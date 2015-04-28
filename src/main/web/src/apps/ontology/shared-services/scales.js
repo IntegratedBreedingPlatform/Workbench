@@ -2,14 +2,14 @@
 'use strict';
 
 (function() {
-	var app = angular.module('scales', ['utilities']);
+	var app = angular.module('scales', ['utilities', 'config']);
 
-	app.service('scalesService', ['$http', 'serviceUtilities', function($http, serviceUtilities) {
+	app.service('scalesService', ['$http', 'serviceUtilities', 'configService', function($http, serviceUtilities, configService) {
 
 		var successHandler = serviceUtilities.restSuccessHandler,
 			failureHandler = serviceUtilities.restFailureHandler;
 
-		function convertScaleForAdding(scale) {
+		function convertScale(scale) {
 			var convertedScale = {
 					dataTypeId: scale.dataType && scale.dataType.id
 				},
@@ -48,8 +48,8 @@
 			}]
 			*/
 			getScales: function() {
-				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/scales');
-				return request.then(successHandler, failureHandler);
+				var request = $http.get('/bmsapi/ontology/' + configService.getCropName() + '/scales');
+				return request.then(serviceUtilities.restFilteredScalesSuccessHandler, failureHandler);
 			},
 
 			/*
@@ -77,8 +77,8 @@
 			}
 			*/
 			addScale: function(scale) {
-				var convertedScale = convertScaleForAdding(scale),
-					request = $http.post('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/scales',
+				var convertedScale = convertScale(scale),
+					request = $http.post('/bmsapi/ontology/' + configService.getCropName() + '/scales',
 						convertedScale);
 				return request.then(successHandler, failureHandler);
 			},
@@ -108,8 +108,8 @@
 			}
 			*/
 			updateScale: function(id, scale) {
-				var request = $http.put('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/scales/:id',
-					scale);
+				var request = $http.put('/bmsapi/ontology/' + configService.getCropName() + '/scales/' + id,
+					convertScale(scale));
 				return request.then(function(response) {
 					return response.status;
 				}, failureHandler);
@@ -118,10 +118,10 @@
 			/*
 			Deletes the scale with the specified ID.
 			*/
-			deleteScale: function(/*id*/) {
+			deleteScale: function(id) {
 				var request;
 
-				request = $http.delete('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/scales/:id');
+				request = $http.delete('/bmsapi/ontology/' + configService.getCropName() + '/scales/' + id);
 				return request.then(function(response) {
 					return response.status;
 				}, failureHandler);
@@ -145,8 +145,8 @@
 				'deletable': false
 			}
 			*/
-			getScale: function(/*id*/) {
-				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/scales/:id');
+			getScale: function(id) {
+				var request = $http.get('/bmsapi/ontology/' + configService.getCropName() + '/scales/' + id);
 				return request.then(successHandler, failureHandler);
 			}
 		};

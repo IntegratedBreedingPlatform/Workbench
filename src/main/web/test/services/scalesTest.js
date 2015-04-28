@@ -14,7 +14,8 @@ describe('Scales Service', function() {
 
 		serviceUtilities = {
 			restSuccessHandler: function() {},
-			restFailureHandler: function() {}
+			restFailureHandler: function() {},
+			restFilteredScalesSuccessHandler: function() {}
 		};
 
 		spyOn(serviceUtilities, 'restSuccessHandler');
@@ -48,17 +49,19 @@ describe('Scales Service', function() {
 			httpBackend.flush();
 		});
 
-		it('should pass the result to the serviceUtilities.restSuccessHandler if a successful GET is made', function() {
+		it('should pass the result to the serviceUtilities.restFilteredScalesSuccessHandler if a successful GET is made', function() {
 
 			var response = ['scales go here'];
+
+			spyOn(serviceUtilities, 'restFilteredScalesSuccessHandler');
 
 			httpBackend.expectGET(/\/scales$/).respond(response);
 
 			scalesService.getScales();
 			httpBackend.flush();
 
-			expect(serviceUtilities.restSuccessHandler).toHaveBeenCalled();
-			expect(serviceUtilities.restSuccessHandler.calls.mostRecent().args[0].data).toEqual(response);
+			expect(serviceUtilities.restFilteredScalesSuccessHandler).toHaveBeenCalled();
+			expect(serviceUtilities.restFilteredScalesSuccessHandler.calls.mostRecent().args[0].data).toEqual(response);
 			expect(serviceUtilities.restFailureHandler.calls.count()).toEqual(0);
 		});
 
@@ -147,19 +150,18 @@ describe('Scales Service', function() {
 	describe('updateScale', function() {
 
 		it('should PUT to /updateScale', function() {
-			httpBackend.expectPUT(/\/scales\/:id$/).respond(204);
+			httpBackend.expectPUT(/\/scales\/null$/).respond(204);
 			scalesService.updateScale(null, {});
 			httpBackend.flush();
 		});
 
 		it('should return the response status if a successful PUT is made', function() {
-			var id = 1,
-				expectedResponse = 204,
+			var expectedResponse = 204,
 				actualResponse;
 
-			httpBackend.expectPUT(/\/scales\/:id$/).respond(expectedResponse);
+			httpBackend.expectPUT(/\/scales\/1$/).respond(expectedResponse);
 
-			scalesService.updateScale(id, {}).then(function(res) {
+			scalesService.updateScale(1, {}).then(function(res) {
 				actualResponse = res;
 			});
 
@@ -172,7 +174,7 @@ describe('Scales Service', function() {
 		it('should pass the result to the serviceUtilities.restFailureHandler if a successful PUT is not made', function() {
 			var error = 'Error!';
 
-			httpBackend.expectPUT(/\/scales\/:id$/, {}).respond(500, error);
+			httpBackend.expectPUT(/\/scales\/1$/, {}).respond(500, error);
 
 			scalesService.updateScale(1, {});
 			httpBackend.flush();
@@ -187,26 +189,21 @@ describe('Scales Service', function() {
 
 		it('should DELETE /scales/:id', function() {
 
-			// FIXME not in use yet because services haven't been hooked up
-			var id = 1;
+			httpBackend.expectDELETE(/\/scales\/1$/).respond(204);
 
-			httpBackend.expectDELETE(/\/scales\/:id$/).respond(204);
-
-			scalesService.deleteScale(id);
+			scalesService.deleteScale(1);
 
 			httpBackend.flush();
 		});
 
 		it('should return a 204 status if a successful DELETE is made', function() {
 
-			var id = 1,
-
-			expectedResponse = 204,
+			var expectedResponse = 204,
 			actualResponse;
 
-			httpBackend.expectDELETE(/\/scales\/:id$/).respond(expectedResponse);
+			httpBackend.expectDELETE(/\/scales\/1$/).respond(expectedResponse);
 
-			scalesService.deleteScale(id).then(function(res) {
+			scalesService.deleteScale(1).then(function(res) {
 				actualResponse = res;
 			});
 
@@ -220,7 +217,7 @@ describe('Scales Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectDELETE(/\/scales\/:id$/).respond(500, error);
+			httpBackend.expectDELETE(/\/scales\/1$/).respond(500, error);
 
 			scalesService.deleteScale(1);
 			httpBackend.flush();
@@ -235,24 +232,20 @@ describe('Scales Service', function() {
 
 		it('should GET /scales, specifying the given id', function() {
 
-			var id = 123;
+			httpBackend.expectGET(/\/scales\/123$/).respond();
 
-			// FIXME check that the property with the specified ID is actually requested once we've hooked up the real service
-			httpBackend.expectGET(/\/scales\/:id$/).respond();
-
-			scalesService.getScale(id);
+			scalesService.getScale(123);
 
 			httpBackend.flush();
 		});
 
 		it('should pass the result to the serviceUtilities.restSuccessHandler if a successful GET is made', function() {
 
-			var id = 123,
-				response = ['scales go here'];
+			var response = ['scales go here'];
 
-			httpBackend.expectGET(/\/scales\/:id$/).respond(response);
+			httpBackend.expectGET(/\/scales\/123$/).respond(response);
 
-			scalesService.getScale(id);
+			scalesService.getScale(123);
 			httpBackend.flush();
 
 			expect(serviceUtilities.restSuccessHandler).toHaveBeenCalled();
@@ -262,12 +255,11 @@ describe('Scales Service', function() {
 
 		it('should pass the result to the serviceUtilities.restFailureHandler if a successful GET is not made', function() {
 
-			var id = 123,
-				error = 'Error!';
+			var error = 'Error!';
 
-			httpBackend.expectGET(/\/scales\/:id$/).respond(500, error);
+			httpBackend.expectGET(/\/scales\/123$/).respond(500, error);
 
-			scalesService.getScale(id);
+			scalesService.getScale(123);
 			httpBackend.flush();
 
 			expect(serviceUtilities.restFailureHandler).toHaveBeenCalled();
