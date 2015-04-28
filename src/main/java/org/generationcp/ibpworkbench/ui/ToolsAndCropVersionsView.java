@@ -207,4 +207,14 @@ public class ToolsAndCropVersionsView extends VerticalLayout implements Initiali
         messageSource.setColumnHeader(tblTools, TITLE, Message.TOOL_NAME);
         messageSource.setColumnHeader(tblTools, VERSION, Message.VERSION);
     }
+
+	public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
+		this.workbenchDataManager = workbenchDataManager;
+	}
+
+	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+    
+    
 }

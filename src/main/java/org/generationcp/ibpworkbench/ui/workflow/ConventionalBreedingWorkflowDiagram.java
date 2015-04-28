@@ -594,4 +594,10 @@ public class ConventionalBreedingWorkflowDiagram extends Panel implements Workfl
             messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, project.getProjectName());
         }
     }
+
+	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+    
+    
 }

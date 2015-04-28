@@ -657,4 +657,8 @@ public class MasWorkflowDiagram extends Panel implements InitializingBean, Inter
             messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, project.getProjectName());
         }
     }
+    
+    public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
 }

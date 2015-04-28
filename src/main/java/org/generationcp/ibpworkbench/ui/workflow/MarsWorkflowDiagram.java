@@ -902,4 +902,8 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
         messageSource.setCaption(queryForAdaptedGermplasmButton2, Message.QUERY_FOR_ADAPTED_GERMPLASM);
         messageSource.setDescription(queryForAdaptedGermplasmButton2, Message.CLICK_TO_LAUNCH_QUERY_FOR_ADAPTED_GERMPLASM);
     }
+
+	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
 }

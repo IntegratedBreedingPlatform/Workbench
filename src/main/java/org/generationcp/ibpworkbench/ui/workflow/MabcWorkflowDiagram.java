@@ -662,4 +662,9 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
         messageSource.setCaption(breedingViewMultiSiteAnalysisButton, Message.MULTI_SITE_ANALYSIS_LINK);
         messageSource.setCaption(breedingViewButton, Message.BREEDING_VIEW);
     }
+
+	public void setMessageSource(
+			SimpleResourceBundleMessageSource messagesource) {
+		this.messageSource = messagesource;
+	}
 }
