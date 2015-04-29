@@ -156,7 +156,8 @@
 
 	"multiSelect": {
 		"noMatchesFound": "No matches found",
-		"placeholder": "Start typing"
+		"placeholder": "Start typing",
+		"tooLong": "Please reduce to 100 characters"
 	},
 
 	"panel": {

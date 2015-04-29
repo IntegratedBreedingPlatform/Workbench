@@ -35,7 +35,7 @@
 		<div ng-class="formGroupClass('omClasses', 'classes')">
 			<label for="omClasses" class="col-sm-2 control-label">{{'formField.classes' | translate}}</label>
 			<div class="col-sm-7">
-				<om-tag-select name="omClasses" om-name="om-classes" om-property="classes" ng-model="property" om-options="classes" om-adding="true"></om-tag-select>
+				<om-tag-select name="omClasses" om-property="classes" ng-model="property" om-options="classes" om-adding="true"></om-tag-select>
 				<ng-messages for="apForm.omClasses.$error" ng-if="apForm.$submitted">
 					<ng-message when="emptyValue"><p class="text-danger">{{'validation.property.classesEmpty' | translate}}</p></ng-message>
 				</ng-messages>

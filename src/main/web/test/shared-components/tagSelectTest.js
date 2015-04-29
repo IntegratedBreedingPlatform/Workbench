@@ -47,8 +47,8 @@ describe('tagSelect module', function() {
 	});
 
 	compileDirective = function() {
-		var directiveHtml = '<om-tag-select om-name="tagSelect" om-property="property" ng-model="model" om-options="options">' +
-			'</om-tag-select>';
+		var directiveHtml = '<om-tag-select om-name="tagSelect" om-property="property" ng-model="model" om-options="options" ' +
+			'om-min-length="2" om-max-length="10"></om-tag-select>';
 
 		inject(function($compile) {
 			directiveElement = $compile(directiveHtml)(scope);
@@ -89,7 +89,6 @@ describe('tagSelect module', function() {
 							'om-property="property" ng-model="model" om-options="options"></om-tag-select>' +
 					'</form>')(scope);
 			});
-
 			scope.$digest();
 		}
 
@@ -106,6 +105,37 @@ describe('tagSelect module', function() {
 
 			expect(scope.testForm.omTagSelect.$error).toEqual({});
 			expect(scope.testForm.$valid).toBe(true);
+		});
+
+		it('should set the validity to be invalid when the text is too long', function() {
+			var directiveScope;
+
+			compileForm();
+
+			directiveScope = directiveElement.find('ng-form').scope();
+			// Add something to the tag select so that we don't seee the emptyValue error
+			directiveScope.model.property.push('one');
+
+			directiveScope.searchText = 'This is a long tag that is a number of characters longer than the required limit of only 100 ' +
+				'characters';
+			directiveScope.textTooLong = true;
+			scope.$apply();
+
+			expect(scope.testForm.omTagSelect.$error).toEqual({maxlength: true});
+			expect(scope.testForm.$valid).toBe(false);
+		});
+
+		it('should set the parent form to be touched if the tag select is touched', function() {
+			var directiveScope;
+
+			compileForm('om-numeric="true"');
+
+			directiveScope = directiveElement.find('ng-form').scope();
+
+			directiveScope.tagSelectForm.omTagSelectText.$touched = true;
+			scope.$apply();
+
+			expect(scope.testForm.omTagSelect.$touched).toBe(true);
 		});
 	});
 
@@ -266,9 +296,18 @@ describe('tagSelect module', function() {
 
 		it('should allow the user to add text they have entered as a tag without explicitly selecting it', function() {
 			isolateScope.searchText = 'hi';
+			isolateScope.itemIsValidLength = true;
 			isolateScope.addToSelectedItems(-1);
 
 			expect(scope.model[scope.property]).toContain('hi');
+		});
+
+		it('should not add the tag if it is not a valid length', function() {
+			isolateScope.searchText = 'a';
+			isolateScope.itemIsValidLength = false;
+			isolateScope.addToSelectedItems(-1);
+
+			expect(scope.model[scope.property].length).toEqual(0);
 		});
 
 		it('should add the item if it hasn\'t already been added to the list of selected items', function() {

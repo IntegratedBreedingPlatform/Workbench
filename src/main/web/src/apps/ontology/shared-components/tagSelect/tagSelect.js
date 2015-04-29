@@ -5,6 +5,8 @@
 	var tagSelect = angular.module('tagSelect', ['formFields', 'clickAway']);
 
 	tagSelect.directive('omTagSelect', ['editable', function(editable) {
+		var MAX_LENGTH = 100,
+			MIN_LENGTH = 2;
 
 		return {
 			controller: function($scope) {
@@ -14,6 +16,7 @@
 			link: function(scope, elm, attrs, ctrl) {
 				scope.suggestions = angular.copy(scope.options);
 				scope.searchText = '';
+				scope.textTooLong = false;
 				scope.selectedIndex = -1;
 
 				// Set the input to contain the text of the selected item from the suggestions
@@ -32,12 +35,26 @@
 
 				}, true);
 
+				scope.$watch('searchText', function(text) {
+					ctrl.$setValidity('maxlength', true);
+
+					if (text && scope.textTooLong) {
+						ctrl.$setValidity('maxlength', false);
+					}
+				});
+
+				scope.$watch('tagSelectForm.omTagSelectText.$touched', function(touched) {
+					if (touched) {
+						ctrl.$setTouched();
+					}
+				});
+
 				scope.addToSelectedItems = function(index) {
 					var itemToAdd = scope.suggestions[index];
 
-					// Allow the user to add the text they have entered as an item
-					// without having to select it from the list
-					if (scope.searchText && !itemToAdd) {
+					// Allow the user to add the text they have entered as an item without having
+					// to select it from the list, so long as it is of valid length
+					if (scope.searchText && !itemToAdd && scope.itemIsValidLength) {
 						itemToAdd = scope.searchText;
 					}
 
@@ -51,11 +68,13 @@
 				};
 
 				scope.search = function() {
+					scope.itemIsValidLength = scope.searchText.length >= MIN_LENGTH && scope.searchText.length <= MAX_LENGTH;
+
 					scope.suggestions = angular.copy(scope.options);
 
 					// Add the search term text that the user has entered into the start of the
 					// suggestions list so that they can add it if no suitable suggestion is found
-					if (scope.searchText && scope.suggestions.indexOf(scope.searchText) === -1) {
+					if (scope.searchText && scope.suggestions.indexOf(scope.searchText) === -1 && scope.itemIsValidLength) {
 						scope.suggestions.unshift(scope.searchText);
 					}
 
@@ -74,6 +93,8 @@
 						return scope.model[scope.property].indexOf(value) === -1;
 					});
 
+					// Indicate whether the text is too long so that the validation styling can be added appropriately
+					scope.textTooLong = scope.searchText.length > MAX_LENGTH;
 					scope.selectedIndex = -1;
 				};
 
@@ -144,6 +165,7 @@
 					scope.suggestions = [];
 					scope.selectedIndex = -1;
 					scope.searchText = '';
+					scope.textTooLong = false;
 					scope.suggestionsShown = false;
 				};
 
@@ -157,7 +179,6 @@
 			scope: {
 				adding: '=omAdding',
 				editing: '=omEditing',
-				name: '@omName',
 				model: '=ngModel',
 				options: '=omOptions',
 				property: '@omProperty'
