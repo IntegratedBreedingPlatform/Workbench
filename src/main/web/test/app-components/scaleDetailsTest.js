@@ -224,6 +224,15 @@ describe('Scale details directive', function() {
 
 			expect(scope.editing).toBe(true);
 		});
+
+		it('should handle any errors if the retrieving data types was not successful', function() {
+			scope.editScale(fakeEvent);
+
+			deferredGetDataTypes.reject();
+			scope.$apply();
+
+			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
+		});
 	});
 
 	describe('$scope.cancel', function() {
@@ -346,6 +355,18 @@ describe('Scale details directive', function() {
 			scope.$apply();
 
 			expect(scope.updateSelectedScale).toHaveBeenCalledWith(PERCENTAGE);
+		});
+
+		it('should handle any errors and set the form to untouched if the update was not successful', function() {
+			spyOn(scope.sdForm, '$setUntouched');
+
+			scope.saveChanges(fakeEvent, PERCENTAGE.id, PERCENTAGE);
+
+			deferredUpdateScale.reject();
+			scope.$apply();
+
+			expect(scope.sdForm.$setUntouched).toHaveBeenCalled();
+			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
 		});
 	});
 

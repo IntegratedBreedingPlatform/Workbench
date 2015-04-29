@@ -104,13 +104,18 @@ describe('Add Scale View', function() {
 			variableStateService: variableStateService,
 			serviceUtilities: serviceUtilities
 		});
-
-		deferredGetDataTypes.resolve(types);
-		scope.$apply();
 	}));
 
 	it('should set the data types on the scope', function() {
+		deferredGetDataTypes.resolve(types);
+		scope.$apply();
 		expect(scope.types).toEqual(types);
+	});
+
+	it('should display errors if data types were not retrieved successfully', function() {
+		deferredGetDataTypes.reject();
+		scope.$apply();
+		expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
 	});
 
 	it('should hide the range and categories widgets by default', function() {
