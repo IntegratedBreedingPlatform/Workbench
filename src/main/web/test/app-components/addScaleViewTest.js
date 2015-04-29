@@ -45,7 +45,7 @@ describe('Add Scale View', function() {
 		},
 
 		serviceUtilities = {
-			genericAndRatherUselessErrorHandler: function() {}
+			formatErrorsForDisplay: function() {}
 		},
 
 		formUtilities,
@@ -87,11 +87,12 @@ describe('Add Scale View', function() {
 
 		// Pretend our form is valid
 		scope.asForm = {
-			$valid: true
+			$valid: true,
+			$setUntouched: function() {}
 		};
 
 		spyOn(scalesService, 'addScale').and.callThrough();
-		spyOn(serviceUtilities, 'genericAndRatherUselessErrorHandler');
+		spyOn(serviceUtilities, 'formatErrorsForDisplay');
 		spyOn(dataTypesService, 'getDataTypes').and.callThrough();
 
 		controller = $controller('AddScaleController', {
@@ -169,7 +170,7 @@ describe('Add Scale View', function() {
 			deferredAddScale.reject();
 			scope.$apply();
 
-			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
+			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
 			expect(location.path.calls.count()).toEqual(0);
 		});
 

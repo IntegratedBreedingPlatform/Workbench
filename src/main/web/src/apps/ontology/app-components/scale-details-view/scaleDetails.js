@@ -14,6 +14,7 @@
 			// Reset any errors we're showing the user
 			function resetErrors($scope) {
 		 		$scope.clientErrors = {};
+		 		$scope.serverErrors = {};
 		 	}
 
 			return {
@@ -57,7 +58,9 @@
 
 						dataTypesService.getDataTypes().then(function(types) {
 							$scope.types = types;
-						}, serviceUtilities.genericAndRatherUselessErrorHandler);
+						}, function(response) {
+							$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+						});
 
 						$scope.editing = true;
 					};
@@ -112,7 +115,10 @@
 								$scope.editing = false;
 								$scope.submitted = false;
 								$scope.showThrobber = false;
-							}, serviceUtilities.genericAndRatherUselessErrorHandler);
+							}, function(response) {
+								$scope.sdForm.$setUntouched();
+								$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+							});
 						}
 					};
 

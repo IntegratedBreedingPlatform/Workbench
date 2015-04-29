@@ -7,7 +7,7 @@ describe('Scale details directive', function() {
 		},
 
 		serviceUtilities = {
-			genericAndRatherUselessErrorHandler: function() {}
+			formatErrorsForDisplay: function() {}
 		},
 
 		panelService = {
@@ -121,7 +121,7 @@ describe('Scale details directive', function() {
 		spyOn(scalesService, 'updateScale').and.callThrough();
 		spyOn(scalesService, 'deleteScale').and.callThrough();
 		spyOn(dataTypesService, 'getDataTypes').and.callThrough();
-		spyOn(serviceUtilities, 'genericAndRatherUselessErrorHandler');
+		spyOn(serviceUtilities, 'formatErrorsForDisplay');
 		spyOn(panelService, 'hidePanel');
 
 		compileDirective();
@@ -324,7 +324,7 @@ describe('Scale details directive', function() {
 			deferredUpdateScale.reject();
 			scope.$apply();
 
-			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
+			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
 		});
 
 		it('should set editing to false after a successful update', function() {

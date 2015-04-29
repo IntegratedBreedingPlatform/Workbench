@@ -11,12 +11,17 @@
 
 			$scope.scale = {};
 
+			// Reset server errors
+			$scope.serverErrors = {};
+
 			$scope.showRangeWidget = false;
 			$scope.showCategoriesWidget = false;
 
 			dataTypesService.getDataTypes().then(function(types) {
 				$scope.types = types;
-			}, serviceUtilities.genericAndRatherUselessErrorHandler);
+			}, function(response) {
+					$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+			});
 
 			$scope.saveScale = function(e, scale) {
 				e.preventDefault();
@@ -34,7 +39,11 @@
 							// FIXME Go somewhere more useful
 							$location.path('/scales');
 						}
-					}, serviceUtilities.genericAndRatherUselessErrorHandler);
+					}, function(response) {
+						$scope.asForm.$setUntouched();
+						$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+						$scope.submitted = false;
+					});
 				}
 			};
 
