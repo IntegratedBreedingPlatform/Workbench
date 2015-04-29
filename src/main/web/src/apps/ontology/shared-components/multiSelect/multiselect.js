@@ -49,6 +49,15 @@
 					return item.name;
 				};
 
+				scope.formatListForDisplay = function(items) {
+					if (items) {
+						var names = items.map( function(item) {
+							return item.name;
+						});
+						return names.join(', ');
+					}
+				};
+
 				scope.search = function() {
 					scope.suggestions = angular.copy(scope.options);
 

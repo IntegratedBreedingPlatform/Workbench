@@ -147,6 +147,10 @@
 					scope.suggestionsShown = false;
 				};
 
+				scope.formatForDisplay = function(items) {
+					return items ? items.join(', ') : '';
+				};
+
 			},
 			require: 'ngModel',
 			restrict: 'E',
