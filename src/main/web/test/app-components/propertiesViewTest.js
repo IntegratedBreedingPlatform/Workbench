@@ -57,11 +57,13 @@ describe('Properties View', function() {
 		var jsonData = [{
 				id: 'prop1',
 				name: 'prop1',
+				description: 'prop1 description',
 				classes: ['class1', 'class2']
 			}],
 			transformedData = [{
 				id: 'prop1',
 				name: 'prop1',
+				description: 'prop1 description',
 				classes: 'class1, class2'
 			}];
 
