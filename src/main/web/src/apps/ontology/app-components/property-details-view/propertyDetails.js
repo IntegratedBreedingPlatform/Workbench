@@ -56,6 +56,11 @@
 						$scope.propertyId = selected && selected.id || null;
 					}, true);
 
+					function resetSubmissionState() {
+						$scope.submitted = false;
+						$scope.showThrobber = false;
+					}
+
 					$scope.editProperty = function(e) {
 						e.preventDefault();
 						resetErrors($scope);
@@ -111,9 +116,9 @@
 								$scope.updateSelectedProperty(model);
 
 								$scope.editing = false;
-								$scope.submitted = false;
-								$scope.showThrobber = false;
+								resetSubmissionState();
 							}, function(response) {
+								resetSubmissionState();
 								$scope.pdForm.$setUntouched();
 								$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
 							});

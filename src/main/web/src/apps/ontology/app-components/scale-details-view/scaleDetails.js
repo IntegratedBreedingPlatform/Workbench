@@ -52,6 +52,11 @@
 						}
 					});
 
+					function resetSubmissionState() {
+						$scope.submitted = false;
+						$scope.showThrobber = false;
+					}
+
 					$scope.editScale = function(e) {
 						e.preventDefault();
 						resetErrors($scope);
@@ -113,9 +118,9 @@
 								$scope.updateSelectedScale(model);
 
 								$scope.editing = false;
-								$scope.submitted = false;
-								$scope.showThrobber = false;
+								resetSubmissionState();
 							}, function(response) {
+								resetSubmissionState();
 								$scope.sdForm.$setUntouched();
 								$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
 							});
