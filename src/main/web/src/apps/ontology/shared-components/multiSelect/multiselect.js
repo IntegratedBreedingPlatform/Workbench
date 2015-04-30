@@ -56,6 +56,7 @@
 						});
 						return names.join(', ');
 					}
+					return '';
 				};
 
 				scope.search = function() {

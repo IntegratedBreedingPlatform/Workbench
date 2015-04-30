@@ -5,6 +5,7 @@ describe('multiselect module', function() {
 
 	var ONE = {name: 'one'},
 		TWO = {name: 'two'},
+		ONE_TWO = [{name: 'one'}, {name: 'two'}],
 
 		fakeEvent = {
 			preventDefault: function() {}
@@ -282,10 +283,14 @@ describe('multiselect module', function() {
 
 	});
 
-	describe('$scope.formatForDisplay', function() {
+	describe('$scope.formatListForDisplay', function() {
 
-		it('should return the name of the passed in object', function() {
-			expect(isolateScope.formatForDisplay(ONE)).toEqual('one');
+		it('should return string separated names of the passed in array of objects', function() {
+			expect(isolateScope.formatListForDisplay(ONE_TWO)).toEqual('one, two');
+		});
+
+		it('should handle falsy passed in object', function() {
+			expect(isolateScope.formatListForDisplay(null)).toEqual('');
 		});
 	});
 
