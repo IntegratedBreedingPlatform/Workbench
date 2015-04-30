@@ -122,6 +122,10 @@
 						event.preventDefault();
 						scope.hideSuggestions();
 					}
+					// Tab pressed, close suggestions and continue with event
+					else if (event.keyCode === 9) {
+						scope.hideSuggestions();
+					}
 				};
 
 				scope.onClick = function(index) {
