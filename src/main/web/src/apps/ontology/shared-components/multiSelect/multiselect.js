@@ -157,6 +157,7 @@
 					scope.selectedIndex = -1;
 					scope.searchText = '';
 					scope.suggestionsShown = false;
+					elm.find('input')[0].focus();
 				};
 
 			},

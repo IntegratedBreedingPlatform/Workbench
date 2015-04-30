@@ -171,6 +171,7 @@
 					scope.searchText = '';
 					scope.textTooLong = false;
 					scope.suggestionsShown = false;
+					elm.find('input')[0].focus();
 				};
 
 				scope.formatForDisplay = function(items) {
