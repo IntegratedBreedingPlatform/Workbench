@@ -119,6 +119,7 @@ describe('multiselect module', function() {
 			UP_KEY = 38,
 			ENTER_KEY = 13,
 			ESCAPE_KEY = 27,
+			TAB_KEY = 9,
 			RANDOM_KEY = 1;
 
 		it('should call search if the user presses the down arrow with nothing selected', function() {
@@ -190,6 +191,15 @@ describe('multiselect module', function() {
 			spyOn(isolateScope, 'hideSuggestions');
 
 			fakeEvent.keyCode = ESCAPE_KEY;
+			isolateScope.checkKeyDown(fakeEvent);
+
+			expect(isolateScope.hideSuggestions).toHaveBeenCalled();
+		});
+
+		it('should call hideSuggestions if the tab key is pressed', function() {
+			spyOn(isolateScope, 'hideSuggestions');
+
+			fakeEvent.keyCode = TAB_KEY;
 			isolateScope.checkKeyDown(fakeEvent);
 
 			expect(isolateScope.hideSuggestions).toHaveBeenCalled();
