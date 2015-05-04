@@ -8,7 +8,8 @@ describe('multiselect module', function() {
 		ONE_TWO = [{name: 'one'}, {name: 'two'}],
 
 		fakeEvent = {
-			preventDefault: function() {}
+			preventDefault: function() {},
+			stopPropagation: function() {}
 		},
 
 		scope,

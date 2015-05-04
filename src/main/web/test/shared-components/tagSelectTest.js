@@ -4,7 +4,8 @@
 describe('tagSelect module', function() {
 
 	var fakeEvent = {
-			preventDefault: function() {}
+			preventDefault: function() {},
+			stopPropagation: function() {}
 		},
 
 		scope,

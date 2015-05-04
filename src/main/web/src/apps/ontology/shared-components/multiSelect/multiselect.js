@@ -121,6 +121,9 @@
 					// Escape pressed, close suggestions
 					else if (event.keyCode === 27) {
 						event.preventDefault();
+						if (!scope.isSuggestionBoxClosed()) {
+							event.stopPropagation();
+						}
 						scope.hideSuggestions();
 					}
 					// Tab pressed, close suggestions and continue with event
@@ -139,8 +142,12 @@
 					scope.model[scope.property].splice(index, 1);
 				};
 
+				scope.isSuggestionBoxClosed = function() {
+					return scope.selectedIndex === -1 && scope.suggestions.length === 0;
+				};
+
 				scope.toggleSuggestions = function() {
-					if (scope.selectedIndex === -1 && scope.suggestions.length === 0) {
+					if (scope.isSuggestionBoxClosed()) {
 						scope.showSuggestions();
 					} else {
 						scope.hideSuggestions();
