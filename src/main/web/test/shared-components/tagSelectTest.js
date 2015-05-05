@@ -233,6 +233,26 @@ describe('tagSelect module', function() {
 			expect(isolateScope.hideSuggestions).toHaveBeenCalled();
 		});
 
+		it('should stop event propagation when the escape key is pressed if suggestions are open', function() {
+			spyOn(fakeEvent, 'stopPropagation');
+			isolateScope.showSuggestions();
+
+			fakeEvent.keyCode = ESCAPE_KEY;
+			isolateScope.checkKeyDown(fakeEvent);
+
+			expect(fakeEvent.stopPropagation).toHaveBeenCalled();
+		});
+
+		it('should not stop event propagation when the escape key is pressed if suggestions are closed', function() {
+			spyOn(fakeEvent, 'stopPropagation');
+			isolateScope.hideSuggestions();
+
+			fakeEvent.keyCode = ESCAPE_KEY;
+			isolateScope.checkKeyDown(fakeEvent);
+
+			expect(fakeEvent.stopPropagation).not.toHaveBeenCalled();
+		});
+
 		it('should call hideSuggestions if the tab key is pressed', function() {
 			spyOn(isolateScope, 'hideSuggestions');
 

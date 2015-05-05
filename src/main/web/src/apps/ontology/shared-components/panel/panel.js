@@ -10,14 +10,16 @@
 
 		return {
 			controller: function($scope) {
-				var escHandler = function (msg, e) {
-						$scope.$apply(function () {
-							if (panelService.getCurrentPanel() === $scope.omPanelIdentifier) {
-								$scope.closePanel(e);
-							}
-						});
-					},
-					removeEscHandler = $scope.$on('escKeydown', escHandler);
+				//this function is esposed for testing purposes only
+				$scope.escHandler = function (msg, e) {
+					$scope.$apply(function () {
+						if (panelService.getCurrentPanel() === $scope.omPanelIdentifier) {
+							$scope.closePanel(e);
+						}
+					});
+				};
+				//this function is esposed for testing purposes only
+				$scope.removeEscHandler = $scope.$on('escKeydown', $scope.escHandler);
 
 				$scope.closePanel = function(e) {
 					e.preventDefault();
@@ -26,7 +28,7 @@
 				};
 
 				$scope.$on('$destroy', function() {
-					removeEscHandler();
+					$scope.removeEscHandler();
 				});
 			},
 			link: function($scope, element) {

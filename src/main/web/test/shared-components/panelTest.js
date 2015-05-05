@@ -1,4 +1,4 @@
-/*global angular, inject, expect*/
+/*global angular, inject, expect, spyOn*/
 'use strict';
 
 describe('Panel module', function() {
@@ -121,6 +121,54 @@ describe('Panel module', function() {
 
 			timeout.flush();
 			expect(isolateScope.showThrobber).toBeFalsy();
+		});
+
+		it('should close the panel if esc key is pressed and panel is opened', function() {
+			var isolateScope;
+
+			scope.panelName = 'panel';
+			compileDirective('om-panel-identifier="panelName"');
+
+			panelService.showPanel('panel');
+			scope.$digest();
+
+			isolateScope = directiveElement.isolateScope();
+			spyOn(isolateScope, 'closePanel');
+			isolateScope.escHandler('escKeydown', {preventDefault: function(){}});
+
+			expect(isolateScope.closePanel).toHaveBeenCalled();
+		});
+
+		it('should not close the panel if esc key is pressed and panel is already closed', function() {
+			var isolateScope;
+
+			scope.panelName = 'panel';
+			compileDirective('om-panel-identifier="panelName"');
+
+			panelService.showPanel('panel');
+			scope.$digest();
+			panelService.hidePanel();
+			scope.$digest();
+
+			isolateScope = directiveElement.isolateScope();
+			spyOn(isolateScope, 'closePanel');
+			isolateScope.escHandler('escKeydown', {preventDefault: function(){}});
+
+			expect(isolateScope.closePanel).not.toHaveBeenCalled();
+		});
+
+		it('should remove the escape handler on destroy', function() {
+			var isolateScope;
+
+			scope.panelName = 'panel';
+			compileDirective('om-panel-identifier="panelName"');
+
+			isolateScope = directiveElement.isolateScope();
+			spyOn(isolateScope, 'removeEscHandler');
+
+			isolateScope.$broadcast('$destroy');
+
+			expect(isolateScope.removeEscHandler).toHaveBeenCalled();
 		});
 	});
 

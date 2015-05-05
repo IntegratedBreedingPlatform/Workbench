@@ -10,17 +10,18 @@
 
 			link: function (scope) {
 
-				var escHandler = function (e) {
+				//this function is exposed for testing purposes
+				scope.escHandler = function (e) {
 					//esc
 					if (e.keyCode === 27) {
 						scope.$broadcast('escKeydown', e);
 					}
 				};
 
-				$document.bind('keydown', escHandler);
+				$document.bind('keydown', scope.escHandler);
 
 				scope.$on('$destroy', function() {
-					$document.off('keydown', escHandler);
+					$document.off('keydown', scope.escHandler);
 				});
 			}
 		};
