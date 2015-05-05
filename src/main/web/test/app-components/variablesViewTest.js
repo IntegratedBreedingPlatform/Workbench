@@ -46,19 +46,18 @@ describe('Variables Controller', function() {
 	// This format is what is returned by a getVariable() call (singular)
 	PLANT_VIGOR_DETAILED = angular.copy(PLANT_VIGOR);
 
-
 	PLANT_VIGOR_DETAILED.scale = {
-			id: 1,
-			name: 'Score',
-			dataType: {
-				id: 2,
-				name: 'Numeric'
-			},
-			validValues: {
-				min: 1,
-				max: 5
-			}
-		};
+		id: 1,
+		name: 'Score',
+		dataType: {
+			id: 2,
+			name: 'Numeric'
+		},
+		validValues: {
+			min: 1,
+			max: 5
+		}
+	};
 
 	delete PLANT_VIGOR_DETAILED.id;
 	delete PLANT_VIGOR_DETAILED.scaleSummary;
