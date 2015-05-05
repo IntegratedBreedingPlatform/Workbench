@@ -2,9 +2,9 @@
 'use strict';
 
 (function() {
-	var multiSelect = angular.module('multiSelect', ['formFields', 'clickAway']);
+	var multiSelect = angular.module('multiSelect', ['formFields', 'clickAway', 'selectScroll']);
 
-	multiSelect.directive('omMultiSelect', ['editable',	function(editable) {
+	multiSelect.directive('omMultiSelect', ['editable', 'selectScroll', function(editable, selectScroll) {
 
 		return {
 			controller: function($scope) {
@@ -12,6 +12,8 @@
 			},
 
 			link: function(scope, elm, attrs, ctrl) {
+				var listElement = elm.find('ul'),
+					rawListElement = listElement[0];
 
 				scope.suggestions = angular.copy(scope.options);
 				scope.searchText = '';
@@ -85,6 +87,7 @@
 				};
 
 				scope.checkKeyDown = function(event) {
+					var itemAdded;
 
 					// Down key, increment selectedIndex
 					if (event.keyCode === 40) {
@@ -98,6 +101,7 @@
 						if (scope.selectedIndex + 1 < scope.suggestions.length) {
 							scope.selectedIndex++;
 						}
+						selectScroll.ensureHighlightVisible(listElement, rawListElement, scope.selectedIndex);
 					}
 					// Up key, decrement selectedIndex
 					else if (event.keyCode === 38) {
@@ -106,11 +110,10 @@
 						if (scope.selectedIndex - 1 > -1) {
 							scope.selectedIndex--;
 						}
+						selectScroll.ensureHighlightVisible(listElement, rawListElement, scope.selectedIndex);
 					}
 					// Enter pressed, select item
 					else if (event.keyCode === 13) {
-						var itemAdded;
-
 						event.preventDefault();
 
 						itemAdded = scope.addToSelectedItems(scope.selectedIndex);
@@ -160,6 +163,7 @@
 				};
 
 				scope.hideSuggestions = function() {
+					selectScroll.resetScroll(rawListElement);
 					scope.suggestions = [];
 					scope.selectedIndex = -1;
 					scope.searchText = '';

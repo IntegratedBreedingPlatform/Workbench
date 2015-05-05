@@ -2,9 +2,9 @@
 'use strict';
 
 (function() {
-	var tagSelect = angular.module('tagSelect', ['formFields', 'clickAway']);
+	var tagSelect = angular.module('tagSelect', ['formFields', 'clickAway', 'selectScroll']);
 
-	tagSelect.directive('omTagSelect', ['editable', function(editable) {
+	tagSelect.directive('omTagSelect', ['editable', 'selectScroll', function(editable, selectScroll) {
 		var MAX_LENGTH = 100,
 			MIN_LENGTH = 2;
 
@@ -14,6 +14,9 @@
 			},
 
 			link: function(scope, elm, attrs, ctrl) {
+				var listElement = elm.find('ul'),
+					rawListElement = listElement[0];
+
 				scope.suggestions = angular.copy(scope.options);
 				scope.searchText = '';
 				scope.textTooLong = false;
@@ -113,6 +116,8 @@
 						if (scope.selectedIndex + 1 < scope.suggestions.length) {
 							scope.selectedIndex++;
 						}
+
+						selectScroll.ensureHighlightVisible(listElement, rawListElement, scope.selectedIndex);
 					}
 					// Up key, decrement selectedIndex
 					else if (event.keyCode === 38) {
@@ -121,6 +126,8 @@
 						if (scope.selectedIndex - 1 > -1) {
 							scope.selectedIndex--;
 						}
+
+						selectScroll.ensureHighlightVisible(listElement, rawListElement, scope.selectedIndex);
 					}
 					// Enter pressed, select item
 					else if (event.keyCode === 13) {
@@ -173,6 +180,7 @@
 				};
 
 				scope.hideSuggestions = function() {
+					selectScroll.resetScroll(rawListElement);
 					scope.suggestions = [];
 					scope.selectedIndex = -1;
 					scope.searchText = '';

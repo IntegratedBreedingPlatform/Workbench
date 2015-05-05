@@ -16,7 +16,8 @@ describe('multiselect module', function() {
 		compileDirective,
 		isolateScope,
 		directiveElement,
-		mockTranslateFilter;
+		mockTranslateFilter,
+		selectScroll;
 
 	beforeEach(function() {
 		module(function($provide) {
@@ -34,7 +35,17 @@ describe('multiselect module', function() {
 
 	beforeEach(function() {
 		module('templates');
-		module('multiSelect');
+	});
+
+	beforeEach(function() {
+		selectScroll = {
+			ensureHighlightVisible: function() {},
+			resetScroll: function() {}
+		};
+
+		module('multiSelect', function($provide) {
+			$provide.value('selectScroll', selectScroll);
+		});
 	});
 
 	beforeEach(inject(function($rootScope) {

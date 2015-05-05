@@ -12,7 +12,8 @@ describe('tagSelect module', function() {
 		compileDirective,
 		isolateScope,
 		directiveElement,
-		mockTranslateFilter;
+		mockTranslateFilter,
+		selectScroll;
 
 	beforeEach(function() {
 		module(function($provide) {
@@ -30,7 +31,17 @@ describe('tagSelect module', function() {
 
 	beforeEach(function() {
 		module('templates');
-		module('tagSelect');
+	});
+
+	beforeEach(function() {
+		selectScroll = {
+			ensureHighlightVisible: function() {},
+			resetScroll: function() {}
+		};
+
+		module('tagSelect', function($provide) {
+			$provide.value('selectScroll', selectScroll);
+		});
 	});
 
 	beforeEach(inject(function($rootScope) {
