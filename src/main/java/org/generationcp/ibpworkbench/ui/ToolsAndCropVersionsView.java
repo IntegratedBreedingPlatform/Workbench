@@ -121,12 +121,7 @@ public class ToolsAndCropVersionsView extends VerticalLayout implements Initiali
             List<String> addedToolNames = new ArrayList<String>();
             for (Tool tool : tools) {
 
-            	if("gdms".equals(tool.getToolName())) {
-            		//temporarily hide gdms
-            		continue;
-            	}
-            	
-                if (!(ToolType.ADMIN.equals(tool.getToolType()) || ToolType.WORKBENCH.equals(tool.getToolType()))
+            	if (!(ToolType.ADMIN.equals(tool.getToolType()) || ToolType.WORKBENCH.equals(tool.getToolType()))
                     && !addedToolNames.contains(tool.getTitle())) {
                     addedToolNames.add(tool.getTitle());
                     
@@ -212,4 +207,14 @@ public class ToolsAndCropVersionsView extends VerticalLayout implements Initiali
         messageSource.setColumnHeader(tblTools, TITLE, Message.TOOL_NAME);
         messageSource.setColumnHeader(tblTools, VERSION, Message.VERSION);
     }
+
+	public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
+		this.workbenchDataManager = workbenchDataManager;
+	}
+
+	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+    
+    
 }

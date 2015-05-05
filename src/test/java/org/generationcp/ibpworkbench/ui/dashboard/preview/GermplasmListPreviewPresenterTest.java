@@ -5,9 +5,6 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -158,7 +155,7 @@ public class GermplasmListPreviewPresenterTest {
 
     @Test
     public void testAddGermplasmListFolder() throws Exception {
-        GermplasmList newListWithParent = new GermplasmList(null, SAMPLE_VALID_FOLDER_NAME, Long.valueOf((new SimpleDateFormat(DateUtil.DATE_AS_NUMBER_FORMAT)).format(Calendar.getInstance().getTime())), GermplasmListPreviewPresenter.FOLDER, USER_ID, SAMPLE_VALID_FOLDER_NAME, germplasmListWithParent.getParent(), 0);
+        GermplasmList newListWithParent = new GermplasmList(null, SAMPLE_VALID_FOLDER_NAME, DateUtil.getCurrentDateAsLongValue(), GermplasmListPreviewPresenter.FOLDER, USER_ID, SAMPLE_VALID_FOLDER_NAME, germplasmListWithParent.getParent(), 0);
         newListWithParent.setDescription("(NEW FOLDER) " + SAMPLE_VALID_FOLDER_NAME);
 
         presenter.addGermplasmListFolder(SAMPLE_VALID_FOLDER_NAME,LIST_ID_WITH_PARENT);

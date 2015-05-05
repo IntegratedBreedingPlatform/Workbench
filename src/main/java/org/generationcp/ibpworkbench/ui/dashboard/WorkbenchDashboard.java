@@ -21,6 +21,7 @@ import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -85,6 +86,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
     
     private List<Project> projects = null;
     private SummaryView summaryView;
+    private Button lasSelectedProjectButton = null;
 
     public WorkbenchDashboard() {
         super();
@@ -112,14 +114,15 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
             @Override
             protected String formatPropertyValue(Object rowId, Object colId, Property property) {
                 if (property.getType() == Date.class) {
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    SimpleDateFormat sdf = DateUtil.getSimpleDateFormat(DateUtil.FRONTEND_DATE_FORMAT);
                     return property.getValue() == null ? "" : sdf.format((Date) property.getValue());
                 }
 
                 return super.formatPropertyValue(rowId, colId, property);
             }
         };
-        tblProject.setImmediate(true); // react at once when something is selected
+        // react at once when something is selected
+        tblProject.setImmediate(true); 
         tblProject.setSelectable(true);
         tblProject.setStyleName("gcp-tblproject");
 
@@ -205,7 +208,8 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
             button.setHtmlContentAllowed(true);
             button.setData(BUTTON_LIST_MANAGER_COLUMN_ID);
             button.setStyleName(Bootstrap.Buttons.LINK.styleName() + " launch");
-            button.setWidth("26px"); button.setHeight("26px");
+            button.setWidth("26px"); 
+            button.setHeight("26px");
             button.addListener(new DashboardMainClickListener(this, project.getProjectId()));
             button.setEnabled(false);
 
@@ -227,8 +231,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
         }
 
     }
-
-    private Button lasSelectedProjectButton = null;
 
     protected void initializeActions() {
         

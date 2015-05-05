@@ -1,7 +1,9 @@
 package org.generationcp.ibpworkbench.service;
 
+import org.generationcp.commons.util.DateUtil;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
@@ -10,9 +12,7 @@ import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Calendar;
 
 /**
  * Created by cyrus on 11/27/14.
@@ -56,8 +56,7 @@ public class WorkbenchUserService {
 		user.setPassword(userAccount.getPassword());
 		user.setAccess(0);
 
-		String currentDate = new SimpleDateFormat("yyyyMMdd").format(
-				Calendar.getInstance().getTime());
+		String currentDate = DateUtil.getCurrentDateAsStringValue();
 
 		user.setAdate(Integer.parseInt(currentDate));
 		user.setCdate(Integer.parseInt(currentDate));
@@ -94,6 +93,37 @@ public class WorkbenchUserService {
 	 * @throws MiddlewareQueryException
 	 */
 	public boolean isValidUserLogin(UserAccountModel userAccount) throws MiddlewareQueryException {
-		return workbenchDataManager.isValidUserLogin(userAccount.getUsername(),userAccount.getPassword());
+		return workbenchDataManager.isValidUserLogin(userAccount.getUsername(),
+				userAccount.getPassword());
+	}
+
+	/**
+	 * Retrieves User obj including the Person object information
+	 * @param username
+	 * @return
+	 * @throws MiddlewareQueryException
+	 */
+	public User getUserByUserName(String username) throws MiddlewareQueryException {
+		User user = workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0);
+		Person person = workbenchDataManager.getPersonById(user.getPersonid());
+		user.setPerson(person);
+
+		return user;
+	}
+
+	/**
+	 * Retreives User with Person object given user id
+	 * @param userId
+	 * @return
+	 * @throws MiddlewareQueryException
+	 */
+	public User getUserByUserid(Integer userId) throws MiddlewareQueryException {
+
+		User user = workbenchDataManager.getUserById(userId);
+		Person person = workbenchDataManager.getPersonById(user.getPersonid());
+		user.setPerson(person);
+
+		return user;
+
 	}
 }

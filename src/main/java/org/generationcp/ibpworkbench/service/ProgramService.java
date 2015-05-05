@@ -1,9 +1,7 @@
 
 package org.generationcp.ibpworkbench.service;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -11,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
+import org.generationcp.commons.util.DateUtil;
 import org.generationcp.ibpworkbench.database.MysqlAccountGenerator;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -57,7 +56,7 @@ public class ProgramService {
     private static final int PROJECT_USER_TYPE = 422;
     private static final int PROJECT_USER_STATUS = 1;
 
-	public void createNewProgram(Project program) throws Exception {
+	public void createNewProgram(Project program) throws MiddlewareQueryException {
 
 		idAndNameOfProgramMembers.clear();
 		
@@ -107,7 +106,7 @@ public class ProgramService {
 					workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
 				}
 			} catch (MiddlewareQueryException e1) {
-				// do nothing
+				LOG.error(e1.getMessage(),e1);
 			}
 		}
 	}
@@ -140,8 +139,8 @@ public class ProgramService {
 			} else {
 				List<Person> persons = userDataManager.getAllPersons();
 				for (Person person : persons) {
-					if (person.getLastName().toUpperCase().equals(cropDBPerson.getLastName().toUpperCase())
-							&& person.getFirstName().toUpperCase().equals(cropDBPerson.getFirstName().toUpperCase())) {
+					if (person.getLastName().equalsIgnoreCase(cropDBPerson.getLastName().toUpperCase())
+							&& person.getFirstName().equalsIgnoreCase(cropDBPerson.getFirstName().toUpperCase())) {
 						cropDBPerson = person;
 						break;
 					}
@@ -188,11 +187,7 @@ public class ProgramService {
 	}
 
     private Integer getCurrentDate(){
-        Calendar now = Calendar.getInstance();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
-        String dateNowStr = formatter.format(now.getTime());
-        Integer dateNowInt = Integer.valueOf(dateNowStr);
-        return dateNowInt;
+        return DateUtil.getCurrentDateAsIntegerValue();
     }
 
 	public void setSelectedUsers(Set<User> users) {

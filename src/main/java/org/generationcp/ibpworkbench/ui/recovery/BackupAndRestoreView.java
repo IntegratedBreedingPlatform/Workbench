@@ -4,6 +4,8 @@ import com.vaadin.data.Validator;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.Reindeer;
+
+import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
@@ -13,16 +15,17 @@ import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.BackupIBDBSaveAction;
 import org.generationcp.ibpworkbench.actions.RestoreIBDBSaveAction;
 import org.generationcp.ibpworkbench.ui.common.UploadField;
-import org.generationcp.ibpworkbench.util.ToolUtil;
+import org.generationcp.ibpworkbench.ui.programmethods.ProgramMethodsView;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.ProjectBackup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 
 /**
  * Created by cyrus on 2/20/14.
@@ -30,7 +33,7 @@ import java.text.SimpleDateFormat;
 @Configurable
 public class BackupAndRestoreView extends CustomComponent implements InitializingBean {
     private static final long serialVersionUID = 1L;
-    
+    private static final Logger LOG = LoggerFactory.getLogger(ProgramMethodsView.class);
     private ListSelect restoreList;
     private Button backupBtn;
     private UploadField uploadFrm;
@@ -42,9 +45,6 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
     private SimpleResourceBundleMessageSource messageSource;
     @Autowired
     private WorkbenchDataManager workbenchDataManager;
-    @Autowired
-    private ToolUtil toolUtil;
-
     private final Panel root = new Panel();
 
     public BackupAndRestoreView() {
@@ -86,11 +86,10 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 
             @Override
             public boolean isValid() {
-                return (this.getLastFileName() != null && getExtension(this.getLastFileName()).toLowerCase().contains("sql"));
+                return this.getLastFileName() != null && getExtension(this.getLastFileName()).toLowerCase().contains("sql");
             }
 
-            private String getExtension(String f)
-            {
+            private String getExtension(String f) {
                 String ext = null;
                 int i = f.lastIndexOf('.');
 
@@ -133,13 +132,13 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
                 
                 restoreList.addItem(pb);
 
-                String dateStr = (new SimpleDateFormat("MMMM dd, yyyy")).format(pb.getBackupTime());
+                String dateStr = (DateUtil.getSimpleDateFormat("MMMM dd, yyyy")).format(pb.getBackupTime());
 
                 restoreList.setItemCaption(pb,dateStr + " - " + pb.getBackupPath());
                 restoreList.setValue(pb);
             }
         } catch (MiddlewareQueryException e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage(),e);
         }
 
         if (restoreList.getItemIds().isEmpty()) {
@@ -186,7 +185,8 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
                     restoreAction.setIsUpload(true);
 
                 } catch (Validator.InvalidValueException e) {
-                    if (!e.getMessage().equals("NO_FILE")) {
+                	LOG.error(e.getMessage(),e);
+                    if (!"NO_FILE".equals(e.getMessage())) {
                         MessageNotifier.showError(clickEvent.getComponent().getWindow(), messageSource.getMessage(Message.ERROR_UPLOAD),messageSource.getMessage(Message.ERROR_INVALID_FILE));
                         return;
                     }

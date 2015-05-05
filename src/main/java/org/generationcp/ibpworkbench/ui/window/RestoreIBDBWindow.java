@@ -7,6 +7,7 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -36,9 +37,6 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchDashboard.class);
     
 	private static final long serialVersionUID = 1L;
-    
-    private static final String VERSION = "1.1.3.10";
-    
 
     private Project project;
         
@@ -119,7 +117,7 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 		}
     }
     
-    protected void initializeComponents() throws Exception {
+    protected void initializeComponents() {
 		saveBtn = new Button("Restore");
         saveBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 		saveBtn.setSizeUndefined();
@@ -134,7 +132,7 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 					Property property) {
 
 				if (property.getType() == java.util.Date.class) {
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					SimpleDateFormat sdf = DateUtil.getSimpleDateFormat(DateUtil.FRONTEND_DATE_FORMAT);
 				    return property.getValue() == null ? "" : sdf.format((java.util.Date) property.getValue());
 				}
 				
@@ -234,7 +232,7 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
     	
     }
 
-    protected void assemble() throws Exception {
+    protected void assemble() {
         initializeComponents();
         initializeLayout();
         initializeData();
