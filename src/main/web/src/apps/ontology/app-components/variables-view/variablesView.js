@@ -61,13 +61,10 @@
 		function($scope, variablesService, panelService, $timeout, collectionUtilities) {
 			var ctrl = this;
 
-			$timeout(function() {
-				ctrl.showAllVariablesThrobber = true;
-				ctrl.showFavouritesThrobber = true;
-			}, DELAY);
-
 			ctrl.variables = [];
 			ctrl.favouriteVariables = [];
+			ctrl.showAllVariablesThrobberWrapper = true;
+			ctrl.colHeaders = ['name', 'property', 'method', 'scale', 'action-favourite'];
 
 			ctrl.transformToDisplayFormat = transformToDisplayFormat;
 			/* Exposed for testing */
@@ -76,7 +73,10 @@
 
 			$scope.panelName = 'variables';
 
-			ctrl.colHeaders = ['name', 'property', 'method', 'scale', 'action-favourite'];
+			$timeout(function() {
+				ctrl.showAllVariablesThrobber = true;
+				ctrl.showFavouritesThrobber = true;
+			}, DELAY);
 
 			variablesService.getFavouriteVariables().then(function(variables) {
 				ctrl.favouriteVariables = ctrl.transformToDisplayFormat(variables);
@@ -84,6 +84,11 @@
 
 			variablesService.getVariables().then(function(variables) {
 				ctrl.variables = ctrl.transformToDisplayFormat(variables);
+				ctrl.showAllVariablesThrobberWrapper = false;
+
+				if (ctrl.variables.length === 0) {
+					ctrl.showNoItemsMessage = true;
+				}
 			});
 
 			$scope.showVariableDetails = function() {
