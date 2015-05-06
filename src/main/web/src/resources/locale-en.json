@@ -186,6 +186,7 @@
 		"method": "Method",
 		"scale": "Scale",
 		"classes": "Classes",
-		"dataType": "Data Type"
+		"dataType": "Data Type",
+		"noItemsFound": "No {{items | translate}} were found."
 	}
 }

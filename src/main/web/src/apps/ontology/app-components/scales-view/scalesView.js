@@ -21,18 +21,24 @@
 	app.controller('ScalesController', ['$scope', 'scalesService', 'panelService', '$timeout', 'collectionUtilities',
 		function($scope, scalesService, panelService, $timeout, collectionUtilities) {
 			var ctrl = this;
-			this.scales = [];
+
+			ctrl.scales = [];
+			ctrl.showThrobberWrapper = true;
+			ctrl.colHeaders = ['name', 'description', 'dataType'];
+
+			$scope.panelName = 'scales';
 
 			$timeout(function() {
 				ctrl.showThrobber = true;
 			}, DELAY);
 
-			$scope.panelName = 'scales';
-
-			ctrl.colHeaders = ['name', 'description', 'dataType'];
-
 			scalesService.getScales().then(function(scales) {
 				ctrl.scales = transformToDisplayFormat(scales);
+				ctrl.showThrobberWrapper = false;
+
+				if (ctrl.scales.length === 0) {
+					ctrl.showNoItemsMessage = true;
+				}
 			});
 
 			$scope.showScaleDetails = function() {
