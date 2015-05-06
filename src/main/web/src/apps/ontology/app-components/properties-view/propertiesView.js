@@ -21,18 +21,24 @@
 	app.controller('PropertiesController', ['$scope', 'propertiesService', 'panelService', '$timeout', 'collectionUtilities',
 		function($scope, propertiesService, panelService, $timeout, collectionUtilities) {
 			var ctrl = this;
-			this.properties = [];
+
+			ctrl.properties = [];
+			ctrl.showThrobberWrapper = true;
+			ctrl.colHeaders = ['name', 'description', 'classes'];
+
+			$scope.panelName = 'properties';
 
 			$timeout(function() {
 				ctrl.showThrobber = true;
 			}, DELAY);
 
-			$scope.panelName = 'properties';
-
-			ctrl.colHeaders = ['name', 'description', 'classes'];
-
 			propertiesService.getProperties().then(function(properties) {
 				ctrl.properties = transformToDisplayFormat(properties);
+				ctrl.showThrobberWrapper = false;
+
+				if (ctrl.properties.length === 0) {
+					ctrl.showNoItemsMessage = true;
+				}
 			});
 
 			$scope.showPropertyDetails = function() {
