@@ -64,6 +64,7 @@
 			ctrl.variables = [];
 			ctrl.favouriteVariables = [];
 			ctrl.showAllVariablesThrobberWrapper = true;
+			ctrl.showFavouritesThrobberWrapper = true;
 			ctrl.colHeaders = ['name', 'property', 'method', 'scale', 'action-favourite'];
 
 			ctrl.transformToDisplayFormat = transformToDisplayFormat;
@@ -80,6 +81,11 @@
 
 			variablesService.getFavouriteVariables().then(function(variables) {
 				ctrl.favouriteVariables = ctrl.transformToDisplayFormat(variables);
+				ctrl.showFavouritesThrobberWrapper = false;
+
+				if (ctrl.favouriteVariables.length === 0) {
+					ctrl.showNoFavouritesMessage = true;
+				}
 			});
 
 			variablesService.getVariables().then(function(variables) {
@@ -87,7 +93,7 @@
 				ctrl.showAllVariablesThrobberWrapper = false;
 
 				if (ctrl.variables.length === 0) {
-					ctrl.showNoItemsMessage = true;
+					ctrl.showNoVariablesMessage = true;
 				}
 			});
 

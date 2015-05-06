@@ -31,10 +31,11 @@
 
 	"variablesList": {
 		"favouritesTitle": "Program Favourites",
-		"allTitle": "All Variables",
+		"title": "Variables",
 		"details": {
 			"expectedRange": "Expected Range"
-		}
+		},
+		"noFavouritesFound": "There are no favourite variables for this program."
 	},
 
 	"propertiesList": {
@@ -187,6 +188,6 @@
 		"scale": "Scale",
 		"classes": "Classes",
 		"dataType": "Data Type",
-		"noItemsFound": "No {{items | translate}} were found."
+		"noItemsFound": "No {{items | translate | lowercase}} were found."
 	}
 }

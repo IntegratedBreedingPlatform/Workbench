@@ -4,15 +4,16 @@
 	</om-panel>
 
 	<h2>{{'variablesList.favouritesTitle' | translate}}</h2>
-	<div ng-show="varsCtrl.favouriteVariables.length === 0" class="om-list-throbber-wrapper">
+	<div ng-show="varsCtrl.showFavouritesThrobberWrapper" class="om-list-throbber-wrapper">
 		<span ng-class="{'throbber-hidden': !varsCtrl.showFavouritesThrobber}" class="throbber throbber-lg"></span>
 	</div>
 	<om-list ng-hide="varsCtrl.favouriteVariables.length === 0" om-data="varsCtrl.favouriteVariables" om-col-headers="varsCtrl.colHeaders" om-on-click="showVariableDetails()" om-selected-item="selectedItem"></om-list>
+	<p ng-show="varsCtrl.showNoFavouritesMessage" class="text-info">{{'variablesList.noFavouritesFound' | translate}}</p>
 
-	<h2>{{'variablesList.allTitle' | translate}}</h2>
+	<h2>{{'variablesList.title' | translate}}</h2>
 	<div ng-show="varsCtrl.showAllVariablesThrobberWrapper" class="om-list-throbber-wrapper">
 		<span ng-class="{'throbber-hidden': !varsCtrl.showAllVariablesThrobber}" class="throbber throbber-lg"></span>
 	</div>
 	<om-list ng-hide="varsCtrl.variables.length === 0" om-data="varsCtrl.variables" om-col-headers="varsCtrl.colHeaders" om-on-click="showVariableDetails()" om-selected-item="selectedItem"></om-list>
-	<div ng-show="varsCtrl.showNoItemsMessage" class="alert alert-info">{{'list.noItemsFound' | translate:'{items: "variables"}'}}</div>
+	<p ng-show="varsCtrl.showNoVariablesMessage" class="text-info">{{'list.noItemsFound' | translate:'{items: "variables"}'}}</p>
 </div>
