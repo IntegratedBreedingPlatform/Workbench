@@ -73,6 +73,16 @@ describe('Properties View', function() {
 		expect(controller.properties).toEqual(transformedData);
 	});
 
+	it('should show a message if there are no properties returned', function() {
+		var jsonData = [];
+
+		deferredGetProperties.resolve(jsonData);
+		scope.$apply();
+
+		expect(propertiesService.getProperties).toHaveBeenCalled();
+		expect(controller.showNoItemsMessage).toBe(true);
+	});
+
 	it('should set the selected item to be an object with an id property set to null by default', function() {
 		expect(scope.selectedItem).toEqual({id: null});
 	});

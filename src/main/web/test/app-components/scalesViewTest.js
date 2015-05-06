@@ -78,6 +78,16 @@ describe('Scales View', function() {
 		expect(controller.scales).toEqual(transformedData);
 	});
 
+	it('should show a message if there are no scales returned', function() {
+		var jsonData = [];
+
+		deferredGetScales.resolve(jsonData);
+		scope.$apply();
+
+		expect(scalesService.getScales).toHaveBeenCalled();
+		expect(controller.showNoItemsMessage).toBe(true);
+	});
+
 	it('should set the selected item to be an object with an id property set to null by default', function() {
 		expect(scope.selectedItem).toEqual({id: null});
 	});

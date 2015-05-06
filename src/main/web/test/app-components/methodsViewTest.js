@@ -54,9 +54,25 @@ describe('Methods View', function() {
 	}));
 
 	it('should get methods', function() {
-		deferredGetMethods.resolve([]);
+		var jsonData = [{
+			id: 1,
+			name: CUT_AND_DRY.name,
+			description: CUT_AND_DRY.description
+		}];
+
+		deferredGetMethods.resolve(jsonData);
 		scope.$apply();
 		expect(methodsService.getMethods).toHaveBeenCalled();
+	});
+
+	it('should show a message if there are no methods returned', function() {
+		var jsonData = [];
+
+		deferredGetMethods.resolve(jsonData);
+		scope.$apply();
+
+		expect(methodsService.getMethods).toHaveBeenCalled();
+		expect(controller.showNoItemsMessage).toBe(true);
 	});
 
 	it('should set the selected item to be an object with an id property set to null by default', function() {

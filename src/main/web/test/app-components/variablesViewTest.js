@@ -187,7 +187,6 @@ describe('Variables Controller', function() {
 	});
 
 	it('should transform variables into display format', function() {
-
 		var jsonData = [PLANT_VIGOR];
 
 		deferredGetVariables.resolve(jsonData);
@@ -197,8 +196,17 @@ describe('Variables Controller', function() {
 		expect(controller.transformToDisplayFormat).toHaveBeenCalledWith(jsonData);
 	});
 
-	it('should transform favourite variables into display format', function() {
+	it('should show a message if there are no variables returned', function() {
+		var jsonData = [];
 
+		deferredGetVariables.resolve(jsonData);
+		scope.$apply();
+
+		expect(variablesService.getVariables).toHaveBeenCalled();
+		expect(controller.showNoVariablesMessage).toBe(true);
+	});
+
+	it('should transform favourite variables into display format', function() {
 		var jsonData = [PLANT_VIGOR];
 
 		deferredGetFavVariables.resolve(jsonData);
@@ -206,6 +214,16 @@ describe('Variables Controller', function() {
 
 		expect(variablesService.getFavouriteVariables).toHaveBeenCalled();
 		expect(controller.transformToDisplayFormat).toHaveBeenCalledWith(jsonData);
+	});
+
+	it('should show a message if there are no favourite variables returned', function() {
+		var jsonData = [];
+
+		deferredGetFavVariables.resolve(jsonData);
+		scope.$apply();
+
+		expect(variablesService.getFavouriteVariables).toHaveBeenCalled();
+		expect(controller.showNoFavouritesMessage).toBe(true);
 	});
 
 	it('should set the selected item to be an object with an id property set to null by default', function() {
