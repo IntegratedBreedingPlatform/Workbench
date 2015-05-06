@@ -8,5 +8,5 @@
 		<span ng-class="{'throbber-hidden': !methodsCtrl.showThrobber}" class="throbber throbber-lg"></span>
 	</div>
 	<om-list ng-hide="methodsCtrl.methods.length === 0" om-data="methodsCtrl.methods" om-col-headers="methodsCtrl.colHeaders" om-on-click="showMethodDetails()" om-selected-item="selectedItem"></om-list>
-	<div ng-show="methodsCtrl.showNoItemsMessage" class="alert alert-info">{{'list.noItemsFound' | translate:'{items: "methods"}'}}</div>
+	<p ng-show="methodsCtrl.showNoItemsMessage" class="text-info">{{'list.noItemsFound' | translate:'{items: "methods"}'}}</p>
 </div>

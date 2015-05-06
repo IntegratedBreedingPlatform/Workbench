@@ -8,5 +8,5 @@
 		<span ng-class="{'throbber-hidden': !scalesCtrl.showThrobber}" class="throbber throbber-lg"></span>
 	</div>
 	<om-list ng-hide="scalesCtrl.scales.length === 0" om-data="scalesCtrl.scales" om-col-headers="scalesCtrl.colHeaders" om-on-click="showScaleDetails()" om-selected-item="selectedItem"></om-list>
-	<div ng-show="scalesCtrl.showNoItemsMessage" class="alert alert-info">{{'list.noItemsFound' | translate:'{items: "scales"}'}}</div>
+	<p ng-show="scalesCtrl.showNoItemsMessage" class="text-info">{{'list.noItemsFound' | translate:'{items: "scales"}'}}</p>
 </div>

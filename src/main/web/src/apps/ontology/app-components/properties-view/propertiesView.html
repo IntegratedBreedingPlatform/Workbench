@@ -8,5 +8,5 @@
 		<span ng-class="{'throbber-hidden': !propsCtrl.showThrobber}" class="throbber throbber-lg"></span>
 	</div>
 	<om-list ng-hide="propsCtrl.properties.length === 0" om-data="propsCtrl.properties" om-col-headers="propsCtrl.colHeaders" om-on-click="showPropertyDetails()" om-selected-item="selectedItem"></om-list>
-	<div ng-show="propsCtrl.showNoItemsMessage" class="alert alert-info">{{'list.noItemsFound' | translate:'{items: "properties"}'}}</div>
+	<p ng-show="propsCtrl.showNoItemsMessage" class="text-info">{{'list.noItemsFound' | translate:'{items: "properties"}'}}</p>
 </div>
