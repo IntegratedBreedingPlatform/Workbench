@@ -4,8 +4,9 @@
 	</om-panel>
 
 	<h2>{{'methodsList.title' | translate}}</h2>
-	<div ng-show="methodsCtrl.methods.length === 0" class="om-list-throbber-wrapper">
+	<div ng-show="methodsCtrl.showThrobberWrapper" class="om-list-throbber-wrapper">
 		<span ng-class="{'throbber-hidden': !methodsCtrl.showThrobber}" class="throbber throbber-lg"></span>
 	</div>
 	<om-list ng-hide="methodsCtrl.methods.length === 0" om-data="methodsCtrl.methods" om-col-headers="methodsCtrl.colHeaders" om-on-click="showMethodDetails()" om-selected-item="selectedItem"></om-list>
+	<div ng-show="methodsCtrl.showNoItemsMessage" class="alert alert-info">{{'list.noItemsFound' | translate:'{items: "methods"}'}}</div>
 </div>

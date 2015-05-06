@@ -8,18 +8,24 @@
 	app.controller('MethodsController', ['$scope', 'methodsService', 'panelService', '$timeout', 'collectionUtilities',
 		function($scope, methodsService, panelService, $timeout, collectionUtilities) {
 			var ctrl = this;
-			this.methods = [];
+
+			ctrl.methods = [];
+			ctrl.showThrobberWrapper = true;
+			ctrl.colHeaders = ['name', 'description'];
+
+			$scope.panelName = 'methods';
 
 			$timeout(function() {
 				ctrl.showThrobber = true;
 			}, DELAY);
 
-			$scope.panelName = 'methods';
-
-			ctrl.colHeaders = ['name', 'description'];
-
 			methodsService.getMethods().then(function(methods) {
 				ctrl.methods = methods;
+				ctrl.showThrobberWrapper = false;
+
+				if (ctrl.methods.length === 0) {
+					ctrl.showNoItemsMessage = true;
+				}
 			});
 
 			$scope.showMethodDetails = function() {
