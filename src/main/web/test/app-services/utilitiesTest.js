@@ -5,6 +5,7 @@ describe('Utilities Service', function() {
 	var serviceUtilities,
 		formUtilities,
 		collectionUtilities,
+		mathUtilities,
 		rootScope,
 		window,
 		timeout,
@@ -13,10 +14,11 @@ describe('Utilities Service', function() {
 	beforeEach(module('utilities'));
 
 	beforeEach(function() {
-		inject(function(_serviceUtilities_, _formUtilities_, _collectionUtilities_, $q, $rootScope, $window, $timeout) {
+		inject(function(_serviceUtilities_, _formUtilities_, _collectionUtilities_, _mathUtilities_, $q, $rootScope, $window, $timeout) {
 			serviceUtilities = _serviceUtilities_;
 			formUtilities = _formUtilities_;
 			collectionUtilities = _collectionUtilities_;
+			mathUtilities = _mathUtilities_;
 			q = $q;
 			rootScope = $rootScope;
 			window = $window;
@@ -477,6 +479,34 @@ describe('Utilities Service', function() {
 				collection = collectionUtilities.sortByName(collection);
 
 				expect(collection).toEqual([A, B, C]);
+			});
+		});
+	});
+
+	describe('Math Utilities', function() {
+
+		describe('easeInOutQuad', function() {
+
+			it('should ease the speed of animation by quadratic curve and if just started it should be equal to start', function() {
+				var currentTime = 0,
+					start = 15,
+					change = 20,
+					duration = 5,
+
+				easedValue = mathUtilities.easeInOutQuad(currentTime, start, change, duration);
+
+				expect(easedValue).toEqual(15);
+			});
+
+			it('should ease the speed of animation by quadratic curve', function() {
+				var currentTime = 10,
+					start = 15,
+					change = 20,
+					duration = 5,
+
+				easedValue = mathUtilities.easeInOutQuad(currentTime, start, change, duration);
+
+				expect(easedValue).toEqual(-5);
 			});
 		});
 	});
