@@ -117,6 +117,7 @@ describe('Variables Controller', function() {
 				transformedVariable = {
 					id: PLANT_VIGOR.id,
 					name: PLANT_VIGOR.name,
+					alias: PLANT_VIGOR.alias,
 					property: PLANT_VIGOR.propertySummary.name,
 					method: PLANT_VIGOR.methodSummary.name,
 					scale: PLANT_VIGOR.scaleSummary.name,
@@ -138,6 +139,7 @@ describe('Variables Controller', function() {
 			transformedVariable = {
 				id: PLANT_VIGOR.id,
 				name: PLANT_VIGOR.name,
+				alias: PLANT_VIGOR.alias,
 				property: '',
 				method: '',
 				scale: '',
@@ -242,6 +244,41 @@ describe('Variables Controller', function() {
 	it('should show the favourites throbber after a delay', function() {
 		timeout.flush();
 		expect(controller.showFavouritesThrobber).toBe(true);
+	});
+
+	describe('ctrl.addAliasToTableIfPresent', function() {
+
+		it('should not change colHeaders if it already contains alias', function() {
+			var variables = [PLANT_VIGOR],
+				colHeaders = ['name', 'alias'];
+
+			controller.colHeaders = colHeaders;
+			controller.addAliasToTableIfPresent(variables);
+
+			expect(controller.colHeaders).toBe(colHeaders);
+		});
+
+		it('should add alias to colHeaders if a variable has an alias', function() {
+			var variables = [{
+					name: PLANT_VIGOR.name,
+					alias: 'PlVgr'
+				}];
+
+			controller.colHeaders = ['name', 'description'];
+			controller.addAliasToTableIfPresent(variables);
+
+			expect(controller.colHeaders).toEqual(['name', 'alias', 'description']);
+		});
+
+		it('should not add alias to colHeaders if no variable has an alias', function() {
+			var variables = [PLANT_VIGOR],
+				colHeaders = ['name', 'description'];
+
+			controller.colHeaders = colHeaders;
+			controller.addAliasToTableIfPresent(variables);
+
+			expect(controller.colHeaders).toBe(colHeaders);
+		});
 	});
 
 	describe('$scope.showVariableDetails', function() {

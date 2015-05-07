@@ -20,6 +20,7 @@
 		return {
 			id: variable.id,
 			name: variable.name,
+			alias: variable.alias,
 			property: variable.propertySummary && variable.propertySummary.name || '',
 			method: variable.methodSummary && variable.methodSummary.name || '',
 			scale: variable.scaleSummary && variable.scaleSummary.name || '',
@@ -85,7 +86,10 @@
 
 				if (ctrl.favouriteVariables.length === 0) {
 					ctrl.showNoFavouritesMessage = true;
+					return;
 				}
+
+				ctrl.addAliasToTableIfPresent(ctrl.favouriteVariables);
 			});
 
 			variablesService.getVariables().then(function(variables) {
@@ -94,8 +98,28 @@
 
 				if (ctrl.variables.length === 0) {
 					ctrl.showNoVariablesMessage = true;
+					return;
 				}
+
+				ctrl.addAliasToTableIfPresent(ctrl.variables);
 			});
+
+			// Exposed for testing
+			ctrl.addAliasToTableIfPresent = function(variables) {
+				var ALIAS = 'alias';
+
+				if (ctrl.colHeaders.indexOf(ALIAS) === -1) {
+
+					// Add alias into the table if at least one variable has an alias
+					variables.some(function(variable) {
+						if (variable.alias) {
+							// Add alias after name
+							ctrl.colHeaders.splice(1, 0, ALIAS);
+							return true;
+						}
+					});
+				}
+			};
 
 			$scope.showVariableDetails = function() {
 
