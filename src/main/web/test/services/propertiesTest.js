@@ -26,7 +26,7 @@ describe('Properties Service', function() {
 		module('properties');
 	});
 
-	beforeEach(function () {
+	beforeEach(function() {
 
 		serviceUtilities = {
 			restSuccessHandler: function() {},
@@ -36,7 +36,7 @@ describe('Properties Service', function() {
 		spyOn(serviceUtilities, 'restSuccessHandler');
 		spyOn(serviceUtilities, 'restFailureHandler');
 
-		module(function ($provide) {
+		module(function($provide) {
 			$provide.value('serviceUtilities', serviceUtilities);
 		});
 	});

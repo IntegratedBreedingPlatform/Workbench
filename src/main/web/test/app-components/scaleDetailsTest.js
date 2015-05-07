@@ -141,7 +141,7 @@ describe('Scale details directive', function() {
 		it('should reset errors and remove any leftover confirmation handlers if the selected method changes', function() {
 			scope.selectedScale = PERCENTAGE;
 			scope.deny = function() {};
-		 	scope.clientErrors = { general: ['error'] };
+			scope.clientErrors = { general: ['error'] };
 
 			spyOn(scope, 'deny');
 
@@ -430,4 +430,3 @@ describe('Scale details directive', function() {
 		});
 	});
 });
-

@@ -328,20 +328,20 @@ describe('Variables Controller', function() {
 				id = 1;
 
 			controller.variables = [{
-					id: id,
-					name: PLANT_VIGOR.name,
-					property: PLANT_VIGOR.propertySummary.name,
-					method: PLANT_VIGOR.methodSummary.name,
-					scale: PLANT_VIGOR.scaleSummary.name
-				}];
+				id: id,
+				name: PLANT_VIGOR.name,
+				property: PLANT_VIGOR.propertySummary.name,
+				method: PLANT_VIGOR.methodSummary.name,
+				scale: PLANT_VIGOR.scaleSummary.name
+			}];
 
 			controller.favouriteVariables = [{
-					id: id,
-					name: PLANT_VIGOR.name,
-					property: PLANT_VIGOR.propertySummary.name,
-					method: PLANT_VIGOR.methodSummary.name,
-					scale: PLANT_VIGOR.scaleSummary.name
-				}];
+				id: id,
+				name: PLANT_VIGOR.name,
+				property: PLANT_VIGOR.propertySummary.name,
+				method: PLANT_VIGOR.methodSummary.name,
+				scale: PLANT_VIGOR.scaleSummary.name
+			}];
 
 			// Select our variable for editing
 			scope.selectedItem.id = id;
@@ -360,20 +360,20 @@ describe('Variables Controller', function() {
 			var id = 1;
 
 			controller.variables = [{
-					id: id,
-					name: PLANT_VIGOR.name,
-					property: PLANT_VIGOR.propertySummary.name,
-					method: PLANT_VIGOR.methodSummary.name,
-					scale: PLANT_VIGOR.scaleSummary.name
-				}];
+				id: id,
+				name: PLANT_VIGOR.name,
+				property: PLANT_VIGOR.propertySummary.name,
+				method: PLANT_VIGOR.methodSummary.name,
+				scale: PLANT_VIGOR.scaleSummary.name
+			}];
 
 			controller.favouriteVariables = [{
-					id: id,
-					name: PLANT_VIGOR.name,
-					property: PLANT_VIGOR.propertySummary.name,
-					method: PLANT_VIGOR.methodSummary.name,
-					scale: PLANT_VIGOR.scaleSummary.name
-				}];
+				id: id,
+				name: PLANT_VIGOR.name,
+				property: PLANT_VIGOR.propertySummary.name,
+				method: PLANT_VIGOR.methodSummary.name,
+				scale: PLANT_VIGOR.scaleSummary.name
+			}];
 
 			// Select our variable for editing
 			scope.selectedItem.id = id;
@@ -391,22 +391,22 @@ describe('Variables Controller', function() {
 				id = 1;
 
 			controller.variables = [{
-					id: id,
-					name: PLANT_VIGOR.name,
-					property: PLANT_VIGOR.propertySummary.name,
-					method: PLANT_VIGOR.methodSummary.name,
-					scale: PLANT_VIGOR.scaleSummary.name,
-					'action-favourite': PLANT_VIGOR.favourite
-				}];
+				id: id,
+				name: PLANT_VIGOR.name,
+				property: PLANT_VIGOR.propertySummary.name,
+				method: PLANT_VIGOR.methodSummary.name,
+				scale: PLANT_VIGOR.scaleSummary.name,
+				'action-favourite': PLANT_VIGOR.favourite
+			}];
 
 			controller.favouriteVariables = [{
-					id: id,
-					name: PLANT_VIGOR.name,
-					property: PLANT_VIGOR.propertySummary.name,
-					method: PLANT_VIGOR.methodSummary.name,
-					scale: PLANT_VIGOR.scaleSummary.name,
-					'action-favourite': PLANT_VIGOR.favourite
-				}];
+				id: id,
+				name: PLANT_VIGOR.name,
+				property: PLANT_VIGOR.propertySummary.name,
+				method: PLANT_VIGOR.methodSummary.name,
+				scale: PLANT_VIGOR.scaleSummary.name,
+				'action-favourite': PLANT_VIGOR.favourite
+			}];
 
 			// Select our variable for editing
 			scope.selectedItem.id = id;

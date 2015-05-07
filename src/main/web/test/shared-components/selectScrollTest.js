@@ -41,7 +41,7 @@ describe('selectScroll module', function() {
 								clientHeight: 10, // Height of item minus padding
 								offsetTop: 40 // Distance from top of container to this item
 							}];
-						},
+						}
 					},
 					rawListElement = {
 						offsetHeight: 40, // Height of list element
@@ -77,7 +77,7 @@ describe('selectScroll module', function() {
 						find: function() {
 							return [{
 								clientHeight: 10, // Height of item minus padding
-								offsetTop: 0, // Distance from top of container to this item
+								offsetTop: 0 // Distance from top of container to this item
 							}];
 						}
 					},

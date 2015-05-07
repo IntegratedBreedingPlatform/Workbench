@@ -1,4 +1,4 @@
-/*global angular, inject, expect, spyOn*/
+/*global inject, expect, spyOn*/
 'use strict';
 
 describe('Click away module', function() {
@@ -48,7 +48,6 @@ describe('Click away module', function() {
 			expect(counter).toBe(1);
 		});
 
-
 		it('should not call the callback on click if the event target is inside the element', function() {
 			scope.enabled = true;
 
@@ -58,7 +57,6 @@ describe('Click away module', function() {
 
 			expect(counter).toBe(0);
 		});
-
 
 		it('should not call the callback on click if enabled is false', function() {
 			scope.enabled = false;

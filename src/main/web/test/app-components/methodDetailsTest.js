@@ -14,7 +14,7 @@ describe('Method details directive', function() {
 		CUT_AND_DRY = {
 			id: 1,
 			name: 'Cut and Dry',
-			editableFields: [ 'description' ]
+			editableFields: ['description']
 		},
 		methodsService = {},
 		formUtilities,
@@ -88,7 +88,7 @@ describe('Method details directive', function() {
 			scope.selectedMethod = CUT_AND_DRY;
 			scope.deny = function() {};
 			scope.serverErrors = { general: ['error'] };
-		 	scope.clientErrors = { general: ['error'] };
+			scope.clientErrors = { general: ['error'] };
 
 			spyOn(scope, 'deny');
 
@@ -334,4 +334,3 @@ describe('Method details directive', function() {
 		});
 	});
 });
-

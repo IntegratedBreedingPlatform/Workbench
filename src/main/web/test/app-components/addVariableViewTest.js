@@ -55,26 +55,21 @@ describe('Add Variable View', function() {
 			}
 		},
 
-		VARIABLE_TYPES_INC_TREATMENT_FACTOR = [
-		{
+		VARIABLE_TYPES_INC_TREATMENT_FACTOR = [{
 			id: 0,
 			name: 'Trait',
 			description: 'Characteristics of a germplasm to be recorded during a study.'
-		},
-		{
+		}, {
 			id: 1,
 			name: 'Treatment Factor',
 			description: 'Treatments to be applied to members of a trial.'
-		}
-		],
+		}],
 
-		VARIABLE_TYPES_WITHOUT_TREATMENT_FACTOR = [
-		{
+		VARIABLE_TYPES_WITHOUT_TREATMENT_FACTOR = [{
 			id: 0,
 			name: 'Trait',
 			description: 'Characteristics of a germplasm to be recorded during a study.'
-		}
-		],
+		}],
 
 		deferred = [],
 		deferredAddVariable,

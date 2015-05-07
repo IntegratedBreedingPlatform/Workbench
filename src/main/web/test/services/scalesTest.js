@@ -10,7 +10,7 @@ describe('Scales Service', function() {
 		module('scales');
 	});
 
-	beforeEach(function () {
+	beforeEach(function() {
 
 		serviceUtilities = {
 			restSuccessHandler: function() {},
@@ -21,7 +21,7 @@ describe('Scales Service', function() {
 		spyOn(serviceUtilities, 'restSuccessHandler');
 		spyOn(serviceUtilities, 'restFailureHandler');
 
-		module(function ($provide) {
+		module(function($provide) {
 			$provide.value('serviceUtilities', serviceUtilities);
 		});
 	});

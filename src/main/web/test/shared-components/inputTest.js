@@ -34,7 +34,7 @@ describe('Input Module', function() {
 			var attrs = extraAttrs || '';
 
 			inject(function($compile) {
-				directiveElement = $compile('<om-input om-name="name" om-label="label" om-property="name" om-model="model"' + attrs +'>' +
+				directiveElement = $compile('<om-input om-name="name" om-label="label" om-property="name" om-model="model"' + attrs + '>' +
 					'</om-input>')(scope);
 
 				scope.$digest();

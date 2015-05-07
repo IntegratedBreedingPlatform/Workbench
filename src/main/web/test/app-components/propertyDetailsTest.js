@@ -14,7 +14,7 @@ describe('Property details directive', function() {
 		BLAST = {
 			id: 1,
 			name: 'Blast',
-			editableFields: [ 'description', 'classes', 'cropOntologyId' ]
+			editableFields: ['description', 'classes', 'cropOntologyId']
 		},
 		SITE_CONDITION = 'Site Condition',
 		propertiesService = {},
@@ -100,7 +100,7 @@ describe('Property details directive', function() {
 			scope.selectedProperty = BLAST;
 			scope.deny = function() {};
 			scope.serverErrors = { general: ['error'] };
-		 	scope.clientErrors = { general: ['error'] };
+			scope.clientErrors = { general: ['error'] };
 
 			spyOn(scope, 'deny');
 

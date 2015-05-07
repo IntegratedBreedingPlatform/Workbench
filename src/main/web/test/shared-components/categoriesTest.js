@@ -3,7 +3,7 @@
 
 describe('Categories module', function() {
 	var fakeEvent = {
-			preventDefault: function(){}
+			preventDefault: function() {}
 		},
 
 		scope,

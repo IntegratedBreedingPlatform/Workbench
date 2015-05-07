@@ -10,7 +10,7 @@ describe('Data Types Service', function() {
 		module('dataTypes');
 	});
 
-	beforeEach(function () {
+	beforeEach(function() {
 
 		serviceUtilities = {
 			restSuccessHandler: function() {},
@@ -20,7 +20,7 @@ describe('Data Types Service', function() {
 		spyOn(serviceUtilities, 'restSuccessHandler');
 		spyOn(serviceUtilities, 'restFailureHandler');
 
-		module(function ($provide) {
+		module(function($provide) {
 			$provide.value('serviceUtilities', serviceUtilities);
 		});
 	});

@@ -144,10 +144,10 @@ describe('Properties View', function() {
 				newName = 'Not Blast';
 
 			controller.properties = [{
-					id: 1,
-					name: propertyToUpdate.name,
-					classes: propertyToUpdate.classes.join(', ')
-				}];
+				id: 1,
+				name: propertyToUpdate.name,
+				classes: propertyToUpdate.classes.join(', ')
+			}];
 
 			// Select our property for editing
 			scope.selectedItem.id = 1;
@@ -165,10 +165,10 @@ describe('Properties View', function() {
 			var id = 1;
 
 			controller.properties = [{
-					id: id,
-					name: BLAST.name,
-					classes: BLAST.classes.join(', ')
-				}];
+				id: id,
+				name: BLAST.name,
+				classes: BLAST.classes.join(', ')
+			}];
 
 			// Select our variable for editing
 			scope.selectedItem.id = id;

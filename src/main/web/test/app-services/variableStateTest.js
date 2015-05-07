@@ -43,7 +43,7 @@ describe('Variable State Service', function() {
 		module('variableState');
 	});
 
-	beforeEach(function () {
+	beforeEach(function() {
 
 		propertiesService = {
 			getProperties: function() {
@@ -70,7 +70,7 @@ describe('Variable State Service', function() {
 		spyOn(methodsService, 'getMethods').and.callThrough();
 		spyOn(scalesService, 'getScales').and.callThrough();
 
-		module(function ($translateProvider, $provide) {
+		module(function($translateProvider, $provide) {
 
 			$translateProvider
 				.translations('en', TRANSLATIONS)

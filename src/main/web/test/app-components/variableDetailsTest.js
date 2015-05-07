@@ -15,34 +15,31 @@ describe('Variable details directive', function() {
 		PLANT_VIGOR = {
 			id: 1,
 			name: 'Plant Vigor',
-			editableFields: [ 'description','cropOntologyId', 'variableTypeIds' ]
+			editableFields: ['description', 'cropOntologyId', 'variableTypeIds']
 		},
 
-		VARIABLE_TYPES_INC_TREATMENT_FACTOR = [
-		{
+		VARIABLE_TYPES_INC_TREATMENT_FACTOR = [{
 			id: 0,
 			name: 'Trait',
 			description: 'Characteristics of a germplasm to be recorded during a study.'
-		},
-		{
+		}, {
 			id: 1,
 			name: 'Treatment Factor',
 			description: 'Treatments to be applied to members of a trial.'
-		}
-		],
+		}],
 
-		VARIABLE_TYPES_WITHOUT_TREATMENT_FACTOR = [
-		{
+		VARIABLE_TYPES_WITHOUT_TREATMENT_FACTOR = [{
 			id: 0,
 			name: 'Trait',
 			description: 'Characteristics of a germplasm to be recorded during a study.'
-		}
-		],
+		}],
+
 		propertiesService = {},
 		methodsService = {},
 		scalesService = {},
 		variableTypesService = {},
 		variablesService = {},
+
 		formUtilities,
 		scope,
 		q,
@@ -154,7 +151,7 @@ describe('Variable details directive', function() {
 		it('should reset errors and remove any leftover confirmation handlers if the selected method changes', function() {
 			scope.selectedVariable = PLANT_VIGOR;
 			scope.deny = function() {};
-		 	scope.clientErrors = { general: ['error'] };
+			scope.clientErrors = { general: ['error'] };
 
 			spyOn(scope, 'deny');
 

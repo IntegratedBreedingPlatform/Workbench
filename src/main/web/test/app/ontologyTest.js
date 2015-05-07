@@ -22,7 +22,7 @@ describe('Ontology Controller', function() {
 				deferred = q.defer();
 				return deferred.promise;
 			},
-			showPanel: function () {
+			showPanel: function() {
 				deferred = q.defer();
 				return deferred.promise;
 			}
