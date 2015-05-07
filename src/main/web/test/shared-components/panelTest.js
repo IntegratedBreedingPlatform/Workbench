@@ -117,7 +117,7 @@ describe('Panel module', function() {
 			scope.$digest();
 
 			isolateScope = directiveElement.isolateScope();
-			isolateScope.closePanel({preventDefault: function(){}});
+			isolateScope.closePanel({preventDefault: function() {}});
 
 			timeout.flush();
 			expect(isolateScope.showThrobber).toBeFalsy();
@@ -134,7 +134,7 @@ describe('Panel module', function() {
 
 			isolateScope = directiveElement.isolateScope();
 			spyOn(isolateScope, 'closePanel');
-			isolateScope.escHandler('escKeydown', {preventDefault: function(){}});
+			isolateScope.escHandler('escKeydown', {preventDefault: function() {}});
 
 			expect(isolateScope.closePanel).toHaveBeenCalled();
 		});
@@ -152,7 +152,7 @@ describe('Panel module', function() {
 
 			isolateScope = directiveElement.isolateScope();
 			spyOn(isolateScope, 'closePanel');
-			isolateScope.escHandler('escKeydown', {preventDefault: function(){}});
+			isolateScope.escHandler('escKeydown', {preventDefault: function() {}});
 
 			expect(isolateScope.closePanel).not.toHaveBeenCalled();
 		});
