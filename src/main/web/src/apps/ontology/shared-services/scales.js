@@ -19,12 +19,12 @@
 					'validValues'
 				];
 
-				Object.keys(scale).forEach(function(key) {
-					// Ignore properties we want to remove before sending
-					if (propertiesToInclude.indexOf(key) > -1) {
-						convertedScale[key] = scale[key];
-					}
-				});
+			Object.keys(scale).forEach(function(key) {
+				// Ignore properties we want to remove before sending
+				if (propertiesToInclude.indexOf(key) > -1) {
+					convertedScale[key] = scale[key];
+				}
+			});
 
 			return convertedScale;
 		}

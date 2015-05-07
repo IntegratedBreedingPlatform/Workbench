@@ -6,12 +6,12 @@
 
 	selectModule.directive('omSelect', function(editable) {
 		return {
-			controller: function ($scope) {
+			controller: function($scope) {
 				$scope.editable = editable($scope);
 				$scope.required = $scope.required || false;
 			},
 			link: function(scope, elm, attrs, ctrl) {
-				scope.$watch('model[property]', function (data) {
+				scope.$watch('model[property]', function(data) {
 					ctrl.$setValidity('required', true);
 
 					if (scope.required && !data) {

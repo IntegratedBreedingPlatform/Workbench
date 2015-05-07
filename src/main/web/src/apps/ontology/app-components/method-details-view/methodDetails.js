@@ -12,8 +12,8 @@
 			// Reset any errors we're showing the user
 			function resetErrors($scope) {
 				$scope.serverErrors = {};
-		 		$scope.clientErrors = {};
-		 	}
+				$scope.clientErrors = {};
+			}
 
 			return {
 				controller: function($scope) {

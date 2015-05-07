@@ -17,7 +17,7 @@
 					if (!element[0].contains(event.target) && scope.enabled) {
 						scope.callback(event);
 						scope.$apply();
-					 }
+					}
 				};
 
 				$document.on('click', scope.handler);

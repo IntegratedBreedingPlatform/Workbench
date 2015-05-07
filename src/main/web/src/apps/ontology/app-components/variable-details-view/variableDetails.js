@@ -10,12 +10,12 @@
 	variableDetails.directive('omVariableDetails', ['variablesService', 'variableTypesService', 'propertiesService', 'methodsService',
 		'scalesService', 'serviceUtilities', 'formUtilities', 'panelService', '$timeout',
 		function(variablesService, variableTypesService, propertiesService, methodsService, scalesService, serviceUtilities, formUtilities,
-		 panelService, $timeout) {
+			panelService, $timeout) {
 
 			// Reset any errors we're showing the user
-		 	function resetErrors($scope) {
-		 		$scope.clientErrors = {};
-		 	}
+			function resetErrors($scope) {
+				$scope.clientErrors = {};
+			}
 
 			return {
 				controller: function($scope) {
@@ -147,9 +147,9 @@
 
 						if (newValue) {
 							filtered = newValue.filter(function(type) {
-				 				//TODO change to filtering by id when real service is hooked in
-				 				return type.name === 'Treatment Factor';
-				 			});
+								//TODO change to filtering by id when real service is hooked in
+								return type.name === 'Treatment Factor';
+							});
 							$scope.showTreatmentFactorAlert = filtered.length > 0;
 						}
 					});

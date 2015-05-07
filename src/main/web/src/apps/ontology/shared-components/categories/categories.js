@@ -56,7 +56,7 @@
 				};
 
 				$scope.removable = function() {
-					 return $scope.model[$scope.property].categories.length >= 2;
+					return $scope.model[$scope.property].categories.length >= 2;
 				};
 
 				$scope.removeCategory = function(e, index) {
@@ -75,7 +75,7 @@
 					ctrl.$setValidity('nonUniqueValue', true);
 				};
 
-				scope.$watch('categorical', function (categorical) {
+				scope.$watch('categorical', function(categorical) {
 					if (!categorical) {
 						resetValidity();
 					} else if (scope.model && scope.model[scope.property] && scope.model[scope.property].categories) {
@@ -83,7 +83,7 @@
 					}
 				});
 
-				scope.$watch('model[property].categories', function (data) {
+				scope.$watch('model[property].categories', function(data) {
 					resetValidity();
 
 					if (!scope.categorical || !data) {

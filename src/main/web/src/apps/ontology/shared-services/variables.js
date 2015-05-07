@@ -26,13 +26,13 @@
 					'expectedRange'
 				];
 
-				Object.keys(variable).forEach(function(key) {
+			Object.keys(variable).forEach(function(key) {
 
-					// Ignore properties we want to remove before sending
-					if (propertiesToInclude.indexOf(key) > -1) {
-						convertedVariable[key] = variable[key];
-					}
-				});
+				// Ignore properties we want to remove before sending
+				if (propertiesToInclude.indexOf(key) > -1) {
+					convertedVariable[key] = variable[key];
+				}
+			});
 
 			return convertedVariable;
 		}

@@ -8,10 +8,10 @@
 		return {
 			restrict: 'A',
 
-			link: function (scope) {
+			link: function(scope) {
 
 				//this function is exposed for testing purposes
-				scope.escHandler = function (e) {
+				scope.escHandler = function(e) {
 					//esc
 					if (e.keyCode === 27) {
 						scope.$broadcast('escKeydown', e);

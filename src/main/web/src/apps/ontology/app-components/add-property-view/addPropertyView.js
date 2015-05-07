@@ -20,7 +20,7 @@
 			propertiesService.getClasses().then(function(classes) {
 				$scope.classes = classes;
 			}, function(response) {
-					$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+				$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
 			});
 
 			$scope.saveProperty = function(e, property) {

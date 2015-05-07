@@ -3,7 +3,7 @@
 
 (function() {
 	var scaleDetailsModule = angular.module('scaleDetails', ['formFields', 'input', 'textArea', 'select', 'scales', 'dataTypes',
-			'utilities', 'categories', 'panel']),
+		'utilities', 'categories', 'panel']),
 		DELAY = 400,
 		NUM_EDITABLE_FIELDS = 3;
 
@@ -13,9 +13,9 @@
 
 			// Reset any errors we're showing the user
 			function resetErrors($scope) {
-		 		$scope.clientErrors = {};
-		 		$scope.serverErrors = {};
-		 	}
+				$scope.clientErrors = {};
+				$scope.serverErrors = {};
+			}
 
 			return {
 				controller: function($scope) {
@@ -132,5 +132,6 @@
 				restrict: 'E',
 				templateUrl: 'static/views/ontology/scaleDetails.html'
 			};
-	}]);
+		}
+	]);
 })();

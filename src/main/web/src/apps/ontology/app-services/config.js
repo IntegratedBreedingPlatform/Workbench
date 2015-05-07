@@ -25,7 +25,7 @@
 			scope: {
 				cropName: '@omCrop'
 			},
-			link: function (scope, element, attrs) {
+			link: function(scope, element, attrs) {
 				configService.setCropName(attrs.omCrop);
 			}
 		};

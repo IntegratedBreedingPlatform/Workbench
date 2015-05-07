@@ -20,7 +20,6 @@
 			validMinProvided = isNumber(scope.min),
 			validMaxProvided = isNumber(scope.max);
 
-
 		if (minimumSpecified) {
 			// If there is a minimum valid value specified, ensure minimum is not lower than this
 			// If there is a maximum valid value specified, ensure minimum is not higher than this
@@ -70,7 +69,7 @@
 					ctrl.$setValidity('maxNaN', true);
 				};
 
-				scope.$watch('numeric', function (numeric) {
+				scope.$watch('numeric', function(numeric) {
 					if (!numeric) {
 						resetValidity();
 					} else if (scope.model && scope.model[scope.property]) {
@@ -78,7 +77,7 @@
 					}
 				});
 
-				scope.$watch('model[property]', function (data) {
+				scope.$watch('model[property]', function(data) {
 					resetValidity();
 
 					if (!scope.numeric || !data) {
@@ -89,11 +88,11 @@
 
 				}, true);
 
-				scope.$watch('rangeForm.omRangeMin.$error.number', function (invalid) {
+				scope.$watch('rangeForm.omRangeMin.$error.number', function(invalid) {
 					ctrl.$setValidity('minNaN', !invalid);
 				});
 
-				scope.$watch('rangeForm.omRangeMax.$error.number', function (invalid) {
+				scope.$watch('rangeForm.omRangeMax.$error.number', function(invalid) {
 					ctrl.$setValidity('maxNaN', !invalid);
 				});
 

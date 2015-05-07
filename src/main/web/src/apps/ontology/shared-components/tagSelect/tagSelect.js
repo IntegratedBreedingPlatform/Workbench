@@ -104,8 +104,8 @@
 				scope.checkKeyDown = function(event) {
 					var itemAdded;
 
-					// Down key, increment selectedIndex
 					if (event.keyCode === 40) {
+						// Down key, increment selectedIndex
 						event.preventDefault();
 
 						// Load the suggestions if the user presses down with an empty input
@@ -116,38 +116,36 @@
 						if (scope.selectedIndex + 1 < scope.suggestions.length) {
 							scope.selectedIndex++;
 						}
-
 						selectScroll.ensureHighlightVisible(listElement, rawListElement, scope.selectedIndex);
-					}
-					// Up key, decrement selectedIndex
-					else if (event.keyCode === 38) {
+
+					} else if (event.keyCode === 38) {
+						// Up key, decrement selectedIndex
 						event.preventDefault();
 
 						if (scope.selectedIndex - 1 > -1) {
 							scope.selectedIndex--;
 						}
-
 						selectScroll.ensureHighlightVisible(listElement, rawListElement, scope.selectedIndex);
-					}
-					// Enter pressed, select item
-					else if (event.keyCode === 13) {
+
+					} else if (event.keyCode === 13) {
+						// Enter pressed, select item
 						event.preventDefault();
 
 						itemAdded = scope.addToSelectedItems(scope.selectedIndex);
 						if (itemAdded) {
 							scope.hideSuggestions();
 						}
-					}
-					// Escape pressed, close suggestions
-					else if (event.keyCode === 27) {
+
+					} else if (event.keyCode === 27) {
+						// Escape pressed, close suggestions
 						event.preventDefault();
-						if(!scope.isSuggestionBoxClosed()) {
+						if (!scope.isSuggestionBoxClosed()) {
 							event.stopPropagation();
 						}
 						scope.hideSuggestions();
-					}
-					// Tab pressed, close suggestions and continue with event
-					else if (event.keyCode === 9) {
+
+					} else if (event.keyCode === 9) {
+						// Tab pressed, close suggestions and continue with event
 						scope.hideSuggestions();
 					}
 				};

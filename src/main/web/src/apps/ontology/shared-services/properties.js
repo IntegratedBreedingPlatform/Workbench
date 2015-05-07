@@ -19,13 +19,13 @@
 					'cropOntologyId'
 				];
 
-				Object.keys(property).forEach(function(key) {
+			Object.keys(property).forEach(function(key) {
 
-					// Ignore properties we want to remove before sending
-					if (propertiesToInclude.indexOf(key) > -1) {
-						convertedProperty[key] = property[key];
-					}
-				});
+				// Ignore properties we want to remove before sending
+				if (propertiesToInclude.indexOf(key) > -1) {
+					convertedProperty[key] = property[key];
+				}
+			});
 
 			return convertedProperty;
 		}

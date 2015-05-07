@@ -3,7 +3,7 @@
 
 (function() {
 	var propertyDetailsModule = angular.module('propertyDetails', ['formFields', 'input', 'textArea', 'tagSelect', 'properties',
-			'utilities', 'panel']),
+		'utilities', 'panel']),
 		DELAY = 400,
 		NUM_EDITABLE_FIELDS = 4;
 
@@ -45,7 +45,6 @@
 						$scope.model = angular.copy(property);
 						$scope.deletable = property && property.deletable || false;
 					});
-
 
 					$scope.$watch('editing', function() {
 						$scope.showNoneditableFieldsAlert = $scope.editing && $scope.model &&

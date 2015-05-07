@@ -17,7 +17,7 @@
 				'id': 23,
 				'name': 'Cut and Dry',
 				'description': 'Cut the plant 10cm above the root and air dry in a shadey place.'
-			  }]
+			}]
 			*/
 			getMethods: function() {
 
@@ -58,8 +58,8 @@
 			Expects a method in the format:
 
 			{
-			 	'name': 'Cut and Dry',
-			 	'description': 'Cut the plant 10cm above the root and air dry in a shadey place.'
+				'name': 'Cut and Dry',
+				'description': 'Cut the plant 10cm above the root and air dry in a shadey place.'
 			}
 
 			If the response has a 400 status, the response data will contain an errors property which is an
@@ -103,9 +103,9 @@
 			Returns a single method in the format:
 
 			{
-			 	'name': 'Cut and Dry',
-			 	'description': 'Cut the plant 10cm above the root and air dry in a shadey place.',
-			 	'editableFields': ['description'],
+				'name': 'Cut and Dry',
+				'description': 'Cut the plant 10cm above the root and air dry in a shadey place.',
+				'editableFields': ['description'],
 				'deletable': false
 			}
 			*/

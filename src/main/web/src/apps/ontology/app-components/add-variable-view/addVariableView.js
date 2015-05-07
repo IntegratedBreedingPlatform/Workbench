@@ -68,7 +68,7 @@
 				if ($scope.avForm.$valid) {
 					$scope.submitted = true;
 
-					variablesService.addVariable(variable).then(function(){
+					variablesService.addVariable(variable).then(function() {
 						variableStateService.reset();
 						// FIXME Go somewhere more useful
 						$location.path('/variables');

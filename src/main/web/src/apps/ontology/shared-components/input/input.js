@@ -6,7 +6,7 @@
 
 	inputModule.directive('omInput', function(editable) {
 		return {
-			controller: function ($scope) {
+			controller: function($scope) {
 				$scope.editable = editable($scope);
 				$scope.required = $scope.required || false;
 				$scope.maxLength = $scope.maxLength || -1;
@@ -21,7 +21,7 @@
 				model: '=omModel',
 				required: '@omRequired',
 				maxLength: '@omMaxLength',
-				pattern: '@omPattern',
+				pattern: '@omPattern'
 			},
 			templateUrl: 'static/views/ontology/input.html'
 		};

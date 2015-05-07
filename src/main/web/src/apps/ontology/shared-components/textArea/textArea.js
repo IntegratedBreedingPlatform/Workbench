@@ -6,7 +6,7 @@
 
 	textAreaModule.directive('omTextArea', function(editable) {
 		return {
-			controller: function ($scope) {
+			controller: function($scope) {
 				$scope.editable = editable($scope);
 				$scope.maxLength = $scope.maxLength || -1;
 			},

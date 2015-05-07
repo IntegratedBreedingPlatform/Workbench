@@ -20,7 +20,7 @@
 			dataTypesService.getDataTypes().then(function(types) {
 				$scope.types = types;
 			}, function(response) {
-					$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+				$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
 			});
 
 			$scope.saveScale = function(e, scale) {
