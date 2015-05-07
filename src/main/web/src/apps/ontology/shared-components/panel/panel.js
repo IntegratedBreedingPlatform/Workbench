@@ -5,14 +5,14 @@
 	var panelModule = angular.module('panel', []),
 		DELAY = 400;
 
-	panelModule.directive('omPanel', ['$timeout', 'panelService', function($timeout, panelService) {
+	panelModule.directive('omPanel', ['$timeout', 'panelService', '$rootScope', function($timeout, panelService, $rootScope) {
 		var VISIBLE_CLASS = 'om-pa-panel-visible';
 
 		return {
 			controller: function($scope) {
 				//this function is esposed for testing purposes only
-				$scope.escHandler = function (msg, e) {
-					$scope.$apply(function () {
+				$scope.escHandler = function(msg, e) {
+					$scope.$apply(function() {
 						if (panelService.getCurrentPanel() === $scope.omPanelIdentifier) {
 							$scope.closePanel(e);
 						}
@@ -43,6 +43,9 @@
 						}, DELAY);
 					} else {
 						element.removeClass(VISIBLE_CLASS);
+						if (!panelName && prevPanelName) {
+							$rootScope.$broadcast('panelClose', element);
+						}
 					}
 				});
 			},
