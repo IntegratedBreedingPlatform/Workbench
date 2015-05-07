@@ -113,17 +113,17 @@ describe('Utilities Service', function() {
 				var response = {
 					data: [
 					{
-						"name": "Test1_Nonfiltered",
-						"dataType": {
-							"id": 1120,
-							"name": "Character"
-						},
+						name: 'Test1_Nonfiltered',
+						dataType: {
+							id: 1120,
+							name: 'Character'
+						}
 					},
 					{
-						"name": "Test2_Filtered",
-						"dataType": null,
+						name: 'Test2_Filtered',
+						dataType: null
 					}]
-					},
+				},
 				result;
 
 				result = serviceUtilities.restFilteredScalesSuccessHandler(response);
@@ -136,7 +136,7 @@ describe('Utilities Service', function() {
 
 				var response = {
 					data: null
-					},
+				},
 				result;
 
 				result = serviceUtilities.restFilteredScalesSuccessHandler(response);
@@ -176,7 +176,7 @@ describe('Utilities Service', function() {
 				expect(typeof formUtilities.formGroupClassGenerator()).toBe('function');
 			});
 
-			describe('the returned function', function(){
+			describe('the returned function', function() {
 
 				it('should return a form-group class if the specified form is not yet initialised', function() {
 					var scope = {},
@@ -223,69 +223,69 @@ describe('Utilities Service', function() {
 				it('should append a has-error class to the returned class if the specified form field is invalid and the form is submitted',
 					function() {
 
-					var scope = {},
-						formName = 'form',
-						fieldName = 'field',
+						var scope = {},
+							formName = 'form',
+							fieldName = 'field',
 
-						returnedFunction = formUtilities.formGroupClassGenerator(scope, formName);
+							returnedFunction = formUtilities.formGroupClassGenerator(scope, formName);
 
-					scope[formName] = {
-						$submitted: true
-					};
+						scope[formName] = {
+							$submitted: true
+						};
 
-					scope[formName][fieldName] = {
-						$touched: false,
-						$invalid: true
-					};
+						scope[formName][fieldName] = {
+							$touched: false,
+							$invalid: true
+						};
 
-					expect(returnedFunction(fieldName)).toEqual('form-group has-error');
-				});
+						expect(returnedFunction(fieldName)).toEqual('form-group has-error');
+					});
 
 				it('should append a has-error class to the returned class if the specified form field is invalid and the field is touched',
 					function() {
 
-					var scope = {},
-						formName = 'form',
-						fieldName = 'field',
+						var scope = {},
+							formName = 'form',
+							fieldName = 'field',
 
-						returnedFunction = formUtilities.formGroupClassGenerator(scope, formName);
+							returnedFunction = formUtilities.formGroupClassGenerator(scope, formName);
 
-					scope[formName] = {
-						$submitted: false
-					};
+						scope[formName] = {
+							$submitted: false
+						};
 
-					scope[formName][fieldName] = {
-						$touched: true,
-						$invalid: true
-					};
+						scope[formName][fieldName] = {
+							$touched: true,
+							$invalid: true
+						};
 
-					expect(returnedFunction(fieldName)).toEqual('form-group has-error');
-				});
+						expect(returnedFunction(fieldName)).toEqual('form-group has-error');
+					});
 
 				it('should append a has-error class to the returned class if the specified field has server errors and is touched',
 					function() {
 
-					var scope = {},
-						formName = 'form',
-						fieldName = 'field',
-						serverFieldName = 'serverField',
+						var scope = {},
+							formName = 'form',
+							fieldName = 'field',
+							serverFieldName = 'serverField',
 
-						returnedFunction = formUtilities.formGroupClassGenerator(scope, formName);
+							returnedFunction = formUtilities.formGroupClassGenerator(scope, formName);
 
-					scope.serverErrors = {};
-					scope.serverErrors[serverFieldName] = ['Something is wrong with this field'];
+						scope.serverErrors = {};
+						scope.serverErrors[serverFieldName] = ['Something is wrong with this field'];
 
-					scope[formName] = {
-						$submitted: true
-					};
+						scope[formName] = {
+							$submitted: true
+						};
 
-					scope[formName][fieldName] = {
-						$touched: false,
-						$invalid: false
-					};
+						scope[formName][fieldName] = {
+							$touched: false,
+							$invalid: false
+						};
 
-					expect(returnedFunction(fieldName, serverFieldName)).toEqual('form-group has-error');
-				});
+						expect(returnedFunction(fieldName, serverFieldName)).toEqual('form-group has-error');
+					});
 			});
 		});
 
