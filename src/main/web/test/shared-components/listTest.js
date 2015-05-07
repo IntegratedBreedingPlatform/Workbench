@@ -145,7 +145,7 @@ describe('List module', function() {
 			compileDirective('om-on-click="clickFn()" om-selected-item="selectedItem"');
 
 			// Call the click handler that would normally be invoked by a click on a list item
-			directiveElement.isolateScope().clickHandler(LIST_ITEM_CAT.id);
+			directiveElement.isolateScope().selectItem(1, LIST_ITEM_CAT.id);
 
 			expect(count).toEqual(1);
 			expect(item.id).toEqual(LIST_ITEM_CAT.id);
