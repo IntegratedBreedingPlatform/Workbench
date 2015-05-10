@@ -290,30 +290,43 @@ describe('Variable details directive', function() {
 		});
 	});
 
-	describe('$scope.hideAlias', function() {
+	describe('$scope.showAlias', function() {
 
-		it('should return true when the name is editable', function() {
+		it('should return true when the alias is valued', function() {
+			scope.editing = false;
+			scope.model = {
+				alias: 'alias'
+			};
+			expect(scope.showAlias()).toBe(true);
+		});
+
+		it('should return true when in edit mode and the alias is editable', function() {
+			scope.editing = true;
+			scope.model = {
+				editableFields: ['alias']
+			};
+			expect(scope.showAlias()).toBe(true);
+		});
+
+		it('should return a falsy value when not in edit mode and there is no alias', function() {
+			scope.editing = false;
+			scope.model = {
+				alias: ''
+			};
+			expect(scope.showAlias()).toBeFalsy();
+		});
+
+		it('should return a falsy value when the alias is not editable and there is no alias', function() {
+			scope.editing = true;
 			scope.model = {
 				editableFields: ['name']
 			};
-			expect(scope.hideAlias()).toBe(true);
+			expect(scope.showAlias()).toBeFalsy();
 		});
 
-		it('should return false when the name is not editable', function() {
-			scope.model = {
-				editableFields: ['description']
-			};
-			expect(scope.hideAlias()).toBe(false);
-		});
-
-		it('should return false when there is no model', function() {
+		it('should return a falsy value when there is no model', function() {
 			scope.model = null;
-			expect(scope.hideAlias()).toBeFalsy();
-		});
-
-		it('should return false when the model has no editable fields', function() {
-			scope.model = {};
-			expect(scope.hideAlias()).toBeFalsy();
+			expect(scope.showAlias()).toBeFalsy();
 		});
 
 	});

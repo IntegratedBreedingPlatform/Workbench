@@ -15,10 +15,10 @@
 		</div>
 	</div>
 
-	<div ng-class="formGroupClass('omAlias')">
+	<div ng-class="formGroupClass('omAlias')" ng-show="showAlias()">
 		<label for="omAlias" class="col-sm-3 control-label">{{'formField.alias' | translate}}</label>
 		<div class="col-sm-9">
-			<om-input om-name="omAlias" om-property="alias" ng-hide="hideAlias()" om-editing="editing" om-model="model" om-max-length="32" om-pattern="^[a-zA-Z_%][a-zA-Z_%0-9]*$"></om-input>
+			<om-input om-name="omAlias" om-property="alias" om-editing="editing" om-model="model" om-max-length="32" om-pattern="^[a-zA-Z_%][a-zA-Z_%0-9]*$"></om-input>
 			<ng-messages for="vdForm.omAlias.$error" ng-if="editing && vdForm.$submitted || vdForm.omAlias.$touched">
 				<ng-message when="maxlength">{{'validation.tooLong' | translate:'{maxLength: "32"}'}}</ng-message>
 				<ng-message when="pattern">{{'validation.variable.pattern' | translate}}</ng-message>

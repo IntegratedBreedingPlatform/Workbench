@@ -74,9 +74,12 @@
 						$scope.variableId = selected && selected.id || null;
 					}, true);
 
-					// Hide the alias if the name is still editable
-					$scope.hideAlias = function() {
-						return $scope.model && $scope.model.editableFields && $scope.model.editableFields.indexOf('name') !== -1;
+					$scope.showAlias = function() {
+						var aliasHasValue = $scope.model && $scope.model.alias && $scope.model.alias !== '',
+							aliasIsEditable = $scope.model && $scope.model.editableFields &&
+								$scope.model.editableFields.indexOf('alias') !== -1;
+
+						return $scope.editing && aliasIsEditable || aliasHasValue;
 					};
 
 					$scope.editVariable = function(e) {
