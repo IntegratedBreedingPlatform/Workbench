@@ -1,70 +1,12 @@
 {
+	"methods": "Methods",
+	"properties": "Properties",
+	"scales": "Scales",
 	"title": "Ontology Browser",
 	"variables": "Variables",
-	"properties": "Properties",
-	"methods": "Methods",
-	"scales": "Scales",
-
-	"button": {
-		"addNew": "Add New",
-		"back": "Back",
-		"save": "Save",
-		"edit": "Edit",
-		"delete": "Delete",
-		"cancel": "Cancel",
-		"discard": "Discard",
-		"continueEditing": "Continue Editing"
-	},
-
-	"formField": {
-		"name": "Name",
-		"alias": "Alias",
-		"description": "Description",
-		"property": "Property",
-		"method": "Method",
-		"scale": "Scale",
-		"variableType": "Variable Type",
-		"classes": "Classes",
-		"ontologyId": "Crop Ontology ID",
-		"dataType": "Data Type"
-	},
-
-	"variablesList": {
-		"favouritesTitle": "Program Favourites",
-		"title": "Variables",
-		"details": {
-			"expectedRange": "Expected Range"
-		},
-		"noFavouritesFound": "There are no favourite variables for this program."
-	},
-
-	"propertiesList": {
-		"title": "Properties"
-	},
-
-	"methodsList": {
-		"title": "Methods"
-	},
-
-	"scalesList": {
-		"details": {
-			"validRange": "Valid Range",
-			"categories": "Categories"
-		},
-		"title": "Scales"
-	},
 
 	"addNew": {
 		"title": "Add New",
-
-		"variable": {
-			"menuItem": "Variable",
-			"title": "Add New Variable",
-			"addProperty": "Add a new property",
-			"addMethod": "Add a new method",
-			"addScale": "Add a new scale",
-			"expectedRange": "@:variablesList.details.expectedRange"
-		},
 
 		"method": {
 			"menuItem": "Method",
@@ -81,78 +23,63 @@
 			"title": "Add New Scale",
 			"validRange": "@:scalesList.details.validRange",
 			"categories": "@:scalesList.details.categories"
-		}
-	},
-
-	"variableStateService": {
-		"couldNotSetProperty": "Your property was created but not set on your new variable. Please try again.",
-		"couldNotSetMethod": "Your method was created but not set on your new variable. Please try again.",
-		"couldNotSetScale": "Your scale was created but not set on your new variable. Please try again."
-	},
-
-	"validation": {
-
-		"tooLong": "Please reduce to under {{maxLength}} characters.",
+		},
 
 		"variable": {
-			"nameRequired": "Please name your variable.",
-			"pattern": "Name must start with a letter and may only contain letters, numbers or underscores.",
-			"propertyRequired": "Property is required.",
-			"methodRequired": "Method is required.",
-			"scaleRequired": "Scale is required.",
-			"variableTypeEmpty": "Please select at least one variable type.",
-			"expectedRange": "Note that values must be within the valid range for the selected scale ({{min}} - {{max}}).",
-			"treatmentFactor":"Please note that in order to use this variable as a Treatment Factor, you need to create two variables with the same property and variable type \"Treatment Factor\".",
-			"noneditableFields": "Some fields cannot be edited as this variable is already in use."
-		},
-
-		"scale": {
-			"nameRequired": "Please name your scale.",
-			"dataTypeRequired": "Please select a data type.",
-			"emptyValue": "Please provide a name and value for all categories.",
-			"nonUniqueName": "All category names must be unique.",
-			"nonUniqueValue": "All category values must be unique.",
-			"noneditableFields": "Some fields cannot be edited as this scale is already in use."
-		},
-
-		"method": {
-			"nameRequired": "Please name your method.",
-			"noneditableFields": "Some fields cannot be edited as this method is already in use."
-		},
-
-		"property": {
-			"nameRequired": "Please name your property.",
-			"classesEmpty": "Please provide at least one class.",
-			"noneditableFields": "Some fields cannot be edited as this property is already in use."
+			"menuItem": "Variable",
+			"title": "Add New Variable",
+			"addProperty": "Add a new property",
+			"addMethod": "Add a new method",
+			"addScale": "Add a new scale",
+			"expectedRange": "@:variablesList.details.expectedRange"
 		}
 	},
 
-	"warnings": {
-		"discardConfirmation": "Are you sure you want to discard your changes?",
-		"deleteUnsuccessful": "Sorry, the deletion was unsuccessful. Please try again.",
-
-		"variables": {
-			"deleteConfirmation": "Are you sure you want to delete this variable?"
-		},
-
-		"properties": {
-			"deleteConfirmation": "Are you sure you want to delete this property?"
-		},
-
-		"methods": {
-			"deleteConfirmation": "Are you sure you want to delete this method?"
-		},
-
-		"scales": {
-			"deleteConfirmation": "Are you sure you want to delete this scale?"
-		}
+	"button": {
+		"addNew": "Add New",
+		"back": "Back",
+		"cancel": "Cancel",
+		"continueEditing": "Continue Editing",
+		"delete": "Delete",
+		"discard": "Discard",
+		"edit": "Edit",
+		"save": "Save"
 	},
 
 	"categories": {
-		"name": "Name",
+		"add": "Add another category",
 		"description": "Description",
-		"remove": "Remove",
-		"add": "Add another category"
+		"name": "Name",
+		"remove": "Remove"
+	},
+
+	"formField": {
+		"alias": "Alias",
+		"classes": "Classes",
+		"dataType": "Data Type",
+		"description": "Description",
+		"method": "Method",
+		"name": "Name",
+		"ontologyId": "Crop Ontology ID",
+		"property": "Property",
+		"scale": "Scale",
+		"variableType": "Variable Type"
+	},
+
+	"list": {
+		"alias": "Alias",
+		"classes": "Classes",
+		"dataType": "Data Type",
+		"description": "Description",
+		"method": "Method",
+		"name": "Name",
+		"noItemsFound": "No {{items | translate | lowercase}} were found.",
+		"property": "Property",
+		"scale": "Scale"
+	},
+
+	"methodsList": {
+		"title": "Methods"
 	},
 
 	"multiSelect": {
@@ -165,30 +92,103 @@
 		"close": "Close"
 	},
 
+	"propertiesList": {
+		"title": "Properties"
+	},
+
 	"range": {
 		"edit": {
-			"min": "Minimum",
-			"max": "Maximum"
+			"max": "Maximum",
+			"min": "Minimum"
 		},
 		"readOnly": "{{min}} - {{max}}",
 		"validation": {
-			"minNaN": "Minimum is not a valid number.",
 			"maxNaN": "Maximum is not a valid number.",
-			"minTooBig": "Minimum must be less than the maximum.",
+			"minNaN": "Minimum is not a valid number.",
+			"maxOutOfRange": "Maximum must be within the range of valid values.",
 			"minOutOfRange": "Minimum must be within the range of valid values.",
-			"maxOutOfRange": "Maximum must be within the range of valid values."
+			"minTooBig": "Minimum must be less than the maximum."
 		}
 	},
 
-	"list": {
-		"name": "Name",
-		"alias": "Alias",
-		"description": "Description",
-		"property": "Property",
-		"method": "Method",
-		"scale": "Scale",
-		"classes": "Classes",
-		"dataType": "Data Type",
-		"noItemsFound": "No {{items | translate | lowercase}} were found."
+	"scalesList": {
+		"details": {
+			"categories": "Categories",
+			"validRange": "Valid Range"
+		},
+		"title": "Scales"
+	},
+
+	"validation": {
+		"tooLong": "Please reduce to under {{maxLength}} characters.",
+
+		"method": {
+			"nameRequired": "Please name your method.",
+			"noneditableFields": "Some fields cannot be edited as this method is already in use."
+		},
+
+		"property": {
+			"classesEmpty": "Please provide at least one class.",
+			"nameRequired": "Please name your property.",
+			"noneditableFields": "Some fields cannot be edited as this property is already in use."
+		},
+
+		"scale": {
+			"dataTypeRequired": "Please select a data type.",
+			"emptyValue": "Please provide a name and value for all categories.",
+			"nameRequired": "Please name your scale.",
+			"noneditableFields": "Some fields cannot be edited as this scale is already in use.",
+			"nonUniqueName": "All category names must be unique.",
+			"nonUniqueValue": "All category values must be unique."
+		},
+
+		"variable": {
+			"expectedRange": "Note that values must be within the valid range for the selected scale ({{min}} - {{max}}).",
+			"methodRequired": "Method is required.",
+			"nameRequired": "Please name your variable.",
+			"noneditableFields": "Some fields cannot be edited as this variable is already in use.",
+			"pattern": "Name must start with a letter and may only contain letters, numbers or underscores.",
+			"propertyRequired": "Property is required.",
+			"scaleRequired": "Scale is required.",
+			"treatmentFactor":"Please note that in order to use this variable as a Treatment Factor, you need to create two variables with the same property and variable type \"Treatment Factor\".",
+			"variableTypeEmpty": "Please select at least one variable type."
+		}
+	},
+
+	"variablesList": {
+		"favouritesTitle": "Program Favourites",
+		"noFavouritesFound": "There are no favourite variables for this program.",
+		"title": "Variables",
+
+		"details": {
+			"expectedRange": "Expected Range"
+		}
+	},
+
+	"variableStateService": {
+		"couldNotSetMethod": "Your method was created but not set on your new variable. Please try again.",
+		"couldNotSetProperty": "Your property was created but not set on your new variable. Please try again.",
+		"couldNotSetScale": "Your scale was created but not set on your new variable. Please try again."
+	},
+
+	"warnings": {
+		"deleteUnsuccessful": "Sorry, the deletion was unsuccessful. Please try again.",
+		"discardConfirmation": "Are you sure you want to discard your changes?",
+
+		"methods": {
+			"deleteConfirmation": "Are you sure you want to delete this method?"
+		},
+
+		"properties": {
+			"deleteConfirmation": "Are you sure you want to delete this property?"
+		},
+
+		"scales": {
+			"deleteConfirmation": "Are you sure you want to delete this scale?"
+		},
+
+		"variables": {
+			"deleteConfirmation": "Are you sure you want to delete this variable?"
+		}
 	}
 }
