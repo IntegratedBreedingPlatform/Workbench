@@ -12,6 +12,11 @@
 	*/
 	inputModule.directive('omSearch', function() {
 		return {
+			link: function(scope) {
+				scope.clearText = function() {
+					scope.model = '';
+				};
+			},
 			restrict: 'E',
 			scope: {
 				model: '=omModel'
