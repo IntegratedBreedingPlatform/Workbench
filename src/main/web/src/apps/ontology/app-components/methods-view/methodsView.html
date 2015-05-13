@@ -3,10 +3,11 @@
 		<om-method-details></om-method-details>
 	</om-panel>
 
-	<h2>{{'methodsList.title' | translate}}</h2>
+	<h2 class="om-list-title">{{'methodsList.title' | translate}}</h2>
+	<om-search om-model="searchFilter"></om-search>
 	<div ng-show="methodsCtrl.showThrobberWrapper" class="om-list-throbber-wrapper">
 		<span ng-class="{'throbber-hidden': !methodsCtrl.showThrobber}" class="throbber throbber-lg"></span>
 	</div>
-	<om-list ng-hide="methodsCtrl.methods.length === 0" om-data="methodsCtrl.methods" om-col-headers="methodsCtrl.colHeaders" om-on-click="showMethodDetails()" om-selected-item="selectedItem"></om-list>
+	<om-list ng-hide="methodsCtrl.methods.length === 0" om-data="methodsCtrl.methods" om-col-headers="methodsCtrl.colHeaders" om-on-click="showMethodDetails()" om-selected-item="selectedItem" om-item-filter="searchFilter"></om-list>
 	<p ng-show="methodsCtrl.showNoItemsMessage" class="text-info">{{'list.noItemsFound' | translate:'{items: "methods"}'}}</p>
 </div>

@@ -119,6 +119,10 @@
 		"title": "Scales"
 	},
 
+	"search": {
+		"search": "Search..."
+	},
+
 	"validation": {
 		"tooLong": "Please reduce to under {{maxLength}} characters.",
 

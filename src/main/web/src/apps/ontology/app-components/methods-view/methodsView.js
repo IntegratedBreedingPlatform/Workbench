@@ -2,7 +2,7 @@
 'use strict';
 
 (function() {
-	var app = angular.module('methodsView', ['methods', 'list', 'panel', 'methodDetails', 'utilities']),
+	var app = angular.module('methodsView', ['methods', 'list', 'panel', 'methodDetails', 'utilities', 'search']),
 		DELAY = 400;
 
 	app.controller('MethodsController', ['$scope', 'methodsService', 'panelService', '$timeout', 'collectionUtilities',

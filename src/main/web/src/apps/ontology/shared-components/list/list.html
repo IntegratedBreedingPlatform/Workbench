@@ -7,7 +7,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		<tr ng-repeat="item in data" ng-click="selectItem($index, item.id)">
+		<tr ng-repeat="item in data track by item.id" ng-click="selectItem($index, item.id)" ng-show="([item] | filter:itemFilter).length > 0">
 			<td ng-repeat="header in colHeaders">
 				<span class="om-li-data-cell-test" ng-if="isString(item[header])">{{item[header]}}</span>
 				<span class="om-li-data-cell-test" ng-if="isAction(item[header])">{{item[header].iconValue}}</span>

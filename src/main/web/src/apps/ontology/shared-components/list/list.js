@@ -11,7 +11,8 @@
 				colHeaders: '=omColHeaders',
 				data: '=omData',
 				parentClickHandler: '&omOnClick',
-				selectedItem: '=omSelectedItem'
+				selectedItem: '=omSelectedItem',
+				itemFilter: '=omItemFilter'
 			},
 			controller: function($scope) {
 				$scope.isString = function(object) {
