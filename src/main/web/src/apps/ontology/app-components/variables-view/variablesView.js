@@ -12,7 +12,7 @@
 			property: variable.propertySummary && variable.propertySummary.name || '',
 			method: variable.methodSummary && variable.methodSummary.name || '',
 			scale: variable.scale && variable.scale.name || '',
-			'action-favourite': variable.favourite
+			'action-favourite': variable.favourite ? { iconValue: 'star' } : { iconValue: 'star-empty' }
 		};
 	}
 
@@ -24,13 +24,19 @@
 			property: variable.propertySummary && variable.propertySummary.name || '',
 			method: variable.methodSummary && variable.methodSummary.name || '',
 			scale: variable.scaleSummary && variable.scaleSummary.name || '',
-			'action-favourite': variable.favourite
+			'action-favourite': variable.favourite ? { iconValue: 'star' } : { iconValue: 'star-empty' }
 		};
 	}
 
-	function transformToDisplayFormat(variables) {
+	function transformToDisplayFormat(variables, actionFunction) {
 		// TODO: check that variable has an ID and name
-		return variables.map(transformVariableToDisplayFormat);
+		var transformedVariables = variables.map(transformVariableToDisplayFormat);
+		// add action functions to the variables
+		transformedVariables.every(function(variable) {
+			variable['action-favourite'].iconFunction = actionFunction;
+			return true;
+		});
+		return transformedVariables;
 	}
 
 	function findAndUpdate(list, id, updatedVariable, sortFunction) {
@@ -54,8 +60,28 @@
 		}
 	}
 
+	function find(list, id) {
+		var foundVariable = null;
+
+		list.some(function(variable) {
+			if (variable.id === id) {
+				foundVariable = variable;
+				return true;
+			}
+		});
+		return foundVariable;
+	}
+
 	function findAndRemove(list, id) {
 		findAndUpdate(list, id);
+	}
+
+	function addNotFound (list, id, updatedVariable, sortFunction) {
+		//if not in the list, add to the list
+		if (!find(list, id)) {
+			list.push(updatedVariable);
+			sortFunction(list);
+		}
 	}
 
 	app.controller('VariablesController', ['$scope', 'variablesService', 'panelService', '$timeout', 'collectionUtilities',
@@ -81,7 +107,7 @@
 			}, DELAY);
 
 			variablesService.getFavouriteVariables().then(function(variables) {
-				ctrl.favouriteVariables = ctrl.transformToDisplayFormat(variables);
+				ctrl.favouriteVariables = ctrl.transformToDisplayFormat(variables, $scope.toggleFavourite);
 				ctrl.showFavouritesThrobberWrapper = false;
 
 				if (ctrl.favouriteVariables.length === 0) {
@@ -93,7 +119,7 @@
 			});
 
 			variablesService.getVariables().then(function(variables) {
-				ctrl.variables = ctrl.transformToDisplayFormat(variables);
+				ctrl.variables = ctrl.transformToDisplayFormat(variables, $scope.toggleFavourite);
 				ctrl.showAllVariablesThrobberWrapper = false;
 
 				if (ctrl.variables.length === 0) {
@@ -133,15 +159,42 @@
 				panelService.showPanel($scope.panelName);
 			};
 
-			$scope.updateSelectedVariable = function(updatedVariable) {
+			$scope.toggleFavourite = function() {
+				$scope.selectedVariable = find(ctrl.variables, $scope.selectedItem.id);
+				$scope.selectedVariable['action-favourite'].iconValue = ($scope.selectedVariable['action-favourite'].iconValue === 'star') ?
+					'star-empty' : 'star';
+				$scope.updateVariable($scope.selectedVariable);
+				variablesService.getVariable($scope.selectedItem.id).then(function(variable) {
+					$scope.selectedVariable = variable;
+				});
+				variablesService.updateVariable($scope.selectedItem.id, $scope.selectedVariable);
+			};
 
+			$scope.updateVariable = function(updatedVariable) {
+				// If the
+				if (updatedVariable) {
+					// If the variable is not a favourite, we need to remove it if it's in the favourites list
+					if ($scope.selectedVariable['action-favourite'].iconValue === 'star') {
+						findAndUpdate(ctrl.favouriteVariables, $scope.selectedItem.id, updatedVariable, collectionUtilities.sortByName);
+						addNotFound(ctrl.favouriteVariables, $scope.selectedItem.id, updatedVariable, collectionUtilities.sortByName);
+					} else {
+						findAndRemove(ctrl.favouriteVariables, $scope.selectedItem.id);
+					}
+
+					findAndUpdate(ctrl.variables, $scope.selectedItem.id, updatedVariable, collectionUtilities.sortByName);
+
+				} else {
+					findAndRemove(ctrl.variables, $scope.selectedItem.id);
+					findAndRemove(ctrl.favouriteVariables, $scope.selectedItem.id);
+				}
+			};
+
+			$scope.updateSelectedVariable = function(updatedVariable) {
 				var transformedVariable;
 
 				// If the
 				if (updatedVariable) {
 					transformedVariable = transformDetailedVariableToDisplayFormat(updatedVariable, $scope.selectedItem.id);
-
-					findAndUpdate(ctrl.variables, $scope.selectedItem.id, transformedVariable, collectionUtilities.sortByName);
 
 					// If the variable is not a favourite, we need to remove it if it's in the favourites list
 					if (updatedVariable.favourite) {
@@ -149,6 +202,8 @@
 					} else {
 						findAndRemove(ctrl.favouriteVariables, $scope.selectedItem.id);
 					}
+
+					findAndUpdate(ctrl.variables, $scope.selectedItem.id, transformedVariable, collectionUtilities.sortByName);
 
 				} else {
 					findAndRemove(ctrl.variables, $scope.selectedItem.id);

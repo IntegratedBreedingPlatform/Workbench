@@ -14,7 +14,7 @@
 					methodId: variable.methodSummary && variable.methodSummary.id,
 					scaleId: variable.scaleSummary && variable.scaleSummary.id,
 					propertyId: variable.propertySummary && variable.propertySummary.id,
-					variableTypeIds: variable.variableTypes.map(function(variableType) {
+					variableTypeIds: variable.variableTypes && variable.variableTypes.map(function(variableType) {
 						return variableType.id;
 					})
 				},

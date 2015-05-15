@@ -69,6 +69,13 @@
 					});
 				};
 
+				scope.toggleFavourites = function(index, id, event, object) {
+					event.stopPropagation();
+					scope.updateActiveItem(index);
+					scope.selectedItem.id = id;
+					object.iconFunction();
+				};
+
 				scope.isScrolledIntoView = function(el) {
 					if (el) {
 						var elemTop = el.getBoundingClientRect().top,

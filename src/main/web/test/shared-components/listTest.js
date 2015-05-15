@@ -7,7 +7,7 @@ describe('List module', function() {
 			name: 'Cat',
 			description: 'A fluffy animal that likes to sleep.',
 			'action-favourite': {
-				iconValue: 'iconFavourite'
+				iconValue: 'star'
 			}
 		},
 		LIST_ITEM_DOG = {
@@ -15,7 +15,7 @@ describe('List module', function() {
 			name: 'Dog',
 			description: 'A playful animal that likes walks',
 			'action-favourite': {
-				iconValue: 'icon'
+				iconValue: 'star-empty'
 			}
 		},
 
@@ -85,7 +85,7 @@ describe('List module', function() {
 		var firstHeader = 'name',
 			secondHeader = 'description';
 
-		scope.testHeaders = [firstHeader, secondHeader];
+		scope.testHeaders = [firstHeader, secondHeader, ''];
 		scope.testData = [LIST_ITEM_CAT];
 
 		compileDirective();
@@ -121,7 +121,7 @@ describe('List module', function() {
 		compileDirective();
 
 		expect(directiveElement.find('.om-li-data-cell-test')[0]).toContainText(LIST_ITEM_CAT[normalHeader]);
-		expect(directiveElement.find('.om-li-data-cell-test')[1]).toContainText(LIST_ITEM_CAT[actionHeader].iconValue);
+		expect(directiveElement.find('.om-li-data-cell-test')[1]).toHaveClass('glyphicon-' + LIST_ITEM_CAT[actionHeader].iconValue);
 	});
 
 	describe('scope.selectItem', function() {

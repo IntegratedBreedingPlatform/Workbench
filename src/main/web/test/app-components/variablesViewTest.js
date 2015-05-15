@@ -1,4 +1,4 @@
-/*global angular, expect, inject, spyOn*/
+/*global angular, expect, inject, spyOn, jasmine*/
 'use strict';
 
 describe('Variables Controller', function() {
@@ -121,7 +121,7 @@ describe('Variables Controller', function() {
 					property: PLANT_VIGOR.propertySummary.name,
 					method: PLANT_VIGOR.methodSummary.name,
 					scale: PLANT_VIGOR.scaleSummary.name,
-					'action-favourite': PLANT_VIGOR.favourite
+					'action-favourite': PLANT_VIGOR.favourite ? { iconValue: 'star' } : { iconValue: 'star-empty' }
 				};
 
 			expect(controller.transformVariableToDisplayFormat(rawVariable)).toEqual(transformedVariable);
@@ -135,6 +135,7 @@ describe('Variables Controller', function() {
 			rawVariable.propertySummary = null;
 			rawVariable.methodSummary = null;
 			rawVariable.scaleSummary = null;
+			rawVariable.favourite = false;
 
 			transformedVariable = {
 				id: PLANT_VIGOR.id,
@@ -143,7 +144,7 @@ describe('Variables Controller', function() {
 				property: '',
 				method: '',
 				scale: '',
-				'action-favourite': PLANT_VIGOR.favourite
+				'action-favourite': { iconValue: 'star-empty' }
 			};
 			expect(controller.transformVariableToDisplayFormat(rawVariable)).toEqual(transformedVariable);
 		});
@@ -160,7 +161,7 @@ describe('Variables Controller', function() {
 					property: PLANT_VIGOR_DETAILED.propertySummary.name,
 					method: PLANT_VIGOR_DETAILED.methodSummary.name,
 					scale: PLANT_VIGOR_DETAILED.scale.name,
-					'action-favourite': PLANT_VIGOR_DETAILED.favourite
+					'action-favourite': PLANT_VIGOR_DETAILED.favourite ? { iconValue: 'star' } : { iconValue: 'star-empty' }
 				};
 
 			expect(controller.transformDetailedVariableToDisplayFormat(PLANT_VIGOR_DETAILED, newId)).toEqual(transformedVariable);
@@ -181,7 +182,7 @@ describe('Variables Controller', function() {
 				property: '',
 				method: '',
 				scale: '',
-				'action-favourite': PLANT_VIGOR_DETAILED.favourite
+				'action-favourite': { iconValue: 'star' }
 			};
 			expect(controller.transformDetailedVariableToDisplayFormat(rawVariable)).toEqual(transformedVariables);
 		});
@@ -195,7 +196,7 @@ describe('Variables Controller', function() {
 		scope.$apply();
 
 		expect(variablesService.getVariables).toHaveBeenCalled();
-		expect(controller.transformToDisplayFormat).toHaveBeenCalledWith(jsonData);
+		expect(controller.transformToDisplayFormat).toHaveBeenCalledWith(jsonData, jasmine.any(Function));
 	});
 
 	it('should show a message if there are no variables returned', function() {
@@ -215,7 +216,7 @@ describe('Variables Controller', function() {
 		scope.$apply();
 
 		expect(variablesService.getFavouriteVariables).toHaveBeenCalled();
-		expect(controller.transformToDisplayFormat).toHaveBeenCalledWith(jsonData);
+		expect(controller.transformToDisplayFormat).toHaveBeenCalledWith(jsonData, jasmine.any(Function));
 	});
 
 	it('should show a message if there are no favourite variables returned', function() {
@@ -396,7 +397,7 @@ describe('Variables Controller', function() {
 				property: PLANT_VIGOR.propertySummary.name,
 				method: PLANT_VIGOR.methodSummary.name,
 				scale: PLANT_VIGOR.scaleSummary.name,
-				'action-favourite': PLANT_VIGOR.favourite
+				'action-favourite': PLANT_VIGOR.favourite ? { iconValue: 'star' } : { iconValue: 'star-empty' }
 			}];
 
 			controller.favouriteVariables = [{
@@ -405,7 +406,7 @@ describe('Variables Controller', function() {
 				property: PLANT_VIGOR.propertySummary.name,
 				method: PLANT_VIGOR.methodSummary.name,
 				scale: PLANT_VIGOR.scaleSummary.name,
-				'action-favourite': PLANT_VIGOR.favourite
+				'action-favourite': PLANT_VIGOR.favourite ? { iconValue: 'star' } : { iconValue: 'star-empty' }
 			}];
 
 			// Select our variable for editing
@@ -419,7 +420,7 @@ describe('Variables Controller', function() {
 			expect(controller.variables.length).toEqual(1);
 			expect(controller.favouriteVariables.length).toEqual(0);
 
-			expect(controller.variables[0]['action-favourite']).toEqual(false);
+			expect(controller.variables[0]['action-favourite']).toEqual({ iconValue: 'star-empty' });
 		});
 
 		it('should only update the variable in the variables list matched by id', function() {
