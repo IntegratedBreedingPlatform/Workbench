@@ -7,7 +7,8 @@ describe('List module', function() {
 			name: 'Cat',
 			description: 'A fluffy animal that likes to sleep.',
 			'action-favourite': {
-				iconValue: 'star'
+				iconValue: 'star',
+				iconFunction: function() {}
 			}
 		},
 		LIST_ITEM_DOG = {
@@ -15,12 +16,17 @@ describe('List module', function() {
 			name: 'Dog',
 			description: 'A playful animal that likes walks',
 			'action-favourite': {
-				iconValue: 'star-empty'
+				iconValue: 'star-empty',
+				iconFunction: function() {}
 			}
 		},
 
 		fakeScrollElement = {
 			scrollTop: 100 // Set the number of pixels scrolled
+		},
+
+		fakeEvent = {
+			stopPropagation: function() {}
 		},
 
 		scope,
@@ -182,6 +188,65 @@ describe('List module', function() {
 			directiveElement.find('table').triggerHandler('blur');
 			expect(directiveElement.find('tr.active').length).toBe(0);
 		});
+	});
+
+	describe('scope.toggleFoavourites', function() {
+
+		it('should stop propagation of the event to <tr>', function() {
+			var item = {
+				id: null
+			},
+				isolateScope;
+			scope.testHeaders = ['name', 'description'];
+			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
+
+			compileDirective();
+			isolateScope = directiveElement.isolateScope();
+			isolateScope.selectedItem = item;
+			isolateScope.data = [LIST_ITEM_CAT, LIST_ITEM_DOG];
+			spyOn(fakeEvent, 'stopPropagation');
+
+			isolateScope.toggleFavourites(1, 1, fakeEvent, LIST_ITEM_CAT['action-favourite']);
+			expect(fakeEvent.stopPropagation).toHaveBeenCalled();
+		});
+
+		it('should update active item', function() {
+			var item = {
+				id: null
+			},
+				isolateScope;
+			scope.testHeaders = ['name', 'description'];
+			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
+
+			compileDirective();
+			isolateScope = directiveElement.isolateScope();
+			isolateScope.selectedItem = item;
+			isolateScope.data = [LIST_ITEM_CAT, LIST_ITEM_DOG];
+			spyOn(directiveElement.isolateScope(), 'updateActiveItem');
+
+			isolateScope.toggleFavourites(1, 1, fakeEvent, LIST_ITEM_CAT['action-favourite']);
+			expect(isolateScope.updateActiveItem).toHaveBeenCalled();
+			expect(isolateScope.selectedItem.id).toBe(1);
+		});
+
+		it('call icon function', function() {
+			var item = {
+				id: null
+			},
+				isolateScope;
+			scope.testHeaders = ['name', 'description'];
+			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
+
+			compileDirective();
+			isolateScope = directiveElement.isolateScope();
+			isolateScope.selectedItem = item;
+			isolateScope.data = [LIST_ITEM_CAT, LIST_ITEM_DOG];
+			spyOn(LIST_ITEM_CAT['action-favourite'], 'iconFunction');
+
+			directiveElement.isolateScope().toggleFavourites(1, 1, fakeEvent, LIST_ITEM_CAT['action-favourite']);
+			expect(LIST_ITEM_CAT['action-favourite'].iconFunction).toHaveBeenCalled();
+		});
+
 	});
 
 	describe('scope.scroll', function() {
