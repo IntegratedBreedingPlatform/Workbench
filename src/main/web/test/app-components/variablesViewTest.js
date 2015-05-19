@@ -159,6 +159,7 @@ describe('Variables Controller', function() {
 				transformedVariable = {
 					id: newId,
 					name: PLANT_VIGOR_DETAILED.name,
+					alias: PLANT_VIGOR_DETAILED.alias,
 					property: PLANT_VIGOR_DETAILED.propertySummary.name,
 					method: PLANT_VIGOR_DETAILED.methodSummary.name,
 					scale: PLANT_VIGOR_DETAILED.scale.name,
@@ -173,6 +174,7 @@ describe('Variables Controller', function() {
 				transformedVariables;
 
 			// Null out some values
+			rawVariable.alias = null;
 			rawVariable.propertySummary = null;
 			rawVariable.methodSummary = null;
 			rawVariable.scale = null;
@@ -180,6 +182,7 @@ describe('Variables Controller', function() {
 			transformedVariables = {
 				id: PLANT_VIGOR_DETAILED.id,
 				name: PLANT_VIGOR_DETAILED.name,
+				alias: '',
 				property: '',
 				method: '',
 				scale: '',

@@ -9,6 +9,7 @@
 		return {
 			id: id,
 			name: variable.name,
+			alias: variable.alias || '',
 			property: variable.propertySummary && variable.propertySummary.name || '',
 			method: variable.methodSummary && variable.methodSummary.name || '',
 			scale: variable.scale && variable.scale.name || '',
@@ -20,7 +21,7 @@
 		return {
 			id: variable.id,
 			name: variable.name,
-			alias: variable.alias,
+			alias: variable.alias || '',
 			property: variable.propertySummary && variable.propertySummary.name || '',
 			method: variable.methodSummary && variable.methodSummary.name || '',
 			scale: variable.scaleSummary && variable.scaleSummary.name || '',
