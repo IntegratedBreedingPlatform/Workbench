@@ -38,7 +38,9 @@ describe('Scale details directive', function() {
 			name: 'Percentage',
 			description: 'As per title, really',
 			dataType: NUMERIC_TYPE,
-			editableFields: ['description']
+			metadata: {
+				editableFields: ['description']
+			}
 		},
 
 		SCORE = {

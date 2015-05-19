@@ -43,12 +43,12 @@
 							$scope.deny();
 						}
 						$scope.model = angular.copy(property);
-						$scope.deletable = property && property.deletable || false;
+						$scope.deletable = property && property.metadata && property.metadata.deletable || false;
 					});
 
 					$scope.$watch('editing', function() {
 						$scope.showNoneditableFieldsAlert = $scope.editing && $scope.model &&
-							$scope.model.editableFields.length < NUM_EDITABLE_FIELDS;
+							$scope.model.metadata.editableFields.length < NUM_EDITABLE_FIELDS;
 					});
 
 					$scope.$watch('selectedItem', function(selected) {

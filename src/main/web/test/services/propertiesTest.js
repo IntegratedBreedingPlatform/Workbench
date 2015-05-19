@@ -7,8 +7,10 @@ describe('Properties Service', function() {
 			description: 'Condition characterized by discoloration of the leaves ranging from ...',
 			classes: ['Abiotic Stress', 'Trait'],
 			cropOntologyId: 'CO_192791864',
-			editableFields: ['name', 'description', 'classes', 'cropOntologyId'],
-			deletable: true
+			metadata: {
+				deletable: true,
+				editableFields: ['name', 'description', 'classes', 'cropOntologyId']
+			}
 		},
 
 		PROPERTY_FOR_ADD_OR_UPDATE = {

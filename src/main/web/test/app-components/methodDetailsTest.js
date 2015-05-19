@@ -14,7 +14,10 @@ describe('Method details directive', function() {
 		CUT_AND_DRY = {
 			id: 1,
 			name: 'Cut and Dry',
-			editableFields: ['description']
+			metadata: {
+				deletable: true,
+				editableFields: ['description']
+			}
 		},
 		methodsService = {},
 		formUtilities,

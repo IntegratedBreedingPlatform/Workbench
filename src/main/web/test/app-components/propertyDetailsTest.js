@@ -14,7 +14,9 @@ describe('Property details directive', function() {
 		BLAST = {
 			id: 1,
 			name: 'Blast',
-			editableFields: ['description', 'classes', 'cropOntologyId']
+			metadata: {
+				editableFields: ['description', 'classes', 'cropOntologyId']
+			}
 		},
 		SITE_CONDITION = 'Site Condition',
 		propertiesService = {},

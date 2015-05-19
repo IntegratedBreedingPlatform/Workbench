@@ -15,7 +15,9 @@ describe('Variable details directive', function() {
 		PLANT_VIGOR = {
 			id: 1,
 			name: 'Plant Vigor',
-			editableFields: ['description', 'cropOntologyId', 'variableTypeIds']
+			metadata: {
+				editableFields: ['description', 'cropOntologyId', 'variableTypeIds']
+			}
 		},
 
 		VARIABLE_TYPES_INC_TREATMENT_FACTOR = [{
@@ -303,7 +305,9 @@ describe('Variable details directive', function() {
 		it('should return true when in edit mode and the alias is editable', function() {
 			scope.editing = true;
 			scope.model = {
-				editableFields: ['alias']
+				metadata: {
+					editableFields: ['alias']
+				}
 			};
 			expect(scope.showAlias()).toBe(true);
 		});
@@ -319,7 +323,9 @@ describe('Variable details directive', function() {
 		it('should return a falsy value when the alias is not editable and there is no alias', function() {
 			scope.editing = true;
 			scope.model = {
-				editableFields: ['name']
+				metadata: {
+					editableFields: ['name']
+				}
 			};
 			expect(scope.showAlias()).toBeFalsy();
 		});

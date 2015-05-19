@@ -141,8 +141,10 @@
 					'min': 0,
 					'max': 100
 				},
-				'editableFields': ['description'],
-				'deletable': false
+				'metadata': {
+					'editableFields': ['description'],
+					'deletable': false
+				}
 			}
 			*/
 			getScale: function(id) {

@@ -128,8 +128,10 @@
 				'description': 'Condition characterized by discoloration of the leaves ranging from ...',
 				'classes': ['Abiotic Stress', 'Trait'],
 				'cropOntologyId': 'CO_192791864',
-				'editableFields': ['name', 'description', 'classes', 'cropOntologyId'],
-				'deletable': true
+				'metadata': {
+					'editableFields': ['name', 'description', 'classes', 'cropOntologyId'],
+					'deletable': true
+				}
 			}
 			*/
 			getProperty: function(id) {

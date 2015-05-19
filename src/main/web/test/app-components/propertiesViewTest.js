@@ -7,8 +7,10 @@ describe('Properties View', function() {
 			description: 'I\'ts a blast',
 			classes: ['class', 'anotherClass'],
 			cropOntologyId: 'CO_192791864',
-			editableFields: ['name', 'description', 'classes', 'cropOntologyId'],
-			deletable: true
+			metadata: {
+				editableFields: ['name', 'description', 'classes', 'cropOntologyId'],
+				deletable: true
+			}
 		},
 		q,
 		controller,

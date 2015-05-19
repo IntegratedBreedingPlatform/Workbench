@@ -62,14 +62,18 @@ describe('formFields Module', function() {
 				var nonEditablePropertyScope = {
 						editing: true,
 						model: {
-							editableFields: ['description']
+							metadata: {
+								editableFields: ['description']
+							}
 						},
 						property: 'name'
 					},
 					noPropertyScope = {
 						editing: true,
 						model: {
-							editableFields: ['description']
+							metadata: {
+								editableFields: ['description']
+							}
 						}
 					};
 
@@ -84,7 +88,9 @@ describe('formFields Module', function() {
 				var editablePropertyScope = {
 						editing: true,
 						model: {
-							editableFields: ['name']
+							metadata: {
+								editableFields: ['name']
+							}
 						},
 						property: 'name'
 					};

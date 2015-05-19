@@ -8,8 +8,8 @@
 		return function($scope) {
 			return function() {
 				return $scope.adding || ($scope.editing &&
-					$scope.model && $scope.model.editableFields &&
-					$scope.model.editableFields.indexOf($scope.property) !== -1);
+					$scope.model && $scope.model.metadata && $scope.model.metadata.editableFields &&
+					$scope.model.metadata.editableFields.indexOf($scope.property) !== -1);
 			};
 		};
 	});

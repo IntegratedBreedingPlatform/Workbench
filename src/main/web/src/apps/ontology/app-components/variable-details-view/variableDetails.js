@@ -41,7 +41,7 @@
 							$scope.deny();
 						}
 						$scope.model = angular.copy(variable);
-						$scope.deletable = variable && variable.deletable || false;
+						$scope.deletable = variable && variable.metadata && variable.metadata.deletable || false;
 					});
 
 					// Show the expected range widget if the chosen scale has a numeric datatype
@@ -51,7 +51,7 @@
 
 					$scope.$watch('editing', function() {
 						$scope.showNoneditableFieldsAlert = $scope.editing && $scope.model &&
-							$scope.model.editableFields.length < NUM_EDITABLE_FIELDS;
+							$scope.model.metadata.editableFields.length < NUM_EDITABLE_FIELDS;
 					});
 
 					propertiesService.getProperties().then(function(properties) {
@@ -76,8 +76,8 @@
 
 					$scope.showAlias = function() {
 						var aliasHasValue = $scope.model && $scope.model.alias && $scope.model.alias !== '',
-							aliasIsEditable = $scope.model && $scope.model.editableFields &&
-								$scope.model.editableFields.indexOf('alias') !== -1;
+							aliasIsEditable = $scope.model && $scope.model.metadata && $scope.model.metadata.editableFields &&
+								$scope.model.metadata.editableFields.indexOf('alias') !== -1;
 
 						return $scope.editing && aliasIsEditable || aliasHasValue;
 					};

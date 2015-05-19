@@ -62,9 +62,10 @@ describe('Variables Controller', function() {
 	delete PLANT_VIGOR_DETAILED.id;
 	delete PLANT_VIGOR_DETAILED.scaleSummary;
 
-	PLANT_VIGOR_DETAILED.deletable = true;
-	PLANT_VIGOR_DETAILED.metadata = {};
-	PLANT_VIGOR_DETAILED.editableFields = ['name', 'description'];
+	PLANT_VIGOR_DETAILED.metadata = {
+		deletable: true,
+		editableFields: ['name', 'description']
+	};
 
 	beforeEach(function() {
 		module('variablesView');

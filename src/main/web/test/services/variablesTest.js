@@ -276,9 +276,10 @@ describe('Variables Service', function() {
 				id = 1,
 				expectedVariable = CONVERTED_PLANT_VIGOR;
 
-			variable.deletable = true;
-			variable.metadata = {};
-			variable.editableFields = ['blah'];
+			variable.metadata = {
+				deletable: true,
+				editableFields: ['blah']
+			};
 
 			httpBackend.expectPUT(/\/variables\/:id\?programId=1$/, expectedVariable).respond(204);
 
