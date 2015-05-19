@@ -171,7 +171,6 @@
 			};
 
 			$scope.updateVariable = function(updatedVariable) {
-				// If the
 				if (updatedVariable) {
 					// If the variable is not a favourite, we need to remove it if it's in the favourites list
 					if ($scope.selectedVariable['action-favourite'].iconValue === 'star') {
@@ -192,7 +191,6 @@
 			$scope.updateSelectedVariable = function(updatedVariable) {
 				var transformedVariable;
 
-				// If the
 				if (updatedVariable) {
 					transformedVariable = transformDetailedVariableToDisplayFormat(updatedVariable, $scope.selectedItem.id);
 
