@@ -49,7 +49,6 @@
 				return true;
 			}
 		});
-
 		// Not much we can really do if we don't find it in the list. Just don't update.
 		if (selectedVariableIndex !== -1) {
 			if (updatedVariable) {
@@ -161,10 +160,10 @@
 			};
 
 			$scope.toggleFavourite = function() {
-				$scope.selectedVariable = find(ctrl.variables, $scope.selectedItem.id);
-				$scope.selectedVariable['action-favourite'].iconValue = ($scope.selectedVariable['action-favourite'].iconValue === 'star') ?
+				var transformedVariable = find(ctrl.variables, $scope.selectedItem.id);
+				transformedVariable['action-favourite'].iconValue = (transformedVariable['action-favourite'].iconValue === 'star') ?
 					'star-empty' : 'star';
-				$scope.updateVariable($scope.selectedVariable);
+				$scope.updateVariable(transformedVariable);
 				variablesService.getVariable($scope.selectedItem.id).then(function(variable) {
 					$scope.selectedVariable = variable;
 				});
@@ -174,7 +173,7 @@
 			$scope.updateVariable = function(updatedVariable) {
 				if (updatedVariable) {
 					// If the variable is not a favourite, we need to remove it if it's in the favourites list
-					if ($scope.selectedVariable['action-favourite'].iconValue === 'star') {
+					if (updatedVariable['action-favourite'].iconValue === 'star') {
 						findAndUpdate(ctrl.favouriteVariables, $scope.selectedItem.id, updatedVariable, collectionUtilities.sortByName);
 						addNotFound(ctrl.favouriteVariables, $scope.selectedItem.id, updatedVariable, collectionUtilities.sortByName);
 					} else {
