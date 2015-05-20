@@ -9,26 +9,6 @@
 		var successHandler = serviceUtilities.restSuccessHandler,
 			failureHandler = serviceUtilities.restFailureHandler;
 
-		function convertScale(scale) {
-			var convertedScale = {
-					dataTypeId: scale.dataType && scale.dataType.id
-				},
-				propertiesToInclude = [
-					'name',
-					'description',
-					'validValues'
-				];
-
-			Object.keys(scale).forEach(function(key) {
-				// Ignore properties we want to remove before sending
-				if (propertiesToInclude.indexOf(key) > -1) {
-					convertedScale[key] = scale[key];
-				}
-			});
-
-			return convertedScale;
-		}
-
 		return {
 			/*
 			Returns an array of scales in the format:
@@ -62,7 +42,10 @@
 			{
 				'name': 'Percentage',
 				'description': 'Percentage',
-				'dataTypeId': 2,
+				'dataType': {
+					'id': 2,
+					'name': 'numeric'
+				}
 				'validValues': {
 					'min': 0,
 					'max': 100
@@ -81,9 +64,7 @@
 			}
 			*/
 			addScale: function(scale) {
-				var convertedScale = convertScale(scale),
-					request = $http.post('/bmsapi/ontology/' + configService.getCropName() + '/scales',
-						convertedScale);
+				var request = $http.post('/bmsapi/ontology/' + configService.getCropName() + '/scales', scale);
 				return request.then(successHandler, failureHandler);
 			},
 
@@ -93,7 +74,10 @@
 			{
 				'name': 'Percentage',
 				'description': 'Percentage',
-				'dataTypeId': 2,
+				'dataType': {
+					'id': 2,
+					'name': 'numeric'
+				},
 				'validValues': {
 					'min': 0,
 					'max': 100
@@ -112,8 +96,15 @@
 			}
 			*/
 			updateScale: function(id, scale) {
-				var request = $http.put('/bmsapi/ontology/' + configService.getCropName() + '/scales/' + id,
-					convertScale(scale));
+				var url = '/bmsapi/ontology/' + configService.getCropName() + '/scales/' + id,
+					convertedScale = {
+						name: scale.name,
+						description: scale.description,
+						dataType: scale.dataType,
+						validValues: scale.validValues
+					},
+					request = $http.put(url, convertedScale);
+
 				return request.then(function(response) {
 					return response.status;
 				}, failureHandler);
