@@ -44,6 +44,10 @@
 				'validValues': {
 					'min': 0,
 					'max': 100
+				},
+				'metadata': {
+					'dateCreated': '2013-10-21T13:28:06.419Z',
+					'lastModified': '2013-10-21T13:28:06.419Z'
 				}
 			}]
 			*/
@@ -143,7 +147,15 @@
 				},
 				'metadata': {
 					'editableFields': ['description'],
-					'deletable': false
+					'deletable': false,
+					'dateCreated': '2013-10-21T13:28:06.419Z',
+					'lastModified': '2013-10-21T13:28:06.419Z',
+					'usage': {
+						'variables': [{
+							'id': 1,
+							'name': 'Plant_Vigor'
+						}]
+					}
 				}
 			}
 			*/

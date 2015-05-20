@@ -46,18 +46,39 @@
 				'name': 'Plant Vigor',
 				'alias': '',
 				'description': 'A little vigourous',
-				'propertySummary': {...},
-				'methodSummary': {...},
-				'scaleSummary': {...},
-				'variableTypes': [{...}],
+				'propertySummary': {
+					'id': 1,
+					'name': 'Plant Vigor'
+				},
+				'methodSummary': {
+					'id': 46,
+					'name': 'Visually Assessed'
+				},
+				'scaleSummary': {
+					'id': 1,
+					'name': 'Percentage',
+					'dataType': {
+						'id': 2,
+						'name': 'Numeric'
+					}
+				},
+				'variableTypes': [{
+					'id': 1,
+					'name': 'Analysis',
+					'description': 'Variable to be used only in analysis (for example derived variables).'
+				}],
 				'favourite': true,
-				'metadata': {...},
-				'expectedRange': {..}
+				'metadata': {
+					'dateCreated': '2013-10-21T13:28:06.419Z',
+					'lastModified': '2013-10-21T13:28:06.419Z'
+				},
+				'expectedRange': {
+					'min': 3,
+					'max': 5
+				}
 			}]
 
-			metadata contains dateCreated, lastModified properties, and a usage object with an observations property.
-			propertySummary and methodSummary have two properties, name and id. expectedRange is optional, and has optional
-			min and max properties.
+			expectedRange is optional, and has optional min and max properties.
 			*/
 			getVariables: function() {
 				var request = $http.get('http://private-905fc7-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables' +
@@ -80,11 +101,40 @@
 			{
 				'name': 'Plant Vigor',
 				'description': 'A little vigourous',
-				'propertySummary': {...},
-				'methodSummary': {...},
-				'scale': {...},
-				'variableTypes': [{...}],
-				'expectedRange': {...}
+				'propertySummary': {
+					'id': 1,
+					'name': 'Plant Vigor'
+				},
+				'methodSummary': {
+					'id': 46,
+					'name': 'Visually Assessed'
+				},
+				'scale': {
+					'id': 1,
+					'name': 'Percentage',
+					'description': 'Percentage',
+					'dataType': {
+						'id': 2,
+						'name': 'Numeric'
+					},
+					'validValues': {
+						'min': 0,
+						'max': 100
+					},
+					'metadata': {
+						'dateCreated': '2013-10-21T13:28:06.419Z',
+						'lastModified': '2013-10-21T13:28:06.419Z'
+					}
+				},
+				'variableTypes': [{
+					'id': 1,
+					'name': 'Analysis',
+					'description': 'Variable to be used only in analysis (for example derived variables).'
+				}],
+				'expectedRange': {
+					'min': 3,
+					'max': 5
+				}
 			}
 
 			This will be converted before sending to change property, method and scale to only return their id, and
@@ -96,8 +146,11 @@
 				'propertyId': 34,
 				'methodId': 68,
 				'scaleId': 145,
-				'variableTypes': [{...}],
-				'expectedRange': {...}
+				'variableTypeIds': [1],
+				'expectedRange': {
+					'min': 3,
+					'max': 5
+				}
 			}
 
 			If the response has a 400 status, the response data will contain an errors property which is an
@@ -126,12 +179,41 @@
 				'name': 'Plant Vigor',
 				'alias': '',
 				'description': 'A little vigourous',
-				'propertySummary': {...},
-				'methodSummary': {...},
-				'scale': {...},
-				'variableTypes': [{...}],
+				'propertySummary': {
+					'id': 1,
+					'name': 'Plant Vigor'
+				},
+				'methodSummary': {
+					'id': 46,
+					'name': 'Visually Assessed'
+				},
+				'scale': {
+					'id': 1,
+					'name': 'Percentage',
+					'description': 'Percentage',
+					'dataType': {
+						'id': 2,
+						'name': 'Numeric'
+					},
+					'validValues': {
+						'min': 0,
+						'max': 100
+					},
+					'metadata': {
+						'dateCreated': '2013-10-21T13:28:06.419Z',
+						'lastModified': '2013-10-21T13:28:06.419Z'
+					}
+				},
+				'variableTypes': [{
+					'id': 1,
+					'name': 'Analysis',
+					'description': 'Variable to be used only in analysis (for example derived variables).'
+				}],
 				'favourite': true,
-				'expectedRange': {...}
+				'expectedRange': {
+					'min': 3,
+					'max': 5
+				}
 			}
 
 			This will be converted before sending to change property, method and scale to only return their id, and
@@ -139,14 +221,17 @@
 
 			{
 				'name': 'Plant Vigor',
-				'alias': ',
+				'alias': '',
 				'description': 'A little vigourous',
 				'propertyId': 12,
 				'methodId': 13,
 				'scaleId': 16,
-				'variableTypes': [{...}],
+				'variableTypeIds': [1],
 				'favourite': true,
-				'expectedRange': {...}
+				'expectedRange': {
+					'min': 3,
+					'max': 5
+				}
 			}
 
 			If the response has a 400 status, the response data will contain an errors property which is an
@@ -191,19 +276,54 @@
 				'name': 'Plant Vigor',
 				'alias': '',
 				'description': 'A little vigourous',
-				'propertySummary': {...},
-				'methodSummary': {...},
-				'scale': {...},
-				'variableTypes': [{...}],
+				'propertySummary': {
+					'id': 1,
+					'name': 'Plant Vigor'
+				},
+				'methodSummary': {
+					'id': 46,
+					'name': 'Visually Assessed'
+				},
+				'scale': {
+					'id': 1,
+					'name': 'Percentage',
+					'description': 'Percentage',
+					'dataType': {
+						'id': 2,
+						'name': 'Numeric'
+					},
+					'validValues': {
+						'min': 0,
+						'max': 100
+					},
+					'metadata': {
+						'dateCreated': '2013-10-21T13:28:06.419Z',
+						'lastModified': '2013-10-21T13:28:06.419Z'
+					}
+				},
+				'variableTypes': [{
+					'id': 1,
+					'name': 'Analysis',
+					'description': 'Variable to be used only in analysis (for example derived variables).'
+				}],
 				'favourite': true,
-				'metadata': {...},
-				'editableFields': ['name', 'description', 'alias', 'variableTypes'],
-				'deletable': false
+				'expectedRange' {
+					'min': 0,
+					'max': 50
+				},
+				'metadata': {
+					'editableFields': ['name', 'description', 'alias', 'variableTypes'],
+					'deletable': false,
+					'dateCreated': '2013-10-21T13:28:06.419Z',
+					'lastModified': '2013-10-21T13:28:06.419Z',
+					'usage': {
+						'observations': 200,
+						'studies': 2
+					}
+				},
 			}
 
-			metadata contains dateCreated, lastModified properties, and a usage object with an observations property.
-			propertySummary and methodSummary have two properties, name and id. expectedRange is optional, and has optional
-			min and max properties.
+			expectedRange is optional, and has optional min and max properties.
 			*/
 			getVariable: function(/*id*/) {
 				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables/:id' +

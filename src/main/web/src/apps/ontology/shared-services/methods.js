@@ -16,7 +16,11 @@
 			[{
 				'id': 23,
 				'name': 'Cut and Dry',
-				'description': 'Cut the plant 10cm above the root and air dry in a shadey place.'
+				'description': 'Cut the plant 10cm above the root and air dry in a shadey place.',
+				'metadata': {
+					'dateCreated': '2013-10-21T13:28:06.419Z',
+					'lastModified': '2013-10-21T13:28:06.419Z'
+				}
 			}]
 			*/
 			getMethods: function() {
@@ -105,8 +109,18 @@
 			{
 				'name': 'Cut and Dry',
 				'description': 'Cut the plant 10cm above the root and air dry in a shadey place.',
-				'editableFields': ['description'],
-				'deletable': false
+				'metadata': {
+					'editableFields': ['description'],
+					'deletable': false
+					'dateCreated': '2013-10-21T13:28:06.419Z',
+					'lastModified': '2013-10-21T13:28:06.419Z',
+					'usage': {
+						'variables': [{
+							'id': 1,
+							'name': 'Plant_Vigor'
+						}]
+					}
+				}
 			}
 			*/
 			getMethod: function(id) {

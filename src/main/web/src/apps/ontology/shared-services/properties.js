@@ -39,7 +39,11 @@
 				'name': 'Alkali Injury',
 				'description': 'Condition characterized by discoloration of the leaves ranging from ...',
 				'classes': ['Abiotic Stress', 'Trait'],
-				'cropOntologyId': 'CO_192791864'
+				'cropOntologyId': 'CO_192791864',
+				'metadata': {
+					'dateCreated': '2013-10-21T13:28:06.419Z',
+					'lastModified': '2013-10-21T13:28:06.419Z'
+				}
 			}]
 
 			*/
@@ -130,7 +134,15 @@
 				'cropOntologyId': 'CO_192791864',
 				'metadata': {
 					'editableFields': ['name', 'description', 'classes', 'cropOntologyId'],
-					'deletable': true
+					'deletable': true,
+					'dateCreated': '2013-10-21T13:28:06.419Z',
+					'lastModified': '2013-10-21T13:28:06.419Z',
+					'usage': {
+						'variables': [{
+							'id': 1,
+							'name': 'Plant_Vigor'
+						}]
+					}
 				}
 			}
 			*/
