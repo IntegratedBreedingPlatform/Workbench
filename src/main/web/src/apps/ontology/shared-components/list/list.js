@@ -4,17 +4,24 @@
 (function() {
 	var listModule = angular.module('list', ['utilities']);
 
-	listModule.directive('omList', ['$rootScope', 'mathUtilities', function($rootScope, mathUtilities) {
+	listModule.directive('omList', ['$rootScope', 'mathUtilities', '$filter', function($rootScope, mathUtilities, $filter) {
+
+		function isItemFilteredOut(item, filter) {
+			return ($filter('filter')([item], filter)).length === 0;
+		}
+
 		return {
 			restrict: 'E',
 			scope: {
 				colHeaders: '=omColHeaders',
-				data: '=omData',
+				rawData: '=omData',
 				parentClickHandler: '&omOnClick',
 				selectedItem: '=omSelectedItem',
 				itemFilter: '=omItemFilter'
 			},
 			controller: function($scope) {
+				$scope.isAnyItemShown = true;
+
 				$scope.isString = function(object) {
 					return typeof object === 'string';
 				};
@@ -26,6 +33,9 @@
 				$scope.isNotActionHeader = function(object) {
 					return object && typeof object === 'string' && object.indexOf('action-') !== 0;
 				};
+
+				// Exposed for testing
+				$scope.isItemFilteredOut = isItemFilteredOut;
 			},
 
 			link: function(scope, element) {
@@ -39,6 +49,40 @@
 					trAngular = function() {
 						return angular.element(trNative());
 					};
+
+				// Copy passed in data the first time that it is valued so that we can ammend it with other information without
+				// altering the passed in data due to the two way data binding.
+				scope.$watch('rawData', function(rawData) {
+					if (!scope.data && rawData.length > 0) {
+						scope.data = angular.copy(rawData);
+					}
+				});
+
+				// Apply the filter to the list whenever it changes
+				scope.$watch('itemFilter', function(newFilterVal, prevFilterVal) {
+					if (newFilterVal !== prevFilterVal) {
+						scope.filterItems(newFilterVal);
+					}
+				});
+
+				scope.filterItems = function(filter) {
+					var itemsShownStatus = [];
+
+					scope.data.forEach(function(item) {
+						// Add value to item about whether it is filtered out or not so that we can either show or hide it
+						item.isHidden = isItemFilteredOut(item, filter);
+						// Add to list of filtered item values so that we can flatten the array to find out whether at least one is shown
+						itemsShownStatus.push(!item.isHidden);
+					});
+
+					// Reduce array of filtered items down to a single boolean for whether any item is shown
+					scope.isAnyItemShown = itemsShownStatus.reduce(function(prevVal, item) {
+						if (prevVal) {
+							return prevVal;
+						}
+						return item;
+					}, false);
+				};
 
 				scope.scroll = function(scrollElement, change, duration, start, currentTime) {
 					var INCREMENT = 20;
