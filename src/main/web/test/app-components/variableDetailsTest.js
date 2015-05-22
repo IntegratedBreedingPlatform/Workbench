@@ -469,6 +469,40 @@ describe('Variable details directive', function() {
 		});
 	});
 
+	describe('$scope.toggleFavourites', function() {
+
+		it('should toggle the model and the selected variable (true -> false)', function() {
+			scope.model = {favourite: true};
+			scope.selectedVariable =  {favourite: true};
+			scope.toggleFavourites(PLANT_VIGOR.id, scope.model);
+			expect(scope.model.favourite).toBe(false);
+			expect(scope.selectedVariable.favourite).toBe(false);
+		});
+
+		it('should toggle the model and the selected variable (false -> true)', function() {
+			scope.model = {favourite: false};
+			scope.selectedVariable =  {favourite: false};
+			scope.toggleFavourites(PLANT_VIGOR.id, scope.model);
+			expect(scope.model.favourite).toBe(true);
+			expect(scope.selectedVariable.favourite).toBe(true);
+		});
+
+		it('should update the selected variable on the parent scope after a successful toggle favourite', function() {
+			scope.model = {favourite: false};
+			scope.selectedVariable =  {favourite: false};
+			scope.updateSelectedVariable = function(/*model*/) {};
+
+			spyOn(scope, 'updateSelectedVariable').and.callThrough();
+
+			scope.toggleFavourites(PLANT_VIGOR.id, scope.model);
+
+			deferredUpdateVariable.resolve();
+			scope.$apply();
+
+			expect(scope.updateSelectedVariable).toHaveBeenCalledWith(scope.selectedVariable);
+		});
+	});
+
 	describe('$scope.deleteVariable', function() {
 
 		var confirmation;

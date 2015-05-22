@@ -4,13 +4,8 @@
 			<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {{'panel.close' | translate}}
 		</button>
 	</div>
-
-	<div ng-hide="title" class="om-panel-throbber-wrapper">
-		<span ng-class="{'throbber-hidden': !showThrobber}" class="throbber throbber-2x"></span>
-	</div>
-	<h2 ng-show="title" class="om-panel-title">{{title}}</h2>
 </div>
 
-<div ng-show="title" class="om-panel-content">
+<div class="om-panel-content">
 	<ng-transclude></ng-transclude>
 </div>

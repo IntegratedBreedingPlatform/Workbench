@@ -1,8 +1,6 @@
 $panelWidth: 60%;
 $panelWidthSmall: 30%;
 
-$headerHeight: 90px;
-
 om-panel {
 	position: fixed;
 	top: 0;
@@ -25,36 +23,9 @@ om-panel {
 	}
 }
 
-.om-panel-header {
-	position: absolute;
-	width: 100%;
-	height: $headerHeight;
-	padding: 1rem 3rem;
-
-	.om-panel-title {
-		line-height: 1.3;
-		overflow: hidden;
-		margin-top: 9px;
-		white-space: nowrap;
-		text-overflow: ellipsis;
-	}
-}
-
-// Not the nicest styling in the world. We want the panel title to be truncated at 3rem, to be
-// inline with the content, so padding on the header is set to 3rem, but we want the close button
-// to be in the same place it is at smaller panel sizes (1rem) so we apply a negative margin.
 .om-panel-close {
-	margin-right: -2rem;
-}
-
-.om-panel-content {
-	position: absolute;
-	top: $headerHeight;
-	bottom: 0;
-	overflow-y: auto;
-	overflow-x: hidden;
-	width: 100%;
-	padding: 0 3rem;
+	margin-right: 1rem;
+	margin-top: 1rem;
 }
 
 // Slightly awkward pseudo media query styling for smaller panel sizes
@@ -67,11 +38,6 @@ om-panel.om-panel-small {
 	.om-panel-close {
 		margin-right: 0;
 	}
-}
-
-.om-panel-throbber-wrapper {
-	text-align: center;
-	padding-top: 5rem;
 }
 
 om-mask {

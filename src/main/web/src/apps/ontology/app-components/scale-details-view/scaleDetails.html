@@ -1,111 +1,122 @@
-<form class="form-horizontal" name="sdForm" ng-submit="saveChanges($event, scaleId, model)" novalidate>
-	<div ng-if="serverErrors.general" class="alert alert-danger" role="alert">
-		<ul>
-			<li ng-repeat="error in serverErrors.general">{{error}}</li>
-		</ul>
-	</div>
-	<div ng-if="showNoneditableFieldsAlert" class="alert alert-warning" role="alert">
-		<span>{{'validation.scale.noneditableFields' | translate }}</span>
+<div ng-hide="model" class="om-details-throbber-wrapper">
+	<span class="throbber throbber-2x"></span>
+</div>
+<form ng-show="model" class="form-horizontal" name="sdForm" ng-submit="saveChanges($event, scaleId, model)" novalidate>
+	<div class="om-details-header">
+		<h2 class="om-details-title">
+			{{model.name}}
+		</h2>
 	</div>
 
-	<div ng-class="formGroupClass('omName', 'name')">
-		<label for="omName" class="col-sm-3 control-label">{{'formField.name' | translate}}</label>
-		<div class="col-sm-9">
-			<om-input om-name="omName" om-property="name" om-editing="editing" om-model="model" om-required="true" om-max-length="200"></om-input>
-			<ng-messages for="sdForm.omName.$error" ng-if="sdForm.$submitted || sdForm.omName.$touched">
-				<ng-message when="required"><p class="text-danger">{{'validation.scale.nameRequired' | translate}}</p></ng-message>
-				<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "200"}'}}</p></ng-message>
-			</ng-messages>
-			<p class="text-danger" ng-hide="sdForm.omName.$touched" ng-repeat="error in serverErrors.name">{{error}}</p>
+	<div class="om-details-content">
+		<div ng-if="serverErrors.general" class="alert alert-danger" role="alert">
+			<ul>
+				<li ng-repeat="error in serverErrors.general">{{error}}</li>
+			</ul>
 		</div>
-	</div>
-
-	<div ng-class="formGroupClass('omDescription', 'description')">
-		<label for="omDescription" class="col-sm-3 control-label">{{'formField.description' | translate}}</label>
-		<div class="col-sm-9">
-			<om-text-area om-name="omDescription" om-property="description" om-editing="editing" om-model="model" om-max-length="255"></om-text-area>
-			<ng-messages for="sdForm.omDescription.$error" ng-if="sdForm.$submitted || sdForm.omDescription.$touched">
-				<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "255"}'}}</p></ng-message>
-			</ng-messages>
-			<p class="text-danger" ng-hide="sdForm.omDescription.$touched" ng-repeat="error in serverErrors.description">{{error}}</p>
+		<div ng-if="showNoneditableFieldsAlert" class="alert alert-warning" role="alert">
+			<span>{{'validation.scale.noneditableFields' | translate }}</span>
 		</div>
-	</div>
 
-	<div ng-class="formGroupClass('omDataType', 'dataType')">
-		<label for="omDataType" class="col-sm-3 control-label">{{'formField.dataType' | translate}}</label>
-		<div class="col-sm-9">
-			<om-select name="omDataType" om-name="om-data-type" om-property="dataType" om-editing="editing" ng-model="model" om-options="types" om-required="true"></om-select>
-			<ng-messages for="sdForm.omDataType.$error" ng-if="sdForm.$submitted">
-				<ng-message when="required"><p class="text-danger">{{'validation.scale.dataTypeRequired' | translate}}</p></ng-message>
-			</ng-messages>
-			<p class="text-danger" ng-hide="sdForm.omDataType.$touched" ng-repeat="error in serverErrors.dataType">{{error}}</p>
-		</div>
-	</div>
-
-	<div ng-class="formGroupClass('omRange', 'validValues')" ng-show="showRangeWidget">
-		<label for="omRange" class="col-sm-3 control-label">{{'scalesList.details.validRange' | translate}}</label>
-		<div class="col-sm-9">
-			<om-range name="omRange" om-property="validValues" om-editing="editing" ng-model="model" om-numeric="showRangeWidget"></om-range>
-
-			<ng-messages for="sdForm.omRange.$error" ng-messages-include="range-validation-messages" multiple ng-if="sdForm.$submitted || sdForm.omRange.$touched"></ng-messages>
-		</div>
-		<p class="text-danger" ng-hide="sdForm.omRange.$touched" ng-repeat="error in serverErrors.validValues">{{error}}</p>
-	</div>
-
-	<div ng-show="showCategoriesWidget">
-		<div ng-class="formGroupClass('omCategories', 'validValues')">
-			<label for="omCategories" class="col-sm-3 control-label">{{'scalesList.details.categories' | translate}}</label>
+		<div ng-class="formGroupClass('omName', 'name')">
+			<label for="omName" class="col-sm-3 control-label">{{'formField.name' | translate}}</label>
 			<div class="col-sm-9">
-				<om-categories name="omCategories" om-property="validValues" om-editing="editing" ng-model="model" om-categorical="showCategoriesWidget"></om-categories>
-				<ng-messages for="sdForm.omCategories.$error" ng-if="sdForm.$submitted">
-					<ng-message when="emptyValue"><p class="text-danger">{{'validation.scale.emptyValue' | translate}}</p></ng-message>
-					<ng-message when="nonUniqueName"><p class="text-danger">{{'validation.scale.nonUniqueName' | translate}}</p></ng-message>
-					<ng-message when="nonUniqueValue"><p class="text-danger">{{'validation.scale.nonUniqueValue' | translate}}</p></ng-message>
+				<om-input om-name="omName" om-property="name" om-editing="editing" om-model="model" om-required="true" om-max-length="200"></om-input>
+				<ng-messages for="sdForm.omName.$error" ng-if="sdForm.$submitted || sdForm.omName.$touched">
+					<ng-message when="required"><p class="text-danger">{{'validation.scale.nameRequired' | translate}}</p></ng-message>
+					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "200"}'}}</p></ng-message>
 				</ng-messages>
-				<p class="text-danger" ng-hide="sdForm.omCategories.$touched" ng-repeat="error in serverErrors.validValues">{{error}}</p>
+				<p class="text-danger" ng-hide="sdForm.omName.$touched" ng-repeat="error in serverErrors.name">{{error}}</p>
 			</div>
 		</div>
-	</div>
 
-	<div class="form-group">
-		<div class="col-sm-offset-3 col-sm-9">
-
-			<div ng-if="clientErrors.failedToDelete" class="alert alert-danger" role="alert">
-				{{'warnings.deleteUnsuccessful' | translate}}
+		<div ng-class="formGroupClass('omDescription', 'description')">
+			<label for="omDescription" class="col-sm-3 control-label">{{'formField.description' | translate}}</label>
+			<div class="col-sm-9">
+				<om-text-area om-name="omDescription" om-property="description" om-editing="editing" om-model="model" om-max-length="255"></om-text-area>
+				<ng-messages for="sdForm.omDescription.$error" ng-if="sdForm.$submitted || sdForm.omDescription.$touched">
+					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "255"}'}}</p></ng-message>
+				</ng-messages>
+				<p class="text-danger" ng-hide="sdForm.omDescription.$touched" ng-repeat="error in serverErrors.description">{{error}}</p>
 			</div>
+		</div>
 
-			<div ng-hide="editing || confirmationNecessary">
-				<button class="btn btn-primary" ng-click="editScale($event)">{{'button.edit' | translate}}</button>
-
-				<button ng-hide="!deletable" type="button" class="btn btn-danger btn-icon" aria-label="{{'button.delete' | translate}}" ng-click="deleteScale($event, scaleId)">
-					<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-				</button>
+		<div ng-class="formGroupClass('omDataType', 'dataType')">
+			<label for="omDataType" class="col-sm-3 control-label">{{'formField.dataType' | translate}}</label>
+			<div class="col-sm-9">
+				<om-select name="omDataType" om-name="om-data-type" om-property="dataType" om-editing="editing" ng-model="model" om-options="types" om-required="true"></om-select>
+				<ng-messages for="sdForm.omDataType.$error" ng-if="sdForm.$submitted">
+					<ng-message when="required"><p class="text-danger">{{'validation.scale.dataTypeRequired' | translate}}</p></ng-message>
+				</ng-messages>
+				<p class="text-danger" ng-hide="sdForm.omDataType.$touched" ng-repeat="error in serverErrors.dataType">{{error}}</p>
 			</div>
-			<div ng-show="editing && !confirmationNecessary">
-				<div ng-hide="confirmationNecessary">
-					<button class="btn btn-primary" type="submit">
-						{{'button.save' | translate}}
-						<span ng-show="showThrobber" class="throbber-btn-wrapper">
-							<span class="throbber throbber-btn throbber-white"></span>
-						</span>
+		</div>
+
+		<div ng-class="formGroupClass('omRange', 'validValues')" ng-show="showRangeWidget">
+			<label for="omRange" class="col-sm-3 control-label">{{'scalesList.details.validRange' | translate}}</label>
+			<div class="col-sm-9">
+				<om-range name="omRange" om-property="validValues" om-editing="editing" ng-model="model" om-numeric="showRangeWidget"></om-range>
+
+				<ng-messages for="sdForm.omRange.$error" ng-messages-include="range-validation-messages" multiple ng-if="sdForm.$submitted || sdForm.omRange.$touched"></ng-messages>
+			</div>
+			<p class="text-danger" ng-hide="sdForm.omRange.$touched" ng-repeat="error in serverErrors.validValues">{{error}}</p>
+		</div>
+
+		<div ng-show="showCategoriesWidget">
+			<div ng-class="formGroupClass('omCategories', 'validValues')">
+				<label for="omCategories" class="col-sm-3 control-label">{{'scalesList.details.categories' | translate}}</label>
+				<div class="col-sm-9">
+					<om-categories name="omCategories" om-property="validValues" om-editing="editing" ng-model="model" om-categorical="showCategoriesWidget"></om-categories>
+					<ng-messages for="sdForm.omCategories.$error" ng-if="sdForm.$submitted">
+						<ng-message when="emptyValue"><p class="text-danger">{{'validation.scale.emptyValue' | translate}}</p></ng-message>
+						<ng-message when="nonUniqueName"><p class="text-danger">{{'validation.scale.nonUniqueName' | translate}}</p></ng-message>
+						<ng-message when="nonUniqueValue"><p class="text-danger">{{'validation.scale.nonUniqueValue' | translate}}</p></ng-message>
+					</ng-messages>
+					<p class="text-danger" ng-hide="sdForm.omCategories.$touched" ng-repeat="error in serverErrors.validValues">{{error}}</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="col-sm-offset-3 col-sm-9">
+
+				<div ng-if="clientErrors.failedToDelete" class="alert alert-danger" role="alert">
+					{{'warnings.deleteUnsuccessful' | translate}}
+				</div>
+
+				<div ng-hide="editing || confirmationNecessary">
+					<button class="btn btn-primary" ng-click="editScale($event)">{{'button.edit' | translate}}</button>
+
+					<button ng-hide="!deletable" type="button" class="btn btn-danger btn-icon" aria-label="{{'button.delete' | translate}}" ng-click="deleteScale($event, scaleId)">
+						<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
 					</button>
-					<a href="#" ng-click="cancel($event)">{{'button.cancel' | translate}}</a>
 				</div>
-			</div>
+				<div ng-show="editing && !confirmationNecessary">
+					<div ng-hide="confirmationNecessary">
+						<button class="btn btn-primary" type="submit">
+							{{'button.save' | translate}}
+							<span ng-show="showThrobber" class="throbber-btn-wrapper">
+								<span class="throbber throbber-btn throbber-white"></span>
+							</span>
+						</button>
+						<a href="#" ng-click="cancel($event)">{{'button.cancel' | translate}}</a>
+					</div>
+				</div>
 
-			<div ng-show="confirmationNecessary">
-				<div class="alert alert-danger">
-					<span ng-show="confirmCancel">{{'warnings.discardConfirmation' | translate}}</span>
-					<span ng-show="confirmDelete">{{'warnings.scales.deleteConfirmation' | translate}}</span>
+				<div ng-show="confirmationNecessary">
+					<div class="alert alert-danger">
+						<span ng-show="confirmCancel">{{'warnings.discardConfirmation' | translate}}</span>
+						<span ng-show="confirmDelete">{{'warnings.scales.deleteConfirmation' | translate}}</span>
+					</div>
+					<button class="btn btn-danger" ng-click="confirm($event)">
+						<span ng-show="confirmCancel">{{'button.discard' | translate}}</span>
+						<span ng-show="confirmDelete">{{'button.delete' | translate}}</span>
+					</button>
+					<a href="#" ng-click="deny($event)">
+						<span ng-show="confirmCancel">{{'button.continueEditing' | translate}}</span>
+						<span ng-show="confirmDelete">{{'button.cancel' | translate}}</span>
+					</a>
 				</div>
-				<button class="btn btn-danger" ng-click="confirm($event)">
-					<span ng-show="confirmCancel">{{'button.discard' | translate}}</span>
-					<span ng-show="confirmDelete">{{'button.delete' | translate}}</span>
-				</button>
-				<a href="#" ng-click="deny($event)">
-					<span ng-show="confirmCancel">{{'button.continueEditing' | translate}}</span>
-					<span ng-show="confirmDelete">{{'button.cancel' | translate}}</span>
-				</a>
 			</div>
 		</div>
 	</div>
