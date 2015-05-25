@@ -45,13 +45,14 @@
 			restFilteredScalesSuccessHandler: function(response) {
 				var scales = response.data,
 					filteredScales = [];
-					if (scales) {
-						scales.forEach(function(scale) {
-							if (scale && scale.dataType) {
-								filteredScales.push(scale);
-							}
-						});
-					}
+
+				if (scales) {
+					scales.forEach(function(scale) {
+						if (scale && scale.dataType) {
+							filteredScales.push(scale);
+						}
+					});
+				}
 				return filteredScales;
 			},
 
