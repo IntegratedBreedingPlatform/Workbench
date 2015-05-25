@@ -14,7 +14,7 @@
 			restrict: 'E',
 			scope: {
 				colHeaders: '=omColHeaders',
-				rawData: '=omData',
+				data: '=omData',
 				parentClickHandler: '&omOnClick',
 				selectedItem: '=omSelectedItem',
 				itemFilter: '=omItemFilter'
@@ -49,14 +49,6 @@
 					trAngular = function() {
 						return angular.element(trNative());
 					};
-
-				// Copy passed in data the first time that it is valued so that we can ammend it with other information without
-				// altering the passed in data due to the two way data binding.
-				scope.$watch('rawData', function(rawData) {
-					if (!scope.data && rawData && rawData.length > 0) {
-						scope.data = angular.copy(rawData);
-					}
-				});
 
 				// Apply the filter to the list whenever it changes
 				scope.$watch('itemFilter', function(newFilterVal, prevFilterVal) {
