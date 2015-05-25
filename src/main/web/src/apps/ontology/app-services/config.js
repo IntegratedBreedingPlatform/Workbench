@@ -6,7 +6,8 @@
 
 	app.service('configService', function() {
 
-		var cropName = '';
+		var cropName = '',
+			programId = '';
 
 		return {
 			setCropName: function(crop) {
@@ -15,18 +16,28 @@
 
 			getCropName: function() {
 				return cropName;
+			},
+
+			setProgramId: function(id) {
+				programId = id;
+			},
+
+			getProgramId: function() {
+				return programId;
 			}
 		};
 	});
 
-	app.directive('omCropName', function(configService) {
+	app.directive('omConfig', function(configService) {
 		return {
 			restrict: 'A',
 			scope: {
-				cropName: '@omCrop'
+				cropName: '@omCrop',
+				programId: '@omProgramId'
 			},
 			link: function(scope, element, attrs) {
 				configService.setCropName(attrs.omCrop);
+				configService.setProgramId(attrs.omProgramId);
 			}
 		};
 	});

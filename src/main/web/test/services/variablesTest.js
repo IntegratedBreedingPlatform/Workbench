@@ -82,7 +82,7 @@ describe('Variables Service', function() {
 
 		it('should GET /variables', function() {
 
-			httpBackend.expectGET(/\/variables\?programId=1$/).respond();
+			httpBackend.expectGET(/\/variables\?programId=$/).respond();
 
 			variablesService.getVariables();
 
@@ -93,7 +93,7 @@ describe('Variables Service', function() {
 
 			var response = ['variables go here'];
 
-			httpBackend.expectGET(/\/variables\?programId=1$/).respond(response);
+			httpBackend.expectGET(/\/variables\?programId=$/).respond(response);
 
 			variablesService.getVariables();
 			httpBackend.flush();
@@ -107,7 +107,7 @@ describe('Variables Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectGET(/\/variables\?programId=1$/).respond(500, error);
+			httpBackend.expectGET(/\/variables\?programId=$/).respond(500, error);
 
 			variablesService.getVariables();
 			httpBackend.flush();
@@ -122,7 +122,7 @@ describe('Variables Service', function() {
 
 		it('should GET /variables, setting favourite=true', function() {
 
-			httpBackend.expectGET(/\/variables\?favourite=true\?programId=1$/).respond();
+			httpBackend.expectGET(/\/variables\?favourite=true\&programId=$/).respond();
 
 			variablesService.getFavouriteVariables();
 
@@ -133,7 +133,7 @@ describe('Variables Service', function() {
 
 			var response = ['variables go here'];
 
-			httpBackend.expectGET(/\/variables\?favourite=true\?programId=1$/).respond(response);
+			httpBackend.expectGET(/\/variables\?favourite=true\&programId=$/).respond(response);
 
 			variablesService.getFavouriteVariables();
 			httpBackend.flush();
@@ -147,7 +147,7 @@ describe('Variables Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectGET(/\/variables\?favourite=true\?programId=1$/).respond(500, error);
+			httpBackend.expectGET(/\/variables\?favourite=true\&programId=$/).respond(500, error);
 
 			variablesService.getFavouriteVariables();
 			httpBackend.flush();
@@ -213,11 +213,9 @@ describe('Variables Service', function() {
 	describe('getVariable', function() {
 
 		it('should GET /variable, specifying the given id', function() {
-
 			var id = 123;
 
-			// FIXME check that the variable with the specified ID is actually requested once we've hooked up the real service
-			httpBackend.expectGET(/\/variables\/:id\?programId=1$/).respond();
+			httpBackend.expectGET(/\/variables\/123\?programId=$/).respond();
 
 			variablesService.getVariable(id);
 
@@ -229,7 +227,7 @@ describe('Variables Service', function() {
 			var id = 123,
 				response = ['variables go here'];
 
-			httpBackend.expectGET(/\/variables\/:id\?programId=1$/).respond(response);
+			httpBackend.expectGET(/\/variables\/123\?programId=$/).respond(response);
 
 			variablesService.getVariable(id);
 			httpBackend.flush();
@@ -244,7 +242,7 @@ describe('Variables Service', function() {
 			var id = 123,
 				error = 'Error!';
 
-			httpBackend.expectGET(/\/variables\/:id\?programId=1$/).respond(500, error);
+			httpBackend.expectGET(/\/variables\/123\?programId=$/).respond(500, error);
 
 			variablesService.getVariable(id);
 			httpBackend.flush();
@@ -324,11 +322,9 @@ describe('Variables Service', function() {
 	describe('deleteVariable', function() {
 
 		it('should DELETE /variables/:id', function() {
-
-			// FIXME not in use yet because services haven't been hooked up
 			var id = 1;
 
-			httpBackend.expectDELETE(/\/variables\/:id$/).respond(204);
+			httpBackend.expectDELETE(/\/variables\/1\?programId=$/).respond(204);
 
 			variablesService.deleteVariable(id);
 
@@ -342,7 +338,7 @@ describe('Variables Service', function() {
 			expectedResponse = 204,
 			actualResponse;
 
-			httpBackend.expectDELETE(/\/variables\/:id$/).respond(expectedResponse);
+			httpBackend.expectDELETE(/\/variables\/1\?programId=$/).respond(expectedResponse);
 
 			variablesService.deleteVariable(id).then(function(res) {
 				actualResponse = res;
@@ -358,7 +354,7 @@ describe('Variables Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectDELETE(/\/variables\/:id$/).respond(500, error);
+			httpBackend.expectDELETE(/\/variables\/1\?programId=$/).respond(500, error);
 
 			variablesService.deleteVariable(1);
 			httpBackend.flush();

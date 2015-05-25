@@ -20,7 +20,7 @@
 			}]
 			*/
 			getTypes: function() {
-				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/variableTypes');
+				var request = $http.get('/bmsapi/ontology/variableTypes');
 				return request.then(successHandler, failureHandler);
 			}
 		};

@@ -33,7 +33,8 @@ describe('Config Module', function() {
 			scope = $rootScope.$new();
 
 			inject(function($compile) {
-				directiveElement = $compile('<div om-crop-name om-crop="maize"></div>')(scope);
+				directiveElement = $compile('<div om-config om-crop="maize" om-program-id="284d56e4-189f-4da4-b152-8a6ac1476ae0">' +
+					'</div>')(scope);
 
 				scope.$digest();
 
@@ -43,6 +44,10 @@ describe('Config Module', function() {
 
 		it('should set the crop name from the omCrop attribute', function() {
 			expect(configService.getCropName()).toEqual('maize');
+		});
+
+		it('should set the program id from the omProgramId attribute', function() {
+			expect(configService.getProgramId()).toEqual('284d56e4-189f-4da4-b152-8a6ac1476ae0');
 		});
 	});
 });

@@ -2,9 +2,9 @@
 'use strict';
 
 (function() {
-	var app = angular.module('variables', ['utilities']);
+	var app = angular.module('variables', ['utilities', 'config']);
 
-	app.service('variablesService', ['$http', 'serviceUtilities', function($http, serviceUtilities) {
+	app.service('variablesService', ['$http', 'serviceUtilities', 'configService', function($http, serviceUtilities, configService) {
 
 		var successHandler = serviceUtilities.restSuccessHandler,
 			failureHandler = serviceUtilities.restFailureHandler;
@@ -81,8 +81,8 @@
 			expectedRange is optional, and has optional min and max properties.
 			*/
 			getVariables: function() {
-				var request = $http.get('http://private-905fc7-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables' +
-					'?programId=1');
+				var request = $http.get('/bmsapi/ontology/' + configService.getCropName() + '/variables?programId=' +
+					configService.getProgramId());
 				return request.then(successHandler, failureHandler);
 			},
 
@@ -90,8 +90,8 @@
 			Returns an array of variables in the same format as getVariables above.
 			*/
 			getFavouriteVariables: function() {
-				var request = $http.get('http://private-905fc7-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables' +
-					'?favourite=true?programId=1');
+				var request = $http.get('/bmsapi/ontology/' + configService.getCropName() + '/variables?favourite=true&programId=' +
+					configService.getProgramId());
 				return request.then(successHandler, failureHandler);
 			},
 
@@ -260,10 +260,11 @@
 			/*
 			Deletes the variable with the specified ID.
 			*/
-			deleteVariable: function(/*id*/) {
+			deleteVariable: function(id) {
 				var request;
 
-				request = $http.delete('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables/:id');
+				request = $http.delete('/bmsapi/ontology/' + configService.getCropName() + '/variables/' + id + '?programId=' +
+					configService.getProgramId());
 				return request.then(function(response) {
 					return response.status;
 				}, failureHandler);
@@ -325,9 +326,9 @@
 
 			expectedRange is optional, and has optional min and max properties.
 			*/
-			getVariable: function(/*id*/) {
-				var request = $http.get('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables/:id' +
-					'?programId=1');
+			getVariable: function(id) {
+				var request = $http.get('/bmsapi/ontology/' + configService.getCropName() + '/variables/' + id + '?programId=' +
+					configService.getProgramId());
 				return request.then(successHandler, failureHandler);
 			}
 		};
