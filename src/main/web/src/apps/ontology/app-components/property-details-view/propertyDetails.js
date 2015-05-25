@@ -43,6 +43,7 @@
 							$scope.deny();
 						}
 						$scope.model = angular.copy(property);
+						$scope.propertyName = $scope.model ? $scope.model.name : '';
 						$scope.deletable = property && property.metadata && property.metadata.deletable || false;
 					});
 
@@ -116,6 +117,7 @@
 
 								$scope.editing = false;
 								resetSubmissionState();
+								$scope.propertyName = model.name;
 							}, function(response) {
 								resetSubmissionState();
 								$scope.pdForm.$setUntouched();

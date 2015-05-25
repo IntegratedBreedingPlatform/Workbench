@@ -29,6 +29,7 @@
 							$scope.deny();
 						}
 						$scope.model = angular.copy(method);
+						$scope.methodName = $scope.model ? $scope.model.name : '';
 						$scope.deletable = method && method.metadata && method.metadata.deletable || false;
 					});
 
@@ -101,6 +102,7 @@
 
 								$scope.editing = false;
 								resetSubmissionState();
+								$scope.methodName = model.name;
 							}, function(response) {
 								resetSubmissionState();
 								$scope.mdForm.$setUntouched();

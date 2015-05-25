@@ -41,6 +41,7 @@
 							$scope.deny();
 						}
 						$scope.model = angular.copy(variable);
+						$scope.variableName = $scope.model ? $scope.model.name : '';
 						$scope.deletable = variable && variable.metadata && variable.metadata.deletable || false;
 					});
 
@@ -139,6 +140,7 @@
 								$scope.editing = false;
 								$scope.submitted = false;
 								$scope.showThrobber = false;
+								$scope.variableName = model.name;
 							}, serviceUtilities.genericAndRatherUselessErrorHandler);
 						}
 					};

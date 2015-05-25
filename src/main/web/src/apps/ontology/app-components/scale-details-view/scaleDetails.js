@@ -33,6 +33,7 @@
 							$scope.deny();
 						}
 						$scope.model = angular.copy(scale);
+						$scope.scaleName = $scope.model ? $scope.model.name : '';
 						$scope.deletable = scale && scale.metadata && scale.metadata.deletable || false;
 					});
 
@@ -119,6 +120,7 @@
 
 								$scope.editing = false;
 								resetSubmissionState();
+								$scope.scaleName = model.name;
 							}, function(response) {
 								resetSubmissionState();
 								$scope.sdForm.$setUntouched();
