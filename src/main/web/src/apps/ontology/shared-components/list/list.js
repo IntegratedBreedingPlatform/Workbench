@@ -53,7 +53,7 @@
 				// Copy passed in data the first time that it is valued so that we can ammend it with other information without
 				// altering the passed in data due to the two way data binding.
 				scope.$watch('rawData', function(rawData) {
-					if (!scope.data && rawData.length > 0) {
+					if (!scope.data && rawData && rawData.length > 0) {
 						scope.data = angular.copy(rawData);
 					}
 				});
@@ -132,7 +132,9 @@
 
 				element.on('keydown', function(e) {
 					var key = e.which,
-						numberOfItems = tbody.find('tr').length,
+						// TODO: change the keyboard nav so that it works correctly when a filter is applied.
+						// For now, minus one off the length for now to account for the "no items found" row.
+						numberOfItems = tbody.find('tr').length - 1,
 						SCROLL_DURATION = 100,
 						CURRENT_TIME = 0;
 

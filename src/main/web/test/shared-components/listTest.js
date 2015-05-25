@@ -70,11 +70,9 @@ describe('List module', function() {
 
 			var firstHeader = 'name',
 				secondHeader = 'description',
-
 				item = {
 					id: null
 				},
-
 				count = 0;
 
 			scope.testHeaders = [firstHeader, secondHeader];
@@ -95,7 +93,9 @@ describe('List module', function() {
 		});
 
 		it('should focus on the table after panel is closed', function() {
-			var item = { id: null };
+			var item = {
+				id: null
+			};
 
 			scope.selectedItem = item;
 			compileDirective('om-on-click="clickFn()" om-selected-item="selectedItem"');
@@ -128,16 +128,17 @@ describe('List module', function() {
 
 		it('should stop propagation of the event to <tr>', function() {
 			var item = {
-				id: null
-			},
+					id: null
+				},
 				isolateScope;
+
 			scope.testHeaders = ['name', 'description'];
 			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
 
 			compileDirective();
 			isolateScope = directiveElement.isolateScope();
 			isolateScope.selectedItem = item;
-			isolateScope.data = [LIST_ITEM_CAT, LIST_ITEM_DOG];
+
 			spyOn(fakeEvent, 'stopPropagation');
 
 			isolateScope.toggleFavourites(1, 1, fakeEvent, LIST_ITEM_CAT['action-favourite']);
@@ -146,16 +147,17 @@ describe('List module', function() {
 
 		it('should update active item', function() {
 			var item = {
-				id: null
-			},
+					id: null
+				},
 				isolateScope;
+
 			scope.testHeaders = ['name', 'description'];
 			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
 
 			compileDirective();
 			isolateScope = directiveElement.isolateScope();
 			isolateScope.selectedItem = item;
-			isolateScope.data = [LIST_ITEM_CAT, LIST_ITEM_DOG];
+
 			spyOn(directiveElement.isolateScope(), 'updateActiveItem');
 
 			isolateScope.toggleFavourites(1, 1, fakeEvent, LIST_ITEM_CAT['action-favourite']);
@@ -165,8 +167,8 @@ describe('List module', function() {
 
 		it('call icon function', function() {
 			var item = {
-				id: null
-			},
+					id: null
+				},
 				isolateScope;
 			scope.testHeaders = ['name', 'description'];
 			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
@@ -174,7 +176,7 @@ describe('List module', function() {
 			compileDirective();
 			isolateScope = directiveElement.isolateScope();
 			isolateScope.selectedItem = item;
-			isolateScope.data = [LIST_ITEM_CAT, LIST_ITEM_DOG];
+
 			spyOn(LIST_ITEM_CAT['action-favourite'], 'iconFunction');
 
 			directiveElement.isolateScope().toggleFavourites(1, 1, fakeEvent, LIST_ITEM_CAT['action-favourite']);
@@ -216,7 +218,8 @@ describe('List module', function() {
 			keyboardEvent = {
 				which: 0,
 				type: 'keydown'
-			};
+			},
+			mockIsScrolledIntoView = function() { return false; };
 
 		it('should listen to the Enter keydown event and select an item on Enter', function() {
 			var item = {
@@ -225,11 +228,12 @@ describe('List module', function() {
 				isolateScope;
 
 			keyboardEvent.which = ENTER_KEY;
+			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
 
 			compileDirective();
 			isolateScope = directiveElement.isolateScope();
 			isolateScope.selectedItem = item;
-			isolateScope.data = [LIST_ITEM_CAT, LIST_ITEM_DOG];
+
 			spyOn(isolateScope, 'selectItem');
 
 			// we pass an event object which then gets appended to the dummy object in the angular triggerHandlerEvent()
@@ -249,7 +253,7 @@ describe('List module', function() {
 			compileDirective();
 			isolateScope = directiveElement.isolateScope();
 			isolateScope.selectedItem = item;
-			isolateScope.data = [LIST_ITEM_CAT, LIST_ITEM_DOG];
+
 			spyOn(isolateScope, 'updateActiveItem');
 
 			// we pass an event object which then gets appended to the dummy object in the angular triggerHandlerEvent()
@@ -269,8 +273,8 @@ describe('List module', function() {
 			compileDirective();
 			isolateScope = directiveElement.isolateScope();
 			isolateScope.selectedItem = item;
-			isolateScope.data = [LIST_ITEM_CAT, LIST_ITEM_DOG];
-			isolateScope.isScrolledIntoView = function() { return false; };
+			isolateScope.isScrolledIntoView = mockIsScrolledIntoView;
+
 			spyOn(isolateScope, 'scroll');
 
 			// we pass an event object which then gets appended to the dummy object in the angular triggerHandlerEvent()
@@ -278,7 +282,7 @@ describe('List module', function() {
 			expect(isolateScope.scroll).toHaveBeenCalled();
 		});
 
-		it('should listen to the Down keydown event and should no do anything if the end of list items is reached', function() {
+		it('should listen to the Down keydown event and should not do anything if the end of list items is reached', function() {
 			var item = {
 					id: null
 				},
@@ -289,13 +293,14 @@ describe('List module', function() {
 
 			compileDirective();
 			isolateScope = directiveElement.isolateScope();
+
 			isolateScope.selectedItem = item;
-			isolateScope.data = [LIST_ITEM_CAT, LIST_ITEM_DOG];
+			isolateScope.isScrolledIntoView = mockIsScrolledIntoView;
+
 			isolateScope.updateActiveItem(2);
-			isolateScope.isScrolledIntoView = function() { return false; };
+
 			spyOn(isolateScope, 'scroll');
 			spyOn(isolateScope, 'updateActiveItem');
-
 			// we pass an event object which then gets appended to the dummy object in the angular triggerHandlerEvent()
 			directiveElement.triggerHandler(keyboardEvent);
 			expect(isolateScope.updateActiveItem).not.toHaveBeenCalled();
@@ -315,7 +320,7 @@ describe('List module', function() {
 			isolateScope = directiveElement.isolateScope();
 			isolateScope.selectedItem = item;
 			isolateScope.updateActiveItem(1);
-			isolateScope.data = [LIST_ITEM_CAT, LIST_ITEM_DOG];
+
 			spyOn(isolateScope, 'updateActiveItem');
 
 			// we pass an event object which then gets appended to the dummy object in the angular triggerHandlerEvent()
@@ -335,8 +340,8 @@ describe('List module', function() {
 			compileDirective();
 			isolateScope = directiveElement.isolateScope();
 			isolateScope.selectedItem = item;
-			isolateScope.data = [LIST_ITEM_CAT, LIST_ITEM_DOG];
-			isolateScope.isScrolledIntoView = function() { return false; };
+			isolateScope.isScrolledIntoView = mockIsScrolledIntoView;
+
 			spyOn(isolateScope, 'scroll');
 
 			// we pass an event object which then gets appended to the dummy object in the angular triggerHandlerEvent()
