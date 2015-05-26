@@ -3,10 +3,11 @@
 		<om-scale-details></om-scale-details>
 	</om-panel>
 
-	<h2>{{'scalesList.title' | translate}}</h2>
+	<h2 class="om-list-title">{{'scalesList.title' | translate}}</h2>
+	<om-search om-model="searchFilter"></om-search>
 	<div ng-show="scalesCtrl.showThrobberWrapper" class="om-list-throbber-wrapper">
 		<span ng-class="{'throbber-hidden': !scalesCtrl.showThrobber}" class="throbber throbber-lg"></span>
 	</div>
-	<om-list ng-hide="scalesCtrl.scales.length === 0" om-data="scalesCtrl.scales" om-col-headers="scalesCtrl.colHeaders" om-on-click="showScaleDetails()" om-selected-item="selectedItem"></om-list>
+	<om-list ng-hide="scalesCtrl.scales.length === 0" om-data="scalesCtrl.scales" om-col-headers="scalesCtrl.colHeaders" om-on-click="showScaleDetails()" om-selected-item="selectedItem" om-item-filter="searchFilter"></om-list>
 	<p ng-show="scalesCtrl.showNoItemsMessage" class="text-info">{{'list.noItemsFound' | translate:'{items: "scales"}'}}</p>
 </div>
