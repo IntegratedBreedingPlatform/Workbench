@@ -6,10 +6,6 @@
 
 	listModule.directive('omList', ['$rootScope', 'mathUtilities', '$filter', function($rootScope, mathUtilities, $filter) {
 
-		function isItemFilteredOut(item, filter) {
-			return ($filter('filter')([item], filter)).length === 0;
-		}
-
 		return {
 			restrict: 'E',
 			scope: {
@@ -19,6 +15,7 @@
 				selectedItem: '=omSelectedItem',
 				itemFilter: '=omItemFilter'
 			},
+
 			controller: function($scope) {
 				$scope.isAnyItemShown = true;
 				$scope.activeItemIndex = 0;
@@ -34,11 +31,13 @@
 				};
 
 				$scope.isNotActionHeader = function(object) {
-					return object && typeof object === 'string' && object.indexOf('action-') !== 0;
+					return typeof object === 'string' && object.indexOf('action-') !== 0;
 				};
 
 				// Exposed for testing
-				$scope.isItemFilteredOut = isItemFilteredOut;
+				$scope.isItemFilteredOut = function(item, filter) {
+					return ($filter('filter')([item], filter)).length === 0;
+				};
 			},
 
 			link: function(scope, element) {

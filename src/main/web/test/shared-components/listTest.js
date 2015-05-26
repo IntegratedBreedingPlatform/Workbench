@@ -65,6 +65,121 @@ describe('List module', function() {
 		scope.$digest();
 	}
 
+	it('should filter the items if the filter value changes', function() {
+		var isolateScope;
+
+		scope.filterText = '';
+		scope.selectedItem = {};
+
+		compileDirective('om-item-filter="filterText" om-selected-item="selectedItem"');
+		isolateScope = directiveElement.isolateScope();
+
+		spyOn(isolateScope, 'filterItems');
+
+		scope.filterText = 'm';
+		isolateScope.$apply();
+
+		expect(isolateScope.filterItems).toHaveBeenCalledWith('m');
+	});
+
+	describe('scope.isString', function() {
+		it('should return true if the type of the passed in object is a string', function() {
+			var isolateScope;
+
+			compileDirective();
+			isolateScope = directiveElement.isolateScope();
+
+			expect(isolateScope.isString('hey')).toBe(true);
+		});
+
+		it('should return false if the type of the passed in object is not a string', function() {
+			var isolateScope;
+
+			compileDirective();
+			isolateScope = directiveElement.isolateScope();
+
+			expect(isolateScope.isString(3)).toBe(false);
+		});
+	});
+
+	describe('scope.isAction', function() {
+		it('should return a truthy value if the passed in item is an object and has an iconValue property', function() {
+			var isolateScope;
+
+			compileDirective();
+			isolateScope = directiveElement.isolateScope();
+
+			expect(isolateScope.isAction({iconValue: 'star'})).toBeTruthy();
+		});
+
+		it('should return a falsy value if the passed in item is not an object', function() {
+			var isolateScope;
+
+			compileDirective();
+			isolateScope = directiveElement.isolateScope();
+
+			expect(isolateScope.isAction(3)).toBeFalsy();
+		});
+
+		it('should return a falsy value if the passed in item is an object and does not have an iconValue property', function() {
+			var isolateScope;
+
+			compileDirective();
+			isolateScope = directiveElement.isolateScope();
+
+			expect(isolateScope.isAction({})).toBeFalsy();
+		});
+	});
+
+	describe('scope.isNotActionHeader', function() {
+		it('should return a truthy value if the passed in item is a string that does not contain "action-"', function() {
+			var isolateScope;
+
+			compileDirective();
+			isolateScope = directiveElement.isolateScope();
+
+			expect(isolateScope.isNotActionHeader('name')).toBeTruthy();
+		});
+
+		it('should return a falsy value if the passed in item is not a string', function() {
+			var isolateScope;
+
+			compileDirective();
+			isolateScope = directiveElement.isolateScope();
+
+			expect(isolateScope.isAction(3)).toBeFalsy();
+		});
+
+		it('should return a falsy value if the passed in item is a string and contains "action-"', function() {
+			var isolateScope;
+
+			compileDirective();
+			isolateScope = directiveElement.isolateScope();
+
+			expect(isolateScope.isAction('action-favourite')).toBeFalsy();
+		});
+	});
+
+	describe('scope.isItemFilteredOut', function() {
+		it('should return true if the filter text is not included in the item text', function() {
+			var isolateScope;
+
+			compileDirective();
+			isolateScope = directiveElement.isolateScope();
+
+			expect(isolateScope.isItemFilteredOut('measurement', 'z')).toBe(true);
+		});
+
+		it('should return false if the filter text is included in the item text', function() {
+			var isolateScope;
+
+			compileDirective();
+			isolateScope = directiveElement.isolateScope();
+
+			expect(isolateScope.isItemFilteredOut('measurement', 'm')).toBe(false);
+		});
+	});
+
 	describe('scope.filterItems', function() {
 		it('should set whether each item is hidden or not on the item', function() {
 			var isolateScope;
