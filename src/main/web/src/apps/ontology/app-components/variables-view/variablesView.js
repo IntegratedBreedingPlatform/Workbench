@@ -161,13 +161,18 @@
 
 			$scope.toggleFavourite = function() {
 				var transformedVariable = find(ctrl.variables, $scope.selectedItem.id);
+
 				transformedVariable['action-favourite'].iconValue = (transformedVariable['action-favourite'].iconValue === 'star') ?
 					'star-empty' : 'star';
 				$scope.updateVariable(transformedVariable);
+
 				variablesService.getVariable($scope.selectedItem.id).then(function(variable) {
 					$scope.selectedVariable = variable;
 				});
 				variablesService.updateVariable($scope.selectedItem.id, $scope.selectedVariable);
+
+				// Show or hide the no favourites message depending on whether there are any favourite variables currently
+				ctrl.showNoFavouritesMessage = ctrl.favouriteVariables.length > 0 ? false : true;
 			};
 
 			$scope.updateVariable = function(updatedVariable) {
