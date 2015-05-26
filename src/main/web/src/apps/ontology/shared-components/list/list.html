@@ -1,4 +1,4 @@
-<table class="table table-striped table-clickable" tabIndex="1">
+<table class="table table-striped table-clickable" tabIndex="1" ng-focus="focused = true" ng-blur="focused = false" ng-keydown="checkKeyDown($event)">
 	<thead>
 		<tr>
 			<th ng-repeat="header in colHeaders">
@@ -7,7 +7,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		<tr ng-repeat="item in data track by item.id" ng-click="selectItem($index, item.id)" ng-hide="item.isHidden">
+		<tr ng-repeat="item in data track by item.id" ng-click="selectItem($index, item.id)" ng-hide="item.isHidden" ng-class="{'active': focused && activeItemIndex === $index}">
 			<td ng-repeat="header in colHeaders" ng-class="{'action-icon' : isAction(item[header])}">
 				<span class="om-li-data-cell-test" ng-if="isString(item[header])">{{item[header]}}</span>
 				<span class="om-li-data-cell-test glyphicon favourite-icon" ng-if="isAction(item[header])" ng-class="'glyphicon-' + item[header].iconValue" ng-click="toggleFavourites($index, item.id, $event, item[header])"></span>

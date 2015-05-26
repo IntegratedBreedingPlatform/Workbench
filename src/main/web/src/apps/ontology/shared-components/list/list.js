@@ -21,6 +21,9 @@
 			},
 			controller: function($scope) {
 				$scope.isAnyItemShown = true;
+				$scope.activeItemIndex = 0;
+				$scope.visibleItemIndex = 0;
+				$scope.indexOfItems = {};
 
 				$scope.isString = function(object) {
 					return typeof object === 'string';
@@ -39,15 +42,10 @@
 			},
 
 			link: function(scope, element) {
-				var activeItemIndex = 0,
-					tbody = element.find('tbody'),
-					ACTIVE_STYLE = 'active',
+				var tbody = element.find('tbody'),
 
 					trNative = function() {
-						return tbody.find('tr')[activeItemIndex];
-					},
-					trAngular = function() {
-						return angular.element(trNative());
+						return tbody.find('tr')[scope.activeItemIndex];
 					};
 
 				// Apply the filter to the list whenever it changes
@@ -57,23 +55,35 @@
 					}
 				});
 
+				scope.$watch('data', function(data) {
+					var i;
+
+					if (!scope.numberOfItemsShown && data && data.length > 0) {
+						scope.numberOfItemsShown = data.length;
+						scope.shownItems = data;
+
+						for (i = 0; i < data.length; i++) {
+							scope.indexOfItems[data[i].id] = i;
+						}
+					}
+				});
+
 				scope.filterItems = function(filter) {
-					var itemsShownStatus = [];
+					var shownItems = [];
 
 					scope.data.forEach(function(item) {
 						// Add value to item about whether it is filtered out or not so that we can either show or hide it
-						item.isHidden = isItemFilteredOut(item, filter);
-						// Add to list of filtered item values so that we can flatten the array to find out whether at least one is shown
-						itemsShownStatus.push(!item.isHidden);
+						item.isHidden = scope.isItemFilteredOut(item, filter);
+						if (!item.isHidden) {
+							shownItems.push(item);
+						}
 					});
 
-					// Reduce array of filtered items down to a single boolean for whether any item is shown
-					scope.isAnyItemShown = itemsShownStatus.reduce(function(prevVal, item) {
-						if (prevVal) {
-							return prevVal;
-						}
-						return item;
-					}, false);
+					scope.shownItems = shownItems;
+					scope.numberOfItemsShown = shownItems.length;
+					scope.isAnyItemShown = !!shownItems.length;
+					// Set the active item index to be the first visible item in the list
+					scope.activeItemIndex = scope.getActiveItemIndex(0);
 				};
 
 				scope.scroll = function(scrollElement, change, duration, start, currentTime) {
@@ -86,17 +96,14 @@
 					}
 				};
 
-				scope.updateActiveItem = function(index) {
-					trAngular().removeClass(ACTIVE_STYLE);
-					activeItemIndex = index;
-					trAngular().addClass(ACTIVE_STYLE);
-				};
-
 				scope.selectItem = function(index, id) {
-					var removePanelClose;
+					var removePanelClose,
+						item = scope.data[index];
 
-					scope.updateActiveItem(index);
+					scope.activeItemIndex = index;
+					scope.visibleItemIndex = scope.shownItems.indexOf(item);
 					scope.selectedItem.id = id;
+
 					scope.parentClickHandler();
 					removePanelClose = $rootScope.$on('panelClose', function() {
 						//execute ONCE and destroy
@@ -107,7 +114,7 @@
 
 				scope.toggleFavourites = function(index, id, event, object) {
 					event.stopPropagation();
-					scope.updateActiveItem(index);
+					scope.activeItemIndex = index;
 					scope.selectedItem.id = id;
 					object.iconFunction();
 				};
@@ -122,58 +129,47 @@
 					return false;
 				};
 
-				element.on('keydown', function(e) {
+				scope.getActiveItemIndex = function(visibleItemIndex) {
+					var shownItem = scope.shownItems[visibleItemIndex];
+
+					return shownItem ? scope.indexOfItems[shownItem.id] : null;
+				};
+
+				scope.checkKeyDown = function(e) {
 					var key = e.which,
-						// TODO: change the keyboard nav so that it works correctly when a filter is applied.
-						// For now, minus one off the length for now to account for the "no items found" row.
-						numberOfItems = tbody.find('tr').length - 1,
 						SCROLL_DURATION = 100,
 						CURRENT_TIME = 0;
 
 					e.preventDefault();
 
-					// Down
 					if (key === 40) {
-						if (activeItemIndex < numberOfItems) {
-							scope.updateActiveItem(activeItemIndex + 1);
+						// Down
+						if (scope.visibleItemIndex < scope.numberOfItemsShown - 1) {
+							scope.visibleItemIndex += 1;
 
-							if (trNative() && !scope.isScrolledIntoView(trNative())) {
-								scope.scroll(document.body, trNative().offsetHeight * 2, SCROLL_DURATION, document.body.scrollTop,
-									CURRENT_TIME);
-							}
+							scope.activeItemIndex = scope.getActiveItemIndex(scope.visibleItemIndex);
 						}
-					}
+						if (trNative() && !scope.isScrolledIntoView(trNative())) {
+							scope.scroll(document.body, trNative().offsetHeight * 2, SCROLL_DURATION, document.body.scrollTop,
+								CURRENT_TIME);
+						}
+					} else if (key === 38) {
+						// Up
+						if (scope.visibleItemIndex > 0) {
+							scope.visibleItemIndex -= 1;
 
-					// Up
-					if (key === 38) {
-						if (activeItemIndex > 0) {
-							scope.updateActiveItem(activeItemIndex - 1);
+							scope.activeItemIndex = scope.getActiveItemIndex(scope.visibleItemIndex);
 						}
 						if (trNative() && !scope.isScrolledIntoView(trNative())) {
 							scope.scroll(document.body, trNative().offsetHeight * -1.5, SCROLL_DURATION, document.body.scrollTop,
 								CURRENT_TIME);
 						}
+					} else if (key === 13) {
+						// Enter
+						scope.selectItem(scope.activeItemIndex, scope.data[scope.activeItemIndex].id);
 					}
+				};
 
-					// Enter
-					if (key === 13) {
-						scope.selectItem(activeItemIndex, scope.data[activeItemIndex].id);
-					}
-				});
-
-				element.find('table').on('focus', function(e) {
-					e.preventDefault();
-					// Mark first item as active
-					trAngular().addClass(ACTIVE_STYLE);
-				});
-
-				element.find('table').on('blur', function(e) {
-					e.preventDefault();
-					// Mark first item as active
-					trAngular().removeClass(ACTIVE_STYLE);
-				});
-
-				element.find('table')[0].focus();
 			},
 			templateUrl: 'static/views/ontology/list.html'
 		};

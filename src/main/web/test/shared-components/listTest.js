@@ -26,6 +26,7 @@ describe('List module', function() {
 		},
 
 		fakeEvent = {
+			preventDefault: function() {},
 			stopPropagation: function() {}
 		},
 
@@ -64,6 +65,50 @@ describe('List module', function() {
 		scope.$digest();
 	}
 
+	describe('scope.filterItems', function() {
+		it('should set whether each item is hidden or not on the item', function() {
+			var isolateScope;
+
+			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
+
+			compileDirective();
+			isolateScope = directiveElement.isolateScope();
+
+			isolateScope.filterItems('dog');
+
+			expect(isolateScope.data[0].isHidden).toBe(true);
+			expect(isolateScope.data[1].isHidden).toBe(false);
+		});
+
+		it('should build up a list of shown items', function() {
+			var isolateScope;
+
+			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
+
+			compileDirective();
+			isolateScope = directiveElement.isolateScope();
+
+			isolateScope.filterItems('dog');
+
+			expect(isolateScope.shownItems).toContain(LIST_ITEM_DOG);
+			expect(isolateScope.shownItems).not.toContain(LIST_ITEM_CAT);
+		});
+
+		it('should set the number of items shown', function() {
+			var isolateScope;
+
+			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
+
+			compileDirective();
+			isolateScope = directiveElement.isolateScope();
+
+			isolateScope.filterItems('dog');
+
+			expect(isolateScope.numberOfItemsShown).toBe(1);
+			expect(isolateScope.isAnyItemShown).toBe(true);
+		});
+	});
+
 	describe('scope.selectItem', function() {
 
 		it('should call the parent click handler and set the selected item id', function() {
@@ -93,38 +138,23 @@ describe('List module', function() {
 		});
 
 		it('should focus on the table after panel is closed', function() {
-			var item = {
+			scope.testData = [LIST_ITEM_CAT];
+			scope.selectedItem = {
 				id: null
 			};
-
-			scope.selectedItem = item;
 			compileDirective('om-on-click="clickFn()" om-selected-item="selectedItem"');
 
-			directiveElement.isolateScope().selectItem(1, LIST_ITEM_CAT.id);
 			var tableHtml = directiveElement.find('table')[0];
 			spyOn(tableHtml, 'focus');
+
+			directiveElement.isolateScope().selectItem(1, LIST_ITEM_CAT.id);
 
 			scope.$broadcast('panelClose');
 			expect(tableHtml.focus).toHaveBeenCalled();
 		});
-
-		it('should show active item in the list on table focus', function() {
-			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
-			compileDirective();
-			directiveElement.find('table').triggerHandler('focus');
-			expect(directiveElement.find('tr.active').length).toBe(1);
-		});
-
-		it('should remove active item selection from the list on table blur', function() {
-			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
-			compileDirective();
-			directiveElement.find('table').triggerHandler('focus');
-			directiveElement.find('table').triggerHandler('blur');
-			expect(directiveElement.find('tr.active').length).toBe(0);
-		});
 	});
 
-	describe('scope.toggleFoavourites', function() {
+	describe('scope.toggleFavourites', function() {
 
 		it('should stop propagation of the event to <tr>', function() {
 			var item = {
@@ -145,7 +175,7 @@ describe('List module', function() {
 			expect(fakeEvent.stopPropagation).toHaveBeenCalled();
 		});
 
-		it('should update active item', function() {
+		it('should set the active item to the passed in index', function() {
 			var item = {
 					id: null
 				},
@@ -155,14 +185,12 @@ describe('List module', function() {
 			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
 
 			compileDirective();
+
 			isolateScope = directiveElement.isolateScope();
 			isolateScope.selectedItem = item;
 
-			spyOn(directiveElement.isolateScope(), 'updateActiveItem');
-
 			isolateScope.toggleFavourites(1, 1, fakeEvent, LIST_ITEM_CAT['action-favourite']);
-			expect(isolateScope.updateActiveItem).toHaveBeenCalled();
-			expect(isolateScope.selectedItem.id).toBe(1);
+			expect(isolateScope.activeItemIndex).toBe(1);
 		});
 
 		it('call icon function', function() {
@@ -210,143 +238,219 @@ describe('List module', function() {
 		});
 	});
 
-	describe('keyDown', function() {
+	describe('scope.getActiveItemIndex', function() {
+		it('should return the actual index in the table of the visible item', function() {
+			var isolateScope;
+
+			compileDirective();
+			isolateScope = directiveElement.isolateScope();
+			isolateScope.shownItems = [LIST_ITEM_DOG];
+			isolateScope.indexOfItems = {
+				cat: 0,
+				dog: 1
+			};
+
+			expect(isolateScope.getActiveItemIndex(0)).toBe(1);
+		});
+
+		it('should return null if the item is not in the list', function() {
+			var isolateScope;
+
+			compileDirective();
+			isolateScope = directiveElement.isolateScope();
+			isolateScope.shownItems = [LIST_ITEM_DOG];
+			isolateScope.indexOfItems = {
+				cat: 0,
+				dog: 1
+			};
+
+			expect(isolateScope.getActiveItemIndex(3)).toBe(null);
+		});
+	});
+
+	describe('scope.checkKeyDown', function() {
 		var DOWN_KEY = 40,
 			UP_KEY = 38,
 			ENTER_KEY = 13,
+			RANDOM_KEY = 1;
 
-			keyboardEvent = {
-				which: 0,
-				type: 'keydown'
-			},
-			mockIsScrolledIntoView = function() { return false; };
+		it('should update visible item index if the end of list is not reached when down is pressed', function() {
+			var isolateScope;
 
-		it('should listen to the Enter keydown event and select an item on Enter', function() {
-			var item = {
-					id: null
-				},
-				isolateScope;
-
-			keyboardEvent.which = ENTER_KEY;
 			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
 
 			compileDirective();
 			isolateScope = directiveElement.isolateScope();
-			isolateScope.selectedItem = item;
+
+			spyOn(isolateScope, 'getActiveItemIndex');
+
+			isolateScope.visibleItemIndex = 0;
+			fakeEvent.which = DOWN_KEY;
+			isolateScope.checkKeyDown(fakeEvent);
+
+			expect(isolateScope.visibleItemIndex).toBe(1);
+		});
+
+		it('should update active item if the end of list is not reached when down is pressed', function() {
+			var isolateScope;
+
+			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
+
+			compileDirective();
+			isolateScope = directiveElement.isolateScope();
+
+			spyOn(isolateScope, 'getActiveItemIndex').and.returnValue(1);
+
+			isolateScope.visibleItemIndex = 0;
+			fakeEvent.which = DOWN_KEY;
+			isolateScope.checkKeyDown(fakeEvent);
+
+			expect(isolateScope.activeItemIndex).toBe(1);
+		});
+
+		it('should scroll the list to the active item when the down key is pressed', function() {
+			var isolateScope;
+
+			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
+
+			compileDirective();
+			isolateScope = directiveElement.isolateScope();
+
+			spyOn(isolateScope, 'isScrolledIntoView').and.returnValue(false);
+			spyOn(isolateScope, 'scroll');
+
+			fakeEvent.which = DOWN_KEY;
+			isolateScope.checkKeyDown(fakeEvent);
+
+			expect(isolateScope.scroll).toHaveBeenCalled();
+		});
+
+		it('should should not change the active item if the end of list items is reached', function() {
+			var isolateScope;
+
+			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
+
+			compileDirective();
+			isolateScope = directiveElement.isolateScope();
+
+			spyOn(isolateScope, 'getActiveItemIndex');
+
+			isolateScope.visibleItemIndex = 1;
+			isolateScope.activeItemIndex = -1;
+			fakeEvent.which = DOWN_KEY;
+			isolateScope.checkKeyDown(fakeEvent);
+
+			expect(isolateScope.getActiveItemIndex).not.toHaveBeenCalled();
+			expect(isolateScope.activeItemIndex).toBe(-1);
+			expect(isolateScope.visibleItemIndex).toBe(1);
+		});
+
+		it('should update visible item index if the start of list is not reached when up is pressed', function() {
+			var isolateScope;
+
+			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
+
+			compileDirective();
+			isolateScope = directiveElement.isolateScope();
+
+			spyOn(isolateScope, 'getActiveItemIndex');
+
+			isolateScope.visibleItemIndex = 1;
+			fakeEvent.which = UP_KEY;
+			isolateScope.checkKeyDown(fakeEvent);
+
+			expect(isolateScope.visibleItemIndex).toBe(0);
+		});
+
+		it('should update active item if the start of list is not reached when up is pressed', function() {
+			var isolateScope;
+
+			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
+
+			compileDirective();
+			isolateScope = directiveElement.isolateScope();
+
+			spyOn(isolateScope, 'getActiveItemIndex').and.returnValue(0);
+
+			isolateScope.visibleItemIndex = 1;
+			fakeEvent.which = UP_KEY;
+			isolateScope.checkKeyDown(fakeEvent);
+
+			expect(isolateScope.activeItemIndex).toBe(0);
+		});
+
+		it('should scroll the list to the active item when the up key is pressed', function() {
+			var isolateScope;
+
+			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
+
+			compileDirective();
+			isolateScope = directiveElement.isolateScope();
+
+			spyOn(isolateScope, 'isScrolledIntoView').and.returnValue(false);
+			spyOn(isolateScope, 'scroll');
+
+			fakeEvent.which = UP_KEY;
+			isolateScope.checkKeyDown(fakeEvent);
+
+			expect(isolateScope.scroll).toHaveBeenCalled();
+		});
+
+		it('should should not change the active item if the start of list items is reached', function() {
+			var isolateScope;
+
+			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
+
+			compileDirective();
+			isolateScope = directiveElement.isolateScope();
+
+			spyOn(isolateScope, 'getActiveItemIndex');
+
+			isolateScope.visibleItemIndex = 0;
+			isolateScope.activeItemIndex = -1;
+			fakeEvent.which = UP_KEY;
+			isolateScope.checkKeyDown(fakeEvent);
+
+			expect(isolateScope.getActiveItemIndex).not.toHaveBeenCalled();
+			expect(isolateScope.activeItemIndex).toBe(-1);
+			expect(isolateScope.visibleItemIndex).toBe(0);
+		});
+
+		it('should select an item when enter is pressed', function() {
+			var isolateScope;
+
+			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
+
+			compileDirective();
+			isolateScope = directiveElement.isolateScope();
 
 			spyOn(isolateScope, 'selectItem');
 
-			// we pass an event object which then gets appended to the dummy object in the angular triggerHandlerEvent()
-			directiveElement.triggerHandler(keyboardEvent);
+			fakeEvent.which = ENTER_KEY;
+			isolateScope.checkKeyDown(fakeEvent);
+
 			expect(isolateScope.selectItem).toHaveBeenCalled();
 		});
 
-		it('should listen to the Down keydown event and update active item if the end of list items is not reached', function() {
-			var item = {
-					id: null
-				},
-				isolateScope;
+		it('should not change the index or select an item if a key other than up, down or enter is pressed', function() {
+			var isolateScope;
 
-			keyboardEvent.which = DOWN_KEY;
-			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
-
-			compileDirective();
-			isolateScope = directiveElement.isolateScope();
-			isolateScope.selectedItem = item;
-
-			spyOn(isolateScope, 'updateActiveItem');
-
-			// we pass an event object which then gets appended to the dummy object in the angular triggerHandlerEvent()
-			directiveElement.triggerHandler(keyboardEvent);
-			expect(isolateScope.updateActiveItem).toHaveBeenCalled();
-		});
-
-		it('should listen to the Down keydown event and scroll the list to active item', function() {
-			var item = {
-					id: null
-				},
-				isolateScope;
-
-			keyboardEvent.which = DOWN_KEY;
-			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
-
-			compileDirective();
-			isolateScope = directiveElement.isolateScope();
-			isolateScope.selectedItem = item;
-			isolateScope.isScrolledIntoView = mockIsScrolledIntoView;
-
-			spyOn(isolateScope, 'scroll');
-
-			// we pass an event object which then gets appended to the dummy object in the angular triggerHandlerEvent()
-			directiveElement.triggerHandler(keyboardEvent);
-			expect(isolateScope.scroll).toHaveBeenCalled();
-		});
-
-		it('should listen to the Down keydown event and should not do anything if the end of list items is reached', function() {
-			var item = {
-					id: null
-				},
-				isolateScope;
-
-			keyboardEvent.which = DOWN_KEY;
 			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
 
 			compileDirective();
 			isolateScope = directiveElement.isolateScope();
 
-			isolateScope.selectedItem = item;
-			isolateScope.isScrolledIntoView = mockIsScrolledIntoView;
+			isolateScope.visibleItemIndex = 0;
+			isolateScope.activeItemIndex = 0;
 
-			isolateScope.updateActiveItem(2);
+			spyOn(isolateScope, 'selectItem');
 
-			spyOn(isolateScope, 'scroll');
-			spyOn(isolateScope, 'updateActiveItem');
-			// we pass an event object which then gets appended to the dummy object in the angular triggerHandlerEvent()
-			directiveElement.triggerHandler(keyboardEvent);
-			expect(isolateScope.updateActiveItem).not.toHaveBeenCalled();
-			expect(isolateScope.scroll).not.toHaveBeenCalled();
-		});
+			fakeEvent.which = RANDOM_KEY;
+			isolateScope.checkKeyDown(fakeEvent);
 
-		it('should listen to the Up keydown event and update active item if the beginning of list items is not reached', function() {
-			var item = {
-					id: 2
-				},
-				isolateScope;
-
-			keyboardEvent.which = UP_KEY;
-			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
-
-			compileDirective();
-			isolateScope = directiveElement.isolateScope();
-			isolateScope.selectedItem = item;
-			isolateScope.updateActiveItem(1);
-
-			spyOn(isolateScope, 'updateActiveItem');
-
-			// we pass an event object which then gets appended to the dummy object in the angular triggerHandlerEvent()
-			directiveElement.triggerHandler(keyboardEvent);
-			expect(isolateScope.updateActiveItem).toHaveBeenCalled();
-		});
-
-		it('should listen to the Up keydown event and scroll the list to active item', function() {
-			var item = {
-					id: null
-				},
-				isolateScope;
-
-			keyboardEvent.which = UP_KEY;
-			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
-
-			compileDirective();
-			isolateScope = directiveElement.isolateScope();
-			isolateScope.selectedItem = item;
-			isolateScope.isScrolledIntoView = mockIsScrolledIntoView;
-
-			spyOn(isolateScope, 'scroll');
-
-			// we pass an event object which then gets appended to the dummy object in the angular triggerHandlerEvent()
-			directiveElement.triggerHandler(keyboardEvent);
-			expect(isolateScope.scroll).toHaveBeenCalled();
+			expect(isolateScope.selectItem).not.toHaveBeenCalled();
+			expect(isolateScope.visibleItemIndex).toBe(0);
+			expect(isolateScope.activeItemIndex).toBe(0);
 		});
 
 	});
