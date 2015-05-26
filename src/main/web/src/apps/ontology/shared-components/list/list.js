@@ -18,13 +18,19 @@
 
 			controller: function($scope) {
 				$scope.isAnyItemShown = true;
+
 				// Actual index of the item in the full list
 				$scope.activeItemIndex = 0;
+
 				// Index of the item in the visible list which doesn't include hidden rows
 				$scope.visibleItemIndex = 0;
+
 				// Lookup object to avoid searching through array for item by id many times
 				// Keys are the item's id and the values are the item's index in the full list
 				$scope.indexOfItems = {};
+
+				// Keep track of whether the list has ever been filtered so we can use this for row striping
+				$scope.neverFiltered = true;
 
 				$scope.isString = function(object) {
 					return typeof object === 'string';
@@ -42,6 +48,7 @@
 				$scope.isItemFilteredOut = function(item, filter) {
 					return ($filter('filter')([item], filter)).length === 0;
 				};
+
 			},
 
 			link: function(scope, element) {
@@ -73,12 +80,17 @@
 				});
 
 				scope.filterItems = function(filter) {
-					var shownItems = [];
+					var shownItems = [],
+						oddOrEvenValue;
 
 					scope.data.forEach(function(item) {
 						// Add value to item about whether it is filtered out or not so that we can either show or hide it
 						item.isHidden = scope.isItemFilteredOut(item, filter);
 						if (!item.isHidden) {
+							// Unfortunately the :nth-match() CSS selector is not supported yet so we need to calculate
+							// here whether the item should have a striped row or not.
+							oddOrEvenValue = shownItems.length % 2;
+							item.isStriped = !!oddOrEvenValue;
 							shownItems.push(item);
 						}
 					});
@@ -88,6 +100,7 @@
 					scope.isAnyItemShown = !!shownItems.length;
 					// Set the active item index to be the first visible item in the list
 					scope.activeItemIndex = scope.getActiveItemIndex(0);
+					scope.neverFiltered = false;
 				};
 
 				scope.scroll = function(scrollElement, change, duration, start, currentTime) {
