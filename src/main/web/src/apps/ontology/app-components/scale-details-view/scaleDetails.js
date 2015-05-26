@@ -35,6 +35,12 @@
 						$scope.model = angular.copy(scale);
 						$scope.scaleName = $scope.model ? $scope.model.name : '';
 						$scope.deletable = scale && scale.metadata && scale.metadata.deletable || false;
+
+						//initialise the categories so that at least one is added initially
+						if ($scope.model && $scope.model.validValues && $scope.model.validValues.categories &&
+							$scope.model.validValues.categories.length < 1) {
+							$scope.model.validValues.categories = [{}];
+						}
 					});
 
 					$scope.$watch('editing', function() {

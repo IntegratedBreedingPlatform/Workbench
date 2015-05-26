@@ -56,7 +56,7 @@
 				};
 
 				$scope.removable = function() {
-					return $scope.model[$scope.property].categories.length >= 2;
+					return $scope.model && $scope.model[$scope.property].categories.length >= 2;
 				};
 
 				$scope.removeCategory = function(e, index) {
@@ -69,6 +69,7 @@
 			},
 
 			link: function(scope, elm, attrs, ctrl) {
+
 				var resetValidity = function() {
 					ctrl.$setValidity('emptyValue', true);
 					ctrl.$setValidity('nonUniqueName', true);
