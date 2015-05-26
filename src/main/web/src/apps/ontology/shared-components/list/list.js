@@ -18,8 +18,12 @@
 
 			controller: function($scope) {
 				$scope.isAnyItemShown = true;
+				// Actual index of the item in the full list
 				$scope.activeItemIndex = 0;
+				// Index of the item in the visible list which doesn't include hidden rows
 				$scope.visibleItemIndex = 0;
+				// Lookup object to avoid searching through array for item by id many times
+				// Keys are the item's id and the values are the item's index in the full list
 				$scope.indexOfItems = {};
 
 				$scope.isString = function(object) {
@@ -59,6 +63,7 @@
 
 					if (!scope.numberOfItemsShown && data && data.length > 0) {
 						scope.numberOfItemsShown = data.length;
+						// Holds the items that are currently shown to the user
 						scope.shownItems = data;
 
 						for (i = 0; i < data.length; i++) {
