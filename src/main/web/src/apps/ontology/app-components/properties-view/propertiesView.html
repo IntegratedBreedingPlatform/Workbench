@@ -3,10 +3,11 @@
 		<om-property-details></om-property-details>
 	</om-panel>
 
-	<h2>{{'propertiesList.title' | translate}}</h2>
+	<h2 class="om-list-title">{{'propertiesList.title' | translate}}</h2>
+	<om-search om-model="searchFilter"></om-search>
 	<div ng-show="propsCtrl.showThrobberWrapper" class="om-list-throbber-wrapper">
 		<span ng-class="{'throbber-hidden': !propsCtrl.showThrobber}" class="throbber throbber-lg"></span>
 	</div>
-	<om-list ng-hide="propsCtrl.properties.length === 0" om-data="propsCtrl.properties" om-col-headers="propsCtrl.colHeaders" om-on-click="showPropertyDetails()" om-selected-item="selectedItem"></om-list>
+	<om-list ng-hide="propsCtrl.properties.length === 0" om-data="propsCtrl.properties" om-col-headers="propsCtrl.colHeaders" om-on-click="showPropertyDetails()" om-selected-item="selectedItem" om-item-filter="searchFilter"></om-list>
 	<p ng-show="propsCtrl.showNoItemsMessage" class="text-info">{{'list.noItemsFound' | translate:'{items: "properties"}'}}</p>
 </div>
