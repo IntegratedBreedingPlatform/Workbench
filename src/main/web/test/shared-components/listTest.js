@@ -150,11 +150,19 @@ describe('List module', function() {
 		});
 
 		it('should return true if the filter text is not included in the item text', function() {
-			expect(isolateScope.isItemFilteredOut('measurement', 'z')).toBe(true);
+			expect(isolateScope.isItemFilteredOut({name: 'measurement'}, 'z')).toBe(true);
 		});
 
-		it('should return false if the filter text is included in the item text', function() {
-			expect(isolateScope.isItemFilteredOut('measurement', 'm')).toBe(false);
+		it('should return false if the filter text is included in the name property of the item text', function() {
+			expect(isolateScope.isItemFilteredOut({name: 'measurement'}, 'm')).toBe(false);
+		});
+
+		it('should return false if the filter text is included in the description property of the item text', function() {
+			expect(isolateScope.isItemFilteredOut({description: 'measurement'}, 'm')).toBe(false);
+		});
+
+		it('should return true if the filter text is included in a property other than name and description of the item text', function() {
+			expect(isolateScope.isItemFilteredOut({id: 'measurement'}, 'm')).toBe(true);
 		});
 	});
 

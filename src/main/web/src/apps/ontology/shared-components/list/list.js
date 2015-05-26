@@ -46,7 +46,7 @@
 
 				// Exposed for testing
 				$scope.isItemFilteredOut = function(item, filter) {
-					return ($filter('filter')([item], filter)).length === 0;
+					return ($filter('filter')([item.name, item.description], filter)).length === 0;
 				};
 
 			},
