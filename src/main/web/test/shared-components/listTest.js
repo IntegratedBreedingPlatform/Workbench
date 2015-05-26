@@ -83,112 +83,91 @@ describe('List module', function() {
 	});
 
 	describe('scope.isString', function() {
-		it('should return true if the type of the passed in object is a string', function() {
-			var isolateScope;
+		var isolateScope;
 
+		beforeEach(function() {
 			compileDirective();
 			isolateScope = directiveElement.isolateScope();
+		});
 
+		it('should return true if the type of the passed in object is a string', function() {
 			expect(isolateScope.isString('hey')).toBe(true);
 		});
 
 		it('should return false if the type of the passed in object is not a string', function() {
-			var isolateScope;
-
-			compileDirective();
-			isolateScope = directiveElement.isolateScope();
-
 			expect(isolateScope.isString(3)).toBe(false);
 		});
 	});
 
 	describe('scope.isAction', function() {
-		it('should return a truthy value if the passed in item is an object and has an iconValue property', function() {
-			var isolateScope;
+		var isolateScope;
 
+		beforeEach(function() {
 			compileDirective();
 			isolateScope = directiveElement.isolateScope();
+		});
 
+		it('should return a truthy value if the passed in item is an object and has an iconValue property', function() {
 			expect(isolateScope.isAction({iconValue: 'star'})).toBeTruthy();
 		});
 
 		it('should return a falsy value if the passed in item is not an object', function() {
-			var isolateScope;
-
-			compileDirective();
-			isolateScope = directiveElement.isolateScope();
-
 			expect(isolateScope.isAction(3)).toBeFalsy();
 		});
 
 		it('should return a falsy value if the passed in item is an object and does not have an iconValue property', function() {
-			var isolateScope;
-
-			compileDirective();
-			isolateScope = directiveElement.isolateScope();
-
 			expect(isolateScope.isAction({})).toBeFalsy();
 		});
 	});
 
 	describe('scope.isNotActionHeader', function() {
-		it('should return a truthy value if the passed in item is a string that does not contain "action-"', function() {
-			var isolateScope;
+		var isolateScope;
 
+		beforeEach(function() {
 			compileDirective();
 			isolateScope = directiveElement.isolateScope();
+		});
 
+		it('should return a truthy value if the passed in item is a string that does not contain "action-"', function() {
 			expect(isolateScope.isNotActionHeader('name')).toBeTruthy();
 		});
 
 		it('should return a falsy value if the passed in item is not a string', function() {
-			var isolateScope;
-
-			compileDirective();
-			isolateScope = directiveElement.isolateScope();
-
 			expect(isolateScope.isAction(3)).toBeFalsy();
 		});
 
 		it('should return a falsy value if the passed in item is a string and contains "action-"', function() {
-			var isolateScope;
-
-			compileDirective();
-			isolateScope = directiveElement.isolateScope();
-
 			expect(isolateScope.isAction('action-favourite')).toBeFalsy();
 		});
 	});
 
 	describe('scope.isItemFilteredOut', function() {
-		it('should return true if the filter text is not included in the item text', function() {
-			var isolateScope;
+		var isolateScope;
 
+		beforeEach(function() {
 			compileDirective();
 			isolateScope = directiveElement.isolateScope();
+		});
 
+		it('should return true if the filter text is not included in the item text', function() {
 			expect(isolateScope.isItemFilteredOut('measurement', 'z')).toBe(true);
 		});
 
 		it('should return false if the filter text is included in the item text', function() {
-			var isolateScope;
-
-			compileDirective();
-			isolateScope = directiveElement.isolateScope();
-
 			expect(isolateScope.isItemFilteredOut('measurement', 'm')).toBe(false);
 		});
 	});
 
 	describe('scope.filterItems', function() {
-		it('should set whether each item is hidden or not on the item', function() {
-			var isolateScope;
+		var isolateScope;
 
+		beforeEach(function() {
 			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
-
 			compileDirective();
 			isolateScope = directiveElement.isolateScope();
+		});
 
+		it('should set whether each item is hidden or not on the item', function() {
 			isolateScope.filterItems('dog');
 
 			expect(isolateScope.data[0].isHidden).toBe(true);
@@ -196,13 +175,6 @@ describe('List module', function() {
 		});
 
 		it('should build up a list of shown items', function() {
-			var isolateScope;
-
-			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
-
-			compileDirective();
-			isolateScope = directiveElement.isolateScope();
-
 			isolateScope.filterItems('dog');
 
 			expect(isolateScope.shownItems).toContain(LIST_ITEM_DOG);
@@ -210,13 +182,6 @@ describe('List module', function() {
 		});
 
 		it('should set the number of items shown', function() {
-			var isolateScope;
-
-			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
-
-			compileDirective();
-			isolateScope = directiveElement.isolateScope();
-
 			isolateScope.filterItems('dog');
 
 			expect(isolateScope.numberOfItemsShown).toBe(1);
@@ -270,20 +235,18 @@ describe('List module', function() {
 	});
 
 	describe('scope.toggleFavourites', function() {
+		var isolateScope;
 
-		it('should stop propagation of the event to <tr>', function() {
-			var item = {
-					id: null
-				},
-				isolateScope;
-
+		beforeEach(function() {
 			scope.testHeaders = ['name', 'description'];
 			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
 
 			compileDirective();
 			isolateScope = directiveElement.isolateScope();
-			isolateScope.selectedItem = item;
+			isolateScope.selectedItem = { id: null };
+		});
 
+		it('should stop propagation of the event to <tr>', function() {
 			spyOn(fakeEvent, 'stopPropagation');
 
 			isolateScope.toggleFavourites(1, 1, fakeEvent, LIST_ITEM_CAT['action-favourite']);
@@ -291,35 +254,11 @@ describe('List module', function() {
 		});
 
 		it('should set the active item to the passed in index', function() {
-			var item = {
-					id: null
-				},
-				isolateScope;
-
-			scope.testHeaders = ['name', 'description'];
-			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
-
-			compileDirective();
-
-			isolateScope = directiveElement.isolateScope();
-			isolateScope.selectedItem = item;
-
 			isolateScope.toggleFavourites(1, 1, fakeEvent, LIST_ITEM_CAT['action-favourite']);
 			expect(isolateScope.activeItemIndex).toBe(1);
 		});
 
 		it('call icon function', function() {
-			var item = {
-					id: null
-				},
-				isolateScope;
-			scope.testHeaders = ['name', 'description'];
-			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
-
-			compileDirective();
-			isolateScope = directiveElement.isolateScope();
-			isolateScope.selectedItem = item;
-
 			spyOn(LIST_ITEM_CAT['action-favourite'], 'iconFunction');
 
 			directiveElement.isolateScope().toggleFavourites(1, 1, fakeEvent, LIST_ITEM_CAT['action-favourite']);
@@ -329,34 +268,36 @@ describe('List module', function() {
 	});
 
 	describe('scope.scroll', function() {
+		var isolateScope;
+
+		beforeEach(function() {
+			compileDirective();
+			isolateScope = directiveElement.isolateScope();
+		});
 
 		it('should set scroll top of the scroll element', function() {
-			compileDirective();
-
-			directiveElement.isolateScope().scroll(fakeScrollElement, 20, 5, 15, 10);
+			isolateScope.scroll(fakeScrollElement, 20, 5, 15, 10);
 			expect(fakeScrollElement.scrollTop).toEqual(-965);
 		});
 
 		it('should set scroll top of the scroll element when current time is less than duration', function() {
-			compileDirective();
-
-			directiveElement.isolateScope().scroll(fakeScrollElement, 20, 5, 15, -20);
+			isolateScope.scroll(fakeScrollElement, 20, 5, 15, -20);
 			expect(fakeScrollElement.scrollTop).toEqual(15);
 		});
 	});
 
 	describe('scope.isScrolledIntoView', function() {
 
-		it('should not break if the falsy value is pased', function() {
+		it('should not break if a falsy value is passed in', function() {
 			compileDirective();
 			expect(directiveElement.isolateScope().isScrolledIntoView(null)).toEqual(false);
 		});
 	});
 
 	describe('scope.getActiveItemIndex', function() {
-		it('should return the actual index in the table of the visible item', function() {
-			var isolateScope;
+		var isolateScope;
 
+		beforeEach(function() {
 			compileDirective();
 			isolateScope = directiveElement.isolateScope();
 			isolateScope.shownItems = [LIST_ITEM_DOG];
@@ -364,21 +305,13 @@ describe('List module', function() {
 				cat: 0,
 				dog: 1
 			};
+		});
 
+		it('should return the actual index in the table of the visible item', function() {
 			expect(isolateScope.getActiveItemIndex(0)).toBe(1);
 		});
 
 		it('should return null if the item is not in the list', function() {
-			var isolateScope;
-
-			compileDirective();
-			isolateScope = directiveElement.isolateScope();
-			isolateScope.shownItems = [LIST_ITEM_DOG];
-			isolateScope.indexOfItems = {
-				cat: 0,
-				dog: 1
-			};
-
 			expect(isolateScope.getActiveItemIndex(3)).toBe(null);
 		});
 	});
@@ -389,14 +322,15 @@ describe('List module', function() {
 			ENTER_KEY = 13,
 			RANDOM_KEY = 1;
 
-		it('should update visible item index if the end of list is not reached when down is pressed', function() {
-			var isolateScope;
+		var isolateScope;
 
+		beforeEach(function() {
 			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
-
 			compileDirective();
 			isolateScope = directiveElement.isolateScope();
+		});
 
+		it('should update visible item index if the end of list is not reached when down is pressed', function() {
 			spyOn(isolateScope, 'getActiveItemIndex');
 
 			isolateScope.visibleItemIndex = 0;
@@ -407,13 +341,6 @@ describe('List module', function() {
 		});
 
 		it('should update active item if the end of list is not reached when down is pressed', function() {
-			var isolateScope;
-
-			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
-
-			compileDirective();
-			isolateScope = directiveElement.isolateScope();
-
 			spyOn(isolateScope, 'getActiveItemIndex').and.returnValue(1);
 
 			isolateScope.visibleItemIndex = 0;
@@ -424,13 +351,6 @@ describe('List module', function() {
 		});
 
 		it('should scroll the list to the active item when the down key is pressed', function() {
-			var isolateScope;
-
-			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
-
-			compileDirective();
-			isolateScope = directiveElement.isolateScope();
-
 			spyOn(isolateScope, 'isScrolledIntoView').and.returnValue(false);
 			spyOn(isolateScope, 'scroll');
 
@@ -441,13 +361,6 @@ describe('List module', function() {
 		});
 
 		it('should should not change the active item if the end of list items is reached', function() {
-			var isolateScope;
-
-			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
-
-			compileDirective();
-			isolateScope = directiveElement.isolateScope();
-
 			spyOn(isolateScope, 'getActiveItemIndex');
 
 			isolateScope.visibleItemIndex = 1;
@@ -461,13 +374,6 @@ describe('List module', function() {
 		});
 
 		it('should update visible item index if the start of list is not reached when up is pressed', function() {
-			var isolateScope;
-
-			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
-
-			compileDirective();
-			isolateScope = directiveElement.isolateScope();
-
 			spyOn(isolateScope, 'getActiveItemIndex');
 
 			isolateScope.visibleItemIndex = 1;
@@ -478,13 +384,6 @@ describe('List module', function() {
 		});
 
 		it('should update active item if the start of list is not reached when up is pressed', function() {
-			var isolateScope;
-
-			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
-
-			compileDirective();
-			isolateScope = directiveElement.isolateScope();
-
 			spyOn(isolateScope, 'getActiveItemIndex').and.returnValue(0);
 
 			isolateScope.visibleItemIndex = 1;
@@ -495,13 +394,6 @@ describe('List module', function() {
 		});
 
 		it('should scroll the list to the active item when the up key is pressed', function() {
-			var isolateScope;
-
-			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
-
-			compileDirective();
-			isolateScope = directiveElement.isolateScope();
-
 			spyOn(isolateScope, 'isScrolledIntoView').and.returnValue(false);
 			spyOn(isolateScope, 'scroll');
 
@@ -512,13 +404,6 @@ describe('List module', function() {
 		});
 
 		it('should should not change the active item if the start of list items is reached', function() {
-			var isolateScope;
-
-			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
-
-			compileDirective();
-			isolateScope = directiveElement.isolateScope();
-
 			spyOn(isolateScope, 'getActiveItemIndex');
 
 			isolateScope.visibleItemIndex = 0;
@@ -532,13 +417,6 @@ describe('List module', function() {
 		});
 
 		it('should select an item when enter is pressed', function() {
-			var isolateScope;
-
-			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
-
-			compileDirective();
-			isolateScope = directiveElement.isolateScope();
-
 			spyOn(isolateScope, 'selectItem');
 
 			fakeEvent.which = ENTER_KEY;
@@ -548,13 +426,6 @@ describe('List module', function() {
 		});
 
 		it('should not change the index or select an item if a key other than up, down or enter is pressed', function() {
-			var isolateScope;
-
-			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
-
-			compileDirective();
-			isolateScope = directiveElement.isolateScope();
-
 			isolateScope.visibleItemIndex = 0;
 			isolateScope.activeItemIndex = 0;
 
@@ -567,6 +438,5 @@ describe('List module', function() {
 			expect(isolateScope.visibleItemIndex).toBe(0);
 			expect(isolateScope.activeItemIndex).toBe(0);
 		});
-
 	});
 });
