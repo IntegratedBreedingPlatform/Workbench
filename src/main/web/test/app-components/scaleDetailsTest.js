@@ -47,7 +47,10 @@ describe('Scale details directive', function() {
 			id: 2,
 			name: 'Score',
 			description: 'Score, 1 - 5',
-			dataType: CATEGORICAL_TYPE
+			dataType: CATEGORICAL_TYPE,
+			validValues: {
+				categories: []
+			}
 		},
 
 		FREE_TEXT = {
@@ -135,9 +138,15 @@ describe('Scale details directive', function() {
 			expect(scope.editing).toBe(false);
 		});
 
-		it('should hide the range and categories widgets by default', function() {
+		it('should hide the range and categories widgets', function() {
 			expect(scope.showRangeWidget).toBe(false);
 			expect(scope.showCategoriesWidget).toBe(false);
+		});
+
+		it('should should add one empty category', function() {
+			scope.selectedScale = SCORE;
+			scope.$apply();
+			expect(scope.model.validValues.categories.length).toBe(1);
 		});
 
 		it('should reset errors and remove any leftover confirmation handlers if the selected method changes', function() {
