@@ -13,6 +13,6 @@
 				<span class="om-li-data-cell-test glyphicon favourite-icon" ng-if="isAction(item[header])" ng-class="'glyphicon-' + item[header].iconValue" ng-click="toggleFavourites($index, item.id, $event, item[header])"></span>
 			</td>
 		</tr>
-		<tr ng-hide="isAnyItemShown"><td colspan="{{colHeaders.length}}">No results were found</td></tr>
+		<tr ng-hide="isAnyItemShown"><td colspan="{{colHeaders.length}}">{{'list.noResultsFound' | translate}}</td></tr>
 	</tbody>
 </table>

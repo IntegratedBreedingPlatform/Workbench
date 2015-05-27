@@ -74,6 +74,7 @@
 		"method": "Method",
 		"name": "Name",
 		"noItemsFound": "No {{items | translate | lowercase}} were found.",
+		"noResultsFound": "No results were found",
 		"property": "Property",
 		"scale": "Scale"
 	},
