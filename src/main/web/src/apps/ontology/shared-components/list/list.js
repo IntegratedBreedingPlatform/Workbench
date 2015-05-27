@@ -25,9 +25,9 @@
 				// Index of the item in the visible list which doesn't include hidden rows
 				$scope.visibleItemIndex = 0;
 
-				// Lookup object to avoid searching through array for item by id many times
-				// Keys are the item's id and the values are the item's index in the full list
-				$scope.indexOfItems = {};
+				// Lookup object to keep track of metadata about each item, including actual index, whether it is
+				// hidden and if it should be a striped row
+				$scope.listItemMetadata = {};
 
 				// Keep track of whether the list has ever been filtered so we can use this for row striping
 				$scope.neverFiltered = true;
@@ -74,23 +74,28 @@
 						scope.shownItems = data;
 
 						for (i = 0; i < data.length; i++) {
-							scope.indexOfItems[data[i].id] = i;
+							scope.listItemMetadata[data[i].id] = {
+								index: i
+							};
 						}
 					}
-				});
+				}, true);
 
 				scope.filterItems = function(filter) {
 					var shownItems = [],
+						isItemHidden,
 						oddOrEvenValue;
 
 					scope.data.forEach(function(item) {
 						// Add value to item about whether it is filtered out or not so that we can either show or hide it
-						item.isHidden = scope.isItemFilteredOut(item, filter);
-						if (!item.isHidden) {
+						isItemHidden = scope.isItemFilteredOut(item, filter);
+						scope.listItemMetadata[item.id].isHidden = isItemHidden;
+
+						if (!isItemHidden) {
 							// Unfortunately the :nth-match() CSS selector is not supported yet so we need to calculate
 							// here whether the item should have a striped row or not.
 							oddOrEvenValue = shownItems.length % 2;
-							item.isStriped = !!oddOrEvenValue;
+							scope.listItemMetadata[item.id].isStriped = !!oddOrEvenValue;
 							shownItems.push(item);
 						}
 					});
@@ -149,7 +154,7 @@
 				scope.getActiveItemIndex = function(visibleItemIndex) {
 					var shownItem = scope.shownItems[visibleItemIndex];
 
-					return shownItem ? scope.indexOfItems[shownItem.id] : null;
+					return shownItem ? scope.listItemMetadata[shownItem.id].index : null;
 				};
 
 				scope.checkKeyDown = function(e) {

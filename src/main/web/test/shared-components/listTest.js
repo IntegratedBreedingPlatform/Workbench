@@ -175,11 +175,11 @@ describe('List module', function() {
 			isolateScope = directiveElement.isolateScope();
 		});
 
-		it('should set whether each item is hidden or not on the item', function() {
+		it('should set whether each item is hidden or not in the list item metadata', function() {
 			isolateScope.filterItems('dog');
 
-			expect(isolateScope.data[0].isHidden).toBe(true);
-			expect(isolateScope.data[1].isHidden).toBe(false);
+			expect(isolateScope.listItemMetadata[LIST_ITEM_CAT.id].isHidden).toBe(true);
+			expect(isolateScope.listItemMetadata[LIST_ITEM_DOG.id].isHidden).toBe(false);
 		});
 
 		it('should build up a list of shown items', function() {
@@ -309,9 +309,13 @@ describe('List module', function() {
 			compileDirective();
 			isolateScope = directiveElement.isolateScope();
 			isolateScope.shownItems = [LIST_ITEM_DOG];
-			isolateScope.indexOfItems = {
-				cat: 0,
-				dog: 1
+			isolateScope.listItemMetadata = {
+				cat: {
+					index: 0
+				},
+				dog: {
+					index: 1
+				}
 			};
 		});
 

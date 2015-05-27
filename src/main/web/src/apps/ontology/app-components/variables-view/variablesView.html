@@ -10,7 +10,7 @@
 		<div ng-show="varsCtrl.showFavouritesThrobberWrapper" class="om-list-throbber-wrapper">
 			<span ng-class="{'throbber-hidden': !varsCtrl.showFavouritesThrobber}" class="throbber throbber-lg"></span>
 		</div>
-		<om-list ng-hide="varsCtrl.favouriteVariables.length === 0" om-data="varsCtrl.favouriteVariables" om-col-headers="varsCtrl.colHeaders" om-on-click="showVariableDetails()" om-selected-item="selectedItem" om-item-filter="searchFilter"></om-list>
+		<om-list ng-hide="varsCtrl.favouriteVariables.length === 0" om-data="varsCtrl.favouriteVariables" om-col-headers="varsCtrl.colHeaders" om-on-click="showVariableDetails()" om-selected-item="selectedItem"></om-list>
 		<p ng-show="varsCtrl.showNoFavouritesMessage" class="text-info">{{'variablesList.noFavouritesFound' | translate}}</p>
 	</div>
 
