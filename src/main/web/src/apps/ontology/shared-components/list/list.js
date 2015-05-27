@@ -65,10 +65,13 @@
 					}
 				});
 
-				scope.$watch('data', function(data) {
-					var i;
+				scope.$watch('data', function(data, prevData) {
+					var isDataPopulated = data && data.length > 0,
+						isFirstLoad = isDataPopulated && !scope.numberOfItemsShown,
+						hasLengthChanged = isDataPopulated && data.length !== prevData.length,
+						i;
 
-					if (!scope.numberOfItemsShown && data && data.length > 0) {
+					if (isFirstLoad || hasLengthChanged) {
 						scope.numberOfItemsShown = data.length;
 						// Holds the items that are currently shown to the user
 						scope.shownItems = data;
