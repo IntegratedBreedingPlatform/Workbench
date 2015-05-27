@@ -145,7 +145,8 @@ describe('List module', function() {
 		var isolateScope;
 
 		beforeEach(function() {
-			compileDirective();
+			scope.propsToFilter = ['name', 'description'];
+			compileDirective('om-properties-to-filter="propsToFilter"');
 			isolateScope = directiveElement.isolateScope();
 		});
 
@@ -171,7 +172,8 @@ describe('List module', function() {
 
 		beforeEach(function() {
 			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
-			compileDirective();
+			scope.propsToFilter = ['name', 'description'];
+			compileDirective('om-properties-to-filter="propsToFilter"');
 			isolateScope = directiveElement.isolateScope();
 		});
 

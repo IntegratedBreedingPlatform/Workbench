@@ -26,6 +26,7 @@
 			ctrl.showThrobberWrapper = true;
 			ctrl.colHeaders = ['name', 'description', 'dataType'];
 
+			$scope.filterByProperties = ctrl.colHeaders;
 			$scope.panelName = 'scales';
 
 			$timeout(function() {

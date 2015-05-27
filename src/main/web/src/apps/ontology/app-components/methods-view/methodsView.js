@@ -13,6 +13,7 @@
 			ctrl.showThrobberWrapper = true;
 			ctrl.colHeaders = ['name', 'description'];
 
+			$scope.filterByProperties = ctrl.colHeaders;
 			$scope.panelName = 'methods';
 
 			$timeout(function() {

@@ -26,6 +26,7 @@
 			ctrl.showThrobberWrapper = true;
 			ctrl.colHeaders = ['name', 'description', 'classes'];
 
+			$scope.filterByProperties = ctrl.colHeaders;
 			$scope.panelName = 'properties';
 
 			$timeout(function() {

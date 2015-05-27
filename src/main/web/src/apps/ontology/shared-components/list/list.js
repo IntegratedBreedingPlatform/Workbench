@@ -13,7 +13,8 @@
 				data: '=omData',
 				parentClickHandler: '&omOnClick',
 				selectedItem: '=omSelectedItem',
-				itemFilter: '=omItemFilter'
+				itemFilter: '=omItemFilter',
+				propertiesToFilter: '=omPropertiesToFilter'
 			},
 
 			controller: function($scope) {
@@ -46,7 +47,13 @@
 
 				// Exposed for testing
 				$scope.isItemFilteredOut = function(item, filter) {
-					return ($filter('filter')([item.name, item.description], filter)).length === 0;
+					var filterProps = [];
+
+					$scope.propertiesToFilter.forEach(function(property) {
+						filterProps.push(item[property]);
+					});
+
+					return ($filter('filter')(filterProps, filter)).length === 0;
 				};
 
 			},

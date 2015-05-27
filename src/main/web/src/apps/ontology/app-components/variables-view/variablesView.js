@@ -99,6 +99,7 @@
 			ctrl.transformVariableToDisplayFormat = transformVariableToDisplayFormat;
 			ctrl.transformDetailedVariableToDisplayFormat = transformDetailedVariableToDisplayFormat;
 
+			$scope.filterByProperties = ['name', 'alias', 'property', 'method', 'scale'];
 			$scope.panelName = 'variables';
 
 			$timeout(function() {
