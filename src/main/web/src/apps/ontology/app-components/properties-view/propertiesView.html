@@ -1,10 +1,11 @@
-<div class="om-pr-view">
+<div class="om-pr-view om-view-content">
 	<om-panel om-panel-identifier="panelName" om-title="selectedProperty.name">
 		<om-property-details></om-property-details>
 	</om-panel>
 
-	<h2 class="om-list-title">{{'propertiesList.title' | translate}}</h2>
 	<om-search om-model="searchFilter"></om-search>
+
+	<h2>{{'propertiesList.title' | translate}}</h2>
 	<div ng-show="propsCtrl.showThrobberWrapper" class="om-list-throbber-wrapper">
 		<span ng-class="{'throbber-hidden': !propsCtrl.showThrobber}" class="throbber throbber-lg"></span>
 	</div>

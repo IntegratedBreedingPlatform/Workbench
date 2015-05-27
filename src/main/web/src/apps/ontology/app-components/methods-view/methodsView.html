@@ -1,10 +1,11 @@
-<div class="om-mt-view">
+<div class="om-mt-view om-view-content">
 	<om-panel om-panel-identifier="panelName" om-title="selectedMethod.name">
 		<om-method-details></om-method-details>
 	</om-panel>
 
-	<h2 class="om-list-title">{{'methodsList.title' | translate}}</h2>
 	<om-search om-model="searchFilter"></om-search>
+
+	<h2>{{'methodsList.title' | translate}}</h2>
 	<div ng-show="methodsCtrl.showThrobberWrapper" class="om-list-throbber-wrapper">
 		<span ng-class="{'throbber-hidden': !methodsCtrl.showThrobber}" class="throbber throbber-lg"></span>
 	</div>

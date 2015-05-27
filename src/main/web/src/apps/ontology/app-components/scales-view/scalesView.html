@@ -1,10 +1,11 @@
-<div class="om-sc-view">
+<div class="om-sc-view om-view-content">
 	<om-panel om-panel-identifier="panelName" om-title="selectedScale.name">
 		<om-scale-details></om-scale-details>
 	</om-panel>
 
-	<h2 class="om-list-title">{{'scalesList.title' | translate}}</h2>
 	<om-search om-model="searchFilter"></om-search>
+
+	<h2>{{'scalesList.title' | translate}}</h2>
 	<div ng-show="scalesCtrl.showThrobberWrapper" class="om-list-throbber-wrapper">
 		<span ng-class="{'throbber-hidden': !scalesCtrl.showThrobber}" class="throbber throbber-lg"></span>
 	</div>
