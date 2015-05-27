@@ -2,8 +2,8 @@
 'use strict';
 
 (function() {
-	var variableDetails = angular.module('variableDetails', ['formFields', 'input', 'textArea', 'select', 'properties', 'methods',
-		'scales', 'utilities', 'variables', 'variableTypes', 'panel']),
+	var variableDetails = angular.module('variableDetails', ['input', 'textArea', 'select', 'properties', 'methods', 'scales', 'utilities',
+		'variables', 'variableTypes', 'panel']),
 		DELAY = 400,
 		NUM_EDITABLE_FIELDS = 6;
 

@@ -2,7 +2,7 @@
 'use strict';
 
 (function() {
-	var methodDetailsModule = angular.module('methodDetails', ['formFields', 'input', 'textArea', 'methods', 'utilities', 'panel']),
+	var methodDetailsModule = angular.module('methodDetails', ['input', 'textArea', 'methods', 'utilities', 'panel']),
 		DELAY = 400,
 		NUM_EDITABLE_FIELDS = 2;
 

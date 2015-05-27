@@ -2,8 +2,8 @@
 'use strict';
 
 (function() {
-	var scaleDetailsModule = angular.module('scaleDetails', ['formFields', 'input', 'textArea', 'select', 'scales', 'dataTypes',
-		'utilities', 'categories', 'panel']),
+	var scaleDetailsModule = angular.module('scaleDetails', ['input', 'textArea', 'select', 'scales', 'dataTypes', 'utilities',
+		'categories', 'panel']),
 		DELAY = 400,
 		NUM_EDITABLE_FIELDS = 3;
 

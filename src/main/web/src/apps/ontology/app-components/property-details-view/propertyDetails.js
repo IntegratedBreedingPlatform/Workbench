@@ -2,8 +2,7 @@
 'use strict';
 
 (function() {
-	var propertyDetailsModule = angular.module('propertyDetails', ['formFields', 'input', 'textArea', 'tagSelect', 'properties',
-		'utilities', 'panel']),
+	var propertyDetailsModule = angular.module('propertyDetails', ['input', 'textArea', 'tagSelect', 'properties', 'utilities', 'panel']),
 		DELAY = 400,
 		NUM_EDITABLE_FIELDS = 4;
 
