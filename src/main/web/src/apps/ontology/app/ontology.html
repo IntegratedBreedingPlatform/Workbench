@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="ontology" xmlns:th="http://www.thymeleaf.org" om-config="" data-th-attr="om-crop=${currentCrop}, om-program-id=${currentProgramId}">
+<html class="om-ontology-manager" ng-app="ontology" xmlns:th="http://www.thymeleaf.org" om-config="" data-th-attr="om-crop=${currentCrop}, om-program-id=${currentProgramId}">
 
 <head>
 	<meta name="viewport" content="initial-scale=1.0, width=device-width"></meta>
@@ -12,7 +12,7 @@
 	<link th:href="@{/controller/static/lib/styleGuide/css/styleGuide.min.css}" rel="stylesheet"></link>
 	<link th:href="@{/controller/static/css/ontology.css}" rel="stylesheet"></link>
 </head>
-<body ng-cloak="" translate-cloak="title" class="om-ontology-manager container-fluid" ng-controller="OntologyController as ctrl" om-key-trap="">
+<body ng-cloak="" translate-cloak="title" class="om-content container-fluid" ng-controller="OntologyController as ctrl" om-key-trap="">
 <om-mask></om-mask>
 	<header>
 		<h1 class="om-title">{{'title' | translate}}</h1>

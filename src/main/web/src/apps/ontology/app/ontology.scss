@@ -36,14 +36,18 @@ ol {
 	padding-left: 0;
 }
 
+.om-ontology-manager {
+	overflow-y: scroll;
+}
+
+.om-content {
+	display: table;
+	box-sizing: border-box;
+}
+
 .om-title {
 	margin-top: 1.5rem;
 	margin-bottom: 2rem;
-}
-
-.om-ontology-manager {
-	display: table;
-	box-sizing: border-box;
 }
 
 .om-add-new-btn {
