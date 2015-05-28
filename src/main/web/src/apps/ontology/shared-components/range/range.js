@@ -2,7 +2,7 @@
 'use strict';
 
 (function() {
-	var rangeModule = angular.module('range', ['formFields']);
+	var rangeModule = angular.module('range', ['formFields', 'utilities']);
 
 	function isNumber(value) {
 		return typeof value === 'number';
@@ -50,7 +50,7 @@
 		}
 	}
 
-	rangeModule.directive('omRange', function(editable) {
+	rangeModule.directive('omRange', ['formUtilities', 'editable', function(formUtilities, editable) {
 		return {
 			controller: function($scope) {
 				// If the specified property does not exist on the model, add it
@@ -58,6 +58,8 @@
 					$scope.model[$scope.property] = $scope.model[$scope.property] || {};
 				}
 				$scope.editable = editable($scope);
+
+				$scope.formParentHasError = formUtilities.formParentHasError($scope, 'rangeForm');
 			},
 			link: function(scope, elm, attrs, ctrl) {
 
@@ -121,5 +123,5 @@
 			},
 			templateUrl: 'static/views/ontology/range.html'
 		};
-	});
+	}]);
 }());

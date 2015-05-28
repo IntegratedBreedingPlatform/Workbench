@@ -291,6 +291,55 @@ describe('Utilities Service', function() {
 			});
 		});
 
+		describe('formParentHasError', function() {
+			it('should set a has-error class to the returned class if the specified form field is invalid and the form is submitted',
+					function() {
+
+						var scope = {},
+							formName = 'form',
+							fieldName = 'field',
+
+							returnedFunction = formUtilities.formParentHasError(scope, formName);
+
+						scope[formName] = {
+							$submitted: true
+						};
+
+						scope[formName][fieldName] = {
+							$touched: false,
+							$invalid: true
+						};
+
+						expect(returnedFunction(fieldName)).toEqual('has-error');
+					});
+
+			it('should set a has-error class to the returned class if the specified field has server errors and is not touched',
+					function() {
+
+						var scope = {},
+							formName = 'form',
+							fieldName = 'field',
+							serverFieldName = 'serverField',
+
+							returnedFunction = formUtilities.formParentHasError(scope, formName);
+
+						scope.$parent = {};
+						scope.$parent.serverErrors = {};
+						scope.$parent.serverErrors[serverFieldName] = ['Something is wrong with this field'];
+
+						scope[formName] = {
+							$submitted: true
+						};
+
+						scope[formName][fieldName] = {
+							$touched: false,
+							$invalid: false
+						};
+
+						expect(returnedFunction(fieldName, serverFieldName)).toEqual('has-error');
+					});
+		});
+
 		describe('cancelAddHandler', function() {
 
 			var confirmation;

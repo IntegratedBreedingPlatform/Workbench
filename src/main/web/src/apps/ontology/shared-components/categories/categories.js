@@ -2,7 +2,7 @@
 'use strict';
 
 (function() {
-	var categoriesModule = angular.module('categories', ['formFields']);
+	var categoriesModule = angular.module('categories', ['formFields', 'utilities']);
 
 	function validateCategories(ctrl, categories) {
 		var names = [],
@@ -29,7 +29,7 @@
 		});
 	}
 
-	categoriesModule.directive('omCategories', function(editable) {
+	categoriesModule.directive('omCategories', ['formUtilities', 'editable', function(formUtilities, editable) {
 		return {
 			require: 'ngModel',
 			restrict: 'E',
@@ -66,6 +66,7 @@
 					}
 				};
 
+				$scope.formParentHasError = formUtilities.formParentHasError($scope, 'categoriesForm');
 			},
 
 			link: function(scope, elm, attrs, ctrl) {
@@ -97,5 +98,5 @@
 
 			templateUrl: 'static/views/ontology/categories.html'
 		};
-	});
+	}]);
 }());

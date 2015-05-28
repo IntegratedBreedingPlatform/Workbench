@@ -1,10 +1,12 @@
 <ng-form class="form-inline" name="rangeForm" ng-show="editable()">
 	<div class="row">
-		<div class="col-sm-3">
+		<div class="col-sm-3" ng-class="formParentHasError('omRangeMin', 'validValues.min')">
 			<input class="form-control" type="number" name="omRangeMin" ng-model="model[property].min" placeholder="{{'range.edit.min' | translate}}"></input>
+			<p class="text-danger" ng-hide="rangeForm.omRangeMin.$touched" ng-repeat="error in $parent.serverErrors['validValues.min']">{{error}}</p>
 		</div>
-		<div class="col-sm-3">
+		<div class="col-sm-3" ng-class="formParentHasError('omRangeMin', 'validValues.max')">
 			<input class="form-control" type="number" name="omRangeMax" ng-model="model[property].max" placeholder="{{'range.edit.max' | translate}}"></input>
+			<p class="text-danger" ng-hide="rangeForm.omRangeMin.$touched" ng-repeat="error in $parent.serverErrors['validValues.max']">{{error}}</p>
 		</div>
 	</div>
 </ng-form>
