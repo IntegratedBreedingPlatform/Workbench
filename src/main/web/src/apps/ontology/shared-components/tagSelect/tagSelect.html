@@ -1,8 +1,10 @@
 <div ng-show="editable()">
-	<div class="label-wrapper" ng-repeat="selectedItem in model[property]">
-		<span class="label label-primary">
-			{{selectedItem}}
-			<a href="#" ng-click="removeItem($event, $index)"><span class="glyphicon glyphicon-remove glyphicon-white" aria-hidden="true"></span></a>
+	<div class="label-wrapper tag-wrapper" ng-repeat="selectedItem in model[property]">
+		<span class="label label-primary tag" title="{{selectedItem}}">
+			<span class="tag-text">{{selectedItem}}</span>
+			<a class="tag-remove" href="#" ng-click="removeItem($event, $index)">
+				<span class="glyphicon glyphicon-remove glyphicon-white" aria-hidden="true"></span>
+			</a>
 		</span>
 	</div>
 	<div class="suggestions-wrapper" ng-class="{'show-suggestions': suggestionsShown}" om-click-anywhere-but-here om-callback="hideSuggestions()" om-enabled="suggestionsShown">
