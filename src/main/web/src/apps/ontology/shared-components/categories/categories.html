@@ -2,12 +2,18 @@
 	<ol class="om-categories">
 		<li class="om-category row" ng-repeat="category in model[property].categories track by $index">
 			<div class="col-sm-2"  ng-class="formParentHasError('omCategoryName{{$index + 1}}', 'validValues.categories[{{$index + 1}}].name')">
-				<input type="text" class="form-control om-category-input" ng-model="category.name" placeholder="{{'categories.name' | translate}}" name="omCategoryName{{$index + 1}}"/>
+				<input type="text" class="form-control om-category-input" ng-model="category.name" placeholder="{{'categories.name' | translate}}" name="omCategoryName{{$index + 1}}" ng-maxlength="200"/>
+				<ng-messages for="categoriesForm.omCategoryName{{$index + 1}}.$error" ng-if="categoriesForm.$submitted || 'categoriesForm.omCategoryName' + ($index + 1) + '.$touched'">
+					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "200"}'}}</p></ng-message>
+				</ng-messages>
 				<p class="text-danger" ng-hide="'omCategoryName{{$index + 1}}'.$touched" ng-repeat="error in $parent.$parent.serverErrors['validValues.categories[' + ($index+1) + '].name']">{{error}}</p>
 			</div>
-			<div class="col-sm-6" ng-class="formParentHasError('omCategoryName{{$index + 1}}', 'validValues.categories[{{$index + 1}}].description')">
-				<input type="text" class="form-control om-category-input" ng-model="category.description" placeholder="{{'categories.description' | translate}}"/>
-				<p class="text-danger" ng-hide="'omCategoryName{{$index + 1}}'.$touched" ng-repeat="error in $parent.$parent.serverErrors['validValues.categories[' + ($index+1) + '].description']">{{error}}</p>
+			<div class="col-sm-6" ng-class="formParentHasError('omCategoryDescription{{$index + 1}}', 'validValues.categories[{{$index + 1}}].description')">
+				<input type="text" class="form-control om-category-input" ng-model="category.description" placeholder="{{'categories.description' | translate}}" name="omCategoryDescription{{$index + 1}}" ng-maxlength="255"/>
+				<ng-messages for="categoriesForm.omCategoryDescription{{$index + 1}}.$error" ng-if="categoriesForm.$submitted || 'categoriesForm.omCategoryDescription' + ($index + 1) + '.$touched'">
+					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "255"}'}}</p></ng-message>
+				</ng-messages>
+				<p class="text-danger" ng-hide="'omCategoryDescription{{$index + 1}}'.$touched" ng-repeat="error in $parent.$parent.serverErrors['validValues.categories[' + ($index+1) + '].description']">{{error}}</p>
 			</div>
 			<div class="col-sm-4">
 				<a class="form-control-static" href="#" ng-show="removable()" ng-click="removeCategory($event, $index)">{{'categories.remove' | translate}}</a>
