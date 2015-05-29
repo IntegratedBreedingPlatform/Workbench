@@ -126,6 +126,8 @@
 
 	"validation": {
 		"tooLong": "Please reduce to under {{maxLength}} characters.",
+		"numTooBig": "The number must be less than or equal to {{max}}",
+		"numTooSmall": "The number must be more than or equal to {{min}}",
 
 		"method": {
 			"nameRequired": "Please name your method.",
