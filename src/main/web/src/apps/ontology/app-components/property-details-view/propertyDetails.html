@@ -55,7 +55,7 @@
 		<div ng-class="formGroupClass('omOntologyId', 'cropOntologyId')">
 			<label for="omOntologyId" class="col-sm-3 control-label">{{'formField.ontologyId' | translate}}</label>
 			<div class="col-sm-9">
-				<om-input om-id="omOntologyId" om-label="{{'formField.ontologyId' | translate}}" om-property="cropOntologyId" om-editing="editing" om-model="model" om-max-length="200"></om-input>
+				<om-input om-name="omOntologyId" om-label="{{'formField.ontologyId' | translate}}" om-property="cropOntologyId" om-editing="editing" om-model="model" om-max-length="200"></om-input>
 				<ng-messages for="pdForm.omOntologyId.$error" ng-if="pdForm.$submitted || pdForm.omName.$touched">
 					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "200"}'}}</p></ng-message>
 				</ng-messages>
