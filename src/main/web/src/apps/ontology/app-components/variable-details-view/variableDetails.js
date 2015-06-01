@@ -3,14 +3,15 @@
 
 (function() {
 	var variableDetails = angular.module('variableDetails', ['input', 'textArea', 'select', 'properties', 'methods', 'scales', 'utilities',
-		'variables', 'variableTypes', 'panel']),
+		'variables', 'variableTypes', 'panel', 'debounce']),
 		DELAY = 400,
+		DEBOUNCE_TIME = 500,
 		NUM_EDITABLE_FIELDS = 6;
 
 	variableDetails.directive('omVariableDetails', ['variablesService', 'variableTypesService', 'propertiesService', 'methodsService',
-		'scalesService', 'serviceUtilities', 'formUtilities', 'panelService', '$timeout',
+		'scalesService', 'serviceUtilities', 'formUtilities', 'panelService', '$timeout', 'debounce',
 		function(variablesService, variableTypesService, propertiesService, methodsService, scalesService, serviceUtilities, formUtilities,
-			panelService, $timeout) {
+			panelService, $timeout, debounce) {
 
 			// Reset any errors we're showing the user
 			function resetErrors($scope) {
@@ -145,6 +146,7 @@
 						}
 					};
 
+					// Exposed for testing
 					$scope.toggleFavourites = function(id, model) {
 						model.favourite = !model.favourite;
 						$scope.selectedVariable.favourite = !$scope.selectedVariable.favourite;
@@ -154,6 +156,8 @@
 							$scope.updateSelectedVariable($scope.selectedVariable);
 						}, serviceUtilities.genericAndRatherUselessErrorHandler);
 					};
+
+					$scope.debouncedToggleFavourites = debounce($scope.toggleFavourites, DEBOUNCE_TIME, true);
 
 					$scope.formGroupClass = formUtilities.formGroupClassGenerator($scope, 'vdForm');
 
