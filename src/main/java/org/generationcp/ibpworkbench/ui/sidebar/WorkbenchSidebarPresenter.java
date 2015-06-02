@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.*;
 
@@ -32,6 +33,9 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 
     @Autowired
     private SessionData sessionData;
+    
+    @Value("${workbench.is.backup.and.restore.enabled}")
+    private String isBackupAndRestoreEnabled;
 
     public WorkbenchSidebarPresenter(WorkbenchSidebar view) {
         this.view = view;
@@ -87,6 +91,9 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 			List<WorkbenchSidebarCategoryLink> categoryLinks, 
     		WorkbenchSidebarCategory category) throws MiddlewareQueryException {
     	categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"manage_program","Manage Program Settings"));
+    	if(isBackupAndRestoreEnabled!=null && Boolean.valueOf(isBackupAndRestoreEnabled)) {
+    		categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"recovery","Backup and Restore Program Data"));
+    	}
         categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"user_tools","Manage User-Added Tools"));
         categoryLinks.add(new WorkbenchSidebarCategoryLink(manager.getToolWithName(ToolEnum.DATASET_IMPORTER.getToolName()),category,
 				ToolEnum.DATASET_IMPORTER.getToolName(),"Data Import Tool"));
