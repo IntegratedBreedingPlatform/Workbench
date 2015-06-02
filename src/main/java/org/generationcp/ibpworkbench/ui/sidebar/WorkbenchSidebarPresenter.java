@@ -87,7 +87,7 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
         return sidebarLinks;
     }
 
-    private void addAdminCategoryLinks(
+    protected void addAdminCategoryLinks(
 			List<WorkbenchSidebarCategoryLink> categoryLinks, 
     		WorkbenchSidebarCategory category) throws MiddlewareQueryException {
     	categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"manage_program","Manage Program Settings"));
@@ -147,4 +147,16 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
             LOG.error(e.toString(), e);
         }
     }
+
+	public void setIsBackupAndRestoreEnabled(String isBackupAndRestoreEnabled) {
+		this.isBackupAndRestoreEnabled = isBackupAndRestoreEnabled;
+	}
+
+	public void setManager(WorkbenchDataManager manager) {
+		this.manager = manager;
+	}
+	
+	
+    
+    
 }
