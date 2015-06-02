@@ -165,7 +165,7 @@
 
 				transformedVariable['action-favourite'].iconValue = (transformedVariable['action-favourite'].iconValue === 'star') ?
 					'star-empty' : 'star';
-				$scope.updateVariable(transformedVariable);
+				$scope.updateSelectedVariable(transformedVariable);
 
 				variablesService.getVariable($scope.selectedItem.id).then(function(variable) {
 					$scope.selectedVariable = variable;
@@ -176,33 +176,17 @@
 				ctrl.showNoFavouritesMessage = ctrl.favouriteVariables.length > 0 ? false : true;
 			};
 
-			$scope.updateVariable = function(updatedVariable) {
-				if (updatedVariable) {
-					// If the variable is not a favourite, we need to remove it if it's in the favourites list
-					if (updatedVariable['action-favourite'].iconValue === 'star') {
-						findAndUpdate(ctrl.favouriteVariables, $scope.selectedItem.id, updatedVariable, collectionUtilities.sortByName);
-						addNotFound(ctrl.favouriteVariables, $scope.selectedItem.id, updatedVariable, collectionUtilities.sortByName);
-					} else {
-						findAndRemove(ctrl.favouriteVariables, $scope.selectedItem.id);
-					}
-
-					findAndUpdate(ctrl.variables, $scope.selectedItem.id, updatedVariable, collectionUtilities.sortByName);
-
-				} else {
-					findAndRemove(ctrl.variables, $scope.selectedItem.id);
-					findAndRemove(ctrl.favouriteVariables, $scope.selectedItem.id);
-				}
-			};
-
 			$scope.updateSelectedVariable = function(updatedVariable) {
 				var transformedVariable;
 
 				if (updatedVariable) {
-					transformedVariable = transformDetailedVariableToDisplayFormat(updatedVariable, $scope.selectedItem.id);
+					transformedVariable = updatedVariable['action-favourite'] ? updatedVariable :
+						transformDetailedVariableToDisplayFormat(updatedVariable, $scope.selectedItem.id);
 
 					// If the variable is not a favourite, we need to remove it if it's in the favourites list
-					if (updatedVariable.favourite) {
+					if (transformedVariable['action-favourite'].iconValue === 'star') {
 						findAndUpdate(ctrl.favouriteVariables, $scope.selectedItem.id, transformedVariable, collectionUtilities.sortByName);
+						addNotFound(ctrl.favouriteVariables, $scope.selectedItem.id, transformedVariable, collectionUtilities.sortByName);
 					} else {
 						findAndRemove(ctrl.favouriteVariables, $scope.selectedItem.id);
 					}

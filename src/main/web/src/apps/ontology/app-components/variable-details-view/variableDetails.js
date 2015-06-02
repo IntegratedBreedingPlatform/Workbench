@@ -150,11 +150,10 @@
 					$scope.toggleFavourites = function(id, model) {
 						model.favourite = !model.favourite;
 						$scope.selectedVariable.favourite = !$scope.selectedVariable.favourite;
-						variablesService.updateVariable(id, $scope.selectedVariable).then(function() {
-
-							// Update variable on parent scope if we succeeded
-							$scope.updateSelectedVariable($scope.selectedVariable);
-						}, serviceUtilities.genericAndRatherUselessErrorHandler);
+						if ($scope.$parent && $scope.$parent.$parent) {
+							$scope.$parent.$parent.updateSelectedVariable($scope.selectedVariable);
+						}
+						variablesService.updateVariable(id, $scope.selectedVariable);
 					};
 
 					$scope.debouncedToggleFavourites = debounce($scope.toggleFavourites, DEBOUNCE_TIME, true);
