@@ -470,6 +470,9 @@ describe('Variable details directive', function() {
 	});
 
 	describe('$scope.toggleFavourites', function() {
+		beforeEach(function() {
+			scope.updateSelectedVariable = function() {};
+		});
 
 		it('should toggle the model and the selected variable (true -> false)', function() {
 			scope.model = {favourite: true};
@@ -490,18 +493,14 @@ describe('Variable details directive', function() {
 		it('should update the selected variable on the parent scope', function() {
 			scope.model = {favourite: false};
 			scope.selectedVariable =  {favourite: false};
-			scope.$parent = {};
-			scope.$parent.$parent = {};
-			scope.$parent.$parent.updateSelectedVariable = function() {};
 
-			spyOn(scope.$parent.$parent, 'updateSelectedVariable').and.callThrough();
-
+			spyOn(scope, 'updateSelectedVariable').and.callThrough();
 			scope.toggleFavourites(PLANT_VIGOR.id, scope.model);
 
 			deferredUpdateVariable.resolve();
 			scope.$apply();
 
-			expect(scope.$parent.$parent.updateSelectedVariable).toHaveBeenCalledWith(scope.selectedVariable);
+			expect(scope.updateSelectedVariable).toHaveBeenCalledWith(scope.selectedVariable);
 		});
 	});
 

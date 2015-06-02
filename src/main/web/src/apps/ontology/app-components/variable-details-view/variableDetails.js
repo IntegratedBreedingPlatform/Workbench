@@ -150,9 +150,7 @@
 					$scope.toggleFavourites = function(id, model) {
 						model.favourite = !model.favourite;
 						$scope.selectedVariable.favourite = !$scope.selectedVariable.favourite;
-						if ($scope.$parent && $scope.$parent.$parent) {
-							$scope.$parent.$parent.updateSelectedVariable($scope.selectedVariable);
-						}
+						$scope.updateSelectedVariable($scope.selectedVariable);
 						variablesService.updateVariable(id, $scope.selectedVariable);
 					};
 
