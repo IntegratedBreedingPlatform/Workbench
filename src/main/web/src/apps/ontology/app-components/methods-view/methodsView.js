@@ -60,15 +60,17 @@
 					if (updatedMethod) {
 						ctrl.methods[selectedIndex] = updatedMethod;
 						collectionUtilities.sortByName(ctrl.methods);
+						$scope.selectedMethod = updatedMethod;
 					} else {
 						ctrl.methods.splice(selectedIndex, 1);
 					}
 				}
 			};
 
+			// An object only containing the selected item's id. This format is required for passing to the list directive.
 			$scope.selectedItem = {id: null};
+			// Contains the entire selected method object once it has been updated.
 			$scope.selectedMethod = null;
-
 		}
 	]);
 }());

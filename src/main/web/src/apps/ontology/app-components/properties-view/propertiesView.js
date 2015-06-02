@@ -71,13 +71,16 @@
 					if (transformedProperty) {
 						ctrl.properties[selectedIndex] = transformedProperty;
 						ctrl.properties = collectionUtilities.sortByName(ctrl.properties);
+						$scope.selectedProperty = updatedProperty;
 					} else {
 						ctrl.properties.splice(selectedIndex, 1);
 					}
 				}
 			};
 
+			// An object only containing the selected item's id. This format is required for passing to the list directive.
 			$scope.selectedItem = {id: null};
+			// Contains the entire selected property object once it has been updated.
 			$scope.selectedProperty = null;
 		}
 	]);

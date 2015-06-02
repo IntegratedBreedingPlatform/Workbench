@@ -183,23 +183,27 @@
 					transformedVariable = updatedVariable['action-favourite'] ? updatedVariable :
 						transformDetailedVariableToDisplayFormat(updatedVariable, $scope.selectedItem.id);
 
-					// If the variable is not a favourite, we need to remove it if it's in the favourites list
 					if (transformedVariable['action-favourite'].iconValue === 'star') {
 						findAndUpdate(ctrl.favouriteVariables, $scope.selectedItem.id, transformedVariable, collectionUtilities.sortByName);
 						addNotFound(ctrl.favouriteVariables, $scope.selectedItem.id, transformedVariable, collectionUtilities.sortByName);
 					} else {
+						// If the variable is not a favourite, we need to remove it if it's in the favourites list
 						findAndRemove(ctrl.favouriteVariables, $scope.selectedItem.id);
 					}
 
 					findAndUpdate(ctrl.variables, $scope.selectedItem.id, transformedVariable, collectionUtilities.sortByName);
 
+					$scope.selectedVariable = updatedVariable;
 				} else {
+					// If the updated variable is null or undefined, then remove it from the all variables and favourites lists
 					findAndRemove(ctrl.variables, $scope.selectedItem.id);
 					findAndRemove(ctrl.favouriteVariables, $scope.selectedItem.id);
 				}
 			};
 
+			// An object only containing the selected item's id. This format is required for passing to the list directive.
 			$scope.selectedItem = {id: null};
+			// Contains the entire selected variable object once it has been updated.
 			$scope.selectedVariable = {};
 		}
 	]);

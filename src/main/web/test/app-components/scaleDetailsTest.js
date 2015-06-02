@@ -176,6 +176,21 @@ describe('Scale details directive', function() {
 			expect(scope.showCategoriesWidget).toBe(true);
 		});
 
+		it('should initialise categories if there aren\'t any yet and the scale type is changed to be Categorical', function() {
+			scope.selectedScale = SCORE;
+			scope.$apply();
+			// Use angular.equals to ignore the $$hashKey property
+			expect(angular.equals(scope.model.validValues.categories, [{}])).toBe(true);
+		});
+
+		it('should not initialise categories if there are already categories and the scale type is changed to be Categorical', function() {
+			scope.selectedScale = SCORE;
+			scope.selectedScale.validValues.categories.push({name: '1', description: 'low'});
+			scope.$apply();
+			// Use angular.equals to ignore the $$hashKey property
+			expect(angular.equals(scope.model.validValues.categories, [{name: '1', description: 'low'}])).toBe(true);
+		});
+
 		it('should hide the categories and range widgets if the scale type is changed to be something other than Categorical or Numeric',
 			function() {
 				scope.selectedScale = FREE_TEXT;

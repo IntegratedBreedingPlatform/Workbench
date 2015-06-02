@@ -70,13 +70,16 @@
 					if (transformedScale) {
 						ctrl.scales[selectedIndex] = transformedScale;
 						collectionUtilities.sortByName(ctrl.scales);
+						$scope.selectedScale = updatedScale;
 					} else {
 						ctrl.scales.splice(selectedIndex, 1);
 					}
 				}
 			};
 
+			// An object only containing the selected item's id. This format is required for passing to the list directive.
 			$scope.selectedItem = {id: null};
+			// Contains the entire selected scale object once it has been updated.
 			$scope.selectedScale = null;
 		}
 	]);
