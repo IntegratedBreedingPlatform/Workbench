@@ -180,6 +180,8 @@
 				var transformedVariable;
 
 				if (updatedVariable) {
+					//if property 'action-favourite' present we assume that variable is already transformed, as it is added during
+					//transformation
 					transformedVariable = updatedVariable['action-favourite'] ? updatedVariable :
 						transformDetailedVariableToDisplayFormat(updatedVariable, $scope.selectedItem.id);
 
