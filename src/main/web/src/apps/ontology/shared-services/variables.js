@@ -21,11 +21,11 @@
 						name: variable.methodSummary.name,
 						description: variable.methodSummary.description
 					},
-					scaleSummary: variable.scale
+					scaleSummary: variable.scale,
+					alias: variable.alias ? variable.alias : ''
 				},
 				propertiesToInclude = [
 					'name',
-					'alias',
 					'description',
 					'favourite',
 					'expectedRange',
@@ -256,8 +256,8 @@
 				var convertedVariable = convertVariableForUpdating(variable),
 					request;
 
-				request = $http.put('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables/:id' +
-					'?programId=1', convertedVariable);
+				request = $http.put('/bmsapi/ontology/' + configService.getCropName() + '/variables/' + id + '?programId=' +
+						configService.getProgramId(), convertedVariable);
 				return request.then(function(response) {
 					return response.status;
 				}, failureHandler);

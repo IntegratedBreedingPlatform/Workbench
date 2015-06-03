@@ -36,6 +36,7 @@ describe('Variables Service', function() {
 
 		CONVERTED_PLANT_VIGOR = {
 			name: PLANT_VIGOR.name,
+			alias: '',
 			description: PLANT_VIGOR.description,
 			propertySummary: PLANT_VIGOR.propertySummary,
 			methodSummary: PLANT_VIGOR.methodSummary,
@@ -261,7 +262,7 @@ describe('Variables Service', function() {
 			// FIXME not in use yet because services haven't been hooked up
 			var id = 1;
 
-			httpBackend.expectPUT(/\/variables\/:id\?programId=1$/, CONVERTED_PLANT_VIGOR).respond(204);
+			httpBackend.expectPUT(/\/variables\/1\?programId=$/, CONVERTED_PLANT_VIGOR).respond(204);
 
 			variablesService.updateVariable(id, PLANT_VIGOR);
 
@@ -279,7 +280,7 @@ describe('Variables Service', function() {
 				editableFields: ['blah']
 			};
 
-			httpBackend.expectPUT(/\/variables\/:id\?programId=1$/, expectedVariable).respond(204);
+			httpBackend.expectPUT(/\/variables\/1\?programId=$/, expectedVariable).respond(204);
 
 			variablesService.updateVariable(id, variable);
 
@@ -292,7 +293,7 @@ describe('Variables Service', function() {
 				expectedResponse = 204,
 				actualResponse;
 
-			httpBackend.expectPUT(/\/variables\/:id\?programId=1$/, CONVERTED_PLANT_VIGOR).respond(expectedResponse);
+			httpBackend.expectPUT(/\/variables\/1\?programId=$/, CONVERTED_PLANT_VIGOR).respond(expectedResponse);
 
 			variablesService.updateVariable(id, PLANT_VIGOR).then(function(res) {
 				actualResponse = res;
@@ -308,7 +309,7 @@ describe('Variables Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectPUT(/\/variables\/:id\?programId=1$/, CONVERTED_PLANT_VIGOR).respond(500, error);
+			httpBackend.expectPUT(/\/variables\/1\?programId=$/, CONVERTED_PLANT_VIGOR).respond(500, error);
 
 			variablesService.updateVariable(1, PLANT_VIGOR);
 			httpBackend.flush();
