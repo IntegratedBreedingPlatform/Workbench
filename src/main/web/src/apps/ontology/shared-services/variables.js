@@ -11,19 +11,25 @@
 
 		function convertVariableForUpdating(variable) {
 			var convertedVariable = {
-					methodId: variable.methodSummary && variable.methodSummary.id,
-					scaleId: variable.scaleSummary && variable.scaleSummary.id,
-					propertyId: variable.propertySummary && variable.propertySummary.id,
-					variableTypeIds: variable.variableTypes && variable.variableTypes.map(function(variableType) {
-						return variableType.id;
-					})
+					propertySummary: {
+						id: variable.propertySummary.id,
+						name: variable.propertySummary.name,
+						description: variable.propertySummary.description
+					},
+					methodSummary: {
+						id: variable.methodSummary.id,
+						name: variable.methodSummary.name,
+						description: variable.methodSummary.description
+					},
+					scaleSummary: variable.scale
 				},
 				propertiesToInclude = [
 					'name',
 					'alias',
 					'description',
 					'favourite',
-					'expectedRange'
+					'expectedRange',
+					'variableTypes'
 				];
 
 			Object.keys(variable).forEach(function(key) {
@@ -166,8 +172,8 @@
 			*/
 			addVariable: function(variable) {
 				var convertedVariable = convertVariableForUpdating(variable),
-					request = $http.post('http://private-f74035-ontologymanagement.apiary-mock.com/bmsapi/ontology/rice/variables',
-						convertedVariable);
+					request = $http.post('/bmsapi/ontology/' + configService.getCropName() + '/variables?programId=' +
+						configService.getProgramId(), convertedVariable);
 
 				return request.then(successHandler, failureHandler);
 			},

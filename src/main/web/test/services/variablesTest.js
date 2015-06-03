@@ -14,7 +14,7 @@ describe('Variables Service', function() {
 				id: 1,
 				name: 'Look at the plant'
 			},
-			scaleSummary: {
+			scale: {
 				id: 1,
 				name: 'Score',
 				description: 'As per title',
@@ -37,10 +37,10 @@ describe('Variables Service', function() {
 		CONVERTED_PLANT_VIGOR = {
 			name: PLANT_VIGOR.name,
 			description: PLANT_VIGOR.description,
-			propertyId: PLANT_VIGOR.propertySummary.id,
-			methodId: PLANT_VIGOR.methodSummary.id,
-			scaleId: PLANT_VIGOR.scaleSummary.id,
-			variableTypeIds: [PLANT_VIGOR.variableTypes[0].id]
+			propertySummary: PLANT_VIGOR.propertySummary,
+			methodSummary: PLANT_VIGOR.methodSummary,
+			scaleSummary: PLANT_VIGOR.scale,
+			variableTypes: PLANT_VIGOR.variableTypes
 		},
 
 		variablesService,
@@ -162,7 +162,7 @@ describe('Variables Service', function() {
 
 		it('should POST to /variables', function() {
 
-			httpBackend.expectPOST(/\/variables$/, CONVERTED_PLANT_VIGOR).respond(201);
+			httpBackend.expectPOST(/\/variables\?programId=$/, CONVERTED_PLANT_VIGOR).respond(201);
 
 			variablesService.addVariable(PLANT_VIGOR);
 
@@ -174,7 +174,7 @@ describe('Variables Service', function() {
 			var variable = angular.copy(PLANT_VIGOR),
 				expectedVariable = CONVERTED_PLANT_VIGOR;
 
-			httpBackend.expectPOST(/\/variables$/, expectedVariable).respond(201);
+			httpBackend.expectPOST(/\/variables\?programId=$/, expectedVariable).respond(201);
 
 			variablesService.addVariable(variable);
 
@@ -185,7 +185,7 @@ describe('Variables Service', function() {
 
 			var response = 123;
 
-			httpBackend.expectPOST(/\/variables$/, CONVERTED_PLANT_VIGOR).respond(201, response);
+			httpBackend.expectPOST(/\/variables\?programId=$/, CONVERTED_PLANT_VIGOR).respond(201, response);
 
 			variablesService.addVariable(PLANT_VIGOR);
 			httpBackend.flush();
@@ -199,7 +199,7 @@ describe('Variables Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectPOST(/\/variables$/).respond(500, error);
+			httpBackend.expectPOST(/\/variables\?programId=$/).respond(500, error);
 
 			variablesService.addVariable(PLANT_VIGOR);
 			httpBackend.flush();
