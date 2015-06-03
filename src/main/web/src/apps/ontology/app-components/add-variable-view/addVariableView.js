@@ -42,19 +42,27 @@
 
 				propertiesService.getProperties().then(function(properties) {
 					$scope.data.properties = properties;
-				}, serviceUtilities.genericAndRatherUselessErrorHandler);
+				}, function(response) {
+					$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+				});
 
 				methodsService.getMethods().then(function(methods) {
 					$scope.data.methods = methods;
-				}, serviceUtilities.genericAndRatherUselessErrorHandler);
+				}, function(response) {
+					$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+				});
 
 				scalesService.getScales().then(function(scales) {
 					$scope.data.scales = scales;
-				}, serviceUtilities.genericAndRatherUselessErrorHandler);
+				}, function(response) {
+					$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+				});
 
 				variableTypesService.getTypes().then(function(types) {
 					$scope.data.types = types;
-				}, serviceUtilities.genericAndRatherUselessErrorHandler);
+				}, function(response) {
+					$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+				});
 			}
 
 			// Show the expected range widget if the chosen scale has a numeric datatype
@@ -72,7 +80,11 @@
 						variableStateService.reset();
 						// FIXME Go somewhere more useful
 						$location.path('/variables');
-					}, serviceUtilities.genericAndRatherUselessErrorHandler);
+					}, function(response) {
+						$scope.avForm.$setUntouched();
+						$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+						$scope.submitted = false;
+					});
 				}
 			};
 

@@ -6,6 +6,45 @@ describe('Add Variable View', function() {
 			preventDefault: function() {}
 		},
 
+		properties = [{
+			id: '51475',
+			name: 'Leaf length',
+			description: 'Measurement of leaf length in centimeter.'
+		},
+		{
+			id: '51476',
+			name: 'Leaf width',
+			description: 'Measurement of leaf width in centimeter.'
+		}],
+
+		methods = [{
+			id: '51081',
+			name: 'Astri counting',
+			description: 'Count the number of plants that are affected by black bundle per plot and record data in the FieldBook/FieldLog.'
+		},
+		{
+			id: '4130',
+			name: 'Average',
+			description: 'Average of values'
+		}],
+
+		scales = [{
+			id: '6067',
+			name: 'Day (dd)',
+			description: 'Day (dd)'
+		}],
+
+		variableTypes = [{
+			id: 1,
+			name: 'Analysis',
+			description: 'Variable to be used only in analysis (for example derived variables).'
+		},
+		{
+			id: 6,
+			name: 'Environment Detail',
+			description: 'Administrative details to be tracked per environment.'
+		}],
+
 		PLANT_VIGOR = {
 			id: 1,
 			name: 'Plant Vigor',
@@ -34,7 +73,7 @@ describe('Add Variable View', function() {
 		},
 
 		serviceUtilities = {
-			genericAndRatherUselessErrorHandler: function() {}
+			formatErrorsForDisplay: function() {}
 		},
 
 		formUtilities,
@@ -71,8 +110,11 @@ describe('Add Variable View', function() {
 			description: 'Characteristics of a germplasm to be recorded during a study.'
 		}],
 
-		deferred = [],
 		deferredAddVariable,
+		deferredGetProperties,
+		deferredGetMethods,
+		deferredGetScales,
+		deferredGetVariablesTypes,
 
 		q,
 		location,
@@ -81,14 +123,6 @@ describe('Add Variable View', function() {
 
 		controller,
 		variableFormService;
-
-	function fakePromise() {
-		return function() {
-			var defer = q.defer();
-			deferred.push(defer);
-			return defer.promise;
-		};
-	}
 
 	function compileController() {
 		controller = controllerFn('AddVariableController', {
@@ -101,10 +135,6 @@ describe('Add Variable View', function() {
 			scalesService: scalesService,
 			variableStateService: variableStateService,
 			serviceUtilities: serviceUtilities
-		});
-
-		deferred.forEach(function(d) {
-			d.resolve();
 		});
 
 		scope.$apply();
@@ -121,15 +151,33 @@ describe('Add Variable View', function() {
 		controllerFn = $controller;
 		formUtilities = _formUtilities_;
 
-		propertiesService.getProperties = fakePromise();
-		methodsService.getMethods = fakePromise();
-		scalesService.getScales = fakePromise();
-		variableTypesService.getTypes = fakePromise();
+		propertiesService.getProperties = function() {
+			deferredGetProperties = q.defer();
+			return deferredGetProperties.promise;
+		};
+		methodsService.getMethods = function() {
+			deferredGetMethods = q.defer();
+			return deferredGetMethods.promise;
+		};
+		scalesService.getScales = function() {
+			deferredGetScales = q.defer();
+			return deferredGetScales.promise;
+		};
+		variableTypesService.getTypes = function() {
+			deferredGetVariablesTypes = q.defer();
+			return deferredGetVariablesTypes.promise;
+		};
 
 		// We want a little more control over when this gets resolved
 		variablesService.addVariable = function() {
 			deferredAddVariable = q.defer();
 			return deferredAddVariable.promise;
+		};
+
+		// Pretend our form is valid
+		scope.avForm = {
+			$valid: true,
+			$setUntouched: function() {}
 		};
 
 		variableFormService = _variableFormService_;
@@ -145,7 +193,7 @@ describe('Add Variable View', function() {
 		spyOn(variableTypesService, 'getTypes').and.callThrough();
 
 		spyOn(location, 'path');
-		spyOn(serviceUtilities, 'genericAndRatherUselessErrorHandler');
+		spyOn(serviceUtilities, 'formatErrorsForDisplay');
 	}));
 
 	describe('by default', function() {
@@ -235,6 +283,54 @@ describe('Add Variable View', function() {
 			expect(scalesService.getScales).toHaveBeenCalled();
 			expect(variableTypesService.getTypes).toHaveBeenCalled();
 		});
+
+		it('should set the properties on the scope', function() {
+			deferredGetProperties.resolve(properties);
+			scope.$apply();
+			expect(scope.data.properties).toEqual(properties);
+		});
+
+		it('should display errors if properties were not retrieved successfully', function() {
+			deferredGetProperties.reject();
+			scope.$apply();
+			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
+		});
+
+		it('should set the methods on the scope', function() {
+			deferredGetMethods.resolve(methods);
+			scope.$apply();
+			expect(scope.data.methods).toEqual(methods);
+		});
+
+		it('should display errors if methods were not retrieved successfully', function() {
+			deferredGetMethods.reject();
+			scope.$apply();
+			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
+		});
+
+		it('should set the scales on the scope', function() {
+			deferredGetScales.resolve(scales);
+			scope.$apply();
+			expect(scope.data.scales).toEqual(scales);
+		});
+
+		it('should display errors if scales were not retrieved successfully', function() {
+			deferredGetScales.reject();
+			scope.$apply();
+			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
+		});
+
+		it('should set the variable types on the scope', function() {
+			deferredGetVariablesTypes.resolve(variableTypes);
+			scope.$apply();
+			expect(scope.data.types).toEqual(variableTypes);
+		});
+
+		it('should display errors if variable types were not retrieved successfully', function() {
+			deferredGetVariablesTypes.reject();
+			scope.$apply();
+			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
+		});
 	});
 
 	describe('$scope.saveVariable', function() {
@@ -243,11 +339,6 @@ describe('Add Variable View', function() {
 			// Pretend no edit is in progress
 			spyOn(variableStateService, 'updateInProgress').and.returnValue(false);
 			compileController();
-
-			// Set the form to be valid
-			scope.avForm = {
-				$valid: true
-			};
 		});
 
 		it('should call the variables service to save the variable', function() {
@@ -269,7 +360,7 @@ describe('Add Variable View', function() {
 			deferredAddVariable.reject();
 			scope.$apply();
 
-			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
+			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
 			expect(location.path.calls.count()).toEqual(0);
 		});
 
