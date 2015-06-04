@@ -1,10 +1,9 @@
+
 package org.generationcp.ibpworkbench;
 
-import com.vaadin.terminal.DownloadStream;
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.ParameterHandler;
-import com.vaadin.terminal.URIHandler;
-import com.vaadin.ui.*;
+import java.net.URL;
+import java.util.Map;
+
 import org.generationcp.ibpworkbench.actions.OpenProgramLocationsAction;
 import org.generationcp.ibpworkbench.actions.OpenProgramMethodsAction;
 import org.generationcp.ibpworkbench.ui.common.IContainerFittable;
@@ -17,46 +16,59 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.net.URL;
-import java.util.Map;
+import com.vaadin.terminal.DownloadStream;
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.terminal.ParameterHandler;
+import com.vaadin.terminal.URIHandler;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.CustomLayout;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Window;
 
 /**
  * Created by cyrus on 1/24/14.
  */
 @Configurable
 public class ContentWindow extends Window implements IContentWindow, InitializingBean, URIHandler, ParameterHandler {
-    private final static Logger LOG = LoggerFactory.getLogger(ContentWindow.class);
-    private Map<String, String[]> queryMap;
-    private String path;
-    private URL url;
-    private IWorkbenchSession appSession;
 
-    public ContentWindow() {
-        super("Breeding Management System | Workbench");
-    }
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -4166591931885992086L;
+	private final static Logger LOG = LoggerFactory.getLogger(ContentWindow.class);
+	private Map<String, String[]> queryMap;
+	private String path;
+	private URL url;
+	private IWorkbenchSession appSession;
 
-    @Override
-    public void showContent(Component content) {
+	public ContentWindow() {
+		super("Breeding Management System | Workbench");
+	}
 
-        try {
+	@Override
+	public void showContent(Component content) {
 
-            this.removeAllComponents();
-        } catch (Exception e) {
-            // ignore
-        }
+		try {
 
-        if (content instanceof ComponentContainer) {
+			this.removeAllComponents();
+		} catch (Exception e) {
+			// ignore
+		}
 
-            if (content instanceof IContainerFittable) {
-                ((IContainerFittable)content).fitToContainer(this);
-            }
+		if (content instanceof ComponentContainer) {
 
-            this.setContent((ComponentContainer)content);
-        } else {
-            this.addComponent(content);
-        }
+			if (content instanceof IContainerFittable) {
+				((IContainerFittable) content).fitToContainer(this);
+			}
 
-    }
+			this.setContent((ComponentContainer) content);
+		} else {
+			this.addComponent(content);
+		}
+
+	}
 
 	@Override
 	public void showContent(String toolUrl) {
@@ -71,124 +83,124 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 	}
 
 	@Override
-    public void attach() {
-        super.attach();
+	public void attach() {
+		super.attach();
 
-        appSession = (IWorkbenchSession) this.getApplication();
-    }
+		this.appSession = (IWorkbenchSession) this.getApplication();
+	}
 
-    @Override
-    public void handleParameters(Map<String, String[]> stringMap) {
-        for (String key : stringMap.keySet()) {
+	@Override
+	public void handleParameters(Map<String, String[]> stringMap) {
+		for (String key : stringMap.keySet()) {
 
-            String values = "";
-            for (String val : stringMap.get(key)) {
-                values += val + " ";
-            }
+			String values = "";
+			for (String val : stringMap.get(key)) {
+				values += val + " ";
+			}
 
-            LOG.debug("query: " + key + " value(s): " + values);
-        }
+			ContentWindow.LOG.debug("query: " + key + " value(s): " + values);
+		}
 
-        this.queryMap = stringMap;
-    }
+		this.queryMap = stringMap;
+	}
 
-    @Override
-    public DownloadStream handleURI(URL url, String s) {
-       this.path = s;
-       this.url = url;
+	@Override
+	public DownloadStream handleURI(URL url, String s) {
+		this.path = s;
+		this.url = url;
 
-        String errorMessage = "";
-        LOG.debug("path: " + path);
+		String errorMessage = "";
+		ContentWindow.LOG.debug("path: " + this.path);
 
-        // perform navigation here
-        try {
+		// perform navigation here
+		try {
 
-            if (path != null) {
-                if (path.equals("ProgramLocations")) {
+			if (this.path != null) {
+				if (this.path.equals("ProgramLocations")) {
 
-                    if (queryMap.get("programId") == null) { throw new Exception("Wrong query string, should be <strong>programId=[ID]<strong/>."); }
+					if (this.queryMap.get("programId") == null) {
+						throw new Exception("Wrong query string, should be <strong>programId=[ID]<strong/>.");
+					}
 
-                    Project project = workbenchDataManager.getProjectById(Long.parseLong(queryMap.get("programId")[0]));
+					Project project = this.workbenchDataManager.getProjectById(Long.parseLong(this.queryMap.get("programId")[0]));
 
-                    if (project == null) {
-                        throw new Exception("No Program Exists with <strong>programId=" + queryMap.get("programId")[0] + "</strong>");
-                    }
+					if (project == null) {
+						throw new Exception("No Program Exists with <strong>programId=" + this.queryMap.get("programId")[0] + "</strong>");
+					}
 
-                    if (appSession.getSessionData().getLastOpenedProject() == null) {
-                        appSession.getSessionData().setLastOpenedProject(project);
-                    }
+					if (this.appSession.getSessionData().getLastOpenedProject() == null) {
+						this.appSession.getSessionData().setLastOpenedProject(project);
+					}
 
-                    if (appSession.getSessionData().getSelectedProject() == null) {
-                        appSession.getSessionData().setSelectedProject(project);
-                    }
+					if (this.appSession.getSessionData().getSelectedProject() == null) {
+						this.appSession.getSessionData().setSelectedProject(project);
+					}
 
-                    new OpenProgramLocationsAction(project ,null).doAction(this,"/" + path,false);   // execute
+					new OpenProgramLocationsAction(project, null).doAction(this, "/" + this.path, false); // execute
 
-                    return null;
-                }
+					return null;
+				}
 
-                else if (path.equals("ProgramMethods") ) {
+				else if (this.path.equals("ProgramMethods")) {
 
-                    if (queryMap.get("programId") == null) { throw new Exception("Wrong query string, should be <strong>programId=[ID]<strong/>."); }
+					if (this.queryMap.get("programId") == null) {
+						throw new Exception("Wrong query string, should be <strong>programId=[ID]<strong/>.");
+					}
 
-                    Project project = workbenchDataManager.getProjectById(Long.parseLong(queryMap.get("programId")[0]));
+					Project project = this.workbenchDataManager.getProjectById(Long.parseLong(this.queryMap.get("programId")[0]));
 
-                    if (project == null) {
-                        throw new Exception("No Program Exists with <strong>programId=" + queryMap.get("programId")[0] + "</strong>");
-                    }
+					if (project == null) {
+						throw new Exception("No Program Exists with <strong>programId=" + this.queryMap.get("programId")[0] + "</strong>");
+					}
 
-                    if (appSession.getSessionData().getLastOpenedProject() == null) {
-                        appSession.getSessionData().setLastOpenedProject(project);
-                    }
+					if (this.appSession.getSessionData().getLastOpenedProject() == null) {
+						this.appSession.getSessionData().setLastOpenedProject(project);
+					}
 
-                    if (appSession.getSessionData().getSelectedProject() == null) {
-                        appSession.getSessionData().setSelectedProject(project);
-                    }
+					if (this.appSession.getSessionData().getSelectedProject() == null) {
+						this.appSession.getSessionData().setSelectedProject(project);
+					}
 
-                    new OpenProgramMethodsAction(project ,null).doAction(this,"/" + path,false);
+					new OpenProgramMethodsAction(project, null).doAction(this, "/" + this.path, false);
 
-                    return null;
-                }
+					return null;
+				}
 
-            }
+			}
 
-            errorMessage = "Incorrect URL. Correct format should be<br/> <strong>/ibpworkbench/content/ProgramLocations?programId=[ID]</strong> or <strong>/ibpworkbench/content/ProgramMethods?programId=[ID]</strong>";
+			errorMessage =
+					"Incorrect URL. Correct format should be<br/> <strong>/ibpworkbench/content/ProgramLocations?programId=[ID]</strong> or <strong>/ibpworkbench/content/ProgramMethods?programId=[ID]</strong>";
 
+		} catch (NumberFormatException e) {
+			errorMessage = "The value you entered for programId is not a number.";
+		}
 
+		catch (Exception e) {
 
-        } catch (NumberFormatException e) {
-            errorMessage = "The value you entered for programId is not a number.";
-        }
+			// error happened
+			errorMessage = e.getMessage();
 
-        catch (Exception e) {
+			e.printStackTrace();
 
+		}
 
-            // error happened
-            errorMessage = e.getMessage();
+		CustomLayout errorPage = new CustomLayout("error");
+		errorPage.setSizeUndefined();
+		errorPage.setWidth("100%");
+		errorPage.setStyleName("error-page");
+		errorPage.addComponent(new Label(errorMessage, Label.CONTENT_XHTML), "error_message");
 
-            e.printStackTrace();
+		this.showContent(errorPage);
 
-        }
+		return null;
+	}
 
+	@Autowired
+	private WorkbenchDataManager workbenchDataManager;
 
-
-        CustomLayout errorPage = new CustomLayout("error");
-        errorPage.setSizeUndefined();
-        errorPage.setWidth("100%");
-        errorPage.setStyleName("error-page");
-        errorPage.addComponent(new Label(errorMessage, Label.CONTENT_XHTML), "error_message");
-
-        this.showContent(errorPage);
-
-       return null;
-    }
-
-    @Autowired
-    private WorkbenchDataManager workbenchDataManager;
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        this.addURIHandler(this);
-        this.addParameterHandler(this);
-    }
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		this.addURIHandler(this);
+		this.addParameterHandler(this);
+	}
 }

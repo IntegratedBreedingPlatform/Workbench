@@ -4,17 +4,18 @@
  * Generation Challenge Programme (GCP)
  *
  *
- * This software is licensed for use under the terms of the GNU General Public
- * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
- * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
+ * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
  *
  *******************************************************************************/
+
 package org.generationcp.ibpworkbench.actions;
 
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component.Event;
-import com.vaadin.ui.Window;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+
+import javax.annotation.Resource;
 
 import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -32,13 +33,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import javax.annotation.Resource;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component.Event;
+import com.vaadin.ui.Window;
 
 @Configurable
 public class OpenWindowAction implements WorkflowConstants, ClickListener, ActionListener {
+
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOG = LoggerFactory.getLogger(OpenWindowAction.class);
 
@@ -72,7 +74,7 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
 	@Override
 	public void doAction(Event event) {
 		Window window = event.getComponent().getWindow();
-		launchWindow(window, windowEnum);
+		this.launchWindow(window, this.windowEnum);
 	}
 
 	@Override
@@ -81,12 +83,11 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
 		String windowName = uriFragment.split("/")[1];
 
 		if (WindowEnum.isCorrectTool(windowName)) {
-			launchWindow(window, WindowEnum.equivalentWindowEnum(windowName));
+			this.launchWindow(window, WindowEnum.equivalentWindowEnum(windowName));
 		} else {
-			LOG.debug("Cannot launch window due to invalid window name: {}", windowName);
-			MessageNotifier.showError(window, messageSource.getMessage(Message.LAUNCH_TOOL_ERROR),
-					messageSource.getMessage(Message.INVALID_TOOL_ERROR_DESC,
-							Arrays.asList(windowName).toArray()));
+			OpenWindowAction.LOG.debug("Cannot launch window due to invalid window name: {}", windowName);
+			MessageNotifier.showError(window, this.messageSource.getMessage(Message.LAUNCH_TOOL_ERROR),
+					this.messageSource.getMessage(Message.INVALID_TOOL_ERROR_DESC, Arrays.asList(windowName).toArray()));
 		}
 	}
 
@@ -106,40 +107,38 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
 			windowCaption = mywindow.getCaption();
 			logActivity = true;
 		} else if (WindowEnum.SOFTWARE_LICENSING_AGREEMENT.equals(windowName)) {
-			ConfirmDialog dialog = ConfirmDialog
-					.show(window, messageSource.getMessage(Message.SOFTWARE_LICENSE_AGREEMENT),
-							messageSource.getMessage(Message.SOFTWARE_LICENSE_AGREEMENT_DETAILS,
-									getCutOffDate()),
-							messageSource.getMessage(Message.DONE), null,
-							new ConfirmDialog.Listener() {
+			ConfirmDialog dialog =
+					ConfirmDialog.show(window, this.messageSource.getMessage(Message.SOFTWARE_LICENSE_AGREEMENT),
+							this.messageSource.getMessage(Message.SOFTWARE_LICENSE_AGREEMENT_DETAILS, this.getCutOffDate()),
+									this.messageSource.getMessage(Message.DONE), null, new ConfirmDialog.Listener() {
+
 								private static final long serialVersionUID = 1L;
 
-								@Override
-								public void onClose(ConfirmDialog dialog) {
+						@Override
+						public void onClose(ConfirmDialog dialog) {
 
-									if (dialog.isConfirmed()) {
-										window.removeWindow(dialog);
-									}
+							if (dialog.isConfirmed()) {
+								window.removeWindow(dialog);
+							}
 
-								}
-							});
+						}
+					});
 
 			dialog.setContentMode(ConfirmDialog.CONTENT_HTML);
-			windowCaption = messageSource.getMessage(Message.SOFTWARE_LICENSE_AGREEMENT);
+			windowCaption = this.messageSource.getMessage(Message.SOFTWARE_LICENSE_AGREEMENT);
 			logActivity = true;
 
 		}
 
 		// Add to Project Activity logs the launched windows
-		if (logActivity && project != null) {
+		if (logActivity && this.project != null) {
 			try {
-				sessionData.logProgramActivity(windowName.getwindowName(),messageSource.getMessage(Message.LAUNCHED_APP, windowCaption));
+				this.sessionData.logProgramActivity(windowName.getwindowName(),
+						this.messageSource.getMessage(Message.LAUNCHED_APP, windowCaption));
 			} catch (MiddlewareQueryException e) {
-				LOG.error(e.getMessage(),e);
-				MessageNotifier.showError(window,
-						messageSource.getMessage(Message.DATABASE_ERROR),
-						"<br />" + messageSource
-								.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+				OpenWindowAction.LOG.error(e.getMessage(), e);
+				MessageNotifier.showError(window, this.messageSource.getMessage(Message.DATABASE_ERROR),
+						"<br />" + this.messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
 
 			}
 
@@ -147,19 +146,18 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
 	}
 
 	protected String getCutOffDate() {
-		//Dec 31, 2015
+		// Dec 31, 2015
 		Calendar cal = DateUtil.getCalendarInstance();
 		cal.set(Calendar.YEAR, 2015);
 		cal.set(Calendar.MONTH, 11);
 		cal.set(Calendar.DATE, 31);
 		Date cutOffDate = cal.getTime();
-		return DateUtil.formatDateAsStringValue(cutOffDate,"MMMMM dd, yyyy");
+		return DateUtil.formatDateAsStringValue(cutOffDate, "MMMMM dd, yyyy");
 
 	}
 
 	public static enum WindowEnum {
-		CHANGE_PASSWORD("change_password"), USER_TOOLS("user_tools"), SOFTWARE_LICENSING_AGREEMENT(
-				"software_license");
+		CHANGE_PASSWORD("change_password"), USER_TOOLS("user_tools"), SOFTWARE_LICENSING_AGREEMENT("software_license");
 
 		private String windowName;
 
@@ -189,7 +187,7 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
 		}
 
 		public String getwindowName() {
-			return windowName;
+			return this.windowName;
 		}
 	}
 

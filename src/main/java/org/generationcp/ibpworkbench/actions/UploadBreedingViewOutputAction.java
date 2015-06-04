@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.actions;
 
 import java.io.File;
@@ -30,251 +31,254 @@ import com.vaadin.ui.Button.ClickListener;
 
 @Configurable
 public class UploadBreedingViewOutputAction implements ClickListener {
+
 	private static final long serialVersionUID = 1L;
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(UploadBreedingViewOutputAction.class);
-	
-	
+
 	private static final String REGEX_VALID_BREEDING_VIEW_CHARACTERS = "[^a-zA-Z0-9-_%']+";
-	
+
 	private File meansFile = null;
 	private File summaryStatsFile = null;
 	private File outlierFile = null;
 	private File bmsInformationFile = null;
 	private File zipFile = null;
-	
+
 	private int studyId;
 	private Project project;
-	
+
 	private CustomUploadField uploadZip;
-	
+
 	private String uploadDirectory = "temp";
-	
+
 	private FileUploadBreedingViewOutputWindow window;
-	
+
 	@Autowired
-    private SimpleResourceBundleMessageSource messageSource;
-    
-    @Autowired
-    private ManagerFactoryProvider managerFactoryProvider;
-    
-    public UploadBreedingViewOutputAction(FileUploadBreedingViewOutputWindow fileUploadBreedingViewOutputWindow){
-    	this.window = fileUploadBreedingViewOutputWindow;
-    	this.project = window.getProject();
-    	this.studyId = window.getStudyId();
-    	this.uploadZip = window.getUploadZip();
-    }
+	private SimpleResourceBundleMessageSource messageSource;
+
+	@Autowired
+	private ManagerFactoryProvider managerFactoryProvider;
+
+	public UploadBreedingViewOutputAction(FileUploadBreedingViewOutputWindow fileUploadBreedingViewOutputWindow) {
+		this.window = fileUploadBreedingViewOutputWindow;
+		this.project = this.window.getProject();
+		this.studyId = this.window.getStudyId();
+		this.uploadZip = this.window.getUploadZip();
+	}
 
 	public UploadBreedingViewOutputAction() {
-		
+
 	}
 
 	@Override
 	public void buttonClick(ClickEvent event) {
-		
-			BreedingViewImportService breedingViewImportService = getBreedingViewImportService();
-			
-			CustomFileFactory uploadZipFileFactory = (CustomFileFactory) uploadZip.getFileFactory();
-		
-			Map<String, String> bmsInformation = new HashMap<>();
-			
-			StringBuilder importErrorMessage = new StringBuilder();
-			
-			Map<String, String> localNameToAliasMap = generateNameAliasMap();
-			
-			try{
-				uploadZip.validate();
-			}catch(Exception e){
-				LOG.error(e.getMessage(), e);
-				showError(messageSource.getMessage(Message.BV_UPLOAD_ERROR_HEADER), messageSource.getMessage(Message.BV_UPLOAD_ERROR_INVALID_FORMAT));
-				return;
-			}
-			
-			if (window.getUploadZip().hasFileSelected() && window.getUploadZip().isValid()){
-				
-				zipFile = uploadZipFileFactory.getFile();
-				String zipFilePath = zipFile.getAbsolutePath();		
-				
-				bmsInformationFile = ZipUtil.extractZipSpecificFile(zipFilePath, "BMSInformation", uploadDirectory);
-				meansFile = ZipUtil.extractZipSpecificFile(zipFilePath, "BMSOutput", uploadDirectory);
-				summaryStatsFile = ZipUtil.extractZipSpecificFile(zipFilePath, "BMSSummary", uploadDirectory);
-				outlierFile = ZipUtil.extractZipSpecificFile(zipFilePath, "BMSOutlier", uploadDirectory);
-				
-				bmsInformation = parseTxt(bmsInformationFile);
-				
-			}
-			
-			if (meansFile == null && summaryStatsFile == null && outlierFile == null){
-				showError(messageSource.getMessage(Message.BV_UPLOAD_ERROR_HEADER), "The selected output zip file does not contain data.");
-				return;
-			}
-			
-			if (!bmsInformation.isEmpty()){
-				if (!bmsInformation.get("WorkbenchProjectId").equals(project.getProjectId().toString())
-					|| !bmsInformation.get("StudyId").equals(String.valueOf(studyId))){
-					showError(messageSource.getMessage(Message.BV_UPLOAD_ERROR_HEADER), "The selected output zip file is not compatible for this study");
-					return;
-				}
-			}
-			
-			if (meansFile!=null){
-				try {
-					if (!localNameToAliasMap.isEmpty()){
-						breedingViewImportService.importMeansData(meansFile, studyId, localNameToAliasMap);
-					}else{
-						breedingViewImportService.importMeansData(meansFile, studyId);
-					}
-					
-				} catch (BreedingViewImportException e) {
-					importErrorMessage.append(messageSource.getMessage(Message.BV_UPLOAD_ERROR_CANNOT_UPLOAD_MEANS));
-					LOG.error(e.getMessage(), e);
-				}
-			}
-				
-			if (summaryStatsFile!=null){
-				try {
-					
-					if (!localNameToAliasMap.isEmpty()){
-						breedingViewImportService.importSummaryStatsData(summaryStatsFile, studyId, localNameToAliasMap);
-					}else{
-						breedingViewImportService.importSummaryStatsData(summaryStatsFile, studyId);
-					}
-					
-				} catch (BreedingViewImportException e) {
-					importErrorMessage.append(messageSource.getMessage(Message.BV_UPLOAD_ERROR_CANNOT_UPLOAD_SUMMARY));
-					LOG.error(e.getMessage(), e);
-				}
-			}
-			
-			if(outlierFile!=null){
-				try {
-					if (!localNameToAliasMap.isEmpty()){
-						breedingViewImportService.importOutlierData(outlierFile, studyId, localNameToAliasMap);
-					}else{
-						breedingViewImportService.importOutlierData(outlierFile, studyId);
-					}
-					
-				} catch (BreedingViewImportException e) {
-					importErrorMessage.append(messageSource.getMessage(Message.BV_UPLOAD_ERROR_CANNOT_UPLOAD_OUTLIER));
-					LOG.error(e.getMessage(), e);
-				}
-			}
-			
-			
-				
-			if (!importErrorMessage.toString().isEmpty()){
-				showError(messageSource.getMessage(Message.BV_UPLOAD_ERROR_HEADER), importErrorMessage.toString());
-			}else{
-				showMessage(messageSource.getMessage(Message.BV_UPLOAD_SUCCESSFUL_HEADER), messageSource.getMessage(Message.BV_UPLOAD_SUCCESSFUL_DESCRIPTION));
-				closeWindow(event);
-			}
-				
-			cleanUp();
+
+		BreedingViewImportService breedingViewImportService = this.getBreedingViewImportService();
+
+		CustomFileFactory uploadZipFileFactory = (CustomFileFactory) this.uploadZip.getFileFactory();
+
+		Map<String, String> bmsInformation = new HashMap<>();
+
+		StringBuilder importErrorMessage = new StringBuilder();
+
+		Map<String, String> localNameToAliasMap = this.generateNameAliasMap();
+
+		try {
+			this.uploadZip.validate();
+		} catch (Exception e) {
+			UploadBreedingViewOutputAction.LOG.error(e.getMessage(), e);
+			this.showError(this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_HEADER),
+					this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_INVALID_FORMAT));
+			return;
 		}
-	
-		protected void deleteZipFile(){
-			
-			if (zipFile!=null && zipFile.exists()){
-				zipFile.delete();
+
+		if (this.window.getUploadZip().hasFileSelected() && this.window.getUploadZip().isValid()) {
+
+			this.zipFile = uploadZipFileFactory.getFile();
+			String zipFilePath = this.zipFile.getAbsolutePath();
+
+			this.bmsInformationFile = ZipUtil.extractZipSpecificFile(zipFilePath, "BMSInformation", this.uploadDirectory);
+			this.meansFile = ZipUtil.extractZipSpecificFile(zipFilePath, "BMSOutput", this.uploadDirectory);
+			this.summaryStatsFile = ZipUtil.extractZipSpecificFile(zipFilePath, "BMSSummary", this.uploadDirectory);
+			this.outlierFile = ZipUtil.extractZipSpecificFile(zipFilePath, "BMSOutlier", this.uploadDirectory);
+
+			bmsInformation = this.parseTxt(this.bmsInformationFile);
+
+		}
+
+		if (this.meansFile == null && this.summaryStatsFile == null && this.outlierFile == null) {
+			this.showError(this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_HEADER),
+					"The selected output zip file does not contain data.");
+			return;
+		}
+
+		if (!bmsInformation.isEmpty()) {
+			if (!bmsInformation.get("WorkbenchProjectId").equals(this.project.getProjectId().toString())
+					|| !bmsInformation.get("StudyId").equals(String.valueOf(this.studyId))) {
+				this.showError(this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_HEADER),
+						"The selected output zip file is not compatible for this study");
+				return;
 			}
 		}
 
-		protected void cleanUp(){
-			
-			deleteZipFile();
-			
-			if (meansFile!=null && meansFile.exists()){
-				meansFile.delete();
+		if (this.meansFile != null) {
+			try {
+				if (!localNameToAliasMap.isEmpty()) {
+					breedingViewImportService.importMeansData(this.meansFile, this.studyId, localNameToAliasMap);
+				} else {
+					breedingViewImportService.importMeansData(this.meansFile, this.studyId);
+				}
+
+			} catch (BreedingViewImportException e) {
+				importErrorMessage.append(this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_CANNOT_UPLOAD_MEANS));
+				UploadBreedingViewOutputAction.LOG.error(e.getMessage(), e);
 			}
-			if (summaryStatsFile!=null && summaryStatsFile.exists()){
-				summaryStatsFile.delete();
-			}
-			if (outlierFile!=null && outlierFile.exists()){
-				outlierFile.delete();
-			}
-			if (bmsInformationFile!=null && bmsInformationFile.exists()){
-				bmsInformationFile.delete();
-			}
-		
 		}
-		
-		protected Map<String, String> generateNameAliasMap(){
-			Map<String, String> map = new HashMap<>();
-			
-			Map<String, Boolean> variates = window.getVariatesStateMap();
-			
-			if (variates!=null){
-				for (Entry<String, Boolean> entry : variates.entrySet()){
-					if (entry.getValue()){
-						String nameSanitized = entry.getKey().replaceAll(REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_");
-						map.put(nameSanitized, entry.getKey());
-					}
+
+		if (this.summaryStatsFile != null) {
+			try {
+
+				if (!localNameToAliasMap.isEmpty()) {
+					breedingViewImportService.importSummaryStatsData(this.summaryStatsFile, this.studyId, localNameToAliasMap);
+				} else {
+					breedingViewImportService.importSummaryStatsData(this.summaryStatsFile, this.studyId);
+				}
+
+			} catch (BreedingViewImportException e) {
+				importErrorMessage.append(this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_CANNOT_UPLOAD_SUMMARY));
+				UploadBreedingViewOutputAction.LOG.error(e.getMessage(), e);
+			}
+		}
+
+		if (this.outlierFile != null) {
+			try {
+				if (!localNameToAliasMap.isEmpty()) {
+					breedingViewImportService.importOutlierData(this.outlierFile, this.studyId, localNameToAliasMap);
+				} else {
+					breedingViewImportService.importOutlierData(this.outlierFile, this.studyId);
+				}
+
+			} catch (BreedingViewImportException e) {
+				importErrorMessage.append(this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_CANNOT_UPLOAD_OUTLIER));
+				UploadBreedingViewOutputAction.LOG.error(e.getMessage(), e);
+			}
+		}
+
+		if (!importErrorMessage.toString().isEmpty()) {
+			this.showError(this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_HEADER), importErrorMessage.toString());
+		} else {
+			this.showMessage(this.messageSource.getMessage(Message.BV_UPLOAD_SUCCESSFUL_HEADER),
+					this.messageSource.getMessage(Message.BV_UPLOAD_SUCCESSFUL_DESCRIPTION));
+			this.closeWindow(event);
+		}
+
+		this.cleanUp();
+	}
+
+	protected void deleteZipFile() {
+
+		if (this.zipFile != null && this.zipFile.exists()) {
+			this.zipFile.delete();
+		}
+	}
+
+	protected void cleanUp() {
+
+		this.deleteZipFile();
+
+		if (this.meansFile != null && this.meansFile.exists()) {
+			this.meansFile.delete();
+		}
+		if (this.summaryStatsFile != null && this.summaryStatsFile.exists()) {
+			this.summaryStatsFile.delete();
+		}
+		if (this.outlierFile != null && this.outlierFile.exists()) {
+			this.outlierFile.delete();
+		}
+		if (this.bmsInformationFile != null && this.bmsInformationFile.exists()) {
+			this.bmsInformationFile.delete();
+		}
+
+	}
+
+	protected Map<String, String> generateNameAliasMap() {
+		Map<String, String> map = new HashMap<>();
+
+		Map<String, Boolean> variates = this.window.getVariatesStateMap();
+
+		if (variates != null) {
+			for (Entry<String, Boolean> entry : variates.entrySet()) {
+				if (entry.getValue()) {
+					String nameSanitized =
+							entry.getKey().replaceAll(UploadBreedingViewOutputAction.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_");
+					map.put(nameSanitized, entry.getKey());
 				}
 			}
-			
-			return map;
-			
 		}
-		
-		public Map<String, String> parseTxt(File file) {
-			Map<String, String> result = new HashMap<String, String>();
-			
-			if (file == null){
-				return result;
-			}
-			
-			Scanner scanner = null;
-			try {
-				scanner = new Scanner(new FileReader(file));
-			} catch (FileNotFoundException e) {
-				LOG.error(e.getMessage(), e);
-				return result;
-			}
-			
-			try {
-				while (scanner.hasNextLine()) {
-					String line = scanner.nextLine();
-					if (!line.startsWith("#")) {
-						String[] mapping = line.split("=");
-						result.put(mapping[0], mapping[1]);
-					}
-				}
-			} finally {
-				scanner.close();
-			}
+
+		return map;
+
+	}
+
+	public Map<String, String> parseTxt(File file) {
+		Map<String, String> result = new HashMap<String, String>();
+
+		if (file == null) {
 			return result;
 		}
-		
-		protected void closeWindow(ClickEvent event) {
-			event.getComponent().getWindow().getParent().removeWindow(window);
-		}
-		
-		protected BreedingViewImportServiceImpl getBreedingViewImportService(){
-			return new BreedingViewImportServiceImpl(project, managerFactoryProvider);
-		}
-		
-		protected void showError(String caption, String description){
-			MessageNotifier.showError(window.getParent(), caption, description);
-		}
-		
-		protected void showMessage(String caption, String description){
-			MessageNotifier.showMessage(window.getParent(), caption, description);
+
+		Scanner scanner = null;
+		try {
+			scanner = new Scanner(new FileReader(file));
+		} catch (FileNotFoundException e) {
+			UploadBreedingViewOutputAction.LOG.error(e.getMessage(), e);
+			return result;
 		}
 
-		protected String getUploadDirectory() {
-			return uploadDirectory;
+		try {
+			while (scanner.hasNextLine()) {
+				String line = scanner.nextLine();
+				if (!line.startsWith("#")) {
+					String[] mapping = line.split("=");
+					result.put(mapping[0], mapping[1]);
+				}
+			}
+		} finally {
+			scanner.close();
 		}
+		return result;
+	}
 
-		protected void setUploadDirectory(String uploadDirectory) {
-			this.uploadDirectory = uploadDirectory;
-		}
-		
-		protected void setStudyId(int studyId) {
-			this.studyId = studyId;
-		}
-		
-		protected void setProject(Project project) {
-			this.project = project;
-		}
-			
+	protected void closeWindow(ClickEvent event) {
+		event.getComponent().getWindow().getParent().removeWindow(this.window);
+	}
+
+	protected BreedingViewImportServiceImpl getBreedingViewImportService() {
+		return new BreedingViewImportServiceImpl(this.project, this.managerFactoryProvider);
+	}
+
+	protected void showError(String caption, String description) {
+		MessageNotifier.showError(this.window.getParent(), caption, description);
+	}
+
+	protected void showMessage(String caption, String description) {
+		MessageNotifier.showMessage(this.window.getParent(), caption, description);
+	}
+
+	protected String getUploadDirectory() {
+		return this.uploadDirectory;
+	}
+
+	protected void setUploadDirectory(String uploadDirectory) {
+		this.uploadDirectory = uploadDirectory;
+	}
+
+	protected void setStudyId(int studyId) {
+		this.studyId = studyId;
+	}
+
+	protected void setProject(Project project) {
+		this.project = project;
+	}
+
 }

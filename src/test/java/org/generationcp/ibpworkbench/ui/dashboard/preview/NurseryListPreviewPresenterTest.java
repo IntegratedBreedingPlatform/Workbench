@@ -1,4 +1,10 @@
+
 package org.generationcp.ibpworkbench.ui.dashboard.preview;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -11,236 +17,231 @@ import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.dms.DmsProject;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
 @RunWith(MockitoJUnitRunner.class)
-public class NurseryListPreviewPresenterTest  {
-    public static final String MORE_THAN_255_CHAR_STRING = "the quick brown fox jumps over the lazy dog. " +
-            "the quick brown fox jumps over the lazy dog. " +
-            "the quick brown fox jumps over the lazy dog. " +
-            "the quick brown fox jumps over the lazy dog. " +
-            "the quick brown fox jumps over the lazy dog. " +
-            "the quick brown fox jumps over the lazy dog. ";
+public class NurseryListPreviewPresenterTest {
+
+	public static final String MORE_THAN_255_CHAR_STRING = "the quick brown fox jumps over the lazy dog. "
+			+ "the quick brown fox jumps over the lazy dog. " + "the quick brown fox jumps over the lazy dog. "
+			+ "the quick brown fox jumps over the lazy dog. " + "the quick brown fox jumps over the lazy dog. "
+			+ "the quick brown fox jumps over the lazy dog. ";
 
 	private static final String NURSERIES_AND_TRIALS = "Nurseries and Trials";
-    
-    private Project project;
 
-    @Mock
-    private NurseryListPreview view;
+	private Project project;
 
-    @Mock
-    private ManagerFactoryProvider managerFactoryProvider;
+	@Mock
+	private NurseryListPreview view;
 
-    @Mock
-    private WorkbenchDataManager manager;
+	@Mock
+	private ManagerFactoryProvider managerFactoryProvider;
 
-    @Mock
-    private ManagerFactory managerFactory;
+	@Mock
+	private WorkbenchDataManager manager;
 
-    @Mock
-    private StudyDataManager studyDataManager;
+	@Mock
+	private ManagerFactory managerFactory;
 
-    @Mock
-    private SimpleResourceBundleMessageSource messageSource;
+	@Mock
+	private StudyDataManager studyDataManager;
 
-    @Mock
-    private DmsProject dmsProject;
+	@Mock
+	private SimpleResourceBundleMessageSource messageSource;
 
-    @InjectMocks
-    private NurseryListPreviewPresenter presenter = new NurseryListPreviewPresenter();
+	@Mock
+	private DmsProject dmsProject;
 
-    private String newFolderName = "folderName";
-    private int folderId = 1;
-    private int sourceId = 1;
-    private int targetId = 1;
-    private boolean isAStudy = true;
-    private int studyId = 2;
-    private int parentFolderId = 3;
-    private int studyIdWithMultipleChildren = 4;
-    private int studyIdWithNoChildren = 5;
+	@InjectMocks
+	private final NurseryListPreviewPresenter presenter = new NurseryListPreviewPresenter();
 
-    @Before
-    public void setUp() throws Exception {
-        when(view.getManagerFactoryProvider()).thenReturn(managerFactoryProvider);
-        NurseryListPreview.NURSERIES_AND_TRIALS = NURSERIES_AND_TRIALS;
-        project = createTestProjectData();
-        view.setProject(project);
+	private final String newFolderName = "folderName";
+	private final int folderId = 1;
+	private final int sourceId = 1;
+	private final int targetId = 1;
+	private final boolean isAStudy = true;
+	private final int studyId = 2;
+	private final int parentFolderId = 3;
+	private final int studyIdWithMultipleChildren = 4;
+	private final int studyIdWithNoChildren = 5;
 
-        when(managerFactoryProvider.getManagerFactoryForProject(project)).thenReturn(managerFactory);
-        when(managerFactory.getStudyDataManager()).thenReturn(studyDataManager);
+	@Before
+	public void setUp() throws Exception {
+		Mockito.when(this.view.getManagerFactoryProvider()).thenReturn(this.managerFactoryProvider);
+		NurseryListPreview.NURSERIES_AND_TRIALS = NurseryListPreviewPresenterTest.NURSERIES_AND_TRIALS;
+		this.project = this.createTestProjectData();
+		this.view.setProject(this.project);
 
-        presenter.setManagerFactory(managerFactory);
-        presenter.setProject(project);
-    }
-    
-    public Project createTestProjectData() {
+		Mockito.when(this.managerFactoryProvider.getManagerFactoryForProject(this.project)).thenReturn(this.managerFactory);
+		Mockito.when(this.managerFactory.getStudyDataManager()).thenReturn(this.studyDataManager);
+
+		this.presenter.setManagerFactory(this.managerFactory);
+		this.presenter.setProject(this.project);
+	}
+
+	public Project createTestProjectData() {
 		Project project = new Project();
-        project.setUserId(1);
-        int uniqueId = new Random().nextInt(10000);
-        project.setProjectName("Test Project " + uniqueId);
-        project.setStartDate(new Date(System.currentTimeMillis()));
-        project.setLastOpenDate(new Date(System.currentTimeMillis()));
-        project.setUniqueID(Integer.toString(uniqueId));
+		project.setUserId(1);
+		int uniqueId = new Random().nextInt(10000);
+		project.setProjectName("Test Project " + uniqueId);
+		project.setStartDate(new Date(System.currentTimeMillis()));
+		project.setLastOpenDate(new Date(System.currentTimeMillis()));
+		project.setUniqueID(Integer.toString(uniqueId));
 		return project;
 	}
 
 	@Test
-    public void testIsFolder() throws Exception {
-        presenter.isFolder(folderId);
-        verify(studyDataManager).isStudy(folderId);
-    }
+	public void testIsFolder() throws Exception {
+		this.presenter.isFolder(this.folderId);
+		Mockito.verify(this.studyDataManager).isStudy(this.folderId);
+	}
 
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	@Test
-    public void testRenameNurseryListFolder() throws Exception {
-        when(messageSource.getMessage(Message.INVALID_ITEM_NAME)).thenReturn("Blank name not accepted");
-        when(studyDataManager.renameSubFolder(null, 0, project.getUniqueID())).thenThrow(MiddlewareException.class);
+	public void testRenameNurseryListFolder() throws Exception {
+		Mockito.when(this.messageSource.getMessage(Message.INVALID_ITEM_NAME)).thenReturn("Blank name not accepted");
+		Mockito.when(this.studyDataManager.renameSubFolder(null, 0, this.project.getUniqueID())).thenThrow(MiddlewareException.class);
 
-        presenter.renameNurseryListFolder(newFolderName,folderId);
+		this.presenter.renameNurseryListFolder(this.newFolderName, this.folderId);
 
-        verify(studyDataManager).renameSubFolder(newFolderName,folderId, project.getUniqueID());
+		Mockito.verify(this.studyDataManager).renameSubFolder(this.newFolderName, this.folderId, this.project.getUniqueID());
 
-        try {
-            presenter.renameNurseryListFolder(null,0);
-            fail("should throw an error when newFolderName = null");
-        } catch (NurseryListPreviewException e) {
-            assertTrue(e.getMessage().contains(NurseryListPreviewException.BLANK_NAME));
-        }
+		try {
+			this.presenter.renameNurseryListFolder(null, 0);
+			Assert.fail("should throw an error when newFolderName = null");
+		} catch (NurseryListPreviewException e) {
+			Assert.assertTrue(e.getMessage().contains(NurseryListPreviewException.BLANK_NAME));
+		}
 
-    }
+	}
 
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	@Test
-    public void testMoveNurseryListFolder() throws Exception {
+	public void testMoveNurseryListFolder() throws Exception {
 
-        presenter.moveNurseryListFolder(sourceId,targetId,isAStudy);
-        verify(studyDataManager).moveDmsProject(sourceId,targetId,isAStudy);
+		this.presenter.moveNurseryListFolder(this.sourceId, this.targetId, this.isAStudy);
+		Mockito.verify(this.studyDataManager).moveDmsProject(this.sourceId, this.targetId, this.isAStudy);
 
-        // simulate middleware error
-        when(studyDataManager.moveDmsProject(-100,-100,false)).thenThrow(MiddlewareQueryException.class);
+		// simulate middleware error
+		Mockito.when(this.studyDataManager.moveDmsProject(-100, -100, false)).thenThrow(MiddlewareQueryException.class);
 
-        try {
-            presenter.moveNurseryListFolder(-100, -100, false);
-            fail("should throw an NurseryListPreviewException exception");
-        } catch (NurseryListPreviewException e) {
-            assertTrue("should throw an NurseryListPreviewException exception",true);
-        }
+		try {
+			this.presenter.moveNurseryListFolder(-100, -100, false);
+			Assert.fail("should throw an NurseryListPreviewException exception");
+		} catch (NurseryListPreviewException e) {
+			Assert.assertTrue("should throw an NurseryListPreviewException exception", true);
+		}
 
-    }
+	}
 
-    @Test
-    public void testAddNurseryListFolder() throws Exception {
-        // 3 scenarios
-
-        // 1st scenario name is null or empty
-        try {
-            presenter.addNurseryListFolder(null,studyId);
-            fail("should throw an exception if name = null");
-        } catch (NurseryListPreviewException e) {
-            assertTrue(e.getLocalizedMessage().contains("Folder name cannot be blank"));
-        }
-
-        // 2nd scenario name == STUDIES
-        try {
-            presenter.addNurseryListFolder(NurseryListPreview.NURSERIES_AND_TRIALS,studyId);
-            fail("should throw an exception if name = NurseryListPreview.NURSERIES_AND_TRIALS");
-        } catch (NurseryListPreviewException e) {
-            assertTrue(e.getLocalizedMessage().contains("Please choose a different name"));
-
-        }
-
-        // 3rd scenario presenter.isFalder(id) === false
-        // assume that studyID is not a folder
-        when(studyDataManager.isStudy(studyId)).thenReturn(true);
-        when(studyDataManager.getParentFolder(studyId)).thenReturn(dmsProject);
-        when(dmsProject.getProjectId()).thenReturn(parentFolderId);
-        presenter.addNurseryListFolder(newFolderName,studyId);
-
-
-        // verify that addSubFolder is called with the correct order of parameters
-        verify(studyDataManager).addSubFolder(parentFolderId,newFolderName,newFolderName, project.getUniqueID());
-    }
-
-    @SuppressWarnings("unchecked")
 	@Test
-    public void testValidateForDeleteNurseryList() throws Exception {
-        // if id is null, expect exception
-        try {
-            presenter.validateForDeleteNurseryList(null);
-            fail("Should throw an exception if id is null");
-        } catch (NurseryListPreviewException e) {
-            assertTrue(e.getLocalizedMessage().contains("Please select a folder item"));
-        }
+	public void testAddNurseryListFolder() throws Exception {
+		// 3 scenarios
 
-        // assume studyDataManager.getProject() returns a DMSObj (no middleware exception)
-        when(studyDataManager.getProject(studyIdWithMultipleChildren)).thenReturn(dmsProject);
-        when(studyDataManager.getProject(studyIdWithNoChildren)).thenReturn(dmsProject);
+		// 1st scenario name is null or empty
+		try {
+			this.presenter.addNurseryListFolder(null, this.studyId);
+			Assert.fail("should throw an exception if name = null");
+		} catch (NurseryListPreviewException e) {
+			Assert.assertTrue(e.getLocalizedMessage().contains("Folder name cannot be blank"));
+		}
 
-        List<Reference> hasMultipleChildren = mock(ArrayList.class);
-        hasMultipleChildren.add(mock(Reference.class));
-        hasMultipleChildren.add(mock(Reference.class));
-        hasMultipleChildren.add(mock(Reference.class));
+		// 2nd scenario name == STUDIES
+		try {
+			this.presenter.addNurseryListFolder(NurseryListPreview.NURSERIES_AND_TRIALS, this.studyId);
+			Assert.fail("should throw an exception if name = NurseryListPreview.NURSERIES_AND_TRIALS");
+		} catch (NurseryListPreviewException e) {
+			Assert.assertTrue(e.getLocalizedMessage().contains("Please choose a different name"));
 
-        when(studyDataManager.getChildrenOfFolder(studyIdWithMultipleChildren, project.getUniqueID())).thenReturn(hasMultipleChildren);
-        when(studyDataManager.getChildrenOfFolder(studyIdWithNoChildren, project.getUniqueID())).thenReturn(new ArrayList<Reference>());
+		}
 
-        try {
-            presenter.validateForDeleteNurseryList(studyIdWithMultipleChildren);
-            fail("Should throw an exception if NurseryListPreviewException.HAS_CHILDREN");
-        } catch(NurseryListPreviewException e) {
-            assertTrue(e.getLocalizedMessage().contains(NurseryListPreviewException.HAS_CHILDREN));
-        }
+		// 3rd scenario presenter.isFalder(id) === false
+		// assume that studyID is not a folder
+		Mockito.when(this.studyDataManager.isStudy(this.studyId)).thenReturn(true);
+		Mockito.when(this.studyDataManager.getParentFolder(this.studyId)).thenReturn(this.dmsProject);
+		Mockito.when(this.dmsProject.getProjectId()).thenReturn(this.parentFolderId);
+		this.presenter.addNurseryListFolder(this.newFolderName, this.studyId);
 
-        assertEquals("Folder has no children, can be deleted",Integer.valueOf(studyIdWithNoChildren),presenter.validateForDeleteNurseryList(studyIdWithNoChildren));
-    }
+		// verify that addSubFolder is called with the correct order of parameters
+		Mockito.verify(this.studyDataManager).addSubFolder(this.parentFolderId, this.newFolderName, this.newFolderName,
+				this.project.getUniqueID());
+	}
 
-    @Test
-    public void testValidateStudyFolderName() throws Exception {
-        try {
-            presenter.validateStudyFolderName(newFolderName);
-        } catch (NurseryListPreviewException e) {
-            fail("We should not expect an exception since the input is valid");
-        }
-    }
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testValidateForDeleteNurseryList() throws Exception {
+		// if id is null, expect exception
+		try {
+			this.presenter.validateForDeleteNurseryList(null);
+			Assert.fail("Should throw an exception if id is null");
+		} catch (NurseryListPreviewException e) {
+			Assert.assertTrue(e.getLocalizedMessage().contains("Please select a folder item"));
+		}
 
-    @Test (expected = NurseryListPreviewException.class)
-    public void testValidateStudyFolderNameNull() throws Exception {
-        presenter.validateStudyFolderName(null);
-        fail("We are expecting an exception since the input is NOT valid");
-    }
+		// assume studyDataManager.getProject() returns a DMSObj (no middleware exception)
+		Mockito.when(this.studyDataManager.getProject(this.studyIdWithMultipleChildren)).thenReturn(this.dmsProject);
+		Mockito.when(this.studyDataManager.getProject(this.studyIdWithNoChildren)).thenReturn(this.dmsProject);
 
-    @Test (expected = NurseryListPreviewException.class)
-    public void testValidateStudyFolderNameBlank() throws Exception {
-        presenter.validateStudyFolderName("");
-        fail("We are expecting an exception since the input is NOT valid");
+		List<Reference> hasMultipleChildren = Mockito.mock(ArrayList.class);
+		hasMultipleChildren.add(Mockito.mock(Reference.class));
+		hasMultipleChildren.add(Mockito.mock(Reference.class));
+		hasMultipleChildren.add(Mockito.mock(Reference.class));
 
-    }
+		Mockito.when(this.studyDataManager.getChildrenOfFolder(this.studyIdWithMultipleChildren, this.project.getUniqueID())).thenReturn(
+				hasMultipleChildren);
+		Mockito.when(this.studyDataManager.getChildrenOfFolder(this.studyIdWithNoChildren, this.project.getUniqueID())).thenReturn(
+				new ArrayList<Reference>());
 
-    @Test (expected = NurseryListPreviewException.class)
-    public void testValidateStudyFolderNameInvalidProgramStudies() throws Exception {
-        presenter.validateStudyFolderName(NurseryListPreview.NURSERIES_AND_TRIALS);
-        fail("We are expecting an exception since the input is NOT valid");
+		try {
+			this.presenter.validateForDeleteNurseryList(this.studyIdWithMultipleChildren);
+			Assert.fail("Should throw an exception if NurseryListPreviewException.HAS_CHILDREN");
+		} catch (NurseryListPreviewException e) {
+			Assert.assertTrue(e.getLocalizedMessage().contains(NurseryListPreviewException.HAS_CHILDREN));
+		}
 
-    }
+		Assert.assertEquals("Folder has no children, can be deleted", Integer.valueOf(this.studyIdWithNoChildren),
+				this.presenter.validateForDeleteNurseryList(this.studyIdWithNoChildren));
+	}
 
+	@Test
+	public void testValidateStudyFolderName() throws Exception {
+		try {
+			this.presenter.validateStudyFolderName(this.newFolderName);
+		} catch (NurseryListPreviewException e) {
+			Assert.fail("We should not expect an exception since the input is valid");
+		}
+	}
 
-    @Test (expected = NurseryListPreviewException.class)
-    public void testValidateStudyFolderNameTooLong() throws Exception {
-        presenter.validateStudyFolderName(MORE_THAN_255_CHAR_STRING);
-        fail("We are expecting an exception since the input is NOT valid");
-    }
+	@Test(expected = NurseryListPreviewException.class)
+	public void testValidateStudyFolderNameNull() throws Exception {
+		this.presenter.validateStudyFolderName(null);
+		Assert.fail("We are expecting an exception since the input is NOT valid");
+	}
+
+	@Test(expected = NurseryListPreviewException.class)
+	public void testValidateStudyFolderNameBlank() throws Exception {
+		this.presenter.validateStudyFolderName("");
+		Assert.fail("We are expecting an exception since the input is NOT valid");
+
+	}
+
+	@Test(expected = NurseryListPreviewException.class)
+	public void testValidateStudyFolderNameInvalidProgramStudies() throws Exception {
+		this.presenter.validateStudyFolderName(NurseryListPreview.NURSERIES_AND_TRIALS);
+		Assert.fail("We are expecting an exception since the input is NOT valid");
+
+	}
+
+	@Test(expected = NurseryListPreviewException.class)
+	public void testValidateStudyFolderNameTooLong() throws Exception {
+		this.presenter.validateStudyFolderName(NurseryListPreviewPresenterTest.MORE_THAN_255_CHAR_STRING);
+		Assert.fail("We are expecting an exception since the input is NOT valid");
+	}
 }

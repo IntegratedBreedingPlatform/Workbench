@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.controller;
 
 import org.generationcp.commons.spring.util.ContextUtil;
@@ -11,14 +12,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 @RequestMapping("/ontology")
 public class OntologyController {
-	
+
 	@Autowired
 	private ContextUtil context;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String ontology(Model model) throws MiddlewareQueryException {
-		model.addAttribute("currentCrop", context.getProjectInContext().getCropType().getCropName());
-		model.addAttribute("currentProgramId", context.getProjectInContext().getUniqueID());
+		model.addAttribute("currentCrop", this.context.getProjectInContext().getCropType().getCropName());
+		model.addAttribute("currentProgramId", this.context.getProjectInContext().getUniqueID());
 		return "ontology";
 	}
 }

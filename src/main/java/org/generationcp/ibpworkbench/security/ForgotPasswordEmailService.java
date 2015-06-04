@@ -1,4 +1,16 @@
+
 package org.generationcp.ibpworkbench.security;
+
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.UUID;
+
+import javax.annotation.Resource;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.servlet.ServletContext;
 
 import org.apache.commons.io.IOUtils;
 import org.generationcp.commons.util.WorkbenchAppPathResolver;
@@ -19,20 +31,11 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import javax.annotation.Resource;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import javax.servlet.ServletContext;
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-import java.util.UUID;
-
 /**
  * Created by cyrus on 4/6/15.
  */
 public class ForgotPasswordEmailService {
+
 	private static final Logger LOG = LoggerFactory.getLogger(ForgotPasswordEmailService.class);
 
 	public static final String BMS_LOGO_LOC = "/WEB-INF/static/images/logo.png";
@@ -65,19 +68,17 @@ public class ForgotPasswordEmailService {
 
 		UserInfo userInfo = null;
 		try {
-			userInfo = workbenchDataManager.getUserInfoByUsername(user.getName());
+			userInfo = this.workbenchDataManager.getUserInfoByUsername(user.getName());
 
-			String generatedURL = generateResetPasswordUrl(userInfo);
-			sendForgotPasswordRequest(user.getPerson().getDisplayName(), user.getPerson().getEmail(),
-					generatedURL);
+			String generatedURL = this.generateResetPasswordUrl(userInfo);
+			this.sendForgotPasswordRequest(user.getPerson().getDisplayName(), user.getPerson().getEmail(), generatedURL);
 
 		} catch (MiddlewareQueryException e) {
-			LOG.error(e.getMessage(),e);
+			ForgotPasswordEmailService.LOG.error(e.getMessage(), e);
 		}
 	}
 
-	public String generateResetPasswordUrl(UserInfo userInfo)
-			throws MiddlewareQueryException {
+	public String generateResetPasswordUrl(UserInfo userInfo) throws MiddlewareQueryException {
 		// generate a strong a unique randomized string
 		final String token = UUID.randomUUID().toString();
 
@@ -86,16 +87,16 @@ public class ForgotPasswordEmailService {
 		// update workbench user_info table
 		userInfo.setResetToken(token);
 
-		userInfo.setResetExpiryDate(getTokenExpiryDate());
+		userInfo.setResetExpiryDate(this.getTokenExpiryDate());
 
-		workbenchDataManager.updateUserInfo(userInfo);
+		this.workbenchDataManager.updateUserInfo(userInfo);
 
 		return url;
 	}
 
 	protected Date getTokenExpiryDate() {
 		Calendar cal = Calendar.getInstance(Locale.getDefault(Locale.Category.DISPLAY));
-		cal.add(Calendar.HOUR, noOfHoursBeforeExpire);
+		cal.add(Calendar.HOUR, this.noOfHoursBeforeExpire);
 
 		return cal.getTime();
 	}
@@ -103,83 +104,80 @@ public class ForgotPasswordEmailService {
 	/**
 	 * Pre-req: a validated user email account + username
 	 */
-	public void sendForgotPasswordRequest(final String recipientName, final String recipientEmail,
-			final String forgotPasswordUrl) throws MessagingException {
+	public void sendForgotPasswordRequest(final String recipientName, final String recipientEmail, final String forgotPasswordUrl)
+			throws MessagingException {
 
 		// Prepare message using a Spring helper
-		final MimeMessage mimeMessage = mailSender.createMimeMessage();
+		final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
 		// true = multipart
-		final MimeMessageHelper message = getMimeMessageHelper(mimeMessage);
+		final MimeMessageHelper message = this.getMimeMessageHelper(mimeMessage);
 
 		try {
 			// prepare the evaluation context
 			Context ctx = new Context(LocaleContextHolder.getLocale());
 			ctx.setVariable("recipientName", recipientName);
 			ctx.setVariable("forgotPasswordUrl", forgotPasswordUrl);
-			ctx.setVariable("bmsLogo", BMS_LOGO_LOC);
-			ctx.setVariable("expireHrs",noOfHoursBeforeExpire);
+			ctx.setVariable("bmsLogo", ForgotPasswordEmailService.BMS_LOGO_LOC);
+			ctx.setVariable("expireHrs", this.noOfHoursBeforeExpire);
 
-			message.setSubject(messageSource.getMessage("forgot.mail.subject", new String[] {}, "",
-					LocaleContextHolder.getLocale()));
-			message.setFrom(senderEmail);
+			message.setSubject(this.messageSource.getMessage("forgot.mail.subject", new String[] {}, "", LocaleContextHolder.getLocale()));
+			message.setFrom(this.senderEmail);
 			message.setTo(recipientEmail);
 
-			final String htmlContent = processTemplate(ctx);
+			final String htmlContent = this.processTemplate(ctx);
 			// true = isHtml
 			message.setText(htmlContent, true);
 
 			// add BMS logo
-			message.addInline(BMS_LOGO_LOC, retrieveLogoImage(),"image/png");
+			message.addInline(ForgotPasswordEmailService.BMS_LOGO_LOC, this.retrieveLogoImage(), "image/png");
 
-			LOG.info("Sent password reset to {} with URL token {}",recipientEmail,forgotPasswordUrl);
+			ForgotPasswordEmailService.LOG.info("Sent password reset to {} with URL token {}", recipientEmail, forgotPasswordUrl);
 		} catch (IOException e) {
-			LOG.error(e.getMessage(),e);
+			ForgotPasswordEmailService.LOG.error(e.getMessage(), e);
 		} finally {
 			// send the message
-			mailSender.send(mimeMessage);
+			this.mailSender.send(mimeMessage);
 		}
 	}
 
 	protected ByteArrayResource retrieveLogoImage() throws IOException {
-		return new ByteArrayResource(IOUtils.toByteArray(servletContext.getResourceAsStream(BMS_LOGO_LOC)));
+		return new ByteArrayResource(IOUtils.toByteArray(this.servletContext.getResourceAsStream(ForgotPasswordEmailService.BMS_LOGO_LOC)));
 	}
 
 	protected String processTemplate(Context ctx) {
-		return templateEngine.process("forgot-password-email", ctx);
+		return this.templateEngine.process("forgot-password-email", ctx);
 	}
 
-	protected MimeMessageHelper getMimeMessageHelper(MimeMessage mimeMessage)
-			throws MessagingException {
+	protected MimeMessageHelper getMimeMessageHelper(MimeMessage mimeMessage) throws MessagingException {
 		return new MimeMessageHelper(mimeMessage, true, "UTF-8");
 	}
 
 	public User validateResetToken(String token) throws InvalidResetTokenException {
 		UserInfo userInfo = null;
 		try {
-			userInfo = workbenchDataManager.getUserInfoByResetToken(token);
+			userInfo = this.workbenchDataManager.getUserInfoByResetToken(token);
 
-			if (!isResetTokenValid(userInfo)) {
+			if (!this.isResetTokenValid(userInfo)) {
 				throw new InvalidResetTokenException("Token is not valid");
 			}
 
-			return workbenchUserService.getUserByUserid(userInfo.getUserId());
+			return this.workbenchUserService.getUserByUserid(userInfo.getUserId());
 
 		} catch (MiddlewareQueryException e) {
-			throw new InvalidResetTokenException(e.getMessage(),e);
+			throw new InvalidResetTokenException(e.getMessage(), e);
 		}
 	}
 
 	protected boolean isResetTokenValid(UserInfo userInfo) {
-		return null != userInfo && getTokenExpiryDate().after(userInfo.getResetExpiryDate());
+		return null != userInfo && this.getTokenExpiryDate().after(userInfo.getResetExpiryDate());
 	}
 
 	public void deleteToken(UserAccountModel user) throws MiddlewareQueryException {
-		UserInfo userInfo = workbenchDataManager.getUserInfoByUsername(user.getUsername());
+		UserInfo userInfo = this.workbenchDataManager.getUserInfoByUsername(user.getUsername());
 		userInfo.setResetToken(null);
 		userInfo.setResetExpiryDate(null);
 
-		workbenchDataManager.updateUserInfo(userInfo);
-
+		this.workbenchDataManager.updateUserInfo(userInfo);
 
 	}
 }

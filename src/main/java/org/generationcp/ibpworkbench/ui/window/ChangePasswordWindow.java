@@ -1,21 +1,16 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- * 
+ *
  * Generation Challenge Programme (GCP)
- * 
- * 
- * This software is licensed for use under the terms of the GNU General Public
- * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
- * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- * 
+ *
+ *
+ * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
+ * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.ui.window;
 
-import com.vaadin.ui.*;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
@@ -26,118 +21,130 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.PasswordField;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.Reindeer;
+
 @Configurable
 public class ChangePasswordWindow extends BaseSubWindow implements InitializingBean, InternationalizableComponent {
-    @Autowired
-    private SessionData sessionData;
 
-    private static final long serialVersionUID = 1L;
+	@Autowired
+	private SessionData sessionData;
 
-    private Label passwordLabel;
-    private Label confirmLabel;
+	private static final long serialVersionUID = 1L;
 
-    private Button cancelButton;
-    private Button saveButton;
-    
-    private PasswordField password;
-    private PasswordField confirm_password;
+	private Label passwordLabel;
+	private Label confirmLabel;
 
-    public ChangePasswordWindow() {
-    }
+	private Button cancelButton;
+	private Button saveButton;
 
-    /**
-     * Assemble the UI after all dependencies has been set.
-     */
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        assemble();
-    }
+	private PasswordField password;
+	private PasswordField confirm_password;
 
-    protected void initializeComponents() throws Exception {
-        this.setOverrideFocus(true);
-        this.addStyleName(Reindeer.WINDOW_LIGHT);
-        this.setCaption("Change Password");
+	public ChangePasswordWindow() {
+	}
 
-        passwordLabel = new Label("&nbsp;&nbsp;&nbsp;Password: &nbsp;&nbsp;", Label.CONTENT_XHTML);
-        confirmLabel = new Label("&nbsp;&nbsp;&nbsp;Confirm Password :&nbsp;&nbsp;", Label.CONTENT_XHTML);
-        passwordLabel.setStyleName("v-label");
-        confirmLabel.setStyleName("v-label");
-        
-        password = new PasswordField();
-        password.focus();
-        
-        confirm_password = new PasswordField();
-        
-        saveButton = new Button("Save");
-        saveButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-        
-        cancelButton = new Button("Cancel");
-    }
+	/**
+	 * Assemble the UI after all dependencies has been set.
+	 */
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		this.assemble();
+	}
 
-    protected void initializeLayout() {
-        this.setWidth("335px");
-        this.setHeight("200px");
-        this.setModal(true);
+	protected void initializeComponents() throws Exception {
+		this.setOverrideFocus(true);
+		this.addStyleName(Reindeer.WINDOW_LIGHT);
+		this.setCaption("Change Password");
 
-        VerticalLayout layout = new VerticalLayout();
-        layout.setSizeFull();
-        layout.setMargin(true);
-        layout.setSpacing(true);
+		this.passwordLabel = new Label("&nbsp;&nbsp;&nbsp;Password: &nbsp;&nbsp;", Label.CONTENT_XHTML);
+		this.confirmLabel = new Label("&nbsp;&nbsp;&nbsp;Confirm Password :&nbsp;&nbsp;", Label.CONTENT_XHTML);
+		this.passwordLabel.setStyleName("v-label");
+		this.confirmLabel.setStyleName("v-label");
 
-        passwordLabel.setWidth("140px");
-        password.setWidth("140px");
-        confirmLabel.setWidth("140px");
-        confirm_password.setWidth("140px");
-        
-        GridLayout passwordGridLayout = new GridLayout(2, 2);
-        passwordGridLayout.setMargin(false, false, false, false);
-        passwordGridLayout.addComponent(passwordLabel);
-        passwordGridLayout.addComponent(password);
-        passwordGridLayout.addComponent(confirmLabel);
-        passwordGridLayout.addComponent(confirm_password);
-        passwordGridLayout.setSizeFull();
-        
-        
-        HorizontalLayout buttonlayout = new HorizontalLayout();
+		this.password = new PasswordField();
+		this.password.focus();
 
-        buttonlayout.addComponent(cancelButton);
-        buttonlayout.addComponent(saveButton);
-        buttonlayout.setSpacing(true);
+		this.confirm_password = new PasswordField();
 
-        layout.addComponent(passwordGridLayout);
-        layout.addComponent(buttonlayout);
-        layout.setComponentAlignment(buttonlayout, Alignment.MIDDLE_CENTER);
-        layout.setExpandRatio(passwordGridLayout,1.0F);
+		this.saveButton = new Button("Save");
+		this.saveButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
-        this.setContent(layout);
-    }
+		this.cancelButton = new Button("Cancel");
+	}
 
-    protected void initializeActions() {
-        User user = sessionData.getUserData();
-        
-        saveButton.addListener(new ChangePasswordAction(user.getName(),password, confirm_password));
-        cancelButton.addListener(new RemoveWindowListener());
-    }
-    
-    public class RemoveWindowListener implements ClickListener {
-        private static final long serialVersionUID = 1L;
+	protected void initializeLayout() {
+		this.setWidth("335px");
+		this.setHeight("200px");
+		this.setModal(true);
 
-        @Override
-        public void buttonClick(ClickEvent event) {
-            event.getComponent().getWindow().getParent().removeWindow(getWindow());
-        }
+		VerticalLayout layout = new VerticalLayout();
+		layout.setSizeFull();
+		layout.setMargin(true);
+		layout.setSpacing(true);
 
-    }
+		this.passwordLabel.setWidth("140px");
+		this.password.setWidth("140px");
+		this.confirmLabel.setWidth("140px");
+		this.confirm_password.setWidth("140px");
 
-    protected void assemble() throws Exception {
-        initializeComponents();
-        initializeLayout();
-        initializeActions();
-    }
+		GridLayout passwordGridLayout = new GridLayout(2, 2);
+		passwordGridLayout.setMargin(false, false, false, false);
+		passwordGridLayout.addComponent(this.passwordLabel);
+		passwordGridLayout.addComponent(this.password);
+		passwordGridLayout.addComponent(this.confirmLabel);
+		passwordGridLayout.addComponent(this.confirm_password);
+		passwordGridLayout.setSizeFull();
 
-    @Override
-    public void updateLabels() {
-        // currently does nothing
-    }
+		HorizontalLayout buttonlayout = new HorizontalLayout();
+
+		buttonlayout.addComponent(this.cancelButton);
+		buttonlayout.addComponent(this.saveButton);
+		buttonlayout.setSpacing(true);
+
+		layout.addComponent(passwordGridLayout);
+		layout.addComponent(buttonlayout);
+		layout.setComponentAlignment(buttonlayout, Alignment.MIDDLE_CENTER);
+		layout.setExpandRatio(passwordGridLayout, 1.0F);
+
+		this.setContent(layout);
+	}
+
+	protected void initializeActions() {
+		User user = this.sessionData.getUserData();
+
+		this.saveButton.addListener(new ChangePasswordAction(user.getName(), this.password, this.confirm_password));
+		this.cancelButton.addListener(new RemoveWindowListener());
+	}
+
+	public class RemoveWindowListener implements ClickListener {
+
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public void buttonClick(ClickEvent event) {
+			event.getComponent().getWindow().getParent().removeWindow(ChangePasswordWindow.this.getWindow());
+		}
+
+	}
+
+	protected void assemble() throws Exception {
+		this.initializeComponents();
+		this.initializeLayout();
+		this.initializeActions();
+	}
+
+	@Override
+	public void updateLabels() {
+		// currently does nothing
+	}
 
 }

@@ -4,17 +4,18 @@
  * Generation Challenge Programme (GCP)
  *
  *
- * This software is licensed for use under the terms of the GNU General Public
- * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
- * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
+ * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
  *
  *******************************************************************************/
 
 package org.generationcp.browser.study.containers;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.util.ObjectProperty;
-import com.vaadin.data.util.PropertysetItem;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.generationcp.middleware.domain.etl.StudyDetails;
 import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -24,10 +25,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vaadin.addons.lazyquerycontainer.Query;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
+import com.vaadin.data.Item;
+import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.data.util.PropertysetItem;
 
 /**
  * An implementation of Query which is needed for using the LazyQueryContainer.
@@ -36,145 +36,142 @@ import java.util.List;
  */
 public class StudyDetailsQuery implements Query {
 
-    private static final Logger LOG = LoggerFactory.getLogger(StudyDetailsQuery.class);
-    private static final SimpleDateFormat BACKEND_DATE_FORMAT = Util.getSimpleDateFormat(
-    		Util.DATE_AS_NUMBER_FORMAT);
-    private static final SimpleDateFormat FRONTEND_DATE_FORMAT = Util.getSimpleDateFormat(
-    		Util.FRONTEND_DATE_FORMAT);
-    private final String programUUID;
-    private StudyDataManager studyDataManager;
-    private StudyType studyType;
-    private List<String> columnIds;
-    private int size;
+	private static final Logger LOG = LoggerFactory.getLogger(StudyDetailsQuery.class);
+	private static final SimpleDateFormat BACKEND_DATE_FORMAT = Util.getSimpleDateFormat(Util.DATE_AS_NUMBER_FORMAT);
+	private static final SimpleDateFormat FRONTEND_DATE_FORMAT = Util.getSimpleDateFormat(Util.FRONTEND_DATE_FORMAT);
+	private final String programUUID;
+	private final StudyDataManager studyDataManager;
+	private final StudyType studyType;
+	private final List<String> columnIds;
+	private int size;
 
-    public StudyDetailsQuery(StudyDataManager studyDataManager,
-                             StudyType studyType, List<String> columnIds, String programUUID) {
-        super();
-        this.studyDataManager = studyDataManager;
-        this.studyType = studyType;
-        this.columnIds = columnIds;
-        this.programUUID = programUUID;
-        size = -1;
-    }
+	public StudyDetailsQuery(StudyDataManager studyDataManager, StudyType studyType, List<String> columnIds, String programUUID) {
+		super();
+		this.studyDataManager = studyDataManager;
+		this.studyType = studyType;
+		this.columnIds = columnIds;
+		this.programUUID = programUUID;
+		this.size = -1;
+	}
 
-    @Override
-    public Item constructItem() {
-        PropertysetItem item = new PropertysetItem();
-        for (String id : columnIds) {
-            item.addItemProperty(id, new ObjectProperty<String>(""));
-        }
-        return item;
-    }
+	@Override
+	public Item constructItem() {
+		PropertysetItem item = new PropertysetItem();
+		for (String id : this.columnIds) {
+			item.addItemProperty(id, new ObjectProperty<String>(""));
+		}
+		return item;
+	}
 
-    @Override
-    public boolean deleteAllItems() {
-        throw new UnsupportedOperationException();
-    }
+	@Override
+	public boolean deleteAllItems() {
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
-    public List<Item> loadItems(int startIndex, int count) {
-        List<Item> items = new ArrayList<Item>();
-        List<StudyDetails> list = getStudyDetailsList(startIndex, count);
+	@Override
+	public List<Item> loadItems(int startIndex, int count) {
+		List<Item> items = new ArrayList<Item>();
+		List<StudyDetails> list = this.getStudyDetailsList(startIndex, count);
 
-        for (StudyDetails studyDetails : list) {
-            items.add(getStudyItem(studyDetails));
-        }
-        return items;
-    }
+		for (StudyDetails studyDetails : list) {
+			items.add(this.getStudyItem(studyDetails));
+		}
+		return items;
+	}
 
-    private Item getStudyItem(StudyDetails studyDetails) {
-        Item item = new PropertysetItem();
-        String value = null;
-        int numOfCols = columnIds.size();
-        for (int i = 0; i < numOfCols; i++) {
-            switch (i) {
-                case 0:
-                    value = studyDetails.getStudyName();
-                    break;
-                case 1:
-                    value = studyDetails.getTitle();
-                    break;
-                case 2:
-                    value = studyDetails.getObjective();
-                    break;
-                case 3:
-                    value = getStudyDate(studyDetails.getStartDate(),
-                            BACKEND_DATE_FORMAT, FRONTEND_DATE_FORMAT);
-                    break;
-                case 4:
-                    value = getStudyDate(studyDetails.getEndDate(),
-                            BACKEND_DATE_FORMAT, FRONTEND_DATE_FORMAT);
-                    break;
-                case 5:
-                    value = studyDetails.getPiName();
-                    break;
-                case 6:
-                    value = studyDetails.getSiteName();
-                    break;
-                case 7:
-                    value = studyDetails.getStudyType().getLabel();
-                    break;
-                default:
-                    break;
-            }
-            item.addItemProperty(columnIds.get(i), value != null ?
-                		new ObjectProperty<String>(value):null);
-        }
-        return item;
-    }
+	private Item getStudyItem(StudyDetails studyDetails) {
+		Item item = new PropertysetItem();
+		String value = null;
+		int numOfCols = this.columnIds.size();
+		for (int i = 0; i < numOfCols; i++) {
+			switch (i) {
+				case 0:
+					value = studyDetails.getStudyName();
+					break;
+				case 1:
+					value = studyDetails.getTitle();
+					break;
+				case 2:
+					value = studyDetails.getObjective();
+					break;
+				case 3:
+					value =
+							this.getStudyDate(studyDetails.getStartDate(), StudyDetailsQuery.BACKEND_DATE_FORMAT,
+									StudyDetailsQuery.FRONTEND_DATE_FORMAT);
+					break;
+				case 4:
+					value =
+							this.getStudyDate(studyDetails.getEndDate(), StudyDetailsQuery.BACKEND_DATE_FORMAT,
+									StudyDetailsQuery.FRONTEND_DATE_FORMAT);
+					break;
+				case 5:
+					value = studyDetails.getPiName();
+					break;
+				case 6:
+					value = studyDetails.getSiteName();
+					break;
+				case 7:
+					value = studyDetails.getStudyType().getLabel();
+					break;
+				default:
+					break;
+			}
+			item.addItemProperty(this.columnIds.get(i), value != null ? new ObjectProperty<String>(value) : null);
+		}
+		return item;
+	}
 
-    protected List<StudyDetails> getStudyDetailsList(int startIndex, int count) {
-        List<StudyDetails> studyDetailsList = new ArrayList<StudyDetails>();
-        try {
-            if (studyType != null) {
-                studyDetailsList = studyDataManager.getStudyDetails(studyType, programUUID, startIndex, count);
-            } else {
-                studyDetailsList = studyDataManager.getNurseryAndTrialStudyDetails(programUUID, startIndex, count);
-            }
-        } catch (MiddlewareQueryException e) {
-            LOG.error("Error in getting all study details for study type: " + studyType + "\n" + e.toString(), e);
-        }
-        return studyDetailsList;
-    }
+	protected List<StudyDetails> getStudyDetailsList(int startIndex, int count) {
+		List<StudyDetails> studyDetailsList = new ArrayList<StudyDetails>();
+		try {
+			if (this.studyType != null) {
+				studyDetailsList = this.studyDataManager.getStudyDetails(this.studyType, this.programUUID, startIndex, count);
+			} else {
+				studyDetailsList = this.studyDataManager.getNurseryAndTrialStudyDetails(this.programUUID, startIndex, count);
+			}
+		} catch (MiddlewareQueryException e) {
+			StudyDetailsQuery.LOG.error("Error in getting all study details for study type: " + this.studyType + "\n" + e.toString(), e);
+		}
+		return studyDetailsList;
+	}
 
-    protected String getStudyDate(String date, SimpleDateFormat oldFormat, SimpleDateFormat format) {
-        String value;
-        try {
-            if (date == null) {
-                value = "";
-            } else {
-                value = format.format(oldFormat.parse(date));
-            }
-        } catch (ParseException e) {
-            LOG.debug(e.getMessage());
-            value = "N/A";
-        }
-        return value;
-    }
+	protected String getStudyDate(String date, SimpleDateFormat oldFormat, SimpleDateFormat format) {
+		String value;
+		try {
+			if (date == null) {
+				value = "";
+			} else {
+				value = format.format(oldFormat.parse(date));
+			}
+		} catch (ParseException e) {
+			StudyDetailsQuery.LOG.debug(e.getMessage());
+			value = "N/A";
+		}
+		return value;
+	}
 
-    @Override
-    public void saveItems(List<Item> arg0, List<Item> arg1, List<Item> arg2) {
-        throw new UnsupportedOperationException();
+	@Override
+	public void saveItems(List<Item> arg0, List<Item> arg1, List<Item> arg2) {
+		throw new UnsupportedOperationException();
 
-    }
+	}
 
-    @Override
-    public int size() {
-        if (size == -1) {
-            try {
-                if (studyType != null) {
-                    Long count = studyDataManager.countStudyDetails(studyType, programUUID);
-                    this.size = count.intValue();
-                } else {
-                    Long count = studyDataManager.countAllNurseryAndTrialStudyDetails(programUUID);
-                    this.size = count.intValue();
-                }
-            } catch (MiddlewareQueryException ex) {
-                LOG.error(ex.getMessage(), ex);
-            }
-        }
-        return size;
-    }
-
+	@Override
+	public int size() {
+		if (this.size == -1) {
+			try {
+				if (this.studyType != null) {
+					Long count = this.studyDataManager.countStudyDetails(this.studyType, this.programUUID);
+					this.size = count.intValue();
+				} else {
+					Long count = this.studyDataManager.countAllNurseryAndTrialStudyDetails(this.programUUID);
+					this.size = count.intValue();
+				}
+			} catch (MiddlewareQueryException ex) {
+				StudyDetailsQuery.LOG.error(ex.getMessage(), ex);
+			}
+		}
+		return this.size;
+	}
 
 }

@@ -4,17 +4,15 @@
  * Generation Challenge Programme (GCP)
  *
  *
- * This software is licensed for use under the terms of the GNU General Public
- * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
- * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
+ * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
  *
  *******************************************************************************/
+
 package org.generationcp.ibpworkbench.actions;
 
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component.Event;
-import com.vaadin.ui.Window;
+import java.util.Arrays;
+
 import org.apache.commons.lang.StringUtils;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -35,10 +33,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.util.Arrays;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component.Event;
+import com.vaadin.ui.Window;
 
 @Configurable
 public class ChangeWindowAction implements WorkflowConstants, ClickListener, ActionListener {
+
 	private static final long serialVersionUID = 1L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(ChangeWindowAction.class);
@@ -48,8 +50,8 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	private Project project;
-	private WindowEnums windowEnums;
+	private final Project project;
+	private final WindowEnums windowEnums;
 
 	public ChangeWindowAction(WindowEnums windowEnum, Project project) {
 		this.windowEnums = windowEnum;
@@ -67,26 +69,25 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
 
 	@Override
 	public void buttonClick(ClickEvent event) {
-		doAction(event);
+		this.doAction(event);
 	}
 
 	@Override
 	public void doAction(Event event) {
-		doAction(event.getComponent().getWindow(), null, true);
+		this.doAction(event.getComponent().getWindow(), null, true);
 	}
 
 	@Override
 	public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
-		String windowName = StringUtils.isNotBlank(uriFragment) ? StringUtils.removeStart(uriFragment,"/") : windowEnums.getwindowName();
+		String windowName =
+				StringUtils.isNotBlank(uriFragment) ? StringUtils.removeStart(uriFragment, "/") : this.windowEnums.getwindowName();
 
 		if (WindowEnums.isCorrectTool(windowName)) {
-			launchWindow(window, windowName, isLinkAccessed);
+			this.launchWindow(window, windowName, isLinkAccessed);
 		} else {
-			LOG.debug("Cannot launch window due to invalid window name: {}", windowName);
-			MessageNotifier
-					.showError(window, messageSource.getMessage(Message.LAUNCH_TOOL_ERROR),
-							messageSource.getMessage(Message.INVALID_TOOL_ERROR_DESC,
-									Arrays.asList(windowName).toArray()));
+			ChangeWindowAction.LOG.debug("Cannot launch window due to invalid window name: {}", windowName);
+			MessageNotifier.showError(window, this.messageSource.getMessage(Message.LAUNCH_TOOL_ERROR),
+					this.messageSource.getMessage(Message.INVALID_TOOL_ERROR_DESC, Arrays.asList(windowName).toArray()));
 		}
 
 	}
@@ -97,46 +98,41 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
 		// TASK: get messagesource equivalent
 		String appLaunched = windowName;
 		if (WindowEnums.MEMBER.getwindowName().equals(windowName)) {
-			appLaunched = messageSource.getMessage(Message.MEMBERS_LINK);
+			appLaunched = this.messageSource.getMessage(Message.MEMBERS_LINK);
 			ProgramMembersPanel projectLocationPanel = new ProgramMembersPanel(this.project);
 			w.showContent(projectLocationPanel);
 		} else if (WindowEnums.RECOVERY.getwindowName().equals(windowName)) {
-			appLaunched = messageSource.getMessage("BACKUP_RESTORE_TITLE");
+			appLaunched = this.messageSource.getMessage("BACKUP_RESTORE_TITLE");
 			BackupAndRestoreView backupAndRestoreView = new BackupAndRestoreView();
 			w.showContent(backupAndRestoreView);
 		} else if (WindowEnums.BREEDING_GXE.getwindowName().equals(windowName)) {
-			appLaunched = messageSource.getMessage(Message.TITLE_GXE);
+			appLaunched = this.messageSource.getMessage(Message.TITLE_GXE);
 			MultiSiteAnalysisPanel gxeAnalysisPanel = new MultiSiteAnalysisPanel(this.project);
 			w.showContent(gxeAnalysisPanel);
 		} else if (WindowEnums.BREEDING_VIEW.getwindowName().equals(windowName)) {
-			appLaunched = messageSource.getMessage(Message.TITLE_SSA);
-			SingleSiteAnalysisPanel breedingViewPanel = new SingleSiteAnalysisPanel(this.project,
-					Database.LOCAL);
+			appLaunched = this.messageSource.getMessage(Message.TITLE_SSA);
+			SingleSiteAnalysisPanel breedingViewPanel = new SingleSiteAnalysisPanel(this.project, Database.LOCAL);
 			w.showContent(breedingViewPanel);
 		} else if (WindowEnums.BV_META_ANALYSIS.getwindowName().equals(windowName)) {
-			appLaunched = messageSource.getMessage(Message.TITLE_METAANALYSIS);
+			appLaunched = this.messageSource.getMessage(Message.TITLE_METAANALYSIS);
 			MetaAnalysisPanel metaAnalyis = new MetaAnalysisPanel(this.project, Database.LOCAL);
 			w.showContent(metaAnalyis);
 		}
 
 		try {
 
-			sessionData.logProgramActivity(windowName,messageSource.getMessage(Message.LAUNCHED_APP,appLaunched));
+			this.sessionData.logProgramActivity(windowName, this.messageSource.getMessage(Message.LAUNCHED_APP, appLaunched));
 
 		} catch (MiddlewareQueryException e1) {
-			MessageNotifier.showError(window, messageSource.getMessage(Message.DATABASE_ERROR),
-					"<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+			MessageNotifier.showError(window, this.messageSource.getMessage(Message.DATABASE_ERROR),
+					"<br />" + this.messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
 		}
 
 	}
 
 	public static enum WindowEnums {
-		BREEDING_VIEW("breeding_view_wb")
-		, BREEDING_GXE("breeding_gxe")
-		, BV_META_ANALYSIS("bv_meta_analysis")
-		, MEMBER("program_member")
-		, RECOVERY("recovery")
-		;
+		BREEDING_VIEW("breeding_view_wb"), BREEDING_GXE("breeding_gxe"), BV_META_ANALYSIS("bv_meta_analysis"), MEMBER("program_member"), RECOVERY(
+				"recovery");
 
 		String windowName;
 
@@ -165,7 +161,7 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
 		}
 
 		public String getwindowName() {
-			return windowName;
+			return this.windowName;
 		}
 	}
 

@@ -1,14 +1,21 @@
+
 package org.generationcp.ibpworkbench.ui.sidebar;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Tree;
-import com.vaadin.ui.Window;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.generationcp.commons.constant.ToolEnum;
 import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.actions.*;
+import org.generationcp.ibpworkbench.actions.ActionListener;
+import org.generationcp.ibpworkbench.actions.ChangeWindowAction;
+import org.generationcp.ibpworkbench.actions.DeleteProjectAction;
+import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
+import org.generationcp.ibpworkbench.actions.OpenProgramLocationsAction;
+import org.generationcp.ibpworkbench.actions.OpenProgramMethodsAction;
+import org.generationcp.ibpworkbench.actions.OpenToolVersionsAction;
+import org.generationcp.ibpworkbench.actions.OpenWindowAction;
+import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.ibpworkbench.ui.programadministration.OpenManageProgramPageAction;
 import org.generationcp.ibpworkbench.ui.project.create.OpenUpdateProjectPageAction;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
@@ -22,29 +29,33 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.vaadin.data.Item;
+import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Tree;
+import com.vaadin.ui.Window;
 
 /**
- * Created with IntelliJ IDEA.
- * User: cyrus
- * Date: 11/19/13
- * Time: 7:22 PM
- * To change this template use File | Settings | File Templates.
+ * Created with IntelliJ IDEA. User: cyrus Date: 11/19/13 Time: 7:22 PM To change this template use File | Settings | File Templates.
  */
 @Configurable
 public class WorkbenchSidebar extends CssLayout implements InitializingBean {
+
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 5744204745926145144L;
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchSidebar.class);
 	public static Map<String, TreeItem> sidebarTreeMap = new HashMap<>();
 
 	@Autowired
 	private SessionData sessionData;
 
-	private WorkbenchSidebarPresenter presenter;
+	private final WorkbenchSidebarPresenter presenter;
 	private Tree sidebarTree;
 
-	private ItemClickEvent.ItemClickListener treeClickListener = new ItemClickEvent.ItemClickListener() {
+	private final ItemClickEvent.ItemClickListener treeClickListener = new ItemClickEvent.ItemClickListener() {
 
 		@Override
 		public void itemClick(ItemClickEvent event) {
@@ -52,36 +63,34 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 				return;
 			}
 
-			LOG.trace(event.getItemId().toString());
+			WorkbenchSidebar.LOG.trace(event.getItemId().toString());
 
 			TreeItem treeItem = (TreeItem) event.getItemId();
 
-			if (!doCollapse(treeItem)) {
-				presenter.updateProjectLastOpenedDate();
+			if (!WorkbenchSidebar.this.doCollapse(treeItem)) {
+				WorkbenchSidebar.this.presenter.updateProjectLastOpenedDate();
 
-				ActionListener listener = WorkbenchSidebar.this
-						.getLinkActions(treeItem.getId(), sessionData.getSelectedProject());
+				ActionListener listener =
+						WorkbenchSidebar.this.getLinkActions(treeItem.getId(), WorkbenchSidebar.this.sessionData.getSelectedProject());
 
-				listener.doAction(event.getComponent().getWindow(), "/" + treeItem.getId(),
-						true);
+				listener.doAction(event.getComponent().getWindow(), "/" + treeItem.getId(), true);
 			}
 		}
 	};
 
 	public WorkbenchSidebar() {
-		presenter = new WorkbenchSidebarPresenter(this);
+		this.presenter = new WorkbenchSidebarPresenter(this);
 	}
-
 
 	@Override
 	public void afterPropertiesSet() {
-		assemble();
+		this.assemble();
 	}
 
 	protected void initializeComponents() {
-		sidebarTree = new Tree();
+		this.sidebarTree = new Tree();
 
-		this.addComponent(sidebarTree);
+		this.addComponent(this.sidebarTree);
 	}
 
 	protected void initializeLayout() {
@@ -95,66 +104,63 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 	public void populateLinks() {
 		this.removeAllComponents();
 
-		sidebarTree = new Tree();
-		sidebarTree.setImmediate(true);
+		this.sidebarTree = new Tree();
+		this.sidebarTree.setImmediate(true);
 
-		Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> links = presenter
-				.getCategoryLinkItems();
-		sidebarTree.setContainerDataSource(new HierarchicalContainer());
-		sidebarTree.addContainerProperty("id", String.class, "");
-		sidebarTree.addContainerProperty("caption", String.class, "");
-		sidebarTree.addContainerProperty("value", Object.class, null);
+		Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> links = this.presenter.getCategoryLinkItems();
+		this.sidebarTree.setContainerDataSource(new HierarchicalContainer());
+		this.sidebarTree.addContainerProperty("id", String.class, "");
+		this.sidebarTree.addContainerProperty("caption", String.class, "");
+		this.sidebarTree.addContainerProperty("value", Object.class, null);
 
 		boolean expandedFirst = false;
 		for (WorkbenchSidebarCategory category : links.keySet()) {
-			TreeItem parentItem = new TreeItem(category.getSidebarCategoryName(),
-					category.getSidebarCategorylabel(), null);
+			TreeItem parentItem = new TreeItem(category.getSidebarCategoryName(), category.getSidebarCategorylabel(), null);
 
-			sidebarTreeMap.put(category.getSidebarCategoryName(), parentItem);
+			WorkbenchSidebar.sidebarTreeMap.put(category.getSidebarCategoryName(), parentItem);
 
-			Item parent = sidebarTree.addItem(parentItem);
+			Item parent = this.sidebarTree.addItem(parentItem);
 
-			sidebarTree.setChildrenAllowed(parent, true);
-			sidebarTree.setItemCaption(parentItem, parentItem.getCaption());
+			this.sidebarTree.setChildrenAllowed(parent, true);
+			this.sidebarTree.setItemCaption(parentItem, parentItem.getCaption());
 			for (WorkbenchSidebarCategoryLink link : links.get(category)) {
-				TreeItem item = new TreeItem(link.getTool().getToolName(),
-						link.getSidebarLinkTitle(), link);
+				TreeItem item = new TreeItem(link.getTool().getToolName(), link.getSidebarLinkTitle(), link);
 
-				sidebarTreeMap.put(link.getSidebarLinkName(), item);
+				WorkbenchSidebar.sidebarTreeMap.put(link.getSidebarLinkName(), item);
 
-				sidebarTree.addItem(item);
-				sidebarTree.setParent(item, parentItem);
-				sidebarTree.setChildrenAllowed(item, false);
-				sidebarTree.setItemCaption(item, item.getCaption());
+				this.sidebarTree.addItem(item);
+				this.sidebarTree.setParent(item, parentItem);
+				this.sidebarTree.setChildrenAllowed(item, false);
+				this.sidebarTree.setItemCaption(item, item.getCaption());
 			}
 
 			if (!expandedFirst) {
-				sidebarTree.expandItem(parentItem);
+				this.sidebarTree.expandItem(parentItem);
 				expandedFirst = true;
 			}
 
 		}
 
-		sidebarTree.setSelectable(true);
-		sidebarTree.addListener(treeClickListener);
+		this.sidebarTree.setSelectable(true);
+		this.sidebarTree.addListener(this.treeClickListener);
 
-		this.addComponent(sidebarTree);
+		this.addComponent(this.sidebarTree);
 	}
 
 	protected void assemble() {
-		initializeComponents();
-		initializeLayout();
-		initializeActions();
+		this.initializeComponents();
+		this.initializeLayout();
+		this.initializeActions();
 	}
 
 	public void clearLinks() {
-		if (sidebarTree != null) {
-			sidebarTree.setContainerDataSource(new HierarchicalContainer());
+		if (this.sidebarTree != null) {
+			this.sidebarTree.setContainerDataSource(new HierarchicalContainer());
 		}
 	}
 
 	public void selectItem(TreeItem item) {
-		sidebarTree.setValue(item);
+		this.sidebarTree.setValue(item);
 	}
 
 	private boolean doCollapse(TreeItem treeItem) {
@@ -162,10 +168,10 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 			return false;
 		}
 
-		if (sidebarTree.isExpanded(treeItem)) {
-			sidebarTree.collapseItem(treeItem);
+		if (this.sidebarTree.isExpanded(treeItem)) {
+			this.sidebarTree.collapseItem(treeItem);
 		} else {
-			sidebarTree.expandItem(treeItem);
+			this.sidebarTree.expandItem(treeItem);
 		}
 
 		return true;
@@ -179,11 +185,9 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 		if (ToolEnum.isCorrectTool(toolName)) {
 			return new LaunchWorkbenchToolAction(ToolEnum.equivalentToolEnum(toolName));
 		} else if (ChangeWindowAction.WindowEnums.isCorrectTool(toolName)) {
-			return new ChangeWindowAction(
-					ChangeWindowAction.WindowEnums.equivalentWindowEnum(toolName), project);
+			return new ChangeWindowAction(ChangeWindowAction.WindowEnums.equivalentWindowEnum(toolName), project);
 		} else if (OpenWindowAction.WindowEnum.isCorrectTool(toolName)) {
-			return new OpenWindowAction(OpenWindowAction.WindowEnum.equivalentWindowEnum(toolName),
-					project);
+			return new OpenWindowAction(OpenWindowAction.WindowEnum.equivalentWindowEnum(toolName), project);
 		} else if (toolName.equals("manage_program")) {
 			return new OpenManageProgramPageAction();
 		} else if (toolName.equals("tool_versions")) {
@@ -193,26 +197,25 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 		} else if (toolName.equals("project_method")) {
 			return new OpenProgramMethodsAction(project);
 		} else if (toolName.equals("project_location")) {
-			return new OpenProgramLocationsAction(project, sessionData.getUserData());
+			return new OpenProgramLocationsAction(project, this.sessionData.getUserData());
 		} else if (toolName.equals("delete_project")) {
 			return new DeleteProjectAction();
 		} else {
 			try {
-				List<Role> roles = presenter.getRoleByTemplateName(toolName);
+				List<Role> roles = this.presenter.getRoleByTemplateName(toolName);
 				if (roles.size() > 0) {
 					final Role role1 = roles.get(0);
 
 					return new OpenWorkflowForRoleAction(project) {
+
 						@Override
-						public void doAction(Window window, String uriFragment,
-								boolean isLinkAccessed) {
+						public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
 
 							if (role1.getWorkflowTemplate() == null) {
-								LOG.warn("No workflow template assigned to role: {}", role1);
+								WorkbenchSidebar.LOG.warn("No workflow template assigned to role: {}", role1);
 								return;
 							}
-							super.showWorkflowDashboard(super.project, role1,
-									(IContentWindow) window);
+							super.showWorkflowDashboard(super.project, role1, (IContentWindow) window);
 
 						}
 					};
@@ -226,6 +229,7 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 	}
 
 	public class TreeItem {
+
 		private String id;
 		private Object value;
 		private String caption;
@@ -237,7 +241,7 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 		}
 
 		public String getId() {
-			return id;
+			return this.id;
 		}
 
 		public void setId(String id) {
@@ -245,7 +249,7 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 		}
 
 		public Object getValue() {
-			return value;
+			return this.value;
 		}
 
 		public void setValue(String caption) {
@@ -257,7 +261,7 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 		}
 
 		public String getCaption() {
-			return caption;
+			return this.caption;
 		}
 	}
 }

@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.validator;
 
 import org.generationcp.ibpworkbench.model.UserAccountModel;
@@ -10,6 +11,7 @@ import org.springframework.validation.Errors;
  * Created by cyrus on 1/19/15.
  */
 public class ForgotPasswordAccountValidator extends UserAccountValidator {
+
 	private static final Logger LOG = LoggerFactory.getLogger(ForgotPasswordAccountValidator.class);
 
 	public static final String SIGNUP_FIELD_USERNAME_EMAIL_COMBO_NOT_EXISTS = "signup.field.username.email.combo.not.exists";
@@ -18,24 +20,20 @@ public class ForgotPasswordAccountValidator extends UserAccountValidator {
 	public void validate(Object o, Errors errors) {
 		UserAccountModel userAccount = (UserAccountModel) o;
 
-		validatePasswordConfirmationIfEquals(errors, userAccount);
+		this.validatePasswordConfirmationIfEquals(errors, userAccount);
 
-		validateUsernameAndEmailIfNotExists(errors, userAccount);
+		this.validateUsernameAndEmailIfNotExists(errors, userAccount);
 	}
 
-	protected void validateUsernameAndEmailIfNotExists(Errors errors,
-			UserAccountModel userAccount) {
+	protected void validateUsernameAndEmailIfNotExists(Errors errors, UserAccountModel userAccount) {
 		try {
-			if (!workbenchDataManager.isPersonWithUsernameAndEmailExists(userAccount.getUsername(),
-					userAccount.getEmail())) {
-				errors.rejectValue(UserAccountFields.USERNAME,
-						SIGNUP_FIELD_USERNAME_EMAIL_COMBO_NOT_EXISTS,
-						new String[] { userAccount.getUsername(), userAccount.getEmail() },
-						null);
+			if (!this.workbenchDataManager.isPersonWithUsernameAndEmailExists(userAccount.getUsername(), userAccount.getEmail())) {
+				errors.rejectValue(UserAccountFields.USERNAME, ForgotPasswordAccountValidator.SIGNUP_FIELD_USERNAME_EMAIL_COMBO_NOT_EXISTS,
+						new String[] {userAccount.getUsername(), userAccount.getEmail()}, null);
 			}
 		} catch (MiddlewareQueryException e) {
-			errors.rejectValue(UserAccountFields.USERNAME, DATABASE_ERROR);
-			LOG.error(e.getMessage(), e);
+			errors.rejectValue(UserAccountFields.USERNAME, UserAccountValidator.DATABASE_ERROR);
+			ForgotPasswordAccountValidator.LOG.error(e.getMessage(), e);
 		}
 	}
 }

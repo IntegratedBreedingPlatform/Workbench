@@ -1,20 +1,16 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- * 
+ *
  * Generation Challenge Programme (GCP)
- * 
- * 
- * This software is licensed for use under the terms of the GNU General Public
- * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
- * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- * 
+ *
+ *
+ * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
+ * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.ui.workflow;
 
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.*;
-import com.vaadin.ui.themes.BaseTheme;
 import org.generationcp.commons.constant.ToolEnum;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -30,577 +26,619 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.AbsoluteLayout;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.BaseTheme;
+
 @Configurable
 public class ConventionalBreedingWorkflowDiagram extends Panel implements WorkflowConstants, InitializingBean, InternationalizableComponent {
-    
-    private static final long serialVersionUID = 1L;
 
-    //this is in pixels and used for layouting
-    private static final int WORKFLOW_STEP_HEIGHT = 125;
-    private static final int WORKFLOW_STEP_EXTRA_HEIGHT = 195;
-    private static final int PROJECT_PLANNING_HEIGHT = 205;
-    private static final int WORKFLOW_STEP_WIDTH = 270;
-    private static final int EXTRA_SPACE_BETWEEN_COMPONENTS = 10;
-    private static final int ARROW_IMAGE_HEIGHT = 30;
-    private static final String FIRST_COLUMN_LEFT_FOR_ARROWS = "135px";
-    private static final String DOWN_ARROW_THEME_RESOURCE = "../gcp-default/images/blc-arrow-d.png";
+	private static final long serialVersionUID = 1L;
+
+	// this is in pixels and used for layouting
+	private static final int WORKFLOW_STEP_HEIGHT = 125;
+	private static final int WORKFLOW_STEP_EXTRA_HEIGHT = 195;
+	private static final int PROJECT_PLANNING_HEIGHT = 205;
+	private static final int WORKFLOW_STEP_WIDTH = 270;
+	private static final int EXTRA_SPACE_BETWEEN_COMPONENTS = 10;
+	private static final int ARROW_IMAGE_HEIGHT = 30;
+	private static final String FIRST_COLUMN_LEFT_FOR_ARROWS = "135px";
+	private static final String DOWN_ARROW_THEME_RESOURCE = "../gcp-default/images/blc-arrow-d.png";
 
 	private static final String GCP_WORKFLOW_LINK = " gcp-workflow-link";
 	private static final String GCP_SECTION_TITLE_LARGE = "gcp-section-title-large";
-    
-    private boolean workflowPreview;
-    
-    private Project project;
-
-    private Label dashboardTitle;
-
-    private Label projectPlanningTitle;
-    private Label populationDevelopmentTitle;
-    private Label fieldTrialManagementTitle;
-    private Label statisticalAnalysisTitle;
-    private Label breedingDecisionTitle;
-
-    //links for tools
-    private Button browseGermplasmButton;
-    private Button browseStudiesButton;
-    private Button browseGermplasmListsButton;
-    private Button breedingManagerButton;
-    private Button breedingViewButton;
-    private Button breedingViewSingleSiteAnalysisCentralButton;
-    private Button breedingViewSingleSiteAnalysisLocalButton;
-    private Button fieldbookButton;
-    private Button browseGenotypingDataButton;
-    private Button optimasButton;
-
-    private Button mainHeadToHeadButton;
-    private Button mainHeadToHeadButton2;
-    
-    private Embedded downArrowImage1;
-    private Embedded downArrowImage2;
-    private Embedded downArrowImage3;
-    private Embedded downArrowImage4;
-    
-    @Autowired
-    private SimpleResourceBundleMessageSource messageSource;
-
-    private Button manageGermplasmListsButton;
-
-    private Button breedingViewMultiSiteAnalysisButton;
-
-    private Button makeCrossesButton;
-
-    private Role role;
-
-    private Button breedingPlannerButton;
-
-    private Button germplasmImportButton;
-
-    private Button germplasmImportButton2;
-
-    private Button queryForAdaptedGermplasmButton;
-    private Button queryForAdaptedGermplasmButton2;
-    
-    private Button breedingManagerListManager;
-    private Button ontologyBrowserFBBtn;
-    private Button metaAnalysisBtn;
-
-    public ConventionalBreedingWorkflowDiagram(boolean workflowPreview, Project project, Role role) {
-        this.workflowPreview = workflowPreview;
-        
-        if (!workflowPreview) {
-            this.project = project;
-        }
-        
-        this.role = role;
-    }
-    
-    @Override
-    public void afterPropertiesSet() {
-        assemble();
-    }
-
-    protected void initializeComponents() {
-        // dashboard title
-        dashboardTitle = new Label();
-        dashboardTitle.setStyleName("gcp-content-title");
-
-        projectPlanningTitle = new Label(messageSource.getMessage(Message.PROJECT_PLANNING));
-        projectPlanningTitle.setStyleName(GCP_SECTION_TITLE_LARGE);
-
-        populationDevelopmentTitle = new Label(messageSource.getMessage(Message.POPULATION_DEVELOPMENT));
-        populationDevelopmentTitle.setStyleName(GCP_SECTION_TITLE_LARGE);
-
-        fieldTrialManagementTitle = new Label(messageSource.getMessage(Message.FIELD_TRIAL_MANAGEMENT));
-        fieldTrialManagementTitle.setStyleName(GCP_SECTION_TITLE_LARGE);
-
-        statisticalAnalysisTitle = new Label(messageSource.getMessage(Message.STATISTICAL_ANALYSIS));
-        statisticalAnalysisTitle.setStyleName(GCP_SECTION_TITLE_LARGE);
-
-        breedingDecisionTitle = new Label(messageSource.getMessage(Message.BREEDING_DECISION));
-        breedingDecisionTitle.setStyleName(GCP_SECTION_TITLE_LARGE);
-
-        breedingPlannerButton = new Button("Breeding Planner");
-        breedingPlannerButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
-        breedingPlannerButton.setSizeUndefined();
-        breedingPlannerButton.setDescription("Click to launch the freestanding Breeding Planner application.");
-        
-        germplasmImportButton = new Button("IBFB Import Germplasm Lists");
-        germplasmImportButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
-        germplasmImportButton.setSizeUndefined();
-        germplasmImportButton.setDescription("Click to launch Fieldbook on Nursery Manager View.");
-        
-        germplasmImportButton2 = new Button("Import Germplasm Lists");
-        germplasmImportButton2.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
-        germplasmImportButton2.setSizeUndefined();
-        germplasmImportButton2.setDescription("Click to launch the Germplasm Import View.");
-        
-        browseGermplasmButton = new Button(messageSource.getMessage(Message.BROWSE_GERMPLASM_INFORMATION));
-        browseGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
-        browseGermplasmButton.setSizeUndefined();
-        browseGermplasmButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_GERMPLASM_BROWSER));
-        
-        browseGenotypingDataButton = new Button(messageSource.getMessage(Message.GENOTYPIC_DATA_BROWSER_LINK));
-        browseGenotypingDataButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
-        browseGenotypingDataButton.setSizeUndefined();
-        browseGenotypingDataButton.setDescription(messageSource.getMessage(Message.GENOTYPIC_DATA_BROWSER_DESC));
-
-        browseStudiesButton = new Button(messageSource.getMessage(Message.BROWSE_STUDIES_AND_DATASETS));
-        browseStudiesButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
-        browseStudiesButton.setSizeUndefined();
-        browseStudiesButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_STUDY_BROWSER));
-
-        browseGermplasmListsButton = new Button(messageSource.getMessage(Message.BROWSE_GERMPLAM_LISTS));
-        browseGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
-        browseGermplasmListsButton.setSizeUndefined();
-        browseGermplasmListsButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_GERMPLASM_LIST_BROWSER));
-        
-        breedingManagerButton = new Button(messageSource.getMessage(Message.MANAGE_NURSERIES));
-        breedingManagerButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
-        breedingManagerButton.setSizeUndefined();
-        breedingManagerButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_BREEDING_MANAGER));
-
-        makeCrossesButton = new Button(messageSource.getMessage(Message.MAKE_CROSSES));
-        makeCrossesButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
-        makeCrossesButton.setSizeUndefined();
-        makeCrossesButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_CROSSING_MANAGER));
-                
-        breedingViewButton = new Button(messageSource.getMessage(Message.BREEDING_VIEW));
-        breedingViewButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
-        breedingViewButton.setSizeUndefined();
-        breedingViewButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_BREEDING_VIEW));
-        
-        breedingViewSingleSiteAnalysisCentralButton = new Button(messageSource.getMessage(Message.SINGLE_SITE_ANALYSIS_CENTRAL_LINK));
-        breedingViewSingleSiteAnalysisCentralButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
-        breedingViewSingleSiteAnalysisCentralButton.setSizeUndefined();
-        breedingViewSingleSiteAnalysisCentralButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_BREEDING_VIEW_SINGLE_SITE_ANALYSIS_CENTRAL));
-
-        breedingViewSingleSiteAnalysisLocalButton = new Button(messageSource.getMessage(Message.SINGLE_SITE_ANALYSIS_LOCAL_LINK));
-        breedingViewSingleSiteAnalysisLocalButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
-        breedingViewSingleSiteAnalysisLocalButton.setSizeUndefined();
-        breedingViewSingleSiteAnalysisLocalButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL));
-        
-        manageGermplasmListsButton = new Button(messageSource.getMessage(Message.LIST_MANAGER));
-        manageGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
-        manageGermplasmListsButton.setSizeUndefined();
-        manageGermplasmListsButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_LIST_MANAGER));
-        
-        breedingViewMultiSiteAnalysisButton = new Button(messageSource.getMessage(Message.MULTI_SITE_ANALYSIS_LINK));
-        breedingViewMultiSiteAnalysisButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
-        breedingViewMultiSiteAnalysisButton.setSizeUndefined();
-        breedingViewMultiSiteAnalysisButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_BREEDING_VIEW_MULTI_SITE_ANALYSIS));
-
-        mainHeadToHeadButton = new Button(messageSource.getMessage(Message.MAIN_HEAD_TO_HEAD_LAUNCH));
-        mainHeadToHeadButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
-        mainHeadToHeadButton.setSizeUndefined();
-        mainHeadToHeadButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_MAIN_HEAD_TO_HEAD));
-        
-        mainHeadToHeadButton2 = new Button(messageSource.getMessage(Message.MAIN_HEAD_TO_HEAD_LAUNCH));
-        mainHeadToHeadButton2.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
-        mainHeadToHeadButton2.setSizeUndefined();
-        mainHeadToHeadButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_MAIN_HEAD_TO_HEAD));
-        
-        fieldbookButton = new Button("Manage Trials");
-        fieldbookButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
-        fieldbookButton.setSizeUndefined();
-        fieldbookButton.setDescription("Click to launch Fieldbook in Trial Manager View");
-        
-        optimasButton = new Button(messageSource.getMessage(Message.OPTIMAS));
-        optimasButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
-        optimasButton.setSizeUndefined();
-        optimasButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_OPTIMAS));
-        
-        queryForAdaptedGermplasmButton = new Button(messageSource.getMessage(Message.QUERY_FOR_ADAPTED_GERMPLASM));
-        queryForAdaptedGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
-        queryForAdaptedGermplasmButton.setSizeUndefined();
-        queryForAdaptedGermplasmButton.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_QUERY_FOR_ADAPTED_GERMPLASM));
-        
-        queryForAdaptedGermplasmButton2 = new Button(messageSource.getMessage(Message.QUERY_FOR_ADAPTED_GERMPLASM));
-        queryForAdaptedGermplasmButton2.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
-        queryForAdaptedGermplasmButton2.setSizeUndefined();
-        queryForAdaptedGermplasmButton2.setDescription(messageSource.getMessage(Message.CLICK_TO_LAUNCH_QUERY_FOR_ADAPTED_GERMPLASM));
-        
-        breedingManagerListManager = new Button(messageSource.getMessage(Message.BREEDING_MANAGER_BROWSE_FOR_GERMPLASMS_AND_LISTS));
-        breedingManagerListManager.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
-        breedingManagerListManager.setSizeUndefined();
-        breedingManagerListManager.setDescription(messageSource.getMessage(Message.CLICK_TO_BROWSE_FOR_GERMPLASMS_AND_LISTS));
-
-        ontologyBrowserFBBtn = new Button("Manage Ontologies");
-        ontologyBrowserFBBtn.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
-        ontologyBrowserFBBtn.setSizeUndefined();
-        ontologyBrowserFBBtn.setDescription("Click to launch Fieldbook on Ontology Browser view");
-
-        metaAnalysisBtn = new Button("Meta Analysis of Field Trials");
-        metaAnalysisBtn.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
-        metaAnalysisBtn.setSizeUndefined();
-        metaAnalysisBtn.setDescription("Click to launch Meta Analysis of Field Trial Tool");
-
-        downArrowImage1 = new Embedded("", new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
-        downArrowImage2 = new Embedded("", new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
-        downArrowImage3 = new Embedded("", new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
-        downArrowImage4 = new Embedded("", new ThemeResource(DOWN_ARROW_THEME_RESOURCE));
-    }
-
-    protected void initializeLayout() {
-        this.setSizeFull();
-        this.setScrollable(true);
-        this.setContent(layoutWorkflowArea());
-    }
-
-    protected ComponentContainer layoutWorkflowArea() {
-        AbsoluteLayout layout = new AbsoluteLayout();
-        layout.setWidth("300px");
-        layout.setHeight("1200px");
-        
-        String extraSpace = EXTRA_SPACE_BETWEEN_COMPONENTS + "px";
-        int top = 10;
-        String topInPixels = "";
-        
-        //the steps on the first column
-        Component projectPlanningArea = layoutProjectPlanning();
-        layout.addComponent(projectPlanningArea, "top:" + extraSpace + "; left:" + extraSpace);
-        
-        top = top + PROJECT_PLANNING_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
-        topInPixels = top + "px";
-        layout.addComponent(downArrowImage1, "top:" + topInPixels + "; left:" + FIRST_COLUMN_LEFT_FOR_ARROWS);
-        
-        top = top + ARROW_IMAGE_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
-        topInPixels = top + "px";
-        Component populationDevelopmentArea = layoutPopulationDevelopment();
-        layout.addComponent(populationDevelopmentArea, "top:" + topInPixels  + "; left:" + extraSpace);
-        
-        top = top + WORKFLOW_STEP_EXTRA_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
-        topInPixels = top + "px";
-        layout.addComponent(downArrowImage2, "top:" + topInPixels + "; left:" + FIRST_COLUMN_LEFT_FOR_ARROWS);
-        
-        top = top + ARROW_IMAGE_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
-        topInPixels = top + "px";
-        Component fieldTrialArea = layoutFieldTrialManagement();
-        layout.addComponent(fieldTrialArea, "top:" + topInPixels  + "; left:" + extraSpace);
-        
-        top = top + WORKFLOW_STEP_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
-        topInPixels = top + "px";
-        layout.addComponent(downArrowImage3, "top:" + topInPixels + "; left:" + FIRST_COLUMN_LEFT_FOR_ARROWS);
-        
-        top = top + ARROW_IMAGE_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
-        topInPixels = top + "px";
-        Component statisticalAnalysisArea = layoutStatisticalAnalysis();
-        layout.addComponent(statisticalAnalysisArea, "top:" + topInPixels  + "; left:" + extraSpace);
-
-        top = top + WORKFLOW_STEP_EXTRA_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
-        topInPixels = top + "px";
-        layout.addComponent(downArrowImage4, "top:" + topInPixels + "; left:" + FIRST_COLUMN_LEFT_FOR_ARROWS);
-        
-        top = top + ARROW_IMAGE_HEIGHT + EXTRA_SPACE_BETWEEN_COMPONENTS;
-        topInPixels = top + "px";
-        Component breedingDecisionArea = layoutBreedingDecision();
-        layout.addComponent(breedingDecisionArea, "top:" + topInPixels  + "; left:" + extraSpace);
-
-        final VerticalLayout rootContainer = new VerticalLayout();
-        rootContainer.setSizeUndefined();
-        rootContainer.setWidth("750px");
-        rootContainer.setMargin(new Layout.MarginInfo(false,true,true,true));
-        rootContainer.setSpacing(false);
-
-        if (!workflowPreview) {
-            Label header = new Label();
-            header.setStyleName(Bootstrap.Typography.H1.styleName());
-            header.setValue(role.getLabel());
-            rootContainer.addComponent(header);
-
-        }
-        rootContainer.addComponent(layout);
-
-        return rootContainer;
-    }
-
-    protected Component layoutProjectPlanning() {
-        VerticalLayout layout = new VerticalLayout();
-        configureWorkflowStepLayout(layout);
-        layout.setHeight(PROJECT_PLANNING_HEIGHT + "px");
-        
-        layout.addComponent(projectPlanningTitle);
-        layout.setComponentAlignment(projectPlanningTitle, Alignment.TOP_CENTER);
-        layout.setExpandRatio(projectPlanningTitle, 0);
-
-        Label emptyLabel = new Label(" ");
-        emptyLabel.setWidth("100%");
-        emptyLabel.setHeight("5px");
-        layout.addComponent(emptyLabel);
-        layout.setExpandRatio(emptyLabel, 100);
-        
-
-        layout.addComponent(ontologyBrowserFBBtn);
-        ontologyBrowserFBBtn.setHeight("20px");
-        layout.setComponentAlignment(ontologyBrowserFBBtn, Alignment.TOP_CENTER);
-        layout.setExpandRatio(ontologyBrowserFBBtn, 0);
-
-        layout.addComponent(browseStudiesButton);
-        browseStudiesButton.setHeight("20px");
-        layout.setComponentAlignment(browseStudiesButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(browseStudiesButton, 0);
-        
-        layout.addComponent(browseGermplasmListsButton);
-        browseGermplasmListsButton.setHeight("20px");
-        layout.setComponentAlignment(browseGermplasmListsButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(browseGermplasmListsButton, 0);
-        
-        layout.addComponent(browseGenotypingDataButton);
-        browseGenotypingDataButton.setHeight("20px");
-        layout.setComponentAlignment(browseGenotypingDataButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(browseGenotypingDataButton, 0);
-
-        layout.addComponent(mainHeadToHeadButton);
-        mainHeadToHeadButton.setHeight("20px");
-        layout.setComponentAlignment(mainHeadToHeadButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(mainHeadToHeadButton, 0);
-        
-        layout.addComponent(queryForAdaptedGermplasmButton);
-        queryForAdaptedGermplasmButton.setHeight("20px");
-        layout.setComponentAlignment(queryForAdaptedGermplasmButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(queryForAdaptedGermplasmButton, 0);
-        
-        return layout;
-    }
-
-    protected Component layoutPopulationDevelopment() {
-        VerticalLayout layout = new VerticalLayout();
-        configureWorkflowStepLayout(layout);
-        layout.setHeight(WORKFLOW_STEP_EXTRA_HEIGHT + "px");
-        
-        layout.setHeight(WORKFLOW_STEP_EXTRA_HEIGHT + "px");
-        
-        layout.addComponent(populationDevelopmentTitle);
-        layout.setComponentAlignment(populationDevelopmentTitle, Alignment.TOP_CENTER);
-        layout.setExpandRatio(populationDevelopmentTitle, 0);
-
-        Label emptyLabel = new Label(" ");
-        emptyLabel.setWidth("100%");
-        emptyLabel.setHeight("5px");
-        layout.addComponent(emptyLabel);
-        layout.setExpandRatio(emptyLabel, 100);
-        
-        layout.addComponent(germplasmImportButton2);
-        germplasmImportButton2.setHeight("20px");
-        layout.setComponentAlignment(germplasmImportButton2, Alignment.TOP_CENTER);
-        layout.setExpandRatio(germplasmImportButton2, 0);
-        
-        layout.addComponent(makeCrossesButton);
-        makeCrossesButton.setHeight("20px");
-        layout.setComponentAlignment(makeCrossesButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(makeCrossesButton, 0);
-
-        layout.addComponent(breedingManagerButton);
-        layout.setComponentAlignment(breedingManagerButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(breedingManagerButton, 0);
-
-        return layout;
-    }
-
-    protected Component layoutFieldTrialManagement() {
-        VerticalLayout layout = new VerticalLayout();
-        configureWorkflowStepLayout(layout);
-
-        layout.addComponent(fieldTrialManagementTitle);
-        layout.setComponentAlignment(fieldTrialManagementTitle, Alignment.TOP_CENTER);
-        layout.setExpandRatio(fieldTrialManagementTitle, 0);
-
-        Label emptyLabel = new Label(" ");
-        emptyLabel.setWidth("100%");
-        emptyLabel.setHeight("20px");
-        layout.addComponent(emptyLabel);
-        layout.setExpandRatio(emptyLabel, 100);
-
-        layout.addComponent(fieldbookButton);
-        layout.setComponentAlignment(fieldbookButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(fieldbookButton, 0);
-        
-        return layout;
-    }
-
-    protected Component layoutStatisticalAnalysis() {
-        VerticalLayout layout = new VerticalLayout();
-        configureWorkflowStepLayout(layout);
-
-        layout.setHeight(WORKFLOW_STEP_EXTRA_HEIGHT + "px");
-                
-        layout.addComponent(statisticalAnalysisTitle);
-        layout.setComponentAlignment(statisticalAnalysisTitle, Alignment.TOP_CENTER);
-        layout.setExpandRatio(statisticalAnalysisTitle, 0);
-
-        Label emptyLabel = new Label(" ");
-        emptyLabel.setWidth("100%");
-        emptyLabel.setHeight("5px");
-        layout.addComponent(emptyLabel);
-        layout.setExpandRatio(emptyLabel, 100);
-        
-        layout.addComponent(breedingViewSingleSiteAnalysisLocalButton);
-        breedingViewSingleSiteAnalysisLocalButton.setHeight("20px");
-        layout.setComponentAlignment(breedingViewSingleSiteAnalysisLocalButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(breedingViewSingleSiteAnalysisLocalButton, 0);
-
-        layout.addComponent(metaAnalysisBtn);
-        metaAnalysisBtn.setHeight("20px");
-        layout.setComponentAlignment(metaAnalysisBtn, Alignment.TOP_CENTER);
-        layout.setExpandRatio(metaAnalysisBtn, 0);
-
-        layout.addComponent(breedingViewMultiSiteAnalysisButton);
-        breedingViewMultiSiteAnalysisButton.setHeight("20px");
-        layout.setComponentAlignment(breedingViewMultiSiteAnalysisButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(breedingViewMultiSiteAnalysisButton, 0);
-        
-        layout.addComponent(breedingViewButton);
-        layout.setComponentAlignment(breedingViewButton, Alignment.TOP_CENTER);
-        layout.setExpandRatio(breedingViewButton, 0);
-        
-        return layout;
-    }
-
-    protected Component layoutBreedingDecision() {
-        VerticalLayout layout = new VerticalLayout();
-        configureWorkflowStepLayout(layout);
-
-        layout.addComponent(breedingDecisionTitle);
-        layout.setComponentAlignment(breedingDecisionTitle, Alignment.TOP_CENTER);
-        layout.setExpandRatio(breedingDecisionTitle, 0);
-        
-        Label emptyLabel = new Label(" ");
-        emptyLabel.setWidth("100%");
-        emptyLabel.setHeight("20px");
-        layout.addComponent(emptyLabel);
-        layout.setExpandRatio(emptyLabel, 100);
-
-        layout.addComponent(mainHeadToHeadButton2);
-        layout.setComponentAlignment(mainHeadToHeadButton2, Alignment.TOP_CENTER);
-        layout.setExpandRatio(mainHeadToHeadButton2, 0);
-        
-        layout.addComponent(queryForAdaptedGermplasmButton2);
-        layout.setComponentAlignment(queryForAdaptedGermplasmButton2, Alignment.TOP_CENTER);
-        layout.setExpandRatio(queryForAdaptedGermplasmButton2, 0);
-        
-        return layout;
-    }
-
-    protected Component createPanel(String caption, String... buttonCaptions) {
-        VerticalLayout layout = new VerticalLayout();
-        configureWorkflowStepLayout(layout);
-
-        Label titleLabel = new Label(caption);
-        titleLabel.setStyleName("gcp-section-title");
-        titleLabel.setSizeUndefined();
-
-        layout.addComponent(titleLabel);
-        layout.setComponentAlignment(titleLabel, Alignment.TOP_CENTER);
-        layout.setExpandRatio(titleLabel, 0);
-
-        Label emptyLabel = new Label(" ");
-        emptyLabel.setWidth("100%");
-        emptyLabel.setHeight("20px");
-        layout.addComponent(emptyLabel);
-        layout.setExpandRatio(emptyLabel, 100);
-
-        for (String buttonCaption : buttonCaptions) {
-            Button button = new Button(buttonCaption);
-            button.setStyleName(BaseTheme.BUTTON_LINK + GCP_WORKFLOW_LINK);
-
-            layout.addComponent(button);
-            layout.setComponentAlignment(button, Alignment.TOP_CENTER);
-            layout.setExpandRatio(button, 0);
-        }
-
-        return layout;
-    }
-
-    protected void configureWorkflowStepLayout(VerticalLayout layout) {
-        layout.setWidth(WORKFLOW_STEP_WIDTH + "px");
-        layout.setHeight(WORKFLOW_STEP_HEIGHT + "px");
-        layout.setStyleName("gcp-workflow-step");
-        layout.setMargin(false,false, true,false);
-    }
-    
-    protected void initializeActions() {
-        if (!workflowPreview) {
-            germplasmImportButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.IBFB_GERMPLASM_IMPORT));
-            germplasmImportButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_IMPORT));
-            
-            breedingPlannerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_PLANNER));
-            
-            mainHeadToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.MAIN_HEAD_TO_HEAD_BROWSER));
-            mainHeadToHeadButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.MAIN_HEAD_TO_HEAD_BROWSER));
-            browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
-            browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER_MAIN));
-            breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.NURSERY_MANAGER_FIELDBOOK_WEB));
-            breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
-
-            breedingViewSingleSiteAnalysisCentralButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_VIEW,this.project,WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_CENTRAL));
-            breedingViewSingleSiteAnalysisLocalButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_VIEW,this.project,WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL));
-
-
-            fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.TRIAL_MANAGER_FIELDBOOK_WEB));
-            optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
-            browseGenotypingDataButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
-            makeCrossesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.CROSSING_MANAGER));
-            manageGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
-            
-            breedingViewMultiSiteAnalysisButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_GXE,this.project,null));
-            queryForAdaptedGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
-            queryForAdaptedGermplasmButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
-            breedingManagerListManager.addListener(new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER_MAIN));
-
-            ontologyBrowserFBBtn.addListener(new LaunchWorkbenchToolAction(ToolEnum.ONTOLOGY_BROWSER_FIELDBOOK_WEB));
-            metaAnalysisBtn.addListener(new ChangeWindowAction(WindowEnums.BV_META_ANALYSIS,this.project,null));
-
-        }
-    }
-
-    protected void assemble() {
-        initializeComponents();
-        initializeLayout();
-        initializeActions();
-        
-        if (workflowPreview) {
-            this.setStyleName("gcp-removelink");
-        }
-        
-    }
-    
-    @Override
-    public void attach() {
-        super.attach();        
-        updateLabels();
-    }
-    
-    @Override
-    public void updateLabels() {
-        if (workflowPreview) {
-            messageSource.setValue(dashboardTitle, Message.WORKFLOW_PREVIEW_TITLE, "Conventional Breeding");
-        } else { 
-            messageSource.setValue(dashboardTitle, Message.PROJECT_TITLE, project.getProjectName());
-        }
-    }
+
+	private final boolean workflowPreview;
+
+	private Project project;
+
+	private Label dashboardTitle;
+
+	private Label projectPlanningTitle;
+	private Label populationDevelopmentTitle;
+	private Label fieldTrialManagementTitle;
+	private Label statisticalAnalysisTitle;
+	private Label breedingDecisionTitle;
+
+	// links for tools
+	private Button browseGermplasmButton;
+	private Button browseStudiesButton;
+	private Button browseGermplasmListsButton;
+	private Button breedingManagerButton;
+	private Button breedingViewButton;
+	private Button breedingViewSingleSiteAnalysisCentralButton;
+	private Button breedingViewSingleSiteAnalysisLocalButton;
+	private Button fieldbookButton;
+	private Button browseGenotypingDataButton;
+	private Button optimasButton;
+
+	private Button mainHeadToHeadButton;
+	private Button mainHeadToHeadButton2;
+
+	private Embedded downArrowImage1;
+	private Embedded downArrowImage2;
+	private Embedded downArrowImage3;
+	private Embedded downArrowImage4;
+
+	@Autowired
+	private SimpleResourceBundleMessageSource messageSource;
+
+	private Button manageGermplasmListsButton;
+
+	private Button breedingViewMultiSiteAnalysisButton;
+
+	private Button makeCrossesButton;
+
+	private final Role role;
+
+	private Button breedingPlannerButton;
+
+	private Button germplasmImportButton;
+
+	private Button germplasmImportButton2;
+
+	private Button queryForAdaptedGermplasmButton;
+	private Button queryForAdaptedGermplasmButton2;
+
+	private Button breedingManagerListManager;
+	private Button ontologyBrowserFBBtn;
+	private Button metaAnalysisBtn;
+
+	public ConventionalBreedingWorkflowDiagram(boolean workflowPreview, Project project, Role role) {
+		this.workflowPreview = workflowPreview;
+
+		if (!workflowPreview) {
+			this.project = project;
+		}
+
+		this.role = role;
+	}
+
+	@Override
+	public void afterPropertiesSet() {
+		this.assemble();
+	}
+
+	protected void initializeComponents() {
+		// dashboard title
+		this.dashboardTitle = new Label();
+		this.dashboardTitle.setStyleName("gcp-content-title");
+
+		this.projectPlanningTitle = new Label(this.messageSource.getMessage(Message.PROJECT_PLANNING));
+		this.projectPlanningTitle.setStyleName(ConventionalBreedingWorkflowDiagram.GCP_SECTION_TITLE_LARGE);
+
+		this.populationDevelopmentTitle = new Label(this.messageSource.getMessage(Message.POPULATION_DEVELOPMENT));
+		this.populationDevelopmentTitle.setStyleName(ConventionalBreedingWorkflowDiagram.GCP_SECTION_TITLE_LARGE);
+
+		this.fieldTrialManagementTitle = new Label(this.messageSource.getMessage(Message.FIELD_TRIAL_MANAGEMENT));
+		this.fieldTrialManagementTitle.setStyleName(ConventionalBreedingWorkflowDiagram.GCP_SECTION_TITLE_LARGE);
+
+		this.statisticalAnalysisTitle = new Label(this.messageSource.getMessage(Message.STATISTICAL_ANALYSIS));
+		this.statisticalAnalysisTitle.setStyleName(ConventionalBreedingWorkflowDiagram.GCP_SECTION_TITLE_LARGE);
+
+		this.breedingDecisionTitle = new Label(this.messageSource.getMessage(Message.BREEDING_DECISION));
+		this.breedingDecisionTitle.setStyleName(ConventionalBreedingWorkflowDiagram.GCP_SECTION_TITLE_LARGE);
+
+		this.breedingPlannerButton = new Button("Breeding Planner");
+		this.breedingPlannerButton.setStyleName(BaseTheme.BUTTON_LINK + ConventionalBreedingWorkflowDiagram.GCP_WORKFLOW_LINK);
+		this.breedingPlannerButton.setSizeUndefined();
+		this.breedingPlannerButton.setDescription("Click to launch the freestanding Breeding Planner application.");
+
+		this.germplasmImportButton = new Button("IBFB Import Germplasm Lists");
+		this.germplasmImportButton.setStyleName(BaseTheme.BUTTON_LINK + ConventionalBreedingWorkflowDiagram.GCP_WORKFLOW_LINK);
+		this.germplasmImportButton.setSizeUndefined();
+		this.germplasmImportButton.setDescription("Click to launch Fieldbook on Nursery Manager View.");
+
+		this.germplasmImportButton2 = new Button("Import Germplasm Lists");
+		this.germplasmImportButton2.setStyleName(BaseTheme.BUTTON_LINK + ConventionalBreedingWorkflowDiagram.GCP_WORKFLOW_LINK);
+		this.germplasmImportButton2.setSizeUndefined();
+		this.germplasmImportButton2.setDescription("Click to launch the Germplasm Import View.");
+
+		this.browseGermplasmButton = new Button(this.messageSource.getMessage(Message.BROWSE_GERMPLASM_INFORMATION));
+		this.browseGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK + ConventionalBreedingWorkflowDiagram.GCP_WORKFLOW_LINK);
+		this.browseGermplasmButton.setSizeUndefined();
+		this.browseGermplasmButton.setDescription(this.messageSource.getMessage(Message.CLICK_TO_LAUNCH_GERMPLASM_BROWSER));
+
+		this.browseGenotypingDataButton = new Button(this.messageSource.getMessage(Message.GENOTYPIC_DATA_BROWSER_LINK));
+		this.browseGenotypingDataButton.setStyleName(BaseTheme.BUTTON_LINK + ConventionalBreedingWorkflowDiagram.GCP_WORKFLOW_LINK);
+		this.browseGenotypingDataButton.setSizeUndefined();
+		this.browseGenotypingDataButton.setDescription(this.messageSource.getMessage(Message.GENOTYPIC_DATA_BROWSER_DESC));
+
+		this.browseStudiesButton = new Button(this.messageSource.getMessage(Message.BROWSE_STUDIES_AND_DATASETS));
+		this.browseStudiesButton.setStyleName(BaseTheme.BUTTON_LINK + ConventionalBreedingWorkflowDiagram.GCP_WORKFLOW_LINK);
+		this.browseStudiesButton.setSizeUndefined();
+		this.browseStudiesButton.setDescription(this.messageSource.getMessage(Message.CLICK_TO_LAUNCH_STUDY_BROWSER));
+
+		this.browseGermplasmListsButton = new Button(this.messageSource.getMessage(Message.BROWSE_GERMPLAM_LISTS));
+		this.browseGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK + ConventionalBreedingWorkflowDiagram.GCP_WORKFLOW_LINK);
+		this.browseGermplasmListsButton.setSizeUndefined();
+		this.browseGermplasmListsButton.setDescription(this.messageSource.getMessage(Message.CLICK_TO_LAUNCH_GERMPLASM_LIST_BROWSER));
+
+		this.breedingManagerButton = new Button(this.messageSource.getMessage(Message.MANAGE_NURSERIES));
+		this.breedingManagerButton.setStyleName(BaseTheme.BUTTON_LINK + ConventionalBreedingWorkflowDiagram.GCP_WORKFLOW_LINK);
+		this.breedingManagerButton.setSizeUndefined();
+		this.breedingManagerButton.setDescription(this.messageSource.getMessage(Message.CLICK_TO_LAUNCH_BREEDING_MANAGER));
+
+		this.makeCrossesButton = new Button(this.messageSource.getMessage(Message.MAKE_CROSSES));
+		this.makeCrossesButton.setStyleName(BaseTheme.BUTTON_LINK + ConventionalBreedingWorkflowDiagram.GCP_WORKFLOW_LINK);
+		this.makeCrossesButton.setSizeUndefined();
+		this.makeCrossesButton.setDescription(this.messageSource.getMessage(Message.CLICK_TO_LAUNCH_CROSSING_MANAGER));
+
+		this.breedingViewButton = new Button(this.messageSource.getMessage(Message.BREEDING_VIEW));
+		this.breedingViewButton.setStyleName(BaseTheme.BUTTON_LINK + ConventionalBreedingWorkflowDiagram.GCP_WORKFLOW_LINK);
+		this.breedingViewButton.setSizeUndefined();
+		this.breedingViewButton.setDescription(this.messageSource.getMessage(Message.CLICK_TO_LAUNCH_BREEDING_VIEW));
+
+		this.breedingViewSingleSiteAnalysisCentralButton =
+				new Button(this.messageSource.getMessage(Message.SINGLE_SITE_ANALYSIS_CENTRAL_LINK));
+		this.breedingViewSingleSiteAnalysisCentralButton.setStyleName(BaseTheme.BUTTON_LINK
+				+ ConventionalBreedingWorkflowDiagram.GCP_WORKFLOW_LINK);
+		this.breedingViewSingleSiteAnalysisCentralButton.setSizeUndefined();
+		this.breedingViewSingleSiteAnalysisCentralButton.setDescription(this.messageSource
+				.getMessage(Message.CLICK_TO_LAUNCH_BREEDING_VIEW_SINGLE_SITE_ANALYSIS_CENTRAL));
+
+		this.breedingViewSingleSiteAnalysisLocalButton = new Button(this.messageSource.getMessage(Message.SINGLE_SITE_ANALYSIS_LOCAL_LINK));
+		this.breedingViewSingleSiteAnalysisLocalButton.setStyleName(BaseTheme.BUTTON_LINK
+				+ ConventionalBreedingWorkflowDiagram.GCP_WORKFLOW_LINK);
+		this.breedingViewSingleSiteAnalysisLocalButton.setSizeUndefined();
+		this.breedingViewSingleSiteAnalysisLocalButton.setDescription(this.messageSource
+				.getMessage(Message.CLICK_TO_LAUNCH_BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL));
+
+		this.manageGermplasmListsButton = new Button(this.messageSource.getMessage(Message.LIST_MANAGER));
+		this.manageGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK + ConventionalBreedingWorkflowDiagram.GCP_WORKFLOW_LINK);
+		this.manageGermplasmListsButton.setSizeUndefined();
+		this.manageGermplasmListsButton.setDescription(this.messageSource.getMessage(Message.CLICK_TO_LAUNCH_LIST_MANAGER));
+
+		this.breedingViewMultiSiteAnalysisButton = new Button(this.messageSource.getMessage(Message.MULTI_SITE_ANALYSIS_LINK));
+		this.breedingViewMultiSiteAnalysisButton
+				.setStyleName(BaseTheme.BUTTON_LINK + ConventionalBreedingWorkflowDiagram.GCP_WORKFLOW_LINK);
+		this.breedingViewMultiSiteAnalysisButton.setSizeUndefined();
+		this.breedingViewMultiSiteAnalysisButton.setDescription(this.messageSource
+				.getMessage(Message.CLICK_TO_LAUNCH_BREEDING_VIEW_MULTI_SITE_ANALYSIS));
+
+		this.mainHeadToHeadButton = new Button(this.messageSource.getMessage(Message.MAIN_HEAD_TO_HEAD_LAUNCH));
+		this.mainHeadToHeadButton.setStyleName(BaseTheme.BUTTON_LINK + ConventionalBreedingWorkflowDiagram.GCP_WORKFLOW_LINK);
+		this.mainHeadToHeadButton.setSizeUndefined();
+		this.mainHeadToHeadButton.setDescription(this.messageSource.getMessage(Message.CLICK_TO_LAUNCH_MAIN_HEAD_TO_HEAD));
+
+		this.mainHeadToHeadButton2 = new Button(this.messageSource.getMessage(Message.MAIN_HEAD_TO_HEAD_LAUNCH));
+		this.mainHeadToHeadButton2.setStyleName(BaseTheme.BUTTON_LINK + ConventionalBreedingWorkflowDiagram.GCP_WORKFLOW_LINK);
+		this.mainHeadToHeadButton2.setSizeUndefined();
+		this.mainHeadToHeadButton2.setDescription(this.messageSource.getMessage(Message.CLICK_TO_LAUNCH_MAIN_HEAD_TO_HEAD));
+
+		this.fieldbookButton = new Button("Manage Trials");
+		this.fieldbookButton.setStyleName(BaseTheme.BUTTON_LINK + ConventionalBreedingWorkflowDiagram.GCP_WORKFLOW_LINK);
+		this.fieldbookButton.setSizeUndefined();
+		this.fieldbookButton.setDescription("Click to launch Fieldbook in Trial Manager View");
+
+		this.optimasButton = new Button(this.messageSource.getMessage(Message.OPTIMAS));
+		this.optimasButton.setStyleName(BaseTheme.BUTTON_LINK + ConventionalBreedingWorkflowDiagram.GCP_WORKFLOW_LINK);
+		this.optimasButton.setSizeUndefined();
+		this.optimasButton.setDescription(this.messageSource.getMessage(Message.CLICK_TO_LAUNCH_OPTIMAS));
+
+		this.queryForAdaptedGermplasmButton = new Button(this.messageSource.getMessage(Message.QUERY_FOR_ADAPTED_GERMPLASM));
+		this.queryForAdaptedGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK + ConventionalBreedingWorkflowDiagram.GCP_WORKFLOW_LINK);
+		this.queryForAdaptedGermplasmButton.setSizeUndefined();
+		this.queryForAdaptedGermplasmButton.setDescription(this.messageSource
+				.getMessage(Message.CLICK_TO_LAUNCH_QUERY_FOR_ADAPTED_GERMPLASM));
+
+		this.queryForAdaptedGermplasmButton2 = new Button(this.messageSource.getMessage(Message.QUERY_FOR_ADAPTED_GERMPLASM));
+		this.queryForAdaptedGermplasmButton2.setStyleName(BaseTheme.BUTTON_LINK + ConventionalBreedingWorkflowDiagram.GCP_WORKFLOW_LINK);
+		this.queryForAdaptedGermplasmButton2.setSizeUndefined();
+		this.queryForAdaptedGermplasmButton2.setDescription(this.messageSource
+				.getMessage(Message.CLICK_TO_LAUNCH_QUERY_FOR_ADAPTED_GERMPLASM));
+
+		this.breedingManagerListManager =
+				new Button(this.messageSource.getMessage(Message.BREEDING_MANAGER_BROWSE_FOR_GERMPLASMS_AND_LISTS));
+		this.breedingManagerListManager.setStyleName(BaseTheme.BUTTON_LINK + ConventionalBreedingWorkflowDiagram.GCP_WORKFLOW_LINK);
+		this.breedingManagerListManager.setSizeUndefined();
+		this.breedingManagerListManager.setDescription(this.messageSource.getMessage(Message.CLICK_TO_BROWSE_FOR_GERMPLASMS_AND_LISTS));
+
+		this.ontologyBrowserFBBtn = new Button("Manage Ontologies");
+		this.ontologyBrowserFBBtn.setStyleName(BaseTheme.BUTTON_LINK + ConventionalBreedingWorkflowDiagram.GCP_WORKFLOW_LINK);
+		this.ontologyBrowserFBBtn.setSizeUndefined();
+		this.ontologyBrowserFBBtn.setDescription("Click to launch Fieldbook on Ontology Browser view");
+
+		this.metaAnalysisBtn = new Button("Meta Analysis of Field Trials");
+		this.metaAnalysisBtn.setStyleName(BaseTheme.BUTTON_LINK + ConventionalBreedingWorkflowDiagram.GCP_WORKFLOW_LINK);
+		this.metaAnalysisBtn.setSizeUndefined();
+		this.metaAnalysisBtn.setDescription("Click to launch Meta Analysis of Field Trial Tool");
+
+		this.downArrowImage1 = new Embedded("", new ThemeResource(ConventionalBreedingWorkflowDiagram.DOWN_ARROW_THEME_RESOURCE));
+		this.downArrowImage2 = new Embedded("", new ThemeResource(ConventionalBreedingWorkflowDiagram.DOWN_ARROW_THEME_RESOURCE));
+		this.downArrowImage3 = new Embedded("", new ThemeResource(ConventionalBreedingWorkflowDiagram.DOWN_ARROW_THEME_RESOURCE));
+		this.downArrowImage4 = new Embedded("", new ThemeResource(ConventionalBreedingWorkflowDiagram.DOWN_ARROW_THEME_RESOURCE));
+	}
+
+	protected void initializeLayout() {
+		this.setSizeFull();
+		this.setScrollable(true);
+		this.setContent(this.layoutWorkflowArea());
+	}
+
+	protected ComponentContainer layoutWorkflowArea() {
+		AbsoluteLayout layout = new AbsoluteLayout();
+		layout.setWidth("300px");
+		layout.setHeight("1200px");
+
+		String extraSpace = ConventionalBreedingWorkflowDiagram.EXTRA_SPACE_BETWEEN_COMPONENTS + "px";
+		int top = 10;
+		String topInPixels = "";
+
+		// the steps on the first column
+		Component projectPlanningArea = this.layoutProjectPlanning();
+		layout.addComponent(projectPlanningArea, "top:" + extraSpace + "; left:" + extraSpace);
+
+		top =
+				top + ConventionalBreedingWorkflowDiagram.PROJECT_PLANNING_HEIGHT
+						+ ConventionalBreedingWorkflowDiagram.EXTRA_SPACE_BETWEEN_COMPONENTS;
+		topInPixels = top + "px";
+		layout.addComponent(this.downArrowImage1, "top:" + topInPixels + "; left:"
+				+ ConventionalBreedingWorkflowDiagram.FIRST_COLUMN_LEFT_FOR_ARROWS);
+
+		top =
+				top + ConventionalBreedingWorkflowDiagram.ARROW_IMAGE_HEIGHT
+						+ ConventionalBreedingWorkflowDiagram.EXTRA_SPACE_BETWEEN_COMPONENTS;
+		topInPixels = top + "px";
+		Component populationDevelopmentArea = this.layoutPopulationDevelopment();
+		layout.addComponent(populationDevelopmentArea, "top:" + topInPixels + "; left:" + extraSpace);
+
+		top =
+				top + ConventionalBreedingWorkflowDiagram.WORKFLOW_STEP_EXTRA_HEIGHT
+						+ ConventionalBreedingWorkflowDiagram.EXTRA_SPACE_BETWEEN_COMPONENTS;
+		topInPixels = top + "px";
+		layout.addComponent(this.downArrowImage2, "top:" + topInPixels + "; left:"
+				+ ConventionalBreedingWorkflowDiagram.FIRST_COLUMN_LEFT_FOR_ARROWS);
+
+		top =
+				top + ConventionalBreedingWorkflowDiagram.ARROW_IMAGE_HEIGHT
+						+ ConventionalBreedingWorkflowDiagram.EXTRA_SPACE_BETWEEN_COMPONENTS;
+		topInPixels = top + "px";
+		Component fieldTrialArea = this.layoutFieldTrialManagement();
+		layout.addComponent(fieldTrialArea, "top:" + topInPixels + "; left:" + extraSpace);
+
+		top =
+				top + ConventionalBreedingWorkflowDiagram.WORKFLOW_STEP_HEIGHT
+						+ ConventionalBreedingWorkflowDiagram.EXTRA_SPACE_BETWEEN_COMPONENTS;
+		topInPixels = top + "px";
+		layout.addComponent(this.downArrowImage3, "top:" + topInPixels + "; left:"
+				+ ConventionalBreedingWorkflowDiagram.FIRST_COLUMN_LEFT_FOR_ARROWS);
+
+		top =
+				top + ConventionalBreedingWorkflowDiagram.ARROW_IMAGE_HEIGHT
+						+ ConventionalBreedingWorkflowDiagram.EXTRA_SPACE_BETWEEN_COMPONENTS;
+		topInPixels = top + "px";
+		Component statisticalAnalysisArea = this.layoutStatisticalAnalysis();
+		layout.addComponent(statisticalAnalysisArea, "top:" + topInPixels + "; left:" + extraSpace);
+
+		top =
+				top + ConventionalBreedingWorkflowDiagram.WORKFLOW_STEP_EXTRA_HEIGHT
+						+ ConventionalBreedingWorkflowDiagram.EXTRA_SPACE_BETWEEN_COMPONENTS;
+		topInPixels = top + "px";
+		layout.addComponent(this.downArrowImage4, "top:" + topInPixels + "; left:"
+				+ ConventionalBreedingWorkflowDiagram.FIRST_COLUMN_LEFT_FOR_ARROWS);
+
+		top =
+				top + ConventionalBreedingWorkflowDiagram.ARROW_IMAGE_HEIGHT
+						+ ConventionalBreedingWorkflowDiagram.EXTRA_SPACE_BETWEEN_COMPONENTS;
+		topInPixels = top + "px";
+		Component breedingDecisionArea = this.layoutBreedingDecision();
+		layout.addComponent(breedingDecisionArea, "top:" + topInPixels + "; left:" + extraSpace);
+
+		final VerticalLayout rootContainer = new VerticalLayout();
+		rootContainer.setSizeUndefined();
+		rootContainer.setWidth("750px");
+		rootContainer.setMargin(new Layout.MarginInfo(false, true, true, true));
+		rootContainer.setSpacing(false);
+
+		if (!this.workflowPreview) {
+			Label header = new Label();
+			header.setStyleName(Bootstrap.Typography.H1.styleName());
+			header.setValue(this.role.getLabel());
+			rootContainer.addComponent(header);
+
+		}
+		rootContainer.addComponent(layout);
+
+		return rootContainer;
+	}
+
+	protected Component layoutProjectPlanning() {
+		VerticalLayout layout = new VerticalLayout();
+		this.configureWorkflowStepLayout(layout);
+		layout.setHeight(ConventionalBreedingWorkflowDiagram.PROJECT_PLANNING_HEIGHT + "px");
+
+		layout.addComponent(this.projectPlanningTitle);
+		layout.setComponentAlignment(this.projectPlanningTitle, Alignment.TOP_CENTER);
+		layout.setExpandRatio(this.projectPlanningTitle, 0);
+
+		Label emptyLabel = new Label(" ");
+		emptyLabel.setWidth("100%");
+		emptyLabel.setHeight("5px");
+		layout.addComponent(emptyLabel);
+		layout.setExpandRatio(emptyLabel, 100);
+
+		layout.addComponent(this.ontologyBrowserFBBtn);
+		this.ontologyBrowserFBBtn.setHeight("20px");
+		layout.setComponentAlignment(this.ontologyBrowserFBBtn, Alignment.TOP_CENTER);
+		layout.setExpandRatio(this.ontologyBrowserFBBtn, 0);
+
+		layout.addComponent(this.browseStudiesButton);
+		this.browseStudiesButton.setHeight("20px");
+		layout.setComponentAlignment(this.browseStudiesButton, Alignment.TOP_CENTER);
+		layout.setExpandRatio(this.browseStudiesButton, 0);
+
+		layout.addComponent(this.browseGermplasmListsButton);
+		this.browseGermplasmListsButton.setHeight("20px");
+		layout.setComponentAlignment(this.browseGermplasmListsButton, Alignment.TOP_CENTER);
+		layout.setExpandRatio(this.browseGermplasmListsButton, 0);
+
+		layout.addComponent(this.browseGenotypingDataButton);
+		this.browseGenotypingDataButton.setHeight("20px");
+		layout.setComponentAlignment(this.browseGenotypingDataButton, Alignment.TOP_CENTER);
+		layout.setExpandRatio(this.browseGenotypingDataButton, 0);
+
+		layout.addComponent(this.mainHeadToHeadButton);
+		this.mainHeadToHeadButton.setHeight("20px");
+		layout.setComponentAlignment(this.mainHeadToHeadButton, Alignment.TOP_CENTER);
+		layout.setExpandRatio(this.mainHeadToHeadButton, 0);
+
+		layout.addComponent(this.queryForAdaptedGermplasmButton);
+		this.queryForAdaptedGermplasmButton.setHeight("20px");
+		layout.setComponentAlignment(this.queryForAdaptedGermplasmButton, Alignment.TOP_CENTER);
+		layout.setExpandRatio(this.queryForAdaptedGermplasmButton, 0);
+
+		return layout;
+	}
+
+	protected Component layoutPopulationDevelopment() {
+		VerticalLayout layout = new VerticalLayout();
+		this.configureWorkflowStepLayout(layout);
+		layout.setHeight(ConventionalBreedingWorkflowDiagram.WORKFLOW_STEP_EXTRA_HEIGHT + "px");
+
+		layout.setHeight(ConventionalBreedingWorkflowDiagram.WORKFLOW_STEP_EXTRA_HEIGHT + "px");
+
+		layout.addComponent(this.populationDevelopmentTitle);
+		layout.setComponentAlignment(this.populationDevelopmentTitle, Alignment.TOP_CENTER);
+		layout.setExpandRatio(this.populationDevelopmentTitle, 0);
+
+		Label emptyLabel = new Label(" ");
+		emptyLabel.setWidth("100%");
+		emptyLabel.setHeight("5px");
+		layout.addComponent(emptyLabel);
+		layout.setExpandRatio(emptyLabel, 100);
+
+		layout.addComponent(this.germplasmImportButton2);
+		this.germplasmImportButton2.setHeight("20px");
+		layout.setComponentAlignment(this.germplasmImportButton2, Alignment.TOP_CENTER);
+		layout.setExpandRatio(this.germplasmImportButton2, 0);
+
+		layout.addComponent(this.makeCrossesButton);
+		this.makeCrossesButton.setHeight("20px");
+		layout.setComponentAlignment(this.makeCrossesButton, Alignment.TOP_CENTER);
+		layout.setExpandRatio(this.makeCrossesButton, 0);
+
+		layout.addComponent(this.breedingManagerButton);
+		layout.setComponentAlignment(this.breedingManagerButton, Alignment.TOP_CENTER);
+		layout.setExpandRatio(this.breedingManagerButton, 0);
+
+		return layout;
+	}
+
+	protected Component layoutFieldTrialManagement() {
+		VerticalLayout layout = new VerticalLayout();
+		this.configureWorkflowStepLayout(layout);
+
+		layout.addComponent(this.fieldTrialManagementTitle);
+		layout.setComponentAlignment(this.fieldTrialManagementTitle, Alignment.TOP_CENTER);
+		layout.setExpandRatio(this.fieldTrialManagementTitle, 0);
+
+		Label emptyLabel = new Label(" ");
+		emptyLabel.setWidth("100%");
+		emptyLabel.setHeight("20px");
+		layout.addComponent(emptyLabel);
+		layout.setExpandRatio(emptyLabel, 100);
+
+		layout.addComponent(this.fieldbookButton);
+		layout.setComponentAlignment(this.fieldbookButton, Alignment.TOP_CENTER);
+		layout.setExpandRatio(this.fieldbookButton, 0);
+
+		return layout;
+	}
+
+	protected Component layoutStatisticalAnalysis() {
+		VerticalLayout layout = new VerticalLayout();
+		this.configureWorkflowStepLayout(layout);
+
+		layout.setHeight(ConventionalBreedingWorkflowDiagram.WORKFLOW_STEP_EXTRA_HEIGHT + "px");
+
+		layout.addComponent(this.statisticalAnalysisTitle);
+		layout.setComponentAlignment(this.statisticalAnalysisTitle, Alignment.TOP_CENTER);
+		layout.setExpandRatio(this.statisticalAnalysisTitle, 0);
+
+		Label emptyLabel = new Label(" ");
+		emptyLabel.setWidth("100%");
+		emptyLabel.setHeight("5px");
+		layout.addComponent(emptyLabel);
+		layout.setExpandRatio(emptyLabel, 100);
+
+		layout.addComponent(this.breedingViewSingleSiteAnalysisLocalButton);
+		this.breedingViewSingleSiteAnalysisLocalButton.setHeight("20px");
+		layout.setComponentAlignment(this.breedingViewSingleSiteAnalysisLocalButton, Alignment.TOP_CENTER);
+		layout.setExpandRatio(this.breedingViewSingleSiteAnalysisLocalButton, 0);
+
+		layout.addComponent(this.metaAnalysisBtn);
+		this.metaAnalysisBtn.setHeight("20px");
+		layout.setComponentAlignment(this.metaAnalysisBtn, Alignment.TOP_CENTER);
+		layout.setExpandRatio(this.metaAnalysisBtn, 0);
+
+		layout.addComponent(this.breedingViewMultiSiteAnalysisButton);
+		this.breedingViewMultiSiteAnalysisButton.setHeight("20px");
+		layout.setComponentAlignment(this.breedingViewMultiSiteAnalysisButton, Alignment.TOP_CENTER);
+		layout.setExpandRatio(this.breedingViewMultiSiteAnalysisButton, 0);
+
+		layout.addComponent(this.breedingViewButton);
+		layout.setComponentAlignment(this.breedingViewButton, Alignment.TOP_CENTER);
+		layout.setExpandRatio(this.breedingViewButton, 0);
+
+		return layout;
+	}
+
+	protected Component layoutBreedingDecision() {
+		VerticalLayout layout = new VerticalLayout();
+		this.configureWorkflowStepLayout(layout);
+
+		layout.addComponent(this.breedingDecisionTitle);
+		layout.setComponentAlignment(this.breedingDecisionTitle, Alignment.TOP_CENTER);
+		layout.setExpandRatio(this.breedingDecisionTitle, 0);
+
+		Label emptyLabel = new Label(" ");
+		emptyLabel.setWidth("100%");
+		emptyLabel.setHeight("20px");
+		layout.addComponent(emptyLabel);
+		layout.setExpandRatio(emptyLabel, 100);
+
+		layout.addComponent(this.mainHeadToHeadButton2);
+		layout.setComponentAlignment(this.mainHeadToHeadButton2, Alignment.TOP_CENTER);
+		layout.setExpandRatio(this.mainHeadToHeadButton2, 0);
+
+		layout.addComponent(this.queryForAdaptedGermplasmButton2);
+		layout.setComponentAlignment(this.queryForAdaptedGermplasmButton2, Alignment.TOP_CENTER);
+		layout.setExpandRatio(this.queryForAdaptedGermplasmButton2, 0);
+
+		return layout;
+	}
+
+	protected Component createPanel(String caption, String... buttonCaptions) {
+		VerticalLayout layout = new VerticalLayout();
+		this.configureWorkflowStepLayout(layout);
+
+		Label titleLabel = new Label(caption);
+		titleLabel.setStyleName("gcp-section-title");
+		titleLabel.setSizeUndefined();
+
+		layout.addComponent(titleLabel);
+		layout.setComponentAlignment(titleLabel, Alignment.TOP_CENTER);
+		layout.setExpandRatio(titleLabel, 0);
+
+		Label emptyLabel = new Label(" ");
+		emptyLabel.setWidth("100%");
+		emptyLabel.setHeight("20px");
+		layout.addComponent(emptyLabel);
+		layout.setExpandRatio(emptyLabel, 100);
+
+		for (String buttonCaption : buttonCaptions) {
+			Button button = new Button(buttonCaption);
+			button.setStyleName(BaseTheme.BUTTON_LINK + ConventionalBreedingWorkflowDiagram.GCP_WORKFLOW_LINK);
+
+			layout.addComponent(button);
+			layout.setComponentAlignment(button, Alignment.TOP_CENTER);
+			layout.setExpandRatio(button, 0);
+		}
+
+		return layout;
+	}
+
+	protected void configureWorkflowStepLayout(VerticalLayout layout) {
+		layout.setWidth(ConventionalBreedingWorkflowDiagram.WORKFLOW_STEP_WIDTH + "px");
+		layout.setHeight(ConventionalBreedingWorkflowDiagram.WORKFLOW_STEP_HEIGHT + "px");
+		layout.setStyleName("gcp-workflow-step");
+		layout.setMargin(false, false, true, false);
+	}
+
+	protected void initializeActions() {
+		if (!this.workflowPreview) {
+			this.germplasmImportButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.IBFB_GERMPLASM_IMPORT));
+			this.germplasmImportButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.GERMPLASM_IMPORT));
+
+			this.breedingPlannerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_PLANNER));
+
+			this.mainHeadToHeadButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.MAIN_HEAD_TO_HEAD_BROWSER));
+			this.mainHeadToHeadButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.MAIN_HEAD_TO_HEAD_BROWSER));
+			this.browseStudiesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.STUDY_BROWSER));
+			this.browseGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER_MAIN));
+			this.breedingManagerButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.NURSERY_MANAGER_FIELDBOOK_WEB));
+			this.breedingViewButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_VIEW));
+
+			this.breedingViewSingleSiteAnalysisCentralButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_VIEW, this.project,
+					WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_CENTRAL));
+			this.breedingViewSingleSiteAnalysisLocalButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_VIEW, this.project,
+					WorkflowConstants.BREEDING_VIEW_SINGLE_SITE_ANALYSIS_LOCAL));
+
+			this.fieldbookButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.TRIAL_MANAGER_FIELDBOOK_WEB));
+			this.optimasButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.OPTIMAS));
+			this.browseGenotypingDataButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.GDMS));
+			this.makeCrossesButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.CROSSING_MANAGER));
+			this.manageGermplasmListsButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.BREEDING_MANAGER));
+
+			this.breedingViewMultiSiteAnalysisButton.addListener(new ChangeWindowAction(WindowEnums.BREEDING_GXE, this.project, null));
+			this.queryForAdaptedGermplasmButton.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
+			this.queryForAdaptedGermplasmButton2.addListener(new LaunchWorkbenchToolAction(ToolEnum.QUERY_FOR_ADAPTED_GERMPLASM));
+			this.breedingManagerListManager.addListener(new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER_MAIN));
+
+			this.ontologyBrowserFBBtn.addListener(new LaunchWorkbenchToolAction(ToolEnum.ONTOLOGY_BROWSER_FIELDBOOK_WEB));
+			this.metaAnalysisBtn.addListener(new ChangeWindowAction(WindowEnums.BV_META_ANALYSIS, this.project, null));
+
+		}
+	}
+
+	protected void assemble() {
+		this.initializeComponents();
+		this.initializeLayout();
+		this.initializeActions();
+
+		if (this.workflowPreview) {
+			this.setStyleName("gcp-removelink");
+		}
+
+	}
+
+	@Override
+	public void attach() {
+		super.attach();
+		this.updateLabels();
+	}
+
+	@Override
+	public void updateLabels() {
+		if (this.workflowPreview) {
+			this.messageSource.setValue(this.dashboardTitle, Message.WORKFLOW_PREVIEW_TITLE, "Conventional Breeding");
+		} else {
+			this.messageSource.setValue(this.dashboardTitle, Message.PROJECT_TITLE, this.project.getProjectName());
+		}
+	}
 
 	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
-    
-    
+
 }

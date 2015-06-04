@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.ui.workflow;
 
 import org.generationcp.MessageResourceUtil;
@@ -15,23 +16,22 @@ import org.junit.Test;
 public class MarsWorkflowDiagramTest {
 
 	private static MarsWorkflowDiagram workflow;
-	private static final SimpleResourceBundleMessageSource messageSource = 
-			MessageResourceUtil.getMessageResource();
-	
+	private static final SimpleResourceBundleMessageSource messageSource = MessageResourceUtil.getMessageResource();
+
 	@BeforeClass
 	public static void setUp() {
-		workflow = new MarsWorkflowDiagram(true, 
-				getProjectTestData(), getRoleTestData());
-		workflow.setMessageSource(messageSource);
-		workflow.afterPropertiesSet();
+		MarsWorkflowDiagramTest.workflow =
+				new MarsWorkflowDiagram(true, MarsWorkflowDiagramTest.getProjectTestData(), MarsWorkflowDiagramTest.getRoleTestData());
+		MarsWorkflowDiagramTest.workflow.setMessageSource(MarsWorkflowDiagramTest.messageSource);
+		MarsWorkflowDiagramTest.workflow.afterPropertiesSet();
 	}
-	
+
 	public static Project getProjectTestData() {
 		Project project = new Project();
 		project.setProjectId(1L);
 		return project;
 	}
-	
+
 	public static Role getRoleTestData() {
 		Role role = new Role();
 		role.setName(Role.MANAGER_ROLE_NAME);
@@ -44,10 +44,11 @@ public class MarsWorkflowDiagramTest {
 
 	@Test
 	public void testCheckIfGDMSIsDisplayed() {
-		String caption = messageSource.getMessage(Message.GENOTYPIC_DATA_BROWSER_LINK);
-		boolean isFound = VaadinComponentsUtil.findComponent(workflow.getContent(),
-				VaadinComponentFieldType.CAPTION, caption, null);
-		Assert.assertTrue(caption+" is not found",isFound);
+		String caption = MarsWorkflowDiagramTest.messageSource.getMessage(Message.GENOTYPIC_DATA_BROWSER_LINK);
+		boolean isFound =
+				VaadinComponentsUtil.findComponent(MarsWorkflowDiagramTest.workflow.getContent(), VaadinComponentFieldType.CAPTION,
+						caption, null);
+		Assert.assertTrue(caption + " is not found", isFound);
 	}
-	
+
 }

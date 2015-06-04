@@ -4,9 +4,8 @@
  * Generation Challenge Programme (GCP)
  *
  *
- * This software is licensed for use under the terms of the GNU General Public
- * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
- * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
+ * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
  *
  *******************************************************************************/
 
@@ -14,7 +13,6 @@ package org.generationcp.ibpworkbench.ui;
 
 import java.util.Properties;
 
-import com.vaadin.terminal.ExternalResource;
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -45,6 +43,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.vaadin.hene.popupbutton.PopupButton;
 
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Alignment;
@@ -67,355 +66,353 @@ import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
 public class WorkbenchMainView extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
-    private static final long serialVersionUID = 1L;
 
-    public static final String HELP_LINK = "https://www.integratedbreeding.net/manuals-and-tutorials-ib-tools";
-    private Label workbenchTitle;
-    private Button homeButton;
-    private PopupButton memberButton;
-    private Button helpButton;
+	private static final long serialVersionUID = 1L;
 
-    @Autowired
-    private WorkbenchDataManager workbenchDataManager;
+	public static final String HELP_LINK = "https://www.integratedbreeding.net/manuals-and-tutorials-ib-tools";
+	private Label workbenchTitle;
+	private Button homeButton;
+	private PopupButton memberButton;
+	private Button helpButton;
 
-    @Autowired
-    private SimpleResourceBundleMessageSource messageSource;
+	@Autowired
+	private WorkbenchDataManager workbenchDataManager;
 
-    @Autowired
-    private SessionData sessionData;
-    
-    @Autowired
-    @Qualifier("workbenchProperties")
-    private Properties workbenchProperties;
+	@Autowired
+	private SimpleResourceBundleMessageSource messageSource;
 
-    private Label actionsTitle;
+	@Autowired
+	private SessionData sessionData;
 
-    private HorizontalSplitPanel root;
+	@Autowired
+	@Qualifier("workbenchProperties")
+	private Properties workbenchProperties;
 
-    private VerticalLayout mainContent;
+	private Label actionsTitle;
 
-    private WorkbenchDashboard workbenchDashboard;
+	private HorizontalSplitPanel root;
 
-    private UriFragmentUtility uriFragUtil;
-    private NavUriFragmentChangedListener uriChangeListener;
+	private VerticalLayout mainContent;
 
-    private WorkbenchSidebar sidebar;
-    private Button collapseButton;
-    private Button signoutButton;
-    private Button logoBtn;
+	private WorkbenchDashboard workbenchDashboard;
 
-    public WorkbenchMainView() {
-        super("Breeding Management System | Workbench");
-    }
+	private UriFragmentUtility uriFragUtil;
+	private NavUriFragmentChangedListener uriChangeListener;
 
-    /**
-     * Assemble the UI after all dependencies has been set.
-     */
-    @Override
-    public void afterPropertiesSet() throws Exception {
-    	assemble();
-        workbenchDashboard = new WorkbenchDashboard();
-        onLoadOperations();
-        this.showContent(workbenchDashboard);
-    }
+	private WorkbenchSidebar sidebar;
+	private Button collapseButton;
+	private Button signoutButton;
+	private Button logoBtn;
 
-    protected void initializeComponents() {
-        // workbench header components
-        initializeHeaderComponents();
+	public WorkbenchMainView() {
+		super("Breeding Management System | Workbench");
+	}
 
-        // sidebar
-        sidebar = new WorkbenchSidebar();
+	/**
+	 * Assemble the UI after all dependencies has been set.
+	 */
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		this.assemble();
+		this.workbenchDashboard = new WorkbenchDashboard();
+		this.onLoadOperations();
+		this.showContent(this.workbenchDashboard);
+	}
 
+	protected void initializeComponents() {
+		// workbench header components
+		this.initializeHeaderComponents();
 
-        // left area components
-        actionsTitle = new Label();
-        actionsTitle.setStyleName("gcp-section-title");
-        actionsTitle.setSizeUndefined();
+		// sidebar
+		this.sidebar = new WorkbenchSidebar();
 
+		// left area components
+		this.actionsTitle = new Label();
+		this.actionsTitle.setStyleName("gcp-section-title");
+		this.actionsTitle.setSizeUndefined();
 
+		this.collapseButton = new Button("<span class='bms-header-btn'><span class='bms-fa-chevron-right ico'/></span>");
+		this.collapseButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + " header-btn");
+		this.collapseButton.setHtmlContentAllowed(true);
+		this.collapseButton.setDescription(this.messageSource.getMessage("TOGGLE_SIDEBAR"));
 
-        collapseButton = new Button(
-                "<span class='bms-header-btn'><span class='bms-fa-chevron-right ico'/></span>");
-        collapseButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + " header-btn");
-        collapseButton.setHtmlContentAllowed(true);
-        collapseButton.setDescription(messageSource.getMessage("TOGGLE_SIDEBAR"));
+		this.uriFragUtil = new UriFragmentUtility();
+		this.uriChangeListener = new NavUriFragmentChangedListener();
 
-        uriFragUtil = new UriFragmentUtility();
-        uriChangeListener = new NavUriFragmentChangedListener();
+		this.uriFragUtil.addListener(this.uriChangeListener);
+	}
 
-        uriFragUtil.addListener(uriChangeListener);
-    }
+	private void initializeHeaderComponents() {
 
-    private void initializeHeaderComponents() {
+		this.logoBtn = new Button();
 
-        logoBtn = new Button();
+		this.workbenchTitle = new Label();
+		this.workbenchTitle.setStyleName("gcp-window-title");
+		this.workbenchTitle.setContentMode(Label.CONTENT_XHTML);
 
-        workbenchTitle = new Label();
-        workbenchTitle.setStyleName("gcp-window-title");
-        workbenchTitle.setContentMode(Label.CONTENT_XHTML);
+		this.homeButton = new Button("<span class='bms-header-btn'><span>My Programs</span></span>");
+		this.homeButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + " header-btn");
+		this.homeButton.setHtmlContentAllowed(true);
+		this.homeButton.setSizeUndefined();
 
-        homeButton = new Button("<span class='bms-header-btn'><span>My Programs</span></span>");
-        homeButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + " header-btn");
-        homeButton.setHtmlContentAllowed(true);
-        homeButton.setSizeUndefined();
+		this.memberButton = new PopupButton();
+		this.memberButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + " bms-header-popuplink");
+		this.memberButton.setHtmlContentAllowed(true);
+		this.memberButton.setSizeUndefined();
 
-        memberButton = new PopupButton();
-        memberButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + " bms-header-popuplink");
-        memberButton.setHtmlContentAllowed(true);
-        memberButton.setSizeUndefined();
+		final VerticalLayout memberPopup = new VerticalLayout();
+		memberPopup.setStyleName("bms-memberpopup");
+		memberPopup.setSizeUndefined();
 
-        final VerticalLayout memberPopup = new VerticalLayout();
-        memberPopup.setStyleName("bms-memberpopup");
-        memberPopup.setSizeUndefined();
+		this.signoutButton = new Button(this.messageSource.getMessage(Message.SIGNOUT));
+		this.signoutButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+		this.signoutButton.setSizeFull();
+		this.signoutButton.addListener(new SignoutAction());
 
-        signoutButton = new Button(messageSource.getMessage(Message.SIGNOUT));
-        signoutButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-        signoutButton.setSizeFull();
-        signoutButton.addListener(new SignoutAction());
+		Person member = this.sessionData.getUserData().getPerson();
+		memberPopup.addComponent(new Label(String.format("<h2>%s %s</h2><h4>%s</h4>", member.getFirstName(), member.getLastName(),
+				member.getEmail()), Label.CONTENT_XHTML));
+		memberPopup.addComponent(this.signoutButton);
 
-        Person member = sessionData.getUserData().getPerson();
-        memberPopup.addComponent(new Label(String.format("<h2>%s %s</h2><h4>%s</h4>",member.getFirstName(),member.getLastName(),member.getEmail()),Label.CONTENT_XHTML));
-        memberPopup.addComponent(signoutButton);
+		this.memberButton.addComponent(memberPopup);
 
-        memberButton.addComponent(memberPopup);
+		this.helpButton = new Button("<span class='bms-header-btn2'><span class='bms-fa-question-circle ico'></span></span>");
+		this.helpButton.setStyleName(Bootstrap.Buttons.LINK.styleName());
+		this.helpButton.setHtmlContentAllowed(true);
+		this.helpButton.setSizeUndefined();
+		this.helpButton.setDebugId("help-button-icon");
+	}
 
+	protected void initializeLayout() {
+		this.mainContent = new VerticalLayout();
+		this.mainContent.setStyleName("gcp-maincontentarea");
+		this.mainContent.setSizeFull();
+		this.mainContent.setMargin(false);
+		this.mainContent.setSpacing(false);
 
-        helpButton = new Button("<span class='bms-header-btn2'><span class='bms-fa-question-circle ico'></span></span>");
-        helpButton.setStyleName(Bootstrap.Buttons.LINK.styleName());
-        helpButton.setHtmlContentAllowed(true);
-        helpButton.setSizeUndefined();
-        helpButton.setDebugId("help-button-icon");
-    }
+		// sidebar
+		final VerticalSplitPanel sidebarWrap = new VerticalSplitPanel();
+		sidebarWrap.setStyleName(Reindeer.SPLITPANEL_SMALL);
+		sidebarWrap.addStyleName("bms-sidebarcontent");
+		sidebarWrap.setSplitPosition(20, Sizeable.UNITS_PIXELS, true);
+		sidebarWrap.setLocked(true);
 
-    protected void initializeLayout() {
-        mainContent = new VerticalLayout();
-        mainContent.setStyleName("gcp-maincontentarea");
-        mainContent.setSizeFull();
-        mainContent.setMargin(false);
-        mainContent.setSpacing(false);
+		final Label title =
+				new Label(String.format(
+						"<span style='font-size: 8pt; color:#9EA5A7; display: inline-block; margin-left: 3px'>%s&nbsp;%s</span>",
+						this.messageSource.getMessage(Message.WORKBENCH_TITLE),
+						this.workbenchProperties.getProperty("workbench.version", "")), Label.CONTENT_XHTML);
 
-        // sidebar
-        final VerticalSplitPanel sidebarWrap = new VerticalSplitPanel();
-        sidebarWrap.setStyleName(Reindeer.SPLITPANEL_SMALL);
-        sidebarWrap.addStyleName("bms-sidebarcontent");
-        sidebarWrap.setSplitPosition(20,Sizeable.UNITS_PIXELS,true);
-        sidebarWrap.setLocked(true);
+		sidebarWrap.setFirstComponent(this.sidebar);
+		sidebarWrap.setSecondComponent(title);
 
-        final Label title = new Label(String.format("<span style='font-size: 8pt; color:#9EA5A7; display: inline-block; margin-left: 3px'>%s&nbsp;%s</span>",messageSource.getMessage(Message.WORKBENCH_TITLE),workbenchProperties.getProperty("workbench.version", "")),Label.CONTENT_XHTML);
+		// content area
+		final VerticalSplitPanel contentAreaSplit = new VerticalSplitPanel();
+		contentAreaSplit.setSplitPosition(40, Sizeable.UNITS_PIXELS);
+		contentAreaSplit.setLocked(true);
+		contentAreaSplit.addStyleName(Reindeer.SPLITPANEL_SMALL);
 
-        sidebarWrap.setFirstComponent(sidebar);
-        sidebarWrap.setSecondComponent(title);
+		// contentArea contents
+		contentAreaSplit.addComponent(this.layoutWorkbenchHeader());
+		contentAreaSplit.addComponent(this.mainContent);
 
-        // content area
-        final VerticalSplitPanel contentAreaSplit = new VerticalSplitPanel();
-        contentAreaSplit.setSplitPosition(40,Sizeable.UNITS_PIXELS);
-        contentAreaSplit.setLocked(true);
-        contentAreaSplit.addStyleName(Reindeer.SPLITPANEL_SMALL);
+		// the root layout
+		this.root = new HorizontalSplitPanel();
+		this.root.setSizeFull();
+		this.root.setSplitPosition(0, Sizeable.UNITS_PIXELS);
+		this.root.addStyleName(Reindeer.SPLITPANEL_SMALL);
+		this.root.addStyleName("gcp-workbench-content-split-panel");
 
-        // contentArea contents
-        contentAreaSplit.addComponent(layoutWorkbenchHeader());
-        contentAreaSplit.addComponent(mainContent);
+		// root contents
+		this.root.setFirstComponent(sidebarWrap);
+		this.root.setSecondComponent(contentAreaSplit);
 
-        // the root layout
-        root = new HorizontalSplitPanel();
-        root.setSizeFull();
-        root.setSplitPosition(0,Sizeable.UNITS_PIXELS);
-        root.addStyleName(Reindeer.SPLITPANEL_SMALL);
-        root.addStyleName("gcp-workbench-content-split-panel");
+		this.setSizeFull();
+		this.setContent(this.root);
+	}
 
-        // root contents
-        root.setFirstComponent(sidebarWrap);
-        root.setSecondComponent(contentAreaSplit);
+	private void toggleSidebarIcon() {
+		if (this.root.getSplitPosition() == 0) {
+			this.collapseButton.setCaption("<span class='bms-header-btn'><span class='bms-fa-chevron-right ico'/></span>");
 
+		} else {
+			this.collapseButton.setCaption("<span class='bms-header-btn'><span class='bms-fa-chevron-left ico'/></span>");
+		}
+	}
 
-        this.setSizeFull();
-        this.setContent(root);
-    }
+	protected void initializeActions() {
+		final Window thisWindow = this;
 
+		final Button.ClickListener homeAction = new HomeAction();
+		this.homeButton.addListener(homeAction);
+		this.logoBtn.addListener(homeAction);
 
-    private void toggleSidebarIcon() {
-        if ( root.getSplitPosition() == 0) {
-            collapseButton.setCaption("<span class='bms-header-btn'><span class='bms-fa-chevron-right ico'/></span>");
+		this.helpButton.addListener(new Button.ClickListener() {
 
-        } else {
-            collapseButton.setCaption("<span class='bms-header-btn'><span class='bms-fa-chevron-left ico'/></span>");
-        }
-    }
+			@Override
+			public void buttonClick(ClickEvent event) {
+				thisWindow.addWindow(new HelpWindow());
+			}
+		});
 
-    protected void initializeActions() {
-        final Window thisWindow = this;
+		this.addListener(new CloseListener() {
 
-        final Button.ClickListener homeAction = new HomeAction();
-        homeButton.addListener(homeAction);
-        logoBtn.addListener(homeAction);
+			@Override
+			public void windowClose(CloseEvent closeEvent) {
+				IBPWorkbenchApplication.get().toggleJira();
+			}
+		});
 
-        helpButton.addListener(new Button.ClickListener() {
+		this.collapseButton.addListener(new Button.ClickListener() {
 
-            @Override
-            public void buttonClick(ClickEvent event) {
-                thisWindow.addWindow(new HelpWindow());
-            }
-        });
+			@Override
+			public void buttonClick(ClickEvent clickEvent) {
+				if (WorkbenchMainView.this.root.getSplitPosition() > 0) {
+					WorkbenchMainView.this.root.setSplitPosition(0, Sizeable.UNITS_PIXELS);
+				} else {
+					WorkbenchMainView.this.root.setSplitPosition(240, Sizeable.UNITS_PIXELS);
+				}
+				// change icon here
+				WorkbenchMainView.this.toggleSidebarIcon();
+			}
+		});
 
-        this.addListener(new CloseListener() {
-            @Override
-            public void windowClose(CloseEvent closeEvent) {
-                IBPWorkbenchApplication.get().toggleJira();
-            }
-        });
+	}
 
-        collapseButton.addListener(new Button.ClickListener() {
+	protected void assemble() {
+		this.initializeComponents();
+		this.initializeLayout();
+		this.initializeActions();
+	}
 
-            @Override
-            public void buttonClick(ClickEvent clickEvent) {
-                if ( root.getSplitPosition() > 0) {
-                    root.setSplitPosition(0,Sizeable.UNITS_PIXELS);
-                } else {
-                    root.setSplitPosition(240,Sizeable.UNITS_PIXELS);
-                }
-                // change icon here
-                toggleSidebarIcon();
-            }
-        });
+	protected void onLoadOperations() {
+		User user = this.sessionData.getUserData();
+		String username = user.getName();
 
-    }
+		if (username == null) {
+			return;
+		}
 
-    protected void assemble() {
-        initializeComponents();
-        initializeLayout();
-        initializeActions();
-    }
+		try {
+			UserInfo userInfo = this.updateUserInfoIfNecessary(user);
+			this.workbenchDataManager.incrementUserLogInCount(userInfo.getUserId());
+		} catch (MiddlewareQueryException e) {
+			throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
+		}
 
-    protected void onLoadOperations() {
-        User user = sessionData.getUserData();
-        String username = user.getName();
+		if (this.sessionData.getLastOpenedProject() != null) {
+			this.workbenchDashboard.initializeDashboardContents(null)
+					.doAction(this.sessionData.getLastOpenedProject().getProjectId(), this);
+		}
 
-        if (username == null) {
-            return;
-        }
+	}
 
-        try {
-            UserInfo userInfo = updateUserInfoIfNecessary(user);
-            workbenchDataManager.incrementUserLogInCount(userInfo.getUserId());
-        } catch (MiddlewareQueryException e) {
-            throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
-        }
+	private UserInfo updateUserInfoIfNecessary(User user) throws MiddlewareQueryException {
+		UserInfo userInfo = this.workbenchDataManager.getUserInfo(user.getUserid());
+		if (userInfo == null || userInfo.getLoginCount() < 1) {
+			if (user.getName().equals(user.getPassword()) && userInfo != null) {
+				OpenWindowAction ow = new OpenWindowAction(WindowEnum.CHANGE_PASSWORD);
+				ow.launchWindow(this, WindowEnum.CHANGE_PASSWORD);
+			}
 
+			if (userInfo == null) {
+				userInfo = new UserInfo();
+			}
+			userInfo.setUserId(user.getUserid());
+			userInfo.setLoginCount(1);
+			this.workbenchDataManager.insertOrUpdateUserInfo(userInfo);
 
-        if (sessionData.getLastOpenedProject() != null) {
-            workbenchDashboard.initializeDashboardContents(null).doAction(sessionData.getLastOpenedProject().getProjectId(), this);
-        }
-
-    }
-
-    private UserInfo updateUserInfoIfNecessary(User user) throws MiddlewareQueryException {
-    	UserInfo userInfo = workbenchDataManager.getUserInfo(user.getUserid());
-        if (userInfo == null || userInfo.getLoginCount() < 1) {
-            if (user.getName().equals(user.getPassword()) && userInfo != null){
-                OpenWindowAction ow = new OpenWindowAction(WindowEnum.CHANGE_PASSWORD);
-                ow.launchWindow(this, WindowEnum.CHANGE_PASSWORD);
-            }
-
-            if (userInfo == null) {
-                userInfo = new UserInfo();
-            }
-            userInfo.setUserId(user.getUserid());
-            userInfo.setLoginCount(1);
-            workbenchDataManager.insertOrUpdateUserInfo(userInfo);
-
-        }
-        return userInfo;
+		}
+		return userInfo;
 	}
 
 	private Component layoutWorkbenchHeader() {
-        HorizontalLayout headerLayout = new HorizontalLayout();
-        headerLayout.setStyleName("bms-header");
-        headerLayout.setWidth("100%");
-        headerLayout.setHeight("100%");
-        headerLayout.setMargin(new Layout.MarginInfo(false,false,false,false));
-        headerLayout.setSpacing(false);
+		HorizontalLayout headerLayout = new HorizontalLayout();
+		headerLayout.setStyleName("bms-header");
+		headerLayout.setWidth("100%");
+		headerLayout.setHeight("100%");
+		headerLayout.setMargin(new Layout.MarginInfo(false, false, false, false));
+		headerLayout.setSpacing(false);
 
+		headerLayout.addComponent(this.collapseButton);
+		headerLayout.setComponentAlignment(this.collapseButton, Alignment.MIDDLE_LEFT);
 
-        headerLayout.addComponent(collapseButton);
-        headerLayout.setComponentAlignment(collapseButton, Alignment.MIDDLE_LEFT);
+		final Embedded ibpLogo = new Embedded(null, new ThemeResource("../gcp-default/images/ibp_logo2.jpg"));
 
-        final Embedded ibpLogo = new Embedded(null, new ThemeResource("../gcp-default/images/ibp_logo2.jpg"));
+		this.logoBtn.setIcon(ibpLogo.getSource());
+		this.logoBtn.setStyleName(BaseTheme.BUTTON_LINK + " bms-logo-btn");
+		this.logoBtn.setWidth("34px");
+		this.logoBtn.setHeight("34px");
 
-        logoBtn.setIcon(ibpLogo.getSource());
-        logoBtn.setStyleName(BaseTheme.BUTTON_LINK + " bms-logo-btn");
-        logoBtn.setWidth("34px");
-        logoBtn.setHeight("34px");
+		headerLayout.addComponent(this.logoBtn);
+		headerLayout.setComponentAlignment(this.logoBtn, Alignment.MIDDLE_LEFT);
 
-        headerLayout.addComponent(logoBtn);
-        headerLayout.setComponentAlignment(logoBtn, Alignment.MIDDLE_LEFT);
+		// workbench title area
+		headerLayout.addComponent(this.workbenchTitle);
+		headerLayout.setComponentAlignment(this.workbenchTitle, Alignment.MIDDLE_LEFT);
+		headerLayout.setExpandRatio(this.workbenchTitle, 1.0f);
 
-        // workbench title area
-        headerLayout.addComponent(workbenchTitle);
-        headerLayout.setComponentAlignment(workbenchTitle, Alignment.MIDDLE_LEFT);
-        headerLayout.setExpandRatio(workbenchTitle, 1.0f);
+		headerLayout.addComponent(this.uriFragUtil);
 
-        headerLayout.addComponent(uriFragUtil);
+		headerLayout.addComponent(this.homeButton);
+		headerLayout.addComponent(this.helpButton);
+		headerLayout.addComponent(this.memberButton);
 
+		headerLayout.setComponentAlignment(this.homeButton, Alignment.MIDDLE_RIGHT);
+		headerLayout.setComponentAlignment(this.helpButton, Alignment.MIDDLE_RIGHT);
+		headerLayout.setComponentAlignment(this.memberButton, Alignment.MIDDLE_RIGHT);
 
-        headerLayout.addComponent(homeButton);
-        headerLayout.addComponent(helpButton);
-        headerLayout.addComponent(memberButton);
+		return headerLayout;
+	}
 
-        headerLayout.setComponentAlignment(homeButton,Alignment.MIDDLE_RIGHT);
-        headerLayout.setComponentAlignment(helpButton,Alignment.MIDDLE_RIGHT);
-        headerLayout.setComponentAlignment(memberButton,Alignment.MIDDLE_RIGHT);
+	/**
+	 * Show the specified {@link Component} on the right side area of the Workbench's split panel.
+	 *
+	 * @param content
+	 */
+	@Override
+	public void showContent(Component content) {
 
-        return headerLayout;
-    }
+		this.mainContent.removeAllComponents();
 
-    /**
-     * Show the specified {@link Component} on the right side area of the
-     * Workbench's split panel.
-     *
-     * @param content
-     */
-    public void showContent(Component content) {
+		if (content instanceof Embedded) {
+			this.mainContent.addComponent(content);
+			this.mainContent.setExpandRatio(content, 1.0F);
 
-            mainContent.removeAllComponents();
+		} else {
 
-        if (content instanceof Embedded) {
-            mainContent.addComponent(content);
-            mainContent.setExpandRatio(content, 1.0F);
+			if (content instanceof Panel) {
+				content.setStyleName(Reindeer.PANEL_LIGHT);
+				this.mainContent.addComponent(content);
+				this.mainContent.setExpandRatio(content, 1.0F);
+			} else {
+				final Panel wrap = new Panel();
+				wrap.setStyleName(Reindeer.PANEL_LIGHT);
+				wrap.setSizeFull();
+				wrap.setScrollable(true);
 
-        } else {
+				if (content instanceof ComponentContainer) {
+					wrap.setContent((ComponentContainer) content);
+				} else {
+					VerticalLayout vl = new VerticalLayout();
+					vl.addComponent(content);
+					vl.setSizeUndefined();
+					wrap.setContent(vl);
+				}
 
-            if (content instanceof Panel) {
-                content.setStyleName(Reindeer.PANEL_LIGHT);
-                mainContent.addComponent(content);
-                mainContent.setExpandRatio(content,1.0F);
-            } else {
-                final Panel wrap = new Panel();
-                wrap.setStyleName(Reindeer.PANEL_LIGHT);
-                wrap.setSizeFull();
-                wrap.setScrollable(true);
+				this.mainContent.addComponent(wrap);
+				this.mainContent.setExpandRatio(wrap, 1.0F);
+			}
+		}
 
-                if (content instanceof  ComponentContainer) {
-                    wrap.setContent((ComponentContainer) content);
-                } else {
-                    VerticalLayout vl = new VerticalLayout();
-                    vl.addComponent(content);
-                    vl.setSizeUndefined();
-                    wrap.setContent(vl);
-                }
+		if (!(content instanceof WorkbenchDashboard || content instanceof AddProgramView)) {
+			this.root.setSplitPosition(240, Sizeable.UNITS_PIXELS);
+		} else {
+			this.root.setSplitPosition(0, Sizeable.UNITS_PIXELS);
+		}
 
-                mainContent.addComponent(wrap);
-                mainContent.setExpandRatio(wrap,1.0F);
-            }
-        }
-
-        if (!(content instanceof WorkbenchDashboard || content instanceof AddProgramView)) {
-            root.setSplitPosition(240, Sizeable.UNITS_PIXELS);
-        } else {
-            root.setSplitPosition(0, Sizeable.UNITS_PIXELS);
-        }
-
-        toggleSidebarIcon();
-    }
+		this.toggleSidebarIcon();
+	}
 
 	@Override
 	public void showContent(String toolUrl) {
@@ -429,49 +426,48 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		}
 	}
 
+	public void setUriFragment(String fragment, boolean isLinkAccessed) {
+		this.uriFragUtil.setFragment(fragment, !isLinkAccessed);
+	}
 
-	public void setUriFragment(String fragment,boolean isLinkAccessed) {
-        uriFragUtil.setFragment(fragment,!isLinkAccessed);
-    }
+	@Override
+	public void attach() {
+		super.attach();
 
-    @Override
-    public void attach() {
-        super.attach();
+		this.updateLabels();
+	}
 
-        updateLabels();
-    }
+	public void addTitle(String myTitle) {
+		if (myTitle.length() > 50) {
+			this.workbenchTitle.setDescription(myTitle);
+		} else {
+			this.workbenchTitle.setDescription("");
+		}
+		String pageTitle = "";
+		if (!myTitle.isEmpty()) {
+			pageTitle = StringUtils.abbreviate(myTitle, 50);
+		}
 
-    public void addTitle(String myTitle){
-        if (myTitle.length() > 50) {
-            workbenchTitle.setDescription(myTitle);
-        } else {
-            workbenchTitle.setDescription("");
-        }
-        String pageTitle = "";
-        if (!myTitle.isEmpty()) {
-        	pageTitle = StringUtils.abbreviate(myTitle, 50);
-        }
+		this.workbenchTitle.setValue(String.format("<h1>%s</h1>", pageTitle));
 
-        workbenchTitle.setValue(String.format("<h1>%s</h1>",pageTitle));
+	}
 
-    }
+	@Override
+	public void updateLabels() {
+		IWorkbenchSession appSession = (IWorkbenchSession) this.getApplication();
 
-    @Override
-    public void updateLabels() {
-        IWorkbenchSession appSession = (IWorkbenchSession) this.getApplication();
+		String signoutName = appSession.getSessionData().getUserData().getName();
+		if (signoutName.length() > 10) {
+			signoutName = signoutName.substring(0, 9) + "...";
+		}
 
-        String signoutName = appSession.getSessionData().getUserData().getName();
-        if (signoutName.length() > 10) {
-            signoutName = signoutName.substring(0, 9) + "...";
-        }
+		this.memberButton.setCaption("<span class='bms-header-btn2'><span>" + signoutName
+				+ "</span><span class='bms-fa-caret-down' style='padding: 0 10px 0 0'></span></span>");
 
-        memberButton.setCaption("<span class='bms-header-btn2'><span>" + signoutName + "</span><span class='bms-fa-caret-down' style='padding: 0 10px 0 0'></span></span>");
+	}
 
-    }
-
-    public WorkbenchSidebar getSidebar() {
-        return sidebar;
-    }
-
+	public WorkbenchSidebar getSidebar() {
+		return this.sidebar;
+	}
 
 }

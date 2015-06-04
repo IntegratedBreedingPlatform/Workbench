@@ -4,14 +4,16 @@
  * Generation Challenge Programme (GCP)
  *
  *
- * This software is licensed for use under the terms of the GNU General Public
- * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
- * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
+ * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
  *
  *******************************************************************************/
+
 package org.generationcp.ibpworkbench.model.formfieldfactory;
 
 import java.util.Map;
+
+import javax.annotation.Resource;
 
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.ibpworkbench.SessionData;
@@ -37,257 +39,267 @@ import com.vaadin.ui.Select;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
-import javax.annotation.Resource;
-
 /**
  * <b>Description</b>: Field factory for generating Breeding Method fields for Breeding Method class.
  * <p/>
  * <br>
  * <br>
  * <p/>
- * <b>Author</b>: Jeffrey Morales
- * <br>
+ * <b>Author</b>: Jeffrey Morales <br>
  * <b>File Created</b>: August 30, 2012
  */
 @Configurable
 public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 
-    private static final String FIELD_WIDTH = "250px";
+	private static final String FIELD_WIDTH = "250px";
 	private static final long serialVersionUID = 3560059243526106791L;
-    private static final Logger LOG = LoggerFactory.getLogger(BreedingMethodFormFieldFactory.class);
+	private static final Logger LOG = LoggerFactory.getLogger(BreedingMethodFormFieldFactory.class);
 
-    private Field methodName;
-    private Field methodDescription;
-    private Select methodSelectType;
-    private Select methodSelectGroup;
-    private Field methodCode;
-    private Select methodSelectClass;
-    
-    private Boolean isEditMode;
-    
-    @Autowired
+	private Field methodName;
+	private Field methodDescription;
+	private Select methodSelectType;
+	private Select methodSelectGroup;
+	private Field methodCode;
+	private Select methodSelectClass;
+
+	private Boolean isEditMode;
+
+	@Autowired
 	private ManagerFactoryProvider managerFactoryProvider;
 
 	@Resource
 	private SessionData sessionData;
 
-    public BreedingMethodFormFieldFactory(Map<Integer,String> classMap) {
-        initFields(classMap);
-    }
-    
-    public BreedingMethodFormFieldFactory(Map<Integer,String> classMap, Boolean isEditMode) {
-    	this.isEditMode = isEditMode;
-        initFields(classMap);
-    }
+	public BreedingMethodFormFieldFactory(Map<Integer, String> classMap) {
+		this.initFields(classMap);
+	}
 
-    private void initFields(final Map<Integer,String> classMap) {
+	public BreedingMethodFormFieldFactory(Map<Integer, String> classMap, Boolean isEditMode) {
+		this.isEditMode = isEditMode;
+		this.initFields(classMap);
+	}
 
-        methodName = new TextField();
-        methodName.setRequired(true);
-        methodName.setRequiredError("Please enter a Breeding Method Name.");
-        methodName.addValidator(new StringLengthValidator("Breeding Method Name must be 1-50 characters.", 1, 50, false));
-        methodName.addValidator(new Validator(){
-        	
+	private void initFields(final Map<Integer, String> classMap) {
+
+		this.methodName = new TextField();
+		this.methodName.setRequired(true);
+		this.methodName.setRequiredError("Please enter a Breeding Method Name.");
+		this.methodName.addValidator(new StringLengthValidator("Breeding Method Name must be 1-50 characters.", 1, 50, false));
+		this.methodName.addValidator(new Validator() {
+
+			/**
+			 *
+			 */
+			private static final long serialVersionUID = 1243756382212441154L;
+
 			@Override
 			public void validate(Object value) {
-				
+
 				if (value == null) {
-                    return;
-                }
-				
-				if (!isValid(value)){
-					throw new InvalidValueException(String.format("Breeding Method \"%s\" already exists.", value.toString())); 
+					return;
+				}
+
+				if (!this.isValid(value)) {
+					throw new InvalidValueException(String.format("Breeding Method \"%s\" already exists.", value.toString()));
 				}
 			}
 
 			@Override
 			public boolean isValid(Object value) {
-				
+
 				if (value == null) {
-                    return true;
-                }
+					return true;
+				}
 
 				Method method = null;
 				try {
-					Project currentProject = sessionData.getSelectedProject();
-					ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(currentProject);
-					method = managerFactory.getGermplasmDataManager().getMethodByName(value.toString(),currentProject.getUniqueID());
+					Project currentProject = BreedingMethodFormFieldFactory.this.sessionData.getSelectedProject();
+					ManagerFactory managerFactory =
+							BreedingMethodFormFieldFactory.this.managerFactoryProvider.getManagerFactoryForProject(currentProject);
+					method = managerFactory.getGermplasmDataManager().getMethodByName(value.toString(), currentProject.getUniqueID());
 				} catch (MiddlewareQueryException e) {
-					LOG.error(e.getMessage(),e);
+					BreedingMethodFormFieldFactory.LOG.error(e.getMessage(), e);
 				}
-				
-				//If Method ID is not null, then Method already exists
+
+				// If Method ID is not null, then Method already exists
 				if (method != null && method.getMid() != null) {
-					
-					 if (isEditMode && methodName.isModified()){
-						 return false;
-					 } else if (!isEditMode){
-						 return false;
-					 }
-					
+
+					if (BreedingMethodFormFieldFactory.this.isEditMode && BreedingMethodFormFieldFactory.this.methodName.isModified()) {
+						return false;
+					} else if (!BreedingMethodFormFieldFactory.this.isEditMode) {
+						return false;
+					}
+
 				}
 				return true;
 			}
-        	
-        });
-        methodName.setWidth(FIELD_WIDTH);
 
-        methodDescription = new TextArea();
-        methodDescription.setRequired(true);
-        methodDescription.setRequiredError("Please enter a Breeding Method Description.");
-        methodDescription.addValidator(new StringLengthValidator("Breeding Method Description must be 1-255 characters.", 1, 255, false));
-        methodDescription.setWidth("375px");
-        methodDescription.setHeight("100px");
+		});
+		this.methodName.setWidth(BreedingMethodFormFieldFactory.FIELD_WIDTH);
 
-        methodCode = new TextField();
-        methodCode.setRequired(true);
-        methodCode.setRequiredError("Please enter a Breeding Method Code.");
-        methodCode.addValidator(new StringLengthValidator("Breeding Method Code must be 1-8 characters.", 1, 8, false));
-        methodCode.addValidator(new Validator(){
-        	
+		this.methodDescription = new TextArea();
+		this.methodDescription.setRequired(true);
+		this.methodDescription.setRequiredError("Please enter a Breeding Method Description.");
+		this.methodDescription.addValidator(new StringLengthValidator("Breeding Method Description must be 1-255 characters.", 1, 255,
+				false));
+		this.methodDescription.setWidth("375px");
+		this.methodDescription.setHeight("100px");
+
+		this.methodCode = new TextField();
+		this.methodCode.setRequired(true);
+		this.methodCode.setRequiredError("Please enter a Breeding Method Code.");
+		this.methodCode.addValidator(new StringLengthValidator("Breeding Method Code must be 1-8 characters.", 1, 8, false));
+		this.methodCode.addValidator(new Validator() {
+
+			/**
+			 *
+			 */
+			private static final long serialVersionUID = -830998093233311135L;
+
 			@Override
 			public void validate(Object value) {
-				
+
 				if (value == null) {
-                    return;
-                }
-				
-				if (!isValid(value)){
-					throw new InvalidValueException(String.format("Breeding Method with Code \"%s\" already exists.", value.toString())); 
+					return;
+				}
+
+				if (!this.isValid(value)) {
+					throw new InvalidValueException(String.format("Breeding Method with Code \"%s\" already exists.", value.toString()));
 				}
 			}
 
 			@Override
 			public boolean isValid(Object value) {
-				
+
 				if (value == null) {
-                    return true;
-                }
+					return true;
+				}
 
 				Method method = null;
 				try {
-					Project currentProject = sessionData.getSelectedProject();
-					ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(currentProject);
+					Project currentProject = BreedingMethodFormFieldFactory.this.sessionData.getSelectedProject();
+					ManagerFactory managerFactory =
+							BreedingMethodFormFieldFactory.this.managerFactoryProvider.getManagerFactoryForProject(currentProject);
 					method = managerFactory.getGermplasmDataManager().getMethodByCode(value.toString(), currentProject.getUniqueID());
 				} catch (MiddlewareQueryException e) {
-					LOG.error(e.getMessage(),e);
+					BreedingMethodFormFieldFactory.LOG.error(e.getMessage(), e);
 				}
-				
-				//If Method ID is not null, then Method already exists
+
+				// If Method ID is not null, then Method already exists
 				if (method != null && method.getMid() != null) {
-					
-					 if (isEditMode && methodCode.isModified()){
-						 return false;
-					 }else if (!isEditMode){
-						 return false;
-					 }
-					
+
+					if (BreedingMethodFormFieldFactory.this.isEditMode && BreedingMethodFormFieldFactory.this.methodCode.isModified()) {
+						return false;
+					} else if (!BreedingMethodFormFieldFactory.this.isEditMode) {
+						return false;
+					}
+
 				}
 				return true;
 			}
-        	
-        });
-        methodCode.setWidth("70px");
 
-        methodSelectType = new Select();
-        methodSelectType.setImmediate(true);
-        methodSelectType.setWidth(FIELD_WIDTH);
-        methodSelectType.addItem("GEN");
-        methodSelectType.setItemCaption("GEN", "Generative");
-        methodSelectType.addItem("DER");
-        methodSelectType.setItemCaption("DER", "Derivative");
-        methodSelectType.addItem("MAN");
-        methodSelectType.setItemCaption("MAN", "Maintenance");
-        methodSelectType.setNullSelectionAllowed(false);
-        methodSelectType.setRequired(true);
-        methodSelectType.setRequiredError("Please select a Generation Advancement Type");
-        
-        
-        methodSelectType.addListener(new Property.ValueChangeListener(){
+		});
+		this.methodCode.setWidth("70px");
+
+		this.methodSelectType = new Select();
+		this.methodSelectType.setImmediate(true);
+		this.methodSelectType.setWidth(BreedingMethodFormFieldFactory.FIELD_WIDTH);
+		this.methodSelectType.addItem("GEN");
+		this.methodSelectType.setItemCaption("GEN", "Generative");
+		this.methodSelectType.addItem("DER");
+		this.methodSelectType.setItemCaption("DER", "Derivative");
+		this.methodSelectType.addItem("MAN");
+		this.methodSelectType.setItemCaption("MAN", "Maintenance");
+		this.methodSelectType.setNullSelectionAllowed(false);
+		this.methodSelectType.setRequired(true);
+		this.methodSelectType.setRequiredError("Please select a Generation Advancement Type");
+
+		this.methodSelectType.addListener(new Property.ValueChangeListener() {
+
+			/**
+			 *
+			 */
+			private static final long serialVersionUID = 3918955977372077902L;
 
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				methodSelectClass.removeAllItems();
-				if ("GEN".equals(event.getProperty().getValue().toString())){
+				BreedingMethodFormFieldFactory.this.methodSelectClass.removeAllItems();
+				if ("GEN".equals(event.getProperty().getValue().toString())) {
 					for (Integer key : classMap.keySet()) {
 						String value = classMap.get(key);
-						
-						if (key.equals(TermId.CROSSING_METHODS_CLASS.getId())
-								|| key.equals(TermId.MUTATION_METHODS_CLASS.getId())
+
+						if (key.equals(TermId.CROSSING_METHODS_CLASS.getId()) || key.equals(TermId.MUTATION_METHODS_CLASS.getId())
 								|| key.equals(TermId.GENETIC_MODIFICATION_CLASS.getId())
 								|| key.equals(TermId.CYTOGENETIC_MANIPULATION.getId())) {
-							methodSelectClass.addItem(key);
-							methodSelectClass.setItemCaption(key, value);
+							BreedingMethodFormFieldFactory.this.methodSelectClass.addItem(key);
+							BreedingMethodFormFieldFactory.this.methodSelectClass.setItemCaption(key, value);
 						}
 					}
-				} else if ("DER".equals(event.getProperty().getValue().toString())){
+				} else if ("DER".equals(event.getProperty().getValue().toString())) {
 					for (Integer key : classMap.keySet()) {
 						String value = classMap.get(key);
 						if (key.equals(TermId.BULKING_BREEDING_METHOD_CLASS.getId())
-								|| key.equals(TermId.NON_BULKING_BREEDING_METHOD_CLASS.getId())){
-							methodSelectClass.addItem(key);
-							methodSelectClass.setItemCaption(key, value);
+								|| key.equals(TermId.NON_BULKING_BREEDING_METHOD_CLASS.getId())) {
+							BreedingMethodFormFieldFactory.this.methodSelectClass.addItem(key);
+							BreedingMethodFormFieldFactory.this.methodSelectClass.setItemCaption(key, value);
 						}
 					}
-				}else if ("MAN".equals(event.getProperty().getValue().toString())){
+				} else if ("MAN".equals(event.getProperty().getValue().toString())) {
 					for (Integer key : classMap.keySet()) {
 						String value = classMap.get(key);
 						if (key.equals(TermId.SEED_INCREASE_METHOD_CLASS.getId())
 								|| key.equals(TermId.SEED_ACQUISITION_METHOD_CLASS.getId())
-								|| key.equals(TermId.CULTIVAR_FORMATION_METHOD_CLASS.getId())){
-							methodSelectClass.addItem(key);
-							methodSelectClass.setItemCaption(key, value);
+								|| key.equals(TermId.CULTIVAR_FORMATION_METHOD_CLASS.getId())) {
+							BreedingMethodFormFieldFactory.this.methodSelectClass.addItem(key);
+							BreedingMethodFormFieldFactory.this.methodSelectClass.setItemCaption(key, value);
 						}
 					}
 				}
-				
+
 			}
-        	
-        });
-        
-        
 
-        methodSelectGroup = new Select();
-        methodSelectGroup.setWidth(FIELD_WIDTH);
-        methodSelectGroup.addItem("S");
-        methodSelectGroup.setItemCaption("S", "Self Fertilizing");
-        methodSelectGroup.addItem("O");
-        methodSelectGroup.setItemCaption("O", "Cross Pollinating");
-        methodSelectGroup.addItem("C");
-        methodSelectGroup.setItemCaption("C", "Clonally Propagating");
-        methodSelectGroup.addItem("G");
-        methodSelectGroup.setItemCaption("G", "All System");
-        methodSelectGroup.select("");
-        methodSelectGroup.setNullSelectionAllowed(false);
-        
-        methodSelectClass = new Select();
-        methodSelectClass.setWidth(FIELD_WIDTH);
-        methodSelectClass.setNullSelectionAllowed(false);
-        methodSelectClass.setRequired(true);
-        methodSelectClass.setRequiredError("Please select a Class");  
-        methodSelectClass.setImmediate(true);
-    }
+		});
 
+		this.methodSelectGroup = new Select();
+		this.methodSelectGroup.setWidth(BreedingMethodFormFieldFactory.FIELD_WIDTH);
+		this.methodSelectGroup.addItem("S");
+		this.methodSelectGroup.setItemCaption("S", "Self Fertilizing");
+		this.methodSelectGroup.addItem("O");
+		this.methodSelectGroup.setItemCaption("O", "Cross Pollinating");
+		this.methodSelectGroup.addItem("C");
+		this.methodSelectGroup.setItemCaption("C", "Clonally Propagating");
+		this.methodSelectGroup.addItem("G");
+		this.methodSelectGroup.setItemCaption("G", "All System");
+		this.methodSelectGroup.select("");
+		this.methodSelectGroup.setNullSelectionAllowed(false);
 
-    @Override
-    public Field createField(Item item, Object propertyId, Component uiContext) {
+		this.methodSelectClass = new Select();
+		this.methodSelectClass.setWidth(BreedingMethodFormFieldFactory.FIELD_WIDTH);
+		this.methodSelectClass.setNullSelectionAllowed(false);
+		this.methodSelectClass.setRequired(true);
+		this.methodSelectClass.setRequiredError("Please select a Class");
+		this.methodSelectClass.setImmediate(true);
+	}
 
-        Field field = super.createField(item, propertyId, uiContext);
+	@Override
+	public Field createField(Item item, Object propertyId, Component uiContext) {
 
-        if ("mname".equals(propertyId)) {
-            return methodName;
+		Field field = super.createField(item, propertyId, uiContext);
 
-        } else if ("mdesc".equals(propertyId)) {
-            return methodDescription;
-        } else if ("mcode".equals(propertyId)) {
-            return methodCode;
-        } else if ("mtype".equals(propertyId)) {
-            return methodSelectType;
-        } else if ("mgrp".equals(propertyId)) {
-            return methodSelectGroup;
-        } else if ("geneq".equals(propertyId)) {
-            return methodSelectClass;
-        }
-        return field;
-    }
+		if ("mname".equals(propertyId)) {
+			return this.methodName;
+
+		} else if ("mdesc".equals(propertyId)) {
+			return this.methodDescription;
+		} else if ("mcode".equals(propertyId)) {
+			return this.methodCode;
+		} else if ("mtype".equals(propertyId)) {
+			return this.methodSelectType;
+		} else if ("mgrp".equals(propertyId)) {
+			return this.methodSelectGroup;
+		} else if ("geneq".equals(propertyId)) {
+			return this.methodSelectClass;
+		}
+		return field;
+	}
 }

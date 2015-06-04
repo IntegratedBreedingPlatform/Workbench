@@ -1,14 +1,16 @@
+
 package org.generationcp.ibpworkbench.ui.programlocations;
 
-import com.vaadin.data.Container;
-import com.vaadin.data.Property;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.event.DataBoundTransferable;
-import com.vaadin.event.dd.DragAndDropEvent;
-import com.vaadin.event.dd.DropHandler;
-import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
-import com.vaadin.ui.*;
-import com.vaadin.ui.Button.ClickEvent;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
+
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -26,760 +28,793 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.util.*;
+import com.vaadin.data.Container;
+import com.vaadin.data.Property;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.event.DataBoundTransferable;
+import com.vaadin.event.dd.DragAndDropEvent;
+import com.vaadin.event.dd.DropHandler;
+import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
+import com.vaadin.ui.AbstractSelect;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.Select;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 @Configurable
- public class ProgramLocationsView extends CustomComponent implements InitializingBean, IContainerFittable {
+public class ProgramLocationsView extends CustomComponent implements InitializingBean, IContainerFittable {
+
 	private static final long serialVersionUID = 2596164971437339822L;
-	
-	private ProgramLocationsPresenter presenter;
-     @Autowired
-     private SimpleResourceBundleMessageSource messageSource;
 
-     private static final Logger LOG = LoggerFactory.getLogger(ProgramLocationsView.class);
+	private final ProgramLocationsPresenter presenter;
+	@Autowired
+	private SimpleResourceBundleMessageSource messageSource;
 
-     public static final Map<String,String> TABLE_COLUMNS;
-     public static final Map<String,Integer> TABLE_COLUMN_SIZES;
-     
-     protected static final String AVAILABLE = "available";
-     protected static final String FAVORITES = "favorites";
- 	 private static final String FIELD = "field";
- 	 private static final String SELECT = "select";
- 	 private static final String LOCATION_NAME = "locationName";
- 	 private static final String LOCATION_ABBREVIATION = "locationAbbreviation";
- 	 private static final String LATITUDE = "latitude";
- 	 private static final String LONGITUDE = "longitude";
- 	 private static final String ALTITUDE = "altitude";
- 	 private static final String LTYPE_STR = "ltypeStr";
+	private static final Logger LOG = LoggerFactory.getLogger(ProgramLocationsView.class);
 
-     static {
-         TABLE_COLUMNS = new LinkedHashMap<String,String>();
-         TABLE_COLUMNS.put(SELECT,"<span class='glyphicon glyphicon-ok'></span>");
-         TABLE_COLUMNS.put(LOCATION_NAME,"Name");
-         TABLE_COLUMNS.put(LOCATION_ABBREVIATION,"abbr.");
-         TABLE_COLUMNS.put(LATITUDE,"Lat");
-         TABLE_COLUMNS.put(LONGITUDE,"Long");
-         TABLE_COLUMNS.put(ALTITUDE,"Alt");
-         TABLE_COLUMNS.put(LTYPE_STR,"Type");
+	public static final Map<String, String> TABLE_COLUMNS;
+	public static final Map<String, Integer> TABLE_COLUMN_SIZES;
 
-         TABLE_COLUMN_SIZES = new HashMap<String, Integer>();
-         TABLE_COLUMN_SIZES.put(SELECT,20);
-         TABLE_COLUMN_SIZES.put(LOCATION_ABBREVIATION,80);
-         TABLE_COLUMN_SIZES.put(LTYPE_STR,240);
-     }
+	protected static final String AVAILABLE = "available";
+	protected static final String FAVORITES = "favorites";
+	private static final String FIELD = "field";
+	private static final String SELECT = "select";
+	private static final String LOCATION_NAME = "locationName";
+	private static final String LOCATION_ABBREVIATION = "locationAbbreviation";
+	private static final String LATITUDE = "latitude";
+	private static final String LONGITUDE = "longitude";
+	private static final String ALTITUDE = "altitude";
+	private static final String LTYPE_STR = "ltypeStr";
 
-     private Button addNewLocationsBtn;
-     private VerticalLayout root;
-     private Button saveBtn;
-     private Table availableTable;
-     private Table favoritesTable;
-     private CheckBox availableSelectAll;
-     private CheckBox favoriteSelectAll;
-     private Label availTotalEntriesLabel;
-     private Label favTotalEntriesLabel;
-     private Label availSelectedEntriesLabel;
-     private Label favSelectedEntriesLabel;
-     private Select countryFilter;
-     private Select locationTypeFilter;
-     private TextField searchField;
-     private Label resultCountLbl;
-     private BeanItemContainer<LocationViewModel> availableTableContainer;
-     private BeanItemContainer<LocationViewModel> favoritesTableContainer;
-     private Button addToFavoriteBtn;
-     private Button removeToFavoriteBtn;
+	static {
+		TABLE_COLUMNS = new LinkedHashMap<String, String>();
+		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.SELECT, "<span class='glyphicon glyphicon-ok'></span>");
+		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.LOCATION_NAME, "Name");
+		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.LOCATION_ABBREVIATION, "abbr.");
+		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.LATITUDE, "Lat");
+		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.LONGITUDE, "Long");
+		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.ALTITUDE, "Alt");
+		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.LTYPE_STR, "Type");
 
-     private Boolean cropOnly = false;
-     private Button searchGoBtn;
+		TABLE_COLUMN_SIZES = new HashMap<String, Integer>();
+		ProgramLocationsView.TABLE_COLUMN_SIZES.put(ProgramLocationsView.SELECT, 20);
+		ProgramLocationsView.TABLE_COLUMN_SIZES.put(ProgramLocationsView.LOCATION_ABBREVIATION, 80);
+		ProgramLocationsView.TABLE_COLUMN_SIZES.put(ProgramLocationsView.LTYPE_STR, 240);
+	}
 
-     public ProgramLocationsView(Project project) {
-         presenter = new ProgramLocationsPresenter(this,project);
-     }
+	private Button addNewLocationsBtn;
+	private VerticalLayout root;
+	private Button saveBtn;
+	private Table availableTable;
+	private Table favoritesTable;
+	private CheckBox availableSelectAll;
+	private CheckBox favoriteSelectAll;
+	private Label availTotalEntriesLabel;
+	private Label favTotalEntriesLabel;
+	private Label availSelectedEntriesLabel;
+	private Label favSelectedEntriesLabel;
+	private Select countryFilter;
+	private Select locationTypeFilter;
+	private TextField searchField;
+	private Label resultCountLbl;
+	private BeanItemContainer<LocationViewModel> availableTableContainer;
+	private BeanItemContainer<LocationViewModel> favoritesTableContainer;
+	private Button addToFavoriteBtn;
+	private Button removeToFavoriteBtn;
 
-    public ProgramLocationsView(CropType cropType) {
-        presenter = new ProgramLocationsPresenter(this,cropType);
-        cropOnly = true;
+	private Boolean cropOnly = false;
+	private Button searchGoBtn;
 
-    }
+	public ProgramLocationsView(Project project) {
+		this.presenter = new ProgramLocationsPresenter(this, project);
+	}
 
-     private void initializeComponents() {
-         resultCountLbl = new Label();
+	public ProgramLocationsView(CropType cropType) {
+		this.presenter = new ProgramLocationsPresenter(this, cropType);
+		this.cropOnly = true;
 
-         addNewLocationsBtn = new Button("Add New Location");
-         addNewLocationsBtn.setStyleName(Bootstrap.Buttons.INFO.styleName() + " loc-add-btn");
+	}
 
-         saveBtn = new Button("Save Favorites");
-         saveBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
+	private void initializeComponents() {
+		this.resultCountLbl = new Label();
 
-         searchGoBtn= new Button("Go");
-         searchGoBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
+		this.addNewLocationsBtn = new Button("Add New Location");
+		this.addNewLocationsBtn.setStyleName(Bootstrap.Buttons.INFO.styleName() + " loc-add-btn");
 
-         availableSelectAll = new CheckBox("Select All");
-         availableSelectAll.setImmediate(true);
-         favoriteSelectAll = new CheckBox("Select All");
-         favoriteSelectAll.setImmediate(true);
-         
-         availTotalEntriesLabel = new Label(messageSource.getMessage(Message.TOTAL_ENTRIES) + ":  <b>0</b>", Label.CONTENT_XHTML);
-         favTotalEntriesLabel = new Label(messageSource.getMessage(Message.TOTAL_ENTRIES) + ":  <b>0</b>", Label.CONTENT_XHTML);
-         availSelectedEntriesLabel = new Label("<i>" + messageSource.getMessage(Message.SELECTED) + ":   <b>0</b></i>", Label.CONTENT_XHTML);
-         favSelectedEntriesLabel = new Label("<i>" + messageSource.getMessage(Message.SELECTED) + ":   <b>0</b></i>", Label.CONTENT_XHTML);
-         
-         // TABLES!
-         availableTable = buildCustomTable(availableSelectAll, availTotalEntriesLabel, availSelectedEntriesLabel);
-         availableTable.setData(AVAILABLE);
+		this.saveBtn = new Button("Save Favorites");
+		this.saveBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
 
-         favoritesTable = buildCustomTable(favoriteSelectAll, favTotalEntriesLabel, favSelectedEntriesLabel);
-         favoritesTable.setData(FAVORITES);
+		this.searchGoBtn = new Button("Go");
+		this.searchGoBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
 
-         addToFavoriteBtn = new Button("Add to Favorite Locations");
-         addToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
+		this.availableSelectAll = new CheckBox("Select All");
+		this.availableSelectAll.setImmediate(true);
+		this.favoriteSelectAll = new CheckBox("Select All");
+		this.favoriteSelectAll.setImmediate(true);
 
-         removeToFavoriteBtn = new Button("Remove from Favorite Locations");
-         removeToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
+		this.availTotalEntriesLabel = new Label(this.messageSource.getMessage(Message.TOTAL_ENTRIES) + ":  <b>0</b>", Label.CONTENT_XHTML);
+		this.favTotalEntriesLabel = new Label(this.messageSource.getMessage(Message.TOTAL_ENTRIES) + ":  <b>0</b>", Label.CONTENT_XHTML);
+		this.availSelectedEntriesLabel =
+				new Label("<i>" + this.messageSource.getMessage(Message.SELECTED) + ":   <b>0</b></i>", Label.CONTENT_XHTML);
+		this.favSelectedEntriesLabel =
+				new Label("<i>" + this.messageSource.getMessage(Message.SELECTED) + ":   <b>0</b></i>", Label.CONTENT_XHTML);
 
-         // filter form
-         this.initializeFilterForm();
-     }
-     private void doLocationSearch(){
-         Country selectedCountry = (Country) countryFilter.getValue();
-         UserDefinedField selectedLocationType =  (UserDefinedField) locationTypeFilter.getValue();
-         String locationName = (String) searchField.getValue();
+		// TABLES!
+		this.availableTable = this.buildCustomTable(this.availableSelectAll, this.availTotalEntriesLabel, this.availSelectedEntriesLabel);
+		this.availableTable.setData(ProgramLocationsView.AVAILABLE);
 
-         Integer cntryId = (selectedCountry != null) ? selectedCountry.getCntryid() : null;
-         Integer locationTypeId = (selectedLocationType != null) ? selectedLocationType.getFldno() : null;
+		this.favoritesTable = this.buildCustomTable(this.favoriteSelectAll, this.favTotalEntriesLabel, this.favSelectedEntriesLabel);
+		this.favoritesTable.setData(ProgramLocationsView.FAVORITES);
 
+		this.addToFavoriteBtn = new Button("Add to Favorite Locations");
+		this.addToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
 
-         try {
-             availableTableContainer.removeAllItems();
-             availableTableContainer.addAll(presenter.getFilteredResults(cntryId, locationTypeId, locationName,favoritesTableContainer.getItemIds()));
+		this.removeToFavoriteBtn = new Button("Remove from Favorite Locations");
+		this.removeToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
 
-             resultCountLbl.setValue("Results: " + availableTableContainer.getItemIds().size() + " items");
-             updateNoOfEntries(availTotalEntriesLabel, availableTable);
-             updateSelectedNoOfEntries(availSelectedEntriesLabel, availableTable);
-         } catch (MiddlewareQueryException e) {
-             LOG.error(e.getMessage(),e);
-         }
-     }
-     private void initializeActions() {
-         addNewLocationsBtn.addListener(new Button.ClickListener() {
+		// filter form
+		this.initializeFilterForm();
+	}
+
+	private void doLocationSearch() {
+		Country selectedCountry = (Country) this.countryFilter.getValue();
+		UserDefinedField selectedLocationType = (UserDefinedField) this.locationTypeFilter.getValue();
+		String locationName = (String) this.searchField.getValue();
+
+		Integer cntryId = selectedCountry != null ? selectedCountry.getCntryid() : null;
+		Integer locationTypeId = selectedLocationType != null ? selectedLocationType.getFldno() : null;
+
+		try {
+			this.availableTableContainer.removeAllItems();
+			this.availableTableContainer.addAll(this.presenter.getFilteredResults(cntryId, locationTypeId, locationName,
+					this.favoritesTableContainer.getItemIds()));
+
+			this.resultCountLbl.setValue("Results: " + this.availableTableContainer.getItemIds().size() + " items");
+			this.updateNoOfEntries(this.availTotalEntriesLabel, this.availableTable);
+			this.updateSelectedNoOfEntries(this.availSelectedEntriesLabel, this.availableTable);
+		} catch (MiddlewareQueryException e) {
+			ProgramLocationsView.LOG.error(e.getMessage(), e);
+		}
+	}
+
+	private void initializeActions() {
+		this.addNewLocationsBtn.addListener(new Button.ClickListener() {
+
 			private static final long serialVersionUID = -7171034021312549121L;
 
 			@Override
-             public void buttonClick(ClickEvent clickEvent) {
-                 clickEvent.getComponent().getWindow().addWindow(new AddLocationsWindow(ProgramLocationsView.this,presenter));
-             }
-         });
+			public void buttonClick(ClickEvent clickEvent) {
+				clickEvent.getComponent().getWindow()
+						.addWindow(new AddLocationsWindow(ProgramLocationsView.this, ProgramLocationsView.this.presenter));
+			}
+		});
 
-         Property.ValueChangeListener filterAction = new Property.ValueChangeListener() {
+		Property.ValueChangeListener filterAction = new Property.ValueChangeListener() {
+
 			private static final long serialVersionUID = -913467981172163048L;
 
 			@Override
-             public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
-                doLocationSearch();
-             }
-         };
+			public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
+				ProgramLocationsView.this.doLocationSearch();
+			}
+		};
 
-         searchField.addListener(filterAction);
-         countryFilter.addListener(filterAction);
-         locationTypeFilter.addListener(filterAction);
+		this.searchField.addListener(filterAction);
+		this.countryFilter.addListener(filterAction);
+		this.locationTypeFilter.addListener(filterAction);
 
-         availableSelectAll.addListener(new Button.ClickListener() {
+		this.availableSelectAll.addListener(new Button.ClickListener() {
+
 			private static final long serialVersionUID = -8196548064100650289L;
 
 			@Override
-             public void buttonClick(ClickEvent clickEvent) {
+			public void buttonClick(ClickEvent clickEvent) {
 
-                 if ((Boolean) ((CheckBox)clickEvent.getComponent()).getValue()){
-                     availableTable.setValue(availableTable.getItemIds());
-                 }else{
-                     availableTable.setValue(null);
-                 }
-                 
-                 updateSelectedNoOfEntries(availSelectedEntriesLabel, availableTable);
-             }
-         });
+				if ((Boolean) ((CheckBox) clickEvent.getComponent()).getValue()) {
+					ProgramLocationsView.this.availableTable.setValue(ProgramLocationsView.this.availableTable.getItemIds());
+				} else {
+					ProgramLocationsView.this.availableTable.setValue(null);
+				}
 
+				ProgramLocationsView.this.updateSelectedNoOfEntries(ProgramLocationsView.this.availSelectedEntriesLabel,
+						ProgramLocationsView.this.availableTable);
+			}
+		});
 
-         favoriteSelectAll.addListener(new Button.ClickListener() {
+		this.favoriteSelectAll.addListener(new Button.ClickListener() {
+
 			private static final long serialVersionUID = -3779881074831495245L;
 
 			@Override
-             public void buttonClick(ClickEvent clickEvent) {
-                 if ((Boolean) ((CheckBox)clickEvent.getComponent()).getValue()){
-                     favoritesTable.setValue(favoritesTable.getItemIds());
-                 }else{
-                     favoritesTable.setValue(null);
-                 }
-                 
-                 updateSelectedNoOfEntries(favSelectedEntriesLabel, favoritesTable);
+			public void buttonClick(ClickEvent clickEvent) {
+				if ((Boolean) ((CheckBox) clickEvent.getComponent()).getValue()) {
+					ProgramLocationsView.this.favoritesTable.setValue(ProgramLocationsView.this.favoritesTable.getItemIds());
+				} else {
+					ProgramLocationsView.this.favoritesTable.setValue(null);
+				}
 
-             }
-         });
+				ProgramLocationsView.this.updateSelectedNoOfEntries(ProgramLocationsView.this.favSelectedEntriesLabel,
+						ProgramLocationsView.this.favoritesTable);
 
-         addToFavoriteBtn.addListener(new Button.ClickListener() {
+			}
+		});
+
+		this.addToFavoriteBtn.addListener(new Button.ClickListener() {
+
 			private static final long serialVersionUID = 131276363615646691L;
 
 			@Override
-             public void buttonClick(Button.ClickEvent clickEvent) {
-                 moveSelectedItems(availableTable,favoritesTable);
-             }
-         });
+			public void buttonClick(Button.ClickEvent clickEvent) {
+				ProgramLocationsView.this.moveSelectedItems(ProgramLocationsView.this.availableTable,
+						ProgramLocationsView.this.favoritesTable);
+			}
+		});
 
-         removeToFavoriteBtn.addListener(new Button.ClickListener() {
+		this.removeToFavoriteBtn.addListener(new Button.ClickListener() {
+
 			private static final long serialVersionUID = -2208257555061319115L;
 
 			@Override
-             public void buttonClick(Button.ClickEvent clickEvent) {
-                 moveSelectedItems(favoritesTable,availableTable);
-             }
-         });
+			public void buttonClick(Button.ClickEvent clickEvent) {
+				ProgramLocationsView.this.moveSelectedItems(ProgramLocationsView.this.favoritesTable,
+						ProgramLocationsView.this.availableTable);
+			}
+		});
 
-         saveBtn.addListener(new Button.ClickListener() {
+		this.saveBtn.addListener(new Button.ClickListener() {
+
 			private static final long serialVersionUID = -1949478106602489651L;
 
 			@Override
-             public void buttonClick(ClickEvent clickEvent) {
-                 try {
-                     if (presenter.saveProgramLocation(favoritesTableContainer.getItemIds())) {
-                         MessageNotifier.showMessage(clickEvent.getComponent().getWindow(), messageSource.getMessage(Message.SUCCESS), messageSource.getMessage(Message.LOCATION_SUCCESSFULLY_CONFIGURED));
-                     }
+			public void buttonClick(ClickEvent clickEvent) {
+				try {
+					if (ProgramLocationsView.this.presenter.saveProgramLocation(ProgramLocationsView.this.favoritesTableContainer
+							.getItemIds())) {
+						MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
+								ProgramLocationsView.this.messageSource.getMessage(Message.SUCCESS),
+								ProgramLocationsView.this.messageSource.getMessage(Message.LOCATION_SUCCESSFULLY_CONFIGURED));
+					}
 
-                 } catch (MiddlewareQueryException e) {
-                	 LOG.error(e.getMessage(),e);
-                 }
-                 LOG.debug("onSaveProgramLocations:");
-             }
-         });
+				} catch (MiddlewareQueryException e) {
+					ProgramLocationsView.LOG.error(e.getMessage(), e);
+				}
+				ProgramLocationsView.LOG.debug("onSaveProgramLocations:");
+			}
+		});
 
-     }
-     
-     protected void updateNoOfEntries(Label totalEntries, Table table){
-    	 int count = 0;
-    	 count = table.getItemIds().size();
-    	 
-    	 totalEntries.setValue(messageSource.getMessage(Message.TOTAL_ENTRIES) + ": " 
-        		 + "  <b>" + count + "</b>");
-     }
-     
-     private void updateSelectedNoOfEntries(Label selectedEntries, Table table){
-    	 int count = 0;
-    	 
-    	 Collection<?> selectedItems = (Collection<?>)table.getValue();
-		 count = selectedItems.size();
-    	 
-		 
-		 selectedEntries.setValue("<i>" + messageSource.getMessage(Message.SELECTED) + ": " 
-        		 + "  <b>" + count + "</b></i>");
-     }
+	}
 
-    /**
-     * Use this to retrieve the favorite locations from the view, you might have to convert LocationViewModel to Middleware's
-     * Location bean
-     * @return
-     */
-     public Collection<Location> getFavoriteLocations() {
-         return presenter.convertTo(favoritesTableContainer.getItemIds()) ;
-     }
+	protected void updateNoOfEntries(Label totalEntries, Table table) {
+		int count = 0;
+		count = table.getItemIds().size();
 
-     @SuppressWarnings("unchecked")
-	protected void moveSelectedItems(Table source,Table target) {
-         List<Object> sourceItems = new LinkedList<Object>((Collection<Object>) source.getValue());
-         ListIterator<Object> sourceItemsIterator = sourceItems.listIterator(sourceItems.size());
+		totalEntries.setValue(this.messageSource.getMessage(Message.TOTAL_ENTRIES) + ": " + "  <b>" + count + "</b>");
+	}
 
-         BeanItemContainer<LocationViewModel> targetDataContainer = (BeanItemContainer<LocationViewModel>) target.getContainerDataSource();
-         Container sourceDataContainer = source.getContainerDataSource();
+	private void updateSelectedNoOfEntries(Label selectedEntries, Table table) {
+		int count = 0;
 
-         int counter = 0;
-         while (sourceItemsIterator.hasPrevious()) {
-             LocationViewModel itemId = (LocationViewModel) sourceItemsIterator.previous();
-             itemId.setActive(false);
-             
-             if (source.getData().toString().equals(AVAILABLE)){
-            	 targetDataContainer.addItemAt(0, itemId);
-            	 if (counter < 100) {
-                     target.unselect(itemId);
-                 }
-             }else{
-            	 sourceDataContainer.removeItem(itemId);
-             }
-             counter++;
-         }
-         
-         if (counter >= 100 & target.getData().toString().equals(FAVORITES)){
-        	 target.setValue(null);
-         }
-         
-         Table favoritesTableRef = source;
-         if (source.getData().toString().equals(AVAILABLE)){
-        	 source.setValue(null);
-        	 favoritesTableRef = target;
-         }
-         
-         source.refreshRowCache();
-         target.refreshRowCache();
-         
-         source.setValue(null);
-         
-         //refresh the fav location table
-         updateNoOfEntries(favTotalEntriesLabel, favoritesTableRef);
-         updateSelectedNoOfEntries(favSelectedEntriesLabel, favoritesTableRef);
-     }
+		Collection<?> selectedItems = (Collection<?>) table.getValue();
+		count = selectedItems.size();
 
-     private void initializeLayout() {
-         root = new VerticalLayout();
-         root.setSpacing(false);
-         root.setMargin(new Layout.MarginInfo(false,true,true,true));
+		selectedEntries.setValue("<i>" + this.messageSource.getMessage(Message.SELECTED) + ": " + "  <b>" + count + "</b></i>");
+	}
 
-         final Label availableLocationsTitle = new Label(messageSource.getMessage(Message.ALL_LOCATIONS));
-         availableLocationsTitle.setStyleName(Bootstrap.Typography.H3.styleName());
+	/**
+	 * Use this to retrieve the favorite locations from the view, you might have to convert LocationViewModel to Middleware's Location bean
+	 * 
+	 * @return
+	 */
+	public Collection<Location> getFavoriteLocations() {
+		return this.presenter.convertTo(this.favoritesTableContainer.getItemIds());
+	}
 
-         availableTable.setWidth("100%");
-         favoritesTable.setWidth("100%");
-         availableTable.setHeight("250px");
-         favoritesTable.setHeight("250px");
+	@SuppressWarnings("unchecked")
+	protected void moveSelectedItems(Table source, Table target) {
+		List<Object> sourceItems = new LinkedList<Object>((Collection<Object>) source.getValue());
+		ListIterator<Object> sourceItemsIterator = sourceItems.listIterator(sourceItems.size());
 
-         final HorizontalLayout availableTableBar = new HorizontalLayout();
-         final HorizontalLayout favoritesTableBar = new HorizontalLayout();
+		BeanItemContainer<LocationViewModel> targetDataContainer = (BeanItemContainer<LocationViewModel>) target.getContainerDataSource();
+		Container sourceDataContainer = source.getContainerDataSource();
 
-         availableSelectAll.setWidth("100px");
-         favoriteSelectAll.setWidth("100px");
+		int counter = 0;
+		while (sourceItemsIterator.hasPrevious()) {
+			LocationViewModel itemId = (LocationViewModel) sourceItemsIterator.previous();
+			itemId.setActive(false);
 
-         availableTableBar.setStyleName("select-all-bar");
-         favoritesTableBar.setStyleName("select-all-bar");
+			if (source.getData().toString().equals(ProgramLocationsView.AVAILABLE)) {
+				targetDataContainer.addItemAt(0, itemId);
+				if (counter < 100) {
+					target.unselect(itemId);
+				}
+			} else {
+				sourceDataContainer.removeItem(itemId);
+			}
+			counter++;
+		}
 
-         availableTableBar.setSizeUndefined();
-         favoritesTableBar.setSizeUndefined();
-         availableTableBar.setSpacing(true);
-         favoritesTableBar.setSpacing(true);
+		if (counter >= 100 & target.getData().toString().equals(ProgramLocationsView.FAVORITES)) {
+			target.setValue(null);
+		}
 
-         availableTableBar.addComponent(availableSelectAll);
-         availableTableBar.addComponent(addToFavoriteBtn);
-         favoritesTableBar.addComponent(favoriteSelectAll);
-         favoritesTableBar.addComponent(removeToFavoriteBtn);
+		Table favoritesTableRef = source;
+		if (source.getData().toString().equals(ProgramLocationsView.AVAILABLE)) {
+			source.setValue(null);
+			favoritesTableRef = target;
+		}
 
+		source.refreshRowCache();
+		target.refreshRowCache();
 
-         root.addComponent(buildPageTitle());
-         root.addComponent(availableLocationsTitle);
-         root.addComponent(buildFilterForm());
-         root.addComponent(buildLocationTableLabels(availTotalEntriesLabel, availSelectedEntriesLabel));
-         root.addComponent(availableTable);
-         root.addComponent(availableTableBar);
-         root.addComponent(buildSelectedLocationsTitle());
-         root.addComponent(buildLocationTableLabels(favTotalEntriesLabel, favSelectedEntriesLabel));
-         root.addComponent(favoritesTable);
-         root.addComponent(favoritesTableBar);
+		source.setValue(null);
 
-         this.setCompositionRoot(root);
-     }
+		// refresh the fav location table
+		this.updateNoOfEntries(this.favTotalEntriesLabel, favoritesTableRef);
+		this.updateSelectedNoOfEntries(this.favSelectedEntriesLabel, favoritesTableRef);
+	}
 
-     private HorizontalLayout buildLocationTableLabels(Label totalEntries, Label selectedEntries) {
+	private void initializeLayout() {
+		this.root = new VerticalLayout();
+		this.root.setSpacing(false);
+		this.root.setMargin(new Layout.MarginInfo(false, true, true, true));
+
+		final Label availableLocationsTitle = new Label(this.messageSource.getMessage(Message.ALL_LOCATIONS));
+		availableLocationsTitle.setStyleName(Bootstrap.Typography.H3.styleName());
+
+		this.availableTable.setWidth("100%");
+		this.favoritesTable.setWidth("100%");
+		this.availableTable.setHeight("250px");
+		this.favoritesTable.setHeight("250px");
+
+		final HorizontalLayout availableTableBar = new HorizontalLayout();
+		final HorizontalLayout favoritesTableBar = new HorizontalLayout();
+
+		this.availableSelectAll.setWidth("100px");
+		this.favoriteSelectAll.setWidth("100px");
+
+		availableTableBar.setStyleName("select-all-bar");
+		favoritesTableBar.setStyleName("select-all-bar");
+
+		availableTableBar.setSizeUndefined();
+		favoritesTableBar.setSizeUndefined();
+		availableTableBar.setSpacing(true);
+		favoritesTableBar.setSpacing(true);
+
+		availableTableBar.addComponent(this.availableSelectAll);
+		availableTableBar.addComponent(this.addToFavoriteBtn);
+		favoritesTableBar.addComponent(this.favoriteSelectAll);
+		favoritesTableBar.addComponent(this.removeToFavoriteBtn);
+
+		this.root.addComponent(this.buildPageTitle());
+		this.root.addComponent(availableLocationsTitle);
+		this.root.addComponent(this.buildFilterForm());
+		this.root.addComponent(this.buildLocationTableLabels(this.availTotalEntriesLabel, this.availSelectedEntriesLabel));
+		this.root.addComponent(this.availableTable);
+		this.root.addComponent(availableTableBar);
+		this.root.addComponent(this.buildSelectedLocationsTitle());
+		this.root.addComponent(this.buildLocationTableLabels(this.favTotalEntriesLabel, this.favSelectedEntriesLabel));
+		this.root.addComponent(this.favoritesTable);
+		this.root.addComponent(favoritesTableBar);
+
+		this.setCompositionRoot(this.root);
+	}
+
+	private HorizontalLayout buildLocationTableLabels(Label totalEntries, Label selectedEntries) {
 		HorizontalLayout layout = new HorizontalLayout();
 		layout.setSpacing(true);
 		layout.setWidth("300px");
-		
+
 		layout.addComponent(totalEntries);
 		layout.addComponent(selectedEntries);
 		return layout;
 	}
 
 	private Component buildPageTitle() {
-         final VerticalLayout layout = new VerticalLayout();
-         layout.setMargin(new Layout.MarginInfo(false,false,true,false));
-         layout.setWidth("100%");
+		final VerticalLayout layout = new VerticalLayout();
+		layout.setMargin(new Layout.MarginInfo(false, false, true, false));
+		layout.setWidth("100%");
 
-         final HorizontalLayout titleContainer = new HorizontalLayout();
-         titleContainer.setSizeUndefined();
-         titleContainer.setWidth("100%");
-         titleContainer.setMargin(true, false, false, false);
+		final HorizontalLayout titleContainer = new HorizontalLayout();
+		titleContainer.setSizeUndefined();
+		titleContainer.setWidth("100%");
+		titleContainer.setMargin(true, false, false, false);
 
-         final Label heading = new Label("<span class='bms-locations' style='color: #D1B02A; font-size: 23px'></span>&nbsp;Locations",Label.CONTENT_XHTML);
-         heading.setStyleName(Bootstrap.Typography.H4.styleName());
+		final Label heading =
+				new Label("<span class='bms-locations' style='color: #D1B02A; font-size: 23px'></span>&nbsp;Locations", Label.CONTENT_XHTML);
+		heading.setStyleName(Bootstrap.Typography.H4.styleName());
 
-         titleContainer.addComponent(heading);
+		titleContainer.addComponent(heading);
 
-         if (!cropOnly) {
-             titleContainer.addComponent(addNewLocationsBtn);
-             titleContainer.setComponentAlignment(addNewLocationsBtn, Alignment.MIDDLE_RIGHT);
-         }
+		if (!this.cropOnly) {
+			titleContainer.addComponent(this.addNewLocationsBtn);
+			titleContainer.setComponentAlignment(this.addNewLocationsBtn, Alignment.MIDDLE_RIGHT);
+		}
 
-         String content = "To choose Favorite Locations for your program, " +
-                 "select entries from the Available Locations table at the top and drag them " +
-                 "into the lower table.";
+		String content =
+				"To choose Favorite Locations for your program, "
+						+ "select entries from the Available Locations table at the top and drag them " + "into the lower table.";
 
-         if (!cropOnly) {
-             content += " You can also add any new locations that you need for managing your program.";
-         }
+		if (!this.cropOnly) {
+			content += " You can also add any new locations that you need for managing your program.";
+		}
 
+		final Label headingDesc = new Label(content);
 
-         final Label headingDesc = new Label(content);
+		layout.addComponent(titleContainer);
+		layout.addComponent(headingDesc);
 
-         layout.addComponent(titleContainer);
-         layout.addComponent(headingDesc);
+		return layout;
+	}
 
-         return layout;
-     }
+	private Component buildSelectedLocationsTitle() {
+		final HorizontalLayout layout = new HorizontalLayout();
+		layout.setWidth("100%");
+		layout.setMargin(true, false, false, false);
 
-     private Component buildSelectedLocationsTitle() {
-         final HorizontalLayout layout = new HorizontalLayout();
-         layout.setWidth("100%");
-         layout.setMargin(true, false, false, false);
+		final Label selectedLocationsTitle = new Label(this.messageSource.getMessage(Message.FAVORITE_PROGRAM_LOCATIONS));
+		selectedLocationsTitle.setStyleName(Bootstrap.Typography.H3.styleName());
 
-         final Label selectedLocationsTitle = new Label(messageSource.getMessage(Message.FAVORITE_PROGRAM_LOCATIONS));
-         selectedLocationsTitle.setStyleName(Bootstrap.Typography.H3.styleName());
+		layout.addComponent(selectedLocationsTitle);
 
-         layout.addComponent(selectedLocationsTitle);
+		if (!this.cropOnly) {
+			layout.addComponent(this.saveBtn);
+		}
 
-         if (!cropOnly) {
-        	 layout.addComponent(saveBtn);
-         }
+		layout.setExpandRatio(selectedLocationsTitle, 1.0F);
 
-         layout.setExpandRatio(selectedLocationsTitle,1.0F);
+		return layout;
+	}
 
-         return layout;
-     }
+	private void initializeValues() throws MiddlewareQueryException {
+		BeanItemContainer<Country> countryContainer = new BeanItemContainer<Country>(Country.class);
+		Country nullItem = new Country();
+		nullItem.setCntryid(0);
+		nullItem.setIsoabbr("All Countries");
+		countryContainer.addItem(nullItem);
+		countryContainer.addAll(this.presenter.getCountryList());
 
+		/* INITIALIZE FILTER CONTROLS DATA */
+		this.countryFilter.setContainerDataSource(countryContainer);
+		this.countryFilter.setItemCaptionPropertyId("isoabbr");
+		this.countryFilter.setNullSelectionItemId(nullItem);
+		this.countryFilter.setNullSelectionAllowed(true);
 
-     private void initializeValues() throws MiddlewareQueryException {
-        BeanItemContainer<Country> countryContainer = new BeanItemContainer<Country>(Country.class);
-        Country nullItem = new Country();
-        nullItem.setCntryid(0);
-        nullItem.setIsoabbr("All Countries");
-        countryContainer.addItem(nullItem);
-        countryContainer.addAll(presenter.getCountryList());
+		List<UserDefinedField> locationTypes = new ArrayList<UserDefinedField>();
+		UserDefinedField nullUdf = new UserDefinedField();
+		nullUdf.setFname("All Location Types");
+		nullUdf.setFldno(0);
+		locationTypes.add(nullUdf);
+		locationTypes.addAll(this.presenter.getLocationTypeList());
 
+		BeanItemContainer<UserDefinedField> udfContainer = new BeanItemContainer<UserDefinedField>(UserDefinedField.class, locationTypes);
+		udfContainer.addAll(locationTypes);
 
-              /* INITIALIZE FILTER CONTROLS DATA */
-         countryFilter.setContainerDataSource(countryContainer);
-         countryFilter.setItemCaptionPropertyId("isoabbr");
-         countryFilter.setNullSelectionItemId(nullItem);
-         countryFilter.setNullSelectionAllowed(true);
+		this.locationTypeFilter.setContainerDataSource(udfContainer);
+		this.locationTypeFilter.setItemCaptionPropertyId("fname");
+		if (locationTypes.size() > 1) {
+			this.locationTypeFilter.select(locationTypes.get(1));
+		} else {
+			this.locationTypeFilter.select(locationTypes.get(0));
+		}
+		this.locationTypeFilter.setNullSelectionItemId(nullUdf);
+		this.locationTypeFilter.setNullSelectionAllowed(true);
 
-         List<UserDefinedField> locationTypes = new ArrayList<UserDefinedField>();
-         UserDefinedField nullUdf = new UserDefinedField();
-         nullUdf.setFname("All Location Types");
-         nullUdf.setFldno(0);
-         locationTypes.add(nullUdf);
-         locationTypes.addAll(presenter.getLocationTypeList());
+		/* INITIALIZE TABLE DATA */
+		this.favoritesTableContainer =
+				new BeanItemContainer<LocationViewModel>(LocationViewModel.class, this.presenter.getSavedProgramLocations());
+		this.availableTableContainer =
+				new BeanItemContainer<LocationViewModel>(LocationViewModel.class, this.presenter.getFilteredResults(null,
+						this.getSelectedLocationTypeIdFromFilter(), ""));
 
-         BeanItemContainer<UserDefinedField> udfContainer = new BeanItemContainer<UserDefinedField>(UserDefinedField.class,locationTypes);
-         udfContainer.addAll(locationTypes);
+		this.resultCountLbl.setValue("Result: " + this.availableTableContainer.size());
 
-         locationTypeFilter.setContainerDataSource(udfContainer);
-         locationTypeFilter.setItemCaptionPropertyId("fname");
-         if(locationTypes.size()>1) {
-        	 locationTypeFilter.select(locationTypes.get(1));
-         } else {
-        	 locationTypeFilter.select(locationTypes.get(0));
-         }
-         locationTypeFilter.setNullSelectionItemId(nullUdf);
-         locationTypeFilter.setNullSelectionAllowed(true);
+		this.availableTable.setContainerDataSource(this.availableTableContainer);
+		this.updateNoOfEntries(this.availTotalEntriesLabel, this.availableTable);
 
-              /* INITIALIZE TABLE DATA */
-         favoritesTableContainer = new BeanItemContainer<LocationViewModel>(LocationViewModel.class,presenter.getSavedProgramLocations());
-         availableTableContainer= new BeanItemContainer<LocationViewModel>(LocationViewModel.class, presenter.getFilteredResults(null, this.getSelectedLocationTypeIdFromFilter(), ""));
+		this.favoritesTable.setContainerDataSource(this.favoritesTableContainer);
+		this.updateNoOfEntries(this.favTotalEntriesLabel, this.favoritesTable);
 
-         resultCountLbl.setValue("Result: " + availableTableContainer.size());
+		/* SETUP TABLE FIELDS */
+		this.setupTableFields(this.availableTable);
+		this.setupTableFields(this.favoritesTable);
+	}
 
-         availableTable.setContainerDataSource(availableTableContainer);
-         updateNoOfEntries(availTotalEntriesLabel, availableTable);
-         
-         favoritesTable.setContainerDataSource(favoritesTableContainer);
-         updateNoOfEntries(favTotalEntriesLabel, favoritesTable);
+	private void initializeFilterForm() {
+		this.countryFilter = new Select();
+		this.countryFilter.setImmediate(true);
 
-              /* SETUP TABLE FIELDS */
-         this.setupTableFields(availableTable);
-         this.setupTableFields(favoritesTable);
-     }
+		this.locationTypeFilter = new Select();
+		this.locationTypeFilter.setImmediate(true);
 
-     private void initializeFilterForm() {
-         countryFilter = new Select();
-         countryFilter.setImmediate(true);
+		this.searchField = new TextField();
+		this.searchField.setImmediate(true);
+	}
 
-         locationTypeFilter = new Select();
-         locationTypeFilter.setImmediate(true);
+	private Component buildFilterForm() {
+		this.locationTypeFilter.setWidth("240px");
 
-         searchField = new TextField();
-         searchField.setImmediate(true);
-     }
+		final Label filterLbl = new Label("<b>Filter By:</b>&nbsp;", Label.CONTENT_XHTML);
+		final Label searchLbl = new Label("<b>Search For:</b>&nbsp;", Label.CONTENT_XHTML);
 
-     private Component buildFilterForm() {
-         locationTypeFilter.setWidth("240px");
+		filterLbl.setSizeUndefined();
+		searchLbl.setSizeUndefined();
 
-         final Label filterLbl = new Label("<b>Filter By:</b>&nbsp;",Label.CONTENT_XHTML);
-         final Label searchLbl = new Label("<b>Search For:</b>&nbsp;",Label.CONTENT_XHTML);
+		filterLbl.setStyleName("loc-filterlbl");
+		searchLbl.setStyleName("loc-filterlbl");
 
-         filterLbl.setSizeUndefined();
-         searchLbl.setSizeUndefined();
+		final CssLayout container = new CssLayout();
+		container.addStyleName("loc-filter-bar");
+		container.setSizeUndefined();
+		container.setWidth("100%");
 
-         filterLbl.setStyleName("loc-filterlbl");
-         searchLbl.setStyleName("loc-filterlbl");
+		final HorizontalLayout field1 = new HorizontalLayout();
+		field1.addStyleName(ProgramLocationsView.FIELD);
+		field1.setSpacing(true);
+		field1.setSizeUndefined();
+		field1.addComponent(searchLbl);
+		field1.addComponent(this.searchField);
+		field1.addComponent(this.searchGoBtn);
 
-         final CssLayout container = new CssLayout();
-         container.addStyleName("loc-filter-bar");
-         container.setSizeUndefined();
-         container.setWidth("100%");
+		this.searchGoBtn.addListener(new Button.ClickListener() {
 
+			private static final long serialVersionUID = 4839268740583678422L;
 
-         final HorizontalLayout field1 = new HorizontalLayout();
-         field1.addStyleName(FIELD);
-         field1.setSpacing(true);
-         field1.setSizeUndefined();
-         field1.addComponent(searchLbl);
-         field1.addComponent(searchField);
-         field1.addComponent(searchGoBtn);
+			@Override
+			public void buttonClick(ClickEvent clickEvent) {
+				ProgramLocationsView.this.doLocationSearch();
+			}
+		});
 
-         searchGoBtn.addListener(new Button.ClickListener() {
-             private static final long serialVersionUID = 4839268740583678422L;
+		container.addComponent(field1);
 
-             @Override
-             public void buttonClick(ClickEvent clickEvent) {
-                 doLocationSearch();
-             }
-         });
+		final HorizontalLayout field2 = new HorizontalLayout();
+		field2.addStyleName(ProgramLocationsView.FIELD);
+		field2.setSpacing(true);
+		field2.setSizeUndefined();
+		field2.addComponent(filterLbl);
+		field2.addComponent(this.countryFilter);
 
-         container.addComponent(field1);
+		final HorizontalLayout field3 = new HorizontalLayout();
+		field3.addStyleName(ProgramLocationsView.FIELD);
+		field3.setSpacing(true);
+		field3.setSizeUndefined();
+		field3.addComponent(this.locationTypeFilter);
 
-         final HorizontalLayout field2 = new HorizontalLayout();
-         field2.addStyleName(FIELD);
-         field2.setSpacing(true);
-         field2.setSizeUndefined();
-         field2.addComponent(filterLbl);
-         field2.addComponent(countryFilter);
+		HorizontalLayout filterContainer = new HorizontalLayout();
+		filterContainer.setSpacing(true);
+		filterContainer.setStyleName("pull-right");
+		filterContainer.setSizeUndefined();
 
+		filterContainer.addComponent(field2);
+		filterContainer.addComponent(field3);
 
-         final HorizontalLayout field3 = new HorizontalLayout();
-         field3.addStyleName(FIELD);
-         field3.setSpacing(true);
-         field3.setSizeUndefined();
-         field3.addComponent(locationTypeFilter);
+		container.addComponent(filterContainer);
 
-         HorizontalLayout filterContainer = new HorizontalLayout();
-         filterContainer.setSpacing(true);
-         filterContainer.setStyleName("pull-right");
-         filterContainer.setSizeUndefined();
+		this.resultCountLbl = new Label("");
+		this.resultCountLbl.setStyleName("loc-resultcnt");
 
-         filterContainer.addComponent(field2);
-         filterContainer.addComponent(field3);
+		return container;
+	}
 
-         container.addComponent(filterContainer);
+	private void setupTableFields(Table table) {
+		table.setVisibleColumns(ProgramLocationsView.TABLE_COLUMNS.keySet().toArray());
+		table.setColumnHeaders(ProgramLocationsView.TABLE_COLUMNS.values().toArray(new String[] {}));
 
+		table.setColumnWidth(ProgramLocationsView.SELECT, 20);
+		table.setColumnExpandRatio(ProgramLocationsView.TABLE_COLUMNS.keySet().toArray()[1], 0.7F);
+		table.setColumnExpandRatio(ProgramLocationsView.TABLE_COLUMNS.keySet().toArray()[6], 0.3F);
 
-         resultCountLbl = new Label("");
-         resultCountLbl.setStyleName("loc-resultcnt");
+	}
 
-         return container;
-     }
+	private Table buildCustomTable(final CheckBox assocSelectAll, final Label totalEntries, final Label selectedEntries) {
+		final Table table = new Table();
 
-     private void setupTableFields(Table table) {
-         table.setVisibleColumns(TABLE_COLUMNS.keySet().toArray());
-         table.setColumnHeaders(TABLE_COLUMNS.values().toArray(new String[]{}));
+		table.setImmediate(true);
+		table.setSelectable(true);
+		table.setMultiSelect(true);
+		table.setDragMode(Table.TableDragMode.MULTIROW);
 
-         table.setColumnWidth(SELECT,20);
-         table.setColumnExpandRatio(TABLE_COLUMNS.keySet().toArray()[1],0.7F);
-         table.setColumnExpandRatio(TABLE_COLUMNS.keySet().toArray()[6],0.3F);
+		table.addGeneratedColumn(ProgramLocationsView.SELECT, new Table.ColumnGenerator() {
 
-     }
-
-     private Table buildCustomTable(final CheckBox assocSelectAll, final Label totalEntries, final Label selectedEntries) {
-         final Table table = new Table();
-
-         table.setImmediate(true);
-         table.setSelectable(true);
-         table.setMultiSelect(true);
-         table.setDragMode(Table.TableDragMode.MULTIROW);
-
-         table.addGeneratedColumn(SELECT, new Table.ColumnGenerator() {
 			private static final long serialVersionUID = 346170573915290251L;
 
 			@Override
-             public Object generateCell(final Table source, final Object itemId, Object colId) {
-                 final CheckBox select = new CheckBox();
-                 select.setImmediate(true);
-                 select.addListener(new Button.ClickListener() {
+			public Object generateCell(final Table source, final Object itemId, Object colId) {
+				final CheckBox select = new CheckBox();
+				select.setImmediate(true);
+				select.addListener(new Button.ClickListener() {
+
 					private static final long serialVersionUID = 4839268740583678422L;
 
 					@Override
-                     public void buttonClick(ClickEvent clickEvent) {
-                         Boolean val = (Boolean) ((CheckBox) clickEvent.getComponent())
-                                 .getValue();
+					public void buttonClick(ClickEvent clickEvent) {
+						Boolean val = (Boolean) ((CheckBox) clickEvent.getComponent()).getValue();
 
-                         ((LocationViewModel)itemId).setActive(val);
-                         if (val) {
-                             source.select(itemId);
-                         } else {
-                             source.unselect(itemId);
-                             assocSelectAll.setValue(val);
-                         }
-                     }
-                 });
+						((LocationViewModel) itemId).setActive(val);
+						if (val) {
+							source.select(itemId);
+						} else {
+							source.unselect(itemId);
+							assocSelectAll.setValue(val);
+						}
+					}
+				});
 
-                 if (((LocationViewModel)itemId).isActive()) {
-                     select.setValue(true);
-                 } else {
-                     select.setValue(false);
-                 }
+				if (((LocationViewModel) itemId).isActive()) {
+					select.setValue(true);
+				} else {
+					select.setValue(false);
+				}
 
+				return select;
+			}
+		});
 
-                 return select;
-             }
-         });
+		// Add behavior to table when selected/has new Value (must be immediate)
+		final Table.ValueChangeListener vcl = new Property.ValueChangeListener() {
 
-         // Add behavior to table when selected/has new Value (must be immediate)
-         final Table.ValueChangeListener vcl = new Property.ValueChangeListener() {
 			private static final long serialVersionUID = 650604866887197865L;
 
 			@SuppressWarnings("unchecked")
 			@Override
-             public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
-                 Table source = (Table) valueChangeEvent.getProperty();
-                 BeanItemContainer<LocationViewModel> container = (BeanItemContainer<LocationViewModel>) source.getContainerDataSource();
+			public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
+				Table source = (Table) valueChangeEvent.getProperty();
+				BeanItemContainer<LocationViewModel> container = (BeanItemContainer<LocationViewModel>) source.getContainerDataSource();
 
-                 // disable previously selected items
-                 for (LocationViewModel beanItem : container.getItemIds()) {
-                     beanItem.setActive(false);
-                 }
+				// disable previously selected items
+				for (LocationViewModel beanItem : container.getItemIds()) {
+					beanItem.setActive(false);
+				}
 
-                 // set current selection to true
-                 for (LocationViewModel selectedItem : (Collection <LocationViewModel>) source.getValue() ) {
-                     selectedItem.setActive(true);
-                 }
-                 
-                 //update the no of selected items
-                 updateSelectedNoOfEntries(selectedEntries, table);
+				// set current selection to true
+				for (LocationViewModel selectedItem : (Collection<LocationViewModel>) source.getValue()) {
+					selectedItem.setActive(true);
+				}
 
-                 // do table repaint
-                 source.requestRepaint();
-                 source.refreshRowCache();
-             }
-         };
+				// update the no of selected items
+				ProgramLocationsView.this.updateSelectedNoOfEntries(selectedEntries, table);
 
-         table.addListener(vcl);
+				// do table repaint
+				source.requestRepaint();
+				source.refreshRowCache();
+			}
+		};
 
-         // Add Drag+Drop behavior
-         table.setDropHandler(new DropHandler() {
+		table.addListener(vcl);
+
+		// Add Drag+Drop behavior
+		table.setDropHandler(new DropHandler() {
+
 			private static final long serialVersionUID = -1306941998752864672L;
 
 			@SuppressWarnings("unchecked")
 			@Override
-             public void drop(DragAndDropEvent dragAndDropEvent) {
-                 DataBoundTransferable t = (DataBoundTransferable) dragAndDropEvent.getTransferable();
+			public void drop(DragAndDropEvent dragAndDropEvent) {
+				DataBoundTransferable t = (DataBoundTransferable) dragAndDropEvent.getTransferable();
 
-                 if (t.getSourceComponent() == dragAndDropEvent.getTargetDetails().getTarget()) {
-                     return;
-                 }
+				if (t.getSourceComponent() == dragAndDropEvent.getTargetDetails().getTarget()) {
+					return;
+				}
 
-                 ((Table)dragAndDropEvent.getTargetDetails().getTarget()).removeListener(vcl);
-                 
-                 
-                 Object itemIdOver = t.getItemId();
-                 Set<Object> sourceItemIds = (Set<Object>)((Table) t.getSourceComponent()).getValue();
-                 
-                 if (itemIdOver!=null && sourceItemIds.isEmpty()) {
-                 	if (((LocationViewModel)itemIdOver).isEnabled()){
-                 		if (((Table) t.getSourceComponent()).getData().toString().equals(FAVORITES)){
-                 			((Table) t.getSourceComponent()).getContainerDataSource().removeItem(itemIdOver);
-                 			updateNoOfEntries(favTotalEntriesLabel, (Table) t.getSourceComponent());
-                 		}
-                 		((Table) dragAndDropEvent.getTargetDetails().getTarget()).getContainerDataSource().addItem(itemIdOver);
-                 	}
-                 }else{
-                	 moveSelectedItems((Table) t.getSourceComponent(), (Table) dragAndDropEvent.getTargetDetails().getTarget());
-                 }
+				((Table) dragAndDropEvent.getTargetDetails().getTarget()).removeListener(vcl);
 
+				Object itemIdOver = t.getItemId();
+				Set<Object> sourceItemIds = (Set<Object>) ((Table) t.getSourceComponent()).getValue();
 
-                 ((Table)dragAndDropEvent.getTargetDetails().getTarget()).addListener(vcl);
-                 
-                 //update no of items
-                 updateNoOfEntries(totalEntries, table);
-             }
+				if (itemIdOver != null && sourceItemIds.isEmpty()) {
+					if (((LocationViewModel) itemIdOver).isEnabled()) {
+						if (((Table) t.getSourceComponent()).getData().toString().equals(ProgramLocationsView.FAVORITES)) {
+							((Table) t.getSourceComponent()).getContainerDataSource().removeItem(itemIdOver);
+							ProgramLocationsView.this.updateNoOfEntries(ProgramLocationsView.this.favTotalEntriesLabel,
+									(Table) t.getSourceComponent());
+						}
+						((Table) dragAndDropEvent.getTargetDetails().getTarget()).getContainerDataSource().addItem(itemIdOver);
+					}
+				} else {
+					ProgramLocationsView.this.moveSelectedItems((Table) t.getSourceComponent(), (Table) dragAndDropEvent.getTargetDetails()
+							.getTarget());
+				}
 
-             @Override
-             public AcceptCriterion getAcceptCriterion() {
-                 return AbstractSelect.AcceptItem.ALL;
-             }
-         });
+				((Table) dragAndDropEvent.getTargetDetails().getTarget()).addListener(vcl);
 
-         return table;
-     }
+				// update no of items
+				ProgramLocationsView.this.updateNoOfEntries(totalEntries, table);
+			}
 
+			@Override
+			public AcceptCriterion getAcceptCriterion() {
+				return AbstractSelect.AcceptItem.ALL;
+			}
+		});
 
-     public void addRow(LocationViewModel item,boolean atAvailableTable,Integer index) {
-    	 Country selectedCountry = (Country) countryFilter.getValue();
-       	 UserDefinedField selectedLocationType =  (UserDefinedField) locationTypeFilter.getValue();
-       	 String locationName = (String) searchField.getValue();
-         if (index != null) {
-        	 if(isToBeDisplayedInAvailableLocations(item,
-        			 locationName,selectedCountry,selectedLocationType)) {
-                 availableTableContainer.addItemAt(index,item);
-        	 }
-             favoritesTableContainer.addItemAt(index,item);
-         } else {
-        	 if(isToBeDisplayedInAvailableLocations(item,
-        			 locationName,selectedCountry,selectedLocationType)) {
-                 availableTableContainer.addItem(item);
-        	 }
-             favoritesTableContainer.addItem(item);
-         }
-         updateNoOfEntries();
-     }
-     
-     protected boolean isToBeDisplayedInAvailableLocations(LocationViewModel item,
-    		 String locationName, Country selectedCountry, UserDefinedField selectedLocationType) {
-    	
-    	Integer cntryId = (selectedCountry != null) ? selectedCountry.getCntryid() : null;
-      	Integer locationTypeId = (selectedLocationType != null) ? selectedLocationType.getFldno() : null;
-      	
-      	if(cntryId != null && !cntryId.equals(item.getCntryid())) {
-      		return false;
-      	}
-      	
-      	if(locationTypeId != null && 0 != locationTypeId.intValue() && 
-      			!locationTypeId.equals(item.getLtype())) {
-      		return false;
-      	}
-      	
-      	if(locationName != null && !locationName.isEmpty() && 
-      			!item.getLocationName().toLowerCase().contains(locationName.toLowerCase())) {
-      		return false;
-      	}
-      	
+		return table;
+	}
+
+	public void addRow(LocationViewModel item, boolean atAvailableTable, Integer index) {
+		Country selectedCountry = (Country) this.countryFilter.getValue();
+		UserDefinedField selectedLocationType = (UserDefinedField) this.locationTypeFilter.getValue();
+		String locationName = (String) this.searchField.getValue();
+		if (index != null) {
+			if (this.isToBeDisplayedInAvailableLocations(item, locationName, selectedCountry, selectedLocationType)) {
+				this.availableTableContainer.addItemAt(index, item);
+			}
+			this.favoritesTableContainer.addItemAt(index, item);
+		} else {
+			if (this.isToBeDisplayedInAvailableLocations(item, locationName, selectedCountry, selectedLocationType)) {
+				this.availableTableContainer.addItem(item);
+			}
+			this.favoritesTableContainer.addItem(item);
+		}
+		this.updateNoOfEntries();
+	}
+
+	protected boolean isToBeDisplayedInAvailableLocations(LocationViewModel item, String locationName, Country selectedCountry,
+			UserDefinedField selectedLocationType) {
+
+		Integer cntryId = selectedCountry != null ? selectedCountry.getCntryid() : null;
+		Integer locationTypeId = selectedLocationType != null ? selectedLocationType.getFldno() : null;
+
+		if (cntryId != null && !cntryId.equals(item.getCntryid())) {
+			return false;
+		}
+
+		if (locationTypeId != null && 0 != locationTypeId.intValue() && !locationTypeId.equals(item.getLtype())) {
+			return false;
+		}
+
+		if (locationName != null && !locationName.isEmpty() && !item.getLocationName().toLowerCase().contains(locationName.toLowerCase())) {
+			return false;
+		}
+
 		return true;
 	}
 
 	private void updateNoOfEntries() {
-    	 updateNoOfEntries(favTotalEntriesLabel,favoritesTable);
-         updateNoOfEntries(availTotalEntriesLabel,availableTable);
+		this.updateNoOfEntries(this.favTotalEntriesLabel, this.favoritesTable);
+		this.updateNoOfEntries(this.availTotalEntriesLabel, this.availableTable);
 	}
 
-     @Override
-     public void fitToContainer(final Window parentWindow) {
-         availableTable.setHeight("100%");
-         favoritesTable.setHeight("100%");
+	@Override
+	public void fitToContainer(final Window parentWindow) {
+		this.availableTable.setHeight("100%");
+		this.favoritesTable.setHeight("100%");
 
-         root.setExpandRatio(availableTable,1.0f);
-         root.setExpandRatio(favoritesTable,1.0f);
-         root.setSizeFull();
+		this.root.setExpandRatio(this.availableTable, 1.0f);
+		this.root.setExpandRatio(this.favoritesTable, 1.0f);
+		this.root.setSizeFull();
 
-         this.setSizeFull();
+		this.setSizeFull();
 
-     }
+	}
 
-     @Override
-     public void afterPropertiesSet() throws Exception {
-         initializeComponents();
-         initializeValues();
-         initializeLayout();
-         initializeActions();
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		this.initializeComponents();
+		this.initializeValues();
+		this.initializeLayout();
+		this.initializeActions();
 
-     }
+	}
 
-     private Integer getSelectedLocationTypeIdFromFilter() {
-         UserDefinedField udf = (UserDefinedField) locationTypeFilter.getValue();
+	private Integer getSelectedLocationTypeIdFromFilter() {
+		UserDefinedField udf = (UserDefinedField) this.locationTypeFilter.getValue();
 
-         return (udf != null) ? udf.getFldno() : null;
-     }
+		return udf != null ? udf.getFldno() : null;
+	}
 
 	public SimpleResourceBundleMessageSource getMessageSource() {
-		return messageSource;
+		return this.messageSource;
 	}
 
 	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
@@ -787,7 +822,7 @@ import java.util.*;
 	}
 
 	public Label getFavTotalEntriesLabel() {
-		return favTotalEntriesLabel;
+		return this.favTotalEntriesLabel;
 	}
 
 	public void setFavTotalEntriesLabel(Label favTotalEntriesLabel) {
@@ -795,7 +830,7 @@ import java.util.*;
 	}
 
 	public Label getFavSelectedEntriesLabel() {
-		return favSelectedEntriesLabel;
+		return this.favSelectedEntriesLabel;
 	}
 
 	public void setFavSelectedEntriesLabel(Label favSelectedEntriesLabel) {
@@ -803,7 +838,7 @@ import java.util.*;
 	}
 
 	public Label getAvailSelectedEntriesLabel() {
-		return availSelectedEntriesLabel;
+		return this.availSelectedEntriesLabel;
 	}
 
 	public void setAvailSelectedEntriesLabel(Label availSelectedEntriesLabel) {
@@ -811,7 +846,7 @@ import java.util.*;
 	}
 
 	public Table getAvailableTable() {
-		return availableTable;
+		return this.availableTable;
 	}
 
 	public void setAvailableTable(Table availableTable) {
@@ -819,7 +854,7 @@ import java.util.*;
 	}
 
 	public Table getFavoritesTable() {
-		return favoritesTable;
+		return this.favoritesTable;
 	}
 
 	public void setFavoritesTable(Table favoritesTable) {
@@ -827,7 +862,7 @@ import java.util.*;
 	}
 
 	public Label getAvailTotalEntriesLabel() {
-		return availTotalEntriesLabel;
+		return this.availTotalEntriesLabel;
 	}
 
 	public void setAvailTotalEntriesLabel(Label availTotalEntriesLabel) {
@@ -835,20 +870,18 @@ import java.util.*;
 	}
 
 	public BeanItemContainer<LocationViewModel> getAvailableTableContainer() {
-		return availableTableContainer;
+		return this.availableTableContainer;
 	}
 
-	public void setAvailableTableContainer(
-			BeanItemContainer<LocationViewModel> availableTableContainer) {
+	public void setAvailableTableContainer(BeanItemContainer<LocationViewModel> availableTableContainer) {
 		this.availableTableContainer = availableTableContainer;
 	}
 
 	public BeanItemContainer<LocationViewModel> getFavoritesTableContainer() {
-		return favoritesTableContainer;
+		return this.favoritesTableContainer;
 	}
 
-	public void setFavoritesTableContainer(
-			BeanItemContainer<LocationViewModel> favoritesTableContainer) {
+	public void setFavoritesTableContainer(BeanItemContainer<LocationViewModel> favoritesTableContainer) {
 		this.favoritesTableContainer = favoritesTableContainer;
 	}
 
@@ -863,5 +896,5 @@ import java.util.*;
 	public void setSearchField(TextField searchField) {
 		this.searchField = searchField;
 	}
-	
- }
+
+}

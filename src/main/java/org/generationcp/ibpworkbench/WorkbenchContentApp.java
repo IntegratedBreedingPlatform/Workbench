@@ -1,5 +1,7 @@
+
 package org.generationcp.ibpworkbench;
 
+import org.dellroad.stuff.vaadin.ContextApplication;
 import org.dellroad.stuff.vaadin.SpringContextApplication;
 import org.generationcp.commons.vaadin.actions.UpdateComponentLabelsAction;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -13,43 +15,48 @@ import org.springframework.web.context.ConfigurableWebApplicationContext;
  */
 public class WorkbenchContentApp extends SpringContextApplication implements IWorkbenchSession {
 
-    private final static Logger LOG = LoggerFactory.getLogger(WorkbenchContentApp.class);
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -3098125752010885259L;
 
-    @Autowired
-    private SimpleResourceBundleMessageSource messageSource;
+	private final static Logger LOG = LoggerFactory.getLogger(WorkbenchContentApp.class);
 
-    @Autowired
-    private SessionData sessionData;
+	@Autowired
+	private SimpleResourceBundleMessageSource messageSource;
 
-    private UpdateComponentLabelsAction messageSourceListener;
+	@Autowired
+	private SessionData sessionData;
 
-    @Override
-    public void close() {
-        super.close();
+	private UpdateComponentLabelsAction messageSourceListener;
 
-        // implement this when we need to do something on session timeout
+	@Override
+	public void close() {
+		super.close();
 
-        messageSource.removeListener(messageSourceListener);
+		// implement this when we need to do something on session timeout
 
-        LOG.debug("Application closed");
-    }
+		this.messageSource.removeListener(this.messageSourceListener);
 
-    @Override
-    protected void initSpringApplication(ConfigurableWebApplicationContext configurableWebApplicationContext) {
-        setTheme("gcp-default");
+		WorkbenchContentApp.LOG.debug("Application closed");
+	}
 
-        messageSourceListener = new UpdateComponentLabelsAction(this);
-        messageSource.addListener(messageSourceListener);
+	@Override
+	protected void initSpringApplication(ConfigurableWebApplicationContext configurableWebApplicationContext) {
+		this.setTheme("gcp-default");
 
-        this.setMainWindow(new ContentWindow());
-    }
+		this.messageSourceListener = new UpdateComponentLabelsAction(this);
+		this.messageSource.addListener(this.messageSourceListener);
 
-    @Override
-    public SessionData getSessionData() {
-        return sessionData;
-    }
+		this.setMainWindow(new ContentWindow());
+	}
 
-    public static WorkbenchContentApp get() {
-        return get(WorkbenchContentApp.class);
-    }
+	@Override
+	public SessionData getSessionData() {
+		return this.sessionData;
+	}
+
+	public static WorkbenchContentApp get() {
+		return ContextApplication.get(WorkbenchContentApp.class);
+	}
 }

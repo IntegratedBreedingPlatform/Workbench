@@ -1,18 +1,18 @@
+
 package org.generationcp.ibpworkbench;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IBPWorkbenchApplicationTest {
@@ -37,17 +37,17 @@ public class IBPWorkbenchApplicationTest {
 
 	@Test
 	public void testLogout() throws Exception {
-		IBPWorkbenchApplication fakeWorkbenchApp = spy(workbenchApp);
+		IBPWorkbenchApplication fakeWorkbenchApp = Mockito.spy(this.workbenchApp);
 
-		doNothing().when(rememberMeServices).logout(request, response, auth);
+		Mockito.doNothing().when(this.rememberMeServices).logout(this.request, this.response, this.auth);
 
-		when(currentContext.getAuthentication()).thenReturn(auth);
-		doReturn(currentContext).when(fakeWorkbenchApp).getCurrentSecurityContext();
+		Mockito.when(this.currentContext.getAuthentication()).thenReturn(this.auth);
+		Mockito.doReturn(this.currentContext).when(fakeWorkbenchApp).getCurrentSecurityContext();
 
 		fakeWorkbenchApp.logout();
 
-		verify(rememberMeServices).logout(request, response, auth);
-		verify(currentContext).setAuthentication(null);
+		Mockito.verify(this.rememberMeServices).logout(this.request, this.response, this.auth);
+		Mockito.verify(this.currentContext).setAuthentication(null);
 	}
 
 }

@@ -1,13 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- * 
+ *
  * Generation Challenge Programme (GCP)
- * 
- * 
- * This software is licensed for use under the terms of the GNU General Public
- * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
- * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- * 
+ *
+ *
+ * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
+ * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
@@ -45,7 +44,6 @@ import org.generationcp.middleware.domain.dms.VariableTypeList;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.ConfigException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -76,46 +74,47 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * 
+ *
  * @author Jeffrey Morales
- * 
+ *
  */
 @Configurable
-public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements InitializingBean,
-		InternationalizableComponent {
+public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements InitializingBean, InternationalizableComponent {
 
 	private static final String MARGIN_TOP10 = "marginTop10";
 	private static final String REPLICATES = "REPLICATES";
 
 	private final class RunBreedingViewButtonListener implements Button.ClickListener {
+
 		private static final long serialVersionUID = -6682011023617457906L;
 
 		@Override
 		public void buttonClick(final ClickEvent event) {
 
-			
-			if (Boolean.parseBoolean(isServerApp)){
-				new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this, project)
-				.buttonClick(event);
+			if (Boolean.parseBoolean(SingleSiteAnalysisDetailsPanel.this.isServerApp)) {
+				new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this, SingleSiteAnalysisDetailsPanel.this.project)
+						.buttonClick(event);
 				return;
 			}
-			
+
 			List<DataSet> dataSets;
 			try {
 
-				dataSets = studyDataManager.getDataSetsByType(breedingViewInput.getStudyId(),
-						DataSetType.MEANS_DATA);
+				dataSets =
+						SingleSiteAnalysisDetailsPanel.this.studyDataManager.getDataSetsByType(
+								SingleSiteAnalysisDetailsPanel.this.breedingViewInput.getStudyId(), DataSetType.MEANS_DATA);
 				if (!dataSets.isEmpty()) {
 
 					DataSet meansDataSet = dataSets.get(0);
-					TrialEnvironments envs = studyDataManager
-							.getTrialEnvironmentsInDataset(meansDataSet.getId());
+					TrialEnvironments envs =
+							SingleSiteAnalysisDetailsPanel.this.studyDataManager.getTrialEnvironmentsInDataset(meansDataSet.getId());
 
 					Boolean environmentExists = false;
-					for (SeaEnvironmentModel model : getSelectedEnvironments()) {
+					for (SeaEnvironmentModel model : SingleSiteAnalysisDetailsPanel.this.getSelectedEnvironments()) {
 
-						TrialEnvironment env = envs.findOnlyOneByLocalName(
-								breedingViewInput.getTrialInstanceName(), model.getTrialno());
+						TrialEnvironment env =
+								envs.findOnlyOneByLocalName(SingleSiteAnalysisDetailsPanel.this.breedingViewInput.getTrialInstanceName(),
+										model.getTrialno());
 						if (env != null) {
 							environmentExists = true;
 							break;
@@ -125,58 +124,63 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 					if (environmentExists) {
 						ConfirmDialog
-								.show(event.getComponent().getWindow(),
-										"",
-										"One or more of the selected traits has existing means data. If you save the results of this analysis, the existing values will be overwritten.",
-										"OK", "Cancel", new Runnable() {
+						.show(event.getComponent().getWindow(),
+								"",
+								"One or more of the selected traits has existing means data. If you save the results of this analysis, the existing values will be overwritten.",
+								"OK", "Cancel", new Runnable() {
 
-											@Override
-											public void run() {
+							@Override
+							public void run() {
 
-												new RunSingleSiteAction(
-														SingleSiteAnalysisDetailsPanel.this,
-														project).buttonClick(event);
-											}
+								new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this,
+										SingleSiteAnalysisDetailsPanel.this.project).buttonClick(event);
+							}
 
-										});
+						});
 					} else {
-						new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this, project)
-								.buttonClick(event);
+						new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this, SingleSiteAnalysisDetailsPanel.this.project)
+						.buttonClick(event);
 					}
 
 				} else {
-					new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this, project)
-							.buttonClick(event);
+					new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this, SingleSiteAnalysisDetailsPanel.this.project)
+					.buttonClick(event);
 				}
 
 			} catch (MiddlewareQueryException e) {
-				new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this, project)
-						.buttonClick(event);
-				LOG.error(e.getMessage(), e);
+				new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this, SingleSiteAnalysisDetailsPanel.this.project)
+				.buttonClick(event);
+				SingleSiteAnalysisDetailsPanel.LOG.error(e.getMessage(), e);
 			} catch (Exception e) {
-				new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this, project)
-						.buttonClick(event);
-				LOG.error(e.getMessage(), e);
+				new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this, SingleSiteAnalysisDetailsPanel.this.project)
+				.buttonClick(event);
+				SingleSiteAnalysisDetailsPanel.LOG.error(e.getMessage(), e);
 			}
 
 		}
 	}
 
 	private final class FooterCheckBoxListener implements Property.ValueChangeListener {
+
 		private static final long serialVersionUID = 1L;
 
 		@Override
 		public void valueChange(ValueChangeEvent event) {
-			boolean selected = (Boolean)event.getProperty().getValue();
+			boolean selected = (Boolean) event.getProperty().getValue();
 			if (!selected) {
-				disableEnvironmentEntries();
-				tblEnvironmentSelection.refreshRowCache();
+				SingleSiteAnalysisDetailsPanel.this.disableEnvironmentEntries();
+				SingleSiteAnalysisDetailsPanel.this.tblEnvironmentSelection.refreshRowCache();
 				return;
 			}
 
 			try {
 
 				List<String> invalidEnvs = new ArrayList<String>() {
+
+					/**
+					 *
+					 */
+					private static final long serialVersionUID = -7282259390346192461L;
 
 					@Override
 					public String toString() {
@@ -192,12 +196,14 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 					}
 				};
 
-				for (Iterator<?> itr = tblEnvironmentSelection.getContainerDataSource()
-						.getItemIds().iterator(); itr.hasNext();) {
+				for (Iterator<?> itr =
+						SingleSiteAnalysisDetailsPanel.this.tblEnvironmentSelection.getContainerDataSource().getItemIds().iterator(); itr
+						.hasNext();) {
 					SeaEnvironmentModel m = (SeaEnvironmentModel) itr.next();
 
-					Boolean valid = studyDataManager.containsAtLeast2CommonEntriesWithValues(
-							getBreedingViewInput().getDatasetId(), m.getLocationId());
+					Boolean valid =
+							SingleSiteAnalysisDetailsPanel.this.studyDataManager.containsAtLeast2CommonEntriesWithValues(
+									SingleSiteAnalysisDetailsPanel.this.getBreedingViewInput().getDatasetId(), m.getLocationId());
 
 					if (!valid) {
 						invalidEnvs.add(m.getEnvironmentName());
@@ -208,27 +214,28 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 				}
 
-				tblEnvironmentSelection.refreshRowCache();
+				SingleSiteAnalysisDetailsPanel.this.tblEnvironmentSelection.refreshRowCache();
 
 				if (!invalidEnvs.isEmpty()) {
 					MessageNotifier
-							.showError(
-									getWindow(),
-									INVALID_SELECTION_STRING,
-									getSelEnvFactor().getValue().toString()
-											+ " "
-											+ invalidEnvs.toString()
-											+ " cannot be used for analysis because the plot data is not complete. The data must contain at least 2 common entries with values.");
+					.showError(
+							SingleSiteAnalysisDetailsPanel.this.getWindow(),
+							SingleSiteAnalysisDetailsPanel.INVALID_SELECTION_STRING,
+							SingleSiteAnalysisDetailsPanel.this.getSelEnvFactor().getValue().toString()
+							+ " "
+							+ invalidEnvs.toString()
+							+ " cannot be used for analysis because the plot data is not complete. The data must contain at least 2 common entries with values.");
 				}
 
 			} catch (Exception e) {
-				LOG.error(e.getMessage(), e);
+				SingleSiteAnalysisDetailsPanel.LOG.error(e.getMessage(), e);
 			}
 
 		}
 	}
 
 	private final class EnvironmentCheckBoxListener implements Property.ValueChangeListener {
+
 		private static final long serialVersionUID = 1L;
 
 		@Override
@@ -238,9 +245,10 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 			Boolean val = (Boolean) event.getProperty().getValue();
 
 			if (!val) {
-				footerCheckBox.removeListener(footerCheckBoxListener);
-				footerCheckBox.setValue(false);
-				footerCheckBox.addListener(footerCheckBoxListener);
+				SingleSiteAnalysisDetailsPanel.this.footerCheckBox
+						.removeListener(SingleSiteAnalysisDetailsPanel.this.footerCheckBoxListener);
+				SingleSiteAnalysisDetailsPanel.this.footerCheckBox.setValue(false);
+				SingleSiteAnalysisDetailsPanel.this.footerCheckBox.addListener(SingleSiteAnalysisDetailsPanel.this.footerCheckBoxListener);
 				return;
 			}
 
@@ -248,33 +256,36 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 			TrialEnvironments trialEnvironments;
 			try {
-				trialEnvironments = studyDataManager
-						.getTrialEnvironmentsInDataset(getBreedingViewInput().getDatasetId());
-				TrialEnvironment trialEnv = trialEnvironments.findOnlyOneByLocalName(
-						getSelEnvFactor().getValue().toString(), model.getEnvironmentName());
+				trialEnvironments =
+						SingleSiteAnalysisDetailsPanel.this.studyDataManager
+								.getTrialEnvironmentsInDataset(SingleSiteAnalysisDetailsPanel.this.getBreedingViewInput().getDatasetId());
+				TrialEnvironment trialEnv =
+						trialEnvironments.findOnlyOneByLocalName(SingleSiteAnalysisDetailsPanel.this.getSelEnvFactor().getValue()
+								.toString(), model.getEnvironmentName());
 
 				if (trialEnv == null) {
 
-					MessageNotifier.showError(getWindow(), INVALID_SELECTION_STRING,
-							"\"" + model.getEnvironmentName()
-									+ "\" value is not a valid selection for breeding view.");
+					MessageNotifier.showError(SingleSiteAnalysisDetailsPanel.this.getWindow(),
+							SingleSiteAnalysisDetailsPanel.INVALID_SELECTION_STRING, "\"" + model.getEnvironmentName()
+							+ "\" value is not a valid selection for breeding view.");
 					chk.setValue(false);
 					model.setActive(false);
 
 				} else {
 
-					Boolean valid = studyDataManager.containsAtLeast2CommonEntriesWithValues(
-							getBreedingViewInput().getDatasetId(), model.getLocationId());
+					Boolean valid =
+							SingleSiteAnalysisDetailsPanel.this.studyDataManager.containsAtLeast2CommonEntriesWithValues(
+									SingleSiteAnalysisDetailsPanel.this.getBreedingViewInput().getDatasetId(), model.getLocationId());
 
 					if (!valid) {
 						MessageNotifier
-								.showError(
-										getWindow(),
-										INVALID_SELECTION_STRING,
-										getSelEnvFactor().getValue().toString()
-												+ " \""
-												+ model.getEnvironmentName()
-												+ "\" cannot be used for analysis because the plot data is not complete. The data must contain at least 2 common entries with values.");
+						.showError(
+								SingleSiteAnalysisDetailsPanel.this.getWindow(),
+								SingleSiteAnalysisDetailsPanel.INVALID_SELECTION_STRING,
+								SingleSiteAnalysisDetailsPanel.this.getSelEnvFactor().getValue().toString()
+								+ " \""
+								+ model.getEnvironmentName()
+								+ "\" cannot be used for analysis because the plot data is not complete. The data must contain at least 2 common entries with values.");
 						chk.setValue(false);
 						model.setActive(false);
 					} else {
@@ -283,9 +294,9 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 				}
 			} catch (ConfigException e) {
-				LOG.error(e.getMessage(), e);
+				SingleSiteAnalysisDetailsPanel.LOG.error(e.getMessage(), e);
 			} catch (MiddlewareQueryException e) {
-				LOG.error(e.getMessage(), e);
+				SingleSiteAnalysisDetailsPanel.LOG.error(e.getMessage(), e);
 			}
 
 		}
@@ -304,7 +315,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	private static final String SELECT_BOX_WIDTH = "191px";
 	private static final String SELECT_COLUMN = "select";
 	private static final String TRIAL_NO_COLUMN = "trialno";
-	
+
 	@Value("${workbench.is.server.app}")
 	private String isServerApp;
 
@@ -382,12 +393,11 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	private Property.ValueChangeListener footerCheckBoxListener;
 
 	public SingleSiteAnalysisDetailsPanel() {
-		setWidth("100%");
+		this.setWidth("100%");
 	}
 
-	public SingleSiteAnalysisDetailsPanel(Tool tool, BreedingViewInput breedingViewInput,
-			List<VariableType> factorsInDataset, List<VariableType> trialVariablesInDataset,
-			Project project, StudyDataManager studyDataManager, ManagerFactory managerFactory,
+	public SingleSiteAnalysisDetailsPanel(Tool tool, BreedingViewInput breedingViewInput, List<VariableType> factorsInDataset,
+			List<VariableType> trialVariablesInDataset, Project project, StudyDataManager studyDataManager, ManagerFactory managerFactory,
 			SingleSiteAnalysisPanel selectDatasetForBreedingViewPanel) {
 
 		this.tool = tool;
@@ -399,60 +409,60 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.managerFactory = managerFactory;
 		this.selectDatasetForBreedingViewPanel = selectDatasetForBreedingViewPanel;
 
-		setWidth("100%");
+		this.setWidth("100%");
 
 	}
 
 	public Tool getTool() {
-		return tool;
+		return this.tool;
 	}
 
 	public TextField getTxtVersion() {
-		return txtVersion;
+		return this.txtVersion;
 	}
 
 	public Select getSelDesignType() {
-		return selDesignType;
+		return this.selDesignType;
 	}
 
 	public BreedingViewInput getBreedingViewInput() {
-		return breedingViewInput;
+		return this.breedingViewInput;
 	}
 
 	public Label getValueProjectType() {
-		return valueProjectType;
+		return this.valueProjectType;
 	}
 
 	public TextField getTxtAnalysisName() {
-		return txtAnalysisName;
+		return this.txtAnalysisName;
 	}
 
 	public TextField getTxtNameForAnalysisEnv() {
-		return txtNameForAnalysisEnv;
+		return this.txtNameForAnalysisEnv;
 	}
 
 	public Select getSelEnvFactor() {
-		return selEnvFactor;
+		return this.selEnvFactor;
 	}
 
 	public Select getSelReplicates() {
-		return selReplicates;
+		return this.selReplicates;
 	}
 
 	public Select getSelBlocks() {
-		return selBlocks;
+		return this.selBlocks;
 	}
 
 	public Select getSelRowFactor() {
-		return selRowFactor;
+		return this.selRowFactor;
 	}
 
 	public Select getSelColumnFactor() {
-		return selColumnFactor;
+		return this.selColumnFactor;
 	}
 
 	public Select getSelGenotypes() {
-		return selGenotypes;
+		return this.selGenotypes;
 	}
 
 	protected void initialize() {
@@ -461,25 +471,25 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	protected void initializeComponents() {
 
-		lblPageTitle = new Label();
-		lblPageTitle.setStyleName(Bootstrap.Typography.H1.styleName());
+		this.lblPageTitle = new Label();
+		this.lblPageTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 
-		environmentsCheckboxState = new HashMap<String, Boolean>();
+		this.environmentsCheckboxState = new HashMap<String, Boolean>();
 
-		tblEnvironmentLayout = new VerticalLayout();
-		tblEnvironmentLayout.setSizeUndefined();
-		tblEnvironmentLayout.setSpacing(true);
-		tblEnvironmentLayout.setWidth("100%");
+		this.tblEnvironmentLayout = new VerticalLayout();
+		this.tblEnvironmentLayout.setSizeUndefined();
+		this.tblEnvironmentLayout.setSpacing(true);
+		this.tblEnvironmentLayout.setWidth("100%");
 
-		tblEnvironmentSelection = new Table();
-		tblEnvironmentSelection.setHeight("200px");
-		tblEnvironmentSelection.setWidth("100%");
+		this.tblEnvironmentSelection = new Table();
+		this.tblEnvironmentSelection.setHeight("200px");
+		this.tblEnvironmentSelection.setWidth("100%");
 
-		setBlockRowColumnContainer(new VerticalLayout());
+		this.setBlockRowColumnContainer(new VerticalLayout());
 
-		envCheckBoxListener = new EnvironmentCheckBoxListener();
+		this.envCheckBoxListener = new EnvironmentCheckBoxListener();
 
-		tblEnvironmentSelection.addGeneratedColumn(SELECT_COLUMN, new ColumnGenerator() {
+		this.tblEnvironmentSelection.addGeneratedColumn(SingleSiteAnalysisDetailsPanel.SELECT_COLUMN, new ColumnGenerator() {
 
 			private static final long serialVersionUID = 8164025367842219781L;
 
@@ -491,213 +501,207 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 				chk.setData(item);
 				chk.setValue(item.getActive());
 				chk.setImmediate(true);
-				chk.addListener(envCheckBoxListener);
+				chk.addListener(SingleSiteAnalysisDetailsPanel.this.envCheckBoxListener);
 				return chk;
 			}
 
 		});
 
-		footerCheckBoxListener = new FooterCheckBoxListener();
+		this.footerCheckBoxListener = new FooterCheckBoxListener();
 
-		footerCheckBox = new CheckBox("Select All", false);
-		footerCheckBox.addListener(footerCheckBoxListener);
-		footerCheckBox.setImmediate(true);
+		this.footerCheckBox = new CheckBox("Select All", false);
+		this.footerCheckBox.addListener(this.footerCheckBoxListener);
+		this.footerCheckBox.setImmediate(true);
 
-		tblEnvironmentLayout.addComponent(tblEnvironmentSelection);
-		tblEnvironmentLayout.addComponent(footerCheckBox);
+		this.tblEnvironmentLayout.addComponent(this.tblEnvironmentSelection);
+		this.tblEnvironmentLayout.addComponent(this.footerCheckBox);
 
-		mainLayout = new VerticalLayout();
+		this.mainLayout = new VerticalLayout();
 
-		lblTitle = new Label();
-		lblTitle.setStyleName(Bootstrap.Typography.H4.styleName());
-		lblTitle.addStyleName(LABEL_BOLD_STYLING);
-		lblTitle.setHeight("25px");
+		this.lblTitle = new Label();
+		this.lblTitle.setStyleName(Bootstrap.Typography.H4.styleName());
+		this.lblTitle.addStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
+		this.lblTitle.setHeight("25px");
 
-		lblDatasetName = new Label();
-		lblDatasetName.setContentMode(Label.CONTENT_XHTML);
-		lblDatasetName.setStyleName(LABEL_BOLD_STYLING);
-		lblDatasourceName = new Label();
-		lblDatasourceName.setContentMode(Label.CONTENT_XHTML);
-		lblDatasourceName.setStyleName(LABEL_BOLD_STYLING);
+		this.lblDatasetName = new Label();
+		this.lblDatasetName.setContentMode(Label.CONTENT_XHTML);
+		this.lblDatasetName.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
+		this.lblDatasourceName = new Label();
+		this.lblDatasourceName.setContentMode(Label.CONTENT_XHTML);
+		this.lblDatasourceName.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
 
-		lblVersion = new Label();
-		lblVersion.setStyleName(LABEL_BOLD_STYLING);
-		lblProjectType = new Label();
-		lblProjectType.setStyleName(LABEL_BOLD_STYLING);
-		lblProjectType.setWidth("100px");
-		lblAnalysisName = new Label();
-		lblAnalysisName.setContentMode(Label.CONTENT_XHTML);
-		lblAnalysisName.setStyleName(LABEL_BOLD_STYLING);
-		lblSiteEnvironment = new Label();
-		lblSpecifyEnvFactor = new Label();
-		lblSpecifyEnvFactor.setContentMode(Label.CONTENT_XHTML);
-		lblSpecifyEnvFactor.setStyleName(LABEL_BOLD_STYLING);
-		lblSelectEnvironmentForAnalysis = new Label();
-		lblSelectEnvironmentForAnalysis.setContentMode(Label.CONTENT_XHTML);
-		lblSelectEnvironmentForAnalysis.setStyleName(LABEL_BOLD_STYLING);
-		lblSpecifyNameForAnalysisEnv = new Label();
-		lblSpecifyNameForAnalysisEnv.setContentMode(Label.CONTENT_XHTML);
-		lblSpecifyNameForAnalysisEnv.setStyleName(LABEL_BOLD_STYLING);
-		lblDesign = new Label();
-		lblDesignType = new Label();
-		lblDesignType.setContentMode(Label.CONTENT_XHTML);
-		lblDesignType.setStyleName(LABEL_BOLD_STYLING);
-		lblDesignType.setWidth(LABEL_WIDTH);
-		lblReplicates = new Label();
-		lblReplicates.setContentMode(Label.CONTENT_XHTML);
-		lblReplicates.setWidth(LABEL_WIDTH);
-		lblReplicates.setStyleName(LABEL_BOLD_STYLING);
-		lblBlocks = new Label();
-		lblBlocks.setContentMode(Label.CONTENT_XHTML);
-		lblBlocks.setWidth(LABEL_WIDTH);
-		lblBlocks.setStyleName(LABEL_BOLD_STYLING);
-		lblSpecifyRowFactor = new Label();
-		lblSpecifyRowFactor.setContentMode(Label.CONTENT_XHTML);
-		lblSpecifyRowFactor.setWidth(LABEL_WIDTH);
-		lblSpecifyRowFactor.setStyleName(LABEL_BOLD_STYLING);
-		lblSpecifyColumnFactor = new Label();
-		lblSpecifyColumnFactor.setContentMode(Label.CONTENT_XHTML);
-		lblSpecifyColumnFactor.setWidth(LABEL_WIDTH);
-		lblSpecifyColumnFactor.setStyleName(LABEL_BOLD_STYLING);
-		lblGenotypes = new Label();
-		lblGenotypes.setWidth(LABEL_WIDTH);
-		lblGenotypes.setStyleName(LABEL_BOLD_STYLING);
+		this.lblVersion = new Label();
+		this.lblVersion.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
+		this.lblProjectType = new Label();
+		this.lblProjectType.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
+		this.lblProjectType.setWidth("100px");
+		this.lblAnalysisName = new Label();
+		this.lblAnalysisName.setContentMode(Label.CONTENT_XHTML);
+		this.lblAnalysisName.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
+		this.lblSiteEnvironment = new Label();
+		this.lblSpecifyEnvFactor = new Label();
+		this.lblSpecifyEnvFactor.setContentMode(Label.CONTENT_XHTML);
+		this.lblSpecifyEnvFactor.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
+		this.lblSelectEnvironmentForAnalysis = new Label();
+		this.lblSelectEnvironmentForAnalysis.setContentMode(Label.CONTENT_XHTML);
+		this.lblSelectEnvironmentForAnalysis.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
+		this.lblSpecifyNameForAnalysisEnv = new Label();
+		this.lblSpecifyNameForAnalysisEnv.setContentMode(Label.CONTENT_XHTML);
+		this.lblSpecifyNameForAnalysisEnv.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
+		this.lblDesign = new Label();
+		this.lblDesignType = new Label();
+		this.lblDesignType.setContentMode(Label.CONTENT_XHTML);
+		this.lblDesignType.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
+		this.lblDesignType.setWidth(SingleSiteAnalysisDetailsPanel.LABEL_WIDTH);
+		this.lblReplicates = new Label();
+		this.lblReplicates.setContentMode(Label.CONTENT_XHTML);
+		this.lblReplicates.setWidth(SingleSiteAnalysisDetailsPanel.LABEL_WIDTH);
+		this.lblReplicates.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
+		this.lblBlocks = new Label();
+		this.lblBlocks.setContentMode(Label.CONTENT_XHTML);
+		this.lblBlocks.setWidth(SingleSiteAnalysisDetailsPanel.LABEL_WIDTH);
+		this.lblBlocks.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
+		this.lblSpecifyRowFactor = new Label();
+		this.lblSpecifyRowFactor.setContentMode(Label.CONTENT_XHTML);
+		this.lblSpecifyRowFactor.setWidth(SingleSiteAnalysisDetailsPanel.LABEL_WIDTH);
+		this.lblSpecifyRowFactor.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
+		this.lblSpecifyColumnFactor = new Label();
+		this.lblSpecifyColumnFactor.setContentMode(Label.CONTENT_XHTML);
+		this.lblSpecifyColumnFactor.setWidth(SingleSiteAnalysisDetailsPanel.LABEL_WIDTH);
+		this.lblSpecifyColumnFactor.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
+		this.lblGenotypes = new Label();
+		this.lblGenotypes.setWidth(SingleSiteAnalysisDetailsPanel.LABEL_WIDTH);
+		this.lblGenotypes.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
 
-		lblDataSelectedForAnalysisHeader = new Label(
-				"<span class='bms-dataset' style='position:relative; top: -1px; color: #FF4612; "
+		this.lblDataSelectedForAnalysisHeader =
+				new Label("<span class='bms-dataset' style='position:relative; top: -1px; color: #FF4612; "
 						+ "font-size: 20px; font-weight: bold;'></span><b>&nbsp;"
-						+ messageSource.getMessage(Message.BV_DATA_SELECTED_FOR_ANALYSIS_HEADER)
-						+ "</b>", Label.CONTENT_XHTML);
-		lblDataSelectedForAnalysisHeader.setStyleName(Bootstrap.Typography.H3.styleName());
+						+ this.messageSource.getMessage(Message.BV_DATA_SELECTED_FOR_ANALYSIS_HEADER) + "</b>", Label.CONTENT_XHTML);
+		this.lblDataSelectedForAnalysisHeader.setStyleName(Bootstrap.Typography.H3.styleName());
 
-		lblChooseEnvironmentHeader = new Label(
-				"<span class='bms-environments' style='position:relative; top: -2px; color: #0076A9; "
-						+ "font-size: 25px; font-weight: bold;'></span><b>&nbsp;"
-						+ "<span style='position:relative; top: -3px;'>"
-						+ messageSource.getMessage(Message.BV_CHOOSE_ENVIRONMENT_HEADER)
-						+ "</span></b>", Label.CONTENT_XHTML);
-		lblChooseEnvironmentHeader.setStyleName(Bootstrap.Typography.H3.styleName());
+		this.lblChooseEnvironmentHeader =
+				new Label("<span class='bms-environments' style='position:relative; top: -2px; color: #0076A9; "
+						+ "font-size: 25px; font-weight: bold;'></span><b>&nbsp;" + "<span style='position:relative; top: -3px;'>"
+						+ this.messageSource.getMessage(Message.BV_CHOOSE_ENVIRONMENT_HEADER) + "</span></b>", Label.CONTENT_XHTML);
+		this.lblChooseEnvironmentHeader.setStyleName(Bootstrap.Typography.H3.styleName());
 
-		lblChooseEnvironmentDescription = new Label();
-		lblChooseEnvironmentForAnalysisDescription = new Label();
-		lblChooseEnvironmentForAnalysisDescription.setContentMode(Label.CONTENT_XHTML);
-		lblChooseEnvironmentForAnalysisDescription.setStyleName(LABEL_BOLD_STYLING);
+		this.lblChooseEnvironmentDescription = new Label();
+		this.lblChooseEnvironmentForAnalysisDescription = new Label();
+		this.lblChooseEnvironmentForAnalysisDescription.setContentMode(Label.CONTENT_XHTML);
+		this.lblChooseEnvironmentForAnalysisDescription.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
 
-		lblSpecifyDesignDetailsHeader = new Label(
-				"<span class='bms-exp-design' style='color: #9A8478; "
-						+ "font-size: 22px; font-weight: bold;'></span><b>&nbsp;"
-						+ messageSource.getMessage(Message.BV_SPECIFY_DESIGN_DETAILS_HEADER)
-						+ "</b>", Label.CONTENT_XHTML);
-		lblSpecifyDesignDetailsHeader.setStyleName(Bootstrap.Typography.H3.styleName());
+		this.lblSpecifyDesignDetailsHeader =
+				new Label("<span class='bms-exp-design' style='color: #9A8478; " + "font-size: 22px; font-weight: bold;'></span><b>&nbsp;"
+						+ this.messageSource.getMessage(Message.BV_SPECIFY_DESIGN_DETAILS_HEADER) + "</b>", Label.CONTENT_XHTML);
+		this.lblSpecifyDesignDetailsHeader.setStyleName(Bootstrap.Typography.H3.styleName());
 
-		lblSpecifyGenotypesHeader = new Label("<span class='bms-factors' style='color: #39B54A; "
-				+ "font-size: 20px; font-weight: bold;'></span><b>&nbsp;"
-				+ messageSource.getMessage(Message.BV_SPECIFY_GENOTYPES_HEADER) + "</b>",
-				Label.CONTENT_XHTML);
-		lblSpecifyGenotypesHeader.setStyleName(Bootstrap.Typography.H3.styleName());
+		this.lblSpecifyGenotypesHeader =
+				new Label("<span class='bms-factors' style='color: #39B54A; " + "font-size: 20px; font-weight: bold;'></span><b>&nbsp;"
+						+ this.messageSource.getMessage(Message.BV_SPECIFY_GENOTYPES_HEADER) + "</b>", Label.CONTENT_XHTML);
+		this.lblSpecifyGenotypesHeader.setStyleName(Bootstrap.Typography.H3.styleName());
 
-		txtVersion = new TextField();
-		txtVersion.setNullRepresentation("");
+		this.txtVersion = new TextField();
+		this.txtVersion.setNullRepresentation("");
 
-		if (!StringUtils.isNullOrEmpty(getBreedingViewInput().getVersion())) {
+		if (!StringUtils.isNullOrEmpty(this.getBreedingViewInput().getVersion())) {
 
-			txtVersion.setValue(getBreedingViewInput().getVersion());
-			txtVersion.setReadOnly(true);
-			txtVersion.setRequired(false);
+			this.txtVersion.setValue(this.getBreedingViewInput().getVersion());
+			this.txtVersion.setReadOnly(true);
+			this.txtVersion.setRequired(false);
 
 		} else {
 
-			txtVersion.setNullSettingAllowed(false);
-			txtVersion.setRequired(false);
+			this.txtVersion.setNullSettingAllowed(false);
+			this.txtVersion.setRequired(false);
 
 		}
 
-		valueProjectType = new Label();
-		valueProjectType.setValue("Field Trial");
+		this.valueProjectType = new Label();
+		this.valueProjectType.setValue("Field Trial");
 
-		valueDatasetName = new Label();
-		valueDatasetName.setWidth("100%");
-		valueDatasetName.setValue(getBreedingViewInput().getDatasetName());
+		this.valueDatasetName = new Label();
+		this.valueDatasetName.setWidth("100%");
+		this.valueDatasetName.setValue(this.getBreedingViewInput().getDatasetName());
 
-		valueDatasourceName = new Label();
-		valueDatasourceName.setWidth("100%");
-		valueDatasourceName.setValue(getBreedingViewInput().getDatasetSource());
+		this.valueDatasourceName = new Label();
+		this.valueDatasourceName.setWidth("100%");
+		this.valueDatasourceName.setValue(this.getBreedingViewInput().getDatasetSource());
 
-		txtAnalysisName = new TextField();
-		txtAnalysisName.setNullRepresentation("");
-		if (!StringUtils.isNullOrEmpty(getBreedingViewInput().getBreedingViewAnalysisName())) {
-			txtAnalysisName.setValue(getBreedingViewInput().getBreedingViewAnalysisName());
+		this.txtAnalysisName = new TextField();
+		this.txtAnalysisName.setNullRepresentation("");
+		if (!StringUtils.isNullOrEmpty(this.getBreedingViewInput().getBreedingViewAnalysisName())) {
+			this.txtAnalysisName.setValue(this.getBreedingViewInput().getBreedingViewAnalysisName());
 		}
-		txtAnalysisName.setRequired(false);
-		txtAnalysisName.setWidth("450");
+		this.txtAnalysisName.setRequired(false);
+		this.txtAnalysisName.setWidth("450");
 
-		selEnvFactor = new Select();
-		selEnvFactor.setImmediate(true);
-		populateChoicesForEnvironmentFactor();
-		selEnvFactor.setNullSelectionAllowed(false);
-		selEnvFactor.setNewItemsAllowed(false);
+		this.selEnvFactor = new Select();
+		this.selEnvFactor.setImmediate(true);
+		this.populateChoicesForEnvironmentFactor();
+		this.selEnvFactor.setNullSelectionAllowed(false);
+		this.selEnvFactor.setNewItemsAllowed(false);
 
-		populateChoicesForEnvForAnalysis();
+		this.populateChoicesForEnvForAnalysis();
 
-		txtNameForAnalysisEnv = new TextField();
-		txtNameForAnalysisEnv.setNullRepresentation("");
-		txtNameForAnalysisEnv.setRequired(false);
+		this.txtNameForAnalysisEnv = new TextField();
+		this.txtNameForAnalysisEnv.setNullRepresentation("");
+		this.txtNameForAnalysisEnv.setRequired(false);
 
-		selDesignType = new Select();
-		selDesignType.setImmediate(true);
-		selDesignType.setNullSelectionAllowed(true);
-		selDesignType.setNewItemsAllowed(false);
-		selDesignType.addItem(DesignType.INCOMPLETE_BLOCK_DESIGN.getName());
-		selDesignType.addItem(DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
-		selDesignType.addItem(DesignType.ROW_COLUMN_DESIGN.getName());
-		selDesignType.setWidth(SELECT_BOX_WIDTH);
+		this.selDesignType = new Select();
+		this.selDesignType.setImmediate(true);
+		this.selDesignType.setNullSelectionAllowed(true);
+		this.selDesignType.setNewItemsAllowed(false);
+		this.selDesignType.addItem(DesignType.INCOMPLETE_BLOCK_DESIGN.getName());
+		this.selDesignType.addItem(DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
+		this.selDesignType.addItem(DesignType.ROW_COLUMN_DESIGN.getName());
+		this.selDesignType.setWidth(SingleSiteAnalysisDetailsPanel.SELECT_BOX_WIDTH);
 
-		selReplicates = new Select();
-		selReplicates.setImmediate(true);
-		populateChoicesForReplicates();
-		selReplicates.setNullSelectionAllowed(true);
-		selReplicates.setNewItemsAllowed(false);
-		selReplicates.setWidth(SELECT_BOX_WIDTH);
+		this.selReplicates = new Select();
+		this.selReplicates.setImmediate(true);
+		this.populateChoicesForReplicates();
+		this.selReplicates.setNullSelectionAllowed(true);
+		this.selReplicates.setNewItemsAllowed(false);
+		this.selReplicates.setWidth(SingleSiteAnalysisDetailsPanel.SELECT_BOX_WIDTH);
 
-		selBlocks = new Select();
-		selBlocks.setImmediate(true);
-		selBlocks.setEnabled(false);
-		populateChoicesForBlocks();
-		selBlocks.setNullSelectionAllowed(false);
-		selBlocks.setNewItemsAllowed(false);
-		selBlocks.setWidth(SELECT_BOX_WIDTH);
+		this.selBlocks = new Select();
+		this.selBlocks.setImmediate(true);
+		this.selBlocks.setEnabled(false);
+		this.populateChoicesForBlocks();
+		this.selBlocks.setNullSelectionAllowed(false);
+		this.selBlocks.setNewItemsAllowed(false);
+		this.selBlocks.setWidth(SingleSiteAnalysisDetailsPanel.SELECT_BOX_WIDTH);
 
-		selRowFactor = new Select();
-		selRowFactor.setImmediate(true);
-		populateChoicesForRowFactor();
-		selRowFactor.setNullSelectionAllowed(false);
-		selRowFactor.setNewItemsAllowed(false);
-		selRowFactor.setWidth(SELECT_BOX_WIDTH);
+		this.selRowFactor = new Select();
+		this.selRowFactor.setImmediate(true);
+		this.populateChoicesForRowFactor();
+		this.selRowFactor.setNullSelectionAllowed(false);
+		this.selRowFactor.setNewItemsAllowed(false);
+		this.selRowFactor.setWidth(SingleSiteAnalysisDetailsPanel.SELECT_BOX_WIDTH);
 
-		selColumnFactor = new Select();
-		selColumnFactor.setImmediate(true);
-		populateChoicesForColumnFactor();
-		selColumnFactor.setNullSelectionAllowed(false);
-		selColumnFactor.setNewItemsAllowed(false);
-		selColumnFactor.setWidth(SELECT_BOX_WIDTH);
+		this.selColumnFactor = new Select();
+		this.selColumnFactor.setImmediate(true);
+		this.populateChoicesForColumnFactor();
+		this.selColumnFactor.setNullSelectionAllowed(false);
+		this.selColumnFactor.setNewItemsAllowed(false);
+		this.selColumnFactor.setWidth(SingleSiteAnalysisDetailsPanel.SELECT_BOX_WIDTH);
 
-		refineChoicesForBlocksReplicationRowAndColumnFactos();
+		this.refineChoicesForBlocksReplicationRowAndColumnFactos();
 
-		setSelGenotypes(new Select());
-		getSelGenotypes().setImmediate(true);
-		populateChoicesForGenotypes();
-		getSelGenotypes().setNullSelectionAllowed(true);
-		getSelGenotypes().setNewItemsAllowed(false);
-		getSelGenotypes().setWidth(SELECT_BOX_WIDTH);
+		this.setSelGenotypes(new Select());
+		this.getSelGenotypes().setImmediate(true);
+		this.populateChoicesForGenotypes();
+		this.getSelGenotypes().setNullSelectionAllowed(true);
+		this.getSelGenotypes().setNewItemsAllowed(false);
+		this.getSelGenotypes().setWidth(SingleSiteAnalysisDetailsPanel.SELECT_BOX_WIDTH);
 
-		btnRun = new Button();
-		btnRun.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-		btnUpload = new Button();
-		btnUpload.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-		btnReset = new Button();
-		btnBack = new Button();
+		this.btnRun = new Button();
+		this.btnRun.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+		this.btnUpload = new Button();
+		this.btnUpload.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+		this.btnReset = new Button();
+		this.btnBack = new Button();
 
-		checkDesignFactor();
+		this.checkDesignFactor();
 
 	}
 
@@ -706,11 +710,11 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		if (this.trialVariablesInDataset == null) {
 			return;
 		}
-		
-		String pleaseChoose = messageSource.getMessage(Message.PLEASE_CHOOSE);
+
+		String pleaseChoose = this.messageSource.getMessage(Message.PLEASE_CHOOSE);
 		this.getSelEnvFactor().addItem(pleaseChoose);
 
-		for (VariableType factor : trialVariablesInDataset) {
+		for (VariableType factor : this.trialVariablesInDataset) {
 			if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT) {
 				this.getSelEnvFactor().addItem(factor.getLocalName());
 				if (PhenotypicType.TRIAL_ENVIRONMENT.getLabelList().contains(factor.getLocalName())) {
@@ -719,7 +723,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 			}
 		}
 		this.getSelEnvFactor().setValue(pleaseChoose);
-		getSelEnvFactor().select(getSelEnvFactor().getItemIds().iterator().next());
+		this.getSelEnvFactor().select(this.getSelEnvFactor().getItemIds().iterator().next());
 
 		if (this.getSelEnvFactor().getItemIds().isEmpty()) {
 			this.getSelEnvFactor().setEnabled(false);
@@ -740,19 +744,19 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	public void populateChoicesForEnvForAnalysis() {
 
-		footerCheckBox.setValue(false);
+		this.footerCheckBox.setValue(false);
 		String trialInstanceFactor = "";
 
 		try {
-			environmentsCheckboxState.clear();
-			tblEnvironmentSelection.removeAllItems();
+			this.environmentsCheckboxState.clear();
+			this.tblEnvironmentSelection.removeAllItems();
 		} catch (Exception e) {
-			LOG.error(e.getMessage(), e);
+			SingleSiteAnalysisDetailsPanel.LOG.error(e.getMessage(), e);
 		}
 
 		String envFactorName = (String) this.selEnvFactor.getValue();
 
-		VariableType factor = getVariableByLocalName(trialVariablesInDataset, envFactorName);
+		VariableType factor = this.getVariableByLocalName(this.trialVariablesInDataset, envFactorName);
 
 		if (factor == null) {
 			return;
@@ -760,27 +764,23 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 		try {
 
-			BeanItemContainer<SeaEnvironmentModel> container = new BeanItemContainer<SeaEnvironmentModel>(
-					SeaEnvironmentModel.class);
-			tblEnvironmentSelection.setContainerDataSource(container);
+			BeanItemContainer<SeaEnvironmentModel> container = new BeanItemContainer<SeaEnvironmentModel>(SeaEnvironmentModel.class);
+			this.tblEnvironmentSelection.setContainerDataSource(container);
 
-			VariableTypeList trialEnvFactors = studyDataManager
-					.getDataSet(getBreedingViewInput().getDatasetId()).getVariableTypes()
-					.getFactors();
+			VariableTypeList trialEnvFactors =
+					this.studyDataManager.getDataSet(this.getBreedingViewInput().getDatasetId()).getVariableTypes().getFactors();
 
 			for (VariableType f : trialEnvFactors.getVariableTypes()) {
 
 				// Always Show the TRIAL INSTANCE Factor
-				if (f.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE
-						.getId()) {
+				if (f.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()) {
 					trialInstanceFactor = f.getLocalName();
 				}
 
 			}
 
 			TrialEnvironments trialEnvironments;
-			trialEnvironments = studyDataManager
-					.getTrialEnvironmentsInDataset(getBreedingViewInput().getDatasetId());
+			trialEnvironments = this.studyDataManager.getTrialEnvironmentsInDataset(this.getBreedingViewInput().getDatasetId());
 
 			for (TrialEnvironment env : trialEnvironments.getTrialEnvironments()) {
 
@@ -791,8 +791,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 					continue;
 				}
 
-				TrialEnvironment temp = trialEnvironments.findOnlyOneByLocalName(
-						envFactorName, selectedEnvVar.getValue());
+				TrialEnvironment temp = trialEnvironments.findOnlyOneByLocalName(envFactorName, selectedEnvVar.getValue());
 
 				if (temp == null) {
 					continue;
@@ -808,53 +807,51 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 			}
 
 			if (trialInstanceFactor.equalsIgnoreCase(envFactorName)) {
-				tblEnvironmentSelection.setVisibleColumns(new Object[] { SELECT_COLUMN, TRIAL_NO_COLUMN });
-				tblEnvironmentSelection.setColumnHeaders(new String[] { "SELECT",
-						trialInstanceFactor });
-				tblEnvironmentSelection.setColumnWidth(SELECT_COLUMN, 45);
-				tblEnvironmentSelection.setColumnWidth(TRIAL_NO_COLUMN, -1);
-				tblEnvironmentSelection.setWidth("45%");
-				getBreedingViewInput().setTrialInstanceName(trialInstanceFactor);
+				this.tblEnvironmentSelection.setVisibleColumns(new Object[] {SingleSiteAnalysisDetailsPanel.SELECT_COLUMN,
+						SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN});
+				this.tblEnvironmentSelection.setColumnHeaders(new String[] {"SELECT", trialInstanceFactor});
+				this.tblEnvironmentSelection.setColumnWidth(SingleSiteAnalysisDetailsPanel.SELECT_COLUMN, 45);
+				this.tblEnvironmentSelection.setColumnWidth(SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN, -1);
+				this.tblEnvironmentSelection.setWidth("45%");
+				this.getBreedingViewInput().setTrialInstanceName(trialInstanceFactor);
 			} else {
-				tblEnvironmentSelection.setVisibleColumns(new Object[] { SELECT_COLUMN, TRIAL_NO_COLUMN,
-						"environmentName" });
-				tblEnvironmentSelection.setColumnHeaders(new String[] { "SELECT",
-						trialInstanceFactor, envFactorName });
-				tblEnvironmentSelection.setColumnWidth(SELECT_COLUMN, 45);
-				tblEnvironmentSelection.setColumnWidth(TRIAL_NO_COLUMN, 60);
-				tblEnvironmentSelection.setColumnWidth("environmentName", 500);
-				tblEnvironmentSelection.setWidth("90%");
+				this.tblEnvironmentSelection.setVisibleColumns(new Object[] {SingleSiteAnalysisDetailsPanel.SELECT_COLUMN,
+						SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN, "environmentName"});
+				this.tblEnvironmentSelection.setColumnHeaders(new String[] {"SELECT", trialInstanceFactor, envFactorName});
+				this.tblEnvironmentSelection.setColumnWidth(SingleSiteAnalysisDetailsPanel.SELECT_COLUMN, 45);
+				this.tblEnvironmentSelection.setColumnWidth(SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN, 60);
+				this.tblEnvironmentSelection.setColumnWidth("environmentName", 500);
+				this.tblEnvironmentSelection.setWidth("90%");
 
-				getBreedingViewInput().setTrialInstanceName(trialInstanceFactor);
+				this.getBreedingViewInput().setTrialInstanceName(trialInstanceFactor);
 			}
 
 		} catch (ConfigException e) {
-			LOG.error(e.getMessage(), e);
+			SingleSiteAnalysisDetailsPanel.LOG.error(e.getMessage(), e);
 		} catch (MiddlewareQueryException e) {
-			LOG.error(e.getMessage(), e);
+			SingleSiteAnalysisDetailsPanel.LOG.error(e.getMessage(), e);
 
 		}
-
 
 	}
 
 	protected void populateChoicesForGenotypes() {
 
-		for (VariableType factor : factorsInDataset) {
+		for (VariableType factor : this.factorsInDataset) {
 			if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.GERMPLASM && factor.getId() != TermId.ENTRY_TYPE.getId()) {
 				this.getSelGenotypes().addItem(factor.getLocalName());
 				this.getSelGenotypes().setValue(factor.getLocalName());
 			}
 		}
 
-		getSelGenotypes().select(getSelGenotypes().getItemIds().iterator().next());
+		this.getSelGenotypes().select(this.getSelGenotypes().getItemIds().iterator().next());
 
 	}
 
 	protected void populateChoicesForReplicates() {
 		for (VariableType factor : this.factorsInDataset) {
 			if (factor.getStandardVariable().getProperty().getName().toString().trim()
-					.equalsIgnoreCase(REPLICATION_FACTOR)) {
+					.equalsIgnoreCase(SingleSiteAnalysisDetailsPanel.REPLICATION_FACTOR)) {
 				this.getSelReplicates().addItem(factor.getLocalName());
 				this.getSelReplicates().setValue(factor.getLocalName());
 			}
@@ -871,10 +868,10 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 		for (VariableType factor : this.factorsInDataset) {
 			if (factor.getStandardVariable().getProperty().getName().toString().trim()
-					.equalsIgnoreCase(BLOCKING_FACTOR)) {
+					.equalsIgnoreCase(SingleSiteAnalysisDetailsPanel.BLOCKING_FACTOR)) {
 				this.getSelBlocks().addItem(factor.getLocalName());
 				this.getSelBlocks().setValue(factor.getLocalName());
-				getSelBlocks().setEnabled(true);
+				this.getSelBlocks().setEnabled(true);
 			}
 		}
 
@@ -884,7 +881,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 		for (VariableType factor : this.factorsInDataset) {
 			if (factor.getStandardVariable().getProperty().getName().toString().trim()
-					.equalsIgnoreCase(ROW_FACTOR)) {
+					.equalsIgnoreCase(SingleSiteAnalysisDetailsPanel.ROW_FACTOR)) {
 				this.getSelRowFactor().addItem(factor.getLocalName());
 				this.getSelRowFactor().setValue(factor.getLocalName());
 			}
@@ -896,7 +893,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 		for (VariableType factor : this.factorsInDataset) {
 			if (factor.getStandardVariable().getProperty().getName().toString().trim()
-					.equalsIgnoreCase(COLUMN_FACTOR)) {
+					.equalsIgnoreCase(SingleSiteAnalysisDetailsPanel.COLUMN_FACTOR)) {
 				this.getSelColumnFactor().addItem(factor.getLocalName());
 				this.getSelColumnFactor().setValue(factor.getLocalName());
 			}
@@ -932,51 +929,49 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	public void checkDesignFactor() {
 		String designFactor = null;
-		int designType = retrieveExperimentalDesignTypeID();
+		int designType = this.retrieveExperimentalDesignTypeID();
 		if (designType != 0) {
 
 			if (designType == TermId.RANDOMIZED_COMPLETE_BLOCK.getId()) {
 				designFactor = DesignType.RANDOMIZED_BLOCK_DESIGN.getName();
-				displayRandomizedBlockDesignElements();
+				this.displayRandomizedBlockDesignElements();
 			} else if (designType == TermId.RESOLVABLE_INCOMPLETE_BLOCK.getId()
 					|| designType == TermId.RESOLVABLE_INCOMPLETE_BLOCK_LATIN.getId()) {
 				designFactor = DesignType.INCOMPLETE_BLOCK_DESIGN.getName();
-				displayIncompleteBlockDesignElements();
+				this.displayIncompleteBlockDesignElements();
 			} else if (designType == TermId.RESOLVABLE_INCOMPLETE_ROW_COL.getId()
 					|| designType == TermId.RESOLVABLE_INCOMPLETE_ROW_COL_LATIN.getId()) {
 				designFactor = DesignType.ROW_COLUMN_DESIGN.getName();
-				displayRowColumnDesignElements();
+				this.displayRowColumnDesignElements();
 			}
 
-			selDesignType.setValue(designFactor);
+			this.selDesignType.setValue(designFactor);
 		} else {
-			selDesignType.select(null);
+			this.selDesignType.select(null);
 		}
-
 
 	}
 
 	protected int retrieveExperimentalDesignTypeID() {
 		try {
-			String expDesign = studyDataManager.getGeolocationPropValue(
-					TermId.EXPERIMENT_DESIGN_FACTOR.getId(), breedingViewInput.getStudyId());
-			if (expDesign != null && !("").equals(expDesign.trim())
-					&& NumberUtils.isNumber(expDesign)) {
+			String expDesign =
+					this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(),
+							this.breedingViewInput.getStudyId());
+			if (expDesign != null && !"".equals(expDesign.trim()) && NumberUtils.isNumber(expDesign)) {
 				return Integer.parseInt(expDesign);
 			}
 		} catch (MiddlewareQueryException e) {
-			LOG.error(e.getMessage(), e);
+			SingleSiteAnalysisDetailsPanel.LOG.error(e.getMessage(), e);
 		}
 
 		return 0;
 	}
 
-
 	protected void initializeLayout() {
 
-		mainLayout.setSizeUndefined();
-		mainLayout.setWidth("100%");
-		mainLayout.setSpacing(true);
+		this.mainLayout.setSizeUndefined();
+		this.mainLayout.setWidth("100%");
+		this.mainLayout.setSpacing(true);
 
 		VerticalLayout selectedInfoLayout = new VerticalLayout();
 		selectedInfoLayout.setSizeUndefined();
@@ -985,16 +980,16 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 		HorizontalLayout row1 = new HorizontalLayout();
 		row1.setSpacing(true);
-		row1.addComponent(lblDataSelectedForAnalysisHeader);
+		row1.addComponent(this.lblDataSelectedForAnalysisHeader);
 
 		HorizontalLayout row2a = new HorizontalLayout();
 		row2a.setSpacing(true);
-		row2a.addComponent(lblDatasetName);
-		row2a.addComponent(valueDatasetName);
+		row2a.addComponent(this.lblDatasetName);
+		row2a.addComponent(this.valueDatasetName);
 		HorizontalLayout row2b = new HorizontalLayout();
 		row2b.setSpacing(true);
-		row2b.addComponent(lblProjectType);
-		row2b.addComponent(valueProjectType);
+		row2b.addComponent(this.lblProjectType);
+		row2b.addComponent(this.valueProjectType);
 
 		GridLayout row2 = new GridLayout(2, 1);
 		row2.setSizeUndefined();
@@ -1006,13 +1001,13 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 		HorizontalLayout row3 = new HorizontalLayout();
 		row3.setSpacing(true);
-		row3.addComponent(lblDatasourceName);
-		row3.addComponent(valueDatasourceName);
+		row3.addComponent(this.lblDatasourceName);
+		row3.addComponent(this.valueDatasourceName);
 
 		VerticalLayout row4 = new VerticalLayout();
 		row4.setSpacing(true);
-		row4.addComponent(lblAnalysisName);
-		row4.addComponent(txtAnalysisName);
+		row4.addComponent(this.lblAnalysisName);
+		row4.addComponent(this.txtAnalysisName);
 
 		selectedInfoLayout.addComponent(row1);
 		selectedInfoLayout.addComponent(row2);
@@ -1025,15 +1020,14 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		chooseEnvironmentLayout.setWidth("100%");
 		chooseEnvironmentLayout.setSpacing(true);
 		chooseEnvironmentLayout.setMargin(false, true, true, false);
-		chooseEnvironmentLayout.addComponent(lblChooseEnvironmentHeader, 0, 0, 1, 0);
-		chooseEnvironmentLayout.addComponent(lblChooseEnvironmentDescription, 0, 1, 1, 1);
-		chooseEnvironmentLayout.addComponent(lblSpecifyEnvFactor, 0, 2);
-		chooseEnvironmentLayout.addComponent(selEnvFactor, 1, 2);
-		chooseEnvironmentLayout
-				.addComponent(lblChooseEnvironmentForAnalysisDescription, 0, 3, 1, 3);
-		chooseEnvironmentLayout.addComponent(tblEnvironmentLayout, 0, 4, 1, 4);
-		chooseEnvironmentLayout.addComponent(lblVersion, 0, 5);
-		chooseEnvironmentLayout.addComponent(txtVersion, 1, 5);
+		chooseEnvironmentLayout.addComponent(this.lblChooseEnvironmentHeader, 0, 0, 1, 0);
+		chooseEnvironmentLayout.addComponent(this.lblChooseEnvironmentDescription, 0, 1, 1, 1);
+		chooseEnvironmentLayout.addComponent(this.lblSpecifyEnvFactor, 0, 2);
+		chooseEnvironmentLayout.addComponent(this.selEnvFactor, 1, 2);
+		chooseEnvironmentLayout.addComponent(this.lblChooseEnvironmentForAnalysisDescription, 0, 3, 1, 3);
+		chooseEnvironmentLayout.addComponent(this.tblEnvironmentLayout, 0, 4, 1, 4);
+		chooseEnvironmentLayout.addComponent(this.lblVersion, 0, 5);
+		chooseEnvironmentLayout.addComponent(this.txtVersion, 1, 5);
 
 		VerticalLayout designDetailsWrapper = new VerticalLayout();
 
@@ -1043,11 +1037,11 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		designDetailsLayout.setWidth("100%");
 		designDetailsLayout.setSpacing(true);
 		designDetailsLayout.setMargin(false, false, false, false);
-		designDetailsLayout.addComponent(lblSpecifyDesignDetailsHeader, 0, 0, 1, 0);
-		designDetailsLayout.addComponent(lblDesignType, 0, 1);
-		designDetailsLayout.addComponent(selDesignType, 1, 1);
-		designDetailsLayout.addComponent(lblReplicates, 0, 2);
-		designDetailsLayout.addComponent(selReplicates, 1, 2);
+		designDetailsLayout.addComponent(this.lblSpecifyDesignDetailsHeader, 0, 0, 1, 0);
+		designDetailsLayout.addComponent(this.lblDesignType, 0, 1);
+		designDetailsLayout.addComponent(this.selDesignType, 1, 1);
+		designDetailsLayout.addComponent(this.lblReplicates, 0, 2);
+		designDetailsLayout.addComponent(this.selReplicates, 1, 2);
 
 		designDetailsWrapper.addComponent(designDetailsLayout);
 
@@ -1056,60 +1050,60 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		gLayout.setColumnExpandRatio(1, 1);
 		gLayout.setWidth("100%");
 		gLayout.setSpacing(true);
-		gLayout.addStyleName(MARGIN_TOP10);
-		gLayout.addComponent(getLblSpecifyGenotypesHeader(), 0, 0, 1, 0);
-		gLayout.addComponent(getLblGenotypes(), 0, 1);
-		gLayout.addComponent(getSelGenotypes(), 1, 1);
-		getBlockRowColumnContainer().addComponent(gLayout);
+		gLayout.addStyleName(SingleSiteAnalysisDetailsPanel.MARGIN_TOP10);
+		gLayout.addComponent(this.getLblSpecifyGenotypesHeader(), 0, 0, 1, 0);
+		gLayout.addComponent(this.getLblGenotypes(), 0, 1);
+		gLayout.addComponent(this.getSelGenotypes(), 1, 1);
+		this.getBlockRowColumnContainer().addComponent(gLayout);
 
-		designDetailsWrapper.addComponent(getBlockRowColumnContainer());
+		designDetailsWrapper.addComponent(this.getBlockRowColumnContainer());
 
-		mainLayout.addComponent(lblPageTitle);
-		mainLayout.addComponent(new Label(""));
+		this.mainLayout.addComponent(this.lblPageTitle);
+		this.mainLayout.addComponent(new Label(""));
 
 		VerticalLayout subMainLayout = new VerticalLayout();
-		subMainLayout.addComponent(lblTitle);
+		subMainLayout.addComponent(this.lblTitle);
 		subMainLayout.addComponent(selectedInfoLayout);
-		mainLayout.addComponent(subMainLayout);
+		this.mainLayout.addComponent(subMainLayout);
 
 		HorizontalLayout combineLayout = new HorizontalLayout();
 		combineLayout.setSizeUndefined();
 		combineLayout.setWidth("100%");
 		combineLayout.addComponent(chooseEnvironmentLayout);
 		combineLayout.addComponent(designDetailsWrapper);
-		mainLayout.addComponent(combineLayout);
+		this.mainLayout.addComponent(combineLayout);
 
 		HorizontalLayout combineLayout2 = new HorizontalLayout();
 		combineLayout2.setSpacing(true);
-		combineLayout2.addComponent(btnBack);
-		combineLayout2.addComponent(btnReset);
-		combineLayout2.addComponent(btnRun);
-		combineLayout2.addComponent(btnUpload);
-		combineLayout2.setComponentAlignment(btnReset, Alignment.TOP_CENTER);
-		combineLayout2.setComponentAlignment(btnRun, Alignment.TOP_CENTER);
-		combineLayout2.setComponentAlignment(btnUpload, Alignment.TOP_CENTER);
-		mainLayout.addComponent(combineLayout2);
-		mainLayout.setComponentAlignment(combineLayout2, Alignment.TOP_CENTER);
+		combineLayout2.addComponent(this.btnBack);
+		combineLayout2.addComponent(this.btnReset);
+		combineLayout2.addComponent(this.btnRun);
+		combineLayout2.addComponent(this.btnUpload);
+		combineLayout2.setComponentAlignment(this.btnReset, Alignment.TOP_CENTER);
+		combineLayout2.setComponentAlignment(this.btnRun, Alignment.TOP_CENTER);
+		combineLayout2.setComponentAlignment(this.btnUpload, Alignment.TOP_CENTER);
+		this.mainLayout.addComponent(combineLayout2);
+		this.mainLayout.setComponentAlignment(combineLayout2, Alignment.TOP_CENTER);
 
-		mainLayout.setMargin(new MarginInfo(false, true, true, true));
+		this.mainLayout.setMargin(new MarginInfo(false, true, true, true));
 
-		addComponent(mainLayout);
+		this.addComponent(this.mainLayout);
 	}
 
 	private void reset() {
 
-		selEnvFactor.select(selEnvFactor.getItemIds().iterator().next());
-		checkDesignFactor();
-		selReplicates.select(selReplicates.getItemIds().iterator().next());
-		getSelGenotypes().select(getSelGenotypes().getItemIds().iterator().next());
-		footerCheckBox.setValue(false);
-		txtAnalysisName.setValue(getBreedingViewInput().getBreedingViewAnalysisName());
+		this.selEnvFactor.select(this.selEnvFactor.getItemIds().iterator().next());
+		this.checkDesignFactor();
+		this.selReplicates.select(this.selReplicates.getItemIds().iterator().next());
+		this.getSelGenotypes().select(this.getSelGenotypes().getItemIds().iterator().next());
+		this.footerCheckBox.setValue(false);
+		this.txtAnalysisName.setValue(this.getBreedingViewInput().getBreedingViewAnalysisName());
 
 	}
 
 	protected void initializeActions() {
 
-		btnBack.addListener(new Button.ClickListener() {
+		this.btnBack.addListener(new Button.ClickListener() {
 
 			private static final long serialVersionUID = 3878612968330447329L;
 
@@ -1117,112 +1111,112 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 			public void buttonClick(ClickEvent event) {
 
 				IContentWindow w = (IContentWindow) event.getComponent().getWindow();
-				selectDatasetForBreedingViewPanel.setParent(null);
-				w.showContent(selectDatasetForBreedingViewPanel);
+				SingleSiteAnalysisDetailsPanel.this.selectDatasetForBreedingViewPanel.setParent(null);
+				w.showContent(SingleSiteAnalysisDetailsPanel.this.selectDatasetForBreedingViewPanel);
 
 			}
 		});
 
-		btnReset.addListener(new Button.ClickListener() {
+		this.btnReset.addListener(new Button.ClickListener() {
 
 			private static final long serialVersionUID = 3878612968330447329L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {
 
-				reset();
+				SingleSiteAnalysisDetailsPanel.this.reset();
 
 			}
 		});
 
 		Button.ClickListener runBreedingView = new RunBreedingViewButtonListener();
 
-		btnRun.addListener(runBreedingView);
-		btnRun.setClickShortcut(KeyCode.ENTER);
-		btnRun.addStyleName("primary");
-		
-		btnUpload.addListener(new Button.ClickListener() {
-			
+		this.btnRun.addListener(runBreedingView);
+		this.btnRun.setClickShortcut(KeyCode.ENTER);
+		this.btnRun.addStyleName("primary");
+
+		this.btnUpload.addListener(new Button.ClickListener() {
+
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {
 				Map<String, Boolean> visibleTraitsMap = new HashMap<>();
-				for (VariableType factor : factorsInDataset){
+				for (VariableType factor : SingleSiteAnalysisDetailsPanel.this.factorsInDataset) {
 					visibleTraitsMap.put(factor.getLocalName(), true);
 				}
-				visibleTraitsMap.putAll(breedingViewInput.getVariatesActiveState());
-				
-				FileUploadBreedingViewOutputWindow window = new FileUploadBreedingViewOutputWindow(event.getComponent().getWindow(), breedingViewInput.getStudyId(), project, visibleTraitsMap);
-				
+				visibleTraitsMap.putAll(SingleSiteAnalysisDetailsPanel.this.breedingViewInput.getVariatesActiveState());
+
+				FileUploadBreedingViewOutputWindow window =
+						new FileUploadBreedingViewOutputWindow(event.getComponent().getWindow(),
+								SingleSiteAnalysisDetailsPanel.this.breedingViewInput.getStudyId(),
+								SingleSiteAnalysisDetailsPanel.this.project, visibleTraitsMap);
+
 				event.getComponent().getWindow().addWindow(window);
-				
+
 			}
 		});
-		btnUpload.addStyleName("primary");
+		this.btnUpload.addStyleName("primary");
 
-		selDesignType.addListener(new BreedingViewDesignTypeValueChangeListener(this));
-		selReplicates.addListener(new BreedingViewReplicatesValueChangeListener(this));
-		selEnvFactor.addListener(new BreedingViewEnvFactorValueChangeListener(this));
+		this.selDesignType.addListener(new BreedingViewDesignTypeValueChangeListener(this));
+		this.selReplicates.addListener(new BreedingViewReplicatesValueChangeListener(this));
+		this.selEnvFactor.addListener(new BreedingViewEnvFactorValueChangeListener(this));
 	}
 
 	protected void assemble() {
-		initialize();
-		initializeComponents();
-		initializeLayout();
-		initializeActions();
+		this.initialize();
+		this.initializeComponents();
+		this.initializeLayout();
+		this.initializeActions();
 	}
 
 	@Override
 	public void afterPropertiesSet() {
-		assemble();
-		managerFactory.close();
+		this.assemble();
+		this.managerFactory.close();
 	}
 
 	@Override
 	public void attach() {
 		super.attach();
 
-		updateLabels();
+		this.updateLabels();
 	}
 
 	@Override
 	public void updateLabels() {
-		messageSource.setValue(lblVersion, Message.BV_VERSION);
-		messageSource.setValue(lblProjectType, Message.BV_PROJECT_TYPE);
-		messageSource.setValue(lblAnalysisName, Message.BV_ANALYSIS_NAME);
-		messageSource.setValue(lblSiteEnvironment, Message.BV_SITE_ENVIRONMENT);
-		messageSource.setValue(lblSpecifyEnvFactor, Message.BV_SPECIFY_ENV_FACTOR);
-		messageSource.setValue(lblSelectEnvironmentForAnalysis, Message.BV_SELECT_ENV_FOR_ANALYSIS);
-		messageSource.setValue(lblSpecifyNameForAnalysisEnv,
-				Message.BV_SPECIFY_NAME_FOR_ANALYSIS_ENV);
-		messageSource.setValue(lblDesign, Message.BV_DESIGN);
-		messageSource.setValue(lblDesignType, Message.DESIGN_TYPE);
-		messageSource.setValue(getLblReplicates(), Message.BV_SPECIFY_REPLICATES);
-		messageSource.setValue(getLblBlocks(), Message.BV_SPECIFY_BLOCKS);
-		messageSource.setValue(getLblSpecifyRowFactor(), Message.BV_SPECIFY_ROW_FACTOR);
-		messageSource.setValue(getLblSpecifyColumnFactor(), Message.BV_SPECIFY_COLUMN_FACTOR);
-		messageSource.setValue(getLblGenotypes(), Message.BV_GENOTYPES);
-		
-		if (Boolean.parseBoolean(isServerApp)){
-			messageSource.setCaption(btnRun, Message.DOWNLOAD_INPUT_FILES);
-			btnUpload.setVisible(true);
-			btnUpload.setCaption("Upload Output Files to BMS");
-		}else{
-			messageSource.setCaption(btnRun, Message.RUN_BREEDING_VIEW);
-			btnUpload.setVisible(false);
-		}
-		messageSource.setCaption(btnReset, Message.RESET);
-		messageSource.setCaption(btnBack, Message.BACK);
+		this.messageSource.setValue(this.lblVersion, Message.BV_VERSION);
+		this.messageSource.setValue(this.lblProjectType, Message.BV_PROJECT_TYPE);
+		this.messageSource.setValue(this.lblAnalysisName, Message.BV_ANALYSIS_NAME);
+		this.messageSource.setValue(this.lblSiteEnvironment, Message.BV_SITE_ENVIRONMENT);
+		this.messageSource.setValue(this.lblSpecifyEnvFactor, Message.BV_SPECIFY_ENV_FACTOR);
+		this.messageSource.setValue(this.lblSelectEnvironmentForAnalysis, Message.BV_SELECT_ENV_FOR_ANALYSIS);
+		this.messageSource.setValue(this.lblSpecifyNameForAnalysisEnv, Message.BV_SPECIFY_NAME_FOR_ANALYSIS_ENV);
+		this.messageSource.setValue(this.lblDesign, Message.BV_DESIGN);
+		this.messageSource.setValue(this.lblDesignType, Message.DESIGN_TYPE);
+		this.messageSource.setValue(this.getLblReplicates(), Message.BV_SPECIFY_REPLICATES);
+		this.messageSource.setValue(this.getLblBlocks(), Message.BV_SPECIFY_BLOCKS);
+		this.messageSource.setValue(this.getLblSpecifyRowFactor(), Message.BV_SPECIFY_ROW_FACTOR);
+		this.messageSource.setValue(this.getLblSpecifyColumnFactor(), Message.BV_SPECIFY_COLUMN_FACTOR);
+		this.messageSource.setValue(this.getLblGenotypes(), Message.BV_GENOTYPES);
 
-		messageSource.setValue(lblTitle, Message.BV_TITLE);
-		messageSource.setValue(lblPageTitle, Message.TITLE_SSA);
-		messageSource.setValue(lblDatasetName, Message.BV_DATASET_NAME);
-		messageSource.setValue(lblDatasourceName, Message.BV_DATASOURCE_NAME);
-		messageSource.setValue(lblChooseEnvironmentDescription,
-				Message.BV_CHOOSE_ENVIRONMENT_DESCRIPTION);
-		messageSource.setValue(lblChooseEnvironmentForAnalysisDescription,
-				Message.BV_CHOOSE_ENVIRONMENT_FOR_ANALYSIS_DESC);
+		if (Boolean.parseBoolean(this.isServerApp)) {
+			this.messageSource.setCaption(this.btnRun, Message.DOWNLOAD_INPUT_FILES);
+			this.btnUpload.setVisible(true);
+			this.btnUpload.setCaption("Upload Output Files to BMS");
+		} else {
+			this.messageSource.setCaption(this.btnRun, Message.RUN_BREEDING_VIEW);
+			this.btnUpload.setVisible(false);
+		}
+		this.messageSource.setCaption(this.btnReset, Message.RESET);
+		this.messageSource.setCaption(this.btnBack, Message.BACK);
+
+		this.messageSource.setValue(this.lblTitle, Message.BV_TITLE);
+		this.messageSource.setValue(this.lblPageTitle, Message.TITLE_SSA);
+		this.messageSource.setValue(this.lblDatasetName, Message.BV_DATASET_NAME);
+		this.messageSource.setValue(this.lblDatasourceName, Message.BV_DATASOURCE_NAME);
+		this.messageSource.setValue(this.lblChooseEnvironmentDescription, Message.BV_CHOOSE_ENVIRONMENT_DESCRIPTION);
+		this.messageSource.setValue(this.lblChooseEnvironmentForAnalysisDescription, Message.BV_CHOOSE_ENVIRONMENT_FOR_ANALYSIS_DESC);
 	}
 
 	public void setBreedingViewInput(BreedingViewInput breedingViewInput) {
@@ -1230,7 +1224,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	}
 
 	public ManagerFactory getManagerFactory() {
-		return managerFactory;
+		return this.managerFactory;
 	}
 
 	public void setManagerFactory(ManagerFactory managerFactory) {
@@ -1238,7 +1232,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	}
 
 	public Label getLblBlocks() {
-		return lblBlocks;
+		return this.lblBlocks;
 	}
 
 	public void setLblBlocks(Label lblBlocks) {
@@ -1246,7 +1240,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	}
 
 	public Label getLblSpecifyRowFactor() {
-		return lblSpecifyRowFactor;
+		return this.lblSpecifyRowFactor;
 	}
 
 	public void setLblSpecifyRowFactor(Label lblSpecifyRowFactor) {
@@ -1254,7 +1248,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	}
 
 	public Label getLblSpecifyColumnFactor() {
-		return lblSpecifyColumnFactor;
+		return this.lblSpecifyColumnFactor;
 	}
 
 	public void setLblSpecifyColumnFactor(Label lblSpecifyColumnFactor) {
@@ -1262,7 +1256,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	}
 
 	public Label getLblReplicates() {
-		return lblReplicates;
+		return this.lblReplicates;
 	}
 
 	public void setLblReplicates(Label lblReplicates) {
@@ -1270,7 +1264,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	}
 
 	public Map<String, Boolean> getEnvironmentsCheckboxState() {
-		return environmentsCheckboxState;
+		return this.environmentsCheckboxState;
 	}
 
 	public void setEnvironmentsCheckboxState(Map<String, Boolean> environmentsCheckboxState) {
@@ -1280,8 +1274,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	public List<SeaEnvironmentModel> getSelectedEnvironments() {
 
 		List<SeaEnvironmentModel> envs = new ArrayList<SeaEnvironmentModel>();
-		for (Iterator<?> itr = tblEnvironmentSelection.getContainerDataSource().getItemIds()
-				.iterator(); itr.hasNext();) {
+		for (Iterator<?> itr = this.tblEnvironmentSelection.getContainerDataSource().getItemIds().iterator(); itr.hasNext();) {
 			SeaEnvironmentModel m = (SeaEnvironmentModel) itr.next();
 			if (m.getActive()) {
 				envs.add(m);
@@ -1291,7 +1284,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	}
 
 	public VerticalLayout getBlockRowColumnContainer() {
-		return blockRowColumnContainer;
+		return this.blockRowColumnContainer;
 	}
 
 	public void setBlockRowColumnContainer(VerticalLayout blockRowColumnContainer) {
@@ -1303,7 +1296,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	}
 
 	public Label getLblGenotypes() {
-		return lblGenotypes;
+		return this.lblGenotypes;
 	}
 
 	public void setLblGenotypes(Label lblGenotypes) {
@@ -1311,7 +1304,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	}
 
 	public Label getLblSpecifyGenotypesHeader() {
-		return lblSpecifyGenotypesHeader;
+		return this.lblSpecifyGenotypesHeader;
 	}
 
 	public void setLblSpecifyGenotypesHeader(Label lblSpecifyGenotypesHeader) {
@@ -1319,7 +1312,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	}
 
 	public SimpleResourceBundleMessageSource getMessageSource() {
-		return messageSource;
+		return this.messageSource;
 	}
 
 	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
@@ -1332,26 +1325,25 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		gLayout.setColumnExpandRatio(1, 1);
 		gLayout.setWidth("100%");
 		gLayout.setSpacing(true);
-		gLayout.addStyleName(MARGIN_TOP10);
+		gLayout.addStyleName(SingleSiteAnalysisDetailsPanel.MARGIN_TOP10);
 
-		getBlockRowColumnContainer().removeAllComponents();
-		gLayout.addComponent(getLblSpecifyColumnFactor(), 0, 0);
-		gLayout.addComponent(getSelColumnFactor(), 1, 0);
-		gLayout.addComponent(getLblSpecifyRowFactor(), 0, 1);
-		gLayout.addComponent(getSelRowFactor(), 1, 1);
-		gLayout.addComponent(getLblSpecifyGenotypesHeader(), 0, 2, 1, 2);
-		gLayout.addComponent(getLblGenotypes(), 0, 3);
-		gLayout.addComponent(getSelGenotypes(), 1, 3);
-		getBlockRowColumnContainer().addComponent(gLayout);
+		this.getBlockRowColumnContainer().removeAllComponents();
+		gLayout.addComponent(this.getLblSpecifyColumnFactor(), 0, 0);
+		gLayout.addComponent(this.getSelColumnFactor(), 1, 0);
+		gLayout.addComponent(this.getLblSpecifyRowFactor(), 0, 1);
+		gLayout.addComponent(this.getSelRowFactor(), 1, 1);
+		gLayout.addComponent(this.getLblSpecifyGenotypesHeader(), 0, 2, 1, 2);
+		gLayout.addComponent(this.getLblGenotypes(), 0, 3);
+		gLayout.addComponent(this.getSelGenotypes(), 1, 3);
+		this.getBlockRowColumnContainer().addComponent(gLayout);
 
-		if (!getSelReplicates().isEnabled()
-				|| getSelReplicates().getItemIds().isEmpty()) {
+		if (!this.getSelReplicates().isEnabled() || this.getSelReplicates().getItemIds().isEmpty()) {
 
-			for (Object itemId : getSelBlocks().getItemIds()) {
-				getSelReplicates().addItem(itemId);
-				getSelReplicates().setItemCaption(itemId, REPLICATES);
-				getSelReplicates().select(itemId);
-				getSelReplicates().setEnabled(true);
+			for (Object itemId : this.getSelBlocks().getItemIds()) {
+				this.getSelReplicates().addItem(itemId);
+				this.getSelReplicates().setItemCaption(itemId, SingleSiteAnalysisDetailsPanel.REPLICATES);
+				this.getSelReplicates().select(itemId);
+				this.getSelReplicates().setEnabled(true);
 			}
 		}
 	}
@@ -1362,22 +1354,21 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		gLayout.setColumnExpandRatio(1, 1);
 		gLayout.setWidth("100%");
 		gLayout.setSpacing(true);
-		gLayout.addStyleName(MARGIN_TOP10);
+		gLayout.addStyleName(SingleSiteAnalysisDetailsPanel.MARGIN_TOP10);
 
-		getBlockRowColumnContainer().removeAllComponents();
-		gLayout.addComponent(getLblSpecifyGenotypesHeader(), 0, 0, 1, 0);
-		gLayout.addComponent(getLblGenotypes(), 0, 1);
-		gLayout.addComponent(getSelGenotypes(), 1, 1);
-		getBlockRowColumnContainer().addComponent(gLayout);
+		this.getBlockRowColumnContainer().removeAllComponents();
+		gLayout.addComponent(this.getLblSpecifyGenotypesHeader(), 0, 0, 1, 0);
+		gLayout.addComponent(this.getLblGenotypes(), 0, 1);
+		gLayout.addComponent(this.getSelGenotypes(), 1, 1);
+		this.getBlockRowColumnContainer().addComponent(gLayout);
 
-		if (!getSelReplicates().isEnabled()
-				|| getSelReplicates().getItemIds().isEmpty()) {
+		if (!this.getSelReplicates().isEnabled() || this.getSelReplicates().getItemIds().isEmpty()) {
 
-			for (Object itemId : getSelBlocks().getItemIds()) {
-				getSelReplicates().addItem(itemId);
-				getSelReplicates().setItemCaption(itemId, REPLICATES);
-				getSelReplicates().select(itemId);
-				getSelReplicates().setEnabled(true);
+			for (Object itemId : this.getSelBlocks().getItemIds()) {
+				this.getSelReplicates().addItem(itemId);
+				this.getSelReplicates().setItemCaption(itemId, SingleSiteAnalysisDetailsPanel.REPLICATES);
+				this.getSelReplicates().select(itemId);
+				this.getSelReplicates().setEnabled(true);
 			}
 		}
 	}
@@ -1388,43 +1379,39 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		gLayout.setColumnExpandRatio(1, 1);
 		gLayout.setWidth("100%");
 		gLayout.setSpacing(true);
-		gLayout.addStyleName(MARGIN_TOP10);
+		gLayout.addStyleName(SingleSiteAnalysisDetailsPanel.MARGIN_TOP10);
 
-		getBlockRowColumnContainer().removeAllComponents();
-		gLayout.addComponent(getLblBlocks(), 0, 0);
-		gLayout.addComponent(getSelBlocks(), 1, 0);
-		gLayout.addComponent(getLblSpecifyGenotypesHeader(), 0, 1, 1, 1);
-		gLayout.addComponent(getLblGenotypes(), 0, 2);
-		gLayout.addComponent(getSelGenotypes(), 1, 2);
+		this.getBlockRowColumnContainer().removeAllComponents();
+		gLayout.addComponent(this.getLblBlocks(), 0, 0);
+		gLayout.addComponent(this.getSelBlocks(), 1, 0);
+		gLayout.addComponent(this.getLblSpecifyGenotypesHeader(), 0, 1, 1, 1);
+		gLayout.addComponent(this.getLblGenotypes(), 0, 2);
+		gLayout.addComponent(this.getSelGenotypes(), 1, 2);
 
-		getBlockRowColumnContainer().addComponent(gLayout);
+		this.getBlockRowColumnContainer().addComponent(gLayout);
 
-		if (!getSelReplicates().isEnabled()
-				|| getSelReplicates().getItemIds().isEmpty()) {
+		if (!this.getSelReplicates().isEnabled() || this.getSelReplicates().getItemIds().isEmpty()) {
 
-			for (Object itemId : getSelBlocks().getItemIds()) {
-				getSelReplicates().addItem(itemId);
-				getSelReplicates().setItemCaption(itemId, REPLICATES);
-				getSelReplicates().select(itemId);
-				getSelReplicates().setEnabled(true);
+			for (Object itemId : this.getSelBlocks().getItemIds()) {
+				this.getSelReplicates().addItem(itemId);
+				this.getSelReplicates().setItemCaption(itemId, SingleSiteAnalysisDetailsPanel.REPLICATES);
+				this.getSelReplicates().select(itemId);
+				this.getSelReplicates().setEnabled(true);
 			}
 		}
 	}
 
 	protected void disableEnvironmentEntries() {
 
-		setEnvironmentEntryValues(false);
-		tblEnvironmentSelection.refreshRowCache();
+		this.setEnvironmentEntryValues(false);
+		this.tblEnvironmentSelection.refreshRowCache();
 	}
 
 	protected void setEnvironmentEntryValues(boolean value) {
-		for (Iterator<?> itr = tblEnvironmentSelection.getContainerDataSource()
-				.getItemIds().iterator(); itr.hasNext(); ) {
+		for (Iterator<?> itr = this.tblEnvironmentSelection.getContainerDataSource().getItemIds().iterator(); itr.hasNext();) {
 			SeaEnvironmentModel m = (SeaEnvironmentModel) itr.next();
 			m.setActive(value);
 		}
 	}
-
-
 
 }

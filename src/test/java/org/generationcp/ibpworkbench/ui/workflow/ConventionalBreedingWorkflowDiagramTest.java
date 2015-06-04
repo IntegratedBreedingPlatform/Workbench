@@ -1,13 +1,14 @@
+
 package org.generationcp.ibpworkbench.ui.workflow;
 
 import org.generationcp.MessageResourceUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.ui.VaadinComponentsUtil;
+import org.generationcp.commons.vaadin.ui.VaadinComponentsUtil.VaadinComponentFieldType;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.WorkflowTemplate;
-import org.generationcp.commons.vaadin.ui.VaadinComponentsUtil;
-import org.generationcp.commons.vaadin.ui.VaadinComponentsUtil.VaadinComponentFieldType;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -15,23 +16,23 @@ import org.junit.Test;
 public class ConventionalBreedingWorkflowDiagramTest {
 
 	private static ConventionalBreedingWorkflowDiagram workflow;
-	private static final SimpleResourceBundleMessageSource messageSource = 
-			MessageResourceUtil.getMessageResource();
-	
+	private static final SimpleResourceBundleMessageSource messageSource = MessageResourceUtil.getMessageResource();
+
 	@BeforeClass
 	public static void setUp() {
-		workflow = new ConventionalBreedingWorkflowDiagram(true, 
-				getProjectTestData(), getRoleTestData());
-		workflow.setMessageSource(messageSource);
-		workflow.afterPropertiesSet();
+		ConventionalBreedingWorkflowDiagramTest.workflow =
+				new ConventionalBreedingWorkflowDiagram(true, ConventionalBreedingWorkflowDiagramTest.getProjectTestData(),
+						ConventionalBreedingWorkflowDiagramTest.getRoleTestData());
+		ConventionalBreedingWorkflowDiagramTest.workflow.setMessageSource(ConventionalBreedingWorkflowDiagramTest.messageSource);
+		ConventionalBreedingWorkflowDiagramTest.workflow.afterPropertiesSet();
 	}
-	
+
 	public static Project getProjectTestData() {
 		Project project = new Project();
 		project.setProjectId(1L);
 		return project;
 	}
-	
+
 	public static Role getRoleTestData() {
 		Role role = new Role();
 		role.setName(Role.MANAGER_ROLE_NAME);
@@ -44,9 +45,10 @@ public class ConventionalBreedingWorkflowDiagramTest {
 
 	@Test
 	public void testCheckIfGDMSIsDisplayed() {
-		String caption = messageSource.getMessage(Message.GENOTYPIC_DATA_BROWSER_LINK);
-		boolean isFound = VaadinComponentsUtil.findComponent(workflow.getContent(),
-				VaadinComponentFieldType.CAPTION, caption, null);
-		Assert.assertTrue(caption+" is not found",isFound);
+		String caption = ConventionalBreedingWorkflowDiagramTest.messageSource.getMessage(Message.GENOTYPIC_DATA_BROWSER_LINK);
+		boolean isFound =
+				VaadinComponentsUtil.findComponent(ConventionalBreedingWorkflowDiagramTest.workflow.getContent(),
+						VaadinComponentFieldType.CAPTION, caption, null);
+		Assert.assertTrue(caption + " is not found", isFound);
 	}
 }

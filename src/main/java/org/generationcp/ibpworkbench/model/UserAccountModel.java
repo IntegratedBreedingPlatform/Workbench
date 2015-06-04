@@ -4,16 +4,16 @@
  * Generation Challenge Programme (GCP)
  *
  *
- * This software is licensed for use under the terms of the GNU General Public
- * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
- * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
+ * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
  *
  *******************************************************************************/
+
 package org.generationcp.ibpworkbench.model;
 
-import org.generationcp.commons.security.Role;
-
 import java.io.Serializable;
+
+import org.generationcp.commons.security.Role;
 
 /**
  * <b>Description</b>: A combined Users and Persons POJO.
@@ -21,8 +21,7 @@ import java.io.Serializable;
  * <br>
  * <br>
  * <p/>
- * <b>Author</b>: Michael Blancaflor
- * <br>
+ * <b>Author</b>: Michael Blancaflor <br>
  * <b>File Created</b>: Jul 16, 2012
  */
 public class UserAccountModel implements Serializable {
@@ -52,23 +51,23 @@ public class UserAccountModel implements Serializable {
 	 * Initialize fields so that the "null" String value does not appear.
 	 */
 	public UserAccountModel() {
-		firstName = "";
-		lastName = "";
-		middlename = "";
-		email = "";
+		this.firstName = "";
+		this.lastName = "";
+		this.middlename = "";
+		this.email = "";
 
-		username = "";
-		password = "";
-		passwordConfirmation = "";
-		securityQuestion = "";
-		securityAnswer = "";
+		this.username = "";
+		this.password = "";
+		this.passwordConfirmation = "";
+		this.securityQuestion = "";
+		this.securityAnswer = "";
 
 		// default
-		role = Role.TECHNICIAN.name();
+		this.role = Role.TECHNICIAN.name();
 	}
 
 	public String getFirstName() {
-		return firstName;
+		return this.firstName;
 	}
 
 	public void setFirstName(String firstName) {
@@ -76,7 +75,7 @@ public class UserAccountModel implements Serializable {
 	}
 
 	public String getLastName() {
-		return lastName;
+		return this.lastName;
 	}
 
 	public void setLastName(String lastName) {
@@ -84,7 +83,7 @@ public class UserAccountModel implements Serializable {
 	}
 
 	public String getMiddleName() {
-		return middlename;
+		return this.middlename;
 	}
 
 	public void setMiddleName(String ioname) {
@@ -92,7 +91,7 @@ public class UserAccountModel implements Serializable {
 	}
 
 	public String getEmail() {
-		return email;
+		return this.email;
 	}
 
 	public void setEmail(String pEmail) {
@@ -100,7 +99,7 @@ public class UserAccountModel implements Serializable {
 	}
 
 	public String getUsername() {
-		return username;
+		return this.username;
 	}
 
 	public void setUsername(String username) {
@@ -108,7 +107,7 @@ public class UserAccountModel implements Serializable {
 	}
 
 	public String getPassword() {
-		return password;
+		return this.password;
 	}
 
 	public void setPassword(String password) {
@@ -116,7 +115,7 @@ public class UserAccountModel implements Serializable {
 	}
 
 	public String getPasswordConfirmation() {
-		return passwordConfirmation;
+		return this.passwordConfirmation;
 	}
 
 	public void setPasswordConfirmation(String passwordConfirmation) {
@@ -124,7 +123,7 @@ public class UserAccountModel implements Serializable {
 	}
 
 	public String getSecurityQuestion() {
-		return securityQuestion;
+		return this.securityQuestion;
 	}
 
 	public void setSecurityQuestion(String securityQuestion) {
@@ -132,7 +131,7 @@ public class UserAccountModel implements Serializable {
 	}
 
 	public String getSecurityAnswer() {
-		return securityAnswer;
+		return this.securityAnswer;
 	}
 
 	public void setSecurityAnswer(String securityAnswer) {
@@ -140,7 +139,7 @@ public class UserAccountModel implements Serializable {
 	}
 
 	public String getRole() {
-		return role;
+		return this.role;
 	}
 
 	public void setRole(String role) {
@@ -148,15 +147,15 @@ public class UserAccountModel implements Serializable {
 	}
 
 	public void trimAll() {
-		firstName = firstName.trim();
-		lastName = lastName.trim();
-		middlename = middlename.trim();
-		email = email.trim();
+		this.firstName = this.firstName.trim();
+		this.lastName = this.lastName.trim();
+		this.middlename = this.middlename.trim();
+		this.email = this.email.trim();
 
-		username = username.trim();
-		password = password.trim();
-		passwordConfirmation = passwordConfirmation.trim();
-		securityQuestion = securityQuestion.trim();
-		securityAnswer = securityAnswer.trim();
+		this.username = this.username.trim();
+		this.password = this.password.trim();
+		this.passwordConfirmation = this.passwordConfirmation.trim();
+		this.securityQuestion = this.securityQuestion.trim();
+		this.securityAnswer = this.securityAnswer.trim();
 	}
 }

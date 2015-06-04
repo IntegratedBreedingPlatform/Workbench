@@ -1,15 +1,14 @@
 /***************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- * 
+ *
  * Generation Challenge Programme (GCP)
- * 
- * 
- * This software is licensed for use under the terms of the 
- * GNU General Public License (http://bit.ly/8Ztv8M) and the 
- * provisions of Part F of the Generation Challenge Programme 
- * Amended Consortium Agreement (http://bit.ly/KQX1nL)
- * 
+ *
+ *
+ * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
+ * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ *
  **************************************************************/
+
 package org.generationcp.ibpworkbench.database;
 
 import java.io.File;
@@ -32,170 +31,170 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 /**
- * 
- * @deprecated No "on the fly" DB generation in merged db world. Keeping this class mainly as some backup/restore code (which also needs re-engineering BMS-209) refers to it.
+ *
+ * @deprecated No "on the fly" DB generation in merged db world. Keeping this class mainly as some backup/restore code (which also needs
+ *             re-engineering BMS-209) refers to it.
  * @author Jeffrey Morales
  */
 @Configurable
 @Deprecated
 public class IBDBGeneratorLocalDb extends IBDBGenerator {
 
-    public static final String DATABASE_LOCAL = "database/local";
+	public static final String DATABASE_LOCAL = "database/local";
 
 	private static final Logger LOG = LoggerFactory.getLogger(IBDBGeneratorLocalDb.class);
 
-    private CropType cropType;
-    private Long projectId;
-    
-    @Autowired
-    private WorkbenchDataManager workbenchDataManager;
-    
-    @Resource
-    private Properties workbenchProperties;
+	private CropType cropType;
+	private Long projectId;
 
-    public IBDBGeneratorLocalDb() {
-    }
+	@Autowired
+	private WorkbenchDataManager workbenchDataManager;
 
-    public IBDBGeneratorLocalDb(CropType cropType, Long projectId) {
-        this.cropType = cropType;
-        this.projectId = projectId;
+	@Resource
+	private Properties workbenchProperties;
 
-    }
+	public IBDBGeneratorLocalDb() {
+	}
 
-    public boolean generateDatabase() {
-        
-        boolean isGenerationSuccess = false;
-        
-        try {
-            createConnection();
-            createLocalDatabase();
-            createManagementSystems();
-            generatedDatabaseName = cropType.getDbName();
-            connection.setCatalog(generatedDatabaseName);            
-            isGenerationSuccess = true;
-        } catch (InternationalizableException e) {
-            isGenerationSuccess = false;            
-            throw e;
-        } catch (SQLException e) {
-        	isGenerationSuccess = false;
-        	handleDatabaseError(e);
+	public IBDBGeneratorLocalDb(CropType cropType, Long projectId) {
+		this.cropType = cropType;
+		this.projectId = projectId;
+
+	}
+
+	public boolean generateDatabase() {
+
+		boolean isGenerationSuccess = false;
+
+		try {
+			this.createConnection();
+			this.createLocalDatabase();
+			this.createManagementSystems();
+			this.generatedDatabaseName = this.cropType.getDbName();
+			this.connection.setCatalog(this.generatedDatabaseName);
+			isGenerationSuccess = true;
+		} catch (InternationalizableException e) {
+			isGenerationSuccess = false;
+			throw e;
+		} catch (SQLException e) {
+			isGenerationSuccess = false;
+			IBDBGeneratorLocalDb.handleDatabaseError(e);
 		} finally {
-            closeConnection();
-        }
+			this.closeConnection();
+		}
 
-        return isGenerationSuccess;
-    }
+		return isGenerationSuccess;
+	}
 
-    protected void createLocalDatabase() {
+	protected void createLocalDatabase() {
 
-        String databaseName = cropType.getDbName();
-        StringBuilder createDatabaseSyntax = new StringBuilder();
+		String databaseName = this.cropType.getDbName();
+		StringBuilder createDatabaseSyntax = new StringBuilder();
 
-        Statement statement = null;
+		Statement statement = null;
 
-        try {
+		try {
 
-            statement = connection.createStatement();
-            
-            createDatabaseSyntax.append(SQL_CREATE_DATABASE).append(databaseName).append(SQL_CHAR_SET).append(DEFAULT_CHAR_SET).append(SQL_COLLATE).append(DEFAULT_COLLATE);
-            
-            if (isLanInstallerMode(workbenchProperties)) {
-                statement.addBatch(createDatabaseSyntax.toString());
+			statement = this.connection.createStatement();
 
-                String grantFormat = "GRANT ALL ON %s.* TO %s@'%s' IDENTIFIED BY '%s'";
+			createDatabaseSyntax.append(IBDBGenerator.SQL_CREATE_DATABASE).append(databaseName).append(IBDBGenerator.SQL_CHAR_SET)
+					.append(IBDBGenerator.DEFAULT_CHAR_SET).append(IBDBGenerator.SQL_COLLATE).append(IBDBGenerator.DEFAULT_COLLATE);
 
-                // grant the user
-                String allGrant = String.format(grantFormat, databaseName, DEFAULT_LOCAL_USER, "%",
-                        DEFAULT_LOCAL_PASSWORD);
-                String localGrant = String
-                        .format(grantFormat, databaseName, DEFAULT_LOCAL_USER, DEFAULT_LOCAL_HOST,
-                                DEFAULT_LOCAL_PASSWORD);
+			if (this.isLanInstallerMode(this.workbenchProperties)) {
+				statement.addBatch(createDatabaseSyntax.toString());
 
-                statement.execute(allGrant);
-                statement.execute(localGrant);
-                statement.execute("FLUSH PRIVILEGES");
+				String grantFormat = "GRANT ALL ON %s.* TO %s@'%s' IDENTIFIED BY '%s'";
 
-                statement.executeBatch();
-            } else {
-                StringBuilder createGrantSyntax = new StringBuilder();
-                StringBuilder createFlushSyntax = new StringBuilder();
-                statement.executeUpdate(createDatabaseSyntax.toString());
+				// grant the user
+				String allGrant =
+						String.format(grantFormat, databaseName, IBDBGenerator.DEFAULT_LOCAL_USER, "%",
+								IBDBGenerator.DEFAULT_LOCAL_PASSWORD);
+				String localGrant =
+						String.format(grantFormat, databaseName, IBDBGenerator.DEFAULT_LOCAL_USER, IBDBGenerator.DEFAULT_LOCAL_HOST,
+								IBDBGenerator.DEFAULT_LOCAL_PASSWORD);
 
-                createGrantSyntax.append(SQL_GRANT_ALL).append(databaseName).append(SQL_PERIOD)
-                        .append(DEFAULT_ALL).append(SQL_TO)
-                        .append(SQL_SINGLE_QUOTE).append(DEFAULT_LOCAL_USER)
-                        .append(SQL_SINGLE_QUOTE).append(SQL_AT_SIGN).append(SQL_SINGLE_QUOTE)
-                        .append(DEFAULT_LOCAL_HOST)
-                        .append(SQL_SINGLE_QUOTE).append(SQL_IDENTIFIED_BY).append(SQL_SINGLE_QUOTE)
-                        .append(DEFAULT_LOCAL_PASSWORD).append(SQL_SINGLE_QUOTE);
+				statement.execute(allGrant);
+				statement.execute(localGrant);
+				statement.execute("FLUSH PRIVILEGES");
 
-                statement.executeUpdate(createGrantSyntax.toString());
+				statement.executeBatch();
+			} else {
+				StringBuilder createGrantSyntax = new StringBuilder();
+				StringBuilder createFlushSyntax = new StringBuilder();
+				statement.executeUpdate(createDatabaseSyntax.toString());
 
-                createFlushSyntax.append(SQL_FLUSH_PRIVILEGES);
+				createGrantSyntax.append(IBDBGenerator.SQL_GRANT_ALL).append(databaseName).append(IBDBGenerator.SQL_PERIOD)
+						.append(IBDBGenerator.DEFAULT_ALL).append(IBDBGenerator.SQL_TO).append(IBDBGenerator.SQL_SINGLE_QUOTE)
+						.append(IBDBGenerator.DEFAULT_LOCAL_USER).append(IBDBGenerator.SQL_SINGLE_QUOTE).append(IBDBGenerator.SQL_AT_SIGN)
+						.append(IBDBGenerator.SQL_SINGLE_QUOTE).append(IBDBGenerator.DEFAULT_LOCAL_HOST)
+						.append(IBDBGenerator.SQL_SINGLE_QUOTE).append(IBDBGenerator.SQL_IDENTIFIED_BY)
+						.append(IBDBGenerator.SQL_SINGLE_QUOTE).append(IBDBGenerator.DEFAULT_LOCAL_PASSWORD)
+						.append(IBDBGenerator.SQL_SINGLE_QUOTE);
 
-                statement.executeUpdate(createFlushSyntax.toString());
-            }
+				statement.executeUpdate(createGrantSyntax.toString());
 
+				createFlushSyntax.append(IBDBGenerator.SQL_FLUSH_PRIVILEGES);
 
-            generatedDatabaseName = databaseName;
-            
-            connection.setCatalog(databaseName);
-        } catch (SQLException e) {
-            handleDatabaseError(e);
-        } finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    handleDatabaseError(e);
-                }
-            }
-        }
-    }
+				statement.executeUpdate(createFlushSyntax.toString());
+			}
 
-    protected void createManagementSystems() {
-        try {
-            WorkbenchSetting setting = workbenchDataManager.getWorkbenchSetting();
-            if (setting == null) {
-                throw new IllegalStateException("Workbench setting record not found");
-            }
-            
-            File localDatabaseDirectory = new File(setting.getInstallationDirectory(), DATABASE_LOCAL);
-            // run the common scripts
-            runScriptsInDirectory(generatedDatabaseName, new File(localDatabaseDirectory, "common"));
-            
-            // run crop specific script
-            runScriptsInDirectory(generatedDatabaseName, new File(localDatabaseDirectory, cropType.getCropName()));
-            
-            // run the common-update scripts
-            runScriptsInDirectory(generatedDatabaseName, new File(localDatabaseDirectory, "common-update"));
+			this.generatedDatabaseName = databaseName;
 
-        } catch (SQLFileException | MiddlewareQueryException e){
-        	handleDatabaseError(e);
-        }
-    }
+			this.connection.setCatalog(databaseName);
+		} catch (SQLException e) {
+			IBDBGeneratorLocalDb.handleDatabaseError(e);
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+					IBDBGeneratorLocalDb.handleDatabaseError(e);
+				}
+			}
+		}
+	}
 
-    public static void handleDatabaseError(Exception e) {
-        LOG.error(e.toString(), e);
-        throw new InternationalizableException(e,
-                Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
-    }
+	protected void createManagementSystems() {
+		try {
+			WorkbenchSetting setting = this.workbenchDataManager.getWorkbenchSetting();
+			if (setting == null) {
+				throw new IllegalStateException("Workbench setting record not found");
+			}
 
-    public static void handleConfigurationError(Exception e) {
-        LOG.error(e.toString(), e);
-        throw new InternationalizableException(e,
-                Message.CONFIG_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
-    }
+			File localDatabaseDirectory = new File(setting.getInstallationDirectory(), IBDBGeneratorLocalDb.DATABASE_LOCAL);
+			// run the common scripts
+			this.runScriptsInDirectory(this.generatedDatabaseName, new File(localDatabaseDirectory, "common"));
 
-    public void setCropType(CropType cropType) {
-        this.cropType = cropType;
-    }
+			// run crop specific script
+			this.runScriptsInDirectory(this.generatedDatabaseName, new File(localDatabaseDirectory, this.cropType.getCropName()));
 
-    public void setProjectId(Long projectId) {
-        this.projectId = projectId;
-    }
+			// run the common-update scripts
+			this.runScriptsInDirectory(this.generatedDatabaseName, new File(localDatabaseDirectory, "common-update"));
 
-    public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
-        this.workbenchDataManager = workbenchDataManager;
-    }
+		} catch (SQLFileException | MiddlewareQueryException e) {
+			IBDBGeneratorLocalDb.handleDatabaseError(e);
+		}
+	}
+
+	public static void handleDatabaseError(Exception e) {
+		IBDBGeneratorLocalDb.LOG.error(e.toString(), e);
+		throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
+	}
+
+	public static void handleConfigurationError(Exception e) {
+		IBDBGeneratorLocalDb.LOG.error(e.toString(), e);
+		throw new InternationalizableException(e, Message.CONFIG_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
+	}
+
+	public void setCropType(CropType cropType) {
+		this.cropType = cropType;
+	}
+
+	public void setProjectId(Long projectId) {
+		this.projectId = projectId;
+	}
+
+	public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
+		this.workbenchDataManager = workbenchDataManager;
+	}
 }

@@ -1,54 +1,53 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- * 
+ *
  * Generation Challenge Programme (GCP)
- * 
- * 
- * This software is licensed for use under the terms of the GNU General Public
- * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
- * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- * 
+ *
+ *
+ * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
+ * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ *
  *******************************************************************************/
 
-package  org.generationcp.ibpworkbench.ui.dashboard.listener;
+package org.generationcp.ibpworkbench.ui.dashboard.listener;
 
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Tree;
-import com.vaadin.ui.Tree.ExpandEvent;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.ui.dashboard.preview.GermplasmListPreview;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GermplasmListTreeExpandListener implements Tree.ExpandListener{
-    
-    private static final Logger LOG = LoggerFactory.getLogger(GermplasmListTreeExpandListener.class);
-    private static final long serialVersionUID = -5145904396164706110L;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Tree;
+import com.vaadin.ui.Tree.ExpandEvent;
 
-    private Component source;
+public class GermplasmListTreeExpandListener implements Tree.ExpandListener {
 
-    public GermplasmListTreeExpandListener(Component source) {
-        this.source = source;
-    }
+	private static final Logger LOG = LoggerFactory.getLogger(GermplasmListTreeExpandListener.class);
+	private static final long serialVersionUID = -5145904396164706110L;
 
-    @Override
-    public void nodeExpand(ExpandEvent event) {
-        if (source instanceof GermplasmListPreview) {
-            try {
-                String id = event.getItemId().toString();
-                int germplasmId = Integer.valueOf(id);
-                
-               ((GermplasmListPreview) source).getPresenter().addGermplasmListNode(germplasmId, event.getItemId());
-            }catch (NumberFormatException e) {
-                LOG.error("Click on the root");
-            } 
-            catch (InternationalizableException e) {
-                LOG.error(e.toString() + "\n" + e.getStackTrace());
-                e.printStackTrace();
-                MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
-            }
-        }
-    }
+	private final Component source;
+
+	public GermplasmListTreeExpandListener(Component source) {
+		this.source = source;
+	}
+
+	@Override
+	public void nodeExpand(ExpandEvent event) {
+		if (this.source instanceof GermplasmListPreview) {
+			try {
+				String id = event.getItemId().toString();
+				int germplasmId = Integer.valueOf(id);
+
+				((GermplasmListPreview) this.source).getPresenter().addGermplasmListNode(germplasmId, event.getItemId());
+			} catch (NumberFormatException e) {
+				GermplasmListTreeExpandListener.LOG.error("Click on the root");
+			} catch (InternationalizableException e) {
+				GermplasmListTreeExpandListener.LOG.error(e.toString() + "\n" + e.getStackTrace());
+				e.printStackTrace();
+				MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
+			}
+		}
+	}
 
 }

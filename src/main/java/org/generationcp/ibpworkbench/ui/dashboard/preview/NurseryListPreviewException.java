@@ -1,30 +1,36 @@
+
 package org.generationcp.ibpworkbench.ui.dashboard.preview;
 
 /**
  * Created by cyrus on 10/9/14.
  */
 public class NurseryListPreviewException extends Exception {
-    public static final String NO_SELECTION = "Please select a folder item";
-    public static final String NOT_FOLDER = "Selected item is not a folder.";
-    public static final String HAS_CHILDREN = "Folder has child items.";
-    public static final String BLANK_NAME = "Folder name cannot be blank";
-    public static final String INVALID_NAME = "Please choose a different name";
-    public static final String NO_PARENT = "Parent folder cannot be null";
-    public static final String TOO_LONG = "Folder name is too long";
 
-    public NurseryListPreviewException() {
-        // empty constructor
-    }
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -3201181380012106251L;
+	public static final String NO_SELECTION = "Please select a folder item";
+	public static final String NOT_FOLDER = "Selected item is not a folder.";
+	public static final String HAS_CHILDREN = "Folder has child items.";
+	public static final String BLANK_NAME = "Folder name cannot be blank";
+	public static final String INVALID_NAME = "Please choose a different name";
+	public static final String NO_PARENT = "Parent folder cannot be null";
+	public static final String TOO_LONG = "Folder name is too long";
 
-    public NurseryListPreviewException(String message) {
-        super(message);
-    }
+	public NurseryListPreviewException() {
+		// empty constructor
+	}
 
-    public NurseryListPreviewException(String message, Throwable cause) {
-        super(message, cause);
-    }
+	public NurseryListPreviewException(String message) {
+		super(message);
+	}
 
-    public NurseryListPreviewException(Throwable cause) {
-        super(cause);
-    }
+	public NurseryListPreviewException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	public NurseryListPreviewException(Throwable cause) {
+		super(cause);
+	}
 }

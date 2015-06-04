@@ -1,11 +1,9 @@
+
 package org.generationcp.ibpworkbench.ui.window;
 
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.util.BeanContainer;
-import com.vaadin.ui.*;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.themes.Reindeer;
+import java.text.SimpleDateFormat;
+import java.util.List;
+
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -28,34 +26,45 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.text.SimpleDateFormat;
-import java.util.List;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.util.BeanContainer;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.Upload;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
 public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean, InternationalizableComponent {
-    
+
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchDashboard.class);
-    
+
 	private static final long serialVersionUID = 1L;
 
-    private Project project;
-        
-    // Components
+	private final Project project;
+
+	// Components
 	private ComponentContainer rootLayout;
 	private Button cancelBtn;
 	private Button saveBtn;
-	
+
 	private static final String WINDOW_WIDTH = "400px";
 	private static final String WINDOW_HEIGHT = "430px";
-    
-    @Autowired
-    private WorkbenchDataManager workbenchDataManager;
-    
-    @Autowired
-    private SimpleResourceBundleMessageSource messageSource;
 
-    @Autowired
-    private SessionData sessionData;
+	@Autowired
+	private WorkbenchDataManager workbenchDataManager;
+
+	@Autowired
+	private SimpleResourceBundleMessageSource messageSource;
+
+	@Autowired
+	private SessionData sessionData;
 
 	private List<Project> projects;
 
@@ -65,193 +74,208 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 
 	private Upload upload;
 
-    public RestoreIBDBWindow(Project project) {
-    	this.project = project;
-    }
+	public RestoreIBDBWindow(Project project) {
+		this.project = project;
+	}
 
-    /**
-     * Assemble the UI after all dependencies has been set.
-     */
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        assemble();
-    }
-    
-    protected void initializeData() {
-    	User currentUser = sessionData.getUserData();
-    	
-    	try {
-			projects = workbenchDataManager.getProjectsByUser(currentUser);
-		
+	/**
+	 * Assemble the UI after all dependencies has been set.
+	 */
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		this.assemble();
+	}
+
+	protected void initializeData() {
+		User currentUser = this.sessionData.getUserData();
+
+		try {
+			this.projects = this.workbenchDataManager.getProjectsByUser(currentUser);
+
 			// set the Project Table data source
-	        BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);
-	        projectContainer.setBeanIdProperty("projectName");
-	        for (Project project : projects) {
-	            projectContainer.addBean(project);
-	        }
-    	
-	        projectBackupContainer = new BeanContainer<String, ProjectBackup>(ProjectBackup.class);
-	        projectBackupContainer.setBeanIdProperty("projectBackupId");
+			BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);
+			projectContainer.setBeanIdProperty("projectName");
+			for (Project project : this.projects) {
+				projectContainer.addBean(project);
+			}
 
-	        table.setContainerDataSource(projectBackupContainer);
-	        table.setVisibleColumns(new String[] {"backupTime","backupPath"});
-	        table.setColumnHeader("backupTime","Backup Time");
-	        table.setColumnHeader("backupPath","Backup Path");
-	        
-	        // init table contents
-	        Project p = sessionData.getSelectedProject();
-	        for (ProjectBackup pb : workbenchDataManager.getProjectBackups(p)) {
-	        	projectBackupContainer.addBean(pb);
-	        }
-	        
-	        if (table.getItemIds().isEmpty()) {
-                saveBtn.setEnabled(false);
-            }
-	        
-	        table.setValue(table.firstItemId());
-	        
-    	} catch (MiddlewareQueryException e) {
-    		 LOG.error("Exception", e);
-             throw new InternationalizableException(e, 
-                     Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
+			this.projectBackupContainer = new BeanContainer<String, ProjectBackup>(ProjectBackup.class);
+			this.projectBackupContainer.setBeanIdProperty("projectBackupId");
+
+			this.table.setContainerDataSource(this.projectBackupContainer);
+			this.table.setVisibleColumns(new String[] {"backupTime", "backupPath"});
+			this.table.setColumnHeader("backupTime", "Backup Time");
+			this.table.setColumnHeader("backupPath", "Backup Path");
+
+			// init table contents
+			Project p = this.sessionData.getSelectedProject();
+			for (ProjectBackup pb : this.workbenchDataManager.getProjectBackups(p)) {
+				this.projectBackupContainer.addBean(pb);
+			}
+
+			if (this.table.getItemIds().isEmpty()) {
+				this.saveBtn.setEnabled(false);
+			}
+
+			this.table.setValue(this.table.firstItemId());
+
+		} catch (MiddlewareQueryException e) {
+			RestoreIBDBWindow.LOG.error("Exception", e);
+			throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
 		}
-    }
-    
-    protected void initializeComponents() {
-		saveBtn = new Button("Restore");
-        saveBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-		saveBtn.setSizeUndefined();
+	}
 
-		cancelBtn = new Button("Cancel");
-		cancelBtn.setSizeUndefined();
-    
+	protected void initializeComponents() {
+		this.saveBtn = new Button("Restore");
+		this.saveBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+		this.saveBtn.setSizeUndefined();
+
+		this.cancelBtn = new Button("Cancel");
+		this.cancelBtn.setSizeUndefined();
+
 		// Backup Table
-		table = new Table() {
+		this.table = new Table() {
+
+			/**
+			 *
+			 */
+			private static final long serialVersionUID = 83415233737294478L;
+
 			@Override
-			protected String formatPropertyValue(Object rowId, Object colId,
-					Property property) {
+			protected String formatPropertyValue(Object rowId, Object colId, Property property) {
 
 				if (property.getType() == java.util.Date.class) {
 					SimpleDateFormat sdf = DateUtil.getSimpleDateFormat(DateUtil.FRONTEND_DATE_FORMAT);
-				    return property.getValue() == null ? "" : sdf.format((java.util.Date) property.getValue());
+					return property.getValue() == null ? "" : sdf.format((java.util.Date) property.getValue());
 				}
-				
+
 				return super.formatPropertyValue(rowId, colId, property);
 			}
 		};
-		
-		table.setSelectable(true);
-		table.setImmediate(true);
-		table.setWidth("100%");
-		table.setHeight("200px");
-		
-		upload = new Upload("Or upload an IB local backup file here:",null);
-    }
 
-    protected void initializeLayout() {
-        this.addStyleName(Reindeer.WINDOW_LIGHT);
+		this.table.setSelectable(true);
+		this.table.setImmediate(true);
+		this.table.setWidth("100%");
+		this.table.setHeight("200px");
+
+		this.upload = new Upload("Or upload an IB local backup file here:", null);
+	}
+
+	protected void initializeLayout() {
+		this.addStyleName(Reindeer.WINDOW_LIGHT);
 
 		this.setCaption("Restore IB Database");
-		this.setWidth(WINDOW_WIDTH);
-		this.setHeight(WINDOW_HEIGHT);
+		this.setWidth(RestoreIBDBWindow.WINDOW_WIDTH);
+		this.setHeight(RestoreIBDBWindow.WINDOW_HEIGHT);
 		this.setResizable(false);
 		this.setModal(true);
-				
-		rootLayout = this.getContent();
 
-		rootLayout.addComponent(new Label(messageSource.getMessage(Message.RESTORE_IBDB_TABLE_SELECT_CAPTION)));
-		
-		rootLayout.addComponent(table);
-		
+		this.rootLayout = this.getContent();
+
+		this.rootLayout.addComponent(new Label(this.messageSource.getMessage(Message.RESTORE_IBDB_TABLE_SELECT_CAPTION)));
+
+		this.rootLayout.addComponent(this.table);
+
 		// bind components to layout
 
 		HorizontalLayout hl = new HorizontalLayout();
 		hl.setWidth("100%");
 		hl.setSpacing(true);
 		hl.setMargin(true);
-		
-		
-		Label spacer = new Label("&nbsp;",Label.CONTENT_XHTML);
+
+		Label spacer = new Label("&nbsp;", Label.CONTENT_XHTML);
 		spacer.setWidth("100%");
-		
-		
+
 		hl.addComponent(spacer);
-		hl.addComponent(cancelBtn);
-        hl.addComponent(saveBtn);
+		hl.addComponent(this.cancelBtn);
+		hl.addComponent(this.saveBtn);
 
-        hl.setComponentAlignment(saveBtn, Alignment.MIDDLE_RIGHT);
-		hl.setComponentAlignment(cancelBtn, Alignment.MIDDLE_RIGHT);
-		hl.setExpandRatio(spacer,1.0f);
-		
-		rootLayout.addComponent(hl);
-		
+		hl.setComponentAlignment(this.saveBtn, Alignment.MIDDLE_RIGHT);
+		hl.setComponentAlignment(this.cancelBtn, Alignment.MIDDLE_RIGHT);
+		hl.setExpandRatio(spacer, 1.0f);
+
+		this.rootLayout.addComponent(hl);
+
 		// add upload
-		rootLayout.addComponent(upload);
-		
-    }
+		this.rootLayout.addComponent(this.upload);
 
-    protected void initializeActions() {
-    	
-    	final RestoreIBDBSaveAction restoreAction = new RestoreIBDBSaveAction(project, table, this);
-    	
-    	// DO button listeners + actions here
-    	cancelBtn.addListener(new Button.ClickListener() {
-			
+	}
+
+	protected void initializeActions() {
+
+		final RestoreIBDBSaveAction restoreAction = new RestoreIBDBSaveAction(this.project, this.table, this);
+
+		// DO button listeners + actions here
+		this.cancelBtn.addListener(new Button.ClickListener() {
+
+			/**
+			 *
+			 */
+			private static final long serialVersionUID = 3986272934965189089L;
+
 			@Override
 			public void buttonClick(ClickEvent event) {
 				event.getButton().getWindow().getParent().removeWindow(event.getButton().getWindow());
 			}
 		});
-    
-    	
-    	saveBtn.addListener(new Button.ClickListener() {
-			
+
+		this.saveBtn.addListener(new Button.ClickListener() {
+
+			/**
+			 *
+			 */
+			private static final long serialVersionUID = 2139337955546100675L;
+
 			@Override
 			public void buttonClick(ClickEvent event) {
 				final Window sourceWindow = event.getButton().getWindow();
-				
+
 				ConfirmDialog.show(sourceWindow.getParent(),
-						messageSource.getMessage(Message.RESTORE_IBDB_WINDOW_CAPTION),
-						messageSource.getMessage(Message.RESTORE_IBDB_CONFIRM),
-						messageSource.getMessage(Message.RESTORE),
-						messageSource.getMessage(Message.CANCEL),
-						restoreAction);
+						RestoreIBDBWindow.this.messageSource.getMessage(Message.RESTORE_IBDB_WINDOW_CAPTION),
+						RestoreIBDBWindow.this.messageSource.getMessage(Message.RESTORE_IBDB_CONFIRM),
+						RestoreIBDBWindow.this.messageSource.getMessage(Message.RESTORE),
+						RestoreIBDBWindow.this.messageSource.getMessage(Message.CANCEL), restoreAction);
 			}
 		});
-    	
-    	// Table actions
-    	table.addListener(new Property.ValueChangeListener() {
+
+		// Table actions
+		this.table.addListener(new Property.ValueChangeListener() {
+
+			/**
+			 *
+			 */
+			private static final long serialVersionUID = -8127163440035052055L;
 
 			@Override
 			public void valueChange(ValueChangeEvent event) {
 				RestoreIBDBWindow.LOG.info("Backup Table > Item selected");
-				
-				saveBtn.setEnabled(true);
+
+				RestoreIBDBWindow.this.saveBtn.setEnabled(true);
 			}
-    	});
-    	
-    }
+		});
 
-    protected void assemble() {
-        initializeComponents();
-        initializeLayout();
-        initializeData();
-        initializeActions();
-    }
+	}
 
-    @Override
-    public void attach() {
-        super.attach();
-        
-        updateLabels();
-    }
+	protected void assemble() {
+		this.initializeComponents();
+		this.initializeLayout();
+		this.initializeData();
+		this.initializeActions();
+	}
+
+	@Override
+	public void attach() {
+		super.attach();
+
+		this.updateLabels();
+	}
 
 	@Override
 	public void updateLabels() {
-		messageSource.setCaption(this, Message.RESTORE_IBDB_WINDOW_CAPTION);
-		messageSource.setCaption(saveBtn,Message.RESTORE);
-		messageSource.setCaption(cancelBtn,Message.CANCEL);
-		
-		messageSource.setCaption(upload,Message.UPLOAD_IBDB_CAPTION);
+		this.messageSource.setCaption(this, Message.RESTORE_IBDB_WINDOW_CAPTION);
+		this.messageSource.setCaption(this.saveBtn, Message.RESTORE);
+		this.messageSource.setCaption(this.cancelBtn, Message.CANCEL);
+
+		this.messageSource.setCaption(this.upload, Message.UPLOAD_IBDB_CAPTION);
 	}
 }

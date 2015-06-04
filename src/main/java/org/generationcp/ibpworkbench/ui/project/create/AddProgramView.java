@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.ui.project.create;
 
 import java.util.ArrayList;
@@ -33,251 +34,254 @@ import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
 public class AddProgramView extends Panel implements InitializingBean {
-	
+
 	private static final long serialVersionUID = 1L;
 
-    @Autowired
-    private SimpleResourceBundleMessageSource messageSource;
-	
 	@Autowired
-    private SessionData sessionData;
-	
+	private SimpleResourceBundleMessageSource messageSource;
+
+	@Autowired
+	private SessionData sessionData;
+
 	private VerticalLayout rootLayout;
-	
+
 	private TabSheet tabSheet;
 
-	//TABS
+	// TABS
 	protected CreateProjectPanel createProjectPanel;
 	protected ProjectMembersComponent programMembersPanel;
 	protected ProgramLocationsView programLocationsView;
 	protected ProgramMethodsView programMethodsView;
 
-    // container of the tabs
-    private VerticalLayout programMethodsContainer;
-    private VerticalLayout programLocationsContainer;
-    private VerticalLayout programMembersContainer;
-    private VerticalLayout basicDetailsContainer;
+	// container of the tabs
+	private VerticalLayout programMethodsContainer;
+	private VerticalLayout programLocationsContainer;
+	private VerticalLayout programMembersContainer;
+	private VerticalLayout basicDetailsContainer;
 
+	private AddProgramPresenter presenter;
+	private Button finishButton;
+	private Button cancelBtn;
 
-    private AddProgramPresenter presenter;
-    private Button finishButton;
-    private Button cancelBtn;
+	private int initialTabView = OpenNewProjectAction.BASIC_DETAILS_TAB;
 
-    private int initialTabView = OpenNewProjectAction.BASIC_DETAILS_TAB;
+	public AddProgramView() {
+	}
 
-    public AddProgramView() {	}
-    public AddProgramView(int initialTabView) { this.initialTabView = initialTabView; }
+	public AddProgramView(int initialTabView) {
+		this.initialTabView = initialTabView;
+	}
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		presenter = new AddProgramPresenter(this);
+		this.presenter = new AddProgramPresenter(this);
 
-        assemble();
-		updateLabels();	
+		this.assemble();
+		this.updateLabels();
 	}
-	
-	private void updateLabels(){
-	    // currently does nothing
-    }
+
+	private void updateLabels() {
+		// currently does nothing
+	}
 
 	protected void assemble() {
 
-		initializeComponents();
-		initializeLayout();
-		initializeActions();
+		this.initializeComponents();
+		this.initializeLayout();
+		this.initializeActions();
 
 	}
-	
+
 	protected void initializeComponents() {
-		rootLayout = new VerticalLayout();
-		
-		tabSheet = generateTabSheet();
+		this.rootLayout = new VerticalLayout();
 
-		createProjectPanel = new CreateProjectPanel(presenter);
-		programMembersPanel = new ProjectMembersComponent(presenter);
+		this.tabSheet = this.generateTabSheet();
 
-        programLocationsContainer = new VerticalLayout();
-        programMethodsContainer = new VerticalLayout();
-        programMembersContainer = new VerticalLayout();
-        basicDetailsContainer = new VerticalLayout();
+		this.createProjectPanel = new CreateProjectPanel(this.presenter);
+		this.programMembersPanel = new ProjectMembersComponent(this.presenter);
 
-        programLocationsContainer.setMargin(false);
-        programLocationsContainer.setSpacing(false);
+		this.programLocationsContainer = new VerticalLayout();
+		this.programMethodsContainer = new VerticalLayout();
+		this.programMembersContainer = new VerticalLayout();
+		this.basicDetailsContainer = new VerticalLayout();
 
-        programMethodsContainer.setMargin(false);
-        programMethodsContainer.setSpacing(false);
+		this.programLocationsContainer.setMargin(false);
+		this.programLocationsContainer.setSpacing(false);
 
-        programMembersContainer.setMargin(false);
-        programMembersContainer.setSpacing(false);
+		this.programMethodsContainer.setMargin(false);
+		this.programMethodsContainer.setSpacing(false);
 
-        basicDetailsContainer.setMargin(false);
-        basicDetailsContainer.setSpacing(false);
+		this.programMembersContainer.setMargin(false);
+		this.programMembersContainer.setSpacing(false);
 
-        // finish button
-        finishButton = new Button("Finish");
-        finishButton.setEnabled(false);
-        finishButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-        finishButton.setDebugId("vaadin_finish_btn");
+		this.basicDetailsContainer.setMargin(false);
+		this.basicDetailsContainer.setSpacing(false);
 
-        // finish button
-        cancelBtn = new Button("Cancel");
-    }
-	
+		// finish button
+		this.finishButton = new Button("Finish");
+		this.finishButton.setEnabled(false);
+		this.finishButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+		this.finishButton.setDebugId("vaadin_finish_btn");
+
+		// finish button
+		this.cancelBtn = new Button("Cancel");
+	}
+
 	protected void initializeActions() {
-	    finishButton.addListener(new Button.ClickListener() {
-       
+		this.finishButton.addListener(new Button.ClickListener() {
+
 			private static final long serialVersionUID = 1L;
 
 			@Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
-                new DashboardMainClickListener(IBPWorkbenchApplication.get().getMainWindow(),presenter.program.getProjectId()).buttonClick(clickEvent);
-            }
-        });
+			public void buttonClick(Button.ClickEvent clickEvent) {
+				new DashboardMainClickListener(IBPWorkbenchApplication.get().getMainWindow(), AddProgramView.this.presenter.program
+						.getProjectId()).buttonClick(clickEvent);
+			}
+		});
 
-        cancelBtn.addListener(new HomeAction());
+		this.cancelBtn.addListener(new HomeAction());
 	}
 
 	protected void initializeLayout() {
-		
+
 		final Label heading = new Label("Add a Program");
 		heading.setStyleName(Bootstrap.Typography.H1.styleName());
 
-        final Label headingDesc = new Label("To provide additional Program configuration, " +
-                "click on <em>Members, Locations, and Breeding Method</em> tabs." +
-                " Note that <em>Locations and Methods</em> are optional and will be available once you" +
-                " complete the <em>Basic Details</em> form by clicking <em>Save</em>." +
-                " Click <em>Finish</em> to complete the operation.",Label.CONTENT_XHTML);
+		final Label headingDesc =
+				new Label("To provide additional Program configuration, "
+						+ "click on <em>Members, Locations, and Breeding Method</em> tabs."
+						+ " Note that <em>Locations and Methods</em> are optional and will be available once you"
+						+ " complete the <em>Basic Details</em> form by clicking <em>Save</em>."
+						+ " Click <em>Finish</em> to complete the operation.", Label.CONTENT_XHTML);
 
-		rootLayout.setMargin(new Layout.MarginInfo(false,true,true,true));
-		rootLayout.setWidth("100%");
-		rootLayout.setSpacing(true);
+		this.rootLayout.setMargin(new Layout.MarginInfo(false, true, true, true));
+		this.rootLayout.setWidth("100%");
+		this.rootLayout.setSpacing(true);
 
-        basicDetailsContainer.addComponent(createProjectPanel);
-        programMembersContainer.addComponent(programMembersPanel);
+		this.basicDetailsContainer.addComponent(this.createProjectPanel);
+		this.programMembersContainer.addComponent(this.programMembersPanel);
 
-		tabSheet.addTab(basicDetailsContainer);
-		tabSheet.getTab(basicDetailsContainer).setClosable(false);
-		tabSheet.getTab(basicDetailsContainer).setCaption("Basic Details");
-		
-		tabSheet.addTab(programMembersContainer);
-		tabSheet.getTab(programMembersContainer).setClosable(false);
-		tabSheet.getTab(programMembersContainer).setCaption("Members");
+		this.tabSheet.addTab(this.basicDetailsContainer);
+		this.tabSheet.getTab(this.basicDetailsContainer).setClosable(false);
+		this.tabSheet.getTab(this.basicDetailsContainer).setCaption("Basic Details");
 
-		tabSheet.addTab(programLocationsContainer);
-		tabSheet.getTab(programLocationsContainer).setClosable(false);
-        tabSheet.getTab(programLocationsContainer).setEnabled(false);
-        tabSheet.getTab(programLocationsContainer).setCaption("Locations");
-		
-		tabSheet.addTab(programMethodsContainer);
-		tabSheet.getTab(programMethodsContainer).setClosable(false);
-        tabSheet.getTab(programMethodsContainer).setEnabled(false);
+		this.tabSheet.addTab(this.programMembersContainer);
+		this.tabSheet.getTab(this.programMembersContainer).setClosable(false);
+		this.tabSheet.getTab(this.programMembersContainer).setCaption("Members");
 
-        tabSheet.getTab(programMethodsContainer).setCaption("Breeding Methods");
-		
-		rootLayout.addComponent(heading);
-        rootLayout.addComponent(headingDesc);
-		rootLayout.addComponent(tabSheet);
+		this.tabSheet.addTab(this.programLocationsContainer);
+		this.tabSheet.getTab(this.programLocationsContainer).setClosable(false);
+		this.tabSheet.getTab(this.programLocationsContainer).setEnabled(false);
+		this.tabSheet.getTab(this.programLocationsContainer).setCaption("Locations");
 
-        final HorizontalLayout btnContainer = new HorizontalLayout();
-        btnContainer.setSpacing(true);
-        btnContainer.setSizeUndefined();
+		this.tabSheet.addTab(this.programMethodsContainer);
+		this.tabSheet.getTab(this.programMethodsContainer).setClosable(false);
+		this.tabSheet.getTab(this.programMethodsContainer).setEnabled(false);
 
-        btnContainer.addComponent(cancelBtn);
-        btnContainer.addComponent(finishButton);
+		this.tabSheet.getTab(this.programMethodsContainer).setCaption("Breeding Methods");
 
+		this.rootLayout.addComponent(heading);
+		this.rootLayout.addComponent(headingDesc);
+		this.rootLayout.addComponent(this.tabSheet);
 
-        rootLayout.addComponent(btnContainer);
-        rootLayout.setComponentAlignment(btnContainer,Alignment.MIDDLE_CENTER);
+		final HorizontalLayout btnContainer = new HorizontalLayout();
+		btnContainer.setSpacing(true);
+		btnContainer.setSizeUndefined();
 
-        // set initial tab view
-        tabSheet.setSelectedTab(initialTabView);
+		btnContainer.addComponent(this.cancelBtn);
+		btnContainer.addComponent(this.finishButton);
 
-		setContent(rootLayout);
-		setScrollable(true);
-	    setSizeFull();
+		this.rootLayout.addComponent(btnContainer);
+		this.rootLayout.setComponentAlignment(btnContainer, Alignment.MIDDLE_CENTER);
+
+		// set initial tab view
+		this.tabSheet.setSelectedTab(this.initialTabView);
+
+		this.setContent(this.rootLayout);
+		this.setScrollable(true);
+		this.setSizeFull();
 	}
 
-	
 	protected TabSheet generateTabSheet() {
 		TabSheet tab = new TabSheet();
 
 		tab.setImmediate(true);
-        tab.setStyleName(Reindeer.TABSHEET_MINIMAL);
-        tab.setStyleName("panel-border");
+		tab.setStyleName(Reindeer.TABSHEET_MINIMAL);
+		tab.setStyleName("panel-border");
 
 		return tab;
 	}
 
-    public void updateUIOnProgramSave(Project project) {
-        if (IBPWorkbenchApplication.get().getMainWindow() instanceof WorkbenchMainView) {
-            ((WorkbenchMainView)IBPWorkbenchApplication.get().getMainWindow()).addTitle(sessionData.getSelectedProject().getProjectName());
-        }
+	public void updateUIOnProgramSave(Project project) {
+		if (IBPWorkbenchApplication.get().getMainWindow() instanceof WorkbenchMainView) {
+			((WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow()).addTitle(this.sessionData.getSelectedProject()
+					.getProjectName());
+		}
 
-        // initialize program methods and view and set them to the tabs
-        programMethodsView = new ProgramMethodsView(project);
-        programLocationsView = new ProgramLocationsView(project);
+		// initialize program methods and view and set them to the tabs
+		this.programMethodsView = new ProgramMethodsView(project);
+		this.programLocationsView = new ProgramLocationsView(project);
 
-        tabSheet.getTab(programMethodsContainer).setEnabled(true);
-        programMethodsContainer.removeAllComponents();
-        programMethodsContainer.addComponent(programMethodsView);
+		this.tabSheet.getTab(this.programMethodsContainer).setEnabled(true);
+		this.programMethodsContainer.removeAllComponents();
+		this.programMethodsContainer.addComponent(this.programMethodsView);
 
-        tabSheet.getTab(programLocationsContainer).setEnabled(true);
-        programLocationsContainer.removeAllComponents();
-        programLocationsContainer.addComponent(programLocationsView);
+		this.tabSheet.getTab(this.programLocationsContainer).setEnabled(true);
+		this.programLocationsContainer.removeAllComponents();
+		this.programLocationsContainer.addComponent(this.programLocationsView);
 
-        // re-initialize program members and basic details (in update mode)
-        basicDetailsContainer.removeAllComponents();
-        UpdateProjectPanel updateProjectPanel = new UpdateProjectPanel();
-        updateProjectPanel.hideDeleteBtn();
-        basicDetailsContainer.addComponent(updateProjectPanel);
+		// re-initialize program members and basic details (in update mode)
+		this.basicDetailsContainer.removeAllComponents();
+		UpdateProjectPanel updateProjectPanel = new UpdateProjectPanel();
+		updateProjectPanel.hideDeleteBtn();
+		this.basicDetailsContainer.addComponent(updateProjectPanel);
 
-        programMembersContainer.removeAllComponents();
-        programMembersContainer.addComponent(new ProgramMembersPanel(sessionData.getLastOpenedProject()));
+		this.programMembersContainer.removeAllComponents();
+		this.programMembersContainer.addComponent(new ProgramMembersPanel(this.sessionData.getLastOpenedProject()));
 
-        finishButton.setEnabled(true);
-        cancelBtn.setEnabled(false);
-    }
+		this.finishButton.setEnabled(true);
+		this.cancelBtn.setEnabled(false);
+	}
 
-    public void disableOptionalTabsAndFinish() {
-        tabSheet.getTab(programMethodsContainer).setEnabled(false);
-        tabSheet.getTab(programLocationsContainer).setEnabled(false);
+	public void disableOptionalTabsAndFinish() {
+		this.tabSheet.getTab(this.programMethodsContainer).setEnabled(false);
+		this.tabSheet.getTab(this.programLocationsContainer).setEnabled(false);
 
-        finishButton.setEnabled(false);
-    }
+		this.finishButton.setEnabled(false);
+	}
 
-    public void enableFinishBtn() {
-        finishButton.setEnabled(true);
-    }
+	public void enableFinishBtn() {
+		this.finishButton.setEnabled(true);
+	}
 
-    public void resetBasicDetails() {
-        basicDetailsContainer.removeAllComponents();
+	public void resetBasicDetails() {
+		this.basicDetailsContainer.removeAllComponents();
 
-        createProjectPanel = new CreateProjectPanel(presenter);
-        basicDetailsContainer.addComponent(createProjectPanel);
-    }
+		this.createProjectPanel = new CreateProjectPanel(this.presenter);
+		this.basicDetailsContainer.addComponent(this.createProjectPanel);
+	}
 
-    public void resetProgramMembers() {
-        programMembersContainer.removeAllComponents();
+	public void resetProgramMembers() {
+		this.programMembersContainer.removeAllComponents();
 
-        programMembersPanel = new ProjectMembersComponent(presenter);
-        programMembersContainer.addComponent(programMembersPanel);
-    }
+		this.programMembersPanel = new ProjectMembersComponent(this.presenter);
+		this.programMembersContainer.addComponent(this.programMembersPanel);
+	}
 
+	public Collection<Location> getFavoriteLocations() {
 
-    public Collection<Location> getFavoriteLocations() {
+		if (this.programLocationsView != null) {
+			return this.programLocationsView.getFavoriteLocations();
+		}
 
-        if (programLocationsView != null) {
-            return programLocationsView.getFavoriteLocations();
-        }
+		return new ArrayList<Location>();
+	}
 
-        return new ArrayList<Location>();
-    }
+	public Collection<Method> getFavoriteMethods() {
+		if (this.programMethodsView != null) {
+			return this.programMethodsView.getFavoriteMethods();
+		}
 
-    public Collection<Method> getFavoriteMethods() {
-        if (programMethodsView != null) {
-            return programMethodsView.getFavoriteMethods();
-        }
-
-        return new ArrayList<Method>();
-    }
+		return new ArrayList<Method>();
+	}
 }
