@@ -1,24 +1,20 @@
+
 package org.generationcp.ibpworkbench.validator;
 
 import org.generationcp.commons.security.Role;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.User;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
+import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.validation.Errors;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserAccountValidatorTest {
@@ -34,13 +30,12 @@ public class UserAccountValidatorTest {
 
 	@Test
 	public void testSupports() throws Exception {
-		assertTrue("UserAccountModel.class is supported by validator", validator.supports(
-				UserAccountModel.class));
+		Assert.assertTrue("UserAccountModel.class is supported by validator", this.validator.supports(UserAccountModel.class));
 	}
 
 	@Test
 	public void testValidate() throws Exception {
-		UserAccountValidator partialValidator = spy(validator);
+		UserAccountValidator partialValidator = Mockito.spy(this.validator);
 
 		UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setFirstName("firstName");
@@ -51,28 +46,25 @@ public class UserAccountValidatorTest {
 		userAccount.setPassword("password");
 		userAccount.setPasswordConfirmation("password");
 
-		when(workbenchDataManager.isUsernameExists(userAccount.getUsername())).thenReturn(false);
-		when(workbenchDataManager
-				.isPersonExists(userAccount.getFirstName(), userAccount.getLastName())).thenReturn(
-				false);
+		Mockito.when(this.workbenchDataManager.isUsernameExists(userAccount.getUsername())).thenReturn(false);
+		Mockito.when(this.workbenchDataManager.isPersonExists(userAccount.getFirstName(), userAccount.getLastName())).thenReturn(false);
 
-		partialValidator.validate(userAccount, errors);
+		partialValidator.validate(userAccount, this.errors);
 
-		verify(partialValidator, times(3))
-				.validateFieldLength(any(Errors.class), anyString(), anyString(), anyString(),
-						anyInt());
+		Mockito.verify(partialValidator, Mockito.times(3)).validateFieldLength(Matchers.any(Errors.class), Matchers.anyString(),
+				Matchers.anyString(), Matchers.anyString(), Matchers.anyInt());
 
-		verify(partialValidator).validateEmailFormat(errors, userAccount);
+		Mockito.verify(partialValidator).validateEmailFormat(this.errors, userAccount);
 
-		verify(partialValidator).validateFieldsEmptyOrWhitespace(errors);
+		Mockito.verify(partialValidator).validateFieldsEmptyOrWhitespace(this.errors);
 
-		verify(partialValidator).validatePasswordConfirmationIfEquals(errors, userAccount);
+		Mockito.verify(partialValidator).validatePasswordConfirmationIfEquals(this.errors, userAccount);
 
-		verify(partialValidator).validateUsernameIfExists(errors, userAccount);
+		Mockito.verify(partialValidator).validateUsernameIfExists(this.errors, userAccount);
 
-		verify(partialValidator).validatePersonEmailIfExists(errors, userAccount);
+		Mockito.verify(partialValidator).validatePersonEmailIfExists(this.errors, userAccount);
 
-		verify(partialValidator).validateUserRole(errors, userAccount);
+		Mockito.verify(partialValidator).validateUserRole(this.errors, userAccount);
 
 	}
 
@@ -85,15 +77,12 @@ public class UserAccountValidatorTest {
 		userAccount.setPassword("password");
 		userAccount.setPasswordConfirmation("passwordNotEquals");
 
-		UserAccountValidator partialValidator = spy(validator);
-		partialValidator.validatePasswordConfirmationIfEquals(errors, userAccount);
+		UserAccountValidator partialValidator = Mockito.spy(this.validator);
+		partialValidator.validatePasswordConfirmationIfEquals(this.errors, userAccount);
 
-		verify(errors).rejectValue(arg1.capture(), arg2.capture());
-		assertEquals("error should output password confirmation field",
-				UserAccountFields.PASSWORD_CONFIRMATION, arg1.getValue());
-		assertEquals("show correct error code",
-				UserAccountValidator.SIGNUP_FIELD_PASSWORD_NOT_MATCH,
-				arg2.getValue());
+		Mockito.verify(this.errors).rejectValue(arg1.capture(), arg2.capture());
+		Assert.assertEquals("error should output password confirmation field", UserAccountFields.PASSWORD_CONFIRMATION, arg1.getValue());
+		Assert.assertEquals("show correct error code", UserAccountValidator.SIGNUP_FIELD_PASSWORD_NOT_MATCH, arg2.getValue());
 
 	}
 
@@ -103,11 +92,11 @@ public class UserAccountValidatorTest {
 		userAccount.setPassword("password");
 		userAccount.setPasswordConfirmation("password");
 
-		UserAccountValidator partialValidator = spy(validator);
+		UserAccountValidator partialValidator = Mockito.spy(this.validator);
 
-		partialValidator.validatePasswordConfirmationIfEquals(errors, userAccount);
+		partialValidator.validatePasswordConfirmationIfEquals(this.errors, userAccount);
 
-		verify(errors, never()).rejectValue(anyString(), anyString());
+		Mockito.verify(this.errors, Mockito.never()).rejectValue(Matchers.anyString(), Matchers.anyString());
 	}
 
 	@Test
@@ -118,18 +107,14 @@ public class UserAccountValidatorTest {
 		UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setUsername("username");
 
-		when(workbenchDataManager.isUsernameExists(userAccount.getUsername())).thenReturn(true);
+		Mockito.when(this.workbenchDataManager.isUsernameExists(userAccount.getUsername())).thenReturn(true);
 
-		UserAccountValidator partialValidator = spy(validator);
-		partialValidator.validateUsernameIfExists(errors, userAccount);
+		UserAccountValidator partialValidator = Mockito.spy(this.validator);
+		partialValidator.validateUsernameIfExists(this.errors, userAccount);
 
-		verify(errors)
-				.rejectValue(arg1.capture(), arg2.capture(), any(String[].class), anyString());
-		assertEquals("error should output username field",
-				UserAccountFields.USERNAME, arg1.getValue());
-		assertEquals("show correct error code",
-				UserAccountValidator.SIGNUP_FIELD_USERNAME_EXISTS,
-				arg2.getValue());
+		Mockito.verify(this.errors).rejectValue(arg1.capture(), arg2.capture(), Matchers.any(String[].class), Matchers.anyString());
+		Assert.assertEquals("error should output username field", UserAccountFields.USERNAME, arg1.getValue());
+		Assert.assertEquals("show correct error code", UserAccountValidator.SIGNUP_FIELD_USERNAME_EXISTS, arg2.getValue());
 	}
 
 	@Test
@@ -140,18 +125,14 @@ public class UserAccountValidatorTest {
 		UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setUsername("username");
 
-		when(workbenchDataManager.isUsernameExists(userAccount.getUsername())).thenThrow(
-				MiddlewareQueryException.class);
+		Mockito.when(this.workbenchDataManager.isUsernameExists(userAccount.getUsername())).thenThrow(MiddlewareQueryException.class);
 
-		UserAccountValidator partialValidator = spy(validator);
-		partialValidator.validateUsernameIfExists(errors, userAccount);
+		UserAccountValidator partialValidator = Mockito.spy(this.validator);
+		partialValidator.validateUsernameIfExists(this.errors, userAccount);
 
-		verify(errors).rejectValue(arg1.capture(), arg2.capture());
-		assertEquals("error should output username field",
-				UserAccountFields.USERNAME, arg1.getValue());
-		assertEquals("show correct error code",
-				UserAccountValidator.DATABASE_ERROR,
-				arg2.getValue());
+		Mockito.verify(this.errors).rejectValue(arg1.capture(), arg2.capture());
+		Assert.assertEquals("error should output username field", UserAccountFields.USERNAME, arg1.getValue());
+		Assert.assertEquals("show correct error code", UserAccountValidator.DATABASE_ERROR, arg2.getValue());
 	}
 
 	@Test
@@ -159,12 +140,12 @@ public class UserAccountValidatorTest {
 		UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setUsername("username");
 
-		when(workbenchDataManager.isUsernameExists(userAccount.getUsername())).thenReturn(false);
+		Mockito.when(this.workbenchDataManager.isUsernameExists(userAccount.getUsername())).thenReturn(false);
 
-		UserAccountValidator partialValidator = spy(validator);
-		partialValidator.validateUsernameIfExists(errors, userAccount);
+		UserAccountValidator partialValidator = Mockito.spy(this.validator);
+		partialValidator.validateUsernameIfExists(this.errors, userAccount);
 
-		verify(errors, never()).rejectValue(anyString(), anyString());
+		Mockito.verify(this.errors, Mockito.never()).rejectValue(Matchers.anyString(), Matchers.anyString());
 	}
 
 	@Test
@@ -172,10 +153,10 @@ public class UserAccountValidatorTest {
 		UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setRole(Role.ADMIN.name());
 
-		UserAccountValidator partialValidator = spy(validator);
-		partialValidator.validateUserRole(errors, userAccount);
+		UserAccountValidator partialValidator = Mockito.spy(this.validator);
+		partialValidator.validateUserRole(this.errors, userAccount);
 
-		verify(errors, never()).rejectValue(anyString(), anyString());
+		Mockito.verify(this.errors, Mockito.never()).rejectValue(Matchers.anyString(), Matchers.anyString());
 	}
 
 	@Test
@@ -186,16 +167,13 @@ public class UserAccountValidatorTest {
 		UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setRole("NON_EXISTING_ROLE");
 
-		UserAccountValidator partialValidator = spy(validator);
-		partialValidator.validateUserRole(errors, userAccount);
+		UserAccountValidator partialValidator = Mockito.spy(this.validator);
+		partialValidator.validateUserRole(this.errors, userAccount);
 
-		verify(errors).rejectValue(arg1.capture(), arg2.capture());
+		Mockito.verify(this.errors).rejectValue(arg1.capture(), arg2.capture());
 
-		assertEquals("error should output role field",
-				UserAccountFields.ROLE, arg1.getValue());
-		assertEquals("show correct error code",
-				UserAccountValidator.SIGNUP_FIELD_INVALID_ROLE,
-				arg2.getValue());
+		Assert.assertEquals("error should output role field", UserAccountFields.ROLE, arg1.getValue());
+		Assert.assertEquals("show correct error code", UserAccountValidator.SIGNUP_FIELD_INVALID_ROLE, arg2.getValue());
 	}
 
 	@Test
@@ -206,16 +184,13 @@ public class UserAccountValidatorTest {
 		UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setEmail("invalidEmail.com");
 
-		UserAccountValidator partialValidator = spy(validator);
-		partialValidator.validateEmailFormat(errors, userAccount);
+		UserAccountValidator partialValidator = Mockito.spy(this.validator);
+		partialValidator.validateEmailFormat(this.errors, userAccount);
 
-		verify(errors).rejectValue(arg1.capture(), arg2.capture());
+		Mockito.verify(this.errors).rejectValue(arg1.capture(), arg2.capture());
 
-		assertEquals("error should output email field",
-				UserAccountFields.EMAIL, arg1.getValue());
-		assertEquals("show correct error code",
-				UserAccountValidator.SIGNUP_FIELD_INVALID_EMAIL_FORMAT,
-				arg2.getValue());
+		Assert.assertEquals("error should output email field", UserAccountFields.EMAIL, arg1.getValue());
+		Assert.assertEquals("show correct error code", UserAccountValidator.SIGNUP_FIELD_INVALID_EMAIL_FORMAT, arg2.getValue());
 	}
 
 	@Test
@@ -223,29 +198,28 @@ public class UserAccountValidatorTest {
 		UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setEmail("validemail123@outlook.com");
 
-		UserAccountValidator partialValidator = spy(validator);
-		partialValidator.validateEmailFormat(errors, userAccount);
+		UserAccountValidator partialValidator = Mockito.spy(this.validator);
+		partialValidator.validateEmailFormat(this.errors, userAccount);
 
-		verify(errors, never()).rejectValue(anyString(), anyString());
+		Mockito.verify(this.errors, Mockito.never()).rejectValue(Matchers.anyString(), Matchers.anyString());
 	}
 
 	@Test
 	public void testValidateFieldLength() throws Exception {
-		UserAccountValidator partialValidator = spy(validator);
-		partialValidator
-				.validateFieldLength(errors, "invalid length", "field.prop", "Field Name", 5);
+		UserAccountValidator partialValidator = Mockito.spy(this.validator);
+		partialValidator.validateFieldLength(this.errors, "invalid length", "field.prop", "Field Name", 5);
 
-		verify(errors).rejectValue(anyString(), anyString(), any(String[].class), anyString());
+		Mockito.verify(this.errors).rejectValue(Matchers.anyString(), Matchers.anyString(), Matchers.any(String[].class),
+				Matchers.anyString());
 	}
 
 	@Test
 	public void testValidateFieldLengthValidValue() throws Exception {
-		UserAccountValidator partialValidator = spy(validator);
-		partialValidator
-				.validateFieldLength(errors, "valid length", "field.prop", "Field Name", 30);
+		UserAccountValidator partialValidator = Mockito.spy(this.validator);
+		partialValidator.validateFieldLength(this.errors, "valid length", "field.prop", "Field Name", 30);
 
-		verify(errors, never())
-				.rejectValue(anyString(), anyString(), any(String[].class), anyString());
+		Mockito.verify(this.errors, Mockito.never()).rejectValue(Matchers.anyString(), Matchers.anyString(), Matchers.any(String[].class),
+				Matchers.anyString());
 	}
 
 	@Test
@@ -256,18 +230,14 @@ public class UserAccountValidatorTest {
 		UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setEmail("email@email.com");
 
-		when(workbenchDataManager.isPersonWithEmailExists(userAccount.getEmail())).thenReturn(true);
+		Mockito.when(this.workbenchDataManager.isPersonWithEmailExists(userAccount.getEmail())).thenReturn(true);
 
-		UserAccountValidator partialValidator = spy(validator);
-		partialValidator.validatePersonEmailIfExists(errors, userAccount);
+		UserAccountValidator partialValidator = Mockito.spy(this.validator);
+		partialValidator.validatePersonEmailIfExists(this.errors, userAccount);
 
-		verify(errors)
-				.rejectValue(arg1.capture(), arg2.capture());
-		assertEquals("error should output email field",
-				UserAccountFields.EMAIL, arg1.getValue());
-		assertEquals("show correct error code",
-				UserAccountValidator.SIGNUP_FIELD_EMAIL_EXISTS,
-				arg2.getValue());
+		Mockito.verify(this.errors).rejectValue(arg1.capture(), arg2.capture());
+		Assert.assertEquals("error should output email field", UserAccountFields.EMAIL, arg1.getValue());
+		Assert.assertEquals("show correct error code", UserAccountValidator.SIGNUP_FIELD_EMAIL_EXISTS, arg2.getValue());
 	}
 
 	@Test
@@ -278,18 +248,14 @@ public class UserAccountValidatorTest {
 		UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setEmail("email@email.com");
 
-		when(workbenchDataManager.isPersonWithEmailExists(userAccount.getEmail())).thenThrow(
-				MiddlewareQueryException.class);
+		Mockito.when(this.workbenchDataManager.isPersonWithEmailExists(userAccount.getEmail())).thenThrow(MiddlewareQueryException.class);
 
-		UserAccountValidator partialValidator = spy(validator);
-		partialValidator.validatePersonEmailIfExists(errors, userAccount);
+		UserAccountValidator partialValidator = Mockito.spy(this.validator);
+		partialValidator.validatePersonEmailIfExists(this.errors, userAccount);
 
-		verify(errors).rejectValue(arg1.capture(), arg2.capture());
-		assertEquals("error should output email field",
-				UserAccountFields.EMAIL, arg1.getValue());
-		assertEquals("show correct error code",
-				UserAccountValidator.DATABASE_ERROR,
-				arg2.getValue());
+		Mockito.verify(this.errors).rejectValue(arg1.capture(), arg2.capture());
+		Assert.assertEquals("error should output email field", UserAccountFields.EMAIL, arg1.getValue());
+		Assert.assertEquals("show correct error code", UserAccountValidator.DATABASE_ERROR, arg2.getValue());
 	}
 
 	@Test
@@ -297,12 +263,11 @@ public class UserAccountValidatorTest {
 		UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setUsername("email@email.com");
 
-		when(workbenchDataManager.isPersonWithEmailExists(userAccount.getEmail()))
-				.thenReturn(false);
+		Mockito.when(this.workbenchDataManager.isPersonWithEmailExists(userAccount.getEmail())).thenReturn(false);
 
-		UserAccountValidator partialValidator = spy(validator);
-		partialValidator.validatePersonEmailIfExists(errors, userAccount);
+		UserAccountValidator partialValidator = Mockito.spy(this.validator);
+		partialValidator.validatePersonEmailIfExists(this.errors, userAccount);
 
-		verify(errors, never()).rejectValue(anyString(), anyString());
+		Mockito.verify(this.errors, Mockito.never()).rejectValue(Matchers.anyString(), Matchers.anyString());
 	}
 }

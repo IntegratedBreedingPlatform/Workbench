@@ -1,12 +1,16 @@
+
 package org.generationcp.ibpworkbench.exception;
 
 /**
  * Created by cyrus on 3/5/15.
  */
 public class AppLaunchException extends Throwable {
+
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -7775524159716055130L;
 	public String[] params;
-
-
 
 	public AppLaunchException(String message, Throwable cause) {
 		super(message, cause);
@@ -14,7 +18,7 @@ public class AppLaunchException extends Throwable {
 
 	public AppLaunchException(String message) {
 		super(message);
-		this.params = new String[]{""};
+		this.params = new String[] {""};
 	}
 
 	public AppLaunchException(String message, String[] params) {
@@ -23,13 +27,13 @@ public class AppLaunchException extends Throwable {
 	}
 
 	public AppLaunchException(String message, String[] params, Throwable cause) {
-		super(message,cause);
+		super(message, cause);
 		this.params = params;
 	}
 
 	public String[] getParams() {
-		if (params != null) {
-			return params;
+		if (this.params != null) {
+			return this.params;
 		} else {
 			return new String[] {""};
 		}

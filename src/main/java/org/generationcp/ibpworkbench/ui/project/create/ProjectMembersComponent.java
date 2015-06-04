@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- * 
+ *
  * Generation Challenge Programme (GCP)
- * 
- * 
- * This software is licensed for use under the terms of the GNU General Public
- * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
- * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- * 
+ *
+ *
+ * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
+ * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ *
  *******************************************************************************/
+
 package org.generationcp.ibpworkbench.ui.project.create;
 
 import java.util.ArrayList;
@@ -47,275 +47,271 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 
-
 /**
  * The third tab (Project Members) in Create Project Accordion Component.
- * 
+ *
  * @author Joyce Avestro
  */
 @Configurable
-public class ProjectMembersComponent extends VerticalLayout implements InitializingBean{
-    
-    private static final Logger LOG = LoggerFactory.getLogger(ProjectMembersComponent.class);
-    private static final long serialVersionUID = 1L;
+public class ProjectMembersComponent extends VerticalLayout implements InitializingBean {
 
-    private TwinTableSelect<User> select;
-    
-    private Button newMemberButton;
+	private static final Logger LOG = LoggerFactory.getLogger(ProjectMembersComponent.class);
+	private static final long serialVersionUID = 1L;
 
-    private Button btnCancel;
-    private Button btnSave;
-    private Component buttonArea;
+	private TwinTableSelect<User> select;
 
-    @Autowired
-    private WorkbenchDataManager workbenchDataManager;
+	private Button newMemberButton;
 
-    @Autowired
-    private SessionData sessionData;
+	private Button btnCancel;
+	private Button btnSave;
+	private Component buttonArea;
 
-    @Autowired
-    private SimpleResourceBundleMessageSource messageSource;
+	@Autowired
+	private WorkbenchDataManager workbenchDataManager;
 
-    private AddProgramPresenter presenter;
+	@Autowired
+	private SessionData sessionData;
 
+	@Autowired
+	private SimpleResourceBundleMessageSource messageSource;
 
-    public ProjectMembersComponent() {
-    }
+	private AddProgramPresenter presenter;
 
-
-    public ProjectMembersComponent(AddProgramPresenter presenter) {
-        this.presenter = presenter;
+	public ProjectMembersComponent() {
 	}
 
+	public ProjectMembersComponent(AddProgramPresenter presenter) {
+		this.presenter = presenter;
+	}
 
 	@Override
-    public void afterPropertiesSet() throws Exception {       
-        assemble();
-    }
+	public void afterPropertiesSet() throws Exception {
+		this.assemble();
+	}
 
-    protected void assemble() {
-        initializeComponents();
-        initializeValues();
-        initializeLayout();
-        initializeActions();
-    }
+	protected void assemble() {
+		this.initializeComponents();
+		this.initializeValues();
+		this.initializeLayout();
+		this.initializeActions();
+	}
 
-    protected void initializeComponents(){
+	protected void initializeComponents() {
 
-        setSpacing(true);
-        setMargin(true);
-        
-        select = new TwinTableSelect<User>(User.class);
-        
-        Table.ColumnGenerator generator1 = new Table.ColumnGenerator(){
+		this.setSpacing(true);
+		this.setMargin(true);
 
-        	private static final long serialVersionUID = 1L;
+		this.select = new TwinTableSelect<User>(User.class);
+
+		Table.ColumnGenerator generator1 = new Table.ColumnGenerator() {
+
+			private static final long serialVersionUID = 1L;
 
 			@Override
-			public Object generateCell(Table source, Object itemId,
-					Object columnId) {
+			public Object generateCell(Table source, Object itemId, Object columnId) {
 				Person person = ((User) itemId).getPerson();
 				Label label = new Label();
 				label.setValue(person.getDisplayName());
-				if (((User) itemId).getUserid().equals(sessionData.getUserData().getUserid())) {
-                    label.setStyleName("label-bold");
-                }
+				if (((User) itemId).getUserid().equals(ProjectMembersComponent.this.sessionData.getUserData().getUserid())) {
+					label.setStyleName("label-bold");
+				}
 				return label;
 			}
-        	
-        	
-        };
-        Table.ColumnGenerator generator2 = new Table.ColumnGenerator(){
-			
-        	private static final long serialVersionUID = 1L;
+
+		};
+		Table.ColumnGenerator generator2 = new Table.ColumnGenerator() {
+
+			private static final long serialVersionUID = 1L;
 
 			@Override
-			public Object generateCell(Table source, Object itemId,
-					Object columnId) {
+			public Object generateCell(Table source, Object itemId, Object columnId) {
 				Person person = ((User) itemId).getPerson();
 				Label label = new Label();
 				label.setValue(person.getDisplayName());
-				if (((User) itemId).getUserid().equals(sessionData.getUserData().getUserid())) {
-                    label.setStyleName("label-bold");
-                }
+				if (((User) itemId).getUserid().equals(ProjectMembersComponent.this.sessionData.getUserData().getUserid())) {
+					label.setStyleName("label-bold");
+				}
 				return label;
 			}
-        	
-        	
-        };
-        
-        
-        select.getTableLeft().addGeneratedColumn("userName", generator1);
-        select.getTableRight().addGeneratedColumn("userName", generator2);
-        
-        select.setVisibleColumns(new Object[] {"select","userName"});
-        select.setColumnHeaders(new String[] {"<span class='glyphicon glyphicon-ok'></span>","USER NAME"});
-        
-        select.setLeftColumnCaption("Available Users");
-        select.setRightColumnCaption("Selected Program Members");
-        
-        select.setLeftLinkCaption("");
-        select.setRightLinkCaption("Remove Selected Members");
-        select.addRightLinkListener(new Button.ClickListener() {
+
+		};
+
+		this.select.getTableLeft().addGeneratedColumn("userName", generator1);
+		this.select.getTableRight().addGeneratedColumn("userName", generator2);
+
+		this.select.setVisibleColumns(new Object[] {"select", "userName"});
+		this.select.setColumnHeaders(new String[] {"<span class='glyphicon glyphicon-ok'></span>", "USER NAME"});
+
+		this.select.setLeftColumnCaption("Available Users");
+		this.select.setRightColumnCaption("Selected Program Members");
+
+		this.select.setLeftLinkCaption("");
+		this.select.setRightLinkCaption("Remove Selected Members");
+		this.select.addRightLinkListener(new Button.ClickListener() {
+
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				select.removeCheckedSelectedItems();
+				ProjectMembersComponent.this.select.removeCheckedSelectedItems();
 			}
 		});
-        buttonArea = layoutButtonArea();
-    }
+		this.buttonArea = this.layoutButtonArea();
+	}
 
-    protected void initializeValues() {
-        try {
-            Container container = createUsersContainer();
-            select.setContainerDataSource(container);
-            
-            Object selectItem = null;
-            for (Object itemId : select.getTableLeft().getItemIds()){
-            	if (((User) itemId).getUserid().equals(sessionData.getUserData().getUserid())){
-            		selectItem = itemId;
-            	}
-            }
-            
-            if (selectItem != null) {
-                select.select(selectItem);
-            }
+	protected void initializeValues() {
+		try {
+			Container container = this.createUsersContainer();
+			this.select.setContainerDataSource(container);
 
-        }
-        catch (MiddlewareQueryException e) {
-            LOG.error("Error encountered while getting workbench users", e);
-            throw new InternationalizableException(e, Message.DATABASE_ERROR, 
-                                                   Message.CONTACT_ADMIN_ERROR_DESC);
-        }
+			Object selectItem = null;
+			for (Object itemId : this.select.getTableLeft().getItemIds()) {
+				if (((User) itemId).getUserid().equals(this.sessionData.getUserData().getUserid())) {
+					selectItem = itemId;
+				}
+			}
 
-    }
+			if (selectItem != null) {
+				this.select.select(selectItem);
+			}
 
-    protected void initializeLayout() {
-        setSpacing(true);
-        setMargin(true);
+		} catch (MiddlewareQueryException e) {
+			ProjectMembersComponent.LOG.error("Error encountered while getting workbench users", e);
+			throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
+		}
 
-        final HorizontalLayout titleContainer = new HorizontalLayout();
-        final Label heading = new Label("<span class='bms-members' style='color: #D1B02A; font-size: 23px'></span>&nbsp;Program Members",Label.CONTENT_XHTML);
-        final Label headingDesc = new Label("Choose team members for this program by dragging available users from the list on the left into the Program Members list on the right.");
+	}
 
-        heading.setStyleName(Bootstrap.Typography.H4.styleName());
+	protected void initializeLayout() {
+		this.setSpacing(true);
+		this.setMargin(true);
 
-        newMemberButton = new Button("Add New User");
-        newMemberButton.setStyleName(Bootstrap.Buttons.INFO.styleName() + " loc-add-btn");
+		final HorizontalLayout titleContainer = new HorizontalLayout();
+		final Label heading =
+				new Label("<span class='bms-members' style='color: #D1B02A; font-size: 23px'></span>&nbsp;Program Members",
+						Label.CONTENT_XHTML);
+		final Label headingDesc =
+				new Label(
+						"Choose team members for this program by dragging available users from the list on the left into the Program Members list on the right.");
 
-        titleContainer.addComponent(heading);
-        titleContainer.addComponent(newMemberButton);
+		heading.setStyleName(Bootstrap.Typography.H4.styleName());
 
-        titleContainer.setComponentAlignment(newMemberButton, Alignment.MIDDLE_RIGHT);
-        titleContainer.setSizeUndefined();
-        titleContainer.setWidth("100%");
-        titleContainer.setMargin(false, false, false, false);	// move this to css
+		this.newMemberButton = new Button("Add New User");
+		this.newMemberButton.setStyleName(Bootstrap.Buttons.INFO.styleName() + " loc-add-btn");
 
-        addComponent(titleContainer);
-        addComponent(headingDesc);
-        addComponent(select);
-        addComponent(buttonArea);
-        
-        setComponentAlignment(select,Alignment.TOP_CENTER);
-        setComponentAlignment(buttonArea, Alignment.TOP_CENTER);
+		titleContainer.addComponent(heading);
+		titleContainer.addComponent(this.newMemberButton);
 
-    }
+		titleContainer.setComponentAlignment(this.newMemberButton, Alignment.MIDDLE_RIGHT);
+		titleContainer.setSizeUndefined();
+		titleContainer.setWidth("100%");
+		titleContainer.setMargin(false, false, false, false); // move this to css
 
-    protected void initializeActions() {
-        newMemberButton.addListener(new OpenNewProjectAddUserWindowAction(select));
+		this.addComponent(titleContainer);
+		this.addComponent(headingDesc);
+		this.addComponent(this.select);
+		this.addComponent(this.buttonArea);
 
-        btnSave.addListener(new ClickListener() {
+		this.setComponentAlignment(this.select, Alignment.TOP_CENTER);
+		this.setComponentAlignment(this.buttonArea, Alignment.TOP_CENTER);
+
+	}
+
+	protected void initializeActions() {
+		this.newMemberButton.addListener(new OpenNewProjectAddUserWindowAction(this.select));
+
+		this.btnSave.addListener(new ClickListener() {
+
 			private static final long serialVersionUID = 1L;
 
 			@Override
-            public void buttonClick(ClickEvent clickEvent) {
-                try {
-                    presenter.doAddNewProgram();
+			public void buttonClick(ClickEvent clickEvent) {
+				try {
+					ProjectMembersComponent.this.presenter.doAddNewProgram();
 
-                    MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
-                            messageSource.getMessage(Message.SUCCESS), presenter.program.getProjectName() + " program has been successfully created.");
+					MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
+							ProjectMembersComponent.this.messageSource.getMessage(Message.SUCCESS),
+							ProjectMembersComponent.this.presenter.program.getProjectName() + " program has been successfully created.");
 
-                    sessionData.setLastOpenedProject(presenter.program);
-                    sessionData.setSelectedProject(presenter.program);
+					ProjectMembersComponent.this.sessionData.setLastOpenedProject(ProjectMembersComponent.this.presenter.program);
+					ProjectMembersComponent.this.sessionData.setSelectedProject(ProjectMembersComponent.this.presenter.program);
 
-                    if (IBPWorkbenchApplication.get().getMainWindow() instanceof WorkbenchMainView) {
-                        ((WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow()).getSidebar().populateLinks();
-                    }
+					if (IBPWorkbenchApplication.get().getMainWindow() instanceof WorkbenchMainView) {
+						((WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow()).getSidebar().populateLinks();
+					}
 
-                    presenter.enableProgramMethodsAndLocationsTab();
+					ProjectMembersComponent.this.presenter.enableProgramMethodsAndLocationsTab();
 
+				} catch (Exception e) {
 
-                } catch (Exception e) {
+					if (e.getMessage().equals("basic_details_invalid")) {
+						return;
+					}
 
-                    if (e.getMessage().equals("basic_details_invalid")) {
-                        return;
-                    }
+					ProjectMembersComponent.LOG.error("Oops there might be serious problem on creating the program, investigate it!", e);
 
-                    LOG.error("Oops there might be serious problem on creating the program, investigate it!",e);
+					MessageNotifier.showError(clickEvent.getComponent().getWindow(),
+							ProjectMembersComponent.this.messageSource.getMessage(Message.DATABASE_ERROR),
+							ProjectMembersComponent.this.messageSource.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
 
-                    MessageNotifier.showError(clickEvent.getComponent().getWindow(), messageSource.getMessage(Message.DATABASE_ERROR),
-                            messageSource.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
+				}
+			}
+		});
 
-                }
-            }
-        });
+		this.btnCancel.addListener(new ClickListener() {
 
-        btnCancel.addListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-            public void buttonClick(ClickEvent clickEvent) {
-                presenter.resetProgramMembers();
-                presenter.disableProgramMethodsAndLocationsTab();
-            }
-        });
-    }
-    
-    protected Component layoutButtonArea() {
-        HorizontalLayout buttonLayout = new HorizontalLayout();
-        buttonLayout.setSpacing(true);
-        buttonLayout.setMargin(true, false, false, false);
+			public void buttonClick(ClickEvent clickEvent) {
+				ProjectMembersComponent.this.presenter.resetProgramMembers();
+				ProjectMembersComponent.this.presenter.disableProgramMethodsAndLocationsTab();
+			}
+		});
+	}
 
-        btnCancel = new Button("Reset");
-        btnSave = new Button("Save");
-        btnSave.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-     
-        buttonLayout.addComponent(btnCancel);
-        buttonLayout.addComponent(btnSave);
+	protected Component layoutButtonArea() {
+		HorizontalLayout buttonLayout = new HorizontalLayout();
+		buttonLayout.setSpacing(true);
+		buttonLayout.setMargin(true, false, false, false);
 
-        return buttonLayout;
-    }
-    
+		this.btnCancel = new Button("Reset");
+		this.btnSave = new Button("Save");
+		this.btnSave.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
-    private Container createUsersContainer() throws MiddlewareQueryException {
-        List<User> validUserList = new ArrayList<User>();
+		buttonLayout.addComponent(this.btnCancel);
+		buttonLayout.addComponent(this.btnSave);
 
-        // TODO: This can be improved once we implement proper User-Person mapping
-        List<User> userList = workbenchDataManager.getAllUsersSorted();
-        for (User user : userList) {
-            Person person = workbenchDataManager.getPersonById(user.getPersonid());
-            user.setPerson(person);
-            
-            if (person != null) {
-                validUserList.add(user);
-            }
-        }
-        
-        BeanItemContainer<User> beanItemContainer = new BeanItemContainer<User>(User.class);
-        for (User user : validUserList) {
-            if (user.getUserid().equals(sessionData.getUserData().getUserid())) {
-                user.setEnabled(false);
-            }
-            
-            beanItemContainer.addBean(user);
-        }
-        
-        return beanItemContainer;
-    }
+		return buttonLayout;
+	}
 
-    public Set<User> getSelectedUsers(){
-        return select.getValue();
-    }
+	private Container createUsersContainer() throws MiddlewareQueryException {
+		List<User> validUserList = new ArrayList<User>();
+
+		// TODO: This can be improved once we implement proper User-Person mapping
+		List<User> userList = this.workbenchDataManager.getAllUsersSorted();
+		for (User user : userList) {
+			Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
+			user.setPerson(person);
+
+			if (person != null) {
+				validUserList.add(user);
+			}
+		}
+
+		BeanItemContainer<User> beanItemContainer = new BeanItemContainer<User>(User.class);
+		for (User user : validUserList) {
+			if (user.getUserid().equals(this.sessionData.getUserData().getUserid())) {
+				user.setEnabled(false);
+			}
+
+			beanItemContainer.addBean(user);
+		}
+
+		return beanItemContainer;
+	}
+
+	public Set<User> getSelectedUsers() {
+		return this.select.getValue();
+	}
 }

@@ -4,15 +4,18 @@
  * Generation Challenge Programme (GCP)
  *
  *
- * This software is licensed for use under the terms of the GNU General Public
- * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
- * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
+ * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
  *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench;
 
-import com.vaadin.ui.Window;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.dellroad.stuff.vaadin.ContextApplication;
 import org.dellroad.stuff.vaadin.SpringContextApplication;
 import org.generationcp.commons.vaadin.actions.UpdateComponentLabelsAction;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -22,13 +25,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.vaadin.ui.Window;
 
 public class IBPWorkbenchApplication extends SpringContextApplication implements IWorkbenchSession {
 
@@ -51,24 +51,24 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 	private boolean jiraSetupDone = false;
 
 	public static IBPWorkbenchApplication get() {
-		return get(IBPWorkbenchApplication.class);
+		return ContextApplication.get(IBPWorkbenchApplication.class);
 	}
 
 	@Override
 	public void close() {
 		super.close();
 		// implement this when we need to do something on session timeout
-		messageSource.removeListener(messageSourceListener);
+		this.messageSource.removeListener(this.messageSourceListener);
 
 		this.logout();
 
-		LOG.debug("IBPWorkbenchApplication closed");
+		IBPWorkbenchApplication.LOG.debug("IBPWorkbenchApplication closed");
 	}
 
 	protected void logout() {
 		Authentication auth = this.getCurrentSecurityContext().getAuthentication();
 		if (auth != null) {
-			rememberMeServices.logout(this.getRequest(), this.getResponse(), auth);
+			this.rememberMeServices.logout(this.getRequest(), this.getResponse(), auth);
 		}
 		this.getCurrentSecurityContext().setAuthentication(null);
 	}
@@ -77,15 +77,14 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 		return SecurityContextHolder.getContext();
 	}
 
-
 	@Override
 	public void terminalError(com.vaadin.terminal.Terminal.ErrorEvent event) {
-		LOG.error("Encountered error", event.getThrowable());
+		IBPWorkbenchApplication.LOG.error("Encountered error", event.getThrowable());
 	}
 
 	@Override
 	public SessionData getSessionData() {
-		return sessionData;
+		return this.sessionData;
 	}
 
 	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
@@ -93,11 +92,11 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 	}
 
 	public HttpServletResponse getResponse() {
-		return response;
+		return this.response;
 	}
 
 	public HttpServletRequest getRequest() {
-		return request;
+		return this.request;
 	}
 
 	@Override
@@ -115,11 +114,11 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 
 	@Override
 	protected void initSpringApplication(ConfigurableWebApplicationContext context) {
-		assemble();
+		this.assemble();
 	}
 
 	protected void initialize() {
-		setTheme("gcp-default");
+		this.setTheme("gcp-default");
 	}
 
 	protected void initializeComponents() {
@@ -131,21 +130,21 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 	}
 
 	protected void initializeActions() {
-		messageSourceListener = new UpdateComponentLabelsAction(this);
-		messageSource.addListener(messageSourceListener);
+		this.messageSourceListener = new UpdateComponentLabelsAction(this);
+		this.messageSource.addListener(this.messageSourceListener);
 	}
 
 	protected void assemble() {
-		initialize();
-		initializeComponents();
-		initializeLayout();
-		initializeActions();
+		this.initialize();
+		this.initializeComponents();
+		this.initializeLayout();
+		this.initializeActions();
 
-		setMainWindow(new WorkbenchMainView());
+		this.setMainWindow(new WorkbenchMainView());
 	}
 
 	public void toggleJira() {
-		jiraSetupDone = !jiraSetupDone;
+		this.jiraSetupDone = !this.jiraSetupDone;
 	}
 
 	@Override
@@ -154,14 +153,16 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 
 		final String prefetch_script = "/ibpworkbench/VAADIN/js/prefetch-resources.js";
 
-		final String script = "try{var fileref=document.createElement('script'); fileref.setAttribute(\"type\",\"text/javascript\"); fileref.setAttribute(\"src\", \" %s \"); document.getElementsByTagName(\"head\")[0].appendChild(fileref);}catch(e){alert(e);}";
+		final String script =
+				"try{var fileref=document.createElement('script'); fileref.setAttribute(\"type\",\"text/javascript\"); fileref.setAttribute(\"src\", \" %s \"); document.getElementsByTagName(\"head\")[0].appendChild(fileref);}catch(e){alert(e);}";
 
-		if (!jiraSetupDone) {
+		if (!this.jiraSetupDone) {
 			w.executeJavaScript(String.format(script, prefetch_script));
 		}
 
-		if (w instanceof WorkbenchMainView && !jiraSetupDone) {
-			final String jiraSupportJSSrc = "https://pods.iplantcollaborative.org/jira/s/en_US-ihxzyo-418945332/852/5/1.2.9/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?collectorId=5f718b22";
+		if (w instanceof WorkbenchMainView && !this.jiraSetupDone) {
+			final String jiraSupportJSSrc =
+					"https://pods.iplantcollaborative.org/jira/s/en_US-ihxzyo-418945332/852/5/1.2.9/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?collectorId=5f718b22";
 
 			w.executeJavaScript(String.format(script, jiraSupportJSSrc));
 

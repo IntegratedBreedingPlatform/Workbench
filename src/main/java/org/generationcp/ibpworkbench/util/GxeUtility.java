@@ -1,10 +1,15 @@
+
 package org.generationcp.ibpworkbench.util;
 
-import au.com.bytecode.opencsv.CSVWriter;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Link;
-import com.vaadin.ui.TextField;
+import java.io.File;
+import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
+
 import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
@@ -17,10 +22,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.util.*;
-import java.util.Map.Entry;
+import au.com.bytecode.opencsv.CSVWriter;
+
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Link;
+import com.vaadin.ui.TextField;
 
 @Configurable
 public class GxeUtility {
@@ -28,13 +35,12 @@ public class GxeUtility {
 	private static final Logger LOG = LoggerFactory.getLogger(GxeUtility.class);
 	protected static Random random = new Random();
 
-	public static Object createObjectCaption(Class<?> propertyType, String value, Integer colIndex)
-			throws Exception {
+	public static Object createObjectCaption(Class<?> propertyType, String value, Integer colIndex) throws Exception {
 
 		if (propertyType.equals(CheckBox.class) || propertyType.isInstance(CheckBox.class)) {
 			CheckBox o = new CheckBox();
 			if (colIndex > 1) {
-				o.setCaption(randomInRange(1, 100).toString());
+				o.setCaption(GxeUtility.randomInRange(1, 100).toString());
 			} else {
 				o.setCaption(value);
 			}
@@ -63,17 +69,16 @@ public class GxeUtility {
 		} else if (propertyType.equals(Integer.class)) {
 			return new Random().nextInt(100);
 		} else if (propertyType.equals(Double.class)) {
-			return randomInRange(1, 100);
+			return GxeUtility.randomInRange(1, 100);
 		} else {
-			throw new Exception(String.format("Property Type: {%s} is not yet supported.",
-					propertyType.toString()));
+			throw new Exception(String.format("Property Type: {%s} is not yet supported.", propertyType.toString()));
 		}
 
 	}
 
 	public static Double randomInRange(double min, double max) {
 		double range = max - min;
-		double scaled = random.nextDouble() * range;
+		double scaled = GxeUtility.random.nextDouble() * range;
 		return scaled + min;
 	}
 
@@ -92,14 +97,12 @@ public class GxeUtility {
 			writer.writeProjectXML();
 
 		} catch (GxeXMLWriterException e) {
-			LOG.error("Error writng GxE XML file", e);
+			GxeUtility.LOG.error("Error writng GxE XML file", e);
 		}
 	}
 
-	public static File exportGxEDatasetToBreadingViewCsv(DataSet gxeDataset,
-			List<Experiment> experiments, String environmentName, String environmentGroup,
-			String genotypeName, GxeEnvironment gxeEnv, List<Trait> selectedTraits,
-			Project currentProject) {
+	public static File exportGxEDatasetToBreadingViewCsv(DataSet gxeDataset, List<Experiment> experiments, String environmentName,
+			String environmentGroup, String genotypeName, GxeEnvironment gxeEnv, List<Trait> selectedTraits, Project currentProject) {
 		List<String[]> tableItems = new ArrayList<String[]>();
 
 		Map<String, Integer> traitToColNoMap = new Hashtable<String, Integer>();
@@ -110,29 +113,25 @@ public class GxeUtility {
 		// site no && site code insert to columnMap
 		if (environmentName != null && !environmentName.isEmpty()) {
 			traitToColNoMap.put(environmentName, j);
-			headerRow.add(environmentName
-					.replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+			headerRow.add(environmentName.replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
 			j++;
 		}
 
-		if (!environmentGroup.equalsIgnoreCase(environmentName) && environmentGroup != null
-				&& !environmentGroup.isEmpty() && !"None".equalsIgnoreCase(environmentGroup)) {
+		if (!environmentGroup.equalsIgnoreCase(environmentName) && environmentGroup != null && !environmentGroup.isEmpty()
+				&& !"None".equalsIgnoreCase(environmentGroup)) {
 			traitToColNoMap.put(environmentGroup, j);
-			headerRow.add(environmentGroup
-					.replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+			headerRow.add(environmentGroup.replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
 			j++;
 		}
 
 		traitToColNoMap.put(genotypeName, j);
-		headerRow.add(genotypeName
-				.replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+		headerRow.add(genotypeName.replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
 		j++;
 
 		for (Trait trait : selectedTraits) {
 
 			traitToColNoMap.put(trait.getName(), j);
-			headerRow.add(j, trait.getName()
-					.replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+			headerRow.add(j, trait.getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
 			j++;
 		}
 
@@ -173,8 +172,7 @@ public class GxeUtility {
 					var = experiment.getVariates().findByLocalName(traitMapEntry.getKey());
 				}
 
-				if (var != null && var.getValue() != null && !var.getValue().trim()
-						.matches("\\-1(\\.0+)?(E|e)(\\+36)")) {
+				if (var != null && var.getValue() != null && !var.getValue().trim().matches("\\-1(\\.0+)?(E|e)(\\+36)")) {
 					row[traitMapEntry.getValue()] = var.getValue().replace(",", ";");
 				}
 
@@ -192,64 +190,38 @@ public class GxeUtility {
 			}
 
 			String dir =
-					"workspace" + File.separator + currentProject.getProjectName() + File.separator
-							+ "breeding_view" + File.separator + "input";
+					"workspace" + File.separator + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator
+							+ "input";
 
-			LOG.debug("save to" + dir);
+			GxeUtility.LOG.debug("save to" + dir);
 
 			new File(dir).mkdirs();
 
 			File csvFile = new File(dir + File.separator + gxeDataset.getName() + ".csv");
 
-			CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile),
-					CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER, "\r\n");
+			CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER, "\r\n");
 			csvWriter.writeAll(tableItems);
 			csvWriter.flush();
 			csvWriter.close();
 
 			return csvFile;
 		} catch (Exception e) {
-			LOG.debug(e.getMessage(), e);
+			GxeUtility.LOG.debug(e.getMessage(), e);
 			return null;
 		}
 	}
 
-	public static File exportTrialDatasetToSummaryStatsCsv(DataSet trialDataSet,
-			List<Experiment> experiments, String environmentName, List<Trait> selectedTraits,
-			Project currentProject) throws MiddlewareQueryException {
+	public static File exportTrialDatasetToSummaryStatsCsv(DataSet trialDataSet, List<Experiment> experiments, String environmentName,
+			List<Trait> selectedTraits, Project currentProject) throws MiddlewareQueryException {
 
 		List<String[]> tableItems = new ArrayList<String[]>();
 
-		String[] header = new String[] {
-				environmentName
-				, "Trait"
-				, "NumValues"
-				, "NumMissing"
-				, "Mean"
-				, "Variance"
-				, "SD"
-				, "Min"
-				, "Max"
-				, "Range"
-				, "Median"
-				, "LowerQuartile"
-				, "UpperQuartile"
-				, "MeanRep"
-				, "MinRep"
-				, "MaxRep"
-				, "MeanSED"
-				, "MinSED"
-				, "MaxSED"
-				, "MeanLSD"
-				, "MinLSD"
-				, "MaxLSD"
-				, "CV"
-				, "Heritability"
-				, "WaldStatistic"
-				, "WaldDF"
-				, "Pvalue"
+		String[] header =
+				new String[] {environmentName, "Trait", "NumValues", "NumMissing", "Mean", "Variance", "SD", "Min", "Max", "Range",
+						"Median", "LowerQuartile", "UpperQuartile", "MeanRep", "MinRep", "MaxRep", "MeanSED", "MinSED", "MaxSED",
+						"MeanLSD", "MinLSD", "MaxLSD", "CV", "Heritability", "WaldStatistic", "WaldDF", "Pvalue"
 
-		};
+				};
 
 		tableItems.add(header);
 
@@ -261,8 +233,7 @@ public class GxeUtility {
 
 				List<String> row = new ArrayList<String>();
 				String envValue = exp.getFactors().findByLocalName(environmentName).getValue();
-				String traitValue = trait.getName()
-						.replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_");
+				String traitValue = trait.getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_");
 				if (envValue != null) {
 					envValue = envValue.replaceAll(",", ";");
 				}
@@ -275,8 +246,7 @@ public class GxeUtility {
 				for (int i = 2; i < header.length; i++) {
 					boolean existsFlag = false;
 					for (Variable variable : map.values()) {
-						if (variable.getVariableType().getLocalName()
-								.equals(trait.getName().replace("_Means", "") + "_" + header[i])) {
+						if (variable.getVariableType().getLocalName().equals(trait.getName().replace("_Means", "") + "_" + header[i])) {
 							row.add(variable.getValue());
 							existsFlag = true;
 							break;
@@ -299,25 +269,23 @@ public class GxeUtility {
 			}
 
 			String dir =
-					"workspace" + File.separator + currentProject.getProjectName() + File.separator
-							+ "breeding_view" + File.separator + "input";
+					"workspace" + File.separator + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator
+							+ "input";
 
-			LOG.debug("save to " + dir);
+			GxeUtility.LOG.debug("save to " + dir);
 
 			new File(dir).mkdirs();
 
-			File csvFile = new File(
-					dir + File.separator + trialDataSet.getName() + "_SummaryStats.csv");
+			File csvFile = new File(dir + File.separator + trialDataSet.getName() + "_SummaryStats.csv");
 
-			CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile),
-					CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER, "\r\n");
+			CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER, "\r\n");
 			csvWriter.writeAll(tableItems);
 			csvWriter.flush();
 			csvWriter.close();
 
 			return csvFile;
 		} catch (Exception e) {
-			LOG.debug(e.getMessage(), e);
+			GxeUtility.LOG.debug(e.getMessage(), e);
 			return null;
 		}
 

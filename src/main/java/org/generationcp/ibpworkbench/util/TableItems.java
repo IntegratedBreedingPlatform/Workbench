@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.util;
 
 public class TableItems {
@@ -7,52 +8,61 @@ public class TableItems {
 	private Integer type;
 	private String Label;
 	private Object value;
-	 
+
 	public String getColumnId() {
-		return columnId;
+		return this.columnId;
 	}
+
 	public void setColumnId(String columnId) {
 		this.columnId = columnId;
 	}
+
 	public Object getRowId() {
-		return rowId;
+		return this.rowId;
 	}
+
 	public void setRowId(Object rowId) {
 		this.rowId = rowId;
 	}
+
 	public Integer getType() {
-		return type;
+		return this.type;
 	}
+
 	public void setType(Integer type) {
 		this.type = type;
 	}
+
 	public String getLabel() {
-		return Label;
+		return this.Label;
 	}
+
 	public void setLabel(String label) {
-		Label = label;
+		this.Label = label;
 	}
+
 	public Object getValue() {
-		return value;
+		return this.value;
 	}
+
 	public void setValue(Object value) {
 		this.value = value;
 	}
-	
+
 	@Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Tableitems [columnId=");
-        builder.append(columnId);
-        builder.append(", rowId=");
-        builder.append(rowId);
-        builder.append(", type=");
-        builder.append(type);
-        builder.append(", Label=");
-        builder.append(Label);
-        builder.append(", value=");
-        builder.append(value);
-        builder.append("]");
-        return builder.toString();
-    }
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Tableitems [columnId=");
+		builder.append(this.columnId);
+		builder.append(", rowId=");
+		builder.append(this.rowId);
+		builder.append(", type=");
+		builder.append(this.type);
+		builder.append(", Label=");
+		builder.append(this.Label);
+		builder.append(", value=");
+		builder.append(this.value);
+		builder.append("]");
+		return builder.toString();
+	}
 }

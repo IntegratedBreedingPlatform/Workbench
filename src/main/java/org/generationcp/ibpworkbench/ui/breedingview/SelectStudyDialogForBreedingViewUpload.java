@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.ui.breedingview;
 
 import org.generationcp.ibpworkbench.Message;
@@ -14,23 +15,24 @@ public class SelectStudyDialogForBreedingViewUpload extends SelectStudyDialog {
 
 	private static final long serialVersionUID = 1L;
 
-	public SelectStudyDialogForBreedingViewUpload(Window parentWindow, Component source,
-			StudyDataManagerImpl studyDataManager, Project project) {
+	public SelectStudyDialogForBreedingViewUpload(Window parentWindow, Component source, StudyDataManagerImpl studyDataManager,
+			Project project) {
 		super(parentWindow, source, studyDataManager, project);
 	}
-	
+
 	@Override
 	public void updateLabels() {
-			messageSource.setCaption(this, Message.BV_SELECT_STUDY_FOR_UPLOAD);
-			messageSource.setValue(lblStudyTreeDetailDescription, Message.BV_SELECT_STUDY_FOR_UPLOAD_DESCRIPTION);		
+		this.messageSource.setCaption(this, Message.BV_SELECT_STUDY_FOR_UPLOAD);
+		this.messageSource.setValue(this.lblStudyTreeDetailDescription, Message.BV_SELECT_STUDY_FOR_UPLOAD_DESCRIPTION);
 	}
-	
+
 	@Override
-	protected void openStudy(Reference r){
-		SingleSiteAnalysisPanel ssaPanel = (SingleSiteAnalysisPanel) source;
-		FileUploadBreedingViewOutputWindow dialog = new FileUploadBreedingViewOutputWindow(parentWindow, r.getId(), ssaPanel.getCurrentProject(), null);
-		parentWindow.getWindow().addWindow(dialog);
-		parentWindow.getWindow().removeWindow(this);
+	protected void openStudy(Reference r) {
+		SingleSiteAnalysisPanel ssaPanel = (SingleSiteAnalysisPanel) this.source;
+		FileUploadBreedingViewOutputWindow dialog =
+				new FileUploadBreedingViewOutputWindow(this.parentWindow, r.getId(), ssaPanel.getCurrentProject(), null);
+		this.parentWindow.getWindow().addWindow(dialog);
+		this.parentWindow.getWindow().removeWindow(this);
 	}
 
 }

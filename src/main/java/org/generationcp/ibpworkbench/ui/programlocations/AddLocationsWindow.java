@@ -1,133 +1,145 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- * 
+ *
  * Generation Challenge Programme (GCP)
- * 
- * 
- * This software is licensed for use under the terms of the GNU General Public
- * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
- * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- * 
+ *
+ *
+ * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
+ * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ *
  *******************************************************************************/
+
 package org.generationcp.ibpworkbench.ui.programlocations;
 
-import com.vaadin.ui.*;
-import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.ibpworkbench.actions.SaveNewLocationAction;
 import org.generationcp.ibpworkbench.ui.form.AddLocationForm;
 import org.generationcp.middleware.manager.api.LocationDataManager;
 
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.Reindeer;
+
 /**
- *  @author Jeffrey Morales, Joyce Avestro
- *  
+ * @author Jeffrey Morales, Joyce Avestro
+ * 
  */
 public class AddLocationsWindow extends BaseSubWindow {
 
-    private static final long serialVersionUID = 3983198771242295731L;
+	private static final long serialVersionUID = 3983198771242295731L;
 
-    private Label newLocationTitle;
+	private Label newLocationTitle;
 
-    private AddLocationForm addLocationForm;
+	private AddLocationForm addLocationForm;
 
-    private Button cancelButton;
+	private Button cancelButton;
 
-    private Button addLocationButton;
+	private Button addLocationButton;
 
-    private Component buttonArea;
+	private Component buttonArea;
 
-    private VerticalLayout layout;
+	private VerticalLayout layout;
 
-    private ProgramLocationsPresenter programLocationsPresenter;
-    private ProgramLocationsView programLocationsView;
+	private final ProgramLocationsPresenter programLocationsPresenter;
+	private final ProgramLocationsView programLocationsView;
 
-    private LocationDataManager ldm;
+	private LocationDataManager ldm;
 
-    public AddLocationsWindow(ProgramLocationsView programLocationsView, ProgramLocationsPresenter programLocationsPresenter) {
-        this.programLocationsView = programLocationsView;
-        this.programLocationsPresenter = programLocationsPresenter;
+	public AddLocationsWindow(ProgramLocationsView programLocationsView, ProgramLocationsPresenter programLocationsPresenter) {
+		this.programLocationsView = programLocationsView;
+		this.programLocationsPresenter = programLocationsPresenter;
 
-        assemble();
-    }
+		this.assemble();
+	}
 
-    protected void initializeComponents() {
+	protected void initializeComponents() {
 
-        addLocationForm = new AddLocationForm(programLocationsPresenter);
+		this.addLocationForm = new AddLocationForm(this.programLocationsPresenter);
 
-        cancelButton = new Button("Cancel");
-        addLocationButton = new Button("Save");
-        addLocationButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-        buttonArea = layoutButtonArea();
-    }
+		this.cancelButton = new Button("Cancel");
+		this.addLocationButton = new Button("Save");
+		this.addLocationButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+		this.buttonArea = this.layoutButtonArea();
+	}
 
-    protected void initializeLayout() {
-        this.addStyleName(Reindeer.WINDOW_LIGHT);
-        this.setModal(true);
-        this.setWidth("600px");
-        this.setResizable(false);
-        this.center();
-        this.setCaption("Add New Location");
+	protected void initializeLayout() {
+		this.addStyleName(Reindeer.WINDOW_LIGHT);
+		this.setModal(true);
+		this.setWidth("600px");
+		this.setResizable(false);
+		this.center();
+		this.setCaption("Add New Location");
 
+		this.layout = new VerticalLayout();
+		this.layout.setWidth("100%");
+		this.layout.setHeight("420px");
 
-        layout = new VerticalLayout();
-        layout.setWidth("100%");
-        layout.setHeight("420px");
+		final Panel p = new Panel();
+		p.setStyleName("form-panel");
+		p.setSizeFull();
 
-        final Panel p = new Panel();
-        p.setStyleName("form-panel");
-        p.setSizeFull();
+		final VerticalLayout vl = new VerticalLayout();
+		vl.setSizeFull();
+		vl.addComponent(new Label("<i><span style='color:red; font-weight:bold'>*</span> indicates a mandatory field.</i>",
+				Label.CONTENT_XHTML));
+		vl.addComponent(this.addLocationForm);
+		vl.setExpandRatio(this.addLocationForm, 1.0F);
 
-        final VerticalLayout vl = new VerticalLayout();
-        vl.setSizeFull();
-        vl.addComponent(new Label("<i><span style='color:red; font-weight:bold'>*</span> indicates a mandatory field.</i>", Label.CONTENT_XHTML));
-        vl.addComponent(addLocationForm);
-        vl.setExpandRatio(addLocationForm,1.0F);
+		p.addComponent(vl);
+		this.layout.addComponent(p);
+		this.layout.addComponent(this.buttonArea);
 
-        p.addComponent(vl);
-        layout.addComponent(p);
-        layout.addComponent(buttonArea);
+		this.layout.setExpandRatio(p, 1.0F);
+		this.layout.setComponentAlignment(this.buttonArea, Alignment.MIDDLE_CENTER);
 
-        layout.setExpandRatio(p,1.0F);
-        layout.setComponentAlignment(buttonArea, Alignment.MIDDLE_CENTER);
+		this.layout.setSpacing(true);
+		this.layout.setMargin(true);
 
-        layout.setSpacing(true);
-        layout.setMargin(true);
+		this.setContent(this.layout);
+	}
 
-        setContent(layout);
-    }
+	protected void initializeActions() {
 
-    protected void initializeActions() {
+		this.addLocationButton.addListener(new SaveNewLocationAction(this.addLocationForm, this, this.programLocationsPresenter));
+		this.cancelButton.addListener(new Button.ClickListener() {
 
-       
-        addLocationButton.addListener(new SaveNewLocationAction(addLocationForm, this, programLocationsPresenter));
-        cancelButton.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
-                AddLocationsWindow.this.getParent().removeWindow(AddLocationsWindow.this);
-            }
-        });
-        
-    }
+			/**
+			 *
+			 */
+			private static final long serialVersionUID = 6449306339821569356L;
 
-    protected Component layoutButtonArea() {
-        HorizontalLayout buttonLayout = new HorizontalLayout();
-        buttonLayout.setSpacing(true);
-        buttonLayout.setMargin(true, false, false, false);
+			@Override
+			public void buttonClick(Button.ClickEvent clickEvent) {
+				AddLocationsWindow.this.getParent().removeWindow(AddLocationsWindow.this);
+			}
+		});
 
-        cancelButton = new Button("Cancel");
-        addLocationButton = new Button("Save");
-        addLocationButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-        buttonLayout.addComponent(cancelButton);
-        buttonLayout.addComponent(addLocationButton);
+	}
 
-        return buttonLayout;
-    }
+	protected Component layoutButtonArea() {
+		HorizontalLayout buttonLayout = new HorizontalLayout();
+		buttonLayout.setSpacing(true);
+		buttonLayout.setMargin(true, false, false, false);
 
-    protected void assemble() {
-        initializeComponents();
-        initializeLayout();
-        initializeActions();
-    }
+		this.cancelButton = new Button("Cancel");
+		this.addLocationButton = new Button("Save");
+		this.addLocationButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+		buttonLayout.addComponent(this.cancelButton);
+		buttonLayout.addComponent(this.addLocationButton);
+
+		return buttonLayout;
+	}
+
+	protected void assemble() {
+		this.initializeComponents();
+		this.initializeLayout();
+		this.initializeActions();
+	}
 
 }

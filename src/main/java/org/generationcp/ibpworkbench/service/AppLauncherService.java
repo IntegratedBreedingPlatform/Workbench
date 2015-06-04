@@ -1,4 +1,11 @@
+
 package org.generationcp.ibpworkbench.service;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Properties;
+
+import javax.annotation.Resource;
 
 import org.generationcp.commons.constant.ToolEnum;
 import org.generationcp.commons.tomcat.util.TomcatUtil;
@@ -17,15 +24,11 @@ import org.generationcp.middleware.pojos.workbench.ToolType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Resource;
-import java.io.File;
-import java.io.IOException;
-import java.util.Properties;
-
 /**
  * Created by cyrus on 3/4/15.
  */
 public class AppLauncherService {
+
 	public static final String WEB_SERVICE_URL_PROPERTY = "bv.web.url";
 	private final static Logger LOG = LoggerFactory.getLogger(AppLauncherService.class);
 
@@ -44,72 +47,59 @@ public class AppLauncherService {
 	@Resource
 	private SessionData sessionData;
 
-
-
 	public String launchTool(String toolName, Integer idParam) throws AppLaunchException {
 		try {
 			String url = "";
-			Tool tool = workbenchDataManager.getToolWithName(toolName);
+			Tool tool = this.workbenchDataManager.getToolWithName(toolName);
 
 			if (tool == null) {
 				throw new AppLaunchException(Message.LAUNCH_TOOL_ERROR.name());
 			}
 
 			// update the tool configuration if needed
-			tomcatUtil.deployWebAppIfNecessary(tool);
-			updateGermplasmStudyBrowserConfigurationIfNecessary(tool);
+			this.tomcatUtil.deployWebAppIfNecessary(tool);
+			this.updateGermplasmStudyBrowserConfigurationIfNecessary(tool);
 
 			switch (tool.getToolType()) {
-			case NATIVE:
-				this.launchNativeapp(tool);
-				break;
-			case WEB_WITH_LOGIN:
-				url = this.launchWebappWithLogin(tool);
-				break;
-			case WEB:
-				url = this.launchWebapp(tool, idParam);
+				case NATIVE:
+					this.launchNativeapp(tool);
+					break;
+				case WEB_WITH_LOGIN:
+					url = this.launchWebappWithLogin(tool);
+					break;
+				case WEB:
+					url = this.launchWebapp(tool, idParam);
 			}
 
 			// log proj act
-			sessionData.logProgramActivity(tool.getTitle(), "Launched " + tool.getTitle());
+			this.sessionData.logProgramActivity(tool.getTitle(), "Launched " + tool.getTitle());
 
 			return url;
 
 		} catch (MiddlewareQueryException e) {
-			throw new AppLaunchException(Message.DATABASE_ERROR.name(), new String[] { toolName },
-					e);
+			throw new AppLaunchException(Message.DATABASE_ERROR.name(), new String[] {toolName}, e);
 		}
 	}
 
-	protected void updateGermplasmStudyBrowserConfigurationIfNecessary(Tool tool)
-			throws AppLaunchException, MiddlewareQueryException {
+	protected void updateGermplasmStudyBrowserConfigurationIfNecessary(Tool tool) throws AppLaunchException, MiddlewareQueryException {
 		// if user is trying to launch the FieldBook webapp,
 		// and if the user is trying to launch the BreedingManager webapp
 		// we need to reconfigure and deploy the GermplasmBrowser webapp
-		if (Util.isOneOf(tool.getToolName()
-				, ToolName.fieldbook_web.name()
-				, ToolName.nursery_manager_fieldbook_web.name()
-				, ToolName.trial_manager_fieldbook_web.name()
-				, ToolName.ontology_browser_fieldbook_web.name()
-				, ToolName.bm_list_manager.name()
-				, ToolName.bm_list_manager_main.name()
-				, ToolName.crossing_manager.name()
-				, ToolName.germplasm_import.name()
-				, ToolName.list_manager.name()
-				, ToolName.nursery_template_wizard.name()
-		)) {
-			Tool germplasmBrowserTool = workbenchDataManager
-					.getToolWithName(ToolName.germplasm_browser.name());
-			tomcatUtil.deployWebAppIfNecessary(germplasmBrowserTool);
+		if (Util.isOneOf(tool.getToolName(), ToolName.fieldbook_web.name(), ToolName.nursery_manager_fieldbook_web.name(),
+				ToolName.trial_manager_fieldbook_web.name(), ToolName.ontology_browser_fieldbook_web.name(),
+				ToolName.bm_list_manager.name(), ToolName.bm_list_manager_main.name(), ToolName.crossing_manager.name(),
+				ToolName.germplasm_import.name(), ToolName.list_manager.name(), ToolName.nursery_template_wizard.name())) {
+			Tool germplasmBrowserTool = this.workbenchDataManager.getToolWithName(ToolName.germplasm_browser.name());
+			this.tomcatUtil.deployWebAppIfNecessary(germplasmBrowserTool);
 		}
 	}
 
 	protected void launchNativeapp(Tool tool) throws AppLaunchException {
 		try {
 			// close the native tool
-			toolUtil.closeNativeTool(tool);
+			this.toolUtil.closeNativeTool(tool);
 		} catch (IOException e) {
-			LOG.info(e.getMessage(), e);
+			AppLauncherService.LOG.info(e.getMessage(), e);
 		}
 
 		try {
@@ -117,29 +107,28 @@ public class AppLauncherService {
 				// when launching BreedingView, update the web service tool first
 				Tool webServiceTool = new Tool();
 				webServiceTool.setToolName("ibpwebservice");
-				webServiceTool.setPath(workbenchProperties.getProperty(WEB_SERVICE_URL_PROPERTY));
+				webServiceTool.setPath(this.workbenchProperties.getProperty(AppLauncherService.WEB_SERVICE_URL_PROPERTY));
 				webServiceTool.setToolType(ToolType.WEB);
 
-				tomcatUtil.deployWebAppIfNecessary(webServiceTool);
+				this.tomcatUtil.deployWebAppIfNecessary(webServiceTool);
 			}
 
 			// this should only affect MBDT
-			toolUtil.updateToolConfigurationForProject(tool, sessionData.getLastOpenedProject());
+			this.toolUtil.updateToolConfigurationForProject(tool, this.sessionData.getLastOpenedProject());
 
-			toolUtil.launchNativeTool(tool);
+			this.toolUtil.launchNativeTool(tool);
 
 		} catch (IOException e) {
 			File absoluteToolFile = new File(tool.getPath()).getAbsoluteFile();
-			throw new AppLaunchException(Message.LAUNCH_TOOL_ERROR_DESC.name(),
-					new String[] { absoluteToolFile.getAbsolutePath() }, e);
+			throw new AppLaunchException(Message.LAUNCH_TOOL_ERROR_DESC.name(), new String[] {absoluteToolFile.getAbsolutePath()}, e);
 		} catch (ConfigurationChangeException e) {
-			LOG.debug(e.getMessage(),e);
+			AppLauncherService.LOG.debug(e.getMessage(), e);
 		}
 	}
 
 	protected String launchWebapp(Tool tool, Integer idParam) {
 		return WorkbenchAppPathResolver.getWorkbenchAppPath(tool, String.valueOf(idParam),
-				"?restartApplication" + sessionData.getWorkbenchContextParameters());
+				"?restartApplication" + this.sessionData.getWorkbenchContextParameters());
 	}
 
 	protected String launchWebappWithLogin(Tool tool) {
@@ -147,7 +136,7 @@ public class AppLauncherService {
 		final String params = "restartApplication&selectedProjectId=%s&loggedInUserId=%s";
 
 		return WorkbenchAppPathResolver.getFullWebAddress(loginUrl,
-				String.format(params, sessionData.getLastOpenedProject().getProjectId(), sessionData.getUserData().getUserid()));
+				String.format(params, this.sessionData.getLastOpenedProject().getProjectId(), this.sessionData.getUserData().getUserid()));
 
 	}
 }

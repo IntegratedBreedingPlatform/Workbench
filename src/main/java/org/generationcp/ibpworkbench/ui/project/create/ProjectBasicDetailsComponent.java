@@ -1,24 +1,21 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- * 
+ *
  * Generation Challenge Programme (GCP)
- * 
- * 
- * This software is licensed for use under the terms of the GNU General Public
- * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
- * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- * 
+ *
+ *
+ * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
+ * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.ui.project.create;
 
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Validator.InvalidValueException;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.validator.AbstractValidator;
-import com.vaadin.data.validator.StringLengthValidator;
-import com.vaadin.ui.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Properties;
+import java.util.regex.Pattern;
+
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.fields.BmsDateField;
@@ -39,453 +36,454 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
-import java.util.regex.Pattern;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Validator.InvalidValueException;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.validator.AbstractValidator;
+import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * The first tab (Basic Details) in Create Project Accordion Component.
- * 
+ *
  * @author Joyce Avestro
  */
 @Configurable
-public class ProjectBasicDetailsComponent extends VerticalLayout implements InitializingBean{
-    
-    private static final Logger LOG = LoggerFactory.getLogger(ProjectBasicDetailsComponent.class);
-    private static final long serialVersionUID = 1L;
-    
-    public static String GENERIC_CROP_DESCRIPTION = "Use Generic Database for Other Crop";
- 
-    private CreateProjectPanel createProjectPanel; // the containing panel
+public class ProjectBasicDetailsComponent extends VerticalLayout implements InitializingBean {
 
-    private GridLayout gridLayout;
-    private TextField projectNameField;
-    private TextField otherCropNameField;
-    private BmsDateField startDateField;
-    private ComboBox cropTypeCombo;
-    
-    private Label lblCrop;
-    private Label lblOtherCrop;
-    private Label lblProjectName;
-    private Label lblStartDate;
-   
-    private Boolean isUpdate = false;
+	private static final Logger LOG = LoggerFactory.getLogger(ProjectBasicDetailsComponent.class);
+	private static final long serialVersionUID = 1L;
 
-    private CropType oldCropType;
+	public static String GENERIC_CROP_DESCRIPTION = "Use Generic Database for Other Crop";
 
-    @Autowired
-    private WorkbenchDataManager workbenchDataManager;
-    
-    @Autowired
-    protected SimpleResourceBundleMessageSource messageSource;
+	private final CreateProjectPanel createProjectPanel; // the containing panel
 
-    @Autowired
-    protected SessionData sessionData;
-    
-    @Autowired
-    @Qualifier("workbenchProperties")
-    private Properties workbenchProperties;
+	private GridLayout gridLayout;
+	private TextField projectNameField;
+	private TextField otherCropNameField;
+	private BmsDateField startDateField;
+	private ComboBox cropTypeCombo;
 
-    public ProjectBasicDetailsComponent(CreateProjectPanel createProjectPanel) {
-        super();
-        this.createProjectPanel = createProjectPanel;
-    }
-    
-    public ProjectBasicDetailsComponent(CreateProjectPanel createProjectPanel, Boolean isUpdate) {
-        super();
-        this.createProjectPanel = createProjectPanel;
-        this.setIsUpdate(isUpdate);
-    }
+	private Label lblCrop;
+	private Label lblOtherCrop;
+	private Label lblProjectName;
+	private Label lblStartDate;
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        assemble();
-    }
+	private Boolean isUpdate = false;
 
-    protected void assemble() {
-        initializeComponents();
-        initializeValues();
-        initializeLayout();
-        initializeActions();
-        
-        if (isUpdate){
-        	initializeLayoutForUpdate();
-        }
-    }
+	private CropType oldCropType;
 
-    protected void initializeComponents() {
-        gridLayout = new GridLayout();
-        gridLayout.setRows(4);
-        gridLayout.setColumns(5);
-        gridLayout.setSpacing(true);
-        gridLayout.addStyleName("basic-details");
-        
-        Pattern projectNameInvalidCharPattern = Pattern.compile("^[^\\\\/:\\*\\?\"<>\\|]+$", Pattern.DOTALL);
-        Pattern cropNameInvalidCharPattern = Pattern.compile("^[^<>'\":;,\\./\\|\\-=\\(\\)\\\\]+$", Pattern.DOTALL);
+	@Autowired
+	private WorkbenchDataManager workbenchDataManager;
 
-        projectNameField = new TextField();
-        projectNameField.setImmediate(true);
-        projectNameField.setRequired(true);
-        projectNameField.setRequiredError("Please enter a Program Name.");
-        projectNameField.addValidator(new StringLengthValidator("Program Name must be 3-65 characters.", 3, 65, false));
-        projectNameField.addValidator(new RegexValidator("Program Name must not contain any of the following: \\ / : * ? \" < > |", projectNameInvalidCharPattern, true));
-        projectNameField.setStyleName("hide-caption");
-        projectNameField.setWidth("250px");
-        projectNameField.setDebugId("vaadin_projectname_txt");
-        
-        otherCropNameField = new TextField();
-        otherCropNameField.setImmediate(true);
-        otherCropNameField.setRequired(false);
-        otherCropNameField.setRequiredError("Please enter Crop Name.");
-        otherCropNameField.addValidator(new StringLengthValidator("Crop Name must be 3-70 characters.", 3, 70, false));
-        otherCropNameField.addValidator(new RegexValidator("Crop name must not contain any of the following: '< > \" : ; , . / \\ | - = \\( \\)", cropNameInvalidCharPattern, true));
-        otherCropNameField.addValidator(new ValueRangeValidator("This crop name is reserved because there is a database available for it. Please install the crop name database before creating this program if you wish to take advantage of traits and other information for this crop. If you wish to proceed with using the generic database, please choose a different name for your crop."));
-        otherCropNameField.setStyleName("hide-caption");
-        otherCropNameField.setVisible(false);
-        
-        startDateField = new BmsDateField();
-        startDateField.setRequired(true);
-        startDateField.setRequiredError("Please enter a Start Date.");
-		startDateField.setStyleName("project-data-time");
-		startDateField.setStyleName("hide-caption");
-        startDateField.setWidth("250px");
+	@Autowired
+	protected SimpleResourceBundleMessageSource messageSource;
 
-        cropTypeCombo = createCropTypeComboBox();
-        cropTypeCombo.setWidth("250px");
-        cropTypeCombo.setStyleName("hide-caption");
-        cropTypeCombo.setDebugId("vaadin_croptype_combo");
-        
-        lblCrop = new Label();
-        lblCrop.setValue(messageSource.getMessage(Message.BASIC_DETAILS_CROP));
-        lblCrop.setStyleName("label-bold");
-        lblCrop.setContentMode(Label.CONTENT_XHTML);
-        
-        lblOtherCrop = new Label();
-        lblOtherCrop.setValue(messageSource.getMessage(Message.BASIC_DETAILS_OTHER_CROP_NAME));
-        lblOtherCrop.setContentMode(Label.CONTENT_XHTML);
-        lblOtherCrop.setVisible(false);
-        
-        lblProjectName = new Label();
-        lblProjectName.setValue(messageSource.getMessage(Message.BASIC_DETAILS_PROGRAM_NAME));
-        lblProjectName.setStyleName("label-bold");
-        lblProjectName.setContentMode(Label.CONTENT_XHTML);
-        lblStartDate = new Label();
-        lblStartDate.setValue(messageSource.getMessage(Message.BASIC_DETAILS_PROGRAM_STARTDATE));
-        lblStartDate.setStyleName("label-bold");
-        lblStartDate.setContentMode(Label.CONTENT_XHTML);
-        
-        gridLayout.addComponent(lblCrop, 1, 1);
-        gridLayout.addComponent(cropTypeCombo, 2, 1);
-        gridLayout.addComponent(lblOtherCrop, 3, 1);
-        gridLayout.addComponent(otherCropNameField, 4, 1);
-        gridLayout.addComponent(lblProjectName, 1, 2);
-        gridLayout.addComponent(projectNameField, 2, 2);
-        gridLayout.addComponent(lblStartDate, 1, 3);
-        gridLayout.addComponent(startDateField, 2, 3);
-        addComponent(gridLayout);
-        
-    }
+	@Autowired
+	protected SessionData sessionData;
 
-    protected void initializeValues() {
-        startDateField.setValue(new Date());
-    }
+	@Autowired
+	@Qualifier("workbenchProperties")
+	private Properties workbenchProperties;
 
-    protected void initializeLayout() {
-        this.setMargin(false);
-        this.setSpacing(false);
+	public ProjectBasicDetailsComponent(CreateProjectPanel createProjectPanel) {
+		super();
+		this.createProjectPanel = createProjectPanel;
+	}
 
-        this.setComponentAlignment(gridLayout, Alignment.TOP_LEFT);
-    }
-    
-    protected void initializeLayoutForUpdate() {
-    	CropType selectedCropType = sessionData.getSelectedProject().getCropType();
-        
-        Boolean isCustomCrop = true;
-        for (CropType.CropEnum crop : CropType.CropEnum.values()){
-        	if (crop.toString().equalsIgnoreCase(selectedCropType.getCropName())){
-        		isCustomCrop = false;
-        		break;
-        	}
-        }
-       
-        if (isCustomCrop){
-        	
-    	     CropType genericCropType = new CropType();
-    	     genericCropType.setDbName("generic");
-    	     genericCropType.setCropName(GENERIC_CROP_DESCRIPTION);
-    	     cropTypeCombo.addItem(genericCropType);
-    	     cropTypeCombo.setValue(genericCropType);
-    	     
-    	     lblOtherCrop.setVisible(true);
-    	     otherCropNameField.setVisible(true);
-    	     otherCropNameField.setEnabled(false);
-    	     otherCropNameField.setRequired(false);
-    	     otherCropNameField.removeAllValidators();
-    	     otherCropNameField.setValue(selectedCropType.getCropName());
-        }
-        
-        
-        disableCropTypeCombo();
-        		
-    }
-    
+	public ProjectBasicDetailsComponent(CreateProjectPanel createProjectPanel, Boolean isUpdate) {
+		super();
+		this.createProjectPanel = createProjectPanel;
+		this.setIsUpdate(isUpdate);
+	}
 
-    protected void initializeActions() {
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		this.assemble();
+	}
 
-    }
+	protected void assemble() {
+		this.initializeComponents();
+		this.initializeValues();
+		this.initializeLayout();
+		this.initializeActions();
 
-    public void refreshVisibleItems(){
-        requestRepaintAll();
-    }
-    
-    private ComboBox createCropTypeComboBox(){
-        List<CropType> cropTypes = null;
-        try {
-            cropTypes = workbenchDataManager.getInstalledCentralCrops();
-        }
-        catch (MiddlewareQueryException e) {
-            LOG.error("Error encountered while getting installed central crops", e);
-            throw new InternationalizableException(e, Message.DATABASE_ERROR, 
-                    Message.CONTACT_ADMIN_ERROR_DESC);
-        }
-        
-        
-        BeanItemContainer<CropType> beanItemContainer = new BeanItemContainer<CropType>(CropType.class);
-        for (CropType cropType : cropTypes) {
-            beanItemContainer.addBean(cropType);
-        }
-        
-        //FIXME BMS-210 
-        //Disabling custom crop for initial merged DB release (CIMMYT).
-        //CropType genericCropType = new CropType();
-        //genericCropType.setCentralDbName("generic");
-        //genericCropType.setCropName(GENERIC_CROP_DESCRIPTION);
-        //beanItemContainer.addBean(genericCropType);
+		if (this.isUpdate) {
+			this.initializeLayoutForUpdate();
+		}
+	}
 
-        ComboBox comboBox = new ComboBox();
-        comboBox.setContainerDataSource(beanItemContainer);
-        comboBox.setNewItemsAllowed(false);
-        comboBox.setItemCaptionPropertyId("cropName");
-        comboBox.setRequired(true);
-        comboBox.setRequiredError("Please choose a Crop.");
-        comboBox.setInputPrompt("Please choose");
-        comboBox.setInvalidAllowed(false);
-        comboBox.setNullSelectionAllowed(false);
-        comboBox.setImmediate(true);  
-       
-        if (cropTypes.size() == 1){     //If there is only one crop, set this by default
-            comboBox.setValue(cropTypes.get(0));
-        }
-        
-        comboBox.addListener(new Property.ValueChangeListener() {
-			
-        	private static final long serialVersionUID = 1L;
+	protected void initializeComponents() {
+		this.gridLayout = new GridLayout();
+		this.gridLayout.setRows(4);
+		this.gridLayout.setColumns(5);
+		this.gridLayout.setSpacing(true);
+		this.gridLayout.addStyleName("basic-details");
+
+		Pattern projectNameInvalidCharPattern = Pattern.compile("^[^\\\\/:\\*\\?\"<>\\|]+$", Pattern.DOTALL);
+		Pattern cropNameInvalidCharPattern = Pattern.compile("^[^<>'\":;,\\./\\|\\-=\\(\\)\\\\]+$", Pattern.DOTALL);
+
+		this.projectNameField = new TextField();
+		this.projectNameField.setImmediate(true);
+		this.projectNameField.setRequired(true);
+		this.projectNameField.setRequiredError("Please enter a Program Name.");
+		this.projectNameField.addValidator(new StringLengthValidator("Program Name must be 3-65 characters.", 3, 65, false));
+		this.projectNameField.addValidator(new RegexValidator("Program Name must not contain any of the following: \\ / : * ? \" < > |",
+				projectNameInvalidCharPattern, true));
+		this.projectNameField.setStyleName("hide-caption");
+		this.projectNameField.setWidth("250px");
+		this.projectNameField.setDebugId("vaadin_projectname_txt");
+
+		this.otherCropNameField = new TextField();
+		this.otherCropNameField.setImmediate(true);
+		this.otherCropNameField.setRequired(false);
+		this.otherCropNameField.setRequiredError("Please enter Crop Name.");
+		this.otherCropNameField.addValidator(new StringLengthValidator("Crop Name must be 3-70 characters.", 3, 70, false));
+		this.otherCropNameField.addValidator(new RegexValidator(
+				"Crop name must not contain any of the following: '< > \" : ; , . / \\ | - = \\( \\)", cropNameInvalidCharPattern, true));
+		this.otherCropNameField
+				.addValidator(new ValueRangeValidator(
+						"This crop name is reserved because there is a database available for it. Please install the crop name database before creating this program if you wish to take advantage of traits and other information for this crop. If you wish to proceed with using the generic database, please choose a different name for your crop."));
+		this.otherCropNameField.setStyleName("hide-caption");
+		this.otherCropNameField.setVisible(false);
+
+		this.startDateField = new BmsDateField();
+		this.startDateField.setRequired(true);
+		this.startDateField.setRequiredError("Please enter a Start Date.");
+		this.startDateField.setStyleName("project-data-time");
+		this.startDateField.setStyleName("hide-caption");
+		this.startDateField.setWidth("250px");
+
+		this.cropTypeCombo = this.createCropTypeComboBox();
+		this.cropTypeCombo.setWidth("250px");
+		this.cropTypeCombo.setStyleName("hide-caption");
+		this.cropTypeCombo.setDebugId("vaadin_croptype_combo");
+
+		this.lblCrop = new Label();
+		this.lblCrop.setValue(this.messageSource.getMessage(Message.BASIC_DETAILS_CROP));
+		this.lblCrop.setStyleName("label-bold");
+		this.lblCrop.setContentMode(Label.CONTENT_XHTML);
+
+		this.lblOtherCrop = new Label();
+		this.lblOtherCrop.setValue(this.messageSource.getMessage(Message.BASIC_DETAILS_OTHER_CROP_NAME));
+		this.lblOtherCrop.setContentMode(Label.CONTENT_XHTML);
+		this.lblOtherCrop.setVisible(false);
+
+		this.lblProjectName = new Label();
+		this.lblProjectName.setValue(this.messageSource.getMessage(Message.BASIC_DETAILS_PROGRAM_NAME));
+		this.lblProjectName.setStyleName("label-bold");
+		this.lblProjectName.setContentMode(Label.CONTENT_XHTML);
+		this.lblStartDate = new Label();
+		this.lblStartDate.setValue(this.messageSource.getMessage(Message.BASIC_DETAILS_PROGRAM_STARTDATE));
+		this.lblStartDate.setStyleName("label-bold");
+		this.lblStartDate.setContentMode(Label.CONTENT_XHTML);
+
+		this.gridLayout.addComponent(this.lblCrop, 1, 1);
+		this.gridLayout.addComponent(this.cropTypeCombo, 2, 1);
+		this.gridLayout.addComponent(this.lblOtherCrop, 3, 1);
+		this.gridLayout.addComponent(this.otherCropNameField, 4, 1);
+		this.gridLayout.addComponent(this.lblProjectName, 1, 2);
+		this.gridLayout.addComponent(this.projectNameField, 2, 2);
+		this.gridLayout.addComponent(this.lblStartDate, 1, 3);
+		this.gridLayout.addComponent(this.startDateField, 2, 3);
+		this.addComponent(this.gridLayout);
+
+	}
+
+	protected void initializeValues() {
+		this.startDateField.setValue(new Date());
+	}
+
+	protected void initializeLayout() {
+		this.setMargin(false);
+		this.setSpacing(false);
+
+		this.setComponentAlignment(this.gridLayout, Alignment.TOP_LEFT);
+	}
+
+	protected void initializeLayoutForUpdate() {
+		CropType selectedCropType = this.sessionData.getSelectedProject().getCropType();
+
+		Boolean isCustomCrop = true;
+		for (CropType.CropEnum crop : CropType.CropEnum.values()) {
+			if (crop.toString().equalsIgnoreCase(selectedCropType.getCropName())) {
+				isCustomCrop = false;
+				break;
+			}
+		}
+
+		if (isCustomCrop) {
+
+			CropType genericCropType = new CropType();
+			genericCropType.setDbName("generic");
+			genericCropType.setCropName(ProjectBasicDetailsComponent.GENERIC_CROP_DESCRIPTION);
+			this.cropTypeCombo.addItem(genericCropType);
+			this.cropTypeCombo.setValue(genericCropType);
+
+			this.lblOtherCrop.setVisible(true);
+			this.otherCropNameField.setVisible(true);
+			this.otherCropNameField.setEnabled(false);
+			this.otherCropNameField.setRequired(false);
+			this.otherCropNameField.removeAllValidators();
+			this.otherCropNameField.setValue(selectedCropType.getCropName());
+		}
+
+		this.disableCropTypeCombo();
+
+	}
+
+	protected void initializeActions() {
+
+	}
+
+	public void refreshVisibleItems() {
+		this.requestRepaintAll();
+	}
+
+	private ComboBox createCropTypeComboBox() {
+		List<CropType> cropTypes = null;
+		try {
+			cropTypes = this.workbenchDataManager.getInstalledCentralCrops();
+		} catch (MiddlewareQueryException e) {
+			ProjectBasicDetailsComponent.LOG.error("Error encountered while getting installed central crops", e);
+			throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
+		}
+
+		BeanItemContainer<CropType> beanItemContainer = new BeanItemContainer<CropType>(CropType.class);
+		for (CropType cropType : cropTypes) {
+			beanItemContainer.addBean(cropType);
+		}
+
+		// FIXME BMS-210
+		// Disabling custom crop for initial merged DB release (CIMMYT).
+		// CropType genericCropType = new CropType();
+		// genericCropType.setCentralDbName("generic");
+		// genericCropType.setCropName(GENERIC_CROP_DESCRIPTION);
+		// beanItemContainer.addBean(genericCropType);
+
+		ComboBox comboBox = new ComboBox();
+		comboBox.setContainerDataSource(beanItemContainer);
+		comboBox.setNewItemsAllowed(false);
+		comboBox.setItemCaptionPropertyId("cropName");
+		comboBox.setRequired(true);
+		comboBox.setRequiredError("Please choose a Crop.");
+		comboBox.setInputPrompt("Please choose");
+		comboBox.setInvalidAllowed(false);
+		comboBox.setNullSelectionAllowed(false);
+		comboBox.setImmediate(true);
+
+		if (cropTypes.size() == 1) { // If there is only one crop, set this by default
+			comboBox.setValue(cropTypes.get(0));
+		}
+
+		comboBox.addListener(new Property.ValueChangeListener() {
+
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				
+
 				if (event.getProperty() == null) {
-                    return;
-                }
+					return;
+				}
 				if (event.getProperty().getValue() == null) {
-                    return;
-                }
-				
-				if (((CropType)event.getProperty().getValue()).getCropName().equals(GENERIC_CROP_DESCRIPTION)){
-					otherCropNameField.setVisible(true);
-					otherCropNameField.setRequired(true);
-					lblOtherCrop.setVisible(true);
-				}else{
-					otherCropNameField.setVisible(false);
-					otherCropNameField.setRequired(false);
-					otherCropNameField.setValue("");
-					lblOtherCrop.setVisible(false);
+					return;
 				}
 
-                if (!isUpdate) {
-                    if (oldCropType == null) {
-                        oldCropType = getCropTypeBasedOnInput();
-                    } else {
-                        CropType newCropType = getCropTypeBasedOnInput();
+				if (((CropType) event.getProperty().getValue()).getCropName().equals(ProjectBasicDetailsComponent.GENERIC_CROP_DESCRIPTION)) {
+					ProjectBasicDetailsComponent.this.otherCropNameField.setVisible(true);
+					ProjectBasicDetailsComponent.this.otherCropNameField.setRequired(true);
+					ProjectBasicDetailsComponent.this.lblOtherCrop.setVisible(true);
+				} else {
+					ProjectBasicDetailsComponent.this.otherCropNameField.setVisible(false);
+					ProjectBasicDetailsComponent.this.otherCropNameField.setRequired(false);
+					ProjectBasicDetailsComponent.this.otherCropNameField.setValue("");
+					ProjectBasicDetailsComponent.this.lblOtherCrop.setVisible(false);
+				}
 
-                        if (!oldCropType.getCropName().equalsIgnoreCase(newCropType.getCropName())) {
-                            createProjectPanel.cropTypeChanged(newCropType);
-                            LOG.debug("changed");
-                        }
+				if (!ProjectBasicDetailsComponent.this.isUpdate) {
+					if (ProjectBasicDetailsComponent.this.oldCropType == null) {
+						ProjectBasicDetailsComponent.this.oldCropType = ProjectBasicDetailsComponent.this.getCropTypeBasedOnInput();
+					} else {
+						CropType newCropType = ProjectBasicDetailsComponent.this.getCropTypeBasedOnInput();
 
-                        oldCropType = newCropType;
-                    }
-                    
-                }
-                if(getWindow()!=null) {
-	                String minimumCropVersion = SchemaVersionUtil.getMinimumCropVersion();
-	                String currentCropVersion = getCropTypeBasedOnInput().getVersion();
-	                if(!SchemaVersionUtil.checkIfVersionIsSupported(currentCropVersion,minimumCropVersion)) {
-	                   	MessageNotifier.showWarning(getWindow(),"",
-	                			messageSource.getMessage(Message.MINIMUM_CROP_VERSION_WARNING,
-	                					currentCropVersion!=null?currentCropVersion:
-	                						messageSource.getMessage(Message.NOT_AVAILABLE)));
-	                }
-                }
+						if (!ProjectBasicDetailsComponent.this.oldCropType.getCropName().equalsIgnoreCase(newCropType.getCropName())) {
+							ProjectBasicDetailsComponent.this.createProjectPanel.cropTypeChanged(newCropType);
+							ProjectBasicDetailsComponent.LOG.debug("changed");
+						}
 
-				
+						ProjectBasicDetailsComponent.this.oldCropType = newCropType;
+					}
+
+				}
+				if (ProjectBasicDetailsComponent.this.getWindow() != null) {
+					String minimumCropVersion = SchemaVersionUtil.getMinimumCropVersion();
+					String currentCropVersion = ProjectBasicDetailsComponent.this.getCropTypeBasedOnInput().getVersion();
+					if (!SchemaVersionUtil.checkIfVersionIsSupported(currentCropVersion, minimumCropVersion)) {
+						MessageNotifier.showWarning(ProjectBasicDetailsComponent.this.getWindow(), "",
+								ProjectBasicDetailsComponent.this.messageSource.getMessage(
+										Message.MINIMUM_CROP_VERSION_WARNING,
+										currentCropVersion != null ? currentCropVersion : ProjectBasicDetailsComponent.this.messageSource
+												.getMessage(Message.NOT_AVAILABLE)));
+					}
+				}
+
 			}
 		});
-       
-        return comboBox;
-    }
 
-    public void updateProjectDetailsFormField(Project project) {
-       this.projectNameField.setValue(project.getProjectName());
-       this.startDateField.setValue(project.getStartDate());
-       this.cropTypeCombo.setValue(project.getCropType());
-       
-       if (isUpdate) {
-           initializeLayoutForUpdate();
-       }
-    }
-    
-    public boolean validate(){
-        boolean success = true;
-        String projectName = (String) projectNameField.getValue();
-        CropType cropType = (CropType) cropTypeCombo.getValue();
-        
-        StringBuffer errorDescription = new StringBuffer();
-        
-        if ((projectName == null) || (projectName.equals(""))){
-            errorDescription.append("No program name supplied. ");
-            success = false;
-        } else {
-        	// Check if the project name already exists
-            try {
-                Project project = workbenchDataManager.getProjectByName(projectName);
-                if (project != null && project.getProjectName() != null && project.getProjectName().equalsIgnoreCase(projectName)){
+		return comboBox;
+	}
 
-                    if (!isUpdate){
-                        errorDescription.append("There is already a program with the given name. ");
-                        success = false;
-                    } else if (sessionData.getSelectedProject().getProjectId().intValue() != project.getProjectId().intValue()){
-                    	errorDescription.append("There is already a program with the given name. ");
-                        success = false;
-                    }
+	public void updateProjectDetailsFormField(Project project) {
+		this.projectNameField.setValue(project.getProjectName());
+		this.startDateField.setValue(project.getStartDate());
+		this.cropTypeCombo.setValue(project.getCropType());
 
-                }
-            }
-            catch (MiddlewareQueryException e) {
-                LOG.error("Error encountered while getting program by name", e);
-                throw new InternationalizableException(e, Message.DATABASE_ERROR, 
-                        Message.CONTACT_ADMIN_ERROR_DESC);
-            }
-            // Run assigned validators
-            
-            try {
-                otherCropNameField.validate();
-            }
-            catch (InvalidValueException e) {
-                errorDescription.append(ValidationUtil.getMessageFor(e));
-                success = false;
-            }
-            
-            try {
-                projectNameField.validate();
-            }
-            catch (InvalidValueException e) {
-                errorDescription.append(ValidationUtil.getMessageFor(e));
-                success = false;
-            }
-            
-            try {
-                cropTypeCombo.validate();
-            }
-            catch (InvalidValueException e) {
-                errorDescription.append(ValidationUtil.getMessageFor(e));
-                success = false;
-            }
-            
-            
-        }
-        
-        String dateValidationMsg = validateDate();
-        if(dateValidationMsg.length() > 0){
-        	errorDescription.append(dateValidationMsg);
-            success = false;
-        }
-        
-        if (cropType == null){
-            errorDescription.append("No crop type selected. ");
-            success = false;
-        }
-        
-        if (!success){
-            MessageNotifier.showRequiredFieldError(getWindow(), errorDescription.toString());
-        }
-            
-        return success;
-    }
-    
-    private String validateDate() {
-    	String errorMessage = "";
-    	try{
-    		startDateField.validate();
-    	} catch (InvalidValueException e) {
-    		errorMessage = e.getMessage();
-    		LOG.debug(e.getMessage());
-    	}
-    	
-    	return errorMessage;
+		if (this.isUpdate) {
+			this.initializeLayoutForUpdate();
+		}
+	}
+
+	public boolean validate() {
+		boolean success = true;
+		String projectName = (String) this.projectNameField.getValue();
+		CropType cropType = (CropType) this.cropTypeCombo.getValue();
+
+		StringBuffer errorDescription = new StringBuffer();
+
+		if (projectName == null || projectName.equals("")) {
+			errorDescription.append("No program name supplied. ");
+			success = false;
+		} else {
+			// Check if the project name already exists
+			try {
+				Project project = this.workbenchDataManager.getProjectByName(projectName);
+				if (project != null && project.getProjectName() != null && project.getProjectName().equalsIgnoreCase(projectName)) {
+
+					if (!this.isUpdate) {
+						errorDescription.append("There is already a program with the given name. ");
+						success = false;
+					} else if (this.sessionData.getSelectedProject().getProjectId().intValue() != project.getProjectId().intValue()) {
+						errorDescription.append("There is already a program with the given name. ");
+						success = false;
+					}
+
+				}
+			} catch (MiddlewareQueryException e) {
+				ProjectBasicDetailsComponent.LOG.error("Error encountered while getting program by name", e);
+				throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
+			}
+			// Run assigned validators
+
+			try {
+				this.otherCropNameField.validate();
+			} catch (InvalidValueException e) {
+				errorDescription.append(ValidationUtil.getMessageFor(e));
+				success = false;
+			}
+
+			try {
+				this.projectNameField.validate();
+			} catch (InvalidValueException e) {
+				errorDescription.append(ValidationUtil.getMessageFor(e));
+				success = false;
+			}
+
+			try {
+				this.cropTypeCombo.validate();
+			} catch (InvalidValueException e) {
+				errorDescription.append(ValidationUtil.getMessageFor(e));
+				success = false;
+			}
+
+		}
+
+		String dateValidationMsg = this.validateDate();
+		if (dateValidationMsg.length() > 0) {
+			errorDescription.append(dateValidationMsg);
+			success = false;
+		}
+
+		if (cropType == null) {
+			errorDescription.append("No crop type selected. ");
+			success = false;
+		}
+
+		if (!success) {
+			MessageNotifier.showRequiredFieldError(this.getWindow(), errorDescription.toString());
+		}
+
+		return success;
+	}
+
+	private String validateDate() {
+		String errorMessage = "";
+		try {
+			this.startDateField.validate();
+		} catch (InvalidValueException e) {
+			errorMessage = e.getMessage();
+			ProjectBasicDetailsComponent.LOG.debug(e.getMessage());
+		}
+
+		return errorMessage;
 	}
 
 	public Project getProjectDetails() throws InvalidValueException {
-        if (!validate()) {
-            throw new InvalidValueException("Failed Validation on BasicDetailsForm");
-        }
+		if (!this.validate()) {
+			throw new InvalidValueException("Failed Validation on BasicDetailsForm");
+		}
 
-        Project project = new Project();
-        String projectName = (String) projectNameField.getValue();
-        if (projectName != null) {
-            projectName = projectName.trim();
-        }
-        project.setProjectName(projectName);
-        project.setStartDate((Date) startDateField.getValue());
-        project.setCropType(getCropTypeBasedOnInput());
-        return project;
-    }
-    
-    
-    public CropType getCropTypeBasedOnInput(){
-    	
-    	if (((CropType)cropTypeCombo.getValue()).getCropName().equalsIgnoreCase(GENERIC_CROP_DESCRIPTION)){
-    	    String bmsVersion = workbenchProperties.getProperty("workbench.version", null);
-    	    
-    		String newItemCaption = (String) otherCropNameField.getValue();
-    		CropType cropType = new CropType(newItemCaption);  	
-            cropType.setDbName("ibdbv2_" + newItemCaption.toLowerCase().replaceAll("\\s+", "_") + "_merged");
-            cropType.setVersion(bmsVersion);
-            return cropType;
-    	}else{
-    		return (CropType) cropTypeCombo.getValue();
-    	}
+		Project project = new Project();
+		String projectName = (String) this.projectNameField.getValue();
+		if (projectName != null) {
+			projectName = projectName.trim();
+		}
+		project.setProjectName(projectName);
+		project.setStartDate((Date) this.startDateField.getValue());
+		project.setCropType(this.getCropTypeBasedOnInput());
+		return project;
+	}
 
-    }
+	public CropType getCropTypeBasedOnInput() {
 
-    public void disableCropTypeCombo() {
-        this.cropTypeCombo.setEnabled(false);
-    }
-    
-    public Boolean getIsUpdate() {
-		return isUpdate;
+		if (((CropType) this.cropTypeCombo.getValue()).getCropName()
+				.equalsIgnoreCase(ProjectBasicDetailsComponent.GENERIC_CROP_DESCRIPTION)) {
+			String bmsVersion = this.workbenchProperties.getProperty("workbench.version", null);
+
+			String newItemCaption = (String) this.otherCropNameField.getValue();
+			CropType cropType = new CropType(newItemCaption);
+			cropType.setDbName("ibdbv2_" + newItemCaption.toLowerCase().replaceAll("\\s+", "_") + "_merged");
+			cropType.setVersion(bmsVersion);
+			return cropType;
+		} else {
+			return (CropType) this.cropTypeCombo.getValue();
+		}
+
+	}
+
+	public void disableCropTypeCombo() {
+		this.cropTypeCombo.setEnabled(false);
+	}
+
+	public Boolean getIsUpdate() {
+		return this.isUpdate;
 	}
 
 	public void setIsUpdate(Boolean isUpdate) {
 		this.isUpdate = isUpdate;
 	}
 
-	public void setAlignment(Alignment alignment){
-    	this.setComponentAlignment(gridLayout, alignment);
-    }
-	
-	private class ValueRangeValidator extends AbstractValidator{
+	public void setAlignment(Alignment alignment) {
+		this.setComponentAlignment(this.gridLayout, alignment);
+	}
+
+	private class ValueRangeValidator extends AbstractValidator {
 
 		private static final long serialVersionUID = 1L;
 
@@ -495,24 +493,27 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 
 		@Override
 		public boolean isValid(Object value) {
-			
+
 			try {
-				CropType cropType = workbenchDataManager.getCropTypeByName(value.toString().trim());
-				if (cropType != null){
-					this.setErrorMessage(String.format("The {0} crop already exists. Please change the Crop Name.", value.toString().trim()));
+				CropType cropType = ProjectBasicDetailsComponent.this.workbenchDataManager.getCropTypeByName(value.toString().trim());
+				if (cropType != null) {
+					this.setErrorMessage(String
+							.format("The {0} crop already exists. Please change the Crop Name.", value.toString().trim()));
 					return false;
 				}
 			} catch (MiddlewareQueryException e) {
 				e.printStackTrace();
 			}
-			
-			for (CropType.CropEnum crop : CropType.CropEnum.values()){
-				if (crop.toString().equalsIgnoreCase((value.toString().trim()))){
-					this.setErrorMessage(String.format("This crop name ({0}) is reserved because there is a database available for it. Please install the {0} database before creating this program if you wish to take advantage of traits and other information for this crop. If you wish to proceed with using the generic database, please choose a different name for your crop.", value.toString().trim()));
+
+			for (CropType.CropEnum crop : CropType.CropEnum.values()) {
+				if (crop.toString().equalsIgnoreCase(value.toString().trim())) {
+					this.setErrorMessage(String
+							.format("This crop name ({0}) is reserved because there is a database available for it. Please install the {0} database before creating this program if you wish to take advantage of traits and other information for this crop. If you wish to proceed with using the generic database, please choose a different name for your crop.",
+									value.toString().trim()));
 					return false;
 				}
 			}
-			
+
 			return true;
 		}
 	}

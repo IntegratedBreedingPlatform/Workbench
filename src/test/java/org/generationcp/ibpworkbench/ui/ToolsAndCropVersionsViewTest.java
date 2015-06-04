@@ -1,7 +1,5 @@
-package org.generationcp.ibpworkbench.ui;
 
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
+package org.generationcp.ibpworkbench.ui;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,25 +15,26 @@ import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 public class ToolsAndCropVersionsViewTest {
-	
+
 	private static ToolsAndCropVersionsView toolsAndCropVersionsView;
-	private static final SimpleResourceBundleMessageSource messageSource = 
-			MessageResourceUtil.getMessageResource();
+	private static final SimpleResourceBundleMessageSource messageSource = MessageResourceUtil.getMessageResource();
 	private static WorkbenchDataManager workbenchDataManager;
-	
+
 	@BeforeClass
 	public static void setUp() throws Exception {
-		workbenchDataManager = mock(WorkbenchDataManager.class);
-		doReturn(getAllCrops()).when(workbenchDataManager).getInstalledCentralCrops();
-		doReturn(getAllTools()).when(workbenchDataManager).getAllTools();
-		toolsAndCropVersionsView = new ToolsAndCropVersionsView();
-		toolsAndCropVersionsView.setMessageSource(messageSource);
-		toolsAndCropVersionsView.setWorkbenchDataManager(workbenchDataManager);
-		toolsAndCropVersionsView.afterPropertiesSet();
+		ToolsAndCropVersionsViewTest.workbenchDataManager = Mockito.mock(WorkbenchDataManager.class);
+		Mockito.doReturn(ToolsAndCropVersionsViewTest.getAllCrops()).when(ToolsAndCropVersionsViewTest.workbenchDataManager)
+				.getInstalledCentralCrops();
+		Mockito.doReturn(ToolsAndCropVersionsViewTest.getAllTools()).when(ToolsAndCropVersionsViewTest.workbenchDataManager).getAllTools();
+		ToolsAndCropVersionsViewTest.toolsAndCropVersionsView = new ToolsAndCropVersionsView();
+		ToolsAndCropVersionsViewTest.toolsAndCropVersionsView.setMessageSource(ToolsAndCropVersionsViewTest.messageSource);
+		ToolsAndCropVersionsViewTest.toolsAndCropVersionsView.setWorkbenchDataManager(ToolsAndCropVersionsViewTest.workbenchDataManager);
+		ToolsAndCropVersionsViewTest.toolsAndCropVersionsView.afterPropertiesSet();
 	}
-	
+
 	private static List<Tool> getAllTools() {
 		List<Tool> tools = new ArrayList<Tool>();
 		Tool tool = new Tool(ToolName.gdms.name(), "GDMS", "GDMS/login.do");
@@ -53,12 +52,13 @@ public class ToolsAndCropVersionsViewTest {
 		cropTypes.add(cropType);
 		return cropTypes;
 	}
-	
+
 	@Test
 	public void testCheckIfGDMSIsDisplayed() {
 		String value = "gdms";
-		boolean isFound = VaadinComponentsUtil.findComponent(toolsAndCropVersionsView,
-				VaadinComponentFieldType.TABLE_CONTENT, value, "toolName");
-		Assert.assertTrue(value+" is not found",isFound);
+		boolean isFound =
+				VaadinComponentsUtil.findComponent(ToolsAndCropVersionsViewTest.toolsAndCropVersionsView,
+						VaadinComponentFieldType.TABLE_CONTENT, value, "toolName");
+		Assert.assertTrue(value + " is not found", isFound);
 	}
 }

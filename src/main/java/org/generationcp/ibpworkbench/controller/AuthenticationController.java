@@ -1,4 +1,11 @@
+
 package org.generationcp.ibpworkbench.controller;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.mail.MessagingException;
 
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.security.ForgotPasswordEmailService;
@@ -19,16 +26,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.Resource;
-import javax.mail.MessagingException;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping(AuthenticationController.URL)
 public class AuthenticationController {
+
 	public static final String URL = "/auth";
 
 	public static final String SUCCESS = "success";
@@ -56,51 +63,47 @@ public class AuthenticationController {
 		return "login";
 	}
 
-	@RequestMapping(value="/reset/{token}", method = RequestMethod.GET)
-	public String getCreateNewPasswordPage(@PathVariable String token,Model model) {
+	@RequestMapping(value = "/reset/{token}", method = RequestMethod.GET)
+	public String getCreateNewPasswordPage(@PathVariable String token, Model model) {
 
 		// verify token if valid
 		try {
-			User user = forgotPasswordEmailService.validateResetToken(token);
+			User user = this.forgotPasswordEmailService.validateResetToken(token);
 
-			model.addAttribute("user",user);
+			model.addAttribute("user", user);
 
 			return "new-password";
 
 		} catch (InvalidResetTokenException e) {
-			LOG.debug(e.getMessage(),e);
+			AuthenticationController.LOG.debug(e.getMessage(), e);
 			return "redirect:" + AuthenticationController.URL;
 		}
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/validateLogin", method = RequestMethod.POST)
-	public ResponseEntity<Map<String, Object>> validateLogin(
-			@ModelAttribute("userAccount") UserAccountModel model, BindingResult result) {
+	public ResponseEntity<Map<String, Object>> validateLogin(@ModelAttribute("userAccount") UserAccountModel model, BindingResult result) {
 		Map<String, Object> out = new LinkedHashMap<>();
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
 		try {
-			if (workbenchUserService.isValidUserLogin(model)) {
+			if (this.workbenchUserService.isValidUserLogin(model)) {
 				isSuccess = HttpStatus.OK;
-				out.put(SUCCESS, Boolean.TRUE);
+				out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
 			} else {
 				Map<String, String> errors = new LinkedHashMap<>();
 
-				errors.put(UserAccountFields.USERNAME, messageSource
-						.getMessage(UserAccountValidator.LOGIN_ATTEMPT_UNSUCCESSFUL,
-								new String[] { },
-								"Your login attempt was not successful. Please try again.",
-								LocaleContextHolder.getLocale()));
+				errors.put(UserAccountFields.USERNAME, this.messageSource.getMessage(UserAccountValidator.LOGIN_ATTEMPT_UNSUCCESSFUL,
+						new String[] {}, "Your login attempt was not successful. Please try again.", LocaleContextHolder.getLocale()));
 
-				out.put(SUCCESS, Boolean.FALSE);
-				out.put(ERRORS, errors);
+				out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
+				out.put(AuthenticationController.ERRORS, errors);
 			}
 		} catch (MiddlewareQueryException e) {
-			out.put(SUCCESS, Boolean.FALSE);
-			out.put(ERRORS, e.getMessage());
+			out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
+			out.put(AuthenticationController.ERRORS, e.getMessage());
 
-			LOG.error(e.getMessage(), e);
+			AuthenticationController.LOG.error(e.getMessage(), e);
 		}
 
 		return new ResponseEntity<>(out, isSuccess);
@@ -108,30 +111,29 @@ public class AuthenticationController {
 
 	@ResponseBody
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
-	public ResponseEntity<Map<String, Object>> saveUserAccount(
-			@ModelAttribute("userAccount") UserAccountModel model, BindingResult result) {
+	public ResponseEntity<Map<String, Object>> saveUserAccount(@ModelAttribute("userAccount") UserAccountModel model, BindingResult result) {
 		Map<String, Object> out = new LinkedHashMap<>();
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
-		userAccountValidator.validate(model, result);
+		this.userAccountValidator.validate(model, result);
 
 		if (result.hasErrors()) {
 
-			generateErrors(result, out);
+			this.generateErrors(result, out);
 
 		} else {
 			// attempt to save the user to the database
 			try {
-				workbenchUserService.saveUserAccount(model);
+				this.workbenchUserService.saveUserAccount(model);
 
 				isSuccess = HttpStatus.OK;
-				out.put(SUCCESS, Boolean.TRUE);
+				out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
 
 			} catch (MiddlewareQueryException e) {
 
-				out.put(SUCCESS, Boolean.FALSE);
-				out.put(ERRORS, e.getMessage());
+				out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
+				out.put(AuthenticationController.ERRORS, e.getMessage());
 
-				LOG.error(e.getMessage(), e);
+				AuthenticationController.LOG.error(e.getMessage(), e);
 			}
 		}
 
@@ -140,19 +142,19 @@ public class AuthenticationController {
 
 	@ResponseBody
 	@RequestMapping(value = "/forgotPassword", method = RequestMethod.POST)
-	public ResponseEntity<Map<String, Object>> validateForgotPasswordForm(
-			@ModelAttribute("userAccount") UserAccountModel model, BindingResult result) {
+	public ResponseEntity<Map<String, Object>> validateForgotPasswordForm(@ModelAttribute("userAccount") UserAccountModel model,
+			BindingResult result) {
 		Map<String, Object> out = new LinkedHashMap<>();
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
-		forgotPasswordAccountValidator.validate(model, result);
+		this.forgotPasswordAccountValidator.validate(model, result);
 
 		if (result.hasErrors()) {
-			generateErrors(result, out);
+			this.generateErrors(result, out);
 		} else {
 
 			isSuccess = HttpStatus.OK;
-			out.put(SUCCESS, Boolean.TRUE);
+			out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
 
 		}
 
@@ -161,24 +163,22 @@ public class AuthenticationController {
 
 	@ResponseBody
 	@RequestMapping(value = "/sendResetEmail", method = RequestMethod.POST)
-	public ResponseEntity<Map<String,Object>> doSendResetPasswordRequestEmail(
-			@ModelAttribute("userAccount") UserAccountModel model) {
+	public ResponseEntity<Map<String, Object>> doSendResetPasswordRequestEmail(@ModelAttribute("userAccount") UserAccountModel model) {
 		Map<String, Object> out = new LinkedHashMap<>();
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
 		try {
 			// success! send an email request
-			forgotPasswordEmailService.doRequestPasswordReset(
-					workbenchUserService.getUserByUserName(model.getUsername()));
+			this.forgotPasswordEmailService.doRequestPasswordReset(this.workbenchUserService.getUserByUserName(model.getUsername()));
 
 			isSuccess = HttpStatus.OK;
-			out.put(SUCCESS, Boolean.TRUE);
+			out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
 
 		} catch (MiddlewareQueryException | MessagingException e) {
-			out.put(SUCCESS, Boolean.FALSE);
-			out.put(ERRORS, e.getMessage());
+			out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
+			out.put(AuthenticationController.ERRORS, e.getMessage());
 
-			LOG.error(e.getMessage(), e);
+			AuthenticationController.LOG.error(e.getMessage(), e);
 		}
 
 		return new ResponseEntity<>(out, isSuccess);
@@ -187,19 +187,19 @@ public class AuthenticationController {
 	@ResponseBody
 	@RequestMapping(value = "/reset", method = RequestMethod.POST)
 	public Boolean doResetPassword(@ModelAttribute("userAccount") UserAccountModel model) {
-		LOG.debug("reset password submitted");
+		AuthenticationController.LOG.debug("reset password submitted");
 
 		try {
 			// 1. replace password
-			workbenchUserService.updateUserPassword(model);
+			this.workbenchUserService.updateUserPassword(model);
 
 			// 2. remove token
-			forgotPasswordEmailService.deleteToken(model);
+			this.forgotPasswordEmailService.deleteToken(model);
 
 			return true;
 
 		} catch (MiddlewareQueryException e) {
-			LOG.error(e.getMessage(),e);
+			AuthenticationController.LOG.error(e.getMessage(), e);
 
 			return false;
 		}
@@ -208,13 +208,13 @@ public class AuthenticationController {
 	protected void generateErrors(BindingResult result, Map<String, Object> out) {
 		Map<String, String> errors = new LinkedHashMap<>();
 		for (FieldError error : result.getFieldErrors()) {
-			errors.put(error.getField(), messageSource
-					.getMessage(error.getCode(), error.getArguments(),
-							error.getDefaultMessage(),
+			errors.put(
+					error.getField(),
+					this.messageSource.getMessage(error.getCode(), error.getArguments(), error.getDefaultMessage(),
 							LocaleContextHolder.getLocale()));
 		}
 
-		out.put(SUCCESS, Boolean.FALSE);
-		out.put(ERRORS, errors);
+		out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
+		out.put(AuthenticationController.ERRORS, errors);
 	}
 }

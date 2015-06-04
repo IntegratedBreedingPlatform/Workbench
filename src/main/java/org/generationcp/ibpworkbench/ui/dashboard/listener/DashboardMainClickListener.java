@@ -1,19 +1,18 @@
 /*******************************************************************************
  * Copyright (c) 2013, All Rights Reserved.
- * 
+ *
  * Generation Challenge Programme (GCP)
- * 
- * 
- * This software is licensed for use under the terms of the GNU General Public
- * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
- * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- * 
+ *
+ *
+ * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
+ * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ *
  *******************************************************************************/
+
 package org.generationcp.ibpworkbench.ui.dashboard.listener;
 
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component;
+import java.util.Date;
+
 import org.generationcp.commons.constant.ToolEnum;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -36,104 +35,112 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.util.Date;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component;
 
 /**
  * @author Efficio.Daniel
  *
  */
 @Configurable
-public class DashboardMainClickListener implements ClickListener{
+public class DashboardMainClickListener implements ClickListener {
 
-    private Long projectId;
-    private Component source;
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 5742093045098439073L;
+	private final Long projectId;
+	private final Component source;
 
-    @Autowired
-    private WorkbenchDataManager manager;
-    
-    @Autowired
-    private ToolUtil toolUtil;
+	@Autowired
+	private WorkbenchDataManager manager;
 
-    @Autowired
-    private SessionData sessionData;
+	@Autowired
+	private ToolUtil toolUtil;
 
-    @Autowired
-    private SimpleResourceBundleMessageSource messageSource;
+	@Autowired
+	private SessionData sessionData;
 
-    private static final Logger LOG = LoggerFactory.getLogger(DashboardMainClickListener.class);
-    
-    public DashboardMainClickListener(Component source, Long projectId){
-        this.projectId = projectId;
-        this.source = source;
-    }
-    /* (non-Javadoc)
-     * @see com.vaadin.ui.Button.ClickListener#buttonClick(com.vaadin.ui.Button.ClickEvent)
-     */
-    @Override
-    public void buttonClick(ClickEvent event) {
-        // TODO Auto-generated method stub
-        try {
-           // lets update last opened project
-            Project project = sessionData.getSelectedProject();
-            String minimumCropVersion = SchemaVersionUtil.getMinimumCropVersion();
-            String currentCropVersion = project.getCropType().getVersion();
-            if(!SchemaVersionUtil.checkIfVersionIsSupported(currentCropVersion,minimumCropVersion)) {
-            	MessageNotifier.showWarning(event.getComponent().getWindow(), 
-            			"",messageSource.getMessage(Message.MINIMUM_CROP_VERSION_WARNING,
-            					currentCropVersion!=null?currentCropVersion:
-            						messageSource.getMessage(Message.NOT_AVAILABLE)));
-            }
+	@Autowired
+	private SimpleResourceBundleMessageSource messageSource;
 
-            try {
-                toolUtil.createWorkspaceDirectoriesForProject(project);
-            } catch (MiddlewareQueryException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+	private static final Logger LOG = LoggerFactory.getLogger(DashboardMainClickListener.class);
 
-            this.updateProjectLastOpenedDate(project);
+	public DashboardMainClickListener(Component source, Long projectId) {
+		this.projectId = projectId;
+		this.source = source;
+	}
 
-            //update sidebar selection
-            LOG.trace("selecting sidebar");
-            WorkbenchMainView mainWindow = (WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow();
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.vaadin.ui.Button.ClickListener#buttonClick(com.vaadin.ui.Button.ClickEvent)
+	 */
+	@Override
+	public void buttonClick(ClickEvent event) {
+		// TODO Auto-generated method stub
+		try {
+			// lets update last opened project
+			Project project = this.sessionData.getSelectedProject();
+			String minimumCropVersion = SchemaVersionUtil.getMinimumCropVersion();
+			String currentCropVersion = project.getCropType().getVersion();
+			if (!SchemaVersionUtil.checkIfVersionIsSupported(currentCropVersion, minimumCropVersion)) {
+				MessageNotifier.showWarning(event.getComponent().getWindow(), "", this.messageSource.getMessage(
+						Message.MINIMUM_CROP_VERSION_WARNING,
+						currentCropVersion != null ? currentCropVersion : this.messageSource.getMessage(Message.NOT_AVAILABLE)));
+			}
 
-            mainWindow.addTitle(project.getProjectName());
+			try {
+				this.toolUtil.createWorkspaceDirectoriesForProject(project);
+			} catch (MiddlewareQueryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
-            if (null != WorkbenchSidebar.sidebarTreeMap.get("manage_list")) {
-                mainWindow.getSidebar().selectItem(WorkbenchSidebar.sidebarTreeMap.get("manage_list"));
-            }
+			this.updateProjectLastOpenedDate(project);
 
+			// update sidebar selection
+			DashboardMainClickListener.LOG.trace("selecting sidebar");
+			WorkbenchMainView mainWindow = (WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow();
 
-            // page change to list manager, with parameter passed
-            (new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER_MAIN)).buttonClick(event);
+			mainWindow.addTitle(project.getProjectName());
 
-        } catch (InternationalizableException e){
-            LOG.error(e.getMessage(),e);
-            MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(),
-					e.getDescription());
-        }
-    }
-    
+			if (null != WorkbenchSidebar.sidebarTreeMap.get("manage_list")) {
+				mainWindow.getSidebar().selectItem(WorkbenchSidebar.sidebarTreeMap.get("manage_list"));
+			}
+
+			// page change to list manager, with parameter passed
+			new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER_MAIN).buttonClick(event);
+
+		} catch (InternationalizableException e) {
+			DashboardMainClickListener.LOG.error(e.getMessage(), e);
+			MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
+		}
+	}
+
 	public void updateProjectLastOpenedDate(Project project) {
-        try {
+		try {
 
-            // set the last opened project in the session
-            IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+			// set the last opened project in the session
+			IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
 
-            ProjectUserInfoDAO projectUserInfoDao = manager.getProjectUserInfoDao();
-            ProjectUserInfo projectUserInfo = projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId().intValue(), app.getSessionData().getUserData().getUserid());
-            if (projectUserInfo != null) {
-                projectUserInfo.setLastOpenDate(new Date());
-                manager.saveOrUpdateProjectUserInfo(projectUserInfo);
-            }
+			ProjectUserInfoDAO projectUserInfoDao = this.manager.getProjectUserInfoDao();
+			ProjectUserInfo projectUserInfo =
+					projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId().intValue(), app.getSessionData().getUserData()
+							.getUserid());
+			if (projectUserInfo != null) {
+				projectUserInfo.setLastOpenDate(new Date());
+				this.manager.saveOrUpdateProjectUserInfo(projectUserInfo);
+			}
 
-            project.setLastOpenDate(new Date());
-            manager.mergeProject(project);
+			project.setLastOpenDate(new Date());
+			this.manager.mergeProject(project);
 
-            app.getSessionData().setLastOpenedProject(project);
+			app.getSessionData().setLastOpenedProject(project);
 
-        } catch (MiddlewareQueryException e) {
-            LOG.error(e.toString(), e);
-        }
-    }
+		} catch (MiddlewareQueryException e) {
+			DashboardMainClickListener.LOG.error(e.toString(), e);
+		}
+	}
 }

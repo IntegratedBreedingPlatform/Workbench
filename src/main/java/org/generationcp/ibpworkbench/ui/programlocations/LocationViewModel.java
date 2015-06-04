@@ -1,109 +1,92 @@
-package org.generationcp.ibpworkbench.ui.programlocations;
 
-import org.generationcp.middleware.pojos.BeanFormState;
-import org.generationcp.middleware.pojos.Location;
-import uk.co.jemos.podam.api.PodamFactory;
-import uk.co.jemos.podam.api.PodamFactoryImpl;
+package org.generationcp.ibpworkbench.ui.programlocations;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.generationcp.middleware.pojos.BeanFormState;
+import org.generationcp.middleware.pojos.Location;
+
+import uk.co.jemos.podam.api.PodamFactory;
+import uk.co.jemos.podam.api.PodamFactoryImpl;
+
 public class LocationViewModel implements BeanFormState {
-	
 
 	private Integer locationId;
 	private String locationName = "";
 	public String locationAbbreviation = "";
 
-    public Integer getLtype() {
-        return ltype;
-    }
+	public Integer getLtype() {
+		return this.ltype;
+	}
 
-    public void setLtype(Integer ltype) {
-        this.ltype = ltype;
-    }
+	public void setLtype(Integer ltype) {
+		this.ltype = ltype;
+	}
 
-    public Integer ltype;
-    public String ltypeStr;
+	public Integer ltype;
+	public String ltypeStr;
 
 	private Integer cntryid;
-    private Integer provinceId;
+	private Integer provinceId;
 
-    private String cntryFullName;
-    private Boolean isSelected = false;
-    private Boolean isEnabled = true;
+	private String cntryFullName;
+	private Boolean isSelected = false;
+	private Boolean isEnabled = true;
 
 	private Double latitude;
 	private Double longitude;
 	private Double altitude;
 
-    public LocationViewModel() {}
-    public LocationViewModel(Location location) {
-
-    }
-
-	
-
-	public Integer getLocationId() {
-		return locationId;
+	public LocationViewModel() {
 	}
 
+	public LocationViewModel(Location location) {
 
+	}
+
+	public Integer getLocationId() {
+		return this.locationId;
+	}
 
 	public void setLocationId(Integer locationId) {
 		this.locationId = locationId;
 	}
 
-
-
 	public String getLocationName() {
-		return locationName;
+		return this.locationName;
 	}
-
-
 
 	public void setLocationName(String locationName) {
 		this.locationName = locationName;
 	}
 
-
-
 	public String getLocationAbbreviation() {
-		return locationAbbreviation;
+		return this.locationAbbreviation;
 	}
-
-
 
 	public void setLocationAbbreviation(String locationAbbreviation) {
 		this.locationAbbreviation = locationAbbreviation;
 	}
 
-
-
 	public String getLtypeStr() {
-		return ltypeStr;
+		return this.ltypeStr;
 	}
-
-
 
 	public void setLtypeStr(String ltypeStr) {
 		this.ltypeStr = ltypeStr;
 	}
 
-
-
 	public String getCntryFullName() {
-		return cntryFullName;
+		return this.cntryFullName;
 	}
-
-
 
 	public void setCntryFullName(String cntryFullName) {
 		this.cntryFullName = cntryFullName;
 	}
 
 	public Double getLatitude() {
-		return latitude;
+		return this.latitude;
 	}
 
 	public void setLatitude(Double latitude) {
@@ -111,7 +94,7 @@ public class LocationViewModel implements BeanFormState {
 	}
 
 	public Double getLongitude() {
-		return longitude;
+		return this.longitude;
 	}
 
 	public void setLongitude(Double longitude) {
@@ -119,7 +102,7 @@ public class LocationViewModel implements BeanFormState {
 	}
 
 	public Double getAltitude() {
-		return altitude;
+		return this.altitude;
 	}
 
 	public void setAltitude(Double altitude) {
@@ -128,9 +111,9 @@ public class LocationViewModel implements BeanFormState {
 
 	public static List<LocationViewModel> generateRandomData(int itemCount) {
 		List<LocationViewModel> list = new ArrayList<LocationViewModel>();
-		
+
 		PodamFactory factory = new PodamFactoryImpl();
-		
+
 		for (int i = 0; i < itemCount; i++) {
 			list.add(factory.manufacturePojo(LocationViewModel.class));
 		}
@@ -140,86 +123,84 @@ public class LocationViewModel implements BeanFormState {
 
 	@Override
 	public String toString() {
-		return "LocationViewModel: [locationId="+ locationId + ", locationName="+ locationName + ", locationAbbreviation="+ locationAbbreviation +", ltypeStr="+ ltypeStr + ", cntryFullName=" + cntryFullName +"]";
+		return "LocationViewModel: [locationId=" + this.locationId + ", locationName=" + this.locationName + ", locationAbbreviation="
+				+ this.locationAbbreviation + ", ltypeStr=" + this.ltypeStr + ", cntryFullName=" + this.cntryFullName + "]";
 	}
 
+	@Override
+	public boolean isActive() {
+		return this.isSelected;
+	}
 
-    @Override
-    public boolean isActive() {
-        return this.isSelected;
-    }
+	@Override
+	public void setActive(Boolean val) {
+		this.isSelected = val;
+	}
 
-    @Override
-    public void setActive(Boolean val) {
-        this.isSelected = val;
-    }
+	public Integer getCntryid() {
+		return this.cntryid;
+	}
 
-    public Integer getCntryid() {
-        return cntryid;
-    }
+	public void setCntryid(Integer cntryid) {
+		this.cntryid = cntryid;
+	}
 
-    public void setCntryid(Integer cntryid) {
-        this.cntryid = cntryid;
-    }
+	public Integer getProvinceId() {
+		return this.provinceId;
+	}
 
-    public Integer getProvinceId() {
-        return provinceId;
-    }
+	public void setProvinceId(Integer provinceId) {
+		this.provinceId = provinceId;
+	}
 
-    public void setProvinceId(Integer provinceId) {
-        this.provinceId = provinceId;
-    }
+	public Boolean getSelected() {
+		return this.isSelected;
+	}
 
-    public Boolean getSelected() {
-        return isSelected;
-    }
-
-    public void setSelected(Boolean selected) {
-        isSelected = selected;
-    }
+	public void setSelected(Boolean selected) {
+		this.isSelected = selected;
+	}
 
 	@Override
 	public boolean isEnabled() {
 		// TODO Auto-generated method stub
-		return isEnabled;
+		return this.isEnabled;
 	}
 
 	@Override
 	public void setEnabled(Boolean val) {
 		this.isEnabled = val;
-		
+
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((locationId == null) ? 0 : locationId.hashCode());
+		result = prime * result + (this.locationId == null ? 0 : this.locationId.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
-            return true;
-        }
+			return true;
+		}
 		if (obj == null) {
-            return false;
-        }
-		if (getClass() != obj.getClass()) {
-            return false;
-        }
+			return false;
+		}
+		if (this.getClass() != obj.getClass()) {
+			return false;
+		}
 		LocationViewModel other = (LocationViewModel) obj;
-		if (locationId == null) {
+		if (this.locationId == null) {
 			if (other.locationId != null) {
-                return false;
-            }
-		} else if (!locationId.equals(other.locationId)) {
-            return false;
-        }
+				return false;
+			}
+		} else if (!this.locationId.equals(other.locationId)) {
+			return false;
+		}
 		return true;
 	}
-	
 
 }

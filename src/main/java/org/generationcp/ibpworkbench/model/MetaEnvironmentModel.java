@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.model;
 
 public class MetaEnvironmentModel {
@@ -5,16 +6,17 @@ public class MetaEnvironmentModel {
 	public MetaEnvironmentModel() {
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	public int getStudyId() {
-		return studyId;
+		return this.studyId;
 	}
+
 	public void setStudyId(int studyId) {
 		this.studyId = studyId;
 	}
 
 	public String getStudyName() {
-		return studyName;
+		return this.studyName;
 	}
 
 	public void setStudyName(String studyName) {
@@ -22,7 +24,7 @@ public class MetaEnvironmentModel {
 	}
 
 	public int getDataSetId() {
-		return dataSetId;
+		return this.dataSetId;
 	}
 
 	public void setDataSetId(int dataSetId) {
@@ -30,7 +32,7 @@ public class MetaEnvironmentModel {
 	}
 
 	public String getDataSetName() {
-		return dataSetName;
+		return this.dataSetName;
 	}
 
 	public void setDataSetName(String dataSetName) {
@@ -38,7 +40,7 @@ public class MetaEnvironmentModel {
 	}
 
 	public String getTrial() {
-		return trial;
+		return this.trial;
 	}
 
 	public void setTrial(String trial) {
@@ -46,7 +48,7 @@ public class MetaEnvironmentModel {
 	}
 
 	public String getEnvironment() {
-		return environment;
+		return this.environment;
 	}
 
 	public void setEnvironment(String environment) {
@@ -62,41 +64,41 @@ public class MetaEnvironmentModel {
 	private String trialFactorName;
 	private Boolean active;
 	private int dataSetTypeId;
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
-            return true;
-        }
+			return true;
+		}
 		if (obj == null) {
-            return false;
-        }
-		if (getClass() != obj.getClass()) {
-            return false;
-        }
-		
+			return false;
+		}
+		if (this.getClass() != obj.getClass()) {
+			return false;
+		}
+
 		MetaEnvironmentModel other = (MetaEnvironmentModel) obj;
 
-		if (studyId != other.studyId) {
-            return false;
-        }
-		if (dataSetId != other.dataSetId) {
-            return false;
-        }
-		if (!trial.equals(other.trial)) {
-            return false;
-        }
-		
+		if (this.studyId != other.studyId) {
+			return false;
+		}
+		if (this.dataSetId != other.dataSetId) {
+			return false;
+		}
+		if (!this.trial.equals(other.trial)) {
+			return false;
+		}
+
 		return true;
 	}
-	
-	 @Override
-	    public int hashCode() {
-	        return this.studyId;
-	    }
+
+	@Override
+	public int hashCode() {
+		return this.studyId;
+	}
 
 	public String getTrialFactorName() {
-		return trialFactorName;
+		return this.trialFactorName;
 	}
 
 	public void setTrialFactorName(String trialFactorName) {
@@ -105,11 +107,11 @@ public class MetaEnvironmentModel {
 
 	public String getKey() {
 		// TODO Auto-generated method stub
-		return String.format("%s%s%s", studyId, dataSetId, trial) ;
+		return String.format("%s%s%s", this.studyId, this.dataSetId, this.trial);
 	}
 
 	public Boolean getActive() {
-		return active;
+		return this.active;
 	}
 
 	public void setActive(Boolean active) {
@@ -117,12 +119,11 @@ public class MetaEnvironmentModel {
 	}
 
 	public int getDataSetTypeId() {
-		return dataSetTypeId;
+		return this.dataSetTypeId;
 	}
 
 	public void setDataSetTypeId(int dataSetTypeId) {
 		this.dataSetTypeId = dataSetTypeId;
 	}
-	
 
 }

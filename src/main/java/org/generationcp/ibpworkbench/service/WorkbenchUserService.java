@@ -1,4 +1,9 @@
+
 package org.generationcp.ibpworkbench.service;
+
+import java.util.Arrays;
+
+import javax.annotation.Resource;
 
 import org.generationcp.commons.util.DateUtil;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
@@ -10,9 +15,6 @@ import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.SecurityQuestion;
 import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.util.Arrays;
 
 /**
  * Created by cyrus on 11/27/14.
@@ -47,7 +49,7 @@ public class WorkbenchUserService {
 		person.setPositionName("-");
 		person.setPhone("-");
 
-		workbenchDataManager.addPerson(person);
+		this.workbenchDataManager.addPerson(person);
 
 		User user = new User();
 		user.setPersonid(person.getId());
@@ -66,46 +68,48 @@ public class WorkbenchUserService {
 
 		// add user roles to the particular user
 		user.setRoles(Arrays.asList(new UserRole(user, userAccount.getRole())));
-		workbenchDataManager.addUser(user);
+		this.workbenchDataManager.addUser(user);
 
 		SecurityQuestion question = new SecurityQuestion();
 		question.setUserId(user.getUserid());
 		question.setSecurityQuestion(userAccount.getSecurityQuestion());
 		question.setSecurityAnswer(userAccount.getSecurityAnswer());
 
-		workbenchDataManager.addSecurityQuestion(question);
+		this.workbenchDataManager.addSecurityQuestion(question);
 
 	}
 
 	/**
 	 * Updates the password of the user
+	 * 
 	 * @param userAccount
 	 * @throws MiddlewareQueryException
 	 */
 	public void updateUserPassword(UserAccountModel userAccount) throws MiddlewareQueryException {
-		workbenchDataManager.changeUserPassword(userAccount.getUsername(),userAccount.getPassword());
+		this.workbenchDataManager.changeUserPassword(userAccount.getUsername(), userAccount.getPassword());
 	}
 
 	/**
 	 * Checks validity of user
+	 * 
 	 * @param userAccount
 	 * @return
 	 * @throws MiddlewareQueryException
 	 */
 	public boolean isValidUserLogin(UserAccountModel userAccount) throws MiddlewareQueryException {
-		return workbenchDataManager.isValidUserLogin(userAccount.getUsername(),
-				userAccount.getPassword());
+		return this.workbenchDataManager.isValidUserLogin(userAccount.getUsername(), userAccount.getPassword());
 	}
 
 	/**
 	 * Retrieves User obj including the Person object information
+	 * 
 	 * @param username
 	 * @return
 	 * @throws MiddlewareQueryException
 	 */
 	public User getUserByUserName(String username) throws MiddlewareQueryException {
-		User user = workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0);
-		Person person = workbenchDataManager.getPersonById(user.getPersonid());
+		User user = this.workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0);
+		Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
 		user.setPerson(person);
 
 		return user;
@@ -113,14 +117,15 @@ public class WorkbenchUserService {
 
 	/**
 	 * Retreives User with Person object given user id
+	 * 
 	 * @param userId
 	 * @return
 	 * @throws MiddlewareQueryException
 	 */
 	public User getUserByUserid(Integer userId) throws MiddlewareQueryException {
 
-		User user = workbenchDataManager.getUserById(userId);
-		Person person = workbenchDataManager.getPersonById(user.getPersonid());
+		User user = this.workbenchDataManager.getUserById(userId);
+		Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
 		user.setPerson(person);
 
 		return user;

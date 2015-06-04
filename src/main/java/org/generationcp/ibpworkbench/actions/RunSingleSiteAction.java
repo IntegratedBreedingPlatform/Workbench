@@ -1,26 +1,33 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- * 
+ *
  * Generation Challenge Programme (GCP)
- * 
- * 
- * This software is licensed for use under the terms of the GNU General Public
- * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
- * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- * 
+ *
+ *
+ * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
+ * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ *
  *******************************************************************************/
+
 package org.generationcp.ibpworkbench.actions;
 
-import com.google.common.base.Strings;
-import com.mysql.jdbc.StringUtils;
-import com.vaadin.Application;
-import com.vaadin.terminal.DownloadStream;
-import com.vaadin.terminal.FileResource;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Window;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.generationcp.commons.breedingview.xml.*;
+import javax.annotation.Resource;
+
+import org.generationcp.commons.breedingview.xml.Blocks;
+import org.generationcp.commons.breedingview.xml.Columns;
+import org.generationcp.commons.breedingview.xml.DesignType;
+import org.generationcp.commons.breedingview.xml.Environment;
+import org.generationcp.commons.breedingview.xml.Genotypes;
+import org.generationcp.commons.breedingview.xml.Plot;
+import org.generationcp.commons.breedingview.xml.Replicates;
+import org.generationcp.commons.breedingview.xml.Rows;
 import org.generationcp.commons.tomcat.util.TomcatUtil;
 import org.generationcp.commons.tomcat.util.WebAppStatusInfo;
 import org.generationcp.commons.util.Util;
@@ -30,7 +37,13 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.exception.ConfigurationChangeException;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDetailsPanel;
-import org.generationcp.ibpworkbench.util.*;
+import org.generationcp.ibpworkbench.util.BreedingViewInput;
+import org.generationcp.ibpworkbench.util.BreedingViewXMLWriter;
+import org.generationcp.ibpworkbench.util.BreedingViewXMLWriterException;
+import org.generationcp.ibpworkbench.util.DatasetExporter;
+import org.generationcp.ibpworkbench.util.DatasetExporterException;
+import org.generationcp.ibpworkbench.util.ToolUtil;
+import org.generationcp.ibpworkbench.util.ZipUtil;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.ConfigException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -43,34 +56,36 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
-import javax.annotation.Resource;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import com.google.common.base.Strings;
+import com.mysql.jdbc.StringUtils;
+import com.vaadin.Application;
+import com.vaadin.terminal.DownloadStream;
+import com.vaadin.terminal.FileResource;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Window;
 
 /**
- * 
+ *
  * @author Jeffrey Morales
- * 
+ *
  */
 @Configurable
 public class RunSingleSiteAction implements ClickListener {
+
 	private static final String ERROR = "ERROR: ";
 
 	private static final long serialVersionUID = 1L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(RunSingleSiteAction.class);
 
-	private SingleSiteAnalysisDetailsPanel source;
+	private final SingleSiteAnalysisDetailsPanel source;
 
-	private Project project;
+	private final Project project;
 
 	@Value("${bv.web.url}")
 	private String bvWebUrl;
-	
+
 	@Value("${workbench.is.server.app}")
 	private String isServerApp;
 
@@ -83,8 +98,7 @@ public class RunSingleSiteAction implements ClickListener {
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	public RunSingleSiteAction(SingleSiteAnalysisDetailsPanel selectDetailsForBreedingViewWindow,
-			Project project) {
+	public RunSingleSiteAction(SingleSiteAnalysisDetailsPanel selectDetailsForBreedingViewWindow, Project project) {
 		this.source = selectDetailsForBreedingViewWindow;
 		this.project = project;
 	}
@@ -94,12 +108,11 @@ public class RunSingleSiteAction implements ClickListener {
 
 		BreedingViewInput breedingViewInput = this.source.getBreedingViewInput();
 
-		breedingViewInput.setSelectedEnvironments(source.getSelectedEnvironments());
+		breedingViewInput.setSelectedEnvironments(this.source.getSelectedEnvironments());
 
 		String analysisProjectName = (String) this.source.getTxtAnalysisName().getValue();
 		if (StringUtils.isNullOrEmpty(analysisProjectName)) {
-			showErrorMessage(event.getComponent().getWindow(),
-					"Please enter an Analysis Name.", "");
+			this.showErrorMessage(event.getComponent().getWindow(), "Please enter an Analysis Name.", "");
 			return;
 		} else {
 
@@ -109,8 +122,7 @@ public class RunSingleSiteAction implements ClickListener {
 		String envFactor = (String) this.source.getSelEnvFactor().getValue();
 
 		if (StringUtils.isNullOrEmpty(envFactor)) {
-			showErrorMessage(event.getComponent().getWindow(),
-					"Please select an environment factor.", "");
+			this.showErrorMessage(event.getComponent().getWindow(), "Please select an environment factor.", "");
 			return;
 		}
 
@@ -119,8 +131,7 @@ public class RunSingleSiteAction implements ClickListener {
 			environment.setName(envFactor.trim());
 
 			if (breedingViewInput.getSelectedEnvironments().isEmpty()) {
-				showErrorMessage(event.getComponent().getWindow(),
-						"Please select environment for analysis.", "");
+				this.showErrorMessage(event.getComponent().getWindow(), "Please select environment for analysis.", "");
 				return;
 			} else {
 
@@ -133,8 +144,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 		String designType = (String) this.source.getSelDesignType().getValue();
 		if (StringUtils.isNullOrEmpty(designType)) {
-			showErrorMessage(event.getComponent().getWindow(),
-					"Please specify design type.", "");
+			this.showErrorMessage(event.getComponent().getWindow(), "Please specify design type.", "");
 			return;
 		} else {
 			breedingViewInput.setDesignType(designType);
@@ -142,10 +152,8 @@ public class RunSingleSiteAction implements ClickListener {
 
 		String replicates = (String) this.source.getSelReplicates().getValue();
 		if (StringUtils.isNullOrEmpty(replicates)) {
-			if (designType.equals(DesignType.RANDOMIZED_BLOCK_DESIGN.getName())
-					&& this.source.getSelReplicates().isEnabled()) {
-				showErrorMessage(event.getComponent().getWindow(),
-						"Please specify replicates factor.", "");
+			if (designType.equals(DesignType.RANDOMIZED_BLOCK_DESIGN.getName()) && this.source.getSelReplicates().isEnabled()) {
+				this.showErrorMessage(event.getComponent().getWindow(), "Please specify replicates factor.", "");
 				return;
 			} else {
 				Replicates reps = new Replicates();
@@ -158,8 +166,7 @@ public class RunSingleSiteAction implements ClickListener {
 			breedingViewInput.setReplicates(reps);
 
 			if (designType.equals(DesignType.INCOMPLETE_BLOCK_DESIGN.getName())) {
-				breedingViewInput.setDesignType(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN
-						.getName());
+				breedingViewInput.setDesignType(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName());
 			} else if (designType.equals(DesignType.ROW_COLUMN_DESIGN.getName())) {
 				breedingViewInput.setDesignType(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName());
 			}
@@ -168,8 +175,7 @@ public class RunSingleSiteAction implements ClickListener {
 		String blocksName = (String) this.source.getSelBlocks().getValue();
 		if (StringUtils.isNullOrEmpty(blocksName)) {
 			if (designType.equals(DesignType.INCOMPLETE_BLOCK_DESIGN.getName())) {
-				showErrorMessage(event.getComponent().getWindow(),
-						"Please specify incomplete block factor.", "");
+				this.showErrorMessage(event.getComponent().getWindow(), "Please specify incomplete block factor.", "");
 				return;
 			} else {
 				breedingViewInput.setBlocks(null);
@@ -185,8 +191,7 @@ public class RunSingleSiteAction implements ClickListener {
 		if (designType.equals(DesignType.ROW_COLUMN_DESIGN.getName())) {
 			if (StringUtils.isNullOrEmpty(columnName)) {
 
-				showErrorMessage(event.getComponent().getWindow(),
-						"Please specify column factor.", "");
+				this.showErrorMessage(event.getComponent().getWindow(), "Please specify column factor.", "");
 				return;
 			} else {
 				Columns columns = new Columns();
@@ -199,8 +204,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 		if (designType.equals(DesignType.ROW_COLUMN_DESIGN.getName())) {
 			if (StringUtils.isNullOrEmpty(rowName)) {
-				showErrorMessage(event.getComponent().getWindow(),
-						"Please specify row factor.", "");
+				this.showErrorMessage(event.getComponent().getWindow(), "Please specify row factor.", "");
 				return;
 			} else {
 				Rows rows = new Rows();
@@ -211,35 +215,28 @@ public class RunSingleSiteAction implements ClickListener {
 
 		String genotypesName = (String) this.source.getSelGenotypes().getValue();
 		if (StringUtils.isNullOrEmpty(genotypesName)) {
-			showErrorMessage(event.getComponent().getWindow(),
-					"Please specify Genotypes factor.", "");
+			this.showErrorMessage(event.getComponent().getWindow(), "Please specify Genotypes factor.", "");
 			return;
 		} else {
 
 			String entryName = "";
 			String plotName = "";
 			try {
-				entryName = source
-						.getManagerFactory()
-						.getNewStudyDataManager()
-						.getLocalNameByStandardVariableId(breedingViewInput.getDatasetId(),
-								TermId.ENTRY_NO.getId());
-				plotName = source
-						.getManagerFactory()
-						.getNewStudyDataManager()
-						.getLocalNameByStandardVariableId(breedingViewInput.getDatasetId(),
-								TermId.PLOT_NO.getId());
+				entryName =
+						this.source.getManagerFactory().getNewStudyDataManager()
+								.getLocalNameByStandardVariableId(breedingViewInput.getDatasetId(), TermId.ENTRY_NO.getId());
+				plotName =
+						this.source.getManagerFactory().getNewStudyDataManager()
+								.getLocalNameByStandardVariableId(breedingViewInput.getDatasetId(), TermId.PLOT_NO.getId());
 				if (Strings.isNullOrEmpty(plotName)) {
-					plotName = source
-							.getManagerFactory()
-							.getNewStudyDataManager()
-							.getLocalNameByStandardVariableId(breedingViewInput.getDatasetId(),
-									TermId.PLOT_NNO.getId());
+					plotName =
+							this.source.getManagerFactory().getNewStudyDataManager()
+									.getLocalNameByStandardVariableId(breedingViewInput.getDatasetId(), TermId.PLOT_NNO.getId());
 				}
 			} catch (ConfigException e) {
-				LOG.error(ERROR, e);
+				RunSingleSiteAction.LOG.error(RunSingleSiteAction.ERROR, e);
 			} catch (MiddlewareQueryException e) {
-				LOG.error(ERROR, e);
+				RunSingleSiteAction.LOG.error(RunSingleSiteAction.ERROR, e);
 			}
 
 			Genotypes genotypes = new Genotypes();
@@ -255,8 +252,8 @@ public class RunSingleSiteAction implements ClickListener {
 
 		}
 
-		DatasetExporter datasetExporter = new DatasetExporter(source.getManagerFactory()
-				.getNewStudyDataManager(), null, breedingViewInput.getDatasetId());
+		DatasetExporter datasetExporter =
+				new DatasetExporter(this.source.getManagerFactory().getNewStudyDataManager(), null, breedingViewInput.getDatasetId());
 
 		try {
 
@@ -265,103 +262,93 @@ public class RunSingleSiteAction implements ClickListener {
 				selectedEnvironments.add(m.getTrialno());
 			}
 
-			datasetExporter.exportToCSVForBreedingView(breedingViewInput.getSourceXLSFilePath(),
-					(String) this.source.getSelEnvFactor().getValue(), selectedEnvironments,
-					breedingViewInput);
-		
-		} catch (DatasetExporterException e1) {
-			LOG.error(ERROR, e1);
-		}
-		
-		writeProjectXML(event);
+			datasetExporter.exportToCSVForBreedingView(breedingViewInput.getSourceXLSFilePath(), (String) this.source.getSelEnvFactor()
+					.getValue(), selectedEnvironments, breedingViewInput);
 
-		if (Boolean.parseBoolean(isServerApp)){
-			
+		} catch (DatasetExporterException e1) {
+			RunSingleSiteAction.LOG.error(RunSingleSiteAction.ERROR, e1);
+		}
+
+		this.writeProjectXML(event);
+
+		if (Boolean.parseBoolean(this.isServerApp)) {
+
 			String outputFilename = breedingViewInput.getDatasetSource() + ".zip";
 			List<String> filenameList = new ArrayList<>();
 			filenameList.add(breedingViewInput.getDestXMLFilePath());
 			filenameList.add(breedingViewInput.getSourceXLSFilePath());
-			
-			ZipUtil.zipIt(outputFilename, filenameList);
-			
-			downloadInputFile(new File(outputFilename), source.getApplication());
 
-			
-		}else{
-			launchBV(event);
+			ZipUtil.zipIt(outputFilename, filenameList);
+
+			this.downloadInputFile(new File(outputFilename), this.source.getApplication());
+
+		} else {
+			this.launchBV(event);
 		}
-		
 
 	}
-	
-	public void showErrorMessage(Window window ,String title, String description){
+
+	public void showErrorMessage(Window window, String title, String description) {
 		MessageNotifier.showError(window, title, description);
 	}
-	
-	private void writeProjectXML(ClickEvent event){
+
+	private void writeProjectXML(ClickEvent event) {
 		BreedingViewXMLWriter breedingViewXMLWriter;
 		BreedingViewInput breedingViewInput = this.source.getBreedingViewInput();
-		
+
 		// write the XML input for breeding view
 		breedingViewXMLWriter = new BreedingViewXMLWriter(breedingViewInput);
-		
-		try{
+
+		try {
 			breedingViewXMLWriter.writeProjectXML();
 		} catch (BreedingViewXMLWriterException e) {
-			LOG.debug("Cannot write Breeding View input XML", e);
+			RunSingleSiteAction.LOG.debug("Cannot write Breeding View input XML", e);
 
-			showErrorMessage(event.getComponent().getWindow(), e.getMessage(), "");
-		} 
-		
+			this.showErrorMessage(event.getComponent().getWindow(), e.getMessage(), "");
+		}
 
 	}
 
 	private void launchBV(ClickEvent event) {
-		
+
 		BreedingViewInput breedingViewInput = this.source.getBreedingViewInput();
 
 		try {
 			// when launching BreedingView, update the web service tool first
 			Tool webServiceTool = new Tool();
 			webServiceTool.setToolName("ibpwebservice");
-			webServiceTool.setPath(bvWebUrl);
+			webServiceTool.setPath(this.bvWebUrl);
 			webServiceTool.setToolType(ToolType.WEB);
-			updateToolConfiguration(event.getButton().getWindow(), webServiceTool);
-
-			
+			this.updateToolConfiguration(event.getButton().getWindow(), webServiceTool);
 
 			// launch breeding view
 			File absoluteToolFile = new File(this.source.getTool().getPath()).getAbsoluteFile();
 
-			
-
-			ProcessBuilder pb = new ProcessBuilder(absoluteToolFile.getAbsolutePath(), "-project=",
-					breedingViewInput.getDestXMLFilePath());
+			ProcessBuilder pb = new ProcessBuilder(absoluteToolFile.getAbsolutePath(), "-project=", breedingViewInput.getDestXMLFilePath());
 			pb.start();
 
-		}catch (IOException e) {
-			LOG.debug("Cannot write Breeding View input XML", e);
+		} catch (IOException e) {
+			RunSingleSiteAction.LOG.debug("Cannot write Breeding View input XML", e);
 
-			showErrorMessage(event.getComponent().getWindow(), e.getMessage(), "");
+			this.showErrorMessage(event.getComponent().getWindow(), e.getMessage(), "");
 		}
 
-		source.getManagerFactory().close();
+		this.source.getManagerFactory().close();
 	}
 
 	private boolean updateToolConfiguration(Window window, Tool tool) {
-		Project currentProject = project;
+		Project currentProject = this.project;
 
 		String url = tool.getPath();
 
 		// update the configuration of the tool
 		boolean changedConfig = false;
 		try {
-			changedConfig = toolUtil.updateToolConfigurationForProject(tool, currentProject);
+			changedConfig = this.toolUtil.updateToolConfigurationForProject(tool, currentProject);
 		} catch (ConfigurationChangeException e1) {
-			LOG.error(ERROR, e1);
-			showErrorMessage(window,
-					"Cannot update configuration for tool: " + tool.getToolName(), "<br />"
-							+ messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+			RunSingleSiteAction.LOG.error(RunSingleSiteAction.ERROR, e1);
+			this.showErrorMessage(window, "Cannot update configuration for tool: " + tool.getToolName(),
+					"<br />" + this.messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
 			return false;
 		}
 
@@ -371,16 +358,16 @@ public class RunSingleSiteAction implements ClickListener {
 		String contextPath = null;
 		String localWarPath = null;
 		try {
-			statusInfo = tomcatUtil.getWebAppStatus();
+			statusInfo = this.tomcatUtil.getWebAppStatus();
 			if (webTool) {
 				contextPath = TomcatUtil.getContextPathFromUrl(url);
 				localWarPath = TomcatUtil.getLocalWarPathFromUrl(url);
 
 			}
 		} catch (Exception e1) {
-			LOG.error(ERROR, e1);
-			showErrorMessage(window, "Cannot get webapp status.",
-					"<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+			RunSingleSiteAction.LOG.error(RunSingleSiteAction.ERROR, e1);
+			this.showErrorMessage(window, "Cannot get webapp status.",
+					"<br />" + this.messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
 			return false;
 		}
 
@@ -392,19 +379,19 @@ public class RunSingleSiteAction implements ClickListener {
 				if (changedConfig || !running) {
 					if (!deployed) {
 						// deploy the webapp
-						tomcatUtil.deployLocalWar(contextPath, localWarPath);
+						this.tomcatUtil.deployLocalWar(contextPath, localWarPath);
 					} else if (running) {
 						// reload the webapp
-						tomcatUtil.reloadWebApp(contextPath);
+						this.tomcatUtil.reloadWebApp(contextPath);
 					} else {
 						// start the webapp
-						tomcatUtil.startWebApp(contextPath);
+						this.tomcatUtil.startWebApp(contextPath);
 					}
 				}
 			} catch (Exception e) {
-				LOG.error(ERROR, e);
-				showErrorMessage(window, "Cannot load tool: " + tool.getToolName(),
-						"<br />" + messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
+				RunSingleSiteAction.LOG.error(RunSingleSiteAction.ERROR, e);
+				this.showErrorMessage(window, "Cannot load tool: " + tool.getToolName(),
+						"<br />" + this.messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
 				return false;
 			}
 		}
@@ -412,28 +399,29 @@ public class RunSingleSiteAction implements ClickListener {
 		return true;
 	}
 
-	private void downloadInputFile(File file, Application application){
-		
+	private void downloadInputFile(File file, Application application) {
+
 		FileResource fr = new FileResource(file, application) {
-            private static final long serialVersionUID = 765143030552676513L;
-            @Override
-            public DownloadStream getStream() {
-                DownloadStream ds;
-                try {
-                    ds = new DownloadStream(new FileInputStream(
-                            getSourceFile()), getMIMEType(), getFilename());
 
-                    ds.setParameter("Content-Disposition", "attachment; filename="+getFilename());
-                    ds.setCacheTime(getCacheTime());
-                    return ds;
+			private static final long serialVersionUID = 765143030552676513L;
 
-                } catch (FileNotFoundException e) {
-                	LOG.error(e.getMessage(), e);
-                    return null;
-                }
-            }
-        };
+			@Override
+			public DownloadStream getStream() {
+				DownloadStream ds;
+				try {
+					ds = new DownloadStream(new FileInputStream(this.getSourceFile()), this.getMIMEType(), this.getFilename());
 
-        application.getMainWindow().open(fr);
+					ds.setParameter("Content-Disposition", "attachment; filename=" + this.getFilename());
+					ds.setCacheTime(this.getCacheTime());
+					return ds;
+
+				} catch (FileNotFoundException e) {
+					RunSingleSiteAction.LOG.error(e.getMessage(), e);
+					return null;
+				}
+			}
+		};
+
+		application.getMainWindow().open(fr);
 	}
 }

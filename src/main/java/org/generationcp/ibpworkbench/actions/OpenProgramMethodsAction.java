@@ -1,20 +1,18 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- * 
+ *
  * Generation Challenge Programme (GCP)
- * 
- * 
- * This software is licensed for use under the terms of the GNU General Public
- * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
- * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- * 
+ *
+ *
+ * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
+ * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ *
  *******************************************************************************/
+
 package org.generationcp.ibpworkbench.actions;
 
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component.Event;
-import com.vaadin.ui.Window;
+import java.util.Date;
+
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -33,90 +31,96 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.util.Date;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component.Event;
+import com.vaadin.ui.Window;
 
 /**
- *  @author Joyce Avestro
+ * @author Joyce Avestro
  */
 @Configurable
-public class OpenProgramMethodsAction implements WorkflowConstants,  ClickListener, ActionListener {
-    private static final long serialVersionUID = 1L;
-    private static final Logger LOG = LoggerFactory.getLogger(OpenProgramMethodsAction.class);
+public class OpenProgramMethodsAction implements WorkflowConstants, ClickListener, ActionListener {
 
-    private User user;
-    private Project project;
+	private static final long serialVersionUID = 1L;
+	private static final Logger LOG = LoggerFactory.getLogger(OpenProgramMethodsAction.class);
 
-    @Autowired
-    private SimpleResourceBundleMessageSource messageSource;
+	private User user;
+	private Project project;
 
-    @Autowired
+	@Autowired
+	private SimpleResourceBundleMessageSource messageSource;
+
+	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
 
-    @Autowired
-    private SessionData sessionData;
+	@Autowired
+	private SessionData sessionData;
 
-    public OpenProgramMethodsAction() {
-    }
+	public OpenProgramMethodsAction() {
+	}
 
-    public OpenProgramMethodsAction(Project project) {
-        this.project = project;
+	public OpenProgramMethodsAction(Project project) {
+		this.project = project;
 
-    }
+	}
 
-    public OpenProgramMethodsAction(Project project, User user) {
-        this.project = project;
-        this.user = user;
-    }
+	public OpenProgramMethodsAction(Project project, User user) {
+		this.project = project;
+		this.user = user;
+	}
 
-    @Override
-    public void buttonClick(ClickEvent event) {
-        doAction(event.getComponent().getWindow(), null, true);
-    }
-    
-    @Override
-    public void doAction(Event event) {
-        // does nothing
-    }
-    
-    @Override
-    public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
-        IContentWindow w = (IContentWindow) window;
+	@Override
+	public void buttonClick(ClickEvent event) {
+		this.doAction(event.getComponent().getWindow(), null, true);
+	}
 
-        if (project == null) {
-            project = sessionData.getLastOpenedProject();
-        }
+	@Override
+	public void doAction(Event event) {
+		// does nothing
+	}
 
-        if (user == null) {
-            user = sessionData.getUserData();
-        }
+	@Override
+	public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
+		IContentWindow w = (IContentWindow) window;
 
+		if (this.project == null) {
+			this.project = this.sessionData.getLastOpenedProject();
+		}
 
-        try {
-        	ProgramMethodsView methodsView = new ProgramMethodsView(project);
+		if (this.user == null) {
+			this.user = this.sessionData.getUserData();
+		}
 
-            w.showContent(methodsView);
-            
-                if (user != null) {
-                    try {
-                        // only log activity if there's a user
-                        Project currentProject = sessionData.getLastOpenedProject();
-                        ProjectActivity projAct = new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject,messageSource.getMessage(Message.PROJECT_METHODS_LINK),messageSource.getMessage(Message.LAUNCHED_APP,messageSource.getMessage(Message.PROJECT_METHODS_LINK)), user, new Date());
-                        workbenchDataManager.addProjectActivity(projAct);
-                    } catch (MiddlewareQueryException e1) {
-                        MessageNotifier.showError(window, "Database Error",
-                                "<br />" + "Please see error logs");
-                        return;
-                    }
+		try {
+			ProgramMethodsView methodsView = new ProgramMethodsView(this.project);
 
-                }
+			w.showContent(methodsView);
 
-        } catch (Exception e) {
-            LOG.error("Exception", e);
-            if(e.getCause() instanceof InternationalizableException) {
-                InternationalizableException i = (InternationalizableException) e.getCause();
-                MessageNotifier.showError(window, i.getCaption(), i.getDescription());
-            }
-            return;
-        }
-    }
+			if (this.user != null) {
+				try {
+					// only log activity if there's a user
+					Project currentProject = this.sessionData.getLastOpenedProject();
+					ProjectActivity projAct =
+							new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject,
+									this.messageSource.getMessage(Message.PROJECT_METHODS_LINK), this.messageSource.getMessage(
+											Message.LAUNCHED_APP, this.messageSource.getMessage(Message.PROJECT_METHODS_LINK)), this.user,
+									new Date());
+					this.workbenchDataManager.addProjectActivity(projAct);
+				} catch (MiddlewareQueryException e1) {
+					MessageNotifier.showError(window, "Database Error", "<br />" + "Please see error logs");
+					return;
+				}
+
+			}
+
+		} catch (Exception e) {
+			OpenProgramMethodsAction.LOG.error("Exception", e);
+			if (e.getCause() instanceof InternationalizableException) {
+				InternationalizableException i = (InternationalizableException) e.getCause();
+				MessageNotifier.showError(window, i.getCaption(), i.getDescription());
+			}
+			return;
+		}
+	}
 }

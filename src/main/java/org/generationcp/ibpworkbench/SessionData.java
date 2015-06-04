@@ -1,4 +1,12 @@
+
 package org.generationcp.ibpworkbench;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.annotation.Resource;
 
 import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.security.SecurityUtil;
@@ -11,12 +19,6 @@ import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 
-import javax.annotation.Resource;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * This class contains all session data needed by the workbench application.
  *
@@ -24,6 +26,7 @@ import java.util.Set;
  */
 @Deprecated
 public class SessionData {
+
 	private Project lastOpenedProject;
 	private Project selectedProject;
 
@@ -33,13 +36,13 @@ public class SessionData {
 	private User userData;
 	private Integer username_counter = 0;
 	private Integer namevalidation_counter = 0;
-	private HashMap<Integer, LocationViewModel> locationMaps = new HashMap<Integer, LocationViewModel>();
-	private Set<String> uniqueLocations = new HashSet<String>();
-	private HashMap<Integer, MethodView> breedingMethodMaps = new HashMap<Integer, MethodView>();
-	private Set<String> uniqueBreedingMethods = new HashSet<String>();
+	private final HashMap<Integer, LocationViewModel> locationMaps = new HashMap<Integer, LocationViewModel>();
+	private final Set<String> uniqueLocations = new HashSet<String>();
+	private final HashMap<Integer, MethodView> breedingMethodMaps = new HashMap<Integer, MethodView>();
+	private final Set<String> uniqueBreedingMethods = new HashSet<String>();
 
 	public Project getSelectedProject() {
-		return selectedProject;
+		return this.selectedProject;
 	}
 
 	public void setSelectedProject(Project selectedProject) {
@@ -47,7 +50,7 @@ public class SessionData {
 	}
 
 	public Integer getUsername_counter() {
-		return username_counter;
+		return this.username_counter;
 	}
 
 	public void setUsername_counter(Integer username_counter) {
@@ -55,7 +58,7 @@ public class SessionData {
 	}
 
 	public Integer getNamevalidation_counter() {
-		return namevalidation_counter;
+		return this.namevalidation_counter;
 	}
 
 	public void setNamevalidation_counter(Integer namevalidation_counter) {
@@ -63,7 +66,7 @@ public class SessionData {
 	}
 
 	public Project getLastOpenedProject() {
-		return lastOpenedProject;
+		return this.lastOpenedProject;
 	}
 
 	public void setLastOpenedProject(Project lastOpenedProject) {
@@ -77,7 +80,7 @@ public class SessionData {
 	 * @return
 	 */
 	public boolean isLastOpenedProject(Project project) {
-		return lastOpenedProject == null ? project == null : lastOpenedProject.equals(project);
+		return this.lastOpenedProject == null ? project == null : this.lastOpenedProject.equals(project);
 	}
 
 	public User getUserData() {
@@ -100,31 +103,23 @@ public class SessionData {
 		return this.uniqueBreedingMethods;
 	}
 
-	public void logProgramActivity(String activityTitle, String activityDescription)
-			throws MiddlewareQueryException {
+	public void logProgramActivity(String activityTitle, String activityDescription) throws MiddlewareQueryException {
 		Project currentProject = this.getLastOpenedProject();
 		User currentUser = this.getUserData();
 
-		ProjectActivity projAct = new ProjectActivity(
-				currentProject.getProjectId().intValue(),
-				currentProject,
-				activityTitle,
-				activityDescription,
-				currentUser,
-				new Date());
+		ProjectActivity projAct =
+				new ProjectActivity(currentProject.getProjectId().intValue(), currentProject, activityTitle, activityDescription,
+						currentUser, new Date());
 
-		workbenchDataManager.addProjectActivity(projAct);
+		this.workbenchDataManager.addProjectActivity(projAct);
 	}
 
 	public String getWorkbenchContextParameters() {
 
-		String contextParameterString = ContextUtil
-				.getContextParameterString(this.getUserData().getUserid(),
-						this.getSelectedProject().getProjectId());
+		String contextParameterString =
+				ContextUtil.getContextParameterString(this.getUserData().getUserid(), this.getSelectedProject().getProjectId());
 
-		String authenticationTokenString = ContextUtil
-				.addQueryParameter(ContextConstants.PARAM_AUTH_TOKEN,
-						SecurityUtil.getEncodedToken());
+		String authenticationTokenString = ContextUtil.addQueryParameter(ContextConstants.PARAM_AUTH_TOKEN, SecurityUtil.getEncodedToken());
 		return contextParameterString + authenticationTokenString;
 	}
 }

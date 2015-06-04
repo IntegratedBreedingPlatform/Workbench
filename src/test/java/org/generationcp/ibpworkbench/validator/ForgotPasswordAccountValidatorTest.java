@@ -1,22 +1,19 @@
+
 package org.generationcp.ibpworkbench.validator;
 
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
+import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.validation.Errors;
-
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ForgotPasswordAccountValidatorTest {
@@ -32,7 +29,7 @@ public class ForgotPasswordAccountValidatorTest {
 
 	@Test
 	public void testValidate() throws Exception {
-		ForgotPasswordAccountValidator validatorDUT = spy(validator);
+		ForgotPasswordAccountValidator validatorDUT = Mockito.spy(this.validator);
 
 		UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setFirstName("firstName");
@@ -43,16 +40,14 @@ public class ForgotPasswordAccountValidatorTest {
 		userAccount.setPassword("password");
 		userAccount.setPasswordConfirmation("password");
 
-		when(workbenchDataManager.isUsernameExists(userAccount.getUsername())).thenReturn(false);
-		when(workbenchDataManager
-				.isPersonExists(userAccount.getFirstName(), userAccount.getLastName())).thenReturn(
-				false);
+		Mockito.when(this.workbenchDataManager.isUsernameExists(userAccount.getUsername())).thenReturn(false);
+		Mockito.when(this.workbenchDataManager.isPersonExists(userAccount.getFirstName(), userAccount.getLastName())).thenReturn(false);
 
-		validatorDUT.validate(userAccount, errors);
+		validatorDUT.validate(userAccount, this.errors);
 
-		verify(validatorDUT).validatePasswordConfirmationIfEquals(errors, userAccount);
+		Mockito.verify(validatorDUT).validatePasswordConfirmationIfEquals(this.errors, userAccount);
 
-		verify(validatorDUT).validateUsernameAndEmailIfNotExists(errors, userAccount);
+		Mockito.verify(validatorDUT).validateUsernameAndEmailIfNotExists(this.errors, userAccount);
 
 	}
 
@@ -64,18 +59,15 @@ public class ForgotPasswordAccountValidatorTest {
 		UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setUsername("username");
 
-		when(workbenchDataManager.isPersonWithUsernameAndEmailExists(userAccount.getUsername(),
-				userAccount.getEmail())).thenReturn(false);
+		Mockito.when(this.workbenchDataManager.isPersonWithUsernameAndEmailExists(userAccount.getUsername(), userAccount.getEmail()))
+				.thenReturn(false);
 
-		ForgotPasswordAccountValidator validatorDUT = spy(validator);
-		validatorDUT.validateUsernameAndEmailIfNotExists(errors, userAccount);
+		ForgotPasswordAccountValidator validatorDUT = Mockito.spy(this.validator);
+		validatorDUT.validateUsernameAndEmailIfNotExists(this.errors, userAccount);
 
-		verify(errors)
-				.rejectValue(arg1.capture(), arg2.capture(), any(String[].class), anyString());
-		assertEquals("error should output username field",
-				UserAccountFields.USERNAME, arg1.getValue());
-		assertEquals("show correct error code",
-				ForgotPasswordAccountValidator.SIGNUP_FIELD_USERNAME_EMAIL_COMBO_NOT_EXISTS,
+		Mockito.verify(this.errors).rejectValue(arg1.capture(), arg2.capture(), Matchers.any(String[].class), Matchers.anyString());
+		Assert.assertEquals("error should output username field", UserAccountFields.USERNAME, arg1.getValue());
+		Assert.assertEquals("show correct error code", ForgotPasswordAccountValidator.SIGNUP_FIELD_USERNAME_EMAIL_COMBO_NOT_EXISTS,
 				arg2.getValue());
 	}
 
@@ -87,19 +79,15 @@ public class ForgotPasswordAccountValidatorTest {
 		UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setUsername("username");
 
-		when(workbenchDataManager
-				.isPersonWithUsernameAndEmailExists(userAccount.getUsername(),userAccount.getEmail())).thenThrow(
-				MiddlewareQueryException.class);
+		Mockito.when(this.workbenchDataManager.isPersonWithUsernameAndEmailExists(userAccount.getUsername(), userAccount.getEmail()))
+				.thenThrow(MiddlewareQueryException.class);
 
-		ForgotPasswordAccountValidator validatorDUT = spy(validator);
-		validatorDUT.validateUsernameAndEmailIfNotExists(errors, userAccount);
+		ForgotPasswordAccountValidator validatorDUT = Mockito.spy(this.validator);
+		validatorDUT.validateUsernameAndEmailIfNotExists(this.errors, userAccount);
 
-		verify(errors).rejectValue(arg1.capture(), arg2.capture());
-		assertEquals("error should output username field",
-				UserAccountFields.USERNAME, arg1.getValue());
-		assertEquals("show correct error code",
-				UserAccountValidator.DATABASE_ERROR,
-				arg2.getValue());
+		Mockito.verify(this.errors).rejectValue(arg1.capture(), arg2.capture());
+		Assert.assertEquals("error should output username field", UserAccountFields.USERNAME, arg1.getValue());
+		Assert.assertEquals("show correct error code", UserAccountValidator.DATABASE_ERROR, arg2.getValue());
 	}
 
 	@Test
@@ -107,12 +95,12 @@ public class ForgotPasswordAccountValidatorTest {
 		UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setUsername("username");
 
-		when(workbenchDataManager
-				.isPersonWithUsernameAndEmailExists(userAccount.getUsername(),userAccount.getEmail())).thenReturn(true);
+		Mockito.when(this.workbenchDataManager.isPersonWithUsernameAndEmailExists(userAccount.getUsername(), userAccount.getEmail()))
+				.thenReturn(true);
 
-		ForgotPasswordAccountValidator validatorDUT = spy(validator);
-		validatorDUT.validateUsernameAndEmailIfNotExists(errors, userAccount);
+		ForgotPasswordAccountValidator validatorDUT = Mockito.spy(this.validator);
+		validatorDUT.validateUsernameAndEmailIfNotExists(this.errors, userAccount);
 
-		verify(errors, never()).rejectValue(anyString(), anyString());
+		Mockito.verify(this.errors, Mockito.never()).rejectValue(Matchers.anyString(), Matchers.anyString());
 	}
 }

@@ -1,29 +1,35 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- * 
+ *
  * Generation Challenge Programme (GCP)
- * 
- * 
- * This software is licensed for use under the terms of the GNU General Public
- * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
- * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- * 
+ *
+ *
+ * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
+ * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ *
  *******************************************************************************/
-package org.generationcp.ibpworkbench.util;
 
-import org.generationcp.commons.breedingview.xml.*;
-import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
-import org.generationcp.middleware.pojos.workbench.Project;
+package org.generationcp.ibpworkbench.util;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import org.generationcp.commons.breedingview.xml.Blocks;
+import org.generationcp.commons.breedingview.xml.Columns;
+import org.generationcp.commons.breedingview.xml.Environment;
+import org.generationcp.commons.breedingview.xml.Genotypes;
+import org.generationcp.commons.breedingview.xml.Plot;
+import org.generationcp.commons.breedingview.xml.Replicates;
+import org.generationcp.commons.breedingview.xml.Rows;
+import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
+import org.generationcp.middleware.pojos.workbench.Project;
+
 /**
- * 
+ *
  * <br>
  * <br>
- * 
+ *
  * <b>Author</b>: Jeffrey Morales <br>
  * <b>File Created</b>:
  */
@@ -62,7 +68,7 @@ public class BreedingViewInput implements Serializable {
 	}
 
 	public Map<Integer, String> getVariateColumns() {
-		return variateColumns;
+		return this.variateColumns;
 	}
 
 	public void setVariateColumns(Map<Integer, String> variateColumns) {
@@ -70,7 +76,7 @@ public class BreedingViewInput implements Serializable {
 	}
 
 	public Project getProject() {
-		return project;
+		return this.project;
 	}
 
 	public void setProject(Project project) {
@@ -86,7 +92,7 @@ public class BreedingViewInput implements Serializable {
 	}
 
 	public Integer getStudyId() {
-		return studyId;
+		return this.studyId;
 	}
 
 	public void setStudyId(Integer studyId) {
@@ -94,7 +100,7 @@ public class BreedingViewInput implements Serializable {
 	}
 
 	public Integer getDatasetId() {
-		return inputDatasetId;
+		return this.inputDatasetId;
 	}
 
 	public void setDatasetId(Integer datasetId) {
@@ -102,7 +108,7 @@ public class BreedingViewInput implements Serializable {
 	}
 
 	public String getEnvironmentName() {
-		return environmentName;
+		return this.environmentName;
 	}
 
 	public void setEnvironmentName(String environmentName) {
@@ -110,7 +116,7 @@ public class BreedingViewInput implements Serializable {
 	}
 
 	public String getVersion() {
-		return version;
+		return this.version;
 	}
 
 	public void setVersion(String version) {
@@ -118,7 +124,7 @@ public class BreedingViewInput implements Serializable {
 	}
 
 	public String getSourceXLSFilePath() {
-		return sourceXLSFilePath;
+		return this.sourceXLSFilePath;
 	}
 
 	public void setSourceXLSFilePath(String sourceXLSFilePath) {
@@ -126,7 +132,7 @@ public class BreedingViewInput implements Serializable {
 	}
 
 	public String getDestXMLFilePath() {
-		return destXMLFilePath;
+		return this.destXMLFilePath;
 	}
 
 	public void setDestXMLFilePath(String destXMLFilePath) {
@@ -134,7 +140,7 @@ public class BreedingViewInput implements Serializable {
 	}
 
 	public String getProjectType() {
-		return projectType;
+		return this.projectType;
 	}
 
 	public void setProjectType(String projectType) {
@@ -142,7 +148,7 @@ public class BreedingViewInput implements Serializable {
 	}
 
 	public String getDesignType() {
-		return designType;
+		return this.designType;
 	}
 
 	public void setDesignType(String designType) {
@@ -150,7 +156,7 @@ public class BreedingViewInput implements Serializable {
 	}
 
 	public Blocks getBlocks() {
-		return blocks;
+		return this.blocks;
 	}
 
 	public void setBlocks(Blocks blocks) {
@@ -158,7 +164,7 @@ public class BreedingViewInput implements Serializable {
 	}
 
 	public Replicates getReplicates() {
-		return replicates;
+		return this.replicates;
 	}
 
 	public void setReplicates(Replicates replicates) {
@@ -166,7 +172,7 @@ public class BreedingViewInput implements Serializable {
 	}
 
 	public Genotypes getGenotypes() {
-		return genotypes;
+		return this.genotypes;
 	}
 
 	public void setGenotypes(Genotypes genotypes) {
@@ -174,7 +180,7 @@ public class BreedingViewInput implements Serializable {
 	}
 
 	public Rows getRows() {
-		return rows;
+		return this.rows;
 	}
 
 	public void setRows(Rows rows) {
@@ -182,7 +188,7 @@ public class BreedingViewInput implements Serializable {
 	}
 
 	public Columns getColumns() {
-		return columns;
+		return this.columns;
 	}
 
 	public void setColumns(Columns columns) {
@@ -190,7 +196,7 @@ public class BreedingViewInput implements Serializable {
 	}
 
 	public Environment getEnvironment() {
-		return environment;
+		return this.environment;
 	}
 
 	public void setEnvironment(Environment environment) {
@@ -201,18 +207,17 @@ public class BreedingViewInput implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((breedingViewProjectName == null) ? 0 : breedingViewProjectName.hashCode());
-		result = prime * result + ((blocks == null) ? 0 : blocks.hashCode());
-		result = prime * result + ((inputDatasetId == null) ? 0 : inputDatasetId.hashCode());
-		result = prime * result + ((designType == null) ? 0 : designType.hashCode());
-		result = prime * result + ((destXMLFilePath == null) ? 0 : destXMLFilePath.hashCode());
-		result = prime * result + ((environmentName == null) ? 0 : environmentName.hashCode());
-		result = prime * result + ((project == null) ? 0 : project.hashCode());
-		result = prime * result + ((projectType == null) ? 0 : projectType.hashCode());
-		result = prime * result + ((replicates == null) ? 0 : replicates.hashCode());
-		result = prime * result + ((sourceXLSFilePath == null) ? 0 : sourceXLSFilePath.hashCode());
-		result = prime * result + ((version == null) ? 0 : version.hashCode());
+		result = prime * result + (this.breedingViewProjectName == null ? 0 : this.breedingViewProjectName.hashCode());
+		result = prime * result + (this.blocks == null ? 0 : this.blocks.hashCode());
+		result = prime * result + (this.inputDatasetId == null ? 0 : this.inputDatasetId.hashCode());
+		result = prime * result + (this.designType == null ? 0 : this.designType.hashCode());
+		result = prime * result + (this.destXMLFilePath == null ? 0 : this.destXMLFilePath.hashCode());
+		result = prime * result + (this.environmentName == null ? 0 : this.environmentName.hashCode());
+		result = prime * result + (this.project == null ? 0 : this.project.hashCode());
+		result = prime * result + (this.projectType == null ? 0 : this.projectType.hashCode());
+		result = prime * result + (this.replicates == null ? 0 : this.replicates.hashCode());
+		result = prime * result + (this.sourceXLSFilePath == null ? 0 : this.sourceXLSFilePath.hashCode());
+		result = prime * result + (this.version == null ? 0 : this.version.hashCode());
 		return result;
 	}
 
@@ -224,85 +229,85 @@ public class BreedingViewInput implements Serializable {
 		if (obj == null) {
 			return false;
 		}
-		if (getClass() != obj.getClass()) {
+		if (this.getClass() != obj.getClass()) {
 			return false;
 		}
 		BreedingViewInput other = (BreedingViewInput) obj;
-		if (breedingViewProjectName == null) {
+		if (this.breedingViewProjectName == null) {
 			if (other.breedingViewProjectName != null) {
 				return false;
 			}
-		} else if (!breedingViewProjectName.equals(other.breedingViewProjectName)) {
+		} else if (!this.breedingViewProjectName.equals(other.breedingViewProjectName)) {
 			return false;
 		}
-		if (blocks == null) {
+		if (this.blocks == null) {
 			if (other.blocks != null) {
 				return false;
 			}
-		} else if (!blocks.equals(other.blocks)) {
+		} else if (!this.blocks.equals(other.blocks)) {
 			return false;
 		}
-		if (inputDatasetId == null) {
+		if (this.inputDatasetId == null) {
 			if (other.inputDatasetId != null) {
 				return false;
 			}
-		} else if (!inputDatasetId.equals(other.inputDatasetId)) {
+		} else if (!this.inputDatasetId.equals(other.inputDatasetId)) {
 			return false;
 		}
-		if (designType == null) {
+		if (this.designType == null) {
 			if (other.designType != null) {
 				return false;
 			}
-		} else if (!designType.equals(other.designType)) {
+		} else if (!this.designType.equals(other.designType)) {
 			return false;
 		}
-		if (destXMLFilePath == null) {
+		if (this.destXMLFilePath == null) {
 			if (other.destXMLFilePath != null) {
 				return false;
 			}
-		} else if (!destXMLFilePath.equals(other.destXMLFilePath)) {
+		} else if (!this.destXMLFilePath.equals(other.destXMLFilePath)) {
 			return false;
 		}
-		if (environmentName == null) {
+		if (this.environmentName == null) {
 			if (other.environmentName != null) {
 				return false;
 			}
-		} else if (!environmentName.equals(other.environmentName)) {
+		} else if (!this.environmentName.equals(other.environmentName)) {
 			return false;
 		}
-		if (project == null) {
+		if (this.project == null) {
 			if (other.project != null) {
 				return false;
 			}
-		} else if (!project.equals(other.project)) {
+		} else if (!this.project.equals(other.project)) {
 			return false;
 		}
-		if (projectType == null) {
+		if (this.projectType == null) {
 			if (other.projectType != null) {
 				return false;
 			}
-		} else if (!projectType.equals(other.projectType)) {
+		} else if (!this.projectType.equals(other.projectType)) {
 			return false;
 		}
-		if (replicates == null) {
+		if (this.replicates == null) {
 			if (other.replicates != null) {
 				return false;
 			}
-		} else if (!replicates.equals(other.replicates)) {
+		} else if (!this.replicates.equals(other.replicates)) {
 			return false;
 		}
-		if (sourceXLSFilePath == null) {
+		if (this.sourceXLSFilePath == null) {
 			if (other.sourceXLSFilePath != null) {
 				return false;
 			}
-		} else if (!sourceXLSFilePath.equals(other.sourceXLSFilePath)) {
+		} else if (!this.sourceXLSFilePath.equals(other.sourceXLSFilePath)) {
 			return false;
 		}
-		if (version == null) {
+		if (this.version == null) {
 			if (other.version != null) {
 				return false;
 			}
-		} else if (!version.equals(other.version)) {
+		} else if (!this.version.equals(other.version)) {
 			return false;
 		}
 
@@ -311,16 +316,14 @@ public class BreedingViewInput implements Serializable {
 
 	@Override
 	public String toString() {
-		return "BreedingViewInput [project=" + project + ", BreedingViewProjectName="
-				+ breedingViewProjectName + ", datasetId=" + inputDatasetId + ", environmentName="
-				+ environmentName + ", version=" + version + ", sourceXLSFilePath="
-				+ sourceXLSFilePath + ", destXMLFilePath=" + destXMLFilePath + ", projectType="
-				+ projectType + ", designType=" + designType + ", blocks=" + blocks
-				+ ", replicates=" + replicates + "]";
+		return "BreedingViewInput [project=" + this.project + ", BreedingViewProjectName=" + this.breedingViewProjectName + ", datasetId="
+				+ this.inputDatasetId + ", environmentName=" + this.environmentName + ", version=" + this.version + ", sourceXLSFilePath="
+				+ this.sourceXLSFilePath + ", destXMLFilePath=" + this.destXMLFilePath + ", projectType=" + this.projectType
+				+ ", designType=" + this.designType + ", blocks=" + this.blocks + ", replicates=" + this.replicates + "]";
 	}
 
 	public Integer getOutputDatasetId() {
-		return outputDatasetId;
+		return this.outputDatasetId;
 	}
 
 	public void setOutputDatasetId(Integer outputDatasetId) {
@@ -328,7 +331,7 @@ public class BreedingViewInput implements Serializable {
 	}
 
 	public String getDatasetName() {
-		return datasetName;
+		return this.datasetName;
 	}
 
 	public void setDatasetName(String datasetName) {
@@ -336,7 +339,7 @@ public class BreedingViewInput implements Serializable {
 	}
 
 	public String getDatasetSource() {
-		return datasetSource;
+		return this.datasetSource;
 	}
 
 	public void setDatasetSource(String datasetSource) {
@@ -344,7 +347,7 @@ public class BreedingViewInput implements Serializable {
 	}
 
 	public Map<String, Boolean> getVariatesActiveState() {
-		return variatesActiveState;
+		return this.variatesActiveState;
 	}
 
 	public void setVariatesActiveState(Map<String, Boolean> variateActiveStates) {
@@ -352,7 +355,7 @@ public class BreedingViewInput implements Serializable {
 	}
 
 	public String getBreedingViewAnalysisName() {
-		return breedingViewAnalysisName;
+		return this.breedingViewAnalysisName;
 	}
 
 	public void setBreedingViewAnalysisName(String breedingViewAnalysisName) {
@@ -360,7 +363,7 @@ public class BreedingViewInput implements Serializable {
 	}
 
 	public String getTrialInstanceName() {
-		return trialInstanceName;
+		return this.trialInstanceName;
 	}
 
 	public void setTrialInstanceName(String trialInstanceName) {
@@ -368,7 +371,7 @@ public class BreedingViewInput implements Serializable {
 	}
 
 	public List<SeaEnvironmentModel> getSelectedEnvironments() {
-		return selectedEnvironments;
+		return this.selectedEnvironments;
 	}
 
 	public void setSelectedEnvironments(List<SeaEnvironmentModel> selectedEnvironments) {
@@ -376,7 +379,7 @@ public class BreedingViewInput implements Serializable {
 	}
 
 	public Plot getPlot() {
-		return plot;
+		return this.plot;
 	}
 
 	public void setPlot(Plot plot) {

@@ -1,12 +1,16 @@
+
 package org.generationcp.ibpworkbench.exception;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Daniel Villafuerte
- * Date: 2/12/2015
- * Time: 1:11 PM
+ * Created by IntelliJ IDEA. User: Daniel Villafuerte Date: 2/12/2015 Time: 1:11 PM
  */
-public class ConfigurationChangeException extends Exception{
+public class ConfigurationChangeException extends Exception {
+
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 6468175326515904069L;
+
 	public ConfigurationChangeException() {
 	}
 
@@ -22,8 +26,7 @@ public class ConfigurationChangeException extends Exception{
 		super(cause);
 	}
 
-	public ConfigurationChangeException(String message, Throwable cause, boolean enableSuppression,
-			boolean writableStackTrace) {
+	public ConfigurationChangeException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
 	}
 }

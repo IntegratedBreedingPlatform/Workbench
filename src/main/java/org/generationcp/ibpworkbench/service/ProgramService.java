@@ -39,99 +39,101 @@ public class ProgramService {
 
 	@Autowired
 	private ToolUtil toolUtil;
-	
+
 	@Autowired
-    private ManagerFactoryProvider managerFactoryProvider;
-	
+	private ManagerFactoryProvider managerFactoryProvider;
+
 	private MysqlAccountGenerator mySQLAccountGenerator;
-	
-    private Set<User> selectedUsers;
-    
-    private User currentUser;
-    
-    private final Map<Integer, String> idAndNameOfProgramMembers = new HashMap<Integer, String>();
-    
-    // http://cropwiki.irri.org/icis/index.php/TDM_Users_and_Access    
-    private static final int PROJECT_USER_ACCESS_NUMBER = 100;
-    private static final int PROJECT_USER_TYPE = 422;
-    private static final int PROJECT_USER_STATUS = 1;
+
+	private Set<User> selectedUsers;
+
+	private User currentUser;
+
+	private final Map<Integer, String> idAndNameOfProgramMembers = new HashMap<Integer, String>();
+
+	// http://cropwiki.irri.org/icis/index.php/TDM_Users_and_Access
+	private static final int PROJECT_USER_ACCESS_NUMBER = 100;
+	private static final int PROJECT_USER_TYPE = 422;
+	private static final int PROJECT_USER_STATUS = 1;
 
 	public void createNewProgram(Project program) throws MiddlewareQueryException {
 
-		idAndNameOfProgramMembers.clear();
-		
-		saveBasicDetails(program);
-		
-		toolUtil.createWorkspaceDirectoriesForProject(program);
-		
-		ManagerFactory managerFactory = managerFactoryProvider.getManagerFactoryForProject(program);
+		this.idAndNameOfProgramMembers.clear();
 
-		addProjectUserRoles(program, managerFactory);
-		copyProjectUsers(managerFactory.getUserDataManager(), program);
-		
+		this.saveBasicDetails(program);
+
+		this.toolUtil.createWorkspaceDirectoriesForProject(program);
+
+		ManagerFactory managerFactory = this.managerFactoryProvider.getManagerFactoryForProject(program);
+
+		this.addProjectUserRoles(program, managerFactory);
+		this.copyProjectUsers(managerFactory.getUserDataManager(), program);
+
 		managerFactory.close();
-		
-		createMySQLAccounts(program);
-		saveProjectUserInfo(program);
-			
-		LOG.info("Program created. ID:" + program.getProjectId() + " Name:" + program.getProjectName() + " Start date:" + program.getStartDate());
+
+		this.createMySQLAccounts(program);
+		this.saveProjectUserInfo(program);
+
+		ProgramService.LOG.info("Program created. ID:" + program.getProjectId() + " Name:" + program.getProjectName() + " Start date:"
+				+ program.getStartDate());
 	}
 
 	private void addProjectUserRoles(Project project, ManagerFactory managerFactory) throws MiddlewareQueryException {
 		List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
-        Set<User> allProjectMembers = new HashSet<User>();
-        allProjectMembers.add(this.currentUser);
-        allProjectMembers.addAll(this.selectedUsers);
-        
-        List<Role> allRolesList = workbenchDataManager.getAllRoles();
-        
-        for (User user : allProjectMembers) {
-            for (Role role : allRolesList) {
-                ProjectUserRole projectUserRole = new ProjectUserRole();
-                projectUserRole.setUserId(user.getUserid());
-                projectUserRole.setRole(role);
-                projectUserRole.setProject(project);
-                projectUserRoles.add(projectUserRole);
-            }
-        }
-        workbenchDataManager.addProjectUserRole(projectUserRoles);
+		Set<User> allProjectMembers = new HashSet<User>();
+		allProjectMembers.add(this.currentUser);
+		allProjectMembers.addAll(this.selectedUsers);
+
+		List<Role> allRolesList = this.workbenchDataManager.getAllRoles();
+
+		for (User user : allProjectMembers) {
+			for (Role role : allRolesList) {
+				ProjectUserRole projectUserRole = new ProjectUserRole();
+				projectUserRole.setUserId(user.getUserid());
+				projectUserRole.setRole(role);
+				projectUserRole.setProject(project);
+				projectUserRoles.add(projectUserRole);
+			}
+		}
+		this.workbenchDataManager.addProjectUserRole(projectUserRoles);
 	}
 
 	private void saveProjectUserInfo(Project program) {
 		// Create records for workbench_project_user_info table
-		for (Map.Entry<Integer, String> e : idAndNameOfProgramMembers.entrySet()) {
+		for (Map.Entry<Integer, String> e : this.idAndNameOfProgramMembers.entrySet()) {
 			try {
-				if (workbenchDataManager.getProjectUserInfoDao().getByProjectIdAndUserId(program.getProjectId().intValue(), e.getKey()) == null) {
+				if (this.workbenchDataManager.getProjectUserInfoDao()
+						.getByProjectIdAndUserId(program.getProjectId().intValue(), e.getKey()) == null) {
 					ProjectUserInfo pUserInfo = new ProjectUserInfo(program.getProjectId().intValue(), e.getKey());
-					workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
+					this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
 				}
 			} catch (MiddlewareQueryException e1) {
-				LOG.error(e1.getMessage(),e1);
+				ProgramService.LOG.error(e1.getMessage(), e1);
 			}
 		}
 	}
 
 	private void saveBasicDetails(Project program) throws MiddlewareQueryException {
 		program.setUserId(this.currentUser.getUserid());
-		CropType cropType = workbenchDataManager.getCropTypeByName(program.getCropType().getCropName());
+		CropType cropType = this.workbenchDataManager.getCropTypeByName(program.getCropType().getCropName());
 		if (cropType == null) {
-			workbenchDataManager.addCropType(program.getCropType());
+			this.workbenchDataManager.addCropType(program.getCropType());
 		}
 		program.setLastOpenDate(null);
-		workbenchDataManager.addProject(program);
+		this.workbenchDataManager.addProject(program);
 	}
-	
-    /**
-     * Create necessary database entries for selected program members.
-     */
-    private void copyProjectUsers(UserDataManager userDataManager, Project project) throws MiddlewareQueryException {
 
-    	for (User user : selectedUsers) {
-					
-			User workbenchUser = workbenchDataManager.getUserById(user.getUserid());
+	/**
+	 * Create necessary database entries for selected program members.
+	 */
+	private void copyProjectUsers(UserDataManager userDataManager, Project project) throws MiddlewareQueryException {
+
+		for (User user : this.selectedUsers) {
+
+			User workbenchUser = this.workbenchDataManager.getUserById(user.getUserid());
 			User cropDBUser = workbenchUser.copy();
 
-			Person workbenchPerson = workbenchDataManager.getPersonById(workbenchUser.getPersonid());
+			Person workbenchPerson = this.workbenchDataManager.getPersonById(workbenchUser.getPersonid());
 			Person cropDBPerson = workbenchPerson.copy();
 
 			if (!userDataManager.isPersonExists(cropDBPerson.getFirstName().toUpperCase(), cropDBPerson.getLastName().toUpperCase())) {
@@ -149,51 +151,51 @@ public class ProgramService {
 
 			if (!userDataManager.isUsernameExists(cropDBUser.getName())) {
 				cropDBUser.setPersonid(cropDBPerson.getId());
-				//TODO we are setting following fields because they are non nullable. Review and make nullable.
+				// TODO we are setting following fields because they are non nullable. Review and make nullable.
 				// See http://cropwiki.irri.org/icis/index.php/TDM_ICIS_Application_and_Database_Installation for background.
-				cropDBUser.setAccess(PROJECT_USER_ACCESS_NUMBER);
-				cropDBUser.setType(PROJECT_USER_TYPE);
+				cropDBUser.setAccess(ProgramService.PROJECT_USER_ACCESS_NUMBER);
+				cropDBUser.setType(ProgramService.PROJECT_USER_TYPE);
 				cropDBUser.setInstalid(Integer.valueOf(0));
-				cropDBUser.setStatus(Integer.valueOf(PROJECT_USER_STATUS));
-				cropDBUser.setAdate(getCurrentDate());
+				cropDBUser.setStatus(Integer.valueOf(ProgramService.PROJECT_USER_STATUS));
+				cropDBUser.setAdate(this.getCurrentDate());
 				Integer userId = userDataManager.addUser(cropDBUser);
-				
+
 				User ibdbUser = userDataManager.getUserById(userId);
-				createIBDBUserMap(project.getProjectId(), workbenchUser.getUserid(), ibdbUser.getUserid());
+				this.createIBDBUserMap(project.getProjectId(), workbenchUser.getUserid(), ibdbUser.getUserid());
 			} else {
 				User ibdbUser = userDataManager.getUserByUserName(cropDBUser.getName());
-				createIBDBUserMap(project.getProjectId(), workbenchUser.getUserid(), ibdbUser.getUserid());
+				this.createIBDBUserMap(project.getProjectId(), workbenchUser.getUserid(), ibdbUser.getUserid());
 			}
 			this.idAndNameOfProgramMembers.put(workbenchUser.getUserid(), cropDBUser.getName());
 		}
-    }
-        
+	}
+
 	private void createIBDBUserMap(Long projectId, Integer workbenchUserId, Integer ibdbUserId) throws MiddlewareQueryException {
 		// Add the mapping between Workbench user and the ibdb user.
 		IbdbUserMap ibdbUserMap = new IbdbUserMap();
 		ibdbUserMap.setWorkbenchUserId(workbenchUserId);
 		ibdbUserMap.setProjectId(projectId);
 		ibdbUserMap.setIbdbUserId(ibdbUserId);
-		workbenchDataManager.addIbdbUserMap(ibdbUserMap);
-	}
-	
-	private void createMySQLAccounts(Project program) {
-		// Create mysql user accounts for members of the project
-		mySQLAccountGenerator.setCropType(program.getCropType());
-		mySQLAccountGenerator.setProjectId(program.getProjectId());
-		mySQLAccountGenerator.setIdAndNameOfProjectMembers(this.idAndNameOfProgramMembers);
-		mySQLAccountGenerator.setDataManager(this.workbenchDataManager);
-		mySQLAccountGenerator.generateMysqlAccounts();
+		this.workbenchDataManager.addIbdbUserMap(ibdbUserMap);
 	}
 
-    private Integer getCurrentDate(){
-        return DateUtil.getCurrentDateAsIntegerValue();
-    }
+	private void createMySQLAccounts(Project program) {
+		// Create mysql user accounts for members of the project
+		this.mySQLAccountGenerator.setCropType(program.getCropType());
+		this.mySQLAccountGenerator.setProjectId(program.getProjectId());
+		this.mySQLAccountGenerator.setIdAndNameOfProjectMembers(this.idAndNameOfProgramMembers);
+		this.mySQLAccountGenerator.setDataManager(this.workbenchDataManager);
+		this.mySQLAccountGenerator.generateMysqlAccounts();
+	}
+
+	private Integer getCurrentDate() {
+		return DateUtil.getCurrentDateAsIntegerValue();
+	}
 
 	public void setSelectedUsers(Set<User> users) {
 		this.selectedUsers = users;
 	}
-	
+
 	public void setCurrentUser(User currentUser) {
 		this.currentUser = currentUser;
 	}
@@ -205,7 +207,7 @@ public class ProgramService {
 	void setToolUtil(ToolUtil toolUtil) {
 		this.toolUtil = toolUtil;
 	}
-	
+
 	public void setMySQLAccountGenerator(MysqlAccountGenerator mySQLAccountGenerator) {
 		this.mySQLAccountGenerator = mySQLAccountGenerator;
 	}

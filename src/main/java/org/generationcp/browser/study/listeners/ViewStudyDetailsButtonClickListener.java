@@ -1,4 +1,7 @@
+
 package org.generationcp.browser.study.listeners;
+
+import javax.annotation.Resource;
 
 import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
 import org.generationcp.commons.util.WorkbenchAppPathResolver;
@@ -21,8 +24,6 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Window;
 
-import javax.annotation.Resource;
-
 @Configurable
 public class ViewStudyDetailsButtonClickListener implements ClickListener {
 
@@ -30,15 +31,14 @@ public class ViewStudyDetailsButtonClickListener implements ClickListener {
 	private static final Logger LOG = LoggerFactory.getLogger(ViewStudyDetailsButtonClickListener.class);
 
 	@Autowired
-    private WorkbenchDataManager workbenchDataManager;
+	private WorkbenchDataManager workbenchDataManager;
 
 	@Resource
 	private SessionData sessionData;
-	
-	private int studyId;
-	private String studyName;
 
-	
+	private final int studyId;
+	private final String studyName;
+
 	public ViewStudyDetailsButtonClickListener(int studyId, String studyName) {
 		super();
 		this.studyId = studyId;
@@ -48,55 +48,56 @@ public class ViewStudyDetailsButtonClickListener implements ClickListener {
 	@Override
 	public void buttonClick(ClickEvent event) {
 		Tool tool = null;
-        try {
-            tool = workbenchDataManager.getToolWithName(ToolName.study_browser_with_id.toString());
-        } catch (MiddlewareQueryException qe) {
-            LOG.error("QueryException", qe);
-        }
+		try {
+			tool = this.workbenchDataManager.getToolWithName(ToolName.study_browser_with_id.toString());
+		} catch (MiddlewareQueryException qe) {
+			ViewStudyDetailsButtonClickListener.LOG.error("QueryException", qe);
+		}
 
-		String addtlParams = sessionData.getWorkbenchContextParameters();
+		String addtlParams = this.sessionData.getWorkbenchContextParameters();
 		ExternalResource studyLink;
 		if (tool == null) {
-			studyLink = new ExternalResource(
-					WorkbenchAppPathResolver.getFullWebAddress(
-							DefaultGermplasmStudyBrowserPath.STUDY_BROWSER_LINK + studyId,
-							"?restartApplication" + addtlParams));
+			studyLink =
+					new ExternalResource(WorkbenchAppPathResolver.getFullWebAddress(DefaultGermplasmStudyBrowserPath.STUDY_BROWSER_LINK
+							+ this.studyId, "?restartApplication" + addtlParams));
 		} else {
-			studyLink = new ExternalResource(WorkbenchAppPathResolver.getWorkbenchAppPath(tool,String.valueOf(studyId),"?restartApplication" + addtlParams));
+			studyLink =
+					new ExternalResource(WorkbenchAppPathResolver.getWorkbenchAppPath(tool, String.valueOf(this.studyId),
+							"?restartApplication" + addtlParams));
 		}
-		LOG.debug(studyLink.getURL());
-        renderStudyDetailsWindow(studyLink, event.getComponent().getWindow());
+		ViewStudyDetailsButtonClickListener.LOG.debug(studyLink.getURL());
+		this.renderStudyDetailsWindow(studyLink, event.getComponent().getWindow());
 
 	}
-	
-	protected void renderStudyDetailsWindow(ExternalResource studyLink, Window window){
-		String windowTitle = "Study Information: " + studyName;
-        final Window studyWindow = new BaseSubWindow(windowTitle);
-        final Embedded studyInfo = new Embedded(null, studyLink);
-        studyInfo.setType(Embedded.TYPE_BROWSER);
-        studyInfo.setSizeFull();
-        
-        AbsoluteLayout layoutForStudy = new AbsoluteLayout();
-        layoutForStudy.setMargin(false);
-        layoutForStudy.setWidth("100%");
-        layoutForStudy.setHeight("100%");
-        layoutForStudy.addStyleName("no-caption");
-        layoutForStudy.addComponent(studyInfo, "top:0; left:0;");
-        
-        studyWindow.setContent(layoutForStudy);
-        studyWindow.setWidth("90%");
-        studyWindow.setHeight("90%");
-        studyWindow.center();
-        studyWindow.setResizable(false);
-        studyWindow.setCloseShortcut(ShortcutAction.KeyCode.ESCAPE);
 
-        studyWindow.setModal(true);
-        studyWindow.addStyleName("graybg");
-        
-        window.addWindow(studyWindow);
+	protected void renderStudyDetailsWindow(ExternalResource studyLink, Window window) {
+		String windowTitle = "Study Information: " + this.studyName;
+		final Window studyWindow = new BaseSubWindow(windowTitle);
+		final Embedded studyInfo = new Embedded(null, studyLink);
+		studyInfo.setType(Embedded.TYPE_BROWSER);
+		studyInfo.setSizeFull();
+
+		AbsoluteLayout layoutForStudy = new AbsoluteLayout();
+		layoutForStudy.setMargin(false);
+		layoutForStudy.setWidth("100%");
+		layoutForStudy.setHeight("100%");
+		layoutForStudy.addStyleName("no-caption");
+		layoutForStudy.addComponent(studyInfo, "top:0; left:0;");
+
+		studyWindow.setContent(layoutForStudy);
+		studyWindow.setWidth("90%");
+		studyWindow.setHeight("90%");
+		studyWindow.center();
+		studyWindow.setResizable(false);
+		studyWindow.setCloseShortcut(ShortcutAction.KeyCode.ESCAPE);
+
+		studyWindow.setModal(true);
+		studyWindow.addStyleName("graybg");
+
+		window.addWindow(studyWindow);
 	}
-	
-	public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager){
+
+	public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
 		this.workbenchDataManager = workbenchDataManager;
 	}
 }

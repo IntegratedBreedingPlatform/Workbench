@@ -1,21 +1,20 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- * 
+ *
  * Generation Challenge Programme (GCP)
- * 
- * 
- * This software is licensed for use under the terms of the GNU General Public
- * License (http://bit.ly/8Ztv8M) and the provisions of Part F of the Generation
- * Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- * 
+ *
+ *
+ * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
+ * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ *
  *******************************************************************************/
+
 package org.generationcp.ibpworkbench.actions;
 
-import com.vaadin.data.Validator;
-import com.vaadin.data.util.BeanItem;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
+import java.util.List;
+
+import javax.annotation.Resource;
+
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
@@ -32,8 +31,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import javax.annotation.Resource;
-import java.util.List;
+import com.vaadin.data.Validator;
+import com.vaadin.data.util.BeanItem;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 
 /**
  * @author Jeffrey Morales, Joyce Avestro
@@ -42,103 +44,99 @@ import java.util.List;
 @Configurable
 public class SaveNewLocationAction implements ClickListener {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SaveNewLocationAction.class);
-    private static final long serialVersionUID = 1L;
+	private static final Logger LOG = LoggerFactory.getLogger(SaveNewLocationAction.class);
+	private static final long serialVersionUID = 1L;
 
-    private AddLocationForm newLocationForm;
+	private final AddLocationForm newLocationForm;
 
-    private AddLocationsWindow window;
+	private final AddLocationsWindow window;
 
-	private ProgramLocationsPresenter programLocationsPresenter;
+	private final ProgramLocationsPresenter programLocationsPresenter;
 
 	@Resource
 	private SessionData sessionData;
 
 	@Resource
-    private SimpleResourceBundleMessageSource messageSource;
+	private SimpleResourceBundleMessageSource messageSource;
 
 	public SaveNewLocationAction(AddLocationForm newLocationForm, AddLocationsWindow window,
 			ProgramLocationsPresenter programLocationsPresenter) {
-        this.newLocationForm = newLocationForm;
-        this.window = window;
-        this.programLocationsPresenter = programLocationsPresenter;
-    }
+		this.newLocationForm = newLocationForm;
+		this.window = window;
+		this.programLocationsPresenter = programLocationsPresenter;
+	}
 
-    @Override
-    public void buttonClick(ClickEvent event) {
-    	
-    	try {
-            newLocationForm.commit();
-			LocationViewModel location = getLocationFromForm();
-			List<Location> existingLocations = programLocationsPresenter
-					.getExistingLocations(location.getLocationName());
+	@Override
+	public void buttonClick(ClickEvent event) {
 
-            // there exists a location with the same name?
-    		if (!existingLocations.isEmpty()){
-    			new ConfirmLocationsWindow(window, existingLocations , programLocationsPresenter, new Button.ClickListener() {
-				
+		try {
+			this.newLocationForm.commit();
+			LocationViewModel location = this.getLocationFromForm();
+			List<Location> existingLocations = this.programLocationsPresenter.getExistingLocations(location.getLocationName());
+
+			// there exists a location with the same name?
+			if (!existingLocations.isEmpty()) {
+				new ConfirmLocationsWindow(this.window, existingLocations, this.programLocationsPresenter, new Button.ClickListener() {
+
 					private static final long serialVersionUID = 1L;
 
-					@Override
-					public void buttonClick(ClickEvent event) {
-						saveLocation();
-					}
-						}).show();
-    			
+							@Override
+							public void buttonClick(ClickEvent event) {
+								SaveNewLocationAction.this.saveLocation();
+							}
+				}).show();
+
 			} else {
-    			saveLocation();
-    		}
-    		
+				this.saveLocation();
+			}
+
 		} catch (Validator.InvalidValueException e) {
-			MessageNotifier.showRequiredFieldError(event.getComponent().getWindow(),
-					e.getLocalizedMessage());
-    	} catch (MiddlewareQueryException e) {
-			LOG.error(e.getMessage(),e);
-            LOG.error(e.getMessage(),e);
-            LOG.error(e.getMessage(),e);
-        }
-    }
-    
+			MessageNotifier.showRequiredFieldError(event.getComponent().getWindow(), e.getLocalizedMessage());
+		} catch (MiddlewareQueryException e) {
+			SaveNewLocationAction.LOG.error(e.getMessage(), e);
+			SaveNewLocationAction.LOG.error(e.getMessage(), e);
+			SaveNewLocationAction.LOG.error(e.getMessage(), e);
+		}
+	}
+
 	protected void saveLocation() {
 		final LocationViewModel locModel = this.getLocationFromForm();
 
-		updateSessionData(locModel);
+		this.updateSessionData(locModel);
 
 		// save to middleware
 		try {
-			Location loc = programLocationsPresenter.convertLocationViewToLocation(locModel);
-			programLocationsPresenter.addLocation(loc);
-			sessionData.logProgramActivity(messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK),
-					"Added new Location (" + locModel.getLocationName() + ")");
+			Location loc = this.programLocationsPresenter.convertLocationViewToLocation(locModel);
+			this.programLocationsPresenter.addLocation(loc);
+			this.sessionData.logProgramActivity(this.messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK), "Added new Location ("
+					+ locModel.getLocationName() + ")");
 		} catch (MiddlewareQueryException e) {
-			LOG.error(e.getMessage(), e);
+			SaveNewLocationAction.LOG.error(e.getMessage(), e);
 		}
 
-		window.getParent().removeWindow(window);
+		this.window.getParent().removeWindow(this.window);
 
 	}
 
 	// FIXME: depricated for BMS-4.0 (merge-db), remove this when we replace sessionData obj.
 	protected void updateSessionData(LocationViewModel locModel) {
-        // increment key from the session's list of locations (correct id from local db)
-        Integer nextKey = sessionData.getProjectLocationData().keySet().size() + 1;
-        locModel.setLocationId(nextKey);
+		// increment key from the session's list of locations (correct id from local db)
+		Integer nextKey = this.sessionData.getProjectLocationData().keySet().size() + 1;
+		locModel.setLocationId(nextKey);
 
-        // add new location to session list
-        sessionData.getProjectLocationData().put(nextKey, locModel);
-        }
+		// add new location to session list
+		this.sessionData.getProjectLocationData().put(nextKey, locModel);
+	}
 
 	protected LocationViewModel getLocationFromForm() {
 		@SuppressWarnings("unchecked")
-		BeanItem<LocationViewModel> locationBean = (BeanItem<LocationViewModel>) newLocationForm
-				.getItemDataSource();
+		BeanItem<LocationViewModel> locationBean = (BeanItem<LocationViewModel>) this.newLocationForm.getItemDataSource();
 		LocationViewModel locModel = locationBean.getBean();
 
 		// sanitize locModel
 		locModel.setLocationName(Sanitizers.FORMATTING.sanitize(locModel.getLocationName()));
-		locModel.setLocationAbbreviation(
-				Sanitizers.FORMATTING.sanitize(locModel.getLocationAbbreviation()));
+		locModel.setLocationAbbreviation(Sanitizers.FORMATTING.sanitize(locModel.getLocationAbbreviation()));
 
 		return locModel;
-    }
+	}
 }

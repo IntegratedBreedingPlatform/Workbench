@@ -1,15 +1,15 @@
+
 package org.generationcp.ibpworkbench.util;
 
+public class DatasetExporterException extends Exception {
 
-public class DatasetExporterException extends Exception{
+	private static final long serialVersionUID = -1639961960516233500L;
 
-    private static final long serialVersionUID = -1639961960516233500L;
+	public DatasetExporterException(String message) {
+		super(message);
+	}
 
-    public DatasetExporterException(String message) {
-        super(message);
-    }
-    
-    public DatasetExporterException(String message, Throwable cause) {
-        super(message, cause);
-    }
+	public DatasetExporterException(String message, Throwable cause) {
+		super(message, cause);
+	}
 }

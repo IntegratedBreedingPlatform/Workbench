@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.util.bean;
 
 import org.generationcp.middleware.domain.dms.Study;
@@ -6,17 +7,17 @@ import org.generationcp.middleware.pojos.workbench.Project;
 public class MultiSiteParameters {
 
 	private Project project;
-	
+
 	private Study study;
-	
+
 	private String selectedEnvironmentFactorName;
-	
+
 	private String selectedEnvGroupFactorName;
-	
+
 	private String selectedGenotypeFactorName;
 
 	public String getSelectedEnvGroupFactorName() {
-		return selectedEnvGroupFactorName;
+		return this.selectedEnvGroupFactorName;
 	}
 
 	public void setSelectedEnvGroupFactorName(String selectedEnvGroupFactorName) {
@@ -24,7 +25,7 @@ public class MultiSiteParameters {
 	}
 
 	public String getSelectedGenotypeFactorName() {
-		return selectedGenotypeFactorName;
+		return this.selectedGenotypeFactorName;
 	}
 
 	public void setSelectedGenotypeFactorName(String selectedGenotypeFactorName) {
@@ -32,7 +33,7 @@ public class MultiSiteParameters {
 	}
 
 	public Project getProject() {
-		return project;
+		return this.project;
 	}
 
 	public void setProject(Project project) {
@@ -40,7 +41,7 @@ public class MultiSiteParameters {
 	}
 
 	public Study getStudy() {
-		return study;
+		return this.study;
 	}
 
 	public void setStudy(Study study) {
@@ -48,13 +49,11 @@ public class MultiSiteParameters {
 	}
 
 	public String getSelectedEnvironmentFactorName() {
-		return selectedEnvironmentFactorName;
+		return this.selectedEnvironmentFactorName;
 	}
 
 	public void setSelectedEnvironmentFactorName(String selectedEnvironmentFactorName) {
 		this.selectedEnvironmentFactorName = selectedEnvironmentFactorName;
 	}
 
-	
-	
 }

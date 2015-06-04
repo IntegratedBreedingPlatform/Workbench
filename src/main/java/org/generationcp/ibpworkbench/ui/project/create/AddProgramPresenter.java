@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.ui.project.create;
 
 import java.util.Set;
@@ -17,56 +18,57 @@ import com.vaadin.data.Validator.InvalidValueException;
  */
 @Configurable
 public class AddProgramPresenter {
-    private AddProgramView view;
 
-    @Autowired
-    private ProgramService programService;
+	private final AddProgramView view;
 
-    @Autowired
-    private SessionData sessionData;
-    
-    private Set<User> users;
-    protected Project program;
-    
-    public AddProgramPresenter(AddProgramView view) {
-        this.view = view;
-    }
+	@Autowired
+	private ProgramService programService;
 
-    public boolean validateAndGetBasicDetails() {
-        try {
-            this.program = view.createProjectPanel.projectBasicDetailsComponent.getProjectDetails();
-            this.users = this.view.programMembersPanel.getSelectedUsers();
-            return true;
-        } catch (InvalidValueException e) {
-            return false;
-        }
-    }
-    
-    public void enableProgramMethodsAndLocationsTab() {
-        view.updateUIOnProgramSave(sessionData.getSelectedProject());
-    }
+	@Autowired
+	private SessionData sessionData;
 
-    public void disableProgramMethodsAndLocationsTab() { 
-    	view.disableOptionalTabsAndFinish(); 
-    }
+	private Set<User> users;
+	protected Project program;
 
-    public void doAddNewProgram() throws Exception {
+	public AddProgramPresenter(AddProgramView view) {
+		this.view = view;
+	}
 
-        if (!validateAndGetBasicDetails()) {
-            throw new Exception("basic_details_invalid");
-        }
+	public boolean validateAndGetBasicDetails() {
+		try {
+			this.program = this.view.createProjectPanel.projectBasicDetailsComponent.getProjectDetails();
+			this.users = this.view.programMembersPanel.getSelectedUsers();
+			return true;
+		} catch (InvalidValueException e) {
+			return false;
+		}
+	}
 
-        programService.setCurrentUser(this.sessionData.getUserData());
-        programService.setSelectedUsers(this.users);
-        programService.setMySQLAccountGenerator(new MysqlAccountGenerator());
-        programService.createNewProgram(this.program);
-    }
+	public void enableProgramMethodsAndLocationsTab() {
+		this.view.updateUIOnProgramSave(this.sessionData.getSelectedProject());
+	}
 
-    public void resetBasicDetails() {
-        view.resetBasicDetails();
-    }
+	public void disableProgramMethodsAndLocationsTab() {
+		this.view.disableOptionalTabsAndFinish();
+	}
 
-    public void resetProgramMembers() {
-        view.resetProgramMembers();
-    }
+	public void doAddNewProgram() throws Exception {
+
+		if (!this.validateAndGetBasicDetails()) {
+			throw new Exception("basic_details_invalid");
+		}
+
+		this.programService.setCurrentUser(this.sessionData.getUserData());
+		this.programService.setSelectedUsers(this.users);
+		this.programService.setMySQLAccountGenerator(new MysqlAccountGenerator());
+		this.programService.createNewProgram(this.program);
+	}
+
+	public void resetBasicDetails() {
+		this.view.resetBasicDetails();
+	}
+
+	public void resetProgramMembers() {
+		this.view.resetProgramMembers();
+	}
 }

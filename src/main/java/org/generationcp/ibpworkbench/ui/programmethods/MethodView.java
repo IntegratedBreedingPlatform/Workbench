@@ -1,47 +1,53 @@
+
 package org.generationcp.ibpworkbench.ui.programmethods;
 
 import org.generationcp.middleware.pojos.BeanFormState;
 import org.generationcp.middleware.pojos.Method;
 
 /**
-  * Created by cyrus on 4/7/14.
-  */
- public class MethodView extends Method implements BeanFormState {
-    private boolean active = false;
-    private boolean isEnabled = true;
+ * Created by cyrus on 4/7/14.
+ */
+public class MethodView extends Method implements BeanFormState {
 
-    public MethodView() {
-        this.setMname("");
-        this.setMdesc("");
-        this.setMtype("");
-        this.setMgrp("");
-        this.setMcode("");
-        this.setGeneq(null);
-    }
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -7781564594804285349L;
+	private boolean active = false;
+	private boolean isEnabled = true;
 
-    public boolean isBulk() {
-        return getGeneq() == 1;
-    }
+	public MethodView() {
+		this.setMname("");
+		this.setMdesc("");
+		this.setMtype("");
+		this.setMgrp("");
+		this.setMcode("");
+		this.setGeneq(null);
+	}
 
-    public void setBulk(boolean value) {
-        this.setGeneq(value ? 1 : 0);
+	public boolean isBulk() {
+		return this.getGeneq() == 1;
+	}
 
-    }
+	public void setBulk(boolean value) {
+		this.setGeneq(value ? 1 : 0);
 
-    @Override
-    public boolean isActive() {
-        return active;
-    }
+	}
 
-    @Override
-    public void setActive(Boolean val) {
-        this.active = val;
-    }
+	@Override
+	public boolean isActive() {
+		return this.active;
+	}
+
+	@Override
+	public void setActive(Boolean val) {
+		this.active = val;
+	}
 
 	@Override
 	public boolean isEnabled() {
 		// TODO Auto-generated method stub
-		return isEnabled;
+		return this.isEnabled;
 	}
 
 	@Override
@@ -49,46 +55,32 @@ import org.generationcp.middleware.pojos.Method;
 		this.isEnabled = val;
 	}
 
-    public Method copy() {
-        return new Method(
-            getMid(),
-            getMtype(),
-            getMgrp(),
-            getMcode(),
-            getMname(),
-            getMdesc(),
-            getReference(),
-            getMprgn(),
-            getMfprg(),
-            getMattr(),
-            getGeneq(),
-            getUser(),
-            getLmid(),
-            getMdate(),
-            getUniqueID()
-        );
-    }
-    
-    public MethodView copyMethodView(){
-    	
-    	MethodView methodView = new MethodView();
-    	methodView.setMtype(getMtype());
-    	methodView.setMgrp(getMgrp());
-    	methodView.setMcode(getMcode());
-    	methodView.setMname(getMname());
-    	methodView.setMdesc(getMdesc());
-    	methodView.setReference(getReference());
-    	methodView.setMprgn(getMprgn());
-    	methodView.setMfprg(getMfprg());
-    	methodView.setMattr(getMattr());
-    	methodView.setGeneq(getGeneq());
-    	methodView.setUser(getUser());
-    	methodView.setLmid(getLmid());
-    	methodView.setMdate(getMdate());
-    	methodView.setUniqueID(getUniqueID());
-    	
+	public Method copy() {
+		return new Method(this.getMid(), this.getMtype(), this.getMgrp(), this.getMcode(), this.getMname(), this.getMdesc(),
+				this.getReference(), this.getMprgn(), this.getMfprg(), this.getMattr(), this.getGeneq(), this.getUser(), this.getLmid(),
+				this.getMdate(), this.getUniqueID());
+	}
+
+	public MethodView copyMethodView() {
+
+		MethodView methodView = new MethodView();
+		methodView.setMtype(this.getMtype());
+		methodView.setMgrp(this.getMgrp());
+		methodView.setMcode(this.getMcode());
+		methodView.setMname(this.getMname());
+		methodView.setMdesc(this.getMdesc());
+		methodView.setReference(this.getReference());
+		methodView.setMprgn(this.getMprgn());
+		methodView.setMfprg(this.getMfprg());
+		methodView.setMattr(this.getMattr());
+		methodView.setGeneq(this.getGeneq());
+		methodView.setUser(this.getUser());
+		methodView.setLmid(this.getLmid());
+		methodView.setMdate(this.getMdate());
+		methodView.setUniqueID(this.getUniqueID());
+
 		return methodView;
-    	
-    }
+
+	}
 
 }

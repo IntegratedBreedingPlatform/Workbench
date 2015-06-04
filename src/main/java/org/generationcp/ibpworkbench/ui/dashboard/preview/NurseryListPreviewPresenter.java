@@ -1,4 +1,9 @@
+
 package org.generationcp.ibpworkbench.ui.dashboard.preview;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
@@ -20,255 +25,246 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 /**
- * Created with IntelliJ IDEA.
- * User: cyrus
- * Date: 11/19/13
- * Time: 7:21 PM
- * To change this template use File | Settings | File Templates.
+ * Created with IntelliJ IDEA. User: cyrus Date: 11/19/13 Time: 7:21 PM To change this template use File | Settings | File Templates.
  */
 @Configurable
 public class NurseryListPreviewPresenter implements InitializingBean {
-    private static final Logger LOG = LoggerFactory.getLogger(NurseryListPreviewPresenter.class);
-    public static final int MAX_STUDY_FOLDER_NAME_LENGTH = 255;
 
-    private NurseryListPreview view;
-    private Project project;
+	private static final Logger LOG = LoggerFactory.getLogger(NurseryListPreviewPresenter.class);
+	public static final int MAX_STUDY_FOLDER_NAME_LENGTH = 255;
 
-    @Autowired
-    private WorkbenchDataManager manager;
+	private NurseryListPreview view;
+	private Project project;
 
-    @Autowired
-    private SimpleResourceBundleMessageSource messageSource;
+	@Autowired
+	private WorkbenchDataManager manager;
 
-    private ManagerFactory managerFactory;
+	@Autowired
+	private SimpleResourceBundleMessageSource messageSource;
 
-    public NurseryListPreviewPresenter(NurseryListPreview view, Project project) {
-        this.view = view;
-        this.project = project;
+	private ManagerFactory managerFactory;
 
-        if (this.project != null && view.getManagerFactoryProvider() != null) {
-            setManagerFactory(view.getManagerFactoryProvider().getManagerFactoryForProject(this.project));
-        }
-    }
+	public NurseryListPreviewPresenter(NurseryListPreview view, Project project) {
+		this.view = view;
+		this.project = project;
 
-    public NurseryListPreviewPresenter() {
+		if (this.project != null && view.getManagerFactoryProvider() != null) {
+			this.setManagerFactory(view.getManagerFactoryProvider().getManagerFactoryForProject(this.project));
+		}
+	}
 
-    }
+	public NurseryListPreviewPresenter() {
 
-    public void generateInitialTreeNodes() {
+	}
 
-        List<FolderReference> root;
-        try {
-        	root = this.getManagerFactory().getStudyDataManager().getRootFolders(project.getUniqueID());
-            view.generateTopListOfTree(root);
-        } catch (MiddlewareQueryException e) {
-            LOG.error(e.getMessage(),e);
-        }
-    }
+	public void generateInitialTreeNodes() {
 
+		List<FolderReference> root;
+		try {
+			root = this.getManagerFactory().getStudyDataManager().getRootFolders(this.project.getUniqueID());
+			this.view.generateTopListOfTree(root);
+		} catch (MiddlewareQueryException e) {
+			NurseryListPreviewPresenter.LOG.error(e.getMessage(), e);
+		}
+	}
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        // do nothing
-    }
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		// do nothing
+	}
 
+	public ManagerFactory getManagerFactory() {
+		return this.managerFactory;
+	}
 
-    public ManagerFactory getManagerFactory() {
-        return managerFactory;
-    }
+	public void setManagerFactory(ManagerFactory managerFactory) {
+		this.managerFactory = managerFactory;
+	}
 
+	public boolean isFolder(Integer value) {
+		try {
+			boolean isStudy = this.getManagerFactory().getStudyDataManager().isStudy(value);
+			NurseryListPreviewPresenter.LOG.info("isFolder = " + !isStudy);
+			return !isStudy;
+		} catch (MiddlewareQueryException e) {
+			NurseryListPreviewPresenter.LOG.error(e.getMessage(), e);
+		}
 
-    public void setManagerFactory(ManagerFactory managerFactory) {
-        this.managerFactory = managerFactory;
-    }
+		return false;
+	}
 
-    public boolean isFolder(Integer value) {
-        try {
-            boolean isStudy = this.getManagerFactory().getStudyDataManager().isStudy(value);
-            LOG.info("isFolder = " + !isStudy);
-            return !isStudy;
-        } catch (MiddlewareQueryException e) {
-            LOG.error(e.getMessage(),e);
-        }
+	public void renameNurseryListFolder(String newFolderName, Integer folderId) throws NurseryListPreviewException {
+		try {
 
-        return false;
-    }
+			this.validateStudyFolderName(newFolderName);
 
-    public void renameNurseryListFolder(String newFolderName, Integer folderId) throws NurseryListPreviewException {
-        try {
+			this.getManagerFactory().getStudyDataManager().renameSubFolder(newFolderName, folderId, this.project.getUniqueID());
+		} catch (MiddlewareQueryException e) {
+			NurseryListPreviewPresenter.LOG.error(e.getMessage(), e);
+		}
+	}
 
-            validateStudyFolderName(newFolderName);
+	public void deleteNurseryListFolder(Integer id) throws MiddlewareQueryException {
+		this.getManagerFactory().getFieldbookMiddlewareService().deleteStudy(id);
+	}
 
-            this.getManagerFactory().getStudyDataManager().renameSubFolder(newFolderName, folderId, project.getUniqueID());
-        } catch (MiddlewareQueryException e) {
-            LOG.error(e.getMessage(),e);
-        }
-    }
+	public Object getStudyNodeParent(Integer newItem) {
+		try {
+			return this.getManagerFactory().getStudyDataManager().getParentFolder(newItem);
+		} catch (MiddlewareQueryException e) {
+			NurseryListPreviewPresenter.LOG.error(e.getMessage(), e);
+			return null;
+		}
+	}
 
-    public void deleteNurseryListFolder(Integer id) throws MiddlewareQueryException {
-        this.getManagerFactory().getFieldbookMiddlewareService().deleteStudy(id);
-    }
+	public boolean moveNurseryListFolder(Integer sourceId, Integer targetId, boolean isAStudy) throws NurseryListPreviewException {
+		try {
+			return this.getManagerFactory().getStudyDataManager().moveDmsProject(sourceId, targetId, isAStudy);
+		} catch (MiddlewareQueryException e) {
+			NurseryListPreviewPresenter.LOG.error(e.getMessage(), e);
+			throw new NurseryListPreviewException(e.getMessage());
+		}
+	}
 
-    public Object getStudyNodeParent(Integer newItem) {
-        try {
-            return this.getManagerFactory().getStudyDataManager().getParentFolder(newItem);
-        } catch (MiddlewareQueryException e) {
-            LOG.error(e.getMessage(),e);
-            return null;
-        }
-    }
+	public Integer addNurseryListFolder(String name, Integer id) throws NurseryListPreviewException {
+		try {
 
-    public boolean moveNurseryListFolder(Integer sourceId, Integer targetId, boolean isAStudy) throws NurseryListPreviewException {
-        try {
-            return getManagerFactory().getStudyDataManager().moveDmsProject(sourceId, targetId, isAStudy);
-        } catch (MiddlewareQueryException e) {
-            LOG.error(e.getMessage(),e);
-            throw new NurseryListPreviewException(e.getMessage());
-        }
-    }
+			this.validateStudyFolderName(name);
 
-    public Integer addNurseryListFolder(String name, Integer id) throws NurseryListPreviewException {
-        try {
+			Integer parentFolderId = id;
+			if (!this.isFolder(id)) {
+				// get parent
+				DmsProject dmsProject = this.getManagerFactory().getStudyDataManager().getParentFolder(id);
+				if (dmsProject == null) {
+					throw new NurseryListPreviewException(NurseryListPreviewException.NO_PARENT);
+				}
+				parentFolderId = dmsProject.getProjectId();
+			}
+			return this.getManagerFactory().getStudyDataManager().addSubFolder(parentFolderId, name, name, this.project.getUniqueID());
+		} catch (MiddlewareQueryException e) {
+			NurseryListPreviewPresenter.LOG.error(e.getMessage(), e);
+			throw new NurseryListPreviewException(e.getMessage());
+		}
+	}
 
-            validateStudyFolderName(name);
+	protected void validateStudyFolderName(String name) throws NurseryListPreviewException {
+		if (name == null || "".equals(name.trim())) {
+			throw new NurseryListPreviewException(NurseryListPreviewException.BLANK_NAME);
+		}
+		if (name.equals(NurseryListPreview.NURSERIES_AND_TRIALS)) {
+			throw new NurseryListPreviewException(NurseryListPreviewException.INVALID_NAME);
+		}
 
-            Integer parentFolderId = id;
-            if (!isFolder(id)) {
-                //get parent
-                DmsProject dmsProject = this.getManagerFactory().getStudyDataManager().getParentFolder(id);
-                if (dmsProject == null) {
-                    throw new NurseryListPreviewException(NurseryListPreviewException.NO_PARENT);
-                }
-                parentFolderId = dmsProject.getProjectId();
-            }
-            return this.getManagerFactory().getStudyDataManager().addSubFolder(parentFolderId, name, name, project.getUniqueID());
-        } catch (MiddlewareQueryException e) {
-            LOG.error(e.getMessage(),e);
-            throw new NurseryListPreviewException(e.getMessage());
-        }
-    }
+		if (name.length() > NurseryListPreviewPresenter.MAX_STUDY_FOLDER_NAME_LENGTH) {
+			throw new NurseryListPreviewException(NurseryListPreviewException.TOO_LONG);
+		}
+	}
 
-    protected void validateStudyFolderName(String name) throws NurseryListPreviewException {
-        if (name == null || "".equals(name.trim())) {
-            throw new NurseryListPreviewException(NurseryListPreviewException.BLANK_NAME);
-        }
-        if (name.equals(NurseryListPreview.NURSERIES_AND_TRIALS)) {
-            throw new NurseryListPreviewException(NurseryListPreviewException.INVALID_NAME);
-        }
+	public Integer validateForDeleteNurseryList(Integer id) throws NurseryListPreviewException {
+		NurseryListPreviewPresenter.LOG.info("id = " + id);
+		if (id == null) {
+			throw new NurseryListPreviewException(NurseryListPreviewException.NO_SELECTION);
+		}
+		DmsProject dmsProject;
 
-        if (name.length() > MAX_STUDY_FOLDER_NAME_LENGTH) {
-            throw new NurseryListPreviewException(NurseryListPreviewException.TOO_LONG);
-        }
-    }
+		try {
+			dmsProject = this.getManagerFactory().getStudyDataManager().getProject(id);
 
-    public Integer validateForDeleteNurseryList(Integer id) throws NurseryListPreviewException {
-        LOG.info("id = " + id);
-        if (id == null) {
-            throw new NurseryListPreviewException(NurseryListPreviewException.NO_SELECTION);
-        }
-        DmsProject dmsProject;
+		} catch (MiddlewareQueryException e) {
+			throw new NurseryListPreviewException(this.messageSource.getMessage(Message.ERROR_DATABASE), e);
+		}
 
-        try {
-            dmsProject = this.getManagerFactory().getStudyDataManager().getProject(id);
+		if (dmsProject == null) {
+			throw new NurseryListPreviewException(this.messageSource.getMessage(Message.ERROR_DATABASE));
+		}
 
-        } catch (MiddlewareQueryException e) {
-            throw new NurseryListPreviewException(messageSource.getMessage(Message.ERROR_DATABASE),e);
-        }
+		if (this.hasChildren(id)) {
+			throw new NurseryListPreviewException(NurseryListPreviewException.HAS_CHILDREN);
+		}
 
-        if (dmsProject == null) {
-            throw new NurseryListPreviewException(messageSource.getMessage(Message.ERROR_DATABASE));
-        }
+		return id;
+	}
 
-        if (hasChildren(id)) {
-            throw new NurseryListPreviewException(NurseryListPreviewException.HAS_CHILDREN);
-        }
+	private boolean hasChildren(Integer id) throws NurseryListPreviewException {
+		List<Reference> studyChildren;
 
-        return id;
-    }
+		try {
+			studyChildren = this.getManagerFactory().getStudyDataManager().getChildrenOfFolder(id, this.project.getUniqueID());
+		} catch (MiddlewareQueryException e) {
+			NurseryListPreviewPresenter.LOG.error(e.getMessage(), e);
+			throw new NurseryListPreviewException(this.messageSource.getMessage(Message.ERROR_DATABASE), e);
+		}
+		if (studyChildren != null && !studyChildren.isEmpty()) {
+			NurseryListPreviewPresenter.LOG.info("hasChildren = true");
+			return true;
+		}
+		NurseryListPreviewPresenter.LOG.info("hasChildren = false");
+		return false;
 
-    private boolean hasChildren(Integer id) throws NurseryListPreviewException {
-        List<Reference> studyChildren;
+	}
 
-        try {
-            studyChildren = this.getManagerFactory().getStudyDataManager().getChildrenOfFolder(id, project.getUniqueID());
-        } catch (MiddlewareQueryException e) {
-            LOG.error(e.getMessage(),e);
-            throw new NurseryListPreviewException(messageSource.getMessage(Message.ERROR_DATABASE),e);
-        }
-        if (studyChildren != null && !studyChildren.isEmpty()) {
-            LOG.info("hasChildren = true");
-            return true;
-        }
-        LOG.info("hasChildren = false");
-        return false;
+	public void addChildrenNode(int parentId) {
+		List<Reference> studyChildren;
 
-    }
+		try {
+			studyChildren = this.getManagerFactory().getStudyDataManager().getChildrenOfFolder(parentId, this.project.getUniqueID());
+		} catch (MiddlewareQueryException e) {
+			NurseryListPreviewPresenter.LOG.error(this.messageSource.getMessage(Message.ERROR_DATABASE), e);
+			studyChildren = new ArrayList<Reference>();
+		}
 
-    public void addChildrenNode(int parentId) {
-        List<Reference> studyChildren;
+		this.view.addChildrenNode(parentId, studyChildren);
 
-        try {
-            studyChildren = this.getManagerFactory().getStudyDataManager().getChildrenOfFolder(parentId, project.getUniqueID());
-        } catch (MiddlewareQueryException e) {
-            LOG.error(messageSource.getMessage(Message.ERROR_DATABASE),e);
-            studyChildren = new ArrayList<Reference>();
-        }
+	}
 
-        view.addChildrenNode(parentId, studyChildren);
+	public void updateProjectLastOpenedDate() {
+		try {
 
-    }
+			// set the last opened project in the session
+			IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
 
-    public void updateProjectLastOpenedDate() {
-        try {
+			ProjectUserInfoDAO projectUserInfoDao = this.manager.getProjectUserInfoDao();
+			ProjectUserInfo projectUserInfo =
+					projectUserInfoDao.getByProjectIdAndUserId(this.project.getProjectId().intValue(), app.getSessionData().getUserData()
+							.getUserid());
+			if (projectUserInfo != null) {
+				projectUserInfo.setLastOpenDate(new Date());
+				this.manager.saveOrUpdateProjectUserInfo(projectUserInfo);
+			}
 
-            // set the last opened project in the session
-            IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+			this.project.setLastOpenDate(new Date());
+			this.manager.mergeProject(this.project);
 
+			app.getSessionData().setLastOpenedProject(this.project);
 
-            ProjectUserInfoDAO projectUserInfoDao = manager.getProjectUserInfoDao();
-            ProjectUserInfo projectUserInfo = projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId().intValue(), app.getSessionData().getUserData().getUserid());
-            if (projectUserInfo != null) {
-                projectUserInfo.setLastOpenDate(new Date());
-                manager.saveOrUpdateProjectUserInfo(projectUserInfo);
-            }
+		} catch (MiddlewareQueryException e) {
+			NurseryListPreviewPresenter.LOG.error(this.messageSource.getMessage(Message.ERROR_DATABASE), e);
+		}
+	}
 
-            project.setLastOpenDate(new Date());
-            manager.mergeProject(project);
+	public StudyType getStudyType(int studyId) {
+		try {
+			Study study = this.getManagerFactory().getStudyDataManager().getStudy(studyId);
+			if (study != null && study.getType() != null) {
+				return StudyType.getStudyType(study.getType());
+			}
+			return null;
+		} catch (MiddlewareQueryException e) {
+			NurseryListPreviewPresenter.LOG.error(this.messageSource.getMessage(Message.ERROR_DATABASE), e);
+			return null;
+		}
+	}
 
-            app.getSessionData().setLastOpenedProject(project);
-
-        } catch (MiddlewareQueryException e) {
-            LOG.error(messageSource.getMessage(Message.ERROR_DATABASE), e);
-        }
-    }
-
-    public StudyType getStudyType(int studyId) {
-        try {
-            Study study = this.getManagerFactory().getStudyDataManager().getStudy(studyId);
-            if (study != null && study.getType() != null) {
-                return StudyType.getStudyType(study.getType());
-            }
-            return null;
-        } catch (MiddlewareQueryException e) {
-            LOG.error(messageSource.getMessage(Message.ERROR_DATABASE),e);
-            return null;
-        }
-    }
-
-    public void setView(NurseryListPreview view) {
-        this.view = view;
-    }
+	public void setView(NurseryListPreview view) {
+		this.view = view;
+	}
 
 	public void setProject(Project project) {
 		this.project = project;
 	}
 
 	public void processToolbarButtons(Object treeItem) {
-    	//to be overridden
-    }
+		// to be overridden
+	}
 }

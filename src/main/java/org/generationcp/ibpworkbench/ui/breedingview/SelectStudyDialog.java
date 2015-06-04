@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.ui.breedingview;
 
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ import com.vaadin.ui.themes.Reindeer;
 public class SelectStudyDialog extends BaseSubWindow implements InitializingBean, InternationalizableComponent {
 
 	private final class TreeTableItemClickListener implements ItemClickListener {
+
 		private final TreeTable tr;
 		private static final long serialVersionUID = 1L;
 
@@ -54,26 +56,26 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 
 		@Override
 		public void itemClick(ItemClickEvent event) {
-			
+
 			Reference r = (Reference) event.getItemId();
-			boolean isStudy = isStudy(r);
-			
-			if (event.isDoubleClick() && isStudy){
-				openStudy(r);
-			}else{
-				if (tr.isCollapsed(r)){
-					tr.setCollapsed(r, false);
-				}else{
-					tr.setCollapsed(r, true);
+			boolean isStudy = SelectStudyDialog.this.isStudy(r);
+
+			if (event.isDoubleClick() && isStudy) {
+				SelectStudyDialog.this.openStudy(r);
+			} else {
+				if (this.tr.isCollapsed(r)) {
+					this.tr.setCollapsed(r, false);
+				} else {
+					this.tr.setCollapsed(r, true);
 				}
-			
-				if (isStudy){
-					selectButton.setEnabled(true);
-				}else{
-					selectButton.setEnabled(false);
+
+				if (isStudy) {
+					SelectStudyDialog.this.selectButton.setEnabled(true);
+				} else {
+					SelectStudyDialog.this.selectButton.setEnabled(false);
 				}
 			}
-			
+
 		}
 	}
 
@@ -92,7 +94,6 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 	protected TreeTable treeTable;
 	protected VerticalLayout rootLayout;
 
-
 	protected StudyDataManagerImpl studyDataManager;
 	protected Component source;
 
@@ -101,10 +102,10 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 	protected ThemeResource dataSetResource;
 
 	protected Label lblStudyTreeDetailDescription;
-	
-	private Project currentProject;
 
-	public SelectStudyDialog(Window parentWindow, Component source, StudyDataManagerImpl studyDataManager, Project currentProject){
+	private final Project currentProject;
+
+	public SelectStudyDialog(Window parentWindow, Component source, StudyDataManagerImpl studyDataManager, Project currentProject) {
 		this.parentWindow = parentWindow;
 		this.studyDataManager = studyDataManager;
 		this.source = source;
@@ -112,14 +113,14 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 	}
 
 	protected void assemble() {
-		initializeComponents();
-		initializeLayout();
-		initializeActions();
+		this.initializeComponents();
+		this.initializeLayout();
+		this.initializeActions();
 	}
 
-	protected void initializeComponents(){
+	protected void initializeComponents() {
 
-		//set as modal window, other components are disabled while window is open
+		// set as modal window, other components are disabled while window is open
 		this.setModal(true);
 		// define window size, set as not resizable
 		this.setWidth("1100px");
@@ -130,97 +131,92 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		this.setStyleName(Reindeer.WINDOW_LIGHT);
 
 		// center window within the browser
-		center();
+		this.center();
 
-		lblStudyTreeDetailDescription = new Label();
-		
-		folderResource = new ThemeResource("../vaadin-retro/svg/folder-icon.svg");
-		studyResource = new ThemeResource("../vaadin-retro/svg/study-icon.svg");
-		dataSetResource = new ThemeResource("../vaadin-retro/svg/dataset-icon.svg");
-		
-		treeTable = createStudyTreeTable();
+		this.lblStudyTreeDetailDescription = new Label();
+
+		this.folderResource = new ThemeResource("../vaadin-retro/svg/folder-icon.svg");
+		this.studyResource = new ThemeResource("../vaadin-retro/svg/study-icon.svg");
+		this.dataSetResource = new ThemeResource("../vaadin-retro/svg/dataset-icon.svg");
+
+		this.treeTable = this.createStudyTreeTable();
 	}
 
-	protected void initializeActions(){
-		cancelButton.addListener(new Button.ClickListener() {
+	protected void initializeActions() {
+		this.cancelButton.addListener(new Button.ClickListener() {
 
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				parentWindow.removeWindow(SelectStudyDialog.this);
+				SelectStudyDialog.this.parentWindow.removeWindow(SelectStudyDialog.this);
 
 			}
 		});
 
-		selectButton.addListener(new Button.ClickListener() {
+		this.selectButton.addListener(new Button.ClickListener() {
 
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {
 
-				if (treeTable.getValue() == null) {
-                    return;
-                }
-				Reference studyRef = (Reference) treeTable.getValue();
-				openStudy(studyRef);
+				if (SelectStudyDialog.this.treeTable.getValue() == null) {
+					return;
+				}
+				Reference studyRef = (Reference) SelectStudyDialog.this.treeTable.getValue();
+				SelectStudyDialog.this.openStudy(studyRef);
 			}
 		});
-		
 
 	}
 
 	protected Integer getPlotDataSetId(Integer studyId) {
 		try {
-			return DatasetUtil.getPlotDataSetId(getStudyDataManager(),studyId);
+			return DatasetUtil.getPlotDataSetId(this.getStudyDataManager(), studyId);
 		} catch (MiddlewareQueryException e) {
-			LOG.error(e.getMessage(), e);
-			MessageNotifier
-			.showWarning(
-					getWindow(),
-					messageSource.getMessage(Message.ERROR_DATABASE),
-					messageSource
-					.getMessage(Message.ERROR_IN_GETTING_VARIABLES_OF_DATASET));
+			SelectStudyDialog.LOG.error(e.getMessage(), e);
+			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
+					this.messageSource.getMessage(Message.ERROR_IN_GETTING_VARIABLES_OF_DATASET));
 		}
 		return null;
 	}
 
-	protected void initializeLayout(){
+	protected void initializeLayout() {
 
-		rootLayout = new VerticalLayout();
-		rootLayout.setMargin(true);
-		rootLayout.setSpacing(true);
-		rootLayout.setWidth("100%");
-		rootLayout.setHeight("100%");
+		this.rootLayout = new VerticalLayout();
+		this.rootLayout.setMargin(true);
+		this.rootLayout.setSpacing(true);
+		this.rootLayout.setWidth("100%");
+		this.rootLayout.setHeight("100%");
 
 		HorizontalLayout buttonLayout = new HorizontalLayout();
 		buttonLayout.setSpacing(true);
 		buttonLayout.setMargin(true, false, false, false);
 
-		cancelButton = new Button("Cancel");
-		cancelButton.setData(CLOSE_SCREEN_BUTTON_ID);
+		this.cancelButton = new Button("Cancel");
+		this.cancelButton.setData(SelectStudyDialog.CLOSE_SCREEN_BUTTON_ID);
 
-		selectButton = new Button("Select");
-		selectButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-		selectButton.setEnabled(false);
+		this.selectButton = new Button("Select");
+		this.selectButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+		this.selectButton.setEnabled(false);
 
-		rootLayout.addComponent(lblStudyTreeDetailDescription);
-		rootLayout.addComponent(treeTable);
+		this.rootLayout.addComponent(this.lblStudyTreeDetailDescription);
+		this.rootLayout.addComponent(this.treeTable);
 
-		buttonLayout.addComponent(cancelButton);
-		buttonLayout.addComponent(selectButton);
+		buttonLayout.addComponent(this.cancelButton);
+		buttonLayout.addComponent(this.selectButton);
 
-		rootLayout.addComponent(buttonLayout);
-		rootLayout.setComponentAlignment(buttonLayout, Alignment.TOP_CENTER);
+		this.rootLayout.addComponent(buttonLayout);
+		this.rootLayout.setComponentAlignment(buttonLayout, Alignment.TOP_CENTER);
 
-		addComponent(rootLayout);
+		this.addComponent(this.rootLayout);
 
 	}
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		assemble();
+		this.assemble();
 	}
 
 	protected TreeTable createStudyTreeTable() {
@@ -234,17 +230,12 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		List<FolderReference> folderRef = null;
 
 		try {
-			folderRef = getStudyDataManager().getRootFolders(currentProject.getUniqueID());
+			folderRef = this.getStudyDataManager().getRootFolders(this.currentProject.getUniqueID());
 		} catch (MiddlewareQueryException e1) {
-			LOG.error(e1.getMessage(), e1);
-			if (getWindow() != null) {
-				MessageNotifier
-				.showWarning(
-						getWindow(),
-						messageSource
-						.getMessage(Message.ERROR_DATABASE),
-						messageSource
-						.getMessage(Message.ERROR_IN_GETTING_TOP_LEVEL_STUDIES));
+			SelectStudyDialog.LOG.error(e1.getMessage(), e1);
+			if (this.getWindow() != null) {
+				MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
+						this.messageSource.getMessage(Message.ERROR_IN_GETTING_TOP_LEVEL_STUDIES));
 			}
 		}
 
@@ -252,25 +243,25 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 
 			Study study = null;
 			try {
-				if (isStudy(fr)){
-					study = getStudyDataManager().getStudy(fr.getId());
+				if (this.isStudy(fr)) {
+					study = this.getStudyDataManager().getStudy(fr.getId());
 				}
 			} catch (MiddlewareQueryException e) {
-				LOG.error(e.getMessage(), e);
+				SelectStudyDialog.LOG.error(e.getMessage(), e);
 			}
 
 			Object[] cells = new Object[3];
 			cells[0] = " " + fr.getName();
-			cells[1] = (study != null) ? study.getTitle() : "";
-			cells[2] = (study != null) ? study.getObjective() : "";
+			cells[1] = study != null ? study.getTitle() : "";
+			cells[2] = study != null ? study.getObjective() : "";
 
 			Object itemId = tr.addItem(cells, fr);
-			
-			if (!isFolder(fr.getId())){
-				tr.setItemIcon(itemId, studyResource);
+
+			if (!this.isFolder(fr.getId())) {
+				tr.setItemIcon(itemId, this.studyResource);
 				tr.setChildrenAllowed(itemId, false);
-			}else{
-				tr.setItemIcon(itemId, folderResource);
+			} else {
+				tr.setItemIcon(itemId, this.folderResource);
 			}
 
 		}
@@ -286,66 +277,62 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		tr.addListener(new TreeTableItemClickListener(tr));
 		return tr;
 	}
-	
+
 	protected boolean isStudy(Reference r) {
-		if(r instanceof StudyReference) {
+		if (r instanceof StudyReference) {
 			return true;
 		}
-		
+
 		try {
-			return getStudyDataManager().isStudy(r.getId());
+			return this.getStudyDataManager().isStudy(r.getId());
 		} catch (MiddlewareQueryException e) {
-			LOG.error(e.getMessage(), e);
+			SelectStudyDialog.LOG.error(e.getMessage(), e);
 			return false;
 		}
 	}
 
-	protected void openStudy(Reference r){
-		if(source instanceof SingleSiteAnalysisPanel) {
-			Integer dataSetId = getPlotDataSetId(r.getId());
-			if(dataSetId!=null) {
-				((SingleSiteAnalysisPanel)source).showDatasetVariatesDetails(dataSetId);
-				parentWindow.removeWindow(SelectStudyDialog.this);
+	protected void openStudy(Reference r) {
+		if (this.source instanceof SingleSiteAnalysisPanel) {
+			Integer dataSetId = this.getPlotDataSetId(r.getId());
+			if (dataSetId != null) {
+				((SingleSiteAnalysisPanel) this.source).showDatasetVariatesDetails(dataSetId);
+				this.parentWindow.removeWindow(SelectStudyDialog.this);
 			}
-		} else if(source instanceof MultiSiteAnalysisPanel) {
+		} else if (this.source instanceof MultiSiteAnalysisPanel) {
 			Study study = null;
 			try {
-				study = getStudyDataManager().getStudy(r.getId());
-				((MultiSiteAnalysisPanel)source).openStudyMeansDataset(study);
-				parentWindow.removeWindow(SelectStudyDialog.this);
+				study = this.getStudyDataManager().getStudy(r.getId());
+				((MultiSiteAnalysisPanel) this.source).openStudyMeansDataset(study);
+				this.parentWindow.removeWindow(SelectStudyDialog.this);
 			} catch (MiddlewareQueryException e) {
-				LOG.error(e.getMessage(), e);
+				SelectStudyDialog.LOG.error(e.getMessage(), e);
 				if (study != null) {
-					MessageNotifier.showError(this, "MEANS dataset doesn't exist", study.getName() + " doesn't have an existing MEANS dataset.");
+					MessageNotifier.showError(this, "MEANS dataset doesn't exist", study.getName()
+							+ " doesn't have an existing MEANS dataset.");
 				} else {
-					MessageNotifier.showError(this, "MEANS dataset doesn't exist", "The selected Study doesn't have an existing MEANS dataset.");
-				}				
-			}	
- 		}		
+					MessageNotifier.showError(this, "MEANS dataset doesn't exist",
+							"The selected Study doesn't have an existing MEANS dataset.");
+				}
+			}
+		}
 	}
 
-	public void queryChildrenStudies(Reference parentFolderReference,
-			TreeTable tr) {
+	public void queryChildrenStudies(Reference parentFolderReference, TreeTable tr) {
 
 		List<Reference> childrenReference = new ArrayList<Reference>();
 
 		try {
 
-			childrenReference = getStudyDataManager().getChildrenOfFolder(
-					parentFolderReference.getId(), currentProject.getUniqueID());
+			childrenReference =
+					this.getStudyDataManager().getChildrenOfFolder(parentFolderReference.getId(), this.currentProject.getUniqueID());
 
 		} catch (MiddlewareQueryException e) {
-			LOG.error(e.getMessage(), e);
-			MessageNotifier
-			.showWarning(
-					getWindow(),
-					messageSource.getMessage(Message.ERROR_DATABASE),
-					messageSource
-					.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
+			SelectStudyDialog.LOG.error(e.getMessage(), e);
+			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
+					this.messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
 		}
 
-		for (java.util.Iterator<Reference> i = childrenReference.iterator(); i
-				.hasNext();) {
+		for (java.util.Iterator<Reference> i = childrenReference.iterator(); i.hasNext();) {
 
 			Reference r = i.next();
 
@@ -355,65 +342,58 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 			try {
 				s = this.getStudyDataManager().getStudy(r.getId());
 			} catch (MiddlewareQueryException e) {
-				LOG.error(e.getMessage(), e);
+				SelectStudyDialog.LOG.error(e.getMessage(), e);
 			}
 
 			cells[0] = " " + r.getName();
-			cells[1] = (s != null) ? s.getTitle() : "";
-			cells[2] = (s != null) ? s.getObjective() : "";
+			cells[1] = s != null ? s.getTitle() : "";
+			cells[2] = s != null ? s.getObjective() : "";
 
 			tr.addItem(cells, r);
 			tr.setParent(r, parentFolderReference);
-			if (hasChildStudy(r.getId())) {
+			if (this.hasChildStudy(r.getId())) {
 				tr.setChildrenAllowed(r, true);
-				tr.setItemIcon(r, getThemeResourceByReference(r));
+				tr.setItemIcon(r, this.getThemeResourceByReference(r));
 			} else {
 				tr.setChildrenAllowed(r, false);
-				tr.setItemIcon(r, getThemeResourceByReference(r));
+				tr.setItemIcon(r, this.getThemeResourceByReference(r));
 			}
 		}
 
 	}
-	
-	private ThemeResource getThemeResourceByReference(Reference r){
-		
-		if (r instanceof FolderReference){
-			LOG.debug("r is FolderReference");
-			return folderResource;
-		}else if (r instanceof StudyReference){
-			LOG.debug("r is StudyReference");
-			return studyResource;
-		}else if (r instanceof DatasetReference){
-			LOG.debug("r is DatasetReference");
-			return dataSetResource;
-		}else{
-			return folderResource; 
+
+	private ThemeResource getThemeResourceByReference(Reference r) {
+
+		if (r instanceof FolderReference) {
+			SelectStudyDialog.LOG.debug("r is FolderReference");
+			return this.folderResource;
+		} else if (r instanceof StudyReference) {
+			SelectStudyDialog.LOG.debug("r is StudyReference");
+			return this.studyResource;
+		} else if (r instanceof DatasetReference) {
+			SelectStudyDialog.LOG.debug("r is DatasetReference");
+			return this.dataSetResource;
+		} else {
+			return this.folderResource;
 		}
-			
+
 	}
 
-	public void queryChildrenDatasets(Reference parentFolderReference,
-			TreeTable tr) throws InternationalizableException {
+	public void queryChildrenDatasets(Reference parentFolderReference, TreeTable tr) throws InternationalizableException {
 
 		List<DatasetReference> childrenReference = new ArrayList<DatasetReference>();
 
 		try {
 
-			childrenReference = getStudyDataManager().getDatasetReferences(
-					parentFolderReference.getId());
+			childrenReference = this.getStudyDataManager().getDatasetReferences(parentFolderReference.getId());
 
 		} catch (MiddlewareQueryException e) {
-			LOG.error(e.getMessage(), e);
-			MessageNotifier
-			.showWarning(
-					getWindow(),
-					messageSource.getMessage(Message.ERROR_DATABASE),
-					messageSource
-					.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
+			SelectStudyDialog.LOG.error(e.getMessage(), e);
+			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
+					this.messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
 		}
 
-		for (java.util.Iterator<DatasetReference> i = childrenReference
-				.iterator(); i.hasNext();) {
+		for (java.util.Iterator<DatasetReference> i = childrenReference.iterator(); i.hasNext();) {
 
 			Reference r = i.next();
 
@@ -424,13 +404,13 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 			cells[2] = "";
 
 			if (r instanceof DatasetReference) {
-                LOG.debug("r is DatasetReference");
-            }
+				SelectStudyDialog.LOG.debug("r is DatasetReference");
+			}
 
 			tr.addItem(cells, r);
 			tr.setParent(r, parentFolderReference);
 			tr.setChildrenAllowed(r, false);
-			tr.setItemIcon(r, getThemeResourceByReference(r));
+			tr.setItemIcon(r, this.getThemeResourceByReference(r));
 
 		}
 
@@ -441,14 +421,10 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		List<Reference> children = new ArrayList<Reference>();
 
 		try {
-			children = getStudyDataManager().getChildrenOfFolder(folderId, currentProject.getUniqueID());
+			children = this.getStudyDataManager().getChildrenOfFolder(folderId, this.currentProject.getUniqueID());
 		} catch (MiddlewareQueryException e) {
-			MessageNotifier
-			.showWarning(
-					getWindow(),
-					messageSource.getMessage(Message.ERROR_DATABASE),
-					messageSource
-					.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
+			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
+					this.messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
 			children = new ArrayList<Reference>();
 		}
 		if (!children.isEmpty()) {
@@ -458,35 +434,33 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 	}
 
 	public Boolean isFolder(Integer studyId) {
-	        try {
-	            boolean isStudy = studyDataManager.isStudy(studyId);
-	            return !isStudy;
-	        } catch (MiddlewareQueryException e) {
-                LOG.error(e.getMessage(), e);
-	        	return false;
-	        }
-	    }
+		try {
+			boolean isStudy = this.studyDataManager.isStudy(studyId);
+			return !isStudy;
+		} catch (MiddlewareQueryException e) {
+			SelectStudyDialog.LOG.error(e.getMessage(), e);
+			return false;
+		}
+	}
 
 	@Override
 	public void attach() {
 		super.attach();
-		updateLabels();
+		this.updateLabels();
 	}
-
 
 	@Override
 	public void updateLabels() {
-		if(source instanceof SingleSiteAnalysisPanel) {
-			messageSource.setCaption(this,Message.BV_STUDY_TREE_TITLE);
-			messageSource.setValue(lblStudyTreeDetailDescription,Message.BV_STUDY_TREE_DESCRIPTION);		
+		if (this.source instanceof SingleSiteAnalysisPanel) {
+			this.messageSource.setCaption(this, Message.BV_STUDY_TREE_TITLE);
+			this.messageSource.setValue(this.lblStudyTreeDetailDescription, Message.BV_STUDY_TREE_DESCRIPTION);
+		} else if (this.source instanceof MultiSiteAnalysisPanel) {
+			this.messageSource.setCaption(this, Message.GXE_SELECT_DATA_FOR_ANALYSIS_HEADER);
+			this.messageSource.setCaption(this.lblStudyTreeDetailDescription, Message.GXE_SELECT_DATA_FOR_ANALYSIS_DESCRIPTION);
 		}
-		else if(source instanceof MultiSiteAnalysisPanel) {
-			messageSource.setCaption(this, Message.GXE_SELECT_DATA_FOR_ANALYSIS_HEADER);
-			messageSource.setCaption(lblStudyTreeDetailDescription, Message.GXE_SELECT_DATA_FOR_ANALYSIS_DESCRIPTION);
-		}		
 	}
 
 	private StudyDataManagerImpl getStudyDataManager() {
-		return studyDataManager;
+		return this.studyDataManager;
 	}
 }

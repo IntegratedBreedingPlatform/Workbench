@@ -1,10 +1,10 @@
+
 package org.generationcp.browser.study.listeners;
 
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Embedded;
-import com.vaadin.ui.Window;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -21,10 +21,11 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Set;
-
-import static org.mockito.Mockito.*;
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.Window;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ViewStudyDetailsButtonClickListenerTest {
@@ -43,32 +44,31 @@ public class ViewStudyDetailsButtonClickListenerTest {
 	private HttpServletRequest request;
 
 	@InjectMocks
-	private ViewStudyDetailsButtonClickListener viewStudyListener = spy(
-			new ViewStudyDetailsButtonClickListener(STUDY_ID, STUDY_NAME));
+	private final ViewStudyDetailsButtonClickListener viewStudyListener = Mockito.spy(new ViewStudyDetailsButtonClickListener(
+			ViewStudyDetailsButtonClickListenerTest.STUDY_ID, ViewStudyDetailsButtonClickListenerTest.STUDY_NAME));
 
 	@Before
 	public void setUp() {
-		when(sessionData.getWorkbenchContextParameters())
-				.thenReturn("&loggedinUserId=1&selectedProjectId=1");
-		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+		Mockito.when(this.sessionData.getWorkbenchContextParameters()).thenReturn("&loggedinUserId=1&selectedProjectId=1");
+		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(this.request));
 
-		when(request.getScheme()).thenReturn("http");
-		when(request.getServerName()).thenReturn("my-host");
-		when(request.getServerPort()).thenReturn(18080);
+		Mockito.when(this.request.getScheme()).thenReturn("http");
+		Mockito.when(this.request.getServerName()).thenReturn("my-host");
+		Mockito.when(this.request.getServerPort()).thenReturn(18080);
 	}
 
 	@Test
 	public void testLaunchStudyDetailsWindow() throws MiddlewareQueryException {
 
-		doReturn(null).when(workbenchManager).getToolWithName(Matchers.anyString());
+		Mockito.doReturn(null).when(this.workbenchManager).getToolWithName(Matchers.anyString());
 
 		ClickEvent event = Mockito.mock(ClickEvent.class);
 		Button mockButton = Mockito.mock(Button.class);
 		Window parentWindow = new Window();
-		doReturn(parentWindow).when(mockButton).getWindow();
-		doReturn(mockButton).when(event).getComponent();
+		Mockito.doReturn(parentWindow).when(mockButton).getWindow();
+		Mockito.doReturn(mockButton).when(event).getComponent();
 
-		viewStudyListener.buttonClick(event);
+		this.viewStudyListener.buttonClick(event);
 
 		// Assert state
 		Set<Window> childWindows = parentWindow.getChildWindows();
@@ -77,17 +77,15 @@ public class ViewStudyDetailsButtonClickListenerTest {
 
 		Window studyWindow = childWindows.iterator().next();
 		Assert.assertNotNull(studyWindow.getContent());
-		Assert.assertEquals("Study Details window caption should be",
-				"Study Information: " + STUDY_NAME, studyWindow.getCaption());
+		Assert.assertEquals("Study Details window caption should be", "Study Information: "
+				+ ViewStudyDetailsButtonClickListenerTest.STUDY_NAME, studyWindow.getCaption());
 
-		Embedded embeddedResource = (Embedded)
-				studyWindow.getContent().getComponentIterator().next();
+		Embedded embeddedResource = (Embedded) studyWindow.getContent().getComponentIterator().next();
 		ExternalResource externalResource = (ExternalResource) embeddedResource.getSource();
 		String expectedStudyURL =
 				"http://my-host:18080/" + DefaultGermplasmStudyBrowserPath.STUDY_BROWSER_LINK
-						+ STUDY_ID + "?restartApplication&loggedinUserId=1&selectedProjectId=1";
-		Assert.assertEquals("URL to StudyBrowser resource should be", expectedStudyURL,
-				externalResource.getURL());
+				+ ViewStudyDetailsButtonClickListenerTest.STUDY_ID + "?restartApplication&loggedinUserId=1&selectedProjectId=1";
+		Assert.assertEquals("URL to StudyBrowser resource should be", expectedStudyURL, externalResource.getURL());
 
 	}
 
