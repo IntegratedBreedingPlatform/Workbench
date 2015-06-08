@@ -29,6 +29,7 @@
 					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "32"}'}}</p></ng-message>
 					<ng-message when="pattern"><p class="text-danger">{{'validation.variable.pattern' | translate}}</p></ng-message>
 				</ng-messages>
+				<p class="text-danger" ng-hide="vdForm.omName.$touched" ng-repeat="error in serverErrors.name">{{error}}</p>
 			</div>
 		</div>
 
@@ -40,6 +41,7 @@
 					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "32"}'}}</p>p></ng-message>
 					<ng-message when="pattern"><p class="text-danger">{{'validation.variable.pattern' | translate}}</p></ng-message>
 				</ng-messages>
+				<p class="text-danger" ng-hide="vdForm.omAlias.$touched" ng-repeat="error in serverErrors.alias">{{error}}</p>
 			</div>
 		</div>
 
@@ -50,6 +52,7 @@
 				<ng-messages for="vdForm.omDescription.$error" ng-if="editing && vdForm.$submitted || vdForm.omDescription.$touched">
 					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "255"}'}}</p></ng-message>
 				</ng-messages>
+				<p class="text-danger" ng-hide="vdForm.omDescription.$touched" ng-repeat="error in serverErrors.description">{{error}}</p>
 			</div>
 		</div>
 
@@ -60,6 +63,7 @@
 				<ng-messages for="vdForm.omProperty.$error" ng-if="editing && vdForm.$submitted">
 					<ng-message when="required"><p class="text-danger">{{'validation.variable.propertyRequired' | translate}}</p></ng-message>
 				</ng-messages>
+				<p class="text-danger" ng-hide="vdForm.omProperty.$touched" ng-repeat="error in serverErrors.propertySummary">{{error}}</p>
 			</div>
 		</div>
 
@@ -70,6 +74,7 @@
 				<ng-messages for="vdForm.omMethod.$error" ng-if="editing && vdForm.$submitted">
 					<ng-message when="required"><p class="text-danger">{{'validation.variable.methodRequired' | translate}}</p></ng-message>
 				</ng-messages>
+				<p class="text-danger" ng-hide="vdForm.omMethod.$touched" ng-repeat="error in serverErrors.methodSummary">{{error}}</p>
 			</div>
 		</div>
 
@@ -80,6 +85,7 @@
 				<ng-messages for="vdForm.omScale.$error" ng-if="editing && vdForm.$submitted">
 					<ng-message when="required"><p class="text-danger">{{'validation.variable.scaleRequired' | translate}}</p></ng-message>
 				</ng-messages>
+				<p class="text-danger" ng-hide="vdForm.omScale.$touched" ng-repeat="error in serverErrors.scale">{{error}}</p>
 			</div>
 		</div>
 
@@ -90,7 +96,7 @@
 				<ng-messages for="vdForm.omVariableTypes.$error" ng-if="vdForm.$submitted">
 					<ng-message when="emptyValue"><p class="text-danger">{{'validation.variable.variableTypeEmpty' | translate}}</p></ng-message>
 				</ng-messages>
-
+				<p class="text-danger" ng-hide="vdForm.omVariableTypes.$touched" ng-repeat="error in serverErrors.variableTypes">{{error}}</p>
 				<p class="text-warning" ng-show="editing && showTreatmentFactorAlert" >
 					{{'validation.variable.treatmentFactor' | translate }}
 				</p>
@@ -103,6 +109,7 @@
 				<om-range name="omRange" om-property="expectedRange" om-editing="editing" ng-model="model" om-numeric="showRangeWidget" om-min="model.scale.validValues.min" om-max="model.scale.validValues.max"></om-range>
 				<small ng-show="editing && model.scale.validValues">{{'validation.variable.expectedRange' | translate: model.scale.validValues}}</small>
 				<ng-messages for="vdForm.omRange.$error" ng-messages-include="range-validation-messages" multiple ng-if="vdForm.$submitted || vdForm.omRange.$touched"></ng-messages>
+				<p class="text-danger" ng-hide="vdForm.omRange.$touched" ng-repeat="error in serverErrors.expectedRange">{{error}}</p>
 			</div>
 		</div>
 		<div class="form-group">

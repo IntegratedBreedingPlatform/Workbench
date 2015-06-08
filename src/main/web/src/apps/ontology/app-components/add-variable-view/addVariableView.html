@@ -10,7 +10,7 @@
 
 	<form class="form-horizontal" name="avForm" ng-submit="saveVariable($event, variable)" novalidate>
 
-		<div ng-class="formGroupClass('omName')">
+		<div ng-class="formGroupClass('omName', 'name')">
 			<label for="omName" class="col-sm-2 control-label">{{'formField.name' | translate}}</label>
 			<div class="col-sm-7">
 				<om-input om-name="omName" om-property="name" om-adding="true" om-model="variable" om-required="true" om-max-length="32" om-pattern="^[a-zA-Z_%][a-zA-Z_%0-9]*$"></om-input>
@@ -19,20 +19,22 @@
 					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "32"}'}}</p></ng-message>
 					<ng-message when="pattern"><p class="text-danger">{{'validation.variable.pattern' | translate}}</p></ng-message>
 				</ng-messages>
+				<p class="text-danger" ng-hide="avForm.omName.$touched" ng-repeat="error in serverErrors.name">{{error}}</p>
 			</div>
 		</div>
 
-		<div ng-class="formGroupClass('omDescription')">
+		<div ng-class="formGroupClass('omDescription', 'description')">
 			<label for="omDescription" class="col-sm-2 control-label">{{'formField.description' | translate}}</label>
 			<div class="col-sm-7">
 				<om-text-area om-name="omDescription" om-property="description" om-adding="true" om-model="variable" om-max-length="255"></om-text-area>
 				<ng-messages for="avForm.omDescription.$error" ng-if="avForm.$submitted || avForm.omDescription.$touched">
 					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "255"}'}}</p></ng-message>
 				</ng-messages>
+				<p class="text-danger" ng-hide="avForm.omDescription.$touched" ng-repeat="error in serverErrors.description">{{error}}</p>
 			</div>
 		</div>
 
-		<div ng-class="formGroupClass('omProperty')">
+		<div ng-class="formGroupClass('omProperty', 'propertySummary')">
 			<label for="omProperty" class="col-sm-2 control-label">{{'formField.property' | translate}}</label>
 			<div class="col-sm-7">
 				<om-select name="omProperty" om-name="om-property" om-property="propertySummary" om-adding="true" ng-model="variable" om-options="data.properties" om-required="true"></om-select>
@@ -40,10 +42,11 @@
 				<ng-messages for="avForm.omProperty.$error" ng-if="avForm.$submitted">
 					<ng-message when="required"><p class="text-danger">{{'validation.variable.propertyRequired' | translate}}</p></ng-message>
 				</ng-messages>
+				<p class="text-danger" ng-hide="avForm.omProperty.$touched" ng-repeat="error in serverErrors.propertySummary">{{error}}</p>
 			</div>
 		</div>
 
-		<div ng-class="formGroupClass('omMethod')">
+		<div ng-class="formGroupClass('omMethod', 'methodSummary')">
 			<label for="omMethod" class="col-sm-2 control-label">{{'formField.method' | translate}}</label>
 			<div class="col-sm-7">
 				<om-select name="omMethod" om-name="om-method" om-property="methodSummary" om-adding="true" ng-model="variable" om-options="data.methods" om-required="true"></om-select>
@@ -51,10 +54,11 @@
 				<ng-messages for="avForm.omMethod.$error" ng-if="avForm.$submitted">
 					<ng-message when="required"><p class="text-danger">{{'validation.variable.methodRequired' | translate}}</p></ng-message>
 				</ng-messages>
+				<p class="text-danger" ng-hide="avForm.omMethod.$touched" ng-repeat="error in serverErrors.methodSummary">{{error}}</p>
 			</div>
 		</div>
 
-		<div ng-class="formGroupClass('omScale')">
+		<div ng-class="formGroupClass('omScale', 'scale')">
 			<label for="omScale" class="col-sm-2 control-label">{{'formField.scale' | translate}}</label>
 			<div class="col-sm-7">
 				<om-select name="omScale" om-name="om-scale" om-property="scale" om-adding="true" ng-model="variable" om-options="data.scales" om-required="true"></om-select>
@@ -62,28 +66,31 @@
 				<ng-messages for="avForm.omScale.$error" ng-if="avForm.$submitted">
 					<ng-message when="required"><p class="text-danger">{{'validation.variable.scaleRequired' | translate}}</p></ng-message>
 				</ng-messages>
+				<p class="text-danger" ng-hide="avForm.omScale.$touched" ng-repeat="error in serverErrors.scale">{{error}}</p>
 			</div>
 		</div>
 
-		<div ng-class="formGroupClass('omVariableTypes')">
+		<div ng-class="formGroupClass('omVariableTypes', 'variableTypes')">
 			<label for="omVariableTypes" class="col-sm-2 control-label">{{'formField.variableType' | translate}}</label>
 			<div class="col-sm-7">
 				<om-multi-select name="omVariableTypes" om-name="om-type" om-property="variableTypes" om-adding="true" ng-model="variable" om-options="data.types"></om-multi-select>
 				<ng-messages for="avForm.omVariableTypes.$error" ng-if="avForm.$submitted">
 					<ng-message when="emptyValue"><p class="text-danger">{{'validation.variable.variableTypeEmpty' | translate}}</p></ng-message>
 				</ng-messages>
+				<p class="text-danger" ng-hide="avForm.omVariableTypes.$touched" ng-repeat="error in serverErrors.variableTypes">{{error}}</p>
 				<p class="text-warning" ng-show="showTreatmentFactorAlert">
 					{{'validation.variable.treatmentFactor' | translate }}
 				</p>
 			</div>
 		</div>
 
-		<div ng-class="formGroupClass('omRange')" ng-show="showRangeWidget">
+		<div ng-class="formGroupClass('omRange', 'expectedRange')" ng-show="showRangeWidget">
 			<label for="omRange" class="col-sm-2 control-label">{{'addNew.variable.expectedRange' | translate}}</label>
 			<div class="col-sm-7">
 				<om-range name="omRange" om-property="expectedRange" om-adding="true" ng-model="variable" om-numeric="showRangeWidget" om-min="variable.scale.validValues.min" om-max="variable.scale.validValues.max"></om-range>
 				<small ng-show="variable.scale.validValues">{{'validation.variable.expectedRange' | translate: variable.scale.validValues}}</small>
 				<ng-messages for="avForm.omRange.$error" ng-messages-include="range-validation-messages" multiple ng-if="avForm.$submitted || avForm.omRange.$touched"></ng-messages>
+				<p class="text-danger" ng-hide="avForm.omRange.$touched" ng-repeat="error in serverErrors.expectedRange">{{error}}</p>
 			</div>
 		</div>
 
