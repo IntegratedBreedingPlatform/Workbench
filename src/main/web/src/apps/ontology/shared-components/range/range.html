@@ -1,20 +1,22 @@
 <ng-form class="form-inline" name="rangeForm" ng-show="editable()">
 	<div class="row">
-		<div class="col-sm-3" ng-class="formParentHasError('omRangeMin', 'validValues.min')">
+		<div class="col-sm-3" ng-class="formParentHasError('omRangeMin', 'validValues.min') + formParentHasError('omRangeMin', 'expectedRange.min')">
 			<input class="form-control" type="number" name="omRangeMin" ng-model="model[property].min" placeholder="{{'range.edit.min' | translate}}" min="-9999999999" max="999999999"></input>
 				<ng-messages for="rangeForm.omRangeMin.$error" ng-if="rangeForm.$submitted || rangeForm.omRangeMin.$touched">
 					<ng-message when="min"><p class="text-danger">{{'validation.numTooSmall' | translate:'{min: "-9999999999"}'}}</p></ng-message>
 					<ng-message when="max"><p class="text-danger">{{'validation.numTooBig' | translate:'{max: "999999999"}'}}</p></ng-message>
 				</ng-messages>
 			<p class="text-danger" ng-hide="rangeForm.omRangeMin.$touched" ng-repeat="error in $parent.serverErrors['validValues.min']">{{error}}</p>
+			<p class="text-danger" ng-hide="rangeForm.omRangeMin.$touched" ng-repeat="error in $parent.serverErrors['expectedRange.min']">{{error}}</p>
 		</div>
-		<div class="col-sm-3" ng-class="formParentHasError('omRangeMax', 'validValues.max')">
+		<div class="col-sm-3" ng-class="formParentHasError('omRangeMax', 'validValues.max') + formParentHasError('omRangeMax', 'expectedRange.max')">
 			<input class="form-control" type="number" name="omRangeMax" ng-model="model[property].max" placeholder="{{'range.edit.max' | translate}}" min="-9999999999" max="999999999"></input>
 				<ng-messages for="rangeForm.omRangeMax.$error" ng-if="rangeForm.$submitted || rangeForm.omRangeMax.$touched">
 					<ng-message when="min"><p class="text-danger">{{'validation.numTooSmall' | translate:'{min: "-9999999999"}'}}</p></ng-message>
 					<ng-message when="max"><p class="text-danger">{{'validation.numTooBig' | translate:'{max: "999999999"}'}}</p></ng-message>
 				</ng-messages>
 			<p class="text-danger" ng-hide="rangeForm.omRangeMax.$touched" ng-repeat="error in $parent.serverErrors['validValues.max']">{{error}}</p>
+			<p class="text-danger" ng-hide="rangeForm.omRangeMax.$touched" ng-repeat="error in $parent.serverErrors['expectedRange.max']">{{error}}</p>
 		</div>
 	</div>
 </ng-form>
