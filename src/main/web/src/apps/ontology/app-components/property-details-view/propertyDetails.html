@@ -45,7 +45,7 @@
 			<label for="omClasses" class="col-sm-3 control-label">{{'formField.classes' | translate}}</label>
 			<div class="col-sm-9">
 				<om-tag-select name="omClasses" om-property="classes" om-editing="editing" ng-model="model" om-options="data.classes"></om-tag-select>
-				<ng-messages for="pdForm.omClasses.$error" ng-if="pdForm.$submitted">
+				<ng-messages for="pdForm.omClasses.$error" ng-if="pdForm.$submitted | pdForm.omClasses.$touched">
 					<ng-message when="emptyValue"><p class="text-danger">{{'validation.property.classesEmpty' | translate}}</p></ng-message>
 				</ng-messages>
 				<p class="text-danger" ng-hide="pdForm.omClasses.$touched" ng-repeat="error in serverErrors.classes">{{error}}</p>
@@ -56,7 +56,7 @@
 			<label for="omOntologyId" class="col-sm-3 control-label">{{'formField.ontologyId' | translate}}</label>
 			<div class="col-sm-9">
 				<om-input om-name="omOntologyId" om-label="{{'formField.ontologyId' | translate}}" om-property="cropOntologyId" om-editing="editing" om-model="model" om-max-length="200"></om-input>
-				<ng-messages for="pdForm.omOntologyId.$error" ng-if="pdForm.$submitted || pdForm.omName.$touched">
+				<ng-messages for="pdForm.omOntologyId.$error" ng-if="pdForm.$submitted || pdForm.omOntologyId.$touched">
 					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "200"}'}}</p></ng-message>
 				</ng-messages>
 				<p class="text-danger" ng-hide="pdForm.omOntologyId.$touched" ng-repeat="error in serverErrors.cropOntologyId">{{error}}</p>
