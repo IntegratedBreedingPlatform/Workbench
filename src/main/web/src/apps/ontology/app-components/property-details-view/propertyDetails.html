@@ -45,7 +45,7 @@
 			<label for="omClasses" class="col-sm-3 control-label">{{'formField.classes' | translate}}</label>
 			<div class="col-sm-9">
 				<om-tag-select name="omClasses" om-property="classes" om-editing="editing" ng-model="model" om-options="data.classes"></om-tag-select>
-				<ng-messages for="pdForm.omClasses.$error" ng-if="pdForm.$submitted | pdForm.omClasses.$touched">
+				<ng-messages for="pdForm.omClasses.$error" ng-if="pdForm.$submitted || pdForm.omClasses.$touched">
 					<ng-message when="emptyValue"><p class="text-danger">{{'validation.property.classesEmpty' | translate}}</p></ng-message>
 				</ng-messages>
 				<p class="text-danger" ng-hide="pdForm.omClasses.$touched" ng-repeat="error in serverErrors.classes">{{error}}</p>

@@ -35,7 +35,7 @@
 			<label for="omDataType" class="col-sm-2 control-label">{{'formField.dataType' | translate}}</label>
 			<div class="col-sm-7">
 				<om-select name="omDataType" om-name="om-data-type" om-property="dataType" om-adding="true" ng-model="scale" om-options="types" om-required="true"></om-select>
-				<ng-messages for="asForm.omDataType.$error" ng-if="asForm.$submitted">
+				<ng-messages for="asForm.omDataType.$error" ng-if="asForm.$submitted || asForm.omDataType.$touched">
 					<ng-message when="required"><p class="text-danger">{{'validation.scale.dataTypeRequired' | translate}}</p></ng-message>
 				</ng-messages>
 				<p class="text-danger" ng-hide="asForm.omDataType.$touched" ng-repeat="error in serverErrors.dataType">{{error}}</p>
@@ -57,7 +57,7 @@
 				<label for="omCategories" class="col-sm-2 control-label">{{'addNew.scale.categories' | translate}}</label>
 				<div class="col-sm-7">
 					<om-categories name="omCategories" om-property="validValues" om-adding="true" ng-model="scale" om-categorical="showCategoriesWidget"></om-categories>
-					<ng-messages for="asForm.omCategories.$error" ng-if="asForm.$submitted">
+					<ng-messages for="asForm.omCategories.$error" ng-if="asForm.$submitted || asForm.omCategories.$touched">
 						<ng-message when="emptyValue"><p class="text-danger">{{'validation.scale.emptyValue' | translate}}</p></ng-message>
 						<ng-message when="nonUniqueName"><p class="text-danger">{{'validation.scale.nonUniqueName' | translate}}</p></ng-message>
 						<ng-message when="nonUniqueValue"><p class="text-danger">{{'validation.scale.nonUniqueValue' | translate}}</p></ng-message>
