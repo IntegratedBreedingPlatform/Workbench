@@ -16,7 +16,7 @@
 		<div ng-if="showNoneditableFieldsAlert" class="alert alert-warning" role="alert">
 			<span>{{'validation.variable.noneditableFields' | translate }}</span>
 		</div>
-		<div ng-class="formGroupClass('omName')">
+		<div ng-class="formGroupClass('omName', 'name')">
 			<label for="omName" class="col-sm-3 control-label">{{'formField.name' | translate}}</label>
 			<div class="col-sm-9">
 				<om-input om-name="omName" om-property="name" om-editing="editing" om-model="model" om-required="true" om-max-length="32" om-pattern="^[a-zA-Z_%][a-zA-Z_%0-9]*$"></om-input>
@@ -28,18 +28,18 @@
 			</div>
 		</div>
 
-		<div ng-class="formGroupClass('omAlias')" ng-show="showAlias()">
+		<div ng-class="formGroupClass('omAlias', 'alias')" ng-show="showAlias()">
 			<label for="omAlias" class="col-sm-3 control-label">{{'formField.alias' | translate}}</label>
 			<div class="col-sm-9">
 				<om-input om-name="omAlias" om-property="alias" om-editing="editing" om-model="model" om-max-length="32" om-pattern="^[a-zA-Z_%][a-zA-Z_%0-9]*$"></om-input>
 				<ng-messages for="vdForm.omAlias.$error" ng-if="editing && vdForm.$submitted || vdForm.omAlias.$touched">
-					<ng-message when="maxlength">{{'validation.tooLong' | translate:'{maxLength: "32"}'}}</ng-message>
-					<ng-message when="pattern">{{'validation.variable.pattern' | translate}}</ng-message>
+					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "32"}'}}</p>p></ng-message>
+					<ng-message when="pattern"><p class="text-danger">{{'validation.variable.pattern' | translate}}</p></ng-message>
 				</ng-messages>
 			</div>
 		</div>
 
-		<div ng-class="formGroupClass('omDescription')">
+		<div ng-class="formGroupClass('omDescription', 'description')">
 			<label for="omDescription" class="col-sm-3 control-label">{{'formField.description' | translate}}</label>
 			<div class="col-sm-9">
 				<om-text-area om-name="omDescription" om-property="description" om-editing="editing" om-model="model" om-max-length="255"></om-text-area>
@@ -49,7 +49,7 @@
 			</div>
 		</div>
 
-		<div ng-class="formGroupClass('omProperty')">
+		<div ng-class="formGroupClass('omProperty', 'propertySummary')">
 			<label for="omProperty" class="col-sm-3 control-label">{{'formField.property' | translate}}</label>
 			<div class="col-sm-9">
 				<om-select name="omProperty" om-name="om-property" om-property="propertySummary" om-editing="editing" ng-model="model" om-options="data.properties" om-required="true"></om-select>
@@ -59,7 +59,7 @@
 			</div>
 		</div>
 
-		<div ng-class="formGroupClass('omMethod')">
+		<div ng-class="formGroupClass('omMethod', 'methodSummary')">
 			<label for="omMethod" class="col-sm-3 control-label">{{'formField.method' | translate}}</label>
 			<div class="col-sm-9">
 				<om-select name="omMethod" om-name="om-method" om-property="methodSummary" om-editing="editing" ng-model="model" om-options="data.methods" om-required="true"></om-select>
@@ -69,7 +69,7 @@
 			</div>
 		</div>
 
-		<div ng-class="formGroupClass('omScale')">
+		<div ng-class="formGroupClass('omScale', 'scale')">
 			<label for="omScale" class="col-sm-3 control-label">{{'formField.scale' | translate}}</label>
 			<div class="col-sm-9">
 				<om-select name="omScale" om-name="om-scale" om-property="scale" om-editing="editing" ng-model="model" om-options="data.scales" om-required="true"></om-select>
@@ -79,7 +79,7 @@
 			</div>
 		</div>
 
-		<div ng-class="formGroupClass('omVariableTypes')">
+		<div ng-class="formGroupClass('omVariableTypes', 'variableTypes')">
 			<label for="omVariableTypes" class="col-sm-3 control-label">{{'formField.variableType' | translate}}</label>
 			<div class="col-sm-9">
 				<om-multi-select name="omVariableTypes" om-name="om-type" om-property="variableTypes" om-editing="editing" ng-model="model" om-options="data.types"></om-multi-select>
@@ -93,7 +93,7 @@
 			</div>
 		</div>
 
-		<div ng-class="formGroupClass('omRange')" ng-show="showRangeWidget">
+		<div ng-class="formGroupClass('omRange', 'expectedRange')" ng-show="showRangeWidget">
 			<label for="omRange" class="col-sm-3 control-label">{{'variablesList.details.expectedRange' | translate}}</label>
 			<div class="col-sm-9">
 				<om-range name="omRange" om-property="expectedRange" om-editing="editing" ng-model="model" om-numeric="showRangeWidget" om-min="model.scale.validValues.min" om-max="model.scale.validValues.max"></om-range>
