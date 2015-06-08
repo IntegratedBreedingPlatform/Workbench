@@ -85,6 +85,11 @@
 						$scope.variableId = selected && selected.id || null;
 					}, true);
 
+					function resetSubmissionState() {
+						$scope.submitted = false;
+						$scope.showThrobber = false;
+					}
+
 					$scope.showAlias = function() {
 						var aliasHasValue = $scope.model && $scope.model.alias && $scope.model.alias !== '',
 							aliasIsEditable = $scope.model && $scope.model.metadata && $scope.model.metadata.editableFields &&
@@ -148,13 +153,12 @@
 								$scope.updateSelectedVariable(model);
 
 								$scope.editing = false;
-								$scope.submitted = false;
-								$scope.showThrobber = false;
+								resetSubmissionState();
 								$scope.variableName = model.name;
 							}, function(response) {
 								$scope.vdForm.$setUntouched();
 								$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
-								$scope.submitted = false;
+								resetSubmissionState();
 							});
 						}
 					};
