@@ -7,13 +7,6 @@
 	app.factory('serviceUtilities', ['$q', function($q) {
 
 		return {
-			genericAndRatherUselessErrorHandler: function(error) {
-				/* istanbul ignore else */
-				if (console) {
-					console.log(error);
-				}
-			},
-
 			formatErrorsForDisplay: function(response) {
 
 				var errors = response.errors,

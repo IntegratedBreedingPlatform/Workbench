@@ -27,21 +27,6 @@ describe('Utilities Service', function() {
 	});
 
 	describe('Service Utilities', function() {
-
-		describe('genericAndRatherUselessErrorHandler', function() {
-
-			it('should print an error message', function() {
-
-				var error = 'this is an error message';
-
-				spyOn(console, 'log');
-
-				serviceUtilities.genericAndRatherUselessErrorHandler(error);
-
-				expect(console.log).toHaveBeenCalledWith(error);
-			});
-		});
-
 		describe('formatErrorsForDisplay', function() {
 
 			it('should return an empty array if there are no errors', function() {
