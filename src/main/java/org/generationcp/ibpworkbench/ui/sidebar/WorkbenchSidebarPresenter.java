@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  * Created with IntelliJ IDEA. User: cyrus Date: 11/19/13 Time: 7:29 PM To change this template use File | Settings | File Templates.
@@ -41,10 +42,11 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 	@Autowired
 	private SessionData sessionData;
 
+	@Value("${workbench.is.backup.and.restore.enabled}")
+	private String isBackupAndRestoreEnabled;
+
 	public WorkbenchSidebarPresenter(WorkbenchSidebar view) {
 		this.view = view;
-
-	}
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -91,9 +93,12 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 		return sidebarLinks;
 	}
 
-	private void addAdminCategoryLinks(List<WorkbenchSidebarCategoryLink> categoryLinks, WorkbenchSidebarCategory category)
+	protected void addAdminCategoryLinks(List<WorkbenchSidebarCategoryLink> categoryLinks, WorkbenchSidebarCategory category)
 			throws MiddlewareQueryException {
 		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "manage_program", "Manage Program Settings"));
+		if (this.isBackupAndRestoreEnabled != null && Boolean.valueOf(this.isBackupAndRestoreEnabled)) {
+			categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "recovery", "Backup and Restore Program Data"));
+		}
 		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "user_tools", "Manage User-Added Tools"));
 		categoryLinks.add(new WorkbenchSidebarCategoryLink(this.manager.getToolWithName(ToolEnum.DATASET_IMPORTER.getToolName()), category,
 				ToolEnum.DATASET_IMPORTER.getToolName(), "Data Import Tool"));
@@ -147,4 +152,13 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 			WorkbenchSidebarPresenter.LOG.error(e.toString(), e);
 		}
 	}
+
+	public void setIsBackupAndRestoreEnabled(String isBackupAndRestoreEnabled) {
+		this.isBackupAndRestoreEnabled = isBackupAndRestoreEnabled;
+	}
+
+	public void setManager(WorkbenchDataManager manager) {
+		this.manager = manager;
+	}
+
 }
