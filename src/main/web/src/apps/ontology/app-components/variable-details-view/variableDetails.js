@@ -58,19 +58,27 @@
 
 					propertiesService.getProperties().then(function(properties) {
 						$scope.data.properties = properties;
-					}, serviceUtilities.genericAndRatherUselessErrorHandler);
+					}, function(response) {
+						$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+					});
 
 					methodsService.getMethods().then(function(methods) {
 						$scope.data.methods = methods;
-					}, serviceUtilities.genericAndRatherUselessErrorHandler);
+					}, function(response) {
+						$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+					});
 
 					scalesService.getScales().then(function(scales) {
 						$scope.data.scales = scales;
-					}, serviceUtilities.genericAndRatherUselessErrorHandler);
+					}, function(response) {
+						$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+					});
 
 					variableTypesService.getTypes().then(function(types) {
 						$scope.data.types = types;
-					}, serviceUtilities.genericAndRatherUselessErrorHandler);
+					}, function(response) {
+						$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+					});
 
 					$scope.$watch('selectedItem', function(selected) {
 						$scope.variableId = selected && selected.id || null;
@@ -142,7 +150,11 @@
 								$scope.submitted = false;
 								$scope.showThrobber = false;
 								$scope.variableName = model.name;
-							}, serviceUtilities.genericAndRatherUselessErrorHandler);
+							}, function(response) {
+								$scope.vdForm.$setUntouched();
+								$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+								$scope.submitted = false;
+							});
 						}
 					};
 

@@ -9,7 +9,7 @@ describe('Variable details directive', function() {
 			hidePanel: function() {}
 		},
 		serviceUtilities = {
-			genericAndRatherUselessErrorHandler: function() {}
+			formatErrorsForDisplay: function() {}
 		},
 
 		PLANT_VIGOR = {
@@ -129,7 +129,7 @@ describe('Variable details directive', function() {
 		spyOn(variableTypesService, 'getTypes').and.callThrough();
 		spyOn(variablesService, 'updateVariable').and.callThrough();
 		spyOn(variablesService, 'deleteVariable').and.callThrough();
-		spyOn(serviceUtilities, 'genericAndRatherUselessErrorHandler');
+		spyOn(serviceUtilities, 'formatErrorsForDisplay');
 		spyOn(panelService, 'hidePanel');
 
 		compileDirective();
@@ -224,7 +224,7 @@ describe('Variable details directive', function() {
 		it('should handle any errors if retrieving the properties was not successful', function() {
 			deferredGetProperties.reject();
 			scope.$apply();
-			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
+			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
 		});
 
 		it('should set data.properties to the returned properties after a successful update', function() {
@@ -243,7 +243,7 @@ describe('Variable details directive', function() {
 		it('should handle any errors if retrieving the methods was not successful', function() {
 			deferredGetMethods.reject();
 			scope.$apply();
-			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
+			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
 		});
 
 		it('should set data.methods to the returned methods after a successful update', function() {
@@ -262,7 +262,7 @@ describe('Variable details directive', function() {
 		it('should handle any errors if retrieving the scales was not successful', function() {
 			deferredGetScales.reject();
 			scope.$apply();
-			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
+			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
 		});
 
 		it('should set data.scales to the returned scales after a successful update', function() {
@@ -281,7 +281,7 @@ describe('Variable details directive', function() {
 		it('should handle any errors if retrieving the variable types was not successful', function() {
 			deferredGetTypes.reject();
 			scope.$apply();
-			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
+			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
 		});
 
 		it('should set data.types to the returned variable types after a successful update', function() {
@@ -444,7 +444,7 @@ describe('Variable details directive', function() {
 			deferredUpdateVariable.reject();
 			scope.$apply();
 
-			expect(serviceUtilities.genericAndRatherUselessErrorHandler).toHaveBeenCalled();
+			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
 		});
 
 		it('should set editing to false after a successful update', function() {

@@ -12,7 +12,11 @@
 	</div>
 
 	<div class="om-details-content">
-
+		<div ng-if="serverErrors.general" class="alert alert-danger" role="alert">
+			<ul>
+				<li ng-repeat="error in serverErrors.general">{{error}}</li>
+			</ul>
+		</div>
 		<div ng-if="showNoneditableFieldsAlert" class="alert alert-warning" role="alert">
 			<span>{{'validation.variable.noneditableFields' | translate }}</span>
 		</div>
