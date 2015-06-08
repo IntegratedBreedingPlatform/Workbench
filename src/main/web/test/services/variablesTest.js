@@ -36,7 +36,6 @@ describe('Variables Service', function() {
 
 		CONVERTED_PLANT_VIGOR = {
 			name: PLANT_VIGOR.name,
-			alias: '',
 			description: PLANT_VIGOR.description,
 			propertySummary: PLANT_VIGOR.propertySummary,
 			methodSummary: PLANT_VIGOR.methodSummary,

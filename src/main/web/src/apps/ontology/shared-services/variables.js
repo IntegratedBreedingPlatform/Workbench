@@ -22,7 +22,7 @@
 						description: variable.methodSummary.description
 					},
 					scaleSummary: variable.scale,
-					alias: variable.alias ? variable.alias : ''
+					alias: variable.alias
 				},
 				propertiesToInclude = [
 					'name',
