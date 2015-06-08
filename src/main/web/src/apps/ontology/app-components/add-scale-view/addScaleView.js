@@ -36,7 +36,6 @@
 								$window.history.back();
 							});
 						} else {
-							// FIXME Go somewhere more useful
 							$location.path('/scales');
 						}
 					}, function(response) {

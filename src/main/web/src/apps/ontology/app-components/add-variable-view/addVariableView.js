@@ -78,7 +78,6 @@
 
 					variablesService.addVariable(variable).then(function() {
 						variableStateService.reset();
-						// FIXME Go somewhere more useful
 						$location.path('/variables');
 					}, function(response) {
 						$scope.avForm.$setUntouched();

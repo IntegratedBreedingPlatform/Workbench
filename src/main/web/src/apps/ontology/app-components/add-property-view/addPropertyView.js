@@ -39,7 +39,6 @@
 								$window.history.back();
 							});
 						} else {
-							// FIXME Go somewhere more useful
 							$location.path('/properties');
 						}
 					}, function(response) {
