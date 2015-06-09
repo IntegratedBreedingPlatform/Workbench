@@ -147,6 +147,9 @@
 								}
 							}, DELAY);
 
+							if (model.alias && model.alias !== '') {
+								model.favourite = true;
+							}
 							variablesService.updateVariable(id, model).then(function() {
 
 								// Update variable on parent scope if we succeeded

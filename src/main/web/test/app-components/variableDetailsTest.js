@@ -417,6 +417,13 @@ describe('Variable details directive', function() {
 			expect(variablesService.updateVariable).toHaveBeenCalledWith(PLANT_VIGOR.id, PLANT_VIGOR);
 		});
 
+		it('should favourite the variable if alias is set for it', function() {
+			PLANT_VIGOR.alias = 'test';
+			scope.model = PLANT_VIGOR;
+			scope.saveChanges(fakeEvent, PLANT_VIGOR.id, scope.model);
+			expect(scope.model.favourite).toBe(true);
+		});
+
 		it('should not call the variables service if the form is not valid', function() {
 			// Set the form to be invalid
 			scope.vdForm.$valid = false;
