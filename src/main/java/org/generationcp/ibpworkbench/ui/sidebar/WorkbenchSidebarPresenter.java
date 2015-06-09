@@ -47,6 +47,7 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 
 	public WorkbenchSidebarPresenter(WorkbenchSidebar view) {
 		this.view = view;
+	}
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
