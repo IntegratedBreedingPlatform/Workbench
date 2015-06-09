@@ -9,6 +9,9 @@
 		function($scope, $location, $window, propertiesService, variableStateService, propertyFormService, serviceUtilities,
 			formUtilities) {
 
+			var ADD_VARIABLE_PATH = '/add/variable',
+				PROPERTIES_PATH = '/properties';
+
 			$scope.property = {
 				classes: []
 			};
@@ -36,10 +39,10 @@
 						property.id = response.id;
 						if (variableStateService.updateInProgress()) {
 							variableStateService.setProperty(property.id, property.name).finally(function() {
-								$window.history.back();
+								$location.path(ADD_VARIABLE_PATH);
 							});
 						} else {
-							$location.path('/properties');
+							$location.path(PROPERTIES_PATH);
 						}
 					}, function(response) {
 						$scope.apForm.$setUntouched();
@@ -50,8 +53,10 @@
 			};
 
 			$scope.cancel = function(e) {
+				var path = variableStateService.updateInProgress() ? ADD_VARIABLE_PATH : PROPERTIES_PATH;
+
 				e.preventDefault();
-				formUtilities.cancelAddHandler($scope, !propertyFormService.formEmpty($scope.property));
+				formUtilities.cancelAddHandler($scope, !propertyFormService.formEmpty($scope.property), path);
 			};
 
 			$scope.formGroupClass = formUtilities.formGroupClassGenerator($scope, 'apForm');
@@ -60,6 +65,7 @@
 
 	app.factory('propertyFormService', [function() {
 		return {
+			//TODO: fix logic
 			formEmpty: function(model) {
 				return !!!model.name &&
 					!!!model.description &&

@@ -123,32 +123,34 @@ describe('Add Method View', function() {
 			expect(location.path).toHaveBeenCalledWith('/methods');
 		});
 
-		it('should set the method on the variable and go back after a successful save, if a variable is being edited', function() {
+		it('should set the method on the variable and go back to add variable after a successful save, if a variable is being edited',
+			function() {
 
-			var deferred;
+				var deferred;
 
-			variableStateService.setMethod = function() {
-				deferred = q.defer();
-				return deferred.promise;
-			};
+				variableStateService.setMethod = function() {
+					deferred = q.defer();
+					return deferred.promise;
+				};
 
-			// Variable edit is in progress
-			spyOn(variableStateService, 'updateInProgress').and.returnValue(true);
-			spyOn(variableStateService, 'setMethod').and.callThrough();
-			spyOn(window.history, 'back');
+				// Variable edit is in progress
+				spyOn(variableStateService, 'updateInProgress').and.returnValue(true);
+				spyOn(variableStateService, 'setMethod').and.callThrough();
+				spyOn(location, 'path');
 
-			// Successful save
-			scope.saveMethod(fakeEvent, CUT_AND_DRY);
-			deferredAddMethod.resolve({id: '1'});
-			scope.$apply();
+				// Successful save
+				scope.saveMethod(fakeEvent, CUT_AND_DRY);
+				deferredAddMethod.resolve({id: '1'});
+				scope.$apply();
 
-			// Successfully set the method
-			deferred.resolve();
-			scope.$apply();
+				// Successfully set the method
+				deferred.resolve();
+				scope.$apply();
 
-			expect(variableStateService.setMethod).toHaveBeenCalledWith(CUT_AND_DRY.id, CUT_AND_DRY.name);
-			expect(window.history.back).toHaveBeenCalled();
-		});
+				expect(variableStateService.setMethod).toHaveBeenCalledWith(CUT_AND_DRY.id, CUT_AND_DRY.name);
+				expect(location.path).toHaveBeenCalledWith('/add/variable');
+			}
+		);
 
 		it('should handle any errors and set the form to untouched if the save was not successful', function() {
 			spyOn(scope.amForm, '$setUntouched');
@@ -178,6 +180,22 @@ describe('Add Method View', function() {
 			scope.cancel(fakeEvent);
 
 			expect(formUtilities.cancelAddHandler).toHaveBeenCalled();
+		});
+
+		it('should set the path to add variable if a variable is in the process of being added', function() {
+			spyOn(variableStateService, 'updateInProgress').and.returnValue(true);
+			spyOn(formUtilities, 'cancelAddHandler');
+
+			scope.cancel(fakeEvent);
+			expect(formUtilities.cancelAddHandler).toHaveBeenCalledWith(scope, false, '/add/variable');
+		});
+
+		it('should set the path to the methods list if there is no variable add in progress', function() {
+			spyOn(variableStateService, 'updateInProgress').and.returnValue(false);
+			spyOn(formUtilities, 'cancelAddHandler');
+
+			scope.cancel(fakeEvent);
+			expect(formUtilities.cancelAddHandler).toHaveBeenCalledWith(scope, false, '/methods');
 		});
 	});
 

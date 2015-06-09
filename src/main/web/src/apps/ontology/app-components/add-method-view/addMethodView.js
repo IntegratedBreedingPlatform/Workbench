@@ -8,6 +8,9 @@
 		'serviceUtilities', 'formUtilities', function($scope, $location, $window, methodsService, methodFormService, variableStateService,
 			serviceUtilities, formUtilities) {
 
+			var ADD_VARIABLE_PATH = '/add/variable',
+				METHODS_PATH = '/methods';
+
 			$scope.method = {};
 
 			$scope.saveMethod = function(e, method) {
@@ -25,10 +28,10 @@
 						if (variableStateService.updateInProgress()) {
 
 							variableStateService.setMethod(method.id, method.name).finally(function() {
-								$window.history.back();
+								$location.path(ADD_VARIABLE_PATH);
 							});
 						} else {
-							$location.path('/methods');
+							$location.path(METHODS_PATH);
 						}
 					}, function(response) {
 						$scope.amForm.$setUntouched();
@@ -39,8 +42,10 @@
 			};
 
 			$scope.cancel = function(e) {
+				var path = variableStateService.updateInProgress() ? ADD_VARIABLE_PATH : METHODS_PATH;
+
 				e.preventDefault();
-				formUtilities.cancelAddHandler($scope, !methodFormService.formEmpty($scope.method));
+				formUtilities.cancelAddHandler($scope, !methodFormService.formEmpty($scope.method), path);
 			};
 
 			$scope.formGroupClass = formUtilities.formGroupClassGenerator($scope, 'amForm');

@@ -9,6 +9,9 @@
 		function($scope, $location, $window, dataTypesService, scalesService, variableStateService, scaleFormService, serviceUtilities,
 			formUtilities) {
 
+			var ADD_VARIABLE_PATH = '/add/variable',
+				SCALES_PATH = '/scales';
+
 			$scope.scale = {};
 
 			// Reset server errors
@@ -33,10 +36,10 @@
 						scale.id = response.id;
 						if (variableStateService.updateInProgress()) {
 							variableStateService.setScale(scale.id, scale.name).finally(function() {
-								$window.history.back();
+								$location.path(ADD_VARIABLE_PATH);
 							});
 						} else {
-							$location.path('/scales');
+							$location.path(SCALES_PATH);
 						}
 					}, function(response) {
 						$scope.asForm.$setUntouched();
@@ -47,8 +50,10 @@
 			};
 
 			$scope.cancel = function(e) {
+				var path = variableStateService.updateInProgress() ? ADD_VARIABLE_PATH : SCALES_PATH;
+
 				e.preventDefault();
-				formUtilities.cancelAddHandler($scope, !scaleFormService.formEmpty($scope.scale));
+				formUtilities.cancelAddHandler($scope, !scaleFormService.formEmpty($scope.scale), path);
 			};
 
 			$scope.formGroupClass = formUtilities.formGroupClassGenerator($scope, 'asForm');

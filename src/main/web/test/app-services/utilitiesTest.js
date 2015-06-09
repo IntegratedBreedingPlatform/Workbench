@@ -6,6 +6,7 @@ describe('Utilities Service', function() {
 		formUtilities,
 		collectionUtilities,
 		mathUtilities,
+		location,
 		rootScope,
 		window,
 		timeout,
@@ -14,11 +15,12 @@ describe('Utilities Service', function() {
 	beforeEach(module('utilities'));
 
 	beforeEach(function() {
-		inject(function(_serviceUtilities_, _formUtilities_, _collectionUtilities_, _mathUtilities_, $q, $rootScope, $window, $timeout) {
+		inject(function(_serviceUtilities_, _formUtilities_, _collectionUtilities_, _mathUtilities_, $location, $q, $rootScope, $window, $timeout) {
 			serviceUtilities = _serviceUtilities_;
 			formUtilities = _formUtilities_;
 			collectionUtilities = _collectionUtilities_;
 			mathUtilities = _mathUtilities_;
+			location = $location;
 			q = $q;
 			rootScope = $rootScope;
 			window = $window;
@@ -85,7 +87,7 @@ describe('Utilities Service', function() {
 				var response = {
 						data: 'some data'
 					},
-				result;
+					result;
 
 				result = serviceUtilities.restSuccessHandler(response);
 
@@ -98,8 +100,7 @@ describe('Utilities Service', function() {
 			it('should return filtered scales from the response', function() {
 
 				var response = {
-					data: [
-					{
+					data: [{
 						name: 'Test1_Nonfiltered',
 						dataType: {
 							id: 1120,
@@ -327,7 +328,8 @@ describe('Utilities Service', function() {
 
 		describe('cancelAddHandler', function() {
 
-			var confirmation;
+			var PATH = '/path',
+				confirmation;
 
 			beforeEach(function() {
 				formUtilities.confirmationHandler = function() {
@@ -335,35 +337,33 @@ describe('Utilities Service', function() {
 					return confirmation.promise;
 				};
 
-				formUtilities.goBack = function() {};
-
 				spyOn(formUtilities, 'confirmationHandler').and.callThrough();
-				spyOn(formUtilities, 'goBack');
+				spyOn(location, 'path');
 			});
 
-			it('should immediately go back if the form is empty', function() {
-				formUtilities.cancelAddHandler({}, false);
-				expect(formUtilities.goBack).toHaveBeenCalled();
+			it('should immediately go to the passed in location if the form is empty', function() {
+				formUtilities.cancelAddHandler({}, false, PATH);
+				expect(location.path).toHaveBeenCalledWith(PATH);
 			});
 
 			it('should set up a confirmation handler if the form is not empty', function() {
 				var scope = {
 						prop: 'some scope'
 					};
-				formUtilities.cancelAddHandler(scope, true);
+				formUtilities.cancelAddHandler(scope, true, '');
 				expect(formUtilities.confirmationHandler).toHaveBeenCalledWith(scope);
 			});
 
-			it('should go back when the confirmation is recieved', function() {
+			it('should go to the passed in location when the confirmation is recieved', function() {
 				var scope = {
 						prop: 'some scope'
 					};
-				formUtilities.cancelAddHandler(scope, true);
+				formUtilities.cancelAddHandler(scope, true, PATH);
 
 				confirmation.resolve();
 				rootScope.$apply();
 
-				expect(formUtilities.goBack).toHaveBeenCalled();
+				expect(location.path).toHaveBeenCalledWith(PATH);
 			});
 		});
 
@@ -490,14 +490,6 @@ describe('Utilities Service', function() {
 			});
 		});
 
-		describe('goBack', function() {
-			it('should load the previous url', function() {
-				spyOn(window.history, 'back').and.callThrough();
-
-				formUtilities.goBack();
-				expect(window.history.back).toHaveBeenCalled();
-			});
-		});
 	});
 
 	describe('Service Utilities', function() {

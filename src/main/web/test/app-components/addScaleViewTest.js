@@ -192,32 +192,34 @@ describe('Add Scale View', function() {
 			expect(location.path).toHaveBeenCalledWith('/scales');
 		});
 
-		it('should set the scale on the variable and go back after a successful save, if a variable is being edited', function() {
+		it('should set the scale on the variable and go back to add variable after a successful save, if a variable is being edited',
+			function() {
 
-			var deferredSetScale;
+				var deferredSetScale;
 
-			variableStateService.setScale = function() {
-				deferredSetScale = q.defer();
-				return deferredSetScale.promise;
-			};
+				variableStateService.setScale = function() {
+					deferredSetScale = q.defer();
+					return deferredSetScale.promise;
+				};
 
-			// Variable edit is in progress
-			spyOn(variableStateService, 'updateInProgress').and.returnValue(true);
-			spyOn(variableStateService, 'setScale').and.callThrough();
-			spyOn(window.history, 'back');
+				// Variable edit is in progress
+				spyOn(variableStateService, 'updateInProgress').and.returnValue(true);
+				spyOn(variableStateService, 'setScale').and.callThrough();
+				spyOn(location, 'path');
 
-			// Successful save
-			scope.saveScale(fakeEvent, PERCENTAGE);
-			deferredAddScale.resolve({id: '1'});
-			scope.$apply();
+				// Successful save
+				scope.saveScale(fakeEvent, PERCENTAGE);
+				deferredAddScale.resolve({id: '1'});
+				scope.$apply();
 
-			// Successfully set the scale
-			deferredSetScale.resolve();
-			scope.$apply();
+				// Successfully set the scale
+				deferredSetScale.resolve();
+				scope.$apply();
 
-			expect(variableStateService.setScale).toHaveBeenCalledWith(PERCENTAGE.id, PERCENTAGE.name);
-			expect(window.history.back).toHaveBeenCalled();
-		});
+				expect(variableStateService.setScale).toHaveBeenCalledWith(PERCENTAGE.id, PERCENTAGE.name);
+				expect(location.path).toHaveBeenCalledWith('/add/variable');
+			}
+		);
 	});
 
 	describe('$scope.cancel', function() {
@@ -235,6 +237,22 @@ describe('Add Scale View', function() {
 			scope.cancel(fakeEvent);
 
 			expect(formUtilities.cancelAddHandler).toHaveBeenCalled();
+		});
+
+		it('should set the path to add variable if a variable is in the process of being added', function() {
+			spyOn(variableStateService, 'updateInProgress').and.returnValue(true);
+			spyOn(formUtilities, 'cancelAddHandler');
+
+			scope.cancel(fakeEvent);
+			expect(formUtilities.cancelAddHandler).toHaveBeenCalledWith(scope, false, '/add/variable');
+		});
+
+		it('should set the path to the scales list if there is no variable add in progress', function() {
+			spyOn(variableStateService, 'updateInProgress').and.returnValue(false);
+			spyOn(formUtilities, 'cancelAddHandler');
+
+			scope.cancel(fakeEvent);
+			expect(formUtilities.cancelAddHandler).toHaveBeenCalledWith(scope, false, '/scales');
 		});
 	});
 

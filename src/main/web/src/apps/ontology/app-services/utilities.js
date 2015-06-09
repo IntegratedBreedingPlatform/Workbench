@@ -58,7 +58,7 @@
 		};
 	}]);
 
-	app.factory('formUtilities', ['$window', '$q', '$timeout', function($window, $q, $timeout) {
+	app.factory('formUtilities', ['$window', '$q', '$timeout', '$location', function($window, $q, $timeout, $location) {
 
 		var formUtilities = {
 
@@ -114,11 +114,11 @@
 				};
 			},
 
-			cancelAddHandler: function(scope, formDirty) {
+			cancelAddHandler: function(scope, formDirty, location) {
 				if (formDirty) {
-					formUtilities.confirmationHandler(scope).then(formUtilities.goBack);
+					formUtilities.confirmationHandler(scope).then($location.path(location));
 				} else {
-					formUtilities.goBack();
+					$location.path(location);
 				}
 			},
 
@@ -167,10 +167,6 @@
 						delete $scope.deny;
 					}, 200);
 				});
-			},
-
-			goBack: function() {
-				$window.history.back();
 			}
 		};
 

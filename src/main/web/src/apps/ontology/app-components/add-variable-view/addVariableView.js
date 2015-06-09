@@ -12,7 +12,8 @@
 		function($scope, $window, $location, variablesService, variableTypesService, propertiesService, methodsService, scalesService,
 			variableStateService, serviceUtilities, formUtilities, variableFormService) {
 
-			var storedData;
+			var VARIABLES_PATH = '/variables',
+				storedData;
 
 			$scope.serverErrors = {};
 
@@ -34,6 +35,8 @@
 				$scope.data = storedData.scopeData;
 				$scope.serverErrors.general = storedData.errors;
 
+				// Clear the variable state service now that we are back on the variables screen
+				variableStateService.reset();
 			} else {
 
 				$scope.variable = {
@@ -78,7 +81,7 @@
 
 					variablesService.addVariable(variable).then(function() {
 						variableStateService.reset();
-						$location.path('/variables');
+						$location.path(VARIABLES_PATH);
 					}, function(response) {
 						$scope.avForm.$setUntouched();
 						$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
@@ -89,7 +92,8 @@
 
 			$scope.cancel = function(e) {
 				e.preventDefault();
-				formUtilities.cancelAddHandler($scope, !variableFormService.formEmpty($scope.variable));
+				variableStateService.reset();
+				formUtilities.cancelAddHandler($scope, !variableFormService.formEmpty($scope.variable), VARIABLES_PATH);
 			};
 
 			$scope.addNew = function(e, path) {

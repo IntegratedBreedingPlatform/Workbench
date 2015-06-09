@@ -164,7 +164,7 @@ describe('Add Property View', function() {
 			// Variable edit is in progress
 			spyOn(variableStateService, 'updateInProgress').and.returnValue(true);
 			spyOn(variableStateService, 'setProperty').and.callThrough();
-			spyOn(window.history, 'back');
+			spyOn(location, 'path');
 
 			// Successful save
 			scope.saveProperty(fakeEvent, BLAST);
@@ -176,7 +176,7 @@ describe('Add Property View', function() {
 			scope.$apply();
 
 			expect(variableStateService.setProperty).toHaveBeenCalledWith(BLAST.id, BLAST.name);
-			expect(window.history.back).toHaveBeenCalled();
+			expect(location.path).toHaveBeenCalledWith('/add/variable');
 		});
 	});
 
@@ -195,6 +195,22 @@ describe('Add Property View', function() {
 			scope.cancel(fakeEvent);
 
 			expect(formUtilities.cancelAddHandler).toHaveBeenCalled();
+		});
+
+		it('should set the path to add variable if a variable is in the process of being added', function() {
+			spyOn(variableStateService, 'updateInProgress').and.returnValue(true);
+			spyOn(formUtilities, 'cancelAddHandler');
+
+			scope.cancel(fakeEvent);
+			expect(formUtilities.cancelAddHandler).toHaveBeenCalledWith(scope, false, '/add/variable');
+		});
+
+		it('should set the path to the properties list if there is no variable add in progress', function() {
+			spyOn(variableStateService, 'updateInProgress').and.returnValue(false);
+			spyOn(formUtilities, 'cancelAddHandler');
+
+			scope.cancel(fakeEvent);
+			expect(formUtilities.cancelAddHandler).toHaveBeenCalledWith(scope, false, '/properties');
 		});
 	});
 
