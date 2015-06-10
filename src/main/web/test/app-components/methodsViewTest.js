@@ -75,6 +75,14 @@ describe('Methods View', function() {
 		expect(controller.showNoItemsMessage).toBe(true);
 	});
 
+	it('should show a message if there was an error getting the list of methods from server', function() {
+		deferredGetMethods.reject();
+		scope.$apply();
+
+		expect(controller.showThrobberWrapper).toBe(false);
+		expect(controller.problemGettingList).toBe(true);
+	});
+
 	it('should set the selected item to be an object with an id property set to null by default', function() {
 		expect(scope.selectedItem).toEqual({id: null});
 	});

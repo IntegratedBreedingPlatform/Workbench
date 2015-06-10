@@ -12,6 +12,7 @@
 			ctrl.methods = [];
 			ctrl.showThrobberWrapper = true;
 			ctrl.colHeaders = ['name', 'description'];
+			ctrl.problemGettingList = false;
 
 			$scope.filterByProperties = ctrl.colHeaders;
 			$scope.panelName = 'methods';
@@ -27,6 +28,9 @@
 				if (ctrl.methods.length === 0) {
 					ctrl.showNoItemsMessage = true;
 				}
+			}, function() {
+				ctrl.showThrobberWrapper = false;
+				ctrl.problemGettingList = true;
 			});
 
 			$scope.showMethodDetails = function() {
