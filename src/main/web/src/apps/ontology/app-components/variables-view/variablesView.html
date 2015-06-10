@@ -12,6 +12,7 @@
 		</div>
 		<om-list ng-hide="varsCtrl.favouriteVariables.length === 0" om-data="varsCtrl.favouriteVariables" om-col-headers="varsCtrl.colHeaders" om-on-click="showVariableDetails()" om-selected-item="selectedItem"></om-list>
 		<p ng-show="varsCtrl.showNoFavouritesMessage" class="text-info">{{'variablesList.noFavouritesFound' | translate}}</p>
+		<p ng-show="varsCtrl.problemGettingFavouriteList" class="text-danger">{{'list.problemGettingList' | translate}}</p>
 	</div>
 
 	<h2>{{'variablesList.title' | translate}}</h2>
@@ -20,4 +21,5 @@
 	</div>
 	<om-list ng-hide="varsCtrl.variables.length === 0" om-data="varsCtrl.variables" om-col-headers="varsCtrl.colHeaders" om-on-click="showVariableDetails()" om-selected-item="selectedItem" om-item-filter="searchFilter" om-properties-to-filter="filterByProperties"></om-list>
 	<p ng-show="varsCtrl.showNoVariablesMessage" class="text-info">{{'list.noItemsFound' | translate:'{items: "variables"}'}}</p>
+	<p ng-show="varsCtrl.problemGettingList" class="text-danger">{{'list.problemGettingList' | translate}}</p>
 </div>

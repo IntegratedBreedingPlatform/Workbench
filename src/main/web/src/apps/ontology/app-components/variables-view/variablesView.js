@@ -93,6 +93,7 @@
 			ctrl.showAllVariablesThrobberWrapper = true;
 			ctrl.showFavouritesThrobberWrapper = true;
 			ctrl.colHeaders = ['name', 'property', 'method', 'scale', 'action-favourite'];
+			ctrl.problemGettingList = false;
 
 			ctrl.transformToDisplayFormat = transformToDisplayFormat;
 			/* Exposed for testing */
@@ -117,6 +118,9 @@
 				}
 
 				ctrl.addAliasToTableIfPresent(ctrl.favouriteVariables);
+			}, function() {
+				ctrl.showFavouritesThrobberWrapper = false;
+				ctrl.problemGettingFavouriteList = true;
 			});
 
 			variablesService.getVariables().then(function(variables) {
@@ -129,6 +133,9 @@
 				}
 
 				ctrl.addAliasToTableIfPresent(ctrl.variables);
+			}, function() {
+				ctrl.showAllVariablesThrobberWrapper = false;
+				ctrl.problemGettingList = true;
 			});
 
 			// Exposed for testing

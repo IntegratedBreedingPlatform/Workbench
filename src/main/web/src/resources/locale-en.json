@@ -75,6 +75,7 @@
 		"name": "Name",
 		"noItemsFound": "No {{items | translate | lowercase}} were found.",
 		"noResultsFound": "No results were found",
+		"problemGettingList": "There was a problem getting the list from server. Please, refresh the page.",
 		"property": "Property",
 		"scale": "Scale"
 	},
