@@ -169,8 +169,9 @@
 
 				variablesService.getVariable($scope.selectedItem.id).then(function(variable) {
 					$scope.selectedVariable = variable;
+					$scope.selectedVariable.favourite = transformedVariable['action-favourite'].iconValue === 'star';
+					variablesService.updateVariable($scope.selectedItem.id, $scope.selectedVariable);
 				});
-				variablesService.updateVariable($scope.selectedItem.id, $scope.selectedVariable);
 
 				// Show or hide the no favourites message depending on whether there are any favourite variables currently
 				ctrl.showNoFavouritesMessage = ctrl.favouriteVariables.length > 0 ? false : true;

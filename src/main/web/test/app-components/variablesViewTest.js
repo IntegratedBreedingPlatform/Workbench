@@ -30,6 +30,7 @@ describe('Variables Controller', function() {
 	},
 
 	PLANT_VIGOR_DETAILED,
+	PLANT_VIGOR_CONVERTED,
 
 	q,
 	controller,
@@ -46,6 +47,7 @@ describe('Variables Controller', function() {
 
 	// This format is what is returned by a getVariable() call (singular)
 	PLANT_VIGOR_DETAILED = angular.copy(PLANT_VIGOR);
+	PLANT_VIGOR_CONVERTED = angular.copy(PLANT_VIGOR);
 
 	PLANT_VIGOR_DETAILED.scale = {
 		id: 1,
@@ -59,6 +61,10 @@ describe('Variables Controller', function() {
 			max: 5
 		}
 	};
+
+	delete PLANT_VIGOR_CONVERTED.favourite;
+	PLANT_VIGOR_CONVERTED['action-favourite'] = {};
+	PLANT_VIGOR_CONVERTED['action-favourite'].iconValue = 'star';
 
 	delete PLANT_VIGOR_DETAILED.id;
 	delete PLANT_VIGOR_DETAILED.scaleSummary;
@@ -375,7 +381,7 @@ describe('Variables Controller', function() {
 
 		it('should sync the updated variable in the variables list', function() {
 
-			var updateSelectedVariable = angular.copy(PLANT_VIGOR_DETAILED),
+			var updateSelectedVariable = angular.copy(PLANT_VIGOR_CONVERTED),
 			newName = 'Not Plant Vigor',
 			id = 1;
 
@@ -507,7 +513,7 @@ describe('Variables Controller', function() {
 		it('should not update variables list if there is no variable in the list with a matching id, but should update favourites list',
 		function() {
 
-			var variableToUpdate = angular.copy(PLANT_VIGOR_DETAILED),
+			var variableToUpdate = angular.copy(PLANT_VIGOR_CONVERTED),
 
 			nonMatchingVariable = {
 				id: 1,
@@ -530,21 +536,14 @@ describe('Variables Controller', function() {
 
 			// Select a property not in the list (shouldn't happen, really)
 			scope.selectedItem.id = 3;
+			variableToUpdate.id = 3;
 
 			scope.updateSelectedVariable(variableToUpdate);
 
 			// Ensure no updates happened
 			expect(controller.variables[0]).toEqual(nonMatchingVariable);
 			expect(controller.variables[1]).toEqual(anotherNonMatchingVariable);
-			expect(controller.favouriteVariables[0]).toEqual({
-				id: 3,
-				name: 'Plant Vigor',
-				alias: '',
-				property: 'Plant Vigor',
-				method: 'Visual assessment at seedling stage',
-				scale: 'Score',
-				'action-favourite': { iconValue: 'star' }
-			});
+			expect(controller.favouriteVariables[0]).toEqual(variableToUpdate);
 			expect(controller.favouriteVariables[1]).toEqual(nonMatchingVariable);
 			expect(controller.favouriteVariables[2]).toEqual(anotherNonMatchingVariable);
 		});
