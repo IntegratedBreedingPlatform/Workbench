@@ -19,11 +19,13 @@
 
 			// Reset server errors
 			$scope.serverErrors = {};
+			$scope.someListsNotLoaded = false;
 
 			propertiesService.getClasses().then(function(classes) {
 				$scope.classes = classes;
 			}, function(response) {
 				$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+				$scope.someListsNotLoaded = true;
 			});
 
 			$scope.saveProperty = function(e, property) {

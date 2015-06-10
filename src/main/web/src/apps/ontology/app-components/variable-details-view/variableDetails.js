@@ -19,7 +19,6 @@
 			function resetErrors($scope) {
 				$scope.clientErrors = {};
 				$scope.serverErrors = {};
-				$scope.someListsNotLoaded = false;
 			}
 
 			return {

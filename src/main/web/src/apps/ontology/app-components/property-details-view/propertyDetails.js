@@ -19,8 +19,10 @@
 			function loadClasses($scope) {
 				propertiesService.getClasses().then(function(classes) {
 					$scope.data.classes = classes;
+					$scope.someListsNotLoaded = false;
 				}, function(response) {
 					$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+					$scope.someListsNotLoaded = true;
 				});
 			}
 

@@ -93,6 +93,7 @@ describe('Add Property View', function() {
 		deferredGetClasses.reject(errors);
 		scope.$apply();
 		expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalledWith(errors);
+		expect(scope.someListsNotLoaded).toBe(true);
 	});
 
 	describe('$scope.saveProperty', function() {

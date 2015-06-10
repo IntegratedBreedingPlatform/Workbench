@@ -125,7 +125,6 @@
 	},
 
 	"validation": {
-		"someListsNotLoaded": "The methods, properties, scales or variables types lists were not loaded. Please, refresh the page.",
 		"tooLong": "Please reduce to under {{maxLength}} characters.",
 		"numTooBig": "The number must be less than or equal to {{max}}",
 		"numTooSmall": "The number must be more than or equal to {{min}}",
@@ -138,7 +137,8 @@
 		"property": {
 			"classesEmpty": "Please provide at least one class.",
 			"nameRequired": "Please name your property.",
-			"noneditableFields": "Some fields cannot be edited as this property is already in use."
+			"noneditableFields": "Some fields cannot be edited as this property is already in use.",
+			"someListsNotLoaded": "The classes list was not loaded. Please, refresh the page."
 		},
 
 		"scale": {
@@ -159,7 +159,8 @@
 			"propertyRequired": "Property is required.",
 			"scaleRequired": "Scale is required.",
 			"treatmentFactor":"Please note that in order to use this variable as a Treatment Factor, you need to create two variables with the same property and variable type \"Treatment Factor\".",
-			"variableTypeEmpty": "Please select at least one variable type."
+			"variableTypeEmpty": "Please select at least one variable type.",
+			"someListsNotLoaded": "The methods, properties, scales or variables types lists were not loaded. Please, refresh the page."
 		}
 	},
 

@@ -1,9 +1,12 @@
 <div class="om-ap-view">
 
 	<h2 class="om-title">{{'addNew.property.title' | translate}}</h2>
-	<div ng-if="serverErrors.general" class="alert alert-danger" role="alert">
+	<div ng-if="serverErrors.general || someListsNotLoaded" class="alert alert-danger" role="alert">
 		<ul>
 			<li ng-repeat="error in serverErrors.general">{{error}}</li>
+		</ul>
+		<ul ng-if="someListsNotLoaded">
+			<li>{{'validation.property.someListsNotLoaded' | translate}}</li>
 		</ul>
 	</div>
 

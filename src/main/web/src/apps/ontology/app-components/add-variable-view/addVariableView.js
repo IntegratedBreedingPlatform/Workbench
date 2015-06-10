@@ -49,8 +49,6 @@
 					$scope.data.properties = properties;
 				}, function(response) {
 					$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
-					console.log($scope.serverErrors);
-					console.log($scope.someListsNotLoaded);
 					$scope.someListsNotLoaded = true;
 				});
 

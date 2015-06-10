@@ -155,6 +155,7 @@ describe('Property details directive', function() {
 			deferredGetClasses.reject();
 			scope.$apply();
 			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
+			expect(scope.someListsNotLoaded).toBe(true);
 		});
 
 		it('should set data.classes to the returned classes after a successful update', function() {
