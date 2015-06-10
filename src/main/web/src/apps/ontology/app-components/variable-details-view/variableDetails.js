@@ -13,6 +13,8 @@
 		function(variablesService, variableTypesService, propertiesService, methodsService, scalesService, serviceUtilities, formUtilities,
 			panelService, $timeout, debounce) {
 
+			var TREATMENT_FACTOR_ID = 9;
+
 			// Reset any errors we're showing the user
 			function resetErrors($scope) {
 				$scope.clientErrors = {};
@@ -183,8 +185,7 @@
 
 						if (newValue) {
 							filtered = newValue.filter(function(type) {
-								//TODO change to filtering by id when real service is hooked in
-								return type.name === 'Treatment Factor';
+								return type.id === TREATMENT_FACTOR_ID;
 							});
 							$scope.showTreatmentFactorAlert = filtered.length > 0;
 						}

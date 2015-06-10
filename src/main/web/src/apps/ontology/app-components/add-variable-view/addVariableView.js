@@ -13,6 +13,7 @@
 			variableStateService, serviceUtilities, formUtilities, variableFormService) {
 
 			var VARIABLES_PATH = '/variables',
+				TREATMENT_FACTOR_ID = 9,
 				storedData;
 
 			$scope.serverErrors = {};
@@ -109,8 +110,7 @@
 
 				if (newValue) {
 					filtered = newValue.filter(function(type) {
-						//TODO change to filtering by id when real service is hooked in
-						return type.name === 'Treatment Factor';
+						return type.id === TREATMENT_FACTOR_ID;
 					});
 					$scope.showTreatmentFactorAlert = filtered.length > 0;
 				}

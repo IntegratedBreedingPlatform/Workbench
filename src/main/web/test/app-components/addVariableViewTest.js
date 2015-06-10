@@ -99,7 +99,7 @@ describe('Add Variable View', function() {
 			name: 'Trait',
 			description: 'Characteristics of a germplasm to be recorded during a study.'
 		}, {
-			id: 1,
+			id: 9,
 			name: 'Treatment Factor',
 			description: 'Treatments to be applied to members of a trial.'
 		}],
