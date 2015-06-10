@@ -2,9 +2,12 @@
 
 	<h2 class="om-title">{{'addNew.variable.title' | translate}}</h2>
 
-	<div ng-if="serverErrors.general.length > 0" class="alert alert-danger" role="alert">
+	<div ng-if="serverErrors.general.length > 0 || someListsNotLoaded" class="alert alert-danger" role="alert">
 		<ul>
 			<li ng-repeat="error in serverErrors.general">{{error}}</li>
+		</ul>
+		<ul ng-if="someListsNotLoaded">
+			<li>{{'validation.someListsNotLoaded' | translate}}</li>
 		</ul>
 	</div>
 

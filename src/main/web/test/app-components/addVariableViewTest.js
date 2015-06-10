@@ -73,7 +73,7 @@ describe('Add Variable View', function() {
 		},
 
 		serviceUtilities = {
-			formatErrorsForDisplay: function() {}
+			formatErrorsForDisplay: function() { return {}; }
 		},
 
 		formUtilities,
@@ -294,6 +294,7 @@ describe('Add Variable View', function() {
 			deferredGetProperties.reject();
 			scope.$apply();
 			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
+			expect(scope.someListsNotLoaded).toBe(true);
 		});
 
 		it('should set the methods on the scope', function() {
@@ -306,6 +307,7 @@ describe('Add Variable View', function() {
 			deferredGetMethods.reject();
 			scope.$apply();
 			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
+			expect(scope.someListsNotLoaded).toBe(true);
 		});
 
 		it('should set the scales on the scope', function() {
@@ -318,6 +320,7 @@ describe('Add Variable View', function() {
 			deferredGetScales.reject();
 			scope.$apply();
 			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
+			expect(scope.someListsNotLoaded).toBe(true);
 		});
 
 		it('should set the variable types on the scope', function() {
@@ -330,6 +333,7 @@ describe('Add Variable View', function() {
 			deferredGetVariablesTypes.reject();
 			scope.$apply();
 			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
+			expect(scope.someListsNotLoaded).toBe(true);
 		});
 	});
 

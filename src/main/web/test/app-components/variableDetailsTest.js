@@ -225,6 +225,7 @@ describe('Variable details directive', function() {
 			deferredGetProperties.reject();
 			scope.$apply();
 			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
+			expect(scope.someListsNotLoaded).toBe(true);
 		});
 
 		it('should set data.properties to the returned properties after a successful update', function() {
@@ -244,6 +245,7 @@ describe('Variable details directive', function() {
 			deferredGetMethods.reject();
 			scope.$apply();
 			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
+			expect(scope.someListsNotLoaded).toBe(true);
 		});
 
 		it('should set data.methods to the returned methods after a successful update', function() {
@@ -263,6 +265,7 @@ describe('Variable details directive', function() {
 			deferredGetScales.reject();
 			scope.$apply();
 			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
+			expect(scope.someListsNotLoaded).toBe(true);
 		});
 
 		it('should set data.scales to the returned scales after a successful update', function() {
@@ -282,6 +285,7 @@ describe('Variable details directive', function() {
 			deferredGetTypes.reject();
 			scope.$apply();
 			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
+			expect(scope.someListsNotLoaded).toBe(true);
 		});
 
 		it('should set data.types to the returned variable types after a successful update', function() {

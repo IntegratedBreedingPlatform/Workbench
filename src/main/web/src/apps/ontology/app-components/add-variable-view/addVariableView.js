@@ -17,6 +17,7 @@
 				storedData;
 
 			$scope.serverErrors = {};
+			$scope.someListsNotLoaded = false;
 
 			// The select2 input needs to be able to call length on the arrays used for the options before the data is returned.
 			$scope.data = {
@@ -48,24 +49,30 @@
 					$scope.data.properties = properties;
 				}, function(response) {
 					$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+					console.log($scope.serverErrors);
+					console.log($scope.someListsNotLoaded);
+					$scope.someListsNotLoaded = true;
 				});
 
 				methodsService.getMethods().then(function(methods) {
 					$scope.data.methods = methods;
 				}, function(response) {
 					$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+					$scope.someListsNotLoaded = true;
 				});
 
 				scalesService.getScales().then(function(scales) {
 					$scope.data.scales = scales;
 				}, function(response) {
 					$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+					$scope.someListsNotLoaded = true;
 				});
 
 				variableTypesService.getTypes().then(function(types) {
 					$scope.data.types = types;
 				}, function(response) {
 					$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+					$scope.someListsNotLoaded = true;
 				});
 			}
 

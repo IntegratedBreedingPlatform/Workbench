@@ -19,6 +19,7 @@
 			function resetErrors($scope) {
 				$scope.clientErrors = {};
 				$scope.serverErrors = {};
+				$scope.someListsNotLoaded = false;
 			}
 
 			return {
@@ -34,6 +35,8 @@
 
 					// Whether or not we want to display the expected range widget
 					$scope.showRangeWidget = false;
+					//Whether or not to display the error message that some lists were not loaded
+					$scope.someListsNotLoaded = false;
 
 					$scope.$watch('selectedVariable', function(variable) {
 						// Should always open in read-only view
@@ -63,24 +66,28 @@
 						$scope.data.properties = properties;
 					}, function(response) {
 						$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+						$scope.someListsNotLoaded = true;
 					});
 
 					methodsService.getMethods().then(function(methods) {
 						$scope.data.methods = methods;
 					}, function(response) {
 						$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+						$scope.someListsNotLoaded = true;
 					});
 
 					scalesService.getScales().then(function(scales) {
 						$scope.data.scales = scales;
 					}, function(response) {
 						$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+						$scope.someListsNotLoaded = true;
 					});
 
 					variableTypesService.getTypes().then(function(types) {
 						$scope.data.types = types;
 					}, function(response) {
 						$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+						$scope.someListsNotLoaded = true;
 					});
 
 					$scope.$watch('selectedItem', function(selected) {

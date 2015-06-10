@@ -125,6 +125,7 @@
 	},
 
 	"validation": {
+		"someListsNotLoaded": "The methods, properties, scales or variables types lists were not loaded. Please, refresh the page.",
 		"tooLong": "Please reduce to under {{maxLength}} characters.",
 		"numTooBig": "The number must be less than or equal to {{max}}",
 		"numTooSmall": "The number must be more than or equal to {{min}}",
