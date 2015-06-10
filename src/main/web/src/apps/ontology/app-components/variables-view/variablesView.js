@@ -110,7 +110,6 @@
 
 			variablesService.getFavouriteVariables().then(function(variables) {
 				ctrl.favouriteVariables = ctrl.transformToDisplayFormat(variables, $scope.toggleFavourite);
-				ctrl.showFavouritesThrobberWrapper = false;
 
 				if (ctrl.favouriteVariables.length === 0) {
 					ctrl.showNoFavouritesMessage = true;
@@ -119,13 +118,13 @@
 
 				ctrl.addAliasToTableIfPresent(ctrl.favouriteVariables);
 			}, function() {
-				ctrl.showFavouritesThrobberWrapper = false;
 				ctrl.problemGettingFavouriteList = true;
+			}).finally (function() {
+				ctrl.showFavouritesThrobberWrapper = false;
 			});
 
 			variablesService.getVariables().then(function(variables) {
 				ctrl.variables = ctrl.transformToDisplayFormat(variables, $scope.toggleFavourite);
-				ctrl.showAllVariablesThrobberWrapper = false;
 
 				if (ctrl.variables.length === 0) {
 					ctrl.showNoVariablesMessage = true;
@@ -134,8 +133,9 @@
 
 				ctrl.addAliasToTableIfPresent(ctrl.variables);
 			}, function() {
-				ctrl.showAllVariablesThrobberWrapper = false;
 				ctrl.problemGettingList = true;
+			}).finally (function() {
+				ctrl.showAllVariablesThrobberWrapper = false;
 			});
 
 			// Exposed for testing

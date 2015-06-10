@@ -23,14 +23,13 @@
 
 			methodsService.getMethods().then(function(methods) {
 				ctrl.methods = methods;
-				ctrl.showThrobberWrapper = false;
-
 				if (ctrl.methods.length === 0) {
 					ctrl.showNoItemsMessage = true;
 				}
 			}, function() {
-				ctrl.showThrobberWrapper = false;
 				ctrl.problemGettingList = true;
+			}).finally (function() {
+				ctrl.showThrobberWrapper = false;
 			});
 
 			$scope.showMethodDetails = function() {

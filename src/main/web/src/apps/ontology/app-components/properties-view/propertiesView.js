@@ -36,14 +36,13 @@
 
 			propertiesService.getProperties().then(function(properties) {
 				ctrl.properties = transformToDisplayFormat(properties);
-				ctrl.showThrobberWrapper = false;
-
 				if (ctrl.properties.length === 0) {
 					ctrl.showNoItemsMessage = true;
 				}
 			}, function() {
-				ctrl.showThrobberWrapper = false;
 				ctrl.problemGettingList = true;
+			}).finally (function() {
+				ctrl.showThrobberWrapper = false;
 			});
 
 			$scope.showPropertyDetails = function() {
