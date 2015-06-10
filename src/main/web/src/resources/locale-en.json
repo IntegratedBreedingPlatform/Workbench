@@ -147,7 +147,8 @@
 			"nameRequired": "Please name your scale.",
 			"noneditableFields": "Some fields cannot be edited as this scale is already in use.",
 			"nonUniqueName": "All category names must be unique.",
-			"nonUniqueValue": "All category values must be unique."
+			"nonUniqueValue": "All category values must be unique.",
+			"someListsNotLoaded": "The data types list was not loaded. Please, refresh the page."
 		},
 
 		"variable": {

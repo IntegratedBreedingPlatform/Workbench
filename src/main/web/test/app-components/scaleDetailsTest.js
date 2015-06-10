@@ -258,6 +258,7 @@ describe('Scale details directive', function() {
 			scope.$apply();
 
 			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
+			expect(scope.someListsNotLoaded).toBe(true);
 		});
 	});
 

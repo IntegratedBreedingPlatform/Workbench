@@ -22,6 +22,7 @@
 					$scope.editing = false;
 					$scope.showRangeWidget = false;
 					$scope.showCategoriesWidget = false;
+					$scope.someListsNotLoaded = false;
 
 					$scope.$watch('selectedScale', function(scale) {
 						// Should always open in read-only view
@@ -74,6 +75,7 @@
 							$scope.types = types;
 						}, function(response) {
 							$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+							$scope.someListsNotLoaded = true;
 						});
 
 						$scope.editing = true;

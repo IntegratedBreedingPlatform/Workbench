@@ -16,6 +16,7 @@
 
 			// Reset server errors
 			$scope.serverErrors = {};
+			$scope.someListsNotLoaded = false;
 
 			$scope.showRangeWidget = false;
 			$scope.showCategoriesWidget = false;
@@ -24,6 +25,7 @@
 				$scope.types = types;
 			}, function(response) {
 				$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+				$scope.someListsNotLoaded = true;
 			});
 
 			$scope.saveScale = function(e, scale) {

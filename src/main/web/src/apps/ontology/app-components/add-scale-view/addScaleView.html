@@ -2,9 +2,12 @@
 
 	<h2 class="om-title">{{'addNew.scale.title' | translate}}</h2>
 	<form class="form-horizontal" name="asForm" ng-submit="saveScale($event, scale)" novalidate>
-	<div ng-if="serverErrors.general" class="alert alert-danger" role="alert">
+	<div ng-if="serverErrors.general || someListsNotLoaded" class="alert alert-danger" role="alert">
 		<ul>
 			<li ng-repeat="error in serverErrors.general">{{error}}</li>
+		</ul>
+		<ul ng-if="someListsNotLoaded">
+			<li>{{'validation.scale.someListsNotLoaded' | translate}}</li>
 		</ul>
 	</div>
 

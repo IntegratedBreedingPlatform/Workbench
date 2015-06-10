@@ -9,9 +9,12 @@
 	</div>
 
 	<div class="om-details-content">
-		<div ng-if="serverErrors.general" class="alert alert-danger" role="alert">
+		<div ng-if="serverErrors.general || someListsNotLoaded" class="alert alert-danger" role="alert">
 			<ul>
 				<li ng-repeat="error in serverErrors.general">{{error}}</li>
+			</ul>
+			<ul ng-if="someListsNotLoaded">
+				<li>{{'validation.scale.someListsNotLoaded' | translate}}</li>
 			</ul>
 		</div>
 		<div ng-if="showNoneditableFieldsAlert" class="alert alert-warning" role="alert">

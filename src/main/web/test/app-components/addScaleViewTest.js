@@ -116,6 +116,7 @@ describe('Add Scale View', function() {
 		deferredGetDataTypes.reject();
 		scope.$apply();
 		expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
+		expect(scope.someListsNotLoaded).toBe(true);
 	});
 
 	it('should hide the range and categories widgets by default', function() {
