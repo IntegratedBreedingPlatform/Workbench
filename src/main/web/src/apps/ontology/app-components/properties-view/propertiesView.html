@@ -11,4 +11,5 @@
 	</div>
 	<om-list ng-hide="propsCtrl.properties.length === 0" om-data="propsCtrl.properties" om-col-headers="propsCtrl.colHeaders" om-on-click="showPropertyDetails()" om-selected-item="selectedItem" om-item-filter="searchFilter" om-properties-to-filter="filterByProperties"></om-list>
 	<p ng-show="propsCtrl.showNoItemsMessage" class="text-info">{{'list.noItemsFound' | translate:'{items: "properties"}'}}</p>
+	<p ng-show="propsCtrl.problemGettingList" class="text-danger">{{'list.problemGettingList' | translate}}</p>
 </div>

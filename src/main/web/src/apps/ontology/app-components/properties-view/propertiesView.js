@@ -25,6 +25,7 @@
 			ctrl.properties = [];
 			ctrl.showThrobberWrapper = true;
 			ctrl.colHeaders = ['name', 'description', 'classes'];
+			ctrl.problemGettingList = false;
 
 			$scope.filterByProperties = ctrl.colHeaders;
 			$scope.panelName = 'properties';
@@ -40,6 +41,9 @@
 				if (ctrl.properties.length === 0) {
 					ctrl.showNoItemsMessage = true;
 				}
+			}, function() {
+				ctrl.showThrobberWrapper = false;
+				ctrl.problemGettingList = true;
 			});
 
 			$scope.showPropertyDetails = function() {

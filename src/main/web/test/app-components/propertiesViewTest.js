@@ -85,6 +85,14 @@ describe('Properties View', function() {
 		expect(controller.showNoItemsMessage).toBe(true);
 	});
 
+	it('should show an error message if there an error while returning a list of properties from the server', function() {
+		deferredGetProperties.reject();
+		scope.$apply();
+
+		expect(controller.showThrobberWrapper).toBe(false);
+		expect(controller.problemGettingList).toBe(true);
+	});
+
 	it('should set the selected item to be an object with an id property set to null by default', function() {
 		expect(scope.selectedItem).toEqual({id: null});
 	});
