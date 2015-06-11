@@ -35,11 +35,13 @@
 
 			scalesService.getScales().then(function(scales) {
 				ctrl.scales = transformToDisplayFormat(scales);
-				ctrl.showThrobberWrapper = false;
-
 				if (ctrl.scales.length === 0) {
 					ctrl.showNoItemsMessage = true;
 				}
+			}, function() {
+				ctrl.problemGettingList = true;
+			}).finally(function() {
+				ctrl.showThrobberWrapper = false;
 			});
 
 			$scope.showScaleDetails = function() {

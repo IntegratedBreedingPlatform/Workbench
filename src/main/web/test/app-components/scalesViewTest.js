@@ -88,6 +88,14 @@ describe('Scales View', function() {
 		expect(controller.showNoItemsMessage).toBe(true);
 	});
 
+	it('should show an error message if there was a problem while returning a list of scales from server', function() {
+		deferredGetScales.reject();
+		scope.$apply();
+
+		expect(controller.problemGettingList).toBe(true);
+		expect(controller.showThrobberWrapper).toBe(false);
+	});
+
 	it('should set the selected item to be an object with an id property set to null by default', function() {
 		expect(scope.selectedItem).toEqual({id: null});
 	});
