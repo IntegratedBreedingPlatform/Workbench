@@ -27,9 +27,9 @@
 		<div ng-class="formGroupClass('omDescription', 'description')">
 			<label for="omDescription" class="col-sm-2 control-label">{{'formField.description' | translate}}</label>
 			<div class="col-sm-7">
-				<om-text-area om-name="omDescription" om-property="description" om-model="property" om-adding="true" om-max-length="255"></om-text-area>
+				<om-text-area om-name="omDescription" om-property="description" om-model="property" om-adding="true" om-max-length="1024"></om-text-area>
 				<ng-messages for="apForm.omDescription.$error" ng-if="apForm.$submitted || apForm.omDescription.$touched">
-					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "255"}'}}</p></ng-message>
+					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "1024"}'}}</p></ng-message>
 				</ng-messages>
 				<p class="text-danger" ng-hide="apForm.omDescription.$touched" ng-repeat="error in serverErrors.description">{{error}}</p>
 			</div>
