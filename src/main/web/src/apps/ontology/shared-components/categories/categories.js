@@ -80,7 +80,8 @@
 				scope.$watch('categorical', function(categorical) {
 					if (!categorical) {
 						resetValidity();
-					} else if (scope.model && scope.model[scope.property] && scope.model[scope.property].categories) {
+					} else if (scope.model && scope.model[scope.property] && scope.model[scope.property].categories &&
+							scope.categoriesForm.$valid) {
 						validateCategories(ctrl, scope.model[scope.property].categories);
 					}
 				});
@@ -91,8 +92,9 @@
 					if (!scope.categorical || !data) {
 						return;
 					}
-
-					validateCategories(ctrl, data);
+					if (scope.categoriesForm.$valid) {
+						validateCategories(ctrl, data);
+					}
 				}, true);
 			},
 
