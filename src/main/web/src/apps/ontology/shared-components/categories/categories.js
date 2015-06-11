@@ -52,7 +52,10 @@
 
 				$scope.addCategory = function(e) {
 					e.preventDefault();
-					$scope.model[$scope.property].categories.push({});
+					$scope.model[$scope.property].categories.push({
+						name: '',
+						description: ''
+					});
 				};
 
 				$scope.removable = function() {
