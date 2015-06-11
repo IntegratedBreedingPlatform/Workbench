@@ -48,8 +48,7 @@
 		<div ng-class="formGroupClass('omRange', 'validValues')" ng-show="showRangeWidget">
 			<label for="omRange" class="col-sm-2 control-label">{{'addNew.scale.validRange' | translate}}</label>
 			<div class="col-sm-7">
-				<om-range name="omRange" om-property="validValues" om-adding="true" ng-model="scale" om-numeric="showRangeWidget"></om-range>
-
+				<om-range name="omRange" om-property="validValues" om-adding="true" ng-model="scale" om-numeric="showRangeWidget" om-min="-999999999" om-max="999999999"></om-range>
 				<ng-messages for="asForm.omRange.$error" ng-messages-include="range-validation-messages" multiple ng-if="asForm.$submitted || asForm.omRange.$touched"></ng-messages>
 				<p class="text-danger" ng-hide="asForm.omRange.$touched" ng-repeat="error in serverErrors.validValues">{{error}}</p>
 			</div>
