@@ -49,7 +49,7 @@
 			*/
 			getProperties: function() {
 				var url = '/bmsapi/ontology/' + configService.getCropName() + '/properties',
-					request = $http.get(url);
+					request = $http.get(url, {timeout: 5000});
 				return request.then(successHandler, failureHandler);
 			},
 
