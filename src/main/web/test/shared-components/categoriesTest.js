@@ -65,7 +65,7 @@ describe('Categories module', function() {
 			isolateScope.addCategory(fakeEvent);
 
 			expect(scope.model.validValues.categories.length).toEqual(2);
-			expect(scope.model.validValues.categories[1]).toEqual({});
+			expect(scope.model.validValues.categories[1]).toEqual({name: '', description: ''});
 		});
 	});
 

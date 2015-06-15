@@ -179,7 +179,8 @@
 	"variableStateService": {
 		"couldNotSetMethod": "Your method was created but not set on your new variable. Please try again.",
 		"couldNotSetProperty": "Your property was created but not set on your new variable. Please try again.",
-		"couldNotSetScale": "Your scale was created but not set on your new variable. Please try again."
+		"couldNotSetScale": "Your scale was created but not set on your new variable. Please try again.",
+		"propertyNotFound": "Your property could not be found in the list of properties. Please try again."
 	},
 
 	"warnings": {

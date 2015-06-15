@@ -23,7 +23,8 @@ describe('Variable State Service', function() {
 		TRANSLATIONS = {
 			'variableStateService.couldNotSetProperty': 'an error message',
 			'variableStateService.couldNotSetMethod': 'another error message',
-			'variableStateService.couldNotSetScale': 'yet another error message'
+			'variableStateService.couldNotSetScale': 'yet another error message',
+			'variableStateService.propertyNotFound': 'property not found error message'
 		},
 
 		variableStateService,
@@ -176,7 +177,7 @@ describe('Variable State Service', function() {
 				result,
 				success;
 
-			result = variableStateService.setProperty(selectedPropertyId);
+			result = variableStateService.setProperty(selectedPropertyId, 'a property');
 
 			// Because Angular doesn't let us inspect the state of a promise, call fake success and failure handlers
 			// to ensure correct promise resolution
@@ -213,8 +214,8 @@ describe('Variable State Service', function() {
 			expect(success).toBe(false);
 		});
 
-		it('should set the properties and property summary if the call to the properties service is successful', function() {
-
+		it('should set the properties and property summary if the call to the properties service is successful and the property is found ' +
+				'in the list of properties', function() {
 			var properties = [{id: 1, name: 'a property'}],
 				selectedPropertyId = 1,
 				selectedPropertyName = 'a property',
@@ -236,6 +237,31 @@ describe('Variable State Service', function() {
 			expect(state.variable.propertySummary.id).toEqual(selectedPropertyId);
 			expect(state.variable.propertySummary.name).toEqual(selectedPropertyName);
 			expect(state.scopeData.properties).toEqual(properties);
+		});
+
+		it('should return an error that property was not found if the call to the properties service is successful' +
+				'but property was not found in the list of properties', function() {
+			var properties = [{id: 2, name: 'another property'}],
+				selectedPropertyId = 1,
+				selectedPropertyName = 'a property',
+				result,
+				state,
+				success;
+
+			result = variableStateService.setProperty(selectedPropertyId, selectedPropertyName);
+
+			// Because Angular doesn't let us inspect the state of a promise, call fake success and failure handlers
+			// to ensure correct promise resolution
+			result.then(function() {success = true;}, function() {success = false;});
+
+			deferredGetProperties.resolve(properties);
+			scope.$apply();
+
+			state = variableStateService.getVariableState();
+
+			expect(state.errors.length).toEqual(1);
+			expect(state.errors[0]).toEqual(TRANSLATIONS['variableStateService.propertyNotFound']);
+			expect(success).toBe(false);
 		});
 	});
 

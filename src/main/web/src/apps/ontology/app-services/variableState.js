@@ -62,14 +62,26 @@
 
 					return $q(function(resolve, reject) {
 						propertiesService.getProperties().then(function(properties) {
+							var isPropertyFound = false;
 							scopeData.properties = properties;
 
-							variable.propertySummary = {
-								id: propertyId,
-								name: propertyName
-							};
-
-							resolve();
+							properties.some(function(property) {
+								if (property.id === propertyId && property.name === propertyName) {
+									variable.propertySummary = {
+										id: propertyId,
+										name: propertyName
+									};
+									isPropertyFound = true;
+								}
+							});
+							if (!isPropertyFound) {
+								$translate('variableStateService.propertyNotFound').then(function(message) {
+									errors.push(message);
+								});
+								reject();
+							} else {
+								resolve();
+							}
 						}, handleFailedUpdate(reject, 'variableStateService.couldNotSetProperty'));
 					});
 				},
