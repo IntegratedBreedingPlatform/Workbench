@@ -9,7 +9,7 @@
 	<div ng-show="scalesCtrl.showThrobberWrapper" class="om-list-throbber-wrapper">
 		<span ng-class="{'throbber-hidden': !scalesCtrl.showThrobber}" class="throbber throbber-lg"></span>
 	</div>
-	<om-list ng-hide="scalesCtrl.scales.length === 0" om-data="scalesCtrl.scales" om-col-headers="scalesCtrl.colHeaders" om-on-click="showScaleDetails()" om-selected-item="selectedItem" om-item-filter="searchFilter" om-properties-to-filter="filterByProperties"></om-list>
+	<om-list ng-hide="scalesCtrl.scales.length === 0" om-data="scalesCtrl.scales" om-col-headers="scalesCtrl.colHeaders" om-on-click="showScaleDetails()" om-selected-item="selectedItem" om-item-filter="searchFilter" om-properties-to-filter="filterByProperties" om-pagination="true"></om-list>
 	<p ng-show="scalesCtrl.showNoItemsMessage" class="text-info">{{'list.noItemsFound' | translate:'{items: "scales"}'}}</p>
 	<p ng-show="scalesCtrl.problemGettingList" class="text-danger">{{'list.problemGettingList' | translate}}</p>
 </div>

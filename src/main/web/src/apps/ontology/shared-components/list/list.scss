@@ -1,5 +1,4 @@
-$lightBlue: #f3f5f7;
-
-.om-striped-row {
-	background-color: $lightBlue;
+// Only show the no items message if there are no other trs
+tr + .om-no-items {
+	display: none;
 }

@@ -1,4 +1,4 @@
-<table class="table" tabIndex="1" ng-focus="focused = true" ng-blur="focused = false" ng-keydown="checkKeyDown($event)" ng-class="{'table-striped': neverFiltered}">
+<table class="table table-striped" tabIndex="1" ng-focus="focused = true" ng-blur="focused = false" ng-keydown="checkKeyDown($event)">
 	<thead>
 		<tr>
 			<th ng-repeat="header in colHeaders">
@@ -7,12 +7,13 @@
 		</tr>
 	</thead>
 	<tbody>
-		<tr ng-repeat="item in data track by item.id" ng-click="selectItem($index, item.id)" ng-hide="listItemMetadata[item.id].isHidden" class="clickable-row" ng-class="{'active': focused && activeItemIndex === $index, 'om-striped-row': listItemMetadata[item.id].isStriped}">
+		<tr ng-repeat="item in filteredData = (data | filter:itemFilter | paginate:rowsPerPage) track by item.id" ng-click="selectItem($index, item.id)" class="clickable-row" ng-class="{'active': focused && activeItemIndex === $index}">
 			<td ng-repeat="header in colHeaders" ng-class="{'action-icon': isAction(item[header])}">
 				<span class="om-li-data-cell-test" ng-if="isString(item[header])">{{item[header]}}</span>
 				<span class="om-li-data-cell-test glyphicon favourite-icon" ng-if="isAction(item[header])" ng-class="'glyphicon-' + item[header].iconValue" ng-click="toggleFavourites($index, item.id, $event, item[header])"></span>
 			</td>
 		</tr>
-		<tr ng-hide="isAnyItemShown"><td colspan="{{colHeaders.length}}">{{'list.noResultsFound' | translate}}</td></tr>
+		<tr class="om-no-items"><td colspan="{{colHeaders.length}}">{{'list.noResultsFound' | translate}}</td></tr>
 	</tbody>
 </table>
+<om-paginator ng-if="pagination && filteredData.length > 0"></om-paginator>

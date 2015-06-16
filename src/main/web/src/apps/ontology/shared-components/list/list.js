@@ -2,9 +2,9 @@
 'use strict';
 
 (function() {
-	var listModule = angular.module('list', ['utilities']);
+	var listModule = angular.module('list', ['utilities', 'paginator']);
 
-	listModule.directive('omList', ['$rootScope', 'mathUtilities', '$filter', function($rootScope, mathUtilities, $filter) {
+	listModule.directive('omList', ['$rootScope', 'mathUtilities', function($rootScope, mathUtilities) {
 
 		return {
 			restrict: 'E',
@@ -14,24 +14,16 @@
 				parentClickHandler: '&omOnClick',
 				selectedItem: '=omSelectedItem',
 				itemFilter: '=omItemFilter',
-				propertiesToFilter: '=omPropertiesToFilter'
+				propertiesToFilter: '=omPropertiesToFilter',
+				pagination: '=omPagination'
 			},
 
 			controller: function($scope) {
-				$scope.isAnyItemShown = true;
-
 				// Actual index of the item in the full list
 				$scope.activeItemIndex = 0;
 
-				// Index of the item in the visible list which doesn't include hidden rows
-				$scope.visibleItemIndex = 0;
-
-				// Lookup object to keep track of metadata about each item, including actual index, whether it is
-				// hidden and if it should be a striped row
-				$scope.listItemMetadata = {};
-
-				// Keep track of whether the list has ever been filtered so we can use this for row striping
-				$scope.neverFiltered = true;
+				// Set the max no of rows to 50 if pagination is enabled, otherwise set to -1
+				$scope.rowsPerPage = $scope.pagination ? 50 : -1;
 
 				$scope.isString = function(object) {
 					return typeof object === 'string';
@@ -45,17 +37,6 @@
 					return typeof object === 'string' && object.indexOf('action-') !== 0;
 				};
 
-				// Exposed for testing
-				$scope.isItemFilteredOut = function(item, filter) {
-					var filterProps = [];
-
-					$scope.propertiesToFilter.forEach(function(property) {
-						filterProps.push(item[property]);
-					});
-
-					return ($filter('filter')(filterProps, filter)).length === 0;
-				};
-
 			},
 
 			link: function(scope, element) {
@@ -65,58 +46,15 @@
 						return tbody.find('tr')[scope.activeItemIndex];
 					};
 
-				// Apply the filter to the list whenever it changes
-				scope.$watch('itemFilter', function(newFilterVal, prevFilterVal) {
-					if (newFilterVal !== prevFilterVal) {
-						scope.filterItems(newFilterVal);
-					}
-				});
-
 				scope.$watch('data', function(data, prevData) {
 					var isDataPopulated = data && data.length > 0,
 						isFirstLoad = isDataPopulated && !scope.numberOfItemsShown,
-						hasLengthChanged = isDataPopulated && data.length !== prevData.length,
-						i;
+						hasLengthChanged = isDataPopulated && data.length !== prevData.length;
 
 					if (isFirstLoad || hasLengthChanged) {
 						scope.numberOfItemsShown = data.length;
-						// Holds the items that are currently shown to the user
-						scope.shownItems = data;
-
-						for (i = 0; i < data.length; i++) {
-							scope.listItemMetadata[data[i].id] = {
-								index: i
-							};
-						}
 					}
 				}, true);
-
-				scope.filterItems = function(filter) {
-					var shownItems = [],
-						isItemHidden,
-						oddOrEvenValue;
-
-					scope.data.forEach(function(item) {
-						// Add value to item about whether it is filtered out or not so that we can either show or hide it
-						isItemHidden = scope.isItemFilteredOut(item, filter);
-						scope.listItemMetadata[item.id].isHidden = isItemHidden;
-
-						if (!isItemHidden) {
-							// Unfortunately the :nth-match() CSS selector is not supported yet so we need to calculate
-							// here whether the item should have a striped row or not.
-							oddOrEvenValue = shownItems.length % 2;
-							scope.listItemMetadata[item.id].isStriped = !!oddOrEvenValue;
-							shownItems.push(item);
-						}
-					});
-
-					scope.shownItems = shownItems;
-					scope.numberOfItemsShown = shownItems.length;
-					scope.isAnyItemShown = !!shownItems.length;
-					// Set the active item index to be the first visible item in the list
-					scope.activeItemIndex = scope.getActiveItemIndex(0);
-					scope.neverFiltered = false;
-				};
 
 				scope.scroll = function(scrollElement, change, duration, start, currentTime) {
 					var INCREMENT = 20;
@@ -129,11 +67,9 @@
 				};
 
 				scope.selectItem = function(index, id) {
-					var removePanelClose,
-						item = scope.data[index];
+					var removePanelClose;
 
 					scope.activeItemIndex = index;
-					scope.visibleItemIndex = scope.shownItems.indexOf(item);
 					scope.selectedItem.id = id;
 
 					scope.parentClickHandler();
@@ -161,12 +97,6 @@
 					return false;
 				};
 
-				scope.getActiveItemIndex = function(visibleItemIndex) {
-					var shownItem = scope.shownItems[visibleItemIndex];
-
-					return shownItem ? scope.listItemMetadata[shownItem.id].index : null;
-				};
-
 				scope.checkKeyDown = function(e) {
 					var key = e.which,
 						SCROLL_DURATION = 100,
@@ -176,10 +106,8 @@
 
 					if (key === 40) {
 						// Down
-						if (scope.visibleItemIndex < scope.numberOfItemsShown - 1) {
-							scope.visibleItemIndex += 1;
-
-							scope.activeItemIndex = scope.getActiveItemIndex(scope.visibleItemIndex);
+						if (scope.activeItemIndex < scope.numberOfItemsShown - 1) {
+							scope.activeItemIndex += 1;
 						}
 						if (trNative() && !scope.isScrolledIntoView(trNative())) {
 							scope.scroll(document.body, trNative().offsetHeight * 2, SCROLL_DURATION, document.body.scrollTop,
@@ -187,10 +115,8 @@
 						}
 					} else if (key === 38) {
 						// Up
-						if (scope.visibleItemIndex > 0) {
-							scope.visibleItemIndex -= 1;
-
-							scope.activeItemIndex = scope.getActiveItemIndex(scope.visibleItemIndex);
+						if (scope.activeItemIndex > 0) {
+							scope.activeItemIndex -= 1;
 						}
 						if (trNative() && !scope.isScrolledIntoView(trNative())) {
 							scope.scroll(document.body, trNative().offsetHeight * -1.5, SCROLL_DURATION, document.body.scrollTop,

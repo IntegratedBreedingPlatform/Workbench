@@ -9,7 +9,7 @@
 	<div ng-show="methodsCtrl.showThrobberWrapper" class="om-list-throbber-wrapper">
 		<span ng-class="{'throbber-hidden': !methodsCtrl.showThrobber}" class="throbber throbber-lg"></span>
 	</div>
-	<om-list ng-hide="methodsCtrl.methods.length === 0" om-data="methodsCtrl.methods" om-col-headers="methodsCtrl.colHeaders" om-on-click="showMethodDetails()" om-selected-item="selectedItem" om-item-filter="searchFilter" om-properties-to-filter="filterByProperties"></om-list>
+	<om-list ng-hide="methodsCtrl.methods.length === 0" om-data="methodsCtrl.methods" om-col-headers="methodsCtrl.colHeaders" om-on-click="showMethodDetails()" om-selected-item="selectedItem" om-item-filter="searchFilter" om-properties-to-filter="filterByProperties" om-pagination="true"></om-list>
 	<p ng-show="methodsCtrl.showNoItemsMessage" class="text-info">{{'list.noItemsFound' | translate:'{items: "methods"}'}}</p>
 	<p ng-show="methodsCtrl.problemGettingList" class="text-danger">{{'list.problemGettingList' | translate}}</p>
 </div>
