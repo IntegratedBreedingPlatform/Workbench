@@ -99,14 +99,26 @@
 
 					return $q(function(resolve, reject) {
 						methodsService.getMethods().then(function(methods) {
+							var isMethodFound = false;
 							scopeData.methods = methods;
 
-							variable.methodSummary = {
-								id: methodId,
-								name: methodName
-							};
-
-							resolve();
+							methods.some(function(method) {
+								if (method.id === methodId && method.name === methodName) {
+									variable.methodSummary = {
+										id: methodId,
+										name: methodName
+									};
+									isMethodFound = true;
+								}
+							});
+							if (!isMethodFound) {
+								$translate('variableStateService.methodNotFound').then(function(message) {
+									errors.push(message);
+								});
+								reject();
+							} else {
+								resolve();
+							}
 						}, handleFailedUpdate(reject, 'variableStateService.couldNotSetMethod'));
 					});
 				},
@@ -123,15 +135,23 @@
 
 					return $q(function(resolve, reject) {
 						scalesService.getScales().then(function(scales) {
+							var isScaleFound = false;
 							scopeData.scales = scales;
 
 							scales.some(function(scale) {
 								if (scale.id === scaleId) {
 									variable.scale = scale;
+									isScaleFound = true;
 								}
 							});
-
-							resolve();
+							if (!isScaleFound) {
+								$translate('variableStateService.scaleNotFound').then(function(message) {
+									errors.push(message);
+								});
+								reject();
+							} else {
+								resolve();
+							}
 						}, handleFailedUpdate(reject, 'variableStateService.couldNotSetScale'));
 					});
 				}

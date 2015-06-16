@@ -180,7 +180,9 @@
 		"couldNotSetMethod": "Your method was created but not set on your new variable. Please try again.",
 		"couldNotSetProperty": "Your property was created but not set on your new variable. Please try again.",
 		"couldNotSetScale": "Your scale was created but not set on your new variable. Please try again.",
-		"propertyNotFound": "Your property could not be found in the list of properties. Please try again."
+		"propertyNotFound": "Your property could not be found in the list of properties. Please try again.",
+		"methodNotFound": "Your method could not be found in the list of methods. Please try again.",
+		"scaleNotFound": "Your scale could not be found in the list of scales. Please try again."
 	},
 
 	"warnings": {

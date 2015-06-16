@@ -24,7 +24,9 @@ describe('Variable State Service', function() {
 			'variableStateService.couldNotSetProperty': 'an error message',
 			'variableStateService.couldNotSetMethod': 'another error message',
 			'variableStateService.couldNotSetScale': 'yet another error message',
-			'variableStateService.propertyNotFound': 'property not found error message'
+			'variableStateService.propertyNotFound': 'property not found error message',
+			'variableStateService.methodNotFound': 'method not found error message',
+			'variableStateService.scaleNotFound': 'scale not found error message'
 		},
 
 		variableStateService,
@@ -274,7 +276,7 @@ describe('Variable State Service', function() {
 				result,
 				success;
 
-			result = variableStateService.setMethod(selectedMethodId);
+			result = variableStateService.setMethod(selectedMethodId, 'a method');
 
 			result.then(function() {success = true;}, function() {success = false;});
 
@@ -307,8 +309,8 @@ describe('Variable State Service', function() {
 
 		});
 
-		it('should set the methods and method summary if the call to the methods service is successful', function() {
-
+		it('should set the methods and method summary if the call to the methods service is successful and method ' +
+				'is found in the list of methods', function() {
 			var methods = [{id: 1, name: 'a method'}],
 				selectedMethodId = 1,
 				selectedMethodName = 'a method',
@@ -328,6 +330,29 @@ describe('Variable State Service', function() {
 			expect(state.variable.methodSummary.id).toEqual(selectedMethodId);
 			expect(state.variable.methodSummary.name).toEqual(selectedMethodName);
 			expect(state.scopeData.methods).toEqual(methods);
+		});
+
+		it('should return an error if the call to the methods service is successful but the method ' +
+				'could not be found in the list of methods', function() {
+			var methods = [{id: 2, name: 'another method'}],
+				selectedMethodId = 1,
+				selectedMethodName = 'a method',
+				result,
+				state,
+				success;
+
+			result = variableStateService.setMethod(selectedMethodId, selectedMethodName);
+
+			result.then(function() {success = true;}, function() {success = false;});
+
+			deferredGetMethods.resolve(methods);
+			scope.$apply();
+
+			state = variableStateService.getVariableState();
+
+			expect(state.errors.length).toEqual(1);
+			expect(state.errors[0]).toEqual(TRANSLATIONS['variableStateService.methodNotFound']);
+			expect(success).toBe(false);
 		});
 	});
 
@@ -374,8 +399,8 @@ describe('Variable State Service', function() {
 
 		});
 
-		it('should set the scales and scale if the call to the scales service is successful', function() {
-
+		it('should set the scales and scale if the call to the scales service is successful and the scale ' +
+				'is found in the list of scales', function() {
 			var scales = [{id: 1, name: 'a scale'}],
 				selectedScaleId = 1,
 				result,
@@ -393,6 +418,28 @@ describe('Variable State Service', function() {
 
 			expect(state.variable.scale.id).toEqual(selectedScaleId);
 			expect(state.scopeData.scales).toEqual(scales);
+		});
+
+		it('should return an error if the call to the scales service is successful but the scale ' +
+				'could not be found in the list of scales', function() {
+			var scales = [{id: 2, name: 'another scale'}],
+				selectedScaleId = 1,
+				result,
+				state,
+				success;
+
+			result = variableStateService.setScale(selectedScaleId);
+
+			result.then(function() {success = true;}, function() {success = false;});
+
+			deferredGetScales.resolve(scales);
+			scope.$apply();
+
+			state = variableStateService.getVariableState();
+
+			expect(state.errors.length).toEqual(1);
+			expect(state.errors[0]).toEqual(TRANSLATIONS['variableStateService.scaleNotFound']);
+			expect(success).toBe(false);
 		});
 
 		it('should not set the scale if there is no matching id', function() {

@@ -32,7 +32,7 @@
 			}]
 			*/
 			getScales: function() {
-				var request = $http.get('/bmsapi/ontology/' + configService.getCropName() + '/scales', {timeout: 5000});
+				var request = $http.get('/bmsapi/ontology/' + configService.getCropName() + '/scales'/*, {timeout: 5000}*/);
 				return request.then(serviceUtilities.restFilteredScalesSuccessHandler, failureHandler);
 			},
 
