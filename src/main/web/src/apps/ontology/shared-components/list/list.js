@@ -120,7 +120,7 @@
 
 					if (key === 40) {
 						// Down
-						if (scope.activeItemIndex < scope.numberOfItemsShown - 1) {
+						if (scope.activeItemIndex < scope.filteredData.length - 1) {
 							scope.activeItemIndex += 1;
 						}
 						if (trNative() && !scope.isScrolledIntoView(trNative())) {
@@ -138,7 +138,7 @@
 						}
 					} else if (key === 13) {
 						// Enter
-						scope.selectItem(scope.activeItemIndex, scope.data[scope.activeItemIndex].id);
+						scope.selectItem(scope.activeItemIndex, scope.filteredData[scope.activeItemIndex].id);
 					}
 				};
 
