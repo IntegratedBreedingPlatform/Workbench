@@ -37,6 +37,20 @@
 					return typeof object === 'string' && object.indexOf('action-') !== 0;
 				};
 
+				$scope.filterByProperties = function(item) {
+					if (!$scope.itemFilter) {
+						return true;
+					}
+					return $scope.propertiesToFilter.some(function(property) {
+						var value = item[property].toLowerCase(),
+							searchText = $scope.itemFilter.toLowerCase();
+
+						if (value.indexOf(searchText) > -1) {
+							return true;
+						}
+					}, this);
+				};
+
 			},
 
 			link: function(scope, element) {
