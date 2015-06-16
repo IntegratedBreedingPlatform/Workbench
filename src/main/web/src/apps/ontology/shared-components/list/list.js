@@ -19,7 +19,6 @@
 			},
 
 			controller: function($scope) {
-				// Actual index of the item in the full list
 				$scope.activeItemIndex = 0;
 
 				// Set the max no of rows to 50 if pagination is enabled, otherwise set to -1
