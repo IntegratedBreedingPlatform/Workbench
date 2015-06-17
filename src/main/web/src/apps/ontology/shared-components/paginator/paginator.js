@@ -15,18 +15,14 @@ http://cacodaemon.de/index.php?id=50
 				result;
 
 			// The rowsPerPage will be -1 when we don't want to apply this filter
-			if (!input || rowsPerPage === -1) {
+			if (!input || !rowsPerPage || rowsPerPage === -1) {
 				return input;
 			}
 
-			if (rowsPerPage) {
-				paginatorService.rowsPerPage = rowsPerPage;
-			}
-
+			paginatorService.rowsPerPage = rowsPerPage;
 			paginatorService.itemCount = input.length;
 
 			page = paginatorService.page;
-
 			result = input.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
 
 			if (result.length === 0) {
@@ -39,9 +35,10 @@ http://cacodaemon.de/index.php?id=50
 
 	paginatorModule.filter('getPageNumbers', function() {
 		return function(input, start, end) {
+			var i;
 			input = [];
 
-			for (var i = 0; start < end; start++, i++) {
+			for (i = 0; start < end; start++, i++) {
 				input[i] = start;
 			}
 
@@ -51,6 +48,7 @@ http://cacodaemon.de/index.php?id=50
 
 	paginatorModule.service('paginatorService', function() {
 		this.page = 0;
+		// Default to 50 rows per page
 		this.rowsPerPage = 50;
 		this.itemCount = 0;
 		this.limitPerPage = 5;
@@ -96,28 +94,23 @@ http://cacodaemon.de/index.php?id=50
 		};
 
 		this.pageCount = function() {
-			var count = Math.ceil(this.itemCount / this.rowsPerPage);
-			if (count === 1) {
-				this.page = 0;
-			}
-			return count;
+			return Math.ceil(this.itemCount / this.rowsPerPage);
 		};
 
+		// Get the lowest Page number that we should show in the paginator
 		this.lowerLimit = function() {
-			var pageCountLimitPerPageDiff = this.pageCount() - this.limitPerPage,
-				low;
+			var lowestPageNo = this.pageCount() - this.limitPerPage;
 
-			if (pageCountLimitPerPageDiff < 0) {
+			if (lowestPageNo < 0) {
 				return 0;
 			}
-
-			if (this.page > pageCountLimitPerPageDiff + 1) {
-				return pageCountLimitPerPageDiff;
+			if (this.page > lowestPageNo + 1) {
+				return lowestPageNo;
 			}
 
-			low = this.page - (Math.ceil(this.limitPerPage / 2) - 1);
+			lowestPageNo = this.page - (Math.ceil(this.limitPerPage / 2) - 1);
 
-			return Math.max(low, 0);
+			return Math.max(lowestPageNo, 0);
 		};
 
 	});
