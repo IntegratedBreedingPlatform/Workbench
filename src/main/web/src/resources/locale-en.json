@@ -172,7 +172,10 @@
 		"title": "Variables",
 
 		"details": {
-			"expectedRange": "Expected Range"
+			"expectedRange": "Expected Range",
+			"observations": "Observations",
+			"studies": "Nurseries and Trials",
+			"metadata": "Metadata"
 		}
 	},
 
