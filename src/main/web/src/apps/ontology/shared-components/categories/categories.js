@@ -4,31 +4,6 @@
 (function() {
 	var categoriesModule = angular.module('categories', ['formFields', 'utilities']);
 
-	function validateCategories(ctrl, categories) {
-		var names = [],
-			values = [];
-
-		categories.some(function(category) {
-			if (!category.name || !category.description) {
-				ctrl.$setValidity('emptyValue', false);
-				return true;
-			}
-
-			if (names.indexOf(category.name) !== -1) {
-				ctrl.$setValidity('nonUniqueName', false);
-				return true;
-			}
-
-			if (values.indexOf(category.description) !== -1) {
-				ctrl.$setValidity('nonUniqueValue', false);
-				return true;
-			}
-
-			names.push(category.name);
-			values.push(category.description);
-		});
-	}
-
 	categoriesModule.directive('omCategories', ['formUtilities', 'editable', function(formUtilities, editable) {
 		return {
 			require: 'ngModel',
@@ -70,6 +45,32 @@
 				};
 
 				$scope.formParentHasError = formUtilities.formParentHasError($scope, 'categoriesForm');
+
+				//exposed for testing purposes
+				$scope.validateCategories = function(ctrl, categories) {
+					var names = [],
+						values = [];
+
+					categories.some(function(category) {
+						if (!category.name || !category.description) {
+							ctrl.$setValidity('emptyValue', false);
+							return true;
+						}
+
+						if (names.indexOf(category.name) !== -1) {
+							ctrl.$setValidity('nonUniqueName', false);
+							return true;
+						}
+
+						if (values.indexOf(category.description) !== -1) {
+							ctrl.$setValidity('nonUniqueValue', false);
+							return true;
+						}
+
+						names.push(category.name);
+						values.push(category.description);
+					});
+				};
 			},
 
 			link: function(scope, elm, attrs, ctrl) {
@@ -85,7 +86,7 @@
 						resetValidity();
 					} else if (scope.model && scope.model[scope.property] && scope.model[scope.property].categories &&
 							scope.categoriesForm.$valid) {
-						validateCategories(ctrl, scope.model[scope.property].categories);
+						scope.validateCategories(ctrl, scope.model[scope.property].categories);
 					}
 				});
 
@@ -96,7 +97,7 @@
 						return;
 					}
 					if (scope.categoriesForm.$valid) {
-						validateCategories(ctrl, data);
+						scope.validateCategories(ctrl, data);
 					}
 				}, true);
 			},

@@ -1,4 +1,4 @@
-/*global angular, inject, expect*/
+/*global angular, inject, expect, spyOn*/
 'use strict';
 
 describe('Categories module', function() {
@@ -140,6 +140,25 @@ describe('Categories module', function() {
 			compileForm('om-categorical="false"');
 
 			expect(scope.testForm.$valid).toBe(true);
+		});
+
+		it('should not validate the categories if the form is not valid', function() {
+			scope.model = {};
+
+			inject(function($compile) {
+				directiveElement = $compile(
+					'<om-categories name="omCategories" ng-model="model" om-property="validValues" om-categorical="true"></om-categories>'
+					)(scope);
+			});
+			scope.$digest();
+			isolateScope = directiveElement.isolateScope();
+			isolateScope.categoriesForm.$setValidity('mymin', false);
+			spyOn(isolateScope, 'validateCategories');
+			scope.model.validValues.categories = [{
+						description: 'new description but no name'
+					}];
+			scope.$digest();
+			expect(isolateScope.validateCategories).not.toHaveBeenCalled();
 		});
 
 		it('should set the widget to be valid if the specified model is undefined or null', function() {
