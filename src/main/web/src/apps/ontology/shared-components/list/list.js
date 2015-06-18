@@ -4,7 +4,7 @@
 (function() {
 	var listModule = angular.module('list', ['utilities', 'paginator']);
 
-	listModule.directive('omList', ['$rootScope', 'mathUtilities', function($rootScope, mathUtilities) {
+	listModule.directive('omList', ['selectedItemService', function(selectedItemService) {
 
 		return {
 			restrict: 'E',
@@ -15,11 +15,12 @@
 				selectedItem: '=omSelectedItem',
 				itemFilter: '=omItemFilter',
 				propertiesToFilter: '=omPropertiesToFilter',
-				pagination: '=omPagination'
+				pagination: '=omPagination',
+				listName: '@omListName'
 			},
 
 			controller: function($scope) {
-				$scope.activeItemIndex = 0;
+				$scope.activeItemId = selectedItemService.getSelectedItem().id;
 
 				// Set the max no of rows to 50 if pagination is enabled, otherwise set to -1
 				$scope.rowsPerPage = $scope.pagination ? 50 : -1;
@@ -52,12 +53,7 @@
 
 			},
 
-			link: function(scope, element) {
-				var tbody = element.find('tbody'),
-
-					trNative = function() {
-						return tbody.find('tr')[scope.activeItemIndex];
-					};
+			link: function(scope) {
 
 				scope.$watch('data', function(data, prevData) {
 					var isDataPopulated = data && data.length > 0,
@@ -69,80 +65,48 @@
 					}
 				}, true);
 
-				scope.scroll = function(scrollElement, change, duration, start, currentTime) {
-					var INCREMENT = 20;
-
-					currentTime += INCREMENT;
-					scrollElement.scrollTop = mathUtilities.easeInOutQuad(currentTime, start, change, duration);
-					if (currentTime < duration) {
-						setTimeout(scope.scroll, INCREMENT, scrollElement, change, duration, start, currentTime);
+				scope.$watch(selectedItemService.getSelectedItem, function(item, prevItem, scope) {
+					if (item.list !== scope.listName) {
+						scope.activeItemId = null;
+					} else {
+						scope.activeItemId = item.id;
 					}
-				};
+				}, true);
 
 				scope.selectItem = function(index, id) {
-					var removePanelClose;
-
-					scope.activeItemIndex = index;
+					selectedItemService.setSelectedItem(id, scope.listName);
+					scope.activeItemId = id;
 					scope.selectedItem.id = id;
 
 					scope.parentClickHandler();
-					removePanelClose = $rootScope.$on('panelClose', function() {
-						//execute ONCE and destroy
-						element.find('table')[0].focus();
-						removePanelClose();
-					});
 				};
 
 				scope.toggleFavourites = function(index, id, event, object) {
 					event.stopPropagation();
-					scope.activeItemIndex = index;
 					scope.selectedItem.id = id;
 					object.iconFunction();
-				};
-
-				scope.isScrolledIntoView = function(el) {
-					if (el) {
-						var elemTop = el.getBoundingClientRect().top,
-						elemBottom = el.getBoundingClientRect().bottom;
-
-						return (elemTop >= 0) && (elemBottom <= window.innerHeight);
-					}
-					return false;
-				};
-
-				scope.checkKeyDown = function(e) {
-					var key = e.which,
-						SCROLL_DURATION = 100,
-						CURRENT_TIME = 0;
-
-					e.preventDefault();
-
-					if (key === 40) {
-						// Down
-						if (scope.activeItemIndex < scope.filteredData.length - 1) {
-							scope.activeItemIndex += 1;
-						}
-						if (trNative() && !scope.isScrolledIntoView(trNative())) {
-							scope.scroll(document.body, trNative().offsetHeight * 2, SCROLL_DURATION, document.body.scrollTop,
-								CURRENT_TIME);
-						}
-					} else if (key === 38) {
-						// Up
-						if (scope.activeItemIndex > 0) {
-							scope.activeItemIndex -= 1;
-						}
-						if (trNative() && !scope.isScrolledIntoView(trNative())) {
-							scope.scroll(document.body, trNative().offsetHeight * -1.5, SCROLL_DURATION, document.body.scrollTop,
-								CURRENT_TIME);
-						}
-					} else if (key === 13) {
-						// Enter
-						scope.selectItem(scope.activeItemIndex, scope.filteredData[scope.activeItemIndex].id);
-					}
 				};
 
 			},
 			templateUrl: 'static/views/ontology/list.html'
 		};
 	}]);
+
+	listModule.service('selectedItemService', function() {
+		var selectedItemId = null,
+			selectedItemList = null;
+
+		return {
+			getSelectedItem: function() {
+				return {
+					id: selectedItemId,
+					list: selectedItemList
+				};
+			},
+			setSelectedItem: function(itemId, list) {
+				selectedItemId = itemId;
+				selectedItemList = list;
+			}
+		};
+	});
 }());

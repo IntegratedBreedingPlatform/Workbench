@@ -2,36 +2,7 @@
 'use strict';
 
 describe('List module', function() {
-	var LIST_ITEM_CAT = {
-			id: 'cat',
-			name: 'Cat',
-			description: 'A fluffy animal that likes to sleep.',
-			'action-favourite': {
-				iconValue: 'star',
-				iconFunction: function() {}
-			}
-		},
-		LIST_ITEM_DOG = {
-			id: 'dog',
-			name: 'Dog',
-			description: 'A playful animal that likes walks',
-			'action-favourite': {
-				iconValue: 'star-empty',
-				iconFunction: function() {}
-			}
-		},
-
-		fakeScrollElement = {
-			scrollTop: 100 // Set the number of pixels scrolled
-		},
-
-		fakeEvent = {
-			preventDefault: function() {},
-			stopPropagation: function() {}
-		},
-
-		scope,
-		directiveElement,
+	var scope,
 		mockTranslateFilter;
 
 	beforeEach(function() {
@@ -55,328 +26,285 @@ describe('List module', function() {
 		scope = $rootScope;
 	}));
 
-	function compileDirective(extraAttrs) {
-		var attrs = extraAttrs || '';
+	describe('omList directive', function() {
+		var LIST_ITEM_CAT = {
+			id: 'cat',
+			name: 'Cat',
+			description: 'A fluffy animal that likes to sleep.',
+			'action-favourite': {
+				iconValue: 'star',
+				iconFunction: function() {}
+			}
+		},
+		LIST_ITEM_DOG = {
+			id: 'dog',
+			name: 'Dog',
+			description: 'A playful animal that likes walks',
+			'action-favourite': {
+				iconValue: 'star-empty',
+				iconFunction: function() {}
+			}
+		},
 
-		inject(function($compile) {
-			directiveElement = $compile('<om-list om-data="testData" om-col-headers="testHeaders" ' + attrs + '></om-list>')(scope);
-		});
+		fakeEvent = {
+			preventDefault: function() {},
+			stopPropagation: function() {}
+		},
+		selectedItemService = {
+			getSelectedItem: function() {}
+		},
+		directiveElement;
 
-		scope.$digest();
-	}
+		function compileDirective(extraAttrs) {
+			var attrs = extraAttrs || '';
 
-	it('should set the maximum rows per page to 50 if the list can be paginated', function() {
-		var isolateScope;
+			inject(function($compile) {
+				directiveElement = $compile('<om-list om-data="testData" om-col-headers="testHeaders" ' + attrs + '></om-list>')(scope);
+			});
 
-		compileDirective('om-pagination="true"');
-		isolateScope = directiveElement.isolateScope();
+			scope.$digest();
+		}
 
-		expect(isolateScope.rowsPerPage).toBe(50);
-	});
+		it('should set the maximum rows per page to 50 if the list can be paginated', function() {
+			var isolateScope;
 
-	it('should set the rows per page to -1 if the list cannot be paginated', function() {
-		var isolateScope;
-
-		compileDirective('om-pagination="false"');
-		isolateScope = directiveElement.isolateScope();
-
-		expect(isolateScope.rowsPerPage).toBe(-1);
-	});
-
-	describe('scope.isString', function() {
-		var isolateScope;
-
-		beforeEach(function() {
-			compileDirective();
+			compileDirective('om-pagination="true"');
 			isolateScope = directiveElement.isolateScope();
+
+			expect(isolateScope.rowsPerPage).toBe(50);
 		});
 
-		it('should return true if the type of the passed in object is a string', function() {
-			expect(isolateScope.isString('hey')).toBe(true);
-		});
+		it('should set the rows per page to -1 if the list cannot be paginated', function() {
+			var isolateScope;
 
-		it('should return false if the type of the passed in object is not a string', function() {
-			expect(isolateScope.isString(3)).toBe(false);
-		});
-	});
-
-	describe('scope.isAction', function() {
-		var isolateScope;
-
-		beforeEach(function() {
-			compileDirective();
+			compileDirective('om-pagination="false"');
 			isolateScope = directiveElement.isolateScope();
+
+			expect(isolateScope.rowsPerPage).toBe(-1);
 		});
 
-		it('should return a truthy value if the passed in item is an object and has an iconValue property', function() {
-			expect(isolateScope.isAction({iconValue: 'star'})).toBeTruthy();
-		});
+		it('should change the active item id if the selectedItemService refers to this list', function() {
+			var isolateScope,
+				selectedItemService;
 
-		it('should return a falsy value if the passed in item is not an object', function() {
-			expect(isolateScope.isAction(3)).toBeFalsy();
-		});
+			inject(function(_selectedItemService_) {
+				selectedItemService = _selectedItemService_;
+			});
 
-		it('should return a falsy value if the passed in item is an object and does not have an iconValue property', function() {
-			expect(isolateScope.isAction({})).toBeFalsy();
-		});
-	});
-
-	describe('scope.isNotActionHeader', function() {
-		var isolateScope;
-
-		beforeEach(function() {
-			compileDirective();
+			compileDirective('om-list-name="list"');
 			isolateScope = directiveElement.isolateScope();
+
+			selectedItemService.setSelectedItem('1', 'list');
+
+			scope.$apply();
+
+			expect(isolateScope.activeItemId).toEqual('1');
 		});
 
-		it('should return a truthy value if the passed in item is a string that does not contain "action-"', function() {
-			expect(isolateScope.isNotActionHeader('name')).toBeTruthy();
-		});
+		it('should not change the active item id if the selectedItemService does not refer to this list', function() {
+			var isolateScope,
+				selectedItemService;
 
-		it('should return a falsy value if the passed in item is not a string', function() {
-			expect(isolateScope.isAction(3)).toBeFalsy();
-		});
+			inject(function(_selectedItemService_) {
+				selectedItemService = _selectedItemService_;
+			});
 
-		it('should return a falsy value if the passed in item is a string and contains "action-"', function() {
-			expect(isolateScope.isAction('action-favourite')).toBeFalsy();
-		});
-	});
-
-	describe('scope.filterByProperties', function() {
-		var isolateScope;
-
-		beforeEach(function() {
-			compileDirective();
+			compileDirective('om-list-name="list"');
 			isolateScope = directiveElement.isolateScope();
+
+			selectedItemService.setSelectedItem('1', 'anotherList');
+
+			scope.$apply();
+
+			expect(isolateScope.activeItemId).toEqual(null);
 		});
 
-		it('should return true if there is no provided filter text', function() {
-			expect(isolateScope.filterByProperties()).toBe(true);
+		describe('scope.isString', function() {
+			var isolateScope;
+
+			beforeEach(function() {
+				compileDirective();
+				isolateScope = directiveElement.isolateScope();
+			});
+
+			it('should return true if the type of the passed in object is a string', function() {
+				expect(isolateScope.isString('hey')).toBe(true);
+			});
+
+			it('should return false if the type of the passed in object is not a string', function() {
+				expect(isolateScope.isString(3)).toBe(false);
+			});
 		});
 
-		it('should return true if the search text is contained within any of the filtered properties of the item', function() {
-			var item = {
-				name: 'cat',
-				description: 'animal'
-			};
-			isolateScope.propertiesToFilter = ['name', 'description'];
-			isolateScope.itemFilter = 'm';
+		describe('scope.isAction', function() {
+			var isolateScope;
 
-			expect(isolateScope.filterByProperties(item)).toBe(true);
+			beforeEach(function() {
+				compileDirective();
+				isolateScope = directiveElement.isolateScope();
+			});
+
+			it('should return a truthy value if the passed in item is an object and has an iconValue property', function() {
+				expect(isolateScope.isAction({iconValue: 'star'})).toBeTruthy();
+			});
+
+			it('should return a falsy value if the passed in item is not an object', function() {
+				expect(isolateScope.isAction(3)).toBeFalsy();
+			});
+
+			it('should return a falsy value if the passed in item is an object and does not have an iconValue property', function() {
+				expect(isolateScope.isAction({})).toBeFalsy();
+			});
 		});
 
-		it('should return true if the value matches the search text but is a different case', function() {
-			var item = {
-				name: 'cat'
-			};
-			isolateScope.propertiesToFilter = ['name'];
-			isolateScope.itemFilter = 'CAT';
+		describe('scope.isNotActionHeader', function() {
+			var isolateScope;
 
-			expect(isolateScope.filterByProperties(item)).toBe(true);
+			beforeEach(function() {
+				compileDirective();
+				isolateScope = directiveElement.isolateScope();
+			});
+
+			it('should return a truthy value if the passed in item is a string that does not contain "action-"', function() {
+				expect(isolateScope.isNotActionHeader('name')).toBeTruthy();
+			});
+
+			it('should return a falsy value if the passed in item is not a string', function() {
+				expect(isolateScope.isAction(3)).toBeFalsy();
+			});
+
+			it('should return a falsy value if the passed in item is a string and contains "action-"', function() {
+				expect(isolateScope.isAction('action-favourite')).toBeFalsy();
+			});
 		});
 
-		it('should return false if the search text is not contained within any of the filtered properties of the item', function() {
-			var item = {
-				name: 'cat',
-				description: 'animal'
-			};
-			isolateScope.propertiesToFilter = ['name', 'description'];
-			isolateScope.itemFilter = 'dog';
+		describe('scope.filterByProperties', function() {
+			var isolateScope;
 
-			expect(isolateScope.filterByProperties(item)).toBe(false);
+			beforeEach(function() {
+				compileDirective();
+				isolateScope = directiveElement.isolateScope();
+			});
+
+			it('should return true if there is no provided filter text', function() {
+				expect(isolateScope.filterByProperties()).toBe(true);
+			});
+
+			it('should return true if the search text is contained within any of the filtered properties of the item', function() {
+				var item = {
+					name: 'cat',
+					description: 'animal'
+				};
+				isolateScope.propertiesToFilter = ['name', 'description'];
+				isolateScope.itemFilter = 'm';
+
+				expect(isolateScope.filterByProperties(item)).toBe(true);
+			});
+
+			it('should return true if the value matches the search text but is a different case', function() {
+				var item = {
+					name: 'cat'
+				};
+				isolateScope.propertiesToFilter = ['name'];
+				isolateScope.itemFilter = 'CAT';
+
+				expect(isolateScope.filterByProperties(item)).toBe(true);
+			});
+
+			it('should return false if the search text is not contained within any of the filtered properties of the item', function() {
+				var item = {
+					name: 'cat',
+					description: 'animal'
+				};
+				isolateScope.propertiesToFilter = ['name', 'description'];
+				isolateScope.itemFilter = 'dog';
+
+				expect(isolateScope.filterByProperties(item)).toBe(false);
+			});
+		});
+
+		describe('scope.selectItem', function() {
+
+			it('should call the parent click handler and set the selected item id', function() {
+
+				var firstHeader = 'name',
+					secondHeader = 'description',
+					item = {
+						id: null
+					},
+					count = 0;
+
+				scope.testHeaders = [firstHeader, secondHeader];
+				scope.testData = [LIST_ITEM_CAT];
+
+				scope.clickFn = function() {
+					count++;
+				};
+				scope.selectedItem = item;
+
+				compileDirective('om-on-click="clickFn()" om-selected-item="selectedItem"');
+
+				// Call the click handler that would normally be invoked by a click on a list item
+				directiveElement.isolateScope().selectItem(1, LIST_ITEM_CAT.id);
+
+				expect(count).toEqual(1);
+				expect(item.id).toEqual(LIST_ITEM_CAT.id);
+			});
+		});
+
+		describe('scope.toggleFavourites', function() {
+			var isolateScope;
+
+			beforeEach(function() {
+				scope.testHeaders = ['name', 'description'];
+				scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
+
+				compileDirective();
+				isolateScope = directiveElement.isolateScope();
+				isolateScope.selectedItem = { id: null };
+			});
+
+			it('should stop propagation of the event to <tr>', function() {
+				spyOn(fakeEvent, 'stopPropagation');
+
+				isolateScope.toggleFavourites(1, 1, fakeEvent, LIST_ITEM_CAT['action-favourite']);
+				expect(fakeEvent.stopPropagation).toHaveBeenCalled();
+			});
+
+			it('call icon function', function() {
+				spyOn(LIST_ITEM_CAT['action-favourite'], 'iconFunction');
+
+				directiveElement.isolateScope().toggleFavourites(1, 1, fakeEvent, LIST_ITEM_CAT['action-favourite']);
+				expect(LIST_ITEM_CAT['action-favourite'].iconFunction).toHaveBeenCalled();
+			});
+
+		});
+	});
+
+	describe('selectedItemService', function() {
+		var selectedItemService;
+
+		beforeEach(inject(function(_selectedItemService_) {
+			selectedItemService = _selectedItemService_;
+		}));
+
+		describe('getSelectedItem', function() {
+
+			it('should return an object containing the selected item id and list that the selected item is in', function() {
+				var item = selectedItemService.getSelectedItem();
+				expect(item).toEqual({id: null, list: null});
+			});
+		});
+
+		describe('setSelectedItem', function() {
+
+			it('should store the passed in item id and list', function() {
+				var item;
+				selectedItemService.setSelectedItem('1', 'list');
+				item = selectedItemService.getSelectedItem();
+				expect(item).toEqual({id: '1', list: 'list'});
+			});
 		});
 	});
 
-	describe('scope.selectItem', function() {
-
-		it('should call the parent click handler and set the selected item id', function() {
-
-			var firstHeader = 'name',
-				secondHeader = 'description',
-				item = {
-					id: null
-				},
-				count = 0;
-
-			scope.testHeaders = [firstHeader, secondHeader];
-			scope.testData = [LIST_ITEM_CAT];
-
-			scope.clickFn = function() {
-				count++;
-			};
-			scope.selectedItem = item;
-
-			compileDirective('om-on-click="clickFn()" om-selected-item="selectedItem"');
-
-			// Call the click handler that would normally be invoked by a click on a list item
-			directiveElement.isolateScope().selectItem(1, LIST_ITEM_CAT.id);
-
-			expect(count).toEqual(1);
-			expect(item.id).toEqual(LIST_ITEM_CAT.id);
-		});
-
-		it('should focus on the table after panel is closed', function() {
-			scope.testData = [LIST_ITEM_CAT];
-			scope.selectedItem = {
-				id: null
-			};
-			compileDirective('om-on-click="clickFn()" om-selected-item="selectedItem"');
-
-			var tableHtml = directiveElement.find('table')[0];
-			spyOn(tableHtml, 'focus');
-
-			directiveElement.isolateScope().selectItem(1, LIST_ITEM_CAT.id);
-
-			scope.$broadcast('panelClose');
-			expect(tableHtml.focus).toHaveBeenCalled();
-		});
-	});
-
-	describe('scope.toggleFavourites', function() {
-		var isolateScope;
-
-		beforeEach(function() {
-			scope.testHeaders = ['name', 'description'];
-			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
-
-			compileDirective();
-			isolateScope = directiveElement.isolateScope();
-			isolateScope.selectedItem = { id: null };
-		});
-
-		it('should stop propagation of the event to <tr>', function() {
-			spyOn(fakeEvent, 'stopPropagation');
-
-			isolateScope.toggleFavourites(1, 1, fakeEvent, LIST_ITEM_CAT['action-favourite']);
-			expect(fakeEvent.stopPropagation).toHaveBeenCalled();
-		});
-
-		it('should set the active item to the passed in index', function() {
-			isolateScope.toggleFavourites(1, 1, fakeEvent, LIST_ITEM_CAT['action-favourite']);
-			expect(isolateScope.activeItemIndex).toBe(1);
-		});
-
-		it('call icon function', function() {
-			spyOn(LIST_ITEM_CAT['action-favourite'], 'iconFunction');
-
-			directiveElement.isolateScope().toggleFavourites(1, 1, fakeEvent, LIST_ITEM_CAT['action-favourite']);
-			expect(LIST_ITEM_CAT['action-favourite'].iconFunction).toHaveBeenCalled();
-		});
-
-	});
-
-	describe('scope.scroll', function() {
-		var isolateScope;
-
-		beforeEach(function() {
-			compileDirective();
-			isolateScope = directiveElement.isolateScope();
-		});
-
-		it('should set scroll top of the scroll element', function() {
-			isolateScope.scroll(fakeScrollElement, 20, 5, 15, 10);
-			expect(fakeScrollElement.scrollTop).toEqual(-965);
-		});
-
-		it('should set scroll top of the scroll element when current time is less than duration', function() {
-			isolateScope.scroll(fakeScrollElement, 20, 5, 15, -20);
-			expect(fakeScrollElement.scrollTop).toEqual(15);
-		});
-	});
-
-	describe('scope.isScrolledIntoView', function() {
-
-		it('should not break if a falsy value is passed in', function() {
-			compileDirective();
-			expect(directiveElement.isolateScope().isScrolledIntoView(null)).toEqual(false);
-		});
-	});
-
-	describe('scope.checkKeyDown', function() {
-		var DOWN_KEY = 40,
-			UP_KEY = 38,
-			ENTER_KEY = 13,
-			RANDOM_KEY = 1,
-
-			isolateScope;
-
-		beforeEach(function() {
-			scope.testData = [LIST_ITEM_CAT, LIST_ITEM_DOG];
-			compileDirective();
-			isolateScope = directiveElement.isolateScope();
-		});
-
-		it('should update active item if the end of list is not reached when down is pressed', function() {
-			isolateScope.activeItemIndex = 0;
-			fakeEvent.which = DOWN_KEY;
-			isolateScope.checkKeyDown(fakeEvent);
-
-			expect(isolateScope.activeItemIndex).toBe(1);
-		});
-
-		it('should scroll the list to the active item when the down key is pressed', function() {
-			spyOn(isolateScope, 'isScrolledIntoView').and.returnValue(false);
-			spyOn(isolateScope, 'scroll');
-
-			fakeEvent.which = DOWN_KEY;
-			isolateScope.checkKeyDown(fakeEvent);
-
-			expect(isolateScope.scroll).toHaveBeenCalled();
-		});
-
-		it('should not change the active item if the end of list items is reached', function() {
-			isolateScope.activeItemIndex = 1;
-			fakeEvent.which = DOWN_KEY;
-			isolateScope.checkKeyDown(fakeEvent);
-
-			expect(isolateScope.activeItemIndex).toBe(1);
-		});
-
-		it('should update active item if the start of list is not reached when up is pressed', function() {
-			isolateScope.activeItemIndex = 1;
-			fakeEvent.which = UP_KEY;
-			isolateScope.checkKeyDown(fakeEvent);
-
-			expect(isolateScope.activeItemIndex).toBe(0);
-		});
-
-		it('should scroll the list to the active item when the up key is pressed', function() {
-			spyOn(isolateScope, 'isScrolledIntoView').and.returnValue(false);
-			spyOn(isolateScope, 'scroll');
-
-			fakeEvent.which = UP_KEY;
-			isolateScope.checkKeyDown(fakeEvent);
-
-			expect(isolateScope.scroll).toHaveBeenCalled();
-		});
-
-		it('should not change the active item if the start of list items is reached', function() {
-			isolateScope.activeItemIndex = 0;
-			fakeEvent.which = UP_KEY;
-			isolateScope.checkKeyDown(fakeEvent);
-
-			expect(isolateScope.activeItemIndex).toBe(0);
-		});
-
-		it('should select an item when enter is pressed', function() {
-			spyOn(isolateScope, 'selectItem');
-
-			fakeEvent.which = ENTER_KEY;
-			isolateScope.checkKeyDown(fakeEvent);
-
-			expect(isolateScope.selectItem).toHaveBeenCalled();
-		});
-
-		it('should not change the index or select an item if a key other than up, down or enter is pressed', function() {
-			isolateScope.activeItemIndex = 0;
-
-			spyOn(isolateScope, 'selectItem');
-
-			fakeEvent.which = RANDOM_KEY;
-			isolateScope.checkKeyDown(fakeEvent);
-
-			expect(isolateScope.selectItem).not.toHaveBeenCalled();
-			expect(isolateScope.activeItemIndex).toBe(0);
-		});
-	});
 });
