@@ -1,4 +1,4 @@
-$headerHeight: 90px;
+$headerHeight: 50px;
 
 /*
 Allow angular.js to be loaded in the body, hiding cloaked elements until
@@ -102,7 +102,9 @@ ol {
 	position: absolute;
 	width: 100%;
 	height: $headerHeight;
-	padding: 1rem 3rem;
+	padding: 1rem 7rem 1rem 3rem;
+	//display the header underneaf the Close button so that the button could be clicked
+	z-index: -1;
 
 	.om-details-title {
 		line-height: 1.3;
