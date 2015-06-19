@@ -203,25 +203,4 @@
 		return collectionUtilities;
 	});
 
-	app.factory('mathUtilities', function() {
-
-		var mathUtilities = {
-
-			/*
-			The easing function used for animation, which controls the speed of amination over time.
-			This function uses the quadratic curve for easing in and out.
-			*/
-			easeInOutQuad: function(currentTime, start, change, duration) {
-				currentTime /= duration / 2;
-				if (currentTime < 1) {
-					return change / 2 * currentTime * currentTime + start;
-				}
-				currentTime--;
-				return - change / 2 * (currentTime * (currentTime - 2) - 1) + start;
-			}
-		};
-
-		return mathUtilities;
-	});
-
 }());
