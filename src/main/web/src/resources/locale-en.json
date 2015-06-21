@@ -175,7 +175,9 @@
 			"expectedRange": "Expected Range",
 			"observations": "Observations",
 			"studies": "Nurseries and Trials",
-			"metadata": "Metadata"
+			"metadata": "Metadata",
+			"dateCreated": "Date Created",
+			"dateLastModified": "Date Last Modified"
 		}
 	},
 
