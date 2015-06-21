@@ -122,7 +122,11 @@ ol {
 	overflow-y: auto;
 	overflow-x: hidden;
 	width: 100%;
-	padding: 0.5rem 3rem 0;
+	padding: 2.5rem 3rem 0;
+
+	.om-details-subheader {
+		padding-right: 2.75rem;
+	}
 }
 
 .om-details-throbber-wrapper {
