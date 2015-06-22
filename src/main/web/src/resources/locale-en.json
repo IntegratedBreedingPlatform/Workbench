@@ -63,7 +63,10 @@
 		"ontologyId": "Crop Ontology ID",
 		"property": "Property",
 		"scale": "Scale",
-		"variableType": "Variable Type"
+		"variableType": "Variable Type",
+		"metadata": "Metadata",
+		"dateCreated": "Date Created",
+		"dateLastModified": "Date Last Modified"
 	},
 
 	"list": {
@@ -174,10 +177,7 @@
 		"details": {
 			"expectedRange": "Expected Range",
 			"observations": "Observations",
-			"studies": "Nurseries and Trials",
-			"metadata": "Metadata",
-			"dateCreated": "Date Created",
-			"dateLastModified": "Date Last Modified"
+			"studies": "Nurseries and Trials"
 		}
 	},
 
