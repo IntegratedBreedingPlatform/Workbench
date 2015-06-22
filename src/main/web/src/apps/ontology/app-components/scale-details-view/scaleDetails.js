@@ -8,8 +8,8 @@
 		NUM_EDITABLE_FIELDS = 3;
 
 	scaleDetailsModule.directive('omScaleDetails', ['scalesService', 'serviceUtilities', 'formUtilities', 'panelService',
-		'dataTypesService', '$timeout',
-		function(scalesService, serviceUtilities, formUtilities, panelService, dataTypesService, $timeout) {
+		'dataTypesService', '$timeout', 'collectionUtilities',
+		function(scalesService, serviceUtilities, formUtilities, panelService, dataTypesService, $timeout, collectionUtilities) {
 
 			// Reset any errors we're showing the user
 			function resetErrors($scope) {
@@ -66,6 +66,8 @@
 						$scope.submitted = false;
 						$scope.showThrobber = false;
 					}
+
+					$scope.formatListForDisplay = collectionUtilities.formatListForDisplay;
 
 					$scope.editScale = function(e) {
 						e.preventDefault();
