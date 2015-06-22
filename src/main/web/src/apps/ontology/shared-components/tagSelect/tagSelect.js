@@ -2,9 +2,9 @@
 'use strict';
 
 (function() {
-	var tagSelect = angular.module('tagSelect', ['formFields', 'clickAway', 'selectScroll']);
+	var tagSelect = angular.module('tagSelect', ['formFields', 'clickAway', 'selectScroll', 'utilities']);
 
-	tagSelect.directive('omTagSelect', ['editable', 'selectScroll', function(editable, selectScroll) {
+	tagSelect.directive('omTagSelect', ['editable', 'selectScroll', 'ieUtilities', function(editable, selectScroll, ieUtilities) {
 		var MAX_LENGTH = 100,
 			MIN_LENGTH = 2;
 
@@ -21,6 +21,11 @@
 				scope.searchText = '';
 				scope.textTooLong = false;
 				scope.selectedIndex = -1;
+
+				ieUtilities.addIeClearInputHandler(elm, function() {
+					scope.hideSuggestions();
+					scope.$apply();
+				});
 
 				// Set the input to contain the text of the selected item from the suggestions
 				scope.$watch('selectedIndex', function(index) {

@@ -2,7 +2,7 @@
 'use strict';
 
 (function() {
-	var inputModule = angular.module('search', []);
+	var inputModule = angular.module('search', ['utilities']);
 
 	/*
 	The search directive allows the user to input search text which will be stored in the passed
@@ -10,12 +10,17 @@
 
 	@param scope.model puts text from the text box in this model so that it can then be used for filtering
 	*/
-	inputModule.directive('omSearch', function() {
+	inputModule.directive('omSearch', ['ieUtilities', function(ieUtilities) {
 		return {
-			link: function(scope) {
+			link: function(scope, element) {
 				scope.clearText = function() {
 					scope.model = '';
 				};
+
+				ieUtilities.addIeClearInputHandler(element, function() {
+					scope.model = '';
+					scope.$apply();
+				});
 			},
 			restrict: 'E',
 			scope: {
@@ -23,6 +28,6 @@
 			},
 			templateUrl: 'static/views/ontology/search.html'
 		};
-	});
+	}]);
 
 })();

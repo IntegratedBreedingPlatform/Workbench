@@ -3,6 +3,7 @@
 
 describe('List module', function() {
 	var scope,
+		ieUtilities,
 		directiveElement,
 		mockTranslateFilter;
 
@@ -19,9 +20,21 @@ describe('List module', function() {
 	beforeEach(function() {
 		angular.mock.module('templates');
 	});
-
 	beforeEach(module('templates'));
-	beforeEach(module('search'));
+
+	beforeEach(module('search', function($provide) {
+		ieUtilities = {
+			// Stub out the add IE clear input handler to call the callback when callCallback is invoked
+			addIeClearInputHandler: function(element, callback) {
+				this.callback = callback;
+			},
+			callCallback: function() {
+				this.callback();
+			}
+		};
+		// Provide mocks for the directive controller
+		$provide.value('ieUtilities', ieUtilities);
+	}));
 
 	beforeEach(inject(function($rootScope) {
 		scope = $rootScope;
@@ -34,6 +47,17 @@ describe('List module', function() {
 
 		scope.$digest();
 	}
+
+	it('should clear the model when the clear input button is clicked in IE', function() {
+		var isolateScope;
+
+		compileDirective();
+		isolateScope = directiveElement.isolateScope();
+		isolateScope.model = 'text';
+		ieUtilities.callCallback();
+
+		expect(isolateScope.model).toEqual('');
+	});
 
 	describe('scope.clearText', function() {
 		it('should set the model to an empty string', function() {

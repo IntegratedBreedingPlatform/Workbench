@@ -4,8 +4,8 @@
 (function() {
 	var multiSelect = angular.module('multiSelect', ['formFields', 'clickAway', 'selectScroll', 'utilities']);
 
-	multiSelect.directive('omMultiSelect', ['editable', 'selectScroll', 'collectionUtilities', function(editable, selectScroll,
-		collectionUtilities) {
+	multiSelect.directive('omMultiSelect', ['editable', 'selectScroll', 'collectionUtilities', 'ieUtilities', function(editable,
+		selectScroll, collectionUtilities, ieUtilities) {
 
 		return {
 			controller: function($scope) {
@@ -19,6 +19,11 @@
 				scope.suggestions = angular.copy(scope.options);
 				scope.searchText = '';
 				scope.selectedIndex = -1;
+
+				ieUtilities.addIeClearInputHandler(elm, function() {
+					scope.hideSuggestions();
+					scope.$apply();
+				});
 
 				// Set the input to contain the text of the selected item from the suggestions
 				scope.$watch('selectedIndex', function(index) {
