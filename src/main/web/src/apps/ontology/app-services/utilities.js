@@ -184,6 +184,19 @@
 				return collection.sort(function(itemOne, itemTwo) {
 					return itemOne.name.toLowerCase().localeCompare(itemTwo.name.toLowerCase());
 				});
+			},
+
+			/*
+			Takes a collection of objects and returns a coma separated string of their name properties.
+			*/
+			formatListForDisplay: function(items) {
+				if (items) {
+					var names = items.map(function(item) {
+						return item.name;
+					});
+					return names.join(', ');
+				}
+				return '';
 			}
 		};
 

@@ -2,9 +2,10 @@
 'use strict';
 
 (function() {
-	var multiSelect = angular.module('multiSelect', ['formFields', 'clickAway', 'selectScroll']);
+	var multiSelect = angular.module('multiSelect', ['formFields', 'clickAway', 'selectScroll', 'utilities']);
 
-	multiSelect.directive('omMultiSelect', ['editable', 'selectScroll', function(editable, selectScroll) {
+	multiSelect.directive('omMultiSelect', ['editable', 'selectScroll', 'collectionUtilities', function(editable, selectScroll,
+		collectionUtilities) {
 
 		return {
 			controller: function($scope) {
@@ -51,15 +52,7 @@
 					return item.name;
 				};
 
-				scope.formatListForDisplay = function(items) {
-					if (items) {
-						var names = items.map(function(item) {
-							return item.name;
-						});
-						return names.join(', ');
-					}
-					return '';
-				};
+				scope.formatListForDisplay = collectionUtilities.formatListForDisplay;
 
 				scope.search = function() {
 					scope.suggestions = angular.copy(scope.options);

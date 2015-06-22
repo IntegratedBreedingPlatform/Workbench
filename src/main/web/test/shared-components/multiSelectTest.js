@@ -315,17 +315,6 @@ describe('multiselect module', function() {
 
 	});
 
-	describe('$scope.formatListForDisplay', function() {
-
-		it('should return string separated names of the passed in array of objects', function() {
-			expect(isolateScope.formatListForDisplay(ONE_TWO)).toEqual('one, two');
-		});
-
-		it('should handle falsy passed in object', function() {
-			expect(isolateScope.formatListForDisplay(null)).toEqual('');
-		});
-	});
-
 	describe('$scope.search', function() {
 
 		it('should reset suggestions to the passed in options', function() {

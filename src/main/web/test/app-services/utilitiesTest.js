@@ -507,6 +507,18 @@ describe('Utilities Service', function() {
 				expect(collection).toEqual([A, B, C]);
 			});
 		});
+
+		describe('formatListForDisplay', function() {
+
+			it('should append the collection into a coma separated string by name property', function() {
+				var A = {name: 'A'},
+					B = {name: 'b'},
+					C = {name: 'C'},
+					collection = [A, B, C];
+
+				expect(collectionUtilities.formatListForDisplay(collection)).toEqual('A, b, C');
+			});
+		});
 	});
 
 	describe('Math Utilities', function() {
