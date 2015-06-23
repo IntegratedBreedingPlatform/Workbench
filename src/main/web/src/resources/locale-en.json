@@ -35,6 +35,10 @@
 		}
 	},
 
+	"filter": {
+		"title": "Filter by..."
+	},
+
 	"button": {
 		"addNew": "Add New",
 		"back": "Back",
@@ -63,7 +67,11 @@
 		"ontologyId": "Crop Ontology ID",
 		"property": "Property",
 		"scale": "Scale",
-		"variableType": "Variable Type"
+		"variableType": "Variable Type",
+		"metadata": "Metadata",
+		"dateCreated": "Date Created",
+		"dateLastModified": "Date Last Modified",
+		"inUseInVariables": "Used in Variables"
 	},
 
 	"list": {
@@ -174,8 +182,7 @@
 		"details": {
 			"expectedRange": "Expected Range",
 			"observations": "Observations",
-			"studies": "Nurseries and Trials",
-			"metadata": "Metadata"
+			"studies": "Nurseries and Trials"
 		}
 	},
 

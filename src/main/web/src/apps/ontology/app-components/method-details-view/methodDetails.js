@@ -7,7 +7,8 @@
 		NUM_EDITABLE_FIELDS = 2;
 
 	methodDetailsModule.directive('omMethodDetails', ['methodsService', 'serviceUtilities', 'formUtilities', 'panelService', '$timeout',
-		function(methodsService, serviceUtilities, formUtilities, panelService, $timeout) {
+		'collectionUtilities',
+		function(methodsService, serviceUtilities, formUtilities, panelService, $timeout, collectionUtilities) {
 
 			// Reset any errors we're showing the user
 			function resetErrors($scope) {
@@ -46,6 +47,8 @@
 						$scope.submitted = false;
 						$scope.showThrobber = false;
 					}
+
+					$scope.formatListForDisplay = collectionUtilities.formatListForDisplay;
 
 					$scope.editMethod = function(e) {
 						e.preventDefault();

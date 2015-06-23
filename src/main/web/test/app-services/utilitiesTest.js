@@ -2,33 +2,19 @@
 'use strict';
 
 describe('Utilities Service', function() {
-	var serviceUtilities,
-		formUtilities,
-		collectionUtilities,
-		mathUtilities,
-		location,
-		rootScope,
-		window,
-		timeout,
-		q;
 
 	beforeEach(module('utilities'));
 
-	beforeEach(function() {
-		inject(function(_serviceUtilities_, _formUtilities_, _collectionUtilities_, _mathUtilities_, $location, $q, $rootScope, $window, $timeout) {
-			serviceUtilities = _serviceUtilities_;
-			formUtilities = _formUtilities_;
-			collectionUtilities = _collectionUtilities_;
-			mathUtilities = _mathUtilities_;
-			location = $location;
-			q = $q;
-			rootScope = $rootScope;
-			window = $window;
-			timeout = $timeout;
-		});
-	});
-
 	describe('Service Utilities', function() {
+		var serviceUtilities,
+			q;
+
+		beforeEach(function() {
+			inject(function(_serviceUtilities_, $q) {
+				serviceUtilities = _serviceUtilities_;
+				q = $q;
+			});
+		});
 		describe('formatErrorsForDisplay', function() {
 
 			it('should return an empty array if there are no errors', function() {
@@ -155,9 +141,28 @@ describe('Utilities Service', function() {
 				expect(result).toEqual(q.reject(expected));
 			});
 		});
+
 	});
 
 	describe('Form Utilities', function() {
+		var formUtilities,
+			rootScope,
+			window,
+			location,
+			timeout,
+			q;
+
+		beforeEach(function() {
+			inject(function(_formUtilities_, $rootScope, $window, $timeout, $location, $q) {
+
+				formUtilities = _formUtilities_;
+				rootScope = $rootScope;
+				window = $window;
+				location = $location;
+				timeout = $timeout;
+				q = $q;
+			});
+		});
 		describe('formGroupClassGenerator', function() {
 
 			it('should return a function', function() {
@@ -492,7 +497,14 @@ describe('Utilities Service', function() {
 
 	});
 
-	describe('Service Utilities', function() {
+	describe('Collection Utilities', function() {
+		var collectionUtilities;
+
+		beforeEach(function() {
+			inject(function(_collectionUtilities_) {
+				collectionUtilities = _collectionUtilities_;
+			});
+		});
 
 		describe('sortByName', function() {
 
@@ -507,33 +519,84 @@ describe('Utilities Service', function() {
 				expect(collection).toEqual([A, B, C]);
 			});
 		});
-	});
 
-	describe('Math Utilities', function() {
+		describe('formatListForDisplay', function() {
 
-		describe('easeInOutQuad', function() {
+			it('should append the collection into a coma separated string by name property', function() {
+				var A = {name: 'A'},
+					B = {name: 'b'},
+					C = {name: 'C'},
+					collection = [A, B, C];
 
-			it('should ease the speed of animation by quadratic curve and if just started it should be equal to start', function() {
-				var currentTime = 0,
-					start = 15,
-					change = 20,
-					duration = 5,
-
-				easedValue = mathUtilities.easeInOutQuad(currentTime, start, change, duration);
-
-				expect(easedValue).toEqual(15);
-			});
-
-			it('should ease the speed of animation by quadratic curve', function() {
-				var currentTime = 10,
-					start = 15,
-					change = 20,
-					duration = 5,
-
-				easedValue = mathUtilities.easeInOutQuad(currentTime, start, change, duration);
-
-				expect(easedValue).toEqual(-5);
+				expect(collectionUtilities.formatListForDisplay(collection)).toEqual('A, b, C');
 			});
 		});
 	});
+
+	describe('IE Utilities', function() {
+		var ieUtilities,
+			val = '',
+			newVal = '',
+			element = {
+				bind: function(event, fn) {
+					fn();
+				},
+				find: function() {
+					return {
+						val: function() {
+							return val;
+						}
+					};
+				}
+			},
+			timeout = function(fn) {
+				val = newVal;
+				fn();
+			};
+
+		beforeEach(module(function($provide) {
+			$provide.value('$timeout', timeout);
+		}));
+
+		beforeEach(function() {
+			inject(function(_ieUtilities_) {
+				ieUtilities = _ieUtilities_;
+			});
+		});
+
+		describe('addIeClearInputHandler', function() {
+
+			it('should bind the mouseup event to the passed in element', function() {
+				var element = {bind: function() {}};
+				spyOn(element, 'bind');
+				ieUtilities.addIeClearInputHandler(element, function() {});
+				expect(element.bind).toHaveBeenCalled();
+			});
+
+			it('should not call the callback if the value of the input is empty when the mouseup event occurs on the input', function() {
+				var count = 0;
+				val = '';
+
+				ieUtilities.addIeClearInputHandler(element, function() {count++;});
+				expect(count).toBe(0);
+			});
+
+			it('should not call the callback if the user didn\'t click the x when the mouseup event occurs on the input', function() {
+				var count = 0;
+				val = 'thing';
+				newVal = 'things';
+				ieUtilities.addIeClearInputHandler(element, function() {count++;});
+				expect(count).toBe(0);
+			});
+
+			it('should call the callback if the user clicks the x when the mouseup event occurs on the input', function() {
+				var count = 0;
+				val = 'thing';
+				newVal = '';
+				ieUtilities.addIeClearInputHandler(element, function() {count++;});
+				expect(count).toBe(1);
+			});
+		});
+	});
+
 });

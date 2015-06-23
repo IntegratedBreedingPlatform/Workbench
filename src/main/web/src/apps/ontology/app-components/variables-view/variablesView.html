@@ -3,8 +3,25 @@
 		<om-variable-details></om-variable-details>
 	</om-panel>
 
-	<om-search om-model="searchFilter"></om-search>
+	<om-panel class="om-panel-small" om-panel-identifier="smallPanelName" om-title="'filter.title' | translate">
+		<form class="form-horizontal" name="filterForm" ng-submit="" novalidate>
+			<div class="om-panel-header">
+				<h2 class="om-panel-title underlined-heading">
+					{{'filter.title' | translate}}
+				</h2>
+			</div>
 
+			<div class="om-details-content">
+			</div>
+		</form>
+	</om-panel>
+
+	<om-search om-model="searchFilter"></om-search>
+	<div class="om-filter-button">
+		<button type="button" class="btn btn-default btn-icon" aria-label="Filter" ng-click="addNewFilter()">
+			<span class="glyphicon glyphicon-filter" aria-hidden="true"></span>
+		</button>
+	</div>
 	<div ng-hide="searchFilter">
 		<h2>{{'variablesList.favouritesTitle' | translate}}</h2>
 		<div ng-show="varsCtrl.showFavouritesThrobberWrapper" class="om-list-throbber-wrapper">

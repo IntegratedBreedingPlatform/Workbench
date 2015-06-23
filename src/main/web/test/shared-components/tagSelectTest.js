@@ -13,7 +13,8 @@ describe('tagSelect module', function() {
 		isolateScope,
 		directiveElement,
 		mockTranslateFilter,
-		selectScroll;
+		selectScroll,
+		ieUtilities;
 
 	beforeEach(function() {
 		module(function($provide) {
@@ -39,8 +40,19 @@ describe('tagSelect module', function() {
 			resetScroll: function() {}
 		};
 
+		ieUtilities = {
+			// Stub out the add IE clear input handler to call the callback when callCallback is invoked
+			addIeClearInputHandler: function(element, callback) {
+				this.callback = callback;
+			},
+			callCallback: function() {
+				this.callback();
+			}
+		};
+
 		module('tagSelect', function($provide) {
 			$provide.value('selectScroll', selectScroll);
+			$provide.value('ieUtilities', ieUtilities);
 		});
 	});
 
@@ -74,6 +86,18 @@ describe('tagSelect module', function() {
 		scope.$apply();
 
 		expect(isolateScope.searchText).toEqual('two');
+	});
+
+	it('should call hideSuggestions when the clear input button is clicked in IE', function() {
+		var isolateScope;
+
+		compileDirective();
+		isolateScope = directiveElement.isolateScope();
+
+		spyOn(isolateScope, 'hideSuggestions');
+		ieUtilities.callCallback();
+
+		expect(isolateScope.hideSuggestions).toHaveBeenCalled();
 	});
 
 	describe('by default', function() {

@@ -7,8 +7,8 @@
 		NUM_EDITABLE_FIELDS = 4;
 
 	propertyDetailsModule.directive('omPropertyDetails', ['propertiesService', 'serviceUtilities', 'formUtilities', 'panelService',
-		'$timeout',
-		function(propertiesService, serviceUtilities, formUtilities, panelService, $timeout) {
+		'$timeout', 'collectionUtilities',
+		function(propertiesService, serviceUtilities, formUtilities, panelService, $timeout, collectionUtilities) {
 
 			// Reset any errors we're showing the user
 			function resetErrors($scope) {
@@ -68,6 +68,8 @@
 
 						$scope.editing = true;
 					};
+
+					$scope.formatListForDisplay = collectionUtilities.formatListForDisplay;
 
 					$scope.deleteProperty = function(e, id) {
 						e.preventDefault();

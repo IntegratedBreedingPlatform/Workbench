@@ -102,6 +102,7 @@
 
 			$scope.filterByProperties = ['name', 'alias', 'property', 'method', 'scale'];
 			$scope.panelName = 'variables';
+			$scope.smallPanelName = 'filters';
 
 			$timeout(function() {
 				ctrl.showAllVariablesThrobber = true;
@@ -153,6 +154,10 @@
 						}
 					});
 				}
+			};
+
+			$scope.addNewFilter = function() {
+				panelService.showPanel($scope.smallPanelName);
 			};
 
 			$scope.showVariableDetails = function() {

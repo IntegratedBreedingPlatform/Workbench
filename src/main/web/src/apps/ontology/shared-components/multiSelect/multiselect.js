@@ -2,9 +2,10 @@
 'use strict';
 
 (function() {
-	var multiSelect = angular.module('multiSelect', ['formFields', 'clickAway', 'selectScroll']);
+	var multiSelect = angular.module('multiSelect', ['formFields', 'clickAway', 'selectScroll', 'utilities']);
 
-	multiSelect.directive('omMultiSelect', ['editable', 'selectScroll', function(editable, selectScroll) {
+	multiSelect.directive('omMultiSelect', ['editable', 'selectScroll', 'collectionUtilities', 'ieUtilities', function(editable,
+		selectScroll, collectionUtilities, ieUtilities) {
 
 		return {
 			controller: function($scope) {
@@ -18,6 +19,11 @@
 				scope.suggestions = angular.copy(scope.options);
 				scope.searchText = '';
 				scope.selectedIndex = -1;
+
+				ieUtilities.addIeClearInputHandler(elm, function() {
+					scope.hideSuggestions();
+					scope.$apply();
+				});
 
 				// Set the input to contain the text of the selected item from the suggestions
 				scope.$watch('selectedIndex', function(index) {
@@ -51,15 +57,7 @@
 					return item.name;
 				};
 
-				scope.formatListForDisplay = function(items) {
-					if (items) {
-						var names = items.map(function(item) {
-							return item.name;
-						});
-						return names.join(', ');
-					}
-					return '';
-				};
+				scope.formatListForDisplay = collectionUtilities.formatListForDisplay;
 
 				scope.search = function() {
 					scope.suggestions = angular.copy(scope.options);

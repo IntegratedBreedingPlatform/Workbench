@@ -17,7 +17,8 @@ describe('multiselect module', function() {
 		isolateScope,
 		directiveElement,
 		mockTranslateFilter,
-		selectScroll;
+		selectScroll,
+		ieUtilities;
 
 	beforeEach(function() {
 		module(function($provide) {
@@ -43,8 +44,19 @@ describe('multiselect module', function() {
 			resetScroll: function() {}
 		};
 
+		ieUtilities = {
+			// Stub out the add IE clear input handler to call the callback when callCallback is invoked
+			addIeClearInputHandler: function(element, callback) {
+				this.callback = callback;
+			},
+			callCallback: function() {
+				this.callback();
+			}
+		};
+
 		module('multiSelect', function($provide) {
 			$provide.value('selectScroll', selectScroll);
+			$provide.value('ieUtilities', ieUtilities);
 		});
 	});
 
@@ -78,6 +90,18 @@ describe('multiselect module', function() {
 		scope.$apply();
 
 		expect(isolateScope.searchText).toEqual('two');
+	});
+
+	it('should call hideSuggestions when the clear input button is clicked in IE', function() {
+		var isolateScope;
+
+		compileDirective();
+		isolateScope = directiveElement.isolateScope();
+
+		spyOn(isolateScope, 'hideSuggestions');
+		ieUtilities.callCallback();
+
+		expect(isolateScope.hideSuggestions).toHaveBeenCalled();
 	});
 
 	describe('by default', function() {
@@ -313,17 +337,6 @@ describe('multiselect module', function() {
 			expect(scope.model[scope.property].length).toEqual(0);
 		});
 
-	});
-
-	describe('$scope.formatListForDisplay', function() {
-
-		it('should return string separated names of the passed in array of objects', function() {
-			expect(isolateScope.formatListForDisplay(ONE_TWO)).toEqual('one, two');
-		});
-
-		it('should handle falsy passed in object', function() {
-			expect(isolateScope.formatListForDisplay(null)).toEqual('');
-		});
 	});
 
 	describe('$scope.search', function() {

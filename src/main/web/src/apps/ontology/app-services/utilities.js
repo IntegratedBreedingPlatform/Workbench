@@ -175,7 +175,7 @@
 
 	app.factory('collectionUtilities', function() {
 
-		var collectionUtilities = {
+		return {
 
 			/*
 			Takes a collection of objects and sorts those objects alphabetically by their name property.
@@ -184,31 +184,61 @@
 				return collection.sort(function(itemOne, itemTwo) {
 					return itemOne.name.toLowerCase().localeCompare(itemTwo.name.toLowerCase());
 				});
-			}
-		};
-
-		return collectionUtilities;
-	});
-
-	app.factory('mathUtilities', function() {
-
-		var mathUtilities = {
+			},
 
 			/*
-			The easing function used for animation, which controls the speed of amination over time.
-			This function uses the quadratic curve for easing in and out.
+			Takes a collection of objects and returns a coma separated string of their name properties.
 			*/
-			easeInOutQuad: function(currentTime, start, change, duration) {
-				currentTime /= duration / 2;
-				if (currentTime < 1) {
-					return change / 2 * currentTime * currentTime + start;
+			formatListForDisplay: function(items) {
+				if (items) {
+					var names = items.map(function(item) {
+						return item.name;
+					});
+					return names.join(', ');
 				}
-				currentTime--;
-				return - change / 2 * (currentTime * (currentTime - 2) - 1) + start;
+				return '';
 			}
 		};
-
-		return mathUtilities;
 	});
+
+	app.factory('ieUtilities', ['$timeout', function($timeout) {
+		/*
+		FIXME: Remove when the BMS is using a version of Vaadin above 7.2.x which supports native IE10 and IE11.
+		This is a workaround for not being able to hide the x clear button in inputs on IE10 and IE11 because
+		Vaadin forces IE9 compatibility mode.
+		Since the x cannot be removed (https://connect.microsoft.com/IE/feedback/details/783743), instead
+		we just make it act in the same way as the x that we have added. This does not happen by default
+		due to an angular bug: https://github.com/angular/angular.js/issues/11193
+		*/
+		return {
+
+			/*
+			Takes an element which has the child input element that will be cleared by clicking the x, and the callback to
+			execute when the x is clicked.
+			*/
+			addIeClearInputHandler: function(element, callback) {
+
+				element.bind('mouseup', function() {
+					var input = element.find('input'),
+						value = input.val();
+
+					if (value === '') {
+						return;
+					}
+
+					// When this event is fired after clicking on the clear button the value is not cleared yet.
+					// We have to wait for it.
+					$timeout(function() {
+						var newValue = input.val();
+
+						if (newValue === '') {
+							callback();
+						}
+					}, 1);
+
+				});
+			}
+		};
+	}]);
 
 }());
