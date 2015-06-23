@@ -54,31 +54,38 @@ ol {
 	float: right;
 }
 
-.om-add-new {
-	list-style: none;
-	margin: -1rem 0;
+.om-panel-content {
+	position: absolute;
+	top: $headerHeight;
+	bottom: 0;
+	overflow-y: hidden;
+	overflow-x: hidden;
+	width: 100%;
 
-	li {
-		padding: 8px;
-		line-height: 1.42857;
-		vertical-align: top;
-		border-top: 1px solid #cfd7de;
+	.om-add-new {
+		list-style: none;
+		li {
+			padding: 8px;
+			line-height: 1.42857;
+			vertical-align: top;
+			border-top: 1px solid #cfd7de;
 
-		&:last-child {
-			border-bottom: 1px solid #cfd7de;
+			&:last-child {
+				border-bottom: 1px solid #cfd7de;
+			}
+
+			&:hover {
+				background-color: #f3f5f7;
+				cursor: pointer;
+			}
 		}
 
-		&:hover {
-			background-color: #f3f5f7;
-			cursor: pointer;
-		}
-	}
+		span {
+			color: #6F889B;
 
-	span {
-		color: #6F889B;
-
-		&:hover {
-			text-decoration: underline;
+			&:hover {
+				text-decoration: underline;
+			}
 		}
 	}
 }
@@ -87,6 +94,17 @@ ol {
 	display: table-row;
 	height: 100%;
 	width: 100%;
+}
+
+.om-va-view {
+	om-search {
+		right: 40px;
+	}
+	.om-filter-button {
+		top: -4px;
+  		position: absolute;
+  		right: 0;
+	}
 }
 
 .om-view-content {
@@ -98,7 +116,7 @@ ol {
 	padding-left: 1.5rem;
 }
 
-.om-details-header {
+.om-panel-header {
 	position: absolute;
 	width: 100%;
 	height: $headerHeight;
@@ -106,7 +124,7 @@ ol {
 	//display the header underneaf the Close button so that the button could be clicked
 	z-index: -1;
 
-	.om-details-title {
+	.om-panel-title {
 		line-height: 1.3;
 		overflow: hidden;
 		margin-top: 9px;

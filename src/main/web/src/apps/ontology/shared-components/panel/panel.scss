@@ -30,11 +30,6 @@ om-panel {
 
 // Slightly awkward pseudo media query styling for smaller panel sizes
 om-panel.om-panel-small {
-	.om-panel-header,
-	.om-panel-content {
-		padding: 1rem;
-	}
-
 	.om-panel-close {
 		margin-right: 0;
 	}

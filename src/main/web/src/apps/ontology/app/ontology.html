@@ -47,12 +47,14 @@
 	<div class="om-view" ng-view="ng-view"></div>
 
 	<om-panel class="om-panel-small" om-panel-identifier="panelName" om-title="'addNew.title' | translate">
-		<ol class="om-add-new">
-			<li ng-click="addNew($event, 'variable')"><span>{{'addNew.variable.menuItem' | translate}}</span></li>
-			<li ng-click="addNew($event, 'property')"><span>{{'addNew.property.menuItem' | translate}}</span></li>
-			<li ng-click="addNew($event, 'method')"><span>{{'addNew.method.menuItem' | translate}}</span></li>
-			<li ng-click="addNew($event, 'scale')"><span>{{'addNew.scale.menuItem' | translate}}</span></li>
-		</ol>
+		<div class="om-panel-content">
+			<ol class="om-add-new">
+				<li ng-click="addNew($event, 'variable')"><span>{{'addNew.variable.menuItem' | translate}}</span></li>
+				<li ng-click="addNew($event, 'property')"><span>{{'addNew.property.menuItem' | translate}}</span></li>
+				<li ng-click="addNew($event, 'method')"><span>{{'addNew.method.menuItem' | translate}}</span></li>
+				<li ng-click="addNew($event, 'scale')"><span>{{'addNew.scale.menuItem' | translate}}</span></li>
+			</ol>
+		</div>
 	</om-panel>
 
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/angular.js}"></script>

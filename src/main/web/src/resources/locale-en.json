@@ -35,6 +35,10 @@
 		}
 	},
 
+	"filter": {
+		"title": "Filter by..."
+	},
+
 	"button": {
 		"addNew": "Add New",
 		"back": "Back",
