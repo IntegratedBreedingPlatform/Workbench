@@ -2,7 +2,7 @@
 'use strict';
 
 (function() {
-	var app = angular.module('variablesView', ['list', 'panel', 'variables', 'variableDetails', 'utilities']),
+	var app = angular.module('variablesView', ['list', 'panel', 'variables', 'variableDetails', 'utilities', 'filter']),
 		DELAY = 400;
 
 	function transformDetailedVariableToDisplayFormat(variable, id) {
@@ -102,7 +102,9 @@
 
 			$scope.filterByProperties = ['name', 'alias', 'property', 'method', 'scale'];
 			$scope.panelName = 'variables';
-			$scope.smallPanelName = 'filters';
+			$scope.filterOptions = {
+				variableTypes: []
+			};
 
 			$timeout(function() {
 				ctrl.showAllVariablesThrobber = true;
@@ -154,10 +156,6 @@
 						}
 					});
 				}
-			};
-
-			$scope.addNewFilter = function() {
-				panelService.showPanel($scope.smallPanelName);
 			};
 
 			$scope.showVariableDetails = function() {
