@@ -22,6 +22,7 @@ import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.domain.dms.VariableTypeList;
 import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.domain.oms.TermId;
+import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.junit.Assert;
@@ -104,7 +105,7 @@ public class GxeTableTest {
 	private Map<String, Boolean> variatesCheckBoxState;
 
 	@Before
-	public void setUp() throws MiddlewareQueryException {
+	public void setUp() throws MiddlewareException {
 		MockitoAnnotations.initMocks(this);
 
 		// means dataset

@@ -30,6 +30,7 @@ import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.domain.dms.VariableType;
+import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -163,7 +164,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 					trialVariablesInDataset, project, this.selectDatasetForBreedingViewPanel.getStudyDataManager(),
 					this.selectDatasetForBreedingViewPanel.getManagerFactory(), this.selectDatasetForBreedingViewPanel));
 
-		} catch (MiddlewareQueryException e) {
+		} catch (MiddlewareException e) {
 			OpenSelectDatasetForExportAction.LOG.error(e.getMessage(), e);
 			MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
 		}

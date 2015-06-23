@@ -35,6 +35,7 @@ import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.VariableType;
+import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.ManagerFactory;
@@ -664,7 +665,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 			this.updateFactorsTable(this.factorList);
 			this.updateVariatesTable(this.variateList);
 
-		} catch (MiddlewareQueryException e) {
+		} catch (MiddlewareException e) {
 			SingleSiteAnalysisPanel.LOG.error(e.getMessage(), e);
 			this.showDatabaseError(this.getWindow());
 		}

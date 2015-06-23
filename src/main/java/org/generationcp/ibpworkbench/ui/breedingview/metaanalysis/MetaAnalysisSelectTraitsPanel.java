@@ -31,6 +31,7 @@ import org.generationcp.middleware.domain.dms.TrialEnvironments;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.domain.oms.TermId;
+import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
@@ -360,7 +361,7 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 						}
 					}
 
-				} catch (MiddlewareQueryException e) {
+				} catch (MiddlewareException e) {
 
 					e.printStackTrace();
 				}
@@ -791,7 +792,7 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 						}
 
 					}
-				} catch (MiddlewareQueryException e) {
+				} catch (MiddlewareException e) {
 
 					e.printStackTrace();
 				}

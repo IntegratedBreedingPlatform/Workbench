@@ -17,6 +17,7 @@ import org.generationcp.middleware.domain.dms.DatasetReference;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.VariableType;
+import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.slf4j.Logger;
@@ -144,7 +145,7 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
 			this.updateFactorsTable(factorList);
 			this.updateVariatesTable(variateList);
 
-		} catch (MiddlewareQueryException e) {
+		} catch (MiddlewareException e) {
 			this.showDatabaseError(event.getComponent().getWindow());
 		}
 

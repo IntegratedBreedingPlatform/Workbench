@@ -30,6 +30,7 @@ import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.domain.dms.VariableTypeList;
 import org.generationcp.middleware.domain.oms.TermId;
+import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.slf4j.Logger;
@@ -281,7 +282,7 @@ public class GxeTable extends Table {
 
 			}
 
-		} catch (MiddlewareQueryException e) {
+		} catch (MiddlewareException e) {
 			GxeTable.LOG.error(e.getMessage(), e);
 		}
 
@@ -341,7 +342,7 @@ public class GxeTable extends Table {
 				}
 			}
 
-		} catch (MiddlewareQueryException e1) {
+		} catch (MiddlewareException e1) {
 			GxeTable.LOG.error(e1.getMessage(), e1);
 		}
 

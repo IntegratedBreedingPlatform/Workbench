@@ -15,6 +15,7 @@ import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.StudyReference;
+import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.StudyDataManagerImpl;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -202,7 +203,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 				if (isStudy) {
 					study = this.getStudyDataManager().getStudy(fr.getId());
 				}
-			} catch (MiddlewareQueryException e) {
+			} catch (MiddlewareException e) {
 				SelectDatasetDialog.LOG.error(e.getMessage(), e);
 			}
 
@@ -275,7 +276,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 			Study s = null;
 			try {
 				s = this.getStudyDataManager().getStudy(r.getId());
-			} catch (MiddlewareQueryException e) {
+			} catch (MiddlewareException e) {
 				SelectDatasetDialog.LOG.error(e.getMessage(), e);
 			}
 

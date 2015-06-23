@@ -24,6 +24,7 @@ import org.generationcp.middleware.domain.dms.ValueReference;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.domain.oms.TermId;
+import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
@@ -73,7 +74,7 @@ public class DatasetExporter {
 		try {
 			dataset = this.studyDataManager.getDataSet(this.datasetId);
 			return dataset;
-		} catch (MiddlewareQueryException ex) {
+		} catch (MiddlewareException ex) {
 			DatasetExporter.LOG.error(ex.getMessage(), ex);
 		}
 

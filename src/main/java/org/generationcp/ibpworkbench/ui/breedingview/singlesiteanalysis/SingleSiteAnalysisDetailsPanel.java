@@ -43,6 +43,7 @@ import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.domain.dms.VariableTypeList;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.ConfigException;
+import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
@@ -295,7 +296,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 				}
 			} catch (ConfigException e) {
 				SingleSiteAnalysisDetailsPanel.LOG.error(e.getMessage(), e);
-			} catch (MiddlewareQueryException e) {
+			} catch (MiddlewareException e) {
 				SingleSiteAnalysisDetailsPanel.LOG.error(e.getMessage(), e);
 			}
 
@@ -828,7 +829,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 		} catch (ConfigException e) {
 			SingleSiteAnalysisDetailsPanel.LOG.error(e.getMessage(), e);
-		} catch (MiddlewareQueryException e) {
+		} catch (MiddlewareException e) {
 			SingleSiteAnalysisDetailsPanel.LOG.error(e.getMessage(), e);
 
 		}

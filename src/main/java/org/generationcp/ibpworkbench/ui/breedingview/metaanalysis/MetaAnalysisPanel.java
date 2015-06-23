@@ -38,6 +38,7 @@ import org.generationcp.middleware.domain.dms.TrialEnvironments;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.domain.oms.TermId;
+import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.ManagerFactory;
@@ -483,7 +484,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 
 			try {
 				this.studyName = MetaAnalysisPanel.this.getStudyDataManager().getStudy(this.dataSet.getStudyId()).getName();
-			} catch (MiddlewareQueryException e) {
+			} catch (MiddlewareException e) {
 				MetaAnalysisPanel.LOG.error("Error getting study name", e);
 			}
 

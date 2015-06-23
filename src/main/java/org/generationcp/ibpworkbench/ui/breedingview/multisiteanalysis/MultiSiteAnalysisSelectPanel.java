@@ -36,6 +36,7 @@ import org.generationcp.middleware.domain.dms.TrialEnvironments;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.domain.oms.TermId;
+import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
@@ -272,7 +273,7 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 					this.environmentNames.add(var.getValue());
 				}
 			}
-		} catch (MiddlewareQueryException e) {
+		} catch (MiddlewareException e) {
 			MultiSiteAnalysisSelectPanel.LOG.error("Error getting trial environments" + e);
 		}
 	}
@@ -309,7 +310,7 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 							MultiSiteAnalysisSelectPanel.this.environmentNames.add(var.getValue());
 						}
 					}
-				} catch (MiddlewareQueryException e) {
+				} catch (MiddlewareException e) {
 					MultiSiteAnalysisSelectPanel.LOG.error("Error getting trial environments", e);
 				}
 
@@ -652,7 +653,7 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 			this.updateFactorsTable(factorList, factors);
 			this.updateVariatesTable(variateList, factors, variates);
 
-		} catch (MiddlewareQueryException e) {
+		} catch (MiddlewareException e) {
 			MultiSiteAnalysisSelectPanel.LOG.error("Error getting dataset(s) for MSA screen", e);
 		}
 	}
