@@ -13,20 +13,13 @@
 			property: variable.propertySummary && variable.propertySummary.name || '',
 			method: variable.methodSummary && variable.methodSummary.name || '',
 			scale: variable.scale && variable.scale.name || '',
+			variableTypes: variable.variableTypes,
 			'action-favourite': variable.favourite ? { iconValue: 'star' } : { iconValue: 'star-empty' }
 		};
 	}
 
 	function transformVariableToDisplayFormat(variable) {
-		return {
-			id: variable.id,
-			name: variable.name,
-			alias: variable.alias || '',
-			property: variable.propertySummary && variable.propertySummary.name || '',
-			method: variable.methodSummary && variable.methodSummary.name || '',
-			scale: variable.scaleSummary && variable.scaleSummary.name || '',
-			'action-favourite': variable.favourite ? { iconValue: 'star' } : { iconValue: 'star-empty' }
-		};
+		return transformDetailedVariableToDisplayFormat(variable, variable.id);
 	}
 
 	function transformToDisplayFormat(variables, actionFunction) {
@@ -104,6 +97,20 @@
 			$scope.panelName = 'variables';
 			$scope.filterOptions = {
 				variableTypes: []
+			};
+
+			$scope.optionsFilter = function(variable) {
+				if (!$scope.filterOptions || !$scope.filterOptions.variableTypes) {
+					return true;
+				}
+				if ($scope.filterOptions.variableTypes.length > 0) {
+					return $scope.filterOptions.variableTypes.some(function(variableType) {
+						return variable.variableTypes.some(function(itemVariableType) {
+							return angular.equals(variableType, itemVariableType);
+						}, this);
+					}, this);
+				}
+				return true;
 			};
 
 			$timeout(function() {

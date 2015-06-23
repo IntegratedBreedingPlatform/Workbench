@@ -19,7 +19,7 @@
 	<div ng-show="varsCtrl.showAllVariablesThrobberWrapper" class="om-list-throbber-wrapper">
 		<span ng-class="{'throbber-hidden': !varsCtrl.showAllVariablesThrobber}" class="throbber throbber-lg"></span>
 	</div>
-	<om-list ng-hide="varsCtrl.variables.length === 0" om-data="varsCtrl.variables" om-col-headers="varsCtrl.colHeaders" om-on-click="showVariableDetails()" om-selected-item="selectedItem" om-item-filter="searchFilter" om-properties-to-filter="filterByProperties" om-pagination="true" om-list-name="variables"></om-list>
+	<om-list ng-hide="varsCtrl.variables.length === 0" om-data="varsCtrl.variables" om-col-headers="varsCtrl.colHeaders" om-on-click="showVariableDetails()" om-selected-item="selectedItem" om-item-filter="searchFilter" om-properties-to-filter="filterByProperties" om-options-filter="optionsFilter" om-pagination="true" om-list-name="variables"></om-list>
 	<p ng-show="varsCtrl.showNoVariablesMessage" class="text-info">{{'list.noItemsFound' | translate:'{items: "variables"}'}}</p>
 	<p ng-show="varsCtrl.problemGettingList" class="text-danger">{{'list.problemGettingList' | translate}}</p>
 </div>
