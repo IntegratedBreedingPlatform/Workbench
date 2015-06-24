@@ -17,7 +17,7 @@
 	</form>
 </om-panel>
 <div class="om-filter-button">
-	<button type="button" class="btn btn-default btn-icon" aria-label="Filter" ng-click="addNewFilter()">
+	<button type="button" class="btn btn-icon" ng-class="filterOptions.variableTypes.length === 0 ? 'btn-default' : 'btn-primary'" aria-label="Filter" ng-click="addNewFilter()">
 		<span class="glyphicon glyphicon-filter" aria-hidden="true"></span>
 	</button>
 </div>
