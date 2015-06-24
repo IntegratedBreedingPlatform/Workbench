@@ -133,6 +133,11 @@ describe('Variables Controller', function() {
 				property: PLANT_VIGOR.propertySummary.name,
 				method: PLANT_VIGOR.methodSummary.name,
 				scale: PLANT_VIGOR.scaleSummary.name,
+				variableTypes: [{
+					id: 1,
+					name: 'Analysis',
+					description: ''
+				}],
 				'action-favourite': PLANT_VIGOR.favourite ? { iconValue: 'star' } : { iconValue: 'star-empty' }
 			};
 
@@ -156,6 +161,11 @@ describe('Variables Controller', function() {
 				property: '',
 				method: '',
 				scale: '',
+				variableTypes: [{
+					id: 1,
+					name: 'Analysis',
+					description: ''
+				}],
 				'action-favourite': { iconValue: 'star-empty' }
 			};
 			expect(controller.transformVariableToDisplayFormat(rawVariable)).toEqual(transformedVariable);
@@ -174,6 +184,11 @@ describe('Variables Controller', function() {
 					property: PLANT_VIGOR_DETAILED.propertySummary.name,
 					method: PLANT_VIGOR_DETAILED.methodSummary.name,
 					scale: PLANT_VIGOR_DETAILED.scale.name,
+					variableTypes: [{
+						id: 1,
+						name: 'Analysis',
+						description: ''
+					}],
 					'action-favourite': PLANT_VIGOR_DETAILED.favourite ? { iconValue: 'star' } : { iconValue: 'star-empty' }
 				};
 
@@ -197,6 +212,11 @@ describe('Variables Controller', function() {
 				property: '',
 				method: '',
 				scale: '',
+				variableTypes: [{
+					id: 1,
+					name: 'Analysis',
+					description: ''
+				}],
 				'action-favourite': { iconValue: 'star' }
 			};
 			expect(controller.transformDetailedVariableToDisplayFormat(rawVariable)).toEqual(transformedVariables);

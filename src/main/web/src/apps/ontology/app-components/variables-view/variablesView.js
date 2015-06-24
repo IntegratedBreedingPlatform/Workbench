@@ -13,7 +13,7 @@
 			property: variable.propertySummary && variable.propertySummary.name || '',
 			method: variable.methodSummary && variable.methodSummary.name || '',
 			scale: (variable.scale && variable.scale.name) || (variable.scaleSummary && variable.scaleSummary.name) || '',
-			variableTypes: variable.variableTypes,
+			variableTypes: variable.variableTypes, // used for filtering
 			'action-favourite': variable.favourite ? { iconValue: 'star' } : { iconValue: 'star-empty' }
 		};
 	}
