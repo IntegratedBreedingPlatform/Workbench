@@ -3,6 +3,7 @@
 
 describe('List module', function() {
 	var scope,
+		isolateScope,
 		mockTranslateFilter;
 
 	beforeEach(function() {
@@ -50,9 +51,6 @@ describe('List module', function() {
 			preventDefault: function() {},
 			stopPropagation: function() {}
 		},
-		selectedItemService = {
-			getSelectedItem: function() {}
-		},
 		directiveElement;
 
 		function compileDirective(extraAttrs) {
@@ -65,9 +63,12 @@ describe('List module', function() {
 			scope.$digest();
 		}
 
-		it('should set the maximum rows per page to 50 if the list can be paginated', function() {
-			var isolateScope;
+		beforeEach(function() {
+			/*compileDirective();
+			isolateScope = directiveElement.isolateScope();*/
+		});
 
+		it('should set the maximum rows per page to 50 if the list can be paginated', function() {
 			compileDirective('om-pagination="true"');
 			isolateScope = directiveElement.isolateScope();
 
@@ -75,8 +76,6 @@ describe('List module', function() {
 		});
 
 		it('should set the rows per page to -1 if the list cannot be paginated', function() {
-			var isolateScope;
-
 			compileDirective('om-pagination="false"');
 			isolateScope = directiveElement.isolateScope();
 
@@ -84,8 +83,7 @@ describe('List module', function() {
 		});
 
 		it('should change the active item id if the selectedItemService refers to this list', function() {
-			var isolateScope,
-				selectedItemService;
+			var selectedItemService;
 
 			inject(function(_selectedItemService_) {
 				selectedItemService = _selectedItemService_;
@@ -102,8 +100,7 @@ describe('List module', function() {
 		});
 
 		it('should not change the active item id if the selectedItemService does not refer to this list', function() {
-			var isolateScope,
-				selectedItemService;
+			var selectedItemService;
 
 			inject(function(_selectedItemService_) {
 				selectedItemService = _selectedItemService_;
@@ -120,12 +117,6 @@ describe('List module', function() {
 		});
 
 		describe('scope.isString', function() {
-			var isolateScope;
-
-			beforeEach(function() {
-				compileDirective();
-				isolateScope = directiveElement.isolateScope();
-			});
 
 			it('should return true if the type of the passed in object is a string', function() {
 				expect(isolateScope.isString('hey')).toBe(true);
@@ -137,7 +128,6 @@ describe('List module', function() {
 		});
 
 		describe('scope.isAction', function() {
-			var isolateScope;
 
 			beforeEach(function() {
 				compileDirective();
@@ -158,7 +148,6 @@ describe('List module', function() {
 		});
 
 		describe('scope.isNotActionHeader', function() {
-			var isolateScope;
 
 			beforeEach(function() {
 				compileDirective();
@@ -179,7 +168,6 @@ describe('List module', function() {
 		});
 
 		describe('scope.filterByProperties', function() {
-			var isolateScope;
 
 			beforeEach(function() {
 				compileDirective();
@@ -223,6 +211,27 @@ describe('List module', function() {
 			});
 		});
 
+		describe('scope.filterByOptions', function() {
+
+			beforeEach(function() {
+				compileDirective();
+				isolateScope = directiveElement.isolateScope();
+			});
+
+			it('should return function returning true if there is no provided options filter function', function() {
+				expect(isolateScope.filterByOptions()()).toBe(true);
+			});
+
+			it('should return options filter function if it is provided', function() {
+				scope.optionsFilter = function() {
+					return 'test';
+				};
+				compileDirective('om-options-filter="optionsFilter"');
+				isolateScope = directiveElement.isolateScope();
+				expect(isolateScope.filterByOptions()).toBe('test');
+			});
+		});
+
 		describe('scope.selectItem', function() {
 
 			it('should call the parent click handler and set the selected item id', function() {
@@ -253,7 +262,6 @@ describe('List module', function() {
 		});
 
 		describe('scope.toggleFavourites', function() {
-			var isolateScope;
 
 			beforeEach(function() {
 				scope.testHeaders = ['name', 'description'];
