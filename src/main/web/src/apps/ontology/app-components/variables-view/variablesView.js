@@ -12,7 +12,7 @@
 			alias: variable.alias || '',
 			property: variable.propertySummary && variable.propertySummary.name || '',
 			method: variable.methodSummary && variable.methodSummary.name || '',
-			scale: variable.scale && variable.scale.name || '',
+			scale: (variable.scale && variable.scale.name) || (variable.scaleSummary && variable.scaleSummary.name) || '',
 			variableTypes: variable.variableTypes,
 			'action-favourite': variable.favourite ? { iconValue: 'star' } : { iconValue: 'star-empty' }
 		};
