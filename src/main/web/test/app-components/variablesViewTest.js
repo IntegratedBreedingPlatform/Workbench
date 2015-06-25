@@ -131,57 +131,6 @@ describe('Variables Controller', function() {
 		spyOn(controller, 'transformDetailedVariableToDisplayFormat').and.callThrough();
 	}));
 
-	describe('ctrl.transformVariableToDisplayFormat', function() {
-
-		it('should transform a variable summary into display format', function() {
-			var rawVariable = PLANT_VIGOR,
-			transformedVariable = {
-				id: PLANT_VIGOR.id,
-				name: PLANT_VIGOR.name,
-				alias: PLANT_VIGOR.alias,
-				property: PLANT_VIGOR.propertySummary.name,
-				method: PLANT_VIGOR.methodSummary.name,
-				scale: PLANT_VIGOR.scaleSummary.name,
-				variableTypes: [{
-					id: 1,
-					name: 'Analysis',
-					description: ''
-				}],
-				'action-favourite': PLANT_VIGOR.favourite ? { iconValue: 'star' } : { iconValue: 'star-empty' }
-			};
-
-			expect(controller.transformVariableToDisplayFormat(rawVariable)).toEqual(transformedVariable);
-		});
-
-		it('should default values to empty strings if they are not present', function() {
-			var rawVariable = angular.copy(PLANT_VIGOR),
-			transformedVariable;
-
-			// Null out some values
-			rawVariable.propertySummary = null;
-			rawVariable.methodSummary = null;
-			rawVariable.scaleSummary = null;
-			rawVariable.favourite = false;
-
-			transformedVariable = {
-				id: PLANT_VIGOR.id,
-				name: PLANT_VIGOR.name,
-				alias: PLANT_VIGOR.alias,
-				property: '',
-				method: '',
-				scale: '',
-				variableTypes: [{
-					id: 1,
-					name: 'Analysis',
-					description: ''
-				}],
-				'action-favourite': { iconValue: 'star-empty' }
-			};
-			expect(controller.transformVariableToDisplayFormat(rawVariable)).toEqual(transformedVariable);
-		});
-
-	});
-
 	describe('ctrl.transformDetailedVariableToDisplayFormat', function() {
 
 		it('should transform a detailed variable into display format', function() {
