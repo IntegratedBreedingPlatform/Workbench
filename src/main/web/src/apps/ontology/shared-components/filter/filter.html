@@ -7,6 +7,14 @@
 		</div>
 
 		<div class="om-details-content">
+			<div ng-if="serverErrors.general || someListsNotLoaded" class="alert alert-danger" role="alert">
+				<ul>
+					<li ng-repeat="error in serverErrors.general">{{error}}</li>
+				</ul>
+				<ul ng-if="someListsNotLoaded">
+					<li>{{'validation.filter.someListsNotLoaded' | translate}}</li>
+				</ul>
+			</div>
 			<div>
 				<label for="omVariableTypes" class="col-sm-3 control-label">{{'formField.variableType' | translate}}</label>
 				<div class="col-sm-9">
