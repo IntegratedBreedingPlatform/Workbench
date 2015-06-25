@@ -22,9 +22,26 @@
 		return transformDetailedVariableToDisplayFormat(variable, variable.id);
 	}
 
+	/*
+	Transforms each of the given variables into the correct object structure to be displayed in the list.
+	This object structure must include the function to call to make a variable a favourite or remove it from
+	being a favourite.
+
+	@return the array of transformed variables
+	@throws malformed variable exception if any variable is missing an id or name
+	*/
 	function transformToDisplayFormat(variables, actionFunction) {
-		// TODO: check that variable has an ID and name
-		var transformedVariables = variables.map(transformVariableToDisplayFormat);
+		var transformedVariables = [],
+			i;
+
+		for (i = 0; i < variables.length; i++) {
+			if (!variables[i].id || !variables[i].name) {
+				// Throw exception if there is any variable that comes back with no id or name
+				throw new Error('Malformed variable');
+			}
+			transformedVariables.push(transformVariableToDisplayFormat(variables[i]));
+		}
+
 		// add action functions to the variables
 		transformedVariables.every(function(variable) {
 			variable['action-favourite'].iconFunction = actionFunction;
@@ -119,14 +136,21 @@
 			}, DELAY);
 
 			variablesService.getFavouriteVariables().then(function(variables) {
-				ctrl.favouriteVariables = ctrl.transformToDisplayFormat(variables, $scope.toggleFavourite);
+				try {
+					ctrl.favouriteVariables = ctrl.transformToDisplayFormat(variables, $scope.toggleFavourite);
 
-				if (ctrl.favouriteVariables.length === 0) {
-					ctrl.showNoFavouritesMessage = true;
-					return;
+					if (ctrl.favouriteVariables.length === 0) {
+						ctrl.showNoFavouritesMessage = true;
+						return;
+					}
+
+					ctrl.addAliasToTableIfPresent(ctrl.favouriteVariables);
+
+				} catch (e) {
+					// The variables could not be transformed to display format
+					ctrl.problemGettingFavouriteList = true;
 				}
 
-				ctrl.addAliasToTableIfPresent(ctrl.favouriteVariables);
 			}, function() {
 				ctrl.problemGettingFavouriteList = true;
 			}).finally (function() {
@@ -134,14 +158,21 @@
 			});
 
 			variablesService.getVariables().then(function(variables) {
-				ctrl.variables = ctrl.transformToDisplayFormat(variables, $scope.toggleFavourite);
+				try {
+					ctrl.variables = ctrl.transformToDisplayFormat(variables, $scope.toggleFavourite);
 
-				if (ctrl.variables.length === 0) {
-					ctrl.showNoVariablesMessage = true;
-					return;
+					if (ctrl.variables.length === 0) {
+						ctrl.showNoVariablesMessage = true;
+						return;
+					}
+
+					ctrl.addAliasToTableIfPresent(ctrl.variables);
+
+				} catch (e) {
+					// The variables could not be transformed to display format
+					ctrl.problemGettingList = true;
 				}
 
-				ctrl.addAliasToTableIfPresent(ctrl.variables);
 			}, function() {
 				ctrl.problemGettingList = true;
 			}).finally (function() {

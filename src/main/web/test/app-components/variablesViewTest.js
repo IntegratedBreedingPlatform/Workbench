@@ -251,6 +251,18 @@ describe('Variables Controller', function() {
 			expect(controller.showNoVariablesMessage).toBe(true);
 		});
 
+		it('should show an error if any of the variables are missing an id or name', function() {
+			var plantVigor = angular.copy(PLANT_VIGOR),
+				jsonData = [plantVigor];
+
+			jsonData[0].name = '';
+			deferredGetVariables.resolve(jsonData);
+			scope.$apply();
+
+			expect(variablesService.getVariables).toHaveBeenCalled();
+			expect(controller.problemGettingList).toBe(true);
+		});
+
 		it('should show a message if there was a problem getting data for variables', function() {
 			deferredGetVariables.reject();
 			scope.$apply();
@@ -277,6 +289,17 @@ describe('Variables Controller', function() {
 
 			expect(variablesService.getFavouriteVariables).toHaveBeenCalled();
 			expect(controller.showNoFavouritesMessage).toBe(true);
+		});
+
+		it('should show an error if any of the favourite variables are missing an id or name', function() {
+			var jsonData = [PLANT_VIGOR];
+
+			jsonData[0].name = '';
+			deferredGetFavVariables.resolve(jsonData);
+			scope.$apply();
+
+			expect(variablesService.getVariables).toHaveBeenCalled();
+			expect(controller.problemGettingFavouriteList).toBe(true);
 		});
 
 		it('should show a message if there was a problem getting data for favourite variables', function() {
