@@ -63,11 +63,6 @@ describe('List module', function() {
 			scope.$digest();
 		}
 
-		beforeEach(function() {
-			/*compileDirective();
-			isolateScope = directiveElement.isolateScope();*/
-		});
-
 		it('should set the maximum rows per page to 50 if the list can be paginated', function() {
 			compileDirective('om-pagination="true"');
 			isolateScope = directiveElement.isolateScope();

@@ -24,8 +24,6 @@
 					$scope.someListsNotLoaded = true;
 				});
 			},
-			link: function($scope, element) {
-			},
 			restrict: 'E',
 			scope: {
 				filterOptions: '=omFilterOptions'
