@@ -2,15 +2,19 @@
 'use strict';
 
 (function() {
-	var filterModule = angular.module('filter', ['panel', 'variableTypes', 'utilities', 'multiSelect']);
+	var filterModule = angular.module('filter', ['panel', 'variableTypes', 'dataTypes', 'utilities', 'multiSelect']);
 
-	filterModule.directive('omFilter', ['panelService', 'variableTypesService', 'serviceUtilities',
-		function(panelService, variableTypesService, serviceUtilities)  {
+	filterModule.directive('omFilter', ['panelService', 'variableTypesService', 'serviceUtilities', 'dataTypesService',
+		function(panelService, variableTypesService, serviceUtilities, dataTypesService)  {
 		return {
 			controller: function($scope) {
 				$scope.smallPanelName = 'filters';
 				$scope.data = {
-					types: []
+					types: [],
+					scaleTypes: [{
+						id: 0,
+						name: '...'
+					}]
 				};
 
 				$scope.addNewFilter = function() {
@@ -19,6 +23,13 @@
 
 				variableTypesService.getTypes().then(function(types) {
 					$scope.data.types = types;
+				}, function(response) {
+					$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+					$scope.someListsNotLoaded = true;
+				});
+
+				dataTypesService.getDataTypes().then(function(types) {
+					$scope.data.scaleTypes = $scope.data.scaleTypes.concat(types);
 				}, function(response) {
 					$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
 					$scope.someListsNotLoaded = true;

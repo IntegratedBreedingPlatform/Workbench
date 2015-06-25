@@ -39,6 +39,14 @@ describe('Variables Controller', function() {
 		scale: PLANT_VIGOR.scaleSummary.name,
 		'action-favourite': { iconValue: 'star' }
 	},
+	CATEGORICAL_TYPE = {
+		id: 1,
+		name: 'Categorical'
+	},
+	NUMERIC_TYPE = {
+		id: 2,
+		name: 'Numeric'
+	},
 
 	q,
 	controller,
@@ -60,19 +68,17 @@ describe('Variables Controller', function() {
 	PLANT_VIGOR_DETAILED.scale = {
 		id: 1,
 		name: 'Score',
-		dataType: {
-			id: 2,
-			name: 'Numeric'
-		},
 		validValues: {
 			min: 1,
 			max: 5
 		}
 	};
+	PLANT_VIGOR_DETAILED.scale.dataType = NUMERIC_TYPE;
 
 	delete PLANT_VIGOR_CONVERTED.favourite;
 	PLANT_VIGOR_CONVERTED['action-favourite'] = {};
 	PLANT_VIGOR_CONVERTED['action-favourite'].iconValue = 'star';
+	PLANT_VIGOR_CONVERTED.scaleType = NUMERIC_TYPE;
 
 	delete PLANT_VIGOR_DETAILED.id;
 	delete PLANT_VIGOR_DETAILED.scaleSummary;
@@ -142,18 +148,15 @@ describe('Variables Controller', function() {
 					property: PLANT_VIGOR_DETAILED.propertySummary.name,
 					method: PLANT_VIGOR_DETAILED.methodSummary.name,
 					scale: PLANT_VIGOR_DETAILED.scale.name,
-					variableTypes: [{
-						id: 1,
-						name: 'Analysis',
-						description: ''
-					}],
+					variableTypes: PLANT_VIGOR_DETAILED.variableTypes,
+					scaleType: PLANT_VIGOR_DETAILED.scale.dataType,
 					'action-favourite': PLANT_VIGOR_DETAILED.favourite ? { iconValue: 'star' } : { iconValue: 'star-empty' }
 				};
 
 			expect(controller.transformDetailedVariableToDisplayFormat(PLANT_VIGOR_DETAILED, newId)).toEqual(transformedVariable);
 		});
 
-		it('should default values to empty strings if they are not present', function() {
+		it('should default some values to empty strings if they are not present', function() {
 			var rawVariable = angular.copy(PLANT_VIGOR_DETAILED),
 				transformedVariables;
 
@@ -162,6 +165,7 @@ describe('Variables Controller', function() {
 			rawVariable.propertySummary = null;
 			rawVariable.methodSummary = null;
 			rawVariable.scale = null;
+			rawVariable.variableTypes = null;
 
 			transformedVariables = {
 				id: PLANT_VIGOR_DETAILED.id,
@@ -170,11 +174,8 @@ describe('Variables Controller', function() {
 				property: '',
 				method: '',
 				scale: '',
-				variableTypes: [{
-					id: 1,
-					name: 'Analysis',
-					description: ''
-				}],
+				variableTypes: null,
+				scaleType: undefined,
 				'action-favourite': { iconValue: 'star' }
 			};
 			expect(controller.transformDetailedVariableToDisplayFormat(rawVariable)).toEqual(transformedVariables);
@@ -587,9 +588,10 @@ describe('Variables Controller', function() {
 					id: 1,
 					name: 'Analysis',
 					description: ''
-				}]
+				}],
+				scaleType: {name: '...'}
 			};
-			expect(scope.optionsFilter(PLANT_VIGOR)).toBe(true);
+			expect(scope.optionsFilter(PLANT_VIGOR_CONVERTED)).toBe(true);
 		});
 
 		it('should return false if there is no match of variable type in variable and filter options', function() {
@@ -598,9 +600,26 @@ describe('Variables Controller', function() {
 					id: 8,
 					name: 'Trait',
 					description: 'Characteristics of a germplasm to be recorded during a study.'
-				}]
+				}],
+				scaleType: {name: '...'}
 			};
-			expect(scope.optionsFilter(PLANT_VIGOR)).toBe(false);
+			expect(scope.optionsFilter(PLANT_VIGOR_CONVERTED)).toBe(false);
+		});
+
+		it('should return true if there is a match of scale data type in variable and filter options', function() {
+			scope.filterOptions = {
+				variableTypes: [],
+				scaleType: NUMERIC_TYPE
+			};
+			expect(scope.optionsFilter(PLANT_VIGOR_CONVERTED)).toBe(true);
+		});
+
+		it('should return false if there is no match of scale data type in variable and filter options', function() {
+			scope.filterOptions = {
+				variableTypes: [],
+				scaleType: CATEGORICAL_TYPE
+			};
+			expect(scope.optionsFilter(PLANT_VIGOR_CONVERTED)).toBe(false);
 		});
 	});
 

@@ -8,8 +8,10 @@ describe('Filter Module', function() {
 		directiveElement,
 		mockTranslateFilter,
 		variableTypesService = {},
+		scaleTypesService = {},
 		q,
 		deferredGetTypes,
+		deferredGetDataTypes,
 
 		panelService = {
 			showPanel: function() {},
@@ -29,7 +31,12 @@ describe('Filter Module', function() {
 			id: 6,
 			name: 'Environment Detail',
 			description: 'Administrative details to be tracked per environment.'
-		}];
+		}],
+
+		CATEGORICAL_TYPE = {
+			id: 1,
+			name: 'Categorical'
+		};
 
 	beforeEach(function() {
 		module(function($provide) {
@@ -55,6 +62,7 @@ describe('Filter Module', function() {
 		$provide.value('variableTypesService', variableTypesService);
 		$provide.value('panelService', panelService);
 		$provide.value('serviceUtilities', serviceUtilities);
+		$provide.value('dataTypesService', scaleTypesService);
 	}));
 
 	beforeEach(inject(function($rootScope, $q) {
@@ -64,6 +72,11 @@ describe('Filter Module', function() {
 		variableTypesService.getTypes = function() {
 			deferredGetTypes = q.defer();
 			return deferredGetTypes.promise;
+		};
+
+		scaleTypesService.getDataTypes = function() {
+			deferredGetDataTypes = q.defer();
+			return deferredGetDataTypes.promise;
 		};
 
 		spyOn(panelService, 'showPanel').and.callThrough();
@@ -98,6 +111,21 @@ describe('Filter Module', function() {
 
 		it('should display errors if variable types were not retrieved successfully', function() {
 			deferredGetTypes.reject();
+			scope.$apply();
+			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
+			expect(isolateScope.someListsNotLoaded).toBe(true);
+		});
+
+		it('should set the scale data types on the scope', function() {
+			//List with the value for 'ALL'
+			var dataTypesList = [{id: 0, name:'...'}].concat(CATEGORICAL_TYPE);
+			deferredGetDataTypes.resolve(CATEGORICAL_TYPE);
+			scope.$apply();
+			expect(isolateScope.data.scaleTypes).toEqual(dataTypesList);
+		});
+
+		it('should display errors if scale data types were not retrieved successfully', function() {
+			deferredGetDataTypes.reject();
 			scope.$apply();
 			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
 			expect(isolateScope.someListsNotLoaded).toBe(true);

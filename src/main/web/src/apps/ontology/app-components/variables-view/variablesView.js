@@ -14,6 +14,7 @@
 			method: variable.methodSummary && variable.methodSummary.name || '',
 			scale: (variable.scale && variable.scale.name) || (variable.scaleSummary && variable.scaleSummary.name) || '',
 			variableTypes: variable.variableTypes, // used for filtering
+			scaleType: (variable.scale && variable.scale.dataType) || (variable.scaleSummary && variable.scaleSummary.dataType),
 			'action-favourite': variable.favourite ? { iconValue: 'star' } : { iconValue: 'star-empty' }
 		};
 	}
@@ -113,21 +114,30 @@
 			$scope.filterByProperties = ['name', 'alias', 'property', 'method', 'scale'];
 			$scope.panelName = 'variables';
 			$scope.filterOptions = {
-				variableTypes: []
+				variableTypes: [],
+				scaleType: null
 			};
 
 			$scope.optionsFilter = function(variable) {
+				var variableTypeMatch = true,
+					scaleDataTypeMatch = true;
+
 				if (!$scope.filterOptions || !$scope.filterOptions.variableTypes) {
 					return true;
 				}
+
 				if ($scope.filterOptions.variableTypes.length > 0) {
-					return $scope.filterOptions.variableTypes.some(function(variableType) {
+					variableTypeMatch =  $scope.filterOptions.variableTypes.every(function(filterVariableType) {
 						return variable.variableTypes.some(function(itemVariableType) {
-							return angular.equals(variableType, itemVariableType);
-						}, this);
-					}, this);
+							return angular.equals(filterVariableType, itemVariableType);
+						});
+					});
 				}
-				return true;
+
+				if ($scope.filterOptions.scaleType && $scope.filterOptions.scaleType.name !== '...') {
+					scaleDataTypeMatch =  angular.equals(variable.scaleType, $scope.filterOptions.scaleType);
+				}
+				return variableTypeMatch && scaleDataTypeMatch;
 			};
 
 			$timeout(function() {
