@@ -261,7 +261,6 @@ public class StudyUtil {
 		var.setScale(new Term(id++, name + StudyUtil.SCALE_POSTFIX, description + StudyUtil.SCALE_POSTFIX));
 		var.setMethod(new Term(id++, name + StudyUtil.METHOD_POSTFIX, description + StudyUtil.METHOD_POSTFIX));
 		var.setDataType(new Term(dataTypeId, name + StudyUtil.DATA_TYPE_POSTFIX, description + StudyUtil.DATA_TYPE_POSTFIX));
-		var.setStoredIn(new Term(storedIn, name + StudyUtil.STORED_IN_POSTFIX, description + StudyUtil.STORED_IN_POSTFIX));
 		var.setIsA(new Term(id++, name + StudyUtil.TRAIT_CLASS_POSTFIX, description + StudyUtil.TRAIT_CLASS_POSTFIX));
 		var.setPhenotypicType(phenotypicType);
 		var.setConstraints(null);

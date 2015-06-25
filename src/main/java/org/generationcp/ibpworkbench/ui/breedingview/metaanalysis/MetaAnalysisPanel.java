@@ -32,6 +32,7 @@ import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
+import org.generationcp.middleware.domain.dms.StandardVariable;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.TrialEnvironment;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
@@ -701,7 +702,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 			String environmentFactorName = null;
 
 			for (VariableType f : this.dataSet.getVariableTypes().getFactors().getVariableTypes()) {
-				if (f.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()) {
+				if (f.getStandardVariable().getId() == TermId.TRIAL_INSTANCE_FACTOR.getId()) {
 					trialInstanceFactorName = f.getLocalName();
 				}
 
@@ -710,9 +711,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 					environmentFactorName = f.getLocalName();
 				}
 
-				if (f.getStandardVariable().getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT
-						&& f.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_ENVIRONMENT_INFO_STORAGE.getId()
-						&& environmentFactorName == null) {
+				if (isGeolocationProperty(f.getStandardVariable()) && environmentFactorName == null) {
 					environmentFactorName = f.getLocalName();
 				}
 
@@ -776,6 +775,18 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 			}
 
 			MetaAnalysisPanel.this.managerFactory.close();
+		}
+
+		private boolean isGeolocationProperty(StandardVariable standardVariable) {
+			if(standardVariable.getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT &&
+				(standardVariable.getId() != TermId.TRIAL_INSTANCE_FACTOR.getId() ||
+				standardVariable.getId() != TermId.LATITUDE.getId() &&
+				standardVariable.getId() != TermId.LONGITUDE.getId() &&
+				standardVariable.getId() != TermId.GEODETIC_DATUM.getId() &&
+				standardVariable.getId() != TermId.ALTITUDE.getId() )) {
+				return true;
+			}
+			return false;
 		}
 
 	}// end of EnvironmentTabComponent inner class

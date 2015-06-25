@@ -774,7 +774,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 			for (VariableType f : trialEnvFactors.getVariableTypes()) {
 
 				// Always Show the TRIAL INSTANCE Factor
-				if (f.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()) {
+				if (f.getStandardVariable().getId() == TermId.TRIAL_INSTANCE_FACTOR.getId()) {
 					trialInstanceFactor = f.getLocalName();
 				}
 

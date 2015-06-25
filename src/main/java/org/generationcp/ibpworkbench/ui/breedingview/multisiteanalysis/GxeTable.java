@@ -303,7 +303,7 @@ public class GxeTable extends Table {
 					Iterator<VariableType> itrFactor = ds.getVariableTypes().getFactors().getVariableTypes().iterator();
 					while (itrFactor.hasNext()) {
 						VariableType f = itrFactor.next();
-						if (f.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()) {
+						if (f.getStandardVariable().getId() == TermId.TRIAL_INSTANCE_FACTOR.getId()) {
 							this.trialInstanceFactorName = f.getLocalName();
 						}
 					}
@@ -362,7 +362,7 @@ public class GxeTable extends Table {
 
 	protected void addNecessaryFactorsToContainer(VariableType factor, Container container) {
 		// Always Show the TRIAL INSTANCE Factor
-		if (factor.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()) {
+		if (factor.getStandardVariable().getId() == TermId.TRIAL_INSTANCE_FACTOR.getId()) {
 			container.addContainerProperty(factor.getLocalName(), Label.class, "");
 			this.factorLocalNames.put(factor.getRank(), factor.getLocalName());
 		}

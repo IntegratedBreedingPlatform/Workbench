@@ -349,8 +349,8 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 
 						Boolean isGidOrDesig = false;
 
-						if (f.getStandardVariable().getStoredIn().getId() == TermId.ENTRY_DESIGNATION_STORAGE.getId()
-								|| f.getStandardVariable().getStoredIn().getId() == TermId.ENTRY_GID_STORAGE.getId()) {
+						if (f.getStandardVariable().getId() == TermId.DESIG.getId()
+								|| f.getStandardVariable().getId() == TermId.GID.getId()) {
 							isGidOrDesig = true;
 						}
 
@@ -682,11 +682,11 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 					Experiment e = exps.get(0);
 					if (e != null) {
 						for (VariableType var : e.getFactors().getVariableTypes().getVariableTypes()) {
-							if (var.getStandardVariable().getStoredIn().getId() == TermId.ENTRY_DESIGNATION_STORAGE.getId()) {
+							if (var.getStandardVariable().getId() == TermId.DESIG.getId()) {
 								desigFactorName = var.getLocalName();
-							} else if (var.getStandardVariable().getStoredIn().getId() == TermId.ENTRY_GID_STORAGE.getId()) {
+							} else if (var.getStandardVariable().getId() == TermId.GID.getId()) {
 								gidFactorName = var.getLocalName();
-							} else if (var.getStandardVariable().getStoredIn().getId() == TermId.ENTRY_NUMBER_STORAGE.getId()) {
+							} else if (var.getStandardVariable().getId() == TermId.ENTRY_NO.getId()) {
 								entrynoFactorName = var.getLocalName();
 							}
 						}

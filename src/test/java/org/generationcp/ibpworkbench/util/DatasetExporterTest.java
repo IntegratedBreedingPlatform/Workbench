@@ -516,9 +516,8 @@ public class DatasetExporterTest {
 		stdVar.setPhenotypicType(type);
 		stdVar.setName(name);
 		stdVar.setDataType(dataType);
-		stdVar.setStoredIn(storedIn);
-
-		if (storedIn == DatasetExporterTest.CATEGORICAL_VARIATE_ROLE) {
+		
+		if (dataType.getId() == DatasetExporterTest.CATEGORICAL_VARIABLE.getId()) {
 			List<Enumeration> validValues = new ArrayList<Enumeration>();
 			validValues.add(new Enumeration(DatasetExporterTest.CATEGORICAL_VARIATE_ENUM_ID,
 					DatasetExporterTest.CATEGORICAL_VARIATE_ENUM_NAME, DatasetExporterTest.CATEGORICAL_VARIATE_ENUM_DESCRIPTION, 1));

@@ -30,6 +30,7 @@ import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.ibpworkbench.util.DatasetUtil;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
+import org.generationcp.middleware.domain.dms.StandardVariable;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.TrialEnvironment;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
@@ -711,16 +712,27 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 		for (VariableType factor : trialDs.getVariableTypes().getFactors().getVariableTypes()) {
 
 			if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT
-					&& factor.getStandardVariable().getStoredIn().getId() != TermId.TRIAL_INSTANCE_STORAGE.getId()) {
+					&& factor.getStandardVariable().getId() != TermId.TRIAL_INSTANCE_FACTOR.getId()) {
 				this.getSelectSpecifyEnvironmentGroups().addItem(factor.getLocalName());
 			}
 
-			// only TRIAL_ENVIRONMENT_INFO_STORAGE(1020) TRIAL_INSTANCE_STORAGE(1021) factors in selectEnv dropdown
-			if (factor.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()
-					|| factor.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_ENVIRONMENT_INFO_STORAGE.getId()) {
+			if (factor.getStandardVariable().getId() == TermId.TRIAL_INSTANCE_FACTOR.getId()
+					|| isGeolocationProperty(factor.getStandardVariable())) {
 				this.getSelectSpecifyEnvironment().addItem(factor.getLocalName());
 			}
 		}
+	}
+
+	private boolean isGeolocationProperty(StandardVariable standardVariable) {
+		if(standardVariable.getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT &&
+			(standardVariable.getId() != TermId.TRIAL_INSTANCE_FACTOR.getId() ||
+			standardVariable.getId() != TermId.LATITUDE.getId() &&
+			standardVariable.getId() != TermId.LONGITUDE.getId() &&
+			standardVariable.getId() != TermId.GEODETIC_DATUM.getId() &&
+			standardVariable.getId() != TermId.ALTITUDE.getId() )) {
+			return true;
+		}
+		return false;
 	}
 
 	private void updateFactorsTable(List<FactorModel> factorList, Table factors) {

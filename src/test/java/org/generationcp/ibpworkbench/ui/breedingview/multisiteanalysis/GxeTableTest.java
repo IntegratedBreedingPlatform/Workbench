@@ -460,9 +460,8 @@ public class GxeTableTest {
 		stdVar.setPhenotypicType(type);
 		stdVar.setName(name);
 		stdVar.setDataType(dataType);
-		stdVar.setStoredIn(storedIn);
-
-		if (storedIn == GxeTableTest.CATEGORICAL_VARIATE_ROLE) {
+		
+		if (dataType.getId() == GxeTableTest.CATEGORICAL_VARIABLE.getId()) {
 			List<Enumeration> validValues = new ArrayList<Enumeration>();
 			validValues.add(new Enumeration(GxeTableTest.CATEGORICAL_VARIATE_ENUM_ID, GxeTableTest.CATEGORICAL_VARIATE_ENUM_NAME,
 					GxeTableTest.CATEGORICAL_VARIATE_ENUM_DESCRIPTION, 1));
