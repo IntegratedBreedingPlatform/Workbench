@@ -21,6 +21,12 @@
 					panelService.showPanel($scope.smallPanelName);
 				};
 
+				$scope.isFilterActive = function() {
+					return ($scope.filterOptions && $scope.filterOptions.variableTypes &&
+						$scope.filterOptions.variableTypes.length !== 0) || ($scope.filterOptions && $scope.filterOptions.scaleType &&
+						$scope.filterOptions.scaleType.name !== '...');
+				};
+
 				variableTypesService.getTypes().then(function(types) {
 					$scope.data.types = types;
 				}, function(response) {

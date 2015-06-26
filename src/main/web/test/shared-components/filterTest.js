@@ -139,5 +139,19 @@ describe('Filter Module', function() {
 				expect(panelService.showPanel).toHaveBeenCalledWith(isolateScope.smallPanelName);
 			});
 		});
+
+		describe('$scope.isFilterActive', function() {
+
+			it('should return true if filter options are set', function() {
+				compileDirective();
+				isolateScope.filterOptions = {};
+				isolateScope.filterOptions.variableTypes = variableTypes;
+				expect(isolateScope.isFilterActive()).toBe(true);
+
+				isolateScope.filterOptions.variableTypes = [];
+				isolateScope.filterOptions.scaleType = CATEGORICAL_TYPE;
+				expect(isolateScope.isFilterActive()).toBe(true);
+			});
+		});
 	});
 });
