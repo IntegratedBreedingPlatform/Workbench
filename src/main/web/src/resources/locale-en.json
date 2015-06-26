@@ -174,7 +174,7 @@
 		},
 
 		"filter": {
-			"someListsNotLoaded": "The variables types list was not loaded. Please, refresh the page."
+			"someListsNotLoaded": "Something went wrong, please refresh the page."
 		}
 	},
 
