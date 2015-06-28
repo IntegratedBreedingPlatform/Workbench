@@ -95,7 +95,7 @@
 		<div ng-class="formGroupClass('omVariableTypes', 'variableTypes')">
 			<label for="omVariableTypes" class="col-sm-3 control-label">{{'formField.variableType' | translate}}</label>
 			<div class="col-sm-9">
-				<om-multi-select name="omVariableTypes" om-name="om-type" om-property="variableTypes" om-editing="editing" ng-model="model" om-options="data.types"></om-multi-select>
+				<om-multi-select name="omVariableTypes" om-property="variableTypes" om-editing="editing" ng-model="model" om-options="data.types"></om-multi-select>
 				<ng-messages for="vdForm.omVariableTypes.$error" ng-if="vdForm.$submitted">
 					<ng-message when="emptyValue"><p class="text-danger">{{'validation.variable.variableTypeEmpty' | translate}}</p></ng-message>
 				</ng-messages>

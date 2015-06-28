@@ -75,7 +75,7 @@ describe('multiselect module', function() {
 	});
 
 	compileDirective = function() {
-		var directiveHtml = '<om-multi-select om-name="multiselect" om-property="property" ng-model="model" om-options="options">' +
+		var directiveHtml = '<om-multi-select om-property="property" ng-model="model" om-options="options">' +
 			'</om-multi-select>';
 
 		inject(function($compile) {
