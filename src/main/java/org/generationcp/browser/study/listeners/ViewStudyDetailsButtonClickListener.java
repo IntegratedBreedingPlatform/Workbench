@@ -49,7 +49,7 @@ public class ViewStudyDetailsButtonClickListener implements ClickListener {
 	public void buttonClick(ClickEvent event) {
 		Tool tool = null;
 		try {
-			tool = this.workbenchDataManager.getToolWithName(ToolName.study_browser_with_id.toString());
+			tool = this.workbenchDataManager.getToolWithName(ToolName.STUDY_BROWSER_WITH_ID.toString());
 		} catch (MiddlewareQueryException qe) {
 			ViewStudyDetailsButtonClickListener.LOG.error("QueryException", qe);
 		}

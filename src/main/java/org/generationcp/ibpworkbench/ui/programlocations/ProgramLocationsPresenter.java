@@ -219,10 +219,10 @@ public class ProgramLocationsPresenter implements InitializingBean {
 	private LocationViewModel convertFrom(LocationDetails location) {
 		LocationViewModel viewModel = new LocationViewModel();
 		viewModel.setLocationId(location.getLocid());
-		viewModel.setLocationName(location.getLocation_name());
-		viewModel.setLocationAbbreviation(location.getLocation_abbreviation());
-		viewModel.setCntryFullName(location.getCountry_full_name());
-		viewModel.setLtypeStr(location.getLocation_type());
+		viewModel.setLocationName(location.getLocationName());
+		viewModel.setLocationAbbreviation(location.getLocationAbbreviation());
+		viewModel.setCntryFullName(location.getCountryFullName());
+		viewModel.setLtypeStr(location.getLocationType());
 		viewModel.setCntryid(location.getCntryid());
 		viewModel.setLtype(location.getLtype());
 		viewModel.setLatitude(location.getLatitude());

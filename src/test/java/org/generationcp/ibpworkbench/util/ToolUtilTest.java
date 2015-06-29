@@ -349,6 +349,6 @@ public class ToolUtilTest {
 	}
 
 	protected Tool constructDummyNativeTool() {
-		return new Tool(ToolName.gdms.name(), ToolUtilTest.DUMMY_TOOL_TITLE, ToolUtilTest.DUMMY_NATIVE_TOOL_PATH);
+		return new Tool(ToolName.GDMS.name(), ToolUtilTest.DUMMY_TOOL_TITLE, ToolUtilTest.DUMMY_NATIVE_TOOL_PATH);
 	}
 }
