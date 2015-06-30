@@ -9,7 +9,7 @@
 		return {
 			id: property.id || id,
 			name: property.name,
-			description: property.description,
+			description: property.description || '',
 			classes: property.classes.join(', ')
 		};
 	}

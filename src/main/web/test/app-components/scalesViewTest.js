@@ -78,6 +78,25 @@ describe('Scales View', function() {
 		expect(controller.scales).toEqual(transformedData);
 	});
 
+	it('should add an empty description when transforming scale into display format if one is missing', function() {
+		var jsonData = [{
+				id: 1,
+				name: PERCENTAGE.name,
+				dataType: PERCENTAGE.dataType
+			}],
+			transformedData = [{
+				id: 1,
+				name: PERCENTAGE.name,
+				description: '',
+				dataType: PERCENTAGE.dataType.name
+			}];
+
+		deferredGetScales.resolve(jsonData);
+		scope.$apply();
+		expect(scalesService.getScales).toHaveBeenCalled();
+		expect(controller.scales).toEqual(transformedData);
+	});
+
 	it('should show a message if there are no scales returned', function() {
 		var jsonData = [];
 
