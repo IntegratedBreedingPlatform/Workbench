@@ -75,6 +75,25 @@ describe('Properties View', function() {
 		expect(controller.properties).toEqual(transformedData);
 	});
 
+	it('should add an empty description when transforming property into display format if one is missing', function() {
+		var jsonData = [{
+				id: 'prop1',
+				name: 'prop1',
+				classes: ['class1', 'class2']
+			}],
+			transformedData = [{
+				id: 'prop1',
+				name: 'prop1',
+				description: '',
+				classes: 'class1, class2'
+			}];
+
+		deferredGetProperties.resolve(jsonData);
+		scope.$apply();
+		expect(propertiesService.getProperties).toHaveBeenCalled();
+		expect(controller.properties).toEqual(transformedData);
+	});
+
 	it('should show a message if there are no properties returned', function() {
 		var jsonData = [];
 

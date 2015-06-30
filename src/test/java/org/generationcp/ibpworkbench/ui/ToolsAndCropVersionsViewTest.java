@@ -37,7 +37,7 @@ public class ToolsAndCropVersionsViewTest {
 
 	private static List<Tool> getAllTools() {
 		List<Tool> tools = new ArrayList<Tool>();
-		Tool tool = new Tool(ToolName.gdms.name(), "GDMS", "GDMS/login.do");
+		Tool tool = new Tool(ToolName.GDMS.name(), "GDMS", "GDMS/login.do");
 		tool.setToolId(9L);
 		tools.add(tool);
 		return tools;

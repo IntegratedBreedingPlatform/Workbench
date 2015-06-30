@@ -41,7 +41,7 @@
 			<div class="col-sm-9">
 				<om-input om-name="omAlias" om-property="alias" om-editing="editing" om-model="model" om-max-length="32" om-pattern="^[a-zA-Z_%][a-zA-Z_%0-9]*$"></om-input>
 				<ng-messages for="vdForm.omAlias.$error" ng-if="editing && vdForm.$submitted || vdForm.omAlias.$touched">
-					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "32"}'}}</p>p></ng-message>
+					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "32"}'}}</p></ng-message>
 					<ng-message when="pattern"><p class="text-danger">{{'validation.variable.pattern' | translate}}</p></ng-message>
 				</ng-messages>
 				<p class="text-danger" ng-hide="vdForm.omAlias.$touched" ng-repeat="error in serverErrors.alias">{{error}}</p>
@@ -51,9 +51,9 @@
 		<div ng-class="formGroupClass('omDescription', 'description')">
 			<label for="omDescription" class="col-sm-3 control-label">{{'formField.description' | translate}}</label>
 			<div class="col-sm-9">
-				<om-text-area om-name="omDescription" om-property="description" om-editing="editing" om-model="model" om-max-length="255"></om-text-area>
+				<om-text-area om-name="omDescription" om-property="description" om-editing="editing" om-model="model" om-max-length="1024"></om-text-area>
 				<ng-messages for="vdForm.omDescription.$error" ng-if="editing && vdForm.$submitted || vdForm.omDescription.$touched">
-					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "255"}'}}</p></ng-message>
+					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "1024"}'}}</p></ng-message>
 				</ng-messages>
 				<p class="text-danger" ng-hide="vdForm.omDescription.$touched" ng-repeat="error in serverErrors.description">{{error}}</p>
 			</div>
@@ -95,7 +95,7 @@
 		<div ng-class="formGroupClass('omVariableTypes', 'variableTypes')">
 			<label for="omVariableTypes" class="col-sm-3 control-label">{{'formField.variableType' | translate}}</label>
 			<div class="col-sm-9">
-				<om-multi-select name="omVariableTypes" om-name="om-type" om-property="variableTypes" om-editing="editing" ng-model="model" om-options="data.types"></om-multi-select>
+				<om-multi-select name="omVariableTypes" om-property="variableTypes" om-editing="editing" ng-model="model" om-options="data.types"></om-multi-select>
 				<ng-messages for="vdForm.omVariableTypes.$error" ng-if="vdForm.$submitted">
 					<ng-message when="emptyValue"><p class="text-danger">{{'validation.variable.variableTypeEmpty' | translate}}</p></ng-message>
 				</ng-messages>

@@ -85,11 +85,11 @@ public class AppLauncherService {
 		// if user is trying to launch the FieldBook webapp,
 		// and if the user is trying to launch the BreedingManager webapp
 		// we need to reconfigure and deploy the GermplasmBrowser webapp
-		if (Util.isOneOf(tool.getToolName(), ToolName.fieldbook_web.name(), ToolName.nursery_manager_fieldbook_web.name(),
-				ToolName.trial_manager_fieldbook_web.name(), ToolName.ontology_browser_fieldbook_web.name(),
-				ToolName.bm_list_manager.name(), ToolName.bm_list_manager_main.name(), ToolName.crossing_manager.name(),
-				ToolName.germplasm_import.name(), ToolName.list_manager.name(), ToolName.nursery_template_wizard.name())) {
-			Tool germplasmBrowserTool = this.workbenchDataManager.getToolWithName(ToolName.germplasm_browser.name());
+		if (Util.isOneOf(tool.getToolName(), ToolName.FIELDBOOK_WEB.name(), ToolName.NURSERY_MANAGER_FIELDBOOK_WEB.name(),
+				ToolName.TRIAL_MANAGER_FIELDBOOK_WEB.name(), ToolName.ONTOLOGY_BROWSER_FIELDBOOK_WEB.name(),
+				ToolName.BM_LIST_MANAGER.name(), ToolName.BM_LIST_MANAGER_MAIN.name(), ToolName.CROSSING_MANAGER.name(),
+				ToolName.GERMPLASM_IMPORT.name(), ToolName.LIST_MANAGER.name(), ToolName.NURSERY_TEMPLATE_WIZARD.name())) {
+			Tool germplasmBrowserTool = this.workbenchDataManager.getToolWithName(ToolName.GERMPLASM_BROWSER.name());
 			this.tomcatUtil.deployWebAppIfNecessary(germplasmBrowserTool);
 		}
 	}

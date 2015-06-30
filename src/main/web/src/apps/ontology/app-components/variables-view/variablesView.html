@@ -3,25 +3,9 @@
 		<om-variable-details></om-variable-details>
 	</om-panel>
 
-	<om-panel class="om-panel-small" om-panel-identifier="smallPanelName" om-title="'filter.title' | translate">
-		<form class="form-horizontal" name="filterForm" ng-submit="" novalidate>
-			<div class="om-panel-header">
-				<h2 class="om-panel-title underlined-heading">
-					{{'filter.title' | translate}}
-				</h2>
-			</div>
-
-			<div class="om-details-content">
-			</div>
-		</form>
-	</om-panel>
-
 	<om-search om-model="searchFilter"></om-search>
-	<div class="om-filter-button">
-		<button type="button" class="btn btn-default btn-icon" aria-label="Filter" ng-click="addNewFilter()">
-			<span class="glyphicon glyphicon-filter" aria-hidden="true"></span>
-		</button>
-	</div>
+	<om-filter om-filter-options="filterOptions"></om-filter>
+
 	<div ng-hide="searchFilter">
 		<h2>{{'variablesList.favouritesTitle' | translate}}</h2>
 		<div ng-show="varsCtrl.showFavouritesThrobberWrapper" class="om-list-throbber-wrapper">
@@ -31,12 +15,11 @@
 		<p ng-show="varsCtrl.showNoFavouritesMessage" class="text-info">{{'variablesList.noFavouritesFound' | translate}}</p>
 		<p ng-show="varsCtrl.problemGettingFavouriteList" class="text-danger">{{'list.problemGettingList' | translate}}</p>
 	</div>
-
 	<h2>{{'variablesList.title' | translate}}</h2>
 	<div ng-show="varsCtrl.showAllVariablesThrobberWrapper" class="om-list-throbber-wrapper">
 		<span ng-class="{'throbber-hidden': !varsCtrl.showAllVariablesThrobber}" class="throbber throbber-lg"></span>
 	</div>
-	<om-list ng-hide="varsCtrl.variables.length === 0" om-data="varsCtrl.variables" om-col-headers="varsCtrl.colHeaders" om-on-click="showVariableDetails()" om-selected-item="selectedItem" om-item-filter="searchFilter" om-properties-to-filter="filterByProperties" om-pagination="true" om-list-name="variables"></om-list>
+	<om-list ng-hide="varsCtrl.variables.length === 0" om-data="varsCtrl.variables" om-col-headers="varsCtrl.colHeaders" om-on-click="showVariableDetails()" om-selected-item="selectedItem" om-item-filter="searchFilter" om-properties-to-filter="filterByProperties" om-options-filter="optionsFilter" om-pagination="true" om-list-name="variables"></om-list>
 	<p ng-show="varsCtrl.showNoVariablesMessage" class="text-info">{{'list.noItemsFound' | translate:'{items: "variables"}'}}</p>
 	<p ng-show="varsCtrl.problemGettingList" class="text-danger">{{'list.problemGettingList' | translate}}</p>
 </div>

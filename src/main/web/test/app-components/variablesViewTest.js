@@ -31,6 +31,22 @@ describe('Variables Controller', function() {
 
 	PLANT_VIGOR_DETAILED,
 	PLANT_VIGOR_CONVERTED,
+	FAVOURITE_VARIABLE = {
+		id: 123,
+		name: PLANT_VIGOR.name,
+		property: PLANT_VIGOR.propertySummary.name,
+		method: PLANT_VIGOR.methodSummary.name,
+		scale: PLANT_VIGOR.scaleSummary.name,
+		'action-favourite': { iconValue: 'star' }
+	},
+	CATEGORICAL_TYPE = {
+		id: 1,
+		name: 'Categorical'
+	},
+	NUMERIC_TYPE = {
+		id: 2,
+		name: 'Numeric'
+	},
 
 	q,
 	controller,
@@ -52,19 +68,17 @@ describe('Variables Controller', function() {
 	PLANT_VIGOR_DETAILED.scale = {
 		id: 1,
 		name: 'Score',
-		dataType: {
-			id: 2,
-			name: 'Numeric'
-		},
 		validValues: {
 			min: 1,
 			max: 5
 		}
 	};
+	PLANT_VIGOR_DETAILED.scale.dataType = NUMERIC_TYPE;
 
 	delete PLANT_VIGOR_CONVERTED.favourite;
 	PLANT_VIGOR_CONVERTED['action-favourite'] = {};
 	PLANT_VIGOR_CONVERTED['action-favourite'].iconValue = 'star';
+	PLANT_VIGOR_CONVERTED.scaleType = NUMERIC_TYPE;
 
 	delete PLANT_VIGOR_DETAILED.id;
 	delete PLANT_VIGOR_DETAILED.scaleSummary;
@@ -107,6 +121,7 @@ describe('Variables Controller', function() {
 		};
 
 		spyOn(variablesService, 'getVariable').and.callThrough();
+		spyOn(variablesService, 'updateVariable').and.callThrough();
 		spyOn(variablesService, 'getVariables').and.callThrough();
 		spyOn(variablesService, 'getFavouriteVariables').and.callThrough();
 		spyOn(panelService, 'showPanel');
@@ -122,47 +137,6 @@ describe('Variables Controller', function() {
 		spyOn(controller, 'transformDetailedVariableToDisplayFormat').and.callThrough();
 	}));
 
-	describe('ctrl.transformVariableToDisplayFormat', function() {
-
-		it('should transform a variable summary into display format', function() {
-			var rawVariable = PLANT_VIGOR,
-			transformedVariable = {
-				id: PLANT_VIGOR.id,
-				name: PLANT_VIGOR.name,
-				alias: PLANT_VIGOR.alias,
-				property: PLANT_VIGOR.propertySummary.name,
-				method: PLANT_VIGOR.methodSummary.name,
-				scale: PLANT_VIGOR.scaleSummary.name,
-				'action-favourite': PLANT_VIGOR.favourite ? { iconValue: 'star' } : { iconValue: 'star-empty' }
-			};
-
-			expect(controller.transformVariableToDisplayFormat(rawVariable)).toEqual(transformedVariable);
-		});
-
-		it('should default values to empty strings if they are not present', function() {
-			var rawVariable = angular.copy(PLANT_VIGOR),
-			transformedVariable;
-
-			// Null out some values
-			rawVariable.propertySummary = null;
-			rawVariable.methodSummary = null;
-			rawVariable.scaleSummary = null;
-			rawVariable.favourite = false;
-
-			transformedVariable = {
-				id: PLANT_VIGOR.id,
-				name: PLANT_VIGOR.name,
-				alias: PLANT_VIGOR.alias,
-				property: '',
-				method: '',
-				scale: '',
-				'action-favourite': { iconValue: 'star-empty' }
-			};
-			expect(controller.transformVariableToDisplayFormat(rawVariable)).toEqual(transformedVariable);
-		});
-
-	});
-
 	describe('ctrl.transformDetailedVariableToDisplayFormat', function() {
 
 		it('should transform a detailed variable into display format', function() {
@@ -174,13 +148,15 @@ describe('Variables Controller', function() {
 					property: PLANT_VIGOR_DETAILED.propertySummary.name,
 					method: PLANT_VIGOR_DETAILED.methodSummary.name,
 					scale: PLANT_VIGOR_DETAILED.scale.name,
+					variableTypes: PLANT_VIGOR_DETAILED.variableTypes,
+					scaleType: PLANT_VIGOR_DETAILED.scale.dataType,
 					'action-favourite': PLANT_VIGOR_DETAILED.favourite ? { iconValue: 'star' } : { iconValue: 'star-empty' }
 				};
 
 			expect(controller.transformDetailedVariableToDisplayFormat(PLANT_VIGOR_DETAILED, newId)).toEqual(transformedVariable);
 		});
 
-		it('should default values to empty strings if they are not present', function() {
+		it('should default some values to empty strings if they are not present', function() {
 			var rawVariable = angular.copy(PLANT_VIGOR_DETAILED),
 				transformedVariables;
 
@@ -189,6 +165,7 @@ describe('Variables Controller', function() {
 			rawVariable.propertySummary = null;
 			rawVariable.methodSummary = null;
 			rawVariable.scale = null;
+			rawVariable.variableTypes = null;
 
 			transformedVariables = {
 				id: PLANT_VIGOR_DETAILED.id,
@@ -197,6 +174,8 @@ describe('Variables Controller', function() {
 				property: '',
 				method: '',
 				scale: '',
+				variableTypes: null,
+				scaleType: undefined,
 				'action-favourite': { iconValue: 'star' }
 			};
 			expect(controller.transformDetailedVariableToDisplayFormat(rawVariable)).toEqual(transformedVariables);
@@ -220,6 +199,18 @@ describe('Variables Controller', function() {
 
 			expect(variablesService.getVariables).toHaveBeenCalled();
 			expect(controller.showNoVariablesMessage).toBe(true);
+		});
+
+		it('should show an error if any of the variables are missing an id or name', function() {
+			var plantVigor = angular.copy(PLANT_VIGOR),
+				jsonData = [plantVigor];
+
+			jsonData[0].name = '';
+			deferredGetVariables.resolve(jsonData);
+			scope.$apply();
+
+			expect(variablesService.getVariables).toHaveBeenCalled();
+			expect(controller.problemGettingList).toBe(true);
 		});
 
 		it('should show a message if there was a problem getting data for variables', function() {
@@ -248,6 +239,17 @@ describe('Variables Controller', function() {
 
 			expect(variablesService.getFavouriteVariables).toHaveBeenCalled();
 			expect(controller.showNoFavouritesMessage).toBe(true);
+		});
+
+		it('should show an error if any of the favourite variables are missing an id or name', function() {
+			var jsonData = [PLANT_VIGOR];
+
+			jsonData[0].name = '';
+			deferredGetFavVariables.resolve(jsonData);
+			scope.$apply();
+
+			expect(variablesService.getVariables).toHaveBeenCalled();
+			expect(controller.problemGettingFavouriteList).toBe(true);
 		});
 
 		it('should show a message if there was a problem getting data for favourite variables', function() {
@@ -344,28 +346,18 @@ describe('Variables Controller', function() {
 
 	describe('$scope.toggleFavourite', function() {
 
-		var favouriteVariable,
-			nonFavouriteVariable;
+		var nonFavouriteVariable,
+			favouriteVariable;
 
 		beforeEach(function() {
 			scope.selectedItem.id = 123;
 
-			favouriteVariable = {
-				id: scope.selectedItem.id,
-				name: PLANT_VIGOR.name,
-				property: PLANT_VIGOR.propertySummary.name,
-				method: PLANT_VIGOR.methodSummary.name,
-				scale: PLANT_VIGOR.scaleSummary.name,
-				'action-favourite': { iconValue: 'star' }
-			};
-			nonFavouriteVariable = {
-				id: scope.selectedItem.id,
-				name: PLANT_VIGOR.name,
-				property: PLANT_VIGOR.propertySummary.name,
-				method: PLANT_VIGOR.methodSummary.name,
-				scale: PLANT_VIGOR.scaleSummary.name,
-				'action-favourite': { iconValue: 'star-empty' }
-			};
+			favouriteVariable = angular.copy(FAVOURITE_VARIABLE);
+			favouriteVariable.id = scope.selectedItem.id;
+
+			nonFavouriteVariable = angular.copy(FAVOURITE_VARIABLE);
+			nonFavouriteVariable.id = scope.selectedItem.id;
+			nonFavouriteVariable['action-favourite'].iconValue = 'star-empty';
 
 			spyOn(scope, 'updateSelectedVariable').and.callThrough();
 		});
@@ -373,23 +365,35 @@ describe('Variables Controller', function() {
 		it('should change the icon of the selected variable to the opposite one (star to star-empty)', function() {
 			controller.variables = [favouriteVariable];
 			scope.toggleFavourite();
-
 			expect(scope.updateSelectedVariable).toHaveBeenCalledWith(nonFavouriteVariable);
-
-			deferredGetVariable.resolve(PLANT_VIGOR_DETAILED);
-			scope.$apply();
-
-			expect(variablesService.getVariable).toHaveBeenCalledWith(scope.selectedItem.id);
-			expect(scope.selectedVariable).toEqual(PLANT_VIGOR_DETAILED);
 		});
+
 		it('should change the icon of the selected variable to the opposite one (star-empty to star)', function() {
 			controller.variables = [nonFavouriteVariable];
+			scope.toggleFavourite();
+			expect(scope.updateSelectedVariable).toHaveBeenCalledWith(FAVOURITE_VARIABLE);
+		});
 
+		it('should toggle the value of selected variable on the backend', function() {
+			controller.variables = [favouriteVariable];
+			scope.toggleFavourite();
 			deferredGetVariable.resolve(PLANT_VIGOR_DETAILED);
 			scope.$apply();
-			scope.toggleFavourite();
+			expect(scope.selectedVariable.favourite).toBe(false);
 
-			expect(scope.updateSelectedVariable).toHaveBeenCalledWith(favouriteVariable);
+			controller.variables = [nonFavouriteVariable];
+			scope.toggleFavourite();
+			deferredGetVariable.resolve(PLANT_VIGOR_DETAILED);
+			scope.$apply();
+			expect(scope.selectedVariable.favourite).toBe(true);
+		});
+
+		it('should save the changes to the backend when selected variable is favourited or defavourited', function() {
+			controller.variables = [favouriteVariable];
+			scope.toggleFavourite();
+			deferredGetVariable.resolve(PLANT_VIGOR_DETAILED);
+			scope.$apply();
+			expect(variablesService.updateVariable).toHaveBeenCalledWith(scope.selectedItem.id, PLANT_VIGOR_DETAILED);
 		});
 	});
 
@@ -562,6 +566,60 @@ describe('Variables Controller', function() {
 			expect(controller.favouriteVariables[0]).toEqual(variableToUpdate);
 			expect(controller.favouriteVariables[1]).toEqual(nonMatchingVariable);
 			expect(controller.favouriteVariables[2]).toEqual(anotherNonMatchingVariable);
+		});
+	});
+
+	describe('$scope.optionsFilter', function() {
+
+		it('should return true if filter options are not set', function() {
+			scope.filterOptions = undefined;
+			expect(scope.optionsFilter()).toBe(true);
+
+			scope.filterOptions = { variableTypes: undefined };
+			expect(scope.optionsFilter()).toBe(true);
+
+			scope.filterOptions = { variableTypes: [] };
+			expect(scope.optionsFilter()).toBe(true);
+		});
+
+		it('should return true if there is a match of variable type in variable and filter options', function() {
+			scope.filterOptions = {
+				variableTypes: [{
+					id: 1,
+					name: 'Analysis',
+					description: ''
+				}],
+				scaleType: {name: '...'}
+			};
+			expect(scope.optionsFilter(PLANT_VIGOR_CONVERTED)).toBe(true);
+		});
+
+		it('should return false if there is no match of variable type in variable and filter options', function() {
+			scope.filterOptions = {
+				variableTypes: [{
+					id: 8,
+					name: 'Trait',
+					description: 'Characteristics of a germplasm to be recorded during a study.'
+				}],
+				scaleType: {name: '...'}
+			};
+			expect(scope.optionsFilter(PLANT_VIGOR_CONVERTED)).toBe(false);
+		});
+
+		it('should return true if there is a match of scale data type in variable and filter options', function() {
+			scope.filterOptions = {
+				variableTypes: [],
+				scaleType: NUMERIC_TYPE
+			};
+			expect(scope.optionsFilter(PLANT_VIGOR_CONVERTED)).toBe(true);
+		});
+
+		it('should return false if there is no match of scale data type in variable and filter options', function() {
+			scope.filterOptions = {
+				variableTypes: [],
+				scaleType: CATEGORICAL_TYPE
+			};
+			expect(scope.optionsFilter(PLANT_VIGOR_CONVERTED)).toBe(false);
 		});
 	});
 

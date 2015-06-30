@@ -16,7 +16,8 @@
 				itemFilter: '=omItemFilter',
 				propertiesToFilter: '=omPropertiesToFilter',
 				pagination: '=omPagination',
-				listName: '@omListName'
+				listName: '@omListName',
+				optionsFilter: '=omOptionsFilter'
 			},
 
 			controller: function($scope) {
@@ -51,6 +52,15 @@
 					}, this);
 				};
 
+				$scope.filterByOptions = function(item) {
+					if ($scope.optionsFilter) {
+						return $scope.optionsFilter(item);
+					} else {
+						return function() {
+							return true;
+						};
+					}
+				};
 			},
 
 			link: function(scope) {

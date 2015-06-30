@@ -9,7 +9,7 @@
 		return {
 			id: scale.id || id,
 			name: scale.name,
-			description: scale.description,
+			description: scale.description || '',
 			dataType: scale.dataType.name
 		};
 	}

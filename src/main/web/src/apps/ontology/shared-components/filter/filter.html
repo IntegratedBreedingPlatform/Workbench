@@ -1,0 +1,37 @@
+<om-panel class="om-panel-small" om-panel-identifier="smallPanelName" om-title="'filter.title' | translate">
+	<form class="form-horizontal" name="filterForm" novalidate>
+		<div class="om-panel-header">
+			<h2 class="om-panel-title underlined-heading">
+				{{'filter.title' | translate}}
+			</h2>
+		</div>
+
+		<div class="om-details-content">
+			<div ng-if="serverErrors.general || someListsNotLoaded" class="alert alert-danger" role="alert">
+				<ul>
+					<li ng-repeat="error in serverErrors.general">{{error}}</li>
+				</ul>
+				<ul ng-if="someListsNotLoaded">
+					<li>{{'validation.filter.someListsNotLoaded' | translate}}</li>
+				</ul>
+			</div>
+			<div ng-class="formGroupClass('omVariableTypes', 'type')">
+				<label for="omVariableTypes" class="col-sm-3 control-label">{{'formField.variableType' | translate}}</label>
+				<div class="col-sm-9">
+					<om-multi-select name="omVariableTypes" om-property="variableTypes" om-adding="true" ng-model="filterOptions" om-options="data.types"></om-multi-select>
+				</div>
+			</div>
+			<div ng-class="formGroupClass('omDataType', 'dataType')">
+				<label for="omDataType" class="col-sm-3 control-label">{{'formField.dataType' | translate}}</label>
+				<div class="col-sm-9">
+					<om-select name="omDataType" om-name="om-data-type" om-property="scaleType" om-adding="true" ng-model="filterOptions" om-options="data.scaleTypes"></om-select>
+				</div>
+			</div>
+		</div>
+	</form>
+</om-panel>
+<div class="om-filter-button">
+	<button type="button" class="btn btn-icon" ng-class="isFilterActive() ? 'btn-primary' : 'btn-default'" aria-label="Filter" ng-click="addNewFilter()">
+		<span class="glyphicon glyphicon-filter" aria-hidden="true"></span>
+	</button>
+</div>

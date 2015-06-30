@@ -168,7 +168,7 @@ public class ProgramLocationsPresenterTest {
 
 				LocationDetails locationDetail = new LocationDetails();
 				locationDetail.setLocid(locId);
-				locationDetail.setLocation_name(locationName);
+				locationDetail.setLocationName(locationName);
 				locationDetail.setLtype(locationType);
 				locationDetail.setCntryid(countryId);
 
