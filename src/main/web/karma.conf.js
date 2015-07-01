@@ -22,6 +22,8 @@ module.exports = function(config) {
 			'src/js/lib/angular-debounce.min.js',
 			'src/js/lib/angular-translate.min.js',
 			'src/js/lib/angular-translate-loader-static-files.min.js',
+			'src/js/lib/ui-bootstrap-custom-0.13.0.min.js',
+			'src/js/lib/ui-bootstrap-custom-tpls-0.13.0.min.js',
 			'test/lib/angular-mocks.js',
 			'src/apps/**/*.js',
 			'test/**/*.js',

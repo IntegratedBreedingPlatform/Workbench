@@ -6,6 +6,8 @@
 		DELAY = 400;
 
 	function transformDetailedVariableToDisplayFormat(variable, id) {
+		var tempDateCreated = new Date(variable.metadata.dateCreated);
+		tempDateCreated.setHours(0, 0, 0, 0);
 		return {
 			id: id,
 			name: variable.name,
@@ -15,6 +17,9 @@
 			scale: (variable.scale && variable.scale.name) || (variable.scaleSummary && variable.scaleSummary.name) || '',
 			variableTypes: variable.variableTypes, // used for filtering
 			scaleType: (variable.scale && variable.scale.dataType) || (variable.scaleSummary && variable.scaleSummary.dataType),
+			metadata: {
+				dateCreated: tempDateCreated
+			},
 			'action-favourite': variable.favourite ? { iconValue: 'star' } : { iconValue: 'star-empty' }
 		};
 	}
@@ -120,7 +125,8 @@
 
 			$scope.optionsFilter = function(variable) {
 				var variableTypeMatch = true,
-					scaleDataTypeMatch = true;
+					scaleDataTypeMatch = true,
+					dateCreatedMatch = true;
 
 				if (!$scope.filterOptions || !$scope.filterOptions.variableTypes) {
 					return true;
@@ -137,7 +143,17 @@
 				if ($scope.filterOptions.scaleType && $scope.filterOptions.scaleType.name !== '...') {
 					scaleDataTypeMatch =  angular.equals(variable.scaleType, $scope.filterOptions.scaleType);
 				}
-				return variableTypeMatch && scaleDataTypeMatch;
+				if ($scope.filterOptions.dateCreatedFrom || $scope.filterOptions.dateCreatedTo) {
+					if ($scope.filterOptions.dateCreatedFrom && $scope.filterOptions.dateCreatedTo) {
+						dateCreatedMatch =  ($scope.filterOptions.dateCreatedFrom.getTime() <= variable.metadata.dateCreated.getTime()) &&
+							(variable.metadata.dateCreated.getTime() <= $scope.filterOptions.dateCreatedTo.getTime());
+					} else if ($scope.filterOptions.dateCreatedFrom && $scope.filterOptions.dateCreatedFrom.getTime()) {
+						dateCreatedMatch =  ($scope.filterOptions.dateCreatedFrom.getTime() <= variable.metadata.dateCreated.getTime());
+					} else if ($scope.filterOptions.dateCreatedTo && $scope.filterOptions.dateCreatedTo.getTime()) {
+						dateCreatedMatch =  (variable.metadata.dateCreated.getTime() <= $scope.filterOptions.dateCreatedTo.getTime());
+					}
+				}
+				return variableTypeMatch && scaleDataTypeMatch && dateCreatedMatch;
 			};
 
 			$timeout(function() {
