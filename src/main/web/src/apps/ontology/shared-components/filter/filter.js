@@ -27,8 +27,8 @@
 				$scope.isFilterActive = function() {
 					return ($scope.filterOptions && $scope.filterOptions.variableTypes &&
 						$scope.filterOptions.variableTypes.length !== 0) || ($scope.filterOptions && $scope.filterOptions.scaleType &&
-						$scope.filterOptions.scaleType.name !== '...') || ($scope.filterOptions.dateCreatedFrom &&
-						$scope.filterOptions.dateCreatedFrom.getTime()) || ($scope.filterOptions.dateCreatedTo &&
+						$scope.filterOptions.scaleType.name !== '...') || ($scope.filterOptions && $scope.filterOptions.dateCreatedFrom &&
+						$scope.filterOptions.dateCreatedFrom.getTime()) || ($scope.filterOptions && $scope.filterOptions.dateCreatedTo &&
 						$scope.filterOptions.dateCreatedTo.getTime());
 				};
 
