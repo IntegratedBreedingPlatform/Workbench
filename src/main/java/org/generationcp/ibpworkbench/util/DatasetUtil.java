@@ -1,15 +1,14 @@
 
 package org.generationcp.ibpworkbench.util;
 
-import java.util.List;
-
+import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
-import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.exceptions.MiddlewareException;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
+
+import java.util.List;
 
 public class DatasetUtil {
 
@@ -35,7 +34,7 @@ public class DatasetUtil {
 				} else {
 					if (dataSet != null && dataSet.getVariableTypes().getVariableTypes() != null) {
 						boolean aTrialDataset = true;
-						for (VariableType variableType : dataSet.getVariableTypes().getVariableTypes()) {
+						for (DMSVariableType variableType : dataSet.getVariableTypes().getVariableTypes()) {
 							if (variableType.getStandardVariable().getPhenotypicType() == PhenotypicType.GERMPLASM) {
 								aTrialDataset = false;
 								break;
@@ -74,7 +73,7 @@ public class DatasetUtil {
 			} else {
 				if (dataSet != null && dataSet.getVariableTypes().getVariableTypes() != null) {
 					boolean aPlotDataset = false;
-					for (VariableType variableType : dataSet.getVariableTypes().getVariableTypes()) {
+					for (DMSVariableType variableType : dataSet.getVariableTypes().getVariableTypes()) {
 						if (variableType.getStandardVariable().getPhenotypicType() == PhenotypicType.GERMPLASM) {
 							aPlotDataset = true;
 							break;

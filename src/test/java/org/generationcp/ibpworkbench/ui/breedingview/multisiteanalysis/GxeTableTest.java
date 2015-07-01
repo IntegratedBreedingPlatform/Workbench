@@ -1,29 +1,13 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.vaadin.data.Property;
+import com.vaadin.ui.Label;
 import org.apache.commons.lang3.ArrayUtils;
-import org.generationcp.middleware.domain.dms.DataSet;
-import org.generationcp.middleware.domain.dms.DataSetType;
-import org.generationcp.middleware.domain.dms.DatasetReference;
-import org.generationcp.middleware.domain.dms.Enumeration;
-import org.generationcp.middleware.domain.dms.Experiment;
-import org.generationcp.middleware.domain.dms.PhenotypicType;
-import org.generationcp.middleware.domain.dms.StandardVariable;
-import org.generationcp.middleware.domain.dms.TrialEnvironment;
-import org.generationcp.middleware.domain.dms.TrialEnvironments;
-import org.generationcp.middleware.domain.dms.Variable;
-import org.generationcp.middleware.domain.dms.VariableList;
-import org.generationcp.middleware.domain.dms.VariableType;
-import org.generationcp.middleware.domain.dms.VariableTypeList;
+import org.generationcp.middleware.domain.dms.*;
 import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareException;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.junit.Assert;
 import org.junit.Before;
@@ -32,8 +16,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import com.vaadin.data.Property;
-import com.vaadin.ui.Label;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GxeTableTest {
 
@@ -109,14 +95,14 @@ public class GxeTableTest {
 		MockitoAnnotations.initMocks(this);
 
 		// means dataset
-		List<VariableType> factors = new ArrayList<VariableType>();
-		List<VariableType> variates = new ArrayList<VariableType>();
+		List<DMSVariableType> factors = new ArrayList<DMSVariableType>();
+		List<DMSVariableType> variates = new ArrayList<DMSVariableType>();
 		List<Variable> factorVariables = new ArrayList<Variable>();
 		List<Variable> variateVariables = new ArrayList<Variable>();
 
 		// trial dataset
-		List<VariableType> trialFactors = new ArrayList<VariableType>();
-		List<VariableType> trialVariates = new ArrayList<VariableType>();
+		List<DMSVariableType> trialFactors = new ArrayList<DMSVariableType>();
+		List<DMSVariableType> trialVariates = new ArrayList<DMSVariableType>();
 		List<Variable> trialFactorVariables = new ArrayList<Variable>();
 		List<Variable> trialVariateVariables = new ArrayList<Variable>();
 
@@ -288,7 +274,7 @@ public class GxeTableTest {
 
 	}
 
-	private List<DataSet> createMeansDataSets(List<VariableType> factors, List<Variable> factorVariables, List<VariableType> variates,
+	private List<DataSet> createMeansDataSets(List<DMSVariableType> factors, List<Variable> factorVariables, List<DMSVariableType> variates,
 			List<Variable> variateVariables) {
 
 		List<DataSet> dataSets = new ArrayList<>();
@@ -297,7 +283,7 @@ public class GxeTableTest {
 		return dataSets;
 	}
 
-	private List<DataSet> createTrialDataSets(List<VariableType> factors, List<Variable> factorVariables, List<VariableType> variates,
+	private List<DataSet> createTrialDataSets(List<DMSVariableType> factors, List<Variable> factorVariables, List<DMSVariableType> variates,
 			List<Variable> variateVariables) {
 
 		List<DataSet> dataSets = new ArrayList<>();
@@ -306,7 +292,7 @@ public class GxeTableTest {
 		return dataSets;
 	}
 
-	private DataSet createMeansDataSet(List<VariableType> factors, List<Variable> factorVariables, List<VariableType> variates,
+	private DataSet createMeansDataSet(List<DMSVariableType> factors, List<Variable> factorVariables, List<DMSVariableType> variates,
 			List<Variable> variateVariables) {
 
 		DataSet meansDataSet = new DataSet();
@@ -315,17 +301,17 @@ public class GxeTableTest {
 		meansDataSet.setId(GxeTableTest.MEANS_DATASET_ID);
 
 		VariableTypeList variableTypeList = new VariableTypeList();
-		for (VariableType f : factors) {
+		for (DMSVariableType f : factors) {
 			variableTypeList.add(f);
 		}
-		for (VariableType v : variates) {
+		for (DMSVariableType v : variates) {
 			variableTypeList.add(v);
 		}
 		meansDataSet.setVariableTypes(variableTypeList);
 		return meansDataSet;
 	}
 
-	private DataSet createTrialDataSet(List<VariableType> factors, List<Variable> factorVariables, List<VariableType> variates,
+	private DataSet createTrialDataSet(List<DMSVariableType> factors, List<Variable> factorVariables, List<DMSVariableType> variates,
 			List<Variable> variateVariables) {
 
 		DataSet trialDataSet = new DataSet();
@@ -334,10 +320,10 @@ public class GxeTableTest {
 		trialDataSet.setId(GxeTableTest.TRIAL_DATASET_ID);
 
 		VariableTypeList variableTypeList = new VariableTypeList();
-		for (VariableType f : factors) {
+		for (DMSVariableType f : factors) {
 			variableTypeList.add(f);
 		}
-		for (VariableType v : variates) {
+		for (DMSVariableType v : variates) {
 			variableTypeList.add(v);
 		}
 		trialDataSet.setVariableTypes(variableTypeList);
@@ -345,8 +331,8 @@ public class GxeTableTest {
 		return trialDataSet;
 	}
 
-	private void createFactorsAndVariatesTestDataForMeans(List<VariableType> factors, List<Variable> factorVariables,
-			List<VariableType> variates, List<Variable> variateVariables) {
+	private void createFactorsAndVariatesTestDataForMeans(List<DMSVariableType> factors, List<Variable> factorVariables,
+			List<DMSVariableType> variates, List<Variable> variateVariables) {
 
 		int rank = 1;
 
@@ -388,8 +374,8 @@ public class GxeTableTest {
 
 	}
 
-	private void createFactorsAndVariatesTestDataForTrial(List<VariableType> factors, List<Variable> factorVariables,
-			List<VariableType> variates, List<Variable> variateVariables) {
+	private void createFactorsAndVariatesTestDataForTrial(List<DMSVariableType> factors, List<Variable> factorVariables,
+			List<DMSVariableType> variates, List<Variable> variateVariables) {
 
 		int rank = 1;
 
@@ -428,24 +414,24 @@ public class GxeTableTest {
 
 	}
 
-	private void addVariableToList(List<VariableType> variableTypes, List<Variable> variables, int id, String variableName, int rank,
+	private void addVariableToList(List<DMSVariableType> variableTypes, List<Variable> variables, int id, String variableName, int rank,
 			String value, PhenotypicType phenotypicType, Term dataType, Term role, Term property, Term scale, Term method) {
 		StandardVariable standardVariable =
 				this.createStardardVariableTestData(id, phenotypicType, variableName, dataType, role, property, scale, method);
-		VariableType variableType = this.createVariableTypeTestData(variableName, rank, standardVariable);
+		DMSVariableType variableType = this.createVariableTypeTestData(variableName, rank, standardVariable);
 		variableTypes.add(variableType);
 		variables.add(this.createVariableTestData(variableType, value));
 	}
 
-	private Variable createVariableTestData(VariableType trial, String value) {
+	private Variable createVariableTestData(DMSVariableType trial, String value) {
 		Variable variable = new Variable();
 		variable.setValue(value);
 		variable.setVariableType(trial);
 		return variable;
 	}
 
-	private VariableType createVariableTypeTestData(String localName, int rank, StandardVariable standardVariable) {
-		VariableType variableType = new VariableType();
+	private DMSVariableType createVariableTypeTestData(String localName, int rank, StandardVariable standardVariable) {
+		DMSVariableType variableType = new DMSVariableType();
 		variableType.setLocalName(localName);
 		variableType.setRank(rank);
 		variableType.setStandardVariable(standardVariable);
@@ -494,9 +480,9 @@ public class GxeTableTest {
 		return trialEnvironment;
 	}
 
-	private Map<String, Boolean> createVariatesCheckBoxState(List<VariableType> variates) {
+	private Map<String, Boolean> createVariatesCheckBoxState(List<DMSVariableType> variates) {
 		Map<String, Boolean> map = new HashMap<>();
-		for (VariableType v : variates) {
+		for (DMSVariableType v : variates) {
 			map.put(v.getLocalName(), true);
 		}
 		return map;
@@ -510,8 +496,8 @@ public class GxeTableTest {
 		return variableList;
 	}
 
-	private List<Experiment> createExperimentsWithTrialEnvironment(List<VariableType> factors, List<Variable> factorVariables,
-			List<VariableType> variates, List<Variable> variateVariables) {
+	private List<Experiment> createExperimentsWithTrialEnvironment(List<DMSVariableType> factors, List<Variable> factorVariables,
+			List<DMSVariableType> variates, List<Variable> variateVariables) {
 		List<Experiment> experiments = new ArrayList<>();
 		Experiment exp = new Experiment();
 		exp.setId(1);

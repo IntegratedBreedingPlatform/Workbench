@@ -11,20 +11,20 @@
 
 package org.generationcp.ibpworkbench.actions;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
 import org.generationcp.ibpworkbench.util.StudyUtil;
-import org.generationcp.middleware.domain.dms.VariableType;
+import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.VariableTypeList;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class OpenSelectDatasetForExportActionTest {
 
@@ -51,7 +51,7 @@ public class OpenSelectDatasetForExportActionTest {
 
 	private void createVariateListWithStateTestData(List<VariateModel> variateList, Map<String, Boolean> variatesCheckboxState) {
 		VariableTypeList variates = this.studyUtil.createVariateVarsTestData();
-		for (VariableType variate : variates.getVariates().getVariableTypes()) {
+		for (DMSVariableType variate : variates.getVariates().getVariableTypes()) {
 			VariateModel vm = this.singleSiteAnalysisPanel.transformVariableTypeToVariateModel(variate);
 			variateList.add(vm);
 			variatesCheckboxState.put(vm.getName(), vm.getActive());
