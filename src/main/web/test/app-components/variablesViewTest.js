@@ -85,7 +85,8 @@ describe('Variables Controller', function() {
 
 	PLANT_VIGOR_DETAILED.metadata = {
 		deletable: true,
-		editableFields: ['name', 'description']
+		editableFields: ['name', 'description'],
+		dateCreated: new Date()
 	};
 
 	beforeEach(function() {
@@ -153,7 +154,8 @@ describe('Variables Controller', function() {
 					'action-favourite': PLANT_VIGOR_DETAILED.favourite ? { iconValue: 'star' } : { iconValue: 'star-empty' }
 				};
 
-			expect(controller.transformDetailedVariableToDisplayFormat(PLANT_VIGOR_DETAILED, newId)).toEqual(transformedVariable);
+			expect(controller.transformDetailedVariableToDisplayFormat(PLANT_VIGOR_DETAILED, newId)).toEqual(
+				jasmine.objectContaining(transformedVariable));
 		});
 
 		it('should default some values to empty strings if they are not present', function() {
@@ -178,7 +180,8 @@ describe('Variables Controller', function() {
 				scaleType: undefined,
 				'action-favourite': { iconValue: 'star' }
 			};
-			expect(controller.transformDetailedVariableToDisplayFormat(rawVariable)).toEqual(transformedVariables);
+			expect(controller.transformDetailedVariableToDisplayFormat(rawVariable)).toEqual(
+				jasmine.objectContaining(transformedVariables));
 		});
 
 		it('should transform variables into display format', function() {
