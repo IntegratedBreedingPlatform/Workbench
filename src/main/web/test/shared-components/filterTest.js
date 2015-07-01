@@ -22,6 +22,11 @@ describe('Filter Module', function() {
 			formatErrorsForDisplay: function() { return {}; }
 		},
 
+		fakeEvent = {
+			preventDefault: function() {},
+			stopPropagation: function() {}
+		},
+
 		variableTypes = [{
 			id: 1,
 			name: 'Analysis',
@@ -36,7 +41,8 @@ describe('Filter Module', function() {
 		CATEGORICAL_TYPE = {
 			id: 1,
 			name: 'Categorical'
-		};
+		},
+		TODAY;
 
 	beforeEach(function() {
 		module(function($provide) {
@@ -79,6 +85,9 @@ describe('Filter Module', function() {
 			return deferredGetDataTypes.promise;
 		};
 
+		TODAY = new Date();
+		TODAY.setHours(0, 0, 0, 0);
+
 		spyOn(panelService, 'showPanel').and.callThrough();
 		spyOn(serviceUtilities, 'formatErrorsForDisplay').and.callThrough();
 	}));
@@ -97,6 +106,7 @@ describe('Filter Module', function() {
 
 		beforeEach(function() {
 			compileDirective();
+			isolateScope.filterOptions = {};
 		});
 
 		it('should set defaults for missing attributes', function() {
@@ -132,24 +142,63 @@ describe('Filter Module', function() {
 		});
 
 		describe('scope.addNewFilter', function() {
-
 			it('should open the panel', function() {
-				compileDirective();
 				isolateScope.addNewFilter();
 				expect(panelService.showPanel).toHaveBeenCalledWith(isolateScope.smallPanelName);
 			});
 		});
 
+		describe('scope.today', function() {
+			it('should set filter options dates to today\'s date', function() {
+				isolateScope.today();
+				isolateScope.filterOptions.dateCreatedFrom.setHours(0, 0, 0, 0);
+				isolateScope.filterOptions.dateCreatedTo.setHours(0, 0, 0, 0);
+				expect(isolateScope.filterOptions.dateCreatedFrom).toEqual(TODAY);
+				expect(isolateScope.filterOptions.dateCreatedTo).toEqual(TODAY);
+			});
+		});
+
+		describe('scope.clear', function() {
+			it('should nullify filter options dates', function() {
+				isolateScope.clear();
+				expect(isolateScope.filterOptions.dateCreatedFrom).toBeNull();
+				expect(isolateScope.filterOptions.dateCreatedTo).toBeNull();
+			});
+		});
+
+		describe('scope.open1', function() {
+			it('should set 1st calendar is opened property to true', function() {
+				isolateScope.open1(fakeEvent);
+				expect(isolateScope.data.calendarOpened1).toBe(true);
+			});
+		});
+
+		describe('scope.open2', function() {
+			it('should set 2st calendar is opened property to true', function() {
+				isolateScope.open2(fakeEvent);
+				expect(isolateScope.data.calendarOpened2).toBe(true);
+			});
+		});
+
 		describe('$scope.isFilterActive', function() {
 
-			it('should return true if filter options are set', function() {
-				compileDirective();
-				isolateScope.filterOptions = {};
+			it('should return true if variable types filter option is set', function() {
 				isolateScope.filterOptions.variableTypes = variableTypes;
 				expect(isolateScope.isFilterActive()).toBe(true);
+			});
 
-				isolateScope.filterOptions.variableTypes = [];
+			it('should return true if scale data types filter option is set', function() {
 				isolateScope.filterOptions.scaleType = CATEGORICAL_TYPE;
+				expect(isolateScope.isFilterActive()).toBe(true);
+			});
+
+			it('should return true if date created from filter option is set', function() {
+				isolateScope.filterOptions.dateCreatedFrom = new Date();
+				expect(isolateScope.isFilterActive()).toBe(true);
+			});
+
+			it('should return true if date created to filter option is set', function() {
+				isolateScope.filterOptions.dateCreatedTo = new Date();
 				expect(isolateScope.isFilterActive()).toBe(true);
 			});
 		});

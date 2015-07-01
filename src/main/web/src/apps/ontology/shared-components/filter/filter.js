@@ -28,8 +28,8 @@
 					return ($scope.filterOptions && $scope.filterOptions.variableTypes &&
 						$scope.filterOptions.variableTypes.length !== 0) || ($scope.filterOptions && $scope.filterOptions.scaleType &&
 						$scope.filterOptions.scaleType.name !== '...') || ($scope.filterOptions && $scope.filterOptions.dateCreatedFrom &&
-						$scope.filterOptions.dateCreatedFrom.getTime()) || ($scope.filterOptions && $scope.filterOptions.dateCreatedTo &&
-						$scope.filterOptions.dateCreatedTo.getTime());
+						$scope.filterOptions.dateCreatedFrom.getTime !== undefined) || ($scope.filterOptions &&
+						$scope.filterOptions.dateCreatedTo && $scope.filterOptions.dateCreatedTo.getTime !== undefined);
 				};
 
 				variableTypesService.getTypes().then(function(types) {
@@ -77,44 +77,6 @@
 
 				$scope.todaysDate = new Date();
 
-				$scope.toggleMin = function() {
-					$scope.minDate = $scope.minDate ? null : new Date();
-				};
-				$scope.toggleMin();
-
-				$scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
-				$scope.format = $scope.formats[0];
-
-				var tomorrow = new Date();
-				tomorrow.setDate(tomorrow.getDate() + 1);
-				var afterTomorrow = new Date();
-				afterTomorrow.setDate(tomorrow.getDate() + 2);
-				$scope.events =
-					[
-					{
-						date: tomorrow,
-						status: 'full'
-					},
-					{
-						date: afterTomorrow,
-						status: 'partially'
-					}
-					];
-
-				$scope.getDayClass = function(date, mode) {
-					if (mode === 'day') {
-						var dayToCheck = new Date(date).setHours(0, 0, 0, 0);
-
-						for (var i = 0; i < $scope.events.length;i++) {
-							var currentDay = new Date($scope.events[i].date).setHours(0, 0, 0, 0);
-
-							if (dayToCheck === currentDay) {
-								return $scope.events[i].status;
-							}
-						}
-					}
-					return '';
-				};
 			},
 			restrict: 'E',
 			scope: {
