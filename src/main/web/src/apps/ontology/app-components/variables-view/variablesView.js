@@ -6,7 +6,7 @@
 		DELAY = 400;
 
 	function transformDetailedVariableToDisplayFormat(variable, id) {
-		var tempDateCreated = new Date(variable.metadata.dateCreated);
+		var tempDateCreated = variable.metadata ? new Date(variable.metadata.dateCreated) : new Date();
 		tempDateCreated.setHours(0, 0, 0, 0);
 		return {
 			id: id,
@@ -144,12 +144,13 @@
 					scaleDataTypeMatch =  angular.equals(variable.scaleType, $scope.filterOptions.scaleType);
 				}
 				if ($scope.filterOptions.dateCreatedFrom || $scope.filterOptions.dateCreatedTo) {
-					if ($scope.filterOptions.dateCreatedFrom && $scope.filterOptions.dateCreatedTo) {
+					if ($scope.filterOptions.dateCreatedFrom && $scope.filterOptions.dateCreatedTo &&
+						$scope.filterOptions.dateCreatedTo.getTime && $scope.filterOptions.dateCreatedFrom.getTime) {
 						dateCreatedMatch =  ($scope.filterOptions.dateCreatedFrom.getTime() <= variable.metadata.dateCreated.getTime()) &&
 							(variable.metadata.dateCreated.getTime() <= $scope.filterOptions.dateCreatedTo.getTime());
-					} else if ($scope.filterOptions.dateCreatedFrom && $scope.filterOptions.dateCreatedFrom.getTime()) {
+					} else if ($scope.filterOptions.dateCreatedFrom && $scope.filterOptions.dateCreatedFrom.getTime) {
 						dateCreatedMatch =  ($scope.filterOptions.dateCreatedFrom.getTime() <= variable.metadata.dateCreated.getTime());
-					} else if ($scope.filterOptions.dateCreatedTo && $scope.filterOptions.dateCreatedTo.getTime()) {
+					} else if ($scope.filterOptions.dateCreatedTo && $scope.filterOptions.dateCreatedTo.getTime) {
 						dateCreatedMatch =  (variable.metadata.dateCreated.getTime() <= $scope.filterOptions.dateCreatedTo.getTime());
 					}
 				}

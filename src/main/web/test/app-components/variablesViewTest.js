@@ -4,7 +4,17 @@
 describe('Variables Controller', function() {
 
 	// This format is what is returned by a getVariables() call
-	var PLANT_VIGOR = {
+	var CATEGORICAL_TYPE = {
+		id: 1,
+		name: 'Categorical'
+	},
+
+	NUMERIC_TYPE = {
+		id: 2,
+		name: 'Numeric'
+	},
+
+	PLANT_VIGOR = {
 		id: 1,
 		name: 'Plant Vigor',
 		alias: '',
@@ -19,7 +29,8 @@ describe('Variables Controller', function() {
 		},
 		scaleSummary: {
 			id: 1,
-			name: 'Score'
+			name: 'Score',
+			dataType: NUMERIC_TYPE
 		},
 		variableTypes: [{
 			id: 1,
@@ -38,14 +49,6 @@ describe('Variables Controller', function() {
 		method: PLANT_VIGOR.methodSummary.name,
 		scale: PLANT_VIGOR.scaleSummary.name,
 		'action-favourite': { iconValue: 'star' }
-	},
-	CATEGORICAL_TYPE = {
-		id: 1,
-		name: 'Categorical'
-	},
-	NUMERIC_TYPE = {
-		id: 2,
-		name: 'Numeric'
 	},
 
 	q,
@@ -79,6 +82,9 @@ describe('Variables Controller', function() {
 	PLANT_VIGOR_CONVERTED['action-favourite'] = {};
 	PLANT_VIGOR_CONVERTED['action-favourite'].iconValue = 'star';
 	PLANT_VIGOR_CONVERTED.scaleType = NUMERIC_TYPE;
+	PLANT_VIGOR_CONVERTED.metadata = {
+		dateCreated: new Date('2015-06-15')
+	};
 
 	delete PLANT_VIGOR_DETAILED.id;
 	delete PLANT_VIGOR_DETAILED.scaleSummary;
@@ -155,6 +161,24 @@ describe('Variables Controller', function() {
 				};
 
 			expect(controller.transformDetailedVariableToDisplayFormat(PLANT_VIGOR_DETAILED, newId)).toEqual(
+				jasmine.objectContaining(transformedVariable));
+		});
+
+		it('should transform a variable into display format', function() {
+			var newId = 3,
+				transformedVariable = {
+					id: newId,
+					name: PLANT_VIGOR_DETAILED.name,
+					alias: PLANT_VIGOR_DETAILED.alias,
+					property: PLANT_VIGOR_DETAILED.propertySummary.name,
+					method: PLANT_VIGOR_DETAILED.methodSummary.name,
+					scale: PLANT_VIGOR_DETAILED.scale.name,
+					variableTypes: PLANT_VIGOR_DETAILED.variableTypes,
+					scaleType: PLANT_VIGOR_DETAILED.scale.dataType,
+					'action-favourite': PLANT_VIGOR_DETAILED.favourite ? { iconValue: 'star' } : { iconValue: 'star-empty' }
+				};
+
+			expect(controller.transformDetailedVariableToDisplayFormat(PLANT_VIGOR, newId)).toEqual(
 				jasmine.objectContaining(transformedVariable));
 		});
 
@@ -623,6 +647,48 @@ describe('Variables Controller', function() {
 				scaleType: CATEGORICAL_TYPE
 			};
 			expect(scope.optionsFilter(PLANT_VIGOR_CONVERTED)).toBe(false);
+		});
+
+		it('should return true if date created in variable metadata is between date created from and date created to of filter options',
+			function() {
+			scope.filterOptions = {
+				variableTypes: [],
+				scaleType: {name: '...'},
+				dateCreatedFrom: new Date('2015-06-01'),
+				dateCreatedTo: new Date('2015-07-01')
+			};
+			expect(scope.optionsFilter(PLANT_VIGOR_CONVERTED)).toBe(true);
+		});
+
+		it('should return true if date created in variable metadata is after date created from of filter options',
+			function() {
+			scope.filterOptions = {
+				variableTypes: [],
+				scaleType: {name: '...'},
+				dateCreatedFrom: new Date('2015-06-01')
+			};
+			expect(scope.optionsFilter(PLANT_VIGOR_CONVERTED)).toBe(true);
+		});
+
+		it('should return true if date created in variable metadata is before date created to of filter options',
+			function() {
+			scope.filterOptions = {
+				variableTypes: [],
+				scaleType: {name: '...'},
+				dateCreatedTo: new Date('2015-07-01')
+			};
+			expect(scope.optionsFilter(PLANT_VIGOR_CONVERTED)).toBe(true);
+		});
+
+		it('should return true if date created from or date created to of filter options are not dates',
+			function() {
+			scope.filterOptions = {
+				variableTypes: [],
+				scaleType: {name: '...'},
+				dateCreatedFrom: 'notADate',
+				dateCreatedTo: 'notADateEither'
+			};
+			expect(scope.optionsFilter(PLANT_VIGOR_CONVERTED)).toBe(true);
 		});
 	});
 
