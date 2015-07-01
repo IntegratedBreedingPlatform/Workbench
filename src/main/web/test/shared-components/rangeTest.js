@@ -79,6 +79,27 @@ describe('Range module', function() {
 			expect(scope.testForm.$valid).toBe(true);
 		});
 
+		it('should validate the widget if it changes to become numeric and already has values', function() {
+			scope.model = {
+				validValues: {
+					min: '80',
+					max: '90'
+				}
+			};
+			scope.numeric = true;
+
+			compileForm('om-numeric="numeric"');
+
+			scope.numeric = false;
+			scope.$apply();
+
+			scope.numeric = true;
+			scope.$apply();
+
+			expect(scope.testForm.omRange.$error).toEqual({});
+			expect(scope.testForm.$valid).toBe(true);
+		});
+
 		it('should set the widget to be valid if the specified model is undefined or null', function() {
 
 			scope.model = undefined;
@@ -96,8 +117,8 @@ describe('Range module', function() {
 
 			scope.model = {
 				validValues: {
-					min: 90,
-					max: 80
+					min: '90',
+					max: '80'
 				}
 			};
 
@@ -111,7 +132,7 @@ describe('Range module', function() {
 
 			scope.model = {
 				validValues: {
-					min: 80
+					min: '80'
 				}
 			};
 
@@ -125,7 +146,7 @@ describe('Range module', function() {
 
 			scope.model = {
 				validValues: {
-					min: 80
+					min: '80'
 				}
 			};
 
@@ -139,7 +160,7 @@ describe('Range module', function() {
 
 			scope.model = {
 				validValues: {
-					max: 80
+					max: '80'
 				}
 			};
 
@@ -153,7 +174,7 @@ describe('Range module', function() {
 
 			scope.model = {
 				validValues: {
-					max: 80
+					max: '80'
 				}
 			};
 

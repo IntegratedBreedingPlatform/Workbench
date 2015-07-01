@@ -74,12 +74,15 @@
 				scope.$watch('numeric', function(numeric) {
 					if (!numeric) {
 						resetValidity();
-					} else if (scope.model && scope.model[scope.property]) {
-						validateValues(ctrl, scope.model[scope.property], scope);
+					} else if (scope.rangeModel) {
+						validateValues(ctrl, scope.rangeModel, scope);
 					}
 				});
 
 				scope.$watch('model[property]', function(data) {
+					var min,
+						max;
+
 					resetValidity();
 
 					if (!scope.numeric || !data) {
@@ -89,20 +92,33 @@
 					// Set a specific model to use in the template where the values are numbers rather than strings
 					// so that we can provide the user a better experience with the number type inputs that have up and
 					// down arrows for changing the values, rather than just a freetext input.
+					min = parseInt(data.min, 10);
+					max = parseInt(data.max, 10);
+
+					// Set the numeric range model to have the model's value if it is a number, otherwise null
 					scope.rangeModel = {
-						min: parseInt(data.min, 10),
-						max: parseInt(data.max, 10)
+						min: !isNaN(min) ? min : null,
+						max: !isNaN(max) ? max : null
 					};
+
+					mapRangeModelToModel(scope.rangeModel, data);
 
 					validateValues(ctrl, scope.rangeModel, scope);
 
 				}, true);
 
+				function mapRangeModelToModel (rangeModel, model) {
+					var isMinValued = !(angular.isUndefined(rangeModel.min) || rangeModel.min === null),
+						isMaxValued = !(angular.isUndefined(rangeModel.max) || rangeModel.max === null);
+
+					model.min = isMinValued ? rangeModel.min.toString() : '';
+					model.max = isMaxValued ? rangeModel.max.toString() : '';
+				}
+
 				scope.$watch('rangeModel', function(rangeModel) {
 
 					if (rangeModel) {
-						scope.model[scope.property].min = rangeModel.min ? rangeModel.min.toString() : '';
-						scope.model[scope.property].max = rangeModel.max ? rangeModel.max.toString() : '';
+						mapRangeModelToModel(rangeModel, scope.model[scope.property]);
 					}
 				}, true);
 
