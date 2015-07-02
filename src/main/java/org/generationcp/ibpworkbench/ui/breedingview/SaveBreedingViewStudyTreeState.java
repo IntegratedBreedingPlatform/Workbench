@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.ui.breedingview;
 
 import java.util.ArrayList;
@@ -26,77 +27,77 @@ import com.vaadin.ui.Window;
  */
 @Configurable
 public class SaveBreedingViewStudyTreeState implements Window.CloseListener {
-    private static final Logger LOG = LoggerFactory.getLogger(SaveBreedingViewStudyTreeState.class);
-    private BreedingViewTreeTable treeTable;
 
-    @Autowired
-    private ManagerFactoryProvider provider;
+	private static final Logger LOG = LoggerFactory.getLogger(SaveBreedingViewStudyTreeState.class);
+	private BreedingViewTreeTable treeTable;
 
-    @Autowired
-    private SessionData sessionData;
+	@Autowired
+	private ManagerFactoryProvider provider;
 
-    public SaveBreedingViewStudyTreeState(BreedingViewTreeTable treeTable) {
-        this.treeTable = treeTable;
-    }
+	@Autowired
+	private SessionData sessionData;
 
-    @Override
-    public void windowClose(Window.CloseEvent e) {
-        List<String> itemIds = getExpandedIds();
+	public SaveBreedingViewStudyTreeState(BreedingViewTreeTable treeTable) {
+		this.treeTable = treeTable;
+	}
 
-        ManagerFactory managerFactory = provider.getManagerFactoryForProject(sessionData.getSelectedProject());
+	@Override
+	public void windowClose(Window.CloseEvent e) {
+		List<String> itemIds = getExpandedIds();
 
+		ManagerFactory managerFactory = provider.getManagerFactoryForProject(sessionData.getSelectedProject());
 
-        UserProgramStateDataManager programStateDataManager = managerFactory.getUserProgramStateDataManager();
-        try {
-            programStateDataManager.saveOrUpdateUserProgramTreeState(sessionData.getUserData().getUserid(),
-                    sessionData.getSelectedProject().getUniqueID(), ListTreeState.STUDY_LIST.name(), itemIds);
-        } catch (MiddlewareQueryException e1) {
-            LOG.error(e1.getMessage(), e1);
-        }
-    }
+		UserProgramStateDataManager programStateDataManager = managerFactory.getUserProgramStateDataManager();
+		try {
+			programStateDataManager.saveOrUpdateUserProgramTreeState(sessionData.getUserData().getUserid(), sessionData
+					.getSelectedProject().getUniqueID(), ListTreeState.STUDY_LIST.name(), itemIds);
+		} catch (MiddlewareQueryException e1) {
+			LOG.error(e1.getMessage(), e1);
+		}
+	}
 
-    protected List<String> getExpandedIds() {
-        List<String> expandedIds = new ArrayList<>();
-        List<FolderReference> firstLevelFolders = getFirstLevelFolders();
+	protected List<String> getExpandedIds() {
+		List<String> expandedIds = new ArrayList<>();
+		List<FolderReference> firstLevelFolders = getFirstLevelFolders();
 
-        // study tree used in analysis always has an expanded "root node"
-        expandedIds.add("STUDY");
+		// study tree used in analysis always has an expanded "root node"
+		expandedIds.add("STUDY");
 
-        for (FolderReference firstLevelFolder : firstLevelFolders) {
-            recurseSaveOpenNodes(firstLevelFolder, expandedIds);
-        }
+		for (FolderReference firstLevelFolder : firstLevelFolders) {
+			recurseSaveOpenNodes(firstLevelFolder, expandedIds);
+		}
 
-        return expandedIds;
-    }
+		return expandedIds;
+	}
 
-    public void recurseSaveOpenNodes(Reference item, List<String> openNodes) {
-        if (treeTable.isCollapsed(item)) {
-            return;
-        }
+	public void recurseSaveOpenNodes(Reference item, List<String> openNodes) {
+		if (treeTable.isCollapsed(item)) {
+			return;
+		}
 
-        openNodes.add(item.getId().toString());
+		openNodes.add(item.getId().toString());
 
-        if (item instanceof StudyReference) {
-            return;
-        }
+		if (item instanceof StudyReference) {
+			return;
+		}
 
-        Collection children = treeTable.getChildren(item);
-        if (children != null && !children.isEmpty()) {
-            for (Object child : children) {
-                recurseSaveOpenNodes((Reference) child, openNodes);
-            }
-        }
-    }
+		Collection children = treeTable.getChildren(item);
+		if (children != null && !children.isEmpty()) {
+			for (Object child : children) {
+				recurseSaveOpenNodes((Reference) child, openNodes);
+			}
+		}
+	}
 
-    protected List<FolderReference> getFirstLevelFolders() {
-        List<FolderReference> firstlevelFolders = new ArrayList<>();
-        for (FolderReference reference : treeTable.getNodeMap().values()) {
-            Integer parentFolderId = reference.getParentFolderId();
-            if (parentFolderId != null && parentFolderId.equals(DmsProject.SYSTEM_FOLDER_ID)) {
-                firstlevelFolders.add(reference);
-            }
-        }
+	protected List<FolderReference> getFirstLevelFolders() {
+		List<FolderReference> firstlevelFolders = new ArrayList<>();
+		for (FolderReference reference : treeTable.getNodeMap().values()) {
+			Integer parentFolderId = reference.getParentFolderId();
+			if (parentFolderId != null && parentFolderId.equals(DmsProject.SYSTEM_FOLDER_ID)) {
+				firstlevelFolders.add(reference);
+			}
+		}
 
-        return firstlevelFolders;
-    }
+		return firstlevelFolders;
+	}
 }

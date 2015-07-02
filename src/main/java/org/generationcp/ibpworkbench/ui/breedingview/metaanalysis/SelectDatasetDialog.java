@@ -13,6 +13,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.breedingview.BreedingViewTreeTable;
 import org.generationcp.ibpworkbench.ui.breedingview.SaveBreedingViewStudyTreeState;
 import org.generationcp.middleware.domain.dms.*;
+import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.StudyDataManagerImpl;
 import org.generationcp.middleware.pojos.workbench.Project;
