@@ -3,13 +3,13 @@ package org.generationcp.ibpworkbench.ui.breedingview.metaanalysis;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.ui.breedingview.BreedingViewTreeTable;
 import org.generationcp.middleware.domain.dms.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.Tree.ExpandEvent;
-import com.vaadin.ui.TreeTable;
 
 public class StudyTreeExpandAction implements Tree.ExpandListener {
 
@@ -17,9 +17,9 @@ public class StudyTreeExpandAction implements Tree.ExpandListener {
 	private static final long serialVersionUID = -5091664285613837786L;
 
 	private final SelectDatasetDialog source;
-	private final TreeTable tr;
+	private final BreedingViewTreeTable tr;
 
-	public StudyTreeExpandAction(SelectDatasetDialog source, TreeTable tr) {
+	public StudyTreeExpandAction(SelectDatasetDialog source, BreedingViewTreeTable tr) {
 		this.source = source;
 		this.tr = tr;
 	}
