@@ -3,7 +3,7 @@
 
 (function() {
 	var variableDetails = angular.module('variableDetails', ['input', 'textArea', 'select', 'properties', 'methods', 'scales', 'utilities',
-		'variables', 'variableTypes', 'panel', 'debounce']),
+		'variables', 'variableTypes', 'panel', 'debounce', 'expandCollapseHeading']),
 		DELAY = 400,
 		DEBOUNCE_TIME = 500,
 		NUM_EDITABLE_FIELDS = 6;
