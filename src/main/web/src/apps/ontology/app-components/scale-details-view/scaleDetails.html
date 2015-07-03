@@ -124,24 +124,26 @@
 		</div>
 
 		<div class="om-details-subheader">
-			<h3 class="underlined-heading">{{'formField.metadata' | translate}}</h3>
+			<om-expand-collapse-heading om-text="{{'formField.metadata' | translate}}" om-is-open="showMetadata"></om-expand-collapse-heading>
 		</div>
-		<div class="form-group" ng-show="model.metadata.usage.variables">
-			<label for="omInUse" class="col-sm-3 control-label">{{'formField.inUseInVariables' | translate}}</label>
-			<div class="col-sm-9">
-				<div class="form-control-static">{{formatListForDisplay(model.metadata.usage.variables)}}</div>
+		<div ng-show="showMetadata">
+			<div class="form-group" ng-show="model.metadata.usage.variables">
+				<label for="omInUse" class="col-sm-3 control-label">{{'formField.inUseInVariables' | translate}}</label>
+				<div class="col-sm-9">
+					<div class="form-control-static">{{formatListForDisplay(model.metadata.usage.variables)}}</div>
+				</div>
 			</div>
-		</div>
-		<div class="form-group">
-			<label for="omDateCreated" class="col-sm-3 control-label">{{'formField.dateCreated' | translate}}</label>
-			<div class="col-sm-9">
-				<div class="form-control-static">{{model.metadata.dateCreated ? (model.metadata.dateCreated | date) : '-'}}</div>
+			<div class="form-group">
+				<label for="omDateCreated" class="col-sm-3 control-label">{{'formField.dateCreated' | translate}}</label>
+				<div class="col-sm-9">
+					<div class="form-control-static">{{model.metadata.dateCreated ? (model.metadata.dateCreated | date) : '-'}}</div>
+				</div>
 			</div>
-		</div>
-		<div class="form-group">
-			<label for="omDateLastModified" class="col-sm-3 control-label">{{'formField.dateLastModified' | translate}}</label>
-			<div class="col-sm-9">
-				<div class="form-control-static">{{model.metadata.dateLastModified ? (model.metadata.dateLastModified | date) : '-'}}</div>
+			<div class="form-group">
+				<label for="omDateLastModified" class="col-sm-3 control-label">{{'formField.dateLastModified' | translate}}</label>
+				<div class="col-sm-9">
+					<div class="form-control-static">{{model.metadata.dateLastModified ? (model.metadata.dateLastModified | date) : '-'}}</div>
+				</div>
 			</div>
 		</div>
 
