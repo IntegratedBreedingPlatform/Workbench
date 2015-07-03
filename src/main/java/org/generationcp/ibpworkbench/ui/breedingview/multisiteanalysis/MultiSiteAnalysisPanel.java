@@ -28,6 +28,7 @@ import org.generationcp.ibpworkbench.util.bean.MultiSiteParameters;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.domain.dms.Study;
+import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.StudyDataManagerImpl;
@@ -249,7 +250,7 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 			List<DataSet> dataSets = null;
 			try {
 				dataSets = this.getStudyDataManager().getDataSetsByType(study.getId(), DataSetType.MEANS_DATA);
-			} catch (MiddlewareQueryException e) {
+			} catch (MiddlewareException e) {
 				MultiSiteAnalysisPanel.LOG.error("Error getting means dataset", e);
 			}
 

@@ -1,23 +1,10 @@
 
 package org.generationcp.ibpworkbench.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.generationcp.commons.breedingview.xml.Replicates;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
-import org.generationcp.middleware.domain.dms.DataSet;
-import org.generationcp.middleware.domain.dms.Enumeration;
-import org.generationcp.middleware.domain.dms.Experiment;
-import org.generationcp.middleware.domain.dms.PhenotypicType;
-import org.generationcp.middleware.domain.dms.StandardVariable;
-import org.generationcp.middleware.domain.dms.Variable;
-import org.generationcp.middleware.domain.dms.VariableList;
-import org.generationcp.middleware.domain.dms.VariableType;
-import org.generationcp.middleware.domain.dms.VariableTypeList;
+import org.generationcp.middleware.domain.dms.*;
 import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.ManagerFactory;
@@ -32,6 +19,11 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DatasetExporterTest {
 
@@ -100,8 +92,8 @@ public class DatasetExporterTest {
 		List<String> selectedEnvironments = new ArrayList<String>();
 		selectedEnvironments.add(DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_VALUE_1);
 
-		List<VariableType> factors = new ArrayList<VariableType>();
-		List<VariableType> variates = new ArrayList<VariableType>();
+		List<DMSVariableType> factors = new ArrayList<DMSVariableType>();
+		List<DMSVariableType> variates = new ArrayList<DMSVariableType>();
 		List<Variable> factorVariables = new ArrayList<Variable>();
 		List<Variable> variateVariables = new ArrayList<Variable>();
 		this.createFactorsAndVariatesTestData(factors, factorVariables, variates, variateVariables, false);
@@ -178,13 +170,13 @@ public class DatasetExporterTest {
 
 	}
 
-	private DataSet createDatasetTestData(List<VariableType> factors, List<VariableType> variates) {
+	private DataSet createDatasetTestData(List<DMSVariableType> factors, List<DMSVariableType> variates) {
 		DataSet dataSet = new DataSet();
 		VariableTypeList variableTypes = new VariableTypeList();
-		for (VariableType variableType : factors) {
+		for (DMSVariableType variableType : factors) {
 			variableTypes.add(variableType);
 		}
-		for (VariableType variableType : variates) {
+		for (DMSVariableType variableType : variates) {
 			variableTypes.add(variableType);
 		}
 		dataSet.setVariableTypes(variableTypes);
@@ -207,8 +199,8 @@ public class DatasetExporterTest {
 		return variableList;
 	}
 
-	private void setupSelectedVariables(HashMap<String, Boolean> variableState, List<VariableType> variates) {
-		for (VariableType variableType : variates) {
+	private void setupSelectedVariables(HashMap<String, Boolean> variableState, List<DMSVariableType> variates) {
+		for (DMSVariableType variableType : variates) {
 			String localName = variableType.getLocalName();
 			if (localName.startsWith(DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME)
 					|| localName.startsWith(DatasetExporterTest.VARIATE_NAME_1) || localName.startsWith(DatasetExporterTest.VARIATE_NAME_2)
@@ -220,7 +212,8 @@ public class DatasetExporterTest {
 		}
 	}
 
-	private void createFactorsAndVariatesTestData(List<VariableType> factors, List<Variable> factorVariables, List<VariableType> variates,
+	private void createFactorsAndVariatesTestData(List<DMSVariableType> factors, List<Variable> factorVariables,
+			List<DMSVariableType> variates,
 			List<Variable> variateVariables, boolean addSpecialCharAndWhitespaceToVarName) {
 
 		String varPostfix = "";
@@ -247,23 +240,24 @@ public class DatasetExporterTest {
 				DatasetExporterTest.OBSERVATION_VARIATE_ROLE);
 	}
 
-	private void addVariableToList(List<VariableType> variableTypes, List<Variable> variables, String variableName, int rank, String value,
+	private void addVariableToList(List<DMSVariableType> variableTypes, List<Variable> variables, String variableName, int rank,
+			String value,
 			PhenotypicType phenotypicType, Term dataType, Term role) {
 		StandardVariable standardVariable = this.createStardardVariableTestData(phenotypicType, variableName, dataType, role);
-		VariableType variableType = this.createVariableTypeTestData(variableName, rank, standardVariable);
+		DMSVariableType variableType = this.createVariableTypeTestData(variableName, rank, standardVariable);
 		variableTypes.add(variableType);
 		variables.add(this.createVariableTestData(variableType, value));
 	}
 
-	private Variable createVariableTestData(VariableType trial, String value) {
+	private Variable createVariableTestData(DMSVariableType trial, String value) {
 		Variable variable = new Variable();
 		variable.setValue(value);
 		variable.setVariableType(trial);
 		return variable;
 	}
 
-	private VariableType createVariableTypeTestData(String localName, int rank, StandardVariable standardVariable) {
-		VariableType variableType = new VariableType();
+	private DMSVariableType createVariableTypeTestData(String localName, int rank, StandardVariable standardVariable) {
+		DMSVariableType variableType = new DMSVariableType();
 		variableType.setLocalName(localName);
 		variableType.setRank(rank);
 		variableType.setStandardVariable(standardVariable);
@@ -276,8 +270,8 @@ public class DatasetExporterTest {
 		List<String> selectedEnvironments = new ArrayList<String>();
 		selectedEnvironments.add(DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_VALUE_2);
 
-		List<VariableType> factors = new ArrayList<VariableType>();
-		List<VariableType> variates = new ArrayList<VariableType>();
+		List<DMSVariableType> factors = new ArrayList<DMSVariableType>();
+		List<DMSVariableType> variates = new ArrayList<DMSVariableType>();
 		List<Variable> factorVariables = new ArrayList<Variable>();
 		List<Variable> variateVariables = new ArrayList<Variable>();
 		this.createFactorsAndVariatesTestData(factors, factorVariables, variates, variateVariables, false);
@@ -343,8 +337,8 @@ public class DatasetExporterTest {
 		List<String> selectedEnvironments = new ArrayList<String>();
 		selectedEnvironments.add(DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_VALUE_1);
 
-		List<VariableType> factors = new ArrayList<VariableType>();
-		List<VariableType> variates = new ArrayList<VariableType>();
+		List<DMSVariableType> factors = new ArrayList<DMSVariableType>();
+		List<DMSVariableType> variates = new ArrayList<DMSVariableType>();
 		List<Variable> factorVariables = new ArrayList<Variable>();
 		List<Variable> variateVariables = new ArrayList<Variable>();
 		this.createFactorsAndVariatesTestData(factors, factorVariables, variates, variateVariables, true);
@@ -424,8 +418,8 @@ public class DatasetExporterTest {
 		envModel.setEnvironmentName(DatasetExporterTest.ENV_VALUE);
 		selectedEnvironmentsList.add(envModel);
 
-		List<VariableType> factors = new ArrayList<VariableType>();
-		List<VariableType> variates = new ArrayList<VariableType>();
+		List<DMSVariableType> factors = new ArrayList<DMSVariableType>();
+		List<DMSVariableType> variates = new ArrayList<DMSVariableType>();
 		List<Variable> factorVariables = new ArrayList<Variable>();
 		List<Variable> variateVariables = new ArrayList<Variable>();
 		this.createFactorsAndVariatesTestData(factors, factorVariables, variates, variateVariables, false);
@@ -516,9 +510,8 @@ public class DatasetExporterTest {
 		stdVar.setPhenotypicType(type);
 		stdVar.setName(name);
 		stdVar.setDataType(dataType);
-		stdVar.setStoredIn(storedIn);
-
-		if (storedIn == DatasetExporterTest.CATEGORICAL_VARIATE_ROLE) {
+		
+		if (dataType.getId() == DatasetExporterTest.CATEGORICAL_VARIABLE.getId()) {
 			List<Enumeration> validValues = new ArrayList<Enumeration>();
 			validValues.add(new Enumeration(DatasetExporterTest.CATEGORICAL_VARIATE_ENUM_ID,
 					DatasetExporterTest.CATEGORICAL_VARIATE_ENUM_NAME, DatasetExporterTest.CATEGORICAL_VARIATE_ENUM_DESCRIPTION, 1));
@@ -533,8 +526,8 @@ public class DatasetExporterTest {
 		List<String> selectedEnvironments = new ArrayList<String>();
 		selectedEnvironments.add(DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_VALUE_1);
 
-		List<VariableType> factors = new ArrayList<VariableType>();
-		List<VariableType> variates = new ArrayList<VariableType>();
+		List<DMSVariableType> factors = new ArrayList<DMSVariableType>();
+		List<DMSVariableType> variates = new ArrayList<DMSVariableType>();
 		List<Variable> factorVariables = new ArrayList<Variable>();
 		List<Variable> variateVariables = new ArrayList<Variable>();
 		this.createFactorsAndVariatesTestData(factors, factorVariables, variates, variateVariables, false);

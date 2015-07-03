@@ -11,12 +11,14 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
+import com.mysql.jdbc.StringUtils;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.ui.*;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Table.ColumnGenerator;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -33,16 +35,10 @@ import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
-import org.generationcp.middleware.domain.dms.DataSet;
-import org.generationcp.middleware.domain.dms.DataSetType;
-import org.generationcp.middleware.domain.dms.PhenotypicType;
-import org.generationcp.middleware.domain.dms.TrialEnvironment;
-import org.generationcp.middleware.domain.dms.TrialEnvironments;
-import org.generationcp.middleware.domain.dms.Variable;
-import org.generationcp.middleware.domain.dms.VariableType;
-import org.generationcp.middleware.domain.dms.VariableTypeList;
+import org.generationcp.middleware.domain.dms.*;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.ConfigException;
+import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
@@ -55,23 +51,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
-import com.mysql.jdbc.StringUtils;
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.event.ShortcutAction.KeyCode;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Select;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Table.ColumnGenerator;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
+import java.util.*;
 
 /**
  *
@@ -295,7 +275,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 				}
 			} catch (ConfigException e) {
 				SingleSiteAnalysisDetailsPanel.LOG.error(e.getMessage(), e);
-			} catch (MiddlewareQueryException e) {
+			} catch (MiddlewareException e) {
 				SingleSiteAnalysisDetailsPanel.LOG.error(e.getMessage(), e);
 			}
 
@@ -375,8 +355,8 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	private BreedingViewInput breedingViewInput;
 	private Tool tool;
-	private List<VariableType> factorsInDataset;
-	private List<VariableType> trialVariablesInDataset;
+	private List<DMSVariableType> factorsInDataset;
+	private List<DMSVariableType> trialVariablesInDataset;
 
 	private Project project;
 
@@ -396,8 +376,9 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.setWidth("100%");
 	}
 
-	public SingleSiteAnalysisDetailsPanel(Tool tool, BreedingViewInput breedingViewInput, List<VariableType> factorsInDataset,
-			List<VariableType> trialVariablesInDataset, Project project, StudyDataManager studyDataManager, ManagerFactory managerFactory,
+	public SingleSiteAnalysisDetailsPanel(Tool tool, BreedingViewInput breedingViewInput, List<DMSVariableType> factorsInDataset,
+			List<DMSVariableType> trialVariablesInDataset, Project project, StudyDataManager studyDataManager,
+			ManagerFactory managerFactory,
 			SingleSiteAnalysisPanel selectDatasetForBreedingViewPanel) {
 
 		this.tool = tool;
@@ -714,7 +695,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		String pleaseChoose = this.messageSource.getMessage(Message.PLEASE_CHOOSE);
 		this.getSelEnvFactor().addItem(pleaseChoose);
 
-		for (VariableType factor : this.trialVariablesInDataset) {
+		for (DMSVariableType factor : this.trialVariablesInDataset) {
 			if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT) {
 				this.getSelEnvFactor().addItem(factor.getLocalName());
 				if (PhenotypicType.TRIAL_ENVIRONMENT.getLabelList().contains(factor.getLocalName())) {
@@ -733,8 +714,8 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	}
 
-	public VariableType getVariableByLocalName(List<VariableType> variables, String name) {
-		for (VariableType factor : variables) {
+	public DMSVariableType getVariableByLocalName(List<DMSVariableType> variables, String name) {
+		for (DMSVariableType factor : variables) {
 			if (factor.getLocalName().equals(name)) {
 				return factor;
 			}
@@ -756,7 +737,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 		String envFactorName = (String) this.selEnvFactor.getValue();
 
-		VariableType factor = this.getVariableByLocalName(this.trialVariablesInDataset, envFactorName);
+		DMSVariableType factor = this.getVariableByLocalName(this.trialVariablesInDataset, envFactorName);
 
 		if (factor == null) {
 			return;
@@ -770,10 +751,10 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 			VariableTypeList trialEnvFactors =
 					this.studyDataManager.getDataSet(this.getBreedingViewInput().getDatasetId()).getVariableTypes().getFactors();
 
-			for (VariableType f : trialEnvFactors.getVariableTypes()) {
+			for (DMSVariableType f : trialEnvFactors.getVariableTypes()) {
 
 				// Always Show the TRIAL INSTANCE Factor
-				if (f.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()) {
+				if (f.getStandardVariable().getId() == TermId.TRIAL_INSTANCE_FACTOR.getId()) {
 					trialInstanceFactor = f.getLocalName();
 				}
 
@@ -828,7 +809,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 		} catch (ConfigException e) {
 			SingleSiteAnalysisDetailsPanel.LOG.error(e.getMessage(), e);
-		} catch (MiddlewareQueryException e) {
+		} catch (MiddlewareException e) {
 			SingleSiteAnalysisDetailsPanel.LOG.error(e.getMessage(), e);
 
 		}
@@ -837,7 +818,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	protected void populateChoicesForGenotypes() {
 
-		for (VariableType factor : this.factorsInDataset) {
+		for (DMSVariableType factor : this.factorsInDataset) {
 			if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.GERMPLASM && factor.getId() != TermId.ENTRY_TYPE.getId()) {
 				this.getSelGenotypes().addItem(factor.getLocalName());
 				this.getSelGenotypes().setValue(factor.getLocalName());
@@ -849,7 +830,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	}
 
 	protected void populateChoicesForReplicates() {
-		for (VariableType factor : this.factorsInDataset) {
+		for (DMSVariableType factor : this.factorsInDataset) {
 			if (factor.getStandardVariable().getProperty().getName().toString().trim()
 					.equalsIgnoreCase(SingleSiteAnalysisDetailsPanel.REPLICATION_FACTOR)) {
 				this.getSelReplicates().addItem(factor.getLocalName());
@@ -866,7 +847,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	protected void populateChoicesForBlocks() {
 
-		for (VariableType factor : this.factorsInDataset) {
+		for (DMSVariableType factor : this.factorsInDataset) {
 			if (factor.getStandardVariable().getProperty().getName().toString().trim()
 					.equalsIgnoreCase(SingleSiteAnalysisDetailsPanel.BLOCKING_FACTOR)) {
 				this.getSelBlocks().addItem(factor.getLocalName());
@@ -879,7 +860,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	protected void populateChoicesForRowFactor() {
 
-		for (VariableType factor : this.factorsInDataset) {
+		for (DMSVariableType factor : this.factorsInDataset) {
 			if (factor.getStandardVariable().getProperty().getName().toString().trim()
 					.equalsIgnoreCase(SingleSiteAnalysisDetailsPanel.ROW_FACTOR)) {
 				this.getSelRowFactor().addItem(factor.getLocalName());
@@ -891,7 +872,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	protected void populateChoicesForColumnFactor() {
 
-		for (VariableType factor : this.factorsInDataset) {
+		for (DMSVariableType factor : this.factorsInDataset) {
 			if (factor.getStandardVariable().getProperty().getName().toString().trim()
 					.equalsIgnoreCase(SingleSiteAnalysisDetailsPanel.COLUMN_FACTOR)) {
 				this.getSelColumnFactor().addItem(factor.getLocalName());
@@ -1142,7 +1123,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 			@Override
 			public void buttonClick(ClickEvent event) {
 				Map<String, Boolean> visibleTraitsMap = new HashMap<>();
-				for (VariableType factor : SingleSiteAnalysisDetailsPanel.this.factorsInDataset) {
+				for (DMSVariableType factor : SingleSiteAnalysisDetailsPanel.this.factorsInDataset) {
 					visibleTraitsMap.put(factor.getLocalName(), true);
 				}
 				visibleTraitsMap.putAll(SingleSiteAnalysisDetailsPanel.this.breedingViewInput.getVariatesActiveState());

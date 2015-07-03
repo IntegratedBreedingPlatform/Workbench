@@ -11,11 +11,7 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
@@ -31,11 +27,11 @@ import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.ibpworkbench.ui.breedingview.SelectStudyDialog;
 import org.generationcp.ibpworkbench.ui.breedingview.SelectStudyDialogForBreedingViewUpload;
+import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.Study;
-import org.generationcp.middleware.domain.dms.VariableType;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.StudyDataManagerImpl;
@@ -52,18 +48,9 @@ import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.*;
 import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 
 /**
  *
@@ -633,7 +620,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 			this.factorList = new ArrayList<FactorModel>();
 			this.variateList = new ArrayList<VariateModel>();
 
-			for (VariableType factor : ds.getVariableTypes().getFactors().getVariableTypes()) {
+			for (DMSVariableType factor : ds.getVariableTypes().getFactors().getVariableTypes()) {
 
 				if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.DATASET) {
 					continue;
@@ -653,7 +640,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 				this.factorList.add(fm);
 			}
 
-			for (VariableType variate : ds.getVariableTypes().getVariates().getVariableTypes()) {
+			for (DMSVariableType variate : ds.getVariableTypes().getVariates().getVariableTypes()) {
 				VariateModel vm = this.transformVariableTypeToVariateModel(variate);
 				this.variateList.add(vm);
 			}
@@ -664,7 +651,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 			this.updateFactorsTable(this.factorList);
 			this.updateVariatesTable(this.variateList);
 
-		} catch (MiddlewareQueryException e) {
+		} catch (MiddlewareException e) {
 			SingleSiteAnalysisPanel.LOG.error(e.getMessage(), e);
 			this.showDatabaseError(this.getWindow());
 		}
@@ -672,7 +659,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		this.getManagerFactory().close();
 	}
 
-	public VariateModel transformVariableTypeToVariateModel(VariableType variate) {
+	public VariateModel transformVariableTypeToVariateModel(DMSVariableType variate) {
 		VariateModel vm = new VariateModel();
 		vm.setId(variate.getRank());
 		vm.setName(variate.getLocalName());
