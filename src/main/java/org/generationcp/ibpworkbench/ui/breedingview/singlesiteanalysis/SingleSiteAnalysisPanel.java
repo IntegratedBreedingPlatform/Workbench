@@ -622,7 +622,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 
 			for (DMSVariableType factor : ds.getVariableTypes().getFactors().getVariableTypes()) {
 
-				if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.DATASET) {
+				if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.DATASET || factor.getStandardVariable().getPhenotypicType() == PhenotypicType.STUDY) {
 					continue;
 				}
 

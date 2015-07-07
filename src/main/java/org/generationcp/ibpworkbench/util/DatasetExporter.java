@@ -74,7 +74,7 @@ public class DatasetExporter {
 
 		for (DMSVariableType factor : factorVariableTypes) {
 
-			if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.DATASET) {
+			if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.DATASET || factor.getStandardVariable().getPhenotypicType() == PhenotypicType.STUDY) {
 				continue;
 			}
 

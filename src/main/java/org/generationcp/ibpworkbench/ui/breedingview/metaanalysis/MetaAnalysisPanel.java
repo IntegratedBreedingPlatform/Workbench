@@ -622,7 +622,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 
 			for (DMSVariableType factor : this.dataSet.getVariableTypes().getFactors().getVariableTypes()) {
 
-				if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.DATASET) {
+				if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.DATASET || factor.getStandardVariable().getPhenotypicType() == PhenotypicType.STUDY) {
 					continue;
 				}
 
