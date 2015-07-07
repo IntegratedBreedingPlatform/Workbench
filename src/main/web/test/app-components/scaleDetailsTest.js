@@ -7,7 +7,10 @@ describe('Scale details directive', function() {
 		},
 
 		serviceUtilities = {
-			formatErrorsForDisplay: function() {}
+			formatErrorsForDisplay: function() {},
+			filterOutSystemDataTypes: function() {
+				return types;
+			}
 		},
 
 		panelService = {
@@ -15,22 +18,25 @@ describe('Scale details directive', function() {
 		},
 
 		dataTypesService = {
-			getDataTypes: function() {}
+			getNonSystemDataTypes: function() {}
 		},
 
 		CATEGORICAL_TYPE = {
 			id: 1,
-			name: 'Categorical'
+			name: 'Categorical',
+			systemDataType: false
 		},
 
 		NUMERIC_TYPE = {
 			id: 2,
-			name: 'Numeric'
+			name: 'Numeric',
+			systemDataType: false
 		},
 
 		CHARACTER_TYPE = {
 			id: 3,
-			name: 'Character'
+			name: 'Character',
+			systemDataType: false
 		},
 
 		PERCENTAGE = {
@@ -69,7 +75,7 @@ describe('Scale details directive', function() {
 		directiveElement,
 		deferredUpdateScale,
 		deferredDeleteScale,
-		deferredGetDataTypes,
+		deferredGetNonSystemDataTypes,
 		mockTranslateFilter;
 
 	beforeEach(function() {
@@ -118,14 +124,14 @@ describe('Scale details directive', function() {
 			return deferredDeleteScale.promise;
 		};
 
-		dataTypesService.getDataTypes = function() {
-			deferredGetDataTypes = q.defer();
-			return deferredGetDataTypes.promise;
+		dataTypesService.getNonSystemDataTypes = function() {
+			deferredGetNonSystemDataTypes = q.defer();
+			return deferredGetNonSystemDataTypes.promise;
 		};
 
 		spyOn(scalesService, 'updateScale').and.callThrough();
 		spyOn(scalesService, 'deleteScale').and.callThrough();
-		spyOn(dataTypesService, 'getDataTypes').and.callThrough();
+		spyOn(dataTypesService, 'getNonSystemDataTypes').and.callThrough();
 		spyOn(serviceUtilities, 'formatErrorsForDisplay');
 		spyOn(panelService, 'hidePanel');
 
@@ -235,10 +241,10 @@ describe('Scale details directive', function() {
 
 	describe('$scope.editScale', function() {
 
-		it('should set the data types on the scope', function() {
+		it('should set the non system data types on the scope', function() {
 			scope.editScale(fakeEvent);
 
-			deferredGetDataTypes.resolve(types);
+			deferredGetNonSystemDataTypes.resolve(types);
 			scope.$apply();
 
 			expect(scope.types).toEqual(types);
@@ -254,7 +260,7 @@ describe('Scale details directive', function() {
 		it('should handle any errors if the retrieving data types was not successful', function() {
 			scope.editScale(fakeEvent);
 
-			deferredGetDataTypes.reject();
+			deferredGetNonSystemDataTypes.reject();
 			scope.$apply();
 
 			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();

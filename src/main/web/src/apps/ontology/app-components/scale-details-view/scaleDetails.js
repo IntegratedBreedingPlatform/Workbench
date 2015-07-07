@@ -73,7 +73,7 @@
 						e.preventDefault();
 						resetErrors($scope);
 
-						dataTypesService.getDataTypes().then(function(types) {
+						dataTypesService.getNonSystemDataTypes().then(function(types) {
 							$scope.types = types;
 						}, function(response) {
 							$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);

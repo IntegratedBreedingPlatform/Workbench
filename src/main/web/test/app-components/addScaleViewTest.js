@@ -8,20 +8,21 @@ describe('Add Scale View', function() {
 
 		CATEGORICAL_TYPE = {
 			id: 1,
-			name: 'Categorical'
+			name: 'Categorical',
+			systemDataType: false
 		},
 
 		NUMERIC_TYPE = {
 			id: 2,
-			name: 'Numeric'
+			name: 'Numeric',
+			systemDataType: false
 		},
 
 		CHARACTER_TYPE = {
 			id: 3,
-			name: 'Character'
+			name: 'Character',
+			systemDataType: false
 		},
-
-		types = [CATEGORICAL_TYPE, NUMERIC_TYPE, CHARACTER_TYPE],
 
 		PERCENTAGE = {
 			name: 'Percentage',
@@ -33,10 +34,10 @@ describe('Add Scale View', function() {
 			}
 		},
 
-		scalesService,
+		types = [CATEGORICAL_TYPE, NUMERIC_TYPE, CHARACTER_TYPE],
 
 		dataTypesService = {
-			getDataTypes: function() {}
+			getNonSystemDataTypes: function() {}
 		},
 
 		variableStateService = {
@@ -48,6 +49,7 @@ describe('Add Scale View', function() {
 			formatErrorsForDisplay: function() {}
 		},
 
+		scalesService,
 		formUtilities,
 		scaleFormService,
 
@@ -57,7 +59,7 @@ describe('Add Scale View', function() {
 		scope,
 		window,
 
-		deferredGetDataTypes,
+		deferredGetNonSystemDataTypes,
 		deferredAddScale;
 
 	beforeEach(function() {
@@ -73,9 +75,9 @@ describe('Add Scale View', function() {
 		formUtilities = _formUtilities_;
 		scaleFormService = _scaleFormService_;
 
-		dataTypesService.getDataTypes = function() {
-			deferredGetDataTypes = q.defer();
-			return deferredGetDataTypes.promise;
+		dataTypesService.getNonSystemDataTypes = function() {
+			deferredGetNonSystemDataTypes = q.defer();
+			return deferredGetNonSystemDataTypes.promise;
 		};
 
 		scalesService = {
@@ -93,7 +95,7 @@ describe('Add Scale View', function() {
 
 		spyOn(scalesService, 'addScale').and.callThrough();
 		spyOn(serviceUtilities, 'formatErrorsForDisplay');
-		spyOn(dataTypesService, 'getDataTypes').and.callThrough();
+		spyOn(dataTypesService, 'getNonSystemDataTypes').and.callThrough();
 
 		controller = $controller('AddScaleController', {
 			$scope: $rootScope,
@@ -106,14 +108,14 @@ describe('Add Scale View', function() {
 		});
 	}));
 
-	it('should set the data types on the scope', function() {
-		deferredGetDataTypes.resolve(types);
+	it('should set the non system data types on the scope', function() {
+		deferredGetNonSystemDataTypes.resolve(types);
 		scope.$apply();
 		expect(scope.types).toEqual(types);
 	});
 
 	it('should display errors if data types were not retrieved successfully', function() {
-		deferredGetDataTypes.reject();
+		deferredGetNonSystemDataTypes.reject();
 		scope.$apply();
 		expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
 		expect(scope.someListsNotLoaded).toBe(true);

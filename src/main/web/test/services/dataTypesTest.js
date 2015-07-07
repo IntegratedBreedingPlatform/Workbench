@@ -76,4 +76,67 @@ describe('Data Types Service', function() {
 			expect(serviceUtilities.restSuccessHandler.calls.count()).toEqual(0);
 		});
 	});
+
+	describe('getNonSystemDataTypes', function() {
+		var deferredGetDataTypes,
+			q,
+			rootScope;
+
+		beforeEach(inject(function($q, $rootScope) {
+			q = $q;
+			rootScope = $rootScope;
+
+			dataTypesService.getDataTypes = function() {
+				deferredGetDataTypes = q.defer();
+				return deferredGetDataTypes.promise;
+			};
+
+			spyOn(dataTypesService, 'getDataTypes').and.callThrough();
+		}));
+
+		it('should filter out system data types and return the non system data types', function() {
+
+			var systemType = {
+					id: 1,
+					name: 'system',
+					systemDataType: true
+				},
+				nonSystemType = {
+					id: 2,
+					name: 'nonsystem',
+					systemDataType: false
+				},
+				dataTypes = [systemType, nonSystemType],
+				filteredTypesPromise,
+				filteredDataTypes;
+
+			filteredTypesPromise = dataTypesService.getNonSystemDataTypes();
+
+			filteredTypesPromise.then(function(result) {
+				filteredDataTypes = result;
+			});
+
+			deferredGetDataTypes.resolve(dataTypes);
+			rootScope.$apply();
+
+			expect(filteredDataTypes).toEqual([nonSystemType]);
+		});
+
+		it('should returned the failed response if unable to get the data types', function() {
+			var filteredTypesPromise,
+				rejectMessage = 'fail',
+				response;
+
+			filteredTypesPromise = dataTypesService.getNonSystemDataTypes();
+
+			filteredTypesPromise.catch(function(result) {
+				response = result;
+			});
+
+			deferredGetDataTypes.reject(rejectMessage);
+			rootScope.$apply();
+
+			expect(response).toEqual(rejectMessage);
+		});
+	});
 });

@@ -11,7 +11,7 @@ describe('Filter Module', function() {
 		scaleTypesService = {},
 		q,
 		deferredGetTypes,
-		deferredGetDataTypes,
+		deferredGetNonSystemDataTypes,
 
 		panelService = {
 			showPanel: function() {},
@@ -31,8 +31,7 @@ describe('Filter Module', function() {
 			id: 1,
 			name: 'Analysis',
 			description: 'Variable to be used only in analysis (for example derived variables).'
-		},
-		{
+		}, {
 			id: 6,
 			name: 'Environment Detail',
 			description: 'Administrative details to be tracked per environment.'
@@ -80,9 +79,9 @@ describe('Filter Module', function() {
 			return deferredGetTypes.promise;
 		};
 
-		scaleTypesService.getDataTypes = function() {
-			deferredGetDataTypes = q.defer();
-			return deferredGetDataTypes.promise;
+		scaleTypesService.getNonSystemDataTypes = function() {
+			deferredGetNonSystemDataTypes = q.defer();
+			return deferredGetNonSystemDataTypes.promise;
 		};
 
 		TODAY = new Date();
@@ -129,13 +128,13 @@ describe('Filter Module', function() {
 		it('should set the scale data types on the scope', function() {
 			//List with the value for 'ALL'
 			var dataTypesList = [{id: 0, name:'...'}].concat(CATEGORICAL_TYPE);
-			deferredGetDataTypes.resolve(CATEGORICAL_TYPE);
+			deferredGetNonSystemDataTypes.resolve(CATEGORICAL_TYPE);
 			scope.$apply();
 			expect(isolateScope.data.scaleTypes).toEqual(dataTypesList);
 		});
 
 		it('should display errors if scale data types were not retrieved successfully', function() {
-			deferredGetDataTypes.reject();
+			deferredGetNonSystemDataTypes.reject();
 			scope.$apply();
 			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
 			expect(isolateScope.someListsNotLoaded).toBe(true);

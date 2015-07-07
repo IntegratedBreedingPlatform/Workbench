@@ -21,7 +21,7 @@
 			$scope.showRangeWidget = false;
 			$scope.showCategoriesWidget = false;
 
-			dataTypesService.getDataTypes().then(function(types) {
+			dataTypesService.getNonSystemDataTypes().then(function(types) {
 				$scope.types = types;
 			}, function(response) {
 				$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
