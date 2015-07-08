@@ -81,7 +81,7 @@ describe('Variables Controller', function() {
 	delete PLANT_VIGOR_CONVERTED.favourite;
 	PLANT_VIGOR_CONVERTED['action-favourite'] = {};
 	PLANT_VIGOR_CONVERTED['action-favourite'].iconValue = 'star';
-	PLANT_VIGOR_CONVERTED.scaleType = NUMERIC_TYPE;
+	PLANT_VIGOR_CONVERTED.scaleDataType = NUMERIC_TYPE;
 	PLANT_VIGOR_CONVERTED.metadata = {
 		dateCreated: new Date('2015-06-15')
 	};
@@ -156,7 +156,7 @@ describe('Variables Controller', function() {
 					method: PLANT_VIGOR_DETAILED.methodSummary.name,
 					scale: PLANT_VIGOR_DETAILED.scale.name,
 					variableTypes: PLANT_VIGOR_DETAILED.variableTypes,
-					scaleType: PLANT_VIGOR_DETAILED.scale.dataType,
+					scaleDataType: PLANT_VIGOR_DETAILED.scale.dataType,
 					'action-favourite': PLANT_VIGOR_DETAILED.favourite ? { iconValue: 'star' } : { iconValue: 'star-empty' }
 				};
 
@@ -174,7 +174,7 @@ describe('Variables Controller', function() {
 					method: PLANT_VIGOR_DETAILED.methodSummary.name,
 					scale: PLANT_VIGOR_DETAILED.scale.name,
 					variableTypes: PLANT_VIGOR_DETAILED.variableTypes,
-					scaleType: PLANT_VIGOR_DETAILED.scale.dataType,
+					scaleDataType: PLANT_VIGOR_DETAILED.scale.dataType,
 					'action-favourite': PLANT_VIGOR_DETAILED.favourite ? { iconValue: 'star' } : { iconValue: 'star-empty' }
 				};
 
@@ -201,7 +201,7 @@ describe('Variables Controller', function() {
 				method: '',
 				scale: '',
 				variableTypes: null,
-				scaleType: undefined,
+				scaleDataType: undefined,
 				'action-favourite': { iconValue: 'star' }
 			};
 			expect(controller.transformDetailedVariableToDisplayFormat(rawVariable)).toEqual(
@@ -616,7 +616,7 @@ describe('Variables Controller', function() {
 					name: 'Analysis',
 					description: ''
 				}],
-				scaleType: {name: '...'}
+				scaleDataType: {name: '...'}
 			};
 			expect(scope.optionsFilter(PLANT_VIGOR_CONVERTED)).toBe(true);
 		});
@@ -628,7 +628,7 @@ describe('Variables Controller', function() {
 					name: 'Trait',
 					description: 'Characteristics of a germplasm to be recorded during a study.'
 				}],
-				scaleType: {name: '...'}
+				scaleDataType: {name: '...'}
 			};
 			expect(scope.optionsFilter(PLANT_VIGOR_CONVERTED)).toBe(false);
 		});
@@ -636,7 +636,7 @@ describe('Variables Controller', function() {
 		it('should return true if there is a match of scale data type in variable and filter options', function() {
 			scope.filterOptions = {
 				variableTypes: [],
-				scaleType: NUMERIC_TYPE
+				scaleDataType: NUMERIC_TYPE
 			};
 			expect(scope.optionsFilter(PLANT_VIGOR_CONVERTED)).toBe(true);
 		});
@@ -644,7 +644,7 @@ describe('Variables Controller', function() {
 		it('should return false if there is no match of scale data type in variable and filter options', function() {
 			scope.filterOptions = {
 				variableTypes: [],
-				scaleType: CATEGORICAL_TYPE
+				scaleDataType: CATEGORICAL_TYPE
 			};
 			expect(scope.optionsFilter(PLANT_VIGOR_CONVERTED)).toBe(false);
 		});
@@ -653,7 +653,7 @@ describe('Variables Controller', function() {
 			function() {
 			scope.filterOptions = {
 				variableTypes: [],
-				scaleType: {name: '...'},
+				scaleDataType: {name: '...'},
 				dateCreatedFrom: new Date('2015-06-01'),
 				dateCreatedTo: new Date('2015-07-01')
 			};
@@ -664,7 +664,7 @@ describe('Variables Controller', function() {
 			function() {
 			scope.filterOptions = {
 				variableTypes: [],
-				scaleType: {name: '...'},
+				scaleDataType: {name: '...'},
 				dateCreatedFrom: new Date('2015-06-01')
 			};
 			expect(scope.optionsFilter(PLANT_VIGOR_CONVERTED)).toBe(true);
@@ -674,7 +674,7 @@ describe('Variables Controller', function() {
 			function() {
 			scope.filterOptions = {
 				variableTypes: [],
-				scaleType: {name: '...'},
+				scaleDataType: {name: '...'},
 				dateCreatedTo: new Date('2015-07-01')
 			};
 			expect(scope.optionsFilter(PLANT_VIGOR_CONVERTED)).toBe(true);
@@ -684,7 +684,7 @@ describe('Variables Controller', function() {
 			function() {
 			scope.filterOptions = {
 				variableTypes: [],
-				scaleType: {name: '...'},
+				scaleDataType: {name: '...'},
 				dateCreatedFrom: 'notADate',
 				dateCreatedTo: 'notADateEither'
 			};

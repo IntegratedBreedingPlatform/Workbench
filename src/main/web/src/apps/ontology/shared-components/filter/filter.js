@@ -12,7 +12,7 @@
 					$scope.smallPanelName = 'filters';
 					$scope.data = {
 						types: [],
-						scaleTypes: [{
+						scaleDataTypes: [{
 							id: 0,
 							name: '...'
 						}],
@@ -26,8 +26,9 @@
 
 					$scope.isFilterActive = function() {
 						return ($scope.filterOptions && $scope.filterOptions.variableTypes &&
-							$scope.filterOptions.variableTypes.length !== 0) || ($scope.filterOptions && $scope.filterOptions.scaleType &&
-							$scope.filterOptions.scaleType.name !== '...') || ($scope.filterOptions &&
+							$scope.filterOptions.variableTypes.length !== 0) ||
+							($scope.filterOptions && $scope.filterOptions.scaleDataType &&
+							$scope.filterOptions.scaleDataType.name !== '...') || ($scope.filterOptions &&
 							$scope.filterOptions.dateCreatedFrom && $scope.filterOptions.dateCreatedFrom.getTime !== undefined) ||
 							($scope.filterOptions && $scope.filterOptions.dateCreatedTo &&
 							$scope.filterOptions.dateCreatedTo.getTime !== undefined);
@@ -41,7 +42,7 @@
 					});
 
 					dataTypesService.getNonSystemDataTypes().then(function(types) {
-						$scope.data.scaleTypes = $scope.data.scaleTypes.concat(types);
+						$scope.data.scaleDataTypes = $scope.data.scaleDataTypes.concat(types);
 					}, function(response) {
 						$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
 						$scope.someListsNotLoaded = true;

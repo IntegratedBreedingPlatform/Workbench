@@ -16,7 +16,7 @@
 			method: variable.methodSummary && variable.methodSummary.name || '',
 			scale: (variable.scale && variable.scale.name) || (variable.scaleSummary && variable.scaleSummary.name) || '',
 			variableTypes: variable.variableTypes, // used for filtering
-			scaleType: (variable.scale && variable.scale.dataType) || (variable.scaleSummary && variable.scaleSummary.dataType),
+			scaleDataType: (variable.scale && variable.scale.dataType) || (variable.scaleSummary && variable.scaleSummary.dataType),
 			metadata: {
 				dateCreated: tempDateCreated
 			},
@@ -120,7 +120,7 @@
 			$scope.panelName = 'variables';
 			$scope.filterOptions = {
 				variableTypes: [],
-				scaleType: null
+				scaleDataType: null
 			};
 
 			$scope.optionsFilter = function(variable) {
@@ -140,8 +140,8 @@
 					});
 				}
 
-				if ($scope.filterOptions.scaleType && $scope.filterOptions.scaleType.name !== '...') {
-					scaleDataTypeMatch =  angular.equals(variable.scaleType, $scope.filterOptions.scaleType);
+				if ($scope.filterOptions.scaleDataType && $scope.filterOptions.scaleDataType.name !== '...') {
+					scaleDataTypeMatch =  angular.equals(variable.scaleDataType, $scope.filterOptions.scaleDataType);
 				}
 				if ($scope.filterOptions.dateCreatedFrom || $scope.filterOptions.dateCreatedTo) {
 					if ($scope.filterOptions.dateCreatedFrom && $scope.filterOptions.dateCreatedTo &&

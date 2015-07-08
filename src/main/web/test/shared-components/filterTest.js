@@ -8,7 +8,7 @@ describe('Filter Module', function() {
 		directiveElement,
 		mockTranslateFilter,
 		variableTypesService = {},
-		scaleTypesService = {},
+		dataTypesService = {},
 		q,
 		deferredGetTypes,
 		deferredGetNonSystemDataTypes,
@@ -67,7 +67,7 @@ describe('Filter Module', function() {
 		$provide.value('variableTypesService', variableTypesService);
 		$provide.value('panelService', panelService);
 		$provide.value('serviceUtilities', serviceUtilities);
-		$provide.value('dataTypesService', scaleTypesService);
+		$provide.value('dataTypesService', dataTypesService);
 	}));
 
 	beforeEach(inject(function($rootScope, $q) {
@@ -79,7 +79,7 @@ describe('Filter Module', function() {
 			return deferredGetTypes.promise;
 		};
 
-		scaleTypesService.getNonSystemDataTypes = function() {
+		dataTypesService.getNonSystemDataTypes = function() {
 			deferredGetNonSystemDataTypes = q.defer();
 			return deferredGetNonSystemDataTypes.promise;
 		};
@@ -130,7 +130,7 @@ describe('Filter Module', function() {
 			var dataTypesList = [{id: 0, name:'...'}].concat(CATEGORICAL_TYPE);
 			deferredGetNonSystemDataTypes.resolve(CATEGORICAL_TYPE);
 			scope.$apply();
-			expect(isolateScope.data.scaleTypes).toEqual(dataTypesList);
+			expect(isolateScope.data.scaleDataTypes).toEqual(dataTypesList);
 		});
 
 		it('should display errors if scale data types were not retrieved successfully', function() {
@@ -187,7 +187,7 @@ describe('Filter Module', function() {
 			});
 
 			it('should return true if scale data types filter option is set', function() {
-				isolateScope.filterOptions.scaleType = CATEGORICAL_TYPE;
+				isolateScope.filterOptions.scaleDataType = CATEGORICAL_TYPE;
 				expect(isolateScope.isFilterActive()).toBe(true);
 			});
 
