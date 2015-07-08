@@ -80,6 +80,73 @@ describe('Scales Service', function() {
 		});
 	});
 
+	describe('getScalesWithNonSystemDataTypes', function() {
+		var deferredGetScales,
+			q,
+			rootScope;
+
+		beforeEach(inject(function($q, $rootScope) {
+			q = $q;
+			rootScope = $rootScope;
+
+			scalesService.getScales = function() {
+				deferredGetScales = q.defer();
+				return deferredGetScales.promise;
+			};
+
+			spyOn(scalesService, 'getScales').and.callThrough();
+		}));
+
+		it('should filter out scales with system data types and return an array of scales', function() {
+
+			var systemTypeScale = {
+					dataType: {
+						id: 1,
+						name: 'system',
+						systemDataType: true
+					}
+				},
+				nonSystemTypeScale = {
+					dataType: {
+						id: 2,
+						name: 'nonsystem',
+						systemDataType: false
+					}
+				},
+				scales = [systemTypeScale, nonSystemTypeScale],
+				filteredScalesPromise,
+				filteredScales;
+
+			filteredScalesPromise = scalesService.getScalesWithNonSystemDataTypes();
+
+			filteredScalesPromise.then(function(result) {
+				filteredScales = result;
+			});
+
+			deferredGetScales.resolve(scales);
+			rootScope.$apply();
+
+			expect(filteredScales).toEqual([nonSystemTypeScale]);
+		});
+
+		it('should returned the failed response if unable to get the scales', function() {
+			var filteredScalesPromise,
+				rejectMessage = 'fail',
+				response;
+
+			filteredScalesPromise = scalesService.getScalesWithNonSystemDataTypes();
+
+			filteredScalesPromise.catch(function(result) {
+				response = result;
+			});
+
+			deferredGetScales.reject(rejectMessage);
+			rootScope.$apply();
+
+			expect(response).toEqual(rejectMessage);
+		});
+	});
+
 	describe('addScale', function() {
 
 		it('should POST to /scales', function() {

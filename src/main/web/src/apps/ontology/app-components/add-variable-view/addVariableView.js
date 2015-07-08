@@ -59,7 +59,7 @@
 					$scope.someListsNotLoaded = true;
 				});
 
-				scalesService.getScales().then(function(scales) {
+				scalesService.getScalesWithNonSystemDataTypes().then(function(scales) {
 					$scope.data.scales = scales;
 				}, function(response) {
 					$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);

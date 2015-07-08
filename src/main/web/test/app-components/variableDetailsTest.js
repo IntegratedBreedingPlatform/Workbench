@@ -48,7 +48,7 @@ describe('Variable details directive', function() {
 		directiveElement,
 		deferredGetProperties,
 		deferredGetMethods,
-		deferredGetScales,
+		deferredGetScalesWithNonSystemDataTypes,
 		deferredGetTypes,
 		deferredUpdateVariable,
 		deferredDeleteVariable,
@@ -103,9 +103,9 @@ describe('Variable details directive', function() {
 			return deferredGetMethods.promise;
 		};
 
-		scalesService.getScales = function() {
-			deferredGetScales = q.defer();
-			return deferredGetScales.promise;
+		scalesService.getScalesWithNonSystemDataTypes = function() {
+			deferredGetScalesWithNonSystemDataTypes = q.defer();
+			return deferredGetScalesWithNonSystemDataTypes.promise;
 		};
 
 		variableTypesService.getTypes = function() {
@@ -125,7 +125,7 @@ describe('Variable details directive', function() {
 
 		spyOn(propertiesService, 'getProperties').and.callThrough();
 		spyOn(methodsService, 'getMethods').and.callThrough();
-		spyOn(scalesService, 'getScales').and.callThrough();
+		spyOn(scalesService, 'getScalesWithNonSystemDataTypes').and.callThrough();
 		spyOn(variableTypesService, 'getTypes').and.callThrough();
 		spyOn(variablesService, 'updateVariable').and.callThrough();
 		spyOn(variablesService, 'deleteVariable').and.callThrough();
@@ -258,18 +258,18 @@ describe('Variable details directive', function() {
 
 	describe('getting scales', function() {
 		it('should call the scales service to get all scales', function() {
-			expect(scalesService.getScales).toHaveBeenCalled();
+			expect(scalesService.getScalesWithNonSystemDataTypes).toHaveBeenCalled();
 		});
 
 		it('should handle any errors if retrieving the scales was not successful', function() {
-			deferredGetScales.reject();
+			deferredGetScalesWithNonSystemDataTypes.reject();
 			scope.$apply();
 			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
 			expect(scope.someListsNotLoaded).toBe(true);
 		});
 
 		it('should set data.scales to the returned scales after a successful update', function() {
-			deferredGetScales.resolve([PLANT_VIGOR]);
+			deferredGetScalesWithNonSystemDataTypes.resolve([PLANT_VIGOR]);
 			scope.$apply();
 
 			expect(scope.data.scales).toEqual([PLANT_VIGOR]);

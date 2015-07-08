@@ -134,7 +134,7 @@
 				setScale: function(scaleId) {
 
 					return $q(function(resolve, reject) {
-						scalesService.getScales().then(function(scales) {
+						scalesService.getScalesWithNonSystemDataTypes().then(function(scales) {
 							var isScaleFound = false;
 							scopeData.scales = scales;
 

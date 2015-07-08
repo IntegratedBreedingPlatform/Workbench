@@ -37,7 +37,7 @@ describe('Variable State Service', function() {
 
 		deferredGetProperties,
 		deferredGetMethods,
-		deferredGetScales,
+		deferredGetScalesWithNonSystemDataTypes,
 
 		scope,
 		q;
@@ -63,15 +63,15 @@ describe('Variable State Service', function() {
 		};
 
 		scalesService = {
-			getScales: function() {
-				deferredGetScales = q.defer();
-				return deferredGetScales.promise;
+			getScalesWithNonSystemDataTypes: function() {
+				deferredGetScalesWithNonSystemDataTypes = q.defer();
+				return deferredGetScalesWithNonSystemDataTypes.promise;
 			}
 		};
 
 		spyOn(propertiesService, 'getProperties').and.callThrough();
 		spyOn(methodsService, 'getMethods').and.callThrough();
-		spyOn(scalesService, 'getScales').and.callThrough();
+		spyOn(scalesService, 'getScalesWithNonSystemDataTypes').and.callThrough();
 
 		module(function($translateProvider, $provide) {
 
@@ -217,54 +217,56 @@ describe('Variable State Service', function() {
 		});
 
 		it('should set the properties and property summary if the call to the properties service is successful and the property is found ' +
-				'in the list of properties', function() {
-			var properties = [{id: 1, name: 'a property'}],
-				selectedPropertyId = 1,
-				selectedPropertyName = 'a property',
-				result,
-				state,
-				success;
+			'in the list of properties', function() {
+				var properties = [{id: 1, name: 'a property'}],
+					selectedPropertyId = 1,
+					selectedPropertyName = 'a property',
+					result,
+					state,
+					success;
 
-			result = variableStateService.setProperty(selectedPropertyId, selectedPropertyName);
+				result = variableStateService.setProperty(selectedPropertyId, selectedPropertyName);
 
-			// Because Angular doesn't let us inspect the state of a promise, call fake success and failure handlers
-			// to ensure correct promise resolution
-			result.then(function() {success = true;}, function() {success = false;});
+				// Because Angular doesn't let us inspect the state of a promise, call fake success and failure handlers
+				// to ensure correct promise resolution
+				result.then(function() {success = true;}, function() {success = false;});
 
-			deferredGetProperties.resolve(properties);
-			scope.$apply();
+				deferredGetProperties.resolve(properties);
+				scope.$apply();
 
-			state = variableStateService.getVariableState();
+				state = variableStateService.getVariableState();
 
-			expect(state.variable.propertySummary.id).toEqual(selectedPropertyId);
-			expect(state.variable.propertySummary.name).toEqual(selectedPropertyName);
-			expect(state.scopeData.properties).toEqual(properties);
-		});
+				expect(state.variable.propertySummary.id).toEqual(selectedPropertyId);
+				expect(state.variable.propertySummary.name).toEqual(selectedPropertyName);
+				expect(state.scopeData.properties).toEqual(properties);
+			}
+		);
 
 		it('should return an error that property was not found if the call to the properties service is successful' +
-				'but property was not found in the list of properties', function() {
-			var properties = [{id: 2, name: 'another property'}],
-				selectedPropertyId = 1,
-				selectedPropertyName = 'a property',
-				result,
-				state,
-				success;
+			'but property was not found in the list of properties', function() {
+				var properties = [{id: 2, name: 'another property'}],
+					selectedPropertyId = 1,
+					selectedPropertyName = 'a property',
+					result,
+					state,
+					success;
 
-			result = variableStateService.setProperty(selectedPropertyId, selectedPropertyName);
+				result = variableStateService.setProperty(selectedPropertyId, selectedPropertyName);
 
-			// Because Angular doesn't let us inspect the state of a promise, call fake success and failure handlers
-			// to ensure correct promise resolution
-			result.then(function() {success = true;}, function() {success = false;});
+				// Because Angular doesn't let us inspect the state of a promise, call fake success and failure handlers
+				// to ensure correct promise resolution
+				result.then(function() {success = true;}, function() {success = false;});
 
-			deferredGetProperties.resolve(properties);
-			scope.$apply();
+				deferredGetProperties.resolve(properties);
+				scope.$apply();
 
-			state = variableStateService.getVariableState();
+				state = variableStateService.getVariableState();
 
-			expect(state.errors.length).toEqual(1);
-			expect(state.errors[0]).toEqual(TRANSLATIONS['variableStateService.propertyNotFound']);
-			expect(success).toBe(false);
-		});
+				expect(state.errors.length).toEqual(1);
+				expect(state.errors[0]).toEqual(TRANSLATIONS['variableStateService.propertyNotFound']);
+				expect(success).toBe(false);
+			}
+		);
 	});
 
 	describe('setMethod', function() {
@@ -310,50 +312,52 @@ describe('Variable State Service', function() {
 		});
 
 		it('should set the methods and method summary if the call to the methods service is successful and method ' +
-				'is found in the list of methods', function() {
-			var methods = [{id: 1, name: 'a method'}],
-				selectedMethodId = 1,
-				selectedMethodName = 'a method',
-				result,
-				state,
-				success;
+			'is found in the list of methods', function() {
+				var methods = [{id: 1, name: 'a method'}],
+					selectedMethodId = 1,
+					selectedMethodName = 'a method',
+					result,
+					state,
+					success;
 
-			result = variableStateService.setMethod(selectedMethodId, selectedMethodName);
+				result = variableStateService.setMethod(selectedMethodId, selectedMethodName);
 
-			result.then(function() {success = true;}, function() {success = false;});
+				result.then(function() {success = true;}, function() {success = false;});
 
-			deferredGetMethods.resolve(methods);
-			scope.$apply();
+				deferredGetMethods.resolve(methods);
+				scope.$apply();
 
-			state = variableStateService.getVariableState();
+				state = variableStateService.getVariableState();
 
-			expect(state.variable.methodSummary.id).toEqual(selectedMethodId);
-			expect(state.variable.methodSummary.name).toEqual(selectedMethodName);
-			expect(state.scopeData.methods).toEqual(methods);
-		});
+				expect(state.variable.methodSummary.id).toEqual(selectedMethodId);
+				expect(state.variable.methodSummary.name).toEqual(selectedMethodName);
+				expect(state.scopeData.methods).toEqual(methods);
+			}
+		);
 
 		it('should return an error if the call to the methods service is successful but the method ' +
-				'could not be found in the list of methods', function() {
-			var methods = [{id: 2, name: 'another method'}],
-				selectedMethodId = 1,
-				selectedMethodName = 'a method',
-				result,
-				state,
-				success;
+			'could not be found in the list of methods', function() {
+				var methods = [{id: 2, name: 'another method'}],
+					selectedMethodId = 1,
+					selectedMethodName = 'a method',
+					result,
+					state,
+					success;
 
-			result = variableStateService.setMethod(selectedMethodId, selectedMethodName);
+				result = variableStateService.setMethod(selectedMethodId, selectedMethodName);
 
-			result.then(function() {success = true;}, function() {success = false;});
+				result.then(function() {success = true;}, function() {success = false;});
 
-			deferredGetMethods.resolve(methods);
-			scope.$apply();
+				deferredGetMethods.resolve(methods);
+				scope.$apply();
 
-			state = variableStateService.getVariableState();
+				state = variableStateService.getVariableState();
 
-			expect(state.errors.length).toEqual(1);
-			expect(state.errors[0]).toEqual(TRANSLATIONS['variableStateService.methodNotFound']);
-			expect(success).toBe(false);
-		});
+				expect(state.errors.length).toEqual(1);
+				expect(state.errors[0]).toEqual(TRANSLATIONS['variableStateService.methodNotFound']);
+				expect(success).toBe(false);
+			}
+		);
 	});
 
 	describe('setScale', function() {
@@ -369,7 +373,7 @@ describe('Variable State Service', function() {
 
 			result.then(function() {success = true;}, function() {success = false;});
 
-			deferredGetScales.resolve(scales);
+			deferredGetScalesWithNonSystemDataTypes.resolve(scales);
 			scope.$apply();
 
 			expect(success).toBe(true);
@@ -388,7 +392,7 @@ describe('Variable State Service', function() {
 
 			result.then(function() {success = true;}, function() {success = false;});
 
-			deferredGetScales.reject();
+			deferredGetScalesWithNonSystemDataTypes.reject();
 			scope.$apply();
 
 			state = variableStateService.getVariableState();
@@ -400,47 +404,49 @@ describe('Variable State Service', function() {
 		});
 
 		it('should set the scales and scale if the call to the scales service is successful and the scale ' +
-				'is found in the list of scales', function() {
-			var scales = [{id: 1, name: 'a scale'}],
-				selectedScaleId = 1,
-				result,
-				state,
-				success;
+			'is found in the list of scales', function() {
+				var scales = [{id: 1, name: 'a scale'}],
+					selectedScaleId = 1,
+					result,
+					state,
+					success;
 
-			result = variableStateService.setScale(selectedScaleId);
+				result = variableStateService.setScale(selectedScaleId);
 
-			result.then(function() {success = true;}, function() {success = false;});
+				result.then(function() {success = true;}, function() {success = false;});
 
-			deferredGetScales.resolve(scales);
-			scope.$apply();
+				deferredGetScalesWithNonSystemDataTypes.resolve(scales);
+				scope.$apply();
 
-			state = variableStateService.getVariableState();
+				state = variableStateService.getVariableState();
 
-			expect(state.variable.scale.id).toEqual(selectedScaleId);
-			expect(state.scopeData.scales).toEqual(scales);
-		});
+				expect(state.variable.scale.id).toEqual(selectedScaleId);
+				expect(state.scopeData.scales).toEqual(scales);
+			}
+		);
 
 		it('should return an error if the call to the scales service is successful but the scale ' +
-				'could not be found in the list of scales', function() {
-			var scales = [{id: 2, name: 'another scale'}],
-				selectedScaleId = 1,
-				result,
-				state,
-				success;
+			'could not be found in the list of scales', function() {
+				var scales = [{id: 2, name: 'another scale'}],
+					selectedScaleId = 1,
+					result,
+					state,
+					success;
 
-			result = variableStateService.setScale(selectedScaleId);
+				result = variableStateService.setScale(selectedScaleId);
 
-			result.then(function() {success = true;}, function() {success = false;});
+				result.then(function() {success = true;}, function() {success = false;});
 
-			deferredGetScales.resolve(scales);
-			scope.$apply();
+				deferredGetScalesWithNonSystemDataTypes.resolve(scales);
+				scope.$apply();
 
-			state = variableStateService.getVariableState();
+				state = variableStateService.getVariableState();
 
-			expect(state.errors.length).toEqual(1);
-			expect(state.errors[0]).toEqual(TRANSLATIONS['variableStateService.scaleNotFound']);
-			expect(success).toBe(false);
-		});
+				expect(state.errors.length).toEqual(1);
+				expect(state.errors[0]).toEqual(TRANSLATIONS['variableStateService.scaleNotFound']);
+				expect(success).toBe(false);
+			}
+		);
 
 		it('should not set the scale if there is no matching id', function() {
 
@@ -454,7 +460,7 @@ describe('Variable State Service', function() {
 
 			result.then(function() {success = true;}, function() {success = false;});
 
-			deferredGetScales.resolve(scales);
+			deferredGetScalesWithNonSystemDataTypes.resolve(scales);
 			scope.$apply();
 
 			state = variableStateService.getVariableState();

@@ -10,8 +10,7 @@ describe('Add Variable View', function() {
 			id: '51475',
 			name: 'Leaf length',
 			description: 'Measurement of leaf length in centimeter.'
-		},
-		{
+		}, {
 			id: '51476',
 			name: 'Leaf width',
 			description: 'Measurement of leaf width in centimeter.'
@@ -21,8 +20,7 @@ describe('Add Variable View', function() {
 			id: '51081',
 			name: 'Astri counting',
 			description: 'Count the number of plants that are affected by black bundle per plot and record data in the FieldBook/FieldLog.'
-		},
-		{
+		}, {
 			id: '4130',
 			name: 'Average',
 			description: 'Average of values'
@@ -38,8 +36,7 @@ describe('Add Variable View', function() {
 			id: 1,
 			name: 'Analysis',
 			description: 'Variable to be used only in analysis (for example derived variables).'
-		},
-		{
+		}, {
 			id: 6,
 			name: 'Environment Detail',
 			description: 'Administrative details to be tracked per environment.'
@@ -113,7 +110,7 @@ describe('Add Variable View', function() {
 		deferredAddVariable,
 		deferredGetProperties,
 		deferredGetMethods,
-		deferredGetScales,
+		deferredGetScalesWithNonSystemDataTypes,
 		deferredGetVariablesTypes,
 
 		q,
@@ -159,9 +156,9 @@ describe('Add Variable View', function() {
 			deferredGetMethods = q.defer();
 			return deferredGetMethods.promise;
 		};
-		scalesService.getScales = function() {
-			deferredGetScales = q.defer();
-			return deferredGetScales.promise;
+		scalesService.getScalesWithNonSystemDataTypes = function() {
+			deferredGetScalesWithNonSystemDataTypes = q.defer();
+			return deferredGetScalesWithNonSystemDataTypes.promise;
 		};
 		variableTypesService.getTypes = function() {
 			deferredGetVariablesTypes = q.defer();
@@ -187,7 +184,7 @@ describe('Add Variable View', function() {
 
 		spyOn(propertiesService, 'getProperties').and.callThrough();
 		spyOn(methodsService, 'getMethods').and.callThrough();
-		spyOn(scalesService, 'getScales').and.callThrough();
+		spyOn(scalesService, 'getScalesWithNonSystemDataTypes').and.callThrough();
 
 		spyOn(variablesService, 'addVariable').and.callThrough();
 		spyOn(variableTypesService, 'getTypes').and.callThrough();
@@ -264,7 +261,7 @@ describe('Add Variable View', function() {
 		it('should not get property, method, scale or variable type data from services', function() {
 			expect(propertiesService.getProperties.calls.count()).toEqual(0);
 			expect(methodsService.getMethods.calls.count()).toEqual(0);
-			expect(scalesService.getScales.calls.count()).toEqual(0);
+			expect(scalesService.getScalesWithNonSystemDataTypes.calls.count()).toEqual(0);
 			expect(variableTypesService.getTypes.calls.count()).toEqual(0);
 		});
 	});
@@ -280,7 +277,7 @@ describe('Add Variable View', function() {
 		it('should get property, method, scale or variable type data from services', function() {
 			expect(propertiesService.getProperties).toHaveBeenCalled();
 			expect(methodsService.getMethods).toHaveBeenCalled();
-			expect(scalesService.getScales).toHaveBeenCalled();
+			expect(scalesService.getScalesWithNonSystemDataTypes).toHaveBeenCalled();
 			expect(variableTypesService.getTypes).toHaveBeenCalled();
 		});
 
@@ -311,13 +308,13 @@ describe('Add Variable View', function() {
 		});
 
 		it('should set the scales on the scope', function() {
-			deferredGetScales.resolve(scales);
+			deferredGetScalesWithNonSystemDataTypes.resolve(scales);
 			scope.$apply();
 			expect(scope.data.scales).toEqual(scales);
 		});
 
 		it('should display errors if scales were not retrieved successfully', function() {
-			deferredGetScales.reject();
+			deferredGetScalesWithNonSystemDataTypes.reject();
 			scope.$apply();
 			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
 			expect(scope.someListsNotLoaded).toBe(true);

@@ -4,7 +4,7 @@
 (function() {
 	var app = angular.module('scales', ['utilities', 'config']);
 
-	app.service('scalesService', ['$http', 'serviceUtilities', 'configService', function($http, serviceUtilities, configService) {
+	app.service('scalesService', ['$http', '$q', 'serviceUtilities', 'configService', function($http, $q, serviceUtilities, configService) {
 
 		var successHandler = serviceUtilities.restSuccessHandler,
 			failureHandler = serviceUtilities.restFailureHandler;
@@ -34,6 +34,20 @@
 			getScales: function() {
 				var request = $http.get('/bmsapi/ontology/' + configService.getCropName() + '/scales'/*, {timeout: 5000}*/);
 				return request.then(serviceUtilities.restFilteredScalesSuccessHandler, failureHandler);
+			},
+
+			/*
+			Returns an array of scales minus the ones that have non system data types.
+			*/
+			getScalesWithNonSystemDataTypes: function() {
+				return this.getScales().then(function(scales) {
+					return scales.filter(function(scale) {
+						return !scale.dataType.systemDataType;
+					});
+
+				}, function(response) {
+					return $q.reject(response);
+				});
 			},
 
 			/*
