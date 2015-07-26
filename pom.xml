@@ -618,8 +618,7 @@
 						</goals>
 
 						<configuration>
-							<!-- Add dash dash prod after 'build' below to get a production build
-								with minified files. -->
+							<!-- When the envConfig is set to 'release' then the JS and CSS files are minified -->
 							<arguments>build</arguments>
 							<arguments>--${envConfig}</arguments>
 						</configuration>
