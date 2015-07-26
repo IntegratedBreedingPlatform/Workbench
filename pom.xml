@@ -327,7 +327,7 @@
 			<version>4.8.1</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- to be used in unit testing the restore functionality, we would dynamically 
+		<!-- to be used in unit testing the restore functionality, we would dynamically
 			do a git (svn) checkout -->
 		<dependency>
 			<groupId>org.tmatesoft.svnkit</groupId>
@@ -618,9 +618,10 @@
 						</goals>
 
 						<configuration>
-							<!-- Add dash dash prod after 'build' below to get a production build 
+							<!-- Add dash dash prod after 'build' below to get a production build
 								with minified files. -->
 							<arguments>build</arguments>
+							<arguments>--${envConfig}</arguments>
 						</configuration>
 					</execution>
 				</executions>

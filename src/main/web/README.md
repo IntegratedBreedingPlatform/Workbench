@@ -19,12 +19,12 @@ When an ordinary Maven build is run, a clean and build is trigger through the us
 To use the gulp tasks directly, you need to install Node and run `npm install` in this directory to download the required packages. You can then run the Gulp build task directly with `gulp build`. There are also a number of other tasks that you can run manually (that will be included in a build):
 
 * `clean` - removes `/WEB-INF/static` and `/WEB-INF/pages`
-* `build` - runs `js`, `sass`, `images`, `html` and `fonts`. Running with the `--prod` flag will minify JS and CSS.
+* `build` - runs `js`, `sass`, `images`, `html` and `fonts`. Running with the `--release` flag will minify JS and CSS.
 * `fonts` - copies font files to the build directory
 * `html` - copies the contents of the src pages folder to the build folder
 * `images` - compresses the images and copies them to the built images folder
-* `js` - will JSHint any non-library code, and copy all JavaScript files (libraries too) to the build folder. Running with the `--prod` flag will minify files.
-* `sass` - compiles scss files into css, adds vendor prefixes and copies to the build folder. Running with the `--prod` flag will minify files.
+* `js` - will JSHint any non-library code, and copy all JavaScript files (libraries too) to the build folder. Running with the `--release` flag will minify files.
+* `sass` - compiles scss files into css, adds vendor prefixes and copies to the build folder. Running with the `--release` flag will minify files.
 * `test` - runs the JavaScript tests (IN PROGRESS)
 * `watch` - will invoke the appropriate task when files in the `src` folder change
 
@@ -32,7 +32,7 @@ Running `gulp` without a specified task will run the `build` task.
 
 ## Building for Production
 
-Before releasing, we should run a production build. You can run `gulp build --prod`, or specify the `--prod` argument in the gulp build configuration in the pom.xml, and run a Maven build. This will minify files ready for release.
+We must build our files for production with the `--release` flag. This will minify JavaScript and CSS files. The `--release` flag will be applied when doing a Maven build with the `release` environment config, or you can run `gulp build --release`.
 
 # Development
 

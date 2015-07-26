@@ -20,7 +20,7 @@ gulp.task('clientSass', function() {
 		.pipe(sass())
 		.pipe(prefix('last 2 versions', 'ie 8'))
 		.pipe(pixrem())
-		.pipe(gulpif(argv.prod, minifyCSS()))
+		.pipe(gulpif(argv.release, minifyCSS()))
 		.pipe(gulp.dest('../webapp/WEB-INF/static/css'))
 		.on('error', handleErrors);
 });
@@ -31,7 +31,7 @@ gulp.task('libSass', function() {
 	return gulp.src('src/sass/lib/**')
 		.pipe(cache('sass'))
 		.pipe(sass())
-		.pipe(gulpif(argv.prod, minifyCSS()))
+		.pipe(gulpif(argv.release, minifyCSS()))
 		.pipe(gulp.dest('../webapp/WEB-INF/static/lib'))
 		.on('error', handleErrors);
 });
