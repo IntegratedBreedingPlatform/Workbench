@@ -11,10 +11,8 @@
 
 package org.generationcp.ibpworkbench.model.formfieldfactory;
 
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.validator.PersonNameValidator;
 import org.generationcp.ibpworkbench.validator.UsernameValidator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.Item;
@@ -45,9 +43,6 @@ public class UserAccountFormFieldFactory extends DefaultFieldFactory {
 	private ComboBox role;
 	private Field email;
 	private Field username;
-
-	@Autowired
-	private SimpleResourceBundleMessageSource messageSource;
 
 	public UserAccountFormFieldFactory() {
 		this.initFields();

@@ -78,7 +78,7 @@ public class UserAccountForm extends Form {
 	protected void assemble() {
 
 		this.initializeComponents();
-		this.initializeLayout();
+
 	}
 
 	protected void initializeComponents() {
@@ -101,10 +101,6 @@ public class UserAccountForm extends Form {
 		this.setWriteThrough(false);
 		this.setInvalidCommitted(false);
 		this.setValidationVisibleOnCommit(false);
-
-	}
-
-	protected void initializeLayout() {
 
 	}
 

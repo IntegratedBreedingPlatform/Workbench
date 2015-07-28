@@ -12,7 +12,6 @@ import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
-import org.generationcp.middleware.pojos.workbench.SecurityQuestion;
 import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +26,7 @@ public class WorkbenchUserService {
 
 	/**
 	 * Cretes new user account
-	 *
+	 * 
 	 * @param userAccount
 	 * @throws org.generationcp.middleware.exceptions.MiddlewareQueryException
 	 */

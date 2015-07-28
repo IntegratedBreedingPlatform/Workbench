@@ -14,6 +14,7 @@ package org.generationcp.ibpworkbench.actions;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Set;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -75,7 +76,7 @@ public class SaveNewProjectAddUserAction implements ClickListener {
 		this.membersSelect = membersSelect;
 	}
 
-	// TODO: Code reviewed by Cyrus: Logic quite similar to SaveUserAccountAction,
+	// Code reviewed by Cyrus: Logic quite similar to SaveUserAccountAction,
 	// this can be consolidated to avoid redundant code
 	@Override
 	public void buttonClick(ClickEvent event) {
@@ -86,13 +87,15 @@ public class SaveNewProjectAddUserAction implements ClickListener {
 		try {
 			this.userAccountForm.commit();
 		} catch (InternationalizableException e) {
+			LOG.error(e.getMessage(), e);
 			MessageNotifier.showRequiredFieldError(event.getComponent().getWindow(), e.getDescription());
 			return;
 		} catch (InvalidValueException e) {
+			LOG.error(e.getMessage(), e);
 			MessageNotifier.showRequiredFieldError(event.getComponent().getWindow(), ValidationUtil.getMessageFor(e));
 			return;
 		} catch (Exception e) {
-			// handle error for unexpected cases
+			LOG.error(e.getMessage(), e);
 			return;
 		}
 
@@ -173,7 +176,7 @@ public class SaveNewProjectAddUserAction implements ClickListener {
 
 		// get currently selected users and add the new user
 		@SuppressWarnings("unchecked")
-		HashSet<User> selectedMembers = new HashSet<User>(membersSelect.getValue());
+		Set<User> selectedMembers = new HashSet<User>(membersSelect.getValue());
 		selectedMembers.add(user);
 		membersSelect.setValue(selectedMembers);
 	}
