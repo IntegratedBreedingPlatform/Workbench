@@ -1,16 +1,17 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * 
  * Generation Challenge Programme (GCP)
- *
- *
+ * 
+ * 
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
+ * 
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.actions;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 
@@ -28,8 +29,8 @@ import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
-import org.generationcp.middleware.pojos.workbench.SecurityQuestion;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
+import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,10 +44,10 @@ import com.vaadin.ui.Form;
 
 /**
  * <b>Description</b>: Listener responsible for saving new Users and Persons records created from the Create New Project screen.
- *
+ * 
  * <br>
  * <br>
- *
+ * 
  * <b>Author</b>: Mark Agarrado <br>
  * <b>File Created</b>: October 15, 2012
  */
@@ -158,11 +159,6 @@ public class SaveNewProjectAddUserAction implements ClickListener {
 		user.setIsNew(true);
 		this.workbenchDataManager.addUser(user);
 
-		SecurityQuestion question = new SecurityQuestion();
-		question.setUserId(user.getUserid());
-		question.setSecurityQuestion(userAccount.getSecurityQuestion());
-		question.setSecurityAnswer(userAccount.getSecurityAnswer());
-		this.workbenchDataManager.addSecurityQuestion(question);
 
 		UserInfo userInfo = new UserInfo();
 		userInfo.setUserId(user.getUserid());

@@ -13,6 +13,7 @@ package org.generationcp.ibpworkbench.ui.programmembers;
 
 import java.util.Collection;
 
+import org.generationcp.commons.security.Role;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
@@ -61,8 +62,7 @@ public class NewProjectAddUserPanel extends Panel {
 
 	private final TwinTableSelect<User> membersSelect;
 
-	private final static Object[] VISIBLE_ITEM_PROPERTIES = new Object[] {"firstName", "middleName", "lastName", "email", "username",
-			"securityQuestion", "securityAnswer"};
+	private final static Object[] VISIBLE_ITEM_PROPERTIES = new Object[] {"firstName", "lastName", "role", "email", "username"};
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -121,10 +121,13 @@ public class NewProjectAddUserPanel extends Panel {
 	}
 
 	protected void initializeValues() {
-		// set default value for Security Question
-		ComboBox questionField = (ComboBox) this.userForm.getField("securityQuestion");
-		Collection<?> itemIds = questionField.getItemIds();
-		questionField.setValue(itemIds.iterator().next());
+
+		ComboBox roleField = (ComboBox) this.userForm.getField("role");
+		roleField.addItem(Role.ADMIN.name());
+		roleField.addItem(Role.BREEDER.name());
+		roleField.addItem(Role.TECHNICIAN.name());
+		roleField.select(null);
+
 	}
 
 	protected void initializeLayout() {
