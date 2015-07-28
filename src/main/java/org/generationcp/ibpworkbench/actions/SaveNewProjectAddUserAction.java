@@ -125,7 +125,7 @@ public class SaveNewProjectAddUserAction implements ClickListener {
 
 	}
 
-	private void saveUserAccount(UserAccountModel userAccount, TwinTableSelect<User> membersSelect) throws MiddlewareQueryException {
+	protected void saveUserAccount(UserAccountModel userAccount, TwinTableSelect<User> membersSelect) throws MiddlewareQueryException {
 		userAccount.trimAll();
 
 		Person person = new Person();
@@ -157,8 +157,11 @@ public class SaveNewProjectAddUserAction implements ClickListener {
 		user.setStatus(0);
 		user.setType(0);
 		user.setIsNew(true);
-		this.workbenchDataManager.addUser(user);
 
+		// add user roles to the particular user
+		user.setRoles(Arrays.asList(new UserRole(user, userAccount.getRole())));
+
+		this.workbenchDataManager.addUser(user);
 
 		UserInfo userInfo = new UserInfo();
 		userInfo.setUserId(user.getUserid());
