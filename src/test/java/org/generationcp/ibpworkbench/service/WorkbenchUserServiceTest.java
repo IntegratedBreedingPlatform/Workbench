@@ -11,7 +11,6 @@ import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
-import org.generationcp.middleware.pojos.workbench.SecurityQuestion;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -40,7 +39,7 @@ public class WorkbenchUserServiceTest {
 
 		Mockito.verify(this.workbenchDataManager).addPerson(Matchers.any(Person.class));
 		Mockito.verify(this.workbenchDataManager).addUser(Matchers.any(User.class));
-		Mockito.verify(this.workbenchDataManager).addSecurityQuestion(Matchers.any(SecurityQuestion.class));
+
 	}
 
 	protected UserAccountModel createUserAccount() {

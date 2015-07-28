@@ -70,13 +70,6 @@ public class WorkbenchUserService {
 		user.setRoles(Arrays.asList(new UserRole(user, userAccount.getRole())));
 		this.workbenchDataManager.addUser(user);
 
-		SecurityQuestion question = new SecurityQuestion();
-		question.setUserId(user.getUserid());
-		question.setSecurityQuestion(userAccount.getSecurityQuestion());
-		question.setSecurityAnswer(userAccount.getSecurityAnswer());
-
-		this.workbenchDataManager.addSecurityQuestion(question);
-
 	}
 
 	/**
