@@ -11,6 +11,7 @@
 
 package org.generationcp.ibpworkbench.ui;
 
+import java.util.Objects;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
@@ -30,6 +31,7 @@ import org.generationcp.ibpworkbench.navigation.NavUriFragmentChangedListener;
 import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
 import org.generationcp.ibpworkbench.ui.project.create.AddProgramView;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
+import org.generationcp.ibpworkbench.ui.window.EmbeddedWindow;
 import org.generationcp.ibpworkbench.ui.window.HelpWindow;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -103,6 +105,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	private Button collapseButton;
 	private Button signoutButton;
 	private Button logoBtn;
+	private Button askSupportBtn;
 
 	public WorkbenchMainView() {
 		super("Breeding Management System | Workbench");
@@ -162,6 +165,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 		final VerticalLayout memberPopup = new VerticalLayout();
 		memberPopup.setStyleName("bms-memberpopup");
+		memberPopup.setSpacing(true);
 		memberPopup.setSizeUndefined();
 
 		this.signoutButton = new Button(this.messageSource.getMessage(Message.SIGNOUT));
@@ -181,6 +185,32 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.helpButton.setHtmlContentAllowed(true);
 		this.helpButton.setSizeUndefined();
 		this.helpButton.setDebugId("help-button-icon");
+	}
+
+	private Button getAskSupportBtn() {
+		if (Objects.equals(this.askSupportBtn,null) ) {
+			this.askSupportBtn = new Button("<span class='bms-header-btn2'><span class='fa fa-comments ico'></span></span>");
+			this.askSupportBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
+			this.askSupportBtn.setHtmlContentAllowed(true);
+			this.askSupportBtn.setSizeUndefined();
+			this.askSupportBtn.setDebugId("support-icon");
+			this.askSupportBtn.setDescription("Ask support/Feedback");
+			this.askSupportBtn.addListener(new Button.ClickListener() {
+
+				@Override
+				public void buttonClick(ClickEvent clickEvent) {
+					EmbeddedWindow askSupportWindow = new EmbeddedWindow();
+					askSupportWindow.setWidth("60%");
+					askSupportWindow.setHeight("80%");
+					askSupportWindow.setCaption("Ask Support/Feedback");
+					askSupportWindow.showContent("/ibpworkbench/controller/support/");
+
+					WorkbenchMainView.this.addWindow(askSupportWindow);
+				}
+			});
+		}
+
+		return this.askSupportBtn;
 	}
 
 	protected void initializeLayout() {
@@ -259,7 +289,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 			@Override
 			public void windowClose(CloseEvent closeEvent) {
-				IBPWorkbenchApplication.get().toggleJira();
+				IBPWorkbenchApplication.get().toggleScripts();
 			}
 		});
 
@@ -356,6 +386,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 		headerLayout.addComponent(this.homeButton);
 		headerLayout.addComponent(this.helpButton);
+		headerLayout.addComponent(getAskSupportBtn());
 		headerLayout.addComponent(this.memberButton);
 
 		headerLayout.setComponentAlignment(this.homeButton, Alignment.MIDDLE_RIGHT);

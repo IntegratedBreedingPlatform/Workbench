@@ -1,0 +1,23 @@
+$info-color: #1b95b2;
+
+.no-margin {
+  margin: 0;
+}
+
+.alert-toast-submit {
+  background: $info-color;
+  color: white;
+}
+
+.ask-support-info-icon {
+  font-size: 30pt;
+  padding-right: 10px;
+}
+
+.form-group .help-block {
+  display: none;
+}
+
+.form-group.has-error .help-block {
+  display: block;
+}

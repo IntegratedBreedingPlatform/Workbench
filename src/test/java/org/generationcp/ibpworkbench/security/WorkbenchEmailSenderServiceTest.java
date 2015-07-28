@@ -35,7 +35,7 @@ import org.thymeleaf.context.Context;
  * Created by cyrus on 4/15/15.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ForgotPasswordEmailServiceTest {
+public class WorkbenchEmailSenderServiceTest {
 
 	public static final String GENERATED_URL = "http://a.generated.com";
 	private static final String RESET_TOKEN_TEST = "test_reset_token";
@@ -66,7 +66,7 @@ public class ForgotPasswordEmailServiceTest {
 	private final Integer noOfHoursBeforeExpire = 24;
 
 	@InjectMocks
-	private ForgotPasswordEmailService service = new ForgotPasswordEmailService();
+	private WorkbenchEmailSenderService service = new WorkbenchEmailSenderService();
 
 	@Before
 	public void setup() throws Exception {
@@ -97,7 +97,7 @@ public class ForgotPasswordEmailServiceTest {
 		testUser.setPerson(testPerson);
 
 		Mockito.when(this.workbenchDataManager.getUserInfoByUsername(testUser.getName())).thenReturn(userInfo);
-		Mockito.doReturn(ForgotPasswordEmailServiceTest.GENERATED_URL).when(this.service).generateResetPasswordUrl(userInfo);
+		Mockito.doReturn(WorkbenchEmailSenderServiceTest.GENERATED_URL).when(this.service).generateResetPasswordUrl(userInfo);
 		Mockito.doNothing().when(this.service)
 				.sendForgotPasswordRequest(Matchers.anyString(), Matchers.anyString(), Matchers.eq(generatedUrl));
 
@@ -128,11 +128,11 @@ public class ForgotPasswordEmailServiceTest {
 
 		Mockito.when(this.mailSender.createMimeMessage()).thenReturn(mimeMessage);
 
-		Mockito.doReturn("processed html text").when(this.service).processTemplate(Matchers.any(Context.class));
+		Mockito.doReturn("processed html text").when(this.service).processTemplate(Matchers.any(Context.class),Matchers.anyString());
 		Mockito.doReturn(message).when(this.service).getMimeMessageHelper(mimeMessage);
 		Mockito.doReturn(Mockito.mock(ByteArrayResource.class)).when(this.service).retrieveLogoImage();
 
-		this.service.sendForgotPasswordRequest(recipientName, "recipient@email.com", ForgotPasswordEmailServiceTest.GENERATED_URL);
+		this.service.sendForgotPasswordRequest(recipientName, "recipient@email.com", WorkbenchEmailSenderServiceTest.GENERATED_URL);
 
 		Mockito.verify(this.mailSender).send(mimeMessage);
 
@@ -142,12 +142,12 @@ public class ForgotPasswordEmailServiceTest {
 	public void testValidateResetToken() throws Exception {
 		UserInfo userInfo = new UserInfo();
 		userInfo.setUserId(1);
-		Mockito.when(this.workbenchDataManager.getUserInfoByResetToken(ForgotPasswordEmailServiceTest.RESET_TOKEN_TEST)).thenReturn(
+		Mockito.when(this.workbenchDataManager.getUserInfoByResetToken(WorkbenchEmailSenderServiceTest.RESET_TOKEN_TEST)).thenReturn(
 				userInfo);
 
 		Mockito.doReturn(true).when(this.service).isResetTokenValid(userInfo);
 
-		this.service.validateResetToken(ForgotPasswordEmailServiceTest.RESET_TOKEN_TEST);
+		this.service.validateResetToken(WorkbenchEmailSenderServiceTest.RESET_TOKEN_TEST);
 
 		Mockito.verify(this.workbenchUserService, Mockito.times(1)).getUserByUserid(1);
 	}
@@ -156,12 +156,12 @@ public class ForgotPasswordEmailServiceTest {
 	public void testValidateResetTokenWithException() throws Exception {
 		UserInfo userInfo = new UserInfo();
 		userInfo.setUserId(1);
-		Mockito.when(this.workbenchDataManager.getUserInfoByResetToken(ForgotPasswordEmailServiceTest.RESET_TOKEN_TEST)).thenReturn(
+		Mockito.when(this.workbenchDataManager.getUserInfoByResetToken(WorkbenchEmailSenderServiceTest.RESET_TOKEN_TEST)).thenReturn(
 				userInfo);
 
 		Mockito.doReturn(false).when(this.service).isResetTokenValid(userInfo);
 
-		this.service.validateResetToken(ForgotPasswordEmailServiceTest.RESET_TOKEN_TEST);
+		this.service.validateResetToken(WorkbenchEmailSenderServiceTest.RESET_TOKEN_TEST);
 	}
 
 	@Test

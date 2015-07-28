@@ -20,8 +20,8 @@ import com.vaadin.ui.Component;
  */
 public interface IContentWindow {
 
-	public void showContent(Component content);
+	void showContent(Component content);
 
-	public void showContent(String toolUrl);
+	void showContent(String toolUrl);
 
 }

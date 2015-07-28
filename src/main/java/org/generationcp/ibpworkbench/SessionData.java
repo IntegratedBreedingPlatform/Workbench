@@ -1,13 +1,11 @@
 
 package org.generationcp.ibpworkbench;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import javax.annotation.Resource;
 
+import com.vaadin.terminal.gwt.server.WebBrowser;
 import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.security.SecurityUtil;
 import org.generationcp.commons.util.ContextUtil;
@@ -36,6 +34,9 @@ public class SessionData {
 	private User userData;
 	private Integer username_counter = 0;
 	private Integer namevalidation_counter = 0;
+
+	private WebBrowser browserInfo;
+
 	private final HashMap<Integer, LocationViewModel> locationMaps = new HashMap<Integer, LocationViewModel>();
 	private final Set<String> uniqueLocations = new HashSet<String>();
 	private final HashMap<Integer, MethodView> breedingMethodMaps = new HashMap<Integer, MethodView>();
@@ -121,5 +122,17 @@ public class SessionData {
 
 		String authenticationTokenString = ContextUtil.addQueryParameter(ContextConstants.PARAM_AUTH_TOKEN, SecurityUtil.getEncodedToken());
 		return contextParameterString + authenticationTokenString;
+	}
+
+	public Map<String,String> getBrowserInfo() {
+		Map<String,String> browserInfo = new HashMap<>();
+		browserInfo.put("browser",String.format("%s", this.browserInfo.getBrowserApplication()));
+		browserInfo.put("screenResolution",String.format("%s width x %s height",this.browserInfo.getScreenWidth(),this.browserInfo.getScreenHeight()));
+
+		return browserInfo;
+	}
+
+	public void setBrowserInfo(WebBrowser browserInfo) {
+		this.browserInfo = browserInfo;
 	}
 }

@@ -291,7 +291,7 @@ html[dir="rtl"] .select2-dropdown-open .select2-choice .select2-arrow b {
   position: relative;
   overflow-x: hidden;
   overflow-y: auto;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
+  -webkit-tap-highlight-color: transparent; }
 
 html[dir="rtl"] .select2-results {
   padding: 0 4px 0 0;
@@ -577,7 +577,5 @@ html[dir="rtl"] .select2-container-multi .select2-search-choice-close {
     background-image: url('select2x2.png') !important;
     background-repeat: no-repeat !important;
     background-size: 60px 40px !important; }
-
   .select2-search input {
-    background-position: 100% -21px !important; }
- }
+    background-position: 100% -21px !important; } }
