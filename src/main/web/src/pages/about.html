@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Ask Support / Feedback</title>
+    <link th:href="@{/controller/static/lib/styleGuide/css/styleGuide.min.css}" rel="stylesheet"/>
+    <link th:href="@{/controller/static/lib/font-awesome-4.2.0/css/font-awesome.css}" rel="stylesheet"/>
+    <link th:href="@{/controller/static/css/about.css}" rel="stylesheet"/>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="about-header">
+        Brought to you by
+        <img th:src="@{/controller/static/images/sponsors/GCP_Splash.jpg}"/>
+    </div>
+
+    <div class="break"></div>
+
+    <h2>In partnership with</h2>
+
+    <div class="row">
+        <div class="col-xs-4" th:each="img : ${partnerImages}">
+            <div class="thumbnail" >
+                <img th:src="@{/controller/static/images/sponsors/{img}(img=${img})}" class="img-responsive"/>
+            </div>
+        </div>
+    </div>
+
+    <h2>With the generous financial support of</h2>
+
+    <div class="row">
+        <div class="col-xs-4" th:each="img : ${supportImages}">
+            <div class="thumbnail" >
+                <img th:src="@{/controller/static/images/sponsors/{img}(img=${img})}" class="img-responsive"/>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+
+</html>
