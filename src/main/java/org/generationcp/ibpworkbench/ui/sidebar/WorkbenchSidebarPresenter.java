@@ -106,6 +106,8 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 				ToolEnum.DATASET_IMPORTER.getToolName(), "Data Import Tool"));
 		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "tool_versions", "Tools and Crops Versions"));
 		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "software_license", "Software License"));
+		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "about_bms", "About the BMS"));
+
 	}
 
 	private void addCategoryLinkBasedOnRole(List<WorkbenchSidebarCategoryLink> categoryLinks, WorkbenchSidebarCategory category)
