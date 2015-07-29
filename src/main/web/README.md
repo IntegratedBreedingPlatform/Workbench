@@ -4,9 +4,9 @@ This is the IBPWorkbench web development source folder. Web development differs 
 
 # Source Structure
 
-Code is built from the source folder (this folder) to `../webapp/WEB-INF`. We check both the source and the built files in, allowing Java developers to get started right away without having to install node or gulp, and do any special steps to build.
+Code is built from the source folder (this folder) to `../webapp/WEB-INF`. 
 
-Do **NOT** edit files under `/WEB-INF/pages` or `/WEB-INF/static` directly. These will be overwritten by their source files in this folder whenever a build is run.
+Do **NOT** edit files under `/WEB-INF/pages` or `/WEB-INF/static` directly. These will be overwritten by their source files in this folder whenever a build is run. All files should be committed to the source folder (`../src/main/web`) only.
 
 # Building
 
@@ -45,6 +45,6 @@ where `property` is a property defined in the `gulp.properties` file specifying 
 In addtion to this, there are a few things to note about developing in this environment:
 
 * We use Sass, not CSS, which you can find in the sass folder
-* We use the auto-prefixer plugin to automatically add vendor prrefixes to our CSS. This happens at build time, so we don't have to specify them ourselves in our Sass files. For more information and to check if your rule is supported, see the [website](https://github.com/postcss/autoprefixer-core)
+* We use the auto-prefixer plugin to automatically add vendor prefixes to our CSS. This happens at build time, so we don't have to specify them ourselves in our Sass files. For more information and to check if your rule is supported, see the [website](https://github.com/postcss/autoprefixer-core)
 * We use an image minification library to compress our images on build
 * JS libraries should be included already minified in the `js/lib` folder
