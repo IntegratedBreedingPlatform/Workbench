@@ -3,6 +3,8 @@
  *
  * TODO: follow OM scaffold after OM branch is merged
  */
+
+/*global angular*/
 (function() {
 	'use strict';
 	var app = angular.module('AskSupportApp', ['ngToast', 'ngUpload']);
