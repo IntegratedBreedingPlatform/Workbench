@@ -12,13 +12,13 @@
 	<div class="container">
 
 		<div class="about-header">
-			Brought to you by
+			<span th:src="#{about.brought.to.you.by}">Brought to you by</span>
 			<img th:src="@{/controller/static/images/sponsors/GCP_Splash.jpg}"/>
 		</div>
 
 		<div class="break"></div>
 
-		<h2>In partnership with</h2>
+		<h2 th:text="#{about.in.partnership.with}">In partnership with</h2>
 
 		<div class="row">
 			<div class="col-xs-4" th:each="img : ${partnerImages}">
@@ -28,7 +28,7 @@
 			</div>
 		</div>
 
-		<h2>With the generous financial support of</h2>
+		<h2 th:text="#{about.with.the.generous.financial.support.of}">With the generous financial support of</h2>
 
 		<div class="row">
 			<div class="col-xs-4" th:each="img : ${supportImages}">
