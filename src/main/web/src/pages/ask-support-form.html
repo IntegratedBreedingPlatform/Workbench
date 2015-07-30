@@ -28,20 +28,20 @@
         <div class="form-group" show-errors>
             <label for="nameTxt">Name</label>
             <input ng-model="form.name" type="text" class="form-control" name="name" id="nameTxt" placeholder="Name" required>
-            <p class="ask-support-help-block" ng-if="askSupportForm.name.$error.required">Please provide your name</p>
+            <p class="help-block ask-support-help-block" ng-if="askSupportForm.name.$error.required">Please provide your name</p>
         </div>
 
         <div class="form-group" show-errors>
             <label for="emailTxt">Email</label>
             <input ng-model="form.email" type="email" class="form-control" name="email" id="emailTxt" placeholder="Email" required>
-            <p class="ask-support-help-block" ng-if="askSupportForm.email.$error.required">Please provide your email address</p>
-            <p class="ask-support-help-block" ng-if="askSupportForm.email.$error.email">The email address is invalid</p>
+            <p class="help-block ask-support-help-block" ng-if="askSupportForm.email.$error.required">Please provide your email address</p>
+            <p class="help-block ask-support-help-block" ng-if="askSupportForm.email.$error.email">The email address is invalid</p>
         </div>
 
         <div class="form-group" show-errors>
             <label for="summaryTxt">Summary</label>
             <input ng-model="form.summary" type="text" class="form-control" name="summary" id="summaryTxt" placeholder="Summary" required>
-            <p class="ask-support-help-block" ng-if="askSupportForm.summary.$error.required">Summary is required</p>
+            <p class="help-block ask-support-help-block" ng-if="askSupportForm.summary.$error.required">Summary is required</p>
         </div>
 
         <div class="form-group">
@@ -68,13 +68,13 @@
     </form>
 </section>
 
-</body>
-
 <script type="text/javascript" th:src="@{/controller/static/js/lib/angular.min.js}"></script>
 <script type="text/javascript" th:src="@{/controller/static/js/lib/angular-animate.min.js}"></script>
 <script type="text/javascript" th:src="@{/controller/static/js/lib/angular-sanitize.min.js}"></script>
 <script type="text/javascript" th:src="@{/controller/static/js/lib/ng-upload.min.js}"></script>
 <script type="text/javascript" th:src="@{/controller/static/js/lib/ngToast.min.js}"></script>
 <script type="text/javascript" th:src="@{/controller/static/js/ask-support.js}"></script>
+
+</body>
 
 </html>
