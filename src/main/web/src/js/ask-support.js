@@ -5,7 +5,7 @@
  */
 (function() {
 	'use strict';
-	var app = angular.module('AskSupportApp', ['ngToast','ngUpload']);
+	var app = angular.module('AskSupportApp', ['ngToast', 'ngUpload']);
 
 	app.config(['ngToastProvider', function(ngToastProvider) {
 		ngToastProvider.configure({
@@ -22,10 +22,10 @@
 			$scope.response = content;
 
 			ngToast.create({
-				className: 'toast-submit',
+				className: 'ask-support-toast-submit',
 				content: '<div class="col-xs-2"><span class="fa fa-thumbs-up ask-support-info-icon"></span></div>' +
 				'<div class="col-xs-10">' +
-				'<h2 class="no-margin">Thank you for your feedback</h2>' +
+				'<h2 class="ask-support-no-margin">Thank you for your feedback</h2>' +
 				'<div>Your feedback has been sent to IBP</div>' +
 				'</div>',
 				dismissOnTimeout: false
