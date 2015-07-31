@@ -205,7 +205,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	private Button getMigrateButton() {
 		if (Objects.equals(this.upgradeBtn,null)) {
-			this.upgradeBtn = new Button("<span class='bms-header-btn'><span>Migrate 3.08 database</span></span>");
+			this.upgradeBtn = new Button("<span class='bms-header-btn bms-header-upgrade-btn'><span>Migrate 3.0.8 database</span></span>");
 			this.upgradeBtn.setStyleName(Bootstrap.Buttons.LINK.styleName() + " header-btn");
 			this.upgradeBtn.setHtmlContentAllowed(true);
 			this.upgradeBtn.setSizeUndefined();
