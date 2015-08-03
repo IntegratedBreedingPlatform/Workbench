@@ -8,12 +8,14 @@ import java.util.List;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.exceptions.UnpermittedDeletionException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.dms.DmsProject;
@@ -24,6 +26,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+
+import javax.annotation.Resource;
 
 /**
  * Created with IntelliJ IDEA. User: cyrus Date: 11/19/13 Time: 7:21 PM To change this template use File | Settings | File Templates.
@@ -43,7 +49,15 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
+	@Autowired
+	private SessionData sessionData;
+
+	@Resource
+	private MessageSource messages;
+
 	private ManagerFactory managerFactory;
+
+	public static final String STUDY_DELETE_NOT_PERMITTED = "study.delete.not.permitted";
 
 	public NurseryListPreviewPresenter(NurseryListPreview view, Project project) {
 		this.view = view;
@@ -105,8 +119,19 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 		}
 	}
 
-	public void deleteNurseryListFolder(Integer id) throws MiddlewareQueryException {
-		this.getManagerFactory().getFieldbookMiddlewareService().deleteStudy(id);
+	public void deleteNurseryListFolder(Integer id) throws MiddlewareQueryException, NurseryListPreviewException {
+		Integer cropUserId =
+					this.manager.getCurrentIbdbUserId(this.sessionData.getSelectedProject().getProjectId(),
+						this.sessionData.getUserData().getUserid());
+		try {
+			this.getManagerFactory().getFieldbookMiddlewareService().deleteStudy(id, cropUserId);
+		} catch (UnpermittedDeletionException e) {
+			Integer studyUserId = this.getManagerFactory().getFieldbookMiddlewareService().getStudy(id).getUser();
+			throw new NurseryListPreviewException(this.messages.getMessage(NurseryListPreviewPresenter.STUDY_DELETE_NOT_PERMITTED,
+					new String[] {this.getManagerFactory().getFieldbookMiddlewareService().getOwnerListName(studyUserId)},
+					"You are not able to delete this nursery or trial as you are not the owner. The owner is {0}." ,
+					LocaleContextHolder.getLocale()));
+		}
 	}
 
 	public Object getStudyNodeParent(Integer newItem) {

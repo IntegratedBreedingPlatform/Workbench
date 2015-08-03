@@ -14,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Tree;
+import org.springframework.beans.factory.annotation.Configurable;
 
+@Configurable
 public class DeleteConfirmDialogListener implements ConfirmDialog.Listener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DeleteConfirmDialogListener.class);

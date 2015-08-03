@@ -4,6 +4,7 @@ package org.generationcp.ibpworkbench.ui.dashboard.listener;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.ibpworkbench.ui.dashboard.preview.NurseryListPreview;
+import org.generationcp.ibpworkbench.ui.dashboard.preview.NurseryListPreviewException;
 import org.generationcp.ibpworkbench.ui.dashboard.preview.NurseryListPreviewPresenter;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.dms.DmsProject;
@@ -34,7 +35,7 @@ public class DeleteConfirmDialogListenerTest {
 	}
 
 	@Test
-	public void testDeleteStudyWithRootFolderAsParent() throws MiddlewareQueryException {
+	public void testDeleteStudyWithRootFolderAsParent() throws MiddlewareQueryException, NurseryListPreviewException {
 		DmsProject parent = new DmsProject();
 		parent.setProjectId(NurseryListPreview.ROOT_FOLDER);
 		Mockito.when(this.presenter.getStudyNodeParent(this.finalId)).thenReturn(parent);
@@ -50,7 +51,7 @@ public class DeleteConfirmDialogListenerTest {
 	}
 
 	@Test
-	public void testDeleteStudyWithNonRootFolderAsParent() throws MiddlewareQueryException {
+	public void testDeleteStudyWithNonRootFolderAsParent() throws MiddlewareQueryException, NurseryListPreviewException {
 		DmsProject parent = new DmsProject();
 		parent.setProjectId(2);
 		Mockito.when(this.presenter.getStudyNodeParent(this.finalId)).thenReturn(parent);
