@@ -236,7 +236,6 @@ pip-log.txt
 node_modules
 node
 
-src/main/webapp/WEB-INF/static/css/styles.css
-src/main/webapp/WEB-INF/static/lib/font-awesome-4.2.0/css/font-awesome.css
-src/main/webapp/WEB-INF/static/lib/select2/select2/css
+src/main/webapp/WEB-INF/pages
+src/main/webapp/WEB-INF/static
 src/main/web/reports
