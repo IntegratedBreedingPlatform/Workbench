@@ -39,7 +39,7 @@
 		};
 	}]);
 
-	app.service('AskSupportService', ['$http', function($http) {
+	app.service('AskSupportService', function() {
 		var requestCategoryOpts = [
 			'Breeding Processes',
 			'Data Management',
@@ -64,7 +64,7 @@
 			return requestCategoryOpts;
 		};
 
-	}]);
+	});
 
 	app.directive('showErrors', function() {
 		return {
