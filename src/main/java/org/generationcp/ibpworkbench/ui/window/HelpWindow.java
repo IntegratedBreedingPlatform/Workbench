@@ -2,9 +2,7 @@
 package org.generationcp.ibpworkbench.ui.window;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.Properties;
 
@@ -28,8 +26,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.StreamResource;
-import com.vaadin.terminal.StreamResource.StreamSource;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.CustomLayout;
@@ -42,7 +38,6 @@ public class HelpWindow extends BaseSubWindow implements InitializingBean, Inter
 
 	private static final Logger LOG = LoggerFactory.getLogger(HelpWindow.class);
 	private static final long serialVersionUID = 1L;
-	private static final String PDF_FILE_NAME = "BMS_User_Manual.pdf";
 	private static final String HTML_DOC_URL = "BMS_HTML/index.html";
 	private static final String BMS_INSTALLATION_DIR_POSTFIX = "infrastructure/tomcat/webapps/";
 	private static final String BMS_HTML = "BMS_HTML";
@@ -125,13 +120,13 @@ public class HelpWindow extends BaseSubWindow implements InitializingBean, Inter
 
 	private void deployDocumentsToTomcat(String installationDirectory) {
 		String docsDirectory = installationDirectory + File.separator + "Documents" + File.separator;
-		String pdfFilepath = docsDirectory + HelpWindow.PDF_FILE_NAME;
+
 		String targetHTMLPath = installationDirectory + File.separator + HelpWindow.BMS_INSTALLATION_DIR_POSTFIX + HelpWindow.BMS_HTML;
-		String targetPDFPath = installationDirectory + File.separator + HelpWindow.BMS_INSTALLATION_DIR_POSTFIX;
+
 		try {
 			FileUtils.deleteDirectory(new File(targetHTMLPath));
 			FileUtils.copyDirectory(new File(this.getHtmlFilesLocation(docsDirectory)), new File(targetHTMLPath));
-			FileUtils.copyFile(new File(pdfFilepath), new File(targetPDFPath + File.separator + HelpWindow.PDF_FILE_NAME));
+
 			String contextPath = TomcatUtil.getContextPathFromUrl(WorkbenchAppPathResolver.getFullWebAddress(HelpWindow.HTML_DOC_URL));
 			String localWarPath = TomcatUtil.getLocalWarPathFromUrl(WorkbenchAppPathResolver.getFullWebAddress(HelpWindow.HTML_DOC_URL));
 			this.tomcatUtil.deployLocalWar(contextPath, localWarPath);
@@ -162,41 +157,6 @@ public class HelpWindow extends BaseSubWindow implements InitializingBean, Inter
 			installationDirectory = setting.getInstallationDirectory();
 		}
 		return installationDirectory;
-	}
-
-	class PDFLink extends Link {
-
-		private static final long serialVersionUID = -6907837759113491854L;
-		private final String pdfFilepath;
-
-		public PDFLink(String pdfFilepath) {
-			this.pdfFilepath = pdfFilepath;
-		}
-
-		@Override
-		public void attach() {
-			super.attach();
-			StreamSource pdfSource = new StreamResource.StreamSource() {
-
-				private static final long serialVersionUID = -8955404385754536528L;
-
-				@Override
-				public InputStream getStream() {
-					try {
-						File f = new File(PDFLink.this.pdfFilepath);
-						return new FileInputStream(f);
-					} catch (Exception e) {
-						HelpWindow.LOG.error(e.getMessage(), e);
-						return null;
-					}
-				}
-			};
-			StreamResource pdfResource = new StreamResource(pdfSource, HelpWindow.PDF_FILE_NAME, this.getApplication());
-			pdfResource.getStream().setParameter("Content-Disposition", "attachment;filename=\"" + HelpWindow.PDF_FILE_NAME + "\"");
-			pdfResource.setMIMEType("application/pdf");
-			pdfResource.setCacheTime(0);
-			this.setResource(pdfResource);
-		}
 	}
 
 	protected void assemble() {
