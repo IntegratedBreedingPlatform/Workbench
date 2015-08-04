@@ -109,11 +109,6 @@ public class HelpWindow extends BaseSubWindow implements InitializingBean, Inter
 
 			this.deployDocumentsToTomcat(installationDirectory);
 
-			String targetPDFPath =
-					installationDirectory + File.separator + HelpWindow.BMS_INSTALLATION_DIR_POSTFIX + HelpWindow.PDF_FILE_NAME;
-			Link pdfLink = this.buildPDFLink(targetPDFPath);
-			helpLayout.addComponent(pdfLink, "pdf_link");
-
 			Link htmlLink = this.buildHTMLLink();
 			helpLayout.addComponent(htmlLink, "html_link");
 		}
@@ -153,15 +148,6 @@ public class HelpWindow extends BaseSubWindow implements InitializingBean, Inter
 		htmlLink.setIcon(new ThemeResource("../gcp-default/images/html_icon.png"));
 		htmlLink.addStyleName("gcp-html-link");
 		return htmlLink;
-	}
-
-	private Link buildPDFLink(String targetPDFPath) {
-		Link pdfLink = new PDFLink(targetPDFPath);
-		pdfLink.setCaption("BMS Manual PDF Version");
-		pdfLink.setTargetName("_blank");
-		pdfLink.setIcon(new ThemeResource("../gcp-default/images/pdf_icon.png"));
-		pdfLink.addStyleName("gcp-pdf-link");
-		return pdfLink;
 	}
 
 	private String getInstallationDirectory() {
