@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * 
  * Generation Challenge Programme (GCP)
- *
- *
+ * 
+ * 
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
+ * 
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis;
@@ -16,6 +16,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.generationcp.commons.help.document.HELP_MODULE;
+import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -52,7 +54,7 @@ import com.vaadin.ui.themes.Reindeer;
 
 /**
  * Multisite analysis component
- *
+ * 
  * @author Aldrich Abrogena
  */
 @Configurable
@@ -66,7 +68,8 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 
 	private Button browseLink;
 
-	private Label lblPageTitle;
+	private HorizontalLayout titleLayout;
+	private Label toolTitle;
 	private HeaderLabelLayout heading;
 
 	protected Boolean setAll = true;
@@ -101,7 +104,7 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 
 	@Override
 	public void updateLabels() {
-		this.messageSource.setValue(this.lblPageTitle, Message.TITLE_GXE);
+		this.messageSource.setValue(this.toolTitle, Message.TITLE_GXE);
 	}
 
 	@Override
@@ -110,9 +113,7 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 		ManagerFactory managerFactory = this.managerFactoryProvider.getManagerFactoryForProject(this.project);
 		this.setStudyDataManager(managerFactory.getNewStudyDataManager());
 
-		this.lblPageTitle = new Label();
-		this.lblPageTitle.setStyleName(Bootstrap.Typography.H1.styleName());
-		this.lblPageTitle.setHeight("26px");
+		this.setTitleContent();
 
 		ThemeResource resource = new ThemeResource("../vaadin-retro/images/search-nurseries.png");
 		Label headingLabel = new Label("Select Data for Analysis");
@@ -131,6 +132,20 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 		this.tabSheetContainer = new VerticalLayout();
 		this.tabSheetContainer.addComponent(this.getStudiesTabsheet());
 		this.tabSheetContainer.setMargin(true, false, false, false);
+	}
+
+	private void setTitleContent() {
+		this.titleLayout = new HorizontalLayout();
+		this.titleLayout.setSpacing(true);
+
+		this.toolTitle = new Label();
+		this.toolTitle.setContentMode(Label.CONTENT_XHTML);
+		this.toolTitle.setStyleName(Bootstrap.Typography.H1.styleName());
+		this.toolTitle.setHeight("26px");
+		this.toolTitle.setWidth("278px");
+
+		this.titleLayout.addComponent(this.toolTitle);
+		this.titleLayout.addComponent(new HelpButton(HELP_MODULE.MULTI_SITE_ANALYSIS, "Go to Multi-Site Analysis Tutorial"));
 	}
 
 	@Override
@@ -173,7 +188,7 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 		selectDataForAnalysisLayout.addComponent(this.heading);
 		selectDataForAnalysisLayout.addComponent(browseLabelLayout);
 
-		this.addComponent(this.lblPageTitle);
+		this.addComponent(this.titleLayout);
 		this.addComponent(selectDataForAnalysisLayout);
 	}
 

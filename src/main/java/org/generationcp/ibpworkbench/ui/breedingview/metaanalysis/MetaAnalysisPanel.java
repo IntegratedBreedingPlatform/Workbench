@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * 
  * Generation Challenge Programme (GCP)
- *
- *
+ * 
+ * 
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
+ * 
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.ui.breedingview.metaanalysis;
@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.generationcp.browser.study.listeners.ViewStudyDetailsButtonClickListener;
+import org.generationcp.commons.help.document.HELP_MODULE;
+import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -67,9 +69,9 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- *
+ * 
  * @author Aldrin Batac
- *
+ * 
  */
 @Configurable
 public class MetaAnalysisPanel extends VerticalLayout implements InitializingBean, InternationalizableComponent, IBPWorkbenchLayout {
@@ -77,7 +79,8 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 	private static final long serialVersionUID = 1L;
 
 	private TabSheet tabSheet;
-	private Label lblPageTitle;
+	private HorizontalLayout titleLayout;
+	private Label toolTitle;
 	private HeaderLabelLayout heading;
 	private Label lblBuildNewAnalysisDescription;
 	private Label lblReviewEnvironments;
@@ -138,7 +141,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 	public void updateLabels() {
 		this.messageSource.setCaption(this.btnCancel, Message.RESET);
 		this.messageSource.setCaption(this.btnNext, Message.NEXT);
-		this.messageSource.setValue(this.lblPageTitle, Message.TITLE_METAANALYSIS);
+		this.messageSource.setValue(this.toolTitle, Message.TITLE_METAANALYSIS);
 		this.messageSource.setValue(this.lblBuildNewAnalysisDescription, Message.META_BUILD_NEW_ANALYSIS_DESCRIPTION);
 		this.messageSource.setValue(this.lblSelectDatasetsForAnalysisDescription, Message.META_SELECT_DATASETS_FOR_ANALYSIS_DESCRIPTION);
 	}
@@ -147,21 +150,19 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 	public void instantiateComponents() {
 		this.managerFactory = this.managerFactoryProvider.getManagerFactoryForProject(this.currentProject);
 
-		this.lblPageTitle = new Label();
-		this.lblPageTitle.setStyleName(Bootstrap.Typography.H1.styleName());
-		this.lblPageTitle.setHeight("26px");
+		this.setTitleContent();
 
 		ThemeResource resource = new ThemeResource("../vaadin-retro/images/search-nurseries.png");
 		Label headingLabel = new Label("Select Data for Analysis");
-				headingLabel.setStyleName(Bootstrap.Typography.H4.styleName());
-				headingLabel.addStyleName("label-bold");
-				this.heading = new HeaderLabelLayout(resource, headingLabel);
+		headingLabel.setStyleName(Bootstrap.Typography.H4.styleName());
+		headingLabel.addStyleName("label-bold");
+		this.heading = new HeaderLabelLayout(resource, headingLabel);
 
 		this.browseLink = new Button();
-				this.browseLink.setImmediate(true);
-				this.browseLink.setStyleName("link");
-				this.browseLink.setCaption("Browse");
-				this.browseLink.setWidth("48px");
+		this.browseLink.setImmediate(true);
+		this.browseLink.setStyleName("link");
+		this.browseLink.setCaption("Browse");
+		this.browseLink.setWidth("48px");
 
 		this.tabSheet = new TabSheet();
 		this.tabSheet.setWidth("100%");
@@ -201,6 +202,21 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 		this.btnNext = new Button();
 		this.btnNext.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
+	}
+
+	private void setTitleContent() {
+		this.titleLayout = new HorizontalLayout();
+		this.titleLayout.setSpacing(true);
+
+		this.toolTitle = new Label();
+		this.toolTitle.setContentMode(Label.CONTENT_XHTML);
+		this.toolTitle.setStyleName(Bootstrap.Typography.H1.styleName());
+		this.toolTitle.setHeight("26px");
+		this.toolTitle.setWidth("430px");
+
+		this.titleLayout.addComponent(this.toolTitle);
+		this.titleLayout.addComponent(new HelpButton(HELP_MODULE.MULTI_YEAR_MULTI_SITE_ANALYSIS,
+				"Go to Multi-Year Multi-Site Analysis Tutorial"));
 	}
 
 	@Override
@@ -320,7 +336,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 
 		this.buttonArea = this.layoutButtonArea();
 
-		this.addComponent(this.lblPageTitle);
+		this.addComponent(this.titleLayout);
 		this.addComponent(selectDataForAnalysisLayout);
 		this.addComponent(this.studyDetailsLayout);
 		this.addComponent(this.selectedDataSetEnvironmentLayout);
