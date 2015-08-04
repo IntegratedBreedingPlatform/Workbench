@@ -77,6 +77,8 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 
 	private Boolean isUpdate = false;
 
+	private StringBuffer errorDescription;
+
 	private CropType oldCropType;
 
 	@Autowired
@@ -355,7 +357,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		String projectName = (String) this.projectNameField.getValue();
 		CropType cropType = (CropType) this.cropTypeCombo.getValue();
 
-		StringBuffer errorDescription = new StringBuffer();
+		errorDescription = new StringBuffer();
 
 		if (projectName == null || projectName.equals("")) {
 			errorDescription.append("No program name supplied. ");
@@ -363,17 +365,9 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		} else {
 			// Check if the project name already exists
 			try {
-				Project project = this.workbenchDataManager.getProjectByName(projectName);
-				if (project != null && project.getProjectName() != null && project.getProjectName().equalsIgnoreCase(projectName)) {
-
-					if (!this.isUpdate) {
-						errorDescription.append("There is already a program with the given name. ");
-						success = false;
-					} else if (this.sessionData.getSelectedProject().getProjectId().intValue() != project.getProjectId().intValue()) {
-						errorDescription.append("There is already a program with the given name. ");
-						success = false;
-					}
-
+				if (this.workbenchDataManager.getProjectByName(projectName) != null) {
+					errorDescription.append(this.messageSource.getMessage(Message.DUPLICATE_PROGRAM_NAME_ERROR) + " ");
+					success = false;
 				}
 			} catch (MiddlewareQueryException e) {
 				ProjectBasicDetailsComponent.LOG.error("Error encountered while getting program by name", e);
@@ -516,5 +510,18 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 
 			return true;
 		}
+
+	}
+
+	public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
+		this.workbenchDataManager = workbenchDataManager;
+	}
+
+	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+
+	public StringBuffer getErrorDescription() {
+		return errorDescription;
 	}
 }
