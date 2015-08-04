@@ -133,7 +133,8 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 		toolTitle.setWidth("376px");
 
 		this.titleLayout.addComponent(toolTitle);
-		this.titleLayout.addComponent(new HelpButton(HELP_MODULE.PROGRAM_CREATION, "Go to Program Creation Tutorial"));
+		this.titleLayout.addComponent(new HelpButton(HELP_MODULE.MANAGE_PROGRAM_SETTINGS_MANAGE_PROGRAM_SETTING,
+				"Go to Program Creation Tutorial"));
 	}
 
 	protected TabSheet generateTabSheet() {
