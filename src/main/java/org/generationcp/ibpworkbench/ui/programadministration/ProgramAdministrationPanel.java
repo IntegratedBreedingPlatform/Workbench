@@ -1,6 +1,8 @@
 
 package org.generationcp.ibpworkbench.ui.programadministration;
 
+import org.generationcp.commons.help.document.HELP_MODULE;
+import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.SessionData;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.Panel;
@@ -23,6 +26,8 @@ import com.vaadin.ui.themes.Reindeer;
 public class ProgramAdministrationPanel extends Panel implements InitializingBean {
 
 	private static final long serialVersionUID = 1L;
+
+	private HorizontalLayout titleLayout;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -78,11 +83,11 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 
 	protected void initializeLayout() {
 
-		final Label heading = new Label("Manage Program Settings");
+		this.setTitleContent();
+
 		final Label headingDesc =
 				new Label(
 						"Modify the details of this program, and manage the members, locations, and methods associated with it using the tabs below.");
-		heading.setStyleName(Bootstrap.Typography.H1.styleName());
 
 		this.rootLayout.setMargin(new Layout.MarginInfo(false, true, true, true));
 		this.rootLayout.setWidth("100%");
@@ -109,13 +114,26 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 		this.tabSheet.getTab(this.programMethodsView).setClosable(false);
 		this.tabSheet.getTab(this.programMethodsView).setCaption("Breeding Methods");
 
-		this.rootLayout.addComponent(heading);
+		this.rootLayout.addComponent(this.titleLayout);
 		this.rootLayout.addComponent(headingDesc);
 		this.rootLayout.addComponent(this.tabSheet);
 
 		this.setContent(this.rootLayout);
 		this.setScrollable(true);
 		this.setSizeFull();
+	}
+
+	private void setTitleContent() {
+		this.titleLayout = new HorizontalLayout();
+		this.titleLayout.setSpacing(true);
+
+		Label toolTitle = new Label("Manage Program Settings");
+		toolTitle.setContentMode(Label.CONTENT_XHTML);
+		toolTitle.setStyleName(Bootstrap.Typography.H1.styleName());
+		toolTitle.setWidth("376px");
+
+		this.titleLayout.addComponent(toolTitle);
+		this.titleLayout.addComponent(new HelpButton(HELP_MODULE.PROGRAM_CREATION, "Go to Program Creation Tutorial"));
 	}
 
 	protected TabSheet generateTabSheet() {
