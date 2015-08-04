@@ -142,7 +142,7 @@ public class HelpWindow extends BaseSubWindow implements InitializingBean, Inter
 
 	private Link buildHTMLLink() {
 		Link htmlLink = new Link();
-		htmlLink.setResource(new ExternalResource(WorkbenchAppPathResolver.getFullWebAddress(HelpWindow.HTML_DOC_URL)));
+		htmlLink.setResource(new ExternalResource("https://www.integratedbreeding.net/62/training/bms-user-manual"));
 		htmlLink.setCaption("BMS Manual HTML Version");
 		htmlLink.setTargetName("_blank");
 		htmlLink.setIcon(new ThemeResource("../gcp-default/images/html_icon.png"));
