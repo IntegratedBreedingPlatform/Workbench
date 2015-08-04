@@ -54,7 +54,7 @@
 	 */
 	function toggleLoginPage(toggleFunction) {
 
-		if ($loginForm.hasClass(createAccount) ) {
+		if ($loginForm.hasClass(createAccount)) {
 			toggleLoginCreateAccount();
 		} else if ($loginForm.hasClass(forgotPasswordClass)) {
 			toggleForgotPasswordScreen();
@@ -222,8 +222,7 @@
 	// Giving the select container the ability to be focused
 	$select2Container.attr('tabindex', 1);
 
-
-	$loginSubmit.on('click',function() {
+	$loginSubmit.on('click', function() {
 		return doFormSubmit();
 	});
 
@@ -247,8 +246,7 @@
 		toggleLoginPage(toggleLoginCreateAccount);
 	});
 
-
-	$('.ac-login-forgot-password').on('click',function(e) {
+	$('.ac-login-forgot-password').on('click', function(e) {
 		e.preventDefault();
 		$('.login-forgot-password-email-notify').hide();
 
@@ -257,15 +255,15 @@
 
 	});
 
-	$('.login-form-control input').on('keypress',function(e) {
-		if (e.which == 13) {
+	$('.login-form-control input').on('keypress', function(e) {
+		if (e.which === 13) {
 			e.preventDefault();
 			$loginForm.submit();
 		}
 	});
 
-	var doSendPasswordRequestEmail = function (userForm) {
-		$.post('/ibpworkbench/controller/auth/sendResetEmail',userForm);
+	var doSendPasswordRequestEmail = function(userForm) {
+		$.post('/ibpworkbench/controller/auth/sendResetEmail', userForm);
 		$('.login-forgot-password-email-notify').show();
 	};
 
@@ -273,10 +271,11 @@
 		// Prevent default submit behaviour and implement our own post / response handler
 		e.preventDefault();
 
-		var loginFormRef = this;
-		var login = isLoginDisplayed();
-		var isPasswordScreen = isForgotPasswordScreenDisplayed();
-		var errorMessage = isPasswordScreen ? validateForgotPasswordInputs() : (login ? validateSignInInputs() : validateCreateAccountInputs());
+		var loginFormRef = this,
+			login = isLoginDisplayed(),
+			isPasswordScreen = isForgotPasswordScreenDisplayed(),
+			errorMessage = isPasswordScreen ? validateForgotPasswordInputs() :
+				(login ? validateSignInInputs() : validateCreateAccountInputs());
 
 		if (errorMessage) {
 			displayClientError(errorMessage);
@@ -293,7 +292,7 @@
 
 		// Continue with form submit - login is currently handled server side
 		if (login) {
-			$.post($loginForm.data('validate-login-action'),$loginForm.serialize())
+			$.post($loginForm.data('validate-login-action'), $loginForm.serialize())
 				.done(function() {
 					clearErrors();
 
@@ -310,12 +309,11 @@
 					}
 				})
 				.always(function() {
-						$loginSubmit.removeClass('loading');
+					$loginSubmit.removeClass('loading');
 				});
 		} else {
 			// Create account or forgot password
 			var userForm = $loginForm.serialize();
-
 
 			$.post($loginForm.attr('action'), userForm)
 				.done(function() {
@@ -331,7 +329,7 @@
 
 					} else {
 						// this will automatically login the user.
-						$loginForm.attr('action',loginAction);
+						$loginForm.attr('action', loginAction);
 						loginFormRef.submit();
 					}
 				})
