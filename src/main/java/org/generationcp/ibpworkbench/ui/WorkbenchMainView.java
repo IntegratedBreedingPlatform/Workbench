@@ -1,28 +1,22 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * 
  * Generation Challenge Programme (GCP)
- *
- *
+ * 
+ * 
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
+ * 
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.ui;
 
-import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Properties;
 
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.Sizeable;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.*;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.themes.BaseTheme;
-import com.vaadin.ui.themes.Reindeer;
+import javax.annotation.Resource;
+
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.constant.ToolEnum;
 import org.generationcp.commons.exceptions.InternationalizableException;
@@ -33,6 +27,7 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.IWorkbenchSession;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.ibpworkbench.WorkbenchContentApp;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.actions.OpenWindowAction;
@@ -52,16 +47,44 @@ import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
+import org.jfree.util.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.vaadin.hene.popupbutton.PopupButton;
 
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.terminal.Sizeable;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.UriFragmentUtility;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.VerticalSplitPanel;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.BaseTheme;
+import com.vaadin.ui.themes.Reindeer;
+
 @Configurable
 public class WorkbenchMainView extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
 
 	private static final long serialVersionUID = 1L;
+
+	private final static Logger LOG = LoggerFactory.getLogger(WorkbenchContentApp.class);
+
+	private static final String HEADER_BTN = " header-btn";
 
 	public static final String HELP_LINK = "https://www.integratedbreeding.net/manuals-and-tutorials-ib-tools";
 	private Label workbenchTitle;
@@ -131,7 +154,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.actionsTitle.setSizeUndefined();
 
 		this.collapseButton = new Button("<span class='bms-header-btn'><span class='bms-fa-chevron-right ico'/></span>");
-		this.collapseButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + " header-btn");
+		this.collapseButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + HEADER_BTN);
 		this.collapseButton.setHtmlContentAllowed(true);
 		this.collapseButton.setDescription(this.messageSource.getMessage("TOGGLE_SIDEBAR"));
 
@@ -150,7 +173,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.workbenchTitle.setContentMode(Label.CONTENT_XHTML);
 
 		this.homeButton = new Button("<span class='bms-header-btn'><span>My Programs</span></span>");
-		this.homeButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + " header-btn");
+		this.homeButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + HEADER_BTN);
 		this.homeButton.setHtmlContentAllowed(true);
 		this.homeButton.setSizeUndefined();
 
@@ -185,18 +208,19 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	private boolean showMigrateButton() {
 		try {
-			Tool migratorTool = workbenchDataManager.getToolWithName(ToolEnum.MIGRATOR.getToolName());
+			Tool migratorTool = this.workbenchDataManager.getToolWithName(ToolEnum.MIGRATOR.getToolName());
 
 			// just make sure migrator tool exists
-			if (Objects.equals(migratorTool,null)) {
+			if (Objects.equals(migratorTool, null)) {
 				return false;
 			}
 
-			if (!sessionData.getUserData().hasRole("ADMIN") || !applauncherService.isBMS3Installed()) {
+			if (!this.sessionData.getUserData().hasRole("ADMIN") || !this.applauncherService.isBMS3Installed()) {
 				return false;
 			}
 
 		} catch (IOException | MiddlewareQueryException e) {
+			Log.error(e.getMessage(), e);
 			return false;
 		}
 
@@ -204,9 +228,9 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	}
 
 	private Button getMigrateButton() {
-		if (Objects.equals(this.upgradeBtn,null)) {
+		if (Objects.equals(this.upgradeBtn, null)) {
 			this.upgradeBtn = new Button("<span class='bms-header-btn bms-header-upgrade-btn'><span>Migrate 3.0.8 database</span></span>");
-			this.upgradeBtn.setStyleName(Bootstrap.Buttons.LINK.styleName() + " header-btn");
+			this.upgradeBtn.setStyleName(Bootstrap.Buttons.LINK.styleName() + HEADER_BTN);
 			this.upgradeBtn.setHtmlContentAllowed(true);
 			this.upgradeBtn.setSizeUndefined();
 
@@ -217,7 +241,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	}
 
 	private Button getAskSupportBtn() {
-		if (Objects.equals(this.askSupportBtn,null) ) {
+		if (Objects.equals(this.askSupportBtn, null)) {
 			this.askSupportBtn = new Button("<span class='bms-header-btn2'><span class='fa fa-comments ico'></span></span>");
 			this.askSupportBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
 			this.askSupportBtn.setHtmlContentAllowed(true);
@@ -413,21 +437,19 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 		headerLayout.addComponent(this.uriFragUtil);
 
-
-
-		if (showMigrateButton()) {
-			headerLayout.addComponent(getMigrateButton());
-			headerLayout.setComponentAlignment(this.upgradeBtn,Alignment.MIDDLE_RIGHT);
+		if (this.showMigrateButton()) {
+			headerLayout.addComponent(this.getMigrateButton());
+			headerLayout.setComponentAlignment(this.upgradeBtn, Alignment.MIDDLE_RIGHT);
 		}
 
 		headerLayout.addComponent(this.homeButton);
 
 		headerLayout.addComponent(this.helpButton);
-		headerLayout.addComponent(getAskSupportBtn());
+		headerLayout.addComponent(this.getAskSupportBtn());
 		headerLayout.addComponent(this.memberButton);
 
 		headerLayout.setComponentAlignment(this.homeButton, Alignment.MIDDLE_RIGHT);
-		headerLayout.setComponentAlignment(this.askSupportBtn,Alignment.MIDDLE_RIGHT);
+		headerLayout.setComponentAlignment(this.askSupportBtn, Alignment.MIDDLE_RIGHT);
 		headerLayout.setComponentAlignment(this.helpButton, Alignment.MIDDLE_RIGHT);
 		headerLayout.setComponentAlignment(this.memberButton, Alignment.MIDDLE_RIGHT);
 
@@ -436,7 +458,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	/**
 	 * Show the specified {@link Component} on the right side area of the Workbench's split panel.
-	 *
+	 * 
 	 * @param content
 	 */
 	@Override
