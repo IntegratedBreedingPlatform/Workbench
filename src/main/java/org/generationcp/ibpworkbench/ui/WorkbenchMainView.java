@@ -20,6 +20,8 @@ import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.constant.ToolEnum;
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.help.document.HelpWindow;
+import org.generationcp.commons.tomcat.util.TomcatUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -39,7 +41,6 @@ import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
 import org.generationcp.ibpworkbench.ui.project.create.AddProgramView;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
 import org.generationcp.ibpworkbench.ui.window.EmbeddedWindow;
-import org.generationcp.ibpworkbench.ui.window.HelpWindow;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -91,6 +92,9 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	private Button homeButton;
 	private PopupButton memberButton;
 	private Button helpButton;
+
+	@Autowired
+	private TomcatUtil tomcatUtil;
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
@@ -334,7 +338,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				thisWindow.addWindow(new HelpWindow());
+				thisWindow.addWindow(new HelpWindow(WorkbenchMainView.this.workbenchDataManager, WorkbenchMainView.this.tomcatUtil));
 			}
 		});
 
