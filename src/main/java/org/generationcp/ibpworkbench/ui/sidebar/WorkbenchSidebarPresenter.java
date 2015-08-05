@@ -26,6 +26,10 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * Created with IntelliJ IDEA. User: cyrus Date: 11/19/13 Time: 7:29 PM To change this template use File | Settings | File Templates.
@@ -45,6 +49,9 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 	@Value("${workbench.is.backup.and.restore.enabled}")
 	private String isBackupAndRestoreEnabled;
 
+	@Autowired
+	private PlatformTransactionManager transactionManager;
+	
 	public WorkbenchSidebarPresenter(WorkbenchSidebar view) {
 		this.view = view;
 
@@ -132,29 +139,38 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 	}
 
 	public void updateProjectLastOpenedDate() {
-		try {
 
-			// set the last opened project in the session
-			IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-			Project project = app.getSessionData().getSelectedProject();
+		TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
 
-			ProjectUserInfoDAO projectUserInfoDao = this.manager.getProjectUserInfoDao();
-			ProjectUserInfo projectUserInfo =
-					projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId().intValue(), app.getSessionData().getUserData()
-							.getUserid());
-			if (projectUserInfo != null) {
-				projectUserInfo.setLastOpenDate(new Date());
-				this.manager.saveOrUpdateProjectUserInfo(projectUserInfo);
+		transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+
+			protected void doInTransactionWithoutResult(TransactionStatus status) {
+				try {
+
+					// set the last opened project in the session
+					IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+					Project project = app.getSessionData().getSelectedProject();
+
+					ProjectUserInfoDAO projectUserInfoDao = WorkbenchSidebarPresenter.this.manager.getProjectUserInfoDao();
+					ProjectUserInfo projectUserInfo =
+							projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId().intValue(), app.getSessionData()
+									.getUserData().getUserid());
+					if (projectUserInfo != null) {
+						projectUserInfo.setLastOpenDate(new Date());
+						WorkbenchSidebarPresenter.this.manager.saveOrUpdateProjectUserInfo(projectUserInfo);
+					}
+
+					project.setLastOpenDate(new Date());
+					WorkbenchSidebarPresenter.this.manager.mergeProject(project);
+
+					app.getSessionData().setLastOpenedProject(project);
+
+				} catch (MiddlewareQueryException e) {
+					WorkbenchSidebarPresenter.LOG.error(e.toString(), e);
+				}
 			}
+		});
 
-			project.setLastOpenDate(new Date());
-			this.manager.mergeProject(project);
-
-			app.getSessionData().setLastOpenedProject(project);
-
-		} catch (MiddlewareQueryException e) {
-			WorkbenchSidebarPresenter.LOG.error(e.toString(), e);
-		}
 	}
 
 	public void setIsBackupAndRestoreEnabled(String isBackupAndRestoreEnabled) {
