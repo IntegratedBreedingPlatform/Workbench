@@ -42,6 +42,9 @@ public class ProgramService {
 
 	@Autowired
 	private ManagerFactoryProvider managerFactoryProvider;
+	
+	@Autowired
+	private UserDataManager userDataManager;
 
 	private MysqlAccountGenerator mySQLAccountGenerator;
 
@@ -66,8 +69,8 @@ public class ProgramService {
 
 		ManagerFactory managerFactory = this.managerFactoryProvider.getManagerFactoryForProject(program);
 
-		this.addProjectUserRoles(program, managerFactory);
-		this.copyProjectUsers(managerFactory.getUserDataManager(), program);
+		this.addProjectUserRoles(program);
+		this.copyProjectUsers(userDataManager, program);
 
 		managerFactory.close();
 
@@ -78,7 +81,7 @@ public class ProgramService {
 				+ program.getStartDate());
 	}
 
-	private void addProjectUserRoles(Project project, ManagerFactory managerFactory) throws MiddlewareQueryException {
+	private void addProjectUserRoles(Project project) throws MiddlewareQueryException {
 		List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
 		Set<User> allProjectMembers = new HashSet<User>();
 		allProjectMembers.add(this.currentUser);

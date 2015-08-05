@@ -77,8 +77,7 @@ public class RunSingleSiteActionTest {
 		project.setUserId(-1);
 
 		this.source =
-				Mockito.spy(new SingleSiteAnalysisDetailsPanel(null, this.breedingViewInput, null, null, project, this.studyDataManager,
-						this.managerFactory, null));
+				Mockito.spy(new SingleSiteAnalysisDetailsPanel(null, this.breedingViewInput, null, null, project, null));
 		Mockito.doReturn(this.breedingViewInput.getSelectedEnvironments()).when(this.source).getSelectedEnvironments();
 		Mockito.doNothing().when(this.source).populateChoicesForEnvForAnalysis();
 		Mockito.doNothing().when(this.source).populateChoicesForReplicates();

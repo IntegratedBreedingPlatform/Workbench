@@ -190,7 +190,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 	@Test
 	public void testPopulateChoicesForGenotypes() {
 		SingleSiteAnalysisDetailsPanel ssaPanel =
-				new SingleSiteAnalysisDetailsPanel(null, new BreedingViewInput(), this.factors, this.trialFactors, null, null, null, null);
+				new SingleSiteAnalysisDetailsPanel(null, new BreedingViewInput(), this.factors, this.trialFactors, null, null);
 		SingleSiteAnalysisDetailsPanel mockSSAPanel = Mockito.spy(ssaPanel);
 		Select genotypeSelect = new Select();
 		Mockito.doReturn(genotypeSelect).when(mockSSAPanel).getSelGenotypes();
@@ -206,7 +206,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 	@Test
 	public void testPopulateChoicesForReplicates() {
 		SingleSiteAnalysisDetailsPanel ssaPanel =
-				new SingleSiteAnalysisDetailsPanel(null, new BreedingViewInput(), this.factors, this.trialFactors, null, null, null, null);
+				new SingleSiteAnalysisDetailsPanel(null, new BreedingViewInput(), this.factors, this.trialFactors, null, null);
 		SingleSiteAnalysisDetailsPanel mockSSAPanel = Mockito.spy(ssaPanel);
 		Select repSelect = new Select();
 		Mockito.doReturn(repSelect).when(mockSSAPanel).getSelReplicates();
@@ -219,7 +219,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 	@Test
 	public void testPopulateChoicesForBlocks() {
 		SingleSiteAnalysisDetailsPanel ssaPanel =
-				new SingleSiteAnalysisDetailsPanel(null, new BreedingViewInput(), this.factors, this.trialFactors, null, null, null, null);
+				new SingleSiteAnalysisDetailsPanel(null, new BreedingViewInput(), this.factors, this.trialFactors, null, null);
 		SingleSiteAnalysisDetailsPanel mockSSAPanel = Mockito.spy(ssaPanel);
 		Select blockSelect = new Select();
 		Mockito.doReturn(blockSelect).when(mockSSAPanel).getSelBlocks();
@@ -232,7 +232,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 	@Test
 	public void testPopulateChoicesForRowFactor() {
 		SingleSiteAnalysisDetailsPanel ssaPanel =
-				new SingleSiteAnalysisDetailsPanel(null, new BreedingViewInput(), this.factors, this.trialFactors, null, null, null, null);
+				new SingleSiteAnalysisDetailsPanel(null, new BreedingViewInput(), this.factors, this.trialFactors, null, null);
 		SingleSiteAnalysisDetailsPanel mockSSAPanel = Mockito.spy(ssaPanel);
 		Select rowSelect = new Select();
 		Mockito.doReturn(rowSelect).when(mockSSAPanel).getSelRowFactor();
@@ -245,7 +245,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 	@Test
 	public void testPopulateChoicesForColumnFactor() {
 		SingleSiteAnalysisDetailsPanel ssaPanel =
-				new SingleSiteAnalysisDetailsPanel(null, new BreedingViewInput(), this.factors, this.trialFactors, null, null, null, null);
+				new SingleSiteAnalysisDetailsPanel(null, new BreedingViewInput(), this.factors, this.trialFactors, null, null);
 		SingleSiteAnalysisDetailsPanel mockSSAPanel = Mockito.spy(ssaPanel);
 		Select columnSelect = new Select();
 		Mockito.doReturn(columnSelect).when(mockSSAPanel).getSelColumnFactor();
@@ -258,7 +258,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 	@Test
 	public void testPopulateChoicesForEnvironmentFactor() {
 		SingleSiteAnalysisDetailsPanel ssaPanel =
-				new SingleSiteAnalysisDetailsPanel(null, new BreedingViewInput(), this.factors, this.trialFactors, null, null, null, null);
+				new SingleSiteAnalysisDetailsPanel(null, new BreedingViewInput(), this.factors, this.trialFactors, null, null);
 		SingleSiteAnalysisDetailsPanel mockSSAPanel = Mockito.spy(ssaPanel);
 		mockSSAPanel.setMessageSource(this.messageSource);
 		String pleaseChooseOption = "Please Choose";

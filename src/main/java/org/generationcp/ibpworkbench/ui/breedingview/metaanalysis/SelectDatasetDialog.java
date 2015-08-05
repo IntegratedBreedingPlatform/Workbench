@@ -12,9 +12,13 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.breedingview.BreedingViewTreeTable;
 import org.generationcp.ibpworkbench.ui.breedingview.SaveBreedingViewStudyTreeState;
-import org.generationcp.middleware.domain.dms.*;
+import org.generationcp.middleware.domain.dms.DatasetReference;
+import org.generationcp.middleware.domain.dms.FolderReference;
+import org.generationcp.middleware.domain.dms.Reference;
+import org.generationcp.middleware.domain.dms.Study;
+import org.generationcp.middleware.domain.dms.StudyReference;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.StudyDataManagerImpl;
+import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,8 +29,14 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.TreeTable;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
@@ -47,7 +57,8 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 	private BreedingViewTreeTable treeTable;
 	private VerticalLayout rootLayout;
 
-	private final StudyDataManagerImpl studyDataManager;
+	@Autowired
+	private StudyDataManager studyDataManager;
 	private final MetaAnalysisPanel metaAnalysisPanel;
 
 	private ThemeResource folderResource;
@@ -58,11 +69,9 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 
 	private final Project currentProject;
 
-	public SelectDatasetDialog(Window parentWindow, MetaAnalysisPanel metaAnalysisPanel, StudyDataManagerImpl studyDataManager,
-			Project currentProject) {
+	public SelectDatasetDialog(Window parentWindow, MetaAnalysisPanel metaAnalysisPanel, Project currentProject) {
 
 		this.parentWindow = parentWindow;
-		this.studyDataManager = studyDataManager;
 		this.metaAnalysisPanel = metaAnalysisPanel;
 		this.currentProject = currentProject;
 	}
@@ -179,7 +188,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 		List<FolderReference> folderRef = null;
 
 		try {
-			folderRef = this.getStudyDataManager().getRootFolders(this.currentProject.getUniqueID());
+			folderRef = studyDataManager.getRootFolders(this.currentProject.getUniqueID());
 		} catch (MiddlewareQueryException e1) {
 			SelectDatasetDialog.LOG.error(e1.getMessage(), e1);
 			if (this.getWindow() != null) {
@@ -193,9 +202,9 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 			Study study = null;
 			Boolean isStudy = false;
 			try {
-				isStudy = this.getStudyDataManager().isStudy(fr.getId());
+				isStudy = studyDataManager.isStudy(fr.getId());
 				if (isStudy) {
-					study = this.getStudyDataManager().getStudy(fr.getId());
+					study = studyDataManager.getStudy(fr.getId());
 				}
 			} catch (MiddlewareQueryException e) {
 				SelectDatasetDialog.LOG.error(e.getMessage(), e);
@@ -253,7 +262,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 		try {
 
 			childrenReference =
-					this.getStudyDataManager().getChildrenOfFolder(parentFolderReference.getId(), this.currentProject.getUniqueID());
+					studyDataManager.getChildrenOfFolder(parentFolderReference.getId(), this.currentProject.getUniqueID());
 
 		} catch (MiddlewareQueryException e) {
 			SelectDatasetDialog.LOG.error(e.getMessage(), e);
@@ -269,7 +278,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 
 			Study s = null;
 			try {
-				s = this.getStudyDataManager().getStudy(r.getId());
+				s = studyDataManager.getStudy(r.getId());
 			} catch (MiddlewareQueryException e) {
 				SelectDatasetDialog.LOG.error(e.getMessage(), e);
 			}
@@ -319,7 +328,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 
 		try {
 
-			childrenReference = this.getStudyDataManager().getDatasetReferences(parentFolderReference.getId());
+			childrenReference = studyDataManager.getDatasetReferences(parentFolderReference.getId());
 
 		} catch (MiddlewareQueryException e) {
 			SelectDatasetDialog.LOG.error(e.getMessage(), e);
@@ -355,7 +364,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 		List<Reference> children = new ArrayList<Reference>();
 
 		try {
-			children = this.getStudyDataManager().getChildrenOfFolder(folderId, this.currentProject.getUniqueID());
+			children = studyDataManager.getChildrenOfFolder(folderId, this.currentProject.getUniqueID());
 		} catch (MiddlewareQueryException e) {
 			SelectDatasetDialog.LOG.error(e.getMessage(), e);
 			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
@@ -383,7 +392,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 		List<DatasetReference> children = new ArrayList<DatasetReference>();
 
 		try {
-			children = this.getStudyDataManager().getDatasetReferences(folderId);
+			children = studyDataManager.getDatasetReferences(folderId);
 		} catch (MiddlewareQueryException e) {
 			SelectDatasetDialog.LOG.error(e.getMessage(), e);
 			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
@@ -409,7 +418,4 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 
 	}
 
-	private StudyDataManagerImpl getStudyDataManager() {
-		return this.studyDataManager;
-	}
 }

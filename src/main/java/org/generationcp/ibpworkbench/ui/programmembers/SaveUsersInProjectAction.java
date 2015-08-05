@@ -68,6 +68,9 @@ public class SaveUsersInProjectAction implements ClickListener {
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
+	
+	@Autowired
+	private UserDataManager userDataManager;
 
 	public SaveUsersInProjectAction(Project project, TwinTableSelect<User> select) {
 		this.project = project;
@@ -148,7 +151,7 @@ public class SaveUsersInProjectAction implements ClickListener {
 	 */
 	private void createLocalDatabaseUsers(ManagerFactory managerFactory, List<ProjectUserRole> projectUserRoles, Project projectSaved)
 			throws MiddlewareQueryException {
-		UserDataManager userDataManager = managerFactory.getUserDataManager();
+		userDataManager = managerFactory.getUserDataManager();
 		Map<Integer, String> usersAccountedFor = new HashMap<Integer, String>();
 
 		for (ProjectUserRole projectUserRole : projectUserRoles) {

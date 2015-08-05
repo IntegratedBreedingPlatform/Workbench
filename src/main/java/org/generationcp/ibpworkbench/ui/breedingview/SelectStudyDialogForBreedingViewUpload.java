@@ -5,7 +5,6 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
 import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow;
 import org.generationcp.middleware.domain.dms.Reference;
-import org.generationcp.middleware.manager.StudyDataManagerImpl;
 import org.generationcp.middleware.pojos.workbench.Project;
 
 import com.vaadin.ui.Component;
@@ -15,9 +14,9 @@ public class SelectStudyDialogForBreedingViewUpload extends SelectStudyDialog {
 
 	private static final long serialVersionUID = 1L;
 
-	public SelectStudyDialogForBreedingViewUpload(Window parentWindow, Component source, StudyDataManagerImpl studyDataManager,
+	public SelectStudyDialogForBreedingViewUpload(Window parentWindow, Component source,
 			Project project) {
-		super(parentWindow, source, studyDataManager, project);
+		super(parentWindow, source, project);
 	}
 
 	@Override

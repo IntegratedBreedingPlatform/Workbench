@@ -24,6 +24,7 @@ import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.LocationDataManager;
+import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.dms.ProgramFavorite;
 import org.generationcp.middleware.pojos.dms.ProgramFavorite.FavoriteType;
@@ -55,6 +56,9 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 
 	@Autowired
 	private DefaultManagerFactoryProvider managerFactoryProvider;
+	
+	@Autowired
+	private StudyDataManager studyDataManager;
 
 	public DeleteProjectAction() {
 	}
@@ -140,7 +144,6 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 	}
 
 	protected void deleteAllProgramStudies() throws MiddlewareQueryException {
-		this.managerFactoryProvider.getManagerFactoryForProject(this.currentProject).getStudyDataManager()
-				.deleteProgramStudies(this.currentProject.getUniqueID());
+		this.studyDataManager.deleteProgramStudies(this.currentProject.getUniqueID());
 	}
 }

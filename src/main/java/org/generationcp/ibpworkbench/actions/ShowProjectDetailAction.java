@@ -75,6 +75,9 @@ public class ShowProjectDetailAction implements Property.ValueChangeListener {
 	private final TabSheet previewTab;
 
 	private final List<Project> projects;
+	
+	@Autowired
+	private StudyDataManager studyDataManager;
 
 	public ShowProjectDetailAction(Table tblProject, SummaryView summaryView, Button selectDatasetForBreedingViewButton,
 			OpenSelectProjectForStudyAndDatasetViewAction openSelectDatasetForBreedingViewAction, Project currentProject,
@@ -127,9 +130,6 @@ public class ShowProjectDetailAction implements Property.ValueChangeListener {
 		}
 		this.openSelectDatasetForBreedingViewAction = new OpenSelectProjectForStudyAndDatasetViewAction(project);
 		this.selectDatasetForBreedingViewButton.addListener(this.openSelectDatasetForBreedingViewAction);
-
-		final StudyDataManager studyDataManager =
-				this.managerFactoryProvider.getManagerFactoryForProject(this.currentProj).getStudyDataManager();
 
 		try {
 			long projectActivitiesCount = this.workbenchDataManager.countProjectActivitiesByProjectId(project.getProjectId());

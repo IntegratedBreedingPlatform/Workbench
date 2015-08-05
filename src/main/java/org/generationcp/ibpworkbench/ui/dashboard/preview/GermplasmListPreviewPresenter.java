@@ -12,7 +12,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.ManagerFactory;
+import org.generationcp.middleware.manager.api.GermplasmListManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -40,19 +40,17 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 	private WorkbenchDataManager manager;
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
+	
+	@Autowired
+	private GermplasmListManager germplasmListManager;
 
 	@Autowired
 	private SessionData sessionData;
-	private ManagerFactory managerFactory;
 
 	public GermplasmListPreviewPresenter(GermplasmListPreview view, Project project) {
 		this.view = view;
 
 		this.project = project;
-
-		if (this.project != null) {
-			this.setManagerFactory(view.getManagerFactoryProvider().getManagerFactoryForProject(this.project));
-		}
 	}
 
 	public GermplasmListPreviewPresenter() {
@@ -63,7 +61,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 
 		try {
 			germplasmListParent =
-					this.getManagerFactory().getGermplasmListManager().getAllTopLevelListsBatched(GermplasmListPreviewPresenter.BATCH_SIZE);
+					germplasmListManager.getAllTopLevelListsBatched(GermplasmListPreviewPresenter.BATCH_SIZE);
 		} catch (MiddlewareQueryException e) {
 			GermplasmListPreviewPresenter.LOG.error(e.getLocalizedMessage(), e);
 			germplasmListParent = new ArrayList<GermplasmList>();
@@ -77,12 +75,8 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 		List<GermplasmList> germplasmListChildren;
 
 		try {
-			if (this.getManagerFactory() == null) {
-				this.setManagerFactory(this.view.getManagerFactoryProvider().getManagerFactoryForProject(this.project));
-			}
-
 			germplasmListChildren =
-					this.getManagerFactory().getGermplasmListManager()
+					germplasmListManager
 							.getGermplasmListByParentFolderIdBatched(parentGermplasmListId, GermplasmListPreviewPresenter.BATCH_SIZE);
 		} catch (MiddlewareQueryException e) {
 			GermplasmListPreviewPresenter.LOG.error(e.getLocalizedMessage(), e);
@@ -98,10 +92,8 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 		List<GermplasmList> listChildren;
 
 		try {
-			if (this.getManagerFactory() == null) {
-				this.setManagerFactory(this.view.getManagerFactoryProvider().getManagerFactoryForProject(this.project));
-			}
-			listChildren = this.getManagerFactory().getGermplasmListManager().getGermplasmListByParentFolderId(listId, 0, 1);
+
+			listChildren = germplasmListManager.getGermplasmListByParentFolderId(listId, 0, 1);
 		} catch (MiddlewareQueryException e) {
 			GermplasmListPreviewPresenter.LOG.error(e.getLocalizedMessage(), e);
 			listChildren = new ArrayList<GermplasmList>();
@@ -115,18 +107,9 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 		// does nothing
 	}
 
-	public ManagerFactory getManagerFactory() {
-
-		return this.managerFactory;
-	}
-
-	public void setManagerFactory(ManagerFactory managerFactory) {
-		this.managerFactory = managerFactory;
-	}
-
 	public boolean isFolder(Integer id) {
 		try {
-			return this.getManagerFactory().getGermplasmListManager().getGermplasmListById(id).isFolder();
+			return germplasmListManager.getGermplasmListById(id).isFolder();
 		} catch (MiddlewareQueryException e) {
 			GermplasmListPreviewPresenter.LOG.error(e.getLocalizedMessage(), e);
 			return false;
@@ -137,12 +120,12 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 	}
 
 	public boolean hasChildren(Integer id) throws MiddlewareQueryException {
-		return !this.getManagerFactory().getGermplasmListManager().getGermplasmListByParentFolderId(id, 0, Integer.MAX_VALUE).isEmpty();
+		return !germplasmListManager.getGermplasmListByParentFolderId(id, 0, Integer.MAX_VALUE).isEmpty();
 	}
 
 	public GermplasmList getGermplasmListParent(Integer id) throws GermplasmListPreviewException {
 		try {
-			return this.getManagerFactory().getGermplasmListManager().getGermplasmListById(id).getParent();
+			return germplasmListManager.getGermplasmListById(id).getParent();
 
 		} catch (MiddlewareQueryException e) {
 			throw new GermplasmListPreviewException(this.messageSource.getMessage(Message.DATABASE_ERROR), e);
@@ -157,7 +140,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 
 			this.validateGermplasmListFolderName(newName);
 
-			GermplasmList gpList = this.getManagerFactory().getGermplasmListManager().getGermplasmListById(id);
+			GermplasmList gpList = germplasmListManager.getGermplasmListById(id);
 
 			if (!gpList.isFolder()) {
 				throw new GermplasmListPreviewException(GermplasmListPreviewException.NOT_FOLDER);
@@ -165,7 +148,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 
 			gpList.setName(newName);
 
-			this.getManagerFactory().getGermplasmListManager().updateGermplasmList(gpList);
+			germplasmListManager.updateGermplasmList(gpList);
 
 			return true;
 		} catch (MiddlewareQueryException e) {
@@ -190,7 +173,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 							.getProjectId());
 			long currentDate = DateUtil.getCurrentDateAsLongValue();
 			if (id != null) {
-				gpList = this.getManagerFactory().getGermplasmListManager().getGermplasmListById(id);
+				gpList = germplasmListManager.getGermplasmListById(id);
 
 				if (null != gpList && !gpList.isFolder()) {
 					newList =
@@ -207,7 +190,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 			}
 
 			newList.setDescription("(NEW FOLDER) " + folderName);
-			return this.getManagerFactory().getGermplasmListManager().addGermplasmList(newList);
+			return germplasmListManager.addGermplasmList(newList);
 
 		} catch (MiddlewareQueryException e) {
 			throw new GermplasmListPreviewException(this.messageSource.getMessage(Message.ERROR_DATABASE), e);
@@ -215,7 +198,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 	}
 
 	private void checkIfUnique(String folderName) throws MiddlewareQueryException, GermplasmListPreviewException {
-		List<GermplasmList> duplicate = this.getManagerFactory().getGermplasmListManager().getGermplasmListByName(folderName, 0, 1, null);
+		List<GermplasmList> duplicate = germplasmListManager.getGermplasmListByName(folderName, 0, 1, null);
 		if (duplicate != null && !duplicate.isEmpty()) {
 			throw new GermplasmListPreviewException(GermplasmListPreviewException.NAME_NOT_UNIQUE);
 		}
@@ -244,7 +227,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 				throw new GermplasmListPreviewException(GermplasmListPreviewException.NO_SELECTION);
 			}
 
-			gpList = this.getManagerFactory().getGermplasmListManager().getGermplasmListById(id);
+			gpList = germplasmListManager.getGermplasmListById(id);
 
 			if (gpList == null) {
 				throw new GermplasmListPreviewException(this.messageSource.getMessage(Message.ERROR_DATABASE));
@@ -282,7 +265,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 	 */
 	public Integer deleteGermplasmListFolder(GermplasmList gpList) throws GermplasmListPreviewException {
 		try {
-			return this.getManagerFactory().getGermplasmListManager().deleteGermplasmList(gpList);
+			return germplasmListManager.deleteGermplasmList(gpList);
 		} catch (MiddlewareQueryException e) {
 			GermplasmListPreviewPresenter.LOG.error(e.getLocalizedMessage(), e);
 			throw new GermplasmListPreviewException(this.messageSource.getMessage(Message.ERROR_DATABASE));
@@ -291,16 +274,16 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 
 	public Integer dropGermplasmListToParent(Integer id, Integer parentId) throws GermplasmListPreviewException {
 		try {
-			GermplasmList gpList = this.getManagerFactory().getGermplasmListManager().getGermplasmListById(id);
+			GermplasmList gpList = germplasmListManager.getGermplasmListById(id);
 
 			if (parentId != null) {
-				GermplasmList parent = this.getManagerFactory().getGermplasmListManager().getGermplasmListById(parentId);
+				GermplasmList parent = germplasmListManager.getGermplasmListById(parentId);
 				gpList.setParent(parent);
 			} else {
 				gpList.setParent(null);
 			}
 
-			return this.getManagerFactory().getGermplasmListManager().updateGermplasmList(gpList);
+			return germplasmListManager.updateGermplasmList(gpList);
 
 		} catch (MiddlewareQueryException e) {
 			throw new GermplasmListPreviewException(this.messageSource.getMessage(Message.ERROR_DATABASE), e);

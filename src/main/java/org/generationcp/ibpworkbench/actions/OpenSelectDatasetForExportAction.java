@@ -31,6 +31,7 @@ import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
@@ -68,6 +69,9 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
+	@Autowired
+	private StudyDataManager studyDataManager;
+	
 	@Value("${workbench.is.server.app}")
 	private String isServerApp;
 
@@ -93,7 +97,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 
 			// List of factors from the new schema
 			List<VariableType> factorsInDataset =
-					this.selectDatasetForBreedingViewPanel.getStudyDataManager().getDataSet(dataSetId).getVariableTypes().getFactors()
+					studyDataManager.getDataSet(dataSetId).getVariableTypes().getFactors()
 							.getVariableTypes();
 
 			String breedingViewProjectName;
@@ -143,7 +147,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 			breedingViewInput.setDatasetSource(this.selectDatasetForBreedingViewPanel.getCurrentStudy().getName());
 			breedingViewInput.setVariatesActiveState(this.selectDatasetForBreedingViewPanel.getVariatesCheckboxState());
 			List<DataSet> meansDs =
-					this.selectDatasetForBreedingViewPanel.getStudyDataManager().getDataSetsByType(studyId, DataSetType.MEANS_DATA);
+					studyDataManager.getDataSetsByType(studyId, DataSetType.MEANS_DATA);
 			if (meansDs != null) {
 				if (!meansDs.isEmpty()) {
 					breedingViewInput.setOutputDatasetId(meansDs.get(0).getId());
@@ -155,13 +159,12 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 			IContentWindow w = (IContentWindow) event.getComponent().getWindow();
 
 			List<VariableType> trialVariablesInDataset = null;
-			DataSet trialDataset = DatasetUtil.getTrialDataSet(this.selectDatasetForBreedingViewPanel.getStudyDataManager(), studyId);
+			DataSet trialDataset = DatasetUtil.getTrialDataSet(studyDataManager, studyId);
 			if (trialDataset != null && trialDataset.getVariableTypes() != null) {
 				trialVariablesInDataset = trialDataset.getVariableTypes().getVariableTypes();
 			}
 			w.showContent(new SingleSiteAnalysisDetailsPanel(breedingViewTool, breedingViewInput, factorsInDataset,
-					trialVariablesInDataset, project, this.selectDatasetForBreedingViewPanel.getStudyDataManager(),
-					this.selectDatasetForBreedingViewPanel.getManagerFactory(), this.selectDatasetForBreedingViewPanel));
+					trialVariablesInDataset, project, this.selectDatasetForBreedingViewPanel));
 
 		} catch (MiddlewareQueryException e) {
 			OpenSelectDatasetForExportAction.LOG.error(e.getMessage(), e);

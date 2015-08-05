@@ -12,7 +12,6 @@ import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.common.ServerFilePicker;
-import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Tool;
@@ -61,7 +60,7 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchDashboard.class);
+	private static final Logger LOG = LoggerFactory.getLogger(UserToolsManagerWindow.class);
 	private static final String WIDTH = "780px";
 	private static final String HEIGHT = "470px";
 

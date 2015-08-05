@@ -17,6 +17,7 @@ import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.exceptions.UnpermittedDeletionException;
 import org.generationcp.middleware.manager.ManagerFactory;
+import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.dms.DmsProject;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -48,6 +49,9 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
+	
+	@Autowired
+	private StudyDataManager studyDataManager;
 
 	@Autowired
 	private SessionData sessionData;
@@ -76,7 +80,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 
 		List<FolderReference> root;
 		try {
-			root = this.getManagerFactory().getStudyDataManager().getRootFolders(this.project.getUniqueID());
+			root = this.studyDataManager.getRootFolders(this.project.getUniqueID());
 			this.view.generateTopListOfTree(root);
 		} catch (MiddlewareQueryException e) {
 			NurseryListPreviewPresenter.LOG.error(e.getMessage(), e);
@@ -98,7 +102,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 
 	public boolean isFolder(Integer value) {
 		try {
-			boolean isStudy = this.getManagerFactory().getStudyDataManager().isStudy(value);
+			boolean isStudy = this.studyDataManager.isStudy(value);
 			NurseryListPreviewPresenter.LOG.info("isFolder = " + !isStudy);
 			return !isStudy;
 		} catch (MiddlewareQueryException e) {
@@ -113,7 +117,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 
 			this.validateStudyFolderName(newFolderName);
 
-			this.getManagerFactory().getStudyDataManager().renameSubFolder(newFolderName, folderId, this.project.getUniqueID());
+			this.studyDataManager.renameSubFolder(newFolderName, folderId, this.project.getUniqueID());
 		} catch (MiddlewareQueryException e) {
 			NurseryListPreviewPresenter.LOG.error(e.getMessage(), e);
 		}
@@ -136,7 +140,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 
 	public Object getStudyNodeParent(Integer newItem) {
 		try {
-			return this.getManagerFactory().getStudyDataManager().getParentFolder(newItem);
+			return this.studyDataManager.getParentFolder(newItem);
 		} catch (MiddlewareQueryException e) {
 			NurseryListPreviewPresenter.LOG.error(e.getMessage(), e);
 			return null;
@@ -145,7 +149,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 
 	public boolean moveNurseryListFolder(Integer sourceId, Integer targetId, boolean isAStudy) throws NurseryListPreviewException {
 		try {
-			return this.getManagerFactory().getStudyDataManager().moveDmsProject(sourceId, targetId, isAStudy);
+			return this.studyDataManager.moveDmsProject(sourceId, targetId, isAStudy);
 		} catch (MiddlewareQueryException e) {
 			NurseryListPreviewPresenter.LOG.error(e.getMessage(), e);
 			throw new NurseryListPreviewException(e.getMessage());
@@ -160,13 +164,13 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 			Integer parentFolderId = id;
 			if (!this.isFolder(id)) {
 				// get parent
-				DmsProject dmsProject = this.getManagerFactory().getStudyDataManager().getParentFolder(id);
+				DmsProject dmsProject = this.studyDataManager.getParentFolder(id);
 				if (dmsProject == null) {
 					throw new NurseryListPreviewException(NurseryListPreviewException.NO_PARENT);
 				}
 				parentFolderId = dmsProject.getProjectId();
 			}
-			return this.getManagerFactory().getStudyDataManager().addSubFolder(parentFolderId, name, name, this.project.getUniqueID());
+			return this.studyDataManager.addSubFolder(parentFolderId, name, name, this.project.getUniqueID());
 		} catch (MiddlewareQueryException e) {
 			NurseryListPreviewPresenter.LOG.error(e.getMessage(), e);
 			throw new NurseryListPreviewException(e.getMessage());
@@ -194,7 +198,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 		DmsProject dmsProject;
 
 		try {
-			dmsProject = this.getManagerFactory().getStudyDataManager().getProject(id);
+			dmsProject = this.studyDataManager.getProject(id);
 
 		} catch (MiddlewareQueryException e) {
 			throw new NurseryListPreviewException(this.messageSource.getMessage(Message.ERROR_DATABASE), e);
@@ -215,7 +219,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 		List<Reference> studyChildren;
 
 		try {
-			studyChildren = this.getManagerFactory().getStudyDataManager().getChildrenOfFolder(id, this.project.getUniqueID());
+			studyChildren = this.studyDataManager.getChildrenOfFolder(id, this.project.getUniqueID());
 		} catch (MiddlewareQueryException e) {
 			NurseryListPreviewPresenter.LOG.error(e.getMessage(), e);
 			throw new NurseryListPreviewException(this.messageSource.getMessage(Message.ERROR_DATABASE), e);
@@ -233,7 +237,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 		List<Reference> studyChildren;
 
 		try {
-			studyChildren = this.getManagerFactory().getStudyDataManager().getChildrenOfFolder(parentId, this.project.getUniqueID());
+			studyChildren = this.studyDataManager.getChildrenOfFolder(parentId, this.project.getUniqueID());
 		} catch (MiddlewareQueryException e) {
 			NurseryListPreviewPresenter.LOG.error(this.messageSource.getMessage(Message.ERROR_DATABASE), e);
 			studyChildren = new ArrayList<Reference>();
@@ -270,7 +274,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 
 	public StudyType getStudyType(int studyId) {
 		try {
-			Study study = this.getManagerFactory().getStudyDataManager().getStudy(studyId);
+			Study study = this.studyDataManager.getStudy(studyId);
 			if (study != null && study.getType() != null) {
 				return StudyType.getStudyType(study.getType());
 			}

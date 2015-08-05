@@ -28,7 +28,6 @@ import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.domain.dms.Experiment;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -67,9 +66,8 @@ public class RunMultiSiteAction implements ClickListener {
 	@Resource
 	private WorkbenchDataManager workbenchDataManager;
 
-	private final StudyDataManager studyDataManager;
-
-	private final ManagerFactory managerFactory;
+	@Resource
+	private StudyDataManager studyDataManager;
 
 	private final MultiSiteParameters multiSiteParameters;
 
@@ -77,11 +75,8 @@ public class RunMultiSiteAction implements ClickListener {
 
 	private final Table selectTraitsTable;
 
-	public RunMultiSiteAction(ManagerFactory managerFactory, StudyDataManager studyDataManager, GxeTable gxeTable, Table selectTraitsTable,
+	public RunMultiSiteAction(GxeTable gxeTable, Table selectTraitsTable,
 			MultiSiteParameters multiSiteParameters) {
-
-		this.studyDataManager = studyDataManager;
-		this.managerFactory = managerFactory;
 		this.gxeTable = gxeTable;
 		this.selectTraitsTable = selectTraitsTable;
 		this.multiSiteParameters = multiSiteParameters;
@@ -207,7 +202,6 @@ public class RunMultiSiteAction implements ClickListener {
 					"But it successfully created GxE Excel and XML input file for the breeding_view!");
 		}
 
-		this.managerFactory.close();
 	}
 
 	protected List<Trait> getSelectedTraits() {

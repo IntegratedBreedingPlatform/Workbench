@@ -31,8 +31,6 @@ import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.ManagerFactory;
-import org.generationcp.middleware.manager.StudyDataManagerImpl;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -54,7 +52,7 @@ import com.vaadin.ui.themes.Reindeer;
 
 /**
  * Multisite analysis component
- * 
+ *
  * @author Aldrich Abrogena
  */
 @Configurable
@@ -75,6 +73,7 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 	protected Boolean setAll = true;
 	protected Boolean fromOthers = true;
 
+	@Autowired
 	private StudyDataManager studyDataManager;
 
 	@Autowired
@@ -109,10 +108,6 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 
 	@Override
 	public void instantiateComponents() {
-
-		ManagerFactory managerFactory = this.managerFactoryProvider.getManagerFactoryForProject(this.project);
-		this.setStudyDataManager(managerFactory.getNewStudyDataManager());
-
 		this.setTitleContent();
 
 		ThemeResource resource = new ThemeResource("../vaadin-retro/images/search-nurseries.png");
@@ -164,7 +159,6 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 
 				SelectStudyDialog dialog =
 						new SelectStudyDialog(event.getComponent().getWindow(), MultiSiteAnalysisPanel.this,
-								(StudyDataManagerImpl) MultiSiteAnalysisPanel.this.getStudyDataManager(),
 								MultiSiteAnalysisPanel.this.project);
 				event.getComponent().getWindow().addWindow(dialog);
 			}

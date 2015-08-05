@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- * 
+ *
  * Generation Challenge Programme (GCP)
- * 
- * 
+ *
+ *
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- * 
+ *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.ui.breedingview.metaanalysis;
@@ -42,8 +42,6 @@ import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
-import org.generationcp.middleware.manager.ManagerFactory;
-import org.generationcp.middleware.manager.StudyDataManagerImpl;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -69,9 +67,9 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * 
+ *
  * @author Aldrin Batac
- * 
+ *
  */
 @Configurable
 public class MetaAnalysisPanel extends VerticalLayout implements InitializingBean, InternationalizableComponent, IBPWorkbenchLayout {
@@ -115,9 +113,8 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
+	@Autowired
 	private StudyDataManager studyDataManager;
-
-	private ManagerFactory managerFactory;
 
 	public MetaAnalysisPanel(Project currentProject, Database database) {
 		this.currentProject = currentProject;
@@ -148,15 +145,13 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 
 	@Override
 	public void instantiateComponents() {
-		this.managerFactory = this.managerFactoryProvider.getManagerFactoryForProject(this.currentProject);
-
 		this.setTitleContent();
 
 		ThemeResource resource = new ThemeResource("../vaadin-retro/images/search-nurseries.png");
 		Label headingLabel = new Label("Select Data for Analysis");
-		headingLabel.setStyleName(Bootstrap.Typography.H4.styleName());
-		headingLabel.addStyleName("label-bold");
-		this.heading = new HeaderLabelLayout(resource, headingLabel);
+				headingLabel.setStyleName(Bootstrap.Typography.H4.styleName());
+				headingLabel.addStyleName("label-bold");
+				this.heading = new HeaderLabelLayout(resource, headingLabel);
 
 		this.browseLink = new Button();
 		this.browseLink.setImmediate(true);
@@ -249,7 +244,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 
 				SelectDatasetDialog dialog =
 						new SelectDatasetDialog(event.getComponent().getWindow(), MetaAnalysisPanel.this,
-								(StudyDataManagerImpl) MetaAnalysisPanel.this.getStudyDataManager(), MetaAnalysisPanel.this.currentProject);
+								MetaAnalysisPanel.this.currentProject);
 				event.getComponent().getWindow().addWindow(dialog);
 			}
 
@@ -295,7 +290,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 				if (!metaEnvironments.isEmpty()) {
 					IContentWindow w = (IContentWindow) event.getComponent().getWindow();
 					w.showContent(new MetaAnalysisSelectTraitsPanel(MetaAnalysisPanel.this.getCurrentProject(), metaEnvironments,
-							MetaAnalysisPanel.this, MetaAnalysisPanel.this.managerFactory));
+							MetaAnalysisPanel.this));
 				}
 
 			}
@@ -365,7 +360,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 			}
 
 			TabSheet tabSheet = MetaAnalysisPanel.this.getTabsheet();
-			DataSet ds = MetaAnalysisPanel.this.getStudyDataManager().getDataSet(dataSetId);
+			DataSet ds = MetaAnalysisPanel.this.studyDataManager.getDataSet(dataSetId);
 
 			Iterator<Component> itr = tabSheet.getComponentIterator();
 			while (itr.hasNext()) {
@@ -432,14 +427,6 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 		this.currentDatasetName = currentDatasetName;
 	}
 
-	public StudyDataManager getStudyDataManager() {
-		if (this.studyDataManager == null) {
-			this.studyDataManager = this.managerFactory.getNewStudyDataManager();
-		}
-		return this.studyDataManager;
-
-	}
-
 	public Map<String, Boolean> getVariatesCheckboxState() {
 		return this.variatesCheckboxState;
 	}
@@ -487,8 +474,6 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 
 			this.initializeComponents();
 
-			MetaAnalysisPanel.this.managerFactory.close();
-
 		}
 
 		public int getDataSetId() {
@@ -498,7 +483,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 		private void initializeComponents() {
 
 			try {
-				this.studyName = MetaAnalysisPanel.this.getStudyDataManager().getStudy(this.dataSet.getStudyId()).getName();
+				this.studyName = MetaAnalysisPanel.this.studyDataManager.getStudy(this.dataSet.getStudyId()).getName();
 			} catch (MiddlewareQueryException e) {
 				MetaAnalysisPanel.LOG.error("Error getting study name", e);
 			}
@@ -738,7 +723,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 			}
 
 			try {
-				TrialEnvironments envs = MetaAnalysisPanel.this.getStudyDataManager().getTrialEnvironmentsInDataset(this.dataSet.getId());
+				TrialEnvironments envs = studyDataManager.getTrialEnvironmentsInDataset(this.dataSet.getId());
 
 				List<Variable> variables;
 				variables = envs.getVariablesByLocalName(environmentFactorName);
@@ -790,7 +775,6 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 				MetaAnalysisPanel.LOG.error(e.getMessage(), e);
 			}
 
-			MetaAnalysisPanel.this.managerFactory.close();
 		}
 
 	}// end of EnvironmentTabComponent inner class

@@ -44,7 +44,6 @@ import org.generationcp.middleware.domain.dms.VariableTypeList;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.ConfigException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
@@ -382,8 +381,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	private VerticalLayout mainLayout;
 
-	private ManagerFactory managerFactory;
-
+	@Autowired
 	private StudyDataManager studyDataManager;
 
 	@Autowired
@@ -397,7 +395,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	}
 
 	public SingleSiteAnalysisDetailsPanel(Tool tool, BreedingViewInput breedingViewInput, List<VariableType> factorsInDataset,
-			List<VariableType> trialVariablesInDataset, Project project, StudyDataManager studyDataManager, ManagerFactory managerFactory,
+			List<VariableType> trialVariablesInDataset, Project project, 
 			SingleSiteAnalysisPanel selectDatasetForBreedingViewPanel) {
 
 		this.tool = tool;
@@ -405,8 +403,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.factorsInDataset = factorsInDataset;
 		this.trialVariablesInDataset = trialVariablesInDataset;
 		this.project = project;
-		this.studyDataManager = studyDataManager;
-		this.managerFactory = managerFactory;
 		this.selectDatasetForBreedingViewPanel = selectDatasetForBreedingViewPanel;
 
 		this.setWidth("100%");
@@ -1173,7 +1169,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	@Override
 	public void afterPropertiesSet() {
 		this.assemble();
-		this.managerFactory.close();
 	}
 
 	@Override
@@ -1221,14 +1216,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	public void setBreedingViewInput(BreedingViewInput breedingViewInput) {
 		this.breedingViewInput = breedingViewInput;
-	}
-
-	public ManagerFactory getManagerFactory() {
-		return this.managerFactory;
-	}
-
-	public void setManagerFactory(ManagerFactory managerFactory) {
-		this.managerFactory = managerFactory;
 	}
 
 	public Label getLblBlocks() {

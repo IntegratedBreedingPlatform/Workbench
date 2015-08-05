@@ -37,7 +37,6 @@ import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -131,10 +130,9 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 	private SimpleResourceBundleMessageSource messageSource;
 
 	private MultiSiteAnalysisPanel gxeAnalysisComponentPanel;
-
+	
+	@Autowired
 	private StudyDataManager studyDataManager;
-
-	private ManagerFactory managerFactory;
 
 	private final List<String> environmentNames = new ArrayList<String>();
 	private TrialEnvironments trialEnvironments = null;
@@ -182,7 +180,6 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 
 	@Override
 	public void instantiateComponents() {
-		this.managerFactory = this.managerFactoryProvider.getManagerFactoryForProject(this.currentProject);
 
 		this.setVariatesCheckboxState(new HashMap<String, Boolean>());
 
@@ -266,7 +263,7 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 
 		this.environmentNames.clear();
 		try {
-			this.trialEnvironments = this.getStudyDataManager().getTrialEnvironmentsInDataset(this.getCurrentDataSetId());
+			this.trialEnvironments = this.studyDataManager.getTrialEnvironmentsInDataset(this.getCurrentDataSetId());
 			for (Variable var : this.trialEnvironments.getVariablesByLocalName(this.selectSpecifyEnvironment.getValue().toString())) {
 				if (var.getValue() != null && !"".equals(var.getValue())) {
 					this.environmentNames.add(var.getValue());
@@ -301,7 +298,7 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 
 				try {
 					MultiSiteAnalysisSelectPanel.this.trialEnvironments =
-							MultiSiteAnalysisSelectPanel.this.getStudyDataManager().getTrialEnvironmentsInDataset(
+							MultiSiteAnalysisSelectPanel.this.studyDataManager.getTrialEnvironmentsInDataset(
 									MultiSiteAnalysisSelectPanel.this.getCurrentDataSetId());
 					for (Variable var : MultiSiteAnalysisSelectPanel.this.trialEnvironments
 							.getVariablesByLocalName(MultiSiteAnalysisSelectPanel.this.selectSpecifyEnvironment.getValue().toString())) {
@@ -315,8 +312,6 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 
 				MultiSiteAnalysisSelectPanel.this.populateFactorsVariatesByDataSetId(MultiSiteAnalysisSelectPanel.this.currentStudy,
 						MultiSiteAnalysisSelectPanel.this.factors, MultiSiteAnalysisSelectPanel.this.variates);
-
-				MultiSiteAnalysisSelectPanel.this.managerFactory.close();
 
 			}
 		});
@@ -825,13 +820,6 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 
 	public void setGxeAnalysisComponentPanel(MultiSiteAnalysisPanel gxeAnalysisComponentPanel) {
 		this.gxeAnalysisComponentPanel = gxeAnalysisComponentPanel;
-	}
-
-	public StudyDataManager getStudyDataManager() {
-		if (this.studyDataManager == null) {
-			this.studyDataManager = this.managerFactory.getNewStudyDataManager();
-		}
-		return this.studyDataManager;
 	}
 
 	public Map<String, Boolean> getVariatesCheckboxState() {

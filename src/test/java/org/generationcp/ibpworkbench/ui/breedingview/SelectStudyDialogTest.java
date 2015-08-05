@@ -19,7 +19,7 @@ public class SelectStudyDialogTest {
 		String uniqueId = "12345";
 		Mockito.when(project.getUniqueID()).thenReturn(uniqueId);
 		SelectStudyDialog dialog =
-				new SelectStudyDialog(Mockito.mock(Window.class), Mockito.mock(Component.class), studyDataManager, project);
+				new SelectStudyDialog(Mockito.mock(Window.class), Mockito.mock(Component.class), project);
 		dialog.createStudyTreeTable();
 		Mockito.verify(studyDataManager, Mockito.times(1)).getRootFolders(uniqueId);
 	}

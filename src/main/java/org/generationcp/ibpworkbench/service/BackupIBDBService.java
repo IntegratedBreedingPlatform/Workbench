@@ -21,8 +21,10 @@ public class BackupIBDBService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(BackupIBDBService.class);
 	private static final String BACKUP_DIR = "backup";
+	
 	@Autowired
 	private MySQLUtil mysqlUtil;
+	
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
 

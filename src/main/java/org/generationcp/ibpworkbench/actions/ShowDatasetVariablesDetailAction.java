@@ -47,7 +47,8 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	private final StudyDataManager studyDataManager;
+	@Autowired
+	private StudyDataManager studyDataManager;
 
 	private final Table tblVariates;
 
@@ -61,7 +62,6 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
 		this.tblFactors = tblFactors;
 		this.tblVariates = tblVariates;
 		this.singleSiteAnalysisPanel = singleSiteAnalysisPanel;
-		this.studyDataManager = singleSiteAnalysisPanel.getStudyDataManager();
 	}
 
 	@Override
@@ -148,7 +148,6 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
 			this.showDatabaseError(event.getComponent().getWindow());
 		}
 
-		this.singleSiteAnalysisPanel.getManagerFactory().close();
 	}
 
 	private void updateFactorsTable(List<FactorModel> factorList) {

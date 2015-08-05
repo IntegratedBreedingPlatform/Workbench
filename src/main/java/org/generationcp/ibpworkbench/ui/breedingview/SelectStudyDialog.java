@@ -14,9 +14,13 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.MultiSiteAnalysisPanel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
 import org.generationcp.ibpworkbench.util.DatasetUtil;
-import org.generationcp.middleware.domain.dms.*;
+import org.generationcp.middleware.domain.dms.DatasetReference;
+import org.generationcp.middleware.domain.dms.FolderReference;
+import org.generationcp.middleware.domain.dms.Reference;
+import org.generationcp.middleware.domain.dms.Study;
+import org.generationcp.middleware.domain.dms.StudyReference;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.StudyDataManagerImpl;
+import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +31,15 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.TreeTable;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
@@ -83,7 +94,8 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 	protected BreedingViewTreeTable treeTable;
 	protected VerticalLayout rootLayout;
 
-	protected StudyDataManagerImpl studyDataManager;
+	@Autowired
+	protected StudyDataManager studyDataManager;
 	protected Component source;
 
 	protected ThemeResource folderResource;
@@ -94,9 +106,8 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 
 	private final Project currentProject;
 
-	public SelectStudyDialog(Window parentWindow, Component source, StudyDataManagerImpl studyDataManager, Project currentProject) {
+	public SelectStudyDialog(Window parentWindow, Component source, Project currentProject) {
 		this.parentWindow = parentWindow;
-		this.studyDataManager = studyDataManager;
 		this.source = source;
 		this.currentProject = currentProject;
 	}
@@ -457,7 +468,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		}
 	}
 
-	private StudyDataManagerImpl getStudyDataManager() {
+	private StudyDataManager getStudyDataManager() {
 		return this.studyDataManager;
 	}
 }
