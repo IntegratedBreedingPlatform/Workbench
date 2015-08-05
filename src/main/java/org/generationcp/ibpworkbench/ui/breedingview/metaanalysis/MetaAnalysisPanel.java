@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.generationcp.browser.study.listeners.ViewStudyDetailsButtonClickListener;
-import org.generationcp.commons.help.document.HELP_MODULE;
 import org.generationcp.commons.help.document.HelpButton;
+import org.generationcp.commons.help.document.HelpModule;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -215,7 +215,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 		this.toolTitle.setWidth("430px");
 
 		this.titleLayout.addComponent(this.toolTitle);
-		this.titleLayout.addComponent(new HelpButton(HELP_MODULE.MULTI_YEAR_MULTI_SITE_ANALYSIS,
+		this.titleLayout.addComponent(new HelpButton(HelpModule.MULTI_YEAR_MULTI_SITE_ANALYSIS,
 				"Go to Multi-Year Multi-Site Analysis Tutorial"));
 	}
 

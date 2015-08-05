@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
-import org.generationcp.commons.help.document.HELP_MODULE;
 import org.generationcp.commons.help.document.HelpButton;
+import org.generationcp.commons.help.document.HelpModule;
 import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -187,7 +187,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		toolTitle.setWidth("80px");
 
 		titleLayout.addComponent(toolTitle);
-		titleLayout.addComponent(new HelpButton(HELP_MODULE.DASHBOARD, "Go to Dashboard Tutorial"));
+		titleLayout.addComponent(new HelpButton(HelpModule.DASHBOARD, "Go to Dashboard Tutorial"));
 
 		this.addComponent(titleLayout);
 	}

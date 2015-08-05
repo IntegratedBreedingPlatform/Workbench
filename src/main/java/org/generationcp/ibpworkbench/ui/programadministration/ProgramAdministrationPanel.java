@@ -1,8 +1,8 @@
 
 package org.generationcp.ibpworkbench.ui.programadministration;
 
-import org.generationcp.commons.help.document.HELP_MODULE;
 import org.generationcp.commons.help.document.HelpButton;
+import org.generationcp.commons.help.document.HelpModule;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.SessionData;
@@ -133,7 +133,7 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 		toolTitle.setWidth("376px");
 
 		this.titleLayout.addComponent(toolTitle);
-		this.titleLayout.addComponent(new HelpButton(HELP_MODULE.MANAGE_PROGRAM_SETTINGS_MANAGE_PROGRAM_SETTING,
+		this.titleLayout.addComponent(new HelpButton(HelpModule.MANAGE_PROGRAM_SETTINGS_MANAGE_PROGRAM_SETTING,
 				"Go to Program Creation Tutorial"));
 	}
 

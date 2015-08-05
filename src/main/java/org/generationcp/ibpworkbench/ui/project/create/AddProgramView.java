@@ -4,8 +4,8 @@ package org.generationcp.ibpworkbench.ui.project.create;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.generationcp.commons.help.document.HELP_MODULE;
 import org.generationcp.commons.help.document.HelpButton;
+import org.generationcp.commons.help.document.HelpModule;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
@@ -215,7 +215,7 @@ public class AddProgramView extends Panel implements InitializingBean {
 		toolTitle.setWidth("216px");
 
 		this.titleLayout.addComponent(toolTitle);
-		this.titleLayout.addComponent(new HelpButton(HELP_MODULE.PROGRAM_CREATION, "Go to Program Creation Tutorial"));
+		this.titleLayout.addComponent(new HelpButton(HelpModule.PROGRAM_CREATION, "Go to Program Creation Tutorial"));
 	}
 
 	protected TabSheet generateTabSheet() {

@@ -3,8 +3,8 @@ package org.generationcp.ibpworkbench.ui.recovery;
 
 import java.io.File;
 
-import org.generationcp.commons.help.document.HELP_MODULE;
 import org.generationcp.commons.help.document.HelpButton;
+import org.generationcp.commons.help.document.HelpModule;
 import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -287,13 +287,13 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 
 		rootContent.addComponent(pageTitle);
 		rootContent.addComponent(new Label("<div style='height: 10px'></div>", Label.CONTENT_XHTML));
-		rootContent.addComponent(this.setUpHeadings(HELP_MODULE.BACKUP_PROGRAM_DATA, this.messageSource.getMessage("BACKUP_BMS_TITLE"),
+		rootContent.addComponent(this.setUpHeadings(HelpModule.BACKUP_PROGRAM_DATA, this.messageSource.getMessage("BACKUP_BMS_TITLE"),
 				"124px"));
 		rootContent.addComponent(new Label(this.messageSource.getMessage("BACKUP_BMS_DESCRIPTION", this.sessionData.getLastOpenedProject()
 				.getProjectName()), Label.CONTENT_XHTML));
 		rootContent.addComponent(this.backupBtn);
 		rootContent.addComponent(new Label("<div style='height: 20px'></div>", Label.CONTENT_XHTML));
-		rootContent.addComponent(this.setUpHeadings(HELP_MODULE.RESTORE_PROGRAM_DATA, this.messageSource.getMessage("RESTORE_BMS_TITLE"),
+		rootContent.addComponent(this.setUpHeadings(HelpModule.RESTORE_PROGRAM_DATA, this.messageSource.getMessage("RESTORE_BMS_TITLE"),
 				"228px"));
 		rootContent.addComponent(new Label(this.messageSource.getMessage("RESTORE_BMS_DESCRIPTION")));
 		rootContent.addComponent(restoreDropdownTitle);
@@ -306,7 +306,7 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 
 	}
 
-	public HorizontalLayout setUpHeadings(HELP_MODULE module, String heading, String width) {
+	public HorizontalLayout setUpHeadings(HelpModule module, String heading, String width) {
 		HorizontalLayout titleLayout = new HorizontalLayout();
 		titleLayout.setSpacing(true);
 		titleLayout.setHeight("40px");
