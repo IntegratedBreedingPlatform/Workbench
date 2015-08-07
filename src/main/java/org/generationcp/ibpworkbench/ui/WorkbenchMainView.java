@@ -338,7 +338,8 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				thisWindow.addWindow(new HelpWindow(WorkbenchMainView.this.workbenchDataManager, WorkbenchMainView.this.tomcatUtil));
+				thisWindow.addWindow(new HelpWindow(WorkbenchMainView.this.workbenchDataManager, WorkbenchMainView.this.tomcatUtil,
+						WorkbenchMainView.this.workbenchProperties));
 			}
 		});
 
