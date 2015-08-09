@@ -26,6 +26,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -65,6 +69,9 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 
 	@Autowired
 	private SessionData sessionData;
+	
+	@Autowired
+	private PlatformTransactionManager transactionManager;
 
 	private Label heading;
 
@@ -124,22 +131,30 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void buttonClick(Button.ClickEvent clickEvent) {
+			
+			public void buttonClick(final Button.ClickEvent clickEvent) {
 				try {
-					CreateProjectPanel.this.presenter.doAddNewProgram();
+					final TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+					transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 
-					MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
-							CreateProjectPanel.this.messageSource.getMessage(Message.SUCCESS),
-							CreateProjectPanel.this.presenter.program.getProjectName() + " program has been successfully created.");
+						@Override
+						protected void doInTransactionWithoutResult(TransactionStatus status) {
+							CreateProjectPanel.this.presenter.doAddNewProgram();
 
-					CreateProjectPanel.this.sessionData.setLastOpenedProject(CreateProjectPanel.this.presenter.program);
-					CreateProjectPanel.this.sessionData.setSelectedProject(CreateProjectPanel.this.presenter.program);
+							MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
+									CreateProjectPanel.this.messageSource.getMessage(Message.SUCCESS),
+									CreateProjectPanel.this.presenter.program.getProjectName() + " program has been successfully created.");
 
-					if (IBPWorkbenchApplication.get().getMainWindow() instanceof WorkbenchMainView) {
-						((WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow()).getSidebar().populateLinks();
-					}
+							CreateProjectPanel.this.sessionData.setLastOpenedProject(CreateProjectPanel.this.presenter.program);
+							CreateProjectPanel.this.sessionData.setSelectedProject(CreateProjectPanel.this.presenter.program);
 
-					CreateProjectPanel.this.presenter.enableProgramMethodsAndLocationsTab();
+							if (IBPWorkbenchApplication.get().getMainWindow() instanceof WorkbenchMainView) {
+								((WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow()).getSidebar().populateLinks();
+							}
+
+							CreateProjectPanel.this.presenter.enableProgramMethodsAndLocationsTab();
+						}
+					});
 
 				} catch (Exception e) {
 
