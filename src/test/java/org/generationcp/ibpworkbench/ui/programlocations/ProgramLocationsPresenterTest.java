@@ -51,7 +51,6 @@ public class ProgramLocationsPresenterTest {
 		this.controller =
 				Mockito.spy(new ProgramLocationsPresenter(project, this.workbenchDataManager, this.managerFactoryProvider,
 						this.locationDataManager));
-		ProgramLocationsPresenter.setGermplasmDataManager(ProgramLocationsPresenterTest.germplasmDataManager);
 	}
 
 	private Project getProject(String dummyProgramUuid) {

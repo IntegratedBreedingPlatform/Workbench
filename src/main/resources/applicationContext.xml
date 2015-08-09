@@ -11,7 +11,6 @@
 						http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
 						http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
 
-	<tx:annotation-driven />
 	<!-- Declare property file locations -->
 	<context:property-placeholder
 		location="classpath:workbench.properties, classpath:database.properties" />
@@ -116,9 +115,18 @@
 		<aop:scoped-proxy />
 	</bean>
 
+	<bean id="germplasmDataManager" factory-bean="managerFactory" 
+		factory-method="getGermplasmDataManager" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+	
+	<bean id="locationDataManager" factory-bean="managerFactory"
+		factory-method="getLocationDataManager" scope="request">
+		<aop:scoped-proxy />
+	</bean>	
 	<!-- Data Source and Transaction Configuration -->
 	
-	<tx:annotation-driven />
+	<tx:annotation-driven/>
 
 	<bean id="xaDataSources" class="org.generationcp.middleware.hibernate.XADataSources" />
 

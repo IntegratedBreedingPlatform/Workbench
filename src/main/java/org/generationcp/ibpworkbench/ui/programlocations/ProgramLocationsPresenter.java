@@ -39,7 +39,8 @@ public class ProgramLocationsPresenter implements InitializingBean {
 
 	private ProgramLocationsView view;
 
-	private static GermplasmDataManager germplasmDataManager;
+	@Autowired
+	private GermplasmDataManager germplasmDataManager;
 
 	@Autowired
 	private ManagerFactoryProvider managerFactoryProvider;
@@ -50,6 +51,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 	@Autowired
 	private SessionData sessionData;
 
+	@Autowired
 	private LocationDataManager locationDataManager;
 
 	private Project project;
@@ -160,7 +162,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 
 		List<LocationViewModel> result = new ArrayList<LocationViewModel>();
 		List<ProgramFavorite> favorites =
-				ProgramLocationsPresenter.germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, this.project.getUniqueID());
+				germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, this.project.getUniqueID());
 
 		for (ProgramFavorite favorite : favorites) {
 			LocationViewModel locationVModel = this.getLocationDetailsByLocId(favorite.getEntityId());
@@ -186,16 +188,16 @@ public class ProgramLocationsPresenter implements InitializingBean {
 	}
 
 	public boolean saveProgramLocation(Collection<LocationViewModel> selectedLocations) throws MiddlewareQueryException {
-		return ProgramLocationsPresenter.saveProgramLocation(selectedLocations, this.project, this.workbenchDataManager);
+		return saveProgramLocation(selectedLocations, this.project, this.workbenchDataManager);
 	}
 
-	public static boolean saveProgramLocation(Collection<LocationViewModel> selectedLocations, Project project,
+	public boolean saveProgramLocation(Collection<LocationViewModel> selectedLocations, Project project,
 			WorkbenchDataManager workbenchDataManager) throws MiddlewareQueryException {
 
 		// Delete existing project locations in the database
 		List<ProgramFavorite> favorites =
-				ProgramLocationsPresenter.germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, project.getUniqueID());
-		ProgramLocationsPresenter.germplasmDataManager.deleteProgramFavorites(favorites);
+				germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, project.getUniqueID());
+		germplasmDataManager.deleteProgramFavorites(favorites);
 
 		/*
 		 * add selected location to local db location table if it does not yet exist add location in workbench_project_loc_map in workbench
@@ -211,7 +213,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		}
 
 		// Add the new set of project locations
-		ProgramLocationsPresenter.germplasmDataManager.saveProgramFavorites(list);
+		germplasmDataManager.saveProgramFavorites(list);
 
 		return true;
 	}
@@ -292,10 +294,6 @@ public class ProgramLocationsPresenter implements InitializingBean {
 	@Override
 	public void afterPropertiesSet() throws Exception {
 
-		ProgramLocationsPresenter.germplasmDataManager =
-				this.managerFactoryProvider.getManagerFactoryForProject(this.project).getGermplasmDataManager();
-
-		this.locationDataManager = this.managerFactoryProvider.getManagerFactoryForProject(this.project).getLocationDataManager();
 		this.onAttachInitialize();
 	}
 
@@ -360,10 +358,6 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		}
 
 		return result;
-	}
-
-	public static void setGermplasmDataManager(GermplasmDataManager germplasmDataManager) {
-		ProgramLocationsPresenter.germplasmDataManager = germplasmDataManager;
 	}
 
 	public void setCropType(CropType cropType) {
