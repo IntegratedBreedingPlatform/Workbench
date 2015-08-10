@@ -21,6 +21,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -67,6 +71,9 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
 
+	@Autowired
+	private PlatformTransactionManager transactionManager;
+	
 	private Button editBtn;
 	private BeanItemContainer<Tool> userToolsListContainer;
 
@@ -76,11 +83,16 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 	}
 
 	protected void assemble() throws MiddlewareQueryException {
-
-		this.initializeComponents();
-		this.initializeData();
-		this.initializeLayout();
-		this.initializeActions();
+		final TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+		transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+			@Override
+			protected void doInTransactionWithoutResult(TransactionStatus status) {
+				UserToolsManagerWindow.this.initializeComponents();
+				UserToolsManagerWindow.this.initializeData();
+				UserToolsManagerWindow.this.initializeLayout();
+				UserToolsManagerWindow.this.initializeActions();
+			}
+		});
 	}
 
 	private void initializeActions() {

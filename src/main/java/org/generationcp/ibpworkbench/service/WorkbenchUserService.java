@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
  * Created by cyrus on 11/27/14.
  */
 @Service
+@Transactional
 public class WorkbenchUserService {
 
 	@Resource

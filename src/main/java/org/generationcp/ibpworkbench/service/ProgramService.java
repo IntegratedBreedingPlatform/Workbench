@@ -38,6 +38,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.util.WebUtils;
 
 @Service
+@Transactional
 public class ProgramService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ProgramService.class);
@@ -68,8 +69,6 @@ public class ProgramService {
 	private static final int PROJECT_USER_STATUS = 1;
 
 	public void createNewProgram(Project program) throws MiddlewareQueryException {
-
-
 
 		this.idAndNameOfProgramMembers.clear();
 

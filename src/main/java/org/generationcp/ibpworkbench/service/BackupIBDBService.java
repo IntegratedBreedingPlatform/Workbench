@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
+@Transactional
 public class BackupIBDBService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(BackupIBDBService.class);
