@@ -1,18 +1,20 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * 
  * Generation Challenge Programme (GCP)
- *
- *
+ * 
+ * 
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
+ * 
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.actions;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Set;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -28,8 +30,8 @@ import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
-import org.generationcp.middleware.pojos.workbench.SecurityQuestion;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
+import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,10 +45,10 @@ import com.vaadin.ui.Form;
 
 /**
  * <b>Description</b>: Listener responsible for saving new Users and Persons records created from the Create New Project screen.
- *
+ * 
  * <br>
  * <br>
- *
+ * 
  * <b>Author</b>: Mark Agarrado <br>
  * <b>File Created</b>: October 15, 2012
  */
@@ -74,7 +76,7 @@ public class SaveNewProjectAddUserAction implements ClickListener {
 		this.membersSelect = membersSelect;
 	}
 
-	// TODO: Code reviewed by Cyrus: Logic quite similar to SaveUserAccountAction,
+	// Code reviewed by Cyrus: Logic quite similar to SaveUserAccountAction,
 	// this can be consolidated to avoid redundant code
 	@Override
 	public void buttonClick(ClickEvent event) {
@@ -85,13 +87,15 @@ public class SaveNewProjectAddUserAction implements ClickListener {
 		try {
 			this.userAccountForm.commit();
 		} catch (InternationalizableException e) {
+			LOG.error(e.getMessage(), e);
 			MessageNotifier.showRequiredFieldError(event.getComponent().getWindow(), e.getDescription());
 			return;
 		} catch (InvalidValueException e) {
+			LOG.error(e.getMessage(), e);
 			MessageNotifier.showRequiredFieldError(event.getComponent().getWindow(), ValidationUtil.getMessageFor(e));
 			return;
 		} catch (Exception e) {
-			// handle error for unexpected cases
+			LOG.error(e.getMessage(), e);
 			return;
 		}
 
@@ -124,7 +128,7 @@ public class SaveNewProjectAddUserAction implements ClickListener {
 
 	}
 
-	private void saveUserAccount(UserAccountModel userAccount, TwinTableSelect<User> membersSelect) throws MiddlewareQueryException {
+	protected void saveUserAccount(UserAccountModel userAccount, TwinTableSelect<User> membersSelect) throws MiddlewareQueryException {
 		userAccount.trimAll();
 
 		Person person = new Person();
@@ -156,13 +160,11 @@ public class SaveNewProjectAddUserAction implements ClickListener {
 		user.setStatus(0);
 		user.setType(0);
 		user.setIsNew(true);
-		this.workbenchDataManager.addUser(user);
 
-		SecurityQuestion question = new SecurityQuestion();
-		question.setUserId(user.getUserid());
-		question.setSecurityQuestion(userAccount.getSecurityQuestion());
-		question.setSecurityAnswer(userAccount.getSecurityAnswer());
-		this.workbenchDataManager.addSecurityQuestion(question);
+		// add user roles to the particular user
+		user.setRoles(Arrays.asList(new UserRole(user, userAccount.getRole())));
+
+		this.workbenchDataManager.addUser(user);
 
 		UserInfo userInfo = new UserInfo();
 		userInfo.setUserId(user.getUserid());
@@ -174,7 +176,7 @@ public class SaveNewProjectAddUserAction implements ClickListener {
 
 		// get currently selected users and add the new user
 		@SuppressWarnings("unchecked")
-		HashSet<User> selectedMembers = new HashSet<User>(membersSelect.getValue());
+		Set<User> selectedMembers = new HashSet<User>(membersSelect.getValue());
 		selectedMembers.add(user);
 		membersSelect.setValue(selectedMembers);
 	}

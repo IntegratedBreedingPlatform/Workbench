@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<title>About the BMS</title>
+	<link th:href="@{/controller/static/lib/styleGuide/css/styleGuide.min.css}" rel="stylesheet"/>
+	<link th:href="@{/controller/static/css/about.css}" rel="stylesheet"/>
+</head>
+<body>
+
+	<div class="container about-container">
+
+		<div class="about-header">
+			<span th:src="#{about.brought.to.you.by}">Brought to you by</span>
+			<img th:src="@{/controller/static/images/sponsors/GCP_Splash.jpg}"/>
+		</div>
+
+		<h2 class="about-header" th:text="#{about.in.partnership.with}">In partnership with</h2>
+
+		<div class="row">
+			<div class="col-xs-4" th:each="img : ${partnerImages}">
+				<div class="about-thumbnail" >
+					<img th:src="@{/controller/static/images/sponsors/{img}(img=${img})}" class="img-responsive"/>
+				</div>
+			</div>
+		</div>
+
+		<h2 class="about-header" th:text="#{about.with.the.generous.financial.support.of}">With the generous financial support of</h2>
+
+		<div class="row">
+			<div class="col-xs-4" th:each="img : ${supportImages}">
+				<div class="about-thumbnail" >
+					<img th:src="@{/controller/static/images/sponsors/{img}(img=${img})}" class="img-responsive"/>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+</body>
+
+</html>

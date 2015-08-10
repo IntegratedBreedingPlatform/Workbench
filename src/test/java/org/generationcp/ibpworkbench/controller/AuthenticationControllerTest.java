@@ -8,7 +8,7 @@ import java.util.Map;
 import javax.mail.MessagingException;
 
 import org.generationcp.ibpworkbench.model.UserAccountModel;
-import org.generationcp.ibpworkbench.security.ForgotPasswordEmailService;
+import org.generationcp.ibpworkbench.security.WorkbenchEmailSenderService;
 import org.generationcp.ibpworkbench.security.InvalidResetTokenException;
 import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.ibpworkbench.validator.ForgotPasswordAccountValidator;
@@ -40,7 +40,7 @@ public class AuthenticationControllerTest {
 	private ForgotPasswordAccountValidator forgotPasswordAccountValidator;
 
 	@Mock
-	private ForgotPasswordEmailService forgotPasswordEmailService;
+	private WorkbenchEmailSenderService workbenchEmailSenderService;
 
 	@Mock
 	private WorkbenchUserService workbenchUserService;
@@ -146,7 +146,7 @@ public class AuthenticationControllerTest {
 		// assume everything is well
 		User user = new User();
 		Model model = Mockito.mock(Model.class);
-		Mockito.when(this.forgotPasswordEmailService.validateResetToken(AuthenticationControllerTest.TEST_RESET_PASSWORD_TOKEN))
+		Mockito.when(this.workbenchEmailSenderService.validateResetToken(AuthenticationControllerTest.TEST_RESET_PASSWORD_TOKEN))
 				.thenReturn(user);
 
 		String page = this.controller.getCreateNewPasswordPage(AuthenticationControllerTest.TEST_RESET_PASSWORD_TOKEN, model);
@@ -158,7 +158,7 @@ public class AuthenticationControllerTest {
 	@Test
 	public void testGetCreateNewPasswordPageInvalidToken() throws Exception {
 		Model model = Mockito.mock(Model.class);
-		Mockito.when(this.forgotPasswordEmailService.validateResetToken(AuthenticationControllerTest.TEST_RESET_PASSWORD_TOKEN)).thenThrow(
+		Mockito.when(this.workbenchEmailSenderService.validateResetToken(AuthenticationControllerTest.TEST_RESET_PASSWORD_TOKEN)).thenThrow(
 				new InvalidResetTokenException());
 
 		String page = this.controller.getCreateNewPasswordPage(AuthenticationControllerTest.TEST_RESET_PASSWORD_TOKEN, model);
@@ -170,7 +170,7 @@ public class AuthenticationControllerTest {
 	public void testDoSendResetPasswordRequestEmail() throws Exception {
 		// default success scenario
 		Mockito.when(this.workbenchUserService.getUserByUserName(Matchers.anyString())).thenReturn(Mockito.mock(User.class));
-		Mockito.doNothing().when(this.forgotPasswordEmailService).doRequestPasswordReset(Matchers.any(User.class));
+		Mockito.doNothing().when(this.workbenchEmailSenderService).doRequestPasswordReset(Matchers.any(User.class));
 
 		ResponseEntity<Map<String, Object>> result = this.controller.doSendResetPasswordRequestEmail(Mockito.mock(UserAccountModel.class));
 
@@ -183,7 +183,7 @@ public class AuthenticationControllerTest {
 	public void testDoSendResetPasswordRequestEmailWithErrors() throws Exception {
 		// houston we have a problem
 		Mockito.when(this.workbenchUserService.getUserByUserName(Matchers.anyString())).thenReturn(Mockito.mock(User.class));
-		Mockito.doThrow(new MessagingException("i cant send me message :(")).when(this.forgotPasswordEmailService)
+		Mockito.doThrow(new MessagingException("i cant send me message :(")).when(this.workbenchEmailSenderService)
 				.doRequestPasswordReset(Matchers.any(User.class));
 
 		ResponseEntity<Map<String, Object>> result = this.controller.doSendResetPasswordRequestEmail(Mockito.mock(UserAccountModel.class));
@@ -199,7 +199,7 @@ public class AuthenticationControllerTest {
 		boolean result = this.controller.doResetPassword(userAccountModel);
 
 		Mockito.verify(this.workbenchUserService, Mockito.times(1)).updateUserPassword(userAccountModel);
-		Mockito.verify(this.forgotPasswordEmailService, Mockito.times(1)).deleteToken(userAccountModel);
+		Mockito.verify(this.workbenchEmailSenderService, Mockito.times(1)).deleteToken(userAccountModel);
 
 		Assert.assertTrue("success!", result);
 	}
@@ -208,13 +208,13 @@ public class AuthenticationControllerTest {
 	public void testDoResetPasswordGotError() throws Exception {
 		UserAccountModel userAccountModel = new UserAccountModel();
 
-		Mockito.doThrow(new MiddlewareQueryException("oops i did it again")).when(this.forgotPasswordEmailService)
+		Mockito.doThrow(new MiddlewareQueryException("oops i did it again")).when(this.workbenchEmailSenderService)
 				.deleteToken(userAccountModel);
 
 		boolean result = this.controller.doResetPassword(userAccountModel);
 
 		Mockito.verify(this.workbenchUserService, Mockito.times(1)).updateUserPassword(userAccountModel);
-		Mockito.verify(this.forgotPasswordEmailService, Mockito.times(1)).deleteToken(userAccountModel);
+		Mockito.verify(this.workbenchEmailSenderService, Mockito.times(1)).deleteToken(userAccountModel);
 
 		Assert.assertFalse("fail!", result);
 	}

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+	<meta charset="UTF-8">
+	<title>Ask Support / Feedback</title>
+	<link th:href="@{/controller/static/lib/styleGuide/css/styleGuide.min.css}" rel="stylesheet"/>
+	<link th:href="@{/controller/static/lib/font-awesome-4.2.0/css/font-awesome.css}" rel="stylesheet"/>
+	<link th:href="@{/controller/static/lib/ngToast/ngToast.min.css}" rel="stylesheet"/>
+	<link th:href="@{/controller/static/lib/ngToast/ngToast-animations.min.css}" rel="stylesheet"/>
+	<link th:href="@{/controller/static/css/ask-support.css}" rel="stylesheet"/>
+</head>
+<body class="container-fluid" ng-app="AskSupportApp">
+	<toast></toast>
+	<section ng-controller="AskSupportFormController">
+		<div class="col-xs-12">
+			<div class="row alert alert-info" role="alert">
+				<div class="pull-left">
+					<span class="fa fa-info-circle ask-support-info-icon"></span>
+				</div>
+				<p>
+					<b>Dear BMS User,</b><br/>
+					<span>Please provide as many details as you can (ex. BMS version, crops used, steps to replicate and template or data used) and fill-up the name and email so we can contact you if we need further information. Thanks!</span>
+				</p>
+			</div>
+		</div>
+
+		<form ng-upload="uploadComplete(content)" upload-options-before-submit="validate()" action="submit" novalidate name="askSupportForm"
+			  class="row col-lg-6 col-md-8 col-sm-10">
+			<div class="form-group" show-errors>
+				<label for="nameTxt">Name</label>
+				<input ng-model="form.name" type="text" class="form-control" name="name" id="nameTxt" placeholder="Name" required>
+
+				<p class="help-block ask-support-help-block" ng-if="askSupportForm.name.$error.required">Please provide your name</p>
+			</div>
+
+			<div class="form-group" show-errors>
+				<label for="emailTxt">Email</label>
+				<input ng-model="form.email" type="email" class="form-control" name="email" id="emailTxt" placeholder="Email" required>
+
+				<p class="help-block ask-support-help-block" ng-if="askSupportForm.email.$error.required">Please provide your email address</p>
+
+				<p class="help-block ask-support-help-block" ng-if="askSupportForm.email.$error.email">The email address is invalid</p>
+			</div>
+
+			<div class="form-group" show-errors>
+				<label for="summaryTxt">Summary</label>
+				<input ng-model="form.summary" type="text" class="form-control" name="summary" id="summaryTxt" placeholder="Summary" required>
+
+				<p class="help-block ask-support-help-block" ng-if="askSupportForm.summary.$error.required">Summary is required</p>
+			</div>
+
+			<div class="form-group">
+				<label for="descriptionTxt">Description</label>
+				<textarea ng-model="form.description" name="description" class="form-control" id="descriptionTxt" rows="6"
+						  placeholder="Description"></textarea>
+			</div>
+
+			<div class="form-group">
+				<label for="requestCategorySelect">Request Category</label>
+				<select ng-model="form.requestCategory" name="requestCategory" id="requestCategorySelect" class="form-control">
+					<option th:each="category,iterStat : ${requestCategories}"
+							th:value="${iterStat.index}"
+							th:text="${category}">Category
+					</option>
+				</select>
+			</div>
+
+			<div class="form-group">
+				<label for="file">File Attachment</label>
+				<input type="file" name="file" id="file">
+			</div>
+
+			<button type="submit" class="btn btn-primary">Submit</button>
+
+		</form>
+	</section>
+
+	<script type="text/javascript" th:src="@{/controller/static/js/lib/angular.min.js}"></script>
+	<script type="text/javascript" th:src="@{/controller/static/js/lib/angular-animate.min.js}"></script>
+	<script type="text/javascript" th:src="@{/controller/static/js/lib/angular-sanitize.min.js}"></script>
+	<script type="text/javascript" th:src="@{/controller/static/js/lib/ng-upload.min.js}"></script>
+	<script type="text/javascript" th:src="@{/controller/static/js/lib/ngToast.min.js}"></script>
+	<script type="text/javascript" th:src="@{/controller/static/js/ask-support.js}"></script>
+
+</body>
+
+</html>

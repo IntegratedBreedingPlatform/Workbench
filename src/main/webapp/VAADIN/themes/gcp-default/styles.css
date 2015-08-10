@@ -246,7 +246,6 @@ span.v-checkbox-hidecheckbox input{display:none !important}
     color: white;
 
     background: #3b7fc4; /* Old browsers */
-    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzNiN2ZjNCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMzMzZlYTkiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
     background: -moz-linear-gradient(top, #3b7fc4 0%, #336ea9 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#3b7fc4), color-stop(100%,#336ea9)); /* Chrome,Safari4+ */
     background: -webkit-linear-gradient(top, #3b7fc4 0%,#336ea9 100%); /* Chrome10+,Safari5.1+ */
@@ -261,7 +260,6 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 
 .bms-header-btn:hover {
     background: #4796e6; /* Old browsers */
-    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzQ3OTZlNiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMzODczYWYiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
     background: -moz-linear-gradient(top, #4796e6 0%, #3873af 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4796e6), color-stop(100%,#3873af)); /* Chrome,Safari4+ */
     background: -webkit-linear-gradient(top, #4796e6 0%,#3873af 100%); /* Chrome10+,Safari5.1+ */
@@ -269,6 +267,30 @@ span.v-checkbox-hidecheckbox input{display:none !important}
     background: -ms-linear-gradient(top, #4796e6 0%,#3873af 100%); /* IE10+ */
     background: linear-gradient(to bottom, #4796e6 0%,#3873af 100%); /* W3C */
 }
+
+.bms-header-upgrade-btn {
+	background: #0097b5; /* Old browsers */
+	background: -moz-linear-gradient(top,  #0097b5 0%, #007a93 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#0097b5), color-stop(100%,#007a93)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #0097b5 0%,#007a93 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #0097b5 0%,#007a93 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #0097b5 0%,#007a93 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #0097b5 0%,#007a93 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0097b5', endColorstr='#007a93',GradientType=0 ); /* IE6-9 */
+}
+
+.bms-header-upgrade-btn:hover {
+	background: #57a2af; /* Old browsers */
+	background: -moz-linear-gradient(top,  #57a2af 0%, #1b7d91 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#57a2af), color-stop(100%,#1b7d91)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #57a2af 0%,#1b7d91 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #57a2af 0%,#1b7d91 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #57a2af 0%,#1b7d91 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #57a2af 0%,#1b7d91 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#57a2af', endColorstr='#1b7d91',GradientType=0 ); /* IE6-9 */
+}
+
+/* linear-gradient(to bottom, #0097B5 0%,#007A93 100%);*/
 
 .bms-header-btn > span {
     font-size: 14px;

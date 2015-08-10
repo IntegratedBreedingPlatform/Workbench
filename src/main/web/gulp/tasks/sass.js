@@ -46,7 +46,7 @@ gulp.task('libSass', function() {
 	return gulp.src('src/sass/lib/**')
 		.pipe(cache('sass'))
 		.pipe(sass())
-		.pipe(gulpif(argv.prod, minifyCSS()))
+		.pipe(gulpif(argv.release, minifyCSS()))
 		.pipe(gulp.dest('../webapp/WEB-INF/static/lib'))
 		.on('error', handleErrors);
 });

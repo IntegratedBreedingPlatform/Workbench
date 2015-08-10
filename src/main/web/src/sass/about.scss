@@ -1,0 +1,28 @@
+$header-grey: #5C6F82;
+$shadow-grey: #888;
+
+.about-container {
+	margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.about-header {
+	color: $header-grey;
+	font-size: 1.5em;
+	font-weight: 600;
+	line-height: 1.1;
+
+    img {
+      vertical-align: middle;
+    }
+}
+
+.about-thumbnail {
+	box-shadow: 0.1em 0.1em 0.1em 0.1em $shadow-grey;
+	margin: 5pt;
+
+	.img-responsive {
+		margin: auto;
+		padding: 1rem;
+	}
+}

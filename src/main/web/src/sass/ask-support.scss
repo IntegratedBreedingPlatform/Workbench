@@ -1,0 +1,28 @@
+$info-color: #1b95b2;
+
+.ask-support-no-margin {
+	margin: 0;
+}
+
+.alert-ask-support-toast-submit {
+	background: $info-color;
+	color: white;
+}
+
+.ask-support-info-icon {
+	font-size: 5em;
+	padding-right: 1rem;
+}
+
+.form-group {
+
+	&.has-error {
+		.ask-support-help-block {
+			display: block;
+		}
+	}
+
+	.ask-support-help-block {
+		display: none;
+	}
+}

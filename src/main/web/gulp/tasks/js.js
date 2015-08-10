@@ -31,15 +31,13 @@ gulp.task('libJs', function() {
 		.pipe(gulp.dest(dest));
 });
 
-// We don't cache here in case the user changes from prod to dev and I can't be bothered figuring out how to
-// get that to work properly
 gulp.task('clientJs', function() {
 
 	var dest = destRoot + '/js';
 
 	return gulp.src('src/js/*')
 		.pipe(hintAllTheThings())
-		.pipe(gulpif(argv.prod, uglify()))
+		.pipe(gulpif(argv.release, uglify()))
 		.pipe(gulp.dest(dest));
 });
 

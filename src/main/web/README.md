@@ -4,9 +4,9 @@ This is the IBPWorkbench web development source folder. Web development differs 
 
 # Source Structure
 
-Code is built from the source folder (this folder) to `../webapp/WEB-INF`. We check both the source and the built files in, allowing Java developers to get started right away without having to install node or gulp, and do any special steps to build.
+Code is built from the source folder (this folder) to `../webapp/WEB-INF`. 
 
-Do **NOT** edit files under `/WEB-INF/pages` or `/WEB-INF/static` directly. These will be overwritten by their source files in this folder whenever a build is run.
+Do **NOT** edit files under `/WEB-INF/pages` or `/WEB-INF/static` directly. These will be overwritten by their source files in this folder whenever a build is run. All files should be committed to the source folder (`../src/main/web`) only.
 
 # Building
 
@@ -19,12 +19,12 @@ When an ordinary Maven build is run, a clean and build is trigger through the us
 To use the gulp tasks directly, you need to install Node and run `npm install` in this directory to download the required packages. You can then run the Gulp build task directly with `gulp build`. There are also a number of other tasks that you can run manually (that will be included in a build):
 
 * `clean` - removes `/WEB-INF/static` and `/WEB-INF/pages`
-* `build` - runs `js`, `sass`, `images`, `html` and `fonts`. Running with the `--prod` flag will minify JS and CSS.
+* `build` - runs `js`, `sass`, `images`, `html` and `fonts`. Running with the `--release` flag will minify JS and CSS.
 * `fonts` - copies font files to the build directory
 * `html` - copies the contents of the src pages folder to the build folder
 * `images` - compresses the images and copies them to the built images folder
-* `js` - will JSHint any non-library code, and copy all JavaScript files (libraries too) to the build folder. Running with the `--prod` flag will minify files.
-* `sass` - compiles scss files into css, adds vendor prefixes and copies to the build folder. Running with the `--prod` flag will minify files.
+* `js` - will JSHint any non-library code, and copy all JavaScript files (libraries too) to the build folder. Running with the `--release` flag will minify files.
+* `sass` - compiles scss files into css, adds vendor prefixes and copies to the build folder. Running with the `--release` flag will minify files.
 * `test` - runs the JavaScript tests (IN PROGRESS)
 * `watch` - will invoke the appropriate task when files in the `src` folder change
 
@@ -32,7 +32,7 @@ Running `gulp` without a specified task will run the `build` task.
 
 ## Building for Production
 
-Before releasing, we should run a production build. You can run `gulp build --prod`, or specify the `--prod` argument in the gulp build configuration in the pom.xml, and run a Maven build. This will minify files ready for release.
+We must build our files for production with the `--release` flag. This will minify JavaScript and CSS files. The `--release` flag will be applied when doing a Maven build with the `release` environment config, or you can run `gulp build --release`.
 
 # Development
 
@@ -45,6 +45,6 @@ where `property` is a property defined in the `gulp.properties` file specifying 
 In addtion to this, there are a few things to note about developing in this environment:
 
 * We use Sass, not CSS, which you can find in the sass folder
-* We use the auto-prefixer plugin to automatically add vendor prrefixes to our CSS. This happens at build time, so we don't have to specify them ourselves in our Sass files. For more information and to check if your rule is supported, see the [website](https://github.com/postcss/autoprefixer-core)
+* We use the auto-prefixer plugin to automatically add vendor prefixes to our CSS. This happens at build time, so we don't have to specify them ourselves in our Sass files. For more information and to check if your rule is supported, see the [website](https://github.com/postcss/autoprefixer-core)
 * We use an image minification library to compress our images on build
 * JS libraries should be included already minified in the `js/lib` folder

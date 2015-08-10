@@ -8,7 +8,7 @@ import javax.annotation.Resource;
 import javax.mail.MessagingException;
 
 import org.generationcp.ibpworkbench.model.UserAccountModel;
-import org.generationcp.ibpworkbench.security.ForgotPasswordEmailService;
+import org.generationcp.ibpworkbench.security.WorkbenchEmailSenderService;
 import org.generationcp.ibpworkbench.security.InvalidResetTokenException;
 import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.ibpworkbench.validator.ForgotPasswordAccountValidator;
@@ -53,7 +53,7 @@ public class AuthenticationController {
 	private ForgotPasswordAccountValidator forgotPasswordAccountValidator;
 
 	@Resource
-	private ForgotPasswordEmailService forgotPasswordEmailService;
+	private WorkbenchEmailSenderService workbenchEmailSenderService;
 
 	@Resource
 	private MessageSource messageSource;
@@ -68,7 +68,7 @@ public class AuthenticationController {
 
 		// verify token if valid
 		try {
-			User user = this.forgotPasswordEmailService.validateResetToken(token);
+			User user = this.workbenchEmailSenderService.validateResetToken(token);
 
 			model.addAttribute("user", user);
 
@@ -169,7 +169,7 @@ public class AuthenticationController {
 
 		try {
 			// success! send an email request
-			this.forgotPasswordEmailService.doRequestPasswordReset(this.workbenchUserService.getUserByUserName(model.getUsername()));
+			this.workbenchEmailSenderService.doRequestPasswordReset(this.workbenchUserService.getUserByUserName(model.getUsername()));
 
 			isSuccess = HttpStatus.OK;
 			out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
@@ -194,7 +194,7 @@ public class AuthenticationController {
 			this.workbenchUserService.updateUserPassword(model);
 
 			// 2. remove token
-			this.forgotPasswordEmailService.deleteToken(model);
+			this.workbenchEmailSenderService.deleteToken(model);
 
 			return true;
 

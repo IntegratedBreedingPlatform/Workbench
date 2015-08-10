@@ -7,15 +7,7 @@ import java.util.Map;
 
 import org.generationcp.commons.constant.ToolEnum;
 import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.actions.ActionListener;
-import org.generationcp.ibpworkbench.actions.ChangeWindowAction;
-import org.generationcp.ibpworkbench.actions.DeleteProjectAction;
-import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
-import org.generationcp.ibpworkbench.actions.OpenProgramLocationsAction;
-import org.generationcp.ibpworkbench.actions.OpenProgramMethodsAction;
-import org.generationcp.ibpworkbench.actions.OpenToolVersionsAction;
-import org.generationcp.ibpworkbench.actions.OpenWindowAction;
-import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
+import org.generationcp.ibpworkbench.actions.*;
 import org.generationcp.ibpworkbench.ui.programadministration.OpenManageProgramPageAction;
 import org.generationcp.ibpworkbench.ui.project.create.OpenUpdateProjectPageAction;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
@@ -198,6 +190,8 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 			return new OpenProgramMethodsAction(project);
 		} else if (toolName.equals("project_location")) {
 			return new OpenProgramLocationsAction(project, this.sessionData.getUserData());
+		} else if (toolName.equals("about_bms")) {
+			return new PageAction("/ibpworkbench/controller/about/");
 		} else if (toolName.equals("delete_project")) {
 			return new DeleteProjectAction();
 		} else {

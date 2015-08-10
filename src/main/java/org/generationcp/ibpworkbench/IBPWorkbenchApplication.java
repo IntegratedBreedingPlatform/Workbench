@@ -15,6 +15,10 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.vaadin.terminal.gwt.server.WebBrowser;
 import org.dellroad.stuff.vaadin.ContextApplication;
 import org.dellroad.stuff.vaadin.SpringContextApplication;
 import org.generationcp.commons.vaadin.actions.UpdateComponentLabelsAction;
@@ -48,7 +52,7 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 
 	private HttpServletRequest request;
 	private HttpServletResponse response;
-	private boolean jiraSetupDone = false;
+	private boolean scriptsRun = false;
 
 	public static IBPWorkbenchApplication get() {
 		return ContextApplication.get(IBPWorkbenchApplication.class);
@@ -143,12 +147,14 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 		this.setMainWindow(new WorkbenchMainView());
 	}
 
-	public void toggleJira() {
-		this.jiraSetupDone = !this.jiraSetupDone;
+	public void toggleScripts() {
+		this.scriptsRun = !this.scriptsRun;
 	}
 
 	@Override
 	public Window getWindow(String name) {
+		sessionData.setBrowserInfo((WebBrowser) this.getMainWindow().getTerminal());
+
 		Window w = super.getWindow(name);
 
 		final String prefetch_script = "/ibpworkbench/VAADIN/js/prefetch-resources.js";
@@ -156,17 +162,10 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 		final String script =
 				"try{var fileref=document.createElement('script'); fileref.setAttribute(\"type\",\"text/javascript\"); fileref.setAttribute(\"src\", \" %s \"); document.getElementsByTagName(\"head\")[0].appendChild(fileref);}catch(e){alert(e);}";
 
-		if (!this.jiraSetupDone) {
+		if (!this.scriptsRun) {
 			w.executeJavaScript(String.format(script, prefetch_script));
-		}
 
-		if (w instanceof WorkbenchMainView && !this.jiraSetupDone) {
-			final String jiraSupportJSSrc =
-					"https://pods.iplantcollaborative.org/jira/s/en_US-ihxzyo-418945332/852/5/1.2.9/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?collectorId=5f718b22";
-
-			w.executeJavaScript(String.format(script, jiraSupportJSSrc));
-
-			this.jiraSetupDone = true;
+			this.scriptsRun = true;
 		}
 
 		return w;

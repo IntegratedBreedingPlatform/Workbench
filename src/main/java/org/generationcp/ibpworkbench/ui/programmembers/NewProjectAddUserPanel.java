@@ -1,18 +1,17 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * 
  * Generation Challenge Programme (GCP)
- *
- *
+ * 
+ * 
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
+ * 
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.ui.programmembers;
 
-import java.util.Collection;
-
+import org.generationcp.commons.security.Role;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
@@ -37,10 +36,10 @@ import com.vaadin.ui.themes.Reindeer;
 
 /**
  * <b>Description</b>: Panel for displaying UserAccountForm in the AddUser pop-up window.
- *
+ * 
  * <br>
  * <br>
- *
+ * 
  * <b>Author</b>: Mark Agarrado <br>
  * <b>File Created</b>: October 15, 2012
  */
@@ -61,8 +60,7 @@ public class NewProjectAddUserPanel extends Panel {
 
 	private final TwinTableSelect<User> membersSelect;
 
-	private final static Object[] VISIBLE_ITEM_PROPERTIES = new Object[] {"firstName", "middleName", "lastName", "email", "username",
-			"securityQuestion", "securityAnswer"};
+	private static final Object[] VISIBLE_ITEM_PROPERTIES = new Object[] {"firstName", "lastName", "role", "email", "username"};
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -121,10 +119,13 @@ public class NewProjectAddUserPanel extends Panel {
 	}
 
 	protected void initializeValues() {
-		// set default value for Security Question
-		ComboBox questionField = (ComboBox) this.userForm.getField("securityQuestion");
-		Collection<?> itemIds = questionField.getItemIds();
-		questionField.setValue(itemIds.iterator().next());
+
+		ComboBox roleField = (ComboBox) this.userForm.getField("role");
+		roleField.addItem(Role.ADMIN.name());
+		roleField.addItem(Role.BREEDER.name());
+		roleField.addItem(Role.TECHNICIAN.name());
+		roleField.select(null);
+
 	}
 
 	protected void initializeLayout() {
