@@ -1,19 +1,25 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * 
  * Generation Challenge Programme (GCP)
- *
- *
+ * 
+ * 
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
+ * 
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
+import org.generationcp.commons.help.document.HelpButton;
+import org.generationcp.commons.help.document.HelpModule;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -48,14 +54,23 @@ import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.*;
 import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 /**
- *
+ * 
  * @author Aldrin Batac
- *
+ * 
  */
 @Configurable
 public class SingleSiteAnalysisPanel extends VerticalLayout implements InitializingBean, InternationalizableComponent, IBPWorkbenchLayout {
@@ -179,7 +194,8 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 	private Button browseLink;
 	private Button uploadLink;
 
-	private Label lblPageTitle;
+	private HorizontalLayout titleLayout;
+	private Label toolTitle;
 	private HeaderLabelLayout heading;
 	private Label lblFactors;
 	private Label lblVariates;
@@ -266,16 +282,14 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 	public void updateLabels() {
 		this.messageSource.setCaption(this.btnCancel, Message.RESET);
 		this.messageSource.setCaption(this.btnNext, Message.NEXT);
-		this.messageSource.setValue(this.lblPageTitle, Message.TITLE_SSA);
+		this.messageSource.setValue(this.toolTitle, Message.TITLE_SSA);
 	}
 
 	@Override
 	public void instantiateComponents() {
 		this.managerFactory = this.managerFactoryProvider.getManagerFactoryForProject(this.currentProject);
 
-		this.lblPageTitle = new Label();
-		this.lblPageTitle.setStyleName(Bootstrap.Typography.H1.styleName());
-		this.lblPageTitle.setHeight("26px");
+		this.setTitleContent();
 
 		ThemeResource resource = new ThemeResource("../vaadin-retro/images/search-nurseries.png");
 		Label headingLabel = new Label("Select Data for Analysis");
@@ -449,13 +463,27 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		this.rootLayout.setWidth("100%");
 		this.rootLayout.setSpacing(true);
 		this.rootLayout.setMargin(false, false, false, true);
-		this.rootLayout.addComponent(this.lblPageTitle);
+		this.rootLayout.addComponent(this.titleLayout);
 		this.rootLayout.addComponent(selectDataForAnalysisLayout);
 		this.rootLayout.addComponent(this.studyDetailsLayout);
 		this.rootLayout.addComponent(this.buttonArea);
 		this.rootLayout.setComponentAlignment(this.buttonArea, Alignment.TOP_CENTER);
 
 		this.addComponent(this.rootLayout);
+	}
+
+	private void setTitleContent() {
+		this.titleLayout = new HorizontalLayout();
+		this.titleLayout.setSpacing(true);
+
+		this.toolTitle = new Label();
+		this.toolTitle.setContentMode(Label.CONTENT_XHTML);
+		this.toolTitle.setStyleName(Bootstrap.Typography.H1.styleName());
+		this.toolTitle.setHeight("26px");
+		this.toolTitle.setWidth("278px");
+
+		this.titleLayout.addComponent(this.toolTitle);
+		this.titleLayout.addComponent(new HelpButton(HelpModule.SINGLE_SITE_ANALYSIS, "Go to Single Site Analysis Tutorial"));
 	}
 
 	protected Component layoutButtonArea() {

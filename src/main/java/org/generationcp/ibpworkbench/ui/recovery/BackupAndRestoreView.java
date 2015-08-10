@@ -3,6 +3,8 @@ package org.generationcp.ibpworkbench.ui.recovery;
 
 import java.io.File;
 
+import org.generationcp.commons.help.document.HelpButton;
+import org.generationcp.commons.help.document.HelpModule;
 import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -27,6 +29,7 @@ import com.vaadin.data.Validator;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.ListSelect;
@@ -264,12 +267,6 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 		final Label pageTitle = new Label(this.messageSource.getMessage("BACKUP_RESTORE_TITLE"));
 		pageTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 
-		final Label backupTitle = new Label(this.messageSource.getMessage("BACKUP_BMS_TITLE"));
-		backupTitle.setStyleName(Bootstrap.Typography.H4.styleName());
-
-		final Label restoreTitle = new Label(this.messageSource.getMessage("RESTORE_BMS_TITLE"));
-		restoreTitle.setStyleName(Bootstrap.Typography.H4.styleName());
-
 		final Label restoreDropdownTitle = new Label(this.messageSource.getMessage("RESTORE_CHOOSE_BACKUP"));
 		restoreDropdownTitle.setStyleName(Bootstrap.Typography.H6.styleName());
 
@@ -290,12 +287,14 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 
 		rootContent.addComponent(pageTitle);
 		rootContent.addComponent(new Label("<div style='height: 10px'></div>", Label.CONTENT_XHTML));
-		rootContent.addComponent(backupTitle);
+		rootContent.addComponent(this.setUpHeadings(HelpModule.BACKUP_PROGRAM_DATA, this.messageSource.getMessage("BACKUP_BMS_TITLE"),
+				"124px"));
 		rootContent.addComponent(new Label(this.messageSource.getMessage("BACKUP_BMS_DESCRIPTION", this.sessionData.getLastOpenedProject()
 				.getProjectName()), Label.CONTENT_XHTML));
 		rootContent.addComponent(this.backupBtn);
 		rootContent.addComponent(new Label("<div style='height: 20px'></div>", Label.CONTENT_XHTML));
-		rootContent.addComponent(restoreTitle);
+		rootContent.addComponent(this.setUpHeadings(HelpModule.RESTORE_PROGRAM_DATA, this.messageSource.getMessage("RESTORE_BMS_TITLE"),
+				"228px"));
 		rootContent.addComponent(new Label(this.messageSource.getMessage("RESTORE_BMS_DESCRIPTION")));
 		rootContent.addComponent(restoreDropdownTitle);
 		rootContent.addComponent(this.restoreList);
@@ -305,5 +304,21 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 		rootContent.addComponent(this.uploadFrm);
 		rootContent.addComponent(this.restoreBtn);
 
+	}
+
+	public HorizontalLayout setUpHeadings(HelpModule module, String heading, String width) {
+		HorizontalLayout titleLayout = new HorizontalLayout();
+		titleLayout.setSpacing(true);
+		titleLayout.setHeight("40px");
+
+		Label toolTitle = new Label(heading);
+		toolTitle.setStyleName(Bootstrap.Typography.H4.styleName());
+		toolTitle.setContentMode(Label.CONTENT_XHTML);
+		toolTitle.setWidth(width);
+
+		titleLayout.addComponent(toolTitle);
+		titleLayout.addComponent(new HelpButton(module, "View " + heading + " Tutorial"));
+
+		return titleLayout;
 	}
 }

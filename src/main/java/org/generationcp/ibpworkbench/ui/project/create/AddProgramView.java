@@ -4,6 +4,8 @@ package org.generationcp.ibpworkbench.ui.project.create;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.generationcp.commons.help.document.HelpButton;
+import org.generationcp.commons.help.document.HelpModule;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
@@ -36,6 +38,8 @@ import com.vaadin.ui.themes.Reindeer;
 public class AddProgramView extends Panel implements InitializingBean {
 
 	private static final long serialVersionUID = 1L;
+
+	private HorizontalLayout titleLayout;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -144,8 +148,7 @@ public class AddProgramView extends Panel implements InitializingBean {
 
 	protected void initializeLayout() {
 
-		final Label heading = new Label("Add a Program");
-		heading.setStyleName(Bootstrap.Typography.H1.styleName());
+		this.setTitleContent();
 
 		final Label headingDesc =
 				new Label("To provide additional Program configuration, "
@@ -180,7 +183,7 @@ public class AddProgramView extends Panel implements InitializingBean {
 
 		this.tabSheet.getTab(this.programMethodsContainer).setCaption("Breeding Methods");
 
-		this.rootLayout.addComponent(heading);
+		this.rootLayout.addComponent(this.titleLayout);
 		this.rootLayout.addComponent(headingDesc);
 		this.rootLayout.addComponent(this.tabSheet);
 
@@ -200,6 +203,19 @@ public class AddProgramView extends Panel implements InitializingBean {
 		this.setContent(this.rootLayout);
 		this.setScrollable(true);
 		this.setSizeFull();
+	}
+
+	private void setTitleContent() {
+		this.titleLayout = new HorizontalLayout();
+		this.titleLayout.setSpacing(true);
+
+		Label toolTitle = new Label("Add a Program");
+		toolTitle.setContentMode(Label.CONTENT_XHTML);
+		toolTitle.setStyleName(Bootstrap.Typography.H1.styleName());
+		toolTitle.setWidth("216px");
+
+		this.titleLayout.addComponent(toolTitle);
+		this.titleLayout.addComponent(new HelpButton(HelpModule.PROGRAM_CREATION, "Go to Program Creation Tutorial"));
 	}
 
 	protected TabSheet generateTabSheet() {

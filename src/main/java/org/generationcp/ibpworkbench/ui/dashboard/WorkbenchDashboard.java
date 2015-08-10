@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * 
  * Generation Challenge Programme (GCP)
- *
- *
+ * 
+ * 
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
+ * 
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.ui.dashboard;
@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.help.document.HelpButton;
+import org.generationcp.commons.help.document.HelpModule;
 import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -168,13 +170,26 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		this.setMargin(new MarginInfo(false, true, true, true));
 		this.setWidth("100%");
 
-		final Label dashboardLbl = new Label(this.messageSource.getMessage(Message.DASHBOARD));
-		dashboardLbl.setDebugId("vaadin-home-lbl");
-		dashboardLbl.setStyleName(Bootstrap.Typography.H1.styleName());
+		this.setTitleContent();
 
-		this.addComponent(dashboardLbl);
 		this.addComponent(this.layoutProjectTableArea());
 		this.addComponent(this.layoutProjectDetailArea());
+	}
+
+	private void setTitleContent() {
+		HorizontalLayout titleLayout = new HorizontalLayout();
+		titleLayout.setSpacing(true);
+
+		Label toolTitle = new Label(this.messageSource.getMessage(Message.DASHBOARD));
+		toolTitle.setContentMode(Label.CONTENT_XHTML);
+		toolTitle.setStyleName(Bootstrap.Typography.H1.styleName());
+		toolTitle.setDebugId("vaadin-home-lbl");
+		toolTitle.setWidth("80px");
+
+		titleLayout.addComponent(toolTitle);
+		titleLayout.addComponent(new HelpButton(HelpModule.DASHBOARD, "Go to Dashboard Tutorial"));
+
+		this.addComponent(titleLayout);
 	}
 
 	protected void initializeData() {
