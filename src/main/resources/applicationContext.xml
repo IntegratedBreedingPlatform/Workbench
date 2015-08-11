@@ -15,6 +15,7 @@
 	<context:property-placeholder
 		location="classpath:workbench.properties, classpath:database.properties" />
 	<util:properties id="workbenchProperties" location="classpath:workbench.properties" />
+	<util:properties id="helpProperties" location="classpath:helplinks.properties" />
 
 	<!-- Enable Spring annotations -->
 	<context:annotation-config />
@@ -61,29 +62,29 @@
 		<constructor-arg ref="workbenchHibernateSessionProvider" />
 		<property name="installationDirectory" value="${workbench.installation_dir}" />
 	</bean>
-	
-    <bean id="toolUtil" class="org.generationcp.ibpworkbench.util.ToolUtil">
-        <property name="jdbcHost"           value="${db.host}"/>
-        <property name="jdbcPort"           value="${db.port}"/>
-        <property name="centralUser"        value=""/>
-        <property name="centralPassword"    value=""/>
-        <property name="localUser"          value=""/>
-        <property name="localPassword"      value=""/>
-        <property name="workbenchDbName"    value="workbench"/>
-        <property name="workbenchUser"      value="${db.username}"/>
-        <property name="workbenchPassword"  value="${db.password}"/>
-        <property name="workbenchInstallationDirectory" value="${workbench.installation_dir}"/>
-    </bean>	
 
-	<bean id="mysqlUtil" class="org.generationcp.commons.util.MySQLUtil" >
-        <property name="mysqlDriver" value="com.mysql.jdbc.Driver"/>
-        <property name="mysqlHost" value="${db.host}"/>
-        <property name="mysqlPort" value="${db.port}"/>
-        <property name="username" value="${db.username}"/>
-        <property name="password" value="${db.password}"/>
-        <property name="mysqlDumpPath" value="${workbench.mysqlDumpPath}"/>
-        <property name="mysqlPath" value="${workbench.mysqlExePath}"/>
-    </bean>
+	<bean id="toolUtil" class="org.generationcp.ibpworkbench.util.ToolUtil">
+		<property name="jdbcHost" value="${db.host}" />
+		<property name="jdbcPort" value="${db.port}" />
+		<property name="centralUser" value="" />
+		<property name="centralPassword" value="" />
+		<property name="localUser" value="" />
+		<property name="localPassword" value="" />
+		<property name="workbenchDbName" value="workbench" />
+		<property name="workbenchUser" value="${db.username}" />
+		<property name="workbenchPassword" value="${db.password}" />
+		<property name="workbenchInstallationDirectory" value="${workbench.installation_dir}" />
+	</bean>
+
+	<bean id="mysqlUtil" class="org.generationcp.commons.util.MySQLUtil">
+		<property name="mysqlDriver" value="com.mysql.jdbc.Driver" />
+		<property name="mysqlHost" value="${db.host}" />
+		<property name="mysqlPort" value="${db.port}" />
+		<property name="username" value="${db.username}" />
+		<property name="password" value="${db.password}" />
+		<property name="mysqlDumpPath" value="${workbench.mysqlDumpPath}" />
+		<property name="mysqlPath" value="${workbench.mysqlExePath}" />
+	</bean>
 
 	<bean id="tomcatUtil" class="org.generationcp.commons.tomcat.util.TomcatUtil">
 		<property name="managerUrl" value="${tomcat.manager.url}" />
@@ -115,18 +116,18 @@
 		<aop:scoped-proxy />
 	</bean>
 
-	<bean id="germplasmDataManager" factory-bean="managerFactory" 
+	<bean id="germplasmDataManager" factory-bean="managerFactory"
 		factory-method="getGermplasmDataManager" scope="request">
 		<aop:scoped-proxy />
 	</bean>
-	
+
 	<bean id="locationDataManager" factory-bean="managerFactory"
 		factory-method="getLocationDataManager" scope="request">
 		<aop:scoped-proxy />
-	</bean>	
+	</bean>
 	<!-- Data Source and Transaction Configuration -->
-	
-	<tx:annotation-driven/>
+
+	<tx:annotation-driven />
 
 	<bean id="xaDataSources" class="org.generationcp.middleware.hibernate.XADataSources" />
 
@@ -152,7 +153,7 @@
 		<property name="sessionFactory" ref="WORKBENCH_SessionFactory" />
 	</bean>
 
-	
+
 	<!-- Manager Factory Provider -->
 	<bean id="managerFactoryProvider"
 		class="org.generationcp.commons.hibernate.DynamicManagerFactoryProviderConcurrency">
