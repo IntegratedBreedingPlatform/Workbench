@@ -125,6 +125,11 @@
 		factory-method="getLocationDataManager" scope="request">
 		<aop:scoped-proxy />
 	</bean>
+	
+	<bean id="userProgramStateManager" factory-bean="managerFactory" 
+		factory-method="getUserProgramStateDataManager" scope="request">
+		<aop:scoped-proxy />
+	</bean>	
 	<!-- Data Source and Transaction Configuration -->
 
 	<tx:annotation-driven />
