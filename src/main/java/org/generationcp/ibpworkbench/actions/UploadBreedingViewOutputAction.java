@@ -20,6 +20,8 @@ import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindo
 import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow.CustomFileFactory;
 import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow.CustomUploadField;
 import org.generationcp.ibpworkbench.util.ZipUtil;
+import org.generationcp.middleware.manager.api.OntologyDataManager;
+import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +60,12 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 	@Autowired
 	private ManagerFactoryProvider managerFactoryProvider;
+
+	@Autowired
+	private StudyDataManager studyDataManager;
+
+	@Autowired
+	private OntologyDataManager ontologyDataManager;
 
 	public UploadBreedingViewOutputAction(FileUploadBreedingViewOutputWindow fileUploadBreedingViewOutputWindow) {
 		this.window = fileUploadBreedingViewOutputWindow;
@@ -254,7 +262,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 	}
 
 	protected BreedingViewImportServiceImpl getBreedingViewImportService() {
-		return new BreedingViewImportServiceImpl(this.project, this.managerFactoryProvider);
+		return new BreedingViewImportServiceImpl(this.studyDataManager, this.ontologyDataManager);
 	}
 
 	protected void showError(String caption, String description) {

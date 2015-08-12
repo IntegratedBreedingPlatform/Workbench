@@ -61,7 +61,6 @@ public class NurseryListPreviewTest {
 		this.view.setManagerFactoryProvider(this.managerFactoryProvider);
 		this.view.setMessageSource(this.messageSource);
 		NurseryListPreviewPresenter presenter = this.view.getPresenter();
-		presenter.setManagerFactory(this.managerFactory);
 		this.view.setProject(project);
 
 	}

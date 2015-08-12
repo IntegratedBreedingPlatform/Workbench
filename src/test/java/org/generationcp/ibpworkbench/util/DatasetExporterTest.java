@@ -132,10 +132,8 @@ public class DatasetExporterTest {
 			Assert.fail(e.getMessage());
 		}
 
-		DatasetExporter exporter = new DatasetExporter(DatasetExporterTest.manager, 1, 1);
+		DatasetExporter exporter = new DatasetExporter(DatasetExporterTest.manager, this.ontologyService, 1, 1);
 		DatasetExporter dut = Mockito.spy(exporter);
-
-		Mockito.doReturn(this.ontologyService).when(dut).retrieveCurrentOntologyService();
 
 		dut.setWorkbenchDataManager(DatasetExporterTest.workbenchDataManager);
 		try {
@@ -308,10 +306,9 @@ public class DatasetExporterTest {
 			Assert.fail(e.getMessage());
 		}
 
-		DatasetExporter exporter = new DatasetExporter(DatasetExporterTest.manager, 1, 1);
+		DatasetExporter exporter = new DatasetExporter(DatasetExporterTest.manager, this.ontologyService, 1, 1);
 		DatasetExporter dut = Mockito.spy(exporter);
 
-		Mockito.doReturn(this.ontologyService).when(dut).retrieveCurrentOntologyService();
 		dut.setWorkbenchDataManager(DatasetExporterTest.workbenchDataManager);
 		try {
 			dut.exportToCSVForBreedingView(DatasetExporterTest.FILENAME, DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME,
@@ -376,10 +373,9 @@ public class DatasetExporterTest {
 			Assert.fail(e.getMessage());
 		}
 
-		DatasetExporter exporter = new DatasetExporter(DatasetExporterTest.manager, 1, 1);
+		DatasetExporter exporter = new DatasetExporter(DatasetExporterTest.manager, this.ontologyService, 1, 1);
 		DatasetExporter dut = Mockito.spy(exporter);
 
-		Mockito.doReturn(this.ontologyService).when(dut).retrieveCurrentOntologyService();
 		dut.setWorkbenchDataManager(DatasetExporterTest.workbenchDataManager);
 		try {
 			dut.exportToCSVForBreedingView(DatasetExporterTest.FILENAME, DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME
@@ -460,10 +456,9 @@ public class DatasetExporterTest {
 			Assert.fail(e.getMessage());
 		}
 
-		DatasetExporter exporter = new DatasetExporter(DatasetExporterTest.manager, 1, 1);
+		DatasetExporter exporter = new DatasetExporter(DatasetExporterTest.manager, this.ontologyService, 1, 1);
 		DatasetExporter dut = Mockito.spy(exporter);
 
-		Mockito.doReturn(this.ontologyService).when(dut).retrieveCurrentOntologyService();
 		dut.setWorkbenchDataManager(DatasetExporterTest.workbenchDataManager);
 		try {
 			dut.exportToCSVForBreedingView(DatasetExporterTest.FILENAME, DatasetExporterTest.ENV_NAME, selectedEnvironments, this.bvInput);
@@ -569,10 +564,9 @@ public class DatasetExporterTest {
 			Assert.fail(e.getMessage());
 		}
 
-		DatasetExporter exporter = new DatasetExporter(DatasetExporterTest.manager, 1, 1);
+		DatasetExporter exporter = new DatasetExporter(DatasetExporterTest.manager, this.ontologyService, 1, 1);
 		DatasetExporter dut = Mockito.spy(exporter);
 
-		Mockito.doReturn(this.ontologyService).when(dut).retrieveCurrentOntologyService();
 		dut.setWorkbenchDataManager(DatasetExporterTest.workbenchDataManager);
 		try {
 			dut.exportToCSVForBreedingView(DatasetExporterTest.FILENAME, DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME,

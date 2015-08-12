@@ -248,8 +248,6 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 	@Autowired
 	private StudyDataManager studyDataManager;
 
-	private ManagerFactory managerFactory;
-
 	private static final String NAMED_COLUMN_1 = "name";
 	private static final String NAMED_COLUMN_2 = "description";
 	private static final String NAMED_COLUMN_3 = "scname";
@@ -287,8 +285,6 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 
 	@Override
 	public void instantiateComponents() {
-		this.managerFactory = this.managerFactoryProvider.getManagerFactoryForProject(this.currentProject);
-
 		this.setTitleContent();
 
 		ThemeResource resource = new ThemeResource("../vaadin-retro/images/search-nurseries.png");
@@ -808,10 +804,6 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 
 	public void setStudyDataManager(StudyDataManager studyDataManager) {
 		this.studyDataManager = studyDataManager;
-	}
-
-	public void setManagerFactory(ManagerFactory managerFactory) {
-		this.managerFactory = managerFactory;
 	}
 
 }

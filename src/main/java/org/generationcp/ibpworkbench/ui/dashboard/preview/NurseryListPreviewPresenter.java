@@ -24,6 +24,7 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.dms.DmsProject;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
+import org.generationcp.middleware.service.api.FieldbookService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -55,11 +56,12 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 
 	@Autowired
 	private SessionData sessionData;
+	
+	@Autowired
+	private FieldbookService fieldbookService;
 
 	@Resource
 	private MessageSource messages;
-
-	private ManagerFactory managerFactory;
 
 	public static final String STUDY_DELETE_NOT_PERMITTED = "study.delete.not.permitted";
 
@@ -67,9 +69,6 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 		this.view = view;
 		this.project = project;
 
-		if (this.project != null && view.getManagerFactoryProvider() != null) {
-			this.setManagerFactory(view.getManagerFactoryProvider().getManagerFactoryForProject(this.project));
-		}
 	}
 
 	public NurseryListPreviewPresenter() {
@@ -90,14 +89,6 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		// do nothing
-	}
-
-	public ManagerFactory getManagerFactory() {
-		return this.managerFactory;
-	}
-
-	public void setManagerFactory(ManagerFactory managerFactory) {
-		this.managerFactory = managerFactory;
 	}
 
 	public boolean isFolder(Integer value) {
@@ -128,11 +119,11 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 					this.manager.getCurrentIbdbUserId(this.sessionData.getSelectedProject().getProjectId(),
 						this.sessionData.getUserData().getUserid());
 		try {
-			this.getManagerFactory().getFieldbookMiddlewareService().deleteStudy(id, cropUserId);
+			fieldbookService.deleteStudy(id, cropUserId);
 		} catch (UnpermittedDeletionException e) {
-			Integer studyUserId = this.getManagerFactory().getFieldbookMiddlewareService().getStudy(id).getUser();
+			Integer studyUserId = fieldbookService.getStudy(id).getUser();
 			throw new NurseryListPreviewException(this.messages.getMessage(NurseryListPreviewPresenter.STUDY_DELETE_NOT_PERMITTED,
-					new String[] {this.getManagerFactory().getFieldbookMiddlewareService().getOwnerListName(studyUserId)},
+					new String[] {fieldbookService.getOwnerListName(studyUserId)},
 					"You are not able to delete this nursery or trial as you are not the owner. The owner is {0}." ,
 					LocaleContextHolder.getLocale()));
 		}

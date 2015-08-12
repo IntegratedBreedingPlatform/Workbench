@@ -72,7 +72,6 @@ public class NurseryTreeDropHandlerTest {
 		this.view.setManagerFactoryProvider(this.managerFactoryProvider);
 		this.view.setMessageSource(this.messageSource);
 		this.view.setPresenter(this.presenter);
-		this.presenter.setManagerFactory(this.managerFactory);
 		this.view.setProject(project);
 
 		try {

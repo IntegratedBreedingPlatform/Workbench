@@ -51,6 +51,7 @@ import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolType;
+import org.generationcp.middleware.service.api.OntologyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,6 +102,9 @@ public class RunSingleSiteAction implements ClickListener {
 
 	@Autowired
 	private StudyDataManager studyDataManager;
+	
+	@Autowired
+	private OntologyService ontologyService;
 	
 	public RunSingleSiteAction(SingleSiteAnalysisDetailsPanel selectDetailsForBreedingViewWindow, Project project) {
 		this.source = selectDetailsForBreedingViewWindow;
@@ -257,7 +261,7 @@ public class RunSingleSiteAction implements ClickListener {
 		}
 
 		DatasetExporter datasetExporter =
-				new DatasetExporter(studyDataManager, null, breedingViewInput.getDatasetId());
+				new DatasetExporter(studyDataManager, ontologyService, null, breedingViewInput.getDatasetId());
 
 		try {
 

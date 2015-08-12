@@ -34,6 +34,9 @@ public class SaveBreedingViewStudyTreeState implements Window.CloseListener {
 
     @Autowired
     private SessionData sessionData;
+    
+    @Autowired
+	private UserProgramStateDataManager userProgramStateManager;
 
     public SaveBreedingViewStudyTreeState(BreedingViewTreeTable treeTable) {
         this.treeTable = treeTable;
@@ -43,12 +46,8 @@ public class SaveBreedingViewStudyTreeState implements Window.CloseListener {
     public void windowClose(Window.CloseEvent e) {
         List<String> itemIds = getExpandedIds();
 
-        ManagerFactory managerFactory = provider.getManagerFactoryForProject(sessionData.getSelectedProject());
-
-
-        UserProgramStateDataManager programStateDataManager = managerFactory.getUserProgramStateDataManager();
         try {
-            programStateDataManager.saveOrUpdateUserProgramTreeState(sessionData.getUserData().getUserid(),
+            userProgramStateManager.saveOrUpdateUserProgramTreeState(sessionData.getUserData().getUserid(),
                     sessionData.getSelectedProject().getUniqueID(), ListTreeState.STUDY_LIST.name(), itemIds);
         } catch (MiddlewareQueryException e1) {
             LOG.error(e1.getMessage(), e1);

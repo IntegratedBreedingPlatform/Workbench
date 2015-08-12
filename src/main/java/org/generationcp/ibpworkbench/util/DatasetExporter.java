@@ -57,12 +57,11 @@ public class DatasetExporter {
 	private int observationSheetColumnIndex;
 
 	private static final String MISSING_VALUE_STRING = "missing";
+	private OntologyService ontologyService;
 
-	@Resource
-	private ManagerFactoryProvider provider;
-
-	public DatasetExporter(StudyDataManager studyDataManager, Integer studyId, Integer datasetId) {
+	public DatasetExporter(StudyDataManager studyDataManager, OntologyService ontologyService, Integer studyId, Integer datasetId) {
 		this.studyDataManager = studyDataManager;
+		this.ontologyService = ontologyService;
 		this.datasetId = datasetId;
 		this.tableItems = new ArrayList<>();
 	}
@@ -161,8 +160,6 @@ public class DatasetExporter {
 
 	public void exportToCSVForBreedingView(String filename, String selectedFactor, List<String> selectedEnvironment,
 			BreedingViewInput breedingViewInput) throws DatasetExporterException {
-
-		OntologyService ontologyService = this.retrieveCurrentOntologyService();
 
 		Map<Integer, String> selectEnvironmentsMap = new HashMap<>();
 		if (!selectedFactor.equalsIgnoreCase(breedingViewInput.getTrialInstanceName())) {
@@ -462,18 +459,6 @@ public class DatasetExporter {
 
 	public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
 		this.workbenchDataManager = workbenchDataManager;
-	}
-
-	protected OntologyService retrieveCurrentOntologyService() {
-		IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-
-		Project currentProject = app.getSessionData().getSelectedProject();
-		if (currentProject == null) {
-			currentProject = app.getSessionData().getLastOpenedProject();
-		}
-
-		ManagerFactory factory = this.provider.getManagerFactoryForProject(currentProject);
-		return factory.getOntologyService();
 	}
 
 }

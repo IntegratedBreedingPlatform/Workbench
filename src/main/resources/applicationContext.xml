@@ -129,7 +129,20 @@
 	<bean id="userProgramStateManager" factory-bean="managerFactory" 
 		factory-method="getUserProgramStateDataManager" scope="request">
 		<aop:scoped-proxy />
-	</bean>	
+	</bean>
+
+	<bean id="ontologyDataManager" factory-bean="managerFactory"
+		factory-method="getOntologyDataManager" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+	
+	<bean id="ontologyService" factory-bean="managerFactory"
+		factory-method="getOntologyService" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+	
+	<bean id="fieldbookService" class="org.generationcp.middleware.service.FieldbookServiceImpl"/>
+			
 	<!-- Data Source and Transaction Configuration -->
 
 	<tx:annotation-driven />
