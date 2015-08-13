@@ -8,12 +8,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+
+import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
+import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.commons.util.DateUtil;
 import org.generationcp.ibpworkbench.database.MysqlAccountGenerator;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.UserDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
@@ -28,8 +32,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.util.WebUtils;
 
 @Service
+@Transactional
 public class ProgramService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ProgramService.class);
@@ -42,6 +50,9 @@ public class ProgramService {
 
 	@Autowired
 	private ManagerFactoryProvider managerFactoryProvider;
+	
+	@Autowired
+	private UserDataManager userDataManager;
 
 	private MysqlAccountGenerator mySQLAccountGenerator;
 
@@ -61,24 +72,25 @@ public class ProgramService {
 		this.idAndNameOfProgramMembers.clear();
 
 		this.saveBasicDetails(program);
-
+		
+		final HttpServletRequest request = ((ServletRequestAttributes) org.springframework.web.context.request.RequestContextHolder.getRequestAttributes())
+				.getRequest();
+		final Cookie userIdCookie = WebUtils.getCookie(request, ContextConstants.PARAM_LOGGED_IN_USER_ID);
+		final Cookie authToken = WebUtils.getCookie(request, ContextConstants.PARAM_AUTH_TOKEN);
+		ContextUtil.setContextInfo(request, userIdCookie != null ? Integer.valueOf(userIdCookie.getValue()) :  null, 
+				program.getProjectId(), authToken !=null ? authToken.getValue() : null);
+		
 		this.toolUtil.createWorkspaceDirectoriesForProject(program);
 
-		ManagerFactory managerFactory = this.managerFactoryProvider.getManagerFactoryForProject(program);
-
-		this.addProjectUserRoles(program, managerFactory);
-		this.copyProjectUsers(managerFactory.getUserDataManager(), program);
-
-		managerFactory.close();
-
-		this.createMySQLAccounts(program);
+		this.addProjectUserRoles(program);
+		this.copyProjectUsers(userDataManager, program);
 		this.saveProjectUserInfo(program);
 
 		ProgramService.LOG.info("Program created. ID:" + program.getProjectId() + " Name:" + program.getProjectName() + " Start date:"
 				+ program.getStartDate());
 	}
 
-	private void addProjectUserRoles(Project project, ManagerFactory managerFactory) throws MiddlewareQueryException {
+	private void addProjectUserRoles(Project project) throws MiddlewareQueryException {
 		List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
 		Set<User> allProjectMembers = new HashSet<User>();
 		allProjectMembers.add(this.currentUser);

@@ -12,7 +12,6 @@ import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.common.ServerFilePicker;
-import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Tool;
@@ -22,6 +21,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -61,13 +64,16 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchDashboard.class);
+	private static final Logger LOG = LoggerFactory.getLogger(UserToolsManagerWindow.class);
 	private static final String WIDTH = "780px";
 	private static final String HEIGHT = "470px";
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
 
+	@Autowired
+	private PlatformTransactionManager transactionManager;
+	
 	private Button editBtn;
 	private BeanItemContainer<Tool> userToolsListContainer;
 
@@ -77,11 +83,16 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 	}
 
 	protected void assemble() throws MiddlewareQueryException {
-
-		this.initializeComponents();
-		this.initializeData();
-		this.initializeLayout();
-		this.initializeActions();
+		final TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+		transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+			@Override
+			protected void doInTransactionWithoutResult(TransactionStatus status) {
+				UserToolsManagerWindow.this.initializeComponents();
+				UserToolsManagerWindow.this.initializeData();
+				UserToolsManagerWindow.this.initializeLayout();
+				UserToolsManagerWindow.this.initializeActions();
+			}
+		});
 	}
 
 	private void initializeActions() {

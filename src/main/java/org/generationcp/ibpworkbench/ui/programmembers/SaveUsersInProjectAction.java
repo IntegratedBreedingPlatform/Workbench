@@ -40,6 +40,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -68,6 +72,12 @@ public class SaveUsersInProjectAction implements ClickListener {
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
+	
+	@Autowired
+	private UserDataManager userDataManager;
+	
+	@Autowired
+	private PlatformTransactionManager transactionManager;
 
 	public SaveUsersInProjectAction(Project project, TwinTableSelect<User> select) {
 		this.project = project;
@@ -79,40 +89,45 @@ public class SaveUsersInProjectAction implements ClickListener {
 	}
 
 	@Override
-	public void buttonClick(ClickEvent event) {
+	public void buttonClick(final ClickEvent event) {
 		if (this.project == null) {
 			return;
 		}
 
-		Collection<User> userList = this.select.getValue();
+		final Collection<User> userList = this.select.getValue();
 		try {
 
-			List<ProjectUserRole> projectUserRoleList = new ArrayList<ProjectUserRole>();
+			final TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+			transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+				@Override
+				protected void doInTransactionWithoutResult(TransactionStatus status) {
+					List<ProjectUserRole> projectUserRoleList = new ArrayList<ProjectUserRole>();
 
-			// add project user roles to the list
-			for (User u : userList) {
-				for (Role role : this.workbenchDataManager.getAllRoles()) {
-					ProjectUserRole projUsrRole = new ProjectUserRole();
-					projUsrRole.setUserId(u.getUserid());
-					projUsrRole.setRole(role);
+					// add project user roles to the list
+					for (User u : userList) {
+						for (Role role : SaveUsersInProjectAction.this.workbenchDataManager.getAllRoles()) {
+							ProjectUserRole projUsrRole = new ProjectUserRole();
+							projUsrRole.setUserId(u.getUserid());
+							projUsrRole.setRole(role);
 
-					projectUserRoleList.add(projUsrRole);
+							projectUserRoleList.add(projUsrRole);
+						}
+					}
+
+					MessageNotifier.showMessage(event.getComponent().getWindow(), "Success", "Successfully updated this project's members list.");
+					
+					for (User u : userList) {
+						if (SaveUsersInProjectAction.this.workbenchDataManager.getProjectUserInfoDao().getByProjectIdAndUserId(SaveUsersInProjectAction.this.project.getProjectId().intValue(),
+								u.getUserid()) == null) {
+							ProjectUserInfo pUserInfo = new ProjectUserInfo(SaveUsersInProjectAction.this.project.getProjectId().intValue(), u.getUserid());
+							SaveUsersInProjectAction.this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
+
+						}
+					}
 				}
-			}
+			});
 
-			// UPDATE workbench DB with the project user roles
-			this.workbenchDataManager.updateProjectsRolesForProject(this.project, projectUserRoleList);
 
-			// create the MySQL users for each project member
-			// TODO: why do we need to create a MySQL for each project member?
-			// why not create a MySQL user for the Workbench user when the account is created?
-			this.createMySQLUsers(projectUserRoleList);
-
-			// create local database users for each workbench user
-			ManagerFactory managerFactory = this.managerFactoryProvider.getManagerFactoryForProject(this.project);
-			this.createLocalDatabaseUsers(managerFactory, projectUserRoleList, this.project);
-
-			MessageNotifier.showMessage(event.getComponent().getWindow(), "Success", "Successfully updated this project's members list.");
 
 		} catch (MiddlewareQueryException ex) {
 			SaveUsersInProjectAction.LOG.error(ex.getMessage(), ex);
@@ -120,19 +135,6 @@ public class SaveUsersInProjectAction implements ClickListener {
 			event.getComponent().getWindow().showNotification("");
 			MessageNotifier.showError(event.getComponent().getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
 					"A database problem occured while updating this project's members list. Please see error logs.");
-		}
-
-		try {
-
-			for (User u : userList) {
-				if (this.workbenchDataManager.getProjectUserInfoDao().getByProjectIdAndUserId(this.project.getProjectId().intValue(),
-						u.getUserid()) == null) {
-					ProjectUserInfo pUserInfo = new ProjectUserInfo(this.project.getProjectId().intValue(), u.getUserid());
-					this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
-
-				}
-			}
-
 		} catch (Exception e) {
 			SaveUsersInProjectAction.LOG.error(e.getMessage(), e);
 		}
@@ -148,7 +150,7 @@ public class SaveUsersInProjectAction implements ClickListener {
 	 */
 	private void createLocalDatabaseUsers(ManagerFactory managerFactory, List<ProjectUserRole> projectUserRoles, Project projectSaved)
 			throws MiddlewareQueryException {
-		UserDataManager userDataManager = managerFactory.getUserDataManager();
+		userDataManager = managerFactory.getUserDataManager();
 		Map<Integer, String> usersAccountedFor = new HashMap<Integer, String>();
 
 		for (ProjectUserRole projectUserRole : projectUserRoles) {

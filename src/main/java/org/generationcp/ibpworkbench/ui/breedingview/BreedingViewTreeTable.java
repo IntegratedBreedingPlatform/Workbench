@@ -35,6 +35,9 @@ public class BreedingViewTreeTable extends TreeTable {
 
 	@Autowired
 	private SessionData sessionData;
+    
+    @Autowired
+    private UserProgramStateDataManager programStateDataManager;
 
 	public BreedingViewTreeTable() {
 		nodeMap = new HashMap<>();
@@ -65,9 +68,6 @@ public class BreedingViewTreeTable extends TreeTable {
 
 	public void reinitializeTree() {
 
-		ManagerFactory managerFactory = provider.getManagerFactoryForProject(sessionData.getSelectedProject());
-
-		UserProgramStateDataManager programStateDataManager = managerFactory.getUserProgramStateDataManager();
 		try {
 			List<String> parsedState =
 					programStateDataManager.getUserProgramTreeStateByUserIdProgramUuidAndType(sessionData.getUserData().getUserid(),

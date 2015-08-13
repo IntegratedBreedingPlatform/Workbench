@@ -33,7 +33,7 @@ import org.springframework.beans.factory.annotation.Configurable;
  */
 
 @Configurable
-public class ProgramMethodsPresenter implements InitializingBean {
+public class ProgramMethodsPresenter {
 
 	private boolean isCropOnly;
 	private Project project;
@@ -51,6 +51,7 @@ public class ProgramMethodsPresenter implements InitializingBean {
 	@Autowired
 	private SessionData sessionData;
 
+	@Autowired
 	private GermplasmDataManager gerplasmDataManager;
 
 	public ProgramMethodsPresenter(ProgramMethodsView view, Project project) {
@@ -62,11 +63,6 @@ public class ProgramMethodsPresenter implements InitializingBean {
 		this.view = view;
 		this.cropType = cropType;
 		this.isCropOnly = true;
-	}
-
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		this.gerplasmDataManager = this.managerFactoryProvider.getManagerFactoryForProject(this.project).getGermplasmDataManager();
 	}
 
 	public void doMoveToSelectedMethod(Integer id) {

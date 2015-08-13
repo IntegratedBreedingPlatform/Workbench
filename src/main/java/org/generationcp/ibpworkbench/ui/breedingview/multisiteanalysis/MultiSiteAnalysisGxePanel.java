@@ -32,7 +32,6 @@ import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.slf4j.Logger;
@@ -101,9 +100,8 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
+	@Autowired
 	private StudyDataManager studyDataManager;
-
-	private ManagerFactory managerFactory;
 
 	private final MultiSiteParameters multiSiteParameters;
 
@@ -171,8 +169,6 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 
 	@Override
 	public void instantiateComponents() {
-
-		this.managerFactory = this.managerFactoryProvider.getManagerFactoryForProject(this.multiSiteParameters.getProject());
 
 		this.lblDataSelectedForAnalysisHeader = new Label();
 		this.lblDataSelectedForAnalysisHeader.setStyleName(Bootstrap.Typography.H2.styleName());
@@ -345,7 +341,7 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 		};
 
 		// Generate Buttons
-		this.btnRunMultiSite.addListener(new RunMultiSiteAction(this.managerFactory, this.studyDataManager, this.gxeTable,
+		this.btnRunMultiSite.addListener(new RunMultiSiteAction(this.gxeTable,
 				this.selectTraitsTable, this.multiSiteParameters));
 
 		this.btnBack.addListener(new Button.ClickListener() {
@@ -470,13 +466,6 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 
 	public void setCurrentDatasetName(String currentDatasetName) {
 		this.currentDatasetName = currentDatasetName;
-	}
-
-	public StudyDataManager getStudyDataManager() {
-		if (this.studyDataManager == null) {
-			this.studyDataManager = this.managerFactory.getNewStudyDataManager();
-		}
-		return this.studyDataManager;
 	}
 
 	public Map<String, Boolean> getVariatesCheckboxState() {

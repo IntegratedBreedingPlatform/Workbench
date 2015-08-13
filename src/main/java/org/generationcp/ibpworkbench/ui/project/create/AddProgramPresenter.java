@@ -6,6 +6,7 @@ import java.util.Set;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.database.MysqlAccountGenerator;
 import org.generationcp.ibpworkbench.service.ProgramService;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,16 +53,20 @@ public class AddProgramPresenter {
 		this.view.disableOptionalTabsAndFinish();
 	}
 
-	public void doAddNewProgram() throws Exception {
-
-		if (!this.validateAndGetBasicDetails()) {
-			throw new Exception("basic_details_invalid");
+	public void doAddNewProgram() {
+		if (!AddProgramPresenter.this.validateAndGetBasicDetails()) {
+			throw new RuntimeException("basic_details_invalid");
 		}
 
-		this.programService.setCurrentUser(this.sessionData.getUserData());
-		this.programService.setSelectedUsers(this.users);
-		this.programService.setMySQLAccountGenerator(new MysqlAccountGenerator());
-		this.programService.createNewProgram(this.program);
+		AddProgramPresenter.this.programService.setCurrentUser(AddProgramPresenter.this.sessionData.getUserData());
+		AddProgramPresenter.this.programService.setSelectedUsers(AddProgramPresenter.this.users);
+		AddProgramPresenter.this.programService.setMySQLAccountGenerator(new MysqlAccountGenerator());
+		try {
+			AddProgramPresenter.this.programService.createNewProgram(AddProgramPresenter.this.program);
+		} catch (MiddlewareQueryException e) {
+			throw new RuntimeException("The application could not successfully create"
+					+ " a program. Please contact support for further help.", e);
+		}
 	}
 
 	public void resetBasicDetails() {

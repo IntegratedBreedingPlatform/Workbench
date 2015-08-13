@@ -33,6 +33,9 @@ public class SaveBreedingViewStudyTreeState implements Window.CloseListener {
 
 	@Autowired
 	private ManagerFactoryProvider provider;
+    
+    @Autowired
+	private UserProgramStateDataManager userProgramStateManager;
 
 	@Autowired
 	private SessionData sessionData;

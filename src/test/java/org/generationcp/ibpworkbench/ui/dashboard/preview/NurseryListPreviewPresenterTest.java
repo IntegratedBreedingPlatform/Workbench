@@ -82,7 +82,6 @@ public class NurseryListPreviewPresenterTest {
 		Mockito.when(this.managerFactoryProvider.getManagerFactoryForProject(this.project)).thenReturn(this.managerFactory);
 		Mockito.when(this.managerFactory.getStudyDataManager()).thenReturn(this.studyDataManager);
 
-		this.presenter.setManagerFactory(this.managerFactory);
 		this.presenter.setProject(this.project);
 	}
 

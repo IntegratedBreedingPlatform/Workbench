@@ -362,8 +362,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	private VerticalLayout mainLayout;
 
-	private ManagerFactory managerFactory;
-
+	@Autowired
 	private StudyDataManager studyDataManager;
 
 	@Autowired
@@ -377,8 +376,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	}
 
 	public SingleSiteAnalysisDetailsPanel(Tool tool, BreedingViewInput breedingViewInput, List<DMSVariableType> factorsInDataset,
-			List<DMSVariableType> trialVariablesInDataset, Project project, StudyDataManager studyDataManager,
-			ManagerFactory managerFactory,
+			List<DMSVariableType> trialVariablesInDataset, Project project, 
 			SingleSiteAnalysisPanel selectDatasetForBreedingViewPanel) {
 
 		this.tool = tool;
@@ -386,8 +384,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.factorsInDataset = factorsInDataset;
 		this.trialVariablesInDataset = trialVariablesInDataset;
 		this.project = project;
-		this.studyDataManager = studyDataManager;
-		this.managerFactory = managerFactory;
 		this.selectDatasetForBreedingViewPanel = selectDatasetForBreedingViewPanel;
 
 		this.setWidth("100%");
@@ -1154,7 +1150,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	@Override
 	public void afterPropertiesSet() {
 		this.assemble();
-		this.managerFactory.close();
 	}
 
 	@Override
@@ -1202,14 +1197,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	public void setBreedingViewInput(BreedingViewInput breedingViewInput) {
 		this.breedingViewInput = breedingViewInput;
-	}
-
-	public ManagerFactory getManagerFactory() {
-		return this.managerFactory;
-	}
-
-	public void setManagerFactory(ManagerFactory managerFactory) {
-		this.managerFactory = managerFactory;
 	}
 
 	public Label getLblBlocks() {

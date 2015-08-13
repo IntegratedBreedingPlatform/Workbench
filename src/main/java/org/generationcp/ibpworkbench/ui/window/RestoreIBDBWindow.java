@@ -14,7 +14,6 @@ import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.RestoreIBDBSaveAction;
-import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
@@ -43,7 +42,7 @@ import com.vaadin.ui.themes.Reindeer;
 @Configurable
 public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean, InternationalizableComponent {
 
-	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchDashboard.class);
+	private static final Logger LOG = LoggerFactory.getLogger(RestoreIBDBWindow.class);
 
 	private static final long serialVersionUID = 1L;
 

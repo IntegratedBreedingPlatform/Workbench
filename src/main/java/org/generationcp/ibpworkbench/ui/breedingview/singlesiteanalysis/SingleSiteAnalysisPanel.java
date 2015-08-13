@@ -40,7 +40,6 @@ import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.ManagerFactory;
-import org.generationcp.middleware.manager.StudyDataManagerImpl;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -246,9 +245,8 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 	@Value("${workbench.is.server.app}")
 	private String isServerApp;
 
+	@Autowired
 	private StudyDataManager studyDataManager;
-
-	private ManagerFactory managerFactory;
 
 	private static final String NAMED_COLUMN_1 = "name";
 	private static final String NAMED_COLUMN_2 = "description";
@@ -287,8 +285,6 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 
 	@Override
 	public void instantiateComponents() {
-		this.managerFactory = this.managerFactoryProvider.getManagerFactoryForProject(this.currentProject);
-
 		this.setTitleContent();
 
 		ThemeResource resource = new ThemeResource("../vaadin-retro/images/search-nurseries.png");
@@ -356,7 +352,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 				if (event.getComponent() != null && event.getComponent().getWindow() != null) {
 					SelectStudyDialog dialog =
 							new SelectStudyDialog(event.getComponent().getWindow(), SingleSiteAnalysisPanel.this,
-									(StudyDataManagerImpl) SingleSiteAnalysisPanel.this.getStudyDataManager(),
+									
 									SingleSiteAnalysisPanel.this.currentProject);
 					event.getComponent().getWindow().addWindow(dialog);
 				} else if (event.getComponent() == null) {
@@ -378,7 +374,6 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 				if (event.getComponent() != null && event.getComponent().getWindow() != null) {
 					SelectStudyDialogForBreedingViewUpload dialog =
 							new SelectStudyDialogForBreedingViewUpload(event.getComponent().getWindow(), SingleSiteAnalysisPanel.this,
-									(StudyDataManagerImpl) SingleSiteAnalysisPanel.this.getStudyDataManager(),
 									SingleSiteAnalysisPanel.this.currentProject);
 					event.getComponent().getWindow().addWindow(dialog);
 				} else if (event.getComponent() == null) {
@@ -600,17 +595,6 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		return toreturn;
 	}
 
-	public StudyDataManager getStudyDataManager() {
-		if (this.studyDataManager == null) {
-			this.studyDataManager = this.getManagerFactory().getNewStudyDataManager();
-		}
-		return this.studyDataManager;
-	}
-
-	public ManagerFactory getManagerFactory() {
-		return this.managerFactory;
-	}
-
 	public Map<String, Boolean> getVariatesCheckboxState() {
 		return this.variatesCheckboxState;
 	}
@@ -683,8 +667,6 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 			SingleSiteAnalysisPanel.LOG.error(e.getMessage(), e);
 			this.showDatabaseError(this.getWindow());
 		}
-
-		this.getManagerFactory().close();
 	}
 
 	public VariateModel transformVariableTypeToVariateModel(DMSVariableType variate) {
@@ -822,10 +804,6 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 
 	public void setStudyDataManager(StudyDataManager studyDataManager) {
 		this.studyDataManager = studyDataManager;
-	}
-
-	public void setManagerFactory(ManagerFactory managerFactory) {
-		this.managerFactory = managerFactory;
 	}
 
 }

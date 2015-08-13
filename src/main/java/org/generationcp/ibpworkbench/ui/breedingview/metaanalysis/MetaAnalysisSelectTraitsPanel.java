@@ -1,15 +1,18 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview.metaanalysis;
 
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.terminal.DownloadStream;
-import com.vaadin.terminal.FileResource;
-import com.vaadin.ui.*;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Table.ColumnGenerator;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -20,23 +23,38 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.MetaEnvironmentModel;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
-import org.generationcp.middleware.domain.dms.*;
+import org.generationcp.middleware.domain.dms.DMSVariableType;
+import org.generationcp.middleware.domain.dms.DataSet;
+import org.generationcp.middleware.domain.dms.DataSetType;
+import org.generationcp.middleware.domain.dms.Experiment;
+import org.generationcp.middleware.domain.dms.PhenotypicType;
+import org.generationcp.middleware.domain.dms.TrialEnvironments;
+import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.util.*;
-import java.util.Map.Entry;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.terminal.DownloadStream;
+import com.vaadin.terminal.FileResource;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.ColumnGenerator;
+import com.vaadin.ui.VerticalLayout;
 
 @Configurable
 public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements InitializingBean, InternationalizableComponent {
@@ -77,18 +95,17 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
+	@Autowired
 	private StudyDataManager studyDataManager;
 
-	private final ManagerFactory managerFactory;
 
 	private final MetaAnalysisPanel selectDatasetsForMetaAnalysisPanel;
 
 	public MetaAnalysisSelectTraitsPanel(Project project, List<MetaEnvironmentModel> metaEnvironments,
-			MetaAnalysisPanel selectDatasetsForMetaAnalysisPanel, ManagerFactory managerFactory) {
+			MetaAnalysisPanel selectDatasetsForMetaAnalysisPanel) {
 		this.metaEnvironments = metaEnvironments;
 		this.currentProject = project;
 		this.selectDatasetsForMetaAnalysisPanel = selectDatasetsForMetaAnalysisPanel;
-		this.managerFactory = managerFactory;
 	}
 
 	private void initializeComponents() {
@@ -217,14 +234,14 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 
 					if (item.getDataSetTypeId() == DataSetType.MEANS_DATA.getId()) {
 						countData =
-								String.valueOf(MetaAnalysisSelectTraitsPanel.this.getStudyDataManager().countStocks(
+								String.valueOf(studyDataManager.countStocks(
 										item.getDataSetId(),
 										MetaAnalysisSelectTraitsPanel.this.trialEnvironmentsList.get(item.getDataSetId())
 												.findOnlyOneByLocalName(item.getTrialFactorName(), item.getTrial()).getId(),
 										varType.getId()));
 					} else {
 						countData =
-								String.valueOf(MetaAnalysisSelectTraitsPanel.this.getStudyDataManager().countStocks(
+								String.valueOf(studyDataManager.countStocks(
 										item.getDataSetId(),
 										MetaAnalysisSelectTraitsPanel.this.trialEnvironmentsList.get(item.getDataSetId())
 												.findOnlyOneByLocalName(item.getTrialFactorName(), item.getTrial()).getId(),
@@ -310,8 +327,8 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 				try {
 					DataSet ds;
 					TrialEnvironments envs;
-					ds = this.getStudyDataManager().getDataSet(metaEnvironment.getDataSetId());
-					envs = this.getStudyDataManager().getTrialEnvironmentsInDataset(ds.getId());
+					ds = studyDataManager.getDataSet(metaEnvironment.getDataSetId());
+					envs = studyDataManager.getTrialEnvironmentsInDataset(ds.getId());
 					this.dataSets.put(metaEnvironment.getDataSetId(), ds);
 					this.trialEnvironmentsList.put(metaEnvironment.getDataSetId(), envs);
 
@@ -601,7 +618,6 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 
 				final File file = MetaAnalysisSelectTraitsPanel.this.exportData();
 
-				MetaAnalysisSelectTraitsPanel.this.managerFactory.close();
 
 				if (file == null) {
 					return;
@@ -659,7 +675,7 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 					String gidFactorName = "";
 					String entrynoFactorName = "";
 
-					List<Experiment> exps = this.getStudyDataManager().getExperiments(envModel.getDataSetId(), 0, Integer.MAX_VALUE);
+					List<Experiment> exps = studyDataManager.getExperiments(envModel.getDataSetId(), 0, Integer.MAX_VALUE);
 					Experiment e = exps.get(0);
 					if (e != null) {
 						for (DMSVariableType var : e.getFactors().getVariableTypes().getVariableTypes()) {
@@ -833,17 +849,6 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 		super.attach();
 
 		this.updateLabels();
-	}
-
-	public StudyDataManager getStudyDataManager() {
-		if (this.studyDataManager == null) {
-			this.studyDataManager = this.getManagerFactory().getNewStudyDataManager();
-		}
-		return this.studyDataManager;
-	}
-
-	public ManagerFactory getManagerFactory() {
-		return this.managerFactory;
 	}
 
 }

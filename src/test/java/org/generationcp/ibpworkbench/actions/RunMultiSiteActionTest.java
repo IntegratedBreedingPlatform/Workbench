@@ -5,8 +5,6 @@ import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.GxeTable;
 import org.generationcp.ibpworkbench.util.GxeInput;
 import org.generationcp.ibpworkbench.util.bean.MultiSiteParameters;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.ManagerFactory;
-import org.generationcp.middleware.manager.StudyDataManagerImpl;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,7 +35,7 @@ public class RunMultiSiteActionTest {
 	GxeInput gxeInput;
 
 	@InjectMocks
-	RunMultiSiteAction multiSiteAction = Mockito.spy(new RunMultiSiteAction(Mockito.mock(ManagerFactory.class), new StudyDataManagerImpl(),
+	RunMultiSiteAction multiSiteAction = Mockito.spy(new RunMultiSiteAction( 
 			this.gxeTable, null, this.parameters));
 
 	private void setUpButtonClickActionTest() throws MiddlewareQueryException {

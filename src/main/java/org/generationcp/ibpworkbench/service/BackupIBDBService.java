@@ -11,18 +11,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * GCP
  */
 
 @Service
+@Transactional
 public class BackupIBDBService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(BackupIBDBService.class);
 	private static final String BACKUP_DIR = "backup";
+	
 	@Autowired
 	private MySQLUtil mysqlUtil;
+	
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
 

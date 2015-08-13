@@ -34,6 +34,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -65,6 +69,9 @@ public class DashboardMainClickListener implements ClickListener {
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
+	@Autowired
+	private PlatformTransactionManager transactionManager;
+
 	private static final Logger LOG = LoggerFactory.getLogger(DashboardMainClickListener.class);
 
 	public DashboardMainClickListener(Component source, Long projectId) {
@@ -78,45 +85,56 @@ public class DashboardMainClickListener implements ClickListener {
 	 * @see com.vaadin.ui.Button.ClickListener#buttonClick(com.vaadin.ui.Button.ClickEvent)
 	 */
 	@Override
-	public void buttonClick(ClickEvent event) {
-		// TODO Auto-generated method stub
+	public void buttonClick(final ClickEvent event) {
 		try {
-			// lets update last opened project
-			Project project = this.sessionData.getSelectedProject();
-			String minimumCropVersion = SchemaVersionUtil.getMinimumCropVersion();
-			String currentCropVersion = project.getCropType().getVersion();
-			if (!SchemaVersionUtil.checkIfVersionIsSupported(currentCropVersion, minimumCropVersion)) {
-				MessageNotifier.showWarning(event.getComponent().getWindow(), "", this.messageSource.getMessage(
-						Message.MINIMUM_CROP_VERSION_WARNING,
-						currentCropVersion != null ? currentCropVersion : this.messageSource.getMessage(Message.NOT_AVAILABLE)));
-			}
+			TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
 
-			try {
-				this.toolUtil.createWorkspaceDirectoriesForProject(project);
-			} catch (MiddlewareQueryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 
-			this.updateProjectLastOpenedDate(project);
+				protected void doInTransactionWithoutResult(TransactionStatus status) {
 
-			// update sidebar selection
-			DashboardMainClickListener.LOG.trace("selecting sidebar");
-			WorkbenchMainView mainWindow = (WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow();
+					// lets update last opened project
+					Project project = DashboardMainClickListener.this.sessionData.getSelectedProject();
+					String minimumCropVersion = SchemaVersionUtil.getMinimumCropVersion();
+					String currentCropVersion = project.getCropType().getVersion();
+					if (!SchemaVersionUtil.checkIfVersionIsSupported(currentCropVersion, minimumCropVersion)) {
+						MessageNotifier.showWarning(event.getComponent().getWindow(), "", DashboardMainClickListener.this.messageSource
+								.getMessage(Message.MINIMUM_CROP_VERSION_WARNING, currentCropVersion != null ? currentCropVersion
+										: DashboardMainClickListener.this.messageSource.getMessage(Message.NOT_AVAILABLE)));
+					}
 
-			mainWindow.addTitle(project.getProjectName());
+					try {
+						DashboardMainClickListener.this.toolUtil.createWorkspaceDirectoriesForProject(project);
+					} catch (MiddlewareQueryException e) {
+						throw new RuntimeException(e.getMessage(),e);
+					}
 
-			if (null != WorkbenchSidebar.sidebarTreeMap.get("manage_list")) {
-				mainWindow.getSidebar().selectItem(WorkbenchSidebar.sidebarTreeMap.get("manage_list"));
-			}
+					DashboardMainClickListener.this.updateProjectLastOpenedDate(project);
 
-			// page change to list manager, with parameter passed
-			new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER_MAIN).buttonClick(event);
+					// update sidebar selection
+					DashboardMainClickListener.LOG.trace("selecting sidebar");
+					WorkbenchMainView mainWindow = (WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow();
 
+					mainWindow.addTitle(project.getProjectName());
+
+					if (null != WorkbenchSidebar.sidebarTreeMap.get("manage_list")) {
+						mainWindow.getSidebar().selectItem(WorkbenchSidebar.sidebarTreeMap.get("manage_list"));
+					}
+
+					// page change to list manager, with parameter passed
+					new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER_MAIN).buttonClick(event);
+
+				}
+			});
 		} catch (InternationalizableException e) {
 			DashboardMainClickListener.LOG.error(e.getMessage(), e);
 			MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
+		} catch (Exception e) {
+			DashboardMainClickListener.LOG.error(e.getMessage(), e);
+			MessageNotifier.showError(event.getComponent().getWindow(), "", e.getLocalizedMessage());
+
 		}
+
 	}
 
 	public void updateProjectLastOpenedDate(Project project) {

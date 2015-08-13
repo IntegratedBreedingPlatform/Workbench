@@ -14,11 +14,13 @@ import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by cyrus on 11/27/14.
  */
 @Service
+@Transactional
 public class WorkbenchUserService {
 
 	@Resource

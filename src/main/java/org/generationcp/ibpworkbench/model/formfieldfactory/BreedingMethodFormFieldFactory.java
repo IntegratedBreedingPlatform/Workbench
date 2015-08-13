@@ -20,6 +20,7 @@ import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
+import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -63,9 +64,10 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 	private Select methodSelectClass;
 
 	private Boolean isEditMode;
-
+	
 	@Autowired
-	private ManagerFactoryProvider managerFactoryProvider;
+	private GermplasmDataManager germplasmDataManager;
+
 
 	@Resource
 	private SessionData sessionData;
@@ -114,9 +116,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 				Method method = null;
 				try {
 					Project currentProject = BreedingMethodFormFieldFactory.this.sessionData.getSelectedProject();
-					ManagerFactory managerFactory =
-							BreedingMethodFormFieldFactory.this.managerFactoryProvider.getManagerFactoryForProject(currentProject);
-					method = managerFactory.getGermplasmDataManager().getMethodByName(value.toString(), currentProject.getUniqueID());
+					method = germplasmDataManager.getMethodByName(value.toString(), currentProject.getUniqueID());
 				} catch (MiddlewareQueryException e) {
 					BreedingMethodFormFieldFactory.LOG.error(e.getMessage(), e);
 				}
@@ -178,9 +178,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 				Method method = null;
 				try {
 					Project currentProject = BreedingMethodFormFieldFactory.this.sessionData.getSelectedProject();
-					ManagerFactory managerFactory =
-							BreedingMethodFormFieldFactory.this.managerFactoryProvider.getManagerFactoryForProject(currentProject);
-					method = managerFactory.getGermplasmDataManager().getMethodByCode(value.toString(), currentProject.getUniqueID());
+					method = germplasmDataManager.getMethodByCode(value.toString(), currentProject.getUniqueID());
 				} catch (MiddlewareQueryException e) {
 					BreedingMethodFormFieldFactory.LOG.error(e.getMessage(), e);
 				}

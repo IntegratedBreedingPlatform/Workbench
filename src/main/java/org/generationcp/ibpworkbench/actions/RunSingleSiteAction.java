@@ -47,9 +47,11 @@ import org.generationcp.ibpworkbench.util.ZipUtil;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.ConfigException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolType;
+import org.generationcp.middleware.service.api.OntologyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,6 +100,12 @@ public class RunSingleSiteAction implements ClickListener {
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
+	@Autowired
+	private StudyDataManager studyDataManager;
+	
+	@Autowired
+	private OntologyService ontologyService;
+	
 	public RunSingleSiteAction(SingleSiteAnalysisDetailsPanel selectDetailsForBreedingViewWindow, Project project) {
 		this.source = selectDetailsForBreedingViewWindow;
 		this.project = project;
@@ -223,14 +231,14 @@ public class RunSingleSiteAction implements ClickListener {
 			String plotName = "";
 			try {
 				entryName =
-						this.source.getManagerFactory().getNewStudyDataManager()
+						studyDataManager
 								.getLocalNameByStandardVariableId(breedingViewInput.getDatasetId(), TermId.ENTRY_NO.getId());
 				plotName =
-						this.source.getManagerFactory().getNewStudyDataManager()
+						studyDataManager
 								.getLocalNameByStandardVariableId(breedingViewInput.getDatasetId(), TermId.PLOT_NO.getId());
 				if (Strings.isNullOrEmpty(plotName)) {
 					plotName =
-							this.source.getManagerFactory().getNewStudyDataManager()
+							studyDataManager
 									.getLocalNameByStandardVariableId(breedingViewInput.getDatasetId(), TermId.PLOT_NNO.getId());
 				}
 			} catch (ConfigException e) {
@@ -253,7 +261,7 @@ public class RunSingleSiteAction implements ClickListener {
 		}
 
 		DatasetExporter datasetExporter =
-				new DatasetExporter(this.source.getManagerFactory().getNewStudyDataManager(), null, breedingViewInput.getDatasetId());
+				new DatasetExporter(studyDataManager, ontologyService, null, breedingViewInput.getDatasetId());
 
 		try {
 
@@ -333,7 +341,6 @@ public class RunSingleSiteAction implements ClickListener {
 			this.showErrorMessage(event.getComponent().getWindow(), e.getMessage(), "");
 		}
 
-		this.source.getManagerFactory().close();
 	}
 
 	private boolean updateToolConfiguration(Window window, Tool tool) {

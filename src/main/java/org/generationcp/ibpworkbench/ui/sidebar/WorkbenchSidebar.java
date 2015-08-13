@@ -20,6 +20,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
@@ -46,27 +50,37 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 
 	private final WorkbenchSidebarPresenter presenter;
 	private Tree sidebarTree;
+	
+	@Autowired
+	private PlatformTransactionManager transactionManager;
 
 	private final ItemClickEvent.ItemClickListener treeClickListener = new ItemClickEvent.ItemClickListener() {
 
 		@Override
-		public void itemClick(ItemClickEvent event) {
-			if (event.getItemId() == null) {
-				return;
-			}
+		public void itemClick(final ItemClickEvent event) {
+			final TransactionTemplate transactionTemplate = new TransactionTemplate(WorkbenchSidebar.this.transactionManager);
+			transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 
-			WorkbenchSidebar.LOG.trace(event.getItemId().toString());
-
-			TreeItem treeItem = (TreeItem) event.getItemId();
-
-			if (!WorkbenchSidebar.this.doCollapse(treeItem)) {
-				WorkbenchSidebar.this.presenter.updateProjectLastOpenedDate();
-
-				ActionListener listener =
-						WorkbenchSidebar.this.getLinkActions(treeItem.getId(), WorkbenchSidebar.this.sessionData.getSelectedProject());
-
-				listener.doAction(event.getComponent().getWindow(), "/" + treeItem.getId(), true);
-			}
+				@Override
+				protected void doInTransactionWithoutResult(TransactionStatus status) {
+					if (event.getItemId() == null) {
+						return;
+					}
+		
+					WorkbenchSidebar.LOG.trace(event.getItemId().toString());
+		
+					TreeItem treeItem = (TreeItem) event.getItemId();
+		
+					if (!WorkbenchSidebar.this.doCollapse(treeItem)) {
+						WorkbenchSidebar.this.presenter.updateProjectLastOpenedDate();
+		
+						ActionListener listener =
+								WorkbenchSidebar.this.getLinkActions(treeItem.getId(), WorkbenchSidebar.this.sessionData.getSelectedProject());
+		
+						listener.doAction(event.getComponent().getWindow(), "/" + treeItem.getId(), true);
+					}
+				}
+			});
 		}
 	};
 

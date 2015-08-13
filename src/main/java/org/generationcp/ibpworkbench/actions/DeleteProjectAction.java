@@ -13,7 +13,6 @@ package org.generationcp.ibpworkbench.actions;
 
 import java.util.List;
 
-import org.generationcp.commons.hibernate.DefaultManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -21,9 +20,9 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.LocationDataManager;
+import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.dms.ProgramFavorite;
 import org.generationcp.middleware.pojos.dms.ProgramFavorite.FavoriteType;
@@ -54,7 +53,13 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
-	private DefaultManagerFactoryProvider managerFactoryProvider;
+	private StudyDataManager studyDataManager;
+
+	@Autowired
+	private LocationDataManager locationDataManager;
+
+	@Autowired
+	private GermplasmDataManager germplasmDataManager;
 
 	public DeleteProjectAction() {
 	}
@@ -110,7 +115,6 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 		this.deleteAllProgramStudies();
 		this.deleteAllProgramFavorites();
 		this.deleteAllProgramLocationsAndMethods();
-		this.managerFactoryProvider.removeProjectFromSessionCache(this.currentProject.getProjectId());
 		this.manager.deleteProjectDependencies(this.currentProject);
 		Project newProj = new Project();
 		newProj.setProjectId(this.currentProject.getProjectId());
@@ -120,16 +124,11 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 	}
 
 	protected void deleteAllProgramLocationsAndMethods() throws MiddlewareQueryException {
-		ManagerFactory managerFactory = this.managerFactoryProvider.getManagerFactoryForProject(this.currentProject);
-		GermplasmDataManager germplasmDataManager = managerFactory.getGermplasmDataManager();
-		LocationDataManager locationDataManager = managerFactory.getLocationDataManager();
 		locationDataManager.deleteProgramLocationsByUniqueId(this.currentProject.getUniqueID());
 		germplasmDataManager.deleteProgramMethodsByUniqueId(this.currentProject.getUniqueID());
 	}
 
 	protected void deleteAllProgramFavorites() throws MiddlewareQueryException {
-		ManagerFactory managerFactory = this.managerFactoryProvider.getManagerFactoryForProject(this.currentProject);
-		GermplasmDataManager germplasmDataManager = managerFactory.getGermplasmDataManager();
 		List<ProgramFavorite> favoriteLocations =
 				germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, this.currentProject.getUniqueID());
 		List<ProgramFavorite> favoriteMethods =
@@ -140,7 +139,6 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 	}
 
 	protected void deleteAllProgramStudies() throws MiddlewareQueryException {
-		this.managerFactoryProvider.getManagerFactoryForProject(this.currentProject).getStudyDataManager()
-				.deleteProgramStudies(this.currentProject.getUniqueID());
+		this.studyDataManager.deleteProgramStudies(this.currentProject.getUniqueID());
 	}
 }
