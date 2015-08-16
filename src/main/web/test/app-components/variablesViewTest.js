@@ -5,69 +5,69 @@ describe('Variables Controller', function() {
 
 	// This format is what is returned by a getVariables() call
 	var CATEGORICAL_TYPE = {
-		id: 1,
-		name: 'Categorical'
-	},
-
-	NUMERIC_TYPE = {
-		id: 2,
-		name: 'Numeric'
-	},
-
-	PLANT_VIGOR = {
-		id: 1,
-		name: 'Plant Vigor',
-		alias: '',
-		description: 'A little vigourous',
-		property: {
 			id: 1,
-			name: 'Plant Vigor'
+			name: 'Categorical'
 		},
-		method: {
-			id: 1,
-			name: 'Visual assessment at seedling stage'
+
+		NUMERIC_TYPE = {
+			id: 2,
+			name: 'Numeric'
 		},
-		scale: {
+
+		PLANT_VIGOR = {
 			id: 1,
-			name: 'Score',
-			dataType: NUMERIC_TYPE,
-			validValues: {
-				min: 1,
-				max: 5
-			}
+			name: 'Plant Vigor',
+			alias: '',
+			description: 'A little vigourous',
+			property: {
+				id: 1,
+				name: 'Plant Vigor'
+			},
+			method: {
+				id: 1,
+				name: 'Visual assessment at seedling stage'
+			},
+			scale: {
+				id: 1,
+				name: 'Score',
+				dataType: NUMERIC_TYPE,
+				validValues: {
+					min: 1,
+					max: 5
+				}
+			},
+			variableTypes: [{
+				id: 1,
+				name: 'Analysis',
+				description: ''
+			}],
+			favourite: true
 		},
-		variableTypes: [{
-			id: 1,
-			name: 'Analysis',
-			description: ''
-		}],
-		favourite: true
-	},
 
-	FAVOURITE_VARIABLE = {
-		id: 123,
-		name: PLANT_VIGOR.name,
-		property: PLANT_VIGOR.property.name,
-		method: PLANT_VIGOR.method.name,
-		scale: PLANT_VIGOR.scale.name,
-		'action-favourite': { iconValue: 'star' }
-	},
+		FAVOURITE_VARIABLE = {
+			id: 123,
+			name: PLANT_VIGOR.name,
+			property: PLANT_VIGOR.property.name,
+			method: PLANT_VIGOR.method.name,
+			scale: PLANT_VIGOR.scale.name,
+			'action-favourite': { iconValue: 'star' }
+		},
 
-	PLANT_VIGOR_DETAILED = angular.copy(PLANT_VIGOR),
-	PLANT_VIGOR_CONVERTED = angular.copy(PLANT_VIGOR),
+		PLANT_VIGOR_DETAILED = angular.copy(PLANT_VIGOR),
+		PLANT_VIGOR_CONVERTED = angular.copy(PLANT_VIGOR),
 
-	q,
-	controller,
-	scope,
-	timeout,
+		q,
+		controller,
+		scope,
+		timeout,
 
-	variablesService,
-	panelService,
+		variablesService,
+		panelService,
 
-	deferredGetVariable,
-	deferredUpdateVariable,
-	deferredGetVariables,
-	deferredGetFavVariables;
+		deferredGetVariable,
+		deferredUpdateVariable,
+		deferredGetVariables,
+		deferredGetFavVariables;
 
 	delete PLANT_VIGOR_CONVERTED.favourite;
 	PLANT_VIGOR_CONVERTED['action-favourite'] = {};
