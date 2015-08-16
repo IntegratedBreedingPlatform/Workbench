@@ -8,15 +8,16 @@
 	function transformDetailedVariableToDisplayFormat(variable, id) {
 		var tempDateCreated = variable.metadata ? new Date(variable.metadata.dateCreated) : new Date();
 		tempDateCreated.setHours(0, 0, 0, 0);
+
 		return {
 			id: id,
 			name: variable.name,
 			alias: variable.alias || '',
-			property: variable.propertySummary && variable.propertySummary.name || '',
-			method: variable.methodSummary && variable.methodSummary.name || '',
-			scale: (variable.scale && variable.scale.name) || (variable.scaleSummary && variable.scaleSummary.name) || '',
+			property: variable.property && variable.property.name || '',
+			method: variable.method && variable.method.name || '',
+			scale: variable.scale && variable.scale.name || '',
 			variableTypes: variable.variableTypes, // used for filtering
-			scaleDataType: (variable.scale && variable.scale.dataType) || (variable.scaleSummary && variable.scaleSummary.dataType),
+			scaleDataType: variable.scale && variable.scale.dataType,
 			metadata: {
 				dateCreated: tempDateCreated
 			},

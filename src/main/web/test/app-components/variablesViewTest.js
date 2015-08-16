@@ -19,18 +19,22 @@ describe('Variables Controller', function() {
 		name: 'Plant Vigor',
 		alias: '',
 		description: 'A little vigourous',
-		propertySummary: {
+		property: {
 			id: 1,
 			name: 'Plant Vigor'
 		},
-		methodSummary: {
+		method: {
 			id: 1,
 			name: 'Visual assessment at seedling stage'
 		},
-		scaleSummary: {
+		scale: {
 			id: 1,
 			name: 'Score',
-			dataType: NUMERIC_TYPE
+			dataType: NUMERIC_TYPE,
+			validValues: {
+				min: 1,
+				max: 5
+			}
 		},
 		variableTypes: [{
 			id: 1,
@@ -40,16 +44,17 @@ describe('Variables Controller', function() {
 		favourite: true
 	},
 
-	PLANT_VIGOR_DETAILED,
-	PLANT_VIGOR_CONVERTED,
 	FAVOURITE_VARIABLE = {
 		id: 123,
 		name: PLANT_VIGOR.name,
-		property: PLANT_VIGOR.propertySummary.name,
-		method: PLANT_VIGOR.methodSummary.name,
-		scale: PLANT_VIGOR.scaleSummary.name,
+		property: PLANT_VIGOR.property.name,
+		method: PLANT_VIGOR.method.name,
+		scale: PLANT_VIGOR.scale.name,
 		'action-favourite': { iconValue: 'star' }
 	},
+
+	PLANT_VIGOR_DETAILED = angular.copy(PLANT_VIGOR),
+	PLANT_VIGOR_CONVERTED = angular.copy(PLANT_VIGOR),
 
 	q,
 	controller,
@@ -64,20 +69,6 @@ describe('Variables Controller', function() {
 	deferredGetVariables,
 	deferredGetFavVariables;
 
-	// This format is what is returned by a getVariable() call (singular)
-	PLANT_VIGOR_DETAILED = angular.copy(PLANT_VIGOR);
-	PLANT_VIGOR_CONVERTED = angular.copy(PLANT_VIGOR);
-
-	PLANT_VIGOR_DETAILED.scale = {
-		id: 1,
-		name: 'Score',
-		validValues: {
-			min: 1,
-			max: 5
-		}
-	};
-	PLANT_VIGOR_DETAILED.scale.dataType = NUMERIC_TYPE;
-
 	delete PLANT_VIGOR_CONVERTED.favourite;
 	PLANT_VIGOR_CONVERTED['action-favourite'] = {};
 	PLANT_VIGOR_CONVERTED['action-favourite'].iconValue = 'star';
@@ -85,9 +76,6 @@ describe('Variables Controller', function() {
 	PLANT_VIGOR_CONVERTED.metadata = {
 		dateCreated: new Date('2015-06-15')
 	};
-
-	delete PLANT_VIGOR_DETAILED.id;
-	delete PLANT_VIGOR_DETAILED.scaleSummary;
 
 	PLANT_VIGOR_DETAILED.metadata = {
 		deletable: true,
@@ -152,8 +140,8 @@ describe('Variables Controller', function() {
 					id: newId,
 					name: PLANT_VIGOR_DETAILED.name,
 					alias: PLANT_VIGOR_DETAILED.alias,
-					property: PLANT_VIGOR_DETAILED.propertySummary.name,
-					method: PLANT_VIGOR_DETAILED.methodSummary.name,
+					property: PLANT_VIGOR_DETAILED.property.name,
+					method: PLANT_VIGOR_DETAILED.method.name,
 					scale: PLANT_VIGOR_DETAILED.scale.name,
 					variableTypes: PLANT_VIGOR_DETAILED.variableTypes,
 					scaleDataType: PLANT_VIGOR_DETAILED.scale.dataType,
@@ -170,8 +158,8 @@ describe('Variables Controller', function() {
 					id: newId,
 					name: PLANT_VIGOR_DETAILED.name,
 					alias: PLANT_VIGOR_DETAILED.alias,
-					property: PLANT_VIGOR_DETAILED.propertySummary.name,
-					method: PLANT_VIGOR_DETAILED.methodSummary.name,
+					property: PLANT_VIGOR_DETAILED.property.name,
+					method: PLANT_VIGOR_DETAILED.method.name,
 					scale: PLANT_VIGOR_DETAILED.scale.name,
 					variableTypes: PLANT_VIGOR_DETAILED.variableTypes,
 					scaleDataType: PLANT_VIGOR_DETAILED.scale.dataType,
@@ -184,16 +172,23 @@ describe('Variables Controller', function() {
 
 		it('should default some values to empty strings if they are not present', function() {
 			var rawVariable = angular.copy(PLANT_VIGOR_DETAILED),
-				transformedVariables;
+				transformedVariable,
+				createdDate = new Date();
+
+			createdDate.setHours(0, 0, 0, 0);
 
 			// Null out some values
 			rawVariable.alias = null;
-			rawVariable.propertySummary = null;
-			rawVariable.methodSummary = null;
+			rawVariable.property = null;
+			rawVariable.method = null;
 			rawVariable.scale = null;
 			rawVariable.variableTypes = null;
 
-			transformedVariables = {
+			rawVariable.metadata = {
+				dateCreated: createdDate
+			};
+
+			transformedVariable = {
 				id: PLANT_VIGOR_DETAILED.id,
 				name: PLANT_VIGOR_DETAILED.name,
 				alias: '',
@@ -201,11 +196,15 @@ describe('Variables Controller', function() {
 				method: '',
 				scale: '',
 				variableTypes: null,
-				scaleDataType: undefined,
+				scaleDataType: null,
+				metadata: {
+					dateCreated: createdDate
+				},
 				'action-favourite': { iconValue: 'star' }
 			};
-			expect(controller.transformDetailedVariableToDisplayFormat(rawVariable)).toEqual(
-				jasmine.objectContaining(transformedVariables));
+
+			expect(controller.transformDetailedVariableToDisplayFormat(rawVariable, rawVariable.id)).toEqual(
+				jasmine.objectContaining(transformedVariable));
 		});
 
 		it('should transform variables into display format', function() {
@@ -435,17 +434,17 @@ describe('Variables Controller', function() {
 			controller.variables = [{
 				id: id,
 				name: PLANT_VIGOR.name,
-				property: PLANT_VIGOR.propertySummary.name,
-				method: PLANT_VIGOR.methodSummary.name,
-				scale: PLANT_VIGOR.scaleSummary.name
+				property: PLANT_VIGOR.property.name,
+				method: PLANT_VIGOR.method.name,
+				scale: PLANT_VIGOR.scale.name
 			}];
 
 			controller.favouriteVariables = [{
 				id: id,
 				name: PLANT_VIGOR.name,
-				property: PLANT_VIGOR.propertySummary.name,
-				method: PLANT_VIGOR.methodSummary.name,
-				scale: PLANT_VIGOR.scaleSummary.name
+				property: PLANT_VIGOR.property.name,
+				method: PLANT_VIGOR.method.name,
+				scale: PLANT_VIGOR.scale.name
 			}];
 
 			// Select our variable for editing
@@ -467,17 +466,17 @@ describe('Variables Controller', function() {
 			controller.variables = [{
 				id: id,
 				name: PLANT_VIGOR.name,
-				property: PLANT_VIGOR.propertySummary.name,
-				method: PLANT_VIGOR.methodSummary.name,
-				scale: PLANT_VIGOR.scaleSummary.name
+				property: PLANT_VIGOR.property.name,
+				method: PLANT_VIGOR.method.name,
+				scale: PLANT_VIGOR.scale.name
 			}];
 
 			controller.favouriteVariables = [{
 				id: id,
 				name: PLANT_VIGOR.name,
-				property: PLANT_VIGOR.propertySummary.name,
-				method: PLANT_VIGOR.methodSummary.name,
-				scale: PLANT_VIGOR.scaleSummary.name
+				property: PLANT_VIGOR.property.name,
+				method: PLANT_VIGOR.method.name,
+				scale: PLANT_VIGOR.scale.name
 			}];
 
 			// Select our variable for editing
@@ -498,18 +497,18 @@ describe('Variables Controller', function() {
 			controller.variables = [{
 				id: id,
 				name: PLANT_VIGOR.name,
-				property: PLANT_VIGOR.propertySummary.name,
-				method: PLANT_VIGOR.methodSummary.name,
-				scale: PLANT_VIGOR.scaleSummary.name,
+				property: PLANT_VIGOR.property.name,
+				method: PLANT_VIGOR.method.name,
+				scale: PLANT_VIGOR.scale.name,
 				'action-favourite': PLANT_VIGOR.favourite ? { iconValue: 'star' } : { iconValue: 'star-empty' }
 			}];
 
 			controller.favouriteVariables = [{
 				id: id,
 				name: PLANT_VIGOR.name,
-				property: PLANT_VIGOR.propertySummary.name,
-				method: PLANT_VIGOR.methodSummary.name,
-				scale: PLANT_VIGOR.scaleSummary.name,
+				property: PLANT_VIGOR.property.name,
+				method: PLANT_VIGOR.method.name,
+				scale: PLANT_VIGOR.scale.name,
 				'action-favourite': PLANT_VIGOR.favourite ? { iconValue: 'star' } : { iconValue: 'star-empty' }
 			}];
 
