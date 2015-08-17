@@ -10,7 +10,7 @@
 
 	<form class="form-horizontal" name="amForm" ng-submit="saveMethod($event, method)" novalidate>
 		<div ng-class="formGroupClass('omName', 'name')">
-			<label for="omName" class="col-sm-2 control-label">{{'formField.name' | translate}}</label>
+			<label for="omName" class="col-sm-2 control-label label-required">{{'formField.name' | translate}}</label>
 			<div class="col-sm-7">
 				<om-input om-name="omName" om-property="name" om-adding="true" om-model="method" om-required="true" om-max-length="200"></om-input>
 				<ng-messages for="amForm.omName.$error" ng-if="amForm.$submitted || amForm.omName.$touched">

@@ -24,7 +24,9 @@
 			<span>{{'validation.variable.noneditableFields' | translate }}</span>
 		</div>
 		<div ng-class="formGroupClass('omName', 'name')">
-			<label for="omName" class="col-sm-3 control-label">{{'formField.name' | translate}}</label>
+			<label for="omName" class="col-sm-3 control-label" ng-class="{'label-required': editing}">
+				{{'formField.name' | translate}}
+			</label>
 			<div class="col-sm-9">
 				<om-input om-name="omName" om-property="name" om-editing="editing" om-model="model" om-required="true" om-max-length="32" om-pattern="^[a-zA-Z_%][a-zA-Z_%0-9]*$"></om-input>
 				<ng-messages for="vdForm.omName.$error" ng-if="vdForm.$submitted || vdForm.omName.$touched">
@@ -60,7 +62,9 @@
 		</div>
 
 		<div ng-class="formGroupClass('omProperty', 'property')">
-			<label for="omProperty" class="col-sm-3 control-label">{{'formField.property' | translate}}</label>
+			<label for="omProperty" class="col-sm-3 control-label" ng-class="{'label-required': editing}">
+				{{'formField.property' | translate}}
+			</label>
 			<div class="col-sm-9">
 				<om-select name="omProperty" om-name="om-property" om-property="property" om-editing="editing" ng-model="model" om-options="data.properties" om-required="true"></om-select>
 				<ng-messages for="vdForm.omProperty.$error" ng-if="editing && vdForm.$submitted">
@@ -71,7 +75,9 @@
 		</div>
 
 		<div ng-class="formGroupClass('omMethod', 'method')">
-			<label for="omMethod" class="col-sm-3 control-label">{{'formField.method' | translate}}</label>
+			<label for="omMethod" class="col-sm-3 control-label" ng-class="{'label-required': editing}">
+				{{'formField.method' | translate}}
+			</label>
 			<div class="col-sm-9">
 				<om-select name="omMethod" om-name="om-method" om-property="method" om-editing="editing" ng-model="model" om-options="data.methods" om-required="true"></om-select>
 				<ng-messages for="vdForm.omMethod.$error" ng-if="editing && vdForm.$submitted">
@@ -82,7 +88,9 @@
 		</div>
 
 		<div ng-class="formGroupClass('omScale', 'scale')">
-			<label for="omScale" class="col-sm-3 control-label">{{'formField.scale' | translate}}</label>
+			<label for="omScale" class="col-sm-3 control-label" ng-class="{'label-required': editing}">
+				{{'formField.scale' | translate}}
+			</label>
 			<div class="col-sm-9">
 				<om-select name="omScale" om-name="om-scale" om-property="scale" om-editing="editing" ng-model="model" om-options="data.scales" om-required="true"></om-select>
 				<ng-messages for="vdForm.omScale.$error" ng-if="editing && vdForm.$submitted">
@@ -93,7 +101,9 @@
 		</div>
 
 		<div ng-class="formGroupClass('omVariableTypes', 'variableTypes')">
-			<label for="omVariableTypes" class="col-sm-3 control-label">{{'formField.variableType' | translate}}</label>
+			<label for="omVariableTypes" class="col-sm-3 control-label" ng-class="{'label-required': editing}">
+				{{'formField.variableType' | translate}}
+			</label>
 			<div class="col-sm-9">
 				<om-multi-select name="omVariableTypes" om-property="variableTypes" om-editing="editing" ng-model="model" om-options="data.types"></om-multi-select>
 				<ng-messages for="vdForm.omVariableTypes.$error" ng-if="vdForm.$submitted">

@@ -13,7 +13,7 @@
 	<form class="form-horizontal" name="apForm" ng-submit="saveProperty($event, property)" novalidate>
 
 		<div ng-class="formGroupClass('omName', 'name')">
-			<label for="omName" class="col-sm-2 control-label">{{'formField.name' | translate}}</label>
+			<label for="omName" class="col-sm-2 control-label label-required">{{'formField.name' | translate}}</label>
 			<div class="col-sm-7">
 				<om-input om-name="omName" om-property="name" om-model="property" om-adding="true" om-required="true" om-max-length="200"></om-input>
 				<ng-messages for="apForm.omName.$error" ng-if="apForm.$submitted || apForm.omName.$touched">
@@ -36,7 +36,7 @@
 		</div>
 
 		<div ng-class="formGroupClass('omClasses', 'classes')">
-			<label for="omClasses" class="col-sm-2 control-label">{{'formField.classes' | translate}}</label>
+			<label for="omClasses" class="col-sm-2 control-label label-required">{{'formField.classes' | translate}}</label>
 			<div class="col-sm-7">
 				<om-tag-select name="omClasses" om-property="classes" ng-model="property" om-options="classes" om-adding="true"></om-tag-select>
 				<ng-messages for="apForm.omClasses.$error" ng-if="apForm.$submitted || apForm.omClasses.$touched">

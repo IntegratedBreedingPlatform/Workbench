@@ -12,7 +12,7 @@
 	</div>
 
 		<div ng-class="formGroupClass('omName', 'name')">
-			<label for="omName" class="col-sm-2 control-label">{{'formField.name' | translate}}</label>
+			<label for="omName" class="col-sm-2 control-label label-required">{{'formField.name' | translate}}</label>
 			<div class="col-sm-7">
 				<om-input om-name="omName" om-property="name" om-adding="true" om-model="scale" om-required="true" om-max-length="200"></om-input>
 				<ng-messages for="asForm.omName.$error" ng-if="asForm.$submitted || asForm.omName.$touched">
@@ -35,7 +35,7 @@
 		</div>
 
 		<div ng-class="formGroupClass('omDataType', 'dataType')">
-			<label for="omDataType" class="col-sm-2 control-label">{{'formField.dataType' | translate}}</label>
+			<label for="omDataType" class="col-sm-2 control-label label-required">{{'formField.dataType' | translate}}</label>
 			<div class="col-sm-7">
 				<om-select name="omDataType" om-name="om-data-type" om-property="dataType" om-adding="true" ng-model="scale" om-options="types" om-required="true"></om-select>
 				<ng-messages for="asForm.omDataType.$error" ng-if="asForm.$submitted || asForm.omDataType.$touched">
@@ -56,7 +56,7 @@
 
 		<div ng-show="showCategoriesWidget">
 			<div ng-class="formGroupClass('omCategories', 'validValues')">
-				<label for="omCategories" class="col-sm-2 control-label">{{'addNew.scale.categories' | translate}}</label>
+				<label for="omCategories" class="col-sm-2 control-label label-required">{{'addNew.scale.categories' | translate}}</label>
 				<div class="col-sm-7">
 					<om-categories name="omCategories" om-property="validValues" om-adding="true" ng-model="scale" om-categorical="showCategoriesWidget"></om-categories>
 					<ng-messages for="asForm.omCategories.$error" ng-if="asForm.$submitted || asForm.omCategories.$touched">
