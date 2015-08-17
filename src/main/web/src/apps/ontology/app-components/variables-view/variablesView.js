@@ -129,12 +129,15 @@
 					scaleDataTypeMatch = true,
 					dateCreatedMatch = true;
 
+				// Include variable if the filter options have not been set
 				if (!$scope.filterOptions || !$scope.filterOptions.variableTypes) {
 					return true;
 				}
 
+				// Check whether variable's variable type matches the chosen types
 				if ($scope.filterOptions.variableTypes.length > 0) {
-					variableTypeMatch =  $scope.filterOptions.variableTypes.every(function(filterVariableType) {
+					variableTypeMatch = $scope.filterOptions.variableTypes.every(function(filterVariableType) {
+						// Check if any of the variable types for the variable match the given variable types to filter on
 						return variable.variableTypes.some(function(itemVariableType) {
 							return angular.equals(filterVariableType, itemVariableType);
 						});
@@ -144,17 +147,19 @@
 				if ($scope.filterOptions.scaleDataType && $scope.filterOptions.scaleDataType.name !== '...') {
 					scaleDataTypeMatch =  angular.equals(variable.scaleDataType, $scope.filterOptions.scaleDataType);
 				}
+
 				if ($scope.filterOptions.dateCreatedFrom || $scope.filterOptions.dateCreatedTo) {
 					if ($scope.filterOptions.dateCreatedFrom && $scope.filterOptions.dateCreatedTo &&
 						$scope.filterOptions.dateCreatedTo.getTime && $scope.filterOptions.dateCreatedFrom.getTime) {
-						dateCreatedMatch =  ($scope.filterOptions.dateCreatedFrom.getTime() <= variable.metadata.dateCreated.getTime()) &&
+						dateCreatedMatch = ($scope.filterOptions.dateCreatedFrom.getTime() <= variable.metadata.dateCreated.getTime()) &&
 							(variable.metadata.dateCreated.getTime() <= $scope.filterOptions.dateCreatedTo.getTime());
 					} else if ($scope.filterOptions.dateCreatedFrom && $scope.filterOptions.dateCreatedFrom.getTime) {
-						dateCreatedMatch =  ($scope.filterOptions.dateCreatedFrom.getTime() <= variable.metadata.dateCreated.getTime());
+						dateCreatedMatch = ($scope.filterOptions.dateCreatedFrom.getTime() <= variable.metadata.dateCreated.getTime());
 					} else if ($scope.filterOptions.dateCreatedTo && $scope.filterOptions.dateCreatedTo.getTime) {
-						dateCreatedMatch =  (variable.metadata.dateCreated.getTime() <= $scope.filterOptions.dateCreatedTo.getTime());
+						dateCreatedMatch = (variable.metadata.dateCreated.getTime() <= $scope.filterOptions.dateCreatedTo.getTime());
 					}
 				}
+
 				return variableTypeMatch && scaleDataTypeMatch && dateCreatedMatch;
 			};
 
