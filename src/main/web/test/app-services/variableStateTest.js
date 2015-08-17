@@ -216,7 +216,7 @@ describe('Variable State Service', function() {
 			expect(success).toBe(false);
 		});
 
-		it('should set the properties and property summary if the call to the properties service is successful and the property is found ' +
+		it('should set the properties and property if the call to the properties service is successful and the property is found ' +
 			'in the list of properties', function() {
 				var properties = [{id: 1, name: 'a property'}],
 					selectedPropertyId = 1,
@@ -236,8 +236,8 @@ describe('Variable State Service', function() {
 
 				state = variableStateService.getVariableState();
 
-				expect(state.variable.propertySummary.id).toEqual(selectedPropertyId);
-				expect(state.variable.propertySummary.name).toEqual(selectedPropertyName);
+				expect(state.variable.property.id).toEqual(selectedPropertyId);
+				expect(state.variable.property.name).toEqual(selectedPropertyName);
 				expect(state.scopeData.properties).toEqual(properties);
 			}
 		);
@@ -311,7 +311,7 @@ describe('Variable State Service', function() {
 
 		});
 
-		it('should set the methods and method summary if the call to the methods service is successful and method ' +
+		it('should set the methods and method if the call to the methods service is successful and method ' +
 			'is found in the list of methods', function() {
 				var methods = [{id: 1, name: 'a method'}],
 					selectedMethodId = 1,
@@ -329,8 +329,8 @@ describe('Variable State Service', function() {
 
 				state = variableStateService.getVariableState();
 
-				expect(state.variable.methodSummary.id).toEqual(selectedMethodId);
-				expect(state.variable.methodSummary.name).toEqual(selectedMethodName);
+				expect(state.variable.method.id).toEqual(selectedMethodId);
+				expect(state.variable.method.name).toEqual(selectedMethodName);
 				expect(state.scopeData.methods).toEqual(methods);
 			}
 		);

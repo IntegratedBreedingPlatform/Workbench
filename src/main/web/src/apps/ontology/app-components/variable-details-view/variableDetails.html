@@ -59,25 +59,25 @@
 			</div>
 		</div>
 
-		<div ng-class="formGroupClass('omProperty', 'propertySummary')">
+		<div ng-class="formGroupClass('omProperty', 'property')">
 			<label for="omProperty" class="col-sm-3 control-label">{{'formField.property' | translate}}</label>
 			<div class="col-sm-9">
-				<om-select name="omProperty" om-name="om-property" om-property="propertySummary" om-editing="editing" ng-model="model" om-options="data.properties" om-required="true"></om-select>
+				<om-select name="omProperty" om-name="om-property" om-property="property" om-editing="editing" ng-model="model" om-options="data.properties" om-required="true"></om-select>
 				<ng-messages for="vdForm.omProperty.$error" ng-if="editing && vdForm.$submitted">
 					<ng-message when="required"><p class="text-danger">{{'validation.variable.propertyRequired' | translate}}</p></ng-message>
 				</ng-messages>
-				<p class="text-danger" ng-hide="vdForm.omProperty.$touched" ng-repeat="error in serverErrors.propertySummary">{{error}}</p>
+				<p class="text-danger" ng-hide="vdForm.omProperty.$touched" ng-repeat="error in serverErrors.property">{{error}}</p>
 			</div>
 		</div>
 
-		<div ng-class="formGroupClass('omMethod', 'methodSummary')">
+		<div ng-class="formGroupClass('omMethod', 'method')">
 			<label for="omMethod" class="col-sm-3 control-label">{{'formField.method' | translate}}</label>
 			<div class="col-sm-9">
-				<om-select name="omMethod" om-name="om-method" om-property="methodSummary" om-editing="editing" ng-model="model" om-options="data.methods" om-required="true"></om-select>
+				<om-select name="omMethod" om-name="om-method" om-property="method" om-editing="editing" ng-model="model" om-options="data.methods" om-required="true"></om-select>
 				<ng-messages for="vdForm.omMethod.$error" ng-if="editing && vdForm.$submitted">
 					<ng-message when="required"><p class="text-danger">{{'validation.variable.methodRequired' | translate}}</p></ng-message>
 				</ng-messages>
-				<p class="text-danger" ng-hide="vdForm.omMethod.$touched" ng-repeat="error in serverErrors.methodSummary">{{error}}</p>
+				<p class="text-danger" ng-hide="vdForm.omMethod.$touched" ng-repeat="error in serverErrors.method">{{error}}</p>
 			</div>
 		</div>
 

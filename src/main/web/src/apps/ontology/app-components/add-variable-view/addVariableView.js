@@ -136,8 +136,8 @@
 				// there must be a scale, in which case the form isn't empty.. :)
 				formEmpty = !!!model.name &&
 					!!!model.description &&
-					isUndefined(model.propertySummary) &&
-					isUndefined(model.methodSummary) &&
+					isUndefined(model.property) &&
+					isUndefined(model.method) &&
 					isUndefined(model.scale) &&
 					(isUndefined(model.variableTypes) ||
 						(angular.isArray(model.variableTypes) && model.variableTypes.length === 0));

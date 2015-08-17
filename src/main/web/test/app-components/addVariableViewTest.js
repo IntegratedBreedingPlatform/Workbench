@@ -453,19 +453,19 @@ describe('Add Variable View', function() {
 				expect(variableFormService.formEmpty(description)).toBe(false);
 			});
 
-			it('should return false if the propertySummary, methodSummary or scale are present', function() {
-				var propertySummary = {
+			it('should return false if the property, method or scale are present', function() {
+				var property = {
 						name: 'a property'
 					},
-					methodSummary = {
+					method = {
 						name: 'a method'
 					},
 					scale = {
 						name: 'a scale'
 					};
 
-				expect(variableFormService.formEmpty(propertySummary)).toBe(false);
-				expect(variableFormService.formEmpty(methodSummary)).toBe(false);
+				expect(variableFormService.formEmpty(property)).toBe(false);
+				expect(variableFormService.formEmpty(method)).toBe(false);
 				expect(variableFormService.formEmpty(scale)).toBe(false);
 			});
 

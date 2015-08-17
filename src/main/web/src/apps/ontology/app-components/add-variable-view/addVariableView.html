@@ -37,27 +37,27 @@
 			</div>
 		</div>
 
-		<div ng-class="formGroupClass('omProperty', 'propertySummary')">
+		<div ng-class="formGroupClass('omProperty', 'property')">
 			<label for="omProperty" class="col-sm-2 control-label">{{'formField.property' | translate}}</label>
 			<div class="col-sm-7">
-				<om-select name="omProperty" om-name="om-property" om-property="propertySummary" om-adding="true" ng-model="variable" om-options="data.properties" om-required="true"></om-select>
+				<om-select name="omProperty" om-name="om-property" om-property="property" om-adding="true" ng-model="variable" om-options="data.properties" om-required="true"></om-select>
 				<a href="#" ng-click="addNew($event, 'property')">{{'addNew.variable.addProperty' | translate}}</a>
 				<ng-messages for="avForm.omProperty.$error" ng-if="avForm.$submitted">
 					<ng-message when="required"><p class="text-danger">{{'validation.variable.propertyRequired' | translate}}</p></ng-message>
 				</ng-messages>
-				<p class="text-danger" ng-hide="avForm.omProperty.$touched" ng-repeat="error in serverErrors.propertySummary">{{error}}</p>
+				<p class="text-danger" ng-hide="avForm.omProperty.$touched" ng-repeat="error in serverErrors.property">{{error}}</p>
 			</div>
 		</div>
 
-		<div ng-class="formGroupClass('omMethod', 'methodSummary')">
+		<div ng-class="formGroupClass('omMethod', 'method')">
 			<label for="omMethod" class="col-sm-2 control-label">{{'formField.method' | translate}}</label>
 			<div class="col-sm-7">
-				<om-select name="omMethod" om-name="om-method" om-property="methodSummary" om-adding="true" ng-model="variable" om-options="data.methods" om-required="true"></om-select>
+				<om-select name="omMethod" om-name="om-method" om-property="method" om-adding="true" ng-model="variable" om-options="data.methods" om-required="true"></om-select>
 				<a href="#" ng-click="addNew($event, 'method')">{{'addNew.variable.addMethod' | translate}}</a>
 				<ng-messages for="avForm.omMethod.$error" ng-if="avForm.$submitted">
 					<ng-message when="required"><p class="text-danger">{{'validation.variable.methodRequired' | translate}}</p></ng-message>
 				</ng-messages>
-				<p class="text-danger" ng-hide="avForm.omMethod.$touched" ng-repeat="error in serverErrors.methodSummary">{{error}}</p>
+				<p class="text-danger" ng-hide="avForm.omMethod.$touched" ng-repeat="error in serverErrors.method">{{error}}</p>
 			</div>
 		</div>
 

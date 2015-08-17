@@ -10,23 +10,14 @@
 			failureHandler = serviceUtilities.restFailureHandler;
 
 		function convertVariableForUpdating(variable) {
-			var convertedVariable = {
-					propertySummary: {
-						id: variable.propertySummary.id,
-						name: variable.propertySummary.name,
-						description: variable.propertySummary.description
-					},
-					methodSummary: {
-						id: variable.methodSummary.id,
-						name: variable.methodSummary.name,
-						description: variable.methodSummary.description
-					},
-					scaleSummary: variable.scale,
-					alias: variable.alias
-				},
+			var convertedVariable = {},
 				propertiesToInclude = [
 					'name',
+					'alias',
 					'description',
+					'property',
+					'method',
+					'scale',
 					'favourite',
 					'expectedRange',
 					'variableTypes'
@@ -52,15 +43,15 @@
 				'name': 'Plant Vigor',
 				'alias': '',
 				'description': 'A little vigourous',
-				'propertySummary': {
+				'property': {
 					'id': 1,
 					'name': 'Plant Vigor'
 				},
-				'methodSummary': {
+				'method': {
 					'id': 46,
 					'name': 'Visually Assessed'
 				},
-				'scaleSummary': {
+				'scale': {
 					'id': 1,
 					'name': 'Percentage',
 					'dataType': {
@@ -107,11 +98,11 @@
 			{
 				'name': 'Plant Vigor',
 				'description': 'A little vigourous',
-				'propertySummary': {
+				'property': {
 					'id': 1,
 					'name': 'Plant Vigor'
 				},
-				'methodSummary': {
+				'method': {
 					'id': 46,
 					'name': 'Visually Assessed'
 				},
@@ -185,11 +176,11 @@
 				'name': 'Plant Vigor',
 				'alias': '',
 				'description': 'A little vigourous',
-				'propertySummary': {
+				'property': {
 					'id': 1,
 					'name': 'Plant Vigor'
 				},
-				'methodSummary': {
+				'method': {
 					'id': 46,
 					'name': 'Visually Assessed'
 				},
@@ -283,11 +274,11 @@
 				'name': 'Plant Vigor',
 				'alias': '',
 				'description': 'A little vigourous',
-				'propertySummary': {
+				'property': {
 					'id': 1,
 					'name': 'Plant Vigor'
 				},
-				'methodSummary': {
+				'method': {
 					'id': 46,
 					'name': 'Visually Assessed'
 				},

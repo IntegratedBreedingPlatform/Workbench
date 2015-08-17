@@ -6,11 +6,11 @@ describe('Variables Service', function() {
 			id: 1,
 			name: 'Plant Vigor',
 			description: 'A little vigourous',
-			propertySummary: {
+			property: {
 				id: 1,
 				name: 'Plant Vigor'
 			},
-			methodSummary: {
+			method: {
 				id: 1,
 				name: 'Look at the plant'
 			},
@@ -37,9 +37,9 @@ describe('Variables Service', function() {
 		CONVERTED_PLANT_VIGOR = {
 			name: PLANT_VIGOR.name,
 			description: PLANT_VIGOR.description,
-			propertySummary: PLANT_VIGOR.propertySummary,
-			methodSummary: PLANT_VIGOR.methodSummary,
-			scaleSummary: PLANT_VIGOR.scale,
+			property: PLANT_VIGOR.property,
+			method: PLANT_VIGOR.method,
+			scale: PLANT_VIGOR.scale,
 			variableTypes: PLANT_VIGOR.variableTypes
 		},
 

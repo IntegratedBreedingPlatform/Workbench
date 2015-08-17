@@ -50,12 +50,12 @@
 				},
 
 				/*
-				This method will update the stored list of properties in scopeData, and sets the propertySummary on the variable to
+				This method will update the stored list of properties in scopeData, and sets the property on the variable to
 				contain the id and name of the selected property.
 
 				@param propertyId the id of the selected property
 				@param propertyName the name of the selected property
-				@returns a promise that will resolve when the properties and property summary have been updated, and will reject
+				@returns a promise that will resolve when the properties and property have been updated, and will reject
 					with one parameter error containing the error if one occurs.
 				*/
 				setProperty: function(propertyId, propertyName) {
@@ -67,7 +67,7 @@
 
 							properties.some(function(property) {
 								if (property.id === propertyId && property.name === propertyName) {
-									variable.propertySummary = {
+									variable.property = {
 										id: propertyId,
 										name: propertyName
 									};
@@ -87,12 +87,12 @@
 				},
 
 				/*
-				This method will update the stored list of methods in scopeData, and sets the methodSummary on the variable to
+				This method will update the stored list of methods in scopeData, and sets the method on the variable to
 				contain the id and name of the selected method.
 
 				@param methodId the id of the selected method
 				@param methodName the name of the selected method
-				@returns a promise that will resolve when the methods and method summary have been updated, and will reject
+				@returns a promise that will resolve when the methods and method have been updated, and will reject
 					with one parameter error containing the error if one occurs.
 				*/
 				setMethod: function(methodId, methodName) {
@@ -104,7 +104,7 @@
 
 							methods.some(function(method) {
 								if (method.id === methodId && method.name === methodName) {
-									variable.methodSummary = {
+									variable.method = {
 										id: methodId,
 										name: methodName
 									};
@@ -124,11 +124,11 @@
 				},
 
 				/*
-				This method will update the stored list of scales in scopeData, and sets the scaleSummary on the variable to
+				This method will update the stored list of scales in scopeData, and sets the scale on the variable to
 				contain the id and name of the selected scale.
 
 				@param scaleId the id of the selected scale
-				@returns a promise that will resolve when the scales and scale summary have been updated, and will reject
+				@returns a promise that will resolve when the scales and scale have been updated, and will reject
 					with one parameter error containing the error if one occurs.
 				*/
 				setScale: function(scaleId) {
