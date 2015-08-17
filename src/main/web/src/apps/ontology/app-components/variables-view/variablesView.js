@@ -242,15 +242,18 @@
 			};
 
 			$scope.toggleFavourite = function() {
-				var transformedVariable = find(ctrl.variables, $scope.selectedItem.id);
+				var transformedVariable = find(ctrl.variables, $scope.selectedItem.id),
+					isFavourite = transformedVariable['action-favourite'].iconValue === 'star';
 
-				transformedVariable['action-favourite'].iconValue = (transformedVariable['action-favourite'].iconValue === 'star') ?
-					'star-empty' : 'star';
+				// Change whether variable is favourite
+				transformedVariable['action-favourite'].iconValue = isFavourite ? 'star-empty' : 'star';
+				// Update the variable
 				$scope.updateSelectedVariable(transformedVariable);
 
+				// Retrieve variable and update it
 				variablesService.getVariable($scope.selectedItem.id).then(function(variable) {
 					$scope.selectedVariable = variable;
-					$scope.selectedVariable.favourite = transformedVariable['action-favourite'].iconValue === 'star';
+					$scope.selectedVariable.favourite = !isFavourite;
 					variablesService.updateVariable($scope.selectedItem.id, $scope.selectedVariable);
 				});
 
@@ -259,7 +262,8 @@
 			};
 
 			$scope.updateSelectedVariable = function(updatedVariable) {
-				var transformedVariable;
+				var transformedVariable,
+					isFavourite;
 
 				if (updatedVariable) {
 					//if property 'action-favourite' present we assume that variable is already transformed, as it is added during
@@ -267,7 +271,9 @@
 					transformedVariable = updatedVariable['action-favourite'] ? updatedVariable :
 						transformDetailedVariableToDisplayFormat(updatedVariable, $scope.selectedItem.id);
 
-					if (transformedVariable['action-favourite'].iconValue === 'star') {
+					isFavourite = transformedVariable['action-favourite'].iconValue === 'star';
+
+					if (isFavourite) {
 						findAndUpdate(ctrl.favouriteVariables, $scope.selectedItem.id, transformedVariable, collectionUtilities.sortByName);
 						addNotFound(ctrl.favouriteVariables, $scope.selectedItem.id, transformedVariable, collectionUtilities.sortByName);
 					} else {
