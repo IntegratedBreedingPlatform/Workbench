@@ -614,8 +614,7 @@ describe('Variables Controller', function() {
 					id: 1,
 					name: 'Analysis',
 					description: ''
-				}],
-				scaleDataType: {name: '...'}
+				}]
 			};
 			expect(scope.optionsFilter(PLANT_VIGOR_CONVERTED)).toBe(true);
 		});
@@ -626,8 +625,7 @@ describe('Variables Controller', function() {
 					id: 8,
 					name: 'Trait',
 					description: 'Characteristics of a germplasm to be recorded during a study.'
-				}],
-				scaleDataType: {name: '...'}
+				}]
 			};
 			expect(scope.optionsFilter(PLANT_VIGOR_CONVERTED)).toBe(false);
 		});
@@ -649,41 +647,34 @@ describe('Variables Controller', function() {
 		});
 
 		it('should return true if date created in variable metadata is between date created from and date created to of filter options',
-			function() {
+		function() {
 			scope.filterOptions = {
 				variableTypes: [],
-				scaleDataType: {name: '...'},
 				dateCreatedFrom: new Date('2015-06-01'),
 				dateCreatedTo: new Date('2015-07-01')
 			};
 			expect(scope.optionsFilter(PLANT_VIGOR_CONVERTED)).toBe(true);
 		});
 
-		it('should return true if date created in variable metadata is after date created from of filter options',
-			function() {
+		it('should return true if date created in variable metadata is after date created from of filter options', function() {
 			scope.filterOptions = {
 				variableTypes: [],
-				scaleDataType: {name: '...'},
 				dateCreatedFrom: new Date('2015-06-01')
 			};
 			expect(scope.optionsFilter(PLANT_VIGOR_CONVERTED)).toBe(true);
 		});
 
-		it('should return true if date created in variable metadata is before date created to of filter options',
-			function() {
+		it('should return true if date created in variable metadata is before date created to of filter options', function() {
 			scope.filterOptions = {
 				variableTypes: [],
-				scaleDataType: {name: '...'},
 				dateCreatedTo: new Date('2015-07-01')
 			};
 			expect(scope.optionsFilter(PLANT_VIGOR_CONVERTED)).toBe(true);
 		});
 
-		it('should return true if date created from or date created to of filter options are not dates',
-			function() {
+		it('should return true if date created from or date created to of filter options are not dates', function() {
 			scope.filterOptions = {
 				variableTypes: [],
-				scaleDataType: {name: '...'},
 				dateCreatedFrom: 'notADate',
 				dateCreatedTo: 'notADateEither'
 			};

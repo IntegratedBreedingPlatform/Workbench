@@ -1,5 +1,5 @@
 <ui-select ng-show="editable()" name="{{name}}" ng-model="model[property]" theme="select2">
-	<ui-select-match>{{$select.selected.name}}</ui-select-match>
+	<ui-select-match allow-clear="{{!!allowClear}}">{{$select.selected.name}}</ui-select-match>
 	<ui-select-choices repeat="item as item in options | filter: {name: $select.search}">
 		{{item.name}}
 	</ui-select-choices>

@@ -27,7 +27,7 @@ describe('Filter Module', function() {
 			stopPropagation: function() {}
 		},
 
-		variableTypes = [{
+		VARIABLE_TYPES = [{
 			id: 1,
 			name: 'Analysis',
 			description: 'Variable to be used only in analysis (for example derived variables).'
@@ -41,6 +41,12 @@ describe('Filter Module', function() {
 			id: 1,
 			name: 'Categorical'
 		},
+
+		NUMERIC_TYPE = {
+			id: 2,
+			name: 'Numeric'
+		},
+
 		TODAY;
 
 	beforeEach(function() {
@@ -113,9 +119,9 @@ describe('Filter Module', function() {
 		});
 
 		it('should set the variable types on the scope', function() {
-			deferredGetTypes.resolve(variableTypes);
+			deferredGetTypes.resolve(VARIABLE_TYPES);
 			scope.$apply();
-			expect(isolateScope.data.types).toEqual(variableTypes);
+			expect(isolateScope.data.types).toEqual(VARIABLE_TYPES);
 		});
 
 		it('should display errors if variable types were not retrieved successfully', function() {
@@ -126,9 +132,8 @@ describe('Filter Module', function() {
 		});
 
 		it('should set the scale data types on the scope', function() {
-			//List with the value for 'ALL'
-			var dataTypesList = [{id: 0, name:'...'}].concat(CATEGORICAL_TYPE);
-			deferredGetNonSystemDataTypes.resolve(CATEGORICAL_TYPE);
+			var dataTypesList = [CATEGORICAL_TYPE, NUMERIC_TYPE];
+			deferredGetNonSystemDataTypes.resolve(dataTypesList);
 			scope.$apply();
 			expect(isolateScope.data.scaleDataTypes).toEqual(dataTypesList);
 		});
@@ -182,7 +187,7 @@ describe('Filter Module', function() {
 		describe('$scope.isFilterActive', function() {
 
 			it('should return true if variable types filter option is set', function() {
-				isolateScope.filterOptions.variableTypes = variableTypes;
+				isolateScope.filterOptions.variableTypes = VARIABLE_TYPES;
 				expect(isolateScope.isFilterActive()).toBe(true);
 			});
 

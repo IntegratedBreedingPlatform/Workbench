@@ -12,10 +12,7 @@
 					$scope.smallPanelName = 'filters';
 					$scope.data = {
 						types: [],
-						scaleDataTypes: [{
-							id: 0,
-							name: '...'
-						}],
+						scaleDataTypes: [],
 						calendarOpened1: false,
 						calendarOpened2: false
 					};
@@ -25,13 +22,27 @@
 					};
 
 					$scope.isFilterActive = function() {
-						return ($scope.filterOptions && $scope.filterOptions.variableTypes &&
-							$scope.filterOptions.variableTypes.length !== 0) ||
-							($scope.filterOptions && $scope.filterOptions.scaleDataType &&
-							$scope.filterOptions.scaleDataType.name !== '...') || ($scope.filterOptions &&
-							$scope.filterOptions.dateCreatedFrom && $scope.filterOptions.dateCreatedFrom.getTime !== undefined) ||
-							($scope.filterOptions && $scope.filterOptions.dateCreatedTo &&
-							$scope.filterOptions.dateCreatedTo.getTime !== undefined);
+						var filterOptionsValued = $scope.filterOptions,
+							variableTypesActive,
+							scaleDataTypesActive,
+							dateCreatedFromActive,
+							dateCreatedToActive;
+
+						if (!filterOptionsValued) {
+							return false;
+						}
+
+						variableTypesActive = $scope.filterOptions.variableTypes && $scope.filterOptions.variableTypes.length !== 0;
+
+						scaleDataTypesActive = !!$scope.filterOptions.scaleDataType;
+
+						dateCreatedFromActive = $scope.filterOptions.dateCreatedFrom &&
+							$scope.filterOptions.dateCreatedFrom.getTime !== undefined;
+
+						dateCreatedToActive = $scope.filterOptions.dateCreatedTo &&
+							$scope.filterOptions.dateCreatedTo.getTime !== undefined;
+
+						return variableTypesActive || scaleDataTypesActive || dateCreatedFromActive || dateCreatedToActive;
 					};
 
 					variableTypesService.getTypes().then(function(types) {

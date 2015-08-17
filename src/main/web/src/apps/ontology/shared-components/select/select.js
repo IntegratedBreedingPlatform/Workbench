@@ -29,7 +29,8 @@
 				adding: '=omAdding',
 				editing: '=omEditing',
 				model: '=ngModel',
-				required: '=?omRequired'
+				required: '=?omRequired',
+				allowClear: '=omAllowClear'
 			},
 			templateUrl: 'static/views/ontology/select.html'
 		};

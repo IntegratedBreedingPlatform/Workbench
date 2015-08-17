@@ -144,7 +144,7 @@
 					});
 				}
 
-				if ($scope.filterOptions.scaleDataType && $scope.filterOptions.scaleDataType.name !== '...') {
+				if ($scope.filterOptions.scaleDataType) {
 					scaleDataTypeMatch =  angular.equals(variable.scaleDataType, $scope.filterOptions.scaleDataType);
 				}
 
