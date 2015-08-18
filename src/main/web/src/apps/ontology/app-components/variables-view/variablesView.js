@@ -5,58 +5,6 @@
 	var app = angular.module('variablesView', ['list', 'panel', 'variables', 'variableDetails', 'utilities', 'filter']),
 		DELAY = 400;
 
-	function transformDetailedVariableToDisplayFormat(variable, id) {
-		var tempDateCreated = variable.metadata ? new Date(variable.metadata.dateCreated) : new Date();
-		tempDateCreated.setHours(0, 0, 0, 0);
-
-		return {
-			id: id,
-			name: variable.name,
-			alias: variable.alias || '',
-			property: variable.property && variable.property.name || '',
-			method: variable.method && variable.method.name || '',
-			scale: variable.scale && variable.scale.name || '',
-			variableTypes: variable.variableTypes, // used for filtering
-			scaleDataType: variable.scale && variable.scale.dataType,
-			metadata: {
-				dateCreated: tempDateCreated
-			},
-			'action-favourite': variable.favourite ? { iconValue: 'star' } : { iconValue: 'star-empty' }
-		};
-	}
-
-	function transformVariableToDisplayFormat(variable) {
-		return transformDetailedVariableToDisplayFormat(variable, variable.id);
-	}
-
-	/*
-	Transforms each of the given variables into the correct object structure to be displayed in the list.
-	This object structure must include the function to call to make a variable a favourite or remove it from
-	being a favourite.
-
-	@return the array of transformed variables
-	@throws malformed variable exception if any variable is missing an id or name
-	*/
-	function transformToDisplayFormat(variables, actionFunction) {
-		var transformedVariables = [],
-			i;
-
-		for (i = 0; i < variables.length; i++) {
-			if (!variables[i].id || !variables[i].name) {
-				// Throw exception if there is any variable that comes back with no id or name
-				throw new Error('Malformed variable');
-			}
-			transformedVariables.push(transformVariableToDisplayFormat(variables[i]));
-		}
-
-		// add action functions to the variables
-		transformedVariables.every(function(variable) {
-			variable['action-favourite'].iconFunction = actionFunction;
-			return true;
-		});
-		return transformedVariables;
-	}
-
 	function findAndUpdate(list, id, updatedVariable, sortFunction) {
 		var selectedVariableIndex = -1;
 
@@ -112,11 +60,6 @@
 			ctrl.colHeaders = ['name', 'property', 'method', 'scale', 'action-favourite'];
 			ctrl.problemGettingList = false;
 
-			ctrl.transformToDisplayFormat = transformToDisplayFormat;
-			/* Exposed for testing */
-			ctrl.transformVariableToDisplayFormat = transformVariableToDisplayFormat;
-			ctrl.transformDetailedVariableToDisplayFormat = transformDetailedVariableToDisplayFormat;
-
 			$scope.filterByProperties = ['name', 'alias', 'property', 'method', 'scale'];
 			$scope.panelName = 'variables';
 			$scope.filterOptions = {
@@ -170,7 +113,7 @@
 
 			variablesService.getFavouriteVariables().then(function(variables) {
 				try {
-					ctrl.favouriteVariables = ctrl.transformToDisplayFormat(variables, $scope.toggleFavourite);
+					ctrl.favouriteVariables = ctrl.transformToDisplayFormat(variables);
 
 					if (ctrl.favouriteVariables.length === 0) {
 						ctrl.showNoFavouritesMessage = true;
@@ -192,7 +135,7 @@
 
 			variablesService.getVariables().then(function(variables) {
 				try {
-					ctrl.variables = ctrl.transformToDisplayFormat(variables, $scope.toggleFavourite);
+					ctrl.variables = ctrl.transformToDisplayFormat(variables);
 
 					if (ctrl.variables.length === 0) {
 						ctrl.showNoVariablesMessage = true;
@@ -211,6 +154,54 @@
 			}).finally (function() {
 				ctrl.showAllVariablesThrobberWrapper = false;
 			});
+
+			ctrl.transformDetailedVariableToDisplayFormat = function(variable, id) {
+				var tempDateCreated = variable.metadata ? new Date(variable.metadata.dateCreated) : new Date();
+				tempDateCreated.setHours(0, 0, 0, 0);
+
+				var returnValue = {
+					id: id || variable.id,
+					name: variable.name,
+					alias: variable.alias || '',
+					property: variable.property && variable.property.name || '',
+					method: variable.method && variable.method.name || '',
+					scale: variable.scale && variable.scale.name || '',
+					variableTypes: variable.variableTypes, // used for filtering
+					scaleDataType: variable.scale && variable.scale.dataType,
+					metadata: {
+						dateCreated: tempDateCreated
+					},
+					'action-favourite': {
+						iconValue: variable.favourite ? 'star' : 'star-empty',
+						iconFunction: $scope.toggleFavourite
+					}
+				};
+
+				return returnValue;
+			};
+
+			/*
+			Transforms each of the given variables into the correct object structure to be displayed in the list.
+			This object structure must include the function to call to make a variable a favourite or remove it from
+			being a favourite.
+
+			@return the array of transformed variables
+			@throws malformed variable exception if any variable is missing an id or name
+			*/
+			ctrl.transformToDisplayFormat = function(variables) {
+				var transformedVariables = [],
+					i;
+
+				for (i = 0; i < variables.length; i++) {
+					if (!variables[i].id || !variables[i].name) {
+						// Throw exception if there is any variable that comes back with no id or name
+						throw new Error('Malformed variable');
+					}
+					transformedVariables.push(ctrl.transformDetailedVariableToDisplayFormat(variables[i]));
+				}
+
+				return transformedVariables;
+			};
 
 			// Exposed for testing
 			ctrl.addAliasToTableIfPresent = function(variables) {
@@ -266,10 +257,10 @@
 					isFavourite;
 
 				if (updatedVariable) {
-					//if property 'action-favourite' present we assume that variable is already transformed, as it is added during
-					//transformation
+					// If property 'action-favourite' present we assume that variable is already transformed, as it is added during
+					// transformation
 					transformedVariable = updatedVariable['action-favourite'] ? updatedVariable :
-						transformDetailedVariableToDisplayFormat(updatedVariable, $scope.selectedItem.id);
+						ctrl.transformDetailedVariableToDisplayFormat(updatedVariable, $scope.selectedItem.id);
 
 					isFavourite = transformedVariable['action-favourite'].iconValue === 'star';
 

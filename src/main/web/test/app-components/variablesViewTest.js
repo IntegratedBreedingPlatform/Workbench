@@ -70,8 +70,10 @@ describe('Variables Controller', function() {
 		deferredGetFavVariables;
 
 	delete PLANT_VIGOR_CONVERTED.favourite;
-	PLANT_VIGOR_CONVERTED['action-favourite'] = {};
-	PLANT_VIGOR_CONVERTED['action-favourite'].iconValue = 'star';
+	PLANT_VIGOR_CONVERTED['action-favourite'] = {
+		iconValue: 'star',
+		iconFunction: jasmine.any(Function)
+	};
 	PLANT_VIGOR_CONVERTED.scaleDataType = NUMERIC_TYPE;
 	PLANT_VIGOR_CONVERTED.metadata = {
 		dateCreated: new Date('2015-06-15')
@@ -128,7 +130,6 @@ describe('Variables Controller', function() {
 		});
 
 		spyOn(controller, 'transformToDisplayFormat').and.callThrough();
-		spyOn(controller, 'transformVariableToDisplayFormat').and.callThrough();
 		spyOn(controller, 'transformDetailedVariableToDisplayFormat').and.callThrough();
 	}));
 
@@ -145,35 +146,20 @@ describe('Variables Controller', function() {
 					scale: PLANT_VIGOR_DETAILED.scale.name,
 					variableTypes: PLANT_VIGOR_DETAILED.variableTypes,
 					scaleDataType: PLANT_VIGOR_DETAILED.scale.dataType,
-					'action-favourite': PLANT_VIGOR_DETAILED.favourite ? { iconValue: 'star' } : { iconValue: 'star-empty' }
+					'action-favourite': {
+						iconValue: 'star',
+						iconFunction: jasmine.any(Function)
+					}
 				};
 
 			expect(controller.transformDetailedVariableToDisplayFormat(PLANT_VIGOR_DETAILED, newId)).toEqual(
 				jasmine.objectContaining(transformedVariable));
 		});
 
-		it('should transform a variable into display format', function() {
-			var newId = 3,
-				transformedVariable = {
-					id: newId,
-					name: PLANT_VIGOR_DETAILED.name,
-					alias: PLANT_VIGOR_DETAILED.alias,
-					property: PLANT_VIGOR_DETAILED.property.name,
-					method: PLANT_VIGOR_DETAILED.method.name,
-					scale: PLANT_VIGOR_DETAILED.scale.name,
-					variableTypes: PLANT_VIGOR_DETAILED.variableTypes,
-					scaleDataType: PLANT_VIGOR_DETAILED.scale.dataType,
-					'action-favourite': PLANT_VIGOR_DETAILED.favourite ? { iconValue: 'star' } : { iconValue: 'star-empty' }
-				};
-
-			expect(controller.transformDetailedVariableToDisplayFormat(PLANT_VIGOR, newId)).toEqual(
-				jasmine.objectContaining(transformedVariable));
-		});
-
 		it('should default some values to empty strings if they are not present', function() {
 			var rawVariable = angular.copy(PLANT_VIGOR_DETAILED),
-				transformedVariable,
-				createdDate = new Date();
+				createdDate = new Date(),
+				transformedVariable;
 
 			createdDate.setHours(0, 0, 0, 0);
 
@@ -200,7 +186,10 @@ describe('Variables Controller', function() {
 				metadata: {
 					dateCreated: createdDate
 				},
-				'action-favourite': { iconValue: 'star' }
+				'action-favourite': {
+					iconValue: 'star',
+					iconFunction: jasmine.any(Function)
+				}
 			};
 
 			expect(controller.transformDetailedVariableToDisplayFormat(rawVariable, rawVariable.id)).toEqual(
@@ -214,7 +203,7 @@ describe('Variables Controller', function() {
 			scope.$apply();
 
 			expect(variablesService.getVariables).toHaveBeenCalled();
-			expect(controller.transformToDisplayFormat).toHaveBeenCalledWith(jsonData, jasmine.any(Function));
+			expect(controller.transformToDisplayFormat).toHaveBeenCalledWith(jsonData);
 		});
 
 		it('should show a message if there are no variables returned', function() {
@@ -254,7 +243,7 @@ describe('Variables Controller', function() {
 			scope.$apply();
 
 			expect(variablesService.getFavouriteVariables).toHaveBeenCalled();
-			expect(controller.transformToDisplayFormat).toHaveBeenCalledWith(jsonData, jasmine.any(Function));
+			expect(controller.transformToDisplayFormat).toHaveBeenCalledWith(jsonData);
 		});
 
 		it('should show a message if there are no favourite variables returned', function() {
@@ -268,7 +257,7 @@ describe('Variables Controller', function() {
 		});
 
 		it('should show an error if any of the favourite variables are missing an id or name', function() {
-			var jsonData = [PLANT_VIGOR];
+			var jsonData = [angular.copy(PLANT_VIGOR)];
 
 			jsonData[0].name = '';
 			deferredGetFavVariables.resolve(jsonData);
@@ -426,34 +415,20 @@ describe('Variables Controller', function() {
 	describe('$scope.updateSelectedVariable', function() {
 
 		it('should sync the updated variable in the variables list', function() {
+			var variable = angular.copy(PLANT_VIGOR),
+				variableToUpdate = angular.copy(PLANT_VIGOR_CONVERTED),
+				newName = 'Not Plant Vigor';
 
-			var updateSelectedVariable = angular.copy(PLANT_VIGOR_CONVERTED),
-			newName = 'Not Plant Vigor',
-			id = 1;
-
-			controller.variables = [{
-				id: id,
-				name: PLANT_VIGOR.name,
-				property: PLANT_VIGOR.property.name,
-				method: PLANT_VIGOR.method.name,
-				scale: PLANT_VIGOR.scale.name
-			}];
-
-			controller.favouriteVariables = [{
-				id: id,
-				name: PLANT_VIGOR.name,
-				property: PLANT_VIGOR.property.name,
-				method: PLANT_VIGOR.method.name,
-				scale: PLANT_VIGOR.scale.name
-			}];
+			controller.variables = [variable];
+			controller.favouriteVariables = [variable];
 
 			// Select our variable for editing
-			scope.selectedItem.id = id;
+			scope.selectedItem.id = variable.id;
 
 			// "Update" our variable
-			updateSelectedVariable.name = newName;
+			variableToUpdate.name = newName;
 
-			scope.updateSelectedVariable(updateSelectedVariable);
+			scope.updateSelectedVariable(variableToUpdate);
 
 			expect(controller.variables[0].name).toEqual(newName);
 			expect(controller.favouriteVariables[0].name).toEqual(newName);
@@ -491,39 +466,25 @@ describe('Variables Controller', function() {
 
 		it('should remove an updated variable from the favourites list if it is no longer a favourite', function() {
 
-			var updateSelectedVariable = angular.copy(PLANT_VIGOR_DETAILED),
-			id = 1;
+			var variableToUpdate = angular.copy(PLANT_VIGOR_DETAILED),
+				variable = angular.copy(PLANT_VIGOR_CONVERTED);
 
-			controller.variables = [{
-				id: id,
-				name: PLANT_VIGOR.name,
-				property: PLANT_VIGOR.property.name,
-				method: PLANT_VIGOR.method.name,
-				scale: PLANT_VIGOR.scale.name,
-				'action-favourite': PLANT_VIGOR.favourite ? { iconValue: 'star' } : { iconValue: 'star-empty' }
-			}];
+			controller.variables = [variable];
 
-			controller.favouriteVariables = [{
-				id: id,
-				name: PLANT_VIGOR.name,
-				property: PLANT_VIGOR.property.name,
-				method: PLANT_VIGOR.method.name,
-				scale: PLANT_VIGOR.scale.name,
-				'action-favourite': PLANT_VIGOR.favourite ? { iconValue: 'star' } : { iconValue: 'star-empty' }
-			}];
+			controller.favouriteVariables = [variable];
 
 			// Select our variable for editing
-			scope.selectedItem.id = id;
+			scope.selectedItem.id = variable.id;
 
 			// "Update" our variable
-			updateSelectedVariable.favourite = false;
+			variableToUpdate.favourite = false;
 
-			scope.updateSelectedVariable(updateSelectedVariable);
+			scope.updateSelectedVariable(variableToUpdate);
 
 			expect(controller.variables.length).toEqual(1);
 			expect(controller.favouriteVariables.length).toEqual(0);
 
-			expect(controller.variables[0]['action-favourite']).toEqual({ iconValue: 'star-empty' });
+			expect(controller.variables[0]['action-favourite'].iconValue).toEqual('star-empty');
 		});
 
 		it('should only update the variable in the variables list matched by id', function() {
