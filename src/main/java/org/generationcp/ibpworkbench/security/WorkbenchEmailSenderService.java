@@ -205,11 +205,12 @@ public class WorkbenchEmailSenderService {
 			message.addInline(WorkbenchEmailSenderService.BMS_LOGO_LOC, this.retrieveLogoImage(), "image/png");
 
 			WorkbenchEmailSenderService.LOG.info("Sent password reset to {} with URL token {}", recipientEmail, forgotPasswordUrl);
-		} catch (IOException e) {
-			WorkbenchEmailSenderService.LOG.error(e.getMessage(), e);
-		} finally {
+
 			// send the message
 			this.mailSender.send(mimeMessage);
+
+		} catch (IOException e) {
+			WorkbenchEmailSenderService.LOG.error(e.getMessage(), e);
 		}
 	}
 

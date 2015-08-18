@@ -1,7 +1,6 @@
 package org.generationcp.ibpworkbench.controller;
 
 import javax.annotation.Resource;
-import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -12,7 +11,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.generationcp.ibpworkbench.model.AskSupportFormModel;
 import org.generationcp.ibpworkbench.security.WorkbenchEmailSenderService;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +33,9 @@ public class AskSupportController {
 	@Resource
 	private WorkbenchEmailSenderService workbenchEmailSenderService;
 
+	@Resource
+	private MessageSource messageSource;
+
 	@ModelAttribute("requestCategories")
 	public List<String> getRequestCategories() {
 
@@ -50,13 +53,15 @@ public class AskSupportController {
 			throws JsonProcessingException {
 		response.setHeader("Content-Type","text/html");
 
-		Map<String,String> result = new HashMap<>();
+		Map<String,Object> result = new HashMap<>();
 			try {
 				workbenchEmailSenderService.sendFeedback(askSupportForm);
-				result.put("success","true");
+				result.put("success",Boolean.TRUE);
 
-			} catch (MiddlewareQueryException | MessagingException e) {
-				result.put("success","false");
+			} catch (Exception e) {
+				result.put("success",Boolean.FALSE);
+				result.put("message",messageSource.getMessage("support.message.email.fail", new String[] {askSupportForm.getEmail()},
+						"Fail to send email", LocaleContextHolder.getLocale()));
 			}
 
 		return new ResponseEntity<>((new ObjectMapper()).writeValueAsString(result),HttpStatus.OK);

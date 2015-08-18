@@ -24,6 +24,15 @@
 		$scope.uploadComplete = function(content) {
 			$scope.response = content;
 			$scope.showThrobber = false;
+
+			if (!$scope.response.success) {
+				ngToast.warning({
+					content: $scope.response.message
+				});
+
+				return;
+			}
+
 			ngToast.create({
 				className: 'ask-support-toast-submit',
 				content: '<div class="col-xs-2"><span class="fa fa-thumbs-up ask-support-info-icon"></span></div>' +
