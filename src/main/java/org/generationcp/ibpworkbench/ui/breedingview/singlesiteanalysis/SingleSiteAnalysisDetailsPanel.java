@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * 
  * Generation Challenge Programme (GCP)
- *
- *
+ * 
+ * 
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
+ * 
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
@@ -73,9 +73,9 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- *
+ * 
  * @author Jeffrey Morales
- *
+ * 
  */
 @Configurable
 public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements InitializingBean, InternationalizableComponent {
@@ -123,36 +123,36 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 					if (environmentExists) {
 						ConfirmDialog
-						.show(event.getComponent().getWindow(),
-								"",
-								"One or more of the selected traits has existing means data. If you save the results of this analysis, the existing values will be overwritten.",
-								"OK", "Cancel", new Runnable() {
+								.show(event.getComponent().getWindow(),
+										"",
+										"One or more of the selected traits has existing means data. If you save the results of this analysis, the existing values will be overwritten.",
+										"OK", "Cancel", new Runnable() {
 
-							@Override
-							public void run() {
+											@Override
+											public void run() {
 
-								new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this,
-										SingleSiteAnalysisDetailsPanel.this.project).buttonClick(event);
-							}
+												new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this,
+														SingleSiteAnalysisDetailsPanel.this.project).buttonClick(event);
+											}
 
-						});
+										});
 					} else {
 						new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this, SingleSiteAnalysisDetailsPanel.this.project)
-						.buttonClick(event);
+								.buttonClick(event);
 					}
 
 				} else {
 					new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this, SingleSiteAnalysisDetailsPanel.this.project)
-					.buttonClick(event);
+							.buttonClick(event);
 				}
 
 			} catch (MiddlewareQueryException e) {
 				new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this, SingleSiteAnalysisDetailsPanel.this.project)
-				.buttonClick(event);
+						.buttonClick(event);
 				SingleSiteAnalysisDetailsPanel.LOG.error(e.getMessage(), e);
 			} catch (Exception e) {
 				new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this, SingleSiteAnalysisDetailsPanel.this.project)
-				.buttonClick(event);
+						.buttonClick(event);
 				SingleSiteAnalysisDetailsPanel.LOG.error(e.getMessage(), e);
 			}
 
@@ -217,13 +217,13 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 				if (!invalidEnvs.isEmpty()) {
 					MessageNotifier
-					.showError(
-							SingleSiteAnalysisDetailsPanel.this.getWindow(),
-							SingleSiteAnalysisDetailsPanel.INVALID_SELECTION_STRING,
-							SingleSiteAnalysisDetailsPanel.this.getSelEnvFactor().getValue().toString()
-							+ " "
-							+ invalidEnvs.toString()
-							+ " cannot be used for analysis because the plot data is not complete. The data must contain at least 2 common entries with values.");
+							.showError(
+									SingleSiteAnalysisDetailsPanel.this.getWindow(),
+									SingleSiteAnalysisDetailsPanel.INVALID_SELECTION_STRING,
+									SingleSiteAnalysisDetailsPanel.this.getSelEnvFactor().getValue().toString()
+											+ " "
+											+ invalidEnvs.toString()
+											+ " cannot be used for analysis because the plot data is not complete. The data must contain at least 2 common entries with values.");
 				}
 
 			} catch (Exception e) {
@@ -266,7 +266,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 					MessageNotifier.showError(SingleSiteAnalysisDetailsPanel.this.getWindow(),
 							SingleSiteAnalysisDetailsPanel.INVALID_SELECTION_STRING, "\"" + model.getEnvironmentName()
-							+ "\" value is not a valid selection for breeding view.");
+									+ "\" value is not a valid selection for breeding view.");
 					chk.setValue(false);
 					model.setActive(false);
 
@@ -278,13 +278,13 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 					if (!valid) {
 						MessageNotifier
-						.showError(
-								SingleSiteAnalysisDetailsPanel.this.getWindow(),
-								SingleSiteAnalysisDetailsPanel.INVALID_SELECTION_STRING,
-								SingleSiteAnalysisDetailsPanel.this.getSelEnvFactor().getValue().toString()
-								+ " \""
-								+ model.getEnvironmentName()
-								+ "\" cannot be used for analysis because the plot data is not complete. The data must contain at least 2 common entries with values.");
+								.showError(
+										SingleSiteAnalysisDetailsPanel.this.getWindow(),
+										SingleSiteAnalysisDetailsPanel.INVALID_SELECTION_STRING,
+										SingleSiteAnalysisDetailsPanel.this.getSelEnvFactor().getValue().toString()
+												+ " \""
+												+ model.getEnvironmentName()
+												+ "\" cannot be used for analysis because the plot data is not complete. The data must contain at least 2 common entries with values.");
 						chk.setValue(false);
 						model.setActive(false);
 					} else {
@@ -395,8 +395,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	}
 
 	public SingleSiteAnalysisDetailsPanel(Tool tool, BreedingViewInput breedingViewInput, List<VariableType> factorsInDataset,
-			List<VariableType> trialVariablesInDataset, Project project, 
-			SingleSiteAnalysisPanel selectDatasetForBreedingViewPanel) {
+			List<VariableType> trialVariablesInDataset, Project project, SingleSiteAnalysisPanel selectDatasetForBreedingViewPanel) {
 
 		this.tool = tool;
 		this.setBreedingViewInput(breedingViewInput);
@@ -1398,6 +1397,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		for (Iterator<?> itr = this.tblEnvironmentSelection.getContainerDataSource().getItemIds().iterator(); itr.hasNext();) {
 			SeaEnvironmentModel m = (SeaEnvironmentModel) itr.next();
 			m.setActive(value);
+
 		}
 	}
 
