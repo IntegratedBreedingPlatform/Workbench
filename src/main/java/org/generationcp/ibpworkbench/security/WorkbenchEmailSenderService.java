@@ -51,6 +51,9 @@ public class WorkbenchEmailSenderService {
 	private WorkbenchDataManager workbenchDataManager;
 
 	@Resource
+	private Properties workbenchProperties;
+
+	@Resource
 	private SessionData sessionData;
 
 	@Resource
@@ -146,6 +149,7 @@ public class WorkbenchEmailSenderService {
 		ctx.setVariable("accountUsername",accountUsername);
 		ctx.setVariable("accountEmail",accountEmail);
 		ctx.setVariable("browserInfo",browser);
+		ctx.setVariable("bmsVersion",this.workbenchProperties.getProperty("workbench.version", "4.0"));
 		ctx.setVariable("screenResolution",screenResolution);
 		ctx.setVariable("lastOpenedProgram",lastOpenedProgram);
 		ctx.setVariable("lastOpenedCrop",lastOpenedCrop);
