@@ -299,6 +299,28 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	}
 
+	private final class UploadListener implements Button.ClickListener {
+
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public void buttonClick(ClickEvent event) {
+			Map<String, Boolean> visibleTraitsMap = new HashMap<>();
+			for (VariableType factor : SingleSiteAnalysisDetailsPanel.this.factorsInDataset) {
+				visibleTraitsMap.put(factor.getLocalName(), true);
+			}
+			visibleTraitsMap.putAll(SingleSiteAnalysisDetailsPanel.this.breedingViewInput.getVariatesActiveState());
+
+			FileUploadBreedingViewOutputWindow window =
+					new FileUploadBreedingViewOutputWindow(event.getComponent().getWindow(),
+							SingleSiteAnalysisDetailsPanel.this.breedingViewInput.getStudyId(),
+							SingleSiteAnalysisDetailsPanel.this.project, visibleTraitsMap);
+
+			event.getComponent().getWindow().addWindow(window);
+
+		}
+	}
+
 	private static final Logger LOG = LoggerFactory.getLogger(SingleSiteAnalysisDetailsPanel.class);
 	private static final long serialVersionUID = 1L;
 
@@ -780,22 +802,20 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 				Variable trialVar = env.getVariables().findByLocalName(trialInstanceFactor);
 				Variable selectedEnvVar = env.getVariables().findByLocalName(envFactorName);
 
-				if (trialVar == null || selectedEnvVar == null) {
-					continue;
+				if (trialVar != null && selectedEnvVar != null) {
+
+					TrialEnvironment temp = trialEnvironments.findOnlyOneByLocalName(envFactorName, selectedEnvVar.getValue());
+
+					if (temp != null) {
+						SeaEnvironmentModel bean = new SeaEnvironmentModel();
+						bean.setActive(false);
+						bean.setEnvironmentName(selectedEnvVar.getValue());
+						bean.setTrialno(trialVar.getValue());
+						bean.setLocationId(temp.getId());
+						container.addBean(bean);
+					}
+
 				}
-
-				TrialEnvironment temp = trialEnvironments.findOnlyOneByLocalName(envFactorName, selectedEnvVar.getValue());
-
-				if (temp == null) {
-					continue;
-				}
-
-				SeaEnvironmentModel bean = new SeaEnvironmentModel();
-				bean.setActive(false);
-				bean.setEnvironmentName(selectedEnvVar.getValue());
-				bean.setTrialno(trialVar.getValue());
-				bean.setLocationId(temp.getId());
-				container.addBean(bean);
 
 			}
 
@@ -1128,27 +1148,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.btnRun.setClickShortcut(KeyCode.ENTER);
 		this.btnRun.addStyleName("primary");
 
-		this.btnUpload.addListener(new Button.ClickListener() {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				Map<String, Boolean> visibleTraitsMap = new HashMap<>();
-				for (VariableType factor : SingleSiteAnalysisDetailsPanel.this.factorsInDataset) {
-					visibleTraitsMap.put(factor.getLocalName(), true);
-				}
-				visibleTraitsMap.putAll(SingleSiteAnalysisDetailsPanel.this.breedingViewInput.getVariatesActiveState());
-
-				FileUploadBreedingViewOutputWindow window =
-						new FileUploadBreedingViewOutputWindow(event.getComponent().getWindow(),
-								SingleSiteAnalysisDetailsPanel.this.breedingViewInput.getStudyId(),
-								SingleSiteAnalysisDetailsPanel.this.project, visibleTraitsMap);
-
-				event.getComponent().getWindow().addWindow(window);
-
-			}
-		});
+		this.btnUpload.addListener(new UploadListener());
 		this.btnUpload.addStyleName("primary");
 
 		this.selDesignType.addListener(new BreedingViewDesignTypeValueChangeListener(this));
