@@ -414,6 +414,9 @@ describe('Variable details directive', function() {
 			timeout = $timeout;
 			scope.updateSelectedVariable = function(/*model*/) {};
 			scope.vdForm.$valid = true;
+			scope.selectedVariable = {
+				alias: ''
+			};
 		}));
 
 		it('should call the variables service to update the variable', function() {
@@ -421,11 +424,23 @@ describe('Variable details directive', function() {
 			expect(variablesService.updateVariable).toHaveBeenCalledWith(PLANT_VIGOR.id, PLANT_VIGOR);
 		});
 
-		it('should favourite the variable if alias is set for it', function() {
-			PLANT_VIGOR.alias = 'test';
-			scope.model = PLANT_VIGOR;
+		it('should favourite the variable if alias has been set and there was no alias previously', function() {
+			scope.model = angular.copy(PLANT_VIGOR);
+			scope.model.alias = 'test';
+			scope.model.favourite = false;
+
 			scope.saveChanges(fakeEvent, PLANT_VIGOR.id, scope.model);
 			expect(scope.model.favourite).toBe(true);
+		});
+
+		it('should not favourite the variable if alias is changed and there was an alias previously', function() {
+			scope.selectedVariable.alias = 'exisingAlias';
+			scope.model = angular.copy(PLANT_VIGOR);
+			scope.model.alias = 'test';
+			scope.model.favourite = false;
+
+			scope.saveChanges(fakeEvent, PLANT_VIGOR.id, scope.model);
+			expect(scope.model.favourite).toBe(false);
 		});
 
 		it('should not call the variables service if the form is not valid', function() {

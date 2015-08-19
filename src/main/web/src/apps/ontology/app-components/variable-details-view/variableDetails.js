@@ -144,6 +144,8 @@
 					};
 
 					$scope.saveChanges = function(e, id, model) {
+						var hadNoAlias;
+
 						e.preventDefault();
 						resetErrors($scope);
 
@@ -155,9 +157,13 @@
 								}
 							}, DELAY);
 
-							if (model.alias && model.alias !== '') {
+							// If the variable has been given an alias from not previously having one, we set that
+							// variable as a favourite for the user.
+							hadNoAlias = !$scope.selectedVariable.alias;
+							if (hadNoAlias && model.alias && model.alias !== '') {
 								model.favourite = true;
 							}
+
 							variablesService.updateVariable(id, model).then(function() {
 
 								// Update variable on parent scope if we succeeded
