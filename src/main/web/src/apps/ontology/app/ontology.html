@@ -47,6 +47,11 @@
 	<div class="om-view" ng-view="ng-view"></div>
 
 	<om-panel class="om-panel-small" om-panel-identifier="panelName" om-title="'addNew.title' | translate">
+		<div class="om-panel-header">
+			<h2 class="om-panel-title underlined-heading">
+				{{'addNew.title' | translate}}
+			</h2>
+		</div>
 		<div class="om-panel-content">
 			<ol class="om-add-new">
 				<li ng-click="addNew($event, 'variable')"><span>{{'addNew.variable.menuItem' | translate}}</span></li>
