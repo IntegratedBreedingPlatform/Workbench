@@ -34,21 +34,6 @@
 				return response.data;
 			},
 
-			//FIXME temporary workaround this will be removed when the data is updated so that every scale has a datatype
-			restFilteredScalesSuccessHandler: function(response) {
-				var scales = response.data,
-					filteredScales = [];
-
-				if (scales) {
-					scales.forEach(function(scale) {
-						if (scale && scale.dataType) {
-							filteredScales.push(scale);
-						}
-					});
-				}
-				return filteredScales;
-			},
-
 			restFailureHandler: function(response) {
 				return $q.reject({
 					status: response.status,

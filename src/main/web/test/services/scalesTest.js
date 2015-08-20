@@ -14,8 +14,7 @@ describe('Scales Service', function() {
 
 		serviceUtilities = {
 			restSuccessHandler: function() {},
-			restFailureHandler: function() {},
-			restFilteredScalesSuccessHandler: function() {}
+			restFailureHandler: function() {}
 		};
 
 		spyOn(serviceUtilities, 'restSuccessHandler');
@@ -49,19 +48,17 @@ describe('Scales Service', function() {
 			httpBackend.flush();
 		});
 
-		it('should pass the result to the serviceUtilities.restFilteredScalesSuccessHandler if a successful GET is made', function() {
+		it('should pass the result to the serviceUtilities.restSuccessHandler if a successful GET is made', function() {
 
 			var response = ['scales go here'];
-
-			spyOn(serviceUtilities, 'restFilteredScalesSuccessHandler');
 
 			httpBackend.expectGET(/\/scales$/).respond(response);
 
 			scalesService.getScales();
 			httpBackend.flush();
 
-			expect(serviceUtilities.restFilteredScalesSuccessHandler).toHaveBeenCalled();
-			expect(serviceUtilities.restFilteredScalesSuccessHandler.calls.mostRecent().args[0].data).toEqual(response);
+			expect(serviceUtilities.restSuccessHandler).toHaveBeenCalled();
+			expect(serviceUtilities.restSuccessHandler.calls.mostRecent().args[0].data).toEqual(response);
 			expect(serviceUtilities.restFailureHandler.calls.count()).toEqual(0);
 		});
 

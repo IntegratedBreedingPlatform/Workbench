@@ -81,45 +81,6 @@ describe('Utilities Service', function() {
 			});
 		});
 
-		describe('restFilteredScalesSuccessHandler', function() {
-
-			it('should return filtered scales from the response', function() {
-
-				var response = {
-					data: [{
-						name: 'Test1_Nonfiltered',
-						dataType: {
-							id: 1120,
-							name: 'Character'
-						}
-					},
-					{
-						name: 'Test2_Filtered',
-						dataType: null
-					}]
-				},
-				result;
-
-				result = serviceUtilities.restFilteredScalesSuccessHandler(response);
-
-				expect(result.length).toEqual(1);
-				expect(result[0].name).toEqual('Test1_Nonfiltered');
-			});
-
-			it('should handle falsy response', function() {
-
-				var response = {
-					data: null
-				},
-				result;
-
-				result = serviceUtilities.restFilteredScalesSuccessHandler(response);
-
-				expect(result.length).toEqual(0);
-				expect(result).toEqual([]);
-			});
-		});
-
 		describe('restFailureHandler', function() {
 
 			it('should return a rejected promise with a status and response data errors', function() {
