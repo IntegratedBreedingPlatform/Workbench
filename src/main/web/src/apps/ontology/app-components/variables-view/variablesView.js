@@ -67,6 +67,14 @@
 				scaleDataType: null
 			};
 
+			$scope.isFilterActive = function() {
+				var variableTypesFilterActive = $scope.filterOptions.variableTypes.length > 0,
+					scaleDataTypeFilterActive = !!$scope.filterOptions.scaleDataType,
+					dateCreatedFilterActive = !!$scope.filterOptions.dateCreatedFrom || !!$scope.filterOptions.dateCreatedTo;
+
+				return variableTypesFilterActive || scaleDataTypeFilterActive || dateCreatedFilterActive;
+			};
+
 			$scope.optionsFilter = function(variable) {
 				var variableTypeMatch = true,
 					scaleDataTypeMatch = true,

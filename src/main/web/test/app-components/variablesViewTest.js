@@ -556,6 +556,47 @@ describe('Variables Controller', function() {
 		});
 	});
 
+	describe('$scope.isFilterActive', function() {
+		it('should return true if there is at least one variable type selected to filter by', function() {
+			scope.filterOptions = {
+				variableTypes: ['type']
+			};
+			expect(scope.isFilterActive()).toBe(true);
+		});
+
+		it('should return true if there is a scale data type selected to filter by', function() {
+			scope.filterOptions = {
+				variableTypes: [],
+				scaleDataType: 'Numeric'
+			};
+			expect(scope.isFilterActive()).toBe(true);
+		});
+
+		it('should return true if the date created to date is selected to filter by', function() {
+			scope.filterOptions = {
+				variableTypes: [],
+				dateCreatedTo: new Date()
+			};
+			expect(scope.isFilterActive()).toBe(true);
+		});
+
+		it('should return true if the date created from date is selected to filter by', function() {
+			scope.filterOptions = {
+				variableTypes: [],
+				dateCreatedFrom: new Date()
+			};
+			expect(scope.isFilterActive()).toBe(true);
+		});
+
+		it('should return false if there are no values selected to filter by', function() {
+			scope.filterOptions = {
+				variableTypes: []
+			};
+			expect(scope.isFilterActive()).toBe(false);
+		});
+
+	});
+
 	describe('$scope.optionsFilter', function() {
 
 		it('should return true if filter options are not set', function() {
