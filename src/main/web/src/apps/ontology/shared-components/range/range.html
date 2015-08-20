@@ -13,7 +13,7 @@
 	</div>
 </ng-form>
 
-<p ng-hide="editable()" class="form-control-static">{{'range.readOnly' | translate: model[property]}}</p>
+<p ng-hide="editable()" class="form-control-static">{{readOnlyRangeText | translate: model[property]}}</p>
 
 <script type="text/ng-template" id="range-validation-messages">
 	<ng-message when="minNaN"><p class="text-danger">{{'range.validation.minNaN' | translate}}</p></ng-message>

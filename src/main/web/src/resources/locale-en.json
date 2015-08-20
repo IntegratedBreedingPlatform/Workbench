@@ -111,7 +111,10 @@
 			"max": "Maximum",
 			"min": "Minimum"
 		},
-		"readOnly": "{{min}} - {{max}}",
+		"fullRange": "{{min}} to {{max}}",
+		"maxOnly": "{{max}} and below",
+		"minOnly": "{{min}} and above",
+		"noRange": "All values allowed",
 		"validation": {
 			"maxNaN": "Maximum is not a valid number.",
 			"minNaN": "Minimum is not a valid number.",

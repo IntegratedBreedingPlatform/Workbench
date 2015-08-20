@@ -58,6 +58,24 @@
 		model.max = isMaxValued ? rangeModel.max.toString() : '';
 	}
 
+	/*
+	Retrieve the translation key to use for the message that should be displayed when the range is read only.
+
+	@param min a string containing the minimum value for the range
+	@param max a string containing the maximum value for the range
+	*/
+	function getReadOnlyRangeText(min, max) {
+		if (min && max) {
+			return 'range.fullRange';
+		} else if (min) {
+			return 'range.minOnly';
+		} else if (max) {
+			return 'range.maxOnly';
+		} else {
+			return 'range.noRange';
+		}
+	}
+
 	rangeModule.directive('omRange', ['formUtilities', 'editable', function(formUtilities, editable) {
 		return {
 			controller: function($scope) {
@@ -97,6 +115,9 @@
 						return;
 					}
 
+					// Set the read only text to reflect the given range
+					scope.readOnlyRangeText = getReadOnlyRangeText(data.min, data.max);
+
 					// Set a specific model to use in the template where the values are numbers rather than strings
 					// so that we can provide the user a better experience with the number type inputs that have up and
 					// down arrows for changing the values, rather than just a freetext input.
@@ -112,7 +133,6 @@
 					mapRangeModelToModel(scope.rangeModel, data);
 
 					validateValues(ctrl, scope.rangeModel, scope);
-
 				}, true);
 
 				scope.$watch('rangeModel', function(rangeModel) {

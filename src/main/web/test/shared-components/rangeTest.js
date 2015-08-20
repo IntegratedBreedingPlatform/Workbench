@@ -30,7 +30,7 @@ describe('Range module', function() {
 
 	function compileDirective() {
 		inject(function($compile) {
-			directiveElement = $compile('<om-range ng-model="model" om-property="validValues"></om-range>')(scope);
+			directiveElement = $compile('<om-range ng-model="model" om-property="validValues" om-numeric="true"></om-range>')(scope);
 		});
 
 		scope.$digest();
@@ -53,6 +53,49 @@ describe('Range module', function() {
 		compileDirective();
 
 		expect(scope.model).toBeUndefined();
+	});
+
+	it('should set the read only text to full range if both the min and max are set', function() {
+		scope.model = {
+			validValues: {
+				min: '80',
+				max: '90'
+			}
+		};
+		compileDirective();
+
+		expect(isolateScope.readOnlyRangeText).toEqual('range.fullRange');
+	});
+
+	it('should set the read only text to min only if the min is set and the max is not', function() {
+		scope.model = {
+			validValues: {
+				min: '0'
+			}
+		};
+		compileDirective();
+
+		expect(isolateScope.readOnlyRangeText).toEqual('range.minOnly');
+	});
+
+	it('should set the read only text to max only if the max is set and the min is not', function() {
+		scope.model = {
+			validValues: {
+				max: '-1'
+			}
+		};
+		compileDirective();
+
+		expect(isolateScope.readOnlyRangeText).toEqual('range.maxOnly');
+	});
+
+	it('should set the read only text to no range if nither the min or max are set', function() {
+		scope.model = {
+			validValues: {}
+		};
+		compileDirective();
+
+		expect(isolateScope.readOnlyRangeText).toEqual('range.noRange');
 	});
 
 	describe('Range validation', function() {
@@ -273,4 +316,5 @@ describe('Range module', function() {
 			expect(scope.testForm.omRange.$touched).toBe(true);
 		});
 	});
+
 });
