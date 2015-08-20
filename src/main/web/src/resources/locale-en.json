@@ -36,7 +36,8 @@
 	},
 
 	"filter": {
-		"title": "Filter Variables"
+		"title": "Filter Variables",
+		"instructions": "Variables may be filtered by one or more of the following options. If multiple filters are selected, they will be applied to the variables list together."
 	},
 
 	"button": {
