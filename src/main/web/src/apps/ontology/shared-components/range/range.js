@@ -50,6 +50,14 @@
 		}
 	}
 
+	function mapRangeModelToModel(rangeModel, model) {
+		var isMinValued = !(angular.isUndefined(rangeModel.min) || rangeModel.min === null),
+			isMaxValued = !(angular.isUndefined(rangeModel.max) || rangeModel.max === null);
+
+		model.min = isMinValued ? rangeModel.min.toString() : '';
+		model.max = isMaxValued ? rangeModel.max.toString() : '';
+	}
+
 	rangeModule.directive('omRange', ['formUtilities', 'editable', function(formUtilities, editable) {
 		return {
 			controller: function($scope) {
@@ -106,14 +114,6 @@
 					validateValues(ctrl, scope.rangeModel, scope);
 
 				}, true);
-
-				function mapRangeModelToModel (rangeModel, model) {
-					var isMinValued = !(angular.isUndefined(rangeModel.min) || rangeModel.min === null),
-						isMaxValued = !(angular.isUndefined(rangeModel.max) || rangeModel.max === null);
-
-					model.min = isMinValued ? rangeModel.min.toString() : '';
-					model.max = isMaxValued ? rangeModel.max.toString() : '';
-				}
 
 				scope.$watch('rangeModel', function(rangeModel) {
 
