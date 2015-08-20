@@ -58,9 +58,10 @@ ol {
 	position: absolute;
 	top: $headerHeight;
 	bottom: 0;
-	overflow-y: hidden;
+	overflow-y: auto;
 	overflow-x: hidden;
 	width: 100%;
+	padding: 1.5rem 1.5rem;
 
 	.om-add-new {
 		list-style: none;
@@ -120,8 +121,8 @@ ol {
 	position: absolute;
 	width: 100%;
 	height: $headerHeight;
-	padding: 1rem 7rem 1rem 3rem;
-	//display the header underneaf the Close button so that the button could be clicked
+	padding: 1rem 7rem 1rem 1.5rem;
+	// Display the header underneath the Close button so that the button can be clicked
 	z-index: -1;
 
 	.om-panel-title {
@@ -133,18 +134,8 @@ ol {
 	}
 }
 
-.om-details-content {
-	position: absolute;
-	top: $headerHeight;
-	bottom: 0;
-	overflow-y: auto;
-	overflow-x: hidden;
-	width: 100%;
-	padding: 2.5rem 3rem 0;
-
-	.om-details-subheader {
-		padding-right: 2.75rem;
-	}
+.om-details-subheader {
+	padding-right: 2.75rem;
 }
 
 .om-details-throbber-wrapper {
