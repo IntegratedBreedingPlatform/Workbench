@@ -51,8 +51,7 @@
 			},
 			restrict: 'E',
 			scope: {
-				omPanelIdentifier: '=',
-				title: '=omTitle'
+				omPanelIdentifier: '='
 			},
 			templateUrl: 'static/views/ontology/panel.html',
 			transclude: true
