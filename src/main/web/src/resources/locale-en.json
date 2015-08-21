@@ -70,8 +70,12 @@
 		"scale": "Scale",
 		"variableType": "Variable Type",
 		"metadata": "Metadata",
-		"dateCreated": "Date Created",
-		"dateLastModified": "Date Last Modified",
+		"date": {
+			"dateCreated": "Date Created",
+			"dateLastModified": "Date Last Modified",
+			"from": "From",
+			"to": "To"
+		},
 		"inUseInVariables": "Used in Variables"
 	},
 
