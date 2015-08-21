@@ -16,9 +16,23 @@
 						calendarOpened1: false,
 						calendarOpened2: false
 					};
+					$scope.dateOptions = {
+						formatYear: 'yy',
+						startingDay: 1
+					};
+					$scope.todaysDate = new Date();
 
 					$scope.addNewFilter = function() {
 						panelService.showPanel($scope.smallPanelName);
+					};
+
+					$scope.clearFilters = function() {
+						$scope.filterOptions = {
+							variableTypes: [],
+							scaleDataType: null,
+							dateCreatedFrom: null,
+							dateCreatedTo: null
+						};
 					};
 
 					$scope.isFilterActive = function() {
@@ -59,11 +73,6 @@
 						$scope.someListsNotLoaded = true;
 					});
 
-					$scope.dateOptions = {
-						formatYear: 'yy',
-						startingDay: 1
-					};
-
 					$scope.today = function() {
 						$scope.filterOptions.dateCreatedFrom = new Date();
 						$scope.filterOptions.dateCreatedTo = new Date();
@@ -87,8 +96,6 @@
 						$scope.filterOptions.dateCreatedFrom = null;
 						$scope.filterOptions.dateCreatedTo = null;
 					};
-
-					$scope.todaysDate = new Date();
 
 				},
 				restrict: 'E',

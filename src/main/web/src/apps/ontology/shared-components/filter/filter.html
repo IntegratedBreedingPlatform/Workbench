@@ -56,9 +56,15 @@
 					</p>
 				</div>
 			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-3 col-md-6">
+					<button class="btn btn-primary" ng-click="clearFilters()">{{'button.clearFilters' | translate}}</button>
+				</div>
+			</div>
 		</div>
 	</form>
 </om-panel>
+
 <div class="om-filter-button">
 	<button type="button" class="btn btn-icon" ng-class="isFilterActive() ? 'btn-primary' : 'btn-default'" aria-label="Filter" ng-click="addNewFilter()">
 		<span class="glyphicon glyphicon-filter" aria-hidden="true"></span>
