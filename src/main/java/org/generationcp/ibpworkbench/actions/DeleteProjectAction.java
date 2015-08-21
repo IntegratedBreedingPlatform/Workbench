@@ -21,6 +21,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
+import org.generationcp.middleware.manager.api.GermplasmListManager;
 import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -44,7 +45,6 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DeleteProjectAction.class);
 	private Project currentProject;
-	private ClickEvent evt;
 
 	@Autowired
 	private WorkbenchDataManager manager;
@@ -60,14 +60,15 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 
 	@Autowired
 	private GermplasmDataManager germplasmDataManager;
+	
+	@Autowired
+	private GermplasmListManager germplasmListManager;
 
 	public DeleteProjectAction() {
 	}
 
 	@Override
 	public void buttonClick(final ClickEvent event) {
-		this.evt = event;
-
 		this.doAction(event.getComponent().getWindow(), "delete_program", true);
 	}
 
@@ -112,9 +113,14 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 	}
 
 	protected void deleteProgram(SessionData sessionData) throws MiddlewareQueryException {
+		// soft delete
 		this.deleteAllProgramStudies();
+		//hard delete
 		this.deleteAllProgramFavorites();
+		//hard delete
 		this.deleteAllProgramLocationsAndMethods();
+		// soft delete
+		this.deleteAllProgramLists();
 		this.manager.deleteProjectDependencies(this.currentProject);
 		Project newProj = new Project();
 		newProj.setProjectId(this.currentProject.getProjectId());
@@ -137,8 +143,13 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 		germplasmDataManager.deleteProgramFavorites(favoriteMethods);
 
 	}
-
+	
 	protected void deleteAllProgramStudies() throws MiddlewareQueryException {
 		this.studyDataManager.deleteProgramStudies(this.currentProject.getUniqueID());
 	}
+
+	protected void deleteAllProgramLists() throws MiddlewareQueryException {
+		this.germplasmListManager.deleteGermplasmListsByProgram(this.currentProject.getUniqueID());
+	}
+	
 }
