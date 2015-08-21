@@ -43,6 +43,7 @@ public class WorkbenchEmailSenderService {
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchEmailSenderService.class);
 
 	public static final String BMS_LOGO_LOC = "/WEB-INF/static/images/logo.png";
+	public static final String RESET_LINK = "/controller/auth/reset/";
 
 	@Resource
 	private WorkbenchUserService workbenchUserService;
@@ -98,8 +99,7 @@ public class WorkbenchEmailSenderService {
 	public String generateResetPasswordUrl(UserInfo userInfo) throws MiddlewareQueryException {
 		// generate a strong a unique randomized string
 		final String token = UUID.randomUUID().toString();
-
-		final String url = WorkbenchAppPathResolver.getFullWebAddress("ibpworkbench/controller/auth/reset/" + token);
+		final String url = WorkbenchAppPathResolver.getFullWebAddress(servletContext.getContextPath() + RESET_LINK + token);
 
 		// update workbench user_info table
 		userInfo.setResetToken(token);
