@@ -145,14 +145,14 @@ describe('Filter Module', function() {
 			expect(isolateScope.someListsNotLoaded).toBe(true);
 		});
 
-		describe('scope.addNewFilter', function() {
+		describe('$scope.addNewFilter', function() {
 			it('should open the panel', function() {
 				isolateScope.addNewFilter();
 				expect(panelService.showPanel).toHaveBeenCalledWith(isolateScope.smallPanelName);
 			});
 		});
 
-		describe('scope.today', function() {
+		describe('$scope.today', function() {
 			it('should set filter options dates to today\'s date', function() {
 				isolateScope.today();
 				isolateScope.filterOptions.dateCreatedFrom.setHours(0, 0, 0, 0);
@@ -162,14 +162,14 @@ describe('Filter Module', function() {
 			});
 		});
 
-		describe('scope.open1', function() {
+		describe('$scope.open1', function() {
 			it('should set 1st calendar is opened property to true', function() {
 				isolateScope.open1(fakeEvent);
 				expect(isolateScope.data.calendarOpened1).toBe(true);
 			});
 		});
 
-		describe('scope.open2', function() {
+		describe('$scope.open2', function() {
 			it('should set 2st calendar is opened property to true', function() {
 				isolateScope.open2(fakeEvent);
 				expect(isolateScope.data.calendarOpened2).toBe(true);
