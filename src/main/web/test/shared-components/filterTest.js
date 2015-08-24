@@ -180,17 +180,17 @@ describe('Filter Module', function() {
 			});
 		});
 
-		describe('$scope.open1', function() {
-			it('should set 1st calendar is opened property to true', function() {
-				isolateScope.open1(fakeEvent);
-				expect(isolateScope.data.calendarOpened1).toBe(true);
+		describe('$scope.openFromCalendar', function() {
+			it('should set the property tracking the open state of the from-date calendar to be true', function() {
+				isolateScope.openFromCalendar(fakeEvent);
+				expect(isolateScope.data.fromCalendarOpened).toBe(true);
 			});
 		});
 
-		describe('$scope.open2', function() {
-			it('should set 2st calendar is opened property to true', function() {
-				isolateScope.open2(fakeEvent);
-				expect(isolateScope.data.calendarOpened2).toBe(true);
+		describe('$scope.openToCalendar', function() {
+			it('should set the property tracking the open state of the to-date calendar to be true', function() {
+				isolateScope.openToCalendar(fakeEvent);
+				expect(isolateScope.data.toCalendarOpened).toBe(true);
 			});
 		});
 

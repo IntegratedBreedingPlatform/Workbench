@@ -38,9 +38,9 @@
 				<label for="omDateCreated" class="col-sm-3 control-label">{{'formField.date.from' | translate}}</label>
 				<div class="col-md-6">
 					<p class="input-group">
-						<input type="text" class="form-control" datepicker-popup ng-model="filterOptions.dateCreatedFrom" is-open="data.calendarOpened1" max-date="todaysDate" datepicker-options="dateOptions" close-text="Close" show-weeks="false" />
+						<input type="text" class="form-control" datepicker-popup ng-model="filterOptions.dateCreatedFrom" is-open="data.fromCalendarOpened" max-date="todaysDate" datepicker-options="dateOptions" close-text="Close" show-weeks="false" />
 						<span class="input-group-btn">
-							<button type="button" class="btn btn-default btn-icon" ng-click="open1($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+							<button type="button" class="btn btn-default btn-icon" ng-click="openFromCalendar($event)"><i class="glyphicon glyphicon-calendar"></i></button>
 						</span>
 					</p>
 				</div>
@@ -49,9 +49,9 @@
 				<label for="omDateCreated" class="col-sm-3 control-label">{{'formField.date.to' | translate}}</label>
 				<div class="col-md-6">
 					<p class="input-group">
-						<input type="text" class="form-control" datepicker-popup ng-model="filterOptions.dateCreatedTo" is-open="data.calendarOpened2" max-date="todaysDate" datepicker-options="dateOptions" close-text="Close" show-weeks="false" />
+						<input type="text" class="form-control" datepicker-popup ng-model="filterOptions.dateCreatedTo" is-open="data.toCalendarOpened" max-date="todaysDate" datepicker-options="dateOptions" close-text="Close" show-weeks="false" />
 						<span class="input-group-btn">
-							<button type="button" class="btn btn-default btn-icon" ng-click="open2($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+							<button type="button" class="btn btn-default btn-icon" ng-click="openToCalendar($event)"><i class="glyphicon glyphicon-calendar"></i></button>
 						</span>
 					</p>
 				</div>

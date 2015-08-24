@@ -13,8 +13,8 @@
 					$scope.data = {
 						types: [],
 						scaleDataTypes: [],
-						calendarOpened1: false,
-						calendarOpened2: false
+						fromCalendarOpened: false,
+						toCalendarOpened: false
 					};
 					$scope.dateOptions = {
 						formatYear: 'yy',
@@ -73,18 +73,18 @@
 						return variableTypesActive || scaleDataTypesActive || dateCreatedFromActive || dateCreatedToActive;
 					};
 
-					$scope.open1 = function($event) {
+					$scope.openFromCalendar = function($event) {
 						$event.preventDefault();
 						$event.stopPropagation();
 
-						$scope.data.calendarOpened1 = true;
+						$scope.data.fromCalendarOpened = true;
 					};
 
-					$scope.open2 = function($event) {
+					$scope.openToCalendar = function($event) {
 						$event.preventDefault();
 						$event.stopPropagation();
 
-						$scope.data.calendarOpened2 = true;
+						$scope.data.toCalendarOpened = true;
 					};
 
 				},
