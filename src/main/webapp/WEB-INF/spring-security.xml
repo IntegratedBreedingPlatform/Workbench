@@ -56,6 +56,8 @@
 
 	<authentication-manager>
 		<authentication-provider ref="rememberMeAuthenticationProvider"/>
-		<authentication-provider user-service-ref="workbenchUserDetailsService"/>
+		<authentication-provider user-service-ref="workbenchUserDetailsService">
+			<password-encoder hash="bcrypt" />
+		</authentication-provider>
 	</authentication-manager>
 </bean:beans>

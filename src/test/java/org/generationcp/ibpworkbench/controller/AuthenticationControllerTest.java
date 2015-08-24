@@ -198,7 +198,7 @@ public class AuthenticationControllerTest {
 
 		boolean result = this.controller.doResetPassword(userAccountModel);
 
-		Mockito.verify(this.workbenchUserService, Mockito.times(1)).updateUserPassword(userAccountModel);
+		Mockito.verify(this.workbenchUserService, Mockito.times(1)).updateUserPassword(userAccountModel.getUsername(), userAccountModel.getPassword());
 		Mockito.verify(this.workbenchEmailSenderService, Mockito.times(1)).deleteToken(userAccountModel);
 
 		Assert.assertTrue("success!", result);
@@ -213,7 +213,7 @@ public class AuthenticationControllerTest {
 
 		boolean result = this.controller.doResetPassword(userAccountModel);
 
-		Mockito.verify(this.workbenchUserService, Mockito.times(1)).updateUserPassword(userAccountModel);
+		Mockito.verify(this.workbenchUserService, Mockito.times(1)).updateUserPassword(userAccountModel.getUsername(), userAccountModel.getPassword());
 		Mockito.verify(this.workbenchEmailSenderService, Mockito.times(1)).deleteToken(userAccountModel);
 
 		Assert.assertFalse("fail!", result);

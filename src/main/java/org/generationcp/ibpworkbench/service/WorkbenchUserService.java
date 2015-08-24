@@ -12,19 +12,21 @@ import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.generationcp.middleware.pojos.workbench.UserRole;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Created by cyrus on 11/27/14.
- */
 @Service
 @Transactional
 public class WorkbenchUserService {
 
 	@Resource
 	private WorkbenchDataManager workbenchDataManager;
+
+	private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 	/**
 	 * Cretes new user account
@@ -34,38 +36,20 @@ public class WorkbenchUserService {
 	 */
 	public void saveUserAccount(UserAccountModel userAccount) throws MiddlewareQueryException {
 		userAccount.trimAll();
-
-		Person person = new Person();
-		person.setFirstName(userAccount.getFirstName());
-		person.setMiddleName(userAccount.getMiddleName());
-		person.setLastName(userAccount.getLastName());
-		person.setEmail(userAccount.getEmail());
-		person.setTitle("-");
-		person.setContact("-");
-		person.setExtension("-");
-		person.setFax("-");
-		person.setInstituteId(0);
-		person.setLanguage(0);
-		person.setNotes("-");
-		person.setPositionName("-");
-		person.setPhone("-");
-
-		this.workbenchDataManager.addPerson(person);
+		Integer currentDate = DateUtil.getCurrentDateAsIntegerValue();
+		Person person = this.createPerson(userAccount);
 
 		User user = new User();
 		user.setPersonid(person.getId());
 		user.setPerson(person);
 		user.setName(userAccount.getUsername());
-		user.setPassword(userAccount.getPassword());
-		user.setAccess(0);
-
-		String currentDate = DateUtil.getCurrentDateAsStringValue();
-
-		user.setAdate(Integer.parseInt(currentDate));
-		user.setCdate(Integer.parseInt(currentDate));
-		user.setInstalid(0);
-		user.setStatus(0);
-		user.setType(0);
+		user.setPassword(passwordEncoder.encode(userAccount.getPassword()));
+		user.setAccess(0); // 0 - Default User
+		user.setAdate(currentDate);
+		user.setCdate(currentDate);
+		user.setInstalid(0); // 0 - Access all areas (legacy from the ICIS system) (not used)
+		user.setStatus(0); // 0 - Unassigned
+		user.setType(0); // 0 - Default user type (not used)
 
 		// add user roles to the particular user
 		user.setRoles(Arrays.asList(new UserRole(user, userAccount.getRole())));
@@ -73,14 +57,44 @@ public class WorkbenchUserService {
 
 	}
 
+	public User saveNewUserAccount(UserAccountModel userAccount) throws MiddlewareQueryException {
+		Person person = this.createPerson(userAccount);
+
+		User user = new User();
+		user.setPersonid(person.getId());
+		user.setPerson(person);
+		user.setName(userAccount.getUsername());
+		// set default password for the new user which is the same as their Username
+		user.setPassword(passwordEncoder.encode(userAccount.getUsername()));
+		user.setAccess(0); // 0 - Default User
+		user.setAdate(0);
+		user.setCdate(0);
+		user.setInstalid(0); // 0 - Access all areas (legacy from the ICIS system) (not used)
+		user.setStatus(0); // 0 - Unassigned
+		user.setType(0); // 0 - Default user type (not used)
+		user.setIsNew(true);
+
+		// add user roles to the particular user
+		user.setRoles(Arrays.asList(new UserRole(user, userAccount.getRole())));
+		this.workbenchDataManager.addUser(user);
+
+		UserInfo userInfo = new UserInfo();
+		userInfo.setUserId(user.getUserid());
+		userInfo.setLoginCount(0);
+		this.workbenchDataManager.insertOrUpdateUserInfo(userInfo);
+
+		return user;
+	}
+
 	/**
 	 * Updates the password of the user
-	 * 
-	 * @param userAccount
+	 *
+	 * @param username
+	 * @param password
 	 * @throws MiddlewareQueryException
 	 */
-	public void updateUserPassword(UserAccountModel userAccount) throws MiddlewareQueryException {
-		this.workbenchDataManager.changeUserPassword(userAccount.getUsername(), userAccount.getPassword());
+	public boolean updateUserPassword(String username, String password) throws MiddlewareQueryException {
+		return this.workbenchDataManager.changeUserPassword(username, passwordEncoder.encode(password));
 	}
 
 	/**
@@ -91,7 +105,12 @@ public class WorkbenchUserService {
 	 * @throws MiddlewareQueryException
 	 */
 	public boolean isValidUserLogin(UserAccountModel userAccount) throws MiddlewareQueryException {
-		return this.workbenchDataManager.isValidUserLogin(userAccount.getUsername(), userAccount.getPassword());
+		User user = this.getUserByUserName(userAccount.getUsername());
+		return passwordEncoder.matches(userAccount.getPassword(), user.getPassword());
+	}
+
+	public boolean isPasswordEqualToUsername(User user) {
+		return passwordEncoder.matches(user.getName(), user.getPassword());
 	}
 
 	/**
@@ -124,5 +143,25 @@ public class WorkbenchUserService {
 
 		return user;
 
+	}
+
+	private Person createPerson(UserAccountModel userAccount){
+		Person person = new Person();
+		person.setFirstName(userAccount.getFirstName());
+		person.setMiddleName(userAccount.getMiddleName());
+		person.setLastName(userAccount.getLastName());
+		person.setEmail(userAccount.getEmail());
+		person.setTitle("-");
+		person.setContact("-");
+		person.setExtension("-");
+		person.setFax("-");
+		person.setInstituteId(0);
+		person.setLanguage(0);
+		person.setNotes("-");
+		person.setPositionName("-");
+		person.setPhone("-");
+		this.workbenchDataManager.addPerson(person);
+
+		return person;
 	}
 }
