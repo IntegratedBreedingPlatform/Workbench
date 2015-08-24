@@ -80,10 +80,10 @@ public class SaveNewLocationAction implements ClickListener {
 
 					private static final long serialVersionUID = 1L;
 
-							@Override
-							public void buttonClick(ClickEvent event) {
-								SaveNewLocationAction.this.saveLocation();
-							}
+					@Override
+					public void buttonClick(ClickEvent event) {
+						SaveNewLocationAction.this.saveLocation();
+					}
 				}).show();
 
 			} else {
@@ -101,31 +101,11 @@ public class SaveNewLocationAction implements ClickListener {
 
 	protected void saveLocation() {
 		final LocationViewModel locModel = this.getLocationFromForm();
-
-		this.updateSessionData(locModel);
-
-		// save to middleware
-		try {
-			Location loc = this.programLocationsPresenter.convertLocationViewToLocation(locModel);
-			this.programLocationsPresenter.addLocation(loc);
-			this.sessionData.logProgramActivity(this.messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK), "Added new Location ("
-					+ locModel.getLocationName() + ")");
-		} catch (MiddlewareQueryException e) {
-			SaveNewLocationAction.LOG.error(e.getMessage(), e);
-		}
-
+		Location loc = this.programLocationsPresenter.convertLocationViewToLocation(locModel);
+		this.programLocationsPresenter.addLocation(loc);
+		this.sessionData.logProgramActivity(this.messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK), "Added new Location ("
+				+ locModel.getLocationName() + ")");
 		this.window.getParent().removeWindow(this.window);
-
-	}
-
-	// FIXME: depricated for BMS-4.0 (merge-db), remove this when we replace sessionData obj.
-	protected void updateSessionData(LocationViewModel locModel) {
-		// increment key from the session's list of locations (correct id from local db)
-		Integer nextKey = this.sessionData.getProjectLocationData().keySet().size() + 1;
-		locModel.setLocationId(nextKey);
-
-		// add new location to session list
-		this.sessionData.getProjectLocationData().put(nextKey, locModel);
 	}
 
 	protected LocationViewModel getLocationFromForm() {
@@ -138,5 +118,13 @@ public class SaveNewLocationAction implements ClickListener {
 		locModel.setLocationAbbreviation(Sanitizers.FORMATTING.sanitize(locModel.getLocationAbbreviation()));
 
 		return locModel;
+	}
+
+	void setSessionData(SessionData sessionData) {
+		this.sessionData = sessionData;
+	}
+
+	void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
 	}
 }

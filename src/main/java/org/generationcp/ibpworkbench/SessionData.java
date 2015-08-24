@@ -1,21 +1,25 @@
 
 package org.generationcp.ibpworkbench;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
-import com.vaadin.terminal.gwt.server.WebBrowser;
 import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.security.SecurityUtil;
 import org.generationcp.commons.util.ContextUtil;
-import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
 import org.generationcp.ibpworkbench.ui.programmethods.MethodView;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
+
+import com.vaadin.terminal.gwt.server.WebBrowser;
 
 /**
  * This class contains all session data needed by the workbench application.
@@ -37,8 +41,6 @@ public class SessionData {
 
 	private WebBrowser browserInfo;
 
-	private final HashMap<Integer, LocationViewModel> locationMaps = new HashMap<Integer, LocationViewModel>();
-	private final Set<String> uniqueLocations = new HashSet<String>();
 	private final HashMap<Integer, MethodView> breedingMethodMaps = new HashMap<Integer, MethodView>();
 	private final Set<String> uniqueBreedingMethods = new HashSet<String>();
 
@@ -92,10 +94,6 @@ public class SessionData {
 		this.userData = userData;
 	}
 
-	public HashMap<Integer, LocationViewModel> getProjectLocationData() {
-		return this.locationMaps;
-	}
-
 	public HashMap<Integer, MethodView> getProjectBreedingMethodData() {
 		return this.breedingMethodMaps;
 	}
@@ -124,10 +122,11 @@ public class SessionData {
 		return contextParameterString + authenticationTokenString;
 	}
 
-	public Map<String,String> getBrowserInfo() {
-		Map<String,String> browserInfo = new HashMap<>();
-		browserInfo.put("browser",String.format("%s", this.browserInfo.getBrowserApplication()));
-		browserInfo.put("screenResolution",String.format("%s width x %s height",this.browserInfo.getScreenWidth(),this.browserInfo.getScreenHeight()));
+	public Map<String, String> getBrowserInfo() {
+		Map<String, String> browserInfo = new HashMap<>();
+		browserInfo.put("browser", String.format("%s", this.browserInfo.getBrowserApplication()));
+		browserInfo.put("screenResolution",
+				String.format("%s width x %s height", this.browserInfo.getScreenWidth(), this.browserInfo.getScreenHeight()));
 
 		return browserInfo;
 	}
