@@ -152,16 +152,6 @@ describe('Filter Module', function() {
 			});
 		});
 
-		describe('$scope.today', function() {
-			it('should set filter options dates to today\'s date', function() {
-				isolateScope.today();
-				isolateScope.filterOptions.dateCreatedFrom.setHours(0, 0, 0, 0);
-				isolateScope.filterOptions.dateCreatedTo.setHours(0, 0, 0, 0);
-				expect(isolateScope.filterOptions.dateCreatedFrom).toEqual(TODAY);
-				expect(isolateScope.filterOptions.dateCreatedTo).toEqual(TODAY);
-			});
-		});
-
 		describe('$scope.clearFilters', function() {
 			it('should reset the filter options', function() {
 				isolateScope.filterOptions = {

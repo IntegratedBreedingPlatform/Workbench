@@ -73,11 +73,6 @@
 						return variableTypesActive || scaleDataTypesActive || dateCreatedFromActive || dateCreatedToActive;
 					};
 
-					$scope.today = function() {
-						$scope.filterOptions.dateCreatedFrom = new Date();
-						$scope.filterOptions.dateCreatedTo = new Date();
-					};
-
 					$scope.open1 = function($event) {
 						$event.preventDefault();
 						$event.stopPropagation();
