@@ -1,7 +1,7 @@
 /*global angular, inject, expect*/
 'use strict';
 
-describe('List module', function() {
+describe('Search module', function() {
 	var scope,
 		ieUtilities,
 		directiveElement,
