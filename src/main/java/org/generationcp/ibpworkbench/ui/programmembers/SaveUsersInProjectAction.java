@@ -208,7 +208,7 @@ public class SaveUsersInProjectAction implements ClickListener {
 			localUser.setType(SaveUsersInProjectAction.PROJECT_USER_TYPE);
 			localUser.setInstalid(Integer.valueOf(this.projectUserInstalId));
 			localUser.setStatus(Integer.valueOf(SaveUsersInProjectAction.PROJECT_USER_STATUS));
-			localUser.setAdate(this.getCurrentDate());
+			localUser.setAssignDate(this.getCurrentDate());
 			userId = userDataManager.addUser(localUser);
 
 			// add or update a workbench user to ibdb user mapping

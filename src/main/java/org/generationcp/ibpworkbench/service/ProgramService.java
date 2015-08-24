@@ -169,7 +169,7 @@ public class ProgramService {
 				cropDBUser.setType(ProgramService.PROJECT_USER_TYPE);
 				cropDBUser.setInstalid(Integer.valueOf(0));
 				cropDBUser.setStatus(Integer.valueOf(ProgramService.PROJECT_USER_STATUS));
-				cropDBUser.setAdate(this.getCurrentDate());
+				cropDBUser.setAssignDate(this.getCurrentDate());
 				Integer userId = userDataManager.addUser(cropDBUser);
 
 				User ibdbUser = userDataManager.getUserById(userId);

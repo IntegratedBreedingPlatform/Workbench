@@ -2,7 +2,6 @@
 package org.generationcp.ibpworkbench.service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -17,7 +16,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -66,9 +64,10 @@ public class WorkbenchUserServiceTest {
 
 		Assert.assertEquals(TEST_USERNAME, capturedUser.getName());
 		Assert.assertEquals(60, capturedUser.getPassword().length());
+		// Check that non-encrypted password matches the encrypted one
 		Assert.assertTrue(passwordEncoder.matches(PASSWORD, capturedUser.getPassword()));
-		Assert.assertEquals(DateUtil.getCurrentDateAsIntegerValue(), capturedUser.getAdate());
-		Assert.assertEquals(DateUtil.getCurrentDateAsIntegerValue(), capturedUser.getCdate());
+		Assert.assertEquals(DateUtil.getCurrentDateAsIntegerValue(), capturedUser.getAssignDate());
+		Assert.assertEquals(DateUtil.getCurrentDateAsIntegerValue(), capturedUser.getCloseDate());
 	}
 
 	@Test
@@ -90,9 +89,10 @@ public class WorkbenchUserServiceTest {
 
 		Assert.assertEquals(TEST_USERNAME, capturedUser.getName());
 		Assert.assertEquals(60, capturedUser.getPassword().length());
+		// Check that non-encrypted password matches the encrypted one
 		Assert.assertTrue(passwordEncoder.matches(TEST_USERNAME, capturedUser.getPassword()));
-		Assert.assertEquals(new Integer(0), capturedUser.getAdate());
-		Assert.assertEquals(new Integer(0), capturedUser.getCdate());
+		Assert.assertEquals(new Integer(0), capturedUser.getAssignDate());
+		Assert.assertEquals(new Integer(0), capturedUser.getCloseDate());
 
 	}
 
@@ -136,6 +136,7 @@ public class WorkbenchUserServiceTest {
 		Mockito.verify(this.workbenchDataManager).changeUserPassword(eq(userName), passwordCaptor.capture());
 		String capturedPassword = passwordCaptor.getAllValues().get(0);
 		Assert.assertEquals(60, capturedPassword.length());
+		// Check that non-encrypted password matches the encrypted one
 		Assert.assertTrue(passwordEncoder.matches(password, capturedPassword));
 	}
 

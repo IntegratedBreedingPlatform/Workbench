@@ -45,8 +45,8 @@ public class WorkbenchUserService {
 		user.setName(userAccount.getUsername());
 		user.setPassword(passwordEncoder.encode(userAccount.getPassword()));
 		user.setAccess(0); // 0 - Default User
-		user.setAdate(currentDate);
-		user.setCdate(currentDate);
+		user.setAssignDate(currentDate);
+		user.setCloseDate(currentDate);
 		user.setInstalid(0); // 0 - Access all areas (legacy from the ICIS system) (not used)
 		user.setStatus(0); // 0 - Unassigned
 		user.setType(0); // 0 - Default user type (not used)
@@ -67,8 +67,8 @@ public class WorkbenchUserService {
 		// set default password for the new user which is the same as their Username
 		user.setPassword(passwordEncoder.encode(userAccount.getUsername()));
 		user.setAccess(0); // 0 - Default User
-		user.setAdate(0);
-		user.setCdate(0);
+		user.setAssignDate(0);
+		user.setCloseDate(0);
 		user.setInstalid(0); // 0 - Access all areas (legacy from the ICIS system) (not used)
 		user.setStatus(0); // 0 - Unassigned
 		user.setType(0); // 0 - Default user type (not used)
