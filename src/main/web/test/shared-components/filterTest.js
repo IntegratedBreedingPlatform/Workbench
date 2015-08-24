@@ -162,6 +162,34 @@ describe('Filter Module', function() {
 			});
 		});
 
+		describe('$scope.clearFilters', function() {
+			it('should reset the filter options', function() {
+				isolateScope.filterOptions = {
+					variableTypes: [{
+						id: 1,
+						name: 'Environment Detail',
+						description: 'Environment detail info'
+					}],
+					scaleDataType: {
+						id: 1110,
+						name: 'Numeric',
+						systemDataType: false
+					},
+					dateCreatedFrom: new Date(),
+					dateCreatedTo: new Date()
+				};
+
+				isolateScope.clearFilters();
+
+				expect(isolateScope.filterOptions).toEqual({
+					variableTypes: [],
+					scaleDataType: null,
+					dateCreatedFrom: null,
+					dateCreatedTo: null
+				});
+			});
+		});
+
 		describe('$scope.open1', function() {
 			it('should set 1st calendar is opened property to true', function() {
 				isolateScope.open1(fakeEvent);
