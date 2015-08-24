@@ -22,6 +22,20 @@
 					};
 					$scope.todaysDate = new Date();
 
+					variableTypesService.getTypes().then(function(types) {
+						$scope.data.types = types;
+					}, function(response) {
+						$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+						$scope.someListsNotLoaded = true;
+					});
+
+					dataTypesService.getNonSystemDataTypes().then(function(types) {
+						$scope.data.scaleDataTypes = $scope.data.scaleDataTypes.concat(types);
+					}, function(response) {
+						$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+						$scope.someListsNotLoaded = true;
+					});
+
 					$scope.addNewFilter = function() {
 						panelService.showPanel($scope.smallPanelName);
 					};
@@ -58,20 +72,6 @@
 
 						return variableTypesActive || scaleDataTypesActive || dateCreatedFromActive || dateCreatedToActive;
 					};
-
-					variableTypesService.getTypes().then(function(types) {
-						$scope.data.types = types;
-					}, function(response) {
-						$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
-						$scope.someListsNotLoaded = true;
-					});
-
-					dataTypesService.getNonSystemDataTypes().then(function(types) {
-						$scope.data.scaleDataTypes = $scope.data.scaleDataTypes.concat(types);
-					}, function(response) {
-						$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
-						$scope.someListsNotLoaded = true;
-					});
 
 					$scope.today = function() {
 						$scope.filterOptions.dateCreatedFrom = new Date();
