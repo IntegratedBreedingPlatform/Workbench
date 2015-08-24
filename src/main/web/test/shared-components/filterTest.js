@@ -162,14 +162,6 @@ describe('Filter Module', function() {
 			});
 		});
 
-		describe('scope.clear', function() {
-			it('should nullify filter options dates', function() {
-				isolateScope.clear();
-				expect(isolateScope.filterOptions.dateCreatedFrom).toBeNull();
-				expect(isolateScope.filterOptions.dateCreatedTo).toBeNull();
-			});
-		});
-
 		describe('scope.open1', function() {
 			it('should set 1st calendar is opened property to true', function() {
 				isolateScope.open1(fakeEvent);

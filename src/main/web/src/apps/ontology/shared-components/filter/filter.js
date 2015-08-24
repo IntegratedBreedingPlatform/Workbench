@@ -92,11 +92,6 @@
 						$scope.data.calendarOpened2 = true;
 					};
 
-					$scope.clear = function() {
-						$scope.filterOptions.dateCreatedFrom = null;
-						$scope.filterOptions.dateCreatedTo = null;
-					};
-
 				},
 				restrict: 'E',
 				scope: {
