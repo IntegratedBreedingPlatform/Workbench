@@ -16,13 +16,6 @@
 				model: '=ngModel'
 			},
 			controller: function($scope) {
-				// Categories will be added to a 'categories' property on the specified property. If either the
-				// property or the categories are not present, instantiate them
-				if ($scope.model) {
-					$scope.model[$scope.property] = $scope.model[$scope.property] || {};
-					$scope.model[$scope.property].categories = $scope.model[$scope.property].categories || [{}];
-				}
-
 				$scope.editable = editable($scope);
 
 				$scope.addCategory = function(e) {
@@ -84,10 +77,21 @@
 				scope.$watch('categorical', function(categorical) {
 					if (!categorical) {
 						resetValidity();
-					} else if (scope.model && scope.model[scope.property] && scope.model[scope.property].categories &&
-							scope.categoriesForm.$valid) {
-						scope.validateCategories(ctrl, scope.model[scope.property].categories);
+					} else {
+
+						if (scope.model) {
+							// Categories will be added to a 'categories' property on the specified property. If either the
+							// property or the categories are not present, instantiate them
+							scope.model[scope.property] = scope.model[scope.property] || {};
+							scope.model[scope.property].categories = scope.model[scope.property].categories || [{}];
+						}
+
+						if (scope.model && scope.model[scope.property] && scope.model[scope.property].categories &&
+								scope.categoriesForm.$valid) {
+							scope.validateCategories(ctrl, scope.model[scope.property].categories);
+						}
 					}
+
 				});
 
 				scope.$watch('model[property].categories', function(data) {

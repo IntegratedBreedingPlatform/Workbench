@@ -32,9 +32,9 @@ describe('Categories module', function() {
 		scope = $rootScope.$new();
 	}));
 
-	function compileDirective() {
+	function compileDirective(attrs) {
 		inject(function($compile) {
-			directiveElement = $compile('<om-categories ng-model="model" om-property="validValues"></om-categories>')(scope);
+			directiveElement = $compile('<om-categories ng-model="model" om-property="validValues"' + attrs + '></om-categories>')(scope);
 		});
 
 		scope.$digest();
@@ -42,14 +42,15 @@ describe('Categories module', function() {
 		isolateScope = directiveElement.isolateScope();
 	}
 
-	it('should instantiate the specified property on the model if not otherwise provided', function() {
-
+	it('should create a categories array with an empty category if not present and categorical is true', function() {
 		scope.model = {};
-		expect(scope.model.validValues).toBeUndefined();
 
-		compileDirective();
+		compileDirective('om-categorical="false"');
 
-		expect(scope.model.validValues).not.toBeUndefined();
+		isolateScope.categorical = true;
+		isolateScope.$apply();
+
+		expect(angular.equals(isolateScope.model[isolateScope.property].categories, [{}])).toBe(true);
 	});
 
 	describe('$scope.addCategory', function() {
@@ -57,7 +58,12 @@ describe('Categories module', function() {
 		it('should add an empty category to the categories array on the scale object', function() {
 
 			scope.model = {
-				validValues: {}
+				validValues: {
+					categories: [{
+						name: '1',
+						description: 'Very low'
+					}]
+				}
 			};
 
 			compileDirective();
@@ -155,8 +161,8 @@ describe('Categories module', function() {
 			isolateScope.categoriesForm.$setValidity('mymin', false);
 			spyOn(isolateScope, 'validateCategories');
 			scope.model.validValues.categories = [{
-						description: 'new description but no name'
-					}];
+				description: 'new description but no name'
+			}];
 			scope.$digest();
 			expect(isolateScope.validateCategories).not.toHaveBeenCalled();
 		});
