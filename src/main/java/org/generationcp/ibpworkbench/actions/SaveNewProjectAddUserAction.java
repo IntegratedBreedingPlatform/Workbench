@@ -60,9 +60,6 @@ public class SaveNewProjectAddUserAction implements ClickListener {
 	private final TwinTableSelect<User> membersSelect;
 
 	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
-
-	@Autowired
 	private WorkbenchUserService workbenchUserService;
 
 	@Autowired
@@ -117,7 +114,7 @@ public class SaveNewProjectAddUserAction implements ClickListener {
 						new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, "Program Member",
 								"Added a new user (" + userAccount.getUsername() + ") to " + currentProject.getProjectName(), user,
 								new Date());
-				this.workbenchDataManager.addProjectActivity(projAct);
+				this.workbenchUserService.addProjectActivity(projAct);
 			}
 		} catch (MiddlewareQueryException e) {
 			SaveNewProjectAddUserAction.LOG.error("Cannot log project activity", e);

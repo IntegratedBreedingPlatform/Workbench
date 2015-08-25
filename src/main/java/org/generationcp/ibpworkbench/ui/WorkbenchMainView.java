@@ -102,9 +102,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	private WorkbenchDataManager workbenchDataManager;
 
 	@Autowired
-	private WorkbenchUserService workbenchUserService;
-
-	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
