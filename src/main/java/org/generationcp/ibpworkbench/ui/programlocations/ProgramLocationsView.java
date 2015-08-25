@@ -95,7 +95,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 	private Button addNewLocationsBtn;
 	private VerticalLayout root;
-	private Button saveBtn;
+	private Button saveFavouritesBtn;
 	private Table availableTable;
 	private Table favoritesTable;
 	private CheckBox availableSelectAll;
@@ -132,8 +132,8 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		this.addNewLocationsBtn = new Button("Add New Location");
 		this.addNewLocationsBtn.setStyleName(Bootstrap.Buttons.INFO.styleName() + " loc-add-btn");
 
-		this.saveBtn = new Button("Save Favorites");
-		this.saveBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
+		this.saveFavouritesBtn = new Button("Save Favorites");
+		this.saveFavouritesBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
 
 		this.searchGoBtn = new Button("Go");
 		this.searchGoBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
@@ -272,7 +272,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 			}
 		});
 
-		this.saveBtn.addListener(new Button.ClickListener() {
+		this.saveFavouritesBtn.addListener(new Button.ClickListener() {
 
 			private static final long serialVersionUID = -1949478106602489651L;
 
@@ -468,7 +468,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		layout.addComponent(selectedLocationsTitle);
 
 		if (!this.cropOnly) {
-			layout.addComponent(this.saveBtn);
+			layout.addComponent(this.saveFavouritesBtn);
 		}
 
 		layout.setExpandRatio(selectedLocationsTitle, 1.0F);
