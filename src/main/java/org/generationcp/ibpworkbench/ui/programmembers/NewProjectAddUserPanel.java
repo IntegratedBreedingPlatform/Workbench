@@ -43,7 +43,7 @@ import com.vaadin.ui.themes.Reindeer;
  * <b>Author</b>: Mark Agarrado <br>
  * <b>File Created</b>: October 15, 2012
  */
-@Configurable
+@Configurable(preConstruction=true)
 public class NewProjectAddUserPanel extends Panel {
 
 	private static final long serialVersionUID = 2187912990347713234L;
@@ -89,8 +89,7 @@ public class NewProjectAddUserPanel extends Panel {
 		this.userForm = new UserAccountForm(new UserAccountModel(), NewProjectAddUserPanel.VISIBLE_ITEM_PROPERTIES);
 
 		this.vl.setSizeFull();
-		this.vl.addComponent(new Label("<i><span style='color:red; font-weight:bold'>*</span> indicates a mandatory field.</i>",
-				Label.CONTENT_XHTML));
+		this.vl.addComponent(new Label(this.messageSource.getMessage(Message.DEFAULT_PASSWORD_HINT), Label.CONTENT_XHTML));
 		this.vl.addComponent(this.userForm);
 		this.vl.setSpacing(true);
 
@@ -106,7 +105,7 @@ public class NewProjectAddUserPanel extends Panel {
 
 		this.rootLayout.setMargin(new Layout.MarginInfo(false, true, true, true));
 		this.rootLayout.setSpacing(true);
-		Label lblTitle = new Label("Register a New User Account");
+		Label lblTitle = new Label(this.messageSource.getMessage(Message.REGISTER_USER_ACCOUNT_TITLE));
 		lblTitle.setStyleName(Bootstrap.Typography.H4.styleName());
 		this.rootLayout.addComponent(lblTitle);
 		this.rootLayout.addComponent(p);
