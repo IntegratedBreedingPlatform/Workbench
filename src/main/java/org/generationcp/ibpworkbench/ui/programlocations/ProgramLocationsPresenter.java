@@ -150,11 +150,11 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		return null;
 	}
 
-	public boolean saveProgramLocation(Collection<LocationViewModel> selectedLocations) throws MiddlewareQueryException {
-		return this.saveProgramLocation(selectedLocations, this.project, this.workbenchDataManager);
+	public boolean saveFavouriteLocations(Collection<LocationViewModel> selectedLocations) throws MiddlewareQueryException {
+		return this.saveFavouriteLocations(selectedLocations, this.project, this.workbenchDataManager);
 	}
 
-	public boolean saveProgramLocation(Collection<LocationViewModel> selectedLocations, Project project,
+	public boolean saveFavouriteLocations(Collection<LocationViewModel> selectedLocations, Project project,
 			WorkbenchDataManager workbenchDataManager) throws MiddlewareQueryException {
 
 		// Delete existing project locations in the database

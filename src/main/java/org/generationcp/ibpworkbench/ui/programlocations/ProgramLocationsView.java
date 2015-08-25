@@ -278,18 +278,11 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 			@Override
 			public void buttonClick(ClickEvent clickEvent) {
-				try {
-					if (ProgramLocationsView.this.presenter.saveProgramLocation(ProgramLocationsView.this.favoritesTableContainer
-							.getItemIds())) {
-						MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
-								ProgramLocationsView.this.messageSource.getMessage(Message.SUCCESS),
-								ProgramLocationsView.this.messageSource.getMessage(Message.LOCATION_SUCCESSFULLY_CONFIGURED));
-					}
-
-				} catch (MiddlewareQueryException e) {
-					ProgramLocationsView.LOG.error(e.getMessage(), e);
+				if (ProgramLocationsView.this.presenter.saveFavouriteLocations(ProgramLocationsView.this.favoritesTableContainer.getItemIds())) {
+					MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
+							ProgramLocationsView.this.messageSource.getMessage(Message.SUCCESS),
+							ProgramLocationsView.this.messageSource.getMessage(Message.LOCATION_SUCCESSFULLY_CONFIGURED));
 				}
-				ProgramLocationsView.LOG.debug("onSaveProgramLocations:");
 			}
 		});
 
@@ -313,7 +306,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 	/**
 	 * Use this to retrieve the favorite locations from the view, you might have to convert LocationViewModel to Middleware's Location bean
-	 * 
+	 *
 	 * @return
 	 */
 	public Collection<Location> getFavoriteLocations() {
