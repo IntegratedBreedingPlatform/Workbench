@@ -24,11 +24,8 @@ import org.generationcp.ibpworkbench.ui.programlocations.AddLocationsWindow;
 import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
 import org.generationcp.ibpworkbench.ui.window.ConfirmLocationsWindow;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.Location;
 import org.owasp.html.Sanitizers;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.Validator;
@@ -44,7 +41,6 @@ import com.vaadin.ui.Button.ClickListener;
 @Configurable
 public class SaveNewLocationAction implements ClickListener {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SaveNewLocationAction.class);
 	private static final long serialVersionUID = 1L;
 
 	private final AddLocationForm newLocationForm;
@@ -92,10 +88,6 @@ public class SaveNewLocationAction implements ClickListener {
 
 		} catch (Validator.InvalidValueException e) {
 			MessageNotifier.showRequiredFieldError(event.getComponent().getWindow(), e.getLocalizedMessage());
-		} catch (MiddlewareQueryException e) {
-			SaveNewLocationAction.LOG.error(e.getMessage(), e);
-			SaveNewLocationAction.LOG.error(e.getMessage(), e);
-			SaveNewLocationAction.LOG.error(e.getMessage(), e);
 		}
 	}
 
