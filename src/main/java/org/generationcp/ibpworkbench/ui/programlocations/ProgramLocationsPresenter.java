@@ -75,17 +75,6 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		this.locationDataManager = locationDataManager;
 	}
 
-	/**
-	 * generates random results
-	 *
-	 * @return
-	 */
-	public static List<LocationViewModel> getRandomResults(Integer countryID, Integer locationType, String locationName) {
-		// for now lets random generate the results
-
-		return LocationViewModel.generateRandomData(2);
-	}
-
 	public Collection<LocationViewModel> getFilteredResults(Integer countryId, Integer locationType, String locationName)
 			throws MiddlewareQueryException {
 		List<Location> locationList = null;
