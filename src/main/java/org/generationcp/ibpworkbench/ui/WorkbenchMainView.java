@@ -43,6 +43,7 @@ import org.generationcp.ibpworkbench.ui.project.create.AddProgramView;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
 import org.generationcp.ibpworkbench.ui.window.EmbeddedWindow;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
+import org.generationcp.ibpworkbench.util.WorkbenchUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
@@ -402,7 +403,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	private UserInfo updateUserInfoIfNecessary(User user) throws MiddlewareQueryException {
 		UserInfo userInfo = this.workbenchDataManager.getUserInfo(user.getUserid());
 		if (userInfo == null || userInfo.getLoginCount() < 1) {
-			if (this.workbenchUserService.isPasswordEqualToUsername(user) && userInfo != null) {
+			if (WorkbenchUtil.isPasswordEqualToUsername(user) && userInfo != null) {
 				OpenWindowAction ow = new OpenWindowAction(WindowEnum.CHANGE_PASSWORD);
 				ow.launchWindow(this, WindowEnum.CHANGE_PASSWORD);
 			}

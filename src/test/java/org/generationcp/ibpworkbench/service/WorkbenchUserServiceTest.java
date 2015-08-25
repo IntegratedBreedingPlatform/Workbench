@@ -141,15 +141,6 @@ public class WorkbenchUserServiceTest {
 	}
 
 	@Test
-	public void testIsPasswordEqualToUsername() throws Exception {
-		User user = new User();
-		user.setName(PASSWORD);
-		user.setPassword(HASHED_PASSWORD);
-
-		Assert.assertTrue(this.userService.isPasswordEqualToUsername(user));
-	}
-
-	@Test
 	public void testGetUserByUserName() throws Exception {
 		User user = new User();
 		user.setPersonid(TEST_PERSON_ID);

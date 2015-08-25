@@ -109,10 +109,6 @@ public class WorkbenchUserService {
 		return passwordEncoder.matches(userAccount.getPassword(), user.getPassword());
 	}
 
-	public boolean isPasswordEqualToUsername(User user) {
-		return passwordEncoder.matches(user.getName(), user.getPassword());
-	}
-
 	/**
 	 * Retrieves User obj including the Person object information
 	 * 
