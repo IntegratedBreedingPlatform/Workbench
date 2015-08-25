@@ -317,4 +317,67 @@ describe('Range module', function() {
 		});
 	});
 
+	describe('scope.clearRange', function() {
+
+		it('should clear the textual min if it exists', function() {
+			compileDirective();
+
+			isolateScope.model = {
+				validValues: {
+					min: '5'
+				}
+			};
+
+			isolateScope.clearRange();
+
+			expect(isolateScope.model.validValues.min).toEqual('');
+		});
+
+		it('should clear the textual max if it exists', function() {
+			compileDirective();
+
+			isolateScope.model = {
+				validValues: {
+					max: '10'
+				}
+			};
+
+			isolateScope.clearRange();
+
+			expect(isolateScope.model.validValues.max).toEqual('');
+		});
+
+		it('should clear the numeric min if it exists', function() {
+			compileDirective();
+
+			isolateScope.rangeModel = {
+				min: 5
+			};
+
+			isolateScope.clearRange();
+
+			expect(isolateScope.rangeModel.min).toBe(null);
+		});
+
+		it('should clear the numeric max if it exists', function() {
+			compileDirective();
+
+			isolateScope.rangeModel = {
+				max: 10
+			};
+
+			isolateScope.clearRange();
+
+			expect(isolateScope.rangeModel.max).toBe(null);
+		});
+
+		it('should reset the read only text message', function() {
+			compileDirective();
+
+			isolateScope.readOnlyRangeText = 'range.maxOnly';
+			isolateScope.clearRange();
+			expect(isolateScope.readOnlyRangeText).toEqual('range.noRange');
+		});
+	});
+
 });

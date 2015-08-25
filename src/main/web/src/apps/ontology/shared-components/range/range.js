@@ -99,6 +99,8 @@
 
 				scope.$watch('numeric', function(numeric) {
 					if (!numeric) {
+						// Clear any previous values that were in the range widget when the range is no longer required
+						scope.clearRange();
 						resetValidity();
 					} else if (scope.rangeModel) {
 						validateValues(ctrl, scope.rangeModel, scope);
@@ -161,6 +163,22 @@
 						ctrl.$setTouched();
 					}
 				});
+
+				scope.clearRange = function() {
+					// Clear the textual min/max that is provided to the directive
+					if (scope.model && scope.model[scope.property]) {
+						scope.model[scope.property].min = '';
+						scope.model[scope.property].max = '';
+					}
+
+					// Clear the numeric min/max that we use for displaying the range in the numeric input
+					if (scope.rangeModel) {
+						scope.rangeModel.min = null;
+						scope.rangeModel.max = null;
+					}
+
+					scope.readOnlyRangeText = getReadOnlyRangeText();
+				};
 			},
 			require: 'ngModel',
 			restrict: 'E',
