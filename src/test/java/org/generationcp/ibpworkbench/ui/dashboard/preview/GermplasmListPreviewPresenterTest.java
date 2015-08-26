@@ -87,11 +87,12 @@ public class GermplasmListPreviewPresenterTest {
 		Mockito.when(this.sessionData.getSelectedProject()).thenReturn(this.project);
 		Mockito.when(this.user.getUserid()).thenReturn(this.USER_ID);
 		Mockito.when(this.project.getProjectId()).thenReturn(this.PROJECT_ID);
+		Mockito.when(this.project.getUniqueID()).thenReturn(this.PROGRAM_UUID);
 
 		// this two conditions setups a successful checkIfUnique() from presenter
-		Mockito.when(
-				this.germplasmListManager.getGermplasmListByName(GermplasmListPreviewPresenterTest.SAMPLE_VALID_FOLDER_NAME, 0, 1, null))
-				.thenReturn(null);
+		Mockito.when(this.germplasmListManager.getGermplasmListByName(GermplasmListPreviewPresenterTest.SAMPLE_VALID_FOLDER_NAME,
+				PROGRAM_UUID, 0, 1, null))
+		.thenReturn(null);
 
 		Mockito.when(this.germplasmListManager.getGermplasmListById(this.LIST_ID_WITH_NO_PARENT)).thenReturn(null);
 		Mockito.when(this.germplasmListManager.getGermplasmListById(this.LIST_ID_WITH_PARENT)).thenReturn(this.germplasmListWithParent);
