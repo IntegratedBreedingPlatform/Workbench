@@ -191,6 +191,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 
 			newList.setDescription("(NEW FOLDER) " + folderName);
 			return germplasmListManager.addGermplasmList(newList);
+			newList.setProgramUUID(this.project.getUniqueID());
 
 		} catch (MiddlewareQueryException e) {
 			throw new GermplasmListPreviewException(this.messageSource.getMessage(Message.ERROR_DATABASE), e);
