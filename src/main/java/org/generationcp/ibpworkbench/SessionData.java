@@ -1,11 +1,7 @@
 
 package org.generationcp.ibpworkbench;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.annotation.Resource;
 
@@ -49,9 +45,11 @@ public class SessionData {
 	}
 
 	public void setSelectedProject(Project selectedProject) {
-		ContextUtil.setContextInfo(IBPWorkbenchApplication.get().getRequest(), this.userData.getUserid(), selectedProject.getProjectId(),
-				null);
-		this.selectedProject = selectedProject;
+		if (selectedProject != null) {
+			ContextUtil.setContextInfo(IBPWorkbenchApplication.get().getRequest(), this.userData.getUserid(), selectedProject.getProjectId(),
+					null);
+			this.selectedProject = selectedProject;
+		}
 	}
 
 	public Integer getUsername_counter() {
@@ -75,9 +73,12 @@ public class SessionData {
 	}
 
 	public void setLastOpenedProject(Project lastOpenedProject) {
-		ContextUtil.setContextInfo(IBPWorkbenchApplication.get().getRequest(), this.userData.getUserid(), lastOpenedProject.getProjectId(),
-				null);
-		this.lastOpenedProject = lastOpenedProject;
+		if (lastOpenedProject != null) {
+			ContextUtil.setContextInfo(IBPWorkbenchApplication.get().getRequest(), this.userData.getUserid(), lastOpenedProject.getProjectId(),
+					null);
+			this.lastOpenedProject = lastOpenedProject;
+		}
+
 	}
 
 	/**
