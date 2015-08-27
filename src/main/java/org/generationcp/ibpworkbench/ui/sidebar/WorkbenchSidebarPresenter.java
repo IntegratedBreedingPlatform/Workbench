@@ -1,25 +1,14 @@
 
 package org.generationcp.ibpworkbench.ui.sidebar;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import org.generationcp.commons.constant.ToolEnum;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
-import org.generationcp.middleware.pojos.workbench.Role;
-import org.generationcp.middleware.pojos.workbench.Tool;
-import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategory;
-import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategoryLink;
+import org.generationcp.middleware.pojos.workbench.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -109,8 +98,6 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 			categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "recovery", "Backup and Restore Program Data"));
 		}
 		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "user_tools", "Manage User-Added Tools"));
-		categoryLinks.add(new WorkbenchSidebarCategoryLink(this.manager.getToolWithName(ToolEnum.DATASET_IMPORTER.getToolName()), category,
-				ToolEnum.DATASET_IMPORTER.getToolName(), "Data Import Tool"));
 		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "tool_versions", "Tools and Crops Versions"));
 		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "software_license", "Software License"));
 		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "about_bms", "About the BMS"));
