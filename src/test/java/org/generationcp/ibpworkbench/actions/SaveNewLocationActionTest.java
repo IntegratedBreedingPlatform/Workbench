@@ -12,10 +12,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.vaadin.data.util.BeanItem;
@@ -42,18 +42,28 @@ public class SaveNewLocationActionTest {
 	@Mock
 	private ProgramLocationsPresenter programLocationsPresenter;
 
-	@InjectMocks
-	private final SaveNewLocationAction saveActionDUT = Mockito.spy(new SaveNewLocationAction(this.newLocationForm, this.window,
-			this.programLocationsPresenter));
+	private SaveNewLocationAction saveNewLocationAction;
+
+	@Mock
 	private LocationViewModel locationViewModelResult;
 
 	@Before
+	public void beforeEachTest() {
+		MockitoAnnotations.initMocks(this);
+		Mockito.doNothing().when(this.sessionData).logProgramActivity(Matchers.anyString(), Matchers.anyString());
+		this.saveNewLocationAction = new SaveNewLocationAction(this.newLocationForm, this.window, this.programLocationsPresenter);
+		this.programLocationsPresenter.setSessionData(this.sessionData);
+		this.saveNewLocationAction.setSessionData(this.sessionData);
+		this.saveNewLocationAction.setMessageSource(this.messageSource);
+	}
+
+	@Test
 	public void testGetLocationFromForm() throws Exception {
 		BeanItem<LocationViewModel> locationFormBean = Mockito.mock(BeanItem.class);
 		Mockito.when(locationFormBean.getBean()).thenReturn(this.generateXSSVulnerableLocation());
 		Mockito.when(this.newLocationForm.getItemDataSource()).thenReturn(locationFormBean);
 
-		this.locationViewModelResult = this.saveActionDUT.getLocationFromForm();
+		this.locationViewModelResult = this.saveNewLocationAction.getLocationFromForm();
 
 		Assert.assertNotSame("should not equal", SaveNewLocationActionTest.XSS_VULNERABLE_STRING,
 				this.locationViewModelResult.getLocationName());
@@ -65,25 +75,24 @@ public class SaveNewLocationActionTest {
 
 	@Test
 	public void testSaveLocation() throws Exception {
-		Mockito.doNothing().when(this.saveActionDUT).updateSessionData(Matchers.any(LocationViewModel.class));
-		Mockito.doNothing().when(this.sessionData).logProgramActivity(Matchers.anyString(), Matchers.anyString());
 
-		Location loc = new Location();
-		loc.setLname(this.locationViewModelResult.getLocationName());
-		loc.setLabbr(this.locationViewModelResult.getLocationAbbreviation());
+		LocationViewModel lvm = new LocationViewModel();
+		lvm.setLocationName("Test Location");
+		lvm.setLocationAbbreviation("TSTL");
 
-		Mockito.when(this.programLocationsPresenter.convertLocationViewToLocation(this.locationViewModelResult)).thenReturn(loc);
+		BeanItem<LocationViewModel> locationFormBean = Mockito.mock(BeanItem.class);
+		Mockito.when(locationFormBean.getBean()).thenReturn(lvm);
+		Mockito.when(this.newLocationForm.getItemDataSource()).thenReturn(locationFormBean);
 
 		Window mockParentWindow = Mockito.mock(Window.class);
 		Mockito.when(this.window.getParent()).thenReturn(mockParentWindow);
 		Mockito.when(mockParentWindow.removeWindow(this.window)).thenReturn(true);
 
 		// perform the test!
-		this.saveActionDUT.saveLocation();
+		this.saveNewLocationAction.saveLocation();
 
 		// assertions
-		Mockito.verify(this.saveActionDUT, Mockito.times(1)).updateSessionData(this.locationViewModelResult);
-		Mockito.verify(this.programLocationsPresenter, Mockito.times(1)).addLocation(loc);
+		Mockito.verify(this.programLocationsPresenter, Mockito.times(1)).addLocation(Mockito.any(Location.class));
 		Mockito.verify(this.sessionData, Mockito.times(1)).logProgramActivity(Matchers.anyString(), Matchers.anyString());
 		Mockito.verify(mockParentWindow, Mockito.times(1)).removeWindow(Matchers.any(Window.class));
 	}
@@ -92,7 +101,6 @@ public class SaveNewLocationActionTest {
 		LocationViewModel lvm = new LocationViewModel();
 		lvm.setLocationName(SaveNewLocationActionTest.XSS_VULNERABLE_STRING);
 		lvm.setLocationAbbreviation("tst");
-
 		return lvm;
 	}
 }

@@ -11,7 +11,6 @@
 
 package org.generationcp.ibpworkbench.actions;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,15 +22,13 @@ import org.generationcp.commons.vaadin.validator.ValidationUtil;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
+import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
-import org.generationcp.middleware.pojos.workbench.UserInfo;
-import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +61,9 @@ public class SaveNewProjectAddUserAction implements ClickListener {
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
+
+	@Autowired
+	private WorkbenchUserService workbenchUserService;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -131,45 +131,7 @@ public class SaveNewProjectAddUserAction implements ClickListener {
 	protected void saveUserAccount(UserAccountModel userAccount, TwinTableSelect<User> membersSelect) throws MiddlewareQueryException {
 		userAccount.trimAll();
 
-		Person person = new Person();
-		person.setFirstName(userAccount.getFirstName());
-		person.setMiddleName(userAccount.getMiddleName());
-		person.setLastName(userAccount.getLastName());
-		person.setEmail(userAccount.getEmail());
-		person.setTitle("-");
-		person.setContact("-");
-		person.setExtension("-");
-		person.setFax("-");
-		person.setInstituteId(0);
-		person.setLanguage(0);
-		person.setNotes("-");
-		person.setPositionName("-");
-		person.setPhone("-");
-		this.workbenchDataManager.addPerson(person);
-
-		User user = new User();
-		user.setPersonid(person.getId());
-		user.setPerson(person);
-		user.setName(userAccount.getUsername());
-		// set default password for the new user
-		user.setPassword(userAccount.getUsername());
-		user.setAccess(0);
-		user.setAdate(0);
-		user.setCdate(0);
-		user.setInstalid(0);
-		user.setStatus(0);
-		user.setType(0);
-		user.setIsNew(true);
-
-		// add user roles to the particular user
-		user.setRoles(Arrays.asList(new UserRole(user, userAccount.getRole())));
-
-		this.workbenchDataManager.addUser(user);
-
-		UserInfo userInfo = new UserInfo();
-		userInfo.setUserId(user.getUserid());
-		userInfo.setLoginCount(0);
-		this.workbenchDataManager.insertOrUpdateUserInfo(userInfo);
+		User user = this.workbenchUserService.saveNewUserAccount(userAccount);
 
 		// add new user to the TwinColumnSelect
 		membersSelect.addItem(user);

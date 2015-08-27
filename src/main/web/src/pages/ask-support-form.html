@@ -24,7 +24,7 @@
 			</div>
 		</div>
 
-		<form ng-upload="uploadComplete(content)" upload-options-before-submit="validate()" action="submit" novalidate name="askSupportForm"
+		<form ng-upload="uploadComplete(content)" upload-options-before-submit="beforeUpload()" action="submit" novalidate name="askSupportForm"
 			  class="row col-lg-6 col-md-8 col-sm-10">
 			<div class="form-group" show-errors>
 				<label for="nameTxt">Name</label>
@@ -70,7 +70,12 @@
 				<input type="file" name="file" id="file">
 			</div>
 
-			<button type="submit" class="btn btn-primary">Submit</button>
+			<button type="submit" ng-disabled="showThrobber" class="btn btn-primary">
+				Submit
+				<span ng-show="showThrobber" class="throbber-btn-wrapper">
+					<span class="throbber throbber-sm throbber-btn throbber-white"></span>
+				</span>
+			</button>
 
 		</form>
 	</section>

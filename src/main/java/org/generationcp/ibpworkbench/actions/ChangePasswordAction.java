@@ -14,7 +14,7 @@ package org.generationcp.ibpworkbench.actions;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ public class ChangePasswordAction implements ClickListener {
 	private final PasswordField password;
 
 	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
+	private WorkbenchUserService workbenchUserService;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -59,7 +59,7 @@ public class ChangePasswordAction implements ClickListener {
 				MessageNotifier.showRequiredFieldError(event.getComponent().getWindow(), "Password cannot be blank.");
 				return;
 			}
-			if (this.workbenchDataManager.changeUserPassword(this.username, this.password.getValue().toString())) {
+			if (this.workbenchUserService.updateUserPassword(this.username, this.password.getValue().toString())) {
 				Window popupWindow = event.getComponent().getWindow();
 				Window parentWindow = popupWindow.getParent();
 				parentWindow.removeWindow(popupWindow);

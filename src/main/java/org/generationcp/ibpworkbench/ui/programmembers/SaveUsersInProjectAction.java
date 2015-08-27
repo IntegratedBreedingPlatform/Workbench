@@ -96,7 +96,6 @@ public class SaveUsersInProjectAction implements ClickListener {
 
 		final Collection<User> userList = this.select.getValue();
 		try {
-
 			final TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
 			transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 				@Override
@@ -109,25 +108,24 @@ public class SaveUsersInProjectAction implements ClickListener {
 							ProjectUserRole projUsrRole = new ProjectUserRole();
 							projUsrRole.setUserId(u.getUserid());
 							projUsrRole.setRole(role);
-
+							projUsrRole.setProject(SaveUsersInProjectAction.this.project);
 							projectUserRoleList.add(projUsrRole);
 						}
-					}
 
-					MessageNotifier.showMessage(event.getComponent().getWindow(), "Success", "Successfully updated this project's members list.");
-					
-					for (User u : userList) {
 						if (SaveUsersInProjectAction.this.workbenchDataManager.getProjectUserInfoDao().getByProjectIdAndUserId(SaveUsersInProjectAction.this.project.getProjectId().intValue(),
 								u.getUserid()) == null) {
 							ProjectUserInfo pUserInfo = new ProjectUserInfo(SaveUsersInProjectAction.this.project.getProjectId().intValue(), u.getUserid());
 							SaveUsersInProjectAction.this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
-
 						}
 					}
+
+					// UPDATE workbench DB with the project user roles
+					SaveUsersInProjectAction.this.workbenchDataManager.updateProjectsRolesForProject(project,projectUserRoleList);
+
+
+					MessageNotifier.showMessage(event.getComponent().getWindow(), "Success", "Successfully updated this project's members list.");
 				}
 			});
-
-
 
 		} catch (MiddlewareQueryException ex) {
 			SaveUsersInProjectAction.LOG.error(ex.getMessage(), ex);
@@ -208,7 +206,7 @@ public class SaveUsersInProjectAction implements ClickListener {
 			localUser.setType(SaveUsersInProjectAction.PROJECT_USER_TYPE);
 			localUser.setInstalid(Integer.valueOf(this.projectUserInstalId));
 			localUser.setStatus(Integer.valueOf(SaveUsersInProjectAction.PROJECT_USER_STATUS));
-			localUser.setAdate(this.getCurrentDate());
+			localUser.setAssignDate(this.getCurrentDate());
 			userId = userDataManager.addUser(localUser);
 
 			// add or update a workbench user to ibdb user mapping

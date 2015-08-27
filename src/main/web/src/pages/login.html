@@ -30,7 +30,7 @@
 		The novalidate attribute disables form validation on submit which means that red outlines are not
 		applied to input elements in IE.
 	*/-->
-	<form th:action="@{/login}" th:attr="data-alt-action=@{/controller/auth/signup},data-forgot-password-action=@{/controller/auth/forgotPassword}, data-validate-login-action=@{/controller/auth/validateLogin}" autocomplete="off" class="js-login-form login-form" method="post" novalidate="" th:classappend="${param.error != null} ? login-form-invalid">
+	<form th:action="@{/login}" th:attr="data-alt-action=@{/controller/auth/signup},data-forgot-password-action=@{/controller/auth/forgotPassword}, data-validate-login-action=@{/controller/auth/validateLogin}, data-reset-password-action=@{/controller/auth/sendResetEmail}" autocomplete="off" class="js-login-form login-form" method="post" novalidate="" th:classappend="${param.error != null} ? login-form-invalid">
 
 		<!-- This is a dirty, necessary hack to avoid disgusting yellow inputs in Chrome. See http://stackoverflow.com/a/23467772/1712802 -->
 		<input class="js-fake-username" type="text" value="" style="display: none"/>

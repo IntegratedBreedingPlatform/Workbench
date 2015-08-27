@@ -11,6 +11,7 @@ import javax.mail.internet.MimeMessage;
 import javax.servlet.ServletContext;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.generationcp.commons.util.WorkbenchAppPathResolver;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.model.AskSupportFormModel;
@@ -42,12 +43,16 @@ public class WorkbenchEmailSenderService {
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchEmailSenderService.class);
 
 	public static final String BMS_LOGO_LOC = "/WEB-INF/static/images/logo.png";
+	public static final String RESET_LINK = "/controller/auth/reset/";
 
 	@Resource
 	private WorkbenchUserService workbenchUserService;
 
 	@Resource
 	private WorkbenchDataManager workbenchDataManager;
+
+	@Resource
+	private Properties workbenchProperties;
 
 	@Resource
 	private SessionData sessionData;
@@ -59,6 +64,9 @@ public class WorkbenchEmailSenderService {
 	private JavaMailSender mailSender;
 
 	@Resource
+	private JavaMailSender supportEmailSender;
+
+	@Resource
 	private TemplateEngine templateEngine;
 
 	@Resource
@@ -66,6 +74,10 @@ public class WorkbenchEmailSenderService {
 
 	@Value("${mail.server.sender.email}")
 	private String senderEmail;
+
+
+	@Value("${support.mail.server.sender.email}")
+	private String supportEmail;
 
 	@Value("${reset.expiry.hours}")
 	private Integer noOfHoursBeforeExpire;
@@ -87,8 +99,7 @@ public class WorkbenchEmailSenderService {
 	public String generateResetPasswordUrl(UserInfo userInfo) throws MiddlewareQueryException {
 		// generate a strong a unique randomized string
 		final String token = UUID.randomUUID().toString();
-
-		final String url = WorkbenchAppPathResolver.getFullWebAddress("ibpworkbench/controller/auth/reset/" + token);
+		final String url = WorkbenchAppPathResolver.getFullWebAddress(servletContext.getContextPath() + RESET_LINK + token);
 
 		// update workbench user_info table
 		userInfo.setResetToken(token);
@@ -124,7 +135,7 @@ public class WorkbenchEmailSenderService {
 
 		// prepare message
 		// Prepare message using a Spring helper
-		final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
+		final MimeMessage mimeMessage = this.supportEmailSender.createMimeMessage();
 		// true = multipart
 		final MimeMessageHelper message = this.getMimeMessageHelper(mimeMessage);
 
@@ -138,6 +149,7 @@ public class WorkbenchEmailSenderService {
 		ctx.setVariable("accountUsername",accountUsername);
 		ctx.setVariable("accountEmail",accountEmail);
 		ctx.setVariable("browserInfo",browser);
+		ctx.setVariable("bmsVersion",this.workbenchProperties.getProperty("workbench.version", "4.0"));
 		ctx.setVariable("screenResolution",screenResolution);
 		ctx.setVariable("lastOpenedProgram",lastOpenedProgram);
 		ctx.setVariable("lastOpenedCrop",lastOpenedCrop);
@@ -145,22 +157,25 @@ public class WorkbenchEmailSenderService {
 
 		message.setSubject("BMS Support / Feedback Email");
 		message.setFrom(askSupportForm.getEmail());
-		message.setTo(this.senderEmail);
+		message.setTo(this.supportEmail);
 
 		final String htmlContent = this.processTemplate(ctx,"ask-support-email");
 		message.setText(htmlContent,true);
 
 		String attachName = askSupportForm.getFile().getOriginalFilename();
-		message.addAttachment(attachName, new InputStreamSource() {
-			@Override
-			public InputStream getInputStream() throws IOException {
-				return askSupportForm.getFile().getInputStream();
-			}
-		});
+
+		if (StringUtils.isNotEmpty(attachName)) {
+			message.addAttachment(attachName, new InputStreamSource() {
+				@Override
+				public InputStream getInputStream() throws IOException {
+					return askSupportForm.getFile().getInputStream();
+				}
+			});
+		}
 
 		WorkbenchEmailSenderService.LOG.info("Sent feedback mail from {}", askSupportForm.getEmail());
 
-		this.mailSender.send(mimeMessage);
+		this.supportEmailSender.send(mimeMessage);
 	}
 
 	/**
@@ -194,11 +209,12 @@ public class WorkbenchEmailSenderService {
 			message.addInline(WorkbenchEmailSenderService.BMS_LOGO_LOC, this.retrieveLogoImage(), "image/png");
 
 			WorkbenchEmailSenderService.LOG.info("Sent password reset to {} with URL token {}", recipientEmail, forgotPasswordUrl);
-		} catch (IOException e) {
-			WorkbenchEmailSenderService.LOG.error(e.getMessage(), e);
-		} finally {
+
 			// send the message
 			this.mailSender.send(mimeMessage);
+
+		} catch (IOException e) {
+			WorkbenchEmailSenderService.LOG.error(e.getMessage(), e);
 		}
 	}
 

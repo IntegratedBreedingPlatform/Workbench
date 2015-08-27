@@ -19,9 +19,19 @@
 	app.controller('AskSupportFormController', ['$scope', 'ngToast', 'AskSupportService', function($scope, ngToast, AskSupportService) {
 		$scope.form = AskSupportService.getAskSupportForm();
 		$scope.requestCategories = AskSupportService.getRequestCategoryOpts();
+		$scope.showThrobber = false;
 
 		$scope.uploadComplete = function(content) {
 			$scope.response = content;
+			$scope.showThrobber = false;
+
+			if (!$scope.response.success) {
+				ngToast.warning({
+					content: $scope.response.message
+				});
+
+				return;
+			}
 
 			ngToast.create({
 				className: 'ask-support-toast-submit',
@@ -34,7 +44,10 @@
 			});
 		};
 
-		$scope.validate = function() {
+		$scope.beforeUpload = function() {
+			$scope.showThrobber = true;
+
+			// perform final validation
 			return !$scope.askSupportForm.$invalid;
 		};
 	}]);

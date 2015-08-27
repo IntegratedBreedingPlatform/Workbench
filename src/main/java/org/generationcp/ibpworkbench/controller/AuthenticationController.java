@@ -191,7 +191,7 @@ public class AuthenticationController {
 
 		try {
 			// 1. replace password
-			this.workbenchUserService.updateUserPassword(model);
+			this.workbenchUserService.updateUserPassword(model.getUsername(), model.getPassword());
 
 			// 2. remove token
 			this.workbenchEmailSenderService.deleteToken(model);

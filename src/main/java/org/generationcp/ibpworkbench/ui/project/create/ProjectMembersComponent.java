@@ -34,6 +34,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.util.BeanItemContainer;
@@ -74,6 +78,9 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
+
+	@Autowired
+	private PlatformTransactionManager transactionManager;
 
 	private AddProgramPresenter presenter;
 
@@ -225,36 +232,42 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void buttonClick(ClickEvent clickEvent) {
-				try {
-					ProjectMembersComponent.this.presenter.doAddNewProgram();
-
-					MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
-							ProjectMembersComponent.this.messageSource.getMessage(Message.SUCCESS),
-							ProjectMembersComponent.this.presenter.program.getProjectName() + " program has been successfully created.");
-
-					ProjectMembersComponent.this.sessionData.setLastOpenedProject(ProjectMembersComponent.this.presenter.program);
-					ProjectMembersComponent.this.sessionData.setSelectedProject(ProjectMembersComponent.this.presenter.program);
-
-					if (IBPWorkbenchApplication.get().getMainWindow() instanceof WorkbenchMainView) {
-						((WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow()).getSidebar().populateLinks();
+			public void buttonClick(final ClickEvent clickEvent) {
+				final TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+				transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+					@Override
+					protected void doInTransactionWithoutResult(final TransactionStatus status) {
+						try {
+							ProjectMembersComponent.this.presenter.doAddNewProgram();
+		
+							MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
+									ProjectMembersComponent.this.messageSource.getMessage(Message.SUCCESS),
+									ProjectMembersComponent.this.presenter.program.getProjectName() + " program has been successfully created.");
+		
+							ProjectMembersComponent.this.sessionData.setLastOpenedProject(ProjectMembersComponent.this.presenter.program);
+							ProjectMembersComponent.this.sessionData.setSelectedProject(ProjectMembersComponent.this.presenter.program);
+		
+							if (IBPWorkbenchApplication.get().getMainWindow() instanceof WorkbenchMainView) {
+								((WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow()).getSidebar().populateLinks();
+							}
+		
+							ProjectMembersComponent.this.presenter.enableProgramMethodsAndLocationsTab();
+		
+						} catch (Exception e) {
+		
+							if (e.getMessage().equals("basic_details_invalid")) {
+								return;
+							}
+		
+							ProjectMembersComponent.LOG.error("Oops there might be serious problem on creating the program, investigate it!", e);
+		
+							MessageNotifier.showError(clickEvent.getComponent().getWindow(),
+									ProjectMembersComponent.this.messageSource.getMessage(Message.DATABASE_ERROR),
+									ProjectMembersComponent.this.messageSource.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
+		
+						}
 					}
-
-					ProjectMembersComponent.this.presenter.enableProgramMethodsAndLocationsTab();
-
-				} catch (Exception e) {
-
-					if (e.getMessage().equals("basic_details_invalid")) {
-						return;
-					}
-
-					ProjectMembersComponent.LOG.error("Oops there might be serious problem on creating the program, investigate it!", e);
-
-					MessageNotifier.showError(clickEvent.getComponent().getWindow(),
-							ProjectMembersComponent.this.messageSource.getMessage(Message.DATABASE_ERROR),
-							ProjectMembersComponent.this.messageSource.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
-
-				}
+				});
 			}
 		});
 

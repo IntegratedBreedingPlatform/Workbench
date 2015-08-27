@@ -95,7 +95,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 	private Button addNewLocationsBtn;
 	private VerticalLayout root;
-	private Button saveBtn;
+	private Button saveFavouritesBtn;
 	private Table availableTable;
 	private Table favoritesTable;
 	private CheckBox availableSelectAll;
@@ -132,8 +132,8 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		this.addNewLocationsBtn = new Button("Add New Location");
 		this.addNewLocationsBtn.setStyleName(Bootstrap.Buttons.INFO.styleName() + " loc-add-btn");
 
-		this.saveBtn = new Button("Save Favorites");
-		this.saveBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
+		this.saveFavouritesBtn = new Button("Save Favorites");
+		this.saveFavouritesBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
 
 		this.searchGoBtn = new Button("Go");
 		this.searchGoBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
@@ -272,24 +272,17 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 			}
 		});
 
-		this.saveBtn.addListener(new Button.ClickListener() {
+		this.saveFavouritesBtn.addListener(new Button.ClickListener() {
 
 			private static final long serialVersionUID = -1949478106602489651L;
 
 			@Override
 			public void buttonClick(ClickEvent clickEvent) {
-				try {
-					if (ProgramLocationsView.this.presenter.saveProgramLocation(ProgramLocationsView.this.favoritesTableContainer
-							.getItemIds())) {
-						MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
-								ProgramLocationsView.this.messageSource.getMessage(Message.SUCCESS),
-								ProgramLocationsView.this.messageSource.getMessage(Message.LOCATION_SUCCESSFULLY_CONFIGURED));
-					}
-
-				} catch (MiddlewareQueryException e) {
-					ProgramLocationsView.LOG.error(e.getMessage(), e);
+				if (ProgramLocationsView.this.presenter.saveFavouriteLocations(ProgramLocationsView.this.favoritesTableContainer.getItemIds())) {
+					MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
+							ProgramLocationsView.this.messageSource.getMessage(Message.SUCCESS),
+							ProgramLocationsView.this.messageSource.getMessage(Message.LOCATION_SUCCESSFULLY_CONFIGURED));
 				}
-				ProgramLocationsView.LOG.debug("onSaveProgramLocations:");
 			}
 		});
 
@@ -313,7 +306,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 	/**
 	 * Use this to retrieve the favorite locations from the view, you might have to convert LocationViewModel to Middleware's Location bean
-	 * 
+	 *
 	 * @return
 	 */
 	public Collection<Location> getFavoriteLocations() {
@@ -468,7 +461,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		layout.addComponent(selectedLocationsTitle);
 
 		if (!this.cropOnly) {
-			layout.addComponent(this.saveBtn);
+			layout.addComponent(this.saveFavouritesBtn);
 		}
 
 		layout.setExpandRatio(selectedLocationsTitle, 1.0F);

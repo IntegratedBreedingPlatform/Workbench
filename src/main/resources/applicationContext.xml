@@ -130,8 +130,8 @@
 		factory-method="getLocationDataManager" scope="request">
 		<aop:scoped-proxy />
 	</bean>
-	
-	<bean id="userProgramStateManager" factory-bean="managerFactory" 
+
+	<bean id="userProgramStateManager" factory-bean="managerFactory"
 		factory-method="getUserProgramStateDataManager" scope="request">
 		<aop:scoped-proxy />
 	</bean>
@@ -140,14 +140,16 @@
 		factory-method="getOntologyDataManager" scope="request">
 		<aop:scoped-proxy />
 	</bean>
-	
+
 	<bean id="ontologyService" factory-bean="managerFactory"
 		factory-method="getOntologyService" scope="request">
 		<aop:scoped-proxy />
 	</bean>
-	
+
+	<bean id="workbenchUserService" class="org.generationcp.ibpworkbench.service.WorkbenchUserService" />
+
 	<bean id="fieldbookService" class="org.generationcp.middleware.service.FieldbookServiceImpl"/>
-			
+
 	<!-- Data Source and Transaction Configuration -->
 
 	<tx:annotation-driven />
@@ -188,4 +190,11 @@
 		<aop:scoped-proxy />
 	</bean>
 
+	<!-- Authentication -->
+	<bean id="encoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+
+	<bean id="authProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+		<property name="userDetailsService" ref="workbenchUserDetailsService" />
+		<property name="passwordEncoder" ref="encoder" />
+	</bean>
 </beans>

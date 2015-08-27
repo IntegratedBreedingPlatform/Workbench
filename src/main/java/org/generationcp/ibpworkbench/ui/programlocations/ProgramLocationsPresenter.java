@@ -75,17 +75,6 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		this.locationDataManager = locationDataManager;
 	}
 
-	/**
-	 * generates random results
-	 * 
-	 * @return
-	 */
-	public static List<LocationViewModel> getRandomResults(Integer countryID, Integer locationType, String locationName) {
-		// for now lets random generate the results
-
-		return LocationViewModel.generateRandomData(2);
-	}
-
 	public Collection<LocationViewModel> getFilteredResults(Integer countryId, Integer locationType, String locationName)
 			throws MiddlewareQueryException {
 		List<Location> locationList = null;
@@ -130,39 +119,13 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		return resultsMap.values();
 	}
 
-	// The ff is a BAD BAD CODE, necessary but BAD!!! >_<
-	private void onAttachInitialize() {
-		try {
-			ProgramLocationsPresenter.LOG.debug(">BAD Routine start!");
-
-			for (Location loc : this.locationDataManager.getAllLocalLocations(0, Integer.MAX_VALUE)) {
-				if (loc.getLocid() < 0 && !this.sessionData.getProjectLocationData().containsKey(loc.getLocid())) {
-					LocationViewModel locModel = new LocationViewModel();
-					locModel.setCntryid(loc.getCntryid());
-					locModel.setLocationAbbreviation(loc.getLabbr());
-					locModel.setLocationId(loc.getLocid());
-					locModel.setLocationName(loc.getLname());
-					locModel.setLtype(loc.getLtype());
-					locModel.setLatitude(loc.getLatitude());
-					locModel.setLongitude(loc.getLongitude());
-					locModel.setAltitude(loc.getAltitude());
-					this.sessionData.getProjectLocationData().put(locModel.getLocationId(), locModel);
-				}
-			}
-
-		} catch (MiddlewareQueryException e) {
-			ProgramLocationsPresenter.LOG.error(e.getMessage(), e);
-		}
-	}
-
 	public List<LocationViewModel> getSavedProgramLocations() throws MiddlewareQueryException {
 		if (this.cropType != null) {
 			return new ArrayList<LocationViewModel>();
 		}
 
 		List<LocationViewModel> result = new ArrayList<LocationViewModel>();
-		List<ProgramFavorite> favorites =
-				germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, this.project.getUniqueID());
+		List<ProgramFavorite> favorites = this.germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, this.project.getUniqueID());
 
 		for (ProgramFavorite favorite : favorites) {
 			LocationViewModel locationVModel = this.getLocationDetailsByLocId(favorite.getEntityId());
@@ -187,17 +150,16 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		return null;
 	}
 
-	public boolean saveProgramLocation(Collection<LocationViewModel> selectedLocations) throws MiddlewareQueryException {
-		return saveProgramLocation(selectedLocations, this.project, this.workbenchDataManager);
+	public boolean saveFavouriteLocations(Collection<LocationViewModel> selectedLocations) throws MiddlewareQueryException {
+		return this.saveFavouriteLocations(selectedLocations, this.project, this.workbenchDataManager);
 	}
 
-	public boolean saveProgramLocation(Collection<LocationViewModel> selectedLocations, Project project,
+	public boolean saveFavouriteLocations(Collection<LocationViewModel> selectedLocations, Project project,
 			WorkbenchDataManager workbenchDataManager) throws MiddlewareQueryException {
 
 		// Delete existing project locations in the database
-		List<ProgramFavorite> favorites =
-				germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, project.getUniqueID());
-		germplasmDataManager.deleteProgramFavorites(favorites);
+		List<ProgramFavorite> favorites = this.germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, project.getUniqueID());
+		this.germplasmDataManager.deleteProgramFavorites(favorites);
 
 		/*
 		 * add selected location to local db location table if it does not yet exist add location in workbench_project_loc_map in workbench
@@ -213,7 +175,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		}
 
 		// Add the new set of project locations
-		germplasmDataManager.saveProgramFavorites(list);
+		this.germplasmDataManager.saveProgramFavorites(list);
 
 		return true;
 	}
@@ -293,8 +255,6 @@ public class ProgramLocationsPresenter implements InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-
-		this.onAttachInitialize();
 	}
 
 	public List<UserDefinedField> getUDFByLocationAndLType() throws MiddlewareQueryException {
@@ -362,5 +322,9 @@ public class ProgramLocationsPresenter implements InitializingBean {
 
 	public void setCropType(CropType cropType) {
 		this.cropType = cropType;
+	}
+
+	public void setSessionData(SessionData sessionData) {
+		this.sessionData = sessionData;
 	}
 }
