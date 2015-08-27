@@ -49,6 +49,8 @@ public class SessionData {
 	}
 
 	public void setSelectedProject(Project selectedProject) {
+		ContextUtil.setContextInfo(IBPWorkbenchApplication.get().getRequest(), this.userData.getUserid(), selectedProject.getProjectId(),
+				null);
 		this.selectedProject = selectedProject;
 	}
 
@@ -73,6 +75,8 @@ public class SessionData {
 	}
 
 	public void setLastOpenedProject(Project lastOpenedProject) {
+		ContextUtil.setContextInfo(IBPWorkbenchApplication.get().getRequest(), this.userData.getUserid(), lastOpenedProject.getProjectId(),
+				null);
 		this.lastOpenedProject = lastOpenedProject;
 	}
 
