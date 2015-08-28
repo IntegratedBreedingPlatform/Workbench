@@ -13,11 +13,13 @@ package org.generationcp.ibpworkbench.ui.programmembers;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -47,13 +49,16 @@ public class SaveUsersInProjectAction implements ClickListener {
 	private final TwinTableSelect<User> select;
 
 	private final Project project;
+	
+	@Autowired
+	private ProgramService programService;
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
-
+	
 	@Autowired
 	private PlatformTransactionManager transactionManager;
 
@@ -96,6 +101,11 @@ public class SaveUsersInProjectAction implements ClickListener {
 							SaveUsersInProjectAction.this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
 						}
 					}
+					
+					// set the users to be added as members of the project in the project service
+					programService.setSelectedUsers(new HashSet<>(userList));
+					//use the project service to link new members to the project
+					programService.copyProjectUsers(project);
 
 					// UPDATE workbench DB with the project user roles
 					SaveUsersInProjectAction.this.workbenchDataManager.updateProjectsRolesForProject(project,projectUserRoleList);

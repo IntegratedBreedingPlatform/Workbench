@@ -83,7 +83,7 @@ public class ProgramService {
 		this.toolUtil.createWorkspaceDirectoriesForProject(program);
 
 		this.addProjectUserRoles(program);
-		this.copyProjectUsers(userDataManager, program);
+		this.copyProjectUsers(program);
 		this.saveProjectUserInfo(program);
 
 		ProgramService.LOG.info("Program created. ID:" + program.getProjectId() + " Name:" + program.getProjectName() + " Start date:"
@@ -138,16 +138,18 @@ public class ProgramService {
 	/**
 	 * Create necessary database entries for selected program members.
 	 */
-	private void copyProjectUsers(UserDataManager userDataManager, Project project) throws MiddlewareQueryException {
+	public void copyProjectUsers(Project project) throws MiddlewareQueryException {
 
 		for (User user : this.selectedUsers) {
-
+			
+			//fetch user record from workbench DB
 			User workbenchUser = this.workbenchDataManager.getUserById(user.getUserid());
-			User cropDBUser = workbenchUser.copy();
-
+			
+			// ccreate a copy of the Person
 			Person workbenchPerson = this.workbenchDataManager.getPersonById(workbenchUser.getPersonid());
 			Person cropDBPerson = workbenchPerson.copy();
-
+			
+			// add the Person record if they do not exist
 			if (!userDataManager.isPersonExists(cropDBPerson.getFirstName().toUpperCase(), cropDBPerson.getLastName().toUpperCase())) {
 				userDataManager.addPerson(cropDBPerson);
 			} else {
@@ -160,11 +162,13 @@ public class ProgramService {
 					}
 				}
 			}
-
+			
+			// create a copy of the user record
+			User cropDBUser = workbenchUser.copy();
+			
+			// if a user is assigned to a program, then add them to the crop database where they can then access the program
 			if (!userDataManager.isUsernameExists(cropDBUser.getName())) {
 				cropDBUser.setPersonid(cropDBPerson.getId());
-				// TODO we are setting following fields because they are non nullable. Review and make nullable.
-				// See http://cropwiki.irri.org/icis/index.php/TDM_ICIS_Application_and_Database_Installation for background.
 				cropDBUser.setAccess(ProgramService.PROJECT_USER_ACCESS_NUMBER);
 				cropDBUser.setType(ProgramService.PROJECT_USER_TYPE);
 				cropDBUser.setInstalid(Integer.valueOf(0));
