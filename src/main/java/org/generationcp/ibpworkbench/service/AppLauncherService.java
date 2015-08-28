@@ -51,6 +51,7 @@ public class AppLauncherService {
 
 	public String launchTool(String toolName, Integer idParam) throws AppLaunchException {
 		try {
+			boolean logProgramActivity = true;
 			String url = "";
 			Tool tool = this.workbenchDataManager.getToolWithName(toolName);
 
@@ -70,12 +71,17 @@ public class AppLauncherService {
 					url = this.launchWebappWithLogin(tool);
 					break;
 				case WEB:
-					url = this.launchWebapp(tool, idParam);
+					if (tool.getToolName().equals("migrator")) {
+						logProgramActivity = false;
+						url = this.launchMigratorWebapp(tool, idParam);
+					} else {
+						url = this.launchWebapp(tool, idParam);
+					}
 			}
-
-			// log proj act
-			this.sessionData.logProgramActivity(tool.getTitle(), "Launched " + tool.getTitle());
-
+			if (logProgramActivity) {
+				// log project activity
+				this.sessionData.logProgramActivity(tool.getTitle(), "Launched " + tool.getTitle());
+			}
 			return url;
 
 		} catch (MiddlewareQueryException e) {
@@ -131,6 +137,18 @@ public class AppLauncherService {
 	protected String launchWebapp(Tool tool, Integer idParam) {
 		return WorkbenchAppPathResolver.getWorkbenchAppPath(tool, String.valueOf(idParam),
 				"?restartApplication" + this.sessionData.getWorkbenchContextParameters());
+	}
+
+	/**
+	 * This method has been added to handle special case when there is no program inside workbench.
+	 * So it will not check for session data and current selected project.
+	 *
+	 * @param tool    tool to be launched.
+	 * @param idParam id
+	 * @return path of the tool to be launched.
+	 */
+	protected String launchMigratorWebapp(Tool tool, Integer idParam) {
+		return WorkbenchAppPathResolver.getWorkbenchAppPath(tool, String.valueOf(idParam));
 	}
 
 	protected String launchWebappWithLogin(Tool tool) {

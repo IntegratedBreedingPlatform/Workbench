@@ -184,11 +184,25 @@ public class AppLauncherServiceTest {
 		aWebTool.setToolType(ToolType.WEB);
 		urlResult = this.appLauncherService.launchWebapp(aWebTool, AppLauncherServiceTest.ID_PARAM);
 
-		Assert.assertEquals("should return correct url for fieldbook trial app", String.format("%s://%s:%d/%s/openTrial/%d%s",
-				AppLauncherServiceTest.SCHEME, AppLauncherServiceTest.HOST_NAME, AppLauncherServiceTest.PORT,
-				AppLauncherServiceTest.SAMPLE_BASE_URL, AppLauncherServiceTest.ID_PARAM, AppLauncherServiceTest.RESTART_URL_STR
-						+ AppLauncherServiceTest.WORKBENCH_CONTEXT_PARAMS), urlResult);
+		Assert.assertEquals("should return correct url for fieldbook trial app",
+				String.format("%s://%s:%d/%s/openTrial/%d%s", AppLauncherServiceTest.SCHEME, AppLauncherServiceTest.HOST_NAME,
+						AppLauncherServiceTest.PORT, AppLauncherServiceTest.SAMPLE_BASE_URL, AppLauncherServiceTest.ID_PARAM,
+						AppLauncherServiceTest.RESTART_URL_STR + AppLauncherServiceTest.WORKBENCH_CONTEXT_PARAMS), urlResult);
 
+	}
+
+	@Test
+	public void testLaunchMigratorWebapp() {
+		Tool migratorWebTool = new Tool();
+
+		migratorWebTool.setToolName(ToolEnum.MIGRATOR.getToolName());
+		migratorWebTool.setPath(AppLauncherServiceTest.SAMPLE_BASE_URL);
+		migratorWebTool.setToolType(ToolType.WEB);
+		String urlResult = this.appLauncherService.launchMigratorWebapp(migratorWebTool, AppLauncherServiceTest.ID_PARAM);
+
+		Assert.assertEquals("should return correct url for List manager app",
+				String.format("%s://%s:%d/%s%d", AppLauncherServiceTest.SCHEME, AppLauncherServiceTest.HOST_NAME,
+						AppLauncherServiceTest.PORT, AppLauncherServiceTest.SAMPLE_BASE_URL, AppLauncherServiceTest.ID_PARAM), urlResult);
 	}
 
 	@Test
