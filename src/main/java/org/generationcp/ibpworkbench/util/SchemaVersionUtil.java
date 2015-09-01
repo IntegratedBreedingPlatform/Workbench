@@ -53,10 +53,7 @@ public class SchemaVersionUtil {
 				return true;
 			}
 		}
-		if (minimumTokens.hasMoreTokens()) {
-			return false;
-		}
-		return true;
+		return !minimumTokens.hasMoreTokens();
 	}
 
 	public static Properties loadPropertiesFile(String filename) {

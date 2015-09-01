@@ -85,11 +85,8 @@ public class MetaEnvironmentModel {
 		if (this.dataSetId != other.dataSetId) {
 			return false;
 		}
-		if (!this.trial.equals(other.trial)) {
-			return false;
-		}
+		return this.trial.equals(other.trial);
 
-		return true;
 	}
 
 	@Override

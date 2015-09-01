@@ -18,5 +18,5 @@ import org.generationcp.middleware.pojos.workbench.WorkFlowActivity;
 
 public interface IWorkFlowActivityManager {
 
-	public List<WorkFlowActivity> getUpcomingActivities(Project project);
+	List<WorkFlowActivity> getUpcomingActivities(Project project);
 }

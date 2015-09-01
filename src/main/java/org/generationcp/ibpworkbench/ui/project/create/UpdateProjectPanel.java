@@ -131,11 +131,8 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 	}
 
 	public boolean validate() {
-		if (this.projectBasicDetailsComponent.validate()) {
-			return true;
-		}
+		return this.projectBasicDetailsComponent.validate();
 
-		return false;
 	}
 
 	public void hideDeleteBtn() {

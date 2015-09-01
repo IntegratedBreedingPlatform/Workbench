@@ -8,5 +8,5 @@ import com.vaadin.ui.Window;
  */
 public interface IContainerFittable {
 
-	public void fitToContainer(final Window parentWindow);
+	void fitToContainer(final Window parentWindow);
 }

@@ -116,7 +116,7 @@ class NurseryTreeDropHandler implements DropHandler {
 		try {
 			int actualTargetId = 0;
 			// switch to using the root folder id if target is the root of the local folder
-			if (parentId instanceof String && ((String) parentId).equals(NurseryListPreview.NURSERIES_AND_TRIALS)) {
+			if (parentId instanceof String && parentId.equals(NurseryListPreview.NURSERIES_AND_TRIALS)) {
 				actualTargetId = NurseryListPreview.ROOT_FOLDER;
 			} else {
 				actualTargetId = (Integer) targetItemId;

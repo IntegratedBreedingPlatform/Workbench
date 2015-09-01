@@ -371,10 +371,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 					this.messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
 			children = new ArrayList<Reference>();
 		}
-		if (!children.isEmpty()) {
-			return true;
-		}
-		return false;
+		return !children.isEmpty();
 	}
 
 	public Boolean isFolder(Integer studyId) {
@@ -399,10 +396,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 					this.messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
 			children = new ArrayList<DatasetReference>();
 		}
-		if (!children.isEmpty()) {
-			return true;
-		}
-		return false;
+		return !children.isEmpty();
 	}
 
 	@Override

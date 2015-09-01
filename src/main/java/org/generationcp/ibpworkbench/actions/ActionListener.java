@@ -31,7 +31,7 @@ public interface ActionListener {
 	 *
 	 * @param event the event
 	 */
-	public void doAction(Component.Event event);
+	void doAction(Component.Event event);
 
 	/**
 	 * Used by NavUriFragmentChangedListener.
@@ -40,6 +40,6 @@ public interface ActionListener {
 	 * @param uriFragment the uri fragment
 	 * @param isLinkAccessed the is link accessed
 	 */
-	public void doAction(Window window, String uriFragment, boolean isLinkAccessed);
+	void doAction(Window window, String uriFragment, boolean isLinkAccessed);
 
 }

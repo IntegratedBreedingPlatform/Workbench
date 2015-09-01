@@ -352,11 +352,7 @@ public abstract class FieldWrapper<PC> extends CustomComponent implements Field,
 	public boolean isValid() {
 		if (this.property instanceof Validatable) {
 			if (this.isEmpty()) {
-				if (this.isRequired()) {
-					return false;
-				} else {
-					return true;
-				}
+				return !this.isRequired();
 			}
 
 			if (this.converter != null) {

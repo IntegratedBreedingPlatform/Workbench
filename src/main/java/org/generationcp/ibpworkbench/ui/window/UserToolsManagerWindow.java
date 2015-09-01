@@ -137,7 +137,7 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 
 					// clear the form data for new entry
 					UserToolsManagerWindow.this.userToolsForm.setItemDataSource(new BeanItem<Tool>(new Tool()),
-							Arrays.asList(new String[] {"toolName", "title", "toolType", "version", "path", "parameter"}));
+							Arrays.asList("toolName", "title", "toolType", "version", "path", "parameter"));
 
 					MessageNotifier.showMessage(UserToolsManagerWindow.this.thisWindow,
 							UserToolsManagerWindow.this.messageSource.getMessage(Message.SUCCESS),
@@ -302,7 +302,7 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 				UserToolsManagerWindow.LOG.debug(selectedTool.toString());
 
 				UserToolsManagerWindow.this.userToolsForm.setItemDataSource(new BeanItem<Tool>(userToolFormData),
-						Arrays.asList(new String[] {"toolName", "title", "toolType", "version", "path", "parameter"}));
+						Arrays.asList("toolName", "title", "toolType", "version", "path", "parameter"));
 
 				UserToolsManagerWindow.this.editBtn.setEnabled(true);
 			}
@@ -365,7 +365,7 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 			this.userToolsListContainer = new BeanItemContainer<Tool>(Tool.class, userTools);
 			this.userToolsListSelect.setContainerDataSource(this.userToolsListContainer);
 			this.userToolsForm.setItemDataSource(new BeanItem<Tool>(new Tool()),
-					Arrays.asList(new String[] {"toolName", "title", "toolType", "version", "path", "parameter"}));
+					Arrays.asList("toolName", "title", "toolType", "version", "path", "parameter"));
 
 			this.userToolsListSelect.setItemCaptionPropertyId("title");
 

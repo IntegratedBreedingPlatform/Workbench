@@ -6,5 +6,5 @@ package org.generationcp.ibpworkbench;
  */
 public interface IWorkbenchSession {
 
-	public SessionData getSessionData();
+	SessionData getSessionData();
 }

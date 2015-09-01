@@ -766,11 +766,9 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 			return false;
 		}
 
-		if (locationName != null && !locationName.isEmpty() && !item.getLocationName().toLowerCase().contains(locationName.toLowerCase())) {
-			return false;
-		}
+		return !(locationName != null && !locationName.isEmpty() && !item.getLocationName().toLowerCase()
+				.contains(locationName.toLowerCase()));
 
-		return true;
 	}
 
 	private void updateNoOfEntries() {

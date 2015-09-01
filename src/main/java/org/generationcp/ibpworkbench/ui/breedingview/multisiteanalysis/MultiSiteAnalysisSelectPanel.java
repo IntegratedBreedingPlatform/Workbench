@@ -348,7 +348,7 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				MultiSiteAnalysisSelectPanel.this.selectSpecifyEnvironment.select((Object) null);
+				MultiSiteAnalysisSelectPanel.this.selectSpecifyEnvironment.select(null);
 				MultiSiteAnalysisSelectPanel.this.selectSpecifyEnvironment
 						.select(MultiSiteAnalysisSelectPanel.this.selectSpecifyEnvironment.getItemIds().iterator().next());
 				MultiSiteAnalysisSelectPanel.this.selectSpecifyGenotypes.select(MultiSiteAnalysisSelectPanel.this.selectSpecifyGenotypes

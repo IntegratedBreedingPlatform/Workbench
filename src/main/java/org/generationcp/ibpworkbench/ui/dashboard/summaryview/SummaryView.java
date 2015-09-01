@@ -549,7 +549,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
 							d.setStyleName("");
 						}
 						if (d instanceof TextField) {
-							((TextField) d).setWidth("30px");
+							d.setWidth("30px");
 						}
 
 					}

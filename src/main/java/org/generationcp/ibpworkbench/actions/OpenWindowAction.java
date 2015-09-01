@@ -156,7 +156,7 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
 
 	}
 
-	public static enum WindowEnum {
+	public enum WindowEnum {
 		CHANGE_PASSWORD("change_password"), USER_TOOLS("user_tools"), SOFTWARE_LICENSING_AGREEMENT("software_license");
 
 		private String windowName;
