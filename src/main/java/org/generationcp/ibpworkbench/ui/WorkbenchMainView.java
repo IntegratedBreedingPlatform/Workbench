@@ -37,7 +37,6 @@ import org.generationcp.ibpworkbench.actions.OpenWindowAction.WindowEnum;
 import org.generationcp.ibpworkbench.actions.SignoutAction;
 import org.generationcp.ibpworkbench.navigation.NavUriFragmentChangedListener;
 import org.generationcp.ibpworkbench.service.AppLauncherService;
-import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
 import org.generationcp.ibpworkbench.ui.project.create.AddProgramView;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
@@ -50,7 +49,6 @@ import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
-import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -226,7 +224,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 			}
 
 		} catch (IOException | MiddlewareQueryException e) {
-			Log.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 			return false;
 		}
 
