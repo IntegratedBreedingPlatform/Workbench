@@ -69,7 +69,7 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 
 	@Autowired
 	private SessionData sessionData;
-	
+
 	@Autowired
 	private PlatformTransactionManager transactionManager;
 
@@ -131,22 +131,22 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			
+
 			public void buttonClick(final Button.ClickEvent clickEvent) {
 				try {
-					final TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+					final TransactionTemplate transactionTemplate = new TransactionTemplate(CreateProjectPanel.this.transactionManager);
 					transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 
 						@Override
 						protected void doInTransactionWithoutResult(TransactionStatus status) {
-							CreateProjectPanel.this.presenter.doAddNewProgram();
+							final Project newlyCreatedProgram = CreateProjectPanel.this.presenter.doAddNewProgram();
 
 							MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
 									CreateProjectPanel.this.messageSource.getMessage(Message.SUCCESS),
-									CreateProjectPanel.this.presenter.program.getProjectName() + " program has been successfully created.");
+									newlyCreatedProgram.getProjectName() + " program has been successfully created.");
 
-							CreateProjectPanel.this.sessionData.setLastOpenedProject(CreateProjectPanel.this.presenter.program);
-							CreateProjectPanel.this.sessionData.setSelectedProject(CreateProjectPanel.this.presenter.program);
+							CreateProjectPanel.this.sessionData.setLastOpenedProject(newlyCreatedProgram);
+							CreateProjectPanel.this.sessionData.setSelectedProject(newlyCreatedProgram);
 
 							if (IBPWorkbenchApplication.get().getMainWindow() instanceof WorkbenchMainView) {
 								((WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow()).getSidebar().populateLinks();

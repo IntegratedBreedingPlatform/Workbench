@@ -138,7 +138,8 @@ public class AddProgramView extends Panel implements InitializingBean {
 
 			@Override
 			public void buttonClick(Button.ClickEvent clickEvent) {
-				new DashboardMainClickListener(IBPWorkbenchApplication.get().getMainWindow(), AddProgramView.this.presenter.program
+				final Project newlyCreatedProgram = AddProgramView.this.sessionData.getSelectedProject();
+				new DashboardMainClickListener(IBPWorkbenchApplication.get().getMainWindow(), newlyCreatedProgram
 						.getProjectId()).buttonClick(clickEvent);
 			}
 		});

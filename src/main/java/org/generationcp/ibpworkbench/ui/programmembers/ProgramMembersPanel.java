@@ -12,7 +12,6 @@
 package org.generationcp.ibpworkbench.ui.programmembers;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -84,8 +83,6 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 	private final Project project;
 
-	private List<Role> inheritedRoles;
-
 	public ProgramMembersPanel(Project project) {
 		this.project = project;
 	}
@@ -115,7 +112,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			/**
 			 *
 			 */
-			 private static final long serialVersionUID = 6976921612035925373L;
+			private static final long serialVersionUID = 6976921612035925373L;
 
 			@Override
 			public Object generateCell(Table source, Object itemId, Object columnId) {
@@ -226,7 +223,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		this.tblMembers = new Table();
 		this.tblMembers.setImmediate(true);
 
-		this.inheritedRoles = this.getRolesForProjectMembers();
+		List<Role> inheritedRoles = this.getRolesForProjectMembers();
 
 		List<Role> roleList = new ArrayList<Role>();
 		try {
@@ -255,7 +252,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		for (Role role : roleList) {
 			columnIds.add("role_" + role.getRoleId());
 			columnHeaders.add(role.getName());
-			if (this.inheritedRoles.contains(role)) {
+			if (inheritedRoles.contains(role)) {
 				container.addContainerProperty("role_" + role.getRoleId(), Boolean.class, Boolean.TRUE);
 			} else {
 				container.addContainerProperty("role_" + role.getRoleId(), Boolean.class, Boolean.FALSE);
