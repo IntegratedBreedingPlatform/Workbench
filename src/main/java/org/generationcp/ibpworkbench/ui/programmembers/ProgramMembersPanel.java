@@ -447,53 +447,6 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		return true; // members not required, so even if there are no values, this returns true
 	}
 
-	/**
-	 * Used to set the inherited roles from the Breeding Workflows tab when edits are made after values are set in this tab.
-	 * 
-	 */
-	public void setInheritedRoles() {
-		this.inheritedRoles = this.getRolesForProjectMembers();
-
-		if (this.tblMembers != null) {
-
-			Container container = this.tblMembers.getContainerDataSource();
-			Collection<User> userList = (Collection<User>) container.getItemIds();
-
-			for (User user : userList) {
-				Item item = container.getItem(user);
-
-				List<Role> roleList = null;
-				try {
-					roleList = this.workbenchDataManager.getAllRoles();
-				} catch (MiddlewareQueryException e) {
-					ProgramMembersPanel.LOG.error("Error encountered while getting workbench roles", e);
-					throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
-				}
-
-				// Reset old values
-				for (Role role : roleList) {
-					String propertyId = "role_" + role.getRoleId();
-					Property property = item.getItemProperty(propertyId);
-					if (property.getType() == Boolean.class) {
-						property.setValue(Boolean.FALSE);
-					}
-				}
-
-				// Set checked boxes based on inherited roles
-				for (Role inheritedRole : this.inheritedRoles) {
-					String propertyId = "role_" + inheritedRole.getRoleId();
-					Property property = item.getItemProperty(propertyId);
-					if (property.getType() == Boolean.class) {
-						property.setValue(Boolean.TRUE);
-					}
-
-				}
-			}
-
-		}
-		this.requestRepaintAll();
-	}
-
 	public void setInheritedRoles(Item currentItem, List<Role> myinheritedRoles) {
 
 		if (this.tblMembers != null) {
