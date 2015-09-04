@@ -42,12 +42,7 @@ import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.validator.AbstractValidator;
 import com.vaadin.data.validator.StringLengthValidator;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 
 /**
  * The first tab (Basic Details) in Create Project Accordion Component.
@@ -210,32 +205,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 	}
 
 	protected void initializeLayoutForUpdate() {
-		CropType selectedCropType = this.sessionData.getSelectedProject().getCropType();
-
-		Boolean isCustomCrop = true;
-		for (CropType.CropEnum crop : CropType.CropEnum.values()) {
-			if (crop.toString().equalsIgnoreCase(selectedCropType.getCropName())) {
-				isCustomCrop = false;
-				break;
-			}
-		}
-
-		if (isCustomCrop) {
-
-			CropType genericCropType = new CropType();
-			genericCropType.setDbName("generic");
-			genericCropType.setCropName(ProjectBasicDetailsComponent.GENERIC_CROP_DESCRIPTION);
-			this.cropTypeCombo.addItem(genericCropType);
-			this.cropTypeCombo.setValue(genericCropType);
-
-			this.lblOtherCrop.setVisible(true);
-			this.otherCropNameField.setVisible(true);
-			this.otherCropNameField.setEnabled(false);
-			this.otherCropNameField.setRequired(false);
-			this.otherCropNameField.removeAllValidators();
-			this.otherCropNameField.setValue(selectedCropType.getCropName());
-		}
-
 		this.disableCropTypeCombo();
 
 	}
