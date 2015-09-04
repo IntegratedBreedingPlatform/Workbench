@@ -10,7 +10,6 @@ import java.util.Map.Entry;
 import java.util.Scanner;
 
 import org.generationcp.commons.exceptions.BreedingViewImportException;
-import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.service.BreedingViewImportService;
 import org.generationcp.commons.service.impl.BreedingViewImportServiceImpl;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -57,9 +56,6 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
-
-	@Autowired
-	private ManagerFactoryProvider managerFactoryProvider;
 
 	@Autowired
 	private StudyDataManager studyDataManager;
@@ -120,13 +116,11 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 			return;
 		}
 
-		if (!bmsInformation.isEmpty()) {
-			if (!bmsInformation.get("WorkbenchProjectId").equals(this.project.getProjectId().toString())
-					|| !bmsInformation.get("StudyId").equals(String.valueOf(this.studyId))) {
-				this.showError(this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_HEADER),
-						"The selected output zip file is not compatible for this study");
-				return;
-			}
+		if (!bmsInformation.isEmpty() && !bmsInformation.get("WorkbenchProjectId").equals(this.project.getProjectId().toString())
+				|| !bmsInformation.get("StudyId").equals(String.valueOf(this.studyId))) {
+			this.showError(this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_HEADER),
+					"The selected output zip file is not compatible for this study");
+			return;
 		}
 
 		if (this.meansFile != null) {

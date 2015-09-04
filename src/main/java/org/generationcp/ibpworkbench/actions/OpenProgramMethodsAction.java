@@ -102,14 +102,14 @@ public class OpenProgramMethodsAction implements WorkflowConstants, ClickListene
 					// only log activity if there's a user
 					Project currentProject = this.sessionData.getLastOpenedProject();
 					ProjectActivity projAct =
-							new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject,
+							new ProjectActivity(currentProject.getProjectId().intValue(), currentProject,
 									this.messageSource.getMessage(Message.PROJECT_METHODS_LINK), this.messageSource.getMessage(
 											Message.LAUNCHED_APP, this.messageSource.getMessage(Message.PROJECT_METHODS_LINK)), this.user,
 									new Date());
 					this.workbenchDataManager.addProjectActivity(projAct);
 				} catch (MiddlewareQueryException e1) {
 					MessageNotifier.showError(window, "Database Error", "<br />" + "Please see error logs");
-					return;
+					LOG.error(e1.getMessage(),e1);
 				}
 
 			}

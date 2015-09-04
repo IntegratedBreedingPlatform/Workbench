@@ -39,7 +39,7 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 	 */
 	private static final long serialVersionUID = 7008891907589673916L;
 
-	protected static final Logger LOG = LoggerFactory.getLogger(RestoreIBDBSaveAction.class);
+	private static final Logger LOG = LoggerFactory.getLogger(RestoreIBDBSaveAction.class);
 
 	protected Window sourceWindow;
 	private ProjectBackup pb;
@@ -80,14 +80,14 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 		this.project = project;
 	}
 
-	public void setProjectBackup(ProjectBackup pb) {
-		this.pb = pb;
-	}
-
 	public RestoreIBDBSaveAction(Project project, ProjectBackup pb, Window sourceWindow) {
 		this.pb = pb;
 		this.sourceWindow = sourceWindow;
 		this.project = project;
+	}
+
+	public void setProjectBackup(ProjectBackup pb) {
+		this.pb = pb;
 	}
 
 	public void setSourceWindow(Window sourceWindow) {

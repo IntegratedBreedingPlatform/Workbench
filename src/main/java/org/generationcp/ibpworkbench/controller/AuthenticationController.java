@@ -174,7 +174,7 @@ public class AuthenticationController {
 			isSuccess = HttpStatus.OK;
 			out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
 
-		} catch (MiddlewareQueryException | MessagingException e) {
+		} catch (MessagingException | RuntimeException e) {
 			out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
 			out.put(AuthenticationController.ERRORS, e.getMessage());
 

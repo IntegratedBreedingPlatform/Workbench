@@ -106,9 +106,9 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
 				contentFrame.showContent(url);
 			}
 		} catch (AppLaunchException e) {
-
 			MessageNotifier.showError(window, this.messageSource.getMessage(Message.LAUNCH_TOOL_ERROR),
 					"<br />" + this.messageSource.getMessage(e.getMessage(), (Object[]) e.getParams()));
+			LOG.error(e.getMessage(),e);
 		}
 	}
 

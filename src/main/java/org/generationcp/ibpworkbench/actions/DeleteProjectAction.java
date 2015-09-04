@@ -112,7 +112,7 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 		}
 	}
 
-	protected void deleteProgram(SessionData sessionData) throws MiddlewareQueryException {
+	protected void deleteProgram(SessionData sessionData) {
 		// soft delete
 		this.deleteAllProgramStudies();
 		//hard delete
@@ -129,12 +129,12 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 		sessionData.setSelectedProject(this.manager.getLastOpenedProject(sessionData.getUserData().getUserid()));
 	}
 
-	protected void deleteAllProgramLocationsAndMethods() throws MiddlewareQueryException {
+	protected void deleteAllProgramLocationsAndMethods() {
 		locationDataManager.deleteProgramLocationsByUniqueId(this.currentProject.getUniqueID());
 		germplasmDataManager.deleteProgramMethodsByUniqueId(this.currentProject.getUniqueID());
 	}
 
-	protected void deleteAllProgramFavorites() throws MiddlewareQueryException {
+	protected void deleteAllProgramFavorites() {
 		List<ProgramFavorite> favoriteLocations =
 				germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, this.currentProject.getUniqueID());
 		List<ProgramFavorite> favoriteMethods =
@@ -144,11 +144,11 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 
 	}
 	
-	protected void deleteAllProgramStudies() throws MiddlewareQueryException {
+	protected void deleteAllProgramStudies() {
 		this.studyDataManager.deleteProgramStudies(this.currentProject.getUniqueID());
 	}
 
-	protected void deleteAllProgramLists() throws MiddlewareQueryException {
+	protected void deleteAllProgramLists() {
 		this.germplasmListManager.deleteGermplasmListsByProgram(this.currentProject.getUniqueID());
 	}
 	

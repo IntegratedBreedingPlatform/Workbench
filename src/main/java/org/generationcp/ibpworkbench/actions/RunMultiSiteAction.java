@@ -147,7 +147,7 @@ public class RunMultiSiteAction implements ClickListener {
 
 			DataSet trialDataSet;
 			List<DataSet> dataSets = this.studyDataManager.getDataSetsByType(study.getId(), DataSetType.SUMMARY_DATA);
-			if (dataSets.size() > 0) {
+			if (!dataSets.isEmpty()) {
 				trialDataSet = dataSets.get(0);
 			} else {
 				trialDataSet = DatasetUtil.getTrialDataSet(this.studyDataManager, study.getId());
@@ -160,7 +160,7 @@ public class RunMultiSiteAction implements ClickListener {
 			gxeInput.setSourceCSVSummaryStatsFilePath(summaryStatsFile.getAbsolutePath());
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage(),e);
 		}
 
 		gxeInput.setSourceCSVFilePath(datasetExportFile.getAbsolutePath());

@@ -24,7 +24,6 @@ import org.generationcp.ibpworkbench.ui.workflow.MabcWorkflowDiagram;
 import org.generationcp.ibpworkbench.ui.workflow.ManagerWorkflowDiagram;
 import org.generationcp.ibpworkbench.ui.workflow.MarsWorkflowDiagram;
 import org.generationcp.ibpworkbench.ui.workflow.MasWorkflowDiagram;
-import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -57,12 +56,10 @@ public class OpenWorkflowForRoleAction implements ItemClickListener, ClickListen
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	@Autowired
-	private ToolUtil toolUtil;
-
 	protected Project project;
 
 	public OpenWorkflowForRoleAction() {
+		// do nothing
 	}
 
 	public OpenWorkflowForRoleAction(Project project) {
@@ -92,9 +89,6 @@ public class OpenWorkflowForRoleAction implements ItemClickListener, ClickListen
 		IContentWindow contentWindow = (IContentWindow) window;
 
 		this.showWorkflowDashboard(this.project, role, contentWindow);
-
-		String url = String.format("/OpenProjectWorkflowForRole?projectId=%d&roleId=%d", this.project.getProjectId(), role.getRoleId());
-		String workflowName = role.getLabel();
 	}
 
 	@Override
@@ -129,7 +123,6 @@ public class OpenWorkflowForRoleAction implements ItemClickListener, ClickListen
 					"<br />" + this.messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
 		}
 
-		String workflowName = role.getLabel();
 	}
 
 	protected void showWorkflowDashboard(Project project, Role role, IContentWindow contentWindow) {

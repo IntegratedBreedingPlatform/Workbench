@@ -16,7 +16,6 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
-import org.generationcp.middleware.pojos.workbench.ProjectBackup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -38,7 +37,6 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.Clic
 
 	private static final Logger LOG = LoggerFactory.getLogger(BackupIBDBSaveAction.class);
 
-	private static final String BACKUP_DIR = "backup";
 
 	private final Window sourceWindow;
 
@@ -47,8 +45,6 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.Clic
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
-
-	private ProjectBackup projectBackup;
 
 	@Autowired
 	private BackupIBDBService backupIBDBService;
@@ -107,6 +103,7 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.Clic
 						return ds;
 
 					} catch (FileNotFoundException e) {
+						LOG.info(e.getMessage(),e);
 						// No logging for non-existing files at this level.
 						return null;
 					}
@@ -116,7 +113,7 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.Clic
 			this.sourceWindow.getApplication().getMainWindow().open(fr);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage(),e);
 			MessageNotifier.showMessage(this.sourceWindow, this.messageSource.getMessage(Message.BACKUP_IBDB_CANNOT_PERFORM_OPERATION),
 					e.getMessage());
 
@@ -125,7 +122,7 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.Clic
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-
+		// do nothing
 	}
 
 	@Override
