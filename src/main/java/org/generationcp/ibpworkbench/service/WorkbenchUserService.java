@@ -12,6 +12,7 @@ import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -109,10 +110,6 @@ public class WorkbenchUserService {
 		return passwordEncoder.matches(userAccount.getPassword(), user.getPassword());
 	}
 
-	public boolean isPasswordEqualToUsername(User user) {
-		return passwordEncoder.matches(user.getName(), user.getPassword());
-	}
-
 	/**
 	 * Retrieves User obj including the Person object information
 	 * 
@@ -143,6 +140,10 @@ public class WorkbenchUserService {
 
 		return user;
 
+	}
+
+	public Integer addProjectActivity(ProjectActivity projectActivity) throws MiddlewareQueryException {
+		return this.workbenchDataManager.addProjectActivity(projectActivity);
 	}
 
 	private Person createPerson(UserAccountModel userAccount){

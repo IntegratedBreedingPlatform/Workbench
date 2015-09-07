@@ -72,6 +72,8 @@ public class GermplasmListPreviewPresenterTest {
 
 	private final int LIST_ID_WITH_NO_PARENT = 2, LIST_ID_WITH_PARENT = 3, LIST_ID_NOT_A_FOLDER = 4, LIST_ID_A_FOLDER = 5;
 
+	private static final String PROGRAM_UUID = "1234567";
+
 	@InjectMocks
 	private final GermplasmListPreviewPresenter presenter = new GermplasmListPreviewPresenter();
 
@@ -85,11 +87,12 @@ public class GermplasmListPreviewPresenterTest {
 		Mockito.when(this.sessionData.getSelectedProject()).thenReturn(this.project);
 		Mockito.when(this.user.getUserid()).thenReturn(this.USER_ID);
 		Mockito.when(this.project.getProjectId()).thenReturn(this.PROJECT_ID);
+		Mockito.when(this.project.getUniqueID()).thenReturn(this.PROGRAM_UUID);
 
 		// this two conditions setups a successful checkIfUnique() from presenter
-		Mockito.when(
-				this.germplasmListManager.getGermplasmListByName(GermplasmListPreviewPresenterTest.SAMPLE_VALID_FOLDER_NAME, 0, 1, null))
-				.thenReturn(null);
+		Mockito.when(this.germplasmListManager.getGermplasmListByName(GermplasmListPreviewPresenterTest.SAMPLE_VALID_FOLDER_NAME,
+				PROGRAM_UUID, 0, 1, null))
+		.thenReturn(null);
 
 		Mockito.when(this.germplasmListManager.getGermplasmListById(this.LIST_ID_WITH_NO_PARENT)).thenReturn(null);
 		Mockito.when(this.germplasmListManager.getGermplasmListById(this.LIST_ID_WITH_PARENT)).thenReturn(this.germplasmListWithParent);
@@ -158,7 +161,7 @@ public class GermplasmListPreviewPresenterTest {
 						GermplasmListPreviewPresenter.FOLDER, this.USER_ID, GermplasmListPreviewPresenterTest.SAMPLE_VALID_FOLDER_NAME,
 						this.germplasmListWithParent.getParent(), 0);
 		newListWithParent.setDescription("(NEW FOLDER) " + GermplasmListPreviewPresenterTest.SAMPLE_VALID_FOLDER_NAME);
-
+		newListWithParent.setProgramUUID(PROGRAM_UUID);
 		this.presenter.addGermplasmListFolder(GermplasmListPreviewPresenterTest.SAMPLE_VALID_FOLDER_NAME, this.LIST_ID_WITH_PARENT);
 		Mockito.verify(this.germplasmListManager).addGermplasmList(newListWithParent);
 	}
