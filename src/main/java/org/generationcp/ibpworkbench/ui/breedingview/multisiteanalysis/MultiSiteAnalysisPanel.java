@@ -18,7 +18,6 @@ import java.util.Map;
 
 import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.help.document.HelpModule;
-import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -75,9 +74,6 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 
 	@Autowired
 	private StudyDataManager studyDataManager;
-
-	@Autowired
-	private ManagerFactoryProvider managerFactoryProvider;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -276,9 +272,7 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 			}
 
 		} catch (NumberFormatException e) {
-
-			e.printStackTrace();
-
+			LOG.error(e.getMessage(),e);
 		}
 
 		this.requestRepaintAll();

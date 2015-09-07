@@ -26,7 +26,7 @@ public class GxeCheckBoxGroupListener implements ValueChangeListener {
 	public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
 		// TODO Auto-generated method stub
 
-		if (this.source.getCaption().equalsIgnoreCase("All rows")) {
+		if ("All rows".equalsIgnoreCase(this.source.getCaption())) {
 			Collection<?> items = this.table.getContainerDataSource().getItemIds();
 			for (Iterator<?> myitems = items.iterator(); myitems.hasNext();) {
 
@@ -34,18 +34,13 @@ public class GxeCheckBoxGroupListener implements ValueChangeListener {
 				Item item = this.table.getContainerDataSource().getItem(key);
 
 				if (key > 1) {
-					try {
-						GxeCheckBoxGroup ba = (GxeCheckBoxGroup) item.getItemProperty(" ").getValue();
-						ba.setValue((Boolean) event.getProperty().getValue());
-					} catch (Exception e) {
-
-					}
-
+					GxeCheckBoxGroup ba = (GxeCheckBoxGroup) item.getItemProperty(" ").getValue();
+					ba.setValue((Boolean) event.getProperty().getValue());
 				}
 
 			}
 
-		} else if (this.source.getCaption().equalsIgnoreCase("All columns")) {
+		} else if ("All columns".equalsIgnoreCase(this.source.getCaption())) {
 
 			Collection<?> cols = this.table.getContainerDataSource().getItem(1).getItemPropertyIds();
 
@@ -57,7 +52,7 @@ public class GxeCheckBoxGroupListener implements ValueChangeListener {
 				}
 
 			}
-		} else if (this.source.getCaption().equals(" ")) {
+		} else if (" ".equals(this.source.getCaption())) {
 
 			((GxeCheckBoxGroup) this.source.getParent()).setValue((Boolean) event.getProperty().getValue());
 

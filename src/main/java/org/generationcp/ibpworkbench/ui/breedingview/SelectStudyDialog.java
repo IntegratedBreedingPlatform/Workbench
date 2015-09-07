@@ -104,7 +104,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 
 	protected Label lblStudyTreeDetailDescription;
 
-	private final Project currentProject;
+	private Project currentProject;
 
 	public SelectStudyDialog(Window parentWindow, Component source, Project currentProject) {
 		this.parentWindow = parentWindow;
@@ -426,14 +426,16 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 
 	private boolean hasChildStudy(int folderId) {
 
-		List<Reference> children = new ArrayList<Reference>();
+		List<Reference> children;
 
 		try {
 			children = this.getStudyDataManager().getChildrenOfFolder(folderId, this.currentProject.getUniqueID());
 		} catch (MiddlewareQueryException e) {
 			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
 					this.messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
-			children = new ArrayList<Reference>();
+			children = new ArrayList<>();
+
+			LOG.warn(e.getMessage(),e);
 		}
 		return !children.isEmpty();
 	}

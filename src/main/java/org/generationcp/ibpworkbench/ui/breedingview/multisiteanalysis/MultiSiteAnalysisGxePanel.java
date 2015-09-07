@@ -19,20 +19,17 @@ import java.util.Map.Entry;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.IBPWorkbenchLayout;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.RunMultiSiteAction;
-import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.ibpworkbench.util.bean.MultiSiteParameters;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -86,15 +83,6 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 
 	@Value("${workbench.is.server.app}")
 	private String isServerApp;
-
-	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
-
-	@Autowired
-	private ToolUtil toolUtil;
-
-	@Autowired
-	private ManagerFactoryProvider managerFactoryProvider;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -264,9 +252,7 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				Boolean val = (Boolean) event.getProperty().getValue();
-
-				if (val == false) {
+				if (!(Boolean) event.getProperty().getValue()) {
 					MultiSiteAnalysisGxePanel.this.chkSelectAllTraits
 							.removeListener(MultiSiteAnalysisGxePanel.this.selectAllTraitsListener);
 					MultiSiteAnalysisGxePanel.this.chkSelectAllTraits.setValue(false);

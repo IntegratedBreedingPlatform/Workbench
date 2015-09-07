@@ -6,11 +6,9 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.constant.ListTreeState;
-import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.UserProgramStateDataManager;
 import org.generationcp.middleware.pojos.dms.DmsProject;
 import org.slf4j.Logger;
@@ -27,9 +25,6 @@ import com.vaadin.ui.TreeTable;
 public class BreedingViewTreeTable extends TreeTable {
     private static final Logger LOG = LoggerFactory.getLogger(BreedingViewTreeTable.class);
     private Map<Integer, FolderReference> nodeMap;
-
-    @Autowired
-    private ManagerFactoryProvider provider;
 
     @Autowired
     private SessionData sessionData;

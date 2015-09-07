@@ -5,13 +5,11 @@ import java.util.Collection;
 import java.util.List;
 
 import org.generationcp.commons.constant.ListTreeState;
-import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.domain.dms.StudyReference;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.UserProgramStateDataManager;
 import org.generationcp.middleware.pojos.dms.DmsProject;
 import org.slf4j.Logger;
@@ -28,9 +26,6 @@ import com.vaadin.ui.Window;
 public class SaveBreedingViewStudyTreeState implements Window.CloseListener {
     private static final Logger LOG = LoggerFactory.getLogger(SaveBreedingViewStudyTreeState.class);
     private BreedingViewTreeTable treeTable;
-
-    @Autowired
-    private ManagerFactoryProvider provider;
 
     @Autowired
     private SessionData sessionData;

@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
@@ -34,6 +36,8 @@ import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -59,6 +63,8 @@ import com.vaadin.ui.VerticalLayout;
 public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements InitializingBean, InternationalizableComponent {
 
 	private static final long serialVersionUID = 1L;
+	private static final Logger LOG = LoggerFactory.getLogger(MetaAnalysisSelectTraitsPanel.class);
+
 	private final List<MetaEnvironmentModel> metaEnvironments;
 	private Map<Integer, DataSet> dataSets;
 	private Map<Integer, TrialEnvironments> trialEnvironmentsList;
@@ -210,8 +216,8 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 		this.factorsAnalysisTable.setWidth("100%");
 		this.factorsAnalysisTable.setColumnCollapsingAllowed(true);
 
-		this.dataSets = new HashMap<Integer, DataSet>();
-		this.trialEnvironmentsList = new HashMap<Integer, TrialEnvironments>();
+		this.dataSets = new HashMap<>();
+		this.trialEnvironmentsList = new HashMap<>();
 
 		ColumnGenerator generatedVariateColumn = new ColumnGenerator() {
 
@@ -229,30 +235,22 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 					return "0";
 				}
 
-				try {
-
-					if (item.getDataSetTypeId() == DataSetType.MEANS_DATA.getId()) {
-						countData =
-								String.valueOf(studyDataManager.countStocks(
-										item.getDataSetId(),
-										MetaAnalysisSelectTraitsPanel.this.trialEnvironmentsList.get(item.getDataSetId())
-												.findOnlyOneByLocalName(item.getTrialFactorName(), item.getTrial()).getId(),
-										varType.getId()));
-					} else {
-						countData =
-								String.valueOf(studyDataManager.countStocks(
-										item.getDataSetId(),
-										MetaAnalysisSelectTraitsPanel.this.trialEnvironmentsList.get(item.getDataSetId())
-												.findOnlyOneByLocalName(item.getTrialFactorName(), item.getTrial()).getId(),
-										varType.getId()));
-					}
-
-				} catch (MiddlewareQueryException e) {
-
-					e.printStackTrace();
-				} catch (Exception e) {
-					e.printStackTrace();
+				if (item.getDataSetTypeId() == DataSetType.MEANS_DATA.getId()) {
+					countData =
+							String.valueOf(studyDataManager.countStocks(
+									item.getDataSetId(),
+									MetaAnalysisSelectTraitsPanel.this.trialEnvironmentsList.get(item.getDataSetId())
+											.findOnlyOneByLocalName(item.getTrialFactorName(), item.getTrial()).getId(),
+									varType.getId()));
+				} else {
+					countData =
+							String.valueOf(studyDataManager.countStocks(
+									item.getDataSetId(),
+									MetaAnalysisSelectTraitsPanel.this.trialEnvironmentsList.get(item.getDataSetId())
+											.findOnlyOneByLocalName(item.getTrialFactorName(), item.getTrial()).getId(),
+									varType.getId()));
 				}
+
 
 				return countData;
 			}
@@ -289,7 +287,7 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 				Boolean val = (Boolean) event.getProperty().getValue();
 				CheckBox chk = (CheckBox) event.getProperty();
 				((MetaEnvironmentModel) chk.getData()).setActive(val);
-				if (val == false) {
+				if (!val) {
 					MetaAnalysisSelectTraitsPanel.this.chkSelectAllEnvironments
 							.removeListener(MetaAnalysisSelectTraitsPanel.this.selectAllEnvironmentsListener);
 					MetaAnalysisSelectTraitsPanel.this.chkSelectAllEnvironments.setValue(false);
@@ -319,52 +317,37 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 			}
 		});
 
-		HashSet<String> variatesColumnList = new HashSet<String>();
-		HashMap<String, Boolean> factorsColumnList = new HashMap<String, Boolean>();
+		Set<String> variatesColumnList = new HashSet<>();
+		Map<String, Boolean> factorsColumnList = new HashMap<>();
 		for (MetaEnvironmentModel metaEnvironment : this.metaEnvironments) {
 			if (this.dataSets.get(metaEnvironment.getDataSetId()) == null) {
-				try {
-					DataSet ds;
-					TrialEnvironments envs;
-					ds = studyDataManager.getDataSet(metaEnvironment.getDataSetId());
-					envs = studyDataManager.getTrialEnvironmentsInDataset(ds.getId());
-					this.dataSets.put(metaEnvironment.getDataSetId(), ds);
-					this.trialEnvironmentsList.put(metaEnvironment.getDataSetId(), envs);
+				DataSet ds;
+				TrialEnvironments envs;
+				ds = studyDataManager.getDataSet(metaEnvironment.getDataSetId());
+				envs = studyDataManager.getTrialEnvironmentsInDataset(ds.getId());
+				this.dataSets.put(metaEnvironment.getDataSetId(), ds);
+				this.trialEnvironmentsList.put(metaEnvironment.getDataSetId(), envs);
 
-					for (VariableType v : ds.getVariableTypes().getVariates().getVariableTypes()) {
-						try {
-							this.environmentsTable.addGeneratedColumn(v.getLocalName(), generatedVariateColumn);
-							variatesColumnList.add(v.getLocalName());
-						} catch (Exception e) {
-						}
-					}
-
-					for (VariableType f : ds.getVariableTypes().getFactors().getVariableTypes()) {
-						if (f.getStandardVariable().getPhenotypicType() == PhenotypicType.DATASET) {
-							continue;
-						}
-
-						Boolean isGidOrDesig = false;
-
-						if (f.getStandardVariable().getStoredIn().getId() == TermId.ENTRY_DESIGNATION_STORAGE.getId()
-								|| f.getStandardVariable().getStoredIn().getId() == TermId.ENTRY_GID_STORAGE.getId()) {
-							isGidOrDesig = true;
-						}
-
-						try {
-							this.factorsAnalysisTable.addGeneratedColumn(f.getLocalName(), generatedFactorColumn);
-							factorsColumnList.put(f.getLocalName(), isGidOrDesig);
-						} catch (Exception e) {
-						}
-					}
-
-				} catch (MiddlewareQueryException e) {
-
-					e.printStackTrace();
+				for (VariableType v : ds.getVariableTypes().getVariates().getVariableTypes()) {
+					this.environmentsTable.addGeneratedColumn(v.getLocalName(), generatedVariateColumn);
+					variatesColumnList.add(v.getLocalName());
 				}
 
-			} else {
-				continue;
+				for (VariableType f : ds.getVariableTypes().getFactors().getVariableTypes()) {
+					if (f.getStandardVariable().getPhenotypicType() == PhenotypicType.DATASET) {
+						continue;
+					}
+
+					Boolean isGidOrDesig = false;
+
+					if (f.getStandardVariable().getStoredIn().getId() == TermId.ENTRY_DESIGNATION_STORAGE.getId()
+							|| f.getStandardVariable().getStoredIn().getId() == TermId.ENTRY_GID_STORAGE.getId()) {
+						isGidOrDesig = true;
+					}
+
+					this.factorsAnalysisTable.addGeneratedColumn(f.getLocalName(), generatedFactorColumn);
+					factorsColumnList.put(f.getLocalName(), isGidOrDesig);
+				}
 			}
 		}
 
@@ -425,7 +408,7 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 				Boolean val = (Boolean) event.getProperty().getValue();
 				CheckBox chk = (CheckBox) event.getProperty();
 				MetaAnalysisSelectTraitsPanel.this.variatesCheckBoxState.put(chk.getData().toString(), val);
-				if (val == false) {
+				if (!val) {
 					MetaAnalysisSelectTraitsPanel.this.chkSelectAllVariates
 							.removeListener(MetaAnalysisSelectTraitsPanel.this.selectAllTraitsListener);
 					MetaAnalysisSelectTraitsPanel.this.chkSelectAllVariates.setValue(false);
@@ -492,7 +475,8 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 			fCheckBoxes.add(factorCheckBox);
 			this.factorsCheckBoxState.put(s.getKey(), false);
 
-			if (s.getValue()) {// GID and DESIG factors are required
+			// GID and DESIG factors are required
+			if (s.getValue()) {
 				factorCheckBox.setValue(true);
 				factorCheckBox.setCaption("Required");
 				factorCheckBox.setStyleName("gcp-required-caption");
@@ -608,8 +592,8 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				if (MetaAnalysisSelectTraitsPanel.this.variatesCheckBoxState.size() == 0
-						|| MetaAnalysisSelectTraitsPanel.this.factorsCheckBoxState.size() == 0
+				if (MetaAnalysisSelectTraitsPanel.this.variatesCheckBoxState.isEmpty()
+						|| MetaAnalysisSelectTraitsPanel.this.factorsCheckBoxState.isEmpty()
 
 				) {
 					return;
@@ -690,17 +674,18 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 
 					for (Experiment exp : exps) {
 
+						// if header Row Created
 						if (!headerRowCreated) {
 
 							headerRow.createCell(cellCounter++).setCellValue("STUDYNAME");
 							headerRow.createCell(cellCounter++).setCellValue("TRIALID");
 							headerRow.createCell(cellCounter++).setCellValue("ENTRYID");
-							if (desigFactorName != "") {
+							if ("".equals(desigFactorName)) {
 								headerRow.createCell(cellCounter++).setCellValue(desigFactorName);
 							} else {
 								headerRow.createCell(cellCounter++).setCellValue("DESIG");
 							}
-							if (gidFactorName != "") {
+							if ("".equals(gidFactorName)) {
 								headerRow.createCell(cellCounter++).setCellValue(gidFactorName);
 							} else {
 								headerRow.createCell(cellCounter++).setCellValue("GID");
@@ -724,7 +709,7 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 							}
 
 							headerRowCreated = true;
-						}// if header Row Created
+						}
 
 						Variable trialVariable = exp.getFactors().findByLocalName(envModel.getTrialFactorName());
 						if (trialVariable == null) {
@@ -789,8 +774,7 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 
 					}
 				} catch (MiddlewareQueryException e) {
-
-					e.printStackTrace();
+					LOG.error(e.getMessage(),e);
 				}
 
 			}
@@ -808,8 +792,8 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 			fos.close();
 			return xlsFile.getAbsoluteFile();
 
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (IOException e) {
+			LOG.error(e.getMessage(),e);
 
 			return null;
 		}

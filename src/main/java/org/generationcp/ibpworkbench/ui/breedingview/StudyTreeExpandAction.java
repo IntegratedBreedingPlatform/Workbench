@@ -32,6 +32,8 @@ public class StudyTreeExpandAction implements Tree.ExpandListener {
 		} catch (InternationalizableException e) {
 			StudyTreeExpandAction.LOG.error(e.toString() + "\n" + e.getStackTrace());
 			MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
+
+			LOG.warn(e.getMessage(),e);
 		}
 
 	}
