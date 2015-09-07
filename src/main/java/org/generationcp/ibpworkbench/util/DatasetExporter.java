@@ -11,11 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
-
-import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.util.ObjectUtil;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.Experiment;
@@ -25,10 +21,8 @@ import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.service.api.OntologyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -402,16 +396,12 @@ public class DatasetExporter {
 							if (value == null) {
 								value = "";
 							} else {
-								try {
-									List<ValueReference> possibleValues =
-											ontologyService.getDistinctStandardVariableValues(variateVariable.getVariableType()
-													.getStandardVariable().getId());
-									if (DatasetExporter.MISSING_VALUE_STRING.equals(value)
-											&& this.isCategoricalValueOutOfBounds(value, possibleValues)) {
-										value = "";
-									}
-								} catch (MiddlewareQueryException e) {
-									e.printStackTrace();
+								List<ValueReference> possibleValues =
+										ontologyService.getDistinctStandardVariableValues(variateVariable.getVariableType()
+												.getStandardVariable().getId());
+								if (DatasetExporter.MISSING_VALUE_STRING.equals(value)
+										&& this.isCategoricalValueOutOfBounds(value, possibleValues)) {
+									value = "";
 								}
 							}
 

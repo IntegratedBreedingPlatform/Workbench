@@ -3,6 +3,7 @@ package org.generationcp.ibpworkbench.util;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -186,7 +187,8 @@ public class GxeUtility {
 		try {
 
 			if (currentProject == null) {
-				throw new Exception("currentProject is null");
+				GxeUtility.LOG.warn("currentProject is null");
+				return null;
 			}
 
 			String dir =
@@ -205,8 +207,8 @@ public class GxeUtility {
 			csvWriter.close();
 
 			return csvFile;
-		} catch (Exception e) {
-			GxeUtility.LOG.debug(e.getMessage(), e);
+		} catch (IOException e) {
+			GxeUtility.LOG.warn(e.getMessage(), e);
 			return null;
 		}
 	}
@@ -262,33 +264,35 @@ public class GxeUtility {
 
 		}
 
+
+		if (currentProject == null) {
+			GxeUtility.LOG.warn("currentProject is null");
+			return null;
+		}
+
+		String dir =
+				"workspace" + File.separator + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator
+						+ "input";
+
+		GxeUtility.LOG.debug("save to " + dir);
+
+		new File(dir).mkdirs();
+
+		File csvFile = new File(dir + File.separator + trialDataSet.getName() + "_SummaryStats.csv");
+
+		CSVWriter csvWriter = null;
 		try {
-
-			if (currentProject == null) {
-				throw new Exception("currentProject is null");
-			}
-
-			String dir =
-					"workspace" + File.separator + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator
-							+ "input";
-
-			GxeUtility.LOG.debug("save to " + dir);
-
-			new File(dir).mkdirs();
-
-			File csvFile = new File(dir + File.separator + trialDataSet.getName() + "_SummaryStats.csv");
-
-			CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER, "\r\n");
+			csvWriter = new CSVWriter(new FileWriter(csvFile), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER, "\r\n");
 			csvWriter.writeAll(tableItems);
 			csvWriter.flush();
 			csvWriter.close();
 
 			return csvFile;
-		} catch (Exception e) {
-			GxeUtility.LOG.debug(e.getMessage(), e);
+
+		} catch (IOException e) {
+			GxeUtility.LOG.warn(e.getMessage(), e);
 			return null;
 		}
-
 	}
 
 }
