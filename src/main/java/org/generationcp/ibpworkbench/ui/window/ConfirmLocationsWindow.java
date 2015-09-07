@@ -31,6 +31,8 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Jeffrey Morales, Joyce Avestro
@@ -39,6 +41,7 @@ import com.vaadin.ui.themes.Reindeer;
 public class ConfirmLocationsWindow extends BaseSubWindow {
 
 	private static final long serialVersionUID = 3983198771242295731L;
+	private static final Logger LOG = LoggerFactory.getLogger(ConfirmLocationsWindow.class);
 
 	private Label confirmMessage;
 
@@ -125,8 +128,7 @@ public class ConfirmLocationsWindow extends BaseSubWindow {
 				container.addItem(l);
 			}
 		} catch (MiddlewareQueryException e) {
-
-			e.printStackTrace();
+			LOG.error(e.getMessage(),e);
 		}
 
 		this.locationsTable.setContainerDataSource(container);

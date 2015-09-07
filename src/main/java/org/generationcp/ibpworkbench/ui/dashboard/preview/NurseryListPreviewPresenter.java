@@ -18,7 +18,6 @@ import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.exceptions.UnpermittedDeletionException;
-import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.dms.DmsProject;
@@ -114,7 +113,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 		}
 	}
 
-	public void deleteNurseryListFolder(Integer id) throws MiddlewareQueryException, NurseryListPreviewException {
+	public void deleteNurseryListFolder(Integer id) throws NurseryListPreviewException {
 		Integer cropUserId =
 					this.manager.getCurrentIbdbUserId(this.sessionData.getSelectedProject().getProjectId(),
 						this.sessionData.getUserData().getUserid());

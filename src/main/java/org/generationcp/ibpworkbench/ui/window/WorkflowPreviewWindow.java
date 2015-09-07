@@ -103,11 +103,11 @@ public class WorkflowPreviewWindow extends BaseSubWindow implements Initializing
 	}
 
 	protected void initializeLayout() {
-
+		// do nothing
 	}
 
 	protected void initializeActions() {
-
+		// do nothing
 	}
 
 	protected void assemble() {
@@ -118,7 +118,6 @@ public class WorkflowPreviewWindow extends BaseSubWindow implements Initializing
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		// TODO Auto-generated method stub
 		this.assemble();
 	}
 }

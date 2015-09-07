@@ -37,10 +37,10 @@ public abstract class PropertyConverter<PC, FC> implements Property, Property.Va
 	private boolean invalidAllowed = true;
 
 	/** Internal list of registered value change listeners. */
-	private final LinkedList<ValueChangeListener> valueChangeListeners = new LinkedList<ValueChangeListener>();
+	private final List<ValueChangeListener> valueChangeListeners = new LinkedList<ValueChangeListener>();
 
 	/** Internal list of registered read-only status change listeners. */
-	private final LinkedList<Property.ReadOnlyStatusChangeListener> readOnlyStatusChangeListeners =
+	private final List<ReadOnlyStatusChangeListener> readOnlyStatusChangeListeners =
 			new LinkedList<ReadOnlyStatusChangeListener>();
 
 	/** Datasource that stores the actual value. */
@@ -209,8 +209,6 @@ public abstract class PropertyConverter<PC, FC> implements Property, Property.Va
 			if (convertedValue == null ? this.getValue() != null : !convertedValue.equals(this.getValue())) {
 				this.fireValueChange();
 			}
-		} catch (ConversionException e) {
-			throw e;// just re-throw as is
 		} catch (Exception e) {
 			throw new ConversionException(e);
 		}
@@ -372,7 +370,8 @@ public abstract class PropertyConverter<PC, FC> implements Property, Property.Va
 	@Override
 	public Collection<Validator> getValidators() {
 		if (this.validators == null || this.validators.isEmpty()) {
-			return Collections.emptySet();// caller friendly
+			// caller friendly
+			return Collections.emptySet();
 		}
 		return Collections.unmodifiableCollection(this.validators);
 	}
@@ -409,7 +408,7 @@ public abstract class PropertyConverter<PC, FC> implements Property, Property.Va
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public void validate() throws Validator.InvalidValueException {
+	public void validate() {
 		if (this.validators == null || this.dataSource == null) {
 			return;
 		}
@@ -419,7 +418,7 @@ public abstract class PropertyConverter<PC, FC> implements Property, Property.Va
 		}
 	}
 
-	public void validate(PC value) throws Validator.InvalidValueException {
+	public void validate(PC value) {
 		// If there is no validator, there can not be any errors
 		if (this.validators == null) {
 			return;

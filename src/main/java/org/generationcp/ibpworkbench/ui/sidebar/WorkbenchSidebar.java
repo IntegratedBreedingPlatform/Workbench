@@ -43,7 +43,7 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 	 */
 	private static final long serialVersionUID = 5744204745926145144L;
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchSidebar.class);
-	public static Map<String, TreeItem> sidebarTreeMap = new HashMap<>();
+	public static final Map<String, TreeItem> sidebarTreeMap = new HashMap<>();
 
 	@Autowired
 	private SessionData sessionData;
@@ -211,7 +211,7 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 		} else {
 			try {
 				List<Role> roles = this.presenter.getRoleByTemplateName(toolName);
-				if (roles.size() > 0) {
+				if (roles.isEmpty()) {
 					final Role role1 = roles.get(0);
 
 					return new OpenWorkflowForRoleAction(project) {
@@ -230,6 +230,7 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 				}
 			} catch (IndexOutOfBoundsException e) {
 				// IGNORE
+				LOG.info("ignored index out of bounds exception",e);
 			}
 		}
 

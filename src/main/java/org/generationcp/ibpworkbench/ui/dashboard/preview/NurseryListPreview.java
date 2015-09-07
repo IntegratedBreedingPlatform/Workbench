@@ -4,14 +4,12 @@ package org.generationcp.ibpworkbench.ui.dashboard.preview;
 import java.util.List;
 
 import org.generationcp.commons.constant.ToolEnum;
-import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.common.InputPopup;
@@ -67,13 +65,7 @@ public class NurseryListPreview extends VerticalLayout {
 	private final ThemeResource studyResource = new ThemeResource("../vaadin-retro/svg/study-icon.svg");
 
 	@Autowired
-	private ManagerFactoryProvider managerFactoryProvider;
-
-	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
-
-	@Autowired
-	private SessionData sessionData;
 
 	private HorizontalLayout toolbar;
 	private Button openStudyManagerBtn;
@@ -112,8 +104,7 @@ public class NurseryListPreview extends VerticalLayout {
 		this.project = project;
 
 		NurseryListPreview.NURSERIES_AND_TRIALS = this.messageSource.getMessage(Message.NURSERIES_AND_TRIALS);
-		this.presenter = new NurseryListPreviewPresenter(this, project);
-
+		this.presenter.setProject(project);
 		this.presenter.generateInitialTreeNodes();
 
 		CssLayout treeContainer = new CssLayout();
@@ -206,14 +197,6 @@ public class NurseryListPreview extends VerticalLayout {
 		this.presenter = presenter;
 	}
 
-	public ManagerFactoryProvider getManagerFactoryProvider() {
-		return this.managerFactoryProvider;
-	}
-
-	public void setManagerFactoryProvider(ManagerFactoryProvider managerFactoryProvider) {
-		this.managerFactoryProvider = managerFactoryProvider;
-	}
-
 	private Component buildToolbar() {
 		this.toolbar = new HorizontalLayout();
 		this.toolbar.setSpacing(true);
@@ -286,7 +269,6 @@ public class NurseryListPreview extends VerticalLayout {
 				NurseryListPreview.this.presenter.updateProjectLastOpenedDate();
 
 				// page change to list manager, with parameter passed
-				Project selectedProject = NurseryListPreview.this.sessionData.getSelectedProject();
 				Object value = NurseryListPreview.this.treeView.getValue();
 
 				// update sidebar selection

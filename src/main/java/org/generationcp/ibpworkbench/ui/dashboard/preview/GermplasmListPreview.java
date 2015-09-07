@@ -11,7 +11,6 @@ import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.common.InputPopup;
@@ -49,9 +48,6 @@ public class GermplasmListPreview extends VerticalLayout {
 	private static final Logger LOG = LoggerFactory.getLogger(GermplasmListPreview.class);
 
 	@Autowired
-	private SessionData sessionData;
-
-	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
@@ -69,7 +65,7 @@ public class GermplasmListPreview extends VerticalLayout {
 	private Panel panel;
 	private HorizontalLayout toolbar;
 
-	public static String LISTS = "";
+	private String LISTS = "";
 
 	private Button openListManagerBtn;
 	private Button addFolderBtn;
@@ -309,7 +305,7 @@ public class GermplasmListPreview extends VerticalLayout {
 						if (parent != null && !GermplasmListPreview.this.treeView.isExpanded(parent.getId())) {
 							GermplasmListPreview.this.expandTree(parent.getId());
 						} else {
-							GermplasmListPreview.this.treeView.expandItem(GermplasmListPreview.LISTS);
+							GermplasmListPreview.this.treeView.expandItem(GermplasmListPreview.this.LISTS);
 						}
 
 						GermplasmListPreview.this.treeView.select(newItem);
@@ -388,9 +384,9 @@ public class GermplasmListPreview extends VerticalLayout {
 										GermplasmListPreview.this.treeView.removeItem(GermplasmListPreview.this.lastItemId);
 										GermplasmListPreview.this.treeView.select(null);
 										if (parent == null) {
-											GermplasmListPreview.this.treeView.select(GermplasmListPreview.LISTS);
-											GermplasmListPreview.this.lastItemId = GermplasmListPreview.LISTS;
-											GermplasmListPreview.this.processToolbarButtons(GermplasmListPreview.LISTS);
+											GermplasmListPreview.this.treeView.select(GermplasmListPreview.this.LISTS);
+											GermplasmListPreview.this.lastItemId = GermplasmListPreview.this.LISTS;
+											GermplasmListPreview.this.processToolbarButtons(GermplasmListPreview.this.LISTS);
 										} else {
 											GermplasmListPreview.this.treeView.select(parent.getId());
 											GermplasmListPreview.this.lastItemId = parent.getId();
@@ -429,7 +425,7 @@ public class GermplasmListPreview extends VerticalLayout {
 	}
 
 	public void generateTree(List<GermplasmList> germplasmListParent) {
-		GermplasmListPreview.LISTS = this.messageSource.getMessage(Message.LISTS);
+		GermplasmListPreview.this.LISTS = this.messageSource.getMessage(Message.LISTS);
 
 		this.lastItemId = null;
 		this.treeView = new Tree();
@@ -437,16 +433,16 @@ public class GermplasmListPreview extends VerticalLayout {
 		this.treeView.setDropHandler(new GermplasmListTreeDropHandler(this.treeView, this.presenter));
 		this.treeView.setDragMode(TreeDragMode.NODE);
 
-		this.treeView.addItem(GermplasmListPreview.LISTS);
-		this.treeView.setItemCaption(GermplasmListPreview.LISTS, GermplasmListPreview.LISTS);
-		this.treeView.setItemIcon(GermplasmListPreview.LISTS, this.folderResource);
+		this.treeView.addItem(GermplasmListPreview.this.LISTS);
+		this.treeView.setItemCaption(GermplasmListPreview.this.LISTS, GermplasmListPreview.this.LISTS);
+		this.treeView.setItemIcon(GermplasmListPreview.this.LISTS, this.folderResource);
 
 		this.treeView.setNullSelectionAllowed(false);
 
 		for (GermplasmList parentList : germplasmListParent) {
 			this.treeView.addItem(parentList.getId());
 			this.treeView.setItemCaption(parentList.getId(), parentList.getName());
-			this.treeView.setParent(parentList.getId(), GermplasmListPreview.LISTS);
+			this.treeView.setParent(parentList.getId(), GermplasmListPreview.this.LISTS);
 			boolean hasChildList = this.getPresenter().hasChildList(parentList.getId());
 
 			this.treeView.setChildrenAllowed(parentList.getId(), hasChildList);
@@ -548,7 +544,7 @@ public class GermplasmListPreview extends VerticalLayout {
 	}
 
 	public void processToolbarButtons(Object treeItem) {
-		boolean isMyListNode = treeItem instanceof String && treeItem.equals(GermplasmListPreview.LISTS);
+		boolean isMyListNode = treeItem instanceof String && treeItem.equals(GermplasmListPreview.this.LISTS);
 		boolean isFolder = treeItem instanceof String || this.getPresenter().isFolder((Integer) treeItem);
 
 		// set the toolbar button state
@@ -582,5 +578,14 @@ public class GermplasmListPreview extends VerticalLayout {
 	public void setManagerFactoryProvider(ManagerFactoryProvider managerFactoryProvider) {
 		this.managerFactoryProvider = managerFactoryProvider;
 	}
+
+	public String getListLabel() {
+		return LISTS;
+	}
+
+	public void setListLabel(String listLabel) {
+		this.LISTS = listLabel;
+	}
+
 
 }

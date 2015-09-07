@@ -319,7 +319,7 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 					}
 				}
 
-				if (itemIdOver != null && (sourceItemIds.size() <= 0 || selectedItemIsDisabled)) {
+				if (itemIdOver != null && (sourceItemIds.isEmpty() || selectedItemIsDisabled)) {
 					if (((T) itemIdOver).isEnabled()) {
 						source.removeItem(itemIdOver);
 						target.addItem(itemIdOver);

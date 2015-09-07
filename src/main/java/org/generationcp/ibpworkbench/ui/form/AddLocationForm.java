@@ -62,7 +62,7 @@ public class AddLocationForm extends Form {
 	}
 
 	protected void initializeLayout() {
-
+		// do nothing
 	}
 
 	protected void initializeComponents() {

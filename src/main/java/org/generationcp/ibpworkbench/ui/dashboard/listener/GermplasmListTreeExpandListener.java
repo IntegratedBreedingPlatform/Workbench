@@ -41,11 +41,10 @@ public class GermplasmListTreeExpandListener implements Tree.ExpandListener {
 
 				((GermplasmListPreview) this.source).getPresenter().addGermplasmListNode(germplasmId, event.getItemId());
 			} catch (NumberFormatException e) {
-				GermplasmListTreeExpandListener.LOG.error("Click on the root");
+				GermplasmListTreeExpandListener.LOG.error("Click on the root",e);
 			} catch (InternationalizableException e) {
-				GermplasmListTreeExpandListener.LOG.error(e.toString() + "\n" + e.getStackTrace());
-				e.printStackTrace();
 				MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
+				GermplasmListTreeExpandListener.LOG.error(e.getMessage(),e);
 			}
 		}
 	}

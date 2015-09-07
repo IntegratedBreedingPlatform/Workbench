@@ -35,6 +35,8 @@ public class ServerFilePicker extends CustomField implements InitializingBean {
 	 *
 	 */
 	private static final long serialVersionUID = 7376447212907278979L;
+	private final static Logger LOG = LoggerFactory.getLogger(ServerFilePicker.class);
+
 	private HorizontalLayout root;
 	private TextField pathFld;
 	private Button browseBtn;
@@ -43,8 +45,6 @@ public class ServerFilePicker extends CustomField implements InitializingBean {
 	private FilesystemContainer fsContainer;
 	private TreeTable treetable;
 	private final Window parentWin;
-
-	private final static Logger LOG = LoggerFactory.getLogger(ServerFilePicker.class);
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -219,7 +219,7 @@ public class ServerFilePicker extends CustomField implements InitializingBean {
 	}
 
 	@Override
-	public void setValue(Object newValue) throws ReadOnlyException, ConversionException {
+	public void setValue(Object newValue) {
 		super.setValue(newValue);
 		this.pathFld.setValue(newValue);
 	}
@@ -253,20 +253,4 @@ public class ServerFilePicker extends CustomField implements InitializingBean {
 
 		return isEmpty;
 	}
-
-	@Override
-	public void validate() throws Validator.InvalidValueException {
-		super.validate();
-	}
-
-	@Override
-	public void setRequired(boolean required) {
-		super.setRequired(required);
-	}
-
-	@Override
-	public void setRequiredError(String requiredMessage) {
-		super.setRequiredError(requiredMessage);
-	}
-
 }
