@@ -16,18 +16,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.pojos.Country;
-import org.generationcp.middleware.pojos.Location;
-import org.generationcp.middleware.pojos.UserDefinedField;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanContainer;
@@ -39,6 +27,16 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.DefaultFieldFactory;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.TextField;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
+import org.generationcp.middleware.pojos.Country;
+import org.generationcp.middleware.pojos.Location;
+import org.generationcp.middleware.pojos.UserDefinedField;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * <b>Description</b>: Field factory for generating Location fields for Location class.
@@ -74,13 +72,8 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
 	private SimpleResourceBundleMessageSource messageSource;
 
 	public LocationFormFieldFactory(ProgramLocationsPresenter presenter) {
-
-		try {
-			this.initFields(presenter.getUDFByLocationAndLType(), presenter.getCountryList());
-			this.presenter = presenter;
-		} catch (MiddlewareQueryException e) {
-			e.printStackTrace();
-		}
+		this.initFields(presenter.getUDFByLocationAndLType(), presenter.getCountryList());
+		this.presenter = presenter;
 	}
 
 	@SuppressWarnings("serial")
@@ -169,15 +162,11 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
 				LocationFormFieldFactory.this.province.setValue(null);
 				Object countryIdValue = LocationFormFieldFactory.this.country.getValue();
 				if (countryIdValue != null) {
-					try {
-						@SuppressWarnings("unchecked")
-						BeanContainer<String, Location> container =
-								(BeanContainer<String, Location>) LocationFormFieldFactory.this.province.getContainerDataSource();
-						container.removeAllItems();
-						container.addAll(LocationFormFieldFactory.this.presenter.getAllProvincesByCountry((Integer) countryIdValue));
-					} catch (MiddlewareQueryException e) {
-						e.printStackTrace();
-					}
+					@SuppressWarnings("unchecked")
+					BeanContainer<String, Location> container =
+							(BeanContainer<String, Location>) LocationFormFieldFactory.this.province.getContainerDataSource();
+					container.removeAllItems();
+					container.addAll(LocationFormFieldFactory.this.presenter.getAllProvincesByCountry((Integer) countryIdValue));
 				}
 			}
 		});

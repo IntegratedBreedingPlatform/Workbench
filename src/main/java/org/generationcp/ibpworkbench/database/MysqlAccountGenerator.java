@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
 import javax.annotation.Resource;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
@@ -110,7 +109,7 @@ public class MysqlAccountGenerator implements Serializable {
 		return isGenerationSuccess;
 	}
 
-	private void createLocalConnection() throws InternationalizableException {
+	private void createLocalConnection() {
 
 		if (this.connection == null) {
 
@@ -122,6 +121,7 @@ public class MysqlAccountGenerator implements Serializable {
 					in = new FileInputStream(new File(ResourceFinder.locateFile(IBDBGenerator.WORKBENCH_PROP).toURI()));
 				} catch (IllegalArgumentException ex) {
 					in = Thread.currentThread().getContextClassLoader().getResourceAsStream(IBDBGenerator.WORKBENCH_PROP);
+					LOG.info(ex.getMessage(),ex);
 				}
 				prop.load(in);
 
@@ -130,16 +130,15 @@ public class MysqlAccountGenerator implements Serializable {
 				this.workbenchUsername = prop.getProperty(IBDBGenerator.WORKBENCH_PROP_USER);
 				this.workbenchPassword = prop.getProperty(IBDBGenerator.WORKBENCH_PROP_PASSWORD);
 				this.workbenchURL = "jdbc:mysql://" + this.workbenchHost + ":" + this.workbenchPort;
-			} catch (URISyntaxException e) {
+			} catch (URISyntaxException | IOException e) {
 				IBDBGenerator.handleConfigurationError(e);
-			} catch (IOException e) {
-				IBDBGenerator.handleConfigurationError(e);
+				LOG.info(e.getMessage(),e);
 			} finally {
 				if (in != null) {
 					try {
 						in.close();
 					} catch (IOException e) {
-						// intentionally empty
+						LOG.warn(e.getMessage(), e);
 					}
 				}
 			}
@@ -153,7 +152,7 @@ public class MysqlAccountGenerator implements Serializable {
 		}
 	}
 
-	private void executeGrantStatements() throws InternationalizableException {
+	private void executeGrantStatements() {
 		// execute grant statements
 		Statement statement = null;
 		String cropDatabaseName = this.cropType.getDbName();
@@ -220,7 +219,7 @@ public class MysqlAccountGenerator implements Serializable {
 		statement.executeBatch();
 	}
 
-	private void storeWokrbenchUserToMysqlAccountMappings() throws InternationalizableException {
+	private void storeWokrbenchUserToMysqlAccountMappings() {
 		List<ProjectUserMysqlAccount> mappingRecords = new ArrayList<ProjectUserMysqlAccount>();
 		Project project = null;
 		try {
@@ -257,7 +256,7 @@ public class MysqlAccountGenerator implements Serializable {
 		}
 	}
 
-	private void handleDatabaseError(Exception e) throws InternationalizableException {
+	private void handleDatabaseError(Exception e) {
 		MysqlAccountGenerator.LOG.error(e.toString(), e);
 		throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
 	}

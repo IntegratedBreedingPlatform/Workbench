@@ -1,10 +1,19 @@
-
 package org.generationcp.ibpworkbench.model;
 
 public class MetaEnvironmentModel {
 
+	private int studyId;
+	private String studyName;
+	private int dataSetId;
+	private String dataSetName;
+	private String trial;
+	private String environment;
+	private String trialFactorName;
+	private Boolean active;
+	private int dataSetTypeId;
+
 	public MetaEnvironmentModel() {
-		// TODO Auto-generated constructor stub
+		// do nothing
 	}
 
 	public int getStudyId() {
@@ -54,16 +63,6 @@ public class MetaEnvironmentModel {
 	public void setEnvironment(String environment) {
 		this.environment = environment;
 	}
-
-	private int studyId;
-	private String studyName;
-	private int dataSetId;
-	private String dataSetName;
-	private String trial;
-	private String environment;
-	private String trialFactorName;
-	private Boolean active;
-	private int dataSetTypeId;
 
 	@Override
 	public boolean equals(Object obj) {

@@ -2,7 +2,6 @@
 package org.generationcp.ibpworkbench.service;
 
 import java.util.Arrays;
-
 import javax.annotation.Resource;
 
 import org.generationcp.commons.util.DateUtil;
@@ -35,7 +34,7 @@ public class WorkbenchUserService {
 	 * @param userAccount
 	 * @throws org.generationcp.middleware.exceptions.MiddlewareQueryException
 	 */
-	public void saveUserAccount(UserAccountModel userAccount) throws MiddlewareQueryException {
+	public void saveUserAccount(UserAccountModel userAccount) {
 		userAccount.trimAll();
 		Integer currentDate = DateUtil.getCurrentDateAsIntegerValue();
 		Person person = this.createPerson(userAccount);
@@ -58,7 +57,7 @@ public class WorkbenchUserService {
 
 	}
 
-	public User saveNewUserAccount(UserAccountModel userAccount) throws MiddlewareQueryException {
+	public User saveNewUserAccount(UserAccountModel userAccount) {
 		Person person = this.createPerson(userAccount);
 
 		User user = new User();
@@ -94,7 +93,7 @@ public class WorkbenchUserService {
 	 * @param password
 	 * @throws MiddlewareQueryException
 	 */
-	public boolean updateUserPassword(String username, String password) throws MiddlewareQueryException {
+	public boolean updateUserPassword(String username, String password) {
 		return this.workbenchDataManager.changeUserPassword(username, passwordEncoder.encode(password));
 	}
 
@@ -105,7 +104,7 @@ public class WorkbenchUserService {
 	 * @return
 	 * @throws MiddlewareQueryException
 	 */
-	public boolean isValidUserLogin(UserAccountModel userAccount) throws MiddlewareQueryException {
+	public boolean isValidUserLogin(UserAccountModel userAccount) {
 		User user = this.getUserByUserName(userAccount.getUsername());
 		return passwordEncoder.matches(userAccount.getPassword(), user.getPassword());
 	}
@@ -132,7 +131,7 @@ public class WorkbenchUserService {
 	 * @return
 	 * @throws MiddlewareQueryException
 	 */
-	public User getUserByUserid(Integer userId) throws MiddlewareQueryException {
+	public User getUserByUserid(Integer userId) {
 
 		User user = this.workbenchDataManager.getUserById(userId);
 		Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
@@ -142,7 +141,7 @@ public class WorkbenchUserService {
 
 	}
 
-	public Integer addProjectActivity(ProjectActivity projectActivity) throws MiddlewareQueryException {
+	public Integer addProjectActivity(ProjectActivity projectActivity) {
 		return this.workbenchDataManager.addProjectActivity(projectActivity);
 	}
 

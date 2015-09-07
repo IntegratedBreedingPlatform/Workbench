@@ -1,4 +1,3 @@
-
 package org.generationcp.ibpworkbench.service;
 
 import java.io.BufferedReader;
@@ -6,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Properties;
-
 import javax.annotation.Resource;
 
 import org.generationcp.commons.constant.ToolEnum;
@@ -71,12 +69,15 @@ public class AppLauncherService {
 					url = this.launchWebappWithLogin(tool);
 					break;
 				case WEB:
-					if (tool.getToolName().equals("migrator")) {
+					if ("migrator".equals(tool.getToolName())) {
 						logProgramActivity = false;
 						url = this.launchMigratorWebapp(tool, idParam);
 					} else {
 						url = this.launchWebapp(tool, idParam);
 					}
+					break;
+				default:
+					// do nothing
 			}
 			if (logProgramActivity) {
 				// log project activity
@@ -165,15 +166,15 @@ public class AppLauncherService {
 			return true;
 		}
 
-		Process p=Runtime.getRuntime().exec("sc query MysqlIBWS");
-		BufferedReader reader=new BufferedReader(new InputStreamReader(p.getInputStream()));
+		Process p = Runtime.getRuntime().exec("sc query MysqlIBWS");
+		BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
 		boolean isBMS3Installed = false;
-		String line=reader.readLine();
-		while(line!=null) {
-			if(line.trim().startsWith("STATE")) {
+		String line = reader.readLine();
+		while (line != null) {
+			if (line.trim().startsWith("STATE")) {
 				isBMS3Installed = true;
 			}
-			line=reader.readLine();
+			line = reader.readLine();
 		}
 
 		return isBMS3Installed;
