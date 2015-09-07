@@ -3,7 +3,6 @@ package org.generationcp.ibpworkbench.ui.programadministration;
 
 import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.help.document.HelpModule;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsView;
@@ -28,9 +27,6 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 	private static final long serialVersionUID = 1L;
 
 	private HorizontalLayout titleLayout;
-
-	@Autowired
-	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
 	private SessionData sessionData;
@@ -78,7 +74,7 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 	}
 
 	protected void initializeActions() {
-
+		// do nothing
 	}
 
 	protected void initializeLayout() {

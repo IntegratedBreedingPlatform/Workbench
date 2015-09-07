@@ -4,7 +4,6 @@ package org.generationcp.ibpworkbench.ui.project.create;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.DeleteProjectAction;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -111,19 +110,15 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 
 	@Override
 	public void afterPropertiesSet() {
-		try {
-			// initialize state
-			this.currentUser = this.workbenchDataManager.getUserById(this.sessionData.getUserData().getUserid()); // get hibernate managed
-																													// version of user
+		// initialize state
+		// get hibernate managed version of user
+		this.currentUser = this.workbenchDataManager.getUserById(this.sessionData.getUserData().getUserid());
 
-			this.initializeComponents();
-			this.initializeLayout();
-			this.initializeActions();
-			this.initializeValues();
+		this.initializeComponents();
+		this.initializeLayout();
+		this.initializeActions();
+		this.initializeValues();
 
-		} catch (MiddlewareQueryException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public String getOldProjectName() {

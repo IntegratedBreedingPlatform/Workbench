@@ -51,8 +51,7 @@ import com.vaadin.ui.themes.Reindeer;
 public class CreateProjectPanel extends Panel implements InitializingBean {
 
 	private static final long serialVersionUID = 1L;
-
-	protected static final Logger LOG = LoggerFactory.getLogger(CreateProjectPanel.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CreateProjectPanel.class);
 
 	protected ProjectBasicDetailsComponent projectBasicDetailsComponent;
 
@@ -61,8 +60,11 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 	protected Button saveProjectButton;
 	protected Component buttonArea;
 
-	protected Project project; // the project created
-	protected User currentUser; // should be the currently logged in user that will try to add / update a new project
+	// the project created
+	protected Project project;
+
+	// should be the currently logged in user that will try to add / update a new project
+	protected User currentUser;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -107,6 +109,7 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 	}
 
 	protected void initializeValues() {
+		// do nothing
 	}
 
 	protected void initializeLayout() {
@@ -158,7 +161,7 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 
 				} catch (Exception e) {
 
-					if (e.getMessage().equals("basic_details_invalid")) {
+					if ("basic_details_invalid".equals(e.getMessage())) {
 						return;
 					}
 

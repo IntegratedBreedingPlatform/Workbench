@@ -69,7 +69,7 @@ public class BreedingMethodForm extends Form {
 	}
 
 	protected void initializeLayout() {
-
+		// do nothing
 	}
 
 	protected void initializeComponents() {

@@ -212,7 +212,8 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 		titleContainer.setComponentAlignment(this.newMemberButton, Alignment.MIDDLE_RIGHT);
 		titleContainer.setSizeUndefined();
 		titleContainer.setWidth("100%");
-		titleContainer.setMargin(false, false, false, false); // move this to css
+		// move this to css
+		titleContainer.setMargin(false, false, false, false);
 
 		this.addComponent(titleContainer);
 		this.addComponent(headingDesc);
@@ -255,7 +256,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 		
 						} catch (Exception e) {
 		
-							if (e.getMessage().equals("basic_details_invalid")) {
+							if ("basic_details_invalid".equals(e.getMessage())) {
 								return;
 							}
 		
@@ -298,7 +299,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 		return buttonLayout;
 	}
 
-	private Container createUsersContainer() throws MiddlewareQueryException {
+	private Container createUsersContainer() {
 		List<User> validUserList = new ArrayList<User>();
 
 		// TODO: This can be improved once we implement proper User-Person mapping

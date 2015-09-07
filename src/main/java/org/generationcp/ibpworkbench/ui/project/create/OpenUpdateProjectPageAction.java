@@ -34,9 +34,6 @@ public class OpenUpdateProjectPageAction implements Button.ClickListener, Action
 	private WorkbenchDataManager workbenchDataManager;
 
 	@Autowired
-	private SimpleResourceBundleMessageSource messageSource;
-
-	@Autowired
 	private SessionData sessionData;
 
 	@Override

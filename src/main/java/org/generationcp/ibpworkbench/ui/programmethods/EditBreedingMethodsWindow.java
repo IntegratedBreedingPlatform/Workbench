@@ -8,6 +8,8 @@ import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -26,6 +28,7 @@ import com.vaadin.ui.themes.Reindeer;
 public class EditBreedingMethodsWindow extends BaseSubWindow {
 
 	private static final long serialVersionUID = 3983198771242295731L;
+	private static final Logger LOG = LoggerFactory.getLogger(EditBreedingMethodsWindow.class);
 
 	private BreedingMethodForm breedingMethodForm;
 
@@ -119,9 +122,11 @@ public class EditBreedingMethodsWindow extends BaseSubWindow {
 					EditBreedingMethodsWindow.this.breedingMethodForm.commit();
 				} catch (Validator.EmptyValueException e) {
 					MessageNotifier.showRequiredFieldError(clickEvent.getComponent().getWindow(), e.getLocalizedMessage());
+					LOG.warn(e.getMessage(),e);
 					return;
 				} catch (Validator.InvalidValueException e) {
 					MessageNotifier.showRequiredFieldError(clickEvent.getComponent().getWindow(), e.getLocalizedMessage());
+					LOG.warn(e.getMessage(),e);
 					return;
 				}
 

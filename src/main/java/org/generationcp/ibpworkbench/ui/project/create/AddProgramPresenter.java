@@ -6,7 +6,6 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.database.MysqlAccountGenerator;
 import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -72,7 +71,6 @@ public class AddProgramPresenter {
 				protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
 					AddProgramPresenter.this.programService.setCurrentUser(AddProgramPresenter.this.sessionData.getUserData());
 					AddProgramPresenter.this.programService.setSelectedUsers(AddProgramPresenter.this.users);
-					AddProgramPresenter.this.programService.setMySQLAccountGenerator(new MysqlAccountGenerator());
 					AddProgramPresenter.this.programService.createNewProgram(AddProgramPresenter.this.program);
 				}
 			});

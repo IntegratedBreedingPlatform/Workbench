@@ -9,9 +9,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.generationcp.commons.hibernate.ManagerFactoryProvider;
-import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.LocationDataManager;
@@ -43,13 +40,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 	private GermplasmDataManager germplasmDataManager;
 
 	@Autowired
-	private ManagerFactoryProvider managerFactoryProvider;
-
-	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
-
-	@Autowired
-	private SessionData sessionData;
 
 	@Autowired
 	private LocationDataManager locationDataManager;
@@ -68,15 +59,15 @@ public class ProgramLocationsPresenter implements InitializingBean {
 	}
 
 	/* THIS IS ONLY USED FOR JUNIT TESTS */
-	public ProgramLocationsPresenter(Project project, WorkbenchDataManager workbenchDataManager,
-			ManagerFactoryProvider managerFactoryProvider, LocationDataManager locationDataManager) {
+	public ProgramLocationsPresenter(Project project, GermplasmDataManager germplasmDataManager, WorkbenchDataManager workbenchDataManager, LocationDataManager locationDataManager) {
 		this.project = project;
 		this.workbenchDataManager = workbenchDataManager;
+		this.germplasmDataManager = germplasmDataManager;
 		this.locationDataManager = locationDataManager;
 	}
 
 	public Collection<LocationViewModel> getFilteredResults(Integer countryId, Integer locationType, String locationName)
-			throws MiddlewareQueryException {
+			{
 		List<Location> locationList = null;
 
 		Map<Integer, LocationViewModel> resultsMap = new LinkedHashMap<Integer, LocationViewModel>();
@@ -98,7 +89,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 	}
 
 	public Collection<LocationViewModel> getFilteredResults(Integer countryId, Integer locationType, String locationName,
-			Collection<LocationViewModel> existingItems) throws MiddlewareQueryException {
+			Collection<LocationViewModel> existingItems) {
 		List<Location> locationList = null;
 
 		Map<Integer, LocationViewModel> resultsMap = new LinkedHashMap<Integer, LocationViewModel>();
@@ -119,7 +110,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		return resultsMap.values();
 	}
 
-	public List<LocationViewModel> getSavedProgramLocations() throws MiddlewareQueryException {
+	public List<LocationViewModel> getSavedProgramLocations() {
 		if (this.cropType != null) {
 			return new ArrayList<LocationViewModel>();
 		}
@@ -138,7 +129,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		return result;
 	}
 
-	public LocationViewModel getLocationDetailsByLocId(int locationId) throws MiddlewareQueryException {
+	public LocationViewModel getLocationDetailsByLocId(int locationId) {
 		try {
 			List<LocationDetails> locList = this.locationDataManager.getLocationDetailsByLocId(locationId, 0, 1);
 			return this.convertFrom(locList.get(0));
@@ -150,12 +141,12 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		return null;
 	}
 
-	public boolean saveFavouriteLocations(Collection<LocationViewModel> selectedLocations) throws MiddlewareQueryException {
+	public boolean saveFavouriteLocations(Collection<LocationViewModel> selectedLocations) {
 		return this.saveFavouriteLocations(selectedLocations, this.project, this.workbenchDataManager);
 	}
 
 	public boolean saveFavouriteLocations(Collection<LocationViewModel> selectedLocations, Project project,
-			WorkbenchDataManager workbenchDataManager) throws MiddlewareQueryException {
+			WorkbenchDataManager workbenchDataManager) {
 
 		// Delete existing project locations in the database
 		List<ProgramFavorite> favorites = this.germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, project.getUniqueID());
@@ -195,7 +186,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		return viewModel;
 	}
 
-	private LocationViewModel convertFrom(Location location) throws MiddlewareQueryException {
+	private LocationViewModel convertFrom(Location location) {
 		LocationViewModel viewModel = new LocationViewModel();
 		viewModel.setLocationId(location.getLocid());
 		viewModel.setLocationName(location.getLname());
@@ -221,7 +212,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		return viewModel;
 	}
 
-	public List<Country> getCountryList() throws MiddlewareQueryException {
+	public List<Country> getCountryList() {
 		List<Country> countryList = this.locationDataManager.getAllCountry();
 		Collections.sort(countryList, new Comparator<Country>() {
 
@@ -236,15 +227,15 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		return countryList;
 	}
 
-	public List<Location> getAllProvinces() throws MiddlewareQueryException {
+	public List<Location> getAllProvinces() {
 		return this.locationDataManager.getAllProvinces();
 	}
 
-	public List<Location> getAllProvincesByCountry(Integer countryId) throws MiddlewareQueryException {
+	public List<Location> getAllProvincesByCountry(Integer countryId) {
 		return this.locationDataManager.getAllProvincesByCountry(countryId);
 	}
 
-	public List<UserDefinedField> getLocationTypeList() throws MiddlewareQueryException {
+	public List<UserDefinedField> getLocationTypeList() {
 
 		return this.locationDataManager.getUserDefinedFieldByFieldTableNameAndType("LOCATION", "LTYPE");
 	}
@@ -255,13 +246,14 @@ public class ProgramLocationsPresenter implements InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		// do nothing
 	}
 
-	public List<UserDefinedField> getUDFByLocationAndLType() throws MiddlewareQueryException {
+	public List<UserDefinedField> getUDFByLocationAndLType() {
 		return this.locationDataManager.getUserDefinedFieldByFieldTableNameAndType("LOCATION", "LTYPE");
 	}
 
-	public void addLocation(Location loc) throws MiddlewareQueryException {
+	public void addLocation(Location loc) {
 		// if crop only AKA locationView instantiated from Add new program page, just add the row to the view table.
 
 		if (!this.isCropOnly) {
@@ -276,7 +268,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		}
 	}
 
-	public List<Location> getExistingLocations(String locationName) throws MiddlewareQueryException {
+	public List<Location> getExistingLocations(String locationName) {
 		return this.locationDataManager.getLocationsByName(locationName, Operation.EQUAL, this.project.getUniqueID());
 	}
 
@@ -322,9 +314,5 @@ public class ProgramLocationsPresenter implements InitializingBean {
 
 	public void setCropType(CropType cropType) {
 		this.cropType = cropType;
-	}
-
-	public void setSessionData(SessionData sessionData) {
-		this.sessionData = sessionData;
 	}
 }
