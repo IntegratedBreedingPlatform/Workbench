@@ -10,7 +10,6 @@
 
 package org.generationcp.ibpworkbench.ui;
 
-import java.io.IOException;
 import java.util.Objects;
 import java.util.Properties;
 import javax.annotation.Resource;
@@ -23,7 +22,6 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.themes.Reindeer;
 import org.apache.commons.lang3.StringUtils;
-import org.generationcp.commons.constant.ToolEnum;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.help.document.HelpWindow;
 import org.generationcp.commons.tomcat.util.TomcatUtil;
@@ -35,7 +33,6 @@ import org.generationcp.ibpworkbench.IWorkbenchSession;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.HomeAction;
-import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.actions.OpenWindowAction;
 import org.generationcp.ibpworkbench.actions.OpenWindowAction.WindowEnum;
 import org.generationcp.ibpworkbench.actions.SignoutAction;
@@ -51,7 +48,6 @@ import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
-import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,7 +104,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	private Button signoutButton;
 	private Button logoBtn;
 	private Button askSupportBtn;
-	private Button upgradeBtn;
 
 	public WorkbenchMainView() {
 		super("Breeding Management System | Workbench");
@@ -189,40 +184,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.helpButton.setHtmlContentAllowed(true);
 		this.helpButton.setSizeUndefined();
 		this.helpButton.setDebugId("help-button-icon");
-	}
-
-	private boolean showMigrateButton() {
-		try {
-			Tool migratorTool = this.workbenchDataManager.getToolWithName(ToolEnum.MIGRATOR.getToolName());
-
-			// just make sure migrator tool exists
-			if (Objects.equals(migratorTool, null)) {
-				return false;
-			}
-
-			if (!this.sessionData.getUserData().hasRole("ADMIN") || !this.applauncherService.isBMS3Installed()) {
-				return false;
-			}
-
-		} catch (IOException | MiddlewareQueryException e) {
-			LOG.error(e.getMessage(), e);
-			return false;
-		}
-
-		return true;
-	}
-
-	private Button getMigrateButton() {
-		if (Objects.equals(this.upgradeBtn, null)) {
-			this.upgradeBtn = new Button("<span class='bms-header-btn bms-header-upgrade-btn'><span>Migrate 3.0.8 database</span></span>");
-			this.upgradeBtn.setStyleName(Bootstrap.Buttons.LINK.styleName() + HEADER_BTN);
-			this.upgradeBtn.setHtmlContentAllowed(true);
-			this.upgradeBtn.setSizeUndefined();
-
-			this.upgradeBtn.addListener(new LaunchWorkbenchToolAction(ToolEnum.MIGRATOR));
-		}
-
-		return this.upgradeBtn;
 	}
 
 	private Button getAskSupportBtn() {
@@ -421,11 +382,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		headerLayout.setExpandRatio(this.workbenchTitle, 1.0f);
 
 		headerLayout.addComponent(this.uriFragUtil);
-
-		if (this.showMigrateButton()) {
-			headerLayout.addComponent(this.getMigrateButton());
-			headerLayout.setComponentAlignment(this.upgradeBtn, Alignment.MIDDLE_RIGHT);
-		}
 
 		headerLayout.addComponent(this.homeButton);
 
