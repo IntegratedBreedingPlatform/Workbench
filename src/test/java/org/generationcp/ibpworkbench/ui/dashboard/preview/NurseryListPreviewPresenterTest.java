@@ -74,7 +74,6 @@ public class NurseryListPreviewPresenterTest {
 
 	@Before
 	public void setUp() throws Exception {
-		Mockito.when(this.view.getManagerFactoryProvider()).thenReturn(this.managerFactoryProvider);
 		NurseryListPreview.NURSERIES_AND_TRIALS = NurseryListPreviewPresenterTest.NURSERIES_AND_TRIALS;
 		this.project = this.createTestProjectData();
 		this.view.setProject(this.project);

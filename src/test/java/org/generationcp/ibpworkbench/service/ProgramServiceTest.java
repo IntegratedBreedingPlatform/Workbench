@@ -5,11 +5,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.ibpworkbench.database.MysqlAccountGenerator;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
-import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.UserDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
@@ -19,17 +17,47 @@ import org.generationcp.middleware.pojos.workbench.IbdbUserMap;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.WorkflowTemplate;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Matchers;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ProgramServiceTest {
+
+	@Mock
+	private RequestAttributes attrs;
+
+	@Mock
+	private WorkbenchDataManager workbenchDataManager;
+
+	@Mock
+	private ToolUtil toolUtil;
+
+	@Mock
+	private UserDataManager userDataManager;
+
+	@InjectMocks
+	private ProgramService programService = new ProgramService();
+
+	@Before
+	public void setup() throws Exception {
+
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+	}
 
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testAddNewProgram() throws Exception {
-
-		ProgramService programService = new ProgramService();
 
 		Project project = new Project();
 		project.setProjectId(1L);
@@ -62,7 +90,6 @@ public class ProgramServiceTest {
 		programMembers.add(memberUser);
 
 		// WorkbenchDataManager mocks
-		WorkbenchDataManager workbenchDataManager = Mockito.mock(WorkbenchDataManager.class);
 		Mockito.when(workbenchDataManager.getCropTypeByName(Matchers.anyString())).thenReturn(cropType);
 		ArrayList<WorkflowTemplate> workflowTemplates = new ArrayList<WorkflowTemplate>();
 		workflowTemplates.add(new WorkflowTemplate());
@@ -85,23 +112,10 @@ public class ProgramServiceTest {
 		allRolesList.add(new Role(5, "Manager", null));
 		Mockito.when(workbenchDataManager.getAllRoles()).thenReturn(allRolesList);
 
-		ToolUtil toolUtil = Mockito.mock(ToolUtil.class);
-
 		MysqlAccountGenerator mySQLAccountGenerator = Mockito.mock(MysqlAccountGenerator.class);
-
-		ManagerFactoryProvider managerFactoryProvider = Mockito.mock(ManagerFactoryProvider.class);
-		ManagerFactory managerFactory = Mockito.mock(ManagerFactory.class);
-		Mockito.when(managerFactoryProvider.getManagerFactoryForProject(project)).thenReturn(managerFactory);
-
-		UserDataManager userDataManager = Mockito.mock(UserDataManager.class);
-		Mockito.when(managerFactory.getUserDataManager()).thenReturn(userDataManager);
 		Mockito.when(userDataManager.addUser(Matchers.any(User.class))).thenReturn(2);
 		Mockito.when(userDataManager.getUserById(Matchers.anyInt())).thenReturn(memberUser);
 
-		programService.setWorkbenchDataManager(workbenchDataManager);
-		programService.setToolUtil(toolUtil);
-		programService.setMySQLAccountGenerator(mySQLAccountGenerator);
-		programService.setManagerFactoryProvider(managerFactoryProvider);
 		programService.setCurrentUser(loggedInUser);
 
 		Set<User> selectedUsers = new HashSet<User>();
@@ -124,7 +138,6 @@ public class ProgramServiceTest {
 		Mockito.verify(workbenchDataManager, Mockito.times(2)).addIbdbUserMap(Matchers.any(IbdbUserMap.class));
 
 		Mockito.verify(workbenchDataManager).addProjectUserRole(Matchers.anyList());
-		Mockito.verify(mySQLAccountGenerator).generateMysqlAccounts();
 	}
 
 }

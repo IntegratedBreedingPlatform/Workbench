@@ -6,8 +6,6 @@ import java.util.Collection;
 import java.util.List;
 
 import junit.framework.Assert;
-
-import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.LocationDataManager;
@@ -36,12 +34,12 @@ public class ProgramLocationsPresenterTest {
 	private static GermplasmDataManager gdm;
 	@Mock
 	private LocationDataManager locationDataManager;
+
 	@Mock
-	private ManagerFactoryProvider managerFactoryProvider;
+	private GermplasmDataManager germplasmDataManager;
+
 	@Mock
 	private WorkbenchDataManager workbenchDataManager;
-	@Mock
-	private static GermplasmDataManager germplasmDataManager;
 
 	@Before
 	public void setUp() {
@@ -49,7 +47,7 @@ public class ProgramLocationsPresenterTest {
 
 		Project project = this.getProject(ProgramLocationsPresenterTest.DUMMY_PROGRAM_UUID);
 		this.controller =
-				Mockito.spy(new ProgramLocationsPresenter(project, this.workbenchDataManager, this.managerFactoryProvider,
+				Mockito.spy(new ProgramLocationsPresenter(project,this.germplasmDataManager, this.workbenchDataManager,
 						this.locationDataManager));
 	}
 
@@ -225,7 +223,7 @@ public class ProgramLocationsPresenterTest {
 		}
 
 		Mockito.when(
-				ProgramLocationsPresenterTest.germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION,
+				this.germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION,
 						ProgramLocationsPresenterTest.DUMMY_PROGRAM_UUID)).thenReturn(favorites);
 
 	}

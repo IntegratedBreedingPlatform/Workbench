@@ -16,6 +16,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vaadin.data.Item;
+import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.data.util.PropertysetItem;
 import org.generationcp.middleware.domain.etl.StudyDetails;
 import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -24,10 +27,6 @@ import org.generationcp.middleware.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vaadin.addons.lazyquerycontainer.Query;
-
-import com.vaadin.data.Item;
-import com.vaadin.data.util.ObjectProperty;
-import com.vaadin.data.util.PropertysetItem;
 
 /**
  * An implementation of Query which is needed for using the LazyQueryContainer.
@@ -39,10 +38,10 @@ public class StudyDetailsQuery implements Query {
 	private static final Logger LOG = LoggerFactory.getLogger(StudyDetailsQuery.class);
 	private static final SimpleDateFormat BACKEND_DATE_FORMAT = Util.getSimpleDateFormat(Util.DATE_AS_NUMBER_FORMAT);
 	private static final SimpleDateFormat FRONTEND_DATE_FORMAT = Util.getSimpleDateFormat(Util.FRONTEND_DATE_FORMAT);
-	private final String programUUID;
-	private final StudyDataManager studyDataManager;
-	private final StudyType studyType;
-	private final List<String> columnIds;
+	private String programUUID;
+	private StudyDataManager studyDataManager;
+	private StudyType studyType;
+	private List<String> columnIds;
 	private int size;
 
 	public StudyDetailsQuery(StudyDataManager studyDataManager, StudyType studyType, List<String> columnIds, String programUUID) {

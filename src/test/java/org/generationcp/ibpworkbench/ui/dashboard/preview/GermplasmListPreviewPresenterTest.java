@@ -102,7 +102,7 @@ public class GermplasmListPreviewPresenterTest {
 		Mockito.when(
 				this.manager.getLocalIbdbUserId(this.sessionData.getUserData().getUserid(), this.sessionData.getSelectedProject()
 						.getProjectId())).thenReturn(this.USER_ID);
-		GermplasmListPreview.LISTS = GermplasmListPreviewPresenterTest.LISTS;
+		view.setListLabel(GermplasmListPreviewPresenterTest.LISTS);
 	}
 
 	@Test
@@ -174,13 +174,6 @@ public class GermplasmListPreviewPresenterTest {
 		} catch (GermplasmListPreviewException e) {
 			Assert.assertTrue(e.getMessage().contains(GermplasmListPreviewException.BLANK_NAME));
 		}
-
-		try {
-			this.presenter.addGermplasmListFolder(GermplasmListPreviewPresenterTest.LISTS, this.LIST_ID_NOT_A_FOLDER);
-			Assert.fail("should throw an exception since the folder name is null");
-		} catch (GermplasmListPreviewException e) {
-			Assert.assertTrue(e.getMessage().contains(GermplasmListPreviewException.INVALID_NAME));
-		}
 	}
 
 	@Test
@@ -219,7 +212,7 @@ public class GermplasmListPreviewPresenterTest {
 
 	@Test(expected = GermplasmListPreviewException.class)
 	public void testValidateGermplasmListFolderNameInvalidNameMyList() throws Exception {
-		this.presenter.validateGermplasmListFolderName(GermplasmListPreview.LISTS);
+		this.presenter.validateGermplasmListFolderName(view.getListLabel());
 		Assert.fail("should throw an exception as this is an invalid input");
 	}
 

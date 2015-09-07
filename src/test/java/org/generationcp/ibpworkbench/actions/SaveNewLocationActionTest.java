@@ -1,6 +1,8 @@
 
 package org.generationcp.ibpworkbench.actions;
 
+import com.vaadin.data.util.BeanItem;
+import com.vaadin.ui.Window;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.form.AddLocationForm;
@@ -17,9 +19,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import com.vaadin.data.util.BeanItem;
-import com.vaadin.ui.Window;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SaveNewLocationActionTest {
@@ -52,7 +51,6 @@ public class SaveNewLocationActionTest {
 		MockitoAnnotations.initMocks(this);
 		Mockito.doNothing().when(this.sessionData).logProgramActivity(Matchers.anyString(), Matchers.anyString());
 		this.saveNewLocationAction = new SaveNewLocationAction(this.newLocationForm, this.window, this.programLocationsPresenter);
-		this.programLocationsPresenter.setSessionData(this.sessionData);
 		this.saveNewLocationAction.setSessionData(this.sessionData);
 		this.saveNewLocationAction.setMessageSource(this.messageSource);
 	}

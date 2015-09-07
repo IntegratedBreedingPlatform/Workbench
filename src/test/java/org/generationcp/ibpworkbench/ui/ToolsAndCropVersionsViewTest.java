@@ -6,15 +6,11 @@ import java.util.List;
 
 import org.generationcp.MessageResourceUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.ui.VaadinComponentsUtil;
-import org.generationcp.commons.vaadin.ui.VaadinComponentsUtil.VaadinComponentFieldType;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
-import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Test;
 import org.mockito.Mockito;
 
 public class ToolsAndCropVersionsViewTest {
@@ -51,14 +47,5 @@ public class ToolsAndCropVersionsViewTest {
 		cropType.setVersion("4.0.0");
 		cropTypes.add(cropType);
 		return cropTypes;
-	}
-
-	@Test
-	public void testCheckIfGDMSIsDisplayed() {
-		String value = "gdms";
-		boolean isFound =
-				VaadinComponentsUtil.findComponent(ToolsAndCropVersionsViewTest.toolsAndCropVersionsView,
-						VaadinComponentFieldType.TABLE_CONTENT, value, "toolName");
-		Assert.assertTrue(value + " is not found", isFound);
 	}
 }

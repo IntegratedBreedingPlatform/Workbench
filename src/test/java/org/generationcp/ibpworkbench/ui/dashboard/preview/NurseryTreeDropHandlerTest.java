@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import com.vaadin.terminal.gwt.client.ui.dd.VerticalDropLocation;
+import org.apache.commons.lang.reflect.FieldUtils;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
@@ -22,8 +24,6 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import com.vaadin.terminal.gwt.client.ui.dd.VerticalDropLocation;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NurseryTreeDropHandlerTest {
@@ -42,7 +42,6 @@ public class NurseryTreeDropHandlerTest {
 	@Mock
 	private SimpleResourceBundleMessageSource messageSource;
 
-	@Mock
 	private NurseryListPreviewPresenter presenter;
 
 	private NurseryListPreview view;
@@ -52,9 +51,13 @@ public class NurseryTreeDropHandlerTest {
 	private List<FolderReference> rootFolderChildren;
 
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
 		NurseryListPreview.NURSERIES_AND_TRIALS = NurseryTreeDropHandlerTest.NURSERIES_AND_TRIALS;
 		Project project = NurseryTreeDropHandlerTest.createTestProjectData();
+
+		this.presenter = new NurseryListPreviewPresenter();
+		FieldUtils.writeDeclaredField(presenter,"studyDataManager",studyDataManager,true);
+		this.presenter = Mockito.spy(this.presenter);
 
 		Mockito.when(this.managerFactoryProvider.getManagerFactoryForProject(project)).thenReturn(this.managerFactory);
 		Mockito.when(this.managerFactory.getStudyDataManager()).thenReturn(this.studyDataManager);
@@ -69,7 +72,10 @@ public class NurseryTreeDropHandlerTest {
 		}
 
 		this.view = new NurseryListPreview(project);
-		this.view.setManagerFactoryProvider(this.managerFactoryProvider);
+
+		this.presenter.setView(this.view);
+		this.presenter.setProject(project);
+
 		this.view.setMessageSource(this.messageSource);
 		this.view.setPresenter(this.presenter);
 		this.view.setProject(project);
