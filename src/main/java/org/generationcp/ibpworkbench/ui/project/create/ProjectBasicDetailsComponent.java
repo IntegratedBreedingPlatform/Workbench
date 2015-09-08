@@ -150,8 +150,8 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		this.otherCropNameField.addValidator(new RegexValidator(
 				"Crop name must not contain any of the following: '< > \" : ; , . / \\ | - = \\( \\)", cropNameInvalidCharPattern, true));
 		this.otherCropNameField
-				.addValidator(new ValueRangeValidator(
-						"This crop name is reserved because there is a database available for it. Please install the crop name database before creating this program if you wish to take advantage of traits and other information for this crop. If you wish to proceed with using the generic database, please choose a different name for your crop."));
+		.addValidator(new ValueRangeValidator(
+				"This crop name is reserved because there is a database available for it. Please install the crop name database before creating this program if you wish to take advantage of traits and other information for this crop. If you wish to proceed with using the generic database, please choose a different name for your crop."));
 		this.otherCropNameField.setStyleName("hide-caption");
 		this.otherCropNameField.setVisible(false);
 
@@ -357,16 +357,16 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		String projectName = (String) this.projectNameField.getValue();
 		CropType cropType = (CropType) this.cropTypeCombo.getValue();
 
-		errorDescription = new StringBuffer();
+		this.errorDescription = new StringBuffer();
 
 		if (projectName == null || projectName.equals("")) {
-			errorDescription.append("No program name supplied. ");
+			this.errorDescription.append("No program name supplied. ");
 			success = false;
 		} else {
 			// Check if the project name already exists
 			try {
 				if (this.workbenchDataManager.getProjectByName(projectName) != null) {
-					errorDescription.append(this.messageSource.getMessage(Message.DUPLICATE_PROGRAM_NAME_ERROR) + " ");
+					this.errorDescription.append(this.messageSource.getMessage(Message.DUPLICATE_PROGRAM_NAME_ERROR) + " ");
 					success = false;
 				}
 			} catch (MiddlewareQueryException e) {
@@ -378,21 +378,21 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 			try {
 				this.otherCropNameField.validate();
 			} catch (InvalidValueException e) {
-				errorDescription.append(ValidationUtil.getMessageFor(e));
+				this.errorDescription.append(ValidationUtil.getMessageFor(e));
 				success = false;
 			}
 
 			try {
 				this.projectNameField.validate();
 			} catch (InvalidValueException e) {
-				errorDescription.append(ValidationUtil.getMessageFor(e));
+				this.errorDescription.append(ValidationUtil.getMessageFor(e));
 				success = false;
 			}
 
 			try {
 				this.cropTypeCombo.validate();
 			} catch (InvalidValueException e) {
-				errorDescription.append(ValidationUtil.getMessageFor(e));
+				this.errorDescription.append(ValidationUtil.getMessageFor(e));
 				success = false;
 			}
 
@@ -400,17 +400,17 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 
 		String dateValidationMsg = this.validateDate();
 		if (dateValidationMsg.length() > 0) {
-			errorDescription.append(dateValidationMsg);
+			this.errorDescription.append(dateValidationMsg);
 			success = false;
 		}
 
 		if (cropType == null) {
-			errorDescription.append("No crop type selected. ");
+			this.errorDescription.append("No crop type selected. ");
 			success = false;
 		}
 
 		if (!success) {
-			MessageNotifier.showRequiredFieldError(this.getWindow(), errorDescription.toString());
+			MessageNotifier.showRequiredFieldError(this.getWindow(), this.errorDescription.toString());
 		}
 
 		return success;
@@ -522,6 +522,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 	}
 
 	public StringBuffer getErrorDescription() {
-		return errorDescription;
+		return this.errorDescription;
 	}
 }
