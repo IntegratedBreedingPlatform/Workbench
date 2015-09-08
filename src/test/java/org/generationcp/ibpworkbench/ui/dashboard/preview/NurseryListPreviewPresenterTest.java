@@ -42,13 +42,7 @@ public class NurseryListPreviewPresenterTest {
 	private NurseryListPreview view;
 
 	@Mock
-	private ManagerFactoryProvider managerFactoryProvider;
-
-	@Mock
 	private WorkbenchDataManager manager;
-
-	@Mock
-	private ManagerFactory managerFactory;
 
 	@Mock
 	private StudyDataManager studyDataManager;
@@ -77,9 +71,6 @@ public class NurseryListPreviewPresenterTest {
 		NurseryListPreview.NURSERIES_AND_TRIALS = NurseryListPreviewPresenterTest.NURSERIES_AND_TRIALS;
 		this.project = this.createTestProjectData();
 		this.view.setProject(this.project);
-
-		Mockito.when(this.managerFactoryProvider.getManagerFactoryForProject(this.project)).thenReturn(this.managerFactory);
-		Mockito.when(this.managerFactory.getStudyDataManager()).thenReturn(this.studyDataManager);
 
 		this.presenter.setProject(this.project);
 	}
