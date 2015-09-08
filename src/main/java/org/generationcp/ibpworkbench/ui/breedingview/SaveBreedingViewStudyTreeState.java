@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.ui.breedingview;
 
 import java.util.ArrayList;
@@ -9,11 +10,8 @@ import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.domain.dms.StudyReference;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.UserProgramStateDataManager;
 import org.generationcp.middleware.pojos.dms.DmsProject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -24,73 +22,69 @@ import com.vaadin.ui.Window;
  */
 @Configurable
 public class SaveBreedingViewStudyTreeState implements Window.CloseListener {
-    private static final Logger LOG = LoggerFactory.getLogger(SaveBreedingViewStudyTreeState.class);
-    private BreedingViewTreeTable treeTable;
 
-    @Autowired
-    private SessionData sessionData;
+	private BreedingViewTreeTable treeTable;
     
     @Autowired
 	private UserProgramStateDataManager userProgramStateManager;
 
-    public SaveBreedingViewStudyTreeState(BreedingViewTreeTable treeTable) {
-        this.treeTable = treeTable;
-    }
+	@Autowired
+	private SessionData sessionData;
 
-    @Override
-    public void windowClose(Window.CloseEvent e) {
-        List<String> itemIds = getExpandedIds();
+	public SaveBreedingViewStudyTreeState(BreedingViewTreeTable treeTable) {
+		this.treeTable = treeTable;
+	}
 
-        try {
-            userProgramStateManager.saveOrUpdateUserProgramTreeState(sessionData.getUserData().getUserid(),
-                    sessionData.getSelectedProject().getUniqueID(), ListTreeState.STUDY_LIST.name(), itemIds);
-        } catch (MiddlewareQueryException e1) {
-            LOG.error(e1.getMessage(), e1);
-        }
-    }
+	@Override
+	public void windowClose(Window.CloseEvent e) {
+		List<String> itemIds = getExpandedIds();
 
-    protected List<String> getExpandedIds() {
-        List<String> expandedIds = new ArrayList<>();
-        List<FolderReference> firstLevelFolders = getFirstLevelFolders();
+		userProgramStateManager.saveOrUpdateUserProgramTreeState(sessionData.getUserData().getUserid(), sessionData
+				.getSelectedProject().getUniqueID(), ListTreeState.STUDY_LIST.name(), itemIds);
+	}
 
-        // study tree used in analysis always has an expanded "root node"
-        expandedIds.add("STUDY");
+	protected List<String> getExpandedIds() {
+		List<String> expandedIds = new ArrayList<>();
+		List<FolderReference> firstLevelFolders = getFirstLevelFolders();
 
-        for (FolderReference firstLevelFolder : firstLevelFolders) {
-            recurseSaveOpenNodes(firstLevelFolder, expandedIds);
-        }
+		// study tree used in analysis always has an expanded "root node"
+		expandedIds.add("STUDY");
 
-        return expandedIds;
-    }
+		for (FolderReference firstLevelFolder : firstLevelFolders) {
+			recurseSaveOpenNodes(firstLevelFolder, expandedIds);
+		}
 
-    public void recurseSaveOpenNodes(Reference item, List<String> openNodes) {
-        if (treeTable.isCollapsed(item)) {
-            return;
-        }
+		return expandedIds;
+	}
 
-        openNodes.add(item.getId().toString());
+	public void recurseSaveOpenNodes(Reference item, List<String> openNodes) {
+		if (treeTable.isCollapsed(item)) {
+			return;
+		}
 
-        if (item instanceof StudyReference) {
-            return;
-        }
+		openNodes.add(item.getId().toString());
 
-        Collection children = treeTable.getChildren(item);
-        if (children != null && !children.isEmpty()) {
-            for (Object child : children) {
-                recurseSaveOpenNodes((Reference) child, openNodes);
-            }
-        }
-    }
+		if (item instanceof StudyReference) {
+			return;
+		}
 
-    protected List<FolderReference> getFirstLevelFolders() {
-        List<FolderReference> firstlevelFolders = new ArrayList<>();
-        for (FolderReference reference : treeTable.getNodeMap().values()) {
-            Integer parentFolderId = reference.getParentFolderId();
-            if (parentFolderId != null && parentFolderId.equals(DmsProject.SYSTEM_FOLDER_ID)) {
-                firstlevelFolders.add(reference);
-            }
-        }
+		Collection children = treeTable.getChildren(item);
+		if (children != null && !children.isEmpty()) {
+			for (Object child : children) {
+				recurseSaveOpenNodes((Reference) child, openNodes);
+			}
+		}
+	}
 
-        return firstlevelFolders;
-    }
+	protected List<FolderReference> getFirstLevelFolders() {
+		List<FolderReference> firstlevelFolders = new ArrayList<>();
+		for (FolderReference reference : treeTable.getNodeMap().values()) {
+			Integer parentFolderId = reference.getParentFolderId();
+			if (parentFolderId != null && parentFolderId.equals(DmsProject.SYSTEM_FOLDER_ID)) {
+				firstlevelFolders.add(reference);
+			}
+		}
+
+		return firstlevelFolders;
+	}
 }

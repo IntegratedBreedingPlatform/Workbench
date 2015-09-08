@@ -48,3 +48,12 @@ In addtion to this, there are a few things to note about developing in this envi
 * We use the auto-prefixer plugin to automatically add vendor prefixes to our CSS. This happens at build time, so we don't have to specify them ourselves in our Sass files. For more information and to check if your rule is supported, see the [website](https://github.com/postcss/autoprefixer-core)
 * We use an image minification library to compress our images on build
 * JS libraries should be included already minified in the `js/lib` folder
+
+# Libraries
+
+We use a couple of third party libraries. Any customisations performed to third party libraries should be listed here:
+
+* UI Bootstrap - Custom build of UI Bootstrap containing the following modules:
+    - Dateparser
+    - Position
+    - Datepicker

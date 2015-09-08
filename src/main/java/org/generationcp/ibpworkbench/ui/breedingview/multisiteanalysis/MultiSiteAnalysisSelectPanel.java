@@ -27,15 +27,16 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.ibpworkbench.util.DatasetUtil;
+import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
+import org.generationcp.middleware.domain.dms.StandardVariable;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.TrialEnvironment;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
 import org.generationcp.middleware.domain.dms.Variable;
-import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.domain.oms.TermId;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -265,7 +266,7 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 					this.environmentNames.add(var.getValue());
 				}
 			}
-		} catch (MiddlewareQueryException e) {
+		} catch (MiddlewareException e) {
 			MultiSiteAnalysisSelectPanel.LOG.error("Error getting trial environments" + e);
 		}
 	}
@@ -302,7 +303,7 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 							MultiSiteAnalysisSelectPanel.this.environmentNames.add(var.getValue());
 						}
 					}
-				} catch (MiddlewareQueryException e) {
+				} catch (MiddlewareException e) {
 					MultiSiteAnalysisSelectPanel.LOG.error("Error getting trial environments", e);
 				}
 
@@ -643,13 +644,13 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 			this.updateFactorsTable(factorList, factors);
 			this.updateVariatesTable(variateList, factors, variates);
 
-		} catch (MiddlewareQueryException e) {
+		} catch (MiddlewareException e) {
 			MultiSiteAnalysisSelectPanel.LOG.error("Error getting dataset(s) for MSA screen", e);
 		}
 	}
 
 	protected void populateTraitGroup(DataSet ds, List<VariateModel> variateList) {
-		for (VariableType variate : ds.getVariableTypes().getVariates().getVariableTypes()) {
+		for (DMSVariableType variate : ds.getVariableTypes().getVariates().getVariableTypes()) {
 
 			VariateModel vm = new VariateModel();
 			vm.setId(variate.getRank());
@@ -676,7 +677,7 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 	}
 
 	protected void populateGenotypeDropdown(DataSet ds, List<FactorModel> factorList) {
-		for (VariableType factor : ds.getVariableTypes().getFactors().getVariableTypes()) {
+		for (DMSVariableType factor : ds.getVariableTypes().getFactors().getVariableTypes()) {
 
 			FactorModel fm = new FactorModel();
 			fm.setId(factor.getRank());
@@ -698,19 +699,26 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 	}
 
 	protected void populateEnvironmentDropdown(DataSet trialDs) {
-		for (VariableType factor : trialDs.getVariableTypes().getFactors().getVariableTypes()) {
+		for (DMSVariableType factor : trialDs.getVariableTypes().getFactors().getVariableTypes()) {
 
 			if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT
-					&& factor.getStandardVariable().getStoredIn().getId() != TermId.TRIAL_INSTANCE_STORAGE.getId()) {
+					&& factor.getStandardVariable().getId() != TermId.TRIAL_INSTANCE_FACTOR.getId()) {
 				this.getSelectSpecifyEnvironmentGroups().addItem(factor.getLocalName());
 			}
 
-			// only TRIAL_ENVIRONMENT_INFO_STORAGE(1020) TRIAL_INSTANCE_STORAGE(1021) factors in selectEnv dropdown
-			if (factor.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()
-					|| factor.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_ENVIRONMENT_INFO_STORAGE.getId()) {
+			if (factor.getStandardVariable().getId() == TermId.TRIAL_INSTANCE_FACTOR.getId()
+					|| isGeolocationProperty(factor.getStandardVariable())) {
 				this.getSelectSpecifyEnvironment().addItem(factor.getLocalName());
 			}
 		}
+	}
+
+	private boolean isGeolocationProperty(StandardVariable standardVariable) {
+		return standardVariable.getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT && (
+				standardVariable.getId() != TermId.TRIAL_INSTANCE_FACTOR.getId() || standardVariable.getId() != TermId.LATITUDE.getId() &&
+						standardVariable.getId() != TermId.LONGITUDE.getId() &&
+						standardVariable.getId() != TermId.GEODETIC_DATUM.getId() &&
+						standardVariable.getId() != TermId.ALTITUDE.getId());
 	}
 
 	private void updateFactorsTable(List<FactorModel> factorList, Table factors) {

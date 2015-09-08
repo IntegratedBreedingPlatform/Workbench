@@ -6,7 +6,8 @@ import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.ibpworkbench.ui.dashboard.preview.NurseryListPreview;
 import org.generationcp.ibpworkbench.ui.dashboard.preview.NurseryListPreviewException;
 import org.generationcp.ibpworkbench.ui.dashboard.preview.NurseryListPreviewPresenter;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.exceptions.ConfigException;
+import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.pojos.dms.DmsProject;
 import org.junit.Assert;
 import org.junit.Before;
@@ -35,7 +36,7 @@ public class DeleteConfirmDialogListenerTest {
 	}
 
 	@Test
-	public void testDeleteStudyWithRootFolderAsParent() throws MiddlewareQueryException, NurseryListPreviewException {
+	public void testDeleteStudyWithRootFolderAsParent() throws NurseryListPreviewException, ConfigException, MiddlewareException {
 		DmsProject parent = new DmsProject();
 		parent.setProjectId(NurseryListPreview.ROOT_FOLDER);
 		Mockito.when(this.presenter.getStudyNodeParent(this.finalId)).thenReturn(parent);
@@ -51,7 +52,7 @@ public class DeleteConfirmDialogListenerTest {
 	}
 
 	@Test
-	public void testDeleteStudyWithNonRootFolderAsParent() throws MiddlewareQueryException, NurseryListPreviewException {
+	public void testDeleteStudyWithNonRootFolderAsParent() throws NurseryListPreviewException, ConfigException, MiddlewareException {
 		DmsProject parent = new DmsProject();
 		parent.setProjectId(2);
 		Mockito.when(this.presenter.getStudyNodeParent(this.finalId)).thenReturn(parent);

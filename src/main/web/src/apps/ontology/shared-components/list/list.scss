@@ -1,0 +1,4 @@
+// Only show the no items message if there are no other trs
+tr + .om-no-items {
+	display: none;
+}

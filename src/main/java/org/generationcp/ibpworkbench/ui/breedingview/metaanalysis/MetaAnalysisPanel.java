@@ -1,22 +1,23 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * 
  * Generation Challenge Programme (GCP)
- *
- *
+ * 
+ * 
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
+ * 
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.ui.breedingview.metaanalysis;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
+import com.vaadin.data.util.BeanContainer;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
+import com.vaadin.ui.*;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
 import org.generationcp.browser.study.listeners.ViewStudyDetailsButtonClickListener;
 import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.help.document.HelpModule;
@@ -30,17 +31,13 @@ import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.MetaEnvironmentModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
-import org.generationcp.middleware.domain.dms.DataSet;
-import org.generationcp.middleware.domain.dms.DataSetType;
-import org.generationcp.middleware.domain.dms.PhenotypicType;
-import org.generationcp.middleware.domain.dms.Study;
-import org.generationcp.middleware.domain.dms.TrialEnvironment;
-import org.generationcp.middleware.domain.dms.TrialEnvironments;
-import org.generationcp.middleware.domain.dms.Variable;
-import org.generationcp.middleware.domain.dms.VariableType;
+import org.generationcp.middleware.domain.dms.*;
 import org.generationcp.middleware.domain.oms.TermId;
+import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
+import org.generationcp.middleware.manager.ManagerFactory;
+import org.generationcp.middleware.manager.StudyDataManagerImpl;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -49,26 +46,12 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.util.BeanContainer;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
+import java.util.*;
 
 /**
- *
+ * 
  * @author Aldrin Batac
- *
+ * 
  */
 @Configurable
 public class MetaAnalysisPanel extends VerticalLayout implements InitializingBean, InternationalizableComponent, IBPWorkbenchLayout {
@@ -141,13 +124,14 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 
 	@Override
 	public void instantiateComponents() {
+
 		this.setTitleContent();
 
 		ThemeResource resource = new ThemeResource("../vaadin-retro/images/search-nurseries.png");
 		Label headingLabel = new Label("Select Data for Analysis");
-				headingLabel.setStyleName(Bootstrap.Typography.H4.styleName());
-				headingLabel.addStyleName("label-bold");
-				this.heading = new HeaderLabelLayout(resource, headingLabel);
+		headingLabel.setStyleName(Bootstrap.Typography.H4.styleName());
+		headingLabel.addStyleName("label-bold");
+		this.heading = new HeaderLabelLayout(resource, headingLabel);
 
 		this.browseLink = new Button();
 		this.browseLink.setImmediate(true);
@@ -481,7 +465,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 
 			try {
 				this.studyName = MetaAnalysisPanel.this.studyDataManager.getStudy(this.dataSet.getStudyId()).getName();
-			} catch (MiddlewareQueryException e) {
+			} catch (MiddlewareException e) {
 				MetaAnalysisPanel.LOG.error("Error getting study name", e);
 			}
 
@@ -603,7 +587,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 			BeanContainer<Integer, VariateModel> container = new BeanContainer<Integer, VariateModel>(VariateModel.class);
 			container.setBeanIdProperty("id");
 
-			for (VariableType variate : this.dataSet.getVariableTypes().getVariates().getVariableTypes()) {
+			for (DMSVariableType variate : this.dataSet.getVariableTypes().getVariates().getVariableTypes()) {
 				VariateModel vm = new VariateModel();
 				vm.setId(variate.getRank());
 				vm.setName(variate.getLocalName());
@@ -637,9 +621,9 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 			BeanContainer<Integer, FactorModel> container = new BeanContainer<Integer, FactorModel>(FactorModel.class);
 			container.setBeanIdProperty("id");
 
-			for (VariableType factor : this.dataSet.getVariableTypes().getFactors().getVariableTypes()) {
+			for (DMSVariableType factor : this.dataSet.getVariableTypes().getFactors().getVariableTypes()) {
 
-				if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.DATASET) {
+				if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.DATASET || factor.getStandardVariable().getPhenotypicType() == PhenotypicType.STUDY) {
 					continue;
 				}
 
@@ -697,8 +681,8 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 			String trialInstanceFactorName = null;
 			String environmentFactorName = null;
 
-			for (VariableType f : this.dataSet.getVariableTypes().getFactors().getVariableTypes()) {
-				if (f.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()) {
+			for (DMSVariableType f : this.dataSet.getVariableTypes().getFactors().getVariableTypes()) {
+				if (f.getStandardVariable().getId() == TermId.TRIAL_INSTANCE_FACTOR.getId()) {
 					trialInstanceFactorName = f.getLocalName();
 				}
 
@@ -707,9 +691,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 					environmentFactorName = f.getLocalName();
 				}
 
-				if (f.getStandardVariable().getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT
-						&& f.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_ENVIRONMENT_INFO_STORAGE.getId()
-						&& environmentFactorName == null) {
+				if (isGeolocationProperty(f.getStandardVariable()) && environmentFactorName == null) {
 					environmentFactorName = f.getLocalName();
 				}
 
@@ -763,6 +745,15 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 					}
 				}
 			}
+		}
+
+		private boolean isGeolocationProperty(StandardVariable standardVariable) {
+			return standardVariable.getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT && (
+					standardVariable.getId() != TermId.TRIAL_INSTANCE_FACTOR.getId()
+							|| standardVariable.getId() != TermId.LATITUDE.getId() &&
+							standardVariable.getId() != TermId.LONGITUDE.getId() &&
+							standardVariable.getId() != TermId.GEODETIC_DATUM.getId() &&
+							standardVariable.getId() != TermId.ALTITUDE.getId());
 		}
 
 	}// end of EnvironmentTabComponent inner class

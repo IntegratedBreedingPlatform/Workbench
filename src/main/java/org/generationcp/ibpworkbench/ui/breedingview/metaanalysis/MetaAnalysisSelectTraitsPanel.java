@@ -25,15 +25,14 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.MetaEnvironmentModel;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
+import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.domain.dms.Experiment;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
 import org.generationcp.middleware.domain.dms.Variable;
-import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.domain.oms.TermId;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -227,7 +226,7 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 			public Object generateCell(Table source, Object itemId, Object columnId) {
 				String countData = "0";
 				MetaEnvironmentModel item = (MetaEnvironmentModel) itemId;
-				VariableType varType =
+				DMSVariableType varType =
 						MetaAnalysisSelectTraitsPanel.this.dataSets.get(item.getDataSetId()).findVariableTypeByLocalName(
 								columnId.toString());
 
@@ -265,7 +264,7 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 			public Object generateCell(Table source, Object itemId, Object columnId) {
 
 				MetaEnvironmentModel item = (MetaEnvironmentModel) itemId;
-				VariableType varType =
+				DMSVariableType varType =
 						MetaAnalysisSelectTraitsPanel.this.dataSets.get(item.getDataSetId()).findVariableTypeByLocalName(
 								columnId.toString());
 				if (varType == null) {
@@ -328,20 +327,20 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 				this.dataSets.put(metaEnvironment.getDataSetId(), ds);
 				this.trialEnvironmentsList.put(metaEnvironment.getDataSetId(), envs);
 
-				for (VariableType v : ds.getVariableTypes().getVariates().getVariableTypes()) {
+				for (DMSVariableType v : ds.getVariableTypes().getVariates().getVariableTypes()) {
 					this.environmentsTable.addGeneratedColumn(v.getLocalName(), generatedVariateColumn);
 					variatesColumnList.add(v.getLocalName());
 				}
 
-				for (VariableType f : ds.getVariableTypes().getFactors().getVariableTypes()) {
+				for (DMSVariableType f : ds.getVariableTypes().getFactors().getVariableTypes()) {
 					if (f.getStandardVariable().getPhenotypicType() == PhenotypicType.DATASET) {
 						continue;
 					}
 
 					Boolean isGidOrDesig = false;
 
-					if (f.getStandardVariable().getStoredIn().getId() == TermId.ENTRY_DESIGNATION_STORAGE.getId()
-							|| f.getStandardVariable().getStoredIn().getId() == TermId.ENTRY_GID_STORAGE.getId()) {
+					if (f.getStandardVariable().getId() == TermId.DESIG.getId()
+							|| f.getStandardVariable().getId() == TermId.GID.getId()) {
 						isGidOrDesig = true;
 					}
 
@@ -651,132 +650,125 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 			MetaEnvironmentModel envModel = (MetaEnvironmentModel) envIterator.next();
 
 			if (envModel.getActive()) {
+				String desigFactorName = "";
+				String gidFactorName = "";
+				String entrynoFactorName = "";
 
-				try {
-
-					String desigFactorName = "";
-					String gidFactorName = "";
-					String entrynoFactorName = "";
-
-					List<Experiment> exps = studyDataManager.getExperiments(envModel.getDataSetId(), 0, Integer.MAX_VALUE);
-					Experiment e = exps.get(0);
-					if (e != null) {
-						for (VariableType var : e.getFactors().getVariableTypes().getVariableTypes()) {
-							if (var.getStandardVariable().getStoredIn().getId() == TermId.ENTRY_DESIGNATION_STORAGE.getId()) {
-								desigFactorName = var.getLocalName();
-							} else if (var.getStandardVariable().getStoredIn().getId() == TermId.ENTRY_GID_STORAGE.getId()) {
-								gidFactorName = var.getLocalName();
-							} else if (var.getStandardVariable().getStoredIn().getId() == TermId.ENTRY_NUMBER_STORAGE.getId()) {
-								entrynoFactorName = var.getLocalName();
-							}
+				List<Experiment> exps = studyDataManager.getExperiments(envModel.getDataSetId(), 0, Integer.MAX_VALUE);
+				Experiment e = exps.get(0);
+				if (e != null) {
+					for (DMSVariableType var : e.getFactors().getVariableTypes().getVariableTypes()) {
+						if (var.getStandardVariable().getId() == TermId.DESIG.getId()) {
+							desigFactorName = var.getLocalName();
+						} else if (var.getStandardVariable().getId() == TermId.GID.getId()) {
+							gidFactorName = var.getLocalName();
+						} else if (var.getStandardVariable().getId() == TermId.ENTRY_NO.getId()) {
+							entrynoFactorName = var.getLocalName();
 						}
 					}
+				}
 
-					for (Experiment exp : exps) {
+				for (Experiment exp : exps) {
 
-						// if header Row Created
-						if (!headerRowCreated) {
+					// if header Row Created
+					if (!headerRowCreated) {
 
-							headerRow.createCell(cellCounter++).setCellValue("STUDYNAME");
-							headerRow.createCell(cellCounter++).setCellValue("TRIALID");
-							headerRow.createCell(cellCounter++).setCellValue("ENTRYID");
-							if ("".equals(desigFactorName)) {
-								headerRow.createCell(cellCounter++).setCellValue(desigFactorName);
-							} else {
-								headerRow.createCell(cellCounter++).setCellValue("DESIG");
-							}
-							if ("".equals(gidFactorName)) {
-								headerRow.createCell(cellCounter++).setCellValue(gidFactorName);
-							} else {
-								headerRow.createCell(cellCounter++).setCellValue("GID");
-							}
-							supressColumnList.add(desigFactorName);
-							supressColumnList.add(gidFactorName);
-							for (Entry<String, Boolean> entry : this.factorsCheckBoxState.entrySet()) {
-								// suppress the desig and gid columns
-								if (supressColumnList.contains(entry.getKey())) {
-									continue;
-								}
-
-								if (entry.getValue()) {
-									headerRow.createCell(cellCounter++).setCellValue(entry.getKey());
-								}
-							}
-							for (Entry<String, Boolean> entry : this.variatesCheckBoxState.entrySet()) {
-								if (entry.getValue()) {
-									headerRow.createCell(cellCounter++).setCellValue(entry.getKey());
-								}
-							}
-
-							headerRowCreated = true;
-						}
-
-						Variable trialVariable = exp.getFactors().findByLocalName(envModel.getTrialFactorName());
-						if (trialVariable == null) {
-							continue;
-						}
-						if (!trialVariable.getValue().equalsIgnoreCase(envModel.getTrial())) {
-							continue;
-						}
-
-						cellCounter = 0;
-						Row row = defaultSheet.createRow(rowCounter++);
-
-						row.createCell(cellCounter++).setCellValue(envModel.getStudyName()); // STUDYNAME
-						row.createCell(cellCounter++).setCellValue(String.format("%s-%s", envModel.getStudyId(), envModel.getTrial())); // TRIALID
-						Variable varEntryNo = exp.getFactors().findByLocalName(entrynoFactorName); // //ENTRYID
-						if (varEntryNo != null) {
-							row.createCell(cellCounter++)
-									.setCellValue(String.format("%s-%s", envModel.getStudyId(), varEntryNo.getValue()));
+						headerRow.createCell(cellCounter++).setCellValue("STUDYNAME");
+						headerRow.createCell(cellCounter++).setCellValue("TRIALID");
+						headerRow.createCell(cellCounter++).setCellValue("ENTRYID");
+						if ("".equals(desigFactorName)) {
+							headerRow.createCell(cellCounter++).setCellValue(desigFactorName);
 						} else {
-							row.createCell(cellCounter++).setCellValue("");
+							headerRow.createCell(cellCounter++).setCellValue("DESIG");
 						}
-						Variable varDesig = exp.getFactors().findByLocalName(desigFactorName); // DESIG
-						if (varDesig != null) {
-							row.createCell(cellCounter++).setCellValue(varDesig.getValue());
+						if ("".equals(gidFactorName)) {
+							headerRow.createCell(cellCounter++).setCellValue(gidFactorName);
 						} else {
-							row.createCell(cellCounter++).setCellValue("");
+							headerRow.createCell(cellCounter++).setCellValue("GID");
 						}
-						Variable varGid = exp.getFactors().findByLocalName(gidFactorName); // GID
-						if (varGid != null) {
-							row.createCell(cellCounter++).setCellValue(varGid.getValue());
-						} else {
-							row.createCell(cellCounter++).setCellValue("");
-						}
-
+						supressColumnList.add(desigFactorName);
+						supressColumnList.add(gidFactorName);
 						for (Entry<String, Boolean> entry : this.factorsCheckBoxState.entrySet()) {
-
 							// suppress the desig and gid columns
 							if (supressColumnList.contains(entry.getKey())) {
 								continue;
 							}
 
 							if (entry.getValue()) {
-								Variable var = exp.getFactors().findByLocalName(entry.getKey());
-								String cellValue = "";
-								if (var != null) {
-									cellValue = var.getValue();
-								}
-								row.createCell(cellCounter++).setCellValue(cellValue);
+								headerRow.createCell(cellCounter++).setCellValue(entry.getKey());
 							}
-
 						}
 						for (Entry<String, Boolean> entry : this.variatesCheckBoxState.entrySet()) {
 							if (entry.getValue()) {
-								Variable var = exp.getVariates().findByLocalName(entry.getKey());
-								String cellValue = "";
-								if (var != null) {
-									cellValue = var.getValue();
-								}
-								row.createCell(cellCounter++).setCellValue(cellValue);
+								headerRow.createCell(cellCounter++).setCellValue(entry.getKey());
 							}
 						}
 
+						headerRowCreated = true;
 					}
-				} catch (MiddlewareQueryException e) {
-					LOG.error(e.getMessage(),e);
-				}
 
+					Variable trialVariable = exp.getFactors().findByLocalName(envModel.getTrialFactorName());
+					if (trialVariable == null) {
+						continue;
+					}
+					if (!trialVariable.getValue().equalsIgnoreCase(envModel.getTrial())) {
+						continue;
+					}
+
+					cellCounter = 0;
+					Row row = defaultSheet.createRow(rowCounter++);
+
+					row.createCell(cellCounter++).setCellValue(envModel.getStudyName()); // STUDYNAME
+					row.createCell(cellCounter++).setCellValue(String.format("%s-%s", envModel.getStudyId(), envModel.getTrial())); // TRIALID
+					Variable varEntryNo = exp.getFactors().findByLocalName(entrynoFactorName); // //ENTRYID
+					if (varEntryNo != null) {
+						row.createCell(cellCounter++)
+								.setCellValue(String.format("%s-%s", envModel.getStudyId(), varEntryNo.getValue()));
+					} else {
+						row.createCell(cellCounter++).setCellValue("");
+					}
+					Variable varDesig = exp.getFactors().findByLocalName(desigFactorName); // DESIG
+					if (varDesig != null) {
+						row.createCell(cellCounter++).setCellValue(varDesig.getValue());
+					} else {
+						row.createCell(cellCounter++).setCellValue("");
+					}
+					Variable varGid = exp.getFactors().findByLocalName(gidFactorName); // GID
+					if (varGid != null) {
+						row.createCell(cellCounter++).setCellValue(varGid.getValue());
+					} else {
+						row.createCell(cellCounter++).setCellValue("");
+					}
+
+					for (Entry<String, Boolean> entry : this.factorsCheckBoxState.entrySet()) {
+
+						// suppress the desig and gid columns
+						if (supressColumnList.contains(entry.getKey())) {
+							continue;
+						}
+
+						if (entry.getValue()) {
+							Variable var = exp.getFactors().findByLocalName(entry.getKey());
+							String cellValue = "";
+							if (var != null) {
+								cellValue = var.getValue();
+							}
+							row.createCell(cellCounter++).setCellValue(cellValue);
+						}
+
+					}
+					for (Entry<String, Boolean> entry : this.variatesCheckBoxState.entrySet()) {
+						if (entry.getValue()) {
+							Variable var = exp.getVariates().findByLocalName(entry.getKey());
+							String cellValue = "";
+							if (var != null) {
+								cellValue = var.getValue();
+							}
+							row.createCell(cellCounter++).setCellValue(cellValue);
+						}
+					}
+
+				}
 			}
 		}// while
 

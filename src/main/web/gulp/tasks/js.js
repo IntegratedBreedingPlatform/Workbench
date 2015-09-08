@@ -40,3 +40,4 @@ gulp.task('clientJs', function() {
 		.pipe(gulpif(argv.release, uglify()))
 		.pipe(gulp.dest(dest));
 });
+

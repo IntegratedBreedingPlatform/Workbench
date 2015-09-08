@@ -29,6 +29,7 @@ import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -234,38 +235,37 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
 			@Override
 			public void buttonClick(final ClickEvent clickEvent) {
-				final TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+				final TransactionTemplate transactionTemplate = new TransactionTemplate(ProjectMembersComponent.this.transactionManager);
 				transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 					@Override
 					protected void doInTransactionWithoutResult(final TransactionStatus status) {
 						try {
-							ProjectMembersComponent.this.presenter.doAddNewProgram();
-		
+							final Project newlyCreatedProgram = ProjectMembersComponent.this.presenter.doAddNewProgram();
 							MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
 									ProjectMembersComponent.this.messageSource.getMessage(Message.SUCCESS),
-									ProjectMembersComponent.this.presenter.program.getProjectName() + " program has been successfully created.");
-		
-							ProjectMembersComponent.this.sessionData.setLastOpenedProject(ProjectMembersComponent.this.presenter.program);
-							ProjectMembersComponent.this.sessionData.setSelectedProject(ProjectMembersComponent.this.presenter.program);
-		
+									newlyCreatedProgram.getProjectName() + " program has been successfully created.");
+
+							ProjectMembersComponent.this.sessionData.setLastOpenedProject(newlyCreatedProgram);
+							ProjectMembersComponent.this.sessionData.setSelectedProject(newlyCreatedProgram);
+
 							if (IBPWorkbenchApplication.get().getMainWindow() instanceof WorkbenchMainView) {
 								((WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow()).getSidebar().populateLinks();
 							}
-		
+
 							ProjectMembersComponent.this.presenter.enableProgramMethodsAndLocationsTab();
-		
+
 						} catch (Exception e) {
-		
+
 							if ("basic_details_invalid".equals(e.getMessage())) {
 								return;
 							}
-		
+
 							ProjectMembersComponent.LOG.error("Oops there might be serious problem on creating the program, investigate it!", e);
-		
+
 							MessageNotifier.showError(clickEvent.getComponent().getWindow(),
 									ProjectMembersComponent.this.messageSource.getMessage(Message.DATABASE_ERROR),
 									ProjectMembersComponent.this.messageSource.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
-		
+
 						}
 					}
 				});

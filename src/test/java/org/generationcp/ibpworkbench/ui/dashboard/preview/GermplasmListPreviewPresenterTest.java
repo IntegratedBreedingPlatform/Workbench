@@ -79,7 +79,6 @@ public class GermplasmListPreviewPresenterTest {
 
 	@Before
 	public void setUp() throws Exception {
-		Mockito.when(this.view.getManagerFactoryProvider()).thenReturn(this.managerFactoryProvider);
 		Mockito.when(this.managerFactoryProvider.getManagerFactoryForProject(this.project)).thenReturn(this.managerFactory);
 		Mockito.when(this.managerFactory.getGermplasmListManager()).thenReturn(this.germplasmListManager);
 

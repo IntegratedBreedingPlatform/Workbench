@@ -4,7 +4,6 @@ package org.generationcp.ibpworkbench.ui.dashboard.preview;
 import java.util.List;
 
 import org.generationcp.commons.constant.ToolEnum;
-import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
@@ -23,6 +22,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.terminal.ThemeResource;
@@ -51,7 +54,8 @@ public class GermplasmListPreview extends VerticalLayout {
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
-	private ManagerFactoryProvider managerFactoryProvider;
+	private PlatformTransactionManager transactionManager;
+
 
 	private GermplasmListPreviewPresenter presenter;
 
@@ -178,33 +182,38 @@ public class GermplasmListPreview extends VerticalLayout {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void buttonClick(Button.ClickEvent event) {
-				if (GermplasmListPreview.this.lastItemId == null || GermplasmListPreview.this.lastItemId instanceof String) {
-					MessageNotifier.showError(event.getComponent().getWindow(),
-							GermplasmListPreview.this.messageSource.getMessage(Message.INVALID_OPERATION),
-							GermplasmListPreview.this.messageSource.getMessage(Message.INVALID_NO_SELECTION));
-					return;
-				}
+			public void buttonClick(final Button.ClickEvent event) {
+				TransactionTemplate transactionTemplate = new TransactionTemplate(GermplasmListPreview.this.transactionManager);
+				transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+					@Override
+					protected void doInTransactionWithoutResult(TransactionStatus status) {
+						if (GermplasmListPreview.this.lastItemId == null || GermplasmListPreview.this.lastItemId instanceof String) {
+							MessageNotifier.showError(event.getComponent().getWindow(),
+									GermplasmListPreview.this.messageSource.getMessage(Message.INVALID_OPERATION),
+									GermplasmListPreview.this.messageSource.getMessage(Message.INVALID_NO_SELECTION));
+							return;
+						}
 
-				if (GermplasmListPreview.this.presenter.isFolder((Integer) GermplasmListPreview.this.lastItemId)) {
-					MessageNotifier.showError(event.getComponent().getWindow(), GermplasmListPreview.this.messageSource
-							.getMessage(Message.INVALID_OPERATION), GermplasmListPreview.this.messageSource.getMessage(
-							Message.INVALID_ITEM_IS_FOLDER,
-							GermplasmListPreview.this.treeView.getItemCaption(GermplasmListPreview.this.lastItemId)));
-					return;
-				}
-				GermplasmListPreview.this.presenter.updateProjectLastOpenedDate();
+						if (GermplasmListPreview.this.presenter.isFolder((Integer) GermplasmListPreview.this.lastItemId)) {
+							MessageNotifier.showError(event.getComponent().getWindow(), GermplasmListPreview.this.messageSource
+									.getMessage(Message.INVALID_OPERATION), GermplasmListPreview.this.messageSource.getMessage(
+											Message.INVALID_ITEM_IS_FOLDER,
+											GermplasmListPreview.this.treeView.getItemCaption(GermplasmListPreview.this.lastItemId)));
+							return;
+						}
+						GermplasmListPreview.this.presenter.updateProjectLastOpenedDate();
 
-				// update sidebar selection
-				GermplasmListPreview.LOG.trace("selecting sidebar");
-				WorkbenchMainView mainWindow = (WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow();
+						// update sidebar selection
+						GermplasmListPreview.LOG.trace("selecting sidebar");
+						WorkbenchMainView mainWindow = (WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow();
 
-				if (null != WorkbenchSidebar.sidebarTreeMap.get("manage_list")) {
-					mainWindow.getSidebar().selectItem(WorkbenchSidebar.sidebarTreeMap.get("manage_list"));
-				}
-				// page change to list manager, with parameter passed
-				new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER, (Integer) GermplasmListPreview.this.lastItemId).buttonClick(event);
-
+						if (null != WorkbenchSidebar.sidebarTreeMap.get("manage_list")) {
+							mainWindow.getSidebar().selectItem(WorkbenchSidebar.sidebarTreeMap.get("manage_list"));
+						}
+						// page change to list manager, with parameter passed
+						new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER, (Integer) GermplasmListPreview.this.lastItemId).buttonClick(event);
+					}
+				});
 			}
 		});
 
@@ -224,7 +233,7 @@ public class GermplasmListPreview extends VerticalLayout {
 				if (GermplasmListPreview.this.lastItemId instanceof String) {
 					MessageNotifier.showError(event.getComponent().getWindow(), GermplasmListPreview.this.messageSource
 							.getMessage(Message.INVALID_OPERATION), GermplasmListPreview.this.messageSource.getMessage(
-							Message.INVALID_CANNOT_RENAME_ITEM, (String) GermplasmListPreview.this.lastItemId));
+									Message.INVALID_CANNOT_RENAME_ITEM, (String) GermplasmListPreview.this.lastItemId));
 					return;
 				}
 
@@ -238,7 +247,7 @@ public class GermplasmListPreview extends VerticalLayout {
 				final InputPopup w =
 						new InputPopup(GermplasmListPreview.this.messageSource.getMessage(Message.RENAME_ITEM),
 								GermplasmListPreview.this.messageSource.getMessage(Message.ITEM_NAME), GermplasmListPreview.this.treeView
-										.getItemCaption(GermplasmListPreview.this.lastItemId));
+								.getItemCaption(GermplasmListPreview.this.lastItemId));
 				w.setOkListener(new Button.ClickListener() {
 
 					private static final long serialVersionUID = -242570054807727077L;
@@ -357,7 +366,7 @@ public class GermplasmListPreview extends VerticalLayout {
 				try {
 					gpList =
 							GermplasmListPreview.this.presenter
-									.validateForDeleteGermplasmList((Integer) GermplasmListPreview.this.lastItemId);
+							.validateForDeleteGermplasmList((Integer) GermplasmListPreview.this.lastItemId);
 				} catch (Exception e) {
 					GermplasmListPreview.LOG.error(e.getMessage(), e);
 					MessageNotifier.showError(event.getComponent().getWindow(),
@@ -569,14 +578,6 @@ public class GermplasmListPreview extends VerticalLayout {
 		this.initializeLayout();
 		this.initializeActions();
 
-	}
-
-	public ManagerFactoryProvider getManagerFactoryProvider() {
-		return this.managerFactoryProvider;
-	}
-
-	public void setManagerFactoryProvider(ManagerFactoryProvider managerFactoryProvider) {
-		this.managerFactoryProvider = managerFactoryProvider;
 	}
 
 	public String getListLabel() {

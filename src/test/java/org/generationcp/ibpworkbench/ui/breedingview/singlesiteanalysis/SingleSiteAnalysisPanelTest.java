@@ -1,19 +1,11 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.ibpworkbench.util.StudyUtil;
-import org.generationcp.middleware.domain.dms.DataSet;
-import org.generationcp.middleware.domain.dms.PhenotypicType;
-import org.generationcp.middleware.domain.dms.Study;
-import org.generationcp.middleware.domain.dms.VariableType;
-import org.generationcp.middleware.domain.dms.VariableTypeList;
+import org.generationcp.middleware.domain.dms.*;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -21,6 +13,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class SingleSiteAnalysisPanelTest {
 
@@ -104,9 +100,9 @@ public class SingleSiteAnalysisPanelTest {
 	}
 
 	private void removeDatasetTypes(VariableTypeList currentFactors) {
-		Iterator<VariableType> variableTypeIterator = currentFactors.getVariableTypes().iterator();
+		Iterator<DMSVariableType> variableTypeIterator = currentFactors.getVariableTypes().iterator();
 		while (variableTypeIterator.hasNext()) {
-			VariableType variableType = variableTypeIterator.next();
+			DMSVariableType variableType = variableTypeIterator.next();
 			if (variableType.getStandardVariable().getPhenotypicType() == PhenotypicType.DATASET) {
 				variableTypeIterator.remove();
 			}
@@ -115,8 +111,8 @@ public class SingleSiteAnalysisPanelTest {
 
 	@Test
 	public void testTransformVariableTypeToVariateModel() {
-		List<VariableType> variates = this.currentDataset.getVariableTypes().getVariates().getVariableTypes();
-		for (VariableType variate : variates) {
+		List<DMSVariableType> variates = this.currentDataset.getVariableTypes().getVariates().getVariableTypes();
+		for (DMSVariableType variate : variates) {
 			VariateModel vm = this.singleSiteAnalysisPanel.transformVariableTypeToVariateModel(variate);
 			Assert.assertEquals(Integer.toString(variate.getRank()), Integer.toString(vm.getId()));
 			Assert.assertEquals(variate.getLocalName(), vm.getName());

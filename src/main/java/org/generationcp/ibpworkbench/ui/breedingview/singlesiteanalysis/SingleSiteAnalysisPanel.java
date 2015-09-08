@@ -33,11 +33,11 @@ import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.ibpworkbench.ui.breedingview.SelectStudyDialog;
 import org.generationcp.ibpworkbench.ui.breedingview.SelectStudyDialogForBreedingViewUpload;
+import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.Study;
-import org.generationcp.middleware.domain.dms.VariableType;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -631,9 +631,9 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 			this.factorList = new ArrayList<FactorModel>();
 			this.variateList = new ArrayList<VariateModel>();
 
-			for (VariableType factor : ds.getVariableTypes().getFactors().getVariableTypes()) {
+			for (DMSVariableType factor : ds.getVariableTypes().getFactors().getVariableTypes()) {
 
-				if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.DATASET) {
+				if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.DATASET || factor.getStandardVariable().getPhenotypicType() == PhenotypicType.STUDY) {
 					continue;
 				}
 
@@ -651,7 +651,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 				this.factorList.add(fm);
 			}
 
-			for (VariableType variate : ds.getVariableTypes().getVariates().getVariableTypes()) {
+			for (DMSVariableType variate : ds.getVariableTypes().getVariates().getVariableTypes()) {
 				VariateModel vm = this.transformVariableTypeToVariateModel(variate);
 				this.variateList.add(vm);
 			}
@@ -662,13 +662,13 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 			this.updateFactorsTable(this.factorList);
 			this.updateVariatesTable(this.variateList);
 
-		} catch (MiddlewareQueryException e) {
+		} catch (MiddlewareException e) {
 			SingleSiteAnalysisPanel.LOG.error(e.getMessage(), e);
 			this.showDatabaseError(this.getWindow());
 		}
 	}
 
-	public VariateModel transformVariableTypeToVariateModel(VariableType variate) {
+	public VariateModel transformVariableTypeToVariateModel(DMSVariableType variate) {
 		VariateModel vm = new VariateModel();
 		vm.setId(variate.getRank());
 		vm.setName(variate.getLocalName());

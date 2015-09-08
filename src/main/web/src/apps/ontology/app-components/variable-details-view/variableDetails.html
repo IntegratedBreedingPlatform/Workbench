@@ -1,0 +1,204 @@
+
+<div ng-hide="model" class="om-details-throbber-wrapper">
+	<span class="throbber throbber-2x"></span>
+</div>
+<form class="form-horizontal" ng-show="model" name="vdForm" ng-submit="saveChanges($event, variableId, model)" novalidate>
+
+	<div class="om-panel-header">
+		<h2 class="om-panel-title underlined-heading">
+			<span class="glyphicon favourite-icon" ng-class="'glyphicon-' + (model.favourite ? 'star' : 'star-empty')" ng-click="debouncedToggleFavourites(variableId, model)"></span>
+			{{variableName}}
+		</h2>
+	</div>
+
+	<div class="om-panel-content">
+		<div ng-if="serverErrors.general || someListsNotLoaded" class="alert alert-danger" role="alert">
+			<ul>
+				<li ng-repeat="error in serverErrors.general">{{error}}</li>
+			</ul>
+			<ul ng-if="someListsNotLoaded">
+				<li>{{'validation.variable.someListsNotLoaded' | translate}}</li>
+			</ul>
+		</div>
+		<div ng-if="showNoneditableFieldsAlert" class="alert alert-warning" role="alert">
+			<span>{{'validation.variable.noneditableFields' | translate }}</span>
+		</div>
+		<div ng-class="formGroupClass('omName', 'name')">
+			<label for="omName" class="col-sm-3 control-label" ng-class="{'label-required': editing}">
+				{{'formField.name' | translate}}
+			</label>
+			<div class="col-sm-9">
+				<om-input om-name="omName" om-property="name" om-editing="editing" om-model="model" om-required="true" om-max-length="32" om-pattern="^[a-zA-Z_%][a-zA-Z_%0-9]*$"></om-input>
+				<ng-messages for="vdForm.omName.$error" ng-if="vdForm.$submitted || vdForm.omName.$touched">
+					<ng-message when="required"><p class="text-danger">{{'validation.variable.nameRequired' | translate}}</p></ng-message>
+					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "32"}'}}</p></ng-message>
+					<ng-message when="pattern"><p class="text-danger">{{'validation.variable.pattern' | translate}}</p></ng-message>
+				</ng-messages>
+				<p class="text-danger" ng-hide="vdForm.omName.$touched" ng-repeat="error in serverErrors.name">{{error}}</p>
+			</div>
+		</div>
+
+		<div ng-class="formGroupClass('omAlias', 'alias')" ng-show="showAlias()">
+			<label for="omAlias" class="col-sm-3 control-label">{{'formField.alias' | translate}}</label>
+			<div class="col-sm-9">
+				<om-input om-name="omAlias" om-property="alias" om-editing="editing" om-model="model" om-max-length="32" om-pattern="^[a-zA-Z_%][a-zA-Z_%0-9]*$"></om-input>
+				<ng-messages for="vdForm.omAlias.$error" ng-if="editing && vdForm.$submitted || vdForm.omAlias.$touched">
+					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "32"}'}}</p></ng-message>
+					<ng-message when="pattern"><p class="text-danger">{{'validation.variable.pattern' | translate}}</p></ng-message>
+				</ng-messages>
+				<p class="text-danger" ng-hide="vdForm.omAlias.$touched" ng-repeat="error in serverErrors.alias">{{error}}</p>
+			</div>
+		</div>
+
+		<div ng-class="formGroupClass('omDescription', 'description')">
+			<label for="omDescription" class="col-sm-3 control-label">{{'formField.description' | translate}}</label>
+			<div class="col-sm-9">
+				<om-text-area om-name="omDescription" om-property="description" om-editing="editing" om-model="model" om-max-length="1024"></om-text-area>
+				<ng-messages for="vdForm.omDescription.$error" ng-if="editing && vdForm.$submitted || vdForm.omDescription.$touched">
+					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "1024"}'}}</p></ng-message>
+				</ng-messages>
+				<p class="text-danger" ng-hide="vdForm.omDescription.$touched" ng-repeat="error in serverErrors.description">{{error}}</p>
+			</div>
+		</div>
+
+		<div ng-class="formGroupClass('omProperty', 'property')">
+			<label for="omProperty" class="col-sm-3 control-label" ng-class="{'label-required': editing}">
+				{{'formField.property' | translate}}
+			</label>
+			<div class="col-sm-9">
+				<om-select name="omProperty" om-name="om-property" om-property="property" om-editing="editing" ng-model="model" om-options="data.properties" om-required="true"></om-select>
+				<ng-messages for="vdForm.omProperty.$error" ng-if="editing && vdForm.$submitted">
+					<ng-message when="required"><p class="text-danger">{{'validation.variable.propertyRequired' | translate}}</p></ng-message>
+				</ng-messages>
+				<p class="text-danger" ng-hide="vdForm.omProperty.$touched" ng-repeat="error in serverErrors.property">{{error}}</p>
+			</div>
+		</div>
+
+		<div ng-class="formGroupClass('omMethod', 'method')">
+			<label for="omMethod" class="col-sm-3 control-label" ng-class="{'label-required': editing}">
+				{{'formField.method' | translate}}
+			</label>
+			<div class="col-sm-9">
+				<om-select name="omMethod" om-name="om-method" om-property="method" om-editing="editing" ng-model="model" om-options="data.methods" om-required="true"></om-select>
+				<ng-messages for="vdForm.omMethod.$error" ng-if="editing && vdForm.$submitted">
+					<ng-message when="required"><p class="text-danger">{{'validation.variable.methodRequired' | translate}}</p></ng-message>
+				</ng-messages>
+				<p class="text-danger" ng-hide="vdForm.omMethod.$touched" ng-repeat="error in serverErrors.method">{{error}}</p>
+			</div>
+		</div>
+
+		<div ng-class="formGroupClass('omScale', 'scale')">
+			<label for="omScale" class="col-sm-3 control-label" ng-class="{'label-required': editing}">
+				{{'formField.scale' | translate}}
+			</label>
+			<div class="col-sm-9">
+				<om-select name="omScale" om-name="om-scale" om-property="scale" om-editing="editing" ng-model="model" om-options="data.scales" om-required="true"></om-select>
+				<ng-messages for="vdForm.omScale.$error" ng-if="editing && vdForm.$submitted">
+					<ng-message when="required"><p class="text-danger">{{'validation.variable.scaleRequired' | translate}}</p></ng-message>
+				</ng-messages>
+				<p class="text-danger" ng-hide="vdForm.omScale.$touched" ng-repeat="error in serverErrors.scale">{{error}}</p>
+			</div>
+		</div>
+
+		<div ng-class="formGroupClass('omVariableTypes', 'variableTypes')">
+			<label for="omVariableTypes" class="col-sm-3 control-label" ng-class="{'label-required': editing}">
+				{{'formField.variableType' | translate}}
+			</label>
+			<div class="col-sm-9">
+				<om-multi-select name="omVariableTypes" om-property="variableTypes" om-editing="editing" ng-model="model" om-options="data.types"></om-multi-select>
+				<ng-messages for="vdForm.omVariableTypes.$error" ng-if="vdForm.$submitted">
+					<ng-message when="emptyValue"><p class="text-danger">{{'validation.variable.variableTypeEmpty' | translate}}</p></ng-message>
+				</ng-messages>
+				<p class="text-danger" ng-hide="vdForm.omVariableTypes.$touched" ng-repeat="error in serverErrors.variableTypes">{{error}}</p>
+				<p class="text-warning" ng-show="editing && showTreatmentFactorAlert" >
+					{{'validation.variable.treatmentFactor' | translate }}
+				</p>
+			</div>
+		</div>
+
+		<div ng-class="formGroupClass('omRange', 'expectedRange')" ng-show="showRangeWidget">
+			<label for="omRange" class="col-sm-3 control-label">{{'variablesList.details.expectedRange' | translate}}</label>
+			<div class="col-sm-9">
+				<om-range name="omRange" om-property="expectedRange" om-editing="editing" ng-model="model" om-numeric="showRangeWidget" om-min="model.scale.validValues.min" om-max="model.scale.validValues.max"></om-range>
+				<small ng-show="editing && model.scale.validValues">{{'validation.variable.expectedRange' | translate: model.scale.validValues}}</small>
+				<ng-messages for="vdForm.omRange.$error" ng-messages-include="range-validation-messages" multiple ng-if="vdForm.$submitted || vdForm.omRange.$touched"></ng-messages>
+				<p class="text-danger" ng-hide="vdForm.omRange.$touched" ng-repeat="error in serverErrors.expectedRange">{{error}}</p>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="col-sm-offset-3 col-sm-9">
+
+				<div ng-if="clientErrors.failedToDelete" class="alert alert-danger" role="alert">
+					{{'warnings.deleteUnsuccessful' | translate}}
+				</div>
+
+				<div ng-hide="editing || confirmationNecessary">
+					<button class="btn btn-primary" ng-click="editVariable($event)">{{'button.edit' | translate}}</button>
+
+					<button ng-hide="!deletable" type="button" class="btn btn-danger btn-icon" aria-label="{{'button.delete' | translate}}" ng-click="deleteVariable($event, variableId)">
+						<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+					</button>
+				</div>
+
+				<div ng-show="editing && !confirmationNecessary">
+					<div ng-hide="confirmationNecessary">
+						<button class="btn btn-primary" type="submit">
+							{{'button.save' | translate}}
+							<span ng-show="showThrobber" class="throbber-btn-wrapper">
+								<span class="throbber throbber-btn throbber-white"></span>
+							</span>
+						</button>
+						<a href="#" ng-click="cancel($event)">{{'button.cancel' | translate}}</a>
+					</div>
+				</div>
+
+				<div ng-show="confirmationNecessary">
+					<div class="alert alert-danger">
+						<span ng-show="confirmCancel">{{'warnings.discardConfirmation' | translate}}</span>
+						<span ng-show="confirmDelete">{{'warnings.variables.deleteConfirmation' | translate}}</span>
+					</div>
+					<button class="btn btn-danger" ng-click="confirm($event)">
+						<span ng-show="confirmCancel">{{'button.discard' | translate}}</span>
+						<span ng-show="confirmDelete">{{'button.delete' | translate}}</span>
+					</button>
+					<a href="#" ng-click="deny($event)">
+						<span ng-show="confirmCancel">{{'button.continueEditing' | translate}}</span>
+						<span ng-show="confirmDelete">{{'button.cancel' | translate}}</span>
+					</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="om-details-subheader">
+			<om-expand-collapse-heading om-text="{{'formField.metadata' | translate}}" om-is-open="showMetadata"></om-expand-collapse-heading>
+		</div>
+		<div ng-show="showMetadata">
+			<div class="form-group">
+				<label for="omStudies" class="col-sm-3 control-label">{{'variablesList.details.studies' | translate}}</label>
+				<div class="col-sm-9">
+					<div class="form-control-static">{{model.metadata.usage.studies}}</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="omObservations" class="col-sm-3 control-label">{{'variablesList.details.observations' | translate}}</label>
+				<div class="col-sm-9">
+					<div class="form-control-static">{{model.metadata.usage.observations}}</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="omDateCreated" class="col-sm-3 control-label">{{'formField.date.dateCreated' | translate}}</label>
+				<div class="col-sm-9">
+					<div class="form-control-static">{{model.metadata.dateCreated ? (model.metadata.dateCreated | date) : '-'}}</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="omDateLastModified" class="col-sm-3 control-label">{{'formField.date.dateLastModified' | translate}}</label>
+				<div class="col-sm-9">
+					<div class="form-control-static">{{model.metadata.dateLastModified ? (model.metadata.dateLastModified | date) : '-'}}</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</form>

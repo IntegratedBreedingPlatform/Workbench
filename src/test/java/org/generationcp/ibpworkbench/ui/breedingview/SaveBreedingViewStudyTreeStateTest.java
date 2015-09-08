@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.ui.breedingview;
 
 import static org.junit.Assert.assertEquals;
@@ -32,100 +33,101 @@ import org.mockito.runners.MockitoJUnitRunner;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class SaveBreedingViewStudyTreeStateTest {
-    @Mock
-    private ManagerFactoryProvider provider;
 
-    @Mock
-    private SessionData sessionData;
+	@Mock
+	private ManagerFactoryProvider provider;
 
-    @InjectMocks
-    private SaveBreedingViewStudyTreeState dut = constructTestObject();
+	@Mock
+	private SessionData sessionData;
 
-    @Mock
-    private UserProgramStateDataManager programStateDataManager;
+	@InjectMocks
+	private SaveBreedingViewStudyTreeState dut = constructTestObject();
 
-    private FolderReference testReference1;
-    private FolderReference testReference2;
-    private BreedingViewTreeTable testTable;
+	@Mock
+	private UserProgramStateDataManager programStateDataManager;
 
-    @Before
-    public void setUp() throws Exception {
-        Project project = mock(Project.class);
-        User userData = mock(User.class);
-        ManagerFactory factory = mock(ManagerFactory.class);
-        when(sessionData.getSelectedProject()).thenReturn(project);
-        when(project.getProjectId()).thenReturn((long) 1);
-        when(sessionData.getUserData()).thenReturn(userData);
+	private FolderReference testReference1;
+	private FolderReference testReference2;
+	private BreedingViewTreeTable testTable;
 
-        when(provider.getManagerFactoryForProject(project)).thenReturn(factory);
-        when(factory.getUserProgramStateDataManager()).thenReturn(programStateDataManager);
+	@Before
+	public void setUp() throws Exception {
+		Project project = mock(Project.class);
+		User userData = mock(User.class);
+		ManagerFactory factory = mock(ManagerFactory.class);
+		when(sessionData.getSelectedProject()).thenReturn(project);
+		when(project.getProjectId()).thenReturn((long) 1);
+		when(sessionData.getUserData()).thenReturn(userData);
 
-    }
+		when(provider.getManagerFactoryForProject(project)).thenReturn(factory);
+		when(factory.getUserProgramStateDataManager()).thenReturn(programStateDataManager);
 
-    @Test
-    public void testSaveOnWindowCloseNoneOpened() throws MiddlewareQueryException{
-        testTable.setCollapsed(testReference1, true);
-        testTable.setCollapsed(testReference2, true);
+	}
 
-        dut.windowClose(null);
+	@Test
+	public void testSaveOnWindowCloseNoneOpened() throws MiddlewareQueryException {
+		testTable.setCollapsed(testReference1, true);
+		testTable.setCollapsed(testReference2, true);
 
-        ArgumentCaptor<List> stringListCaptor = ArgumentCaptor.forClass(List.class);
+		dut.windowClose(null);
 
-        verify(programStateDataManager).saveOrUpdateUserProgramTreeState(anyInt(), anyString(), anyString(), stringListCaptor.capture());
+		ArgumentCaptor<List> stringListCaptor = ArgumentCaptor.forClass(List.class);
 
-        List savedTreeState = stringListCaptor.getValue();
+		verify(programStateDataManager).saveOrUpdateUserProgramTreeState(anyInt(), anyString(), anyString(), stringListCaptor.capture());
 
-        assertTrue(savedTreeState.size() == 1);
-        assertEquals("STUDY", savedTreeState.get(0));
-    }
+		List savedTreeState = stringListCaptor.getValue();
 
-    @Test
-    public void testSaveOnWindowCloseOnlyChildFolderOpened() throws MiddlewareQueryException{
-        testTable.setCollapsed(testReference1, true);
-        testTable.setCollapsed(testReference2, false);
+		assertTrue(savedTreeState.size() == 1);
+		assertEquals("STUDY", savedTreeState.get(0));
+	}
 
-        dut.windowClose(null);
+	@Test
+	public void testSaveOnWindowCloseOnlyChildFolderOpened() throws MiddlewareQueryException {
+		testTable.setCollapsed(testReference1, true);
+		testTable.setCollapsed(testReference2, false);
 
-        ArgumentCaptor<List> stringListCaptor = ArgumentCaptor.forClass(List.class);
+		dut.windowClose(null);
 
-        verify(programStateDataManager).saveOrUpdateUserProgramTreeState(anyInt(),anyString(), anyString(), stringListCaptor.capture());
+		ArgumentCaptor<List> stringListCaptor = ArgumentCaptor.forClass(List.class);
 
-        List savedTreeState = stringListCaptor.getValue();
+		verify(programStateDataManager).saveOrUpdateUserProgramTreeState(anyInt(), anyString(), anyString(), stringListCaptor.capture());
 
-        assertTrue(savedTreeState.size() == 1);
-        assertEquals("STUDY", savedTreeState.get(0));
-    }
+		List savedTreeState = stringListCaptor.getValue();
 
-    @Test
-    public void testSaveOnWindowCloseAllOpened() throws MiddlewareQueryException{
-        testTable.setCollapsed(testReference1, false);
-        testTable.setCollapsed(testReference2, false);
+		assertTrue(savedTreeState.size() == 1);
+		assertEquals("STUDY", savedTreeState.get(0));
+	}
 
-        dut.windowClose(null);
+	@Test
+	public void testSaveOnWindowCloseAllOpened() throws MiddlewareQueryException {
+		testTable.setCollapsed(testReference1, false);
+		testTable.setCollapsed(testReference2, false);
 
-        ArgumentCaptor<List> stringListCaptor = ArgumentCaptor.forClass(List.class);
+		dut.windowClose(null);
 
-        verify(programStateDataManager).saveOrUpdateUserProgramTreeState(anyInt(), anyString(), anyString(), stringListCaptor.capture());
+		ArgumentCaptor<List> stringListCaptor = ArgumentCaptor.forClass(List.class);
 
-        List savedTreeState = stringListCaptor.getValue();
+		verify(programStateDataManager).saveOrUpdateUserProgramTreeState(anyInt(), anyString(), anyString(), stringListCaptor.capture());
 
-        assertTrue(savedTreeState.size() == 3);
-        assertEquals("STUDY", savedTreeState.get(0));
-        assertEquals(testReference1.getId().toString(), savedTreeState.get(1));
-        assertEquals(testReference2.getId().toString(), savedTreeState.get(2));
-    }
+		List savedTreeState = stringListCaptor.getValue();
 
-    protected SaveBreedingViewStudyTreeState constructTestObject() {
-        testTable = new BreedingViewTreeTable();
+		assertTrue(savedTreeState.size() == 3);
+		assertEquals("STUDY", savedTreeState.get(0));
+		assertEquals(testReference1.getId().toString(), savedTreeState.get(1));
+		assertEquals(testReference2.getId().toString(), savedTreeState.get(2));
+	}
 
-        testReference1 = new FolderReference(2, "TEST", "TEST");
-        testReference1.setParentFolderId(DmsProject.SYSTEM_FOLDER_ID);
-        testTable.addFolderReferenceNode(new Object[]{}, testReference1);
-        testReference2 = new FolderReference(3, "TEST", "TEST");
-        testTable.addFolderReferenceNode(new Object[]{}, testReference2);
+	protected SaveBreedingViewStudyTreeState constructTestObject() {
+		testTable = new BreedingViewTreeTable();
 
-        testTable.setParent(testReference2, testReference1);
+		testReference1 = new FolderReference(2, "TEST", "TEST");
+		testReference1.setParentFolderId(DmsProject.SYSTEM_FOLDER_ID);
+		testTable.addFolderReferenceNode(new Object[] {}, testReference1);
+		testReference2 = new FolderReference(3, "TEST", "TEST");
+		testTable.addFolderReferenceNode(new Object[] {}, testReference2);
 
-        return new SaveBreedingViewStudyTreeState(testTable);
-    }
+		testTable.setParent(testReference2, testReference1);
+
+		return new SaveBreedingViewStudyTreeState(testTable);
+	}
 }

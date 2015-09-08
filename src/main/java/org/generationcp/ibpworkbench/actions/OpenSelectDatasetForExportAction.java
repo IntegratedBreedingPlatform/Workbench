@@ -11,10 +11,9 @@
 
 package org.generationcp.ibpworkbench.actions;
 
-import java.io.File;
-import java.util.List;
-import java.util.Map;
-
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Window.Notification;
 import org.generationcp.commons.breedingview.xml.ProjectType;
 import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -27,10 +26,10 @@ import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.ibpworkbench.util.DatasetUtil;
 import org.generationcp.ibpworkbench.util.ToolUtil;
+import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
-import org.generationcp.middleware.domain.dms.VariableType;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -42,9 +41,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Window.Notification;
+import java.io.File;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -96,7 +95,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 		try {
 
 			// List of factors from the new schema
-			List<VariableType> factorsInDataset =
+			List<DMSVariableType> factorsInDataset =
 					studyDataManager.getDataSet(dataSetId).getVariableTypes().getFactors()
 							.getVariableTypes();
 
@@ -158,15 +157,17 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 
 			IContentWindow w = (IContentWindow) event.getComponent().getWindow();
 
-			List<VariableType> trialVariablesInDataset = null;
+			List<DMSVariableType> trialVariablesInDataset = null;
 			DataSet trialDataset = DatasetUtil.getTrialDataSet(studyDataManager, studyId);
 			if (trialDataset != null && trialDataset.getVariableTypes() != null) {
 				trialVariablesInDataset = trialDataset.getVariableTypes().getVariableTypes();
 			}
+			
 			w.showContent(new SingleSiteAnalysisDetailsPanel(breedingViewTool, breedingViewInput, factorsInDataset,
-					trialVariablesInDataset, project, this.selectDatasetForBreedingViewPanel));
+					trialVariablesInDataset, project, 
+					this.selectDatasetForBreedingViewPanel));
 
-		} catch (MiddlewareQueryException e) {
+		} catch (MiddlewareException e) {
 			OpenSelectDatasetForExportAction.LOG.error(e.getMessage(), e);
 			MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
 		}

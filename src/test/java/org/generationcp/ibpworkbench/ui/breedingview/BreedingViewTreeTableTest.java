@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.ui.breedingview;
 
 import static org.junit.Assert.assertFalse;
@@ -33,82 +34,80 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class BreedingViewTreeTableTest {
 
-    public static final int TEST_FOLDER_ITEM_ID = 2;
+	public static final int TEST_FOLDER_ITEM_ID = 2;
 
-    @Mock
-    private SessionData sessionData;
+	@Mock
+	private SessionData sessionData;
 
-    @Mock
-    private ManagerFactoryProvider provider;
+	@Mock
+	private ManagerFactoryProvider provider;
 
-    @InjectMocks
-    private BreedingViewTreeTable treeTable;
+	@InjectMocks
+	private BreedingViewTreeTable treeTable;
 
-    @Mock
-    private UserProgramStateDataManager programStateDataManager;
+	@Mock
+	private UserProgramStateDataManager programStateDataManager;
 
-    @Before
-    public void setUp() throws Exception {
-        Project project = mock(Project.class);
-        User userData = mock(User.class);
-        ManagerFactory factory = mock(ManagerFactory.class);
-        when(sessionData.getSelectedProject()).thenReturn(project);
-        when(project.getProjectId()).thenReturn((long) 1);
-        when(sessionData.getUserData()).thenReturn(userData);
+	@Before
+	public void setUp() throws Exception {
+		Project project = mock(Project.class);
+		User userData = mock(User.class);
+		ManagerFactory factory = mock(ManagerFactory.class);
+		when(sessionData.getSelectedProject()).thenReturn(project);
+		when(project.getProjectId()).thenReturn((long) 1);
+		when(sessionData.getUserData()).thenReturn(userData);
 
-        when(provider.getManagerFactoryForProject(project)).thenReturn(factory);
-        when(factory.getUserProgramStateDataManager()).thenReturn(programStateDataManager);
+		when(provider.getManagerFactoryForProject(project)).thenReturn(factory);
+		when(factory.getUserProgramStateDataManager()).thenReturn(programStateDataManager);
 
-    }
+	}
 
-    @Test
-    public void testAddFolderReference() {
-        FolderReference testReference = constructTestReference();
-        treeTable.addFolderReferenceNode(new Object[]{}, testReference);
+	@Test
+	public void testAddFolderReference() {
+		FolderReference testReference = constructTestReference();
+		treeTable.addFolderReferenceNode(new Object[] {}, testReference);
 
-        assertTrue(treeTable.getNodeMap().containsKey(testReference.getId()));
-        assertNotNull(treeTable.getItem(testReference));
-    }
+		assertTrue(treeTable.getNodeMap().containsKey(testReference.getId()));
+		assertNotNull(treeTable.getItem(testReference));
+	}
 
-    @Test
-    public void testSetCollapsedTrue() {
-        FolderReference testReference = constructTestReference();
-        treeTable.addFolderReferenceNode(new Object[]{}, testReference);
+	@Test
+	public void testSetCollapsedTrue() {
+		FolderReference testReference = constructTestReference();
+		treeTable.addFolderReferenceNode(new Object[] {}, testReference);
 
-        treeTable.setCollapsedFolder(TEST_FOLDER_ITEM_ID, true);
-        assertTrue(treeTable.isCollapsed(testReference));
-    }
+		treeTable.setCollapsedFolder(TEST_FOLDER_ITEM_ID, true);
+		assertTrue(treeTable.isCollapsed(testReference));
+	}
 
-    @Test
-    public void testSetCollapsedFalse() {
-        FolderReference testReference = constructTestReference();
-        treeTable.addFolderReferenceNode(new Object[]{}, testReference);
+	@Test
+	public void testSetCollapsedFalse() {
+		FolderReference testReference = constructTestReference();
+		treeTable.addFolderReferenceNode(new Object[] {}, testReference);
 
-        treeTable.setCollapsedFolder(TEST_FOLDER_ITEM_ID, false);
-        assertFalse(treeTable.isCollapsed(testReference));
-    }
+		treeTable.setCollapsedFolder(TEST_FOLDER_ITEM_ID, false);
+		assertFalse(treeTable.isCollapsed(testReference));
+	}
 
-    @Test
-    public void testReinitializeTreeExists() throws MiddlewareQueryException{
-        FolderReference testReference = constructTestReference();
-        treeTable.addFolderReferenceNode(new Object[]{}, testReference);
+	@Test
+	public void testReinitializeTreeExists() throws MiddlewareQueryException {
+		FolderReference testReference = constructTestReference();
+		treeTable.addFolderReferenceNode(new Object[] {}, testReference);
 
-        List<String> forExpansion = new ArrayList<>();
-        forExpansion.add("STUDY");
-        forExpansion.add(Integer.toString(TEST_FOLDER_ITEM_ID));
-        
+		List<String> forExpansion = new ArrayList<>();
+		forExpansion.add("STUDY");
+		forExpansion.add(Integer.toString(TEST_FOLDER_ITEM_ID));
+
 		when(programStateDataManager.getUserProgramTreeStateByUserIdProgramUuidAndType(anyInt(), anyString(), anyString())).thenReturn(
-                forExpansion);
+				forExpansion);
 
-        treeTable.reinitializeTree();
+		treeTable.reinitializeTree();
 
-        assertFalse(treeTable.isCollapsed(testReference));
-    }
+		assertFalse(treeTable.isCollapsed(testReference));
+	}
 
-    protected FolderReference constructTestReference() {
-        return new FolderReference(TEST_FOLDER_ITEM_ID,"TEST", "TEST");
-    }
-
-
+	protected FolderReference constructTestReference() {
+		return new FolderReference(TEST_FOLDER_ITEM_ID, "TEST", "TEST");
+	}
 
 }

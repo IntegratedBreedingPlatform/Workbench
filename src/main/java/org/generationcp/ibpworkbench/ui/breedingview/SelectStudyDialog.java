@@ -19,6 +19,7 @@ import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.StudyReference;
+import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -108,6 +109,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 
 	public SelectStudyDialog(Window parentWindow, Component source, Project currentProject) {
 		this.parentWindow = parentWindow;
+		this.studyDataManager = studyDataManager;
 		this.source = source;
 		this.currentProject = currentProject;
 	}
@@ -177,7 +179,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 	protected Integer getPlotDataSetId(Integer studyId) {
 		try {
 			return DatasetUtil.getPlotDataSetId(this.getStudyDataManager(), studyId);
-		} catch (MiddlewareQueryException e) {
+		} catch (MiddlewareException e) {
 			SelectStudyDialog.LOG.error(e.getMessage(), e);
 			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
 					this.messageSource.getMessage(Message.ERROR_IN_GETTING_VARIABLES_OF_DATASET));
@@ -249,7 +251,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 				if (this.isStudy(fr)) {
 					study = this.getStudyDataManager().getStudy(fr.getId());
 				}
-			} catch (MiddlewareQueryException e) {
+			} catch (MiddlewareException e) {
 				SelectStudyDialog.LOG.error(e.getMessage(), e);
 			}
 
@@ -307,7 +309,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 				study = this.getStudyDataManager().getStudy(r.getId());
 				((MultiSiteAnalysisPanel) this.source).openStudyMeansDataset(study);
 				this.parentWindow.removeWindow(SelectStudyDialog.this);
-			} catch (MiddlewareQueryException e) {
+			} catch (MiddlewareException e) {
 				SelectStudyDialog.LOG.error(e.getMessage(), e);
 				if (study != null) {
 					MessageNotifier.showError(this, "MEANS dataset doesn't exist", study.getName()
@@ -344,7 +346,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 			Study s = null;
 			try {
 				s = this.getStudyDataManager().getStudy(r.getId());
-			} catch (MiddlewareQueryException e) {
+			} catch (MiddlewareException e) {
 				SelectStudyDialog.LOG.error(e.getMessage(), e);
 			}
 

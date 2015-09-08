@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html class="om-ontology-manager" ng-app="ontology" xmlns:th="http://www.thymeleaf.org" om-config="" data-th-attr="om-crop=${currentCrop}, om-program-id=${currentProgramId}">
+
+<head>
+	<meta name="viewport" content="initial-scale=1.0, width=device-width"></meta>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+	<meta charset="utf-8"></meta>
+	<title>{{'title' | translate}}</title>
+
+	<link th:href="@{/controller/static/lib/angular-ui-select/angular-ui-select.min.css}" rel="stylesheet"></link>
+	<link rel="stylesheet" th:href="@{/controller/static/lib/select2/select2.css}"></link>
+	<link th:href="@{/controller/static/lib/styleGuide/css/styleGuide.min.css}" rel="stylesheet"></link>
+	<link th:href="@{/controller/static/css/ontology.css}" rel="stylesheet"></link>
+</head>
+<body ng-cloak="" translate-cloak="title" class="om-content container-fluid" ng-controller="OntologyController as ctrl" om-key-trap="">
+<om-mask></om-mask>
+	<header>
+		<h1 class="om-title">{{'title' | translate}}</h1>
+
+		<button class="btn btn-default om-add-new-btn" ng-click="addNewSelection()">{{'button.addNew' | translate}}</button>
+		<nav>
+			<ol class="nav nav-tabs">
+				<li role="presentation" ng-class="{active : activeTab === 'variables'}">
+					<a href="#variables" ng-click="setAsActive('variables')">
+						{{'variables' | translate}}
+					</a>
+				</li>
+				<li role="presentation" ng-class="{active : activeTab === 'properties'}">
+					<a href="#properties" ng-click="setAsActive('properties')">
+						{{'properties' | translate}}
+					</a>
+				</li>
+				<li role="presentation" ng-class="{active : activeTab === 'methods'}">
+					<a href="#methods" ng-click="setAsActive('methods')">
+						{{'methods' | translate}}
+					</a>
+				</li>
+				<li role="presentation" ng-class="{active : activeTab === 'scales'}">
+					<a href="#scales" ng-click="setAsActive('scales')">
+						{{'scales' | translate}}
+					</a>
+				</li>
+			</ol>
+		</nav>
+	</header>
+
+	<div class="om-view" ng-view="ng-view"></div>
+
+	<om-panel class="om-panel-small" om-panel-identifier="panelName">
+		<div class="om-panel-header">
+			<h2 class="om-panel-title underlined-heading">
+				{{'addNew.title' | translate}}
+			</h2>
+		</div>
+		<div class="om-panel-content">
+			<ol class="om-add-new">
+				<li ng-click="addNew($event, 'variable')"><span>{{'addNew.variable.menuItem' | translate}}</span></li>
+				<li ng-click="addNew($event, 'property')"><span>{{'addNew.property.menuItem' | translate}}</span></li>
+				<li ng-click="addNew($event, 'method')"><span>{{'addNew.method.menuItem' | translate}}</span></li>
+				<li ng-click="addNew($event, 'scale')"><span>{{'addNew.scale.menuItem' | translate}}</span></li>
+			</ol>
+		</div>
+	</om-panel>
+
+	<script type="text/javascript" th:src="@{/controller/static/js/lib/angular.js}"></script>
+	<script type="text/javascript" th:src="@{/controller/static/js/lib/angular-route.min.js}"></script>
+	<script type="text/javascript" th:src="@{/controller/static/js/lib/angular-messages.min.js}"></script>
+	<script type="text/javascript" th:src="@{/controller/static/js/lib/angular-sanitize.min.js}"></script>
+	<script type="text/javascript" th:src="@{/controller/static/js/lib/angular-ui-select.min.js}"></script>
+	<script type="text/javascript" th:src="@{/controller/static/js/lib/angular-debounce.min.js}"></script>
+	<script type="text/javascript" th:src="@{/controller/static/js/lib/angular-translate.min.js}"></script>
+	<script type="text/javascript" th:src="@{/controller/static/js/lib/angular-translate-loader-static-files.min.js}"></script>
+	<script type="text/javascript" th:src="@{/controller/static/js/lib/ui-bootstrap-custom-0.13.3.min.js}"></script>
+	<script type="text/javascript" th:src="@{/controller/static/js/lib/ui-bootstrap-custom-tpls-0.13.3.min.js}"></script>
+	<script type="text/javascript" th:src="@{/controller/static/js/ontology.js}"></script>
+</body>
+</html>

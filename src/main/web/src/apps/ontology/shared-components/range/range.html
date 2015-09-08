@@ -1,0 +1,24 @@
+<ng-form class="form-inline" name="rangeForm" ng-show="editable()">
+	<div class="row">
+		<div class="col-sm-3" ng-class="formParentHasError('omRangeMin', 'validValues.min') + formParentHasError('omRangeMin', 'expectedRange.min')">
+			<input class="form-control" type="number" name="omRangeMin" ng-model="rangeModel.min" placeholder="{{'range.edit.min' | translate}}"></input>
+			<p class="text-danger" ng-hide="rangeForm.omRangeMin.$touched" ng-repeat="error in $parent.serverErrors['validValues.min']">{{error}}</p>
+			<p class="text-danger" ng-hide="rangeForm.omRangeMin.$touched" ng-repeat="error in $parent.serverErrors['expectedRange.min']">{{error}}</p>
+		</div>
+		<div class="col-sm-3" ng-class="formParentHasError('omRangeMax', 'validValues.max') + formParentHasError('omRangeMax', 'expectedRange.max')">
+			<input class="form-control" type="number" name="omRangeMax" ng-model="rangeModel.max" placeholder="{{'range.edit.max' | translate}}"></input>
+			<p class="text-danger" ng-hide="rangeForm.omRangeMax.$touched" ng-repeat="error in $parent.serverErrors['validValues.max']">{{error}}</p>
+			<p class="text-danger" ng-hide="rangeForm.omRangeMax.$touched" ng-repeat="error in $parent.serverErrors['expectedRange.max']">{{error}}</p>
+		</div>
+	</div>
+</ng-form>
+
+<p ng-hide="editable()" class="form-control-static">{{readOnlyRangeText | translate: model[property]}}</p>
+
+<script type="text/ng-template" id="range-validation-messages">
+	<ng-message when="minNaN"><p class="text-danger">{{'range.validation.minNaN' | translate}}</p></ng-message>
+	<ng-message when="maxNaN"><p class="text-danger">{{'range.validation.maxNaN' | translate}}</p></ng-message>
+	<ng-message when="minTooBig"><p class="text-danger">{{'range.validation.minTooBig' | translate}}</p></ng-message>
+	<ng-message when="minOutOfRange"><p class="text-danger">{{'range.validation.minOutOfRange' | translate}}</p></ng-message>
+	<ng-message when="maxOutOfRange"><p class="text-danger">{{'range.validation.maxOutOfRange' | translate}}</p></ng-message>
+</script>

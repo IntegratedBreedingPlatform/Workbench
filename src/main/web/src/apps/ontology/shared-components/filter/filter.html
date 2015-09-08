@@ -1,0 +1,72 @@
+<om-panel om-panel-identifier="smallPanelName">
+	<form class="form-horizontal" name="filterForm" novalidate>
+		<div class="om-panel-header">
+			<h2 class="om-panel-title underlined-heading">
+				{{'filter.title' | translate}}
+			</h2>
+		</div>
+		<div class="om-panel-content">
+			<div ng-if="serverErrors.general || someListsNotLoaded" class="alert alert-danger" role="alert">
+				<ul>
+					<li ng-repeat="error in serverErrors.general">{{error}}</li>
+				</ul>
+				<ul ng-if="someListsNotLoaded">
+					<li>{{'validation.filter.someListsNotLoaded' | translate}}</li>
+				</ul>
+			</div>
+
+			<p>{{'filter.instructions' | translate}}</p>
+
+			<div class="form-group">
+				<label for="omVariableTypes" class="col-sm-3 control-label">{{'formField.variableType' | translate}}</label>
+				<div class="col-sm-9">
+					<om-multi-select name="omVariableTypes" om-property="variableTypes" om-adding="true" ng-model="filterOptions" om-options="data.types"></om-multi-select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="omDataType" class="col-sm-3 control-label">{{'formField.dataType' | translate}}</label>
+				<div class="col-sm-9">
+					<om-select name="omDataType" om-name="om-data-type" om-property="scaleDataType" om-adding="true" ng-model="filterOptions" om-options="data.scaleDataTypes" om-allow-clear="true"></om-select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="omDateCreated" class="col-sm-3 control-label">{{'formField.date.dateCreated' | translate}}</label>
+				<div class="col-md-6">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="omDateCreated" class="col-sm-3 control-label">{{'formField.date.from' | translate}}</label>
+				<div class="col-md-6">
+					<p class="input-group">
+						<input type="text" class="form-control" datepicker-popup ng-model="filterOptions.dateCreatedFrom" is-open="data.fromCalendarOpened" max-date="todaysDate" datepicker-options="dateOptions" close-text="Close" show-weeks="false" />
+						<span class="input-group-btn">
+							<button type="button" class="btn btn-default btn-icon" ng-click="openFromCalendar($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+						</span>
+					</p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="omDateCreated" class="col-sm-3 control-label">{{'formField.date.to' | translate}}</label>
+				<div class="col-md-6">
+					<p class="input-group">
+						<input type="text" class="form-control" datepicker-popup ng-model="filterOptions.dateCreatedTo" is-open="data.toCalendarOpened" max-date="todaysDate" datepicker-options="dateOptions" close-text="Close" show-weeks="false" />
+						<span class="input-group-btn">
+							<button type="button" class="btn btn-default btn-icon" ng-click="openToCalendar($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+						</span>
+					</p>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-3 col-md-6">
+					<button class="btn btn-primary" ng-click="clearFilters()">{{'button.clearFilters' | translate}}</button>
+				</div>
+			</div>
+		</div>
+	</form>
+</om-panel>
+
+<div class="om-filter-button">
+	<button type="button" class="btn btn-icon" ng-class="isFilterActive() ? 'btn-primary' : 'btn-default'" aria-label="Filter" ng-click="addNewFilter()">
+		<span class="glyphicon glyphicon-filter" aria-hidden="true"></span>
+	</button>
+</div>
