@@ -43,7 +43,6 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 	
 	public WorkbenchSidebarPresenter(WorkbenchSidebar view) {
 		this.view = view;
-
 	}
 
 	@Override

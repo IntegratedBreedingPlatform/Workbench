@@ -1,46 +1,27 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
-
-import org.generationcp.commons.gxe.xml.GxeEnvironment;
-import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
-import org.generationcp.commons.sea.xml.Environment;
-import org.generationcp.ibpworkbench.util.DatasetUtil;
-import org.generationcp.ibpworkbench.util.TableItems;
-import org.generationcp.middleware.domain.dms.DataSet;
-import org.generationcp.middleware.domain.dms.DataSetType;
-import org.generationcp.middleware.domain.dms.DatasetReference;
-import org.generationcp.middleware.domain.dms.Experiment;
-import org.generationcp.middleware.domain.dms.PhenotypicType;
-import org.generationcp.middleware.domain.dms.TrialEnvironments;
-import org.generationcp.middleware.domain.dms.Variable;
-import org.generationcp.middleware.domain.dms.VariableType;
-import org.generationcp.middleware.domain.dms.VariableTypeList;
-import org.generationcp.middleware.domain.oms.TermId;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.api.StudyDataManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.vaadin.data.Container;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
+import org.generationcp.commons.gxe.xml.GxeEnvironment;
+import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
+import org.generationcp.commons.sea.xml.Environment;
+import org.generationcp.ibpworkbench.util.DatasetUtil;
+import org.generationcp.ibpworkbench.util.TableItems;
+import org.generationcp.middleware.domain.dms.*;
+import org.generationcp.middleware.domain.oms.TermId;
+import org.generationcp.middleware.exceptions.MiddlewareException;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 public class GxeTable extends Table {
 
@@ -187,7 +168,7 @@ public class GxeTable extends Table {
 				DataSet trialDataSet = DatasetUtil.getTrialDataSet(this.studyDataManager, studyId);
 				VariableTypeList trialEnvFactors = trialDataSet.getVariableTypes().getFactors();
 
-				for (VariableType factor : trialEnvFactors.getVariableTypes()) {
+				for (DMSVariableType factor : trialEnvFactors.getVariableTypes()) {
 
 					this.addNecessaryFactorsToContainer(factor, container);
 
@@ -196,7 +177,7 @@ public class GxeTable extends Table {
 				this.germplasmFactors.addAll(this.meansDataSet.getFactorsByPhenotypicType(PhenotypicType.GERMPLASM));
 				// get the Variates
 				VariableTypeList variates = this.meansDataSet.getVariableTypes().getVariates();
-				for (VariableType v : variates.getVariableTypes()) {
+				for (DMSVariableType v : variates.getVariableTypes()) {
 					container.addContainerProperty(v.getLocalName(), Label.class, null);
 					if (!v.getStandardVariable().getMethod().getName().equalsIgnoreCase(GxeTable.ERROR_ESTIMATE)
 							&& !v.getStandardVariable().getMethod().getName()
@@ -281,7 +262,7 @@ public class GxeTable extends Table {
 
 			}
 
-		} catch (MiddlewareQueryException e) {
+		} catch (MiddlewareException e) {
 			GxeTable.LOG.error(e.getMessage(), e);
 		}
 
@@ -299,15 +280,15 @@ public class GxeTable extends Table {
 
 				if (ds.getDataSetType() != DataSetType.MEANS_DATA) {
 
-					Iterator<VariableType> itrFactor = ds.getVariableTypes().getFactors().getVariableTypes().iterator();
+					Iterator<DMSVariableType> itrFactor = ds.getVariableTypes().getFactors().getVariableTypes().iterator();
 					while (itrFactor.hasNext()) {
-						VariableType f = itrFactor.next();
-						if (f.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()) {
+						DMSVariableType f = itrFactor.next();
+						if (f.getStandardVariable().getId() == TermId.TRIAL_INSTANCE_FACTOR.getId()) {
 							this.trialInstanceFactorName = f.getLocalName();
 						}
 					}
 
-					Iterator<VariableType> itrVariates = ds.getVariableTypes().getVariates().getVariableTypes().iterator();
+					Iterator<DMSVariableType> itrVariates = ds.getVariableTypes().getVariates().getVariableTypes().iterator();
 					while (itrVariates.hasNext()) {
 						if (itrVariates.next().getLocalName().contains("_Heritability")) {
 							plotDatasets.add(ds);
@@ -341,7 +322,7 @@ public class GxeTable extends Table {
 				}
 			}
 
-		} catch (MiddlewareQueryException e1) {
+		} catch (MiddlewareException e1) {
 			GxeTable.LOG.error(e1.getMessage(), e1);
 		}
 
@@ -359,9 +340,9 @@ public class GxeTable extends Table {
 
 	}
 
-	protected void addNecessaryFactorsToContainer(VariableType factor, Container container) {
+	protected void addNecessaryFactorsToContainer(DMSVariableType factor, Container container) {
 		// Always Show the TRIAL INSTANCE Factor
-		if (factor.getStandardVariable().getStoredIn().getId() == TermId.TRIAL_INSTANCE_STORAGE.getId()) {
+		if (factor.getStandardVariable().getId() == TermId.TRIAL_INSTANCE_FACTOR.getId()) {
 			container.addContainerProperty(factor.getLocalName(), Label.class, "");
 			this.factorLocalNames.put(factor.getRank(), factor.getLocalName());
 		}
@@ -440,7 +421,7 @@ public class GxeTable extends Table {
 		return this.selectedEnvFactorName;
 	}
 
-	public List<VariableType> getGermplasmFactors() {
+	public List<DMSVariableType> getGermplasmFactors() {
 		return this.germplasmFactors.getVariableTypes();
 	}
 

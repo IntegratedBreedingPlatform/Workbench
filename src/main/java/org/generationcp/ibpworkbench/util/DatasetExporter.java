@@ -1,29 +1,14 @@
 
 package org.generationcp.ibpworkbench.util;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
+import au.com.bytecode.opencsv.CSVWriter;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.util.ObjectUtil;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
-import org.generationcp.middleware.domain.dms.DataSet;
-import org.generationcp.middleware.domain.dms.Experiment;
-import org.generationcp.middleware.domain.dms.PhenotypicType;
-import org.generationcp.middleware.domain.dms.ValueReference;
-import org.generationcp.middleware.domain.dms.Variable;
-import org.generationcp.middleware.domain.dms.VariableType;
+import org.generationcp.middleware.domain.dms.*;
 import org.generationcp.middleware.domain.oms.TermId;
+import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
@@ -35,7 +20,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import au.com.bytecode.opencsv.CSVWriter;
+import javax.annotation.Resource;
+import java.io.File;
+import java.io.FileWriter;
+import java.util.*;
 
 @Configurable
 public class DatasetExporter {
@@ -72,7 +60,7 @@ public class DatasetExporter {
 		try {
 			dataset = this.studyDataManager.getDataSet(this.datasetId);
 			return dataset;
-		} catch (MiddlewareQueryException ex) {
+		} catch (MiddlewareException ex) {
 			DatasetExporter.LOG.error(ex.getMessage(), ex);
 		}
 
@@ -81,11 +69,11 @@ public class DatasetExporter {
 
 	private void getFactorDetails(DataSet dataset) {
 
-		List<VariableType> factorVariableTypes = dataset.getVariableTypes().getFactors().getVariableTypes();
+		List<DMSVariableType> factorVariableTypes = dataset.getVariableTypes().getFactors().getVariableTypes();
 
-		for (VariableType factor : factorVariableTypes) {
+		for (DMSVariableType factor : factorVariableTypes) {
 
-			if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.DATASET) {
+			if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.DATASET || factor.getStandardVariable().getPhenotypicType() == PhenotypicType.STUDY) {
 				continue;
 			}
 
@@ -107,9 +95,9 @@ public class DatasetExporter {
 
 	private void getVariateDetails(DataSet dataset, BreedingViewInput breedingViewInput) {
 
-		List<VariableType> variateVariableTypes = dataset.getVariableTypes().getVariates().getVariableTypes();
+		List<DMSVariableType> variateVariableTypes = dataset.getVariableTypes().getVariates().getVariableTypes();
 
-		for (VariableType variate : variateVariableTypes) {
+		for (DMSVariableType variate : variateVariableTypes) {
 
 			String variateName = variate.getLocalName();
 

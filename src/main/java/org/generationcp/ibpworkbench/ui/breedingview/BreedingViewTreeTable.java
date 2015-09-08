@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.ui.breedingview;
 
 import java.util.HashMap;
@@ -25,53 +26,54 @@ import com.vaadin.ui.TreeTable;
  */
 @Configurable
 public class BreedingViewTreeTable extends TreeTable {
-    private static final Logger LOG = LoggerFactory.getLogger(BreedingViewTreeTable.class);
-    private Map<Integer, FolderReference> nodeMap;
 
-    @Autowired
-    private ManagerFactoryProvider provider;
+	private static final Logger LOG = LoggerFactory.getLogger(BreedingViewTreeTable.class);
+	private Map<Integer, FolderReference> nodeMap;
 
-    @Autowired
-    private SessionData sessionData;
+	@Autowired
+	private ManagerFactoryProvider provider;
+
+	@Autowired
+	private SessionData sessionData;
     
     @Autowired
     private UserProgramStateDataManager programStateDataManager;
 
-    public BreedingViewTreeTable() {
-        nodeMap = new HashMap<>();
-    }
+	public BreedingViewTreeTable() {
+		nodeMap = new HashMap<>();
+	}
 
-    public Object addFolderReferenceNode(Object[] cells, FolderReference folderReference) {
-        nodeMap.put(folderReference.getId(), folderReference);
-        return super.addItem(cells, folderReference);
-    }
+	public Object addFolderReferenceNode(Object[] cells, FolderReference folderReference) {
+		nodeMap.put(folderReference.getId(), folderReference);
+		return super.addItem(cells, folderReference);
+	}
 
-    public FolderReference getRootNode() {
-        return nodeMap.get(DmsProject.SYSTEM_FOLDER_ID);
-    }
+	public FolderReference getRootNode() {
+		return nodeMap.get(DmsProject.SYSTEM_FOLDER_ID);
+	}
 
-    public FolderReference getFolderNode(Integer itemId) {
-        return nodeMap.get(itemId);
-    }
+	public FolderReference getFolderNode(Integer itemId) {
+		return nodeMap.get(itemId);
+	}
 
-    public void setCollapsedFolder(Integer itemId, boolean collapsed) {
-        FolderReference referenceObject = nodeMap.get(itemId);
+	public void setCollapsedFolder(Integer itemId, boolean collapsed) {
+		FolderReference referenceObject = nodeMap.get(itemId);
 
-        if (referenceObject == null) {
-            return;
-        }
+		if (referenceObject == null) {
+			return;
+		}
 
-        this.setCollapsed(referenceObject, collapsed);
-    }
+		this.setCollapsed(referenceObject, collapsed);
+	}
 
 	public void reinitializeTree() {
 
 		try {
 			List<String> parsedState =
 					programStateDataManager.getUserProgramTreeStateByUserIdProgramUuidAndType(sessionData.getUserData().getUserid(),
-                            sessionData.getSelectedProject().getUniqueID(), ListTreeState.STUDY_LIST.name());
+							sessionData.getSelectedProject().getUniqueID(), ListTreeState.STUDY_LIST.name());
 
-			if (parsedState.isEmpty() || (parsedState.size() == 1 && !StringUtils.isEmpty(parsedState.get(0))) ) {
+			if (parsedState.isEmpty() || (parsedState.size() == 1 && !StringUtils.isEmpty(parsedState.get(0)))) {
 				return;
 			}
 
@@ -90,7 +92,7 @@ public class BreedingViewTreeTable extends TreeTable {
 		}
 	}
 
-    public Map<Integer, FolderReference> getNodeMap() {
-        return nodeMap;
-    }
+	public Map<Integer, FolderReference> getNodeMap() {
+		return nodeMap;
+	}
 }

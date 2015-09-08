@@ -1,17 +1,15 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.vaadin.ui.Select;
 import org.apache.commons.lang3.ArrayUtils;
 import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
+import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.StandardVariable;
-import org.generationcp.middleware.domain.dms.VariableType;
 import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.junit.Assert;
@@ -22,7 +20,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.vaadin.ui.Select;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA. User: Daniel Villafuerte Date: 12/17/2014 Time: 1:39 PM
@@ -48,8 +47,8 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 	private SingleSiteAnalysisDetailsPanel dut;
 
-	private List<VariableType> factors;
-	private List<VariableType> trialFactors;
+	private List<DMSVariableType> factors;
+	private List<DMSVariableType> trialFactors;
 
 	@Mock
 	private SimpleResourceBundleMessageSource messageSource;
@@ -279,109 +278,111 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		}
 	}
 
-	private List<VariableType> createTestFactors() {
-		List<VariableType> factors = new ArrayList<VariableType>();
+	private List<DMSVariableType> createTestFactors() {
+		List<DMSVariableType> factors = new ArrayList<DMSVariableType>();
 
 		StandardVariable entryNoVariable = new StandardVariable();
 		entryNoVariable.setId(TermId.ENTRY_NO.getId());
 		entryNoVariable.setPhenotypicType(PhenotypicType.GERMPLASM);
 		entryNoVariable.setProperty(new Term(1, "GERMPLASM ENTRY", "GERMPLASM ENTRY"));
-		factors.add(new VariableType("ENTRY_NO", "ENTRY_NO", entryNoVariable, 1));
+		factors.add(new DMSVariableType("ENTRY_NO", "ENTRY_NO", entryNoVariable, 1));
 
 		StandardVariable gidVariable = new StandardVariable();
 		gidVariable.setId(TermId.GID.getId());
 		gidVariable.setPhenotypicType(PhenotypicType.GERMPLASM);
 		gidVariable.setProperty(new Term(1, "GERMPLASM ID", "GERMPLASM ID"));
-		factors.add(new VariableType("GID", "GID", gidVariable, 2));
+		factors.add(new DMSVariableType("GID", "GID", gidVariable, 2));
 
 		StandardVariable desigVariable = new StandardVariable();
 		desigVariable.setId(TermId.DESIG.getId());
 		desigVariable.setPhenotypicType(PhenotypicType.GERMPLASM);
 		desigVariable.setProperty(new Term(1, "GERMPLASM ID", "GERMPLASM ID"));
-		factors.add(new VariableType("DESIGNATION", "DESIGNATION", desigVariable, 3));
+		factors.add(new DMSVariableType("DESIGNATION", "DESIGNATION", desigVariable, 3));
 
 		StandardVariable entryTypeVariable = new StandardVariable();
 		entryTypeVariable.setId(TermId.ENTRY_TYPE.getId());
 		entryTypeVariable.setPhenotypicType(PhenotypicType.GERMPLASM);
 		entryTypeVariable.setProperty(new Term(1, "ENTRY TYPE", "ENTRY_TYPE"));
-		factors.add(new VariableType("ENTRY_TYPE", "ENTRY_TYPE", entryTypeVariable, 4));
+		factors.add(new DMSVariableType("ENTRY_TYPE", "ENTRY_TYPE", entryTypeVariable, 4));
 
 		StandardVariable repVariable = new StandardVariable();
 		repVariable.setId(TermId.REP_NO.getId());
 		repVariable.setPhenotypicType(PhenotypicType.TRIAL_DESIGN);
 		repVariable.setProperty(new Term(1, SingleSiteAnalysisDetailsPanel.REPLICATION_FACTOR, "REP_NO"));
-		factors.add(new VariableType("REP_NO", "REP_NO", repVariable, 5));
+		factors.add(new DMSVariableType("REP_NO", "REP_NO", repVariable, 5));
 
 		StandardVariable blockVariable = new StandardVariable();
 		blockVariable.setId(TermId.BLOCK_NO.getId());
 		blockVariable.setPhenotypicType(PhenotypicType.TRIAL_DESIGN);
 		blockVariable.setProperty(new Term(1, SingleSiteAnalysisDetailsPanel.BLOCKING_FACTOR, "BLOCK_NO"));
-		factors.add(new VariableType("BLOCK_NO", "BLOCK_NO", blockVariable, 6));
+		factors.add(new DMSVariableType("BLOCK_NO", "BLOCK_NO", blockVariable, 6));
 
 		StandardVariable rowVariable = new StandardVariable();
 		rowVariable.setId(TermId.ROW.getId());
 		rowVariable.setPhenotypicType(PhenotypicType.TRIAL_DESIGN);
 		rowVariable.setProperty(new Term(1, SingleSiteAnalysisDetailsPanel.ROW_FACTOR, "ROW_NO"));
-		factors.add(new VariableType("ROW_NO", "ROW_NO", rowVariable, 7));
+		factors.add(new DMSVariableType("ROW_NO", "ROW_NO", rowVariable, 7));
 
 		StandardVariable columnVariable = new StandardVariable();
 		columnVariable.setId(TermId.COLUMN_NO.getId());
 		columnVariable.setPhenotypicType(PhenotypicType.TRIAL_DESIGN);
 		columnVariable.setProperty(new Term(1, SingleSiteAnalysisDetailsPanel.COLUMN_FACTOR, "COL_NO"));
-		factors.add(new VariableType("COLUMN_NO", "COLUMN_NO", columnVariable, 8));
+		factors.add(new DMSVariableType("COLUMN_NO", "COLUMN_NO", columnVariable, 8));
 
 		return factors;
 	}
 
-	private List<VariableType> createTrialVariables() {
-		List<VariableType> factors = new ArrayList<VariableType>();
+	private List<DMSVariableType> createTrialVariables() {
+		List<DMSVariableType> factors = new ArrayList<DMSVariableType>();
 
 		StandardVariable trialInstanceVar = new StandardVariable();
 		trialInstanceVar.setId(TermId.TRIAL_INSTANCE_FACTOR.getId());
 		trialInstanceVar.setPhenotypicType(PhenotypicType.TRIAL_ENVIRONMENT);
 		trialInstanceVar.setProperty(new Term(1, "TRIAL INSTANCE", "TRIAL INSTANCE"));
-		factors.add(new VariableType(SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE, SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE,
+		factors.add(
+				new DMSVariableType(SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE, SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE,
 				trialInstanceVar, 1));
 
 		StandardVariable exptDesignVar = new StandardVariable();
 		exptDesignVar.setId(TermId.EXPERIMENT_DESIGN_FACTOR.getId());
 		exptDesignVar.setPhenotypicType(PhenotypicType.TRIAL_ENVIRONMENT);
 		exptDesignVar.setProperty(new Term(1, "EXPERIMENTAL DESIGN", "EXPERIMENTAL DESIGN"));
-		factors.add(new VariableType(SingleSiteAnalysisDetailsPanelTest.EXPT_DESIGN, SingleSiteAnalysisDetailsPanelTest.EXPT_DESIGN,
+		factors.add(new DMSVariableType(SingleSiteAnalysisDetailsPanelTest.EXPT_DESIGN, SingleSiteAnalysisDetailsPanelTest.EXPT_DESIGN,
 				exptDesignVar, 2));
 
 		StandardVariable locNameVar = new StandardVariable();
 		locNameVar.setId(TermId.SITE_NAME.getId());
 		locNameVar.setPhenotypicType(PhenotypicType.TRIAL_ENVIRONMENT);
 		locNameVar.setProperty(new Term(1, "LOCATION", "LOCATION"));
-		factors.add(new VariableType(SingleSiteAnalysisDetailsPanelTest.LOC_NAME, SingleSiteAnalysisDetailsPanelTest.LOC_NAME, locNameVar,
+		factors.add(
+				new DMSVariableType(SingleSiteAnalysisDetailsPanelTest.LOC_NAME, SingleSiteAnalysisDetailsPanelTest.LOC_NAME, locNameVar,
 				3));
 
 		StandardVariable locIDVar = new StandardVariable();
 		locIDVar.setId(TermId.LOCATION_ID.getId());
 		locIDVar.setPhenotypicType(PhenotypicType.TRIAL_ENVIRONMENT);
 		locIDVar.setProperty(new Term(1, "LOCATION", "LOCATION"));
-		factors.add(new VariableType(SingleSiteAnalysisDetailsPanelTest.LOC_ID, SingleSiteAnalysisDetailsPanelTest.LOC_ID, locIDVar, 4));
+		factors.add(new DMSVariableType(SingleSiteAnalysisDetailsPanelTest.LOC_ID, SingleSiteAnalysisDetailsPanelTest.LOC_ID, locIDVar, 4));
 
 		StandardVariable datasetNameVar = new StandardVariable();
 		datasetNameVar.setId(TermId.DATASET_NAME.getId());
 		datasetNameVar.setPhenotypicType(PhenotypicType.DATASET);
 		datasetNameVar.setProperty(new Term(1, "DATASET", "DATASET"));
-		factors.add(new VariableType(SingleSiteAnalysisDetailsPanelTest.DATASET_NAME, SingleSiteAnalysisDetailsPanelTest.DATASET_NAME,
+		factors.add(new DMSVariableType(SingleSiteAnalysisDetailsPanelTest.DATASET_NAME, SingleSiteAnalysisDetailsPanelTest.DATASET_NAME,
 				datasetNameVar, 5));
 
 		StandardVariable datasetTitleVar = new StandardVariable();
 		datasetTitleVar.setId(TermId.DATASET_NAME.getId());
 		datasetTitleVar.setPhenotypicType(PhenotypicType.DATASET);
 		datasetTitleVar.setProperty(new Term(1, "DATASET TITLE", SingleSiteAnalysisDetailsPanelTest.DATASET_TITLE));
-		factors.add(new VariableType(SingleSiteAnalysisDetailsPanelTest.DATASET_TITLE, SingleSiteAnalysisDetailsPanelTest.DATASET_TITLE,
+		factors.add(new DMSVariableType(SingleSiteAnalysisDetailsPanelTest.DATASET_TITLE, SingleSiteAnalysisDetailsPanelTest.DATASET_TITLE,
 				datasetTitleVar, 6));
 
 		StandardVariable datasetTypeVar = new StandardVariable();
 		datasetTypeVar.setId(TermId.DATASET_NAME.getId());
 		datasetTypeVar.setPhenotypicType(PhenotypicType.DATASET);
 		datasetTypeVar.setProperty(new Term(1, "DATASET", "DATASET"));
-		factors.add(new VariableType(SingleSiteAnalysisDetailsPanelTest.DATASET_TYPE, SingleSiteAnalysisDetailsPanelTest.DATASET_TYPE,
+		factors.add(new DMSVariableType(SingleSiteAnalysisDetailsPanelTest.DATASET_TYPE, SingleSiteAnalysisDetailsPanelTest.DATASET_TYPE,
 				datasetTypeVar, 7));
 
 		return factors;

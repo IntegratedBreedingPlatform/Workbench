@@ -1,0 +1,144 @@
+$headerHeight: 50px;
+
+/*
+Allow angular.js to be loaded in the body, hiding cloaked elements until
+templates compile.  The !important is important given that there may be
+other selectors that are more specific or come later and might alter display.
+*/
+[ng\:cloak],
+[ng-cloak],
+.ng-cloak {
+	display: none !important;
+}
+
+/*
+Class provided by angular-translate to hide the flicker of translation keys before
+the translations are loaded. The class is removed as soon as the actual translations
+have loaded.
+*/
+.translate-cloak {
+	display: none !important;
+}
+
+html,
+body {
+	height: 100%;
+	width: 100%;
+}
+
+body {
+	margin: 0;
+	padding: 0 10px;
+}
+
+ol {
+	margin: 0;
+	padding-left: 0;
+}
+
+.om-ontology-manager {
+	overflow-y: scroll;
+}
+
+.om-content {
+	display: table;
+	box-sizing: border-box;
+}
+
+.om-title {
+	margin-top: 1.5rem;
+	margin-bottom: 2rem;
+}
+
+.om-add-new-btn {
+	float: right;
+}
+
+.om-panel-content {
+	position: absolute;
+	top: $headerHeight;
+	bottom: 0;
+	overflow-y: auto;
+	overflow-x: hidden;
+	width: 100%;
+	padding: 1.5rem 1.5rem;
+
+	.om-add-new {
+		list-style: none;
+		li {
+			padding: 8px;
+			line-height: 1.42857;
+			vertical-align: top;
+			border-top: 1px solid #cfd7de;
+
+			&:last-child {
+				border-bottom: 1px solid #cfd7de;
+			}
+
+			&:hover {
+				background-color: #f3f5f7;
+				cursor: pointer;
+			}
+		}
+
+		span {
+			color: #6F889B;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+	}
+}
+
+.om-view {
+	display: table-row;
+	height: 100%;
+	width: 100%;
+}
+
+.om-va-view {
+	om-search {
+		right: 40px;
+	}
+	.om-filter-button {
+		top: -4px;
+  		position: absolute;
+  		right: 0;
+	}
+}
+
+.om-view-content {
+	position: relative;
+}
+
+.om-list-throbber-wrapper {
+	padding: 0.5rem;
+	padding-left: 1.5rem;
+}
+
+.om-panel-header {
+	position: absolute;
+	width: 100%;
+	height: $headerHeight;
+	padding: 1rem 7rem 1rem 1.5rem;
+	// Display the header underneath the Close button so that the button can be clicked
+	z-index: -1;
+
+	.om-panel-title {
+		line-height: 1.3;
+		overflow: hidden;
+		margin-top: 9px;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+}
+
+.om-details-subheader {
+	padding-right: 2.75rem;
+}
+
+.om-details-throbber-wrapper {
+	text-align: center;
+	padding-top: 5rem;
+}

@@ -16,6 +16,8 @@ import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.oms.StudyType;
+import org.generationcp.middleware.exceptions.ConfigException;
+import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.exceptions.UnpermittedDeletionException;
 import org.generationcp.middleware.manager.ManagerFactory;
@@ -114,10 +116,10 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 		}
 	}
 
-	public void deleteNurseryListFolder(Integer id) throws MiddlewareQueryException, NurseryListPreviewException {
+	public void deleteNurseryListFolder(Integer id) throws NurseryListPreviewException, ConfigException, MiddlewareException {
 		Integer cropUserId =
-					this.manager.getCurrentIbdbUserId(this.sessionData.getSelectedProject().getProjectId(),
-						this.sessionData.getUserData().getUserid());
+				this.manager.getCurrentIbdbUserId(this.sessionData.getSelectedProject().getProjectId(), this.sessionData.getUserData()
+						.getUserid());
 		try {
 			fieldbookService.deleteStudy(id, cropUserId);
 		} catch (UnpermittedDeletionException e) {
@@ -270,7 +272,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 				return StudyType.getStudyType(study.getType());
 			}
 			return null;
-		} catch (MiddlewareQueryException e) {
+		} catch (MiddlewareException e) {
 			NurseryListPreviewPresenter.LOG.error(this.messageSource.getMessage(Message.ERROR_DATABASE), e);
 			return null;
 		}

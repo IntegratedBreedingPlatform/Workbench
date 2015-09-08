@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.ui.breedingview;
 
 import java.util.ArrayList;
@@ -26,76 +27,80 @@ import com.vaadin.ui.Window;
  */
 @Configurable
 public class SaveBreedingViewStudyTreeState implements Window.CloseListener {
-    private static final Logger LOG = LoggerFactory.getLogger(SaveBreedingViewStudyTreeState.class);
-    private BreedingViewTreeTable treeTable;
 
-    @Autowired
-    private ManagerFactoryProvider provider;
+	private static final Logger LOG = LoggerFactory.getLogger(SaveBreedingViewStudyTreeState.class);
+	private BreedingViewTreeTable treeTable;
 
-    @Autowired
-    private SessionData sessionData;
+	@Autowired
+	private ManagerFactoryProvider provider;
     
     @Autowired
 	private UserProgramStateDataManager userProgramStateManager;
 
-    public SaveBreedingViewStudyTreeState(BreedingViewTreeTable treeTable) {
-        this.treeTable = treeTable;
-    }
+	@Autowired
+	private SessionData sessionData;
 
-    @Override
-    public void windowClose(Window.CloseEvent e) {
-        List<String> itemIds = getExpandedIds();
+	public SaveBreedingViewStudyTreeState(BreedingViewTreeTable treeTable) {
+		this.treeTable = treeTable;
+	}
 
-        try {
-            userProgramStateManager.saveOrUpdateUserProgramTreeState(sessionData.getUserData().getUserid(),
-                    sessionData.getSelectedProject().getUniqueID(), ListTreeState.STUDY_LIST.name(), itemIds);
-        } catch (MiddlewareQueryException e1) {
-            LOG.error(e1.getMessage(), e1);
-        }
-    }
+	@Override
+	public void windowClose(Window.CloseEvent e) {
+		List<String> itemIds = getExpandedIds();
 
-    protected List<String> getExpandedIds() {
-        List<String> expandedIds = new ArrayList<>();
-        List<FolderReference> firstLevelFolders = getFirstLevelFolders();
+		ManagerFactory managerFactory = provider.getManagerFactoryForProject(sessionData.getSelectedProject());
 
-        // study tree used in analysis always has an expanded "root node"
-        expandedIds.add("STUDY");
+		UserProgramStateDataManager programStateDataManager = managerFactory.getUserProgramStateDataManager();
+		try {
+			programStateDataManager.saveOrUpdateUserProgramTreeState(sessionData.getUserData().getUserid(), sessionData
+					.getSelectedProject().getUniqueID(), ListTreeState.STUDY_LIST.name(), itemIds);
+		} catch (MiddlewareQueryException e1) {
+			LOG.error(e1.getMessage(), e1);
+		}
+	}
 
-        for (FolderReference firstLevelFolder : firstLevelFolders) {
-            recurseSaveOpenNodes(firstLevelFolder, expandedIds);
-        }
+	protected List<String> getExpandedIds() {
+		List<String> expandedIds = new ArrayList<>();
+		List<FolderReference> firstLevelFolders = getFirstLevelFolders();
 
-        return expandedIds;
-    }
+		// study tree used in analysis always has an expanded "root node"
+		expandedIds.add("STUDY");
 
-    public void recurseSaveOpenNodes(Reference item, List<String> openNodes) {
-        if (treeTable.isCollapsed(item)) {
-            return;
-        }
+		for (FolderReference firstLevelFolder : firstLevelFolders) {
+			recurseSaveOpenNodes(firstLevelFolder, expandedIds);
+		}
 
-        openNodes.add(item.getId().toString());
+		return expandedIds;
+	}
 
-        if (item instanceof StudyReference) {
-            return;
-        }
+	public void recurseSaveOpenNodes(Reference item, List<String> openNodes) {
+		if (treeTable.isCollapsed(item)) {
+			return;
+		}
 
-        Collection children = treeTable.getChildren(item);
-        if (children != null && !children.isEmpty()) {
-            for (Object child : children) {
-                recurseSaveOpenNodes((Reference) child, openNodes);
-            }
-        }
-    }
+		openNodes.add(item.getId().toString());
 
-    protected List<FolderReference> getFirstLevelFolders() {
-        List<FolderReference> firstlevelFolders = new ArrayList<>();
-        for (FolderReference reference : treeTable.getNodeMap().values()) {
-            Integer parentFolderId = reference.getParentFolderId();
-            if (parentFolderId != null && parentFolderId.equals(DmsProject.SYSTEM_FOLDER_ID)) {
-                firstlevelFolders.add(reference);
-            }
-        }
+		if (item instanceof StudyReference) {
+			return;
+		}
 
-        return firstlevelFolders;
-    }
+		Collection children = treeTable.getChildren(item);
+		if (children != null && !children.isEmpty()) {
+			for (Object child : children) {
+				recurseSaveOpenNodes((Reference) child, openNodes);
+			}
+		}
+	}
+
+	protected List<FolderReference> getFirstLevelFolders() {
+		List<FolderReference> firstlevelFolders = new ArrayList<>();
+		for (FolderReference reference : treeTable.getNodeMap().values()) {
+			Integer parentFolderId = reference.getParentFolderId();
+			if (parentFolderId != null && parentFolderId.equals(DmsProject.SYSTEM_FOLDER_ID)) {
+				firstlevelFolders.add(reference);
+			}
+		}
+
+		return firstlevelFolders;
+	}
 }

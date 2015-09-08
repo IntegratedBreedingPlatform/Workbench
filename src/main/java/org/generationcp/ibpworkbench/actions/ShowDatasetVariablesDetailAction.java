@@ -1,10 +1,11 @@
 
 package org.generationcp.ibpworkbench.actions;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import com.vaadin.data.util.BeanContainer;
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.Window;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -12,23 +13,17 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
-import org.generationcp.middleware.domain.dms.DataSet;
-import org.generationcp.middleware.domain.dms.DatasetReference;
-import org.generationcp.middleware.domain.dms.PhenotypicType;
-import org.generationcp.middleware.domain.dms.Study;
-import org.generationcp.middleware.domain.dms.VariableType;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.domain.dms.*;
+import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.util.BeanContainer;
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Window;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -95,7 +90,7 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
 			List<FactorModel> factorList = new ArrayList<FactorModel>();
 			List<VariateModel> variateList = new ArrayList<VariateModel>();
 
-			for (VariableType factor : ds.getVariableTypes().getFactors().getVariableTypes()) {
+			for (DMSVariableType factor : ds.getVariableTypes().getFactors().getVariableTypes()) {
 
 				if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.DATASET) {
 					continue;
@@ -115,7 +110,7 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
 				factorList.add(fm);
 			}
 
-			for (VariableType variate : ds.getVariableTypes().getVariates().getVariableTypes()) {
+			for (DMSVariableType variate : ds.getVariableTypes().getVariates().getVariableTypes()) {
 
 				VariateModel vm = new VariateModel();
 				vm.setId(variate.getRank());
@@ -144,7 +139,7 @@ public class ShowDatasetVariablesDetailAction implements ItemClickListener {
 			this.updateFactorsTable(factorList);
 			this.updateVariatesTable(variateList);
 
-		} catch (MiddlewareQueryException e) {
+		} catch (MiddlewareException e) {
 			this.showDatabaseError(event.getComponent().getWindow());
 		}
 
