@@ -211,7 +211,7 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 		} else {
 			try {
 				List<Role> roles = this.presenter.getRoleByTemplateName(toolName);
-				if (roles.isEmpty()) {
+				if (!roles.isEmpty()) {
 					final Role role1 = roles.get(0);
 
 					return new OpenWorkflowForRoleAction(project) {

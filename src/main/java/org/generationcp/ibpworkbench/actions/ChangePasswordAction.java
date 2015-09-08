@@ -55,7 +55,7 @@ public class ChangePasswordAction implements ClickListener {
 				return;
 			}
 
-			if ("".equals(this.password.getValue().toString()) || "".equals(this.password.getValue().toString())) {
+			if ("".equals(this.password.getValue().toString()) || " ".equals(this.password.getValue().toString())) {
 				MessageNotifier.showRequiredFieldError(event.getComponent().getWindow(), "Password cannot be blank.");
 				return;
 			}
