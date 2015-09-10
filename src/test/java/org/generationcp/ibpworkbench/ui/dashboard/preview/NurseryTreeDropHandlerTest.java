@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Random;
 
 import com.vaadin.terminal.gwt.client.ui.dd.VerticalDropLocation;
-import org.apache.commons.lang.reflect.FieldUtils;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
@@ -55,9 +54,7 @@ public class NurseryTreeDropHandlerTest {
 		NurseryListPreview.NURSERIES_AND_TRIALS = NurseryTreeDropHandlerTest.NURSERIES_AND_TRIALS;
 		Project project = NurseryTreeDropHandlerTest.createTestProjectData();
 
-		this.presenter = new NurseryListPreviewPresenter();
-		FieldUtils.writeDeclaredField(presenter,"studyDataManager",studyDataManager,true);
-		this.presenter = Mockito.spy(this.presenter);
+		this.presenter = Mockito.mock(NurseryListPreviewPresenter.class);
 
 		Mockito.when(this.managerFactoryProvider.getManagerFactoryForProject(project)).thenReturn(this.managerFactory);
 		Mockito.when(this.managerFactory.getStudyDataManager()).thenReturn(this.studyDataManager);
@@ -73,15 +70,16 @@ public class NurseryTreeDropHandlerTest {
 
 		this.view = new NurseryListPreview(project);
 
-		this.presenter.setView(this.view);
-		this.presenter.setProject(project);
+		// since presenter that initializes some object in the view (NurseryListPreview) is now a mock obj not a full spied obj,
+		// we need manually initially initialize treeView to the view
+		this.view.generateTopListOfTree(new ArrayList<FolderReference>());
 
 		this.view.setMessageSource(this.messageSource);
 		this.view.setPresenter(this.presenter);
 		this.view.setProject(project);
 
 		try {
-			Mockito.doReturn(false).when(this.presenter).moveNurseryListFolder(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyBoolean());
+			Mockito.when(this.presenter.moveNurseryListFolder(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyBoolean())).thenReturn(false);
 		} catch (NurseryListPreviewException e) {
 			Assert.fail(e.getMessage());
 		}
