@@ -56,7 +56,6 @@ public class GermplasmListPreview extends VerticalLayout {
 	@Autowired
 	private PlatformTransactionManager transactionManager;
 
-
 	private GermplasmListPreviewPresenter presenter;
 
 	private Tree treeView;
@@ -85,7 +84,7 @@ public class GermplasmListPreview extends VerticalLayout {
 
 		try {
 			if (project != null) {
-				this.assemble();
+				this.initializeLayout();
 			}
 		} catch (Exception e) {
 			GermplasmListPreview.LOG.error(e.getMessage(), e);
@@ -429,10 +428,6 @@ public class GermplasmListPreview extends VerticalLayout {
 		this.treeView.setImmediate(true);
 	}
 
-	protected void initializeComponents() {
-		// do nothing
-	}
-
 	public void generateTree(List<GermplasmList> germplasmListParent) {
 		this.listLabel = this.messageSource.getMessage(Message.LISTS);
 
@@ -548,10 +543,6 @@ public class GermplasmListPreview extends VerticalLayout {
 		this.setSizeFull();
 	}
 
-	protected void initializeActions() {
-		// do nothing
-	}
-
 	public void processToolbarButtons(Object treeItem) {
 		boolean isMyListNode = treeItem instanceof String && treeItem.equals(this.listLabel);
 		boolean isFolder = treeItem instanceof String || this.getPresenter().isFolder((Integer) treeItem);
@@ -570,14 +561,6 @@ public class GermplasmListPreview extends VerticalLayout {
 
 		// set the launch button state
 		this.setToolbarLaunchButtonEnabled(!isMyListNode && !isFolder);
-	}
-
-	protected void assemble() throws Exception {
-
-		this.initializeComponents();
-		this.initializeLayout();
-		this.initializeActions();
-
 	}
 
 	public String getListLabel() {

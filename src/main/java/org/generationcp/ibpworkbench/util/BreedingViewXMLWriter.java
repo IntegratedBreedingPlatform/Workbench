@@ -300,6 +300,6 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		// do nothing
+		// overridden method from interface
 	}
 }

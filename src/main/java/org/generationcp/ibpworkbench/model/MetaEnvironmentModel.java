@@ -13,7 +13,7 @@ public class MetaEnvironmentModel {
 	private int dataSetTypeId;
 
 	public MetaEnvironmentModel() {
-		// do nothing
+		// default constructor
 	}
 
 	public int getStudyId() {

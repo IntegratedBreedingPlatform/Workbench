@@ -122,14 +122,6 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 		this.setTheme("gcp-default");
 	}
 
-	protected void initializeComponents() {
-	    // do nothing
-	}
-
-	protected void initializeLayout() {
-		// do nothing
-	}
-
 	protected void initializeActions() {
 		this.messageSourceListener = new UpdateComponentLabelsAction(this);
 		this.messageSource.addListener(this.messageSourceListener);
@@ -137,8 +129,6 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 
 	protected void assemble() {
 		this.initialize();
-		this.initializeComponents();
-		this.initializeLayout();
 		this.initializeActions();
 
 		this.setMainWindow(new WorkbenchMainView());

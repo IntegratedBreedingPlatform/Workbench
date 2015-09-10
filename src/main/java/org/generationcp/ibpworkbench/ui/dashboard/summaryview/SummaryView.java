@@ -91,8 +91,6 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		this.initializeComponents();
-		this.initializeActions();
-		this.initializeValues();
 		this.initializeLayout();
 	}
 
@@ -135,14 +133,6 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
 		this.setWidth("100%");
 		this.setSpacing(false);
 
-	}
-
-	private void initializeValues() {
-		// do nothing
-	}
-
-	private void initializeActions() {
-		// do nothing
 	}
 
 	private void initializeComponents() {

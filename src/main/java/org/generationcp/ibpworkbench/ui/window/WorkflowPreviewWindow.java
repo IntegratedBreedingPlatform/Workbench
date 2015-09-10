@@ -102,22 +102,8 @@ public class WorkflowPreviewWindow extends BaseSubWindow implements Initializing
 		}
 	}
 
-	protected void initializeLayout() {
-		// do nothing
-	}
-
-	protected void initializeActions() {
-		// do nothing
-	}
-
-	protected void assemble() {
-		this.initializeComponents();
-		this.initializeLayout();
-		this.initializeActions();
-	}
-
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		this.assemble();
+		this.initializeComponents();
 	}
 }

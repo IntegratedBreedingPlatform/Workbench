@@ -52,17 +52,8 @@ public class AddLocationForm extends Form {
 
 	public AddLocationForm(ProgramLocationsPresenter presenter) {
 		this.presenter = presenter;
-		this.assemble();
-	}
-
-	protected void assemble() {
-
 		this.initializeComponents();
-		this.initializeLayout();
-	}
 
-	protected void initializeLayout() {
-		// do nothing
 	}
 
 	protected void initializeComponents() {

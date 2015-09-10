@@ -108,10 +108,6 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 
 	}
 
-	protected void initializeValues() {
-		// do nothing
-	}
-
 	protected void initializeLayout() {
 		VerticalLayout root = new VerticalLayout();
 		root.setMargin(new Layout.MarginInfo(true, true, true, true));
@@ -205,7 +201,6 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 
 	protected void assemble() {
 		this.initializeComponents();
-		this.initializeValues();
 		this.initializeLayout();
 		this.initializeActions();
 

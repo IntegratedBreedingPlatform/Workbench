@@ -74,7 +74,7 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 
 	@Override
 	public void doAction(Event event) {
-		// do nothing
+		// method inherited from interface, does nothing
 	}
 
 	@Override

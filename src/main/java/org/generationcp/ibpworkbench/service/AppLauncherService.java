@@ -77,7 +77,7 @@ public class AppLauncherService {
 					}
 					break;
 				default:
-					// do nothing
+					// empty default case
 			}
 			if (logProgramActivity) {
 				// log project activity

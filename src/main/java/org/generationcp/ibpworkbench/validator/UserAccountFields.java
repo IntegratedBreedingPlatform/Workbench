@@ -14,7 +14,7 @@ public final class UserAccountFields {
 	public static final String ROLE = "role";
 
 	private UserAccountFields() {
-		// do nothing
+		// default private constructor so we cant instantiate this
 	}
 
 }

@@ -246,7 +246,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		// do nothing
+		// method inherited from interface, does nothing
 	}
 
 	public List<UserDefinedField> getUDFByLocationAndLType() {

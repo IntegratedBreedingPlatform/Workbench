@@ -8,7 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class WorkbenchUtil {
 
 	private WorkbenchUtil() {
-		// do nothing
+		// default private constructor so we cant instantiate this
 	}
 
 	public static boolean isPasswordEqualToUsername(User user) {

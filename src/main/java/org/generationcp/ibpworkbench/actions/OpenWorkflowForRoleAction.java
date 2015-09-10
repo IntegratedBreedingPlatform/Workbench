@@ -59,7 +59,7 @@ public class OpenWorkflowForRoleAction implements ItemClickListener, ClickListen
 	protected Project project;
 
 	public OpenWorkflowForRoleAction() {
-		// do nothing
+		// default constructor
 	}
 
 	public OpenWorkflowForRoleAction(Project project) {

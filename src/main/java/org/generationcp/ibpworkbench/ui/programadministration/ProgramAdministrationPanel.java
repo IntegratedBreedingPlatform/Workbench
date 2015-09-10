@@ -48,19 +48,12 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		this.assemble();
-		this.updateLabels();
-	}
-
-	private void updateLabels() {
-		// do nothing
 	}
 
 	protected void assemble() {
 
 		this.initializeComponents();
 		this.initializeLayout();
-		this.initializeActions();
-
 	}
 
 	protected void initializeComponents() {
@@ -71,10 +64,6 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 		this.programMembersPanel = new ProgramMembersPanel(this.sessionData.getLastOpenedProject());
 		this.programLocationsView = new ProgramLocationsView(this.sessionData.getLastOpenedProject());
 		this.programMethodsView = new ProgramMethodsView(this.sessionData.getLastOpenedProject());
-	}
-
-	protected void initializeActions() {
-		// do nothing
 	}
 
 	protected void initializeLayout() {

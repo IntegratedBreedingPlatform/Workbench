@@ -47,7 +47,7 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		// do nothing
+		// method inherited from interface, does nothing
 	}
 
 	public WorkbenchDataManager getManager() {

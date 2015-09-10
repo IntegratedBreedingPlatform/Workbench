@@ -115,7 +115,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		this.initializeComponents();
 		this.initializeValues();
 		this.initializeLayout();
-		this.initializeActions();
 
 		if (this.isUpdate) {
 			this.initializeLayoutForUpdate();
@@ -239,10 +238,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 
 		this.disableCropTypeCombo();
 
-	}
-
-	protected void initializeActions() {
-		// do nothing
 	}
 
 	public void refreshVisibleItems() {

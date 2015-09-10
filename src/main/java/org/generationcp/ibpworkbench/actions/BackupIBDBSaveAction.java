@@ -122,7 +122,7 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.Clic
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		// do nothing
+		// method inherited from interface, does nothing
 	}
 
 	@Override

@@ -90,21 +90,13 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() {
-		this.assemble();
+		this.initializeComponents();
 	}
 
 	protected void initializeComponents() {
 		this.sidebarTree = new Tree();
 
 		this.addComponent(this.sidebarTree);
-	}
-
-	protected void initializeLayout() {
-		// do nothing
-	}
-
-	protected void initializeActions() {
-		// do nothing
 	}
 
 	public void populateLinks() {
@@ -151,12 +143,6 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 		this.sidebarTree.addListener(this.treeClickListener);
 
 		this.addComponent(this.sidebarTree);
-	}
-
-	protected void assemble() {
-		this.initializeComponents();
-		this.initializeLayout();
-		this.initializeActions();
 	}
 
 	public void clearLinks() {

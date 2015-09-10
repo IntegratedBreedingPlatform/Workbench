@@ -142,7 +142,7 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 
 	@Override
 	public void initializeValues() {
-		// do nothing - inherited abstract method
+		// method inherited from interface, does nothing
 	}
 
 	@Override
