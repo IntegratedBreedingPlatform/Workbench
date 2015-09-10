@@ -247,7 +247,7 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				RestoreIBDBWindow.LOG.info("Backup Table > Item selected");
+				RestoreIBDBWindow.LOG.debug("Backup Table > Item selected");
 
 				RestoreIBDBWindow.this.saveBtn.setEnabled(true);
 			}

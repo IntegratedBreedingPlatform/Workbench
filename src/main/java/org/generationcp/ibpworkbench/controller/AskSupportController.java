@@ -65,7 +65,7 @@ public class AskSupportController {
 				result.put("success",Boolean.TRUE);
 
 			} catch (MessagingException | MailException e) {
-				LOG.info(e.getMessage(),e);
+				LOG.warn(e.getMessage(),e);
 				result.put("success",Boolean.FALSE);
 				result.put("message",messageSource.getMessage("support.message.email.fail", new String[] {askSupportForm.getEmail()},
 						"Fail to send email", LocaleContextHolder.getLocale()));

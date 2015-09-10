@@ -53,8 +53,8 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 		try {
 			this.removeAllComponents();
 		} catch (Exception e) {
-			// ignore
-			LOG.info(e.getMessage(),e);
+			// swallow the exception
+			LOG.warn(e.getMessage(),e);
 		}
 
 		if (content instanceof ComponentContainer) {

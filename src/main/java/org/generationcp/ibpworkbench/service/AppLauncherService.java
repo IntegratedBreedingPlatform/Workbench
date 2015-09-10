@@ -108,7 +108,7 @@ public class AppLauncherService {
 			// close the native tool
 			this.toolUtil.closeNativeTool(tool);
 		} catch (IOException e) {
-			AppLauncherService.LOG.info(e.getMessage(), e);
+			AppLauncherService.LOG.warn(e.getMessage(), e);
 		}
 
 		try {

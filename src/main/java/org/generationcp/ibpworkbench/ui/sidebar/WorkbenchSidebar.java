@@ -216,7 +216,7 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 				}
 			} catch (IndexOutOfBoundsException e) {
 				// IGNORE
-				LOG.info("ignored index out of bounds exception",e);
+				LOG.debug("ignored index out of bounds exception",e);
 			}
 		}
 

@@ -91,7 +91,7 @@ public class SaveNewLocationAction implements ClickListener {
 
 		} catch (Validator.InvalidValueException e) {
 			MessageNotifier.showRequiredFieldError(event.getComponent().getWindow(), e.getLocalizedMessage());
-			LOG.info(e.getMessage(),e);
+			LOG.warn(e.getMessage(),e);
 		}
 	}
 

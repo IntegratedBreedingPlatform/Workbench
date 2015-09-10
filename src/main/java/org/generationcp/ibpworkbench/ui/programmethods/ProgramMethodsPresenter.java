@@ -172,7 +172,7 @@ public class ProgramMethodsPresenter {
 
 			this.sessionData.getProjectBreedingMethodData().put(nextKey, newBreedingMethod);
 
-			ProgramMethodsPresenter.LOG.info(this.sessionData.getProjectBreedingMethodData().toString());
+			ProgramMethodsPresenter.LOG.debug(this.sessionData.getProjectBreedingMethodData().toString());
 
 			if (this.sessionData.getUserData() != null) {
 				newBreedingMethod.setUser(this.sessionData.getUserData().getUserid());

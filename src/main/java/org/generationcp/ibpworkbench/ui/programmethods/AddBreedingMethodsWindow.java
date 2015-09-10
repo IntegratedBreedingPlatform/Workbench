@@ -120,7 +120,7 @@ public class AddBreedingMethodsWindow extends BaseSubWindow {
 				} catch (Validator.InvalidValueException  e) {
 					MessageNotifier.showRequiredFieldError(clickEvent.getComponent().getWindow(), e.getLocalizedMessage());
 
-					LOG.info(e.getMessage(),e);
+					LOG.warn(e.getMessage(),e);
 
 					return;
 				}

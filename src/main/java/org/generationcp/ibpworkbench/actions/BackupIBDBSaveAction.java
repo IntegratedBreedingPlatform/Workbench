@@ -103,8 +103,7 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.Clic
 						return ds;
 
 					} catch (FileNotFoundException e) {
-						LOG.info(e.getMessage(),e);
-						// No logging for non-existing files at this level.
+						LOG.warn(e.getMessage(),e);
 						return null;
 					}
 				}

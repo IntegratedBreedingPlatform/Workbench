@@ -433,7 +433,7 @@ public class NurseryListPreview extends VerticalLayout {
 			@Override
 			public void buttonClick(final Button.ClickEvent event) {
 
-				NurseryListPreview.LOG.info(NurseryListPreview.this.treeView.getValue() != null ? NurseryListPreview.this.treeView
+				NurseryListPreview.LOG.trace(NurseryListPreview.this.treeView.getValue() != null ? NurseryListPreview.this.treeView
 						.getValue().toString() : null);
 
 				if (NurseryListPreview.this.treeView.getValue() instanceof String) {

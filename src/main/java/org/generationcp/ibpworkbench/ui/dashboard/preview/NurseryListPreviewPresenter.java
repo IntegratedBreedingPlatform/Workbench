@@ -95,7 +95,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 	public boolean isFolder(Integer value) {
 		try {
 			boolean isStudy = this.studyDataManager.isStudy(value);
-			NurseryListPreviewPresenter.LOG.info("isFolder = " + !isStudy);
+			NurseryListPreviewPresenter.LOG.trace("isFolder = " + !isStudy);
 			return !isStudy;
 		} catch (MiddlewareQueryException e) {
 			NurseryListPreviewPresenter.LOG.error(e.getMessage(), e);
@@ -183,7 +183,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 	}
 
 	public Integer validateForDeleteNurseryList(Integer id) throws NurseryListPreviewException {
-		NurseryListPreviewPresenter.LOG.info("id = " + id);
+		NurseryListPreviewPresenter.LOG.trace("id = " + id);
 		if (id == null) {
 			throw new NurseryListPreviewException(NurseryListPreviewException.NO_SELECTION);
 		}
@@ -217,10 +217,10 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 			throw new NurseryListPreviewException(this.messageSource.getMessage(Message.ERROR_DATABASE), e);
 		}
 		if (studyChildren != null && !studyChildren.isEmpty()) {
-			NurseryListPreviewPresenter.LOG.info("hasChildren = true");
+			NurseryListPreviewPresenter.LOG.debug("hasChildren = true");
 			return true;
 		}
-		NurseryListPreviewPresenter.LOG.info("hasChildren = false");
+		NurseryListPreviewPresenter.LOG.debug("hasChildren = false");
 		return false;
 
 	}
