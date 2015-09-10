@@ -69,7 +69,7 @@ public class GermplasmListPreview extends VerticalLayout {
 	private Panel panel;
 	private HorizontalLayout toolbar;
 
-	private String LISTS = "";
+	private String listLabel = "";
 
 	private Button openListManagerBtn;
 	private Button addFolderBtn;
@@ -314,7 +314,7 @@ public class GermplasmListPreview extends VerticalLayout {
 						if (parent != null && !GermplasmListPreview.this.treeView.isExpanded(parent.getId())) {
 							GermplasmListPreview.this.expandTree(parent.getId());
 						} else {
-							GermplasmListPreview.this.treeView.expandItem(GermplasmListPreview.this.LISTS);
+							GermplasmListPreview.this.treeView.expandItem(GermplasmListPreview.this.listLabel);
 						}
 
 						GermplasmListPreview.this.treeView.select(newItem);
@@ -393,9 +393,9 @@ public class GermplasmListPreview extends VerticalLayout {
 										GermplasmListPreview.this.treeView.removeItem(GermplasmListPreview.this.lastItemId);
 										GermplasmListPreview.this.treeView.select(null);
 										if (parent == null) {
-											GermplasmListPreview.this.treeView.select(GermplasmListPreview.this.LISTS);
-											GermplasmListPreview.this.lastItemId = GermplasmListPreview.this.LISTS;
-											GermplasmListPreview.this.processToolbarButtons(GermplasmListPreview.this.LISTS);
+											GermplasmListPreview.this.treeView.select(GermplasmListPreview.this.listLabel);
+											GermplasmListPreview.this.lastItemId = GermplasmListPreview.this.listLabel;
+											GermplasmListPreview.this.processToolbarButtons(GermplasmListPreview.this.listLabel);
 										} else {
 											GermplasmListPreview.this.treeView.select(parent.getId());
 											GermplasmListPreview.this.lastItemId = parent.getId();
@@ -434,7 +434,7 @@ public class GermplasmListPreview extends VerticalLayout {
 	}
 
 	public void generateTree(List<GermplasmList> germplasmListParent) {
-		GermplasmListPreview.this.LISTS = this.messageSource.getMessage(Message.LISTS);
+		this.listLabel = this.messageSource.getMessage(Message.LISTS);
 
 		this.lastItemId = null;
 		this.treeView = new Tree();
@@ -442,16 +442,16 @@ public class GermplasmListPreview extends VerticalLayout {
 		this.treeView.setDropHandler(new GermplasmListTreeDropHandler(this.treeView, this.presenter));
 		this.treeView.setDragMode(TreeDragMode.NODE);
 
-		this.treeView.addItem(GermplasmListPreview.this.LISTS);
-		this.treeView.setItemCaption(GermplasmListPreview.this.LISTS, GermplasmListPreview.this.LISTS);
-		this.treeView.setItemIcon(GermplasmListPreview.this.LISTS, this.folderResource);
+		this.treeView.addItem(this.listLabel);
+		this.treeView.setItemCaption(this.listLabel, this.listLabel);
+		this.treeView.setItemIcon(this.listLabel, this.folderResource);
 
 		this.treeView.setNullSelectionAllowed(false);
 
 		for (GermplasmList parentList : germplasmListParent) {
 			this.treeView.addItem(parentList.getId());
 			this.treeView.setItemCaption(parentList.getId(), parentList.getName());
-			this.treeView.setParent(parentList.getId(), GermplasmListPreview.this.LISTS);
+			this.treeView.setParent(parentList.getId(), this.listLabel);
 			boolean hasChildList = this.getPresenter().hasChildList(parentList.getId());
 
 			this.treeView.setChildrenAllowed(parentList.getId(), hasChildList);
@@ -553,7 +553,7 @@ public class GermplasmListPreview extends VerticalLayout {
 	}
 
 	public void processToolbarButtons(Object treeItem) {
-		boolean isMyListNode = treeItem instanceof String && treeItem.equals(GermplasmListPreview.this.LISTS);
+		boolean isMyListNode = treeItem instanceof String && treeItem.equals(this.listLabel);
 		boolean isFolder = treeItem instanceof String || this.getPresenter().isFolder((Integer) treeItem);
 
 		// set the toolbar button state
@@ -581,11 +581,11 @@ public class GermplasmListPreview extends VerticalLayout {
 	}
 
 	public String getListLabel() {
-		return LISTS;
+		return listLabel;
 	}
 
 	public void setListLabel(String listLabel) {
-		this.LISTS = listLabel;
+		this.listLabel = listLabel;
 	}
 
 
