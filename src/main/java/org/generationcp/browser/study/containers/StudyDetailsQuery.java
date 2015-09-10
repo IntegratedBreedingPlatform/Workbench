@@ -38,10 +38,11 @@ public class StudyDetailsQuery implements Query {
 	private static final Logger LOG = LoggerFactory.getLogger(StudyDetailsQuery.class);
 	private static final SimpleDateFormat BACKEND_DATE_FORMAT = Util.getSimpleDateFormat(Util.DATE_AS_NUMBER_FORMAT);
 	private static final SimpleDateFormat FRONTEND_DATE_FORMAT = Util.getSimpleDateFormat(Util.FRONTEND_DATE_FORMAT);
-	private String programUUID;
-	private StudyDataManager studyDataManager;
-	private StudyType studyType;
-	private List<String> columnIds;
+
+	private final String programUUID;
+	private final StudyDataManager studyDataManager;
+	private final StudyType studyType;
+	private final List<String> columnIds;
 	private int size;
 
 	public StudyDetailsQuery(StudyDataManager studyDataManager, StudyType studyType, List<String> columnIds, String programUUID) {
