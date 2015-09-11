@@ -159,7 +159,7 @@ public class RunMultiSiteAction implements ClickListener {
 							selectedTraits, project);
 			gxeInput.setSourceCSVSummaryStatsFilePath(summaryStatsFile.getAbsolutePath());
 
-		} catch (Exception e) {
+		} catch (IllegalArgumentException | MiddlewareQueryException e) {
 			LOG.error(e.getMessage(),e);
 		}
 
