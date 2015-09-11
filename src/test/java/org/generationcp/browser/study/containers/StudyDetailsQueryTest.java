@@ -8,10 +8,10 @@ import org.generationcp.middleware.domain.etl.StudyDetails;
 import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -21,22 +21,25 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class StudyDetailsQueryTest {
 
 	private final String programUUID = "sample_program_uuid";
+	private final StudyType studyType = StudyType.S;
+
+	// unit under tests
+	protected StudyDetailsQuery studyDetailsQueryWithStudyType;
+	protected StudyDetailsQuery studyDetailsQueryWoStudyType;
 
 	@Mock
 	private StudyDataManager studyDataManager;
-
-	private final StudyType studyType = StudyType.S;
-
 	@Mock
 	private List<String> columnIds;
 
-	@InjectMocks
-	private final StudyDetailsQuery studyDetailsQueryWithStudyType = Mockito.spy(new StudyDetailsQuery(this.studyDataManager,
-			this.studyType, this.columnIds, this.programUUID));
+	@Before
+	public void setUp() throws Exception {
+		this.studyDetailsQueryWithStudyType  = new StudyDetailsQuery(this.studyDataManager,
+				this.studyType, this.columnIds, this.programUUID);
 
-	@InjectMocks
-	private final StudyDetailsQuery studyDetailsQueryWoStudyType = Mockito.spy(new StudyDetailsQuery(this.studyDataManager, null,
-			this.columnIds, this.programUUID));
+		this.studyDetailsQueryWoStudyType = new StudyDetailsQuery(this.studyDataManager, null,
+				this.columnIds, this.programUUID);
+	}
 
 	@Test
 	public void testGetStudyDetailsList() throws Exception {

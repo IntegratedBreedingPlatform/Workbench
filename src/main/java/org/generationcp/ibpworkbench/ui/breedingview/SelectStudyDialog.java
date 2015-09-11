@@ -89,14 +89,15 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 	@Autowired
 	protected SimpleResourceBundleMessageSource messageSource;
 
+	@Autowired
+	protected StudyDataManager studyDataManager;
+
 	protected Window parentWindow;
 	protected Button cancelButton;
 	protected Button selectButton;
 	protected BreedingViewTreeTable treeTable;
 	protected VerticalLayout rootLayout;
 
-	@Autowired
-	protected StudyDataManager studyDataManager;
 	protected Component source;
 
 	protected ThemeResource folderResource;
@@ -105,11 +106,10 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 
 	protected Label lblStudyTreeDetailDescription;
 
-	private Project currentProject;
+	private final Project currentProject;
 
 	public SelectStudyDialog(Window parentWindow, Component source, Project currentProject) {
 		this.parentWindow = parentWindow;
-		this.studyDataManager = studyDataManager;
 		this.source = source;
 		this.currentProject = currentProject;
 	}
@@ -312,8 +312,8 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 			} catch (MiddlewareException e) {
 				SelectStudyDialog.LOG.error(e.getMessage(), e);
 				if (study != null) {
-					MessageNotifier.showError(this, "MEANS dataset doesn't exist", study.getName()
-							+ " doesn't have an existing MEANS dataset.");
+					MessageNotifier.showError(this, "MEANS dataset doesn't exist",
+							study.getName() + " doesn't have an existing MEANS dataset.");
 				} else {
 					MessageNotifier.showError(this, "MEANS dataset doesn't exist",
 							"The selected Study doesn't have an existing MEANS dataset.");
@@ -437,7 +437,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 					this.messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
 			children = new ArrayList<>();
 
-			LOG.warn(e.getMessage(),e);
+			LOG.warn(e.getMessage(), e);
 		}
 		return !children.isEmpty();
 	}
@@ -471,5 +471,8 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 
 	private StudyDataManager getStudyDataManager() {
 		return this.studyDataManager;
+	}
+	public void setStudyDataManager(StudyDataManager studyDataManager) {
+		this.studyDataManager = studyDataManager;
 	}
 }
