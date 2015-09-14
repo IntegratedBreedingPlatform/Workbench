@@ -78,16 +78,6 @@ describe('Scale details directive', function() {
 		deferredGetNonSystemDataTypes,
 		mockTranslateFilter;
 
-	beforeEach(function() {
-		module(function($provide) {
-			$provide.value('translateFilter', mockTranslateFilter);
-		});
-
-		mockTranslateFilter = function(value) {
-			return value;
-		};
-	});
-
 	function compileDirective() {
 		inject(function($compile) {
 			directiveElement = $compile('<om-scale-details></om-scale-details>')(scope);
@@ -96,16 +86,24 @@ describe('Scale details directive', function() {
 	}
 
 	beforeEach(function() {
-		angular.mock.module('templates');
-	});
+		module(function($provide) {
+			$provide.value('translateFilter', mockTranslateFilter);
+		});
 
-	beforeEach(module('scaleDetails', function($provide) {
-		// Provide mocks for the directive controller
-		$provide.value('dataTypesService', dataTypesService);
-		$provide.value('scalesService', scalesService);
-		$provide.value('serviceUtilities', serviceUtilities);
-		$provide.value('panelService', panelService);
-	}));
+		mockTranslateFilter = function(value) {
+			return value;
+		};
+
+		angular.mock.module('templates');
+
+		module('scaleDetails', function($provide) {
+			// Provide mocks for the directive controller
+			$provide.value('dataTypesService', dataTypesService);
+			$provide.value('scalesService', scalesService);
+			$provide.value('serviceUtilities', serviceUtilities);
+			$provide.value('panelService', panelService);
+		});
+	});
 
 	beforeEach(inject(function($rootScope, $q, _formUtilities_) {
 		q = $q;

@@ -7,38 +7,6 @@ describe('Search module', function() {
 		directiveElement,
 		mockTranslateFilter;
 
-	beforeEach(function() {
-		module(function($provide) {
-			$provide.value('translateFilter', mockTranslateFilter);
-		});
-
-		mockTranslateFilter = function(value) {
-			return value;
-		};
-	});
-
-	beforeEach(function() {
-		angular.mock.module('templates');
-	});
-
-	beforeEach(module('search', function($provide) {
-		ieUtilities = {
-			// Stub out the add IE clear input handler to call the callback when callCallback is invoked
-			addIeClearInputHandler: function(element, callback) {
-				this.callback = callback;
-			},
-			callCallback: function() {
-				this.callback();
-			}
-		};
-		// Provide mocks for the directive controller
-		$provide.value('ieUtilities', ieUtilities);
-	}));
-
-	beforeEach(inject(function($rootScope) {
-		scope = $rootScope;
-	}));
-
 	function compileDirective() {
 		inject(function($compile) {
 			directiveElement = $compile('<om-search om-model="searchText"></om-search>')(scope);
@@ -47,12 +15,45 @@ describe('Search module', function() {
 		scope.$digest();
 	}
 
+	beforeEach(function() {
+		module(function($provide) {
+			$provide.value('translateFilter', mockTranslateFilter);
+		});
+
+		mockTranslateFilter = function(value) {
+			return value;
+		};
+
+		angular.mock.module('templates');
+
+		module('search', function($provide) {
+			ieUtilities = {
+				// Stub out the add IE clear input handler to call the callback when callCallback is invoked
+				addIeClearInputHandler: function(element, callback) {
+					this.callback = callback;
+				},
+				callCallback: function() {
+					this.callback();
+				}
+			};
+			// Provide mocks for the directive controller
+			$provide.value('ieUtilities', ieUtilities);
+		});
+	});
+
+	beforeEach(inject(function($rootScope) {
+		scope = $rootScope;
+	}));
+
 	it('should clear the model when the clear input button is clicked in IE', function() {
 		var isolateScope;
 
 		compileDirective();
 		isolateScope = directiveElement.isolateScope();
 		isolateScope.model = 'text';
+
+		// Simulate the callback passed to the ieUtilities addIeClearInputHandler function
+		// being called.
 		ieUtilities.callCallback();
 
 		expect(isolateScope.model).toEqual('');

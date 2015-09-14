@@ -19,13 +19,10 @@ describe('Categories module', function() {
 		mockTranslateFilter = function(value) {
 			return value;
 		};
-	});
 
-	beforeEach(function() {
 		angular.mock.module('templates');
+		module('categories');
 	});
-
-	beforeEach(module('categories'));
 
 	beforeEach(inject(function($rootScope) {
 		scope = $rootScope.$new();

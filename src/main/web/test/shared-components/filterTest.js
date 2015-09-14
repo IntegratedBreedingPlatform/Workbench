@@ -57,24 +57,17 @@ describe('Filter Module', function() {
 		mockTranslateFilter = function(value) {
 			return value;
 		};
-	});
 
-	beforeEach(function() {
 		angular.mock.module('templates');
-	});
 
-	beforeEach(function() {
-		module('templates');
-		module('filter');
+		module('filter', function($provide) {
+			// Provide mocks for the directive controller
+			$provide.value('variableTypesService', variableTypesService);
+			$provide.value('panelService', panelService);
+			$provide.value('serviceUtilities', serviceUtilities);
+			$provide.value('dataTypesService', dataTypesService);
+		});
 	});
-
-	beforeEach(module('filter', function($provide) {
-		// Provide mocks for the directive controller
-		$provide.value('variableTypesService', variableTypesService);
-		$provide.value('panelService', panelService);
-		$provide.value('serviceUtilities', serviceUtilities);
-		$provide.value('dataTypesService', dataTypesService);
-	}));
 
 	beforeEach(inject(function($rootScope, $q) {
 		q = $q;

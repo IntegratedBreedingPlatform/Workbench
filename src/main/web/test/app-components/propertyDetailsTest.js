@@ -29,16 +29,6 @@ describe('Property details directive', function() {
 		deferredDeleteProperty,
 		mockTranslateFilter;
 
-	beforeEach(function() {
-		module(function($provide) {
-			$provide.value('translateFilter', mockTranslateFilter);
-		});
-
-		mockTranslateFilter = function(value) {
-			return value;
-		};
-	});
-
 	function compileDirective() {
 		inject(function($compile) {
 			directiveElement = $compile('<om-property-details></om-property-details>')(scope);
@@ -47,15 +37,23 @@ describe('Property details directive', function() {
 	}
 
 	beforeEach(function() {
-		angular.mock.module('templates');
-	});
+		module(function($provide) {
+			$provide.value('translateFilter', mockTranslateFilter);
+		});
 
-	beforeEach(module('propertyDetails', function($provide) {
-		// Provide mocks for the directive controller
-		$provide.value('propertiesService', propertiesService);
-		$provide.value('serviceUtilities', serviceUtilities);
-		$provide.value('panelService', panelService);
-	}));
+		mockTranslateFilter = function(value) {
+			return value;
+		};
+
+		angular.mock.module('templates');
+
+		module('propertyDetails', function($provide) {
+			// Provide mocks for the directive controller
+			$provide.value('propertiesService', propertiesService);
+			$provide.value('serviceUtilities', serviceUtilities);
+			$provide.value('panelService', panelService);
+		});
+	});
 
 	beforeEach(inject(function($rootScope, $q, _formUtilities_) {
 		q = $q;

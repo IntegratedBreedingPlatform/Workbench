@@ -14,13 +14,10 @@ describe('List module', function() {
 		mockTranslateFilter = function(value) {
 			return value;
 		};
-	});
 
-	beforeEach(function() {
 		angular.mock.module('templates');
+		module('list');
 	});
-
-	beforeEach(module('list'));
 
 	beforeEach(inject(function($rootScope) {
 		scope = $rootScope;

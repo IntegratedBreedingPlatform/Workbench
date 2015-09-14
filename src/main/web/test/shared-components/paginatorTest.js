@@ -8,9 +8,8 @@ describe('Paginator module', function() {
 
 		beforeEach(function() {
 			angular.mock.module('templates');
+			module('paginator');
 		});
-
-		beforeEach(module('paginator'));
 
 		beforeEach(inject(function($rootScope) {
 			scope = $rootScope;

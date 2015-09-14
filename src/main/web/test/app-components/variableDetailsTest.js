@@ -54,16 +54,6 @@ describe('Variable details directive', function() {
 		deferredDeleteVariable,
 		mockTranslateFilter;
 
-	beforeEach(function() {
-		module(function($provide) {
-			$provide.value('translateFilter', mockTranslateFilter);
-		});
-
-		mockTranslateFilter = function(value) {
-			return value;
-		};
-	});
-
 	function compileDirective() {
 		inject(function($compile) {
 			directiveElement = $compile('<om-variable-details></om-variable-details>')(scope);
@@ -72,19 +62,27 @@ describe('Variable details directive', function() {
 	}
 
 	beforeEach(function() {
-		angular.mock.module('templates');
-	});
+		module(function($provide) {
+			$provide.value('translateFilter', mockTranslateFilter);
+		});
 
-	beforeEach(module('variableDetails', function($provide) {
-		// Provide mocks for the directive controller
-		$provide.value('propertiesService', propertiesService);
-		$provide.value('methodsService', methodsService);
-		$provide.value('scalesService', scalesService);
-		$provide.value('serviceUtilities', serviceUtilities);
-		$provide.value('variablesService', variablesService);
-		$provide.value('variableTypesService', variableTypesService);
-		$provide.value('panelService', panelService);
-	}));
+		mockTranslateFilter = function(value) {
+			return value;
+		};
+
+		angular.mock.module('templates');
+
+		module('variableDetails', function($provide) {
+			// Provide mocks for the directive controller
+			$provide.value('propertiesService', propertiesService);
+			$provide.value('methodsService', methodsService);
+			$provide.value('scalesService', scalesService);
+			$provide.value('serviceUtilities', serviceUtilities);
+			$provide.value('variablesService', variablesService);
+			$provide.value('variableTypesService', variableTypesService);
+			$provide.value('panelService', panelService);
+		});
+	});
 
 	beforeEach(inject(function($rootScope, $q, _formUtilities_) {
 		q = $q;
