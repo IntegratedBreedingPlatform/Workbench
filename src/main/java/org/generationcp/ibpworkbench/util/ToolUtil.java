@@ -270,8 +270,6 @@ public class ToolUtil {
 				username = account.getMysqlUsername();
 				password = account.getMysqlPassword();
 			} catch (MiddlewareQueryException ex) {
-				// do nothing, use the default central and local mysql user
-				// accounts
 				ToolUtil.LOG.error(ex.getMessage(), ex);
 			}
 		}
