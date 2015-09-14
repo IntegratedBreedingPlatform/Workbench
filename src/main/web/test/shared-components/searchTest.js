@@ -20,7 +20,6 @@ describe('Search module', function() {
 	beforeEach(function() {
 		angular.mock.module('templates');
 	});
-	beforeEach(module('templates'));
 
 	beforeEach(module('search', function($provide) {
 		ieUtilities = {

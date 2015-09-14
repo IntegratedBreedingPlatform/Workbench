@@ -25,7 +25,6 @@ describe('Categories module', function() {
 		angular.mock.module('templates');
 	});
 
-	beforeEach(module('templates'));
 	beforeEach(module('categories'));
 
 	beforeEach(inject(function($rootScope) {

@@ -99,8 +99,6 @@ describe('Scale details directive', function() {
 		angular.mock.module('templates');
 	});
 
-	beforeEach(module('templates'));
-
 	beforeEach(module('scaleDetails', function($provide) {
 		// Provide mocks for the directive controller
 		$provide.value('dataTypesService', dataTypesService);

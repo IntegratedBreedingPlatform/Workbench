@@ -21,7 +21,6 @@ describe('Range module', function() {
 		angular.mock.module('templates');
 	});
 
-	beforeEach(module('templates'));
 	beforeEach(module('range'));
 
 	beforeEach(inject(function($rootScope) {

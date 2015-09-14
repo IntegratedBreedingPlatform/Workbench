@@ -20,7 +20,6 @@ describe('List module', function() {
 		angular.mock.module('templates');
 	});
 
-	beforeEach(module('templates'));
 	beforeEach(module('list'));
 
 	beforeEach(inject(function($rootScope) {

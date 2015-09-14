@@ -49,8 +49,6 @@ describe('Method details directive', function() {
 		angular.mock.module('templates');
 	});
 
-	beforeEach(module('templates'));
-
 	beforeEach(module('methodDetails', function($provide) {
 		// Provide mocks for the directive controller
 		$provide.value('methodsService', methodsService);

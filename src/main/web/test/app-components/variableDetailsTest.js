@@ -75,8 +75,6 @@ describe('Variable details directive', function() {
 		angular.mock.module('templates');
 	});
 
-	beforeEach(module('templates'));
-
 	beforeEach(module('variableDetails', function($provide) {
 		// Provide mocks for the directive controller
 		$provide.value('propertiesService', propertiesService);

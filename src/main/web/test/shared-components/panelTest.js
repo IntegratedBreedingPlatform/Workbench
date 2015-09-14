@@ -20,7 +20,6 @@ describe('Panel module', function() {
 		angular.mock.module('templates');
 	});
 
-	beforeEach(module('templates'));
 	beforeEach(module('panel'));
 
 	beforeEach(inject(function($rootScope, _panelService_) {
