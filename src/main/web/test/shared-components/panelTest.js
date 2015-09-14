@@ -25,7 +25,7 @@ describe('Panel module', function() {
 		panelService = _panelService_;
 	}));
 
-	describe('Panel directive', function() {
+	describe('Panel Directive', function() {
 		var CONTENT_CLASS = 'om-pa-content-test',
 			CONTENT = '<div class="' + CONTENT_CLASS + '"></div>',
 
