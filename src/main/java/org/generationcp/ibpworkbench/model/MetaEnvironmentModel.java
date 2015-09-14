@@ -12,6 +12,9 @@ public class MetaEnvironmentModel {
 	private Boolean active;
 	private int dataSetTypeId;
 
+	/**
+	 * Default Constructor, used by MetaAnalysisPanel to create a bean instance
+	 */
 	public MetaEnvironmentModel() {
 		// default constructor
 	}

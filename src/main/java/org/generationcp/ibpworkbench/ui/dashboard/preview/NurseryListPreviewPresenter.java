@@ -87,6 +87,13 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 		}
 	}
 
+
+	/**
+	 * afterPropertiesSet() is called after Aspect4J weaves spring objects when this class is instantiated since this class is
+	 * a @configurable that implements InitializingBean. Since we do not have any need for additional initialization after the weaving, this
+	 * method remains unimplemented.
+	 * @throws Exception
+	 */
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		// method inherited from interface, does nothing

@@ -60,7 +60,7 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 
 	@Autowired
 	private GermplasmDataManager germplasmDataManager;
-	
+
 	@Autowired
 	private GermplasmListManager germplasmListManager;
 
@@ -72,6 +72,12 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 		this.doAction(event.getComponent().getWindow(), "delete_program", true);
 	}
 
+	/**
+	 * Class implements workbench's ActionListener class which has two doAction implementations.
+	 * This class only uses doAction(final Window window, String uriFragment, boolean isLinkAccessed) thats why this method remains unimplemented
+	 *
+	 * @param event the event
+	 */
 	@Override
 	public void doAction(Event event) {
 		// method inherited from interface, does nothing
@@ -143,7 +149,7 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 		germplasmDataManager.deleteProgramFavorites(favoriteMethods);
 
 	}
-	
+
 	protected void deleteAllProgramStudies() {
 		this.studyDataManager.deleteProgramStudies(this.currentProject.getUniqueID());
 	}
@@ -151,5 +157,5 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 	protected void deleteAllProgramLists() {
 		this.germplasmListManager.deleteGermplasmListsByProgram(this.currentProject.getUniqueID());
 	}
-	
+
 }

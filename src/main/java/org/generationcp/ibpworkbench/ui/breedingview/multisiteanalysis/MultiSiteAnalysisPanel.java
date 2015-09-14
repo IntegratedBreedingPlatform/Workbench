@@ -142,7 +142,7 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 
 	@Override
 	public void initializeValues() {
-		// method inherited from interface, does nothing
+		// no UI components needs values on this UI object creation
 	}
 
 	@Override

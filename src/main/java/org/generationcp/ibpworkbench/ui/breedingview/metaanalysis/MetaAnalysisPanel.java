@@ -34,10 +34,7 @@ import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.middleware.domain.dms.*;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareException;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
-import org.generationcp.middleware.manager.ManagerFactory;
-import org.generationcp.middleware.manager.StudyDataManagerImpl;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -194,6 +191,9 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 				"Go to Multi-Year Multi-Site Analysis Tutorial"));
 	}
 
+	/**
+	 * This View Class inherits IBPWorkbenchLayout but does not have components it needs to initialize values from
+	 */
 	@Override
 	public void initializeValues() {
 		// method inherited from interface, does nothing

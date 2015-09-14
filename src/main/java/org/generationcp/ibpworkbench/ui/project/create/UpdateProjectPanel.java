@@ -35,8 +35,12 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 
 	private Button deleteProgramButton;
 
+	/**
+	 * Default constructor, instantiated by ProgamAdministratorPanel as its component for
+	 * updating workbench program
+	 */
 	public UpdateProjectPanel() {
-
+		// default constructor
 	}
 
 	@Override
@@ -103,12 +107,6 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 	}
 
 	@Override
-	protected void initializeValues() {
-		// initialize component values
-
-	}
-
-	@Override
 	public void afterPropertiesSet() {
 		// initialize state
 		// get hibernate managed version of user
@@ -117,7 +115,6 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 		this.initializeComponents();
 		this.initializeLayout();
 		this.initializeActions();
-		this.initializeValues();
 
 	}
 
