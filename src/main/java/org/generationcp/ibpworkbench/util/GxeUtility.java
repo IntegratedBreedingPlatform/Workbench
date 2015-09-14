@@ -17,7 +17,6 @@ import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.Experiment;
 import org.generationcp.middleware.domain.dms.Variable;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,6 +103,10 @@ public class GxeUtility {
 
 	public static File exportGxEDatasetToBreadingViewCsv(DataSet gxeDataset, List<Experiment> experiments, String environmentName,
 			String environmentGroup, String genotypeName, GxeEnvironment gxeEnv, List<Trait> selectedTraits, Project currentProject) {
+		if (currentProject == null) {
+			throw new IllegalArgumentException("current project is null");
+		}
+
 		List<String[]> tableItems = new ArrayList<String[]>();
 
 		Map<String, Integer> traitToColNoMap = new Hashtable<String, Integer>();
@@ -185,12 +188,6 @@ public class GxeUtility {
 		}
 
 		try {
-
-			if (currentProject == null) {
-				GxeUtility.LOG.warn("currentProject is null");
-				return null;
-			}
-
 			String dir =
 					"workspace" + File.separator + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator
 							+ "input";
@@ -214,7 +211,10 @@ public class GxeUtility {
 	}
 
 	public static File exportTrialDatasetToSummaryStatsCsv(DataSet trialDataSet, List<Experiment> experiments, String environmentName,
-			List<Trait> selectedTraits, Project currentProject) throws MiddlewareQueryException {
+			List<Trait> selectedTraits, Project currentProject) {
+		if (currentProject == null) {
+			throw new IllegalArgumentException("current project is null");
+		}
 
 		List<String[]> tableItems = new ArrayList<String[]>();
 
@@ -262,12 +262,6 @@ public class GxeUtility {
 				tableItems.add(row.toArray(new String[0]));
 			}
 
-		}
-
-
-		if (currentProject == null) {
-			GxeUtility.LOG.warn("currentProject is null");
-			return null;
 		}
 
 		String dir =
