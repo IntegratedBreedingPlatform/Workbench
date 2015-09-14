@@ -4,7 +4,7 @@
 	<groupId>org.generationcp</groupId>
 	<artifactId>ibpworkbench</artifactId>
 	<packaging>war</packaging>
-	<name>IBPWorkbench</name>
+	<name>Workbench</name>
 	<version>4.0.0.BETA</version>
 
 	<properties>
