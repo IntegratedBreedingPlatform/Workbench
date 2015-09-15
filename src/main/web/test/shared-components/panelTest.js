@@ -14,21 +14,18 @@ describe('Panel module', function() {
 		mockTranslateFilter = function(value) {
 			return value;
 		};
-	});
 
-	beforeEach(function() {
 		angular.mock.module('templates');
-	});
 
-	beforeEach(module('templates'));
-	beforeEach(module('panel'));
+		module('panel');
+	});
 
 	beforeEach(inject(function($rootScope, _panelService_) {
 		scope = $rootScope.$new();
 		panelService = _panelService_;
 	}));
 
-	describe('Panel directive', function() {
+	describe('Panel Directive', function() {
 		var CONTENT_CLASS = 'om-pa-content-test',
 			CONTENT = '<div class="' + CONTENT_CLASS + '"></div>',
 

@@ -6,9 +6,6 @@ describe('Input Module', function() {
 
 	beforeEach(function() {
 		angular.mock.module('templates');
-	});
-
-	beforeEach(function() {
 		module('templates');
 		module('input');
 	});

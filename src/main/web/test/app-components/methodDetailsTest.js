@@ -28,16 +28,6 @@ describe('Method details directive', function() {
 		deferredDeleteMethod,
 		mockTranslateFilter;
 
-	beforeEach(function() {
-		module(function($provide) {
-			$provide.value('translateFilter', mockTranslateFilter);
-		});
-
-		mockTranslateFilter = function(value) {
-			return value;
-		};
-	});
-
 	function compileDirective() {
 		inject(function($compile) {
 			directiveElement = $compile('<om-method-details></om-method-details>')(scope);
@@ -46,17 +36,23 @@ describe('Method details directive', function() {
 	}
 
 	beforeEach(function() {
+		module(function($provide) {
+			$provide.value('translateFilter', mockTranslateFilter);
+		});
+
+		mockTranslateFilter = function(value) {
+			return value;
+		};
+
 		angular.mock.module('templates');
+
+		module('methodDetails', function($provide) {
+			// Provide mocks for the directive controller
+			$provide.value('methodsService', methodsService);
+			$provide.value('serviceUtilities', serviceUtilities);
+			$provide.value('panelService', panelService);
+		});
 	});
-
-	beforeEach(module('templates'));
-
-	beforeEach(module('methodDetails', function($provide) {
-		// Provide mocks for the directive controller
-		$provide.value('methodsService', methodsService);
-		$provide.value('serviceUtilities', serviceUtilities);
-		$provide.value('panelService', panelService);
-	}));
 
 	beforeEach(inject(function($rootScope, $q, _formUtilities_) {
 		q = $q;

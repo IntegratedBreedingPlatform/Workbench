@@ -15,6 +15,7 @@ describe('Utilities Service', function() {
 				q = $q;
 			});
 		});
+
 		describe('formatErrorsForDisplay', function() {
 
 			it('should return an empty array if there are no errors', function() {
@@ -124,6 +125,7 @@ describe('Utilities Service', function() {
 				q = $q;
 			});
 		});
+
 		describe('formGroupClassGenerator', function() {
 
 			it('should return a function', function() {
