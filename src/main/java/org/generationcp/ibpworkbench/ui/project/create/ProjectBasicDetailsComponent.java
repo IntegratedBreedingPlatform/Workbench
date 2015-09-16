@@ -117,7 +117,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		this.initializeActions();
 
 		if (this.isUpdate) {
-			this.initializeLayoutForUpdate();
+			this.disableCropTypeCombo();
 		}
 	}
 
@@ -207,11 +207,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		this.setSpacing(false);
 
 		this.setComponentAlignment(this.gridLayout, Alignment.TOP_LEFT);
-	}
-
-	protected void initializeLayoutForUpdate() {
-		this.disableCropTypeCombo();
-
 	}
 
 	protected void initializeActions() {
@@ -315,7 +310,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		this.cropTypeCombo.setValue(project.getCropType());
 
 		if (this.isUpdate) {
-			this.initializeLayoutForUpdate();
+			this.disableCropTypeCombo();
 		}
 	}
 
