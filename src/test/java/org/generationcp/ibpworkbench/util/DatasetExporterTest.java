@@ -125,19 +125,18 @@ public class DatasetExporterTest {
 		}
 
 		DatasetExporter exporter = new DatasetExporter(DatasetExporterTest.manager, this.ontologyService, 1, 1);
-		DatasetExporter dut = Mockito.spy(exporter);
 
-		dut.setWorkbenchDataManager(DatasetExporterTest.workbenchDataManager);
+		exporter.setWorkbenchDataManager(DatasetExporterTest.workbenchDataManager);
 		try {
-			dut.exportToCSVForBreedingView(DatasetExporterTest.FILENAME, DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME,
+			exporter.exportToCSVForBreedingView(DatasetExporterTest.FILENAME, DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME,
 					selectedEnvironments, this.bvInput);
 		} catch (DatasetExporterException e) {
 
 			Assert.fail(e.getMessage());
 		}
 
-		List<String[]> tableItems = dut.getTableItems();
-		Map<String, String> headerAliasMap = dut.getHeaderNameAliasMap();
+		List<String[]> tableItems = exporter.getTableItems();
+		Map<String, String> headerAliasMap = exporter.getHeaderNameAliasMap();
 
 		// header
 		Assert.assertEquals("Expected 1st column header is " + DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME,
@@ -302,19 +301,18 @@ public class DatasetExporterTest {
 		}
 
 		DatasetExporter exporter = new DatasetExporter(DatasetExporterTest.manager, this.ontologyService, 1, 1);
-		DatasetExporter dut = Mockito.spy(exporter);
 
-		dut.setWorkbenchDataManager(DatasetExporterTest.workbenchDataManager);
+		exporter.setWorkbenchDataManager(DatasetExporterTest.workbenchDataManager);
 		try {
-			dut.exportToCSVForBreedingView(DatasetExporterTest.FILENAME, DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME,
+			exporter.exportToCSVForBreedingView(DatasetExporterTest.FILENAME, DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME,
 					selectedEnvironments, this.bvInput);
 		} catch (DatasetExporterException e) {
 
 			Assert.fail(e.getMessage());
 		}
 
-		List<String[]> tableItems = dut.getTableItems();
-		Map<String, String> headerAliasMap = dut.getHeaderNameAliasMap();
+		List<String[]> tableItems = exporter.getTableItems();
+		Map<String, String> headerAliasMap = exporter.getHeaderNameAliasMap();
 
 		Assert.assertEquals("Expected 1st column header is " + DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME,
 				DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME, tableItems.get(0)[0]);
@@ -369,19 +367,18 @@ public class DatasetExporterTest {
 		}
 
 		DatasetExporter exporter = new DatasetExporter(DatasetExporterTest.manager, this.ontologyService, 1, 1);
-		DatasetExporter dut = Mockito.spy(exporter);
 
-		dut.setWorkbenchDataManager(DatasetExporterTest.workbenchDataManager);
+		exporter.setWorkbenchDataManager(DatasetExporterTest.workbenchDataManager);
 		try {
-			dut.exportToCSVForBreedingView(DatasetExporterTest.FILENAME, DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME
-					+ DatasetExporterTest.VAR_POST_FIX, selectedEnvironments, this.bvInput);
+			exporter.exportToCSVForBreedingView(DatasetExporterTest.FILENAME,
+					DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME + DatasetExporterTest.VAR_POST_FIX, selectedEnvironments, this.bvInput);
 		} catch (DatasetExporterException e) {
 
 			Assert.fail(e.getMessage());
 		}
 
-		List<String[]> tableItems = dut.getTableItems();
-		Map<String, String> headerAliasMap = dut.getHeaderNameAliasMap();
+		List<String[]> tableItems = exporter.getTableItems();
+		Map<String, String> headerAliasMap = exporter.getHeaderNameAliasMap();
 
 		Assert.assertEquals("Expected 1st column header is " + DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME
 				+ DatasetExporterTest.CLEANED_VAR_POST_FIX, DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME
@@ -452,18 +449,17 @@ public class DatasetExporterTest {
 		}
 
 		DatasetExporter exporter = new DatasetExporter(DatasetExporterTest.manager, this.ontologyService, 1, 1);
-		DatasetExporter dut = Mockito.spy(exporter);
 
-		dut.setWorkbenchDataManager(DatasetExporterTest.workbenchDataManager);
+		exporter.setWorkbenchDataManager(DatasetExporterTest.workbenchDataManager);
 		try {
-			dut.exportToCSVForBreedingView(DatasetExporterTest.FILENAME, DatasetExporterTest.ENV_NAME, selectedEnvironments, this.bvInput);
+			exporter.exportToCSVForBreedingView(DatasetExporterTest.FILENAME, DatasetExporterTest.ENV_NAME, selectedEnvironments, this.bvInput);
 		} catch (DatasetExporterException e) {
 
 			Assert.fail(e.getMessage());
 		}
 
-		List<String[]> tableItems = dut.getTableItems();
-		Map<String, String> headerAliasMap = dut.getHeaderNameAliasMap();
+		List<String[]> tableItems = exporter.getTableItems();
+		Map<String, String> headerAliasMap = exporter.getHeaderNameAliasMap();
 
 		// header
 		Assert.assertEquals("Expected 1st column header is " + DatasetExporterTest.ALT_TRIAL_INSTANCE_NAME,
@@ -559,19 +555,18 @@ public class DatasetExporterTest {
 		}
 
 		DatasetExporter exporter = new DatasetExporter(DatasetExporterTest.manager, this.ontologyService, 1, 1);
-		DatasetExporter dut = Mockito.spy(exporter);
 
-		dut.setWorkbenchDataManager(DatasetExporterTest.workbenchDataManager);
+		exporter.setWorkbenchDataManager(DatasetExporterTest.workbenchDataManager);
 		try {
-			dut.exportToCSVForBreedingView(DatasetExporterTest.FILENAME, DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME,
+			exporter.exportToCSVForBreedingView(DatasetExporterTest.FILENAME, DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME,
 					selectedEnvironments, this.bvInput);
 		} catch (DatasetExporterException e) {
 
 			Assert.fail(e.getMessage());
 		}
 
-		List<String[]> tableItems = dut.getTableItems();
-		Map<String, String> headerAliasMap = dut.getHeaderNameAliasMap();
+		List<String[]> tableItems = exporter.getTableItems();
+		Map<String, String> headerAliasMap = exporter.getHeaderNameAliasMap();
 
 		// header
 		Assert.assertEquals("Expected 1st column header is " + DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME,
