@@ -8,10 +8,8 @@ describe('Paginator module', function() {
 
 		beforeEach(function() {
 			angular.mock.module('templates');
+			module('paginator');
 		});
-
-		beforeEach(module('templates'));
-		beforeEach(module('paginator'));
 
 		beforeEach(inject(function($rootScope) {
 			scope = $rootScope;
@@ -100,7 +98,6 @@ describe('Paginator module', function() {
 			angular.mock.module('templates');
 		});
 
-		beforeEach(module('templates'));
 		beforeEach(module('paginator'));
 
 		beforeEach(inject(function($rootScope) {
@@ -260,7 +257,6 @@ describe('Paginator module', function() {
 			angular.mock.module('templates');
 		});
 
-		beforeEach(module('templates'));
 		beforeEach(module('paginator', function($provide) {
 			// Provide mock for the directive controller
 			$provide.value('paginatorService', {page: 0});

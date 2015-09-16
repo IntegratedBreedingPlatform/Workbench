@@ -1,11 +1,10 @@
-/*global angular, inject, expect, spyOn*/
+/*global inject, expect, spyOn*/
 'use strict';
 
 describe('Key trap module', function() {
 	var scope,
-	doc,
-
-	fakeEvent = {};
+		doc,
+		fakeEvent = {};
 
 	beforeEach(module('keyTrap'));
 
@@ -16,8 +15,8 @@ describe('Key trap module', function() {
 
 	describe('Key trap directive', function() {
 		var directiveElement,
-		ESC_KEYCODE = 27,
-		NOT_ESC_KEYCODE = 13;
+			ESC_KEYCODE = 27,
+			NOT_ESC_KEYCODE = 13;
 
 		function compileDirective() {
 
@@ -26,10 +25,6 @@ describe('Key trap module', function() {
 			});
 			scope.$digest();
 		}
-
-		beforeEach(function() {
-
-		});
 
 		afterEach(function() {
 			doc.off();

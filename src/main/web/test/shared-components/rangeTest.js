@@ -7,27 +7,6 @@ describe('Range module', function() {
 		directiveElement,
 		mockTranslateFilter;
 
-	beforeEach(function() {
-		module(function($provide) {
-			$provide.value('translateFilter', mockTranslateFilter);
-		});
-
-		mockTranslateFilter = function(value) {
-			return value;
-		};
-	});
-
-	beforeEach(function() {
-		angular.mock.module('templates');
-	});
-
-	beforeEach(module('templates'));
-	beforeEach(module('range'));
-
-	beforeEach(inject(function($rootScope) {
-		scope = $rootScope.$new();
-	}));
-
 	function compileDirective() {
 		inject(function($compile) {
 			directiveElement = $compile('<om-range ng-model="model" om-property="validValues" om-numeric="true"></om-range>')(scope);
@@ -37,6 +16,24 @@ describe('Range module', function() {
 
 		isolateScope = directiveElement.isolateScope();
 	}
+
+	beforeEach(function() {
+		module(function($provide) {
+			$provide.value('translateFilter', mockTranslateFilter);
+		});
+
+		mockTranslateFilter = function(value) {
+			return value;
+		};
+
+		angular.mock.module('templates');
+
+		module('range');
+	});
+
+	beforeEach(inject(function($rootScope) {
+		scope = $rootScope.$new();
+	}));
 
 	it('should instantiate the specified property on the model if not otherwise provided', function() {
 
