@@ -259,6 +259,7 @@ public class DatasetExporterTest {
 		variableType.setLocalName(localName);
 		variableType.setRank(rank);
 		variableType.setStandardVariable(standardVariable);
+		variableType.setRole(standardVariable.getPhenotypicType());
 		return variableType;
 	}
 
