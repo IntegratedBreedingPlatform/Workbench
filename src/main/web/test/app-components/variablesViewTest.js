@@ -41,7 +41,10 @@ describe('Variables Controller', function() {
 				name: 'Analysis',
 				description: ''
 			}],
-			favourite: true
+			favourite: true,
+			metadata: {
+				dateCreated: new Date()
+			}
 		},
 
 		FAVOURITE_VARIABLE = {
@@ -265,6 +268,19 @@ describe('Variables Controller', function() {
 
 			expect(variablesService.getVariables).toHaveBeenCalled();
 			expect(controller.problemGettingFavouriteList).toBe(true);
+		});
+
+		it('should set null created date if created date metadata is null ', function() {
+			var variable = angular.copy(PLANT_VIGOR),
+				result;
+
+			variable.metadata = {
+				dateCreated: null
+			};
+
+			result = controller.transformDetailedVariableToDisplayFormat(variable, PLANT_VIGOR.id);
+
+			expect(result.metadata.dateCreated).toBe(null);
 		});
 
 		it('should show a message if there was a problem getting data for favourite variables', function() {
@@ -664,6 +680,16 @@ describe('Variables Controller', function() {
 				dateCreatedFrom: new Date('2015-06-01')
 			};
 			expect(scope.optionsFilter(PLANT_VIGOR_CONVERTED)).toBe(true);
+		});
+
+		it('should return false if date created in variable metadata is null', function() {
+			var PLANT_VIGOR_CREATED_DATE_NULL = angular.copy(PLANT_VIGOR_CONVERTED);
+			scope.filterOptions = {
+				variableTypes: [],
+				dateCreatedFrom: new Date('2015-06-01')
+			};
+			PLANT_VIGOR_CREATED_DATE_NULL.metadata.dateCreated = null;
+			expect(scope.optionsFilter(PLANT_VIGOR_CREATED_DATE_NULL)).toBe(false);
 		});
 
 		it('should return true if date created in variable metadata is before date created to of filter options', function() {

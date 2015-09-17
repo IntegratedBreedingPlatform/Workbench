@@ -117,7 +117,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		this.initializeLayout();
 
 		if (this.isUpdate) {
-			this.initializeLayoutForUpdate();
+			this.disableCropTypeCombo();
 		}
 	}
 
@@ -209,6 +209,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		this.setComponentAlignment(this.gridLayout, Alignment.TOP_LEFT);
 	}
 
+<<<<<<< HEAD
 	protected void initializeLayoutForUpdate() {
 		CropType selectedCropType = this.sessionData.getSelectedProject().getCropType();
 
@@ -237,6 +238,9 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		}
 
 		this.disableCropTypeCombo();
+=======
+	protected void initializeActions() {
+>>>>>>> master
 
 	}
 
@@ -338,7 +342,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		this.cropTypeCombo.setValue(project.getCropType());
 
 		if (this.isUpdate) {
-			this.initializeLayoutForUpdate();
+			this.disableCropTypeCombo();
 		}
 	}
 

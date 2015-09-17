@@ -12,7 +12,7 @@ function postProcessLCOV() {
 		.pipe(gulp.dest('reports/coverage'));
 }
 
-gulp.task('test', function (done) {
+gulp.task('test', function(done) {
 	var karmaConf = argv.ci ? 'karma.conf.ci.js' : 'karma.conf.js',
 		cb = argv.ci ? postProcessLCOV : done;
 
