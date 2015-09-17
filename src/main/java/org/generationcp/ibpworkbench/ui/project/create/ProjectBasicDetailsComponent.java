@@ -209,41 +209,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		this.setComponentAlignment(this.gridLayout, Alignment.TOP_LEFT);
 	}
 
-<<<<<<< HEAD
-	protected void initializeLayoutForUpdate() {
-		CropType selectedCropType = this.sessionData.getSelectedProject().getCropType();
-
-		Boolean isCustomCrop = true;
-		for (CropType.CropEnum crop : CropType.CropEnum.values()) {
-			if (crop.toString().equalsIgnoreCase(selectedCropType.getCropName())) {
-				isCustomCrop = false;
-				break;
-			}
-		}
-
-		if (isCustomCrop) {
-
-			CropType genericCropType = new CropType();
-			genericCropType.setDbName("generic");
-			genericCropType.setCropName(ProjectBasicDetailsComponent.GENERIC_CROP_DESCRIPTION);
-			this.cropTypeCombo.addItem(genericCropType);
-			this.cropTypeCombo.setValue(genericCropType);
-
-			this.lblOtherCrop.setVisible(true);
-			this.otherCropNameField.setVisible(true);
-			this.otherCropNameField.setEnabled(false);
-			this.otherCropNameField.setRequired(false);
-			this.otherCropNameField.removeAllValidators();
-			this.otherCropNameField.setValue(selectedCropType.getCropName());
-		}
-
-		this.disableCropTypeCombo();
-=======
-	protected void initializeActions() {
->>>>>>> master
-
-	}
-
 	public void refreshVisibleItems() {
 		this.requestRepaintAll();
 	}
