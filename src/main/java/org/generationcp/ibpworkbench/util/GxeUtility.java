@@ -3,6 +3,7 @@ package org.generationcp.ibpworkbench.util;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -16,7 +17,6 @@ import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.Experiment;
 import org.generationcp.middleware.domain.dms.Variable;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,6 +103,10 @@ public class GxeUtility {
 
 	public static File exportGxEDatasetToBreadingViewCsv(DataSet gxeDataset, List<Experiment> experiments, String environmentName,
 			String environmentGroup, String genotypeName, GxeEnvironment gxeEnv, List<Trait> selectedTraits, Project currentProject) {
+		if (currentProject == null) {
+			throw new IllegalArgumentException("current project is null");
+		}
+
 		List<String[]> tableItems = new ArrayList<String[]>();
 
 		Map<String, Integer> traitToColNoMap = new Hashtable<String, Integer>();
@@ -184,11 +188,6 @@ public class GxeUtility {
 		}
 
 		try {
-
-			if (currentProject == null) {
-				throw new Exception("currentProject is null");
-			}
-
 			String dir =
 					"workspace" + File.separator + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator
 							+ "input";
@@ -205,14 +204,17 @@ public class GxeUtility {
 			csvWriter.close();
 
 			return csvFile;
-		} catch (Exception e) {
-			GxeUtility.LOG.debug(e.getMessage(), e);
+		} catch (IOException e) {
+			GxeUtility.LOG.warn(e.getMessage(), e);
 			return null;
 		}
 	}
 
 	public static File exportTrialDatasetToSummaryStatsCsv(DataSet trialDataSet, List<Experiment> experiments, String environmentName,
-			List<Trait> selectedTraits, Project currentProject) throws MiddlewareQueryException {
+			List<Trait> selectedTraits, Project currentProject) {
+		if (currentProject == null) {
+			throw new IllegalArgumentException("current project is null");
+		}
 
 		List<String[]> tableItems = new ArrayList<String[]>();
 
@@ -262,33 +264,29 @@ public class GxeUtility {
 
 		}
 
+		String dir =
+				"workspace" + File.separator + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator
+						+ "input";
+
+		GxeUtility.LOG.debug("save to " + dir);
+
+		new File(dir).mkdirs();
+
+		File csvFile = new File(dir + File.separator + trialDataSet.getName() + "_SummaryStats.csv");
+
+		CSVWriter csvWriter = null;
 		try {
-
-			if (currentProject == null) {
-				throw new Exception("currentProject is null");
-			}
-
-			String dir =
-					"workspace" + File.separator + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator
-							+ "input";
-
-			GxeUtility.LOG.debug("save to " + dir);
-
-			new File(dir).mkdirs();
-
-			File csvFile = new File(dir + File.separator + trialDataSet.getName() + "_SummaryStats.csv");
-
-			CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER, "\r\n");
+			csvWriter = new CSVWriter(new FileWriter(csvFile), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER, "\r\n");
 			csvWriter.writeAll(tableItems);
 			csvWriter.flush();
 			csvWriter.close();
 
 			return csvFile;
-		} catch (Exception e) {
-			GxeUtility.LOG.debug(e.getMessage(), e);
+
+		} catch (IOException e) {
+			GxeUtility.LOG.warn(e.getMessage(), e);
 			return null;
 		}
-
 	}
 
 }

@@ -17,7 +17,7 @@ public class AboutController {
 
 	@ModelAttribute("partnerImages")
 	public List<String> getPartnerImages() {
-		return Arrays.asList(new String[]{
+		return Arrays.asList(
 				"Logo_Bioversity.jpg",
 				"Logo_CAAS.png",
 				"agri_food_logo.jpg",
@@ -30,19 +30,19 @@ public class AboutController {
 				"Logo_Leafnode.png",
 				"Logo_VSNI.png",
 				"Logo_Waigeningen.jpg"
-		});
+		);
 	}
 
 	@ModelAttribute("supportImages")
 	public List<String> getSupportImages() {
-		return Arrays.asList(new String[]{
+		return Arrays.asList(
 				"Logo_Gates_Foundation-1.png",
 				"Logo_Euro_Comm.png",
 				"Logo_UKAID.png",
 				"Logo_CGIAR.png",
 				"Logo_SDC.png",
 				"Logo_IFAD.jpg"
-		});
+		);
 	}
 
 	@RequestMapping(value = "/")

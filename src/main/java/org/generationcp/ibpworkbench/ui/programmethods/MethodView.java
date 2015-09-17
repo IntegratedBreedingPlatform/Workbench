@@ -46,7 +46,6 @@ public class MethodView extends Method implements BeanFormState {
 
 	@Override
 	public boolean isEnabled() {
-		// TODO Auto-generated method stub
 		return this.isEnabled;
 	}
 

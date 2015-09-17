@@ -3,8 +3,13 @@ package org.generationcp.ibpworkbench.security;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
-
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Properties;
+import java.util.UUID;
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -96,7 +101,7 @@ public class WorkbenchEmailSenderService {
 		}
 	}
 
-	public String generateResetPasswordUrl(UserInfo userInfo) throws MiddlewareQueryException {
+	public String generateResetPasswordUrl(UserInfo userInfo) {
 		// generate a strong a unique randomized string
 		final String token = UUID.randomUUID().toString();
 		final String url = WorkbenchAppPathResolver.getFullWebAddress(servletContext.getContextPath() + RESET_LINK + token);
@@ -119,7 +124,7 @@ public class WorkbenchEmailSenderService {
 	}
 
 
-	public void sendFeedback(final AskSupportFormModel askSupportForm) throws MiddlewareQueryException, MessagingException {
+	public void sendFeedback(final AskSupportFormModel askSupportForm) throws MessagingException {
 		Project lastOpenedProject = sessionData.getLastOpenedProject();
 		List<ProjectActivity> projectActivitiesByProjectId = workbenchDataManager.getProjectActivitiesByProjectId(lastOpenedProject.getProjectId(), 0, 1);
 
@@ -250,7 +255,7 @@ public class WorkbenchEmailSenderService {
 		return null != userInfo && this.getTokenExpiryDate().after(userInfo.getResetExpiryDate());
 	}
 
-	public void deleteToken(UserAccountModel user) throws MiddlewareQueryException {
+	public void deleteToken(UserAccountModel user) {
 		UserInfo userInfo = this.workbenchDataManager.getUserInfoByUsername(user.getUsername());
 		userInfo.setResetToken(null);
 		userInfo.setResetExpiryDate(null);

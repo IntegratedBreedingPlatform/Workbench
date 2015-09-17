@@ -193,7 +193,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 	}
 
 	protected void initializeData() {
-		// TODO: Verify the try-catch flow
 		// Get the list of Projects
 
 		this.lastOpenedProject = null;

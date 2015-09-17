@@ -10,7 +10,7 @@ public class AppLaunchException extends Throwable {
 	 *
 	 */
 	private static final long serialVersionUID = -7775524159716055130L;
-	public String[] params;
+	private String[] params;
 
 	public AppLaunchException(String message, Throwable cause) {
 		super(message, cause);

@@ -83,11 +83,13 @@ public class AskSupportFormModel {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o)
+		if (this == o) {
 			return true;
+		}
 
-		if (!(o instanceof AskSupportFormModel))
+		if (!(o instanceof AskSupportFormModel)) {
 			return false;
+		}
 
 		AskSupportFormModel that = (AskSupportFormModel) o;
 

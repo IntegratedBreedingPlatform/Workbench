@@ -11,6 +11,7 @@
 
 package org.generationcp.ibpworkbench.validator;
 
+import com.vaadin.data.validator.AbstractValidator;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
@@ -20,8 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import com.vaadin.data.validator.AbstractValidator;
 
 /**
  * <b>Description</b>: Tests if a Users record with the same Username already exists.
@@ -49,15 +48,14 @@ public class UsernameValidator extends AbstractValidator {
 	@Override
 	public boolean isValid(Object value) {
 
-		int username_counter;
+		int usernameCounter;
 		IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-		username_counter = app.getSessionData().getUsername_counter();
-		username_counter++;
-		app.getSessionData().setUsername_counter(username_counter);
+		usernameCounter = app.getSessionData().getUsernameCounter();
+		usernameCounter++;
+		app.getSessionData().setUsernameCounter(usernameCounter);
 
-		if (username_counter > 2) {
-			username_counter = 0;
-			app.getSessionData().setUsername_counter(0);
+		if (usernameCounter > 2) {
+			app.getSessionData().setUsernameCounter(0);
 			return true;
 		}
 		try {

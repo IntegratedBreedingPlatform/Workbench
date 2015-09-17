@@ -103,11 +103,7 @@ public class DashboardMainClickListener implements ClickListener {
 										: DashboardMainClickListener.this.messageSource.getMessage(Message.NOT_AVAILABLE)));
 					}
 
-					try {
-						DashboardMainClickListener.this.toolUtil.createWorkspaceDirectoriesForProject(project);
-					} catch (MiddlewareQueryException e) {
-						throw new RuntimeException(e.getMessage(),e);
-					}
+					DashboardMainClickListener.this.toolUtil.createWorkspaceDirectoriesForProject(project);
 
 					DashboardMainClickListener.this.updateProjectLastOpenedDate(project);
 

@@ -7,8 +7,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.exceptions.InternationalizableException;
-import org.generationcp.commons.hibernate.ManagerFactoryProvider;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
@@ -38,9 +36,6 @@ public class UpdateProjectAction implements Button.ClickListener {
 	private static final Logger LOG = LoggerFactory.getLogger(UpdateProjectAction.class);
 
 	@Autowired
-	private ManagerFactoryProvider managerFactoryProvider;
-
-	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
 
 	@Autowired
@@ -48,9 +43,6 @@ public class UpdateProjectAction implements Button.ClickListener {
 
 	@Autowired
 	private SessionData sessionData;
-
-	@Autowired
-	private SimpleResourceBundleMessageSource messageSource;
 
 	private static final long serialVersionUID = 1L;
 
@@ -62,11 +54,7 @@ public class UpdateProjectAction implements Button.ClickListener {
 	public void buttonClick(Button.ClickEvent event) {
 
 		if (this.projectPanel.validate()) {
-			try {
-				this.doUpdate();
-			} catch (MiddlewareQueryException e) {
-				e.printStackTrace();
-			}
+			this.doUpdate();
 		}
 
 	}

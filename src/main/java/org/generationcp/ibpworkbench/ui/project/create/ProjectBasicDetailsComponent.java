@@ -60,9 +60,10 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 	private static final Logger LOG = LoggerFactory.getLogger(ProjectBasicDetailsComponent.class);
 	private static final long serialVersionUID = 1L;
 
-	public static String GENERIC_CROP_DESCRIPTION = "Use Generic Database for Other Crop";
+	public static final String GENERIC_CROP_DESCRIPTION = "Use Generic Database for Other Crop";
 
-	private final CreateProjectPanel createProjectPanel; // the containing panel
+	// the containing panel
+	private final CreateProjectPanel createProjectPanel;
 
 	private GridLayout gridLayout;
 	private TextField projectNameField;
@@ -77,7 +78,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 
 	private Boolean isUpdate = false;
 
-	private StringBuffer errorDescription;
+	private StringBuilder errorDescription;
 
 	private CropType oldCropType;
 
@@ -114,7 +115,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		this.initializeComponents();
 		this.initializeValues();
 		this.initializeLayout();
-		this.initializeActions();
 
 		if (this.isUpdate) {
 			this.disableCropTypeCombo();
@@ -209,10 +209,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		this.setComponentAlignment(this.gridLayout, Alignment.TOP_LEFT);
 	}
 
-	protected void initializeActions() {
-
-	}
-
 	public void refreshVisibleItems() {
 		this.requestRepaintAll();
 	}
@@ -242,7 +238,8 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		comboBox.setNullSelectionAllowed(false);
 		comboBox.setImmediate(true);
 
-		if (cropTypes.size() == 1) { // If there is only one crop, set this by default
+		// If there is only one crop, set this by default
+		if (cropTypes.size() == 1) {
 			comboBox.setValue(cropTypes.get(0));
 		}
 
@@ -319,7 +316,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		String projectName = (String) this.projectNameField.getValue();
 		CropType cropType = (CropType) this.cropTypeCombo.getValue();
 
-		this.errorDescription = new StringBuffer();
+		this.errorDescription = new StringBuilder();
 
 		if (projectName == null || projectName.equals("")) {
 			this.errorDescription.append("No program name supplied. ");
@@ -483,7 +480,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		this.messageSource = messageSource;
 	}
 
-	public StringBuffer getErrorDescription() {
+	public StringBuilder getErrorDescription() {
 		return this.errorDescription;
 	}
 }

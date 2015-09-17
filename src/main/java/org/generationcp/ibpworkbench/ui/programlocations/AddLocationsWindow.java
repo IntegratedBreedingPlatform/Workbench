@@ -34,8 +34,6 @@ public class AddLocationsWindow extends BaseSubWindow {
 
 	private static final long serialVersionUID = 3983198771242295731L;
 
-	private Label newLocationTitle;
-
 	private AddLocationForm addLocationForm;
 
 	private Button cancelButton;

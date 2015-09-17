@@ -573,11 +573,7 @@ public abstract class CustomField extends CustomComponent implements Field {
 	public boolean isValid() {
 
 		if (this.isEmpty()) {
-			if (this.isRequired()) {
-				return false;
-			} else {
-				return true;
-			}
+			return !this.isRequired();
 		}
 
 		if (this.validators == null) {
@@ -733,7 +729,7 @@ public abstract class CustomField extends CustomComponent implements Field {
 	static {
 		try {
 			VALUE_CHANGE_METHOD =
-					Property.ValueChangeListener.class.getDeclaredMethod("valueChange", new Class[] {Property.ValueChangeEvent.class});
+					Property.ValueChangeListener.class.getDeclaredMethod("valueChange", Property.ValueChangeEvent.class);
 		} catch (final java.lang.NoSuchMethodException e) {
 			// This should never happen
 			throw new java.lang.RuntimeException("Internal error finding methods in AbstractField");

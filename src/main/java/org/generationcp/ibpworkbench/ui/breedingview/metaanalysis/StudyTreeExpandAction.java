@@ -32,16 +32,15 @@ public class StudyTreeExpandAction implements Tree.ExpandListener {
 
 		} catch (InternationalizableException e) {
 			StudyTreeExpandAction.LOG.error(e.toString() + "\n" + e.getStackTrace());
-			e.printStackTrace();
 			MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
+			LOG.error(e.getMessage(),e);
 		}
 
 		try {
 			this.source.queryChildrenDatasets((Reference) event.getItemId(), this.tr);
 		} catch (Exception e) {
 			StudyTreeExpandAction.LOG.error(e.toString() + "\n" + e.getStackTrace());
-			e.printStackTrace();
-
+			LOG.error(e.getMessage(),e);
 		}
 	}
 

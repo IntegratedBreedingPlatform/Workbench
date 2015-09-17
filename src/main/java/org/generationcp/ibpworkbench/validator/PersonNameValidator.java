@@ -11,6 +11,8 @@
 
 package org.generationcp.ibpworkbench.validator;
 
+import com.vaadin.data.validator.AbstractValidator;
+import com.vaadin.ui.Field;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
@@ -19,9 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import com.vaadin.data.validator.AbstractValidator;
-import com.vaadin.ui.Field;
 
 /**
  * <b>Description</b>: Tests if a Persons record with the same First Name and Last Name already exists.
@@ -63,15 +62,14 @@ public class PersonNameValidator extends AbstractValidator {
 
 	@Override
 	public boolean isValid(Object value) {
-		int person_counter;
+		int personCounter;
 		IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-		person_counter = app.getSessionData().getNamevalidation_counter();
-		person_counter++;
-		app.getSessionData().setNamevalidation_counter(person_counter);
+		personCounter = app.getSessionData().getNameValidationCounter();
+		personCounter++;
+		app.getSessionData().setNameValidationCounter(personCounter);
 
-		if (person_counter > 2) {
-			app.getSessionData().setNamevalidation_counter(0);
-			person_counter = 0;
+		if (personCounter > 2) {
+			app.getSessionData().setNameValidationCounter(0);
 			return true;
 		}
 

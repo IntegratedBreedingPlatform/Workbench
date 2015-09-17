@@ -12,8 +12,6 @@
 package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.ibpworkbench.ui.programmethods.AddBreedingMethodsWindow;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.ui.Button.ClickEvent;
@@ -27,7 +25,6 @@ import com.vaadin.ui.Button.ClickListener;
 @Configurable
 public class CancelBreedingMethodAction implements ClickListener {
 
-	private static final Logger LOG = LoggerFactory.getLogger(CancelBreedingMethodAction.class);
 	private static final long serialVersionUID = 1L;
 
 	private final AddBreedingMethodsWindow window;

@@ -97,11 +97,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		this.initializeValues();
 		this.initializeLayout();
 		this.initializeActions();
-		try {
-			this.initializeUsers();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		this.initializeUsers();
+
 	}
 
 	protected void initializeComponents() {
@@ -338,7 +335,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		this.setContent(root);
 	}
 
-	protected void initializeUsers() throws MiddlewareQueryException {
+	protected void initializeUsers() {
 		Container container = this.tblMembers.getContainerDataSource();
 
 		List<ProjectUserRole> projectUserRoles = this.workbenchDataManager.getProjectUserRolesByProject(this.project);
@@ -368,26 +365,14 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		this.newMemberButton.addListener(new OpenNewProjectAddUserWindowAction(this.select));
 		this.saveButton.addListener(new SaveUsersInProjectAction(this.project, this.select));
 		this.cancelButton.addListener(new Button.ClickListener() {
-
-			/**
-			 *
-			 */
 			private static final long serialVersionUID = 8879824681692031501L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				// TODO Auto-generated method stub
 				ProgramMembersPanel.this.initializeValues();
-				try {
-					ProgramMembersPanel.this.initializeUsers();
-				} catch (MiddlewareQueryException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
+				ProgramMembersPanel.this.initializeUsers();
 			}
 		});
-
 	}
 
 	protected ComponentContainer layoutButtonArea() {

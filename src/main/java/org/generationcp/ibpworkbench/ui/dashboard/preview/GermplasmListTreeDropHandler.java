@@ -91,7 +91,7 @@ public class GermplasmListTreeDropHandler implements DropHandler {
 
 		HierarchicalContainer container = (HierarchicalContainer) this.tree.getContainerDataSource();
 
-		if (sourceItemId.equals(GermplasmListPreview.LISTS)) {
+		if (sourceItemId.equals(presenter.getView().getListLabel())) {
 			MessageNotifier.showError(IBPWorkbenchApplication.get().getMainWindow(),
 					this.messageSource.getMessage(Message.INVALID_OPERATION),
 					this.messageSource.getMessage(Message.UNABLE_TO_MOVE_ROOT_FOLDERS));
@@ -112,7 +112,7 @@ public class GermplasmListTreeDropHandler implements DropHandler {
 				if (parentFolder != null) {
 					targetItemId = parentFolder.getId();
 				} else {
-					targetItemId = GermplasmListPreview.LISTS;
+					targetItemId = presenter.getView().getListLabel();
 				}
 			}
 

@@ -2,14 +2,12 @@
 package org.generationcp.ibpworkbench.security;
 
 import java.io.IOException;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
@@ -33,7 +31,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
  */
 public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-	private final Logger LOGGER = LoggerFactory.getLogger(WorkbenchAuthenticationSuccessHandler.class);
+	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchAuthenticationSuccessHandler.class);
 
 	@Autowired
 	private SessionData sessionData;
@@ -51,7 +49,7 @@ public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSucc
 
 		String targetUrl = this.defaultTargetUrl;
 		if (response.isCommitted()) {
-			this.LOGGER.debug("Response has already been committed. Unable to redirect to " + targetUrl);
+			this.LOG.debug("Response has already been committed. Unable to redirect to " + targetUrl);
 			return;
 		}
 		this.populateWorkbenchSessionData(authentication);
@@ -63,29 +61,24 @@ public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSucc
 	 * Actions that the old org.generationcp.ibpworkbench.actions.LoginPresenter used to perform on successful login.
 	 */
 	private void populateWorkbenchSessionData(Authentication authentication) {
-		try {
-			// 1. Populate Session Data
-			String username = authentication.getName();
-			User user = this.workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0);
-			Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
-			user.setPerson(person);
-			this.sessionData.setUserData(user);
+		// 1. Populate Session Data
+		String username = authentication.getName();
+		User user = this.workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0);
+		Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
+		user.setPerson(person);
+		this.sessionData.setUserData(user);
 
-			// 2. Remember Me. TODO under BMS-84.
-			// See the cookie based scheme in org.generationcp.ibpworkbench.actions.LoginPresenter.doLogin(): line 97-111 for ref.
-			// We want this replaced using Spring Security's "Remember Me services" options.
+		// 2. Remember Me. TODO under BMS-84.
+		// See the cookie based scheme in org.generationcp.ibpworkbench.actions.LoginPresenter.doLogin(): line 97-111 for ref.
+		// We want this replaced using Spring Security's "Remember Me services" options.
 
-			// 3. Update WorkbenchRuntimeData
-			WorkbenchRuntimeData data = this.workbenchDataManager.getWorkbenchRuntimeData();
-			if (data == null) {
-				data = new WorkbenchRuntimeData();
-			}
-			data.setUserId(user.getUserid());
-			this.workbenchDataManager.updateWorkbenchRuntimeData(data);
-		} catch (MiddlewareQueryException e) {
-			this.LOGGER
-					.warn("Error while populating Workbench SessionData: " + e.getMessage() + " Caused by: " + e.getCause().getMessage());
+		// 3. Update WorkbenchRuntimeData
+		WorkbenchRuntimeData data = this.workbenchDataManager.getWorkbenchRuntimeData();
+		if (data == null) {
+			data = new WorkbenchRuntimeData();
 		}
+		data.setUserId(user.getUserid());
+		this.workbenchDataManager.updateWorkbenchRuntimeData(data);
 	}
 
 	/**

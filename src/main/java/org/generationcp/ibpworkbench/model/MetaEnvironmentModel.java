@@ -1,10 +1,22 @@
-
 package org.generationcp.ibpworkbench.model;
 
 public class MetaEnvironmentModel {
 
+	private int studyId;
+	private String studyName;
+	private int dataSetId;
+	private String dataSetName;
+	private String trial;
+	private String environment;
+	private String trialFactorName;
+	private Boolean active;
+	private int dataSetTypeId;
+
+	/**
+	 * Default Constructor, used by MetaAnalysisPanel to create a bean instance
+	 */
 	public MetaEnvironmentModel() {
-		// TODO Auto-generated constructor stub
+		// default constructor
 	}
 
 	public int getStudyId() {
@@ -55,16 +67,6 @@ public class MetaEnvironmentModel {
 		this.environment = environment;
 	}
 
-	private int studyId;
-	private String studyName;
-	private int dataSetId;
-	private String dataSetName;
-	private String trial;
-	private String environment;
-	private String trialFactorName;
-	private Boolean active;
-	private int dataSetTypeId;
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -85,11 +87,8 @@ public class MetaEnvironmentModel {
 		if (this.dataSetId != other.dataSetId) {
 			return false;
 		}
-		if (!this.trial.equals(other.trial)) {
-			return false;
-		}
+		return this.trial.equals(other.trial);
 
-		return true;
 	}
 
 	@Override

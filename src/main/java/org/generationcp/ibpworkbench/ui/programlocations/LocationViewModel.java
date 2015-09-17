@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.generationcp.middleware.pojos.BeanFormState;
-import org.generationcp.middleware.pojos.Location;
 
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
@@ -15,14 +14,6 @@ public class LocationViewModel implements BeanFormState {
 	private Integer locationId;
 	private String locationName = "";
 	public String locationAbbreviation = "";
-
-	public Integer getLtype() {
-		return this.ltype;
-	}
-
-	public void setLtype(Integer ltype) {
-		this.ltype = ltype;
-	}
 
 	public Integer ltype;
 	public String ltypeStr;
@@ -41,9 +32,15 @@ public class LocationViewModel implements BeanFormState {
 	public LocationViewModel() {
 	}
 
-	public LocationViewModel(Location location) {
-
+	public Integer getLtype() {
+		return this.ltype;
 	}
+
+	public void setLtype(Integer ltype) {
+		this.ltype = ltype;
+	}
+
+
 
 	public Integer getLocationId() {
 		return this.locationId;
@@ -163,7 +160,6 @@ public class LocationViewModel implements BeanFormState {
 
 	@Override
 	public boolean isEnabled() {
-		// TODO Auto-generated method stub
 		return this.isEnabled;
 	}
 

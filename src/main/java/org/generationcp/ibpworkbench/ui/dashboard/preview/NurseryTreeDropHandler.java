@@ -25,23 +25,20 @@ import com.vaadin.ui.Tree;
  * Created with IntelliJ IDEA. User: cyrus Date: 12/26/13 Time: 10:34 PM To change this template use File | Settings | File Templates.
  */
 @Configurable
-class NurseryTreeDropHandler implements DropHandler {
-
-	/**
-	 *
-	 */
+public class NurseryTreeDropHandler implements DropHandler {
 	private static final long serialVersionUID = -1002553195338670841L;
 	private static final Logger LOG = LoggerFactory.getLogger(NurseryTreeDropHandler.class);
 	private final Tree tree;
 	private final NurseryListPreviewPresenter presenter;
+
+	@Autowired
+	private SimpleResourceBundleMessageSource messageSource;
 
 	public NurseryTreeDropHandler(Tree tree, NurseryListPreviewPresenter presenter) {
 		this.tree = tree;
 		this.presenter = presenter;
 	}
 
-	@Autowired
-	private SimpleResourceBundleMessageSource messageSource;
 
 	@Override
 	public void drop(DragAndDropEvent dropEvent) {
@@ -116,7 +113,7 @@ class NurseryTreeDropHandler implements DropHandler {
 		try {
 			int actualTargetId = 0;
 			// switch to using the root folder id if target is the root of the local folder
-			if (parentId instanceof String && ((String) parentId).equals(NurseryListPreview.NURSERIES_AND_TRIALS)) {
+			if (parentId instanceof String && parentId.equals(NurseryListPreview.NURSERIES_AND_TRIALS)) {
 				actualTargetId = NurseryListPreview.ROOT_FOLDER;
 			} else {
 				actualTargetId = (Integer) targetItemId;

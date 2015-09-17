@@ -2,12 +2,12 @@
 package org.generationcp.ibpworkbench.ui.programmethods;
 
 import org.apache.commons.lang3.StringUtils;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.actions.CancelBreedingMethodAction;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.Validator;
@@ -26,6 +26,8 @@ public class AddBreedingMethodsWindow extends BaseSubWindow {
 
 	private static final long serialVersionUID = 3983198771242295731L;
 
+	private static final Logger LOG = LoggerFactory.getLogger(AddBreedingMethodsWindow.class);
+
 	private MethodView methodView;
 
 	private BreedingMethodForm breedingMethodForm;
@@ -39,9 +41,6 @@ public class AddBreedingMethodsWindow extends BaseSubWindow {
 	private VerticalLayout layout;
 
 	private final ProgramMethodsView projectBreedingMethodsPanel;
-
-	@Autowired
-	private SimpleResourceBundleMessageSource messageSource;
 
 	private final static String[] VISIBLE_ITEM_PROPERTIES = new String[] {"methodName", "methodDescription", "methodType", "methodCode"};
 
@@ -118,11 +117,11 @@ public class AddBreedingMethodsWindow extends BaseSubWindow {
 			public void buttonClick(Button.ClickEvent clickEvent) {
 				try {
 					AddBreedingMethodsWindow.this.breedingMethodForm.commit();
-				} catch (Validator.EmptyValueException e) {
+				} catch (Validator.InvalidValueException  e) {
 					MessageNotifier.showRequiredFieldError(clickEvent.getComponent().getWindow(), e.getLocalizedMessage());
-					return;
-				} catch (Validator.InvalidValueException e) {
-					MessageNotifier.showRequiredFieldError(clickEvent.getComponent().getWindow(), e.getLocalizedMessage());
+
+					LOG.warn(e.getMessage(),e);
+
 					return;
 				}
 

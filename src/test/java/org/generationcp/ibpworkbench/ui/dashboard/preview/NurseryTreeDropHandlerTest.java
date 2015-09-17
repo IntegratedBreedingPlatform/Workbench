@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import com.vaadin.terminal.gwt.client.ui.dd.VerticalDropLocation;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
@@ -22,8 +23,6 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import com.vaadin.terminal.gwt.client.ui.dd.VerticalDropLocation;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NurseryTreeDropHandlerTest {
@@ -42,7 +41,6 @@ public class NurseryTreeDropHandlerTest {
 	@Mock
 	private SimpleResourceBundleMessageSource messageSource;
 
-	@Mock
 	private NurseryListPreviewPresenter presenter;
 
 	private NurseryListPreview view;
@@ -52,9 +50,11 @@ public class NurseryTreeDropHandlerTest {
 	private List<FolderReference> rootFolderChildren;
 
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
 		NurseryListPreview.NURSERIES_AND_TRIALS = NurseryTreeDropHandlerTest.NURSERIES_AND_TRIALS;
 		Project project = NurseryTreeDropHandlerTest.createTestProjectData();
+
+		this.presenter = Mockito.mock(NurseryListPreviewPresenter.class);
 
 		Mockito.when(this.managerFactoryProvider.getManagerFactoryForProject(project)).thenReturn(this.managerFactory);
 		Mockito.when(this.managerFactory.getStudyDataManager()).thenReturn(this.studyDataManager);
@@ -69,13 +69,17 @@ public class NurseryTreeDropHandlerTest {
 		}
 
 		this.view = new NurseryListPreview(project);
-		this.view.setManagerFactoryProvider(this.managerFactoryProvider);
+
+		// since presenter that initializes some object in the view (NurseryListPreview) is now a mock obj not a full spied obj,
+		// we need manually initially initialize treeView to the view
+		this.view.generateTopListOfTree(new ArrayList<FolderReference>());
+
 		this.view.setMessageSource(this.messageSource);
 		this.view.setPresenter(this.presenter);
 		this.view.setProject(project);
 
 		try {
-			Mockito.doReturn(false).when(this.presenter).moveNurseryListFolder(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyBoolean());
+			Mockito.when(this.presenter.moveNurseryListFolder(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyBoolean())).thenReturn(false);
 		} catch (NurseryListPreviewException e) {
 			Assert.fail(e.getMessage());
 		}

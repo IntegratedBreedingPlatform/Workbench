@@ -21,7 +21,6 @@ import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
 import org.generationcp.browser.study.listeners.ViewStudyDetailsButtonClickListener;
 import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.help.document.HelpModule;
-import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -35,10 +34,7 @@ import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.middleware.domain.dms.*;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareException;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
-import org.generationcp.middleware.manager.ManagerFactory;
-import org.generationcp.middleware.manager.StudyDataManagerImpl;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -89,9 +85,6 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 	private Map<String, Boolean> variatesCheckboxState;
 
 	private static final Logger LOG = LoggerFactory.getLogger(MetaAnalysisPanel.class);
-
-	@Autowired
-	private ManagerFactoryProvider managerFactoryProvider;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -198,8 +191,12 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 				"Go to Multi-Year Multi-Site Analysis Tutorial"));
 	}
 
+	/**
+	 * This View Class inherits IBPWorkbenchLayout but does not have components it needs to initialize values from
+	 */
 	@Override
 	public void initializeValues() {
+		// No state or initial values are required to be initialized for this layout
 	}
 
 	@Override
@@ -704,59 +701,50 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 				environmentFactorName = trialInstanceFactorName;
 			}
 
-			try {
-				TrialEnvironments envs = studyDataManager.getTrialEnvironmentsInDataset(this.dataSet.getId());
+			TrialEnvironments envs = studyDataManager.getTrialEnvironmentsInDataset(this.dataSet.getId());
 
-				List<Variable> variables;
-				variables = envs.getVariablesByLocalName(environmentFactorName);
+			List<Variable> variables;
+			variables = envs.getVariablesByLocalName(environmentFactorName);
 
-				for (Variable var : variables) {
-					TrialEnvironment env = envs.findOnlyOneByLocalName(environmentFactorName, var.getValue());
-					if (env == null && environmentFactorName != trialInstanceFactorName) {
-						environmentFactorName = trialInstanceFactorName;
-					}
-					break;
+			for (Variable var : variables) {
+				TrialEnvironment env = envs.findOnlyOneByLocalName(environmentFactorName, var.getValue());
+				if (env == null && environmentFactorName != trialInstanceFactorName) {
+					environmentFactorName = trialInstanceFactorName;
 				}
-
-				if (environmentFactorName == trialInstanceFactorName) {
-					variables = envs.getVariablesByLocalName(environmentFactorName);
-				}
-
-				for (Variable var : variables) {
-					if (var != null && var.getValue() != "") {
-						//
-						TrialEnvironment env = envs.findOnlyOneByLocalName(environmentFactorName, var.getValue());
-
-						if (env != null) {
-
-							String trialNo = env.getVariables().findByLocalName(trialInstanceFactorName).getValue();
-							String envName = env.getVariables().findByLocalName(environmentFactorName).getValue();
-
-							MetaEnvironmentModel bean = new MetaEnvironmentModel();
-							bean.setTrial(trialNo);
-							bean.setEnvironment(envName);
-							bean.setDataSetId(this.dataSet.getId());
-							bean.setDataSetName(this.dataSet.getName());
-							bean.setStudyId(this.dataSet.getStudyId());
-							bean.setStudyName(this.studyName);
-							bean.setTrialFactorName(trialInstanceFactorName);
-							if (this.dataSet.getDataSetType() == null) {
-								bean.setDataSetTypeId(DataSetType.PLOT_DATA.getId());
-							} else {
-								bean.setDataSetTypeId(this.dataSet.getDataSetType().getId());
-							}
-
-							container.addBean(bean);
-						}
-					}
-				}
-
-			} catch (MiddlewareQueryException e) {
-				MetaAnalysisPanel.LOG.error("Error getting trial environments for dataset", e);
-			} catch (Exception e) {
-				MetaAnalysisPanel.LOG.error(e.getMessage(), e);
+				break;
 			}
 
+			if (environmentFactorName == trialInstanceFactorName) {
+				variables = envs.getVariablesByLocalName(environmentFactorName);
+			}
+
+			for (Variable var : variables) {
+				if (var != null && !"".equals(var.getValue())) {
+					TrialEnvironment env = envs.findOnlyOneByLocalName(environmentFactorName, var.getValue());
+
+					if (env != null) {
+
+						String trialNo = env.getVariables().findByLocalName(trialInstanceFactorName).getValue();
+						String envName = env.getVariables().findByLocalName(environmentFactorName).getValue();
+
+						MetaEnvironmentModel bean = new MetaEnvironmentModel();
+						bean.setTrial(trialNo);
+						bean.setEnvironment(envName);
+						bean.setDataSetId(this.dataSet.getId());
+						bean.setDataSetName(this.dataSet.getName());
+						bean.setStudyId(this.dataSet.getStudyId());
+						bean.setStudyName(this.studyName);
+						bean.setTrialFactorName(trialInstanceFactorName);
+						if (this.dataSet.getDataSetType() == null) {
+							bean.setDataSetTypeId(DataSetType.PLOT_DATA.getId());
+						} else {
+							bean.setDataSetTypeId(this.dataSet.getDataSetType().getId());
+						}
+
+						container.addBean(bean);
+					}
+				}
+			}
 		}
 
 		private boolean isGeolocationProperty(StandardVariable standardVariable) {

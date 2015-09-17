@@ -6,7 +6,6 @@ import java.util.Collection;
 
 import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.help.document.HelpModule;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.SessionData;
@@ -40,9 +39,6 @@ public class AddProgramView extends Panel implements InitializingBean {
 	private static final long serialVersionUID = 1L;
 
 	private HorizontalLayout titleLayout;
-
-	@Autowired
-	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
 	private SessionData sessionData;

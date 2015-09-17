@@ -1,6 +1,7 @@
 package org.generationcp.ibpworkbench.controller;
 
 import javax.annotation.Resource;
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -11,11 +12,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.generationcp.ibpworkbench.model.AskSupportFormModel;
 import org.generationcp.ibpworkbench.security.WorkbenchEmailSenderService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +29,8 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping(AskSupportController.URL)
 public class AskSupportController {
+	private static final Logger LOG = LoggerFactory.getLogger(AskSupportController.class);
+
 	public static final String URL = "/support";
 
 	public static final String SUCCESS = "success";
@@ -58,7 +64,8 @@ public class AskSupportController {
 				workbenchEmailSenderService.sendFeedback(askSupportForm);
 				result.put("success",Boolean.TRUE);
 
-			} catch (Exception e) {
+			} catch (MessagingException | MailException e) {
+				LOG.warn(e.getMessage(),e);
 				result.put("success",Boolean.FALSE);
 				result.put("message",messageSource.getMessage("support.message.email.fail", new String[] {askSupportForm.getEmail()},
 						"Fail to send email", LocaleContextHolder.getLocale()));

@@ -270,8 +270,6 @@ public class ToolUtil {
 				username = account.getMysqlUsername();
 				password = account.getMysqlPassword();
 			} catch (MiddlewareQueryException ex) {
-				// do nothing, use the default central and local mysql user
-				// accounts
 				ToolUtil.LOG.error(ex.getMessage(), ex);
 			}
 		}
@@ -424,7 +422,7 @@ public class ToolUtil {
 		return new File(params.getPropertyFile()).getAbsoluteFile();
 	}
 
-	public void createWorkspaceDirectoriesForProject(Project project) throws MiddlewareQueryException {
+	public void createWorkspaceDirectoriesForProject(Project project) {
 		WorkbenchSetting workbenchSetting = this.workbenchDataManager.getWorkbenchSetting();
 		if (workbenchSetting == null) {
 			return;
@@ -454,7 +452,7 @@ public class ToolUtil {
 		}
 	}
 
-	public void renameOldWorkspaceDirectoryToNewFormat(long projectId, String oldProjectName) throws MiddlewareQueryException {
+	public void renameOldWorkspaceDirectoryToNewFormat(long projectId, String oldProjectName) {
 		WorkbenchSetting workbenchSetting = this.workbenchDataManager.getWorkbenchSetting();
 		if (workbenchSetting == null) {
 			return;
@@ -471,7 +469,7 @@ public class ToolUtil {
 		}
 	}
 
-	public String getInputDirectoryForTool(Project project, Tool tool) throws MiddlewareQueryException {
+	public String getInputDirectoryForTool(Project project, Tool tool) {
 		WorkbenchSetting workbenchSetting = this.workbenchDataManager.getWorkbenchSetting();
 		if (workbenchSetting == null) {
 			throw new IllegalStateException("Workbench Setting record was not found!");
@@ -486,7 +484,7 @@ public class ToolUtil {
 		return new File(toolDir, ToolUtil.INPUT).getAbsolutePath();
 	}
 
-	public String getOutputDirectoryForTool(Project project, Tool tool) throws MiddlewareQueryException {
+	public String getOutputDirectoryForTool(Project project, Tool tool) {
 		WorkbenchSetting workbenchSetting = this.workbenchDataManager.getWorkbenchSetting();
 		if (workbenchSetting == null) {
 			throw new IllegalStateException("Workbench Setting record was not found!");

@@ -89,14 +89,15 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 	@Autowired
 	protected SimpleResourceBundleMessageSource messageSource;
 
+	@Autowired
+	protected StudyDataManager studyDataManager;
+
 	protected Window parentWindow;
 	protected Button cancelButton;
 	protected Button selectButton;
 	protected BreedingViewTreeTable treeTable;
 	protected VerticalLayout rootLayout;
 
-	@Autowired
-	protected StudyDataManager studyDataManager;
 	protected Component source;
 
 	protected ThemeResource folderResource;
@@ -109,7 +110,6 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 
 	public SelectStudyDialog(Window parentWindow, Component source, Project currentProject) {
 		this.parentWindow = parentWindow;
-		this.studyDataManager = studyDataManager;
 		this.source = source;
 		this.currentProject = currentProject;
 	}
@@ -312,8 +312,8 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 			} catch (MiddlewareException e) {
 				SelectStudyDialog.LOG.error(e.getMessage(), e);
 				if (study != null) {
-					MessageNotifier.showError(this, "MEANS dataset doesn't exist", study.getName()
-							+ " doesn't have an existing MEANS dataset.");
+					MessageNotifier.showError(this, "MEANS dataset doesn't exist",
+							study.getName() + " doesn't have an existing MEANS dataset.");
 				} else {
 					MessageNotifier.showError(this, "MEANS dataset doesn't exist",
 							"The selected Study doesn't have an existing MEANS dataset.");
@@ -428,19 +428,18 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 
 	private boolean hasChildStudy(int folderId) {
 
-		List<Reference> children = new ArrayList<Reference>();
+		List<Reference> children;
 
 		try {
 			children = this.getStudyDataManager().getChildrenOfFolder(folderId, this.currentProject.getUniqueID());
 		} catch (MiddlewareQueryException e) {
 			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
 					this.messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
-			children = new ArrayList<Reference>();
+			children = new ArrayList<>();
+
+			LOG.warn(e.getMessage(), e);
 		}
-		if (!children.isEmpty()) {
-			return true;
-		}
-		return false;
+		return !children.isEmpty();
 	}
 
 	public Boolean isFolder(Integer studyId) {
@@ -472,5 +471,8 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 
 	private StudyDataManager getStudyDataManager() {
 		return this.studyDataManager;
+	}
+	public void setStudyDataManager(StudyDataManager studyDataManager) {
+		this.studyDataManager = studyDataManager;
 	}
 }

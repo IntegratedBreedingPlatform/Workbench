@@ -1,4 +1,3 @@
-
 package org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis;
 
 import com.vaadin.data.Property;
@@ -7,13 +6,14 @@ import com.vaadin.ui.HorizontalLayout;
 
 public class GxeCheckBoxGroup extends HorizontalLayout {
 
-	private Boolean value = true;
+	private static final long serialVersionUID = 2449518272837130888L;
+
 	private final GxeTable table;
 	private final Property.ValueChangeListener listener;
+	private Boolean value = true;
 
 	public GxeCheckBoxGroup(Integer cellType, Integer rowIndex, GxeTable table, Property.ValueChangeListener listener) {
 		super();
-		// TODO Auto-generated constructor stub
 		this.table = table;
 		this.listener = listener;
 
@@ -57,18 +57,12 @@ public class GxeCheckBoxGroup extends HorizontalLayout {
 
 	}
 
-	public void setValue(Boolean val) {
-		this.value = val;
-		this.refresh();
-	}
-
 	public Boolean getValue() {
 		return this.value;
 	}
 
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = 2449518272837130888L;
-
+	public void setValue(Boolean val) {
+		this.value = val;
+		this.refresh();
+	}
 }

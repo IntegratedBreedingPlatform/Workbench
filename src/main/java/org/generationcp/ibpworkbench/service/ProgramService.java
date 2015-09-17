@@ -7,15 +7,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.generationcp.commons.context.ContextConstants;
-import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.commons.util.DateUtil;
-import org.generationcp.ibpworkbench.database.MysqlAccountGenerator;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.UserDataManager;
@@ -33,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.util.WebUtils;
 
@@ -49,12 +47,7 @@ public class ProgramService {
 	private ToolUtil toolUtil;
 
 	@Autowired
-	private ManagerFactoryProvider managerFactoryProvider;
-	
-	@Autowired
 	private UserDataManager userDataManager;
-
-	private MysqlAccountGenerator mySQLAccountGenerator;
 
 	private Set<User> selectedUsers;
 
@@ -73,7 +66,7 @@ public class ProgramService {
 
 		this.saveBasicDetails(program);
 		
-		final HttpServletRequest request = ((ServletRequestAttributes) org.springframework.web.context.request.RequestContextHolder.getRequestAttributes())
+		final HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
 				.getRequest();
 		final Cookie userIdCookie = WebUtils.getCookie(request, ContextConstants.PARAM_LOGGED_IN_USER_ID);
 		final Cookie authToken = WebUtils.getCookie(request, ContextConstants.PARAM_AUTH_TOKEN);
@@ -186,22 +179,13 @@ public class ProgramService {
 		}
 	}
 
-	private void createIBDBUserMap(Long projectId, Integer workbenchUserId, Integer ibdbUserId) throws MiddlewareQueryException {
+	private void createIBDBUserMap(Long projectId, Integer workbenchUserId, Integer ibdbUserId) {
 		// Add the mapping between Workbench user and the ibdb user.
 		IbdbUserMap ibdbUserMap = new IbdbUserMap();
 		ibdbUserMap.setWorkbenchUserId(workbenchUserId);
 		ibdbUserMap.setProjectId(projectId);
 		ibdbUserMap.setIbdbUserId(ibdbUserId);
 		this.workbenchDataManager.addIbdbUserMap(ibdbUserMap);
-	}
-
-	private void createMySQLAccounts(Project program) {
-		// Create mysql user accounts for members of the project
-		this.mySQLAccountGenerator.setCropType(program.getCropType());
-		this.mySQLAccountGenerator.setProjectId(program.getProjectId());
-		this.mySQLAccountGenerator.setIdAndNameOfProjectMembers(this.idAndNameOfProgramMembers);
-		this.mySQLAccountGenerator.setDataManager(this.workbenchDataManager);
-		this.mySQLAccountGenerator.generateMysqlAccounts();
 	}
 
 	private Integer getCurrentDate() {
@@ -222,13 +206,5 @@ public class ProgramService {
 
 	void setToolUtil(ToolUtil toolUtil) {
 		this.toolUtil = toolUtil;
-	}
-
-	public void setMySQLAccountGenerator(MysqlAccountGenerator mySQLAccountGenerator) {
-		this.mySQLAccountGenerator = mySQLAccountGenerator;
-	}
-
-	void setManagerFactoryProvider(ManagerFactoryProvider managerFactoryProvider) {
-		this.managerFactoryProvider = managerFactoryProvider;
 	}
 }

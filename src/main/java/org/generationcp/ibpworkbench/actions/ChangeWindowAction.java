@@ -130,7 +130,7 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
 
 	}
 
-	public static enum WindowEnums {
+	public enum WindowEnums {
 		BREEDING_VIEW("breeding_view_wb"), BREEDING_GXE("breeding_gxe"), BV_META_ANALYSIS("bv_meta_analysis"), MEMBER("program_member"), RECOVERY(
 				"recovery");
 

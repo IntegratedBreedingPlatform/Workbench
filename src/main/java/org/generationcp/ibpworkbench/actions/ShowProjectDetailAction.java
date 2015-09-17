@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.generationcp.browser.study.containers.StudyDetailsQueryFactory;
-import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
@@ -56,9 +55,6 @@ public class ShowProjectDetailAction implements Property.ValueChangeListener {
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
-
-	@Autowired
-	private ManagerFactoryProvider managerFactoryProvider;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -118,87 +114,83 @@ public class ShowProjectDetailAction implements Property.ValueChangeListener {
 
 				@Override
 				protected void doInTransactionWithoutResult(TransactionStatus status) {
-					try {
-						Project project = null;
-						if (projectId != null) {
-							for (Project tempProject : ShowProjectDetailAction.this.projects) {
-								if (tempProject.getProjectId().longValue() == projectId.longValue()) {
-									project = tempProject;
-									break;
-								}
-							}
-						} else {
-							project = ShowProjectDetailAction.this.sessionData.getLastOpenedProject();
-						}
-
-						if (project == null) {
-							return;
-						} else {
-							ShowProjectDetailAction.this.currentProj = project;
-							IBPWorkbenchApplication.get().getSessionData().setSelectedProject(ShowProjectDetailAction.this.currentProj);
-						}
-
-						// update the project activity table's listener
-						if (ShowProjectDetailAction.this.openSelectDatasetForBreedingViewAction != null) {
-							ShowProjectDetailAction.this.selectDatasetForBreedingViewButton
-									.removeListener(ShowProjectDetailAction.this.openSelectDatasetForBreedingViewAction);
-						}
-						ShowProjectDetailAction.this.openSelectDatasetForBreedingViewAction =
-								new OpenSelectProjectForStudyAndDatasetViewAction(project);
-						ShowProjectDetailAction.this.selectDatasetForBreedingViewButton
-								.addListener(ShowProjectDetailAction.this.openSelectDatasetForBreedingViewAction);
-
-						long projectActivitiesCount;
-
-						projectActivitiesCount =
-								ShowProjectDetailAction.this.workbenchDataManager.countProjectActivitiesByProjectId(project.getProjectId());
-
-						List<ProjectActivity> activityList =
-								ShowProjectDetailAction.this.workbenchDataManager.getProjectActivitiesByProjectId(project.getProjectId(),
-										0, (int) projectActivitiesCount);
-
-						ShowProjectDetailAction.this.workbenchDashboardwindow = (WorkbenchMainView) workbenchDashboardWin;
-						if (ShowProjectDetailAction.this.workbenchDashboardwindow != null) {
-							ShowProjectDetailAction.this.workbenchDashboardwindow.addTitle(project.getProjectName());
-						}
-
-						// retieve sidebar instance from app
-						if (workbenchDashboardWin instanceof WorkbenchMainView) {
-							WorkbenchMainView main = (WorkbenchMainView) workbenchDashboardWin;
-
-							if (main.getSidebar() != null) {
-								main.getSidebar().populateLinks();
+					Project project = null;
+					if (projectId != null) {
+						for (Project tempProject : ShowProjectDetailAction.this.projects) {
+							if (tempProject.getProjectId().longValue() == projectId.longValue()) {
+								project = tempProject;
+								break;
 							}
 						}
-
-						ShowProjectDetailAction.this.tblProject.setCellStyleGenerator(new ProjectTableCellStyleGenerator(
-								ShowProjectDetailAction.this.tblProject, project));
-						ShowProjectDetailAction.this.tblProject.refreshRowCache();
-
-						ShowProjectDetailAction.this.summaryView.updateActivityTable(activityList);
-
-						StudyDetailsQueryFactory trialFactory =
-								new StudyDetailsQueryFactory(studyDataManager, StudyType.T, Arrays
-										.asList(ShowProjectDetailAction.this.summaryView.getTblTrialColumns()), project.getUniqueID());
-
-						ShowProjectDetailAction.this.summaryView.updateTrialSummaryTable(trialFactory);
-
-						StudyDetailsQueryFactory nurseryFactory =
-								new StudyDetailsQueryFactory(studyDataManager, StudyType.N, Arrays
-										.asList(ShowProjectDetailAction.this.summaryView.getTblNurseryColumns()), project.getUniqueID());
-						ShowProjectDetailAction.this.summaryView.updateNurserySummaryTable(nurseryFactory);
-
-						StudyDetailsQueryFactory seasonFactory =
-								new StudyDetailsQueryFactory(studyDataManager, null, Arrays.asList(ShowProjectDetailAction.this.summaryView
-										.getTblSeasonColumns()), project.getUniqueID());
-						ShowProjectDetailAction.this.summaryView.updateSeasonSummaryTable(seasonFactory);
-
-						ShowProjectDetailAction.this.germplasmListPreview.setProject(ShowProjectDetailAction.this.currentProj);
-						ShowProjectDetailAction.this.nurseryListPreview.setProject(ShowProjectDetailAction.this.currentProj);
-						ShowProjectDetailAction.this.previewTab.setSelectedTab(ShowProjectDetailAction.this.germplasmListPreview);
-					} catch (MiddlewareQueryException e) {
-						throw new RuntimeException(e.getMessage(), e);
+					} else {
+						project = ShowProjectDetailAction.this.sessionData.getLastOpenedProject();
 					}
+
+					if (project == null) {
+						return;
+					} else {
+						ShowProjectDetailAction.this.currentProj = project;
+						IBPWorkbenchApplication.get().getSessionData().setSelectedProject(ShowProjectDetailAction.this.currentProj);
+					}
+
+					// update the project activity table's listener
+					if (ShowProjectDetailAction.this.openSelectDatasetForBreedingViewAction != null) {
+						ShowProjectDetailAction.this.selectDatasetForBreedingViewButton
+								.removeListener(ShowProjectDetailAction.this.openSelectDatasetForBreedingViewAction);
+					}
+					ShowProjectDetailAction.this.openSelectDatasetForBreedingViewAction =
+							new OpenSelectProjectForStudyAndDatasetViewAction(project);
+					ShowProjectDetailAction.this.selectDatasetForBreedingViewButton
+							.addListener(ShowProjectDetailAction.this.openSelectDatasetForBreedingViewAction);
+
+					long projectActivitiesCount;
+
+					projectActivitiesCount =
+							ShowProjectDetailAction.this.workbenchDataManager.countProjectActivitiesByProjectId(project.getProjectId());
+
+					List<ProjectActivity> activityList =
+							ShowProjectDetailAction.this.workbenchDataManager.getProjectActivitiesByProjectId(project.getProjectId(),
+									0, (int) projectActivitiesCount);
+
+					ShowProjectDetailAction.this.workbenchDashboardwindow = (WorkbenchMainView) workbenchDashboardWin;
+					if (ShowProjectDetailAction.this.workbenchDashboardwindow != null) {
+						ShowProjectDetailAction.this.workbenchDashboardwindow.addTitle(project.getProjectName());
+					}
+
+					// retieve sidebar instance from app
+					if (workbenchDashboardWin instanceof WorkbenchMainView) {
+						WorkbenchMainView main = (WorkbenchMainView) workbenchDashboardWin;
+
+						if (main.getSidebar() != null) {
+							main.getSidebar().populateLinks();
+						}
+					}
+
+					ShowProjectDetailAction.this.tblProject.setCellStyleGenerator(new ProjectTableCellStyleGenerator(
+							ShowProjectDetailAction.this.tblProject, project));
+					ShowProjectDetailAction.this.tblProject.refreshRowCache();
+
+					ShowProjectDetailAction.this.summaryView.updateActivityTable(activityList);
+
+					StudyDetailsQueryFactory trialFactory =
+							new StudyDetailsQueryFactory(studyDataManager, StudyType.T, Arrays
+									.asList(ShowProjectDetailAction.this.summaryView.getTblTrialColumns()), project.getUniqueID());
+
+					ShowProjectDetailAction.this.summaryView.updateTrialSummaryTable(trialFactory);
+
+					StudyDetailsQueryFactory nurseryFactory =
+							new StudyDetailsQueryFactory(studyDataManager, StudyType.N, Arrays
+									.asList(ShowProjectDetailAction.this.summaryView.getTblNurseryColumns()), project.getUniqueID());
+					ShowProjectDetailAction.this.summaryView.updateNurserySummaryTable(nurseryFactory);
+
+					StudyDetailsQueryFactory seasonFactory =
+							new StudyDetailsQueryFactory(studyDataManager, null, Arrays.asList(ShowProjectDetailAction.this.summaryView
+									.getTblSeasonColumns()), project.getUniqueID());
+					ShowProjectDetailAction.this.summaryView.updateSeasonSummaryTable(seasonFactory);
+
+					ShowProjectDetailAction.this.germplasmListPreview.setProject(ShowProjectDetailAction.this.currentProj);
+					ShowProjectDetailAction.this.nurseryListPreview.setProject(ShowProjectDetailAction.this.currentProj);
+					ShowProjectDetailAction.this.previewTab.setSelectedTab(ShowProjectDetailAction.this.germplasmListPreview);
 				}
 			});
 		} catch (Exception e) {

@@ -192,14 +192,9 @@ public class ToolsAndCropVersionsView extends VerticalLayout implements Initiali
 		this.setWidth("100%");
 	}
 
-	protected void initializeActions() {
-		// do nothing
-	}
-
 	protected void assemble() {
 		this.initializeComponents();
 		this.initializeLayout();
-		this.initializeActions();
 	}
 
 	@Override

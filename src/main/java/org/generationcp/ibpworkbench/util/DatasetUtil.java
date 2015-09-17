@@ -5,19 +5,18 @@ import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
-import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 
 import java.util.List;
 
 public class DatasetUtil {
 
-	public final static String OLD_PLOT_DATASET_NAME_PREFIX = "MEASUREMENT EFEC_";
-	public final static String NEW_PLOT_DATASET_NAME_SUFFIX = "-PLOTDATA";
-	public final static String OLD_SUMMARY_DATASET_NAME_PREFIX = "TRIAL_";
-	public final static String NEW_SUMMARY_DATASET_NAME_SUFFIX = "-ENVIRONMENT";
+	public static final String OLD_PLOT_DATASET_NAME_PREFIX = "MEASUREMENT EFEC_";
+	public static final String NEW_PLOT_DATASET_NAME_SUFFIX = "-PLOTDATA";
+	public static final String OLD_SUMMARY_DATASET_NAME_PREFIX = "TRIAL_";
+	public static final String NEW_SUMMARY_DATASET_NAME_SUFFIX = "-ENVIRONMENT";
 
-	public static DataSet getTrialDataSet(StudyDataManager studyDataManager, int studyId) throws MiddlewareException {
+	public static DataSet getTrialDataSet(StudyDataManager studyDataManager, int studyId) {
 		List<DataSet> summaryDatasets = studyDataManager.getDataSetsByType(studyId, DataSetType.SUMMARY_DATA);
 		if (summaryDatasets == null || summaryDatasets.isEmpty()) {
 			List<DataSet> plotDatasets = studyDataManager.getDataSetsByType(studyId, DataSetType.PLOT_DATA);
@@ -52,11 +51,11 @@ public class DatasetUtil {
 		return null;
 	}
 
-	public static DataSet getMeansDataSet(StudyDataManager studyDataManager, int studyId) throws MiddlewareException {
+	public static DataSet getMeansDataSet(StudyDataManager studyDataManager, int studyId) {
 		return studyDataManager.getDataSetsByType(studyId, DataSetType.MEANS_DATA).get(0);
 	}
 
-	public static Integer getPlotDataSetId(StudyDataManager studyDataManager, int studyId) throws MiddlewareException {
+	public static Integer getPlotDataSetId(StudyDataManager studyDataManager, int studyId) {
 		List<DataSet> plotDatasets = studyDataManager.getDataSetsByType(studyId, DataSetType.PLOT_DATA);
 		for (DataSet dataSet : plotDatasets) {
 			String name = dataSet.getName();

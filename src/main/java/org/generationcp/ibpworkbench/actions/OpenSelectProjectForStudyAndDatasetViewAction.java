@@ -34,6 +34,7 @@ import com.vaadin.ui.Window;
 public class OpenSelectProjectForStudyAndDatasetViewAction implements ClickListener, ActionListener {
 
 	private static final long serialVersionUID = 1L;
+	private static final Logger LOG = LoggerFactory.getLogger(OpenSelectProjectForStudyAndDatasetViewAction.class);
 
 	private final Project currentProject;
 	private Project lastOpenedProject;
@@ -49,8 +50,6 @@ public class OpenSelectProjectForStudyAndDatasetViewAction implements ClickListe
 		this.currentProject = project;
 		this.role = role;
 	}
-
-	private static final Logger LOG = LoggerFactory.getLogger(OpenSelectProjectForStudyAndDatasetViewAction.class);
 
 	@Override
 	public void buttonClick(ClickEvent event) {

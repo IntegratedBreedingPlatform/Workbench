@@ -14,8 +14,6 @@ package org.generationcp.ibpworkbench.ui.dashboard.listener;
 import org.generationcp.ibpworkbench.ui.dashboard.preview.GermplasmListPreview;
 import org.generationcp.ibpworkbench.ui.dashboard.preview.NurseryListPreview;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.Component;
@@ -32,8 +30,6 @@ public class DashboardMainTreeListener implements ItemClickEvent.ItemClickListen
 	private static final long serialVersionUID = -7404027023456975933L;
 	private final Project project;
 	private final Component source;
-
-	private static final Logger LOG = LoggerFactory.getLogger(DashboardMainClickListener.class);
 
 	public DashboardMainTreeListener(Component source, Project project) {
 		this.project = project;

@@ -197,19 +197,18 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 		}
 	}
 
-	private void checkIfUnique(String folderName, String programUUID) throws MiddlewareQueryException, GermplasmListPreviewException {
+	private void checkIfUnique(String folderName, String programUUID) throws GermplasmListPreviewException {
 		List<GermplasmList> duplicate = this.germplasmListManager.getGermplasmListByName(folderName, programUUID, 0, 1, null);
 		if (duplicate != null && !duplicate.isEmpty()) {
 			throw new GermplasmListPreviewException(GermplasmListPreviewException.NAME_NOT_UNIQUE);
 		}
 	}
 
-	protected void validateGermplasmListFolderName(String germplasmListFolderName) throws MiddlewareQueryException,
-	GermplasmListPreviewException {
+	protected void validateGermplasmListFolderName(String germplasmListFolderName) throws GermplasmListPreviewException {
 
 		if (germplasmListFolderName == null || germplasmListFolderName.trim().isEmpty()) {
 			throw new GermplasmListPreviewException(GermplasmListPreviewException.BLANK_NAME);
-		} else if (germplasmListFolderName.equals(GermplasmListPreview.LISTS)) {
+		} else if (germplasmListFolderName.equals(view.getListLabel())) {
 			throw new GermplasmListPreviewException(GermplasmListPreviewException.INVALID_NAME);
 		} else if (germplasmListFolderName.trim().length() > GermplasmListPreviewPresenter.MAX_LIST_FOLDER_NAME_LENGTH) {
 			throw new GermplasmListPreviewException(GermplasmListPreviewException.LONG_NAME);
@@ -316,5 +315,8 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 
 	public void setView(GermplasmListPreview view) {
 		this.view = view;
+	}
+	public GermplasmListPreview getView() {
+		return view;
 	}
 }

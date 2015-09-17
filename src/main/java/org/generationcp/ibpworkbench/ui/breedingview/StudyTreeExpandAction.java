@@ -30,7 +30,7 @@ public class StudyTreeExpandAction implements Tree.ExpandListener {
 			this.source.queryChildrenStudies((Reference) event.getItemId(), this.tr);
 
 		} catch (InternationalizableException e) {
-			StudyTreeExpandAction.LOG.error(e.toString() + "\n" + e.getStackTrace());
+			StudyTreeExpandAction.LOG.warn(e.getMessage(), e);
 			MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
 		}
 

@@ -43,9 +43,8 @@ public class NurseryListTreeExpandListener implements Tree.ExpandListener {
 			} catch (NumberFormatException e) {
 				NurseryListTreeExpandListener.LOG.error("Click on the root");
 			} catch (InternationalizableException e) {
-				NurseryListTreeExpandListener.LOG.error(e.toString() + "\n" + e.getStackTrace());
-				e.printStackTrace();
 				MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
+				NurseryListTreeExpandListener.LOG.error(e.getMessage(),e);
 			}
 		}
 	}

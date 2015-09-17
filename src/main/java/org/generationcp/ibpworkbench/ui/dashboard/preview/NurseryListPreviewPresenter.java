@@ -20,7 +20,6 @@ import org.generationcp.middleware.exceptions.ConfigException;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.exceptions.UnpermittedDeletionException;
-import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.dms.DmsProject;
@@ -88,15 +87,22 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 		}
 	}
 
+
+	/**
+	 * afterPropertiesSet() is called after Aspect4J weaves spring objects when this class is instantiated since this class is
+	 * a @configurable that implements InitializingBean. Since we do not have any need for additional initialization after the weaving, this
+	 * method remains unimplemented.
+	 * @throws Exception
+	 */
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		// do nothing
+		// No values are required to be initialized for this layout
 	}
 
 	public boolean isFolder(Integer value) {
 		try {
 			boolean isStudy = this.studyDataManager.isStudy(value);
-			NurseryListPreviewPresenter.LOG.info("isFolder = " + !isStudy);
+			NurseryListPreviewPresenter.LOG.trace("isFolder = " + !isStudy);
 			return !isStudy;
 		} catch (MiddlewareQueryException e) {
 			NurseryListPreviewPresenter.LOG.error(e.getMessage(), e);
@@ -116,7 +122,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 		}
 	}
 
-	public void deleteNurseryListFolder(Integer id) throws NurseryListPreviewException, ConfigException, MiddlewareException {
+	public void deleteNurseryListFolder(Integer id) throws NurseryListPreviewException, ConfigException {
 		Integer cropUserId =
 				this.manager.getCurrentIbdbUserId(this.sessionData.getSelectedProject().getProjectId(), this.sessionData.getUserData()
 						.getUserid());
@@ -184,7 +190,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 	}
 
 	public Integer validateForDeleteNurseryList(Integer id) throws NurseryListPreviewException {
-		NurseryListPreviewPresenter.LOG.info("id = " + id);
+		NurseryListPreviewPresenter.LOG.trace("id = " + id);
 		if (id == null) {
 			throw new NurseryListPreviewException(NurseryListPreviewException.NO_SELECTION);
 		}
@@ -218,10 +224,10 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 			throw new NurseryListPreviewException(this.messageSource.getMessage(Message.ERROR_DATABASE), e);
 		}
 		if (studyChildren != null && !studyChildren.isEmpty()) {
-			NurseryListPreviewPresenter.LOG.info("hasChildren = true");
+			NurseryListPreviewPresenter.LOG.debug("hasChildren = true");
 			return true;
 		}
-		NurseryListPreviewPresenter.LOG.info("hasChildren = false");
+		NurseryListPreviewPresenter.LOG.debug("hasChildren = false");
 		return false;
 
 	}

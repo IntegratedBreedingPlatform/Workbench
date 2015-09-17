@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import com.vaadin.ui.Tree;
+import org.apache.commons.lang.reflect.FieldUtils;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
@@ -21,8 +23,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import com.vaadin.ui.Tree;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NurseryListPreviewTest {
@@ -44,7 +44,7 @@ public class NurseryListPreviewTest {
 	private NurseryListPreview view;
 
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
 		NurseryListPreview.NURSERIES_AND_TRIALS = NurseryListPreviewTest.NURSERIES_AND_TRIALS;
 		Project project = NurseryListPreviewTest.createTestProjectData();
 
@@ -58,11 +58,10 @@ public class NurseryListPreviewTest {
 		Mockito.when(this.messageSource.getMessage(Message.NURSERIES_AND_TRIALS)).thenReturn(NurseryListPreviewTest.NURSERIES_AND_TRIALS);
 
 		this.view = new NurseryListPreview(project);
-		this.view.setManagerFactoryProvider(this.managerFactoryProvider);
 		this.view.setMessageSource(this.messageSource);
 		NurseryListPreviewPresenter presenter = this.view.getPresenter();
+		FieldUtils.writeDeclaredField(presenter,"studyDataManager",studyDataManager,true);
 		this.view.setProject(project);
-
 	}
 
 	public static Project createTestProjectData() {

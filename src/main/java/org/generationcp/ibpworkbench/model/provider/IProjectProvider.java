@@ -15,5 +15,5 @@ import org.generationcp.middleware.pojos.workbench.Project;
 
 public interface IProjectProvider {
 
-	public Project getProject();
+	Project getProject();
 }

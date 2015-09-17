@@ -53,24 +53,16 @@ public class BreedingMethodForm extends Form {
 	public BreedingMethodForm(Map<Integer, String> classMap) {
 		this.classMap = classMap;
 		this.modelBean = new MethodView();
-		this.assemble();
+		this.initializeComponents();
 
 	}
 
 	public BreedingMethodForm(Map<Integer, String> classMap, MethodView methodView) {
 		this.classMap = classMap;
 		this.modelBean = methodView;
-		this.assemble();
-	}
-
-	protected void assemble() {
 		this.initializeComponents();
-		this.initializeLayout();
 	}
 
-	protected void initializeLayout() {
-
-	}
 
 	protected void initializeComponents() {
 		this.grid = new GridLayout(2, 6);

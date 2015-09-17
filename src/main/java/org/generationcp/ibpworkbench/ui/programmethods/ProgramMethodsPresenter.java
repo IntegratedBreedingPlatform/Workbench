@@ -24,7 +24,6 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -41,9 +40,6 @@ public class ProgramMethodsPresenter {
 	private final ProgramMethodsView view;
 
 	private static final Logger LOG = LoggerFactory.getLogger(ProgramMethodsPresenter.class);
-
-	@Autowired
-	private ManagerFactoryProvider managerFactoryProvider;
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
@@ -78,34 +74,12 @@ public class ProgramMethodsPresenter {
 
 	}
 
-	public Method getMethodByID(Integer id) {
-		try {
-			return this.gerplasmDataManager.getMethodByID(id);
-
-		} catch (MiddlewareQueryException e) {
-			ProgramMethodsPresenter.LOG.error(e.getMessage(), e);
-		}
-		return null;
-	}
-
-	public void doRemoveSelectedMethod(Integer id) {
-		Method selectedMethod = null;
-		try {
-			selectedMethod = this.gerplasmDataManager.getMethodByID(id);
-
-			this.view.addRow(this.convertMethod(selectedMethod), true, 0);
-
-		} catch (MiddlewareQueryException e) {
-			ProgramMethodsPresenter.LOG.error(e.getMessage(), e);
-		}
-	}
-
 	public List<MethodView> getSavedProgramMethods() {
 		if (this.cropType != null) {
-			return new ArrayList<MethodView>();
+			return new ArrayList<>();
 		}
 
-		List<Method> result = new ArrayList<Method>();
+		List<Method> result = new ArrayList<>();
 		try {
 			List<ProgramFavorite> favorites = this.gerplasmDataManager.getProgramFavorites(FavoriteType.METHOD, this.project.getUniqueID());
 
@@ -198,7 +172,7 @@ public class ProgramMethodsPresenter {
 
 			this.sessionData.getProjectBreedingMethodData().put(nextKey, newBreedingMethod);
 
-			ProgramMethodsPresenter.LOG.info(this.sessionData.getProjectBreedingMethodData().toString());
+			ProgramMethodsPresenter.LOG.debug(this.sessionData.getProjectBreedingMethodData().toString());
 
 			if (this.sessionData.getUserData() != null) {
 				newBreedingMethod.setUser(this.sessionData.getUserData().getUserid());

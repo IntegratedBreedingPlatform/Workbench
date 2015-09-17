@@ -25,7 +25,6 @@ import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
@@ -125,7 +124,7 @@ public class SaveNewProjectAddUserAction implements ClickListener {
 
 	}
 
-	protected void saveUserAccount(UserAccountModel userAccount, TwinTableSelect<User> membersSelect) throws MiddlewareQueryException {
+	protected void saveUserAccount(UserAccountModel userAccount, TwinTableSelect<User> membersSelect) {
 		userAccount.trimAll();
 
 		User user = this.workbenchUserService.saveNewUserAccount(userAccount);

@@ -29,7 +29,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 public class SchemaVersionUtil {
 
 	public static final String MINIMUM_CROP_VERSION = "gcp.minimum.crop.version";
-	private final static String WORKBENCH_PROP_FILEPATH = IBDBGenerator.WORKBENCH_PROP;
+	private static final String WORKBENCH_PROP_FILEPATH = IBDBGenerator.WORKBENCH_PROP;
 
 	private static final Logger LOG = LoggerFactory.getLogger(SchemaVersionUtil.class);
 
@@ -53,10 +53,7 @@ public class SchemaVersionUtil {
 				return true;
 			}
 		}
-		if (minimumTokens.hasMoreTokens()) {
-			return false;
-		}
-		return true;
+		return !minimumTokens.hasMoreTokens();
 	}
 
 	public static Properties loadPropertiesFile(String filename) {

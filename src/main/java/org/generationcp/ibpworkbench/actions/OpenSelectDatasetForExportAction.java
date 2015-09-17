@@ -104,11 +104,11 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 			String inputDir = "";
 
 			Tool breedingViewTool = this.workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
-			OpenSelectDatasetForExportAction.LOG.info(breedingViewTool + "");
+			OpenSelectDatasetForExportAction.LOG.trace(breedingViewTool + "");
 
 			inputDir = this.toolUtil.getInputDirectoryForTool(project, breedingViewTool);
 
-			OpenSelectDatasetForExportAction.LOG.info("Input Directory: " + inputDir);
+			OpenSelectDatasetForExportAction.LOG.trace("Input Directory: " + inputDir);
 
 			breedingViewProjectName = project.getProjectName().trim() + "_" + dataSetId + "_" + datasetName.trim();
 			String timeStamp = DateUtil.getCurrentDateAsStringValue("yyyy-MM-dd_HH:mm");
@@ -117,7 +117,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 
 			defaultFilePath = File.separator + breedingViewProjectName;
 
-			OpenSelectDatasetForExportAction.LOG.info("Default File Path: " + defaultFilePath);
+			OpenSelectDatasetForExportAction.LOG.trace("Default File Path: " + defaultFilePath);
 
 			String sourceCSVFile = "";
 			if (Boolean.parseBoolean(this.isServerApp)) {
@@ -126,11 +126,11 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 				sourceCSVFile = inputDir + defaultFilePath + ".csv";
 			}
 
-			OpenSelectDatasetForExportAction.LOG.info("Source CSV File Path: " + sourceCSVFile);
+			OpenSelectDatasetForExportAction.LOG.trace("Source CSV File Path: " + sourceCSVFile);
 
 			String destXMLFilePath = inputDir + defaultFilePath + ".xml";
 
-			OpenSelectDatasetForExportAction.LOG.info("Destination XML File Path: " + destXMLFilePath);
+			OpenSelectDatasetForExportAction.LOG.trace("Destination XML File Path: " + destXMLFilePath);
 
 			BreedingViewInput breedingViewInput = new BreedingViewInput();
 			breedingViewInput.setProject(project);

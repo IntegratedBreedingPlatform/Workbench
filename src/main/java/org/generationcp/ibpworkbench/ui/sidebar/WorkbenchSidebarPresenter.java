@@ -45,9 +45,16 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 		this.view = view;
 	}
 
+
+	/**
+	 * afterPropertiesSet() is called after Aspect4J weaves spring objects when this class is instantiated since this class is
+	 * a @configurable that implements InitializingBean. Since we do not have any need for additional initialization after the weaving, this
+	 * method remains unimplemented.
+	 * @throws Exception
+	 */
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		// do nothing
+		// No values are required to be initialized for this layout
 	}
 
 	public WorkbenchDataManager getManager() {
@@ -90,8 +97,7 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 		return sidebarLinks;
 	}
 
-	protected void addAdminCategoryLinks(List<WorkbenchSidebarCategoryLink> categoryLinks, WorkbenchSidebarCategory category)
-			throws MiddlewareQueryException {
+	protected void addAdminCategoryLinks(List<WorkbenchSidebarCategoryLink> categoryLinks, WorkbenchSidebarCategory category) {
 		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "manage_program", "Manage Program Settings"));
 		if (this.isBackupAndRestoreEnabled != null && Boolean.valueOf(this.isBackupAndRestoreEnabled)) {
 			categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "recovery", "Backup and Restore Program Data"));
@@ -103,8 +109,7 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 
 	}
 
-	private void addCategoryLinkBasedOnRole(List<WorkbenchSidebarCategoryLink> categoryLinks, WorkbenchSidebarCategory category)
-			throws MiddlewareQueryException {
+	private void addCategoryLinkBasedOnRole(List<WorkbenchSidebarCategoryLink> categoryLinks, WorkbenchSidebarCategory category) {
 		List<Role> roles = this.manager.getRolesByProjectAndUser(this.sessionData.getSelectedProject(), this.sessionData.getUserData());
 		for (Role role : roles) {
 			// we dont include the tools anymore

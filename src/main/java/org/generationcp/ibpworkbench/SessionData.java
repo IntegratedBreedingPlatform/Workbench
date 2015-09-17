@@ -32,8 +32,8 @@ public class SessionData {
 	private WorkbenchDataManager workbenchDataManager;
 
 	private User userData;
-	private Integer username_counter = 0;
-	private Integer namevalidation_counter = 0;
+	private Integer usernameCounter = 0;
+	private Integer nameValidationCounter = 0;
 
 	private WebBrowser browserInfo;
 
@@ -52,20 +52,20 @@ public class SessionData {
 		}
 	}
 
-	public Integer getUsername_counter() {
-		return this.username_counter;
+	public Integer getUsernameCounter() {
+		return this.usernameCounter;
 	}
 
-	public void setUsername_counter(Integer username_counter) {
-		this.username_counter = username_counter;
+	public void setUsernameCounter(Integer username_counter) {
+		this.usernameCounter = username_counter;
 	}
 
-	public Integer getNamevalidation_counter() {
-		return this.namevalidation_counter;
+	public Integer getNameValidationCounter() {
+		return this.nameValidationCounter;
 	}
 
-	public void setNamevalidation_counter(Integer namevalidation_counter) {
-		this.namevalidation_counter = namevalidation_counter;
+	public void setNameValidationCounter(Integer namevalidation_counter) {
+		this.nameValidationCounter = namevalidation_counter;
 	}
 
 	public Project getLastOpenedProject() {

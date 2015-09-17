@@ -188,7 +188,7 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
 
 		@Override
 		public void buttonClick(ClickEvent event) {
-			// do nothing
+			// not implemented
 		}
 	}
 

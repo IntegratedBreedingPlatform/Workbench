@@ -15,9 +15,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.vaadin.terminal.gwt.server.WebBrowser;
 import org.dellroad.stuff.vaadin.ContextApplication;
 import org.dellroad.stuff.vaadin.SpringContextApplication;
@@ -125,14 +122,6 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 		this.setTheme("gcp-default");
 	}
 
-	protected void initializeComponents() {
-
-	}
-
-	protected void initializeLayout() {
-
-	}
-
 	protected void initializeActions() {
 		this.messageSourceListener = new UpdateComponentLabelsAction(this);
 		this.messageSource.addListener(this.messageSourceListener);
@@ -140,8 +129,6 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 
 	protected void assemble() {
 		this.initialize();
-		this.initializeComponents();
-		this.initializeLayout();
 		this.initializeActions();
 
 		this.setMainWindow(new WorkbenchMainView());
@@ -157,13 +144,13 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 
 		Window w = super.getWindow(name);
 
-		final String prefetch_script = "/ibpworkbench/VAADIN/js/prefetch-resources.js";
+		final String prefetchScript = "/ibpworkbench/VAADIN/js/prefetch-resources.js";
 
 		final String script =
 				"try{var fileref=document.createElement('script'); fileref.setAttribute(\"type\",\"text/javascript\"); fileref.setAttribute(\"src\", \" %s \"); document.getElementsByTagName(\"head\")[0].appendChild(fileref);}catch(e){alert(e);}";
 
 		if (!this.scriptsRun) {
-			w.executeJavaScript(String.format(script, prefetch_script));
+			w.executeJavaScript(String.format(script, prefetchScript));
 
 			this.scriptsRun = true;
 		}

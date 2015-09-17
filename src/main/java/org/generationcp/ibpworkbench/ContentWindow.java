@@ -37,7 +37,7 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 	 *
 	 */
 	private static final long serialVersionUID = -4166591931885992086L;
-	private final static Logger LOG = LoggerFactory.getLogger(ContentWindow.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ContentWindow.class);
 	private Map<String, String[]> queryMap;
 	private String path;
 	private URL url;
@@ -51,10 +51,10 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 	public void showContent(Component content) {
 
 		try {
-
 			this.removeAllComponents();
 		} catch (Exception e) {
-			// ignore
+			// swallow the exception
+			LOG.warn(e.getMessage(),e);
 		}
 
 		if (content instanceof ComponentContainer) {
@@ -136,12 +136,13 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 						this.appSession.getSessionData().setSelectedProject(project);
 					}
 
-					new OpenProgramLocationsAction(project, null).doAction(this, "/" + this.path, false); // execute
+					// execute
+					new OpenProgramLocationsAction(project, null).doAction(this, "/" + this.path, false);
 
 					return null;
 				}
 
-				else if (this.path.equals("ProgramMethods")) {
+				else if ("ProgramMethods".equals(this.path)) {
 
 					if (this.queryMap.get("programId") == null) {
 						throw new Exception("Wrong query string, should be <strong>programId=[ID]<strong/>.");
@@ -173,14 +174,12 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 
 		} catch (NumberFormatException e) {
 			errorMessage = "The value you entered for programId is not a number.";
-		}
-
-		catch (Exception e) {
+		} catch (Exception e) {
 
 			// error happened
 			errorMessage = e.getMessage();
 
-			e.printStackTrace();
+			LOG.error(e.getMessage(),e);
 
 		}
 

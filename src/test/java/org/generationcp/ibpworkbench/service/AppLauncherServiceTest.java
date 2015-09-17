@@ -2,7 +2,6 @@
 package org.generationcp.ibpworkbench.service;
 
 import java.util.Properties;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.generationcp.commons.constant.ToolEnum;
@@ -14,6 +13,7 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
+import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.generationcp.middleware.pojos.workbench.ToolType;
 import org.junit.Assert;
 import org.junit.Before;
@@ -108,7 +108,7 @@ public class AppLauncherServiceTest {
 	public void testUpdateGermplasmStudyBrowserConfigurationIfNecessary() throws Exception, AppLaunchException {
 		Tool gsbTool = new Tool();
 		gsbTool.setToolName(ToolEnum.GERMPLASM_BROWSER.getToolName());
-		Mockito.when(this.workbenchDataManager.getToolWithName(ToolEnum.GERMPLASM_BROWSER.getToolName())).thenReturn(gsbTool);
+		Mockito.when(this.workbenchDataManager.getToolWithName(ToolName.GERMPLASM_BROWSER.name())).thenReturn(gsbTool);
 
 		Mockito.doNothing().when(this.tomcatUtil).deployWebAppIfNecessary(gsbTool);
 

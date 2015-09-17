@@ -28,7 +28,7 @@ public class GxeTableTest {
 	private static final int TRIAL_DATASET_ID = 1;
 
 	private static final String TRIAL_FACTOR = "TRIAL";
-	private static final int TRIAL_FACTOR_ID = 9999;
+	private static final int TRIAL_FACTOR_ID = TermId.TRIAL_INSTANCE_FACTOR.getId();
 	private static final String TRIAL_FACTOR_VALUE = "1";
 	private static final String SITE_FACTOR = "SITE";
 	private static final int SITE_FACTOR_ID = 8888;
@@ -143,9 +143,8 @@ public class GxeTableTest {
 	@Test
 	public void testFillTableWithDatasetWithTrialInstanceAsSelectedFactor() {
 
-		GxeTable gxeTable =
-				Mockito.spy(new GxeTable(this.studyDataManager, GxeTableTest.STUDY_ID, GxeTableTest.TRIAL_FACTOR, "",
-						this.variatesCheckBoxState, this.listener));
+		GxeTable gxeTable = new GxeTable(this.studyDataManager, GxeTableTest.STUDY_ID, GxeTableTest.TRIAL_FACTOR, "",
+						this.variatesCheckBoxState, this.listener);
 
 		Assert.assertTrue("The Trial Instance Factor should always be visible in the table",
 				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.TRIAL_FACTOR));
@@ -435,6 +434,7 @@ public class GxeTableTest {
 		variableType.setLocalName(localName);
 		variableType.setRank(rank);
 		variableType.setStandardVariable(standardVariable);
+		variableType.setRole(standardVariable.getPhenotypicType());
 		return variableType;
 	}
 

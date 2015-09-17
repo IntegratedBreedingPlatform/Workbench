@@ -1,21 +1,26 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- * 
+ *
  * Generation Challenge Programme (GCP)
- * 
- * 
+ *
+ *
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- * 
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.ui;
 
 import java.util.Objects;
 import java.util.Properties;
-
 import javax.annotation.Resource;
 
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.terminal.Sizeable;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.*;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.themes.BaseTheme;
+import com.vaadin.ui.themes.Reindeer;
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.help.document.HelpWindow;
@@ -27,7 +32,6 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.IWorkbenchSession;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.WorkbenchContentApp;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenWindowAction;
 import org.generationcp.ibpworkbench.actions.OpenWindowAction.WindowEnum;
@@ -48,63 +52,39 @@ import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.vaadin.hene.popupbutton.PopupButton;
-
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.Sizeable;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.Embedded;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Layout;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.UriFragmentUtility;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.VerticalSplitPanel;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.BaseTheme;
-import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
 public class WorkbenchMainView extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
 
 	private static final long serialVersionUID = 1L;
-
-	private final static Logger LOG = LoggerFactory.getLogger(WorkbenchContentApp.class);
+	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchMainView.class);
 
 	private static final String HEADER_BTN = " header-btn";
 
-	public static final String HELP_LINK = "https://www.integratedbreeding.net/manuals-and-tutorials-ib-tools";
 	private Label workbenchTitle;
 	private Button homeButton;
 	private PopupButton memberButton;
 	private Button helpButton;
 
-	@Autowired
+	@Resource
 	private TomcatUtil tomcatUtil;
 
-	@Autowired
+	@Resource
 	private WorkbenchDataManager workbenchDataManager;
 
-	@Autowired
+	@Resource
 	private SimpleResourceBundleMessageSource messageSource;
 
-	@Autowired
+	@Resource
 	private SessionData sessionData;
 
 	@Resource
 	private AppLauncherService applauncherService;
 
-	@Autowired
+	@Resource
 	@Qualifier("workbenchProperties")
 	private Properties workbenchProperties;
 
@@ -192,8 +172,9 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.signoutButton.addListener(new SignoutAction());
 
 		Person member = this.sessionData.getUserData().getPerson();
-		memberPopup.addComponent(new Label(String.format("<h2>%s %s</h2><h4>%s</h4>", member.getFirstName(), member.getLastName(),
-				member.getEmail()), Label.CONTENT_XHTML));
+		memberPopup.addComponent(
+				new Label(String.format("<h2>%s %s</h2><h4>%s</h4>", member.getFirstName(), member.getLastName(), member.getEmail()),
+						Label.CONTENT_XHTML));
 		memberPopup.addComponent(this.signoutButton);
 
 		this.memberButton.addComponent(memberPopup);
@@ -245,9 +226,8 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		sidebarWrap.setSplitPosition(20, Sizeable.UNITS_PIXELS, true);
 		sidebarWrap.setLocked(true);
 
-		final Label title =
-				new Label(String.format(
-						"<span style='font-size: 8pt; color:#9EA5A7; display: inline-block; margin-left: 3px'>%s&nbsp;%s</span>",
+		final Label title = new Label(
+				String.format("<span style='font-size: 8pt; color:#9EA5A7; display: inline-block; margin-left: 3px'>%s&nbsp;%s</span>",
 						this.messageSource.getMessage(Message.WORKBENCH_TITLE),
 						this.workbenchProperties.getProperty("workbench.version", "")), Label.CONTENT_XHTML);
 
@@ -419,7 +399,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	/**
 	 * Show the specified {@link Component} on the right side area of the Workbench's split panel.
-	 * 
+	 *
 	 * @param content
 	 */
 	@Override

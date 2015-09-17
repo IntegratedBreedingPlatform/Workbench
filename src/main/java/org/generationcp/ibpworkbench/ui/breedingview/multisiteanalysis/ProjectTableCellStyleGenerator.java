@@ -30,10 +30,8 @@ public class ProjectTableCellStyleGenerator implements CellStyleGenerator {
 			return "project-table";
 		} else if (this.selectedProject != null && projectId.equals(this.selectedProject.getProjectId())) {
 			return "gcp-selected-project";
-		} else if (lastOpenedProject != null) {
-			if (projectId.equals(lastOpenedProject.getProjectId())) {
-				return "gcp-highlight";
-			}
+		} else if (lastOpenedProject != null && projectId.equals(lastOpenedProject.getProjectId())) {
+			return "gcp-highlight";
 		}
 
 		return "project-table";

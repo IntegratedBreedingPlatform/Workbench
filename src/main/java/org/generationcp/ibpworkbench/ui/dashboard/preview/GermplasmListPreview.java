@@ -4,14 +4,12 @@ package org.generationcp.ibpworkbench.ui.dashboard.preview;
 import java.util.List;
 
 import org.generationcp.commons.constant.ToolEnum;
-import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.common.InputPopup;
@@ -53,17 +51,10 @@ public class GermplasmListPreview extends VerticalLayout {
 	private static final Logger LOG = LoggerFactory.getLogger(GermplasmListPreview.class);
 
 	@Autowired
-	private SessionData sessionData;
-
-	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
-	private ManagerFactoryProvider managerFactoryProvider;
-
-	@Autowired
 	private PlatformTransactionManager transactionManager;
-
 
 	private GermplasmListPreviewPresenter presenter;
 
@@ -77,7 +68,7 @@ public class GermplasmListPreview extends VerticalLayout {
 	private Panel panel;
 	private HorizontalLayout toolbar;
 
-	public static String LISTS = "";
+	private String listLabel = "";
 
 	private Button openListManagerBtn;
 	private Button addFolderBtn;
@@ -93,7 +84,7 @@ public class GermplasmListPreview extends VerticalLayout {
 
 		try {
 			if (project != null) {
-				this.assemble();
+				this.initializeLayout();
 			}
 		} catch (Exception e) {
 			GermplasmListPreview.LOG.error(e.getMessage(), e);
@@ -322,7 +313,7 @@ public class GermplasmListPreview extends VerticalLayout {
 						if (parent != null && !GermplasmListPreview.this.treeView.isExpanded(parent.getId())) {
 							GermplasmListPreview.this.expandTree(parent.getId());
 						} else {
-							GermplasmListPreview.this.treeView.expandItem(GermplasmListPreview.LISTS);
+							GermplasmListPreview.this.treeView.expandItem(GermplasmListPreview.this.listLabel);
 						}
 
 						GermplasmListPreview.this.treeView.select(newItem);
@@ -389,36 +380,36 @@ public class GermplasmListPreview extends VerticalLayout {
 						GermplasmListPreview.this.messageSource.getMessage(Message.YES),
 						GermplasmListPreview.this.messageSource.getMessage(Message.NO), new ConfirmDialog.Listener() {
 
-					private static final long serialVersionUID = 1L;
+							private static final long serialVersionUID = 1L;
 
-					@Override
-					public void onClose(ConfirmDialog dialog) {
-						if (dialog.isConfirmed()) {
-							try {
-								GermplasmList parent =
-										GermplasmListPreview.this.presenter.getGermplasmListParent(finalGpList.getId());
-								GermplasmListPreview.this.presenter.deleteGermplasmListFolder(finalGpList);
-								GermplasmListPreview.this.treeView.removeItem(GermplasmListPreview.this.lastItemId);
-								GermplasmListPreview.this.treeView.select(null);
-								if (parent == null) {
-									GermplasmListPreview.this.treeView.select(GermplasmListPreview.LISTS);
-									GermplasmListPreview.this.lastItemId = GermplasmListPreview.LISTS;
-									GermplasmListPreview.this.processToolbarButtons(GermplasmListPreview.LISTS);
-								} else {
-									GermplasmListPreview.this.treeView.select(parent.getId());
-									GermplasmListPreview.this.lastItemId = parent.getId();
-									GermplasmListPreview.this.processToolbarButtons(parent.getId());
+							@Override
+							public void onClose(ConfirmDialog dialog) {
+								if (dialog.isConfirmed()) {
+									try {
+										GermplasmList parent =
+												GermplasmListPreview.this.presenter.getGermplasmListParent(finalGpList.getId());
+										GermplasmListPreview.this.presenter.deleteGermplasmListFolder(finalGpList);
+										GermplasmListPreview.this.treeView.removeItem(GermplasmListPreview.this.lastItemId);
+										GermplasmListPreview.this.treeView.select(null);
+										if (parent == null) {
+											GermplasmListPreview.this.treeView.select(GermplasmListPreview.this.listLabel);
+											GermplasmListPreview.this.lastItemId = GermplasmListPreview.this.listLabel;
+											GermplasmListPreview.this.processToolbarButtons(GermplasmListPreview.this.listLabel);
+										} else {
+											GermplasmListPreview.this.treeView.select(parent.getId());
+											GermplasmListPreview.this.lastItemId = parent.getId();
+											GermplasmListPreview.this.processToolbarButtons(parent.getId());
+										}
+										GermplasmListPreview.this.treeView.setImmediate(true);
+									} catch (Exception e) {
+										GermplasmListPreview.LOG.error(e.getMessage(), e);
+										MessageNotifier.showError(event.getComponent().getWindow(),
+												GermplasmListPreview.this.messageSource.getMessage(Message.INVALID_OPERATION),
+												e.getMessage());
+									}
 								}
-								GermplasmListPreview.this.treeView.setImmediate(true);
-							} catch (Exception e) {
-								GermplasmListPreview.LOG.error(e.getMessage(), e);
-								MessageNotifier.showError(event.getComponent().getWindow(),
-										GermplasmListPreview.this.messageSource.getMessage(Message.INVALID_OPERATION),
-										e.getMessage());
 							}
-						}
-					}
-				});
+						});
 			}
 		});
 	}
@@ -437,12 +428,8 @@ public class GermplasmListPreview extends VerticalLayout {
 		this.treeView.setImmediate(true);
 	}
 
-	protected void initializeComponents() {
-		// do nothing
-	}
-
 	public void generateTree(List<GermplasmList> germplasmListParent) {
-		GermplasmListPreview.LISTS = this.messageSource.getMessage(Message.LISTS);
+		this.listLabel = this.messageSource.getMessage(Message.LISTS);
 
 		this.lastItemId = null;
 		this.treeView = new Tree();
@@ -450,16 +437,16 @@ public class GermplasmListPreview extends VerticalLayout {
 		this.treeView.setDropHandler(new GermplasmListTreeDropHandler(this.treeView, this.presenter));
 		this.treeView.setDragMode(TreeDragMode.NODE);
 
-		this.treeView.addItem(GermplasmListPreview.LISTS);
-		this.treeView.setItemCaption(GermplasmListPreview.LISTS, GermplasmListPreview.LISTS);
-		this.treeView.setItemIcon(GermplasmListPreview.LISTS, this.folderResource);
+		this.treeView.addItem(this.listLabel);
+		this.treeView.setItemCaption(this.listLabel, this.listLabel);
+		this.treeView.setItemIcon(this.listLabel, this.folderResource);
 
 		this.treeView.setNullSelectionAllowed(false);
 
 		for (GermplasmList parentList : germplasmListParent) {
 			this.treeView.addItem(parentList.getId());
 			this.treeView.setItemCaption(parentList.getId(), parentList.getName());
-			this.treeView.setParent(parentList.getId(), GermplasmListPreview.LISTS);
+			this.treeView.setParent(parentList.getId(), this.listLabel);
 			boolean hasChildList = this.getPresenter().hasChildList(parentList.getId());
 
 			this.treeView.setChildrenAllowed(parentList.getId(), hasChildList);
@@ -556,12 +543,8 @@ public class GermplasmListPreview extends VerticalLayout {
 		this.setSizeFull();
 	}
 
-	protected void initializeActions() {
-		// do nothing
-	}
-
 	public void processToolbarButtons(Object treeItem) {
-		boolean isMyListNode = treeItem instanceof String && treeItem.equals(GermplasmListPreview.LISTS);
+		boolean isMyListNode = treeItem instanceof String && treeItem.equals(this.listLabel);
 		boolean isFolder = treeItem instanceof String || this.getPresenter().isFolder((Integer) treeItem);
 
 		// set the toolbar button state
@@ -580,20 +563,13 @@ public class GermplasmListPreview extends VerticalLayout {
 		this.setToolbarLaunchButtonEnabled(!isMyListNode && !isFolder);
 	}
 
-	protected void assemble() throws Exception {
-
-		this.initializeComponents();
-		this.initializeLayout();
-		this.initializeActions();
-
+	public String getListLabel() {
+		return listLabel;
 	}
 
-	public ManagerFactoryProvider getManagerFactoryProvider() {
-		return this.managerFactoryProvider;
+	public void setListLabel(String listLabel) {
+		this.listLabel = listLabel;
 	}
 
-	public void setManagerFactoryProvider(ManagerFactoryProvider managerFactoryProvider) {
-		this.managerFactoryProvider = managerFactoryProvider;
-	}
 
 }

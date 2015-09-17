@@ -98,7 +98,7 @@ public class OpenProgramLocationsAction implements WorkflowConstants, ClickListe
 			if (this.user != null) {
 				try {
 					ProjectActivity projAct =
-							new ProjectActivity(new Integer(this.project.getProjectId().intValue()), this.project,
+							new ProjectActivity(this.project.getProjectId().intValue(), this.project,
 									this.messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK), this.messageSource.getMessage(
 											Message.LAUNCHED_APP, this.messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK)),
 									this.user, new Date());

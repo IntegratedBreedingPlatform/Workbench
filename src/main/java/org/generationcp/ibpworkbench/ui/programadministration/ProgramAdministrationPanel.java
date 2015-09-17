@@ -3,7 +3,6 @@ package org.generationcp.ibpworkbench.ui.programadministration;
 
 import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.help.document.HelpModule;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsView;
@@ -30,9 +29,6 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 	private HorizontalLayout titleLayout;
 
 	@Autowired
-	private SimpleResourceBundleMessageSource messageSource;
-
-	@Autowired
 	private SessionData sessionData;
 
 	private VerticalLayout rootLayout;
@@ -52,19 +48,12 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		this.assemble();
-		this.updateLabels();
-	}
-
-	private void updateLabels() {
-		// do nothing
 	}
 
 	protected void assemble() {
 
 		this.initializeComponents();
 		this.initializeLayout();
-		this.initializeActions();
-
 	}
 
 	protected void initializeComponents() {
@@ -75,10 +64,6 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 		this.programMembersPanel = new ProgramMembersPanel(this.sessionData.getLastOpenedProject());
 		this.programLocationsView = new ProgramLocationsView(this.sessionData.getLastOpenedProject());
 		this.programMethodsView = new ProgramMethodsView(this.sessionData.getLastOpenedProject());
-	}
-
-	protected void initializeActions() {
-
 	}
 
 	protected void initializeLayout() {

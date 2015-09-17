@@ -128,12 +128,14 @@ public class StudyUtil {
 	public DMSVariableType createCategoricalNonNumericVariateTestData() {
 		DMSVariableType variableType = new DMSVariableType();
 		variableType.setLocalName(StudyUtil.VARIATE_VAR_PREFIX + StudyUtil.CATEGORICAL_NON_NUMERIC_PREFIX + StudyUtil.VAR_NAME);
-		variableType.setLocalDescription(StudyUtil.VARIATE_VAR_PREFIX + StudyUtil.CATEGORICAL_NON_NUMERIC_PREFIX
-				+ StudyUtil.VAR_DESCRIPTION);
+		variableType.setLocalDescription(
+				StudyUtil.VARIATE_VAR_PREFIX + StudyUtil.CATEGORICAL_NON_NUMERIC_PREFIX + StudyUtil.VAR_DESCRIPTION);
 		variableType.setRank(this.rank++);
-		variableType.setStandardVariable(this.createStandardVariableTestData(variableType.getRank(), variableType.getLocalName(),
-				variableType.getLocalDescription(), TermId.CATEGORICAL_VARIABLE.getId(), TermId.CATEGORICAL_VARIATE.getId(),
-				PhenotypicType.VARIATE));
+		variableType.setStandardVariable(
+				this.createStandardVariableTestData(variableType.getRank(), variableType.getLocalName(), variableType.getLocalDescription(),
+						TermId.CATEGORICAL_VARIABLE.getId(), TermId.CATEGORICAL_VARIATE.getId(), PhenotypicType.VARIATE));
+		variableType.setRole(PhenotypicType.VARIATE);
+
 		return variableType;
 	}
 
@@ -148,6 +150,8 @@ public class StudyUtil {
 		List<Enumeration> validValues = new ArrayList<Enumeration>();
 		validValues.add(new Enumeration(1, StudyUtil.CATEGORICAL_VAR_NUMERIC_ENUM_NAME, StudyUtil.CATEGORICAL_VAR_NUMERIC_ENUM_DEF, 1));
 		variableType.getStandardVariable().setEnumerations(validValues);
+		variableType.setRole(PhenotypicType.VARIATE);
+
 		return variableType;
 	}
 
@@ -156,9 +160,11 @@ public class StudyUtil {
 		variableType.setLocalName(StudyUtil.VARIATE_VAR_PREFIX + StudyUtil.NUMERIC_PREFIX + StudyUtil.VAR_NAME);
 		variableType.setLocalDescription(StudyUtil.VARIATE_VAR_PREFIX + StudyUtil.NUMERIC_PREFIX + StudyUtil.VAR_DESCRIPTION);
 		variableType.setRank(this.rank++);
-		variableType.setStandardVariable(this.createStandardVariableTestData(variableType.getRank(), variableType.getLocalName(),
-				variableType.getLocalDescription(), TermId.NUMERIC_VARIABLE.getId(), TermId.OBSERVATION_VARIATE.getId(),
-				PhenotypicType.VARIATE));
+		variableType.setStandardVariable(
+				this.createStandardVariableTestData(variableType.getRank(), variableType.getLocalName(), variableType.getLocalDescription(),
+						TermId.NUMERIC_VARIABLE.getId(), TermId.OBSERVATION_VARIATE.getId(), PhenotypicType.VARIATE));
+		variableType.setRole(PhenotypicType.VARIATE);
+
 		return variableType;
 	}
 
@@ -168,10 +174,12 @@ public class StudyUtil {
 		variableType.setLocalName(StudyUtil.TRIAL_DESIGN_VAR_PREFIX + StudyUtil.VAR_NAME);
 		variableType.setLocalDescription(StudyUtil.TRIAL_DESIGN_VAR_PREFIX + StudyUtil.VAR_DESCRIPTION);
 		variableType.setRank(this.rank++);
-		variableType.setStandardVariable(this.createStandardVariableTestData(TermId.PLOT_NO.getId(), variableType.getLocalName(),
-				variableType.getLocalDescription(), TermId.NUMERIC_VARIABLE.getId(), TermId.TRIAL_DESIGN_INFO_STORAGE.getId(),
-				PhenotypicType.TRIAL_DESIGN));
+		variableType.setStandardVariable(
+				this.createStandardVariableTestData(TermId.PLOT_NO.getId(), variableType.getLocalName(), variableType.getLocalDescription(),
+						TermId.NUMERIC_VARIABLE.getId(), TermId.TRIAL_DESIGN_INFO_STORAGE.getId(), PhenotypicType.TRIAL_DESIGN));
 		variableTypes.add(variableType);
+		variableType.setRole(PhenotypicType.TRIAL_DESIGN);
+
 		return variableTypes;
 	}
 
@@ -185,6 +193,8 @@ public class StudyUtil {
 				variableType.getLocalDescription(), TermId.NUMERIC_VARIABLE.getId(), TermId.ENTRY_NUMBER_STORAGE.getId(),
 				PhenotypicType.GERMPLASM));
 		variableTypes.add(variableType);
+		variableType.setRole(PhenotypicType.GERMPLASM);
+
 		return variableTypes;
 	}
 
@@ -194,10 +204,12 @@ public class StudyUtil {
 		variableType.setLocalName(StudyUtil.TRIAL_INSTANCE_VAR_NAME);
 		variableType.setLocalDescription(StudyUtil.TRIAL_INSTANCE_VAR_DESC);
 		variableType.setRank(this.rank++);
-		variableType.setStandardVariable(this.createStandardVariableTestData(TermId.TRIAL_INSTANCE_FACTOR.getId(),
-				variableType.getLocalName(), variableType.getLocalDescription(), TermId.NUMERIC_VARIABLE.getId(),
-				TermId.TRIAL_INSTANCE_STORAGE.getId(), PhenotypicType.TRIAL_ENVIRONMENT));
+		variableType.setStandardVariable(
+				this.createStandardVariableTestData(TermId.TRIAL_INSTANCE_FACTOR.getId(), variableType.getLocalName(),
+						variableType.getLocalDescription(), TermId.NUMERIC_VARIABLE.getId(), TermId.TRIAL_INSTANCE_STORAGE.getId(),
+						PhenotypicType.TRIAL_ENVIRONMENT));
 		variableTypes.add(variableType);
+		variableType.setRole(PhenotypicType.TRIAL_ENVIRONMENT);
 
 		return variableTypes;
 	}
@@ -218,6 +230,8 @@ public class StudyUtil {
 		variableType.setStandardVariable(this.createStandardVariableTestData(TermId.DATASET_TYPE.getId(), variableType.getLocalName(),
 				variableType.getLocalDescription(), TermId.CATEGORICAL_VARIABLE.getId(), TermId.DATASET_INFO_STORAGE.getId(),
 				PhenotypicType.DATASET));
+		variableType.setRole(PhenotypicType.DATASET);
+
 		return variableType;
 	}
 
@@ -229,6 +243,8 @@ public class StudyUtil {
 		variableType.setStandardVariable(this.createStandardVariableTestData(TermId.DATASET_TITLE.getId(), variableType.getLocalName(),
 				variableType.getLocalDescription(), TermId.CHARACTER_VARIABLE.getId(), TermId.DATASET_TITLE_STORAGE.getId(),
 				PhenotypicType.DATASET));
+		variableType.setRole(PhenotypicType.DATASET);
+
 		return variableType;
 	}
 
@@ -240,6 +256,8 @@ public class StudyUtil {
 		variableType.setStandardVariable(this.createStandardVariableTestData(TermId.DATASET_NAME.getId(), variableType.getLocalName(),
 				variableType.getLocalDescription(), TermId.CHARACTER_VARIABLE.getId(), TermId.DATASET_NAME_STORAGE.getId(),
 				PhenotypicType.DATASET));
+		variableType.setRole(PhenotypicType.DATASET);
+
 		return variableType;
 	}
 

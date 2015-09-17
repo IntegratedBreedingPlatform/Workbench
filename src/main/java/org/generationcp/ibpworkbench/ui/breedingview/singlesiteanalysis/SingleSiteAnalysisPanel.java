@@ -39,7 +39,6 @@ import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.manager.Database;
-import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -520,7 +519,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		table.setItemDescriptionGenerator(new ItemDescriptionGenerator() {
 
 			private static final long serialVersionUID = 1L;
-			private final String description = "<span class=\"gcp-table-header-bold\">%s</span><br>"
+			private static final String description = "<span class=\"gcp-table-header-bold\">%s</span><br>"
 					+ "<span>Property:</span> %s<br><span>Scale:</span> %s<br>" + "<span>Method:</span> %s<br><span>Data Type:</span> %s";
 
 			@Override
@@ -552,7 +551,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		table.setItemDescriptionGenerator(new ItemDescriptionGenerator() {
 
 			private static final long serialVersionUID = 1L;
-			private final String description = "<span class=\"gcp-table-header-bold\">%s</span><br>"
+			private static final String description = "<span class=\"gcp-table-header-bold\">%s</span><br>"
 					+ "<span>Property:</span> %s<br><span>Scale:</span> %s<br>" + "<span>Method:</span> %s<br><span>Data Type:</span> %s";
 
 			@Override
