@@ -80,7 +80,7 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 	 */
 	@Override
 	public void doAction(Event event) {
-		// method inherited from interface, does nothing
+		// No state or initial values are required to be initialized for this layout
 	}
 
 	@Override

@@ -128,7 +128,7 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.Clic
 	 */
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		// method inherited from interface, does nothing
+		// No state or initial values are required to be initialized for this layout
 	}
 
 	@Override

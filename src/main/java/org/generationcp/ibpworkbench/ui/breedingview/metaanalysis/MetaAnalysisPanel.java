@@ -196,7 +196,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 	 */
 	@Override
 	public void initializeValues() {
-		// method inherited from interface, does nothing
+		// No state or initial values are required to be initialized for this layout
 	}
 
 	@Override

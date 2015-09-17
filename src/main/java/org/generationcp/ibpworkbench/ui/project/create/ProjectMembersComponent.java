@@ -213,7 +213,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 		titleContainer.setComponentAlignment(this.newMemberButton, Alignment.MIDDLE_RIGHT);
 		titleContainer.setSizeUndefined();
 		titleContainer.setWidth("100%");
-		// move this to css
+		//TODO: move this to css
 		titleContainer.setMargin(false, false, false, false);
 
 		this.addComponent(titleContainer);

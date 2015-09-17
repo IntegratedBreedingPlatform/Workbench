@@ -258,9 +258,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 			beanItemContainer.addBean(cropType);
 		}
 
-		// FIXME BMS-210
-		// Disabling custom crop for initial merged DB release (CIMMYT).
-
 		ComboBox comboBox = new ComboBox();
 		comboBox.setContainerDataSource(beanItemContainer);
 		comboBox.setNewItemsAllowed(false);

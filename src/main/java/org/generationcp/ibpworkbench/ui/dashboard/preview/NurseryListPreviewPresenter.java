@@ -96,7 +96,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 	 */
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		// method inherited from interface, does nothing
+		// No values are required to be initialized for this layout
 	}
 
 	public boolean isFolder(Integer value) {

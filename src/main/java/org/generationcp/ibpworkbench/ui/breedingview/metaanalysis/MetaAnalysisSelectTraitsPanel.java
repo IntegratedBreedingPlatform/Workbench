@@ -670,7 +670,6 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 
 				for (Experiment exp : exps) {
 
-					// if header Row Created
 					if (!headerRowCreated) {
 
 						headerRow.createCell(cellCounter++).setCellValue("STUDYNAME");
