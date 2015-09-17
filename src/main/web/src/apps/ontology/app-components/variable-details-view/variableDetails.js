@@ -168,6 +168,9 @@
 
 								// Update variable on parent scope if we succeeded
 								$scope.updateSelectedVariable(model);
+								// evaluate the model (stdVariable) to see if we need to add
+								// an alias column to the parent page - list variables
+								$scope.addAliasToTableIfPresent([model]);
 
 								$scope.editing = false;
 								resetSubmissionState();

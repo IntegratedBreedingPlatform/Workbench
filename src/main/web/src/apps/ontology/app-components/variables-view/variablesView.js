@@ -144,7 +144,7 @@
 						return;
 					}
 
-					ctrl.addAliasToTableIfPresent(ctrl.favouriteVariables);
+					$scope.addAliasToTableIfPresent(ctrl.favouriteVariables);
 
 				} catch (e) {
 					// The variables could not be transformed to display format
@@ -166,7 +166,7 @@
 						return;
 					}
 
-					ctrl.addAliasToTableIfPresent(ctrl.variables);
+					$scope.addAliasToTableIfPresent(ctrl.variables);
 
 				} catch (e) {
 					// The variables could not be transformed to display format
@@ -230,8 +230,8 @@
 				return transformedVariables;
 			};
 
-			// Exposed for testing
-			ctrl.addAliasToTableIfPresent = function(variables) {
+			// function that checks to see if an alias has been added for the first time and eeds a column for it
+			$scope.addAliasToTableIfPresent = function(variables) {
 				var ALIAS = 'alias';
 
 				if (ctrl.colHeaders.indexOf(ALIAS) === -1) {

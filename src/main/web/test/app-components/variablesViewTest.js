@@ -311,14 +311,14 @@ describe('Variables Controller', function() {
 
 	});
 
-	describe('ctrl.addAliasToTableIfPresent', function() {
+	describe('$scope.addAliasToTableIfPresent', function() {
 
 		it('should not change colHeaders if it already contains alias', function() {
 			var variables = [PLANT_VIGOR],
 			colHeaders = ['name', 'alias'];
 
 			controller.colHeaders = colHeaders;
-			controller.addAliasToTableIfPresent(variables);
+			scope.addAliasToTableIfPresent(variables);
 
 			expect(controller.colHeaders).toBe(colHeaders);
 		});
@@ -330,7 +330,7 @@ describe('Variables Controller', function() {
 			}];
 
 			controller.colHeaders = ['name', 'description'];
-			controller.addAliasToTableIfPresent(variables);
+			scope.addAliasToTableIfPresent(variables);
 
 			expect(controller.colHeaders).toEqual(['name', 'alias', 'description']);
 		});
@@ -340,7 +340,7 @@ describe('Variables Controller', function() {
 			colHeaders = ['name', 'description'];
 
 			controller.colHeaders = colHeaders;
-			controller.addAliasToTableIfPresent(variables);
+			scope.addAliasToTableIfPresent(variables);
 
 			expect(controller.colHeaders).toBe(colHeaders);
 		});
