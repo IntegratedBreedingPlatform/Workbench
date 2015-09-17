@@ -78,7 +78,8 @@
 			$scope.optionsFilter = function(variable) {
 				var variableTypeMatch = true,
 					scaleDataTypeMatch = true,
-					dateCreatedMatch = true;
+					dateCreatedMatch = true,
+					variableDateCreatedTime;
 
 				// Include variable if the filter options have not been set
 				if (!$scope.filterOptions || !$scope.filterOptions.variableTypes) {
@@ -100,14 +101,29 @@
 				}
 
 				if ($scope.filterOptions.dateCreatedFrom || $scope.filterOptions.dateCreatedTo) {
-					if ($scope.filterOptions.dateCreatedFrom && $scope.filterOptions.dateCreatedTo &&
-						$scope.filterOptions.dateCreatedTo.getTime && $scope.filterOptions.dateCreatedFrom.getTime) {
-						dateCreatedMatch = ($scope.filterOptions.dateCreatedFrom.getTime() <= variable.metadata.dateCreated.getTime()) &&
-							(variable.metadata.dateCreated.getTime() <= $scope.filterOptions.dateCreatedTo.getTime());
-					} else if ($scope.filterOptions.dateCreatedFrom && $scope.filterOptions.dateCreatedFrom.getTime) {
-						dateCreatedMatch = ($scope.filterOptions.dateCreatedFrom.getTime() <= variable.metadata.dateCreated.getTime());
-					} else if ($scope.filterOptions.dateCreatedTo && $scope.filterOptions.dateCreatedTo.getTime) {
-						dateCreatedMatch = (variable.metadata.dateCreated.getTime() <= $scope.filterOptions.dateCreatedTo.getTime());
+
+					if (variable.metadata.dateCreated) {
+						variableDateCreatedTime = variable.metadata.dateCreated.getTime();
+
+						if ($scope.filterOptions.dateCreatedFrom && $scope.filterOptions.dateCreatedTo &&
+							$scope.filterOptions.dateCreatedFrom.getTime && $scope.filterOptions.dateCreatedTo.getTime) {
+
+							dateCreatedMatch = ($scope.filterOptions.dateCreatedFrom.getTime() <= variableDateCreatedTime) &&
+								(variableDateCreatedTime <= $scope.filterOptions.dateCreatedTo.getTime());
+
+						} else if ($scope.filterOptions.dateCreatedFrom && $scope.filterOptions.dateCreatedFrom.getTime) {
+
+							dateCreatedMatch = ($scope.filterOptions.dateCreatedFrom.getTime() <= variableDateCreatedTime);
+
+						} else if ($scope.filterOptions.dateCreatedTo && $scope.filterOptions.dateCreatedTo.getTime) {
+
+							dateCreatedMatch = (variableDateCreatedTime <= $scope.filterOptions.dateCreatedTo.getTime());
+
+						}
+
+					} else {
+						// If there is no created date then remove from results
+						dateCreatedMatch = false;
 					}
 				}
 
@@ -164,8 +180,11 @@
 			});
 
 			ctrl.transformDetailedVariableToDisplayFormat = function(variable, id) {
-				var tempDateCreated = variable.metadata ? new Date(variable.metadata.dateCreated) : new Date();
-				tempDateCreated.setHours(0, 0, 0, 0);
+
+				var tempDateCreated = variable.metadata.dateCreated ? new Date(variable.metadata.dateCreated) : null;
+				if (tempDateCreated) {
+					tempDateCreated.setHours(0, 0, 0, 0);
+				}
 
 				var returnValue = {
 					id: id || variable.id,
