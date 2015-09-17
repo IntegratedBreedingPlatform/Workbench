@@ -54,6 +54,11 @@ In addtion to this, there are a few things to note about developing in this envi
 * We use an image minification library to compress our images on build
 * JS libraries should be included already minified in the `js/lib` folder
 
+# Test Coverage Report
+
+To see a report of the JS unit test coverage, run `gulp test --ci`.
+The coverage report can be found in `reports/coverage/lcov-report/index.html`.
+
 # Libraries
 
 We use a couple of third party libraries. Any customisations performed to third party libraries should be listed here:
