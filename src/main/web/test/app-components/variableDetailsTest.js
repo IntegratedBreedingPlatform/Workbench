@@ -409,6 +409,7 @@ describe('Variable details directive', function() {
 		beforeEach(inject(function($timeout) {
 			timeout = $timeout;
 			scope.updateSelectedVariable = function(/*model*/) {};
+			scope.addAliasToTableIfPresent = function(/*variables*/) {};
 			scope.vdForm.$valid = true;
 			scope.selectedVariable = {
 				alias: ''
