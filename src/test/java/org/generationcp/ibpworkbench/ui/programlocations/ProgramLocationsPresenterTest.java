@@ -46,9 +46,8 @@ public class ProgramLocationsPresenterTest {
 		MockitoAnnotations.initMocks(this);
 
 		Project project = this.getProject(ProgramLocationsPresenterTest.DUMMY_PROGRAM_UUID);
-		this.controller =
-				Mockito.spy(new ProgramLocationsPresenter(project,this.germplasmDataManager, this.workbenchDataManager,
-						this.locationDataManager));
+		this.controller = new ProgramLocationsPresenter(project,this.germplasmDataManager, this.workbenchDataManager,
+						this.locationDataManager);
 	}
 
 	private Project getProject(String dummyProgramUuid) {
