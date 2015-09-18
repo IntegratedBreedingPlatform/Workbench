@@ -10,13 +10,19 @@ Do **NOT** edit files under `/WEB-INF/pages` or `/WEB-INF/static` directly. Thes
 
 # Building
 
+## Node
+
+You will need to have Node.js [v0.12.7](https://nodejs.org/dist/v0.12.7/) installed. If you are running on Windows, this will need to be the 64 bit version of Node due to bitness issues with node-sass running Node locally vs from the frontend-maven-plugin.
+
 ## Maven
 
-When an ordinary Maven build is run, a clean and build is trigger through the use of a maven-node-gulp plugin. This will run a clean, deleting the `/WEB-INF/pages` and `/WEB-INF/static` folders and will rebuild everything from scratch. The WEB-INF folder will then be included in the war file that can be deployed to Tomcat.
+When an ordinary Maven build (`mvn clean install`) is run we use the maven-node-gulp plugin to install Node.js and npm. Then it runs a gulp clean and build. The clean will delete the `/WEB-INF/pages` and `/WEB-INF/static` folders and will rebuild everything from scratch. The WEB-INF folder will then be included in the war file that can be deployed to Tomcat.
 
 ## Gulp
 
-To use the gulp tasks directly, you need to install Node and run `npm install` in this directory to download the required packages. You can then run the Gulp build task directly with `gulp build`. There are also a number of other tasks that you can run manually (that will be included in a build):
+To use the gulp tasks directly, you will need to run a `mvn clean install` in the top level of Workbench. This will run `npm install` as part of the task and install the Node modules required for Workbench front end development.
+
+You can then run the gulp build task directly with `gulp build`. There are also a number of other tasks that you can run manually (that will be included in a build):
 
 * `clean` - removes `/WEB-INF/static` and `/WEB-INF/pages`
 * `build` - runs `'js'`, `'sass'`, `'images'`, `'html'`, `'fonts'`, `'angular'` and `'resources'`. Running with the `--release` flag will minify JS and CSS.
@@ -43,9 +49,9 @@ We must build our files for production with the `--release` flag. This will mini
 
 When developing in a web environment, it is useful to not have to re-build and deploy war files every time you want to test a change. We have added tools to enable this. To enable this, call:
 
-`gulp watch --env=property`
+`gulp watch --env=<property>`
 
-where `property` is a property defined in the `gulp.properties` file specifying the location of your Tomcat installation. This will watch your source folder for changes, and as you develop, will trigger the correct tasks and copy files over the build folder as necessary. In addition to this, **changed files will be copied directly into the exploded Workbench folder in your Tomcat webapps directory**, allowing you to refresh your browser and see changes without redeploying.
+where `<property>` is a property defined in the `gulp.properties` file specifying the location of your Tomcat installation. This will watch your source folder for changes, and as you develop, will trigger the correct tasks and copy files over the build folder as necessary. In addition to this, **changed files will be copied directly into the exploded Workbench folder in your Tomcat webapps directory**, allowing you to refresh your browser and see changes without redeploying.
 
 In addtion to this, there are a few things to note about developing in this environment:
 
