@@ -21,7 +21,7 @@
 	app.controller('ScalesController', ['$scope', 'scalesService', 'panelService', '$timeout', 'collectionUtilities', '$filter',
 		function($scope, scalesService, panelService, $timeout, collectionUtilities, $filter) {
 			var ctrl = this,
-				orderCategoryByFilter = $filter('orderCategoryBy');
+				orderCategoryByFilter = $filter('ifNumericOrderBy');
 
 			ctrl.scales = [];
 			ctrl.showThrobberWrapper = true;

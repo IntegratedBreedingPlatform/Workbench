@@ -1,4 +1,4 @@
-/*global expect, inject, spyOn, fail*/
+/*global expect, inject, spyOn, fail, angular*/
 'use strict';
 
 describe('Utilities Service', function() {
@@ -559,6 +559,98 @@ describe('Utilities Service', function() {
 				ieUtilities.addIeClearInputHandler(element, function() {count++;});
 				expect(count).toBe(1);
 			});
+		});
+	});
+
+	describe('ifNumericOrderBy filter', function() {
+		var ifNumericOrderByFilter,
+
+		NUMERIC_TEXT_CATEGORIES = [{
+			name: '11',
+			description: 'high'
+		},
+		{
+			name: '1text',
+			description: 'low'
+		},
+		{
+			name: '5',
+			description: 'middle'
+		}],
+
+		TEXT_CATEGORIES = [{
+			name: 'west',
+			description: 'high'
+		},
+		{
+			name: 'east',
+			description: 'low'
+		},
+		{
+			name: 'north',
+			description: 'middle'
+		}];
+
+		beforeEach(inject(function($filter) {
+			ifNumericOrderByFilter = $filter('ifNumericOrderBy');
+		}));
+
+		it('should sort the records and transform them to numbers if field passed contains only numeric values', function() {
+			var categories = {
+				validValues: {
+					categories: [{
+						name: '11',
+						description: 'high'
+					},
+					{
+						name: '1',
+						description: 'low'
+					},
+					{
+						name: '5',
+						description: 'middle'
+					}]
+				}
+			},
+			sortedArray;
+
+			sortedArray = ifNumericOrderByFilter(categories.validValues.categories, 'name');
+
+			// Use angular.equals to ignore the $$hashKey property
+			expect(angular.equals(sortedArray, [{name: '1', description: 'low'}, {name: '5', description: 'middle'},
+				{name: '11', description: 'high'}])).toBe(true);
+		});
+
+		it('should not sort the records if field passed contains any non-numeric value and return the original array', function() {
+			var categories = {
+				validValues: {
+					categories: NUMERIC_TEXT_CATEGORIES
+				}
+			},
+			sortedArray;
+
+			sortedArray = ifNumericOrderByFilter(categories.validValues.categories, 'name');
+
+			// Use angular.equals to ignore the $$hashKey property
+			expect(angular.equals(sortedArray, NUMERIC_TEXT_CATEGORIES)).toBe(true);
+		});
+
+		it('should not sort the records if all field passed values are strings and it should return the original array', function() {
+			var categories = {
+				validValues: {
+					categories: TEXT_CATEGORIES
+				}
+			},
+			sortedArray;
+
+			sortedArray = ifNumericOrderByFilter(categories.validValues.categories, 'name');
+
+			// Use angular.equals to ignore the $$hashKey property
+			expect(angular.equals(sortedArray, TEXT_CATEGORIES)).toBe(true);
+		});
+
+		it('should return falsy value if it was passed to the filter ', function() {
+			expect(ifNumericOrderByFilter(undefined, 'name')).toBeFalsy();
 		});
 	});
 
