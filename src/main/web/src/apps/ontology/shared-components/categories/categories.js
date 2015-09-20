@@ -109,4 +109,5 @@
 			templateUrl: 'static/views/ontology/categories.html'
 		};
 	}]);
+
 }());

@@ -18,9 +18,10 @@
 		return scales.map(transformScaleToDisplayFormat);
 	}
 
-	app.controller('ScalesController', ['$scope', 'scalesService', 'panelService', '$timeout', 'collectionUtilities',
-		function($scope, scalesService, panelService, $timeout, collectionUtilities) {
-			var ctrl = this;
+	app.controller('ScalesController', ['$scope', 'scalesService', 'panelService', '$timeout', 'collectionUtilities', '$filter',
+		function($scope, scalesService, panelService, $timeout, collectionUtilities, $filter) {
+			var ctrl = this,
+				orderCategoryByFilter = $filter('ifNumericOrderBy');
 
 			ctrl.scales = [];
 			ctrl.showThrobberWrapper = true;
@@ -49,6 +50,9 @@
 				$scope.selectedScale = null;
 
 				scalesService.getScale($scope.selectedItem.id).then(function(scale) {
+					if (scale.validValues && scale.validValues.categories) {
+						scale.validValues.categories = orderCategoryByFilter(scale.validValues.categories, 'name');
+					}
 					$scope.selectedScale = scale;
 				});
 
