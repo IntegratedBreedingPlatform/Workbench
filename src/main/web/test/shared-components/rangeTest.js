@@ -36,9 +36,7 @@ describe('Range module', function() {
 	}));
 
 	it('should instantiate the specified property on the model if not otherwise provided', function() {
-
 		scope.model = {};
-		expect(scope.model.validValues).toBeUndefined();
 
 		compileDirective();
 
