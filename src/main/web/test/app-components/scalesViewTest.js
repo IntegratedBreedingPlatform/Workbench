@@ -15,6 +15,31 @@ describe('Scales View', function() {
 			}
 		},
 
+		SCORE = {
+			id: 2,
+			name: 'Score',
+			description: 'Score, 1 - 3',
+			dataType: {
+				id: 1,
+				name: 'Categorical',
+				systemDataType: false
+			},
+			validValues: {
+				categories: [{
+					name: '2',
+					description: 'Middle'
+				},
+				{
+					name: '1',
+					description: 'Low'
+				},
+				{
+					name: '3',
+					description: 'High'
+				}]
+			}
+		},
+
 		q,
 		controller,
 		scope,
@@ -165,6 +190,33 @@ describe('Scales View', function() {
 			expect(scalesService.getScale).toHaveBeenCalledWith(selectedId);
 			expect(scope.selectedScale).toEqual(scale);
 			expect(panelService.showPanel).toHaveBeenCalledWith(panelName);
+		});
+
+		it('should retrieve the selected scale with the categories with the numeric names sorted ', function() {
+
+			var selectedId = 123,
+				panelName = 'scales',
+				scale = SCORE;
+
+			scope.selectedItem.id = selectedId;
+			scope.panelName = panelName;
+
+			scope.showScaleDetails();
+			deferredGetScale.resolve(scale);
+			scope.$apply();
+
+			expect(scope.selectedScale.validValues.categories).toEqual([{
+					name: '1',
+					description: 'Low'
+				},
+				{
+					name: '2',
+					description: 'Middle'
+				},
+				{
+					name: '3',
+					description: 'High'
+				}]);
 		});
 	});
 

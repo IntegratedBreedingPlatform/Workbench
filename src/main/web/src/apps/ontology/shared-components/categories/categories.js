@@ -109,4 +109,27 @@
 			templateUrl: 'static/views/ontology/categories.html'
 		};
 	}]);
+
+	categoriesModule.filter('orderCategoryBy', function() {
+		return function(items, field) {
+			var someItemsNotNumbers;
+
+			if (!items) {
+				return items;
+			}
+
+			someItemsNotNumbers = items.some(function(item) {
+				return isNaN(item[field]) || item[field] === '';
+			});
+
+			if (someItemsNotNumbers) {
+				return items;
+			}
+
+			items.sort(function(a, b) {
+				return Number(a[field]) - Number(b[field]);
+			});
+			return items;
+		};
+	});
 }());

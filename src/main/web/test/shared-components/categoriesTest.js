@@ -9,7 +9,8 @@ describe('Categories module', function() {
 		scope,
 		isolateScope,
 		directiveElement,
-		mockTranslateFilter;
+		mockTranslateFilter,
+		orderCategoryByFilter;
 
 	beforeEach(function() {
 		module(function($provide) {
@@ -24,8 +25,9 @@ describe('Categories module', function() {
 		module('categories');
 	});
 
-	beforeEach(inject(function($rootScope) {
+	beforeEach(inject(function($rootScope, $filter) {
 		scope = $rootScope.$new();
+		orderCategoryByFilter = $filter('orderCategoryBy');
 	}));
 
 	function compileDirective(attrs) {
@@ -257,5 +259,90 @@ describe('Categories module', function() {
 			});
 			expect(scope.testForm.$valid).toBe(false);
 		});
+	});
+
+	describe('orderCategoryBy filter', function() {
+		it('should sort the categories and transform them to numbers if names contain only numeric values', function() {
+			var categories = {
+				validValues: {
+					categories: [{
+						name: '11',
+						description: 'high'
+					},
+					{
+						name: '1',
+						description: 'low'
+					},
+					{
+						name: '5',
+						description: 'middle'
+					}]
+				}
+			};
+
+			compileDirective('om-categorical="true"');
+			var sortedArray = orderCategoryByFilter(categories.validValues.categories, 'name');
+
+			// Use angular.equals to ignore the $$hashKey property
+			expect(angular.equals(sortedArray, [{name: '1', description: 'low'}, {name: '5', description: 'middle'},
+				{name: '11', description: 'high'}])).toBe(true);
+		});
+
+		it('should not sort the categories if names contain any non-numeric value and return the original array', function() {
+			var categories = {
+				validValues: {
+					categories: [{
+						name: '11',
+						description: 'high'
+					},
+					{
+						name: '1text',
+						description: 'low'
+					},
+					{
+						name: '5',
+						description: 'middle'
+					}]
+				}
+			};
+
+			compileDirective('om-categorical="true"');
+			var sortedArray = orderCategoryByFilter(categories.validValues.categories, 'name');
+
+			// Use angular.equals to ignore the $$hashKey property
+			expect(angular.equals(sortedArray, [{name: '11', description: 'high'}, {name: '1text', description: 'low'},
+				{name: '5', description: 'middle'}])).toBe(true);
+		});
+
+		it('should not sort the categories if all names are strings and return the original array', function() {
+			var categories = {
+				validValues: {
+					categories: [{
+						name: 'west',
+						description: 'high'
+					},
+					{
+						name: 'east',
+						description: 'low'
+					},
+					{
+						name: 'north',
+						description: 'middle'
+					}]
+				}
+			};
+
+			compileDirective('om-categorical="true"');
+			var sortedArray = orderCategoryByFilter(categories.validValues.categories, 'name');
+
+			// Use angular.equals to ignore the $$hashKey property
+			expect(angular.equals(sortedArray, [{name: 'west', description: 'high'}, {name: 'east', description: 'low'},
+				{name: 'north', description: 'middle'}])).toBe(true);
+		});
+
+		it('should return falsy value if it was passed to the filter ', function() {
+			expect(orderCategoryByFilter(undefined, 'name')).toBeFalsy();
+		});
+
 	});
 });
