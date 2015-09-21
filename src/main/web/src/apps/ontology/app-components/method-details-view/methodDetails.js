@@ -18,7 +18,7 @@
 			}
 
 			return {
-				controller: function($scope) {
+				controller: ['$scope', function($scope) {
 					$scope.editing = false;
 
 					$scope.$watch('selectedMethod', function(method) {
@@ -116,7 +116,7 @@
 					};
 
 					$scope.formGroupClass = formUtilities.formGroupClassGenerator($scope, 'mdForm');
-				},
+				}],
 				restrict: 'E',
 				templateUrl: 'static/views/ontology/methodDetails.html'
 			};

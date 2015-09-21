@@ -65,7 +65,7 @@
 		}
 	]);
 
-	app.factory('propertyFormService', [function() {
+	app.factory('propertyFormService', function() {
 		return {
 			//TODO: fix logic
 			formEmpty: function(model) {
@@ -76,5 +76,5 @@
 						(angular.isArray(model.classes) && model.classes.length === 0));
 			}
 		};
-	}]);
+	});
 } ());

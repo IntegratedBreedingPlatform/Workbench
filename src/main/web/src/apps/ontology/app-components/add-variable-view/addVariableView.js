@@ -125,7 +125,7 @@
 		}
 	]);
 
-	app.factory('variableFormService', [function() {
+	app.factory('variableFormService', function() {
 
 		return {
 			formEmpty: function(model) {
@@ -145,5 +145,5 @@
 				return formEmpty;
 			}
 		};
-	}]);
+	});
 }());

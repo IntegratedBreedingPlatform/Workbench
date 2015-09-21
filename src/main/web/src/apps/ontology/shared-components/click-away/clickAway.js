@@ -4,7 +4,7 @@
 (function() {
 	var clickAway = angular.module('clickAway', []);
 
-	clickAway.directive('omClickAnywhereButHere', function($document) {
+	clickAway.directive('omClickAnywhereButHere', ['$document', function($document) {
 		return {
 			restrict: 'A',
 			scope: {
@@ -27,5 +27,5 @@
 				});
 			}
 		};
-	});
+	}]);
 }());

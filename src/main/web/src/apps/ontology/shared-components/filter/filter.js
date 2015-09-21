@@ -8,7 +8,7 @@
 	filterModule.directive('omFilter', ['panelService', 'variableTypesService', 'serviceUtilities', 'dataTypesService',
 		function(panelService, variableTypesService, serviceUtilities, dataTypesService)  {
 			return {
-				controller: function($scope) {
+				controller: ['$scope', function($scope) {
 					$scope.smallPanelName = 'filters';
 					$scope.data = {
 						types: [],
@@ -87,7 +87,7 @@
 						$scope.data.toCalendarOpened = true;
 					};
 
-				},
+				}],
 				restrict: 'E',
 				scope: {
 					filterOptions: '=omFilterOptions'

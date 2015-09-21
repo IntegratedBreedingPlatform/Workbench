@@ -18,7 +18,7 @@
 			}
 
 			return {
-				controller: function($scope) {
+				controller: ['$scope', function($scope) {
 					$scope.editing = false;
 					$scope.showRangeWidget = false;
 					$scope.showCategoriesWidget = false;
@@ -142,7 +142,7 @@
 					};
 
 					$scope.formGroupClass = formUtilities.formGroupClassGenerator($scope, 'sdForm');
-				},
+				}],
 				restrict: 'E',
 				templateUrl: 'static/views/ontology/scaleDetails.html'
 			};

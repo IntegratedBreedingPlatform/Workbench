@@ -4,7 +4,7 @@
 (function() {
 	var VIEWS_LOCATION = 'static/views/ontology/',
 		app = angular.module('ontology', ['ngRoute', 'variablesView', 'propertiesView', 'methodsView', 'scalesView', 'addVariable',
-		'addProperty', 'addMethod', 'addScale', 'pascalprecht.translate', 'keyTrap']);
+		'addProperty', 'addMethod', 'addScale', 'pascalprecht.translate', 'keyTrap', 'config']);
 
 	app.config(['$routeProvider', function($routeProvider) {
 

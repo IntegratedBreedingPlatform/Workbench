@@ -69,7 +69,7 @@
 		}
 	]);
 
-	app.factory('scaleFormService', [function() {
+	app.factory('scaleFormService', function() {
 		return {
 			formEmpty: function(model) {
 				// Don't bother checking for valid values, because for there to be any
@@ -79,5 +79,5 @@
 					angular.isUndefined(model.dataType);
 			}
 		};
-	}]);
+	});
 }());

@@ -52,11 +52,11 @@
 		}
 	]);
 
-	app.factory('methodFormService', [function() {
+	app.factory('methodFormService', function() {
 		return {
 			formEmpty: function(model) {
 				return !!!model.name && !!!model.description;
 			}
 		};
-	}]);
+	});
 }());

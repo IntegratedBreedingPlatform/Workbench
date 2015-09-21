@@ -9,9 +9,9 @@
 			MIN_LENGTH = 2;
 
 		return {
-			controller: function($scope) {
+			controller: ['$scope', function($scope) {
 				$scope.editable = editable($scope);
-			},
+			}],
 
 			link: function(scope, elm, attrs, ctrl) {
 				var listElement = elm.find('ul'),

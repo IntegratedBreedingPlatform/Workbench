@@ -4,14 +4,14 @@
 (function() {
 	var inputModule = angular.module('input', ['formFields']);
 
-	inputModule.directive('omInput', function(editable) {
+	inputModule.directive('omInput', ['editable', function(editable) {
 		return {
-			controller: function($scope) {
+			controller: ['$scope', function($scope) {
 				$scope.editable = editable($scope);
 				$scope.required = $scope.required || false;
 				$scope.maxLength = $scope.maxLength || -1;
 				$scope.regex = $scope.pattern ? new RegExp($scope.pattern) : /[\s\S]*/;
-			},
+			}],
 			restrict: 'E',
 			scope: {
 				name: '@omName',
@@ -25,6 +25,6 @@
 			},
 			templateUrl: 'static/views/ontology/input.html'
 		};
-	});
+	}]);
 
 })();

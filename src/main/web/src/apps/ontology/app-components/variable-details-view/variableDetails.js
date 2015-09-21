@@ -22,7 +22,7 @@
 			}
 
 			return {
-				controller: function($scope) {
+				controller: ['$scope', function($scope) {
 					$scope.editing = false;
 
 					$scope.data = {
@@ -205,7 +205,7 @@
 							$scope.showTreatmentFactorAlert = filtered.length > 0;
 						}
 					});
-				},
+				}],
 				restrict: 'E',
 				templateUrl: 'static/views/ontology/variableDetails.html'
 			};

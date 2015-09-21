@@ -4,12 +4,12 @@
 (function() {
 	var textAreaModule = angular.module('textArea', ['formFields']);
 
-	textAreaModule.directive('omTextArea', function(editable) {
+	textAreaModule.directive('omTextArea', ['editable', function(editable) {
 		return {
-			controller: function($scope) {
+			controller: ['$scope', function($scope) {
 				$scope.editable = editable($scope);
 				$scope.maxLength = $scope.maxLength || -1;
-			},
+			}],
 			restrict: 'E',
 			scope: {
 				name: '@omName',
@@ -21,5 +21,5 @@
 			},
 			templateUrl: 'static/views/ontology/textArea.html'
 		};
-	});
+	}]);
 })();
