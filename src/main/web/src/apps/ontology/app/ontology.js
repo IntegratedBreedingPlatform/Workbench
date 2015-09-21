@@ -50,7 +50,6 @@
 			});
 	}]);
 
-	// FIXME Use the dynamic context path passed in from the server
 	app.config(['$translateProvider', function($translateProvider) {
 		$translateProvider.useStaticFilesLoader({
 			prefix: '/ibpworkbench/controller/static/resources/locale-',
