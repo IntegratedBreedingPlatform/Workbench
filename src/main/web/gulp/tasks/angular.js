@@ -38,7 +38,7 @@ gulp.task('angularJs', function() {
 	var tasks = folders.map(function(folder) {
 
 		return gulp.src(path.join(srcRoot, folder, '**/*.js'))
-			.pipe(gulpif(argv.prod, uglify()))
+			.pipe(gulpif(argv.release, uglify()))
 			.pipe(concat(folder + '.js'))
 			.pipe(gulp.dest(destRoot + 'js'));
 	});
@@ -55,7 +55,7 @@ gulp.task('angularSass', function() {
 			.pipe(sass())
 			.pipe(prefix('last 2 versions', 'ie 8'))
 			.pipe(pixrem())
-			.pipe(gulpif(argv.prod, minifyCSS()))
+			.pipe(gulpif(argv.release, minifyCSS()))
 			.pipe(concat(folder + '.css'))
 			.pipe(gulp.dest(path.join(destRoot, 'css')));
 	});
