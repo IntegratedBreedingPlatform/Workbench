@@ -50,14 +50,6 @@
 		}
 	}
 
-	function mapRangeModelToModel(rangeModel, model) {
-		var isMinValued = !(angular.isUndefined(rangeModel.min) || rangeModel.min === null),
-			isMaxValued = !(angular.isUndefined(rangeModel.max) || rangeModel.max === null);
-
-		model.min = isMinValued ? rangeModel.min.toString() : '';
-		model.max = isMaxValued ? rangeModel.max.toString() : '';
-	}
-
 	/*
 	Retrieve the translation key to use for the message that should be displayed when the range is read only.
 
@@ -65,11 +57,14 @@
 	@param max a string containing the maximum value for the range
 	*/
 	function getReadOnlyRangeText(min, max) {
-		if (min && max) {
+		var isMinValued = !angular.isUndefined(min) && min != null,
+			isMaxValued = !angular.isUndefined(max) && max != null;
+
+		if (isMinValued && isMaxValued) {
 			return 'range.fullRange';
-		} else if (min) {
+		} else if (isMinValued) {
 			return 'range.minOnly';
-		} else if (max) {
+		} else if (isMaxValued) {
 			return 'range.maxOnly';
 		} else {
 			return 'range.noRange';
@@ -102,14 +97,12 @@
 						// Clear any previous values that were in the range widget when the range is no longer required
 						scope.clearRange();
 						resetValidity();
-					} else if (scope.rangeModel) {
-						validateValues(ctrl, scope.rangeModel, scope);
+					} else if (scope.model && scope.model[scope.property]) {
+						validateValues(ctrl, scope.model[scope.property], scope);
 					}
 				});
 
 				scope.$watch('model[property]', function(data) {
-					var min,
-						max;
 
 					resetValidity();
 
@@ -120,28 +113,7 @@
 					// Set the read only text to reflect the given range
 					scope.readOnlyRangeText = getReadOnlyRangeText(data.min, data.max);
 
-					// Set a specific model to use in the template where the values are numbers rather than strings
-					// so that we can provide the user a better experience with the number type inputs that have up and
-					// down arrows for changing the values, rather than just a freetext input.
-					min = parseInt(data.min, 10);
-					max = parseInt(data.max, 10);
-
-					// Set the numeric range model to have the model's value if it is a number, otherwise null
-					scope.rangeModel = {
-						min: !isNaN(min) ? min : null,
-						max: !isNaN(max) ? max : null
-					};
-
-					mapRangeModelToModel(scope.rangeModel, data);
-
-					validateValues(ctrl, scope.rangeModel, scope);
-				}, true);
-
-				scope.$watch('rangeModel', function(rangeModel) {
-
-					if (rangeModel) {
-						mapRangeModelToModel(rangeModel, scope.model[scope.property]);
-					}
+					validateValues(ctrl, data, scope);
 				}, true);
 
 				scope.$watch('rangeForm.omRangeMin.$error.number', function(invalid) {
@@ -165,16 +137,9 @@
 				});
 
 				scope.clearRange = function() {
-					// Clear the textual min/max that is provided to the directive
-					if (scope.model && scope.model[scope.property]) {
-						scope.model[scope.property].min = '';
-						scope.model[scope.property].max = '';
-					}
 
-					// Clear the numeric min/max that we use for displaying the range in the numeric input
-					if (scope.rangeModel) {
-						scope.rangeModel.min = null;
-						scope.rangeModel.max = null;
+					if (scope.model && scope.model[scope.property]) {
+						scope.model[scope.property] = {};
 					}
 
 					scope.readOnlyRangeText = getReadOnlyRangeText();

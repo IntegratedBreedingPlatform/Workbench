@@ -36,9 +36,7 @@ describe('Range module', function() {
 	}));
 
 	it('should instantiate the specified property on the model if not otherwise provided', function() {
-
 		scope.model = {};
-		expect(scope.model.validValues).toBeUndefined();
 
 		compileDirective();
 
@@ -55,8 +53,8 @@ describe('Range module', function() {
 	it('should set the read only text to full range if both the min and max are set', function() {
 		scope.model = {
 			validValues: {
-				min: '80',
-				max: '90'
+				min: 80,
+				max: 90
 			}
 		};
 		compileDirective();
@@ -67,7 +65,7 @@ describe('Range module', function() {
 	it('should set the read only text to min only if the min is set and the max is not', function() {
 		scope.model = {
 			validValues: {
-				min: '0'
+				min: 0
 			}
 		};
 		compileDirective();
@@ -78,7 +76,7 @@ describe('Range module', function() {
 	it('should set the read only text to max only if the max is set and the min is not', function() {
 		scope.model = {
 			validValues: {
-				max: '-1'
+				max: -1
 			}
 		};
 		compileDirective();
@@ -122,8 +120,8 @@ describe('Range module', function() {
 		it('should validate the widget if it changes to become numeric and already has values', function() {
 			scope.model = {
 				validValues: {
-					min: '80',
-					max: '90'
+					min: 80,
+					max: 90
 				}
 			};
 			scope.numeric = true;
@@ -157,8 +155,8 @@ describe('Range module', function() {
 
 			scope.model = {
 				validValues: {
-					min: '90',
-					max: '80'
+					min: 90,
+					max: 80
 				}
 			};
 
@@ -172,7 +170,7 @@ describe('Range module', function() {
 
 			scope.model = {
 				validValues: {
-					min: '80'
+					min: 80
 				}
 			};
 
@@ -186,7 +184,7 @@ describe('Range module', function() {
 
 			scope.model = {
 				validValues: {
-					min: '80'
+					min: 80
 				}
 			};
 
@@ -200,7 +198,7 @@ describe('Range module', function() {
 
 			scope.model = {
 				validValues: {
-					max: '80'
+					max: 80
 				}
 			};
 
@@ -214,7 +212,7 @@ describe('Range module', function() {
 
 			scope.model = {
 				validValues: {
-					max: '80'
+					max: 80
 				}
 			};
 
@@ -316,56 +314,33 @@ describe('Range module', function() {
 
 	describe('scope.clearRange', function() {
 
-		it('should clear the textual min if it exists', function() {
-			compileDirective();
+		it('should set the validValues back to an empty object with no min or max', function() {
 
-			isolateScope.model = {
+			scope.model = {
 				validValues: {
-					min: '5'
+					min: 5
 				}
 			};
 
-			isolateScope.clearRange();
-
-			expect(isolateScope.model.validValues.min).toEqual('');
-		});
-
-		it('should clear the textual max if it exists', function() {
 			compileDirective();
 
-			isolateScope.model = {
-				validValues: {
-					max: '10'
-				}
-			};
-
 			isolateScope.clearRange();
 
-			expect(isolateScope.model.validValues.max).toEqual('');
+			expect(scope.model.validValues).toEqual({});
 		});
 
-		it('should clear the numeric min if it exists', function() {
-			compileDirective();
-
-			isolateScope.rangeModel = {
-				min: 5
+		it('should leave the model as it is if the model doesn\'t have the passed in property', function() {
+			var model = {
+				name: 'name'
 			};
+
+			scope.model = model;
+
+			compileDirective();
 
 			isolateScope.clearRange();
 
-			expect(isolateScope.rangeModel.min).toBe(null);
-		});
-
-		it('should clear the numeric max if it exists', function() {
-			compileDirective();
-
-			isolateScope.rangeModel = {
-				max: 10
-			};
-
-			isolateScope.clearRange();
-
-			expect(isolateScope.rangeModel.max).toBe(null);
+			expect(scope.model).toEqual(model);
 		});
 
 		it('should reset the read only text message', function() {
