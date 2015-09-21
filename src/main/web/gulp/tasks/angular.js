@@ -20,7 +20,19 @@ var gulp = require('gulp'),
 	minifyCSS = require('gulp-minify-css'),
 	prefix = require('gulp-autoprefixer'),
 	pixrem = require('gulp-pixrem'),
-	sass = require('gulp-sass');
+	sass = require('gulp-sass'),
+
+	cache = require('gulp-cached'),
+	jshint = require('gulp-jshint'),
+	jshintStylish = require('jshint-stylish'),
+	lazypipe = require('lazypipe'),
+
+	hintAllTheThings;
+
+hintAllTheThings = lazypipe()
+	.pipe(cache, 'linting')
+	.pipe(jshint)
+	.pipe(jshint.reporter, jshintStylish);
 
 function getFolders(dir) {
 	return fs.readdirSync(dir)
@@ -31,13 +43,13 @@ function getFolders(dir) {
 
 gulp.task('angular', ['angularJs', 'angularPages', 'angularViews', 'angularSass']);
 
-// FIXME lint
 gulp.task('angularJs', function() {
 	var folders = getFolders(srcRoot);
 
 	var tasks = folders.map(function(folder) {
 
 		return gulp.src(path.join(srcRoot, folder, '**/*.js'))
+			.pipe(hintAllTheThings())
 			.pipe(gulpif(argv.release, uglify()))
 			.pipe(concat(folder + '.js'))
 			.pipe(gulp.dest(destRoot + 'js'));
