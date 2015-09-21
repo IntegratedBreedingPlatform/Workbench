@@ -39,7 +39,7 @@ You can then run the gulp build task directly with `gulp build`. There are also 
 Running `gulp` without a specified task will run the `build` task.
 
 __Note:__ If you see the following error when running `gulp watch`: 
-`Error: 'libsass' bindings not found.` then as a workaround, delete the existing `node_modules` folder and re-run `npm install`.
+`Error: 'libsass' bindings not found.` then as a workaround, delete the existing `node_modules` folder and re-run `npm install`. If this doesn't help, the issue could be due to having a version of Node installed that is lower than the required v0.12.7.
 
 ## Building for Production
 
