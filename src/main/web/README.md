@@ -51,7 +51,7 @@ When developing in a web environment, it is useful to not have to re-build and d
 
 `gulp watch --env=<property>`
 
-where `<property>` is a property defined in the `gulp.properties` file specifying the location of your Tomcat installation. This will watch your source folder for changes, and as you develop, will trigger the correct tasks and copy files over the build folder as necessary. In addition to this, **changed files will be copied directly into the exploded Workbench folder in your Tomcat webapps directory**, allowing you to refresh your browser and see changes without redeploying.
+where `<property>` is a property defined in the `gulp.properties` file specifying the location of your Tomcat installation. This will watch your source folder for changes, and as you develop, will trigger the correct tasks and copy files over the build folder as necessary. In addition to this, **changed files will be copied directly into the exploded Workbench folder iny our Tomcat webapps directory**, allowing you to refresh your browser and see changes without redeploying.
 
 In addtion to this, there are a few things to note about developing in this environment:
 
@@ -66,6 +66,11 @@ To see a report of the JS unit test coverage, run `gulp test --ci`.
 The coverage report can be found in `reports/coverage/lcov-report/index.html`.
 
 # Libraries
+
+## Angular
+When upgrading the angular version, the `angular-mocks.js` library also needs to be upgraded to the same version in order for the tests to run.
+
+## Others
 
 We use a couple of third party libraries. Any customisations performed to third party libraries should be listed here:
 

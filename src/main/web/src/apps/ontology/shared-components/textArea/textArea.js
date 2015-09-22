@@ -8,7 +8,11 @@
 		return {
 			controller: ['$scope', function($scope) {
 				$scope.editable = editable($scope);
-				$scope.maxLength = $scope.maxLength || -1;
+
+				// We cannot assign values to one time binding scope properties that are not defined
+				// on the directive instance, so instead we must use a different scope property
+				// and just read from the initial property as to whether the value was given or not.
+				$scope.maxLength = $scope.omMaxLength || -1;
 			}],
 			restrict: 'E',
 			scope: {
@@ -17,7 +21,8 @@
 				adding: '=omAdding',
 				editing: '=omEditing',
 				model: '=omModel',
-				maxLength: '@omMaxLength'
+				// Use this syntax for optional one time binding properties
+				omMaxLength: '@'
 			},
 			templateUrl: 'static/views/ontology/textArea.html'
 		};
