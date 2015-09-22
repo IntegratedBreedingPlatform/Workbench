@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="om-ontology-manager" ng-app="ontology" xmlns:th="http://www.thymeleaf.org" om-config="" data-th-attr="om-crop=${currentCrop}, om-program-id=${currentProgramId}">
+<html class="om-ontology-manager" ng-app="ontology" ng-strict-di xmlns:th="http://www.thymeleaf.org" om-config="" data-th-attr="om-crop=${currentCrop}, om-program-id=${currentProgramId}">
 
 <head>
 	<meta name="viewport" content="initial-scale=1.0, width=device-width"></meta>
@@ -62,7 +62,7 @@
 		</div>
 	</om-panel>
 
-	<script type="text/javascript" th:src="@{/controller/static/js/lib/angular.js}"></script>
+	<script type="text/javascript" th:src="@{/controller/static/js/lib/angular.min.js}"></script>
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/angular-route.min.js}"></script>
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/angular-messages.min.js}"></script>
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/angular-sanitize.min.js}"></script>

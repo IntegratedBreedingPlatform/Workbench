@@ -20,7 +20,7 @@
 				optionsFilter: '=omOptionsFilter'
 			},
 
-			controller: function($scope) {
+			controller: ['$scope', function($scope) {
 				$scope.activeItemId = selectedItemService.getSelectedItem().id;
 
 				// Set the max no of rows to 50 if pagination is enabled, otherwise set to -1
@@ -61,7 +61,7 @@
 						};
 					}
 				};
-			},
+			}],
 
 			link: function(scope) {
 

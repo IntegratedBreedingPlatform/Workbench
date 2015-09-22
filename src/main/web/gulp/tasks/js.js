@@ -24,9 +24,11 @@ gulp.task('js', ['libJs', 'clientJs']);
 
 gulp.task('libJs', function() {
 
-	var dest = destRoot + '/js/lib';
+	var srcRoot = 'src/js/lib/**',
+		src = argv.release ? srcRoot + '/*.js' : srcRoot,
+		dest = destRoot + '/js/lib';
 
-	return gulp.src('src/js/lib/**')
+	return gulp.src(src)
 		.pipe(changed(dest))
 		.pipe(gulp.dest(dest));
 });
@@ -40,4 +42,3 @@ gulp.task('clientJs', function() {
 		.pipe(gulpif(argv.release, uglify()))
 		.pipe(gulp.dest(dest));
 });
-

@@ -9,7 +9,7 @@
 		var VISIBLE_CLASS = 'om-pa-panel-visible';
 
 		return {
-			controller: function($scope) {
+			controller: ['$scope', function($scope) {
 				//this function is esposed for testing purposes only
 				$scope.escHandler = function(msg, e) {
 					$scope.$apply(function() {
@@ -30,7 +30,8 @@
 				$scope.$on('$destroy', function() {
 					$scope.removeEscHandler();
 				});
-			},
+			}],
+
 			link: function($scope, element) {
 				$scope.$watch(panelService.getCurrentPanel, function(panelName, prevPanelName, scope) {
 					if (panelName === scope.omPanelIdentifier) {
@@ -58,7 +59,7 @@
 		};
 	}]);
 
-	panelModule.directive('omMask', function(panelService) {
+	panelModule.directive('omMask', ['panelService', function(panelService) {
 		var VISIBLE_CLASS = 'om-mask-visible';
 
 		return {
@@ -70,9 +71,9 @@
 			restrict: 'E',
 			scope: {}
 		};
-	});
+	}]);
 
-	panelModule.service('panelService', [function() {
+	panelModule.service('panelService', function() {
 		var currentPanel = null;
 
 		return {
@@ -86,6 +87,6 @@
 				return currentPanel;
 			}
 		};
-	}]);
+	});
 
 }());

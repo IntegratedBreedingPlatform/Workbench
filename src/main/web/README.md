@@ -39,7 +39,7 @@ You can then run the gulp build task directly with `gulp build`. There are also 
 Running `gulp` without a specified task will run the `build` task.
 
 __Note:__ If you see the following error when running `gulp watch`: 
-`Error: 'libsass' bindings not found.` then as a workaround, delete the existing `node_modules` folder and re-run `npm install`.
+`Error: 'libsass' bindings not found.` then as a workaround, delete the existing `node_modules` folder and re-run `npm install`. If this doesn't help, the issue could be due to having a version of Node installed that is lower than the required v0.12.7.
 
 ## Building for Production
 
@@ -51,7 +51,7 @@ When developing in a web environment, it is useful to not have to re-build and d
 
 `gulp watch --env=<property>`
 
-where `<property>` is a property defined in the `gulp.properties` file specifying the location of your Tomcat installation. This will watch your source folder for changes, and as you develop, will trigger the correct tasks and copy files over the build folder as necessary. In addition to this, **changed files will be copied directly into the exploded Workbench folder in your Tomcat webapps directory**, allowing you to refresh your browser and see changes without redeploying.
+where `<property>` is a property defined in the `gulp.properties` file specifying the location of your Tomcat installation. This will watch your source folder for changes, and as you develop, will trigger the correct tasks and copy files over the build folder as necessary. In addition to this, **changed files will be copied directly into the exploded Workbench folder iny our Tomcat webapps directory**, allowing you to refresh your browser and see changes without redeploying.
 
 In addtion to this, there are a few things to note about developing in this environment:
 
@@ -60,12 +60,23 @@ In addtion to this, there are a few things to note about developing in this envi
 * We use an image minification library to compress our images on build
 * JS libraries should be included already minified in the `js/lib` folder
 
+## Potential issues
+
+* During development if you are introducing a new module, due to the inclusion of the Strict DI Mode directive (`ng-strict-di`), you may see an error that the ontology module cannot be instantiated. The cause of this issue will be that the DI for the module that you are adding is not correct - there is likely a module dependency missing that needs to be included. When this issue occurs, it is caught in the build process by JSHint, which causes the built `ontology.js` file to not be created correctly. It will not include all of the JS concatenated together as it should. To resolve this, you will need to fix up your DI in your module, and then run `gulp clean` before building again. You will also need to ensure that `ontology.js` has the correct content when loaded in your browser.
+
 # Test Coverage Report
 
 To see a report of the JS unit test coverage, run `gulp test --ci`.
 The coverage report can be found in `reports/coverage/lcov-report/index.html`.
 
 # Libraries
+
+## Angular
+When upgrading the Angular version, the `angular-mocks.js` library also needs to be upgraded to the same version in order for the tests to run.
+
+Note that the minified Angular library has a complimentary source map (`.map`) file to assist in debugging. This is excluded from being copied to the `WEB-INF\static` directory. 
+
+## Others
 
 We use a couple of third party libraries. Any customisations performed to third party libraries should be listed here:
 

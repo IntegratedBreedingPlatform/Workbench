@@ -73,7 +73,7 @@
 
 	rangeModule.directive('omRange', ['formUtilities', 'editable', function(formUtilities, editable) {
 		return {
-			controller: function($scope) {
+			controller: ['$scope', function($scope) {
 				// If the specified property does not exist on the model, add it
 				if ($scope.model) {
 					$scope.model[$scope.property] = $scope.model[$scope.property] || {};
@@ -81,7 +81,7 @@
 				$scope.editable = editable($scope);
 
 				$scope.formParentHasError = formUtilities.formParentHasError($scope, 'rangeForm');
-			},
+			}],
 			link: function(scope, elm, attrs, ctrl) {
 
 				var resetValidity = function() {

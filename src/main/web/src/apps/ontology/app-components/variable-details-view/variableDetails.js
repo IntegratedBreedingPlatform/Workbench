@@ -3,7 +3,7 @@
 
 (function() {
 	var variableDetails = angular.module('variableDetails', ['input', 'textArea', 'select', 'properties', 'methods', 'scales', 'utilities',
-		'variables', 'variableTypes', 'panel', 'debounce', 'expandCollapseHeading']),
+		'variables', 'variableTypes', 'panel', 'debounce', 'expandCollapseHeading', 'multiSelect', 'range']),
 		DELAY = 400,
 		DEBOUNCE_TIME = 500,
 		NUM_EDITABLE_FIELDS = 6;
@@ -22,7 +22,7 @@
 			}
 
 			return {
-				controller: function($scope) {
+				controller: ['$scope', function($scope) {
 					$scope.editing = false;
 
 					$scope.data = {
@@ -205,7 +205,7 @@
 							$scope.showTreatmentFactorAlert = filtered.length > 0;
 						}
 					});
-				},
+				}],
 				restrict: 'E',
 				templateUrl: 'static/views/ontology/variableDetails.html'
 			};

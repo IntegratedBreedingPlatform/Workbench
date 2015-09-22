@@ -28,7 +28,7 @@
 		};
 	});
 
-	app.directive('omConfig', function(configService) {
+	app.directive('omConfig', ['configService', function(configService) {
 		return {
 			restrict: 'A',
 			scope: {
@@ -40,5 +40,5 @@
 				configService.setProgramId(attrs.omProgramId);
 			}
 		};
-	});
+	}]);
 }());

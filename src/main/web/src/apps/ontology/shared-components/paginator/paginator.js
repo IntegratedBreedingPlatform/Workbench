@@ -118,9 +118,9 @@ http://cacodaemon.de/index.php?id=50
 	paginatorModule.directive('omPaginator', ['paginatorService', function(paginatorService) {
 		return {
 			restrict:'E',
-			controller: function($scope) {
+			controller: ['$scope', function($scope) {
 				$scope.paginator = paginatorService;
-			},
+			}],
 			templateUrl: 'static/views/ontology/paginator.html'
 		};
 	}]);

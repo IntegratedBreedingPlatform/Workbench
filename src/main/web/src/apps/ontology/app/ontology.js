@@ -4,7 +4,7 @@
 (function() {
 	var VIEWS_LOCATION = 'static/views/ontology/',
 		app = angular.module('ontology', ['ngRoute', 'variablesView', 'propertiesView', 'methodsView', 'scalesView', 'addVariable',
-		'addProperty', 'addMethod', 'addScale', 'pascalprecht.translate', 'keyTrap']);
+		'addProperty', 'addMethod', 'addScale', 'pascalprecht.translate', 'keyTrap', 'config', 'panel']);
 
 	app.config(['$routeProvider', function($routeProvider) {
 
@@ -50,7 +50,6 @@
 			});
 	}]);
 
-	// FIXME Use the dynamic context path passed in from the server
 	app.config(['$translateProvider', function($translateProvider) {
 		$translateProvider.useStaticFilesLoader({
 			prefix: '/ibpworkbench/controller/static/resources/locale-',

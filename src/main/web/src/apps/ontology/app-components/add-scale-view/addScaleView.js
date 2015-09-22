@@ -2,7 +2,8 @@
 'use strict';
 
 (function() {
-	var app = angular.module('addScale', ['scales', 'dataTypes', 'variableState', 'utilities', 'categories', 'range', 'ngMessages']);
+	var app = angular.module('addScale', ['scales', 'dataTypes', 'variableState', 'utilities', 'categories', 'range', 'ngMessages',
+		'input', 'textArea', 'select']);
 
 	app.controller('AddScaleController', ['$scope', '$location', '$window', 'dataTypesService', 'scalesService', 'variableStateService',
 		'scaleFormService', 'serviceUtilities', 'formUtilities',
@@ -69,7 +70,7 @@
 		}
 	]);
 
-	app.factory('scaleFormService', [function() {
+	app.factory('scaleFormService', function() {
 		return {
 			formEmpty: function(model) {
 				// Don't bother checking for valid values, because for there to be any
@@ -79,5 +80,5 @@
 					angular.isUndefined(model.dataType);
 			}
 		};
-	}]);
+	});
 }());

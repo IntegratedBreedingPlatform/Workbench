@@ -3,7 +3,7 @@
 
 (function() {
 	var scaleDetailsModule = angular.module('scaleDetails', ['input', 'textArea', 'select', 'scales', 'dataTypes', 'utilities',
-		'categories', 'panel']),
+		'categories', 'panel', 'range', 'expandCollapseHeading']),
 		DELAY = 400,
 		NUM_EDITABLE_FIELDS = 3;
 
@@ -18,7 +18,7 @@
 			}
 
 			return {
-				controller: function($scope) {
+				controller: ['$scope', function($scope) {
 					$scope.editing = false;
 					$scope.showRangeWidget = false;
 					$scope.showCategoriesWidget = false;
@@ -142,7 +142,7 @@
 					};
 
 					$scope.formGroupClass = formUtilities.formGroupClassGenerator($scope, 'sdForm');
-				},
+				}],
 				restrict: 'E',
 				templateUrl: 'static/views/ontology/scaleDetails.html'
 			};

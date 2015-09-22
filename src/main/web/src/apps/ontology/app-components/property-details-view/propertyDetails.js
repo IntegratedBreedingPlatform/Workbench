@@ -28,7 +28,7 @@
 			}
 
 			return {
-				controller: function($scope) {
+				controller: ['$scope', function($scope) {
 					$scope.editing = false;
 					$scope.data = {
 						classes: []
@@ -131,7 +131,7 @@
 					};
 
 					$scope.formGroupClass = formUtilities.formGroupClassGenerator($scope, 'pdForm');
-				},
+				}],
 				restrict: 'E',
 				templateUrl: 'static/views/ontology/propertyDetails.html'
 			};

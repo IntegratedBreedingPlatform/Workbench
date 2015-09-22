@@ -15,7 +15,7 @@
 				editing: '=omEditing',
 				model: '=ngModel'
 			},
-			controller: function($scope) {
+			controller: ['$scope', function($scope) {
 				$scope.editable = editable($scope);
 
 				$scope.addCategory = function(e) {
@@ -64,7 +64,7 @@
 						values.push(category.description);
 					});
 				};
-			},
+			}],
 
 			link: function(scope, elm, attrs, ctrl) {
 
