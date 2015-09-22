@@ -2,7 +2,7 @@
 'use strict';
 
 (function() {
-	var app = angular.module('variablesView', ['list', 'panel', 'variables', 'variableDetails', 'utilities', 'filter']),
+	var app = angular.module('variablesView', ['list', 'panel', 'variables', 'variableDetails', 'utilities', 'filter', 'search']),
 		DELAY = 400;
 
 	function findAndUpdate(list, id, updatedVariable, sortFunction) {

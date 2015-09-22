@@ -2,7 +2,7 @@
 'use strict';
 
 (function() {
-	var app = angular.module('scalesView', ['scales', 'scaleDetails', 'list', 'panel', 'utilities']),
+	var app = angular.module('scalesView', ['scales', 'scaleDetails', 'list', 'panel', 'utilities', 'search']),
 		DELAY = 400;
 
 	function transformScaleToDisplayFormat(scale, id) {

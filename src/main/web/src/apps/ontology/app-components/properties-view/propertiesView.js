@@ -2,7 +2,7 @@
 'use strict';
 
 (function() {
-	var app = angular.module('propertiesView', ['properties', 'list', 'panel', 'propertyDetails', 'utilities']),
+	var app = angular.module('propertiesView', ['properties', 'list', 'panel', 'propertyDetails', 'utilities', 'search']),
 		DELAY = 400;
 
 	function transformPropertyToDisplayFormat(property, id) {

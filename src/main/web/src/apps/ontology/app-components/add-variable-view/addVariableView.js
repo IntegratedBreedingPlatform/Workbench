@@ -3,7 +3,7 @@
 
 (function() {
 	var app = angular.module('addVariable', ['multiSelect', 'input', 'textArea', 'select', 'variables', 'properties', 'variableTypes',
-		'methods', 'scales', 'variableState', 'utilities']);
+		'methods', 'scales', 'variableState', 'utilities', 'range']);
 
 	app.controller('AddVariableController', ['$scope', '$window', '$location', 'variablesService', 'variableTypesService',
 		'propertiesService', 'methodsService', 'scalesService', 'variableStateService', 'serviceUtilities', 'formUtilities',

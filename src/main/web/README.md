@@ -60,6 +60,10 @@ In addtion to this, there are a few things to note about developing in this envi
 * We use an image minification library to compress our images on build
 * JS libraries should be included already minified in the `js/lib` folder
 
+## Potential issues
+
+* During development if you are introducing a new module, due to the inclusion of the Strict DI Mode directive (`ng-strict-di`), you may see an error that the ontology module cannot be instantiated. The cause of this issue will be that the DI for the module that you are adding is not correct - there is likely a module dependency missing that needs to be included. When this issue occurs, it is caught in the build process by JSHint, which causes the built `ontology.js` file to not be created correctly. It will not include all of the JS concatenated together as it should. To resolve this, you will need to fix up your DI in your module, and then run `gulp clean` before building again. You will also need to ensure that `ontology.js` has the correct content when loaded in your browser.
+
 # Test Coverage Report
 
 To see a report of the JS unit test coverage, run `gulp test --ci`.

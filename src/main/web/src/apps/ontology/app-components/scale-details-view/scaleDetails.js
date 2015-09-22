@@ -3,7 +3,7 @@
 
 (function() {
 	var scaleDetailsModule = angular.module('scaleDetails', ['input', 'textArea', 'select', 'scales', 'dataTypes', 'utilities',
-		'categories', 'panel']),
+		'categories', 'panel', 'range', 'expandCollapseHeading']),
 		DELAY = 400,
 		NUM_EDITABLE_FIELDS = 3;
 
