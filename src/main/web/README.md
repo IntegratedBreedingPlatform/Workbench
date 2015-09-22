@@ -68,7 +68,9 @@ The coverage report can be found in `reports/coverage/lcov-report/index.html`.
 # Libraries
 
 ## Angular
-When upgrading the angular version, the `angular-mocks.js` library also needs to be upgraded to the same version in order for the tests to run.
+When upgrading the Angular version, the `angular-mocks.js` library also needs to be upgraded to the same version in order for the tests to run.
+
+Note that the minified Angular library has a complimentary source map (`.map`) file to assist in debugging. This is excluded from being copied to the `WEB-INF\static` directory. 
 
 ## Others
 
