@@ -34,7 +34,7 @@ You can then run the gulp build task directly with `gulp build`. There are also 
 * `angular` - concatenates all Angular JS and copies it to the build folder. Running with the `--release` flag will minify files. It also compiles the scss files related to angular components, adds vendor prefixes, converts rem to px and copies to the build folder. Running with the `--release` flag will minify files.
 * `sass` - compiles scss files into css, adds vendor prefixes and copies to the build folder. Running with the `--release` flag will minify files.
 * `test` - runs the JavaScript tests
-* `watch` - will invoke the appropriate task when files in the `src` folder change
+* `watch` - will invoke the appropriate task when files in the `src` folder change (note that the watch task will need restarting to pick up newly created files)
 
 Running `gulp` without a specified task will run the `build` task.
 
