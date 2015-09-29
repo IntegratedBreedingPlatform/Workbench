@@ -207,14 +207,21 @@
 				for (sourceProperty in source) {
 					if (source.hasOwnProperty(sourceProperty)) {
 						if (destination[sourceProperty]) {
-							// Does not remove duplicates
 							destination[sourceProperty] = destination[sourceProperty].concat(source[sourceProperty]);
 						} else {
 							destination[sourceProperty] = source[sourceProperty];
 						}
+						destination[sourceProperty] = this.removeDupesFromArray(destination[sourceProperty]);
 					}
 				}
+
 				return destination;
+			},
+
+			removeDupesFromArray: function(array) {
+				return array.filter(function(item, pos) {
+					return array.indexOf(item) === pos;
+				});
 			}
 
 		};

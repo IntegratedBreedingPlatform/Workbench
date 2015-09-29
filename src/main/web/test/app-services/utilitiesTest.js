@@ -494,6 +494,15 @@ describe('Utilities Service', function() {
 				expect(collectionUtilities.formatListForDisplay(collection)).toEqual('A, b, C');
 			});
 		});
+
+		describe('removeDupesFromArray', function() {
+
+			it('should remove duplicate entries from an array', function() {
+				var array = ['a', 'b', 'a', 'c', 'c', 'a', 'd'];
+
+				expect(collectionUtilities.removeDupesFromArray(array)).toEqual(['a', 'b', 'c', 'd']);
+			});
+		});
 	});
 
 	describe('IE Utilities', function() {
