@@ -1,15 +1,11 @@
 <div class="om-as-view">
 
 	<h2 class="om-title">{{'addNew.scale.title' | translate}}</h2>
+
+	<om-error-list om-errors-already-translated="serverErrors.general" om-errors-to-translate="serverErrors.someListsNotLoaded">
+	</om-error-list>
+
 	<form class="form-horizontal" name="asForm" ng-submit="saveScale($event, scale)" novalidate>
-	<div ng-if="serverErrors.general || someListsNotLoaded" class="alert alert-danger" role="alert">
-		<ul>
-			<li ng-repeat="error in serverErrors.general">{{error}}</li>
-		</ul>
-		<ul ng-if="someListsNotLoaded">
-			<li>{{'validation.scale.someListsNotLoaded' | translate}}</li>
-		</ul>
-	</div>
 
 		<div ng-class="formGroupClass('omName', 'name')">
 			<label for="omName" class="col-sm-2 control-label label-required">{{'formField.name' | translate}}</label>

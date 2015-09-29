@@ -2,7 +2,7 @@
 'use strict';
 
 (function() {
-	var app = angular.module('addMethod', ['methods', 'variableState', 'utilities', 'input', 'textArea']);
+	var app = angular.module('addMethod', ['methods', 'variableState', 'utilities', 'input', 'textArea', 'errorList']);
 
 	app.controller('AddMethodController', ['$scope', '$location', '$window', 'methodsService', 'methodFormService', 'variableStateService',
 		'serviceUtilities', 'formUtilities', function($scope, $location, $window, methodsService, methodFormService, variableStateService,

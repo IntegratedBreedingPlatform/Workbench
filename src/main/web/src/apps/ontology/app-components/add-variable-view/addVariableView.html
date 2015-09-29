@@ -2,14 +2,8 @@
 
 	<h2 class="om-title">{{'addNew.variable.title' | translate}}</h2>
 
-	<div ng-if="serverErrors.general.length > 0 || someListsNotLoaded" class="alert alert-danger" role="alert">
-		<ul>
-			<li ng-repeat="error in serverErrors.general">{{error}}</li>
-		</ul>
-		<ul ng-if="someListsNotLoaded">
-			<li>{{'validation.variable.someListsNotLoaded' | translate}}</li>
-		</ul>
-	</div>
+	<om-error-list om-errors-already-translated="serverErrors.general" om-errors-to-translate="serverErrors.someListsNotLoaded">
+	</om-error-list>
 
 	<form class="form-horizontal" name="avForm" ng-submit="saveVariable($event, variable)" novalidate>
 

@@ -4,7 +4,7 @@
 (function() {
 	var app = angular.module('utilities', []);
 
-	app.factory('serviceUtilities', ['$q', function($q) {
+	app.factory('serviceUtilities', ['$q', 'collectionUtilities', function($q, collectionUtilities) {
 
 		return {
 			formatErrorsForDisplay: function(response) {
@@ -39,6 +39,16 @@
 					status: response.status,
 					errors: response.data && response.data.errors
 				});
+			},
+
+			serverErrorHandler: function(currentErrors, response) {
+				var errors = this.formatErrorsForDisplay(response);
+
+				if (currentErrors) {
+					return collectionUtilities.mergeObjectsWithArrayProperties(errors, currentErrors);
+				}
+
+				return errors;
 			}
 		};
 	}]);
@@ -172,7 +182,7 @@
 			},
 
 			/*
-			Takes a collection of objects and returns a coma separated string of their name properties.
+			Takes a collection of objects and returns a comma separated string of their name properties.
 			*/
 			formatListForDisplay: function(items) {
 				if (items) {
@@ -182,7 +192,31 @@
 					return names.join(', ');
 				}
 				return '';
+			},
+
+			/*
+			Takes two objects that have properties whose values are arrays, and merges those objects
+			so that the resulting object has all of the properties of both objects, and any properties that
+			were present in both objects, have an array containing all objects from both. Note that duplicates
+			are not removed, so if an item is present in an array on both the source and destination object
+			then it will be duplicated in the array on the resulting object.
+			*/
+			mergeObjectsWithArrayProperties: function(source, destination) {
+				var sourceProperty;
+
+				for (sourceProperty in source) {
+					if (source.hasOwnProperty(sourceProperty)) {
+						if (destination[sourceProperty]) {
+							// Does not remove duplicates
+							destination[sourceProperty] = destination[sourceProperty].concat(source[sourceProperty]);
+						} else {
+							destination[sourceProperty] = source[sourceProperty];
+						}
+					}
+				}
+				return destination;
 			}
+
 		};
 	});
 

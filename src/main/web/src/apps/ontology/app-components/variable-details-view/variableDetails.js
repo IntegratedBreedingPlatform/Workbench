@@ -3,7 +3,7 @@
 
 (function() {
 	var variableDetails = angular.module('variableDetails', ['input', 'textArea', 'select', 'properties', 'methods', 'scales', 'utilities',
-		'variables', 'variableTypes', 'panel', 'debounce', 'expandCollapseHeading', 'multiSelect', 'range']),
+		'variables', 'variableTypes', 'panel', 'debounce', 'expandCollapseHeading', 'multiSelect', 'range', 'errorList']),
 		DELAY = 400,
 		DEBOUNCE_TIME = 500,
 		NUM_EDITABLE_FIELDS = 6;
@@ -13,7 +13,8 @@
 		function(variablesService, variableTypesService, propertiesService, methodsService, scalesService, serviceUtilities, formUtilities,
 			panelService, $timeout, debounce) {
 
-			var TREATMENT_FACTOR_ID = 9;
+			var TREATMENT_FACTOR_ID = 9,
+				LISTS_NOT_LOADED_TRANSLATION = 'validation.variable.someListsNotLoaded';
 
 			// Reset any errors we're showing the user
 			function resetErrors($scope) {
@@ -34,8 +35,6 @@
 
 					// Whether or not we want to display the expected range widget
 					$scope.showRangeWidget = false;
-					//Whether or not to display the error message that some lists were not loaded
-					$scope.someListsNotLoaded = false;
 
 					$scope.$watch('selectedVariable', function(variable) {
 						// Should always open in read-only view
@@ -61,34 +60,6 @@
 							$scope.model.metadata.editableFields.length < NUM_EDITABLE_FIELDS;
 					});
 
-					propertiesService.getProperties().then(function(properties) {
-						$scope.data.properties = properties;
-					}, function(response) {
-						$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
-						$scope.someListsNotLoaded = true;
-					});
-
-					methodsService.getMethods().then(function(methods) {
-						$scope.data.methods = methods;
-					}, function(response) {
-						$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
-						$scope.someListsNotLoaded = true;
-					});
-
-					scalesService.getScalesWithNonSystemDataTypes().then(function(scales) {
-						$scope.data.scales = scales;
-					}, function(response) {
-						$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
-						$scope.someListsNotLoaded = true;
-					});
-
-					variableTypesService.getTypes().then(function(types) {
-						$scope.data.types = types;
-					}, function(response) {
-						$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
-						$scope.someListsNotLoaded = true;
-					});
-
 					$scope.$watch('selectedItem', function(selected) {
 						$scope.variableId = selected && selected.id || null;
 					}, true);
@@ -109,6 +80,34 @@
 					$scope.editVariable = function(e) {
 						e.preventDefault();
 						resetErrors($scope);
+
+						propertiesService.getProperties().then(function(properties) {
+							$scope.data.properties = properties;
+						}, function(response) {
+							$scope.serverErrors = serviceUtilities.serverErrorHandler($scope.serverErrors, response);
+							$scope.serverErrors.someListsNotLoaded = [LISTS_NOT_LOADED_TRANSLATION];
+						});
+
+						methodsService.getMethods().then(function(methods) {
+							$scope.data.methods = methods;
+						}, function(response) {
+							$scope.serverErrors = serviceUtilities.serverErrorHandler($scope.serverErrors, response);
+							$scope.serverErrors.someListsNotLoaded = [LISTS_NOT_LOADED_TRANSLATION];
+						});
+
+						scalesService.getScalesWithNonSystemDataTypes().then(function(scales) {
+							$scope.data.scales = scales;
+						}, function(response) {
+							$scope.serverErrors = serviceUtilities.serverErrorHandler($scope.serverErrors, response);
+							$scope.serverErrors.someListsNotLoaded = [LISTS_NOT_LOADED_TRANSLATION];
+						});
+
+						variableTypesService.getTypes().then(function(types) {
+							$scope.data.types = types;
+						}, function(response) {
+							$scope.serverErrors = serviceUtilities.serverErrorHandler($scope.serverErrors, response);
+							$scope.serverErrors.someListsNotLoaded = [LISTS_NOT_LOADED_TRANSLATION];
+						});
 
 						$scope.editing = true;
 					};
@@ -177,7 +176,7 @@
 								$scope.variableName = model.name;
 							}, function(response) {
 								$scope.vdForm.$setUntouched();
-								$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+								$scope.serverErrors = serviceUtilities.serverErrorHandler($scope.serverErrors, response);
 								resetSubmissionState();
 							});
 						}

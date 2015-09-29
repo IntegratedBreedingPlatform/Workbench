@@ -3,13 +3,15 @@
 
 (function() {
 	var propertyDetailsModule = angular.module('propertyDetails', ['input', 'textArea', 'tagSelect', 'properties', 'utilities', 'panel',
-		'expandCollapseHeading']),
+		'expandCollapseHeading', 'errorList']),
 		DELAY = 400,
 		NUM_EDITABLE_FIELDS = 4;
 
 	propertyDetailsModule.directive('omPropertyDetails', ['propertiesService', 'serviceUtilities', 'formUtilities', 'panelService',
 		'$timeout', 'collectionUtilities',
 		function(propertiesService, serviceUtilities, formUtilities, panelService, $timeout, collectionUtilities) {
+
+			var LISTS_NOT_LOADED_TRANSLATION = 'validation.property.someListsNotLoaded';
 
 			// Reset any errors we're showing the user
 			function resetErrors($scope) {
@@ -20,10 +22,9 @@
 			function loadClasses($scope) {
 				propertiesService.getClasses().then(function(classes) {
 					$scope.data.classes = classes;
-					$scope.someListsNotLoaded = false;
 				}, function(response) {
-					$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
-					$scope.someListsNotLoaded = true;
+					$scope.serverErrors = serviceUtilities.serverErrorHandler($scope.serverErrors, response);
+					$scope.serverErrors.someListsNotLoaded = [LISTS_NOT_LOADED_TRANSLATION];
 				});
 			}
 
@@ -37,7 +38,6 @@
 					$scope.$watch('selectedProperty', function(property) {
 						// Should always open in read-only view
 						$scope.editing = false;
-						loadClasses($scope);
 						resetErrors($scope);
 
 						// If a confirmation handler was in effect, get rid of it
@@ -66,6 +66,8 @@
 					$scope.editProperty = function(e) {
 						e.preventDefault();
 						resetErrors($scope);
+
+						loadClasses($scope);
 
 						$scope.editing = true;
 					};
@@ -125,7 +127,7 @@
 							}, function(response) {
 								resetSubmissionState();
 								$scope.pdForm.$setUntouched();
-								$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+								$scope.serverErrors = serviceUtilities.serverErrorHandler($scope.serverErrors, response);
 							});
 						}
 					};

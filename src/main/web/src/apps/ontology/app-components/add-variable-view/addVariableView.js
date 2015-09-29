@@ -3,7 +3,7 @@
 
 (function() {
 	var app = angular.module('addVariable', ['multiSelect', 'input', 'textArea', 'select', 'variables', 'properties', 'variableTypes',
-		'methods', 'scales', 'variableState', 'utilities', 'range']);
+		'methods', 'scales', 'variableState', 'utilities', 'range', 'errorList']);
 
 	app.controller('AddVariableController', ['$scope', '$window', '$location', 'variablesService', 'variableTypesService',
 		'propertiesService', 'methodsService', 'scalesService', 'variableStateService', 'serviceUtilities', 'formUtilities',
@@ -14,10 +14,10 @@
 
 			var VARIABLES_PATH = '/variables',
 				TREATMENT_FACTOR_ID = 9,
+				LISTS_NOT_LOADED_TRANSLATION = 'validation.variable.someListsNotLoaded',
 				storedData;
 
 			$scope.serverErrors = {};
-			$scope.someListsNotLoaded = false;
 
 			// The select2 input needs to be able to call length on the arrays used for the options before the data is returned.
 			$scope.data = {
@@ -48,29 +48,29 @@
 				propertiesService.getProperties().then(function(properties) {
 					$scope.data.properties = properties;
 				}, function(response) {
-					$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
-					$scope.someListsNotLoaded = true;
+					$scope.serverErrors = serviceUtilities.serverErrorHandler($scope.serverErrors, response);
+					$scope.serverErrors.someListsNotLoaded = [LISTS_NOT_LOADED_TRANSLATION];
 				});
 
 				methodsService.getMethods().then(function(methods) {
 					$scope.data.methods = methods;
 				}, function(response) {
-					$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
-					$scope.someListsNotLoaded = true;
+					$scope.serverErrors = serviceUtilities.serverErrorHandler($scope.serverErrors, response);
+					$scope.serverErrors.someListsNotLoaded = [LISTS_NOT_LOADED_TRANSLATION];
 				});
 
 				scalesService.getScalesWithNonSystemDataTypes().then(function(scales) {
 					$scope.data.scales = scales;
 				}, function(response) {
-					$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
-					$scope.someListsNotLoaded = true;
+					$scope.serverErrors = serviceUtilities.serverErrorHandler($scope.serverErrors, response);
+					$scope.serverErrors.someListsNotLoaded = [LISTS_NOT_LOADED_TRANSLATION];
 				});
 
 				variableTypesService.getTypes().then(function(types) {
 					$scope.data.types = types;
 				}, function(response) {
-					$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
-					$scope.someListsNotLoaded = true;
+					$scope.serverErrors = serviceUtilities.serverErrorHandler($scope.serverErrors, response);
+					$scope.serverErrors.someListsNotLoaded = [LISTS_NOT_LOADED_TRANSLATION];
 				});
 			}
 
@@ -90,7 +90,7 @@
 						$location.path(VARIABLES_PATH);
 					}, function(response) {
 						$scope.avForm.$setUntouched();
-						$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+						$scope.serverErrors = serviceUtilities.serverErrorHandler($scope.serverErrors, response);
 						$scope.submitted = false;
 					});
 				}
