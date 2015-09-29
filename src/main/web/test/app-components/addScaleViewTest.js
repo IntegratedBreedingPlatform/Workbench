@@ -34,6 +34,8 @@ describe('Add Scale View', function() {
 			}
 		},
 
+		SOME_LISTS_NOT_LOADED = 'validation.scale.someListsNotLoaded',
+
 		types = [CATEGORICAL_TYPE, NUMERIC_TYPE, CHARACTER_TYPE],
 
 		dataTypesService = {
@@ -46,7 +48,9 @@ describe('Add Scale View', function() {
 		},
 
 		serviceUtilities = {
-			formatErrorsForDisplay: function() {}
+			serverErrorHandler: function() {
+				return {};
+			}
 		},
 
 		scalesService,
@@ -94,7 +98,7 @@ describe('Add Scale View', function() {
 		};
 
 		spyOn(scalesService, 'addScale').and.callThrough();
-		spyOn(serviceUtilities, 'formatErrorsForDisplay');
+		spyOn(serviceUtilities, 'serverErrorHandler').and.callThrough();
 		spyOn(dataTypesService, 'getNonSystemDataTypes').and.callThrough();
 
 		controller = $controller('AddScaleController', {
@@ -117,8 +121,8 @@ describe('Add Scale View', function() {
 	it('should display errors if data types were not retrieved successfully', function() {
 		deferredGetNonSystemDataTypes.reject();
 		scope.$apply();
-		expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
-		expect(scope.someListsNotLoaded).toBe(true);
+		expect(serviceUtilities.serverErrorHandler).toHaveBeenCalled();
+		expect(scope.serverErrors.someListsNotLoaded).toEqual([SOME_LISTS_NOT_LOADED]);
 	});
 
 	it('should hide the range and categories widgets by default', function() {
@@ -178,7 +182,7 @@ describe('Add Scale View', function() {
 			deferredAddScale.reject();
 			scope.$apply();
 
-			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
+			expect(serviceUtilities.serverErrorHandler).toHaveBeenCalled();
 			expect(location.path.calls.count()).toEqual(0);
 		});
 

@@ -70,7 +70,9 @@ describe('Add Variable View', function() {
 		},
 
 		serviceUtilities = {
-			formatErrorsForDisplay: function() { return {}; }
+			serverErrorHandler: function() {
+				return {};
+			}
 		},
 
 		formUtilities,
@@ -106,6 +108,8 @@ describe('Add Variable View', function() {
 			name: 'Trait',
 			description: 'Characteristics of a germplasm to be recorded during a study.'
 		}],
+
+		SOME_LISTS_NOT_LOADED = 'validation.variable.someListsNotLoaded',
 
 		deferredAddVariable,
 		deferredGetProperties,
@@ -190,7 +194,7 @@ describe('Add Variable View', function() {
 		spyOn(variableTypesService, 'getTypes').and.callThrough();
 
 		spyOn(location, 'path');
-		spyOn(serviceUtilities, 'formatErrorsForDisplay');
+		spyOn(serviceUtilities, 'serverErrorHandler').and.callThrough();
 	}));
 
 	describe('by default', function() {
@@ -290,8 +294,8 @@ describe('Add Variable View', function() {
 		it('should display errors if properties were not retrieved successfully', function() {
 			deferredGetProperties.reject();
 			scope.$apply();
-			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
-			expect(scope.someListsNotLoaded).toBe(true);
+			expect(serviceUtilities.serverErrorHandler).toHaveBeenCalled();
+			expect(scope.serverErrors.someListsNotLoaded).toEqual([SOME_LISTS_NOT_LOADED]);
 		});
 
 		it('should set the methods on the scope', function() {
@@ -303,8 +307,8 @@ describe('Add Variable View', function() {
 		it('should display errors if methods were not retrieved successfully', function() {
 			deferredGetMethods.reject();
 			scope.$apply();
-			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
-			expect(scope.someListsNotLoaded).toBe(true);
+			expect(serviceUtilities.serverErrorHandler).toHaveBeenCalled();
+			expect(scope.serverErrors.someListsNotLoaded).toEqual([SOME_LISTS_NOT_LOADED]);
 		});
 
 		it('should set the scales on the scope', function() {
@@ -316,8 +320,8 @@ describe('Add Variable View', function() {
 		it('should display errors if scales were not retrieved successfully', function() {
 			deferredGetScalesWithNonSystemDataTypes.reject();
 			scope.$apply();
-			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
-			expect(scope.someListsNotLoaded).toBe(true);
+			expect(serviceUtilities.serverErrorHandler).toHaveBeenCalled();
+			expect(scope.serverErrors.someListsNotLoaded).toEqual([SOME_LISTS_NOT_LOADED]);
 		});
 
 		it('should set the variable types on the scope', function() {
@@ -329,8 +333,8 @@ describe('Add Variable View', function() {
 		it('should display errors if variable types were not retrieved successfully', function() {
 			deferredGetVariablesTypes.reject();
 			scope.$apply();
-			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
-			expect(scope.someListsNotLoaded).toBe(true);
+			expect(serviceUtilities.serverErrorHandler).toHaveBeenCalled();
+			expect(scope.serverErrors.someListsNotLoaded).toEqual([SOME_LISTS_NOT_LOADED]);
 		});
 	});
 
@@ -361,7 +365,7 @@ describe('Add Variable View', function() {
 			deferredAddVariable.reject();
 			scope.$apply();
 
-			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
+			expect(serviceUtilities.serverErrorHandler).toHaveBeenCalled();
 			expect(location.path.calls.count()).toEqual(0);
 		});
 

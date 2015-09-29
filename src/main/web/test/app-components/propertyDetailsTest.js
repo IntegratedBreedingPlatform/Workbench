@@ -9,7 +9,9 @@ describe('Property details directive', function() {
 			hidePanel: function() {}
 		},
 		serviceUtilities = {
-			formatErrorsForDisplay: function() {}
+			serverErrorHandler: function() {
+				return {};
+			}
 		},
 		BLAST = {
 			id: 1,
@@ -19,6 +21,8 @@ describe('Property details directive', function() {
 			}
 		},
 		SITE_CONDITION = 'Site Condition',
+		SOME_LISTS_NOT_LOADED = 'validation.property.someListsNotLoaded',
+
 		propertiesService = {},
 		formUtilities,
 		scope,
@@ -78,7 +82,7 @@ describe('Property details directive', function() {
 		spyOn(propertiesService, 'getClasses').and.callThrough();
 		spyOn(propertiesService, 'updateProperty').and.callThrough();
 		spyOn(propertiesService, 'deleteProperty').and.callThrough();
-		spyOn(serviceUtilities, 'formatErrorsForDisplay');
+		spyOn(serviceUtilities, 'serverErrorHandler').and.callThrough();
 		spyOn(panelService, 'hidePanel');
 
 		compileDirective();
@@ -142,32 +146,36 @@ describe('Property details directive', function() {
 		});
 	});
 
-	describe('getting classes', function() {
-		it('should call the properties service to get all classes', function() {
-			expect(propertiesService.getClasses).toHaveBeenCalled();
-		});
-
-		it('should handle any errors if the retrieving classes was not successful', function() {
-			deferredGetClasses.reject();
-			scope.$apply();
-			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
-			expect(scope.someListsNotLoaded).toBe(true);
-		});
-
-		it('should set data.classes to the returned classes after a successful update', function() {
-			deferredGetClasses.resolve([SITE_CONDITION]);
-			scope.$apply();
-
-			expect(scope.data.classes).toEqual([SITE_CONDITION]);
-		});
-	});
-
 	describe('$scope.editProperty', function() {
 
 		it('should set editing to be true', function() {
 			scope.editing = false;
 			scope.editProperty(fakeEvent);
 			expect(scope.editing).toBe(true);
+		});
+
+		describe('getting classes', function() {
+			beforeEach(function() {
+				scope.editProperty(fakeEvent);
+			});
+
+			it('should call the properties service to get all classes', function() {
+				expect(propertiesService.getClasses).toHaveBeenCalled();
+			});
+
+			it('should handle any errors if the retrieving classes was not successful', function() {
+				deferredGetClasses.reject();
+				scope.$apply();
+				expect(serviceUtilities.serverErrorHandler).toHaveBeenCalled();
+				expect(scope.serverErrors.someListsNotLoaded).toEqual([SOME_LISTS_NOT_LOADED]);
+			});
+
+			it('should set data.classes to the returned classes after a successful update', function() {
+				deferredGetClasses.resolve([SITE_CONDITION]);
+				scope.$apply();
+
+				expect(scope.data.classes).toEqual([SITE_CONDITION]);
+			});
 		});
 	});
 
@@ -276,7 +284,7 @@ describe('Property details directive', function() {
 			deferredUpdateProperty.reject();
 			scope.$apply();
 
-			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
+			expect(serviceUtilities.serverErrorHandler).toHaveBeenCalled();
 		});
 
 		it('should set editing to false after a successful update', function() {
@@ -309,7 +317,7 @@ describe('Property details directive', function() {
 			scope.$apply();
 
 			expect(scope.pdForm.$setUntouched).toHaveBeenCalled();
-			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
+			expect(serviceUtilities.serverErrorHandler).toHaveBeenCalled();
 		});
 	});
 

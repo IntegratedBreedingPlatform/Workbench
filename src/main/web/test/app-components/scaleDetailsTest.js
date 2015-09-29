@@ -7,7 +7,9 @@ describe('Scale details directive', function() {
 		},
 
 		serviceUtilities = {
-			formatErrorsForDisplay: function() {},
+			serverErrorHandler: function() {
+				return {};
+			},
 			filterOutSystemDataTypes: function() {
 				return types;
 			}
@@ -65,6 +67,8 @@ describe('Scale details directive', function() {
 			description: 'Some text',
 			dataType: CHARACTER_TYPE
 		},
+
+		SOME_LISTS_NOT_LOADED = 'validation.scale.someListsNotLoaded',
 
 		types = [angular.copy(CATEGORICAL_TYPE), angular.copy(NUMERIC_TYPE), angular.copy(CHARACTER_TYPE)],
 
@@ -128,7 +132,7 @@ describe('Scale details directive', function() {
 		spyOn(scalesService, 'updateScale').and.callThrough();
 		spyOn(scalesService, 'deleteScale').and.callThrough();
 		spyOn(dataTypesService, 'getNonSystemDataTypes').and.callThrough();
-		spyOn(serviceUtilities, 'formatErrorsForDisplay');
+		spyOn(serviceUtilities, 'serverErrorHandler').and.callThrough();
 		spyOn(panelService, 'hidePanel');
 
 		compileDirective();
@@ -259,8 +263,8 @@ describe('Scale details directive', function() {
 			deferredGetNonSystemDataTypes.reject();
 			scope.$apply();
 
-			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
-			expect(scope.someListsNotLoaded).toBe(true);
+			expect(serviceUtilities.serverErrorHandler).toHaveBeenCalled();
+			expect(scope.serverErrors.someListsNotLoaded).toEqual([SOME_LISTS_NOT_LOADED]);
 		});
 	});
 
@@ -362,7 +366,7 @@ describe('Scale details directive', function() {
 			deferredUpdateScale.reject();
 			scope.$apply();
 
-			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
+			expect(serviceUtilities.serverErrorHandler).toHaveBeenCalled();
 		});
 
 		it('should set editing to false after a successful update', function() {
@@ -395,7 +399,7 @@ describe('Scale details directive', function() {
 			scope.$apply();
 
 			expect(scope.sdForm.$setUntouched).toHaveBeenCalled();
-			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
+			expect(serviceUtilities.serverErrorHandler).toHaveBeenCalled();
 		});
 	});
 
