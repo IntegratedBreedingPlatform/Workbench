@@ -3,13 +3,15 @@
 
 (function() {
 	var scaleDetailsModule = angular.module('scaleDetails', ['input', 'textArea', 'select', 'scales', 'dataTypes', 'utilities',
-		'categories', 'panel', 'range', 'expandCollapseHeading']),
+		'categories', 'panel', 'range', 'expandCollapseHeading', 'errorList']),
 		DELAY = 400,
 		NUM_EDITABLE_FIELDS = 3;
 
 	scaleDetailsModule.directive('omScaleDetails', ['scalesService', 'serviceUtilities', 'formUtilities', 'panelService',
 		'dataTypesService', '$timeout', 'collectionUtilities',
 		function(scalesService, serviceUtilities, formUtilities, panelService, dataTypesService, $timeout, collectionUtilities) {
+
+			var LISTS_NOT_LOADED_TRANSLATION = 'validation.scale.someListsNotLoaded';
 
 			// Reset any errors we're showing the user
 			function resetErrors($scope) {
@@ -22,7 +24,6 @@
 					$scope.editing = false;
 					$scope.showRangeWidget = false;
 					$scope.showCategoriesWidget = false;
-					$scope.someListsNotLoaded = false;
 
 					$scope.$watch('selectedScale', function(scale) {
 						// Should always open in read-only view
@@ -76,8 +77,8 @@
 						dataTypesService.getNonSystemDataTypes().then(function(types) {
 							$scope.types = types;
 						}, function(response) {
-							$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
-							$scope.someListsNotLoaded = true;
+							$scope.serverErrors = serviceUtilities.serverErrorHandler($scope.serverErrors, response);
+							$scope.serverErrors.someListsNotLoaded = [LISTS_NOT_LOADED_TRANSLATION];
 						});
 
 						$scope.editing = true;
@@ -136,7 +137,7 @@
 							}, function(response) {
 								resetSubmissionState();
 								$scope.sdForm.$setUntouched();
-								$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+								$scope.serverErrors = serviceUtilities.serverErrorHandler($scope.serverErrors, response);
 							});
 						}
 					};

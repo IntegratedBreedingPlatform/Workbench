@@ -19,7 +19,7 @@ describe('Filter Module', function() {
 		},
 
 		serviceUtilities = {
-			formatErrorsForDisplay: function() { return {}; }
+			serverErrorHandler: function() { return {}; }
 		},
 
 		fakeEvent = {
@@ -46,6 +46,8 @@ describe('Filter Module', function() {
 			id: 2,
 			name: 'Numeric'
 		},
+
+		SOME_LISTS_NOT_LOADED = 'validation.filter.someListsNotLoaded',
 
 		TODAY;
 
@@ -87,7 +89,7 @@ describe('Filter Module', function() {
 		TODAY.setHours(0, 0, 0, 0);
 
 		spyOn(panelService, 'showPanel').and.callThrough();
-		spyOn(serviceUtilities, 'formatErrorsForDisplay').and.callThrough();
+		spyOn(serviceUtilities, 'serverErrorHandler').and.callThrough();
 	}));
 
 	describe('omFilter', function() {
@@ -120,8 +122,8 @@ describe('Filter Module', function() {
 		it('should display errors if variable types were not retrieved successfully', function() {
 			deferredGetTypes.reject();
 			scope.$apply();
-			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
-			expect(isolateScope.someListsNotLoaded).toBe(true);
+			expect(serviceUtilities.serverErrorHandler).toHaveBeenCalled();
+			expect(isolateScope.serverErrors.someListsNotLoaded).toEqual([SOME_LISTS_NOT_LOADED]);
 		});
 
 		it('should set the scale data types on the scope', function() {
@@ -134,8 +136,8 @@ describe('Filter Module', function() {
 		it('should display errors if scale data types were not retrieved successfully', function() {
 			deferredGetNonSystemDataTypes.reject();
 			scope.$apply();
-			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
-			expect(isolateScope.someListsNotLoaded).toBe(true);
+			expect(serviceUtilities.serverErrorHandler).toHaveBeenCalled();
+			expect(isolateScope.serverErrors.someListsNotLoaded).toEqual([SOME_LISTS_NOT_LOADED]);
 		});
 
 		describe('$scope.addNewFilter', function() {

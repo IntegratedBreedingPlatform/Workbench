@@ -9,7 +9,9 @@ describe('Variable details directive', function() {
 			hidePanel: function() {}
 		},
 		serviceUtilities = {
-			formatErrorsForDisplay: function() {}
+			serverErrorHandler: function() {
+				return {};
+			}
 		},
 
 		PLANT_VIGOR = {
@@ -35,6 +37,8 @@ describe('Variable details directive', function() {
 			name: 'Trait',
 			description: 'Characteristics of a germplasm to be recorded during a study.'
 		}],
+
+		SOME_LISTS_NOT_LOADED = 'validation.variable.someListsNotLoaded',
 
 		propertiesService = {},
 		methodsService = {},
@@ -125,7 +129,7 @@ describe('Variable details directive', function() {
 		spyOn(variableTypesService, 'getTypes').and.callThrough();
 		spyOn(variablesService, 'updateVariable').and.callThrough();
 		spyOn(variablesService, 'deleteVariable').and.callThrough();
-		spyOn(serviceUtilities, 'formatErrorsForDisplay');
+		spyOn(serviceUtilities, 'serverErrorHandler').and.callThrough();
 		spyOn(panelService, 'hidePanel');
 
 		compileDirective();
@@ -212,86 +216,6 @@ describe('Variable details directive', function() {
 		});
 	});
 
-	describe('getting properties', function() {
-		it('should call the properties service to get all properties', function() {
-			expect(propertiesService.getProperties).toHaveBeenCalled();
-		});
-
-		it('should handle any errors if retrieving the properties was not successful', function() {
-			deferredGetProperties.reject();
-			scope.$apply();
-			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
-			expect(scope.someListsNotLoaded).toBe(true);
-		});
-
-		it('should set data.properties to the returned properties after a successful update', function() {
-			deferredGetProperties.resolve([PLANT_VIGOR]);
-			scope.$apply();
-
-			expect(scope.data.properties).toEqual([PLANT_VIGOR]);
-		});
-	});
-
-	describe('getting methods', function() {
-		it('should call the methods service to get all methods', function() {
-			expect(methodsService.getMethods).toHaveBeenCalled();
-		});
-
-		it('should handle any errors if retrieving the methods was not successful', function() {
-			deferredGetMethods.reject();
-			scope.$apply();
-			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
-			expect(scope.someListsNotLoaded).toBe(true);
-		});
-
-		it('should set data.methods to the returned methods after a successful update', function() {
-			deferredGetMethods.resolve([PLANT_VIGOR]);
-			scope.$apply();
-
-			expect(scope.data.methods).toEqual([PLANT_VIGOR]);
-		});
-	});
-
-	describe('getting scales', function() {
-		it('should call the scales service to get all scales', function() {
-			expect(scalesService.getScalesWithNonSystemDataTypes).toHaveBeenCalled();
-		});
-
-		it('should handle any errors if retrieving the scales was not successful', function() {
-			deferredGetScalesWithNonSystemDataTypes.reject();
-			scope.$apply();
-			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
-			expect(scope.someListsNotLoaded).toBe(true);
-		});
-
-		it('should set data.scales to the returned scales after a successful update', function() {
-			deferredGetScalesWithNonSystemDataTypes.resolve([PLANT_VIGOR]);
-			scope.$apply();
-
-			expect(scope.data.scales).toEqual([PLANT_VIGOR]);
-		});
-	});
-
-	describe('getting variable types', function() {
-		it('should call the variables service to get all variable types', function() {
-			expect(variableTypesService.getTypes).toHaveBeenCalled();
-		});
-
-		it('should handle any errors if retrieving the variable types was not successful', function() {
-			deferredGetTypes.reject();
-			scope.$apply();
-			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
-			expect(scope.someListsNotLoaded).toBe(true);
-		});
-
-		it('should set data.types to the returned variable types after a successful update', function() {
-			deferredGetTypes.resolve([1, 2]);
-			scope.$apply();
-
-			expect(scope.data.types).toEqual([1, 2]);
-		});
-	});
-
 	describe('$scope.showAlias', function() {
 
 		it('should return true when the alias is valued', function() {
@@ -344,6 +268,104 @@ describe('Variable details directive', function() {
 			scope.editVariable(fakeEvent);
 			expect(scope.editing).toBe(true);
 		});
+
+		describe('getting variable types', function() {
+
+			beforeEach(function() {
+				scope.editVariable(fakeEvent);
+			});
+
+			it('should call the variables service to get all variable types', function() {
+				expect(variableTypesService.getTypes).toHaveBeenCalled();
+			});
+
+			it('should handle any errors if retrieving the variable types was not successful', function() {
+				deferredGetTypes.reject();
+				scope.$apply();
+				expect(serviceUtilities.serverErrorHandler).toHaveBeenCalled();
+				expect(scope.serverErrors.someListsNotLoaded).toEqual([SOME_LISTS_NOT_LOADED]);
+			});
+
+			it('should set data.types to the returned variable types after a successful update', function() {
+				deferredGetTypes.resolve([1, 2]);
+				scope.$apply();
+
+				expect(scope.data.types).toEqual([1, 2]);
+			});
+		});
+
+		describe('getting properties', function() {
+			beforeEach(function() {
+				scope.editVariable(fakeEvent);
+			});
+
+			it('should call the properties service to get all properties', function() {
+				expect(propertiesService.getProperties).toHaveBeenCalled();
+			});
+
+			it('should handle any errors if retrieving the properties was not successful', function() {
+				deferredGetProperties.reject();
+				scope.$apply();
+				expect(serviceUtilities.serverErrorHandler).toHaveBeenCalled();
+				expect(scope.serverErrors.someListsNotLoaded).toEqual([SOME_LISTS_NOT_LOADED]);
+			});
+
+			it('should set data.properties to the returned properties after a successful update', function() {
+				deferredGetProperties.resolve([PLANT_VIGOR]);
+				scope.$apply();
+
+				expect(scope.data.properties).toEqual([PLANT_VIGOR]);
+			});
+		});
+
+		describe('getting methods', function() {
+			beforeEach(function() {
+				scope.editVariable(fakeEvent);
+			});
+
+			it('should call the methods service to get all methods', function() {
+				expect(methodsService.getMethods).toHaveBeenCalled();
+			});
+
+			it('should handle any errors if retrieving the methods was not successful', function() {
+				deferredGetMethods.reject();
+				scope.$apply();
+				expect(serviceUtilities.serverErrorHandler).toHaveBeenCalled();
+				expect(scope.serverErrors.someListsNotLoaded).toEqual([SOME_LISTS_NOT_LOADED]);
+			});
+
+			it('should set data.methods to the returned methods after a successful update', function() {
+				deferredGetMethods.resolve([PLANT_VIGOR]);
+				scope.$apply();
+
+				expect(scope.data.methods).toEqual([PLANT_VIGOR]);
+			});
+		});
+
+		describe('getting scales', function() {
+			beforeEach(function() {
+				scope.editVariable(fakeEvent);
+			});
+
+			it('should call the scales service to get all scales', function() {
+				expect(scalesService.getScalesWithNonSystemDataTypes).toHaveBeenCalled();
+			});
+
+			it('should handle any errors if retrieving the scales was not successful', function() {
+				deferredGetScalesWithNonSystemDataTypes.reject();
+				scope.$apply();
+				expect(serviceUtilities.serverErrorHandler).toHaveBeenCalled();
+				expect(scope.serverErrors.someListsNotLoaded).toEqual([SOME_LISTS_NOT_LOADED]);
+			});
+
+			it('should set data.scales to the returned scales after a successful update', function() {
+				deferredGetScalesWithNonSystemDataTypes.resolve([PLANT_VIGOR]);
+				scope.$apply();
+
+				expect(scope.data.scales).toEqual([PLANT_VIGOR]);
+			});
+		});
+
 	});
 
 	describe('$scope.cancel', function() {
@@ -467,7 +489,7 @@ describe('Variable details directive', function() {
 			deferredUpdateVariable.reject();
 			scope.$apply();
 
-			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
+			expect(serviceUtilities.serverErrorHandler).toHaveBeenCalled();
 		});
 
 		it('should set editing to false after a successful update', function() {

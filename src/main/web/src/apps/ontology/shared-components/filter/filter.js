@@ -3,10 +3,13 @@
 
 (function() {
 	var filterModule = angular.module('filter', ['panel', 'variableTypes', 'dataTypes', 'utilities', 'multiSelect', 'select',
-		'ui.bootstrap']);
+		'ui.bootstrap', 'errorList']);
 
 	filterModule.directive('omFilter', ['panelService', 'variableTypesService', 'serviceUtilities', 'dataTypesService',
 		function(panelService, variableTypesService, serviceUtilities, dataTypesService)  {
+
+			var LISTS_NOT_LOADED_TRANSLATION = 'validation.filter.someListsNotLoaded';
+
 			return {
 				controller: ['$scope', function($scope) {
 					$scope.smallPanelName = 'filters';
@@ -25,15 +28,15 @@
 					variableTypesService.getTypes().then(function(types) {
 						$scope.data.types = types;
 					}, function(response) {
-						$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
-						$scope.someListsNotLoaded = true;
+						$scope.serverErrors = serviceUtilities.serverErrorHandler($scope.serverErrors, response);
+						$scope.serverErrors.someListsNotLoaded = [LISTS_NOT_LOADED_TRANSLATION];
 					});
 
 					dataTypesService.getNonSystemDataTypes().then(function(types) {
 						$scope.data.scaleDataTypes = $scope.data.scaleDataTypes.concat(types);
 					}, function(response) {
-						$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
-						$scope.someListsNotLoaded = true;
+						$scope.serverErrors = serviceUtilities.serverErrorHandler($scope.serverErrors, response);
+						$scope.serverErrors.someListsNotLoaded = [LISTS_NOT_LOADED_TRANSLATION];
 					});
 
 					$scope.addNewFilter = function() {

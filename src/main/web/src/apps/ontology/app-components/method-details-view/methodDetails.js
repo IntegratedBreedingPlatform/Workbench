@@ -3,7 +3,7 @@
 
 (function() {
 	var methodDetailsModule = angular.module('methodDetails', ['input', 'textArea', 'methods', 'utilities', 'panel',
-		'expandCollapseHeading']),
+		'expandCollapseHeading', 'errorList']),
 		DELAY = 400,
 		NUM_EDITABLE_FIELDS = 2;
 

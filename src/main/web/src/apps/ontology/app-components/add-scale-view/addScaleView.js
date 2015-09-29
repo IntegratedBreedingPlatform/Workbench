@@ -3,7 +3,7 @@
 
 (function() {
 	var app = angular.module('addScale', ['scales', 'dataTypes', 'variableState', 'utilities', 'categories', 'range', 'ngMessages',
-		'input', 'textArea', 'select']);
+		'input', 'textArea', 'select', 'errorList']);
 
 	app.controller('AddScaleController', ['$scope', '$location', '$window', 'dataTypesService', 'scalesService', 'variableStateService',
 		'scaleFormService', 'serviceUtilities', 'formUtilities',
@@ -11,13 +11,13 @@
 			formUtilities) {
 
 			var ADD_VARIABLE_PATH = '/add/variable',
-				SCALES_PATH = '/scales';
+				SCALES_PATH = '/scales',
+				LISTS_NOT_LOADED_TRANSLATION = 'validation.scale.someListsNotLoaded';
 
 			$scope.scale = {};
 
 			// Reset server errors
 			$scope.serverErrors = {};
-			$scope.someListsNotLoaded = false;
 
 			$scope.showRangeWidget = false;
 			$scope.showCategoriesWidget = false;
@@ -25,8 +25,8 @@
 			dataTypesService.getNonSystemDataTypes().then(function(types) {
 				$scope.types = types;
 			}, function(response) {
-				$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
-				$scope.someListsNotLoaded = true;
+				$scope.serverErrors = serviceUtilities.serverErrorHandler($scope.serverErrors, response);
+				$scope.serverErrors.someListsNotLoaded = [LISTS_NOT_LOADED_TRANSLATION];
 			});
 
 			$scope.saveScale = function(e, scale) {
@@ -46,7 +46,7 @@
 						}
 					}, function(response) {
 						$scope.asForm.$setUntouched();
-						$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+						$scope.serverErrors = serviceUtilities.serverErrorHandler($scope.serverErrors, response);
 						$scope.submitted = false;
 					});
 				}

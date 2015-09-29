@@ -2,11 +2,7 @@
 
 	<h2 class="om-title">{{'addNew.method.title' | translate}}</h2>
 
-	<div ng-if="serverErrors.general" class="alert alert-danger" role="alert">
-		<ul>
-			<li ng-repeat="error in serverErrors.general">{{error}}</li>
-		</ul>
-	</div>
+	<om-error-list om-errors-already-translated="serverErrors.general"></om-error-list>
 
 	<form class="form-horizontal" name="amForm" ng-submit="saveMethod($event, method)" novalidate>
 		<div ng-class="formGroupClass('omName', 'name')">

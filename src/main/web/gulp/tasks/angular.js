@@ -22,17 +22,7 @@ var gulp = require('gulp'),
 	pixrem = require('gulp-pixrem'),
 	sass = require('gulp-sass'),
 
-	cache = require('gulp-cached'),
-	jshint = require('gulp-jshint'),
-	jshintStylish = require('jshint-stylish'),
-	lazypipe = require('lazypipe'),
-
-	hintAllTheThings;
-
-hintAllTheThings = lazypipe()
-	.pipe(cache, 'linting')
-	.pipe(jshint)
-	.pipe(jshint.reporter, jshintStylish);
+	jshint = require('gulp-jshint');
 
 function getFolders(dir) {
 	return fs.readdirSync(dir)
@@ -49,7 +39,11 @@ gulp.task('angularJs', function() {
 	var tasks = folders.map(function(folder) {
 
 		return gulp.src(path.join(srcRoot, folder, '**/*.js'))
-			.pipe(hintAllTheThings())
+			.pipe(jshint().on('error', function() {
+				// Ignore errors as they are already being printed to the console and we still
+				// want to create the built js.
+			}))
+			.pipe(jshint.reporter('jshint-stylish'))
 			.pipe(gulpif(argv.release, uglify()))
 			.pipe(concat(folder + '.js'))
 			.pipe(gulp.dest(destRoot + 'js'));

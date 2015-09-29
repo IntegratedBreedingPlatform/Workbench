@@ -2,7 +2,7 @@
 'use strict';
 
 (function() {
-	var app = angular.module('addProperty', ['tagSelect', 'input', 'textArea', 'properties', 'variableState', 'utilities']);
+	var app = angular.module('addProperty', ['tagSelect', 'input', 'textArea', 'properties', 'variableState', 'utilities', 'errorList']);
 
 	app.controller('AddPropertyController', ['$scope', '$location', '$window', 'propertiesService', 'variableStateService',
 		'propertyFormService', 'serviceUtilities', 'formUtilities',
@@ -10,7 +10,8 @@
 			formUtilities) {
 
 			var ADD_VARIABLE_PATH = '/add/variable',
-				PROPERTIES_PATH = '/properties';
+				PROPERTIES_PATH = '/properties',
+				LISTS_NOT_LOADED_TRANSLATION = 'validation.property.someListsNotLoaded';
 
 			$scope.property = {
 				classes: []
@@ -19,13 +20,12 @@
 
 			// Reset server errors
 			$scope.serverErrors = {};
-			$scope.someListsNotLoaded = false;
 
 			propertiesService.getClasses().then(function(classes) {
 				$scope.classes = classes;
 			}, function(response) {
-				$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
-				$scope.someListsNotLoaded = true;
+				$scope.serverErrors = serviceUtilities.serverErrorHandler($scope.serverErrors, response);
+				$scope.serverErrors.someListsNotLoaded = [LISTS_NOT_LOADED_TRANSLATION];
 			});
 
 			$scope.saveProperty = function(e, property) {
@@ -48,7 +48,7 @@
 						}
 					}, function(response) {
 						$scope.apForm.$setUntouched();
-						$scope.serverErrors = serviceUtilities.formatErrorsForDisplay(response);
+						$scope.serverErrors = serviceUtilities.serverErrorHandler($scope.serverErrors, response);
 						$scope.submitted = false;
 					});
 				}

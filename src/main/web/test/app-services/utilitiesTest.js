@@ -104,6 +104,45 @@ describe('Utilities Service', function() {
 			});
 		});
 
+		describe('serverErrorHandler', function() {
+
+			it('should return an error object if current errors is falsy', function() {
+				var message = 'Name must be shorter than 100 characters',
+					response = {
+						errors: [{
+							fieldNames: ['name'],
+							message: message
+						}]
+					},
+					result;
+
+				result = serviceUtilities.serverErrorHandler(null, response);
+				expect(result).toEqual({name: [message]});
+			});
+
+			it('should return a compiled error object including current errors if there are any present', function() {
+				var generalMessage = 'Something went wrong',
+					nameMessage = 'Name must be shorter than 100 characters',
+					currentErrors = {
+						general: [generalMessage]
+					},
+					errors = [{
+						fieldNames: ['name'],
+						message: nameMessage
+					}],
+					response = {
+						errors: errors
+					},
+					result;
+
+				result = serviceUtilities.serverErrorHandler(currentErrors, response);
+				expect(result).toEqual({
+					general: [generalMessage],
+					name: [nameMessage]
+				});
+			});
+		});
+
 	});
 
 	describe('Form Utilities', function() {
@@ -492,6 +531,75 @@ describe('Utilities Service', function() {
 					collection = [A, B, C];
 
 				expect(collectionUtilities.formatListForDisplay(collection)).toEqual('A, b, C');
+			});
+		});
+
+		describe('removeDupesFromArray', function() {
+
+			it('should remove duplicate entries from an array', function() {
+				var array = ['a', 'b', 'a', 'c', 'c', 'a', 'd'];
+
+				expect(collectionUtilities.removeDupesFromArray(array)).toEqual(['a', 'b', 'c', 'd']);
+			});
+		});
+
+		describe('mergeObjectsWithArrayProperties', function() {
+
+			it('should return the destination obect unmodified if source is an empty object', function() {
+				var source = {},
+					destination = {
+						messages: ['message one']
+					};
+
+				expect(collectionUtilities.mergeObjectsWithArrayProperties(source, destination)).toEqual(destination);
+			});
+
+			it('should add properties from the source object to the destination object if not present', function() {
+				var source = {
+						names: ['name']
+					},
+					destination = {
+						messages: ['message one']
+					},
+					expectedResult = {
+						messages: ['message one'],
+						names: ['name']
+					};
+
+				expect(collectionUtilities.mergeObjectsWithArrayProperties(source, destination)).toEqual(expectedResult);
+			});
+
+			it('should add items from the source object property to the destination object property if both are defined', function() {
+				var source = {
+						messages: ['message two']
+					},
+					destination = {
+						messages: ['message one']
+					},
+					expectedResult = {
+						messages: ['message one', 'message two']
+					};
+
+				expect(collectionUtilities.mergeObjectsWithArrayProperties(source, destination)).toEqual(expectedResult);
+			});
+
+			it('should only add properties from the source if they are directly on that instance', function() {
+				var destination = {
+						messages: ['message one']
+					},
+					expectedResult = {
+						messages: ['message one', 'message two']
+					},
+					source;
+
+				// Create object that has a property which is not directly on its own instance.
+				// The names property is not on its own instance, but messages is.
+				function ObjectWithProtoProp() {}
+				ObjectWithProtoProp.prototype = {names: ['names']};
+				source = new ObjectWithProtoProp();
+				source.messages = ['message two'];
+
+				expect(collectionUtilities.mergeObjectsWithArrayProperties(source, destination)).toEqual(expectedResult);
 			});
 		});
 	});

@@ -14,6 +14,8 @@ describe('Add Property View', function() {
 			classes: classes
 		},
 
+		SOME_LISTS_NOT_LOADED = 'validation.property.someListsNotLoaded',
+
 		propertiesService,
 
 		variableStateService = {
@@ -22,7 +24,9 @@ describe('Add Property View', function() {
 		},
 
 		serviceUtilities = {
-			formatErrorsForDisplay: function() {}
+			serverErrorHandler: function() {
+				return {};
+			}
 		},
 
 		formUtilities,
@@ -62,7 +66,7 @@ describe('Add Property View', function() {
 
 		spyOn(propertiesService, 'addProperty').and.callThrough();
 		spyOn(propertiesService, 'getClasses').and.callThrough();
-		spyOn(serviceUtilities, 'formatErrorsForDisplay');
+		spyOn(serviceUtilities, 'serverErrorHandler').and.callThrough();
 
 		controller = $controller('AddPropertyController', {
 			$scope: $rootScope,
@@ -92,8 +96,8 @@ describe('Add Property View', function() {
 		var errors = ['error'];
 		deferredGetClasses.reject(errors);
 		scope.$apply();
-		expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalledWith(errors);
-		expect(scope.someListsNotLoaded).toBe(true);
+		expect(serviceUtilities.serverErrorHandler).toHaveBeenCalledWith({}, errors);
+		expect(scope.serverErrors.someListsNotLoaded).toEqual([SOME_LISTS_NOT_LOADED]);
 	});
 
 	describe('$scope.saveProperty', function() {
@@ -125,7 +129,7 @@ describe('Add Property View', function() {
 			deferredAddProperty.reject();
 			scope.$apply();
 
-			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
+			expect(serviceUtilities.serverErrorHandler).toHaveBeenCalled();
 			expect(location.path.calls.count()).toEqual(0);
 		});
 
@@ -138,7 +142,7 @@ describe('Add Property View', function() {
 			scope.$apply();
 
 			expect(scope.apForm.$setUntouched).toHaveBeenCalled();
-			expect(serviceUtilities.formatErrorsForDisplay).toHaveBeenCalled();
+			expect(serviceUtilities.serverErrorHandler).toHaveBeenCalled();
 		});
 
 		it('should redirect to /properties after a successful save, if no variable is currently being edited', function() {
