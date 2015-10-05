@@ -12,7 +12,6 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
-import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.oms.StudyType;
@@ -77,14 +76,8 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 	}
 
 	public void generateInitialTreeNodes() {
-
-		List<FolderReference> root;
-		try {
-			root = this.studyDataManager.getRootFolders(this.project.getUniqueID());
-			this.view.generateTopListOfTree(root);
-		} catch (MiddlewareQueryException e) {
-			NurseryListPreviewPresenter.LOG.error(e.getMessage(), e);
-		}
+		List<Reference> root = this.studyDataManager.getRootFolders(this.project.getUniqueID());
+		this.view.generateTopListOfTree(root);
 	}
 
 
@@ -99,6 +92,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 		// No values are required to be initialized for this layout
 	}
 
+	// FIXME - Performance problem if such checking is done per tree node. The query that retrieves tree metadata should have all the information already.
 	public boolean isFolder(Integer value) {
 		try {
 			boolean isStudy = this.studyDataManager.isStudy(value);

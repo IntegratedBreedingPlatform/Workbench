@@ -186,7 +186,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 		tr.addContainerProperty("Title", String.class, "title");
 		tr.addContainerProperty("Objective", String.class, "objective");
 
-		List<FolderReference> folderRef = null;
+		List<Reference> folderRef = null;
 
 		try {
 			folderRef = studyDataManager.getRootFolders(this.currentProject.getUniqueID());
@@ -198,7 +198,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 			}
 		}
 
-		for (FolderReference fr : folderRef) {
+		for (Reference fr : folderRef) {
 
 			Study study = null;
 			Boolean isStudy = false;

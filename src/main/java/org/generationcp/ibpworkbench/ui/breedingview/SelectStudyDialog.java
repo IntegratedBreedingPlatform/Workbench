@@ -59,7 +59,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		public void itemClick(ItemClickEvent event) {
 
 			Reference r = (Reference) event.getItemId();
-			boolean isStudy = SelectStudyDialog.this.isStudy(r);
+			boolean isStudy = r.isStudy();
 
 			if (event.isDoubleClick() && isStudy) {
 				SelectStudyDialog.this.openStudy(r);
@@ -232,7 +232,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		tr.addContainerProperty("Title", String.class, "title");
 		tr.addContainerProperty("Objective", String.class, "description");
 
-		List<FolderReference> folderRef = null;
+		List<Reference> folderRef = null;
 
 		try {
 			folderRef = this.getStudyDataManager().getRootFolders(this.currentProject.getUniqueID());
@@ -244,11 +244,11 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 			}
 		}
 
-		for (FolderReference fr : folderRef) {
+		for (Reference fr : folderRef) {
 
 			Study study = null;
 			try {
-				if (this.isStudy(fr)) {
+				if (fr.isStudy()) {
 					study = this.getStudyDataManager().getStudy(fr.getId());
 				}
 			} catch (MiddlewareException e) {
@@ -281,19 +281,6 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		tr.addListener(new StudyTreeExpandAction(this, tr));
 		tr.addListener(new TreeTableItemClickListener(tr));
 		return tr;
-	}
-
-	protected boolean isStudy(Reference r) {
-		if (r instanceof StudyReference) {
-			return true;
-		}
-
-		try {
-			return this.getStudyDataManager().isStudy(r.getId());
-		} catch (MiddlewareQueryException e) {
-			SelectStudyDialog.LOG.error(e.getMessage(), e);
-			return false;
-		}
 	}
 
 	protected void openStudy(Reference r) {
@@ -354,7 +341,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 			cells[1] = s != null ? s.getTitle() : "";
 			cells[2] = s != null ? s.getObjective() : "";
 
-			if (r instanceof FolderReference) {
+			if (r.isFolder()) {
 				tr.addFolderReferenceNode(cells, (FolderReference) r);
 			} else {
 				tr.addItem(cells, r);
