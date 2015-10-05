@@ -33,6 +33,7 @@ import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.api.OntologyDataManager;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,6 +50,9 @@ import com.vaadin.ui.Window;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UploadBreedingViewOutputActionTest {
+
+	private static final int LOCATION_ID1 = 1;
+	private static final int LOCATION_ID2 = 1;
 
 	private static final int ASI_TERMID = 1234;
 	private static final int PLT_HEIGHT_TERMID = 7653;
@@ -234,6 +238,68 @@ public class UploadBreedingViewOutputActionTest {
 
 	}
 
+	@Test
+	public void testProcessTheUploadedFileOutlierFileNotAvailable() throws BreedingViewImportException {
+
+		Mockito.when(this.bmsOutputParser.getMeansFile()).thenReturn(Mockito.mock(File.class));
+		Mockito.when(this.bmsOutputParser.getSummaryStatsFile()).thenReturn(Mockito.mock(File.class));
+		Mockito.when(this.bmsOutputParser.getOutlierFile()).thenReturn(null);
+
+		this.uploadBreedingViewOutputAction.processTheUploadedFile(this.event, TEST_STUDY_ID,
+				this.fileUploadBreedingViewOutputWindow.getProject());
+
+		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importMeansData(Mockito.any(File.class), Mockito.anyInt(),
+				Mockito.anyMap());
+		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importSummaryStatsData(Mockito.any(File.class), Mockito.anyInt(),
+				Mockito.anyMap());
+		Mockito.verify(this.breedingViewImportService, Mockito.times(0)).importOutlierData(Mockito.any(File.class), Mockito.anyInt(),
+				Mockito.anyMap());
+
+		Mockito.verify(this.messageSource).getMessage(Message.BV_UPLOAD_SUCCESSFUL_HEADER);
+		Mockito.verify(this.parentWindow).removeWindow(Mockito.any(Window.class));
+	}
+
+	@Test
+	public void testProcessTheUploadedFileFailed() throws BreedingViewImportException {
+
+		Mockito.when(this.bmsOutputParser.getMeansFile()).thenReturn(Mockito.mock(File.class));
+		Mockito.when(this.bmsOutputParser.getSummaryStatsFile()).thenReturn(Mockito.mock(File.class));
+		Mockito.when(this.bmsOutputParser.getOutlierFile()).thenReturn(Mockito.mock(File.class));
+
+		Mockito.doThrow(new BreedingViewImportException()).when(this.breedingViewImportService)
+				.importMeansData(Mockito.any(File.class), Mockito.anyInt(), Mockito.anyMap());
+
+		this.uploadBreedingViewOutputAction.processTheUploadedFile(this.event, TEST_STUDY_ID,
+				this.fileUploadBreedingViewOutputWindow.getProject());
+
+		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importMeansData(Mockito.any(File.class), Mockito.anyInt(),
+				Mockito.anyMap());
+		Mockito.verify(this.breedingViewImportService, Mockito.times(0)).importSummaryStatsData(Mockito.any(File.class), Mockito.anyInt(),
+				Mockito.anyMap());
+		Mockito.verify(this.breedingViewImportService, Mockito.times(0)).importOutlierData(Mockito.any(File.class), Mockito.anyInt(),
+				Mockito.anyMap());
+
+		Mockito.verify(this.messageSource).getMessage(Message.BV_UPLOAD_ERROR_HEADER);
+		Mockito.verify(this.messageSource).getMessage(Message.BV_UPLOAD_ERROR_CANNOT_UPLOAD_MEANS);
+
+	}
+
+	@Test
+	public void testGetLocationIdsBasedOnInformationFromMeansDataFile() throws IOException {
+
+		Mockito.when(this.bmsOutputParser.extractEnvironmentInfoFromFile()).thenReturn(this.createEnvironmentInfo());
+		Mockito.when(this.studyDataManager.getDataSetsByType(TEST_STUDY_ID, DataSetType.MEANS_DATA)).thenReturn(this.createDataSetList());
+		Mockito.when(this.studyDataManager.getTrialEnvironmentsInDataset(TEST_MEANS_DATASET_ID)).thenReturn(this.createTrialEnvironments());
+
+		List<Integer> locationIds =
+				this.uploadBreedingViewOutputAction.getLocationIdsBasedOnInformationFromMeansDataFile(TEST_STUDY_ID,
+						Mockito.mock(File.class));
+
+		Assert.assertEquals("The test means data has only one trial instance", 1, locationIds.size());
+		Assert.assertEquals(LOCATION_ID1, locationIds.get(0).intValue());
+
+	}
+
 	private Project createProject() {
 		Project project = new Project();
 		project.setProjectId(TEST_PROJECT_ID);
@@ -243,11 +309,18 @@ public class UploadBreedingViewOutputActionTest {
 	private TrialEnvironments createTrialEnvironments() {
 
 		TrialEnvironments trialEnvironments = new TrialEnvironments();
+
 		VariableList variableList = new VariableList();
 		variableList.add(this.createVariable(TermId.TRIAL_INSTANCE_FACTOR.getId(), "TRIAL_INSTANCE", "1"));
 
-		TrialEnvironment trialEnvironment = new TrialEnvironment(1, variableList);
-		trialEnvironments.add(trialEnvironment);
+		TrialEnvironment trialEnvironment1 = new TrialEnvironment(LOCATION_ID1, variableList);
+		trialEnvironments.add(trialEnvironment1);
+
+		VariableList variableList2 = new VariableList();
+		variableList2.add(this.createVariable(TermId.TRIAL_INSTANCE_FACTOR.getId(), "TRIAL_INSTANCE", "2"));
+
+		TrialEnvironment trialEnvironment2 = new TrialEnvironment(LOCATION_ID2, variableList);
+		trialEnvironments.add(trialEnvironment2);
 
 		return trialEnvironments;
 	}

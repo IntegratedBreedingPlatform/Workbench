@@ -213,8 +213,6 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 	public void processTheUploadedFile(ClickEvent event, int studyId, Project project) {
 
-		StringBuilder importErrorMessage = new StringBuilder();
-
 		Map<String, String> localNameToAliasMap = this.generateNameAliasMap(studyId);
 
 		try {
@@ -236,7 +234,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 			UploadBreedingViewOutputAction.LOG.error(e.getMessage(), e);
 
 			MessageNotifier.showError(this.window.getParent(), this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_HEADER),
-					importErrorMessage.toString());
+					this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_CANNOT_UPLOAD_MEANS));
 
 		}
 
