@@ -2,212 +2,313 @@
 package org.generationcp.ibpworkbench.actions;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.generationcp.commons.exceptions.BreedingViewImportException;
-import org.generationcp.commons.hibernate.ManagerFactoryProvider;
-import org.generationcp.commons.service.impl.BreedingViewImportServiceImpl;
+import org.generationcp.commons.service.BreedingViewImportService;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.BMSOutputParser;
+import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.BMSOutputParser.ZipFileInvalidContentException;
 import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow;
 import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow.CustomFileFactory;
 import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow.CustomUploadField;
+import org.generationcp.middleware.domain.dms.DMSVariableType;
+import org.generationcp.middleware.domain.dms.DataSet;
+import org.generationcp.middleware.domain.dms.DataSetType;
+import org.generationcp.middleware.domain.dms.StandardVariable;
+import org.generationcp.middleware.domain.dms.TrialEnvironment;
+import org.generationcp.middleware.domain.dms.TrialEnvironments;
+import org.generationcp.middleware.domain.dms.Variable;
+import org.generationcp.middleware.domain.dms.VariableList;
+import org.generationcp.middleware.domain.dms.VariableTypeList;
+import org.generationcp.middleware.domain.oms.TermId;
+import org.generationcp.middleware.manager.api.OntologyDataManager;
+import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
 
+import com.vaadin.Application;
 import com.vaadin.data.Validator;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Window;
 
+@RunWith(MockitoJUnitRunner.class)
 public class UploadBreedingViewOutputActionTest {
 
+	private static final int ASI_TERMID = 1234;
+	private static final int PLT_HEIGHT_TERMID = 7653;
+	private static final int TWG_TERMID = 4567;
+
+	private static final int TEST_STUDY_ID = 2;
+	private static final long TEST_PROJECT_ID = 1L;
+	private static final int TEST_MEANS_DATASET_ID = 3;
+
 	@Mock
-	private FileUploadBreedingViewOutputWindow window;
+	private FileUploadBreedingViewOutputWindow fileUploadBreedingViewOutputWindow;
 
 	@Mock
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Mock
-	private ManagerFactoryProvider managerFactoryProvider;
+	private CustomUploadField uploadZip;
 
 	@Mock
-	private CustomUploadField uploadZip;
+	private File zipFile;
+
+	@Mock
+	private CustomFileFactory customFileFactory;
+
+	@Mock
+	private BMSOutputParser bmsOutputParser;
 
 	@Mock
 	private ClickEvent event;
 
 	@Mock
-	BreedingViewImportServiceImpl breedingViewImportService;
+	private Window window;
+
+	@Mock
+	private BreedingViewImportService breedingViewImportService;
+
+	@Mock
+	private StudyDataManager studyDataManager;
+
+	@Mock
+	private OntologyDataManager ontologyDataManager;
+
+	@Mock
+	private Component component;
+
+	@Mock
+	private Window parentWindow;
+
+	@Mock
+	private Application application;
 
 	@InjectMocks
-	UploadBreedingViewOutputAction uploadBreedingViewOutputAction = Mockito.spy(new UploadBreedingViewOutputAction());
+	private UploadBreedingViewOutputAction uploadBreedingViewOutputAction = new UploadBreedingViewOutputAction();
 
 	@Before
 	public void setUp() {
 
-		MockitoAnnotations.initMocks(this);
+		Project project = this.createProject();
 
-		Mockito.doReturn(this.breedingViewImportService).when(this.uploadBreedingViewOutputAction).getBreedingViewImportService();
-		Mockito.doReturn(this.uploadZip).when(this.window).getUploadZip();
+		Mockito.when(this.fileUploadBreedingViewOutputWindow.getProject()).thenReturn(project);
+		Mockito.when(this.fileUploadBreedingViewOutputWindow.getStudyId()).thenReturn(TEST_STUDY_ID);
+		Mockito.when(this.fileUploadBreedingViewOutputWindow.getUploadZip()).thenReturn(this.uploadZip);
+		Mockito.when(this.fileUploadBreedingViewOutputWindow.getParent()).thenReturn(this.window);
+		Mockito.when(this.event.getComponent()).thenReturn(this.component);
+		Mockito.when(this.component.getWindow()).thenReturn(this.window);
+		Mockito.when(this.window.getParent()).thenReturn(this.parentWindow);
+		Mockito.when(this.component.getApplication()).thenReturn(this.application);
+		Mockito.when(this.application.getMainWindow()).thenReturn(this.window);
 
-		Mockito.doNothing().when(this.uploadBreedingViewOutputAction).showError(Matchers.anyString(), Matchers.anyString());
-		Mockito.doNothing().when(this.uploadBreedingViewOutputAction).showMessage(Matchers.anyString(), Matchers.anyString());
-		Mockito.doNothing().when(this.uploadBreedingViewOutputAction).closeWindow(this.event);
-		Mockito.doNothing().when(this.uploadBreedingViewOutputAction).deleteZipFile();
+		Mockito.when(this.studyDataManager.getAllStudyVariates(TEST_STUDY_ID)).thenReturn(this.createVariateVariableList());
 
 	}
 
 	@Test
-	public void testUploadInvalidFileOrNoFileSelected() {
+	public void testButtonClickUploadedZipIsInvalidFileOrNoFileSelected() {
 
 		Mockito.doThrow(new Validator.InvalidValueException("NOT_VALID")).when(this.uploadZip).validate();
 
 		this.uploadBreedingViewOutputAction.buttonClick(this.event);
 
-		Mockito.verify(this.uploadBreedingViewOutputAction, Mockito.times(1)).showError(Matchers.anyString(), Matchers.anyString());
-	}
-
-	@Test
-	public void testUploadZipHasNoContent() throws URISyntaxException {
-
-		File zipFile = new File(ClassLoader.getSystemClassLoader().getResource("zipToExtractNoContent.zip").toURI());
-		CustomFileFactory factory = Mockito.mock(CustomFileFactory.class);
-
-		Mockito.doReturn(true).when(this.uploadZip).hasFileSelected();
-		Mockito.doReturn(true).when(this.uploadZip).isValid();
-		Mockito.doReturn(factory).when(this.uploadZip).getFileFactory();
-		Mockito.doReturn(zipFile).when(factory).getFile();
-
-		this.uploadBreedingViewOutputAction.buttonClick(this.event);
-
-		Mockito.verify(this.uploadBreedingViewOutputAction, Mockito.times(1)).showError(Matchers.anyString(), Matchers.anyString());
-	}
-
-	@Test
-	public void testUploadZipOutputZipFileDoesNotMatchTheTargetProjectAndStudy() throws URISyntaxException, BreedingViewImportException {
-
-		File zipFile = new File(ClassLoader.getSystemClassLoader().getResource("BMSOutput.zip").toURI());
-		CustomFileFactory factory = Mockito.mock(CustomFileFactory.class);
-
-		Mockito.doReturn(true).when(this.uploadZip).hasFileSelected();
-		Mockito.doReturn(true).when(this.uploadZip).isValid();
-
-		Mockito.doReturn(factory).when(this.uploadZip).getFileFactory();
-		Mockito.doReturn(zipFile).when(factory).getFile();
-		Mockito.doReturn(this.generateInvalidBMSInformation()).when(this.uploadBreedingViewOutputAction).parseTxt(Matchers.any(File.class));
-
-		this.uploadBreedingViewOutputAction.setProject(this.createProject());
-		this.uploadBreedingViewOutputAction.setStudyId(-23);
-
-		String uploadDirectory = ClassLoader.getSystemResource("").getPath();
-		this.uploadBreedingViewOutputAction.setUploadDirectory(uploadDirectory);
-		this.uploadBreedingViewOutputAction.buttonClick(this.event);
-
-		Mockito.verify(this.uploadBreedingViewOutputAction, Mockito.times(1)).showError(Matchers.anyString(), Matchers.anyString());
+		Mockito.verify(this.messageSource).getMessage(Message.BV_UPLOAD_ERROR_INVALID_FORMAT);
 
 	}
 
 	@Test
-	public void testUploadZipHasValidContentWithDefaultNameToAliasMap() throws URISyntaxException, BreedingViewImportException {
+	public void testButtonClickUploadZipHasNoContent() throws URISyntaxException, ZipFileInvalidContentException {
 
-		File zipFile = new File(ClassLoader.getSystemClassLoader().getResource("BMSOutput.zip").toURI());
-		CustomFileFactory factory = Mockito.mock(CustomFileFactory.class);
+		Mockito.when(this.uploadZip.hasFileSelected()).thenReturn(true);
+		Mockito.when(this.uploadZip.isValid()).thenReturn(true);
+		Mockito.when(this.uploadZip.getFileFactory()).thenReturn(this.customFileFactory);
+		Mockito.when(this.customFileFactory.getFile()).thenReturn(this.zipFile);
+		Mockito.when(this.bmsOutputParser.parseZipFile(this.zipFile)).thenThrow(new ZipFileInvalidContentException());
 
-		Mockito.doReturn(true).when(this.uploadZip).hasFileSelected();
-		Mockito.doReturn(true).when(this.uploadZip).isValid();
-
-		Mockito.doReturn(factory).when(this.uploadZip).getFileFactory();
-		Mockito.doReturn(zipFile).when(factory).getFile();
-		Mockito.doReturn(this.generateBMSInformation()).when(this.uploadBreedingViewOutputAction).parseTxt(Matchers.any(File.class));
-
-		this.uploadBreedingViewOutputAction.setProject(this.createProject());
-		this.uploadBreedingViewOutputAction.setStudyId(-23);
-
-		String uploadDirectory = ClassLoader.getSystemResource("").getPath();
-		this.uploadBreedingViewOutputAction.setUploadDirectory(uploadDirectory);
 		this.uploadBreedingViewOutputAction.buttonClick(this.event);
 
-		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importMeansData(Matchers.any(File.class), Matchers.anyInt());
-		Mockito.verify(this.breedingViewImportService, Mockito.times(1))
-				.importSummaryStatsData(Matchers.any(File.class), Matchers.anyInt());
-		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importOutlierData(Matchers.any(File.class), Matchers.anyInt());
-		Mockito.verify(this.uploadBreedingViewOutputAction, Mockito.times(1)).showMessage(Matchers.anyString(), Matchers.anyString());
-		Mockito.verify(this.uploadBreedingViewOutputAction, Mockito.times(1)).closeWindow(this.event);
-		Mockito.verify(this.uploadBreedingViewOutputAction, Mockito.times(1)).cleanUp();
+		Mockito.verify(this.messageSource).getMessage(Message.BV_UPLOAD_ERROR_INVALID_CONTENT);
+
 	}
 
 	@Test
-	public void testUploadZipHasValidContentWithSpecifiedNameToAliasMap() throws URISyntaxException, BreedingViewImportException {
+	public void testButtonClickUploadZipOutputZipFileDoesNotMatchTheTargetProjectAndStudy() throws URISyntaxException,
+			BreedingViewImportException, ZipFileInvalidContentException {
 
-		File zipFile = new File(ClassLoader.getSystemClassLoader().getResource("BMSOutput.zip").toURI());
-		CustomFileFactory factory = Mockito.mock(CustomFileFactory.class);
+		Mockito.when(this.fileUploadBreedingViewOutputWindow.getStudyId()).thenReturn(55);
+		Mockito.when(this.uploadZip.hasFileSelected()).thenReturn(true);
+		Mockito.when(this.uploadZip.isValid()).thenReturn(true);
+		Mockito.when(this.uploadZip.getFileFactory()).thenReturn(this.customFileFactory);
+		Mockito.when(this.customFileFactory.getFile()).thenReturn(this.zipFile);
 
-		Mockito.doReturn(true).when(this.uploadZip).hasFileSelected();
-		Mockito.doReturn(true).when(this.uploadZip).isValid();
+		Map<String, String> bmsInformation = this.createBmsInformationMap();
+		bmsInformation.put(BMSOutputParser.WORKBENCH_PROJECT_ID_INFO, "99");
+		Mockito.when(this.bmsOutputParser.parseZipFile(this.zipFile)).thenReturn(bmsInformation);
 
-		Mockito.doReturn(factory).when(this.uploadZip).getFileFactory();
-		Mockito.doReturn(zipFile).when(factory).getFile();
-		Mockito.doReturn(this.generateBMSInformation()).when(this.uploadBreedingViewOutputAction).parseTxt(Matchers.any(File.class));
-		Mockito.doReturn(this.generateLocalNameToAliasMap()).when(this.uploadBreedingViewOutputAction).generateNameAliasMap();
+		ClassLoader.getSystemResource("").getPath();
 
-		this.uploadBreedingViewOutputAction.setProject(this.createProject());
-		this.uploadBreedingViewOutputAction.setStudyId(-23);
-
-		String uploadDirectory = ClassLoader.getSystemResource("").getPath();
-		this.uploadBreedingViewOutputAction.setUploadDirectory(uploadDirectory);
 		this.uploadBreedingViewOutputAction.buttonClick(this.event);
 
-		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importMeansData(Matchers.any(File.class), Matchers.anyInt(),
-				Matchers.anyMap());
-		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importSummaryStatsData(Matchers.any(File.class),
-				Matchers.anyInt(), Matchers.anyMap());
-		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importOutlierData(Matchers.any(File.class), Matchers.anyInt(),
-				Matchers.anyMap());
-		Mockito.verify(this.uploadBreedingViewOutputAction, Mockito.times(1)).showMessage(Matchers.anyString(), Matchers.anyString());
-		Mockito.verify(this.uploadBreedingViewOutputAction, Mockito.times(1)).closeWindow(this.event);
-		Mockito.verify(this.uploadBreedingViewOutputAction, Mockito.times(1)).cleanUp();
+		Mockito.verify(this.messageSource).getMessage(Message.BV_UPLOAD_ERROR_NOT_COMPATIBLE);
+
 	}
 
-	private Map<String, String> generateBMSInformation() {
-		Map<String, String> map = new HashMap<>();
-		map.put("InputDataSetId", "-25");
-		map.put("OutputDataSetId", "-26");
-		map.put("StudyId", "-23");
-		map.put("WorkbenchProjectId", "12");
-		return map;
+	@Test
+	public void testButtonClickUploadSuccessful() throws URISyntaxException, BreedingViewImportException, ZipFileInvalidContentException,
+			IOException {
+
+		Mockito.when(this.uploadZip.hasFileSelected()).thenReturn(true);
+		Mockito.when(this.uploadZip.isValid()).thenReturn(true);
+		Mockito.when(this.uploadZip.getFileFactory()).thenReturn(this.customFileFactory);
+		Mockito.when(this.customFileFactory.getFile()).thenReturn(this.zipFile);
+
+		Map<String, String> bmsInformation = this.createBmsInformationMap();
+		Mockito.when(this.bmsOutputParser.parseZipFile(this.zipFile)).thenReturn(bmsInformation);
+		Mockito.when(this.bmsOutputParser.extractEnvironmentInfoFromFile()).thenReturn(this.createEnvironmentInfo());
+		Mockito.when(this.bmsOutputParser.getMeansFile()).thenReturn(Mockito.mock(File.class));
+		Mockito.when(this.bmsOutputParser.getSummaryStatsFile()).thenReturn(Mockito.mock(File.class));
+		Mockito.when(this.bmsOutputParser.getOutlierFile()).thenReturn(Mockito.mock(File.class));
+
+		Mockito.when(this.studyDataManager.getDataSetsByType(TEST_STUDY_ID, DataSetType.MEANS_DATA)).thenReturn(this.createDataSetList());
+		Mockito.when(this.studyDataManager.getTrialEnvironmentsInDataset(TEST_MEANS_DATASET_ID)).thenReturn(this.createTrialEnvironments());
+
+		this.uploadBreedingViewOutputAction.buttonClick(this.event);
+
+		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importMeansData(Mockito.any(File.class), Mockito.anyInt(),
+				Mockito.anyMap());
+		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importSummaryStatsData(Mockito.any(File.class), Mockito.anyInt(),
+				Mockito.anyMap());
+		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importOutlierData(Mockito.any(File.class), Mockito.anyInt(),
+				Mockito.anyMap());
+
+		Mockito.verify(this.messageSource).getMessage(Message.BV_UPLOAD_SUCCESSFUL_HEADER);
+		Mockito.verify(this.parentWindow).removeWindow(Mockito.any(Window.class));
+
 	}
 
-	private Map<String, String> generateInvalidBMSInformation() {
-		Map<String, String> map = new HashMap<>();
-		map.put("InputDataSetId", "-25");
-		map.put("OutputDataSetId", "-26");
-		map.put("StudyId", "999");
-		map.put("WorkbenchProjectId", "999");
-		return map;
+	@Test
+	public void testButtonClickMeansDataAlreadyExists() throws ZipFileInvalidContentException, IOException {
+
+		Mockito.when(this.uploadZip.hasFileSelected()).thenReturn(true);
+		Mockito.when(this.uploadZip.isValid()).thenReturn(true);
+		Mockito.when(this.uploadZip.getFileFactory()).thenReturn(this.customFileFactory);
+		Mockito.when(this.customFileFactory.getFile()).thenReturn(this.zipFile);
+
+		Map<String, String> bmsInformation = this.createBmsInformationMap();
+		Mockito.when(this.bmsOutputParser.parseZipFile(this.zipFile)).thenReturn(bmsInformation);
+		Mockito.when(this.bmsOutputParser.extractEnvironmentInfoFromFile()).thenReturn(this.createEnvironmentInfo());
+		Mockito.when(this.bmsOutputParser.getMeansFile()).thenReturn(Mockito.mock(File.class));
+		Mockito.when(this.bmsOutputParser.getSummaryStatsFile()).thenReturn(Mockito.mock(File.class));
+		Mockito.when(this.bmsOutputParser.getOutlierFile()).thenReturn(Mockito.mock(File.class));
+
+		Mockito.when(this.studyDataManager.getDataSetsByType(TEST_STUDY_ID, DataSetType.MEANS_DATA)).thenReturn(this.createDataSetList());
+		Mockito.when(this.studyDataManager.getTrialEnvironmentsInDataset(TEST_MEANS_DATASET_ID)).thenReturn(this.createTrialEnvironments());
+		Mockito.when(
+				this.studyDataManager.checkIfAnyLocationIDsExistInExperiments(Mockito.anyInt(), Mockito.any(DataSetType.class),
+						Mockito.anyList())).thenReturn(true);
+
+		Mockito.when(this.messageSource.getMessage(Message.BV_UPLOAD_OVERWRITE_WARNING)).thenReturn("");
+		Mockito.when(this.messageSource.getMessage(Message.OK)).thenReturn("");
+		Mockito.when(this.messageSource.getMessage(Message.CANCEL)).thenReturn("");
+
+		this.uploadBreedingViewOutputAction.buttonClick(this.event);
+
+		Mockito.verify(this.messageSource).getMessage(Message.BV_UPLOAD_OVERWRITE_WARNING);
+
 	}
 
 	private Project createProject() {
 		Project project = new Project();
-		project.setProjectId(12L);
+		project.setProjectId(TEST_PROJECT_ID);
 		return project;
 	}
 
-	private Map<String, String> generateLocalNameToAliasMap() {
-		Map<String, String> localNameToAliasMapping = new HashMap<>();
-		localNameToAliasMapping.put("TRIAL_INSTANCE", "TRIAL_INSTANCE");
-		localNameToAliasMapping.put("ENTRY_NO", "ENTRY_NO");
-		localNameToAliasMapping.put("GID", "GID");
-		localNameToAliasMapping.put("ASI", "ASI");
-		localNameToAliasMapping.put("Aphid1_5", "Aphid1_5");
-		localNameToAliasMapping.put("EPH", "EPH");
-		localNameToAliasMapping.put("FMSROT", "FMSROT");
-		return localNameToAliasMapping;
+	private TrialEnvironments createTrialEnvironments() {
+
+		TrialEnvironments trialEnvironments = new TrialEnvironments();
+		VariableList variableList = new VariableList();
+		variableList.add(this.createVariable(TermId.TRIAL_INSTANCE_FACTOR.getId(), "TRIAL_INSTANCE", "1"));
+
+		TrialEnvironment trialEnvironment = new TrialEnvironment(1, variableList);
+		trialEnvironments.add(trialEnvironment);
+
+		return trialEnvironments;
+	}
+
+	private List<DataSet> createDataSetList() {
+		List<DataSet> dataSets = new ArrayList<>();
+		DataSet dataSet = new DataSet();
+		dataSet.setId(TEST_MEANS_DATASET_ID);
+		dataSets.add(dataSet);
+		return dataSets;
+	}
+
+	private Variable createVariable(int termId, String localName, String value) {
+		Variable variable = new Variable();
+		variable.setVariableType(this.createDMSVariableType(termId, localName));
+		variable.setValue(value);
+		return variable;
+	}
+
+	private DMSVariableType createDMSVariableType(int termId, String localName) {
+
+		DMSVariableType dmsVariableType = new DMSVariableType();
+		dmsVariableType.setStandardVariable(this.createStandardVariable(termId, localName));
+		dmsVariableType.setLocalName(localName);
+
+		return dmsVariableType;
+	}
+
+	private StandardVariable createStandardVariable(int termId, String name) {
+		StandardVariable standardVariable = new StandardVariable();
+		standardVariable.setId(termId);
+		standardVariable.setName(name);
+		return standardVariable;
+	}
+
+	private VariableTypeList createVariateVariableList() {
+		VariableTypeList variableTypeList = new VariableTypeList();
+		variableTypeList.add(this.createDMSVariableType(ASI_TERMID, "ASI"));
+		variableTypeList.add(this.createDMSVariableType(PLT_HEIGHT_TERMID, "PLANT HEIGHT"));
+		variableTypeList.add(this.createDMSVariableType(TWG_TERMID, "TWG?"));
+		return variableTypeList;
+	}
+
+	private Map<String, String> createBmsInformationMap() {
+		Map<String, String> bmsInformationMap = new HashMap<>();
+		bmsInformationMap.put(BMSOutputParser.INPUT_DATASET_ID_INFO, "3");
+		bmsInformationMap.put(BMSOutputParser.OUTPUT_DATASET_ID_INFO, "4");
+		bmsInformationMap.put(BMSOutputParser.STUDY_ID_INFO, "2");
+		bmsInformationMap.put(BMSOutputParser.WORKBENCH_PROJECT_ID_INFO, "1");
+		return bmsInformationMap;
+	}
+
+	private Map<String, Object> createEnvironmentInfo() {
+		Map environmentInfoMap = new HashMap<>();
+		environmentInfoMap.put(BMSOutputParser.ENVIRONMENT_FACTOR, "TRIAL_INSTANCE");
+
+		Set<String> environmentNames = new HashSet<>();
+		environmentNames.add("1");
+		environmentInfoMap.put(BMSOutputParser.ENVIRONMENT_NAMES, environmentNames);
+
+		return environmentInfoMap;
 	}
 
 }
