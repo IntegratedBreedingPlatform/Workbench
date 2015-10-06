@@ -33,6 +33,8 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 
+import com.google.common.collect.Lists;
+
 /**
  * Created with IntelliJ IDEA. User: cyrus Date: 11/19/13 Time: 7:21 PM To change this template use File | Settings | File Templates.
  */
@@ -76,7 +78,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 	}
 
 	public void generateInitialTreeNodes() {
-		List<Reference> root = this.studyDataManager.getRootFolders(this.project.getUniqueID());
+		List<Reference> root = this.studyDataManager.getRootFolders(this.project.getUniqueID(), StudyType.nurseriesAndTrials());
 		this.view.generateTopListOfTree(root);
 	}
 
@@ -93,6 +95,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 	}
 
 	// FIXME - Performance problem if such checking is done per tree node. The query that retrieves tree metadata should have all the information already.
+	// Can not get rid of it until Vaadin tree object is constructed with appropriate information already available from Middleware service.
 	public boolean isFolder(Integer value) {
 		try {
 			boolean isStudy = this.studyDataManager.isStudy(value);
@@ -212,7 +215,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 		List<Reference> studyChildren;
 
 		try {
-			studyChildren = this.studyDataManager.getChildrenOfFolder(id, this.project.getUniqueID());
+			studyChildren = this.studyDataManager.getChildrenOfFolder(id, this.project.getUniqueID(), Lists.newArrayList(StudyType.N, StudyType.T));
 		} catch (MiddlewareQueryException e) {
 			NurseryListPreviewPresenter.LOG.error(e.getMessage(), e);
 			throw new NurseryListPreviewException(this.messageSource.getMessage(Message.ERROR_DATABASE), e);
@@ -230,7 +233,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 		List<Reference> studyChildren;
 
 		try {
-			studyChildren = this.studyDataManager.getChildrenOfFolder(parentId, this.project.getUniqueID());
+			studyChildren = this.studyDataManager.getChildrenOfFolder(parentId, this.project.getUniqueID(), StudyType.nurseriesAndTrials());
 		} catch (MiddlewareQueryException e) {
 			NurseryListPreviewPresenter.LOG.error(this.messageSource.getMessage(Message.ERROR_DATABASE), e);
 			studyChildren = new ArrayList<Reference>();

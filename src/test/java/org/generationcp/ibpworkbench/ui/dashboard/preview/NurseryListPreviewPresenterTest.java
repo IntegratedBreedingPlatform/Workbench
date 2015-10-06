@@ -6,13 +6,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
-import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.domain.dms.Reference;
+import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.dms.DmsProject;
@@ -25,6 +24,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import com.google.common.collect.Lists;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NurseryListPreviewPresenterTest {
@@ -183,9 +184,9 @@ public class NurseryListPreviewPresenterTest {
 		hasMultipleChildren.add(Mockito.mock(Reference.class));
 		hasMultipleChildren.add(Mockito.mock(Reference.class));
 
-		Mockito.when(this.studyDataManager.getChildrenOfFolder(this.studyIdWithMultipleChildren, this.project.getUniqueID())).thenReturn(
+		Mockito.when(this.studyDataManager.getChildrenOfFolder(this.studyIdWithMultipleChildren, this.project.getUniqueID(), StudyType.nurseriesAndTrials())).thenReturn(
 				hasMultipleChildren);
-		Mockito.when(this.studyDataManager.getChildrenOfFolder(this.studyIdWithNoChildren, this.project.getUniqueID())).thenReturn(
+		Mockito.when(this.studyDataManager.getChildrenOfFolder(this.studyIdWithNoChildren, this.project.getUniqueID(), StudyType.nurseriesAndTrials())).thenReturn(
 				new ArrayList<Reference>());
 
 		try {

@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import com.google.common.collect.Lists;
 import com.vaadin.ui.Tree;
 
 import org.apache.commons.lang.reflect.FieldUtils;
@@ -14,6 +15,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
+import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
@@ -51,7 +53,7 @@ public class NurseryListPreviewTest {
 		Project project = NurseryListPreviewTest.createTestProjectData();
 
 		try {
-			Mockito.when(this.studyDataManager.getRootFolders(project.getUniqueID())).thenReturn(this.createTopLevelFolderReferences(0));
+			Mockito.when(this.studyDataManager.getRootFolders(project.getUniqueID(), StudyType.nurseriesAndTrials())).thenReturn(this.createTopLevelFolderReferences(0));
 		} catch (MiddlewareQueryException e) {
 			Assert.fail(e.getMessage());
 		}
@@ -61,7 +63,7 @@ public class NurseryListPreviewTest {
 
 		this.view = new NurseryListPreview(project);
 		this.view.setMessageSource(this.messageSource);
-		NurseryListPreviewPresenter presenter = this.view.getPresenter();
+		NurseryListPreviewPresenter presenter = this.view.getPresenter();	
 		FieldUtils.writeDeclaredField(presenter,"studyDataManager",studyDataManager,true);
 		this.view.setProject(project);
 	}
