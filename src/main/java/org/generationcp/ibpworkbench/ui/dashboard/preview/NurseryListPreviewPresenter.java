@@ -12,7 +12,6 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
-import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.oms.StudyType;
@@ -51,13 +50,13 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
-	
+
 	@Autowired
 	private StudyDataManager studyDataManager;
 
 	@Autowired
 	private SessionData sessionData;
-	
+
 	@Autowired
 	private FieldbookService fieldbookService;
 
@@ -77,21 +76,15 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 	}
 
 	public void generateInitialTreeNodes() {
-
-		List<FolderReference> root;
-		try {
-			root = this.studyDataManager.getRootFolders(this.project.getUniqueID());
-			this.view.generateTopListOfTree(root);
-		} catch (MiddlewareQueryException e) {
-			NurseryListPreviewPresenter.LOG.error(e.getMessage(), e);
-		}
+		List<Reference> root = this.studyDataManager.getRootFolders(this.project.getUniqueID(), StudyType.nurseriesAndTrials());
+		this.view.generateTopListOfTree(root);
 	}
 
-
 	/**
-	 * afterPropertiesSet() is called after Aspect4J weaves spring objects when this class is instantiated since this class is
-	 * a @configurable that implements InitializingBean. Since we do not have any need for additional initialization after the weaving, this
-	 * method remains unimplemented.
+	 * afterPropertiesSet() is called after Aspect4J weaves spring objects when this class is instantiated since this class is a @configurable
+	 * that implements InitializingBean. Since we do not have any need for additional initialization after the weaving, this method remains
+	 * unimplemented.
+	 * 
 	 * @throws Exception
 	 */
 	@Override
@@ -99,6 +92,9 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 		// No values are required to be initialized for this layout
 	}
 
+	// FIXME - Performance problem if such checking is done per tree node. The query that retrieves tree metadata should have all the
+	// information already.
+	// Can not get rid of it until Vaadin tree object is constructed with appropriate information already available from Middleware service.
 	public boolean isFolder(Integer value) {
 		try {
 			boolean isStudy = this.studyDataManager.isStudy(value);
@@ -127,12 +123,12 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 				this.manager.getCurrentIbdbUserId(this.sessionData.getSelectedProject().getProjectId(), this.sessionData.getUserData()
 						.getUserid());
 		try {
-			fieldbookService.deleteStudy(id, cropUserId);
+			this.fieldbookService.deleteStudy(id, cropUserId);
 		} catch (UnpermittedDeletionException e) {
-			Integer studyUserId = fieldbookService.getStudy(id).getUser();
+			Integer studyUserId = this.fieldbookService.getStudy(id).getUser();
 			throw new NurseryListPreviewException(this.messages.getMessage(NurseryListPreviewPresenter.STUDY_DELETE_NOT_PERMITTED,
-					new String[] {fieldbookService.getOwnerListName(studyUserId)},
-					"You are not able to delete this nursery or trial as you are not the owner. The owner is {0}." ,
+					new String[] {this.fieldbookService.getOwnerListName(studyUserId)},
+					"You are not able to delete this nursery or trial as you are not the owner. The owner is {0}.",
 					LocaleContextHolder.getLocale()));
 		}
 	}
@@ -218,7 +214,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 		List<Reference> studyChildren;
 
 		try {
-			studyChildren = this.studyDataManager.getChildrenOfFolder(id, this.project.getUniqueID());
+			studyChildren = this.studyDataManager.getChildrenOfFolder(id, this.project.getUniqueID(), StudyType.nurseriesAndTrials());
 		} catch (MiddlewareQueryException e) {
 			NurseryListPreviewPresenter.LOG.error(e.getMessage(), e);
 			throw new NurseryListPreviewException(this.messageSource.getMessage(Message.ERROR_DATABASE), e);
@@ -236,7 +232,7 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 		List<Reference> studyChildren;
 
 		try {
-			studyChildren = this.studyDataManager.getChildrenOfFolder(parentId, this.project.getUniqueID());
+			studyChildren = this.studyDataManager.getChildrenOfFolder(parentId, this.project.getUniqueID(), StudyType.nurseriesAndTrials());
 		} catch (MiddlewareQueryException e) {
 			NurseryListPreviewPresenter.LOG.error(this.messageSource.getMessage(Message.ERROR_DATABASE), e);
 			studyChildren = new ArrayList<Reference>();

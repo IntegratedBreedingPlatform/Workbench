@@ -6,11 +6,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import com.google.common.collect.Lists;
 import com.vaadin.terminal.gwt.client.ui.dd.VerticalDropLocation;
+
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.domain.dms.FolderReference;
+import org.generationcp.middleware.domain.dms.Reference;
+import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
@@ -61,7 +65,7 @@ public class NurseryTreeDropHandlerTest {
 
 		try {
 			this.rootFolderChildren = this.createTopLevelFolderReferences(2);
-			Mockito.when(this.studyDataManager.getRootFolders(project.getUniqueID())).thenReturn(this.rootFolderChildren);
+			Mockito.doReturn(this.rootFolderChildren).when(this.studyDataManager).getRootFolders(project.getUniqueID(), StudyType.nurseriesAndTrials());
 			Mockito.when(this.messageSource.getMessage(Message.NURSERIES_AND_TRIALS)).thenReturn(
 					NurseryTreeDropHandlerTest.NURSERIES_AND_TRIALS);
 		} catch (MiddlewareQueryException e) {
@@ -72,7 +76,7 @@ public class NurseryTreeDropHandlerTest {
 
 		// since presenter that initializes some object in the view (NurseryListPreview) is now a mock obj not a full spied obj,
 		// we need manually initially initialize treeView to the view
-		this.view.generateTopListOfTree(new ArrayList<FolderReference>());
+		this.view.generateTopListOfTree(new ArrayList<Reference>());
 
 		this.view.setMessageSource(this.messageSource);
 		this.view.setPresenter(this.presenter);
@@ -107,7 +111,7 @@ public class NurseryTreeDropHandlerTest {
 		return project;
 	}
 
-	private List<FolderReference> createTopLevelFolderReferences(int numberOfItems) throws MiddlewareQueryException {
+	private List<FolderReference> createTopLevelFolderReferences(int numberOfItems) {
 		List<FolderReference> items = new ArrayList<FolderReference>();
 		for (int i = 1; i <= numberOfItems; i++) {
 			FolderReference folderReference =

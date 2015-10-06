@@ -6,12 +6,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import com.google.common.collect.Lists;
 import com.vaadin.ui.Tree;
+
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.domain.dms.FolderReference;
+import org.generationcp.middleware.domain.dms.Reference;
+import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
@@ -49,7 +53,7 @@ public class NurseryListPreviewTest {
 		Project project = NurseryListPreviewTest.createTestProjectData();
 
 		try {
-			Mockito.when(this.studyDataManager.getRootFolders(project.getUniqueID())).thenReturn(this.createTopLevelFolderReferences(0));
+			Mockito.when(this.studyDataManager.getRootFolders(project.getUniqueID(), StudyType.nurseriesAndTrials())).thenReturn(this.createTopLevelFolderReferences(0));
 		} catch (MiddlewareQueryException e) {
 			Assert.fail(e.getMessage());
 		}
@@ -59,7 +63,7 @@ public class NurseryListPreviewTest {
 
 		this.view = new NurseryListPreview(project);
 		this.view.setMessageSource(this.messageSource);
-		NurseryListPreviewPresenter presenter = this.view.getPresenter();
+		NurseryListPreviewPresenter presenter = this.view.getPresenter();	
 		FieldUtils.writeDeclaredField(presenter,"studyDataManager",studyDataManager,true);
 		this.view.setProject(project);
 	}
@@ -80,7 +84,7 @@ public class NurseryListPreviewTest {
 		try {
 			String rootFolder = NurseryListPreview.NURSERIES_AND_TRIALS;
 
-			List<FolderReference> items = this.createTopLevelFolderReferences(0);
+			List<Reference> items = this.createTopLevelFolderReferences(0);
 			this.view.generateTopListOfTree(items);
 			Tree tree = this.view.getTreeView();
 			Assert.assertEquals("Root folder is " + rootFolder, tree.getItemIds().iterator().next(), rootFolder);
@@ -97,7 +101,7 @@ public class NurseryListPreviewTest {
 		try {
 			String rootFolder = NurseryListPreview.NURSERIES_AND_TRIALS;
 
-			List<FolderReference> items = this.createTopLevelFolderReferences(2);
+			List<Reference> items = this.createTopLevelFolderReferences(2);
 			this.view.generateTopListOfTree(items);
 			Tree tree = this.view.getTreeView();
 			Assert.assertEquals("Root folder is " + rootFolder, tree.getItemIds().iterator().next(), rootFolder);
@@ -109,8 +113,8 @@ public class NurseryListPreviewTest {
 		}
 	}
 
-	private List<FolderReference> createTopLevelFolderReferences(int numberOfItems) throws MiddlewareQueryException {
-		List<FolderReference> items = new ArrayList<FolderReference>();
+	private List<Reference> createTopLevelFolderReferences(int numberOfItems) {
+		List<Reference> items = new ArrayList<Reference>();
 		for (int i = 1; i <= numberOfItems; i++) {
 			FolderReference folderReference =
 					new FolderReference(NurseryListPreview.ROOT_FOLDER, i, "Test Name " + i, "Test Description " + i);

@@ -119,7 +119,7 @@ public class NurseryListPreview extends VerticalLayout {
 		this.setExpandRatio(this.panel, 1.0F);
 	}
 
-	public void generateTopListOfTree(List<FolderReference> root) {
+	public void generateTopListOfTree(List<Reference> root) {
 
 		this.treeView = new Tree();
 		this.treeView.setContainerDataSource(new HierarchicalContainer());
@@ -135,17 +135,17 @@ public class NurseryListPreview extends VerticalLayout {
 
 	}
 
-	private void addInstanceTree(Tree treeView, List<FolderReference> folders) {
+	private void addInstanceTree(Tree treeView, List<Reference> folders) {
 		String folderName = NurseryListPreview.NURSERIES_AND_TRIALS;
 		treeView.addItem(folderName);
 		treeView.setItemCaption(folderName, folderName);
 		treeView.setItemIcon(folderName, this.folderResource);
 
-		for (FolderReference folderReference : folders) {
+		for (Reference folderReference : folders) {
 			treeView.addItem(folderReference.getId());
 			treeView.setItemCaption(folderReference.getId(), folderReference.getName());
 			treeView.setParent(folderReference.getId(), folderName);
-			boolean isFolder = this.getPresenter().isFolder(folderReference.getId());
+			boolean isFolder = folderReference.isFolder();
 
 			if (isFolder) {
 				treeView.setChildrenAllowed(folderReference.getId(), true);
@@ -472,7 +472,7 @@ public class NurseryListPreview extends VerticalLayout {
 			this.treeView.setItemCaption(sc.getId(), sc.getName());
 			this.treeView.setParent(sc.getId(), parentId);
 			// check if the study has sub study
-			if (this.presenter.isFolder(sc.getId())) {
+			if (sc.isFolder()) {
 				this.treeView.setChildrenAllowed(sc.getId(), true);
 				this.treeView.setItemIcon(sc.getId(), this.folderResource);
 			} else {

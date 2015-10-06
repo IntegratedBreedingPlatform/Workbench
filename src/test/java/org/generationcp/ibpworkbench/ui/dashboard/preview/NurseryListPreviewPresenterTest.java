@@ -6,13 +6,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
-import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
+import org.generationcp.middleware.domain.dms.StudyReference;
+import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.dms.DmsProject;
@@ -50,7 +51,6 @@ public class NurseryListPreviewPresenterTest {
 	@Mock
 	private SimpleResourceBundleMessageSource messageSource;
 
-	@Mock
 	private DmsProject dmsProject;
 
 	@InjectMocks
@@ -73,6 +73,8 @@ public class NurseryListPreviewPresenterTest {
 		this.view.setProject(this.project);
 
 		this.presenter.setProject(this.project);
+
+		this.dmsProject = new DmsProject();
 	}
 
 	public Project createTestProjectData() {
@@ -154,8 +156,9 @@ public class NurseryListPreviewPresenterTest {
 		// 3rd scenario presenter.isFalder(id) === false
 		// assume that studyID is not a folder
 		Mockito.when(this.studyDataManager.isStudy(this.studyId)).thenReturn(true);
+
+		this.dmsProject.setProjectId(this.parentFolderId);
 		Mockito.when(this.studyDataManager.getParentFolder(this.studyId)).thenReturn(this.dmsProject);
-		Mockito.when(this.dmsProject.getProjectId()).thenReturn(this.parentFolderId);
 		this.presenter.addNurseryListFolder(this.newFolderName, this.studyId);
 
 		// verify that addSubFolder is called with the correct order of parameters
@@ -163,7 +166,6 @@ public class NurseryListPreviewPresenterTest {
 				this.project.getUniqueID());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testValidateForDeleteNurseryList() throws Exception {
 		// if id is null, expect exception
@@ -174,19 +176,23 @@ public class NurseryListPreviewPresenterTest {
 			Assert.assertTrue(e.getLocalizedMessage().contains("Please select a folder item"));
 		}
 
+		this.dmsProject.setProjectId(this.studyIdWithNoChildren);
+		this.dmsProject.setProgramUUID(this.project.getUniqueID());
+
 		// assume studyDataManager.getProject() returns a DMSObj (no middleware exception)
 		Mockito.when(this.studyDataManager.getProject(this.studyIdWithMultipleChildren)).thenReturn(this.dmsProject);
 		Mockito.when(this.studyDataManager.getProject(this.studyIdWithNoChildren)).thenReturn(this.dmsProject);
 
-		List<Reference> hasMultipleChildren = Mockito.mock(ArrayList.class);
-		hasMultipleChildren.add(Mockito.mock(Reference.class));
-		hasMultipleChildren.add(Mockito.mock(Reference.class));
-		hasMultipleChildren.add(Mockito.mock(Reference.class));
+		List<Reference> children = new ArrayList<>();
+		children.add(new FolderReference(1, "Folder 1"));
+		children.add(new StudyReference(2, "Study 1"));
 
-		Mockito.when(this.studyDataManager.getChildrenOfFolder(this.studyIdWithMultipleChildren, this.project.getUniqueID())).thenReturn(
-				hasMultipleChildren);
-		Mockito.when(this.studyDataManager.getChildrenOfFolder(this.studyIdWithNoChildren, this.project.getUniqueID())).thenReturn(
-				new ArrayList<Reference>());
+		Mockito.when(
+				this.studyDataManager.getChildrenOfFolder(this.studyIdWithMultipleChildren, this.project.getUniqueID(),
+						StudyType.nurseriesAndTrials())).thenReturn(children);
+		Mockito.when(
+				this.studyDataManager.getChildrenOfFolder(this.studyIdWithNoChildren, this.project.getUniqueID(),
+						StudyType.nurseriesAndTrials())).thenReturn(new ArrayList<Reference>());
 
 		try {
 			this.presenter.validateForDeleteNurseryList(this.studyIdWithMultipleChildren);

@@ -8,7 +8,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.constant.ListTreeState;
 import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.middleware.domain.dms.FolderReference;
+import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.UserProgramStateDataManager;
 import org.generationcp.middleware.pojos.dms.DmsProject;
@@ -26,7 +26,7 @@ import com.vaadin.ui.TreeTable;
 public class BreedingViewTreeTable extends TreeTable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(BreedingViewTreeTable.class);
-	private Map<Integer, FolderReference> nodeMap;
+	private Map<Integer, Reference> nodeMap;
 
 	@Autowired
     private SessionData sessionData;
@@ -38,21 +38,21 @@ public class BreedingViewTreeTable extends TreeTable {
 		nodeMap = new HashMap<>();
 	}
 
-	public Object addFolderReferenceNode(Object[] cells, FolderReference folderReference) {
+	public Object addFolderReferenceNode(Object[] cells, Reference folderReference) {
 		nodeMap.put(folderReference.getId(), folderReference);
 		return super.addItem(cells, folderReference);
 	}
 
-	public FolderReference getRootNode() {
+	public Reference getRootNode() {
 		return nodeMap.get(DmsProject.SYSTEM_FOLDER_ID);
 	}
 
-	public FolderReference getFolderNode(Integer itemId) {
+	public Reference getFolderNode(Integer itemId) {
 		return nodeMap.get(itemId);
 	}
 
 	public void setCollapsedFolder(Integer itemId, boolean collapsed) {
-		FolderReference referenceObject = nodeMap.get(itemId);
+		Reference referenceObject = nodeMap.get(itemId);
 
 		if (referenceObject == null) {
 			return;
@@ -87,7 +87,7 @@ public class BreedingViewTreeTable extends TreeTable {
 		}
 	}
 
-	public Map<Integer, FolderReference> getNodeMap() {
+	public Map<Integer, Reference> getNodeMap() {
 		return nodeMap;
 	}
 }

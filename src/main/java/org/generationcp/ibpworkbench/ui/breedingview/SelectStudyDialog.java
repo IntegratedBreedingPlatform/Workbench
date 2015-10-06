@@ -19,6 +19,7 @@ import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.StudyReference;
+import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
@@ -59,7 +60,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		public void itemClick(ItemClickEvent event) {
 
 			Reference r = (Reference) event.getItemId();
-			boolean isStudy = SelectStudyDialog.this.isStudy(r);
+			boolean isStudy = r.isStudy();
 
 			if (event.isDoubleClick() && isStudy) {
 				SelectStudyDialog.this.openStudy(r);
@@ -232,10 +233,10 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		tr.addContainerProperty("Title", String.class, "title");
 		tr.addContainerProperty("Objective", String.class, "description");
 
-		List<FolderReference> folderRef = null;
+		List<Reference> folderRef = null;
 
 		try {
-			folderRef = this.getStudyDataManager().getRootFolders(this.currentProject.getUniqueID());
+			folderRef = this.getStudyDataManager().getRootFolders(this.currentProject.getUniqueID(), StudyType.nurseriesAndTrials());
 		} catch (MiddlewareQueryException e1) {
 			SelectStudyDialog.LOG.error(e1.getMessage(), e1);
 			if (this.getWindow() != null) {
@@ -244,11 +245,11 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 			}
 		}
 
-		for (FolderReference fr : folderRef) {
+		for (Reference fr : folderRef) {
 
 			Study study = null;
 			try {
-				if (this.isStudy(fr)) {
+				if (fr.isStudy()) {
 					study = this.getStudyDataManager().getStudy(fr.getId());
 				}
 			} catch (MiddlewareException e) {
@@ -262,7 +263,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 
 			Object itemId = tr.addFolderReferenceNode(cells, fr);
 
-			if (!this.isFolder(fr.getId())) {
+			if (fr.isStudy()) {
 				tr.setItemIcon(itemId, this.studyResource);
 				tr.setChildrenAllowed(itemId, false);
 			} else {
@@ -281,19 +282,6 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		tr.addListener(new StudyTreeExpandAction(this, tr));
 		tr.addListener(new TreeTableItemClickListener(tr));
 		return tr;
-	}
-
-	protected boolean isStudy(Reference r) {
-		if (r instanceof StudyReference) {
-			return true;
-		}
-
-		try {
-			return this.getStudyDataManager().isStudy(r.getId());
-		} catch (MiddlewareQueryException e) {
-			SelectStudyDialog.LOG.error(e.getMessage(), e);
-			return false;
-		}
 	}
 
 	protected void openStudy(Reference r) {
@@ -329,7 +317,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		try {
 
 			childrenReference =
-					this.getStudyDataManager().getChildrenOfFolder(parentFolderReference.getId(), this.currentProject.getUniqueID());
+					this.getStudyDataManager().getChildrenOfFolder(parentFolderReference.getId(), this.currentProject.getUniqueID(), StudyType.nurseriesAndTrials());
 
 		} catch (MiddlewareQueryException e) {
 			SelectStudyDialog.LOG.error(e.getMessage(), e);
@@ -354,7 +342,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 			cells[1] = s != null ? s.getTitle() : "";
 			cells[2] = s != null ? s.getObjective() : "";
 
-			if (r instanceof FolderReference) {
+			if (r.isFolder()) {
 				tr.addFolderReferenceNode(cells, (FolderReference) r);
 			} else {
 				tr.addItem(cells, r);
@@ -431,7 +419,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		List<Reference> children;
 
 		try {
-			children = this.getStudyDataManager().getChildrenOfFolder(folderId, this.currentProject.getUniqueID());
+			children = this.getStudyDataManager().getChildrenOfFolder(folderId, this.currentProject.getUniqueID(), StudyType.nurseriesAndTrials());
 		} catch (MiddlewareQueryException e) {
 			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
 					this.messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
@@ -440,16 +428,6 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 			LOG.warn(e.getMessage(), e);
 		}
 		return !children.isEmpty();
-	}
-
-	public Boolean isFolder(Integer studyId) {
-		try {
-			boolean isStudy = this.studyDataManager.isStudy(studyId);
-			return !isStudy;
-		} catch (MiddlewareQueryException e) {
-			SelectStudyDialog.LOG.error(e.getMessage(), e);
-			return false;
-		}
 	}
 
 	@Override

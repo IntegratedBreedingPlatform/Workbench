@@ -45,12 +45,12 @@ public class SaveBreedingViewStudyTreeState implements Window.CloseListener {
 
 	protected List<String> getExpandedIds() {
 		List<String> expandedIds = new ArrayList<>();
-		List<FolderReference> firstLevelFolders = getFirstLevelFolders();
+		List<Reference> firstLevelFolders = getFirstLevelFolders();
 
 		// study tree used in analysis always has an expanded "root node"
 		expandedIds.add("STUDY");
 
-		for (FolderReference firstLevelFolder : firstLevelFolders) {
+		for (Reference firstLevelFolder : firstLevelFolders) {
 			recurseSaveOpenNodes(firstLevelFolder, expandedIds);
 		}
 
@@ -76,12 +76,14 @@ public class SaveBreedingViewStudyTreeState implements Window.CloseListener {
 		}
 	}
 
-	protected List<FolderReference> getFirstLevelFolders() {
-		List<FolderReference> firstlevelFolders = new ArrayList<>();
-		for (FolderReference reference : treeTable.getNodeMap().values()) {
-			Integer parentFolderId = reference.getParentFolderId();
-			if (parentFolderId != null && parentFolderId.equals(DmsProject.SYSTEM_FOLDER_ID)) {
-				firstlevelFolders.add(reference);
+	protected List<Reference> getFirstLevelFolders() {
+		List<Reference> firstlevelFolders = new ArrayList<>();
+		for (Reference reference : treeTable.getNodeMap().values()) {
+			if(reference.isFolder()) {
+				Integer parentFolderId = ((FolderReference) reference).getParentFolderId();
+				if (parentFolderId != null && parentFolderId.equals(DmsProject.SYSTEM_FOLDER_ID)) {
+					firstlevelFolders.add(reference);
+				}
 			}
 		}
 

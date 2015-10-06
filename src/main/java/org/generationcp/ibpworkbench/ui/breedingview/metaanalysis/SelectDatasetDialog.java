@@ -17,7 +17,7 @@ import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.StudyReference;
-import org.generationcp.middleware.exceptions.MiddlewareException;
+import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -186,10 +186,10 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 		tr.addContainerProperty("Title", String.class, "title");
 		tr.addContainerProperty("Objective", String.class, "objective");
 
-		List<FolderReference> folderRef = null;
+		List<Reference> folderRef = null;
 
 		try {
-			folderRef = studyDataManager.getRootFolders(this.currentProject.getUniqueID());
+			folderRef = studyDataManager.getRootFolders(this.currentProject.getUniqueID(), StudyType.nurseriesAndTrials());
 		} catch (MiddlewareQueryException e1) {
 			SelectDatasetDialog.LOG.error(e1.getMessage(), e1);
 			if (this.getWindow() != null) {
@@ -198,31 +198,25 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 			}
 		}
 
-		for (FolderReference fr : folderRef) {
+		for (Reference fr : folderRef) {
 
 			Study study = null;
 			Boolean isStudy = false;
-			try {
-				isStudy = studyDataManager.isStudy(fr.getId());
-				if (isStudy) {
-					study = studyDataManager.getStudy(fr.getId());
-				}
-			} catch (MiddlewareException e) {
-				SelectDatasetDialog.LOG.error(e.getMessage(), e);
+			isStudy = fr.isStudy();
+			if (isStudy) {
+				study = studyDataManager.getStudy(fr.getId());
 			}
-
 			Object[] cells = new Object[3];
 			cells[0] = " " + fr.getName();
 			cells[1] = study != null ? study.getTitle() : "";
 			cells[2] = study != null ? study.getObjective() : "";
 
 			Object itemId = tr.addFolderReferenceNode(cells, fr);
-			if (!this.isFolder(fr.getId())) {
+			if (isStudy) {
 				tr.setItemIcon(itemId, this.studyResource);
 			} else {
 				tr.setItemIcon(itemId, this.folderResource);
 			}
-
 		}
 
 		// reserve excess space for the "treecolumn"
@@ -263,7 +257,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 		try {
 
 			childrenReference =
-					studyDataManager.getChildrenOfFolder(parentFolderReference.getId(), this.currentProject.getUniqueID());
+					studyDataManager.getChildrenOfFolder(parentFolderReference.getId(), this.currentProject.getUniqueID(), StudyType.nurseriesAndTrials());
 
 		} catch (MiddlewareQueryException e) {
 			SelectDatasetDialog.LOG.error(e.getMessage(), e);
@@ -289,7 +283,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 			cells[1] = s != null ? s.getTitle() : "";
 			cells[2] = s != null ? s.getObjective() : "";
 
-			if (r instanceof FolderReference) {
+			if (r.isFolder()) {
 				tr.addFolderReferenceNode(cells, (FolderReference) r);
 			} else {
 				tr.addItem(cells, r);
@@ -366,7 +360,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 		List<Reference> children = new ArrayList<Reference>();
 
 		try {
-			children = studyDataManager.getChildrenOfFolder(folderId, this.currentProject.getUniqueID());
+			children = studyDataManager.getChildrenOfFolder(folderId, this.currentProject.getUniqueID(), StudyType.nurseriesAndTrials());
 		} catch (MiddlewareQueryException e) {
 			SelectDatasetDialog.LOG.error(e.getMessage(), e);
 			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
@@ -374,16 +368,6 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 			children = new ArrayList<Reference>();
 		}
 		return !children.isEmpty();
-	}
-
-	public Boolean isFolder(Integer studyId) {
-		try {
-			boolean isStudy = this.studyDataManager.isStudy(studyId);
-			return !isStudy;
-		} catch (MiddlewareQueryException e) {
-			SelectDatasetDialog.LOG.error(e.getMessage(), e);
-			return false;
-		}
 	}
 
 	private boolean hasChildDataset(int folderId) {
