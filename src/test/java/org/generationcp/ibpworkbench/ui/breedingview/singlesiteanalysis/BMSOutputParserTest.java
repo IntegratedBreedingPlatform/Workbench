@@ -17,18 +17,19 @@ public class BMSOutputParserTest {
 
 	@BeforeClass
 	public static void runOnce() throws URISyntaxException {
-		bmsOutputZipFile = new File(ClassLoader.getSystemClassLoader().getResource("BMSOutput.zip").toURI());
-		bmsOutputZipFileNoContent = new File(ClassLoader.getSystemClassLoader().getResource("zipToExtractNoContent.zip").toURI());
+		BMSOutputParserTest.bmsOutputZipFile = new File(ClassLoader.getSystemClassLoader().getResource("BMSOutput.zip").toURI());
+		BMSOutputParserTest.bmsOutputZipFileNoContent =
+				new File(ClassLoader.getSystemClassLoader().getResource("zipToExtractNoContent.zip").toURI());
 	}
 
 	@Test
 	public void testParseZipFileValidZipFile() throws URISyntaxException, ZipFileInvalidContentException {
 
-		BMSOutputParser bmsOutputParser = new BMSOutputParser();
+		final BMSOutputParser bmsOutputParser = new BMSOutputParser();
 
 		bmsOutputParser.setUploadDirectory(ClassLoader.getSystemResource("").getPath());
 
-		BMSOutputInformation bmsInformation = bmsOutputParser.parseZipFile(bmsOutputZipFile);
+		final BMSOutputInformation bmsInformation = bmsOutputParser.parseZipFile(BMSOutputParserTest.bmsOutputZipFile);
 
 		Assert.assertEquals(3, bmsInformation.getInputDataSetId());
 		Assert.assertEquals(4, bmsInformation.getOutputDataSetId());
@@ -46,23 +47,23 @@ public class BMSOutputParserTest {
 	@Test(expected = ZipFileInvalidContentException.class)
 	public void testParseZipFileInvalidZipFile() throws URISyntaxException, ZipFileInvalidContentException {
 
-		BMSOutputParser bmsOutputParser = new BMSOutputParser();
+		final BMSOutputParser bmsOutputParser = new BMSOutputParser();
 		bmsOutputParser.setUploadDirectory(ClassLoader.getSystemResource("").getPath());
 
-		bmsOutputParser.parseZipFile(bmsOutputZipFileNoContent);
+		bmsOutputParser.parseZipFile(BMSOutputParserTest.bmsOutputZipFileNoContent);
 
 	}
 
 	@Test
 	public void testExtractEnvironmentInfoFromFile() throws URISyntaxException, IOException, ZipFileInvalidContentException {
 
-		BMSOutputParser bmsOutputParser = new BMSOutputParser();
+		final BMSOutputParser bmsOutputParser = new BMSOutputParser();
 
 		bmsOutputParser.setUploadDirectory(ClassLoader.getSystemResource("").getPath());
 
-		bmsOutputParser.parseZipFile(bmsOutputZipFile);
+		bmsOutputParser.parseZipFile(BMSOutputParserTest.bmsOutputZipFile);
 
-		BMSOutputInformation bmsInformation = new BMSOutputInformation();
+		final BMSOutputInformation bmsInformation = new BMSOutputInformation();
 		bmsOutputParser.extractEnvironmentInfoFromFile(bmsOutputParser.getMeansFile(), bmsInformation);
 
 		Assert.assertEquals("TRIAL_INSTANCE", bmsInformation.getEnvironmentFactorName());

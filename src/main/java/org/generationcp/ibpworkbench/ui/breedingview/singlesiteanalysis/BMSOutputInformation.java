@@ -27,7 +27,7 @@ public class BMSOutputInformation {
 		return this.environmentNames;
 	}
 
-	public void setEnvironmentNames(Set<String> environmentNames) {
+	public void setEnvironmentNames(final Set<String> environmentNames) {
 		this.environmentNames = environmentNames;
 	}
 
@@ -35,7 +35,7 @@ public class BMSOutputInformation {
 		return this.environmentFactorName;
 	}
 
-	public void setEnvironmentFactorName(String environmentFactorName) {
+	public void setEnvironmentFactorName(final String environmentFactorName) {
 		this.environmentFactorName = environmentFactorName;
 	}
 
@@ -43,7 +43,7 @@ public class BMSOutputInformation {
 		return this.workbenchProjectId;
 	}
 
-	public void setWorkbenchProjectId(int workbenchProjectId) {
+	public void setWorkbenchProjectId(final int workbenchProjectId) {
 		this.workbenchProjectId = workbenchProjectId;
 	}
 
@@ -51,7 +51,7 @@ public class BMSOutputInformation {
 		return this.studyId;
 	}
 
-	public void setStudyId(int studyId) {
+	public void setStudyId(final int studyId) {
 		this.studyId = studyId;
 	}
 
@@ -59,7 +59,7 @@ public class BMSOutputInformation {
 		return this.inputDataSetId;
 	}
 
-	public void setInputDataSetId(int inputDataSetId) {
+	public void setInputDataSetId(final int inputDataSetId) {
 		this.inputDataSetId = inputDataSetId;
 	}
 
@@ -67,7 +67,7 @@ public class BMSOutputInformation {
 		return this.outputDataSetId;
 	}
 
-	public void setOutputDataSetId(int outputDataSetId) {
+	public void setOutputDataSetId(final int outputDataSetId) {
 		this.outputDataSetId = outputDataSetId;
 	}
 

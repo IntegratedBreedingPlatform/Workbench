@@ -37,6 +37,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -104,15 +105,15 @@ public class UploadBreedingViewOutputActionTest {
 	private Application application;
 
 	@InjectMocks
-	private UploadBreedingViewOutputAction uploadBreedingViewOutputAction = new UploadBreedingViewOutputAction();
+	private final UploadBreedingViewOutputAction uploadBreedingViewOutputAction = new UploadBreedingViewOutputAction();
 
 	@Before
 	public void setUp() {
 
-		Project project = this.createProject();
+		final Project project = this.createProject();
 
 		Mockito.when(this.fileUploadBreedingViewOutputWindow.getProject()).thenReturn(project);
-		Mockito.when(this.fileUploadBreedingViewOutputWindow.getStudyId()).thenReturn(TEST_STUDY_ID);
+		Mockito.when(this.fileUploadBreedingViewOutputWindow.getStudyId()).thenReturn(UploadBreedingViewOutputActionTest.TEST_STUDY_ID);
 		Mockito.when(this.fileUploadBreedingViewOutputWindow.getUploadZip()).thenReturn(this.uploadZip);
 		Mockito.when(this.fileUploadBreedingViewOutputWindow.getParent()).thenReturn(this.window);
 		Mockito.when(this.event.getComponent()).thenReturn(this.component);
@@ -121,9 +122,9 @@ public class UploadBreedingViewOutputActionTest {
 		Mockito.when(this.component.getApplication()).thenReturn(this.application);
 		Mockito.when(this.application.getMainWindow()).thenReturn(this.window);
 
-		DataSet plotDataSet = Mockito.mock(DataSet.class);
+		final DataSet plotDataSet = Mockito.mock(DataSet.class);
 		Mockito.when(plotDataSet.getVariableTypes()).thenReturn(this.createVariateVariableList());
-		Mockito.when(this.studyDataManager.getDataSet(Mockito.anyInt())).thenReturn(plotDataSet);
+		Mockito.when(this.studyDataManager.getDataSet(Matchers.anyInt())).thenReturn(plotDataSet);
 
 	}
 
@@ -163,7 +164,7 @@ public class UploadBreedingViewOutputActionTest {
 		Mockito.when(this.uploadZip.getFileFactory()).thenReturn(this.customFileFactory);
 		Mockito.when(this.customFileFactory.getFile()).thenReturn(this.zipFile);
 
-		BMSOutputInformation bmsInformation = this.createBmsOutputInformation();
+		final BMSOutputInformation bmsInformation = this.createBmsOutputInformation();
 		bmsInformation.setWorkbenchProjectId(99);
 		Mockito.when(this.bmsOutputParser.parseZipFile(this.zipFile)).thenReturn(bmsInformation);
 
@@ -184,29 +185,31 @@ public class UploadBreedingViewOutputActionTest {
 		Mockito.when(this.uploadZip.getFileFactory()).thenReturn(this.customFileFactory);
 		Mockito.when(this.customFileFactory.getFile()).thenReturn(this.zipFile);
 
-		BMSOutputInformation bmsOutputInformation = this.createBmsOutputInformation();
+		final BMSOutputInformation bmsOutputInformation = this.createBmsOutputInformation();
 		Mockito.when(this.bmsOutputParser.parseZipFile(this.zipFile)).thenReturn(bmsOutputInformation);
 		Mockito.when(this.bmsOutputParser.getBmsOutputInformation()).thenReturn(bmsOutputInformation);
 		Mockito.when(this.bmsOutputParser.getMeansFile()).thenReturn(Mockito.mock(File.class));
 		Mockito.when(this.bmsOutputParser.getSummaryStatsFile()).thenReturn(Mockito.mock(File.class));
 		Mockito.when(this.bmsOutputParser.getOutlierFile()).thenReturn(Mockito.mock(File.class));
 
-		Mockito.when(this.studyDataManager.getDataSetsByType(TEST_STUDY_ID, DataSetType.MEANS_DATA)).thenReturn(this.createDataSetList());
-		Mockito.when(this.studyDataManager.getTrialEnvironmentsInDataset(TEST_MEANS_DATASET_ID)).thenReturn(this.createTrialEnvironments());
+		Mockito.when(this.studyDataManager.getDataSetsByType(UploadBreedingViewOutputActionTest.TEST_STUDY_ID, DataSetType.MEANS_DATA))
+				.thenReturn(this.createDataSetList());
+		Mockito.when(this.studyDataManager.getTrialEnvironmentsInDataset(UploadBreedingViewOutputActionTest.TEST_MEANS_DATASET_ID))
+				.thenReturn(this.createTrialEnvironments());
 
 		this.uploadBreedingViewOutputAction.buttonClick(this.event);
 
-		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importMeansData(Mockito.any(File.class), Mockito.anyInt(),
-				Mockito.anyMap());
-		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importSummaryStatsData(Mockito.any(File.class), Mockito.anyInt(),
-				Mockito.anyMap());
-		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importOutlierData(Mockito.any(File.class), Mockito.anyInt(),
-				Mockito.anyMap());
+		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importMeansData(Matchers.any(File.class), Matchers.anyInt(),
+				Matchers.anyMap());
+		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importSummaryStatsData(Matchers.any(File.class),
+				Matchers.anyInt(), Matchers.anyMap());
+		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importOutlierData(Matchers.any(File.class), Matchers.anyInt(),
+				Matchers.anyMap());
 
 		Mockito.verify(this.bmsOutputParser).deleteTemporaryFiles();
 
 		Mockito.verify(this.messageSource).getMessage(Message.BV_UPLOAD_SUCCESSFUL_HEADER);
-		Mockito.verify(this.parentWindow).removeWindow(Mockito.any(Window.class));
+		Mockito.verify(this.parentWindow).removeWindow(Matchers.any(Window.class));
 
 	}
 
@@ -218,18 +221,20 @@ public class UploadBreedingViewOutputActionTest {
 		Mockito.when(this.uploadZip.getFileFactory()).thenReturn(this.customFileFactory);
 		Mockito.when(this.customFileFactory.getFile()).thenReturn(this.zipFile);
 
-		BMSOutputInformation bmsOutputInformation = this.createBmsOutputInformation();
+		final BMSOutputInformation bmsOutputInformation = this.createBmsOutputInformation();
 		Mockito.when(this.bmsOutputParser.parseZipFile(this.zipFile)).thenReturn(bmsOutputInformation);
 		Mockito.when(this.bmsOutputParser.getBmsOutputInformation()).thenReturn(bmsOutputInformation);
 		Mockito.when(this.bmsOutputParser.getMeansFile()).thenReturn(Mockito.mock(File.class));
 		Mockito.when(this.bmsOutputParser.getSummaryStatsFile()).thenReturn(Mockito.mock(File.class));
 		Mockito.when(this.bmsOutputParser.getOutlierFile()).thenReturn(Mockito.mock(File.class));
 
-		Mockito.when(this.studyDataManager.getDataSetsByType(TEST_STUDY_ID, DataSetType.MEANS_DATA)).thenReturn(this.createDataSetList());
-		Mockito.when(this.studyDataManager.getTrialEnvironmentsInDataset(TEST_MEANS_DATASET_ID)).thenReturn(this.createTrialEnvironments());
+		Mockito.when(this.studyDataManager.getDataSetsByType(UploadBreedingViewOutputActionTest.TEST_STUDY_ID, DataSetType.MEANS_DATA))
+				.thenReturn(this.createDataSetList());
+		Mockito.when(this.studyDataManager.getTrialEnvironmentsInDataset(UploadBreedingViewOutputActionTest.TEST_MEANS_DATASET_ID))
+				.thenReturn(this.createTrialEnvironments());
 		Mockito.when(
-				this.studyDataManager.checkIfAnyLocationIDsExistInExperiments(Mockito.anyInt(), Mockito.any(DataSetType.class),
-						Mockito.anyList())).thenReturn(true);
+				this.studyDataManager.checkIfAnyLocationIDsExistInExperiments(Matchers.anyInt(), Matchers.any(DataSetType.class),
+						Matchers.anyList())).thenReturn(true);
 
 		Mockito.when(this.messageSource.getMessage(Message.BV_UPLOAD_OVERWRITE_WARNING)).thenReturn("");
 		Mockito.when(this.messageSource.getMessage(Message.OK)).thenReturn("");
@@ -249,18 +254,18 @@ public class UploadBreedingViewOutputActionTest {
 		Mockito.when(this.bmsOutputParser.getOutlierFile()).thenReturn(null);
 		Mockito.when(this.bmsOutputParser.getBmsOutputInformation()).thenReturn(this.createBmsOutputInformation());
 
-		this.uploadBreedingViewOutputAction.processTheUploadedFile(this.event, TEST_STUDY_ID,
+		this.uploadBreedingViewOutputAction.processTheUploadedFile(this.event, UploadBreedingViewOutputActionTest.TEST_STUDY_ID,
 				this.fileUploadBreedingViewOutputWindow.getProject());
 
-		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importMeansData(Mockito.any(File.class), Mockito.anyInt(),
-				Mockito.anyMap());
-		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importSummaryStatsData(Mockito.any(File.class), Mockito.anyInt(),
-				Mockito.anyMap());
-		Mockito.verify(this.breedingViewImportService, Mockito.times(0)).importOutlierData(Mockito.any(File.class), Mockito.anyInt(),
-				Mockito.anyMap());
+		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importMeansData(Matchers.any(File.class), Matchers.anyInt(),
+				Matchers.anyMap());
+		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importSummaryStatsData(Matchers.any(File.class),
+				Matchers.anyInt(), Matchers.anyMap());
+		Mockito.verify(this.breedingViewImportService, Mockito.times(0)).importOutlierData(Matchers.any(File.class), Matchers.anyInt(),
+				Matchers.anyMap());
 
 		Mockito.verify(this.messageSource).getMessage(Message.BV_UPLOAD_SUCCESSFUL_HEADER);
-		Mockito.verify(this.parentWindow).removeWindow(Mockito.any(Window.class));
+		Mockito.verify(this.parentWindow).removeWindow(Matchers.any(Window.class));
 	}
 
 	@Test
@@ -272,17 +277,17 @@ public class UploadBreedingViewOutputActionTest {
 		Mockito.when(this.bmsOutputParser.getBmsOutputInformation()).thenReturn(this.createBmsOutputInformation());
 
 		Mockito.doThrow(new BreedingViewImportException()).when(this.breedingViewImportService)
-				.importMeansData(Mockito.any(File.class), Mockito.anyInt(), Mockito.anyMap());
+				.importMeansData(Matchers.any(File.class), Matchers.anyInt(), Matchers.anyMap());
 
-		this.uploadBreedingViewOutputAction.processTheUploadedFile(this.event, TEST_STUDY_ID,
+		this.uploadBreedingViewOutputAction.processTheUploadedFile(this.event, UploadBreedingViewOutputActionTest.TEST_STUDY_ID,
 				this.fileUploadBreedingViewOutputWindow.getProject());
 
-		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importMeansData(Mockito.any(File.class), Mockito.anyInt(),
-				Mockito.anyMap());
-		Mockito.verify(this.breedingViewImportService, Mockito.times(0)).importSummaryStatsData(Mockito.any(File.class), Mockito.anyInt(),
-				Mockito.anyMap());
-		Mockito.verify(this.breedingViewImportService, Mockito.times(0)).importOutlierData(Mockito.any(File.class), Mockito.anyInt(),
-				Mockito.anyMap());
+		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importMeansData(Matchers.any(File.class), Matchers.anyInt(),
+				Matchers.anyMap());
+		Mockito.verify(this.breedingViewImportService, Mockito.times(0)).importSummaryStatsData(Matchers.any(File.class),
+				Matchers.anyInt(), Matchers.anyMap());
+		Mockito.verify(this.breedingViewImportService, Mockito.times(0)).importOutlierData(Matchers.any(File.class), Matchers.anyInt(),
+				Matchers.anyMap());
 
 		Mockito.verify(this.messageSource).getMessage(Message.BV_UPLOAD_ERROR_HEADER);
 		Mockito.verify(this.messageSource).getMessage(Message.BV_UPLOAD_ERROR_CANNOT_UPLOAD_MEANS);
@@ -293,91 +298,93 @@ public class UploadBreedingViewOutputActionTest {
 	public void testGetLocationIdsBasedOnInformationFromMeansDataFile() throws IOException {
 
 		Mockito.when(this.bmsOutputParser.getBmsOutputInformation()).thenReturn(this.createBmsOutputInformation());
-		Mockito.when(this.studyDataManager.getDataSetsByType(TEST_STUDY_ID, DataSetType.MEANS_DATA)).thenReturn(this.createDataSetList());
-		Mockito.when(this.studyDataManager.getTrialEnvironmentsInDataset(TEST_MEANS_DATASET_ID)).thenReturn(this.createTrialEnvironments());
+		Mockito.when(this.studyDataManager.getDataSetsByType(UploadBreedingViewOutputActionTest.TEST_STUDY_ID, DataSetType.MEANS_DATA))
+				.thenReturn(this.createDataSetList());
+		Mockito.when(this.studyDataManager.getTrialEnvironmentsInDataset(UploadBreedingViewOutputActionTest.TEST_MEANS_DATASET_ID))
+				.thenReturn(this.createTrialEnvironments());
 
-		List<Integer> locationIds =
-				this.uploadBreedingViewOutputAction.getLocationIdsBasedOnInformationFromMeansDataFile(TEST_STUDY_ID,
-						Mockito.mock(File.class));
+		final List<Integer> locationIds =
+				this.uploadBreedingViewOutputAction.getLocationIdsBasedOnInformationFromMeansDataFile(
+						UploadBreedingViewOutputActionTest.TEST_STUDY_ID, Mockito.mock(File.class));
 
 		Assert.assertEquals("The test means data has only one trial instance", 1, locationIds.size());
-		Assert.assertEquals(LOCATION_ID1, locationIds.get(0).intValue());
+		Assert.assertEquals(UploadBreedingViewOutputActionTest.LOCATION_ID1, locationIds.get(0).intValue());
 
 	}
 
 	private Project createProject() {
-		Project project = new Project();
-		project.setProjectId(TEST_PROJECT_ID);
+		final Project project = new Project();
+		project.setProjectId(UploadBreedingViewOutputActionTest.TEST_PROJECT_ID);
 		return project;
 	}
 
 	private TrialEnvironments createTrialEnvironments() {
 
-		TrialEnvironments trialEnvironments = new TrialEnvironments();
+		final TrialEnvironments trialEnvironments = new TrialEnvironments();
 
-		VariableList variableList = new VariableList();
+		final VariableList variableList = new VariableList();
 		variableList.add(this.createVariable(TermId.TRIAL_INSTANCE_FACTOR.getId(), "TRIAL_INSTANCE", "1"));
 
-		TrialEnvironment trialEnvironment1 = new TrialEnvironment(LOCATION_ID1, variableList);
+		final TrialEnvironment trialEnvironment1 = new TrialEnvironment(UploadBreedingViewOutputActionTest.LOCATION_ID1, variableList);
 		trialEnvironments.add(trialEnvironment1);
 
-		VariableList variableList2 = new VariableList();
+		final VariableList variableList2 = new VariableList();
 		variableList2.add(this.createVariable(TermId.TRIAL_INSTANCE_FACTOR.getId(), "TRIAL_INSTANCE", "2"));
 
-		TrialEnvironment trialEnvironment2 = new TrialEnvironment(LOCATION_ID2, variableList2);
+		final TrialEnvironment trialEnvironment2 = new TrialEnvironment(UploadBreedingViewOutputActionTest.LOCATION_ID2, variableList2);
 		trialEnvironments.add(trialEnvironment2);
 
 		return trialEnvironments;
 	}
 
 	private List<DataSet> createDataSetList() {
-		List<DataSet> dataSets = new ArrayList<>();
-		DataSet dataSet = new DataSet();
-		dataSet.setId(TEST_MEANS_DATASET_ID);
+		final List<DataSet> dataSets = new ArrayList<>();
+		final DataSet dataSet = new DataSet();
+		dataSet.setId(UploadBreedingViewOutputActionTest.TEST_MEANS_DATASET_ID);
 		dataSets.add(dataSet);
 		return dataSets;
 	}
 
-	private Variable createVariable(int termId, String localName, String value) {
-		Variable variable = new Variable();
+	private Variable createVariable(final int termId, final String localName, final String value) {
+		final Variable variable = new Variable();
 		variable.setVariableType(this.createDMSVariableType(termId, localName));
 		variable.setValue(value);
 		return variable;
 	}
 
-	private DMSVariableType createDMSVariableType(int termId, String localName) {
+	private DMSVariableType createDMSVariableType(final int termId, final String localName) {
 
-		DMSVariableType dmsVariableType = new DMSVariableType();
+		final DMSVariableType dmsVariableType = new DMSVariableType();
 		dmsVariableType.setStandardVariable(this.createStandardVariable(termId, localName));
 		dmsVariableType.setLocalName(localName);
 
 		return dmsVariableType;
 	}
 
-	private StandardVariable createStandardVariable(int termId, String name) {
-		StandardVariable standardVariable = new StandardVariable();
+	private StandardVariable createStandardVariable(final int termId, final String name) {
+		final StandardVariable standardVariable = new StandardVariable();
 		standardVariable.setId(termId);
 		standardVariable.setName(name);
 		return standardVariable;
 	}
 
 	private VariableTypeList createVariateVariableList() {
-		VariableTypeList variableTypeList = new VariableTypeList();
-		variableTypeList.add(this.createDMSVariableType(ASI_TERMID, "ASI"));
-		variableTypeList.add(this.createDMSVariableType(PLT_HEIGHT_TERMID, "PLANT HEIGHT"));
-		variableTypeList.add(this.createDMSVariableType(TWG_TERMID, "TWG?"));
+		final VariableTypeList variableTypeList = new VariableTypeList();
+		variableTypeList.add(this.createDMSVariableType(UploadBreedingViewOutputActionTest.ASI_TERMID, "ASI"));
+		variableTypeList.add(this.createDMSVariableType(UploadBreedingViewOutputActionTest.PLT_HEIGHT_TERMID, "PLANT HEIGHT"));
+		variableTypeList.add(this.createDMSVariableType(UploadBreedingViewOutputActionTest.TWG_TERMID, "TWG?"));
 		return variableTypeList;
 	}
 
 	private BMSOutputInformation createBmsOutputInformation() {
 
-		BMSOutputInformation bmsOutputInformation = new BMSOutputInformation();
+		final BMSOutputInformation bmsOutputInformation = new BMSOutputInformation();
 		bmsOutputInformation.setInputDataSetId(3);
 		bmsOutputInformation.setOutputDataSetId(4);
 		bmsOutputInformation.setStudyId(2);
 		bmsOutputInformation.setWorkbenchProjectId(1);
 
-		Set<String> environmentNames = new HashSet<>();
+		final Set<String> environmentNames = new HashSet<>();
 		environmentNames.add("1");
 
 		bmsOutputInformation.setEnvironmentFactorName("TRIAL_INSTANCE");

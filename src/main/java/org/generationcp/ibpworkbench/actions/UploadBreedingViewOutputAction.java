@@ -68,7 +68,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 	}
 
-	public UploadBreedingViewOutputAction(FileUploadBreedingViewOutputWindow fileUploadBreedingViewOutputWindow) {
+	public UploadBreedingViewOutputAction(final FileUploadBreedingViewOutputWindow fileUploadBreedingViewOutputWindow) {
 
 		this.window = fileUploadBreedingViewOutputWindow;
 		this.bmsOutputParser = new BMSOutputParser();
@@ -83,12 +83,12 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 		if (this.isUploadedZipFileValid(studyId, project)) {
 
-			List<Integer> locationIds = new ArrayList<>();
+			final List<Integer> locationIds = new ArrayList<>();
 			try {
 				locationIds.addAll(this.getLocationIdsBasedOnInformationFromMeansDataFile(studyId, this.bmsOutputParser.getMeansFile()));
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				// Do nothing here.
-				LOG.error(e.getMessage(), e);
+				UploadBreedingViewOutputAction.LOG.error(e.getMessage(), e);
 			}
 
 			boolean environmentExists = false;
@@ -126,7 +126,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 			this.window.getUploadZip().validate();
 
-		} catch (InvalidValueException e) {
+		} catch (final InvalidValueException e) {
 			UploadBreedingViewOutputAction.LOG.error(e.getMessage(), e);
 
 			MessageNotifier.showError(this.window.getParent(), this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_HEADER),
@@ -136,9 +136,9 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 		}
 
 		try {
-			CustomFileFactory uploadZipFileFactory = (CustomFileFactory) this.window.getUploadZip().getFileFactory();
+			final CustomFileFactory uploadZipFileFactory = (CustomFileFactory) this.window.getUploadZip().getFileFactory();
 			bmsOutputInformation = this.bmsOutputParser.parseZipFile(uploadZipFileFactory.getFile());
-		} catch (ZipFileInvalidContentException e1) {
+		} catch (final ZipFileInvalidContentException e1) {
 
 			MessageNotifier.showError(this.window.getParent(), this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_HEADER),
 					this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_INVALID_CONTENT));
@@ -157,19 +157,20 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 		return true;
 	}
 
-	protected List<Integer> getLocationIdsBasedOnInformationFromMeansDataFile(int studyId, File meansDataFile) throws IOException {
+	protected List<Integer> getLocationIdsBasedOnInformationFromMeansDataFile(final int studyId, final File meansDataFile)
+			throws IOException {
 
-		List<Integer> locationIds = new ArrayList<>();
+		final List<Integer> locationIds = new ArrayList<>();
 
-		BMSOutputInformation bmsOutputInformation = this.bmsOutputParser.getBmsOutputInformation();
+		final BMSOutputInformation bmsOutputInformation = this.bmsOutputParser.getBmsOutputInformation();
 
-		List<DataSet> datasets = this.studyDataManager.getDataSetsByType(studyId, DataSetType.MEANS_DATA);
+		final List<DataSet> datasets = this.studyDataManager.getDataSetsByType(studyId, DataSetType.MEANS_DATA);
 
 		if (!datasets.isEmpty()) {
-			TrialEnvironments trialEnvironments = this.studyDataManager.getTrialEnvironmentsInDataset(datasets.get(0).getId());
-			Set<TrialEnvironment> trialEnvironmentList = trialEnvironments.getTrialEnvironments();
-			for (TrialEnvironment trialEnvironment : trialEnvironmentList) {
-				for (String environmentName : bmsOutputInformation.getEnvironmentNames()) {
+			final TrialEnvironments trialEnvironments = this.studyDataManager.getTrialEnvironmentsInDataset(datasets.get(0).getId());
+			final Set<TrialEnvironment> trialEnvironmentList = trialEnvironments.getTrialEnvironments();
+			for (final TrialEnvironment trialEnvironment : trialEnvironmentList) {
+				for (final String environmentName : bmsOutputInformation.getEnvironmentNames()) {
 					if (this.containsValueByLocalName(bmsOutputInformation.getEnvironmentFactorName(), environmentName, trialEnvironment)) {
 						locationIds.add(trialEnvironment.getId());
 					}
@@ -181,9 +182,10 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 	}
 
-	protected boolean containsValueByLocalName(String environmentFactor, String environmentName, TrialEnvironment trialEnvironment) {
+	protected boolean containsValueByLocalName(final String environmentFactor, final String environmentName,
+			final TrialEnvironment trialEnvironment) {
 
-		Variable environmentFactorVariable = trialEnvironment.getVariables().findByLocalName(environmentFactor);
+		final Variable environmentFactorVariable = trialEnvironment.getVariables().findByLocalName(environmentFactor);
 		if (environmentFactorVariable != null) {
 
 			// Unfortunately, Breeding View cannot handle double quotes in CSV! It's very likely that the data that we
@@ -199,7 +201,8 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 		return false;
 	}
 
-	protected boolean isUploadedZipFileCompatibleWithCurrentStudy(BMSOutputInformation bmsInformation, int studyId, Project project) {
+	protected boolean isUploadedZipFileCompatibleWithCurrentStudy(final BMSOutputInformation bmsInformation, final int studyId,
+			final Project project) {
 
 		if (bmsInformation.getWorkbenchProjectId() != project.getProjectId() || bmsInformation.getStudyId() != studyId) {
 			return false;
@@ -209,9 +212,9 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 	}
 
-	public void processTheUploadedFile(ClickEvent event, int studyId, Project project) {
+	public void processTheUploadedFile(final ClickEvent event, final int studyId, final Project project) {
 
-		Map<String, String> localNameToAliasMap =
+		final Map<String, String> localNameToAliasMap =
 				this.generateNameAliasMap(this.bmsOutputParser.getBmsOutputInformation().getInputDataSetId());
 
 		try {
@@ -230,7 +233,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 			event.getComponent().getWindow().getParent().removeWindow(this.window);
 
-		} catch (BreedingViewImportException e) {
+		} catch (final BreedingViewImportException e) {
 
 			UploadBreedingViewOutputAction.LOG.error(e.getMessage(), e);
 
@@ -251,16 +254,16 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 	 * @param studyId
 	 * @return
 	 */
-	protected Map<String, String> generateNameAliasMap(int dataSetId) {
-		Map<String, String> map = new HashMap<>();
+	protected Map<String, String> generateNameAliasMap(final int dataSetId) {
+		final Map<String, String> map = new HashMap<>();
 
-		DataSet dataSet = this.studyDataManager.getDataSet(dataSetId);
-		VariableTypeList variableTypeList = dataSet.getVariableTypes().getVariates();
+		final DataSet dataSet = this.studyDataManager.getDataSet(dataSetId);
+		final VariableTypeList variableTypeList = dataSet.getVariableTypes().getVariates();
 
 		if (variableTypeList.getVariableTypes() != null) {
-			for (DMSVariableType variableType : variableTypeList.getVariableTypes()) {
+			for (final DMSVariableType variableType : variableTypeList.getVariableTypes()) {
 
-				String nameSanitized =
+				final String nameSanitized =
 						variableType.getLocalName().replaceAll(UploadBreedingViewOutputAction.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_");
 				map.put(nameSanitized, variableType.getLocalName());
 			}
