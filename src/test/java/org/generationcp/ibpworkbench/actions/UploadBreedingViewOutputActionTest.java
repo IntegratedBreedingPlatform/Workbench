@@ -5,16 +5,15 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.generationcp.commons.exceptions.BreedingViewImportException;
 import org.generationcp.commons.service.BreedingViewImportService;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.BMSOutputInformation;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.BMSOutputParser;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.BMSOutputParser.ZipFileInvalidContentException;
 import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow;
@@ -52,7 +51,7 @@ import com.vaadin.ui.Window;
 public class UploadBreedingViewOutputActionTest {
 
 	private static final int LOCATION_ID1 = 1;
-	private static final int LOCATION_ID2 = 1;
+	private static final int LOCATION_ID2 = 2;
 
 	private static final int ASI_TERMID = 1234;
 	private static final int PLT_HEIGHT_TERMID = 7653;
@@ -122,7 +121,9 @@ public class UploadBreedingViewOutputActionTest {
 		Mockito.when(this.component.getApplication()).thenReturn(this.application);
 		Mockito.when(this.application.getMainWindow()).thenReturn(this.window);
 
-		Mockito.when(this.studyDataManager.getAllStudyVariates(TEST_STUDY_ID)).thenReturn(this.createVariateVariableList());
+		DataSet plotDataSet = Mockito.mock(DataSet.class);
+		Mockito.when(plotDataSet.getVariableTypes()).thenReturn(this.createVariateVariableList());
+		Mockito.when(this.studyDataManager.getDataSet(Mockito.anyInt())).thenReturn(plotDataSet);
 
 	}
 
@@ -162,8 +163,8 @@ public class UploadBreedingViewOutputActionTest {
 		Mockito.when(this.uploadZip.getFileFactory()).thenReturn(this.customFileFactory);
 		Mockito.when(this.customFileFactory.getFile()).thenReturn(this.zipFile);
 
-		Map<String, String> bmsInformation = this.createBmsInformationMap();
-		bmsInformation.put(BMSOutputParser.WORKBENCH_PROJECT_ID_INFO, "99");
+		BMSOutputInformation bmsInformation = this.createBmsOutputInformation();
+		bmsInformation.setWorkbenchProjectId(99);
 		Mockito.when(this.bmsOutputParser.parseZipFile(this.zipFile)).thenReturn(bmsInformation);
 
 		ClassLoader.getSystemResource("").getPath();
@@ -183,9 +184,9 @@ public class UploadBreedingViewOutputActionTest {
 		Mockito.when(this.uploadZip.getFileFactory()).thenReturn(this.customFileFactory);
 		Mockito.when(this.customFileFactory.getFile()).thenReturn(this.zipFile);
 
-		Map<String, String> bmsInformation = this.createBmsInformationMap();
-		Mockito.when(this.bmsOutputParser.parseZipFile(this.zipFile)).thenReturn(bmsInformation);
-		Mockito.when(this.bmsOutputParser.extractEnvironmentInfoFromFile()).thenReturn(this.createEnvironmentInfo());
+		BMSOutputInformation bmsOutputInformation = this.createBmsOutputInformation();
+		Mockito.when(this.bmsOutputParser.parseZipFile(this.zipFile)).thenReturn(bmsOutputInformation);
+		Mockito.when(this.bmsOutputParser.getBmsOutputInformation()).thenReturn(bmsOutputInformation);
 		Mockito.when(this.bmsOutputParser.getMeansFile()).thenReturn(Mockito.mock(File.class));
 		Mockito.when(this.bmsOutputParser.getSummaryStatsFile()).thenReturn(Mockito.mock(File.class));
 		Mockito.when(this.bmsOutputParser.getOutlierFile()).thenReturn(Mockito.mock(File.class));
@@ -202,6 +203,8 @@ public class UploadBreedingViewOutputActionTest {
 		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importOutlierData(Mockito.any(File.class), Mockito.anyInt(),
 				Mockito.anyMap());
 
+		Mockito.verify(this.bmsOutputParser).deleteTemporaryFiles();
+
 		Mockito.verify(this.messageSource).getMessage(Message.BV_UPLOAD_SUCCESSFUL_HEADER);
 		Mockito.verify(this.parentWindow).removeWindow(Mockito.any(Window.class));
 
@@ -215,9 +218,9 @@ public class UploadBreedingViewOutputActionTest {
 		Mockito.when(this.uploadZip.getFileFactory()).thenReturn(this.customFileFactory);
 		Mockito.when(this.customFileFactory.getFile()).thenReturn(this.zipFile);
 
-		Map<String, String> bmsInformation = this.createBmsInformationMap();
-		Mockito.when(this.bmsOutputParser.parseZipFile(this.zipFile)).thenReturn(bmsInformation);
-		Mockito.when(this.bmsOutputParser.extractEnvironmentInfoFromFile()).thenReturn(this.createEnvironmentInfo());
+		BMSOutputInformation bmsOutputInformation = this.createBmsOutputInformation();
+		Mockito.when(this.bmsOutputParser.parseZipFile(this.zipFile)).thenReturn(bmsOutputInformation);
+		Mockito.when(this.bmsOutputParser.getBmsOutputInformation()).thenReturn(bmsOutputInformation);
 		Mockito.when(this.bmsOutputParser.getMeansFile()).thenReturn(Mockito.mock(File.class));
 		Mockito.when(this.bmsOutputParser.getSummaryStatsFile()).thenReturn(Mockito.mock(File.class));
 		Mockito.when(this.bmsOutputParser.getOutlierFile()).thenReturn(Mockito.mock(File.class));
@@ -244,6 +247,7 @@ public class UploadBreedingViewOutputActionTest {
 		Mockito.when(this.bmsOutputParser.getMeansFile()).thenReturn(Mockito.mock(File.class));
 		Mockito.when(this.bmsOutputParser.getSummaryStatsFile()).thenReturn(Mockito.mock(File.class));
 		Mockito.when(this.bmsOutputParser.getOutlierFile()).thenReturn(null);
+		Mockito.when(this.bmsOutputParser.getBmsOutputInformation()).thenReturn(this.createBmsOutputInformation());
 
 		this.uploadBreedingViewOutputAction.processTheUploadedFile(this.event, TEST_STUDY_ID,
 				this.fileUploadBreedingViewOutputWindow.getProject());
@@ -265,6 +269,7 @@ public class UploadBreedingViewOutputActionTest {
 		Mockito.when(this.bmsOutputParser.getMeansFile()).thenReturn(Mockito.mock(File.class));
 		Mockito.when(this.bmsOutputParser.getSummaryStatsFile()).thenReturn(Mockito.mock(File.class));
 		Mockito.when(this.bmsOutputParser.getOutlierFile()).thenReturn(Mockito.mock(File.class));
+		Mockito.when(this.bmsOutputParser.getBmsOutputInformation()).thenReturn(this.createBmsOutputInformation());
 
 		Mockito.doThrow(new BreedingViewImportException()).when(this.breedingViewImportService)
 				.importMeansData(Mockito.any(File.class), Mockito.anyInt(), Mockito.anyMap());
@@ -287,7 +292,7 @@ public class UploadBreedingViewOutputActionTest {
 	@Test
 	public void testGetLocationIdsBasedOnInformationFromMeansDataFile() throws IOException {
 
-		Mockito.when(this.bmsOutputParser.extractEnvironmentInfoFromFile()).thenReturn(this.createEnvironmentInfo());
+		Mockito.when(this.bmsOutputParser.getBmsOutputInformation()).thenReturn(this.createBmsOutputInformation());
 		Mockito.when(this.studyDataManager.getDataSetsByType(TEST_STUDY_ID, DataSetType.MEANS_DATA)).thenReturn(this.createDataSetList());
 		Mockito.when(this.studyDataManager.getTrialEnvironmentsInDataset(TEST_MEANS_DATASET_ID)).thenReturn(this.createTrialEnvironments());
 
@@ -319,7 +324,7 @@ public class UploadBreedingViewOutputActionTest {
 		VariableList variableList2 = new VariableList();
 		variableList2.add(this.createVariable(TermId.TRIAL_INSTANCE_FACTOR.getId(), "TRIAL_INSTANCE", "2"));
 
-		TrialEnvironment trialEnvironment2 = new TrialEnvironment(LOCATION_ID2, variableList);
+		TrialEnvironment trialEnvironment2 = new TrialEnvironment(LOCATION_ID2, variableList2);
 		trialEnvironments.add(trialEnvironment2);
 
 		return trialEnvironments;
@@ -364,24 +369,20 @@ public class UploadBreedingViewOutputActionTest {
 		return variableTypeList;
 	}
 
-	private Map<String, String> createBmsInformationMap() {
-		Map<String, String> bmsInformationMap = new HashMap<>();
-		bmsInformationMap.put(BMSOutputParser.INPUT_DATASET_ID_INFO, "3");
-		bmsInformationMap.put(BMSOutputParser.OUTPUT_DATASET_ID_INFO, "4");
-		bmsInformationMap.put(BMSOutputParser.STUDY_ID_INFO, "2");
-		bmsInformationMap.put(BMSOutputParser.WORKBENCH_PROJECT_ID_INFO, "1");
-		return bmsInformationMap;
-	}
+	private BMSOutputInformation createBmsOutputInformation() {
 
-	private Map<String, Object> createEnvironmentInfo() {
-		Map environmentInfoMap = new HashMap<>();
-		environmentInfoMap.put(BMSOutputParser.ENVIRONMENT_FACTOR, "TRIAL_INSTANCE");
+		BMSOutputInformation bmsOutputInformation = new BMSOutputInformation();
+		bmsOutputInformation.setInputDataSetId(3);
+		bmsOutputInformation.setOutputDataSetId(4);
+		bmsOutputInformation.setStudyId(2);
+		bmsOutputInformation.setWorkbenchProjectId(1);
 
 		Set<String> environmentNames = new HashSet<>();
 		environmentNames.add("1");
-		environmentInfoMap.put(BMSOutputParser.ENVIRONMENT_NAMES, environmentNames);
 
-		return environmentInfoMap;
+		bmsOutputInformation.setEnvironmentFactorName("TRIAL_INSTANCE");
+		bmsOutputInformation.setEnvironmentNames(environmentNames);
+		return bmsOutputInformation;
 	}
 
 }

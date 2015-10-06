@@ -4,9 +4,6 @@ package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.BMSOutputParser.ZipFileInvalidContentException;
 import org.junit.Assert;
@@ -31,18 +28,19 @@ public class BMSOutputParserTest {
 
 		bmsOutputParser.setUploadDirectory(ClassLoader.getSystemResource("").getPath());
 
-		Map<String, String> bmsInformation = bmsOutputParser.parseZipFile(bmsOutputZipFile);
+		BMSOutputInformation bmsInformation = bmsOutputParser.parseZipFile(bmsOutputZipFile);
 
-		Assert.assertEquals("3", bmsInformation.get(BMSOutputParser.INPUT_DATASET_ID_INFO));
-		Assert.assertEquals("4", bmsInformation.get(BMSOutputParser.OUTPUT_DATASET_ID_INFO));
-		Assert.assertEquals("2", bmsInformation.get(BMSOutputParser.STUDY_ID_INFO));
-		Assert.assertEquals("1", bmsInformation.get(BMSOutputParser.WORKBENCH_PROJECT_ID_INFO));
+		Assert.assertEquals(3, bmsInformation.getInputDataSetId());
+		Assert.assertEquals(4, bmsInformation.getOutputDataSetId());
+		Assert.assertEquals(2, bmsInformation.getStudyId());
+		Assert.assertEquals(1, bmsInformation.getWorkbenchProjectId());
 
 		Assert.assertNotNull(bmsOutputParser.getMeansFile());
 		Assert.assertNotNull(bmsOutputParser.getOutlierFile());
 		Assert.assertNotNull(bmsOutputParser.getSummaryStatsFile());
 
 		bmsOutputParser.deleteTemporaryFiles();
+
 	}
 
 	@Test(expected = ZipFileInvalidContentException.class)
@@ -63,14 +61,14 @@ public class BMSOutputParserTest {
 		bmsOutputParser.setUploadDirectory(ClassLoader.getSystemResource("").getPath());
 
 		bmsOutputParser.parseZipFile(bmsOutputZipFile);
-		Map<String, Object> environmentInfo = bmsOutputParser.extractEnvironmentInfoFromFile();
 
-		Assert.assertEquals("TRIAL_INSTANCE", environmentInfo.get(BMSOutputParser.ENVIRONMENT_FACTOR));
+		BMSOutputInformation bmsInformation = new BMSOutputInformation();
+		bmsOutputParser.extractEnvironmentInfoFromFile(bmsOutputParser.getMeansFile(), bmsInformation);
 
-		Set<String> ennvironmentNames = (HashSet) environmentInfo.get(BMSOutputParser.ENVIRONMENT_NAMES);
+		Assert.assertEquals("TRIAL_INSTANCE", bmsInformation.getEnvironmentFactorName());
 
-		Assert.assertTrue(!ennvironmentNames.isEmpty());
-		Assert.assertTrue(ennvironmentNames.contains("1"));
+		Assert.assertTrue(!bmsInformation.getEnvironmentNames().isEmpty());
+		Assert.assertTrue(bmsInformation.getEnvironmentNames().contains("1"));
 
 		bmsOutputParser.deleteTemporaryFiles();
 

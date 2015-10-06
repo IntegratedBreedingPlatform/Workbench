@@ -15,6 +15,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.BMSOutputInformation;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.BMSOutputParser;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.BMSOutputParser.ZipFileInvalidContentException;
 import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow;
@@ -119,7 +120,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 	protected boolean isUploadedZipFileValid(final int studyId, final Project project) {
 
-		Map<String, String> bmsInformation;
+		BMSOutputInformation bmsOutputInformation;
 
 		try {
 
@@ -136,7 +137,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 		try {
 			CustomFileFactory uploadZipFileFactory = (CustomFileFactory) this.window.getUploadZip().getFileFactory();
-			bmsInformation = this.bmsOutputParser.parseZipFile(uploadZipFileFactory.getFile());
+			bmsOutputInformation = this.bmsOutputParser.parseZipFile(uploadZipFileFactory.getFile());
 		} catch (ZipFileInvalidContentException e1) {
 
 			MessageNotifier.showError(this.window.getParent(), this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_HEADER),
@@ -145,7 +146,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 			return false;
 		}
 
-		if (!this.isUploadedZipFileCompatibleWithCurrentStudy(bmsInformation, studyId, project)) {
+		if (!this.isUploadedZipFileCompatibleWithCurrentStudy(bmsOutputInformation, studyId, project)) {
 
 			MessageNotifier.showError(this.window.getParent(), this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_HEADER),
 					this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_NOT_COMPATIBLE));
@@ -157,11 +158,10 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 	}
 
 	protected List<Integer> getLocationIdsBasedOnInformationFromMeansDataFile(int studyId, File meansDataFile) throws IOException {
+
 		List<Integer> locationIds = new ArrayList<>();
 
-		Map<String, Object> environmentInfo = this.bmsOutputParser.extractEnvironmentInfoFromFile();
-		String environmentFactor = (String) environmentInfo.get(BMSOutputParser.ENVIRONMENT_FACTOR);
-		Set<String> environmentNames = (Set<String>) environmentInfo.get(BMSOutputParser.ENVIRONMENT_NAMES);
+		BMSOutputInformation bmsOutputInformation = this.bmsOutputParser.getBmsOutputInformation();
 
 		List<DataSet> datasets = this.studyDataManager.getDataSetsByType(studyId, DataSetType.MEANS_DATA);
 
@@ -169,8 +169,8 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 			TrialEnvironments trialEnvironments = this.studyDataManager.getTrialEnvironmentsInDataset(datasets.get(0).getId());
 			Set<TrialEnvironment> trialEnvironmentList = trialEnvironments.getTrialEnvironments();
 			for (TrialEnvironment trialEnvironment : trialEnvironmentList) {
-				for (String environmentName : environmentNames) {
-					if (this.containsValueByLocalName(environmentFactor, environmentName, trialEnvironment)) {
+				for (String environmentName : bmsOutputInformation.getEnvironmentNames()) {
+					if (this.containsValueByLocalName(bmsOutputInformation.getEnvironmentFactorName(), environmentName, trialEnvironment)) {
 						locationIds.add(trialEnvironment.getId());
 					}
 				}
@@ -199,11 +199,9 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 		return false;
 	}
 
-	protected boolean isUploadedZipFileCompatibleWithCurrentStudy(Map<String, String> bmsInformation, int studyId, Project project) {
+	protected boolean isUploadedZipFileCompatibleWithCurrentStudy(BMSOutputInformation bmsInformation, int studyId, Project project) {
 
-		if (!bmsInformation.isEmpty() && !bmsInformation.get("WorkbenchProjectId").equals(project.getProjectId().toString())
-				|| !bmsInformation.get("StudyId").equals(String.valueOf(studyId))) {
-
+		if (bmsInformation.getWorkbenchProjectId() != project.getProjectId() || bmsInformation.getStudyId() != studyId) {
 			return false;
 		} else {
 			return true;
@@ -213,7 +211,8 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 	public void processTheUploadedFile(ClickEvent event, int studyId, Project project) {
 
-		Map<String, String> localNameToAliasMap = this.generateNameAliasMap(studyId);
+		Map<String, String> localNameToAliasMap =
+				this.generateNameAliasMap(this.bmsOutputParser.getBmsOutputInformation().getInputDataSetId());
 
 		try {
 
@@ -226,6 +225,8 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 			MessageNotifier.showMessage(this.window.getParent(), this.messageSource.getMessage(Message.BV_UPLOAD_SUCCESSFUL_HEADER),
 					this.messageSource.getMessage(Message.BV_UPLOAD_SUCCESSFUL_DESCRIPTION));
+
+			this.bmsOutputParser.deleteUploadedZipFile();
 
 			event.getComponent().getWindow().getParent().removeWindow(this.window);
 
@@ -242,10 +243,19 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 	}
 
-	protected Map<String, String> generateNameAliasMap(int studyId) {
+	/**
+	 * Breeding View only supports alphanumeric, dash, underscore and percentage characters in trait header names. When we generate the
+	 * input file for Breeding View, we replace the invalid characters in trait header names with underscore. We create this map so that BMS
+	 * knows the original name of the traits.
+	 * 
+	 * @param studyId
+	 * @return
+	 */
+	protected Map<String, String> generateNameAliasMap(int dataSetId) {
 		Map<String, String> map = new HashMap<>();
 
-		VariableTypeList variableTypeList = this.studyDataManager.getAllStudyVariates(studyId);
+		DataSet dataSet = this.studyDataManager.getDataSet(dataSetId);
+		VariableTypeList variableTypeList = dataSet.getVariableTypes().getVariates();
 
 		if (variableTypeList.getVariableTypes() != null) {
 			for (DMSVariableType variableType : variableTypeList.getVariableTypes()) {

@@ -5,9 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -19,26 +17,30 @@ import org.slf4j.LoggerFactory;
 import au.com.bytecode.opencsv.CSVReader;
 
 /**
- * Parser for Breeding View's output files.
+ * Parser for Breeding View's output file.
  * 
  * @author Aldrin Batac
  * 
  */
 public class BMSOutputParser {
 
+	private static final String BMS_OUTLIER_FILENAME = "BMSOutlier";
+
+	private static final String BMS_SUMMARY_FILENAME = "BMSSummary";
+
 	private static final Logger LOG = LoggerFactory.getLogger(BMSOutputParser.class);
 
-	public static final String ENVIRONMENT_FACTOR = "environmentFactor";
+	private static final String BMS_OUTPUT_FILENAME = "BMSOutput";
 
-	public static final String ENVIRONMENT_NAMES = "environmentNames";
+	private static final String BMS_INFORMATION_FILENAME = "BMSInformation";
 
-	public static final String INPUT_DATASET_ID_INFO = "InputDataSetId";
+	private static final String INPUT_DATASET_ID_INFO = "InputDataSetId";
 
-	public static final String OUTPUT_DATASET_ID_INFO = "OutputDataSetId";
+	private static final String OUTPUT_DATASET_ID_INFO = "OutputDataSetId";
 
-	public static final String STUDY_ID_INFO = "StudyId";
+	private static final String STUDY_ID_INFO = "StudyId";
 
-	public static final String WORKBENCH_PROJECT_ID_INFO = "WorkbenchProjectId";
+	private static final String WORKBENCH_PROJECT_ID_INFO = "WorkbenchProjectId";
 
 	private CSVReaderBuilder csvReaderBuilder;
 
@@ -54,78 +56,83 @@ public class BMSOutputParser {
 
 	private String uploadDirectory = "temp";
 
+	private BMSOutputInformation bmsOutputInformation;
+
 	public BMSOutputParser() {
 		this.csvReaderBuilder = new CSVReaderBuilder();
 	}
 
-	public Map<String, String> parseZipFile(File bmsOutputZipFile) throws ZipFileInvalidContentException {
+	public BMSOutputInformation parseZipFile(File bmsOutputZipFile) throws ZipFileInvalidContentException {
 		this.zipFile = bmsOutputZipFile;
-		return this.uncompressTheUploadedZipFile(bmsOutputZipFile);
+		this.bmsOutputInformation = this.uncompressAndParseTheUploadedZipFile(this.zipFile);
+		return this.bmsOutputInformation;
 	}
 
-	public Map<String, Object> extractEnvironmentInfoFromFile() throws IOException {
+	public void extractEnvironmentInfoFromFile(File file, BMSOutputInformation environmentInfo) {
 
-		Map<String, Object> environmentInfo = new HashMap<>();
-
-		CSVReader reader = this.csvReaderBuilder.build(this.meansFile);
+		CSVReader reader;
+		try {
+			reader = this.csvReaderBuilder.build(file);
+		} catch (FileNotFoundException e) {
+			LOG.error(e.getMessage(), e);
+			return;
+		}
 		String nextLine[];
 
-		// The first name in the first record is the environment factor name
-		if ((nextLine = reader.readNext()) != null) {
-			environmentInfo.put(ENVIRONMENT_FACTOR, nextLine[0]);
-		}
-
-		// Get the distinct environment names
 		Set<String> environmentNames = new HashSet<>();
-		while ((nextLine = reader.readNext()) != null) {
-			environmentNames.add(nextLine[0]);
+
+		try {
+
+			// The first name in the first record is the environment factor name
+			if ((nextLine = reader.readNext()) != null) {
+				environmentInfo.setEnvironmentFactorName(nextLine[0]);
+			}
+
+			// Get the distinct environment names
+			while ((nextLine = reader.readNext()) != null) {
+				environmentNames.add(nextLine[0]);
+			}
+
+			reader.close();
+
+			environmentInfo.setEnvironmentNames(environmentNames);
+
+		} catch (IOException e) {
+
+			LOG.error(e.getMessage(), e);
 		}
 
-		environmentInfo.put(ENVIRONMENT_NAMES, environmentNames);
+	}
 
-		reader.close();
+	protected BMSOutputInformation uncompressAndParseTheUploadedZipFile(File zipFile) throws ZipFileInvalidContentException {
+
+		BMSOutputInformation environmentInfo = new BMSOutputInformation();
+
+		String zipFilePath = zipFile.getAbsolutePath();
+
+		this.bmsInformationFile = ZipUtil.extractZipSpecificFile(zipFilePath, BMS_INFORMATION_FILENAME, this.uploadDirectory);
+
+		this.meansFile = ZipUtil.extractZipSpecificFile(zipFilePath, BMS_OUTPUT_FILENAME, this.uploadDirectory);
+
+		this.summaryStatsFile = ZipUtil.extractZipSpecificFile(zipFilePath, BMS_SUMMARY_FILENAME, this.uploadDirectory);
+
+		this.outlierFile = ZipUtil.extractZipSpecificFile(zipFilePath, BMS_OUTLIER_FILENAME, this.uploadDirectory);
+
+		if (this.bmsInformationFile == null || this.meansFile == null) {
+			throw new ZipFileInvalidContentException("The zip file " + zipFile.getName() + " is invalid for BMS upload");
+		}
+
+		this.extractEnvironmentInfoFromFile(this.meansFile, environmentInfo);
+		this.extractBmsInformationFromFile(this.bmsInformationFile, environmentInfo);
 
 		return environmentInfo;
 
 	}
 
-	public File getMeansFile() {
-		return this.meansFile;
-	}
-
-	public File getSummaryStatsFile() {
-		return this.summaryStatsFile;
-	}
-
-	public File getOutlierFile() {
-		return this.outlierFile;
-	}
-
-	protected Map<String, String> uncompressTheUploadedZipFile(File zipFile) throws ZipFileInvalidContentException {
-
-		String zipFilePath = zipFile.getAbsolutePath();
-
-		this.bmsInformationFile = ZipUtil.extractZipSpecificFile(zipFilePath, "BMSInformation", this.uploadDirectory);
-
-		this.meansFile = ZipUtil.extractZipSpecificFile(zipFilePath, "BMSOutput", this.uploadDirectory);
-
-		this.summaryStatsFile = ZipUtil.extractZipSpecificFile(zipFilePath, "BMSSummary", this.uploadDirectory);
-
-		this.outlierFile = ZipUtil.extractZipSpecificFile(zipFilePath, "BMSOutlier", this.uploadDirectory);
-
-		if (this.bmsInformationFile == null) {
-			throw new ZipFileInvalidContentException("The zip file " + zipFile.getName() + " is invalid for BMS upload");
-		}
-
-		return this.parseBmsInformationTextFile(this.bmsInformationFile);
-
-	}
-
-	protected Map<String, String> parseBmsInformationTextFile(File file) {
-		Map<String, String> result = new HashMap<String, String>();
+	protected void extractBmsInformationFromFile(File file, BMSOutputInformation bmsOutputInformation) {
 
 		if (file == null) {
-			return result;
+			return;
 		}
 
 		Scanner scanner = null;
@@ -133,7 +140,7 @@ public class BMSOutputParser {
 			scanner = new Scanner(new FileReader(file));
 		} catch (FileNotFoundException e) {
 			LOG.error(e.getMessage(), e);
-			return result;
+			return;
 		}
 
 		try {
@@ -141,13 +148,32 @@ public class BMSOutputParser {
 				String line = scanner.nextLine();
 				if (!line.startsWith("#")) {
 					String[] mapping = line.split("=");
-					result.put(mapping[0], mapping[1]);
+					this.mapToBmsOutputInformation(mapping[0], mapping[1], bmsOutputInformation);
 				}
 			}
 		} finally {
 			scanner.close();
 		}
-		return result;
+		return;
+	}
+
+	protected void mapToBmsOutputInformation(String key, String value, BMSOutputInformation bmsOutputInformation) {
+
+		if (key.equals(INPUT_DATASET_ID_INFO)) {
+			bmsOutputInformation.setInputDataSetId(Integer.parseInt(value));
+		}
+
+		if (key.equals(OUTPUT_DATASET_ID_INFO)) {
+			bmsOutputInformation.setOutputDataSetId(Integer.parseInt(value));
+		}
+
+		if (key.equals(STUDY_ID_INFO)) {
+			bmsOutputInformation.setStudyId(Integer.parseInt(value));
+		}
+
+		if (key.equals(WORKBENCH_PROJECT_ID_INFO)) {
+			bmsOutputInformation.setWorkbenchProjectId(Integer.parseInt(value));
+		}
 	}
 
 	public static class ZipFileInvalidContentException extends Exception {
@@ -164,11 +190,13 @@ public class BMSOutputParser {
 
 	}
 
-	public void deleteTemporaryFiles() {
-
+	public void deleteUploadedZipFile() {
 		if (this.zipFile != null && this.zipFile.exists()) {
 			this.zipFile.delete();
 		}
+	}
+
+	public void deleteTemporaryFiles() {
 
 		if (this.meansFile != null && this.meansFile.exists()) {
 			this.meansFile.delete();
@@ -187,6 +215,22 @@ public class BMSOutputParser {
 
 	protected void setUploadDirectory(String uploadDirectory) {
 		this.uploadDirectory = uploadDirectory;
+	}
+
+	public File getMeansFile() {
+		return this.meansFile;
+	}
+
+	public File getSummaryStatsFile() {
+		return this.summaryStatsFile;
+	}
+
+	public File getOutlierFile() {
+		return this.outlierFile;
+	}
+
+	public BMSOutputInformation getBmsOutputInformation() {
+		return this.bmsOutputInformation;
 	}
 
 }
