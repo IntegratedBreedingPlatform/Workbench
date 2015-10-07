@@ -27,7 +27,6 @@ import org.generationcp.middleware.domain.dms.TrialEnvironment;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableTypeList;
-import org.generationcp.middleware.manager.api.OntologyDataManager;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -53,9 +52,6 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 	@Autowired
 	private StudyDataManager studyDataManager;
-
-	@Autowired
-	private OntologyDataManager ontologyDataManager;
 
 	@Autowired
 	private BreedingViewImportService breedingViewImportService;
@@ -140,6 +136,8 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 			bmsOutputInformation = this.bmsOutputParser.parseZipFile(uploadZipFileFactory.getFile());
 		} catch (final ZipFileInvalidContentException e1) {
 
+			UploadBreedingViewOutputAction.LOG.error(e1.getMessage(), e1);
+
 			MessageNotifier.showError(this.window.getParent(), this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_HEADER),
 					this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_INVALID_CONTENT));
 
@@ -194,9 +192,8 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 			// name from the database, so we have no choice but to replace the comma in location name to properly match it from the data
 			// from the CSV file.
 
-			if (environmentName.equals(environmentFactorVariable.getValue().replace(",", ";"))) {
-				return true;
-			}
+			return environmentName.equals(environmentFactorVariable.getValue().replace(",", ";"));
+
 		}
 		return false;
 	}
@@ -204,11 +201,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 	protected boolean isUploadedZipFileCompatibleWithCurrentStudy(final BMSOutputInformation bmsInformation, final int studyId,
 			final Project project) {
 
-		if (bmsInformation.getWorkbenchProjectId() != project.getProjectId() || bmsInformation.getStudyId() != studyId) {
-			return false;
-		} else {
-			return true;
-		}
+		return bmsInformation.getWorkbenchProjectId() == project.getProjectId() && bmsInformation.getStudyId() == studyId;
 
 	}
 

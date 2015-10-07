@@ -77,7 +77,7 @@ public class BMSOutputParser {
 			BMSOutputParser.LOG.error(e.getMessage(), e);
 			return;
 		}
-		String nextLine[];
+		String[] nextLine;
 
 		final Set<String> environmentNames = new HashSet<>();
 
