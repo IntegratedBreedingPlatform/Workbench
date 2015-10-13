@@ -14,22 +14,22 @@ public class AskSupportFormModel {
 	private String requestCategory;
 
 	public static final String[] CATEGORIES=  new String[]{
-		"Analysis",
-		"Breeder Queries",
-		"Breeding Processes",
-		"Browser Tools",
-		"Crossing Manager",
-		"Data Import Tool",
-		"Data Management",
-		"Documentation",
-		"GDMS",
-		"Germplasm Import",
-		"Label Printing",
-		"List Manager",
-		"Nursery Manager",
-		"Ontology Manager",
-		"Trial Manager",
-		"Workbench/Program Admin"
+		"support.category.analysis",
+		"support.category.breeder.queries",
+		"support.category.breeding.processes",
+		"support.category.browser.tools",
+		"support.category.crossing.manager",
+		"support.category.data.import.tool",
+		"support.category.data.management",
+		"support.category.documentation",
+		"support.category.gdms",
+		"support.category.germplasm.import",
+		"support.category.label.printing",
+		"support.category.list.manager",
+		"support.category.nursery.manager",
+		"support.category.ontology.manager",
+		"support.category.trial.manager",
+		"support.category.workbench.program.admin"
 	};
 
 	public AskSupportFormModel() {
