@@ -14,11 +14,22 @@ public class AskSupportFormModel {
 	private String requestCategory;
 
 	public static final String[] CATEGORIES=  new String[]{
-			"Breeding Processes",
-			"Data Management",
-			"Templates",
-			"Documentation",
-			"Feature Improvement"
+		"Analysis",
+		"Breeder Queries",
+		"Breeding Processes",
+		"Browser Tools",
+		"Crossing Manager",
+		"Data Import Tool",
+		"Data Management",
+		"Documentation",
+		"GDMS",
+		"Germplasm Import",
+		"Label Printing",
+		"List Manager",
+		"Nursery Manager",
+		"Ontology Manager",
+		"Trial Manager",
+		"Workbench/Program Admin"
 	};
 
 	public AskSupportFormModel() {
