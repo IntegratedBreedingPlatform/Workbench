@@ -17,7 +17,7 @@ import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.GxeTable;
-import org.generationcp.ibpworkbench.util.DatasetUtil;
+import org.generationcp.middleware.util.DatasetUtil;
 import org.generationcp.ibpworkbench.util.GxeInput;
 import org.generationcp.ibpworkbench.util.GxeUtility;
 import org.generationcp.ibpworkbench.util.ToolUtil;
