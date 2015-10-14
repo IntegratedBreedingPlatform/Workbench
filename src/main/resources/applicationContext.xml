@@ -140,6 +140,26 @@
 		factory-method="getOntologyDataManager" scope="request">
 		<aop:scoped-proxy />
 	</bean>
+	
+	<bean id="ontologyVariableDataManager" factory-bean="managerFactory"
+		factory-method="getOntologyVariableDataManager" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+	
+	<bean id="methodDataManager" factory-bean="managerFactory"
+		factory-method="getOntologyMethodDataManager" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+	
+	<bean id="ontologyDaoFactory" factory-bean="managerFactory"
+		factory-method="getOntologyDaoFactory" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+	
+	<bean id="standardVariableTransformer" factory-bean="managerFactory"
+		factory-method="getStandardVariableTransformer" scope="request">
+		<aop:scoped-proxy />
+	</bean>
 
 	<bean id="ontologyService" factory-bean="managerFactory"
 		factory-method="getOntologyService" scope="request">
