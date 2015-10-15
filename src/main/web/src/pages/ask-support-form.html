@@ -60,7 +60,7 @@
 				<select ng-model="form.requestCategory" name="requestCategory" id="requestCategorySelect" class="form-control">
 					<option th:each="category,iterStat : ${requestCategories}"
 							th:value="${iterStat.index}"
-							th:text="${category}">Category
+							th:text="#{${category}}">Category
 					</option>
 				</select>
 			</div>
