@@ -100,7 +100,7 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 	protected void addAdminCategoryLinks(List<WorkbenchSidebarCategoryLink> categoryLinks, WorkbenchSidebarCategory category) {
 		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "manage_program", "Manage Program Settings"));
 		if (this.isBackupAndRestoreEnabled != null && Boolean.valueOf(this.isBackupAndRestoreEnabled)) {
-			categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "recovery", "Backup and Restore Program Data"));
+			categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "recovery", "Backup and Restore"));
 		}
 		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "user_tools", "Manage User-Added Tools"));
 		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "tool_versions", "Tools and Crops Versions"));

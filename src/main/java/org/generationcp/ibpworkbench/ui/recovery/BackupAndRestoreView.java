@@ -211,7 +211,8 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 
 					if (BackupAndRestoreView.this.restoreList.getValue() == null) {
 						MessageNotifier.showError(clickEvent.getComponent().getWindow(),
-								BackupAndRestoreView.this.messageSource.getMessage(Message.ERROR_UPLOAD), "No project backup is selected");
+								BackupAndRestoreView.this.messageSource.getMessage(Message.ERROR_UPLOAD), 
+								BackupAndRestoreView.this.messageSource.getMessage(Message.RESTORE_NO_BACKUP_SELECTED));
 						return;
 					}
 
@@ -219,13 +220,14 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 					restoreAction.setIsUpload(false);
 				}
 
-				String restoreDescMessageFormat = "%s<br/><br/><b style='color:red'>%s</b>";
+				String restoreDescMessageFormat = "<b style='color:red'>%s</b><br/><br/>%s";
 
 				ConfirmDialog dialog =
 						ConfirmDialog.show(clickEvent.getComponent().getWindow(), BackupAndRestoreView.this.messageSource
 								.getMessage(Message.RESTORE_IBDB_WINDOW_CAPTION), String.format(restoreDescMessageFormat,
-								BackupAndRestoreView.this.messageSource.getMessage(Message.RESTORE_IBDB_CONFIRM),
-								BackupAndRestoreView.this.messageSource.getMessage("RESTORE_BMS_WARN")),
+								BackupAndRestoreView.this.messageSource.getMessage(Message.RESTORE_IBDB_CONFIRM, 
+										BackupAndRestoreView.this.sessionData.getLastOpenedProject().getDatabaseName()),
+								BackupAndRestoreView.this.messageSource.getMessage(Message.RESTORE_BMS_WARN)),
 								BackupAndRestoreView.this.messageSource.getMessage(Message.RESTORE),
 								BackupAndRestoreView.this.messageSource.getMessage(Message.CANCEL), restoreAction);
 				dialog.setContentMode(ConfirmDialog.CONTENT_HTML);
