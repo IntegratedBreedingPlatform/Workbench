@@ -30,22 +30,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-/**
- *
- * @deprecated No "on the fly" DB generation in merged db world. Keeping this class mainly as some backup/restore code (which also needs
- *             re-engineering BMS-209) refers to it.
- * @author Jeffrey Morales
- */
 @Configurable
-@Deprecated
-public class IBDBGeneratorLocalDb extends IBDBGenerator {
+public class CropDatabaseGenerator extends IBDBGenerator {
 
-	public static final String DATABASE_LOCAL = "database/local";
+	public static final String DB_SCRIPT_FOLDER = "database/merged";
 
-	private static final Logger LOG = LoggerFactory.getLogger(IBDBGeneratorLocalDb.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CropDatabaseGenerator.class);
 
 	private CropType cropType;
-	private Long projectId;
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
@@ -53,13 +45,11 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
 	@Resource
 	private Properties workbenchProperties;
 
-	public IBDBGeneratorLocalDb() {
+	public CropDatabaseGenerator() {
 	}
 
-	public IBDBGeneratorLocalDb(CropType cropType, Long projectId) {
+	public CropDatabaseGenerator(CropType cropType) {
 		this.cropType = cropType;
-		this.projectId = projectId;
-
 	}
 
 	public boolean generateDatabase() {
@@ -68,8 +58,8 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
 
 		try {
 			this.createConnection();
-			this.createLocalDatabase();
-			this.createManagementSystems();
+			this.createCropDatabase();
+			this.runSchemaCreationScripts();
 			this.generatedDatabaseName = this.cropType.getDbName();
 			this.connection.setCatalog(this.generatedDatabaseName);
 			isGenerationSuccess = true;
@@ -78,7 +68,7 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
 			throw e;
 		} catch (SQLException e) {
 			isGenerationSuccess = false;
-			IBDBGeneratorLocalDb.handleDatabaseError(e);
+			CropDatabaseGenerator.handleDatabaseError(e);
 		} finally {
 			this.closeConnection();
 		}
@@ -86,7 +76,7 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
 		return isGenerationSuccess;
 	}
 
-	protected void createLocalDatabase() {
+	protected void createCropDatabase() {
 
 		String databaseName = this.cropType.getDbName();
 		StringBuilder createDatabaseSyntax = new StringBuilder();
@@ -142,26 +132,26 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
 
 			this.connection.setCatalog(databaseName);
 		} catch (SQLException e) {
-			IBDBGeneratorLocalDb.handleDatabaseError(e);
+			CropDatabaseGenerator.handleDatabaseError(e);
 		} finally {
 			if (statement != null) {
 				try {
 					statement.close();
 				} catch (SQLException e) {
-					IBDBGeneratorLocalDb.handleDatabaseError(e);
+					CropDatabaseGenerator.handleDatabaseError(e);
 				}
 			}
 		}
 	}
 
-	protected void createManagementSystems() {
+	protected void runSchemaCreationScripts() {
 		try {
 			WorkbenchSetting setting = this.workbenchDataManager.getWorkbenchSetting();
 			if (setting == null) {
 				throw new IllegalStateException("Workbench setting record not found");
 			}
 
-			File localDatabaseDirectory = new File(setting.getInstallationDirectory(), IBDBGeneratorLocalDb.DATABASE_LOCAL);
+			File localDatabaseDirectory = new File(setting.getInstallationDirectory(), CropDatabaseGenerator.DB_SCRIPT_FOLDER);
 			// run the common scripts
 			this.runScriptsInDirectory(this.generatedDatabaseName, new File(localDatabaseDirectory, "common"));
 
@@ -172,26 +162,22 @@ public class IBDBGeneratorLocalDb extends IBDBGenerator {
 			this.runScriptsInDirectory(this.generatedDatabaseName, new File(localDatabaseDirectory, "common-update"));
 
 		} catch (SQLFileException | MiddlewareQueryException e) {
-			IBDBGeneratorLocalDb.handleDatabaseError(e);
+			CropDatabaseGenerator.handleDatabaseError(e);
 		}
 	}
 
 	public static void handleDatabaseError(Exception e) {
-		IBDBGeneratorLocalDb.LOG.error(e.toString(), e);
+		CropDatabaseGenerator.LOG.error(e.toString(), e);
 		throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
 	}
 
 	public static void handleConfigurationError(Exception e) {
-		IBDBGeneratorLocalDb.LOG.error(e.toString(), e);
+		CropDatabaseGenerator.LOG.error(e.toString(), e);
 		throw new InternationalizableException(e, Message.CONFIG_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
 	}
 
 	public void setCropType(CropType cropType) {
 		this.cropType = cropType;
-	}
-
-	public void setProjectId(Long projectId) {
-		this.projectId = projectId;
 	}
 
 	public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {

@@ -17,7 +17,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class IBDBGeneratorLocalDbTest {
+public class CropDatabaseGeneratorTest {
 
 	private final CropType cropType = new CropType();
 
@@ -28,7 +28,7 @@ public class IBDBGeneratorLocalDbTest {
 	private Connection connection;
 
 	@InjectMocks
-	private final IBDBGeneratorLocalDb localDbGenerator = Mockito.spy(new IBDBGeneratorLocalDb(this.cropType, 1L));
+	private final CropDatabaseGenerator cropDbGenerator = Mockito.spy(new CropDatabaseGenerator(this.cropType));
 
 	@Before
 	public void setup() throws Exception {
@@ -43,22 +43,22 @@ public class IBDBGeneratorLocalDbTest {
 		setting.setInstallationDirectory("C:/BMS");
 		Mockito.doReturn(setting).when(this.workbenchManager).getWorkbenchSetting();
 
-		Mockito.doNothing().when(this.localDbGenerator).createConnection();
-		Mockito.doNothing().when(this.localDbGenerator).createLocalDatabase();
-		Mockito.doNothing().when(this.localDbGenerator).runScriptsInDirectory(Matchers.anyString(), Matchers.any(File.class));
+		Mockito.doNothing().when(this.cropDbGenerator).createConnection();
+		Mockito.doNothing().when(this.cropDbGenerator).createCropDatabase();
+		Mockito.doNothing().when(this.cropDbGenerator).runScriptsInDirectory(Matchers.anyString(), Matchers.any(File.class));
 
-		this.localDbGenerator.generateDatabase();
+		this.cropDbGenerator.generateDatabase();
 
 		// verify that main steps of function are called
-		Mockito.verify(this.localDbGenerator, Mockito.times(1)).createConnection();
-		Mockito.verify(this.localDbGenerator, Mockito.times(1)).createLocalDatabase();
-		Mockito.verify(this.localDbGenerator, Mockito.times(1)).createManagementSystems();
+		Mockito.verify(this.cropDbGenerator, Mockito.times(1)).createConnection();
+		Mockito.verify(this.cropDbGenerator, Mockito.times(1)).createCropDatabase();
+		Mockito.verify(this.cropDbGenerator, Mockito.times(1)).runSchemaCreationScripts();
 
-		File localDatabaseDirectory = new File(setting.getInstallationDirectory(), IBDBGeneratorLocalDb.DATABASE_LOCAL);
-		Mockito.verify(this.localDbGenerator, Mockito.times(1)).runScriptsInDirectory(null, new File(localDatabaseDirectory, "common"));
-		Mockito.verify(this.localDbGenerator, Mockito.times(1)).runScriptsInDirectory(null,
+		File localDatabaseDirectory = new File(setting.getInstallationDirectory(), CropDatabaseGenerator.DB_SCRIPT_FOLDER);
+		Mockito.verify(this.cropDbGenerator, Mockito.times(1)).runScriptsInDirectory(null, new File(localDatabaseDirectory, "common"));
+		Mockito.verify(this.cropDbGenerator, Mockito.times(1)).runScriptsInDirectory(null,
 				new File(localDatabaseDirectory, this.cropType.getCropName()));
-		Mockito.verify(this.localDbGenerator, Mockito.times(1)).runScriptsInDirectory(null,
+		Mockito.verify(this.cropDbGenerator, Mockito.times(1)).runScriptsInDirectory(null,
 				new File(localDatabaseDirectory, "common-update"));
 	}
 
