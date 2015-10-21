@@ -44,7 +44,7 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 	protected Window sourceWindow;
 	private ProjectBackup pb;
 
-	public static final String BACKUP_FILE_STRING_PATTERN = "ibdbv2_([a-zA-Z]*)_\\d+_local_\\d+_\\d+_\\d+_(.*).sql";
+	public static final String BACKUP_FILE_STRING_PATTERN = "ibdbv2_([a-zA-Z]*)_merged_\\d+_\\d+_\\d+_(.*).sql";
 	public static final Pattern BACKUP_FILE_PATTERN = Pattern.compile(RestoreIBDBSaveAction.BACKUP_FILE_STRING_PATTERN);
 
 	@Autowired
