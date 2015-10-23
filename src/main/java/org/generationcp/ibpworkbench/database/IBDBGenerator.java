@@ -34,10 +34,11 @@ public class IBDBGenerator {
 	private static final Logger LOG = LoggerFactory.getLogger(IBDBGenerator.class);
 	// common constants
 	public static final String WORKBENCH_PROP = "workbench.properties";
-	public static final String WORKBENCH_PROP_HOST = "workbench.host";
-	public static final String WORKBENCH_PROP_PORT = "workbench.port";
-	public static final String WORKBENCH_PROP_USER = "workbench.username";
-	public static final String WORKBENCH_PROP_PASSWORD = "workbench.password";
+
+	public static final String DB_PROP_HOST = "db.host";
+	public static final String DB_PROP_PORT = "db.port";
+	public static final String DB_PROP_USER = "db.username";
+	public static final String DB_PROP_PASSWORD = "db.password";
 
 	public static final String WORKBENCH_PROP_INSTALLER_MODE = "workbench.installer.mode";
 
@@ -67,14 +68,14 @@ public class IBDBGenerator {
 	protected Connection connection;
 	protected String generatedDatabaseName;
 
-	protected String workbenchHost;
-	protected String workbenchPort;
-	protected String workbenchUsername;
-	protected String workbenchPassword;
-	protected String workbenchURL;
+	protected String dbHost;
+	protected String dbPort;
+	protected String dbUsername;
+	protected String dbPassword;
+	protected String jdbcURL;
 
 	@Resource
-	protected Properties workbenchProperties;
+	protected Properties databaseProperties;
 
 	@Autowired
 	private MySQLUtil mysqlUtil;
@@ -82,14 +83,14 @@ public class IBDBGenerator {
 	protected void createConnection() {
 		if (this.connection == null) {
 
-			this.workbenchHost = this.workbenchProperties.getProperty(IBDBGenerator.WORKBENCH_PROP_HOST);
-			this.workbenchPort = this.workbenchProperties.getProperty(IBDBGenerator.WORKBENCH_PROP_PORT);
-			this.workbenchUsername = this.workbenchProperties.getProperty(IBDBGenerator.WORKBENCH_PROP_USER);
-			this.workbenchPassword = this.workbenchProperties.getProperty(IBDBGenerator.WORKBENCH_PROP_PASSWORD);
-			this.workbenchURL = "jdbc:mysql://" + this.workbenchHost + ":" + this.workbenchPort;
+			this.dbHost = this.databaseProperties.getProperty(IBDBGenerator.DB_PROP_HOST);
+			this.dbPort = this.databaseProperties.getProperty(IBDBGenerator.DB_PROP_PORT);
+			this.dbUsername = this.databaseProperties.getProperty(IBDBGenerator.DB_PROP_USER);
+			this.dbPassword = this.databaseProperties.getProperty(IBDBGenerator.DB_PROP_PASSWORD);
+			this.jdbcURL = "jdbc:mysql://" + this.dbHost + ":" + this.dbPort;
 
 			try {
-				this.connection = DriverManager.getConnection(this.workbenchURL, this.workbenchUsername, this.workbenchPassword);
+				this.connection = DriverManager.getConnection(this.jdbcURL, this.dbUsername, this.dbPassword);
 			} catch (SQLException e) {
 				IBDBGenerator.handleDatabaseError(e);
 			}

@@ -21,7 +21,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.RestoreIBDBSaveAction;
-import org.generationcp.ibpworkbench.database.IBDBGeneratorLocalDb;
+import org.generationcp.ibpworkbench.database.CropDatabaseGenerator;
 import org.generationcp.middleware.hibernate.HibernateSessionPerThreadProvider;
 import org.generationcp.middleware.hibernate.HibernateSessionProvider;
 import org.generationcp.middleware.hibernate.HibernateUtil;
@@ -206,7 +206,7 @@ public class RestoreUtilTest {
 				Project project = this.workbenchDataManager.addProject(newProject);
 				this.workbenchDataManager.saveOrUpdateProject(project);
 
-				IBDBGeneratorLocalDb generator = new IBDBGeneratorLocalDb(project.getCropType(), project.getProjectId());
+				CropDatabaseGenerator generator = new CropDatabaseGenerator(project.getCropType());
 				generator.setWorkbenchDataManager(this.workbenchDataManager);
 				generator.generateDatabase();
 
@@ -259,8 +259,8 @@ public class RestoreUtilTest {
 				Project project = this.workbenchDataManager.addProject(newProject);
 				this.workbenchDataManager.saveOrUpdateProject(project);
 
-				IBDBGeneratorLocalDb generator;
-				generator = new IBDBGeneratorLocalDb(project.getCropType(), project.getProjectId());
+				CropDatabaseGenerator generator;
+				generator = new CropDatabaseGenerator(project.getCropType());
 				generator.setWorkbenchDataManager(this.workbenchDataManager);
 				generator.generateDatabase();
 

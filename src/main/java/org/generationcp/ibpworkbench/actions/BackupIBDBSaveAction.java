@@ -80,8 +80,8 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.Clic
 
 			// TODO: internationalize this
 			ProjectActivity projAct =
-					new ProjectActivity(new Integer(this.selectedProject.getProjectId().intValue()), this.selectedProject, "backup action",
-							"backup performed on " + this.selectedProject.getProjectName(), user, new Date());
+					new ProjectActivity(null, this.selectedProject, "Crop Database Backup",
+							"Backup performed on " + this.selectedProject.getDatabaseName(), user, new Date());
 
 			this.workbenchDataManager.addProjectActivity(projAct);
 

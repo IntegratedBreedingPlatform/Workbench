@@ -13,7 +13,7 @@ import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.database.IBDBGeneratorLocalDb;
+import org.generationcp.ibpworkbench.database.CropDatabaseGenerator;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -44,7 +44,7 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 	protected Window sourceWindow;
 	private ProjectBackup pb;
 
-	public static final String BACKUP_FILE_STRING_PATTERN = "ibdbv2_([a-zA-Z]*)_\\d+_local_\\d+_\\d+_\\d+_(.*).sql";
+	public static final String BACKUP_FILE_STRING_PATTERN = "ibdbv2_([a-zA-Z]*)_merged_\\d+_\\d+_\\d+_(.*).sql";
 	public static final Pattern BACKUP_FILE_PATTERN = Pattern.compile(RestoreIBDBSaveAction.BACKUP_FILE_STRING_PATTERN);
 
 	@Autowired
@@ -131,11 +131,10 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 
 					@Override
 					public Boolean call() throws Exception {
-						IBDBGeneratorLocalDb generateLocalDB =
-								new IBDBGeneratorLocalDb(RestoreIBDBSaveAction.this.sessionData.getLastOpenedProject().getCropType(),
-										RestoreIBDBSaveAction.this.sessionData.getLastOpenedProject().getProjectId());
-						generateLocalDB.setWorkbenchDataManager(RestoreIBDBSaveAction.this.workbenchDataManager);
-						return generateLocalDB.generateDatabase();
+						CropDatabaseGenerator cropDatabaseGenerator =
+								new CropDatabaseGenerator(RestoreIBDBSaveAction.this.sessionData.getLastOpenedProject().getCropType());
+						cropDatabaseGenerator.setWorkbenchDataManager(RestoreIBDBSaveAction.this.workbenchDataManager);
+						return cropDatabaseGenerator.generateDatabase();
 					}
 				});
 
@@ -150,7 +149,7 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 				// the restored database may be old
 				// and needs to be upgraded for it to be usable
 				WorkbenchSetting setting = this.workbenchDataManager.getWorkbenchSetting();
-				File schemaDir = new File(setting.getInstallationDirectory(), "database/local/common-update");
+				File schemaDir = new File(setting.getInstallationDirectory(), "database/merged/common-update");
 				this.mysqlUtil.upgradeDatabase(this.project.getDatabaseName(), schemaDir);
 
 				MessageNotifier.showMessage(this.sourceWindow, this.messageSource.getMessage(Message.SUCCESS),
@@ -161,16 +160,15 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 				// if there is no user id, it means there is no user data
 				if (userId != null) {
 					ProjectActivity projAct =
-							new ProjectActivity(new Integer(this.project.getProjectId().intValue()), this.project,
-									"Program Local Database Restore", "Restore performed on " + this.project.getProjectName(),
-									this.sessionData.getUserData(), new Date());
+							new ProjectActivity(null, this.project, "Crop Database Restore", "Restored backup from: "
+									+ restoreFile.getName(), this.sessionData.getUserData(), new Date());
 					this.workbenchDataManager.addProjectActivity(projAct);
 				}
 
 				this.hasRestoreError = false;
 			} catch (Exception e) {
 				RestoreIBDBSaveAction.LOG.error(e.getMessage(), e);
-				MessageNotifier.showError(this.sourceWindow, "Cannot perform restore operation", e.getMessage());
+				MessageNotifier.showError(this.sourceWindow, "Error performing restore operation", e.getMessage());
 				this.hasRestoreError = true;
 			}
 

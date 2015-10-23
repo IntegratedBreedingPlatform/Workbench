@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.generationcp.ibpworkbench.database.MysqlAccountGenerator;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.manager.api.UserDataManager;
@@ -112,7 +111,6 @@ public class ProgramServiceTest {
 		allRolesList.add(new Role(5, "Manager", null));
 		Mockito.when(workbenchDataManager.getAllRoles()).thenReturn(allRolesList);
 
-		MysqlAccountGenerator mySQLAccountGenerator = Mockito.mock(MysqlAccountGenerator.class);
 		Mockito.when(userDataManager.addUser(Matchers.any(User.class))).thenReturn(2);
 		Mockito.when(userDataManager.getUserById(Matchers.anyInt())).thenReturn(memberUser);
 

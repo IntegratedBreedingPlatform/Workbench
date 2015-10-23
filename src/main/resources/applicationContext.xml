@@ -14,6 +14,8 @@
 	<!-- Declare property file locations -->
 	<context:property-placeholder
 		location="classpath:workbench.properties, classpath:database.properties" />
+		
+	<util:properties id="databaseProperties" location="classpath:database.properties" />	
 	<util:properties id="workbenchProperties" location="classpath:workbench.properties" />
 	<util:properties id="helpProperties" location="classpath:helplinks.properties" />
 
