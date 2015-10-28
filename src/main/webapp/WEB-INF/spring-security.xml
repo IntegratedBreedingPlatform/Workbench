@@ -32,6 +32,10 @@
 		<remember-me
 				authentication-success-handler-ref="workbenchAuthenticationSuccessHandler"
 				services-ref="rememberMeServices" />
+
+		<session-management>
+			<concurrency-control session-registry-alias="sessionRegistry" />
+		</session-management>
 	</http>
 
 	<bean:bean id="rememberMeServices" class=
