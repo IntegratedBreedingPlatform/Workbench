@@ -163,8 +163,6 @@ public class ProgramMethodsPresenter {
 			newBreedingMethod.setMtype(method.getMtype());
 			newBreedingMethod.setGeneq(method.getGeneq());
 
-			ProgramMethodsPresenter.LOG.debug(this.sessionData.getProjectBreedingMethodData().toString());
-
 			if (this.sessionData.getUserData() != null) {
 				newBreedingMethod.setUser(this.sessionData.getUserData().getUserid());
 			}
