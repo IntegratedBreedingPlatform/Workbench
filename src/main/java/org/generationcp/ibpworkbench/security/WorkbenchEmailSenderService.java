@@ -160,7 +160,7 @@ public class WorkbenchEmailSenderService {
 		ctx.setVariable("lastOpenedCrop",lastOpenedCrop);
 		ctx.setVariable("lastOpenedModule",lastOpenedModule);
 
-		message.setSubject("BMS Support / Feedback Email");
+		message.setSubject(askSupportForm.getSummary());
 		message.setFrom(askSupportForm.getEmail());
 		message.setTo(this.supportEmail);
 

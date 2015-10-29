@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.generationcp.commons.util.StringUtil;
 import org.generationcp.commons.util.Util;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
@@ -204,6 +205,10 @@ public class ToolUtil {
 	public void closeNativeTool(Tool tool) throws IOException {
 		if (tool.getToolType() != ToolType.NATIVE) {
 			throw new IllegalArgumentException("Tool must be a native tool");
+		}
+		
+		if (!SystemUtils.IS_OS_WINDOWS) {
+			return;
 		}
 
 		String toolPath = this.getComputedToolPath(tool);
