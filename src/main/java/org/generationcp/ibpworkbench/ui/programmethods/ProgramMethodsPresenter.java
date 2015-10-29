@@ -154,11 +154,6 @@ public class ProgramMethodsPresenter {
 	public MethodView saveNewBreedingMethod(MethodView method) {
 
 		if (!this.isExistingMethod(method.getMname())) {
-
-			this.sessionData.getUniqueBreedingMethods().add(method.getMname());
-
-			Integer nextKey = this.sessionData.getProjectBreedingMethodData().keySet().size() + 1;
-
 			MethodView newBreedingMethod = new MethodView();
 
 			newBreedingMethod.setMname(method.getMname());
@@ -167,10 +162,6 @@ public class ProgramMethodsPresenter {
 			newBreedingMethod.setMgrp(method.getMgrp());
 			newBreedingMethod.setMtype(method.getMtype());
 			newBreedingMethod.setGeneq(method.getGeneq());
-
-			newBreedingMethod.setMid(nextKey);
-
-			this.sessionData.getProjectBreedingMethodData().put(nextKey, newBreedingMethod);
 
 			ProgramMethodsPresenter.LOG.debug(this.sessionData.getProjectBreedingMethodData().toString());
 
