@@ -33,6 +33,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.ui.Button.ClickEvent;
@@ -55,13 +59,17 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 	@Autowired
 	private BreedingViewImportService breedingViewImportService;
+	
+	@Autowired
+	private PlatformTransactionManager transactionManager;
 
-	private BMSOutputParser bmsOutputParser;
+	private final BMSOutputParser bmsOutputParser;
 
-	private FileUploadBreedingViewOutputWindow window;
+	private final FileUploadBreedingViewOutputWindow window;
 
 	public UploadBreedingViewOutputAction() {
-
+		window = null;
+		this.bmsOutputParser = new BMSOutputParser();
 	}
 
 	public UploadBreedingViewOutputAction(final FileUploadBreedingViewOutputWindow fileUploadBreedingViewOutputWindow) {
@@ -207,35 +215,43 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 	public void processTheUploadedFile(final ClickEvent event, final int studyId, final Project project) {
 
-		final Map<String, String> localNameToAliasMap =
-				this.generateNameAliasMap(this.bmsOutputParser.getBmsOutputInformation().getInputDataSetId());
+		final TransactionTemplate transactionTemplate = new TransactionTemplate(this.transactionManager);
+		transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 
-		try {
+			@Override
+			protected void doInTransactionWithoutResult(TransactionStatus arg0) {
+				final Map<String, String> localNameToAliasMap =
+						generateNameAliasMap(bmsOutputParser.getBmsOutputInformation().getInputDataSetId());
 
-			this.breedingViewImportService.importMeansData(this.bmsOutputParser.getMeansFile(), studyId, localNameToAliasMap);
-			this.breedingViewImportService.importSummaryStatsData(this.bmsOutputParser.getSummaryStatsFile(), studyId, localNameToAliasMap);
-
-			if (this.bmsOutputParser.getOutlierFile() != null) {
-				this.breedingViewImportService.importOutlierData(this.bmsOutputParser.getOutlierFile(), studyId, localNameToAliasMap);
+				try {
+					breedingViewImportService.importMeansData(bmsOutputParser.getMeansFile(), studyId, localNameToAliasMap);
+					breedingViewImportService.importSummaryStatsData(bmsOutputParser.getSummaryStatsFile(), studyId, localNameToAliasMap);
+		
+					if (bmsOutputParser.getOutlierFile() != null) {
+						breedingViewImportService.importOutlierData(bmsOutputParser.getOutlierFile(), studyId, localNameToAliasMap);
+					}
+				
+	
+					MessageNotifier.showMessage(window.getParent(), messageSource.getMessage(Message.BV_UPLOAD_SUCCESSFUL_HEADER),
+							messageSource.getMessage(Message.BV_UPLOAD_SUCCESSFUL_DESCRIPTION));
+		
+					bmsOutputParser.deleteUploadedZipFile();
+		
+					event.getComponent().getWindow().getParent().removeWindow(window);
+		
+				} catch (final BreedingViewImportException e) {
+		
+					UploadBreedingViewOutputAction.LOG.error(e.getMessage(), e);
+		
+					MessageNotifier.showError(window.getParent(), messageSource.getMessage(Message.BV_UPLOAD_ERROR_HEADER),
+							messageSource.getMessage(Message.BV_UPLOAD_ERROR_CANNOT_UPLOAD_MEANS));
+		
+				}
+	
+				bmsOutputParser.deleteTemporaryFiles();
 			}
-
-			MessageNotifier.showMessage(this.window.getParent(), this.messageSource.getMessage(Message.BV_UPLOAD_SUCCESSFUL_HEADER),
-					this.messageSource.getMessage(Message.BV_UPLOAD_SUCCESSFUL_DESCRIPTION));
-
-			this.bmsOutputParser.deleteUploadedZipFile();
-
-			event.getComponent().getWindow().getParent().removeWindow(this.window);
-
-		} catch (final BreedingViewImportException e) {
-
-			UploadBreedingViewOutputAction.LOG.error(e.getMessage(), e);
-
-			MessageNotifier.showError(this.window.getParent(), this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_HEADER),
-					this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_CANNOT_UPLOAD_MEANS));
-
-		}
-
-		this.bmsOutputParser.deleteTemporaryFiles();
+		
+		});
 
 	}
 

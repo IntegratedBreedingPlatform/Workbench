@@ -168,11 +168,7 @@
 		<aop:scoped-proxy />
 	</bean>
 	
-	<bean id="breedingViewImportService"  class="org.generationcp.commons.service.impl.BreedingViewImportServiceImpl" scope="request">
-		<constructor-arg ref="studyDataManager" />
-		<constructor-arg ref="ontologyDataManager" />
-		<aop:scoped-proxy />
-	</bean>
+	<bean id="breedingViewImportService"  class="org.generationcp.commons.service.impl.BreedingViewImportServiceImpl"/>
 
 	<bean id="workbenchUserService" class="org.generationcp.ibpworkbench.service.WorkbenchUserService" />
 
