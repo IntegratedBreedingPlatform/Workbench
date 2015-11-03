@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,6 +15,7 @@ import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.commons.util.DateUtil;
 import org.generationcp.ibpworkbench.util.ToolUtil;
+import org.generationcp.middleware.ContextHolder;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.UserDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -72,7 +74,7 @@ public class ProgramService {
 		final Cookie authToken = WebUtils.getCookie(request, ContextConstants.PARAM_AUTH_TOKEN);
 		ContextUtil.setContextInfo(request, userIdCookie != null ? Integer.valueOf(userIdCookie.getValue()) :  null, 
 				program.getProjectId(), authToken !=null ? authToken.getValue() : null);
-		
+		ContextHolder.setCurrentCrop(program.getCropType().getCropName());
 		this.toolUtil.createWorkspaceDirectoriesForProject(program);
 
 		this.addProjectUserRoles(program);
