@@ -77,7 +77,7 @@ public class ToolsAndCropVersionsView extends VerticalLayout implements Initiali
 		cropContainer.setBeanIdProperty(ToolsAndCropVersionsView.CROP_NAME);
 
 		try {
-			cropContainer.addAll(this.workbenchDataManager.getInstalledCentralCrops());
+			cropContainer.addAll(this.workbenchDataManager.getInstalledCropDatabses());
 
 			this.tblCrops.setContainerDataSource(cropContainer);
 			this.tblCrops.addGeneratedColumn(ToolsAndCropVersionsView.G_VERSION, new Table.ColumnGenerator() {

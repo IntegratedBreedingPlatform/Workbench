@@ -216,7 +216,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 	private ComboBox createCropTypeComboBox() {
 		List<CropType> cropTypes = null;
 		try {
-			cropTypes = this.workbenchDataManager.getInstalledCentralCrops();
+			cropTypes = this.workbenchDataManager.getInstalledCropDatabses();
 		} catch (MiddlewareQueryException e) {
 			ProjectBasicDetailsComponent.LOG.error("Error encountered while getting installed central crops", e);
 			throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
