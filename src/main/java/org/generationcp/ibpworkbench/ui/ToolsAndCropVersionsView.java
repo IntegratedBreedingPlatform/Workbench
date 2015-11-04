@@ -76,37 +76,33 @@ public class ToolsAndCropVersionsView extends VerticalLayout implements Initiali
 		BeanContainer<Long, CropType> cropContainer = new BeanContainer<Long, CropType>(CropType.class);
 		cropContainer.setBeanIdProperty(ToolsAndCropVersionsView.CROP_NAME);
 
-		try {
-			cropContainer.addAll(this.workbenchDataManager.getInstalledCropDatabses());
+		cropContainer.addAll(this.workbenchDataManager.getInstalledCropDatabses());
 
-			this.tblCrops.setContainerDataSource(cropContainer);
-			this.tblCrops.addGeneratedColumn(ToolsAndCropVersionsView.G_VERSION, new Table.ColumnGenerator() {
+		this.tblCrops.setContainerDataSource(cropContainer);
+		this.tblCrops.addGeneratedColumn(ToolsAndCropVersionsView.G_VERSION, new Table.ColumnGenerator() {
 
-				/**
-				 *
-				 */
-				 private static final long serialVersionUID = -3892464608867001492L;
+			/**
+			 *
+			 */
+			private static final long serialVersionUID = -3892464608867001492L;
 
-				@Override
-				public Object generateCell(Table source, Object itemId, Object colId) {
-					final CropType beanItem = ((BeanContainer<Long, CropType>) source.getContainerDataSource()).getItem(itemId).getBean();
+			@Override
+			public Object generateCell(Table source, Object itemId, Object colId) {
+				final CropType beanItem = ((BeanContainer<Long, CropType>) source.getContainerDataSource()).getItem(itemId).getBean();
 
-					if (beanItem.getVersion() == null || beanItem.getVersion().trim().isEmpty()) {
-						return new Label("<em>Not Available</em>", Label.CONTENT_XHTML);
-					} else {
-						return beanItem.getVersion().trim();
-					}
-
+				if (beanItem.getVersion() == null || beanItem.getVersion().trim().isEmpty()) {
+					return new Label("<em>Not Available</em>", Label.CONTENT_XHTML);
+				} else {
+					return beanItem.getVersion().trim();
 				}
-			});
 
-			this.tblCrops.setVisibleColumns(new String[] {ToolsAndCropVersionsView.CROP_NAME, ToolsAndCropVersionsView.G_VERSION});
-			this.tblCrops.setColumnHeaders(new String[] {"Crop Name", ToolsAndCropVersionsView.VERSION});
-			this.tblCrops.setColumnExpandRatio(ToolsAndCropVersionsView.CROP_NAME, 0.7F);
-			this.tblCrops.setColumnExpandRatio(ToolsAndCropVersionsView.G_VERSION, 0.3F);
-		} catch (MiddlewareQueryException e) {
-			ToolsAndCropVersionsView.LOG.error("Oops, something happened!", e);
-		}
+			}
+		});
+
+		this.tblCrops.setVisibleColumns(new String[] {ToolsAndCropVersionsView.CROP_NAME, ToolsAndCropVersionsView.G_VERSION});
+		this.tblCrops.setColumnHeaders(new String[] {"Crop Name", ToolsAndCropVersionsView.VERSION});
+		this.tblCrops.setColumnExpandRatio(ToolsAndCropVersionsView.CROP_NAME, 0.7F);
+		this.tblCrops.setColumnExpandRatio(ToolsAndCropVersionsView.G_VERSION, 0.3F);
 
 	}
 
