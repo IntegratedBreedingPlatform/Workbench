@@ -148,6 +148,16 @@
 		<aop:scoped-proxy />
 	</bean>
 	
+	<bean id="propertyDataManager" factory-bean="managerFactory"
+		factory-method="getOntologyPropertyDataManager" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="scaleDataManager" factory-bean="managerFactory"
+		factory-method="getOntologyScaleDataManager" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+	
 	<bean id="methodDataManager" factory-bean="managerFactory"
 		factory-method="getOntologyMethodDataManager" scope="request">
 		<aop:scoped-proxy />
