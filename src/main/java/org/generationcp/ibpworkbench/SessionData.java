@@ -1,7 +1,11 @@
 
 package org.generationcp.ibpworkbench;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -9,6 +13,7 @@ import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.security.SecurityUtil;
 import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.ibpworkbench.ui.programmethods.MethodView;
+import org.generationcp.middleware.ContextHolder;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
@@ -46,8 +51,9 @@ public class SessionData {
 
 	public void setSelectedProject(Project selectedProject) {
 		if (selectedProject != null) {
-			ContextUtil.setContextInfo(IBPWorkbenchApplication.get().getRequest(), this.userData.getUserid(), selectedProject.getProjectId(),
-					null);
+			ContextUtil.setContextInfo(IBPWorkbenchApplication.get().getRequest(), this.userData.getUserid(),
+					selectedProject.getProjectId(), null);
+			ContextHolder.setCurrentCrop(selectedProject.getCropType().getCropName());
 			this.selectedProject = selectedProject;
 		}
 	}
@@ -74,8 +80,9 @@ public class SessionData {
 
 	public void setLastOpenedProject(Project lastOpenedProject) {
 		if (lastOpenedProject != null) {
-			ContextUtil.setContextInfo(IBPWorkbenchApplication.get().getRequest(), this.userData.getUserid(), lastOpenedProject.getProjectId(),
-					null);
+			ContextUtil.setContextInfo(IBPWorkbenchApplication.get().getRequest(), this.userData.getUserid(),
+					lastOpenedProject.getProjectId(), null);
+			ContextHolder.setCurrentCrop(lastOpenedProject.getCropType().getCropName());
 			this.lastOpenedProject = lastOpenedProject;
 		}
 
