@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtilsBean;
-import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.util.DateUtil;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.domain.oms.Term;
@@ -179,13 +178,10 @@ public class ProgramMethodsPresenter {
 			newBreedingMethod.setUniqueID(this.project.getUniqueID());
 
 			// ADD TO MIDDLEWARE LOCAL
-			try {
-				newBreedingMethod.setMid(this.gerplasmDataManager.addMethod(newBreedingMethod.copy()));
-			} catch (Exception e) {
-				ProgramMethodsPresenter.LOG.error(e.getMessage(), e);
-			}
-
+			newBreedingMethod.setMid(this.gerplasmDataManager.addMethod(newBreedingMethod.copy()));
 			newBreedingMethod.setIsnew(true);
+
+			LOG.trace("Added breeding method (" + newBreedingMethod.getMname() + " id:" + newBreedingMethod.getMid() + ")");
 
 			this.view.addRow(newBreedingMethod, false, 0);
 

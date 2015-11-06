@@ -1,7 +1,10 @@
 
 package org.generationcp.ibpworkbench.ui.programmethods;
 
+	import javax.annotation.Resource;
+
 import org.apache.commons.lang3.StringUtils;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -43,6 +46,9 @@ public class AddBreedingMethodsWindow extends BaseSubWindow {
 	private final ProgramMethodsView projectBreedingMethodsPanel;
 
 	private final static String[] VISIBLE_ITEM_PROPERTIES = new String[] {"methodName", "methodDescription", "methodType", "methodCode"};
+
+	@Resource
+	private SimpleResourceBundleMessageSource messageSource;
 
 	public AddBreedingMethodsWindow(ProgramMethodsView projectBreedingMethodsPanel) {
 		this.projectBreedingMethodsPanel = projectBreedingMethodsPanel;
@@ -117,25 +123,30 @@ public class AddBreedingMethodsWindow extends BaseSubWindow {
 			public void buttonClick(Button.ClickEvent clickEvent) {
 				try {
 					AddBreedingMethodsWindow.this.breedingMethodForm.commit();
+
+					@SuppressWarnings("unchecked")
+					MethodView bean = ((BeanItem<MethodView>) AddBreedingMethodsWindow.this.breedingMethodForm.getItemDataSource()).getBean();
+					if (StringUtils.isEmpty(bean.getMtype())) {
+						MessageNotifier.showRequiredFieldError(clickEvent.getComponent().getWindow(),
+								"Please select a Generation Advancement Type");
+						return;
+					}
+
+					AddBreedingMethodsWindow.this.projectBreedingMethodsPanel.presenter.saveNewBreedingMethod(bean);
+
+					AddBreedingMethodsWindow.this.getParent().removeWindow(AddBreedingMethodsWindow.this);
+
 				} catch (Validator.InvalidValueException  e) {
 					MessageNotifier.showRequiredFieldError(clickEvent.getComponent().getWindow(), e.getLocalizedMessage());
 
 					LOG.warn(e.getMessage(),e);
 
-					return;
+				} catch (RuntimeException e) {
+					MessageNotifier.showError(clickEvent.getComponent().getWindow(),messageSource.getMessage("DATABASE_ERROR"),messageSource.getMessage("CONTACT_ADMIN_ERROR_DESC"));
+					LOG.error(e.getMessage(),e);
 				}
 
-				@SuppressWarnings("unchecked")
-				MethodView bean = ((BeanItem<MethodView>) AddBreedingMethodsWindow.this.breedingMethodForm.getItemDataSource()).getBean();
-				if (StringUtils.isEmpty(bean.getMtype())) {
-					MessageNotifier.showRequiredFieldError(clickEvent.getComponent().getWindow(),
-							"Please select a Generation Advancement Type");
-					return;
-				}
 
-				AddBreedingMethodsWindow.this.projectBreedingMethodsPanel.presenter.saveNewBreedingMethod(bean);
-
-				AddBreedingMethodsWindow.this.getParent().removeWindow(AddBreedingMethodsWindow.this);
 			}
 		});
 
