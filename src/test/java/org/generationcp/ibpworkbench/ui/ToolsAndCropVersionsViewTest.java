@@ -23,7 +23,7 @@ public class ToolsAndCropVersionsViewTest {
 	public static void setUp() throws Exception {
 		ToolsAndCropVersionsViewTest.workbenchDataManager = Mockito.mock(WorkbenchDataManager.class);
 		Mockito.doReturn(ToolsAndCropVersionsViewTest.getAllCrops()).when(ToolsAndCropVersionsViewTest.workbenchDataManager)
-				.getInstalledCentralCrops();
+				.getInstalledCropDatabses();
 		Mockito.doReturn(ToolsAndCropVersionsViewTest.getAllTools()).when(ToolsAndCropVersionsViewTest.workbenchDataManager).getAllTools();
 		ToolsAndCropVersionsViewTest.toolsAndCropVersionsView = new ToolsAndCropVersionsView();
 		ToolsAndCropVersionsViewTest.toolsAndCropVersionsView.setMessageSource(ToolsAndCropVersionsViewTest.messageSource);
