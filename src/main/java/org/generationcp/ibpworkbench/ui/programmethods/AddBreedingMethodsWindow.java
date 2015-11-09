@@ -8,7 +8,8 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.actions.CancelBreedingMethodAction;
+	import org.generationcp.ibpworkbench.Message;
+	import org.generationcp.ibpworkbench.actions.CancelBreedingMethodAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -141,9 +142,10 @@ public class AddBreedingMethodsWindow extends BaseSubWindow {
 
 					LOG.warn(e.getMessage(),e);
 
-				} catch (RuntimeException e) {
-					MessageNotifier.showError(clickEvent.getComponent().getWindow(),messageSource.getMessage("DATABASE_ERROR"),messageSource.getMessage("CONTACT_ADMIN_ERROR_DESC"));
-					LOG.error(e.getMessage(),e);
+				} catch (Exception e) {
+					MessageNotifier.showError(clickEvent.getComponent().getWindow(), messageSource.getMessage(Message.ERROR_APPLICATION),
+							messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC_LONG));
+					LOG.error(e.getMessage(), e);
 				}
 
 
