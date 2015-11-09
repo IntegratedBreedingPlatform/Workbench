@@ -59,7 +59,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 	@Autowired
 	private BreedingViewImportService breedingViewImportService;
-	
+
 	@Autowired
 	private PlatformTransactionManager transactionManager;
 
@@ -68,7 +68,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 	private final FileUploadBreedingViewOutputWindow window;
 
 	public UploadBreedingViewOutputAction() {
-		window = null;
+		this.window = null;
 		this.bmsOutputParser = new BMSOutputParser();
 	}
 
@@ -107,13 +107,13 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 						this.messageSource.getMessage(Message.BV_UPLOAD_OVERWRITE_WARNING), this.messageSource.getMessage(Message.OK),
 						this.messageSource.getMessage(Message.CANCEL), new Runnable() {
 
-							@Override
-							public void run() {
-								UploadBreedingViewOutputAction.this.processTheUploadedFile(event, studyId, project);
+					@Override
+					public void run() {
+						UploadBreedingViewOutputAction.this.processTheUploadedFile(event, studyId, project);
 
-							}
+					}
 
-						});
+				});
 			} else {
 				this.processTheUploadedFile(event, studyId, project);
 			}
@@ -219,38 +219,43 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 		transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 
 			@Override
-			protected void doInTransactionWithoutResult(TransactionStatus arg0) {
+			protected void doInTransactionWithoutResult(final TransactionStatus arg0) {
 				final Map<String, String> localNameToAliasMap =
-						generateNameAliasMap(bmsOutputParser.getBmsOutputInformation().getInputDataSetId());
+						UploadBreedingViewOutputAction.this.generateNameAliasMap(UploadBreedingViewOutputAction.this.bmsOutputParser
+								.getBmsOutputInformation().getInputDataSetId());
 
 				try {
-					breedingViewImportService.importMeansData(bmsOutputParser.getMeansFile(), studyId, localNameToAliasMap);
-					breedingViewImportService.importSummaryStatsData(bmsOutputParser.getSummaryStatsFile(), studyId, localNameToAliasMap);
-		
-					if (bmsOutputParser.getOutlierFile() != null) {
-						breedingViewImportService.importOutlierData(bmsOutputParser.getOutlierFile(), studyId, localNameToAliasMap);
+					UploadBreedingViewOutputAction.this.breedingViewImportService.importMeansData(
+							UploadBreedingViewOutputAction.this.bmsOutputParser.getMeansFile(), studyId, localNameToAliasMap);
+					UploadBreedingViewOutputAction.this.breedingViewImportService.importSummaryStatsData(
+							UploadBreedingViewOutputAction.this.bmsOutputParser.getSummaryStatsFile(), studyId, localNameToAliasMap);
+
+					if (UploadBreedingViewOutputAction.this.bmsOutputParser.getOutlierFile() != null) {
+						UploadBreedingViewOutputAction.this.breedingViewImportService.importOutlierData(
+								UploadBreedingViewOutputAction.this.bmsOutputParser.getOutlierFile(), studyId, localNameToAliasMap);
 					}
-				
-	
-					MessageNotifier.showMessage(window.getParent(), messageSource.getMessage(Message.BV_UPLOAD_SUCCESSFUL_HEADER),
-							messageSource.getMessage(Message.BV_UPLOAD_SUCCESSFUL_DESCRIPTION));
-		
-					bmsOutputParser.deleteUploadedZipFile();
-		
-					event.getComponent().getWindow().getParent().removeWindow(window);
-		
+
+					MessageNotifier.showMessage(UploadBreedingViewOutputAction.this.window.getParent(),
+							UploadBreedingViewOutputAction.this.messageSource.getMessage(Message.BV_UPLOAD_SUCCESSFUL_HEADER),
+							UploadBreedingViewOutputAction.this.messageSource.getMessage(Message.BV_UPLOAD_SUCCESSFUL_DESCRIPTION));
+
+					UploadBreedingViewOutputAction.this.bmsOutputParser.deleteUploadedZipFile();
+
+					event.getComponent().getWindow().getParent().removeWindow(UploadBreedingViewOutputAction.this.window);
+
 				} catch (final BreedingViewImportException e) {
-		
+
 					UploadBreedingViewOutputAction.LOG.error(e.getMessage(), e);
-		
-					MessageNotifier.showError(window.getParent(), messageSource.getMessage(Message.BV_UPLOAD_ERROR_HEADER),
-							messageSource.getMessage(Message.BV_UPLOAD_ERROR_CANNOT_UPLOAD_MEANS));
-		
+
+					MessageNotifier.showError(UploadBreedingViewOutputAction.this.window.getParent(),
+							UploadBreedingViewOutputAction.this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_HEADER),
+							UploadBreedingViewOutputAction.this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_CANNOT_UPLOAD_MEANS));
+
 				}
-	
-				bmsOutputParser.deleteTemporaryFiles();
+
+				UploadBreedingViewOutputAction.this.bmsOutputParser.deleteTemporaryFiles();
 			}
-		
+
 		});
 
 	}
@@ -259,7 +264,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 	 * Breeding View only supports alphanumeric, dash, underscore and percentage characters in trait header names. When we generate the
 	 * input file for Breeding View, we replace the invalid characters in trait header names with underscore. We create this map so that BMS
 	 * knows the original name of the traits.
-	 * 
+	 *
 	 * @param studyId
 	 * @return
 	 */
