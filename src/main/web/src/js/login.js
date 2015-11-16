@@ -293,9 +293,9 @@
 		// Continue with form submit - login is currently handled server side
 		if (login) {
 			$.post($loginForm.data('validate-login-action'), $loginForm.serialize())
-				.done(function() {
+				.done(function(data) {
 					clearErrors();
-
+					localStorage['bms.xAuthToken'] = JSON.stringify(data);				
 					// no login problems! submit
 					loginFormRef.submit();
 				})

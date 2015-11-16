@@ -8,8 +8,8 @@ import javax.annotation.Resource;
 import javax.mail.MessagingException;
 
 import org.generationcp.ibpworkbench.model.UserAccountModel;
-import org.generationcp.ibpworkbench.security.WorkbenchEmailSenderService;
 import org.generationcp.ibpworkbench.security.InvalidResetTokenException;
+import org.generationcp.ibpworkbench.security.WorkbenchEmailSenderService;
 import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.ibpworkbench.validator.ForgotPasswordAccountValidator;
 import org.generationcp.ibpworkbench.validator.UserAccountFields;
@@ -59,6 +59,9 @@ public class AuthenticationController {
 	@Resource
 	private MessageSource messageSource;
 
+	@Resource
+	private ApiAuthenticationService apiAuthenticationService;
+
 	@RequestMapping(value = "/login")
 	public String getLoginPage() {
 		return "login";
@@ -91,6 +94,13 @@ public class AuthenticationController {
 			if (this.workbenchUserService.isValidUserLogin(model)) {
 				isSuccess = HttpStatus.OK;
 				out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
+
+				final Token apiAuthToken = this.apiAuthenticationService.authenticate(model.getUsername(), model.getPassword());
+				if (apiAuthToken != null) {
+					out.put("token", apiAuthToken.getToken());
+					out.put("expires", apiAuthToken.getExpires());
+				}
+
 			} else {
 				Map<String, String> errors = new LinkedHashMap<>();
 

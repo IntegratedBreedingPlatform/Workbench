@@ -4,7 +4,7 @@
 (function() {
 	var VIEWS_LOCATION = 'static/views/ontology/',
 		app = angular.module('ontology', ['ngRoute', 'variablesView', 'propertiesView', 'methodsView', 'scalesView', 'addVariable',
-		'addProperty', 'addMethod', 'addScale', 'pascalprecht.translate', 'keyTrap', 'config', 'panel']);
+		'addProperty', 'addMethod', 'addScale', 'pascalprecht.translate', 'keyTrap', 'config', 'panel', 'bmsAuth']);
 
 	app.config(['$routeProvider', function($routeProvider) {
 
@@ -56,6 +56,14 @@
 			suffix: '.json'
 		});
 		$translateProvider.preferredLanguage('en');
+	}]);
+	
+	app.config(['$httpProvider', function($httpProvider) {
+		$httpProvider.interceptors.push('authInterceptor');
+	}]);
+	
+	app.config(['localStorageServiceProvider', function(localStorageServiceProvider){
+		localStorageServiceProvider.setPrefix('bms');
 	}]);
 
 	app.controller('OntologyController', ['$scope', '$location', '$window', 'panelService',
