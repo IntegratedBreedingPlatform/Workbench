@@ -8,8 +8,8 @@ import java.util.Map;
 import javax.mail.MessagingException;
 
 import org.generationcp.ibpworkbench.model.UserAccountModel;
-import org.generationcp.ibpworkbench.security.WorkbenchEmailSenderService;
 import org.generationcp.ibpworkbench.security.InvalidResetTokenException;
+import org.generationcp.ibpworkbench.security.WorkbenchEmailSenderService;
 import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.ibpworkbench.validator.ForgotPasswordAccountValidator;
 import org.generationcp.ibpworkbench.validator.UserAccountValidator;
@@ -53,6 +53,9 @@ public class AuthenticationControllerTest {
 
 	@Mock
 	private BindingResult result;
+
+	@Mock
+	private ApiAuthenticationService apiAuthenticationService;
 
 	@InjectMocks
 	private AuthenticationController controller;
@@ -147,7 +150,7 @@ public class AuthenticationControllerTest {
 		User user = new User();
 		Model model = Mockito.mock(Model.class);
 		Mockito.when(this.workbenchEmailSenderService.validateResetToken(AuthenticationControllerTest.TEST_RESET_PASSWORD_TOKEN))
-				.thenReturn(user);
+		.thenReturn(user);
 
 		String page = this.controller.getCreateNewPasswordPage(AuthenticationControllerTest.TEST_RESET_PASSWORD_TOKEN, model);
 
@@ -184,7 +187,7 @@ public class AuthenticationControllerTest {
 		// houston we have a problem
 		Mockito.when(this.workbenchUserService.getUserByUserName(Matchers.anyString())).thenReturn(Mockito.mock(User.class));
 		Mockito.doThrow(new MessagingException("i cant send me message :(")).when(this.workbenchEmailSenderService)
-				.doRequestPasswordReset(Matchers.any(User.class));
+		.doRequestPasswordReset(Matchers.any(User.class));
 
 		ResponseEntity<Map<String, Object>> result = this.controller.doSendResetPasswordRequestEmail(Mockito.mock(UserAccountModel.class));
 
@@ -209,7 +212,7 @@ public class AuthenticationControllerTest {
 		UserAccountModel userAccountModel = new UserAccountModel();
 
 		Mockito.doThrow(new MiddlewareQueryException("oops i did it again")).when(this.workbenchEmailSenderService)
-				.deleteToken(userAccountModel);
+		.deleteToken(userAccountModel);
 
 		boolean result = this.controller.doResetPassword(userAccountModel);
 
@@ -217,5 +220,52 @@ public class AuthenticationControllerTest {
 		Mockito.verify(this.workbenchEmailSenderService, Mockito.times(1)).deleteToken(userAccountModel);
 
 		Assert.assertFalse("fail!", result);
+	}
+
+	@Test
+	public void testTokenIsReturnedForSuccessfulAuthentication() {
+
+		UserAccountModel testUserAccountModel = new UserAccountModel();
+		testUserAccountModel.setUsername("naymesh");
+		testUserAccountModel.setPassword("b");
+		Mockito.when(this.workbenchUserService.isValidUserLogin(testUserAccountModel)).thenReturn(true);
+		final Token testToken = new Token("naymesh:1447734506586:3a7e599e28efc35a2d53e62715ffd3cb", 1447734506586L);
+		Mockito.when(
+				this.apiAuthenticationService.authenticate(Mockito.eq(testUserAccountModel.getUsername()),
+						Mockito.eq(testUserAccountModel.getPassword()))).thenReturn(testToken);
+
+		ResponseEntity<Map<String, Object>> out = this.controller.validateLogin(testUserAccountModel, this.result);
+		Assert.assertEquals(testToken.getToken(), out.getBody().get("token"));
+		Assert.assertEquals(testToken.getExpires(), out.getBody().get("expires"));
+	}
+
+	@Test
+	public void testTokenIsNotReturnedWhenThereIsFailureInApiAuthentication() {
+
+		UserAccountModel testUserAccountModel = new UserAccountModel();
+		testUserAccountModel.setUsername("naymesh");
+		testUserAccountModel.setPassword("b");
+		Mockito.when(this.workbenchUserService.isValidUserLogin(testUserAccountModel)).thenReturn(true);
+
+		// Case when ApiAuthenticationService will return null token
+		Mockito.when(
+				this.apiAuthenticationService.authenticate(Mockito.eq(testUserAccountModel.getUsername()),
+						Mockito.eq(testUserAccountModel.getPassword()))).thenReturn(null);
+
+		ResponseEntity<Map<String, Object>> out = this.controller.validateLogin(testUserAccountModel, this.result);
+		Mockito.verify(this.apiAuthenticationService).authenticate(Mockito.anyString(), Mockito.anyString());
+		Assert.assertNull(out.getBody().get("token"));
+		Assert.assertNull(out.getBody().get("expires"));
+	}
+
+	@Test
+	public void testTokenIsNotReturnedForUnSuccessfulAuthentication() {
+
+		UserAccountModel testUserAccountModel = new UserAccountModel();
+		Mockito.when(this.workbenchUserService.isValidUserLogin(testUserAccountModel)).thenReturn(false);
+		ResponseEntity<Map<String, Object>> out = this.controller.validateLogin(testUserAccountModel, this.result);
+		Mockito.verify(this.apiAuthenticationService, Mockito.never()).authenticate(Mockito.anyString(), Mockito.anyString());
+		Assert.assertNull(out.getBody().get("token"));
+		Assert.assertNull(out.getBody().get("expires"));
 	}
 }

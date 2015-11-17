@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestOperations;
 
 @Service
 public class ApiAuthenticationService {
@@ -20,16 +20,17 @@ public class ApiAuthenticationService {
 	@Autowired
 	private HttpServletRequest currentHttpRequest;
 
-	public Token authenticate(String userName, String password) {
-		LOG.debug("Trying to authenticating user {} with BMSAPI to obtain a token.", userName);
-		try {
-			RestTemplate restTemplate = new RestTemplate();
+	@Autowired
+	private RestOperations restClient;
 
+	public Token authenticate(String userName, String password) {
+		LOG.debug("Trying to authenticate user {} with BMSAPI to obtain a token.", userName);
+		try {
 			String bmsApiAuthURLFormat = "%s://%s:%s/bmsapi/authenticate?username=%s&password=%s";
 			String bmsApiAuthURL =
 					String.format(bmsApiAuthURLFormat, this.currentHttpRequest.getScheme(), this.currentHttpRequest.getServerName(),
 							this.currentHttpRequest.getServerPort(), userName, password);
-			final Token apiAuthToken = restTemplate.postForObject(bmsApiAuthURL, new HashMap<String, String>(), Token.class);
+			final Token apiAuthToken = this.restClient.postForObject(bmsApiAuthURL, new HashMap<String, String>(), Token.class);
 			if (apiAuthToken != null) {
 				LOG.debug("Successfully authenticated and obtained a token from BMSAPI for user {}.", userName);
 			}
@@ -38,5 +39,13 @@ public class ApiAuthenticationService {
 			LOG.debug("Error encountered while trying authenticate user {} with BMSAPI to obtain a token: {}", userName, e.getMessage());
 			throw e;
 		}
+	}
+
+	void setCurrentHttpRequest(HttpServletRequest currentHttpRequest) {
+		this.currentHttpRequest = currentHttpRequest;
+	}
+
+	void setRestClient(RestOperations restClient) {
+		this.restClient = restClient;
 	}
 }

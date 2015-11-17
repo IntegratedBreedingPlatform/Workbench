@@ -239,3 +239,8 @@ node
 src/main/webapp/WEB-INF/pages
 src/main/webapp/WEB-INF/static
 src/main/web/reports
+/target/
+datasetExporterTest.csv
+*.ser
+test1.txt
+test2.txt
