@@ -2,9 +2,9 @@
 'use strict';
 
 (function() {
-	
+
 	var bmsAuth = angular.module('bmsAuth', ['LocalStorageModule']);
-	
+
 	bmsAuth.factory('authInterceptor', ['$rootScope', '$q', '$location', 'localStorageService', function($rootScope, $q, $location, localStorageService) {
 		return {
 			// Add authorization token to headers
@@ -20,25 +20,26 @@
 			}
 		};
 	}]);
-	
+
 	bmsAuth.factory('authExpiredInterceptor', ['$rootScope', '$q', 'localStorageService', 'reAuthenticationService', function($rootScope, $q, localStorageService, reAuthenticationService) {
 		return {
 			responseError: function(response) {
 				// Token has expired or is invalid.
 				if (response.status === 401 && (response.data.error === 'invalid_token' || response.data.error === 'Unauthorized')) {
-					localStorageService.remove('xAuthToken');					
+					localStorageService.remove('xAuthToken');
 					reAuthenticationService.handleReAuthentication();
 				}
 				return $q.reject(response);
 			}
 		};
 	}]);
-	
+
 	bmsAuth.service('reAuthenticationService', function() {
 		var hasBeenHandled = false;
 		return {
 			// Current strategy is to logout the user from Workbench by hittig Spring secutiry's internal logout endpoint
 			//    which means re-login, which in turn means a fresh token will be issued ;)
+			// TODO find a better alternative to use insead of alert then in the face punch to logout which is easy to unit test as well.
 			handleReAuthentication: function() {
 				if (!hasBeenHandled) {
 					hasBeenHandled = true;
@@ -55,5 +56,5 @@
 			}
 		};
 	});
-	
+
 })();
