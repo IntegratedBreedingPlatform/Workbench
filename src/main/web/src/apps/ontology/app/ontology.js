@@ -60,6 +60,7 @@
 	
 	app.config(['$httpProvider', function($httpProvider) {
 		$httpProvider.interceptors.push('authInterceptor');
+		$httpProvider.interceptors.push('authExpiredInterceptor');
 	}]);
 	
 	app.config(['localStorageServiceProvider', function(localStorageServiceProvider){

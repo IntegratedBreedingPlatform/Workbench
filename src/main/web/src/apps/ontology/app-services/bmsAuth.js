@@ -21,4 +21,39 @@
 		};
 	}]);
 	
+	bmsAuth.factory('authExpiredInterceptor', ['$rootScope', '$q', 'localStorageService', 'reAuthenticationService', function($rootScope, $q, localStorageService, reAuthenticationService) {
+		return {
+			responseError: function(response) {
+				// Token has expired or is invalid.
+				if (response.status === 401 && (response.data.error === 'invalid_token' || response.data.error === 'Unauthorized')) {
+					localStorageService.remove('xAuthToken');					
+					reAuthenticationService.handleReAuthentication();
+				}
+				return $q.reject(response);
+			}
+		};
+	}]);
+	
+	bmsAuth.service('reAuthenticationService', function() {
+		var hasBeenHandled = false;
+		return {
+			// Current strategy is to logout the user from Workbench by hittig Spring secutiry's internal logout endpoint
+			//    which means re-login, which in turn means a fresh token will be issued ;)
+			handleReAuthentication: function() {
+				if (!hasBeenHandled) {
+					hasBeenHandled = true;
+					alert('Ontology manager needs to authenticate you again. Redirecting to login page.');
+					var isInFrame = window.location !== window.parent.location;
+					var parentUrl = isInFrame ? document.referrer : document.location.href;
+					var pathArray = parentUrl.split('/');
+					var protocol = pathArray[0];
+					var host = pathArray[2];
+					var baseUrl = protocol + '//' + host;
+					var logoutUrl = baseUrl + '/ibpworkbench/logout';
+					window.top.location.href = logoutUrl;
+				}
+			}
+		};
+	});
+	
 })();
