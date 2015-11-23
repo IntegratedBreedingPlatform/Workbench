@@ -16,6 +16,8 @@
 		<intercept-url pattern="/controller/ontology*" access="hasRole('ROLE_ADMIN')"/>
 		<intercept-url pattern="/controller/ontology/**" access="hasRole('ROLE_ADMIN')"/>
 		<intercept-url pattern="/**" access="isAuthenticated()" />
+		
+		<access-denied-handler error-page="/controller/accessDenied"/>
 
 		<form-login login-page="/controller/auth/login"
             login-processing-url="/login"

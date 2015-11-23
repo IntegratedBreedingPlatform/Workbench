@@ -239,3 +239,4 @@ node
 src/main/webapp/WEB-INF/pages
 src/main/webapp/WEB-INF/static
 src/main/web/reports
+/target/
