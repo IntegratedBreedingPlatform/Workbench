@@ -95,6 +95,11 @@ public class AuthenticationController {
 				isSuccess = HttpStatus.OK;
 				out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
 
+				/**
+				 * This is crucial for Ontology Manager UI which needs the authentication token to make calls to BMSAPI Ontology services.
+				 * See login.js and bmsAuth.js client side scripts to see how this token is used by front-end code via the local storage
+				 * service in browsers.
+				 */
 				final Token apiAuthToken = this.apiAuthenticationService.authenticate(model.getUsername(), model.getPassword());
 				if (apiAuthToken != null) {
 					out.put("token", apiAuthToken.getToken());

@@ -12,6 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestOperations;
 
+/**
+ * Service for Java clients e.g. {@link AuthenticationController} to authenticate and obtain an access token in exchange of valid user name
+ * and password. This token is required to make calls to BMSAPI REST services.
+ */
 @Service
 public class ApiAuthenticationService {
 

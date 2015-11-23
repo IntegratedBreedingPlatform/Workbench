@@ -64,6 +64,9 @@
 	}]);
 	
 	app.config(['localStorageServiceProvider', function(localStorageServiceProvider){
+		/**
+		 * BMSAPI x-auth-token is stored in local storage service as bms.xAuthToken see login.js
+		 */
 		localStorageServiceProvider.setPrefix('bms');
 	}]);
 
