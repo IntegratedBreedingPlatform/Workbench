@@ -107,13 +107,13 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 						this.messageSource.getMessage(Message.BV_UPLOAD_OVERWRITE_WARNING), this.messageSource.getMessage(Message.OK),
 						this.messageSource.getMessage(Message.CANCEL), new Runnable() {
 
-					@Override
-					public void run() {
-						UploadBreedingViewOutputAction.this.processTheUploadedFile(event, studyId, project);
+							@Override
+							public void run() {
+								UploadBreedingViewOutputAction.this.processTheUploadedFile(event, studyId, project);
 
-					}
+							}
 
-				});
+						});
 			} else {
 				this.processTheUploadedFile(event, studyId, project);
 			}
@@ -246,13 +246,13 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 				} catch (final BreedingViewImportException e) {
 
 					UploadBreedingViewOutputAction.LOG.error(e.getMessage(), e);
-					
+
 					MessageNotifier.showError(UploadBreedingViewOutputAction.this.window.getParent(),
 							UploadBreedingViewOutputAction.this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_HEADER),
 							UploadBreedingViewOutputAction.this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_CANNOT_UPLOAD_MEANS));
 
 					throw new RuntimeException(e);
-					
+
 				} finally {
 					UploadBreedingViewOutputAction.this.bmsOutputParser.deleteTemporaryFiles();
 				}
