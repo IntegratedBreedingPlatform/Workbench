@@ -246,14 +246,16 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 				} catch (final BreedingViewImportException e) {
 
 					UploadBreedingViewOutputAction.LOG.error(e.getMessage(), e);
-
+					
 					MessageNotifier.showError(UploadBreedingViewOutputAction.this.window.getParent(),
 							UploadBreedingViewOutputAction.this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_HEADER),
 							UploadBreedingViewOutputAction.this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_CANNOT_UPLOAD_MEANS));
 
+					throw new RuntimeException(e);
+					
+				} finally {
+					UploadBreedingViewOutputAction.this.bmsOutputParser.deleteTemporaryFiles();
 				}
-
-				UploadBreedingViewOutputAction.this.bmsOutputParser.deleteTemporaryFiles();
 			}
 
 		});
