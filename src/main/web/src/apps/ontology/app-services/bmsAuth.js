@@ -3,6 +3,7 @@
 
 (function() {
 
+	// LocalStorageModule is an Angular module we depend on: https://github.com/grevory/angular-local-storage.
 	var bmsAuth = angular.module('bmsAuth', ['LocalStorageModule']);
 
 	bmsAuth.factory('authInterceptor', ['$rootScope', '$q', '$location', 'localStorageService', function($rootScope, $q, $location, localStorageService) {
@@ -47,7 +48,7 @@
 	bmsAuth.service('reAuthenticationService', function() {
 		var hasBeenHandled = false;
 		return {
-			// Current strategy is to logout the user from Workbench by hittig Spring secutiry's internal logout endpoint
+			// Current strategy to re-authenticate is to log the user out from Workbench by hitting Spring security internal logout endpoint
 			//    which means re-login, which in turn means a fresh token will be issued ;)
 			// TODO find a better alternative to use insead of alert then in the face punch to logout which is easy to unit test as well.
 			handleReAuthentication: function() {
