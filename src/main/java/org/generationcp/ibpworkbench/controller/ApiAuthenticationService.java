@@ -16,6 +16,9 @@ import org.springframework.web.client.RestOperations;
  * Service for Java clients e.g. {@link AuthenticationController} to authenticate and obtain an access token in exchange of valid user name
  * and password. This token is required to make calls to BMSAPI REST services.
  */
+// **Important note for developers** : This class is central to the authentication framework of BMSAPI. Please do not alter it without a
+// good understanding of Spring Security in general and BMS X-Auth-Token based authentication workflow in particular, otherwise there will
+// be MAJOR breakages in the functioning of BMS components. Consult your friendly senior developer first if you are unsure.
 @Service
 public class ApiAuthenticationService {
 
