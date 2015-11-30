@@ -6,7 +6,7 @@
 	// LocalStorageModule is an Angular module we depend on: https://github.com/grevory/angular-local-storage.
 	var bmsAuth = angular.module('bmsAuth', ['LocalStorageModule']);
 
-	bmsAuth.factory('authInterceptor', ['$rootScope', '$q', '$location', 'localStorageService', function($rootScope, $q, $location, localStorageService) {
+	bmsAuth.factory('authInterceptor', ['localStorageService', function(localStorageService) {
 		return {
 			// Add authorization token to headers
 			request: function(config) {
@@ -27,7 +27,7 @@
 		};
 	}]);
 
-	bmsAuth.factory('authExpiredInterceptor', ['$rootScope', '$q', 'localStorageService', 'reAuthenticationService', function($rootScope, $q, localStorageService, reAuthenticationService) {
+	bmsAuth.factory('authExpiredInterceptor', ['$q', 'localStorageService', 'reAuthenticationService', function($q, localStorageService, reAuthenticationService) {
 		return {
 			responseError: function(response) {
 				// Token has expired or is invalid.
