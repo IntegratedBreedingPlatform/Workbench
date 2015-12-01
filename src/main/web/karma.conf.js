@@ -21,6 +21,7 @@ module.exports = function(config) {
 			'src/js/lib/angular-ui-select.min.js',
 			'src/js/lib/angular-debounce.min.js',
 			'src/js/lib/angular-translate.min.js',
+			'src/js/lib/angular-local-storage.min.js',
 			'src/js/lib/angular-translate-loader-static-files.min.js',
 			'src/js/lib/ui-bootstrap-custom-0.13.3.min.js',
 			'src/js/lib/ui-bootstrap-custom-tpls-0.13.3.min.js',
