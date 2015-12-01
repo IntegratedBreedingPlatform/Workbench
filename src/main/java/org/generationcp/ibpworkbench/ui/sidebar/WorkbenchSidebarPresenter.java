@@ -78,10 +78,6 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"user_tools","Manage User-Added Tools"));
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(manager.getToolWithName(LaunchWorkbenchToolAction.ToolEnum.DATASET_IMPORTER.getToolName()),category,LaunchWorkbenchToolAction.ToolEnum.DATASET_IMPORTER.getToolName(),"Data Import Tool"));
                     categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"tool_versions","Tools and Crops Versions"));
-                    categoryLinks.add(new WorkbenchSidebarCategoryLink(null,category,"software_license","Software License"));
-
-                    //add the softare_license in the tools
-
                 } else {
                     categoryLinks.addAll(manager.getAllWorkbenchSidebarLinksByCategoryId(category));
                 }
