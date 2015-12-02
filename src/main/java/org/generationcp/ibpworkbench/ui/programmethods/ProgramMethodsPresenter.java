@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtilsBean;
-import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.util.DateUtil;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.domain.oms.Term;
@@ -154,11 +153,6 @@ public class ProgramMethodsPresenter {
 	public MethodView saveNewBreedingMethod(MethodView method) {
 
 		if (!this.isExistingMethod(method.getMname())) {
-
-			this.sessionData.getUniqueBreedingMethods().add(method.getMname());
-
-			Integer nextKey = this.sessionData.getProjectBreedingMethodData().keySet().size() + 1;
-
 			MethodView newBreedingMethod = new MethodView();
 
 			newBreedingMethod.setMname(method.getMname());
@@ -167,12 +161,6 @@ public class ProgramMethodsPresenter {
 			newBreedingMethod.setMgrp(method.getMgrp());
 			newBreedingMethod.setMtype(method.getMtype());
 			newBreedingMethod.setGeneq(method.getGeneq());
-
-			newBreedingMethod.setMid(nextKey);
-
-			this.sessionData.getProjectBreedingMethodData().put(nextKey, newBreedingMethod);
-
-			ProgramMethodsPresenter.LOG.debug(this.sessionData.getProjectBreedingMethodData().toString());
 
 			if (this.sessionData.getUserData() != null) {
 				newBreedingMethod.setUser(this.sessionData.getUserData().getUserid());
@@ -190,13 +178,10 @@ public class ProgramMethodsPresenter {
 			newBreedingMethod.setUniqueID(this.project.getUniqueID());
 
 			// ADD TO MIDDLEWARE LOCAL
-			try {
-				newBreedingMethod.setMid(this.gerplasmDataManager.addMethod(newBreedingMethod.copy()));
-			} catch (Exception e) {
-				ProgramMethodsPresenter.LOG.error(e.getMessage(), e);
-			}
-
+			newBreedingMethod.setMid(this.gerplasmDataManager.addMethod(newBreedingMethod.copy()));
 			newBreedingMethod.setIsnew(true);
+
+			LOG.trace("Added breeding method (" + newBreedingMethod.getMname() + " id:" + newBreedingMethod.getMid() + ")");
 
 			this.view.addRow(newBreedingMethod, false, 0);
 
