@@ -142,7 +142,7 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
             w.executeJavaScript(String.format(script, prefetch_script));
 
         if (w instanceof WorkbenchMainView && !jiraSetupDone) {
-            final String jiraSupportJSSrc = "https://pods.iplantcollaborative.org/jira/s/en_US-ihxzyo-418945332/852/5/1.2.9/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?collectorId=5f718b22";
+            final String jiraSupportJSSrc = "https://ibplatform.atlassian.net/s/325c8160bc5b40166eec492e543f1d91-T/en_UKj5ok3n-ren-on/70107/242e31e02e74585a6e9c03205d0f9262/2.0.7/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?locale=en-UK&collectorId=77e97d16";
 
             w.executeJavaScript(String.format(script, jiraSupportJSSrc));
 
