@@ -142,6 +142,36 @@
 		factory-method="getOntologyDataManager" scope="request">
 		<aop:scoped-proxy />
 	</bean>
+	
+	<bean id="ontologyVariableDataManager" factory-bean="managerFactory"
+		factory-method="getOntologyVariableDataManager" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+	
+	<bean id="propertyDataManager" factory-bean="managerFactory"
+		factory-method="getOntologyPropertyDataManager" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="scaleDataManager" factory-bean="managerFactory"
+		factory-method="getOntologyScaleDataManager" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+	
+	<bean id="methodDataManager" factory-bean="managerFactory"
+		factory-method="getOntologyMethodDataManager" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+	
+	<bean id="ontologyDaoFactory" factory-bean="managerFactory"
+		factory-method="getOntologyDaoFactory" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+	
+	<bean id="standardVariableTransformer" factory-bean="managerFactory"
+		factory-method="getStandardVariableTransformer" scope="request">
+		<aop:scoped-proxy />
+	</bean>
 
 	<bean id="ontologyService" factory-bean="managerFactory"
 		factory-method="getOntologyService" scope="request">
@@ -149,8 +179,6 @@
 	</bean>
 	
 	<bean id="breedingViewImportService"  class="org.generationcp.commons.service.impl.BreedingViewImportServiceImpl" scope="request">
-		<constructor-arg ref="studyDataManager" />
-		<constructor-arg ref="ontologyDataManager" />
 		<aop:scoped-proxy />
 	</bean>
 
