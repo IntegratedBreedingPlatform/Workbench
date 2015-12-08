@@ -257,6 +257,8 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 					UploadBreedingViewOutputAction.LOG.error(e.getMessage(), e);
 
+					// Wrapping in RuntimeException because TransactionCallbackWithoutResult will only send rollback signal if it is a runtime exception.
+					// See http://docs.spring.io/autorepo/docs/spring/3.2.11.RELEASE/javadoc-api/org/springframework/transaction/support/TransactionCallbackWithoutResult.html
 					throw new RuntimeException(e);
 
 				} finally {
