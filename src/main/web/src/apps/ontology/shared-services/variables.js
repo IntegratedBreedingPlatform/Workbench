@@ -79,7 +79,7 @@
 			*/
 			getVariables: function() {
 				var request = $http.get('/bmsapi/ontology/' + configService.getCropName() + '/variables?programId=' +
-					configService.getProgramId(), {timeout: 10000});
+					configService.getProgramId(), {timeout: 60000});
 				return request.then(successHandler, failureHandler);
 			},
 
@@ -88,7 +88,7 @@
 			*/
 			getFavouriteVariables: function() {
 				var request = $http.get('/bmsapi/ontology/' + configService.getCropName() + '/variables?favourite=true&programId=' +
-					configService.getProgramId(), {timeout: 10000});
+					configService.getProgramId(), {timeout: 60000});
 				return request.then(successHandler, failureHandler);
 			},
 

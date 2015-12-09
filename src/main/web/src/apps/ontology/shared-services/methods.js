@@ -26,7 +26,7 @@
 			getMethods: function() {
 
 				var url = '/bmsapi/ontology/' + configService.getCropName() + '/methods',
-					request = $http.get(url, {timeout: 5000});
+					request = $http.get(url, {timeout: 60000});
 
 				return request.then(successHandler, failureHandler);
 			},
