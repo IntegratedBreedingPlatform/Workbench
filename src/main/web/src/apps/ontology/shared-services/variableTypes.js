@@ -20,7 +20,7 @@
 			}]
 			*/
 			getTypes: function() {
-				var request = $http.get('/bmsapi/ontology/variableTypes', {timeout: 5000});
+				var request = $http.get('/bmsapi/ontology/variableTypes', {timeout: 60000});
 				return request.then(successHandler, failureHandler);
 			}
 		};
