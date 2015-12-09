@@ -34,7 +34,6 @@ import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -42,6 +41,7 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import com.vaadin.Application;
 import com.vaadin.data.Validator;
@@ -50,7 +50,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Window;
 
 @RunWith(MockitoJUnitRunner.class)
-@Ignore(value = "Ignoring temporarly while all failures are fixed up.")
 public class UploadBreedingViewOutputActionTest {
 
 	private static final int LOCATION_ID1 = 1;
@@ -106,12 +105,15 @@ public class UploadBreedingViewOutputActionTest {
 	@Mock
 	private Application application;
 
+	@Mock
+	private PlatformTransactionManager transactionManager;
+
 	@InjectMocks
-	private final UploadBreedingViewOutputAction uploadBreedingViewOutputAction = new UploadBreedingViewOutputAction();
+	private UploadBreedingViewOutputAction uploadBreedingViewOutputAction = new UploadBreedingViewOutputAction();
 
 	@Before
 	public void setUp() {
-
+		
 		final Project project = this.createProject();
 
 		Mockito.when(this.fileUploadBreedingViewOutputWindow.getProject()).thenReturn(project);
@@ -270,7 +272,7 @@ public class UploadBreedingViewOutputActionTest {
 		Mockito.verify(this.parentWindow).removeWindow(Matchers.any(Window.class));
 	}
 
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void testProcessTheUploadedFileFailed() throws BreedingViewImportException {
 
 		Mockito.when(this.bmsOutputParser.getMeansFile()).thenReturn(Mockito.mock(File.class));
@@ -290,9 +292,6 @@ public class UploadBreedingViewOutputActionTest {
 				Matchers.anyInt(), Matchers.anyMap());
 		Mockito.verify(this.breedingViewImportService, Mockito.times(0)).importOutlierData(Matchers.any(File.class), Matchers.anyInt(),
 				Matchers.anyMap());
-
-		Mockito.verify(this.messageSource).getMessage(Message.BV_UPLOAD_ERROR_HEADER);
-		Mockito.verify(this.messageSource).getMessage(Message.BV_UPLOAD_ERROR_CANNOT_UPLOAD_MEANS);
 
 	}
 

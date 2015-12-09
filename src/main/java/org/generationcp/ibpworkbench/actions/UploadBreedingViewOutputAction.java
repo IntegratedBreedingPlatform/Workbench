@@ -63,9 +63,9 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 	@Autowired
 	private PlatformTransactionManager transactionManager;
 
-	private final BMSOutputParser bmsOutputParser;
+	private BMSOutputParser bmsOutputParser;
 
-	private final FileUploadBreedingViewOutputWindow window;
+	private FileUploadBreedingViewOutputWindow window;
 
 	public UploadBreedingViewOutputAction() {
 		this.window = null;
@@ -296,5 +296,14 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 		return map;
 
 	}
+
+	public void setWindow(FileUploadBreedingViewOutputWindow window) {
+		this.window = window;
+	}
+
+	public void setBmsOutputParser(BMSOutputParser bmsOutputParser) {
+		this.bmsOutputParser = bmsOutputParser;
+	}
+
 
 }
