@@ -1,7 +1,9 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
-import com.vaadin.ui.Select;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -20,8 +22,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.vaadin.ui.Select;
 
 /**
  * Created by IntelliJ IDEA. User: Daniel Villafuerte Date: 12/17/2014 Time: 1:39 PM
@@ -386,6 +387,17 @@ public class SingleSiteAnalysisDetailsPanelTest {
 				datasetTypeVar, 7));
 
 		return factors;
+	}
+
+	@Test
+	public void testDesignTypeAlphaLattice() {
+		Mockito.doReturn(TermId.ALPHA_LATTICE_E30_REP2.getId()).when(this.dut).retrieveExperimentalDesignTypeID();
+
+		this.dut.initializeComponents();
+
+		Mockito.verify(this.dut).displayAlphaLatticeDesignElements();
+
+		Assert.assertTrue(this.dut.getSelDesignType().getValue().equals(DesignType.ALPHA_LATTICE.getName()));
 	}
 
 }
