@@ -21,7 +21,7 @@
 
 			*/
 			getDataTypes: function() {
-				var request = $http.get('/bmsapi/ontology/datatypes', {timeout: 5000});
+				var request = $http.get('/bmsapi/ontology/datatypes', {timeout: 60000});
 				return request.then(successHandler, failureHandler);
 			},
 
