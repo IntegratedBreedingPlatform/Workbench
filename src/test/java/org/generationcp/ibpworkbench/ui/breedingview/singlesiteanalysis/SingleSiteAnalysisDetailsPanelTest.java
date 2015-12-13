@@ -390,14 +390,14 @@ public class SingleSiteAnalysisDetailsPanelTest {
 	}
 
 	@Test
-	public void testDesignTypeAlphaLattice() {
+	public void testDesignTypeAlphaLatticePresets() {
 		Mockito.doReturn(TermId.ALPHA_LATTICE_E30_REP2.getId()).when(this.dut).retrieveExperimentalDesignTypeID();
 
 		this.dut.initializeComponents();
 
 		Mockito.verify(this.dut).displayAlphaLatticeDesignElements();
 
-		Assert.assertTrue(this.dut.getSelDesignType().getValue().equals(DesignType.ALPHA_LATTICE.getName()));
+		Assert.assertTrue(this.dut.getSelDesignType().getValue().equals(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName()));
 	}
 
 }

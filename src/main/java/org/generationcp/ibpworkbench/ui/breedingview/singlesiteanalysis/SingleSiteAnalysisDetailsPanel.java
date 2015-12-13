@@ -671,7 +671,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.selDesignType.addItem(DesignType.INCOMPLETE_BLOCK_DESIGN.getName());
 		this.selDesignType.addItem(DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
 		this.selDesignType.addItem(DesignType.ROW_COLUMN_DESIGN.getName());
-		this.selDesignType.addItem(DesignType.ALPHA_LATTICE.getName());
+		this.selDesignType.addItem(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName());
 		this.selDesignType.setWidth(SingleSiteAnalysisDetailsPanel.SELECT_BOX_WIDTH);
 
 		this.selReplicates = new Select();
@@ -961,7 +961,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 				this.displayRowColumnDesignElements();
 			} else if (designType == TermId.ALPHA_LATTICE_E30_REP2.getId() || designType == TermId.ALPHA_LATTICE_E30_REP3.getId()
 					|| designType == TermId.ALPHA_LATTICE_E50_REP2.getId()) {
-				designFactor = DesignType.ALPHA_LATTICE.getName();
+				designFactor = DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName();
 				this.displayAlphaLatticeDesignElements();
 			}
 
