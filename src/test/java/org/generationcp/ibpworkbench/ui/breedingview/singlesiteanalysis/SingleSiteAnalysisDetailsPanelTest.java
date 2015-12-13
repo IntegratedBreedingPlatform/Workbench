@@ -2,6 +2,7 @@
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -10,18 +11,28 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
+import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.StandardVariable;
+import org.generationcp.middleware.domain.dms.TrialEnvironment;
+import org.generationcp.middleware.domain.dms.TrialEnvironments;
+import org.generationcp.middleware.domain.dms.VariableTypeList;
 import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.domain.oms.TermId;
+import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.Tool;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.vaadin.ui.Component;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Select;
 
 /**
@@ -46,6 +57,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 	private static final String[] DATASET_FACTORS = {SingleSiteAnalysisDetailsPanelTest.DATASET_NAME,
 			SingleSiteAnalysisDetailsPanelTest.DATASET_TITLE, SingleSiteAnalysisDetailsPanelTest.DATASET_TYPE};
 
+	@InjectMocks
 	private SingleSiteAnalysisDetailsPanel dut;
 
 	private List<DMSVariableType> factors;
@@ -54,36 +66,93 @@ public class SingleSiteAnalysisDetailsPanelTest {
 	@Mock
 	private SimpleResourceBundleMessageSource messageSource;
 
-	@Mock
 	private BreedingViewInput input;
+
+	@Mock
+	private StudyDataManager studyDataManager;
 
 	@Before
 	public void setup() {
-		SingleSiteAnalysisDetailsPanel panel = new SingleSiteAnalysisDetailsPanel();
-		this.dut = Mockito.spy(panel);
-		this.dut.setMessageSource(this.messageSource);
-		Mockito.doReturn(this.input).when(this.dut).getBreedingViewInput();
-		Mockito.doNothing().when(this.dut).populateChoicesForEnvForAnalysis();
-		Mockito.doNothing().when(this.dut).populateChoicesForReplicates();
-		Mockito.doNothing().when(this.dut).populateChoicesForBlocks();
-		Mockito.doNothing().when(this.dut).populateChoicesForRowFactor();
-		Mockito.doNothing().when(this.dut).populateChoicesForColumnFactor();
-		Mockito.doNothing().when(this.dut).refineChoicesForBlocksReplicationRowAndColumnFactos();
-		Mockito.doNothing().when(this.dut).populateChoicesForGenotypes();
-		Mockito.when(this.input.getVersion()).thenReturn(null);
-
+		// SingleSiteAnalysisDetailsPanel panel = new SingleSiteAnalysisDetailsPanel();
+		this.initializeBreedingViewInput();
 		this.factors = this.createTestFactors();
 		this.trialFactors = this.createTrialVariables();
+		
+		Select selEnvFactor = new Select();
+		selEnvFactor.setValue("TRIAL INSTANCE");
+		this.dut.setSelEnvFactor(selEnvFactor);
+
+		Project project = new Project();
+		this.dut =
+				new SingleSiteAnalysisDetailsPanel(new Tool(), this.input, this.factors, this.trialFactors, project,
+						new SingleSiteAnalysisPanel(project, null));
+		this.dut.setMessageSource(this.messageSource);
+		this.dut.setStudyDataManager(this.studyDataManager);
+
+		this.mockStudyDataManagerCalls();
+		this.mockMessageResource();
+
+
+		// Mockito.doNothing().when(this.dut).populateChoicesForEnvForAnalysis();
+		// Mockito.doNothing().when(this.dut).populateChoicesForReplicates();
+		// Mockito.doNothing().when(this.dut).populateChoicesForBlocks();
+		// Mockito.doNothing().when(this.dut).populateChoicesForRowFactor();
+		// Mockito.doNothing().when(this.dut).populateChoicesForColumnFactor();
+		// Mockito.doNothing().when(this.dut).refineChoicesForBlocksReplicationRowAndColumnFactos();
+		// Mockito.doNothing().when(this.dut).populateChoicesForGenotypes();
+		
+
+		
+	}
+
+	private void mockMessageResource() {
+		Mockito.when(this.messageSource.getMessage(Message.PLEASE_CHOOSE)).thenReturn("Please choose");
+	}
+
+	private void mockStudyDataManagerCalls() {
+		DataSet dataset = new DataSet();
+		VariableTypeList variableTypes = new VariableTypeList();
+		variableTypes.setVariableTypes(this.factors);
+		dataset.setVariableTypes(variableTypes);
+		Mockito.when(this.studyDataManager.getDataSet(this.input.getDatasetId())).thenReturn(dataset);
+
+		TrialEnvironments trialEnvironments = new TrialEnvironments();
+		TrialEnvironment trialEnvironment = new TrialEnvironment(2);
+		trialEnvironments.add(trialEnvironment);
+		Mockito.when(this.studyDataManager.getTrialEnvironmentsInDataset(this.input.getDatasetId())).thenReturn(trialEnvironments);
+	}
+
+	private void initializeBreedingViewInput() {
+		input = new BreedingViewInput();
+		input.setStudyId(1);
+		input.setDatasetId(3);
 	}
 
 	@Test
 	public void testDesignTypeIncompleteBlockDesignResolvableNonLatin() {
-
-		Mockito.doReturn(TermId.RESOLVABLE_INCOMPLETE_BLOCK.getId()).when(this.dut).retrieveExperimentalDesignTypeID();
+		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
+				.thenReturn(Integer.toString(TermId.RESOLVABLE_INCOMPLETE_BLOCK.getId()));
 
 		this.dut.initializeComponents();
 
-		Mockito.verify(this.dut).displayIncompleteBlockDesignElements();
+		GridLayout gLayout = (GridLayout) this.dut.getBlockRowColumnContainer().getComponentIterator().next();
+		Iterator<Component> componentsIterator = gLayout.getComponentIterator();
+		List<Component> components = new ArrayList<>();
+		while (componentsIterator.hasNext()) {
+			Component component = componentsIterator.next();
+			components.add(component);
+		}
+
+		Assert.assertTrue(components.contains(this.dut.getLblBlocks()));
+		Assert.assertTrue(components.contains(this.dut.getSelBlocks()));
+		Assert.assertTrue(components.contains(this.dut.getLblSpecifyGenotypesHeader()));
+		Assert.assertTrue(components.contains(this.dut.getLblGenotypes()));
+		Assert.assertTrue(components.contains(this.dut.getSelGenotypes()));
+
+		Assert.assertFalse(components.contains(this.dut.getLblSpecifyColumnFactor()));
+		Assert.assertFalse(components.contains(this.dut.getSelColumnFactor()));
+		Assert.assertFalse(components.contains(this.dut.getLblSpecifyRowFactor()));
+		Assert.assertFalse(components.contains(this.dut.getSelRowFactor()));
 
 		Assert.assertTrue(this.dut.getSelDesignType().getValue().equals(DesignType.INCOMPLETE_BLOCK_DESIGN.getName()));
 
@@ -99,12 +168,29 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 	@Test
 	public void testDesignTypeIncompleteBlockDesignResolvableLatin() {
-
-		Mockito.doReturn(TermId.RESOLVABLE_INCOMPLETE_BLOCK_LATIN.getId()).when(this.dut).retrieveExperimentalDesignTypeID();
+		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
+				.thenReturn(Integer.toString(TermId.RESOLVABLE_INCOMPLETE_BLOCK_LATIN.getId()));
 
 		this.dut.initializeComponents();
 
-		Mockito.verify(this.dut).displayIncompleteBlockDesignElements();
+		GridLayout gLayout = (GridLayout) this.dut.getBlockRowColumnContainer().getComponentIterator().next();
+		Iterator<Component> componentsIterator = gLayout.getComponentIterator();
+		List<Component> components = new ArrayList<>();
+		while (componentsIterator.hasNext()) {
+			Component component = componentsIterator.next();
+			components.add(component);
+		}
+
+		Assert.assertTrue(components.contains(this.dut.getLblBlocks()));
+		Assert.assertTrue(components.contains(this.dut.getSelBlocks()));
+		Assert.assertTrue(components.contains(this.dut.getLblSpecifyGenotypesHeader()));
+		Assert.assertTrue(components.contains(this.dut.getLblGenotypes()));
+		Assert.assertTrue(components.contains(this.dut.getSelGenotypes()));
+
+		Assert.assertFalse(components.contains(this.dut.getLblSpecifyColumnFactor()));
+		Assert.assertFalse(components.contains(this.dut.getSelColumnFactor()));
+		Assert.assertFalse(components.contains(this.dut.getLblSpecifyRowFactor()));
+		Assert.assertFalse(components.contains(this.dut.getSelRowFactor()));
 
 		Assert.assertTrue(this.dut.getSelDesignType().getValue().equals(DesignType.INCOMPLETE_BLOCK_DESIGN.getName()));
 
@@ -120,11 +206,29 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 	@Test
 	public void testDesignTypeRowColumnDesignLatin() {
-		Mockito.doReturn(TermId.RESOLVABLE_INCOMPLETE_ROW_COL_LATIN.getId()).when(this.dut).retrieveExperimentalDesignTypeID();
+		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
+				.thenReturn(Integer.toString(TermId.RESOLVABLE_INCOMPLETE_ROW_COL_LATIN.getId()));
 
 		this.dut.initializeComponents();
 
-		Mockito.verify(this.dut).displayRowColumnDesignElements();
+		GridLayout gLayout = (GridLayout) this.dut.getBlockRowColumnContainer().getComponentIterator().next();
+		Iterator<Component> componentsIterator = gLayout.getComponentIterator();
+		List<Component> components = new ArrayList<>();
+		while (componentsIterator.hasNext()) {
+			Component component = componentsIterator.next();
+			components.add(component);
+		}
+
+		Assert.assertTrue(components.contains(this.dut.getLblSpecifyColumnFactor()));
+		Assert.assertTrue(components.contains(this.dut.getSelColumnFactor()));
+		Assert.assertTrue(components.contains(this.dut.getLblSpecifyRowFactor()));
+		Assert.assertTrue(components.contains(this.dut.getSelRowFactor()));
+		Assert.assertTrue(components.contains(this.dut.getLblSpecifyGenotypesHeader()));
+		Assert.assertTrue(components.contains(this.dut.getLblGenotypes()));
+		Assert.assertTrue(components.contains(this.dut.getSelGenotypes()));
+
+		Assert.assertFalse(components.contains(this.dut.getLblBlocks()));
+		Assert.assertFalse(components.contains(this.dut.getSelBlocks()));
 
 		Assert.assertTrue(this.dut.getSelDesignType().getValue().equals(DesignType.ROW_COLUMN_DESIGN.getName()));
 
@@ -140,11 +244,29 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 	@Test
 	public void testDesignTypeRowColumnDesignNonLatin() {
-		Mockito.doReturn(TermId.RESOLVABLE_INCOMPLETE_ROW_COL.getId()).when(this.dut).retrieveExperimentalDesignTypeID();
+		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
+				.thenReturn(Integer.toString(TermId.RESOLVABLE_INCOMPLETE_ROW_COL.getId()));
 
 		this.dut.initializeComponents();
 
-		Mockito.verify(this.dut).displayRowColumnDesignElements();
+		GridLayout gLayout = (GridLayout) this.dut.getBlockRowColumnContainer().getComponentIterator().next();
+		Iterator<Component> componentsIterator = gLayout.getComponentIterator();
+		List<Component> components = new ArrayList<>();
+		while (componentsIterator.hasNext()) {
+			Component component = componentsIterator.next();
+			components.add(component);
+		}
+
+		Assert.assertTrue(components.contains(this.dut.getLblSpecifyColumnFactor()));
+		Assert.assertTrue(components.contains(this.dut.getSelColumnFactor()));
+		Assert.assertTrue(components.contains(this.dut.getLblSpecifyRowFactor()));
+		Assert.assertTrue(components.contains(this.dut.getSelRowFactor()));
+		Assert.assertTrue(components.contains(this.dut.getLblSpecifyGenotypesHeader()));
+		Assert.assertTrue(components.contains(this.dut.getLblGenotypes()));
+		Assert.assertTrue(components.contains(this.dut.getSelGenotypes()));
+
+		Assert.assertFalse(components.contains(this.dut.getLblBlocks()));
+		Assert.assertFalse(components.contains(this.dut.getSelBlocks()));
 
 		Assert.assertTrue(this.dut.getSelDesignType().getValue().equals(DesignType.ROW_COLUMN_DESIGN.getName()));
 
@@ -160,11 +282,29 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 	@Test
 	public void testDesignTypeRandomizedBlockDesign() {
-		Mockito.doReturn(TermId.RANDOMIZED_COMPLETE_BLOCK.getId()).when(this.dut).retrieveExperimentalDesignTypeID();
+		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
+				.thenReturn(Integer.toString(TermId.RANDOMIZED_COMPLETE_BLOCK.getId()));
 
 		this.dut.initializeComponents();
 
-		Mockito.verify(this.dut).displayRandomizedBlockDesignElements();
+		GridLayout gLayout = (GridLayout) this.dut.getBlockRowColumnContainer().getComponentIterator().next();
+		Iterator<Component> componentsIterator = gLayout.getComponentIterator();
+		List<Component> components = new ArrayList<>();
+		while (componentsIterator.hasNext()) {
+			Component component = componentsIterator.next();
+			components.add(component);
+		}
+
+		Assert.assertTrue(components.contains(this.dut.getLblSpecifyGenotypesHeader()));
+		Assert.assertTrue(components.contains(this.dut.getLblGenotypes()));
+		Assert.assertTrue(components.contains(this.dut.getSelGenotypes()));
+
+		Assert.assertFalse(components.contains(this.dut.getLblSpecifyColumnFactor()));
+		Assert.assertFalse(components.contains(this.dut.getSelColumnFactor()));
+		Assert.assertFalse(components.contains(this.dut.getLblSpecifyRowFactor()));
+		Assert.assertFalse(components.contains(this.dut.getSelRowFactor()));
+		Assert.assertFalse(components.contains(this.dut.getLblBlocks()));
+		Assert.assertFalse(components.contains(this.dut.getSelBlocks()));
 
 		Assert.assertTrue(this.dut.getSelDesignType().getValue().equals(DesignType.RANDOMIZED_BLOCK_DESIGN.getName()));
 
@@ -180,7 +320,8 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 	@Test
 	public void testDesignTypeInvalid() {
-		Mockito.doReturn(0).when(this.dut).retrieveExperimentalDesignTypeID();
+		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
+				.thenReturn(null);
 
 		this.dut.initializeComponents();
 
@@ -189,15 +330,10 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 	@Test
 	public void testPopulateChoicesForGenotypes() {
-		SingleSiteAnalysisDetailsPanel ssaPanel =
-				new SingleSiteAnalysisDetailsPanel(null, new BreedingViewInput(), this.factors, this.trialFactors, null, null);
-		SingleSiteAnalysisDetailsPanel mockSSAPanel = Mockito.spy(ssaPanel);
-		Select genotypeSelect = new Select();
-		Mockito.doReturn(genotypeSelect).when(mockSSAPanel).getSelGenotypes();
-
-		mockSSAPanel.populateChoicesForGenotypes();
-		Assert.assertTrue("Dropdown should have 3 factors", genotypeSelect.getItemIds().size() == 3);
-		for (Object id : genotypeSelect.getItemIds()) {
+		this.dut.setSelGenotypes(new Select());
+		this.dut.populateChoicesForGenotypes();
+		Assert.assertTrue("Dropdown should have 3 factors", this.dut.getSelGenotypes().getItemIds().size() == 3);
+		for (Object id : this.dut.getSelGenotypes().getItemIds()) {
 			String localName = (String) id;
 			Assert.assertFalse("Entry Type factor not included in dropdown", "ENTRY_TYPE".equals(localName));
 		}
@@ -391,11 +527,29 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 	@Test
 	public void testDesignTypeAlphaLatticePresets() {
-		Mockito.doReturn(TermId.ALPHA_LATTICE_E30_REP2.getId()).when(this.dut).retrieveExperimentalDesignTypeID();
+		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
+				.thenReturn(Integer.toString(TermId.ALPHA_LATTICE_E30_REP2.getId()));
 
 		this.dut.initializeComponents();
 
-		Mockito.verify(this.dut).displayAlphaLatticeDesignElements();
+		GridLayout gLayout = (GridLayout) this.dut.getBlockRowColumnContainer().getComponentIterator().next();
+		Iterator<Component> componentsIterator = gLayout.getComponentIterator();
+		List<Component> components = new ArrayList<>();
+		while (componentsIterator.hasNext()) {
+			Component component = componentsIterator.next();
+			components.add(component);
+		}
+
+		Assert.assertTrue(components.contains(this.dut.getLblBlocks()));
+		Assert.assertTrue(components.contains(this.dut.getSelBlocks()));
+		Assert.assertTrue(components.contains(this.dut.getLblSpecifyGenotypesHeader()));
+		Assert.assertTrue(components.contains(this.dut.getLblGenotypes()));
+		Assert.assertTrue(components.contains(this.dut.getSelGenotypes()));
+
+		Assert.assertFalse(components.contains(this.dut.getLblSpecifyColumnFactor()));
+		Assert.assertFalse(components.contains(this.dut.getSelColumnFactor()));
+		Assert.assertFalse(components.contains(this.dut.getLblSpecifyRowFactor()));
+		Assert.assertFalse(components.contains(this.dut.getSelRowFactor()));
 
 		Assert.assertTrue(this.dut.getSelDesignType().getValue().equals(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName()));
 	}

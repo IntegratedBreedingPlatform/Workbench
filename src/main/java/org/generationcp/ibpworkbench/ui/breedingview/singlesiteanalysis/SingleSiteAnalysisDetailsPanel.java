@@ -462,6 +462,10 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		return this.selEnvFactor;
 	}
 
+	public void setSelEnvFactor(Select selEnvFactor) {
+		this.selEnvFactor = selEnvFactor;
+	}
+
 	public Select getSelReplicates() {
 		return this.selReplicates;
 	}
@@ -480,6 +484,10 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	public Select getSelGenotypes() {
 		return this.selGenotypes;
+	}
+
+	public void setStudyDataManager(StudyDataManager studyDataManager) {
+		this.studyDataManager = studyDataManager;
 	}
 
 	protected void initialize() {
