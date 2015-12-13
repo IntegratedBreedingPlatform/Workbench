@@ -988,16 +988,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		gLayout.addComponent(this.getSelGenotypes(), 1, 2);
 
 		this.getBlockRowColumnContainer().addComponent(gLayout);
-
-		if (!this.getSelReplicates().isEnabled() || this.getSelReplicates().getItemIds().isEmpty()) {
-
-			for (final Object itemId : this.getSelBlocks().getItemIds()) {
-				this.getSelReplicates().addItem(itemId);
-				this.getSelReplicates().setItemCaption(itemId, SingleSiteAnalysisDetailsPanel.REPLICATES);
-				this.getSelReplicates().select(itemId);
-				this.getSelReplicates().setEnabled(true);
-			}
-		}
 	}
 
 	protected int retrieveExperimentalDesignTypeID() {
