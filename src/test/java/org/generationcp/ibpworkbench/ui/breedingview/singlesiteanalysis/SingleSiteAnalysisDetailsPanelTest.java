@@ -73,7 +73,6 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 	@Before
 	public void setup() {
-		// SingleSiteAnalysisDetailsPanel panel = new SingleSiteAnalysisDetailsPanel();
 		this.initializeBreedingViewInput();
 		this.factors = this.createTestFactors();
 		this.trialFactors = this.createTrialVariables();
@@ -91,18 +90,6 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 		this.mockStudyDataManagerCalls();
 		this.mockMessageResource();
-
-
-		// Mockito.doNothing().when(this.dut).populateChoicesForEnvForAnalysis();
-		// Mockito.doNothing().when(this.dut).populateChoicesForReplicates();
-		// Mockito.doNothing().when(this.dut).populateChoicesForBlocks();
-		// Mockito.doNothing().when(this.dut).populateChoicesForRowFactor();
-		// Mockito.doNothing().when(this.dut).populateChoicesForColumnFactor();
-		// Mockito.doNothing().when(this.dut).refineChoicesForBlocksReplicationRowAndColumnFactos();
-		// Mockito.doNothing().when(this.dut).populateChoicesForGenotypes();
-		
-
-		
 	}
 
 	private void mockMessageResource() {
@@ -523,93 +510,6 @@ public class SingleSiteAnalysisDetailsPanelTest {
 				datasetTypeVar, 7));
 
 		return factors;
-	}
-
-	@Test
-	public void testDesignType1stAlphaLatticePreset() {
-		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
-				.thenReturn(Integer.toString(TermId.ALPHA_LATTICE_E30_REP2.getId()));
-
-		this.dut.initializeComponents();
-
-		GridLayout gLayout = (GridLayout) this.dut.getBlockRowColumnContainer().getComponentIterator().next();
-		Iterator<Component> componentsIterator = gLayout.getComponentIterator();
-		List<Component> components = new ArrayList<>();
-		while (componentsIterator.hasNext()) {
-			Component component = componentsIterator.next();
-			components.add(component);
-		}
-
-		Assert.assertTrue(components.contains(this.dut.getLblBlocks()));
-		Assert.assertTrue(components.contains(this.dut.getSelBlocks()));
-		Assert.assertTrue(components.contains(this.dut.getLblSpecifyGenotypesHeader()));
-		Assert.assertTrue(components.contains(this.dut.getLblGenotypes()));
-		Assert.assertTrue(components.contains(this.dut.getSelGenotypes()));
-
-		Assert.assertFalse(components.contains(this.dut.getLblSpecifyColumnFactor()));
-		Assert.assertFalse(components.contains(this.dut.getSelColumnFactor()));
-		Assert.assertFalse(components.contains(this.dut.getLblSpecifyRowFactor()));
-		Assert.assertFalse(components.contains(this.dut.getSelRowFactor()));
-
-		Assert.assertTrue(this.dut.getSelDesignType().getValue().equals(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName()));
-	}
-
-	@Test
-	public void testDesignType2ndAlphaLatticePresets() {
-		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
-				.thenReturn(Integer.toString(TermId.ALPHA_LATTICE_E30_REP3.getId()));
-
-		this.dut.initializeComponents();
-
-		GridLayout gLayout = (GridLayout) this.dut.getBlockRowColumnContainer().getComponentIterator().next();
-		Iterator<Component> componentsIterator = gLayout.getComponentIterator();
-		List<Component> components = new ArrayList<>();
-		while (componentsIterator.hasNext()) {
-			Component component = componentsIterator.next();
-			components.add(component);
-		}
-
-		Assert.assertTrue(components.contains(this.dut.getLblBlocks()));
-		Assert.assertTrue(components.contains(this.dut.getSelBlocks()));
-		Assert.assertTrue(components.contains(this.dut.getLblSpecifyGenotypesHeader()));
-		Assert.assertTrue(components.contains(this.dut.getLblGenotypes()));
-		Assert.assertTrue(components.contains(this.dut.getSelGenotypes()));
-
-		Assert.assertFalse(components.contains(this.dut.getLblSpecifyColumnFactor()));
-		Assert.assertFalse(components.contains(this.dut.getSelColumnFactor()));
-		Assert.assertFalse(components.contains(this.dut.getLblSpecifyRowFactor()));
-		Assert.assertFalse(components.contains(this.dut.getSelRowFactor()));
-
-		Assert.assertTrue(this.dut.getSelDesignType().getValue().equals(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName()));
-	}
-
-	@Test
-	public void testDesignType3rdAlphaLatticePresets() {
-		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
-				.thenReturn(Integer.toString(TermId.ALPHA_LATTICE_E50_REP2.getId()));
-
-		this.dut.initializeComponents();
-
-		GridLayout gLayout = (GridLayout) this.dut.getBlockRowColumnContainer().getComponentIterator().next();
-		Iterator<Component> componentsIterator = gLayout.getComponentIterator();
-		List<Component> components = new ArrayList<>();
-		while (componentsIterator.hasNext()) {
-			Component component = componentsIterator.next();
-			components.add(component);
-		}
-
-		Assert.assertTrue(components.contains(this.dut.getLblBlocks()));
-		Assert.assertTrue(components.contains(this.dut.getSelBlocks()));
-		Assert.assertTrue(components.contains(this.dut.getLblSpecifyGenotypesHeader()));
-		Assert.assertTrue(components.contains(this.dut.getLblGenotypes()));
-		Assert.assertTrue(components.contains(this.dut.getSelGenotypes()));
-
-		Assert.assertFalse(components.contains(this.dut.getLblSpecifyColumnFactor()));
-		Assert.assertFalse(components.contains(this.dut.getSelColumnFactor()));
-		Assert.assertFalse(components.contains(this.dut.getLblSpecifyRowFactor()));
-		Assert.assertFalse(components.contains(this.dut.getSelRowFactor()));
-
-		Assert.assertTrue(this.dut.getSelDesignType().getValue().equals(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName()));
 	}
 
 }

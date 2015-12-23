@@ -679,7 +679,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.selDesignType.addItem(DesignType.INCOMPLETE_BLOCK_DESIGN.getName());
 		this.selDesignType.addItem(DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
 		this.selDesignType.addItem(DesignType.ROW_COLUMN_DESIGN.getName());
-		this.selDesignType.addItem(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName());
 		this.selDesignType.setWidth(SingleSiteAnalysisDetailsPanel.SELECT_BOX_WIDTH);
 
 		this.selReplicates = new Select();
@@ -967,10 +966,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 					|| designType == TermId.RESOLVABLE_INCOMPLETE_ROW_COL_LATIN.getId()) {
 				designFactor = DesignType.ROW_COLUMN_DESIGN.getName();
 				this.displayRowColumnDesignElements();
-			} else if (designType == TermId.ALPHA_LATTICE_E30_REP2.getId() || designType == TermId.ALPHA_LATTICE_E30_REP3.getId()
-					|| designType == TermId.ALPHA_LATTICE_E50_REP2.getId()) {
-				designFactor = DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName();
-				this.displayAlphaLatticeDesignElements();
 			}
 
 			this.selDesignType.setValue(designFactor);
@@ -978,24 +973,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 			this.selDesignType.select(null);
 		}
 
-	}
-
-	public void displayAlphaLatticeDesignElements() {
-		final GridLayout gLayout = new GridLayout(2, 3);
-		gLayout.setColumnExpandRatio(0, 0);
-		gLayout.setColumnExpandRatio(1, 1);
-		gLayout.setWidth("100%");
-		gLayout.setSpacing(true);
-		gLayout.addStyleName(SingleSiteAnalysisDetailsPanel.MARGIN_TOP10);
-
-		this.getBlockRowColumnContainer().removeAllComponents();
-		gLayout.addComponent(this.getLblBlocks(), 0, 0);
-		gLayout.addComponent(this.getSelBlocks(), 1, 0);
-		gLayout.addComponent(this.getLblSpecifyGenotypesHeader(), 0, 1, 1, 1);
-		gLayout.addComponent(this.getLblGenotypes(), 0, 2);
-		gLayout.addComponent(this.getSelGenotypes(), 1, 2);
-
-		this.getBlockRowColumnContainer().addComponent(gLayout);
 	}
 
 	protected int retrieveExperimentalDesignTypeID() {
