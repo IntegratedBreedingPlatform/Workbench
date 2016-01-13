@@ -139,11 +139,11 @@
 
 @font-face {
     font-family: "BMS";
-    src:url("bms.eot");
-    src:url("bms.eot?#iefix") format("embedded-opentype"),
-    url("bms.ttf") format("truetype"),
-    url("bms.svg#bms") format("svg"),
-    url("bms.woff") format("woff");
+    src:url("/ibpworkbench/VAADIN/themes/vaadin-retro/fonts/bms.eot");
+    src:url("/ibpworkbench/VAADIN/themes/vaadin-retro/fonts/bms.eot?#iefix") format("embedded-opentype"),
+    url("/ibpworkbench/VAADIN/themes/vaadin-retro/fonts/bms.ttf") format("truetype"),
+    url("/ibpworkbench/VAADIN/themes/vaadin-retro/fonts/bms.svg#bms") format("svg"),
+    url("/ibpworkbench/VAADIN/themes/vaadin-retro/fonts/bms.woff") format("woff");
     font-weight: normal;
     font-style: normal;
 }
