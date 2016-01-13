@@ -2,13 +2,13 @@
 		font-size: 1.7rem;
 		padding-left: 1.7rem;
 		color: #5A5A59;
-
+		cursor: pointer;
 }
 
 .om-help-box {
 	.modal-content {
 		background: url('/ibpworkbench/VAADIN/themes/vaadin-retro/images/login.png');
-		width: 53rem;
+		width: 53.4rem;
 	}
 
 	.helpPopup h1 {
@@ -39,7 +39,7 @@
 	.modal-title {
 		h1 {
 			color: white;
-			font-size: 2rem;
+			font-size: 1.85rem;
 			font-weight: 100;
 			margin-right: 2rem;
 			margin-bottom: 0;
