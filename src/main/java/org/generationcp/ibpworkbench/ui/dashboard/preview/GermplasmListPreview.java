@@ -447,7 +447,7 @@ public class GermplasmListPreview extends VerticalLayout {
 			this.treeView.addItem(parentList.getId());
 			this.treeView.setItemCaption(parentList.getId(), parentList.getName());
 			this.treeView.setParent(parentList.getId(), this.listLabel);
-			boolean hasChildList = this.getPresenter().hasChildList(parentList.getId());
+			boolean hasChildList = parentList.isFolder();
 
 			this.treeView.setChildrenAllowed(parentList.getId(), hasChildList);
 
@@ -507,7 +507,7 @@ public class GermplasmListPreview extends VerticalLayout {
 
 		for (GermplasmList listChild : germplasmListChildren) {
 
-			boolean hasChildList = this.getPresenter().hasChildList(listChild.getId());
+			boolean hasChildList = listChild.isFolder();
 
 			this.treeView.addItem(listChild.getId());
 			this.treeView.setItemCaption(listChild.getId(), listChild.getName());

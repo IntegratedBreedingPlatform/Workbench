@@ -31,7 +31,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 
 	public static final String FOLDER = "FOLDER";
 	private static final Logger LOG = LoggerFactory.getLogger(GermplasmListPreviewPresenter.class);
-	private static final int BATCH_SIZE = 50;
+	private static final int BATCH_SIZE = 500;
 	public static final int MAX_LIST_FOLDER_NAME_LENGTH = 50;
 	private GermplasmListPreview view;
 	private Project project;
@@ -84,21 +84,6 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 
 		this.view.addGermplasmListNode(parentGermplasmListId, germplasmListChildren, itemId);
 
-	}
-
-	public boolean hasChildList(int listId) {
-
-		List<GermplasmList> listChildren;
-
-		try {
-
-			listChildren = this.germplasmListManager.getGermplasmListByParentFolderId(listId, this.project.getUniqueID(), 0, 1);
-		} catch (MiddlewareQueryException e) {
-			GermplasmListPreviewPresenter.LOG.error(e.getLocalizedMessage(), e);
-			listChildren = new ArrayList<GermplasmList>();
-		}
-
-		return !listChildren.isEmpty();
 	}
 
 	@Override
