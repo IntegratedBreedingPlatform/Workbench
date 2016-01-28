@@ -2,6 +2,7 @@
 package org.generationcp.ibpworkbench.service;
 
 import java.util.Arrays;
+import java.util.List;
 import javax.annotation.Resource;
 
 import org.generationcp.commons.util.DateUtil;
@@ -35,6 +36,11 @@ public class WorkbenchUserService {
 	 * @throws org.generationcp.middleware.exceptions.MiddlewareQueryException
 	 */
 	public void saveUserAccount(UserAccountModel userAccount) {
+		// user.access =  0 - Default User
+		// user.instalid =  0 - Access all areas (legacy from the ICIS system) (not used)
+		// user.status = 0 - Unassigned
+		// user.type = 0 - Default user type (not used)
+
 		userAccount.trimAll();
 		Integer currentDate = DateUtil.getCurrentDateAsIntegerValue();
 		Person person = this.createPerson(userAccount);
@@ -44,12 +50,12 @@ public class WorkbenchUserService {
 		user.setPerson(person);
 		user.setName(userAccount.getUsername());
 		user.setPassword(passwordEncoder.encode(userAccount.getPassword()));
-		user.setAccess(0); // 0 - Default User
+		user.setAccess(0);
 		user.setAssignDate(currentDate);
 		user.setCloseDate(currentDate);
-		user.setInstalid(0); // 0 - Access all areas (legacy from the ICIS system) (not used)
-		user.setStatus(0); // 0 - Unassigned
-		user.setType(0); // 0 - Default user type (not used)
+		user.setInstalid(0);
+		user.setStatus(0);
+		user.setType(0);
 
 		// add user roles to the particular user
 		user.setRoles(Arrays.asList(new UserRole(user, userAccount.getRole())));
@@ -64,14 +70,15 @@ public class WorkbenchUserService {
 		user.setPersonid(person.getId());
 		user.setPerson(person);
 		user.setName(userAccount.getUsername());
+
 		// set default password for the new user which is the same as their Username
 		user.setPassword(passwordEncoder.encode(userAccount.getUsername()));
-		user.setAccess(0); // 0 - Default User
+		user.setAccess(0);
 		user.setAssignDate(0);
 		user.setCloseDate(0);
-		user.setInstalid(0); // 0 - Access all areas (legacy from the ICIS system) (not used)
-		user.setStatus(0); // 0 - Unassigned
-		user.setType(0); // 0 - Default user type (not used)
+		user.setInstalid(0);
+		user.setStatus(0);
+		user.setType(0);
 		user.setIsNew(true);
 
 		// add user roles to the particular user
@@ -106,7 +113,12 @@ public class WorkbenchUserService {
 	 */
 	public boolean isValidUserLogin(UserAccountModel userAccount) {
 		User user = this.getUserByUserName(userAccount.getUsername());
-		return passwordEncoder.matches(userAccount.getPassword(), user.getPassword());
+
+		if (user != null) {
+			return passwordEncoder.matches(userAccount.getPassword(), user.getPassword());
+		}
+
+		return false;
 	}
 
 	/**
@@ -117,11 +129,16 @@ public class WorkbenchUserService {
 	 * @throws MiddlewareQueryException
 	 */
 	public User getUserByUserName(String username) throws MiddlewareQueryException {
-		User user = this.workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0);
-		Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
-		user.setPerson(person);
+		List<User> userList = this.workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL);
 
-		return user;
+		if (!userList.isEmpty()) {
+			User user = userList.get(0);
+			Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
+			user.setPerson(person);
+			return user;
+		}
+
+		return null;
 	}
 
 	/**
