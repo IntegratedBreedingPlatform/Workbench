@@ -408,7 +408,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 		BeanItemContainer<User> beanItemContainer = new BeanItemContainer<User>(User.class);
 		for (User user : validUserList) {
-			if (user.getUserid().equals(this.sessionData.getUserData().getUserid())) {
+			if (user.getUserid().equals(this.sessionData.getUserData().getUserid()) || user.getUserid().equals(this.project.getUserId())) {
 				user.setEnabled(false);
 			}
 
@@ -465,4 +465,13 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			this.requestRepaintAll();
 		}
 	}
+
+	public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
+		this.workbenchDataManager = workbenchDataManager;
+	}
+
+	public void setSessionData(SessionData sessionData) {
+		this.sessionData = sessionData;
+	}
+
 }
