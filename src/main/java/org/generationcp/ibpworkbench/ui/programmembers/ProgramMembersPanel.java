@@ -66,6 +66,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ProgramMembersPanel.class);
 	private static final long serialVersionUID = 1L;
+	private static final String ROLE_PREFIX = "role_";
+	private static final String USERNAME = "userName";
 
 	private TwinTableSelect<User> select;
 
@@ -143,10 +145,10 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			}
 		};
 
-		this.select.getTableLeft().addGeneratedColumn("userName", generator1);
-		this.select.getTableRight().addGeneratedColumn("userName", generator2);
+		this.select.getTableLeft().addGeneratedColumn(USERNAME, generator1);
+		this.select.getTableRight().addGeneratedColumn(USERNAME, generator2);
 
-		this.select.setVisibleColumns(new Object[] {"select", "userName"});
+		this.select.setVisibleColumns(new Object[] {"select", USERNAME});
 		this.select.setColumnHeaders(new String[] {"<span class='glyphicon glyphicon-ok'></span>", "USER NAME"});
 
 		this.select.setLeftColumnCaption("Available Users");
@@ -200,7 +202,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		final List<Role> roles = new ArrayList<Role>();
 		ProgramMembersPanel.LOG.debug("getRolesForProjectMembers");
 		for (final CheckBox cb : this.createUserRolesCheckBoxList()) {
-			if ((Boolean) cb.getValue() == true) {
+			if ((Boolean) cb.getValue()) {
 				try {
 					final Role role = this.workbenchDataManager.getRoleById((Integer) cb.getData());
 					ProgramMembersPanel.LOG.debug("getRolesForProjectMembers id : " + cb.getData());
@@ -238,21 +240,21 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		}
 
 		final List<Object> columnIds = new ArrayList<Object>();
-		columnIds.add("userName");
+		columnIds.add(USERNAME);
 		final List<String> columnHeaders = new ArrayList<String>();
 		columnHeaders.add("Member");
 
 		// prepare the container
 		final IndexedContainer container = new IndexedContainer();
 		container.addContainerProperty("userId", Integer.class, null);
-		container.addContainerProperty("userName", String.class, null);
+		container.addContainerProperty(USERNAME, String.class, null);
 		for (final Role role : roleList) {
-			columnIds.add("role_" + role.getRoleId());
+			columnIds.add(ROLE_PREFIX + role.getRoleId());
 			columnHeaders.add(role.getName());
 			if (inheritedRoles.contains(role)) {
-				container.addContainerProperty("role_" + role.getRoleId(), Boolean.class, Boolean.TRUE);
+				container.addContainerProperty(ROLE_PREFIX + role.getRoleId(), Boolean.class, Boolean.TRUE);
 			} else {
-				container.addContainerProperty("role_" + role.getRoleId(), Boolean.class, Boolean.FALSE);
+				container.addContainerProperty(ROLE_PREFIX + role.getRoleId(), Boolean.class, Boolean.FALSE);
 			}
 		}
 		this.tblMembers.setContainerDataSource(container);
@@ -310,7 +312,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		titleContainer.setComponentAlignment(this.newMemberButton, Alignment.MIDDLE_RIGHT);
 		titleContainer.setSizeUndefined();
 		titleContainer.setWidth("100%");
-		titleContainer.setMargin(true, false, false, false); // move this to css
+		// move this to css
+		titleContainer.setMargin(true, false, false, false);
 
 		final VerticalLayout root = new VerticalLayout();
 		root.setMargin(new Layout.MarginInfo(false, true, true, true));
@@ -350,8 +353,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 			final Item item = container.addItem(userTemp);
 			item.getItemProperty("userId").setValue(1);
-			item.getItemProperty("userName").setValue(userTemp.getPerson().getDisplayName());
-			item.getItemProperty("role_" + projrole.getRole().getRoleId()).setValue("true");
+			item.getItemProperty(USERNAME).setValue(userTemp.getPerson().getDisplayName());
+			item.getItemProperty(ROLE_PREFIX + projrole.getRole().getRoleId()).setValue("true");
 			// item.getItemProperty("")
 			final List<Role> projroles = this.workbenchDataManager.getRolesByProjectAndUser(this.project, userTemp);
 			this.setInheritedRoles(item, projroles);
@@ -392,7 +395,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		return buttonLayout;
 	}
 
-	protected Container createUsersContainer() throws MiddlewareQueryException {
+	protected Container createUsersContainer() {
 		final List<User> validUserList = new ArrayList<User>();
 
 		// TODO: This can be improved once we implement proper User-Person mapping
@@ -430,7 +433,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 			this.project.setMembers(members);
 		}
-		return true; // members not required, so even if there are no values, this returns true
+		// members not required, so even if there are no values, this returns true
+		return true;
 	}
 
 	public void setInheritedRoles(final Item currentItem, final List<Role> myinheritedRoles) {
@@ -446,7 +450,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 			// Reset old values
 			for (final Role role : roleList) {
-				final String propertyId = "role_" + role.getRoleId();
+				final String propertyId = ROLE_PREFIX + role.getRoleId();
 				final Property property = currentItem.getItemProperty(propertyId);
 				if (property.getType() == Boolean.class) {
 					property.setValue(Boolean.FALSE);
@@ -455,7 +459,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 			// Set checked boxes based on inherited roles
 			for (final Role inheritedRole : myinheritedRoles) {
-				final String propertyId = "role_" + inheritedRole.getRoleId();
+				final String propertyId = ROLE_PREFIX + inheritedRole.getRoleId();
 				ProgramMembersPanel.LOG.debug("inheritedRole " + inheritedRole);
 				ProgramMembersPanel.LOG.debug("currentItem " + currentItem);
 				final Property property = currentItem.getItemProperty(propertyId);
