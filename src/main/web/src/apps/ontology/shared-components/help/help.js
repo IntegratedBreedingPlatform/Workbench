@@ -4,7 +4,7 @@
 (function() {
 	var helpModule = angular.module('help', ['ngBootbox']);
 
-	helpModule.directive('omHelp', ['$q', '$http', '$ngBootbox', function($q, $http, $ngBootbox) {
+	helpModule.directive('omHelp', ['$q', '$http', '$window', '$ngBootbox', function($q, $http, $window, $ngBootbox) {
 		return {
 			restrict: 'E',
 			scope: {
@@ -41,7 +41,7 @@
 								});
 							});
 						} else {
-							window.open(helpUrl);
+							$window.open(helpUrl);
 						}
 					});
 				});
