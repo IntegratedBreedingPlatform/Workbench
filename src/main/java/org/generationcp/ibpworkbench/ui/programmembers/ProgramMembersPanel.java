@@ -66,6 +66,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ProgramMembersPanel.class);
 	private static final long serialVersionUID = 1L;
+	private static final String ROLE_PREFIX = "role_";
+	private static final String USERNAME = "userName";
 
 	private TwinTableSelect<User> select;
 
@@ -83,7 +85,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 	private final Project project;
 
-	public ProgramMembersPanel(Project project) {
+	public ProgramMembersPanel(final Project project) {
 		this.project = project;
 	}
 
@@ -104,7 +106,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	protected void initializeComponents() {
 		this.select = new TwinTableSelect<User>(User.class);
 
-		Table.ColumnGenerator generator1 = new Table.ColumnGenerator() {
+		final Table.ColumnGenerator generator1 = new Table.ColumnGenerator() {
 
 			/**
 			 *
@@ -112,9 +114,9 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			private static final long serialVersionUID = 6976921612035925373L;
 
 			@Override
-			public Object generateCell(Table source, Object itemId, Object columnId) {
-				Person person = ((User) itemId).getPerson();
-				Label label = new Label();
+			public Object generateCell(final Table source, final Object itemId, final Object columnId) {
+				final Person person = ((User) itemId).getPerson();
+				final Label label = new Label();
 				label.setValue(person.getDisplayName());
 
 				if (((User) itemId).getUserid().equals(ProgramMembersPanel.this.sessionData.getUserData().getUserid())) {
@@ -123,7 +125,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 				return label;
 			}
 		};
-		Table.ColumnGenerator generator2 = new Table.ColumnGenerator() {
+		final Table.ColumnGenerator generator2 = new Table.ColumnGenerator() {
 
 			/**
 			 *
@@ -131,9 +133,9 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			private static final long serialVersionUID = 2789260422341831368L;
 
 			@Override
-			public Object generateCell(Table source, Object itemId, Object columnId) {
-				Person person = ((User) itemId).getPerson();
-				Label label = new Label();
+			public Object generateCell(final Table source, final Object itemId, final Object columnId) {
+				final Person person = ((User) itemId).getPerson();
+				final Label label = new Label();
 				label.setValue(person.getDisplayName());
 
 				if (((User) itemId).getUserid().equals(ProgramMembersPanel.this.sessionData.getUserData().getUserid())) {
@@ -143,10 +145,10 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			}
 		};
 
-		this.select.getTableLeft().addGeneratedColumn("userName", generator1);
-		this.select.getTableRight().addGeneratedColumn("userName", generator2);
+		this.select.getTableLeft().addGeneratedColumn(USERNAME, generator1);
+		this.select.getTableRight().addGeneratedColumn(USERNAME, generator2);
 
-		this.select.setVisibleColumns(new Object[] {"select", "userName"});
+		this.select.setVisibleColumns(new Object[] {"select", USERNAME});
 		this.select.setColumnHeaders(new String[] {"<span class='glyphicon glyphicon-ok'></span>", "USER NAME"});
 
 		this.select.setLeftColumnCaption("Available Users");
@@ -162,7 +164,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			private static final long serialVersionUID = -7548361229675101895L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 				ProgramMembersPanel.this.select.removeCheckedSelectedItems();
 			}
 		});
@@ -170,19 +172,19 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 	private List<CheckBox> createUserRolesCheckBoxList() {
 		List<Role> roles = null;
-		List<CheckBox> rolesCheckBoxList = new ArrayList<CheckBox>();
+		final List<CheckBox> rolesCheckBoxList = new ArrayList<CheckBox>();
 
 		ProgramMembersPanel.LOG.debug("createUserRolesCheckBoxList");
 
 		try {
 			roles = this.workbenchDataManager.getAllRolesOrderedByLabel();
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			ProgramMembersPanel.LOG.error("Error encountered while getting roles", e);
 			throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
 		}
 
-		for (Role role : roles) {
-			CheckBox cb = new CheckBox(role.getName());
+		for (final Role role : roles) {
+			final CheckBox cb = new CheckBox(role.getName());
 			cb.setData(role.getRoleId());
 			if (role.getName().equals(Role.MANAGER_ROLE_NAME)) {
 				// set default checked value
@@ -197,17 +199,17 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	}
 
 	public List<Role> getRolesForProjectMembers() {
-		List<Role> roles = new ArrayList<Role>();
+		final List<Role> roles = new ArrayList<Role>();
 		ProgramMembersPanel.LOG.debug("getRolesForProjectMembers");
-		for (CheckBox cb : this.createUserRolesCheckBoxList()) {
-			if ((Boolean) cb.getValue() == true) {
+		for (final CheckBox cb : this.createUserRolesCheckBoxList()) {
+			if ((Boolean) cb.getValue()) {
 				try {
-					Role role = this.workbenchDataManager.getRoleById((Integer) cb.getData());
+					final Role role = this.workbenchDataManager.getRoleById((Integer) cb.getData());
 					ProgramMembersPanel.LOG.debug("getRolesForProjectMembers id : " + cb.getData());
 					ProgramMembersPanel.LOG.debug("getRolesForProjectMembers name : " + role.getName());
 					roles.add(role);
 
-				} catch (MiddlewareQueryException e) {
+				} catch (final MiddlewareQueryException e) {
 					ProgramMembersPanel.LOG.error("Error encountered while getting creator user roles", e);
 					throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
 				}
@@ -220,39 +222,39 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		this.tblMembers = new Table();
 		this.tblMembers.setImmediate(true);
 
-		List<Role> inheritedRoles = this.getRolesForProjectMembers();
+		final List<Role> inheritedRoles = this.getRolesForProjectMembers();
 
-		List<Role> roleList = new ArrayList<Role>();
+		final List<Role> roleList = new ArrayList<Role>();
 		try {
 
 			// Add the roles in this order: CB, MAS, MABC, MARS
-			List<Role> roles = this.workbenchDataManager.getAllRolesOrderedByLabel();
-			for (Role role : roles) {
+			final List<Role> roles = this.workbenchDataManager.getAllRolesOrderedByLabel();
+			for (final Role role : roles) {
 				roleList.add(role);
 
 			}
 
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			ProgramMembersPanel.LOG.error("Error encountered while getting workbench roles", e);
 			throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
 		}
 
 		final List<Object> columnIds = new ArrayList<Object>();
-		columnIds.add("userName");
-		List<String> columnHeaders = new ArrayList<String>();
+		columnIds.add(USERNAME);
+		final List<String> columnHeaders = new ArrayList<String>();
 		columnHeaders.add("Member");
 
 		// prepare the container
-		IndexedContainer container = new IndexedContainer();
+		final IndexedContainer container = new IndexedContainer();
 		container.addContainerProperty("userId", Integer.class, null);
-		container.addContainerProperty("userName", String.class, null);
-		for (Role role : roleList) {
-			columnIds.add("role_" + role.getRoleId());
+		container.addContainerProperty(USERNAME, String.class, null);
+		for (final Role role : roleList) {
+			columnIds.add(ROLE_PREFIX + role.getRoleId());
 			columnHeaders.add(role.getName());
 			if (inheritedRoles.contains(role)) {
-				container.addContainerProperty("role_" + role.getRoleId(), Boolean.class, Boolean.TRUE);
+				container.addContainerProperty(ROLE_PREFIX + role.getRoleId(), Boolean.class, Boolean.TRUE);
 			} else {
-				container.addContainerProperty("role_" + role.getRoleId(), Boolean.class, Boolean.FALSE);
+				container.addContainerProperty(ROLE_PREFIX + role.getRoleId(), Boolean.class, Boolean.FALSE);
 			}
 		}
 		this.tblMembers.setContainerDataSource(container);
@@ -266,8 +268,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public Field createField(Container container, Object itemId, Object propertyId, Component uiContext) {
-				int columnIndex = columnIds.indexOf(propertyId);
+			public Field createField(final Container container, final Object itemId, final Object propertyId, final Component uiContext) {
+				final int columnIndex = columnIds.indexOf(propertyId);
 				if (columnIndex >= 1) {
 					return new CheckBox();
 				}
@@ -280,9 +282,9 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 	protected void initializeValues() {
 		try {
-			Container container = this.createUsersContainer();
+			final Container container = this.createUsersContainer();
 			this.select.setContainerDataSource(container);
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			ProgramMembersPanel.LOG.error("Error encountered while getting workbench users", e);
 			throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
 		}
@@ -310,7 +312,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		titleContainer.setComponentAlignment(this.newMemberButton, Alignment.MIDDLE_RIGHT);
 		titleContainer.setSizeUndefined();
 		titleContainer.setWidth("100%");
-		titleContainer.setMargin(true, false, false, false); // move this to css
+		// move this to css
+		titleContainer.setMargin(true, false, false, false);
 
 		final VerticalLayout root = new VerticalLayout();
 		root.setMargin(new Layout.MarginInfo(false, true, true, true));
@@ -336,24 +339,24 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	}
 
 	protected void initializeUsers() {
-		Container container = this.tblMembers.getContainerDataSource();
+		final Container container = this.tblMembers.getContainerDataSource();
 
-		List<ProjectUserRole> projectUserRoles = this.workbenchDataManager.getProjectUserRolesByProject(this.project);
+		final List<ProjectUserRole> projectUserRoles = this.workbenchDataManager.getProjectUserRolesByProject(this.project);
 
-		Set<User> selectedItems = new HashSet<User>();
+		final Set<User> selectedItems = new HashSet<User>();
 
-		for (ProjectUserRole projrole : projectUserRoles) {
-			User userTemp = this.workbenchDataManager.getUserById(projrole.getUserId());
+		for (final ProjectUserRole projrole : projectUserRoles) {
+			final User userTemp = this.workbenchDataManager.getUserById(projrole.getUserId());
 			selectedItems.add(userTemp);
 
 			container.removeItem(userTemp);
 
-			Item item = container.addItem(userTemp);
+			final Item item = container.addItem(userTemp);
 			item.getItemProperty("userId").setValue(1);
-			item.getItemProperty("userName").setValue(userTemp.getPerson().getDisplayName());
-			item.getItemProperty("role_" + projrole.getRole().getRoleId()).setValue("true");
+			item.getItemProperty(USERNAME).setValue(userTemp.getPerson().getDisplayName());
+			item.getItemProperty(ROLE_PREFIX + projrole.getRole().getRoleId()).setValue("true");
 			// item.getItemProperty("")
-			List<Role> projroles = this.workbenchDataManager.getRolesByProjectAndUser(this.project, userTemp);
+			final List<Role> projroles = this.workbenchDataManager.getRolesByProjectAndUser(this.project, userTemp);
 			this.setInheritedRoles(item, projroles);
 
 			this.select.select(userTemp);
@@ -365,10 +368,11 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		this.newMemberButton.addListener(new OpenNewProjectAddUserWindowAction(this.select));
 		this.saveButton.addListener(new SaveUsersInProjectAction(this.project, this.select));
 		this.cancelButton.addListener(new Button.ClickListener() {
+
 			private static final long serialVersionUID = 8879824681692031501L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 				ProgramMembersPanel.this.initializeValues();
 				ProgramMembersPanel.this.initializeUsers();
 			}
@@ -391,14 +395,14 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		return buttonLayout;
 	}
 
-	private Container createUsersContainer() throws MiddlewareQueryException {
-		List<User> validUserList = new ArrayList<User>();
+	protected Container createUsersContainer() {
+		final List<User> validUserList = new ArrayList<User>();
 
 		// TODO: This can be improved once we implement proper User-Person mapping
-		List<User> userList = this.workbenchDataManager.getAllUsersSorted();
+		final List<User> userList = this.workbenchDataManager.getAllUsersSorted();
 
-		for (User user : userList) {
-			Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
+		for (final User user : userList) {
+			final Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
 			user.setPerson(person);
 
 			if (person != null) {
@@ -406,9 +410,9 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			}
 		}
 
-		BeanItemContainer<User> beanItemContainer = new BeanItemContainer<User>(User.class);
-		for (User user : validUserList) {
-			if (user.getUserid().equals(this.sessionData.getUserData().getUserid())) {
+		final BeanItemContainer<User> beanItemContainer = new BeanItemContainer<User>(User.class);
+		for (final User user : validUserList) {
+			if (user.getUserid().equals(this.sessionData.getUserData().getUserid()) || user.getUserid().equals(this.project.getUserId())) {
 				user.setEnabled(false);
 			}
 
@@ -425,39 +429,40 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 	public boolean validateAndSave() {
 		if (this.validate()) {
-			Set<User> members = this.select.getValue();
+			final Set<User> members = this.select.getValue();
 
 			this.project.setMembers(members);
 		}
-		return true; // members not required, so even if there are no values, this returns true
+		// members not required, so even if there are no values, this returns true
+		return true;
 	}
 
-	public void setInheritedRoles(Item currentItem, List<Role> myinheritedRoles) {
+	public void setInheritedRoles(final Item currentItem, final List<Role> myinheritedRoles) {
 
 		if (this.tblMembers != null) {
 			List<Role> roleList = null;
 			try {
 				roleList = this.workbenchDataManager.getAllRoles();
-			} catch (MiddlewareQueryException e) {
+			} catch (final MiddlewareQueryException e) {
 				ProgramMembersPanel.LOG.error("Error encountered while getting workbench roles", e);
 				throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
 			}
 
 			// Reset old values
-			for (Role role : roleList) {
-				String propertyId = "role_" + role.getRoleId();
-				Property property = currentItem.getItemProperty(propertyId);
+			for (final Role role : roleList) {
+				final String propertyId = ROLE_PREFIX + role.getRoleId();
+				final Property property = currentItem.getItemProperty(propertyId);
 				if (property.getType() == Boolean.class) {
 					property.setValue(Boolean.FALSE);
 				}
 			}
 
 			// Set checked boxes based on inherited roles
-			for (Role inheritedRole : myinheritedRoles) {
-				String propertyId = "role_" + inheritedRole.getRoleId();
+			for (final Role inheritedRole : myinheritedRoles) {
+				final String propertyId = ROLE_PREFIX + inheritedRole.getRoleId();
 				ProgramMembersPanel.LOG.debug("inheritedRole " + inheritedRole);
 				ProgramMembersPanel.LOG.debug("currentItem " + currentItem);
-				Property property = currentItem.getItemProperty(propertyId);
+				final Property property = currentItem.getItemProperty(propertyId);
 				if (property.getType() == Boolean.class) {
 					property.setValue(Boolean.TRUE);
 				}
@@ -465,4 +470,13 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			this.requestRepaintAll();
 		}
 	}
+
+	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
+		this.workbenchDataManager = workbenchDataManager;
+	}
+
+	public void setSessionData(final SessionData sessionData) {
+		this.sessionData = sessionData;
+	}
+
 }
