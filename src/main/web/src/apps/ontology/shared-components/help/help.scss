@@ -1,0 +1,57 @@
+.om-help-link:before {
+		font-size: 1.7rem;
+		padding-left: 1.7rem;
+		color: #5A5A59;
+		cursor: pointer;
+}
+
+.om-help-box {
+	.modal-content {
+		background: url('/ibpworkbench/VAADIN/themes/vaadin-retro/images/login.png');
+		width: 53.4rem;
+	}
+
+	.helpPopup h1 {
+		margin: 1.5rem 0;
+		font-weight: 600;
+	}
+
+	.modal-body {
+		height: 28rem;
+		border: none;
+	}
+
+	.modal-header {
+		border: none;
+		padding: 0.5rem 0;
+	}
+
+	.modal-header .close {
+		color: white;
+		opacity: 1;
+		text-shadow: none;
+		font-size: 1.5rem;
+		border: 0;
+		background-color: transparent;
+		float: right;
+	}
+
+	.modal-title {
+		h1 {
+			color: white;
+			font-size: 1.85rem;
+			font-weight: 100;
+			margin-right: 2rem;
+			margin-bottom: 0;
+			text-align: right;
+		}
+
+		h2 {
+			color: white;
+			font-size: 1.3rem;
+			font-weight: 400;
+			text-align: right;
+			margin: 0 2rem 0;
+		}
+	}
+}
