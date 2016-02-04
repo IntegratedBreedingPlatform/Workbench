@@ -130,7 +130,7 @@ public class RunSingleSiteAction implements ClickListener {
 		String envFactor = (String) this.source.getSelEnvFactor().getValue();
 
 		if (StringUtils.isNullOrEmpty(envFactor)) {
-			this.showErrorMessage(event.getComponent().getWindow(), "Please select an environment factor.", "");
+			this.showErrorMessage(event.getComponent().getWindow(), messageSource.getMessage(Message.SSA_SELECT_ENVIRONMENT_FACTOR_WARNING), "");
 			return;
 		}
 
@@ -139,7 +139,7 @@ public class RunSingleSiteAction implements ClickListener {
 			environment.setName(envFactor.trim());
 
 			if (breedingViewInput.getSelectedEnvironments().isEmpty()) {
-				this.showErrorMessage(event.getComponent().getWindow(), "Please select environment for analysis.", "");
+				this.showErrorMessage(event.getComponent().getWindow(), messageSource.getMessage(Message.SSA_SELECT_ENVIRONMENT_FACTOR_WARNING), "");
 				return;
 			} else {
 
