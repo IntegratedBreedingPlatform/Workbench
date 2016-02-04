@@ -25,6 +25,7 @@ import com.vaadin.ui.Field;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
+import org.generationcp.commons.vaadin.ui.fields.SanitizedTextField;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -79,7 +80,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 
 	private void initFields(final Map<Integer, String> classMap) {
 
-		this.methodName = new TextField();
+		this.methodName = new SanitizedTextField();
 		this.methodName.setRequired(true);
 		this.methodName.setRequiredError("Please enter a Breeding Method Name.");
 		this.methodName.addValidator(new StringLengthValidator("Breeding Method Name must be 1-50 characters.", 1, 50, false));
@@ -141,7 +142,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 		this.methodDescription.setWidth("375px");
 		this.methodDescription.setHeight("100px");
 
-		this.methodCode = new TextField();
+		this.methodCode = new SanitizedTextField();
 		this.methodCode.setRequired(true);
 		this.methodCode.setRequiredError("Please enter a Breeding Method Code.");
 		this.methodCode.addValidator(new StringLengthValidator("Breeding Method Code must be 1-8 characters.", 1, 8, false));

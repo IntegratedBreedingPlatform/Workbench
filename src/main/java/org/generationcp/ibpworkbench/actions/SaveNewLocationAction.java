@@ -109,10 +109,6 @@ public class SaveNewLocationAction implements ClickListener {
 		BeanItem<LocationViewModel> locationBean = (BeanItem<LocationViewModel>) this.newLocationForm.getItemDataSource();
 		LocationViewModel locModel = locationBean.getBean();
 
-		// sanitize locModel
-		locModel.setLocationName(Sanitizers.FORMATTING.sanitize(locModel.getLocationName()));
-		locModel.setLocationAbbreviation(Sanitizers.FORMATTING.sanitize(locModel.getLocationAbbreviation()));
-
 		return locModel;
 	}
 

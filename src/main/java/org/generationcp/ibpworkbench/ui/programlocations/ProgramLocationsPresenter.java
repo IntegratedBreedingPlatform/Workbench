@@ -66,26 +66,8 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		this.locationDataManager = locationDataManager;
 	}
 
-	public Collection<LocationViewModel> getFilteredResults(Integer countryId, Integer locationType, String locationName)
-			{
-		List<Location> locationList = null;
-
-		Map<Integer, LocationViewModel> resultsMap = new LinkedHashMap<Integer, LocationViewModel>();
-		Country country = this.locationDataManager.getCountryById(countryId);
-		locationList =
-				this.locationDataManager.getLocationsByNameCountryAndType(locationName != null ? locationName : "", country, locationType);
-
-		Collections.sort(locationList, Location.LocationNameComparator);
-
-		for (Location location : locationList) {
-			final LocationViewModel locationVModel = this.getLocationDetailsByLocId(location.getLocid());
-
-			if (locationVModel != null && (location.getUniqueID() == null || location.getUniqueID().equals(this.project.getUniqueID()))) {
-				resultsMap.put(location.getLocid(), locationVModel);
-			}
-		}
-
-		return resultsMap.values();
+	public Collection<LocationViewModel> getFilteredResults(Integer countryId, Integer locationType, String locationName) {
+		return this.getFilteredResults(countryId,locationType,locationName, Collections.<LocationViewModel>emptyList());
 	}
 
 	public Collection<LocationViewModel> getFilteredResults(Integer countryId, Integer locationType, String locationName,
