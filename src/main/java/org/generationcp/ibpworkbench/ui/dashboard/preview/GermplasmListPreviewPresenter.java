@@ -175,7 +175,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 						new GermplasmList(null, folderName, currentDate, GermplasmListPreviewPresenter.FOLDER, userId, folderName, null, 0);
 			}
 
-			newList.setDescription("(NEW FOLDER) " + folderName);
+			newList.setDescription(folderName);
 			newList.setProgramUUID(this.project.getUniqueID());
 			return this.germplasmListManager.addGermplasmList(newList);
 
