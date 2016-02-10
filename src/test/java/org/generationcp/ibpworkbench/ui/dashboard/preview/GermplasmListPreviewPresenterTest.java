@@ -159,7 +159,7 @@ public class GermplasmListPreviewPresenterTest {
 				new GermplasmList(null, GermplasmListPreviewPresenterTest.SAMPLE_VALID_FOLDER_NAME, DateUtil.getCurrentDateAsLongValue(),
 						GermplasmListPreviewPresenter.FOLDER, this.USER_ID, GermplasmListPreviewPresenterTest.SAMPLE_VALID_FOLDER_NAME,
 						this.germplasmListWithParent.getParent(), 0);
-		newListWithParent.setDescription("(NEW FOLDER) " + GermplasmListPreviewPresenterTest.SAMPLE_VALID_FOLDER_NAME);
+		newListWithParent.setDescription(GermplasmListPreviewPresenterTest.SAMPLE_VALID_FOLDER_NAME);
 		newListWithParent.setProgramUUID(PROGRAM_UUID);
 		this.presenter.addGermplasmListFolder(GermplasmListPreviewPresenterTest.SAMPLE_VALID_FOLDER_NAME, this.LIST_ID_WITH_PARENT);
 		Mockito.verify(this.germplasmListManager).addGermplasmList(newListWithParent);
