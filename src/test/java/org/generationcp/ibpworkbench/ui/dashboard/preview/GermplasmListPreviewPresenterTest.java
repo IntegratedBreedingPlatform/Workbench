@@ -16,6 +16,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -162,7 +163,11 @@ public class GermplasmListPreviewPresenterTest {
 		newListWithParent.setDescription(GermplasmListPreviewPresenterTest.SAMPLE_VALID_FOLDER_NAME);
 		newListWithParent.setProgramUUID(PROGRAM_UUID);
 		this.presenter.addGermplasmListFolder(GermplasmListPreviewPresenterTest.SAMPLE_VALID_FOLDER_NAME, this.LIST_ID_WITH_PARENT);
-		Mockito.verify(this.germplasmListManager).addGermplasmList(newListWithParent);
+
+		ArgumentCaptor<GermplasmList> argumentCaptor = ArgumentCaptor.forClass(GermplasmList.class);
+		Mockito.verify(this.germplasmListManager).addGermplasmList(argumentCaptor.capture());
+		Assert.assertEquals("Folder must be saved with the name supplied.", GermplasmListPreviewPresenterTest.SAMPLE_VALID_FOLDER_NAME,
+				argumentCaptor.getValue().getDescription());
 	}
 
 	@Test
