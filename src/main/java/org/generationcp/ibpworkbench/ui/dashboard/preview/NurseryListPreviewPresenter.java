@@ -268,16 +268,8 @@ public class NurseryListPreviewPresenter implements InitializingBean {
 	}
 
 	public StudyType getStudyType(int studyId) {
-		try {
-			Study study = this.studyDataManager.getStudy(studyId);
-			if (study != null && study.getType() != null) {
-				return StudyType.getStudyType(study.getType());
-			}
-			return null;
-		} catch (MiddlewareException e) {
-			NurseryListPreviewPresenter.LOG.error(this.messageSource.getMessage(Message.ERROR_DATABASE), e);
-			return null;
-		}
+        Study study = this.studyDataManager.getStudy(studyId);
+        return study.getType();
 	}
 
 	public void setView(NurseryListPreview view) {
