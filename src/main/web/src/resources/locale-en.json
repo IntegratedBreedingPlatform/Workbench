@@ -49,7 +49,9 @@
 		"delete": "Delete",
 		"discard": "Discard",
 		"edit": "Edit",
-		"save": "Save"
+		"save": "Save",
+        "addToFavourite": "Add the variable to favourites?",
+        "removeFromFavourite": "Remove the variable from favourites?"
 	},
 
 	"categories": {
