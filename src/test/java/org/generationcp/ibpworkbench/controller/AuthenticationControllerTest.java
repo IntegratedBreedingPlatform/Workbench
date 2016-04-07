@@ -18,6 +18,7 @@ import org.generationcp.middleware.pojos.User;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -62,7 +63,16 @@ public class AuthenticationControllerTest {
 
 	@Test
 	public void testGetLoginPage() throws Exception {
-		Assert.assertEquals("should return the login url", "login", this.controller.getLoginPage());
+		Model model = Mockito.mock(Model.class);
+		Assert.assertEquals("should return the login url", "login", this.controller.getLoginPage(model));
+	}
+
+	@Test
+	public void loginPageIsPopulatedWithEnableAccountCreationParameter() throws Exception {
+		Model model = Mockito.mock(Model.class);
+
+		Assert.assertEquals("should return the login url", "login", this.controller.getLoginPage(model));
+		Mockito.verify(model).addAttribute("isCreateAccountEnable", false);
 	}
 
 	@Test
