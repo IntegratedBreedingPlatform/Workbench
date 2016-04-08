@@ -24,6 +24,10 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Property;
@@ -49,6 +53,8 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+
+import com.google.common.collect.Lists;
 
 /**
  * Created with IntelliJ IDEA. User: cyrus Date: 11/11/13 Time: 9:48 AM To change this template use File | Settings | File Templates.
@@ -84,6 +90,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 	private static final String DATE = "date";
 	private static final String CLASS = "class";
 	private static final String FIELD = "field";
+	public static final String ROLE_ADMIN = "ROLE_ADMIN";
 
 	private Button.ClickListener editMethodListener;
 
@@ -165,10 +172,16 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 
 		this.addNewMethodsBtn = new Button("Add New Method");
 		this.addNewMethodsBtn.setStyleName(Bootstrap.Buttons.INFO.styleName() + " loc-add-btn");
+		this.addNewMethodsBtn.setVisible(false);
 
 		this.saveBtn = new Button("Save Favorites");
 		this.saveBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
-
+		this.saveBtn.setVisible(false);
+		try {
+			initializeRestrictedComponents();
+		}catch (AccessDeniedException e){
+			// Do no do anything as the screen needs to be displayed just the buttons don't
+		}
 		this.searchGoBtn = new Button("Go");
 		this.searchGoBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
 
@@ -195,9 +208,14 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 
 		this.removeToFavoriteBtn = new Button("Remove from Favorite Methods");
 		this.removeToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
-
 		// filter form
 		this.initializeFilterForm();
+	}
+
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	private void initializeRestrictedComponents() {
+		this.addNewMethodsBtn.setVisible(true);
+		this.saveBtn.setVisible(true);
 	}
 
 	private void initializeFilterForm() {
@@ -264,12 +282,21 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 
 			@Override
 			public Object generateCell(final Table source, final Object itemId, Object colId) {
-				final Button mNameBtn = new Button(((MethodView) itemId).getMname());
-				mNameBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
-				mNameBtn.setData(itemId);
-				mNameBtn.addListener(ProgramMethodsView.this.editMethodListener);
+				Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+				if (auth.getAuthorities().contains(ROLE_ADMIN)) {
+					final Button mNameBtn = new Button(((MethodView) itemId).getMname());
+					mNameBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
+					mNameBtn.setData(itemId);
+					mNameBtn.addListener(ProgramMethodsView.this.editMethodListener);
+					return mNameBtn;
+				}else{
+					final Label mNameLabel = new Label();
+					mNameLabel.setDescription(((MethodView) itemId).getMname());
+					mNameLabel.setValue(((MethodView) itemId).getMname());
 
-				return mNameBtn;
+					return mNameLabel;
+				}
+
 			}
 		});
 
@@ -755,6 +782,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 			private static final long serialVersionUID = -6938448455072630697L;
 
 			@Override
+			@PreAuthorize("hasRole('ROLE_ADMIN')")
 			public void buttonClick(Button.ClickEvent event) {
 				event.getComponent()
 						.getWindow()
@@ -769,7 +797,11 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 
 			@Override
 			public void buttonClick(Button.ClickEvent event) {
-				event.getComponent().getWindow().addWindow(new AddBreedingMethodsWindow(ProgramMethodsView.this));
+				Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+				if (auth.getAuthorities().contains(ROLE_ADMIN)) {
+					event.getComponent().getWindow().addWindow(new AddBreedingMethodsWindow(ProgramMethodsView.this));
+				}
+
 			}
 		});
 

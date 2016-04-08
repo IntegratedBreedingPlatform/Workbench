@@ -1,20 +1,14 @@
 
 package org.generationcp.ibpworkbench.ui.project.create;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.DeleteProjectAction;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -24,8 +18,6 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
-
-import com.google.common.collect.Lists;
 
 /**
  * Created with IntelliJ IDEA. User: cyrus Date: 10/28/13 Time: 10:59 AM To change this template use File | Settings | File Templates.
@@ -189,7 +181,9 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 	}
 
 	public void hideDeleteBtn() {
-		this.deleteProgramButton.setVisible(false);
+		if(this.deleteProgramButton!=null){
+			this.deleteProgramButton.setVisible(false);
+		}
 	}
 
 }
