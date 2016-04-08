@@ -1,12 +1,20 @@
 
 package org.generationcp.ibpworkbench.ui.project.create;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.DeleteProjectAction;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -17,6 +25,8 @@ import com.vaadin.ui.Layout;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
+import com.google.common.collect.Lists;
+
 /**
  * Created with IntelliJ IDEA. User: cyrus Date: 10/28/13 Time: 10:59 AM To change this template use File | Settings | File Templates.
  */
@@ -24,6 +34,7 @@ import com.vaadin.ui.themes.Reindeer;
 public class UpdateProjectPanel extends CreateProjectPanel {
 
 	private static final long serialVersionUID = 1L;
+	public static final String ROLE_ADMIN = "ROLE_ADMIN";
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
@@ -45,8 +56,36 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 
 	@Override
 	protected void initializeActions() {
+
+
+		try{
+			this.cancelButton.setVisible(false);
+			super.saveProjectButton.setVisible(false);
+			saveAndDeleteProjectActionUpdate();
+		}catch(AccessDeniedException ex){
+			// Do nothing the screen needs to be display but the
+		}
+
+	}
+
+	/**
+	 * Only the Save and Delete actions need to be restricted
+	 * If a user with unauthorize access is trying to access this method an ${@link AccessDeniedException} will be thrown.
+	 * Another option would be to use SecurityContextHolder.getContext().getAuthentication()
+	 */
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	private void saveAndDeleteProjectActionUpdate() {
+		//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		//		Collection<String> allowedRoles = Lists.newArrayList(ROLE_ADMIN);
+		//		if (!auth.getAuthorities().containsAll(allowedRoles)) {
+		//			return;
+		//		}
 		super.saveProjectButton.addListener(new UpdateProjectAction(this));
 		super.saveProjectButton.setCaption("Save");
+		super.saveProjectButton.setVisible(true);
+		this.deleteProgramButton.addListener(new DeleteProjectAction());
+		this.cancelButton.setVisible(true);
+
 		this.cancelButton.addListener(new Button.ClickListener() {
 
 			private static final long serialVersionUID = 1L;
@@ -58,8 +97,6 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 
 			}
 		});
-
-		this.deleteProgramButton.addListener(new DeleteProjectAction());
 	}
 
 	@Override
@@ -73,12 +110,9 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 						Label.CONTENT_XHTML);
 		this.heading.setStyleName(Bootstrap.Typography.H4.styleName());
 
-		this.deleteProgramButton = new Button("DELETE PROGRAM");
-		this.deleteProgramButton.setStyleName(Bootstrap.Buttons.INFO.styleName() + " loc-add-btn");
 
 		this.newProjectTitleArea.addComponent(this.heading);
-		this.newProjectTitleArea.addComponent(this.deleteProgramButton);
-		this.newProjectTitleArea.setComponentAlignment(this.deleteProgramButton, Alignment.MIDDLE_RIGHT);
+
 		this.newProjectTitleArea.setSizeUndefined();
 		this.newProjectTitleArea.setWidth("100%");
 		this.newProjectTitleArea.setMargin(false, false, false, false); // move this to css
@@ -86,8 +120,35 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 		this.projectBasicDetailsComponent = new ProjectBasicDetailsComponent(this, true);
 
 		this.projectBasicDetailsComponent.updateProjectDetailsFormField(this.sessionData.getSelectedProject());
-
+		this.projectBasicDetailsComponent.disableForm();
 		this.buttonArea = this.layoutButtonArea();
+
+		try {
+			initializeRestrictedComponents();
+		}catch(AccessDeniedException ex){
+			// Do nothing the screen needs to be display but the
+		}
+	}
+	/**
+	 * Only the Delete button need to be restricted
+	 * If a user with unauthorize access is trying to access this method an ${@link AccessDeniedException} will be thrown.
+	 * Another option would be to use SecurityContextHolder.getContext().getAuthentication()
+	 */
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	private void initializeRestrictedComponents() {
+
+//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//		Collection<String> allowedRoles = Lists.newArrayList(ROLE_ADMIN);
+//		if (!auth.getAuthorities().containsAll(allowedRoles)) {
+//			return;
+//		}
+
+		this.deleteProgramButton = new Button("DELETE PROGRAM");
+		this.deleteProgramButton.setStyleName(Bootstrap.Buttons.INFO.styleName() + " loc-add-btn");
+
+		this.newProjectTitleArea.addComponent(this.deleteProgramButton);
+		this.newProjectTitleArea.setComponentAlignment(this.deleteProgramButton, Alignment.MIDDLE_RIGHT);
+		this.projectBasicDetailsComponent.enableForm();
 	}
 
 	@Override

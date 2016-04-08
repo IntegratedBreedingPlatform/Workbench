@@ -63,4 +63,8 @@
 			<password-encoder hash="bcrypt" />
 		</authentication-provider>
 	</authentication-manager>
+
+	<!-- Must use AspectJ mode for using method level security annotations on Vaadin component beans. -->
+	<global-method-security pre-post-annotations="enabled" mode="aspectj" proxy-target-class="true"/>
+
 </bean:beans>
