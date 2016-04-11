@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.vaadin.data.Container;
@@ -289,10 +290,14 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 				mNameBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
 				mNameBtn.setData(itemId);
 				mNameBtn.addListener(ProgramMethodsView.this.editMethodListener);
-
-				if (!auth.getAuthorities().contains(ROLE_ADMIN)) {
-					mNameBtn.setEnabled(false);
+				mNameBtn.setEnabled(false);
+				for (GrantedAuthority grantedAuthority : auth.getAuthorities()) {
+					if(grantedAuthority.getAuthority().equalsIgnoreCase(ROLE_ADMIN)){
+						mNameBtn.setEnabled(true);
+					}
 				}
+
+
 				return mNameBtn;
 
 			}
