@@ -63,15 +63,9 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 	/**
 	 * Only the Save and Delete actions need to be restricted
 	 * If a user with unauthorize access is trying to access this method an ${@link AccessDeniedException} will be thrown.
-	 * Another option would be to use SecurityContextHolder.getContext().getAuthentication()
 	 */
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	private void saveAndDeleteProjectActionUpdate() {
-		//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		//		Collection<String> allowedRoles = Lists.newArrayList(ROLE_ADMIN);
-		//		if (!auth.getAuthorities().containsAll(allowedRoles)) {
-		//			return;
-		//		}
 		super.saveProjectButton.addListener(new UpdateProjectAction(this));
 		super.saveProjectButton.setCaption("Save");
 		super.saveProjectButton.setVisible(true);
