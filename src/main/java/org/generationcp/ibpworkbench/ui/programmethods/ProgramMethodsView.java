@@ -176,11 +176,13 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 
 		this.saveBtn = new Button("Save Favorites");
 		this.saveBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
-		this.saveBtn.setVisible(false);
 		try {
 			initializeRestrictedComponents();
 		}catch (AccessDeniedException e){
-			// Do no do anything as the screen needs to be displayed just the buttons don't
+			/**
+			 * Do nothing: the screen needs to be displayed, only some of the components needs to be hidden.
+			 * If a user with unauthorize access is trying to access this method an ${@link AccessDeniedException} will be thrown.
+			 */
 		}
 		this.searchGoBtn = new Button("Go");
 		this.searchGoBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
@@ -215,7 +217,6 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	private void initializeRestrictedComponents() {
 		this.addNewMethodsBtn.setVisible(true);
-		this.saveBtn.setVisible(true);
 	}
 
 	private void initializeFilterForm() {
