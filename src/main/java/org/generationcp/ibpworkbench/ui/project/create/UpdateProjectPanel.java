@@ -118,22 +118,17 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 		try {
 			initializeRestrictedComponents();
 		}catch(AccessDeniedException ex){
-			// Do nothing the screen needs to be display but the
+			/*
+			 * Do nothing: the screen needs to be displayed, only some of the components needs to be hidden.
+			 * If a user with unauthorize access is trying to access this method an ${@link AccessDeniedException} will be thrown.
+	 		 */
 		}
 	}
 	/**
 	 * Only the Delete button need to be restricted
-	 * If a user with unauthorize access is trying to access this method an ${@link AccessDeniedException} will be thrown.
-	 * Another option would be to use SecurityContextHolder.getContext().getAuthentication()
 	 */
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	private void initializeRestrictedComponents() {
-
-//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//		Collection<String> allowedRoles = Lists.newArrayList(ROLE_ADMIN);
-//		if (!auth.getAuthorities().containsAll(allowedRoles)) {
-//			return;
-//		}
 
 		this.deleteProgramButton = new Button("DELETE PROGRAM");
 		this.deleteProgramButton.setStyleName(Bootstrap.Buttons.INFO.styleName() + " loc-add-btn");
