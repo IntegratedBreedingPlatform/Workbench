@@ -283,19 +283,16 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 			@Override
 			public Object generateCell(final Table source, final Object itemId, Object colId) {
 				Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-				if (auth.getAuthorities().contains(ROLE_ADMIN)) {
-					final Button mNameBtn = new Button(((MethodView) itemId).getMname());
-					mNameBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
-					mNameBtn.setData(itemId);
-					mNameBtn.addListener(ProgramMethodsView.this.editMethodListener);
-					return mNameBtn;
-				}else{
-					final Label mNameLabel = new Label();
-					mNameLabel.setDescription(((MethodView) itemId).getMname());
-					mNameLabel.setValue(((MethodView) itemId).getMname());
 
-					return mNameLabel;
+				final Button mNameBtn = new Button(((MethodView) itemId).getMname());
+				mNameBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
+				mNameBtn.setData(itemId);
+				mNameBtn.addListener(ProgramMethodsView.this.editMethodListener);
+
+				if (!auth.getAuthorities().contains(ROLE_ADMIN)) {
+					mNameBtn.setEnabled(false);
 				}
+				return mNameBtn;
 
 			}
 		});
