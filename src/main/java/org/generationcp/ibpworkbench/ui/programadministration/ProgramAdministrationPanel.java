@@ -37,6 +37,8 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 
 	private TabSheet tabSheet;
 
+	public static final String ROLE_ADMIN = "ROLE_ADMIN";
+
 	// TABS
 	private UpdateProjectPanel updateProjectPanel;
 	private ProgramMembersPanel programMembersPanel;
@@ -88,13 +90,16 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 		this.tabSheet.addTab(this.updateProjectPanel);
 		this.tabSheet.getTab(this.updateProjectPanel).setClosable(false);
 		this.tabSheet.getTab(this.updateProjectPanel).setCaption("Basic Details");
+
+		this.tabSheet.addTab(this.programMembersPanel);
+		this.tabSheet.getTab(this.programMembersPanel).setClosable(false);
+		this.tabSheet.getTab(this.programMembersPanel).setCaption("Members");
+		this.tabSheet.getTab(this.programMembersPanel).setVisible(false);
+
 		try {
-			addRestrictedTabs();
-		}catch(AccessDeniedException ex){
-			/**
-			 * Do nothing: the screen needs to be displayed, only some of the components needs to be hidden.
-			 * If a user with unauthorize access is trying to access this method an ${@link AccessDeniedException} will be thrown.
-	 		 */
+			AddRestrictredComponents();
+		}catch (AccessDeniedException e){
+			// Do no do anything as the screen needs to be displayed just the buttons don't
 		}
 
 		this.tabSheet.addTab(this.programLocationsView);
@@ -112,15 +117,6 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 		this.setContent(this.rootLayout);
 		this.setScrollable(true);
 		this.setSizeFull();
-	}
-	/**
-	 * Only Admins could access the members tab.
-	 */
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	private void addRestrictedTabs() {
-		this.tabSheet.addTab(this.programMembersPanel);
-		this.tabSheet.getTab(this.programMembersPanel).setClosable(false);
-		this.tabSheet.getTab(this.programMembersPanel).setCaption("Members");
 	}
 
 	private void setTitleContent() {
@@ -145,6 +141,11 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 		tab.setStyleName("panel-border");
 
 		return tab;
+	}
+
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	private void AddRestrictredComponents() {
+		this.tabSheet.getTab(this.programMembersPanel).setVisible(true);
 	}
 
 }
