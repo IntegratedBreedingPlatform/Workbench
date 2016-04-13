@@ -106,7 +106,8 @@
 			<span class="throbber"></span>
 		</button>
 	</form>
-	<div class="login-mode-toggle">
+
+	<div class="login-mode-toggle" th:if="${isCreateAccountEnable}">
 		<a class="js-login-mode-toggle ac-login-mode-toggle login-link login-unselectable" href="#">Create Account</a>
 	</div>
 
