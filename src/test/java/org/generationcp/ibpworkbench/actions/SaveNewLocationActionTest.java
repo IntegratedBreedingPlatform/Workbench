@@ -23,9 +23,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class SaveNewLocationActionTest {
 
-	public static final String XSS_VULNERABLE_STRING = ">'>\"><img src=x onerror=alert(0)>";
-	public static final String SANITIZED_LOCATION_NAME = "&gt;&#39;&gt;&#34;&gt;";
-
+	public static final String TEST_LOCATION = "Test Location";
 	@Mock
 	private SessionData sessionData;
 
@@ -58,24 +56,24 @@ public class SaveNewLocationActionTest {
 	@Test
 	public void testGetLocationFromForm() throws Exception {
 		BeanItem<LocationViewModel> locationFormBean = Mockito.mock(BeanItem.class);
-		Mockito.when(locationFormBean.getBean()).thenReturn(this.generateXSSVulnerableLocation());
+
+		LocationViewModel lvm = new LocationViewModel();
+		lvm.setLocationName(TEST_LOCATION);
+
+		Mockito.when(locationFormBean.getBean()).thenReturn(lvm);
 		Mockito.when(this.newLocationForm.getItemDataSource()).thenReturn(locationFormBean);
 
 		this.locationViewModelResult = this.saveNewLocationAction.getLocationFromForm();
 
-		Assert.assertNotSame("should not equal", SaveNewLocationActionTest.XSS_VULNERABLE_STRING,
+		Assert.assertEquals("location name is set", TEST_LOCATION,
 				this.locationViewModelResult.getLocationName());
-
-		Assert.assertEquals("location name is sanitized", SaveNewLocationActionTest.SANITIZED_LOCATION_NAME,
-				this.locationViewModelResult.getLocationName());
-
 	}
 
 	@Test
 	public void testSaveLocation() throws Exception {
 
 		LocationViewModel lvm = new LocationViewModel();
-		lvm.setLocationName("Test Location");
+		lvm.setLocationName(TEST_LOCATION);
 		lvm.setLocationAbbreviation("TSTL");
 
 		BeanItem<LocationViewModel> locationFormBean = Mockito.mock(BeanItem.class);
@@ -93,12 +91,5 @@ public class SaveNewLocationActionTest {
 		Mockito.verify(this.programLocationsPresenter, Mockito.times(1)).addLocation(Mockito.any(Location.class));
 		Mockito.verify(this.sessionData, Mockito.times(1)).logProgramActivity(Matchers.anyString(), Matchers.anyString());
 		Mockito.verify(mockParentWindow, Mockito.times(1)).removeWindow(Matchers.any(Window.class));
-	}
-
-	private LocationViewModel generateXSSVulnerableLocation() {
-		LocationViewModel lvm = new LocationViewModel();
-		lvm.setLocationName(SaveNewLocationActionTest.XSS_VULNERABLE_STRING);
-		lvm.setLocationAbbreviation("tst");
-		return lvm;
 	}
 }

@@ -32,6 +32,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -69,7 +71,13 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 
 	@Override
 	public void buttonClick(final ClickEvent event) {
-		this.doAction(event.getComponent().getWindow(), "delete_program", true);
+		try{
+			this.doAction(event.getComponent().getWindow(), "delete_program", true);
+		}catch (AccessDeniedException ex){
+			//the only reason we are catching this is in case someone used this wrongly.
+			MessageNotifier.showError(event.getComponent().getWindow(),"Error!","Operation not allowed for user.");
+		}
+
 	}
 
 	/**
@@ -84,6 +92,7 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 	}
 
 	@Override
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void doAction(final Window window, String uriFragment, boolean isLinkAccessed) {
 		final IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
 		if (app.getMainWindow() != null) {

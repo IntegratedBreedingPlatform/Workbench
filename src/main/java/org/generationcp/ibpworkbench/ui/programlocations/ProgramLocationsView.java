@@ -1,4 +1,3 @@
-
 package org.generationcp.ibpworkbench.ui.programlocations;
 
 import java.util.ArrayList;
@@ -27,6 +26,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Property;
@@ -76,6 +77,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 	private static final String LONGITUDE = "longitude";
 	private static final String ALTITUDE = "altitude";
 	private static final String LTYPE_STR = "ltypeStr";
+	public static final String ROLE_ADMIN = "ROLE_ADMIN";
 
 	static {
 		TABLE_COLUMNS = new LinkedHashMap<String, String>();
@@ -128,10 +130,9 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 	private void initializeComponents() {
 		this.resultCountLbl = new Label();
-
 		this.addNewLocationsBtn = new Button("Add New Location");
 		this.addNewLocationsBtn.setStyleName(Bootstrap.Buttons.INFO.styleName() + " loc-add-btn");
-
+		this.addNewLocationsBtn.setVisible(false);
 		this.saveFavouritesBtn = new Button("Save Favorites");
 		this.saveFavouritesBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
 
@@ -142,7 +143,11 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		this.availableSelectAll.setImmediate(true);
 		this.favoriteSelectAll = new CheckBox("Select All");
 		this.favoriteSelectAll.setImmediate(true);
-
+		try {
+			AddRestrictredComponents();
+		}catch (AccessDeniedException e){
+			// Do no do anything as the screen needs to be displayed just the buttons don't
+		}
 		this.availTotalEntriesLabel = new Label(this.messageSource.getMessage(Message.TOTAL_ENTRIES) + ":  <b>0</b>", Label.CONTENT_XHTML);
 		this.favTotalEntriesLabel = new Label(this.messageSource.getMessage(Message.TOTAL_ENTRIES) + ":  <b>0</b>", Label.CONTENT_XHTML);
 		this.availSelectedEntriesLabel =
@@ -160,11 +165,18 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		this.addToFavoriteBtn = new Button("Add to Favorite Locations");
 		this.addToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
 
+
 		this.removeToFavoriteBtn = new Button("Remove from Favorite Locations");
 		this.removeToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
 
 		// filter form
 		this.initializeFilterForm();
+	}
+
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	private void AddRestrictredComponents() {
+
+		this.addNewLocationsBtn.setVisible(true);
 	}
 
 	private void doLocationSearch() {
@@ -482,6 +494,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		this.countryFilter.setItemCaptionPropertyId("isoabbr");
 		this.countryFilter.setNullSelectionItemId(nullItem);
 		this.countryFilter.setNullSelectionAllowed(true);
+
 
 		List<UserDefinedField> locationTypes = new ArrayList<UserDefinedField>();
 		UserDefinedField nullUdf = new UserDefinedField();

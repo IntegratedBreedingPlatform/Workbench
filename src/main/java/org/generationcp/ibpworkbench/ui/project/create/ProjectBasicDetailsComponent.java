@@ -436,6 +436,18 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		this.setComponentAlignment(this.gridLayout, alignment);
 	}
 
+	public void enableForm() {
+		this.cropTypeCombo.setEnabled(false);
+		this.startDateField.setEnabled(true);
+		this.projectNameField.setEnabled(true);
+	}
+
+	public void disableForm() {
+		this.cropTypeCombo.setEnabled(false);
+		this.startDateField.setEnabled(false);
+		this.projectNameField.setEnabled(false);
+	}
+
 	private class ValueRangeValidator extends AbstractValidator {
 
 		private static final long serialVersionUID = 1L;

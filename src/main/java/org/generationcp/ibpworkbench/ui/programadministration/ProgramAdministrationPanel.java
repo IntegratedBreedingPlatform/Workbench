@@ -12,6 +12,8 @@ import org.generationcp.ibpworkbench.ui.project.create.UpdateProjectPanel;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -86,10 +88,14 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 		this.tabSheet.addTab(this.updateProjectPanel);
 		this.tabSheet.getTab(this.updateProjectPanel).setClosable(false);
 		this.tabSheet.getTab(this.updateProjectPanel).setCaption("Basic Details");
-
-		this.tabSheet.addTab(this.programMembersPanel);
-		this.tabSheet.getTab(this.programMembersPanel).setClosable(false);
-		this.tabSheet.getTab(this.programMembersPanel).setCaption("Members");
+		try {
+			addRestrictedTabs();
+		}catch(AccessDeniedException ex){
+			/**
+			 * Do nothing: the screen needs to be displayed, only some of the components needs to be hidden.
+			 * If a user with unauthorize access is trying to access this method an ${@link AccessDeniedException} will be thrown.
+	 		 */
+		}
 
 		this.tabSheet.addTab(this.programLocationsView);
 		this.tabSheet.getTab(this.programLocationsView).setClosable(false);
@@ -106,6 +112,15 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 		this.setContent(this.rootLayout);
 		this.setScrollable(true);
 		this.setSizeFull();
+	}
+	/**
+	 * Only Admins could access the members tab.
+	 */
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	private void addRestrictedTabs() {
+		this.tabSheet.addTab(this.programMembersPanel);
+		this.tabSheet.getTab(this.programMembersPanel).setClosable(false);
+		this.tabSheet.getTab(this.programMembersPanel).setCaption("Members");
 	}
 
 	private void setTitleContent() {

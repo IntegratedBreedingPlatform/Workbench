@@ -28,6 +28,7 @@ import com.vaadin.ui.DefaultFieldFactory;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.TextField;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.ui.fields.SanitizedTextField;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
 import org.generationcp.middleware.pojos.Country;
@@ -86,36 +87,13 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
 			}
 		});
 
-		this.locationName = new TextField() {
-
-			/**
-			 *
-			 */
-			 private static final long serialVersionUID = 3402159687769548386L;
-
-			 @Override
-			 public Object getValue() {
-				 return super.getValue() != null ? super.getValue().toString().trim() : null;
-			 }
-		};
-
+		this.locationName = new SanitizedTextField();
 		this.locationName.setWidth("250px");
 		this.locationName.setRequired(true);
 		this.locationName.setRequiredError("Please enter a Location Name.");
 		this.locationName.addValidator(new StringLengthValidator("Location Name must be 1-60 characters.", 1, 60, false));
 
-		this.locationAbbreviation = new TextField() {
-
-			/**
-			 *
-			 */
-			private static final long serialVersionUID = -8447225372577850948L;
-
-			@Override
-			public Object getValue() {
-				return super.getValue() != null ? super.getValue().toString().trim() : null;
-			}
-		};
+		this.locationAbbreviation = new SanitizedTextField();
 
 		this.locationAbbreviation.setWidth("70px");
 		this.locationAbbreviation.setRequired(true);

@@ -2,6 +2,7 @@
 package org.generationcp.ibpworkbench.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -125,6 +126,14 @@ public class WorkbenchUserServiceTest {
 	}
 
 	@Test
+	public void testIsValidUserLoginShouldReturnFalseIfInvalid() {
+		UserAccountModel userAccount = this.createUserAccount();
+		Mockito.when(this.workbenchDataManager.getUserByName(TEST_USERNAME, 0, 1, Operation.EQUAL)).thenReturn(
+				Collections.<User>emptyList());
+		Assert.assertFalse(this.userService.isValidUserLogin(userAccount));
+	}
+
+	@Test
 	public void testUpdateUserPassword() throws Exception {
 		ArgumentCaptor<String> passwordCaptor = ArgumentCaptor.forClass(String.class);
 		String userName = "testUsername";
@@ -159,6 +168,19 @@ public class WorkbenchUserServiceTest {
 	}
 
 	@Test
+	public void testGetUserByUserNameWithNoExistingUserAcct() throws Exception {
+		List<User> userList = new ArrayList<>();
+
+		Mockito.when(this.workbenchDataManager.getUserByName(TEST_USERNAME, 0, 1, Operation.EQUAL)).thenReturn(
+				userList);
+
+		User resultUser = this.userService.getUserByUserName(TEST_USERNAME);
+
+		Assert.assertNull("Should be null since there is no user with the TEST_USERNAME", resultUser);
+
+	}
+
+	@Test
 	public void testGetUserByUserId() throws Exception {
 		User user = new User();
 		user.setPersonid(TEST_PERSON_ID);
@@ -171,5 +193,4 @@ public class WorkbenchUserServiceTest {
 		Assert.assertEquals("Should be the same as the setup user", user, resultUser);
 
 	}
-
 }
