@@ -26,7 +26,6 @@ import com.vaadin.ui.themes.Reindeer;
 public class UpdateProjectPanel extends CreateProjectPanel {
 
 	private static final long serialVersionUID = 1L;
-	public static final String ROLE_ADMIN = "ROLE_ADMIN";
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;

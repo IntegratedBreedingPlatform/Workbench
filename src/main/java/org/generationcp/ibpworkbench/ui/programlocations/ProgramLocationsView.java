@@ -77,7 +77,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 	private static final String LONGITUDE = "longitude";
 	private static final String ALTITUDE = "altitude";
 	private static final String LTYPE_STR = "ltypeStr";
-	public static final String ROLE_ADMIN = "ROLE_ADMIN";
+
 
 	static {
 		TABLE_COLUMNS = new LinkedHashMap<String, String>();
