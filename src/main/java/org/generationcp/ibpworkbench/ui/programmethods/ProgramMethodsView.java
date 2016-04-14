@@ -806,10 +806,11 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 			@Override
 			public void buttonClick(Button.ClickEvent event) {
 				Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-				if (auth.getAuthorities().contains(ROLE_ADMIN)) {
-					event.getComponent().getWindow().addWindow(new AddBreedingMethodsWindow(ProgramMethodsView.this));
+				for (GrantedAuthority grantedAuthority : auth.getAuthorities()) {
+					if (grantedAuthority.getAuthority().compareToIgnoreCase(ROLE_ADMIN)==0) {
+						event.getComponent().getWindow().addWindow(new AddBreedingMethodsWindow(ProgramMethodsView.this));
+					}
 				}
-
 			}
 		});
 
