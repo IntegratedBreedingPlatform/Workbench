@@ -4,6 +4,7 @@ package org.generationcp.ibpworkbench.controller;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
 
@@ -18,11 +19,14 @@ import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -62,8 +66,20 @@ public class AuthenticationController {
 	@Resource
 	private ApiAuthenticationService apiAuthenticationService;
 
+	@Value("${workbench.enable.create.account}")
+	private String enableCreateAccount;
+	private boolean isAccountCreationEnabled;
+
+	@PostConstruct
+	public void initialize(){
+		//ensuaring that the link is disable by default
+		isAccountCreationEnabled = enableCreateAccount==null ? false : Boolean.valueOf(enableCreateAccount);
+	}
+
 	@RequestMapping(value = "/login")
-	public String getLoginPage() {
+	public String getLoginPage(Model model) {
+
+		model.addAttribute("isCreateAccountEnable", isAccountCreationEnabled);
 		return "login";
 	}
 
@@ -130,6 +146,11 @@ public class AuthenticationController {
 	public ResponseEntity<Map<String, Object>> saveUserAccount(@ModelAttribute("userAccount") UserAccountModel model, BindingResult result) {
 		Map<String, Object> out = new LinkedHashMap<>();
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
+
+		if(!isAccountCreationEnabled ){
+			new ResponseEntity<>(out, HttpStatus.FORBIDDEN);
+		}
+
 		this.userAccountValidator.validate(model, result);
 
 		if (result.hasErrors()) {
