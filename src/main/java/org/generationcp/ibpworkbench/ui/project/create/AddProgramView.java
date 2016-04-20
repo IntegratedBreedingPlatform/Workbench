@@ -22,6 +22,8 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -113,6 +115,7 @@ public class AddProgramView extends Panel implements InitializingBean {
 
 		this.programMembersContainer.setMargin(false);
 		this.programMembersContainer.setSpacing(false);
+		this.programMembersContainer.setVisible(false);
 
 		this.basicDetailsContainer.setMargin(false);
 		this.basicDetailsContainer.setSpacing(false);
@@ -125,6 +128,14 @@ public class AddProgramView extends Panel implements InitializingBean {
 
 		// finish button
 		this.cancelBtn = new Button("Cancel");
+	}
+
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	private void restrictedAccessMethod() {
+		this.programMembersContainer.setVisible(true);
+		this.tabSheet.addTab(this.programMembersContainer);
+		this.tabSheet.getTab(this.programMembersContainer).setClosable(false);
+		this.tabSheet.getTab(this.programMembersContainer).setCaption("Members");
 	}
 
 	protected void initializeActions() {
@@ -165,9 +176,13 @@ public class AddProgramView extends Panel implements InitializingBean {
 		this.tabSheet.getTab(this.basicDetailsContainer).setClosable(false);
 		this.tabSheet.getTab(this.basicDetailsContainer).setCaption("Basic Details");
 
-		this.tabSheet.addTab(this.programMembersContainer);
-		this.tabSheet.getTab(this.programMembersContainer).setClosable(false);
-		this.tabSheet.getTab(this.programMembersContainer).setCaption("Members");
+		try {
+
+			restrictedAccessMethod();
+		} catch (AccessDeniedException ex) {
+			//Do nothing, if the user does not have the required roles the screen needs to be displayed as well.
+		}
+
 
 		this.tabSheet.addTab(this.programLocationsContainer);
 		this.tabSheet.getTab(this.programLocationsContainer).setClosable(false);
