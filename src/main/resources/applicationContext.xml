@@ -195,6 +195,8 @@
 
 	<tx:annotation-driven />
 
+	<bean id="liquibaseInitBean" class="org.generationcp.middleware.liquibase.LiquibaseInitBean" />
+
 	<bean id="xaDataSources" class="org.generationcp.middleware.hibernate.XADataSources" />
 
 	<bean id="atomikosTransactionManager" class="com.atomikos.icatch.jta.UserTransactionManager"
