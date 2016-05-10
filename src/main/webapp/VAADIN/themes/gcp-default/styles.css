@@ -368,3 +368,9 @@ img[src$="leaf_16.png"] {
     position: relative;
     right: 6px;
 }
+
+.bms-backup-restore-help-icon {
+	position: relative;
+    left: -10px;
+    top: -10px;
+}

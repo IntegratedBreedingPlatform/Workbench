@@ -34,13 +34,12 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
-/**
- * Created by cyrus on 2/20/14.
- */
+
 @Configurable
 public class BackupAndRestoreView extends CustomComponent implements InitializingBean {
 
@@ -50,6 +49,9 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 	private Button backupBtn;
 	private UploadField uploadFrm;
 	private Button restoreBtn;
+	private TabSheet tabSheet;
+	private Panel backupPanel;
+	private Panel restorePanel;
 
 	@Autowired
 	private SessionData sessionData;
@@ -131,6 +133,15 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 		this.restoreList.setRows(1);
 		this.restoreList.setNullSelectionAllowed(true);
 
+		this.tabSheet = new TabSheet();
+		this.tabSheet.setImmediate(true);
+		this.tabSheet.setStyleName(Reindeer.TABSHEET_MINIMAL);
+		this.tabSheet.setStyleName("panel-border");
+
+		this.backupPanel = new Panel();
+		this.backupPanel.setStyleName(Reindeer.PANEL_LIGHT);
+		this.restorePanel = new Panel();
+		this.restorePanel.setStyleName(Reindeer.PANEL_LIGHT);
 	}
 
 	public void populateRestoreList() {
@@ -254,6 +265,14 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 	}
 
 	public void initializeLayout() {
+		this.tabSheet.addTab(this.backupPanel);
+		this.tabSheet.getTab(this.backupPanel).setClosable(false);
+		this.tabSheet.getTab(this.backupPanel).setCaption("Backup");
+
+		this.tabSheet.addTab(this.restorePanel);
+		this.tabSheet.getTab(this.restorePanel).setClosable(false);
+		this.tabSheet.getTab(this.restorePanel).setCaption("Restore");
+
 		this.backupBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 		this.backupBtn.addStyleName("marginTop10");
 
@@ -288,24 +307,27 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 		rootContent.setSpacing(true);
 
 		rootContent.addComponent(pageTitle);
-		rootContent.addComponent(new Label("<div style='height: 10px'></div>", Label.CONTENT_XHTML));
-		rootContent.addComponent(this.setUpHeadings(HelpModule.BACKUP_PROGRAM_DATA, this.messageSource.getMessage("BACKUP_BMS_TITLE"),
-				"124px"));
-		rootContent.addComponent(new Label(this.messageSource.getMessage("BACKUP_BMS_DESCRIPTION", this.sessionData.getLastOpenedProject()
-				.getProjectName()), Label.CONTENT_XHTML));
-		rootContent.addComponent(this.backupBtn);
-		rootContent.addComponent(new Label("<div style='height: 20px'></div>", Label.CONTENT_XHTML));
-		rootContent.addComponent(this.setUpHeadings(HelpModule.RESTORE_PROGRAM_DATA, this.messageSource.getMessage("RESTORE_BMS_TITLE"),
-				"228px"));
-		rootContent.addComponent(new Label(this.messageSource.getMessage("RESTORE_BMS_DESCRIPTION")));
-		rootContent.addComponent(restoreDropdownTitle);
-		rootContent.addComponent(this.restoreList);
-		rootContent.addComponent(new Label("", Label.CONTENT_XHTML));
-		rootContent.addComponent(new Label("<div style='margin: 5px 0;'>Or</div>", Label.CONTENT_XHTML));
-		rootContent.addComponent(restoreUploadTitle);
-		rootContent.addComponent(this.uploadFrm);
-		rootContent.addComponent(this.restoreBtn);
 
+		this.backupPanel.addComponent(new Label("<div style='height: 10px'></div>", Label.CONTENT_XHTML));
+		this.backupPanel.addComponent(this.setUpHeadings(HelpModule.BACKUP_PROGRAM_DATA, this.messageSource.getMessage("BACKUP_BMS_TITLE"),
+				"124px"));
+		this.backupPanel.addComponent(new Label(this.messageSource.getMessage("BACKUP_BMS_DESCRIPTION", this.sessionData.getLastOpenedProject()
+				.getProjectName()), Label.CONTENT_XHTML));
+		this.backupPanel.addComponent(this.backupBtn);
+
+		this.restorePanel.addComponent(new Label("<div style='height: 20px'></div>", Label.CONTENT_XHTML));
+		this.restorePanel.addComponent(this.setUpHeadings(HelpModule.RESTORE_PROGRAM_DATA, this.messageSource.getMessage("RESTORE_BMS_TITLE"),
+				"228px"));
+		this.restorePanel.addComponent(new Label(this.messageSource.getMessage("RESTORE_BMS_DESCRIPTION")));
+		this.restorePanel.addComponent(restoreDropdownTitle);
+		this.restorePanel.addComponent(this.restoreList);
+		this.restorePanel.addComponent(new Label("", Label.CONTENT_XHTML));
+		this.restorePanel.addComponent(new Label("<div style='margin: 5px 0;'>Or</div>", Label.CONTENT_XHTML));
+		this.restorePanel.addComponent(restoreUploadTitle);
+		this.restorePanel.addComponent(this.uploadFrm);
+		this.restorePanel.addComponent(this.restoreBtn);
+
+		rootContent.addComponent(this.tabSheet);
 	}
 
 	public HorizontalLayout setUpHeadings(HelpModule module, String heading, String width) {
@@ -314,12 +336,14 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 		titleLayout.setHeight("40px");
 
 		Label toolTitle = new Label(heading);
-		toolTitle.setStyleName(Bootstrap.Typography.H4.styleName());
+		toolTitle.addStyleName(Bootstrap.Typography.H4.styleName());
 		toolTitle.setContentMode(Label.CONTENT_XHTML);
 		toolTitle.setWidth(width);
 
 		titleLayout.addComponent(toolTitle);
-		titleLayout.addComponent(new HelpButton(module, "View " + heading + " Tutorial"));
+		final HelpButton helpButton = new HelpButton(module, "View " + heading + " Tutorial");
+		helpButton.addStyleName("bms-backup-restore-help-icon");
+		titleLayout.addComponent(helpButton);
 
 		return titleLayout;
 	}
