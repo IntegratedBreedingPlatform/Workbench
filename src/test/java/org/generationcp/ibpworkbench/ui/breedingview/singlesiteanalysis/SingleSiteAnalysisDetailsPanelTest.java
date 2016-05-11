@@ -122,7 +122,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 		this.dut.initializeComponents();
 
-		final GridLayout gLayout = (GridLayout) this.dut.getBlockRowColumnContainer().getComponentIterator().next();
+		final GridLayout gLayout = (GridLayout) this.dut.getDesignDetailsContainer().getComponentIterator().next();
 		final Iterator<Component> componentsIterator = gLayout.getComponentIterator();
 		final List<Component> components = new ArrayList<>();
 		while (componentsIterator.hasNext()) {
@@ -160,7 +160,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 		this.dut.initializeComponents();
 
-		final GridLayout gLayout = (GridLayout) this.dut.getBlockRowColumnContainer().getComponentIterator().next();
+		final GridLayout gLayout = (GridLayout) this.dut.getDesignDetailsContainer().getComponentIterator().next();
 		final Iterator<Component> componentsIterator = gLayout.getComponentIterator();
 		final List<Component> components = new ArrayList<>();
 		while (componentsIterator.hasNext()) {
@@ -198,7 +198,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 		this.dut.initializeComponents();
 
-		final GridLayout gLayout = (GridLayout) this.dut.getBlockRowColumnContainer().getComponentIterator().next();
+		final GridLayout gLayout = (GridLayout) this.dut.getDesignDetailsContainer().getComponentIterator().next();
 		final Iterator<Component> componentsIterator = gLayout.getComponentIterator();
 		final List<Component> components = new ArrayList<>();
 		while (componentsIterator.hasNext()) {
@@ -236,7 +236,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 		this.dut.initializeComponents();
 
-		final GridLayout gLayout = (GridLayout) this.dut.getBlockRowColumnContainer().getComponentIterator().next();
+		final GridLayout gLayout = (GridLayout) this.dut.getDesignDetailsContainer().getComponentIterator().next();
 		final Iterator<Component> componentsIterator = gLayout.getComponentIterator();
 		final List<Component> components = new ArrayList<>();
 		while (componentsIterator.hasNext()) {
@@ -274,7 +274,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 		this.dut.initializeComponents();
 
-		final GridLayout gLayout = (GridLayout) this.dut.getBlockRowColumnContainer().getComponentIterator().next();
+		final GridLayout gLayout = (GridLayout) this.dut.getDesignDetailsContainer().getComponentIterator().next();
 		final Iterator<Component> componentsIterator = gLayout.getComponentIterator();
 		final List<Component> components = new ArrayList<>();
 		while (componentsIterator.hasNext()) {

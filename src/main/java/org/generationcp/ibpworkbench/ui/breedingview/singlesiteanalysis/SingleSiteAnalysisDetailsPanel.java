@@ -335,6 +335,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	private static final String SELECT_BOX_WIDTH = "191px";
 	private static final String SELECT_COLUMN = "select";
 	private static final String TRIAL_NO_COLUMN = "trialno";
+	private static final String REQUIRED_FIELD_INDICATOR = " <span style='color: red'>*</span>";
 
 	@Value("${workbench.is.server.app}")
 	private String isServerApp;
@@ -384,7 +385,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	private Select selColumnFactor;
 	private Select selGenotypes;
 
-	private VerticalLayout blockRowColumnContainer;
+	private VerticalLayout designDetailsContainer;
 
 	private CheckBox footerCheckBox;
 
@@ -510,7 +511,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.tblEnvironmentSelection.setHeight("200px");
 		this.tblEnvironmentSelection.setWidth("100%");
 
-		this.setBlockRowColumnContainer(new VerticalLayout());
+		this.setDesignDetailsContainer(new VerticalLayout());
 
 		this.envCheckBoxListener = new EnvironmentCheckBoxListener();
 
@@ -679,6 +680,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.selDesignType.addItem(DesignType.INCOMPLETE_BLOCK_DESIGN.getName());
 		this.selDesignType.addItem(DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
 		this.selDesignType.addItem(DesignType.ROW_COLUMN_DESIGN.getName());
+		this.selDesignType.addItem(DesignType.P_REP_DESIGN.getName());
 		this.selDesignType.setWidth(SingleSiteAnalysisDetailsPanel.SELECT_BOX_WIDTH);
 
 		this.selReplicates = new Select();
@@ -1063,8 +1065,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		designDetailsLayout.addComponent(this.lblSpecifyDesignDetailsHeader, 0, 0, 1, 0);
 		designDetailsLayout.addComponent(this.lblDesignType, 0, 1);
 		designDetailsLayout.addComponent(this.selDesignType, 1, 1);
-		designDetailsLayout.addComponent(this.lblReplicates, 0, 2);
-		designDetailsLayout.addComponent(this.selReplicates, 1, 2);
 
 		designDetailsWrapper.addComponent(designDetailsLayout);
 
@@ -1077,9 +1077,9 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		gLayout.addComponent(this.getLblSpecifyGenotypesHeader(), 0, 0, 1, 0);
 		gLayout.addComponent(this.getLblGenotypes(), 0, 1);
 		gLayout.addComponent(this.getSelGenotypes(), 1, 1);
-		this.getBlockRowColumnContainer().addComponent(gLayout);
+		this.getDesignDetailsContainer().addComponent(gLayout);
 
-		designDetailsWrapper.addComponent(this.getBlockRowColumnContainer());
+		designDetailsWrapper.addComponent(this.getDesignDetailsContainer());
 
 		this.mainLayout.addComponent(this.lblPageTitle);
 		this.mainLayout.addComponent(new Label(""));
@@ -1279,12 +1279,12 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		return envs;
 	}
 
-	public VerticalLayout getBlockRowColumnContainer() {
-		return this.blockRowColumnContainer;
+	public VerticalLayout getDesignDetailsContainer() {
+		return this.designDetailsContainer;
 	}
 
-	public void setBlockRowColumnContainer(final VerticalLayout blockRowColumnContainer) {
-		this.blockRowColumnContainer = blockRowColumnContainer;
+	public void setDesignDetailsContainer(final VerticalLayout designDetailsContainer) {
+		this.designDetailsContainer = designDetailsContainer;
 	}
 
 	public void setSelGenotypes(final Select selGenotypes) {
@@ -1315,76 +1315,120 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.messageSource = messageSource;
 	}
 
-	public void displayRowColumnDesignElements() {
-		final GridLayout gLayout = new GridLayout(2, 4);
-		gLayout.setColumnExpandRatio(0, 0);
-		gLayout.setColumnExpandRatio(1, 1);
-		gLayout.setWidth("100%");
-		gLayout.setSpacing(true);
-		gLayout.addStyleName(SingleSiteAnalysisDetailsPanel.MARGIN_TOP10);
-
-		this.getBlockRowColumnContainer().removeAllComponents();
-		gLayout.addComponent(this.getLblSpecifyColumnFactor(), 0, 0);
-		gLayout.addComponent(this.getSelColumnFactor(), 1, 0);
-		gLayout.addComponent(this.getLblSpecifyRowFactor(), 0, 1);
-		gLayout.addComponent(this.getSelRowFactor(), 1, 1);
-		gLayout.addComponent(this.getLblSpecifyGenotypesHeader(), 0, 2, 1, 2);
-		gLayout.addComponent(this.getLblGenotypes(), 0, 3);
-		gLayout.addComponent(this.getSelGenotypes(), 1, 3);
-		this.getBlockRowColumnContainer().addComponent(gLayout);
-
-		if (!this.getSelReplicates().isEnabled() || this.getSelReplicates().getItemIds().isEmpty()) {
-
-			for (final Object itemId : this.getSelBlocks().getItemIds()) {
-				this.getSelReplicates().addItem(itemId);
-				this.getSelReplicates().setItemCaption(itemId, SingleSiteAnalysisDetailsPanel.REPLICATES);
-				this.getSelReplicates().select(itemId);
-				this.getSelReplicates().setEnabled(true);
-			}
-		}
-	}
-
 	public void displayRandomizedBlockDesignElements() {
-		final GridLayout gLayout = new GridLayout(2, 2);
-		gLayout.setColumnExpandRatio(0, 0);
-		gLayout.setColumnExpandRatio(1, 1);
-		gLayout.setWidth("100%");
-		gLayout.setSpacing(true);
-		gLayout.addStyleName(SingleSiteAnalysisDetailsPanel.MARGIN_TOP10);
 
-		this.getBlockRowColumnContainer().removeAllComponents();
-		gLayout.addComponent(this.getLblSpecifyGenotypesHeader(), 0, 0, 1, 0);
-		gLayout.addComponent(this.getLblGenotypes(), 0, 1);
-		gLayout.addComponent(this.getSelGenotypes(), 1, 1);
-		this.getBlockRowColumnContainer().addComponent(gLayout);
+		this.getDesignDetailsContainer().removeAllComponents();
 
-		if (!this.getSelReplicates().isEnabled() || this.getSelReplicates().getItemIds().isEmpty()) {
-
-			for (final Object itemId : this.getSelBlocks().getItemIds()) {
-				this.getSelReplicates().addItem(itemId);
-				this.getSelReplicates().setItemCaption(itemId, SingleSiteAnalysisDetailsPanel.REPLICATES);
-				this.getSelReplicates().select(itemId);
-				this.getSelReplicates().setEnabled(true);
-			}
-		}
-	}
-
-	public void displayIncompleteBlockDesignElements() {
-		final GridLayout gLayout = new GridLayout(2, 3);
-		gLayout.setColumnExpandRatio(0, 0);
-		gLayout.setColumnExpandRatio(1, 1);
-		gLayout.setWidth("100%");
-		gLayout.setSpacing(true);
-		gLayout.addStyleName(SingleSiteAnalysisDetailsPanel.MARGIN_TOP10);
-
-		this.getBlockRowColumnContainer().removeAllComponents();
-		gLayout.addComponent(this.getLblBlocks(), 0, 0);
-		gLayout.addComponent(this.getSelBlocks(), 1, 0);
+		// Add visible components for Randomized Block Design
+		GridLayout gLayout = createGridLayout(2, 3);
+		gLayout.addComponent(this.getLblReplicates(), 0, 0);
+		gLayout.addComponent(this.getSelReplicates(), 1, 0);
 		gLayout.addComponent(this.getLblSpecifyGenotypesHeader(), 0, 1, 1, 1);
 		gLayout.addComponent(this.getLblGenotypes(), 0, 2);
 		gLayout.addComponent(this.getSelGenotypes(), 1, 2);
 
-		this.getBlockRowColumnContainer().addComponent(gLayout);
+		this.getDesignDetailsContainer().addComponent(gLayout);
+
+		this.substituteMissingReplicatesWithBlocks();
+	}
+
+	public void displayIncompleteBlockDesignElements() {
+
+		this.getDesignDetailsContainer().removeAllComponents();
+
+		final GridLayout gLayout =  this.createGridLayout(2, 4);
+
+		// Add visible components for Incomplete Block Design
+		gLayout.addComponent(this.getLblReplicates(), 0, 0);
+		gLayout.addComponent(this.getSelReplicates(), 1, 0);
+		gLayout.addComponent(this.getLblBlocks(), 0, 1);
+		gLayout.addComponent(this.getSelBlocks(), 1, 1);
+		gLayout.addComponent(this.getLblSpecifyGenotypesHeader(), 0, 2, 1, 2);
+		gLayout.addComponent(this.getLblGenotypes(), 0, 3);
+		gLayout.addComponent(this.getSelGenotypes(), 1, 3);
+
+		this.getDesignDetailsContainer().addComponent(gLayout);
+
+		this.substituteMissingReplicatesWithBlocks();
+	}
+
+	public void displayRowColumnDesignElements() {
+
+
+		this.getDesignDetailsContainer().removeAllComponents();
+
+		GridLayout gLayout = createGridLayout(2, 5);
+
+		// Add visible components for Row-and-column Design
+		gLayout.addComponent(this.getLblReplicates(), 0, 0);
+		gLayout.addComponent(this.getSelReplicates(), 1, 0);
+		gLayout.addComponent(this.getLblSpecifyColumnFactor(), 0, 1);
+		gLayout.addComponent(this.getSelColumnFactor(), 1, 1);
+		gLayout.addComponent(this.getLblSpecifyRowFactor(), 0, 2);
+		gLayout.addComponent(this.getSelRowFactor(), 1, 2);
+		gLayout.addComponent(this.getLblSpecifyGenotypesHeader(), 0, 3, 1, 3);
+		gLayout.addComponent(this.getLblGenotypes(), 0, 4);
+		gLayout.addComponent(this.getSelGenotypes(), 1, 4);
+
+		this.changeRowAndColumnLabelsBasedOnDesignType(DesignType.ROW_COLUMN_DESIGN);
+
+		this.getDesignDetailsContainer().addComponent(gLayout);
+
+		this.substituteMissingReplicatesWithBlocks();
+	}
+
+	public void displayPRepDesignElements() {
+
+		this.getDesignDetailsContainer().removeAllComponents();
+
+		final GridLayout gLayout =  this.createGridLayout(2, 5);
+
+		// Add visible components for P-rep Design
+		gLayout.addComponent(this.getLblBlocks(), 0, 0);
+		gLayout.addComponent(this.getSelBlocks(), 1, 0);
+		gLayout.addComponent(this.getLblSpecifyColumnFactor(), 0, 1);
+		gLayout.addComponent(this.getSelColumnFactor(), 1, 1);
+		gLayout.addComponent(this.getLblSpecifyRowFactor(), 0, 2);
+		gLayout.addComponent(this.getSelRowFactor(), 1, 2);
+		gLayout.addComponent(this.getLblSpecifyGenotypesHeader(), 0, 3, 1, 3);
+		gLayout.addComponent(this.getLblGenotypes(), 0, 4);
+		gLayout.addComponent(this.getSelGenotypes(), 1, 4);
+
+		this.changeRowAndColumnLabelsBasedOnDesignType(DesignType.P_REP_DESIGN);
+
+		// P-rep design do not need a replicates factor, make the select box unselected
+		this.getSelReplicates().select(null);
+
+		this.getDesignDetailsContainer().addComponent(gLayout);
+
+	}
+
+	private void changeRowAndColumnLabelsBasedOnDesignType(DesignType designType) {
+
+		if (designType == DesignType.P_REP_DESIGN) {
+			// When the design type is P-rep, the row and column factors are optional. So we
+			// need to change the text label to NOT have red asterisk (*) appended to the text label.
+			this.getLblSpecifyRowFactor().setValue(this.messageSource.getMessage(Message.BV_SPECIFY_ROW_FACTOR));
+			this.getLblSpecifyColumnFactor().setValue(this.messageSource.getMessage(Message.BV_SPECIFY_COLUMN_FACTOR));
+
+		} else if (designType == DesignType.ROW_COLUMN_DESIGN) {
+
+			// For Row and Column Design, row and column factors are all required so their text labels should have a
+			// red asterisk (*)
+			this.getLblSpecifyRowFactor().setValue(this.messageSource.getMessage(Message.BV_SPECIFY_ROW_FACTOR) + REQUIRED_FIELD_INDICATOR);
+			this.getLblSpecifyColumnFactor().setValue(this.messageSource.getMessage(Message.BV_SPECIFY_COLUMN_FACTOR) + REQUIRED_FIELD_INDICATOR);
+
+		}
+
+
+	}
+
+
+	private void substituteMissingReplicatesWithBlocks(){
+
+		/**
+		 * If a trial doesn't have a replicates factor, this will use the block factor as a substitute for replicates factor.
+		 */
 
 		if (!this.getSelReplicates().isEnabled() || this.getSelReplicates().getItemIds().isEmpty()) {
 
@@ -1395,7 +1439,22 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 				this.getSelReplicates().setEnabled(true);
 			}
 		}
+
 	}
+
+	private GridLayout createGridLayout(int col, int row){
+
+		final GridLayout gLayout = new GridLayout(col, row);
+		gLayout.setColumnExpandRatio(0, 0);
+		gLayout.setColumnExpandRatio(1, 1);
+		gLayout.setWidth("100%");
+		gLayout.setSpacing(true);
+		gLayout.addStyleName(SingleSiteAnalysisDetailsPanel.MARGIN_TOP10);
+
+		return gLayout;
+
+	}
+
 
 	protected void disableEnvironmentEntries() {
 
