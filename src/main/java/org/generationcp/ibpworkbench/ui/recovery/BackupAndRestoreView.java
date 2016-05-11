@@ -45,7 +45,8 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOG = LoggerFactory.getLogger(ProgramMethodsView.class);
-	private ListSelect restoreList;
+	public static final String NO_FILE = "NO_FILE";
+	public static final String NO_FILE_SELECTED = "NO_FILE_SELECTED";
 	private Button backupBtn;
 	private UploadField uploadFrm;
 	private Button restoreBtn;
@@ -86,14 +87,12 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 				super.uploadFinished(event);
 
 				BackupAndRestoreView.this.restoreBtn.setEnabled(true);
-
-				BackupAndRestoreView.this.restoreList.setEnabled(false);
 			}
 
 			@Override
 			public void validate() throws Validator.InvalidValueException {
 				if (this.getLastFileName() == null) {
-					throw new Validator.InvalidValueException("NO_FILE");
+					throw new Validator.InvalidValueException(NO_FILE);
 				} else if (!this.isValid()) {
 					throw new Validator.InvalidValueException("NOT_VALID");
 				}
@@ -119,19 +118,12 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 			}
 		};
 
-		this.uploadFrm.setNoFileSelectedText(this.messageSource.getMessage("NO_FILE_SELECTED"));
+		this.uploadFrm.setNoFileSelectedText(this.messageSource.getMessage(NO_FILE_SELECTED));
 		this.uploadFrm.setSelectedFileText("<b>" + this.messageSource.getMessage("SELECTED_BACKUP_FILE") + "</b>");
 		this.uploadFrm.setDeleteCaption(this.messageSource.getMessage("CLEAR"));
 		this.uploadFrm.setFieldType(UploadField.FieldType.FILE);
 
 		this.restoreBtn = new Button(this.messageSource.getMessage("RESTORE_BMS_BUTTON"));
-		this.restoreList = new ListSelect();
-
-		this.populateRestoreList();
-
-		this.restoreList.setMultiSelect(false);
-		this.restoreList.setRows(1);
-		this.restoreList.setNullSelectionAllowed(true);
 
 		this.tabSheet = new TabSheet();
 		this.tabSheet.setImmediate(true);
@@ -144,33 +136,6 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 		this.restorePanel.setStyleName(Reindeer.PANEL_LIGHT);
 	}
 
-	public void populateRestoreList() {
-		this.restoreList.removeAllItems();
-
-		try {
-			for (ProjectBackup pb : this.workbenchDataManager.getProjectBackups(this.sessionData.getLastOpenedProject())) {
-				if (!new File(pb.getBackupPath()).exists()) {
-					continue;
-				}
-
-				this.restoreList.addItem(pb);
-
-				String dateStr = DateUtil.getSimpleDateFormat("MMMM dd, yyyy").format(pb.getBackupTime());
-
-				this.restoreList.setItemCaption(pb, dateStr + " - " + pb.getBackupPath());
-				this.restoreList.setValue(pb);
-			}
-		} catch (MiddlewareQueryException e) {
-			BackupAndRestoreView.LOG.error(e.getMessage(), e);
-		}
-
-		if (this.restoreList.getItemIds().isEmpty()) {
-			this.restoreBtn.setEnabled(false);
-		} else {
-			this.restoreBtn.setEnabled(true);
-		}
-
-	}
 
 	/**
 	 * If possible, move to a controller class in the future
@@ -181,7 +146,6 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 			@Override
 			public void doAction() {
 				super.doAction();
-				BackupAndRestoreView.this.populateRestoreList();
 			}
 		};
 
@@ -193,10 +157,6 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 					@Override
 					public void onClose(ConfirmDialog dialog) {
 						super.onClose(dialog);
-
-						if (dialog.isConfirmed()) {
-							BackupAndRestoreView.this.populateRestoreList();
-						}
 					}
 				};
 
@@ -207,28 +167,21 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 				// validate file upload
 
 				try {
-
 					BackupAndRestoreView.this.uploadFrm.validate();
-					restoreAction.setIsUpload(true);
 
 				} catch (Validator.InvalidValueException e) {
 					BackupAndRestoreView.LOG.error(e.getMessage(), e);
-					if (!"NO_FILE".equals(e.getMessage())) {
+					if (NO_FILE.equals(e.getMessage())) {
+						MessageNotifier.showError(clickEvent.getComponent().getWindow(),
+								BackupAndRestoreView.this.messageSource.getMessage(Message.ERROR_UPLOAD),
+								BackupAndRestoreView.this.messageSource.getMessage(NO_FILE_SELECTED));
+						return;
+					} else {
 						MessageNotifier.showError(clickEvent.getComponent().getWindow(),
 								BackupAndRestoreView.this.messageSource.getMessage(Message.ERROR_UPLOAD),
 								BackupAndRestoreView.this.messageSource.getMessage(Message.ERROR_INVALID_FILE));
 						return;
 					}
-
-					if (BackupAndRestoreView.this.restoreList.getValue() == null) {
-						MessageNotifier.showError(clickEvent.getComponent().getWindow(),
-								BackupAndRestoreView.this.messageSource.getMessage(Message.ERROR_UPLOAD), 
-								BackupAndRestoreView.this.messageSource.getMessage(Message.RESTORE_NO_BACKUP_SELECTED));
-						return;
-					}
-
-					restoreAction.setProjectBackup((ProjectBackup) BackupAndRestoreView.this.restoreList.getValue());
-					restoreAction.setIsUpload(false);
 				}
 
 				String restoreDescMessageFormat = "<b style='color:red'>%s</b><br/><br/>%s";
@@ -253,13 +206,7 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				BackupAndRestoreView.this.restoreList.setEnabled(true);
-
-				if (BackupAndRestoreView.this.restoreList.getItemIds().isEmpty()) {
-					BackupAndRestoreView.this.restoreBtn.setEnabled(false);
-				} else {
 					BackupAndRestoreView.this.restoreBtn.setEnabled(true);
-				}
 			}
 		});
 	}
@@ -283,13 +230,8 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 		this.uploadFrm.getRootLayout().setWidth("100%");
 		this.uploadFrm.setButtonCaption("Browse");
 
-		this.restoreList.setWidth("400px");
-
 		final Label pageTitle = new Label(this.messageSource.getMessage("BACKUP_RESTORE_TITLE"));
 		pageTitle.setStyleName(Bootstrap.Typography.H1.styleName());
-
-		final Label restoreDropdownTitle = new Label(this.messageSource.getMessage("RESTORE_CHOOSE_BACKUP"));
-		restoreDropdownTitle.setStyleName(Bootstrap.Typography.H6.styleName());
 
 		final Label restoreUploadTitle = new Label(this.messageSource.getMessage("RESTORE_BMS_UPLOAD"));
 		restoreUploadTitle.setStyleName(Bootstrap.Typography.H6.styleName());
@@ -319,10 +261,6 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 		this.restorePanel.addComponent(this.setUpHeadings(HelpModule.RESTORE_PROGRAM_DATA, this.messageSource.getMessage("RESTORE_BMS_TITLE"),
 				"228px"));
 		this.restorePanel.addComponent(new Label(this.messageSource.getMessage("RESTORE_BMS_DESCRIPTION")));
-		this.restorePanel.addComponent(restoreDropdownTitle);
-		this.restorePanel.addComponent(this.restoreList);
-		this.restorePanel.addComponent(new Label("", Label.CONTENT_XHTML));
-		this.restorePanel.addComponent(new Label("<div style='margin: 5px 0;'>Or</div>", Label.CONTENT_XHTML));
 		this.restorePanel.addComponent(restoreUploadTitle);
 		this.restorePanel.addComponent(this.uploadFrm);
 		this.restorePanel.addComponent(this.restoreBtn);

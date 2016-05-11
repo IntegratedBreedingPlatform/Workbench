@@ -223,7 +223,6 @@ public class RestoreUtilTest {
 				restoreAction.setWorkbenchDataManager(this.workbenchDataManager);
 				restoreAction.setMessageSource(this.messageSource);
 				restoreAction.setFile(new File(fullFilePath));
-				restoreAction.setIsUpload(true);
 				restoreAction.onClose(confirmDialog);
 
 				this.workbenchDataManager.deleteProject(project);

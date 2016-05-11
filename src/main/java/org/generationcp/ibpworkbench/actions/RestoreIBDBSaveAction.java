@@ -68,8 +68,6 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 
 	private static final String BACKUP_DIR = "temp";
 
-	private boolean isUpload = false;
-
 	// this would be the indicator if there is an error during the restore process
 	private boolean hasRestoreError = false;
 
@@ -107,11 +105,6 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 			File restoreFile = this.file;
 
 			try {
-
-				if (!this.isUpload()) {
-					restoreFile = new File(this.pb.getBackupPath());
-				}
-
 				Matcher matcher = RestoreIBDBSaveAction.BACKUP_FILE_PATTERN.matcher(restoreFile.getName());
 				if (matcher.matches()) {
 					String cropName = matcher.group(1);
@@ -205,14 +198,6 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 
 		this.file = new File(saveDir, sb.toString());
 		return this.file;
-	}
-
-	public boolean isUpload() {
-		return this.isUpload;
-	}
-
-	public void setIsUpload(boolean value) {
-		this.isUpload = value;
 	}
 
 	// for unit testing to be able to inject test attribute
