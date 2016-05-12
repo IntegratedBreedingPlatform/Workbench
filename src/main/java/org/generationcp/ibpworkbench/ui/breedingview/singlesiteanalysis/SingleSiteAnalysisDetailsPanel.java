@@ -435,33 +435,27 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		return this.tool;
 	}
 
-	public TextField getTxtVersion() {
-		return this.txtVersion;
-	}
-
 	public Select getSelDesignType() {
 		return this.selDesignType;
 	}
 
+	public String getSelDesignTypeValue() { return (String) this.selDesignType.getValue(); }
+
 	public BreedingViewInput getBreedingViewInput() {
 		return this.breedingViewInput;
-	}
-
-	public Label getValueProjectType() {
-		return this.valueProjectType;
 	}
 
 	public TextField getTxtAnalysisName() {
 		return this.txtAnalysisName;
 	}
 
-	public TextField getTxtNameForAnalysisEnv() {
-		return this.txtNameForAnalysisEnv;
-	}
+	public String getTxtAnalysisNameValue() { return (String) this.txtAnalysisName.getValue(); }
 
 	public Select getSelEnvFactor() {
 		return this.selEnvFactor;
 	}
+
+	public String getSelEnvFactorValue() { return (String) this.selEnvFactor.getValue(); }
 
 	public void setSelEnvFactor(final Select selEnvFactor) {
 		this.selEnvFactor = selEnvFactor;
@@ -471,28 +465,34 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		return this.selReplicates;
 	}
 
+	public String getSelReplicatesValue() { return (String) this.selReplicates.getValue(); }
+
 	public Select getSelBlocks() {
 		return this.selBlocks;
 	}
+
+	public String getSelBlocksValue() { return (String) this.selBlocks.getValue(); }
 
 	public Select getSelRowFactor() {
 		return this.selRowFactor;
 	}
 
+	public String getSelRowFactorValue() { return (String) this.selRowFactor.getValue(); }
+
 	public Select getSelColumnFactor() {
 		return this.selColumnFactor;
 	}
+
+	public String getSelColumnFactorValue() { return (String) this.selColumnFactor.getValue(); }
 
 	public Select getSelGenotypes() {
 		return this.selGenotypes;
 	}
 
+	public String getSelGenotypesValue() { return (String) this.selGenotypes.getValue(); }
+
 	public void setStudyDataManager(final StudyDataManager studyDataManager) {
 		this.studyDataManager = studyDataManager;
-	}
-
-	protected void initialize() {
-		// not yet implemented
 	}
 
 	protected void initializeComponents() {
@@ -1169,7 +1169,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	}
 
 	protected void assemble() {
-		this.initialize();
 		this.initializeComponents();
 		this.initializeLayout();
 		this.initializeActions();
@@ -1231,40 +1230,16 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		return this.lblBlocks;
 	}
 
-	public void setLblBlocks(final Label lblBlocks) {
-		this.lblBlocks = lblBlocks;
-	}
-
 	public Label getLblSpecifyRowFactor() {
 		return this.lblSpecifyRowFactor;
-	}
-
-	public void setLblSpecifyRowFactor(final Label lblSpecifyRowFactor) {
-		this.lblSpecifyRowFactor = lblSpecifyRowFactor;
 	}
 
 	public Label getLblSpecifyColumnFactor() {
 		return this.lblSpecifyColumnFactor;
 	}
 
-	public void setLblSpecifyColumnFactor(final Label lblSpecifyColumnFactor) {
-		this.lblSpecifyColumnFactor = lblSpecifyColumnFactor;
-	}
-
 	public Label getLblReplicates() {
 		return this.lblReplicates;
-	}
-
-	public void setLblReplicates(final Label lblReplicates) {
-		this.lblReplicates = lblReplicates;
-	}
-
-	public Map<String, Boolean> getEnvironmentsCheckboxState() {
-		return this.environmentsCheckboxState;
-	}
-
-	public void setEnvironmentsCheckboxState(final Map<String, Boolean> environmentsCheckboxState) {
-		this.environmentsCheckboxState = environmentsCheckboxState;
 	}
 
 	public List<SeaEnvironmentModel> getSelectedEnvironments() {
@@ -1295,16 +1270,8 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		return this.lblGenotypes;
 	}
 
-	public void setLblGenotypes(final Label lblGenotypes) {
-		this.lblGenotypes = lblGenotypes;
-	}
-
 	public Label getLblSpecifyGenotypesHeader() {
 		return this.lblSpecifyGenotypesHeader;
-	}
-
-	public void setLblSpecifyGenotypesHeader(final Label lblSpecifyGenotypesHeader) {
-		this.lblSpecifyGenotypesHeader = lblSpecifyGenotypesHeader;
 	}
 
 	public SimpleResourceBundleMessageSource getMessageSource() {
@@ -1423,7 +1390,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	}
 
-
 	private void substituteMissingReplicatesWithBlocks(){
 
 		/**
@@ -1454,7 +1420,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		return gLayout;
 
 	}
-
 
 	protected void disableEnvironmentEntries() {
 
