@@ -31,12 +31,10 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
 
+// TODO: internationalize this class
 @Configurable
 public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, InitializingBean, FileFactory {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 7008891907589673916L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(RestoreIBDBSaveAction.class);
@@ -149,7 +147,6 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 						this.messageSource.getMessage(Message.RESTORE_IBDB_COMPLETE));
 
 				// LOG to project activity
-				// TODO: internationalize this
 				// if there is no user id, it means there is no user data
 				if (userId != null) {
 					ProjectActivity projAct =

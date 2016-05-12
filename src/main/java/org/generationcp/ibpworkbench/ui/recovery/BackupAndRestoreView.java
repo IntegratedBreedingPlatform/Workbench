@@ -40,6 +40,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
 
+//TODO Localise messages in this class
 @Configurable
 public class BackupAndRestoreView extends CustomComponent implements InitializingBean {
 

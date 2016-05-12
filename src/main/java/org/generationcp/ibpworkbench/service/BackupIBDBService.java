@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class BackupIBDBService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(BackupIBDBService.class);
-	private static final String BACKUP_DIR = "backup";
 	
 	@Autowired
 	private MySQLUtil mysqlUtil;
@@ -30,29 +29,16 @@ public class BackupIBDBService {
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
 
-	public File backupIBDB(String projectId, String dbName) throws Exception {
-		BackupIBDBService.LOG.debug("onClick > do save backup");
-		BackupIBDBService.LOG.debug("Current ProjectID: " + projectId);
+	//TODO Iryna
+	public File backupIBDB(final String projectId, final String dbName) throws Exception {
 
-		this.checkBackupDir();
-		ProjectBackup projectBackup = new ProjectBackup();
+		final ProjectBackup projectBackup = new ProjectBackup();
 		projectBackup.setProjectId(Long.valueOf(projectId));
 		projectBackup.setBackupTime(Util.getCurrentDate());
-		File backupFile = this.mysqlUtil.backupDatabase(dbName);
+		final File backupFile = this.mysqlUtil.backupDatabase(dbName);
 		projectBackup.setBackupPath(backupFile.getAbsolutePath());
 		// save result to DB
 		this.workbenchDataManager.saveOrUpdateProjectBackup(projectBackup);
 		return backupFile;
-	}
-
-	public void checkBackupDir() {
-		File saveDir = new File(BackupIBDBService.BACKUP_DIR);
-		if (!saveDir.exists() || !saveDir.isDirectory()) {
-			saveDir.mkdirs();
-		}
-
-		this.mysqlUtil.setBackupDir(BackupIBDBService.BACKUP_DIR);
-
-		BackupIBDBService.LOG.debug("dumppath: " + new File(this.mysqlUtil.getMysqlDumpPath()).getAbsolutePath());
 	}
 }
