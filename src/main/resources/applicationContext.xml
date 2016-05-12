@@ -94,7 +94,6 @@
 		<property name="password" value="${tomcat.manager.password}" />
 	</bean>
 
-	<bean id="backupIBDBService" class="org.generationcp.ibpworkbench.service.BackupIBDBService"></bean>
 	<bean id="programService" class="org.generationcp.ibpworkbench.service.ProgramService"></bean>
 	<bean id="appLauncherService"
 		class="org.generationcp.ibpworkbench.service.AppLauncherService"></bean>

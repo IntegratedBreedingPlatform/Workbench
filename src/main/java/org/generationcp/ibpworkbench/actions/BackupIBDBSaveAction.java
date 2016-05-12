@@ -6,12 +6,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Date;
 
+import org.generationcp.commons.util.MySQLUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.service.BackupIBDBService;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -47,7 +47,7 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.Clic
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
-	private BackupIBDBService backupIBDBService;
+	private MySQLUtil mysqlUtil;
 
 	private final Project selectedProject;
 
@@ -69,9 +69,8 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.Clic
 		File backupFile;
 		try {
 			// TODO review this for merged DB scheme. For now passing in the pointer to the merged db if backup action is executed..
-			backupFile =
-					this.backupIBDBService.backupIBDB(this.selectedProject.getProjectId().toString(),
-							this.selectedProject.getDatabaseName());
+			backupFile = this.mysqlUtil.backupDatabase(this.selectedProject.getDatabaseName(),
+					this.mysqlUtil.getBackupFilename(this.selectedProject.getDatabaseName(), ".sql", "temp"), true);
 
 			// TODO: remove test code
 
@@ -79,6 +78,7 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.Clic
 			User user = app.getSessionData().getUserData();
 
 			// TODO: internationalize this
+
 			ProjectActivity projAct =
 					new ProjectActivity(null, this.selectedProject, "Crop Database Backup",
 							"Backup performed on " + this.selectedProject.getDatabaseName(), user, new Date());
