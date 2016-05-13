@@ -212,6 +212,7 @@ public class RunSingleSiteAction implements ClickListener {
 			reps.setName(replicatesFactor.trim());
 			return reps;
 		} else {
+
 			// We need the replicates factor in performing analysis. If it is not available in a study,
 			// blocks factor can be used as as substitute. But if both replicates factor and blocks factor are not available,
 			// the system wouldn't be able to run the analysis. When this happens we should create a dummy replicates factor (in xml and csv input)
@@ -224,6 +225,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 
 	}
+
 
 	Rows createRows(String rowFactor) {
 
@@ -274,6 +276,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 	}
 
+
 	Plot createPlot(int datasetId) {
 
 		String plotNoFactor =
@@ -295,6 +298,7 @@ public class RunSingleSiteAction implements ClickListener {
 		}
 
 	}
+
 
 	Genotypes createGenotypes(int datasetId, String genotypesFactor) {
 
@@ -372,7 +376,6 @@ public class RunSingleSiteAction implements ClickListener {
 			return false;
 		}
 
-
 		return true;
 	}
 
@@ -380,7 +383,9 @@ public class RunSingleSiteAction implements ClickListener {
 		MessageNotifier.showError(window, title, description);
 	}
 
+
 	void writeProjectXML(Window window, BreedingViewInput breedingViewInput) {
+
 		BreedingViewXMLWriter breedingViewXMLWriter;
 
 		// write the XML input for breeding view
