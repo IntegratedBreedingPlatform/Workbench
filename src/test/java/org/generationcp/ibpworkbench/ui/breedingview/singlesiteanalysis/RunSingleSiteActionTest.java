@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.RunSingleSiteAction;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
@@ -96,6 +97,8 @@ public class RunSingleSiteActionTest {
 		this.runBreedingViewAction = Mockito.spy(new RunSingleSiteAction(this.source, project));
 		Mockito.doNothing().when(this.runBreedingViewAction)
 				.showErrorMessage(Matchers.any(Window.class), Matchers.anyString(), Matchers.anyString());
+		
+		this.runBreedingViewAction.setMessageSource(messageSource);
 
 	}
 
@@ -113,7 +116,7 @@ public class RunSingleSiteActionTest {
 		this.source.getTxtAnalysisName().setValue(RunSingleSiteActionTest.ANALYSIS_NAME);
 
 		this.runBreedingViewAction.buttonClick(this.event);
-		Mockito.verify(this.runBreedingViewAction, Mockito.times(1)).showErrorMessage(this.window, "Please select an environment factor.",
+		Mockito.verify(this.runBreedingViewAction, Mockito.times(1)).showErrorMessage(this.window, messageSource.getMessage(Message.SSA_SELECT_ENVIRONMENT_FACTOR_WARNING),
 				"");
 
 	}
@@ -128,7 +131,7 @@ public class RunSingleSiteActionTest {
 
 		this.runBreedingViewAction.buttonClick(this.event);
 		Mockito.verify(this.runBreedingViewAction, Mockito.times(1)).showErrorMessage(this.window,
-				"Please select environment for analysis.", "");
+				messageSource.getMessage(Message.SSA_SELECT_ENVIRONMENT_FACTOR_WARNING), "");
 
 	}
 

@@ -431,4 +431,12 @@ public class RunSingleSiteAction implements ClickListener {
 
 		application.getMainWindow().open(fr);
 	}
+
+	/**
+	 * For Unit tests to inject messageSource Resource
+	 * @param messageSource
+	 */
+	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
 }
