@@ -51,6 +51,12 @@ public class SingleSiteAnalysisDetailsPanelTest {
 	private static final String TRIAL_INSTANCE = "TRIAL_INSTANCE";
 	private static final String DEFAULT_REPLICATES = "REPLICATES";
 
+	private static final String ROW_FACTOR_LABEL = "Specify Row Factor";
+	private static final String COLUMN_FACTOR_LABEL = "Specify Column Factor";
+
+	private static final String BLOCK_NO = "BLOCK_NO";
+
+
 	private static final String[] TRIAL_ENV_FACTORS = {SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE,
 			SingleSiteAnalysisDetailsPanelTest.LOC_ID, SingleSiteAnalysisDetailsPanelTest.LOC_NAME,
 			SingleSiteAnalysisDetailsPanelTest.EXPT_DESIGN};
@@ -90,10 +96,13 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 		this.mockStudyDataManagerCalls();
 		this.mockMessageResource();
+
 	}
 
 	private void mockMessageResource() {
 		Mockito.when(this.messageSource.getMessage(Message.PLEASE_CHOOSE)).thenReturn("Please choose");
+		Mockito.when(this.messageSource.getMessage(Message.BV_SPECIFY_ROW_FACTOR)).thenReturn(ROW_FACTOR_LABEL);
+		Mockito.when(this.messageSource.getMessage(Message.BV_SPECIFY_COLUMN_FACTOR)).thenReturn(COLUMN_FACTOR_LABEL);
 	}
 
 	private void mockStudyDataManagerCalls() {
@@ -117,18 +126,13 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 	@Test
 	public void testDesignTypeIncompleteBlockDesignResolvableNonLatin() {
+
 		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
 				.thenReturn(Integer.toString(TermId.RESOLVABLE_INCOMPLETE_BLOCK.getId()));
 
 		this.dut.initializeComponents();
 
-		final GridLayout gLayout = (GridLayout) this.dut.getDesignDetailsContainer().getComponentIterator().next();
-		final Iterator<Component> componentsIterator = gLayout.getComponentIterator();
-		final List<Component> components = new ArrayList<>();
-		while (componentsIterator.hasNext()) {
-			final Component component = componentsIterator.next();
-			components.add(component);
-		}
+		List<Component> components = this.getComponentsListFromGridLayout();
 
 		Assert.assertTrue(components.contains(this.dut.getLblBlocks()));
 		Assert.assertTrue(components.contains(this.dut.getSelBlocks()));
@@ -160,13 +164,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 		this.dut.initializeComponents();
 
-		final GridLayout gLayout = (GridLayout) this.dut.getDesignDetailsContainer().getComponentIterator().next();
-		final Iterator<Component> componentsIterator = gLayout.getComponentIterator();
-		final List<Component> components = new ArrayList<>();
-		while (componentsIterator.hasNext()) {
-			final Component component = componentsIterator.next();
-			components.add(component);
-		}
+		List<Component> components = this.getComponentsListFromGridLayout();
 
 		Assert.assertTrue(components.contains(this.dut.getLblBlocks()));
 		Assert.assertTrue(components.contains(this.dut.getSelBlocks()));
@@ -198,13 +196,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 		this.dut.initializeComponents();
 
-		final GridLayout gLayout = (GridLayout) this.dut.getDesignDetailsContainer().getComponentIterator().next();
-		final Iterator<Component> componentsIterator = gLayout.getComponentIterator();
-		final List<Component> components = new ArrayList<>();
-		while (componentsIterator.hasNext()) {
-			final Component component = componentsIterator.next();
-			components.add(component);
-		}
+		List<Component> components = this.getComponentsListFromGridLayout();
 
 		Assert.assertTrue(components.contains(this.dut.getLblSpecifyColumnFactor()));
 		Assert.assertTrue(components.contains(this.dut.getSelColumnFactor()));
@@ -236,13 +228,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 		this.dut.initializeComponents();
 
-		final GridLayout gLayout = (GridLayout) this.dut.getDesignDetailsContainer().getComponentIterator().next();
-		final Iterator<Component> componentsIterator = gLayout.getComponentIterator();
-		final List<Component> components = new ArrayList<>();
-		while (componentsIterator.hasNext()) {
-			final Component component = componentsIterator.next();
-			components.add(component);
-		}
+		List<Component> components = this.getComponentsListFromGridLayout();
 
 		Assert.assertTrue(components.contains(this.dut.getLblSpecifyColumnFactor()));
 		Assert.assertTrue(components.contains(this.dut.getSelColumnFactor()));
@@ -274,13 +260,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 		this.dut.initializeComponents();
 
-		final GridLayout gLayout = (GridLayout) this.dut.getDesignDetailsContainer().getComponentIterator().next();
-		final Iterator<Component> componentsIterator = gLayout.getComponentIterator();
-		final List<Component> components = new ArrayList<>();
-		while (componentsIterator.hasNext()) {
-			final Component component = componentsIterator.next();
-			components.add(component);
-		}
+		List<Component> components = this.getComponentsListFromGridLayout();
 
 		Assert.assertTrue(components.contains(this.dut.getLblSpecifyGenotypesHeader()));
 		Assert.assertTrue(components.contains(this.dut.getLblGenotypes()));
@@ -400,6 +380,91 @@ public class SingleSiteAnalysisDetailsPanelTest {
 					|| pleaseChooseOption.equals(localName));
 			Assert.assertFalse(ArrayUtils.contains(SingleSiteAnalysisDetailsPanelTest.DATASET_FACTORS, localName));
 		}
+	}
+
+
+	@Test
+	public void testDisplayPRepDesignElements() {
+
+		this.dut.initializeComponents();
+
+		this.dut.displayPRepDesignElements();
+
+		List<Component> components = this.getComponentsListFromGridLayout();
+
+		// The following components should be visible in Design Details' Grid Layout
+		Assert.assertTrue(components.contains(this.dut.getLblBlocks()));
+		Assert.assertTrue(components.contains(this.dut.getSelBlocks()));
+		Assert.assertTrue(components.contains(this.dut.getLblSpecifyColumnFactor()));
+		Assert.assertTrue(components.contains(this.dut.getSelColumnFactor()));
+		Assert.assertTrue(components.contains(this.dut.getLblSpecifyRowFactor()));
+		Assert.assertTrue(components.contains(this.dut.getSelRowFactor()));
+		Assert.assertTrue(components.contains(this.dut.getLblSpecifyGenotypesHeader()));
+		Assert.assertTrue(components.contains(this.dut.getLblGenotypes()));
+		Assert.assertTrue(components.contains(this.dut.getSelGenotypes()));
+
+		// The following components should not be added in Design Details' GridLayout
+		Assert.assertFalse(components.contains(this.dut.getLblReplicates()));
+		Assert.assertFalse(components.contains(this.dut.getSelReplicates()));
+
+		Assert.assertNull("Replicates factor is not needed in P-rep design, so replicates should be unselected (null)",this.dut.getSelReplicates().getValue());
+
+	}
+
+
+
+	@Test
+	public void testSubstituteMissingReplicatesWithBlocksNoReplicatesFactor(){
+
+		this.dut.initializeComponents();
+
+		dut.getSelBlocks().addItem(BLOCK_NO);
+		dut.getSelReplicates().removeAllItems();
+
+		dut.substituteMissingReplicatesWithBlocks();
+
+		Assert.assertEquals("The value of Replicates Factor Select Field should be the same as the Block factor", BLOCK_NO, dut.getSelReplicates().getValue());
+		Assert.assertEquals("If block factor is used as a substitute for replicates, then the item caption should be \"" + SingleSiteAnalysisDetailsPanel.REPLICATES + "\"" ,SingleSiteAnalysisDetailsPanel.REPLICATES ,dut.getSelReplicates().getItemCaption((String) dut.getSelReplicates().getValue()));
+
+	}
+
+	@Test
+	public void testChangeRowAndColumnLabelsBasedOnDesignTypePRepDesign(){
+
+		this.dut.initializeComponents();
+
+		dut.changeRowAndColumnLabelsBasedOnDesignType(DesignType.P_REP_DESIGN);
+
+		// Row and Column factors are optional in P-rep Design, the labels should not have required field indicator (red asterisk '*')
+		Assert.assertEquals(COLUMN_FACTOR_LABEL, dut.getLblSpecifyColumnFactor().getValue());
+		Assert.assertEquals(ROW_FACTOR_LABEL, dut.getLblSpecifyRowFactor().getValue());
+
+	}
+
+	@Test
+	public void testChangeRowAndColumnLabelsBasedOnDesignTypeRowAndColumnDesign(){
+
+		this.dut.initializeComponents();
+
+		dut.changeRowAndColumnLabelsBasedOnDesignType(DesignType.ROW_COLUMN_DESIGN);
+
+		// Row and Column factors are required in Row-and-Column Design, the labels should have a required field indicator (red asterisk '*')
+		Assert.assertEquals(COLUMN_FACTOR_LABEL + SingleSiteAnalysisDetailsPanel.REQUIRED_FIELD_INDICATOR, dut.getLblSpecifyColumnFactor().getValue());
+		Assert.assertEquals(ROW_FACTOR_LABEL + SingleSiteAnalysisDetailsPanel.REQUIRED_FIELD_INDICATOR, dut.getLblSpecifyRowFactor().getValue());
+
+	}
+
+	private List<Component> getComponentsListFromGridLayout() {
+
+		final GridLayout gLayout = (GridLayout) this.dut.getDesignDetailsContainer().getComponentIterator().next();
+		final Iterator<Component> componentsIterator = gLayout.getComponentIterator();
+		final List<Component> components = new ArrayList<>();
+		while (componentsIterator.hasNext()) {
+			final Component component = componentsIterator.next();
+			components.add(component);
+		}
+
+		return components;
 	}
 
 	private List<DMSVariableType> createTestFactors() {

@@ -83,7 +83,7 @@ import com.vaadin.ui.VerticalLayout;
 public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements InitializingBean, InternationalizableComponent {
 
 	private static final String MARGIN_TOP10 = "marginTop10";
-	private static final String REPLICATES = "REPLICATES";
+	protected static final String REPLICATES = "REPLICATES";
 
 	private final class RunBreedingViewButtonListener implements Button.ClickListener {
 
@@ -335,7 +335,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	private static final String SELECT_BOX_WIDTH = "191px";
 	private static final String SELECT_COLUMN = "select";
 	private static final String TRIAL_NO_COLUMN = "trialno";
-	private static final String REQUIRED_FIELD_INDICATOR = " <span style='color: red'>*</span>";
+	protected static final String REQUIRED_FIELD_INDICATOR = " <span style='color: red'>*</span>";
 
 	@Value("${workbench.is.server.app}")
 	private String isServerApp;
@@ -1370,7 +1370,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	}
 
-	private void changeRowAndColumnLabelsBasedOnDesignType(DesignType designType) {
+	void changeRowAndColumnLabelsBasedOnDesignType(DesignType designType) {
 
 		if (designType == DesignType.P_REP_DESIGN) {
 			// When the design type is P-rep, the row and column factors are optional. So we
@@ -1390,7 +1390,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	}
 
-	private void substituteMissingReplicatesWithBlocks(){
+	void substituteMissingReplicatesWithBlocks(){
 
 		/**
 		 * If a trial doesn't have a replicates factor, this will use the block factor as a substitute for replicates factor.
