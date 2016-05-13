@@ -67,10 +67,6 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 
 	private List<Project> projects;
 
-	private Table table;
-
-	private BeanContainer<String, ProjectBackup> projectBackupContainer;
-
 	private Upload upload;
 
 	public RestoreIBDBWindow(Project project) {
@@ -98,26 +94,6 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 				projectContainer.addBean(project);
 			}
 
-			this.projectBackupContainer = new BeanContainer<String, ProjectBackup>(ProjectBackup.class);
-			this.projectBackupContainer.setBeanIdProperty("projectBackupId");
-
-			this.table.setContainerDataSource(this.projectBackupContainer);
-			this.table.setVisibleColumns(new String[] {"backupTime", "backupPath"});
-			this.table.setColumnHeader("backupTime", "Backup Time");
-			this.table.setColumnHeader("backupPath", "Backup Path");
-
-			// init table contents
-			Project p = this.sessionData.getSelectedProject();
-			for (ProjectBackup pb : this.workbenchDataManager.getProjectBackups(p)) {
-				this.projectBackupContainer.addBean(pb);
-			}
-
-			if (this.table.getItemIds().isEmpty()) {
-				this.saveBtn.setEnabled(false);
-			}
-
-			this.table.setValue(this.table.firstItemId());
-
 		} catch (MiddlewareQueryException e) {
 			RestoreIBDBWindow.LOG.error("Exception", e);
 			throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
@@ -131,31 +107,6 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 
 		this.cancelBtn = new Button("Cancel");
 		this.cancelBtn.setSizeUndefined();
-
-		// Backup Table
-		this.table = new Table() {
-
-			/**
-			 *
-			 */
-			private static final long serialVersionUID = 83415233737294478L;
-
-			@Override
-			protected String formatPropertyValue(Object rowId, Object colId, Property property) {
-
-				if (property.getType() == java.util.Date.class) {
-					SimpleDateFormat sdf = DateUtil.getSimpleDateFormat(DateUtil.FRONTEND_DATE_FORMAT);
-					return property.getValue() == null ? "" : sdf.format((java.util.Date) property.getValue());
-				}
-
-				return super.formatPropertyValue(rowId, colId, property);
-			}
-		};
-
-		this.table.setSelectable(true);
-		this.table.setImmediate(true);
-		this.table.setWidth("100%");
-		this.table.setHeight("200px");
 
 		this.upload = new Upload("Or upload an IB local backup file here:", null);
 	}
@@ -172,8 +123,6 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 		this.rootLayout = this.getContent();
 
 		this.rootLayout.addComponent(new Label(this.messageSource.getMessage(Message.RESTORE_IBDB_TABLE_SELECT_CAPTION)));
-
-		this.rootLayout.addComponent(this.table);
 
 		// bind components to layout
 
@@ -202,7 +151,7 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 
 	protected void initializeActions() {
 
-		final RestoreIBDBSaveAction restoreAction = new RestoreIBDBSaveAction(this.project, this.table, this);
+		final RestoreIBDBSaveAction restoreAction = new RestoreIBDBSaveAction(this.project, this);
 
 		// DO button listeners + actions here
 		this.cancelBtn.addListener(new Button.ClickListener() {
@@ -234,22 +183,6 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 						RestoreIBDBWindow.this.messageSource.getMessage(Message.RESTORE_IBDB_CONFIRM),
 						RestoreIBDBWindow.this.messageSource.getMessage(Message.RESTORE),
 						RestoreIBDBWindow.this.messageSource.getMessage(Message.CANCEL), restoreAction);
-			}
-		});
-
-		// Table actions
-		this.table.addListener(new Property.ValueChangeListener() {
-
-			/**
-			 *
-			 */
-			private static final long serialVersionUID = -8127163440035052055L;
-
-			@Override
-			public void valueChange(ValueChangeEvent event) {
-				RestoreIBDBWindow.LOG.debug("Backup Table > Item selected");
-
-				RestoreIBDBWindow.this.saveBtn.setEnabled(true);
 			}
 		});
 

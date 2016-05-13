@@ -153,7 +153,7 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 		this.backupBtn.addListener(backupAction);
 
 		final RestoreIBDBSaveAction restoreAction =
-				new RestoreIBDBSaveAction(this.sessionData.getLastOpenedProject(), (ProjectBackup) null, this.getWindow()) {
+				new RestoreIBDBSaveAction(this.sessionData.getLastOpenedProject(), this.getWindow()) {
 
 					@Override
 					public void onClose(ConfirmDialog dialog) {

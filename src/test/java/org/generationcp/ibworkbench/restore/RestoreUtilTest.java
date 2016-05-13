@@ -214,7 +214,7 @@ public class RestoreUtilTest {
 
 				ConfirmDialog confirmDialog = new CustomConfirmDialog(true);
 
-				RestoreIBDBSaveAction restoreAction = new RestoreIBDBSaveAction(project, (ProjectBackup) null, new Window());
+				RestoreIBDBSaveAction restoreAction = new RestoreIBDBSaveAction(project, new Window());
 				SessionData sessionData = new SessionData();
 				sessionData.setLastOpenedProject(project);
 				sessionData.setUserData(new User(1));
@@ -265,7 +265,7 @@ public class RestoreUtilTest {
 
 				ConfirmDialog confirmDialog = new CustomConfirmDialog(false);
 
-				RestoreIBDBSaveAction restoreAction = new RestoreIBDBSaveAction(project, (ProjectBackup) null, new Window());
+				RestoreIBDBSaveAction restoreAction = new RestoreIBDBSaveAction(project, new Window());
 				restoreAction.onClose(confirmDialog);
 
 				this.workbenchDataManager.deleteProject(project);

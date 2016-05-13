@@ -69,17 +69,14 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 	// this would be the indicator if there is an error during the restore process
 	private boolean hasRestoreError = false;
 
-	public RestoreIBDBSaveAction(Project project, Table table, Window sourceWindow) {
-		this.pb = ((BeanItem<ProjectBackup>) table.getItem(table.getValue())).getBean();
-
+	public RestoreIBDBSaveAction(final Project project, final ProjectBackup pb, final Window sourceWindow) {
+		this.pb = pb;
 		this.sourceWindow = sourceWindow;
 		this.project = project;
 	}
 
-	public RestoreIBDBSaveAction(Project project, ProjectBackup pb, Window sourceWindow) {
-		this.pb = pb;
-		this.sourceWindow = sourceWindow;
-		this.project = project;
+	public RestoreIBDBSaveAction(final Project project, final Window sourceWindow) {
+		this(project, null, sourceWindow);
 	}
 
 	public void setProjectBackup(ProjectBackup pb) {
