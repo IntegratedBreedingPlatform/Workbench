@@ -30,7 +30,6 @@ import org.generationcp.middleware.manager.WorkbenchDataManagerImpl;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectBackup;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
 import org.generationcp.middleware.util.ResourceFinder;
 import org.junit.After;
@@ -222,7 +221,7 @@ public class RestoreUtilTest {
 				restoreAction.setMysqlUtil(this.mySqlUtil);
 				restoreAction.setWorkbenchDataManager(this.workbenchDataManager);
 				restoreAction.setMessageSource(this.messageSource);
-				restoreAction.setFile(new File(fullFilePath));
+				restoreAction.setRestoreFile(new File(fullFilePath));
 				restoreAction.onClose(confirmDialog);
 
 				this.workbenchDataManager.deleteProject(project);
