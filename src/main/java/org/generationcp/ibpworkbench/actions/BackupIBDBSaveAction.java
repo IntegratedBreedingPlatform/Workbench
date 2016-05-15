@@ -13,7 +13,6 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.slf4j.Logger;
@@ -30,9 +29,6 @@ import com.vaadin.ui.Window;
 @Configurable
 public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.ClickListener, InitializingBean {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 3502237968419196524L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(BackupIBDBSaveAction.class);
@@ -51,14 +47,14 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.Clic
 
 	private final Project selectedProject;
 
-	public BackupIBDBSaveAction(Project project, Window window) {
+	public BackupIBDBSaveAction(final Project project, final Window window) {
 		this.sourceWindow = window;
 		this.selectedProject = project;
 		// for now, manually init MySQLUtil
 	}
 
 	@Override
-	public void onClose(ConfirmDialog dialog) {
+	public void onClose(final ConfirmDialog dialog) {
 		if (dialog.isConfirmed()) {
 			this.doAction();
 		}
@@ -66,43 +62,40 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.Clic
 
 	public void doAction() {
 		BackupIBDBSaveAction.LOG.debug("Current ProjectID: " + this.selectedProject.getProjectId());
-		File backupFile;
+		final File backupFile;
 		try {
 			// TODO review this for merged DB scheme. For now passing in the pointer to the merged db if backup action is executed..
 			backupFile = this.mysqlUtil.backupDatabase(this.selectedProject.getDatabaseName(),
 					this.mysqlUtil.getBackupFilename(this.selectedProject.getDatabaseName(), ".sql", "temp"), true);
 
 			// TODO: remove test code
+			final IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
 
-			IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-			User user = app.getSessionData().getUserData();
-
-			// TODO: internationalize this
-
-			ProjectActivity projAct =
-					new ProjectActivity(null, this.selectedProject, "Crop Database Backup",
-							"Backup performed on " + this.selectedProject.getDatabaseName(), user, new Date());
+			final ProjectActivity projAct =
+					new ProjectActivity(null, this.selectedProject, this.messageSource.getMessage(Message.CROP_DATABASE_BACKUP),
+							this.messageSource.getMessage(Message.BACKUP_PERFORMED_ON) + " " + this.selectedProject.getDatabaseName(),
+							app.getSessionData().getUserData(), new Date());
 
 			this.workbenchDataManager.addProjectActivity(projAct);
 
 			MessageNotifier.showMessage(this.sourceWindow, this.messageSource.getMessage(Message.SUCCESS),
 					this.messageSource.getMessage(Message.BACKUP_IBDB_COMPLETE));
 
-			FileResource fr = new FileResource(backupFile, this.sourceWindow.getApplication()) {
+			final FileResource fr = new FileResource(backupFile, this.sourceWindow.getApplication()) {
 
 				private static final long serialVersionUID = 765143030552676513L;
 
 				@Override
 				public DownloadStream getStream() {
-					DownloadStream ds;
 					try {
-						ds = new DownloadStream(new FileInputStream(this.getSourceFile()), this.getMIMEType(), this.getFilename());
+						final DownloadStream ds = new DownloadStream(new FileInputStream(this.getSourceFile()), this.getMIMEType(), this
+								.getFilename());
 
 						ds.setParameter("Content-Disposition", "attachment; filename=" + this.getFilename());
 						ds.setCacheTime(this.getCacheTime());
 						return ds;
 
-					} catch (FileNotFoundException e) {
+					} catch (final FileNotFoundException e) {
 						LOG.warn(e.getMessage(),e);
 						return null;
 					}
@@ -111,7 +104,7 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.Clic
 
 			this.sourceWindow.getApplication().getMainWindow().open(fr);
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			LOG.error(e.getMessage(),e);
 			MessageNotifier.showMessage(this.sourceWindow, this.messageSource.getMessage(Message.BACKUP_IBDB_CANNOT_PERFORM_OPERATION),
 					e.getMessage());
@@ -132,7 +125,7 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.Clic
 	}
 
 	@Override
-	public void buttonClick(Button.ClickEvent clickEvent) {
+	public void buttonClick(final Button.ClickEvent clickEvent) {
 		this.doAction();
 	}
 }
