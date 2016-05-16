@@ -306,6 +306,14 @@ public class RunSingleSiteActionTest {
 	}
 
 	@Test
+	public void testCreateReplicatesForPrepDesign(){
+
+		Replicates replicates = runSingleSiteAction.createReplicates(DesignType.P_REP_DESIGN.getName(), REPLICATES_FACTOR);
+		Assert.assertNull("No replicates should be created if the design type is " + DesignType.P_REP_DESIGN.getName() ,replicates);
+
+	}
+
+	@Test
 	public void testCreateRows(){
 
 		Assert.assertNull(runSingleSiteAction.createRows(""));

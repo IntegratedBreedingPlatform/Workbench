@@ -207,7 +207,13 @@ public class RunSingleSiteAction implements ClickListener {
 
 	Replicates createReplicates(String designType, String replicatesFactor) {
 
-		if (!StringUtils.isNullOrEmpty(replicatesFactor)){
+
+		if (designType.equals(DesignType.P_REP_DESIGN.getName())) {
+
+			// Do not include the replicates factor if the design type is P-rep.
+			return null;
+
+		} else if (!StringUtils.isNullOrEmpty(replicatesFactor)) {
 			Replicates reps = new Replicates();
 			reps.setName(replicatesFactor.trim());
 			return reps;
