@@ -160,8 +160,8 @@ public class DatasetExporter {
 
 		this.getFactorDetails(dataset);
 		this.getVariateDetails(dataset, breedingViewInput);
-
-		if (DatasetExporter.DUMMY_REPLICATES.equals(breedingViewInput.getReplicates().getName())) {
+		
+		if (breedingViewInput.getReplicates() != null && DatasetExporter.DUMMY_REPLICATES.equals(breedingViewInput.getReplicates().getName())) {
 			this.columnsMap.put(DatasetExporter.DUMMY_REPLICATES, Integer.valueOf(this.observationSheetColumnIndex));
 			this.observationSheetColumnIndex++;
 		}
@@ -203,7 +203,7 @@ public class DatasetExporter {
 
 			this.processVariates(row, experiment, breedingViewInput, ontologyService);
 
-			if (breedingViewInput.getReplicates().getName().equals(DatasetExporter.DUMMY_REPLICATES)) {
+			if (breedingViewInput.getReplicates() != null && breedingViewInput.getReplicates().getName().equals(DatasetExporter.DUMMY_REPLICATES)) {
 				row.add("1");
 			}
 
