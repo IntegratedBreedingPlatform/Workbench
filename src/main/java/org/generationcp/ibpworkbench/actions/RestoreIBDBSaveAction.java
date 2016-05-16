@@ -53,6 +53,8 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 	private File restoreFile;
 
 	private static final String BACKUP_DIR = "temp";
+	private static final String SQL_FILE_EXTENSION = ".sql";
+	private static final String UNDERSCORE = "_";
 
 	// this would be the indicator if there is an error during the restore process
 	private boolean hasRestoreError = false;
@@ -101,15 +103,16 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 				// if there is no user id, it means there is no user data
 				if (userId != null) {
 					final ProjectActivity projAct =
-							new ProjectActivity(null, this.project, "Crop Database Restore", "Restored backup from: "
-									+ this.restoreFile.getName(), this.sessionData.getUserData(), new Date());
+							new ProjectActivity(null, this.project, this.messageSource.getMessage(Message.CROP_DATABASE_RESTORE),
+									this.messageSource.getMessage(Message.RESTORED_BACKUP_FROM) + " " + this.restoreFile.getName(),
+									this.sessionData.getUserData(), new Date());
 					this.workbenchDataManager.addProjectActivity(projAct);
 				}
 
 				this.hasRestoreError = false;
 			} catch (final Exception e) {
 				RestoreIBDBSaveAction.LOG.error(e.getMessage(), e);
-				MessageNotifier.showError(this.sourceWindow, "Error performing restore operation", e.getMessage());
+				MessageNotifier.showError(this.sourceWindow, this.messageSource.getMessage(Message.RESTORE_OPERATION_ERROR), e.getMessage());
 				this.hasRestoreError = true;
 			}
 		} else {
@@ -132,10 +135,10 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 		final StringBuilder sb = new StringBuilder();
 		if (new File(saveDir.getAbsolutePath() + "/" + fileName).exists()) {
 			for (int x = 1; x < 10000; x++) {
-				final String temp = fileName.substring(0, fileName.lastIndexOf(".")) + "_" + x + ".sql";
+				final String temp = fileName.substring(0, fileName.lastIndexOf(".")) + UNDERSCORE + x + SQL_FILE_EXTENSION;
 				if (!new File(saveDir.getAbsolutePath() + "/" + temp).exists()) {
 					sb.append(fileName.substring(0, fileName.lastIndexOf(".")));
-					sb.append("_").append(x).append(".sql");
+					sb.append(UNDERSCORE).append(x).append(SQL_FILE_EXTENSION);
 					break;
 				}
 			}
