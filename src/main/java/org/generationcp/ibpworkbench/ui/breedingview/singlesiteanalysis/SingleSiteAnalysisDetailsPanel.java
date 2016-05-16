@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * 
  * Generation Challenge Programme (GCP)
- *
- *
+ * 
+ * 
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
+ * 
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
@@ -75,9 +75,9 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- *
+ * 
  * @author Jeffrey Morales
- *
+ * 
  */
 @Configurable
 public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements InitializingBean, InternationalizableComponent {
@@ -439,7 +439,9 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		return this.selDesignType;
 	}
 
-	public String getSelDesignTypeValue() { return (String) this.selDesignType.getValue(); }
+	public String getSelDesignTypeValue() {
+		return (String) this.selDesignType.getValue();
+	}
 
 	public BreedingViewInput getBreedingViewInput() {
 		return this.breedingViewInput;
@@ -449,13 +451,17 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		return this.txtAnalysisName;
 	}
 
-	public String getTxtAnalysisNameValue() { return (String) this.txtAnalysisName.getValue(); }
+	public String getTxtAnalysisNameValue() {
+		return (String) this.txtAnalysisName.getValue();
+	}
 
 	public Select getSelEnvFactor() {
 		return this.selEnvFactor;
 	}
 
-	public String getSelEnvFactorValue() { return (String) this.selEnvFactor.getValue(); }
+	public String getSelEnvFactorValue() {
+		return (String) this.selEnvFactor.getValue();
+	}
 
 	public void setSelEnvFactor(final Select selEnvFactor) {
 		this.selEnvFactor = selEnvFactor;
@@ -465,31 +471,41 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		return this.selReplicates;
 	}
 
-	public String getSelReplicatesValue() { return (String) this.selReplicates.getValue(); }
+	public String getSelReplicatesValue() {
+		return (String) this.selReplicates.getValue();
+	}
 
 	public Select getSelBlocks() {
 		return this.selBlocks;
 	}
 
-	public String getSelBlocksValue() { return (String) this.selBlocks.getValue(); }
+	public String getSelBlocksValue() {
+		return (String) this.selBlocks.getValue();
+	}
 
 	public Select getSelRowFactor() {
 		return this.selRowFactor;
 	}
 
-	public String getSelRowFactorValue() { return (String) this.selRowFactor.getValue(); }
+	public String getSelRowFactorValue() {
+		return (String) this.selRowFactor.getValue();
+	}
 
 	public Select getSelColumnFactor() {
 		return this.selColumnFactor;
 	}
 
-	public String getSelColumnFactorValue() { return (String) this.selColumnFactor.getValue(); }
+	public String getSelColumnFactorValue() {
+		return (String) this.selColumnFactor.getValue();
+	}
 
 	public Select getSelGenotypes() {
 		return this.selGenotypes;
 	}
 
-	public String getSelGenotypesValue() { return (String) this.selGenotypes.getValue(); }
+	public String getSelGenotypesValue() {
+		return (String) this.selGenotypes.getValue();
+	}
 
 	public void setStudyDataManager(final StudyDataManager studyDataManager) {
 		this.studyDataManager = studyDataManager;
@@ -1287,7 +1303,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.getDesignDetailsContainer().removeAllComponents();
 
 		// Add visible components for Randomized Block Design
-		GridLayout gLayout = createGridLayout(2, 3);
+		final GridLayout gLayout = this.createGridLayout(2, 3);
 		gLayout.addComponent(this.getLblReplicates(), 0, 0);
 		gLayout.addComponent(this.getSelReplicates(), 1, 0);
 		gLayout.addComponent(this.getLblSpecifyGenotypesHeader(), 0, 1, 1, 1);
@@ -1303,7 +1319,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 		this.getDesignDetailsContainer().removeAllComponents();
 
-		final GridLayout gLayout =  this.createGridLayout(2, 4);
+		final GridLayout gLayout = this.createGridLayout(2, 4);
 
 		// Add visible components for Incomplete Block Design
 		gLayout.addComponent(this.getLblReplicates(), 0, 0);
@@ -1321,10 +1337,9 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	public void displayRowColumnDesignElements() {
 
-
 		this.getDesignDetailsContainer().removeAllComponents();
 
-		GridLayout gLayout = createGridLayout(2, 5);
+		final GridLayout gLayout = this.createGridLayout(2, 5);
 
 		// Add visible components for Row-and-column Design
 		gLayout.addComponent(this.getLblReplicates(), 0, 0);
@@ -1348,7 +1363,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 		this.getDesignDetailsContainer().removeAllComponents();
 
-		final GridLayout gLayout =  this.createGridLayout(2, 5);
+		final GridLayout gLayout = this.createGridLayout(2, 5);
 
 		// Add visible components for P-rep Design
 		gLayout.addComponent(this.getLblBlocks(), 0, 0);
@@ -1370,7 +1385,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	}
 
-	void changeRowAndColumnLabelsBasedOnDesignType(DesignType designType) {
+	void changeRowAndColumnLabelsBasedOnDesignType(final DesignType designType) {
 
 		if (designType == DesignType.P_REP_DESIGN) {
 			// When the design type is P-rep, the row and column factors are optional. So we
@@ -1382,15 +1397,17 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 			// For Row and Column Design, row and column factors are all required so their text labels should have a
 			// red asterisk (*)
-			this.getLblSpecifyRowFactor().setValue(this.messageSource.getMessage(Message.BV_SPECIFY_ROW_FACTOR) + REQUIRED_FIELD_INDICATOR);
-			this.getLblSpecifyColumnFactor().setValue(this.messageSource.getMessage(Message.BV_SPECIFY_COLUMN_FACTOR) + REQUIRED_FIELD_INDICATOR);
+			this.getLblSpecifyRowFactor().setValue(
+					this.messageSource.getMessage(Message.BV_SPECIFY_ROW_FACTOR) + SingleSiteAnalysisDetailsPanel.REQUIRED_FIELD_INDICATOR);
+			this.getLblSpecifyColumnFactor().setValue(
+					this.messageSource.getMessage(Message.BV_SPECIFY_COLUMN_FACTOR)
+							+ SingleSiteAnalysisDetailsPanel.REQUIRED_FIELD_INDICATOR);
 
 		}
 
-
 	}
 
-	void substituteMissingReplicatesWithBlocks(){
+	void substituteMissingReplicatesWithBlocks() {
 
 		/**
 		 * If a trial doesn't have a replicates factor, this will use the block factor as a substitute for replicates factor.
@@ -1408,7 +1425,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	}
 
-	private GridLayout createGridLayout(int col, int row){
+	private GridLayout createGridLayout(final int col, final int row) {
 
 		final GridLayout gLayout = new GridLayout(col, row);
 		gLayout.setColumnExpandRatio(0, 0);

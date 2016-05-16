@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * 
  * Generation Challenge Programme (GCP)
- *
- *
+ * 
+ * 
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
+ * 
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.actions;
@@ -66,9 +66,9 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Window;
 
 /**
- *
+ * 
  * @author Jeffrey Morales
- *
+ * 
  */
 @Configurable
 public class RunSingleSiteAction implements ClickListener {
@@ -100,11 +100,11 @@ public class RunSingleSiteAction implements ClickListener {
 
 	@Autowired
 	private StudyDataManager studyDataManager;
-	
+
 	@Autowired
 	private OntologyService ontologyService;
-	
-	public RunSingleSiteAction(SingleSiteAnalysisDetailsPanel selectDetailsForBreedingViewWindow, Project project) {
+
+	public RunSingleSiteAction(final SingleSiteAnalysisDetailsPanel selectDetailsForBreedingViewWindow, final Project project) {
 		this.source = selectDetailsForBreedingViewWindow;
 		this.project = project;
 	}
@@ -112,12 +112,12 @@ public class RunSingleSiteAction implements ClickListener {
 	@Override
 	public void buttonClick(final ClickEvent event) {
 
-		Window window = event.getComponent().getWindow();
-		BreedingViewInput breedingViewInput = this.source.getBreedingViewInput();
+		final Window window = event.getComponent().getWindow();
+		final BreedingViewInput breedingViewInput = this.source.getBreedingViewInput();
 
 		breedingViewInput.setSelectedEnvironments(this.source.getSelectedEnvironments());
 
-		if (this.validateDesignInput(window, breedingViewInput)){
+		if (this.validateDesignInput(window, breedingViewInput)) {
 
 			this.populateBreedingViewInputFromUserInput(breedingViewInput);
 
@@ -127,8 +127,8 @@ public class RunSingleSiteAction implements ClickListener {
 
 			if (Boolean.parseBoolean(this.isServerApp)) {
 
-				String outputFilename = breedingViewInput.getDatasetSource() + ".zip";
-				List<String> filenameList = new ArrayList<>();
+				final String outputFilename = breedingViewInput.getDatasetSource() + ".zip";
+				final List<String> filenameList = new ArrayList<>();
 				filenameList.add(breedingViewInput.getDestXMLFilePath());
 				filenameList.add(breedingViewInput.getSourceXLSFilePath());
 
@@ -147,25 +147,25 @@ public class RunSingleSiteAction implements ClickListener {
 
 	/**
 	 * Generates the CSV input file to be used in Breeding View application.
-	 *
+	 * 
 	 * @param breedingViewInput
-     */
-	void exportData(BreedingViewInput breedingViewInput) {
+	 */
+	void exportData(final BreedingViewInput breedingViewInput) {
 
-		DatasetExporter datasetExporter =
-				new DatasetExporter(studyDataManager, ontologyService, null, breedingViewInput.getDatasetId());
+		final DatasetExporter datasetExporter =
+				new DatasetExporter(this.studyDataManager, this.ontologyService, null, breedingViewInput.getDatasetId());
 
 		try {
 
-			List<String> selectedEnvironments = new ArrayList<String>();
-			for (SeaEnvironmentModel m : breedingViewInput.getSelectedEnvironments()) {
+			final List<String> selectedEnvironments = new ArrayList<String>();
+			for (final SeaEnvironmentModel m : breedingViewInput.getSelectedEnvironments()) {
 				selectedEnvironments.add(m.getTrialno());
 			}
 
 			datasetExporter.exportToCSVForBreedingView(breedingViewInput.getSourceXLSFilePath(), (String) this.source.getSelEnvFactor()
 					.getValue(), selectedEnvironments, breedingViewInput);
 
-		} catch (DatasetExporterException e) {
+		} catch (final DatasetExporterException e) {
 			RunSingleSiteAction.LOG.error(RunSingleSiteAction.ERROR, e);
 		}
 
@@ -173,9 +173,10 @@ public class RunSingleSiteAction implements ClickListener {
 
 	/**
 	 * Populate the necessary data in BreedingViewInput that will be used to build the XML Input for Breeding View
+	 * 
 	 * @param breedingViewInput
-     */
-	void populateBreedingViewInputFromUserInput(BreedingViewInput breedingViewInput) {
+	 */
+	void populateBreedingViewInputFromUserInput(final BreedingViewInput breedingViewInput) {
 
 		breedingViewInput.setBreedingViewAnalysisName(this.source.getTxtAnalysisNameValue());
 
@@ -197,16 +198,15 @@ public class RunSingleSiteAction implements ClickListener {
 
 	}
 
-	Environment createEnvironment(String environmentFactor) {
+	Environment createEnvironment(final String environmentFactor) {
 
-		Environment environment = new Environment();
+		final Environment environment = new Environment();
 		environment.setName(environmentFactor.trim());
 		return environment;
 
 	}
 
-	Replicates createReplicates(String designType, String replicatesFactor) {
-
+	Replicates createReplicates(final String designType, final String replicatesFactor) {
 
 		if (designType.equals(DesignType.P_REP_DESIGN.getName())) {
 
@@ -214,41 +214,40 @@ public class RunSingleSiteAction implements ClickListener {
 			return null;
 
 		} else if (!StringUtils.isNullOrEmpty(replicatesFactor)) {
-			Replicates reps = new Replicates();
+			final Replicates reps = new Replicates();
 			reps.setName(replicatesFactor.trim());
 			return reps;
 		} else {
 
 			// We need the replicates factor in performing analysis. If it is not available in a study,
 			// blocks factor can be used as as substitute. But if both replicates factor and blocks factor are not available,
-			// the system wouldn't be able to run the analysis. When this happens we should create a dummy replicates factor (in xml and csv input)
+			// the system wouldn't be able to run the analysis. When this happens we should create a dummy replicates factor (in xml and csv
+			// input)
 			// so that the system can still proceed with analysis.
 
-			Replicates reps = new Replicates();
+			final Replicates reps = new Replicates();
 			reps.setName(DatasetExporter.DUMMY_REPLICATES);
 			return reps;
 		}
 
-
 	}
 
+	Rows createRows(final String rowFactor) {
 
-	Rows createRows(String rowFactor) {
-
-		if (!StringUtils.isNullOrEmpty(rowFactor)){
-			Rows rows = new Rows();
+		if (!StringUtils.isNullOrEmpty(rowFactor)) {
+			final Rows rows = new Rows();
 			rows.setName(rowFactor.trim());
 			return rows;
-		}else{
+		} else {
 			return null;
 		}
 
 	}
 
-	Columns createColumns(String columnFactor) {
+	Columns createColumns(final String columnFactor) {
 
-		if (!StringUtils.isNullOrEmpty(columnFactor)){
-			Columns columns = new Columns();
+		if (!StringUtils.isNullOrEmpty(columnFactor)) {
+			final Columns columns = new Columns();
 			columns.setName(columnFactor.trim());
 			return columns;
 		} else {
@@ -257,20 +256,19 @@ public class RunSingleSiteAction implements ClickListener {
 
 	}
 
-	Blocks createBlocks(String blocksFactor) {
+	Blocks createBlocks(final String blocksFactor) {
 
-		if (!StringUtils.isNullOrEmpty(blocksFactor)){
-			Blocks blocks = new Blocks();
+		if (!StringUtils.isNullOrEmpty(blocksFactor)) {
+			final Blocks blocks = new Blocks();
 			blocks.setName(blocksFactor.trim());
 			return blocks;
 		} else {
 			return null;
 		}
 
-
 	}
 
-	String resolveDesignType(String designType) {
+	String resolveDesignType(final String designType) {
 
 		if (designType.equals(DesignType.INCOMPLETE_BLOCK_DESIGN.getName())) {
 			return DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName();
@@ -282,21 +280,16 @@ public class RunSingleSiteAction implements ClickListener {
 
 	}
 
+	Plot createPlot(final int datasetId) {
 
-	Plot createPlot(int datasetId) {
-
-		String plotNoFactor =
-				studyDataManager
-						.getLocalNameByStandardVariableId(datasetId, TermId.PLOT_NO.getId());
+		String plotNoFactor = this.studyDataManager.getLocalNameByStandardVariableId(datasetId, TermId.PLOT_NO.getId());
 
 		if (Strings.isNullOrEmpty(plotNoFactor)) {
-			plotNoFactor =
-					studyDataManager
-							.getLocalNameByStandardVariableId(datasetId, TermId.PLOT_NNO.getId());
+			plotNoFactor = this.studyDataManager.getLocalNameByStandardVariableId(datasetId, TermId.PLOT_NNO.getId());
 		}
 
 		if (!Strings.isNullOrEmpty(plotNoFactor)) {
-			Plot plot = new Plot();
+			final Plot plot = new Plot();
 			plot.setName(plotNoFactor);
 			return plot;
 		} else {
@@ -305,13 +298,11 @@ public class RunSingleSiteAction implements ClickListener {
 
 	}
 
+	Genotypes createGenotypes(final int datasetId, final String genotypesFactor) {
 
-	Genotypes createGenotypes(int datasetId, String genotypesFactor) {
+		final String entryNoFactor = this.studyDataManager.getLocalNameByStandardVariableId(datasetId, TermId.ENTRY_NO.getId());
 
-		String entryNoFactor = studyDataManager
-						.getLocalNameByStandardVariableId(datasetId, TermId.ENTRY_NO.getId());
-
-		Genotypes genotypes = new Genotypes();
+		final Genotypes genotypes = new Genotypes();
 		genotypes.setName(genotypesFactor.trim());
 		genotypes.setEntry(entryNoFactor);
 
@@ -320,22 +311,22 @@ public class RunSingleSiteAction implements ClickListener {
 	}
 
 	/**
-	 * Validates the user input from Single-Site Analysis' Design Details form
-	 * Returns true if the all inputs are valid, otherwise false.
+	 * Validates the user input from Single-Site Analysis' Design Details form Returns true if the all inputs are valid, otherwise false.
+	 * 
 	 * @param window
 	 * @param breedingViewInput
-     * @return
-     */
-	boolean validateDesignInput(final Window window, BreedingViewInput breedingViewInput) {
+	 * @return
+	 */
+	boolean validateDesignInput(final Window window, final BreedingViewInput breedingViewInput) {
 
-		String analysisProjectName = this.source.getTxtAnalysisNameValue();
-		String environmentFactor = this.source.getSelEnvFactorValue();
-		String designType = this.source.getSelDesignTypeValue();
-		String replicatesFactor = this.source.getSelReplicatesValue();
-		String blocksFactor = this.source.getSelBlocksValue();
-		String columnFactor = this.source.getSelColumnFactorValue();
-		String rowFactor = this.source.getSelRowFactorValue();
-		String genotypeFactor = this.source.getSelGenotypesValue();
+		final String analysisProjectName = this.source.getTxtAnalysisNameValue();
+		final String environmentFactor = this.source.getSelEnvFactorValue();
+		final String designType = this.source.getSelDesignTypeValue();
+		final String replicatesFactor = this.source.getSelReplicatesValue();
+		final String blocksFactor = this.source.getSelBlocksValue();
+		final String columnFactor = this.source.getSelColumnFactorValue();
+		final String rowFactor = this.source.getSelRowFactorValue();
+		final String genotypeFactor = this.source.getSelGenotypesValue();
 
 		if (StringUtils.isNullOrEmpty(analysisProjectName)) {
 			this.showErrorMessage(window, "Please enter an Analysis Name.", "");
@@ -343,12 +334,12 @@ public class RunSingleSiteAction implements ClickListener {
 		}
 
 		if (StringUtils.isNullOrEmpty(environmentFactor)) {
-			this.showErrorMessage(window, messageSource.getMessage(Message.SSA_SELECT_ENVIRONMENT_FACTOR_WARNING), "");
+			this.showErrorMessage(window, this.messageSource.getMessage(Message.SSA_SELECT_ENVIRONMENT_FACTOR_WARNING), "");
 			return false;
 		}
 
 		if (breedingViewInput.getSelectedEnvironments().isEmpty()) {
-			this.showErrorMessage(window, messageSource.getMessage(Message.SSA_SELECT_ENVIRONMENT_FACTOR_WARNING), "");
+			this.showErrorMessage(window, this.messageSource.getMessage(Message.SSA_SELECT_ENVIRONMENT_FACTOR_WARNING), "");
 			return false;
 		}
 
@@ -357,12 +348,14 @@ public class RunSingleSiteAction implements ClickListener {
 			return false;
 		}
 
-		if (StringUtils.isNullOrEmpty(replicatesFactor) && designType.equals(DesignType.RANDOMIZED_BLOCK_DESIGN.getName()) && this.source.getSelReplicates().isEnabled()) {
+		if (StringUtils.isNullOrEmpty(replicatesFactor) && designType.equals(DesignType.RANDOMIZED_BLOCK_DESIGN.getName())
+				&& this.source.getSelReplicates().isEnabled()) {
 			this.showErrorMessage(window, "Please specify replicates factor.", "");
 			return false;
 		}
 
-		if (StringUtils.isNullOrEmpty(blocksFactor) && (designType.equals(DesignType.INCOMPLETE_BLOCK_DESIGN.getName()) || designType.equals(DesignType.P_REP_DESIGN.getName()))) {
+		if (StringUtils.isNullOrEmpty(blocksFactor)
+				&& (designType.equals(DesignType.INCOMPLETE_BLOCK_DESIGN.getName()) || designType.equals(DesignType.P_REP_DESIGN.getName()))) {
 			this.showErrorMessage(window, "Please specify incomplete block factor.", "");
 			return false;
 		}
@@ -385,12 +378,11 @@ public class RunSingleSiteAction implements ClickListener {
 		return true;
 	}
 
-	public void showErrorMessage(Window window, String title, String description) {
+	public void showErrorMessage(final Window window, final String title, final String description) {
 		MessageNotifier.showError(window, title, description);
 	}
 
-
-	void writeProjectXML(Window window, BreedingViewInput breedingViewInput) {
+	void writeProjectXML(final Window window, final BreedingViewInput breedingViewInput) {
 
 		BreedingViewXMLWriter breedingViewXMLWriter;
 
@@ -399,7 +391,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 		try {
 			breedingViewXMLWriter.writeProjectXML();
-		} catch (BreedingViewXMLWriterException e) {
+		} catch (final BreedingViewXMLWriterException e) {
 			RunSingleSiteAction.LOG.debug("Cannot write Breeding View input XML", e);
 
 			this.showErrorMessage(window, e.getMessage(), "");
@@ -407,25 +399,26 @@ public class RunSingleSiteAction implements ClickListener {
 
 	}
 
-	private void launchBV(ClickEvent event) {
+	private void launchBV(final ClickEvent event) {
 
-		BreedingViewInput breedingViewInput = this.source.getBreedingViewInput();
+		final BreedingViewInput breedingViewInput = this.source.getBreedingViewInput();
 
 		try {
 			// when launching BreedingView, update the web service tool first
-			Tool webServiceTool = new Tool();
+			final Tool webServiceTool = new Tool();
 			webServiceTool.setToolName("ibpwebservice");
 			webServiceTool.setPath(this.bvWebUrl);
 			webServiceTool.setToolType(ToolType.WEB);
 			this.updateToolConfiguration(event.getButton().getWindow(), webServiceTool);
 
 			// launch breeding view
-			File absoluteToolFile = new File(this.source.getTool().getPath()).getAbsoluteFile();
+			final File absoluteToolFile = new File(this.source.getTool().getPath()).getAbsoluteFile();
 
-			ProcessBuilder pb = new ProcessBuilder(absoluteToolFile.getAbsolutePath(), "-project=", breedingViewInput.getDestXMLFilePath());
+			final ProcessBuilder pb =
+					new ProcessBuilder(absoluteToolFile.getAbsolutePath(), "-project=", breedingViewInput.getDestXMLFilePath());
 			pb.start();
 
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			RunSingleSiteAction.LOG.debug("Cannot write Breeding View input XML", e);
 
 			this.showErrorMessage(event.getComponent().getWindow(), e.getMessage(), "");
@@ -433,23 +426,23 @@ public class RunSingleSiteAction implements ClickListener {
 
 	}
 
-	private boolean updateToolConfiguration(Window window, Tool tool) {
-		Project currentProject = this.project;
+	private boolean updateToolConfiguration(final Window window, final Tool tool) {
+		final Project currentProject = this.project;
 
-		String url = tool.getPath();
+		final String url = tool.getPath();
 
 		// update the configuration of the tool
 		boolean changedConfig = false;
 		try {
 			changedConfig = this.toolUtil.updateToolConfigurationForProject(tool, currentProject);
-		} catch (ConfigurationChangeException e1) {
+		} catch (final ConfigurationChangeException e1) {
 			RunSingleSiteAction.LOG.error(RunSingleSiteAction.ERROR, e1);
 			this.showErrorMessage(window, "Cannot update configuration for tool: " + tool.getToolName(),
 					"<br />" + this.messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
 			return false;
 		}
 
-		boolean webTool = Util.isOneOf(tool.getToolType(), ToolType.WEB_WITH_LOGIN, ToolType.WEB);
+		final boolean webTool = Util.isOneOf(tool.getToolType(), ToolType.WEB_WITH_LOGIN, ToolType.WEB);
 
 		WebAppStatusInfo statusInfo = null;
 		String contextPath = null;
@@ -461,7 +454,7 @@ public class RunSingleSiteAction implements ClickListener {
 				localWarPath = TomcatUtil.getLocalWarPathFromUrl(url);
 
 			}
-		} catch (Exception e1) {
+		} catch (final Exception e1) {
 			RunSingleSiteAction.LOG.error(RunSingleSiteAction.ERROR, e1);
 			this.showErrorMessage(window, "Cannot get webapp status.",
 					"<br />" + this.messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
@@ -470,8 +463,8 @@ public class RunSingleSiteAction implements ClickListener {
 
 		if (webTool) {
 			try {
-				boolean deployed = statusInfo.isDeployed(contextPath);
-				boolean running = statusInfo.isRunning(contextPath);
+				final boolean deployed = statusInfo.isDeployed(contextPath);
+				final boolean running = statusInfo.isRunning(contextPath);
 
 				if (changedConfig || !running) {
 					if (!deployed) {
@@ -485,7 +478,7 @@ public class RunSingleSiteAction implements ClickListener {
 						this.tomcatUtil.startWebApp(contextPath);
 					}
 				}
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				RunSingleSiteAction.LOG.error(RunSingleSiteAction.ERROR, e);
 				this.showErrorMessage(window, "Cannot load tool: " + tool.getToolName(),
 						"<br />" + this.messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
@@ -496,9 +489,9 @@ public class RunSingleSiteAction implements ClickListener {
 		return true;
 	}
 
-	private void downloadInputFile(File file, Application application) {
+	private void downloadInputFile(final File file, final Application application) {
 
-		FileResource fr = new FileResource(file, application) {
+		final FileResource fr = new FileResource(file, application) {
 
 			private static final long serialVersionUID = 765143030552676513L;
 
@@ -512,7 +505,7 @@ public class RunSingleSiteAction implements ClickListener {
 					ds.setCacheTime(this.getCacheTime());
 					return ds;
 
-				} catch (FileNotFoundException e) {
+				} catch (final FileNotFoundException e) {
 					RunSingleSiteAction.LOG.error(e.getMessage(), e);
 					return null;
 				}
@@ -522,15 +515,15 @@ public class RunSingleSiteAction implements ClickListener {
 		application.getMainWindow().open(fr);
 	}
 
-	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+	public void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
 
-	public void setProject(Project project) {
+	public void setProject(final Project project) {
 		this.project = project;
 	}
 
-	public void setSource(SingleSiteAnalysisDetailsPanel source) {
+	public void setSource(final SingleSiteAnalysisDetailsPanel source) {
 		this.source = source;
 	}
 }
