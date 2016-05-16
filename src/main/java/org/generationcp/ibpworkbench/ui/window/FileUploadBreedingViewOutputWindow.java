@@ -20,6 +20,7 @@ import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.UploadBreedingViewOutputAction;
 import org.generationcp.ibpworkbench.ui.common.UploadField;
+import org.generationcp.ibpworkbench.ui.recovery.BackupAndRestoreView;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -216,7 +217,7 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
 		@Override
 		public void validate() {
 			if (!this.isValid()) {
-				throw new Validator.InvalidValueException("NOT_VALID");
+				throw new Validator.InvalidValueException(BackupAndRestoreView.NOT_VALID);
 			}
 		}
 

@@ -1,11 +1,8 @@
 
 package org.generationcp.ibpworkbench.ui.recovery;
 
-import java.io.File;
-
 import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.help.document.HelpModule;
-import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
@@ -16,9 +13,7 @@ import org.generationcp.ibpworkbench.actions.BackupIBDBSaveAction;
 import org.generationcp.ibpworkbench.actions.RestoreIBDBSaveAction;
 import org.generationcp.ibpworkbench.ui.common.UploadField;
 import org.generationcp.ibpworkbench.ui.programmethods.ProgramMethodsView;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.workbench.ProjectBackup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -32,22 +27,23 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
-import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
-
-//TODO Localise messages in this class
 @Configurable
 public class BackupAndRestoreView extends CustomComponent implements InitializingBean {
 
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOG = LoggerFactory.getLogger(ProgramMethodsView.class);
-	public static final String NO_FILE = "NO_FILE";
-	public static final String NO_FILE_SELECTED = "NO_FILE_SELECTED";
+
+	private static final String NO_FILE = "NO_FILE";
+	private static final String NO_FILE_SELECTED = "NO_FILE_SELECTED";
+	public static final String NOT_VALID = "NOT_VALID";
+	private static final String MARGIN_TOP_10 = "marginTop10";
+
 	private Button backupBtn;
 	private UploadField uploadFrm;
 	private Button restoreBtn;
@@ -84,7 +80,7 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 		this.uploadFrm = new UploadField() {
 
 			@Override
-			public void uploadFinished(Upload.FinishedEvent event) {
+			public void uploadFinished(final Upload.FinishedEvent event) {
 				super.uploadFinished(event);
 
 				BackupAndRestoreView.this.restoreBtn.setEnabled(true);
@@ -95,7 +91,7 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 				if (this.getLastFileName() == null) {
 					throw new Validator.InvalidValueException(NO_FILE);
 				} else if (!this.isValid()) {
-					throw new Validator.InvalidValueException("NOT_VALID");
+					throw new Validator.InvalidValueException(NOT_VALID);
 				}
 			}
 
@@ -104,9 +100,9 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 				return this.getLastFileName() != null && this.getExtension(this.getLastFileName()).toLowerCase().contains("sql");
 			}
 
-			private String getExtension(String f) {
+			private String getExtension(final String f) {
 				String ext = null;
-				int i = f.lastIndexOf('.');
+				final int i = f.lastIndexOf('.');
 
 				if (i > 0 && i < f.length() - 1) {
 					ext = f.substring(i + 1).toLowerCase();
@@ -156,7 +152,7 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 				new RestoreIBDBSaveAction(this.sessionData.getLastOpenedProject(), this.getWindow()) {
 
 					@Override
-					public void onClose(ConfirmDialog dialog) {
+					public void onClose(final ConfirmDialog dialog) {
 						super.onClose(dialog);
 					}
 				};
@@ -164,13 +160,13 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 		this.restoreBtn.addListener(new Button.ClickListener() {
 
 			@Override
-			public void buttonClick(Button.ClickEvent clickEvent) {
+			public void buttonClick(final Button.ClickEvent clickEvent) {
 				// validate file upload
 
 				try {
 					BackupAndRestoreView.this.uploadFrm.validate();
 
-				} catch (Validator.InvalidValueException e) {
+				} catch (final Validator.InvalidValueException e) {
 					BackupAndRestoreView.LOG.error(e.getMessage(), e);
 					if (NO_FILE.equals(e.getMessage())) {
 						MessageNotifier.showError(clickEvent.getComponent().getWindow(),
@@ -185,9 +181,9 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 					}
 				}
 
-				String restoreDescMessageFormat = "<b style='color:red'>%s</b><br/><br/>%s";
+				final String restoreDescMessageFormat = "<b style='color:red'>%s</b><br/><br/>%s";
 
-				ConfirmDialog dialog =
+				final ConfirmDialog dialog =
 						ConfirmDialog.show(clickEvent.getComponent().getWindow(), BackupAndRestoreView.this.messageSource
 								.getMessage(Message.RESTORE_IBDB_WINDOW_CAPTION), String.format(restoreDescMessageFormat,
 								BackupAndRestoreView.this.messageSource.getMessage(Message.RESTORE_IBDB_CONFIRM, 
@@ -206,7 +202,7 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 					BackupAndRestoreView.this.restoreBtn.setEnabled(true);
 			}
 		});
@@ -215,21 +211,21 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 	public void initializeLayout() {
 		this.tabSheet.addTab(this.backupPanel);
 		this.tabSheet.getTab(this.backupPanel).setClosable(false);
-		this.tabSheet.getTab(this.backupPanel).setCaption("Backup");
+		this.tabSheet.getTab(this.backupPanel).setCaption(this.messageSource.getMessage("BACKUP_LABEL"));
 
 		this.tabSheet.addTab(this.restorePanel);
 		this.tabSheet.getTab(this.restorePanel).setClosable(false);
-		this.tabSheet.getTab(this.restorePanel).setCaption("Restore");
+		this.tabSheet.getTab(this.restorePanel).setCaption(this.messageSource.getMessage("RESTORE_LABEL"));
 
 		this.backupBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-		this.backupBtn.addStyleName("marginTop10");
+		this.backupBtn.addStyleName(MARGIN_TOP_10);
 
 		this.restoreBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-		this.restoreBtn.addStyleName("marginTop10");
+		this.restoreBtn.addStyleName(MARGIN_TOP_10);
 
 		this.uploadFrm.getRootLayout().setStyleName("bms-upload-container");
 		this.uploadFrm.getRootLayout().setWidth("100%");
-		this.uploadFrm.setButtonCaption("Browse");
+		this.uploadFrm.setButtonCaption(this.messageSource.getMessage("BROWSE"));
 
 		final Label pageTitle = new Label(this.messageSource.getMessage("BACKUP_RESTORE_TITLE"));
 		pageTitle.setStyleName(Bootstrap.Typography.H1.styleName());
@@ -269,18 +265,19 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 		rootContent.addComponent(this.tabSheet);
 	}
 
-	public HorizontalLayout setUpHeadings(HelpModule module, String heading, String width) {
-		HorizontalLayout titleLayout = new HorizontalLayout();
+	private HorizontalLayout setUpHeadings(final HelpModule module, final String heading, final String width) {
+		final HorizontalLayout titleLayout = new HorizontalLayout();
 		titleLayout.setSpacing(true);
 		titleLayout.setHeight("40px");
 
-		Label toolTitle = new Label(heading);
+		final Label toolTitle = new Label(heading);
 		toolTitle.addStyleName(Bootstrap.Typography.H4.styleName());
 		toolTitle.setContentMode(Label.CONTENT_XHTML);
 		toolTitle.setWidth(width);
 
 		titleLayout.addComponent(toolTitle);
-		final HelpButton helpButton = new HelpButton(module, "View " + heading + " Tutorial");
+		final HelpButton helpButton = new HelpButton(module, this.messageSource.getMessage("VIEW") + " " + heading + " " +
+				this.messageSource.getMessage("TUTORIAL"));
 		helpButton.addStyleName("bms-backup-restore-help-icon");
 		titleLayout.addComponent(helpButton);
 
