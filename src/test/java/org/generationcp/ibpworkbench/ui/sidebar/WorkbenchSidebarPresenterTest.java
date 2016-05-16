@@ -25,7 +25,7 @@ public class WorkbenchSidebarPresenterTest {
 	public static void setUpClass() throws MiddlewareQueryException {
 		WorkbenchSidebarPresenterTest.manager = Mockito.mock(WorkbenchDataManager.class);
 		WorkbenchSidebarPresenterTest.adminCategory = new WorkbenchSidebarCategory("admin", "Program Administration");
-		WorkbenchSidebarPresenterTest.workbenchSidebarPresenter = new WorkbenchSidebarPresenter(null);
+		WorkbenchSidebarPresenterTest.workbenchSidebarPresenter = new WorkbenchSidebarPresenter();
 		WorkbenchSidebarPresenterTest.workbenchSidebarPresenter.setManager(WorkbenchSidebarPresenterTest.manager);
 		Mockito.doReturn(WorkbenchSidebarPresenterTest.createDataImportTool()).when(WorkbenchSidebarPresenterTest.manager)
 				.getToolWithName(ToolEnum.DATASET_IMPORTER.getToolName());
@@ -39,11 +39,11 @@ public class WorkbenchSidebarPresenterTest {
 	public void testAddAdminCategoryLinks() throws MiddlewareQueryException {
 		// default with no backup and restore
 		WorkbenchSidebarPresenterTest.workbenchSidebarPresenter.setIsBackupAndRestoreEnabled("false");
-		List<WorkbenchSidebarCategoryLink> categoryLinks = new ArrayList<WorkbenchSidebarCategoryLink>();
+		final List<WorkbenchSidebarCategoryLink> categoryLinks = new ArrayList<>();
 
 		WorkbenchSidebarPresenterTest.workbenchSidebarPresenter.addAdminCategoryLinks(categoryLinks,
 				WorkbenchSidebarPresenterTest.adminCategory);
-		for (WorkbenchSidebarCategoryLink workbenchSidebarCategoryLink : categoryLinks) {
+		for (final WorkbenchSidebarCategoryLink workbenchSidebarCategoryLink : categoryLinks) {
 			Assert.assertFalse("recovery".equals(workbenchSidebarCategoryLink.getSidebarLinkName()));
 		}
 	}
@@ -52,11 +52,11 @@ public class WorkbenchSidebarPresenterTest {
 	public void testAddAdminCategoryLinks_WithBackAndRestore() throws MiddlewareQueryException {
 		// default with no backup and restore
 		WorkbenchSidebarPresenterTest.workbenchSidebarPresenter.setIsBackupAndRestoreEnabled("true");
-		List<WorkbenchSidebarCategoryLink> categoryLinks = new ArrayList<WorkbenchSidebarCategoryLink>();
-		WorkbenchSidebarCategory adminCategory = new WorkbenchSidebarCategory("admin", "Program Administration");
+		final List<WorkbenchSidebarCategoryLink> categoryLinks = new ArrayList<>();
+		final WorkbenchSidebarCategory adminCategory = new WorkbenchSidebarCategory("admin", "Program Administration");
 		WorkbenchSidebarPresenterTest.workbenchSidebarPresenter.addAdminCategoryLinks(categoryLinks, adminCategory);
 		boolean hasBackupAndRestore = false;
-		for (WorkbenchSidebarCategoryLink workbenchSidebarCategoryLink : categoryLinks) {
+		for (final WorkbenchSidebarCategoryLink workbenchSidebarCategoryLink : categoryLinks) {
 			if ("recovery".equals(workbenchSidebarCategoryLink.getSidebarLinkName())) {
 				hasBackupAndRestore = true;
 			}
