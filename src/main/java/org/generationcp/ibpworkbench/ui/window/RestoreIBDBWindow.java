@@ -1,11 +1,9 @@
 
 package org.generationcp.ibpworkbench.ui.window;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
-import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -16,17 +14,13 @@ import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.RestoreIBDBSaveAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectBackup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -34,7 +28,6 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Table;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
@@ -48,8 +41,6 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 
 	private final Project project;
 
-	// Components
-	private ComponentContainer rootLayout;
 	private Button cancelBtn;
 	private Button saveBtn;
 
@@ -65,11 +56,9 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 	@Autowired
 	private SessionData sessionData;
 
-	private List<Project> projects;
-
 	private Upload upload;
 
-	public RestoreIBDBWindow(Project project) {
+	public RestoreIBDBWindow(final Project project) {
 		this.project = project;
 	}
 
@@ -82,56 +71,54 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 	}
 
 	protected void initializeData() {
-		User currentUser = this.sessionData.getUserData();
-
 		try {
-			this.projects = this.workbenchDataManager.getProjectsByUser(currentUser);
+			final List<Project> projects = this.workbenchDataManager.getProjectsByUser(this.sessionData.getUserData());
 
 			// set the Project Table data source
-			BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);
+			final BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);
 			projectContainer.setBeanIdProperty("projectName");
-			for (Project project : this.projects) {
+			for (final Project project : projects) {
 				projectContainer.addBean(project);
 			}
 
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			RestoreIBDBWindow.LOG.error("Exception", e);
 			throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
 		}
 	}
 
 	protected void initializeComponents() {
-		this.saveBtn = new Button("Restore");
+		this.saveBtn = new Button(this.messageSource.getMessage("RESTORE_LABEL"));
 		this.saveBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 		this.saveBtn.setSizeUndefined();
 
-		this.cancelBtn = new Button("Cancel");
+		this.cancelBtn = new Button(this.messageSource.getMessage("CANCEL"));
 		this.cancelBtn.setSizeUndefined();
 
-		this.upload = new Upload("Or upload an IB local backup file here:", null);
+		this.upload = new Upload(this.messageSource.getMessage("RESTORE_BMS_UPLOAD"), null);
 	}
 
 	protected void initializeLayout() {
 		this.addStyleName(Reindeer.WINDOW_LIGHT);
 
-		this.setCaption("Restore IB Database");
+		this.setCaption(this.messageSource.getMessage("RESTORE_IB_DB"));
 		this.setWidth(RestoreIBDBWindow.WINDOW_WIDTH);
 		this.setHeight(RestoreIBDBWindow.WINDOW_HEIGHT);
 		this.setResizable(false);
 		this.setModal(true);
 
-		this.rootLayout = this.getContent();
+		final ComponentContainer rootLayout = this.getContent();
 
-		this.rootLayout.addComponent(new Label(this.messageSource.getMessage(Message.RESTORE_IBDB_TABLE_SELECT_CAPTION)));
+		rootLayout.addComponent(new Label(this.messageSource.getMessage(Message.RESTORE_IBDB_TABLE_SELECT_CAPTION)));
 
 		// bind components to layout
 
-		HorizontalLayout hl = new HorizontalLayout();
+		final HorizontalLayout hl = new HorizontalLayout();
 		hl.setWidth("100%");
 		hl.setSpacing(true);
 		hl.setMargin(true);
 
-		Label spacer = new Label("&nbsp;", Label.CONTENT_XHTML);
+		final Label spacer = new Label("&nbsp;", Label.CONTENT_XHTML);
 		spacer.setWidth("100%");
 
 		hl.addComponent(spacer);
@@ -142,10 +129,10 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 		hl.setComponentAlignment(this.cancelBtn, Alignment.MIDDLE_RIGHT);
 		hl.setExpandRatio(spacer, 1.0f);
 
-		this.rootLayout.addComponent(hl);
+		rootLayout.addComponent(hl);
 
 		// add upload
-		this.rootLayout.addComponent(this.upload);
+		rootLayout.addComponent(this.upload);
 
 	}
 
@@ -155,27 +142,19 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 
 		// DO button listeners + actions here
 		this.cancelBtn.addListener(new Button.ClickListener() {
-
-			/**
-			 *
-			 */
 			private static final long serialVersionUID = 3986272934965189089L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 				event.getButton().getWindow().getParent().removeWindow(event.getButton().getWindow());
 			}
 		});
 
 		this.saveBtn.addListener(new Button.ClickListener() {
-
-			/**
-			 *
-			 */
 			private static final long serialVersionUID = 2139337955546100675L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 				final Window sourceWindow = event.getButton().getWindow();
 
 				ConfirmDialog.show(sourceWindow.getParent(),
