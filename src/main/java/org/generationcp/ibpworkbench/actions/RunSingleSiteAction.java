@@ -184,7 +184,8 @@ public class RunSingleSiteAction implements ClickListener {
 
 		breedingViewInput.setReplicates(this.createReplicates(this.source.getSelDesignTypeValue(), this.source.getSelReplicatesValue()));
 
-		breedingViewInput.setDesignType(DesignType.fromString(this.source.getSelDesignTypeValue()).resolveDesignTypeNameForBreedingView());
+		DesignType designType = DesignType.getDesignTypeByName(this.source.getSelDesignTypeValue());
+		breedingViewInput.setDesignType(designType.resolveDesignTypeNameForBreedingView());
 
 		breedingViewInput.setBlocks(this.createBlocks(this.source.getSelBlocksValue()));
 
