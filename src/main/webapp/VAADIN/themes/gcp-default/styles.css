@@ -374,3 +374,7 @@ img[src$="leaf_16.png"] {
     left: -10px;
     top: -10px;
 }
+
+.bms-label-bottom-space {
+	padding-bottom: 18px;
+}

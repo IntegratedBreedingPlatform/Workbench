@@ -43,6 +43,7 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 	private static final String NO_FILE_SELECTED = "NO_FILE_SELECTED";
 	public static final String NOT_VALID = "NOT_VALID";
 	private static final String MARGIN_TOP_10 = "marginTop10";
+	public static final String BMS_LABEL_BOTTOM_SPACE_STYLE = "bms-label-bottom-space";
 
 	private Button backupBtn;
 	private UploadField uploadFrm;
@@ -223,9 +224,10 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 		this.restoreBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 		this.restoreBtn.addStyleName(MARGIN_TOP_10);
 
-		this.uploadFrm.getRootLayout().setStyleName("bms-upload-container");
+		this.uploadFrm.getRootLayout().addStyleName("bms-upload-container");
 		this.uploadFrm.getRootLayout().setWidth("100%");
 		this.uploadFrm.setButtonCaption(this.messageSource.getMessage("BROWSE"));
+		this.uploadFrm.addStyleName(BMS_LABEL_BOTTOM_SPACE_STYLE);
 
 		final Label pageTitle = new Label(this.messageSource.getMessage("BACKUP_RESTORE_TITLE"));
 		pageTitle.setStyleName(Bootstrap.Typography.H1.styleName());
@@ -250,14 +252,18 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 		this.backupPanel.addComponent(new Label("<div style='height: 10px'></div>", Label.CONTENT_XHTML));
 		this.backupPanel.addComponent(this.setUpHeadings(HelpModule.BACKUP_PROGRAM_DATA, this.messageSource.getMessage("BACKUP_BMS_TITLE"),
 				"124px"));
-		this.backupPanel.addComponent(new Label(this.messageSource.getMessage("BACKUP_BMS_DESCRIPTION", this.sessionData.getLastOpenedProject()
-				.getProjectName()), Label.CONTENT_XHTML));
+		final Label backupTextLabel = new Label(this.messageSource.getMessage("BACKUP_BMS_DESCRIPTION", this.sessionData.getLastOpenedProject()
+				.getProjectName()));
+		backupTextLabel.addStyleName(BMS_LABEL_BOTTOM_SPACE_STYLE);
+		this.backupPanel.addComponent(backupTextLabel);
 		this.backupPanel.addComponent(this.backupBtn);
 
 		this.restorePanel.addComponent(new Label("<div style='height: 20px'></div>", Label.CONTENT_XHTML));
 		this.restorePanel.addComponent(this.setUpHeadings(HelpModule.RESTORE_PROGRAM_DATA, this.messageSource.getMessage("RESTORE_BMS_TITLE"),
 				"228px"));
-		this.restorePanel.addComponent(new Label(this.messageSource.getMessage("RESTORE_BMS_DESCRIPTION")));
+		final Label restoreDescriptionLabel = new Label(this.messageSource.getMessage("RESTORE_BMS_DESCRIPTION"));
+		restoreDescriptionLabel.addStyleName(BMS_LABEL_BOTTOM_SPACE_STYLE);
+		this.restorePanel.addComponent(restoreDescriptionLabel);
 		this.restorePanel.addComponent(restoreUploadTitle);
 		this.restorePanel.addComponent(this.uploadFrm);
 		this.restorePanel.addComponent(this.restoreBtn);
