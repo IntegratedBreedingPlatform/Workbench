@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.util.ObjectUtil;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
@@ -175,8 +176,7 @@ public class DatasetExporter {
 		this.getFactorDetails(dataset);
 		this.getVariateDetails(dataset, breedingViewInput);
 
-		if (breedingViewInput.getReplicates() != null
-				&& DatasetExporter.DUMMY_REPLICATES.equals(breedingViewInput.getReplicates().getName())) {
+		if (!breedingViewInput.getDesignType().equals(DesignType.P_REP_DESIGN.getName()) && DatasetExporter.DUMMY_REPLICATES.equals(breedingViewInput.getReplicates().getName())) {
 			this.columnsMap.put(DatasetExporter.DUMMY_REPLICATES, Integer.valueOf(this.observationSheetColumnIndex));
 			this.observationSheetColumnIndex++;
 		}
@@ -218,7 +218,7 @@ public class DatasetExporter {
 
 			this.processVariates(row, experiment, breedingViewInput, this.ontologyService);
 
-			if (breedingViewInput.getReplicates() != null
+			if (!breedingViewInput.getDesignType().equals(DesignType.P_REP_DESIGN.getName())
 					&& breedingViewInput.getReplicates().getName().equals(DatasetExporter.DUMMY_REPLICATES)) {
 				row.add("1");
 			}

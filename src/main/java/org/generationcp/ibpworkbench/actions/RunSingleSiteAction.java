@@ -184,7 +184,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 		breedingViewInput.setReplicates(this.createReplicates(this.source.getSelDesignTypeValue(), this.source.getSelReplicatesValue()));
 
-		breedingViewInput.setDesignType(this.resolveDesignType(this.source.getSelDesignTypeValue()));
+		breedingViewInput.setDesignType(DesignType.fromString(this.source.getSelDesignTypeValue()).resolveDesignTypeNameForBreedingView());
 
 		breedingViewInput.setBlocks(this.createBlocks(this.source.getSelBlocksValue()));
 
@@ -264,18 +264,6 @@ public class RunSingleSiteAction implements ClickListener {
 			return blocks;
 		} else {
 			return null;
-		}
-
-	}
-
-	String resolveDesignType(final String designType) {
-
-		if (designType.equals(DesignType.INCOMPLETE_BLOCK_DESIGN.getName())) {
-			return DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName();
-		} else if (designType.equals(DesignType.ROW_COLUMN_DESIGN.getName())) {
-			return DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName();
-		} else {
-			return designType;
 		}
 
 	}

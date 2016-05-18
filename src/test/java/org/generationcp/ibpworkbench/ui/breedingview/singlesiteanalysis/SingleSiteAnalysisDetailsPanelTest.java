@@ -454,6 +454,18 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 	}
 
+	@Test
+	public void testChangeRowAndColumnLabelsBasedOnDesignTypeRowAndOtherDesign(){
+
+		this.dut.initializeComponents();
+
+		dut.changeRowAndColumnLabelsBasedOnDesignType(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN);
+
+		Assert.assertEquals(COLUMN_FACTOR_LABEL, dut.getLblSpecifyColumnFactor().getValue());
+		Assert.assertEquals(ROW_FACTOR_LABEL, dut.getLblSpecifyRowFactor().getValue());
+
+	}
+
 	private List<Component> getComponentsListFromGridLayout() {
 
 		final GridLayout gLayout = (GridLayout) this.dut.getDesignDetailsContainer().getComponentIterator().next();

@@ -1403,6 +1403,11 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 					this.messageSource.getMessage(Message.BV_SPECIFY_COLUMN_FACTOR)
 							+ SingleSiteAnalysisDetailsPanel.REQUIRED_FIELD_INDICATOR);
 
+		} else {
+			// Default labels
+			this.getLblSpecifyRowFactor().setValue(this.messageSource.getMessage(Message.BV_SPECIFY_ROW_FACTOR));
+			this.getLblSpecifyColumnFactor().setValue(this.messageSource.getMessage(Message.BV_SPECIFY_COLUMN_FACTOR));
+
 		}
 
 	}
