@@ -2,6 +2,7 @@
 package org.generationcp.ibpworkbench.util;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.breedingview.xml.Replicates;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.domain.dms.*;
@@ -84,6 +85,8 @@ public class DatasetExporterTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
+
+		Mockito.when(this.bvInput.getDesignType()).thenReturn(DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
 	}
 
 	@Test
