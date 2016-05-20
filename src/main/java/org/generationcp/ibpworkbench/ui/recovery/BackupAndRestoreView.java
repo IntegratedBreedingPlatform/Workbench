@@ -10,6 +10,7 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.BackupIBDBSaveAction;
+import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.RestoreIBDBSaveAction;
 import org.generationcp.ibpworkbench.ui.common.UploadField;
 import org.generationcp.ibpworkbench.ui.programmethods.ProgramMethodsView;
@@ -155,6 +156,8 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 					@Override
 					public void onClose(final ConfirmDialog dialog) {
 						super.onClose(dialog);
+						// go back to dashboard
+						new HomeAction().doAction(BackupAndRestoreView.this.getWindow(), "/Home", true);
 					}
 				};
 
