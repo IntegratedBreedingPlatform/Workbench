@@ -142,29 +142,23 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 		transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 
 			protected void doInTransactionWithoutResult(final TransactionStatus status) {
-				try {
+				// set the last opened project in the session
+				final IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+				final Project project = app.getSessionData().getSelectedProject();
 
-					// set the last opened project in the session
-					final IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-					final Project project = app.getSessionData().getSelectedProject();
-
-					final ProjectUserInfoDAO projectUserInfoDao = WorkbenchSidebarPresenter.this.manager.getProjectUserInfoDao();
-					final ProjectUserInfo projectUserInfo =
-							projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId().intValue(), app.getSessionData()
-									.getUserData().getUserid());
-					if (projectUserInfo != null) {
-						projectUserInfo.setLastOpenDate(new Date());
-						WorkbenchSidebarPresenter.this.manager.saveOrUpdateProjectUserInfo(projectUserInfo);
-					}
-
-					project.setLastOpenDate(new Date());
-					WorkbenchSidebarPresenter.this.manager.mergeProject(project);
-
-					app.getSessionData().setLastOpenedProject(project);
-
-				} catch (final MiddlewareQueryException e) {
-					WorkbenchSidebarPresenter.LOG.error(e.toString(), e);
+				final ProjectUserInfoDAO projectUserInfoDao = WorkbenchSidebarPresenter.this.manager.getProjectUserInfoDao();
+				final ProjectUserInfo projectUserInfo =
+						projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId().intValue(), app.getSessionData()
+								.getUserData().getUserid());
+				if (projectUserInfo != null) {
+					projectUserInfo.setLastOpenDate(new Date());
+					WorkbenchSidebarPresenter.this.manager.saveOrUpdateProjectUserInfo(projectUserInfo);
 				}
+
+				project.setLastOpenDate(new Date());
+				WorkbenchSidebarPresenter.this.manager.mergeProject(project);
+
+				app.getSessionData().setLastOpenedProject(project);
 			}
 		});
 

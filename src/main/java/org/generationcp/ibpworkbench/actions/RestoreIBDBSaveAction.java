@@ -26,7 +26,6 @@ import org.vaadin.easyuploads.FileFactory;
 
 import com.vaadin.ui.Window;
 
-// TODO: internationalize this class
 @Configurable
 public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, InitializingBean, FileFactory {
 
