@@ -85,7 +85,7 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 	};
 
 	public WorkbenchSidebar() {
-		this.presenter = new WorkbenchSidebarPresenter(this);
+		this.presenter = new WorkbenchSidebarPresenter();
 	}
 
 	@Override

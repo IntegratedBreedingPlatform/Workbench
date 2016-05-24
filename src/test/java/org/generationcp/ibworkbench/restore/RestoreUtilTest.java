@@ -30,7 +30,6 @@ import org.generationcp.middleware.manager.WorkbenchDataManagerImpl;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectBackup;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
 import org.generationcp.middleware.util.ResourceFinder;
 import org.junit.After;
@@ -214,7 +213,7 @@ public class RestoreUtilTest {
 
 				ConfirmDialog confirmDialog = new CustomConfirmDialog(true);
 
-				RestoreIBDBSaveAction restoreAction = new RestoreIBDBSaveAction(project, (ProjectBackup) null, new Window());
+				RestoreIBDBSaveAction restoreAction = new RestoreIBDBSaveAction(project, new Window());
 				SessionData sessionData = new SessionData();
 				sessionData.setLastOpenedProject(project);
 				sessionData.setUserData(new User(1));
@@ -222,8 +221,7 @@ public class RestoreUtilTest {
 				restoreAction.setMysqlUtil(this.mySqlUtil);
 				restoreAction.setWorkbenchDataManager(this.workbenchDataManager);
 				restoreAction.setMessageSource(this.messageSource);
-				restoreAction.setFile(new File(fullFilePath));
-				restoreAction.setIsUpload(true);
+				restoreAction.setRestoreFile(new File(fullFilePath));
 				restoreAction.onClose(confirmDialog);
 
 				this.workbenchDataManager.deleteProject(project);
@@ -266,7 +264,7 @@ public class RestoreUtilTest {
 
 				ConfirmDialog confirmDialog = new CustomConfirmDialog(false);
 
-				RestoreIBDBSaveAction restoreAction = new RestoreIBDBSaveAction(project, (ProjectBackup) null, new Window());
+				RestoreIBDBSaveAction restoreAction = new RestoreIBDBSaveAction(project, new Window());
 				restoreAction.onClose(confirmDialog);
 
 				this.workbenchDataManager.deleteProject(project);

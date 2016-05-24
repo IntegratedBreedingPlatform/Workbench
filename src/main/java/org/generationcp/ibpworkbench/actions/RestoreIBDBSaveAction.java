@@ -4,8 +4,6 @@ package org.generationcp.ibpworkbench.actions;
 import java.io.File;
 import java.util.Date;
 import java.util.concurrent.Callable;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.generationcp.commons.util.MySQLUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -14,7 +12,6 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.database.CropDatabaseGenerator;
-import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
@@ -27,25 +24,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.vaadin.easyuploads.FileFactory;
 
-import com.vaadin.data.util.BeanItem;
-import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
 
 @Configurable
 public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, InitializingBean, FileFactory {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 7008891907589673916L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(RestoreIBDBSaveAction.class);
 
-	protected Window sourceWindow;
-	private ProjectBackup pb;
-
-	public static final String BACKUP_FILE_STRING_PATTERN = "ibdbv2_([a-zA-Z]*)_merged_\\d+_\\d+_\\d+_(.*).sql";
-	public static final Pattern BACKUP_FILE_PATTERN = Pattern.compile(RestoreIBDBSaveAction.BACKUP_FILE_STRING_PATTERN);
+	private final Window sourceWindow;
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
@@ -57,89 +45,44 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 	private MySQLUtil mysqlUtil;
 
 	@Autowired
-	private ToolUtil toolUtil;
-
-	@Autowired
 	private SessionData sessionData;
 
 	private final Project project;
 
-	private File file;
+	private File restoreFile;
 
 	private static final String BACKUP_DIR = "temp";
-
-	private boolean isUpload = false;
+	private static final String SQL_FILE_EXTENSION = ".sql";
+	private static final String UNDERSCORE = "_";
 
 	// this would be the indicator if there is an error during the restore process
 	private boolean hasRestoreError = false;
 
-	public RestoreIBDBSaveAction(Project project, Table table, Window sourceWindow) {
-		this.pb = ((BeanItem<ProjectBackup>) table.getItem(table.getValue())).getBean();
-
+	public RestoreIBDBSaveAction(final Project project, final Window sourceWindow) {
 		this.sourceWindow = sourceWindow;
 		this.project = project;
-	}
-
-	public RestoreIBDBSaveAction(Project project, ProjectBackup pb, Window sourceWindow) {
-		this.pb = pb;
-		this.sourceWindow = sourceWindow;
-		this.project = project;
-	}
-
-	public void setProjectBackup(ProjectBackup pb) {
-		this.pb = pb;
-	}
-
-	public void setSourceWindow(Window sourceWindow) {
-		this.sourceWindow = sourceWindow;
 	}
 
 	@Override
-	public void onClose(ConfirmDialog dialog) {
+	public void onClose(final ConfirmDialog dialog) {
 		this.hasRestoreError = false;
-		if (this.pb != null) {
-			RestoreIBDBSaveAction.LOG.debug("selected backup: " + this.pb.getProjectBackupId());
-		}
-
 		if (dialog.isConfirmed()) {
 			RestoreIBDBSaveAction.LOG.debug("onClick > do Restore IBDB");
 
-			File restoreFile = this.file;
-
 			try {
-
-				if (!this.isUpload()) {
-					restoreFile = new File(this.pb.getBackupPath());
-				}
-
-				Matcher matcher = RestoreIBDBSaveAction.BACKUP_FILE_PATTERN.matcher(restoreFile.getName());
-				if (matcher.matches()) {
-					String cropName = matcher.group(1);
-					if (!cropName.equals(this.sessionData.getLastOpenedProject().getCropType().getCropName())) {
-						MessageNotifier.showError(this.sourceWindow, this.messageSource.getMessage(Message.ERROR_UPLOAD),
-								"Invalid backup file. Selected backup file is for crop " + cropName);
-						RestoreIBDBSaveAction.LOG.error("Invalid backup file provided during restore : wrong crop type");
-						return;
-					}
-				}
-				if (this.toolUtil != null) {
-					this.toolUtil.closeAllNativeTools();
-				}
-
 				// restore the database
-				this.mysqlUtil.restoreDatabase(this.project.getDatabaseName(), restoreFile, new Callable<Boolean>() {
+				this.mysqlUtil.restoreDatabase(this.project.getDatabaseName(), this.restoreFile, new Callable<Boolean>() {
 
 					@Override
 					public Boolean call() throws Exception {
-						CropDatabaseGenerator cropDatabaseGenerator =
+						final CropDatabaseGenerator cropDatabaseGenerator =
 								new CropDatabaseGenerator(RestoreIBDBSaveAction.this.sessionData.getLastOpenedProject().getCropType());
 						cropDatabaseGenerator.setWorkbenchDataManager(RestoreIBDBSaveAction.this.workbenchDataManager);
 						return cropDatabaseGenerator.generateDatabase();
 					}
 				});
 
-				Integer userId =
-						this.workbenchDataManager.getLocalIbdbUserId(this.sessionData.getUserData().getUserid(),
+				final Integer userId = this.workbenchDataManager.getLocalIbdbUserId(this.sessionData.getUserData().getUserid(),
 								this.project.getProjectId());
 
 				if (userId != null) {
@@ -148,30 +91,29 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 
 				// the restored database may be old
 				// and needs to be upgraded for it to be usable
-				WorkbenchSetting setting = this.workbenchDataManager.getWorkbenchSetting();
-				File schemaDir = new File(setting.getInstallationDirectory(), "database/merged/common-update");
+				final WorkbenchSetting setting = this.workbenchDataManager.getWorkbenchSetting();
+				final File schemaDir = new File(setting.getInstallationDirectory(), "database/merged/common-update");
 				this.mysqlUtil.upgradeDatabase(this.project.getDatabaseName(), schemaDir);
 
 				MessageNotifier.showMessage(this.sourceWindow, this.messageSource.getMessage(Message.SUCCESS),
 						this.messageSource.getMessage(Message.RESTORE_IBDB_COMPLETE));
 
 				// LOG to project activity
-				// TODO: internationalize this
 				// if there is no user id, it means there is no user data
 				if (userId != null) {
-					ProjectActivity projAct =
-							new ProjectActivity(null, this.project, "Crop Database Restore", "Restored backup from: "
-									+ restoreFile.getName(), this.sessionData.getUserData(), new Date());
+					final ProjectActivity projAct =
+							new ProjectActivity(null, this.project, this.messageSource.getMessage(Message.CROP_DATABASE_RESTORE),
+									this.messageSource.getMessage(Message.RESTORED_BACKUP_FROM) + " " + this.restoreFile.getName(),
+									this.sessionData.getUserData(), new Date());
 					this.workbenchDataManager.addProjectActivity(projAct);
 				}
 
 				this.hasRestoreError = false;
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				RestoreIBDBSaveAction.LOG.error(e.getMessage(), e);
-				MessageNotifier.showError(this.sourceWindow, "Error performing restore operation", e.getMessage());
+				MessageNotifier.showError(this.sourceWindow, this.messageSource.getMessage(Message.RESTORE_OPERATION_ERROR), e.getMessage());
 				this.hasRestoreError = true;
 			}
-
 		} else {
 			this.hasRestoreError = true;
 		}
@@ -183,19 +125,19 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 	}
 
 	@Override
-	public File createFile(String fileName, String mimeType) {
-		File saveDir = new File(new File(RestoreIBDBSaveAction.BACKUP_DIR).getAbsolutePath());
+	public File createFile(final String fileName, final String mimeType) {
+		final File saveDir = new File(new File(RestoreIBDBSaveAction.BACKUP_DIR).getAbsolutePath());
 		if (!saveDir.exists() || !saveDir.isDirectory()) {
 			saveDir.mkdirs();
 		}
 
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		if (new File(saveDir.getAbsolutePath() + "/" + fileName).exists()) {
 			for (int x = 1; x < 10000; x++) {
-				String temp = fileName.substring(0, fileName.lastIndexOf(".")) + "_" + x + ".sql";
+				final String temp = fileName.substring(0, fileName.lastIndexOf(".")) + UNDERSCORE + x + SQL_FILE_EXTENSION;
 				if (!new File(saveDir.getAbsolutePath() + "/" + temp).exists()) {
 					sb.append(fileName.substring(0, fileName.lastIndexOf(".")));
-					sb.append("_" + x + ".sql");
+					sb.append(UNDERSCORE).append(x).append(SQL_FILE_EXTENSION);
 					break;
 				}
 			}
@@ -203,36 +145,28 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 			sb.append(fileName);
 		}
 
-		this.file = new File(saveDir, sb.toString());
-		return this.file;
-	}
-
-	public boolean isUpload() {
-		return this.isUpload;
-	}
-
-	public void setIsUpload(boolean value) {
-		this.isUpload = value;
+		this.restoreFile = new File(saveDir, sb.toString());
+		return this.restoreFile;
 	}
 
 	// for unit testing to be able to inject test attribute
-	public void setMysqlUtil(MySQLUtil mysqlUtil) {
+	public void setMysqlUtil(final MySQLUtil mysqlUtil) {
 		this.mysqlUtil = mysqlUtil;
 	}
 
-	public void setSessionData(SessionData sessionData) {
+	public void setSessionData(final SessionData sessionData) {
 		this.sessionData = sessionData;
 	}
 
-	public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
+	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
 		this.workbenchDataManager = workbenchDataManager;
 	}
 
-	public void setFile(File file) {
-		this.file = file;
+	public void setRestoreFile(final File restoreFile) {
+		this.restoreFile = restoreFile;
 	}
 
-	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+	public void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
 
