@@ -184,7 +184,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 		breedingViewInput.setReplicates(this.createReplicates(this.source.getSelDesignTypeValue(), this.source.getSelReplicatesValue()));
 
-		DesignType designType = DesignType.getDesignTypeByName(this.source.getSelDesignTypeValue());
+		final DesignType designType = DesignType.getDesignTypeByName(this.source.getSelDesignTypeValue());
 		breedingViewInput.setDesignType(designType.resolveDesignTypeNameForBreedingView());
 
 		breedingViewInput.setBlocks(this.createBlocks(this.source.getSelBlocksValue()));
@@ -374,7 +374,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 	void writeProjectXML(final Window window, final BreedingViewInput breedingViewInput) {
 
-		BreedingViewXMLWriter breedingViewXMLWriter;
+		final BreedingViewXMLWriter breedingViewXMLWriter;
 
 		// write the XML input for breeding view
 		breedingViewXMLWriter = new BreedingViewXMLWriter(breedingViewInput);
@@ -487,7 +487,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 			@Override
 			public DownloadStream getStream() {
-				DownloadStream ds;
+				final DownloadStream ds;
 				try {
 					ds = new DownloadStream(new FileInputStream(this.getSourceFile()), this.getMIMEType(), this.getFilename());
 
