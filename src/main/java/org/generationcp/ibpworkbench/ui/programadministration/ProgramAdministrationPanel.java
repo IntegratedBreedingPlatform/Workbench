@@ -3,7 +3,9 @@ package org.generationcp.ibpworkbench.ui.programadministration;
 
 import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.help.document.HelpModule;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsView;
 import org.generationcp.ibpworkbench.ui.programmembers.ProgramMembersPanel;
@@ -32,6 +34,9 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 
 	@Autowired
 	private SessionData sessionData;
+
+	@Autowired
+	private SimpleResourceBundleMessageSource messageSource;
 
 	private VerticalLayout rootLayout;
 
@@ -74,9 +79,7 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 
 		this.setTitleContent();
 
-		final Label headingDesc =
-				new Label(
-						"Modify the details of this program, and manage the members, locations, and methods associated with it using the tabs below.");
+		final Label headingDesc = new Label(this.messageSource.getMessage(Message.PROGRAM_MODIFY_DETAILS));
 
 		this.rootLayout.setMargin(new Layout.MarginInfo(false, true, true, true));
 		this.rootLayout.setWidth("100%");
@@ -89,26 +92,26 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 
 		this.tabSheet.addTab(this.updateProjectPanel);
 		this.tabSheet.getTab(this.updateProjectPanel).setClosable(false);
-		this.tabSheet.getTab(this.updateProjectPanel).setCaption("Basic Details");
+		this.tabSheet.getTab(this.updateProjectPanel).setCaption(this.messageSource.getMessage(Message.BASIC_DETAILS_LABEL));
 
 		this.tabSheet.addTab(this.programMembersPanel);
 		this.tabSheet.getTab(this.programMembersPanel).setClosable(false);
-		this.tabSheet.getTab(this.programMembersPanel).setCaption("Members");
+		this.tabSheet.getTab(this.programMembersPanel).setCaption(this.messageSource.getMessage(Message.PROGRAM_MEMBERS));
 		this.tabSheet.getTab(this.programMembersPanel).setVisible(false);
 
 		try {
-			AddRestrictredComponents();
-		}catch (AccessDeniedException e){
+			this.AddRestrictedComponents();
+		} catch (final AccessDeniedException e){
 			// Do no do anything as the screen needs to be displayed just the buttons don't
 		}
 
 		this.tabSheet.addTab(this.programLocationsView);
 		this.tabSheet.getTab(this.programLocationsView).setClosable(false);
-		this.tabSheet.getTab(this.programLocationsView).setCaption("Locations");
+		this.tabSheet.getTab(this.programLocationsView).setCaption(this.messageSource.getMessage(Message.PROGRAM_LOCATIONS));
 
 		this.tabSheet.addTab(this.programMethodsView);
 		this.tabSheet.getTab(this.programMethodsView).setClosable(false);
-		this.tabSheet.getTab(this.programMethodsView).setCaption("Breeding Methods");
+		this.tabSheet.getTab(this.programMethodsView).setCaption(this.messageSource.getMessage(Message.BREEDING_METHODS_LABEL));
 
 		this.rootLayout.addComponent(this.titleLayout);
 		this.rootLayout.addComponent(headingDesc);
@@ -123,18 +126,18 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 		this.titleLayout = new HorizontalLayout();
 		this.titleLayout.setSpacing(true);
 
-		Label toolTitle = new Label("Manage Program Settings");
+		final Label toolTitle = new Label(this.messageSource.getMessage(Message.PROGRAM_MANAGE_SETTINGS));
 		toolTitle.setContentMode(Label.CONTENT_XHTML);
 		toolTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 		toolTitle.setWidth("376px");
 
 		this.titleLayout.addComponent(toolTitle);
 		this.titleLayout.addComponent(new HelpButton(HelpModule.MANAGE_PROGRAM_SETTINGS_MANAGE_PROGRAM_SETTING,
-				"Go to Program Creation Tutorial"));
+				this.messageSource.getMessage(Message.PROGRAM_GO_TO_TUTORIAL)));
 	}
 
 	protected TabSheet generateTabSheet() {
-		TabSheet tab = new TabSheet();
+		final TabSheet tab = new TabSheet();
 
 		tab.setImmediate(true);
 		tab.setStyleName(Reindeer.TABSHEET_MINIMAL);
@@ -144,7 +147,7 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	private void AddRestrictredComponents() {
+	private void AddRestrictedComponents() {
 		this.tabSheet.getTab(this.programMembersPanel).setVisible(true);
 	}
 

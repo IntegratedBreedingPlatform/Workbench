@@ -31,11 +31,11 @@ public class BreedingViewDesignTypeValueChangeListener implements ValueChangeLis
 			gLayout.setSpacing(true);
 			gLayout.addStyleName("marginTop10");
 
-			this.source.getBlockRowColumnContainer().removeAllComponents();
+			this.source.getDesignDetailsContainer().removeAllComponents();
 			gLayout.addComponent(this.source.getLblSpecifyGenotypesHeader(), 0, 0, 1, 0);
 			gLayout.addComponent(this.source.getLblGenotypes(), 0, 1);
 			gLayout.addComponent(this.source.getSelGenotypes(), 1, 1);
-			this.source.getBlockRowColumnContainer().addComponent(gLayout);
+			this.source.getDesignDetailsContainer().addComponent(gLayout);
 			return;
 		}
 
@@ -59,6 +59,9 @@ public class BreedingViewDesignTypeValueChangeListener implements ValueChangeLis
 			this.source.getSelColumnFactor().setEnabled(true);
 			this.source.getSelRowFactor().setEnabled(true);
 			this.source.getSelBlocks().setEnabled(false);
+		} else if (value.equals(DesignType.P_REP_DESIGN.getName())){
+
+			this.source.displayPRepDesignElements();
 		}
 	}
 

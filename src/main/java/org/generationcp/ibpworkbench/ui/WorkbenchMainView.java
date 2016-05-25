@@ -151,6 +151,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.workbenchTitle.setStyleName("gcp-window-title");
 		this.workbenchTitle.setContentMode(Label.CONTENT_XHTML);
 
+		//TODO localise that text
 		this.homeButton = new Button("<span class='bms-header-btn'><span>My Programs</span></span>");
 		this.homeButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + HEADER_BTN);
 		this.homeButton.setHtmlContentAllowed(true);

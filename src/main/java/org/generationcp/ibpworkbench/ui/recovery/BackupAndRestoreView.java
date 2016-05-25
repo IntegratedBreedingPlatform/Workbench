@@ -1,11 +1,8 @@
 
 package org.generationcp.ibpworkbench.ui.recovery;
 
-import java.io.File;
-
 import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.help.document.HelpModule;
-import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
@@ -13,12 +10,11 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.BackupIBDBSaveAction;
+import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.RestoreIBDBSaveAction;
 import org.generationcp.ibpworkbench.ui.common.UploadField;
 import org.generationcp.ibpworkbench.ui.programmethods.ProgramMethodsView;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.workbench.ProjectBackup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -32,24 +28,30 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
-import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
-/**
- * Created by cyrus on 2/20/14.
- */
 @Configurable
 public class BackupAndRestoreView extends CustomComponent implements InitializingBean {
 
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOG = LoggerFactory.getLogger(ProgramMethodsView.class);
-	private ListSelect restoreList;
+
+	private static final String NO_FILE = "NO_FILE";
+	private static final String NO_FILE_SELECTED = "NO_FILE_SELECTED";
+	public static final String NOT_VALID = "NOT_VALID";
+	private static final String MARGIN_TOP_10 = "marginTop10";
+	public static final String BMS_LABEL_BOTTOM_SPACE_STYLE = "bms-label-bottom-space";
+
 	private Button backupBtn;
 	private UploadField uploadFrm;
 	private Button restoreBtn;
+	private TabSheet tabSheet;
+	private Panel backupPanel;
+	private Panel restorePanel;
 
 	@Autowired
 	private SessionData sessionData;
@@ -80,20 +82,18 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 		this.uploadFrm = new UploadField() {
 
 			@Override
-			public void uploadFinished(Upload.FinishedEvent event) {
+			public void uploadFinished(final Upload.FinishedEvent event) {
 				super.uploadFinished(event);
 
 				BackupAndRestoreView.this.restoreBtn.setEnabled(true);
-
-				BackupAndRestoreView.this.restoreList.setEnabled(false);
 			}
 
 			@Override
 			public void validate() throws Validator.InvalidValueException {
 				if (this.getLastFileName() == null) {
-					throw new Validator.InvalidValueException("NO_FILE");
+					throw new Validator.InvalidValueException(NO_FILE);
 				} else if (!this.isValid()) {
-					throw new Validator.InvalidValueException("NOT_VALID");
+					throw new Validator.InvalidValueException(NOT_VALID);
 				}
 			}
 
@@ -102,9 +102,9 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 				return this.getLastFileName() != null && this.getExtension(this.getLastFileName()).toLowerCase().contains("sql");
 			}
 
-			private String getExtension(String f) {
+			private String getExtension(final String f) {
 				String ext = null;
-				int i = f.lastIndexOf('.');
+				final int i = f.lastIndexOf('.');
 
 				if (i > 0 && i < f.length() - 1) {
 					ext = f.substring(i + 1).toLowerCase();
@@ -117,49 +117,24 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 			}
 		};
 
-		this.uploadFrm.setNoFileSelectedText(this.messageSource.getMessage("NO_FILE_SELECTED"));
+		this.uploadFrm.setNoFileSelectedText(this.messageSource.getMessage(NO_FILE_SELECTED));
 		this.uploadFrm.setSelectedFileText("<b>" + this.messageSource.getMessage("SELECTED_BACKUP_FILE") + "</b>");
 		this.uploadFrm.setDeleteCaption(this.messageSource.getMessage("CLEAR"));
 		this.uploadFrm.setFieldType(UploadField.FieldType.FILE);
 
 		this.restoreBtn = new Button(this.messageSource.getMessage("RESTORE_BMS_BUTTON"));
-		this.restoreList = new ListSelect();
 
-		this.populateRestoreList();
+		this.tabSheet = new TabSheet();
+		this.tabSheet.setImmediate(true);
+		this.tabSheet.setStyleName(Reindeer.TABSHEET_MINIMAL);
+		this.tabSheet.setStyleName("panel-border");
 
-		this.restoreList.setMultiSelect(false);
-		this.restoreList.setRows(1);
-		this.restoreList.setNullSelectionAllowed(true);
-
+		this.backupPanel = new Panel();
+		this.backupPanel.setStyleName(Reindeer.PANEL_LIGHT);
+		this.restorePanel = new Panel();
+		this.restorePanel.setStyleName(Reindeer.PANEL_LIGHT);
 	}
 
-	public void populateRestoreList() {
-		this.restoreList.removeAllItems();
-
-		try {
-			for (ProjectBackup pb : this.workbenchDataManager.getProjectBackups(this.sessionData.getLastOpenedProject())) {
-				if (!new File(pb.getBackupPath()).exists()) {
-					continue;
-				}
-
-				this.restoreList.addItem(pb);
-
-				String dateStr = DateUtil.getSimpleDateFormat("MMMM dd, yyyy").format(pb.getBackupTime());
-
-				this.restoreList.setItemCaption(pb, dateStr + " - " + pb.getBackupPath());
-				this.restoreList.setValue(pb);
-			}
-		} catch (MiddlewareQueryException e) {
-			BackupAndRestoreView.LOG.error(e.getMessage(), e);
-		}
-
-		if (this.restoreList.getItemIds().isEmpty()) {
-			this.restoreBtn.setEnabled(false);
-		} else {
-			this.restoreBtn.setEnabled(true);
-		}
-
-	}
 
 	/**
 	 * If possible, move to a controller class in the future
@@ -170,59 +145,49 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 			@Override
 			public void doAction() {
 				super.doAction();
-				BackupAndRestoreView.this.populateRestoreList();
 			}
 		};
 
 		this.backupBtn.addListener(backupAction);
 
 		final RestoreIBDBSaveAction restoreAction =
-				new RestoreIBDBSaveAction(this.sessionData.getLastOpenedProject(), (ProjectBackup) null, this.getWindow()) {
+				new RestoreIBDBSaveAction(this.sessionData.getLastOpenedProject(), this.getWindow()) {
 
 					@Override
-					public void onClose(ConfirmDialog dialog) {
+					public void onClose(final ConfirmDialog dialog) {
 						super.onClose(dialog);
-
-						if (dialog.isConfirmed()) {
-							BackupAndRestoreView.this.populateRestoreList();
-						}
+						// go back to dashboard
+						new HomeAction().doAction(BackupAndRestoreView.this.getWindow(), "/Home", true);
 					}
 				};
 
 		this.restoreBtn.addListener(new Button.ClickListener() {
 
 			@Override
-			public void buttonClick(Button.ClickEvent clickEvent) {
+			public void buttonClick(final Button.ClickEvent clickEvent) {
 				// validate file upload
 
 				try {
-
 					BackupAndRestoreView.this.uploadFrm.validate();
-					restoreAction.setIsUpload(true);
 
-				} catch (Validator.InvalidValueException e) {
+				} catch (final Validator.InvalidValueException e) {
 					BackupAndRestoreView.LOG.error(e.getMessage(), e);
-					if (!"NO_FILE".equals(e.getMessage())) {
+					if (NO_FILE.equals(e.getMessage())) {
+						MessageNotifier.showError(clickEvent.getComponent().getWindow(),
+								BackupAndRestoreView.this.messageSource.getMessage(Message.ERROR_UPLOAD),
+								BackupAndRestoreView.this.messageSource.getMessage(NO_FILE_SELECTED));
+						return;
+					} else {
 						MessageNotifier.showError(clickEvent.getComponent().getWindow(),
 								BackupAndRestoreView.this.messageSource.getMessage(Message.ERROR_UPLOAD),
 								BackupAndRestoreView.this.messageSource.getMessage(Message.ERROR_INVALID_FILE));
 						return;
 					}
-
-					if (BackupAndRestoreView.this.restoreList.getValue() == null) {
-						MessageNotifier.showError(clickEvent.getComponent().getWindow(),
-								BackupAndRestoreView.this.messageSource.getMessage(Message.ERROR_UPLOAD), 
-								BackupAndRestoreView.this.messageSource.getMessage(Message.RESTORE_NO_BACKUP_SELECTED));
-						return;
-					}
-
-					restoreAction.setProjectBackup((ProjectBackup) BackupAndRestoreView.this.restoreList.getValue());
-					restoreAction.setIsUpload(false);
 				}
 
-				String restoreDescMessageFormat = "<b style='color:red'>%s</b><br/><br/>%s";
+				final String restoreDescMessageFormat = "<b style='color:red'>%s</b><br/><br/>%s";
 
-				ConfirmDialog dialog =
+				final ConfirmDialog dialog =
 						ConfirmDialog.show(clickEvent.getComponent().getWindow(), BackupAndRestoreView.this.messageSource
 								.getMessage(Message.RESTORE_IBDB_WINDOW_CAPTION), String.format(restoreDescMessageFormat,
 								BackupAndRestoreView.this.messageSource.getMessage(Message.RESTORE_IBDB_CONFIRM, 
@@ -241,36 +206,34 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
-				BackupAndRestoreView.this.restoreList.setEnabled(true);
-
-				if (BackupAndRestoreView.this.restoreList.getItemIds().isEmpty()) {
-					BackupAndRestoreView.this.restoreBtn.setEnabled(false);
-				} else {
+			public void buttonClick(final ClickEvent event) {
 					BackupAndRestoreView.this.restoreBtn.setEnabled(true);
-				}
 			}
 		});
 	}
 
 	public void initializeLayout() {
+		this.tabSheet.addTab(this.backupPanel);
+		this.tabSheet.getTab(this.backupPanel).setClosable(false);
+		this.tabSheet.getTab(this.backupPanel).setCaption(this.messageSource.getMessage("BACKUP_LABEL"));
+
+		this.tabSheet.addTab(this.restorePanel);
+		this.tabSheet.getTab(this.restorePanel).setClosable(false);
+		this.tabSheet.getTab(this.restorePanel).setCaption(this.messageSource.getMessage("RESTORE_LABEL"));
+
 		this.backupBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-		this.backupBtn.addStyleName("marginTop10");
+		this.backupBtn.addStyleName(MARGIN_TOP_10);
 
 		this.restoreBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-		this.restoreBtn.addStyleName("marginTop10");
+		this.restoreBtn.addStyleName(MARGIN_TOP_10);
 
-		this.uploadFrm.getRootLayout().setStyleName("bms-upload-container");
+		this.uploadFrm.getRootLayout().addStyleName("bms-upload-container");
 		this.uploadFrm.getRootLayout().setWidth("100%");
-		this.uploadFrm.setButtonCaption("Browse");
-
-		this.restoreList.setWidth("400px");
+		this.uploadFrm.setButtonCaption(this.messageSource.getMessage("BROWSE"));
+		this.uploadFrm.addStyleName(BMS_LABEL_BOTTOM_SPACE_STYLE);
 
 		final Label pageTitle = new Label(this.messageSource.getMessage("BACKUP_RESTORE_TITLE"));
 		pageTitle.setStyleName(Bootstrap.Typography.H1.styleName());
-
-		final Label restoreDropdownTitle = new Label(this.messageSource.getMessage("RESTORE_CHOOSE_BACKUP"));
-		restoreDropdownTitle.setStyleName(Bootstrap.Typography.H6.styleName());
 
 		final Label restoreUploadTitle = new Label(this.messageSource.getMessage("RESTORE_BMS_UPLOAD"));
 		restoreUploadTitle.setStyleName(Bootstrap.Typography.H6.styleName());
@@ -288,38 +251,44 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 		rootContent.setSpacing(true);
 
 		rootContent.addComponent(pageTitle);
-		rootContent.addComponent(new Label("<div style='height: 10px'></div>", Label.CONTENT_XHTML));
-		rootContent.addComponent(this.setUpHeadings(HelpModule.BACKUP_PROGRAM_DATA, this.messageSource.getMessage("BACKUP_BMS_TITLE"),
-				"124px"));
-		rootContent.addComponent(new Label(this.messageSource.getMessage("BACKUP_BMS_DESCRIPTION", this.sessionData.getLastOpenedProject()
-				.getProjectName()), Label.CONTENT_XHTML));
-		rootContent.addComponent(this.backupBtn);
-		rootContent.addComponent(new Label("<div style='height: 20px'></div>", Label.CONTENT_XHTML));
-		rootContent.addComponent(this.setUpHeadings(HelpModule.RESTORE_PROGRAM_DATA, this.messageSource.getMessage("RESTORE_BMS_TITLE"),
-				"228px"));
-		rootContent.addComponent(new Label(this.messageSource.getMessage("RESTORE_BMS_DESCRIPTION")));
-		rootContent.addComponent(restoreDropdownTitle);
-		rootContent.addComponent(this.restoreList);
-		rootContent.addComponent(new Label("", Label.CONTENT_XHTML));
-		rootContent.addComponent(new Label("<div style='margin: 5px 0;'>Or</div>", Label.CONTENT_XHTML));
-		rootContent.addComponent(restoreUploadTitle);
-		rootContent.addComponent(this.uploadFrm);
-		rootContent.addComponent(this.restoreBtn);
 
+		this.backupPanel.addComponent(new Label("<div style='height: 10px'></div>", Label.CONTENT_XHTML));
+		this.backupPanel.addComponent(this.setUpHeadings(HelpModule.BACKUP_PROGRAM_DATA, this.messageSource.getMessage("BACKUP_BMS_TITLE"),
+				"124px"));
+		final Label backupTextLabel = new Label(this.messageSource.getMessage("BACKUP_BMS_DESCRIPTION", this.sessionData.getLastOpenedProject()
+				.getProjectName()));
+		backupTextLabel.addStyleName(BMS_LABEL_BOTTOM_SPACE_STYLE);
+		this.backupPanel.addComponent(backupTextLabel);
+		this.backupPanel.addComponent(this.backupBtn);
+
+		this.restorePanel.addComponent(new Label("<div style='height: 20px'></div>", Label.CONTENT_XHTML));
+		this.restorePanel.addComponent(this.setUpHeadings(HelpModule.RESTORE_PROGRAM_DATA, this.messageSource.getMessage("RESTORE_BMS_TITLE"),
+				"228px"));
+		final Label restoreDescriptionLabel = new Label(this.messageSource.getMessage("RESTORE_BMS_DESCRIPTION"));
+		restoreDescriptionLabel.addStyleName(BMS_LABEL_BOTTOM_SPACE_STYLE);
+		this.restorePanel.addComponent(restoreDescriptionLabel);
+		this.restorePanel.addComponent(restoreUploadTitle);
+		this.restorePanel.addComponent(this.uploadFrm);
+		this.restorePanel.addComponent(this.restoreBtn);
+
+		rootContent.addComponent(this.tabSheet);
 	}
 
-	public HorizontalLayout setUpHeadings(HelpModule module, String heading, String width) {
-		HorizontalLayout titleLayout = new HorizontalLayout();
+	private HorizontalLayout setUpHeadings(final HelpModule module, final String heading, final String width) {
+		final HorizontalLayout titleLayout = new HorizontalLayout();
 		titleLayout.setSpacing(true);
 		titleLayout.setHeight("40px");
 
-		Label toolTitle = new Label(heading);
-		toolTitle.setStyleName(Bootstrap.Typography.H4.styleName());
+		final Label toolTitle = new Label(heading);
+		toolTitle.addStyleName(Bootstrap.Typography.H4.styleName());
 		toolTitle.setContentMode(Label.CONTENT_XHTML);
 		toolTitle.setWidth(width);
 
 		titleLayout.addComponent(toolTitle);
-		titleLayout.addComponent(new HelpButton(module, "View " + heading + " Tutorial"));
+		final HelpButton helpButton = new HelpButton(module, this.messageSource.getMessage("VIEW") + " " + heading + " " +
+				this.messageSource.getMessage("TUTORIAL"));
+		helpButton.addStyleName("bms-backup-restore-help-icon");
+		titleLayout.addComponent(helpButton);
 
 		return titleLayout;
 	}
