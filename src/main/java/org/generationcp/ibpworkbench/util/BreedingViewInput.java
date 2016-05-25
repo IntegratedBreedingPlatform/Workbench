@@ -37,6 +37,8 @@ public class BreedingViewInput implements Serializable {
 
 	private static final long serialVersionUID = 7669967119863861617L;
 
+	private final static String BV_INVALID_CHARACTER_EXPRESSION = "[\\\\/:*?|<>()\"']";
+
 	private Project project;
 	private String breedingViewProjectName;
 	private String breedingViewAnalysisName;
@@ -321,6 +323,28 @@ public class BreedingViewInput implements Serializable {
 				+ this.sourceXLSFilePath + ", destXMLFilePath=" + this.destXMLFilePath + ", projectType=" + this.projectType
 				+ ", designType=" + this.designType + ", blocks=" + this.blocks + ", replicates=" + this.replicates + "]";
 	}
+
+	/**
+	 * Used to normalize breeding view input so that it is acceptable for the BV application.
+	 *
+	 * So far, this method replaces invalid characters stemming from the project name
+	 */
+	public void normalizeBreedingViewInput() {
+		this.breedingViewAnalysisName = this.breedingViewAnalysisName.replaceAll(BV_INVALID_CHARACTER_EXPRESSION, "_");
+		this.breedingViewProjectName = this.breedingViewProjectName.replaceAll(BV_INVALID_CHARACTER_EXPRESSION, "_");
+
+        this.sourceXLSFilePath = normalizeBVFilePath(this.sourceXLSFilePath);
+        this.destXMLFilePath = normalizeBVFilePath(this.destXMLFilePath);
+	}
+
+    String normalizeBVFilePath(String filePath) {
+        int index = filePath.lastIndexOf("\\");
+        String forNormalization = filePath.substring(index + 1, filePath.length());
+        forNormalization = forNormalization.replaceAll(BV_INVALID_CHARACTER_EXPRESSION, "_");
+        // we use index + 1 here so that the file separator character is included in the resulting substring
+        String output = filePath.substring(0, index + 1) + forNormalization;
+        return output;
+    }
 
 	public Integer getOutputDatasetId() {
 		return this.outputDatasetId;
