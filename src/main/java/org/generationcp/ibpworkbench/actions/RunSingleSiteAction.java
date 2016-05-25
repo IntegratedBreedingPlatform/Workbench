@@ -196,6 +196,7 @@ public class RunSingleSiteAction implements ClickListener {
 		breedingViewInput.setGenotypes(this.createGenotypes(breedingViewInput.getDatasetId(), this.source.getSelGenotypesValue()));
 
 		breedingViewInput.setPlot(this.createPlot(breedingViewInput.getDatasetId()));
+        breedingViewInput.normalizeBreedingViewInput();
 
 	}
 
