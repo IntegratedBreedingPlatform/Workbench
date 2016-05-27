@@ -54,6 +54,8 @@ import com.vaadin.ui.VerticalLayout;
  *
  * @author Joyce Avestro
  */
+
+//TODO The messages in this class should be localised
 @Configurable
 public class ProjectBasicDetailsComponent extends VerticalLayout implements InitializingBean {
 
@@ -222,17 +224,17 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 			throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
 		}
 
-		BeanItemContainer<CropType> beanItemContainer = new BeanItemContainer<CropType>(CropType.class);
-		for (CropType cropType : cropTypes) {
+		final BeanItemContainer<CropType> beanItemContainer = new BeanItemContainer<CropType>(CropType.class);
+		for (final CropType cropType : cropTypes) {
 			beanItemContainer.addBean(cropType);
 		}
 
-		ComboBox comboBox = new ComboBox();
+		final ComboBox comboBox = new ComboBox();
 		comboBox.setContainerDataSource(beanItemContainer);
 		comboBox.setNewItemsAllowed(false);
 		comboBox.setItemCaptionPropertyId("cropName");
 		comboBox.setRequired(true);
-		comboBox.setRequiredError("Please choose a Crop.");
+		comboBox.setRequiredError("Please choose a Crop. ");
 		comboBox.setInputPrompt("Please choose");
 		comboBox.setInvalidAllowed(false);
 		comboBox.setNullSelectionAllowed(false);
@@ -313,8 +315,8 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 
 	public boolean validate() {
 		boolean success = true;
-		String projectName = (String) this.projectNameField.getValue();
-		CropType cropType = (CropType) this.cropTypeCombo.getValue();
+		final String projectName = (String) this.projectNameField.getValue();
+		final CropType cropType = (CropType) this.cropTypeCombo.getValue();
 
 		this.errorDescription = new StringBuilder();
 
@@ -322,13 +324,13 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 			this.errorDescription.append("No program name supplied. ");
 			success = false;
 		} else {
-			// Check if the project name already exists
+			// Check if the project name already exists for given crop
 			try {
-				if (this.workbenchDataManager.getProjectByName(projectName) != null) {
+				if (this.workbenchDataManager.getProjectByNameAndCrop(projectName, cropType) != null) {
 					this.errorDescription.append(this.messageSource.getMessage(Message.DUPLICATE_PROGRAM_NAME_ERROR) + " ");
 					success = false;
 				}
-			} catch (MiddlewareQueryException e) {
+			} catch (final MiddlewareQueryException e) {
 				ProjectBasicDetailsComponent.LOG.error("Error encountered while getting program by name", e);
 				throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
 			}

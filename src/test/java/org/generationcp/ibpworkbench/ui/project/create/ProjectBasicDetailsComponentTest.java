@@ -5,7 +5,6 @@ import org.generationcp.MessageResourceUtil;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.CropType;
@@ -15,16 +14,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class ProjectBasicDetailsComponentTest {
 
+	private static final String EXCEPTION_GETTING_PROJECT_NAME = "ExceptionGettingProjectName";
 	private CreateProjectPanel panel;
 	private WorkbenchDataManager workbenchDataManager;
 	private static final SimpleResourceBundleMessageSource messageSource = MessageResourceUtil.getMessageResource();
 
-	public static final String PROJECT_NAME = "TestProjectName";
-	public static final String CROP_NAME = "TestCropName";
+	private static final String PROJECT_NAME = "TestProjectName";
+	private static final String CROP_NAME = "TestCropName";
 
 	@Before
 	public void setUp() {
@@ -34,17 +35,22 @@ public class ProjectBasicDetailsComponentTest {
 
 	@Test
 	public void testValidateWithDuplicateNames() throws Exception {
-		ProjectBasicDetailsComponent component = Mockito.spy(new ProjectBasicDetailsComponent(this.panel));
-		Window window = Mockito.spy(new Window());
+		final ProjectBasicDetailsComponent component = Mockito.spy(new ProjectBasicDetailsComponent(this.panel));
+		final Window window = Mockito.spy(new Window());
 
-		Project project = new Project();
+		final Project project = new Project();
 		project.setProjectName(PROJECT_NAME);
-		project.setCropType(new CropType(CROP_NAME));
+		final CropType cropType = new CropType(CROP_NAME);
+		project.setCropType(cropType);
 		project.setStartDate(new Date());
-		Mockito.when(workbenchDataManager.getProjectByName(PROJECT_NAME)).thenReturn(project);
+		Mockito.when(this.workbenchDataManager.getProjectByNameAndCrop(PROJECT_NAME, cropType)).thenReturn(project);
+		final ArrayList<CropType> cropTypes = new ArrayList<>();
+		cropTypes.add(cropType);
+		Mockito.when(this.workbenchDataManager.getInstalledCropDatabses()).thenReturn(cropTypes);
 		Mockito.when(component.getWindow()).thenReturn(window);
-		component.setWorkbenchDataManager(workbenchDataManager);
+		component.setWorkbenchDataManager(this.workbenchDataManager);
 		component.setMessageSource(messageSource);
+		component.initializeComponents();
 		component.afterPropertiesSet();
 
 		component.updateProjectDetailsFormField(project);
@@ -54,16 +60,17 @@ public class ProjectBasicDetailsComponentTest {
 
 	@Test
 	public void testValidateNoProjectWithThatName() throws Exception {
-		ProjectBasicDetailsComponent component = Mockito.spy(new ProjectBasicDetailsComponent(this.panel));
-		Window window = Mockito.spy(new Window());
+		final ProjectBasicDetailsComponent component = Mockito.spy(new ProjectBasicDetailsComponent(this.panel));
+		final Window window = Mockito.spy(new Window());
 
-		Project project = new Project();
+		final Project project = new Project();
 		project.setProjectName(PROJECT_NAME);
-		project.setCropType(new CropType(CROP_NAME));
+		final CropType cropType = new CropType(CROP_NAME);
+		project.setCropType(cropType);
 		project.setStartDate(new Date());
-		Mockito.when(workbenchDataManager.getProjectByName(PROJECT_NAME)).thenReturn(null);
+		Mockito.when(this.workbenchDataManager.getProjectByNameAndCrop(PROJECT_NAME, cropType)).thenReturn(null);
 		Mockito.when(component.getWindow()).thenReturn(window);
-		component.setWorkbenchDataManager(workbenchDataManager);
+		component.setWorkbenchDataManager(this.workbenchDataManager);
 		component.setMessageSource(messageSource);
 		component.afterPropertiesSet();
 
@@ -75,18 +82,23 @@ public class ProjectBasicDetailsComponentTest {
 
 	@Test(expected=InternationalizableException.class)
 	public void testValidateDatabaseException() throws Exception {
-		ProjectBasicDetailsComponent component = Mockito.spy(new ProjectBasicDetailsComponent(this.panel));
-		Window window = Mockito.spy(new Window());
+		final ProjectBasicDetailsComponent component = Mockito.spy(new ProjectBasicDetailsComponent(this.panel));
+		final Window window = Mockito.spy(new Window());
 
-		Project project = new Project();
-		project.setProjectName("ExceptionGettingProjectName");
-		project.setCropType(new CropType(CROP_NAME));
+		final Project project = new Project();
+		project.setProjectName(EXCEPTION_GETTING_PROJECT_NAME);
+		final CropType cropType = new CropType(CROP_NAME);
+		project.setCropType(cropType);
 		project.setStartDate(new Date());
-		Mockito.when(workbenchDataManager.getProjectByName("ExceptionGettingProjectName")).thenThrow(
+		Mockito.when(this.workbenchDataManager.getProjectByNameAndCrop(EXCEPTION_GETTING_PROJECT_NAME, cropType)).thenThrow(
 				new MiddlewareQueryException("DB error"));
 		Mockito.when(component.getWindow()).thenReturn(window);
-		component.setWorkbenchDataManager(workbenchDataManager);
+		final ArrayList<CropType> cropTypes = new ArrayList<>();
+		cropTypes.add(cropType);
+		Mockito.when(this.workbenchDataManager.getInstalledCropDatabses()).thenReturn(cropTypes);
+		component.setWorkbenchDataManager(this.workbenchDataManager);
 		component.setMessageSource(messageSource);
+		component.initializeComponents();
 		component.afterPropertiesSet();
 
 		component.updateProjectDetailsFormField(project);
