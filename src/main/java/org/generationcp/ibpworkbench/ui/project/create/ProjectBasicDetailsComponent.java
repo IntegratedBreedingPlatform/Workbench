@@ -57,15 +57,11 @@ import static java.lang.String.*;
  * @author Joyce Avestro
  */
 
-//TODO The messages in this class should be localised
 @Configurable
 public class ProjectBasicDetailsComponent extends VerticalLayout implements InitializingBean {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ProjectBasicDetailsComponent.class);
 	private static final long serialVersionUID = 1L;
-
-	//TODO
-	private static final String GENERIC_CROP_DESCRIPTION = "Use Generic Database for Other Crop";
 
 	// the containing panel
 	private final CreateProjectPanel createProjectPanel;
@@ -96,6 +92,8 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 	@Autowired
 	@Qualifier("workbenchProperties")
 	private Properties workbenchProperties;
+
+	private final String genericCropDescription = this.messageSource.getMessage("GENERIC_CROP_DESCRIPTION");
 
 	public ProjectBasicDetailsComponent(final CreateProjectPanel createProjectPanel) {
 		super();
@@ -136,12 +134,9 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		this.projectNameField = new TextField();
 		this.projectNameField.setImmediate(true);
 		this.projectNameField.setRequired(true);
-		//TODO
-		this.projectNameField.setRequiredError("Please enter a Program Name.");
-		//TODO
-		this.projectNameField.addValidator(new StringLengthValidator("Program Name must be 3-65 characters.", 3, 65, false));
-		//TODO
-		this.projectNameField.addValidator(new RegexValidator("Program Name must not contain any of the following: \\ / : * ? \" < > |",
+		this.projectNameField.setRequiredError(this.messageSource.getMessage("PROGRAM_NAME_REQUIRED_ERROR"));
+		this.projectNameField.addValidator(new StringLengthValidator(this.messageSource.getMessage("PROGRAM_NAME_LENGTH_ERROR"), 3, 65, false));
+		this.projectNameField.addValidator(new RegexValidator(this.messageSource.getMessage("PROGRAM_NAME_INVALID_ERROR"),
 				projectNameInvalidCharPattern, true));
 		this.projectNameField.setStyleName("hide-caption");
 		this.projectNameField.setWidth("250px");
@@ -150,24 +145,17 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		this.otherCropNameField = new TextField();
 		this.otherCropNameField.setImmediate(true);
 		this.otherCropNameField.setRequired(false);
-		//TODO
-		this.otherCropNameField.setRequiredError("Please enter Crop Name.");
-		//TODO
-		this.otherCropNameField.addValidator(new StringLengthValidator("Crop Name must be 3-70 characters.", 3, 70, false));
-		//TODO
-		this.otherCropNameField.addValidator(new RegexValidator(
-				"Crop name must not contain any of the following: '< > \" : ; , . / \\ | - = \\( \\)", cropNameInvalidCharPattern, true));
-		//TODO
-		this.otherCropNameField
-		.addValidator(new ValueRangeValidator(
-				"This crop name is reserved because there is a database available for it. Please install the crop name database before creating this program if you wish to take advantage of traits and other information for this crop. If you wish to proceed with using the generic database, please choose a different name for your crop."));
+		this.otherCropNameField.setRequiredError(this.messageSource.getMessage("CROP_NAME_REQUIRED_ERROR"));
+		this.otherCropNameField.addValidator(new StringLengthValidator(this.messageSource.getMessage("CROP_NAME_LENGTH_ERROR"), 3, 70, false));
+		this.otherCropNameField.addValidator(new RegexValidator(this.messageSource.getMessage("CROP_NAME_INVALID_ERROR"),
+				cropNameInvalidCharPattern, true));
+		this.otherCropNameField.addValidator(new ValueRangeValidator(this.messageSource.getMessage("CROP_NAME_RESERVED_ERROR")));
 		this.otherCropNameField.setStyleName("hide-caption");
 		this.otherCropNameField.setVisible(false);
 
 		this.startDateField = new BmsDateField();
 		this.startDateField.setRequired(true);
-		//TODO
-		this.startDateField.setRequiredError("Please enter a Start Date.");
+		this.startDateField.setRequiredError(this.messageSource.getMessage("START_DATE_REQUIRED_ERROR"));
 		this.startDateField.setStyleName("project-data-time");
 		this.startDateField.setStyleName("hide-caption");
 		this.startDateField.setWidth("250px");
@@ -225,8 +213,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		try {
 			cropTypes = this.workbenchDataManager.getInstalledCropDatabses();
 		} catch (final MiddlewareQueryException e) {
-			//TODO
-			ProjectBasicDetailsComponent.LOG.error("Error encountered while getting installed central crops", e);
+			ProjectBasicDetailsComponent.LOG.error(this.messageSource.getMessage("INSTALL_CROPS_ERROR"), e);
 			throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
 		}
 
@@ -240,10 +227,8 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		comboBox.setNewItemsAllowed(false);
 		comboBox.setItemCaptionPropertyId("cropName");
 		comboBox.setRequired(true);
-		//TODO
-		comboBox.setRequiredError("Please choose a Crop. ");
-		//TODO
-		comboBox.setInputPrompt("Please choose");
+		comboBox.setRequiredError(this.messageSource.getMessage("CROP_REQUIRED_ERROR") + " ");
+		comboBox.setInputPrompt(this.messageSource.getMessage("CHOOSE_VALUE_PROMPT"));
 		comboBox.setInvalidAllowed(false);
 		comboBox.setNullSelectionAllowed(false);
 		comboBox.setImmediate(true);
@@ -267,7 +252,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 					return;
 				}
 
-				if (((CropType) event.getProperty().getValue()).getCropName().equals(ProjectBasicDetailsComponent.GENERIC_CROP_DESCRIPTION)) {
+				if (ProjectBasicDetailsComponent.this.genericCropDescription.equals(((CropType) event.getProperty().getValue()).getCropName())) {
 					ProjectBasicDetailsComponent.this.otherCropNameField.setVisible(true);
 					ProjectBasicDetailsComponent.this.otherCropNameField.setRequired(true);
 					ProjectBasicDetailsComponent.this.lblOtherCrop.setVisible(true);
@@ -329,8 +314,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		this.errorDescription = new StringBuilder();
 
 		if (projectName == null || projectName.equals("")) {
-			//TODO
-			this.errorDescription.append("No program name supplied. ");
+			this.errorDescription.append(this.messageSource.getMessage("NO_PROGRAM_NAME_ERROR")).append(" ");
 			success = false;
 		} else {
 			// Check if the project name already exists for given crop
@@ -340,8 +324,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 					success = false;
 				}
 			} catch (final MiddlewareQueryException e) {
-				//TODO
-				ProjectBasicDetailsComponent.LOG.error("Error encountered while getting program by name", e);
+				ProjectBasicDetailsComponent.LOG.error(this.messageSource.getMessage("CANNOT_GET_PROGRAM_BY_NAME_ERROR"), e);
 				throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
 			}
 			// Run assigned validators
@@ -376,8 +359,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		}
 
 		if (cropType == null) {
-			//TODO
-			this.errorDescription.append("No crop type selected. ");
+			this.errorDescription.append("CROP_TYPE_REQUIRED_ERROR").append(" ");
 			success = false;
 		}
 
@@ -402,8 +384,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 
 	Project getProjectDetails() throws InvalidValueException {
 		if (!this.validate()) {
-			//TODO
-			throw new InvalidValueException("Failed Validation on BasicDetailsForm");
+			throw new InvalidValueException(this.messageSource.getMessage("INVALID_BASIC_DETAILS_FORM_EXCEPTION"));
 		}
 
 		final Project project = new Project();
@@ -420,7 +401,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 	private CropType getCropTypeBasedOnInput() {
 
 		if (((CropType) this.cropTypeCombo.getValue()).getCropName()
-				.equalsIgnoreCase(ProjectBasicDetailsComponent.GENERIC_CROP_DESCRIPTION)) {
+				.equalsIgnoreCase(this.genericCropDescription)) {
 			final String bmsVersion = this.workbenchProperties.getProperty("workbench.version", null);
 
 			final String newItemCaption = (String) this.otherCropNameField.getValue();
@@ -468,18 +449,17 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 
 		@Override
 		public boolean isValid(final Object value) {
-			final CropType cropType = ProjectBasicDetailsComponent.this.workbenchDataManager.getCropTypeByName(value.toString().trim());
+			final String trimmedValue = value.toString().trim();
+			final CropType cropType = ProjectBasicDetailsComponent.this.workbenchDataManager.getCropTypeByName(trimmedValue);
 			if (cropType != null) {
-				//TODO
-				this.setErrorMessage(format("The {0} crop already exists. Please change the Crop Name.", value.toString().trim()));
+				this.setErrorMessage(ProjectBasicDetailsComponent.this.messageSource.getMessage("CROP_TYPE_EXISTS_ERROR", trimmedValue));
 				return false;
 			}
 
 			for (final CropType.CropEnum crop : CropType.CropEnum.values()) {
-				if (crop.toString().equalsIgnoreCase(value.toString().trim())) {
-					//TODO
-					this.setErrorMessage(format("This crop name ({0}) is reserved because there is a database available for it. Please install the {0} database before creating this program if you wish to take advantage of traits and other information for this crop. If you wish to proceed with using the generic database, please choose a different name for your crop.",
-									value.toString().trim()));
+				if (crop.toString().equalsIgnoreCase(trimmedValue)) {
+					this.setErrorMessage(ProjectBasicDetailsComponent.this.messageSource.getMessage("SPECIFIC_CROP_NAME_RESERVED_ERROR",
+							trimmedValue));
 					return false;
 				}
 			}
