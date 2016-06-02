@@ -37,7 +37,7 @@ public class BreedingViewInput implements Serializable {
 
 	private static final long serialVersionUID = 7669967119863861617L;
 
-	private static final String BV_INVALID_CHARACTER_EXPRESSION = "[\\\\/:*?|<>()\"']";
+	private static final String BV_INVALID_CHARACTER_EXPRESSION = "[^a-zA-Z0-9]";
 
 	private Project project;
 	private String breedingViewProjectName;
