@@ -208,8 +208,11 @@ public class RunSingleSiteAction implements ClickListener {
 
 			breedingViewInput.setColPos(this.createColPos(this.source.getSelColumnFactorValue()));
 			breedingViewInput.setRowPos(this.createRowPos(this.source.getSelRowFactorValue()));
-			breedingViewInput.setRows(null);
-			breedingViewInput.setColumns(null);
+
+		} else {
+
+			breedingViewInput.setColPos(null);
+			breedingViewInput.setRowPos(null);
 		}
 
 
@@ -221,9 +224,11 @@ public class RunSingleSiteAction implements ClickListener {
 
 			breedingViewInput.setColumns(this.createColumns(this.source.getSelColumnFactorValue()));
 			breedingViewInput.setRows(this.createRows(this.source.getSelRowFactorValue()));
-			breedingViewInput.setRowPos(null);
-			breedingViewInput.setColPos(null);
 
+		} else {
+
+			breedingViewInput.setColumns(null);
+			breedingViewInput.setRows(null);
 		}
 
 	}

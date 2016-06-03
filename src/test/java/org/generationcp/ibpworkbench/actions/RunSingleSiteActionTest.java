@@ -333,9 +333,6 @@ public class RunSingleSiteActionTest {
 		// ColPos and RowPos should not be null if the design type is P-Rep Design
 		Assert.assertNotNull(this.breedingViewInput.getColPos());
 		Assert.assertNotNull(this.breedingViewInput.getRowPos());
-		// Rows and Column should be null because this is a P-rep Design
-		Assert.assertNull(this.breedingViewInput.getRows());
-		Assert.assertNull(this.breedingViewInput.getColumns());
 
 	}
 
@@ -358,10 +355,6 @@ public class RunSingleSiteActionTest {
 		// Columns and Rows should not be null if the design type is Row and Column Design
 		Assert.assertNotNull(this.breedingViewInput.getRows());
 		Assert.assertNotNull(this.breedingViewInput.getColumns());
-
-		// ColPos and RowPos should be null because this is a P-rep Design
-		Assert.assertNull(this.breedingViewInput.getRowPos());
-		Assert.assertNull(this.breedingViewInput.getColPos());
 
 	}
 
