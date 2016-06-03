@@ -14,6 +14,7 @@ import java.util.Random;
 import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
+import org.generationcp.commons.util.BreedingViewUtil;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.Experiment;
 import org.generationcp.middleware.domain.dms.Variable;
@@ -117,25 +118,25 @@ public class GxeUtility {
 		// site no && site code insert to columnMap
 		if (environmentName != null && !environmentName.isEmpty()) {
 			traitToColNoMap.put(environmentName, j);
-			headerRow.add(environmentName.replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+			headerRow.add(environmentName.replaceAll(BreedingViewUtil.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
 			j++;
 		}
 
 		if (!environmentGroup.equalsIgnoreCase(environmentName) && environmentGroup != null && !environmentGroup.isEmpty()
 				&& !"None".equalsIgnoreCase(environmentGroup)) {
 			traitToColNoMap.put(environmentGroup, j);
-			headerRow.add(environmentGroup.replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+			headerRow.add(environmentGroup.replaceAll(BreedingViewUtil.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
 			j++;
 		}
 
 		traitToColNoMap.put(genotypeName, j);
-		headerRow.add(genotypeName.replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+		headerRow.add(genotypeName.replaceAll(BreedingViewUtil.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
 		j++;
 
 		for (Trait trait : selectedTraits) {
 
 			traitToColNoMap.put(trait.getName(), j);
-			headerRow.add(j, trait.getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+			headerRow.add(j, trait.getName().replaceAll(BreedingViewUtil.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
 			j++;
 		}
 
@@ -235,7 +236,7 @@ public class GxeUtility {
 
 				List<String> row = new ArrayList<String>();
 				String envValue = exp.getFactors().findByLocalName(environmentName).getValue();
-				String traitValue = trait.getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_");
+				String traitValue = trait.getName().replaceAll(BreedingViewUtil.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_");
 				if (envValue != null) {
 					envValue = envValue.replaceAll(",", ";");
 				}

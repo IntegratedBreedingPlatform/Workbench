@@ -35,6 +35,7 @@ import org.generationcp.commons.sea.xml.Environments;
 import org.generationcp.commons.sea.xml.Pipeline;
 import org.generationcp.commons.sea.xml.Pipelines;
 import org.generationcp.commons.sea.xml.Traits;
+import org.generationcp.commons.util.BreedingViewUtil;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.domain.oms.TermId;
@@ -95,9 +96,9 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 	public void writeProjectXML() throws BreedingViewXMLWriterException {
 		DataFile data = new DataFile();
 		data.setName(this.breedingViewInput.getSourceXLSFilePath());
-		BreedingViewProject project = this.getBreedingViewProject();
-		SSAParameters ssaParameters = this.getSSAParameters();
-		BreedingViewSession bvSession = this.getBreedingViewSession(project, data, ssaParameters);
+		BreedingViewProject project = this.createBreedingViewProject();
+		SSAParameters ssaParameters = this.createSSAParameters();
+		BreedingViewSession bvSession = this.createBreedingViewSession(project, data, ssaParameters);
 		this.createProjectXMLFile(bvSession);
 		this.removePreviousDatastore(ssaParameters.getOutputDirectory());
 	}
@@ -132,7 +133,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 		return marshaller;
 	}
 
-	private BreedingViewSession getBreedingViewSession(BreedingViewProject project, DataFile data, SSAParameters ssaParameters) {
+	private BreedingViewSession createBreedingViewSession(BreedingViewProject project, DataFile data, SSAParameters ssaParameters) {
 		BreedingViewSession bvSession = new BreedingViewSession();
 		bvSession.setBreedingViewProject(project);
 		bvSession.setDataFile(data);
@@ -140,12 +141,12 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 		return bvSession;
 	}
 
-	private BreedingViewProject getBreedingViewProject() {
-		Environments environments = this.getEnvironments();
-		Design design = this.getDesign();
-		Traits traits = this.getTraits();
-		DataConfiguration dataConfiguration = this.getDataConfiguration(environments, design, traits);
-		Pipelines pipelines = this.getPipelines(dataConfiguration);
+	private BreedingViewProject createBreedingViewProject() {
+		Environments environments = this.createEnvironments();
+		Design design = this.createDesign();
+		Traits traits = this.createTraits();
+		DataConfiguration dataConfiguration = this.createDataConfiguration(environments, design, traits);
+		Pipelines pipelines = this.createPipelines(dataConfiguration);
 		BreedingViewProject project = new BreedingViewProject();
 		project.setName(this.breedingViewInput.getBreedingViewAnalysisName());
 		project.setVersion("1.2");
@@ -153,7 +154,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 		return project;
 	}
 
-	private Pipelines getPipelines(DataConfiguration dataConfiguration) {
+	private Pipelines createPipelines(DataConfiguration dataConfiguration) {
 		Pipelines pipelines = new Pipelines();
 		Pipeline pipeline = new Pipeline();
 		pipeline.setType("SEA");
@@ -162,7 +163,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 		return pipelines;
 	}
 
-	private SSAParameters getSSAParameters() throws BreedingViewXMLWriterException {
+	private SSAParameters createSSAParameters() throws BreedingViewXMLWriterException {
 		SSAParameters ssaParameters = new SSAParameters();
 		ssaParameters.setWebApiUrl(this.getWebApiUrl());
 		ssaParameters.setStudyId(this.breedingViewInput.getStudyId());
@@ -173,15 +174,12 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 		if (workbenchProject != null) {
 			ssaParameters.setWorkbenchProjectId(workbenchProject.getProjectId());
 		}
-		try {
-			String installationDirectory = this.getInstallationDirectory();
-			String outputDirectory =
-					String.format("%s/workspace/%s/breeding_view/output", installationDirectory, workbenchProject.getProjectName());
-			ssaParameters.setOutputDirectory(outputDirectory);
-		} catch (MiddlewareQueryException ex) {
-			throw new BreedingViewXMLWriterException("Error with getting installation directory: " + this.breedingViewInput.getDatasetId()
-					+ ": " + ex.getMessage(), ex);
-		}
+
+		String installationDirectory = this.getInstallationDirectory();
+		String outputDirectory =
+				String.format("%s/workspace/%s/breeding_view/output", installationDirectory, workbenchProject.getProjectName());
+		ssaParameters.setOutputDirectory(outputDirectory);
+
 
 		if (Boolean.parseBoolean(this.isServerApp)) {
 			ssaParameters.setOutputDirectory(null);
@@ -195,7 +193,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 		return this.sessionData.getLastOpenedProject();
 	}
 
-	protected String getInstallationDirectory() throws MiddlewareQueryException {
+	protected String getInstallationDirectory() {
 		return this.workbenchDataManager.getWorkbenchSetting().getInstallationDirectory();
 	}
 
@@ -205,10 +203,9 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 		return url;
 	}
 
-	private Environments getEnvironments() {
+	private Environments createEnvironments() {
 		Environments environments = new Environments();
-		environments.setName(this.breedingViewInput.getEnvironment().getName()
-				.replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+		environments.setName(this.breedingViewInput.getEnvironment().getName());
 
 		for (SeaEnvironmentModel s : this.breedingViewInput.getSelectedEnvironments()) {
 			org.generationcp.commons.sea.xml.Environment env = new org.generationcp.commons.sea.xml.Environment();
@@ -221,82 +218,50 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 		return environments;
 	}
 
-	private Design getDesign() {
+	private Design createDesign() {
+
 		Design design = new Design();
 		design.setType(this.breedingViewInput.getDesignType());
 
-		if (this.breedingViewInput.getBlocks() != null) {
-			this.breedingViewInput.getBlocks().setName(
-					this.breedingViewInput.getBlocks().getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
-		}
-
 		design.setBlocks(this.breedingViewInput.getBlocks());
 
-		if (this.breedingViewInput.getReplicates() != null) {
-			this.breedingViewInput.getReplicates().setName(
-					this.breedingViewInput.getReplicates().getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
-		}
 		design.setReplicates(this.breedingViewInput.getReplicates());
-
-		if (this.breedingViewInput.getColumns() != null) {
-			this.breedingViewInput.getColumns().setName(
-					this.breedingViewInput.getColumns().getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
-		}
 
 		design.setColumns(this.breedingViewInput.getColumns());
 
-		if (this.breedingViewInput.getRows() != null) {
-			this.breedingViewInput.getRows().setName(
-					this.breedingViewInput.getRows().getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
-		}
-
-		if (this.breedingViewInput.getColPos() != null) {
-			this.breedingViewInput.getColPos().setName(
-					this.breedingViewInput.getColPos().getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
-		}
+		design.setRows(this.breedingViewInput.getRows());
 
 		design.setColPos(this.breedingViewInput.getColPos());
 
-		if (this.breedingViewInput.getRowPos() != null) {
-			this.breedingViewInput.getRowPos().setName(
-					this.breedingViewInput.getRowPos().getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
-		}
-
 		design.setRowPos(this.breedingViewInput.getRowPos());
 
-		if (this.breedingViewInput.getPlot() != null) {
-			this.breedingViewInput.getPlot().setName(
-					this.breedingViewInput.getPlot().getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
-		}
 		design.setPlot(this.breedingViewInput.getPlot());
 
 		return design;
 	}
 
-	private DataConfiguration getDataConfiguration(Environments environments, Design design, Traits traits) {
+	private DataConfiguration createDataConfiguration(Environments environments, Design design, Traits traits) {
 
 		DataConfiguration dataConfiguration = new DataConfiguration();
+
 		dataConfiguration.setEnvironments(environments);
+
 		dataConfiguration.setDesign(design);
 
-		if (this.breedingViewInput.getGenotypes() != null) {
-			this.breedingViewInput.getGenotypes().setName(
-					this.breedingViewInput.getGenotypes().getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
-			this.breedingViewInput.getGenotypes().setEntry(
-					this.breedingViewInput.getGenotypes().getEntry().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
-		}
 		dataConfiguration.setGenotypes(this.breedingViewInput.getGenotypes());
+
 		dataConfiguration.setTraits(traits);
+
 		return dataConfiguration;
 	}
 
-	private Traits getTraits() {
+	private Traits createTraits() {
 		Traits traits = new Traits();
 		SortedSet<String> keys = new TreeSet<String>(this.breedingViewInput.getVariatesActiveState().keySet());
 		for (String key : keys) {
 			if (this.breedingViewInput.getVariatesActiveState().get(key)) {
 				Trait trait = new Trait();
-				trait.setName(key.replaceAll("[^a-zA-Z0-9-_%']+", "_"));
+				trait.setName(BreedingViewUtil.trimAndSanitizeName(key));
 				trait.setActive(true);
 				traits.add(trait);
 			}

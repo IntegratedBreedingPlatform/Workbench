@@ -32,6 +32,7 @@ import org.generationcp.commons.sea.xml.MegaEnvironments;
 import org.generationcp.commons.sea.xml.Pipeline;
 import org.generationcp.commons.sea.xml.Pipelines;
 import org.generationcp.commons.sea.xml.Traits;
+import org.generationcp.commons.util.BreedingViewUtil;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +65,7 @@ public class GxeXMLWriter implements InitializingBean, Serializable {
 
 		Traits traits = new Traits();
 		for (Trait t : this.gxeInput.getTraits()) {
-			String traitName = t.getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_");
+			String traitName = t.getName().replaceAll(BreedingViewUtil.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_");
 			t.setBlues(traitName);
 			t.setBlups(traitName.replace("_Means", "_BLUPs"));
 			t.setName(traitName);
@@ -82,7 +83,7 @@ public class GxeXMLWriter implements InitializingBean, Serializable {
 		}
 
 		Environments environments = new Environments();
-		environments.setName(this.gxeInput.getEnvironmentName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+		environments.setName(this.gxeInput.getEnvironmentName().replaceAll(BreedingViewUtil.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
 		environments.setEnvironments(this.gxeInput.getSelectedEnvironments());
 
 		for (Environment e : environments.getEnvironments()) {
@@ -95,7 +96,7 @@ public class GxeXMLWriter implements InitializingBean, Serializable {
 		dataConfiguration.setEnvironments(environments);
 		if (this.gxeInput.getGenotypes() != null) {
 			this.gxeInput.getGenotypes().setName(
-					this.gxeInput.getGenotypes().getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+					this.gxeInput.getGenotypes().getName().replaceAll(BreedingViewUtil.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
 		}
 		dataConfiguration.setGenotypes(this.gxeInput.getGenotypes());
 		dataConfiguration.setTraits(traits);
@@ -105,7 +106,7 @@ public class GxeXMLWriter implements InitializingBean, Serializable {
 			MegaEnvironment megaEnv = new MegaEnvironment();
 			MegaEnvironments megaEnvs = new MegaEnvironments();
 			megaEnv.setActive(true);
-			megaEnv.setName(this.gxeInput.getEnvironmentGroup().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+			megaEnv.setName(this.gxeInput.getEnvironmentGroup().replaceAll(BreedingViewUtil.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
 			megaEnvs.add(megaEnv);
 			dataConfiguration.setMegaEnvironments(megaEnvs);
 		}

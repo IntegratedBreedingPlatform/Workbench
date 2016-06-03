@@ -32,6 +32,7 @@ import org.generationcp.commons.breedingview.xml.RowPos;
 import org.generationcp.commons.breedingview.xml.Rows;
 import org.generationcp.commons.tomcat.util.TomcatUtil;
 import org.generationcp.commons.tomcat.util.WebAppStatusInfo;
+import org.generationcp.commons.util.BreedingViewUtil;
 import org.generationcp.commons.util.Util;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -191,13 +192,9 @@ public class RunSingleSiteAction implements ClickListener {
 
 		breedingViewInput.setBlocks(this.createBlocks(this.source.getSelBlocksValue()));
 
-		breedingViewInput.setColumns(this.createColumns(this.source.getSelColumnFactorValue()));
+		populateRowAndColumn(designType, breedingViewInput);
 
-		breedingViewInput.setRows(this.createRows(this.source.getSelRowFactorValue()));
-
-		breedingViewInput.setColPos(this.createColPos(this.source.getSelColumnFactorValue()));
-
-		breedingViewInput.setRowPos(this.createRowPos(this.source.getSelRowFactorValue()));
+		populateRowPosAndColPos(designType, breedingViewInput);
 
 		breedingViewInput.setGenotypes(this.createGenotypes(breedingViewInput.getDatasetId(), this.source.getSelGenotypesValue()));
 
@@ -205,10 +202,32 @@ public class RunSingleSiteAction implements ClickListener {
 
 	}
 
+	void populateRowPosAndColPos(DesignType designType, BreedingViewInput breedingViewInput) {
+
+		if (designType == DesignType.P_REP_DESIGN) {
+
+			breedingViewInput.setColPos(this.createColPos(this.source.getSelColumnFactorValue()));
+			breedingViewInput.setRowPos(this.createRowPos(this.source.getSelRowFactorValue()));
+		}
+
+
+	}
+
+	void populateRowAndColumn(DesignType designType, BreedingViewInput breedingViewInput) {
+
+		if (designType == DesignType.ROW_COLUMN_DESIGN) {
+
+			breedingViewInput.setColumns(this.createColumns(this.source.getSelColumnFactorValue()));
+			breedingViewInput.setRows(this.createRows(this.source.getSelRowFactorValue()));
+
+		}
+
+	}
+
 	Environment createEnvironment(final String environmentFactor) {
 
 		final Environment environment = new Environment();
-		environment.setName(environmentFactor.trim());
+		environment.setName(BreedingViewUtil.trimAndSanitizeName(environmentFactor));
 		return environment;
 
 	}
@@ -222,7 +241,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 		} else if (!StringUtils.isNullOrEmpty(replicatesFactor)) {
 			final Replicates reps = new Replicates();
-			reps.setName(replicatesFactor.trim());
+			reps.setName(BreedingViewUtil.trimAndSanitizeName(replicatesFactor));
 			return reps;
 		} else {
 
@@ -243,7 +262,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 		if (!StringUtils.isNullOrEmpty(rowFactor)) {
 			final Rows rows = new Rows();
-			rows.setName(rowFactor.trim());
+			rows.setName(BreedingViewUtil.trimAndSanitizeName(rowFactor));
 			return rows;
 		} else {
 			return null;
@@ -255,7 +274,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 		if (!StringUtils.isNullOrEmpty(columnFactor)) {
 			final Columns columns = new Columns();
-			columns.setName(columnFactor.trim());
+			columns.setName(BreedingViewUtil.trimAndSanitizeName(columnFactor));
 			return columns;
 		} else {
 			return null;
@@ -267,7 +286,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 		if (!StringUtils.isNullOrEmpty(rowPosFactor)) {
 			final RowPos rowPos = new RowPos();
-			rowPos.setName(rowPosFactor.trim());
+			rowPos.setName(BreedingViewUtil.trimAndSanitizeName(rowPosFactor));
 			return rowPos;
 		} else {
 			return null;
@@ -279,7 +298,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 		if (!StringUtils.isNullOrEmpty(colPosFactor)) {
 			final ColPos colPos = new ColPos();
-			colPos.setName(colPosFactor.trim());
+			colPos.setName(BreedingViewUtil.trimAndSanitizeName(colPosFactor));
 			return colPos;
 		} else {
 			return null;
@@ -291,7 +310,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 		if (!StringUtils.isNullOrEmpty(blocksFactor)) {
 			final Blocks blocks = new Blocks();
-			blocks.setName(blocksFactor.trim());
+			blocks.setName(BreedingViewUtil.trimAndSanitizeName(blocksFactor));
 			return blocks;
 		} else {
 			return null;
@@ -309,7 +328,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 		if (!Strings.isNullOrEmpty(plotNoFactor)) {
 			final Plot plot = new Plot();
-			plot.setName(plotNoFactor);
+			plot.setName(BreedingViewUtil.trimAndSanitizeName(plotNoFactor));
 			return plot;
 		} else {
 			return null;
@@ -322,7 +341,7 @@ public class RunSingleSiteAction implements ClickListener {
 		final String entryNoFactor = this.studyDataManager.getLocalNameByStandardVariableId(datasetId, TermId.ENTRY_NO.getId());
 
 		final Genotypes genotypes = new Genotypes();
-		genotypes.setName(genotypesFactor.trim());
+		genotypes.setName(BreedingViewUtil.trimAndSanitizeName(genotypesFactor));
 		genotypes.setEntry(entryNoFactor);
 
 		return genotypes;
@@ -545,4 +564,5 @@ public class RunSingleSiteAction implements ClickListener {
 	public void setSource(final SingleSiteAnalysisDetailsPanel source) {
 		this.source = source;
 	}
+
 }
