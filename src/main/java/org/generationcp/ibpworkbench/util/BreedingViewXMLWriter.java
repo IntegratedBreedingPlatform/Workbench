@@ -1,13 +1,12 @@
 /***************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * <p/>
  * Generation Challenge Programme (GCP)
  *
  * @author Kevin L. Manansala
- *
- *         This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of
- *         Part F of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
+ * <p/>
+ * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of
+ * Part F of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
  **************************************************************/
 
 package org.generationcp.ibpworkbench.util;
@@ -39,7 +38,6 @@ import org.generationcp.commons.util.BreedingViewUtil;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.domain.oms.TermId;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -180,7 +178,6 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 				String.format("%s/workspace/%s/breeding_view/output", installationDirectory, workbenchProject.getProjectName());
 		ssaParameters.setOutputDirectory(outputDirectory);
 
-
 		if (Boolean.parseBoolean(this.isServerApp)) {
 			ssaParameters.setOutputDirectory(null);
 			ssaParameters.setWebApiUrl(null);
@@ -218,7 +215,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 		return environments;
 	}
 
-	private Design createDesign() {
+	Design createDesign() {
 
 		Design design = new Design();
 		design.setType(this.breedingViewInput.getDesignType());
@@ -280,4 +277,13 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 	public void afterPropertiesSet() throws Exception {
 		// overridden method from interface
 	}
+
+	public void setSessionData(SessionData sessionData) {
+		this.sessionData = sessionData;
+	}
+
+	public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
+		this.workbenchDataManager = workbenchDataManager;
+	}
+
 }
