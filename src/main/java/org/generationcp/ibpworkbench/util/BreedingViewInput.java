@@ -16,11 +16,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.generationcp.commons.breedingview.xml.Blocks;
+import org.generationcp.commons.breedingview.xml.ColPos;
 import org.generationcp.commons.breedingview.xml.Columns;
 import org.generationcp.commons.breedingview.xml.Environment;
 import org.generationcp.commons.breedingview.xml.Genotypes;
 import org.generationcp.commons.breedingview.xml.Plot;
 import org.generationcp.commons.breedingview.xml.Replicates;
+import org.generationcp.commons.breedingview.xml.RowPos;
 import org.generationcp.commons.breedingview.xml.Rows;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -55,6 +57,7 @@ public class BreedingViewInput implements Serializable {
 	private Genotypes genotypes;
 	private Rows rows;
 	private Columns columns;
+	private ColPos colPos;
 	private Plot plot;
 	private Environment environment;
 	private Map<Integer, String> variateColumns;
@@ -384,6 +387,24 @@ public class BreedingViewInput implements Serializable {
 
 	public void setPlot(Plot plot) {
 		this.plot = plot;
+	}
+
+	public RowPos getRowPos() {
+		return rowPos;
+	}
+
+	public void setRowPos(RowPos rowPos) {
+		this.rowPos = rowPos;
+	}
+
+	private RowPos rowPos;
+
+	public ColPos getColPos() {
+		return colPos;
+	}
+
+	public void setColPos(ColPos colPos) {
+		this.colPos = colPos;
 	}
 
 }

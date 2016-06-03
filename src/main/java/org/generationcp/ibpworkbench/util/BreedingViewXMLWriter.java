@@ -249,7 +249,20 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 			this.breedingViewInput.getRows().setName(
 					this.breedingViewInput.getRows().getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
 		}
-		design.setRows(this.breedingViewInput.getRows());
+
+		if (this.breedingViewInput.getColPos() != null) {
+			this.breedingViewInput.getColPos().setName(
+					this.breedingViewInput.getColPos().getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+		}
+
+		design.setColPos(this.breedingViewInput.getColPos());
+
+		if (this.breedingViewInput.getRowPos() != null) {
+			this.breedingViewInput.getRowPos().setName(
+					this.breedingViewInput.getRowPos().getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+		}
+
+		design.setRowPos(this.breedingViewInput.getRowPos());
 
 		if (this.breedingViewInput.getPlot() != null) {
 			this.breedingViewInput.getPlot().setName(

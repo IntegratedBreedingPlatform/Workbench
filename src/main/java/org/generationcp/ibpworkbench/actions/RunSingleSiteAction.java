@@ -21,12 +21,14 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.generationcp.commons.breedingview.xml.Blocks;
+import org.generationcp.commons.breedingview.xml.ColPos;
 import org.generationcp.commons.breedingview.xml.Columns;
 import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.breedingview.xml.Environment;
 import org.generationcp.commons.breedingview.xml.Genotypes;
 import org.generationcp.commons.breedingview.xml.Plot;
 import org.generationcp.commons.breedingview.xml.Replicates;
+import org.generationcp.commons.breedingview.xml.RowPos;
 import org.generationcp.commons.breedingview.xml.Rows;
 import org.generationcp.commons.tomcat.util.TomcatUtil;
 import org.generationcp.commons.tomcat.util.WebAppStatusInfo;
@@ -193,6 +195,10 @@ public class RunSingleSiteAction implements ClickListener {
 
 		breedingViewInput.setRows(this.createRows(this.source.getSelRowFactorValue()));
 
+		breedingViewInput.setColPos(this.createColPos(this.source.getSelColumnFactorValue()));
+
+		breedingViewInput.setRowPos(this.createRowPos(this.source.getSelRowFactorValue()));
+
 		breedingViewInput.setGenotypes(this.createGenotypes(breedingViewInput.getDatasetId(), this.source.getSelGenotypesValue()));
 
 		breedingViewInput.setPlot(this.createPlot(breedingViewInput.getDatasetId()));
@@ -251,6 +257,30 @@ public class RunSingleSiteAction implements ClickListener {
 			final Columns columns = new Columns();
 			columns.setName(columnFactor.trim());
 			return columns;
+		} else {
+			return null;
+		}
+
+	}
+
+	RowPos createRowPos(final String rowPosFactor) {
+
+		if (!StringUtils.isNullOrEmpty(rowPosFactor)) {
+			final RowPos rowPos = new RowPos();
+			rowPos.setName(rowPosFactor.trim());
+			return rowPos;
+		} else {
+			return null;
+		}
+
+	}
+
+	ColPos createColPos(final String colPosFactor) {
+
+		if (!StringUtils.isNullOrEmpty(colPosFactor)) {
+			final ColPos colPos = new ColPos();
+			colPos.setName(colPosFactor.trim());
+			return colPos;
 		} else {
 			return null;
 		}
