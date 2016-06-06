@@ -74,7 +74,7 @@ public class BreedingViewInput implements Serializable {
 		return this.variateColumns;
 	}
 
-	public void setVariateColumns(Map<Integer, String> variateColumns) {
+	public void setVariateColumns(final Map<Integer, String> variateColumns) {
 		this.variateColumns = variateColumns;
 	}
 
@@ -82,7 +82,7 @@ public class BreedingViewInput implements Serializable {
 		return this.project;
 	}
 
-	public void setProject(Project project) {
+	public void setProject(final Project project) {
 		this.project = project;
 	}
 
@@ -90,7 +90,7 @@ public class BreedingViewInput implements Serializable {
 		return this.breedingViewProjectName;
 	}
 
-	public void setBreedingViewProjectName(String breedingViewProjectName) {
+	public void setBreedingViewProjectName(final String breedingViewProjectName) {
 		this.breedingViewProjectName = breedingViewProjectName;
 	}
 
@@ -98,7 +98,7 @@ public class BreedingViewInput implements Serializable {
 		return this.studyId;
 	}
 
-	public void setStudyId(Integer studyId) {
+	public void setStudyId(final Integer studyId) {
 		this.studyId = studyId;
 	}
 
@@ -106,7 +106,7 @@ public class BreedingViewInput implements Serializable {
 		return this.inputDatasetId;
 	}
 
-	public void setDatasetId(Integer datasetId) {
+	public void setDatasetId(final Integer datasetId) {
 		this.inputDatasetId = datasetId;
 	}
 
@@ -114,7 +114,7 @@ public class BreedingViewInput implements Serializable {
 		return this.environmentName;
 	}
 
-	public void setEnvironmentName(String environmentName) {
+	public void setEnvironmentName(final String environmentName) {
 		this.environmentName = environmentName;
 	}
 
@@ -122,7 +122,7 @@ public class BreedingViewInput implements Serializable {
 		return this.version;
 	}
 
-	public void setVersion(String version) {
+	public void setVersion(final String version) {
 		this.version = version;
 	}
 
@@ -130,7 +130,7 @@ public class BreedingViewInput implements Serializable {
 		return this.sourceXLSFilePath;
 	}
 
-	public void setSourceXLSFilePath(String sourceXLSFilePath) {
+	public void setSourceXLSFilePath(final String sourceXLSFilePath) {
 		this.sourceXLSFilePath = sourceXLSFilePath;
 	}
 
@@ -138,7 +138,7 @@ public class BreedingViewInput implements Serializable {
 		return this.destXMLFilePath;
 	}
 
-	public void setDestXMLFilePath(String destXMLFilePath) {
+	public void setDestXMLFilePath(final String destXMLFilePath) {
 		this.destXMLFilePath = destXMLFilePath;
 	}
 
@@ -146,7 +146,7 @@ public class BreedingViewInput implements Serializable {
 		return this.projectType;
 	}
 
-	public void setProjectType(String projectType) {
+	public void setProjectType(final String projectType) {
 		this.projectType = projectType;
 	}
 
@@ -154,7 +154,7 @@ public class BreedingViewInput implements Serializable {
 		return this.designType;
 	}
 
-	public void setDesignType(String designType) {
+	public void setDesignType(final String designType) {
 		this.designType = designType;
 	}
 
@@ -162,7 +162,7 @@ public class BreedingViewInput implements Serializable {
 		return this.blocks;
 	}
 
-	public void setBlocks(Blocks blocks) {
+	public void setBlocks(final Blocks blocks) {
 		this.blocks = blocks;
 	}
 
@@ -170,7 +170,7 @@ public class BreedingViewInput implements Serializable {
 		return this.replicates;
 	}
 
-	public void setReplicates(Replicates replicates) {
+	public void setReplicates(final Replicates replicates) {
 		this.replicates = replicates;
 	}
 
@@ -178,7 +178,7 @@ public class BreedingViewInput implements Serializable {
 		return this.genotypes;
 	}
 
-	public void setGenotypes(Genotypes genotypes) {
+	public void setGenotypes(final Genotypes genotypes) {
 		this.genotypes = genotypes;
 	}
 
@@ -186,7 +186,7 @@ public class BreedingViewInput implements Serializable {
 		return this.rows;
 	}
 
-	public void setRows(Rows rows) {
+	public void setRows(final Rows rows) {
 		this.rows = rows;
 	}
 
@@ -194,7 +194,7 @@ public class BreedingViewInput implements Serializable {
 		return this.columns;
 	}
 
-	public void setColumns(Columns columns) {
+	public void setColumns(final Columns columns) {
 		this.columns = columns;
 	}
 
@@ -202,7 +202,7 @@ public class BreedingViewInput implements Serializable {
 		return this.environment;
 	}
 
-	public void setEnvironment(Environment environment) {
+	public void setEnvironment(final Environment environment) {
 		this.environment = environment;
 	}
 
@@ -225,7 +225,7 @@ public class BreedingViewInput implements Serializable {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -235,7 +235,7 @@ public class BreedingViewInput implements Serializable {
 		if (this.getClass() != obj.getClass()) {
 			return false;
 		}
-		BreedingViewInput other = (BreedingViewInput) obj;
+		@SuppressWarnings("LocalCanBeFinal") final BreedingViewInput other = (BreedingViewInput) obj;
 		if (this.breedingViewProjectName == null) {
 			if (other.breedingViewProjectName != null) {
 				return false;
@@ -329,7 +329,7 @@ public class BreedingViewInput implements Serializable {
 		return this.outputDatasetId;
 	}
 
-	public void setOutputDatasetId(Integer outputDatasetId) {
+	public void setOutputDatasetId(final Integer outputDatasetId) {
 		this.outputDatasetId = outputDatasetId;
 	}
 
@@ -337,7 +337,7 @@ public class BreedingViewInput implements Serializable {
 		return this.datasetName;
 	}
 
-	public void setDatasetName(String datasetName) {
+	public void setDatasetName(final String datasetName) {
 		this.datasetName = datasetName;
 	}
 
@@ -345,7 +345,7 @@ public class BreedingViewInput implements Serializable {
 		return this.datasetSource;
 	}
 
-	public void setDatasetSource(String datasetSource) {
+	public void setDatasetSource(final String datasetSource) {
 		this.datasetSource = datasetSource;
 	}
 
@@ -353,7 +353,7 @@ public class BreedingViewInput implements Serializable {
 		return this.variatesActiveState;
 	}
 
-	public void setVariatesActiveState(Map<String, Boolean> variateActiveStates) {
+	public void setVariatesActiveState(final Map<String, Boolean> variateActiveStates) {
 		this.variatesActiveState = variateActiveStates;
 	}
 
@@ -361,7 +361,7 @@ public class BreedingViewInput implements Serializable {
 		return this.breedingViewAnalysisName;
 	}
 
-	public void setBreedingViewAnalysisName(String breedingViewAnalysisName) {
+	public void setBreedingViewAnalysisName(final String breedingViewAnalysisName) {
 		this.breedingViewAnalysisName = breedingViewAnalysisName;
 	}
 
@@ -369,7 +369,7 @@ public class BreedingViewInput implements Serializable {
 		return this.trialInstanceName;
 	}
 
-	public void setTrialInstanceName(String trialInstanceName) {
+	public void setTrialInstanceName(final String trialInstanceName) {
 		this.trialInstanceName = trialInstanceName;
 	}
 
@@ -377,7 +377,7 @@ public class BreedingViewInput implements Serializable {
 		return this.selectedEnvironments;
 	}
 
-	public void setSelectedEnvironments(List<SeaEnvironmentModel> selectedEnvironments) {
+	public void setSelectedEnvironments(final List<SeaEnvironmentModel> selectedEnvironments) {
 		this.selectedEnvironments = selectedEnvironments;
 	}
 
@@ -385,7 +385,7 @@ public class BreedingViewInput implements Serializable {
 		return this.plot;
 	}
 
-	public void setPlot(Plot plot) {
+	public void setPlot(final Plot plot) {
 		this.plot = plot;
 	}
 
@@ -393,7 +393,7 @@ public class BreedingViewInput implements Serializable {
 		return rowPos;
 	}
 
-	public void setRowPos(RowPos rowPos) {
+	public void setRowPos(final RowPos rowPos) {
 		this.rowPos = rowPos;
 	}
 
@@ -403,7 +403,7 @@ public class BreedingViewInput implements Serializable {
 		return colPos;
 	}
 
-	public void setColPos(ColPos colPos) {
+	public void setColPos(final ColPos colPos) {
 		this.colPos = colPos;
 	}
 

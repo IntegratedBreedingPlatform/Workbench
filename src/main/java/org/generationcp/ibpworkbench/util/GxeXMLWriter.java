@@ -56,16 +56,16 @@ public class GxeXMLWriter implements InitializingBean, Serializable {
 
 	private final GxeInput gxeInput;
 
-	public GxeXMLWriter(GxeInput gxeInput) {
+	public GxeXMLWriter(final GxeInput gxeInput) {
 		this.gxeInput = gxeInput;
 	}
 
 	public void writeProjectXML() throws GxeXMLWriterException {
-		boolean isServerApp = Boolean.parseBoolean(this.isServerAppString);
+		final boolean isServerApp = Boolean.parseBoolean(this.isServerAppString);
 
-		Traits traits = new Traits();
-		for (Trait t : this.gxeInput.getTraits()) {
-			String traitName = BreedingViewUtil.sanitizeName(t.getName());
+		final Traits traits = new Traits();
+		for (final Trait t : this.gxeInput.getTraits()) {
+			final String traitName = BreedingViewUtil.sanitizeName(t.getName());
 			t.setBlues(traitName);
 			t.setBlups(traitName.replace("_Means", "_BLUPs"));
 			t.setName(traitName);
@@ -73,7 +73,7 @@ public class GxeXMLWriter implements InitializingBean, Serializable {
 		}
 
 		// create DataFile element
-		DataFile data = new DataFile();
+		final DataFile data = new DataFile();
 		if (isServerApp) {
 			data.setName(new File(this.gxeInput.getSourceCSVFilePath()).getName());
 			data.setSummarystats(new File(this.gxeInput.getSourceCSVSummaryStatsFilePath()).getName());
@@ -82,16 +82,16 @@ public class GxeXMLWriter implements InitializingBean, Serializable {
 			data.setSummarystats(this.gxeInput.getSourceCSVSummaryStatsFilePath());
 		}
 
-		Environments environments = new Environments();
+		final Environments environments = new Environments();
 		environments.setName(BreedingViewUtil.sanitizeName(this.gxeInput.getEnvironmentName()));
 		environments.setEnvironments(this.gxeInput.getSelectedEnvironments());
 
-		for (Environment e : environments.getEnvironments()) {
+		for (final Environment e : environments.getEnvironments()) {
 			e.setName(e.getName().replace(",", ";"));
 		}
 
 		// create the DataConfiguration element
-		DataConfiguration dataConfiguration = new DataConfiguration();
+		final DataConfiguration dataConfiguration = new DataConfiguration();
 		dataConfiguration.setName("GxE Analysis");
 		dataConfiguration.setEnvironments(environments);
 		if (this.gxeInput.getGenotypes() != null) {
@@ -103,40 +103,40 @@ public class GxeXMLWriter implements InitializingBean, Serializable {
 		dataConfiguration.setHeritabilities(this.gxeInput.getHeritabilities());
 
 		if (!"None".equalsIgnoreCase(this.gxeInput.getEnvironmentGroup())) {
-			MegaEnvironment megaEnv = new MegaEnvironment();
-			MegaEnvironments megaEnvs = new MegaEnvironments();
+			final MegaEnvironment megaEnv = new MegaEnvironment();
+			final MegaEnvironments megaEnvs = new MegaEnvironments();
 			megaEnv.setActive(true);
 			megaEnv.setName(BreedingViewUtil.sanitizeName(this.gxeInput.getEnvironmentGroup()));
 			megaEnvs.add(megaEnv);
 			dataConfiguration.setMegaEnvironments(megaEnvs);
 		}
 
-		Pipelines pipelines = new Pipelines();
-		Pipeline pipeline = new Pipeline();
+		final Pipelines pipelines = new Pipelines();
+		final Pipeline pipeline = new Pipeline();
 		pipeline.setType("GXE");
 		pipeline.setDataConfiguration(dataConfiguration);
 		pipelines.add(pipeline);
 
 		// create the Breeding View project element
-		org.generationcp.commons.sea.xml.BreedingViewProject project = new org.generationcp.commons.sea.xml.BreedingViewProject();
+		final org.generationcp.commons.sea.xml.BreedingViewProject project = new org.generationcp.commons.sea.xml.BreedingViewProject();
 		project.setName(this.gxeInput.getBreedingViewProjectName());
 		project.setVersion("1.2");
 		project.setPipelines(pipelines);
 
-		BreedingViewSession bvSession = new BreedingViewSession();
+		final BreedingViewSession bvSession = new BreedingViewSession();
 		bvSession.setBreedingViewProject(project);
 		bvSession.setDataFile(data);
 
-		SSAParameters ssaParameters = new SSAParameters();
+		final SSAParameters ssaParameters = new SSAParameters();
 		// output directory is not needed if deployed on server
 		if (!isServerApp) {
 			try {
-				String installationDirectory = this.workbenchDataManager.getWorkbenchSetting().getInstallationDirectory();
-				String outputDirectory =
+				final String installationDirectory = this.workbenchDataManager.getWorkbenchSetting().getInstallationDirectory();
+				final String outputDirectory =
 						String.format("%s/workspace/%s/breeding_view/output", installationDirectory, this.gxeInput.getProject()
 								.getProjectName());
 				ssaParameters.setOutputDirectory(outputDirectory);
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				GxeXMLWriter.LOG.error("Error getting BMS installation directory", e);
 			}
 		}

@@ -64,7 +64,7 @@ public class DatasetExporter {
 
 	private DataSet getDataSet(final int dataSetId) {
 
-		DataSet dataset;
+		final DataSet dataset;
 		try {
 			dataset = this.studyDataManager.getDataSet(this.datasetId);
 			return dataset;
