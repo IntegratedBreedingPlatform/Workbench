@@ -86,9 +86,6 @@ public class GxeUtility {
 	/**
 	 * Generates GxE Multi-site analysis XML data, stored in IBWorkflowSystem\workspace\{PROJECT}\breeding_view\input
 	 *
-	 * @param tableContainer
-	 * @param currentProject
-	 * @param breedingViewInput
 	 * @return void
 	 */
 
@@ -118,25 +115,25 @@ public class GxeUtility {
 		// site no && site code insert to columnMap
 		if (environmentName != null && !environmentName.isEmpty()) {
 			traitToColNoMap.put(environmentName, j);
-			headerRow.add(environmentName.replaceAll(BreedingViewUtil.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+			headerRow.add(BreedingViewUtil.sanitizeName(environmentName));
 			j++;
 		}
 
 		if (!environmentGroup.equalsIgnoreCase(environmentName) && environmentGroup != null && !environmentGroup.isEmpty()
 				&& !"None".equalsIgnoreCase(environmentGroup)) {
 			traitToColNoMap.put(environmentGroup, j);
-			headerRow.add(environmentGroup.replaceAll(BreedingViewUtil.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+			headerRow.add(BreedingViewUtil.sanitizeName(environmentGroup));
 			j++;
 		}
 
 		traitToColNoMap.put(genotypeName, j);
-		headerRow.add(genotypeName.replaceAll(BreedingViewUtil.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+		headerRow.add(BreedingViewUtil.sanitizeName(genotypeName));
 		j++;
 
 		for (Trait trait : selectedTraits) {
 
 			traitToColNoMap.put(trait.getName(), j);
-			headerRow.add(j, trait.getName().replaceAll(BreedingViewUtil.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+			headerRow.add(j, BreedingViewUtil.sanitizeName(trait.getName()));
 			j++;
 		}
 
@@ -236,7 +233,7 @@ public class GxeUtility {
 
 				List<String> row = new ArrayList<String>();
 				String envValue = exp.getFactors().findByLocalName(environmentName).getValue();
-				String traitValue = trait.getName().replaceAll(BreedingViewUtil.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_");
+				String traitValue = BreedingViewUtil.sanitizeName(trait.getName());
 				if (envValue != null) {
 					envValue = envValue.replaceAll(",", ";");
 				}
