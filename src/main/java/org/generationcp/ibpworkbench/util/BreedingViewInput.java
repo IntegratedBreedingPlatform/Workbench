@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FilenameUtils;
 import org.generationcp.commons.breedingview.xml.Blocks;
 import org.generationcp.commons.breedingview.xml.Columns;
 import org.generationcp.commons.breedingview.xml.Environment;
@@ -340,9 +341,12 @@ public class BreedingViewInput implements Serializable {
     String normalizeBVFilePath(final String filePath) {
         final int index = filePath.lastIndexOf("\\");
         String forNormalization = filePath.substring(index + 1, filePath.length());
+		// do not normalize the file extension so we remove it from the string
+		forNormalization = FilenameUtils.removeExtension(forNormalization);
+		// then remove the invalid characters
         forNormalization = forNormalization.replaceAll(BV_INVALID_CHARACTER_EXPRESSION, "_");
         // we use index + 1 here so that the file separator character is included in the resulting substring
-        return filePath.substring(0, index + 1) + forNormalization;
+        return filePath.substring(0, index + 1) + forNormalization + "." + FilenameUtils.getExtension(filePath);
     }
 
 	public Integer getOutputDatasetId() {
