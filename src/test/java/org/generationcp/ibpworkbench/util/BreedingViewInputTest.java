@@ -10,7 +10,7 @@ public class BreedingViewInputTest {
 	private static final String TEST_BV_INPUT_DIRECTORY = "c:\\BMS4\\workspace\\Maize\\breeding_view\\input";
 	private static final String TEST_PROJECT_NAME = "ABC'sTrial";
     private static final String NORMALIZED_PROJECT_NAME ="ABC_sTrial";
-    private static final String NORMALIZED_DATASET_NAME = "ABC_sTrial-PLOTDATA";
+    private static final String NORMALIZED_DATASET_NAME = "ABC_sTrial_PLOTDATA";
 
 	private BreedingViewInput unitUnderTest;
 
