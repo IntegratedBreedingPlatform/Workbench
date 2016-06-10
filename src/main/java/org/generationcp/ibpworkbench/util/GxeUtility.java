@@ -14,6 +14,7 @@ import java.util.Random;
 import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
+import org.generationcp.commons.util.BreedingViewUtil;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.Experiment;
 import org.generationcp.middleware.domain.dms.Variable;
@@ -33,12 +34,12 @@ import com.vaadin.ui.TextField;
 public class GxeUtility {
 
 	private static final Logger LOG = LoggerFactory.getLogger(GxeUtility.class);
-	protected static Random random = new Random();
+	protected static final Random random = new Random();
 
-	public static Object createObjectCaption(Class<?> propertyType, String value, Integer colIndex) throws Exception {
+	public static Object createObjectCaption(final Class<?> propertyType, final String value, final Integer colIndex) throws Exception {
 
 		if (propertyType.equals(CheckBox.class) || propertyType.isInstance(CheckBox.class)) {
-			CheckBox o = new CheckBox();
+			final CheckBox o = new CheckBox();
 			if (colIndex > 1) {
 				o.setCaption(GxeUtility.randomInRange(1, 100).toString());
 			} else {
@@ -47,20 +48,20 @@ public class GxeUtility {
 
 			return o;
 		} else if (propertyType.equals(Label.class)) {
-			Label o = new Label();
+			final Label o = new Label();
 			o.setCaption(value);
 			o.setValue(value);
 			return o;
 		} else if (propertyType.equals(Link.class)) {
-			Link o = new Link();
+			final Link o = new Link();
 			o.setCaption(value);
 			return o;
 		} else if (propertyType.equals(Link.class)) {
-			Link o = new Link();
+			final Link o = new Link();
 			o.setCaption(value);
 			return o;
 		} else if (propertyType.equals(TextField.class)) {
-			TextField o = new TextField();
+			final TextField o = new TextField();
 			o.setCaption(value);
 			o.setValue(value);
 			return o;
@@ -76,82 +77,79 @@ public class GxeUtility {
 
 	}
 
-	public static Double randomInRange(double min, double max) {
-		double range = max - min;
-		double scaled = GxeUtility.random.nextDouble() * range;
+	public static Double randomInRange(final double min, final double max) {
+		final double range = max - min;
+		final double scaled = GxeUtility.random.nextDouble() * range;
 		return scaled + min;
 	}
 
 	/**
 	 * Generates GxE Multi-site analysis XML data, stored in IBWorkflowSystem\workspace\{PROJECT}\breeding_view\input
 	 *
-	 * @param tableContainer
-	 * @param currentProject
-	 * @param breedingViewInput
 	 * @return void
 	 */
 
-	public static void generateXmlFieldBook(GxeInput gxeInput) {
+	public static void generateXmlFieldBook(final GxeInput gxeInput) {
 		try {
-			GxeXMLWriter writer = new GxeXMLWriter(gxeInput);
+			final GxeXMLWriter writer = new GxeXMLWriter(gxeInput);
 			writer.writeProjectXML();
 
-		} catch (GxeXMLWriterException e) {
+		} catch (final GxeXMLWriterException e) {
 			GxeUtility.LOG.error("Error writng GxE XML file", e);
 		}
 	}
 
-	public static File exportGxEDatasetToBreadingViewCsv(DataSet gxeDataset, List<Experiment> experiments, String environmentName,
-			String environmentGroup, String genotypeName, GxeEnvironment gxeEnv, List<Trait> selectedTraits, Project currentProject) {
+	public static File exportGxEDatasetToBreadingViewCsv(final DataSet gxeDataset, final List<Experiment> experiments, final String environmentName,
+			final String environmentGroup, final String genotypeName, final GxeEnvironment gxeEnv, final List<Trait> selectedTraits, final Project currentProject) {
 		if (currentProject == null) {
 			throw new IllegalArgumentException("current project is null");
 		}
 
-		List<String[]> tableItems = new ArrayList<String[]>();
+		final List<String[]> tableItems = new ArrayList<String[]>();
 
-		Map<String, Integer> traitToColNoMap = new Hashtable<String, Integer>();
+		final Map<String, Integer> traitToColNoMap = new Hashtable<String, Integer>();
 
 		int i = 0, j = 0;
 		// create header row
-		List<String> headerRow = new ArrayList<String>();
+		final List<String> headerRow = new ArrayList<String>();
 		// site no && site code insert to columnMap
 		if (environmentName != null && !environmentName.isEmpty()) {
 			traitToColNoMap.put(environmentName, j);
-			headerRow.add(environmentName.replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+			headerRow.add(BreedingViewUtil.sanitizeName(environmentName));
 			j++;
 		}
 
 		if (!environmentGroup.equalsIgnoreCase(environmentName) && environmentGroup != null && !environmentGroup.isEmpty()
 				&& !"None".equalsIgnoreCase(environmentGroup)) {
 			traitToColNoMap.put(environmentGroup, j);
-			headerRow.add(environmentGroup.replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+			headerRow.add(BreedingViewUtil.sanitizeName(environmentGroup));
 			j++;
 		}
 
 		traitToColNoMap.put(genotypeName, j);
-		headerRow.add(genotypeName.replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+		headerRow.add(BreedingViewUtil.sanitizeName(genotypeName));
 		j++;
 
-		for (Trait trait : selectedTraits) {
+		for (final Trait trait : selectedTraits) {
 
 			traitToColNoMap.put(trait.getName(), j);
-			headerRow.add(j, trait.getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_"));
+			headerRow.add(j, BreedingViewUtil.sanitizeName(trait.getName()));
 			j++;
 		}
 
-		String[] headerRowArr = new String[headerRow.size()];
+		final String[] headerRowArr = new String[headerRow.size()];
 		tableItems.add(i, headerRow.toArray(headerRowArr));
 
 		i++;
 
-		List<String> gxeEnvLabels = new ArrayList<String>();
-		for (GxeEnvironmentLabel env : gxeEnv.getLabels()) {
+		final List<String> gxeEnvLabels = new ArrayList<String>();
+		for (final GxeEnvironmentLabel env : gxeEnv.getLabels()) {
 			gxeEnvLabels.add(env.getName());
 		}
 
 		// create table content
-		for (Experiment experiment : experiments) {
-			String[] row = new String[headerRow.size()];
+		for (final Experiment experiment : experiments) {
+			final String[] row = new String[headerRow.size()];
 
 			// site no && site code insert to columnMap
 			if (environmentName != null && !environmentName.isEmpty()) {
@@ -169,7 +167,7 @@ public class GxeUtility {
 				}
 			}
 
-			for (Entry<String, Integer> traitMapEntry : traitToColNoMap.entrySet()) {
+			for (final Entry<String, Integer> traitMapEntry : traitToColNoMap.entrySet()) {
 				Variable var = experiment.getFactors().findByLocalName(traitMapEntry.getKey());
 
 				if (var == null) {
@@ -188,7 +186,7 @@ public class GxeUtility {
 		}
 
 		try {
-			String dir =
+			final String dir =
 					"workspace" + File.separator + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator
 							+ "input";
 
@@ -196,29 +194,29 @@ public class GxeUtility {
 
 			new File(dir).mkdirs();
 
-			File csvFile = new File(dir + File.separator + gxeDataset.getName() + ".csv");
+			final File csvFile = new File(dir + File.separator + gxeDataset.getName() + ".csv");
 
-			CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER, "\r\n");
+			final CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER, "\r\n");
 			csvWriter.writeAll(tableItems);
 			csvWriter.flush();
 			csvWriter.close();
 
 			return csvFile;
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			GxeUtility.LOG.warn(e.getMessage(), e);
 			return null;
 		}
 	}
 
-	public static File exportTrialDatasetToSummaryStatsCsv(DataSet trialDataSet, List<Experiment> experiments, String environmentName,
-			List<Trait> selectedTraits, Project currentProject) {
+	public static File exportTrialDatasetToSummaryStatsCsv(final DataSet trialDataSet, final List<Experiment> experiments, final String environmentName,
+			final List<Trait> selectedTraits, final Project currentProject) {
 		if (currentProject == null) {
 			throw new IllegalArgumentException("current project is null");
 		}
 
-		List<String[]> tableItems = new ArrayList<String[]>();
+		final List<String[]> tableItems = new ArrayList<String[]>();
 
-		String[] header =
+		final String[] header =
 				new String[] {environmentName, "Trait", "NumValues", "NumMissing", "Mean", "Variance", "SD", "Min", "Max", "Range",
 						"Median", "LowerQuartile", "UpperQuartile", "MeanRep", "MinRep", "MaxRep", "MeanSED", "MinSED", "MaxSED",
 						"MeanLSD", "MinLSD", "MaxLSD", "CV", "Heritability", "WaldStatistic", "WaldDF", "Pvalue"
@@ -227,15 +225,15 @@ public class GxeUtility {
 
 		tableItems.add(header);
 
-		for (Experiment exp : experiments) {
+		for (final Experiment exp : experiments) {
 
-			Map<String, Variable> map = exp.getVariatesMap();
+			final Map<String, Variable> map = exp.getVariatesMap();
 
-			for (Trait trait : selectedTraits) {
+			for (final Trait trait : selectedTraits) {
 
-				List<String> row = new ArrayList<String>();
+				final List<String> row = new ArrayList<String>();
 				String envValue = exp.getFactors().findByLocalName(environmentName).getValue();
-				String traitValue = trait.getName().replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_");
+				String traitValue = BreedingViewUtil.sanitizeName(trait.getName());
 				if (envValue != null) {
 					envValue = envValue.replaceAll(",", ";");
 				}
@@ -247,7 +245,7 @@ public class GxeUtility {
 
 				for (int i = 2; i < header.length; i++) {
 					boolean existsFlag = false;
-					for (Variable variable : map.values()) {
+					for (final Variable variable : map.values()) {
 						if (variable.getVariableType().getLocalName().equals(trait.getName().replace("_Means", "") + "_" + header[i])) {
 							row.add(variable.getValue());
 							existsFlag = true;
@@ -264,7 +262,7 @@ public class GxeUtility {
 
 		}
 
-		String dir =
+		final String dir =
 				"workspace" + File.separator + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator
 						+ "input";
 
@@ -272,7 +270,7 @@ public class GxeUtility {
 
 		new File(dir).mkdirs();
 
-		File csvFile = new File(dir + File.separator + trialDataSet.getName() + "_SummaryStats.csv");
+		final File csvFile = new File(dir + File.separator + trialDataSet.getName() + "_SummaryStats.csv");
 
 		CSVWriter csvWriter = null;
 		try {
@@ -283,7 +281,7 @@ public class GxeUtility {
 
 			return csvFile;
 
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			GxeUtility.LOG.warn(e.getMessage(), e);
 			return null;
 		}
