@@ -49,8 +49,6 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
-import static java.lang.String.*;
-
 /**
  * The first tab (Basic Details) in Create Project Accordion Component.
  *
@@ -92,8 +90,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 	@Autowired
 	@Qualifier("workbenchProperties")
 	private Properties workbenchProperties;
-
-	private final String genericCropDescription = this.messageSource.getMessage("GENERIC_CROP_DESCRIPTION");
 
 	public ProjectBasicDetailsComponent(final CreateProjectPanel createProjectPanel) {
 		super();
@@ -252,7 +248,8 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 					return;
 				}
 
-				if (ProjectBasicDetailsComponent.this.genericCropDescription.equals(((CropType) event.getProperty().getValue()).getCropName())) {
+				if (ProjectBasicDetailsComponent.this.messageSource.getMessage("GENERIC_CROP_DESCRIPTION")
+						.equals(((CropType) event.getProperty().getValue()).getCropName())) {
 					ProjectBasicDetailsComponent.this.otherCropNameField.setVisible(true);
 					ProjectBasicDetailsComponent.this.otherCropNameField.setRequired(true);
 					ProjectBasicDetailsComponent.this.lblOtherCrop.setVisible(true);
@@ -401,7 +398,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 	private CropType getCropTypeBasedOnInput() {
 
 		if (((CropType) this.cropTypeCombo.getValue()).getCropName()
-				.equalsIgnoreCase(this.genericCropDescription)) {
+				.equalsIgnoreCase(this.messageSource.getMessage("GENERIC_CROP_DESCRIPTION"))) {
 			final String bmsVersion = this.workbenchProperties.getProperty("workbench.version", null);
 
 			final String newItemCaption = (String) this.otherCropNameField.getValue();
