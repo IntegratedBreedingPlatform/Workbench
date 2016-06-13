@@ -130,7 +130,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 			if (Boolean.parseBoolean(this.isServerApp)) {
 
-				final String outputFilename = breedingViewInput.getDatasetSource() + ".zip";
+				final String outputFilename = BreedingViewUtil.sanitizeNameAlphaNumericOnly(breedingViewInput.getDatasetSource()) + ".zip";
 				final List<String> filenameList = new ArrayList<>();
 				filenameList.add(breedingViewInput.getDestXMLFilePath());
 				filenameList.add(breedingViewInput.getSourceXLSFilePath());
@@ -199,7 +199,6 @@ public class RunSingleSiteAction implements ClickListener {
 		breedingViewInput.setGenotypes(this.createGenotypes(breedingViewInput.getDatasetId(), this.source.getSelGenotypesValue()));
 
 		breedingViewInput.setPlot(this.createPlot(breedingViewInput.getDatasetId()));
-        breedingViewInput.normalizeBreedingViewInput();
 
 	}
 

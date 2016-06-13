@@ -25,6 +25,7 @@ import org.generationcp.commons.breedingview.xml.Plot;
 import org.generationcp.commons.breedingview.xml.Replicates;
 import org.generationcp.commons.breedingview.xml.RowPos;
 import org.generationcp.commons.breedingview.xml.Rows;
+import org.generationcp.commons.util.BreedingViewUtil;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.pojos.workbench.Project;
 
@@ -39,8 +40,6 @@ import org.generationcp.middleware.pojos.workbench.Project;
 public class BreedingViewInput implements Serializable {
 
 	private static final long serialVersionUID = 7669967119863861617L;
-
-	private static final String BV_INVALID_CHARACTER_EXPRESSION = "[^a-zA-Z0-9]";
 
 	private Project project;
 	private String breedingViewProjectName;
@@ -329,30 +328,6 @@ public class BreedingViewInput implements Serializable {
 				+ this.sourceXLSFilePath + ", destXMLFilePath=" + this.destXMLFilePath + ", projectType=" + this.projectType
 				+ ", designType=" + this.designType + ", blocks=" + this.blocks + ", replicates=" + this.replicates + "]";
 	}
-
-	/**
-	 * Used to normalize breeding view input so that it is acceptable for the BV application.
-	 *
-	 * So far, this method replaces invalid characters stemming from the project name
-	 */
-	public void normalizeBreedingViewInput() {
-		this.breedingViewAnalysisName = this.breedingViewAnalysisName.replaceAll(BV_INVALID_CHARACTER_EXPRESSION, "_");
-		this.breedingViewProjectName = this.breedingViewProjectName.replaceAll(BV_INVALID_CHARACTER_EXPRESSION, "_");
-
-        this.sourceXLSFilePath = normalizeBVFilePath(this.sourceXLSFilePath);
-        this.destXMLFilePath = normalizeBVFilePath(this.destXMLFilePath);
-	}
-
-    String normalizeBVFilePath(final String filePath) {
-        final int index = filePath.lastIndexOf("\\");
-        String forNormalization = filePath.substring(index + 1, filePath.length());
-		// do not normalize the file extension so we remove it from the string
-		forNormalization = FilenameUtils.removeExtension(forNormalization);
-		// then remove the invalid characters
-        forNormalization = forNormalization.replaceAll(BV_INVALID_CHARACTER_EXPRESSION, "_");
-        // we use index + 1 here so that the file separator character is included in the resulting substring
-        return filePath.substring(0, index + 1) + forNormalization + "." + FilenameUtils.getExtension(filePath);
-    }
 
 	public Integer getOutputDatasetId() {
 		return this.outputDatasetId;
