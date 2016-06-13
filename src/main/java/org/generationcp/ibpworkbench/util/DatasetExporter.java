@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.generationcp.commons.breedingview.xml.DesignType;
+import org.generationcp.commons.util.BreedingViewUtil;
 import org.generationcp.commons.util.ObjectUtil;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
@@ -37,7 +38,6 @@ public class DatasetExporter {
 
 	public static final String NUMERIC_VARIABLE = "Numeric variable";
 	public static final String DUMMY_REPLICATES = "_REPLICATES_";
-	public static final String REGEX_VALID_BREEDING_VIEW_CHARACTERS = "[^a-zA-Z0-9-_%']+";
 
 	private static final Logger LOG = LoggerFactory.getLogger(DatasetExporter.class);
 
@@ -64,7 +64,7 @@ public class DatasetExporter {
 
 	private DataSet getDataSet(final int dataSetId) {
 
-		DataSet dataset;
+		final DataSet dataset;
 		try {
 			dataset = this.studyDataManager.getDataSet(this.datasetId);
 			return dataset;
@@ -145,7 +145,7 @@ public class DatasetExporter {
 			final String k = i.next();
 			final Integer columnIndex = this.columnsMap.get(k).intValue();
 			if (columnIndex >= 0) {
-				final String nameSanitized = k.replaceAll(DatasetExporter.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_");
+				final String nameSanitized = BreedingViewUtil.trimAndSanitizeName(k);
 				rowHeader.add(nameSanitized);
 				headerNameAliasMap.put(nameSanitized, k);
 			}

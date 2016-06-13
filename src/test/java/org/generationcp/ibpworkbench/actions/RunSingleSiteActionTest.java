@@ -30,14 +30,14 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class RunSingleSiteActionTest {
 
-	private static final String ENVIRONMENT_FACTOR = "Environment Name";
+	private static final String ENVIRONMENT_FACTOR = "Environment Factor";
 	private static final String ANALYSIS_NAME = "Analysis Name";
-	private static final String ROW_FACTOR = "ROW FACTOR";
-	private static final String COLUMN_FACTOR = "COLUMN FACTOR";
-	private static final String BLOCK_FACTOR = "BLOCK FACTOR";
-	private static final String REPLICATES_FACTOR = "REPLICATES FACTOR";
-	private static final String GENOTYPES_FACTOR = "GENOTYPES FACTOR";
-	private static final String PROJECT_NAME = "PROJECT NAME";
+	private static final String ROW_FACTOR = "Row Factor";
+	private static final String COLUMN_FACTOR = "Column Factor";
+	private static final String BLOCK_FACTOR = "Block Factor";
+	private static final String REPLICATES_FACTOR = "Replicates Factor";
+	private static final String GENOTYPES_FACTOR = "Genotypes Factor";
+	private static final String PROJECT_NAME = "Project Name";
 	private static final String DATA_SOURCE_NAME = "Data source Name";
 	private static final String DATASET_NAME = "Dataset Name";
 	private static final int DATASET_ID = 2;
@@ -224,7 +224,7 @@ public class RunSingleSiteActionTest {
 		Blocks blocks = runSingleSiteAction.createBlocks(BLOCK_FACTOR);
 
 		Assert.assertNotNull(blocks);
-		Assert.assertEquals(BLOCK_FACTOR, blocks.getName());
+		Assert.assertEquals("Block_Factor", blocks.getName());
 
 	}
 
@@ -236,7 +236,7 @@ public class RunSingleSiteActionTest {
 		Columns columns = runSingleSiteAction.createColumns(COLUMN_FACTOR);
 
 		Assert.assertNotNull(columns);
-		Assert.assertEquals(COLUMN_FACTOR, columns.getName());
+		Assert.assertEquals("Column_Factor", columns.getName());
 
 	}
 
@@ -245,7 +245,7 @@ public class RunSingleSiteActionTest {
 
 		Environment environment = runSingleSiteAction.createEnvironment(ENVIRONMENT_FACTOR);
 		Assert.assertNotNull(environment);
-		Assert.assertEquals(ENVIRONMENT_FACTOR, environment.getName());
+		Assert.assertEquals("Environment_Factor", environment.getName());
 
 	}
 
@@ -258,7 +258,7 @@ public class RunSingleSiteActionTest {
 		Genotypes genotypes = runSingleSiteAction.createGenotypes(DATASET_ID, GENOTYPES_FACTOR);
 
 		Assert.assertNotNull(genotypes);
-		Assert.assertEquals(GENOTYPES_FACTOR, genotypes.getName());
+		Assert.assertEquals("Genotypes_Factor", genotypes.getName());
 		Assert.assertEquals(ENTRY_NO, genotypes.getEntry());
 
 	}
@@ -291,7 +291,7 @@ public class RunSingleSiteActionTest {
 
 		Replicates replicates = runSingleSiteAction.createReplicates(DesignType.RANDOMIZED_BLOCK_DESIGN.getName(), REPLICATES_FACTOR);
 		Assert.assertNotNull(replicates);
-		Assert.assertEquals(REPLICATES_FACTOR, replicates.getName());
+		Assert.assertEquals("Replicates_Factor", replicates.getName());
 
 	}
 
@@ -321,7 +321,51 @@ public class RunSingleSiteActionTest {
 		Rows rows = runSingleSiteAction.createRows(ROW_FACTOR);
 
 		Assert.assertNotNull(rows);
-		Assert.assertEquals(ROW_FACTOR, rows.getName());
+		Assert.assertEquals("Row_Factor", rows.getName());
+
+	}
+
+	@Test
+	public void testPopulateRowPosAndColPosDesignIsPRep(){
+
+		runSingleSiteAction.populateRowPosAndColPos(DesignType.P_REP_DESIGN, this.breedingViewInput);
+
+		// ColPos and RowPos should not be null if the design type is P-Rep Design
+		Assert.assertNotNull(this.breedingViewInput.getColPos());
+		Assert.assertNotNull(this.breedingViewInput.getRowPos());
+
+	}
+
+	@Test
+	public void testPopulateRowPosAndColPosDesignIsNotPRep() {
+
+		runSingleSiteAction.populateRowPosAndColPos(DesignType.ROW_COLUMN_DESIGN, this.breedingViewInput);
+
+		// ColPos and RowPos should be null if the design type is NOT P-Rep Design
+		Assert.assertNull(this.breedingViewInput.getColPos());
+		Assert.assertNull(this.breedingViewInput.getRowPos());
+
+	}
+
+	@Test
+	public void testPopulateRowAndColumnForRowAndColumnDesign() {
+
+		runSingleSiteAction.populateRowAndColumn(DesignType.ROW_COLUMN_DESIGN, this.breedingViewInput);
+
+		// Columns and Rows should not be null if the design type is Row and Column Design
+		Assert.assertNotNull(this.breedingViewInput.getRows());
+		Assert.assertNotNull(this.breedingViewInput.getColumns());
+
+	}
+
+	@Test
+	public void testPopulateRowAndColumnDesignIsNotRowAndColumn() {
+
+		runSingleSiteAction.populateRowAndColumn(DesignType.RANDOMIZED_BLOCK_DESIGN, this.breedingViewInput);
+
+		// Columns and Rows should be null if the design type is NOT Row and Column Design
+		Assert.assertNull(this.breedingViewInput.getRows());
+		Assert.assertNull(this.breedingViewInput.getColumns());
 
 	}
 
