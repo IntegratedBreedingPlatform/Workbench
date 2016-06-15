@@ -1,0 +1,54 @@
+
+package org.generationcp.ibpworkbench.customfields;
+
+import org.generationcp.ibpworkbench.customcomponent.GermplasmListTree;
+import org.generationcp.ibpworkbench.listeners.ListTreeActionsListener;
+import org.springframework.beans.factory.annotation.Configurable;
+
+@Configurable
+public abstract class ListTreeComponent extends ListSelectorComponent {
+
+	private static final long serialVersionUID = -4025353842975688857L;
+
+	public ListTreeComponent(Integer selectListId) {
+		this.listId = selectListId;
+		this.selectListsFolderByDefault = false;
+	}
+
+	public ListTreeComponent(ListTreeActionsListener treeActionsListener) {
+		this.treeActionsListener = treeActionsListener;
+		this.selectListsFolderByDefault = false;
+	}
+
+	public ListTreeComponent(ListTreeActionsListener treeActionsListener, Integer selectedListId) {
+		this.treeActionsListener = treeActionsListener;
+		this.listId = selectedListId;
+		this.selectListsFolderByDefault = true;
+	}
+
+	@Override
+	public String getTreeStyleName() {
+		return "listTree";
+	}
+
+	@Override
+	public String getMainTreeStyleName() {
+		return "listTree";
+	}
+
+	@Override
+	public void instantiateGermplasmListSourceComponent() {
+		this.setGermplasmListSource(new GermplasmListTree());
+	}
+
+	@Override
+	public Object[] generateCellInfo(String name, String owner, String description, String listType, String numberOfEntries) {
+		// just return an empty array, due to sonar inspection warning
+		return new Object[1];
+	}
+
+	@Override
+	public void setNodeItemIcon(Object itemId, boolean isFolder) {
+
+	}
+}
