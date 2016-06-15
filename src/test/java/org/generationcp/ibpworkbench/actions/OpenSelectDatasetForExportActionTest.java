@@ -1,12 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * <p/>
  * Generation Challenge Programme (GCP)
- *
- *
+ * <p/>
+ * <p/>
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.actions;
@@ -43,8 +42,8 @@ public class OpenSelectDatasetForExportActionTest {
 	@Before
 	public void setup() {
 
-		Project project = this.createProject();
-		Study study = this.createStudy();
+		final Project project = this.createProject();
+		final Study study = this.createStudy();
 
 		this.studyUtil = StudyUtil.getInstance();
 		this.singleSiteAnalysisPanel = new SingleSiteAnalysisPanel(project, null);
@@ -59,8 +58,8 @@ public class OpenSelectDatasetForExportActionTest {
 
 	@Test
 	public void testCheckIfNumericCategoricalVarAreIncluded() {
-		List<VariateModel> variateList = new ArrayList<VariateModel>();
-		Map<String, Boolean> variatesCheckboxState = new HashMap<String, Boolean>();
+		final List<VariateModel> variateList = new ArrayList<VariateModel>();
+		final Map<String, Boolean> variatesCheckboxState = new HashMap<String, Boolean>();
 		this.createVariateListWithStateTestData(variateList, variatesCheckboxState);
 		Assert.assertTrue("Numerical categorical variates if selected can be included",
 				this.openSelectDatasetForExportAction.checkIfNumericCategoricalVarAreIncluded(variateList, variatesCheckboxState));
@@ -68,8 +67,8 @@ public class OpenSelectDatasetForExportActionTest {
 
 	@Test
 	public void testCheckIfNonNumericVarAreIncluded() {
-		List<VariateModel> variateList = new ArrayList<VariateModel>();
-		Map<String, Boolean> variatesCheckboxState = new HashMap<String, Boolean>();
+		final List<VariateModel> variateList = new ArrayList<VariateModel>();
+		final Map<String, Boolean> variatesCheckboxState = new HashMap<String, Boolean>();
 		this.createVariateListWithStateTestData(variateList, variatesCheckboxState);
 		Assert.assertFalse("Non-numeric variates cannot be included",
 				this.openSelectDatasetForExportAction.checkIfNonNumericVarAreIncluded(variateList, variatesCheckboxState));
@@ -78,7 +77,7 @@ public class OpenSelectDatasetForExportActionTest {
 	@Test
 	public void testPopulateAnalysisName() {
 
-		BreedingViewInput breedingViewInput = new BreedingViewInput();
+		final BreedingViewInput breedingViewInput = new BreedingViewInput();
 		this.openSelectDatasetForExportAction.populateAnalysisName(breedingViewInput, DATASET_NAME);
 		Assert.assertTrue(breedingViewInput.getBreedingViewAnalysisName().contains("SSA analysis of TEST_ _-_-PLOTDATA  (run at "));
 
@@ -87,7 +86,7 @@ public class OpenSelectDatasetForExportActionTest {
 	@Test
 	public void testPopulateProjectNameAndFilePaths() {
 
-		BreedingViewInput breedingViewInput = new BreedingViewInput();
+		final BreedingViewInput breedingViewInput = new BreedingViewInput();
 		this.openSelectDatasetForExportAction.populateProjectNameAndFilePaths(breedingViewInput, this.createProject(), INPUT_DIRECTORY);
 
 		Assert.assertEquals("PROJECT NAME_99_TEST_ _-_-PLOTDATA", breedingViewInput.getBreedingViewProjectName());
@@ -98,7 +97,7 @@ public class OpenSelectDatasetForExportActionTest {
 
 	private Project createProject() {
 
-		Project project = new Project();
+		final Project project = new Project();
 		project.setProjectName(PROJECT_NAME);
 		return project;
 
@@ -106,15 +105,14 @@ public class OpenSelectDatasetForExportActionTest {
 
 	private Study createStudy() {
 
-		Study study = new Study();
+		final Study study = new Study();
 		return study;
 	}
 
-
-	private void createVariateListWithStateTestData(List<VariateModel> variateList, Map<String, Boolean> variatesCheckboxState) {
-		VariableTypeList variates = this.studyUtil.createVariateVarsTestData();
-		for (DMSVariableType variate : variates.getVariates().getVariableTypes()) {
-			VariateModel vm = this.singleSiteAnalysisPanel.transformVariableTypeToVariateModel(variate);
+	private void createVariateListWithStateTestData(final List<VariateModel> variateList, final Map<String, Boolean> variatesCheckboxState) {
+		final VariableTypeList variates = this.studyUtil.createVariateVarsTestData();
+		for (final DMSVariableType variate : variates.getVariates().getVariableTypes()) {
+			final VariateModel vm = this.singleSiteAnalysisPanel.transformVariableTypeToVariateModel(variate);
 			variateList.add(vm);
 			variatesCheckboxState.put(vm.getName(), vm.getActive());
 		}
