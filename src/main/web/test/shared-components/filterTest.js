@@ -12,6 +12,7 @@ describe('Filter Module', function() {
 		q,
 		deferredGetTypes,
 		deferredGetNonSystemDataTypes,
+		httpBackend,
 
 		panelService = {
 			showPanel: function() {},
@@ -71,9 +72,10 @@ describe('Filter Module', function() {
 		});
 	});
 
-	beforeEach(inject(function($rootScope, $q) {
+	beforeEach(inject(function($rootScope, $q, $httpBackend) {
 		q = $q;
 		scope = $rootScope;
+		httpBackend = $httpBackend;
 
 		variableTypesService.getTypes = function() {
 			deferredGetTypes = q.defer();
@@ -90,6 +92,9 @@ describe('Filter Module', function() {
 
 		spyOn(panelService, 'showPanel').and.callThrough();
 		spyOn(serviceUtilities, 'serverErrorHandler').and.callThrough();
+
+		$httpBackend.when('GET', 'template/datepicker/datepicker.html').respond('http://anyvalid.url');
+		$httpBackend.when('GET', 'template/datepicker/popup.html').respond('http://anyvalid.url');
 	}));
 
 	describe('omFilter', function() {
