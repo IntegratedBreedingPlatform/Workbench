@@ -12,8 +12,8 @@
 			request: function(config) {
 				config.headers = config.headers || {};
 				/**
-				 * BMSAPI x-auth-token is stored in local storage service as "bms.xAuthToken" see login.js. 
-				 * The prefix "bms" is configured in ontology.js as part of app.config: 
+				 * BMSAPI x-auth-token is stored in local storage service as "bms.xAuthToken" see login.js.
+				 * The prefix "bms" is configured in ontology.js as part of app.config:
 				 *     localStorageServiceProvider.setPrefix('bms');
 				 */
 				var token = localStorageService.get('xAuthToken');
@@ -27,14 +27,15 @@
 		};
 	}]);
 
-	bmsAuth.factory('authExpiredInterceptor', ['$q', 'localStorageService', 'reAuthenticationService', function($q, localStorageService, reAuthenticationService) {
+	bmsAuth.factory('authExpiredInterceptor', ['$q', 'localStorageService', 'reAuthenticationService', function($q, localStorageService,
+		reAuthenticationService) {
 		return {
 			responseError: function(response) {
 				// Token has expired or is invalid.
 				if (response.status === 401 && (response.data.error === 'invalid_token' || response.data.error === 'Unauthorized')) {
 					/**
-					 * BMSAPI x-auth-token is stored in local storage service as "bms.xAuthToken" see login.js. 
-					 * The prefix "bms" is configured in ontology.js as part of app.config: 
+					 * BMSAPI x-auth-token is stored in local storage service as "bms.xAuthToken" see login.js.
+					 * The prefix "bms" is configured in ontology.js as part of app.config:
 					 *     localStorageServiceProvider.setPrefix('bms');
 					 */
 					localStorageService.remove('xAuthToken');

@@ -296,12 +296,13 @@
 				.done(function(data) {
 					clearErrors();
 					/**
-					 * This is crucial for the Ontology Manager UI which retrieves the token from local storage and uses it to make calls to BMSAPI.
+					 * This is crucial for the Ontology Manager UI which retrieves the token from local storage
+					 * and uses it to make calls to BMSAPI.
 					 * See bmsAuth.js and ontology.js and the AuthenticationController.validateLogin() method on server side.
-					 * The prefix "bms" is configured in ontology.js as part of app.config: 
+					 * The prefix "bms" is configured in ontology.js as part of app.config:
 					 *     localStorageServiceProvider.setPrefix('bms');
 					 */
-					localStorage['bms.xAuthToken'] = JSON.stringify(data);				
+					localStorage['bms.xAuthToken'] = JSON.stringify(data);
 					// no login problems! submit
 					loginFormRef.submit();
 				})
