@@ -63,47 +63,50 @@ describe('BMS Auth Module Tests', function() {
 
 	describe('Auth Expired Interceptor Tests', function() {
 
-		var authExpiredInterceptor, localStorageService, reAuthenticationService, q;
+		var authExpiredInterceptor, localStorageService, q, rootScope;
 
 		beforeEach(function() {
-			inject(function(_authExpiredInterceptor_, _localStorageService_, _reAuthenticationService_, $q) {
+			inject(function(_authExpiredInterceptor_, _localStorageService_, $q, $rootScope) {
 				authExpiredInterceptor = _authExpiredInterceptor_;
 				localStorageService = _localStorageService_;
-				reAuthenticationService = _reAuthenticationService_;
 				q = $q;
+				rootScope = $rootScope;
 			});
 			spyOn(localStorageService, 'remove');
-			spyOn(reAuthenticationService, 'handleReAuthentication');
 			spyOn(q, 'reject');
+			spyOn(rootScope, '$broadcast');
 		});
 
-		it('Should remove x-auth-token from local storage and call re-authentication service when response status code is 401 with error Unauthorized', function() {
+		it('Should remove x-auth-token from local storage and call re-authentication service when response status code is 401 ' +
+		'with error Unauthorized', function() {
 
 			var response = { status: 401, data: { error: 'Unauthorized'} };
 
 			authExpiredInterceptor.responseError(response);
 			expect(localStorageService.remove).toHaveBeenCalledWith('xAuthToken');
-			expect(reAuthenticationService.handleReAuthentication).toHaveBeenCalled();
+			expect(rootScope.$broadcast).toHaveBeenCalledWith('authenticationError');
 			expect(q.reject).toHaveBeenCalledWith(response);
 		});
 
-		it('Should remove x-auth-token from local storage and call re-authentication service when response status code is 401 with error invalid_token', function() {
+		it('Should remove x-auth-token from local storage and call re-authentication service when response status code is 401 ' +
+		'with error invalid_token', function() {
 
 			var response = { status: 401, data: { error: 'invalid_token'} };
 
 			authExpiredInterceptor.responseError(response);
 			expect(localStorageService.remove).toHaveBeenCalledWith('xAuthToken');
-			expect(reAuthenticationService.handleReAuthentication).toHaveBeenCalled();
+			expect(rootScope.$broadcast).toHaveBeenCalledWith('authenticationError');
 			expect(q.reject).toHaveBeenCalledWith(response);
 		});
 
-		it('Should not remove x-auth-token from local storage or call re-authentication service when error is not related to authentication.', function() {
+		it('Should not remove x-auth-token from local storage or call re-authentication service when error is not related to ' +
+		'authentication.', function() {
 
 			var response = { status: 500, data: { error: 'Some error that is not related to authentication.'} };
 
 			authExpiredInterceptor.responseError(response);
 			expect(localStorageService.remove).not.toHaveBeenCalled();
-			expect(reAuthenticationService.handleReAuthentication).not.toHaveBeenCalled();
+			expect(rootScope.$broadcast).not.toHaveBeenCalledWith('authenticationError');
 			expect(q.reject).toHaveBeenCalledWith(response);
 		});
 	});

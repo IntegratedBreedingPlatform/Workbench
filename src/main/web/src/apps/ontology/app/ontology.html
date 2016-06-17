@@ -18,6 +18,9 @@
 <om-mask></om-mask>
 	<header>
 		<h1 class="om-title">{{'title' | translate}} <om-help module="MANAGE_ONTOLOGIES"></om-help></h1>
+		<div ng-if="hasAuthError" class="alert alert-danger" role="alert">
+			<span>{{'validation.authError' | translate}}</span>
+		</div>
 
 		<button class="btn btn-default om-add-new-btn" ng-click="addNewSelection()">{{'button.addNew' | translate}}</button>
 		<nav>

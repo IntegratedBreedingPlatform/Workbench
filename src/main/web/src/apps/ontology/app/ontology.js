@@ -57,26 +57,27 @@
 		});
 		$translateProvider.preferredLanguage('en');
 	}]);
-	
+
 	app.config(['$httpProvider', function($httpProvider) {
 		$httpProvider.interceptors.push('authInterceptor');
 		$httpProvider.interceptors.push('authExpiredInterceptor');
 	}]);
-	
-	app.config(['localStorageServiceProvider', function(localStorageServiceProvider){
+
+	app.config(['localStorageServiceProvider', function(localStorageServiceProvider) {
 		/**
 		 * BMSAPI x-auth-token is stored in local storage service as bms.xAuthToken see login.js
 		 */
 		localStorageServiceProvider.setPrefix('bms');
 	}]);
 
-	app.controller('OntologyController', ['$scope', '$location', '$window', 'panelService',
-		function($scope, $location, $window, panelService) {
+	app.controller('OntologyController', ['$scope', '$location', '$window', 'panelService', '$timeout',
+		function($scope, $location, $window, panelService, $timeout) {
 
 			var urls = ['methods', 'variables', 'scales', 'properties'];
 
 			$scope.panelName = 'addNew';
 			$scope.activeTab = 'variables';
+			$scope.hasAuthError = false;
 
 			$scope.addNewSelection = function() {
 				panelService.showPanel($scope.panelName);
@@ -102,6 +103,20 @@
 			$scope.setAsActive = function(value) {
 				$scope.activeTab = value;
 			};
+
+			$scope.$on('authenticationError', function() {
+				$scope.hasAuthError = true;
+				$timeout(function() {
+					var isInFrame = window.location !== window.parent.location;
+					var parentUrl = isInFrame ? document.referrer : document.location.href;
+					var pathArray = parentUrl.split('/');
+					var protocol = pathArray[0];
+					var host = pathArray[2];
+					var baseUrl = protocol + '//' + host;
+					var logoutUrl = baseUrl + '/ibpworkbench/logout';
+					window.top.location.href = logoutUrl;
+				}, 10000);
+			});
 		}
 	]);
 

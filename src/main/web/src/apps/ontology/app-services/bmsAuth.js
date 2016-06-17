@@ -27,8 +27,8 @@
 		};
 	}]);
 
-	bmsAuth.factory('authExpiredInterceptor', ['$q', 'localStorageService', 'reAuthenticationService', function($q, localStorageService,
-		reAuthenticationService) {
+	bmsAuth.factory('authExpiredInterceptor', ['$q', 'localStorageService', '$rootScope',
+		function($q, localStorageService, $rootScope) {
 		return {
 			responseError: function(response) {
 				// Token has expired or is invalid.
@@ -39,34 +39,10 @@
 					 *     localStorageServiceProvider.setPrefix('bms');
 					 */
 					localStorageService.remove('xAuthToken');
-					reAuthenticationService.handleReAuthentication();
+					$rootScope.$broadcast('authenticationError');
 				}
 				return $q.reject(response);
 			}
 		};
 	}]);
-
-	bmsAuth.service('reAuthenticationService', function() {
-		var hasBeenHandled = false;
-		return {
-			// Current strategy to re-authenticate is to log the user out from Workbench by hitting Spring security internal logout endpoint
-			//    which means re-login, which in turn means a fresh token will be issued ;)
-			// TODO find a better alternative to use insead of alert then in the face punch to logout which is easy to unit test as well.
-			handleReAuthentication: function() {
-				if (!hasBeenHandled) {
-					hasBeenHandled = true;
-					alert('Ontology manager needs to authenticate you again. Redirecting to login page.');
-					var isInFrame = window.location !== window.parent.location;
-					var parentUrl = isInFrame ? document.referrer : document.location.href;
-					var pathArray = parentUrl.split('/');
-					var protocol = pathArray[0];
-					var host = pathArray[2];
-					var baseUrl = protocol + '//' + host;
-					var logoutUrl = baseUrl + '/ibpworkbench/logout';
-					window.top.location.href = logoutUrl;
-				}
-			}
-		};
-	});
-
 })();
