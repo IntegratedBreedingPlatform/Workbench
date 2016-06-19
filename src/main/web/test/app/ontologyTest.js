@@ -93,4 +93,10 @@ describe('Ontology Controller', function() {
 			expect(scope.activeTab).toEqual(testValue);
 		});
 	});
+
+	it('should dislay the error message when the the authentication error was returned from the server', function() {
+		expect(scope.hasAuthError).toBe(false);
+		scope.$broadcast('authenticationError');
+		expect(scope.hasAuthError).toBe(true);
+	});
 });
