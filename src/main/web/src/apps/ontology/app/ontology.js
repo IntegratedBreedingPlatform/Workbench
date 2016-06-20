@@ -104,18 +104,21 @@
 				$scope.activeTab = value;
 			};
 
-			$scope.$on('authenticationError', function() {
-				$scope.hasAuthError = true;
-				$timeout(function() {
-					var isInFrame = window.location !== window.parent.location;
-					var parentUrl = isInFrame ? document.referrer : document.location.href;
+			//exposed for testing purposed
+			$scope.redirectToLoginPage = function(_window, _document) {
+					var isInFrame = _window.location !== _window.parent.location;
+					var parentUrl = isInFrame ? _document.referrer : _document.location.href;
 					var pathArray = parentUrl.split('/');
 					var protocol = pathArray[0];
 					var host = pathArray[2];
 					var baseUrl = protocol + '//' + host;
 					var logoutUrl = baseUrl + '/ibpworkbench/logout';
-					window.top.location.href = logoutUrl;
-				}, 10000);
+					_window.top.location.href = logoutUrl;
+				};
+
+			$scope.$on('authenticationError', function() {
+				$scope.hasAuthError = true;
+				$timeout($scope.redirectToLoginPage(window, document), 10000);
 			});
 		}
 	]);

@@ -6,17 +6,20 @@ describe('Ontology Controller', function() {
 	var fakeEvent = {
 			preventDefault: function() {}
 		},
+		doNothingFunction =  function() {},
 		controller,
 		deferred,
+		httpBackend,
 		location,
 		panelService,
 		q,
 		scope,
+		timeout,
 		window;
 
 	beforeEach(module('ontology'));
 
-	beforeEach(inject(function($rootScope, $location, $controller, $q, $window) {
+	beforeEach(inject(function($rootScope, $location, $controller, $q, $window, $timeout, $httpBackend) {
 		panelService = {
 			hidePanel: function() {
 				deferred = q.defer();
@@ -39,7 +42,8 @@ describe('Ontology Controller', function() {
 		q = $q;
 		scope = $rootScope;
 		window = $window;
-
+		timeout = $timeout;
+		httpBackend = $httpBackend;
 	}));
 
 	it('should store the previous location when the location changes', function() {
@@ -94,7 +98,41 @@ describe('Ontology Controller', function() {
 		});
 	});
 
+	describe('redirectToLoginPage', function() {
+		it('should redirect to login page if not in frame', function() {
+			var fakeWindow = {
+					location: 'mypage',
+					parent: {location: 'mypage'},
+					top: {
+						location: {href: 'thisShouldChange'}
+					}
+				},
+				fakeDocument = {
+					referrer: 'http://localhost:8080/topTestPage/nestedTestPage',
+					location: {href: 'http://localhost:8080/topTestPage/nestedTestPage'}
+				};
+			scope.redirectToLoginPage(fakeWindow, fakeDocument);
+			expect(fakeWindow.top.location.href).toBe('http://localhost:8080/ibpworkbench/logout');
+		});
+		it('should redirect to login page in frame', function() {
+			var fakeWindow = {
+					location: 'mypage1',
+					parent: {location: 'mypage2'},
+					top: {
+						location: {href: 'thisShouldChange'}
+					}
+				},
+				fakeDocument = {
+					referrer: 'http://localhost:8080/topTestPage/nestedTestPage',
+					location: {href: 'http://localhost:8080/topTestPage/nestedTestPage'}
+				};
+			scope.redirectToLoginPage(fakeWindow, fakeDocument);
+			expect(fakeWindow.top.location.href).toBe('http://localhost:8080/ibpworkbench/logout');
+		});
+	});
+
 	it('should dislay the error message when the the authentication error was returned from the server', function() {
+		spyOn(scope, 'redirectToLoginPage').and.callFake(doNothingFunction);
 		expect(scope.hasAuthError).toBe(false);
 		scope.$broadcast('authenticationError');
 		expect(scope.hasAuthError).toBe(true);
