@@ -15,6 +15,7 @@ import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
 import org.generationcp.commons.util.BreedingViewUtil;
+import org.generationcp.ibpworkbench.util.bean.MultiSiteParameters;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.Experiment;
 import org.generationcp.middleware.domain.dms.Variable;
@@ -99,8 +100,13 @@ public class GxeUtility {
 		}
 	}
 
-	public static File exportGxEDatasetToBreadingViewCsv(final DataSet gxeDataset, final List<Experiment> experiments, final String environmentName,
-			final String environmentGroup, final String genotypeName, final GxeEnvironment gxeEnv, final List<Trait> selectedTraits, final Project currentProject) {
+	public static File exportMeansDatasetToCsv(final String inputFileName, final MultiSiteParameters multiSiteParameters, final DataSet gxeDataset, final List<Experiment> experiments, final String environmentName,
+			 final GxeEnvironment gxeEnv, final List<Trait> selectedTraits) {
+
+		Project currentProject = multiSiteParameters.getProject();
+		String environmentGroup = multiSiteParameters.getSelectedEnvGroupFactorName();
+		String genotypeName = multiSiteParameters.getSelectedGenotypeFactorName();
+
 		if (currentProject == null) {
 			throw new IllegalArgumentException("current project is null");
 		}
@@ -194,7 +200,7 @@ public class GxeUtility {
 
 			new File(dir).mkdirs();
 
-			final File csvFile = new File(dir + File.separator + gxeDataset.getName() + ".csv");
+			final File csvFile = new File(dir + File.separator + inputFileName + ".csv");
 
 			final CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER, "\r\n");
 			csvWriter.writeAll(tableItems);
@@ -208,8 +214,9 @@ public class GxeUtility {
 		}
 	}
 
-	public static File exportTrialDatasetToSummaryStatsCsv(final DataSet trialDataSet, final List<Experiment> experiments, final String environmentName,
+	public static File exportTrialDatasetToSummaryStatsCsv(final String inputFileName, final DataSet trialDataSet, final List<Experiment> experiments, final String environmentName,
 			final List<Trait> selectedTraits, final Project currentProject) {
+
 		if (currentProject == null) {
 			throw new IllegalArgumentException("current project is null");
 		}
@@ -270,7 +277,7 @@ public class GxeUtility {
 
 		new File(dir).mkdirs();
 
-		final File csvFile = new File(dir + File.separator + trialDataSet.getName() + "_SummaryStats.csv");
+		final File csvFile = new File(dir + File.separator + inputFileName + "_SummaryStats.csv");
 
 		CSVWriter csvWriter = null;
 		try {
