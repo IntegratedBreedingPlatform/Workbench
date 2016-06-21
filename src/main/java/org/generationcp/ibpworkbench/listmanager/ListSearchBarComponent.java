@@ -3,6 +3,10 @@ package org.generationcp.ibpworkbench.listmanager;
 
 import java.util.ArrayList;
 
+import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.event.ShortcutListener;
+import com.vaadin.ui.*;
+import com.vaadin.ui.Button.ClickEvent;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -18,19 +22,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import com.vaadin.event.ShortcutAction.KeyCode;
-import com.vaadin.event.ShortcutListener;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.PopupView;
-import com.vaadin.ui.TextField;
 
 @Configurable
 public class ListSearchBarComponent extends Panel implements InternationalizableComponent, InitializingBean, BreedingManagerLayout {
@@ -91,7 +82,7 @@ public class ListSearchBarComponent extends Panel implements Internationalizable
 		final Label descLbl = new Label(ListSearchBarComponent.GUIDE, Label.CONTENT_XHTML);
 		descLbl.setWidth("300px");
 		this.popup = new PopupView(" ? ", descLbl);
-		this.popup.setStyleName("gcp-popup-view");
+		this.popup.setStyleName("gcp-popup-view-bm");
 
 		this.exactMatchesOnlyCheckBox = new CheckBox();
 		this.exactMatchesOnlyCheckBox.setValue(false);

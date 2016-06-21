@@ -5,9 +5,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
 
+import com.vaadin.data.Container.ItemSetChangeEvent;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.ui.*;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Window.CloseEvent;
+import com.vaadin.ui.Window.CloseListener;
+import com.vaadin.ui.themes.BaseTheme;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -27,22 +35,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import com.vaadin.data.Container.ItemSetChangeEvent;
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.PopupView;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.Window.CloseEvent;
-import com.vaadin.ui.Window.CloseListener;
-import com.vaadin.ui.themes.BaseTheme;
 
 @Configurable
 public class BreedingMethodField extends AbsoluteLayout implements InitializingBean, InternationalizableComponent, BreedingManagerLayout {
@@ -166,7 +158,7 @@ public class BreedingMethodField extends AbsoluteLayout implements InitializingB
 		this.methodDescription = new Label();
 		this.methodDescription.setWidth("300px");
 		this.popup = new PopupView(" ? ", this.methodDescription);
-		this.popup.setStyleName("gcp-popup-view");
+		this.popup.setStyleName("gcp-popup-view-bm");
 
 		try {
 			this.programUniqueId = this.breedingManagerService.getCurrentProject().getUniqueID();

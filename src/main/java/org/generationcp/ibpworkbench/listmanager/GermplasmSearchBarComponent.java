@@ -4,6 +4,12 @@ package org.generationcp.ibpworkbench.listmanager;
 import java.util.Arrays;
 import java.util.List;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+import com.vaadin.event.ShortcutAction;
+import com.vaadin.event.ShortcutListener;
+import com.vaadin.ui.*;
+import com.vaadin.ui.Button.ClickEvent;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -25,23 +31,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
-
-import com.vaadin.event.ShortcutAction;
-import com.vaadin.event.ShortcutListener;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.OptionGroup;
-import com.vaadin.ui.PopupView;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.Window;
-
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
 
 @Configurable
 public class GermplasmSearchBarComponent extends CssLayout implements InternationalizableComponent, InitializingBean, BreedingManagerLayout {
@@ -121,7 +110,7 @@ public class GermplasmSearchBarComponent extends CssLayout implements Internatio
 		final Label descLbl = new Label(GermplasmSearchBarComponent.GUIDE, Label.CONTENT_XHTML);
 		descLbl.setWidth("300px");
 		this.popup = new PopupView(" ? ", descLbl);
-		this.popup.setStyleName("gcp-popup-view");
+		this.popup.setStyleName("gcp-popup-view-bm");
 
 		this.withInventoryOnlyCheckBox = new CheckBox();
 		this.withInventoryOnlyCheckBox.setValue(false);
