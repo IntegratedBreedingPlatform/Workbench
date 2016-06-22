@@ -1,0 +1,94 @@
+
+package org.generationcp.ibpworkbench.listimport;
+
+import org.generationcp.commons.constant.ColumnLabels;
+import org.generationcp.ibpworkbench.listimport.actions.ProcessImportedGermplasmAction;
+import org.generationcp.middleware.domain.oms.Term;
+import org.generationcp.middleware.domain.oms.TermId;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.api.OntologyDataManager;
+import org.generationcp.middleware.pojos.Germplasm;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+
+import com.vaadin.ui.Table;
+import com.vaadin.ui.Window;
+
+public class SelectGermplasmWindowTest {
+
+	@Mock
+	private OntologyDataManager ontologyDataManager;
+	@Mock
+	private ProcessImportedGermplasmAction source;
+	@Mock
+	private Window parentWindow;
+
+	private final String germplasmName = "Germplasm Name";
+	private final int index = 2;
+	private Germplasm germplasm;
+
+	private SelectGermplasmWindow selectGermplasmWindow;
+
+	@Before
+	public void setUp() {
+		MockitoAnnotations.initMocks(this);
+
+		this.germplasm = new Germplasm();
+		this.germplasm.setGid(1);
+
+		this.selectGermplasmWindow =
+				new SelectGermplasmWindow(this.source, this.germplasmName, this.index, this.germplasm, this.parentWindow);
+		this.selectGermplasmWindow.setOntologyDataManager(this.ontologyDataManager);
+	}
+
+	@Test
+	public void testInitGermplasmTable_returnsTheValueFromColumLabelDefaultName() throws MiddlewareQueryException {
+		Table germplasmTable = new Table();
+		this.selectGermplasmWindow.setGermplasmTable(germplasmTable);
+
+		Term fromOntology = new Term();
+		Mockito.when(this.ontologyDataManager.getTermById(TermId.DESIG.getId())).thenReturn(fromOntology);
+		Mockito.when(this.ontologyDataManager.getTermById(TermId.GID.getId())).thenReturn(fromOntology);
+		Mockito.when(this.ontologyDataManager.getTermById(TermId.GERMPLASM_LOCATION.getId())).thenReturn(fromOntology);
+		Mockito.when(this.ontologyDataManager.getTermById(TermId.BREEDING_METHOD_NAME.getId())).thenReturn(fromOntology);
+		Mockito.when(this.ontologyDataManager.getTermById(TermId.CROSS.getId())).thenReturn(fromOntology);
+
+		this.selectGermplasmWindow.initGermplasmTable();
+
+		Table table = this.selectGermplasmWindow.getGermplasmTable();
+
+		Assert.assertEquals("DESIGNATION", table.getColumnHeader(ColumnLabels.DESIGNATION.getName()));
+		Assert.assertEquals("GID", table.getColumnHeader(ColumnLabels.GID.getName()));
+		Assert.assertEquals("LOCATIONS", table.getColumnHeader(ColumnLabels.GERMPLASM_LOCATION.getName()));
+		Assert.assertEquals("METHOD NAME", table.getColumnHeader(ColumnLabels.BREEDING_METHOD_NAME.getName()));
+		Assert.assertEquals("PARENTAGE", table.getColumnHeader(ColumnLabels.PARENTAGE.getName()));
+	}
+
+	@Test
+	public void testInitGermplasmTable_returnsTheValueFromOntology() throws MiddlewareQueryException {
+		Table germplasmTable = new Table();
+		this.selectGermplasmWindow.setGermplasmTable(germplasmTable);
+
+		Term fromOntology = new Term();
+		fromOntology.setName("Ontology Name");
+		Mockito.when(this.ontologyDataManager.getTermById(TermId.DESIG.getId())).thenReturn(fromOntology);
+		Mockito.when(this.ontologyDataManager.getTermById(TermId.GID.getId())).thenReturn(fromOntology);
+		Mockito.when(this.ontologyDataManager.getTermById(TermId.GERMPLASM_LOCATION.getId())).thenReturn(fromOntology);
+		Mockito.when(this.ontologyDataManager.getTermById(TermId.BREEDING_METHOD_NAME.getId())).thenReturn(fromOntology);
+		Mockito.when(this.ontologyDataManager.getTermById(TermId.CROSS.getId())).thenReturn(fromOntology);
+
+		this.selectGermplasmWindow.initGermplasmTable();
+
+		Table table = this.selectGermplasmWindow.getGermplasmTable();
+
+		Assert.assertEquals("Ontology Name", table.getColumnHeader(ColumnLabels.DESIGNATION.getName()));
+		Assert.assertEquals("Ontology Name", table.getColumnHeader(ColumnLabels.GID.getName()));
+		Assert.assertEquals("Ontology Name", table.getColumnHeader(ColumnLabels.GERMPLASM_LOCATION.getName()));
+		Assert.assertEquals("Ontology Name", table.getColumnHeader(ColumnLabels.BREEDING_METHOD_NAME.getName()));
+		Assert.assertEquals("Ontology Name", table.getColumnHeader(ColumnLabels.PARENTAGE.getName()));
+	}
+}

@@ -1,0 +1,361 @@
+
+package org.generationcp.ibpworkbench.listimport.actions;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.vaadin.ui.fields.BmsDateField;
+import org.generationcp.ibpworkbench.actions.SaveGermplasmListActionSource;
+import org.generationcp.ibpworkbench.data.initializer.ImportedGermplasmListDataInitializer;
+import org.generationcp.ibpworkbench.listimport.GermplasmFieldsComponent;
+import org.generationcp.ibpworkbench.listimport.GermplasmImportMain;
+import org.generationcp.ibpworkbench.listimport.SpecifyGermplasmDetailsComponent;
+import org.generationcp.ibpworkbench.pojos.ImportedGermplasm;
+import org.generationcp.middleware.data.initializer.GermplasmTestDataInitializer;
+import org.generationcp.middleware.manager.GermplasmDataManagerUtil;
+import org.generationcp.middleware.manager.GermplasmNameType;
+import org.generationcp.middleware.manager.Operation;
+import org.generationcp.middleware.manager.api.GermplasmDataManager;
+import org.generationcp.middleware.pojos.Germplasm;
+import org.generationcp.middleware.pojos.Name;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Matchers;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Window;
+
+/**
+ * Unit Test to verify Process Imported Germplasm Action file
+ */
+public class ProcessImportedGermplasmActionTest {
+
+	@Mock
+	private ContextUtil contextUtil;
+
+	@Mock
+	private SaveGermplasmListActionSource saveGermplasmListActionSource;
+
+	@Mock
+	private GermplasmDataManager germplasmDataManager;
+
+	private ProcessImportedGermplasmAction processImportedGermplasmAction;
+
+	@Mock
+	private GermplasmFieldsComponent germplasmFieldsComponent;
+
+	@Mock
+	private SpecifyGermplasmDetailsComponent germplasmDetailsComponent;
+
+	@Mock
+	private GermplasmDataManagerUtil germplasmDataManagerUtil;
+
+	@Mock
+	private CheckBox automaticallyAcceptSingleMatchesCheckbox;
+
+	final static Integer IBDB_USER_ID = 1;
+	final static Integer DATE_INT_VALUE = 20151105;
+
+	@Before
+	public void setUp() throws Exception {
+		MockitoAnnotations.initMocks(this);
+
+		this.processImportedGermplasmAction = new ProcessImportedGermplasmAction(this.germplasmDetailsComponent);
+		this.processImportedGermplasmAction.setContextUtil(this.contextUtil);
+		this.processImportedGermplasmAction.setGermplasmDataManager(this.germplasmDataManager);
+
+		Mockito.doReturn(this.germplasmFieldsComponent).when(this.germplasmDetailsComponent).getGermplasmFieldsComponent();
+		final ComboBox locationComboBox = new ComboBox();
+		locationComboBox.addItem("1");
+		Mockito.doReturn(locationComboBox).when(this.germplasmFieldsComponent).getLocationComboBox();
+
+		final ComboBox methodComboBox = new ComboBox();
+		methodComboBox.addItem("1");
+		Mockito.doReturn(methodComboBox).when(this.germplasmFieldsComponent).getBreedingMethodComboBox();
+	}
+
+	/**
+	 * Test to verify performSecondPedigreeAction method works properly if gid is specified
+	 */
+	@Test
+	public void testPerformSecondPedigreeActionIfGidSpecified() {
+		Mockito.when(this.contextUtil.getCurrentUserLocalId()).thenReturn(123);
+		Mockito.when(this.germplasmDetailsComponent.getGermplasmFieldsComponent()).thenReturn(this.germplasmFieldsComponent);
+		final BmsDateField bmsDateField = new BmsDateField();
+		final Calendar cal = Calendar.getInstance();
+		cal.set(2015, Calendar.JANUARY, 1);
+		final Date testCreatedDate = cal.getTime();
+		bmsDateField.setValue(testCreatedDate);
+
+		Mockito.when(this.germplasmFieldsComponent.getGermplasmDateField()).thenReturn(bmsDateField);
+
+		final List<ImportedGermplasm> importedGermplasms = new ArrayList<>();
+		final ImportedGermplasm importedGermplasm = new ImportedGermplasm();
+		importedGermplasm.setDesig("(CML454 X CML451)-B-4-1-112");
+		importedGermplasm.setGid(123);
+		importedGermplasms.add(importedGermplasm);
+
+		Mockito.when(this.germplasmDetailsComponent.getImportedGermplasms()).thenReturn(importedGermplasms);
+
+		final ComboBox comboBox1 = new ComboBox();
+		comboBox1.setValue(3);
+		Mockito.when(this.germplasmFieldsComponent.getLocationComboBox()).thenReturn(comboBox1);
+
+		final ComboBox comboBox2 = new ComboBox();
+		comboBox2.setValue(4);
+		Mockito.when(this.germplasmFieldsComponent.getBreedingMethodComboBox()).thenReturn(comboBox2);
+
+		final Germplasm germplasm = new Germplasm();
+		germplasm.setGid(1);
+		germplasm.setGpid1(4);
+		germplasm.setGpid2(5);
+		Mockito.when(this.germplasmDataManager.getGermplasmByGID(Matchers.isA(Integer.class))).thenReturn(germplasm);
+
+		final ComboBox nameTypeComboBox = new ComboBox();
+		nameTypeComboBox.setValue(3);
+
+		final ComboBox locationComboBox = new ComboBox();
+		locationComboBox.setValue(4);
+
+		Mockito.when(this.germplasmFieldsComponent.getNameTypeComboBox()).thenReturn(nameTypeComboBox);
+		Mockito.when(this.germplasmFieldsComponent.getNameTypeComboBox()).thenReturn(locationComboBox);
+
+		final GermplasmImportMain germplasmImportMain = new GermplasmImportMain(new Window(), true);
+		Mockito.when(this.germplasmDetailsComponent.getSource()).thenReturn(germplasmImportMain);
+		Mockito.when(this.germplasmDetailsComponent.getWindow()).thenReturn(new Window());
+
+		this.processImportedGermplasmAction.performSecondPedigreeAction();
+
+		Mockito.verify(this.contextUtil).getCurrentUserLocalId();
+		Mockito.verify(this.germplasmDetailsComponent, Mockito.times(5)).getGermplasmFieldsComponent();
+		Mockito.verify(this.germplasmFieldsComponent).getGermplasmDateField();
+		Mockito.verify(this.germplasmDetailsComponent, Mockito.times(4)).getImportedGermplasms();
+		Mockito.verify(this.germplasmFieldsComponent, Mockito.times(2)).getLocationComboBox();
+		Mockito.verify(this.germplasmFieldsComponent).getBreedingMethodComboBox();
+		Mockito.verify(this.germplasmDataManager).getGermplasmByGID(Matchers.isA(Integer.class));
+		Mockito.verify(this.germplasmFieldsComponent).getNameTypeComboBox();
+	}
+
+	/**
+	 * Test to verify performSecondPedigree method works properly if germplasm match is one
+	 */
+	@Test
+	public void testPerformSecondPedigreeActionIfGermplasmMatchCountIsOne() {
+
+		Mockito.when(this.contextUtil.getCurrentUserLocalId()).thenReturn(123);
+		Mockito.when(this.germplasmDetailsComponent.getGermplasmFieldsComponent()).thenReturn(this.germplasmFieldsComponent);
+		final BmsDateField bmsDateField = new BmsDateField();
+		final Calendar cal = Calendar.getInstance();
+		cal.set(2015, Calendar.JANUARY, 1);
+		final Date testCreatedDate = cal.getTime();
+		bmsDateField.setValue(testCreatedDate);
+
+		Mockito.when(this.germplasmFieldsComponent.getGermplasmDateField()).thenReturn(bmsDateField);
+
+		final List<ImportedGermplasm> importedGermplasms = new ArrayList<>();
+		final ImportedGermplasm importedGermplasm = new ImportedGermplasm();
+		importedGermplasm.setDesig("(CML454 X CML451)-B-4-1-112");
+		importedGermplasms.add(importedGermplasm);
+
+		Mockito.when(this.germplasmDetailsComponent.getImportedGermplasms()).thenReturn(importedGermplasms);
+
+		final ComboBox comboBox1 = new ComboBox();
+		comboBox1.setValue(3);
+		Mockito.when(this.germplasmFieldsComponent.getLocationComboBox()).thenReturn(comboBox1);
+
+		final ComboBox comboBox2 = new ComboBox();
+		comboBox2.setValue(4);
+		Mockito.when(this.germplasmFieldsComponent.getBreedingMethodComboBox()).thenReturn(comboBox2);
+
+		final List<Germplasm> germplasms = new ArrayList<>();
+		final Germplasm germplasm = new Germplasm();
+		germplasm.setGid(1);
+		germplasm.setGpid1(2);
+		germplasms.add(germplasm);
+		Mockito.when(
+				this.germplasmDataManager.getGermplasmByName(Matchers.anyString(), Matchers.anyInt(), Matchers.anyInt(),
+						Matchers.isA(Operation.class))).thenReturn(germplasms);
+
+		final ComboBox nameTypeComboBox = new ComboBox();
+		nameTypeComboBox.setValue(3);
+
+		final ComboBox locationComboBox = new ComboBox();
+		locationComboBox.setValue(4);
+
+		Mockito.when(this.germplasmFieldsComponent.getNameTypeComboBox()).thenReturn(nameTypeComboBox);
+		Mockito.when(this.germplasmFieldsComponent.getNameTypeComboBox()).thenReturn(locationComboBox);
+
+		final GermplasmImportMain germplasmImportMain = new GermplasmImportMain(new Window(), true);
+		Mockito.when(this.germplasmDetailsComponent.getSource()).thenReturn(germplasmImportMain);
+		Mockito.when(this.germplasmDetailsComponent.getWindow()).thenReturn(new Window());
+
+		this.processImportedGermplasmAction.performSecondPedigreeAction();
+
+		Mockito.verify(this.contextUtil).getCurrentUserLocalId();
+		Mockito.verify(this.germplasmDetailsComponent, Mockito.times(5)).getGermplasmFieldsComponent();
+		Mockito.verify(this.germplasmFieldsComponent).getGermplasmDateField();
+		Mockito.verify(this.germplasmDetailsComponent, Mockito.times(4)).getImportedGermplasms();
+		Mockito.verify(this.germplasmFieldsComponent, Mockito.times(2)).getLocationComboBox();
+		Mockito.verify(this.germplasmFieldsComponent).getBreedingMethodComboBox();
+		Mockito.verify(this.germplasmFieldsComponent).getNameTypeComboBox();
+		Mockito.verify(this.germplasmFieldsComponent, Mockito.times(2)).getLocationComboBox();
+
+	}
+
+	/**
+	 * Test to verify performThirdPedigreeAction works properly or not
+	 */
+	@Test
+	public void testPerformThirdPedigreeActionIfMatchingNameFound() {
+		Mockito.when(this.contextUtil.getCurrentUserLocalId()).thenReturn(123);
+		Mockito.when(this.germplasmDetailsComponent.getGermplasmFieldsComponent()).thenReturn(this.germplasmFieldsComponent);
+		final BmsDateField bmsDateField = new BmsDateField();
+		final Calendar cal = Calendar.getInstance();
+		cal.set(2015, Calendar.JANUARY, 1);
+		final Date testCreatedDate = cal.getTime();
+		bmsDateField.setValue(testCreatedDate);
+
+		Mockito.when(this.germplasmFieldsComponent.getGermplasmDateField()).thenReturn(bmsDateField);
+
+		final List<ImportedGermplasm> importedGermplasms = new ArrayList<>();
+		final ImportedGermplasm importedGermplasm = new ImportedGermplasm();
+		importedGermplasm.setDesig("(CML454 X CML451)-B-4-1-112");
+		importedGermplasm.setGid(1);
+		importedGermplasms.add(importedGermplasm);
+		Mockito.when(this.germplasmDetailsComponent.getImportedGermplasms()).thenReturn(importedGermplasms);
+
+		final Germplasm germplasm = new Germplasm();
+		germplasm.setGid(1);
+		germplasm.setGpid1(4);
+		germplasm.setGpid2(5);
+		Mockito.when(this.germplasmDataManager.getGermplasmByGID(Matchers.isA(Integer.class))).thenReturn(germplasm);
+
+		final List<Name> names = new ArrayList<>();
+		final Name name = new Name();
+		name.setNstat(1);
+		name.setGermplasmId(1);
+		name.setNid(1);
+		name.setNval("(CML454 X CML451)-B-4-1-112");
+		names.add(name);
+
+		Mockito.when(
+				this.germplasmDataManager.getNamesByGID(Matchers.isA(Integer.class), Matchers.anyInt(),
+						(GermplasmNameType) Matchers.isNull())).thenReturn(names);
+
+		final ComboBox nameTypeComboBox = new ComboBox();
+		nameTypeComboBox.setValue(3);
+		Mockito.when(this.germplasmFieldsComponent.getNameTypeComboBox()).thenReturn(nameTypeComboBox);
+
+		final ComboBox locationIdComboBox = new ComboBox();
+		locationIdComboBox.setValue(4);
+		Mockito.when(this.germplasmFieldsComponent.getLocationComboBox()).thenReturn(locationIdComboBox);
+
+		this.processImportedGermplasmAction.performThirdPedigreeAction();
+
+		Mockito.verify(this.contextUtil).getCurrentUserLocalId();
+		Mockito.verify(this.germplasmDetailsComponent, Mockito.times(3)).getGermplasmFieldsComponent();
+		Mockito.verify(this.germplasmFieldsComponent).getGermplasmDateField();
+		Mockito.verify(this.germplasmDetailsComponent, Mockito.times(4)).getImportedGermplasms();
+		Mockito.verify(this.germplasmDataManager).getGermplasmByGID(Matchers.isA(Integer.class));
+		Mockito.verify(this.germplasmDataManager).getNamesByGID(Matchers.isA(Integer.class), Matchers.anyInt(),
+				(GermplasmNameType) Matchers.isNull());
+		Mockito.verify(this.germplasmFieldsComponent).getNameTypeComboBox();
+		Mockito.verify(this.germplasmFieldsComponent).getLocationComboBox();
+	}
+
+	@Test
+	public void testUpdateGidWhenGermplasmIdIsExisting() {
+		final int gid = 100;
+		final ImportedGermplasm importedGermplasm = ImportedGermplasmListDataInitializer.createImportedGermplasm(gid, true);
+		importedGermplasm.setDesig("Name" + gid);
+
+		final int germplasmMatchesCount = 1;
+		final boolean searchByNameOrNewGermplasmIsNeeded = true;
+		Germplasm germplasm = GermplasmTestDataInitializer.createGermplasm(0);
+
+		Mockito.doReturn(true).when(this.germplasmDetailsComponent).automaticallyAcceptSingleMatchesCheckbox();
+
+		final List<Germplasm> germplasms = new ArrayList<Germplasm>();
+		germplasms.add(GermplasmTestDataInitializer.createGermplasm(gid));
+
+		Mockito.doReturn(germplasms).when(this.germplasmDataManager)
+				.getGermplasmByName(importedGermplasm.getDesig(), 0, 1, Operation.EQUAL);
+
+		germplasm =
+				this.processImportedGermplasmAction.updateGidForSingleMatch(ProcessImportedGermplasmActionTest.IBDB_USER_ID,
+						ProcessImportedGermplasmActionTest.DATE_INT_VALUE, importedGermplasm, germplasmMatchesCount, germplasm,
+						searchByNameOrNewGermplasmIsNeeded);
+
+		Assert.assertEquals("Expecting that the gid set is from the existing germplasm.", gid, germplasm.getGid().intValue());
+	}
+
+	@Test
+	public void testUpdateGidWhenNoGermplasmIdIsExisting() {
+		final int gid = 0;
+		final ImportedGermplasm importedGermplasm = ImportedGermplasmListDataInitializer.createImportedGermplasm(gid, true);
+		importedGermplasm.setDesig("Name" + gid);
+
+		final int germplasmMatchesCount = 0;
+		final boolean searchByNameOrNewGermplasmIsNeeded = true;
+		Germplasm germplasm = GermplasmTestDataInitializer.createGermplasm(0);
+
+		germplasm =
+				this.processImportedGermplasmAction.updateGidForSingleMatch(ProcessImportedGermplasmActionTest.IBDB_USER_ID,
+						ProcessImportedGermplasmActionTest.DATE_INT_VALUE, importedGermplasm, germplasmMatchesCount, germplasm,
+						searchByNameOrNewGermplasmIsNeeded);
+
+		Mockito.verify(this.germplasmDetailsComponent, Mockito.times(0)).automaticallyAcceptSingleMatchesCheckbox();
+		Mockito.verify(this.germplasmDataManager, Mockito.times(0)).getGermplasmByName(importedGermplasm.getDesig(), 0, 1, Operation.EQUAL);
+		Assert.assertEquals("Expecting that the gid is set to 0 when there is no existing germplasm.", 0, germplasm.getGid().intValue());
+	}
+
+	@Test
+	public void testIsNeedToDisplayGermplasmSelectionWindowForNoMatchWithoutAutomaticMatching() {
+		Mockito.doReturn(false).when(this.germplasmDetailsComponent).automaticallyAcceptSingleMatchesCheckbox();
+		Assert.assertFalse("Germplasm Selection Window should not be displayed",
+				this.processImportedGermplasmAction.isNeedToDisplayGermplasmSelectionWindow(0));
+	}
+
+	@Test
+	public void testIsNeedToDisplayGermplasmSelectionWindowForNoMatchWithAutomaticMatching() {
+		Mockito.doReturn(true).when(this.germplasmDetailsComponent).automaticallyAcceptSingleMatchesCheckbox();
+		Assert.assertFalse("Germplasm Selection Window should not be displayed",
+				this.processImportedGermplasmAction.isNeedToDisplayGermplasmSelectionWindow(0));
+	}
+
+	@Test
+	public void testIsNeedToDisplayGermplasmSelectionWindowForSingleMatchWithoutAutomaticMatching() {
+		Mockito.doReturn(false).when(this.germplasmDetailsComponent).automaticallyAcceptSingleMatchesCheckbox();
+		Assert.assertTrue("Germplasm Selection Window should be displayed",
+				this.processImportedGermplasmAction.isNeedToDisplayGermplasmSelectionWindow(1));
+	}
+
+	@Test
+	public void testIsNeedToDisplayGermplasmSelectionWindowForSingleMatchWithAutomaticMatching() {
+		Mockito.doReturn(true).when(this.germplasmDetailsComponent).automaticallyAcceptSingleMatchesCheckbox();
+		Assert.assertFalse("Germplasm Selection Window should not be displayed",
+				this.processImportedGermplasmAction.isNeedToDisplayGermplasmSelectionWindow(1));
+	}
+
+	@Test
+	public void testIsNeedToDisplayGermplasmSelectionWindowForMultipleMatchWithoutAutomaticMatching() {
+		Mockito.doReturn(false).when(this.germplasmDetailsComponent).automaticallyAcceptSingleMatchesCheckbox();
+		Assert.assertTrue("Germplasm Selection Window should be displayed",
+				this.processImportedGermplasmAction.isNeedToDisplayGermplasmSelectionWindow(2));
+	}
+
+	@Test
+	public void testIsNeedToDisplayGermplasmSelectionWindowForMultipleMatchWithAutomaticMatching() {
+		Mockito.doReturn(true).when(this.germplasmDetailsComponent).automaticallyAcceptSingleMatchesCheckbox();
+		Assert.assertTrue("Germplasm Selection Window should be displayed",
+				this.processImportedGermplasmAction.isNeedToDisplayGermplasmSelectionWindow(2));
+	}
+}
