@@ -9,7 +9,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Random;
 
 import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
@@ -20,69 +19,14 @@ import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.Experiment;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Configurable;
 
 import au.com.bytecode.opencsv.CSVWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Link;
-import com.vaadin.ui.TextField;
+public class MultiSiteDataExporter {
 
-@Configurable
-public class GxeUtility {
-
-	private static final Logger LOG = LoggerFactory.getLogger(GxeUtility.class);
-	protected static final Random random = new Random();
-
-	public static Object createObjectCaption(final Class<?> propertyType, final String value, final Integer colIndex) throws Exception {
-
-		if (propertyType.equals(CheckBox.class) || propertyType.isInstance(CheckBox.class)) {
-			final CheckBox o = new CheckBox();
-			if (colIndex > 1) {
-				o.setCaption(GxeUtility.randomInRange(1, 100).toString());
-			} else {
-				o.setCaption(value);
-			}
-
-			return o;
-		} else if (propertyType.equals(Label.class)) {
-			final Label o = new Label();
-			o.setCaption(value);
-			o.setValue(value);
-			return o;
-		} else if (propertyType.equals(Link.class)) {
-			final Link o = new Link();
-			o.setCaption(value);
-			return o;
-		} else if (propertyType.equals(Link.class)) {
-			final Link o = new Link();
-			o.setCaption(value);
-			return o;
-		} else if (propertyType.equals(TextField.class)) {
-			final TextField o = new TextField();
-			o.setCaption(value);
-			o.setValue(value);
-			return o;
-		} else if (propertyType.equals(String.class)) {
-			return value;
-		} else if (propertyType.equals(Integer.class)) {
-			return new Random().nextInt(100);
-		} else if (propertyType.equals(Double.class)) {
-			return GxeUtility.randomInRange(1, 100);
-		} else {
-			throw new Exception(String.format("Property Type: {%s} is not yet supported.", propertyType.toString()));
-		}
-
-	}
-
-	public static Double randomInRange(final double min, final double max) {
-		final double range = max - min;
-		final double scaled = GxeUtility.random.nextDouble() * range;
-		return scaled + min;
-	}
+	private static final Logger LOG = LoggerFactory.getLogger(MultiSiteDataExporter.class);
 
 	/**
 	 * Generates GxE Multi-site analysis XML data, stored in IBWorkflowSystem\workspace\{PROJECT}\breeding_view\input
@@ -90,17 +34,17 @@ public class GxeUtility {
 	 * @return void
 	 */
 
-	public static void generateXmlFieldBook(final GxeInput gxeInput) {
+	public void generateXmlFieldBook(final GxeInput gxeInput) {
 		try {
 			final GxeXMLWriter writer = new GxeXMLWriter(gxeInput);
 			writer.writeProjectXML();
 
 		} catch (final GxeXMLWriterException e) {
-			GxeUtility.LOG.error("Error writng GxE XML file", e);
+			MultiSiteDataExporter.LOG.error("Error writng GxE XML file", e);
 		}
 	}
 
-	public static File exportMeansDatasetToCsv(final String inputFileName, final MultiSiteParameters multiSiteParameters, final DataSet gxeDataset, final List<Experiment> experiments, final String environmentName,
+	public String exportMeansDatasetToCsv(final String inputFileName, final MultiSiteParameters multiSiteParameters, final DataSet gxeDataset, final List<Experiment> experiments, final String environmentName,
 			 final GxeEnvironment gxeEnv, final List<Trait> selectedTraits) {
 
 		Project currentProject = multiSiteParameters.getProject();
@@ -196,7 +140,7 @@ public class GxeUtility {
 					"workspace" + File.separator + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator
 							+ "input";
 
-			GxeUtility.LOG.debug("save to" + dir);
+			MultiSiteDataExporter.LOG.debug("save to" + dir);
 
 			new File(dir).mkdirs();
 
@@ -207,14 +151,14 @@ public class GxeUtility {
 			csvWriter.flush();
 			csvWriter.close();
 
-			return csvFile;
+			return csvFile.getAbsolutePath();
 		} catch (final IOException e) {
-			GxeUtility.LOG.warn(e.getMessage(), e);
+			MultiSiteDataExporter.LOG.warn(e.getMessage(), e);
 			return null;
 		}
 	}
 
-	public static File exportTrialDatasetToSummaryStatsCsv(final String inputFileName, final DataSet trialDataSet, final List<Experiment> experiments, final String environmentName,
+	public String exportTrialDatasetToSummaryStatsCsv(final String inputFileName, final DataSet trialDataSet, final List<Experiment> experiments, final String environmentName,
 			final List<Trait> selectedTraits, final Project currentProject) {
 
 		if (currentProject == null) {
@@ -273,7 +217,7 @@ public class GxeUtility {
 				"workspace" + File.separator + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator
 						+ "input";
 
-		GxeUtility.LOG.debug("save to " + dir);
+		MultiSiteDataExporter.LOG.debug("save to " + dir);
 
 		new File(dir).mkdirs();
 
@@ -286,10 +230,10 @@ public class GxeUtility {
 			csvWriter.flush();
 			csvWriter.close();
 
-			return csvFile;
+			return csvFile.getAbsolutePath();
 
 		} catch (final IOException e) {
-			GxeUtility.LOG.warn(e.getMessage(), e);
+			MultiSiteDataExporter.LOG.warn(e.getMessage(), e);
 			return null;
 		}
 	}

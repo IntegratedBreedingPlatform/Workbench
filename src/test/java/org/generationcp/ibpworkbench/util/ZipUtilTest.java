@@ -33,6 +33,8 @@ public class ZipUtilTest {
 	List<String> filenameList;
 	String zipFilename = "test.zip";
 
+	ZipUtil zipUtil = new ZipUtil();
+
 	@Before
 	public void setUp() {
 		this.filenameList = new ArrayList<String>();
@@ -64,7 +66,7 @@ public class ZipUtilTest {
 	 */
 	@Test
 	public void testFileZipping() {
-		ZipUtil.zipIt(this.zipFilename, this.filenameList);
+		this.zipUtil.zipIt(this.zipFilename, this.filenameList);
 		ZipFile zipFile;
 		try {
 			zipFile = new ZipFile(this.zipFilename);
@@ -94,7 +96,7 @@ public class ZipUtilTest {
 
 		File file = new File(ClassLoader.getSystemClassLoader().getResource("zipToExtract.zip").toURI());
 		String destination = ClassLoader.getSystemResource("").getPath();
-		ZipUtil.extractZip(file.getAbsolutePath(), destination);
+		zipUtil.extractZip(file.getAbsolutePath(), destination);
 
 		File testFile = new File(destination + File.separator + "test.txt");
 		Assert.assertTrue(testFile.exists());
@@ -112,7 +114,7 @@ public class ZipUtilTest {
 
 		File file = new File(ClassLoader.getSystemClassLoader().getResource("zipToExtract.zip").toURI());
 		String destination = ClassLoader.getSystemResource("").getPath();
-		File extractedFile = ZipUtil.extractZipSpecificFile(file.getAbsolutePath(), "test", destination);
+		File extractedFile = zipUtil.extractZipSpecificFile(file.getAbsolutePath(), "test", destination);
 
 		Assert.assertTrue(extractedFile.exists());
 

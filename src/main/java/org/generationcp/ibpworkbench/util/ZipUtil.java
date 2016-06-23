@@ -27,7 +27,7 @@ public class ZipUtil {
 	 * 
 	 * @param zipFile output ZIP file location
 	 */
-	public static void zipIt(String zipFile, List<String> filenameList) {
+	public void zipIt(String zipFile, List<String> filenameList) {
 
 		byte[] buffer = new byte[1024];
 
@@ -64,7 +64,7 @@ public class ZipUtil {
 		}
 	}
 
-	public static void extractZip(String zipFile, String destination) {
+	public void extractZip(String zipFile, String destination) {
 
 		File file = new File(zipFile);
 		InputStream input;
@@ -79,7 +79,7 @@ public class ZipUtil {
 
 				String filePath = destination + File.separator + entry.getName();
 
-				ZipUtil.extractFile(zip, filePath);
+				extractFile(zip, filePath);
 
 				entry = zip.getNextEntry();
 			}
@@ -95,7 +95,7 @@ public class ZipUtil {
 
 	}
 
-	public static File extractZipSpecificFile(String zipFile, String fileNameToExtract, String destination) {
+	public File extractZipSpecificFile(String zipFile, String fileNameToExtract, String destination) {
 
 		File extractedFile = null;
 		File file = new File(zipFile);
@@ -111,7 +111,7 @@ public class ZipUtil {
 
 				if (entry.getName().toLowerCase().contains(fileNameToExtract.toLowerCase())) {
 					String filePath = destination + File.separator + RandomUtils.nextInt() + entry.getName();
-					ZipUtil.extractFile(zip, filePath);
+					this.extractFile(zip, filePath);
 					extractedFile = new File(filePath);
 					break;
 				}
@@ -135,7 +135,7 @@ public class ZipUtil {
 
 	}
 
-	public static void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
+	public void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
 		BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));
 		byte[] bytesIn = new byte[ZipUtil.BUFFER_SIZE];
 		int read = 0;

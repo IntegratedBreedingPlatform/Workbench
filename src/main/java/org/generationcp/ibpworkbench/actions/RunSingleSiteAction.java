@@ -107,6 +107,8 @@ public class RunSingleSiteAction implements ClickListener {
 	@Autowired
 	private OntologyService ontologyService;
 
+	private ZipUtil zipUtil = new ZipUtil();
+
 	public RunSingleSiteAction(final SingleSiteAnalysisDetailsPanel selectDetailsForBreedingViewWindow, final Project project) {
 		this.source = selectDetailsForBreedingViewWindow;
 		this.project = project;
@@ -135,7 +137,7 @@ public class RunSingleSiteAction implements ClickListener {
 				filenameList.add(breedingViewInput.getDestXMLFilePath());
 				filenameList.add(breedingViewInput.getSourceXLSFilePath());
 
-				ZipUtil.zipIt(outputFilename, filenameList);
+				this.zipUtil.zipIt(outputFilename, filenameList);
 
 				this.downloadInputFile(new File(outputFilename), this.source.getApplication());
 
