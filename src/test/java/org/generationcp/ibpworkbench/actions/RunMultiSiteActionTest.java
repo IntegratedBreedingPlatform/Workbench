@@ -287,17 +287,17 @@ public class RunMultiSiteActionTest {
 		return gxeEnvironment;
 	}
 
-	private Study createStudy(String name) {
+	private Study createStudy(final String name) {
 
 		final Study study = new Study();
 		study.setId(STUDY_ID);
 
-		VariableList conditions = new VariableList();
-		Variable studyNameVariable = new Variable();
+		final VariableList conditions = new VariableList();
+		final Variable studyNameVariable = new Variable();
 		studyNameVariable.setValue(name);
 
-		DMSVariableType studyNameVariableType = new DMSVariableType();
-		StandardVariable studyNameStandardVariable = new StandardVariable();
+		final DMSVariableType studyNameVariableType = new DMSVariableType();
+		final StandardVariable studyNameStandardVariable = new StandardVariable();
 
 		studyNameStandardVariable.setId(TermId.STUDY_NAME.getId());
 

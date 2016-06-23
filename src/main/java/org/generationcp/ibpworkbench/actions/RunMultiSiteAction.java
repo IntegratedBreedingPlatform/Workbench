@@ -70,7 +70,7 @@ public class RunMultiSiteAction implements ClickListener {
 
 	private IBPWorkbenchApplication workbenchApplication;
 
-	private MultiSiteDataExporter multiSiteDataExporter = new MultiSiteDataExporter();
+	private final MultiSiteDataExporter multiSiteDataExporter = new MultiSiteDataExporter();
 
 	private MultiSiteParameters multiSiteParameters;
 
@@ -78,13 +78,13 @@ public class RunMultiSiteAction implements ClickListener {
 
 	private Table selectTraitsTable;
 
-	private ZipUtil zipUtil = new ZipUtil();
+	private final ZipUtil zipUtil = new ZipUtil();
 
 	public RunMultiSiteAction() {
 		// for unit testing
 	}
 
-	public RunMultiSiteAction(GxeTable gxeTable, Table selectTraitsTable, MultiSiteParameters multiSiteParameters) {
+	public RunMultiSiteAction(final GxeTable gxeTable, final Table selectTraitsTable, final MultiSiteParameters multiSiteParameters) {
 		this.gxeTable = gxeTable;
 		this.selectTraitsTable = selectTraitsTable;
 		this.multiSiteParameters = multiSiteParameters;
@@ -92,12 +92,12 @@ public class RunMultiSiteAction implements ClickListener {
 	}
 
 	@Override
-	public void buttonClick(ClickEvent event) {
+	public void buttonClick(final ClickEvent event) {
 		final ClickEvent buttonClickEvent = event;
 
 		this.breedingViewTool = this.workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
 
-		GxeInput gxeInput;
+		final GxeInput gxeInput;
 		gxeInput = this.generateInputFiles();
 
 		if (this.isServerApp) {
@@ -111,13 +111,13 @@ public class RunMultiSiteAction implements ClickListener {
 
 	}
 
-	protected void zipInputFilesAndDownload(GxeInput gxeInput) {
+	protected void zipInputFilesAndDownload(final GxeInput gxeInput) {
 
-		String studyName = HtmlEscape.unescapeHtml(this.multiSiteParameters.getStudy().getName());
+		final String studyName = HtmlEscape.unescapeHtml(this.multiSiteParameters.getStudy().getName());
 
-		String outputFilename = BreedingViewUtil.sanitizeNameAlphaNumericOnly(studyName) + ".zip";
+		final String outputFilename = BreedingViewUtil.sanitizeNameAlphaNumericOnly(studyName) + ".zip";
 
-		List<String> filenameList = new ArrayList<>();
+		final List<String> filenameList = new ArrayList<>();
 		filenameList.add(gxeInput.getDestXMLFilePath());
 		filenameList.add(gxeInput.getSourceCSVFilePath());
 		filenameList.add(gxeInput.getSourceCSVSummaryStatsFilePath());
@@ -129,10 +129,10 @@ public class RunMultiSiteAction implements ClickListener {
 
 	protected GxeInput generateInputFiles() throws MiddlewareQueryException {
 
-		GxeEnvironment gxeEnvironment = this.gxeTable.getGxeEnvironment();
-		List<Trait> selectedTraits = this.getSelectedTraits();
+		final GxeEnvironment gxeEnvironment = this.gxeTable.getGxeEnvironment();
+		final List<Trait> selectedTraits = this.getSelectedTraits();
 
-		GxeInput gxeInput = this.createGxeInput(this.multiSiteParameters, gxeEnvironment, selectedTraits);
+		final GxeInput gxeInput = this.createGxeInput(this.multiSiteParameters, gxeEnvironment, selectedTraits);
 
 		this.exportDataFiles(this.multiSiteParameters, gxeInput, gxeEnvironment, selectedTraits);
 
@@ -146,10 +146,10 @@ public class RunMultiSiteAction implements ClickListener {
 	 *
 	 * @param gxeInput
 	 */
-	void exportMultiSiteProjectFile(MultiSiteParameters multiSiteParameters, GxeInput gxeInput) {
+	void exportMultiSiteProjectFile(final MultiSiteParameters multiSiteParameters, final GxeInput gxeInput) {
 
-		String inputDir = this.toolUtil.getInputDirectoryForTool(multiSiteParameters.getProject(), this.breedingViewTool);
-		String inputFileName = this.generateInputFileName(multiSiteParameters.getProject());
+		final String inputDir = this.toolUtil.getInputDirectoryForTool(multiSiteParameters.getProject(), this.breedingViewTool);
+		final String inputFileName = this.generateInputFileName(multiSiteParameters.getProject());
 
 		gxeInput.setDestXMLFilePath(inputDir + File.separator + inputFileName + ".xml");
 
@@ -165,19 +165,19 @@ public class RunMultiSiteAction implements ClickListener {
 	 * @param gxeEnvironment
 	 * @param selectedTraits
 	 */
-	void exportDataFiles(MultiSiteParameters multiSiteParameters, GxeInput gxeInput, GxeEnvironment gxeEnvironment,
-			List<Trait> selectedTraits) {
+	void exportDataFiles(final MultiSiteParameters multiSiteParameters, final GxeInput gxeInput, final GxeEnvironment gxeEnvironment,
+			final List<Trait> selectedTraits) {
 
-		String inputDir = this.toolUtil.getInputDirectoryForTool(multiSiteParameters.getProject(), this.breedingViewTool);
-		String inputFileName = this.generateInputFileName(multiSiteParameters.getProject());
+		final String inputDir = this.toolUtil.getInputDirectoryForTool(multiSiteParameters.getProject(), this.breedingViewTool);
+		final String inputFileName = this.generateInputFileName(multiSiteParameters.getProject());
 
-		String meansDataFilePath = multiSiteDataExporter
+		final String meansDataFilePath = multiSiteDataExporter
 				.exportMeansDatasetToCsv(inputFileName, multiSiteParameters, this.gxeTable.getMeansDataSet(),
 						this.gxeTable.getExperiments(), this.gxeTable.getEnvironmentName(), gxeEnvironment, selectedTraits);
 
-		DataSet summaryStatsDataSet = this.getSummaryStatsDataSet(multiSiteParameters.getStudy().getId());
+		final DataSet summaryStatsDataSet = this.getSummaryStatsDataSet(multiSiteParameters.getStudy().getId());
 
-		String summaryStatsDataFilePath = multiSiteDataExporter.exportTrialDatasetToSummaryStatsCsv(inputFileName, summaryStatsDataSet,
+		final String summaryStatsDataFilePath = multiSiteDataExporter.exportTrialDatasetToSummaryStatsCsv(inputFileName, summaryStatsDataSet,
 				this.getSummaryStatsExperiments(summaryStatsDataSet.getId()), this.gxeTable.getEnvironmentName(), selectedTraits,
 				multiSiteParameters.getProject());
 
@@ -186,17 +186,17 @@ public class RunMultiSiteAction implements ClickListener {
 
 	}
 
-	GxeInput createGxeInput(MultiSiteParameters multiSiteParameters, final GxeEnvironment gxeEnvironment,
+	GxeInput createGxeInput(final MultiSiteParameters multiSiteParameters, final GxeEnvironment gxeEnvironment,
 			final List<Trait> selectedTraits) {
 
-		GxeInput gxeInput = new GxeInput(multiSiteParameters.getProject(), "", 0, 0, "", "", "", "");
+		final GxeInput gxeInput = new GxeInput(multiSiteParameters.getProject(), "", 0, 0, "", "", "", "");
 
 		gxeInput.setTraits(selectedTraits);
 		gxeInput.setEnvironment(gxeEnvironment);
 		gxeInput.setSelectedEnvironments(this.gxeTable.getSelectedEnvironments());
 		gxeInput.setEnvironmentGroup(multiSiteParameters.getSelectedEnvGroupFactorName());
 
-		Genotypes genotypes = new Genotypes();
+		final Genotypes genotypes = new Genotypes();
 		genotypes.setName(multiSiteParameters.getSelectedGenotypeFactorName());
 
 		gxeInput.setGenotypes(genotypes);
@@ -213,10 +213,10 @@ public class RunMultiSiteAction implements ClickListener {
 
 	}
 
-	DataSet getSummaryStatsDataSet(int studyId) {
+	DataSet getSummaryStatsDataSet(final int studyId) {
 
-		DataSet summaryStatsDataSet;
-		List<DataSet> dataSets = this.studyDataManager.getDataSetsByType(studyId, DataSetType.SUMMARY_DATA);
+		final DataSet summaryStatsDataSet;
+		final List<DataSet> dataSets = this.studyDataManager.getDataSetsByType(studyId, DataSetType.SUMMARY_DATA);
 		if (!dataSets.isEmpty()) {
 			summaryStatsDataSet = dataSets.get(0);
 		} else {
@@ -227,28 +227,28 @@ public class RunMultiSiteAction implements ClickListener {
 		return summaryStatsDataSet;
 	}
 
-	String generateInputFileName(Project project) {
+	String generateInputFileName(final Project project) {
 
-		String sanitizedProjectName = BreedingViewUtil.sanitizeNameAlphaNumericOnly(project.getProjectName().trim());
+		final String sanitizedProjectName = BreedingViewUtil.sanitizeNameAlphaNumericOnly(project.getProjectName().trim());
 
-		String meansDataSetName = HtmlEscape.unescapeHtml(this.gxeTable.getMeansDataSet().getName());
-		String sanitizedMeansDataSetName = BreedingViewUtil.sanitizeNameAlphaNumericOnly(meansDataSetName);
+		final String meansDataSetName = HtmlEscape.unescapeHtml(this.gxeTable.getMeansDataSet().getName());
+		final String sanitizedMeansDataSetName = BreedingViewUtil.sanitizeNameAlphaNumericOnly(meansDataSetName);
 
 		return String.format("%s_%s_%s", sanitizedProjectName, this.gxeTable.getMeansDataSetId(), sanitizedMeansDataSetName);
 
 	}
 
-	protected void launchBV(String projectFilePath, final Window windowSource) {
+	protected void launchBV(final String projectFilePath, final Window windowSource) {
 
-		File absoluteToolFile = new File(this.breedingViewTool.getPath()).getAbsoluteFile();
+		final File absoluteToolFile = new File(this.breedingViewTool.getPath()).getAbsoluteFile();
 
 		try {
-			ProcessBuilder pb = new ProcessBuilder(absoluteToolFile.getAbsolutePath(), "-project=", projectFilePath);
+			final ProcessBuilder pb = new ProcessBuilder(absoluteToolFile.getAbsolutePath(), "-project=", projectFilePath);
 			pb.start();
 
 			MessageNotifier.showMessage(windowSource, "GxE files saved",
 					"Successfully generated the means dataset and xml input files for breeding view.");
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			RunMultiSiteAction.LOG.error(e.getMessage(), e);
 			MessageNotifier.showMessage(windowSource, "Cannot launch " + absoluteToolFile.getName(),
 					"But it successfully created GxE Excel and XML input file for the breeding_view!");
@@ -257,14 +257,14 @@ public class RunMultiSiteAction implements ClickListener {
 	}
 
 	protected List<Trait> getSelectedTraits() {
-		List<Trait> selectedTraits = new ArrayList<Trait>();
-		Iterator<?> itr = this.selectTraitsTable.getItem(1).getItemPropertyIds().iterator();
+		final List<Trait> selectedTraits = new ArrayList<Trait>();
+		final Iterator<?> itr = this.selectTraitsTable.getItem(1).getItemPropertyIds().iterator();
 
 		while (itr.hasNext()) {
-			Object propertyId = itr.next();
-			CheckBox cb = (CheckBox) this.selectTraitsTable.getItem(1).getItemProperty(propertyId).getValue();
+			final Object propertyId = itr.next();
+			final CheckBox cb = (CheckBox) this.selectTraitsTable.getItem(1).getItemProperty(propertyId).getValue();
 			if ((Boolean) cb.getValue()) {
-				Trait t = new Trait();
+				final Trait t = new Trait();
 				t.setName(propertyId.toString());
 				t.setActive(true);
 				selectedTraits.add(t);
@@ -274,15 +274,15 @@ public class RunMultiSiteAction implements ClickListener {
 		return selectedTraits;
 	}
 
-	void downloadInputFile(File file, Application application) {
+	void downloadInputFile(final File file, final Application application) {
 
-		FileResource fr = new FileResource(file, application) {
+		final FileResource fr = new FileResource(file, application) {
 
 			private static final long serialVersionUID = 765143030552676513L;
 
 			@Override
 			public DownloadStream getStream() {
-				DownloadStream ds;
+				final DownloadStream ds;
 				try {
 					ds = new DownloadStream(new FileInputStream(this.getSourceFile()), this.getMIMEType(), this.getFilename());
 
@@ -290,7 +290,7 @@ public class RunMultiSiteAction implements ClickListener {
 					ds.setCacheTime(this.getCacheTime());
 					return ds;
 
-				} catch (FileNotFoundException e) {
+				} catch (final FileNotFoundException e) {
 					RunMultiSiteAction.LOG.error(e.getMessage(), e);
 					return null;
 				}
@@ -300,7 +300,7 @@ public class RunMultiSiteAction implements ClickListener {
 		application.getMainWindow().open(fr);
 	}
 
-	protected void setIsServerApp(boolean isServerApp) {
+	protected void setIsServerApp(final boolean isServerApp) {
 		this.isServerApp = isServerApp;
 	}
 

@@ -1,4 +1,3 @@
-
 package org.generationcp.ibpworkbench.util;
 
 import java.io.File;
@@ -44,8 +43,9 @@ public class MultiSiteDataExporter {
 		}
 	}
 
-	public String exportMeansDatasetToCsv(final String inputFileName, final MultiSiteParameters multiSiteParameters, final DataSet gxeDataset, final List<Experiment> experiments, final String environmentName,
-			 final GxeEnvironment gxeEnv, final List<Trait> selectedTraits) {
+	public String exportMeansDatasetToCsv(final String inputFileName, final MultiSiteParameters multiSiteParameters,
+			final DataSet gxeDataset, final List<Experiment> experiments, final String environmentName, final GxeEnvironment gxeEnv,
+			final List<Trait> selectedTraits) {
 
 		Project currentProject = multiSiteParameters.getProject();
 		String environmentGroup = multiSiteParameters.getSelectedEnvGroupFactorName();
@@ -69,8 +69,8 @@ public class MultiSiteDataExporter {
 			j++;
 		}
 
-		if (!environmentGroup.equalsIgnoreCase(environmentName) && environmentGroup != null && !environmentGroup.isEmpty()
-				&& !"None".equalsIgnoreCase(environmentGroup)) {
+		if (!environmentGroup.equalsIgnoreCase(environmentName) && environmentGroup != null && !environmentGroup.isEmpty() && !"None"
+				.equalsIgnoreCase(environmentGroup)) {
 			traitToColNoMap.put(environmentGroup, j);
 			headerRow.add(BreedingViewUtil.sanitizeName(environmentGroup));
 			j++;
@@ -146,7 +146,8 @@ public class MultiSiteDataExporter {
 
 			final File csvFile = new File(dir + File.separator + inputFileName + ".csv");
 
-			final CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER, "\r\n");
+			final CSVWriter csvWriter =
+					new CSVWriter(new FileWriter(csvFile), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER, "\r\n");
 			csvWriter.writeAll(tableItems);
 			csvWriter.flush();
 			csvWriter.close();
@@ -158,8 +159,9 @@ public class MultiSiteDataExporter {
 		}
 	}
 
-	public String exportTrialDatasetToSummaryStatsCsv(final String inputFileName, final DataSet trialDataSet, final List<Experiment> experiments, final String environmentName,
-			final List<Trait> selectedTraits, final Project currentProject) {
+	public String exportTrialDatasetToSummaryStatsCsv(final String inputFileName, final DataSet trialDataSet,
+			final List<Experiment> experiments, final String environmentName, final List<Trait> selectedTraits,
+			final Project currentProject) {
 
 		if (currentProject == null) {
 			throw new IllegalArgumentException("current project is null");
@@ -169,8 +171,8 @@ public class MultiSiteDataExporter {
 
 		final String[] header =
 				new String[] {environmentName, "Trait", "NumValues", "NumMissing", "Mean", "Variance", "SD", "Min", "Max", "Range",
-						"Median", "LowerQuartile", "UpperQuartile", "MeanRep", "MinRep", "MaxRep", "MeanSED", "MinSED", "MaxSED",
-						"MeanLSD", "MinLSD", "MaxLSD", "CV", "Heritability", "WaldStatistic", "WaldDF", "Pvalue"
+						"Median", "LowerQuartile", "UpperQuartile", "MeanRep", "MinRep", "MaxRep", "MeanSED", "MinSED", "MaxSED", "MeanLSD",
+						"MinLSD", "MaxLSD", "CV", "Heritability", "WaldStatistic", "WaldDF", "Pvalue"
 
 				};
 
