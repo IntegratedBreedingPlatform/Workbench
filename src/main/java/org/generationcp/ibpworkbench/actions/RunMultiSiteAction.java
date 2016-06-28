@@ -167,8 +167,7 @@ public class RunMultiSiteAction implements ClickListener {
 	 */
 	void exportDataFiles(final MultiSiteParameters multiSiteParameters, final GxeInput gxeInput, final GxeEnvironment gxeEnvironment,
 			final List<Trait> selectedTraits) {
-
-		final String inputDir = this.toolUtil.getInputDirectoryForTool(multiSiteParameters.getProject(), this.breedingViewTool);
+		
 		final String inputFileName = this.generateInputFileName(multiSiteParameters.getProject());
 
 		final String meansDataFilePath = multiSiteDataExporter
