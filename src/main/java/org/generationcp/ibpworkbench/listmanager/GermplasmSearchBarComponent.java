@@ -110,7 +110,7 @@ public class GermplasmSearchBarComponent extends CssLayout implements Internatio
 		final Label descLbl = new Label(GermplasmSearchBarComponent.GUIDE, Label.CONTENT_XHTML);
 		descLbl.setWidth("300px");
 		this.popup = new PopupView(" ? ", descLbl);
-		this.popup.setStyleName("gcp-popup-view-bm");
+		this.popup.setStyleName("gcp-popup-view");
 
 		this.withInventoryOnlyCheckBox = new CheckBox();
 		this.withInventoryOnlyCheckBox.setValue(false);

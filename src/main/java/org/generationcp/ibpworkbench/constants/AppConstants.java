@@ -22,7 +22,7 @@ public final class AppConstants {
 		public static final String HORIZONTAL_GROUP = "horizontalgroup";
 		public static final String ITALIC = "italic";
 		public static final String BOLD = "bold";
-		public static final String POPUP_VIEW = "gcp-popup-view-bm";
+		public static final String POPUP_VIEW = "gcp-popup-view";
 
 		public static final String TREE_ROOT_NODE = "listManagerTreeRootNode";
 		public static final String TREE_REGULAR_PARENT_NODE = "listManagerTreeRegularParentNode";

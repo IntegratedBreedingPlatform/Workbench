@@ -158,7 +158,7 @@ public class BreedingMethodField extends AbsoluteLayout implements InitializingB
 		this.methodDescription = new Label();
 		this.methodDescription.setWidth("300px");
 		this.popup = new PopupView(" ? ", this.methodDescription);
-		this.popup.setStyleName("gcp-popup-view-bm");
+		this.popup.setStyleName("gcp-popup-view");
 
 		try {
 			this.programUniqueId = this.breedingManagerService.getCurrentProject().getUniqueID();

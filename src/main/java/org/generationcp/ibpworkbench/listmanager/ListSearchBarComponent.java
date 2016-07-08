@@ -82,7 +82,7 @@ public class ListSearchBarComponent extends Panel implements Internationalizable
 		final Label descLbl = new Label(ListSearchBarComponent.GUIDE, Label.CONTENT_XHTML);
 		descLbl.setWidth("300px");
 		this.popup = new PopupView(" ? ", descLbl);
-		this.popup.setStyleName("gcp-popup-view-bm");
+		this.popup.setStyleName("gcp-popup-view");
 
 		this.exactMatchesOnlyCheckBox = new CheckBox();
 		this.exactMatchesOnlyCheckBox.setValue(false);
