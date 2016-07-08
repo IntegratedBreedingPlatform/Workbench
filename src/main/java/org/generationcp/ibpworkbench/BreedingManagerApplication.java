@@ -83,7 +83,7 @@ public class BreedingManagerApplication extends SpringContextApplication impleme
 
 		this.window = this.instantiateListManagerWindow(BreedingManagerApplication.LIST_MANAGER_WINDOW_NAME);
 		this.setMainWindow(this.window);
-		this.setTheme("gcp-default");
+		this.setTheme("bm-default");
 		this.window.setSizeUndefined();
 
 		// Override the existing error handler that shows the stack trace

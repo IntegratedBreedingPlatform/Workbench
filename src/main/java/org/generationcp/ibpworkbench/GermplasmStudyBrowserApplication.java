@@ -102,7 +102,7 @@ public class GermplasmStudyBrowserApplication extends SpringContextApplication i
 
 		this.window = this.instantiateStudyBrowserWindow();
 		this.setMainWindow(this.window);
-		this.setTheme("gcp-default");
+		this.setTheme("bm-default");
 		this.window.setSizeUndefined();
 
 		// Override the existing error handler that shows the stack trace
