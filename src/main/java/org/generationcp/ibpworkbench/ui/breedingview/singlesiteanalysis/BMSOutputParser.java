@@ -54,6 +54,8 @@ public class BMSOutputParser {
 
 	private File zipFile;
 
+	private ZipUtil zipUtil = new ZipUtil();
+
 	private String uploadDirectory = "temp";
 
 	private BMSOutputInformation bmsOutputInformation;
@@ -111,13 +113,13 @@ public class BMSOutputParser {
 		final String zipFilePath = zipFile.getAbsolutePath();
 
 		this.bmsInformationFile =
-				ZipUtil.extractZipSpecificFile(zipFilePath, BMSOutputParser.BMS_INFORMATION_FILENAME, this.uploadDirectory);
+				zipUtil.extractZipSpecificFile(zipFilePath, BMSOutputParser.BMS_INFORMATION_FILENAME, this.uploadDirectory);
 
-		this.meansFile = ZipUtil.extractZipSpecificFile(zipFilePath, BMSOutputParser.BMS_OUTPUT_FILENAME, this.uploadDirectory);
+		this.meansFile = zipUtil.extractZipSpecificFile(zipFilePath, BMSOutputParser.BMS_OUTPUT_FILENAME, this.uploadDirectory);
 
-		this.summaryStatsFile = ZipUtil.extractZipSpecificFile(zipFilePath, BMSOutputParser.BMS_SUMMARY_FILENAME, this.uploadDirectory);
+		this.summaryStatsFile = zipUtil.extractZipSpecificFile(zipFilePath, BMSOutputParser.BMS_SUMMARY_FILENAME, this.uploadDirectory);
 
-		this.outlierFile = ZipUtil.extractZipSpecificFile(zipFilePath, BMSOutputParser.BMS_OUTLIER_FILENAME, this.uploadDirectory);
+		this.outlierFile = zipUtil.extractZipSpecificFile(zipFilePath, BMSOutputParser.BMS_OUTLIER_FILENAME, this.uploadDirectory);
 
 		if (this.bmsInformationFile == null || this.meansFile == null) {
 			throw new ZipFileInvalidContentException("The zip file " + zipFile.getName() + " is invalid for BMS upload");

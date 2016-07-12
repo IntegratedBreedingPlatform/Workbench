@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FilenameUtils;
 import org.generationcp.commons.breedingview.xml.Blocks;
 import org.generationcp.commons.breedingview.xml.ColPos;
 import org.generationcp.commons.breedingview.xml.Columns;
@@ -24,6 +25,7 @@ import org.generationcp.commons.breedingview.xml.Plot;
 import org.generationcp.commons.breedingview.xml.Replicates;
 import org.generationcp.commons.breedingview.xml.RowPos;
 import org.generationcp.commons.breedingview.xml.Rows;
+import org.generationcp.commons.util.BreedingViewUtil;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.pojos.workbench.Project;
 
@@ -235,7 +237,9 @@ public class BreedingViewInput implements Serializable {
 		if (this.getClass() != obj.getClass()) {
 			return false;
 		}
+
 		@SuppressWarnings("LocalCanBeFinal") final BreedingViewInput other = (BreedingViewInput) obj;
+
 		if (this.breedingViewProjectName == null) {
 			if (other.breedingViewProjectName != null) {
 				return false;

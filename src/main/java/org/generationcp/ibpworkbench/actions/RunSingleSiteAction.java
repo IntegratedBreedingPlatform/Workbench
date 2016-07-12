@@ -107,6 +107,8 @@ public class RunSingleSiteAction implements ClickListener {
 	@Autowired
 	private OntologyService ontologyService;
 
+	private ZipUtil zipUtil = new ZipUtil();
+
 	public RunSingleSiteAction(final SingleSiteAnalysisDetailsPanel selectDetailsForBreedingViewWindow, final Project project) {
 		this.source = selectDetailsForBreedingViewWindow;
 		this.project = project;
@@ -130,12 +132,12 @@ public class RunSingleSiteAction implements ClickListener {
 
 			if (Boolean.parseBoolean(this.isServerApp)) {
 
-				final String outputFilename = breedingViewInput.getDatasetSource() + ".zip";
+				final String outputFilename = BreedingViewUtil.sanitizeNameAlphaNumericOnly(breedingViewInput.getDatasetSource()) + ".zip";
 				final List<String> filenameList = new ArrayList<>();
 				filenameList.add(breedingViewInput.getDestXMLFilePath());
 				filenameList.add(breedingViewInput.getSourceXLSFilePath());
 
-				ZipUtil.zipIt(outputFilename, filenameList);
+				this.zipUtil.zipIt(outputFilename, filenameList);
 
 				this.downloadInputFile(new File(outputFilename), this.source.getApplication());
 
@@ -187,7 +189,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 		breedingViewInput.setReplicates(this.createReplicates(this.source.getSelDesignTypeValue(), this.source.getSelReplicatesValue()));
 
-		DesignType designType = DesignType.getDesignTypeByName(this.source.getSelDesignTypeValue());
+		final DesignType designType = DesignType.getDesignTypeByName(this.source.getSelDesignTypeValue());
 		breedingViewInput.setDesignType(designType.resolveDesignTypeNameForBreedingView());
 
 		breedingViewInput.setBlocks(this.createBlocks(this.source.getSelBlocksValue()));
@@ -431,7 +433,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 	void writeProjectXML(final Window window, final BreedingViewInput breedingViewInput) {
 
-		BreedingViewXMLWriter breedingViewXMLWriter;
+		final BreedingViewXMLWriter breedingViewXMLWriter;
 
 		// write the XML input for breeding view
 		breedingViewXMLWriter = new BreedingViewXMLWriter(breedingViewInput);
@@ -544,7 +546,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 			@Override
 			public DownloadStream getStream() {
-				DownloadStream ds;
+				final DownloadStream ds;
 				try {
 					ds = new DownloadStream(new FileInputStream(this.getSourceFile()), this.getMIMEType(), this.getFilename());
 

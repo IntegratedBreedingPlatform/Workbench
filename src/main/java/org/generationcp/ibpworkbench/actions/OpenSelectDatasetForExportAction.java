@@ -1,12 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * <p/>
  * Generation Challenge Programme (GCP)
- *
- *
+ * <p/>
+ * <p/>
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.actions;
@@ -15,6 +14,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Window.Notification;
 import org.generationcp.commons.breedingview.xml.ProjectType;
+import org.generationcp.commons.util.BreedingViewUtil;
 import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -24,6 +24,7 @@ import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSi
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
+import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.util.DatasetUtil;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
@@ -40,6 +41,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
+import org.unbescape.html.HtmlEscape;
 
 import java.io.File;
 import java.util.List;
@@ -70,110 +72,119 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 
 	@Autowired
 	private StudyDataManager studyDataManager;
-	
+
 	@Value("${workbench.is.server.app}")
 	private String isServerApp;
 
-	public OpenSelectDatasetForExportAction(SingleSiteAnalysisPanel selectDatasetForBreedingViewWindow) {
+	private Project project;
+
+	private Study study;
+
+	private Integer dataSetId;
+
+	private String datasetName;
+
+	public OpenSelectDatasetForExportAction(final SingleSiteAnalysisPanel selectDatasetForBreedingViewWindow) {
 
 		this.selectDatasetForBreedingViewPanel = selectDatasetForBreedingViewWindow;
 
 	}
 
 	@Override
-	public void buttonClick(ClickEvent event) {
-		Project project = this.selectDatasetForBreedingViewPanel.getCurrentProject();
+	public void buttonClick(final ClickEvent event) {
 
-		Integer studyId = this.selectDatasetForBreedingViewPanel.getCurrentStudy().getId();
-		Integer dataSetId = this.selectDatasetForBreedingViewPanel.getCurrentDataSetId();
-		String datasetName = this.selectDatasetForBreedingViewPanel.getCurrentDatasetName();
+		project = this.selectDatasetForBreedingViewPanel.getCurrentProject();
+		study = this.selectDatasetForBreedingViewPanel.getCurrentStudy();
+		dataSetId = this.selectDatasetForBreedingViewPanel.getCurrentDataSetId();
+		datasetName = this.selectDatasetForBreedingViewPanel.getCurrentDatasetName();
 
-		if (!this.validateInput(event, studyId, dataSetId, datasetName)) {
+		if (!this.validateInput(event, study.getId(), dataSetId, datasetName)) {
 			return;
 		}
 
 		try {
 
+			final Tool breedingViewTool = this.workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
+			final String inputDir = this.toolUtil.getInputDirectoryForTool(project, breedingViewTool);
+
 			// List of factors from the new schema
-			List<DMSVariableType> factorsInDataset =
-					studyDataManager.getDataSet(dataSetId).getVariableTypes().getFactors()
-							.getVariableTypes();
+			final List<DMSVariableType> factorsInDataset =
+					studyDataManager.getDataSet(dataSetId).getVariableTypes().getFactors().getVariableTypes();
 
-			String breedingViewProjectName;
-			String defaultFilePath = "";
-			String inputDir = "";
-
-			Tool breedingViewTool = this.workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
-			OpenSelectDatasetForExportAction.LOG.trace(breedingViewTool + "");
-
-			inputDir = this.toolUtil.getInputDirectoryForTool(project, breedingViewTool);
-
-			OpenSelectDatasetForExportAction.LOG.trace("Input Directory: " + inputDir);
-
-			breedingViewProjectName = project.getProjectName().trim() + "_" + dataSetId + "_" + datasetName.trim();
-			String timeStamp = DateUtil.getCurrentDateAsStringValue("yyyy-MM-dd_HH:mm");
-
-			String breedingViewAnalysisName = String.format("SSA analysis of %s  (run at %s)", datasetName.trim(), timeStamp);
-
-			defaultFilePath = File.separator + breedingViewProjectName;
-
-			OpenSelectDatasetForExportAction.LOG.trace("Default File Path: " + defaultFilePath);
-
-			String sourceCSVFile = "";
-			if (Boolean.parseBoolean(this.isServerApp)) {
-				sourceCSVFile = breedingViewProjectName + ".csv";
-			} else {
-				sourceCSVFile = inputDir + defaultFilePath + ".csv";
-			}
-
-			OpenSelectDatasetForExportAction.LOG.trace("Source CSV File Path: " + sourceCSVFile);
-
-			String destXMLFilePath = inputDir + defaultFilePath + ".xml";
-
-			OpenSelectDatasetForExportAction.LOG.trace("Destination XML File Path: " + destXMLFilePath);
-
-			BreedingViewInput breedingViewInput = new BreedingViewInput();
+			final BreedingViewInput breedingViewInput = new BreedingViewInput();
 			breedingViewInput.setProject(project);
-			breedingViewInput.setBreedingViewProjectName(breedingViewProjectName);
-			breedingViewInput.setStudyId(studyId);
+			breedingViewInput.setStudyId(study.getId());
 			breedingViewInput.setDatasetId(dataSetId);
 			breedingViewInput.setVersion(breedingViewTool.getVersion());
-			breedingViewInput.setSourceXLSFilePath(sourceCSVFile);
-			breedingViewInput.setDestXMLFilePath(destXMLFilePath);
 			breedingViewInput.setProjectType(ProjectType.FIELD_TRIAL.getName());
-			breedingViewInput.setBreedingViewAnalysisName(breedingViewAnalysisName);
-			breedingViewInput.setDatasetName(this.selectDatasetForBreedingViewPanel.getCurrentDatasetName());
-			breedingViewInput.setDatasetSource(this.selectDatasetForBreedingViewPanel.getCurrentStudy().getName());
-			breedingViewInput.setVariatesActiveState(this.selectDatasetForBreedingViewPanel.getVariatesCheckboxState());
-			List<DataSet> meansDs =
-					studyDataManager.getDataSetsByType(studyId, DataSetType.MEANS_DATA);
-			if (meansDs != null) {
-				if (!meansDs.isEmpty()) {
-					breedingViewInput.setOutputDatasetId(meansDs.get(0).getId());
-				} else {
-					breedingViewInput.setOutputDatasetId(0);
-				}
-			}
+			breedingViewInput.setDatasetName(this.datasetName);
 
-			IContentWindow w = (IContentWindow) event.getComponent().getWindow();
+			// THe study name is stored in the database as escaped html. We need to decode it to use it properly in generating filenames.
+			final String studyName = HtmlEscape.unescapeHtml(this.study.getName());
+			breedingViewInput.setDatasetSource(studyName);
+
+			// OutputDatasetId is not used anymore in Breeding View web service, but OutputDatasetId attribute should still be included in XML to ensure compatibility.
+			breedingViewInput.setOutputDatasetId(0);
+
+			populateProjectNameAndFilePaths(breedingViewInput, project, inputDir);
+			populateAnalysisName(breedingViewInput, datasetName);
+
+			breedingViewInput.setVariatesActiveState(this.selectDatasetForBreedingViewPanel.getVariatesCheckboxState());
+
+			final IContentWindow w = (IContentWindow) event.getComponent().getWindow();
 
 			List<DMSVariableType> trialVariablesInDataset = null;
-			DataSet trialDataset = DatasetUtil.getTrialDataSet(studyDataManager, studyId);
+			final DataSet trialDataset = DatasetUtil.getTrialDataSet(studyDataManager, study.getId());
 			if (trialDataset != null && trialDataset.getVariableTypes() != null) {
 				trialVariablesInDataset = trialDataset.getVariableTypes().getVariableTypes();
 			}
-			
-			w.showContent(new SingleSiteAnalysisDetailsPanel(breedingViewTool, breedingViewInput, factorsInDataset,
-					trialVariablesInDataset, project, 
-					this.selectDatasetForBreedingViewPanel));
 
-		} catch (MiddlewareException e) {
+			w.showContent(new SingleSiteAnalysisDetailsPanel(breedingViewTool, breedingViewInput, factorsInDataset, trialVariablesInDataset,
+					project, this.selectDatasetForBreedingViewPanel));
+
+		} catch (final MiddlewareException e) {
 			OpenSelectDatasetForExportAction.LOG.error(e.getMessage(), e);
 			MessageNotifier.showError(event.getComponent().getWindow(), e.getMessage(), "");
 		}
 	}
 
-	private boolean validateInput(ClickEvent event, Integer studyId, Integer dataSetId, String datasetName) {
+	void populateProjectNameAndFilePaths(final BreedingViewInput breedingViewInput, final Project project, final String inputDirectory) {
+
+		String breedingViewProjectName = "";
+		String defaultFilePath = "";
+
+		breedingViewProjectName = project.getProjectName().trim() + "_" + dataSetId + "_" + datasetName.trim();
+
+		breedingViewProjectName = BreedingViewUtil.sanitizeNameAlphaNumericOnly(breedingViewProjectName);
+
+		defaultFilePath = File.separator + breedingViewProjectName;
+
+		breedingViewInput.setBreedingViewProjectName(breedingViewProjectName);
+
+		String sourceCSVFile = "";
+		if (Boolean.parseBoolean(this.isServerApp)) {
+			sourceCSVFile = breedingViewProjectName + ".csv";
+		} else {
+			sourceCSVFile = inputDirectory + defaultFilePath + ".csv";
+		}
+
+		breedingViewInput.setSourceXLSFilePath(sourceCSVFile);
+
+		final String destXMLFilePath = inputDirectory + defaultFilePath + ".xml";
+
+		breedingViewInput.setDestXMLFilePath(destXMLFilePath);
+
+	}
+
+	void populateAnalysisName(final BreedingViewInput breedingViewInput, final String datasetName) {
+
+		final String timeStamp = DateUtil.getCurrentDateAsStringValue("yyyy-MM-dd_HH:mm");
+		breedingViewInput.setBreedingViewAnalysisName(
+				String.format("SSA analysis of %s  (run at %s)", BreedingViewUtil.sanitizeNameAlphaNumericOnly(datasetName), timeStamp));
+
+	}
+
+	private boolean validateInput(final ClickEvent event, final Integer studyId, final Integer dataSetId, final String datasetName) {
 		// study is required
 		if (this.selectDatasetForBreedingViewPanel.getCurrentStudy() == null) {
 			event.getComponent().getWindow().showNotification("Please select a Study first.", Notification.TYPE_ERROR_MESSAGE);
@@ -185,15 +196,15 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 			event.getComponent().getWindow().showNotification("Please select a Dataset first.", Notification.TYPE_ERROR_MESSAGE);
 			return false;
 		}
-		List<VariateModel> variates = this.selectDatasetForBreedingViewPanel.getVariateList();
-		Map<String, Boolean> variatesCheckboxState = this.selectDatasetForBreedingViewPanel.getVariatesCheckboxState();
-		boolean includesNonNumeric = this.checkIfNonNumericVarAreIncluded(variates, variatesCheckboxState);
+		final List<VariateModel> variates = this.selectDatasetForBreedingViewPanel.getVariateList();
+		final Map<String, Boolean> variatesCheckboxState = this.selectDatasetForBreedingViewPanel.getVariatesCheckboxState();
+		final boolean includesNonNumeric = this.checkIfNonNumericVarAreIncluded(variates, variatesCheckboxState);
 		if (includesNonNumeric) {
 			MessageNotifier.showError(event.getComponent().getWindow(), this.messageSource.getMessage(Message.INVALID_INPUT),
 					this.messageSource.getMessage(Message.SSA_NON_NUMERIC_CATEGORICAL_VAR_ERROR));
 			return false;
 		}
-		boolean includesNumericCategorical = this.checkIfNumericCategoricalVarAreIncluded(variates, variatesCheckboxState);
+		final boolean includesNumericCategorical = this.checkIfNumericCategoricalVarAreIncluded(variates, variatesCheckboxState);
 		if (includesNumericCategorical) {
 			MessageNotifier.showWarning(event.getComponent().getWindow(), this.messageSource.getMessage(Message.WARNING),
 					this.messageSource.getMessage(Message.SSA_NUMERIC_CATEGORICAL_VAR_WARNING));
@@ -201,9 +212,9 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 		return true;
 	}
 
-	protected boolean checkIfNumericCategoricalVarAreIncluded(List<VariateModel> variates, Map<String, Boolean> variatesCheckboxState) {
-		for (VariateModel vm : variates) {
-			boolean isSelected = variatesCheckboxState.get(vm.getName());
+	protected boolean checkIfNumericCategoricalVarAreIncluded(final List<VariateModel> variates, final Map<String, Boolean> variatesCheckboxState) {
+		for (final VariateModel vm : variates) {
+			final boolean isSelected = variatesCheckboxState.get(vm.getName());
 			if (isSelected && vm.isNumericCategoricalVariate()) {
 				return true;
 			}
@@ -211,13 +222,29 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 		return false;
 	}
 
-	protected boolean checkIfNonNumericVarAreIncluded(List<VariateModel> variates, Map<String, Boolean> variatesCheckboxState) {
-		for (VariateModel vm : variates) {
-			boolean isSelected = variatesCheckboxState.get(vm.getName());
+	protected boolean checkIfNonNumericVarAreIncluded(final List<VariateModel> variates, final Map<String, Boolean> variatesCheckboxState) {
+		for (final VariateModel vm : variates) {
+			final boolean isSelected = variatesCheckboxState.get(vm.getName());
 			if (isSelected && vm.isNonNumeric()) {
 				return true;
 			}
 		}
 		return false;
+	}
+
+	public void setDatasetName(final String datasetName) {
+		this.datasetName = datasetName;
+	}
+
+	public void setDataSetId(final Integer dataSetId) {
+		this.dataSetId = dataSetId;
+	}
+
+	public void setStudy(final Study study) {
+		this.study = study;
+	}
+
+	public void setProject(final Project project) {
+		this.project = project;
 	}
 }

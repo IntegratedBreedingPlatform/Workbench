@@ -1,4 +1,3 @@
-
 package org.generationcp.ibpworkbench.actions;
 
 import java.io.File;
@@ -14,19 +13,19 @@ import javax.annotation.Resource;
 import org.generationcp.commons.breedingview.xml.Genotypes;
 import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
+import org.generationcp.commons.util.BreedingViewUtil;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.GxeTable;
 import org.generationcp.middleware.util.DatasetUtil;
 import org.generationcp.ibpworkbench.util.GxeInput;
-import org.generationcp.ibpworkbench.util.GxeUtility;
+import org.generationcp.ibpworkbench.util.MultiSiteDataExporter;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.ibpworkbench.util.ZipUtil;
 import org.generationcp.ibpworkbench.util.bean.MultiSiteParameters;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.domain.dms.Experiment;
-import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -38,7 +37,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
-import com.mysql.jdbc.StringUtils;
 import com.vaadin.Application;
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.FileResource;
@@ -47,6 +45,7 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
+import org.unbescape.html.HtmlEscape;
 
 @Configurable
 public class RunMultiSiteAction implements ClickListener {
@@ -58,7 +57,7 @@ public class RunMultiSiteAction implements ClickListener {
 	private Tool breedingViewTool;
 
 	@Value("${workbench.is.server.app}")
-	private String isServerApp;
+	private boolean isServerApp;
 
 	@Resource
 	private ToolUtil toolUtil;
@@ -69,134 +68,186 @@ public class RunMultiSiteAction implements ClickListener {
 	@Resource
 	private StudyDataManager studyDataManager;
 
-	private final MultiSiteParameters multiSiteParameters;
+	private IBPWorkbenchApplication workbenchApplication;
 
-	private final GxeTable gxeTable;
+	private MultiSiteDataExporter multiSiteDataExporter = new MultiSiteDataExporter();
 
-	private final Table selectTraitsTable;
+	private MultiSiteParameters multiSiteParameters;
 
-	public RunMultiSiteAction(GxeTable gxeTable, Table selectTraitsTable,
-			MultiSiteParameters multiSiteParameters) {
+	private GxeTable gxeTable;
+
+	private Table selectTraitsTable;
+
+	private ZipUtil zipUtil = new ZipUtil();
+
+	public RunMultiSiteAction() {
+		// for unit testing
+	}
+
+	public RunMultiSiteAction(final GxeTable gxeTable, final Table selectTraitsTable, final MultiSiteParameters multiSiteParameters) {
 		this.gxeTable = gxeTable;
 		this.selectTraitsTable = selectTraitsTable;
 		this.multiSiteParameters = multiSiteParameters;
+		this.workbenchApplication = IBPWorkbenchApplication.get();
 	}
 
 	@Override
-	public void buttonClick(ClickEvent event) {
+	public void buttonClick(final ClickEvent event) {
 		final ClickEvent buttonClickEvent = event;
 
-		try {
-			this.breedingViewTool = this.workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
-		} catch (MiddlewareQueryException ex) {
-			RunMultiSiteAction.LOG.error(ex.getMessage(), ex);
-		}
+		this.breedingViewTool = this.workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
 
-		try {
+		final GxeInput gxeInput;
+		gxeInput = this.generateInputFiles();
 
-			GxeInput gxeInput;
-			gxeInput = this.generateInputFiles();
+		if (this.isServerApp) {
 
-			if (Boolean.parseBoolean(this.isServerApp)) {
+			this.zipInputFilesAndDownload(gxeInput);
 
-				this.zipInputFilesAndDownload(gxeInput);
+		} else {
 
-			} else {
-				this.launchBV(gxeInput.getDestXMLFilePath(), buttonClickEvent.getComponent().getWindow());
-			}
-
-		} catch (MiddlewareQueryException e) {
-			RunMultiSiteAction.LOG.error(e.getMessage(), e);
+			this.launchBV(gxeInput.getDestXMLFilePath(), buttonClickEvent.getComponent().getWindow());
 		}
 
 	}
 
-	protected void zipInputFilesAndDownload(GxeInput gxeInput) {
-		String outputFilename = this.multiSiteParameters.getStudy().getName() + ".zip";
-		List<String> filenameList = new ArrayList<>();
+	protected void zipInputFilesAndDownload(final GxeInput gxeInput) {
+
+		final String studyName = HtmlEscape.unescapeHtml(this.multiSiteParameters.getStudy().getName());
+
+		final String outputFilename = BreedingViewUtil.sanitizeNameAlphaNumericOnly(studyName) + ".zip";
+
+		final List<String> filenameList = new ArrayList<>();
 		filenameList.add(gxeInput.getDestXMLFilePath());
 		filenameList.add(gxeInput.getSourceCSVFilePath());
 		filenameList.add(gxeInput.getSourceCSVSummaryStatsFilePath());
 
-		ZipUtil.zipIt(outputFilename, filenameList);
+		this.zipUtil.zipIt(outputFilename, filenameList);
 
-		this.downloadInputFile(new File(outputFilename), IBPWorkbenchApplication.get());
+		this.downloadInputFile(new File(outputFilename), workbenchApplication);
 	}
 
 	protected GxeInput generateInputFiles() throws MiddlewareQueryException {
 
-		Project project = this.multiSiteParameters.getProject();
-		Study study = this.multiSiteParameters.getStudy();
+		final GxeEnvironment gxeEnvironment = this.gxeTable.getGxeEnvironment();
+		final List<Trait> selectedTraits = this.getSelectedTraits();
 
-		GxeInput gxeInput = new GxeInput(project, "", 0, 0, "", "", "", "");
-		String inputDir = this.toolUtil.getInputDirectoryForTool(project, this.breedingViewTool);
-		String inputFileName =
-				String.format("%s_%s_%s", project.getProjectName().trim(), this.gxeTable.getMeansDataSetId(), this.gxeTable
-						.getMeansDataSet().getName());
+		final GxeInput gxeInput = this.createGxeInput(this.multiSiteParameters, gxeEnvironment, selectedTraits);
 
-		GxeEnvironment gxeEnv = this.gxeTable.getGxeEnvironment();
-		List<Trait> selectedTraits = this.getSelectedTraits();
+		this.exportDataFiles(this.multiSiteParameters, gxeInput, gxeEnvironment, selectedTraits);
 
-		File datasetExportFile = null;
-		datasetExportFile =
-				GxeUtility.exportGxEDatasetToBreadingViewCsv(this.gxeTable.getMeansDataSet(), this.gxeTable.getExperiments(),
-						this.gxeTable.getEnvironmentName(), this.multiSiteParameters.getSelectedEnvGroupFactorName(),
-						this.multiSiteParameters.getSelectedGenotypeFactorName(), gxeEnv, selectedTraits, project);
-
-		try {
-
-			DataSet trialDataSet;
-			List<DataSet> dataSets = this.studyDataManager.getDataSetsByType(study.getId(), DataSetType.SUMMARY_DATA);
-			if (!dataSets.isEmpty()) {
-				trialDataSet = dataSets.get(0);
-			} else {
-				trialDataSet = DatasetUtil.getTrialDataSet(this.studyDataManager, study.getId());
-
-			}
-			List<Experiment> trialExperiments = this.studyDataManager.getExperiments(trialDataSet.getId(), 0, Integer.MAX_VALUE);
-			File summaryStatsFile =
-					GxeUtility.exportTrialDatasetToSummaryStatsCsv(trialDataSet, trialExperiments, this.gxeTable.getEnvironmentName(),
-							selectedTraits, project);
-			gxeInput.setSourceCSVSummaryStatsFilePath(summaryStatsFile.getAbsolutePath());
-
-		} catch (IllegalArgumentException | MiddlewareQueryException e) {
-			LOG.error(e.getMessage(),e);
-		}
-
-		gxeInput.setSourceCSVFilePath(datasetExportFile.getAbsolutePath());
-		gxeInput.setDestXMLFilePath(String.format("%s\\%s.xml", inputDir, inputFileName));
-		gxeInput.setTraits(selectedTraits);
-		gxeInput.setEnvironment(gxeEnv);
-		gxeInput.setSelectedEnvironments(this.gxeTable.getSelectedEnvironments());
-		gxeInput.setEnvironmentGroup(this.multiSiteParameters.getSelectedEnvGroupFactorName());
-
-		Genotypes genotypes = new Genotypes();
-		if (!StringUtils.isNullOrEmpty(this.multiSiteParameters.getSelectedGenotypeFactorName())) {
-			genotypes.setName(this.multiSiteParameters.getSelectedGenotypeFactorName());
-		} else {
-			genotypes.setName("G!");
-		}
-
-		gxeInput.setGenotypes(genotypes);
-		gxeInput.setEnvironmentName(this.gxeTable.getEnvironmentName());
-		gxeInput.setBreedingViewProjectName(project.getProjectName());
-
-		GxeUtility.generateXmlFieldBook(gxeInput);
+		this.exportMultiSiteProjectFile(this.multiSiteParameters, gxeInput);
 
 		return gxeInput;
 	}
 
-	protected void launchBV(String projectFilePath, final Window windowSource) {
+	/**
+	 * Exports the Breeding View project file for Multi-Site Analysis.
+	 *
+	 * @param gxeInput
+	 */
+	void exportMultiSiteProjectFile(final MultiSiteParameters multiSiteParameters, final GxeInput gxeInput) {
 
-		File absoluteToolFile = new File(this.breedingViewTool.getPath()).getAbsoluteFile();
+		final String inputDir = this.toolUtil.getInputDirectoryForTool(multiSiteParameters.getProject(), this.breedingViewTool);
+		final String inputFileName = this.generateInputFileName(multiSiteParameters.getProject());
+
+		gxeInput.setDestXMLFilePath(inputDir + File.separator + inputFileName + ".xml");
+
+		multiSiteDataExporter.generateXmlFieldBook(gxeInput);
+
+	}
+
+	/**
+	 * Exports the Means Dataset and Summary Stats data into CSV files. These are the input files required for running Multi-Site Analsysis in Breeding View.
+	 *
+	 * @param multiSiteParameters
+	 * @param gxeInput
+	 * @param gxeEnvironment
+	 * @param selectedTraits
+	 */
+	void exportDataFiles(final MultiSiteParameters multiSiteParameters, final GxeInput gxeInput, final GxeEnvironment gxeEnvironment,
+			final List<Trait> selectedTraits) {
+		
+		final String inputFileName = this.generateInputFileName(multiSiteParameters.getProject());
+
+		final String meansDataFilePath = multiSiteDataExporter
+				.exportMeansDatasetToCsv(inputFileName, multiSiteParameters, this.gxeTable.getMeansDataSet(),
+						this.gxeTable.getExperiments(), this.gxeTable.getEnvironmentName(), gxeEnvironment, selectedTraits);
+
+		final DataSet summaryStatsDataSet = this.getSummaryStatsDataSet(multiSiteParameters.getStudy().getId());
+
+		final String summaryStatsDataFilePath = multiSiteDataExporter.exportTrialDatasetToSummaryStatsCsv(inputFileName, summaryStatsDataSet,
+				this.getSummaryStatsExperiments(summaryStatsDataSet.getId()), this.gxeTable.getEnvironmentName(), selectedTraits,
+				multiSiteParameters.getProject());
+
+		gxeInput.setSourceCSVSummaryStatsFilePath(summaryStatsDataFilePath);
+		gxeInput.setSourceCSVFilePath(meansDataFilePath);
+
+	}
+
+	GxeInput createGxeInput(final MultiSiteParameters multiSiteParameters, final GxeEnvironment gxeEnvironment,
+			final List<Trait> selectedTraits) {
+
+		final GxeInput gxeInput = new GxeInput(multiSiteParameters.getProject(), "", 0, 0, "", "", "", "");
+
+		gxeInput.setTraits(selectedTraits);
+		gxeInput.setEnvironment(gxeEnvironment);
+		gxeInput.setSelectedEnvironments(this.gxeTable.getSelectedEnvironments());
+		gxeInput.setEnvironmentGroup(multiSiteParameters.getSelectedEnvGroupFactorName());
+
+		final Genotypes genotypes = new Genotypes();
+		genotypes.setName(multiSiteParameters.getSelectedGenotypeFactorName());
+
+		gxeInput.setGenotypes(genotypes);
+		gxeInput.setEnvironmentName(this.gxeTable.getEnvironmentName());
+		gxeInput.setBreedingViewProjectName(multiSiteParameters.getProject().getProjectName());
+
+		return gxeInput;
+
+	}
+
+	List<Experiment> getSummaryStatsExperiments(final int dataSetId) {
+
+		return this.studyDataManager.getExperiments(dataSetId, 0, Integer.MAX_VALUE);
+
+	}
+
+	DataSet getSummaryStatsDataSet(final int studyId) {
+
+		final DataSet summaryStatsDataSet;
+		final List<DataSet> dataSets = this.studyDataManager.getDataSetsByType(studyId, DataSetType.SUMMARY_DATA);
+		if (!dataSets.isEmpty()) {
+			summaryStatsDataSet = dataSets.get(0);
+		} else {
+			summaryStatsDataSet = DatasetUtil.getTrialDataSet(this.studyDataManager, studyId);
+
+		}
+
+		return summaryStatsDataSet;
+	}
+
+	String generateInputFileName(final Project project) {
+
+		final String sanitizedProjectName = BreedingViewUtil.sanitizeNameAlphaNumericOnly(project.getProjectName().trim());
+
+		final String meansDataSetName = HtmlEscape.unescapeHtml(this.gxeTable.getMeansDataSet().getName());
+		final String sanitizedMeansDataSetName = BreedingViewUtil.sanitizeNameAlphaNumericOnly(meansDataSetName);
+
+		return String.format("%s_%s_%s", sanitizedProjectName, this.gxeTable.getMeansDataSetId(), sanitizedMeansDataSetName);
+
+	}
+
+	protected void launchBV(final String projectFilePath, final Window windowSource) {
+
+		final File absoluteToolFile = new File(this.breedingViewTool.getPath()).getAbsoluteFile();
 
 		try {
-			ProcessBuilder pb = new ProcessBuilder(absoluteToolFile.getAbsolutePath(), "-project=", projectFilePath);
+			final ProcessBuilder pb = new ProcessBuilder(absoluteToolFile.getAbsolutePath(), "-project=", projectFilePath);
 			pb.start();
 
 			MessageNotifier.showMessage(windowSource, "GxE files saved",
 					"Successfully generated the means dataset and xml input files for breeding view.");
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			RunMultiSiteAction.LOG.error(e.getMessage(), e);
 			MessageNotifier.showMessage(windowSource, "Cannot launch " + absoluteToolFile.getName(),
 					"But it successfully created GxE Excel and XML input file for the breeding_view!");
@@ -205,14 +256,14 @@ public class RunMultiSiteAction implements ClickListener {
 	}
 
 	protected List<Trait> getSelectedTraits() {
-		List<Trait> selectedTraits = new ArrayList<Trait>();
-		Iterator<?> itr = this.selectTraitsTable.getItem(1).getItemPropertyIds().iterator();
+		final List<Trait> selectedTraits = new ArrayList<Trait>();
+		final Iterator<?> itr = this.selectTraitsTable.getItem(1).getItemPropertyIds().iterator();
 
 		while (itr.hasNext()) {
-			Object propertyId = itr.next();
-			CheckBox cb = (CheckBox) this.selectTraitsTable.getItem(1).getItemProperty(propertyId).getValue();
+			final Object propertyId = itr.next();
+			final CheckBox cb = (CheckBox) this.selectTraitsTable.getItem(1).getItemProperty(propertyId).getValue();
 			if ((Boolean) cb.getValue()) {
-				Trait t = new Trait();
+				final Trait t = new Trait();
 				t.setName(propertyId.toString());
 				t.setActive(true);
 				selectedTraits.add(t);
@@ -222,15 +273,15 @@ public class RunMultiSiteAction implements ClickListener {
 		return selectedTraits;
 	}
 
-	private void downloadInputFile(File file, Application application) {
+	void downloadInputFile(final File file, final Application application) {
 
-		FileResource fr = new FileResource(file, application) {
+		final FileResource fr = new FileResource(file, application) {
 
 			private static final long serialVersionUID = 765143030552676513L;
 
 			@Override
 			public DownloadStream getStream() {
-				DownloadStream ds;
+				final DownloadStream ds;
 				try {
 					ds = new DownloadStream(new FileInputStream(this.getSourceFile()), this.getMIMEType(), this.getFilename());
 
@@ -238,7 +289,7 @@ public class RunMultiSiteAction implements ClickListener {
 					ds.setCacheTime(this.getCacheTime());
 					return ds;
 
-				} catch (FileNotFoundException e) {
+				} catch (final FileNotFoundException e) {
 					RunMultiSiteAction.LOG.error(e.getMessage(), e);
 					return null;
 				}
@@ -248,8 +299,23 @@ public class RunMultiSiteAction implements ClickListener {
 		application.getMainWindow().open(fr);
 	}
 
-	protected void setIsServerApp(String isServerApp) {
+	protected void setIsServerApp(final boolean isServerApp) {
 		this.isServerApp = isServerApp;
 	}
 
+	protected void setSelectTraitsTable(final Table selectTraitsTable) {
+		this.selectTraitsTable = selectTraitsTable;
+	}
+
+	protected void setBreedingViewTool(final Tool breedingViewTool) {
+		this.breedingViewTool = breedingViewTool;
+	}
+
+	protected void setMultiSiteParameters(final MultiSiteParameters multiSiteParameters) {
+		this.multiSiteParameters = multiSiteParameters;
+	}
+
+	protected Table getSelectTraitsTable() {
+		return this.selectTraitsTable;
+	}
 }
