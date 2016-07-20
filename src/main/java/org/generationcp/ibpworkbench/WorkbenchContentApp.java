@@ -34,9 +34,7 @@ public class WorkbenchContentApp extends SpringContextApplication implements IWo
 	public void close() {
 		super.close();
 
-		// implement this when we need to do something on session timeout
 
-		this.messageSource.removeListener(this.messageSourceListener);
 
 		WorkbenchContentApp.LOG.debug("Application closed");
 	}
@@ -46,7 +44,6 @@ public class WorkbenchContentApp extends SpringContextApplication implements IWo
 		this.setTheme("gcp-default");
 
 		this.messageSourceListener = new UpdateComponentLabelsAction(this);
-		this.messageSource.addListener(this.messageSourceListener);
 
 		this.setMainWindow(new ContentWindow());
 	}
