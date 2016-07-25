@@ -16,7 +16,7 @@ import java.util.List;
 @Configurable
 public class SystemLabelPresenter {
 
-	private SystemLabelView view;
+	private final SystemLabelView view;
 
 	@Resource
 	private OntologyDataManager ontologyDataManager;
@@ -24,7 +24,7 @@ public class SystemLabelPresenter {
 	@Value("${system.label.ids}")
 	private String systemLabelIds;
 
-	public SystemLabelPresenter(SystemLabelView view) {
+	public SystemLabelPresenter(final SystemLabelView view) {
 		this.view = view;
 	}
 
@@ -35,8 +35,8 @@ public class SystemLabelPresenter {
 	 */
 	protected List<Term> retrieveSystemLabelTerms() {
 
-		List<Integer> termIdSystemLabels = new ArrayList<>();
-		for (String value : systemLabelIds.split(",")) {
+		final List<Integer> termIdSystemLabels = new ArrayList<>();
+		for (final String value : systemLabelIds.split(",")) {
 			termIdSystemLabels.add(Integer.valueOf(value));
 		}
 		return ontologyDataManager.getTermsByIds(termIdSystemLabels);
@@ -48,7 +48,7 @@ public class SystemLabelPresenter {
 	 */
 	protected void saveTerms() {
 
-		List<Term> terms = this.retrieveTermsFromTable();
+		final List<Term> terms = this.retrieveTermsFromTable();
 
 		if (this.isAllTermsValid(terms)) {
 
@@ -69,10 +69,10 @@ public class SystemLabelPresenter {
 	 */
 	protected void loadDataSystemLabelTable() {
 
-		Table systemLableTable = view.getTblSystemLabels();
+		final Table systemLableTable = view.getTblSystemLabels();
 		systemLableTable.removeAllItems();
 
-		List<Term> terms = this.retrieveSystemLabelTerms();
+		final List<Term> terms = this.retrieveSystemLabelTerms();
 		((BeanItemContainer<Term>) systemLableTable.getContainerDataSource()).addAll(terms);
 		systemLableTable.setPageLength(terms.size());
 
@@ -84,12 +84,12 @@ public class SystemLabelPresenter {
 	 */
 	protected List<Term> retrieveTermsFromTable() {
 
-		Table systemLableTable = view.getTblSystemLabels();
+		final Table systemLableTable = view.getTblSystemLabels();
 
 		systemLableTable.commit();
 
 		// Get the Terms from the table's container
-		BeanItemContainer<Term> container = (BeanItemContainer<Term>) systemLableTable.getContainerDataSource();
+		final BeanItemContainer<Term> container = (BeanItemContainer<Term>) systemLableTable.getContainerDataSource();
 		return new ArrayList<Term>((Collection<Term>) container.getItemIds());
 
 	}
@@ -100,7 +100,7 @@ public class SystemLabelPresenter {
 	 * @return
 	 */
 	protected boolean isAllTermsValid(final List<Term> terms) {
-		for (Term term : terms) {
+		for (final Term term : terms) {
 			if (StringUtils.isNullOrEmpty(term.getName())) {
 				return false;
 			}

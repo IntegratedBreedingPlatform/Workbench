@@ -153,7 +153,7 @@ public class SystemLabelView extends Panel implements InitializingBean, Internat
 		return buttonLayout;
 	}
 
-	protected void initializeTable(Table table) {
+	protected void initializeTable(final Table table) {
 
 		table.setContainerDataSource(new BeanItemContainer<Term>(Term.class));
 		table.setEditable(true);
@@ -190,16 +190,16 @@ public class SystemLabelView extends Panel implements InitializingBean, Internat
 
 	protected void showSaveSuccessMessage() {
 
-		String title = messageSource.getMessage(Message.SUCCESS);
-		String message = messageSource.getMessage(Message.SYSTEM_LABEL_UPDATE_SUCCESS);
+		final String title = messageSource.getMessage(Message.SUCCESS);
+		final String message = messageSource.getMessage(Message.SYSTEM_LABEL_UPDATE_SUCCESS);
 		MessageNotifier.showMessage(this.getWindow(), title, message);
 
 	}
 
 	protected void showValidationErrorMessage() {
 
-		String title = messageSource.getMessage(Message.ERROR);
-		String message = messageSource.getMessage(Message.SYSTEM_LABEL_UPDATE_ERROR);
+		final String title = messageSource.getMessage(Message.ERROR);
+		final String message = messageSource.getMessage(Message.SYSTEM_LABEL_UPDATE_ERROR);
 		MessageNotifier.showError(this.getWindow(), title, message);
 
 	}
