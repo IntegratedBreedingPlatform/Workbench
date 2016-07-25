@@ -15,6 +15,7 @@ public class SystemLabelFieldFactory extends DefaultFieldFactory {
 			TextField textField = new TextField();
 			textField.setMaxLength(200);
 			textField.setRequired(true);
+			textField.setInvalidCommitted(true);
 			textField.setSizeFull();
 			return textField;
 		}

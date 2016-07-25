@@ -1,49 +1,28 @@
 package org.generationcp.ibpworkbench.ui.systemlabel;
 
-import com.vaadin.data.Container;
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
+import com.vaadin.data.Validator;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.DefaultFieldFactory;
-import com.vaadin.ui.Field;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
-import com.vaadin.ui.Link;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.TableFieldFactory;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
-import org.apache.commons.collections.ListUtils;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchLayout;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.middleware.domain.oms.CvId;
 import org.generationcp.middleware.domain.oms.Term;
-import org.generationcp.middleware.manager.api.OntologyDataManager;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.TransactionCallbackWithoutResult;
-import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.annotation.OverridingMethodsMustInvokeSuper;
-import javax.annotation.Resource;
-import javax.transaction.TransactionManager;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Configurable
@@ -89,8 +68,18 @@ public class SystemLabelView extends Panel implements InitializingBean, Internat
 			@Override
 			public void buttonClick(final Button.ClickEvent clickEvent) {
 
-				systemLabelPresenter.saveTerms();
-				SystemLabelView.this.showSuccessMessage();
+				List<Term> terms = systemLabelPresenter.retrieveTermsFromTable();
+
+				if (systemLabelPresenter.isAllTermsValid(terms)) {
+
+					systemLabelPresenter.saveTerms(terms);
+
+					SystemLabelView.this.showSaveSuccessMessage();
+
+				} else {
+
+					SystemLabelView.this.showSaveErrorMessage();
+				}
 
 			}
 		});
@@ -145,7 +134,6 @@ public class SystemLabelView extends Panel implements InitializingBean, Internat
 		this.messageSource.setValue(this.headingDesc, Message.SYSTEM_LABEL_HEADING_DESCRIPTION);
 		this.messageSource.setCaption(this.saveButton, Message.SAVE);
 		this.messageSource.setCaption(this.cancelButton, Message.RESET);
-
 
 	}
 
@@ -211,11 +199,19 @@ public class SystemLabelView extends Panel implements InitializingBean, Internat
 
 	}
 
-	protected void showSuccessMessage() {
+	protected void showSaveSuccessMessage() {
 
 		String title = messageSource.getMessage(Message.SUCCESS);
 		String message = messageSource.getMessage(Message.SYSTEM_LABEL_UPDATE_SUCCESS);
 		MessageNotifier.showMessage(this.getWindow(), title, message);
+
+	}
+
+	protected void showSaveErrorMessage() {
+
+		String title = messageSource.getMessage(Message.ERROR);
+		String message = messageSource.getMessage(Message.SYSTEM_LABEL_UPDATE_ERROR);
+		MessageNotifier.showError(this.getWindow(), title, message);
 
 	}
 
