@@ -86,13 +86,45 @@ public class SystemLabelPresenterTest {
 	@Test
 	public void testSaveTerms() {
 
-		Container container = systemLabelTable.getContainerDataSource();
+		List<Term> terms = systemLabelPresenter.retrieveTermsFromTable();
 
-		systemLabelPresenter.saveTerms();
+		systemLabelPresenter.saveTerms(terms);
 
+		Mockito.verify(ontologyDataManager).updateTerms(terms);
+
+	}
+
+	@Test
+	public void testRetrieveTermsFromTable() {
+
+		BeanItemContainer<Term> container = (BeanItemContainer<Term>) systemLabelTable.getContainerDataSource();
+		container.addAll(this.createTerms());
+
+		List<Term> terms = systemLabelPresenter.retrieveTermsFromTable();
+
+		Assert.assertEquals(TEST_TERMS_SIZE, terms.size());
+
+		// Make sure that the table.commit is called so that data is updated with the user input.
 		Mockito.verify(systemLabelTable).commit();
 
-		Mockito.verify(ontologyDataManager).updateTerms(new ArrayList<Term>((Collection<Term>) container.getItemIds()));
+	}
+
+	@Test
+	public void testIsAllTermsValidTrue() {
+
+		List<Term> terms = this.createTerms();
+		Assert.assertTrue(systemLabelPresenter.isAllTermsValid(terms));
+
+	}
+
+	@Test
+	public void testIsAllTermsValidFalse() {
+
+		List<Term> terms = this.createTerms();
+		// Set the first term's name to empty to simulate invalidity.
+		terms.get(0).setName("");
+
+		Assert.assertFalse(systemLabelPresenter.isAllTermsValid(terms));
 
 	}
 
