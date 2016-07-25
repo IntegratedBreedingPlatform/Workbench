@@ -1,6 +1,5 @@
 package org.generationcp.ibpworkbench.ui.systemlabel;
 
-import com.vaadin.data.Container;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Table;
 import junit.framework.Assert;
@@ -17,7 +16,6 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -41,12 +39,15 @@ public class SystemLabelPresenterTest {
 	public void init() {
 
 		Mockito.when(ontologyDataManager.getTermsByIds(Mockito.anyList())).thenReturn(this.createTerms());
+
 		// Simulate the system label termid values.
 		systemLabelPresenter.setSystemLabelIds(
 				String.format("%s,%s,%s", TermId.AVAILABLE_INVENTORY.getId(), TermId.LOT_ID_INVENTORY.getId(),
 						TermId.TOTAL_INVENTORY.getId()));
 
 		BeanItemContainer<Term> container = new BeanItemContainer<Term>(Term.class);
+		container.addAll(this.createTerms());
+
 		Mockito.when(view.getTblSystemLabels()).thenReturn(systemLabelTable);
 		Mockito.when(systemLabelTable.getContainerDataSource()).thenReturn(container);
 
@@ -84,21 +85,31 @@ public class SystemLabelPresenterTest {
 	}
 
 	@Test
-	public void testSaveTerms() {
+	public void testSaveTermsSuccessful() {
 
-		List<Term> terms = systemLabelPresenter.retrieveTermsFromTable();
+		systemLabelPresenter.saveTerms();
 
-		systemLabelPresenter.saveTerms(terms);
+		Mockito.verify(ontologyDataManager).updateTerms(Mockito.anyList());
+		Mockito.verify(view).showSaveSuccessMessage();
 
-		Mockito.verify(ontologyDataManager).updateTerms(terms);
+	}
+
+	@Test
+	public void testSaveTermsValidationError() {
+
+		// Modify the name of the first Term item to simulate validation error
+		Term term = (Term) systemLabelTable.getContainerDataSource().getItemIds().iterator().next();
+		term.setName("");
+
+		systemLabelPresenter.saveTerms();
+
+		Mockito.verify(ontologyDataManager, Mockito.times(0)).updateTerms(Mockito.anyList());
+		Mockito.verify(view).showValidationErrorMessage();
 
 	}
 
 	@Test
 	public void testRetrieveTermsFromTable() {
-
-		BeanItemContainer<Term> container = (BeanItemContainer<Term>) systemLabelTable.getContainerDataSource();
-		container.addAll(this.createTerms());
 
 		List<Term> terms = systemLabelPresenter.retrieveTermsFromTable();
 

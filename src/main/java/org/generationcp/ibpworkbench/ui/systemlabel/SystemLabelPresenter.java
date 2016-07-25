@@ -1,7 +1,6 @@
 package org.generationcp.ibpworkbench.ui.systemlabel;
 
 import com.mysql.jdbc.StringUtils;
-import com.vaadin.data.Validator;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Table;
 import org.generationcp.middleware.domain.oms.Term;
@@ -47,10 +46,20 @@ public class SystemLabelPresenter {
 	/**
 	 * Saves the Term changes from the System Label table.
 	 */
-	protected void saveTerms(final List<Term> terms) throws Validator.InvalidValueException {
+	protected void saveTerms() {
 
-		// Then save the changes.
-		ontologyDataManager.updateTerms(terms);
+		List<Term> terms = this.retrieveTermsFromTable();
+
+		if (this.isAllTermsValid(terms)) {
+
+			ontologyDataManager.updateTerms(terms);
+
+			view.showSaveSuccessMessage();
+
+		} else {
+
+			view.showValidationErrorMessage();
+		}
 
 	}
 

@@ -68,18 +68,7 @@ public class SystemLabelView extends Panel implements InitializingBean, Internat
 			@Override
 			public void buttonClick(final Button.ClickEvent clickEvent) {
 
-				List<Term> terms = systemLabelPresenter.retrieveTermsFromTable();
-
-				if (systemLabelPresenter.isAllTermsValid(terms)) {
-
-					systemLabelPresenter.saveTerms(terms);
-
-					SystemLabelView.this.showSaveSuccessMessage();
-
-				} else {
-
-					SystemLabelView.this.showSaveErrorMessage();
-				}
+				systemLabelPresenter.saveTerms();
 
 			}
 		});
@@ -207,7 +196,7 @@ public class SystemLabelView extends Panel implements InitializingBean, Internat
 
 	}
 
-	protected void showSaveErrorMessage() {
+	protected void showValidationErrorMessage() {
 
 		String title = messageSource.getMessage(Message.ERROR);
 		String message = messageSource.getMessage(Message.SYSTEM_LABEL_UPDATE_ERROR);

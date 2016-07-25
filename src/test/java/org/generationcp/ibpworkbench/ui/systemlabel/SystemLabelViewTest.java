@@ -68,7 +68,7 @@ public class SystemLabelViewTest {
 	public void testShowErrorMessage() {
 
 		view.instantiateComponents();
-		view.showSaveErrorMessage();
+		view.showValidationErrorMessage();
 
 		Mockito.verify(messageSource).getMessage(Message.ERROR);
 		Mockito.verify(messageSource).getMessage(Message.SYSTEM_LABEL_UPDATE_ERROR);
