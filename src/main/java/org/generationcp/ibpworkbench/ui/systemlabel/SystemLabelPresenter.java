@@ -16,29 +16,30 @@ import java.util.List;
 @Configurable
 public class SystemLabelPresenter {
 
-	private final SystemLabelView view;
+	private SystemLabelView view;
 
 	@Resource
 	private OntologyDataManager ontologyDataManager;
-
-	@Value("${system.label.ids}")
-	private String systemLabelIds;
 
 	public SystemLabelPresenter(final SystemLabelView view) {
 		this.view = view;
 	}
 
 	/**
-	 * Gets the list of Term based on the termIds specified in the property settings {system.label.ids}
+	 * Gets the list of System Label terms.
 	 *
 	 * @return
 	 */
 	protected List<Term> retrieveSystemLabelTerms() {
 
+		// NOTE: We know that the system label terms are within the id range of 1700 to 1799 so we will get all
+		// the terms within this range.
 		final List<Integer> termIdSystemLabels = new ArrayList<>();
-		for (final String value : systemLabelIds.split(",")) {
-			termIdSystemLabels.add(Integer.valueOf(value));
+
+		for (int i = 1700; i < 1800; i++) {
+			termIdSystemLabels.add(Integer.valueOf(i));
 		}
+
 		return ontologyDataManager.getTermsByIds(termIdSystemLabels);
 
 	}
@@ -108,10 +109,6 @@ public class SystemLabelPresenter {
 
 		return true;
 
-	}
-
-	public void setSystemLabelIds(final String systemLabelIds) {
-		this.systemLabelIds = systemLabelIds;
 	}
 
 

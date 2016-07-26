@@ -21,7 +21,8 @@ import java.util.List;
 @RunWith(MockitoJUnitRunner.class)
 public class SystemLabelPresenterTest {
 
-	private static final int TEST_TERMS_SIZE = 3;
+	private static final int SYSTEM_LABELS_TERM_RANGE_SIZE = 100;
+	private static final int SYSTEM_LABELS_TEST_RECORDS_SIZE = 3;
 
 	@Mock
 	private SystemLabelView view;
@@ -39,11 +40,6 @@ public class SystemLabelPresenterTest {
 	public void init() {
 
 		Mockito.when(ontologyDataManager.getTermsByIds(Mockito.anyList())).thenReturn(this.createTerms());
-
-		// Simulate the system label termid values.
-		systemLabelPresenter.setSystemLabelIds(
-				String.format("%s,%s,%s", TermId.AVAILABLE_INVENTORY.getId(), TermId.LOT_ID_INVENTORY.getId(),
-						TermId.TOTAL_INVENTORY.getId()));
 
 		BeanItemContainer<Term> container = new BeanItemContainer<Term>(Term.class);
 		container.addAll(this.createTerms());
@@ -65,10 +61,8 @@ public class SystemLabelPresenterTest {
 
 		List<Integer> termIds = termIdListCaptor.getValue();
 
-		Assert.assertEquals(TEST_TERMS_SIZE, termIds.size());
-		Assert.assertEquals(TermId.AVAILABLE_INVENTORY.getId(), termIds.get(0).intValue());
-		Assert.assertEquals(TermId.LOT_ID_INVENTORY.getId(), termIds.get(1).intValue());
-		Assert.assertEquals(TermId.TOTAL_INVENTORY.getId(), termIds.get(2).intValue());
+		Assert.assertEquals(SYSTEM_LABELS_TERM_RANGE_SIZE, termIds.size());
+
 
 	}
 
@@ -80,7 +74,7 @@ public class SystemLabelPresenterTest {
 		Mockito.verify(systemLabelTable).removeAllItems();
 		Mockito.verify(systemLabelTable).setPageLength(3);
 
-		Assert.assertEquals(TEST_TERMS_SIZE, systemLabelTable.getContainerDataSource().size());
+		Assert.assertEquals(SYSTEM_LABELS_TEST_RECORDS_SIZE, systemLabelTable.getContainerDataSource().size());
 
 	}
 
@@ -113,7 +107,7 @@ public class SystemLabelPresenterTest {
 
 		List<Term> terms = systemLabelPresenter.retrieveTermsFromTable();
 
-		Assert.assertEquals(TEST_TERMS_SIZE, terms.size());
+		Assert.assertEquals(SYSTEM_LABELS_TEST_RECORDS_SIZE, terms.size());
 
 		// Make sure that the table.commit is called so that data is updated with the user input.
 		Mockito.verify(systemLabelTable).commit();
