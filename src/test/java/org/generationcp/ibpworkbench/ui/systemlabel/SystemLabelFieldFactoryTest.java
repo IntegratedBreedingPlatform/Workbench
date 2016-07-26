@@ -2,7 +2,6 @@ package org.generationcp.ibpworkbench.ui.systemlabel;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;

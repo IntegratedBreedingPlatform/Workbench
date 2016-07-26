@@ -1,6 +1,5 @@
 package org.generationcp.ibpworkbench.ui.systemlabel;
 
-import com.vaadin.data.Validator;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -22,8 +21,6 @@ import org.generationcp.middleware.domain.oms.Term;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import java.util.List;
 
 @Configurable
 public class SystemLabelView extends Panel implements InitializingBean, InternationalizableComponent, IBPWorkbenchLayout {

@@ -6,7 +6,6 @@ import com.vaadin.ui.Table;
 import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.manager.api.OntologyDataManager;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
