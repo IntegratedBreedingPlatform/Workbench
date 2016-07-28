@@ -45,8 +45,6 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 	@Resource
 	private LogoutHandler rememberMeServices;
 
-	private UpdateComponentLabelsAction messageSourceListener;
-
 	private HttpServletRequest request;
 	private HttpServletResponse response;
 	private boolean scriptsRun = false;
@@ -58,8 +56,7 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 	@Override
 	public void close() {
 		super.close();
-		// implement this when we need to do something on session timeout
-		this.messageSource.removeListener(this.messageSourceListener);
+
 
 		this.logout();
 
@@ -122,14 +119,8 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 		this.setTheme("gcp-default");
 	}
 
-	protected void initializeActions() {
-		this.messageSourceListener = new UpdateComponentLabelsAction(this);
-		this.messageSource.addListener(this.messageSourceListener);
-	}
-
 	protected void assemble() {
 		this.initialize();
-		this.initializeActions();
 
 		this.setMainWindow(new WorkbenchMainView());
 	}
