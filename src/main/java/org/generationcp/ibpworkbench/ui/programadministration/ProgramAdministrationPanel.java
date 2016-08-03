@@ -11,6 +11,7 @@ import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsView;
 import org.generationcp.ibpworkbench.ui.programmembers.ProgramMembersPanel;
 import org.generationcp.ibpworkbench.ui.programmethods.ProgramMethodsView;
 import org.generationcp.ibpworkbench.ui.project.create.UpdateProjectPanel;
+import org.generationcp.ibpworkbench.ui.systemlabel.SystemLabelView;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -49,6 +50,7 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 	private ProgramMembersPanel programMembersPanel;
 	private ProgramLocationsView programLocationsView;
 	private ProgramMethodsView programMethodsView;
+	private SystemLabelView systemLabelPanel;
 
 	public ProgramAdministrationPanel() {
 
@@ -73,6 +75,7 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 		this.programMembersPanel = new ProgramMembersPanel(this.sessionData.getLastOpenedProject());
 		this.programLocationsView = new ProgramLocationsView(this.sessionData.getLastOpenedProject());
 		this.programMethodsView = new ProgramMethodsView(this.sessionData.getLastOpenedProject());
+		this.systemLabelPanel = new SystemLabelView();
 	}
 
 	protected void initializeLayout() {
@@ -89,6 +92,7 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 		this.programMembersPanel.setVisible(true);
 		this.programLocationsView.setVisible(true);
 		this.programMethodsView.setVisible(true);
+		this.systemLabelPanel.setVisible(true);
 
 		this.tabSheet.addTab(this.updateProjectPanel);
 		this.tabSheet.getTab(this.updateProjectPanel).setClosable(false);
@@ -112,6 +116,10 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 		this.tabSheet.addTab(this.programMethodsView);
 		this.tabSheet.getTab(this.programMethodsView).setClosable(false);
 		this.tabSheet.getTab(this.programMethodsView).setCaption(this.messageSource.getMessage(Message.BREEDING_METHODS_LABEL));
+
+		this.tabSheet.addTab(this.systemLabelPanel);
+		this.tabSheet.getTab(this.systemLabelPanel).setClosable(false);
+		this.tabSheet.getTab(this.systemLabelPanel).setCaption("System Labels");
 
 		this.rootLayout.addComponent(this.titleLayout);
 		this.rootLayout.addComponent(headingDesc);
