@@ -61,8 +61,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 
 		try {
 			germplasmListParent =
-					this.germplasmListManager.getAllTopLevelListsBatched(this.project.getUniqueID(),
-							GermplasmListPreviewPresenter.BATCH_SIZE);
+					this.germplasmListManager.getAllTopLevelLists(this.project.getUniqueID());
 		} catch (final MiddlewareQueryException e) {
 			GermplasmListPreviewPresenter.LOG.error(e.getLocalizedMessage(), e);
 			germplasmListParent = new ArrayList<GermplasmList>();
@@ -106,7 +105,7 @@ public class GermplasmListPreviewPresenter implements InitializingBean {
 	}
 
 	public boolean hasChildren(final Integer id) throws MiddlewareQueryException {
-		return !this.germplasmListManager.getGermplasmListByParentFolderId(id, this.project.getUniqueID(), 0, Integer.MAX_VALUE).isEmpty();
+		return !this.germplasmListManager.getGermplasmListByParentFolderId(id, this.project.getUniqueID()).isEmpty();
 	}
 
 	public GermplasmList getGermplasmListParent(final Integer id) throws GermplasmListPreviewException {
