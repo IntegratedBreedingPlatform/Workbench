@@ -22,6 +22,8 @@ import org.springframework.web.client.RestOperations;
 @Service
 public class ApiAuthenticationService {
 
+	static final String LOCAL_LOOPBACK_ADDRESS = "127.0.0.1";
+
 	private static final Logger LOG = LoggerFactory.getLogger(ApiAuthenticationService.class);
 
 	@Autowired
@@ -40,7 +42,7 @@ public class ApiAuthenticationService {
 			 * rules etc, use of local loop back address and getLocalPort() ensures we always hit the correct server.
 			 */
 			String bmsApiAuthURL =
-					String.format(bmsApiAuthURLFormat, this.currentHttpRequest.getScheme(), "127.0.0.1",
+					String.format(bmsApiAuthURLFormat, this.currentHttpRequest.getScheme(), LOCAL_LOOPBACK_ADDRESS,
 							this.currentHttpRequest.getLocalPort(), userName, password);
 			final Token apiAuthToken = this.restClient.postForObject(bmsApiAuthURL, new HashMap<String, String>(), Token.class);
 			if (apiAuthToken != null) {

@@ -47,7 +47,8 @@ public class ApiAuthenticationServiceTest {
 		final String urlUsedForTokenResource = urlCaptor.getValue();
 		Assert.assertEquals(
 				"Token authentication request URL must use the local loop back address and local port where request was received.",
-				"http://127.0.0.1:78080/bmsapi/authenticate?username=user&password=password", urlUsedForTokenResource);
+				"http://" + ApiAuthenticationService.LOCAL_LOOPBACK_ADDRESS + ":78080/bmsapi/authenticate?username=user&password=password",
+				urlUsedForTokenResource);
 	}
 
 	@Test
