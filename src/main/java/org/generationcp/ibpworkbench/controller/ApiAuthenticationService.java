@@ -22,6 +22,8 @@ import org.springframework.web.client.RestOperations;
 @Service
 public class ApiAuthenticationService {
 
+	static final String LOCAL_LOOPBACK_ADDRESS = "127.0.0.1";
+
 	private static final Logger LOG = LoggerFactory.getLogger(ApiAuthenticationService.class);
 
 	@Autowired
@@ -34,9 +36,14 @@ public class ApiAuthenticationService {
 		LOG.debug("Trying to authenticate user {} with BMSAPI to obtain a token.", userName);
 		try {
 			String bmsApiAuthURLFormat = "%s://%s:%s/bmsapi/authenticate?username=%s&password=%s";
+			/**
+			 * We want to make sure we construct the URL based on the server/port the request was received on. We want to hit the same
+			 * server's authentication end point to obtain token. For servers in networks behind proxies and different cross network access
+			 * rules etc, use of local loop back address and getLocalPort() ensures we always hit the correct server.
+			 */
 			String bmsApiAuthURL =
-					String.format(bmsApiAuthURLFormat, this.currentHttpRequest.getScheme(), this.currentHttpRequest.getServerName(),
-							this.currentHttpRequest.getServerPort(), userName, password);
+					String.format(bmsApiAuthURLFormat, this.currentHttpRequest.getScheme(), LOCAL_LOOPBACK_ADDRESS,
+							this.currentHttpRequest.getLocalPort(), userName, password);
 			final Token apiAuthToken = this.restClient.postForObject(bmsApiAuthURL, new HashMap<String, String>(), Token.class);
 			if (apiAuthToken != null) {
 				LOG.debug("Successfully authenticated and obtained a token from BMSAPI for user {}.", userName);
