@@ -3,8 +3,10 @@ package org.generationcp.ibpworkbench.service;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import org.generationcp.ibpworkbench.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.manager.api.UserDataManager;
@@ -14,11 +16,14 @@ import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.IbdbUserMap;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.WorkflowTemplate;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -52,6 +57,7 @@ public class ProgramServiceTest {
 
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+		
 	}
 
 	@SuppressWarnings("unchecked")
@@ -136,6 +142,76 @@ public class ProgramServiceTest {
 		Mockito.verify(workbenchDataManager, Mockito.times(2)).addIbdbUserMap(Matchers.any(IbdbUserMap.class));
 
 		Mockito.verify(workbenchDataManager).addProjectUserRole(Matchers.anyList());
+	}
+	
+	@Test
+	public void testAddProjectUserToAllProgramsOfCropType() {
+		//set data
+		final int userId = 1;
+		final CropType cropType = new CropType(CropType.CropEnum.MAIZE.toString());
+		final List<Project> projects = ProjectTestDataInitializer.createProjectsWithCropType(cropType);
+		Mockito.doReturn(projects).when(workbenchDataManager).getProjectsByCropType(cropType);
+		
+		//mock methods - set first project as an existing program of the user while the second as not
+		final Project firstProject = projects.get(0);
+		final Project secondProject = projects.get(1);
+		final ProjectUserInfoDAO puiDao = Mockito.mock(ProjectUserInfoDAO.class);
+		Mockito.when(workbenchDataManager.getProjectUserInfoDao()).thenReturn(puiDao);
+		Mockito.doReturn(new ProjectUserInfo()).when(puiDao).getByProjectIdAndUserId(
+				firstProject.getProjectId().intValue(), userId);
+		Mockito.doReturn(null).when(puiDao).getByProjectIdAndUserId(
+				secondProject.getProjectId().intValue(), userId);
+		
+		//test
+		this.programService.addProjectUserToAllProgramsOfCropType(userId, cropType);
+		
+		ArgumentCaptor<ProjectUserInfo> captor = ArgumentCaptor.forClass(ProjectUserInfo.class);
+		
+		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).
+			saveOrUpdateProjectUserInfo(captor.capture());
+		
+		ProjectUserInfo captured = captor.getValue();
+		Assert.assertEquals("The user id of the newly-added program member must be " + userId, 
+				userId, captured.getUserId().intValue());
+		Assert.assertEquals("The project id of the newly-added program member must be " + userId, 
+				secondProject.getProjectId().intValue(), captured.getProjectId().intValue());
+		
+	}
+	
+	@Test
+	public void testAddAllAdminUsersOfCropToProgram() {
+		String crop = CropType.CropEnum.MAIZE.toString();
+		int projectId = 1;
+		int memberAdminUserId = 1;
+		int nonMemberAdminUserId = 2;
+		final List<Integer> adminUserIds = this.createAdminUserIdsTestData(memberAdminUserId, nonMemberAdminUserId);
+		
+		//mock data
+		Mockito.doReturn(adminUserIds).when(this.workbenchDataManager).getAdminUserIdsOfCrop(crop);
+		final ProjectUserInfoDAO puiDao = Mockito.mock(ProjectUserInfoDAO.class);
+		Mockito.when(workbenchDataManager.getProjectUserInfoDao()).thenReturn(puiDao);
+		Mockito.doReturn(new ProjectUserInfo()).when(puiDao).getByProjectIdAndUserId(projectId, memberAdminUserId);
+		Mockito.doReturn(null).when(puiDao).getByProjectIdAndUserId(projectId, nonMemberAdminUserId);
+		
+		//test
+		this.programService.addAllAdminUsersOfCropToProgram(crop, projectId);
+		
+		ArgumentCaptor<ProjectUserInfo> captor = ArgumentCaptor.forClass(ProjectUserInfo.class);
+		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).
+			saveOrUpdateProjectUserInfo(captor.capture());
+		
+		ProjectUserInfo captured = captor.getValue();
+		Assert.assertEquals("The user id of the newly-added program member must be " + nonMemberAdminUserId, 
+				nonMemberAdminUserId, captured.getUserId().intValue());
+		Assert.assertEquals("The project id of the newly-added program member must be " + projectId, 
+				projectId, captured.getProjectId().intValue());
+	}
+
+	private List<Integer> createAdminUserIdsTestData(int memberAdminUserId, int nonMemberAdminUserId) {
+		final List<Integer> adminUserIds = new ArrayList<>();
+		adminUserIds.add(memberAdminUserId);
+		adminUserIds.add(nonMemberAdminUserId);
+		return adminUserIds;
 	}
 
 }

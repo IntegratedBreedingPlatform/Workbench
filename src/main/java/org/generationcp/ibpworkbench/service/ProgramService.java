@@ -209,4 +209,27 @@ public class ProgramService {
 	void setToolUtil(ToolUtil toolUtil) {
 		this.toolUtil = toolUtil;
 	}
+	
+	public void addProjectUserToAllProgramsOfCropType(final int userId, final CropType cropType) {
+		final List<Project> projects = this.workbenchDataManager.getProjectsByCropType(cropType);
+		for (final Project project : projects) {
+			if (this.workbenchDataManager.getProjectUserInfoDao()
+					.getByProjectIdAndUserId(project.getProjectId().intValue(), userId) == null) {
+				ProjectUserInfo pUserInfo = new ProjectUserInfo(project.getProjectId().intValue(), userId);
+				this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
+			}
+		}
+	}
+	public void addAllAdminUsersOfCropToProgram(final String crop, final int projectId) {
+		final List<Integer> adminUsers = this.workbenchDataManager.getAdminUserIdsOfCrop(crop);
+		for (final Integer userId : adminUsers) {
+			if (this.workbenchDataManager.getProjectUserInfoDao()
+					.getByProjectIdAndUserId(projectId, userId) == null) {
+				ProjectUserInfo pUserInfo = new ProjectUserInfo(projectId, userId);
+				this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
+			}
+		}
+		
+	}
+	
 }
