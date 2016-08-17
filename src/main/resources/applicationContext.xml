@@ -34,6 +34,10 @@
 
 	<bean id="workbenchContent" class="org.generationcp.ibpworkbench.WorkbenchContentApp"
 		scope="prototype" />
+	<!-- GPSB -->
+	<bean id="application_gpsb"
+		  class="org.generationcp.ibpworkbench.GermplasmStudyBrowserApplication"
+		  scope="prototype" />
 
 	<bean id="sessionData" class="org.generationcp.ibpworkbench.SessionData"
 		scope="session">
@@ -176,7 +180,7 @@
 		factory-method="getOntologyService" scope="request">
 		<aop:scoped-proxy />
 	</bean>
-	
+
 	<bean id="breedingViewImportService"  class="org.generationcp.commons.service.impl.BreedingViewImportServiceImpl" scope="request">
 		<aop:scoped-proxy />
 	</bean>
