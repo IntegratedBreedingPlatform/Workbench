@@ -62,7 +62,7 @@ public class ProgramService {
 	private static final int PROJECT_USER_TYPE = 422;
 	private static final int PROJECT_USER_STATUS = 1;
 
-	public void createNewProgram(Project program) throws MiddlewareQueryException {
+	public void createNewProgram(Project program) {
 
 		this.idAndNameOfProgramMembers.clear();
 
@@ -85,7 +85,7 @@ public class ProgramService {
 				+ program.getStartDate());
 	}
 
-	private void addProjectUserRoles(Project project) throws MiddlewareQueryException {
+	private void addProjectUserRoles(Project project) {
 		List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
 		Set<User> allProjectMembers = new HashSet<User>();
 		allProjectMembers.add(this.currentUser);
@@ -120,7 +120,7 @@ public class ProgramService {
 		}
 	}
 
-	private void saveBasicDetails(Project program) throws MiddlewareQueryException {
+	private void saveBasicDetails(Project program) {
 		program.setUserId(this.currentUser.getUserid());
 		CropType cropType = this.workbenchDataManager.getCropTypeByName(program.getCropType().getCropName());
 		if (cropType == null) {
@@ -133,7 +133,7 @@ public class ProgramService {
 	/**
 	 * Create necessary database entries for selected program members.
 	 */
-	public void copyProjectUsers(Project project) throws MiddlewareQueryException {
+	public void copyProjectUsers(Project project) {
 
 		for (User user : this.selectedUsers) {
 			
