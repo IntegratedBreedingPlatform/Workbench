@@ -644,6 +644,60 @@
 					</execution>
 				</executions>
 			</plugin>
+			
+			<!-- Angular 2 -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.5.0</version>
+				<executions>
+					<execution>
+						<id>exec-npm-install</id>
+						<phase>generate-resources</phase>
+						<configuration>
+							<workingDirectory>src/main/angular2</workingDirectory>
+							<executable>node/npm</executable>
+							<arguments>
+								<argument>install</argument>
+							</arguments>
+						</configuration>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+					</execution>
+					<!-- <execution>
+						<id>exec-gulp-clean</id>
+						<phase>generate-resources</phase>
+						<configuration>
+							<workingDirectory>src/main/angular2</workingDirectory>
+							<executable>node/npm</executable>
+							<arguments>
+								<argument>run</argument>
+								<argument>clean</argument>
+							</arguments>
+						</configuration>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+					</execution>-->
+					<execution>
+						<id>exec-gulp-build</id>
+						<phase>generate-resources</phase>
+						<configuration>
+							<workingDirectory>src/main/angular2</workingDirectory>
+							<executable>node/npm</executable>
+							<arguments>
+								<argument>run</argument>
+								<argument>build</argument>
+							</arguments>
+						</configuration>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin> 
+			
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>buildnumber-maven-plugin</artifactId>

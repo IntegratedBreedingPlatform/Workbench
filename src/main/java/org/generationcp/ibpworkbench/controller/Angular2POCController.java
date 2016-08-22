@@ -13,6 +13,6 @@ public class Angular2POCController {
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String angular2poc(Model model) throws MiddlewareQueryException {
-		return "angular2-poc";
+		return "angular2/angular2-poc/index";
 	}
 }
