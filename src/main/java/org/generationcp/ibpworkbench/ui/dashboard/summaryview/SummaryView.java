@@ -96,13 +96,16 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
 
 	private void initializeLayout() {
 		final HorizontalLayout headerArea = new HorizontalLayout();
+		headerArea.setDebugId("headerArea");
 		headerArea.setSizeUndefined();
 		headerArea.setWidth("100%");
 
 		final Embedded headerImg = new Embedded(null, new ThemeResource("images/recent-activity.png"));
+		headerImg.setDebugId("headerImg");
 		headerImg.setStyleName("header-img");
 
 		final HorizontalLayout headerTitleWrap = new HorizontalLayout();
+		headerTitleWrap.setDebugId("headerTitleWrap");
 		headerTitleWrap.setSizeUndefined();
 		headerTitleWrap.setSpacing(true);
 
@@ -112,6 +115,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
 		headerArea.addComponent(headerTitleWrap);
 
 		final HorizontalLayout buttonLayout = new HorizontalLayout();
+		buttonLayout.setDebugId("buttonLayout");
 		buttonLayout.setSizeUndefined();
 
 		buttonLayout.addComponent(this.exportBtn);
@@ -137,6 +141,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
 
 	private void initializeComponents() {
 		this.header = new Label(this.messageSource.getMessage(Message.ACTIVITIES));
+		this.header.setDebugId("header");
 		this.header.setStyleName(Bootstrap.Typography.H2.styleName());
 
 		final ToolsDropDown toolsDropDown =
@@ -146,6 +151,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
 						this.messageSource.getMessage(Message.PROGRAM_SUMMARY_ALL));
 
 		this.toolsPopup = new PopupView(toolsDropDown);
+		this.toolsPopup.setDebugId("toolsPopup");
 		this.toolsPopup.setStyleName("btn-dropdown");
 		this.toolsPopup.setHideOnMouseOut(false);
 		this.toolsPopup.addListener(new PopupView.PopupVisibilityListener() {
@@ -200,6 +206,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
 		});
 
 		this.exportBtn = new Button("<span class='glyphicon glyphicon-export' style='right: 4px'></span>EXPORT");
+		this.exportBtn.setDebugId("exportBtn");
 		this.exportBtn.setHtmlContentAllowed(true);
 		this.exportBtn.addListener(new Button.ClickListener() {
 
@@ -414,10 +421,13 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
 		private final VerticalLayout root = new VerticalLayout();
 
 		public ToolsDropDown(String... selections) {
+			this.root.setDebugId("root");
+
 			this.choices = new Button[selections.length];
 
 			for (int i = 0; i < selections.length; i++) {
 				this.choices[i] = new Button(selections[i]);
+				this.choices[i].setDebugId("choices[i]");
 				this.choices[i].setStyleName(BaseTheme.BUTTON_LINK);
 				this.choices[i].addListener(new ChoiceListener(i));
 				this.choices[i].setWidth("100%");

@@ -317,10 +317,13 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 		this.setCaption(this.messageSource.getMessage(Message.USER_TOOLS_WINDOW_CAPTION));
 
 		HorizontalLayout mainPanel = new HorizontalLayout();
+		mainPanel.setDebugId("mainPanel");
 		Label spacer2 = new Label("&nbsp;", Label.CONTENT_XHTML);
+		spacer2.setDebugId("spacer2");
 		spacer2.setWidth("20px");
 
 		VerticalLayout vl = new VerticalLayout();
+		vl.setDebugId("vl");
 		vl.setCaption(this.messageSource.getMessage(Message.TOOL_NAME));
 		vl.addComponent(new Label("<div style='height: 5px'></div>", Label.CONTENT_XHTML));
 		vl.addComponent(this.userToolsListSelect);
@@ -335,8 +338,10 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 		mainPanel.setExpandRatio(vl, 1.0f);
 
 		Label spacer = new Label("&nbsp;", Label.CONTENT_XHTML);
+		spacer.setDebugId("spacer");
 
 		HorizontalLayout btnPanel = new HorizontalLayout();
+		btnPanel.setDebugId("btnPanel");
 		btnPanel.setWidth("100%");
 		btnPanel.setSpacing(true);
 		btnPanel.setMargin(true);
@@ -385,6 +390,7 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 		this.setResizable(false);
 
 		this.userToolsForm = new Form();
+		this.userToolsForm.setDebugId("userToolsForm");
 
 		this.userToolsForm.setWidth("380px");
 		this.userToolsForm.setHeight("250px");
@@ -395,15 +401,19 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 		this.userToolsForm.setValidationVisibleOnCommit(false);
 
 		this.addBtn = new Button(this.messageSource.getMessage(Message.ADD));
+		this.addBtn.setDebugId("addBtn");
 		this.addBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
 		this.editBtn = new Button(this.messageSource.getMessage(Message.EDIT));
+		this.editBtn.setDebugId("editBtn");
 		this.editBtn.setEnabled(false);
 		this.editBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
 		this.cancelBtn = new Button(this.messageSource.getMessage(Message.CANCEL), this.userToolsForm, "discard");
+		this.cancelBtn.setDebugId("cancelBtn");
 
 		this.userToolsListSelect = new ListSelect();
+		this.userToolsListSelect.setDebugId("userToolsListSelect");
 		this.userToolsListSelect.setWidth("100%");
 		this.userToolsListSelect.setNullSelectionAllowed(false);
 
@@ -425,21 +435,25 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 		public UserToolsFormFieldFactory(Window parentWindow) {
 			// TODO: replace with internationalized messages
 			this.nameFld = new TextField(UserToolsManagerWindow.this.messageSource.getMessage(Message.NAME));
+			this.nameFld.setDebugId("nameFld");
 			this.nameFld.setWidth("190px");
 			this.nameFld.setRequired(true);
 			this.nameFld.setRequiredError(UserToolsManagerWindow.this.messageSource
 					.getMessage(Message.FORM_VALIDATION_USER_TOOLS_NAME_REQUIRED));
 
 			this.titleFld = new TextField(UserToolsManagerWindow.this.messageSource.getMessage(Message.TITLE));
+			this.titleFld.setDebugId("titleFld");
 			this.titleFld.setWidth("190px");
 			this.titleFld.setRequired(true);
 			this.titleFld.setRequiredError(UserToolsManagerWindow.this.messageSource
 					.getMessage(Message.FORM_VALIDATION_USER_TOOLS_TITLE_REQUIRED));
 
 			this.parameterFld = new TextField(UserToolsManagerWindow.this.messageSource.getMessage(Message.PARAMETER));
+			this.parameterFld.setDebugId("parameterFld");
 			this.parameterFld.setWidth("190px");
 
 			this.versionFld = new TextField(UserToolsManagerWindow.this.messageSource.getMessage(Message.VERSION));
+			this.versionFld.setDebugId("versionFld");
 			this.versionFld.setWidth("80px");
 
 			this.toolTypeFld =
@@ -476,6 +490,7 @@ public class UserToolsManagerWindow extends BaseSubWindow implements Initializin
 			});
 
 			this.filePicker = new ServerFilePicker(parentWindow);
+			this.filePicker.setDebugId("filePicker");
 			this.filePicker.setCaption(UserToolsManagerWindow.this.messageSource.getMessage(Message.TOOL_PATH));
 			this.filePicker.setWidth("190px");
 			this.filePicker.setRequired(true);

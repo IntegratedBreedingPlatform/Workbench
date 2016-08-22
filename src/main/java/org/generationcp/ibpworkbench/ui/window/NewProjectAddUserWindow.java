@@ -46,10 +46,12 @@ public class NewProjectAddUserWindow extends BaseSubWindow {
 	protected void initializeComponents() {
 
 		this.layout = new VerticalLayout();
+		this.layout.setDebugId("layout");
 		this.setContent(this.layout);
 
 		// reuse "Register New Account" window from login screen
 		this.newUserPanel = new NewProjectAddUserPanel(this.membersSelect);
+		this.newUserPanel.setDebugId("newUserPanel");
 		this.newUserPanel.setSizeFull();
 		this.layout.addComponent(this.newUserPanel);
 	}

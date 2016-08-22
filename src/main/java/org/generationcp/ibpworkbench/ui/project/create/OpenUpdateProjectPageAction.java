@@ -52,6 +52,7 @@ public class OpenUpdateProjectPageAction implements Button.ClickListener, Action
 
 		try {
 			UpdateProjectPanel projectPanel = new UpdateProjectPanel();
+			projectPanel.setDebugId("projectPanel");
 			w.showContent(projectPanel);
 
 			ProjectActivity projAct =

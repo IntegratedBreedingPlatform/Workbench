@@ -74,6 +74,7 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 	public void showContent(String toolUrl) {
 		if (!toolUrl.isEmpty()) {
 			Embedded browser = new Embedded(null, new ExternalResource(toolUrl));
+			browser.setDebugId("browser");
 
 			browser.setType(Embedded.TYPE_BROWSER);
 			browser.setSizeFull();
@@ -184,6 +185,7 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 		}
 
 		CustomLayout errorPage = new CustomLayout("error");
+		errorPage.setDebugId("errorPage");
 		errorPage.setSizeUndefined();
 		errorPage.setWidth("100%");
 		errorPage.setStyleName("error-page");

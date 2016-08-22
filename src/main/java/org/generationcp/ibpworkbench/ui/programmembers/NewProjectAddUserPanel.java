@@ -80,13 +80,17 @@ public class NewProjectAddUserPanel extends Panel {
 
 	protected void initializeComponents() {
 		this.rootLayout = new VerticalLayout();
+		this.rootLayout.setDebugId("rootLayout");
 		this.vl = new VerticalLayout();
+		this.vl.setDebugId("vl");
 
 		final Panel p = new Panel();
+		p.setDebugId("p");
 		p.setStyleName("form-panel");
 		p.setSizeFull();
 
 		this.userForm = new UserAccountForm(new UserAccountModel(), NewProjectAddUserPanel.VISIBLE_ITEM_PROPERTIES);
+		this.userForm.setDebugId("userForm");
 
 		this.vl.setSizeFull();
 		this.vl.addComponent(new Label(this.messageSource.getMessage(Message.DEFAULT_PASSWORD_HINT), Label.CONTENT_XHTML));
@@ -96,8 +100,11 @@ public class NewProjectAddUserPanel extends Panel {
 		p.addComponent(this.vl);
 
 		this.saveButton = new Button();
+		this.saveButton.setDebugId("saveButton");
 		this.cancelButton = new Button();
+		this.cancelButton.setDebugId("cancelButton");
 		this.buttonLayout = new HorizontalLayout();
+		this.buttonLayout.setDebugId("buttonLayout");
 		this.buttonLayout.addComponent(this.cancelButton);
 		this.buttonLayout.addComponent(this.saveButton);
 		this.buttonLayout.setWidth("140px");
@@ -106,6 +113,7 @@ public class NewProjectAddUserPanel extends Panel {
 		this.rootLayout.setMargin(new Layout.MarginInfo(false, true, true, true));
 		this.rootLayout.setSpacing(true);
 		Label lblTitle = new Label(this.messageSource.getMessage(Message.REGISTER_USER_ACCOUNT_TITLE));
+		lblTitle.setDebugId("lblTitle");
 		lblTitle.setStyleName(Bootstrap.Typography.H4.styleName());
 		this.rootLayout.addComponent(lblTitle);
 		this.rootLayout.addComponent(p);

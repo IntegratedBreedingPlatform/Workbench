@@ -128,6 +128,7 @@ public class GxeTable extends Table {
 			if (tableItems[i].getType() == GxeTable.CELL_CHECKBOX) {
 
 				CheckBox cb = new CheckBox();
+				cb.setDebugId("cb");
 				cb.setCaption(tableItems[i].getLabel());
 				cb.setValue(tableItems[i].getValue());
 				cb.setImmediate(true);

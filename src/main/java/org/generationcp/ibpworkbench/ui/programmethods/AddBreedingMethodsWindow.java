@@ -66,12 +66,16 @@ public class AddBreedingMethodsWindow extends BaseSubWindow {
 
 		if (this.methodView != null) {
 			this.breedingMethodForm = new BreedingMethodForm(this.projectBreedingMethodsPanel.retrieveMethodClasses(), this.methodView);
+			this.breedingMethodForm.setDebugId("breedingMethodForm");
 		} else {
 			this.breedingMethodForm = new BreedingMethodForm(this.projectBreedingMethodsPanel.retrieveMethodClasses());
+			this.breedingMethodForm.setDebugId("breedingMethodForm");
 		}
 
 		this.cancelButton = new Button("Cancel");
+		this.cancelButton.setDebugId("cancelButton");
 		this.addBreedingMethodButton = new Button("Save");
+		this.addBreedingMethodButton.setDebugId("addBreedingMethodButton");
 		this.addBreedingMethodButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 		this.buttonArea = this.layoutButtonArea();
 	}
@@ -87,14 +91,17 @@ public class AddBreedingMethodsWindow extends BaseSubWindow {
 		this.addStyleName(Reindeer.WINDOW_LIGHT);
 
 		this.layout = new VerticalLayout();
+		this.layout.setDebugId("layout");
 		this.layout.setWidth("100%");
 		this.layout.setHeight("450px");
 
 		final Panel p = new Panel();
+		p.setDebugId("p");
 		p.setStyleName("form-panel");
 		p.setSizeFull();
 
 		final VerticalLayout vl = new VerticalLayout();
+		vl.setDebugId("vl");
 		vl.setSizeFull();
 		vl.addComponent(new Label("<i><span style='color:red; font-weight:bold'>*</span> indicates a mandatory field.</i>",
 				Label.CONTENT_XHTML));
@@ -157,11 +164,14 @@ public class AddBreedingMethodsWindow extends BaseSubWindow {
 
 	protected Component layoutButtonArea() {
 		HorizontalLayout buttonLayout = new HorizontalLayout();
+		buttonLayout.setDebugId("buttonLayout");
 		buttonLayout.setSpacing(true);
 		buttonLayout.setMargin(true, false, false, false);
 
 		this.cancelButton = new Button("Cancel");
+		this.cancelButton.setDebugId("cancelButton");
 		this.addBreedingMethodButton = new Button("Save");
+		this.addBreedingMethodButton.setDebugId("addBreedingMethodButton");
 		this.addBreedingMethodButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 		buttonLayout.addComponent(this.cancelButton);
 		buttonLayout.addComponent(this.addBreedingMethodButton);

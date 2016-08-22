@@ -16,6 +16,7 @@ public class EmbeddedWindow extends BaseSubWindow {
 	public void showContent(String toolUrl) {
 		if (!toolUrl.isEmpty()) {
 			Embedded browser = new Embedded(null, new ExternalResource(toolUrl));
+			browser.setDebugId("browser");
 
 			browser.setType(Embedded.TYPE_BROWSER);
 			browser.setSizeFull();
@@ -30,6 +31,7 @@ public class EmbeddedWindow extends BaseSubWindow {
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		this.mainContent = new VerticalLayout();
+		this.mainContent.setDebugId("mainContent");
 		this.mainContent.setSizeFull();
 		this.mainContent.setMargin(false);
 		this.mainContent.setSpacing(false);

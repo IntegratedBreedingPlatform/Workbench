@@ -88,6 +88,7 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 	protected void initializeComponents() {
 
 		this.newProjectTitleArea = new HorizontalLayout();
+		this.newProjectTitleArea.setDebugId("newProjectTitleArea");
 		this.newProjectTitleArea.setSpacing(true);
 
 		this.heading =
@@ -103,6 +104,7 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 		this.newProjectTitleArea.setMargin(false, false, false, false); // move this to css
 
 		this.projectBasicDetailsComponent = new ProjectBasicDetailsComponent(this, true);
+		this.projectBasicDetailsComponent.setDebugId("projectBasicDetailsComponent");
 
 		this.projectBasicDetailsComponent.updateProjectDetailsFormField(this.sessionData.getSelectedProject());
 		this.projectBasicDetailsComponent.disableForm();
@@ -124,6 +126,7 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 	private void initializeRestrictedComponents() {
 
 		this.deleteProgramButton = new Button("DELETE PROGRAM");
+		this.deleteProgramButton.setDebugId("deleteProgramButton");
 		this.deleteProgramButton.setStyleName(Bootstrap.Buttons.INFO.styleName() + " loc-add-btn");
 
 		this.newProjectTitleArea.addComponent(this.deleteProgramButton);
@@ -134,6 +137,7 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 	@Override
 	protected void initializeLayout() {
 		VerticalLayout root = new VerticalLayout();
+		root.setDebugId("root");
 		root.setMargin(new Layout.MarginInfo(true, true, true, true));
 		root.setSpacing(true);
 		root.addComponent(this.newProjectTitleArea);

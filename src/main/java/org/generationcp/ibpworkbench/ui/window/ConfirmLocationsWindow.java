@@ -100,10 +100,12 @@ public class ConfirmLocationsWindow extends BaseSubWindow {
 
 	protected void initializeComponents() {
 		this.layout = new VerticalLayout();
+		this.layout.setDebugId("layout");
 		this.setContent(this.layout);
 		this.setParentWindow(this.window);
 
 		this.confirmMessage = new Label();
+		this.confirmMessage.setDebugId("confirmMessage");
 		if (this.existingLocations.size() == 1) {
 			this.confirmMessage.setCaption("There is already 1 location of the name you've specified:\n");
 		} else {
@@ -116,6 +118,7 @@ public class ConfirmLocationsWindow extends BaseSubWindow {
 		this.layout.addComponent(this.confirmMessage);
 
 		this.locationsTable = new Table();
+		this.locationsTable.setDebugId("locationsTable");
 		this.locationsTable.setMultiSelect(false);
 		this.locationsTable.setSelectable(false);
 		this.locationsTable.setImmediate(true);
@@ -137,10 +140,13 @@ public class ConfirmLocationsWindow extends BaseSubWindow {
 		this.locationsTable.setColumnHeaders(new String[] {"LOCATION NAME", "COUNTRY FULL NAME", "LOCATION ABBREVIATION", "LOCATION TYPE"});
 
 		Label confirmMessage2 = new Label("Continue to save anyway?");
+		confirmMessage2.setDebugId("confirmMessage2");
 		this.layout.addComponent(confirmMessage2);
 
 		this.cancelButton = new Button("Cancel");
+		this.cancelButton.setDebugId("cancelButton");
 		this.okButton = new Button("Save");
+		this.okButton.setDebugId("okButton");
 		this.okButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 		this.buttonArea = this.layoutButtonArea();
 		this.layout.addComponent(this.buttonArea);
@@ -182,6 +188,7 @@ public class ConfirmLocationsWindow extends BaseSubWindow {
 
 	protected Component layoutButtonArea() {
 		HorizontalLayout buttonLayout = new HorizontalLayout();
+		buttonLayout.setDebugId("buttonLayout");
 		buttonLayout.setSpacing(true);
 		buttonLayout.setMargin(true, false, false, false);
 

@@ -94,6 +94,7 @@ public class OpenProgramMethodsAction implements WorkflowConstants, ClickListene
 
 		try {
 			ProgramMethodsView methodsView = new ProgramMethodsView(this.project);
+			methodsView.setDebugId("methodsView");
 
 			w.showContent(methodsView);
 

@@ -25,6 +25,7 @@ public class BreedingViewDesignTypeValueChangeListener implements ValueChangeLis
 		if (value == null) {
 
 			GridLayout gLayout = new GridLayout(2, 2);
+			gLayout.setDebugId("gLayout");
 			gLayout.setColumnExpandRatio(0, 0);
 			gLayout.setColumnExpandRatio(1, 1);
 			gLayout.setWidth("100%");

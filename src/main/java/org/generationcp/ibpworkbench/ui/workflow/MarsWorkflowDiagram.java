@@ -151,161 +151,202 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 	protected void initializeComponents() {
 		// dashboard title
 		this.dashboardTitle = new Label();
+		this.dashboardTitle.setDebugId("dashboardTitle");
 		this.dashboardTitle.setStyleName("gcp-content-title");
 
 		// project planning
 		this.projectPlanningTitle = new Label();
+		this.projectPlanningTitle.setDebugId("projectPlanningTitle");
 		this.projectPlanningTitle.setStyleName(MarsWorkflowDiagram.GCP_SECTION_TITLE);
 
 		this.populationDevelopmentTitle = new Label();
+		this.populationDevelopmentTitle.setDebugId("populationDevelopmentTitle");
 		this.populationDevelopmentTitle.setStyleName(MarsWorkflowDiagram.GCP_SECTION_TITLE);
 
 		this.fieldTrialManagementTitle = new Label();
+		this.fieldTrialManagementTitle.setDebugId("fieldTrialManagementTitle");
 		this.fieldTrialManagementTitle.setStyleName(MarsWorkflowDiagram.GCP_SECTION_TITLE);
 
 		this.genotypingTitle = new Label();
+		this.genotypingTitle.setDebugId("genotypingTitle");
 		this.genotypingTitle.setStyleName(MarsWorkflowDiagram.GCP_SECTION_TITLE);
 
 		this.phenotypicAnalysisTitle = new Label();
+		this.phenotypicAnalysisTitle.setDebugId("phenotypicAnalysisTitle");
 		this.phenotypicAnalysisTitle.setStyleName(MarsWorkflowDiagram.GCP_SECTION_TITLE);
 
 		this.qtlAnalysisTitle = new Label();
+		this.qtlAnalysisTitle.setDebugId("qtlAnalysisTitle");
 		this.qtlAnalysisTitle.setStyleName(MarsWorkflowDiagram.GCP_SECTION_TITLE);
 
 		this.singleSiteAnalysisTitle = new Label();
+		this.singleSiteAnalysisTitle.setDebugId("singleSiteAnalysisTitle");
 		this.singleSiteAnalysisTitle.setStyleName(MarsWorkflowDiagram.GCP_SECTION_TITLE);
 
 		this.qtlSelectionTitle = new Label();
+		this.qtlSelectionTitle.setDebugId("qtlSelectionTitle");
 		this.qtlSelectionTitle.setStyleName(MarsWorkflowDiagram.GCP_SECTION_TITLE);
 
 		this.recombinationCycleTitle = new Label();
+		this.recombinationCycleTitle.setDebugId("recombinationCycleTitle");
 		this.recombinationCycleTitle.setStyleName(MarsWorkflowDiagram.GCP_SECTION_TITLE);
 
 		this.finalBreedingDecisionTitle = new Label();
+		this.finalBreedingDecisionTitle.setDebugId("finalBreedingDecisionTitle");
 		this.finalBreedingDecisionTitle.setStyleName(MarsWorkflowDiagram.GCP_SECTION_TITLE);
 
 		// project planning buttons
 		this.browseGermplasmButton = new Button();
+		this.browseGermplasmButton.setDebugId("browseGermplasmButton");
 		this.browseGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK + MarsWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.browseGermplasmButton.setSizeUndefined();
 
 		this.browseStudiesButton = new Button();
+		this.browseStudiesButton.setDebugId("browseStudiesButton");
 		this.browseStudiesButton.setStyleName(BaseTheme.BUTTON_LINK + MarsWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.browseStudiesButton.setSizeUndefined();
 
 		this.browseGermplasmListsButton = new Button();
+		this.browseGermplasmListsButton.setDebugId("browseGermplasmListsButton");
 		this.browseGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK + MarsWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.browseGermplasmListsButton.setSizeUndefined();
 
 		this.browseGenotypingDataButton = new Button("Browse Genotyping Data");
+		this.browseGenotypingDataButton.setDebugId("browseGenotypingDataButton");
 		this.browseGenotypingDataButton.setStyleName(BaseTheme.BUTTON_LINK + MarsWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.browseGenotypingDataButton.setSizeUndefined();
 		this.browseGenotypingDataButton.setDescription("Click to launch genotyping data");
 
 		// population development buttons
 		this.breedingManagerButton = new Button();
+		this.breedingManagerButton.setDebugId("breedingManagerButton");
 		this.breedingManagerButton.setStyleName(BaseTheme.BUTTON_LINK + MarsWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.breedingManagerButton.setSizeUndefined();
 
 		this.breedingPlannerButton = new Button(this.messageSource.getMessage(Message.BREEDING_PLANNER_MARS));
+		this.breedingPlannerButton.setDebugId("breedingPlannerButton");
 		this.breedingPlannerButton.setStyleName(BaseTheme.BUTTON_LINK + MarsWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.breedingPlannerButton.setSizeUndefined();
 		this.breedingPlannerButton.setDescription("Click to launch the freestanding Breeding Planner application.");
 
 		this.germplasmImportButton = new Button("IBFB Import Germplasm Lists");
+		this.germplasmImportButton.setDebugId("germplasmImportButton");
 		this.germplasmImportButton.setStyleName(BaseTheme.BUTTON_LINK + MarsWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.germplasmImportButton.setSizeUndefined();
 		this.germplasmImportButton.setDescription("Click to launch Fieldbook on Nursery Manager View.");
 
 		this.germplasmImportButton2 = new Button("Import Germplasm Lists");
+		this.germplasmImportButton2.setDebugId("germplasmImportButton2");
 		this.germplasmImportButton2.setStyleName(BaseTheme.BUTTON_LINK + MarsWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.germplasmImportButton2.setSizeUndefined();
 		this.germplasmImportButton2.setDescription("Click to launch the Germplasm Import View.");
 
 		// field trial management buttons
 		this.fieldBookButton = new Button("Manage Trials");
+		this.fieldBookButton.setDebugId("fieldBookButton");
 		this.fieldBookButton.setStyleName(BaseTheme.BUTTON_LINK + MarsWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.fieldBookButton.setDescription("Click to launch Fieldbook on Trial Manager View");
 		this.fieldBookButton.setSizeUndefined();
 
 		// genotyping buttons
 		this.gdmsButton = new Button();
+		this.gdmsButton.setDebugId("gdmsButton");
 		this.gdmsButton.setStyleName(BaseTheme.BUTTON_LINK + MarsWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.gdmsButton.setSizeUndefined();
 
 		// phenotypic analysis buttons
 		this.phenotypicBreedingViewButton = new Button();
+		this.phenotypicBreedingViewButton.setDebugId("phenotypicBreedingViewButton");
 		this.phenotypicBreedingViewButton.setStyleName(BaseTheme.BUTTON_LINK + MarsWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.phenotypicBreedingViewButton.setSizeUndefined();
 
 		// qtl analysis buttons
 		this.qtlBreedingViewButton = new Button();
+		this.qtlBreedingViewButton.setDebugId("qtlBreedingViewButton");
 		this.qtlBreedingViewButton.setStyleName(BaseTheme.BUTTON_LINK + MarsWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.qtlBreedingViewButton.setSizeUndefined();
 
 		this.breedingViewSingleSiteAnalysisCentralButton = new Button("Single-Site Analysis for Central Datasets");
+		this.breedingViewSingleSiteAnalysisCentralButton.setDebugId("breedingViewSingleSiteAnalysisCentralButton");
 		this.breedingViewSingleSiteAnalysisCentralButton.setStyleName(BaseTheme.BUTTON_LINK + MarsWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.breedingViewSingleSiteAnalysisCentralButton.setSizeUndefined();
 		this.breedingViewSingleSiteAnalysisCentralButton
 				.setDescription("Click to launch Single-Site Analysis on Study Datasets from Central IBDB");
 
 		this.breedingViewSingleSiteAnalysisLocalButton = new Button("Single-Site Analysis");
+		this.breedingViewSingleSiteAnalysisLocalButton.setDebugId("breedingViewSingleSiteAnalysisLocalButton");
 		this.breedingViewSingleSiteAnalysisLocalButton.setStyleName(BaseTheme.BUTTON_LINK + MarsWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.breedingViewSingleSiteAnalysisLocalButton.setSizeUndefined();
 		this.breedingViewSingleSiteAnalysisLocalButton.setDescription("Click to launch Single-Site Analysis on Study Datasets");
 
 		// recombination cycle selection buttons
 		this.optimasButton = new Button();
+		this.optimasButton.setDebugId("optimasButton");
 		this.optimasButton.setStyleName(BaseTheme.BUTTON_LINK + MarsWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.optimasButton.setSizeUndefined();
 
 		this.recomBreedingManagerButton = new Button();
+		this.recomBreedingManagerButton.setDebugId("recomBreedingManagerButton");
 		this.recomBreedingManagerButton.setStyleName(BaseTheme.BUTTON_LINK + MarsWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.recomBreedingManagerButton.setSizeUndefined();
 
 		this.manageGermplasmListsButton = new Button();
+		this.manageGermplasmListsButton.setDebugId("manageGermplasmListsButton");
 		this.manageGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK + MarsWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.manageGermplasmListsButton.setSizeUndefined();
 
 		this.breedingViewMultiSiteAnalysisButton = new Button();
+		this.breedingViewMultiSiteAnalysisButton.setDebugId("breedingViewMultiSiteAnalysisButton");
 		this.breedingViewMultiSiteAnalysisButton.setStyleName(BaseTheme.BUTTON_LINK + MarsWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.breedingViewMultiSiteAnalysisButton.setSizeUndefined();
 
 		this.makeCrossesButton = new Button();
+		this.makeCrossesButton.setDebugId("makeCrossesButton");
 		this.makeCrossesButton.setStyleName(BaseTheme.BUTTON_LINK + MarsWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.makeCrossesButton.setSizeUndefined();
 
 		this.recomMakeCrossesButton = new Button();
+		this.recomMakeCrossesButton.setDebugId("recomMakeCrossesButton");
 		this.recomMakeCrossesButton.setStyleName(BaseTheme.BUTTON_LINK + MarsWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.recomMakeCrossesButton.setSizeUndefined();
 
 		// arrows
 		this.downArrow11 = new Embedded(null, new ThemeResource(MarsWorkflowDiagram.DOWN_ARROW_THEME_RESOURCE));
+		this.downArrow11.setDebugId("downArrow11");
 		this.downArrow12 = new Embedded(null, new ThemeResource(MarsWorkflowDiagram.DOWN_ARROW_THEME_RESOURCE));
+		this.downArrow12.setDebugId("downArrow12");
 		this.downArrow13 = new Embedded(null, new ThemeResource(MarsWorkflowDiagram.DOWN_ARROW_THEME_RESOURCE));
+		this.downArrow13.setDebugId("downArrow13");
 
 		this.downArrow21 = new Embedded(null, new ThemeResource(MarsWorkflowDiagram.DOWN_ARROW_THEME_RESOURCE));
+		this.downArrow21.setDebugId("downArrow21");
 
 		this.downArrow31 = new Embedded(null, new ThemeResource(MarsWorkflowDiagram.DOWN_ARROW_THEME_RESOURCE));
+		this.downArrow31.setDebugId("downArrow31");
 		this.downArrow32 = new Embedded(null, new ThemeResource(MarsWorkflowDiagram.DOWN_ARROW_THEME_RESOURCE));
+		this.downArrow32.setDebugId("downArrow32");
 
 		this.mainHeadToHeadButton = new Button(this.messageSource.getMessage(Message.MAIN_HEAD_TO_HEAD_LAUNCH));
+		this.mainHeadToHeadButton.setDebugId("mainHeadToHeadButton");
 		this.mainHeadToHeadButton.setStyleName(BaseTheme.BUTTON_LINK + MarsWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.mainHeadToHeadButton.setSizeUndefined();
 		this.mainHeadToHeadButton.setDescription(this.messageSource.getMessage(Message.CLICK_TO_LAUNCH_MAIN_HEAD_TO_HEAD));
 
 		this.mainHeadToHeadButton2 = new Button(this.messageSource.getMessage(Message.MAIN_HEAD_TO_HEAD_LAUNCH));
+		this.mainHeadToHeadButton2.setDebugId("mainHeadToHeadButton2");
 		this.mainHeadToHeadButton2.setStyleName(BaseTheme.BUTTON_LINK + MarsWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.mainHeadToHeadButton2.setSizeUndefined();
 		this.mainHeadToHeadButton2.setDescription(this.messageSource.getMessage(Message.CLICK_TO_LAUNCH_MAIN_HEAD_TO_HEAD));
 
 		this.queryForAdaptedGermplasmButton = new Button(this.messageSource.getMessage(Message.QUERY_FOR_ADAPTED_GERMPLASM));
+		this.queryForAdaptedGermplasmButton.setDebugId("queryForAdaptedGermplasmButton");
 		this.queryForAdaptedGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK + MarsWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.queryForAdaptedGermplasmButton.setSizeUndefined();
 		this.queryForAdaptedGermplasmButton.setDescription(this.messageSource
 				.getMessage(Message.CLICK_TO_LAUNCH_QUERY_FOR_ADAPTED_GERMPLASM));
 
 		this.queryForAdaptedGermplasmButton2 = new Button(this.messageSource.getMessage(Message.QUERY_FOR_ADAPTED_GERMPLASM));
+		this.queryForAdaptedGermplasmButton2.setDebugId("queryForAdaptedGermplasmButton2");
 		this.queryForAdaptedGermplasmButton2.setStyleName(BaseTheme.BUTTON_LINK + MarsWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.queryForAdaptedGermplasmButton2.setSizeUndefined();
 		this.queryForAdaptedGermplasmButton2.setDescription(this.messageSource
@@ -318,16 +359,19 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 		this.breedingManagerListManager.setDescription(this.messageSource.getMessage(Message.CLICK_TO_BROWSE_FOR_GERMPLASMS_AND_LISTS));
 
 		this.ontologyBrowserFBBtn = new Button("Manage Ontologies");
+		this.ontologyBrowserFBBtn.setDebugId("ontologyBrowserFBBtn");
 		this.ontologyBrowserFBBtn.setStyleName(BaseTheme.BUTTON_LINK + MarsWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.ontologyBrowserFBBtn.setSizeUndefined();
 		this.ontologyBrowserFBBtn.setDescription("Click to launch Fieldbook on Ontology Browser view");
 
 		this.metaAnalysisBtn = new Button("Meta Analysis of Field Trials");
+		this.metaAnalysisBtn.setDebugId("metaAnalysisBtn");
 		this.metaAnalysisBtn.setStyleName(BaseTheme.BUTTON_LINK + MarsWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.metaAnalysisBtn.setSizeUndefined();
 		this.metaAnalysisBtn.setDescription("Click to launch Meta Analysis of Field Trial Tool");
 
 		this.metaAnalysisBtn2 = new Button("Meta Analysis of Field Trials");
+		this.metaAnalysisBtn2.setDebugId("metaAnalysisBtn2");
 		this.metaAnalysisBtn2.setStyleName(BaseTheme.BUTTON_LINK + MarsWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.metaAnalysisBtn2.setSizeUndefined();
 		this.metaAnalysisBtn2.setDescription("Click to launch Meta Analysis of Field Trial Tool");
@@ -341,6 +385,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 
 	protected ComponentContainer layoutWorkflowArea() {
 		HorizontalLayout layout = new HorizontalLayout();
+		layout.setDebugId("layout");
 		layout.setSpacing(true);
 		layout.setHeight("1500px");
 
@@ -357,12 +402,14 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 		layout.addComponent(markerImplementationArea);
 
 		final VerticalLayout rootContainer = new VerticalLayout();
+		rootContainer.setDebugId("rootContainer");
 		rootContainer.setSizeUndefined();
 		rootContainer.setMargin(new Layout.MarginInfo(false, true, true, true));
 		rootContainer.setSpacing(false);
 
 		if (!this.workflowPreview) {
 			Label header = new Label();
+			header.setDebugId("header");
 			header.setStyleName(Bootstrap.Typography.H1.styleName());
 			header.setValue(this.role.getLabel());
 			rootContainer.addComponent(header);
@@ -375,6 +422,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 
 	protected ComponentContainer layoutBreedingManagementArea() {
 		VerticalLayout layout = new VerticalLayout();
+		layout.setDebugId("layout");
 		layout.setHeight(MarsWorkflowDiagram.COMPONENT_HEIGHT);
 		layout.setMargin(new Layout.MarginInfo(true, false, false, false));
 		layout.setSpacing(true);
@@ -401,6 +449,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 		layout.addComponent(genotypingArea);
 
 		Label emptyLabel = new Label(" ");
+		emptyLabel.setDebugId("emptyLabel");
 		emptyLabel.setWidth("100%");
 		emptyLabel.setHeight("20px");
 		layout.addComponent(emptyLabel);
@@ -411,6 +460,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 
 	protected ComponentContainer layoutProjectPlanning() {
 		VerticalLayout layout = new VerticalLayout();
+		layout.setDebugId("layout");
 		this.configureWorkflowStepLayout(layout);
 
 		layout.addComponent(this.projectPlanningTitle);
@@ -418,6 +468,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 		layout.setExpandRatio(this.projectPlanningTitle, 0);
 
 		Label emptyLabel = new Label(" ");
+		emptyLabel.setDebugId("emptyLabel");
 		emptyLabel.setWidth("100%");
 		emptyLabel.setHeight("20px");
 		layout.addComponent(emptyLabel);
@@ -458,6 +509,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 
 	protected ComponentContainer layoutPopulationDevelopment() {
 		VerticalLayout layout = new VerticalLayout();
+		layout.setDebugId("layout");
 		this.configureWorkflowStepLayout(layout);
 
 		layout.addComponent(this.populationDevelopmentTitle);
@@ -465,6 +517,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 		layout.setExpandRatio(this.populationDevelopmentTitle, 0);
 
 		Label emptyLabel = new Label(" ");
+		emptyLabel.setDebugId("emptyLabel");
 		emptyLabel.setWidth("100%");
 		emptyLabel.setHeight("20px");
 		layout.addComponent(emptyLabel);
@@ -487,6 +540,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 
 	protected ComponentContainer layoutFieldTrialManagement() {
 		VerticalLayout layout = new VerticalLayout();
+		layout.setDebugId("layout");
 		this.configureWorkflowStepLayout(layout);
 
 		layout.addComponent(this.fieldTrialManagementTitle);
@@ -494,6 +548,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 		layout.setExpandRatio(this.fieldTrialManagementTitle, 0);
 
 		Label emptyLabel = new Label(" ");
+		emptyLabel.setDebugId("emptyLabel");
 		emptyLabel.setWidth("100%");
 		emptyLabel.setHeight("20px");
 		layout.addComponent(emptyLabel);
@@ -508,6 +563,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 
 	protected ComponentContainer layoutGenotyping() {
 		VerticalLayout layout = new VerticalLayout();
+		layout.setDebugId("layout");
 		this.configureWorkflowStepLayout(layout);
 
 		layout.addComponent(this.genotypingTitle);
@@ -515,6 +571,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 		layout.setExpandRatio(this.genotypingTitle, 0);
 
 		Label emptyLabel = new Label(" ");
+		emptyLabel.setDebugId("emptyLabel");
 		emptyLabel.setWidth("100%");
 		emptyLabel.setHeight("20px");
 		layout.addComponent(emptyLabel);
@@ -529,6 +586,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 
 	protected ComponentContainer layoutMarkerTraitAnalysisArea() {
 		VerticalLayout layout = new VerticalLayout();
+		layout.setDebugId("layout");
 		layout.setHeight(MarsWorkflowDiagram.COMPONENT_HEIGHT);
 		layout.setMargin(new Layout.MarginInfo(true, false, false, false));
 		layout.setSpacing(true);
@@ -543,6 +601,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 		layout.addComponent(qtlAnalysisArea);
 
 		Label emptyLabel = new Label(" ");
+		emptyLabel.setDebugId("emptyLabel");
 		emptyLabel.setWidth("100%");
 		emptyLabel.setHeight("20px");
 		layout.addComponent(emptyLabel);
@@ -553,6 +612,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 
 	protected ComponentContainer layoutPhenotypicAnalysis() {
 		VerticalLayout layout = new VerticalLayout();
+		layout.setDebugId("layout");
 		this.configureWorkflowStepLayout(layout);
 
 		layout.addComponent(this.phenotypicAnalysisTitle);
@@ -560,6 +620,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 		layout.setExpandRatio(this.phenotypicAnalysisTitle, 0);
 
 		Label emptyLabel = new Label(" ");
+		emptyLabel.setDebugId("emptyLabel");
 		emptyLabel.setWidth("100%");
 		emptyLabel.setHeight("20px");
 		layout.addComponent(emptyLabel);
@@ -586,6 +647,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 
 	protected ComponentContainer layoutQtlAnalysis() {
 		VerticalLayout layout = new VerticalLayout();
+		layout.setDebugId("layout");
 		this.configureWorkflowStepLayout(layout);
 
 		layout.addComponent(this.qtlAnalysisTitle);
@@ -593,6 +655,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 		layout.setExpandRatio(this.qtlAnalysisTitle, 0);
 
 		Label emptyLabel = new Label(" ");
+		emptyLabel.setDebugId("emptyLabel");
 		emptyLabel.setWidth("100%");
 		emptyLabel.setHeight("20px");
 		layout.addComponent(emptyLabel);
@@ -607,6 +670,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 
 	protected ComponentContainer layoutSingleSiteAnalysis() {
 		VerticalLayout layout = new VerticalLayout();
+		layout.setDebugId("layout");
 		this.configureWorkflowStepLayout(layout);
 
 		layout.addComponent(this.singleSiteAnalysisTitle);
@@ -614,6 +678,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 		layout.setExpandRatio(this.singleSiteAnalysisTitle, 0);
 
 		Label emptyLabel = new Label(" ");
+		emptyLabel.setDebugId("emptyLabel");
 		emptyLabel.setWidth("100%");
 		emptyLabel.setHeight("20px");
 		layout.addComponent(emptyLabel);
@@ -636,6 +701,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 
 	protected Component layoutMarkerImplementationArea() {
 		VerticalLayout layout = new VerticalLayout();
+		layout.setDebugId("layout");
 		layout.setHeight(MarsWorkflowDiagram.COMPONENT_HEIGHT);
 		layout.setMargin(new Layout.MarginInfo(true, false, false, false));
 		layout.setSpacing(true);
@@ -656,6 +722,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 		layout.addComponent(finalBreedingDecisionArea);
 
 		Label emptyLabel = new Label(" ");
+		emptyLabel.setDebugId("emptyLabel");
 		emptyLabel.setWidth("100%");
 		emptyLabel.setHeight("20px");
 		layout.addComponent(emptyLabel);
@@ -666,6 +733,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 
 	protected ComponentContainer layoutQtlSelection() {
 		VerticalLayout layout = new VerticalLayout();
+		layout.setDebugId("layout");
 		this.configureWorkflowStepLayout(layout);
 
 		layout.addComponent(this.qtlSelectionTitle);
@@ -673,6 +741,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 		layout.setExpandRatio(this.qtlSelectionTitle, 0);
 
 		Label emptyLabel = new Label(" ");
+		emptyLabel.setDebugId("emptyLabel");
 		emptyLabel.setWidth("100%");
 		emptyLabel.setHeight("20px");
 		layout.addComponent(emptyLabel);
@@ -683,6 +752,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 
 	protected ComponentContainer layoutRecombinationCycle() {
 		VerticalLayout layout = new VerticalLayout();
+		layout.setDebugId("layout");
 		this.configureWorkflowStepLayout(layout);
 
 		layout.addComponent(this.recombinationCycleTitle);
@@ -690,6 +760,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 		layout.setExpandRatio(this.recombinationCycleTitle, 0);
 
 		Label emptyLabel = new Label(" ");
+		emptyLabel.setDebugId("emptyLabel");
 		emptyLabel.setWidth("100%");
 		emptyLabel.setHeight("20px");
 		layout.addComponent(emptyLabel);
@@ -712,6 +783,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 
 	protected ComponentContainer layoutFinalBreedingDecision() {
 		VerticalLayout layout = new VerticalLayout();
+		layout.setDebugId("layout");
 		this.configureWorkflowStepLayout(layout);
 
 		layout.addComponent(this.finalBreedingDecisionTitle);
@@ -719,6 +791,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 		layout.setExpandRatio(this.finalBreedingDecisionTitle, 0);
 
 		Label emptyLabel = new Label(" ");
+		emptyLabel.setDebugId("emptyLabel");
 		emptyLabel.setWidth("100%");
 		emptyLabel.setHeight("20px");
 		layout.addComponent(emptyLabel);
@@ -737,9 +810,11 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 
 	protected ComponentContainer createPanel(String caption, String... buttonCaptions) {
 		VerticalLayout layout = new VerticalLayout();
+		layout.setDebugId("layout");
 		this.configureWorkflowStepLayout(layout);
 
 		Label titleLabel = new Label(caption);
+		titleLabel.setDebugId("titleLabel");
 		titleLabel.setStyleName(MarsWorkflowDiagram.GCP_SECTION_TITLE);
 		titleLabel.setSizeUndefined();
 
@@ -748,6 +823,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 		layout.setExpandRatio(titleLabel, 0);
 
 		Label emptyLabel = new Label(" ");
+		emptyLabel.setDebugId("emptyLabel");
 		emptyLabel.setWidth("100%");
 		emptyLabel.setHeight("20px");
 		layout.addComponent(emptyLabel);
@@ -755,6 +831,7 @@ public class MarsWorkflowDiagram extends Panel implements InitializingBean, Inte
 
 		for (String buttonCaption : buttonCaptions) {
 			Button button = new Button(buttonCaption);
+			button.setDebugId("button");
 			button.setStyleName(BaseTheme.BUTTON_LINK + MarsWorkflowDiagram.GCP_WORKFLOW_LINK);
 
 			layout.addComponent(button);

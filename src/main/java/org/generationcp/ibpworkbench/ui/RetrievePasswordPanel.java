@@ -62,12 +62,15 @@ public class RetrievePasswordPanel extends VerticalLayout implements Initializin
 
 	protected void initializeComponents() {
 		Label securityQuestionLabel = new Label(this.securityQuestion.getSecurityQuestion());
+		securityQuestionLabel.setDebugId("securityQuestionLabel");
 		this.addComponent(securityQuestionLabel);
 		this.securityAnswerField = new TextField();
+		this.securityAnswerField.setDebugId("securityAnswerField");
 		this.securityAnswerField.setDebugId("vaadin_answer_txt");
 		this.addComponent(this.securityAnswerField);
 
 		this.retrieveBtn = new Button(this.messageSource.getMessage(Message.BTN_RETRIEVE));
+		this.retrieveBtn.setDebugId("retrieveBtn");
 		this.addComponent(this.retrieveBtn);
 	}
 

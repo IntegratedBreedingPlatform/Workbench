@@ -119,11 +119,13 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
 
 	protected void initializeComponents() {
 		this.layout = new VerticalLayout();
+		this.layout.setDebugId("layout");
 		this.layout.setWidth("100%");
 		this.setContent(this.layout);
 		this.setParentWindow(this.window);
 
 		this.uploadZip = new CustomUploadField();
+		this.uploadZip.setDebugId("uploadZip");
 		this.uploadZip.setFieldType(UploadField.FieldType.FILE);
 		this.uploadZip.setNoFileSelectedText("");
 		this.uploadZip.setSelectedFileText("");
@@ -135,8 +137,10 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
 		this.uploadZip.setDeleteButtonListener(new DeleteButtonListener());
 
 		this.uploadZipLabel = new Label(this.messageSource.getMessage(Message.BV_UPLOAD_ZIP), Label.CONTENT_XHTML);
+		this.uploadZipLabel.setDebugId("uploadZipLabel");
 
 		this.description = new Label(this.messageSource.getMessage(Message.BV_UPLOAD_DESCRIPTION), Label.CONTENT_XHTML);
+		this.description.setDebugId("description");
 		this.description.setStyleName(Bootstrap.Typography.TEXT_LEFT.styleName());
 
 		this.layout.addComponent(this.description);
@@ -144,7 +148,9 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
 		this.layout.addComponent(this.uploadZip);
 
 		this.cancelButton = new Button("Cancel");
+		this.cancelButton.setDebugId("cancelButton");
 		this.uploadButton = new Button("Upload");
+		this.uploadButton.setDebugId("uploadButton");
 		this.uploadButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 		this.buttonArea = this.layoutButtonArea();
 
@@ -168,6 +174,7 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
 
 	protected Component layoutButtonArea() {
 		HorizontalLayout buttonLayout = new HorizontalLayout();
+		buttonLayout.setDebugId("buttonLayout");
 		buttonLayout.setSpacing(true);
 		buttonLayout.setMargin(true, false, false, false);
 

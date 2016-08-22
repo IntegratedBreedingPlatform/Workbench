@@ -119,6 +119,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 			public Object generateCell(Table source, Object itemId, Object columnId) {
 				Person person = ((User) itemId).getPerson();
 				Label label = new Label();
+				label.setDebugId("label");
 				label.setValue(person.getDisplayName());
 				if (((User) itemId).getUserid().equals(ProjectMembersComponent.this.sessionData.getUserData().getUserid())) {
 					label.setStyleName("label-bold");
@@ -135,6 +136,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 			public Object generateCell(Table source, Object itemId, Object columnId) {
 				Person person = ((User) itemId).getPerson();
 				Label label = new Label();
+				label.setDebugId("label");
 				label.setValue(person.getDisplayName());
 				if (((User) itemId).getUserid().equals(ProjectMembersComponent.this.sessionData.getUserData().getUserid())) {
 					label.setStyleName("label-bold");
@@ -195,6 +197,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 		this.setMargin(true);
 
 		final HorizontalLayout titleContainer = new HorizontalLayout();
+		titleContainer.setDebugId("titleContainer");
 		final Label heading =
 				new Label("<span class='bms-members' style='color: #D1B02A; font-size: 23px'></span>&nbsp;Program Members",
 						Label.CONTENT_XHTML);
@@ -205,6 +208,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 		heading.setStyleName(Bootstrap.Typography.H4.styleName());
 
 		this.newMemberButton = new Button("Add New User");
+		this.newMemberButton.setDebugId("newMemberButton");
 		this.newMemberButton.setStyleName(Bootstrap.Buttons.INFO.styleName() + " loc-add-btn");
 
 		titleContainer.addComponent(heading);
@@ -286,11 +290,14 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
 	protected Component layoutButtonArea() {
 		HorizontalLayout buttonLayout = new HorizontalLayout();
+		buttonLayout.setDebugId("buttonLayout");
 		buttonLayout.setSpacing(true);
 		buttonLayout.setMargin(true, false, false, false);
 
 		this.btnCancel = new Button("Reset");
+		this.btnCancel.setDebugId("btnCancel");
 		this.btnSave = new Button("Save");
+		this.btnSave.setDebugId("btnSave");
 		this.btnSave.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
 		buttonLayout.addComponent(this.btnCancel);

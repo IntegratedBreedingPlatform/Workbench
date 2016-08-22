@@ -13,6 +13,7 @@ public class SystemLabelFieldFactory extends DefaultFieldFactory {
 
 		if (SystemLabelView.NAME.equals(propertyId.toString())) {
 			TextField textField = new TextField();
+			textField.setDebugId("textField");
 			textField.setMaxLength(200);
 			textField.setRequired(true);
 			textField.setInvalidCommitted(true);
