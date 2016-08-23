@@ -12,11 +12,16 @@ const outDir = '../webapp/WEB-INF/pages/angular2/';
  * Remove build directory.
  */
 gulp.task('clean', (cb) => {
-    let tasks = CONFIGS.map(config => {
-        return del([config.compilerOptions.rootDir + "/build"], cb);
-    });
- 
-    return merge(tasks);
+    try {
+        let tasks = CONFIGS.map(config => {
+            return del([config.compilerOptions.rootDir + "/build"], cb);
+        });
+     
+        return merge(tasks);
+    } catch (e) {
+        // TODO [TypeError: source.once is not a function]
+        console.log(e);
+    }
 
 });
 
