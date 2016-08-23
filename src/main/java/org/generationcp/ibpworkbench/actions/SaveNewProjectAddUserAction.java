@@ -154,11 +154,8 @@ public class SaveNewProjectAddUserAction implements ClickListener {
 	}
 
 	public void addUserToAllProgramsOfCurrentCropIfAdmin(final User user) {
-		String cropName = ContextHolder.getCurrentCrop();
-		if(cropName != null) {
-			final CropType cropType = this.workbenchDataManager.getCropTypeByName(cropName);
-			this.programService.addUserToAllProgramsOfCropTypeIfAdmin(user, cropType);
-		}
+		final Project currentProject = this.sessionData.getLastOpenedProject();
+		this.programService.addUserToAllProgramsOfCropTypeIfAdmin(user, currentProject.getCropType());
 	}
 
 }

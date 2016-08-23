@@ -6,15 +6,16 @@ import java.util.Set;
 
 import junit.framework.Assert;
 
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
-import org.generationcp.middleware.ContextHolder;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.CropType;
+import org.generationcp.middleware.pojos.workbench.Project;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,6 +36,9 @@ public class SaveNewProjectAddUserActionTest {
 	@Mock
 	private WorkbenchDataManager workbenchDataManager;
 
+	@Mock
+	private SessionData sessionData;
+
 	@InjectMocks
 	private final SaveNewProjectAddUserAction action = new SaveNewProjectAddUserAction(null, null);
 
@@ -53,8 +57,10 @@ public class SaveNewProjectAddUserActionTest {
 		userSet.add(user);
 
 		final String crop = "maize";
-		ContextHolder.setCurrentCrop(crop);
 		final CropType cropType = new CropType(crop);
+		final Project currentProject = new Project();
+		currentProject.setCropType(cropType);
+		Mockito.when(this.sessionData.getLastOpenedProject()).thenReturn(currentProject);
 
 		Mockito.when(this.workbenchUserService.saveNewUserAccount(userAccount)).thenReturn(user);
 		Mockito.doNothing().when(membersSelect).addItem(user);
@@ -65,7 +71,6 @@ public class SaveNewProjectAddUserActionTest {
 
 		Mockito.verify(this.workbenchUserService).saveNewUserAccount(userAccount);
 
-		Mockito.verify(this.workbenchDataManager).getCropTypeByName(crop);
 		Mockito.verify(this.programService).addUserToAllProgramsOfCropTypeIfAdmin(user, cropType);
 
 		Assert.assertEquals("The user must be added to the TwinTableSelect UI", 1, membersSelect.getValue().size());
