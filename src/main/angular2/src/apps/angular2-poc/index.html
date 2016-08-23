@@ -4,15 +4,17 @@
     <title>Angular 2 POC</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    
     <!-- 1. Load libraries -->
     <!-- Polyfill(s) for older browsers -->
-    <script th:src="@{/controller/static/pages/angular2/lib/shim.min.js}"></script>
-    <script th:src="@{/controller/static/pages/angular2/lib/zone.js}"></script>
-    <script th:src="@{/controller/static/pages/angular2/lib/Reflect.js}"></script>
+    <script th:src="@{/controller/pages/angular2/lib/es6-shim/es6-shim.min.js}"></script>
+    <script th:src="@{/controller/pages/angular2/lib/zone.js/dist/zone.js}"></script>
+    <script th:src="@{/controller/pages/angular2/lib/reflect-metadata/Reflect.js}"></script>
+    <script th:src="@{/controller/pages/angular2/lib/systemjs/dist/system.src.js}"></script>
 
-    <!-- 2. Configure SystemJS -->
-    <script th:src="@{/controller/static/pages/angular2/angular2-poc/system.src.js}"></script>
+   	<!-- 2. Configure SystemJS -->
+    <script th:src="@{/controller/pages/angular2/angular2-poc/systemjs.config.js}"></script>
+    
 
     <script>
       System.import('app').catch(function(err){ console.error(err); });

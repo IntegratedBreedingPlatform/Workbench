@@ -8,6 +8,7 @@
 		http://www.springframework.org/schema/security/spring-security-3.2.xsd">
 
 	<http pattern="/controller/static/**" security="none" />
+	<http pattern="/controller/pages/angular2/lib/**" security="none" />
 	<http pattern="/VAADIN/themes/**" security="none" />
 
 	<http auto-config="true" use-expressions="true">

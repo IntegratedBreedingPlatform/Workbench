@@ -233,6 +233,9 @@ pip-log.txt
 ## Web Dev
 #############
 
+# angular 2
+src/main/angular2/typings/
+
 node_modules
 node
 

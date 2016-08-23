@@ -665,7 +665,7 @@
 							<goal>exec</goal>
 						</goals>
 					</execution>
-					<!-- <execution>
+					<execution>
 						<id>exec-gulp-clean</id>
 						<phase>generate-resources</phase>
 						<configuration>
@@ -679,7 +679,7 @@
 						<goals>
 							<goal>exec</goal>
 						</goals>
-					</execution>-->
+					</execution>
 					<execution>
 						<id>exec-gulp-build</id>
 						<phase>generate-resources</phase>
