@@ -15,6 +15,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.annotation.Resource;
+
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -22,10 +24,14 @@ import org.generationcp.commons.vaadin.validator.ValidationUtil;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
+import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
+import org.generationcp.middleware.ContextHolder;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.slf4j.Logger;
@@ -60,6 +66,12 @@ public class SaveNewProjectAddUserAction implements ClickListener {
 
 	@Autowired
 	private WorkbenchUserService workbenchUserService;
+	
+	@Autowired
+	private ProgramService programService;
+	
+	@Resource
+	private WorkbenchDataManager workbenchDataManager;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -128,15 +140,25 @@ public class SaveNewProjectAddUserAction implements ClickListener {
 		userAccount.trimAll();
 
 		User user = this.workbenchUserService.saveNewUserAccount(userAccount);
-
+		
+		//if admin, add user as program member of all programs of the current crop
+		this.addUserToAllProgramsOfCurrentCropIfAdmin(user);
+		
 		// add new user to the TwinColumnSelect
 		membersSelect.addItem(user);
 
 		// get currently selected users and add the new user
-		@SuppressWarnings("unchecked")
 		Set<User> selectedMembers = new HashSet<User>(membersSelect.getValue());
 		selectedMembers.add(user);
 		membersSelect.setValue(selectedMembers);
+	}
+
+	public void addUserToAllProgramsOfCurrentCropIfAdmin(final User user) {
+		String cropName = ContextHolder.getCurrentCrop();
+		if(cropName != null) {
+			final CropType cropType = this.workbenchDataManager.getCropTypeByName(cropName);
+			this.programService.addUserToAllProgramsOfCropTypeIfAdmin(user, cropType);
+		}
 	}
 
 }

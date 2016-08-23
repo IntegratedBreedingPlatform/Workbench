@@ -18,6 +18,7 @@ import org.generationcp.middleware.pojos.workbench.IbdbUserMap;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
 import org.generationcp.middleware.pojos.workbench.Role;
+import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.generationcp.middleware.pojos.workbench.WorkflowTemplate;
 import org.junit.Assert;
 import org.junit.Before;
@@ -76,6 +77,10 @@ public class ProgramServiceTest {
 		loggedInUser.setName("mrbreeder");
 		loggedInUser.setPersonid(1);
 
+		final List<UserRole> roles = new ArrayList<>();
+		roles.add(new UserRole(loggedInUser, ProgramService.ADMIN_ROLE));
+		loggedInUser.setRoles(roles);
+
 		final Person loggedInPerson = new Person();
 		loggedInPerson.setId(1);
 		loggedInPerson.setFirstName("Jan");
@@ -120,6 +125,14 @@ public class ProgramServiceTest {
 		Mockito.when(this.userDataManager.addUser(Matchers.any(User.class))).thenReturn(2);
 		Mockito.when(this.userDataManager.getUserById(Matchers.anyInt())).thenReturn(memberUser);
 
+		final List<Project> projects = new ArrayList<>();
+		final Project program = new Project();
+		program.setProjectId(new Long(1));
+		projects.add(program);
+		Mockito.when(this.workbenchDataManager.getProjectsByCropType(project.getCropType())).thenReturn(projects);
+
+		Mockito.when(puiDao.getByProjectIdAndUserId(Matchers.anyInt(), Matchers.anyInt())).thenReturn(null);
+
 		this.programService.setCurrentUser(loggedInUser);
 
 		final Set<User> selectedUsers = new HashSet<User>();
@@ -142,6 +155,10 @@ public class ProgramServiceTest {
 		Mockito.verify(this.workbenchDataManager, Mockito.times(2)).addIbdbUserMap(Matchers.any(IbdbUserMap.class));
 
 		Mockito.verify(this.workbenchDataManager).addProjectUserRole(Matchers.anyList());
+
+		Mockito.verify(this.workbenchDataManager, Mockito.atLeast(1 + projects.size())).saveOrUpdateProjectUserInfo(
+				Matchers.any(ProjectUserInfo.class));
+
 	}
 
 	@Test

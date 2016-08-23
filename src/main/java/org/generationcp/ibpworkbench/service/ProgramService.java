@@ -27,6 +27,7 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
 import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
 import org.generationcp.middleware.pojos.workbench.Role;
+import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +63,8 @@ public class ProgramService {
 	private static final int PROJECT_USER_TYPE = 422;
 	private static final int PROJECT_USER_STATUS = 1;
 
+	public static final String ADMIN_ROLE = "ADMIN";
+
 	public void createNewProgram(final Project program) {
 
 		this.idAndNameOfProgramMembers.clear();
@@ -80,8 +83,28 @@ public class ProgramService {
 		this.copyProjectUsers(program);
 		this.saveProjectUserInfo(program);
 
+		this.addAllAdminUsersOfCropToProgram(program.getCropType().getCropName(), program.getProjectId().intValue());
+
 		ProgramService.LOG.info("Program created. ID:" + program.getProjectId() + " Name:" + program.getProjectName() + " Start date:"
 				+ program.getStartDate());
+	}
+
+	public void addUserToAllProgramsOfCropTypeIfAdmin(final User user, final CropType cropType) {
+		if (this.isAdmin(user)) {
+			this.addProjectUserToAllProgramsOfCropType(user.getUserid().intValue(), cropType);
+		}
+	}
+
+	public boolean isAdmin(final User user) {
+		final List<UserRole> roles = user.getRoles();
+		if (roles != null) {
+			for (final UserRole userRole : roles) {
+				if (ProgramService.ADMIN_ROLE.equalsIgnoreCase(userRole.getRole())) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	private void addProjectUserRoles(final Project project) {
