@@ -83,7 +83,7 @@ public class ProgramService {
 		this.copyProjectUsers(program);
 		this.saveProjectUserInfo(program);
 
-		this.addAllAdminUsersOfCropToProgram(program.getCropType().getCropName(), program.getProjectId().intValue());
+		this.addAllAdminUsersOfCropToProgram(program.getCropType().getCropName(), program);
 
 		ProgramService.LOG.info("Program created. ID:" + program.getProjectId() + " Name:" + program.getProjectName() + " Start date:"
 				+ program.getStartDate());
@@ -91,7 +91,7 @@ public class ProgramService {
 
 	public void addUserToAllProgramsOfCropTypeIfAdmin(final User user, final CropType cropType) {
 		if (this.isAdmin(user)) {
-			this.addProjectUserToAllProgramsOfCropType(user.getUserid().intValue(), cropType);
+			this.addProjectUserToAllProgramsOfCropType(user, cropType);
 		}
 	}
 
@@ -232,25 +232,40 @@ public class ProgramService {
 		this.toolUtil = toolUtil;
 	}
 
-	public void addProjectUserToAllProgramsOfCropType(final int userId, final CropType cropType) {
+	public void addProjectUserToAllProgramsOfCropType(final User user, final CropType cropType) {
 		final List<Project> projects = this.workbenchDataManager.getProjectsByCropType(cropType);
+		final List<Role> allRoles = this.workbenchDataManager.getAllRoles();
 		for (final Project project : projects) {
-			if (this.workbenchDataManager.getProjectUserInfoDao().getByProjectIdAndUserId(project.getProjectId().intValue(), userId) == null) {
-				final ProjectUserInfo pUserInfo = new ProjectUserInfo(project.getProjectId().intValue(), userId);
+			if (this.workbenchDataManager.getProjectUserInfoDao().getByProjectIdAndUserId(project.getProjectId().intValue(),
+					user.getUserid()) == null) {
+				final ProjectUserInfo pUserInfo = new ProjectUserInfo(project.getProjectId().intValue(), user.getUserid());
 				this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
 			}
+			this.assignAllTheRolesOfTheProgramToUser(allRoles, project, user);
 		}
 	}
 
-	public void addAllAdminUsersOfCropToProgram(final String crop, final int projectId) {
-		final List<Integer> adminUsers = this.workbenchDataManager.getAdminUserIdsOfCrop(crop);
-		for (final Integer userId : adminUsers) {
-			if (this.workbenchDataManager.getProjectUserInfoDao().getByProjectIdAndUserId(projectId, userId) == null) {
-				final ProjectUserInfo pUserInfo = new ProjectUserInfo(projectId, userId);
+	public void addAllAdminUsersOfCropToProgram(final String crop, final Project program) {
+		final List<User> adminUsers = this.workbenchDataManager.getAdminUsersOfCrop(crop);
+		final List<Role> allRoles = this.workbenchDataManager.getAllRoles();
+		for (final User user : adminUsers) {
+			if (this.workbenchDataManager.getProjectUserInfoDao().getByProjectIdAndUserId(program.getProjectId().intValue(),
+					user.getUserid()) == null) {
+				final ProjectUserInfo pUserInfo = new ProjectUserInfo(program.getProjectId().intValue(), user.getUserid());
 				this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
 			}
+			this.assignAllTheRolesOfTheProgramToUser(allRoles, program, user);
 		}
+	}
 
+	@SuppressWarnings("rawtypes")
+	private void assignAllTheRolesOfTheProgramToUser(final List<Role> allRoles, final Project program, final User user) {
+		final List<Role> roles = new ArrayList(allRoles);
+		final List<Role> existingRoles = this.workbenchDataManager.getRolesByProjectAndUser(program, user);
+		roles.removeAll(existingRoles);
+		for (final Role role : roles) {
+			this.workbenchDataManager.addProjectUserRole(program, user, role);
+		}
 	}
 
 }
