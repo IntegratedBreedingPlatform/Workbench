@@ -655,8 +655,8 @@
 						<id>exec-npm-install</id>
 						<phase>generate-resources</phase>
 						<configuration>
-							<workingDirectory>src/main/angular2</workingDirectory>
-							<executable>node/npm</executable>
+							<workingDirectory>${basedir}/src/main/angular2</workingDirectory>
+							<executable>${basedir}/node/npm</executable>
 							<arguments>
 								<argument>install</argument>
 							</arguments>
@@ -669,8 +669,8 @@
 						<id>exec-gulp-clean</id>
 						<phase>generate-resources</phase>
 						<configuration>
-							<workingDirectory>src/main/angular2</workingDirectory>
-							<executable>node/npm</executable>
+							<workingDirectory>${basedir}/src/main/angular2</workingDirectory>
+							<executable>${basedir}/node/npm</executable>
 							<arguments>
 								<argument>run</argument>
 								<argument>clean</argument>
@@ -684,8 +684,8 @@
 						<id>exec-gulp-build</id>
 						<phase>generate-resources</phase>
 						<configuration>
-							<workingDirectory>src/main/angular2</workingDirectory>
-							<executable>node/npm</executable>
+							<workingDirectory>${basedir}/src/main/angular2</workingDirectory>
+							<executable>${basedir}/node/npm</executable>
 							<arguments>
 								<argument>run</argument>
 								<argument>build</argument>
