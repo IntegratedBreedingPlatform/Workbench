@@ -56,7 +56,7 @@ public class BreedingViewXMLWriterTest {
 	private static final String SOURCE_FILE_PATH = BreedingViewXMLWriterTest.INPUT_DIRECTORY + "/test.csv";
 	private static final String DEST_FILE_PATH = BreedingViewXMLWriterTest.INPUT_DIRECTORY + "/test.xml";
 	private static final String WEB_API_URL = "http://localhost:18080/"
-			+ "IBPWebService/rest/breeding_view/ssa/save_result_summary&loggedInUserId=1&selectedProjectId=1";
+			+ "bmsapi/breeding_view/{cropName}/ssa/save_result_summary&loggedInUserId=1&selectedProjectId=1";
 	private static final String INSTALLATION_DIRECTORY = "C://Breeding Management System/";
 
 	@Before
@@ -69,6 +69,7 @@ public class BreedingViewXMLWriterTest {
 
 		this.breedingViewInput = this.createBreedingViewInput();
 		this.breedingViewXMLWriter = new BreedingViewXMLWriter(this.breedingViewInput);
+		this.breedingViewXMLWriter.setWebApiUrl(WEB_API_URL);
 		breedingViewXMLWriter.setSessionData(sessionData);
 		breedingViewXMLWriter.setWorkbenchDataManager(workbenchDataManager);
 		this.createBreedingViewDirectories();
