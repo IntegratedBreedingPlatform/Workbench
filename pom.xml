@@ -645,8 +645,8 @@
 				</executions>
 			</plugin>
 			
-			<!-- Angular 2 -->
-			<plugin>
+			<!-- Angular 2 Option 2 -->
+			<!-- <plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>1.5.0</version>
@@ -696,7 +696,7 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin> 
+			</plugin> --> 
 			
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
