@@ -56,9 +56,9 @@ gulp.task('angular2Resources', ['angular2'], function() {
 
 	var tasks = folders.map(function(folder) {
 		
-    // TODO
+    // TODO get all js recursively, exclude build folder
 		return gulp.src([path.join(srcRoot, folder, '*.js'),
-                     path.join(srcRoot, folder, '*.html')])
+                     path.join(srcRoot, folder, '**/*.html')])
 			.pipe(gulp.dest(path.join(srcRoot, folder, 'build')));
 	});
 

@@ -6,9 +6,7 @@
   "scripts": {
     "test": "gulp",
     "postinstall": "typings install",
-    "typings": "typings",
-    "build": "gulp build",
-    "clean": "gulp clean"
+    "typings": "typings"
   },
   "repository": {
     "type": "git",

@@ -1,0 +1,15 @@
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th *ngFor="let col of columns"><span
+				class="om-li-header-cell-test" >{{col}}</span></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr *ngFor="let user of users" class="clickable-row">
+			<td *ngFor="let col of columns"><span
+				class="om-li-data-cell-test">{{user[col]}}</span> <span
+				class="om-li-data-cell-test glyphicon favourite-icon"></span></td>
+		</tr>
+	</tbody>
+</table>
