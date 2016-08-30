@@ -5,9 +5,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedHashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
@@ -21,6 +20,8 @@ import org.generationcp.middleware.pojos.dms.ProgramFavorite;
 import org.generationcp.middleware.pojos.dms.ProgramFavorite.FavoriteType;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -66,30 +67,50 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		this.locationDataManager = locationDataManager;
 	}
 
-	public Collection<LocationViewModel> getFilteredResults(Integer countryId, Integer locationType, String locationName) {
-		return this.getFilteredResults(countryId,locationType,locationName, Collections.<LocationViewModel>emptyList());
+	public Collection<LocationViewModel> getFilteredResults(final Integer countryId, final Integer locationType,
+			final String locationName) {
+		return this.getFilteredResults(countryId, locationType, locationName, Collections.<LocationViewModel>emptyList());
 	}
 
-	public Collection<LocationViewModel> getFilteredResults(Integer countryId, Integer locationType, String locationName,
-			Collection<LocationViewModel> existingItems) {
-		List<Location> locationList = null;
+	public Collection<LocationViewModel> getFilteredResults(final Integer countryId, final Integer locationType, final String locationName,
+			final Collection<LocationViewModel> existingItems) {
 
-		Map<Integer, LocationViewModel> resultsMap = new LinkedHashMap<Integer, LocationViewModel>();
+		final List<LocationDetails> locationDetails =
+				this.locationDataManager.getFilteredLocations(countryId, locationType, locationName, this.project.getUniqueID());
+		final Collection<LocationViewModel> result = createLocationViewModelList(locationDetails);
 
-		Country country = this.locationDataManager.getCountryById(countryId);
-		locationList =
-				this.locationDataManager.getLocationsByNameCountryAndType(locationName != null ? locationName : "", country, locationType);
+		return result;
+	}
 
-		Collections.sort(locationList, Location.LocationNameComparator);
+	private Collection<LocationViewModel> createLocationViewModelList(final List<LocationDetails> locationDetails) {
+		final Collection<LocationViewModel> result = new ArrayList<LocationViewModel>();
+		final PropertyMap<LocationDetails, LocationViewModel> locationMapper = new PropertyMap<LocationDetails, LocationViewModel>() {
 
-		for (Location location : locationList) {
-			final LocationViewModel locationVModel = this.getLocationDetailsByLocId(location.getLocid());
-			if (locationVModel != null && (location.getUniqueID() == null || location.getUniqueID().equals(this.project.getUniqueID()))) {
-				resultsMap.put(location.getLocid(), locationVModel);
+			@Override
+			protected void configure() {
+				this.map(this.source.getLocid(), this.destination.getLocationId());
+				this.map(this.source.getLocationName(), this.destination.getLocationName());
+				this.map(this.source.getLocationAbbreviation(), this.destination.getLocationAbbreviation());
+				this.map(this.source.getCountryFullName(), this.destination.getCntryFullName());
+				this.map(this.source.getLocationType(), this.destination.getLtypeStr());
+				this.map(this.source.getCntryid(), this.destination.getCntryid());
+				this.map(this.source.getLtype(), this.destination.getLtype());
+				this.map(this.source.getLatitude(), this.destination.getLatitude());
+				this.map(this.source.getLongitude(), this.destination.getLongitude());
+				this.map(this.source.getAltitude(), this.destination.getAltitude());
 			}
-		}
 
-		return resultsMap.values();
+		};
+
+		final ModelMapper modelMapper = new ModelMapper();
+
+		modelMapper.addMappings(locationMapper);
+
+		for (final Iterator<LocationDetails> iterator = locationDetails.iterator(); iterator.hasNext();) {
+			final LocationDetails detail = iterator.next();
+			result.add(modelMapper.map(detail, LocationViewModel.class));
+		}
+		return result;
 	}
 
 	public List<LocationViewModel> getSavedProgramLocations() {
