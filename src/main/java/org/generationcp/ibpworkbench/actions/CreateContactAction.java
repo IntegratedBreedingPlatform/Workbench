@@ -62,6 +62,7 @@ public class CreateContactAction implements ClickListener, ActionListener {
 	@Override
 	public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
 		ContactBookPanel contactBookPanel = new ContactBookPanel();
+		contactBookPanel.setDebugId("contactBookPanel");
 		IContentWindow w = (IContentWindow) window;
 
 		w.showContent(contactBookPanel);

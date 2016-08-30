@@ -90,6 +90,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 			final VariateModel vm = container.getItem(itemId).getBean();
 
 			final CheckBox checkBox = new CheckBox();
+			checkBox.setDebugId("checkBox");
 			checkBox.setImmediate(true);
 			checkBox.setVisible(true);
 			checkBox.addListener(new CheckBoxListener(vm));
@@ -288,17 +289,21 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 
 		ThemeResource resource = new ThemeResource("../vaadin-retro/images/search-nurseries.png");
 		Label headingLabel = new Label("Select Data for Analysis");
+		headingLabel.setDebugId("headingLabel");
 		headingLabel.setStyleName(Bootstrap.Typography.H4.styleName());
 		headingLabel.addStyleName("label-bold");
 		this.heading = new HeaderLabelLayout(resource, headingLabel);
+		this.heading.setDebugId("heading");
 
 		this.browseLink = new Button();
+		this.browseLink.setDebugId("browseLink");
 		this.browseLink.setImmediate(true);
 		this.browseLink.setStyleName("link");
 		this.browseLink.setCaption("Browse");
 		this.browseLink.setWidth("48px");
 
 		this.uploadLink = new Button();
+		this.uploadLink.setDebugId("uploadLink");
 		this.uploadLink.setImmediate(true);
 		this.uploadLink.setStyleName("link");
 		this.uploadLink.setCaption("Upload");
@@ -325,6 +330,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		this.lblVariates.setStyleName(Bootstrap.Typography.H4.styleName());
 
 		this.chkVariatesSelectAll = new CheckBox();
+		this.chkVariatesSelectAll.setDebugId("chkVariatesSelectAll");
 		this.chkVariatesSelectAll.setImmediate(true);
 		this.chkVariatesSelectAll.setCaption("Select All");
 
@@ -403,6 +409,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		this.setWidth("100%");
 
 		HorizontalLayout browseLabelLayout = new HorizontalLayout();
+		browseLabelLayout.setDebugId("browseLabelLayout");
 		browseLabelLayout.addComponent(this.browseLink);
 		Label workWith = null;
 
@@ -415,6 +422,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		workWith.setWidth("150px");
 		browseLabelLayout.addComponent(workWith);
 		Label orLabel = new Label("or");
+		orLabel.setDebugId("orLabel");
 		orLabel.setWidth("20px");
 
 		if (Boolean.parseBoolean(this.isServerApp)) {
@@ -426,13 +434,18 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		browseLabelLayout.setSizeUndefined();
 
 		VerticalLayout selectDataForAnalysisLayout = new VerticalLayout();
+		selectDataForAnalysisLayout.setDebugId("selectDataForAnalysisLayout");
 		selectDataForAnalysisLayout.addComponent(this.heading);
 		selectDataForAnalysisLayout.addComponent(browseLabelLayout);
 
 		this.lblFactorContainer = new VerticalLayout();
+		this.lblFactorContainer.setDebugId("lblFactorContainer");
 		this.lblVariateContainer = new VerticalLayout();
+		this.lblVariateContainer.setDebugId("lblVariateContainer");
 		this.tblFactorContainer = new VerticalLayout();
+		this.tblFactorContainer.setDebugId("tblFactorContainer");
 		this.tblVariateContainer = new VerticalLayout();
+		this.tblVariateContainer.setDebugId("tblVariateContainer");
 		this.tblVariateContainer.setSpacing(true);
 
 		this.lblFactorContainer.addComponent(this.lblFactors);
@@ -447,6 +460,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		this.tblVariateContainer.setMargin(false, true, false, true);
 
 		this.studyDetailsLayout = new GridLayout(10, 3);
+		this.studyDetailsLayout.setDebugId("studyDetailsLayout");
 		this.studyDetailsLayout.setWidth("100%");
 		this.studyDetailsLayout.addComponent(this.lblFactorContainer, 0, 0, 4, 0);
 		this.studyDetailsLayout.addComponent(this.lblVariateContainer, 5, 0, 9, 0);
@@ -454,6 +468,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		this.studyDetailsLayout.addComponent(this.tblVariateContainer, 5, 1, 9, 1);
 
 		this.rootLayout = new VerticalLayout();
+		this.rootLayout.setDebugId("rootLayout");
 		this.rootLayout.setWidth("100%");
 		this.rootLayout.setSpacing(true);
 		this.rootLayout.setMargin(false, false, false, true);
@@ -468,9 +483,11 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 
 	private void setTitleContent() {
 		this.titleLayout = new HorizontalLayout();
+		this.titleLayout.setDebugId("titleLayout");
 		this.titleLayout.setSpacing(true);
 
 		this.toolTitle = new Label();
+		this.toolTitle.setDebugId("toolTitle");
 		this.toolTitle.setContentMode(Label.CONTENT_XHTML);
 		this.toolTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 		this.toolTitle.setHeight("26px");
@@ -483,12 +500,15 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 	protected Component layoutButtonArea() {
 
 		HorizontalLayout buttonLayout = new HorizontalLayout();
+		buttonLayout.setDebugId("buttonLayout");
 
 		buttonLayout.setSpacing(true);
 		buttonLayout.setMargin(true);
 
 		this.btnCancel = new Button();
+		this.btnCancel.setDebugId("btnCancel");
 		this.btnNext = new Button();
+		this.btnNext.setDebugId("btnNext");
 		this.btnNext.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 		this.btnNext.setEnabled(false);// default
 
@@ -502,6 +522,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 	protected Table initializeFactorsTable() {
 
 		final Table table = new Table();
+		table.setDebugId("table");
 		table.setImmediate(true);
 		table.setWidth("100%");
 		table.setHeight("400px");
@@ -539,6 +560,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		this.variatesCheckboxState.clear();
 
 		final Table table = new Table();
+		table.setDebugId("table");
 		table.setImmediate(true);
 		table.setWidth("100%");
 		table.setHeight("400px");

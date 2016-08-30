@@ -133,6 +133,7 @@ public class CrumbTrail extends HorizontalLayout {
 		}
 
 		BreadCrumb newBreadCrumb = new BreadCrumb(level, caption, viewId, className);
+		newBreadCrumb.setDebugId("newBreadCrumb");
 
 		if (this.getLastBreadCrumb() != null) {
 			this.getLastBreadCrumb().removeStyleName("gcp-crumb-active");

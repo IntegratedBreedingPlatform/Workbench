@@ -75,6 +75,7 @@ public class UserAccountFormFieldFactory extends DefaultFieldFactory {
 		this.firstName.addValidator(new PersonNameValidator(this.firstName, this.lastName));
 
 		this.role = new ComboBox();
+		this.role.setDebugId("role");
 
 		this.email = new TextField() {
 

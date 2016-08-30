@@ -63,6 +63,7 @@ public class OpenNewProjectAction implements ClickListener, ActionListener {
 
 		try {
 			AddProgramView newProjectPanel = new AddProgramView(this.initialTabView);
+			newProjectPanel.setDebugId("newProjectPanel");
 
 			w.showContent(newProjectPanel);
 

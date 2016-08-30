@@ -95,6 +95,7 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 
 	protected void initializeComponents() {
 		this.sidebarTree = new Tree();
+		this.sidebarTree.setDebugId("sidebarTree");
 
 		this.addComponent(this.sidebarTree);
 	}
@@ -103,6 +104,7 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 		this.removeAllComponents();
 
 		this.sidebarTree = new Tree();
+		this.sidebarTree.setDebugId("sidebarTree");
 		this.sidebarTree.setImmediate(true);
 
 		Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> links = this.presenter.getCategoryLinkItems();

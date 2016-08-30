@@ -100,22 +100,27 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
 		if (WindowEnums.MEMBER.getwindowName().equals(windowName)) {
 			appLaunched = this.messageSource.getMessage(Message.MEMBERS_LINK);
 			ProgramMembersPanel projectLocationPanel = new ProgramMembersPanel(this.project);
+			projectLocationPanel.setDebugId("projectLocationPanel");
 			w.showContent(projectLocationPanel);
 		} else if (WindowEnums.RECOVERY.getwindowName().equals(windowName)) {
 			appLaunched = this.messageSource.getMessage("BACKUP_RESTORE_TITLE");
 			BackupAndRestoreView backupAndRestoreView = new BackupAndRestoreView();
+			backupAndRestoreView.setDebugId("backupAndRestoreView");
 			w.showContent(backupAndRestoreView);
 		} else if (WindowEnums.BREEDING_GXE.getwindowName().equals(windowName)) {
 			appLaunched = this.messageSource.getMessage(Message.TITLE_GXE);
 			MultiSiteAnalysisPanel gxeAnalysisPanel = new MultiSiteAnalysisPanel(this.project);
+			gxeAnalysisPanel.setDebugId("gxeAnalysisPanel");
 			w.showContent(gxeAnalysisPanel);
 		} else if (WindowEnums.BREEDING_VIEW.getwindowName().equals(windowName)) {
 			appLaunched = this.messageSource.getMessage(Message.TITLE_SSA);
 			SingleSiteAnalysisPanel breedingViewPanel = new SingleSiteAnalysisPanel(this.project, Database.LOCAL);
+			breedingViewPanel.setDebugId("breedingViewPanel");
 			w.showContent(breedingViewPanel);
 		} else if (WindowEnums.BV_META_ANALYSIS.getwindowName().equals(windowName)) {
 			appLaunched = this.messageSource.getMessage(Message.TITLE_METAANALYSIS);
 			MetaAnalysisPanel metaAnalyis = new MetaAnalysisPanel(this.project, Database.LOCAL);
+			metaAnalyis.setDebugId("metaAnalyis");
 			w.showContent(metaAnalyis);
 		}
 

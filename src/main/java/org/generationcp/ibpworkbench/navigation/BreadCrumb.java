@@ -133,6 +133,7 @@ public class BreadCrumb extends HorizontalLayout implements InitializingBean {
 	 */
 	private void init() throws Exception {
 		this.button = new Button(this.getLabel());
+		this.button.setDebugId("button");
 		this.button.setStyleName(BaseTheme.BUTTON_LINK);
 
 		this.initListener();
@@ -152,6 +153,7 @@ public class BreadCrumb extends HorizontalLayout implements InitializingBean {
 
 		if (this.level > 0) {
 			this.vLabel = new Label(">");
+			this.vLabel.setDebugId("vLabel");
 			this.addComponent(this.vLabel);
 		}
 

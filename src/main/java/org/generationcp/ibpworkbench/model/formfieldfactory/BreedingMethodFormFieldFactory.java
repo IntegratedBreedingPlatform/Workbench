@@ -81,6 +81,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 	private void initFields(final Map<Integer, String> classMap) {
 
 		this.methodName = new SanitizedTextField();
+		this.methodName.setDebugId("methodName");
 		this.methodName.setRequired(true);
 		this.methodName.setRequiredError("Please enter a Breeding Method Name.");
 		this.methodName.addValidator(new StringLengthValidator("Breeding Method Name must be 1-50 characters.", 1, 50, false));
@@ -135,6 +136,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 		this.methodName.setWidth(BreedingMethodFormFieldFactory.FIELD_WIDTH);
 
 		this.methodDescription = new TextArea();
+		this.methodDescription.setDebugId("methodDescription");
 		this.methodDescription.setRequired(true);
 		this.methodDescription.setRequiredError("Please enter a Breeding Method Description.");
 		this.methodDescription.addValidator(new StringLengthValidator("Breeding Method Description must be 1-255 characters.", 1, 255,
@@ -143,6 +145,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 		this.methodDescription.setHeight("100px");
 
 		this.methodCode = new SanitizedTextField();
+		this.methodCode.setDebugId("methodCode");
 		this.methodCode.setRequired(true);
 		this.methodCode.setRequiredError("Please enter a Breeding Method Code.");
 		this.methodCode.addValidator(new StringLengthValidator("Breeding Method Code must be 1-8 characters.", 1, 8, false));
@@ -197,6 +200,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 		this.methodCode.setWidth("70px");
 
 		this.methodSelectType = new Select();
+		this.methodSelectType.setDebugId("methodSelectType");
 		this.methodSelectType.setImmediate(true);
 		this.methodSelectType.setWidth(BreedingMethodFormFieldFactory.FIELD_WIDTH);
 		this.methodSelectType.addItem("GEN");
@@ -256,6 +260,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 		});
 
 		this.methodSelectGroup = new Select();
+		this.methodSelectGroup.setDebugId("methodSelectGroup");
 		this.methodSelectGroup.setWidth(BreedingMethodFormFieldFactory.FIELD_WIDTH);
 		this.methodSelectGroup.addItem("S");
 		this.methodSelectGroup.setItemCaption("S", "Self Fertilizing");
@@ -269,6 +274,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 		this.methodSelectGroup.setNullSelectionAllowed(false);
 
 		this.methodSelectClass = new Select();
+		this.methodSelectClass.setDebugId("methodSelectClass");
 		this.methodSelectClass.setWidth(BreedingMethodFormFieldFactory.FIELD_WIDTH);
 		this.methodSelectClass.setNullSelectionAllowed(false);
 		this.methodSelectClass.setRequired(true);

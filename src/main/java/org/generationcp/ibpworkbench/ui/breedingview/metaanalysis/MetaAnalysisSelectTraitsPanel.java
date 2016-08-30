@@ -115,12 +115,14 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 	private void initializeComponents() {
 
 		this.lblPageTitle = new Label();
+		this.lblPageTitle.setDebugId("lblPageTitle");
 		this.lblPageTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 
 		this.factorsCheckBoxState = new HashMap<String, Boolean>();
 		this.variatesCheckBoxState = new HashMap<String, Boolean>();
 
 		this.environmentsTable = new Table();
+		this.environmentsTable.setDebugId("environmentsTable");
 		this.environmentsTable.setColumnCollapsingAllowed(true);
 
 		this.selectAllEnvironmentsListener = new Property.ValueChangeListener() {
@@ -188,30 +190,40 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 		};
 
 		this.chkSelectAllVariates = new CheckBox();
+		this.chkSelectAllVariates.setDebugId("chkSelectAllVariates");
 		this.chkSelectAllVariates.setImmediate(true);
 		this.chkSelectAllVariates.setCaption("Select All Traits");
 		this.chkSelectAllVariates.addListener(this.selectAllTraitsListener);
 		this.chkSelectAllFactors = new CheckBox();
+		this.chkSelectAllFactors.setDebugId("chkSelectAllFactors");
 		this.chkSelectAllFactors.setImmediate(true);
 		this.chkSelectAllFactors.setCaption("Select All Factors");
 		this.chkSelectAllFactors.addListener(this.selectAllFactorsListener);
 		this.chkSelectAllEnvironments = new CheckBox();
+		this.chkSelectAllEnvironments.setDebugId("chkSelectAllEnvironments");
 		this.chkSelectAllEnvironments.setImmediate(true);
 		this.chkSelectAllEnvironments.setCaption("Select All Environments");
 		this.chkSelectAllEnvironments.addListener(this.selectAllEnvironmentsListener);
 		this.chkSelectAllEnvironments.setValue(true);
 
 		this.lblSelectEnvVarForAnalysis = new Label();
+		this.lblSelectEnvVarForAnalysis.setDebugId("lblSelectEnvVarForAnalysis");
 		this.lblSelectEnvVarForAnalysis.setStyleName(Bootstrap.Typography.H4.styleName());
 		this.lblSelectEnvVarForAnalysisDesc = new Label();
+		this.lblSelectEnvVarForAnalysisDesc.setDebugId("lblSelectEnvVarForAnalysisDesc");
 		this.lblSelectVariates = new Label();
+		this.lblSelectVariates.setDebugId("lblSelectVariates");
 		this.lblSelectFactorsForAnalysis = new Label();
+		this.lblSelectFactorsForAnalysis.setDebugId("lblSelectFactorsForAnalysis");
 		this.lblSelectFactorsForAnalysis.setStyleName(Bootstrap.Typography.H4.styleName());
 		this.lblSelectFactorsForAnalysisDesc = new Label();
+		this.lblSelectFactorsForAnalysisDesc.setDebugId("lblSelectFactorsForAnalysisDesc");
 		this.lblSelectFactors = new Label();
+		this.lblSelectFactors.setDebugId("lblSelectFactors");
 
 		this.environmentsTable.setWidth("100%");
 		this.factorsAnalysisTable = new Table();
+		this.factorsAnalysisTable.setDebugId("factorsAnalysisTable");
 		this.factorsAnalysisTable.setWidth("100%");
 		this.factorsAnalysisTable.setColumnCollapsingAllowed(true);
 
@@ -307,6 +319,7 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 				MetaEnvironmentModel item = (MetaEnvironmentModel) itemId;
 
 				CheckBox chk = new CheckBox();
+				chk.setDebugId("chk");
 				chk.setValue(item.getActive());
 				chk.setData(itemId);
 				chk.setImmediate(true);
@@ -420,6 +433,7 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 		};
 
 		this.variatesSelectionTable = new Table();
+		this.variatesSelectionTable.setDebugId("variatesSelectionTable");
 		this.variatesSelectionTable.setWidth("100%");
 		this.variatesSelectionTable.setHeight("80px");
 		this.variatesSelectionTable.setColumnCollapsingAllowed(true);
@@ -428,6 +442,7 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 		for (Object s : variatesColumnList.toArray()) {
 			variatesSelectionTableContainer.addContainerProperty(s.toString(), CheckBox.class, null);
 			CheckBox variateCheckBox = new CheckBox();
+			variateCheckBox.setDebugId("variateCheckBox");
 			variateCheckBox.setImmediate(true);
 			variateCheckBox.addListener(traitCheckBoxListener);
 			variateCheckBox.setData(s);
@@ -460,6 +475,7 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 		};
 
 		this.factorsSelectionTable = new Table();
+		this.factorsSelectionTable.setDebugId("factorsSelectionTable");
 		this.factorsSelectionTable.setWidth("100%");
 		this.factorsSelectionTable.setHeight("80px");
 		this.factorsSelectionTable.setColumnCollapsingAllowed(true);
@@ -468,6 +484,7 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 		for (Entry<String, Boolean> s : factorsColumnList.entrySet()) {
 			factorsSelectionTableContainer.addContainerProperty(s.getKey(), CheckBox.class, null);
 			CheckBox factorCheckBox = new CheckBox();
+			factorCheckBox.setDebugId("factorCheckBox");
 			factorCheckBox.setImmediate(true);
 			factorCheckBox.addListener(factorCheckBoxListener);
 			factorCheckBox.setData(s.getKey());
@@ -496,6 +513,7 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 		this.setWidth("95%");
 
 		VerticalLayout layout1 = new VerticalLayout();
+		layout1.setDebugId("layout1");
 		layout1.setMargin(new MarginInfo(false, true, false, true));
 		layout1.setSpacing(true);
 		layout1.addComponent(this.lblPageTitle);
@@ -506,6 +524,7 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 		this.addComponent(layout1);
 
 		VerticalLayout layout2 = new VerticalLayout();
+		layout2.setDebugId("layout2");
 		layout2.setMargin(new MarginInfo(false, true, false, true));
 		layout2.setSpacing(true);
 		layout2.addComponent(this.lblSelectVariates);
@@ -514,6 +533,7 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 		this.addComponent(layout2);
 
 		VerticalLayout layout3 = new VerticalLayout();
+		layout3.setDebugId("layout3");
 		layout3.setMargin(new MarginInfo(true, true, false, true));
 		layout3.setSpacing(true);
 		layout3.addComponent(this.lblSelectFactorsForAnalysis);
@@ -522,6 +542,7 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 		this.addComponent(layout3);
 
 		VerticalLayout layout4 = new VerticalLayout();
+		layout4.setDebugId("layout4");
 		layout4.setMargin(new MarginInfo(false, true, false, true));
 		layout4.setSpacing(true);
 		layout4.addComponent(this.lblSelectFactors);
@@ -538,13 +559,17 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 	protected Component layoutButtonArea() {
 
 		HorizontalLayout buttonLayout = new HorizontalLayout();
+		buttonLayout.setDebugId("buttonLayout");
 
 		buttonLayout.setSpacing(true);
 		buttonLayout.setMargin(true);
 
 		this.btnBack = new Button();
+		this.btnBack.setDebugId("btnBack");
 		this.btnReset = new Button();
+		this.btnReset.setDebugId("btnReset");
 		this.btnNext = new Button();
+		this.btnNext.setDebugId("btnNext");
 		this.btnNext.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
 		buttonLayout.addComponent(this.btnBack);

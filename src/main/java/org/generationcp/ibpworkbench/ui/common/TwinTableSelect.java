@@ -68,19 +68,25 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 		this.setSpacing(true);
 
 		this.lblLeftColumnCaption = new Label();
+		this.lblLeftColumnCaption.setDebugId("lblLeftColumnCaption");
 		this.lblLeftColumnCaption.setSizeFull();
 		this.lblRightColumnCaption = new Label();
+		this.lblRightColumnCaption.setDebugId("lblRightColumnCaption");
 		this.lblRightColumnCaption.setSizeFull();
 
 		this.btnLinkLeft = new Button();
+		this.btnLinkLeft.setDebugId("btnLinkLeft");
 		this.btnLinkLeft.setStyleName("link");
 		this.btnLinkLeft.setImmediate(true);
 		this.btnLinkRight = new Button();
+		this.btnLinkRight.setDebugId("btnLinkRight");
 		this.btnLinkRight.setStyleName("link");
 		this.btnLinkRight.setImmediate(true);
 
 		this.chkSelectAllLeft = new CheckBox("Select All");
+		this.chkSelectAllLeft.setDebugId("chkSelectAllLeft");
 		this.chkSelectAllRight = new CheckBox("Select All");
+		this.chkSelectAllRight.setDebugId("chkSelectAllRight");
 		this.chkSelectAllLeft.setImmediate(true);
 		this.chkSelectAllRight.setImmediate(true);
 
@@ -155,6 +161,7 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 		this.addComponent(this.getTableRight(), 1, 1);
 
 		HorizontalLayout hLayout1 = new HorizontalLayout();
+		hLayout1.setDebugId("hLayout1");
 		hLayout1.addComponent(this.chkSelectAllLeft);
 		hLayout1.addComponent(this.btnLinkLeft);
 		hLayout1.setComponentAlignment(this.btnLinkLeft, Alignment.TOP_RIGHT);
@@ -162,6 +169,7 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 		this.addComponent(hLayout1, 0, 2);
 
 		HorizontalLayout hLayout2 = new HorizontalLayout();
+		hLayout2.setDebugId("hLayout2");
 		hLayout2.addComponent(this.chkSelectAllRight);
 		hLayout2.addComponent(this.btnLinkRight);
 		hLayout2.setComponentAlignment(this.btnLinkRight, Alignment.TOP_RIGHT);
@@ -200,6 +208,7 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 
 	private Table buildCustomTable() {
 		final Table table = new Table();
+		table.setDebugId("table");
 		final Property.ValueChangeListener tableValueChangeListener = new Property.ValueChangeListener() {
 
 			private static final long serialVersionUID = 1L;
@@ -242,6 +251,7 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 				final T bean = container.getItem(itemId).getBean();
 
 				final CheckBox checkBox = new CheckBox();
+				checkBox.setDebugId("checkBox");
 				checkBox.setImmediate(true);
 				checkBox.setVisible(true);
 				checkBox.addListener(new Button.ClickListener() {

@@ -19,7 +19,9 @@ public class GxeCheckBoxGroup extends HorizontalLayout {
 
 		if (rowIndex == 1) {
 			CheckBox cbRow = new CheckBox("All Rows");
+			cbRow.setDebugId("cbRow");
 			CheckBox cbCol = new CheckBox("All Columns");
+			cbCol.setDebugId("cbCol");
 
 			cbRow.setValue(true);
 			cbCol.setValue(true);
@@ -34,6 +36,7 @@ public class GxeCheckBoxGroup extends HorizontalLayout {
 
 		} else {
 			CheckBox cb = new CheckBox(" ");
+			cb.setDebugId("cb");
 			cb.setValue(true);
 			cb.addListener(new GxeCheckBoxGroupListener(null, table, cb));
 			cb.addListener(listener);
@@ -50,6 +53,7 @@ public class GxeCheckBoxGroup extends HorizontalLayout {
 	public void refresh() {
 		this.removeAllComponents();
 		CheckBox cb = new CheckBox(" ");
+		cb.setDebugId("cb");
 		cb.setValue(this.value);
 		cb.addListener(new GxeCheckBoxGroupListener(null, this.table, cb));
 		cb.setImmediate(true);

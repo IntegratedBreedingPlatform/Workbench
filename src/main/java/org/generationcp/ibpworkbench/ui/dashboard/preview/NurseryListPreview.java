@@ -97,6 +97,7 @@ public class NurseryListPreview extends VerticalLayout {
 		this.setSizeFull();
 
 		this.panel = new Panel();
+		this.panel.setDebugId("panel");
 		this.panel.removeAllComponents();
 
 		this.addComponent(this.buildToolbar());
@@ -108,6 +109,7 @@ public class NurseryListPreview extends VerticalLayout {
 		this.presenter.generateInitialTreeNodes();
 
 		CssLayout treeContainer = new CssLayout();
+		treeContainer.setDebugId("treeContainer");
 		treeContainer.setSizeUndefined();
 		treeContainer.addComponent(this.treeView);
 
@@ -122,6 +124,7 @@ public class NurseryListPreview extends VerticalLayout {
 	public void generateTopListOfTree(List<Reference> root) {
 
 		this.treeView = new Tree();
+		this.treeView.setDebugId("treeView");
 		this.treeView.setContainerDataSource(new HierarchicalContainer());
 		this.treeView.setDropHandler(new NurseryTreeDropHandler(this.treeView, this.presenter));
 		this.treeView.setDragMode(TreeDragMode.NODE);
@@ -199,6 +202,7 @@ public class NurseryListPreview extends VerticalLayout {
 
 	private Component buildToolbar() {
 		this.toolbar = new HorizontalLayout();
+		this.toolbar.setDebugId("toolbar");
 		this.toolbar.setSpacing(true);
 		this.toolbar.setMargin(true);
 
@@ -210,14 +214,17 @@ public class NurseryListPreview extends VerticalLayout {
 		this.openStudyManagerBtn.setEnabled(false);
 
 		this.renameFolderBtn = new Button("<span class='bms-edit' style='color:#0082CB'><span>");
+		this.renameFolderBtn.setDebugId("renameFolderBtn");
 		this.renameFolderBtn.setHtmlContentAllowed(true);
 		this.renameFolderBtn.setDescription(this.messageSource.getMessage(Message.RENAME_ITEM));
 
 		this.addFolderBtn = new Button("<span class='bms-add' style='color:#00AF40'></span>");
+		this.addFolderBtn.setDebugId("addFolderBtn");
 		this.addFolderBtn.setHtmlContentAllowed(true);
 		this.addFolderBtn.setDescription(this.messageSource.getMessage(Message.ADD_FOLDER));
 
 		this.deleteFolderBtn = new Button("<span class='bms-delete' style='color:#F4A41C'></span>");
+		this.deleteFolderBtn.setDebugId("deleteFolderBtn");
 		this.deleteFolderBtn.setHtmlContentAllowed(true);
 		this.deleteFolderBtn.setDescription(this.messageSource.getMessage(Message.DELETE_ITEM));
 
@@ -234,6 +241,7 @@ public class NurseryListPreview extends VerticalLayout {
 		this.toolbar.addComponent(this.openStudyManagerBtn);
 
 		Label spacer = new Label("");
+		spacer.setDebugId("spacer");
 		this.toolbar.addComponent(spacer);
 		this.toolbar.setExpandRatio(spacer, 1.0F);
 

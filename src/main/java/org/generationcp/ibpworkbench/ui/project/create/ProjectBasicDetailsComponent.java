@@ -119,6 +119,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 
 	protected void initializeComponents() {
 		this.gridLayout = new GridLayout();
+		this.gridLayout.setDebugId("gridLayout");
 		this.gridLayout.setRows(4);
 		this.gridLayout.setColumns(5);
 		this.gridLayout.setSpacing(true);
@@ -128,6 +129,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		final Pattern cropNameInvalidCharPattern = Pattern.compile("^[^<>'\":;,\\./\\|\\-=\\(\\)\\\\]+$", Pattern.DOTALL);
 
 		this.projectNameField = new TextField();
+		this.projectNameField.setDebugId("projectNameField");
 		this.projectNameField.setImmediate(true);
 		this.projectNameField.setRequired(true);
 		this.projectNameField.setRequiredError(this.messageSource.getMessage("PROGRAM_NAME_REQUIRED_ERROR"));
@@ -139,6 +141,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		this.projectNameField.setDebugId("vaadin_projectname_txt");
 
 		this.otherCropNameField = new TextField();
+		this.otherCropNameField.setDebugId("otherCropNameField");
 		this.otherCropNameField.setImmediate(true);
 		this.otherCropNameField.setRequired(false);
 		this.otherCropNameField.setRequiredError(this.messageSource.getMessage("CROP_NAME_REQUIRED_ERROR"));
@@ -150,6 +153,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		this.otherCropNameField.setVisible(false);
 
 		this.startDateField = new BmsDateField();
+		this.startDateField.setDebugId("startDateField");
 		this.startDateField.setRequired(true);
 		this.startDateField.setRequiredError(this.messageSource.getMessage("START_DATE_REQUIRED_ERROR"));
 		this.startDateField.setStyleName("project-data-time");
@@ -162,21 +166,25 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		this.cropTypeCombo.setDebugId("vaadin_croptype_combo");
 
 		final Label lblCrop = new Label();
+		lblCrop.setDebugId("lblCrop");
 		lblCrop.setValue(this.messageSource.getMessage(Message.BASIC_DETAILS_CROP));
 		lblCrop.setStyleName("label-bold");
 		lblCrop.setContentMode(Label.CONTENT_XHTML);
 
 		this.lblOtherCrop = new Label();
+		this.lblOtherCrop.setDebugId("lblOtherCrop");
 		this.lblOtherCrop.setValue(this.messageSource.getMessage(Message.BASIC_DETAILS_OTHER_CROP_NAME));
 		this.lblOtherCrop.setContentMode(Label.CONTENT_XHTML);
 		this.lblOtherCrop.setVisible(false);
 
 		final Label lblProjectName = new Label();
+		lblProjectName.setDebugId("lblProjectName");
 		lblProjectName.setValue(this.messageSource.getMessage(Message.BASIC_DETAILS_PROGRAM_NAME));
 		lblProjectName.setStyleName("label-bold");
 		lblProjectName.setContentMode(Label.CONTENT_XHTML);
 
 		final Label lblStartDate = new Label();
+		lblStartDate.setDebugId("lblStartDate");
 		lblStartDate.setValue(this.messageSource.getMessage(Message.BASIC_DETAILS_PROGRAM_STARTDATE));
 		lblStartDate.setStyleName("label-bold");
 		lblStartDate.setContentMode(Label.CONTENT_XHTML);
@@ -219,6 +227,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		}
 
 		final ComboBox comboBox = new ComboBox();
+		comboBox.setDebugId("comboBox");
 		comboBox.setContainerDataSource(beanItemContainer);
 		comboBox.setNewItemsAllowed(false);
 		comboBox.setItemCaptionPropertyId("cropName");

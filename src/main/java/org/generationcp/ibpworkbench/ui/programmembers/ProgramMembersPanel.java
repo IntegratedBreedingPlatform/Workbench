@@ -117,6 +117,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			public Object generateCell(final Table source, final Object itemId, final Object columnId) {
 				final Person person = ((User) itemId).getPerson();
 				final Label label = new Label();
+				label.setDebugId("label");
 				label.setValue(person.getDisplayName());
 
 				if (((User) itemId).getUserid().equals(ProgramMembersPanel.this.sessionData.getUserData().getUserid())) {
@@ -136,6 +137,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			public Object generateCell(final Table source, final Object itemId, final Object columnId) {
 				final Person person = ((User) itemId).getPerson();
 				final Label label = new Label();
+				label.setDebugId("label");
 				label.setValue(person.getDisplayName());
 
 				if (((User) itemId).getUserid().equals(ProgramMembersPanel.this.sessionData.getUserData().getUserid())) {
@@ -185,6 +187,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 		for (final Role role : roles) {
 			final CheckBox cb = new CheckBox(role.getName());
+			cb.setDebugId("cb");
 			cb.setData(role.getRoleId());
 			if (role.getName().equals(Role.MANAGER_ROLE_NAME)) {
 				// set default checked value
@@ -220,6 +223,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 	private Table initializeMembersTable() {
 		this.tblMembers = new Table();
+		this.tblMembers.setDebugId("tblMembers");
 		this.tblMembers.setImmediate(true);
 
 		final List<Role> inheritedRoles = this.getRolesForProjectMembers();
@@ -294,6 +298,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		this.setStyleName(Reindeer.PANEL_LIGHT);
 
 		final HorizontalLayout titleContainer = new HorizontalLayout();
+		titleContainer.setDebugId("titleContainer");
 		final Label heading =
 				new Label("<span class='bms-members' style='color: #D1B02A; font-size: 23px'></span>&nbsp;Program Members",
 						Label.CONTENT_XHTML);
@@ -304,6 +309,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		heading.setStyleName(Bootstrap.Typography.H4.styleName());
 
 		this.newMemberButton = new Button("Add New User");
+		this.newMemberButton.setDebugId("newMemberButton");
 		this.newMemberButton.setStyleName(Bootstrap.Buttons.INFO.styleName() + " loc-add-btn");
 
 		titleContainer.addComponent(heading);
@@ -316,6 +322,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		titleContainer.setMargin(true, false, false, false);
 
 		final VerticalLayout root = new VerticalLayout();
+		root.setDebugId("root");
 		root.setMargin(new Layout.MarginInfo(false, true, true, true));
 		root.setSpacing(true);
 		root.setSizeFull();
@@ -381,11 +388,14 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 	protected ComponentContainer layoutButtonArea() {
 		final HorizontalLayout buttonLayout = new HorizontalLayout();
+		buttonLayout.setDebugId("buttonLayout");
 		buttonLayout.setSpacing(true);
 		buttonLayout.setMargin(true, false, false, false);
 
 		this.cancelButton = new Button("Reset");
+		this.cancelButton.setDebugId("cancelButton");
 		this.saveButton = new Button("Save");
+		this.saveButton.setDebugId("saveButton");
 
 		this.saveButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 

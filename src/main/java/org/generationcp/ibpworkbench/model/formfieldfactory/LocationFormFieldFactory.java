@@ -88,12 +88,14 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
 		});
 
 		this.locationName = new SanitizedTextField();
+		this.locationName.setDebugId("locationName");
 		this.locationName.setWidth("250px");
 		this.locationName.setRequired(true);
 		this.locationName.setRequiredError("Please enter a Location Name.");
 		this.locationName.addValidator(new StringLengthValidator("Location Name must be 1-60 characters.", 1, 60, false));
 
 		this.locationAbbreviation = new SanitizedTextField();
+		this.locationAbbreviation.setDebugId("locationAbbreviation");
 
 		this.locationAbbreviation.setWidth("70px");
 		this.locationAbbreviation.setRequired(true);
@@ -114,6 +116,7 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
 		provinceBeanContainer.addAll(new ArrayList<Location>());
 
 		this.lType = new ComboBox();
+		this.lType.setDebugId("lType");
 		this.lType.setWidth("250px");
 		this.lType.setContainerDataSource(udfBeanContainer);
 		this.lType.setItemCaptionMode(AbstractSelect.ITEM_CAPTION_MODE_PROPERTY);
@@ -123,6 +126,7 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
 		this.lType.setRequiredError("Please a select Location Type.");
 
 		this.country = new ComboBox();
+		this.country.setDebugId("country");
 		this.country.setWidth("250px");
 		this.country.setContainerDataSource(countryBeanContainer);
 		this.country.setItemCaptionMode(AbstractSelect.ITEM_CAPTION_MODE_PROPERTY);
@@ -150,6 +154,7 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
 		});
 
 		this.province = new ComboBox();
+		this.province.setDebugId("province");
 		this.province.setWidth("250px");
 		this.province.setContainerDataSource(provinceBeanContainer);
 		this.province.setItemCaptionMode(AbstractSelect.ITEM_CAPTION_MODE_PROPERTY);

@@ -74,10 +74,12 @@ public class ViewStudyDetailsButtonClickListener implements ClickListener {
 		String windowTitle = "Study Information: " + this.studyName;
 		final Window studyWindow = new BaseSubWindow(windowTitle);
 		final Embedded studyInfo = new Embedded(null, studyLink);
+		studyInfo.setDebugId("studyInfo");
 		studyInfo.setType(Embedded.TYPE_BROWSER);
 		studyInfo.setSizeFull();
 
 		AbsoluteLayout layoutForStudy = new AbsoluteLayout();
+		layoutForStudy.setDebugId("layoutForStudy");
 		layoutForStudy.setMargin(false);
 		layoutForStudy.setWidth("100%");
 		layoutForStudy.setHeight("100%");

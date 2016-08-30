@@ -76,26 +76,31 @@ public class WorkflowPreviewWindow extends BaseSubWindow implements Initializing
 		String workflowName = this.role.getWorkflowTemplate().getName();
 		if (workflowName.equals("MARS")) {
 			MarsWorkflowDiagram marsWorkflowDiagram = new MarsWorkflowDiagram(true, null, null);
+			marsWorkflowDiagram.setDebugId("marsWorkflowDiagram");
 			this.setHeight(marsWorkflowDiagram.getHeight(), marsWorkflowDiagram.getHeightUnits());
 			this.setWidth(marsWorkflowDiagram.getWidth(), marsWorkflowDiagram.getWidthUnits());
 			this.setContent(marsWorkflowDiagram);
 		} else if (workflowName.equals("MAS")) {
 			MasWorkflowDiagram masWorkflowDiagram = new MasWorkflowDiagram(true, null, null);
+			masWorkflowDiagram.setDebugId("masWorkflowDiagram");
 			this.setHeight(masWorkflowDiagram.getHeight(), masWorkflowDiagram.getHeightUnits());
 			this.setWidth(masWorkflowDiagram.getWidth(), masWorkflowDiagram.getWidthUnits());
 			this.setContent(masWorkflowDiagram);
 		} else if (workflowName.equals("Manager")) {
 			ManagerWorkflowDiagram managerWorkflowDiagram = new ManagerWorkflowDiagram(true, null, null);
+			managerWorkflowDiagram.setDebugId("managerWorkflowDiagram");
 			this.setHeight(managerWorkflowDiagram.getHeight(), managerWorkflowDiagram.getHeightUnits());
 			this.setWidth(managerWorkflowDiagram.getWidth(), managerWorkflowDiagram.getWidthUnits());
 			this.setContent(managerWorkflowDiagram);
 		} else if (workflowName.equals("MABC")) {
 			MabcWorkflowDiagram mabcWorkflowDiagram = new MabcWorkflowDiagram(true, null, null);
+			mabcWorkflowDiagram.setDebugId("mabcWorkflowDiagram");
 			this.setHeight(mabcWorkflowDiagram.getHeight(), mabcWorkflowDiagram.getHeightUnits());
 			this.setWidth(mabcWorkflowDiagram.getWidth(), mabcWorkflowDiagram.getWidthUnits());
 			this.setContent(mabcWorkflowDiagram);
 		} else if (workflowName.equals("CB")) {
 			ConventionalBreedingWorkflowDiagram cbWorkflowDiagram = new ConventionalBreedingWorkflowDiagram(true, null, null);
+			cbWorkflowDiagram.setDebugId("cbWorkflowDiagram");
 			this.setHeight(cbWorkflowDiagram.getHeight(), cbWorkflowDiagram.getHeightUnits());
 			this.setWidth(cbWorkflowDiagram.getWidth(), cbWorkflowDiagram.getWidthUnits());
 			this.setContent(cbWorkflowDiagram);
