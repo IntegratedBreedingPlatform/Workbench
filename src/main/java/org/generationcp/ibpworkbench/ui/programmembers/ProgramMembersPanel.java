@@ -412,7 +412,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 		final BeanItemContainer<User> beanItemContainer = new BeanItemContainer<User>(User.class);
 		for (final User user : validUserList) {
-			if (user.getUserid().equals(this.sessionData.getUserData().getUserid()) || user.getUserid().equals(this.project.getUserId())) {
+			if (user.getUserid().equals(this.sessionData.getUserData().getUserid()) || user.getUserid().equals(this.project.getUserId()) ||
+					user.hasRole(org.generationcp.commons.security.Role.ADMIN.toString())) {
 				user.setEnabled(false);
 			}
 
