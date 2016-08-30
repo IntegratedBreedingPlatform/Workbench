@@ -121,15 +121,16 @@ public class ProgramMembersPanelTest {
 	private List<User> createProgramMembersTestData() {
 		final List<User> programMembers = new ArrayList<>();
 		programMembers.add(this.createUsersTestData(ProgramMembersPanelTest.OWNER_USER_ID, ProgramMembersPanelTest.OWNER_PERSON_ID, false));
-		programMembers.add(this.createUsersTestData(ProgramMembersPanelTest.MEMBER_USER_ID, ProgramMembersPanelTest.MEMBER_PERSON_ID, false));
+		programMembers.add(this
+				.createUsersTestData(ProgramMembersPanelTest.MEMBER_USER_ID, ProgramMembersPanelTest.MEMBER_PERSON_ID, false));
 		programMembers.add(this.createUsersTestData(ProgramMembersPanelTest.ADMIN_USER_ID, ProgramMembersPanelTest.ADMIN_PERSON_ID, true));
 		return programMembers;
 	}
 
-	private User createUsersTestData(final int userId, final int personId, boolean isAdmin) {
+	private User createUsersTestData(final int userId, final int personId, final boolean isAdmin) {
 		final User user = new User(userId);
 		user.setPersonid(personId);
-		if(isAdmin) {
+		if (isAdmin) {
 			user.setRoles(new ArrayList<UserRole>());
 			user.getRoles().add(new UserRole(user, Role.ADMIN.toString()));
 		}
