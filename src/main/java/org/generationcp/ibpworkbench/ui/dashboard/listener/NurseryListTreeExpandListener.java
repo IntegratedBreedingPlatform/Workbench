@@ -25,7 +25,7 @@ public class NurseryListTreeExpandListener implements Tree.ExpandListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(NurseryListTreeExpandListener.class);
 	private static final long serialVersionUID = 4340373177977306882L;
-
+	public static final String NURSERIES_AND_TRAILS = "Nurseries and Trials";
 	private final Component source;
 
 	public NurseryListTreeExpandListener(Component source) {
@@ -35,18 +35,19 @@ public class NurseryListTreeExpandListener implements Tree.ExpandListener {
 	@Override
 	public void nodeExpand(ExpandEvent event) {
 		if (this.source instanceof NurseryListPreview) {
-			try {
-				String id = event.getItemId().toString();
-				int studyId = Integer.valueOf(id);
+			if (!event.getItemId().toString().equals(NurseryListTreeExpandListener.NURSERIES_AND_TRAILS)) {
+				try {
+					String id = event.getItemId().toString();
+					int studyId = Integer.valueOf(id);
 
-				((NurseryListPreview) this.source).getPresenter().addChildrenNode(studyId);
-			} catch (NumberFormatException e) {
-				NurseryListTreeExpandListener.LOG.error("Click on the root");
-			} catch (InternationalizableException e) {
-				MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
-				NurseryListTreeExpandListener.LOG.error(e.getMessage(),e);
+					((NurseryListPreview) this.source).getPresenter().addChildrenNode(studyId);
+				} catch (NumberFormatException e) {
+					NurseryListTreeExpandListener.LOG.error("Click on the root", e);
+				} catch (InternationalizableException e) {
+					MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
+					NurseryListTreeExpandListener.LOG.error(e.getMessage(), e);
+				}
 			}
 		}
 	}
-
 }
