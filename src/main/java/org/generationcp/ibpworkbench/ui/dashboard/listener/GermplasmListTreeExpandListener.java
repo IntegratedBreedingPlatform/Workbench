@@ -25,7 +25,7 @@ public class GermplasmListTreeExpandListener implements Tree.ExpandListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(GermplasmListTreeExpandListener.class);
 	private static final long serialVersionUID = -5145904396164706110L;
-
+	public static final String LISTS = "Lists";
 	private final Component source;
 
 	public GermplasmListTreeExpandListener(Component source) {
@@ -35,18 +35,19 @@ public class GermplasmListTreeExpandListener implements Tree.ExpandListener {
 	@Override
 	public void nodeExpand(ExpandEvent event) {
 		if (this.source instanceof GermplasmListPreview) {
-			try {
-				String id = event.getItemId().toString();
-				int germplasmId = Integer.valueOf(id);
+			if (!event.getItemId().toString().equals(GermplasmListTreeExpandListener.LISTS)) {
+				try {
+					String id = event.getItemId().toString();
+					int germplasmId = Integer.valueOf(id);
 
-				((GermplasmListPreview) this.source).getPresenter().addGermplasmListNode(germplasmId, event.getItemId());
-			} catch (NumberFormatException e) {
-				GermplasmListTreeExpandListener.LOG.error("Click on the root",e);
-			} catch (InternationalizableException e) {
-				MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
-				GermplasmListTreeExpandListener.LOG.error(e.getMessage(),e);
+					((GermplasmListPreview) this.source).getPresenter().addGermplasmListNode(germplasmId, event.getItemId());
+				} catch (NumberFormatException e) {
+					GermplasmListTreeExpandListener.LOG.error("Click on the root",e);
+				} catch (InternationalizableException e) {
+					MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
+					GermplasmListTreeExpandListener.LOG.error(e.getMessage(),e);
+				}
 			}
 		}
 	}
-
 }
