@@ -141,125 +141,152 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
 	protected void initializeComponents() {
 		// dashboard title
 		this.dashboardTitle = new Label();
+		this.dashboardTitle.setDebugId("dashboardTitle");
 		this.dashboardTitle.setStyleName("gcp-content-title");
 
 		this.projectPlanningTitle = new Label("Program Planning");
+		this.projectPlanningTitle.setDebugId("projectPlanningTitle");
 		this.projectPlanningTitle.setStyleName(MabcWorkflowDiagram.GCP_SECTION_TITLE_LARGE);
 
 		this.backcrossingTitle = new Label("Backcrossing");
+		this.backcrossingTitle.setDebugId("backcrossingTitle");
 		this.backcrossingTitle.setStyleName(MabcWorkflowDiagram.GCP_SECTION_TITLE_LARGE);
 
 		this.fieldTrialManagementTitle = new Label("Field Trial Management");
+		this.fieldTrialManagementTitle.setDebugId("fieldTrialManagementTitle");
 		this.fieldTrialManagementTitle.setStyleName(MabcWorkflowDiagram.GCP_SECTION_TITLE_LARGE);
 
 		this.genotypingTitle = new Label("Genotyping");
+		this.genotypingTitle.setDebugId("genotypingTitle");
 		this.genotypingTitle.setStyleName(MabcWorkflowDiagram.GCP_SECTION_TITLE_LARGE);
 
 		this.statisticalAnalysisTitle = new Label("Statistical Analysis");
+		this.statisticalAnalysisTitle.setDebugId("statisticalAnalysisTitle");
 		this.statisticalAnalysisTitle.setStyleName(MabcWorkflowDiagram.GCP_SECTION_TITLE_LARGE);
 
 		this.breedingDecisionTitle = new Label("Breeding Decision");
+		this.breedingDecisionTitle.setDebugId("breedingDecisionTitle");
 		this.breedingDecisionTitle.setStyleName(MabcWorkflowDiagram.GCP_SECTION_TITLE_LARGE);
 
 		this.breedingPlannerButton = new Button(this.messageSource.getMessage(Message.BREEDING_PLANNER_MABC));
+		this.breedingPlannerButton.setDebugId("breedingPlannerButton");
 		this.breedingPlannerButton.setStyleName(BaseTheme.BUTTON_LINK + MabcWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.breedingPlannerButton.setSizeUndefined();
 		this.breedingPlannerButton.setDescription("Click to launch the freestanding Breeding Planner application.");
 
 		this.germplasmImportButton = new Button("IBFB Import Germplasm Lists");
+		this.germplasmImportButton.setDebugId("germplasmImportButton");
 		this.germplasmImportButton.setStyleName(BaseTheme.BUTTON_LINK + MabcWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.germplasmImportButton.setSizeUndefined();
 		this.germplasmImportButton.setDescription("Click to launch Fieldbook on Nursery Manager View.");
 
 		this.germplasmImportButton2 = new Button("Import Germplasm Lists");
+		this.germplasmImportButton2.setDebugId("germplasmImportButton2");
 		this.germplasmImportButton2.setStyleName(BaseTheme.BUTTON_LINK + MabcWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.germplasmImportButton2.setSizeUndefined();
 		this.germplasmImportButton2.setDescription("Click to launch the Germplasm Import View.");
 
 		this.mainHeadToHeadButton = new Button(this.messageSource.getMessage(Message.MAIN_HEAD_TO_HEAD_LAUNCH));
+		this.mainHeadToHeadButton.setDebugId("mainHeadToHeadButton");
 		this.mainHeadToHeadButton.setStyleName(BaseTheme.BUTTON_LINK + MabcWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.mainHeadToHeadButton.setSizeUndefined();
 		this.mainHeadToHeadButton.setDescription(this.messageSource.getMessage(Message.CLICK_TO_LAUNCH_MAIN_HEAD_TO_HEAD));
 
 		this.mainHeadToHeadButton2 = new Button(this.messageSource.getMessage(Message.MAIN_HEAD_TO_HEAD_LAUNCH));
+		this.mainHeadToHeadButton2.setDebugId("mainHeadToHeadButton2");
 		this.mainHeadToHeadButton2.setStyleName(BaseTheme.BUTTON_LINK + MabcWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.mainHeadToHeadButton2.setSizeUndefined();
 		this.mainHeadToHeadButton2.setDescription(this.messageSource.getMessage(Message.CLICK_TO_LAUNCH_MAIN_HEAD_TO_HEAD));
 
 		// GCP-6394
 		this.ontologyBrowserButton = new Button(this.messageSource.getMessage(Message.MANAGE_ONTOLOGIES));
+		this.ontologyBrowserButton.setDebugId("ontologyBrowserButton");
 		this.ontologyBrowserButton.setStyleName(BaseTheme.BUTTON_LINK + MabcWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.ontologyBrowserButton.setSizeUndefined();
 		this.ontologyBrowserButton.setDescription(this.messageSource.getMessage(Message.CLICK_TO_LAUNCH_ONTOLOGY_BROWSER));
 
 		this.metaAnalysisButton = new Button(this.messageSource.getMessage(Message.META_ANALYSIS));
+		this.metaAnalysisButton.setDebugId("metaAnalysisButton");
 		this.metaAnalysisButton.setStyleName(BaseTheme.BUTTON_LINK + MabcWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.metaAnalysisButton.setSizeUndefined();
 		this.metaAnalysisButton.setDescription(this.messageSource.getMessage(Message.META_ANALYSIS));
 
 		this.manageGermplasmListsButton = new Button("Manage Germplasm Lists");
+		this.manageGermplasmListsButton.setDebugId("manageGermplasmListsButton");
 		this.manageGermplasmListsButton.setStyleName(BaseTheme.BUTTON_LINK + MabcWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.manageGermplasmListsButton.setSizeUndefined();
 		this.manageGermplasmListsButton.setDescription("Click to launch Germplasm List Manager");
 
 		this.browseGenotypingDataButton = new Button("Browse Genotyping Data");
+		this.browseGenotypingDataButton.setDebugId("browseGenotypingDataButton");
 		this.browseGenotypingDataButton.setStyleName(BaseTheme.BUTTON_LINK + MabcWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.browseGenotypingDataButton.setSizeUndefined();
 		this.browseGenotypingDataButton.setDescription("Click to launch genotyping data");
 
 		this.breedingManagerButton = new Button("Manage Nurseries");
+		this.breedingManagerButton.setDebugId("breedingManagerButton");
 		this.breedingManagerButton.setStyleName(BaseTheme.BUTTON_LINK + MabcWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.breedingManagerButton.setSizeUndefined();
 		this.breedingManagerButton.setDescription("Click to launch Manage Nurseries");
 
 		this.browseStudiesButton = new Button("Browse Studies and Datasets");
+		this.browseStudiesButton.setDebugId("browseStudiesButton");
 		this.browseStudiesButton.setStyleName(BaseTheme.BUTTON_LINK + MabcWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.browseStudiesButton.setSizeUndefined();
 		this.browseStudiesButton.setDescription("Click to launch Study Browser");
 
 		this.breedingViewButton = new Button("Breeding View Standalone (all analyses)");
+		this.breedingViewButton.setDebugId("breedingViewButton");
 		this.breedingViewButton.setStyleName(BaseTheme.BUTTON_LINK + MabcWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.breedingViewButton.setSizeUndefined();
 		this.breedingViewButton.setDescription("Click to launch Breeding View");
 
 		this.breedingViewSingleSiteAnalysisCentralButton = new Button("Single-Site Analysis for Central Datasets");
+		this.breedingViewSingleSiteAnalysisCentralButton.setDebugId("breedingViewSingleSiteAnalysisCentralButton");
 		this.breedingViewSingleSiteAnalysisCentralButton.setStyleName(BaseTheme.BUTTON_LINK + MabcWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.breedingViewSingleSiteAnalysisCentralButton.setSizeUndefined();
 		this.breedingViewSingleSiteAnalysisCentralButton
 				.setDescription("Click to launch Single-Site Analysis on Study Datasets from Central IBDB");
 
 		this.breedingViewSingleSiteAnalysisLocalButton = new Button("Single-Site Analysis");
+		this.breedingViewSingleSiteAnalysisLocalButton.setDebugId("breedingViewSingleSiteAnalysisLocalButton");
 		this.breedingViewSingleSiteAnalysisLocalButton.setStyleName(BaseTheme.BUTTON_LINK + MabcWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.breedingViewSingleSiteAnalysisLocalButton.setSizeUndefined();
 		this.breedingViewSingleSiteAnalysisLocalButton.setDescription("Click to launch Single-Site Analysis on Study Datasets");
 
 		this.breedingViewMultiSiteAnalysisButton = new Button("Multi-site Analysis");
+		this.breedingViewMultiSiteAnalysisButton.setDebugId("breedingViewMultiSiteAnalysisButton");
 		this.breedingViewMultiSiteAnalysisButton.setStyleName(BaseTheme.BUTTON_LINK + MabcWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.breedingViewMultiSiteAnalysisButton.setSizeUndefined();
 		this.breedingViewMultiSiteAnalysisButton.setDescription("Click to launch Multi-Site Analysis on Study Datasets");
 
 		this.gdmsButton = new Button("Manage Genotyping Data");
+		this.gdmsButton.setDebugId("gdmsButton");
 		this.gdmsButton.setStyleName(BaseTheme.BUTTON_LINK + MabcWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.gdmsButton.setSizeUndefined();
 		this.gdmsButton.setDescription("Click to launch GDMS");
 
 		this.mbdtButton = new Button(this.messageSource.getMessage(Message.MBDT_MABC));
+		this.mbdtButton.setDebugId("mbdtButton");
 		this.mbdtButton.setStyleName(BaseTheme.BUTTON_LINK + MabcWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.mbdtButton.setSizeUndefined();
 		this.mbdtButton.setDescription("Click to launch MBDT");
 
 		this.fieldbookButton = new Button(this.messageSource.getMessage(Message.MANAGE_TRIALS));
+		this.fieldbookButton.setDebugId("fieldbookButton");
 		this.fieldbookButton.setStyleName(BaseTheme.BUTTON_LINK + MabcWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.fieldbookButton.setSizeUndefined();
 		this.fieldbookButton.setDescription("Click to launch Fieldbook");
 
 		this.queryForAdaptedGermplasmButton = new Button(this.messageSource.getMessage(Message.QUERY_FOR_ADAPTED_GERMPLASM));
+		this.queryForAdaptedGermplasmButton.setDebugId("queryForAdaptedGermplasmButton");
 		this.queryForAdaptedGermplasmButton.setStyleName(BaseTheme.BUTTON_LINK + MabcWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.queryForAdaptedGermplasmButton.setSizeUndefined();
 		this.queryForAdaptedGermplasmButton.setDescription(this.messageSource
 				.getMessage(Message.CLICK_TO_LAUNCH_QUERY_FOR_ADAPTED_GERMPLASM));
 
 		this.queryForAdaptedGermplasmButton2 = new Button(this.messageSource.getMessage(Message.QUERY_FOR_ADAPTED_GERMPLASM));
+		this.queryForAdaptedGermplasmButton2.setDebugId("queryForAdaptedGermplasmButton2");
 		this.queryForAdaptedGermplasmButton2.setStyleName(BaseTheme.BUTTON_LINK + MabcWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.queryForAdaptedGermplasmButton2.setSizeUndefined();
 		this.queryForAdaptedGermplasmButton2.setDescription(this.messageSource
@@ -272,20 +299,27 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
 		this.breedingManagerListManager.setDescription(this.messageSource.getMessage(Message.CLICK_TO_BROWSE_FOR_GERMPLASMS_AND_LISTS));
 
 		this.optimasButton = new Button("OptiMAS");
+		this.optimasButton.setDebugId("optimasButton");
 		this.optimasButton.setStyleName(BaseTheme.BUTTON_LINK + MabcWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.optimasButton.setSizeUndefined();
 		this.optimasButton.setDescription("Click to launch OptiMAS");
 
 		this.makeCrossesButton = new Button("Make Crosses");
+		this.makeCrossesButton.setDebugId("makeCrossesButton");
 		this.makeCrossesButton.setStyleName(BaseTheme.BUTTON_LINK + MabcWorkflowDiagram.GCP_WORKFLOW_LINK);
 		this.makeCrossesButton.setSizeUndefined();
 		this.makeCrossesButton.setDescription("Click to launch Crossing Manager");
 
 		this.downArrowImage1 = new Embedded("", new ThemeResource(MabcWorkflowDiagram.DOWN_ARROW_THEME_RESOURCE));
+		this.downArrowImage1.setDebugId("downArrowImage1");
 		this.downArrowImage2 = new Embedded("", new ThemeResource(MabcWorkflowDiagram.DOWN_ARROW_THEME_RESOURCE));
+		this.downArrowImage2.setDebugId("downArrowImage2");
 		this.downArrowImage3 = new Embedded("", new ThemeResource(MabcWorkflowDiagram.DOWN_ARROW_THEME_RESOURCE));
+		this.downArrowImage3.setDebugId("downArrowImage3");
 		this.downArrowImage4 = new Embedded("", new ThemeResource(MabcWorkflowDiagram.DOWN_ARROW_THEME_RESOURCE));
+		this.downArrowImage4.setDebugId("downArrowImage4");
 		this.twoHeadedArrowImage = new Embedded("", new ThemeResource(MabcWorkflowDiagram.TWO_HEADED_ARROW_THEME_RESOURCE));
+		this.twoHeadedArrowImage.setDebugId("twoHeadedArrowImage");
 	}
 
 	protected void initializeLayout() {
@@ -296,6 +330,7 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
 
 	protected ComponentContainer layoutWorkflowArea() {
 		AbsoluteLayout layout = new AbsoluteLayout();
+		layout.setDebugId("layout");
 		layout.setWidth("620px");
 		layout.setHeight("1000px");
 
@@ -369,11 +404,13 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
 		layout.addComponent(this.twoHeadedArrowImage, "top:" + topInPixels + "; left:" + leftInPixels);
 
 		final VerticalLayout rootContainer = new VerticalLayout();
+		rootContainer.setDebugId("rootContainer");
 		rootContainer.setMargin(new Layout.MarginInfo(false, true, true, true));
 		rootContainer.setSpacing(false);
 
 		if (!this.workflowPreview) {
 			Label header = new Label();
+			header.setDebugId("header");
 			header.setStyleName(Bootstrap.Typography.H1.styleName());
 			header.setValue(this.role.getLabel());
 			rootContainer.addComponent(header);
@@ -387,6 +424,7 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
 
 	protected Component layoutProjectPlanning() {
 		VerticalLayout layout = new VerticalLayout();
+		layout.setDebugId("layout");
 		this.configureWorkflowStepLayout(layout);
 		layout.setHeight(MabcWorkflowDiagram.PROJECT_PLANNING_HEIGHT + "px");
 
@@ -395,6 +433,7 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
 		layout.setExpandRatio(this.projectPlanningTitle, 0);
 
 		Label emptyLabel = new Label(" ");
+		emptyLabel.setDebugId("emptyLabel");
 		emptyLabel.setWidth("100%");
 		emptyLabel.setHeight("20px");
 		layout.addComponent(emptyLabel);
@@ -446,6 +485,7 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
 
 	protected Component layoutBackcrossing() {
 		VerticalLayout layout = new VerticalLayout();
+		layout.setDebugId("layout");
 		this.configureWorkflowStepLayout(layout);
 
 		layout.addComponent(this.backcrossingTitle);
@@ -453,6 +493,7 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
 		layout.setExpandRatio(this.backcrossingTitle, 0);
 
 		Label emptyLabel = new Label(" ");
+		emptyLabel.setDebugId("emptyLabel");
 		emptyLabel.setWidth("100%");
 		emptyLabel.setHeight("20px");
 		layout.addComponent(emptyLabel);
@@ -477,6 +518,7 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
 
 	protected Component layoutFieldTrialManagement() {
 		VerticalLayout layout = new VerticalLayout();
+		layout.setDebugId("layout");
 		this.configureWorkflowStepLayout(layout);
 
 		layout.setHeight(MabcWorkflowDiagram.FIELD_TRIAL_MANAGEMENT_HEIGHT + "px");
@@ -486,6 +528,7 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
 		layout.setExpandRatio(this.fieldTrialManagementTitle, 0);
 
 		Label emptyLabel = new Label(" ");
+		emptyLabel.setDebugId("emptyLabel");
 		emptyLabel.setWidth("100%");
 		emptyLabel.setHeight("20px");
 		layout.addComponent(emptyLabel);
@@ -500,6 +543,7 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
 
 	protected Component layoutGenotypingStep() {
 		VerticalLayout layout = new VerticalLayout();
+		layout.setDebugId("layout");
 		this.configureWorkflowStepLayout(layout);
 
 		layout.addComponent(this.genotypingTitle);
@@ -507,6 +551,7 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
 		layout.setExpandRatio(this.genotypingTitle, 0);
 
 		Label emptyLabel = new Label(" ");
+		emptyLabel.setDebugId("emptyLabel");
 		emptyLabel.setWidth("100%");
 		emptyLabel.setHeight("20px");
 		layout.addComponent(emptyLabel);
@@ -521,6 +566,7 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
 
 	protected Component layoutStatisticalAnalysis() {
 		VerticalLayout layout = new VerticalLayout();
+		layout.setDebugId("layout");
 		this.configureWorkflowStepLayout(layout);
 
 		layout.setHeight(MabcWorkflowDiagram.STATISTICAL_ANALYSIS_HEIGHT + "px");
@@ -530,6 +576,7 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
 		layout.setExpandRatio(this.statisticalAnalysisTitle, 0);
 
 		Label emptyLabel = new Label(" ");
+		emptyLabel.setDebugId("emptyLabel");
 		emptyLabel.setWidth("100%");
 		emptyLabel.setHeight("20px");
 		layout.addComponent(emptyLabel);
@@ -559,6 +606,7 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
 
 	protected Component layoutBreedingDecision() {
 		VerticalLayout layout = new VerticalLayout();
+		layout.setDebugId("layout");
 		this.configureWorkflowStepLayout(layout);
 
 		layout.addComponent(this.breedingDecisionTitle);
@@ -566,6 +614,7 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
 		layout.setExpandRatio(this.breedingDecisionTitle, 0);
 
 		Label emptyLabel = new Label(" ");
+		emptyLabel.setDebugId("emptyLabel");
 		emptyLabel.setWidth("100%");
 		emptyLabel.setHeight("20px");
 		layout.addComponent(emptyLabel);
@@ -584,9 +633,11 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
 
 	protected Component createPanel(String caption, String... buttonCaptions) {
 		VerticalLayout layout = new VerticalLayout();
+		layout.setDebugId("layout");
 		this.configureWorkflowStepLayout(layout);
 
 		Label titleLabel = new Label(caption);
+		titleLabel.setDebugId("titleLabel");
 		titleLabel.setStyleName("gcp-section-title");
 		titleLabel.setSizeUndefined();
 
@@ -595,6 +646,7 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
 		layout.setExpandRatio(titleLabel, 0);
 
 		Label emptyLabel = new Label(" ");
+		emptyLabel.setDebugId("emptyLabel");
 		emptyLabel.setWidth("100%");
 		emptyLabel.setHeight("20px");
 		layout.addComponent(emptyLabel);
@@ -602,6 +654,7 @@ public class MabcWorkflowDiagram extends Panel implements WorkflowConstants, Ini
 
 		for (String buttonCaption : buttonCaptions) {
 			Button button = new Button(buttonCaption);
+			button.setDebugId("button");
 			button.setStyleName(BaseTheme.BUTTON_LINK + MabcWorkflowDiagram.GCP_WORKFLOW_LINK);
 
 			layout.addComponent(button);

@@ -100,6 +100,7 @@ public class GermplasmListPreview extends VerticalLayout {
 
 		// add toolbar here
 		this.panel = new Panel();
+		this.panel.setDebugId("panel");
 		this.panel.removeAllComponents();
 
 		this.addComponent(this.buildToolbar());
@@ -109,6 +110,7 @@ public class GermplasmListPreview extends VerticalLayout {
 		this.presenter.generateInitialTreeNode();
 
 		CssLayout treeContainer = new CssLayout();
+		treeContainer.setDebugId("treeContainer");
 		treeContainer.setSizeUndefined();
 		treeContainer.addComponent(this.treeView);
 
@@ -122,6 +124,7 @@ public class GermplasmListPreview extends VerticalLayout {
 
 	private Component buildToolbar() {
 		this.toolbar = new HorizontalLayout();
+		this.toolbar.setDebugId("toolbar");
 		this.toolbar.setSpacing(true);
 		this.toolbar.setMargin(true);
 
@@ -133,14 +136,17 @@ public class GermplasmListPreview extends VerticalLayout {
 		this.openListManagerBtn.setEnabled(false);
 
 		this.renameFolderBtn = new Button("<span class='bms-edit' style='color:#0082CB'><span>");
+		this.renameFolderBtn.setDebugId("renameFolderBtn");
 		this.renameFolderBtn.setHtmlContentAllowed(true);
 		this.renameFolderBtn.setDescription(this.messageSource.getMessage(Message.RENAME_ITEM));
 
 		this.addFolderBtn = new Button("<span class='bms-add' style='color:#00AF40'></span>");
+		this.addFolderBtn.setDebugId("addFolderBtn");
 		this.addFolderBtn.setHtmlContentAllowed(true);
 		this.addFolderBtn.setDescription(this.messageSource.getMessage(Message.ADD_FOLDER));
 
 		this.deleteFolderBtn = new Button("<span class='bms-delete' style='color:#F4A41C'></span>");
+		this.deleteFolderBtn.setDebugId("deleteFolderBtn");
 		this.deleteFolderBtn.setHtmlContentAllowed(true);
 		this.deleteFolderBtn.setDescription(this.messageSource.getMessage(Message.DELETE_ITEM));
 
@@ -157,6 +163,7 @@ public class GermplasmListPreview extends VerticalLayout {
 		this.toolbar.addComponent(this.openListManagerBtn);
 
 		Label spacer = new Label("");
+		spacer.setDebugId("spacer");
 		this.toolbar.addComponent(spacer);
 		this.toolbar.setExpandRatio(spacer, 1.0F);
 
@@ -433,6 +440,7 @@ public class GermplasmListPreview extends VerticalLayout {
 
 		this.lastItemId = null;
 		this.treeView = new Tree();
+		this.treeView.setDebugId("treeView");
 		this.treeView.setContainerDataSource(new HierarchicalContainer());
 		this.treeView.setDropHandler(new GermplasmListTreeDropHandler(this.treeView, this.presenter));
 		this.treeView.setDragMode(TreeDragMode.NODE);

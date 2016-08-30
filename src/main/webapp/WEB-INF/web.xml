@@ -83,6 +83,7 @@
 			<param-name>widgetset</param-name>
 			<param-value>org.generationcp.ibpworkbench.IBPWorkbenchWidgetSet</param-value>
 		</init-param>
+		${vaadin.enable.pref.testing}
 	</servlet>
 
 	<servlet>

@@ -66,19 +66,25 @@ public class ChangePasswordWindow extends BaseSubWindow implements InitializingB
 		this.setCaption("Change Password");
 
 		this.passwordLabel = new Label("&nbsp;&nbsp;&nbsp;Password: &nbsp;&nbsp;", Label.CONTENT_XHTML);
+		this.passwordLabel.setDebugId("passwordLabel");
 		this.confirmLabel = new Label("&nbsp;&nbsp;&nbsp;Confirm Password :&nbsp;&nbsp;", Label.CONTENT_XHTML);
+		this.confirmLabel.setDebugId("confirmLabel");
 		this.passwordLabel.setStyleName("v-label");
 		this.confirmLabel.setStyleName("v-label");
 
 		this.password = new PasswordField();
+		this.password.setDebugId("password");
 		this.password.focus();
 
 		this.confirm_password = new PasswordField();
+		this.confirm_password.setDebugId("confirm_password");
 
 		this.saveButton = new Button("Save");
+		this.saveButton.setDebugId("saveButton");
 		this.saveButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
 		this.cancelButton = new Button("Cancel");
+		this.cancelButton.setDebugId("cancelButton");
 	}
 
 	protected void initializeLayout() {
@@ -87,6 +93,7 @@ public class ChangePasswordWindow extends BaseSubWindow implements InitializingB
 		this.setModal(true);
 
 		VerticalLayout layout = new VerticalLayout();
+		layout.setDebugId("layout");
 		layout.setSizeFull();
 		layout.setMargin(true);
 		layout.setSpacing(true);
@@ -97,6 +104,7 @@ public class ChangePasswordWindow extends BaseSubWindow implements InitializingB
 		this.confirm_password.setWidth("140px");
 
 		GridLayout passwordGridLayout = new GridLayout(2, 2);
+		passwordGridLayout.setDebugId("passwordGridLayout");
 		passwordGridLayout.setMargin(false, false, false, false);
 		passwordGridLayout.addComponent(this.passwordLabel);
 		passwordGridLayout.addComponent(this.password);
@@ -105,6 +113,7 @@ public class ChangePasswordWindow extends BaseSubWindow implements InitializingB
 		passwordGridLayout.setSizeFull();
 
 		HorizontalLayout buttonlayout = new HorizontalLayout();
+		buttonlayout.setDebugId("buttonlayout");
 
 		buttonlayout.addComponent(this.cancelButton);
 		buttonlayout.addComponent(this.saveButton);

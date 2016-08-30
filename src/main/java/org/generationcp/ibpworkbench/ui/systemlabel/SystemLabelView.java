@@ -44,10 +44,13 @@ public class SystemLabelView extends Panel implements InitializingBean, Internat
 	public void instantiateComponents() {
 
 		this.tblSystemLabels = new Table();
+		this.tblSystemLabels.setDebugId("tblSystemLabels");
 		this.initializeTable(tblSystemLabels);
 		this.systemLabelPresenter = new SystemLabelPresenter(this);
 		this.heading = new Label();
+		this.heading.setDebugId("heading");
 		this.headingDesc = new Label();
+		this.headingDesc.setDebugId("headingDesc");
 	}
 
 	@Override
@@ -89,11 +92,13 @@ public class SystemLabelView extends Panel implements InitializingBean, Internat
 		this.setSizeFull();
 
 		final HorizontalLayout titleContainer = new HorizontalLayout();
+		titleContainer.setDebugId("titleContainer");
 		heading.setStyleName(Bootstrap.Typography.H4.styleName());
 
 		titleContainer.addComponent(heading);
 
 		final VerticalLayout root = new VerticalLayout();
+		root.setDebugId("root");
 		root.setMargin(new Layout.MarginInfo(true, true, true, true));
 		root.setSpacing(true);
 		root.setSizeFull();
@@ -136,11 +141,14 @@ public class SystemLabelView extends Panel implements InitializingBean, Internat
 
 	protected ComponentContainer layoutButtonArea() {
 		final HorizontalLayout buttonLayout = new HorizontalLayout();
+		buttonLayout.setDebugId("buttonLayout");
 		buttonLayout.setSpacing(true);
 		buttonLayout.setMargin(true, false, false, false);
 
 		this.cancelButton = new Button();
+		this.cancelButton.setDebugId("cancelButton");
 		this.saveButton = new Button();
+		this.saveButton.setDebugId("saveButton");
 
 		this.saveButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 

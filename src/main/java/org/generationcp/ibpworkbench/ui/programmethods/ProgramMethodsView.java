@@ -170,12 +170,15 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 
 	private void initializeComponents() {
 		this.resultCountLbl = new Label();
+		this.resultCountLbl.setDebugId("resultCountLbl");
 
 		this.addNewMethodsBtn = new Button("Add New Method");
+		this.addNewMethodsBtn.setDebugId("addNewMethodsBtn");
 		this.addNewMethodsBtn.setStyleName(Bootstrap.Buttons.INFO.styleName() + " loc-add-btn");
 		this.addNewMethodsBtn.setVisible(false);
 
 		this.saveBtn = new Button("Save Favorites");
+		this.saveBtn.setDebugId("saveBtn");
 		this.saveBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
 		try {
 			initializeRestrictedComponents();
@@ -186,15 +189,20 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 			 */
 		}
 		this.searchGoBtn = new Button("Go");
+		this.searchGoBtn.setDebugId("searchGoBtn");
 		this.searchGoBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
 
 		this.availableSelectAll = new CheckBox("Select All");
+		this.availableSelectAll.setDebugId("availableSelectAll");
 		this.availableSelectAll.setImmediate(true);
 		this.favoriteSelectAll = new CheckBox("Select All");
+		this.favoriteSelectAll.setDebugId("favoriteSelectAll");
 		this.favoriteSelectAll.setImmediate(true);
 
 		this.availTotalEntriesLabel = new Label(this.messageSource.getMessage(Message.TOTAL_ENTRIES) + ":  <b>0</b>", Label.CONTENT_XHTML);
+		this.availTotalEntriesLabel.setDebugId("availTotalEntriesLabel");
 		this.favTotalEntriesLabel = new Label(this.messageSource.getMessage(Message.TOTAL_ENTRIES) + ":  <b>0</b>", Label.CONTENT_XHTML);
+		this.favTotalEntriesLabel.setDebugId("favTotalEntriesLabel");
 		this.availSelectedEntriesLabel =
 				new Label("<i>" + this.messageSource.getMessage(Message.SELECTED) + ":   <b>0</b></i>", Label.CONTENT_XHTML);
 		this.favSelectedEntriesLabel =
@@ -207,9 +215,11 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 		this.favoritesTable.setData(ProgramMethodsView.FAVORITES);
 
 		this.addToFavoriteBtn = new Button("Add to Favorite Methods");
+		this.addToFavoriteBtn.setDebugId("addToFavoriteBtn");
 		this.addToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
 
 		this.removeToFavoriteBtn = new Button("Remove from Favorite Methods");
+		this.removeToFavoriteBtn.setDebugId("removeToFavoriteBtn");
 		this.removeToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
 		// filter form
 		this.initializeFilterForm();
@@ -222,20 +232,24 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 
 	private void initializeFilterForm() {
 		this.typeFilter = new Select();
+		this.typeFilter.setDebugId("typeFilter");
 		this.typeFilter.setImmediate(true);
 		this.typeFilter.setNullSelectionItemId(false);
 
 		this.groupFilter = new Select();
+		this.groupFilter.setDebugId("groupFilter");
 		this.groupFilter.setImmediate(true);
 		this.groupFilter.setNullSelectionAllowed(false);
 
 		this.searchField = new TextField();
+		this.searchField.setDebugId("searchField");
 		this.searchField.setImmediate(true);
 
 	}
 
 	private Table buildCustomTable(final CheckBox assocSelectAll, final Label totalEntries, final Label selectedEntries) {
 		final Table table = new Table();
+		table.setDebugId("table");
 
 		table.setImmediate(true);
 		table.setSelectable(true);
@@ -249,6 +263,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 			@Override
 			public Object generateCell(final Table source, final Object itemId, Object colId) {
 				final CheckBox select = new CheckBox();
+				select.setDebugId("select");
 				select.setImmediate(true);
 				select.addListener(new Button.ClickListener() {
 
@@ -297,6 +312,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 				}
 				if(mNameBtn==null){
 					final Label mNameLabel = new Label();
+					mNameLabel.setDebugId("mNameLabel");
 					mNameLabel.setDescription(((MethodView) itemId).getMname());
 					mNameLabel.setValue(((MethodView) itemId).getMname());
 
@@ -315,6 +331,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 			@Override
 			public Object generateCell(final Table source, final Object itemId, Object colId) {
 				Label classLbl = new Label("");
+				classLbl.setDebugId("classLbl");
 				classLbl.setContentMode(Label.CONTENT_XHTML);
 				String methodClass = ProgramMethodsView.this.classMap.get(((MethodView) itemId).getGeneq());
 				methodClass = methodClass == null ? "" : methodClass;
@@ -352,6 +369,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 			@Override
 			public Object generateCell(final Table source, final Object itemId, Object colI) {
 				Label l = new Label();
+				l.setDebugId("l");
 				l.setDescription(((MethodView) itemId).getMdesc());
 				l.setValue(((MethodView) itemId).getMdesc());
 
@@ -569,10 +587,12 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 
 	private void initializeLayout() {
 		this.root = new VerticalLayout();
+		this.root.setDebugId("root");
 		this.root.setSpacing(false);
 		this.root.setMargin(new Layout.MarginInfo(false, true, true, true));
 
 		final Label availableMethodsTitle = new Label(this.messageSource.getMessage(Message.AVAILABLE_METHODS));
+		availableMethodsTitle.setDebugId("availableMethodsTitle");
 		availableMethodsTitle.setStyleName(Bootstrap.Typography.H3.styleName());
 
 		this.availableTable.setWidth("100%");
@@ -581,7 +601,9 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 		this.favoritesTable.setHeight("250px");
 
 		final HorizontalLayout availableTableBar = new HorizontalLayout();
+		availableTableBar.setDebugId("availableTableBar");
 		final HorizontalLayout favoritesTableBar = new HorizontalLayout();
+		favoritesTableBar.setDebugId("favoritesTableBar");
 
 		this.availableSelectAll.setWidth("100px");
 		this.favoriteSelectAll.setWidth("100px");
@@ -615,6 +637,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 
 	private HorizontalLayout buildLocationTableLabels(Label totalEntries, Label selectedEntries) {
 		HorizontalLayout layout = new HorizontalLayout();
+		layout.setDebugId("layout");
 		layout.setSpacing(true);
 		layout.setWidth("300px");
 
@@ -625,10 +648,12 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 
 	private Component buildFavoriteTableTitle() {
 		final HorizontalLayout layout = new HorizontalLayout();
+		layout.setDebugId("layout");
 		layout.setWidth("100%");
 		layout.setMargin(true, false, false, false);
 
 		final Label favoriteMethodsTitle = new Label(this.messageSource.getMessage(Message.FAVORITE_PROGRAM_METHODS));
+		favoriteMethodsTitle.setDebugId("favoriteMethodsTitle");
 		favoriteMethodsTitle.setStyleName(Bootstrap.Typography.H3.styleName());
 
 		layout.addComponent(favoriteMethodsTitle);
@@ -647,7 +672,9 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 		this.typeFilter.setWidth("245px");
 
 		final Label filterLbl = new Label("<b>Filter By:</b>&nbsp;", Label.CONTENT_XHTML);
+		filterLbl.setDebugId("filterLbl");
 		final Label searchLbl = new Label("<b>Search For:</b>&nbsp;", Label.CONTENT_XHTML);
+		searchLbl.setDebugId("searchLbl");
 
 		filterLbl.setSizeUndefined();
 		searchLbl.setSizeUndefined();
@@ -656,11 +683,13 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 		searchLbl.setStyleName("loc-filterlbl");
 
 		final CssLayout container = new CssLayout();
+		container.setDebugId("container");
 		container.addStyleName("loc-filter-bar");
 		container.setSizeUndefined();
 		container.setWidth("100%");
 
 		final HorizontalLayout field1 = new HorizontalLayout();
+		field1.setDebugId("field1");
 		field1.addStyleName(ProgramMethodsView.FIELD);
 		field1.setSpacing(true);
 		field1.setSizeUndefined();
@@ -681,6 +710,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 		container.addComponent(field1);
 
 		final HorizontalLayout field2 = new HorizontalLayout();
+		field2.setDebugId("field2");
 		field2.addStyleName(ProgramMethodsView.FIELD);
 		field2.setSpacing(true);
 		field2.setSizeUndefined();
@@ -688,12 +718,14 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 		field2.addComponent(this.typeFilter);
 
 		final HorizontalLayout field3 = new HorizontalLayout();
+		field3.setDebugId("field3");
 		field3.addStyleName(ProgramMethodsView.FIELD);
 		field3.setSpacing(true);
 		field3.setSizeUndefined();
 		field3.addComponent(this.groupFilter);
 
 		HorizontalLayout filterContainer = new HorizontalLayout();
+		filterContainer.setDebugId("filterContainer");
 		filterContainer.setSpacing(true);
 		filterContainer.setStyleName("pull-right");
 		filterContainer.setSizeUndefined();
@@ -704,6 +736,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 		container.addComponent(filterContainer);
 
 		this.resultCountLbl = new Label("");
+		this.resultCountLbl.setDebugId("resultCountLbl");
 		this.resultCountLbl.setStyleName("loc-resultcnt");
 
 		return container;
@@ -711,10 +744,12 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 
 	private Component buildPageTitle() {
 		final VerticalLayout layout = new VerticalLayout();
+		layout.setDebugId("layout");
 		layout.setMargin(new Layout.MarginInfo(false, false, true, false));
 		layout.setWidth("100%");
 
 		final HorizontalLayout titleContainer = new HorizontalLayout();
+		titleContainer.setDebugId("titleContainer");
 		titleContainer.setSizeUndefined();
 		titleContainer.setWidth("100%");
 		titleContainer.setMargin(true, false, false, false);
@@ -739,6 +774,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 		}
 
 		final Label headingDesc = new Label(content);
+		headingDesc.setDebugId("headingDesc");
 
 		layout.addComponent(titleContainer);
 		layout.addComponent(headingDesc);

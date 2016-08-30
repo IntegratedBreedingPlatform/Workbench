@@ -59,6 +59,7 @@ public class AddLocationForm extends Form {
 	protected void initializeComponents() {
 
 		this.grid = new GridLayout(4, 7);
+		this.grid.setDebugId("grid");
 		this.grid.setSpacing(true);
 		this.grid.setMargin(new Layout.MarginInfo(true, false, false, false));
 		this.setLayout(this.grid);
@@ -144,6 +145,7 @@ public class AddLocationForm extends Form {
 	private Label createLabel(String caption, boolean required) {
 
 		Label label = new Label();
+		label.setDebugId("label");
 		label.setContentMode(Label.CONTENT_XHTML);
 		label.setWidth("220px");
 
@@ -160,6 +162,7 @@ public class AddLocationForm extends Form {
 	private Label createCaption(String caption, boolean required) {
 
 		Label label = new Label();
+		label.setDebugId("label");
 		label.setContentMode(Label.CONTENT_XHTML);
 		label.setWidth("80px");
 

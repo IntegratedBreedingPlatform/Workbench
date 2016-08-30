@@ -69,13 +69,19 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 
 	protected void initializeComponents() {
 		this.rootLayout = new VerticalLayout();
+		this.rootLayout.setDebugId("rootLayout");
 		this.tabSheet = this.generateTabSheet();
 
 		this.updateProjectPanel = new UpdateProjectPanel();
+		this.updateProjectPanel.setDebugId("updateProjectPanel");
 		this.programMembersPanel = new ProgramMembersPanel(this.sessionData.getLastOpenedProject());
+		this.programMembersPanel.setDebugId("programMembersPanel");
 		this.programLocationsView = new ProgramLocationsView(this.sessionData.getLastOpenedProject());
+		this.programLocationsView.setDebugId("programLocationsView");
 		this.programMethodsView = new ProgramMethodsView(this.sessionData.getLastOpenedProject());
+		this.programMethodsView.setDebugId("programMethodsView");
 		this.systemLabelPanel = new SystemLabelView();
+		this.systemLabelPanel.setDebugId("systemLabelPanel");
 	}
 
 	protected void initializeLayout() {
@@ -83,6 +89,7 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 		this.setTitleContent();
 
 		final Label headingDesc = new Label(this.messageSource.getMessage(Message.PROGRAM_MODIFY_DETAILS));
+		headingDesc.setDebugId("headingDesc");
 
 		this.rootLayout.setMargin(new Layout.MarginInfo(false, true, true, true));
 		this.rootLayout.setWidth("100%");
@@ -132,9 +139,11 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 
 	private void setTitleContent() {
 		this.titleLayout = new HorizontalLayout();
+		this.titleLayout.setDebugId("titleLayout");
 		this.titleLayout.setSpacing(true);
 
 		final Label toolTitle = new Label(this.messageSource.getMessage(Message.PROGRAM_MANAGE_SETTINGS));
+		toolTitle.setDebugId("toolTitle");
 		toolTitle.setContentMode(Label.CONTENT_XHTML);
 		toolTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 		toolTitle.setWidth("376px");
@@ -146,6 +155,7 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 
 	protected TabSheet generateTabSheet() {
 		final TabSheet tab = new TabSheet();
+		tab.setDebugId("tab");
 
 		tab.setImmediate(true);
 		tab.setStyleName(Reindeer.TABSHEET_MINIMAL);

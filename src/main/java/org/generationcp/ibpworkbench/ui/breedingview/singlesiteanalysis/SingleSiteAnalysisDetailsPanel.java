@@ -514,16 +514,19 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	protected void initializeComponents() {
 
 		this.lblPageTitle = new Label();
+		this.lblPageTitle.setDebugId("lblPageTitle");
 		this.lblPageTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 
 		this.environmentsCheckboxState = new HashMap<String, Boolean>();
 
 		this.tblEnvironmentLayout = new VerticalLayout();
+		this.tblEnvironmentLayout.setDebugId("tblEnvironmentLayout");
 		this.tblEnvironmentLayout.setSizeUndefined();
 		this.tblEnvironmentLayout.setSpacing(true);
 		this.tblEnvironmentLayout.setWidth("100%");
 
 		this.tblEnvironmentSelection = new Table();
+		this.tblEnvironmentSelection.setDebugId("tblEnvironmentSelection");
 		this.tblEnvironmentSelection.setHeight("200px");
 		this.tblEnvironmentSelection.setWidth("100%");
 
@@ -540,6 +543,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 				final SeaEnvironmentModel item = (SeaEnvironmentModel) itemId;
 
 				final CheckBox chk = new CheckBox();
+				chk.setDebugId("chk");
 				chk.setData(item);
 				chk.setValue(item.getActive());
 				chk.setImmediate(true);
@@ -552,6 +556,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.footerCheckBoxListener = new FooterCheckBoxListener();
 
 		this.footerCheckBox = new CheckBox("Select All", false);
+		this.footerCheckBox.setDebugId("footerCheckBox");
 		this.footerCheckBox.addListener(this.footerCheckBoxListener);
 		this.footerCheckBox.setImmediate(true);
 
@@ -559,59 +564,77 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.tblEnvironmentLayout.addComponent(this.footerCheckBox);
 
 		this.mainLayout = new VerticalLayout();
+		this.mainLayout.setDebugId("mainLayout");
 
 		this.lblTitle = new Label();
+		this.lblTitle.setDebugId("lblTitle");
 		this.lblTitle.setStyleName(Bootstrap.Typography.H4.styleName());
 		this.lblTitle.addStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
 		this.lblTitle.setHeight("25px");
 
 		this.lblDatasetName = new Label();
+		this.lblDatasetName.setDebugId("lblDatasetName");
 		this.lblDatasetName.setContentMode(Label.CONTENT_XHTML);
 		this.lblDatasetName.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
 		this.lblDatasourceName = new Label();
+		this.lblDatasourceName.setDebugId("lblDatasourceName");
 		this.lblDatasourceName.setContentMode(Label.CONTENT_XHTML);
 		this.lblDatasourceName.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
 
 		this.lblVersion = new Label();
+		this.lblVersion.setDebugId("lblVersion");
 		this.lblVersion.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
 		this.lblProjectType = new Label();
+		this.lblProjectType.setDebugId("lblProjectType");
 		this.lblProjectType.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
 		this.lblProjectType.setWidth("100px");
 		this.lblAnalysisName = new Label();
+		this.lblAnalysisName.setDebugId("lblAnalysisName");
 		this.lblAnalysisName.setContentMode(Label.CONTENT_XHTML);
 		this.lblAnalysisName.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
 		this.lblSiteEnvironment = new Label();
+		this.lblSiteEnvironment.setDebugId("lblSiteEnvironment");
 		this.lblSpecifyEnvFactor = new Label();
+		this.lblSpecifyEnvFactor.setDebugId("lblSpecifyEnvFactor");
 		this.lblSpecifyEnvFactor.setContentMode(Label.CONTENT_XHTML);
 		this.lblSpecifyEnvFactor.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
 		this.lblSelectEnvironmentForAnalysis = new Label();
+		this.lblSelectEnvironmentForAnalysis.setDebugId("lblSelectEnvironmentForAnalysis");
 		this.lblSelectEnvironmentForAnalysis.setContentMode(Label.CONTENT_XHTML);
 		this.lblSelectEnvironmentForAnalysis.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
 		this.lblSpecifyNameForAnalysisEnv = new Label();
+		this.lblSpecifyNameForAnalysisEnv.setDebugId("lblSpecifyNameForAnalysisEnv");
 		this.lblSpecifyNameForAnalysisEnv.setContentMode(Label.CONTENT_XHTML);
 		this.lblSpecifyNameForAnalysisEnv.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
 		this.lblDesign = new Label();
+		this.lblDesign.setDebugId("lblDesign");
 		this.lblDesignType = new Label();
+		this.lblDesignType.setDebugId("lblDesignType");
 		this.lblDesignType.setContentMode(Label.CONTENT_XHTML);
 		this.lblDesignType.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
 		this.lblDesignType.setWidth(SingleSiteAnalysisDetailsPanel.LABEL_WIDTH);
 		this.lblReplicates = new Label();
+		this.lblReplicates.setDebugId("lblReplicates");
 		this.lblReplicates.setContentMode(Label.CONTENT_XHTML);
 		this.lblReplicates.setWidth(SingleSiteAnalysisDetailsPanel.LABEL_WIDTH);
 		this.lblReplicates.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
 		this.lblBlocks = new Label();
+		this.lblBlocks.setDebugId("lblBlocks");
 		this.lblBlocks.setContentMode(Label.CONTENT_XHTML);
 		this.lblBlocks.setWidth(SingleSiteAnalysisDetailsPanel.LABEL_WIDTH);
 		this.lblBlocks.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
 		this.lblSpecifyRowFactor = new Label();
+		this.lblSpecifyRowFactor.setDebugId("lblSpecifyRowFactor");
 		this.lblSpecifyRowFactor.setContentMode(Label.CONTENT_XHTML);
 		this.lblSpecifyRowFactor.setWidth(SingleSiteAnalysisDetailsPanel.LABEL_WIDTH);
 		this.lblSpecifyRowFactor.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
 		this.lblSpecifyColumnFactor = new Label();
+		this.lblSpecifyColumnFactor.setDebugId("lblSpecifyColumnFactor");
 		this.lblSpecifyColumnFactor.setContentMode(Label.CONTENT_XHTML);
 		this.lblSpecifyColumnFactor.setWidth(SingleSiteAnalysisDetailsPanel.LABEL_WIDTH);
 		this.lblSpecifyColumnFactor.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
 		this.lblGenotypes = new Label();
+		this.lblGenotypes.setDebugId("lblGenotypes");
 		this.lblGenotypes.setWidth(SingleSiteAnalysisDetailsPanel.LABEL_WIDTH);
 		this.lblGenotypes.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
 
@@ -628,7 +651,9 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.lblChooseEnvironmentHeader.setStyleName(Bootstrap.Typography.H3.styleName());
 
 		this.lblChooseEnvironmentDescription = new Label();
+		this.lblChooseEnvironmentDescription.setDebugId("lblChooseEnvironmentDescription");
 		this.lblChooseEnvironmentForAnalysisDescription = new Label();
+		this.lblChooseEnvironmentForAnalysisDescription.setDebugId("lblChooseEnvironmentForAnalysisDescription");
 		this.lblChooseEnvironmentForAnalysisDescription.setContentMode(Label.CONTENT_XHTML);
 		this.lblChooseEnvironmentForAnalysisDescription.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
 
@@ -643,6 +668,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.lblSpecifyGenotypesHeader.setStyleName(Bootstrap.Typography.H3.styleName());
 
 		this.txtVersion = new TextField();
+		this.txtVersion.setDebugId("txtVersion");
 		this.txtVersion.setNullRepresentation("");
 
 		if (!StringUtils.isNullOrEmpty(this.getBreedingViewInput().getVersion())) {
@@ -659,17 +685,21 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		}
 
 		this.valueProjectType = new Label();
+		this.valueProjectType.setDebugId("valueProjectType");
 		this.valueProjectType.setValue("Field Trial");
 
 		this.valueDatasetName = new Label();
+		this.valueDatasetName.setDebugId("valueDatasetName");
 		this.valueDatasetName.setWidth("100%");
 		this.valueDatasetName.setValue(this.getBreedingViewInput().getDatasetName());
 
 		this.valueDatasourceName = new Label();
+		this.valueDatasourceName.setDebugId("valueDatasourceName");
 		this.valueDatasourceName.setWidth("100%");
 		this.valueDatasourceName.setValue(this.getBreedingViewInput().getDatasetSource());
 
 		this.txtAnalysisName = new TextField();
+		this.txtAnalysisName.setDebugId("txtAnalysisName");
 		this.txtAnalysisName.setNullRepresentation("");
 		if (!StringUtils.isNullOrEmpty(this.getBreedingViewInput().getBreedingViewAnalysisName())) {
 			this.txtAnalysisName.setValue(this.getBreedingViewInput().getBreedingViewAnalysisName());
@@ -678,6 +708,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.txtAnalysisName.setWidth("450");
 
 		this.selEnvFactor = new Select();
+		this.selEnvFactor.setDebugId("selEnvFactor");
 		this.selEnvFactor.setImmediate(true);
 		this.populateChoicesForEnvironmentFactor();
 		this.selEnvFactor.setNullSelectionAllowed(false);
@@ -686,10 +717,12 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.populateChoicesForEnvForAnalysis();
 
 		this.txtNameForAnalysisEnv = new TextField();
+		this.txtNameForAnalysisEnv.setDebugId("txtNameForAnalysisEnv");
 		this.txtNameForAnalysisEnv.setNullRepresentation("");
 		this.txtNameForAnalysisEnv.setRequired(false);
 
 		this.selDesignType = new Select();
+		this.selDesignType.setDebugId("selDesignType");
 		this.selDesignType.setImmediate(true);
 		this.selDesignType.setNullSelectionAllowed(true);
 		this.selDesignType.setNewItemsAllowed(false);
@@ -700,6 +733,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.selDesignType.setWidth(SingleSiteAnalysisDetailsPanel.SELECT_BOX_WIDTH);
 
 		this.selReplicates = new Select();
+		this.selReplicates.setDebugId("selReplicates");
 		this.selReplicates.setImmediate(true);
 		this.populateChoicesForReplicates();
 		this.selReplicates.setNullSelectionAllowed(true);
@@ -707,6 +741,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.selReplicates.setWidth(SingleSiteAnalysisDetailsPanel.SELECT_BOX_WIDTH);
 
 		this.selBlocks = new Select();
+		this.selBlocks.setDebugId("selBlocks");
 		this.selBlocks.setImmediate(true);
 		this.selBlocks.setEnabled(false);
 		this.populateChoicesForBlocks();
@@ -715,6 +750,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.selBlocks.setWidth(SingleSiteAnalysisDetailsPanel.SELECT_BOX_WIDTH);
 
 		this.selRowFactor = new Select();
+		this.selRowFactor.setDebugId("selRowFactor");
 		this.selRowFactor.setImmediate(true);
 		this.populateChoicesForRowFactor();
 		this.selRowFactor.setNullSelectionAllowed(false);
@@ -722,6 +758,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.selRowFactor.setWidth(SingleSiteAnalysisDetailsPanel.SELECT_BOX_WIDTH);
 
 		this.selColumnFactor = new Select();
+		this.selColumnFactor.setDebugId("selColumnFactor");
 		this.selColumnFactor.setImmediate(true);
 		this.populateChoicesForColumnFactor();
 		this.selColumnFactor.setNullSelectionAllowed(false);
@@ -738,11 +775,15 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.getSelGenotypes().setWidth(SingleSiteAnalysisDetailsPanel.SELECT_BOX_WIDTH);
 
 		this.btnRun = new Button();
+		this.btnRun.setDebugId("btnRun");
 		this.btnRun.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 		this.btnUpload = new Button();
+		this.btnUpload.setDebugId("btnUpload");
 		this.btnUpload.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 		this.btnReset = new Button();
+		this.btnReset.setDebugId("btnReset");
 		this.btnBack = new Button();
+		this.btnBack.setDebugId("btnBack");
 
 		this.checkDesignFactor();
 
@@ -1015,24 +1056,29 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.mainLayout.setSpacing(true);
 
 		final VerticalLayout selectedInfoLayout = new VerticalLayout();
+		selectedInfoLayout.setDebugId("selectedInfoLayout");
 		selectedInfoLayout.setSizeUndefined();
 		selectedInfoLayout.setWidth("100%");
 		selectedInfoLayout.setSpacing(true);
 
 		final HorizontalLayout row1 = new HorizontalLayout();
+		row1.setDebugId("row1");
 		row1.setSpacing(true);
 		row1.addComponent(this.lblDataSelectedForAnalysisHeader);
 
 		final HorizontalLayout row2a = new HorizontalLayout();
+		row2a.setDebugId("row2a");
 		row2a.setSpacing(true);
 		row2a.addComponent(this.lblDatasetName);
 		row2a.addComponent(this.valueDatasetName);
 		final HorizontalLayout row2b = new HorizontalLayout();
+		row2b.setDebugId("row2b");
 		row2b.setSpacing(true);
 		row2b.addComponent(this.lblProjectType);
 		row2b.addComponent(this.valueProjectType);
 
 		final GridLayout row2 = new GridLayout(2, 1);
+		row2.setDebugId("row2");
 		row2.setSizeUndefined();
 		row2.setWidth("100%");
 		row2.setColumnExpandRatio(0, 0.45f);
@@ -1041,11 +1087,13 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		row2.addComponent(row2b);
 
 		final HorizontalLayout row3 = new HorizontalLayout();
+		row3.setDebugId("row3");
 		row3.setSpacing(true);
 		row3.addComponent(this.lblDatasourceName);
 		row3.addComponent(this.valueDatasourceName);
 
 		final VerticalLayout row4 = new VerticalLayout();
+		row4.setDebugId("row4");
 		row4.setSpacing(true);
 		row4.addComponent(this.lblAnalysisName);
 		row4.addComponent(this.txtAnalysisName);
@@ -1056,6 +1104,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		selectedInfoLayout.addComponent(row4);
 
 		final GridLayout chooseEnvironmentLayout = new GridLayout(2, 9);
+		chooseEnvironmentLayout.setDebugId("chooseEnvironmentLayout");
 		chooseEnvironmentLayout.setColumnExpandRatio(0, 4);
 		chooseEnvironmentLayout.setColumnExpandRatio(1, 2);
 		chooseEnvironmentLayout.setWidth("100%");
@@ -1071,8 +1120,10 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		chooseEnvironmentLayout.addComponent(this.txtVersion, 1, 5);
 
 		final VerticalLayout designDetailsWrapper = new VerticalLayout();
+		designDetailsWrapper.setDebugId("designDetailsWrapper");
 
 		final GridLayout designDetailsLayout = new GridLayout(2, 3);
+		designDetailsLayout.setDebugId("designDetailsLayout");
 		designDetailsLayout.setColumnExpandRatio(0, 0);
 		designDetailsLayout.setColumnExpandRatio(1, 1);
 		designDetailsLayout.setWidth("100%");
@@ -1085,6 +1136,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		designDetailsWrapper.addComponent(designDetailsLayout);
 
 		final GridLayout gLayout = new GridLayout(2, 2);
+		gLayout.setDebugId("gLayout");
 		gLayout.setColumnExpandRatio(0, 0);
 		gLayout.setColumnExpandRatio(1, 1);
 		gLayout.setWidth("100%");
@@ -1101,11 +1153,13 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.mainLayout.addComponent(new Label(""));
 
 		final VerticalLayout subMainLayout = new VerticalLayout();
+		subMainLayout.setDebugId("subMainLayout");
 		subMainLayout.addComponent(this.lblTitle);
 		subMainLayout.addComponent(selectedInfoLayout);
 		this.mainLayout.addComponent(subMainLayout);
 
 		final HorizontalLayout combineLayout = new HorizontalLayout();
+		combineLayout.setDebugId("combineLayout");
 		combineLayout.setSizeUndefined();
 		combineLayout.setWidth("100%");
 		combineLayout.addComponent(chooseEnvironmentLayout);
@@ -1113,6 +1167,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.mainLayout.addComponent(combineLayout);
 
 		final HorizontalLayout combineLayout2 = new HorizontalLayout();
+		combineLayout2.setDebugId("combineLayout2");
 		combineLayout2.setSpacing(true);
 		combineLayout2.addComponent(this.btnBack);
 		combineLayout2.addComponent(this.btnReset);
@@ -1433,6 +1488,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	private GridLayout createGridLayout(final int col, final int row) {
 
 		final GridLayout gLayout = new GridLayout(col, row);
+		gLayout.setDebugId("gLayout");
 		gLayout.setColumnExpandRatio(0, 0);
 		gLayout.setColumnExpandRatio(1, 1);
 		gLayout.setWidth("100%");

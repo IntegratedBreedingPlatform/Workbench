@@ -96,16 +96,23 @@ public class AddProgramView extends Panel implements InitializingBean {
 
 	protected void initializeComponents() {
 		this.rootLayout = new VerticalLayout();
+		this.rootLayout.setDebugId("rootLayout");
 
 		this.tabSheet = this.generateTabSheet();
 
 		this.createProjectPanel = new CreateProjectPanel(this.presenter);
+		this.createProjectPanel.setDebugId("createProjectPanel");
 		this.programMembersPanel = new ProjectMembersComponent(this.presenter);
+		this.programMembersPanel.setDebugId("programMembersPanel");
 
 		this.programLocationsContainer = new VerticalLayout();
+		this.programLocationsContainer.setDebugId("programLocationsContainer");
 		this.programMethodsContainer = new VerticalLayout();
+		this.programMethodsContainer.setDebugId("programMethodsContainer");
 		this.programMembersContainer = new VerticalLayout();
+		this.programMembersContainer.setDebugId("programMembersContainer");
 		this.basicDetailsContainer = new VerticalLayout();
+		this.basicDetailsContainer.setDebugId("basicDetailsContainer");
 
 		this.programLocationsContainer.setMargin(false);
 		this.programLocationsContainer.setSpacing(false);
@@ -122,12 +129,14 @@ public class AddProgramView extends Panel implements InitializingBean {
 
 		// finish button
 		this.finishButton = new Button("Finish");
+		this.finishButton.setDebugId("finishButton");
 		this.finishButton.setEnabled(false);
 		this.finishButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 		this.finishButton.setDebugId("vaadin_finish_btn");
 
 		// finish button
 		this.cancelBtn = new Button("Cancel");
+		this.cancelBtn.setDebugId("cancelBtn");
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -200,6 +209,7 @@ public class AddProgramView extends Panel implements InitializingBean {
 		this.rootLayout.addComponent(this.tabSheet);
 
 		final HorizontalLayout btnContainer = new HorizontalLayout();
+		btnContainer.setDebugId("btnContainer");
 		btnContainer.setSpacing(true);
 		btnContainer.setSizeUndefined();
 
@@ -219,9 +229,11 @@ public class AddProgramView extends Panel implements InitializingBean {
 
 	private void setTitleContent() {
 		this.titleLayout = new HorizontalLayout();
+		this.titleLayout.setDebugId("titleLayout");
 		this.titleLayout.setSpacing(true);
 
 		Label toolTitle = new Label("Add a Program");
+		toolTitle.setDebugId("toolTitle");
 		toolTitle.setContentMode(Label.CONTENT_XHTML);
 		toolTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 		toolTitle.setWidth("216px");
@@ -232,6 +244,7 @@ public class AddProgramView extends Panel implements InitializingBean {
 
 	protected TabSheet generateTabSheet() {
 		TabSheet tab = new TabSheet();
+		tab.setDebugId("tab");
 
 		tab.setImmediate(true);
 		tab.setStyleName(Reindeer.TABSHEET_MINIMAL);
@@ -248,7 +261,9 @@ public class AddProgramView extends Panel implements InitializingBean {
 
 		// initialize program methods and view and set them to the tabs
 		this.programMethodsView = new ProgramMethodsView(project);
+		this.programMethodsView.setDebugId("programMethodsView");
 		this.programLocationsView = new ProgramLocationsView(project);
+		this.programLocationsView.setDebugId("programLocationsView");
 
 		this.tabSheet.getTab(this.programMethodsContainer).setEnabled(true);
 		this.programMethodsContainer.removeAllComponents();
@@ -261,6 +276,7 @@ public class AddProgramView extends Panel implements InitializingBean {
 		// re-initialize program members and basic details (in update mode)
 		this.basicDetailsContainer.removeAllComponents();
 		UpdateProjectPanel updateProjectPanel = new UpdateProjectPanel();
+		updateProjectPanel.setDebugId("updateProjectPanel");
 		updateProjectPanel.hideDeleteBtn();
 		this.basicDetailsContainer.addComponent(updateProjectPanel);
 
@@ -286,6 +302,7 @@ public class AddProgramView extends Panel implements InitializingBean {
 		this.basicDetailsContainer.removeAllComponents();
 
 		this.createProjectPanel = new CreateProjectPanel(this.presenter);
+		this.createProjectPanel.setDebugId("createProjectPanel");
 		this.basicDetailsContainer.addComponent(this.createProjectPanel);
 	}
 
@@ -293,6 +310,7 @@ public class AddProgramView extends Panel implements InitializingBean {
 		this.programMembersContainer.removeAllComponents();
 
 		this.programMembersPanel = new ProjectMembersComponent(this.presenter);
+		this.programMembersPanel.setDebugId("programMembersPanel");
 		this.programMembersContainer.addComponent(this.programMembersPanel);
 	}
 

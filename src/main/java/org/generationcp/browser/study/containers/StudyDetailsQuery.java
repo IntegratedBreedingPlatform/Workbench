@@ -36,8 +36,6 @@ import org.vaadin.addons.lazyquerycontainer.Query;
 public class StudyDetailsQuery implements Query {
 
 	private static final Logger LOG = LoggerFactory.getLogger(StudyDetailsQuery.class);
-	private static final SimpleDateFormat BACKEND_DATE_FORMAT = Util.getSimpleDateFormat(Util.DATE_AS_NUMBER_FORMAT);
-	private static final SimpleDateFormat FRONTEND_DATE_FORMAT = Util.getSimpleDateFormat(Util.FRONTEND_DATE_FORMAT);
 
 	private final String programUUID;
 	private final StudyDataManager studyDataManager;
@@ -83,6 +81,9 @@ public class StudyDetailsQuery implements Query {
 		Item item = new PropertysetItem();
 		String value = null;
 		int numOfCols = this.columnIds.size();
+		final SimpleDateFormat backendDateFormat = Util.getSimpleDateFormat(Util.DATE_AS_NUMBER_FORMAT);
+		final SimpleDateFormat frontendDateFormat = Util.getSimpleDateFormat(Util.FRONTEND_DATE_FORMAT);
+
 		for (int i = 0; i < numOfCols; i++) {
 			switch (i) {
 				case 0:
@@ -96,13 +97,13 @@ public class StudyDetailsQuery implements Query {
 					break;
 				case 3:
 					value =
-							this.getStudyDate(studyDetails.getStartDate(), StudyDetailsQuery.BACKEND_DATE_FORMAT,
-									StudyDetailsQuery.FRONTEND_DATE_FORMAT);
+							this.getStudyDate(studyDetails.getStartDate(), backendDateFormat,
+									frontendDateFormat);
 					break;
 				case 4:
 					value =
-							this.getStudyDate(studyDetails.getEndDate(), StudyDetailsQuery.BACKEND_DATE_FORMAT,
-									StudyDetailsQuery.FRONTEND_DATE_FORMAT);
+							this.getStudyDate(studyDetails.getEndDate(), backendDateFormat,
+									frontendDateFormat);
 					break;
 				case 5:
 					value = studyDetails.getPiName();

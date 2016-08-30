@@ -89,13 +89,17 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 
 	protected void initializeComponents() {
 		this.saveBtn = new Button(this.messageSource.getMessage("RESTORE_LABEL"));
+		this.saveBtn.setDebugId("saveBtn");
 		this.saveBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 		this.saveBtn.setSizeUndefined();
 
 		this.cancelBtn = new Button(this.messageSource.getMessage("CANCEL"));
+		this.cancelBtn.setDebugId("cancelBtn");
 		this.cancelBtn.setSizeUndefined();
 
 		this.upload = new Upload(this.messageSource.getMessage("RESTORE_BMS_UPLOAD"), null);
+		this.upload.setDebugId("upload");
+		this.upload.setDebugId("upload");
 	}
 
 	protected void initializeLayout() {
@@ -114,11 +118,13 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 		// bind components to layout
 
 		final HorizontalLayout hl = new HorizontalLayout();
+		hl.setDebugId("hl");
 		hl.setWidth("100%");
 		hl.setSpacing(true);
 		hl.setMargin(true);
 
 		final Label spacer = new Label("&nbsp;", Label.CONTENT_XHTML);
+		spacer.setDebugId("spacer");
 		spacer.setWidth("100%");
 
 		hl.addComponent(spacer);

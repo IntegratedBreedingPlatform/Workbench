@@ -31,6 +31,7 @@ public class OpenNewProjectAddUserWindowAction implements ClickListener {
 	@Override
 	public void buttonClick(ClickEvent event) {
 		NewProjectAddUserWindow window = new NewProjectAddUserWindow(this.membersSelect);
+		window.setDebugId("window");
 
 		event.getComponent().getWindow().addWindow(window);
 	}

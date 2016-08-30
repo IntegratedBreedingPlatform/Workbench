@@ -61,6 +61,7 @@ public class ToolsAndCropVersionsView extends VerticalLayout implements Initiali
 
 	protected void initializeComponents() {
 		this.lblToolVersions = new Label();
+		this.lblToolVersions.setDebugId("lblToolVersions");
 		this.lblToolVersions.setStyleName(Bootstrap.Typography.H1.styleName());
 
 		this.initializeToolsTable();
@@ -70,6 +71,7 @@ public class ToolsAndCropVersionsView extends VerticalLayout implements Initiali
 
 	private void initializeCropsTable() {
 		this.tblCrops = new Table();
+		this.tblCrops.setDebugId("tblCrops");
 		this.tblCrops.setImmediate(true);
 		this.tblCrops.setColumnCollapsingAllowed(true);
 
@@ -108,6 +110,7 @@ public class ToolsAndCropVersionsView extends VerticalLayout implements Initiali
 
 	protected void initializeToolsTable() {
 		this.tblTools = new Table();
+		this.tblTools.setDebugId("tblTools");
 		this.tblTools.setImmediate(true);
 		this.tblTools.setColumnCollapsingAllowed(true);
 
@@ -166,12 +169,14 @@ public class ToolsAndCropVersionsView extends VerticalLayout implements Initiali
 		this.setSpacing(true);
 
 		final HorizontalLayout root = new HorizontalLayout();
+		root.setDebugId("root");
 		root.setSpacing(true);
 		root.setSizeFull();
 
 		this.addComponent(this.lblToolVersions);
 
 		final VerticalLayout cropsContainer = new VerticalLayout();
+		cropsContainer.setDebugId("cropsContainer");
 		cropsContainer.setSpacing(true);
 		cropsContainer.addComponent(this.tblCrops);
 		cropsContainer.addComponent(new Label("<em>Not available</em> means crop is installed prior to version BMS 3.0",

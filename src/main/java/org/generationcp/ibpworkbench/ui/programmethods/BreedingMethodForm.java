@@ -66,6 +66,7 @@ public class BreedingMethodForm extends Form {
 
 	protected void initializeComponents() {
 		this.grid = new GridLayout(2, 6);
+		this.grid.setDebugId("grid");
 		this.grid.setSpacing(true);
 		this.grid.setMargin(new Layout.MarginInfo(true, false, false, false));
 		this.setLayout(this.grid);
@@ -144,6 +145,7 @@ public class BreedingMethodForm extends Form {
 	private Label createLabel(String caption, boolean required) {
 
 		Label label = new Label();
+		label.setDebugId("label");
 		label.setContentMode(Label.CONTENT_XHTML);
 		label.setWidth("220px");
 
