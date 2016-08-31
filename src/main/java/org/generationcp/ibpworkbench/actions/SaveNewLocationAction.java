@@ -25,7 +25,6 @@ import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
 import org.generationcp.ibpworkbench.ui.window.ConfirmLocationsWindow;
 import org.generationcp.middleware.pojos.Location;
-import org.owasp.html.Sanitizers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
