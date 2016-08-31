@@ -1,0 +1,84 @@
+<section>
+  <header>
+    <h1 class="om-title">
+        Site Administration</h1>
+        <nav>
+        			<ol class="nav nav-tabs" >
+        				<li class="active ">
+        					<a> Users </a>
+        				</li>
+        			</ol>
+        </nav>
+    </header>
+    <p></p>
+    <div class="om-panel-content">
+          <button class="btn btn-default om-add-new-btn form-group pull-right"
+              (click)="addRecordPlugin()">Add user</button>
+    </div>
+    <div class="om-panel-header">
+          <h1 class="om-panel-title ">
+              Manage users</h1>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-inline">
+
+                <div class="form-group">
+                  <label class="">Status: </label>
+                  &nbsp;
+                  <select class="select2-chosen ui-select-match" name="status"
+                      [(ngModel)]="table.searchValue.status">
+                      <option value="*">All</option>
+                      <option value="true">Active</option>
+                      <option value="false">Inactive</option>
+                  </select>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <label class="">Role: </label>
+                  &nbsp;
+                  <select  class="select2-chosen" name="role"   [(ngModel)]="table.searchValue.role">
+                    <option value="*">All</option>
+                    <option value="Breeder">Breeder</option>
+                    <option value="Technician">Technician</option>
+                    <option value="Admin">Admin</option>
+                  </select>
+                </div>
+            </div>
+    </div>
+    </div>
+    <br><br>
+    <div class="row">
+        <div class="col-xs-12">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>User Name</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngIf="!table.totalFilteredRows" class="clickable-row">
+                        <td colspan="4" class="text-center">No records found.</td>
+                    </tr>
+                    <tr *ngFor="let user of table.itemsOnCurrentPage">
+                        <td>{{user.username}}</td>
+                        <td>{{user.firstName}}</td>
+                        <td>{{user.lastName}}</td>
+                        <td>{{user.email}}</td>
+                        <td>{{user.role}}</td>
+                        <td>{{user.status}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <pagination [maxPageIndex]="table.maxPageIndex"
+                (pageNumberChanged)="table.currentPageIndex = $event">
+    </pagination>
+
+
+</section>
