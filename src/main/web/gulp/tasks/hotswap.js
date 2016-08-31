@@ -28,5 +28,9 @@ gulp.task('hotswap', function() {
 
 	} else {
 		console.warn('Please provide the env property if you wish to hotswap.');
+		console.warn('Example:');
+		console.warn('npm run watch -- --env=<myenv>');
+		console.warn('or');
+		console.warn('gulp watch --env=<myenv>');
 	}
 });

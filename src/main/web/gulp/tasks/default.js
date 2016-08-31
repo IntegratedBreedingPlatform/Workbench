@@ -1,3 +1,3 @@
 var gulp = require('gulp');
 
-gulp.task('default', ['build', 'angular2Dist']);
+gulp.task('default', ['build', 'angular2']);

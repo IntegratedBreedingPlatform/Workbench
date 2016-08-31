@@ -18,8 +18,58 @@ function getFoldersNg2(dir) {
 }
 
 gulp.task('angular2Clean', function() {
-  return del(['src/appsNg2/**/build']);
+  return del.sync(['src/appsNg2/**/build']);
 });
+
+gulp.task('angular2Ts', function() {
+	var folders = getFoldersNg2(srcRoot);
+
+	var tasks = folders.map(function(folder) {
+		
+		return gulp.src(path.join(srcRoot, folder, '**/*.ts'))
+			.pipe(typescript(tscConfig.compilerOptions))
+			.pipe(gulp.dest(path.join(srcRoot, folder, 'build')));
+	});
+
+	return es.merge.apply(null, tasks);
+});
+
+// Give clean task a higher priority
+gulp.task('angular2PrioritizeClean', ['angular2Clean']);
+gulp.task('angular2CleanBuild', ['angular2PrioritizeClean', 'angular2Clean', 'angular2Ts']);
+
+gulp.task('angular2Resources', ['angular2Ts'], function() {
+	var folders = getFoldersNg2(srcRoot);
+
+	var tasks = folders.map(function(folder) {
+
+	// TODO get all js recursively, exclude build folder
+	return gulp.src([path.join(srcRoot, folder, '*.js'), 
+					 path.join(srcRoot, folder, '**/*.css'), 
+					 path.join(srcRoot, folder, '**/*.json'),
+					 path.join(srcRoot, folder, '**/*.html')])
+		   .pipe(gulp.dest(path.join(srcRoot, folder, 'build')));
+	});
+
+	return es.merge.apply(null, tasks);
+});
+
+gulp.task('angular2Dist', ['angular2Resources'], function() {
+	var folders = getFoldersNg2(srcRoot);
+
+	var tasks = folders.map(function(folder) {
+		
+		return gulp.src(path.join(srcRoot, folder, 'build/**'))
+			.pipe(gulp.dest(path.join(destRoot , folder)));
+	});
+
+	return es.merge.apply(null, tasks);
+
+});
+
+// Give clean build task a higher priority
+gulp.task('angular2PrioritizeCleanBuild', ['angular2CleanBuild']);
+gulp.task('angular2CleanDist', ['angular2PrioritizeCleanBuild', 'angular2CleanBuild', 'angular2Dist']);
 
 /**
  * Copy all required libraries into build directory.
@@ -38,44 +88,4 @@ gulp.task('angular2Libs', function () {
         .pipe(gulp.dest(path.join(destRoot, 'lib')));
 });
 
-gulp.task('angular2', ['angular2Clean', 'build'], function() {
-	var folders = getFoldersNg2(srcRoot);
-
-	var tasks = folders.map(function(folder) {
-		
-		return gulp.src(path.join(srcRoot, folder, '**/*.ts'))
-			.pipe(typescript(tscConfig.compilerOptions))
-			.pipe(gulp.dest(path.join(srcRoot, folder, 'build')));
-	});
-
-	return es.merge.apply(null, tasks);
-});
-
-gulp.task('angular2Resources', ['angular2'], function() {
-	var folders = getFoldersNg2(srcRoot);
-
-	var tasks = folders.map(function(folder) {
-
-	// TODO get all js recursively, exclude build folder
-	return gulp.src([path.join(srcRoot, folder, '*.js'), 
-					 path.join(srcRoot, folder, '**/*.css'), 
-					 path.join(srcRoot, folder, '**/*.json'),
-					 path.join(srcRoot, folder, '**/*.html')])
-		   .pipe(gulp.dest(path.join(srcRoot, folder, 'build')));
-	});
-
-	return es.merge.apply(null, tasks);
-});
-
-gulp.task('angular2Dist', ['angular2', 'angular2Resources', 'angular2Libs'], function() {
-	var folders = getFoldersNg2(srcRoot);
-
-	var tasks = folders.map(function(folder) {
-		
-		return gulp.src(path.join(srcRoot, folder, 'build/**'))
-			.pipe(gulp.dest(path.join(destRoot , folder)));
-	});
-
-	return es.merge.apply(null, tasks);
-
-});
+gulp.task('angular2', ['angular2CleanDist', 'angular2Libs']);
