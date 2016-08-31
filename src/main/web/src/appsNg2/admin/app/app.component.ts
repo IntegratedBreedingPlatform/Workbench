@@ -3,7 +3,7 @@
  */
 import { Component, ViewEncapsulation } from '@angular/core';
 
-import { TableComponent } from './demo/index';
+import { TableComponent } from './users/index';
 
 /*
  * AppComponent Component
@@ -13,13 +13,12 @@ import { TableComponent } from './demo/index';
   selector: 'app',
   encapsulation: ViewEncapsulation.None,
   styleUrls: [
-    './app.style.css',
-    './style.css'
+    './app.style.css'
   ],
   directives: [ TableComponent ],
   template: `
     <div class="container">
-        <table-demo></table-demo>
+        <users-table></users-table>
     </div>
   `,
   moduleId: module.id

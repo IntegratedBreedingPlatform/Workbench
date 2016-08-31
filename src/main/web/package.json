@@ -5,6 +5,7 @@
   "main": "gulpfile.js",
   "scripts": {
     "test": "gulp",
+    "clean": "gulp clean",
     "postinstall": "typings install",
     "typings": "typings"
   },

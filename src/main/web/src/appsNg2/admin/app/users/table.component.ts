@@ -3,7 +3,7 @@ import { InMemoryComponent } from './inMemory.component';
 
 
 @Component({
-    selector: 'table-demo',
+    selector: 'users-table',
     templateUrl: './table.component.html',
     directives: [InMemoryComponent],
     moduleId: module.id
