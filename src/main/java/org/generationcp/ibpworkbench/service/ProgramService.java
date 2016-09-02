@@ -246,7 +246,7 @@ public class ProgramService {
 	}
 
 	public void addAllAdminUsersOfCropToProgram(final String crop, final Project program) {
-		final List<User> adminUsers = this.workbenchDataManager.getAdminUsersOfCrop(crop);
+		final List<User> adminUsers = this.workbenchDataManager.getAllUsersByRole(org.generationcp.commons.security.Role.ADMIN.toString());
 		final List<Role> allRoles = this.workbenchDataManager.getAllRoles();
 		for (final User user : adminUsers) {
 			if (this.workbenchDataManager.getProjectUserInfoDao().getByProjectIdAndUserId(program.getProjectId().intValue(),
