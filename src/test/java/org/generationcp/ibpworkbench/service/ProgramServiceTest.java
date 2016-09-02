@@ -215,7 +215,7 @@ public class ProgramServiceTest {
 		final List<User> adminUsers = this.createAdminUsersTestData(memberAdminUserId, nonMemberAdminUserId);
 
 		// mock data
-		Mockito.doReturn(adminUsers).when(this.workbenchDataManager).getAdminUsersOfCrop(crop);
+		Mockito.doReturn(adminUsers).when(this.workbenchDataManager).getAllUsersByRole(org.generationcp.commons.security.Role.ADMIN.toString());
 		final ProjectUserInfoDAO puiDao = Mockito.mock(ProjectUserInfoDAO.class);
 		Mockito.when(this.workbenchDataManager.getProjectUserInfoDao()).thenReturn(puiDao);
 		Mockito.doReturn(new ProjectUserInfo()).when(puiDao).getByProjectIdAndUserId(projectId, memberAdminUserId);
