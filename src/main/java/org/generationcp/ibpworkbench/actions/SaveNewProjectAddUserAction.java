@@ -18,6 +18,7 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.security.Role;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.commons.vaadin.validator.ValidationUtil;
@@ -154,6 +155,9 @@ public class SaveNewProjectAddUserAction implements ClickListener {
 	public void addUserToAllProgramsOfCurrentCropIfAdmin(final User user) {
 		final Project currentProject = this.sessionData.getLastOpenedProject();
 		this.programService.addUserToAllProgramsOfCropTypeIfAdmin(user, currentProject.getCropType());
+
+		// disable the user item in the member selection table if the role is ADMIN
+		user.setEnabled(!user.hasRole(Role.ADMIN.toString()));
 	}
 
 }
