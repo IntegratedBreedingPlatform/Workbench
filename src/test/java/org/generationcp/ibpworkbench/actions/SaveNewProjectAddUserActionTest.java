@@ -1,4 +1,3 @@
-
 package org.generationcp.ibpworkbench.actions;
 
 import java.util.Arrays;
@@ -71,7 +70,8 @@ public class SaveNewProjectAddUserActionTest {
 
 		Mockito.when(this.workbenchUserService.saveNewUserAccount(userAccount)).thenReturn(user);
 		Mockito.doNothing().when(membersSelect).addItem(user);
-		Mockito.when(this.workbenchDataManager.getCropTypeByName(currentProject.getCropType().getCropName())).thenReturn(currentProject.getCropType());
+		Mockito.when(this.workbenchDataManager.getCropTypeByName(currentProject.getCropType().getCropName()))
+				.thenReturn(currentProject.getCropType());
 		Mockito.when(membersSelect.getValue()).thenReturn(userSet);
 
 		this.action.saveUserAccount(userAccount, membersSelect);
@@ -95,7 +95,7 @@ public class SaveNewProjectAddUserActionTest {
 
 		Mockito.verify(this.programService).addUserToAllProgramsOfCropTypeIfAdmin(user, currentProject.getCropType());
 
-		Assert.assertFalse("The user is admin so it should be disabled for selection",user.isEnabled());
+		Assert.assertFalse("The user is admin so it should be disabled for selection", user.isEnabled());
 	}
 
 	@Test
@@ -108,6 +108,6 @@ public class SaveNewProjectAddUserActionTest {
 
 		Mockito.verify(this.programService).addUserToAllProgramsOfCropTypeIfAdmin(user, currentProject.getCropType());
 
-		Assert.assertTrue("The user is not admin so it should be enabled for selection",user.isEnabled());
+		Assert.assertTrue("The user is not admin so it should be enabled for selection", user.isEnabled());
 	}
 }

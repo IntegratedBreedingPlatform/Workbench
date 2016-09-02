@@ -1,12 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * <p/>
  * Generation Challenge Programme (GCP)
- *
- *
+ * <p/>
+ * <p/>
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.actions;
@@ -87,8 +86,8 @@ public class SaveNewProjectAddUserAction implements ClickListener {
 	// this can be consolidated to avoid redundant code
 	@Override
 	public void buttonClick(final ClickEvent event) {
-		@SuppressWarnings("unchecked")
-		final BeanItem<UserAccountModel> bean = (BeanItem<UserAccountModel>) this.userAccountForm.getItemDataSource();
+		@SuppressWarnings("unchecked") final BeanItem<UserAccountModel> bean =
+				(BeanItem<UserAccountModel>) this.userAccountForm.getItemDataSource();
 		final UserAccountModel userAccount = bean.getBean();
 
 		try {
