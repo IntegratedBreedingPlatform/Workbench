@@ -102,10 +102,9 @@ public class SaveUsersInProjectAction implements ClickListener {
 						}
 					}
 					
-					// set the users to be added as members of the project in the project service
-					programService.setSelectedUsers(new HashSet<>(userList));
+
 					//use the project service to link new members to the project
-					programService.copyProjectUsers(project);
+					programService.createIBDBUserMapping(project, new HashSet<>(userList));
 
 					// UPDATE workbench DB with the project user roles
 					SaveUsersInProjectAction.this.workbenchDataManager.updateProjectsRolesForProject(project,projectUserRoleList);

@@ -80,7 +80,7 @@ public class ProgramService {
 		this.toolUtil.createWorkspaceDirectoriesForProject(program);
 
 		this.addProjectUserRoles(program);
-		this.copyProjectUsers(program);
+		this.createIBDBUserMapping(program, this.selectedUsers);
 		this.saveProjectUserInfo(program);
 
 		this.addAllAdminUsersOfCropToProgram(program.getCropType().getCropName(), program);
@@ -153,17 +153,14 @@ public class ProgramService {
 	}
 
 	/**
-	 * Create necessary database entries for selected program members.
+	 * Creates IBDBUserMap entries for the specified users.
 	 */
-	public void copyProjectUsers(final Project project) {
+	public void createIBDBUserMapping(final Project project, Set<User> users) {
 
-		for (final User user : this.selectedUsers) {
-
-			// fetch user record from workbench DB
-			final User workbenchUser = this.workbenchDataManager.getUserById(user.getUserid());
+		for (final User user : users) {
 
 			// ccreate a copy of the Person
-			final Person workbenchPerson = this.workbenchDataManager.getPersonById(workbenchUser.getPersonid());
+			final Person workbenchPerson = this.workbenchDataManager.getPersonById(user.getPersonid());
 			Person cropDBPerson = workbenchPerson.copy();
 
 			// add the Person record if they do not exist
@@ -181,7 +178,7 @@ public class ProgramService {
 			}
 
 			// create a copy of the user record
-			final User cropDBUser = workbenchUser.copy();
+			final User cropDBUser = user.copy();
 
 			// if a user is assigned to a program, then add them to the crop database where they can then access the program
 			if (!this.userDataManager.isUsernameExists(cropDBUser.getName())) {
@@ -194,16 +191,16 @@ public class ProgramService {
 				final Integer userId = this.userDataManager.addUser(cropDBUser);
 
 				final User ibdbUser = this.userDataManager.getUserById(userId);
-				this.createIBDBUserMap(project.getProjectId(), workbenchUser.getUserid(), ibdbUser.getUserid());
+				this.createAndSaveIBDBUserMap(project.getProjectId(), user.getUserid(), ibdbUser.getUserid());
 			} else {
 				final User ibdbUser = this.userDataManager.getUserByUserName(cropDBUser.getName());
-				this.createIBDBUserMap(project.getProjectId(), workbenchUser.getUserid(), ibdbUser.getUserid());
+				this.createAndSaveIBDBUserMap(project.getProjectId(), user.getUserid(), ibdbUser.getUserid());
 			}
-			this.idAndNameOfProgramMembers.put(workbenchUser.getUserid(), cropDBUser.getName());
+			this.idAndNameOfProgramMembers.put(user.getUserid(), cropDBUser.getName());
 		}
 	}
 
-	private void createIBDBUserMap(final Long projectId, final Integer workbenchUserId, final Integer ibdbUserId) {
+	private void createAndSaveIBDBUserMap(final Long projectId, final Integer workbenchUserId, final Integer ibdbUserId) {
 		// Add the mapping between Workbench user and the ibdb user.
 		final IbdbUserMap ibdbUserMap = new IbdbUserMap();
 		ibdbUserMap.setWorkbenchUserId(workbenchUserId);
@@ -256,6 +253,7 @@ public class ProgramService {
 			}
 			this.assignAllTheRolesOfTheProgramToUser(allRoles, program, user);
 		}
+
 	}
 
 	@SuppressWarnings("rawtypes")
