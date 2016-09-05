@@ -7,8 +7,7 @@ var gulp = require('gulp'),
 	destRoot = '../webapp/WEB-INF/pages/angular2',
 	es = require('event-stream'),
 	path = require('path'),
-	typescript = require('gulp-typescript'),
-	tscConfig = require('./tsconfig.json');
+	typescript = require('gulp-typescript');
 
 function getFoldersNg2(dir) {
 	return fs.readdirSync(dir)
@@ -25,9 +24,10 @@ gulp.task('angular2Ts', function() {
 	var folders = getFoldersNg2(srcRoot);
 
 	var tasks = folders.map(function(folder) {
-		
+		var tsProject = typescript.createProject(path.join(srcRoot, folder, 'tsconfig.json'));
+
 		return gulp.src(path.join(srcRoot, folder, '**/*.ts'))
-			.pipe(typescript(tscConfig.compilerOptions))
+			.pipe(typescript(tsProject))
 			.pipe(gulp.dest(path.join(srcRoot, folder, 'build')));
 	});
 
@@ -43,11 +43,11 @@ gulp.task('angular2Resources', ['angular2Ts'], function() {
 
 	var tasks = folders.map(function(folder) {
 
-	// TODO get all js recursively, exclude build folder
-	return gulp.src([path.join(srcRoot, folder, '*.js'), 
-					 path.join(srcRoot, folder, '**/*.css'), 
+	return gulp.src([path.join(srcRoot, folder, '*.js'),
+					 path.join(srcRoot, folder, '**/*.css'),
 					 path.join(srcRoot, folder, '**/*.json'),
-					 path.join(srcRoot, folder, '**/*.html')])
+					 path.join(srcRoot, folder, '**/*.html'),
+					 "!" + path.join(srcRoot, folder, 'build', '**')])
 		   .pipe(gulp.dest(path.join(srcRoot, folder, 'build')));
 	});
 

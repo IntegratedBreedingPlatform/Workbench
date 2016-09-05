@@ -1,3 +1,5 @@
+/// <reference path="../../../../typings/globals/node/index.d.ts" />
+
 /*
  * Angular 2 decorators and services
  */

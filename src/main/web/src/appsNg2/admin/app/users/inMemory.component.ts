@@ -1,8 +1,10 @@
+/// <reference path="../../../../../typings/globals/node/index.d.ts" />
+
 import { Component, OnInit } from '@angular/core';
 import { NgDataGridModel } from './../datagrid/ng-datagrid.model';
 import { PaginationComponent } from './../datagrid/pagination.component';
 import { User } from './inMemory.model';
-import { FORM_DIRECTIVES } from '@angular/forms'; 
+import { FORM_DIRECTIVES } from '@angular/forms';
 import './../utils/array.extensions';
 
 @Component({

@@ -1,3 +1,5 @@
+ /// <reference path="../../../../../typings/globals/node/index.d.ts" />
+
 import { Component, OnInit } from '@angular/core';
 import { InMemoryComponent } from './inMemory.component';
 

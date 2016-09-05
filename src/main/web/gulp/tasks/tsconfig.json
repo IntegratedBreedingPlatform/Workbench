@@ -1,5 +1,0 @@
-{
-    "outDir": "build/app",
-    "target": "es5",
-    "module": "system"
-}

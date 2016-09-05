@@ -1,4 +1,3 @@
-import { WebpackAsyncRoute } from '@angularclass/webpack-toolkit';
 import { RouterConfig } from '@angular/router';
 import { TableComponent } from './users/index'; // TODO use system js
 
