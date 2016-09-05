@@ -286,6 +286,22 @@
 			<version>1.6</version>
 		</dependency>
 
+		<!--For results computation in Breeder Queries-->
+		<!--from GPSB-->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math3</artifactId>
+			<version>3.2</version>
+		</dependency>
+
+		<!--from GPSB-->
+		<!-- Gson: Java to Json conversion -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.2.4</version>
+		</dependency>
+
 		<!-- Other Apache Libs -->
 		<dependency>
 			<groupId>org.apache.poi</groupId>
@@ -345,6 +361,14 @@
 			<groupId>net.sf.opencsv</groupId>
 			<artifactId>opencsv</artifactId>
 			<version>2.3</version>
+		</dependency>
+		<!-- Middleware Dependency -->
+		<dependency>
+			<groupId>org.generationcp</groupId>
+			<artifactId>middleware</artifactId>
+			<version>${ibpcommons.version}</version>
+			<type>test-jar</type>
+			<scope>test</scope>
 		</dependency>
 
 		<!-- Random Pojo Data Generator -->
