@@ -253,6 +253,7 @@ public class ProgramService {
 			}
 			this.assignAllTheRolesOfTheProgramToUser(allRoles, program, user);
 		}
+		this.createIBDBUserMapping(program, new HashSet<>(adminUsers));
 
 	}
 
