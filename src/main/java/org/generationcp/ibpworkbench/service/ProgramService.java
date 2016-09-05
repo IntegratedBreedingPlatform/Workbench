@@ -161,43 +161,53 @@ public class ProgramService {
 
 			// ccreate a copy of the Person
 			final Person workbenchPerson = this.workbenchDataManager.getPersonById(user.getPersonid());
-			Person cropDBPerson = workbenchPerson.copy();
+			final Person cropDBPerson = createCropDBPersonIfNecessary(workbenchPerson);
+			final User cropDBUser = createIBDBUserIfNecessary(user, cropDBPerson);
 
-			// add the Person record if they do not exist
-			if (!this.userDataManager.isPersonExists(cropDBPerson.getFirstName().toUpperCase(), cropDBPerson.getLastName().toUpperCase())) {
-				this.userDataManager.addPerson(cropDBPerson);
-			} else {
-				final List<Person> persons = this.userDataManager.getAllPersons();
-				for (final Person person : persons) {
-					if (person.getLastName().equalsIgnoreCase(cropDBPerson.getLastName().toUpperCase())
-							&& person.getFirstName().equalsIgnoreCase(cropDBPerson.getFirstName().toUpperCase())) {
-						cropDBPerson = person;
-						break;
-					}
-				}
-			}
+			this.createAndSaveIBDBUserMap(project.getProjectId(), user.getUserid(), cropDBUser.getUserid());
 
-			// create a copy of the user record
-			final User cropDBUser = user.copy();
-
-			// if a user is assigned to a program, then add them to the crop database where they can then access the program
-			if (!this.userDataManager.isUsernameExists(cropDBUser.getName())) {
-				cropDBUser.setPersonid(cropDBPerson.getId());
-				cropDBUser.setAccess(ProgramService.PROJECT_USER_ACCESS_NUMBER);
-				cropDBUser.setType(ProgramService.PROJECT_USER_TYPE);
-				cropDBUser.setInstalid(Integer.valueOf(0));
-				cropDBUser.setStatus(Integer.valueOf(ProgramService.PROJECT_USER_STATUS));
-				cropDBUser.setAssignDate(this.getCurrentDate());
-				final Integer userId = this.userDataManager.addUser(cropDBUser);
-
-				final User ibdbUser = this.userDataManager.getUserById(userId);
-				this.createAndSaveIBDBUserMap(project.getProjectId(), user.getUserid(), ibdbUser.getUserid());
-			} else {
-				final User ibdbUser = this.userDataManager.getUserByUserName(cropDBUser.getName());
-				this.createAndSaveIBDBUserMap(project.getProjectId(), user.getUserid(), ibdbUser.getUserid());
-			}
 			this.idAndNameOfProgramMembers.put(user.getUserid(), cropDBUser.getName());
 		}
+	}
+
+	User createIBDBUserIfNecessary(User user, Person cropDBPerson) {
+
+		// if a user is assigned to a program, then add them to the crop database where they can then access the program
+		final User cropDBUser = this.userDataManager.getUserByUserName(user.getName());
+
+		if (cropDBUser == null) {
+
+			User newCropDBUser = user.copy();
+			newCropDBUser.setPersonid(cropDBPerson.getId());
+			newCropDBUser.setAccess(ProgramService.PROJECT_USER_ACCESS_NUMBER);
+			newCropDBUser.setType(ProgramService.PROJECT_USER_TYPE);
+			newCropDBUser.setInstalid(Integer.valueOf(0));
+			newCropDBUser.setStatus(Integer.valueOf(ProgramService.PROJECT_USER_STATUS));
+			newCropDBUser.setAssignDate(this.getCurrentDate());
+
+			this.userDataManager.addUser(newCropDBUser);
+
+			return newCropDBUser;
+
+		} else {
+			return cropDBUser;
+		}
+
+	}
+
+	Person createCropDBPersonIfNecessary(Person workbenchPerson) {
+
+
+			Person cropDBPerson = userDataManager.getPersonByFirstAndLastName(workbenchPerson.getFirstName(), workbenchPerson.getLastName());
+			if (cropDBPerson == null) {
+				Person newCropDBPerson = workbenchPerson.copy();
+				userDataManager.addPerson(newCropDBPerson);
+				return newCropDBPerson;
+			} else {
+				return cropDBPerson;
+			}
+
+
 	}
 
 	private void createAndSaveIBDBUserMap(final Long projectId, final Integer workbenchUserId, final Integer ibdbUserId) {
