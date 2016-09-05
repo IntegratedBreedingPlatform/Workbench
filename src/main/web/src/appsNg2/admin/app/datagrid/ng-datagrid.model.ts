@@ -2,6 +2,8 @@ import './../utils/object.extensions';
 
 export class NgDataGridModel<T> {
     searchValue: T = <T>{};
+    sortBy: string;
+    sortAsc: boolean = true;
     currentPageIndex: number = 1;
     pageSize: number;
     private _items: T[];
@@ -49,7 +51,20 @@ export class NgDataGridModel<T> {
     }
 
     get itemsFiltered(): T[] {
-      return this.items.filter(item => Object.same(this.searchValue, item));
+        let key: string = this.sortBy;
+        
+        console.log("sort by: " + key);
+
+        return this.items
+            .filter(item => Object.same(this.searchValue, item))
+            .sort((obj1: T, obj2: T) => {
+
+                let one: number = this.sortAsc ? 1 : -1; 
+
+                if (obj1[key] < obj2[key]) return -one;
+                if (obj1[key] > obj2[key]) return one;
+                return 0;
+            });
     }
 
     get itemsOnCurrentPage(): T[] {

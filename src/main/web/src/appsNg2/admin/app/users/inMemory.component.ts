@@ -10,7 +10,10 @@ import './../utils/array.extensions';
 @Component({
     selector: 'in-memory-demo',
     templateUrl: 'inMemory.component.html',
-    directives: [ PaginationComponent, FORM_DIRECTIVES],
+    styleUrls: [
+        './inMemory.component.css'
+    ],
+    directives: [PaginationComponent, FORM_DIRECTIVES],
     moduleId: module.id
 })
 export class InMemoryComponent implements OnInit {
@@ -128,6 +131,24 @@ export class InMemoryComponent implements OnInit {
     }
 
     ngOnInit() { }
+    
+    isSorted(col): boolean {
+        return col == this.table.sortBy;
+    }
+    
+    sort(col, event?: MouseEvent): void {
+        if (event) {
+            event.preventDefault();
+        }
+        
+        if (this.table.sortBy == col) {
+            this.table.sortAsc = !this.table.sortAsc;
+        } else {
+            this.table.sortAsc = true;
+        }
+
+        this.table.sortBy = col;
+    }
 
     addRecordPlugin() {
         //let userId = this.userId++;

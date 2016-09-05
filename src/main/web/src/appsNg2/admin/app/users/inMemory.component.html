@@ -51,12 +51,12 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>User Name</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Status</th>
+                        <th [ngClass]="{ sort: isSorted('username'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('username')">User Name</th>
+                        <th [ngClass]="{ sort: isSorted('firstName'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('firstName')">First Name</th>
+                        <th [ngClass]="{ sort: isSorted('lastName'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('lastName')">Last Name</th>
+                        <th [ngClass]="{ sort: isSorted('email'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('email')">Email</th>
+                        <th [ngClass]="{ sort: isSorted('role'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('role')">Role</th>
+                        <th [ngClass]="{ sort: isSorted('status'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('status')">Status</th>
                     </tr>
                 </thead>
                 <tbody>
