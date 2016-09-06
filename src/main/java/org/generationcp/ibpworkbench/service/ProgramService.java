@@ -59,9 +59,9 @@ public class ProgramService {
 	private final Map<Integer, String> idAndNameOfProgramMembers = new HashMap<Integer, String>();
 
 	// http://cropwiki.irri.org/icis/index.php/TDM_Users_and_Access
-	private static final int PROJECT_USER_ACCESS_NUMBER = 100;
-	private static final int PROJECT_USER_TYPE = 422;
-	private static final int PROJECT_USER_STATUS = 1;
+	public static final int PROJECT_USER_ACCESS_NUMBER = 100;
+	public static final int PROJECT_USER_TYPE = 422;
+	public static final int PROJECT_USER_STATUS = 1;
 
 	public static final String ADMIN_ROLE = "ADMIN";
 

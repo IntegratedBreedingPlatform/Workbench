@@ -61,16 +61,38 @@ public class ProgramServiceTest {
 
 	}
 
+
+	Person workbenchPerson;
+	Person cropDBPerson;
+	User workbenchUser;
+	User cropDBUser;
+
+	@Before
+	public void init() {
+
+		initializeTestPersonsAndUsers();
+
+	}
+
+	private void initializeTestPersonsAndUsers() {
+
+		workbenchPerson = createPerson(1, "John", "Doe");
+		cropDBPerson = createPerson(2, "JOHN", "DOE");
+
+		workbenchUser = new User();
+		workbenchUser.setName("John");
+		workbenchUser.setPersonid(1);
+
+		cropDBUser = new User();
+		cropDBUser.setName("John");
+
+	}
+
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testAddNewProgram() throws Exception {
 
-		final Project project = new Project();
-		project.setProjectId(1L);
-		project.setProjectName("TestRiceProject");
-		final CropType cropType = new CropType(CropType.CropEnum.RICE.toString());
-		cropType.setDbName("ibdbv2_rice_merged");
-		project.setCropType(cropType);
+		final Project project = this.createProject();
 
 		final User loggedInUser = new User();
 		loggedInUser.setUserid(1);
@@ -100,7 +122,7 @@ public class ProgramServiceTest {
 		programMembers.add(memberUser);
 
 		// WorkbenchDataManager mocks
-		Mockito.when(this.workbenchDataManager.getCropTypeByName(Matchers.anyString())).thenReturn(cropType);
+		Mockito.when(this.workbenchDataManager.getCropTypeByName(Matchers.anyString())).thenReturn(project.getCropType());
 		final ArrayList<WorkflowTemplate> workflowTemplates = new ArrayList<WorkflowTemplate>();
 		workflowTemplates.add(new WorkflowTemplate());
 		Mockito.when(this.workbenchDataManager.getWorkflowTemplates()).thenReturn(workflowTemplates);
@@ -228,6 +250,11 @@ public class ProgramServiceTest {
 		Mockito.doReturn(new ArrayList<Role>()).when(this.workbenchDataManager).getRolesByProjectAndUser(program, memberAdminUser);
 		Mockito.doReturn(new ArrayList<Role>()).when(this.workbenchDataManager).getRolesByProjectAndUser(program, nonMemberAdminUser);
 
+		Mockito.when(this.workbenchDataManager.getPersonById(memberAdminUser.getPersonid())).thenReturn(this.createPerson(memberAdminUser.getPersonid(),
+				"John", "Doe"));
+		Mockito.when(this.workbenchDataManager.getPersonById(nonMemberAdminUser.getPersonid())).thenReturn(this.createPerson(nonMemberAdminUser.getPersonid(),
+				"Juan", "Dela Cruz"));
+
 		// test
 		this.programService.addAllAdminUsersOfCropToProgram(crop, program);
 
@@ -245,6 +272,106 @@ public class ProgramServiceTest {
 		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).getRolesByProjectAndUser(program, nonMemberAdminUser);
 		Mockito.verify(this.workbenchDataManager, Mockito.times(roles.size() * adminUsers.size())).addProjectUserRole(
 				Matchers.any(Project.class), Matchers.any(User.class), Matchers.any(Role.class));
+		Mockito.verify(this.workbenchDataManager, Mockito.times(adminUsers.size())).addIbdbUserMap(Matchers.any(IbdbUserMap.class));
+	}
+
+	@Test
+	public void testCreateCropDBPersonIfNecessaryExistingCropDBPerson() {
+
+
+		Mockito.when(userDataManager.getPersonByFirstAndLastName(workbenchPerson.getFirstName(), workbenchPerson.getLastName())).thenReturn(cropDBPerson);
+
+		Person result = this.programService.createCropDBPersonIfNecessary(workbenchPerson);
+
+		Mockito.verify(userDataManager, Mockito.times(0)).addPerson(Mockito.any(Person.class));
+		Assert.assertSame(result, cropDBPerson);
+
+
+	}
+
+	@Test
+	public void testCreateCropDBPersonIfNecessaryCropDBPersonDoesNotExist() {
+
+
+		Mockito.when(userDataManager.getPersonByFirstAndLastName(workbenchPerson.getFirstName(), workbenchPerson.getLastName())).thenReturn(null);
+
+		Person result = this.programService.createCropDBPersonIfNecessary(workbenchPerson);
+
+		Mockito.verify(userDataManager, Mockito.times(1)).addPerson(Mockito.any(Person.class));
+		Assert.assertNotSame(result, workbenchPerson);
+		Assert.assertEquals(result.getFirstName(), workbenchPerson.getFirstName());
+		Assert.assertEquals(result.getLastName(), workbenchPerson.getLastName());
+
+	}
+
+	@Test
+	public void testCreateIBDBUserIfNecessaryCropDBUSerIsExisting() {
+
+
+		Mockito.when(userDataManager.getUserByUserName(workbenchUser.getName())).thenReturn(cropDBUser);
+
+		User result = this.programService.createIBDBUserIfNecessary(workbenchUser, cropDBPerson);
+
+		Mockito.verify(userDataManager, Mockito.times(0)).addUser(Mockito.any(User.class));
+
+		Assert.assertSame(result, cropDBUser);
+
+	}
+
+	@Test
+	public void testCreateIBDBUserIfNecessaryCropDBUSerIsNotExisting() {
+
+		Mockito.when(userDataManager.getUserByUserName(workbenchUser.getName())).thenReturn(null);
+
+		User result = this.programService.createIBDBUserIfNecessary(workbenchUser, cropDBPerson);
+
+		Mockito.verify(userDataManager, Mockito.times(1)).addUser(Mockito.any(User.class));
+
+		Assert.assertEquals(cropDBPerson.getId(), result.getPersonid());
+		Assert.assertEquals(Integer.valueOf(ProgramService.PROJECT_USER_ACCESS_NUMBER), result.getAccess());
+		Assert.assertEquals(Integer.valueOf(ProgramService.PROJECT_USER_TYPE), result.getType());
+		Assert.assertEquals(Integer.valueOf(0), result.getInstalid());
+		Assert.assertEquals(Integer.valueOf(ProgramService.PROJECT_USER_STATUS), result.getStatus());
+		Assert.assertNotNull(result.getAssignDate());
+
+	}
+
+	@Test
+	public void testCreateIBDBUserMapping() {
+
+		Project project = this.createProject();
+
+		final Set<User> users = new HashSet<>();
+		users.add(workbenchUser);
+
+		Mockito.when(this.workbenchDataManager.getPersonById(workbenchUser.getPersonid())).thenReturn(workbenchPerson);
+		Mockito.when(this.userDataManager.getPersonByFirstAndLastName(workbenchPerson.getFirstName(), workbenchPerson.getLastName())).thenReturn(cropDBPerson);
+		Mockito.when(this.userDataManager.getUserByUserName(workbenchUser.getName())).thenReturn(cropDBUser);
+
+		this.programService.createIBDBUserMapping(project, users);
+
+		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).addIbdbUserMap(Mockito.any(IbdbUserMap.class));
+
+	}
+
+	private Project createProject() {
+
+		final Project project = new Project();
+		project.setProjectId(1L);
+		project.setProjectName("TestRiceProject");
+		final CropType cropType = new CropType(CropType.CropEnum.RICE.toString());
+		cropType.setDbName("ibdbv2_rice_merged");
+		project.setCropType(cropType);
+
+		return project;
+	}
+
+	private Person createPerson(final Integer personid, final String firstName, final String lastName) {
+		Person person = new Person();
+		person.setId(personid);
+		person.setFirstName(firstName);
+		person.setLastName(lastName);
+		return person;
 	}
 
 	private List<Role> getAllRolesTestData() {
@@ -265,8 +392,14 @@ public class ProgramServiceTest {
 
 	private List<User> createAdminUsersTestData(final int memberAdminUserId, final int nonMemberAdminUserId) {
 		final List<User> adminUserIds = new ArrayList<>();
-		adminUserIds.add(new User(memberAdminUserId));
-		adminUserIds.add(new User(nonMemberAdminUserId));
+
+		User userMemberAdmin = new User(memberAdminUserId);
+		userMemberAdmin.setPersonid(1);
+		adminUserIds.add(userMemberAdmin);
+
+		User userNonMemberAdmin = new User(nonMemberAdminUserId);
+		userNonMemberAdmin.setPersonid(2);
+		adminUserIds.add(userNonMemberAdmin);
 		return adminUserIds;
 	}
 
