@@ -52,8 +52,6 @@ export class NgDataGridModel<T> {
 
     get itemsFiltered(): T[] {
         let key: string = this.sortBy;
-        
-        console.log("sort by: " + key);
 
         return this.items
             .filter(item => Object.same(this.searchValue, item))
