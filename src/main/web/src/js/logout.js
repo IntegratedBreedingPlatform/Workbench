@@ -14,6 +14,7 @@
         var fieldBookLogoutUrl = baseUrl + '/Fieldbook/logout';
         var breedingManagerLogoutUrl = baseUrl + '/BreedingManager/logout';
         var workbenchLogoutUrl = baseUrl + '/ibpworkbench/logout';
+        var gdmsLogoutUrl = baseUrl + '/GDMS/logout';
 
          $.ajax({
                 url: fieldBookLogoutUrl,
@@ -34,6 +35,17 @@
             success: function(data) {
             }
         });
+
+        $.ajax({
+            url: gdmsLogoutUrl,
+            type: 'GET',
+            data: '',
+            cache: false,
+            async: false,
+            success: function(data) {
+            }
+        });
+
 
         //alert('You have logged out of all application');
         window.top.location.href = workbenchLogoutUrl;
