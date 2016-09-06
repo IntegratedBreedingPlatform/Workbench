@@ -54,6 +54,8 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(BreedingViewXMLWriter.class);
 
+	private static final String CROP_PLACEHOLDER = "{cropName}";
+
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
 
@@ -196,9 +198,22 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 
 	protected String getWebApiUrl() {
 		String url = this.webApiUrl + "?restartApplication";
-		url += this.sessionData.getWorkbenchContextParameters();
-		return url;
+		Project project = sessionData.getLastOpenedProject();
+		String webApiUrlWithCropName = replaceCropNameInWebApiUrl(url, project.getCropType().getCropName());
+		webApiUrlWithCropName += this.sessionData.getWorkbenchContextParameters();
+		return webApiUrlWithCropName;
 	}
+
+	private String replaceCropNameInWebApiUrl(final String webApiUrl, final String cropNameValue){
+		StringBuilder containerWebApiUrl = new StringBuilder(webApiUrl);
+
+		int startIndex = containerWebApiUrl.indexOf(CROP_PLACEHOLDER);
+		int endIndex = startIndex + CROP_PLACEHOLDER.length();
+
+		containerWebApiUrl.replace(startIndex, endIndex, cropNameValue);
+		return containerWebApiUrl.toString();
+	}
+
 
 	private Environments createEnvironments() {
 		final Environments environments = new Environments();
@@ -286,4 +301,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 		this.workbenchDataManager = workbenchDataManager;
 	}
 
+	public void setWebApiUrl(String webApiUrl) {
+		this.webApiUrl = webApiUrl;
+	}
 }
