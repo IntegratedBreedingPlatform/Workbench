@@ -66,6 +66,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	private Label workbenchTitle;
 	private Button homeButton;
+	private Button adminButton;
 	private PopupButton memberButton;
 	private Button helpButton;
 
@@ -156,6 +157,12 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.homeButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + HEADER_BTN);
 		this.homeButton.setHtmlContentAllowed(true);
 		this.homeButton.setSizeUndefined();
+
+		this.adminButton = new Button(
+				String.format("<span class='bms-header-btn'><span>%s</span></span>", this.messageSource.getMessage("ADMIN_BUTTON")));
+		this.adminButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + HEADER_BTN);
+		this.adminButton.setHtmlContentAllowed(true);
+		this.adminButton.setSizeUndefined();
 
 		this.memberButton = new PopupButton();
 		this.memberButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + " bms-header-popuplink");
@@ -275,6 +282,20 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		final Button.ClickListener homeAction = new HomeAction();
 		this.homeButton.addListener(homeAction);
 		this.logoBtn.addListener(homeAction);
+		
+		this.adminButton.addListener(new Button.ClickListener() {
+			
+			@Override
+			public void buttonClick(ClickEvent event) {
+				final IContentWindow contentFrame = (IContentWindow) event.getComponent().getWindow();
+				contentFrame.showContent("controller/admin");
+
+				// collapse sidebar
+				WorkbenchMainView.this.root.setSplitPosition(0, Sizeable.UNITS_PIXELS);
+				// change icon here
+				WorkbenchMainView.this.toggleSidebarIcon();
+			}
+		});
 
 		this.helpButton.addListener(new Button.ClickListener() {
 
@@ -384,6 +405,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 		headerLayout.addComponent(this.uriFragUtil);
 
+		headerLayout.addComponent(this.adminButton);
 		headerLayout.addComponent(this.homeButton);
 
 		headerLayout.addComponent(this.helpButton);
@@ -391,6 +413,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		headerLayout.addComponent(this.memberButton);
 
 		headerLayout.setComponentAlignment(this.homeButton, Alignment.MIDDLE_RIGHT);
+		headerLayout.setComponentAlignment(this.adminButton, Alignment.MIDDLE_RIGHT);
 		headerLayout.setComponentAlignment(this.askSupportBtn, Alignment.MIDDLE_RIGHT);
 		headerLayout.setComponentAlignment(this.helpButton, Alignment.MIDDLE_RIGHT);
 		headerLayout.setComponentAlignment(this.memberButton, Alignment.MIDDLE_RIGHT);
