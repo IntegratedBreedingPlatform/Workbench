@@ -8,7 +8,7 @@ __karma__.loaded = function() {};
 
 System.config({
     packages: {
-        './build/app': {
+        './src/appsNg2/admin/build': {
             defaultExtension: false,
             format: 'register',
             map: Object.keys(window.__karma__.files).
@@ -19,7 +19,7 @@ System.config({
 });
 
 //System.import('angular2/src/platform/browser/browser_adapter')
-System.import('./build/app')
+System.import('./node_modules/@angular/platform-browser/src/browser/browser_adapter')
     .then(function(browser_adapter) { browser_adapter.BrowserDomAdapter.makeCurrent(); })
     .then(function() { return Promise.all(resolveTestFiles()); })
     .then(function() { __karma__.start(); }, function(error) { __karma__.error(error.stack || error); });
@@ -28,7 +28,7 @@ function createPathRecords(pathsMapping, appPath) {
     // creates local module name mapping to global path with karma's fingerprint in path, e.g.:
     // './vg-player/vg-player':
     // '/base/dist/vg-player/vg-player.js?f4523daf879cfb7310ef6242682ccf10b2041b3e'
-    var moduleName = './' + resolveKeyPathForMapping('./build/app', appPath);
+    var moduleName = './' + resolveKeyPathForMapping('src/appsNg2/admin/build/test', appPath);
     moduleName = moduleName.replace(/\.js$/, '');
     pathsMapping[moduleName] = appPath + '?' + window.__karma__.files[appPath];
     return pathsMapping;
@@ -36,7 +36,7 @@ function createPathRecords(pathsMapping, appPath) {
 
 function onlyAppFiles(filePath) {
     //return /\/base\/dist\/(?!.*\.spec\.js$).*\.js$/.test(filePath);
-    return /\/base\/build\/test\/(?!.*\.spec\.js$).*\.js$/.test(filePath);
+    return /\/src\/appsNg2\/admin\/build\/**\/(?!.*\.spec\.js$).*\.js$/.test(filePath);
 }
 
 function onlySpecFiles(path) {

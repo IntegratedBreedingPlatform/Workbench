@@ -1,7 +1,7 @@
 module.exports = function(config) {
     config.set({
 
-        basePath: '.',
+        basePath: '',
 
         frameworks: ['jasmine'],
 
@@ -18,8 +18,8 @@ module.exports = function(config) {
             {pattern: './../webapp/WEB-INF/pages/angular2/admin/**/*.js', included: false, watched: true},
 
             // paths to support debugging with source maps in dev tools
-            {pattern: 'src/appNG2/**/*.ts', included: false, watched: false},
-            {pattern: './../webapp/WEB-INF/pages/angular2/admin**/*.js.map', included: false, watched: false}
+            {pattern: 'src/appsNg2/**/*.ts', included: false, watched: false},
+            {pattern: './../webapp/WEB-INF/pages/angular2/admin/build/**/*.js.map', included: false, watched: false}
         ],
 
         // list of files to exclude
@@ -28,14 +28,15 @@ module.exports = function(config) {
      		],
 
         // proxied base paths
-  /*      proxies: {
+        // proxied base paths
+        proxies: {
             // required for component assests fetched by Angular's compiler
             '/src/': '/base/src/'
         },
-*/
+
         port: 9876,
 
-        logLevel: config.LOG_DEBUG,
+        logLevel: config.WARN,
 
         colors: true,
 
@@ -57,15 +58,14 @@ module.exports = function(config) {
         // Do not include tests or libraries (these files will be instrumented by Istanbul)
         preprocessors: {
     			// generate js files from html templates
-    			'../webapp/WEB-INF/static/views/**/*.html': 'ng-html2js',
-    			'src/apps/**/*.js': ['coverage']
+//   			'../webapp/WEB-INF/static/views/**/*.html': 'ng-html2js',
+//    			'src/apps/**/*.js': ['coverage']
+          'src/appsNg2/admin/build/**/!(*spec).js': ['coverage']
     		},
 
         coverageReporter: {
-            reporters:[
-                {type: 'json', subdir: '.', file: 'coverage-final.json'}
-            ]
-        },
+    			type: 'text-summary'
+    		},
 
         singleRun: true
     })

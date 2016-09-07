@@ -11,7 +11,8 @@
     "ng2:build": "gulp angular2",
     "hotswap": "gulp hotswap",
     "postinstall": "typings install",
-    "typings": "typings"
+    "typings": "typings",
+    "testk" : "karma start karma.conf-ng2.js"
   },
   "repository": {
     "type": "git",
