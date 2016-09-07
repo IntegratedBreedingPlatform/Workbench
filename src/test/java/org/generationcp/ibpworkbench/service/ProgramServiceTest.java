@@ -1,4 +1,3 @@
-
 package org.generationcp.ibpworkbench.service;
 
 import java.util.ArrayList;
@@ -63,7 +62,6 @@ public class ProgramServiceTest {
 		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
 	}
-
 
 	Person workbenchPerson;
 	Person cropDBPerson;
@@ -184,8 +182,8 @@ public class ProgramServiceTest {
 
 		Mockito.verify(this.workbenchDataManager, Mockito.times(2)).addProjectUserRole(Matchers.anyList());
 
-		Mockito.verify(this.workbenchDataManager, Mockito.atLeast(1 + projects.size())).saveOrUpdateProjectUserInfo(
-				Matchers.any(ProjectUserInfo.class));
+		Mockito.verify(this.workbenchDataManager, Mockito.atLeast(1 + projects.size()))
+				.saveOrUpdateProjectUserInfo(Matchers.any(ProjectUserInfo.class));
 
 	}
 
@@ -211,10 +209,8 @@ public class ProgramServiceTest {
 		Mockito.doReturn(new ArrayList<Role>()).when(this.workbenchDataManager).getRolesByProjectAndUser(secondProject, workbenchUser);
 
 		List<Person> allPersons = new ArrayList<>();
-		allPersons.add(this.createPerson(1,
-				"John", "Doe"));
-		allPersons.add(this.createPerson(2,
-				"Juan", "Dela Cruz"));
+		allPersons.add(this.createPerson(1, "John", "Doe"));
+		allPersons.add(this.createPerson(2, "Juan", "Dela Cruz"));
 		Mockito.when(this.workbenchDataManager.getAllPersons()).thenReturn(allPersons);
 
 		// test
@@ -225,8 +221,8 @@ public class ProgramServiceTest {
 		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).saveOrUpdateProjectUserInfo(captor.capture());
 
 		final ProjectUserInfo captured = captor.getValue();
-		Assert.assertEquals("The user id of the newly-added program member must be " + workbenchUser.getUserid(), workbenchUser.getUserid().intValue(),
-				captured.getUserId().intValue());
+		Assert.assertEquals("The user id of the newly-added program member must be " + workbenchUser.getUserid(),
+				workbenchUser.getUserid().intValue(), captured.getUserId().intValue());
 		Assert.assertEquals("The project id of the newly-added program member must be " + secondProject.getProjectId().intValue(),
 				secondProject.getProjectId().intValue(), captured.getProjectId().intValue());
 
@@ -248,7 +244,8 @@ public class ProgramServiceTest {
 		final List<User> adminUsers = this.createAdminUsersTestData(memberAdminUserId, nonMemberAdminUserId);
 
 		// mock data
-		Mockito.doReturn(adminUsers).when(this.workbenchDataManager).getAllUsersByRole(org.generationcp.commons.security.Role.ADMIN.toString());
+		Mockito.doReturn(adminUsers).when(this.workbenchDataManager)
+				.getAllUsersByRole(org.generationcp.commons.security.Role.ADMIN.toString());
 		final ProjectUserInfoDAO puiDao = Mockito.mock(ProjectUserInfoDAO.class);
 		Mockito.when(this.workbenchDataManager.getProjectUserInfoDao()).thenReturn(puiDao);
 		Mockito.doReturn(new ProjectUserInfo()).when(puiDao).getByProjectIdAndUserId(projectId, memberAdminUserId);
@@ -262,10 +259,8 @@ public class ProgramServiceTest {
 		Mockito.doReturn(new ArrayList<Role>()).when(this.workbenchDataManager).getRolesByProjectAndUser(program, nonMemberAdminUser);
 
 		List<Person> allPersons = new ArrayList<>();
-		allPersons.add(this.createPerson(memberAdminUser.getPersonid(),
-				"John", "Doe"));
-		allPersons.add(this.createPerson(nonMemberAdminUser.getPersonid(),
-				"Juan", "Dela Cruz"));
+		allPersons.add(this.createPerson(memberAdminUser.getPersonid(), "John", "Doe"));
+		allPersons.add(this.createPerson(nonMemberAdminUser.getPersonid(), "Juan", "Dela Cruz"));
 		Mockito.when(this.workbenchDataManager.getAllPersons()).thenReturn(allPersons);
 
 		// test
@@ -275,10 +270,10 @@ public class ProgramServiceTest {
 		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).saveOrUpdateProjectUserInfo(captor.capture());
 
 		final ProjectUserInfo captured = captor.getValue();
-		Assert.assertEquals("The user id of the newly-added program member must be " + nonMemberAdminUserId, nonMemberAdminUserId, captured
-				.getUserId().intValue());
-		Assert.assertEquals("The project id of the newly-added program member must be " + projectId, projectId, captured.getProjectId()
-				.intValue());
+		Assert.assertEquals("The user id of the newly-added program member must be " + nonMemberAdminUserId, nonMemberAdminUserId,
+				captured.getUserId().intValue());
+		Assert.assertEquals("The project id of the newly-added program member must be " + projectId, projectId,
+				captured.getProjectId().intValue());
 
 		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).getAllRoles();
 		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).getRolesByProjectAndUser(program, memberAdminUser);
@@ -290,7 +285,6 @@ public class ProgramServiceTest {
 	@Test
 	public void testCreateCropDBPersonIfNecessaryExistingCropDBPerson() {
 
-
 		Map<String, Person> cropDBPersonsMap = new HashMap<>();
 		cropDBPersonsMap.put(programService.getNameKey(cropDBPerson), cropDBPerson);
 
@@ -298,7 +292,6 @@ public class ProgramServiceTest {
 
 		Mockito.verify(userDataManager, Mockito.times(0)).addPerson(Mockito.any(Person.class));
 		Assert.assertSame(result, cropDBPerson);
-
 
 	}
 
@@ -358,7 +351,8 @@ public class ProgramServiceTest {
 		Mockito.when(this.userDataManager.getAllPersons()).thenReturn(Arrays.asList(cropDBPerson));
 		Mockito.when(this.userDataManager.getAllUsers()).thenReturn(Arrays.asList(cropDBUser));
 
-		this.programService.createIBDBUserMapping(project, users, programService.retrieveWorkbenchPersonsMap(), programService.retrieveCropDBPersonsMap(), programService.retrieveCropDBUsersMap());
+		this.programService.createIBDBUserMapping(project, users, programService.retrieveWorkbenchPersonsMap(),
+				programService.retrieveCropDBPersonsMap(), programService.retrieveCropDBUsersMap());
 
 		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).addIbdbUserMap(Mockito.any(IbdbUserMap.class));
 

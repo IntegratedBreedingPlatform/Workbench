@@ -1,4 +1,3 @@
-
 package org.generationcp.ibpworkbench.service;
 
 import java.util.ArrayList;
@@ -82,8 +81,9 @@ public class ProgramService {
 
 		this.addUsersToProgram(users, program);
 
-		ProgramService.LOG.info("Program created. ID:" + program.getProjectId() + " Name:" + program.getProjectName() + " Start date:"
-				+ program.getStartDate());
+		ProgramService.LOG
+				.info("Program created. ID:" + program.getProjectId() + " Name:" + program.getProjectName() + " Start date:" + program
+						.getStartDate());
 	}
 
 	public void addUserToAllProgramsIfAdmin(final User user) {
@@ -117,7 +117,8 @@ public class ProgramService {
 	/**
 	 * Creates IBDBUserMap entries for the specified users.
 	 */
-	public void createIBDBUserMapping(final Project project, final Set<User> users, final Map<Integer, Person> workbenchPersonsMap, final Map<String, Person> cropDBPersonsMap, final Map<String, User> cropDBUsersMap) {
+	public void createIBDBUserMapping(final Project project, final Set<User> users, final Map<Integer, Person> workbenchPersonsMap,
+			final Map<String, Person> cropDBPersonsMap, final Map<String, User> cropDBUsersMap) {
 
 		for (final User user : users) {
 
@@ -131,16 +132,16 @@ public class ProgramService {
 		}
 	}
 
-	public Map<String,User> retrieveCropDBUsersMap() {
+	public Map<String, User> retrieveCropDBUsersMap() {
 
 		Map<String, User> map = new HashMap<>();
-		for (User user : this.userDataManager.getAllUsers()){
+		for (User user : this.userDataManager.getAllUsers()) {
 			map.put(user.getName(), user);
 		}
 		return map;
 	}
 
-	public Map<String,Person> retrieveCropDBPersonsMap() {
+	public Map<String, Person> retrieveCropDBPersonsMap() {
 		Map<String, Person> map = new HashMap<>();
 		for (Person person : this.userDataManager.getAllPersons()) {
 			map.put(getNameKey(person), person);
@@ -148,7 +149,7 @@ public class ProgramService {
 		return map;
 	}
 
-	public Map<Integer,Person> retrieveWorkbenchPersonsMap() {
+	public Map<Integer, Person> retrieveWorkbenchPersonsMap() {
 		Map<Integer, Person> map = new HashMap<>();
 		for (Person person : this.workbenchDataManager.getAllPersons()) {
 			map.put(person.getId(), person);
@@ -181,21 +182,20 @@ public class ProgramService {
 
 	Person createCropDBPersonIfNecessary(Person workbenchPerson, final Map<String, Person> cropDBPersonsMap) {
 
-			String nameKey = getNameKey(workbenchPerson);
+		String nameKey = getNameKey(workbenchPerson);
 
-			if (!cropDBPersonsMap.containsKey(nameKey)) {
-				Person newCropDBPerson = workbenchPerson.copy();
-				userDataManager.addPerson(newCropDBPerson);
-				return newCropDBPerson;
-			} else {
-				return cropDBPersonsMap.get(nameKey);
-			}
-
+		if (!cropDBPersonsMap.containsKey(nameKey)) {
+			Person newCropDBPerson = workbenchPerson.copy();
+			userDataManager.addPerson(newCropDBPerson);
+			return newCropDBPerson;
+		} else {
+			return cropDBPersonsMap.get(nameKey);
+		}
 
 	}
 
 	String getNameKey(Person person) {
-		return person.getFirstName().toLowerCase() +  person.getLastName().toLowerCase();
+		return person.getFirstName().toLowerCase() + person.getLastName().toLowerCase();
 	}
 
 	private void createAndSaveIBDBUserMap(final Long projectId, final Integer workbenchUserId, final Integer ibdbUserId) {
@@ -236,13 +236,14 @@ public class ProgramService {
 		final Map<String, User> cropDBUsersMap = retrieveCropDBUsersMap();
 
 		for (final Project project : projects) {
-			if (this.workbenchDataManager.getProjectUserInfoDao().getByProjectIdAndUserId(project.getProjectId().intValue(),
-					user.getUserid()) == null) {
+			if (this.workbenchDataManager.getProjectUserInfoDao()
+					.getByProjectIdAndUserId(project.getProjectId().intValue(), user.getUserid()) == null) {
 				final ProjectUserInfo pUserInfo = new ProjectUserInfo(project.getProjectId().intValue(), user.getUserid());
 				this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
 			}
 			this.assignAllTheRolesOfTheProgramToUser(allRoles, project, user);
-			this.createIBDBUserMapping(project, new HashSet<User>(Arrays.asList(user)), workbenchPersonsMap, cropDBPersonsMap, cropDBUsersMap);
+			this.createIBDBUserMapping(project, new HashSet<User>(Arrays.asList(user)), workbenchPersonsMap, cropDBPersonsMap,
+					cropDBUsersMap);
 		}
 
 	}
@@ -255,8 +256,8 @@ public class ProgramService {
 		final Map<String, User> cropDBUsersMap = retrieveCropDBUsersMap();
 
 		for (final User user : users) {
-			if (this.workbenchDataManager.getProjectUserInfoDao().getByProjectIdAndUserId(program.getProjectId().intValue(),
-					user.getUserid()) == null) {
+			if (this.workbenchDataManager.getProjectUserInfoDao()
+					.getByProjectIdAndUserId(program.getProjectId().intValue(), user.getUserid()) == null) {
 				final ProjectUserInfo pUserInfo = new ProjectUserInfo(program.getProjectId().intValue(), user.getUserid());
 				this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
 			}

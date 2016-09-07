@@ -1,12 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * <p/>
  * Generation Challenge Programme (GCP)
- *
- *
+ * <p/>
+ * <p/>
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.ui.programmembers;
@@ -51,7 +50,7 @@ public class SaveUsersInProjectAction implements ClickListener {
 	private final TwinTableSelect<User> select;
 
 	private final Project project;
-	
+
 	@Autowired
 	private ProgramService programService;
 
@@ -60,7 +59,7 @@ public class SaveUsersInProjectAction implements ClickListener {
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
-	
+
 	@Autowired
 	private PlatformTransactionManager transactionManager;
 
@@ -83,6 +82,7 @@ public class SaveUsersInProjectAction implements ClickListener {
 		try {
 			final TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
 			transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+
 				@Override
 				protected void doInTransactionWithoutResult(TransactionStatus status) {
 					List<ProjectUserRole> projectUserRoleList = new ArrayList<ProjectUserRole>();
@@ -97,9 +97,11 @@ public class SaveUsersInProjectAction implements ClickListener {
 							projectUserRoleList.add(projUsrRole);
 						}
 
-						if (SaveUsersInProjectAction.this.workbenchDataManager.getProjectUserInfoDao().getByProjectIdAndUserId(SaveUsersInProjectAction.this.project.getProjectId().intValue(),
-								u.getUserid()) == null) {
-							ProjectUserInfo pUserInfo = new ProjectUserInfo(SaveUsersInProjectAction.this.project.getProjectId().intValue(), u.getUserid());
+						if (SaveUsersInProjectAction.this.workbenchDataManager.getProjectUserInfoDao()
+								.getByProjectIdAndUserId(SaveUsersInProjectAction.this.project.getProjectId().intValue(), u.getUserid())
+								== null) {
+							ProjectUserInfo pUserInfo =
+									new ProjectUserInfo(SaveUsersInProjectAction.this.project.getProjectId().intValue(), u.getUserid());
 							SaveUsersInProjectAction.this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
 						}
 					}
@@ -108,13 +110,14 @@ public class SaveUsersInProjectAction implements ClickListener {
 					final Map<String, Person> cropDBPersonsMap = programService.retrieveCropDBPersonsMap();
 					final Map<String, User> cropDBUsersMap = programService.retrieveCropDBUsersMap();
 					//use the project service to link new members to the project
-					programService.createIBDBUserMapping(project, new HashSet<>(userList), workbenchPersonsMap, cropDBPersonsMap, cropDBUsersMap);
+					programService
+							.createIBDBUserMapping(project, new HashSet<>(userList), workbenchPersonsMap, cropDBPersonsMap, cropDBUsersMap);
 
 					// UPDATE workbench DB with the project user roles
-					SaveUsersInProjectAction.this.workbenchDataManager.updateProjectsRolesForProject(project,projectUserRoleList);
+					SaveUsersInProjectAction.this.workbenchDataManager.updateProjectsRolesForProject(project, projectUserRoleList);
 
-
-					MessageNotifier.showMessage(event.getComponent().getWindow(), "Success", "Successfully updated this project's members list.");
+					MessageNotifier
+							.showMessage(event.getComponent().getWindow(), "Success", "Successfully updated this project's members list.");
 				}
 			});
 
