@@ -3,9 +3,9 @@ table > thead > tr > th {
 }
 table > thead > tr > th.sort::after {
     font-family: 'Glyphicons Halflings';
-    position: relative;
-    top: 2px;
-    left: 9px;
+    position: absolute;
+    margin-left: 5px;
+    top: 9px;
 }
 table > thead > tr > th.sort.desc::after {
     content: "\e253";

@@ -19,7 +19,7 @@ Object.same = function(source, target): boolean {
         if (typeof source[prop] === 'string' && target[prop].startsWith(source[prop])) continue;
         if (source[prop] === target[prop]) continue;
         if (source[prop].toUpperCase()  === target[prop].toUpperCase()) continue;
-        if(source[prop] == "*") continue;
+        if(source[prop] == "undefined") continue;
         return false;
     }
 
