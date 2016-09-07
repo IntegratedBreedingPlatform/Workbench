@@ -21,6 +21,11 @@
    	<!-- 2. Configure SystemJS -->
     <script th:src="@{/controller/pages/angular2/admin/systemjs.config.js}"></script>
     
+    <style type="text/css">
+		.throbber {
+			margin: 20px;
+		}
+	</style>
 
     <script>
       System.import('app').catch(function(err){ console.error(err); });
@@ -29,6 +34,8 @@
 
   <!-- 3. Display the application -->
   <body>
-     <app>Loading...</app>
+     <app>
+		 <span class="throbber throbber-lg"></span>
+     </app>
    </body>
 </html>
