@@ -12,7 +12,6 @@ import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
-import org.generationcp.middleware.pojos.workbench.WorkbenchRuntimeData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,13 +71,6 @@ public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSucc
 		// See the cookie based scheme in org.generationcp.ibpworkbench.actions.LoginPresenter.doLogin(): line 97-111 for ref.
 		// We want this replaced using Spring Security's "Remember Me services" options.
 
-		// 3. Update WorkbenchRuntimeData
-		WorkbenchRuntimeData data = this.workbenchDataManager.getWorkbenchRuntimeData();
-		if (data == null) {
-			data = new WorkbenchRuntimeData();
-		}
-		data.setUserId(user.getUserid());
-		this.workbenchDataManager.updateWorkbenchRuntimeData(data);
 	}
 
 	/**
