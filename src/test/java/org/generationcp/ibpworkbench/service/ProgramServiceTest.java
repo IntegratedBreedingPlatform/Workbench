@@ -2,8 +2,11 @@
 package org.generationcp.ibpworkbench.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.generationcp.ibpworkbench.data.initializer.ProjectTestDataInitializer;
@@ -80,6 +83,7 @@ public class ProgramServiceTest {
 		cropDBPerson = createPerson(2, "JOHN", "DOE");
 
 		workbenchUser = new User();
+		workbenchUser.setUserid(1);
 		workbenchUser.setName("John");
 		workbenchUser.setPersonid(1);
 
@@ -128,10 +132,12 @@ public class ProgramServiceTest {
 		Mockito.when(this.workbenchDataManager.getWorkflowTemplates()).thenReturn(workflowTemplates);
 
 		Mockito.when(this.workbenchDataManager.getUserById(loggedInUser.getUserid())).thenReturn(loggedInUser);
-		Mockito.when(this.workbenchDataManager.getPersonById(loggedInPerson.getId())).thenReturn(loggedInPerson);
-
 		Mockito.when(this.workbenchDataManager.getUserById(memberUser.getUserid())).thenReturn(memberUser);
-		Mockito.when(this.workbenchDataManager.getPersonById(memberPerson.getId())).thenReturn(memberPerson);
+
+		List<Person> allPersons = new ArrayList<>();
+		allPersons.add(loggedInPerson);
+		allPersons.add(memberPerson);
+		Mockito.when(this.workbenchDataManager.getAllPersons()).thenReturn(allPersons);
 
 		final ProjectUserInfoDAO puiDao = Mockito.mock(ProjectUserInfoDAO.class);
 		Mockito.when(this.workbenchDataManager.getProjectUserInfoDao()).thenReturn(puiDao);
@@ -176,7 +182,7 @@ public class ProgramServiceTest {
 		// Map is added for both current and membeer user.
 		Mockito.verify(this.workbenchDataManager, Mockito.times(2)).addIbdbUserMap(Matchers.any(IbdbUserMap.class));
 
-		Mockito.verify(this.workbenchDataManager).addProjectUserRole(Matchers.anyList());
+		Mockito.verify(this.workbenchDataManager, Mockito.times(2)).addProjectUserRole(Matchers.anyList());
 
 		Mockito.verify(this.workbenchDataManager, Mockito.atLeast(1 + projects.size())).saveOrUpdateProjectUserInfo(
 				Matchers.any(ProjectUserInfo.class));
@@ -186,11 +192,9 @@ public class ProgramServiceTest {
 	@Test
 	public void testAddProjectUserToAllPrograms() {
 		// set data
-		final User user = new User();
-		user.setUserid(1);
 		final CropType cropType = new CropType(CropType.CropEnum.MAIZE.toString());
 		final List<Project> projects = ProjectTestDataInitializer.createProjectsWithCropType(cropType);
-		Mockito.doReturn(projects).when(this.workbenchDataManager).getProjectsByCropType(cropType);
+		Mockito.doReturn(projects).when(this.workbenchDataManager).getProjects();
 
 		// mock methods - set first project as an existing program of the user while the second as not
 		final Project firstProject = projects.get(0);
@@ -198,12 +202,20 @@ public class ProgramServiceTest {
 		final ProjectUserInfoDAO puiDao = Mockito.mock(ProjectUserInfoDAO.class);
 		Mockito.when(this.workbenchDataManager.getProjectUserInfoDao()).thenReturn(puiDao);
 		Mockito.doReturn(new ProjectUserInfo()).when(puiDao)
-				.getByProjectIdAndUserId(firstProject.getProjectId().intValue(), user.getUserid());
-		Mockito.doReturn(null).when(puiDao).getByProjectIdAndUserId(secondProject.getProjectId().intValue(), user.getUserid());
+				.getByProjectIdAndUserId(firstProject.getProjectId().intValue(), workbenchUser.getUserid());
+		Mockito.doReturn(null).when(puiDao).getByProjectIdAndUserId(secondProject.getProjectId().intValue(), workbenchUser.getUserid());
 		final List<Role> roles = this.getAllRolesTestData();
+
 		Mockito.doReturn(roles).when(this.workbenchDataManager).getAllRoles();
-		Mockito.doReturn(new ArrayList<Role>()).when(this.workbenchDataManager).getRolesByProjectAndUser(firstProject, user);
-		Mockito.doReturn(new ArrayList<Role>()).when(this.workbenchDataManager).getRolesByProjectAndUser(secondProject, user);
+		Mockito.doReturn(new ArrayList<Role>()).when(this.workbenchDataManager).getRolesByProjectAndUser(firstProject, workbenchUser);
+		Mockito.doReturn(new ArrayList<Role>()).when(this.workbenchDataManager).getRolesByProjectAndUser(secondProject, workbenchUser);
+
+		List<Person> allPersons = new ArrayList<>();
+		allPersons.add(this.createPerson(1,
+				"John", "Doe"));
+		allPersons.add(this.createPerson(2,
+				"Juan", "Dela Cruz"));
+		Mockito.when(this.workbenchDataManager.getAllPersons()).thenReturn(allPersons);
 
 		// test
 		this.programService.addProjectUserToAllPrograms(workbenchUser);
@@ -213,16 +225,15 @@ public class ProgramServiceTest {
 		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).saveOrUpdateProjectUserInfo(captor.capture());
 
 		final ProjectUserInfo captured = captor.getValue();
-		Assert.assertEquals("The user id of the newly-added program member must be " + user.getUserid(), user.getUserid().intValue(),
+		Assert.assertEquals("The user id of the newly-added program member must be " + workbenchUser.getUserid(), workbenchUser.getUserid().intValue(),
 				captured.getUserId().intValue());
 		Assert.assertEquals("The project id of the newly-added program member must be " + secondProject.getProjectId().intValue(),
 				secondProject.getProjectId().intValue(), captured.getProjectId().intValue());
 
 		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).getAllRoles();
-		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).getRolesByProjectAndUser(firstProject, user);
-		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).getRolesByProjectAndUser(secondProject, user);
-		Mockito.verify(this.workbenchDataManager, Mockito.times(roles.size() * projects.size())).addProjectUserRole(
-				Matchers.any(Project.class), Matchers.any(User.class), Matchers.any(Role.class));
+		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).getRolesByProjectAndUser(firstProject, workbenchUser);
+		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).getRolesByProjectAndUser(secondProject, workbenchUser);
+		Mockito.verify(this.workbenchDataManager, Mockito.times(projects.size())).addProjectUserRole(Mockito.anyList());
 
 	}
 
@@ -250,10 +261,12 @@ public class ProgramServiceTest {
 		Mockito.doReturn(new ArrayList<Role>()).when(this.workbenchDataManager).getRolesByProjectAndUser(program, memberAdminUser);
 		Mockito.doReturn(new ArrayList<Role>()).when(this.workbenchDataManager).getRolesByProjectAndUser(program, nonMemberAdminUser);
 
-		Mockito.when(this.workbenchDataManager.getPersonById(memberAdminUser.getPersonid())).thenReturn(this.createPerson(memberAdminUser.getPersonid(),
+		List<Person> allPersons = new ArrayList<>();
+		allPersons.add(this.createPerson(memberAdminUser.getPersonid(),
 				"John", "Doe"));
-		Mockito.when(this.workbenchDataManager.getPersonById(nonMemberAdminUser.getPersonid())).thenReturn(this.createPerson(nonMemberAdminUser.getPersonid(),
+		allPersons.add(this.createPerson(nonMemberAdminUser.getPersonid(),
 				"Juan", "Dela Cruz"));
+		Mockito.when(this.workbenchDataManager.getAllPersons()).thenReturn(allPersons);
 
 		// test
 		this.programService.addUsersToProgram(adminUsers, program);
@@ -270,8 +283,7 @@ public class ProgramServiceTest {
 		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).getAllRoles();
 		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).getRolesByProjectAndUser(program, memberAdminUser);
 		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).getRolesByProjectAndUser(program, nonMemberAdminUser);
-		Mockito.verify(this.workbenchDataManager, Mockito.times(roles.size() * adminUsers.size())).addProjectUserRole(
-				Matchers.any(Project.class), Matchers.any(User.class), Matchers.any(Role.class));
+		Mockito.verify(this.workbenchDataManager, Mockito.times(adminUsers.size())).addProjectUserRole(Matchers.anyList());
 		Mockito.verify(this.workbenchDataManager, Mockito.times(adminUsers.size())).addIbdbUserMap(Matchers.any(IbdbUserMap.class));
 	}
 
@@ -279,9 +291,10 @@ public class ProgramServiceTest {
 	public void testCreateCropDBPersonIfNecessaryExistingCropDBPerson() {
 
 
-		Mockito.when(userDataManager.getPersonByFirstAndLastName(workbenchPerson.getFirstName(), workbenchPerson.getLastName())).thenReturn(cropDBPerson);
+		Map<String, Person> cropDBPersonsMap = new HashMap<>();
+		cropDBPersonsMap.put(programService.getNameKey(cropDBPerson), cropDBPerson);
 
-		Person result = this.programService.createCropDBPersonIfNecessary(workbenchPerson);
+		Person result = this.programService.createCropDBPersonIfNecessary(workbenchPerson, cropDBPersonsMap);
 
 		Mockito.verify(userDataManager, Mockito.times(0)).addPerson(Mockito.any(Person.class));
 		Assert.assertSame(result, cropDBPerson);
@@ -292,10 +305,7 @@ public class ProgramServiceTest {
 	@Test
 	public void testCreateCropDBPersonIfNecessaryCropDBPersonDoesNotExist() {
 
-
-		Mockito.when(userDataManager.getPersonByFirstAndLastName(workbenchPerson.getFirstName(), workbenchPerson.getLastName())).thenReturn(null);
-
-		Person result = this.programService.createCropDBPersonIfNecessary(workbenchPerson);
+		Person result = this.programService.createCropDBPersonIfNecessary(workbenchPerson, new HashMap<String, Person>());
 
 		Mockito.verify(userDataManager, Mockito.times(1)).addPerson(Mockito.any(Person.class));
 		Assert.assertNotSame(result, workbenchPerson);
@@ -307,10 +317,10 @@ public class ProgramServiceTest {
 	@Test
 	public void testCreateIBDBUserIfNecessaryCropDBUSerIsExisting() {
 
+		Map<String, User> cropDBUsersMap = new HashMap<>();
+		cropDBUsersMap.put(cropDBUser.getName(), cropDBUser);
 
-		Mockito.when(userDataManager.getUserByUserName(workbenchUser.getName())).thenReturn(cropDBUser);
-
-		User result = this.programService.createIBDBUserIfNecessary(workbenchUser, cropDBPerson);
+		User result = this.programService.createIBDBUserIfNecessary(workbenchUser, cropDBPerson, cropDBUsersMap);
 
 		Mockito.verify(userDataManager, Mockito.times(0)).addUser(Mockito.any(User.class));
 
@@ -323,7 +333,7 @@ public class ProgramServiceTest {
 
 		Mockito.when(userDataManager.getUserByUserName(workbenchUser.getName())).thenReturn(null);
 
-		User result = this.programService.createIBDBUserIfNecessary(workbenchUser, cropDBPerson);
+		User result = this.programService.createIBDBUserIfNecessary(workbenchUser, cropDBPerson, new HashMap<String, User>());
 
 		Mockito.verify(userDataManager, Mockito.times(1)).addUser(Mockito.any(User.class));
 
@@ -344,11 +354,11 @@ public class ProgramServiceTest {
 		final Set<User> users = new HashSet<>();
 		users.add(workbenchUser);
 
-		Mockito.when(this.workbenchDataManager.getPersonById(workbenchUser.getPersonid())).thenReturn(workbenchPerson);
-		Mockito.when(this.userDataManager.getPersonByFirstAndLastName(workbenchPerson.getFirstName(), workbenchPerson.getLastName())).thenReturn(cropDBPerson);
-		Mockito.when(this.userDataManager.getUserByUserName(workbenchUser.getName())).thenReturn(cropDBUser);
+		Mockito.when(this.workbenchDataManager.getAllPersons()).thenReturn(Arrays.asList(workbenchPerson));
+		Mockito.when(this.userDataManager.getAllPersons()).thenReturn(Arrays.asList(cropDBPerson));
+		Mockito.when(this.userDataManager.getAllUsers()).thenReturn(Arrays.asList(cropDBUser));
 
-		this.programService.createIBDBUserMapping(project, users);
+		this.programService.createIBDBUserMapping(project, users, programService.retrieveWorkbenchPersonsMap(), programService.retrieveCropDBPersonsMap(), programService.retrieveCropDBUsersMap());
 
 		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).addIbdbUserMap(Mockito.any(IbdbUserMap.class));
 

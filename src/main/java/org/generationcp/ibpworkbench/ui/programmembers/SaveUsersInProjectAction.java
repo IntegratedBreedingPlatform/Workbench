@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -23,6 +24,7 @@ import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
@@ -101,10 +103,12 @@ public class SaveUsersInProjectAction implements ClickListener {
 							SaveUsersInProjectAction.this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
 						}
 					}
-					
 
+					final Map<Integer, Person> workbenchPersonsMap = programService.retrieveWorkbenchPersonsMap();
+					final Map<String, Person> cropDBPersonsMap = programService.retrieveCropDBPersonsMap();
+					final Map<String, User> cropDBUsersMap = programService.retrieveCropDBUsersMap();
 					//use the project service to link new members to the project
-					programService.createIBDBUserMapping(project, new HashSet<>(userList));
+					programService.createIBDBUserMapping(project, new HashSet<>(userList), workbenchPersonsMap, cropDBPersonsMap, cropDBUsersMap);
 
 					// UPDATE workbench DB with the project user roles
 					SaveUsersInProjectAction.this.workbenchDataManager.updateProjectsRolesForProject(project,projectUserRoleList);
