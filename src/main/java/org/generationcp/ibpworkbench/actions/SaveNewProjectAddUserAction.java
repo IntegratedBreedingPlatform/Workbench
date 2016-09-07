@@ -153,7 +153,7 @@ public class SaveNewProjectAddUserAction implements ClickListener {
 
 	public void addUserToAllProgramsOfCurrentCropIfAdmin(final User user) {
 		final Project currentProject = this.sessionData.getLastOpenedProject();
-		this.programService.addUserToAllProgramsOfCropTypeIfAdmin(user, currentProject.getCropType());
+		this.programService.addUserToAllProgramsIfAdmin(user);
 
 		// disable the user item in the member selection table if the role is ADMIN
 		user.setEnabled(!user.hasRole(Role.ADMIN.toString()));

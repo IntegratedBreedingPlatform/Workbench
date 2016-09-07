@@ -184,7 +184,7 @@ public class ProgramServiceTest {
 	}
 
 	@Test
-	public void testAddProjectUserToAllProgramsOfCropType() {
+	public void testAddProjectUserToAllPrograms() {
 		// set data
 		final User user = new User();
 		user.setUserid(1);
@@ -206,7 +206,7 @@ public class ProgramServiceTest {
 		Mockito.doReturn(new ArrayList<Role>()).when(this.workbenchDataManager).getRolesByProjectAndUser(secondProject, user);
 
 		// test
-		this.programService.addProjectUserToAllProgramsOfCropType(user, cropType);
+		this.programService.addProjectUserToAllPrograms(workbenchUser);
 
 		final ArgumentCaptor<ProjectUserInfo> captor = ArgumentCaptor.forClass(ProjectUserInfo.class);
 
@@ -227,7 +227,7 @@ public class ProgramServiceTest {
 	}
 
 	@Test
-	public void testAddAllAdminUsersOfCropToProgram() {
+	public void testAddUsersToProgram() {
 		final String crop = CropType.CropEnum.MAIZE.toString();
 		final int projectId = 1;
 		final Project program = new Project();
@@ -256,7 +256,7 @@ public class ProgramServiceTest {
 				"Juan", "Dela Cruz"));
 
 		// test
-		this.programService.addAllAdminUsersOfCropToProgram(crop, program);
+		this.programService.addUsersToProgram(adminUsers, program);
 
 		final ArgumentCaptor<ProjectUserInfo> captor = ArgumentCaptor.forClass(ProjectUserInfo.class);
 		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).saveOrUpdateProjectUserInfo(captor.capture());

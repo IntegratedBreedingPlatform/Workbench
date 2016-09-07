@@ -3,10 +3,10 @@ package org.generationcp.ibpworkbench.actions;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Matcher;
 
 import junit.framework.Assert;
 
-import org.apache.commons.collections.ListUtils;
 import org.generationcp.commons.security.Role;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
@@ -78,7 +78,7 @@ public class SaveNewProjectAddUserActionTest {
 
 		Mockito.verify(this.workbenchUserService).saveNewUserAccount(userAccount);
 
-		Mockito.verify(this.programService).addUserToAllProgramsOfCropTypeIfAdmin(user, currentProject.getCropType());
+		Mockito.verify(this.programService).addUserToAllProgramsIfAdmin(user);
 
 		Assert.assertEquals("The user must be added to the TwinTableSelect UI", 1, membersSelect.getValue().size());
 
@@ -93,7 +93,7 @@ public class SaveNewProjectAddUserActionTest {
 
 		this.action.addUserToAllProgramsOfCurrentCropIfAdmin(user);
 
-		Mockito.verify(this.programService).addUserToAllProgramsOfCropTypeIfAdmin(user, currentProject.getCropType());
+		Mockito.verify(this.programService).addUserToAllProgramsIfAdmin(user);
 
 		Assert.assertFalse("The user is admin so it should be disabled for selection", user.isEnabled());
 	}
@@ -106,7 +106,7 @@ public class SaveNewProjectAddUserActionTest {
 
 		this.action.addUserToAllProgramsOfCurrentCropIfAdmin(user);
 
-		Mockito.verify(this.programService).addUserToAllProgramsOfCropTypeIfAdmin(user, currentProject.getCropType());
+		Mockito.verify(this.programService).addUserToAllProgramsIfAdmin(user);
 
 		Assert.assertTrue("The user is not admin so it should be enabled for selection", user.isEnabled());
 	}

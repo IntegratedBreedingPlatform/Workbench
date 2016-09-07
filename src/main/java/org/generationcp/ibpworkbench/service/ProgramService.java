@@ -83,15 +83,15 @@ public class ProgramService {
 		this.createIBDBUserMapping(program, this.selectedUsers);
 		this.saveProjectUserInfo(program);
 
-		this.addAllAdminUsersOfCropToProgram(program.getCropType().getCropName(), program);
+		this.addUsersToProgram(users, program);
 
 		ProgramService.LOG.info("Program created. ID:" + program.getProjectId() + " Name:" + program.getProjectName() + " Start date:"
 				+ program.getStartDate());
 	}
 
-	public void addUserToAllProgramsOfCropTypeIfAdmin(final User user, final CropType cropType) {
+	public void addUserToAllProgramsIfAdmin(final User user) {
 		if (this.isAdmin(user)) {
-			this.addProjectUserToAllProgramsOfCropType(user, cropType);
+			this.addProjectUserToAllPrograms(user);
 		}
 	}
 
@@ -239,8 +239,7 @@ public class ProgramService {
 		this.toolUtil = toolUtil;
 	}
 
-	public void addProjectUserToAllProgramsOfCropType(final User user, final CropType cropType) {
-		final List<Project> projects = this.workbenchDataManager.getProjectsByCropType(cropType);
+	public void addProjectUserToAllPrograms(final User user) {
 		final List<Role> allRoles = this.workbenchDataManager.getAllRoles();
 		for (final Project project : projects) {
 			if (this.workbenchDataManager.getProjectUserInfoDao().getByProjectIdAndUserId(project.getProjectId().intValue(),
@@ -252,8 +251,8 @@ public class ProgramService {
 		}
 	}
 
-	public void addAllAdminUsersOfCropToProgram(final String crop, final Project program) {
-		final List<User> adminUsers = this.workbenchDataManager.getAllUsersByRole(org.generationcp.commons.security.Role.ADMIN.toString());
+	public void addUsersToProgram(final List<User> users, final Project program) {
+
 		final List<Role> allRoles = this.workbenchDataManager.getAllRoles();
 		for (final User user : adminUsers) {
 			if (this.workbenchDataManager.getProjectUserInfoDao().getByProjectIdAndUserId(program.getProjectId().intValue(),
