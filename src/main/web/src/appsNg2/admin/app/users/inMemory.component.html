@@ -64,12 +64,15 @@
                         <td colspan="4" class="text-center">No records found.</td>
                     </tr>
                     <tr *ngFor="let user of table.itemsOnCurrentPage">
-                        <td>{{user.username}}</td>
+						<td><a href=""> {{user.username}} </a></td>
                         <td>{{user.firstName}}</td>
                         <td>{{user.lastName}}</td>
                         <td>{{user.email}}</td>
                         <td>{{user.role}}</td>
-                        <td>{{user.status}}</td>
+                        <td>
+                          <a href="" *ngIf="user.status == 'true'">Deactivate</a>
+                          <a href="" *ngIf="user.status == 'false'">Activate</a>
+                        </td>
                     </tr>
                 </tbody>
             </table>
