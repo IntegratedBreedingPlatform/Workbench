@@ -43,7 +43,7 @@ export class UserService{
 function mapUsers(response:Response): User[]{
    // The response of the API has a results
    // property with the actual results
-   return response.json().results.map(toUser)
+   return response.json().map(toUser)
 }
 
 function toUser(r:any): User{

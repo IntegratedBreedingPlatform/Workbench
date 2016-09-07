@@ -24,7 +24,7 @@ export class InMemoryComponent implements OnInit {
 
     constructor(private userService : UserService) {
         this.table = new NgDataGridModel<User>([]);
-        this.table.pageSize = 10;
+        this.table.pageSize = 5;
         
 
     }
