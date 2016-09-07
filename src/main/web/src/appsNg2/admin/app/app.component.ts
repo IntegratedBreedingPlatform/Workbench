@@ -6,6 +6,7 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 
 import { TableComponent } from './users/index';
+import { UserService } from './users/user.service';
 
 /*
  * AppComponent Component
@@ -23,7 +24,8 @@ import { TableComponent } from './users/index';
         <users-table></users-table>
     </div>
   `,
-  moduleId: module.id
+  moduleId: module.id,
+  providers: [UserService]
 
 })
 export class AppComponent {

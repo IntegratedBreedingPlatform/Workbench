@@ -6,6 +6,7 @@ import { PaginationComponent } from './../datagrid/pagination.component';
 import { User } from './inMemory.model';
 import { FORM_DIRECTIVES } from '@angular/forms';
 import './../utils/array.extensions';
+import { UserService } from './user.service';
 
 @Component({
     selector: 'in-memory-demo',
@@ -19,118 +20,22 @@ import './../utils/array.extensions';
 export class InMemoryComponent implements OnInit {
     table: NgDataGridModel<User>;
     recentlyRemoveUsers: any[];
+    errorMessage: string = '';
 
-    constructor() {
+    constructor(private userService : UserService) {
         this.table = new NgDataGridModel<User>([]);
         this.table.pageSize = 10;
-        var json = {
-            "data": [
-                {
-                    "username": "user1",
-                    "firstName": "name1",
-                    "lastName": "lastName1",
-                    "email": "name1@gmail.com",
-                    "status": "false",
-                    "role": "Breeder"
-                },
-                {
-                    "username": "user2",
-                    "firstName": "name2",
-                    "lastName": "lastName2",
-                    "email": "name2@gmail.com",
-                    "status": "true",
-                    "role": "Breeder"
-                },
-                {
-                    "username": "user3",
-                    "firstName": "name3",
-                    "lastName": "lastName3",
-                    "email": "name3@gmail.com",
-                    "status": "true",
-                    "role": "Technician"
-                },
-                {
-                    "username": "user4",
-                    "firstName": "name4",
-                    "lastName": "lastName4",
-                    "email": "name4@gmail.com",
-                    "status": "true",
-                    "role": "Admin"
-                },
-                {
-                    "username": "user1",
-                    "firstName": "name1",
-                    "lastName": "lastName1",
-                    "email": "name1@gmail.com",
-                    "status": "false",
-                    "role": "Admin"
-                },
-                {
-                    "username": "user2",
-                    "firstName": "name2",
-                    "lastName": "lastName2",
-                    "email": "name2@gmail.com",
-                    "status": "true",
-                    "role": "Breeder"
-                },
-                {
-                    "username": "user3",
-                    "firstName": "name3",
-                    "lastName": "lastName3",
-                    "email": "name3@gmail.com",
-                    "status": "false",
-                    "role": "Technician"
-                },
-                {
-                    "username": "user4",
-                    "firstName": "name4",
-                    "lastName": "lastName4",
-                    "email": "name4@gmail.com",
-                    "status": "true",
-                    "role": "Admin"
-                },
-                {
-                    "username": "user1",
-                    "firstName": "name1",
-                    "lastName": "lastName1",
-                    "email": "name1@gmail.com",
-                    "status": "true",
-                    "role": "Breeder"
-                },
-                {
-                    "username": "user2",
-                    "firstName": "name2",
-                    "lastName": "lastName2",
-                    "email": "name2@gmail.com",
-                    "status": "true",
-                    "role": "Breeder"
-                },
-                {
-                    "username": "user3",
-                    "firstName": "name3",
-                    "lastName": "lastName3",
-                    "email": "name3@gmail.com",
-                    "status": "true",
-                    "role": "Technician"
-                },
-                {
-                    "username": "user4",
-                    "firstName": "name4",
-                    "lastName": "lastName4",
-                    "email": "name4@gmail.com",
-                    "status": "true",
-                    "role": "Admin"
-                }
-            ]
-        };
-        json.data.forEach(item=> {
-          this.table.items.push(new User(item.firstName, item.lastName, item.username,
-                                        item.role, item.email, item.status));
+        
 
-        });
     }
 
-    ngOnInit() { }
+    ngOnInit() { 
+        this.userService
+            .getAll()
+            .subscribe(
+        /* happy path */ p => this.table.items = p,
+        /* error path */ e => this.errorMessage = e);
+    }
     
     isSorted(col): boolean {
         return col == this.table.sortBy;
