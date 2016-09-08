@@ -33,8 +33,22 @@ export class InMemoryComponent implements OnInit {
         this.userService
             .getAll()
             .subscribe(
-        /* happy path */ p => this.table.items = p,
-        /* error path */ e => this.errorMessage = e);
+                users => this.table.items = users,
+                error => {
+                    this.errorMessage = error;
+                    if (error.status === 401) {
+                        localStorage.removeItem('xAuthToken');
+                        this.handleReAuthentication();
+                    }
+            });
+    }
+    
+    // TODO 
+    // - Move to a shared component
+    // - see /ibpworkbench/src/main/web/src/apps/ontology/app-services/bmsAuth.js
+    handleReAuthentication() {
+        alert('Site Admin needs to authenticate you again. Redirecting to login page.');
+        window.top.location.href = '/ibpworkbench/logout';
     }
     
     isSorted(col): boolean {
