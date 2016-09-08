@@ -1,72 +1,128 @@
+'use strict';
+
+var argv = require('yargs').argv;
+
 module.exports = function(config) {
-    config.set({
+  config.set({
 
-        basePath: '',
+    // base path that will be used to resolve all patterns (eg. files, exclude)
+    basePath: './',
 
-        frameworks: ['jasmine'],
 
-        files: [
-            // paths loaded by Karma
-            {pattern: 'node_modules/angular2/bundles/angular2-polyfills.js', included: true, watched: true},
-            {pattern: 'node_modules/systemjs/dist/system.src.js', included: true, watched: true},
-            {pattern: 'node_modules/rxjs/bundles/Rx.js', included: true, watched: true},
-            {pattern: 'node_modules/angular2/bundles/angular2.dev.js', included: true, watched: true},
-            {pattern: 'node_modules/angular2/bundles/testing.dev.js', included: true, watched: true},
-            {pattern: 'karma-test-shim-ng2.js', included: true, watched: true},
+    // frameworks to use
+    // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
+    frameworks: ['jasmine'],
 
-            // paths loaded via module imports
-            {pattern: './../webapp/WEB-INF/pages/angular2/admin/**/*.js', included: false, watched: true},
 
-            // paths to support debugging with source maps in dev tools
-            {pattern: 'src/appsNg2/**/*.ts', included: false, watched: false},
-            {pattern: './../webapp/WEB-INF/pages/angular2/admin/build/**/*.js.map', included: false, watched: false}
-        ],
+    // list of files / patterns to load in the browser
+    files: [
+      // Polyfills.
+      'node_modules/es6-shim/es6-shim.js',
 
-        // list of files to exclude
-     		exclude: [
-     			'karma*.conf*.js'
-     		],
+      // System.js for module loading
+      'node_modules/systemjs/dist/system.src.js',
 
-        // proxied base paths
-        // proxied base paths
-        proxies: {
-            // required for component assests fetched by Angular's compiler
-            '/src/': '/base/src/'
-        },
+      // Zone.js dependencies
+      'node_modules/zone.js/dist/zone.js',
+      'node_modules/zone.js/dist/sync-test.js',
+      'node_modules/zone.js/dist/proxy.js',
+      'node_modules/zone.js/dist/jasmine-patch.js',
+      'node_modules/zone.js/dist/async-test.js',
+      'node_modules/zone.js/dist/fake-async-test.js',
 
-        port: 9876,
+      'node_modules/reflect-metadata/Reflect.js',
 
-        logLevel: config.WARN,
+      // RxJs.
+      { pattern: 'node_modules/rxjs/**/*.js', included: false, watched: false },
+      { pattern: 'node_modules/rxjs/**/*.js.map', included: false, watched: false },
 
-        colors: true,
+      // paths loaded via module imports
+      // Angular itself
+      { pattern: 'node_modules/@angular/**/*.js', included: false, watched: true },
 
-        autoWatch: true,
+      { pattern: './src/appsNg2/admin/build/**/*.js', included: false, watched: true },
+      { pattern: './src/appsNg2/admin/build/**/*.html', included: false, watched: true, served: true },
+      { pattern: './src/appsNg2/admin/build/**/*.css', included: false, watched: true, served: true },
+      { pattern: 'node_modules/systemjs/dist/system-polyfills.js', included: false, watched: false }, // PhantomJS2 (and possibly others) might require it
 
-        browsers: ['Chrome'],
+      'karma-test-shim-ng2.js'
+    ],
 
-        // Karma plugins loaded
-        plugins: [
-            'karma-jasmine',
-            'karma-coverage',
-            'karma-chrome-launcher'
-        ],
 
-        // Coverage reporter generates the coverage
-		    reporters: ['coverage'],
+    // list of files to exclude
+    exclude: [
+      'node_modules/**/*spec.js'
+    ],
 
-        // Source files that you wanna generate coverage for.
-        // Do not include tests or libraries (these files will be instrumented by Istanbul)
-        preprocessors: {
-    			// generate js files from html templates
-//   			'../webapp/WEB-INF/static/views/**/*.html': 'ng-html2js',
-//    			'src/apps/**/*.js': ['coverage']
-          'src/appsNg2/admin/build/**/!(*spec).js': ['coverage']
-    		},
 
-        coverageReporter: {
-    			type: 'text-summary'
-    		},
+    // preprocess matching files before serving them to the browser
+    // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
+    preprocessors: {
+      'src/appsNg2/admin/build/**/!(*spec).js': ['coverage']
+    },
 
-        singleRun: true
-    })
+    // test results reporter to use
+    // possible values: 'dots', 'progress'
+    // available reporters: https://npmjs.org/browse/keyword/karma-reporter
+    // reporters: ['coverage'],
+
+
+    // web server port
+    port: 9876,
+
+
+    // enable / disable colors in the output (reporters and logs)
+    colors: true,
+
+
+    // level of logging
+    // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
+    logLevel: config.LOG_INFO,
+
+
+    // enable / disable watching file and executing tests whenever any file changes
+    autoWatch: true,
+
+
+    // start these browsers
+    // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
+    browsers: [
+      'Chrome'
+    ],
+
+
+    customLaunchers: {
+      Chrome_travis_ci: {
+        base: 'Chrome',
+        flags: ['--no-sandbox']
+      }
+    },
+
+    coverageReporter: {
+      dir: 'coverage/',
+      reporters: [
+        { type: 'json', subdir: '.', file: 'coverage-final.json' }
+      ]
+    },
+
+    // Continuous Integration mode
+    // if true, Karma captures browsers, runs the tests and exits
+    singleRun: false,
+
+    // Passing command line arguments to tests
+    client: {
+      files: argv.files
+    }
+  });
+
+  if (process.env.APPVEYOR) {
+    config.browsers = ['IE'];
+    config.singleRun = true;
+    config.browserNoActivityTimeout = 90000; // Note: default value (10000) is not enough
+  }
+
+  if (process.env.TRAVIS || process.env.CIRCLECI) {
+    config.browsers = ['Chrome_travis_ci'];
+    config.singleRun = true;
+  }
 };
