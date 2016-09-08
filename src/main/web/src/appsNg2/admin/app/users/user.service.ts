@@ -25,8 +25,6 @@ export class UserService{
   }
 
   save(User: User) : Observable<Response>{
-    // this won't actually work because the StarWars API doesn't
-    // is read-only. But it would look like this:
     return this.http
       .put(`${this.baseUrl}/users/${User.id}`, JSON.stringify(User), {headers: this.getHeaders()});
   }
@@ -41,8 +39,6 @@ export class UserService{
 
 
 function mapUsers(response:Response): User[]{
-   // The response of the API has a results
-   // property with the actual results
    return response.json().map(toUser)
 }
 
@@ -56,11 +52,9 @@ function toUser(r:any): User{
     email: r.email,
     status: r.status,
   });
-  console.log('Parsed User:', User);
   return User;
 }
 
 function mapUser(response:Response): User{
-  // toUser looks just like in the previous example
   return toUser(response.json());
 }

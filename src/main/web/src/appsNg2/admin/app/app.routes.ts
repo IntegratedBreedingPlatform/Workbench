@@ -1,5 +1,5 @@
 import { RouterConfig } from '@angular/router';
-import { TableComponent } from './users/index'; // TODO use system js
+import { TableComponent } from './users/index';
 
 export const routes: RouterConfig = [
     {
