@@ -4,7 +4,7 @@
     margin-bottom: 20px;
 }
 .table-striped > tbody > tr:nth-of-type(odd) {
-    background-color: #f9f9f9;
+    background-color: #f3f5f7;
 }
 .om-title {
     margin-top: 24px;
@@ -54,4 +54,9 @@ h6 {
 
 h1 {
     margin: .67em 0
+}
+
+header > nav > ol > li {
+	text-align: center;	
+	font-weight: bold;
 }

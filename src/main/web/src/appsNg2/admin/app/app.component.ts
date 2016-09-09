@@ -20,7 +20,7 @@ import { UserService } from './users/user.service';
   ],
   directives: [ TableComponent ],
   template: `
-    <div class="container">
+    <div class="container-fluid">
         <users-table></users-table>
     </div>
   `,
