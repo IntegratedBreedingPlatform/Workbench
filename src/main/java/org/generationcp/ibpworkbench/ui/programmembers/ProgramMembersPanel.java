@@ -147,10 +147,10 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			}
 		};
 
-		this.select.getTableLeft().addGeneratedColumn(USERNAME, generator1);
-		this.select.getTableRight().addGeneratedColumn(USERNAME, generator2);
+		this.select.getTableLeft().addGeneratedColumn(ProgramMembersPanel.USERNAME, generator1);
+		this.select.getTableRight().addGeneratedColumn(ProgramMembersPanel.USERNAME, generator2);
 
-		this.select.setVisibleColumns(new Object[] {"select", USERNAME});
+		this.select.setVisibleColumns(new Object[] {"select", ProgramMembersPanel.USERNAME});
 		this.select.setColumnHeaders(new String[] {"<span class='glyphicon glyphicon-ok'></span>", "USER NAME"});
 
 		this.select.setLeftColumnCaption("Available Users");
@@ -244,21 +244,21 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		}
 
 		final List<Object> columnIds = new ArrayList<Object>();
-		columnIds.add(USERNAME);
+		columnIds.add(ProgramMembersPanel.USERNAME);
 		final List<String> columnHeaders = new ArrayList<String>();
 		columnHeaders.add("Member");
 
 		// prepare the container
 		final IndexedContainer container = new IndexedContainer();
 		container.addContainerProperty("userId", Integer.class, null);
-		container.addContainerProperty(USERNAME, String.class, null);
+		container.addContainerProperty(ProgramMembersPanel.USERNAME, String.class, null);
 		for (final Role role : roleList) {
-			columnIds.add(ROLE_PREFIX + role.getRoleId());
+			columnIds.add(ProgramMembersPanel.ROLE_PREFIX + role.getRoleId());
 			columnHeaders.add(role.getName());
 			if (inheritedRoles.contains(role)) {
-				container.addContainerProperty(ROLE_PREFIX + role.getRoleId(), Boolean.class, Boolean.TRUE);
+				container.addContainerProperty(ProgramMembersPanel.ROLE_PREFIX + role.getRoleId(), Boolean.class, Boolean.TRUE);
 			} else {
-				container.addContainerProperty(ROLE_PREFIX + role.getRoleId(), Boolean.class, Boolean.FALSE);
+				container.addContainerProperty(ProgramMembersPanel.ROLE_PREFIX + role.getRoleId(), Boolean.class, Boolean.FALSE);
 			}
 		}
 		this.tblMembers.setContainerDataSource(container);
@@ -360,8 +360,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 			final Item item = container.addItem(userTemp);
 			item.getItemProperty("userId").setValue(1);
-			item.getItemProperty(USERNAME).setValue(userTemp.getPerson().getDisplayName());
-			item.getItemProperty(ROLE_PREFIX + projrole.getRole().getRoleId()).setValue("true");
+			item.getItemProperty(ProgramMembersPanel.USERNAME).setValue(userTemp.getPerson().getDisplayName());
+			item.getItemProperty(ProgramMembersPanel.ROLE_PREFIX + projrole.getRole().getRoleId()).setValue("true");
 			// item.getItemProperty("")
 			final List<Role> projroles = this.workbenchDataManager.getRolesByProjectAndUser(this.project, userTemp);
 			this.setInheritedRoles(item, projroles);
@@ -422,7 +422,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 		final BeanItemContainer<User> beanItemContainer = new BeanItemContainer<User>(User.class);
 		for (final User user : validUserList) {
-			if (user.getUserid().equals(this.sessionData.getUserData().getUserid()) || user.getUserid().equals(this.project.getUserId())) {
+			if (user.getUserid().equals(this.sessionData.getUserData().getUserid()) || user.getUserid().equals(this.project.getUserId())
+					|| user.hasRole(org.generationcp.commons.security.Role.ADMIN.toString())) {
 				user.setEnabled(false);
 			}
 
@@ -460,7 +461,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 			// Reset old values
 			for (final Role role : roleList) {
-				final String propertyId = ROLE_PREFIX + role.getRoleId();
+				final String propertyId = ProgramMembersPanel.ROLE_PREFIX + role.getRoleId();
 				final Property property = currentItem.getItemProperty(propertyId);
 				if (property.getType() == Boolean.class) {
 					property.setValue(Boolean.FALSE);
@@ -469,7 +470,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 			// Set checked boxes based on inherited roles
 			for (final Role inheritedRole : myinheritedRoles) {
-				final String propertyId = ROLE_PREFIX + inheritedRole.getRoleId();
+				final String propertyId = ProgramMembersPanel.ROLE_PREFIX + inheritedRole.getRoleId();
 				ProgramMembersPanel.LOG.debug("inheritedRole " + inheritedRole);
 				ProgramMembersPanel.LOG.debug("currentItem " + currentItem);
 				final Property property = currentItem.getItemProperty(propertyId);
