@@ -57,9 +57,6 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 	public void close() {
 		super.close();
 
-
-		this.logout();
-
 		IBPWorkbenchApplication.LOG.debug("IBPWorkbenchApplication closed");
 	}
 
