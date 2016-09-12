@@ -40,6 +40,7 @@ public class OpenManageProgramPageAction implements Button.ClickListener, Action
 
 		try {
 			ProgramAdministrationPanel projectPanel = new ProgramAdministrationPanel();
+			projectPanel.setDebugId("projectPanel");
 			w.showContent(projectPanel);
 
 		} catch (Exception e) {

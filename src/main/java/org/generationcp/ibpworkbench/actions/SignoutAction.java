@@ -11,10 +11,15 @@
 
 package org.generationcp.ibpworkbench.actions;
 
+import org.generationcp.commons.util.WorkbenchAppPathResolver;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import javax.annotation.Resource;
 
 /**
  * <b>Description</b>: Listener class for closing the application.
@@ -25,10 +30,14 @@ import com.vaadin.ui.Button.ClickListener;
  * <b>Author</b>: Michael Blancaflor <br>
  * <b>File Created</b>: Jun 11, 2012.
  */
+@Configurable
 public class SignoutAction implements ClickListener {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1898892299981012511L;
+
+	@Resource
+	private SessionData sessionData;
 
 	/**
 	 * Button click.
@@ -40,7 +49,10 @@ public class SignoutAction implements ClickListener {
 		WorkbenchMainView window = (WorkbenchMainView) event.getButton().getWindow();
 		window.setUriFragment("", true);
 
-		event.getButton().getApplication().close();
+		String fullLogoutUrl = WorkbenchAppPathResolver.getFullWebAddress("ibpworkbench/controller/logout",
+				String.format("", this.sessionData.getLastOpenedProject().getProjectId(), this.sessionData.getUserData().getUserid()));
+
+		window.showContent(fullLogoutUrl);
 	}
 
 }

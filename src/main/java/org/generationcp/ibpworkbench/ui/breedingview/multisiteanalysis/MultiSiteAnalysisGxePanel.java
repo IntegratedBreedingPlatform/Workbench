@@ -159,32 +159,43 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 	public void instantiateComponents() {
 
 		this.lblDataSelectedForAnalysisHeader = new Label();
+		this.lblDataSelectedForAnalysisHeader.setDebugId("lblDataSelectedForAnalysisHeader");
 		this.lblDataSelectedForAnalysisHeader.setStyleName(Bootstrap.Typography.H2.styleName());
 
 		this.lblDatasetName = new Label();
+		this.lblDatasetName.setDebugId("lblDatasetName");
 		this.lblDatasetName.setStyleName("label-bold");
 
 		this.txtDatasetName = new Label();
+		this.txtDatasetName.setDebugId("txtDatasetName");
 
 		this.lblDatasourceName = new Label();
+		this.lblDatasourceName.setDebugId("lblDatasourceName");
 		this.lblDatasourceName.setStyleName("label-bold");
 
 		this.txtDatasourceName = new Label();
+		this.txtDatasourceName.setDebugId("txtDatasourceName");
 
 		this.lblSelectedEnvironmentFactor = new Label();
+		this.lblSelectedEnvironmentFactor.setDebugId("lblSelectedEnvironmentFactor");
 		this.lblSelectedEnvironmentFactor.setStyleName("label-bold");
 
 		this.txtSelectedEnvironmentFactor = new Label();
+		this.txtSelectedEnvironmentFactor.setDebugId("txtSelectedEnvironmentFactor");
 
 		this.lblSelectedEnvironmentGroupFactor = new Label();
+		this.lblSelectedEnvironmentGroupFactor.setDebugId("lblSelectedEnvironmentGroupFactor");
 		this.lblSelectedEnvironmentGroupFactor.setStyleName("label-bold");
 
 		this.txtSelectedEnvironmentGroupFactor = new Label();
+		this.txtSelectedEnvironmentGroupFactor.setDebugId("txtSelectedEnvironmentGroupFactor");
 
 		this.chkSelectAllEnvironments = new CheckBox("Select all environments", true);
+		this.chkSelectAllEnvironments.setDebugId("chkSelectAllEnvironments");
 		this.chkSelectAllEnvironments.setImmediate(true);
 
 		this.chkSelectAllTraits = new CheckBox("Select all traits", true);
+		this.chkSelectAllTraits.setDebugId("chkSelectAllTraits");
 		this.chkSelectAllTraits.setImmediate(true);
 
 		this.lblAdjustedMeansHeader =
@@ -194,12 +205,17 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 		this.lblAdjustedMeansHeader.setStyleName(Bootstrap.Typography.H2.styleName());
 
 		this.lblAdjustedMeansDescription = new Label();
+		this.lblAdjustedMeansDescription.setDebugId("lblAdjustedMeansDescription");
 
 		this.lblSelectTraitsForAnalysis = new Label();
+		this.lblSelectTraitsForAnalysis.setDebugId("lblSelectTraitsForAnalysis");
 
 		this.btnRunMultiSite = new Button();
+		this.btnRunMultiSite.setDebugId("btnRunMultiSite");
 		this.btnBack = new Button();
+		this.btnBack.setDebugId("btnBack");
 		this.btnReset = new Button();
+		this.btnReset.setDebugId("btnReset");
 
 	}
 
@@ -245,6 +261,7 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 		}
 
 		this.selectTraitsTable = new Table();
+		this.selectTraitsTable.setDebugId("selectTraitsTable");
 		IndexedContainer container = new IndexedContainer();
 
 		Property.ValueChangeListener traitCheckBoxListener = new Property.ValueChangeListener() {
@@ -273,6 +290,7 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 				container.addContainerProperty(key, CheckBox.class, null);
 				columnNames.add(key.replace("_Means", ""));
 				CheckBox chk = new CheckBox("", true);
+				chk.setDebugId("chk");
 				chk.setImmediate(true);
 				chk.addListener(traitCheckBoxListener);
 				cells.add(chk);
@@ -368,6 +386,7 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 		this.setMargin(true);
 
 		GridLayout selectedInfoLayout = new GridLayout(4, 3);
+		selectedInfoLayout.setDebugId("selectedInfoLayout");
 		selectedInfoLayout.setSizeUndefined();
 		selectedInfoLayout.setSpacing(true);
 		selectedInfoLayout.setMargin(false, false, true, false);
@@ -406,6 +425,7 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 
 	protected Component layoutButtonArea() {
 		HorizontalLayout buttonLayout = new HorizontalLayout();
+		buttonLayout.setDebugId("buttonLayout");
 
 		buttonLayout.setSizeFull();
 		buttonLayout.setSpacing(true);
@@ -413,6 +433,7 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 
 		this.btnRunMultiSite.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 		Label spacer = new Label("&nbsp;", Label.CONTENT_XHTML);
+		spacer.setDebugId("spacer");
 		spacer.setSizeFull();
 
 		buttonLayout.addComponent(spacer);

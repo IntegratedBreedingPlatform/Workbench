@@ -378,3 +378,189 @@ img[src$="leaf_16.png"] {
 .bms-label-bottom-space {
 	padding-bottom: 18px;
 }
+
+
+/*//from GPSB*/
+.addTopSpace {
+    margin-top: 10px;
+    margin-left: 10px
+}
+
+.gcp-form-title {
+    font-weight: bold;
+}
+
+
+.gcp-bold-italic {
+    font-weight: bold;
+    font-style: italic;
+}
+
+.listManagerTree {
+    padding: 10px;
+    border: 1px solid e3e3e3;
+    background: #e3e3e3;
+    width: 200px;
+    height: 320px;
+    overflow: scroll;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    color: #33333;
+}
+
+.studyBrowserTree {
+    padding: 10px;
+    border: 1px solid e3e3e3;
+    background: #e3e3e3;
+    width: 100%;
+    height: 370px;
+    overflow: scroll;
+    color: #33333;
+}
+
+/* COMPONENT TREE */
+.component-tree {
+    background-color: #f6f6f6;
+    border: solid 1px #e6e6e6;
+    border-radius: 3px;
+}
+
+.componenttree-parent > div > div {
+    /* 	background: #e6e6e6; */
+    background: #f6f6f6;
+    margin-left: 5px;
+    margin-right: 5px;
+    border-radius: 3px;
+}
+
+.componenttree-children {
+    padding-left: 4px;
+    background: #f6f6f6;
+}
+.componenttree-parent {
+    padding: 8px 0 4px 0px;
+}
+.componenttree-parent div.v-label-h4{
+    text-transform:uppercase;
+}
+.componenttree-child {
+    padding: 5px 0 5px 15px;
+    margin-left: 9px;
+}
+
+/* Expand/collapse button: */
+.componenttree-expander {
+    float: left;
+    margin-left: 15px;
+    padding: 10px;
+}
+
+.white-bg,
+.white-background,
+.white-bg div div,
+.white-background div div,
+{
+    background: #ffffff !important;
+}
+
+.headerLabelLayout .v-caption {
+    height: 0px;
+}
+
+
+
+/* colorpicker fix */
+.v-colorpicker-popup .v-colorpicker-history {
+    position: absolute !important;
+    top: 370px !important;
+}
+
+.v-colorpicker-popup .v-horizontallayout {
+    position: absolute !important;
+    top: 410px !important;
+}
+
+.gwt-FileUpload {
+    display: inline !important;
+}
+
+img[src$="document-icon.png"] {
+    width:14px;
+    height:16px;
+}
+
+.gsb-component-wrap {
+    display: inline-block !important;
+    float: left !important;
+}
+
+.gsb-div-wrap div.v-horizontallayout {
+    display: inline-block !important
+}
+
+.gsb-div-wrap div.v-csslayout {
+    display: inline-block !important
+}
+
+.study-browser-main .v-button .v-button-caption {
+    font-size: 13px;
+}
+
+td.v-table-cell-content-accepted-value{
+    background-color: #E6F5FF;
+    color: #3366CC;
+}
+
+
+
+
+.v-tree-node-listManagerTreeRootNode {
+    font-size: 12px;
+    padding-bottom:5px;
+}
+
+.v-tree-node-listManagerTreeRootNode span {
+    margin-left: 5px;
+}
+
+.v-tree-node-listManagerTreeRegularParentNode {
+    padding-bottom:4px;
+    padding-top:4px;
+}
+.v-tree-node-listManagerTreeRegularChildNode {
+    padding-bottom:3px;
+    padding-top:3px;
+}
+
+.v-tree-node-listManagerTreeRegularParentNode span {
+    margin-left: 5px;
+    background-repeat: no-repeat;
+}
+
+.v-tree-node-listManagerTreeRootNode .v-tree-node-focused span,
+.v-tree-node-listManagerTreeRegularParentNode .v-tree-node-focused span {
+    padding-left: 25px;
+}
+
+.v-tree-node-listManagerTreeRegularChildNode span {
+    margin-left: 5px;
+}
+
+
+
+.v-captiontext {
+    font-size: 13px;
+    text-transform: none;
+    font-weight: bold;
+}
+
+.v-horizontallayout .v-captiontext{
+    text-transform: none;
+    font-size: 13px;
+}
+
+.v-absolutelayout {
+    background: #f6f6f6 !important;
+}
+

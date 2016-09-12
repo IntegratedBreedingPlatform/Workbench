@@ -109,11 +109,14 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 
 		ThemeResource resource = new ThemeResource("../vaadin-retro/images/search-nurseries.png");
 		Label headingLabel = new Label("Select Data for Analysis");
+		headingLabel.setDebugId("headingLabel");
 		headingLabel.setStyleName(Bootstrap.Typography.H4.styleName());
 		headingLabel.addStyleName("label-bold");
 		this.heading = new HeaderLabelLayout(resource, headingLabel);
+		this.heading.setDebugId("heading");
 
 		this.browseLink = new Button();
+		this.browseLink.setDebugId("browseLink");
 		this.browseLink.setImmediate(true);
 		this.browseLink.setStyleName("link");
 		this.browseLink.setCaption("Browse");
@@ -122,15 +125,18 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 		this.setStudiesTabsheet(this.generateTabSheet());
 
 		this.tabSheetContainer = new VerticalLayout();
+		this.tabSheetContainer.setDebugId("tabSheetContainer");
 		this.tabSheetContainer.addComponent(this.getStudiesTabsheet());
 		this.tabSheetContainer.setMargin(true, false, false, false);
 	}
 
 	private void setTitleContent() {
 		this.titleLayout = new HorizontalLayout();
+		this.titleLayout.setDebugId("titleLayout");
 		this.titleLayout.setSpacing(true);
 
 		this.toolTitle = new Label();
+		this.toolTitle.setDebugId("toolTitle");
 		this.toolTitle.setContentMode(Label.CONTENT_XHTML);
 		this.toolTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 		this.toolTitle.setHeight("26px");
@@ -171,11 +177,13 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 		this.setWidth("100%");
 
 		HorizontalLayout browseLabelLayout = new HorizontalLayout();
+		browseLabelLayout.setDebugId("browseLabelLayout");
 		browseLabelLayout.addComponent(this.browseLink);
 		browseLabelLayout.addComponent(new Label("for a study to work with."));
 		browseLabelLayout.setSizeUndefined();
 
 		VerticalLayout selectDataForAnalysisLayout = new VerticalLayout();
+		selectDataForAnalysisLayout.setDebugId("selectDataForAnalysisLayout");
 		selectDataForAnalysisLayout.addComponent(this.heading);
 		selectDataForAnalysisLayout.addComponent(browseLabelLayout);
 
@@ -192,6 +200,7 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 			container.removeAllComponents();
 
 			Label tabTitle = new Label("&nbsp;&nbsp;" + "Adjusted means dataset", Label.CONTENT_XHTML);
+			tabTitle.setDebugId("tabTitle");
 			tabTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 
 			container.addComponent(tabTitle);
@@ -282,6 +291,7 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 
 	protected TabSheet generateTabSheet() {
 		TabSheet tab = new TabSheet();
+		tab.setDebugId("tab");
 
 		tab.setImmediate(true);
 		tab.setStyleName(Reindeer.TABSHEET_MINIMAL);

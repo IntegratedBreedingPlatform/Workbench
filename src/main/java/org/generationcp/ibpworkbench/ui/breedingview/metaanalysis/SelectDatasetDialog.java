@@ -98,6 +98,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 		this.center();
 
 		this.lblStudyTreeDetailDescription = new Label(this.messageSource.getMessage(Message.META_SELECT_DATA_FOR_ANALYSIS_DESCRIPTION));
+		this.lblStudyTreeDetailDescription.setDebugId("lblStudyTreeDetailDescription");
 
 		this.folderResource = new ThemeResource("../vaadin-retro/svg/folder-icon.svg");
 		this.studyResource = new ThemeResource("../vaadin-retro/svg/study-icon.svg");
@@ -144,19 +145,23 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 	protected void initializeLayout() {
 
 		this.rootLayout = new VerticalLayout();
+		this.rootLayout.setDebugId("rootLayout");
 		this.rootLayout.setMargin(true);
 		this.rootLayout.setSpacing(true);
 		this.rootLayout.setWidth("100%");
 		this.rootLayout.setHeight("100%");
 
 		HorizontalLayout buttonLayout = new HorizontalLayout();
+		buttonLayout.setDebugId("buttonLayout");
 		buttonLayout.setSpacing(true);
 		buttonLayout.setMargin(true, false, false, false);
 
 		this.cancelButton = new Button("Cancel");
+		this.cancelButton.setDebugId("cancelButton");
 		this.cancelButton.setData(SelectDatasetDialog.CLOSE_SCREEN_BUTTON_ID);
 
 		this.selectButton = new Button("Select");
+		this.selectButton.setDebugId("selectButton");
 		this.selectButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 		this.selectButton.setEnabled(false);
 
@@ -181,6 +186,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 	private BreedingViewTreeTable createStudyTreeTable() {
 
 		final BreedingViewTreeTable tr = new BreedingViewTreeTable();
+		tr.setDebugId("tr");
 
 		tr.addContainerProperty("Study Name", String.class, "sname");
 		tr.addContainerProperty("Title", String.class, "title");

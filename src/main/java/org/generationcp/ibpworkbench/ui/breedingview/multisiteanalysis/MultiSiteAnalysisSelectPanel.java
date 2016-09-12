@@ -181,19 +181,26 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 		this.setVariatesCheckboxState(new HashMap<String, Boolean>());
 
 		this.lblEnvironmentFactorHeader = new Label();
+		this.lblEnvironmentFactorHeader.setDebugId("lblEnvironmentFactorHeader");
 		this.lblEnvironmentFactorHeader.setStyleName(Bootstrap.Typography.H2.styleName());
 
 		this.lblEnvironmentFactorDescription = new Label();
+		this.lblEnvironmentFactorDescription.setDebugId("lblEnvironmentFactorDescription");
 		this.lblGenotypesFactorDescription = new Label();
+		this.lblGenotypesFactorDescription.setDebugId("lblGenotypesFactorDescription");
 
 		this.lblEnvironmentGroupsHeader = new Label();
+		this.lblEnvironmentGroupsHeader.setDebugId("lblEnvironmentGroupsHeader");
 		this.lblEnvironmentGroupsHeader.setStyleName(Bootstrap.Typography.H2.styleName());
 
 		this.lblEnvironmentGroupsDescription = new Label();
+		this.lblEnvironmentGroupsDescription.setDebugId("lblEnvironmentGroupsDescription");
 
 		this.lblEnvironmentGroupsSpecify = new Label();
+		this.lblEnvironmentGroupsSpecify.setDebugId("lblEnvironmentGroupsSpecify");
 
 		this.lblReviewSelectedDataset = new Label();
+		this.lblReviewSelectedDataset.setDebugId("lblReviewSelectedDataset");
 		this.lblReviewSelectedDataset.setStyleName(Bootstrap.Typography.H2.styleName());
 
 		this.lblFactorTableHeader =
@@ -202,6 +209,7 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 		this.lblFactorTableHeader.setStyleName(Bootstrap.Typography.H3.styleName());
 
 		this.lblFactorTableDescription = new Label();
+		this.lblFactorTableDescription.setDebugId("lblFactorTableDescription");
 
 		this.lblVariateTableHeader =
 				new Label(
@@ -210,8 +218,10 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 		this.lblVariateTableHeader.setStyleName(Bootstrap.Typography.H3.styleName());
 
 		this.lblVariateTableDescription = new Label();
+		this.lblVariateTableDescription.setDebugId("lblVariateTableDescription");
 
 		this.lblStudyTreeDetailTitle = new Label();
+		this.lblStudyTreeDetailTitle.setDebugId("lblStudyTreeDetailTitle");
 		this.lblStudyTreeDetailTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 
 		this.factors = this.initializeFactorsTable();
@@ -220,24 +230,30 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 		this.variates.setImmediate(true);
 
 		this.chkVariatesSelectAll = new CheckBox();
+		this.chkVariatesSelectAll.setDebugId("chkVariatesSelectAll");
 		this.chkVariatesSelectAll.setImmediate(true);
 		this.chkVariatesSelectAll.setCaption("Select All");
 
 		this.selectSpecifyEnvironment = new Select();
+		this.selectSpecifyEnvironment.setDebugId("selectSpecifyEnvironment");
 		this.selectSpecifyEnvironment.setSizeFull();
 		this.selectSpecifyEnvironment.setImmediate(true);
 
 		this.selectSpecifyGenotypes = new Select();
+		this.selectSpecifyGenotypes.setDebugId("selectSpecifyGenotypes");
 		this.selectSpecifyGenotypes.setSizeFull();
 
 		this.selectSpecifyEnvironmentGroups = new Select();
+		this.selectSpecifyEnvironmentGroups.setDebugId("selectSpecifyEnvironmentGroups");
 		this.selectSpecifyEnvironmentGroups.setSizeFull();
 
 		this.populateFactorsVariatesByDataSetId(this.currentStudy, this.factors, this.variates);
 
 		// initialize buttons
 		this.btnCancel = new Button();
+		this.btnCancel.setDebugId("btnCancel");
 		this.btnNext = new Button();
+		this.btnNext.setDebugId("btnNext");
 		this.btnNext.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 	}
 
@@ -380,12 +396,16 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 
 		// Sub-Layouts
 		this.specifyEnvironmentFactorLayout = new HorizontalLayout();
+		this.specifyEnvironmentFactorLayout.setDebugId("specifyEnvironmentFactorLayout");
 		this.specifyEnvironmentFactorLayout.setSpacing(true);
 		this.specifyGenotypesFactorLayout = new HorizontalLayout();
+		this.specifyGenotypesFactorLayout.setDebugId("specifyGenotypesFactorLayout");
 		this.specifyGenotypesFactorLayout.setSpacing(true);
 		this.specifyEnvironmentGroupsLayout = new HorizontalLayout();
+		this.specifyEnvironmentGroupsLayout.setDebugId("specifyEnvironmentGroupsLayout");
 		this.specifyEnvironmentGroupsLayout.setSpacing(true);
 		this.datasetVariablesDetailLayout = new VerticalLayout();
+		this.datasetVariablesDetailLayout.setDebugId("datasetVariablesDetailLayout");
 
 		this.specifyEnvironmentFactorLayout.addComponent(this.lblEnvironmentFactorDescription);
 		this.specifyEnvironmentFactorLayout.addComponent(this.selectSpecifyEnvironment);
@@ -400,6 +420,7 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 
 		// Main Layout
 		this.generalLayout = new VerticalLayout();
+		this.generalLayout.setDebugId("generalLayout");
 		this.generalLayout.setSpacing(true);
 		this.generalLayout.setMargin(true);
 
@@ -430,6 +451,7 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 	protected Table initializeFactorsTable() {
 
 		final Table tblFactors = new Table();
+		tblFactors.setDebugId("tblFactors");
 		tblFactors.setImmediate(true);
 		tblFactors.setWidth("100%");
 		tblFactors.setHeight("170px");
@@ -470,6 +492,7 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 	protected void initializeVariatesTable() {
 
 		this.variates = new Table();
+		this.variates.setDebugId("variates");
 		this.variates.setImmediate(true);
 		this.variates.setWidth("100%");
 		this.variates.setHeight("100%");
@@ -516,6 +539,7 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 				final VariateModel vm = container.getItem(itemId).getBean();
 
 				final CheckBox checkBox = new CheckBox();
+				checkBox.setDebugId("checkBox");
 				checkBox.setImmediate(true);
 				checkBox.setVisible(true);
 				checkBox.addListener(new Property.ValueChangeListener() {
@@ -604,11 +628,13 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 
 	protected Component layoutButtonArea() {
 		HorizontalLayout buttonLayout = new HorizontalLayout();
+		buttonLayout.setDebugId("buttonLayout");
 		buttonLayout.setSizeFull();
 		buttonLayout.setSpacing(true);
 		buttonLayout.setMargin(true);
 
 		Label spacer = new Label("&nbsp;", Label.CONTENT_XHTML);
+		spacer.setDebugId("spacer");
 		spacer.setSizeFull();
 
 		buttonLayout.addComponent(spacer);

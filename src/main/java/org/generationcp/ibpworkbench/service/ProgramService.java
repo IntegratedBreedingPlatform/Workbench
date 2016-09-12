@@ -1,7 +1,7 @@
-
 package org.generationcp.ibpworkbench.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +27,7 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
 import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
 import org.generationcp.middleware.pojos.workbench.Role;
+import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,74 +56,57 @@ public class ProgramService {
 
 	private User currentUser;
 
-	private final Map<Integer, String> idAndNameOfProgramMembers = new HashMap<Integer, String>();
-
 	// http://cropwiki.irri.org/icis/index.php/TDM_Users_and_Access
-	private static final int PROJECT_USER_ACCESS_NUMBER = 100;
-	private static final int PROJECT_USER_TYPE = 422;
-	private static final int PROJECT_USER_STATUS = 1;
+	public static final int PROJECT_USER_ACCESS_NUMBER = 100;
+	public static final int PROJECT_USER_TYPE = 422;
+	public static final int PROJECT_USER_STATUS = 1;
 
-	public void createNewProgram(Project program) throws MiddlewareQueryException {
+	public static final String ADMIN_ROLE = "ADMIN";
 
-		this.idAndNameOfProgramMembers.clear();
+	public void createNewProgram(final Project program) {
 
 		this.saveBasicDetails(program);
-		
-		final HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-				.getRequest();
+
+		final HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		final Cookie userIdCookie = WebUtils.getCookie(request, ContextConstants.PARAM_LOGGED_IN_USER_ID);
 		final Cookie authToken = WebUtils.getCookie(request, ContextConstants.PARAM_AUTH_TOKEN);
-		ContextUtil.setContextInfo(request, userIdCookie != null ? Integer.valueOf(userIdCookie.getValue()) :  null, 
-				program.getProjectId(), authToken !=null ? authToken.getValue() : null);
+		ContextUtil.setContextInfo(request, userIdCookie != null ? Integer.valueOf(userIdCookie.getValue()) : null, program.getProjectId(),
+				authToken != null ? authToken.getValue() : null);
 		ContextHolder.setCurrentCrop(program.getCropType().getCropName());
 		this.toolUtil.createWorkspaceDirectoriesForProject(program);
 
-		this.addProjectUserRoles(program);
-		this.copyProjectUsers(program);
-		this.saveProjectUserInfo(program);
+		// Get all the ADMIN users then add the current selected users.
+		final List<User> users = this.workbenchDataManager.getAllUsersByRole(org.generationcp.commons.security.Role.ADMIN.toString());
+		users.addAll(this.selectedUsers);
 
-		ProgramService.LOG.info("Program created. ID:" + program.getProjectId() + " Name:" + program.getProjectName() + " Start date:"
-				+ program.getStartDate());
+		this.addUsersToProgram(users, program);
+
+		ProgramService.LOG
+				.info("Program created. ID:" + program.getProjectId() + " Name:" + program.getProjectName() + " Start date:" + program
+						.getStartDate());
 	}
 
-	private void addProjectUserRoles(Project project) throws MiddlewareQueryException {
-		List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
-		Set<User> allProjectMembers = new HashSet<User>();
-		allProjectMembers.add(this.currentUser);
-		allProjectMembers.addAll(this.selectedUsers);
-
-		List<Role> allRolesList = this.workbenchDataManager.getAllRoles();
-
-		for (User user : allProjectMembers) {
-			for (Role role : allRolesList) {
-				ProjectUserRole projectUserRole = new ProjectUserRole();
-				projectUserRole.setUserId(user.getUserid());
-				projectUserRole.setRole(role);
-				projectUserRole.setProject(project);
-				projectUserRoles.add(projectUserRole);
-			}
+	public void addUserToAllProgramsIfAdmin(final User user) {
+		if (this.isAdmin(user)) {
+			this.addProjectUserToAllPrograms(user);
 		}
-		this.workbenchDataManager.addProjectUserRole(projectUserRoles);
 	}
 
-	private void saveProjectUserInfo(Project program) {
-		// Create records for workbench_project_user_info table
-		for (Map.Entry<Integer, String> e : this.idAndNameOfProgramMembers.entrySet()) {
-			try {
-				if (this.workbenchDataManager.getProjectUserInfoDao()
-						.getByProjectIdAndUserId(program.getProjectId().intValue(), e.getKey()) == null) {
-					ProjectUserInfo pUserInfo = new ProjectUserInfo(program.getProjectId().intValue(), e.getKey());
-					this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
+	public boolean isAdmin(final User user) {
+		final List<UserRole> roles = user.getRoles();
+		if (roles != null) {
+			for (final UserRole userRole : roles) {
+				if (ProgramService.ADMIN_ROLE.equalsIgnoreCase(userRole.getRole())) {
+					return true;
 				}
-			} catch (MiddlewareQueryException e1) {
-				ProgramService.LOG.error(e1.getMessage(), e1);
 			}
 		}
+		return false;
 	}
 
-	private void saveBasicDetails(Project program) throws MiddlewareQueryException {
+	private void saveBasicDetails(final Project program) {
 		program.setUserId(this.currentUser.getUserid());
-		CropType cropType = this.workbenchDataManager.getCropTypeByName(program.getCropType().getCropName());
+		final CropType cropType = this.workbenchDataManager.getCropTypeByName(program.getCropType().getCropName());
 		if (cropType == null) {
 			this.workbenchDataManager.addCropType(program.getCropType());
 		}
@@ -131,59 +115,92 @@ public class ProgramService {
 	}
 
 	/**
-	 * Create necessary database entries for selected program members.
+	 * Creates IBDBUserMap entries for the specified users.
 	 */
-	public void copyProjectUsers(Project project) throws MiddlewareQueryException {
+	public void createIBDBUserMapping(final Project project, final Set<User> users, final Map<Integer, Person> workbenchPersonsMap,
+			final Map<String, Person> cropDBPersonsMap, final Map<String, User> cropDBUsersMap) {
 
-		for (User user : this.selectedUsers) {
-			
-			//fetch user record from workbench DB
-			User workbenchUser = this.workbenchDataManager.getUserById(user.getUserid());
-			
+		for (final User user : users) {
+
 			// ccreate a copy of the Person
-			Person workbenchPerson = this.workbenchDataManager.getPersonById(workbenchUser.getPersonid());
-			Person cropDBPerson = workbenchPerson.copy();
-			
-			// add the Person record if they do not exist
-			if (!userDataManager.isPersonExists(cropDBPerson.getFirstName().toUpperCase(), cropDBPerson.getLastName().toUpperCase())) {
-				userDataManager.addPerson(cropDBPerson);
-			} else {
-				List<Person> persons = userDataManager.getAllPersons();
-				for (Person person : persons) {
-					if (person.getLastName().equalsIgnoreCase(cropDBPerson.getLastName().toUpperCase())
-							&& person.getFirstName().equalsIgnoreCase(cropDBPerson.getFirstName().toUpperCase())) {
-						cropDBPerson = person;
-						break;
-					}
-				}
-			}
-			
-			// create a copy of the user record
-			User cropDBUser = workbenchUser.copy();
-			
-			// if a user is assigned to a program, then add them to the crop database where they can then access the program
-			if (!userDataManager.isUsernameExists(cropDBUser.getName())) {
-				cropDBUser.setPersonid(cropDBPerson.getId());
-				cropDBUser.setAccess(ProgramService.PROJECT_USER_ACCESS_NUMBER);
-				cropDBUser.setType(ProgramService.PROJECT_USER_TYPE);
-				cropDBUser.setInstalid(Integer.valueOf(0));
-				cropDBUser.setStatus(Integer.valueOf(ProgramService.PROJECT_USER_STATUS));
-				cropDBUser.setAssignDate(this.getCurrentDate());
-				Integer userId = userDataManager.addUser(cropDBUser);
+			final Person workbenchPerson = workbenchPersonsMap.get(user.getPersonid());
+			final Person cropDBPerson = createCropDBPersonIfNecessary(workbenchPerson, cropDBPersonsMap);
+			final User cropDBUser = createIBDBUserIfNecessary(user, cropDBPerson, cropDBUsersMap);
 
-				User ibdbUser = userDataManager.getUserById(userId);
-				this.createIBDBUserMap(project.getProjectId(), workbenchUser.getUserid(), ibdbUser.getUserid());
-			} else {
-				User ibdbUser = userDataManager.getUserByUserName(cropDBUser.getName());
-				this.createIBDBUserMap(project.getProjectId(), workbenchUser.getUserid(), ibdbUser.getUserid());
-			}
-			this.idAndNameOfProgramMembers.put(workbenchUser.getUserid(), cropDBUser.getName());
+			this.createAndSaveIBDBUserMap(project.getProjectId(), user.getUserid(), cropDBUser.getUserid());
+
 		}
 	}
 
-	private void createIBDBUserMap(Long projectId, Integer workbenchUserId, Integer ibdbUserId) {
+	public Map<String, User> retrieveCropDBUsersMap() {
+
+		Map<String, User> map = new HashMap<>();
+		for (User user : this.userDataManager.getAllUsers()) {
+			map.put(user.getName(), user);
+		}
+		return map;
+	}
+
+	public Map<String, Person> retrieveCropDBPersonsMap() {
+		Map<String, Person> map = new HashMap<>();
+		for (Person person : this.userDataManager.getAllPersons()) {
+			map.put(getNameKey(person), person);
+		}
+		return map;
+	}
+
+	public Map<Integer, Person> retrieveWorkbenchPersonsMap() {
+		Map<Integer, Person> map = new HashMap<>();
+		for (Person person : this.workbenchDataManager.getAllPersons()) {
+			map.put(person.getId(), person);
+		}
+		return map;
+	}
+
+	User createIBDBUserIfNecessary(User user, Person cropDBPerson, final Map<String, User> cropDBUsersMap) {
+
+		// if a user is assigned to a program, then add them to the crop database where they can then access the program
+		if (!cropDBUsersMap.containsKey(user.getName())) {
+
+			User newCropDBUser = user.copy();
+			newCropDBUser.setPersonid(cropDBPerson.getId());
+			newCropDBUser.setAccess(ProgramService.PROJECT_USER_ACCESS_NUMBER);
+			newCropDBUser.setType(ProgramService.PROJECT_USER_TYPE);
+			newCropDBUser.setInstalid(Integer.valueOf(0));
+			newCropDBUser.setStatus(Integer.valueOf(ProgramService.PROJECT_USER_STATUS));
+			newCropDBUser.setAssignDate(this.getCurrentDate());
+
+			this.userDataManager.addUser(newCropDBUser);
+
+			return newCropDBUser;
+
+		} else {
+			return cropDBUsersMap.get(user.getName());
+		}
+
+	}
+
+	Person createCropDBPersonIfNecessary(Person workbenchPerson, final Map<String, Person> cropDBPersonsMap) {
+
+		String nameKey = getNameKey(workbenchPerson);
+
+		if (!cropDBPersonsMap.containsKey(nameKey)) {
+			Person newCropDBPerson = workbenchPerson.copy();
+			userDataManager.addPerson(newCropDBPerson);
+			return newCropDBPerson;
+		} else {
+			return cropDBPersonsMap.get(nameKey);
+		}
+
+	}
+
+	String getNameKey(Person person) {
+		return person.getFirstName().toLowerCase() + person.getLastName().toLowerCase();
+	}
+
+	private void createAndSaveIBDBUserMap(final Long projectId, final Integer workbenchUserId, final Integer ibdbUserId) {
 		// Add the mapping between Workbench user and the ibdb user.
-		IbdbUserMap ibdbUserMap = new IbdbUserMap();
+		final IbdbUserMap ibdbUserMap = new IbdbUserMap();
 		ibdbUserMap.setWorkbenchUserId(workbenchUserId);
 		ibdbUserMap.setProjectId(projectId);
 		ibdbUserMap.setIbdbUserId(ibdbUserId);
@@ -194,19 +211,76 @@ public class ProgramService {
 		return DateUtil.getCurrentDateAsIntegerValue();
 	}
 
-	public void setSelectedUsers(Set<User> users) {
+	public void setSelectedUsers(final Set<User> users) {
 		this.selectedUsers = users;
 	}
 
-	public void setCurrentUser(User currentUser) {
+	public void setCurrentUser(final User currentUser) {
 		this.currentUser = currentUser;
 	}
 
-	void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
+	void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
 		this.workbenchDataManager = workbenchDataManager;
 	}
 
-	void setToolUtil(ToolUtil toolUtil) {
+	void setToolUtil(final ToolUtil toolUtil) {
 		this.toolUtil = toolUtil;
 	}
+
+	public void addProjectUserToAllPrograms(final User user) {
+
+		final List<Project> projects = this.workbenchDataManager.getProjects();
+		final List<Role> allRoles = this.workbenchDataManager.getAllRoles();
+		final Map<Integer, Person> workbenchPersonsMap = retrieveWorkbenchPersonsMap();
+		final Map<String, Person> cropDBPersonsMap = retrieveCropDBPersonsMap();
+		final Map<String, User> cropDBUsersMap = retrieveCropDBUsersMap();
+
+		for (final Project project : projects) {
+			if (this.workbenchDataManager.getProjectUserInfoDao()
+					.getByProjectIdAndUserId(project.getProjectId().intValue(), user.getUserid()) == null) {
+				final ProjectUserInfo pUserInfo = new ProjectUserInfo(project.getProjectId().intValue(), user.getUserid());
+				this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
+			}
+			this.assignAllTheRolesOfTheProgramToUser(allRoles, project, user);
+			this.createIBDBUserMapping(project, new HashSet<User>(Arrays.asList(user)), workbenchPersonsMap, cropDBPersonsMap,
+					cropDBUsersMap);
+		}
+
+	}
+
+	public void addUsersToProgram(final List<User> users, final Project program) {
+
+		final List<Role> allRoles = this.workbenchDataManager.getAllRoles();
+		final Map<Integer, Person> workbenchPersonsMap = retrieveWorkbenchPersonsMap();
+		final Map<String, Person> cropDBPersonsMap = retrieveCropDBPersonsMap();
+		final Map<String, User> cropDBUsersMap = retrieveCropDBUsersMap();
+
+		for (final User user : users) {
+			if (this.workbenchDataManager.getProjectUserInfoDao()
+					.getByProjectIdAndUserId(program.getProjectId().intValue(), user.getUserid()) == null) {
+				final ProjectUserInfo pUserInfo = new ProjectUserInfo(program.getProjectId().intValue(), user.getUserid());
+				this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
+			}
+			this.assignAllTheRolesOfTheProgramToUser(allRoles, program, user);
+		}
+		this.createIBDBUserMapping(program, new HashSet<>(users), workbenchPersonsMap, cropDBPersonsMap, cropDBUsersMap);
+
+	}
+
+	@SuppressWarnings("rawtypes")
+	private void assignAllTheRolesOfTheProgramToUser(final List<Role> allRoles, final Project project, final User user) {
+		final List<Role> roles = new ArrayList(allRoles);
+		final List<Role> existingRoles = this.workbenchDataManager.getRolesByProjectAndUser(project, user);
+		roles.removeAll(existingRoles);
+		List<ProjectUserRole> userRoles = new ArrayList<>();
+		for (final Role role : roles) {
+			final ProjectUserRole projectUserRole = new ProjectUserRole();
+			projectUserRole.setProject(project);
+			projectUserRole.setUserId(user.getUserid());
+			projectUserRole.setRole(role);
+			userRoles.add(projectUserRole);
+		}
+		this.workbenchDataManager.addProjectUserRole(userRoles);
+	}
+
 }

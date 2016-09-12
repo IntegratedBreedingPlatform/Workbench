@@ -45,6 +45,7 @@ public class OpenToolVersionsAction implements ClickListener, ActionListener {
 
 		try {
 			ToolsAndCropVersionsView toolsAndCropVersionsView = new ToolsAndCropVersionsView();
+			toolsAndCropVersionsView.setDebugId("toolsAndCropVersionsView");
 
 			w.showContent(toolsAndCropVersionsView);
 

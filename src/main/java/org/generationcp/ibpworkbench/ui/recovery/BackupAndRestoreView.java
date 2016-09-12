@@ -62,6 +62,7 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 	private final Panel root = new Panel();
 
 	public BackupAndRestoreView() {
+		this.root.setDebugId("root");
 		this.setCompositionRoot(this.root);
 	}
 
@@ -79,6 +80,7 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 
 	public void initializeComponents() {
 		this.backupBtn = new Button(this.messageSource.getMessage("BACKUP_BMS_BUTTON"));
+		this.backupBtn.setDebugId("backupBtn");
 		this.uploadFrm = new UploadField() {
 
 			@Override
@@ -123,15 +125,19 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 		this.uploadFrm.setFieldType(UploadField.FieldType.FILE);
 
 		this.restoreBtn = new Button(this.messageSource.getMessage("RESTORE_BMS_BUTTON"));
+		this.restoreBtn.setDebugId("restoreBtn");
 
 		this.tabSheet = new TabSheet();
+		this.tabSheet.setDebugId("tabSheet");
 		this.tabSheet.setImmediate(true);
 		this.tabSheet.setStyleName(Reindeer.TABSHEET_MINIMAL);
 		this.tabSheet.setStyleName("panel-border");
 
 		this.backupPanel = new Panel();
+		this.backupPanel.setDebugId("backupPanel");
 		this.backupPanel.setStyleName(Reindeer.PANEL_LIGHT);
 		this.restorePanel = new Panel();
+		this.restorePanel.setDebugId("restorePanel");
 		this.restorePanel.setStyleName(Reindeer.PANEL_LIGHT);
 	}
 
@@ -233,9 +239,11 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 		this.uploadFrm.addStyleName(BMS_LABEL_BOTTOM_SPACE_STYLE);
 
 		final Label pageTitle = new Label(this.messageSource.getMessage("BACKUP_RESTORE_TITLE"));
+		pageTitle.setDebugId("pageTitle");
 		pageTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 
 		final Label restoreUploadTitle = new Label(this.messageSource.getMessage("RESTORE_BMS_UPLOAD"));
+		restoreUploadTitle.setDebugId("restoreUploadTitle");
 		restoreUploadTitle.setStyleName(Bootstrap.Typography.H6.styleName());
 
 		this.root.setSizeFull();
@@ -243,6 +251,7 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 		this.root.setStyleName(Reindeer.PANEL_LIGHT);
 
 		final VerticalLayout rootContent = new VerticalLayout();
+		rootContent.setDebugId("rootContent");
 		this.root.setContent(rootContent);
 
 		rootContent.setSizeUndefined();
@@ -265,6 +274,7 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 		this.restorePanel.addComponent(this.setUpHeadings(HelpModule.RESTORE_PROGRAM_DATA, this.messageSource.getMessage("RESTORE_BMS_TITLE"),
 				"228px"));
 		final Label restoreDescriptionLabel = new Label(this.messageSource.getMessage("RESTORE_BMS_DESCRIPTION"));
+		restoreDescriptionLabel.setDebugId("restoreDescriptionLabel");
 		restoreDescriptionLabel.addStyleName(BMS_LABEL_BOTTOM_SPACE_STYLE);
 		this.restorePanel.addComponent(restoreDescriptionLabel);
 		this.restorePanel.addComponent(restoreUploadTitle);
@@ -276,10 +286,12 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 
 	private HorizontalLayout setUpHeadings(final HelpModule module, final String heading, final String width) {
 		final HorizontalLayout titleLayout = new HorizontalLayout();
+		titleLayout.setDebugId("titleLayout");
 		titleLayout.setSpacing(true);
 		titleLayout.setHeight("40px");
 
 		final Label toolTitle = new Label(heading);
+		toolTitle.setDebugId("toolTitle");
 		toolTitle.addStyleName(Bootstrap.Typography.H4.styleName());
 		toolTitle.setContentMode(Label.CONTENT_XHTML);
 		toolTitle.setWidth(width);

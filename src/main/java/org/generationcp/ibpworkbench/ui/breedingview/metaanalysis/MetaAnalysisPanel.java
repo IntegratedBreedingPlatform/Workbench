@@ -126,17 +126,21 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 
 		ThemeResource resource = new ThemeResource("../vaadin-retro/images/search-nurseries.png");
 		Label headingLabel = new Label("Select Data for Analysis");
+		headingLabel.setDebugId("headingLabel");
 		headingLabel.setStyleName(Bootstrap.Typography.H4.styleName());
 		headingLabel.addStyleName("label-bold");
 		this.heading = new HeaderLabelLayout(resource, headingLabel);
+		this.heading.setDebugId("heading");
 
 		this.browseLink = new Button();
+		this.browseLink.setDebugId("browseLink");
 		this.browseLink.setImmediate(true);
 		this.browseLink.setStyleName("link");
 		this.browseLink.setCaption("Browse");
 		this.browseLink.setWidth("48px");
 
 		this.tabSheet = new TabSheet();
+		this.tabSheet.setDebugId("tabSheet");
 		this.tabSheet.setWidth("100%");
 
 		this.setSelectedEnvironmenTable(new Table());
@@ -154,8 +158,10 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 		this.lblReviewEnvironments.setStyleName(Bootstrap.Typography.H3.styleName());
 
 		this.lblBuildNewAnalysisDescription = new Label();
+		this.lblBuildNewAnalysisDescription.setDebugId("lblBuildNewAnalysisDescription");
 
 		this.linkCloseAllTab = new Button();
+		this.linkCloseAllTab.setDebugId("linkCloseAllTab");
 		this.linkCloseAllTab.setStyleName("link");
 		this.linkCloseAllTab.setImmediate(true);
 		this.linkCloseAllTab.setCaption("Close All Tabs");
@@ -168,19 +174,24 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 		this.lblSelectDatasetsForAnalysis.setStyleName(Bootstrap.Typography.H3.styleName());
 
 		this.lblSelectDatasetsForAnalysisDescription = new Label();
+		this.lblSelectDatasetsForAnalysisDescription.setDebugId("lblSelectDatasetsForAnalysisDescription");
 
 		// initialize buttons
 		this.btnCancel = new Button();
+		this.btnCancel.setDebugId("btnCancel");
 		this.btnNext = new Button();
+		this.btnNext.setDebugId("btnNext");
 		this.btnNext.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
 	}
 
 	private void setTitleContent() {
 		this.titleLayout = new HorizontalLayout();
+		this.titleLayout.setDebugId("titleLayout");
 		this.titleLayout.setSpacing(true);
 
 		this.toolTitle = new Label();
+		this.toolTitle.setDebugId("toolTitle");
 		this.toolTitle.setContentMode(Label.CONTENT_XHTML);
 		this.toolTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 		this.toolTitle.setHeight("26px");
@@ -285,16 +296,19 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 		this.setWidth("100%");
 
 		HorizontalLayout browseLabelLayout = new HorizontalLayout();
+		browseLabelLayout.setDebugId("browseLabelLayout");
 		browseLabelLayout.addComponent(this.browseLink);
 		browseLabelLayout.addComponent(new Label("for a dataset to work with."));
 		browseLabelLayout.setSizeUndefined();
 		browseLabelLayout.setMargin(false);
 
 		VerticalLayout selectDataForAnalysisLayout = new VerticalLayout();
+		selectDataForAnalysisLayout.setDebugId("selectDataForAnalysisLayout");
 		selectDataForAnalysisLayout.addComponent(this.heading);
 		selectDataForAnalysisLayout.addComponent(browseLabelLayout);
 
 		this.studyDetailsLayout = new GridLayout(10, 3);
+		this.studyDetailsLayout.setDebugId("studyDetailsLayout");
 		this.studyDetailsLayout.setMargin(false);
 		this.studyDetailsLayout.setSpacing(true);
 		this.studyDetailsLayout.setWidth("100%");
@@ -304,6 +318,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 		this.studyDetailsLayout.addComponent(this.lblBuildNewAnalysisDescription, 0, 1, 9, 1);
 
 		this.selectedDataSetEnvironmentLayout = new VerticalLayout();
+		this.selectedDataSetEnvironmentLayout.setDebugId("selectedDataSetEnvironmentLayout");
 		this.selectedDataSetEnvironmentLayout.setMargin(false);
 		this.selectedDataSetEnvironmentLayout.setSpacing(true);
 		this.selectedDataSetEnvironmentLayout.addComponent(this.lblSelectDatasetsForAnalysis);
@@ -323,6 +338,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 	protected Component layoutButtonArea() {
 
 		HorizontalLayout buttonLayout = new HorizontalLayout();
+		buttonLayout.setDebugId("buttonLayout");
 
 		buttonLayout.setSpacing(true);
 		buttonLayout.setMargin(true);
@@ -353,6 +369,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 			}
 
 			EnvironmentTabComponent component = new EnvironmentTabComponent(ds);
+			component.setDebugId("component");
 			tabSheet.addTab(component);
 			tabSheet.getTab(component).setClosable(true);
 			tabSheet.getTab(component).setCaption(ds.getName());
@@ -475,17 +492,22 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 							Label.CONTENT_XHTML);
 			this.lblFactors.setStyleName(Bootstrap.Typography.H3.styleName());
 			this.lblFactorDescription = new Label("The factors of the dataset you have selected are shown below for your review.");
+			this.lblFactorDescription.setDebugId("lblFactorDescription");
 			this.lblTraits =
 					new Label(
 							"<span class='bms-variates' style='color: #B8D433; font-size: 20px; font-weight: bold;'></span><b>&nbsp;TRAITS</b>",
 							Label.CONTENT_XHTML);
 			this.lblTraits.setStyleName(Bootstrap.Typography.H3.styleName());
 			this.lblTraitDescription = new Label("The traits of the dataset you have selected are shown below for your review.");
+			this.lblTraitDescription.setDebugId("lblTraitDescription");
 
 			Label lblStudyName = new Label("<b>Study Name:</b> " + this.studyName);
+			lblStudyName.setDebugId("lblStudyName");
 			lblStudyName.setContentMode(Label.CONTENT_XHTML);
 			Button linkFullStudyDetails = new Button("<span class='glyphicon glyphicon-open' style='right: 6px'></span>Full Study Details");
+			linkFullStudyDetails.setDebugId("linkFullStudyDetails");
 			Button linkSaveToList = new Button("<span class='glyphicon glyphicon-plus' style='right: 6px'></span>Save To List");
+			linkSaveToList.setDebugId("linkSaveToList");
 			linkFullStudyDetails.setHtmlContentAllowed(true);
 			linkSaveToList.setHtmlContentAllowed(true);
 
@@ -503,18 +525,22 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 			linkFullStudyDetails.addListener(new ViewStudyDetailsButtonClickListener(this.dataSet.getStudyId(), this.studyName));
 
 			final HorizontalLayout buttonContainer = new HorizontalLayout();
+			buttonContainer.setDebugId("buttonContainer");
 			buttonContainer.setSpacing(true);
 			buttonContainer.addComponent(linkFullStudyDetails);
 			buttonContainer.addComponent(linkSaveToList);
 
 			final HorizontalLayout tableContainer = new HorizontalLayout();
+			tableContainer.setDebugId("tableContainer");
 			tableContainer.setSpacing(true);
 			tableContainer.setSizeFull();
 
 			final VerticalLayout factorsContainer = new VerticalLayout();
+			factorsContainer.setDebugId("factorsContainer");
 			factorsContainer.setSpacing(true);
 
 			final VerticalLayout descContainer1 = new VerticalLayout();
+			descContainer1.setDebugId("descContainer1");
 			descContainer1.setSpacing(false);
 			descContainer1.setHeight("90px");
 			descContainer1.setWidth("100%");
@@ -526,9 +552,11 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 			factorsContainer.addComponent(this.initializeFactorsTable());
 
 			final VerticalLayout variatesContainer = new VerticalLayout();
+			variatesContainer.setDebugId("variatesContainer");
 			variatesContainer.setSpacing(true);
 
 			final VerticalLayout descContainer2 = new VerticalLayout();
+			descContainer2.setDebugId("descContainer2");
 			descContainer2.setSpacing(false);
 			descContainer2.setHeight("90px");
 			descContainer2.setWidth("100%");
@@ -555,6 +583,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 		protected Table initializeVariatesTable() {
 
 			final Table tblVariates = new Table();
+			tblVariates.setDebugId("tblVariates");
 			tblVariates.setImmediate(true);
 			tblVariates.setWidth("100%");
 			tblVariates.setHeight("270px");
@@ -615,6 +644,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 		protected Table initializeFactorsTable() {
 
 			final Table tblFactors = new Table();
+			tblFactors.setDebugId("tblFactors");
 			tblFactors.setImmediate(true);
 			tblFactors.setWidth("100%");
 			tblFactors.setHeight("270px");

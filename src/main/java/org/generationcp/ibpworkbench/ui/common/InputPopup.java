@@ -60,12 +60,14 @@ public class InputPopup extends BaseSubWindow implements InitializingBean {
 
 	private void initializeComponents() {
 		this.label = new Label();
+		this.label.setDebugId("label");
 
 		if (this.fieldName != null) {
 			this.label.setValue(this.fieldName);
 		}
 
 		this.field = new TextField();
+		this.field.setDebugId("field");
 
 		if (this.defaultFieldValue != null) {
 			this.field.setValue(this.defaultFieldValue);
@@ -75,9 +77,11 @@ public class InputPopup extends BaseSubWindow implements InitializingBean {
 		this.field.focus();
 
 		this.okBtn = new Button(this.messageSource.getMessage(Message.OK));
+		this.okBtn.setDebugId("okBtn");
 		this.okBtn.setClickShortcut(ShortcutAction.KeyCode.ENTER);
 		this.okBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 		this.cancelBtn = new Button(this.messageSource.getMessage(Message.CANCEL));
+		this.cancelBtn.setDebugId("cancelBtn");
 
 		// set debug ids
 		this.field.setDebugId("vaadin-itemname-txt");
@@ -95,16 +99,19 @@ public class InputPopup extends BaseSubWindow implements InitializingBean {
 		this.label.setValue(this.messageSource.getMessage(Message.ITEM_NAME));
 
 		final HorizontalLayout formContainer = new HorizontalLayout();
+		formContainer.setDebugId("formContainer");
 		formContainer.setSpacing(true);
 
 		formContainer.addComponent(this.label);
 		formContainer.addComponent(this.field);
 
 		final HorizontalLayout btnContainer = new HorizontalLayout();
+		btnContainer.setDebugId("btnContainer");
 		btnContainer.setSpacing(true);
 		btnContainer.setWidth("100%");
 
 		final Label spacer = new Label("");
+		spacer.setDebugId("spacer");
 		btnContainer.addComponent(spacer);
 		btnContainer.setExpandRatio(spacer, 1.0F);
 
@@ -112,6 +119,7 @@ public class InputPopup extends BaseSubWindow implements InitializingBean {
 		btnContainer.addComponent(this.cancelBtn);
 
 		final VerticalLayout rootContainer = new VerticalLayout();
+		rootContainer.setDebugId("rootContainer");
 
 		rootContainer.setSpacing(true);
 		rootContainer.setMargin(true);

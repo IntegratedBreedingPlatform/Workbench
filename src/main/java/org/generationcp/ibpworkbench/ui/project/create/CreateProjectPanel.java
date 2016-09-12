@@ -99,17 +99,20 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 		this.heading.setStyleName(Bootstrap.Typography.H4.styleName());
 
 		this.newProjectTitleArea = new HorizontalLayout();
+		this.newProjectTitleArea.setDebugId("newProjectTitleArea");
 		this.newProjectTitleArea.setSpacing(true);
 
 		this.project = new Project();
 
 		this.projectBasicDetailsComponent = new ProjectBasicDetailsComponent(this);
+		this.projectBasicDetailsComponent.setDebugId("projectBasicDetailsComponent");
 		this.buttonArea = this.layoutButtonArea();
 
 	}
 
 	protected void initializeLayout() {
 		VerticalLayout root = new VerticalLayout();
+		root.setDebugId("root");
 		root.setMargin(new Layout.MarginInfo(true, true, true, true));
 		root.setSpacing(true);
 		root.addComponent(this.heading);
@@ -186,11 +189,14 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 
 	protected Component layoutButtonArea() {
 		HorizontalLayout buttonLayout = new HorizontalLayout();
+		buttonLayout.setDebugId("buttonLayout");
 		buttonLayout.setSpacing(true);
 		buttonLayout.setMargin(true, false, false, false);
 
 		this.cancelButton = new Button("Reset");
+		this.cancelButton.setDebugId("cancelButton");
 		this.saveProjectButton = new Button("Save");
+		this.saveProjectButton.setDebugId("saveProjectButton");
 		this.saveProjectButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
 		buttonLayout.addComponent(this.cancelButton);

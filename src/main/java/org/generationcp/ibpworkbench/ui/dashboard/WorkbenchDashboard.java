@@ -109,6 +109,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
 	public void initializeComponents() {
 		this.selectDatasetForBreedingViewButton = new Button("View Studies and Datasets");
+		this.selectDatasetForBreedingViewButton.setDebugId("selectDatasetForBreedingViewButton");
 		this.selectDatasetForBreedingViewButton.setWidth("200px");
 
 		this.initializeProjectTable();
@@ -154,9 +155,12 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
 	private void initializePreviewTable() {
 		this.germplasmListPreview = new GermplasmListPreview(null);
+		this.germplasmListPreview.setDebugId("germplasmListPreview");
 		this.nurseryListPreview = new NurseryListPreview(null);
+		this.nurseryListPreview.setDebugId("nurseryListPreview");
 
 		this.previewTab = new TabSheet();
+		this.previewTab.setDebugId("previewTab");
 		this.previewTab.setHeight(100, Sizeable.UNITS_PERCENTAGE);
 		this.previewTab.addTab(this.germplasmListPreview, "Lists");
 
@@ -178,9 +182,11 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
 	private void setTitleContent() {
 		HorizontalLayout titleLayout = new HorizontalLayout();
+		titleLayout.setDebugId("titleLayout");
 		titleLayout.setSpacing(true);
 
 		Label toolTitle = new Label(this.messageSource.getMessage(Message.DASHBOARD));
+		toolTitle.setDebugId("toolTitle");
 		toolTitle.setContentMode(Label.CONTENT_XHTML);
 		toolTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 		toolTitle.setDebugId("vaadin-home-lbl");
@@ -224,6 +230,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 			project = this.projects.get(i);
 
 			Button button = new Button("<span class='glyphicon glyphicon-play'></span>");
+			button.setDebugId("button");
 			button.setHtmlContentAllowed(true);
 			button.setData(WorkbenchDashboard.BUTTON_LIST_MANAGER_COLUMN_ID);
 			button.setStyleName(Bootstrap.Buttons.LINK.styleName() + " launch");
@@ -309,19 +316,24 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
 	private Component layoutProjectTableArea() {
 		final HorizontalSplitPanel root = new HorizontalSplitPanel();
+		root.setDebugId("root");
 		root.setSplitPosition(300, Sizeable.UNITS_PIXELS, true);
 		root.setStyleName(Reindeer.SPLITPANEL_SMALL + " gcp-program-table-area");
 
 		final VerticalLayout programArea = new VerticalLayout();
+		programArea.setDebugId("programArea");
 		programArea.setSizeFull();
 		programArea.setMargin(new MarginInfo(false, true, false, false));
 
 		final HorizontalLayout programHeaderArea = new HorizontalLayout();
+		programHeaderArea.setDebugId("programHeaderArea");
 		programHeaderArea.setWidth("100%");
 		final Label programLbl = new Label(this.messageSource.getMessage(Message.PROGRAMS_LABEL));
+		programLbl.setDebugId("programLbl");
 		programLbl.setStyleName(Bootstrap.Typography.H2.styleName());
 
 		final Label programDescLbl = new Label(this.messageSource.getMessage(Message.PROGRAM_TABLE_TOOLTIP));
+		programDescLbl.setDebugId("programDescLbl");
 		programDescLbl.setStyleName(Bootstrap.Typography.H6.styleName());
 
 		final Button addProgramBtn =
@@ -335,10 +347,12 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		programHeaderArea.addComponent(programLbl);
 
 		final HorizontalLayout headerContainer = new HorizontalLayout();
+		headerContainer.setDebugId("headerContainer");
 		headerContainer.setSizeUndefined();
 		headerContainer.setSpacing(true);
 
 		final Embedded headerImg = new Embedded(null, new ThemeResource("images/programs.png"));
+		headerImg.setDebugId("headerImg");
 		headerImg.setStyleName("header-img");
 
 		headerContainer.addComponent(headerImg);
@@ -362,6 +376,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		programArea.setExpandRatio(this.tblProject, 1.0F);
 
 		final VerticalLayout previewArea = new VerticalLayout();
+		previewArea.setDebugId("previewArea");
 		previewArea.setStyleName("preview-area");
 		previewArea.setSizeFull();
 		previewArea.setMargin(new MarginInfo(true, false, false, false));
@@ -378,6 +393,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
 	private Component layoutProjectDetailArea() {
 		this.summaryView = new SummaryView();
+		this.summaryView.setDebugId("summaryView");
 
 		return this.summaryView;
 	}

@@ -53,12 +53,15 @@ public class ContactBookPanel extends VerticalLayout {
 
 	protected void initializeComponent() {
 		this.lblContactBook = new Label("Contact Book");
+		this.lblContactBook.setDebugId("lblContactBook");
 		this.lblContactBook.setStyleName(Bootstrap.Typography.H1.styleName());
 
 		this.txtSearch = new TextField();
+		this.txtSearch.setDebugId("txtSearch");
 		this.txtSearch.setInputPrompt("Search Contacts");
 
 		this.tblContact = new Table();
+		this.tblContact.setDebugId("tblContact");
 
 		this.tblContact.setWidth("90%");
 		this.tblContact.setHeight("100%");

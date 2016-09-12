@@ -85,6 +85,7 @@ public class UserAccountForm extends Form {
 
 		this.setImmediate(false);
 		this.grid = new GridLayout(5, 8);
+		this.grid.setDebugId("grid");
 		this.grid.setSpacing(true);
 		this.grid.setMargin(new Layout.MarginInfo(true, true, true, true));
 		this.grid.setWidth("100%");
@@ -167,6 +168,7 @@ public class UserAccountForm extends Form {
 	private Label createLabel() {
 
 		Label label = new Label();
+		label.setDebugId("label");
 		label.setContentMode(Label.CONTENT_XHTML);
 		label.setWidth("150px");
 		return label;

@@ -134,6 +134,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	public void afterPropertiesSet() throws Exception {
 		this.assemble();
 		this.workbenchDashboard = new WorkbenchDashboard();
+		this.workbenchDashboard.setDebugId("workbenchDashboard");
 		this.onLoadOperations();
 		this.showContent(this.workbenchDashboard);
 	}
@@ -144,18 +145,22 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 		// sidebar
 		this.sidebar = new WorkbenchSidebar();
+		this.sidebar.setDebugId("sidebar");
 
 		// left area components
 		this.actionsTitle = new Label();
+		this.actionsTitle.setDebugId("actionsTitle");
 		this.actionsTitle.setStyleName("gcp-section-title");
 		this.actionsTitle.setSizeUndefined();
 
 		this.collapseButton = new Button("<span class='bms-header-btn'><span class='bms-fa-chevron-right ico'/></span>");
+		this.collapseButton.setDebugId("collapseButton");
 		this.collapseButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + HEADER_BTN);
 		this.collapseButton.setHtmlContentAllowed(true);
 		this.collapseButton.setDescription(this.messageSource.getMessage("TOGGLE_SIDEBAR"));
 
 		this.uriFragUtil = new UriFragmentUtility();
+		this.uriFragUtil.setDebugId("uriFragUtil");
 		this.uriChangeListener = new NavUriFragmentChangedListener();
 
 		this.uriFragUtil.addListener(this.uriChangeListener);
@@ -164,13 +169,16 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	private void initializeHeaderComponents() {
 
 		this.logoBtn = new Button();
+		this.logoBtn.setDebugId("logoBtn");
 
 		this.workbenchTitle = new Label();
+		this.workbenchTitle.setDebugId("workbenchTitle");
 		this.workbenchTitle.setStyleName("gcp-window-title");
 		this.workbenchTitle.setContentMode(Label.CONTENT_XHTML);
 
 		//TODO localise that text
 		this.homeButton = new Button("<span class='bms-header-btn'><span>My Programs</span></span>");
+		this.homeButton.setDebugId("homeButton");
 		this.homeButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + HEADER_BTN);
 		this.homeButton.setHtmlContentAllowed(true);
 		this.homeButton.setSizeUndefined();
@@ -182,16 +190,19 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.adminButton.setSizeUndefined();
 
 		this.memberButton = new PopupButton();
+		this.memberButton.setDebugId("memberButton");
 		this.memberButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + " bms-header-popuplink");
 		this.memberButton.setHtmlContentAllowed(true);
 		this.memberButton.setSizeUndefined();
 
 		final VerticalLayout memberPopup = new VerticalLayout();
+		memberPopup.setDebugId("memberPopup");
 		memberPopup.setStyleName("bms-memberpopup");
 		memberPopup.setSpacing(true);
 		memberPopup.setSizeUndefined();
 
 		this.signoutButton = new Button(this.messageSource.getMessage(Message.SIGNOUT));
+		this.signoutButton.setDebugId("signoutButton");
 		this.signoutButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 		this.signoutButton.setSizeFull();
 		this.signoutButton.addListener(new SignoutAction());
@@ -205,6 +216,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.memberButton.addComponent(memberPopup);
 
 		this.helpButton = new Button("<span class='bms-header-btn2'><span class='bms-fa-question-circle ico'></span></span>");
+		this.helpButton.setDebugId("helpButton");
 		this.helpButton.setStyleName(Bootstrap.Buttons.LINK.styleName());
 		this.helpButton.setHtmlContentAllowed(true);
 		this.helpButton.setSizeUndefined();
@@ -214,6 +226,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	private Button getAskSupportBtn() {
 		if (Objects.equals(this.askSupportBtn, null)) {
 			this.askSupportBtn = new Button("<span class='bms-header-btn2'><span class='fa fa-comments ico'></span></span>");
+			this.askSupportBtn.setDebugId("askSupportBtn");
 			this.askSupportBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
 			this.askSupportBtn.setHtmlContentAllowed(true);
 			this.askSupportBtn.setSizeUndefined();
@@ -224,6 +237,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 				@Override
 				public void buttonClick(ClickEvent clickEvent) {
 					EmbeddedWindow askSupportWindow = new EmbeddedWindow();
+					askSupportWindow.setDebugId("askSupportWindow");
 					askSupportWindow.setWidth("60%");
 					askSupportWindow.setHeight("80%");
 					askSupportWindow.setCaption("Ask Support/Feedback");
@@ -239,6 +253,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	protected void initializeLayout() {
 		this.mainContent = new VerticalLayout();
+		this.mainContent.setDebugId("mainContent");
 		this.mainContent.setStyleName("gcp-maincontentarea");
 		this.mainContent.setSizeFull();
 		this.mainContent.setMargin(false);
@@ -246,6 +261,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 		// sidebar
 		final VerticalSplitPanel sidebarWrap = new VerticalSplitPanel();
+		sidebarWrap.setDebugId("sidebarWrap");
 		sidebarWrap.setStyleName(Reindeer.SPLITPANEL_SMALL);
 		sidebarWrap.addStyleName("bms-sidebarcontent");
 		sidebarWrap.setSplitPosition(20, Sizeable.UNITS_PIXELS, true);
@@ -261,6 +277,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 		// content area
 		final VerticalSplitPanel contentAreaSplit = new VerticalSplitPanel();
+		contentAreaSplit.setDebugId("contentAreaSplit");
 		contentAreaSplit.setSplitPosition(40, Sizeable.UNITS_PIXELS);
 		contentAreaSplit.setLocked(true);
 		contentAreaSplit.addStyleName(Reindeer.SPLITPANEL_SMALL);
@@ -271,6 +288,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 		// the root layout
 		this.root = new HorizontalSplitPanel();
+		this.root.setDebugId("root");
 		this.root.setSizeFull();
 		this.root.setSplitPosition(0, Sizeable.UNITS_PIXELS);
 		this.root.addStyleName(Reindeer.SPLITPANEL_SMALL);
@@ -396,6 +414,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	private Component layoutWorkbenchHeader() {
 		HorizontalLayout headerLayout = new HorizontalLayout();
+		headerLayout.setDebugId("headerLayout");
 		headerLayout.setStyleName("bms-header");
 		headerLayout.setWidth("100%");
 		headerLayout.setHeight("100%");
@@ -406,6 +425,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		headerLayout.setComponentAlignment(this.collapseButton, Alignment.MIDDLE_LEFT);
 
 		final Embedded ibpLogo = new Embedded(null, new ThemeResource("../gcp-default/images/ibp_logo2.jpg"));
+		ibpLogo.setDebugId("ibpLogo");
 
 		this.logoBtn.setIcon(ibpLogo.getSource());
 		this.logoBtn.setStyleName(BaseTheme.BUTTON_LINK + " bms-logo-btn");
@@ -470,6 +490,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 				this.mainContent.setExpandRatio(content, 1.0F);
 			} else {
 				final Panel wrap = new Panel();
+				wrap.setDebugId("wrap");
 				wrap.setStyleName(Reindeer.PANEL_LIGHT);
 				wrap.setSizeFull();
 				wrap.setScrollable(true);
@@ -478,6 +499,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 					wrap.setContent((ComponentContainer) content);
 				} else {
 					VerticalLayout vl = new VerticalLayout();
+					vl.setDebugId("vl");
 					vl.addComponent(content);
 					vl.setSizeUndefined();
 					wrap.setContent(vl);
@@ -501,6 +523,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	public void showContent(String toolUrl) {
 		if (!toolUrl.isEmpty()) {
 			Embedded browser = new Embedded(null, new ExternalResource(toolUrl));
+			browser.setDebugId("browser");
 
 			browser.setType(Embedded.TYPE_BROWSER);
 			browser.setSizeFull();

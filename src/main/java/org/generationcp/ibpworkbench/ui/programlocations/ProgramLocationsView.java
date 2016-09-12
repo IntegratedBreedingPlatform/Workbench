@@ -130,18 +130,24 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 	private void initializeComponents() {
 		this.resultCountLbl = new Label();
+		this.resultCountLbl.setDebugId("resultCountLbl");
 		this.addNewLocationsBtn = new Button("Add New Location");
+		this.addNewLocationsBtn.setDebugId("addNewLocationsBtn");
 		this.addNewLocationsBtn.setStyleName(Bootstrap.Buttons.INFO.styleName() + " loc-add-btn");
 		this.addNewLocationsBtn.setVisible(false);
 		this.saveFavouritesBtn = new Button("Save Favorites");
+		this.saveFavouritesBtn.setDebugId("saveFavouritesBtn");
 		this.saveFavouritesBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
 
 		this.searchGoBtn = new Button("Go");
+		this.searchGoBtn.setDebugId("searchGoBtn");
 		this.searchGoBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
 
 		this.availableSelectAll = new CheckBox("Select All");
+		this.availableSelectAll.setDebugId("availableSelectAll");
 		this.availableSelectAll.setImmediate(true);
 		this.favoriteSelectAll = new CheckBox("Select All");
+		this.favoriteSelectAll.setDebugId("favoriteSelectAll");
 		this.favoriteSelectAll.setImmediate(true);
 		try {
 			AddRestrictredComponents();
@@ -149,7 +155,9 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 			// Do no do anything as the screen needs to be displayed just the buttons don't
 		}
 		this.availTotalEntriesLabel = new Label(this.messageSource.getMessage(Message.TOTAL_ENTRIES) + ":  <b>0</b>", Label.CONTENT_XHTML);
+		this.availTotalEntriesLabel.setDebugId("availTotalEntriesLabel");
 		this.favTotalEntriesLabel = new Label(this.messageSource.getMessage(Message.TOTAL_ENTRIES) + ":  <b>0</b>", Label.CONTENT_XHTML);
+		this.favTotalEntriesLabel.setDebugId("favTotalEntriesLabel");
 		this.availSelectedEntriesLabel =
 				new Label("<i>" + this.messageSource.getMessage(Message.SELECTED) + ":   <b>0</b></i>", Label.CONTENT_XHTML);
 		this.favSelectedEntriesLabel =
@@ -163,10 +171,12 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		this.favoritesTable.setData(ProgramLocationsView.FAVORITES);
 
 		this.addToFavoriteBtn = new Button("Add to Favorite Locations");
+		this.addToFavoriteBtn.setDebugId("addToFavoriteBtn");
 		this.addToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
 
 
 		this.removeToFavoriteBtn = new Button("Remove from Favorite Locations");
+		this.removeToFavoriteBtn.setDebugId("removeToFavoriteBtn");
 		this.removeToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
 
 		// filter form
@@ -371,10 +381,12 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 	private void initializeLayout() {
 		this.root = new VerticalLayout();
+		this.root.setDebugId("root");
 		this.root.setSpacing(false);
 		this.root.setMargin(new Layout.MarginInfo(false, true, true, true));
 
 		final Label availableLocationsTitle = new Label(this.messageSource.getMessage(Message.ALL_LOCATIONS));
+		availableLocationsTitle.setDebugId("availableLocationsTitle");
 		availableLocationsTitle.setStyleName(Bootstrap.Typography.H3.styleName());
 
 		this.availableTable.setWidth("100%");
@@ -383,7 +395,9 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		this.favoritesTable.setHeight("250px");
 
 		final HorizontalLayout availableTableBar = new HorizontalLayout();
+		availableTableBar.setDebugId("availableTableBar");
 		final HorizontalLayout favoritesTableBar = new HorizontalLayout();
+		favoritesTableBar.setDebugId("favoritesTableBar");
 
 		this.availableSelectAll.setWidth("100px");
 		this.favoriteSelectAll.setWidth("100px");
@@ -417,6 +431,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 	private HorizontalLayout buildLocationTableLabels(Label totalEntries, Label selectedEntries) {
 		HorizontalLayout layout = new HorizontalLayout();
+		layout.setDebugId("layout");
 		layout.setSpacing(true);
 		layout.setWidth("300px");
 
@@ -427,10 +442,12 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 	private Component buildPageTitle() {
 		final VerticalLayout layout = new VerticalLayout();
+		layout.setDebugId("layout");
 		layout.setMargin(new Layout.MarginInfo(false, false, true, false));
 		layout.setWidth("100%");
 
 		final HorizontalLayout titleContainer = new HorizontalLayout();
+		titleContainer.setDebugId("titleContainer");
 		titleContainer.setSizeUndefined();
 		titleContainer.setWidth("100%");
 		titleContainer.setMargin(true, false, false, false);
@@ -455,6 +472,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		}
 
 		final Label headingDesc = new Label(content);
+		headingDesc.setDebugId("headingDesc");
 
 		layout.addComponent(titleContainer);
 		layout.addComponent(headingDesc);
@@ -464,10 +482,12 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 	private Component buildSelectedLocationsTitle() {
 		final HorizontalLayout layout = new HorizontalLayout();
+		layout.setDebugId("layout");
 		layout.setWidth("100%");
 		layout.setMargin(true, false, false, false);
 
 		final Label selectedLocationsTitle = new Label(this.messageSource.getMessage(Message.FAVORITE_PROGRAM_LOCATIONS));
+		selectedLocationsTitle.setDebugId("selectedLocationsTitle");
 		selectedLocationsTitle.setStyleName(Bootstrap.Typography.H3.styleName());
 
 		layout.addComponent(selectedLocationsTitle);
@@ -538,12 +558,15 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 	private void initializeFilterForm() {
 		this.countryFilter = new Select();
+		this.countryFilter.setDebugId("countryFilter");
 		this.countryFilter.setImmediate(true);
 
 		this.locationTypeFilter = new Select();
+		this.locationTypeFilter.setDebugId("locationTypeFilter");
 		this.locationTypeFilter.setImmediate(true);
 
 		this.searchField = new TextField();
+		this.searchField.setDebugId("searchField");
 		this.searchField.setImmediate(true);
 	}
 
@@ -551,7 +574,9 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		this.locationTypeFilter.setWidth("240px");
 
 		final Label filterLbl = new Label("<b>Filter By:</b>&nbsp;", Label.CONTENT_XHTML);
+		filterLbl.setDebugId("filterLbl");
 		final Label searchLbl = new Label("<b>Search For:</b>&nbsp;", Label.CONTENT_XHTML);
+		searchLbl.setDebugId("searchLbl");
 
 		filterLbl.setSizeUndefined();
 		searchLbl.setSizeUndefined();
@@ -560,11 +585,13 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		searchLbl.setStyleName("loc-filterlbl");
 
 		final CssLayout container = new CssLayout();
+		container.setDebugId("container");
 		container.addStyleName("loc-filter-bar");
 		container.setSizeUndefined();
 		container.setWidth("100%");
 
 		final HorizontalLayout field1 = new HorizontalLayout();
+		field1.setDebugId("field1");
 		field1.addStyleName(ProgramLocationsView.FIELD);
 		field1.setSpacing(true);
 		field1.setSizeUndefined();
@@ -585,6 +612,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		container.addComponent(field1);
 
 		final HorizontalLayout field2 = new HorizontalLayout();
+		field2.setDebugId("field2");
 		field2.addStyleName(ProgramLocationsView.FIELD);
 		field2.setSpacing(true);
 		field2.setSizeUndefined();
@@ -592,12 +620,14 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		field2.addComponent(this.countryFilter);
 
 		final HorizontalLayout field3 = new HorizontalLayout();
+		field3.setDebugId("field3");
 		field3.addStyleName(ProgramLocationsView.FIELD);
 		field3.setSpacing(true);
 		field3.setSizeUndefined();
 		field3.addComponent(this.locationTypeFilter);
 
 		HorizontalLayout filterContainer = new HorizontalLayout();
+		filterContainer.setDebugId("filterContainer");
 		filterContainer.setSpacing(true);
 		filterContainer.setStyleName("pull-right");
 		filterContainer.setSizeUndefined();
@@ -608,6 +638,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		container.addComponent(filterContainer);
 
 		this.resultCountLbl = new Label("");
+		this.resultCountLbl.setDebugId("resultCountLbl");
 		this.resultCountLbl.setStyleName("loc-resultcnt");
 
 		return container;
@@ -625,6 +656,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 	private Table buildCustomTable(final CheckBox assocSelectAll, final Label totalEntries, final Label selectedEntries) {
 		final Table table = new Table();
+		table.setDebugId("table");
 
 		table.setImmediate(true);
 		table.setSelectable(true);
@@ -638,6 +670,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 			@Override
 			public Object generateCell(final Table source, final Object itemId, Object colId) {
 				final CheckBox select = new CheckBox();
+				select.setDebugId("select");
 				select.setImmediate(true);
 				select.addListener(new Button.ClickListener() {
 

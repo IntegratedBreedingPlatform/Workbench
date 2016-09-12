@@ -56,13 +56,17 @@ public class ServerFilePicker extends CustomField implements InitializingBean {
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		this.root = new HorizontalLayout();
+		this.root.setDebugId("root");
 		this.root.setSpacing(true);
 
 		this.setCompositionRoot(this.root);
 
 		this.pathFld = new TextField();
+		this.pathFld.setDebugId("pathFld");
 		this.pathLbl = new Label();
+		this.pathLbl.setDebugId("pathLbl");
 		this.browseBtn = new Button("Browse");
+		this.browseBtn.setDebugId("browseBtn");
 		this.pathFld.setNullRepresentation("");
 
 		this.root.addComponent(this.pathFld);
@@ -84,6 +88,7 @@ public class ServerFilePicker extends CustomField implements InitializingBean {
 
 	private void buildFilePicker() {
 		this.pickerWindow = new BaseSubWindow("Select an executable file");
+		this.pickerWindow.setDebugId("pickerWindow");
 		this.pickerWindow.addStyleName(Reindeer.WINDOW_LIGHT);
 		this.pickerWindow.center();
 		this.pickerWindow.setModal(true);
@@ -93,11 +98,13 @@ public class ServerFilePicker extends CustomField implements InitializingBean {
 		this.pickerWindow.setResizable(false);
 
 		final HorizontalLayout hl = new HorizontalLayout();
+		hl.setDebugId("hl");
 
 		hl.addComponent(new Label("Selected file: "));
 		hl.addComponent(this.pathLbl);
 
 		this.treetable = new TreeTable();
+		this.treetable.setDebugId("treetable");
 
 		// TODO: refactor this to make this more generic / reusable
 		this.fsContainer = new FilesystemContainer(new File("tools"), new FilenameFilter() {
@@ -158,10 +165,14 @@ public class ServerFilePicker extends CustomField implements InitializingBean {
 		this.pickerWindow.addComponent(hl);
 
 		final HorizontalLayout btnPanel = new HorizontalLayout();
+		btnPanel.setDebugId("btnPanel");
 		final Label spacer = new Label("&nbsp;", Label.CONTENT_XHTML);
+		spacer.setDebugId("spacer");
 
 		final Button selectBtn = new Button(this.messageSource.getMessage(Message.SELECT));
+		selectBtn.setDebugId("selectBtn");
 		final Button cancelSelectBtn = new Button(this.messageSource.getMessage(Message.CANCEL));
+		cancelSelectBtn.setDebugId("cancelSelectBtn");
 
 		selectBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
