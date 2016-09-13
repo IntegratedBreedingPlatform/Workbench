@@ -63,7 +63,7 @@ public class SaveUsersInProjectAction implements ClickListener {
 	@Autowired
 	private PlatformTransactionManager transactionManager;
 
-	public SaveUsersInProjectAction(final Project project, final TwinTableSelect<User> select) {
+	public SaveUsersInProjectAction(Project project, TwinTableSelect<User> select) {
 		this.project = project;
 		this.select = select;
 	}
@@ -80,57 +80,56 @@ public class SaveUsersInProjectAction implements ClickListener {
 
 		final Collection<User> userList = this.select.getValue();
 		try {
-			final TransactionTemplate transactionTemplate = new TransactionTemplate(this.transactionManager);
+			final TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
 			transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 
 				@Override
-				protected void doInTransactionWithoutResult(final TransactionStatus status) {
-					final List<ProjectUserRole> projectUserRoleList = new ArrayList<ProjectUserRole>();
+				protected void doInTransactionWithoutResult(TransactionStatus status) {
+					List<ProjectUserRole> projectUserRoleList = new ArrayList<ProjectUserRole>();
 
 					// add project user roles to the list
-					for (final User u : userList) {
-						for (final Role role : SaveUsersInProjectAction.this.workbenchDataManager.getAllRoles()) {
-							final ProjectUserRole projUsrRole = new ProjectUserRole();
+					for (User u : userList) {
+						for (Role role : SaveUsersInProjectAction.this.workbenchDataManager.getAllRoles()) {
+							ProjectUserRole projUsrRole = new ProjectUserRole();
 							projUsrRole.setUserId(u.getUserid());
 							projUsrRole.setRole(role);
 							projUsrRole.setProject(SaveUsersInProjectAction.this.project);
 							projectUserRoleList.add(projUsrRole);
 						}
 
-						if (SaveUsersInProjectAction.this.workbenchDataManager.getProjectUserInfoDao().getByProjectIdAndUserId(
-								SaveUsersInProjectAction.this.project.getProjectId().intValue(), u.getUserid()) == null) {
-							final ProjectUserInfo pUserInfo =
+						if (SaveUsersInProjectAction.this.workbenchDataManager.getProjectUserInfoDao()
+								.getByProjectIdAndUserId(SaveUsersInProjectAction.this.project.getProjectId().intValue(), u.getUserid())
+								== null) {
+							ProjectUserInfo pUserInfo =
 									new ProjectUserInfo(SaveUsersInProjectAction.this.project.getProjectId().intValue(), u.getUserid());
 							SaveUsersInProjectAction.this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
 						}
 					}
 
-					final Map<Integer, Person> workbenchPersonsMap =
-							SaveUsersInProjectAction.this.programService.retrieveWorkbenchPersonsMap();
-					final Map<String, Person> cropDBPersonsMap = SaveUsersInProjectAction.this.programService.retrieveCropDBPersonsMap();
-					final Map<String, User> cropDBUsersMap = SaveUsersInProjectAction.this.programService.retrieveCropDBUsersMap();
-					// use the project service to link new members to the project
-					SaveUsersInProjectAction.this.programService.createIBDBUserMapping(SaveUsersInProjectAction.this.project,
-							new HashSet<>(userList), workbenchPersonsMap, cropDBPersonsMap, cropDBUsersMap);
+					final Map<Integer, Person> workbenchPersonsMap = programService.retrieveWorkbenchPersonsMap();
+					final Map<String, User> cropDBUsersMap = programService.retrieveCropDBUsersMap();
+					//use the project service to link new members to the project
+					programService
+							.createIBDBUserMapping(project, new HashSet<>(userList), workbenchPersonsMap, cropDBUsersMap);
 
 					// UPDATE workbench DB with the project user roles
-					SaveUsersInProjectAction.this.workbenchDataManager.updateProjectsRolesForProject(SaveUsersInProjectAction.this.project,
-							projectUserRoleList);
+					SaveUsersInProjectAction.this.workbenchDataManager.updateProjectsRolesForProject(project, projectUserRoleList);
 
-					MessageNotifier.showMessage(event.getComponent().getWindow(), "Success",
-							"Successfully updated this project's members list.");
+					MessageNotifier
+							.showMessage(event.getComponent().getWindow(), "Success", "Successfully updated this project's members list.");
 				}
 			});
 
-		} catch (final MiddlewareQueryException ex) {
+		} catch (MiddlewareQueryException ex) {
 			SaveUsersInProjectAction.LOG.error(ex.getMessage(), ex);
 			// do nothing because getting the User will not fail
 			event.getComponent().getWindow().showNotification("");
 			MessageNotifier.showError(event.getComponent().getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
 					"A database problem occured while updating this project's members list. Please see error logs.");
-		} catch (final Exception e) {
+		} catch (Exception e) {
 			SaveUsersInProjectAction.LOG.error(e.getMessage(), e);
 		}
 	}
 
 }
+

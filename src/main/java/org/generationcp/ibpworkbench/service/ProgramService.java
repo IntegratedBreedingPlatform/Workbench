@@ -118,14 +118,13 @@ public class ProgramService {
 	 * Creates IBDBUserMap entries for the specified users.
 	 */
 	public void createIBDBUserMapping(final Project project, final Set<User> users, final Map<Integer, Person> workbenchPersonsMap,
-			final Map<String, Person> cropDBPersonsMap, final Map<String, User> cropDBUsersMap) {
+			final Map<String, User> cropDBUsersMap) {
 
 		for (final User user : users) {
 
 			// ccreate a copy of the Person
 			final Person workbenchPerson = workbenchPersonsMap.get(user.getPersonid());
-			final Person cropDBPerson = createCropDBPersonIfNecessary(workbenchPerson, cropDBPersonsMap);
-			final User cropDBUser = createIBDBUserIfNecessary(user, cropDBPerson, cropDBUsersMap);
+			final User cropDBUser = createIBDBUserIfNecessary(user, workbenchPerson, cropDBUsersMap);
 
 			this.createAndSaveIBDBUserMap(project.getProjectId(), user.getUserid(), cropDBUser.getUserid());
 
@@ -141,14 +140,6 @@ public class ProgramService {
 		return map;
 	}
 
-	public Map<String, Person> retrieveCropDBPersonsMap() {
-		Map<String, Person> map = new HashMap<>();
-		for (Person person : this.userDataManager.getAllPersons()) {
-			map.put(getNameKey(person), person);
-		}
-		return map;
-	}
-
 	public Map<Integer, Person> retrieveWorkbenchPersonsMap() {
 		Map<Integer, Person> map = new HashMap<>();
 		for (Person person : this.workbenchDataManager.getAllPersons()) {
@@ -157,13 +148,16 @@ public class ProgramService {
 		return map;
 	}
 
-	User createIBDBUserIfNecessary(User user, Person cropDBPerson, final Map<String, User> cropDBUsersMap) {
+	User createIBDBUserIfNecessary(User user, Person workbenchPerson, final Map<String, User> cropDBUsersMap) {
 
 		// if a user is assigned to a program, then add them to the crop database where they can then access the program
 		if (!cropDBUsersMap.containsKey(user.getName())) {
 
+			Person newCropDBPerson = workbenchPerson.copy();
+			Integer newCropDBPersonId = this.userDataManager.addPerson(newCropDBPerson);
+
 			User newCropDBUser = user.copy();
-			newCropDBUser.setPersonid(cropDBPerson.getId());
+			newCropDBUser.setPersonid(newCropDBPersonId);
 			newCropDBUser.setAccess(ProgramService.PROJECT_USER_ACCESS_NUMBER);
 			newCropDBUser.setType(ProgramService.PROJECT_USER_TYPE);
 			newCropDBUser.setInstalid(Integer.valueOf(0));
@@ -176,20 +170,6 @@ public class ProgramService {
 
 		} else {
 			return cropDBUsersMap.get(user.getName());
-		}
-
-	}
-
-	Person createCropDBPersonIfNecessary(Person workbenchPerson, final Map<String, Person> cropDBPersonsMap) {
-
-		String nameKey = getNameKey(workbenchPerson);
-
-		if (!cropDBPersonsMap.containsKey(nameKey)) {
-			Person newCropDBPerson = workbenchPerson.copy();
-			userDataManager.addPerson(newCropDBPerson);
-			return newCropDBPerson;
-		} else {
-			return cropDBPersonsMap.get(nameKey);
 		}
 
 	}
@@ -232,7 +212,6 @@ public class ProgramService {
 		final List<Project> projects = this.workbenchDataManager.getProjects();
 		final List<Role> allRoles = this.workbenchDataManager.getAllRoles();
 		final Map<Integer, Person> workbenchPersonsMap = retrieveWorkbenchPersonsMap();
-		final Map<String, Person> cropDBPersonsMap = retrieveCropDBPersonsMap();
 		final Map<String, User> cropDBUsersMap = retrieveCropDBUsersMap();
 
 		for (final Project project : projects) {
@@ -242,8 +221,7 @@ public class ProgramService {
 				this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
 			}
 			this.assignAllTheRolesOfTheProgramToUser(allRoles, project, user);
-			this.createIBDBUserMapping(project, new HashSet<User>(Arrays.asList(user)), workbenchPersonsMap, cropDBPersonsMap,
-					cropDBUsersMap);
+			this.createIBDBUserMapping(project, new HashSet<User>(Arrays.asList(user)), workbenchPersonsMap, cropDBUsersMap);
 		}
 
 	}
@@ -252,7 +230,6 @@ public class ProgramService {
 
 		final List<Role> allRoles = this.workbenchDataManager.getAllRoles();
 		final Map<Integer, Person> workbenchPersonsMap = retrieveWorkbenchPersonsMap();
-		final Map<String, Person> cropDBPersonsMap = retrieveCropDBPersonsMap();
 		final Map<String, User> cropDBUsersMap = retrieveCropDBUsersMap();
 
 		for (final User user : users) {
@@ -263,7 +240,7 @@ public class ProgramService {
 			}
 			this.assignAllTheRolesOfTheProgramToUser(allRoles, program, user);
 		}
-		this.createIBDBUserMapping(program, new HashSet<>(users), workbenchPersonsMap, cropDBPersonsMap, cropDBUsersMap);
+		this.createIBDBUserMapping(program, new HashSet<>(users), workbenchPersonsMap, cropDBUsersMap);
 
 	}
 

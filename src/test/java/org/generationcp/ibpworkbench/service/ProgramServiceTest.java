@@ -283,39 +283,15 @@ public class ProgramServiceTest {
 	}
 
 	@Test
-	public void testCreateCropDBPersonIfNecessaryExistingCropDBPerson() {
-
-		Map<String, Person> cropDBPersonsMap = new HashMap<>();
-		cropDBPersonsMap.put(programService.getNameKey(cropDBPerson), cropDBPerson);
-
-		Person result = this.programService.createCropDBPersonIfNecessary(workbenchPerson, cropDBPersonsMap);
-
-		Mockito.verify(userDataManager, Mockito.times(0)).addPerson(Mockito.any(Person.class));
-		Assert.assertSame(result, cropDBPerson);
-
-	}
-
-	@Test
-	public void testCreateCropDBPersonIfNecessaryCropDBPersonDoesNotExist() {
-
-		Person result = this.programService.createCropDBPersonIfNecessary(workbenchPerson, new HashMap<String, Person>());
-
-		Mockito.verify(userDataManager, Mockito.times(1)).addPerson(Mockito.any(Person.class));
-		Assert.assertNotSame(result, workbenchPerson);
-		Assert.assertEquals(result.getFirstName(), workbenchPerson.getFirstName());
-		Assert.assertEquals(result.getLastName(), workbenchPerson.getLastName());
-
-	}
-
-	@Test
 	public void testCreateIBDBUserIfNecessaryCropDBUSerIsExisting() {
 
 		Map<String, User> cropDBUsersMap = new HashMap<>();
 		cropDBUsersMap.put(cropDBUser.getName(), cropDBUser);
 
-		User result = this.programService.createIBDBUserIfNecessary(workbenchUser, cropDBPerson, cropDBUsersMap);
+		User result = this.programService.createIBDBUserIfNecessary(workbenchUser, workbenchPerson, cropDBUsersMap);
 
 		Mockito.verify(userDataManager, Mockito.times(0)).addUser(Mockito.any(User.class));
+		Mockito.verify(userDataManager, Mockito.times(0)).addPerson(Mockito.any(Person.class));
 
 		Assert.assertSame(result, cropDBUser);
 
@@ -324,13 +300,17 @@ public class ProgramServiceTest {
 	@Test
 	public void testCreateIBDBUserIfNecessaryCropDBUSerIsNotExisting() {
 
-		Mockito.when(userDataManager.getUserByUserName(workbenchUser.getName())).thenReturn(null);
+		Integer newCropDBPersonId = 99;
 
-		User result = this.programService.createIBDBUserIfNecessary(workbenchUser, cropDBPerson, new HashMap<String, User>());
+		Mockito.when(userDataManager.getUserByUserName(workbenchUser.getName())).thenReturn(null);
+		Mockito.when(userDataManager.addPerson(Mockito.any(Person.class))).thenReturn(newCropDBPersonId);
+
+		User result = this.programService.createIBDBUserIfNecessary(workbenchUser, workbenchPerson, new HashMap<String, User>());
 
 		Mockito.verify(userDataManager, Mockito.times(1)).addUser(Mockito.any(User.class));
+		Mockito.verify(userDataManager, Mockito.times(1)).addPerson(Mockito.any(Person.class));
 
-		Assert.assertEquals(cropDBPerson.getId(), result.getPersonid());
+		Assert.assertEquals(newCropDBPersonId, result.getPersonid());
 		Assert.assertEquals(Integer.valueOf(ProgramService.PROJECT_USER_ACCESS_NUMBER), result.getAccess());
 		Assert.assertEquals(Integer.valueOf(ProgramService.PROJECT_USER_TYPE), result.getType());
 		Assert.assertEquals(Integer.valueOf(0), result.getInstalid());
@@ -352,7 +332,7 @@ public class ProgramServiceTest {
 		Mockito.when(this.userDataManager.getAllUsers()).thenReturn(Arrays.asList(cropDBUser));
 
 		this.programService.createIBDBUserMapping(project, users, programService.retrieveWorkbenchPersonsMap(),
-				programService.retrieveCropDBPersonsMap(), programService.retrieveCropDBUsersMap());
+				programService.retrieveCropDBUsersMap());
 
 		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).addIbdbUserMap(Mockito.any(IbdbUserMap.class));
 
