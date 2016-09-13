@@ -1,4 +1,4 @@
-import './../utils/object.extensions';
+import './../../utils/object.extensions';
 
 export class NgDataGridModel<T> {
     searchValue: T = <T>{};
@@ -57,7 +57,7 @@ export class NgDataGridModel<T> {
             .filter(item => Object.same(this.searchValue, item))
             .sort((obj1: T, obj2: T) => {
 
-                let one: number = this.sortAsc ? 1 : -1; 
+                let one: number = this.sortAsc ? 1 : -1;
 
                 if (obj1[key] < obj2[key]) return -one;
                 if (obj1[key] > obj2[key]) return one;

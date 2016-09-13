@@ -1,1 +1,1 @@
-export * from './table.component';
+export * from './users-admin.component';

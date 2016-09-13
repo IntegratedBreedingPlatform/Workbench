@@ -1,16 +1,17 @@
  /// <reference path="../../../../../typings/globals/node/index.d.ts" />
 
 import { Component, OnInit } from '@angular/core';
-import { InMemoryComponent } from './inMemory.component';
+import { UsersDatagrid } from './users-datagrid.component';
 
 
 @Component({
-    selector: 'users-table',
-    templateUrl: './table.component.html',
-    directives: [InMemoryComponent],
+    selector: 'users-admin',
+    templateUrl: './users-admin.component.html',
+    directives: [UsersDatagrid],
     moduleId: module.id
 })
-export class TableComponent implements OnInit {
+
+export class UsersAdmin implements OnInit {
     recentlyRemoveUsers: any[];
     recentlyRemoveUsersPluginServer: any[];
     private userId: number = 0;
@@ -18,5 +19,6 @@ export class TableComponent implements OnInit {
     constructor() {
     }
 
-    ngOnInit() { }
+    ngOnInit() {
+    }
 }

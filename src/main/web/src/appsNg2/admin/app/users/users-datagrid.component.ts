@@ -1,23 +1,24 @@
 /// <reference path="../../../../../typings/globals/node/index.d.ts" />
 
 import { Component, OnInit } from '@angular/core';
-import { NgDataGridModel } from './../datagrid/ng-datagrid.model';
-import { PaginationComponent } from './../datagrid/pagination.component';
-import { User } from './inMemory.model';
+import { NgDataGridModel } from './../shared/components/datagrid/ng-datagrid.model';
+import { PaginationComponent } from './../shared/components/datagrid/pagination.component';
+import { User } from './../shared/models/user.model';
 import { FORM_DIRECTIVES } from '@angular/forms';
-import './../utils/array.extensions';
-import { UserService } from './user.service';
+import './../shared/utils/array.extensions';
+import { UserService } from './../shared/services/user.service';
 
 @Component({
-    selector: 'in-memory-demo',
-    templateUrl: 'inMemory.component.html',
+    selector: 'users-datagrid',
+    templateUrl: 'users-datagrid.component.html',
     styleUrls: [
-        './inMemory.component.css'
+        './users-datagrid.component.css'
     ],
     directives: [PaginationComponent, FORM_DIRECTIVES],
     moduleId: module.id
 })
-export class InMemoryComponent implements OnInit {
+
+export class UsersDatagrid implements OnInit {
     table: NgDataGridModel<User>;
     recentlyRemoveUsers: any[];
     errorMessage: string = '';
@@ -25,11 +26,11 @@ export class InMemoryComponent implements OnInit {
     constructor(private userService : UserService) {
         this.table = new NgDataGridModel<User>([]);
         this.table.pageSize = 25;
-        
+
 
     }
 
-    ngOnInit() { 
+    ngOnInit() {
         this.userService
             .getAll()
             .subscribe(
@@ -42,24 +43,24 @@ export class InMemoryComponent implements OnInit {
                     }
             });
     }
-    
-    // TODO 
+
+    // TODO
     // - Move to a shared component
     // - see /ibpworkbench/src/main/web/src/apps/ontology/app-services/bmsAuth.js
     handleReAuthentication() {
         alert('Site Admin needs to authenticate you again. Redirecting to login page.');
         window.top.location.href = '/ibpworkbench/logout';
     }
-    
+
     isSorted(col): boolean {
         return col == this.table.sortBy;
     }
-    
+
     sort(col, event?: MouseEvent): void {
         if (event) {
             event.preventDefault();
         }
-        
+
         if (this.table.sortBy == col) {
             this.table.sortAsc = !this.table.sortAsc;
         } else {

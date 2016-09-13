@@ -1,5 +1,5 @@
 import { RouterConfig } from '@angular/router';
-import { TableComponent } from './users/index';
+import { UsersAdmin } from './users/index';
 
 export const routes: RouterConfig = [
     {
@@ -7,5 +7,5 @@ export const routes: RouterConfig = [
         redirectTo: '/home',
         pathMatch: 'full'
     },
-    { path: 'home', component: TableComponent }
+    { path: 'home', component: UsersAdmin }
 ];

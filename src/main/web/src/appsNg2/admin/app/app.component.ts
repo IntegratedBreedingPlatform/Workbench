@@ -5,8 +5,8 @@
  */
 import { Component, ViewEncapsulation } from '@angular/core';
 
-import { TableComponent } from './users/index';
-import { UserService } from './users/user.service';
+import { UsersAdmin } from './users/index';
+import { UserService } from './shared/services/user.service';
 
 /*
  * AppComponent Component
@@ -18,10 +18,10 @@ import { UserService } from './users/user.service';
   styleUrls: [
     './app.style.css'
   ],
-  directives: [ TableComponent ],
+  directives: [ UsersAdmin ],
   template: `
     <div class="container-fluid">
-        <users-table></users-table>
+        <users-admin></users-admin>
     </div>
   `,
   moduleId: module.id,

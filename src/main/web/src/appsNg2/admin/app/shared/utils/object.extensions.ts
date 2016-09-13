@@ -1,4 +1,3 @@
-
 interface ObjectConstructor {
     equals( x: any, y: any ): boolean;
     same( x: any, y: any ): boolean;

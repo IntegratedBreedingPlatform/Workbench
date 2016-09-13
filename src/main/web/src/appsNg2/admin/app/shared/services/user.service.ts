@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
 import { Http, Response, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
-import { User } from './inMemory.model';
+import { User } from './../models/user.model';
 
 @Injectable()
 export class UserService{
-  private baseUrl: string = '/bmsapi';
+  private baseUrl: string = '/bmsapi/brapi/v1';
 
   constructor(private http : Http){
   }
 
   getAll(): Observable<User[]>{
     let users$ = this.http
-      .get(`${this.baseUrl}/users/listUsers`, {headers: this.getHeaders()})
+      .get(`${this.baseUrl}/users`, {headers: this.getHeaders()})
       .map(mapUsers);
       return users$;
   }
