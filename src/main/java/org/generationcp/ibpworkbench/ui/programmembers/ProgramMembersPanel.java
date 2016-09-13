@@ -366,6 +366,9 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			final List<Role> projroles = this.workbenchDataManager.getRolesByProjectAndUser(this.project, userTemp);
 			this.setInheritedRoles(item, projroles);
 
+			if(userTemp.hasRole(org.generationcp.commons.security.Role.ADMIN.toString())) {
+				userTemp.setEnabled(false);
+			}
 			this.select.select(userTemp);
 		}
 
