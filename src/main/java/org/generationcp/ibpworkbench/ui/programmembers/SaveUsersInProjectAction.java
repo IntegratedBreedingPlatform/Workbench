@@ -1,3 +1,4 @@
+
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
  * <p/>
@@ -106,8 +107,8 @@ public class SaveUsersInProjectAction implements ClickListener {
 						}
 					}
 
-					final Map<Integer, Person> workbenchPersonsMap = programService.retrieveWorkbenchPersonsMap();
-					final Map<String, User> cropDBUsersMap = programService.retrieveCropDBUsersMap();
+					final Map<Integer, Person> workbenchPersonsMap = programService.retrieveExistingWorkbenchPersonsMap(new ArrayList<User>(userList));
+					final Map<String, User> cropDBUsersMap = programService.retrieveExistingCropDBUsersMap(new ArrayList<User>(userList));
 					//use the project service to link new members to the project
 					programService
 							.createIBDBUserMapping(project, new HashSet<>(userList), workbenchPersonsMap, cropDBUsersMap);

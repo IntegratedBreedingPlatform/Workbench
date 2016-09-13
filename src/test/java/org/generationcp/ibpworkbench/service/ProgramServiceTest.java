@@ -135,7 +135,7 @@ public class ProgramServiceTest {
 		List<Person> allPersons = new ArrayList<>();
 		allPersons.add(loggedInPerson);
 		allPersons.add(memberPerson);
-		Mockito.when(this.workbenchDataManager.getAllPersons()).thenReturn(allPersons);
+		Mockito.when(this.workbenchDataManager.getPersonsByIds(Mockito.anyList())).thenReturn(allPersons);
 
 		final ProjectUserInfoDAO puiDao = Mockito.mock(ProjectUserInfoDAO.class);
 		Mockito.when(this.workbenchDataManager.getProjectUserInfoDao()).thenReturn(puiDao);
@@ -211,7 +211,7 @@ public class ProgramServiceTest {
 		List<Person> allPersons = new ArrayList<>();
 		allPersons.add(this.createPerson(1, "John", "Doe"));
 		allPersons.add(this.createPerson(2, "Juan", "Dela Cruz"));
-		Mockito.when(this.workbenchDataManager.getAllPersons()).thenReturn(allPersons);
+		Mockito.when(this.workbenchDataManager.getPersonsByIds(Mockito.anyList())).thenReturn(allPersons);
 
 		// test
 		this.programService.addProjectUserToAllPrograms(workbenchUser);
@@ -261,7 +261,7 @@ public class ProgramServiceTest {
 		List<Person> allPersons = new ArrayList<>();
 		allPersons.add(this.createPerson(memberAdminUser.getPersonid(), "John", "Doe"));
 		allPersons.add(this.createPerson(nonMemberAdminUser.getPersonid(), "Juan", "Dela Cruz"));
-		Mockito.when(this.workbenchDataManager.getAllPersons()).thenReturn(allPersons);
+		Mockito.when(this.workbenchDataManager.getPersonsByIds(Mockito.anyList())).thenReturn(allPersons);
 
 		// test
 		this.programService.addUsersToProgram(adminUsers, program);
@@ -327,12 +327,12 @@ public class ProgramServiceTest {
 		final Set<User> users = new HashSet<>();
 		users.add(workbenchUser);
 
-		Mockito.when(this.workbenchDataManager.getAllPersons()).thenReturn(Arrays.asList(workbenchPerson));
-		Mockito.when(this.userDataManager.getAllPersons()).thenReturn(Arrays.asList(cropDBPerson));
-		Mockito.when(this.userDataManager.getAllUsers()).thenReturn(Arrays.asList(cropDBUser));
+		Mockito.when(this.workbenchDataManager.getPersonsByIds(Mockito.anyList())).thenReturn(Arrays.asList(workbenchPerson));
+		Mockito.when(this.userDataManager.getUsersByUserNames(Mockito.anyList())).thenReturn(Arrays.asList(cropDBUser));
 
-		this.programService.createIBDBUserMapping(project, users, programService.retrieveWorkbenchPersonsMap(),
-				programService.retrieveCropDBUsersMap());
+		this.programService
+				.createIBDBUserMapping(project, users, programService.retrieveExistingWorkbenchPersonsMap(new ArrayList<User>(users)),
+						programService.retrieveExistingCropDBUsersMap(new ArrayList<User>(users)));
 
 		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).addIbdbUserMap(Mockito.any(IbdbUserMap.class));
 

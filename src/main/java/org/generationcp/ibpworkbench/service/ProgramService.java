@@ -16,7 +16,6 @@ import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.commons.util.DateUtil;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.ContextHolder;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.UserDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
@@ -131,18 +130,32 @@ public class ProgramService {
 		}
 	}
 
-	public Map<String, User> retrieveCropDBUsersMap() {
+	public Map<String, User> retrieveExistingCropDBUsersMap(List<User> users) {
 
 		Map<String, User> map = new HashMap<>();
-		for (User user : this.userDataManager.getAllUsers()) {
+
+		// generate list of usernames
+		List<String> usernames = new ArrayList<>();
+		for (User user : users) {
+			usernames.add(user.getName());
+		}
+
+		for (User user : this.userDataManager.getUsersByUserNames(usernames)) {
 			map.put(user.getName(), user);
 		}
 		return map;
 	}
 
-	public Map<Integer, Person> retrieveWorkbenchPersonsMap() {
+	public Map<Integer, Person> retrieveExistingWorkbenchPersonsMap(final List<User> users) {
+
 		Map<Integer, Person> map = new HashMap<>();
-		for (Person person : this.workbenchDataManager.getAllPersons()) {
+
+		List<Integer> personids = new ArrayList<>();
+		for (User user : users) {
+			personids.add(user.getPersonid());
+		}
+
+		for (Person person : this.workbenchDataManager.getPersonsByIds(personids)) {
 			map.put(person.getId(), person);
 		}
 		return map;
@@ -211,8 +224,9 @@ public class ProgramService {
 
 		final List<Project> projects = this.workbenchDataManager.getProjects();
 		final List<Role> allRoles = this.workbenchDataManager.getAllRoles();
-		final Map<Integer, Person> workbenchPersonsMap = retrieveWorkbenchPersonsMap();
-		final Map<String, User> cropDBUsersMap = retrieveCropDBUsersMap();
+
+		final Map<Integer, Person> workbenchPersonsMap = retrieveExistingWorkbenchPersonsMap(Arrays.asList(user));
+		final Map<String, User> cropDBUsersMap = retrieveExistingCropDBUsersMap(Arrays.asList(user));
 
 		for (final Project project : projects) {
 			if (this.workbenchDataManager.getProjectUserInfoDao()
@@ -229,8 +243,9 @@ public class ProgramService {
 	public void addUsersToProgram(final List<User> users, final Project program) {
 
 		final List<Role> allRoles = this.workbenchDataManager.getAllRoles();
-		final Map<Integer, Person> workbenchPersonsMap = retrieveWorkbenchPersonsMap();
-		final Map<String, User> cropDBUsersMap = retrieveCropDBUsersMap();
+
+		final Map<Integer, Person> workbenchPersonsMap = retrieveExistingWorkbenchPersonsMap(users);
+		final Map<String, User> cropDBUsersMap = retrieveExistingCropDBUsersMap(users);
 
 		for (final User user : users) {
 			if (this.workbenchDataManager.getProjectUserInfoDao()
