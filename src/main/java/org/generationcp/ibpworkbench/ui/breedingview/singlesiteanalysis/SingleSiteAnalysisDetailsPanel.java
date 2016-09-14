@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.util.StringUtil;
@@ -56,7 +57,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
-import com.mysql.jdbc.StringUtils;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.BeanItemContainer;
@@ -671,7 +671,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.txtVersion.setDebugId("txtVersion");
 		this.txtVersion.setNullRepresentation("");
 
-		if (!StringUtils.isNullOrEmpty(this.getBreedingViewInput().getVersion())) {
+		if (!StringUtils.isEmpty(this.getBreedingViewInput().getVersion())) {
 
 			this.txtVersion.setValue(this.getBreedingViewInput().getVersion());
 			this.txtVersion.setReadOnly(true);
@@ -701,7 +701,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.txtAnalysisName = new TextField();
 		this.txtAnalysisName.setDebugId("txtAnalysisName");
 		this.txtAnalysisName.setNullRepresentation("");
-		if (!StringUtils.isNullOrEmpty(this.getBreedingViewInput().getBreedingViewAnalysisName())) {
+		if (!StringUtils.isEmpty(this.getBreedingViewInput().getBreedingViewAnalysisName())) {
 			this.txtAnalysisName.setValue(this.getBreedingViewInput().getBreedingViewAnalysisName());
 		}
 		this.txtAnalysisName.setRequired(false);

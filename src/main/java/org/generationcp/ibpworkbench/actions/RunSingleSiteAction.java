@@ -20,6 +20,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.breedingview.xml.Blocks;
 import org.generationcp.commons.breedingview.xml.ColPos;
 import org.generationcp.commons.breedingview.xml.Columns;
@@ -60,7 +61,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.google.common.base.Strings;
-import com.mysql.jdbc.StringUtils;
 import com.vaadin.Application;
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.FileResource;
@@ -250,7 +250,7 @@ public class RunSingleSiteAction implements ClickListener {
 			// Do not include the replicates factor if the design type is P-rep.
 			return null;
 
-		} else if (!StringUtils.isNullOrEmpty(replicatesFactor)) {
+		} else if (!StringUtils.isEmpty(replicatesFactor)) {
 			final Replicates reps = new Replicates();
 			reps.setName(BreedingViewUtil.trimAndSanitizeName(replicatesFactor));
 			return reps;
@@ -271,7 +271,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 	Rows createRows(final String rowFactor) {
 
-		if (!StringUtils.isNullOrEmpty(rowFactor)) {
+		if (!StringUtils.isEmpty(rowFactor)) {
 			final Rows rows = new Rows();
 			rows.setName(BreedingViewUtil.trimAndSanitizeName(rowFactor));
 			return rows;
@@ -283,7 +283,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 	Columns createColumns(final String columnFactor) {
 
-		if (!StringUtils.isNullOrEmpty(columnFactor)) {
+		if (!StringUtils.isEmpty(columnFactor)) {
 			final Columns columns = new Columns();
 			columns.setName(BreedingViewUtil.trimAndSanitizeName(columnFactor));
 			return columns;
@@ -295,7 +295,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 	RowPos createRowPos(final String rowPosFactor) {
 
-		if (!StringUtils.isNullOrEmpty(rowPosFactor)) {
+		if (!StringUtils.isEmpty(rowPosFactor)) {
 			final RowPos rowPos = new RowPos();
 			rowPos.setName(BreedingViewUtil.trimAndSanitizeName(rowPosFactor));
 			return rowPos;
@@ -307,7 +307,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 	ColPos createColPos(final String colPosFactor) {
 
-		if (!StringUtils.isNullOrEmpty(colPosFactor)) {
+		if (!StringUtils.isEmpty(colPosFactor)) {
 			final ColPos colPos = new ColPos();
 			colPos.setName(BreedingViewUtil.trimAndSanitizeName(colPosFactor));
 			return colPos;
@@ -319,7 +319,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 	Blocks createBlocks(final String blocksFactor) {
 
-		if (!StringUtils.isNullOrEmpty(blocksFactor)) {
+		if (!StringUtils.isEmpty(blocksFactor)) {
 			final Blocks blocks = new Blocks();
 			blocks.setName(BreedingViewUtil.trimAndSanitizeName(blocksFactor));
 			return blocks;
@@ -377,12 +377,12 @@ public class RunSingleSiteAction implements ClickListener {
 		final String rowFactor = this.source.getSelRowFactorValue();
 		final String genotypeFactor = this.source.getSelGenotypesValue();
 
-		if (StringUtils.isNullOrEmpty(analysisProjectName)) {
+		if (StringUtils.isEmpty(analysisProjectName)) {
 			this.showErrorMessage(window, "Please enter an Analysis Name.", "");
 			return false;
 		}
 
-		if (StringUtils.isNullOrEmpty(environmentFactor)) {
+		if (StringUtils.isEmpty(environmentFactor)) {
 			this.showErrorMessage(window, this.messageSource.getMessage(Message.SSA_SELECT_ENVIRONMENT_FACTOR_WARNING), "");
 			return false;
 		}
@@ -392,34 +392,34 @@ public class RunSingleSiteAction implements ClickListener {
 			return false;
 		}
 
-		if (StringUtils.isNullOrEmpty(designType)) {
+		if (StringUtils.isEmpty(designType)) {
 			this.showErrorMessage(window, "Please specify design type.", "");
 			return false;
 		}
 
-		if (StringUtils.isNullOrEmpty(replicatesFactor) && designType.equals(DesignType.RANDOMIZED_BLOCK_DESIGN.getName())
+		if (StringUtils.isEmpty(replicatesFactor) && designType.equals(DesignType.RANDOMIZED_BLOCK_DESIGN.getName())
 				&& this.source.getSelReplicates().isEnabled()) {
 			this.showErrorMessage(window, "Please specify replicates factor.", "");
 			return false;
 		}
 
-		if (StringUtils.isNullOrEmpty(blocksFactor)
+		if (StringUtils.isEmpty(blocksFactor)
 				&& (designType.equals(DesignType.INCOMPLETE_BLOCK_DESIGN.getName()) || designType.equals(DesignType.P_REP_DESIGN.getName()))) {
 			this.showErrorMessage(window, "Please specify incomplete block factor.", "");
 			return false;
 		}
 
-		if (StringUtils.isNullOrEmpty(columnFactor) && designType.equals(DesignType.ROW_COLUMN_DESIGN.getName())) {
+		if (StringUtils.isEmpty(columnFactor) && designType.equals(DesignType.ROW_COLUMN_DESIGN.getName())) {
 			this.showErrorMessage(window, "Please specify column factor.", "");
 			return false;
 		}
 
-		if (StringUtils.isNullOrEmpty(rowFactor) && designType.equals(DesignType.ROW_COLUMN_DESIGN.getName())) {
+		if (StringUtils.isEmpty(rowFactor) && designType.equals(DesignType.ROW_COLUMN_DESIGN.getName())) {
 			this.showErrorMessage(window, "Please specify row factor.", "");
 			return false;
 		}
 
-		if (StringUtils.isNullOrEmpty(genotypeFactor)) {
+		if (StringUtils.isEmpty(genotypeFactor)) {
 			this.showErrorMessage(window, "Please specify Genotypes factor.", "");
 			return false;
 		}
