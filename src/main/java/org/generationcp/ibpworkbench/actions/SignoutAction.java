@@ -30,14 +30,10 @@ import javax.annotation.Resource;
  * <b>Author</b>: Michael Blancaflor <br>
  * <b>File Created</b>: Jun 11, 2012.
  */
-@Configurable
 public class SignoutAction implements ClickListener {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1898892299981012511L;
-
-	@Resource
-	private SessionData sessionData;
 
 	/**
 	 * Button click.
@@ -49,8 +45,7 @@ public class SignoutAction implements ClickListener {
 		WorkbenchMainView window = (WorkbenchMainView) event.getButton().getWindow();
 		window.setUriFragment("", true);
 
-		String fullLogoutUrl = WorkbenchAppPathResolver.getFullWebAddress("ibpworkbench/controller/logout",
-				String.format("", this.sessionData.getLastOpenedProject().getProjectId(), this.sessionData.getUserData().getUserid()));
+		String fullLogoutUrl = WorkbenchAppPathResolver.getFullWebAddress("ibpworkbench/controller/logout", "");
 
 		window.showContent(fullLogoutUrl);
 	}
