@@ -107,7 +107,18 @@ public class AuthenticationController {
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
 		try {
-			if (this.workbenchUserService.isValidUserLogin(model)) {
+			if (!this.workbenchUserService.isUserActive(model)) {
+				Map<String, String> errors = new LinkedHashMap<>();
+
+				errors.put(UserAccountFields.USERNAME,
+						this.messageSource.getMessage(UserAccountValidator.LOGIN_ATTEMPT_USER_INACTIVE, new String[] {},
+								"Your user account is not currently active. Please contact your system administrator",
+								LocaleContextHolder.getLocale()));
+
+				out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
+				out.put(AuthenticationController.ERRORS, errors);
+
+			} else if (this.workbenchUserService.isValidUserLogin(model)) {
 				isSuccess = HttpStatus.OK;
 				out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
 

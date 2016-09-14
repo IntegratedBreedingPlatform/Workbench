@@ -105,6 +105,24 @@ public class WorkbenchUserService {
 	}
 
 	/**
+	 * Checks if user is active
+	 * 
+	 * @param userAccount
+	 * @return
+	 * @throws MiddlewareQueryException
+	 */
+	public boolean isUserActive(UserAccountModel userAccount) {
+		User user = this.getUserByUserName(userAccount.getUsername());
+
+		if (user != null) {
+			Integer status = user.getStatus();
+			return user.getStatus() != null && status.equals(0);
+		}
+
+		return false;
+	}
+
+	/**
 	 * Checks validity of user
 	 * 
 	 * @param userAccount
