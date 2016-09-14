@@ -12,7 +12,7 @@ function postProcessLCOV() {
 		.pipe(gulp.dest('reports/coverage'));
 }
 
-gulp.task('test-ng2', ['angular2'], function(done) {
+gulp.task('test-ng2', ['angular2CleanDist'], function(done) {
 		var karmaConf = 'karma.conf-ng2.js',
 		cb =  postProcessLCOV;
 
