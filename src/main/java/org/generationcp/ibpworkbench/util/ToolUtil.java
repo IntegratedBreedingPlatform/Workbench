@@ -45,7 +45,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 public class ToolUtil {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ToolUtil.class);
-	public static final String DEFAULT_DRIVER = "com.mysql.jdbc.Driver";
+	public static final String DEFAULT_DRIVER = "org.mariadb.jdbc.Driver";
 	public static final String JDBC_FORMAT_STRING = "jdbc:mysql://%s:%s/%s";
 	public static final String INPUT = "input";
 	public static final String GDMS_CONFIG_LOCATION = "infrastructure/tomcat/webapps/GDMS/WEB-INF/classes/DatabaseConfig.properties";
