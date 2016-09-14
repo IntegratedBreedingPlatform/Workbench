@@ -1,5 +1,3 @@
-/// <reference path="../../../../../typings/globals/node/index.d.ts" />
-
 import { Component, OnInit } from '@angular/core';
 import { NgDataGridModel } from './../shared/components/datagrid/ng-datagrid.model';
 import { PaginationComponent } from './../shared/components/datagrid/pagination.component';

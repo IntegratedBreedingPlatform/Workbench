@@ -1,8 +1,5 @@
- /// <reference path="../../../../../typings/globals/node/index.d.ts" />
-
 import { Component, OnInit } from '@angular/core';
 import { UsersDatagrid } from './users-datagrid.component';
-
 
 @Component({
     selector: 'users-admin',

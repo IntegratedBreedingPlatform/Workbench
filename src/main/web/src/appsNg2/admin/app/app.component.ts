@@ -6,7 +6,9 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 
 import { UsersAdmin } from './users/index';
+import { SiteAdminHeader } from './shared/components/header/site-admin-header.component';
 import { UserService } from './shared/services/user.service';
+
 
 /*
  * AppComponent Component
@@ -18,9 +20,10 @@ import { UserService } from './shared/services/user.service';
   styleUrls: [
     './app.style.css'
   ],
-  directives: [ UsersAdmin ],
+  directives: [ SiteAdminHeader, UsersAdmin ],
   template: `
     <div class="container-fluid">
+        <site-admin-header></site-admin-header>
         <users-admin></users-admin>
     </div>
   `,
