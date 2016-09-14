@@ -20,15 +20,16 @@ export function main() {
         .compileComponents();
       }));
 
-      it('should run a passing test', () => {
-          expect(true).toEqual(true, 'should pass');
-      });
-
       beforeEach(() => {
          fixture = TestBed.createComponent(SiteAdminHeader);
          comp    = fixture.componentInstance;
          el  = fixture.debugElement.query(By.css('.om-title'));
        });
+
+      it('should load Admin Header', function() {
+         expect(el.nativeElement.textContent).toContain('Site Administration');
+      });
+
     });
 
 }
