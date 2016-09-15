@@ -16,6 +16,7 @@ import org.generationcp.ibpworkbench.validator.UserAccountValidator;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.User;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -60,6 +61,11 @@ public class AuthenticationControllerTest {
 
 	@InjectMocks
 	private AuthenticationController controller;
+
+	@Before
+	public void beforeEachTest() {
+		Mockito.when(this.workbenchUserService.isUserActive(Matchers.any(UserAccountModel.class))).thenReturn(true);
+	}
 
 	@Test
 	public void testGetLoginPage() throws Exception {
