@@ -18,10 +18,16 @@ Object.same = function(source, target): boolean {
         if (typeof source[prop] === 'string' && target[prop].startsWith(source[prop])) continue;
         if (source[prop] === target[prop]) continue;
         if (source[prop].toUpperCase()  === target[prop].toUpperCase()) continue;
-        if(source[prop] == "undefined") continue;
+        //Option for status Active
+        if(prop == "status" && source[prop] == "undefined" && target[prop] === "true") continue;
+        if((source[prop] == "undefined" && prop != "status") || source[prop] == "all") continue;
         return false;
     }
 
+    if(source["status"] == undefined && target["status"] == "false") {
+        return false;   
+    }
+    
     return true;
 };
 
