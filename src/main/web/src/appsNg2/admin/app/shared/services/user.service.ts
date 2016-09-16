@@ -27,9 +27,14 @@ export class UserService{
       return User$;
   }
 
-  save(User: User) : Observable<Response>{
+  save(user: User) : Observable<Response>{
     return this.http
-      .put(`${this.baseUrl}/users/${User.id}`, JSON.stringify(User), {headers: this.getHeaders()});
+      .post(`${this.baseUrl}/users`, JSON.stringify(User), {headers: this.getHeaders()});
+  }
+
+  update(user: User) : Observable<Response>{
+    return this.http
+      .put(`${this.baseUrl}/users`, JSON.stringify(User), {headers: this.getHeaders()});
   }
 
   private getHeaders(){
