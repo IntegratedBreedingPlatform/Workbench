@@ -17,6 +17,7 @@ export function main() {
       let header: Headers;
 
       beforeEach(() => {
+        //TODO Move inject here
         addProviders([HTTP_PROVIDERS,
                       provide(XHRBackend, {useClass: MockBackend}), UserService]);
         header = new Headers();

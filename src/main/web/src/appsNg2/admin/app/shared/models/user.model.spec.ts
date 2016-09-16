@@ -5,7 +5,7 @@ import 'rxjs/add/operator/map';
 
 export function main() {
 
-    describe('User Service Test', () => {
+    describe('User Model Test', () => {
 
       function createUser() {
         return new User("0", "first", "last", "username", "role", "email", "status");
