@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { Http, Response, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { User } from './../models/user.model';
@@ -7,20 +7,23 @@ import { User } from './../models/user.model';
 export class UserService{
   private baseUrl: string = '/bmsapi/brapi/v1';
 
-  constructor(private http : Http){
+  private http: Http;
+
+  constructor(@Inject(Http) http:Http) {
+      this.http = http;
   }
 
   getAll(): Observable<User[]>{
     let users$ = this.http
       .get(`${this.baseUrl}/users`, {headers: this.getHeaders()})
-      .map(mapUsers);
+      .map(response => this.mapUsers(response));
       return users$;
   }
 
   get(id: number): Observable<User> {
     let User$ = this.http
       .get(`${this.baseUrl}/users/${id}`, {headers: this.getHeaders()})
-      .map(mapUser);
+      .map(response => this.mapUser(response));
       return User$;
   }
 
@@ -35,26 +38,26 @@ export class UserService{
     headers.append('X-Auth-Token', JSON.parse(localStorage["bms.xAuthToken"]).token);
     return headers;
   }
-}
 
+  private mapUsers(response:Response): User[]{
+     return response.json().map(this.toUser)
+  }
 
-function mapUsers(response:Response): User[]{
-   return response.json().map(toUser)
-}
+  private toUser(r:any): User{
+    let User = <User>({
+      id: r.userId,
+      firstName: r.firstName,
+      lastName: r.lastName,
+      username: r.username,
+      role: r.role,
+      email: r.email,
+      status: r.status,
+    });
+    return User;
+  }
 
-function toUser(r:any): User{
-  let User = <User>({
-    id: r.id,
-    firstName: r.firstName,
-    lastName: r.lastName,
-    username: r.username,
-    role: r.role,
-    email: r.email,
-    status: r.status,
-  });
-  return User;
-}
+  private mapUser(response:Response): User{
+    return this.toUser(response.json());
+  }
 
-function mapUser(response:Response): User{
-  return toUser(response.json());
 }
