@@ -4,8 +4,9 @@
             (click)="addRecordPlugin()">Add user</button>
   </div>
   <div class="om-panel-header">
-        <h1 class="om-panel-title ">
-            Manage users</h1>
+        <h2 class="om-panel-title ">
+            Manage users</h2>
+        &nbsp;
   </div>
     <div class="row">
         <div class="col-xs-12">
@@ -16,18 +17,16 @@
                   &nbsp;
                   <select class="select2-chosen ui-select-match" name="status"
                       [(ngModel)]="table.searchValue.status">
-                      <option value="undefined">All</option>
-                      <option value="true">Active</option>
+                      <option value="all">All</option>
+                      <option value="undefined">Active</option>                      
                       <option value="false">Inactive</option>
                   </select>
                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                   <label class="">Role: </label>
                   &nbsp;
-                  <select  class="select2-chosen" name="role"   [(ngModel)]="table.searchValue.role">
+                  <select  class="select2-chosen" name="role" [(ngModel)]="table.searchValue.role">
                     <option value="undefined">All</option>
-                    <option value="Breeder">Breeder</option>
-                    <option value="Technician">Technician</option>
-                    <option value="Admin">Admin</option>
+                    <option  *ngFor="let role of roles" [value]="role.description">{{role.description}}</option>          
                   </select>
                 </div>
             </div>

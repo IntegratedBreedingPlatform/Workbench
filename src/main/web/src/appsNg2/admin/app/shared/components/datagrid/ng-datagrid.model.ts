@@ -13,6 +13,10 @@ export class NgDataGridModel<T> {
         this.pageSize = pageSize;
     }
 
+     ngOnInit(){
+       
+    }
+    
     get totalRows(): number {
         return this._items.length;
     }
@@ -69,4 +73,7 @@ export class NgDataGridModel<T> {
         return this.itemsFiltered.slice(this.startRow,
             this.startRow + this.pageSize);
     }
+    
+
+    
 }

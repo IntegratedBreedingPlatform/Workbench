@@ -2,9 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { NgDataGridModel } from './../shared/components/datagrid/ng-datagrid.model';
 import { PaginationComponent } from './../shared/components/datagrid/pagination.component';
 import { User } from './../shared/models/user.model';
+import { Role } from './../shared/models/role.model';
 import { FORM_DIRECTIVES } from '@angular/forms';
 import './../shared/utils/array.extensions';
 import { UserService } from './../shared/services/user.service';
+import { RoleService } from './../shared/services/role.service';
 
 @Component({
     selector: 'users-datagrid',
@@ -20,19 +22,33 @@ export class UsersDatagrid implements OnInit {
     table: NgDataGridModel<User>;
     recentlyRemoveUsers: any[];
     errorMessage: string = '';
+    private roles: Role[];
 
-    constructor(private userService : UserService) {
+    constructor(private userService : UserService, private roleService : RoleService) {
         this.table = new NgDataGridModel<User>([]);
         this.table.pageSize = 25;
-
-
-    }
+        
+     }
 
     ngOnInit() {
+        //get all users
         this.userService
             .getAll()
             .subscribe(
                 users => this.table.items = users,
+                error => {
+                    this.errorMessage = error;
+                    if (error.status === 401) {
+                        localStorage.removeItem('xAuthToken');
+                        this.handleReAuthentication();
+                    }
+            });
+        
+        // get all roles
+        this.roleService
+            .getAll()
+            .subscribe(
+                roles => this.roles = roles,
                 error => {
                     this.errorMessage = error;
                     if (error.status === 401) {
