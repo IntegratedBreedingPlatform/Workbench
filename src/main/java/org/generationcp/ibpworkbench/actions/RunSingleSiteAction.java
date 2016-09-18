@@ -550,7 +550,7 @@ public class RunSingleSiteAction implements ClickListener {
 				try {
 					ds = new DownloadStream(new FileInputStream(this.getSourceFile()), this.getMIMEType(), this.getFilename());
 
-					ds.setParameter("Content-Disposition", "attachment; filename=" + this.getFilename());
+					ds.setParameter("Content-Disposition", "attachment; filename=\"" + this.getFilename() + "\"");
 					ds.setCacheTime(this.getCacheTime());
 					return ds;
 
