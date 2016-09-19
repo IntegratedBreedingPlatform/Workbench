@@ -5,7 +5,7 @@
 	<artifactId>ibpworkbench</artifactId>
 	<packaging>war</packaging>
 	<name>Workbench</name>
-        <version>4.0.0.BETA.15.UAT3</version>
+        <version>4.0.0.BETA.15</version>
 
 	<properties>
 		<vaadin.version>6.8.13</vaadin.version>
