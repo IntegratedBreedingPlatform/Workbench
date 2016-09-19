@@ -14,7 +14,7 @@ export function main() {
       it('should be createable by constructor', () => {
         let role = createRole();
         expect(role.id).toBe("0");
-        expect(role.description).toBe("description);
+        expect(role.description).toBe("description");
       });
 
     });
