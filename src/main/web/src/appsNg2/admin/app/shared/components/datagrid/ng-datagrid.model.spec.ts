@@ -29,10 +29,10 @@ export function main() {
 
       beforeEach(() => {
         items = createArrayOfGenericModel();
+        grid = new NgDataGridModel (items, 2);
       });
 
       it ('Should create a NgDatagrid Model', function() {
-        grid = new NgDataGridModel (items, 2);
         expect (grid.items[0].typeToSearch).toBe('A');
         expect (grid.items[1].typeToSearch).toBe('B');
         expect (grid.items[2].typeToSearch).toBe('A');
@@ -40,24 +40,52 @@ export function main() {
       });
 
       it ('Should match the total rows', function() {
-        grid = new NgDataGridModel (items, 2);
         expect (grid.totalRows).toBe(items.length);
       });
 
       it ('Should filter by typeToSearch equals to A', function () {
-        grid = new NgDataGridModel (items, 2);
         grid.sortBy = 'typeToSearch';
         grid.searchValue = new GenericModel('A');
         expect (grid.itemsFiltered.length).toBe(2);
       });
 
       it ('Should get totalFilteredRows equals to 2', function () {
-        grid = new NgDataGridModel (items, 2);
         grid.sortBy = 'typeToSearch';
         grid.searchValue = new GenericModel('A');
         expect (grid.totalFilteredRows).toBe(2);
       });
 
+      it ('Should get startRow equals to 0', function () {
+        expect (grid.startRow).toBe(0);
+      });
+
+      it ('Should get startRow equals to 2', function () {
+        grid.currentPageIndex = 2;
+        expect (grid.startRow).toBe(2);
+      });
+
+      it ('Should get maxPageIndex equals to 2', function () {
+        expect (grid.maxPageIndex).toBe(2);
+      });
+
+      it ('Should get itemsOnCurrentPage.length equals to 2', function () {
+        expect (grid.itemsOnCurrentPage.length).toBe(2);
+      });
+
+      it ('Should get itemsOnCurrentPage.length equals to 1', function () {
+        grid.currentPageIndex = 2;
+        expect (grid.itemsOnCurrentPage.length).toBe(1);
+      });
+
+      it ('Should get items.length equals to 3', function () {
+        expect (grid.items.length).toBe(3);
+      });
+
+      it ('Should get items.length equals to 2', function () {
+        grid.items = [ new GenericModel('A'),
+                       new GenericModel('B')];
+        expect (grid.items.length).toBe(2);
+      });
 
   });
 }
