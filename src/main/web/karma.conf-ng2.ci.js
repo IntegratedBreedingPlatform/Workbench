@@ -12,9 +12,6 @@ module.exports = function(config) {
 		colors: false,
 		autoWatch: false,
 		reporters: ['progress', 'junit', 'coverage'],
-		preprocessors: {
-			'src/appsNg2/**/*.js': ['coverage']
-		},
 		junitReporter: {
 			// These will not be interpreted unless the file name starts with TESTS-,
 			// but right now the parsing is failing (see jira.codehaus.org/browse/SONARJS-304)

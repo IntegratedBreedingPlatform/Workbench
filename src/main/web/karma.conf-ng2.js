@@ -64,7 +64,7 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    // reporters: ['coverage'],
+    reporters: ['progress', 'coverage'],
 
 
     // web server port
@@ -79,10 +79,8 @@ module.exports = function(config) {
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
     logLevel: config.LOG_INFO,
 
-
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch: true,
-
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
@@ -90,20 +88,18 @@ module.exports = function(config) {
       'PhantomJS'
     ],
 
-
+    /*
     customLaunchers: {
       Chrome_travis_ci: {
         base: 'Chrome',
         flags: ['--no-sandbox']
       }
     },
+    */
 
-    coverageReporter: {
-      dir: 'coverage/',
-      reporters: [
-        { type: 'json', subdir: '.', file: 'coverage-final.json' }
-      ]
-    },
+	coverageReporter: {
+		type: 'text-summary'
+	},
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
@@ -115,6 +111,7 @@ module.exports = function(config) {
     }
   });
 
+  /*
   if (process.env.APPVEYOR) {
     config.browsers = ['IE'];
     config.singleRun = true;
@@ -125,4 +122,5 @@ module.exports = function(config) {
     config.browsers = ['Chrome_travis_ci'];
     config.singleRun = true;
   }
+  */
 };

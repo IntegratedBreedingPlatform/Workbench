@@ -1,6 +1,6 @@
 import { provide }    from '@angular/core';
 import { addProviders, inject, async, TestBed , ComponentFixture } from "@angular/core/testing";
-import { Role } from './role.model'
+import { Role } from './role.model';
 import 'rxjs/add/operator/map';
 
 export function main() {
