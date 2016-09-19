@@ -62,7 +62,7 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 	private final Panel root = new Panel();
 
 	public BackupAndRestoreView() {
-		this.root.setDebugId("root");
+		this.root.setDebugId("rootBackupAndRestore");
 		this.setCompositionRoot(this.root);
 	}
 
@@ -286,12 +286,12 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 
 	private HorizontalLayout setUpHeadings(final HelpModule module, final String heading, final String width) {
 		final HorizontalLayout titleLayout = new HorizontalLayout();
-		titleLayout.setDebugId("titleLayout");
+		titleLayout.setDebugId("titleLayoutBackupAndRestore");
 		titleLayout.setSpacing(true);
 		titleLayout.setHeight("40px");
 
 		final Label toolTitle = new Label(heading);
-		toolTitle.setDebugId("toolTitle");
+		toolTitle.setDebugId("toolTitleHeadingBackupAndRestore");
 		toolTitle.addStyleName(Bootstrap.Typography.H4.styleName());
 		toolTitle.setContentMode(Label.CONTENT_XHTML);
 		toolTitle.setWidth(width);

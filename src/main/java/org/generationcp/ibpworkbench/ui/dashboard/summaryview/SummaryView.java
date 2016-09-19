@@ -421,7 +421,7 @@ public class SummaryView extends VerticalLayout implements InitializingBean {
 		private final VerticalLayout root = new VerticalLayout();
 
 		public ToolsDropDown(String... selections) {
-			this.root.setDebugId("root");
+			this.root.setDebugId("rootToolsDropDown");
 
 			this.choices = new Button[selections.length];
 
