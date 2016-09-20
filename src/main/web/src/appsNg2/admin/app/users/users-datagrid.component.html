@@ -1,7 +1,10 @@
 <section>
   <div class="om-panel-content">
         <button class="btn btn-default om-add-new-btn form-group pull-right"
-            (click)="addRecordPlugin()">Add user</button>
+            (click)="showDialog = !showDialog">Add user</button>
+           <app-dialog [(visible)]="showDialog">
+                <user-card></user-card>
+           </app-dialog> 
   </div>
   <div class="om-panel-header">
         <h2 class="om-panel-title ">

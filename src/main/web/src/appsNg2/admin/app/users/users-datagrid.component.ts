@@ -7,7 +7,9 @@ import { FORM_DIRECTIVES } from '@angular/forms';
 import './../shared/utils/array.extensions';
 import { UserService } from './../shared/services/user.service';
 import { RoleService } from './../shared/services/role.service';
+import { Dialog } from './../shared/components/dialog/dialog.component';
 import {UserComparator} from './user-comparator.component';
+import { UserCard } from './user-card.component';
 
 @Component({
     selector: 'users-datagrid',
@@ -15,11 +17,12 @@ import {UserComparator} from './user-comparator.component';
     styleUrls: [
         './users-datagrid.component.css'
     ],
-    directives: [PaginationComponent, FORM_DIRECTIVES],
+    directives: [PaginationComponent, FORM_DIRECTIVES, Dialog, UserCard],
     moduleId: module.id
 })
 
 export class UsersDatagrid implements OnInit {
+    showDialog = false;
     table: NgDataGridModel<User>;
     recentlyRemoveUsers: any[];
     errorMessage: string = '';
@@ -49,11 +52,7 @@ export class UsersDatagrid implements OnInit {
             .subscribe(
                 roles => this.roles = roles,
                 error => {
-                    this.errorMessage = error;
-                    if (error.status === 401) {
-                        localStorage.removeItem('xAuthToken');
-                        this.handleReAuthentication();
-                    }
+                    // TODO
             });
     }
 
