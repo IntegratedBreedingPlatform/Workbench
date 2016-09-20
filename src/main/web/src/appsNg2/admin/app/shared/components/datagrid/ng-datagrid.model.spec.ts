@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Rx';
 import { NgDataGridModel } from './ng-datagrid.model'
 import 'rxjs/add/operator/map';
 
+
 export function main() {
 
   class GenericModel {

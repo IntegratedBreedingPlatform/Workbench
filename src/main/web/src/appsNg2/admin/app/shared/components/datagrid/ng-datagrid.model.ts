@@ -1,4 +1,6 @@
-import './../../utils/object.extensions';
+import {DefaultObjectComparator} from './default-object-comparator.component';
+import {IObjectComparator} from './object-comparator.interface';
+
 
 export class NgDataGridModel<T> {
     searchValue: T = <T>{};
@@ -7,16 +9,22 @@ export class NgDataGridModel<T> {
     currentPageIndex: number = 1;
     pageSize: number;
     private _items: T[];
+    comparator: IObjectComparator;
 
-    constructor(items: T[], pageSize: number = 10) {
+    constructor(items: T[], pageSize: number = 10, comparator?: IObjectComparator) {
         this._items = items;
         this.pageSize = pageSize;
+        if (comparator) {
+          this.comparator = comparator;
+        } else {
+          this.comparator = new DefaultObjectComparator();
+        }
     }
 
      ngOnInit(){
-       
+
     }
-    
+
     get totalRows(): number {
         return this._items.length;
     }
@@ -56,9 +64,8 @@ export class NgDataGridModel<T> {
 
     get itemsFiltered(): T[] {
         let key: string = this.sortBy;
-
         return this.items
-            .filter(item => Object.same(this.searchValue, item))
+            .filter( item => this.comparator.same(this.searchValue, item))
             .sort((obj1: T, obj2: T) => {
 
                 let one: number = this.sortAsc ? 1 : -1;
@@ -73,7 +80,6 @@ export class NgDataGridModel<T> {
         return this.itemsFiltered.slice(this.startRow,
             this.startRow + this.pageSize);
     }
-    
 
-    
+
 }

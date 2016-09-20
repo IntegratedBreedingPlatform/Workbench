@@ -7,6 +7,7 @@ import { FORM_DIRECTIVES } from '@angular/forms';
 import './../shared/utils/array.extensions';
 import { UserService } from './../shared/services/user.service';
 import { RoleService } from './../shared/services/role.service';
+import {UserComparator} from './user-comparator.component';
 
 @Component({
     selector: 'users-datagrid',
@@ -25,9 +26,7 @@ export class UsersDatagrid implements OnInit {
     private roles: Role[];
 
     constructor(private userService : UserService, private roleService : RoleService) {
-        this.table = new NgDataGridModel<User>([]);
-        this.table.pageSize = 25;
-        
+        this.table = new NgDataGridModel<User>([], 25, new UserComparator());
      }
 
     ngOnInit() {
@@ -43,7 +42,7 @@ export class UsersDatagrid implements OnInit {
                         this.handleReAuthentication();
                     }
             });
-        
+
         // get all roles
         this.roleService
             .getAll()
