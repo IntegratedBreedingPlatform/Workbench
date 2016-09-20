@@ -23,6 +23,7 @@ import { UserCard } from './user-card.component';
 
 export class UsersDatagrid implements OnInit {
     showDialog = false;
+    dialogTitle: string = "Add User";
     table: NgDataGridModel<User>;
     recentlyRemoveUsers: any[];
     errorMessage: string = '';

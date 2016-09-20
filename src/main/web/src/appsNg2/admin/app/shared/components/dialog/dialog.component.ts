@@ -11,14 +11,14 @@ import { Component, OnInit, Input, Output, OnChanges, EventEmitter, trigger, sta
       transition('void => *', [
         style({
           opacity: 0,
-          transform: 'translateX(-100%)'
+          transform: 'translateY(50px)'
         }),
-        animate('0.2s ease-in')
+        animate('0.3s ease-in')
       ]),
       transition('* => void', [
-        animate('0.2s 10 ease-out', style({
+        animate('0.3s 10 ease-out', style({
           opacity: 0,
-          transform: 'translateX(100%)'
+          transform: 'translateY(-50px)'
         }))
       ])
     ])
@@ -27,6 +27,7 @@ import { Component, OnInit, Input, Output, OnChanges, EventEmitter, trigger, sta
 export class Dialog implements OnInit {
   @Input() closable = true;
   @Input() visible: boolean;
+  @Input() title: string;
   @Output() visibleChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   constructor() { }
