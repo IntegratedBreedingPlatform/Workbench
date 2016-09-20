@@ -35,8 +35,8 @@ gulp.task('angular2Ts', function() {
 });
 
 // Give clean task a higher priority
-gulp.task('angular2PrioritizeClean', ['angular2Clean']);
-gulp.task('angular2CleanBuild', ['angular2PrioritizeClean', 'angular2Clean', 'angular2Ts']);
+gulp.task('preAngular2Clean', ['angular2Clean']);
+gulp.task('angular2CleanBuild', ['preAngular2Clean', 'angular2Clean', 'angular2Ts']);
 
 gulp.task('angular2Resources', ['angular2Ts'], function() {
 	var folders = getFoldersNg2(srcRoot);
@@ -68,8 +68,8 @@ gulp.task('angular2Dist', ['angular2Resources'], function() {
 });
 
 // Give clean build task a higher priority
-gulp.task('angular2PrioritizeCleanBuild', ['angular2CleanBuild']);
-gulp.task('angular2CleanDist', ['angular2PrioritizeCleanBuild', 'angular2CleanBuild', 'angular2Dist']);
+gulp.task('preAngular2CleanDist', ['angular2CleanBuild']);
+gulp.task('angular2CleanDist', ['preAngular2CleanDist', 'angular2CleanBuild', 'angular2Dist']);
 
 /**
  * Copy all required libraries into build directory.
@@ -89,3 +89,6 @@ gulp.task('angular2Libs', function () {
 });
 
 gulp.task('angular2', ['angular2CleanDist', 'angular2Libs']);
+
+gulp.task('preAngular2Serve', ['angular2Dist']);
+gulp.task('angular2Serve', ['angular2Dist', 'preAngular2Serve', 'hotswap']);
