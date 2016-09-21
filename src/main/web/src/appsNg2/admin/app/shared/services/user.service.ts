@@ -28,13 +28,18 @@ export class UserService{
   }
 
   save(user: User) : Observable<Response>{
+    let headers = this.getHeaders()
+    headers.append('Content-Type', 'application/json');
     return this.http
-      .post(`${this.baseUrl}/users`, JSON.stringify(User), {headers: this.getHeaders()});
+      .post(`${this.baseUrl}/users`, JSON.stringify(user), {headers: headers});
+    ;
   }
 
   update(user: User) : Observable<Response>{
+    let headers = this.getHeaders()
+    headers.append('Content-Type', 'application/json');
     return this.http
-      .put(`${this.baseUrl}/users`, JSON.stringify(User), {headers: this.getHeaders()});
+      .put(`${this.baseUrl}/users`, JSON.stringify(user), {headers: headers});
   }
 
   private getHeaders(){
@@ -50,7 +55,7 @@ export class UserService{
 
   private toUser(r:any): User{
     let User = <User>({
-      id: r.userId,
+      id: r.id,
       firstName: r.firstName,
       lastName: r.lastName,
       username: r.username,

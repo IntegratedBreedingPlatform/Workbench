@@ -2,7 +2,7 @@
   <div class="om-panel-content">
         <button class="btn btn-default om-add-new-btn form-group pull-right"
             (click)="showDialog = !showDialog">Add user</button>
-           <app-dialog [(visible)]="showDialog" [title]="dialogTitle">
+           <app-dialog [(visible)]="showDialog" [title]="dialogTitle" >
                 <user-card></user-card>
            </app-dialog> 
   </div>

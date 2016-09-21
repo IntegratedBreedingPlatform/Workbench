@@ -58,6 +58,12 @@ export class UsersDatagrid implements OnInit {
     }
 
     // TODO
+    onUserAdded() {
+        console.log("User added");
+        this.showDialog = false;
+    }
+
+    // TODO
     // - Move to a shared component
     // - see /ibpworkbench/src/main/web/src/apps/ontology/app-services/bmsAuth.js
     handleReAuthentication() {
