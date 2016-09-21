@@ -33,16 +33,16 @@ export class NgDataGridModel<T> {
         return this.itemsFiltered.length;
     }
 
-    private get currentRowStart(): number {
-        return this.totalRows > this.pageSize
-            ? (this.startRow + 1)
-            : this.totalRows === 0 ? 0 : 1;
-    }
-    private get currentRowEnd(): number {
-        return (this.startRow + this.pageSize) < this.totalRows
-            ? (this.startRow + this.pageSize)
-            : this.totalRows;
-    }
+    // private get currentRowStart(): number {
+    //     return this.totalRows > this.pageSize
+    //         ? (this.startRow + 1)
+    //         : this.totalRows === 0 ? 0 : 1;
+    // }
+    // private get currentRowEnd(): number {
+    //     return (this.startRow + this.pageSize) < this.totalRows
+    //         ? (this.startRow + this.pageSize)
+    //         : this.totalRows;
+    // }
 
     get startRow(): number {
         if (this.currentPageIndex === 0)

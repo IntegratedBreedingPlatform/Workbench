@@ -12,7 +12,6 @@ export class DefaultObjectComparator implements IObjectComparator {
       if ( ! ( source instanceof Object ) || ! ( target instanceof Object ) ) return false;
       // if they are not strictly equal, they both need to be Objects
       for ( let prop in source ) {
-          // console.log("source " + source[prop]);
           if (!source.hasOwnProperty(prop)) continue;
           if (source[prop] === undefined || source[prop] === null || source[prop] === '') continue;
           if (typeof source[prop] === 'object' && this.same(source[prop], target[prop])) continue;

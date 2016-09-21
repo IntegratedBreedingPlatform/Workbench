@@ -1,7 +1,8 @@
 import { DebugElement, provide }    from '@angular/core';
 import { addProviders, inject, async, TestBed , ComponentFixture } from "@angular/core/testing";
 import { Observable } from 'rxjs/Rx';
-import { NgDataGridModel } from './ng-datagrid.model'
+import { NgDataGridModel } from './ng-datagrid.model';
+import { DefaultObjectComparator } from './default-object-comparator.component';
 import 'rxjs/add/operator/map';
 
 
@@ -21,6 +22,8 @@ export function main() {
 
       let grid : NgDataGridModel<GenericModel>;
 
+      let gridComp : NgDataGridModel<GenericModel>;
+
       function createArrayOfGenericModel () {
           return [ new GenericModel('A'),
                    new GenericModel('B'),
@@ -31,6 +34,7 @@ export function main() {
       beforeEach(() => {
         items = createArrayOfGenericModel();
         grid = new NgDataGridModel (items, 2);
+        gridComp = new NgDataGridModel (items, 2, new DefaultObjectComparator());
       });
 
       it ('Should create a NgDatagrid Model', function() {
@@ -38,6 +42,10 @@ export function main() {
         expect (grid.items[1].typeToSearch).toBe('B');
         expect (grid.items[2].typeToSearch).toBe('A');
         expect (grid.pageSize).toBe(2);
+        expect (gridComp.items[0].typeToSearch).toBe('A');
+        expect (gridComp.items[1].typeToSearch).toBe('B');
+        expect (gridComp.items[2].typeToSearch).toBe('A');
+        expect (gridComp.pageSize).toBe(2);
       });
 
       it ('Should match the total rows', function() {
@@ -57,6 +65,7 @@ export function main() {
       });
 
       it ('Should get startRow equals to 0', function () {
+        grid.currentPageIndex = 0;
         expect (grid.startRow).toBe(0);
       });
 
@@ -86,6 +95,20 @@ export function main() {
         grid.items = [ new GenericModel('A'),
                        new GenericModel('B')];
         expect (grid.items.length).toBe(2);
+      });
+
+      it ('Should get totalFilteredRows equals to 2', function () {
+        grid.sortBy = 'typeToSearch';
+        grid.searchValue = new GenericModel('A');
+        let i = [ new GenericModel('Ana'),
+                  new GenericModel('B'),
+                  new GenericModel('Augusto'),
+                  new GenericModel('Abel'),
+                  new GenericModel('Adolfo')
+               ];
+        grid.items = i;
+        grid.sortAsc = false;
+        expect (grid.totalFilteredRows).toBe(4);
       });
 
   });
