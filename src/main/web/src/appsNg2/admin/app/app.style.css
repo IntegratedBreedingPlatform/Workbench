@@ -18,17 +18,6 @@
 tr + .om-no-items {
     display: none;
 }
-.glyphicon {
-    position: relative;
-    top: 1px;
-    display: inline-block;
-    font-family: 'Glyphicons Halflings';
-    font-style: normal;
-    font-weight: normal;
-    line-height: 1;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
 .h1,
 h1 {
     font-size: 24px
@@ -59,4 +48,13 @@ h1 {
 header > nav > ol > li {
 	text-align: center;	
 	font-weight: bold;
+}
+
+/* FIXME */
+/* Temp Fix for form control feedback */
+.form-control-feedback {
+    display: none;
+}
+.has-error .form-control-feedback {
+    display: block;
 }
