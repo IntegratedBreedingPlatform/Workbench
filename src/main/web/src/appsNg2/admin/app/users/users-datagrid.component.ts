@@ -32,23 +32,23 @@ export class UsersDatagrid implements OnInit {
     recentlyRemoveUsers: any[];
     errorMessage: string = '';
     user: User;
-    userSaved: boolean = false;
     private roles: Role[];
-
 
     constructor(private userService: UserService, private roleService: RoleService) {
         this.table = new NgDataGridModel<User>([], 25, new UserComparator());
         this.initUser();
-        // this.userCard.initialize()
     }
 
     showUserForm() {
         this.showDialog = true;
-        this.userCard.initialize()
     }
 
+    showNewUserForm() {
+        this.initUser();
+        this.showUserForm();
+    }
+    
     initUser() {
-        this.userSaved = false;
         this.user = new User("0", "", "", "", "", "", "");
     }
 

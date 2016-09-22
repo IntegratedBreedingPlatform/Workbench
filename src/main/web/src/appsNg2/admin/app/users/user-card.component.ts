@@ -20,13 +20,23 @@ export class UserCard implements OnInit {
     @Output() onCancel = new EventEmitter<void>();
 
     constructor(private userService: UserService, private roleService: RoleService) {
-        this.initialize();
-    }
-
-    initialize() {
-        this.userSaved = false;
         this.model = new User("0", "", "", "", "", "", "");
     }
+
+    /**
+     * Init state except the model
+     */
+    initialize() {
+        this.userSaved = false;
+    }
+
+    /*
+    resetForm() {
+        // see https://angular.io/docs/ts/latest/guide/forms.html#!#add-a-hero-and-reset-the-form
+        this.activeForm = false;
+        setTimeout(() => this.activeForm = true, 0);
+    }
+    */
 
     onSubmit() { this.submitted = true; }
     cancel() { this.onCancel.emit() }
