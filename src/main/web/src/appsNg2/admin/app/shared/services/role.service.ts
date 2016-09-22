@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable , Inject} from '@angular/core';
 import { Http, Response, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { Role } from './../models/role.model';
@@ -7,7 +7,10 @@ import { Role } from './../models/role.model';
 export class RoleService{
   private baseUrl: string = '/bmsapi/brapi/v1';
 
-  constructor(private http : Http){
+  private http: Http;
+
+  constructor(@Inject(Http) http:Http) {
+      this.http = http;
   }
 
   getAll(): Observable<Role[]>{
