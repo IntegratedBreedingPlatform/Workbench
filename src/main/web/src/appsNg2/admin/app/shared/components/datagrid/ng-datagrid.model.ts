@@ -11,13 +11,16 @@ export class NgDataGridModel<T> {
     private _items: T[];
     comparator: IObjectComparator;
 
-    constructor(items: T[], pageSize: number = 10, comparator?: IObjectComparator) {
+    constructor(items: T[], pageSize: number = 10, comparator?: IObjectComparator, searchValue?: T) {
         this._items = items;
         this.pageSize = pageSize;
         if (comparator) {
           this.comparator = comparator;
         } else {
           this.comparator = new DefaultObjectComparator();
+        }
+        if (searchValue) {
+            this.searchValue = searchValue
         }
     }
 

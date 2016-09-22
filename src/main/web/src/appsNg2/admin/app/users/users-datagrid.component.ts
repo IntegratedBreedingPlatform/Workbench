@@ -35,7 +35,7 @@ export class UsersDatagrid implements OnInit {
     private roles: Role[];
 
     constructor(private userService: UserService, private roleService: RoleService) {
-        this.table = new NgDataGridModel<User>([], 25, new UserComparator());
+        this.table = new NgDataGridModel<User>([], 25, new UserComparator(), <User>{ status: "true" });
         this.initUser();
     }
 
