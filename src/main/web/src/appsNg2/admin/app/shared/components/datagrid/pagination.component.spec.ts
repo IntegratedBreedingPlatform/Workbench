@@ -1,12 +1,12 @@
 import { PaginationComponent } from './pagination.component';
 import { TestBed, async, ComponentFixture} from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { DebugElement }    from '@angular/core';
+import { DebugElement, SimpleChange }    from '@angular/core';
 
 export function main() {
 
     describe('Pagination component Test', () => {
-        
+
         let pc = new PaginationComponent();
 
         beforeEach(() => {
@@ -50,9 +50,14 @@ export function main() {
             pc.maxPageIndex = 35;
             pc.setCurrentPage(25)
             expect(pc.pageEndNumber).toBe(28);
-            
+
             pc.maxPageIndex = 26;
             expect(pc.pageEndNumber).toBe(26);
+        });
+
+        it('should set pageEndNumber to 7 ', function() {
+            pc.ngOnInit();
+            expect(pc.pageEndNumber).toBe(7);
         });
 
     });
