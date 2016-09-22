@@ -1,19 +1,19 @@
 <div (ngSubmit)="onSubmit()" class="modal-body">
     <form class="form-horizontal" #form="ngForm">
-        <div class="form-group" [class.has-feedback]="!(firstName.valid || lastName.valid || firstName.pristine || lastName.pristine)"
-            [class.has-error]="!(firstName.valid || lastName.valid || firstName.pristine || lastName.pristine)">
+        <div class="form-group" [class.has-feedback]="!(firstName.valid || firstName.pristine) || !(lastName.valid || lastName.pristine)"
+            [class.has-error]="!(firstName.valid || firstName.pristine) || !(lastName.valid || lastName.pristine)">
             <label for="name" class="col-sm-2 control-label">Name</label>
             <div class="col-sm-5">
                 <input type="text" class="form-control" [(ngModel)]="model.firstName" #firstName="ngModel" required name="firstName" id="firstName"
                     placeholder="First Name">
                 <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
-                <span id="inputError2Status" class="sr-only">(error)</span>
+                <span class="sr-only">(error)</span>
             </div>
             <div class="col-sm-5">
                 <input type="text" class="form-control" [(ngModel)]="model.lastName" #lastName="ngModel" required name="lastName" id="lastName"
                     placeholder="Last Name">
                 <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
-                <span id="inputError2Status" class="sr-only">(error)</span>
+                <span class="sr-only">(error)</span>
             </div>
         </div>
         <div class="form-group" [class.has-feedback]="!(username.valid || username.pristine)" [class.has-error]="!(username.valid || username.pristine)">
@@ -22,15 +22,16 @@
                 <input type="text" class="form-control" [(ngModel)]="model.username" #username="ngModel" required name="username" id="username"
                     placeholder="username">
                 <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
-                <span id="inputError2Status" class="sr-only">(error)</span>
+                <span class="sr-only">(error)</span>
             </div>
         </div>
         <div class="form-group" [class.has-feedback]="!(email.valid || email.pristine)" [class.has-error]="!(email.valid || email.pristine)">
             <label for="email" class="col-sm-2 control-label">Email</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" [(ngModel)]="model.email" #email="ngModel" validateEmail name="email" id="email" placeholder="Email">
+                <input type="text" class="form-control" [(ngModel)]="model.email" #email="ngModel" validateEmail name="email" id="email"
+                    placeholder="Email">
                 <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
-                <span id="inputError2Status" class="sr-only">(error)</span>
+                <span class="sr-only">(error)</span>
             </div>
         </div>
         <div class="form-group" [class.has-feedback]="!(role.valid || role.pristine)" [class.has-error]="!(role.valid || role.pristine)">
@@ -48,13 +49,13 @@
             <div class="col-sm-10">
                 <div class="radio">
                     <label>
-                        <input type="radio" name="optionsStatus" id="optionsRadios1" value="option1" checked>
+                        <input type="radio" name="optionsStatus" [(ngModel)]="model.status" id="statuson" value="true" checked>
                         Active
                     </label>
                 </div>
                 <div class="radio">
                     <label>
-                        <input type="radio" name="optionsStatus" id="optionsRadios2" value="option2">
+                        <input type="radio" name="optionsStatus"  [(ngModel)]="model.status" id="statusoff" value="false">
                         Inactive
                     </label>
                 </div>
@@ -72,6 +73,7 @@
     </form>
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+    <div class="alert alert-success pull-left" *ngIf="userSaved" role="alert">User saved!</div>
+    <button type="button" class="btn btn-default" data-dismiss="modal" (click)="cancel()">Cancel</button>
     <button type="submit" class="btn btn-primary" [disabled]="!form.valid" (click)="addUser()">Add user</button>
 </div>

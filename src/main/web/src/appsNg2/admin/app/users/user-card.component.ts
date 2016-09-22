@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, Input, AfterViewInit } from '@angular/core';
 import {
     FormBuilder,
     FormGroup,
@@ -14,32 +14,43 @@ import { RoleService } from './../shared/services/role.service';
     moduleId: module.id
 })
 
-export class UserCard implements OnInit {
+export class UserCard implements OnInit, AfterViewInit {
     registerForm: FormGroup;
     submitted = false;
-    model: User;
-    @Output() onUserAdded = new EventEmitter<boolean>();
+    @Input() model: User;
+    @Input() userSaved: boolean = false;
+    @Output() onUserAdded = new EventEmitter<User>();
+    @Output() onCancel = new EventEmitter<void>();
 
     constructor(private userService: UserService, private roleService: RoleService) {
-        this.model = new User("0", "", "", "", "", "", "true");
+        this.initialize();
+    }
+
+    private initialize() {
+        this.userSaved = false;
+        this.model = new User("0", "", "", "", "", "", "");
     }
 
     onSubmit() { this.submitted = true; }
+    cancel() { this.onCancel.emit() }
 
     ngOnInit() {
     }
 
+    ngAfterViewInit() {
+        this.initialize();
+    }
+
     addUser() {
-        // this.model = new Hero(42, '', '');
-        // this.active = false;
-        // setTimeout(() => this.active = true, 0);
         this.userService
             .save(this.model)
             .subscribe(
                 resp => {
-                    // TODO this.model.id
-                    // TODO emit
-                    this.onUserAdded.emit();
+                    this.userSaved = true;
+                    setTimeout(() => {
+                        this.model.id = resp.json().id;
+                        this.onUserAdded.emit(this.model);
+                    }, 3000)
                 },
                 err => console.log(err)
             )

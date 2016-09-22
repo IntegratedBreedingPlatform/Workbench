@@ -27,11 +27,24 @@ export class UsersDatagrid implements OnInit {
     table: NgDataGridModel<User>;
     recentlyRemoveUsers: any[];
     errorMessage: string = '';
+    user: User;
+    userSaved: boolean = false;
     private roles: Role[];
 
-    constructor(private userService : UserService, private roleService : RoleService) {
+    constructor(private userService: UserService, private roleService: RoleService) {
         this.table = new NgDataGridModel<User>([], 25, new UserComparator());
-     }
+        this.initUser();
+    }
+
+    showUserForm() {
+        this.showDialog = true;
+        this.initUser();
+    }
+
+    initUser() {
+        this.userSaved = false;
+        this.user = new User("0", "", "", "", "", "", "");
+    }
 
     ngOnInit() {
         //get all users
@@ -57,10 +70,9 @@ export class UsersDatagrid implements OnInit {
             });
     }
 
-    // TODO
-    onUserAdded() {
-        console.log("User added");
+    onUserAdded(user: User) {
         this.showDialog = false;
+        this.table.items.push(user);
     }
 
     // TODO
