@@ -32,7 +32,7 @@ export function main() {
                       var options = new ResponseOptions({
                           body:
                               {
-                                "userId": 1,
+                                "id": 1,
                                 "username": "username",
                                 "firstName": "first",
                                 "lastName": "last",
@@ -70,7 +70,7 @@ export function main() {
                       var options = new ResponseOptions({
                           body: [
                               {
-                                "userId": 1,
+                                "id": 1,
                                 "username": "username",
                                 "firstName": "first",
                                 "lastName": "last",
@@ -79,7 +79,7 @@ export function main() {
                                 "email": "test-ng2@leafnode.io"
                               },
                               {
-                                "userId": 2,
+                                "id": 2,
                                 "username": "username2",
                                 "firstName": "first2",
                                 "lastName": "last2",
