@@ -1,7 +1,5 @@
-import { Component, OnInit, EventEmitter, Output, Input, AfterViewInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
 import {
-    FormBuilder,
-    FormGroup,
     Validators
 } from '@angular/forms';
 import { User } from '../shared/models/user.model';
@@ -14,8 +12,7 @@ import { RoleService } from './../shared/services/role.service';
     moduleId: module.id
 })
 
-export class UserCard implements OnInit, AfterViewInit {
-    registerForm: FormGroup;
+export class UserCard implements OnInit {
     submitted = false;
     @Input() model: User;
     @Input() userSaved: boolean = false;
@@ -26,7 +23,7 @@ export class UserCard implements OnInit, AfterViewInit {
         this.initialize();
     }
 
-    private initialize() {
+    initialize() {
         this.userSaved = false;
         this.model = new User("0", "", "", "", "", "", "");
     }
@@ -35,10 +32,6 @@ export class UserCard implements OnInit, AfterViewInit {
     cancel() { this.onCancel.emit() }
 
     ngOnInit() {
-    }
-
-    ngAfterViewInit() {
-        this.initialize();
     }
 
     addUser() {
@@ -50,7 +43,7 @@ export class UserCard implements OnInit, AfterViewInit {
                     setTimeout(() => {
                         this.model.id = resp.json().id;
                         this.onUserAdded.emit(this.model);
-                    }, 3000)
+                    }, 1000)
                 },
                 err => console.log(err)
             )

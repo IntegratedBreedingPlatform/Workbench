@@ -3,7 +3,7 @@
         <button class="btn btn-default om-add-new-btn form-group pull-right"
             (click)="showUserForm()">Add user</button>
             <app-dialog [(visible)]="showDialog" [title]="dialogTitle">
-                <user-card (onUserAdded)="onUserAdded($event)" [model]="user" [userSaved]="userSaved" (onCancel)="showDialog = false"></user-card>
+                <user-card (onUserAdded)="onUserAdded($event)" [model]="user" [(userSaved)]="userSaved" (onCancel)="showDialog = false"></user-card>
             </app-dialog>
   </div>
   <div class="om-panel-header">

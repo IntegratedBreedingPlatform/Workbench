@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgDataGridModel } from './../shared/components/datagrid/ng-datagrid.model';
 import { PaginationComponent } from './../shared/components/datagrid/pagination.component';
 import { User } from './../shared/models/user.model';
@@ -22,6 +22,10 @@ import { UserCard } from './user-card.component';
 })
 
 export class UsersDatagrid implements OnInit {
+
+    @ViewChild(UserCard)
+    userCard: UserCard;
+
     showDialog = false;
     dialogTitle: string = "Add User";
     table: NgDataGridModel<User>;
@@ -31,14 +35,16 @@ export class UsersDatagrid implements OnInit {
     userSaved: boolean = false;
     private roles: Role[];
 
+
     constructor(private userService: UserService, private roleService: RoleService) {
         this.table = new NgDataGridModel<User>([], 25, new UserComparator());
         this.initUser();
+        // this.userCard.initialize()
     }
 
     showUserForm() {
         this.showDialog = true;
-        this.initUser();
+        this.userCard.initialize()
     }
 
     initUser() {
