@@ -40,9 +40,9 @@ module.exports = function(config) {
       // Angular itself
       { pattern: 'node_modules/@angular/**/*.js', included: false, watched: true },
 
-      { pattern: './src/appsNg2/admin/build/**/*.js', included: false, watched: true },
-      { pattern: './src/appsNg2/admin/build/**/*.html', included: false, watched: true, served: true },
-      { pattern: './src/appsNg2/admin/build/**/*.css', included: false, watched: true, served: true },
+      { pattern: './src/appsNg2/**/build/**/*.js', included: false, watched: true },
+      { pattern: './src/appsNg2/**/build/**/*.html', included: false, watched: true, served: true },
+      { pattern: './src/appsNg2/**/build/**/*.css', included: false, watched: true, served: true },
       { pattern: 'node_modules/systemjs/dist/system-polyfills.js', included: false, watched: false }, // PhantomJS2 (and possibly others) might require it
 
       'karma-test-shim-ng2.js'
@@ -58,7 +58,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'src/appsNg2/admin/build/**/!(*spec).js': ['coverage']
+      'src/appsNg2/**/build/**/!(*spec).js': ['coverage']
     },
 
     // test results reporter to use
