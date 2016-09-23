@@ -97,7 +97,7 @@ export function main() {
         expect (grid.items.length).toBe(2);
       });
 
-      it ('Should get totalFilteredRows equals to 2', function () {
+      it ('Should get totalFilteredRows equals to 4', function () {
         gridComp = new NgDataGridModel (items, 2, new DefaultObjectComparator(), new GenericModel('A'));
         gridComp.sortBy = 'typeToSearch';
         let i = [ new GenericModel('Ana'),
