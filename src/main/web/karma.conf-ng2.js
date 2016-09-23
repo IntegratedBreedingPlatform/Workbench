@@ -97,9 +97,16 @@ module.exports = function(config) {
     },
     */
 
-	coverageReporter: {
-		type: 'text-summary'
-	},
+   coverageReporter: {
+      type: 'text-summary'
+   },
+
+// Enable when checking test paths is needed
+  //  coverageReporter: {
+	// 		type: 'lcov',
+	// 		dir: 'reports',
+	// 		subdir: 'coverage-ng2'
+	// 	},
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
