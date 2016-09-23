@@ -18,7 +18,7 @@
                 <div class="form-group">
                   <label class="">Status: </label>
                   &nbsp;
-                  <select class="select2-chosen ui-select-match" name="status"
+                  <select class="form-control" name="status"
                       [(ngModel)]="table.searchValue.status">
                       <option value="all">All</option>
                       <option value="true">Active</option>
@@ -27,7 +27,7 @@
                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                   <label class="">Role: </label>
                   &nbsp;
-                  <select  class="select2-chosen" name="role" [(ngModel)]="table.searchValue.role">
+                  <select  class="form-control" name="role" [(ngModel)]="table.searchValue.role">
                     <option value="undefined">All</option>
                     <option  *ngFor="let role of roles" [value]="role.description">{{role.description}}</option>
                   </select>
