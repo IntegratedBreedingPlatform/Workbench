@@ -8,7 +8,9 @@ var gulp = require('gulp'),
 	es = require('event-stream'),
 	path = require('path'),
 	typescript = require('gulp-typescript'),
-	babel = require('gulp-babel');
+	babel = require('gulp-babel'),
+	uglify = require('gulp-uglify'),
+	sourcemaps = require('gulp-sourcemaps');
 
 function getFoldersNg2(dir) {
 	return fs.readdirSync(dir)
@@ -28,9 +30,12 @@ gulp.task('angular2Ts', function() {
 		var tsProject = typescript.createProject(path.join(srcRoot, folder, 'tsconfig.json'));
 
 		return gulp.src(path.join(srcRoot, folder, '**/*.ts'))
+		  .pipe(sourcemaps.init())
 			.pipe(typescript(tsProject))
 			// Transpile ES6 to ES5 using ES2015 preset, needed because PhantomJS does not support ES6
 		  .pipe(babel({ presets: ['es2015'] }))
+			.pipe(uglify())
+			.pipe(sourcemaps.write('.'))
 			.pipe(gulp.dest(path.join(srcRoot, folder, 'build')));
 	});
 
