@@ -35,11 +35,11 @@ export class UserService{
     ;
   }
 
-  update(user: User) : Observable<Response>{
-    let headers = this.getHeaders()
-    headers.append('Content-Type', 'application/json');
-    return this.http
-      .put(`${this.baseUrl}/users`, JSON.stringify(user), {headers: headers});
+  update(user: User) : Observable < Response > {
+      let headers = this.getHeaders()
+      headers.append('Content-Type', 'application/json');
+      return this.http
+          .put(`${this.baseUrl}/users/${user.id}`, JSON.stringify(user), { headers: headers });
   }
 
   private getHeaders(){

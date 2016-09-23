@@ -28,11 +28,15 @@ export class UsersDatagrid implements OnInit {
 
     showDialog = false;
     dialogTitle: string = "Add User";
+    showConfirmStatusDialog = false;
+    confirmStatusTitle: string = "Confirm";
     table: NgDataGridModel<User>;
     recentlyRemoveUsers: any[];
     errorMessage: string = '';
+    message: string = "Please confirm that you would like to deactivate/activate this user account.";
     user: User;
     private roles: Role[];
+    public userSelected: User;
 
     constructor(private userService: UserService, private roleService: RoleService) {
         this.table = new NgDataGridModel<User>([], 25, new UserComparator(), <User>{ status: "true" });
@@ -47,7 +51,7 @@ export class UsersDatagrid implements OnInit {
         this.initUser();
         this.showUserForm();
     }
-    
+
     initUser() {
         this.user = new User("0", "", "", "", "", "", "");
     }
@@ -122,10 +126,43 @@ export class UsersDatagrid implements OnInit {
     }
 
     changedActiveStatus(e: any) {
-      //  if (confirm('Do you want to include all filtered items?')) {
-    //        this.table.itemsFiltered.forEach(user => user.active = e.target.checked);
-    //    } else {
-    //        this.table.itemsOnCurrentPage.forEach(user => user.active = e.target.checked);
-    //    }
+        //  if (confirm('Do you want to include all filtered items?')) {
+        //        this.table.itemsFiltered.forEach(user => user.active = e.target.checked);
+        //    } else {
+        //        this.table.itemsOnCurrentPage.forEach(user => user.active = e.target.checked);
+        //    }
+
+        if (this.userSelected.status === "true") {
+            this.userSelected.status = "false";
+        } else {
+            this.userSelected.status = "true";
+        }
+        this.userService
+            .update(this.userSelected)
+            .subscribe(
+            resp => { },
+            error => {
+                this.errorMessage = error;
+            });
+
+        this.userSelected = null;
+        this.showConfirmStatusDialog = false;
+
+    }
+
+    showUserStatusConfirmPopUp(e: any){
+      this.userSelected = e;
+      this.showConfirmStatusDialog = true;
+      this.message = "Please confirm that you would like to ";
+
+      if (e.status === "true") {
+          this.message = this.message + "deactivate this user account.";
+      } else {
+          this.message = this.message + "activate this user account.";
+      }
+    }
+
+    closeUserStatusConfirmPopUp(){
+      this.showConfirmStatusDialog = false;
     }
 }
