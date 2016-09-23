@@ -54,7 +54,7 @@
                         <td colspan="6" class="text-center">No records found.</td>
                     </tr>
                     <tr *ngFor="let user of table.itemsOnCurrentPage">
-						<td><a href=""> {{user.username}} </a></td>
+						<td><a href="javascript:void(0)"  (click)="showEditUserForm(user)"> {{user.username}} </a></td>
                         <td>{{user.firstName}}</td>
                         <td>{{user.lastName}}</td>
                         <td>{{user.email}}</td>
@@ -64,6 +64,7 @@
                           <a href="javascript:void(0)" *ngIf="user.status == 'false'" (click)="showUserStatusConfirmPopUp(user)">Activate</a>
                         </td>
                     </tr>
+<<<<<<< Updated upstream
                     <div class="popup">
                       <app-dialog [(visible)]="showConfirmStatusDialog" [title]="confirmStatusTitle">
                           <div class="modal-body">
@@ -80,6 +81,27 @@
                       </app-dialog>
                     </div>
                     </tbody>
+=======
+                    <app-dialog [(visible)]="showDialog" [title]="dialogTitle">
+		                <user-card (onUserEdited)="onUserEdited($event)" (onCancel)="showDialog = false" [model]="user"></user-card>
+		            </app-dialog>
+                    <app-dialog [(visible)]="showConfirmStatusDialog" [title]="confirmStatusTitle">
+                        <user-status-confirm>
+                            <div class="modal-body">
+                                <form class="form-horizontal">
+                                    <div class="modal-body">
+                                        <strong>{{message}}</strong>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="closeUserStatusConfirmPopUp()">Cancel</button>
+                                        <button type="button" class="btn btn-primary" (click)="changedActiveStatus()">accept</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </user-status-confirm>
+                    </app-dialog>
+                </tbody>
+>>>>>>> Stashed changes
             </table>
         </div>
     </div>

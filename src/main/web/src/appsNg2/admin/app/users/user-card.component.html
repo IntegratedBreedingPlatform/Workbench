@@ -5,13 +5,13 @@
             <label for="name" class="col-sm-2 control-label">Name</label>
             <div class="col-sm-5">
                 <input type="text" class="form-control" [(ngModel)]="model.firstName" #firstName="ngModel" required name="firstName" id="firstName"
-                    placeholder="First Name">
+                    placeholder="First Name" maxlength="20">
                 <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
                 <span class="sr-only">(error)</span>
             </div>
             <div class="col-sm-5">
                 <input type="text" class="form-control" [(ngModel)]="model.lastName" #lastName="ngModel" required name="lastName" id="lastName"
-                    placeholder="Last Name">
+                    placeholder="Last Name" maxlength="50">
                 <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
                 <span class="sr-only">(error)</span>
             </div>
@@ -20,7 +20,7 @@
             <label for="username" class="col-sm-2 control-label">username</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" [(ngModel)]="model.username" #username="ngModel" required name="username" id="username"
-                    placeholder="username">
+                    placeholder="username" maxlength="30">
                 <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
                 <span class="sr-only">(error)</span>
             </div>
@@ -29,7 +29,7 @@
             <label for="email" class="col-sm-2 control-label">Email</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" [(ngModel)]="model.email" #email="ngModel" validateEmail name="email" id="email"
-                    placeholder="Email">
+                    placeholder="Email" maxlength="40"> 
                 <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
                 <span class="sr-only">(error)</span>
             </div>
@@ -64,16 +64,20 @@
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
                 <div class="checkbox">
-                    <label>
-                    <input type="checkbox"> Send an invitation email for the user to set their password
-                </label>
+                    <label *ngIf="!isEditing">
+                        <input type="checkbox" > Send an invitation email for the user to set their password
+                    </label>
+                    <label *ngIf="isEditing">
+                        <input type="checkbox" > Send an email for the user to reset their password
+                    </label>
                 </div>
             </div>
         </div>
     </form>
 </div>
 <div class="modal-footer">
-    <div class="alert alert-success pull-left" *ngIf="userSaved" role="alert">User saved!</div>
+    <div *ngIf="!userSaved" class="alert alert-success pull-left" role="alert">User saved!</div>
     <button type="button" class="btn btn-default" data-dismiss="modal" (click)="cancel()">Cancel</button>
-    <button type="submit" class="btn btn-primary" [disabled]="!form.valid" (click)="addUser()">Add user</button>
+    <button type="submit" class="btn btn-primary" [disabled]="!form.valid" (click)="addUser()" *ngIf="!isEditing">Add user</button>
+    <button type="submit" class="btn btn-primary" [disabled]="!form.valid" (click)="editUser()" *ngIf="isEditing">Update user</button>
 </div>

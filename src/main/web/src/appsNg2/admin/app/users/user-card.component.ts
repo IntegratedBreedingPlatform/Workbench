@@ -14,9 +14,12 @@ import { RoleService } from './../shared/services/role.service';
 
 export class UserCard implements OnInit {
     submitted = false;
+    @Input() originalUser: User;
+    @Input() isEditing: boolean;
     @Input() model: User;
-    @Input() userSaved: boolean = false;
+    @Input() userSaved: boolean;
     @Output() onUserAdded = new EventEmitter<User>();
+    @Output() onUserEdited = new EventEmitter<User>();
     @Output() onCancel = new EventEmitter<void>();
 
     constructor(private userService: UserService, private roleService: RoleService) {
@@ -39,7 +42,9 @@ export class UserCard implements OnInit {
     */
 
     onSubmit() { this.submitted = true; }
-    cancel() { this.onCancel.emit() }
+    cancel() { 
+            this.onCancel.emit();
+             }
 
     ngOnInit() {
     }
@@ -53,6 +58,21 @@ export class UserCard implements OnInit {
                     setTimeout(() => {
                         this.model.id = resp.json().id;
                         this.onUserAdded.emit(this.model);
+                    }, 1000)
+                },
+                err => console.log(err)
+            )
+    }
+
+
+    editUser() {
+        this.userService
+            .update(this.model)
+            .subscribe(
+                resp => {
+                    this.userSaved = true;
+                    setTimeout(() => {
+                        this.onUserEdited.emit(this.model);
                     }, 1000)
                 },
                 err => console.log(err)

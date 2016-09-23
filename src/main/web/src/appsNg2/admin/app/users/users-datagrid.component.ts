@@ -27,7 +27,7 @@ export class UsersDatagrid implements OnInit {
     userCard: UserCard;
 
     showDialog = false;
-    dialogTitle: string = "Add User";
+    dialogTitle: string;
     showConfirmStatusDialog = false;
     confirmStatusTitle: string = "Confirm";
     table: NgDataGridModel<User>;
@@ -35,6 +35,7 @@ export class UsersDatagrid implements OnInit {
     errorMessage: string = '';
     message: string = "Please confirm that you would like to deactivate/activate this user account.";
     user: User;
+    originalUser: User;
     private roles: Role[];
     public userSelected: User;
 
@@ -45,10 +46,23 @@ export class UsersDatagrid implements OnInit {
 
     showUserForm() {
         this.showDialog = true;
+        this.userCard.initialize();
     }
 
     showNewUserForm() {
         this.initUser();
+        this.dialogTitle = "Add User";
+        this.userCard.isEditing = false;
+        this.showUserForm();
+    }
+
+    showEditUserForm(user: User) {
+        
+        this.dialogTitle = "Edit User";
+        this.originalUser = user;
+        this.user = new User(user.id, user.firstName, user.lastName,
+                        user.username, user.role, user.email, user.status);
+        this.userCard.isEditing = true;                        
         this.showUserForm();
     }
 
@@ -82,6 +96,12 @@ export class UsersDatagrid implements OnInit {
 
     onUserAdded(user: User) {
         this.showDialog = false;
+        this.table.items.push(user);
+    }
+    
+     onUserEdited(user: User) {
+        this.showDialog = false;
+        this.table.items.remove(this.originalUser);
         this.table.items.push(user);
     }
 
