@@ -98,17 +98,17 @@ export function main() {
       });
 
       it ('Should get totalFilteredRows equals to 2', function () {
-        grid.sortBy = 'typeToSearch';
-        grid.searchValue = new GenericModel('A');
+        gridComp = new NgDataGridModel (items, 2, new DefaultObjectComparator(), new GenericModel('A'));
+        gridComp.sortBy = 'typeToSearch';
         let i = [ new GenericModel('Ana'),
                   new GenericModel('B'),
                   new GenericModel('Augusto'),
                   new GenericModel('Abel'),
                   new GenericModel('Adolfo')
                ];
-        grid.items = i;
-        grid.sortAsc = false;
-        expect (grid.totalFilteredRows).toBe(4);
+        gridComp.items = i;
+        gridComp.sortAsc = false;
+        expect (gridComp.totalFilteredRows).toBe(4);
       });
 
   });
