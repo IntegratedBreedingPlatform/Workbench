@@ -8,8 +8,9 @@
     "clean": "gulp clean",
     "watch": "gulp watch",
     "test-ng2": "gulp test-ng2",
+    "ng2:clean": "gulp angular2Clean",
+    "ng2:dist": "gulp angular2Dist",
     "ng2:build": "gulp angular2",
-    "ng2:serve": "gulp angular2Serve",
     "hotswap": "gulp hotswap",
     "postinstall": "typings install",
     "typings": "typings"

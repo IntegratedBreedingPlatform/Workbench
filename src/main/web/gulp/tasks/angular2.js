@@ -23,7 +23,7 @@ gulp.task('angular2Clean', function() {
   return del.sync(['src/appsNg2/**/build']);
 });
 
-gulp.task('angular2Ts', function() {
+var angular2Ts = function() {
 	var folders = getFoldersNg2(srcRoot);
 
 	var tasks = folders.map(function(folder) {
@@ -40,13 +40,12 @@ gulp.task('angular2Ts', function() {
 	});
 
 	return es.merge.apply(null, tasks);
-});
+};
 
-// Give clean task a higher priority
-gulp.task('preAngular2Clean', ['angular2Clean']);
-gulp.task('angular2CleanBuild', ['preAngular2Clean', 'angular2Clean', 'angular2Ts']);
+gulp.task('angular2Ts', angular2Ts);
+gulp.task('angular2TsWithClean', ['angular2Clean'], angular2Ts);
 
-gulp.task('angular2Resources', ['angular2Ts'], function() {
+var angular2Resources = function() {
 	var folders = getFoldersNg2(srcRoot);
 
 	var tasks = folders.map(function(folder) {
@@ -60,9 +59,12 @@ gulp.task('angular2Resources', ['angular2Ts'], function() {
 	});
 
 	return es.merge.apply(null, tasks);
-});
+};
 
-gulp.task('angular2Dist', ['angular2Resources'], function() {
+gulp.task('angular2Resources', ['angular2Ts'], angular2Resources);
+gulp.task('angular2ResourcesWithClean', ['angular2TsWithClean'], angular2Resources);
+
+var angular2Dist = function() {
 	var folders = getFoldersNg2(srcRoot);
 
 	var tasks = folders.map(function(folder) {
@@ -73,11 +75,10 @@ gulp.task('angular2Dist', ['angular2Resources'], function() {
 
 	return es.merge.apply(null, tasks);
 
-});
+};
 
-// Give clean build task a higher priority
-gulp.task('preAngular2CleanDist', ['angular2CleanBuild']);
-gulp.task('angular2CleanDist', ['preAngular2CleanDist', 'angular2CleanBuild', 'angular2Dist']);
+gulp.task('angular2Dist', ['angular2Resources'], angular2Dist);
+gulp.task('angular2DistWithClean', ['angular2ResourcesWithClean'], angular2Dist);
 
 /**
  * Copy all required libraries into build directory.
@@ -96,7 +97,4 @@ gulp.task('angular2Libs', function () {
         .pipe(gulp.dest(path.join(destRoot, 'lib')));
 });
 
-gulp.task('angular2', ['angular2CleanDist', 'angular2Libs']);
-
-gulp.task('preAngular2Serve', ['angular2Dist']);
-gulp.task('angular2Serve', ['angular2Dist', 'preAngular2Serve', 'hotswap']);
+gulp.task('angular2', ['angular2DistWithClean', 'angular2Libs']);
