@@ -16,7 +16,6 @@ import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.IbdbUserMap;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Role;
-import org.generationcp.middleware.pojos.workbench.WorkflowTemplate;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -82,25 +81,25 @@ public class ProgramServiceTest {
 	public void testCreateNewProgram() throws Exception {
 
 		Project project = this.createProject();
-
 		
 		// Set up test users and persons data and mocks
 		User loggedInUser = this.createUser(1, "mrbreeder", 1);
 		User memberUser = this.createUser(2, "mrbreederfriend", 2);
-		programService.setCurrentUser(loggedInUser);
+		User defaultAdminUser = this.createUser(3, ProgramService.ADMIN_USERNAME, 3);
+		Mockito.when(workbenchDataManager.getUserByUsername(ProgramService.ADMIN_USERNAME)).thenReturn(defaultAdminUser);
 
 		Set<User> selectedUsers = new HashSet<User>();
 		selectedUsers.add(loggedInUser);
 		selectedUsers.add(memberUser);
 		programService.setSelectedUsers(selectedUsers);
-
-		Set<User> programMembers = new HashSet<User>();
-		programMembers.add(memberUser);
+		programService.setCurrentUser(loggedInUser);
 
 		Person loggedInPerson = this.createPerson(1, "Jan", "Erik");
 		Person memberPerson =this.createPerson(2, "John", "Doe");
+		Person defaultAdminPerson =this.createPerson(3, "Default", "Admin");
 		Mockito.when(workbenchDataManager.getPersonById(loggedInPerson.getId())).thenReturn(loggedInPerson);
 		Mockito.when(workbenchDataManager.getPersonById(memberPerson.getId())).thenReturn(memberPerson);
+		Mockito.when(workbenchDataManager.getPersonById(defaultAdminPerson.getId())).thenReturn(defaultAdminPerson);
 
 		
 		// Other WorkbenchDataManager mocks
@@ -123,18 +122,20 @@ public class ProgramServiceTest {
 		// Verify that the key database operations for program creation are invoked.
 		Mockito.verify(workbenchDataManager).addProject(project);
 
-		// Add Person and Add user called twice - once for current person and user and once for member person and user.
-		Mockito.verify(userDataManager, Mockito.times(2)).addPerson(Matchers.any(Person.class));
-		Mockito.verify(userDataManager, Mockito.times(2)).addUser(Matchers.any(User.class));
+		// Add Person and Add User called three times - 1)for current person and user and 
+		// 2) for member person and user selected and 3) for default ADMIN user
+		Mockito.verify(userDataManager, Mockito.times(3)).addPerson(Matchers.any(Person.class));
+		Mockito.verify(userDataManager, Mockito.times(3)).addUser(Matchers.any(User.class));
 
-		// Ibdb_user_map is added for both current and member user.
-		Mockito.verify(workbenchDataManager, Mockito.times(2)).addIbdbUserMap(Matchers.any(IbdbUserMap.class));
+		// Ibdb_user_map is added for both current, member and default ADMIN users
+		Mockito.verify(workbenchDataManager, Mockito.times(3)).addIbdbUserMap(Matchers.any(IbdbUserMap.class));
 		
 		Mockito.verify(workbenchDataManager).addProjectUserRole(Matchers.anyList());
 
 		
 		// Verify that utility to create workspace directory was called
 		Mockito.verify(toolUtil).createWorkspaceDirectoriesForProject(project);
+		
 	}
 
 

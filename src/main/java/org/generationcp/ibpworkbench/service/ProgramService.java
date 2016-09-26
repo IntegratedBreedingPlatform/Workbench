@@ -37,6 +37,8 @@ import org.springframework.web.util.WebUtils;
 @Transactional
 public class ProgramService {
 
+	public static final String ADMIN_USERNAME = "ADMIN";
+
 	private static final Logger LOG = LoggerFactory.getLogger(ProgramService.class);
 
 	@Autowired
@@ -68,6 +70,10 @@ public class ProgramService {
 		// Need to save first to workbench_project so project id can be saved in session
 		this.saveWorkbenchProject(program);
 		this.setContextInfoAndCurrentCrop(program);
+		
+		// Add default "ADMIN" user to selected users of program to give access to new program
+		final User defaultAdminUser = this.workbenchDataManager.getUserByUsername(ADMIN_USERNAME);
+		this.selectedUsers.add(defaultAdminUser);
 		
 		// Save workbench project metadata and to crop users, persons (if necessary)
 		this.saveProjectUserRoles(program);
