@@ -97,12 +97,23 @@ export class UsersDatagrid implements OnInit {
     onUserAdded(user: User) {
         this.showNewDialog = false;
         this.table.items.push(user);
+        this.sortAfterAddOrEdit();
+    }
+
+    sortAfterAddOrEdit() {        
+        if(this.table.sortBy == undefined) {
+            this.sort("lastName", true);
+        }
+        else {
+            this.sort(this.table.sortBy, true);
+        }
     }
     
     onUserEdited(user: User) {
         this.showEditDialog = false;
         this.table.items.remove(this.originalUser);
         this.table.items.push(user);
+        this.sortAfterAddOrEdit();
     }
 
     // TODO
@@ -117,15 +128,17 @@ export class UsersDatagrid implements OnInit {
         return col == this.table.sortBy;
     }
 
-    sort(col, event?: MouseEvent): void {
+    sort(col, direction?, event?: MouseEvent): void {
         if (event) {
             event.preventDefault();
         }
 
-        if (this.table.sortBy == col) {
-            this.table.sortAsc = !this.table.sortAsc;
-        } else {
-            this.table.sortAsc = true;
+        if(!direction) {
+            if (this.table.sortBy == col) {
+                this.table.sortAsc = !this.table.sortAsc;
+            } else {
+                this.table.sortAsc = true;
+            }
         }
 
         this.table.sortBy = col;
