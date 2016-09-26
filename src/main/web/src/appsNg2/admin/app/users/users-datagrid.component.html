@@ -2,8 +2,8 @@
   <div class="om-panel-content">
         <button class="btn btn-default om-add-new-btn form-group pull-right"
             (click)="showNewUserForm()">Add user</button>
-            <app-dialog [(visible)]="showDialog" [title]="dialogTitle">
-                <user-card (onUserAdded)="onUserAdded($event)" [model]="user" (onCancel)="showDialog = false"></user-card>
+            <app-dialog [(visible)]="showNewDialog" [title]="dialogTitle">
+                <user-card (onUserAdded)="onUserAdded($event)" [isEditing]="isEditing" [model]="user" (onCancel)="showNewDialog = false"></user-card>
             </app-dialog>
   </div>
   <div class="om-panel-header">
@@ -64,8 +64,8 @@
                           <a href="javascript:void(0)" *ngIf="user.status == 'false'" (click)="showUserStatusConfirmPopUp(user)">Activate</a>
                         </td>
                     </tr>
-					<app-dialog [(visible)]="showDialog" [title]="dialogTitle">
- 		                <user-card (onUserEdited)="onUserEdited($event)" (onCancel)="showDialog = false" [model]="user"></user-card>
+					<app-dialog [(visible)]="showEditDialog" [title]="dialogTitle">
+ 		                <user-card (onUserEdited)="onUserEdited($event)" [isEditing]="isEditing" (onCancel)="showEditDialog = false" [model]="user"></user-card>
  		            </app-dialog>
                     <div class="popup">
                       <app-dialog [(visible)]="showConfirmStatusDialog" [title]="confirmStatusTitle">

@@ -1,6 +1,6 @@
 import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
 import {
-    Validators
+    Validators, FormGroup, FormControl
 } from '@angular/forms';
 import { User } from '../shared/models/user.model';
 import { UserService } from './../shared/services/user.service';
@@ -15,22 +15,15 @@ import { RoleService } from './../shared/services/role.service';
 export class UserCard implements OnInit {
     submitted = false;
     @Input() originalUser: User;
+    @Input() userSaved: boolean = false;
     @Input() isEditing: boolean;
     @Input() model: User;
-    @Input() userSaved: boolean;
     @Output() onUserAdded = new EventEmitter<User>();
     @Output() onUserEdited = new EventEmitter<User>();
     @Output() onCancel = new EventEmitter<void>();
 
     constructor(private userService: UserService, private roleService: RoleService) {
         this.model = new User("0", "", "", "", "", "", "");
-    }
-
-    /**
-     * Init state except the model
-     */
-    initialize() {
-        this.userSaved = false;
     }
 
     /*
@@ -42,9 +35,7 @@ export class UserCard implements OnInit {
     */
 
     onSubmit() { this.submitted = true; }
-    cancel() { 
-            this.onCancel.emit();
-             }
+    cancel() { this.onCancel.emit(); }
 
     ngOnInit() {
     }
@@ -58,6 +49,7 @@ export class UserCard implements OnInit {
                     setTimeout(() => {
                         this.model.id = resp.json().id;
                         this.onUserAdded.emit(this.model);
+                        this.userSaved = false;
                     }, 1000)
                 },
                 err => console.log(err)
@@ -73,6 +65,7 @@ export class UserCard implements OnInit {
                     this.userSaved = true;
                     setTimeout(() => {
                         this.onUserEdited.emit(this.model);
+                        this.userSaved = false;
                     }, 1000)
                 },
                 err => console.log(err)

@@ -23,10 +23,12 @@ import { UserCard } from './user-card.component';
 
 export class UsersDatagrid implements OnInit {
 
-    @ViewChild(UserCard)
-    userCard: UserCard;
+    // @ViewChild(UserCard)
+    // userCard: UserCard;
 
-    showDialog = false;
+    showNewDialog = false;
+    showEditDialog = false;
+    isEditing = false;
     dialogTitle: string;
     showConfirmStatusDialog = false;
     confirmStatusTitle: string = "Confirm";
@@ -36,6 +38,7 @@ export class UsersDatagrid implements OnInit {
     message: string = "Please confirm that you would like to deactivate/activate this user account.";
     user: User;
     originalUser: User;
+
     private roles: Role[];
     public userSelected: User;
 
@@ -44,16 +47,12 @@ export class UsersDatagrid implements OnInit {
         this.initUser();
     }
 
-    showUserForm() {
-        this.showDialog = true;
-        this.userCard.initialize();
-    }
-
     showNewUserForm() {
         this.initUser();
         this.dialogTitle = "Add User";
-        this.userCard.isEditing = false;
-        this.showUserForm();
+        this.isEditing = false;
+        this.showNewDialog = true;
+        // this.userCard.initialize();
     }
 
     showEditUserForm(user: User) {
@@ -62,8 +61,9 @@ export class UsersDatagrid implements OnInit {
         this.originalUser = user;
         this.user = new User(user.id, user.firstName, user.lastName,
                         user.username, user.role, user.email, user.status);
-        this.userCard.isEditing = true;                        
-        this.showUserForm();
+        this.isEditing = true;
+        this.showEditDialog = true;
+        // this.userCard.initialize();
     }
 
     initUser() {
@@ -95,12 +95,12 @@ export class UsersDatagrid implements OnInit {
     }
 
     onUserAdded(user: User) {
-        this.showDialog = false;
+        this.showNewDialog = false;
         this.table.items.push(user);
     }
     
-     onUserEdited(user: User) {
-        this.showDialog = false;
+    onUserEdited(user: User) {
+        this.showEditDialog = false;
         this.table.items.remove(this.originalUser);
         this.table.items.push(user);
     }
