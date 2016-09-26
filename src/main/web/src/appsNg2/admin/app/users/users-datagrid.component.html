@@ -64,44 +64,25 @@
                           <a href="javascript:void(0)" *ngIf="user.status == 'false'" (click)="showUserStatusConfirmPopUp(user)">Activate</a>
                         </td>
                     </tr>
-<<<<<<< Updated upstream
-                    <div class="popup">
-                      <app-dialog [(visible)]="showConfirmStatusDialog" [title]="confirmStatusTitle">
-                          <div class="modal-body">
-                              <form class="form-horizontal">
-                                  <div class="modal-body">
-                                      <strong>{{message}}</strong>
-                                  </div>
-                              </form>
-                          </div>
-                          <div class="modal-footer">
-                              <button type="button" class="btn btn-default" data-dismiss="modal" (click)="closeUserStatusConfirmPopUp()">Cancel</button>
-                              <button type="button" class="btn btn-primary" (click)="changedActiveStatus()">Accept</button>
-                          </div>
-                      </app-dialog>
-                    </div>
-                    </tbody>
-=======
-                    <app-dialog [(visible)]="showDialog" [title]="dialogTitle">
-		                <user-card (onUserEdited)="onUserEdited($event)" (onCancel)="showDialog = false" [model]="user"></user-card>
-		            </app-dialog>
-                    <app-dialog [(visible)]="showConfirmStatusDialog" [title]="confirmStatusTitle">
-                        <user-status-confirm>
-                            <div class="modal-body">
-                                <form class="form-horizontal">
-                                    <div class="modal-body">
-                                        <strong>{{message}}</strong>
-                                    </div>
+					<app-dialog [(visible)]="showDialog" [title]="dialogTitle">
+ 		                <user-card (onUserEdited)="onUserEdited($event)" (onCancel)="showDialog = false" [model]="user"></user-card>
+ 		            </app-dialog>
+                     <app-dialog [(visible)]="showConfirmStatusDialog" [title]="confirmStatusTitle">
+                         <user-status-confirm>
+                             <div class="modal-body">
+                                 <form class="form-horizontal">
+                                     <div class="modal-body">
+                                         <strong>{{message}}</strong>
+                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="closeUserStatusConfirmPopUp()">Cancel</button>
-                                        <button type="button" class="btn btn-primary" (click)="changedActiveStatus()">accept</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </user-status-confirm>
-                    </app-dialog>
-                </tbody>
->>>>>>> Stashed changes
+                                         <button type="button" class="btn btn-default" data-dismiss="modal" (click)="closeUserStatusConfirmPopUp()">Cancel</button>
+                                         <button type="button" class="btn btn-primary" (click)="changedActiveStatus()">accept</button>
+                                     </div>
+                                 </form>
+                             </div>
+                         </user-status-confirm>
+                     </app-dialog>
+                 </tbody>
             </table>
         </div>
     </div>
