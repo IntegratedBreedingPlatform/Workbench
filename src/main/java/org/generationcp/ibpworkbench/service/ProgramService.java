@@ -2,10 +2,8 @@
 package org.generationcp.ibpworkbench.service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.Cookie;
@@ -16,7 +14,6 @@ import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.commons.util.DateUtil;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.ContextHolder;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.UserDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
@@ -55,37 +52,56 @@ public class ProgramService {
 
 	private User currentUser;
 
-	private final Map<Integer, String> idAndNameOfProgramMembers = new HashMap<Integer, String>();
-
 	// http://cropwiki.irri.org/icis/index.php/TDM_Users_and_Access
-	private static final int PROJECT_USER_ACCESS_NUMBER = 100;
-	private static final int PROJECT_USER_TYPE = 422;
-	private static final int PROJECT_USER_STATUS = 1;
-
-	public void createNewProgram(Project program) throws MiddlewareQueryException {
-
-		this.idAndNameOfProgramMembers.clear();
-
-		this.saveBasicDetails(program);
+	public static final int PROJECT_USER_ACCESS_NUMBER = 100;
+	public static final int PROJECT_USER_TYPE = 422;
+	public static final int PROJECT_USER_STATUS = 1;
+	
+	
+	/**
+	 * Create new project in workbench and add selected users as project members. Also creates copy of workbench person and user 
+	 * to currect crop DB, if not yet existing. Finally, create a new folder under <install directory>/workspace/<program name>
+	 * 
+	 * @param program
+	 */
+	public void createNewProgram(Project program) {
+		// Need to save first to workbench_project so project id can be saved in session
+		this.saveWorkbenchProject(program);
+		this.setContextInfoAndCurrentCrop(program);
 		
+		// Save workbench project metadata and to crop users, persons (if necessary)
+		this.saveProjectUserRoles(program);
+		final List<Integer> userIDs = this.saveWorkbenchUserToCropUserMapping(program, this.selectedUsers);
+		this.saveProjectUserInfo(program, userIDs);
+		
+		// After saving, we create folder for program under <install directory>/workspace
+		this.toolUtil.createWorkspaceDirectoriesForProject(program);
+
+		
+		ProgramService.LOG.info("Program created. ID:" + program.getProjectId() + " Name:" + program.getProjectName() + " Start date:"
+				+ program.getStartDate());
+	}
+
+	
+	private void setContextInfoAndCurrentCrop(Project program) {
 		final HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
 				.getRequest();
 		final Cookie userIdCookie = WebUtils.getCookie(request, ContextConstants.PARAM_LOGGED_IN_USER_ID);
 		final Cookie authToken = WebUtils.getCookie(request, ContextConstants.PARAM_AUTH_TOKEN);
 		ContextUtil.setContextInfo(request, userIdCookie != null ? Integer.valueOf(userIdCookie.getValue()) :  null, 
 				program.getProjectId(), authToken !=null ? authToken.getValue() : null);
+		
 		ContextHolder.setCurrentCrop(program.getCropType().getCropName());
-		this.toolUtil.createWorkspaceDirectoriesForProject(program);
-
-		this.addProjectUserRoles(program);
-		this.copyProjectUsers(program);
-		this.saveProjectUserInfo(program);
-
-		ProgramService.LOG.info("Program created. ID:" + program.getProjectId() + " Name:" + program.getProjectName() + " Start date:"
-				+ program.getStartDate());
 	}
 
-	private void addProjectUserRoles(Project project) throws MiddlewareQueryException {
+	
+	/*
+	 * Add records to workbench_project_user_role table. It's a redundant table but currently,
+	 * a record here is needed in order to get projects of user
+	 * 
+	 * @param project
+	 */
+	private void saveProjectUserRoles(Project project) {
 		List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
 		Set<User> allProjectMembers = new HashSet<User>();
 		allProjectMembers.add(this.currentUser);
@@ -105,91 +121,120 @@ public class ProgramService {
 		this.workbenchDataManager.addProjectUserRole(projectUserRoles);
 	}
 
-	private void saveProjectUserInfo(Project program) {
-		// Create records for workbench_project_user_info table
-		for (Map.Entry<Integer, String> e : this.idAndNameOfProgramMembers.entrySet()) {
-			try {
-				if (this.workbenchDataManager.getProjectUserInfoDao()
-						.getByProjectIdAndUserId(program.getProjectId().intValue(), e.getKey()) == null) {
-					ProjectUserInfo pUserInfo = new ProjectUserInfo(program.getProjectId().intValue(), e.getKey());
-					this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
-				}
-			} catch (MiddlewareQueryException e1) {
-				ProgramService.LOG.error(e1.getMessage(), e1);
+	
+	/*
+	 *  Create records for workbench_project_user_info table if combination of 
+	 *  project id, user id is not yet existing in workbench DB
+	 */
+	private void saveProjectUserInfo(final Project program, final List<Integer> userIDs) {
+		for (final Integer userID : userIDs) {
+			final int projectID = program.getProjectId().intValue();
+			
+			if (this.workbenchDataManager.getProjectUserInfoDao().getByProjectIdAndUserId(projectID, userID) == null) {
+				ProjectUserInfo pUserInfo = new ProjectUserInfo(projectID, userID);
+				this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
 			}
 		}
 	}
 
-	private void saveBasicDetails(Project program) throws MiddlewareQueryException {
+	
+	/*
+	 * Create new record in workbench_project table in workbench DB for current crop.
+	 * 
+	 * @param program
+	 */
+	private void saveWorkbenchProject(Project program) {
 		program.setUserId(this.currentUser.getUserid());
 		CropType cropType = this.workbenchDataManager.getCropTypeByName(program.getCropType().getCropName());
 		if (cropType == null) {
 			this.workbenchDataManager.addCropType(program.getCropType());
 		}
 		program.setLastOpenDate(null);
+		
 		this.workbenchDataManager.addProject(program);
 	}
 
+	
 	/**
-	 * Create necessary database entries for selected program members.
+	 * Create person and user records in crop DB (from counterpart workbench records), if not yet existing in crop.
+	 * Save mapping of workbench user to crop user
+	 * 
+	 * @param project
+	 * @param users
+	 * @return
 	 */
-	public void copyProjectUsers(Project project) throws MiddlewareQueryException {
+	public List<Integer> saveWorkbenchUserToCropUserMapping(Project project, Set<User> users) {
+		final List<Integer> userIDs = new ArrayList<>();
+		
+		for (User user : users) {
+			// Create person and user records in crop DB if not yet existing.
+			final Person workbenchPerson = this.workbenchDataManager.getPersonById(user.getPersonid());
+			final Person cropPerson = createCropPersonIfNecessary(workbenchPerson);
+			final User cropUser = createCropUserIfNecessary(user, cropPerson);
 
-		for (User user : this.selectedUsers) {
-			
-			//fetch user record from workbench DB
-			User workbenchUser = this.workbenchDataManager.getUserById(user.getUserid());
-			
-			// ccreate a copy of the Person
-			Person workbenchPerson = this.workbenchDataManager.getPersonById(workbenchUser.getPersonid());
-			Person cropDBPerson = workbenchPerson.copy();
-			
-			// add the Person record if they do not exist
-			if (!userDataManager.isPersonExists(cropDBPerson.getFirstName().toUpperCase(), cropDBPerson.getLastName().toUpperCase())) {
-				userDataManager.addPerson(cropDBPerson);
-			} else {
-				List<Person> persons = userDataManager.getAllPersons();
-				for (Person person : persons) {
-					if (person.getLastName().equalsIgnoreCase(cropDBPerson.getLastName().toUpperCase())
-							&& person.getFirstName().equalsIgnoreCase(cropDBPerson.getFirstName().toUpperCase())) {
-						cropDBPerson = person;
-						break;
-					}
-				}
-			}
-			
-			// create a copy of the user record
-			User cropDBUser = workbenchUser.copy();
-			
-			// if a user is assigned to a program, then add them to the crop database where they can then access the program
-			if (!userDataManager.isUsernameExists(cropDBUser.getName())) {
-				cropDBUser.setPersonid(cropDBPerson.getId());
-				cropDBUser.setAccess(ProgramService.PROJECT_USER_ACCESS_NUMBER);
-				cropDBUser.setType(ProgramService.PROJECT_USER_TYPE);
-				cropDBUser.setInstalid(Integer.valueOf(0));
-				cropDBUser.setStatus(Integer.valueOf(ProgramService.PROJECT_USER_STATUS));
-				cropDBUser.setAssignDate(this.getCurrentDate());
-				Integer userId = userDataManager.addUser(cropDBUser);
-
-				User ibdbUser = userDataManager.getUserById(userId);
-				this.createIBDBUserMap(project.getProjectId(), workbenchUser.getUserid(), ibdbUser.getUserid());
-			} else {
-				User ibdbUser = userDataManager.getUserByUserName(cropDBUser.getName());
-				this.createIBDBUserMap(project.getProjectId(), workbenchUser.getUserid(), ibdbUser.getUserid());
-			}
-			this.idAndNameOfProgramMembers.put(workbenchUser.getUserid(), cropDBUser.getName());
+			// Save mapping of workbench user to crop user
+			this.createAndSaveIBDBUserMap(project.getProjectId(), user.getUserid(), cropUser.getUserid());
+			userIDs.add(user.getUserid());
 		}
+		
+		return userIDs;
+	}
+	
+	
+	/**
+	 * Search for a person record in crop DB with specified last first name, last name, email combination.
+	 * If not yet existing, add new person record.
+	 * 
+	 * @param workbenchPerson
+	 * @return
+	 */
+	Person createCropPersonIfNecessary(Person workbenchPerson) {
+		Person cropDBPerson = userDataManager.getPersonByFirstAndLastName(workbenchPerson.getFirstName(), workbenchPerson.getLastName());
+		if (cropDBPerson == null) {
+			cropDBPerson = workbenchPerson.copy();
+			userDataManager.addPerson(cropDBPerson);
+		}
+
+		return cropDBPerson;
 	}
 
-	private void createIBDBUserMap(Long projectId, Integer workbenchUserId, Integer ibdbUserId) {
-		// Add the mapping between Workbench user and the ibdb user.
+	
+	/**
+	 * Search for a person record in crop DB with specified username.
+	 * If not found, create a user record in crop DB
+	 * 
+	 * @param user
+	 * @param cropPerson
+	 * @return
+	 */
+	User createCropUserIfNecessary(User user, Person cropPerson) {
+		User cropUser = userDataManager.getUserByUserName(user.getName());
+		
+		if (cropUser == null) {
+			cropUser = user.copy();
+			cropUser.setPersonid(cropPerson.getId());
+			cropUser.setAccess(ProgramService.PROJECT_USER_ACCESS_NUMBER);
+			cropUser.setType(ProgramService.PROJECT_USER_TYPE);
+			cropUser.setInstalid(Integer.valueOf(0));
+			cropUser.setStatus(Integer.valueOf(ProgramService.PROJECT_USER_STATUS));
+			cropUser.setAssignDate(this.getCurrentDate());
+			
+			userDataManager.addUser(cropUser);
+		} 
+		
+		return cropUser;
+	}
+
+	
+	// Add the mapping between Workbench user and the ibdb user.
+	private void createAndSaveIBDBUserMap(Long projectId, Integer workbenchUserId, Integer ibdbUserId) {
 		IbdbUserMap ibdbUserMap = new IbdbUserMap();
 		ibdbUserMap.setWorkbenchUserId(workbenchUserId);
 		ibdbUserMap.setProjectId(projectId);
 		ibdbUserMap.setIbdbUserId(ibdbUserId);
 		this.workbenchDataManager.addIbdbUserMap(ibdbUserMap);
 	}
-
+		
 	private Integer getCurrentDate() {
 		return DateUtil.getCurrentDateAsIntegerValue();
 	}
@@ -209,4 +254,5 @@ public class ProgramService {
 	void setToolUtil(ToolUtil toolUtil) {
 		this.toolUtil = toolUtil;
 	}
+	
 }
