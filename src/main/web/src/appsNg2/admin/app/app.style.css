@@ -59,6 +59,16 @@ header > nav > ol > li {
     display: block;
 }
 
+users-admin app-dialog div.modal-footer {
+    text-align: center;
+}
+
+users-admin app-dialog div.modal-footer > .message {
+    position: absolute;
+    left: 15px;
+    padding: 6px 12px; 
+}
+
 @media (min-width: 768px){
   .popup .modal-dialog {
       width: 470px;

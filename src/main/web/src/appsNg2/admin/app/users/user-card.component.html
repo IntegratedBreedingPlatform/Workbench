@@ -76,7 +76,7 @@
     </form>
 </div>
 <div class="modal-footer">
-    <div *ngIf="userSaved" class="alert alert-success pull-left" role="alert">User saved!</div>
+    <div *ngIf="userSaved" class="alert alert-success message" role="alert">User saved!</div>
     <button type="button" class="btn btn-default" data-dismiss="modal" (click)="cancel(form)">Cancel</button>
     <button type="submit" class="btn btn-primary" [disabled]="!form.valid" (click)="addUser(form)" *ngIf="!isEditing">Add user</button>
     <button type="submit" class="btn btn-primary" [disabled]="!form.valid" (click)="editUser(form)" *ngIf="isEditing">Update user</button>
