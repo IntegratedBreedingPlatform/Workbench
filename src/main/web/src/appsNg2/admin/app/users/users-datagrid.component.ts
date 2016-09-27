@@ -71,6 +71,9 @@ export class UsersDatagrid implements OnInit {
     }
 
     ngOnInit() {
+        if(this.table.sortBy == undefined) {
+            this.table.sortBy = "lastName";
+        }
         //get all users
         this.userService
             .getAll()
