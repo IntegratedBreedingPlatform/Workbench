@@ -1,4 +1,4 @@
-<div (ngSubmit)="onSubmit()" class="modal-body">
+<div class="modal-body">
     <form class="form-horizontal" #form="ngForm">
         <div class="form-group" [class.has-feedback]="!(firstName.valid || firstName.pristine) || !(lastName.valid || lastName.pristine)"
             [class.has-error]="!(firstName.valid || firstName.pristine) || !(lastName.valid || lastName.pristine)">
@@ -77,7 +77,7 @@
 </div>
 <div class="modal-footer">
     <div *ngIf="userSaved" class="alert alert-success pull-left" role="alert">User saved!</div>
-    <button type="button" class="btn btn-default" data-dismiss="modal" (click)="cancel()">Cancel</button>
-    <button type="submit" class="btn btn-primary" [disabled]="!form.valid" (click)="addUser()" *ngIf="!isEditing">Add user</button>
-    <button type="submit" class="btn btn-primary" [disabled]="!form.valid" (click)="editUser()" *ngIf="isEditing">Update user</button>
+    <button type="button" class="btn btn-default" data-dismiss="modal" (click)="cancel(form)">Cancel</button>
+    <button type="submit" class="btn btn-primary" [disabled]="!form.valid" (click)="addUser(form)" *ngIf="!isEditing">Add user</button>
+    <button type="submit" class="btn btn-primary" [disabled]="!form.valid" (click)="editUser(form)" *ngIf="isEditing">Update user</button>
 </div>

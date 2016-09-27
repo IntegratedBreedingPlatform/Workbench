@@ -35,12 +35,15 @@ export class UserCard implements OnInit {
     */
 
     onSubmit() { this.submitted = true; }
-    cancel() { this.onCancel.emit(); }
+    cancel(form: FormGroup) {
+        form.reset();
+        this.onCancel.emit();
+    }
 
     ngOnInit() {
     }
 
-    addUser() {
+    addUser(form: FormGroup) {
         this.userService
             .save(this.model)
             .subscribe(
@@ -48,8 +51,8 @@ export class UserCard implements OnInit {
                     this.userSaved = true;
                     setTimeout(() => {
                         this.model.id = resp.json().id;
-                        this.onUserAdded.emit(this.model);
                         this.userSaved = false;
+                        this.onUserAdded.emit(this.model);
                     }, 1000)
                 },
                 err => console.log(err)
@@ -64,8 +67,8 @@ export class UserCard implements OnInit {
                 resp => {
                     this.userSaved = true;
                     setTimeout(() => {
-                        this.onUserEdited.emit(this.model);
                         this.userSaved = false;
+                        this.onUserEdited.emit(this.model);
                     }, 1000)
                 },
                 err => console.log(err)
