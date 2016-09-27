@@ -67,7 +67,7 @@ export class UsersDatagrid implements OnInit {
     }
 
     initUser() {
-        this.user = new User("0", "", "", "", "", "", "");
+        this.user = new User("0", "", "", "", "", "", "true");
     }
 
     ngOnInit() {
