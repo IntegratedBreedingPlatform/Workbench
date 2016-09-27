@@ -3,6 +3,8 @@
 var gulp = require('gulp'),
 	del = require('del'),
 	fs = require('fs'),
+	gulpif = require('gulp-if'),
+	argv = require('yargs').argv,
 	srcRoot = 'src/appsNg2',
 	destRoot = '../webapp/WEB-INF/pages/angular2',
 	es = require('event-stream'),
@@ -33,8 +35,8 @@ var angular2Ts = function() {
 		  .pipe(sourcemaps.init())
 			.pipe(typescript(tsProject))
 			// Transpile ES6 to ES5 using ES2015 preset, needed because PhantomJS does not support ES6
-		  .pipe(babel({ presets: ['es2015'] }))
-			.pipe(uglify())
+		  	.pipe(babel({ presets: ['es2015'] }))
+			.pipe(gulpif(argv.release, uglify()))
 			.pipe(sourcemaps.write('.'))
 			.pipe(gulp.dest(path.join(srcRoot, folder, 'build')));
 	});
