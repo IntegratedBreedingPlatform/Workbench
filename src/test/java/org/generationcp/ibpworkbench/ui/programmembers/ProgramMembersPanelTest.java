@@ -29,14 +29,14 @@ public class ProgramMembersPanelTest {
 	private static final int OWNER_USER_ID = 1;
 	private static final int OWNER_PERSON_ID = 1;
 	private static final String OWNER_NAME = "USER1";
-	
+
 	private static final int MEMBER_USER_ID = 2;
 	private static final int MEMBER_PERSON_ID = 2;
 	private static final String MEMBER_NAME = "USER2";
 
 	private static final int ADMIN_USER_ID = 3;
 	private static final int ADMIN_PERSON_ID = 3;
-	
+
 	@Mock
 	private WorkbenchDataManager workbenchDataManager;
 
@@ -71,17 +71,18 @@ public class ProgramMembersPanelTest {
 	public void testCreateUsersContainerWhenProgramOwnerIsCurrentUser() {
 		this.mockProgramMembers();
 		this.mockCurrentUser(ProgramMembersPanelTest.OWNER_USER_ID);
-		
+
 		final Container usersContainer = this.controller.createUsersContainer();
-		
+
 		final Collection<User> programMembers = (Collection<User>) usersContainer.getItemIds();
 		Assert.assertNotNull(programMembers);
 		Assert.assertEquals("There should be 3 program members.", 3, programMembers.size());
-		
+
 		// Check that program owner should be disabled
 		for (final User user : programMembers) {
 			if (user.getUserid().equals(ProgramMembersPanelTest.OWNER_PERSON_ID)) {
-				Assert.assertFalse("Program Owner and Default Admin users should be disabled so they cannot be removed as member.", user.isEnabled());
+				Assert.assertFalse("Program Owner and Default Admin users should be disabled so they cannot be removed as member.",
+						user.isEnabled());
 			} else {
 				Assert.assertTrue("Other users should be enabled so they can be removed as members.", user.isEnabled());
 			}
@@ -93,46 +94,46 @@ public class ProgramMembersPanelTest {
 	public void testCreateUsersContainerWhenCurrentUserIsNotProgramOwner() {
 		this.mockProgramMembers();
 		this.mockCurrentUser(ProgramMembersPanelTest.MEMBER_USER_ID);
-		
+
 		final Container usersContainer = this.controller.createUsersContainer();
-		
+
 		final Collection<User> programMembers = (Collection<User>) usersContainer.getItemIds();
 		Assert.assertNotNull(programMembers);
 		Assert.assertEquals("There should be 3 program members.", 3, programMembers.size());
-		
+
 		// Two users should be disabled - current user and program owner
 		for (final User user : programMembers) {
-			if (user.getUserid().equals(ProgramMembersPanelTest.OWNER_PERSON_ID) || user.getUserid().equals(ProgramMembersPanelTest.MEMBER_PERSON_ID)){
-				Assert.assertFalse("Program owner and current user should be disabled and cannot be removed as program members.", user.isEnabled());
+			if (user.getUserid().equals(ProgramMembersPanelTest.OWNER_PERSON_ID)
+					|| user.getUserid().equals(ProgramMembersPanelTest.MEMBER_PERSON_ID)) {
+				Assert.assertFalse("Program owner and current user should be disabled and cannot be removed as program members.",
+						user.isEnabled());
 			} else {
 				Assert.assertTrue("Other users should be enabled so they can be removed as members.", user.isEnabled());
 			}
 		}
 	}
-	
-	@Test 
+
+	@Test
 	public void testPopulateProgramMembers() {
 		// Setup test data and mocks
 		this.mockDataAndReturnTheProjectUserRoles();
-		this.mockCurrentUser(MEMBER_USER_ID);
-		
+		this.mockCurrentUser(ProgramMembersPanelTest.MEMBER_USER_ID);
+
 		// Initialization in controller
 		this.controller.initializeComponents();
 		this.controller.initializeValues();
-		
-		
+
 		// Call method to test
 		this.controller.populateProgramMembers();
-		
-		
+
 		// Check that members are selected in twin table
 		final Set<User> programMembers = this.controller.getProgramMembersDisplayed();
 		Assert.assertNotNull(programMembers);
 		Assert.assertEquals("There should be 3 program members.", 3, programMembers.size());
-		
+
 		// Check that ADMIN user is disabled from selection
 		for (final User user : programMembers) {
-			if (ProgramService.ADMIN_USERNAME.equalsIgnoreCase(user.getName())){
+			if (ProgramService.ADMIN_USERNAME.equalsIgnoreCase(user.getName())) {
 				Assert.assertFalse("Default Admin should be disabled and cannot be removed as program member.", user.isEnabled());
 			}
 		}
@@ -153,7 +154,7 @@ public class ProgramMembersPanelTest {
 			projectUserRole.setProject(project);
 			projectUserRole.setUserId(user.getUserid());
 			projectUserRoles.add(projectUserRole);
-			
+
 			Mockito.doReturn(user).when(this.workbenchDataManager).getUserById(user.getUserid());
 		}
 		return projectUserRoles;
@@ -180,21 +181,21 @@ public class ProgramMembersPanelTest {
 
 	private List<User> createProgramMembersTestData() {
 		final List<User> programMembers = new ArrayList<>();
-		programMembers.add(this.createUsersTestData(ProgramMembersPanelTest.OWNER_USER_ID,
-				ProgramMembersPanelTest.OWNER_NAME, ProgramMembersPanelTest.OWNER_PERSON_ID));
-		programMembers.add(this.createUsersTestData(ProgramMembersPanelTest.MEMBER_USER_ID,
-				ProgramMembersPanelTest.MEMBER_NAME, ProgramMembersPanelTest.MEMBER_PERSON_ID));
-		programMembers.add(this.createUsersTestData(ProgramMembersPanelTest.ADMIN_USER_ID,
-				ProgramService.ADMIN_USERNAME, ProgramMembersPanelTest.ADMIN_PERSON_ID));
+		programMembers.add(this.createUsersTestData(ProgramMembersPanelTest.OWNER_USER_ID, ProgramMembersPanelTest.OWNER_NAME,
+				ProgramMembersPanelTest.OWNER_PERSON_ID));
+		programMembers.add(this.createUsersTestData(ProgramMembersPanelTest.MEMBER_USER_ID, ProgramMembersPanelTest.MEMBER_NAME,
+				ProgramMembersPanelTest.MEMBER_PERSON_ID));
+		programMembers.add(this.createUsersTestData(ProgramMembersPanelTest.ADMIN_USER_ID, ProgramService.ADMIN_USERNAME,
+				ProgramMembersPanelTest.ADMIN_PERSON_ID));
 		return programMembers;
 	}
 
-	private User createUsersTestData(final int userId, String username, final int personId) {
+	private User createUsersTestData(final int userId, final String username, final int personId) {
 		final User user = new User(userId);
 		user.setName(username);
 		user.setPersonid(personId);
 		user.setPerson(new Person("Mister", "User", username + userId));
 		return user;
 	}
-	
+
 }

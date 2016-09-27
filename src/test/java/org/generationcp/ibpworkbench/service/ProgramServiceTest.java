@@ -46,8 +46,8 @@ public class ProgramServiceTest {
 	private UserDataManager userDataManager;
 
 	@InjectMocks
-	private ProgramService programService = new ProgramService();
-	
+	private final ProgramService programService = new ProgramService();
+
 	private Person workbenchPerson;
 	private Person cropDBPerson;
 	private User workbenchUser;
@@ -56,16 +56,15 @@ public class ProgramServiceTest {
 	@Before
 	public void setup() throws Exception {
 
-		MockHttpServletRequest request = new MockHttpServletRequest();
+		final MockHttpServletRequest request = new MockHttpServletRequest();
 		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
-		
-		initializeTestPersonsAndUsers();
+
+		this.initializeTestPersonsAndUsers();
 	}
-	
-	
+
 	private void initializeTestPersonsAndUsers() {
-		this.workbenchPerson = createPerson(1, "John", "Doe");
-		this.cropDBPerson = createPerson(2, "JOHN", "DOE");
+		this.workbenchPerson = this.createPerson(1, "John", "Doe");
+		this.cropDBPerson = this.createPerson(2, "JOHN", "DOE");
 
 		this.workbenchUser = new User();
 		this.workbenchUser.setName("John");
@@ -75,121 +74,113 @@ public class ProgramServiceTest {
 		this.cropDBUser.setName("John");
 	}
 
-	
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testCreateNewProgram() throws Exception {
 
-		Project project = this.createProject();
-		
-		// Set up test users and persons data and mocks
-		User loggedInUser = this.createUser(1, "mrbreeder", 1);
-		User memberUser = this.createUser(2, "mrbreederfriend", 2);
-		User defaultAdminUser = this.createUser(3, ProgramService.ADMIN_USERNAME, 3);
-		Mockito.when(workbenchDataManager.getUserByUsername(ProgramService.ADMIN_USERNAME)).thenReturn(defaultAdminUser);
+		final Project project = this.createProject();
 
-		Set<User> selectedUsers = new HashSet<User>();
+		// Set up test users and persons data and mocks
+		final User loggedInUser = this.createUser(1, "mrbreeder", 1);
+		final User memberUser = this.createUser(2, "mrbreederfriend", 2);
+		final User defaultAdminUser = this.createUser(3, ProgramService.ADMIN_USERNAME, 3);
+		Mockito.when(this.workbenchDataManager.getUserByUsername(ProgramService.ADMIN_USERNAME)).thenReturn(defaultAdminUser);
+
+		final Set<User> selectedUsers = new HashSet<User>();
 		selectedUsers.add(loggedInUser);
 		selectedUsers.add(memberUser);
-		programService.setSelectedUsers(selectedUsers);
-		programService.setCurrentUser(loggedInUser);
+		this.programService.setSelectedUsers(selectedUsers);
+		this.programService.setCurrentUser(loggedInUser);
 
-		Person loggedInPerson = this.createPerson(1, "Jan", "Erik");
-		Person memberPerson =this.createPerson(2, "John", "Doe");
-		Person defaultAdminPerson =this.createPerson(3, "Default", "Admin");
-		Mockito.when(workbenchDataManager.getPersonById(loggedInPerson.getId())).thenReturn(loggedInPerson);
-		Mockito.when(workbenchDataManager.getPersonById(memberPerson.getId())).thenReturn(memberPerson);
-		Mockito.when(workbenchDataManager.getPersonById(defaultAdminPerson.getId())).thenReturn(defaultAdminPerson);
+		final Person loggedInPerson = this.createPerson(1, "Jan", "Erik");
+		final Person memberPerson = this.createPerson(2, "John", "Doe");
+		final Person defaultAdminPerson = this.createPerson(3, "Default", "Admin");
+		Mockito.when(this.workbenchDataManager.getPersonById(loggedInPerson.getId())).thenReturn(loggedInPerson);
+		Mockito.when(this.workbenchDataManager.getPersonById(memberPerson.getId())).thenReturn(memberPerson);
+		Mockito.when(this.workbenchDataManager.getPersonById(defaultAdminPerson.getId())).thenReturn(defaultAdminPerson);
 
-		
 		// Other WorkbenchDataManager mocks
-		Mockito.when(workbenchDataManager.getCropTypeByName(Matchers.anyString())).thenReturn(project.getCropType());
-		ProjectUserInfoDAO puiDao = Mockito.mock(ProjectUserInfoDAO.class);
-		Mockito.when(workbenchDataManager.getProjectUserInfoDao()).thenReturn(puiDao);
+		Mockito.when(this.workbenchDataManager.getCropTypeByName(Matchers.anyString())).thenReturn(project.getCropType());
+		final ProjectUserInfoDAO puiDao = Mockito.mock(ProjectUserInfoDAO.class);
+		Mockito.when(this.workbenchDataManager.getProjectUserInfoDao()).thenReturn(puiDao);
 
-		List<Role> allRolesList = new ArrayList<Role>();
+		final List<Role> allRolesList = new ArrayList<Role>();
 		allRolesList.add(new Role(1, "CB Breeder", null));
 		allRolesList.add(new Role(2, "MAS Breeder", null));
-		Mockito.when(workbenchDataManager.getAllRoles()).thenReturn(allRolesList);
+		Mockito.when(this.workbenchDataManager.getAllRoles()).thenReturn(allRolesList);
 
-		Mockito.when(userDataManager.addUser(Matchers.any(User.class))).thenReturn(2);
-		
-		
+		Mockito.when(this.userDataManager.addUser(Matchers.any(User.class))).thenReturn(2);
+
 		// Call the method to test
-		programService.createNewProgram(project);
+		this.programService.createNewProgram(project);
 
-		
 		// Verify that the key database operations for program creation are invoked.
-		Mockito.verify(workbenchDataManager).addProject(project);
+		Mockito.verify(this.workbenchDataManager).addProject(project);
 
-		// Add Person and Add User called three times - 1)for current person and user and 
+		// Add Person and Add User called three times - 1)for current person and user and
 		// 2) for member person and user selected and 3) for default ADMIN user
-		Mockito.verify(userDataManager, Mockito.times(3)).addPerson(Matchers.any(Person.class));
-		Mockito.verify(userDataManager, Mockito.times(3)).addUser(Matchers.any(User.class));
+		Mockito.verify(this.userDataManager, Mockito.times(3)).addPerson(Matchers.any(Person.class));
+		Mockito.verify(this.userDataManager, Mockito.times(3)).addUser(Matchers.any(User.class));
 
 		// Ibdb_user_map is added for both current, member and default ADMIN users
-		Mockito.verify(workbenchDataManager, Mockito.times(3)).addIbdbUserMap(Matchers.any(IbdbUserMap.class));
-		
-		Mockito.verify(workbenchDataManager).addProjectUserRole(Matchers.anyList());
+		Mockito.verify(this.workbenchDataManager, Mockito.times(3)).addIbdbUserMap(Matchers.any(IbdbUserMap.class));
 
-		
+		Mockito.verify(this.workbenchDataManager).addProjectUserRole(Matchers.anyList());
+
 		// Verify that utility to create workspace directory was called
-		Mockito.verify(toolUtil).createWorkspaceDirectoriesForProject(project);
-		
-	}
+		Mockito.verify(this.toolUtil).createWorkspaceDirectoriesForProject(project);
 
+	}
 
 	@Test
 	public void testCreateCropPersonIfNecessaryWhenPersonIsExisting() {
 
-		Mockito.when(userDataManager.getPersonByEmail(workbenchPerson.getEmail())).thenReturn(cropDBPerson);
+		Mockito.when(this.userDataManager.getPersonByEmail(this.workbenchPerson.getEmail())).thenReturn(this.cropDBPerson);
 
-		Person result = this.programService.createCropPersonIfNecessary(workbenchPerson);
+		final Person result = this.programService.createCropPersonIfNecessary(this.workbenchPerson);
 
-		Mockito.verify(userDataManager, Mockito.times(0)).addPerson(Mockito.any(Person.class));
-		Assert.assertSame(result, cropDBPerson);
+		Mockito.verify(this.userDataManager, Mockito.times(0)).addPerson(Matchers.any(Person.class));
+		Assert.assertSame(result, this.cropDBPerson);
 
 	}
 
-	
 	@Test
 	public void testCreateCropPersonIfNecessaryWhenPersonIsNotExisting() {
 
-		Mockito.when(userDataManager.getPersonByEmail(workbenchPerson.getEmail())).thenReturn(null);
+		Mockito.when(this.userDataManager.getPersonByEmail(this.workbenchPerson.getEmail())).thenReturn(null);
 
-		Person result = this.programService.createCropPersonIfNecessary(workbenchPerson);
+		final Person result = this.programService.createCropPersonIfNecessary(this.workbenchPerson);
 
-		Mockito.verify(userDataManager, Mockito.times(1)).addPerson(Mockito.any(Person.class));
-		Assert.assertNotSame(result, workbenchPerson);
-		Assert.assertEquals(result.getFirstName(), workbenchPerson.getFirstName());
-		Assert.assertEquals(result.getLastName(), workbenchPerson.getLastName());
+		Mockito.verify(this.userDataManager, Mockito.times(1)).addPerson(Matchers.any(Person.class));
+		Assert.assertNotSame(result, this.workbenchPerson);
+		Assert.assertEquals(result.getFirstName(), this.workbenchPerson.getFirstName());
+		Assert.assertEquals(result.getLastName(), this.workbenchPerson.getLastName());
 
 	}
 
 	@Test
 	public void testCreateCropUserIfNecessaryWhenUserIsExisting() {
 
+		Mockito.when(this.userDataManager.getUserByUserName(this.workbenchUser.getName())).thenReturn(this.cropDBUser);
 
-		Mockito.when(userDataManager.getUserByUserName(workbenchUser.getName())).thenReturn(cropDBUser);
+		final User result = this.programService.createCropUserIfNecessary(this.workbenchUser, this.cropDBPerson);
 
-		User result = this.programService.createCropUserIfNecessary(workbenchUser, cropDBPerson);
+		Mockito.verify(this.userDataManager, Mockito.times(0)).addUser(Matchers.any(User.class));
 
-		Mockito.verify(userDataManager, Mockito.times(0)).addUser(Mockito.any(User.class));
-
-		Assert.assertSame(result, cropDBUser);
+		Assert.assertSame(result, this.cropDBUser);
 
 	}
 
 	@Test
 	public void testCreateCropUserIfNecessaryWhenUserIsNotExisting() {
 
-		Mockito.when(userDataManager.getUserByUserName(workbenchUser.getName())).thenReturn(null);
+		Mockito.when(this.userDataManager.getUserByUserName(this.workbenchUser.getName())).thenReturn(null);
 
-		User result = this.programService.createCropUserIfNecessary(workbenchUser, cropDBPerson);
+		final User result = this.programService.createCropUserIfNecessary(this.workbenchUser, this.cropDBPerson);
 
-		Mockito.verify(userDataManager, Mockito.times(1)).addUser(Mockito.any(User.class));
+		Mockito.verify(this.userDataManager, Mockito.times(1)).addUser(Matchers.any(User.class));
 
-		Assert.assertEquals(cropDBPerson.getId(), result.getPersonid());
+		Assert.assertEquals(this.cropDBPerson.getId(), result.getPersonid());
 		Assert.assertEquals(Integer.valueOf(ProgramService.PROJECT_USER_ACCESS_NUMBER), result.getAccess());
 		Assert.assertEquals(Integer.valueOf(ProgramService.PROJECT_USER_TYPE), result.getType());
 		Assert.assertEquals(Integer.valueOf(0), result.getInstalid());
@@ -201,21 +192,21 @@ public class ProgramServiceTest {
 	@Test
 	public void testSaveWorkbenchUserToCropUserMapping() {
 
-		Project project = this.createProject();
+		final Project project = this.createProject();
 
 		final Set<User> users = new HashSet<>();
-		users.add(workbenchUser);
+		users.add(this.workbenchUser);
 
-		Mockito.when(this.workbenchDataManager.getPersonById(workbenchUser.getPersonid())).thenReturn(workbenchPerson);
-		Mockito.when(this.userDataManager.getPersonByEmail(workbenchPerson.getEmail())).thenReturn(cropDBPerson);
-		Mockito.when(this.userDataManager.getUserByUserName(workbenchUser.getName())).thenReturn(cropDBUser);
+		Mockito.when(this.workbenchDataManager.getPersonById(this.workbenchUser.getPersonid())).thenReturn(this.workbenchPerson);
+		Mockito.when(this.userDataManager.getPersonByEmail(this.workbenchPerson.getEmail())).thenReturn(this.cropDBPerson);
+		Mockito.when(this.userDataManager.getUserByUserName(this.workbenchUser.getName())).thenReturn(this.cropDBUser);
 
 		this.programService.saveWorkbenchUserToCropUserMapping(project, users);
 
-		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).addIbdbUserMap(Mockito.any(IbdbUserMap.class));
+		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).addIbdbUserMap(Matchers.any(IbdbUserMap.class));
 
 	}
-	
+
 	private Project createProject() {
 		final Project project = new Project();
 		project.setProjectId(1L);
@@ -226,17 +217,17 @@ public class ProgramServiceTest {
 
 		return project;
 	}
-	
+
 	private Person createPerson(final Integer personId, final String firstName, final String lastName) {
-		Person person = new Person();
+		final Person person = new Person();
 		person.setId(personId);
 		person.setFirstName(firstName);
 		person.setLastName(lastName);
 		return person;
 	}
-	
+
 	private User createUser(final Integer userId, final String username, final Integer personId) {
-		User loggedInUser = new User();
+		final User loggedInUser = new User();
 		loggedInUser.setUserid(userId);
 		loggedInUser.setName(username);
 		loggedInUser.setPersonid(personId);
