@@ -21,6 +21,7 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAddUserWindowAction;
+import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -250,7 +251,15 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			final Item item = container.addItem(userTemp);
 			item.getItemProperty("userId").setValue(1);
 			item.getItemProperty(USERNAME).setValue(userTemp.getPerson().getDisplayName());
-
+			
+			/*
+			 * If default ADMIN user, disable selection so it cannot be removed. 
+			 * Disabling is done here so that it can still be selected in Available Users table
+			 */
+			if (ProgramService.ADMIN_USERNAME.equalsIgnoreCase(userTemp.getName())){
+				userTemp.setEnabled(false);
+			}
+			
 			this.select.select(userTemp);
 		}
 
@@ -367,5 +376,9 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			return label;
 		}
 	};
+	
+	public Set<User> getProgramMembersDisplayed(){
+		return this.select.getValue();
+	}
 
 }
