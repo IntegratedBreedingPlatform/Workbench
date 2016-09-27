@@ -142,7 +142,7 @@ public class ProgramServiceTest {
 	@Test
 	public void testCreateCropPersonIfNecessaryWhenPersonIsExisting() {
 
-		Mockito.when(userDataManager.getPersonByFirstAndLastName(workbenchPerson.getFirstName(), workbenchPerson.getLastName())).thenReturn(cropDBPerson);
+		Mockito.when(userDataManager.getPersonByEmail(workbenchPerson.getEmail())).thenReturn(cropDBPerson);
 
 		Person result = this.programService.createCropPersonIfNecessary(workbenchPerson);
 
@@ -155,7 +155,7 @@ public class ProgramServiceTest {
 	@Test
 	public void testCreateCropPersonIfNecessaryWhenPersonIsNotExisting() {
 
-		Mockito.when(userDataManager.getPersonByFirstAndLastName(workbenchPerson.getFirstName(), workbenchPerson.getLastName())).thenReturn(null);
+		Mockito.when(userDataManager.getPersonByEmail(workbenchPerson.getEmail())).thenReturn(null);
 
 		Person result = this.programService.createCropPersonIfNecessary(workbenchPerson);
 
@@ -207,7 +207,7 @@ public class ProgramServiceTest {
 		users.add(workbenchUser);
 
 		Mockito.when(this.workbenchDataManager.getPersonById(workbenchUser.getPersonid())).thenReturn(workbenchPerson);
-		Mockito.when(this.userDataManager.getPersonByFirstAndLastName(workbenchPerson.getFirstName(), workbenchPerson.getLastName())).thenReturn(cropDBPerson);
+		Mockito.when(this.userDataManager.getPersonByEmail(workbenchPerson.getEmail())).thenReturn(cropDBPerson);
 		Mockito.when(this.userDataManager.getUserByUserName(workbenchUser.getName())).thenReturn(cropDBUser);
 
 		this.programService.saveWorkbenchUserToCropUserMapping(project, users);

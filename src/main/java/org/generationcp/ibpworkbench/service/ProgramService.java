@@ -188,14 +188,14 @@ public class ProgramService {
 	
 	
 	/**
-	 * Search for a person record in crop DB with specified last first name, last name, email combination.
+	 * Search for a person record in crop DB with specified email. Email is assumed to be unique among users.
 	 * If not yet existing, add new person record.
 	 * 
 	 * @param workbenchPerson
 	 * @return
 	 */
 	Person createCropPersonIfNecessary(Person workbenchPerson) {
-		Person cropDBPerson = userDataManager.getPersonByFirstAndLastName(workbenchPerson.getFirstName(), workbenchPerson.getLastName());
+		Person cropDBPerson = userDataManager.getPersonByEmail(workbenchPerson.getEmail());
 		if (cropDBPerson == null) {
 			cropDBPerson = workbenchPerson.copy();
 			userDataManager.addPerson(cropDBPerson);
