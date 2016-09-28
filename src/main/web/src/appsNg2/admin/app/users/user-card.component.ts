@@ -3,6 +3,7 @@ import {
     Validators, FormGroup, FormControl
 } from '@angular/forms';
 import { User } from '../shared/models/user.model';
+
 import { UserService } from './../shared/services/user.service';
 import { RoleService } from './../shared/services/role.service';
 
@@ -13,6 +14,7 @@ import { RoleService } from './../shared/services/role.service';
 })
 
 export class UserCard implements OnInit {
+    errorMessage: string = '';
     submitted = false;
     @Input() originalUser: User;
     @Input() userSaved: boolean = false;
@@ -25,7 +27,7 @@ export class UserCard implements OnInit {
     @ViewChild('form') form: FormGroup;
 
     constructor(private userService: UserService, private roleService: RoleService) {
-        
+
     }
 
     /**
@@ -37,7 +39,7 @@ export class UserCard implements OnInit {
      * The second call is to rebind
      * model.status to the form control
      * after reset
-     * 
+     *
      */
     resetForm() {
         this.initUser();
@@ -63,14 +65,16 @@ export class UserCard implements OnInit {
             .subscribe(
                 resp => {
                     this.userSaved = true;
+                    this.errorMessage = '';
                     setTimeout(() => {
                         this.model.id = resp.json().id;
                         this.userSaved = false;
                         this.onUserAdded.emit(this.model);
                     }, 1000)
                 },
-                err => console.log(err)
-            )
+                error =>  {this.errorMessage =  this.mapErrorUser(error.json().ERROR.errors);
+
+              });
     }
 
 
@@ -80,12 +84,26 @@ export class UserCard implements OnInit {
             .subscribe(
                 resp => {
                     this.userSaved = true;
+                    this.errorMessage = '';
                     setTimeout(() => {
                         this.userSaved = false;
                         this.onUserEdited.emit(this.model);
                     }, 1000)
                 },
-                err => console.log(err)
-            )
+                error =>  {this.errorMessage =  this.mapErrorUser(error.json().ERROR.errors);
+            });
     }
+
+    private mapErrorUser(response:any): string{
+       return response.map(this.toErrorUser);
+    }
+
+    private toErrorUser(r:any): string{
+      let msg ={
+        fieldNames: r.fieldNames,
+        message: r.message,
+      }
+      return " " + msg.fieldNames + " " + msg.message;
+    }
+
 }
