@@ -15,10 +15,9 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.vaadin.terminal.gwt.server.WebBrowser;
 import org.dellroad.stuff.vaadin.ContextApplication;
 import org.dellroad.stuff.vaadin.SpringContextApplication;
-import org.generationcp.commons.vaadin.actions.UpdateComponentLabelsAction;
+import org.generationcp.commons.spring.util.ToolLicenseUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.slf4j.Logger;
@@ -29,6 +28,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 
+import com.vaadin.terminal.gwt.server.WebBrowser;
 import com.vaadin.ui.Window;
 
 public class IBPWorkbenchApplication extends SpringContextApplication implements IWorkbenchSession {
@@ -44,6 +44,9 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 
 	@Resource
 	private LogoutHandler rememberMeServices;
+	
+	@Resource
+	private ToolLicenseUtil toolLicenseUtil;
 
 	private HttpServletRequest request;
 	private HttpServletResponse response;
@@ -118,8 +121,12 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 
 	protected void assemble() {
 		this.initialize();
-
+		this.cacheLicenseInfo();
 		this.setMainWindow(new WorkbenchMainView());
+	}
+	
+	public void cacheLicenseInfo() {
+		toolLicenseUtil.loadToolLicenseCache();
 	}
 
 	public void toggleScripts() {
