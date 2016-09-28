@@ -29,7 +29,7 @@
             <label for="email" class="col-sm-2 control-label">Email</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" [(ngModel)]="model.email" #email="ngModel" validateEmail name="email" id="email"
-                    placeholder="Email" maxlength="40"> 
+                    placeholder="Email" maxlength="40">
                 <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
                 <span class="sr-only">(error)</span>
             </div>
@@ -37,10 +37,9 @@
         <div class="form-group" [class.has-feedback]="!(role.valid || role.pristine)" [class.has-error]="!(role.valid || role.pristine)">
             <label for="role" class="col-sm-2 control-label">Role</label>
             <div class="col-sm-10">
-                <select id="role" class="form-control" [(ngModel)]="model.role" #role="ngModel" required name="role">
-                        <option>Breeder</option>
-                        <option>Technician</option>
-                        <option>Admin</option>
+                    <select  id="role" class="form-control" name="role" [(ngModel)]="model.role" #role="ngModel" required>
+                       <option disabled value="">Please choose</option>
+                       <option  *ngFor="let role of roles" [value]="role.description">{{role.description}}</option>
                     </select>
             </div>
         </div>
@@ -74,6 +73,7 @@
             </div>
         </div>
     </form>
+    <div class="alert alert-danger" role="alert" *ngIf="errorMessage"><strong>Errors: {{errorMessage}}</strong></div>
 </div>
 <div class="modal-footer">
     <div *ngIf="userSaved" class="alert alert-success message" role="alert">User saved!</div>

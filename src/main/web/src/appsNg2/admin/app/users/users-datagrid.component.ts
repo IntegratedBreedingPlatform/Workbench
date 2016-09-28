@@ -56,7 +56,7 @@ export class UsersDatagrid implements OnInit {
     }
 
     showEditUserForm(user: User) {
-        
+
         this.dialogTitle = "Edit User";
         this.originalUser = user;
         this.user = new User(user.id, user.firstName, user.lastName,
@@ -103,7 +103,7 @@ export class UsersDatagrid implements OnInit {
         this.sortAfterAddOrEdit();
     }
 
-    sortAfterAddOrEdit() {        
+    sortAfterAddOrEdit() {
         if(this.table.sortBy == undefined) {
             this.sort("lastName", true);
         }
@@ -111,7 +111,7 @@ export class UsersDatagrid implements OnInit {
             this.sort(this.table.sortBy, true);
         }
     }
-    
+
     onUserEdited(user: User) {
         this.showEditDialog = false;
         this.table.items.remove(this.originalUser);
