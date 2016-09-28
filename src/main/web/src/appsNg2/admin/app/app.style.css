@@ -70,8 +70,12 @@ users-admin app-dialog div.modal-footer > .message {
 }
 
 @media (min-width: 768px){
-  .popup .modal-dialog {
-      width: 470px;
-      margin: 30px auto;
-  }
+    .popup .modal-dialog {
+        width: 470px;
+        margin: 30px auto;
+    }
+  
+    #filters.form-inline .form-group {
+        margin-right: 15px;
+    }
 }

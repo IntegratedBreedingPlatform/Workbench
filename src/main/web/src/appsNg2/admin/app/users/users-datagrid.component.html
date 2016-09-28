@@ -9,22 +9,22 @@
   <div class="om-panel-header">
         <h2 class="om-panel-title ">
             Manage users</h2>
-        &nbsp;
   </div>
+  <br/>
     <div class="row">
         <div class="col-xs-12">
-            <div class="form-inline">
-
+            <div id="filters" class="form-inline">
                 <div class="form-group">
                   <label class="">Status: </label>
-                  &nbsp;
+                   &nbsp;
                   <select class="form-control" name="status"
                       [(ngModel)]="table.searchValue.status">
                       <option value="all">All</option>
                       <option value="true">Active</option>
                       <option value="false">Inactive</option>
                   </select>
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </div>
+                <div class="form-group">
                   <label class="">Role: </label>
                   &nbsp;
                   <select  class="form-control" name="role" [(ngModel)]="table.searchValue.role">
@@ -33,9 +33,9 @@
                   </select>
                 </div>
             </div>
+        </div>
     </div>
-    </div>
-    <br><br>
+    <br /><br />
     <div class="row">
         <div class="col-xs-12">
             <table class="table table-striped">
