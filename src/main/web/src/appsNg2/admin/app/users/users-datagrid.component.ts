@@ -23,8 +23,8 @@ import { UserCard } from './user-card.component';
 
 export class UsersDatagrid implements OnInit {
 
-    @ViewChild(UserCard)
-    userCard: UserCard;
+    // @ViewChild(UserCard)
+    // userCard: UserCard;
 
     showNewDialog = false;
     showEditDialog = false;
@@ -48,10 +48,11 @@ export class UsersDatagrid implements OnInit {
     }
 
     showNewUserForm() {
-        this.userCard.resetForm();
+        this.initUser();
         this.dialogTitle = "Add User";
         this.isEditing = false;
         this.showNewDialog = true;
+        // this.userCard.initialize();
     }
 
     showEditUserForm(user: User) {
@@ -62,13 +63,9 @@ export class UsersDatagrid implements OnInit {
                         user.username, user.role, user.email, user.status);
         this.isEditing = true;
         this.showEditDialog = true;
+        // this.userCard.initialize();
     }
 
-    /**
-     * User needed for user-card first rendering
-     * The one created by
-     * userCard.resetForm() will be used during creation
-     */
     initUser() {
         this.user = new User("0", "", "", "", "", "", "true");
     }

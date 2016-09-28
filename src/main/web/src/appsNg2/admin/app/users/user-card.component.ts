@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
 import {
     Validators, FormGroup, FormControl
 } from '@angular/forms';
@@ -22,42 +22,28 @@ export class UserCard implements OnInit {
     @Output() onUserEdited = new EventEmitter<User>();
     @Output() onCancel = new EventEmitter<void>();
 
-    @ViewChild('form') form: FormGroup;
-
     constructor(private userService: UserService, private roleService: RoleService) {
-        
+        this.model = new User("0", "", "", "", "", "", "");
     }
 
-    /**
-     * XXX
-     * Reset form hack
-     * The first call to initUser() is needed
-     * when coming from edit user
-     * to clean the user loaded
-     * The second call is to rebind
-     * model.status to the form control
-     * after reset
-     * 
-     */
+    /*
     resetForm() {
-        this.initUser();
-        this.form.reset();
-        this.initUser();
+        // see https://angular.io/docs/ts/latest/guide/forms.html#!#add-a-hero-and-reset-the-form
+        this.activeForm = false;
+        setTimeout(() => this.activeForm = true, 0);
     }
-
-    initUser() {
-        this.model = new User("0", "", "", "", "", "", "true");
-    }
+    */
 
     onSubmit() { this.submitted = true; }
     cancel(form: FormGroup) {
+        form.reset();
         this.onCancel.emit();
     }
 
     ngOnInit() {
     }
 
-    addUser() {
+    addUser(form: FormGroup) {
         this.userService
             .save(this.model)
             .subscribe(
