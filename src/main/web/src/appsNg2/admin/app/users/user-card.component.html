@@ -1,15 +1,14 @@
 <div class="modal-body">
     <form class="form-horizontal" #form="ngForm">
-        <div class="form-group" [class.has-feedback]="!(firstName.valid || firstName.pristine) || !(lastName.valid || lastName.pristine)"
-            [class.has-error]="!(firstName.valid || firstName.pristine) || !(lastName.valid || lastName.pristine)">
+        <div class="form-group">
             <label for="name" class="col-sm-2 control-label">Name</label>
-            <div class="col-sm-5">
+            <div class="col-sm-5" [class.has-feedback]="!(firstName.valid || firstName.pristine)" [class.has-error]="!(firstName.valid || firstName.pristine)">
                 <input type="text" class="form-control" [(ngModel)]="model.firstName" #firstName="ngModel" required name="firstName" id="firstName"
                     placeholder="First Name" maxlength="20">
                 <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
                 <span class="sr-only">(error)</span>
             </div>
-            <div class="col-sm-5">
+            <div class="col-sm-5" [class.has-feedback]="!(lastName.valid || lastName.pristine)" [class.has-error]="!(lastName.valid || lastName.pristine)">
                 <input type="text" class="form-control" [(ngModel)]="model.lastName" #lastName="ngModel" required name="lastName" id="lastName"
                     placeholder="Last Name" maxlength="50">
                 <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
