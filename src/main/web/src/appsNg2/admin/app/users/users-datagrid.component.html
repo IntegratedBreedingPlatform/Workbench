@@ -3,7 +3,7 @@
         <button class="btn btn-default om-add-new-btn form-group pull-right"
             (click)="showNewUserForm()">Add user</button>
             <app-dialog [(visible)]="showNewDialog" [title]="dialogTitle">
-                <user-card (onUserAdded)="onUserAdded($event)" [isEditing]="isEditing" [model]="user" [roles]="roles" (onCancel)="showNewDialog = false"></user-card>
+                <user-card (onUserAdded)="onUserAdded($event)" [errorMessage]="errorMessage" [isEditing]="isEditing" [model]="user" [roles]="roles" (onCancel)="showNewDialog = false"></user-card>
             </app-dialog>
   </div>
   <div class="om-panel-header">
@@ -65,7 +65,7 @@
                         </td>
                     </tr>
 					<app-dialog [(visible)]="showEditDialog" [title]="dialogTitle">
- 		                <user-card (onUserEdited)="onUserEdited($event)" [isEditing]="isEditing" (onCancel)="showEditDialog = false" [model]="user" [roles]="roles"></user-card>
+ 		                <user-card (onUserEdited)="onUserEdited($event)" [errorMessage]="errorMessage" [isEditing]="isEditing" (onCancel)="showEditDialog = false" [model]="user" [roles]="roles"></user-card>
  		            </app-dialog>
                     <div class="popup">
                       <app-dialog [(visible)]="showConfirmStatusDialog" [title]="confirmStatusTitle">

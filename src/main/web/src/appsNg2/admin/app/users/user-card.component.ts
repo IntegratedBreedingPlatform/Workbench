@@ -15,7 +15,7 @@ import { Role } from './../shared/models/role.model';
 })
 
 export class UserCard implements OnInit {
-    errorMessage: string = '';
+    @Input() errorMessage: string = '';
     submitted = false;
     @Input() originalUser: User;
     @Input() userSaved: boolean = false;
@@ -50,6 +50,7 @@ export class UserCard implements OnInit {
     onSubmit() { this.submitted = true; }
     cancel(form: FormGroup) {
         form.reset();
+        this.errorMessage = '';
         this.onCancel.emit();
     }
 
