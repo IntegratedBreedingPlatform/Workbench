@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Rx';
 
 @Injectable()
 export class MailService{
-  private baseUrl: string = '/ibpworkbench/auth'; //sendResetEmail/{username}
+  private baseUrl: string = '/ibpworkbench/controller/auth'; //sendResetEmail/{username}
 
   private http: Http;
 
