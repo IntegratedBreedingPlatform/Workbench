@@ -1,7 +1,11 @@
 <div class="modal-body">
     <form class="form-horizontal" #form="ngForm">
-        <div class="form-group has-inline-form-controls">
-            <label for="name" class="col-sm-2 control-label">Name</label>
+        <div class="form-group has-inline-form-controls" >
+            <div [class.has-feedback]="!(firstName.valid || firstName.pristine) || !(lastName.valid || lastName.pristine)"
+                [class.has-error]="!(firstName.valid || firstName.pristine) || !(lastName.valid || lastName.pristine)"
+                class="col-sm-2 ">
+                <label for="name" class="control-label pull-right" >Name</label>
+            </div>
             <div class="col-sm-5" [class.has-feedback]="!(firstName.valid || firstName.pristine)" [class.has-error]="!(firstName.valid || firstName.pristine)">
                 <input type="text" class="form-control" [(ngModel)]="model.firstName" #firstName="ngModel" required name="firstName" id="firstName"
                     placeholder="First Name" maxlength="20">
