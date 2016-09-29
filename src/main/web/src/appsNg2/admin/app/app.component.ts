@@ -9,6 +9,7 @@ import { UsersAdmin } from './users/index';
 import { SiteAdminHeader } from './shared/components/header/site-admin-header.component';
 import { UserService } from './shared/services/user.service';
 import { RoleService } from './shared/services/role.service';
+import { MailService } from './shared/services/mail.service';
 
 
 /*
@@ -29,7 +30,7 @@ import { RoleService } from './shared/services/role.service';
     </div>
   `,
   moduleId: module.id,
-  providers: [UserService, RoleService]
+  providers: [UserService, RoleService, MailService]
 
 })
 export class AppComponent {

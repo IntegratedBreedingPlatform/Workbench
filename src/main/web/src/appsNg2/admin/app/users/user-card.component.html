@@ -63,16 +63,16 @@
             <div class="col-sm-offset-2 col-sm-10">
                 <div class="checkbox">
                     <label *ngIf="!isEditing">
-                        <input type="checkbox" > Send an invitation email for the user to set their password
+                         <input type="checkbox" [(ngModel)]="sendMail" name="sendMail"> Send an invitation email for the user to set their password
                     </label>
                     <label *ngIf="isEditing">
-                        <input type="checkbox" > Send an email for the user to reset their password
+                         <input type="checkbox" [(ngModel)]="sendMail" name="sendMail"> Send an email for the user to reset their password
                     </label>
                 </div>
             </div>
         </div>
     </form>
-    <div class="alert alert-danger" role="alert" *ngIf="errorMessage"><strong>Errors: {{errorMessage}}</strong></div>
+    <div [class]="errorClass" role="alert" *ngIf="errorMessage"><strong>Errors: {{errorMessage}}</strong></div>
 </div>
 <div class="modal-footer">
     <div *ngIf="userSaved" class="alert alert-success message" role="alert">User saved!</div>

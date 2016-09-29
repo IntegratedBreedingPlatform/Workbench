@@ -6,7 +6,10 @@ import { User } from '../shared/models/user.model';
 
 import { UserService } from './../shared/services/user.service';
 import { RoleService } from './../shared/services/role.service';
+import { MailService } from './../shared/services/mail.service';
 import { Role } from './../shared/models/role.model';
+import { Response } from '@angular/http';
+
 
 @Component({
     selector: 'user-card',
@@ -16,17 +19,19 @@ import { Role } from './../shared/models/role.model';
 
 export class UserCard implements OnInit {
     errorMessage: string = '';
+    errorClass: string = 'alert alert-danger';
     submitted = false;
     @Input() originalUser: User;
     @Input() userSaved: boolean = false;
     @Input() isEditing: boolean;
     @Input() model: User;
     @Input() roles: Role[];
+    @Input() sendMail: boolean;
     @Output() onUserAdded = new EventEmitter<User>();
     @Output() onUserEdited = new EventEmitter<User>();
     @Output() onCancel = new EventEmitter<void>();
 
-    constructor(private userService: UserService, private roleService: RoleService) {
+    constructor(private userService: UserService, private roleService: RoleService, private mailService: MailService) {
         this.model = new User("0", "", "", "", "", "", "");
     }
 
@@ -63,11 +68,7 @@ export class UserCard implements OnInit {
                 resp => {
                     this.userSaved = true;
                     this.errorMessage = '';
-                    setTimeout(() => {
-                        this.model.id = resp.json().id;
-                        this.userSaved = false;
-                        this.onUserAdded.emit(this.model);
-                    }, 1000)
+                    this.sendEmailToResetPassword(resp);
                 },
                 error =>  {this.errorMessage =  this.mapErrorUser(error.json().ERROR.errors);
 
@@ -82,10 +83,7 @@ export class UserCard implements OnInit {
                 resp => {
                     this.userSaved = true;
                     this.errorMessage = '';
-                    setTimeout(() => {
-                        this.userSaved = false;
-                        this.onUserEdited.emit(this.model);
-                    }, 1000)
+                    this.sendEmailToResetPassword(resp);
                 },
                 error =>  {this.errorMessage =  this.mapErrorUser(error.json().ERROR.errors);
             });
@@ -101,6 +99,54 @@ export class UserCard implements OnInit {
         message: r.message,
       }
       return " " + msg.fieldNames + " " + msg.message;
+    }
+
+    private sendEmailToResetPassword (respSaving: Response){
+      if (this.sendMail) {
+          this.mailService
+              .send(this.model)
+              .subscribe(
+                resp => {
+                  setTimeout(() => {
+                      this.userSaved = false;
+                      this.sendMail = !this.isEditing;
+                      if (!this.isEditing) {
+                        this.model.id = respSaving.json().id;
+                        this.onUserAdded.emit(this.model);
+                      } else {
+                        this.onUserEdited.emit(this.model);
+                      }
+                  }, 1000);
+                },
+                error => {
+                    this.errorClass = 'alert alert-warning';
+                    this.errorMessage = 'Email was not sent. Please contact your system administrator';
+                    setTimeout(() => {
+                        this.errorMessage ='';
+                        this.errorClass = 'alert alert-danger';
+                        this.userSaved = false;
+                        this.sendMail = !this.isEditing;
+                        if (!this.isEditing) {
+                          this.model.id = respSaving.json().id;
+                          this.onUserAdded.emit(this.model);
+                        } else {
+                          this.onUserEdited.emit(this.model);
+                        }
+                    }, 2000);
+                }
+              );
+      } else {
+        setTimeout(() => {
+            this.userSaved = false;
+            this.sendMail = !this.isEditing;
+            if (!this.isEditing) {
+              this.model.id = respSaving.json().id;
+              this.onUserAdded.emit(this.model);
+            } else {
+              this.onUserEdited.emit(this.model);
+            }
+        }, 1000);
+      }
     }
 
 }

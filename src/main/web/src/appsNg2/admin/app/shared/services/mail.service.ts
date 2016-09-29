@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Rx';
 
 @Injectable()
 export class MailService{
-  private baseUrl: string = '/ibpworkbench/controller/auth/';
+  private baseUrl: string = '/ibpworkbench/auth'; //sendResetEmail/{username}
 
   private http: Http;
 
@@ -13,7 +13,7 @@ export class MailService{
       this.http = http;
   }
 
-  send(user: User): Observable<Response>{    
+  send(user: User): Observable<Response>{
     return this.http
       .get(`${this.baseUrl}/sendResetEmail/${user.username}`, {headers: this.getHeaders()});
   }
