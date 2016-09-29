@@ -18,7 +18,7 @@ import { Response } from '@angular/http';
 })
 
 export class UserCard implements OnInit {
-    errorMessage: string = '';
+    @Input() errorMessage: string = '';
     errorClass: string = 'alert alert-danger';
     submitted = false;
     @Input() originalUser: User;
@@ -55,6 +55,7 @@ export class UserCard implements OnInit {
     onSubmit() { this.submitted = true; }
     cancel(form: FormGroup) {
         form.reset();
+        this.errorMessage = '';
         this.onCancel.emit();
     }
 
