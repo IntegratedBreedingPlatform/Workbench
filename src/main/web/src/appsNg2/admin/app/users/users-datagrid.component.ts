@@ -25,7 +25,7 @@ export class UsersDatagrid implements OnInit {
 
     // @ViewChild(UserCard)
     // userCard: UserCard;
-
+    errorServiceMessage: string = "";
     showNewDialog = false;
     showEditDialog = false;
     isEditing = false;
@@ -34,8 +34,7 @@ export class UsersDatagrid implements OnInit {
     confirmStatusTitle: string = "Confirm";
     table: NgDataGridModel<User>;
     recentlyRemoveUsers: any[];
-    errorMessage: string = '';
-    message: string = "Please confirm that you would like to deactivate/activate this user account.";
+    confirmMessage: string = "Please confirm that you would like to deactivate/activate this user account.";
     user: User;
     originalUser: User;
 
@@ -52,7 +51,6 @@ export class UsersDatagrid implements OnInit {
         this.dialogTitle = "Add User";
         this.isEditing = false;
         this.showNewDialog = true;
-        this.errorMessage = '';
         // this.userCard.initialize();
     }
 
@@ -64,7 +62,6 @@ export class UsersDatagrid implements OnInit {
                         user.username, user.role, user.email, user.status);
         this.isEditing = true;
         this.showEditDialog = true;
-        this.errorMessage = '';
         // this.userCard.initialize();
     }
 
@@ -82,7 +79,7 @@ export class UsersDatagrid implements OnInit {
             .subscribe(
                 users => this.table.items = users,
                 error => {
-                    this.errorMessage = error;
+                    this.errorServiceMessage = error;
                     if (error.status === 401) {
                         localStorage.removeItem('xAuthToken');
                         this.handleReAuthentication();
@@ -180,7 +177,7 @@ export class UsersDatagrid implements OnInit {
             .subscribe(
             resp => { },
             error => {
-                this.errorMessage = error;
+                this.errorServiceMessage = error;
             });
 
         this.userSelected = null;
@@ -191,12 +188,12 @@ export class UsersDatagrid implements OnInit {
     showUserStatusConfirmPopUp(e: any){
       this.userSelected = e;
       this.showConfirmStatusDialog = true;
-      this.message = "Please confirm that you would like to ";
+      this.confirmMessage = "Please confirm that you would like to ";
 
       if (e.status === "true") {
-          this.message = this.message + "deactivate this user account.";
+          this.confirmMessage = this.confirmMessage + "deactivate this user account.";
       } else {
-          this.message = this.message + "activate this user account.";
+          this.confirmMessage = this.confirmMessage + "activate this user account.";
       }
     }
 
