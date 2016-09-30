@@ -76,7 +76,7 @@
             </div>
         </div>
     </form>
-    <div [class]="errorClass" role="alert" *ngIf="errorMessage"><strong>Errors: {{errorMessage}}</strong></div>
+    <div [class]="errorClass" role="alert" *ngIf="errorUserMessage">Errors: {{errorUserMessage}}</div>
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-default" data-dismiss="modal" (click)="cancel(form)">Cancel</button>
