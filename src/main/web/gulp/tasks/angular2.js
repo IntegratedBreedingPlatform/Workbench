@@ -71,7 +71,9 @@ var angular2Dist = function() {
 
 	var tasks = folders.map(function(folder) {
 
-		return gulp.src(path.join(srcRoot, folder, 'build/**'))
+		return gulp.src([path.join(srcRoot, folder, 'build/**'),"!"
+		  + path.join(srcRoot, folder, 'build/**/*.spec.js'), "!"
+			+ path.join(srcRoot, folder, 'build/**/*.spec.js.map')])
 			.pipe(gulp.dest(path.join(destRoot , folder)));
 	});
 
