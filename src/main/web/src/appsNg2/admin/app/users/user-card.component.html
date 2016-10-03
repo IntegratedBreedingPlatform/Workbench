@@ -76,6 +76,9 @@
             </div>
         </div>
     </form>
+    <div *ngIf="sendingEmail">
+      <span class="throbber throbber-lg"></span>
+    </div>
     <div [class]="errorClass" role="alert" *ngIf="errorUserMessage">Errors: {{errorUserMessage}}</div>
 </div>
 <div class="modal-footer">

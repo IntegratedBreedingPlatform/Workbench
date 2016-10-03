@@ -21,6 +21,7 @@ export class UserCard implements OnInit {
     errorUserMessage: string = '';
     errorClass: string = 'alert alert-danger';
     submitted = false;
+    sendingEmail: boolean = false;
     @Input() originalUser: User;
     @Input() userSaved: boolean = false;
     @Input() isEditing: boolean;
@@ -105,11 +106,13 @@ export class UserCard implements OnInit {
 
     private sendEmailToResetPassword (respSaving: Response){
       if (this.sendMail) {
+          this.sendingEmail = true;
           this.mailService
               .send(this.model)
               .subscribe(
                 resp => {
                   setTimeout(() => {
+                      this.sendingEmail = false;
                       this.userSaved = false;
                       this.sendMail = !this.isEditing;
                       if (!this.isEditing) {
@@ -121,6 +124,7 @@ export class UserCard implements OnInit {
                   }, 1000);
                 },
                 error => {
+                    this.sendingEmail = false;
                     this.errorClass = 'alert alert-warning';
                     this.errorUserMessage = 'Email was not sent. Please contact your system administrator';
                     setTimeout(() => {
