@@ -1,30 +1,30 @@
 <section>
   <div class="om-panel-content">
         <button class="btn btn-default om-add-new-btn form-group pull-right"
-            (click)="showNewUserForm()">Add user</button>
+            (click)="showNewUserForm(userCreateCard)">Add user</button>
             <app-dialog [(visible)]="showNewDialog" [title]="dialogTitle">
-                <user-card (onUserAdded)="onUserAdded($event)" [isEditing]="isEditing" [model]="user" (onCancel)="showNewDialog = false"></user-card>
+                <user-card #userCreateCard (onUserAdded)="onUserAdded($event)" [sendMail]="!isEditing" [isEditing]="isEditing" [model]="user" [roles]="roles" (onCancel)="showNewDialog = false"></user-card>
             </app-dialog>
   </div>
   <div class="om-panel-header">
         <h2 class="om-panel-title ">
             Manage users</h2>
-        &nbsp;
   </div>
+  <br/>
     <div class="row">
         <div class="col-xs-12">
-            <div class="form-inline">
-
+            <div id="filters" class="form-inline">
                 <div class="form-group">
                   <label class="">Status: </label>
-                  &nbsp;
+                   &nbsp;
                   <select class="form-control" name="status"
                       [(ngModel)]="table.searchValue.status">
                       <option value="all">All</option>
                       <option value="true">Active</option>
                       <option value="false">Inactive</option>
                   </select>
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </div>
+                <div class="form-group">
                   <label class="">Role: </label>
                   &nbsp;
                   <select  class="form-control" name="role" [(ngModel)]="table.searchValue.role">
@@ -33,9 +33,9 @@
                   </select>
                 </div>
             </div>
+        </div>
     </div>
-    </div>
-    <br><br>
+    <br /><br />
     <div class="row">
         <div class="col-xs-12">
             <table class="table table-striped">
@@ -54,7 +54,7 @@
                         <td colspan="6" class="text-center">No records found.</td>
                     </tr>
                     <tr *ngFor="let user of table.itemsOnCurrentPage">
-						<td><a href="javascript:void(0)"  (click)="showEditUserForm(user)"> {{user.username}} </a></td>
+						<td><a href="javascript:void(0)"  (click)="showEditUserForm(user, userEditCard)"> {{user.username}} </a></td>
                         <td>{{user.firstName}}</td>
                         <td>{{user.lastName}}</td>
                         <td>{{user.email}}</td>
@@ -65,14 +65,14 @@
                         </td>
                     </tr>
 					<app-dialog [(visible)]="showEditDialog" [title]="dialogTitle">
- 		                <user-card (onUserEdited)="onUserEdited($event)" [isEditing]="isEditing" (onCancel)="showEditDialog = false" [model]="user"></user-card>
+ 		                <user-card #userEditCard (onUserEdited)="onUserEdited($event)" [isEditing]="isEditing" [sendMail]="!isEditing" (onCancel)="showEditDialog = false" [model]="user" [roles]="roles"></user-card>
  		            </app-dialog>
                     <div class="popup">
                       <app-dialog [(visible)]="showConfirmStatusDialog" [title]="confirmStatusTitle">
                           <div class="modal-body">
                               <form class="form-horizontal">
-                                  <div class="modal-body">
-                                      <strong>{{message}}</strong>
+                                  <div class="popup-center-text">
+                                      {{confirmMessage}}
                                   </div>
                               </form>
                           </div>

@@ -1,15 +1,18 @@
-<div (ngSubmit)="onSubmit()" class="modal-body">
+<div class="modal-body">
     <form class="form-horizontal" #form="ngForm">
-        <div class="form-group" [class.has-feedback]="!(firstName.valid || firstName.pristine) || !(lastName.valid || lastName.pristine)"
-            [class.has-error]="!(firstName.valid || firstName.pristine) || !(lastName.valid || lastName.pristine)">
-            <label for="name" class="col-sm-2 control-label">Name</label>
-            <div class="col-sm-5">
+        <div class="form-group has-inline-form-controls" >
+            <div [class.has-feedback]="!(firstName.valid || firstName.pristine) || !(lastName.valid || lastName.pristine)"
+                [class.has-error]="!(firstName.valid || firstName.pristine) || !(lastName.valid || lastName.pristine)"
+                class="col-sm-2 ">
+                <label for="name" class="control-label pull-right" >Name</label>
+            </div>
+            <div class="col-sm-5" [class.has-feedback]="!(firstName.valid || firstName.pristine)" [class.has-error]="!(firstName.valid || firstName.pristine)">
                 <input type="text" class="form-control" [(ngModel)]="model.firstName" #firstName="ngModel" required name="firstName" id="firstName"
                     placeholder="First Name" maxlength="20">
                 <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
                 <span class="sr-only">(error)</span>
             </div>
-            <div class="col-sm-5">
+            <div class="col-sm-5" [class.has-feedback]="!(lastName.valid || lastName.pristine)" [class.has-error]="!(lastName.valid || lastName.pristine)">
                 <input type="text" class="form-control" [(ngModel)]="model.lastName" #lastName="ngModel" required name="lastName" id="lastName"
                     placeholder="Last Name" maxlength="50">
                 <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
@@ -29,7 +32,7 @@
             <label for="email" class="col-sm-2 control-label">Email</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" [(ngModel)]="model.email" #email="ngModel" validateEmail name="email" id="email"
-                    placeholder="Email" maxlength="40"> 
+                    placeholder="Email" maxlength="40">
                 <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
                 <span class="sr-only">(error)</span>
             </div>
@@ -37,10 +40,9 @@
         <div class="form-group" [class.has-feedback]="!(role.valid || role.pristine)" [class.has-error]="!(role.valid || role.pristine)">
             <label for="role" class="col-sm-2 control-label">Role</label>
             <div class="col-sm-10">
-                <select id="role" class="form-control" [(ngModel)]="model.role" #role="ngModel" required name="role">
-                        <option>Breeder</option>
-                        <option>Technician</option>
-                        <option>Admin</option>
+                    <select  id="role" class="form-control" name="role" [(ngModel)]="model.role" #role="ngModel" required>
+                       <option disabled value="">Please choose</option>
+                       <option  *ngFor="let role of roles" [value]="role.description">{{role.description}}</option>
                     </select>
             </div>
         </div>
@@ -65,19 +67,23 @@
             <div class="col-sm-offset-2 col-sm-10">
                 <div class="checkbox">
                     <label *ngIf="!isEditing">
-                        <input type="checkbox" > Send an invitation email for the user to set their password
+                         <input type="checkbox" [(ngModel)]="sendMail" name="sendMail"> Send an invitation email for the user to set their password
                     </label>
                     <label *ngIf="isEditing">
-                        <input type="checkbox" > Send an email for the user to reset their password
+                         <input type="checkbox" [(ngModel)]="sendMail" name="sendMail"> Send an email for the user to reset their password
                     </label>
                 </div>
             </div>
         </div>
     </form>
+    <div *ngIf="sendingEmail">
+      <span class="throbber throbber-lg"></span>
+    </div>
+    <div [class]="errorClass" role="alert" *ngIf="errorUserMessage">Errors: {{errorUserMessage}}</div>
 </div>
 <div class="modal-footer">
-    <div *ngIf="userSaved" class="alert alert-success pull-left" role="alert">User saved!</div>
-    <button type="button" class="btn btn-default" data-dismiss="modal" (click)="cancel()">Cancel</button>
-    <button type="submit" class="btn btn-primary" [disabled]="!form.valid" (click)="addUser()" *ngIf="!isEditing">Add user</button>
-    <button type="submit" class="btn btn-primary" [disabled]="!form.valid" (click)="editUser()" *ngIf="isEditing">Update user</button>
+    <button type="button" class="btn btn-default" data-dismiss="modal" (click)="cancel(form)">Cancel</button>
+    <button type="submit" class="btn btn-primary" [disabled]="!form.valid" (click)="addUser(form)" *ngIf="!isEditing && !userSaved">Add user</button>
+    <button type="submit" class="btn btn-primary" [disabled]="!form.valid" (click)="editUser(form)" *ngIf="isEditing && !userSaved">Update user</button>
+    <button type="submit" class="btn btn-success" [disabled]="!form.valid" *ngIf="userSaved">User saved!</button>
 </div>

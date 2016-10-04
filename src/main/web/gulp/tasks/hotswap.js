@@ -19,8 +19,7 @@ gulp.task('hotswap', function() {
 		if (!tomcatLocation) {
 			console.warn('Could not find property ' + argv.env + ' in gulp.properties.');
 		} else {
-			dest = tomcatLocation + '/webapps/ibpworkbench/WEB-INF';
-
+			dest = tomcatLocation + '/ibpworkbench/WEB-INF';
 			return gulp.src('../webapp/WEB-INF/**')
 				.pipe(changed(dest))
 				.pipe(gulp.dest(dest));

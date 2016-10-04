@@ -56,6 +56,7 @@ local.properties
 *.suo
 *.user
 *.sln.docstates
+.vscode/
 
 # Build results
 
