@@ -54,6 +54,10 @@ export class UserCard implements OnInit {
         setTimeout(() => this.activeForm = true, 0);
     }*/
 
+    initialize() {
+        this.errorUserMessage = '';
+    }
+
     onSubmit() { this.submitted = true; }
     cancel(form: FormGroup) {
         form.reset();

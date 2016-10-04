@@ -46,15 +46,15 @@ export class UsersDatagrid implements OnInit {
         this.initUser();
     }
 
-    showNewUserForm() {
+    showNewUserForm(userCreateCard: UserCard) {
         this.initUser();
         this.dialogTitle = "Add User";
         this.isEditing = false;
         this.showNewDialog = true;
-        // this.userCard.initialize();
+        userCreateCard.initialize();
     }
 
-    showEditUserForm(user: User) {
+    showEditUserForm(user: User, userEditCard: UserCard) {
 
         this.dialogTitle = "Edit User";
         this.originalUser = user;
@@ -62,7 +62,7 @@ export class UsersDatagrid implements OnInit {
                         user.username, user.role, user.email, user.status);
         this.isEditing = true;
         this.showEditDialog = true;
-        // this.userCard.initialize();
+        userEditCard.initialize();
     }
 
     initUser() {
