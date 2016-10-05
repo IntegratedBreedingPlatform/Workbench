@@ -1,41 +1,44 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <title>Angular 2 POC</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-   	<link th:href="@{/controller/static/lib/angular-ui-select/angular-ui-select.min.css}" rel="stylesheet"></link>
-	<link th:href="@{/controller/static/lib/select2/select2.css}" rel="stylesheet" ></link>
-	<link th:href="@{/controller/static/lib/styleGuide/css/styleGuide.min.css}" rel="stylesheet"></link>
-	<link th:href="@{/controller/static/lib/font.css}" rel="stylesheet"></link>
-	<link th:href="@{/controller/static/lib/bootstrap-modal/bootstrap-modal.css}" rel="stylesheet"></link>
-    
-    <!-- 1. Load libraries -->
-    <!-- Polyfill(s) for older browsers -->
-    <script th:src="@{/controller/pages/angular2/lib/es6-shim/es6-shim.min.js}"></script>
-    <script th:src="@{/controller/pages/angular2/lib/zone.js/dist/zone.js}"></script>
-    <script th:src="@{/controller/pages/angular2/lib/reflect-metadata/Reflect.js}"></script>
-    <script th:src="@{/controller/pages/angular2/lib/systemjs/dist/system.src.js}"></script>
 
-   	<!-- 2. Configure SystemJS -->
-    <script th:src="@{/controller/pages/angular2/admin/systemjs.config.js}"></script>
-    
-    <style type="text/css">
-		.throbber {
-			margin: 20px;
-		}
-	</style>
+<head>
+  <title>Angular 2 POC</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <script>
+  <link th:href="@{/controller/static/lib/angular-ui-select/angular-ui-select.min.css}" rel="stylesheet"></link>
+  <link th:href="@{/controller/static/lib/select2/select2.css}" rel="stylesheet"></link>
+  <link th:href="@{/controller/static/lib/styleGuide/css/styleGuide.min.css}" rel="stylesheet"></link>
+  <link th:href="@{/controller/static/lib/font.css}" rel="stylesheet"></link>
+  <link th:href="@{/controller/static/lib/bootstrap-modal/bootstrap-modal.css}" rel="stylesheet"></link>
+
+  <!-- 1. Load libraries -->
+  <!-- Polyfill(s) for older browsers -->
+  <script th:src="@{/controller/pages/angular2/lib/es6-shim/es6-shim.min.js}"></script>
+  <script th:src="@{/controller/pages/angular2/lib/zone.js/dist/zone.js}"></script>
+  <script th:src="@{/controller/pages/angular2/lib/reflect-metadata/Reflect.js}"></script>
+  <script th:src="@{/controller/pages/angular2/lib/systemjs/dist/system.src.js}"></script>
+
+  <!-- 2. Configure SystemJS -->
+  <script th:src="@{/controller/pages/angular2/admin/systemjs.config.js}"></script>
+
+  <style type="text/css">
+    .throbber {
+      margin: 20px;
+    }
+  </style>
+
+  <script>
       System.import('app').catch(function(err){ console.error(err); });
     </script>
-  </head>
+</head>
 
-  <!-- 3. Display the application -->
-  <body>
-     <app>
-		 <span class="throbber throbber-lg"></span>
-     </app>
-   </body>
+<!-- 3. Display the application -->
+
+<body>
+  <app>
+    <span class="throbber throbber-lg"></span>
+  </app>
+</body>
+
 </html>
