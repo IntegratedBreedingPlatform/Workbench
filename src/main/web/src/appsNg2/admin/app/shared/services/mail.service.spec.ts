@@ -34,7 +34,7 @@ export function main()
                     ( connection: MockConnection ) =>
                     {
                         var options = new ResponseOptions( {
-                            body: 
+                            body:
                                 {
                                     success: true
                                 }

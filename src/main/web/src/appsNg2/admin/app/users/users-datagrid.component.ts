@@ -92,7 +92,9 @@ export class UsersDatagrid implements OnInit {
             .subscribe(
                 roles => this.roles = roles,
                 error => {
-                    // TODO
+                    // XXX
+                    // handleReAuthentication is called on
+                    // userService error
             });
     }
 
@@ -146,27 +148,7 @@ export class UsersDatagrid implements OnInit {
         this.table.sortBy = col;
     }
 
-    addRecordPlugin() {
-        //let userId = this.userId++;
-        //this.table.items.push(new User(userId, `user ${userId}`, `username${userId}`));
-    }
-
-    removeRecordPlugin(item) {
-        //this.recentlyRemoveUsers = this.table.items.remove(item);
-    }
-
-    removeAllEvenIdPlugin() {
-        //this.recentlyRemoveUsers = this.table.items
-        //    .remove(item => item.userId % 2 === 0);
-    }
-
     changedActiveStatus(e: any) {
-        //  if (confirm('Do you want to include all filtered items?')) {
-        //        this.table.itemsFiltered.forEach(user => user.active = e.target.checked);
-        //    } else {
-        //        this.table.itemsOnCurrentPage.forEach(user => user.active = e.target.checked);
-        //    }
-
         if (this.userSelected.status === "true") {
             this.userSelected.status = "false";
         } else {
