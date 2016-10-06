@@ -25,8 +25,6 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -107,7 +105,18 @@ public class AuthenticationController {
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
 		try {
-			if (this.workbenchUserService.isValidUserLogin(model)) {
+			if (!this.workbenchUserService.isUserActive(model)) {
+				Map<String, String> errors = new LinkedHashMap<>();
+
+				errors.put(UserAccountFields.USERNAME,
+						this.messageSource.getMessage(UserAccountValidator.LOGIN_ATTEMPT_USER_INACTIVE, new String[] {},
+								"Your user account is not currently active. Please contact your system administrator",
+								LocaleContextHolder.getLocale()));
+
+				out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
+				out.put(AuthenticationController.ERRORS, errors);
+
+			} else if (this.workbenchUserService.isValidUserLogin(model)) {
 				isSuccess = HttpStatus.OK;
 				out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
 
@@ -201,12 +210,22 @@ public class AuthenticationController {
 	@ResponseBody
 	@RequestMapping(value = "/sendResetEmail", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Object>> doSendResetPasswordRequestEmail(@ModelAttribute("userAccount") UserAccountModel model) {
+		return sendResetEmail(model.getUsername());
+	}
+
+	@RequestMapping(value = "/sendResetEmail/{username}", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> sendResetPasswordEmail(@PathVariable final String username) {
+		return sendResetEmail(username);
+	}
+
+	private ResponseEntity<Map<String, Object>> sendResetEmail(final String username) {
 		Map<String, Object> out = new LinkedHashMap<>();
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
 		try {
 			// success! send an email request
-			this.workbenchEmailSenderService.doRequestPasswordReset(this.workbenchUserService.getUserByUserName(model.getUsername()));
+			this.workbenchEmailSenderService.doRequestPasswordReset(this.workbenchUserService.getUserByUserName(username));
 
 			isSuccess = HttpStatus.OK;
 			out.put(AuthenticationController.SUCCESS, Boolean.TRUE);

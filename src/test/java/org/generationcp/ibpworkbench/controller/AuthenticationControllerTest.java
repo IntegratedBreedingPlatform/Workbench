@@ -16,9 +16,9 @@ import org.generationcp.ibpworkbench.validator.UserAccountValidator;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.User;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -29,6 +29,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AuthenticationControllerTest {
@@ -61,6 +62,11 @@ public class AuthenticationControllerTest {
 	@InjectMocks
 	private AuthenticationController controller;
 
+	@Before
+	public void beforeEachTest() {
+		Mockito.when(this.workbenchUserService.isUserActive(Matchers.any(UserAccountModel.class))).thenReturn(true);
+	}
+
 	@Test
 	public void testGetLoginPage() throws Exception {
 		Model model = Mockito.mock(Model.class);
@@ -90,7 +96,7 @@ public class AuthenticationControllerTest {
 	@Test
 	public void testSaveUserAccountWithErrors() throws Exception {
 		Mockito.when(this.result.hasErrors()).thenReturn(true);
-		Mockito.when(this.result.getFieldErrors()).thenReturn(Collections.EMPTY_LIST);
+		Mockito.when(this.result.getFieldErrors()).thenReturn(Collections.<FieldError>emptyList());
 
 		ResponseEntity<Map<String, Object>> out = this.controller.saveUserAccount(this.userAccountModel, this.result);
 
@@ -137,7 +143,7 @@ public class AuthenticationControllerTest {
 	@Test
 	public void testValidateLoginAndForgotPasswordWithErrors() throws Exception {
 		Mockito.when(this.result.hasErrors()).thenReturn(true);
-		Mockito.when(this.result.getFieldErrors()).thenReturn(Collections.EMPTY_LIST);
+		Mockito.when(this.result.getFieldErrors()).thenReturn(Collections.<FieldError>emptyList());
 
 		Mockito.when(this.messageSource.getMessage(Matchers.anyString(), Matchers.any(Object[].class), Matchers.any(Locale.class)))
 		.thenReturn(Matchers.anyString());
@@ -277,5 +283,35 @@ public class AuthenticationControllerTest {
 		Mockito.verify(this.apiAuthenticationService, Mockito.never()).authenticate(Mockito.anyString(), Mockito.anyString());
 		Assert.assertNull(out.getBody().get("token"));
 		Assert.assertNull(out.getBody().get("expires"));
+	}
+	
+	@Test
+	public void testsendResetPasswordEmail() throws Exception {
+		// default success scenario
+		Mockito.when(this.workbenchUserService.getUserByUserName(Matchers.anyString()))
+				.thenReturn(Mockito.mock(User.class));
+		Mockito.doNothing().when(this.workbenchEmailSenderService).doRequestPasswordReset(Matchers.any(User.class));
+
+		ResponseEntity<Map<String, Object>> result = this.controller
+				.sendResetPasswordEmail(Mockito.mock(UserAccountModel.class).getUsername());
+
+		Assert.assertEquals("no http errors", HttpStatus.OK, result.getStatusCode());
+		Assert.assertEquals("is successful", Boolean.TRUE, result.getBody().get(AuthenticationController.SUCCESS));
+
+	}
+
+	@Test
+	public void testsendResetPasswordEmailWithErrors() throws Exception {
+		// houston we have a problem
+		Mockito.when(this.workbenchUserService.getUserByUserName(Matchers.anyString()))
+				.thenReturn(Mockito.mock(User.class));
+		Mockito.doThrow(new MessagingException("i cant send me message :(")).when(this.workbenchEmailSenderService)
+				.doRequestPasswordReset(Matchers.any(User.class));
+
+		ResponseEntity<Map<String, Object>> result = this.controller
+				.sendResetPasswordEmail(Mockito.mock(UserAccountModel.class).getUsername());
+
+		Assert.assertEquals("no http errors", HttpStatus.BAD_REQUEST, result.getStatusCode());
+		Assert.assertEquals("is successful", Boolean.FALSE, result.getBody().get(AuthenticationController.SUCCESS));
 	}
 }

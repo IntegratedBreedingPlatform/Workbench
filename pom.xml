@@ -424,7 +424,7 @@
 			<artifactId>modelmapper</artifactId>
 			<version>${modelmapper.version}</version>
 		</dependency>
-		
+
 	</dependencies>
 
 	<profiles>
@@ -673,8 +673,18 @@
 							<karmaConfPath>karma.conf.ci.js</karmaConfPath>
 						</configuration>
 					</execution>
+					<execution>
+						<id>javascript tests angular 2</id>
+						<goals>
+							<goal>karma</goal>
+						</goals>
+						<configuration>
+							<karmaConfPath>karma.conf-ng2.ci.js</karmaConfPath>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
+			
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>buildnumber-maven-plugin</artifactId>

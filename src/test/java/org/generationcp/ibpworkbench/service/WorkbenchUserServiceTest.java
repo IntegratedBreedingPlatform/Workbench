@@ -109,6 +109,32 @@ public class WorkbenchUserServiceTest {
 	}
 
 	@Test
+	public void testIsUserActive() throws Exception {
+		UserAccountModel userAccount = this.createUserAccount();
+		User user = new User();
+		user.setStatus(0);
+		user.setPersonid(TEST_PERSON_ID);
+		Person person = new Person();
+		List<User> userList = new ArrayList<>();
+		userList.add(user);
+
+		Mockito.when(this.workbenchDataManager.getUserByName(TEST_USERNAME, 0, 1, Operation.EQUAL)).thenReturn(
+				userList);
+		Mockito.when(this.workbenchDataManager.getPersonById(TEST_PERSON_ID)).thenReturn(person);
+
+		Assert.assertTrue(this.userService.isUserActive(userAccount));
+
+		user.setStatus(1);
+		Assert.assertFalse(this.userService.isUserActive(userAccount));
+
+		user.setStatus(null);
+		Assert.assertFalse(this.userService.isUserActive(userAccount));
+
+		userList.remove(user);
+		Assert.assertFalse(this.userService.isUserActive(userAccount));
+	}
+
+	@Test
 	public void testIsValidUserLogin() throws Exception {
 		UserAccountModel userAccount = this.createUserAccount();
 		User user = new User();

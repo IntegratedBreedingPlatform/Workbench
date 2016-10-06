@@ -2,6 +2,7 @@
 package org.generationcp.ibpworkbench.ui.programmembers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -14,6 +15,8 @@ import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
+import org.generationcp.middleware.pojos.workbench.Role;
+import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,7 +50,7 @@ public class ProgramMembersPanelTest {
 
 	@InjectMocks
 	private ProgramMembersPanel controller;
-
+	
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
@@ -114,7 +117,7 @@ public class ProgramMembersPanelTest {
 	}
 
 	@Test
-	public void testPopulateProgramMembers() {
+	public void testInitializeUsers() {
 		// Setup test data and mocks
 		this.mockDataAndReturnTheProjectUserRoles();
 		this.mockCurrentUser(ProgramMembersPanelTest.MEMBER_USER_ID);
@@ -124,7 +127,7 @@ public class ProgramMembersPanelTest {
 		this.controller.initializeValues();
 
 		// Call method to test
-		this.controller.populateProgramMembers();
+		this.controller.initializeUsers();
 
 		// Check that members are selected in twin table
 		final Set<User> programMembers = this.controller.getProgramMembersDisplayed();
@@ -140,6 +143,10 @@ public class ProgramMembersPanelTest {
 	}
 
 	private List<ProjectUserRole> mockDataAndReturnTheProjectUserRoles() {
+		final Role dummyRole = new Role();
+		dummyRole.setRoleId(1);
+		Mockito.doReturn(Arrays.asList(dummyRole)).when(this.workbenchDataManager).getAllRolesOrderedByLabel();
+		
 		final List<ProjectUserRole> projectUserRoles = this.createProjectUserRolesTestData(this.project);
 		Mockito.doReturn(projectUserRoles).when(this.workbenchDataManager).getProjectUserRolesByProject(this.project);
 
@@ -195,6 +202,11 @@ public class ProgramMembersPanelTest {
 		user.setName(username);
 		user.setPersonid(personId);
 		user.setPerson(new Person("Mister", "User", username + userId));
+		
+		final List<UserRole> userRoleList = new ArrayList<>();
+		userRoleList.add(new UserRole(user, "ADMIN"));
+		user.setRoles(userRoleList);
+		
 		return user;
 	}
 
