@@ -1,8 +1,9 @@
 package org.generationcp.ibpworkbench.ui.systemlabel;
 
-import com.mysql.jdbc.StringUtils;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Table;
+
+import org.apache.commons.lang3.StringUtils;
 import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.manager.api.OntologyDataManager;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -101,7 +102,7 @@ public class SystemLabelPresenter {
 	 */
 	protected boolean isAllTermsValid(final List<Term> terms) {
 		for (final Term term : terms) {
-			if (StringUtils.isNullOrEmpty(term.getName())) {
+			if (StringUtils.isEmpty(term.getName())) {
 				return false;
 			}
 		}
