@@ -24,10 +24,10 @@ export class UserCard implements OnInit {
     sendingEmail: boolean = false;
     @Input() originalUser: User;
     @Input() userSaved: boolean = false;
-    @Input() isEditing: boolean;
+    isEditing: boolean;
     @Input() model: User;
     @Input() roles: Role[];
-    @Input() sendMail: boolean;
+    sendMail: boolean;
     @Output() onUserAdded = new EventEmitter<User>();
     @Output() onUserEdited = new EventEmitter<User>();
     @Output() onCancel = new EventEmitter<void>();
@@ -54,8 +54,10 @@ export class UserCard implements OnInit {
         setTimeout(() => this.activeForm = true, 0);
     }*/
 
-    initialize() {
+    initialize(isEditing: boolean) {
+        this.isEditing = isEditing;
         this.errorUserMessage = '';
+        this.sendMail = !this.isEditing;
     }
 
     onSubmit() { this.submitted = true; }
