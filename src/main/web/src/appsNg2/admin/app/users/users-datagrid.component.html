@@ -1,0 +1,74 @@
+<section>
+  <div class="om-panel-content">
+        <button class="btn btn-default om-add-new-btn form-group pull-right"
+            (click)="addRecordPlugin()">Add user</button>
+  </div>
+  <div class="om-panel-header">
+        <h2 class="om-panel-title ">
+            Manage users</h2>
+        &nbsp;
+  </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-inline">
+
+                <div class="form-group">
+                  <label class="">Status: </label>
+                  &nbsp;
+                  <select class="select2-chosen ui-select-match" name="status"
+                      [(ngModel)]="table.searchValue.status">
+                      <option value="all">All</option>
+                      <option value="undefined">Active</option>                      
+                      <option value="false">Inactive</option>
+                  </select>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <label class="">Role: </label>
+                  &nbsp;
+                  <select  class="select2-chosen" name="role" [(ngModel)]="table.searchValue.role">
+                    <option value="undefined">All</option>
+                    <option  *ngFor="let role of roles" [value]="role.description">{{role.description}}</option>          
+                  </select>
+                </div>
+            </div>
+    </div>
+    </div>
+    <br><br>
+    <div class="row">
+        <div class="col-xs-12">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th [ngClass]="{ sort: isSorted('username'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('username')">User Name</th>
+                        <th [ngClass]="{ sort: isSorted('firstName'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('firstName')">First Name</th>
+                        <th [ngClass]="{ sort: isSorted('lastName'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('lastName')">Last Name</th>
+                        <th [ngClass]="{ sort: isSorted('email'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('email')">Email</th>
+                        <th [ngClass]="{ sort: isSorted('role'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('role')">Role</th>
+                        <th [ngClass]="{ sort: isSorted('status'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('status')">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngIf="!table.totalFilteredRows" class="clickable-row">
+                        <td colspan="6" class="text-center">No records found.</td>
+                    </tr>
+                    <tr *ngFor="let user of table.itemsOnCurrentPage">
+						<td><a href=""> {{user.username}} </a></td>
+                        <td>{{user.firstName}}</td>
+                        <td>{{user.lastName}}</td>
+                        <td>{{user.email}}</td>
+                        <td>{{user.role}}</td>
+                        <td>
+                          <a href="" *ngIf="user.status == 'true'">Deactivate</a>
+                          <a href="" *ngIf="user.status == 'false'">Activate</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <pagination [maxPageIndex]="table.maxPageIndex"
+                (pageNumberChanged)="table.currentPageIndex = $event">
+    </pagination>
+
+
+</section>

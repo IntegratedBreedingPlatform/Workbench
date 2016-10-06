@@ -22,7 +22,6 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.actions.OpenNewProjectAddUserWindowAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -62,10 +61,10 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
 	private static final Logger LOG = LoggerFactory.getLogger(ProjectMembersComponent.class);
 	private static final long serialVersionUID = 1L;
+	private static final String ROLE = "role";
+	private static final String USERNAME = "userName";
 
 	private TwinTableSelect<User> select;
-
-	private Button newMemberButton;
 
 	private Button btnCancel;
 	private Button btnSave;
@@ -88,7 +87,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 	public ProjectMembersComponent() {
 	}
 
-	public ProjectMembersComponent(AddProgramPresenter presenter) {
+	public ProjectMembersComponent(final AddProgramPresenter presenter) {
 		this.presenter = presenter;
 	}
 
@@ -111,46 +110,60 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
 		this.select = new TwinTableSelect<User>(User.class);
 
-		Table.ColumnGenerator generator1 = new Table.ColumnGenerator() {
+		final Table.ColumnGenerator tableLeftUserName = new Table.ColumnGenerator() {
 
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public Object generateCell(Table source, Object itemId, Object columnId) {
-				Person person = ((User) itemId).getPerson();
-				Label label = new Label();
-				label.setDebugId("label");
-				label.setValue(person.getDisplayName());
-				if (((User) itemId).getUserid().equals(ProjectMembersComponent.this.sessionData.getUserData().getUserid())) {
-					label.setStyleName("label-bold");
-				}
-				return label;
+			public Object generateCell(final Table source, final Object itemId, final Object columnId) {
+				return ProjectMembersComponent.this.generateUserNameCell(itemId);
 			}
 
 		};
-		Table.ColumnGenerator generator2 = new Table.ColumnGenerator() {
+		final Table.ColumnGenerator tableRightUserName = new Table.ColumnGenerator() {
 
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public Object generateCell(Table source, Object itemId, Object columnId) {
-				Person person = ((User) itemId).getPerson();
-				Label label = new Label();
-				label.setDebugId("label");
-				label.setValue(person.getDisplayName());
-				if (((User) itemId).getUserid().equals(ProjectMembersComponent.this.sessionData.getUserData().getUserid())) {
-					label.setStyleName("label-bold");
-				}
-				return label;
+			public Object generateCell(final Table source, final Object itemId, final Object columnId) {
+				return ProjectMembersComponent.this.generateUserNameCell(itemId);
 			}
 
 		};
 
-		this.select.getTableLeft().addGeneratedColumn("userName", generator1);
-		this.select.getTableRight().addGeneratedColumn("userName", generator2);
+		final Table.ColumnGenerator tableLeftRole = new Table.ColumnGenerator() {
 
-		this.select.setVisibleColumns(new Object[] {"select", "userName"});
-		this.select.setColumnHeaders(new String[] {"<span class='glyphicon glyphicon-ok'></span>", "USER NAME"});
+			/**
+			 *
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Object generateCell(final Table source, final Object itemId, final Object columnId) {
+				return ProjectMembersComponent.this.generateRoleCell(itemId);
+			}
+		};
+		final Table.ColumnGenerator tableRightRole = new Table.ColumnGenerator() {
+
+			/**
+			 *
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Object generateCell(final Table source, final Object itemId, final Object columnId) {
+				return ProjectMembersComponent.this.generateRoleCell(itemId);
+			}
+
+		};
+
+		this.select.getTableLeft().addGeneratedColumn(ProjectMembersComponent.USERNAME, tableLeftUserName);
+		this.select.getTableRight().addGeneratedColumn(ProjectMembersComponent.USERNAME, tableRightUserName);
+		this.select.getTableLeft().addGeneratedColumn(ProjectMembersComponent.ROLE, tableLeftRole);
+		this.select.getTableRight().addGeneratedColumn(ProjectMembersComponent.ROLE, tableRightRole);
+
+		this.select.setVisibleColumns(new Object[] {"select", ProjectMembersComponent.USERNAME, ProjectMembersComponent.ROLE});
+		this.select.setColumnHeaders(new String[] {"<span class='glyphicon glyphicon-ok'></span>", "User Name", "Role"});
 
 		this.select.setLeftColumnCaption("Available Users");
 		this.select.setRightColumnCaption("Selected Program Members");
@@ -162,7 +175,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 				ProjectMembersComponent.this.select.removeCheckedSelectedItems();
 			}
 		});
@@ -171,11 +184,11 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
 	protected void initializeValues() {
 		try {
-			Container container = this.createUsersContainer();
+			final Container container = this.createUsersContainer();
 			this.select.setContainerDataSource(container);
 
 			Object selectItem = null;
-			for (Object itemId : this.select.getTableLeft().getItemIds()) {
+			for (final Object itemId : this.select.getTableLeft().getItemIds()) {
 				if (((User) itemId).getUserid().equals(this.sessionData.getUserData().getUserid())) {
 					selectItem = itemId;
 				}
@@ -185,7 +198,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 				this.select.select(selectItem);
 			}
 
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			ProjectMembersComponent.LOG.error("Error encountered while getting workbench users", e);
 			throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
 		}
@@ -198,26 +211,17 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
 		final HorizontalLayout titleContainer = new HorizontalLayout();
 		titleContainer.setDebugId("titleContainer");
-		final Label heading =
-				new Label("<span class='bms-members' style='color: #D1B02A; font-size: 23px'></span>&nbsp;Program Members",
-						Label.CONTENT_XHTML);
-		final Label headingDesc =
-				new Label(
-						"Choose team members for this program by dragging available users from the list on the left into the Program Members list on the right.");
+		final Label heading = new Label("<span class='bms-members' style='color: #D1B02A; font-size: 23px'></span>&nbsp;Program Members",
+				Label.CONTENT_XHTML);
+		final Label headingDesc = new Label(
+				"Choose team members for this program by dragging available users from the list on the left into the Program Members list on the right.");
 
 		heading.setStyleName(Bootstrap.Typography.H4.styleName());
 
-		this.newMemberButton = new Button("Add New User");
-		this.newMemberButton.setDebugId("newMemberButton");
-		this.newMemberButton.setStyleName(Bootstrap.Buttons.INFO.styleName() + " loc-add-btn");
-
 		titleContainer.addComponent(heading);
-		titleContainer.addComponent(this.newMemberButton);
-
-		titleContainer.setComponentAlignment(this.newMemberButton, Alignment.MIDDLE_RIGHT);
 		titleContainer.setSizeUndefined();
 		titleContainer.setWidth("100%");
-		//TODO: move this to css
+		// TODO: move this to css
 		titleContainer.setMargin(false, false, false, false);
 
 		this.addComponent(titleContainer);
@@ -231,8 +235,6 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 	}
 
 	protected void initializeActions() {
-		this.newMemberButton.addListener(new OpenNewProjectAddUserWindowAction(this.select));
-
 		this.btnSave.addListener(new ClickListener() {
 
 			private static final long serialVersionUID = 1L;
@@ -241,6 +243,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 			public void buttonClick(final ClickEvent clickEvent) {
 				final TransactionTemplate transactionTemplate = new TransactionTemplate(ProjectMembersComponent.this.transactionManager);
 				transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+
 					@Override
 					protected void doInTransactionWithoutResult(final TransactionStatus status) {
 						try {
@@ -258,13 +261,14 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
 							ProjectMembersComponent.this.presenter.enableProgramMethodsAndLocationsTab();
 
-						} catch (Exception e) {
+						} catch (final Exception e) {
 
 							if ("basic_details_invalid".equals(e.getMessage())) {
 								return;
 							}
 
-							ProjectMembersComponent.LOG.error("Oops there might be serious problem on creating the program, investigate it!", e);
+							ProjectMembersComponent.LOG
+									.error("Oops there might be serious problem on creating the program, investigate it!", e);
 
 							MessageNotifier.showError(clickEvent.getComponent().getWindow(),
 									ProjectMembersComponent.this.messageSource.getMessage(Message.DATABASE_ERROR),
@@ -281,7 +285,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void buttonClick(ClickEvent clickEvent) {
+			public void buttonClick(final ClickEvent clickEvent) {
 				ProjectMembersComponent.this.presenter.resetProgramMembers();
 				ProjectMembersComponent.this.presenter.disableProgramMethodsAndLocationsTab();
 			}
@@ -289,7 +293,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 	}
 
 	protected Component layoutButtonArea() {
-		HorizontalLayout buttonLayout = new HorizontalLayout();
+		final HorizontalLayout buttonLayout = new HorizontalLayout();
 		buttonLayout.setDebugId("buttonLayout");
 		buttonLayout.setSpacing(true);
 		buttonLayout.setMargin(true, false, false, false);
@@ -306,13 +310,37 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 		return buttonLayout;
 	}
 
+	private Label generateRoleCell(final Object itemId) {
+		final String role = ((User) itemId).getRoles().get(0).getCapitalizedRole();
+		final Label label = new Label();
+		label.setDebugId("label");
+		label.setValue(role);
+
+		if (((User) itemId).getUserid().equals(ProjectMembersComponent.this.sessionData.getUserData().getUserid())) {
+			label.setStyleName("label-bold");
+		}
+		return label;
+	}
+
+	private Label generateUserNameCell(final Object itemId) {
+		final Person person = ((User) itemId).getPerson();
+		final Label label = new Label();
+		label.setDebugId("label");
+		label.setValue(person.getDisplayName());
+
+		if (((User) itemId).getUserid().equals(ProjectMembersComponent.this.sessionData.getUserData().getUserid())) {
+			label.setStyleName("label-bold");
+		}
+		return label;
+	}
+
 	private Container createUsersContainer() {
-		List<User> validUserList = new ArrayList<User>();
+		final List<User> validUserList = new ArrayList<User>();
 
 		// TODO: This can be improved once we implement proper User-Person mapping
-		List<User> userList = this.workbenchDataManager.getAllUsersSorted();
-		for (User user : userList) {
-			Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
+		final List<User> userList = this.workbenchDataManager.getAllUsersSorted();
+		for (final User user : userList) {
+			final Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
 			user.setPerson(person);
 
 			if (person != null) {
@@ -320,8 +348,8 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 			}
 		}
 
-		BeanItemContainer<User> beanItemContainer = new BeanItemContainer<User>(User.class);
-		for (User user : validUserList) {
+		final BeanItemContainer<User> beanItemContainer = new BeanItemContainer<User>(User.class);
+		for (final User user : validUserList) {
 			if (user.getUserid().equals(this.sessionData.getUserData().getUserid())) {
 				user.setEnabled(false);
 			}
