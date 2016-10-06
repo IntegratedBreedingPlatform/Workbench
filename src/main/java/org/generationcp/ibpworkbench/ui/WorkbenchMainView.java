@@ -12,15 +12,9 @@ package org.generationcp.ibpworkbench.ui;
 
 import java.util.Objects;
 import java.util.Properties;
+
 import javax.annotation.Resource;
 
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.Sizeable;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.*;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.themes.BaseTheme;
-import com.vaadin.ui.themes.Reindeer;
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.help.document.HelpWindow;
@@ -54,7 +48,30 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.vaadin.hene.popupbutton.PopupButton;
+
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.terminal.Sizeable;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.UriFragmentUtility;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.VerticalSplitPanel;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.BaseTheme;
+import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
 public class WorkbenchMainView extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
@@ -66,6 +83,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	private Label workbenchTitle;
 	private Button homeButton;
+	private Button adminButton;
 	private PopupButton memberButton;
 	private Button helpButton;
 
@@ -164,6 +182,12 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.homeButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + HEADER_BTN);
 		this.homeButton.setHtmlContentAllowed(true);
 		this.homeButton.setSizeUndefined();
+
+		this.adminButton = new Button(
+				String.format("<span class='bms-header-btn'><span>%s</span></span>", this.messageSource.getMessage("ADMIN_BUTTON")));
+		this.adminButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + HEADER_BTN);
+		this.adminButton.setHtmlContentAllowed(true);
+		this.adminButton.setSizeUndefined();
 
 		this.memberButton = new PopupButton();
 		this.memberButton.setDebugId("memberButton");
@@ -293,6 +317,20 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		final Button.ClickListener homeAction = new HomeAction();
 		this.homeButton.addListener(homeAction);
 		this.logoBtn.addListener(homeAction);
+		
+		this.adminButton.addListener(new Button.ClickListener() {
+			
+			@Override
+			public void buttonClick(ClickEvent event) {
+				final IContentWindow contentFrame = (IContentWindow) event.getComponent().getWindow();
+				contentFrame.showContent("controller/admin");
+
+				// collapse sidebar
+				WorkbenchMainView.this.root.setSplitPosition(0, Sizeable.UNITS_PIXELS);
+				// change icon here
+				WorkbenchMainView.this.toggleSidebarIcon();
+			}
+		});
 
 		this.helpButton.addListener(new Button.ClickListener() {
 
@@ -404,6 +442,12 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 		headerLayout.addComponent(this.uriFragUtil);
 
+		try {
+			addAdminButton(headerLayout);
+		} catch (final AccessDeniedException e){
+			// no-op
+		}
+
 		headerLayout.addComponent(this.homeButton);
 
 		headerLayout.addComponent(this.helpButton);
@@ -416,6 +460,12 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		headerLayout.setComponentAlignment(this.memberButton, Alignment.MIDDLE_RIGHT);
 
 		return headerLayout;
+	}
+
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	private void addAdminButton(HorizontalLayout headerLayout) {
+		headerLayout.addComponent(this.adminButton);
+		headerLayout.setComponentAlignment(this.adminButton, Alignment.MIDDLE_RIGHT);
 	}
 
 	/**

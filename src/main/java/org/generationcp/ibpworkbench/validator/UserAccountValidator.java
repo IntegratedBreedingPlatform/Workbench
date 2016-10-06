@@ -38,6 +38,7 @@ public class UserAccountValidator implements Validator {
 	public static final String SIGNUP_FIELD_EMAIL_EXISTS = "signup.field.email.exists";
 	public static final String SIGNUP_FIELD_INVALID_EMAIL_FORMAT = "signup.field.email.invalid";
 	public static final String LOGIN_ATTEMPT_UNSUCCESSFUL = "login.attempt.unsuccessful";
+	public static final String LOGIN_ATTEMPT_USER_INACTIVE = "login.attempt.user.inactive";
 
 	public static final String FIRST_NAME_STR = "First Name";
 	public static final String LAST_NAME_STR = "Last Name";
