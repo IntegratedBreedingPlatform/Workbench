@@ -4,7 +4,7 @@ import { MailService } from './mail.service';
 import { By } from '@angular/platform-browser';
 import { DebugElement }    from '@angular/core';
 import { inject, async, TestBed, ComponentFixture } from "@angular/core/testing";
-import { Response, XHRBackend, ResponseOptions, Headers, Http} from "@angular/http";
+import { Response, XHRBackend, ResponseOptions, Headers, Http, BaseRequestOptions } from "@angular/http";
 import { MockConnection, MockBackend } from "@angular/http/testing";
 import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
@@ -21,7 +21,16 @@ export function main()
         beforeEach(() =>
         {
             TestBed.configureTestingModule({
-                providers: [ XHRBackend, { useClass: MockBackend, MailService }]
+                providers: [{ provide: XHRBackend, useClass: MockBackend }, MailService,
+                    {
+                        provide: Http, useFactory: (backend, options) => {
+                            return new Http(backend, options);
+                        },
+                        deps: [MockBackend, BaseRequestOptions]
+                    },
+                    MockBackend,
+                    BaseRequestOptions
+                ]
             });
             header = new Headers();
             header.append( 'Accept', 'application/json' );
