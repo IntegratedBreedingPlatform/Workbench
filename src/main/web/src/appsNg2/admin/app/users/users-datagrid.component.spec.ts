@@ -77,10 +77,10 @@ export function main() {
       });
 
       it ('Should open edit user popup', function () {
-         user = new User("2", "Clarysabel", "Tovar", "ctovar2", "admin", "clarysabel2@leafnode.io", "0")        
+         user = new User("2", "Clarysabel2", "Tovar2", "ctovar2", "admin2", "clarysabel2@leafnode.io", "0")        
          userCard = new UserCard(userService, roleService, mailService);
          grid.showEditUserForm(user, userCard);
-        expect (grid.showEditDialog).toBe(true);
+         expect (grid.showEditDialog).toBe(true);
       });
     });
   }
