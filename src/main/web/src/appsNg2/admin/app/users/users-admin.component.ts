@@ -4,7 +4,6 @@ import { UsersDatagrid } from './users-datagrid.component';
 @Component({
     selector: 'users-admin',
     templateUrl: './users-admin.component.html',
-    directives: [UsersDatagrid],
     moduleId: module.id
 })
 

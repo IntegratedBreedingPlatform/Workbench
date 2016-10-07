@@ -3,7 +3,6 @@ import { NgDataGridModel } from './../shared/components/datagrid/ng-datagrid.mod
 import { PaginationComponent } from './../shared/components/datagrid/pagination.component';
 import { User } from './../shared/models/user.model';
 import { Role } from './../shared/models/role.model';
-import { FORM_DIRECTIVES } from '@angular/forms';
 import './../shared/utils/array.extensions';
 import { UserService } from './../shared/services/user.service';
 import { RoleService } from './../shared/services/role.service';
@@ -12,6 +11,7 @@ import {UserComparator} from './user-comparator.component';
 import { UsersDatagrid } from './users-datagrid.component';
 import { UserCard } from './user-card.component';
 import { MailService } from './../shared/services/mail.service';
+import { inject, async, TestBed , ComponentFixture } from "@angular/core/testing";
 
 export function main() {
 

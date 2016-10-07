@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { NgDataGridModel } from './../shared/components/datagrid/ng-datagrid.model';
-import { PaginationComponent } from './../shared/components/datagrid/pagination.component';
 import { User } from './../shared/models/user.model';
 import { Role } from './../shared/models/role.model';
-import { FORM_DIRECTIVES } from '@angular/forms';
 import './../shared/utils/array.extensions';
 import { UserService } from './../shared/services/user.service';
 import { RoleService } from './../shared/services/role.service';
 import { Dialog } from './../shared/components/dialog/dialog.component';
-import {UserComparator} from './user-comparator.component';
+import { PaginationComponent } from './../shared/components/datagrid/pagination.component';
 import { UserCard } from './user-card.component';
+import {UserComparator} from './user-comparator.component';
 
 @Component({
     selector: 'users-datagrid',
@@ -17,7 +16,6 @@ import { UserCard } from './user-card.component';
     styleUrls: [
         './users-datagrid.component.css'
     ],
-    directives: [PaginationComponent, FORM_DIRECTIVES, Dialog, UserCard],
     moduleId: module.id
 })
 

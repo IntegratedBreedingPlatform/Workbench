@@ -2,9 +2,9 @@
 
 import { RoleService } from './role.service';
 import { By } from '@angular/platform-browser';
-import { DebugElement, provide }    from '@angular/core';
-import { addProviders, inject, async, TestBed, ComponentFixture } from "@angular/core/testing";
-import { Response, XHRBackend, ResponseOptions, HTTP_PROVIDERS, Headers, Http} from "@angular/http";
+import { DebugElement }    from '@angular/core';
+import { inject, async, TestBed, ComponentFixture } from "@angular/core/testing";
+import { Response, XHRBackend, ResponseOptions, Headers, Http} from "@angular/http";
 import { MockConnection, MockBackend } from "@angular/http/testing";
 import { Observable } from 'rxjs/Rx';
 import { Role } from './../models/role.model'
@@ -20,8 +20,9 @@ export function main()
 
         beforeEach(() =>
         {
-            addProviders( [HTTP_PROVIDERS,
-                provide( XHRBackend, { useClass: MockBackend }), RoleService] );
+            TestBed.configureTestingModule({
+                providers: [ XHRBackend, { useClass: MockBackend, RoleService }]
+            });
             header = new Headers();
             header.append( 'Accept', 'application/json' );
             header.append( 'X-Auth-Token', 'token' )
