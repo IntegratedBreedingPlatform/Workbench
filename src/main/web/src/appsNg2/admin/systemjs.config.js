@@ -1,48 +1,52 @@
-(function(global) {
-  // map tells the System loader where to look for things
-  var map = {
-	'app':                        'pages/angular2/admin/app',
-	'@angular':                   'pages/angular2/lib/@angular',
-	'rxjs':                       'pages/angular2/lib/rxjs'
-  };
+(function (global) {
 
-  // packages tells the System loader how to load when no filename and/or no extension
-  var packages = {
-	  'app': {main: 'main.js', defaultExtension: 'js'},
-	  'rxjs': {defaultExtension: 'js'}
-  };
+    var paths = {
+        // paths serve as alias
+        'lib:': 'pages/angular2/lib/'
+    };
 
+    // map tells the System loader where to look for things
+    var map = {
+        'app': 'pages/angular2/admin/app',
 
+        // angular bundles
+        '@angular/core': 'lib:@angular/core/bundles/core.umd.js',
+        '@angular/core/testing': 'lib:@angular/core/bundles/core-testing.umd.js',
+        '@angular/platform-browser-dynamic/testing': 'lib:@angular/platform-browser-dynamic/bundles/platform-browser-dynamic-testing.umd.js',
+        '@angular/platform-browser/testing': 'lib:@angular/platform-browser/bundles/platform-browser-testing.umd.js',
+        '@angular/compiler/testing': 'lib:@angular/compiler/bundles/compiler-testing.umd.js',
+        '@angular/http/testing': 'lib:@angular/http/bundles/http-testing.umd.js',
+        '@angular/common': 'lib:@angular/common/bundles/common.umd.js',
+        '@angular/compiler': 'lib:@angular/compiler/bundles/compiler.umd.js',
+        '@angular/platform-browser': 'lib:@angular/platform-browser/bundles/platform-browser.umd.js',
+        '@angular/platform-browser-dynamic': 'lib:@angular/platform-browser-dynamic/bundles/platform-browser-dynamic.umd.js',
+        '@angular/http': 'lib:@angular/http/bundles/http.umd.js',
+        '@angular/router': 'lib:@angular/router/bundles/router.umd.js',
+        '@angular/forms': 'lib:@angular/forms/bundles/forms.umd.js',
+        '@angular/upgrade': 'lib:@angular/upgrade/bundles/upgrade.umd.js',
 
-  var packageNames = [
-      '@angular/common',
-      '@angular/forms',
-      '@angular/compiler',
-      '@angular/core',
-      '@angular/http',
-      '@angular/platform-browser',
-      '@angular/platform-browser-dynamic',
-      '@angular/router',
-      '@angular/router-deprecated',
-      '@angular/testing',
-      '@angular/upgrade'
-  ];
+        // other libraries
+        'rxjs': 'lib:rxjs',
+        'angular-in-memory-web-api': 'lib:angular-in-memory-web-api',
+    };
 
-  // add package entries for angular packages in the form '@angular/common': { main: 'index.js', defaultExtension: 'js' }
-  packageNames.forEach(function (pkgName) {
-      packages[pkgName] = {main: 'index.js', defaultExtension: 'js'};
-  });
+    // packages tells the System loader how to load when no filename and/or no extension
+    var packages = {
+        'app': { main: 'main.js', defaultExtension: 'js' },
+        'rxjs': { defaultExtension: 'js' }
+    };
 
-  var config = {
-      map: map,
-      packages: packages
-  };
+    var config = {
+        map: map,
+        packages: packages,
+        paths: paths
+    };
 
-  // filterSystemConfig - index.html's chance to modify config before we register it.
-  if (global.filterSystemConfig) {
-      global.filterSystemConfig(config);
-  }
+    // filterSystemConfig - index.html's chance to modify config before we register it.
+    if (global.filterSystemConfig) {
+        global.filterSystemConfig(config);
+    }
 
-  System.config(config);
+    System.config(config);
 
 })(this);
