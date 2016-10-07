@@ -144,7 +144,7 @@ export class UsersDatagrid implements OnInit {
         this.table.sortBy = col;
     }
 
-    changedActiveStatus(e: any) {
+    changedActiveStatus() {
         if (this.userSelected.status === "true") {
             this.userSelected.status = "false";
         } else {

@@ -13,6 +13,7 @@ import { UserCard } from './user-card.component';
 import { MailService } from './../shared/services/mail.service';
 import { inject, async, TestBed , ComponentFixture } from "@angular/core/testing";
 import { Observable } from 'rxjs/Rx';
+import { Http, Response, ResponseOptions, Headers } from '@angular/http';
 
 export function main() {
 
@@ -25,7 +26,17 @@ export function main() {
         return Observable.of([new User("0", "Vanina", "Maletta", "vmaletta", "technician", "vanina@leafnode.io", "0"),
                     new User("1", "Clarysabel", "Tovar", "ctovar", "admin", "clarysabel@leafnode.io", "0")]);
       }
-     
+
+      update(user: User) : Observable < Response > {
+        var options = new ResponseOptions({
+          body: {
+            "id" : "1"
+               }
+                            });
+        var response = new Response(options);
+        return Observable.of(response);
+      }
+
   }
 
   class MockRoleService extends RoleService {
@@ -38,6 +49,7 @@ export function main() {
                             new Role("1", "breeder"),
                             new Role("2", "technician")]);
       }
+
   }
 
   describe('User Datagrid Test', () => {
@@ -61,7 +73,7 @@ export function main() {
         items = createArrayOfUsers();
         mockRoleService = new MockRoleService();
         mockUserService = new MockUserService();
-        user = new User("3", "Diego", "Cuenya", "dcuenya", "breeder", "dcuenya@leafnode.io", "0");  
+        user = new User("3", "Diego", "Cuenya", "dcuenya", "breeder", "dcuenya@leafnode.io", "0");
         grid = new UsersDatagrid (mockUserService, mockRoleService);
         grid.table.items = items;
       });
@@ -106,7 +118,7 @@ export function main() {
         expect (grid.showNewDialog).toBe(true);
       });
 
-      it ('Should open edit user popup', function () {      
+      it ('Should open edit user popup', function () {
          userCard = new UserCard(userService, roleService, mailService);
          grid.showEditUserForm(user, userCard);
          expect (grid.showEditDialog).toBe(true);
@@ -117,27 +129,27 @@ export function main() {
         expect (grid.showNewDialog).toBe(false);
       });
 
-      it ('Should close edit user popup', function () {      
+      it ('Should close edit user popup', function () {
          grid.onUserEdited(user);
          expect (grid.showEditDialog).toBe(false);
       });
 
-      it ('Should init user', function () {      
+      it ('Should init user', function () {
          grid.initUser();
          expect (grid.user.id).toBe("0");
       });
 
-      it ('Should return is sorted by specific column', function () {      
+      it ('Should return is sorted by specific column', function () {
          grid.table.sortBy = "firstName";
          expect (grid.isSorted("firstName")).toBe(true);
       });
 
-     it ('Should sort by specific column', function () {      
+     it ('Should sort by specific column', function () {
          grid.sort("username");
          expect (grid.isSorted("username")).toBe(true);
       });
 
-     it ('Should sort after edit or add user', function () {      
+     it ('Should sort after edit or add user', function () {
          grid.sortAfterAddOrEdit();
          expect (grid.isSorted("lastName")).toBe(true);
 
@@ -146,17 +158,40 @@ export function main() {
          expect (grid.isSorted("username")).toBe(true);
       });
 
-     it ('Should get all users and all roles', function () {      
+     it ('Should get all users and all roles', function () {
          grid.ngOnInit();
          expect (grid.table.items.length).toBe(2);
          expect (grid.roles.length).toBe(3);
       });
 
-      /*it ('Should handleReAuthentication', function () {      
+      /*it ('Should handleReAuthentication', function () {
          grid.handleReAuthentication();
          expect(window.location).toBeDefined();
          expect (window.top.location.href).toContain('/ibpworkbench/logout');
       });*/
 
+      it ('Should open user confirm status popup', function () {
+         user = new User("2", "Clarysabel2", "Tovar2", "ctovar2", "admin2", "clarysabel2@leafnode.io", "true")
+         grid.showUserStatusConfirmPopUp(user);
+         expect (grid.showConfirmStatusDialog).toBe(true);
+      });
+
+      it ('Should say the dialog popup', function () {
+        let userChangeStatus = new User("2", "Clarysabel2", "Tovar2", "ctovar2", "admin2", "clarysabel2@leafnode.io", "true")
+         grid.showUserStatusConfirmPopUp(userChangeStatus);
+         expect (grid.confirmMessage).toBe("Please confirm that you would like to deactivate this user account.");
+      });MockUserService
+
+      it ('Should close user confirm status popup', function () {
+         grid.closeUserStatusConfirmPopUp();
+         expect (grid.showConfirmStatusDialog).toBe(false);
+      });
+
+     it ('Should update user status when accept confirm status popup', function () {
+        let userChangeStatus = new User("2", "Clarysabel2", "Tovar2", "ctovar2", "admin2", "clarysabel2@leafnode.io", "true")
+         grid.showUserStatusConfirmPopUp(userChangeStatus);
+         grid.changedActiveStatus();
+         expect (grid.showConfirmStatusDialog).toBe(false);
+      });
     });
   }
