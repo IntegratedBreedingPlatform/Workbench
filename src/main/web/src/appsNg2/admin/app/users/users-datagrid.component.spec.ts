@@ -10,16 +10,19 @@ import { RoleService } from './../shared/services/role.service';
 import { Dialog } from './../shared/components/dialog/dialog.component';
 import {UserComparator} from './user-comparator.component';
 import { UsersDatagrid } from './users-datagrid.component';
+import { UserCard } from './user-card.component';
+import { MailService } from './../shared/services/mail.service';
 
 export function main() {
 
   describe('User Datagrid Test', () => {
       let items: User[];
       let grid : UsersDatagrid;
-
+      let userCard : UserCard;
       let userService: UserService;
-
+      let mailService : MailService;
       let roleService: RoleService
+      let user : User;
 
       function createArrayOfUsers () {
           return [ new User("0", "Vanina", "Maletta", "vmaletta", "technician", "vanina@leafnode.io", "0"),
@@ -67,5 +70,17 @@ export function main() {
         expect (grid.table.itemsFiltered.length).toBe(1);
       });
 
+      it ('Should open add user popup', function () {
+         userCard = new UserCard(userService, roleService, mailService);
+         grid.showNewUserForm(userCard);
+        expect (grid.showNewDialog).toBe(true);
+      });
+
+      it ('Should open edit user popup', function () {
+         user = new User("2", "Clarysabel", "Tovar", "ctovar2", "admin", "clarysabel2@leafnode.io", "0")        
+         userCard = new UserCard(userService, roleService, mailService);
+         grid.showEditUserForm(user, userCard);
+        expect (grid.showEditDialog).toBe(true);
+      });
     });
   }
