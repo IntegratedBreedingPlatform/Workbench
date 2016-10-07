@@ -34,7 +34,7 @@ export class UsersDatagrid implements OnInit {
     user: User;
     originalUser: User;
 
-    private roles: Role[];
+    public roles: Role[];
     public userSelected: User;
 
     constructor(private userService: UserService, private roleService: RoleService) {

@@ -12,8 +12,33 @@ import { UsersDatagrid } from './users-datagrid.component';
 import { UserCard } from './user-card.component';
 import { MailService } from './../shared/services/mail.service';
 import { inject, async, TestBed , ComponentFixture } from "@angular/core/testing";
+import { Observable } from 'rxjs/Rx';
 
 export function main() {
+
+    class MockUserService extends UserService {
+      constructor(){
+        super(null);
+      }
+
+      getAll(): Observable<User[]>{
+        return Observable.of([new User("0", "Vanina", "Maletta", "vmaletta", "technician", "vanina@leafnode.io", "0"),
+                    new User("1", "Clarysabel", "Tovar", "ctovar", "admin", "clarysabel@leafnode.io", "0")]);
+      }
+     
+  }
+
+  class MockRoleService extends RoleService {
+      constructor(){
+        super(null);
+      }
+
+       getAll(): Observable<Role[]>{
+        return Observable.of([new Role("0", "admin"),
+                            new Role("1", "breeder"),
+                            new Role("2", "technician")]);
+      }
+  }
 
   describe('User Datagrid Test', () => {
       let items: User[];
@@ -21,8 +46,10 @@ export function main() {
       let userCard : UserCard;
       let userService: UserService;
       let mailService : MailService;
-      let roleService: RoleService
+      let roleService: RoleService;
       let user : User;
+      let mockRoleService : MockRoleService;
+      let mockUserService: MockUserService;
 
       function createArrayOfUsers () {
           return [ new User("0", "Vanina", "Maletta", "vmaletta", "technician", "vanina@leafnode.io", "0"),
@@ -32,7 +59,10 @@ export function main() {
 
       beforeEach(() => {
         items = createArrayOfUsers();
-        grid = new UsersDatagrid (userService, roleService);
+        mockRoleService = new MockRoleService();
+        mockUserService = new MockUserService();
+        user = new User("3", "Diego", "Cuenya", "dcuenya", "breeder", "dcuenya@leafnode.io", "0");  
+        grid = new UsersDatagrid (mockUserService, mockRoleService);
         grid.table.items = items;
       });
 
@@ -76,11 +106,57 @@ export function main() {
         expect (grid.showNewDialog).toBe(true);
       });
 
-      it ('Should open edit user popup', function () {
-         user = new User("2", "Clarysabel2", "Tovar2", "ctovar2", "admin2", "clarysabel2@leafnode.io", "0")        
+      it ('Should open edit user popup', function () {      
          userCard = new UserCard(userService, roleService, mailService);
          grid.showEditUserForm(user, userCard);
          expect (grid.showEditDialog).toBe(true);
       });
+
+      it ('Should close add user popup', function () {
+         grid.onUserAdded(user);
+        expect (grid.showNewDialog).toBe(false);
+      });
+
+      it ('Should close edit user popup', function () {      
+         grid.onUserEdited(user);
+         expect (grid.showEditDialog).toBe(false);
+      });
+
+      it ('Should init user', function () {      
+         grid.initUser();
+         expect (grid.user.id).toBe("0");
+      });
+
+      it ('Should return is sorted by specific column', function () {      
+         grid.table.sortBy = "firstName";
+         expect (grid.isSorted("firstName")).toBe(true);
+      });
+
+     it ('Should sort by specific column', function () {      
+         grid.sort("username");
+         expect (grid.isSorted("username")).toBe(true);
+      });
+
+     it ('Should sort after edit or add user', function () {      
+         grid.sortAfterAddOrEdit();
+         expect (grid.isSorted("lastName")).toBe(true);
+
+         grid.table.sortBy = "username";
+         grid.sortAfterAddOrEdit();
+         expect (grid.isSorted("username")).toBe(true);
+      });
+
+     it ('Should get all users and all roles', function () {      
+         grid.ngOnInit();
+         expect (grid.table.items.length).toBe(2);
+         expect (grid.roles.length).toBe(3);
+      });
+
+      /*it ('Should handleReAuthentication', function () {      
+         grid.handleReAuthentication();
+         expect(window.location).toBeDefined();
+         expect (window.top.location.href).toContain('/ibpworkbench/logout');
+      });*/
+
     });
   }
