@@ -74,6 +74,9 @@ public class AuthenticationController {
 	@Value("${institute.logo.path}")
 	private String instituteLogoPath;
 
+	@Value("${footer.message}")
+	private String footerMessage;
+
 	private boolean isAccountCreationEnabled;
 
 	@PostConstruct
@@ -86,7 +89,9 @@ public class AuthenticationController {
 	public String getLoginPage(Model model) {
 
 		model.addAttribute("isCreateAccountEnable", isAccountCreationEnabled);
-		model.addAttribute("instituteLogo", findInstituteLogo(instituteLogoPath));
+		model.addAttribute("instituteLogoPath", findInstituteLogo(instituteLogoPath));
+		model.addAttribute("footerMessage", footerMessage);
+
 		return "login";
 	}
 
