@@ -81,6 +81,30 @@ select {
 	margin-top: 1rem;
 }
 
+.login-footer a {
+	color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.login-footer {
+	text-align: center;
+    font-size: 0.9rem;
+	margin-top: 2rem;
+}
+
+.login-footer-logo {
+	width: 3rem;
+    border-radius: 4rem;
+    margin-right: 1rem;
+}
+
+.login-footer-body {
+    display: inline-block;
+    vertical-align: top;
+    padding-top: 13px;
+}
+
 .login-logo {
 	display: inline-block;
 	vertical-align: middle;

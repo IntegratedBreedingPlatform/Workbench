@@ -3,6 +3,7 @@ package org.generationcp.ibpworkbench.controller;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -20,6 +21,7 @@ import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -68,6 +70,10 @@ public class AuthenticationController {
 	@Resource
 	private ServletContext servletContext;
 
+	@Resource
+	@Qualifier("workbenchProperties")
+	private Properties workbenchProperties;
+
 	@Value("${workbench.enable.create.account}")
 	private String enableCreateAccount;
 
@@ -91,6 +97,7 @@ public class AuthenticationController {
 		model.addAttribute("isCreateAccountEnable", isAccountCreationEnabled);
 		model.addAttribute("instituteLogoPath", findInstituteLogo(instituteLogoPath));
 		model.addAttribute("footerMessage", footerMessage);
+		model.addAttribute("version", this.workbenchProperties.getProperty("workbench.version", ""));
 
 		return "login";
 	}

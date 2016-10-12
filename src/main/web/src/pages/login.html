@@ -122,6 +122,15 @@
 		</div>
 	</div>
 
+	<div class="login-footer">
+		<img class="login-footer-logo"
+			th:src="@{/controller/static/images/logo.png}" alt="Logo" />
+		<div class="login-footer-body">
+			Breeding Management System v<span th:text="${version}"></span> &bull;
+			Provided by the <a href="https://www.integratedbreeding.net/">Integrated Breeding Platform</a>
+		</div>
+	</div>
+
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/jquery-1.11.1.min.js}"></script>
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/modernizr-custom.js}"></script>
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/jquery.placeholder.js}"></script>
