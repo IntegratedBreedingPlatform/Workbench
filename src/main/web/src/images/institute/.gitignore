@@ -1,0 +1,5 @@
+# Put institute logo in this directory
+# Ignore everything for version control
+*
+# Except this file
+!.gitignore

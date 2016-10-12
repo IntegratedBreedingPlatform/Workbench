@@ -24,8 +24,14 @@
 	<link th:href="@{/controller/static/css/login.css}" rel="stylesheet">
 </head>
 <body>
-	<img class="login-logo" th:src="@{/controller/static/images/logo.png}" alt="Logo"/>
-
+	<div class="login-section">
+		<img class="login-logo" th:src="@{/controller/static/images/logo.png}"
+			alt="Logo" />
+		<img class="institute-logo"
+			onerror="this.style.display = 'none'"
+			th:if="${ instituteLogo != '' && instituteLogo != null }"
+			th:src="@{ ${instituteLogo} }" />
+	</div>
 	<!--/*
 		The novalidate attribute disables form validation on submit which means that red outlines are not
 		applied to input elements in IE.

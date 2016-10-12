@@ -68,9 +68,12 @@ public class AuthenticationController {
 	private String enableCreateAccount;
 	private boolean isAccountCreationEnabled;
 
+	@Value("${institute.logo.path}")
+	private String instituteLogoPath;
+
 	@PostConstruct
 	public void initialize(){
-		//ensuaring that the link is disable by default
+		// ensuring that the link is disable by default
 		isAccountCreationEnabled = enableCreateAccount==null ? false : Boolean.valueOf(enableCreateAccount);
 	}
 
@@ -78,6 +81,7 @@ public class AuthenticationController {
 	public String getLoginPage(Model model) {
 
 		model.addAttribute("isCreateAccountEnable", isAccountCreationEnabled);
+		model.addAttribute("instituteLogo", instituteLogoPath);
 		return "login";
 	}
 
