@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
+import javax.servlet.ServletContext;
 
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.security.InvalidResetTokenException;
@@ -64,12 +65,16 @@ public class AuthenticationController {
 	@Resource
 	private ApiAuthenticationService apiAuthenticationService;
 
+	@Resource
+	private ServletContext servletContext;
+
 	@Value("${workbench.enable.create.account}")
 	private String enableCreateAccount;
-	private boolean isAccountCreationEnabled;
 
 	@Value("${institute.logo.path}")
 	private String instituteLogoPath;
+
+	private boolean isAccountCreationEnabled;
 
 	@PostConstruct
 	public void initialize(){
@@ -81,8 +86,16 @@ public class AuthenticationController {
 	public String getLoginPage(Model model) {
 
 		model.addAttribute("isCreateAccountEnable", isAccountCreationEnabled);
-		model.addAttribute("instituteLogo", instituteLogoPath);
+		model.addAttribute("instituteLogo", findInstituteLogo(instituteLogoPath));
 		return "login";
+	}
+
+	protected String findInstituteLogo(String path) {
+		if (servletContext.getResourceAsStream("/WEB-INF/" + path) != null) {
+			return "/controller/" + path;
+		} else {
+			return "";
+		}
 	}
 
 	@RequestMapping(value = "/reset/{token}", method = RequestMethod.GET)
