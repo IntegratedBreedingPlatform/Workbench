@@ -190,7 +190,7 @@ public class RunSingleSiteAction implements ClickListener {
 		breedingViewInput.setReplicates(this.createReplicates(this.source.getSelDesignTypeValue(), this.source.getSelReplicatesValue()));
 
 		final DesignType designType = DesignType.getDesignTypeByName(this.source.getSelDesignTypeValue());
-		breedingViewInput.setDesignType(designType.resolveDesignTypeNameForBreedingView());
+		breedingViewInput.setDesignType(resolveDesignTypeNameForBreedingView(designType));
 
 		breedingViewInput.setBlocks(this.createBlocks(this.source.getSelBlocksValue()));
 
@@ -202,6 +202,23 @@ public class RunSingleSiteAction implements ClickListener {
 
 		breedingViewInput.setPlot(this.createPlot(breedingViewInput.getDatasetId()));
 
+	}
+
+	/**
+	 * Resolve the design type name to be used in Breeding View application.
+	 * @return
+	 */
+	String resolveDesignTypeNameForBreedingView(DesignType designType) {
+
+		if (designType == DesignType.INCOMPLETE_BLOCK_DESIGN) {
+			return DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName();
+		} else if (designType == DesignType.ROW_COLUMN_DESIGN) {
+			return DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName();
+		} else if (designType == DesignType.AUGMENTED_RANDOMIZED_BLOCK) {
+			return DesignType.INCOMPLETE_BLOCK_DESIGN.getName();
+		} else {
+			return designType.getName();
+		}
 	}
 
 	void populateRowPosAndColPos(DesignType designType, BreedingViewInput breedingViewInput) {
@@ -245,9 +262,9 @@ public class RunSingleSiteAction implements ClickListener {
 
 	Replicates createReplicates(final String designType, final String replicatesFactor) {
 
-		if (designType.equals(DesignType.P_REP_DESIGN.getName())) {
+		if (designType.equals(DesignType.P_REP_DESIGN.getName()) || designType.equals(DesignType.AUGMENTED_RANDOMIZED_BLOCK.getName())) {
 
-			// Do not include the replicates factor if the design type is P-rep.
+			// Do not include the replicates factor if the design type is P-rep and Augmented Randomized design.
 			return null;
 
 		} else if (!StringUtils.isNullOrEmpty(replicatesFactor)) {

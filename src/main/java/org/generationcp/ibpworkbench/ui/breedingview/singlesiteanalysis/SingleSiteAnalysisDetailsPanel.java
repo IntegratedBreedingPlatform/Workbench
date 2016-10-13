@@ -730,6 +730,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.selDesignType.addItem(DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
 		this.selDesignType.addItem(DesignType.ROW_COLUMN_DESIGN.getName());
 		this.selDesignType.addItem(DesignType.P_REP_DESIGN.getName());
+		this.selDesignType.addItem(DesignType.AUGMENTED_RANDOMIZED_BLOCK.getName());
 		this.selDesignType.setWidth(SingleSiteAnalysisDetailsPanel.SELECT_BOX_WIDTH);
 
 		this.selReplicates = new Select();
@@ -1025,6 +1026,9 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 					|| designType == TermId.RESOLVABLE_INCOMPLETE_ROW_COL_LATIN.getId()) {
 				designFactor = DesignType.ROW_COLUMN_DESIGN.getName();
 				this.displayRowColumnDesignElements();
+			} else if (designType == TermId.AUGMENTED_RANDOMIZED_BLOCK.getId()) {
+				designFactor = DesignType.AUGMENTED_RANDOMIZED_BLOCK.getName();
+				this.displayAugmentedDesignElements();
 			}
 
 			this.selDesignType.setValue(designFactor);
@@ -1388,6 +1392,23 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.getDesignDetailsContainer().addComponent(gLayout);
 
 		this.substituteMissingReplicatesWithBlocks();
+	}
+
+	public void displayAugmentedDesignElements() {
+
+		this.getDesignDetailsContainer().removeAllComponents();
+
+		final GridLayout gLayout = this.createGridLayout(2, 4);
+
+		// Add visible components for Augmented Design
+		gLayout.addComponent(this.getLblBlocks(), 0, 1);
+		gLayout.addComponent(this.getSelBlocks(), 1, 1);
+		gLayout.addComponent(this.getLblSpecifyGenotypesHeader(), 0, 2, 1, 2);
+		gLayout.addComponent(this.getLblGenotypes(), 0, 3);
+		gLayout.addComponent(this.getSelGenotypes(), 1, 3);
+
+		this.getDesignDetailsContainer().addComponent(gLayout);
+
 	}
 
 	public void displayRowColumnDesignElements() {

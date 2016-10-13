@@ -1,11 +1,17 @@
 
 package org.generationcp.ibpworkbench.actions;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Select;
-import org.generationcp.commons.breedingview.xml.*;
+import com.vaadin.ui.Window;
+import org.generationcp.commons.breedingview.xml.Blocks;
+import org.generationcp.commons.breedingview.xml.Columns;
+import org.generationcp.commons.breedingview.xml.DesignType;
+import org.generationcp.commons.breedingview.xml.Environment;
+import org.generationcp.commons.breedingview.xml.Genotypes;
+import org.generationcp.commons.breedingview.xml.Plot;
+import org.generationcp.commons.breedingview.xml.Replicates;
+import org.generationcp.commons.breedingview.xml.Rows;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDetailsPanel;
@@ -22,10 +28,10 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Window;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RunSingleSiteActionTest {
@@ -368,6 +374,20 @@ public class RunSingleSiteActionTest {
 		Assert.assertNull(this.breedingViewInput.getColumns());
 
 	}
+
+	@Test
+	public void testResolveDesignTypeNameForBreedingView() {
+
+		Assert.assertEquals("When resolving the design type for use in Breeding View, the Incomplete Block Design should become Resolvable Incomplete Block Design", DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName(), runSingleSiteAction.resolveDesignTypeNameForBreedingView(DesignType.INCOMPLETE_BLOCK_DESIGN));
+		Assert.assertEquals("When resolving the design type for use in Breeding View, the Row-and-Column Design should become Resolvable Row-and-Column Design", DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName(), runSingleSiteAction.resolveDesignTypeNameForBreedingView(DesignType.ROW_COLUMN_DESIGN));
+		Assert.assertEquals(DesignType.RANDOMIZED_BLOCK_DESIGN.getName(), runSingleSiteAction.resolveDesignTypeNameForBreedingView(DesignType.RANDOMIZED_BLOCK_DESIGN));
+		Assert.assertEquals(DesignType.P_REP_DESIGN.getName(), runSingleSiteAction.resolveDesignTypeNameForBreedingView(DesignType.P_REP_DESIGN));
+		Assert.assertEquals(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName(), runSingleSiteAction.resolveDesignTypeNameForBreedingView(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN));
+		Assert.assertEquals(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName(), runSingleSiteAction.resolveDesignTypeNameForBreedingView(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN));
+		Assert.assertEquals(DesignType.INCOMPLETE_BLOCK_DESIGN.getName(), runSingleSiteAction.resolveDesignTypeNameForBreedingView(DesignType.AUGMENTED_RANDOMIZED_BLOCK));
+
+	}
+
 
 
 
