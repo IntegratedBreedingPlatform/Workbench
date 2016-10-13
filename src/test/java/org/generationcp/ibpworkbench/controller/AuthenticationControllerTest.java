@@ -1,11 +1,17 @@
 
 package org.generationcp.ibpworkbench.controller;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.mail.MessagingException;
+import javax.servlet.ServletContext;
 
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.security.InvalidResetTokenException;
@@ -59,6 +65,12 @@ public class AuthenticationControllerTest {
 	@Mock
 	private ApiAuthenticationService apiAuthenticationService;
 
+	@Mock
+	private ServletContext servletContext;
+
+	@Mock
+	private Properties workbenchProperties;
+
 	@InjectMocks
 	private AuthenticationController controller;
 
@@ -71,6 +83,18 @@ public class AuthenticationControllerTest {
 	public void testGetLoginPage() throws Exception {
 		Model model = Mockito.mock(Model.class);
 		Assert.assertEquals("should return the login url", "login", this.controller.getLoginPage(model));
+	}
+
+	@Test
+	public void testFindInstituteLogo() {
+		final String path = "src/main/web/src/images/institute";
+
+		Mockito.when(this.servletContext.getResourceAsStream(Matchers.anyString())).thenReturn(null);
+		Assert.assertThat(this.controller.findInstituteLogo(path), is(""));
+
+		final InputStream inputStream = Mockito.mock(InputStream.class);
+		Mockito.when(this.servletContext.getResourceAsStream(Matchers.anyString())).thenReturn(inputStream);
+		Assert.assertThat(this.controller.findInstituteLogo(path), is(not("")));
 	}
 
 	@Test
