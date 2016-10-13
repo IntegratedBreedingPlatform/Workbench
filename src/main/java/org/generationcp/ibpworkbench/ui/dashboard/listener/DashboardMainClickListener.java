@@ -39,23 +39,23 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component;
+import com.vaadin.ui.Window;
 
 /**
  * @author Efficio.Daniel
  *
  */
 @Configurable
-public class DashboardMainClickListener implements ClickListener {
+public class DashboardMainClickListener implements ItemClickListener {
 
 	/**
 	 *
 	 */
 	private static final long serialVersionUID = 5742093045098439073L;
-	private final Long projectId;
-	private final Component source;
 
 	@Autowired
 	private WorkbenchDataManager manager;
@@ -74,18 +74,7 @@ public class DashboardMainClickListener implements ClickListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DashboardMainClickListener.class);
 
-	public DashboardMainClickListener(Component source, Long projectId) {
-		this.projectId = projectId;
-		this.source = source;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.vaadin.ui.Button.ClickListener#buttonClick(com.vaadin.ui.Button.ClickEvent)
-	 */
-	@Override
-	public void buttonClick(final ClickEvent event) {
+	public void openSelectedProgram(final Project project, final Window window) {
 		try {
 			TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
 
@@ -93,47 +82,52 @@ public class DashboardMainClickListener implements ClickListener {
 
 				protected void doInTransactionWithoutResult(TransactionStatus status) {
 
-					// lets update last opened project
-					Project project = DashboardMainClickListener.this.sessionData.getSelectedProject();
+					// Sets selected program/project to session
+					DashboardMainClickListener.this.sessionData.setSelectedProject(project);
+					
+					// Warn if the selected program's crop is outdated
 					String minimumCropVersion = SchemaVersionUtil.getMinimumCropVersion();
 					String currentCropVersion = project.getCropType().getVersion();
 					if (!SchemaVersionUtil.checkIfVersionIsSupported(currentCropVersion, minimumCropVersion)) {
-						MessageNotifier.showWarning(event.getComponent().getWindow(), "", DashboardMainClickListener.this.messageSource
+						MessageNotifier.showWarning(window, "", DashboardMainClickListener.this.messageSource
 								.getMessage(Message.MINIMUM_CROP_VERSION_WARNING, currentCropVersion != null ? currentCropVersion
 										: DashboardMainClickListener.this.messageSource.getMessage(Message.NOT_AVAILABLE)));
 					}
 
+					// FIXME - why are we creating workspace directories when just changing selected program? See if we can remove this
 					DashboardMainClickListener.this.toolUtil.createWorkspaceDirectoriesForProject(project);
 
 					DashboardMainClickListener.this.updateProjectLastOpenedDate(project);
 
+					// Set project name to header
+					WorkbenchMainView workbenchMainView = (WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow();
+					workbenchMainView.addTitle(project.getProjectName());
+
+					// FIXME - why are we populating the sidebar everytime we change projects?
+					workbenchMainView.getSidebar().populateLinks();
+					
 					// update sidebar selection
 					DashboardMainClickListener.LOG.trace("selecting sidebar");
-					WorkbenchMainView mainWindow = (WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow();
-
-					mainWindow.addTitle(project.getProjectName());
-
 					if (null != WorkbenchSidebar.sidebarTreeMap.get("manage_list")) {
-						mainWindow.getSidebar().selectItem(WorkbenchSidebar.sidebarTreeMap.get("manage_list"));
+						workbenchMainView.getSidebar().selectItem(WorkbenchSidebar.sidebarTreeMap.get("manage_list"));
 					}
 
 					// page change to list manager, with parameter passed
-					new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER_MAIN).buttonClick(event);
+					new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER_MAIN).onAppLaunch(window);
 
 				}
 			});
 		} catch (InternationalizableException e) {
 			DashboardMainClickListener.LOG.error(e.getMessage(), e);
-			MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
+			MessageNotifier.showError(window, e.getCaption(), e.getDescription());
 		} catch (Exception e) {
 			DashboardMainClickListener.LOG.error(e.getMessage(), e);
-			MessageNotifier.showError(event.getComponent().getWindow(), "", e.getLocalizedMessage());
+			MessageNotifier.showError(window, "", e.getLocalizedMessage());
 
 		}
-
 	}
 
-	public void updateProjectLastOpenedDate(Project project) {
+	void updateProjectLastOpenedDate(Project project) {
 		try {
 
 			// set the last opened project in the session
@@ -156,5 +150,11 @@ public class DashboardMainClickListener implements ClickListener {
 		} catch (MiddlewareQueryException e) {
 			DashboardMainClickListener.LOG.error(e.toString(), e);
 		}
+	}
+
+	@Override
+	public void itemClick(ItemClickEvent event) {
+		final Project project = (Project) event.getItemId();
+		openSelectedProgram(project, event.getComponent().getWindow());
 	}
 }

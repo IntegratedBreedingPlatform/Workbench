@@ -67,11 +67,11 @@ public class HomeAction implements ClickListener, ActionListener {
 	public void buttonClick(ClickEvent event) {
 		Window window = event.getComponent().getWindow();
 		if (this.newProgram != null) {
+			// FIXME this is redundant code
 			this.sessionData.setLastOpenedProject(this.newProgram);
 			this.sessionData.setSelectedProject(this.newProgram);
 
-			new DashboardMainClickListener(null, this.newProgram.getProjectId()).buttonClick(event);
-
+			new DashboardMainClickListener().openSelectedProgram(newProgram, event.getComponent().getWindow());
 		}
 
 		else {
@@ -97,6 +97,7 @@ public class HomeAction implements ClickListener, ActionListener {
 	 */
 	@Override
 	public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
+		// FIXME do not recreate workbench dashboard
 		// we create a new WorkbenchDashboard object here
 		// so that the UI is reset to its initial state
 		// we can remove this if we want to present the last UI state.
@@ -110,13 +111,10 @@ public class HomeAction implements ClickListener, ActionListener {
 			w.showContent(workbenchDashboard);
 
 			// reinitialize dashboard with default values
-
 			if (this.sessionData.getLastOpenedProject() != null) {
-				workbenchDashboard.initializeDashboardContents(this.newProgram).doAction(
-						this.sessionData.getLastOpenedProject().getProjectId(), IBPWorkbenchApplication.get().getMainWindow());
+				workbenchDashboard.initializeDashboardContents(this.newProgram);
 			} else {
-				workbenchDashboard.initializeDashboardContents(this.newProgram).doAction(null,
-						IBPWorkbenchApplication.get().getMainWindow());
+				workbenchDashboard.initializeDashboardContents(this.newProgram);
 			}
 
 		} catch (Exception e) {

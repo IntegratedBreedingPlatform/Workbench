@@ -386,11 +386,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 			throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
 		}
 
-		if (this.sessionData.getLastOpenedProject() != null) {
-			this.workbenchDashboard.initializeDashboardContents(null)
-					.doAction(this.sessionData.getLastOpenedProject().getProjectId(), this);
-		}
-
 	}
 
 	private UserInfo updateUserInfoIfNecessary(User user) throws MiddlewareQueryException {

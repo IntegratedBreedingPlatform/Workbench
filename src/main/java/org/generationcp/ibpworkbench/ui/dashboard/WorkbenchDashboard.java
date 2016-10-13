@@ -13,9 +13,7 @@ package org.generationcp.ibpworkbench.ui.dashboard;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.help.document.HelpButton;
@@ -27,7 +25,6 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
-import org.generationcp.ibpworkbench.actions.ShowProjectDetailAction;
 import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.ProjectTableCellStyleGenerator;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainClickListener;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -42,7 +39,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanContainer;
-import com.vaadin.event.ItemClickEvent;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
@@ -83,7 +79,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 	public static final String BUTTON_LIST_MANAGER_COLUMN_ID = "Workbench Dashboard List Manager Button Column Id";
 
 	private List<Project> projects = null;
-	private Button lasSelectedProjectButton = null;
 
 	public WorkbenchDashboard() {
 		super();
@@ -201,68 +196,52 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 			button.setStyleName(Bootstrap.Buttons.LINK.styleName() + " launch");
 			button.setWidth("26px");
 			button.setHeight("26px");
-			button.addListener(new DashboardMainClickListener(this, project.getProjectId()));
-			button.setEnabled(false);
-
-			Long lastOpenedProjectId = this.lastOpenedProject == null ? null : this.lastOpenedProject.getProjectId();
-			boolean sameProject =
-					lastOpenedProjectId == null ? project.getProjectId() == null : lastOpenedProjectId.equals(project.getProjectId());
-
-			if (sameProject) {
-				WorkbenchDashboard.this.lasSelectedProjectButton = button;
-
-				button.setEnabled(true);
-			}
+			button.setEnabled(true);
 
 			// capitalization done on CSS
 			this.tblProject.addItem(new Object[] {project.getProjectName(), project.getCropType().getCropName(), button},
-					project.getProjectId());
+					project);
 		}
 
 		if (this.lastOpenedProject != null) {
-			this.tblProject.select(this.lastOpenedProject.getProjectId());
+			this.tblProject.select(this.lastOpenedProject);
 		}
 
 	}
 
 	protected void initializeActions() {
 
-		this.tblProject.addListener(new ItemClickEvent.ItemClickListener() {
+//		this.tblProject.addListener(new ItemClickEvent.ItemClickListener() {
+//
+//			/**
+//			 *
+//			 */
+//			private static final long serialVersionUID = -7560323455772265841L;
+//
+//			@Override
+//			public void itemClick(ItemClickEvent event) {
+//				Object selectedButton =
+//						WorkbenchDashboard.this.tblProject.getItem(event.getItemId())
+//								.getItemProperty(WorkbenchDashboard.BUTTON_LIST_MANAGER_COLUMN_ID).getValue();
+//
+//				if (selectedButton instanceof Button && selectedButton != null) {
+//					((Button) selectedButton).setEnabled(true);
+//					WorkbenchDashboard.this.lastSelectedProjectButton = (Button) selectedButton;
+//
+//					if (event.isDoubleClick()) {
+//
+//						// hack manual trigger button
+//						Map vars = new HashMap();
+//						vars.put("state", true);
+//						((Button) selectedButton).changeVariables(this, vars);
+//
+//					}
+//				}
+//			}
+//		});
 
-			/**
-			 *
-			 */
-			private static final long serialVersionUID = -7560323455772265841L;
-
-			@Override
-			public void itemClick(ItemClickEvent event) {
-				Object selectedButton =
-						WorkbenchDashboard.this.tblProject.getItem(event.getItemId())
-								.getItemProperty(WorkbenchDashboard.BUTTON_LIST_MANAGER_COLUMN_ID).getValue();
-
-				// disable previously selected button
-
-				if (WorkbenchDashboard.this.lasSelectedProjectButton != null) {
-					WorkbenchDashboard.this.lasSelectedProjectButton.setEnabled(false);
-				}
-
-				if (selectedButton instanceof Button && selectedButton != null) {
-					((Button) selectedButton).setEnabled(true);
-					WorkbenchDashboard.this.lasSelectedProjectButton = (Button) selectedButton;
-
-					if (event.isDoubleClick()) {
-
-						// hack manual trigger button
-						Map vars = new HashMap();
-						vars.put("state", true);
-						((Button) selectedButton).changeVariables(this, vars);
-
-					}
-				}
-			}
-		});
-
-		this.tblProject.addListener(new ShowProjectDetailAction(this.tblProject, this.currentProject, this.projects));
+//		this.tblProject.addListener(new ShowProjectDetailAction(this.tblProject, this.currentProject, this.projects));
+		this.tblProject.addListener(new DashboardMainClickListener());
 
 	}
 
@@ -382,15 +361,13 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 	}
 
 	// hacky hack hack
-	public ShowProjectDetailAction initializeDashboardContents(Project selectProgram) {
+	public void initializeDashboardContents(Project selectProgram) {
 
 		// set this program as selected in dashboard
 		if (selectProgram != null) {
-			this.tblProject.select(selectProgram.getProjectId());
+			this.tblProject.select(selectProgram);
 		}
 
-		// update other pards
-		return new ShowProjectDetailAction(this.tblProject, this.lastOpenedProject, this.projects);
 	}
 
 }
