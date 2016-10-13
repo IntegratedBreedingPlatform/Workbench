@@ -11,10 +11,8 @@
 
 package org.generationcp.ibpworkbench.actions;
 
-import java.util.Arrays;
 import java.util.List;
 
-import org.generationcp.browser.study.containers.StudyDetailsQueryFactory;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
@@ -22,12 +20,8 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.ProjectTableCellStyleGenerator;
-import org.generationcp.ibpworkbench.ui.dashboard.summaryview.SummaryView;
-import org.generationcp.middleware.domain.oms.StudyType;
-import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,10 +41,6 @@ public class ShowProjectDetailAction implements Property.ValueChangeListener {
 
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOG = LoggerFactory.getLogger(ShowProjectDetailAction.class);
-	private final SummaryView summaryView;
-
-	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -69,12 +59,9 @@ public class ShowProjectDetailAction implements Property.ValueChangeListener {
 	private final List<Project> projects;
 
 	@Autowired
-	private StudyDataManager studyDataManager;
-
-	@Autowired
 	private PlatformTransactionManager transactionManager;
 
-	public ShowProjectDetailAction(Table tblProject, SummaryView summaryView, Button selectDatasetForBreedingViewButton,
+	public ShowProjectDetailAction(Table tblProject, Button selectDatasetForBreedingViewButton,
 			OpenSelectProjectForStudyAndDatasetViewAction openSelectDatasetForBreedingViewAction, Project currentProject,
 			List<Project> projects) {
 		this.tblProject = tblProject;
@@ -82,7 +69,6 @@ public class ShowProjectDetailAction implements Property.ValueChangeListener {
 		this.openSelectDatasetForBreedingViewAction = openSelectDatasetForBreedingViewAction;
 		this.currentProj = currentProject;
 		this.projects = projects;
-		this.summaryView = summaryView;
 	}
 
 	private void showDatabaseError(Window window) {
@@ -132,15 +118,6 @@ public class ShowProjectDetailAction implements Property.ValueChangeListener {
 					ShowProjectDetailAction.this.selectDatasetForBreedingViewButton
 							.addListener(ShowProjectDetailAction.this.openSelectDatasetForBreedingViewAction);
 
-					long projectActivitiesCount;
-
-					projectActivitiesCount =
-							ShowProjectDetailAction.this.workbenchDataManager.countProjectActivitiesByProjectId(project.getProjectId());
-
-					List<ProjectActivity> activityList =
-							ShowProjectDetailAction.this.workbenchDataManager.getProjectActivitiesByProjectId(project.getProjectId(),
-									0, (int) projectActivitiesCount);
-
 					ShowProjectDetailAction.this.workbenchDashboardwindow = (WorkbenchMainView) workbenchDashboardWin;
 					if (ShowProjectDetailAction.this.workbenchDashboardwindow != null) {
 						ShowProjectDetailAction.this.workbenchDashboardwindow.addTitle(project.getProjectName());
@@ -159,23 +136,6 @@ public class ShowProjectDetailAction implements Property.ValueChangeListener {
 							ShowProjectDetailAction.this.tblProject, project));
 					ShowProjectDetailAction.this.tblProject.refreshRowCache();
 
-					ShowProjectDetailAction.this.summaryView.updateActivityTable(activityList);
-
-					StudyDetailsQueryFactory trialFactory =
-							new StudyDetailsQueryFactory(studyDataManager, StudyType.T, Arrays
-									.asList(ShowProjectDetailAction.this.summaryView.getTblTrialColumns()), project.getUniqueID());
-
-					ShowProjectDetailAction.this.summaryView.updateTrialSummaryTable(trialFactory);
-
-					StudyDetailsQueryFactory nurseryFactory =
-							new StudyDetailsQueryFactory(studyDataManager, StudyType.N, Arrays
-									.asList(ShowProjectDetailAction.this.summaryView.getTblNurseryColumns()), project.getUniqueID());
-					ShowProjectDetailAction.this.summaryView.updateNurserySummaryTable(nurseryFactory);
-
-					StudyDetailsQueryFactory seasonFactory =
-							new StudyDetailsQueryFactory(studyDataManager, null, Arrays.asList(ShowProjectDetailAction.this.summaryView
-									.getTblSeasonColumns()), project.getUniqueID());
-					ShowProjectDetailAction.this.summaryView.updateSeasonSummaryTable(seasonFactory);
 					
 				}
 			});

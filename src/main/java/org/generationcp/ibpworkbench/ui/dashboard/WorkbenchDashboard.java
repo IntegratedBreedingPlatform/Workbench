@@ -31,9 +31,6 @@ import org.generationcp.ibpworkbench.actions.OpenSelectProjectForStudyAndDataset
 import org.generationcp.ibpworkbench.actions.ShowProjectDetailAction;
 import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.ProjectTableCellStyleGenerator;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainClickListener;
-import org.generationcp.ibpworkbench.ui.dashboard.preview.GermplasmListPreview;
-import org.generationcp.ibpworkbench.ui.dashboard.preview.NurseryListPreview;
-import org.generationcp.ibpworkbench.ui.dashboard.summaryview.SummaryView;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
@@ -57,7 +54,6 @@ import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
@@ -91,7 +87,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 	public static final String BUTTON_LIST_MANAGER_COLUMN_ID = "Workbench Dashboard List Manager Button Column Id";
 
 	private List<Project> projects = null;
-	private SummaryView summaryView;
 	private Button lasSelectedProjectButton = null;
 
 	public WorkbenchDashboard() {
@@ -156,7 +151,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		this.setTitleContent();
 
 		this.addComponent(this.layoutProjectTableArea());
-		this.addComponent(this.layoutProjectDetailArea());
 	}
 
 	private void setTitleContent() {
@@ -280,7 +274,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 			}
 		});
 
-		this.tblProject.addListener(new ShowProjectDetailAction(this.tblProject, this.summaryView, this.selectDatasetForBreedingViewButton,
+		this.tblProject.addListener(new ShowProjectDetailAction(this.tblProject, this.selectDatasetForBreedingViewButton,
 				openSelectDatasetForBreedingViewAction, this.currentProject, this.projects));
 
 	}
@@ -366,13 +360,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		return root;
 	}
 
-	private Component layoutProjectDetailArea() {
-		this.summaryView = new SummaryView();
-		this.summaryView.setDebugId("summaryView");
-
-		return this.summaryView;
-	}
-
 	@Override
 	public void attach() {
 		super.attach();
@@ -416,7 +403,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		}
 
 		// update other pards
-		return new ShowProjectDetailAction(this.tblProject, this.summaryView, this.selectDatasetForBreedingViewButton,
+		return new ShowProjectDetailAction(this.tblProject, this.selectDatasetForBreedingViewButton,
 				new OpenSelectProjectForStudyAndDatasetViewAction(null), this.lastOpenedProject, this.projects);
 	}
 
