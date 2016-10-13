@@ -20,7 +20,6 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.ProjectTableCellStyleGenerator;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +31,6 @@ import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import com.vaadin.data.Property;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
 
@@ -51,9 +49,6 @@ public class ShowProjectDetailAction implements Property.ValueChangeListener {
 	private final Table tblProject;
 	private WorkbenchMainView workbenchDashboardwindow;
 
-	private OpenSelectProjectForStudyAndDatasetViewAction openSelectDatasetForBreedingViewAction;
-
-	private final Button selectDatasetForBreedingViewButton;
 	private Project currentProj;
 
 	private final List<Project> projects;
@@ -61,12 +56,8 @@ public class ShowProjectDetailAction implements Property.ValueChangeListener {
 	@Autowired
 	private PlatformTransactionManager transactionManager;
 
-	public ShowProjectDetailAction(Table tblProject, Button selectDatasetForBreedingViewButton,
-			OpenSelectProjectForStudyAndDatasetViewAction openSelectDatasetForBreedingViewAction, Project currentProject,
-			List<Project> projects) {
+	public ShowProjectDetailAction(Table tblProject, Project currentProject, List<Project> projects) {
 		this.tblProject = tblProject;
-		this.selectDatasetForBreedingViewButton = selectDatasetForBreedingViewButton;
-		this.openSelectDatasetForBreedingViewAction = openSelectDatasetForBreedingViewAction;
 		this.currentProj = currentProject;
 		this.projects = projects;
 	}
@@ -107,16 +98,6 @@ public class ShowProjectDetailAction implements Property.ValueChangeListener {
 						ShowProjectDetailAction.this.currentProj = project;
 						IBPWorkbenchApplication.get().getSessionData().setSelectedProject(ShowProjectDetailAction.this.currentProj);
 					}
-
-					// update the project activity table's listener
-					if (ShowProjectDetailAction.this.openSelectDatasetForBreedingViewAction != null) {
-						ShowProjectDetailAction.this.selectDatasetForBreedingViewButton
-								.removeListener(ShowProjectDetailAction.this.openSelectDatasetForBreedingViewAction);
-					}
-					ShowProjectDetailAction.this.openSelectDatasetForBreedingViewAction =
-							new OpenSelectProjectForStudyAndDatasetViewAction(project);
-					ShowProjectDetailAction.this.selectDatasetForBreedingViewButton
-							.addListener(ShowProjectDetailAction.this.openSelectDatasetForBreedingViewAction);
 
 					ShowProjectDetailAction.this.workbenchDashboardwindow = (WorkbenchMainView) workbenchDashboardWin;
 					if (ShowProjectDetailAction.this.workbenchDashboardwindow != null) {

@@ -27,7 +27,6 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
-import org.generationcp.ibpworkbench.actions.OpenSelectProjectForStudyAndDatasetViewAction;
 import org.generationcp.ibpworkbench.actions.ShowProjectDetailAction;
 import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.ProjectTableCellStyleGenerator;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainClickListener;
@@ -68,9 +67,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
 	private Project currentProject;
 
-	private Button selectDatasetForBreedingViewButton;
-
-
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
 
@@ -99,10 +95,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 	}
 
 	public void initializeComponents() {
-		this.selectDatasetForBreedingViewButton = new Button("View Studies and Datasets");
-		this.selectDatasetForBreedingViewButton.setDebugId("selectDatasetForBreedingViewButton");
-		this.selectDatasetForBreedingViewButton.setWidth("200px");
-
 		this.initializeProjectTable();
 	}
 
@@ -235,10 +227,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
 	protected void initializeActions() {
 
-		OpenSelectProjectForStudyAndDatasetViewAction openSelectDatasetForBreedingViewAction =
-				new OpenSelectProjectForStudyAndDatasetViewAction(null);
-		this.selectDatasetForBreedingViewButton.addListener(openSelectDatasetForBreedingViewAction);
-
 		this.tblProject.addListener(new ItemClickEvent.ItemClickListener() {
 
 			/**
@@ -274,8 +262,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 			}
 		});
 
-		this.tblProject.addListener(new ShowProjectDetailAction(this.tblProject, this.selectDatasetForBreedingViewButton,
-				openSelectDatasetForBreedingViewAction, this.currentProject, this.projects));
+		this.tblProject.addListener(new ShowProjectDetailAction(this.tblProject, this.currentProject, this.projects));
 
 	}
 
@@ -403,8 +390,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		}
 
 		// update other pards
-		return new ShowProjectDetailAction(this.tblProject, this.selectDatasetForBreedingViewButton,
-				new OpenSelectProjectForStudyAndDatasetViewAction(null), this.lastOpenedProject, this.projects);
+		return new ShowProjectDetailAction(this.tblProject, this.lastOpenedProject, this.projects);
 	}
 
 }
