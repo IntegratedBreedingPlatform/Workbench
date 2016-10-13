@@ -22,11 +22,8 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.ProjectTableCellStyleGenerator;
-import org.generationcp.ibpworkbench.ui.dashboard.preview.GermplasmListPreview;
-import org.generationcp.ibpworkbench.ui.dashboard.preview.NurseryListPreview;
 import org.generationcp.ibpworkbench.ui.dashboard.summaryview.SummaryView;
 import org.generationcp.middleware.domain.oms.StudyType;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -42,7 +39,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import com.vaadin.data.Property;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
 
@@ -70,10 +66,6 @@ public class ShowProjectDetailAction implements Property.ValueChangeListener {
 	private final Button selectDatasetForBreedingViewButton;
 	private Project currentProj;
 
-	private final GermplasmListPreview germplasmListPreview;
-	private final NurseryListPreview nurseryListPreview;
-	private final TabSheet previewTab;
-
 	private final List<Project> projects;
 
 	@Autowired
@@ -84,14 +76,11 @@ public class ShowProjectDetailAction implements Property.ValueChangeListener {
 
 	public ShowProjectDetailAction(Table tblProject, SummaryView summaryView, Button selectDatasetForBreedingViewButton,
 			OpenSelectProjectForStudyAndDatasetViewAction openSelectDatasetForBreedingViewAction, Project currentProject,
-			GermplasmListPreview germplasmListPreview, NurseryListPreview nurseryListPreview, TabSheet previewTab, List<Project> projects) {
+			List<Project> projects) {
 		this.tblProject = tblProject;
 		this.selectDatasetForBreedingViewButton = selectDatasetForBreedingViewButton;
 		this.openSelectDatasetForBreedingViewAction = openSelectDatasetForBreedingViewAction;
 		this.currentProj = currentProject;
-		this.germplasmListPreview = germplasmListPreview;
-		this.nurseryListPreview = nurseryListPreview;
-		this.previewTab = previewTab;
 		this.projects = projects;
 		this.summaryView = summaryView;
 	}
@@ -187,10 +176,7 @@ public class ShowProjectDetailAction implements Property.ValueChangeListener {
 							new StudyDetailsQueryFactory(studyDataManager, null, Arrays.asList(ShowProjectDetailAction.this.summaryView
 									.getTblSeasonColumns()), project.getUniqueID());
 					ShowProjectDetailAction.this.summaryView.updateSeasonSummaryTable(seasonFactory);
-
-					ShowProjectDetailAction.this.germplasmListPreview.setProject(ShowProjectDetailAction.this.currentProj);
-					ShowProjectDetailAction.this.nurseryListPreview.setProject(ShowProjectDetailAction.this.currentProj);
-					ShowProjectDetailAction.this.previewTab.setSelectedTab(ShowProjectDetailAction.this.germplasmListPreview);
+					
 				}
 			});
 		} catch (Exception e) {

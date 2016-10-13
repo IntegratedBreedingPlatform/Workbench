@@ -74,10 +74,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
 	private Button selectDatasetForBreedingViewButton;
 
-	private TabSheet previewTab;
-
-	private GermplasmListPreview germplasmListPreview;
-	private NurseryListPreview nurseryListPreview;
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
@@ -113,7 +109,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		this.selectDatasetForBreedingViewButton.setWidth("200px");
 
 		this.initializeProjectTable();
-		this.initializePreviewTable();
 	}
 
 	private void initializeProjectTable() {
@@ -151,22 +146,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		this.tblProject.setColumnCollapsingAllowed(false);
 		this.tblProject.setCellStyleGenerator(new ProjectTableCellStyleGenerator(this.tblProject, null));
 
-	}
-
-	private void initializePreviewTable() {
-		this.germplasmListPreview = new GermplasmListPreview(null);
-		this.germplasmListPreview.setDebugId("germplasmListPreview");
-		this.nurseryListPreview = new NurseryListPreview(null);
-		this.nurseryListPreview.setDebugId("nurseryListPreview");
-
-		this.previewTab = new TabSheet();
-		this.previewTab.setDebugId("previewTab");
-		this.previewTab.setHeight(100, Sizeable.UNITS_PERCENTAGE);
-		this.previewTab.addTab(this.germplasmListPreview, "Lists");
-
-		this.previewTab.addTab(this.nurseryListPreview, "Nurseries & Trials");
-
-		this.previewTab.setImmediate(true);
 	}
 
 	protected void initializeLayout() {
@@ -302,8 +281,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		});
 
 		this.tblProject.addListener(new ShowProjectDetailAction(this.tblProject, this.summaryView, this.selectDatasetForBreedingViewButton,
-				openSelectDatasetForBreedingViewAction, this.currentProject, this.germplasmListPreview, this.nurseryListPreview,
-				this.previewTab, this.projects));
+				openSelectDatasetForBreedingViewAction, this.currentProject, this.projects));
 
 	}
 
@@ -381,9 +359,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		previewArea.setSizeFull();
 		previewArea.setMargin(new MarginInfo(true, false, false, false));
 
-		previewArea.addComponent(this.previewTab);
-		this.previewTab.addStyleName("preview-tab");
-
 		root.setFirstComponent(programArea);
 		root.setSecondComponent(previewArea);
 		root.setHeight("400px");
@@ -442,8 +417,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
 		// update other pards
 		return new ShowProjectDetailAction(this.tblProject, this.summaryView, this.selectDatasetForBreedingViewButton,
-				new OpenSelectProjectForStudyAndDatasetViewAction(null), this.lastOpenedProject, this.germplasmListPreview,
-				this.nurseryListPreview, this.previewTab, this.projects);
+				new OpenSelectProjectForStudyAndDatasetViewAction(null), this.lastOpenedProject, this.projects);
 	}
 
 }
