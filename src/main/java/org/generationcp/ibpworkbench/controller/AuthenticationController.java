@@ -95,6 +95,7 @@ public class AuthenticationController {
 	public String getLoginPage(Model model) {
 
 		model.addAttribute("isCreateAccountEnable", isAccountCreationEnabled);
+
 		model.addAttribute("instituteLogoPath", findInstituteLogo(instituteLogoPath));
 		model.addAttribute("footerMessage", footerMessage);
 		model.addAttribute("version", this.workbenchProperties.getProperty("workbench.version", ""));
@@ -102,6 +103,11 @@ public class AuthenticationController {
 		return "login";
 	}
 
+	/**
+	 * Return img logo or emtpy if file not present
+	 * @param path path to logo image
+	 * @return img src
+	 */
 	protected String findInstituteLogo(String path) {
 		if (servletContext.getResourceAsStream("/WEB-INF/" + path) != null) {
 			return "/controller/" + path;
@@ -118,6 +124,10 @@ public class AuthenticationController {
 			User user = this.workbenchEmailSenderService.validateResetToken(token);
 
 			model.addAttribute("user", user);
+
+			model.addAttribute("instituteLogoPath", findInstituteLogo(instituteLogoPath));
+			model.addAttribute("footerMessage", footerMessage);
+			model.addAttribute("version", this.workbenchProperties.getProperty("workbench.version", ""));
 
 			return "new-password";
 
