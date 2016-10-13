@@ -71,11 +71,6 @@ select {
     margin-top: 4rem;
 }
 
-.institute-logo {
-    vertical-align: middle;
-	margin-left: 2rem;
-}
-
 .login-footer-message {
 	text-align: center;
 	margin-top: 1rem;
@@ -90,7 +85,7 @@ select {
 .login-footer {
 	text-align: center;
     font-size: 0.9rem;
-	margin-top: 2rem;
+	margin-top: 6rem;
 }
 
 .login-footer-logo {
@@ -105,11 +100,18 @@ select {
     padding-top: 13px;
 }
 
+.login-logo, .institute-logo {
+	display: block;
+	margin: 0 auto;
+}
+
 .login-logo {
-	display: inline-block;
-	vertical-align: middle;
 	width: 8rem;
 	border-radius: 4rem;
+}
+
+.institute-logo {
+	margin-top: 2rem;
 }
 
 .login-form {
