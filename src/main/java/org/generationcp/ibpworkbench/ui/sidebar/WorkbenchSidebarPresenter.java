@@ -4,10 +4,13 @@ package org.generationcp.ibpworkbench.ui.sidebar;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import com.google.common.collect.Lists;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.SessionData;
@@ -18,8 +21,11 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.Tool;
+import org.generationcp.middleware.pojos.workbench.ToolName;
+import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategory;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategoryLink;
+import org.generationcp.middleware.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -45,6 +51,9 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 
 	@Value("${workbench.is.backup.and.restore.enabled}")
 	private String isBackupAndRestoreEnabled;
+
+	@Value("#{'${workbench.import.germplasm.permissible.roles}'.split(',')}")
+	private Set<String> importGermplasmPermissibleRoles = new HashSet<>();
 
 	@Autowired
 	private PlatformTransactionManager transactionManager;
@@ -91,18 +100,42 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 			}
 
 			for (final WorkbenchSidebarCategoryLink link : categoryLinks) {
-				if (sidebarLinks.get(link.getWorkbenchSidebarCategory()) == null) {
-					sidebarLinks.put(link.getWorkbenchSidebarCategory(), new ArrayList<WorkbenchSidebarCategoryLink>());
+				if(isCategoryLinkPermissibleForUserRole(link)){
+					if (sidebarLinks.get(link.getWorkbenchSidebarCategory()) == null) {
+						sidebarLinks.put(link.getWorkbenchSidebarCategory(), new ArrayList<WorkbenchSidebarCategoryLink>());
+					}
+					if (link.getTool() == null) {
+						link.setTool(new Tool(link.getSidebarLinkName(), link.getSidebarLinkTitle(), ""));
+					}
+					sidebarLinks.get(link.getWorkbenchSidebarCategory()).add(link);
 				}
-				if (link.getTool() == null) {
-					link.setTool(new Tool(link.getSidebarLinkName(), link.getSidebarLinkTitle(), ""));
-				}
-				sidebarLinks.get(link.getWorkbenchSidebarCategory()).add(link);
+
 			}
 		} catch (final MiddlewareQueryException e) {
 			WorkbenchSidebarPresenter.LOG.error(e.getMessage(), e);
 		}
 		return sidebarLinks;
+	}
+
+	protected boolean isCategoryLinkPermissibleForUserRole(final WorkbenchSidebarCategoryLink link){
+		final List<UserRole> roles = this.sessionData.getUserData().getRoles();
+
+
+		if(ToolName.GERMPLASM_IMPORT.name().equalsIgnoreCase(link.getSidebarLinkName())){
+			final List<String> importGermplasmPermittedRoleList = Lists.newArrayList(importGermplasmPermissibleRoles);
+			if(importGermplasmPermissibleRoles.isEmpty()){
+				return false;
+			}
+
+			for (final UserRole role : roles) {
+				if(!StringUtil.containsIgnoreCase(importGermplasmPermittedRoleList, role.getRole())){
+					return false;
+				}
+
+			}
+		}
+
+		return true;
 	}
 
 	protected void addAdminCategoryLinks(final List<WorkbenchSidebarCategoryLink> categoryLinks, final WorkbenchSidebarCategory category) {
@@ -171,4 +204,7 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 		this.manager = manager;
 	}
 
+	public void setImportGermplasmPermissibleRoles(Set<String> importGermplasmPermissibleRoles) {
+		this.importGermplasmPermissibleRoles = importGermplasmPermissibleRoles;
+	}
 }

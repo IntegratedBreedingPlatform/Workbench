@@ -2,13 +2,18 @@
 package org.generationcp.ibpworkbench.ui.sidebar;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.Sets;
 import org.generationcp.commons.constant.ToolEnum;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Tool;
+import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategory;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategoryLink;
 import org.junit.Assert;
@@ -23,6 +28,9 @@ public class WorkbenchSidebarPresenterTest {
 
 	@Mock
 	private SimpleResourceBundleMessageSource messageSource;
+
+	@Mock
+	private SessionData sessionData;
 
 	@InjectMocks
 	private final WorkbenchSidebarPresenter workbenchSidebarPresenter = new WorkbenchSidebarPresenter();
@@ -72,5 +80,47 @@ public class WorkbenchSidebarPresenterTest {
 			}
 		}
 		Assert.assertTrue(hasBackupAndRestore);
+	}
+
+	@Test
+	public void testIsCategoryLinkPermissibleForUserRoleWithAdminAndPermissibleRolesAdmin() throws Exception{
+		this.workbenchSidebarPresenter.setImportGermplasmPermissibleRoles(Sets.newHashSet("Admin"));
+
+		final WorkbenchSidebarCategoryLink link = new WorkbenchSidebarCategoryLink();
+		link.setSidebarLinkName("germplasm_import");
+
+		User user = new User();
+		user.setUserid(1);
+		user.setName("a_username");
+		user.setPassword("a_password");
+		UserRole userRole = new UserRole();
+		userRole.setRole("Admin");
+
+		user.setRoles((Arrays.asList(userRole)));
+
+		Mockito.when(this.sessionData.getUserData()).thenReturn(user);
+		boolean categoryLinkPermissibleForUserRole = this.workbenchSidebarPresenter.isCategoryLinkPermissibleForUserRole(link);
+		Assert.assertTrue("Germplasm Import link should be added in Workbench sidebar and should return true", categoryLinkPermissibleForUserRole);
+	}
+
+	@Test
+	public void testIsCategoryLinkPermissibleForUserRoleWithAdminAndPermissibleRolesTechnician() throws Exception{
+		this.workbenchSidebarPresenter.setImportGermplasmPermissibleRoles(Sets.newHashSet("Technician"));
+
+		final WorkbenchSidebarCategoryLink link = new WorkbenchSidebarCategoryLink();
+		link.setSidebarLinkName("germplasm_import");
+
+		User user = new User();
+		user.setUserid(1);
+		user.setName("a_username");
+		user.setPassword("a_password");
+		UserRole userRole = new UserRole();
+		userRole.setRole("Admin");
+
+		user.setRoles((Arrays.asList(userRole)));
+
+		Mockito.when(this.sessionData.getUserData()).thenReturn(user);
+		boolean categoryLinkPermissibleForUserRole = this.workbenchSidebarPresenter.isCategoryLinkPermissibleForUserRole(link);
+		Assert.assertFalse("Germplasm Import link should not be added in Workbench sidebar and should return false", categoryLinkPermissibleForUserRole);
 	}
 }
