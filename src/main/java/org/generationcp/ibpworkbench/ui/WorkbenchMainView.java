@@ -91,7 +91,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	private TomcatUtil tomcatUtil;
 
 	@Resource
-	private WorkbenchDataManager workbenchDataManager;
+	WorkbenchDataManager workbenchDataManager;
 
 	@Resource
 	private SimpleResourceBundleMessageSource messageSource;
@@ -393,7 +393,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	}
 
-	private UserInfo updateUserInfoIfNecessary(User user) throws MiddlewareQueryException {
+	UserInfo updateUserInfoIfNecessary(User user) throws MiddlewareQueryException {
 		UserInfo userInfo = this.workbenchDataManager.getUserInfo(user.getUserid());
 		if (userInfo == null || userInfo.getLoginCount() < 1) {
 			if (userInfo == null) {
