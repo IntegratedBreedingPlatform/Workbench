@@ -1,4 +1,3 @@
-
 package org.generationcp.ibpworkbench.germplasm.inventory;
 
 import java.util.Collection;
