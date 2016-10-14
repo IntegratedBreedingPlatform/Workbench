@@ -396,11 +396,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	private UserInfo updateUserInfoIfNecessary(User user) throws MiddlewareQueryException {
 		UserInfo userInfo = this.workbenchDataManager.getUserInfo(user.getUserid());
 		if (userInfo == null || userInfo.getLoginCount() < 1) {
-			if (WorkbenchUtil.isPasswordEqualToUsername(user) && userInfo != null) {
-				OpenWindowAction ow = new OpenWindowAction(WindowEnum.CHANGE_PASSWORD);
-				ow.launchWindow(this, WindowEnum.CHANGE_PASSWORD);
-			}
-
 			if (userInfo == null) {
 				userInfo = new UserInfo();
 			}
@@ -408,6 +403,8 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 			userInfo.setLoginCount(1);
 			this.workbenchDataManager.insertOrUpdateUserInfo(userInfo);
 
+			OpenWindowAction ow = new OpenWindowAction(WindowEnum.CHANGE_PASSWORD);
+			ow.launchWindow(this, WindowEnum.CHANGE_PASSWORD);
 		}
 		return userInfo;
 	}
