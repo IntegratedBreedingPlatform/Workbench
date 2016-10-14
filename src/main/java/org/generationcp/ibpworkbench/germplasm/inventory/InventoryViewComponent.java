@@ -1,15 +1,14 @@
-
 package org.generationcp.ibpworkbench.germplasm.inventory;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
+
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.commons.constant.ColumnLabels;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.middleware.domain.inventory.ListEntryLotDetails;
 import org.generationcp.middleware.domain.inventory.LotDetails;
 import org.generationcp.middleware.manager.api.InventoryDataManager;
 import org.generationcp.middleware.manager.api.OntologyDataManager;
@@ -57,7 +56,6 @@ public class InventoryViewComponent extends VerticalLayout implements Initializi
 	public static final String SEED_SOURCE = "seedSource";
 	public static final String STOCKID = "stockId";
 
-
 	private boolean isThereNoInventoryInfo;
 
 	public InventoryViewComponent(Integer listId) {
@@ -103,21 +101,22 @@ public class InventoryViewComponent extends VerticalLayout implements Initializi
 
 		// Get the name of the headers from the ontology
 		this.lotEntriesTable.setColumnHeader(InventoryViewComponent.LOT_LOCATION, this.getTermNameFromOntology(ColumnLabels.LOT_LOCATION));
-		this.lotEntriesTable.setColumnHeader(InventoryViewComponent.ACTUAL_BALANCE, this.getTermNameFromOntology(ColumnLabels.ACTUAL_BALANCE));
+		this.lotEntriesTable
+				.setColumnHeader(InventoryViewComponent.ACTUAL_BALANCE, this.getTermNameFromOntology(ColumnLabels.ACTUAL_BALANCE));
 		this.lotEntriesTable.setColumnHeader(InventoryViewComponent.AVAILABLE_BALANCE, this.getTermNameFromOntology(ColumnLabels.TOTAL));
-		this.lotEntriesTable.setColumnHeader(InventoryViewComponent.WITHDRAWAL, this.getTermNameFromOntology(ColumnLabels.SEED_RESERVATION));
+		this.lotEntriesTable
+				.setColumnHeader(InventoryViewComponent.WITHDRAWAL, this.getTermNameFromOntology(ColumnLabels.SEED_RESERVATION));
 		this.lotEntriesTable.setColumnHeader(InventoryViewComponent.STATUS, this.getTermNameFromOntology(ColumnLabels.STATUS));
 		this.lotEntriesTable.setColumnHeader(InventoryViewComponent.COMMENTS, this.getTermNameFromOntology(ColumnLabels.COMMENT));
-		this.lotEntriesTable.setColumnHeader(InventoryViewComponent.STOCKID,
-				this.getTermNameFromOntology(ColumnLabels.STOCKID));
+		this.lotEntriesTable.setColumnHeader(InventoryViewComponent.STOCKID, this.getTermNameFromOntology(ColumnLabels.STOCKID));
 		this.lotEntriesTable.setColumnHeader(InventoryViewComponent.LOT_ID, this.getTermNameFromOntology(ColumnLabels.LOT_ID));
 		this.lotEntriesTable.setColumnHeader(InventoryViewComponent.SEED_SOURCE, this.getTermNameFromOntology(ColumnLabels.SEED_SOURCE));
 	}
 
 	public void initializeValues() {
-		List<? extends LotDetails> lotDetailEntries =
-				this.listId != null && this.recordId != null ? this.inventoryDataManager.getLotDetailsForListEntry(this.listId,
-						this.recordId, this.gid) : this.inventoryDataManager.getLotDetailsForGermplasm(this.gid);
+		List<? extends LotDetails> lotDetailEntries = this.listId != null && this.recordId != null ?
+				this.inventoryDataManager.getLotDetailsForListEntry(this.listId, this.recordId, this.gid) :
+				this.inventoryDataManager.getLotDetailsForGermplasm(this.gid);
 
 		for (LotDetails lotEntry : lotDetailEntries) {
 			Item newItem = this.lotEntriesTable.addItem(lotEntry.getLotId());
@@ -131,29 +130,28 @@ public class InventoryViewComponent extends VerticalLayout implements Initializi
 			newItem.getItemProperty(InventoryViewComponent.LOT_LOCATION).setValue(lotLocation);
 
 			String actualBalance = "";
-			if(lotEntry.getActualLotBalance() > 0){
+			if (lotEntry.getActualLotBalance() > 0) {
 				actualBalance = lotEntry.getActualLotBalance() + lotEntry.getLotScaleNameAbbr();
 			}
 			newItem.getItemProperty(InventoryViewComponent.ACTUAL_BALANCE).setValue(actualBalance);
 
 			String availableBalance = "";
-			if(lotEntry.getAvailableLotBalance() != null && lotEntry.getAvailableLotBalance() > 0){
+			if (lotEntry.getAvailableLotBalance() != null && lotEntry.getAvailableLotBalance() > 0) {
 				availableBalance = lotEntry.getAvailableLotBalance() + lotEntry.getLotScaleNameAbbr();
 			}
 			newItem.getItemProperty(InventoryViewComponent.AVAILABLE_BALANCE).setValue(availableBalance);
 
 			String withdrawalBalance = "";
-			if(lotEntry.getWithdrawalBalance() != null && lotEntry.getWithdrawalBalance() > 0){
+			if (lotEntry.getWithdrawalBalance() != null && lotEntry.getWithdrawalBalance() > 0) {
 				withdrawalBalance = lotEntry.getWithdrawalBalance() + lotEntry.getLotScaleNameAbbr();
 			}
 			newItem.getItemProperty(InventoryViewComponent.WITHDRAWAL).setValue(withdrawalBalance);
 
 			String withdrawalStatus = "";
-			if(lotEntry.getWithdrawalStatus() != null){
+			if (lotEntry.getWithdrawalStatus() != null) {
 				withdrawalStatus = lotEntry.getWithdrawalStatus();
 			}
 			newItem.getItemProperty(InventoryViewComponent.STATUS).setValue(withdrawalStatus);
-
 
 			newItem.getItemProperty(InventoryViewComponent.COMMENTS).setValue(lotEntry.getCommentOfLot());
 			newItem.getItemProperty(InventoryViewComponent.STOCKID).setValue(lotEntry.getStockIds());
