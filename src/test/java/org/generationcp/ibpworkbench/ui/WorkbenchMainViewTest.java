@@ -24,11 +24,6 @@ public class WorkbenchMainViewTest {
 	private WorkbenchDataManager workbenchDataManager;
 
 	@Test
-	public void testSmoke() {
-		Assert.assertThat("Should run a smoke test", true, CoreMatchers.is(true));
-	}
-
-	@Test
 	public void testUpdateUserInfoIfNecessary() {
 		final User user = Mockito.mock(User.class);
 		UserInfo userInfo = Mockito.mock(UserInfo.class);

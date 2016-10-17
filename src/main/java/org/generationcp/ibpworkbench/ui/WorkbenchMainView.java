@@ -91,7 +91,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	private TomcatUtil tomcatUtil;
 
 	@Resource
-	WorkbenchDataManager workbenchDataManager;
+	private WorkbenchDataManager workbenchDataManager;
 
 	@Resource
 	private SimpleResourceBundleMessageSource messageSource;
