@@ -11,14 +11,11 @@
 
 package org.generationcp.ibpworkbench.ui.dashboard;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.help.document.HelpModule;
-import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -37,7 +34,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.ThemeResource;
@@ -59,9 +55,9 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchDashboard.class);
 	private static final long serialVersionUID = 1L;
 
-	private Table tblProject;
+	private Table programsTable;
 
-	private Project currentProject;
+	private Project currentProgram;
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
@@ -72,13 +68,13 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 	@Autowired
 	private SessionData sessionData;
 
-	private Project lastOpenedProject;
+	private Project lastOpenedProgram;
 
 	public static final String PROGRAM_NAME_COLUMN_ID = "Workbench Dashboard Program Name Column Id";
 	public static final String CROP_NAME_COLUMN_ID = "Workbench Dashboard Crop Name Column Id";
 	public static final String BUTTON_LIST_MANAGER_COLUMN_ID = "Workbench Dashboard List Manager Button Column Id";
 
-	private List<Project> projects = null;
+	private List<Project> programs = null;
 
 	public WorkbenchDashboard() {
 		super();
@@ -94,39 +90,25 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 	}
 
 	private void initializeProjectTable() {
-		// project table components
-		this.tblProject = new Table() {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected String formatPropertyValue(Object rowId, Object colId, Property property) {
-				if (property.getType() == Date.class) {
-					SimpleDateFormat sdf = DateUtil.getSimpleDateFormat(DateUtil.FRONTEND_DATE_FORMAT);
-					return property.getValue() == null ? "" : sdf.format((Date) property.getValue());
-				}
-
-				return super.formatPropertyValue(rowId, colId, property);
-			}
-		};
+		this.programsTable = new Table();
 		// react at once when something is selected
-		this.tblProject.setImmediate(true);
-		this.tblProject.setSelectable(true);
-		this.tblProject.setStyleName("gcp-tblproject");
+		this.programsTable.setImmediate(true);
+		this.programsTable.setSelectable(true);
+		this.programsTable.setStyleName("gcp-tblproject");
 
-		this.tblProject.addContainerProperty(WorkbenchDashboard.PROGRAM_NAME_COLUMN_ID, String.class, null);
-		this.tblProject.addContainerProperty(WorkbenchDashboard.CROP_NAME_COLUMN_ID, String.class, null);
-		this.tblProject.addContainerProperty(WorkbenchDashboard.BUTTON_LIST_MANAGER_COLUMN_ID, Button.class, null);
+		this.programsTable.addContainerProperty(WorkbenchDashboard.PROGRAM_NAME_COLUMN_ID, String.class, null);
+		this.programsTable.addContainerProperty(WorkbenchDashboard.CROP_NAME_COLUMN_ID, String.class, null);
+		this.programsTable.addContainerProperty(WorkbenchDashboard.BUTTON_LIST_MANAGER_COLUMN_ID, Button.class, null);
 
-		this.tblProject.setColumnHeader(WorkbenchDashboard.PROGRAM_NAME_COLUMN_ID, "PROGRAM NAME");
-		this.tblProject.setColumnHeader(WorkbenchDashboard.CROP_NAME_COLUMN_ID, "CROP");
-		this.tblProject.setColumnHeader(WorkbenchDashboard.BUTTON_LIST_MANAGER_COLUMN_ID, "LAUNCH");
+		this.programsTable.setColumnHeader(WorkbenchDashboard.PROGRAM_NAME_COLUMN_ID, "PROGRAM NAME");
+		this.programsTable.setColumnHeader(WorkbenchDashboard.CROP_NAME_COLUMN_ID, "CROP");
+		this.programsTable.setColumnHeader(WorkbenchDashboard.BUTTON_LIST_MANAGER_COLUMN_ID, "LAUNCH");
 
-		this.tblProject.setColumnExpandRatio(WorkbenchDashboard.PROGRAM_NAME_COLUMN_ID, 1.0F);
-		this.tblProject.setColumnWidth(WorkbenchDashboard.BUTTON_LIST_MANAGER_COLUMN_ID, 55);
+		this.programsTable.setColumnExpandRatio(WorkbenchDashboard.PROGRAM_NAME_COLUMN_ID, 1.0F);
+		this.programsTable.setColumnWidth(WorkbenchDashboard.BUTTON_LIST_MANAGER_COLUMN_ID, 55);
 
-		this.tblProject.setColumnCollapsingAllowed(false);
-		this.tblProject.setCellStyleGenerator(new ProjectTableCellStyleGenerator(this.tblProject, null));
+		this.programsTable.setColumnCollapsingAllowed(false);
+		this.programsTable.setCellStyleGenerator(new ProjectTableCellStyleGenerator(this.programsTable, null));
 
 	}
 
@@ -158,27 +140,30 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		this.addComponent(titleLayout);
 	}
 
+	/**
+	 * Populates Programs table and selects last opened program by user (if any)
+	 */
 	protected void initializeData() {
 		// Get the list of Projects
 
-		this.lastOpenedProject = null;
+		this.lastOpenedProgram = null;
 
 		try {
 			User currentUser = this.sessionData.getUserData();
-			this.projects = this.workbenchDataManager.getProjectsByUser(currentUser);
-			this.lastOpenedProject = this.workbenchDataManager.getLastOpenedProject(currentUser.getUserid());
+			this.programs = this.workbenchDataManager.getProjectsByUser(currentUser);
+			this.lastOpenedProgram = this.workbenchDataManager.getLastOpenedProject(currentUser.getUserid());
 		} catch (MiddlewareQueryException e) {
 			WorkbenchDashboard.LOG.error("Exception", e);
 			throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
 		}
 
-		this.sessionData.setLastOpenedProject(this.lastOpenedProject);
+		this.sessionData.setLastOpenedProject(this.lastOpenedProgram);
 
-		if (this.currentProject == null) {
-			this.currentProject = this.lastOpenedProject;
+		if (this.currentProgram == null) {
+			this.currentProgram = this.lastOpenedProgram;
 		}
 
-		this.sessionData.setSelectedProject(this.currentProject);
+		this.sessionData.setSelectedProject(this.currentProgram);
 
 		// set the Project Table data source
 		BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);
@@ -186,8 +171,8 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
 		int i = 0;
 		Project project;
-		for (i = this.projects.size() - 1; i >= 0; i--) {
-			project = this.projects.get(i);
+		for (i = this.programs.size() - 1; i >= 0; i--) {
+			project = this.programs.get(i);
 
 			Button button = new Button("<span class='glyphicon glyphicon-play'></span>");
 			button.setDebugId("button");
@@ -199,49 +184,18 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 			button.setEnabled(true);
 
 			// capitalization done on CSS
-			this.tblProject.addItem(new Object[] {project.getProjectName(), project.getCropType().getCropName(), button},
+			this.programsTable.addItem(new Object[] {project.getProjectName(), project.getCropType().getCropName(), button},
 					project);
 		}
 
-		if (this.lastOpenedProject != null) {
-			this.tblProject.select(this.lastOpenedProject);
+		if (this.lastOpenedProgram != null) {
+			this.programsTable.select(this.lastOpenedProgram);
 		}
 
 	}
 
 	protected void initializeActions() {
-
-//		this.tblProject.addListener(new ItemClickEvent.ItemClickListener() {
-//
-//			/**
-//			 *
-//			 */
-//			private static final long serialVersionUID = -7560323455772265841L;
-//
-//			@Override
-//			public void itemClick(ItemClickEvent event) {
-//				Object selectedButton =
-//						WorkbenchDashboard.this.tblProject.getItem(event.getItemId())
-//								.getItemProperty(WorkbenchDashboard.BUTTON_LIST_MANAGER_COLUMN_ID).getValue();
-//
-//				if (selectedButton instanceof Button && selectedButton != null) {
-//					((Button) selectedButton).setEnabled(true);
-//					WorkbenchDashboard.this.lastSelectedProjectButton = (Button) selectedButton;
-//
-//					if (event.isDoubleClick()) {
-//
-//						// hack manual trigger button
-//						Map vars = new HashMap();
-//						vars.put("state", true);
-//						((Button) selectedButton).changeVariables(this, vars);
-//
-//					}
-//				}
-//			}
-//		});
-
-//		this.tblProject.addListener(new ShowProjectDetailAction(this.tblProject, this.currentProject, this.projects));
-		this.tblProject.addListener(new DashboardMainClickListener());
+		this.programsTable.addListener(new DashboardMainClickListener());
 
 	}
 
@@ -266,23 +220,24 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		final HorizontalLayout programHeaderArea = new HorizontalLayout();
 		programHeaderArea.setDebugId("programHeaderArea");
 		programHeaderArea.setWidth("100%");
-		final Label programLbl = new Label(this.messageSource.getMessage(Message.PROGRAMS_LABEL));
-		programLbl.setDebugId("programLbl");
-		programLbl.setStyleName(Bootstrap.Typography.H2.styleName());
+		
+		final Label programLabel = new Label(this.messageSource.getMessage(Message.PROGRAMS_LABEL));
+		programLabel.setDebugId("programLbl");
+		programLabel.setStyleName(Bootstrap.Typography.H2.styleName());
 
-		final Label programDescLbl = new Label(this.messageSource.getMessage(Message.PROGRAM_TABLE_TOOLTIP));
-		programDescLbl.setDebugId("programDescLbl");
-		programDescLbl.setStyleName(Bootstrap.Typography.H6.styleName());
+		final Label programDescriptionLabel = new Label(this.messageSource.getMessage(Message.PROGRAM_TABLE_TOOLTIP));
+		programDescriptionLabel.setDebugId("programDescLbl");
+		programDescriptionLabel.setStyleName(Bootstrap.Typography.H6.styleName());
 
-		final Button addProgramBtn =
+		final Button addProgramButton =
 				new Button("<span class='glyphicon glyphicon-plus' style='right: 4px'></span> "
 						+ this.messageSource.getMessage(Message.ADD_A_PROGRAM));
-		addProgramBtn.setHtmlContentAllowed(true);
-		addProgramBtn.addListener(new OpenNewProjectAction());
-		addProgramBtn.addStyleName(Bootstrap.Buttons.INFO.styleName());
-		addProgramBtn.setWidth("145px");
+		addProgramButton.setHtmlContentAllowed(true);
+		addProgramButton.addListener(new OpenNewProjectAction());
+		addProgramButton.addStyleName(Bootstrap.Buttons.INFO.styleName());
+		addProgramButton.setWidth("145px");
 
-		programHeaderArea.addComponent(programLbl);
+		programHeaderArea.addComponent(programLabel);
 
 		final HorizontalLayout headerContainer = new HorizontalLayout();
 		headerContainer.setDebugId("headerContainer");
@@ -294,24 +249,24 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		headerImg.setStyleName("header-img");
 
 		headerContainer.addComponent(headerImg);
-		headerContainer.addComponent(programLbl);
-		headerContainer.addComponent(programDescLbl);
+		headerContainer.addComponent(programLabel);
+		headerContainer.addComponent(programDescriptionLabel);
 
 		headerContainer.setComponentAlignment(headerImg, Alignment.BOTTOM_LEFT);
-		headerContainer.setComponentAlignment(programLbl, Alignment.BOTTOM_LEFT);
-		headerContainer.setComponentAlignment(programDescLbl, Alignment.BOTTOM_LEFT);
+		headerContainer.setComponentAlignment(programLabel, Alignment.BOTTOM_LEFT);
+		headerContainer.setComponentAlignment(programDescriptionLabel, Alignment.BOTTOM_LEFT);
 
 		programHeaderArea.addComponent(headerContainer);
-		programHeaderArea.addComponent(addProgramBtn);
-		programHeaderArea.setComponentAlignment(addProgramBtn, Alignment.MIDDLE_LEFT);
+		programHeaderArea.addComponent(addProgramButton);
+		programHeaderArea.setComponentAlignment(addProgramButton, Alignment.MIDDLE_LEFT);
 		programHeaderArea.setExpandRatio(headerContainer, 1.0F);
 
-		this.tblProject.setSizeFull();
-		this.tblProject.setStyleName("program-tab");
+		this.programsTable.setSizeFull();
+		this.programsTable.setStyleName("program-tab");
 
 		programArea.addComponent(programHeaderArea);
-		programArea.addComponent(this.tblProject);
-		programArea.setExpandRatio(this.tblProject, 1.0F);
+		programArea.addComponent(this.programsTable);
+		programArea.setExpandRatio(this.programsTable, 1.0F);
 
 		final VerticalLayout previewArea = new VerticalLayout();
 		previewArea.setDebugId("previewArea");
@@ -335,13 +290,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
 	@Override
 	public void updateLabels() {
-		this.messageSource.setColumnHeader(this.tblProject, "startDate", Message.START_DATE);
-		this.messageSource.setColumnHeader(this.tblProject, "projectName", Message.PROJECT);
-		this.messageSource.setColumnHeader(this.tblProject, "action", Message.ACTION);
-		this.messageSource.setColumnHeader(this.tblProject, "status", Message.STATUS);
-		this.messageSource.setColumnHeader(this.tblProject, "owner", Message.OWNER);
-
-		this.tblProject.setItemDescriptionGenerator(new ItemDescriptionGenerator() {
+		this.programsTable.setItemDescriptionGenerator(new ItemDescriptionGenerator() {
 
 			private static final long serialVersionUID = 1L;
 
@@ -353,11 +302,11 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 	}
 
 	public Project getCurrentProject() {
-		return this.currentProject;
+		return this.currentProgram;
 	}
 
 	public void setCurrentProject(Project currentProject) {
-		this.currentProject = currentProject;
+		this.currentProgram = currentProject;
 	}
 
 	// hacky hack hack
@@ -365,7 +314,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
 		// set this program as selected in dashboard
 		if (selectProgram != null) {
-			this.tblProject.select(selectProgram);
+			this.programsTable.select(selectProgram);
 		}
 
 	}

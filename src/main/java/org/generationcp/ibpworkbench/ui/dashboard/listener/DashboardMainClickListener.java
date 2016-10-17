@@ -41,8 +41,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Window;
 
 /**
@@ -93,9 +91,6 @@ public class DashboardMainClickListener implements ItemClickListener {
 								.getMessage(Message.MINIMUM_CROP_VERSION_WARNING, currentCropVersion != null ? currentCropVersion
 										: DashboardMainClickListener.this.messageSource.getMessage(Message.NOT_AVAILABLE)));
 					}
-
-					// FIXME - why are we creating workspace directories when just changing selected program? See if we can remove this
-					DashboardMainClickListener.this.toolUtil.createWorkspaceDirectoriesForProject(project);
 
 					DashboardMainClickListener.this.updateProjectLastOpenedDate(project);
 
