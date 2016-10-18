@@ -23,7 +23,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.ProjectTableCellStyleGenerator;
-import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainClickListener;
+import org.generationcp.ibpworkbench.ui.dashboard.listener.LaunchProgramAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
@@ -57,8 +57,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
 	private Table programsTable;
 
-	private Project currentProgram;
-
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
 
@@ -67,8 +65,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
 	@Autowired
 	private SessionData sessionData;
-
-	private Project lastOpenedProgram;
 
 	public static final String PROGRAM_NAME_COLUMN_ID = "Workbench Dashboard Program Name Column Id";
 	public static final String CROP_NAME_COLUMN_ID = "Workbench Dashboard Crop Name Column Id";
@@ -146,33 +142,23 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 	protected void initializeData() {
 		// Get the list of Projects
 
-		this.lastOpenedProgram = null;
+		Project lastOpenedProgram = null;
 
 		try {
 			User currentUser = this.sessionData.getUserData();
 			this.programs = this.workbenchDataManager.getProjectsByUser(currentUser);
-			this.lastOpenedProgram = this.workbenchDataManager.getLastOpenedProject(currentUser.getUserid());
+			lastOpenedProgram = this.workbenchDataManager.getLastOpenedProject(currentUser.getUserid());
 		} catch (MiddlewareQueryException e) {
 			WorkbenchDashboard.LOG.error("Exception", e);
 			throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
 		}
 
-		this.sessionData.setLastOpenedProject(this.lastOpenedProgram);
-
-		if (this.currentProgram == null) {
-			this.currentProgram = this.lastOpenedProgram;
-		}
-
-		this.sessionData.setSelectedProject(this.currentProgram);
-
 		// set the Project Table data source
 		BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);
 		projectContainer.setBeanIdProperty("projectName");
 
-		int i = 0;
-		Project project;
-		for (i = this.programs.size() - 1; i >= 0; i--) {
-			project = this.programs.get(i);
+		for (int i = this.programs.size() - 1; i >= 0; i--) {
+			Project project = this.programs.get(i);
 
 			Button button = new Button("<span class='glyphicon glyphicon-play'></span>");
 			button.setDebugId("button");
@@ -181,6 +167,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 			button.setStyleName(Bootstrap.Buttons.LINK.styleName() + " launch");
 			button.setWidth("26px");
 			button.setHeight("26px");
+			button.addListener(new LaunchProgramAction(project));
 			button.setEnabled(true);
 
 			// capitalization done on CSS
@@ -188,14 +175,16 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 					project);
 		}
 
-		if (this.lastOpenedProgram != null) {
-			this.programsTable.select(this.lastOpenedProgram);
+		if (lastOpenedProgram != null) {
+			this.programsTable.select(lastOpenedProgram);
+			this.sessionData.setLastOpenedProject(lastOpenedProgram);
+			this.sessionData.setSelectedProject(lastOpenedProgram);
 		}
 
 	}
 
 	protected void initializeActions() {
-		this.programsTable.addListener(new DashboardMainClickListener());
+		this.programsTable.addListener(new LaunchProgramAction());
 
 	}
 
@@ -299,14 +288,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 				return WorkbenchDashboard.this.messageSource.getMessage(Message.PROGRAM_TABLE_TOOLTIP);
 			}
 		});
-	}
-
-	public Project getCurrentProject() {
-		return this.currentProgram;
-	}
-
-	public void setCurrentProject(Project currentProject) {
-		this.currentProgram = currentProject;
 	}
 
 	// hacky hack hack

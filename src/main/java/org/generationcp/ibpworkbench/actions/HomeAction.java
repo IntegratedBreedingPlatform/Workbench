@@ -17,7 +17,7 @@ import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
-import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainClickListener;
+import org.generationcp.ibpworkbench.ui.dashboard.listener.LaunchProgramAction;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,12 +49,6 @@ public class HomeAction implements ClickListener, ActionListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(HomeAction.class);
 
-	public HomeAction(Project newProgram) {
-		this.newProgram = newProgram;
-	}
-
-	private Project newProgram;
-
 	public HomeAction() {
 	}
 
@@ -66,17 +60,7 @@ public class HomeAction implements ClickListener, ActionListener {
 	@Override
 	public void buttonClick(ClickEvent event) {
 		Window window = event.getComponent().getWindow();
-		if (this.newProgram != null) {
-			// FIXME this is redundant code
-			this.sessionData.setLastOpenedProject(this.newProgram);
-			this.sessionData.setSelectedProject(this.newProgram);
-
-			new DashboardMainClickListener().openSelectedProgram(newProgram, event.getComponent().getWindow());
-		}
-
-		else {
-			this.doAction(window, "/Home", true);
-		}
+		this.doAction(window, "/Home", true);
 	}
 
 	/**
@@ -111,11 +95,10 @@ public class HomeAction implements ClickListener, ActionListener {
 			w.showContent(workbenchDashboard);
 
 			// reinitialize dashboard with default values
-			if (this.sessionData.getLastOpenedProject() != null) {
-				workbenchDashboard.initializeDashboardContents(this.newProgram);
-			} else {
-				workbenchDashboard.initializeDashboardContents(this.newProgram);
-			}
+			Project lastOpenedProgram = this.sessionData.getLastOpenedProject();
+			if (lastOpenedProgram != null) {
+				workbenchDashboard.initializeDashboardContents(lastOpenedProgram);
+			} 
 
 		} catch (Exception e) {
 			HomeAction.LOG.error("Exception", e);
