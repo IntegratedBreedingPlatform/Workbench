@@ -26,8 +26,12 @@
 					});
 				};
 
-				$scope.removable = function() {
-					return $scope.model && $scope.model[$scope.property].categories.length >= 2;
+				$scope.removable = function(category) {
+					return $scope.model && $scope.model[$scope.property].categories.length >= 2 && category.editable;
+				};
+
+				$scope.disabled = function(category) {
+					return !category.editable;
 				};
 
 				$scope.removeCategory = function(e, index) {
