@@ -1,9 +1,12 @@
 package org.generationcp.ibpworkbench.germplasm.inventory;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.generationcp.commons.constant.ColumnLabels;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.middleware.data.initializer.ListInventoryDataInitializer;
+import org.generationcp.middleware.domain.inventory.LotDetails;
 import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.api.InventoryDataManager;
@@ -17,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.vaadin.data.Item;
 import com.vaadin.ui.Table;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -74,6 +78,8 @@ public class InventoryViewComponentTest {
 		Mockito.doReturn(new Term(TermId.SEED_SOURCE.getId(), SEED_SOURCE_HEADER_NAME, "")).when(this.ontologyDataManager)
 				.getTermById(ColumnLabels.SEED_SOURCE.getTermId().getId());
 
+		this.inventoryView.instantiateComponents();
+
 	}
 
 	@Test
@@ -108,4 +114,24 @@ public class InventoryViewComponentTest {
 		Assert.assertEquals(SEED_SOURCE_HEADER_NAME, table.getColumnHeader(InventoryViewComponent.SEED_SOURCE));
 	}
 
+	@Test
+	public void testInitializeValues() {
+		final List<? extends LotDetails> inventoryDetails = ListInventoryDataInitializer.createLotDetails(1);
+		Mockito.when(this.inventoryDataManager.getLotDetailsForGermplasm(Mockito.anyInt())).thenReturn((List<LotDetails>) inventoryDetails);
+
+		this.inventoryView.initializeValues();
+
+		Item item = this.inventoryView.getTable().getItem(1);
+
+		Assert.assertEquals(5, inventoryView.getTable().size());
+		Assert.assertEquals("Location1", item.getItemProperty(InventoryViewComponent.LOT_LOCATION).getValue());
+		Assert.assertEquals("100.0g", item.getItemProperty(InventoryViewComponent.ACTUAL_BALANCE).getValue());
+		Assert.assertEquals("100.0g", item.getItemProperty(InventoryViewComponent.AVAILABLE_BALANCE).getValue());
+		Assert.assertEquals("12.0g", item.getItemProperty(InventoryViewComponent.WITHDRAWAL).getValue());
+		Assert.assertEquals("1", item.getItemProperty(InventoryViewComponent.STATUS).getValue());
+		Assert.assertEquals("Lot Comment1", item.getItemProperty(InventoryViewComponent.COMMENTS).getValue());
+		Assert.assertEquals("STK1-1,STK2-2,STK-3", item.getItemProperty(InventoryViewComponent.STOCKID).getValue().toString());
+		Assert.assertEquals("1", item.getItemProperty(InventoryViewComponent.LOT_ID).getValue().toString());
+
+	}
 }
