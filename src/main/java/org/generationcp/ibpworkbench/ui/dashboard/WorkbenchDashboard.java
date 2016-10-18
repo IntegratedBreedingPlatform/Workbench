@@ -128,7 +128,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		toolTitle.setContentMode(Label.CONTENT_XHTML);
 		toolTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 		toolTitle.setDebugId("vaadin-home-lbl");
-		toolTitle.setWidth("80px");
+		toolTitle.setWidth("150px");
 
 		titleLayout.addComponent(toolTitle);
 		titleLayout.addComponent(new HelpButton(HelpModule.DASHBOARD, "Go to Dashboard Tutorial"));
