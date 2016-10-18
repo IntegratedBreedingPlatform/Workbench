@@ -142,7 +142,7 @@ public class InventoryViewComponent extends VerticalLayout implements Initializi
 			newItem.getItemProperty(InventoryViewComponent.AVAILABLE_BALANCE).setValue(availableBalance);
 
 			String withdrawalBalance = "";
-			if (lotEntry.getWithdrawalBalance() != null && lotEntry.getWithdrawalBalance() > 0) {
+			if (lotEntry.getWithdrawalBalance() != null) {
 				withdrawalBalance = lotEntry.getWithdrawalBalance() + lotEntry.getLotScaleNameAbbr();
 			}
 			newItem.getItemProperty(InventoryViewComponent.WITHDRAWAL).setValue(withdrawalBalance);
