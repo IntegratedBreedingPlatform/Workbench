@@ -1,4 +1,3 @@
-
 package org.generationcp.ibpworkbench.ui.sidebar;
 
 import java.util.ArrayList;
@@ -6,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.google.common.collect.Sets;
+
 import org.generationcp.commons.constant.ToolEnum;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.SessionData;
@@ -59,8 +59,7 @@ public class WorkbenchSidebarPresenterTest {
 		this.workbenchSidebarPresenter.setIsBackupAndRestoreEnabled("false");
 		final List<WorkbenchSidebarCategoryLink> categoryLinks = new ArrayList<>();
 
-		this.workbenchSidebarPresenter.addAdminCategoryLinks(categoryLinks,
-				WorkbenchSidebarPresenterTest.adminCategory);
+		this.workbenchSidebarPresenter.addAdminCategoryLinks(categoryLinks, WorkbenchSidebarPresenterTest.adminCategory);
 		for (final WorkbenchSidebarCategoryLink workbenchSidebarCategoryLink : categoryLinks) {
 			Assert.assertFalse("recovery".equals(workbenchSidebarCategoryLink.getSidebarLinkName()));
 		}
@@ -83,7 +82,7 @@ public class WorkbenchSidebarPresenterTest {
 	}
 
 	@Test
-	public void testIsCategoryLinkPermissibleForUserRoleWithAdminAndPermissibleRolesAdmin() throws Exception{
+	public void testIsCategoryLinkPermissibleForUserRoleWithAdminAndPermissibleRolesAdmin() throws Exception {
 		this.workbenchSidebarPresenter.setImportGermplasmPermissibleRoles(Sets.newHashSet("Admin"));
 
 		final WorkbenchSidebarCategoryLink link = new WorkbenchSidebarCategoryLink();
@@ -100,11 +99,12 @@ public class WorkbenchSidebarPresenterTest {
 
 		Mockito.when(this.sessionData.getUserData()).thenReturn(user);
 		boolean categoryLinkPermissibleForUserRole = this.workbenchSidebarPresenter.isCategoryLinkPermissibleForUserRole(link);
-		Assert.assertTrue("Germplasm Import link should be added in Workbench sidebar and should return true", categoryLinkPermissibleForUserRole);
+		Assert.assertTrue("Germplasm Import link should be added in Workbench sidebar and should return true",
+				categoryLinkPermissibleForUserRole);
 	}
 
 	@Test
-	public void testIsCategoryLinkPermissibleForUserRoleWithAdminAndPermissibleRolesTechnician() throws Exception{
+	public void testIsCategoryLinkPermissibleForUserRoleWithAdminAndPermissibleRolesTechnician() throws Exception {
 		this.workbenchSidebarPresenter.setImportGermplasmPermissibleRoles(Sets.newHashSet("Technician"));
 
 		final WorkbenchSidebarCategoryLink link = new WorkbenchSidebarCategoryLink();
@@ -121,6 +121,7 @@ public class WorkbenchSidebarPresenterTest {
 
 		Mockito.when(this.sessionData.getUserData()).thenReturn(user);
 		boolean categoryLinkPermissibleForUserRole = this.workbenchSidebarPresenter.isCategoryLinkPermissibleForUserRole(link);
-		Assert.assertFalse("Germplasm Import link should not be added in Workbench sidebar and should return false", categoryLinkPermissibleForUserRole);
+		Assert.assertFalse("Germplasm Import link should not be added in Workbench sidebar and should return false",
+				categoryLinkPermissibleForUserRole);
 	}
 }

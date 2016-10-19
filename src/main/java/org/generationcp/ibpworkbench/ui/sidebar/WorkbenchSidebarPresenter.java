@@ -1,4 +1,3 @@
-
 package org.generationcp.ibpworkbench.ui.sidebar;
 
 import java.util.ArrayList;
@@ -11,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.Lists;
+
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.SessionData;
@@ -37,7 +37,6 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
-
 @Configurable
 public class WorkbenchSidebarPresenter implements InitializingBean {
 
@@ -60,7 +59,7 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
-	
+
 	public WorkbenchSidebarPresenter() {
 	}
 
@@ -68,6 +67,7 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 	 * afterPropertiesSet() is called after Aspect4J weaves spring objects when this class is instantiated since this class is
 	 * a @configurable that implements InitializingBean. Since we do not have any need for additional initialization after the weaving, this
 	 * method remains unimplemented.
+	 *
 	 * @throws Exception
 	 */
 	@Override
@@ -100,7 +100,7 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 			}
 
 			for (final WorkbenchSidebarCategoryLink link : categoryLinks) {
-				if(isCategoryLinkPermissibleForUserRole(link)){
+				if (isCategoryLinkPermissibleForUserRole(link)) {
 					if (sidebarLinks.get(link.getWorkbenchSidebarCategory()) == null) {
 						sidebarLinks.put(link.getWorkbenchSidebarCategory(), new ArrayList<WorkbenchSidebarCategoryLink>());
 					}
@@ -117,18 +117,17 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 		return sidebarLinks;
 	}
 
-	protected boolean isCategoryLinkPermissibleForUserRole(final WorkbenchSidebarCategoryLink link){
+	protected boolean isCategoryLinkPermissibleForUserRole(final WorkbenchSidebarCategoryLink link) {
 		final List<UserRole> roles = this.sessionData.getUserData().getRoles();
 
-
-		if(ToolName.GERMPLASM_IMPORT.name().equalsIgnoreCase(link.getSidebarLinkName())){
+		if (ToolName.GERMPLASM_IMPORT.name().equalsIgnoreCase(link.getSidebarLinkName())) {
 			final List<String> importGermplasmPermittedRoleList = Lists.newArrayList(importGermplasmPermissibleRoles);
-			if(importGermplasmPermissibleRoles.isEmpty()){
+			if (importGermplasmPermissibleRoles.isEmpty()) {
 				return false;
 			}
 
 			for (final UserRole role : roles) {
-				if(!StringUtil.containsIgnoreCase(importGermplasmPermittedRoleList, role.getRole())){
+				if (!StringUtil.containsIgnoreCase(importGermplasmPermittedRoleList, role.getRole())) {
 					return false;
 				}
 
@@ -139,16 +138,21 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 	}
 
 	protected void addAdminCategoryLinks(final List<WorkbenchSidebarCategoryLink> categoryLinks, final WorkbenchSidebarCategory category) {
-		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "manage_program", this.messageSource.getMessage("LINK_MANAGE_SETTINGS")));
+		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "manage_program",
+				this.messageSource.getMessage("LINK_MANAGE_SETTINGS")));
 		if (this.isBackupAndRestoreEnabled != null && Boolean.valueOf(this.isBackupAndRestoreEnabled)) {
-			categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "recovery", this.messageSource.getMessage("LINK_BACKUP_RESTORE")));
+			categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "recovery",
+					this.messageSource.getMessage("LINK_BACKUP_RESTORE")));
 		}
-		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "user_tools", this.messageSource.getMessage("LINK_MANAGE_TOOLS")));
+		categoryLinks
+				.add(new WorkbenchSidebarCategoryLink(null, category, "user_tools", this.messageSource.getMessage("LINK_MANAGE_TOOLS")));
 		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "about_bms", this.messageSource.getMessage("LINK_ABOUT_BMS")));
 	}
 
-	private void addCategoryLinkBasedOnRole(final List<WorkbenchSidebarCategoryLink> categoryLinks, final WorkbenchSidebarCategory category) {
-		final List<Role> roles = this.manager.getRolesByProjectAndUser(this.sessionData.getSelectedProject(), this.sessionData.getUserData());
+	private void addCategoryLinkBasedOnRole(final List<WorkbenchSidebarCategoryLink> categoryLinks,
+			final WorkbenchSidebarCategory category) {
+		final List<Role> roles =
+				this.manager.getRolesByProjectAndUser(this.sessionData.getSelectedProject(), this.sessionData.getUserData());
 		for (final Role role : roles) {
 			// we don't include the tools anymore
 			if (!"Manager".equalsIgnoreCase(role.getName())) {
@@ -179,9 +183,8 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 				final Project project = app.getSessionData().getSelectedProject();
 
 				final ProjectUserInfoDAO projectUserInfoDao = WorkbenchSidebarPresenter.this.manager.getProjectUserInfoDao();
-				final ProjectUserInfo projectUserInfo =
-						projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId().intValue(), app.getSessionData()
-								.getUserData().getUserid());
+				final ProjectUserInfo projectUserInfo = projectUserInfoDao
+						.getByProjectIdAndUserId(project.getProjectId().intValue(), app.getSessionData().getUserData().getUserid());
 				if (projectUserInfo != null) {
 					projectUserInfo.setLastOpenDate(new Date());
 					WorkbenchSidebarPresenter.this.manager.saveOrUpdateProjectUserInfo(projectUserInfo);
