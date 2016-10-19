@@ -112,9 +112,6 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 					WorkbenchMainView workbenchMainView = (WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow();
 					workbenchMainView.addTitle(project.getProjectName());
 
-					// FIXME - why are we populating the sidebar everytime we change projects?
-					workbenchMainView.getSidebar().populateLinks();
-					
 					// update sidebar selection
 					LaunchProgramAction.LOG.trace("selecting sidebar");
 					if (null != WorkbenchSidebar.sidebarTreeMap.get("manage_list")) {

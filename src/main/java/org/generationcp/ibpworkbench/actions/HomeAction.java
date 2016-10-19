@@ -91,7 +91,6 @@ public class HomeAction implements ClickListener, ActionListener {
 			workbenchDashboard = new WorkbenchDashboard();
 
 			w.addTitle("");
-			w.getSidebar().clearLinks();
 			w.showContent(workbenchDashboard);
 
 			// reinitialize dashboard with default values

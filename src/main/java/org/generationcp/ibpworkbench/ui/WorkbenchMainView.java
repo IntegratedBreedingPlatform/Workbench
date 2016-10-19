@@ -76,6 +76,7 @@ import com.vaadin.ui.themes.Reindeer;
 @Configurable
 public class WorkbenchMainView extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
 
+	private static final int SIDEBAR_OPEN_POSITION = 240;
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchMainView.class);
 
@@ -111,6 +112,8 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	private HorizontalSplitPanel root;
 
 	private VerticalLayout mainContent;
+	
+	private HorizontalLayout workbenchHeaderLayout;
 
 	private WorkbenchDashboard workbenchDashboard;
 
@@ -118,10 +121,13 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	private NavUriFragmentChangedListener uriChangeListener;
 
 	private WorkbenchSidebar sidebar;
-	private Button collapseButton;
+	private Button sidebarToggleButton;
 	private Button signoutButton;
 	private Button logoBtn;
 	private Button askSupportBtn;
+	
+	// Initial workbench screen is dashboard where the button to expand sidebar should be hidden as no program has been selected yet
+	private boolean doHideSidebarToggleButton = true;
 
 	public WorkbenchMainView() {
 		super("Breeding Management System | Workbench");
@@ -133,13 +139,15 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		this.assemble();
-		this.workbenchDashboard = new WorkbenchDashboard();
-		this.workbenchDashboard.setDebugId("workbenchDashboard");
 		this.onLoadOperations();
 		this.showContent(this.workbenchDashboard);
 	}
 
 	protected void initializeComponents() {
+		// initialize dashboard
+		this.workbenchDashboard = new WorkbenchDashboard();
+		this.workbenchDashboard.setDebugId("workbenchDashboard");
+		
 		// workbench header components
 		this.initializeHeaderComponents();
 
@@ -153,12 +161,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.actionsTitle.setStyleName("gcp-section-title");
 		this.actionsTitle.setSizeUndefined();
 
-		this.collapseButton = new Button("<span class='bms-header-btn'><span class='bms-fa-chevron-right ico'/></span>");
-		this.collapseButton.setDebugId("collapseButton");
-		this.collapseButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + HEADER_BTN);
-		this.collapseButton.setHtmlContentAllowed(true);
-		this.collapseButton.setDescription(this.messageSource.getMessage("TOGGLE_SIDEBAR"));
-
 		this.uriFragUtil = new UriFragmentUtility();
 		this.uriFragUtil.setDebugId("uriFragUtil");
 		this.uriChangeListener = new NavUriFragmentChangedListener();
@@ -167,9 +169,20 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	}
 
 	private void initializeHeaderComponents() {
-
+		this.sidebarToggleButton = new Button("<span class='bms-header-btn'><span class='bms-fa-chevron-right ico'/></span>");
+		this.sidebarToggleButton.setDebugId("collapseButton");
+		this.sidebarToggleButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + HEADER_BTN);
+		this.sidebarToggleButton.setHtmlContentAllowed(true);
+		this.sidebarToggleButton.setDescription(this.messageSource.getMessage("TOGGLE_SIDEBAR"));
+		
+		final Embedded ibpLogo = new Embedded(null, new ThemeResource("../gcp-default/images/ibp_logo2.jpg"));
+		ibpLogo.setDebugId("ibpLogo");
 		this.logoBtn = new Button();
 		this.logoBtn.setDebugId("logoBtn");
+		this.logoBtn.setIcon(ibpLogo.getSource());
+		this.logoBtn.setStyleName(BaseTheme.BUTTON_LINK + " bms-logo-btn");
+		this.logoBtn.setWidth("34px");
+		this.logoBtn.setHeight("34px");
 
 		this.workbenchTitle = new Label();
 		this.workbenchTitle.setDebugId("workbenchTitle");
@@ -282,8 +295,17 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		contentAreaSplit.setLocked(true);
 		contentAreaSplit.addStyleName(Reindeer.SPLITPANEL_SMALL);
 
+		this.workbenchHeaderLayout = new HorizontalLayout();
+		this.workbenchHeaderLayout.setDebugId("headerLayout");
+		this.workbenchHeaderLayout.setStyleName("bms-header");
+		this.workbenchHeaderLayout.setWidth("100%");
+		this.workbenchHeaderLayout.setHeight("100%");
+		this.workbenchHeaderLayout.setMargin(new Layout.MarginInfo(false, false, false, false));
+		this.workbenchHeaderLayout.setSpacing(false);
+		this.layoutWorkbenchHeaderComponents();
+
 		// contentArea contents
-		contentAreaSplit.addComponent(this.layoutWorkbenchHeader());
+		contentAreaSplit.addComponent(this.workbenchHeaderLayout);
 		contentAreaSplit.addComponent(this.mainContent);
 
 		// the root layout
@@ -304,10 +326,10 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	private void toggleSidebarIcon() {
 		if (this.root.getSplitPosition() == 0) {
-			this.collapseButton.setCaption("<span class='bms-header-btn'><span class='bms-fa-chevron-right ico'/></span>");
+			this.sidebarToggleButton.setCaption("<span class='bms-header-btn'><span class='bms-fa-chevron-right ico'/></span>");
 
 		} else {
-			this.collapseButton.setCaption("<span class='bms-header-btn'><span class='bms-fa-chevron-left ico'/></span>");
+			this.sidebarToggleButton.setCaption("<span class='bms-header-btn'><span class='bms-fa-chevron-left ico'/></span>");
 		}
 	}
 
@@ -349,7 +371,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 			}
 		});
 
-		this.collapseButton.addListener(new Button.ClickListener() {
+		this.sidebarToggleButton.addListener(new Button.ClickListener() {
 
 			@Override
 			public void buttonClick(ClickEvent clickEvent) {
@@ -407,54 +429,49 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		return userInfo;
 	}
 
-	private Component layoutWorkbenchHeader() {
-		HorizontalLayout headerLayout = new HorizontalLayout();
-		headerLayout.setDebugId("headerLayout");
-		headerLayout.setStyleName("bms-header");
-		headerLayout.setWidth("100%");
-		headerLayout.setHeight("100%");
-		headerLayout.setMargin(new Layout.MarginInfo(false, false, false, false));
-		headerLayout.setSpacing(false);
+	/*
+	 * Layout the components in Workbench header.
+	 * Button to expand/collapse will be hidden when in Dashboard and Create Program views.
+	 */
+	private void layoutWorkbenchHeaderComponents() {
+		// Button to collapse or expand sidebar
+		if (!this.doHideSidebarToggleButton){
+			this.workbenchHeaderLayout.addComponent(this.sidebarToggleButton);
+			this.workbenchHeaderLayout.setComponentAlignment(this.sidebarToggleButton, Alignment.MIDDLE_LEFT);
+		}
 
-		headerLayout.addComponent(this.collapseButton);
-		headerLayout.setComponentAlignment(this.collapseButton, Alignment.MIDDLE_LEFT);
-
-		final Embedded ibpLogo = new Embedded(null, new ThemeResource("../gcp-default/images/ibp_logo2.jpg"));
-		ibpLogo.setDebugId("ibpLogo");
-
-		this.logoBtn.setIcon(ibpLogo.getSource());
-		this.logoBtn.setStyleName(BaseTheme.BUTTON_LINK + " bms-logo-btn");
-		this.logoBtn.setWidth("34px");
-		this.logoBtn.setHeight("34px");
-
-		headerLayout.addComponent(this.logoBtn);
-		headerLayout.setComponentAlignment(this.logoBtn, Alignment.MIDDLE_LEFT);
+		this.workbenchHeaderLayout.addComponent(this.logoBtn);
+		this.workbenchHeaderLayout.setComponentAlignment(this.logoBtn, Alignment.MIDDLE_LEFT);
 
 		// workbench title area
-		headerLayout.addComponent(this.workbenchTitle);
-		headerLayout.setComponentAlignment(this.workbenchTitle, Alignment.MIDDLE_LEFT);
-		headerLayout.setExpandRatio(this.workbenchTitle, 1.0f);
+		this.workbenchHeaderLayout.addComponent(this.workbenchTitle);
+		this.workbenchHeaderLayout.setComponentAlignment(this.workbenchTitle, Alignment.MIDDLE_LEFT);
+		this.workbenchHeaderLayout.setExpandRatio(this.workbenchTitle, 1.0f);
 
-		headerLayout.addComponent(this.uriFragUtil);
+		this.workbenchHeaderLayout.addComponent(this.uriFragUtil);
 
 		try {
-			addAdminButton(headerLayout);
+			addAdminButton(this.workbenchHeaderLayout);
 		} catch (final AccessDeniedException e){
 			// no-op
 		}
 
-		headerLayout.addComponent(this.homeButton);
+		this.workbenchHeaderLayout.addComponent(this.homeButton);
 
-		headerLayout.addComponent(this.helpButton);
-		headerLayout.addComponent(this.getAskSupportBtn());
-		headerLayout.addComponent(this.memberButton);
+		this.workbenchHeaderLayout.addComponent(this.helpButton);
+		this.workbenchHeaderLayout.addComponent(this.getAskSupportBtn());
+		this.workbenchHeaderLayout.addComponent(this.memberButton);
 
-		headerLayout.setComponentAlignment(this.homeButton, Alignment.MIDDLE_RIGHT);
-		headerLayout.setComponentAlignment(this.askSupportBtn, Alignment.MIDDLE_RIGHT);
-		headerLayout.setComponentAlignment(this.helpButton, Alignment.MIDDLE_RIGHT);
-		headerLayout.setComponentAlignment(this.memberButton, Alignment.MIDDLE_RIGHT);
-
-		return headerLayout;
+		this.workbenchHeaderLayout.setComponentAlignment(this.homeButton, Alignment.MIDDLE_RIGHT);
+		this.workbenchHeaderLayout.setComponentAlignment(this.askSupportBtn, Alignment.MIDDLE_RIGHT);
+		this.workbenchHeaderLayout.setComponentAlignment(this.helpButton, Alignment.MIDDLE_RIGHT);
+		this.workbenchHeaderLayout.setComponentAlignment(this.memberButton, Alignment.MIDDLE_RIGHT);
+	}
+	
+	private void refreshHeaderLayout(){
+		this.workbenchHeaderLayout.removeAllComponents();
+		this.layoutWorkbenchHeaderComponents();
+		this.workbenchHeaderLayout.requestRepaint();
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -505,13 +522,14 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 			}
 		}
 
-		if (!(content instanceof WorkbenchDashboard || content instanceof AddProgramView)) {
-			this.root.setSplitPosition(240, Sizeable.UNITS_PIXELS);
-		} else {
+		this.doHideSidebarToggleButton = content instanceof WorkbenchDashboard || content instanceof AddProgramView;
+		if (doHideSidebarToggleButton){
 			this.root.setSplitPosition(0, Sizeable.UNITS_PIXELS);
+		} else {
+			this.root.setSplitPosition(SIDEBAR_OPEN_POSITION, Sizeable.UNITS_PIXELS);
 		}
-
-		this.toggleSidebarIcon();
+		// Hide sidebar button if in Workbench Dashboard or in Create Program screens
+		refreshHeaderLayout();
 	}
 
 	@Override
@@ -566,6 +584,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 				+ "</span><span class='bms-fa-caret-down' style='padding: 0 10px 0 0'></span></span>");
 
 	}
+	
 
 	public WorkbenchSidebar getSidebar() {
 		return this.sidebar;
