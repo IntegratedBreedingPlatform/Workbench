@@ -46,7 +46,7 @@ describe('Categories module', function() {
 		isolateScope.categorical = true;
 		isolateScope.$apply();
 
-		expect(angular.equals(isolateScope.model[isolateScope.property].categories, [{}])).toBe(true);
+		expect(angular.equals(isolateScope.model[isolateScope.property].categories, [{ editable: true }])).toBe(true);
 	});
 
 	describe('$scope.addCategory', function() {
