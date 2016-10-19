@@ -97,7 +97,6 @@ public class InventoryViewComponent extends VerticalLayout implements Initializi
 		this.lotEntriesTable.addContainerProperty(InventoryViewComponent.COMMENTS, String.class, null);
 		this.lotEntriesTable.addContainerProperty(InventoryViewComponent.STOCKID, Label.class, null);
 		this.lotEntriesTable.addContainerProperty(InventoryViewComponent.LOT_ID, Integer.class, null);
-		this.lotEntriesTable.addContainerProperty(InventoryViewComponent.SEED_SOURCE, String.class, null);
 
 		// Get the name of the headers from the ontology
 		this.lotEntriesTable.setColumnHeader(InventoryViewComponent.LOT_LOCATION, this.getTermNameFromOntology(ColumnLabels.LOT_LOCATION));
@@ -110,7 +109,7 @@ public class InventoryViewComponent extends VerticalLayout implements Initializi
 		this.lotEntriesTable.setColumnHeader(InventoryViewComponent.COMMENTS, this.getTermNameFromOntology(ColumnLabels.COMMENT));
 		this.lotEntriesTable.setColumnHeader(InventoryViewComponent.STOCKID, this.getTermNameFromOntology(ColumnLabels.STOCKID));
 		this.lotEntriesTable.setColumnHeader(InventoryViewComponent.LOT_ID, this.getTermNameFromOntology(ColumnLabels.LOT_ID));
-		this.lotEntriesTable.setColumnHeader(InventoryViewComponent.SEED_SOURCE, this.getTermNameFromOntology(ColumnLabels.SEED_SOURCE));
+
 	}
 
 	public void initializeValues() {
@@ -157,9 +156,6 @@ public class InventoryViewComponent extends VerticalLayout implements Initializi
 			newItem.getItemProperty(InventoryViewComponent.STOCKID).setValue(lotEntry.getStockIds());
 			newItem.getItemProperty(InventoryViewComponent.LOT_ID).setValue(lotEntry.getLotId());
 
-			// TODO - BMS-3487 seed source
-			String seedSource = "";
-			newItem.getItemProperty(InventoryViewComponent.SEED_SOURCE).setValue(seedSource);
 		}
 	}
 

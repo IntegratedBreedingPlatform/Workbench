@@ -42,8 +42,6 @@ public class InventoryViewComponentTest {
 
 	private static final String LOTID_HEADER_NAME = "LOTID";
 
-	private static final String SEED_SOURCE_HEADER_NAME = "TOTAL";
-
 	@Mock
 	private SimpleResourceBundleMessageSource messageSource;
 
@@ -75,8 +73,6 @@ public class InventoryViewComponentTest {
 				.getTermById(ColumnLabels.STOCKID.getTermId().getId());
 		Mockito.doReturn(new Term(TermId.LOT_ID_INVENTORY.getId(), LOTID_HEADER_NAME, "")).when(this.ontologyDataManager)
 				.getTermById(ColumnLabels.LOT_ID.getTermId().getId());
-		Mockito.doReturn(new Term(TermId.SEED_SOURCE.getId(), SEED_SOURCE_HEADER_NAME, "")).when(this.ontologyDataManager)
-				.getTermById(ColumnLabels.SEED_SOURCE.getTermId().getId());
 
 		this.inventoryView.instantiateComponents();
 
@@ -92,7 +88,7 @@ public class InventoryViewComponentTest {
 		Assert.assertNotNull(table);
 		Collection<?> columnIds = table.getContainerPropertyIds();
 
-		Assert.assertTrue(columnIds.size() == 9);
+		Assert.assertTrue(columnIds.size() == 8);
 		Assert.assertTrue(columnIds.contains(InventoryViewComponent.LOT_LOCATION));
 		Assert.assertTrue(columnIds.contains(InventoryViewComponent.ACTUAL_BALANCE));
 		Assert.assertTrue(columnIds.contains(InventoryViewComponent.AVAILABLE_BALANCE));
@@ -101,7 +97,6 @@ public class InventoryViewComponentTest {
 		Assert.assertTrue(columnIds.contains(InventoryViewComponent.COMMENTS));
 		Assert.assertTrue(columnIds.contains(InventoryViewComponent.STOCKID));
 		Assert.assertTrue(columnIds.contains(InventoryViewComponent.LOT_ID));
-		Assert.assertTrue(columnIds.contains(InventoryViewComponent.SEED_SOURCE));
 
 		Assert.assertEquals(LOTID_HEADER_NAME, table.getColumnHeader(InventoryViewComponent.LOT_ID));
 		Assert.assertEquals(ACTUAL_BALANCE_HEADER_NAME, table.getColumnHeader(InventoryViewComponent.ACTUAL_BALANCE));
@@ -111,7 +106,6 @@ public class InventoryViewComponentTest {
 		Assert.assertEquals(COMMENT_HEADER_NAME, table.getColumnHeader(InventoryViewComponent.COMMENTS));
 		Assert.assertEquals(STOCKID_HEADER_NAME, table.getColumnHeader(InventoryViewComponent.STOCKID));
 		Assert.assertEquals(LOTID_HEADER_NAME, table.getColumnHeader(InventoryViewComponent.LOT_ID));
-		Assert.assertEquals(SEED_SOURCE_HEADER_NAME, table.getColumnHeader(InventoryViewComponent.SEED_SOURCE));
 	}
 
 	@Test
