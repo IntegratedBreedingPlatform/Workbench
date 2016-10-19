@@ -45,22 +45,13 @@ public class InventoryViewComponent extends VerticalLayout implements Initializi
 
 	public static final String LOT_LOCATION = "lotLocation";
 	public static final String ACTUAL_BALANCE = "actualBalance";
-	public static final String LOT_UNITS = "lotUnits";
-	public static final String TOTAL = "actualBalance";
 	public static final String AVAILABLE_BALANCE = "availableBalance";
 	public static final String WITHDRAWAL = "withdrawal";
 	public static final String STATUS = "status";
 
 	public static final String COMMENTS = "comments";
 	public static final String LOT_ID = "lotId";
-	public static final String SEED_SOURCE = "seedSource";
 	public static final String STOCKID = "stockId";
-
-	private boolean isThereNoInventoryInfo;
-
-	public InventoryViewComponent(Integer listId) {
-		this.listId = listId;
-	}
 
 	public InventoryViewComponent(Integer listId, Integer recordId, Integer gid) {
 		this.listId = listId;
@@ -168,10 +159,6 @@ public class InventoryViewComponent extends VerticalLayout implements Initializi
 			this.addComponent(this.noEntriesLabel);
 		}
 
-	}
-
-	public boolean isThereNoInventoryInfo() {
-		return this.isThereNoInventoryInfo;
 	}
 
 	@Override
