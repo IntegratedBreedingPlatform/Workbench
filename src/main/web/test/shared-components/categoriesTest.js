@@ -57,7 +57,8 @@ describe('Categories module', function() {
 				validValues: {
 					categories: [{
 						name: '1',
-						description: 'Very low'
+						description: 'Very low',
+						editable: true
 					}]
 				}
 			};
@@ -67,7 +68,7 @@ describe('Categories module', function() {
 			isolateScope.addCategory(fakeEvent);
 
 			expect(scope.model.validValues.categories.length).toEqual(2);
-			expect(scope.model.validValues.categories[1]).toEqual({name: '', description: ''});
+			expect(scope.model.validValues.categories[1]).toEqual({name: '', description: '', editable: true});
 		});
 	});
 

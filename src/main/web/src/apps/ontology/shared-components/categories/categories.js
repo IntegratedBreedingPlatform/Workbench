@@ -22,7 +22,8 @@
 					e.preventDefault();
 					$scope.model[$scope.property].categories.push({
 						name: '',
-						description: ''
+						description: '',
+						editable: true
 					});
 				};
 
@@ -87,7 +88,7 @@
 							// Categories will be added to a 'categories' property on the specified property. If either the
 							// property or the categories are not present, instantiate them
 							scope.model[scope.property] = scope.model[scope.property] || {};
-							scope.model[scope.property].categories = scope.model[scope.property].categories || [{}];
+							scope.model[scope.property].categories = scope.model[scope.property].categories || [{ editable: true }];
 						}
 
 						if (scope.model && scope.model[scope.property] && scope.model[scope.property].categories &&
