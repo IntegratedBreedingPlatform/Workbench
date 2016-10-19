@@ -34,9 +34,9 @@
 					return !category.editable;
 				};
 
-				$scope.removeCategory = function(e, index) {
+				$scope.removeCategory = function(e, index, category) {
 					e.preventDefault();
-					if ($scope.removable()) {
+					if ($scope.removable(category)) {
 						$scope.model[$scope.property].categories.splice(index, 1);
 					}
 				};

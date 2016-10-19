@@ -77,11 +77,13 @@ describe('Categories module', function() {
 
 			var cat1 = {
 					label: 'a',
-					value: 'value a'
+					value: 'value a',
+					editable: true
 				},
 				cat2 = {
 					label: 'b',
-					value: 'value b'
+					value: 'value b',
+					editable: true
 				};
 
 			scope.model = {
@@ -92,7 +94,7 @@ describe('Categories module', function() {
 
 			compileDirective();
 
-			isolateScope.removeCategory(fakeEvent, cat1.label);
+			isolateScope.removeCategory(fakeEvent, cat1.label, cat1);
 
 			expect(scope.model.validValues.categories.length).toEqual(1);
 			expect(scope.model.validValues.categories[0]).toEqual(cat2);
@@ -102,7 +104,8 @@ describe('Categories module', function() {
 
 			var cat1 = {
 					label: 'a',
-					value: 'value a'
+					value: 'value a',
+					editable: true
 				};
 
 			scope.model = {
@@ -113,7 +116,7 @@ describe('Categories module', function() {
 
 			compileDirective();
 
-			isolateScope.removeCategory(fakeEvent, cat1.label);
+			isolateScope.removeCategory(fakeEvent, cat1.label, cat1);
 
 			expect(scope.model.validValues.categories.length).toEqual(1);
 		});

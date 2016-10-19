@@ -16,7 +16,7 @@
 				<p class="text-danger" ng-hide="'omCategoryDescription{{$index + 1}}'.$touched" ng-repeat="error in $parent.$parent.serverErrors['validValues.categories[' + ($index+1) + '].description']">{{error}}</p>
 			</div>
 			<div class="col-sm-3">
-				<a class="form-control-static" href="#" ng-show="removable(category)" ng-click="removeCategory($event, $index)">{{'categories.remove' | translate}}</a>
+				<a class="form-control-static" href="#" ng-show="removable(category)" ng-click="removeCategory($event, $index, category)">{{'categories.remove' | translate}}</a>
 			</div>
 		</li>
 	</ol>
