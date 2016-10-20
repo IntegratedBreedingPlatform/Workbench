@@ -61,8 +61,8 @@
 				<om-range name="omRange" om-property="validValues" om-editing="editing" ng-model="model" om-numeric="showRangeWidget" om-min="-999999999" om-max="999999999"></om-range>
 
 				<ng-messages for="sdForm.omRange.$error" ng-messages-include="range-validation-messages" multiple ng-if="sdForm.$submitted || sdForm.omRange.$touched"></ng-messages>
+				<p class="text-danger" ng-hide="sdForm.omRange.$touched" ng-repeat="error in serverErrors.validValues">{{error}}</p>
 			</div>
-			<p class="text-danger" ng-hide="sdForm.omRange.$touched" ng-repeat="error in serverErrors.validValues">{{error}}</p>
 		</div>
 
 		<div ng-show="showCategoriesWidget">
