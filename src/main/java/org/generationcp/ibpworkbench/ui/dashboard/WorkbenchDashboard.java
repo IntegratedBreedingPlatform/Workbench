@@ -21,7 +21,6 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.ProjectTableCellStyleGenerator;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.LaunchProgramAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -218,14 +217,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		programDescriptionLabel.setDebugId("programDescLbl");
 		programDescriptionLabel.setStyleName(Bootstrap.Typography.H6.styleName());
 
-		final Button addProgramButton =
-				new Button("<span class='glyphicon glyphicon-plus' style='right: 4px'></span> "
-						+ this.messageSource.getMessage(Message.ADD_A_PROGRAM));
-		addProgramButton.setHtmlContentAllowed(true);
-		addProgramButton.addListener(new OpenNewProjectAction());
-		addProgramButton.addStyleName(Bootstrap.Buttons.INFO.styleName());
-		addProgramButton.setWidth("145px");
-
 		programHeaderArea.addComponent(programLabel);
 
 		final HorizontalLayout headerContainer = new HorizontalLayout();
@@ -246,8 +237,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		headerContainer.setComponentAlignment(programDescriptionLabel, Alignment.BOTTOM_LEFT);
 
 		programHeaderArea.addComponent(headerContainer);
-		programHeaderArea.addComponent(addProgramButton);
-		programHeaderArea.setComponentAlignment(addProgramButton, Alignment.MIDDLE_LEFT);
 		programHeaderArea.setExpandRatio(headerContainer, 1.0F);
 
 		this.programsTable.setSizeFull();

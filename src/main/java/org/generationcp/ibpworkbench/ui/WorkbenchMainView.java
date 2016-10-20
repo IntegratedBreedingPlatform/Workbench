@@ -27,6 +27,7 @@ import org.generationcp.ibpworkbench.IWorkbenchSession;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.HomeAction;
+import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.actions.OpenWindowAction;
 import org.generationcp.ibpworkbench.actions.OpenWindowAction.WindowEnum;
 import org.generationcp.ibpworkbench.actions.SignoutAction;
@@ -125,9 +126,11 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	private Button signoutButton;
 	private Button logoBtn;
 	private Button askSupportBtn;
+	private Button addProgramButton;
 	
-	// Initial workbench screen is dashboard where the button to expand sidebar should be hidden as no program has been selected yet
+	// Hide sidebar toggle button when in Dashboard and Add Program screens where no program has been selected yet
 	private boolean doHideSidebarToggleButton = true;
+	private boolean isWorkbenchDashboardShown = true;
 
 	public WorkbenchMainView() {
 		super("Breeding Management System | Workbench");
@@ -189,12 +192,19 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.workbenchTitle.setStyleName("gcp-window-title");
 		this.workbenchTitle.setContentMode(Label.CONTENT_XHTML);
 
-		//TODO localise that text
-		this.homeButton = new Button("<span class='bms-header-btn'><span>My Programs</span></span>");
+		this.homeButton = new Button(
+				String.format("<span class='bms-header-btn'><span>%s</span></span>", this.messageSource.getMessage("MY_PROGRAMS")));
 		this.homeButton.setDebugId("homeButton");
 		this.homeButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + HEADER_BTN);
 		this.homeButton.setHtmlContentAllowed(true);
 		this.homeButton.setSizeUndefined();
+		
+		this.addProgramButton = new Button(String.format("<span class='bms-header-btn'><span class='glyphicon glyphicon-plus' style='padding-right: 0px'></span>"
+				+ "<span>%s</span></span>", this.messageSource.getMessage(Message.ADD_A_PROGRAM)));
+		this.addProgramButton.setDebugId("addProgramButton");
+		this.addProgramButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + HEADER_BTN);
+		this.addProgramButton.setHtmlContentAllowed(true);
+		this.addProgramButton.setSizeUndefined();
 
 		this.adminButton = new Button(
 				String.format("<span class='bms-header-btn'><span>%s</span></span>", this.messageSource.getMessage("ADMIN_BUTTON")));
@@ -340,6 +350,8 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.homeButton.addListener(homeAction);
 		this.logoBtn.addListener(homeAction);
 		
+		this.addProgramButton.addListener(new OpenNewProjectAction());
+		
 		this.adminButton.addListener(new Button.ClickListener() {
 			
 			@Override
@@ -451,18 +463,26 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.workbenchHeaderLayout.addComponent(this.uriFragUtil);
 
 		try {
-			addAdminButton(this.workbenchHeaderLayout);
+			layoutAdminButton();
 		} catch (final AccessDeniedException e){
-			// no-op
+			//do nothing if the user is not authorized to access Admin button
 		}
 
-		this.workbenchHeaderLayout.addComponent(this.homeButton);
+		if (this.isWorkbenchDashboardShown){
+			try {
+				layoutAddProgramButton();
+			} catch (final AccessDeniedException e){
+				//do nothing if the user is not authorized to access Admin button
+			}
+		} else {
+			this.workbenchHeaderLayout.addComponent(this.homeButton);
+			this.workbenchHeaderLayout.setComponentAlignment(this.homeButton, Alignment.MIDDLE_RIGHT);
+		}
 
 		this.workbenchHeaderLayout.addComponent(this.helpButton);
 		this.workbenchHeaderLayout.addComponent(this.getAskSupportBtn());
 		this.workbenchHeaderLayout.addComponent(this.memberButton);
 
-		this.workbenchHeaderLayout.setComponentAlignment(this.homeButton, Alignment.MIDDLE_RIGHT);
 		this.workbenchHeaderLayout.setComponentAlignment(this.askSupportBtn, Alignment.MIDDLE_RIGHT);
 		this.workbenchHeaderLayout.setComponentAlignment(this.helpButton, Alignment.MIDDLE_RIGHT);
 		this.workbenchHeaderLayout.setComponentAlignment(this.memberButton, Alignment.MIDDLE_RIGHT);
@@ -475,11 +495,17 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	private void addAdminButton(HorizontalLayout headerLayout) {
-		headerLayout.addComponent(this.adminButton);
-		headerLayout.setComponentAlignment(this.adminButton, Alignment.MIDDLE_RIGHT);
+	private void layoutAdminButton() {
+		this.workbenchHeaderLayout.addComponent(this.adminButton);
+		this.workbenchHeaderLayout.setComponentAlignment(this.adminButton, Alignment.MIDDLE_RIGHT);
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	private void layoutAddProgramButton() {
+		this.workbenchHeaderLayout.addComponent(this.addProgramButton);
+		this.workbenchHeaderLayout.setComponentAlignment(this.addProgramButton, Alignment.MIDDLE_RIGHT);
+	}
+	
 	/**
 	 * Show the specified {@link Component} on the right side area of the Workbench's split panel.
 	 *
@@ -522,13 +548,15 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 			}
 		}
 
-		this.doHideSidebarToggleButton = content instanceof WorkbenchDashboard || content instanceof AddProgramView;
+		// Hide sidebar button if in Workbench Dashboard or in Create Program screens
+		this.isWorkbenchDashboardShown = content instanceof WorkbenchDashboard;
+		this.doHideSidebarToggleButton = isWorkbenchDashboardShown || content instanceof AddProgramView;
 		if (doHideSidebarToggleButton){
 			this.root.setSplitPosition(0, Sizeable.UNITS_PIXELS);
 		} else {
 			this.root.setSplitPosition(SIDEBAR_OPEN_POSITION, Sizeable.UNITS_PIXELS);
 		}
-		// Hide sidebar button if in Workbench Dashboard or in Create Program screens
+		// Refresh buttons available on header section
 		refreshHeaderLayout();
 	}
 
