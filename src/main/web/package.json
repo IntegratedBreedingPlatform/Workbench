@@ -5,6 +5,7 @@
   "main": "gulpfile.js",
   "scripts": {
     "default": "gulp",
+    "build": "gulp build",
     "clean": "gulp clean",
     "watch": "gulp watch",
     "test-ng2": "gulp test-ng2",
