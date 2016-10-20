@@ -269,6 +269,9 @@
 		<property name="userDetailsService" ref="workbenchUserDetailsService" />
 		<property name="passwordEncoder" ref="encoder" />
 	</bean>
+
+	<aop:aspectj-autoproxy/>
+	<bean id="bmsPreAuthorizeAspect" class="org.generationcp.commons.aspect.BMSPreAuthorizeAspect" />
 	
 	<!-- Nested <beans> elements can only be at the end. -->
 	
