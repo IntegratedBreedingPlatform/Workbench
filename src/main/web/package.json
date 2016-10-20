@@ -1,7 +1,7 @@
 {
-  "name": "login-page",
+  "name": "bms-frontend",
   "version": "0.0.1",
-  "description": "A new login page for the BMS",
+  "description": "BMS frontend",
   "main": "gulpfile.js",
   "scripts": {
     "default": "gulp",
@@ -17,17 +17,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/leafn0de/login-page"
+    "url": "https://github.com/IntegratedBreedingPlatform/Workbench"
   },
   "keywords": [
-    "login"
+    "login",
+    "ontology",
+    "admin"
   ],
   "author": "goodforenergy and lisaq-leafnode",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/leafn0de/login-page/issues"
+    "url": "https://github.com/IntegratedBreedingPlatform/Workbench"
   },
-  "homepage": "https://github.com/leafn0de/login-page",
+  "homepage": "https://github.com/IntegratedBreedingPlatform/Workbench",
   "dependencies": {
     "@angular/common": "2.0.0-rc.5",
     "@angular/compiler": "2.0.0-rc.5",
