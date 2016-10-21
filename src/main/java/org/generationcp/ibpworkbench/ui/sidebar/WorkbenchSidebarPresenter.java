@@ -119,8 +119,6 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 	}
 
 	protected boolean isCategoryLinkPermissibleForUserRole(final WorkbenchSidebarCategoryLink link) {
-		final Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-
 		if (ToolName.GERMPLASM_IMPORT.name().equalsIgnoreCase(link.getSidebarLinkName())) {
 			try {
 				BMSPreAuthorizeUtil.preAuthorize(importGermplasmPermissibleRoles);
