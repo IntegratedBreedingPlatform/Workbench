@@ -1,16 +1,14 @@
 package org.generationcp.ibpworkbench.ui.sidebar;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import com.google.common.collect.Lists;
-
+import org.generationcp.commons.security.BMSPreAuthorizeUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.SessionData;
@@ -32,6 +30,9 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
@@ -51,8 +52,8 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 	@Value("${workbench.is.backup.and.restore.enabled}")
 	private String isBackupAndRestoreEnabled;
 
-	@Value("#{'${workbench.import.germplasm.permissible.roles}'.split(',')}")
-	private Set<String> importGermplasmPermissibleRoles = new HashSet<>();
+	@Value("#{'${workbench.import.germplasm.permissible.roles}'}")
+	private String importGermplasmPermissibleRoles = new String();
 
 	@Autowired
 	private PlatformTransactionManager transactionManager;
@@ -118,22 +119,16 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 	}
 
 	protected boolean isCategoryLinkPermissibleForUserRole(final WorkbenchSidebarCategoryLink link) {
-		final List<UserRole> roles = this.sessionData.getUserData().getRoles();
+		final Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
 
 		if (ToolName.GERMPLASM_IMPORT.name().equalsIgnoreCase(link.getSidebarLinkName())) {
-			final List<String> importGermplasmPermittedRoleList = Lists.newArrayList(importGermplasmPermissibleRoles);
-			if (importGermplasmPermissibleRoles.isEmpty()) {
+			try {
+				BMSPreAuthorizeUtil.preAuthorize(importGermplasmPermissibleRoles);
+			} catch (AccessDeniedException ex) {
 				return false;
 			}
 
-			for (final UserRole role : roles) {
-				if (!StringUtil.containsIgnoreCase(importGermplasmPermittedRoleList, role.getRole())) {
-					return false;
-				}
-
-			}
 		}
-
 		return true;
 	}
 
@@ -207,7 +202,7 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 		this.manager = manager;
 	}
 
-	public void setImportGermplasmPermissibleRoles(Set<String> importGermplasmPermissibleRoles) {
+	public void setImportGermplasmPermissibleRoles(String importGermplasmPermissibleRoles) {
 		this.importGermplasmPermissibleRoles = importGermplasmPermissibleRoles;
 	}
 }

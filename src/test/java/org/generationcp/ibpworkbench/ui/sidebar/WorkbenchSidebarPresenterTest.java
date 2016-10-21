@@ -83,7 +83,7 @@ public class WorkbenchSidebarPresenterTest {
 
 	@Test
 	public void testIsCategoryLinkPermissibleForUserRoleWithAdminAndPermissibleRolesAdmin() throws Exception {
-		this.workbenchSidebarPresenter.setImportGermplasmPermissibleRoles(Sets.newHashSet("Admin"));
+		this.workbenchSidebarPresenter.setImportGermplasmPermissibleRoles("Admin");
 
 		final WorkbenchSidebarCategoryLink link = new WorkbenchSidebarCategoryLink();
 		link.setSidebarLinkName("germplasm_import");
@@ -105,7 +105,7 @@ public class WorkbenchSidebarPresenterTest {
 
 	@Test
 	public void testIsCategoryLinkPermissibleForUserRoleWithAdminAndPermissibleRolesTechnician() throws Exception {
-		this.workbenchSidebarPresenter.setImportGermplasmPermissibleRoles(Sets.newHashSet("Technician"));
+		this.workbenchSidebarPresenter.setImportGermplasmPermissibleRoles("Technician");
 
 		final WorkbenchSidebarCategoryLink link = new WorkbenchSidebarCategoryLink();
 		link.setSidebarLinkName("germplasm_import");
