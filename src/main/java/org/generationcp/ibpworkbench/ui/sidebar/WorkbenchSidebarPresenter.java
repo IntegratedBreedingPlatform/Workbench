@@ -52,7 +52,7 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 	@Value("${workbench.is.backup.and.restore.enabled}")
 	private String isBackupAndRestoreEnabled;
 
-	@Value("#{'${workbench.import.germplasm.permissible.roles}'}")
+	@Value("${workbench.import.germplasm.permissible.roles}")
 	private String importGermplasmPermissibleRoles = new String();
 
 	@Autowired
