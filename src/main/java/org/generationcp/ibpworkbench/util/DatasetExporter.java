@@ -176,7 +176,7 @@ public class DatasetExporter {
 		this.getFactorDetails(dataset);
 		this.getVariateDetails(dataset, breedingViewInput);
 
-		if (!breedingViewInput.getDesignType().equals(DesignType.P_REP_DESIGN.getName()) && DatasetExporter.DUMMY_REPLICATES.equals(breedingViewInput.getReplicates().getName())) {
+		if (!breedingViewInput.getDesignType().equals(DesignType.P_REP_DESIGN.getName()) && !breedingViewInput.getDesignType().equals(DesignType.AUGMENTED_RANDOMIZED_BLOCK.getName())  && DatasetExporter.DUMMY_REPLICATES.equals(breedingViewInput.getReplicatesFactorName())) {
 			this.columnsMap.put(DatasetExporter.DUMMY_REPLICATES, Integer.valueOf(this.observationSheetColumnIndex));
 			this.observationSheetColumnIndex++;
 		}
@@ -218,8 +218,8 @@ public class DatasetExporter {
 
 			this.processVariates(row, experiment, breedingViewInput, this.ontologyService);
 
-			if (!breedingViewInput.getDesignType().equals(DesignType.P_REP_DESIGN.getName())
-					&& breedingViewInput.getReplicates().getName().equals(DatasetExporter.DUMMY_REPLICATES)) {
+			if (!breedingViewInput.getDesignType().equals(DesignType.P_REP_DESIGN.getName()) && !breedingViewInput.getDesignType().equals(DesignType.AUGMENTED_RANDOMIZED_BLOCK.getName())
+					&& DatasetExporter.DUMMY_REPLICATES.equals(breedingViewInput.getReplicatesFactorName())) {
 				row.add("1");
 			}
 

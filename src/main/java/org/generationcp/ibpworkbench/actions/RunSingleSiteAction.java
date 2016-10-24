@@ -183,11 +183,15 @@ public class RunSingleSiteAction implements ClickListener {
 	 */
 	void populateBreedingViewInputFromUserInput(final BreedingViewInput breedingViewInput) {
 
+		// TODO: Move the creation of breeding view xml objects in BreedingViewXMLWriter.
+
 		breedingViewInput.setBreedingViewAnalysisName(this.source.getTxtAnalysisNameValue());
 
 		breedingViewInput.setEnvironment(this.createEnvironment(this.source.getSelEnvFactorValue()));
 
 		breedingViewInput.setReplicates(this.createReplicates(this.source.getSelDesignTypeValue(), this.source.getSelReplicatesValue()));
+
+		breedingViewInput.setReplicatesFactorName(this.source.getSelReplicatesValue());
 
 		final DesignType designType = DesignType.getDesignTypeByName(this.source.getSelDesignTypeValue());
 		breedingViewInput.setDesignType(designType.getName());
@@ -270,6 +274,8 @@ public class RunSingleSiteAction implements ClickListener {
 	}
 
 	Rows createRows(final String rowFactor) {
+
+		// TODO: We should not return null objects.
 
 		if (!StringUtils.isNullOrEmpty(rowFactor)) {
 			final Rows rows = new Rows();

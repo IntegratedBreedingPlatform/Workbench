@@ -54,6 +54,7 @@ public class BreedingViewInput implements Serializable {
 	private String destXMLFilePath;
 	private String projectType;
 	private String designType;
+	private String replicatesFactorName;
 	private Blocks blocks;
 	private Replicates replicates;
 	private Genotypes genotypes;
@@ -411,4 +412,11 @@ public class BreedingViewInput implements Serializable {
 		this.colPos = colPos;
 	}
 
+	public String getReplicatesFactorName() {
+		return replicatesFactorName;
+	}
+
+	public void setReplicatesFactorName(String replicatesFactorName) {
+		this.replicatesFactorName = replicatesFactorName;
+	}
 }
