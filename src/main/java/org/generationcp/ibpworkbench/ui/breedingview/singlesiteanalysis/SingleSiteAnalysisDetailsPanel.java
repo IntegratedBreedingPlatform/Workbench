@@ -726,11 +726,16 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.selDesignType.setImmediate(true);
 		this.selDesignType.setNullSelectionAllowed(true);
 		this.selDesignType.setNewItemsAllowed(false);
-		this.selDesignType.addItem(DesignType.INCOMPLETE_BLOCK_DESIGN.getName());
+		this.selDesignType.addItem(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName());
+		this.selDesignType.setItemCaption(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName(), "Incomplete block design");
 		this.selDesignType.addItem(DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
-		this.selDesignType.addItem(DesignType.ROW_COLUMN_DESIGN.getName());
+		this.selDesignType.setItemCaption(DesignType.RANDOMIZED_BLOCK_DESIGN.getName(), "Randomized block design");
+		this.selDesignType.addItem(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName());
+		this.selDesignType.setItemCaption(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName(), "Row-column design");
 		this.selDesignType.addItem(DesignType.P_REP_DESIGN.getName());
+		this.selDesignType.setItemCaption(DesignType.P_REP_DESIGN.getName(), "P-rep design");
 		this.selDesignType.addItem(DesignType.AUGMENTED_RANDOMIZED_BLOCK.getName());
+		this.selDesignType.setItemCaption(DesignType.AUGMENTED_RANDOMIZED_BLOCK.getName(), "Augmented design");
 		this.selDesignType.setWidth(SingleSiteAnalysisDetailsPanel.SELECT_BOX_WIDTH);
 
 		this.selReplicates = new Select();

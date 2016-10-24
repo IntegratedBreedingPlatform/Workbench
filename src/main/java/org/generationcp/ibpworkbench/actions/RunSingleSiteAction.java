@@ -190,7 +190,7 @@ public class RunSingleSiteAction implements ClickListener {
 		breedingViewInput.setReplicates(this.createReplicates(this.source.getSelDesignTypeValue(), this.source.getSelReplicatesValue()));
 
 		final DesignType designType = DesignType.getDesignTypeByName(this.source.getSelDesignTypeValue());
-		breedingViewInput.setDesignType(resolveDesignTypeNameForBreedingView(designType));
+		breedingViewInput.setDesignType(designType.getName());
 
 		breedingViewInput.setBlocks(this.createBlocks(this.source.getSelBlocksValue()));
 
@@ -202,23 +202,6 @@ public class RunSingleSiteAction implements ClickListener {
 
 		breedingViewInput.setPlot(this.createPlot(breedingViewInput.getDatasetId()));
 
-	}
-
-	/**
-	 * Resolve the design type name to be used in Breeding View application.
-	 * @return
-	 */
-	String resolveDesignTypeNameForBreedingView(DesignType designType) {
-
-		if (designType == DesignType.INCOMPLETE_BLOCK_DESIGN) {
-			return DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName();
-		} else if (designType == DesignType.ROW_COLUMN_DESIGN) {
-			return DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName();
-		} else if (designType == DesignType.AUGMENTED_RANDOMIZED_BLOCK) {
-			return DesignType.INCOMPLETE_BLOCK_DESIGN.getName();
-		} else {
-			return designType.getName();
-		}
 	}
 
 	void populateRowPosAndColPos(DesignType designType, BreedingViewInput breedingViewInput) {
