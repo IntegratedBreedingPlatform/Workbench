@@ -28,7 +28,6 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.BreedingViewDesignTypeValueChangeListener;
 import org.generationcp.ibpworkbench.actions.BreedingViewEnvFactorValueChangeListener;
-import org.generationcp.ibpworkbench.actions.BreedingViewReplicatesValueChangeListener;
 import org.generationcp.ibpworkbench.actions.RunSingleSiteAction;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow;
@@ -1025,11 +1024,11 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 				this.displayRandomizedBlockDesignElements();
 			} else if (designType == TermId.RESOLVABLE_INCOMPLETE_BLOCK.getId()
 					|| designType == TermId.RESOLVABLE_INCOMPLETE_BLOCK_LATIN.getId()) {
-				designFactor = DesignType.INCOMPLETE_BLOCK_DESIGN.getName();
+				designFactor = DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName();
 				this.displayIncompleteBlockDesignElements();
 			} else if (designType == TermId.RESOLVABLE_INCOMPLETE_ROW_COL.getId()
 					|| designType == TermId.RESOLVABLE_INCOMPLETE_ROW_COL_LATIN.getId()) {
-				designFactor = DesignType.ROW_COLUMN_DESIGN.getName();
+				designFactor = DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName();
 				this.displayRowColumnDesignElements();
 			} else if (designType == TermId.AUGMENTED_RANDOMIZED_BLOCK.getId()) {
 				designFactor = DesignType.AUGMENTED_RANDOMIZED_BLOCK.getName();
@@ -1242,7 +1241,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.btnUpload.addStyleName("primary");
 
 		this.selDesignType.addListener(new BreedingViewDesignTypeValueChangeListener(this));
-		this.selReplicates.addListener(new BreedingViewReplicatesValueChangeListener(this));
 		this.selEnvFactor.addListener(new BreedingViewEnvFactorValueChangeListener(this));
 		this.selGenotypes.addListener(new GenotypeValueChangeListener());
 
@@ -1433,7 +1431,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		gLayout.addComponent(this.getLblGenotypes(), 0, 4);
 		gLayout.addComponent(this.getSelGenotypes(), 1, 4);
 
-		this.changeRowAndColumnLabelsBasedOnDesignType(DesignType.ROW_COLUMN_DESIGN);
+		this.changeRowAndColumnLabelsBasedOnDesignType(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN);
 
 		this.getDesignDetailsContainer().addComponent(gLayout);
 
@@ -1474,7 +1472,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 			this.getLblSpecifyRowFactor().setValue(this.messageSource.getMessage(Message.BV_SPECIFY_ROW_FACTOR));
 			this.getLblSpecifyColumnFactor().setValue(this.messageSource.getMessage(Message.BV_SPECIFY_COLUMN_FACTOR));
 
-		} else if (designType == DesignType.ROW_COLUMN_DESIGN) {
+		} else if (designType == DesignType.RESOLVABLE_ROW_COLUMN_DESIGN) {
 
 			// For Row and Column Design, row and column factors are all required so their text labels should have a
 			// red asterisk (*)

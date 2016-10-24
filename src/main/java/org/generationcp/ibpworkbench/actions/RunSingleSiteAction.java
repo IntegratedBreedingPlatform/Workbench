@@ -222,7 +222,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 	void populateRowAndColumn(DesignType designType, BreedingViewInput breedingViewInput) {
 
-		if (designType == DesignType.ROW_COLUMN_DESIGN) {
+		if (designType == DesignType.RESOLVABLE_ROW_COLUMN_DESIGN) {
 
 			breedingViewInput.setColumns(this.createColumns(this.source.getSelColumnFactorValue()));
 			breedingViewInput.setRows(this.createRows(this.source.getSelRowFactorValue()));
@@ -404,17 +404,17 @@ public class RunSingleSiteAction implements ClickListener {
 		}
 
 		if (StringUtils.isNullOrEmpty(blocksFactor)
-				&& (designType.equals(DesignType.INCOMPLETE_BLOCK_DESIGN.getName()) || designType.equals(DesignType.P_REP_DESIGN.getName()))) {
+				&& (designType.equals(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName()) || designType.equals(DesignType.P_REP_DESIGN.getName()))) {
 			this.showErrorMessage(window, "Please specify incomplete block factor.", "");
 			return false;
 		}
 
-		if (StringUtils.isNullOrEmpty(columnFactor) && designType.equals(DesignType.ROW_COLUMN_DESIGN.getName())) {
+		if (StringUtils.isNullOrEmpty(columnFactor) && designType.equals(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName())) {
 			this.showErrorMessage(window, "Please specify column factor.", "");
 			return false;
 		}
 
-		if (StringUtils.isNullOrEmpty(rowFactor) && designType.equals(DesignType.ROW_COLUMN_DESIGN.getName())) {
+		if (StringUtils.isNullOrEmpty(rowFactor) && designType.equals(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName())) {
 			this.showErrorMessage(window, "Please specify row factor.", "");
 			return false;
 		}

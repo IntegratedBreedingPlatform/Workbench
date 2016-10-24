@@ -145,7 +145,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		Assert.assertFalse(components.contains(this.dut.getLblSpecifyRowFactor()));
 		Assert.assertFalse(components.contains(this.dut.getSelRowFactor()));
 
-		Assert.assertTrue(this.dut.getSelDesignType().getValue().equals(DesignType.INCOMPLETE_BLOCK_DESIGN.getName()));
+		Assert.assertTrue(this.dut.getSelDesignType().getValue().equals(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName()));
 
 		if ((!this.dut.getSelReplicates().isEnabled() || this.dut.getSelReplicates().getItemIds().isEmpty())
 				&& !this.dut.getSelBlocks().getItemIds().isEmpty()) {
@@ -177,7 +177,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		Assert.assertFalse(components.contains(this.dut.getLblSpecifyRowFactor()));
 		Assert.assertFalse(components.contains(this.dut.getSelRowFactor()));
 
-		Assert.assertTrue(this.dut.getSelDesignType().getValue().equals(DesignType.INCOMPLETE_BLOCK_DESIGN.getName()));
+		Assert.assertTrue(this.dut.getSelDesignType().getValue().equals(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName()));
 
 		if ((!this.dut.getSelReplicates().isEnabled() || this.dut.getSelReplicates().getItemIds().isEmpty())
 				&& !this.dut.getSelBlocks().getItemIds().isEmpty()) {
@@ -209,7 +209,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		Assert.assertFalse(components.contains(this.dut.getLblBlocks()));
 		Assert.assertFalse(components.contains(this.dut.getSelBlocks()));
 
-		Assert.assertTrue(this.dut.getSelDesignType().getValue().equals(DesignType.ROW_COLUMN_DESIGN.getName()));
+		Assert.assertTrue(this.dut.getSelDesignType().getValue().equals(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName()));
 
 		if ((!this.dut.getSelReplicates().isEnabled() || this.dut.getSelReplicates().getItemIds().isEmpty())
 				&& !this.dut.getSelBlocks().getItemIds().isEmpty()) {
@@ -241,7 +241,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		Assert.assertFalse(components.contains(this.dut.getLblBlocks()));
 		Assert.assertFalse(components.contains(this.dut.getSelBlocks()));
 
-		Assert.assertTrue(this.dut.getSelDesignType().getValue().equals(DesignType.ROW_COLUMN_DESIGN.getName()));
+		Assert.assertTrue(this.dut.getSelDesignType().getValue().equals(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName()));
 
 		if ((!this.dut.getSelReplicates().isEnabled() || this.dut.getSelReplicates().getItemIds().isEmpty())
 				&& !this.dut.getSelBlocks().getItemIds().isEmpty()) {
@@ -446,7 +446,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 		this.dut.initializeComponents();
 
-		dut.changeRowAndColumnLabelsBasedOnDesignType(DesignType.ROW_COLUMN_DESIGN);
+		dut.changeRowAndColumnLabelsBasedOnDesignType(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN);
 
 		// Row and Column factors are required in Row-and-Column Design, the labels should have a required field indicator (red asterisk '*')
 		Assert.assertEquals(COLUMN_FACTOR_LABEL + SingleSiteAnalysisDetailsPanel.REQUIRED_FIELD_INDICATOR, dut.getLblSpecifyColumnFactor().getValue());

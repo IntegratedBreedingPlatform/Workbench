@@ -40,11 +40,11 @@ public class BreedingViewDesignTypeValueChangeListener implements ValueChangeLis
 			return;
 		}
 
-		if (value.equals(DesignType.ROW_COLUMN_DESIGN.getName())) {
+		if (value.equals(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName())) {
 
 			this.source.displayRowColumnDesignElements();
 
-		} else if (value.equals(DesignType.INCOMPLETE_BLOCK_DESIGN.getName())) {
+		} else if (value.equals(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName())) {
 
 			this.source.displayIncompleteBlockDesignElements();
 
