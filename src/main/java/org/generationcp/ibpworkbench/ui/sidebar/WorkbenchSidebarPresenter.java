@@ -110,7 +110,6 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 		if (this.isBackupAndRestoreEnabled != null && Boolean.valueOf(this.isBackupAndRestoreEnabled)) {
 			categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "recovery", this.messageSource.getMessage("LINK_BACKUP_RESTORE")));
 		}
-		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "user_tools", this.messageSource.getMessage("LINK_MANAGE_TOOLS")));
 		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "about_bms", this.messageSource.getMessage("LINK_ABOUT_BMS")));
 	}
 
