@@ -288,5 +288,10 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		}
 
 	}
+	
+	// For test purposes only
+	public Table getProgramsTable(){
+		return this.programsTable;
+	}
 
 }

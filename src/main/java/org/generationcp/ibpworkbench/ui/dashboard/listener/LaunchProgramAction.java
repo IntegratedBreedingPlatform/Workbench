@@ -13,8 +13,6 @@ package org.generationcp.ibpworkbench.ui.dashboard.listener;
 
 import java.util.Date;
 
-import javax.swing.ButtonModel;
-
 import org.generationcp.commons.constant.ToolEnum;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -26,7 +24,6 @@ import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
 import org.generationcp.ibpworkbench.util.SchemaVersionUtil;
-import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -47,23 +44,13 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Window;
 
-/**
- * @author Efficio.Daniel
- *
- */
 @Configurable
 public class LaunchProgramAction implements ItemClickListener, ClickListener {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 5742093045098439073L;
 
 	@Autowired
-	private WorkbenchDataManager manager;
-
-	@Autowired
-	private ToolUtil toolUtil;
+	private WorkbenchDataManager workbenchDataManager;
 
 	@Autowired
 	private SessionData sessionData;
@@ -78,6 +65,8 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 	
 	private Project selectedProgram;
 	
+	private LaunchWorkbenchToolAction launchListManagerToolAction = new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER_MAIN);
+	
 	public LaunchProgramAction(){
 		super();
 	}
@@ -88,7 +77,7 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 
 	void openSelectedProgram(final Project project, final Window window) {
 		try {
-			TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+			TransactionTemplate transactionTemplate = new TransactionTemplate(this.transactionManager);
 
 			transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 
@@ -109,7 +98,7 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 					LaunchProgramAction.this.updateProjectLastOpenedDate(project);
 
 					// Set project name to header
-					WorkbenchMainView workbenchMainView = (WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow();
+					WorkbenchMainView workbenchMainView = (WorkbenchMainView) window;
 					workbenchMainView.addTitle(project.getProjectName());
 
 					// update sidebar selection
@@ -119,7 +108,7 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 					}
 
 					// page change to list manager, with parameter passed
-					new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER_MAIN).onAppLaunch(window);
+					launchListManagerToolAction.onAppLaunch(window);
 
 				}
 			});
@@ -133,25 +122,30 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 		}
 	}
 
+	/**
+	 * Updates last opened project for user in DB and last opened project in session.
+	 * 
+	 * @param project : the program selected in dashboard
+	 */
 	void updateProjectLastOpenedDate(Project project) {
 		try {
 
 			// set the last opened project in the session
-			IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+//			IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
 
-			ProjectUserInfoDAO projectUserInfoDao = this.manager.getProjectUserInfoDao();
+			ProjectUserInfoDAO projectUserInfoDao = this.workbenchDataManager.getProjectUserInfoDao();
 			ProjectUserInfo projectUserInfo =
-					projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId().intValue(), app.getSessionData().getUserData()
+					projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId().intValue(), this.sessionData.getUserData()
 							.getUserid());
 			if (projectUserInfo != null) {
 				projectUserInfo.setLastOpenDate(new Date());
-				this.manager.saveOrUpdateProjectUserInfo(projectUserInfo);
+				this.workbenchDataManager.saveOrUpdateProjectUserInfo(projectUserInfo);
 			}
 
 			project.setLastOpenDate(new Date());
-			this.manager.mergeProject(project);
+			this.workbenchDataManager.mergeProject(project);
 
-			app.getSessionData().setLastOpenedProject(project);
+			this.sessionData.setLastOpenedProject(project);
 
 		} catch (MiddlewareQueryException e) {
 			LaunchProgramAction.LOG.error(e.toString(), e);
@@ -170,5 +164,21 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 			openSelectedProgram(this.selectedProgram, event.getComponent().getWindow());
 		}
 		
+	}
+	
+	public void setTransactionManager(final PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
+	}
+	
+	public void setSessionData(final SessionData sessionData) {
+		this.sessionData = sessionData;
+	}
+	
+	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
+		this.workbenchDataManager = workbenchDataManager;
+	}
+	
+	public void setLaunchWorkbenchToolAction (final LaunchWorkbenchToolAction launchWorkbenchToolAction){
+		this.launchListManagerToolAction = launchWorkbenchToolAction;
 	}
 }
