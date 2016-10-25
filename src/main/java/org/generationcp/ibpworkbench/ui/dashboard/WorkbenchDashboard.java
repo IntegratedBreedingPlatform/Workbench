@@ -114,7 +114,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 			final Application application = IBPWorkbenchApplication.get();
 			final String basepath = application.getContext().getBaseDirectory().getAbsolutePath().replace("\\", "/");
 
-			final FileResource resource = new FileResource(new File(basepath + this.instituteLogoPath), application);
+			final FileResource resource = new FileResource(new File(basepath + instituteLogoURL), application);
 
 			this.instituteLogo = new Embedded("", resource);
 			this.instituteLogo.setDebugId("instituteLogo");
