@@ -63,6 +63,10 @@ public class BreedingViewDesignTypeValueChangeListener implements ValueChangeLis
 		} else if (value.equals(DesignType.P_REP_DESIGN.getName())){
 
 			this.source.displayPRepDesignElements();
+
+		} else if (value.equals(DesignType.AUGMENTED_RANDOMIZED_BLOCK.getName())){
+
+			this.source.displayAugmentedDesignElements();
 		}
 	}
 
