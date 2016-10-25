@@ -790,7 +790,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.btnBack = new Button();
 		this.btnBack.setDebugId("btnBack");
 
-		this.checkDesignFactor();
+		this.displayDesignElementsBasedOnDesignTypeOfTheStudy();
 
 	}
 
@@ -1014,7 +1014,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		}
 	}
 
-	public void checkDesignFactor() {
+	public void displayDesignElementsBasedOnDesignTypeOfTheStudy() {
 		String designFactor = null;
 		final int designType = this.retrieveExperimentalDesignTypeID();
 		if (designType != 0) {
@@ -1195,7 +1195,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	private void reset() {
 
 		this.selEnvFactor.select(this.selEnvFactor.getItemIds().iterator().next());
-		this.checkDesignFactor();
+		this.displayDesignElementsBasedOnDesignTypeOfTheStudy();
 		this.selReplicates.select(this.selReplicates.getItemIds().iterator().next());
 		this.getSelGenotypes().select(this.getSelGenotypes().getItemIds().iterator().next());
 		this.footerCheckBox.setValue(false);
