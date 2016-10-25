@@ -125,9 +125,11 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 		this.tabSheet.getTab(this.programMethodsView).setCaption(this.messageSource.getMessage(Message.BREEDING_METHODS_LABEL));
 
 		// System Labels tab
-		this.tabSheet.addTab(this.systemLabelPanel);
-		this.tabSheet.getTab(this.systemLabelPanel).setClosable(false);
-		this.tabSheet.getTab(this.systemLabelPanel).setCaption(this.messageSource.getMessage("SYSTEM_LABELS"));
+		try {
+			this.addSystemLabelsTab();
+		} catch (final AccessDeniedException e){
+			// Do not do anything as the screen should be displayed, just this tab shouldn't appear for non-admins
+		}
 		
 		// Program Summary tab
 		this.tabSheet.addTab(this.programSummaryView);
@@ -175,6 +177,13 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 		this.tabSheet.addTab(this.programMembersPanel);
 		this.tabSheet.getTab(this.programMembersPanel).setClosable(false);
 		this.tabSheet.getTab(this.programMembersPanel).setCaption(this.messageSource.getMessage(Message.PROGRAM_MEMBERS));
+	}
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	private void addSystemLabelsTab() {
+		this.tabSheet.addTab(this.systemLabelPanel);
+		this.tabSheet.getTab(this.systemLabelPanel).setClosable(false);
+		this.tabSheet.getTab(this.systemLabelPanel).setCaption(this.messageSource.getMessage("SYSTEM_LABELS"));
 	}
 	
 	// For Test purposes only
