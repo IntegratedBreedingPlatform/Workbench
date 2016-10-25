@@ -1,4 +1,3 @@
-
 package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.commons.breedingview.xml.DesignType;
@@ -14,13 +13,13 @@ public class BreedingViewDesignTypeValueChangeListener implements ValueChangeLis
 
 	SingleSiteAnalysisDetailsPanel source;
 
-	public BreedingViewDesignTypeValueChangeListener(SingleSiteAnalysisDetailsPanel source) {
+	public BreedingViewDesignTypeValueChangeListener(final SingleSiteAnalysisDetailsPanel source) {
 		this.source = source;
 	}
 
 	@Override
-	public void valueChange(ValueChangeEvent event) {
-		String value = (String) event.getProperty().getValue();
+	public void valueChange(final ValueChangeEvent event) {
+		final String value = (String) event.getProperty().getValue();
 
 		if (value.equals(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName())) {
 
@@ -34,11 +33,11 @@ public class BreedingViewDesignTypeValueChangeListener implements ValueChangeLis
 
 			this.source.displayRandomizedBlockDesignElements();
 
-		} else if (value.equals(DesignType.P_REP_DESIGN.getName())){
+		} else if (value.equals(DesignType.P_REP_DESIGN.getName())) {
 
 			this.source.displayPRepDesignElements();
 
-		} else if (value.equals(DesignType.AUGMENTED_RANDOMIZED_BLOCK.getName())){
+		} else if (value.equals(DesignType.AUGMENTED_RANDOMIZED_BLOCK.getName())) {
 
 			this.source.displayAugmentedDesignElements();
 		}
