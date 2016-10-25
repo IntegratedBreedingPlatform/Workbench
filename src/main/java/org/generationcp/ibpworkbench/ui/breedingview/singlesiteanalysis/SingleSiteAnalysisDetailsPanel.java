@@ -1410,6 +1410,9 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		gLayout.addComponent(this.getLblGenotypes(), 0, 3);
 		gLayout.addComponent(this.getSelGenotypes(), 1, 3);
 
+		// Augmented design does not need a replicates factor, make the replicates factor select box unselected
+		this.getSelReplicates().select(null);
+
 		this.getDesignDetailsContainer().addComponent(gLayout);
 
 	}
