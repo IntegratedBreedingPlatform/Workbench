@@ -11,14 +11,20 @@
 
 package org.generationcp.ibpworkbench.ui.dashboard;
 
+import java.io.File;
 import java.util.List;
 
+import javax.annotation.Resource;
+import javax.servlet.ServletContext;
+
+import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.help.document.HelpModule;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.ProjectTableCellStyleGenerator;
@@ -32,8 +38,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 
+import com.vaadin.Application;
 import com.vaadin.data.util.BeanContainer;
+import com.vaadin.terminal.FileResource;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
@@ -65,11 +74,19 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 	@Autowired
 	private SessionData sessionData;
 
+	@Resource
+	private ServletContext servletContext;
+
+	@Value("${institute.logo.path}")
+	private String instituteLogoPath;
+
 	public static final String PROGRAM_NAME_COLUMN_ID = "Workbench Dashboard Program Name Column Id";
 	public static final String CROP_NAME_COLUMN_ID = "Workbench Dashboard Crop Name Column Id";
 	public static final String BUTTON_LIST_MANAGER_COLUMN_ID = "Workbench Dashboard List Manager Button Column Id";
 
 	private List<Project> programs = null;
+
+	private Embedded instituteLogo;
 
 	public WorkbenchDashboard() {
 		super();
@@ -82,6 +99,28 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
 	public void initializeComponents() {
 		this.initializeProjectTable();
+
+		this.initializeInstituteLogo();
+	}
+
+	/*
+	 * Check if client logo URL is specified from properties file and if the resource exists. Use the image if it exists.
+	 */
+	private void initializeInstituteLogo() {
+		final String instituteLogoURL = findInstituteLogo(this.instituteLogoPath);
+
+		if (!StringUtils.isBlank(instituteLogoURL)) {
+			// Image as a file resource
+			final Application application = IBPWorkbenchApplication.get();
+			final String basepath = application.getContext().getBaseDirectory().getAbsolutePath().replace("\\", "/");
+
+			final FileResource resource = new FileResource(new File(basepath + this.instituteLogoPath), application);
+
+			this.instituteLogo = new Embedded("", resource);
+			this.instituteLogo.setDebugId("instituteLogo");
+			this.instituteLogo.setMimeType("image/png");
+			this.instituteLogo.setSizeUndefined();
+		}
 	}
 
 	private void initializeProjectTable() {
@@ -170,8 +209,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 			button.setEnabled(true);
 
 			// capitalization done on CSS
-			this.programsTable.addItem(new Object[] {project.getProjectName(), project.getCropType().getCropName(), button},
-					project);
+			this.programsTable.addItem(new Object[] {project.getProjectName(), project.getCropType().getCropName(), button}, project);
 		}
 
 		if (lastOpenedProgram != null) {
@@ -208,7 +246,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		final HorizontalLayout programHeaderArea = new HorizontalLayout();
 		programHeaderArea.setDebugId("programHeaderArea");
 		programHeaderArea.setWidth("100%");
-		
+
 		final Label programLabel = new Label(this.messageSource.getMessage(Message.PROGRAMS_LABEL));
 		programLabel.setDebugId("programLbl");
 		programLabel.setStyleName(Bootstrap.Typography.H2.styleName());
@@ -246,11 +284,15 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		programArea.addComponent(this.programsTable);
 		programArea.setExpandRatio(this.programsTable, 1.0F);
 
+		// Show institute logo, if any, in preview area
 		final VerticalLayout previewArea = new VerticalLayout();
 		previewArea.setDebugId("previewArea");
 		previewArea.setStyleName("preview-area");
 		previewArea.setSizeFull();
 		previewArea.setMargin(new MarginInfo(true, false, false, false));
+		if (this.instituteLogo != null) {
+			previewArea.addComponent(this.instituteLogo);
+		}
 
 		root.setFirstComponent(programArea);
 		root.setSecondComponent(previewArea);
@@ -288,9 +330,18 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		}
 
 	}
-	
+
+	protected String findInstituteLogo(String path) {
+		final String contextPath = "/WEB-INF" + path;
+		if (servletContext.getResourceAsStream(contextPath) != null) {
+			return contextPath;
+		} else {
+			return "";
+		}
+	}
+
 	// For test purposes only
-	public Table getProgramsTable(){
+	public Table getProgramsTable() {
 		return this.programsTable;
 	}
 
