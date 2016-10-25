@@ -617,5 +617,22 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	public WorkbenchSidebar getSidebar() {
 		return this.sidebar;
 	}
-
+	
+	// For test purposes
+	public HorizontalLayout getWorkbenchHeaderLayout(){
+		return this.workbenchHeaderLayout;
+	}
+	
+	// For test purposes
+	public Button getSidebarToggleButton(){
+		return this.sidebarToggleButton;
+	}
+	
+	public Button getAddProgramButton(){
+		return this.addProgramButton;
+	}
+	
+	public Button getHomeButton(){
+		return this.homeButton;
+	}
 }
