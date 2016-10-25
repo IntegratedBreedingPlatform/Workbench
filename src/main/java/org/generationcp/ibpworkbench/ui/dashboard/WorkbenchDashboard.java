@@ -345,4 +345,8 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		return this.programsTable;
 	}
 
+	// For test purposes only
+	public void setInstituteLogo(Embedded instituteLogo){
+		this.instituteLogo = instituteLogo;
+	}
 }
