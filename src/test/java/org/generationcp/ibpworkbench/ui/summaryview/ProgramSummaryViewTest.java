@@ -54,14 +54,18 @@ public class ProgramSummaryViewTest {
 		// Setup mocks
 		final Project project = new Project();
 		project.setProjectId(10L);
-		project.setUniqueID(PROGRAM_UUID);
+		project.setUniqueID(ProgramSummaryViewTest.PROGRAM_UUID);
 		Mockito.doReturn(project).when(this.sessionData).getSelectedProject();
-		Mockito.doReturn(ACTIVITIES_COUNT).when(this.workbenchDataManager).countProjectActivitiesByProjectId(project.getProjectId());
-		Mockito.doReturn(getTestProjectActivities(ACTIVITIES_COUNT.intValue())).when(this.workbenchDataManager)
-				.getProjectActivitiesByProjectId(project.getProjectId(), 0, ACTIVITIES_COUNT.intValue());
-		Mockito.doReturn(NURSERY_COUNT).when(this.studyDataManager).countStudyDetails(StudyType.N, PROGRAM_UUID);
-		Mockito.doReturn(TRIAL_COUNT).when(this.studyDataManager).countStudyDetails(StudyType.T, PROGRAM_UUID);
-		Mockito.doReturn(STUDIES_COUNT).when(this.studyDataManager).countAllNurseryAndTrialStudyDetails(PROGRAM_UUID);
+		Mockito.doReturn(ProgramSummaryViewTest.ACTIVITIES_COUNT).when(this.workbenchDataManager)
+				.countProjectActivitiesByProjectId(project.getProjectId());
+		Mockito.doReturn(this.getTestProjectActivities(ProgramSummaryViewTest.ACTIVITIES_COUNT.intValue())).when(this.workbenchDataManager)
+				.getProjectActivitiesByProjectId(project.getProjectId(), 0, ProgramSummaryViewTest.ACTIVITIES_COUNT.intValue());
+		Mockito.doReturn(ProgramSummaryViewTest.NURSERY_COUNT).when(this.studyDataManager).countStudyDetails(StudyType.N,
+				ProgramSummaryViewTest.PROGRAM_UUID);
+		Mockito.doReturn(ProgramSummaryViewTest.TRIAL_COUNT).when(this.studyDataManager).countStudyDetails(StudyType.T,
+				ProgramSummaryViewTest.PROGRAM_UUID);
+		Mockito.doReturn(ProgramSummaryViewTest.STUDIES_COUNT).when(this.studyDataManager)
+				.countAllNurseryAndTrialStudyDetails(ProgramSummaryViewTest.PROGRAM_UUID);
 
 		this.summaryView.initializeComponents();
 		this.summaryView.initializeData();
@@ -76,16 +80,16 @@ public class ProgramSummaryViewTest {
 		Assert.assertEquals(this.summaryView.getProgramStudiesTable(),
 				this.summaryView.getComponent(ProgramSummaryView.COMPONENT_INDEX_OF_TABLES));
 		// Check the sizes of tables
-		Assert.assertEquals(TRIAL_COUNT.intValue(), this.summaryView.getProgramTrialsTable().size());
-		Assert.assertEquals(NURSERY_COUNT.intValue(), this.summaryView.getProgramNurseriesTable().size());
-		Assert.assertEquals(ACTIVITIES_COUNT.intValue(), this.summaryView.getProgramActivitiesTable().size());
-		Assert.assertEquals(STUDIES_COUNT.intValue(), this.summaryView.getProgramStudiesTable().size());
+		Assert.assertEquals(ProgramSummaryViewTest.TRIAL_COUNT.intValue(), this.summaryView.getProgramTrialsTable().size());
+		Assert.assertEquals(ProgramSummaryViewTest.NURSERY_COUNT.intValue(), this.summaryView.getProgramNurseriesTable().size());
+		Assert.assertEquals(ProgramSummaryViewTest.ACTIVITIES_COUNT.intValue(), this.summaryView.getProgramActivitiesTable().size());
+		Assert.assertEquals(ProgramSummaryViewTest.STUDIES_COUNT.intValue(), this.summaryView.getProgramStudiesTable().size());
 	}
 
-	private List<ProjectActivity> getTestProjectActivities(int noOfActivities) {
-		List<ProjectActivity> activityList = new ArrayList<>();
+	private List<ProjectActivity> getTestProjectActivities(final int noOfActivities) {
+		final List<ProjectActivity> activityList = new ArrayList<>();
 		for (int i = 0; i < noOfActivities; i++) {
-			ProjectActivity activity = new ProjectActivity();
+			final ProjectActivity activity = new ProjectActivity();
 			activity.setProjectActivityId(i + 1);
 			activityList.add(activity);
 		}

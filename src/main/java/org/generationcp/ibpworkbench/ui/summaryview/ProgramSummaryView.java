@@ -73,17 +73,16 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 	private static final String SITE_NAME = "siteName";
 
 	private static final String STUDY_TYPE = "studyType";
-	
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
 	private SessionData sessionData;
-	
+
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
-	
+
 	@Autowired
 	private StudyDataManager studyDataManager;
 
@@ -146,7 +145,8 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		// add Program Studies All as default table
 		this.addComponent(headerArea);
 		this.addComponent(this.programStudiesTable);
-		this.updateHeaderAndTableControls(this.messageSource.getMessage(Message.PROGRAM_SUMMARY_ALL), this.studiesCount, this.programStudiesTable);
+		this.updateHeaderAndTableControls(this.messageSource.getMessage(Message.PROGRAM_SUMMARY_ALL), this.studiesCount,
+				this.programStudiesTable);
 
 		this.setWidth("100%");
 		this.setSpacing(false);
@@ -158,17 +158,15 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		this.header.setDebugId("header");
 		this.header.setStyleName(Bootstrap.Typography.H2.styleName());
 
-		this.toolsDropDown =
-				new ToolsDropDown(this.messageSource.getMessage(Message.PROGRAM_SUMMARY_ACTIVITIES),
-						this.messageSource.getMessage(Message.PROGRAM_SUMMARY_TRIALS),
-						this.messageSource.getMessage(Message.PROGRAM_SUMMARY_NURSERY),
-						this.messageSource.getMessage(Message.PROGRAM_SUMMARY_ALL));
+		this.toolsDropDown = new ToolsDropDown(this.messageSource.getMessage(Message.PROGRAM_SUMMARY_ACTIVITIES),
+				this.messageSource.getMessage(Message.PROGRAM_SUMMARY_TRIALS),
+				this.messageSource.getMessage(Message.PROGRAM_SUMMARY_NURSERY), this.messageSource.getMessage(Message.PROGRAM_SUMMARY_ALL));
 
-		this.toolsPopup = new PopupView(toolsDropDown);
+		this.toolsPopup = new PopupView(this.toolsDropDown);
 		this.toolsPopup.setDebugId("toolsPopup");
 		this.toolsPopup.setStyleName("btn-dropdown");
 		this.toolsPopup.setHideOnMouseOut(false);
-		
+
 		this.exportBtn = new Button("<span class='glyphicon glyphicon-export' style='right: 4px'></span>EXPORT");
 		this.exportBtn.setDebugId("exportBtn");
 		this.exportBtn.setHtmlContentAllowed(true);
@@ -179,47 +177,52 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		this.programStudiesTable = this.buildProgramStudiesTable();
 
 	}
-	
-	private void initializeActions(){
+
+	private void initializeActions() {
 		this.toolsPopup.addListener(new PopupView.PopupVisibilityListener() {
 
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void popupVisibilityChange(PopupView.PopupVisibilityEvent event) {
+			public void popupVisibilityChange(final PopupView.PopupVisibilityEvent event) {
 				if (!event.isPopupVisible()) {
-					int selection = toolsDropDown.getSelectedItem();
+					final int selection = ProgramSummaryView.this.toolsDropDown.getSelectedItem();
 
 					if (selection >= 0) {
-						ProgramSummaryView.this.removeComponent(ProgramSummaryView.this.getComponent(COMPONENT_INDEX_OF_TABLES));
+						ProgramSummaryView.this
+								.removeComponent(ProgramSummaryView.this.getComponent(ProgramSummaryView.COMPONENT_INDEX_OF_TABLES));
 					} else {
 						return;
 					}
 
 					switch (selection) {
 						case 0:
-							ProgramSummaryView.this.addComponent(ProgramSummaryView.this.programActivitiesTable, COMPONENT_INDEX_OF_TABLES);
+							ProgramSummaryView.this.addComponent(ProgramSummaryView.this.programActivitiesTable,
+									ProgramSummaryView.COMPONENT_INDEX_OF_TABLES);
 							ProgramSummaryView.this.updateHeaderAndTableControls(
 									ProgramSummaryView.this.messageSource.getMessage(Message.PROGRAM_SUMMARY_ACTIVITIES),
 									ProgramSummaryView.this.activityCount, ProgramSummaryView.this.programActivitiesTable);
 							break;
 						case 1:
-							ProgramSummaryView.this.addComponent(ProgramSummaryView.this.programTrialsTable, COMPONENT_INDEX_OF_TABLES);
+							ProgramSummaryView.this.addComponent(ProgramSummaryView.this.programTrialsTable,
+									ProgramSummaryView.COMPONENT_INDEX_OF_TABLES);
 							ProgramSummaryView.this.updateHeaderAndTableControls(
-									ProgramSummaryView.this.messageSource.getMessage(Message.PROGRAM_SUMMARY_TRIALS), ProgramSummaryView.this.trialCount,
-									ProgramSummaryView.this.programTrialsTable);
+									ProgramSummaryView.this.messageSource.getMessage(Message.PROGRAM_SUMMARY_TRIALS),
+									ProgramSummaryView.this.trialCount, ProgramSummaryView.this.programTrialsTable);
 							break;
 						case 2:
-							ProgramSummaryView.this.addComponent(ProgramSummaryView.this.programNurseriesTable, COMPONENT_INDEX_OF_TABLES);
+							ProgramSummaryView.this.addComponent(ProgramSummaryView.this.programNurseriesTable,
+									ProgramSummaryView.COMPONENT_INDEX_OF_TABLES);
 							ProgramSummaryView.this.updateHeaderAndTableControls(
 									ProgramSummaryView.this.messageSource.getMessage(Message.PROGRAM_SUMMARY_NURSERY),
 									ProgramSummaryView.this.nurseryCount, ProgramSummaryView.this.programNurseriesTable);
 							break;
 						case 3:
-							ProgramSummaryView.this.addComponent(ProgramSummaryView.this.programStudiesTable, COMPONENT_INDEX_OF_TABLES);
+							ProgramSummaryView.this.addComponent(ProgramSummaryView.this.programStudiesTable,
+									ProgramSummaryView.COMPONENT_INDEX_OF_TABLES);
 							ProgramSummaryView.this.updateHeaderAndTableControls(
-									ProgramSummaryView.this.messageSource.getMessage(Message.PROGRAM_SUMMARY_ALL), ProgramSummaryView.this.studiesCount,
-									ProgramSummaryView.this.programStudiesTable);
+									ProgramSummaryView.this.messageSource.getMessage(Message.PROGRAM_SUMMARY_ALL),
+									ProgramSummaryView.this.studiesCount, ProgramSummaryView.this.programStudiesTable);
 							break;
 						default:
 							break;
@@ -228,22 +231,23 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 				}
 			}
 		});
-		
+
 		this.exportBtn.addListener(new Button.ClickListener() {
 
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void buttonClick(Button.ClickEvent event) {
-				String tableName = ProgramSummaryView.this.header.getValue().toString().split("\\[")[0].trim();
-				String programName = ProgramSummaryView.this.sessionData.getSelectedProject().getProjectName();
+			public void buttonClick(final Button.ClickEvent event) {
+				final String tableName = ProgramSummaryView.this.header.getValue().toString().split("\\[")[0].trim();
+				final String programName = ProgramSummaryView.this.sessionData.getSelectedProject().getProjectName();
 
-				ExcelExport export = new ExcelExport((Table) ProgramSummaryView.this.getComponent(1), tableName);
+				final ExcelExport export = new ExcelExport((Table) ProgramSummaryView.this.getComponent(1), tableName);
 				export.setReportTitle(programName + " - " + tableName);
 				export.setExportFileName((tableName + " " + programName + ".xls").replaceAll(" ", "_"));
 				export.setDisplayTotals(false);
 
-				ProgramSummaryView.LOG.info("Exporting " + tableName + ": " + export.getExportFileName() + ".xls will be downloaded in a moment.");
+				ProgramSummaryView.LOG
+						.info("Exporting " + tableName + ": " + export.getExportFileName() + ".xls will be downloaded in a moment.");
 				export.export();
 
 			}
@@ -255,17 +259,17 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		final PagedTable activityTable = new PagedTableWithUpdatedControls();
 		activityTable.setImmediate(true);
 
-		BeanContainer<Integer, ProjectActivity> container = new BeanContainer<Integer, ProjectActivity>(ProjectActivity.class);
+		final BeanContainer<Integer, ProjectActivity> container = new BeanContainer<Integer, ProjectActivity>(ProjectActivity.class);
 		container.setBeanIdProperty("projectActivityId");
 		activityTable.setContainerDataSource(container);
 
-		String[] columns = new String[] {CREATED_AT, NAME, DESCRIPTION};
+		final String[] columns = new String[] {ProgramSummaryView.CREATED_AT, ProgramSummaryView.NAME, ProgramSummaryView.DESCRIPTION};
 		activityTable.setVisibleColumns(columns);
 		activityTable.setWidth("100%");
 
-		this.messageSource.setColumnHeader(activityTable, CREATED_AT, Message.DATE);
-		this.messageSource.setColumnHeader(activityTable, NAME, Message.NAME);
-		this.messageSource.setColumnHeader(activityTable, DESCRIPTION, Message.DESCRIPTION_HEADER);
+		this.messageSource.setColumnHeader(activityTable, ProgramSummaryView.CREATED_AT, Message.DATE);
+		this.messageSource.setColumnHeader(activityTable, ProgramSummaryView.NAME, Message.NAME);
+		this.messageSource.setColumnHeader(activityTable, ProgramSummaryView.DESCRIPTION, Message.DESCRIPTION_HEADER);
 
 		return activityTable;
 	}
@@ -274,11 +278,11 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		final PagedTable trialSummaryTable = new PagedTableWithUpdatedControls();
 		trialSummaryTable.setImmediate(true);
 
-		BeanContainer<Integer, StudyDetails> container = new BeanContainer<Integer, StudyDetails>(StudyDetails.class);
+		final BeanContainer<Integer, StudyDetails> container = new BeanContainer<Integer, StudyDetails>(StudyDetails.class);
 		container.setBeanIdProperty("id");
 		trialSummaryTable.setContainerDataSource(container);
 
-		String[] columns = this.getTrialOrNuseryTableColumns();
+		final String[] columns = this.getTrialOrNuseryTableColumns();
 		trialSummaryTable.setVisibleColumns(columns);
 		trialSummaryTable.setWidth("100%");
 
@@ -297,11 +301,11 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		final PagedTable nurserySummaryTable = new PagedTableWithUpdatedControls();
 		nurserySummaryTable.setImmediate(true);
 
-		BeanContainer<Integer, StudyDetails> container = new BeanContainer<Integer, StudyDetails>(StudyDetails.class);
+		final BeanContainer<Integer, StudyDetails> container = new BeanContainer<Integer, StudyDetails>(StudyDetails.class);
 		container.setBeanIdProperty("id");
 		nurserySummaryTable.setContainerDataSource(container);
 
-		String[] columns = this.getTrialOrNuseryTableColumns();
+		final String[] columns = this.getTrialOrNuseryTableColumns();
 		nurserySummaryTable.setVisibleColumns(columns);
 		nurserySummaryTable.setWidth("100%");
 
@@ -320,11 +324,11 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		final PagedTable allStudiesTable = new PagedTableWithUpdatedControls();
 		allStudiesTable.setImmediate(true);
 
-		BeanContainer<Integer, StudyDetails> container = new BeanContainer<Integer, StudyDetails>(StudyDetails.class);
+		final BeanContainer<Integer, StudyDetails> container = new BeanContainer<Integer, StudyDetails>(StudyDetails.class);
 		container.setBeanIdProperty("id");
 		allStudiesTable.setContainerDataSource(container);
 
-		String[] columns = this.getProgramStudiesTableColumns();
+		final String[] columns = this.getProgramStudiesTableColumns();
 		allStudiesTable.setVisibleColumns(columns);
 		allStudiesTable.setWidth("100%");
 
@@ -339,37 +343,35 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 
 		return allStudiesTable;
 	}
-	
-	void initializeData(){
+
+	void initializeData() {
 		long projectActivitiesCount;
 		final Project project = this.sessionData.getSelectedProject();
 		projectActivitiesCount = this.workbenchDataManager.countProjectActivitiesByProjectId(project.getProjectId());
 
-		final List<ProjectActivity> activityList = this.workbenchDataManager.getProjectActivitiesByProjectId(project.getProjectId(),
-						0, (int) projectActivitiesCount);
+		final List<ProjectActivity> activityList =
+				this.workbenchDataManager.getProjectActivitiesByProjectId(project.getProjectId(), 0, (int) projectActivitiesCount);
 		this.populateActivityTable(activityList);
-		
-		final StudyDetailsQueryFactory trialFactory =
-				new StudyDetailsQueryFactory(this.studyDataManager, StudyType.T, Arrays
-						.asList(getTrialOrNuseryTableColumns()), project.getUniqueID());
+
+		final StudyDetailsQueryFactory trialFactory = new StudyDetailsQueryFactory(this.studyDataManager, StudyType.T,
+				Arrays.asList(this.getTrialOrNuseryTableColumns()), project.getUniqueID());
 		this.populateTrialSummaryTable(trialFactory);
 
-		final StudyDetailsQueryFactory nurseryFactory =
-				new StudyDetailsQueryFactory(studyDataManager, StudyType.N, Arrays
-						.asList(this.getTrialOrNuseryTableColumns()), project.getUniqueID());
+		final StudyDetailsQueryFactory nurseryFactory = new StudyDetailsQueryFactory(this.studyDataManager, StudyType.N,
+				Arrays.asList(this.getTrialOrNuseryTableColumns()), project.getUniqueID());
 		this.populateNurserySummaryTable(nurseryFactory);
 
-		StudyDetailsQueryFactory allStudiesTable =
-				new StudyDetailsQueryFactory(studyDataManager, null, Arrays.asList(getProgramStudiesTableColumns()), project.getUniqueID());
+		final StudyDetailsQueryFactory allStudiesTable = new StudyDetailsQueryFactory(this.studyDataManager, null,
+				Arrays.asList(this.getProgramStudiesTableColumns()), project.getUniqueID());
 		this.populateProgramStudiesTable(allStudiesTable);
 	}
 
-	void populateActivityTable(List<ProjectActivity> activityList) {
-		BeanContainer<Integer, ProjectActivity> container = new BeanContainer<Integer, ProjectActivity>(ProjectActivity.class);
+	void populateActivityTable(final List<ProjectActivity> activityList) {
+		final BeanContainer<Integer, ProjectActivity> container = new BeanContainer<Integer, ProjectActivity>(ProjectActivity.class);
 		container.setBeanIdProperty("projectActivityId");
 		this.programActivitiesTable.setContainerDataSource(container);
 
-		for (ProjectActivity activity : activityList) {
+		for (final ProjectActivity activity : activityList) {
 			container.addBean(activity);
 		}
 
@@ -378,11 +380,11 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		this.programActivitiesTable.setContainerDataSource(container);
 	}
 
-	void populateTrialSummaryTable(StudyDetailsQueryFactory factory) {
-		LazyQueryContainer container = new LazyQueryContainer(factory, false, 10);
-		String[] columns = this.getTrialOrNuseryTableColumns();
+	void populateTrialSummaryTable(final StudyDetailsQueryFactory factory) {
+		final LazyQueryContainer container = new LazyQueryContainer(factory, false, 10);
+		final String[] columns = this.getTrialOrNuseryTableColumns();
 
-		for (String columnId : columns) {
+		for (final String columnId : columns) {
 			container.addContainerProperty(columnId, String.class, null);
 		}
 
@@ -394,11 +396,11 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		this.programTrialsTable.setImmediate(true);
 	}
 
-	void populateNurserySummaryTable(StudyDetailsQueryFactory factory) {
-		LazyQueryContainer container = new LazyQueryContainer(factory, false, 10);
-		String[] columns = this.getTrialOrNuseryTableColumns();
+	void populateNurserySummaryTable(final StudyDetailsQueryFactory factory) {
+		final LazyQueryContainer container = new LazyQueryContainer(factory, false, 10);
+		final String[] columns = this.getTrialOrNuseryTableColumns();
 
-		for (String columnId : columns) {
+		for (final String columnId : columns) {
 			container.addContainerProperty(columnId, String.class, null);
 		}
 
@@ -410,11 +412,11 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		this.programNurseriesTable.setImmediate(true);
 	}
 
-	void populateProgramStudiesTable(StudyDetailsQueryFactory factory) {
-		LazyQueryContainer container = new LazyQueryContainer(factory, false, 10);
-		String[] columns = this.getProgramStudiesTableColumns();
+	void populateProgramStudiesTable(final StudyDetailsQueryFactory factory) {
+		final LazyQueryContainer container = new LazyQueryContainer(factory, false, 10);
+		final String[] columns = this.getProgramStudiesTableColumns();
 
-		for (String columnId : columns) {
+		for (final String columnId : columns) {
 			container.addContainerProperty(columnId, String.class, null);
 		}
 
@@ -433,7 +435,7 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		private Integer selectedItem = -1;
 		private final VerticalLayout root = new VerticalLayout();
 
-		public ToolsDropDown(String... selections) {
+		public ToolsDropDown(final String... selections) {
 			this.root.setDebugId("rootToolsDropDown");
 
 			this.choices = new Button[selections.length];
@@ -455,8 +457,8 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 
 		@Override
 		public String getMinimizedValueAsHTML() {
-			return "<span class='glyphicon glyphicon-cog' style='right: 6px; top: 2px; font-size: 13px; font-weight: 300'></span>" 
-					+ messageSource.getMessage(Message.ACTIONS);
+			return "<span class='glyphicon glyphicon-cog' style='right: 6px; top: 2px; font-size: 13px; font-weight: 300'></span>"
+					+ ProgramSummaryView.this.messageSource.getMessage(Message.ACTIONS);
 		}
 
 		@Override
@@ -465,7 +467,7 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		}
 
 		public Integer getSelectedItem() {
-			int value = this.selectedItem;
+			final int value = this.selectedItem;
 
 			// reset the selected item
 			this.selectedItem = -1;
@@ -478,20 +480,20 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 			private static final long serialVersionUID = -1931124754200308585L;
 			private final int choice;
 
-			public ChoiceListener(int choice) {
+			public ChoiceListener(final int choice) {
 				this.choice = choice;
 			}
 
 			@Override
-			public void buttonClick(Button.ClickEvent event) {
+			public void buttonClick(final Button.ClickEvent event) {
 				ToolsDropDown.this.selectedItem = this.choice;
 				ProgramSummaryView.this.toolsPopup.setPopupVisible(false);
 			}
 		}
 	}
 
-	private void updateHeaderAndTableControls(String label, int count, PagedTable table) {
-		if (this.getComponent(COMPONENT_INDEX_OF_TABLES).equals(table)) {
+	private void updateHeaderAndTableControls(final String label, final int count, final PagedTable table) {
+		if (this.getComponent(ProgramSummaryView.COMPONENT_INDEX_OF_TABLES).equals(table)) {
 
 			if (count > 0) {
 				this.header.setValue(label + " [" + count + "]");
@@ -511,13 +513,14 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 	}
 
 	private String[] getTrialOrNuseryTableColumns() {
-		return new String[] {ProgramSummaryView.STUDY_NAME, ProgramSummaryView.TITLE, ProgramSummaryView.OBJECTIVE, ProgramSummaryView.START_DATE,
-				ProgramSummaryView.END_DATE, ProgramSummaryView.PI_NAME, ProgramSummaryView.SITE_NAME};
+		return new String[] {ProgramSummaryView.STUDY_NAME, ProgramSummaryView.TITLE, ProgramSummaryView.OBJECTIVE,
+				ProgramSummaryView.START_DATE, ProgramSummaryView.END_DATE, ProgramSummaryView.PI_NAME, ProgramSummaryView.SITE_NAME};
 	}
 
 	private String[] getProgramStudiesTableColumns() {
-		return new String[] {ProgramSummaryView.STUDY_NAME, ProgramSummaryView.TITLE, ProgramSummaryView.OBJECTIVE, ProgramSummaryView.START_DATE,
-				ProgramSummaryView.END_DATE, ProgramSummaryView.PI_NAME, ProgramSummaryView.SITE_NAME, ProgramSummaryView.STUDY_TYPE};
+		return new String[] {ProgramSummaryView.STUDY_NAME, ProgramSummaryView.TITLE, ProgramSummaryView.OBJECTIVE,
+				ProgramSummaryView.START_DATE, ProgramSummaryView.END_DATE, ProgramSummaryView.PI_NAME, ProgramSummaryView.SITE_NAME,
+				ProgramSummaryView.STUDY_TYPE};
 	}
 
 	private class PagedTableWithUpdatedControls extends PagedTable {
@@ -533,19 +536,19 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 
 		@Override
 		public HorizontalLayout createControls() {
-			HorizontalLayout controls = super.createControls();
+			final HorizontalLayout controls = super.createControls();
 
 			controls.setMargin(new MarginInfo(true, false, true, false));
 
-			Iterator<Component> iterator = controls.getComponentIterator();
+			final Iterator<Component> iterator = controls.getComponentIterator();
 
 			while (iterator.hasNext()) {
-				Component c = iterator.next();
+				final Component c = iterator.next();
 				if (c instanceof HorizontalLayout) {
-					Iterator<Component> iterator2 = ((HorizontalLayout) c).getComponentIterator();
+					final Iterator<Component> iterator2 = ((HorizontalLayout) c).getComponentIterator();
 
 					while (iterator2.hasNext()) {
-						Component d = iterator2.next();
+						final Component d = iterator2.next();
 
 						if (d instanceof Button) {
 							d.setStyleName("");
@@ -561,9 +564,9 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		}
 
 		@Override
-		protected String formatPropertyValue(Object rowId, Object colId, Property property) {
+		protected String formatPropertyValue(final Object rowId, final Object colId, final Property property) {
 			if (property.getType() == Date.class) {
-				SimpleDateFormat sdf = DateUtil.getSimpleDateFormat(DateUtil.FRONTEND_TIMESTAMP_FORMAT);
+				final SimpleDateFormat sdf = DateUtil.getSimpleDateFormat(DateUtil.FRONTEND_TIMESTAMP_FORMAT);
 				return property.getValue() == null ? "" : sdf.format((Date) property.getValue());
 			}
 
@@ -571,26 +574,25 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		}
 
 	}
-	
+
 	// For test purposes only
 	public Table getProgramStudiesTable() {
 		return this.programStudiesTable;
 	}
-	
+
 	// For test purposes only
 	public Table getProgramActivitiesTable() {
 		return this.programActivitiesTable;
 	}
-	
+
 	// For test purposes only
 	public Table getProgramTrialsTable() {
 		return this.programTrialsTable;
 	}
-	
+
 	// For test purposes only
 	public Table getProgramNurseriesTable() {
 		return this.programNurseriesTable;
 	}
-	
 
 }

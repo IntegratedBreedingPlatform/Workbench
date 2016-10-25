@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- * 
+ *
  * Generation Challenge Programme (GCP)
- * 
- * 
+ *
+ *
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- * 
+ *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.ui.dashboard;
@@ -99,7 +99,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
 	public void initializeComponents() {
 		this.initializeProjectTable();
-
 		this.initializeInstituteLogo();
 	}
 
@@ -107,7 +106,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 	 * Check if client logo URL is specified from properties file and if the resource exists. Use the image if it exists.
 	 */
 	private void initializeInstituteLogo() {
-		final String instituteLogoURL = findInstituteLogo(this.instituteLogoPath);
+		final String instituteLogoURL = this.findInstituteLogo(this.instituteLogoPath);
 
 		if (!StringUtils.isBlank(instituteLogoURL)) {
 			// Image as a file resource
@@ -157,11 +156,11 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 	}
 
 	private void setTitleContent() {
-		HorizontalLayout titleLayout = new HorizontalLayout();
+		final HorizontalLayout titleLayout = new HorizontalLayout();
 		titleLayout.setDebugId("titleLayout");
 		titleLayout.setSpacing(true);
 
-		Label toolTitle = new Label(this.messageSource.getMessage(Message.DASHBOARD));
+		final Label toolTitle = new Label(this.messageSource.getMessage(Message.DASHBOARD));
 		toolTitle.setDebugId("toolTitle");
 		toolTitle.setContentMode(Label.CONTENT_XHTML);
 		toolTitle.setStyleName(Bootstrap.Typography.H1.styleName());
@@ -183,22 +182,22 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		Project lastOpenedProgram = null;
 
 		try {
-			User currentUser = this.sessionData.getUserData();
+			final User currentUser = this.sessionData.getUserData();
 			this.programs = this.workbenchDataManager.getProjectsByUser(currentUser);
 			lastOpenedProgram = this.workbenchDataManager.getLastOpenedProject(currentUser.getUserid());
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			WorkbenchDashboard.LOG.error("Exception", e);
 			throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
 		}
 
 		// set the Project Table data source
-		BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);
+		final BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);
 		projectContainer.setBeanIdProperty("projectName");
 
 		for (int i = this.programs.size() - 1; i >= 0; i--) {
-			Project project = this.programs.get(i);
+			final Project project = this.programs.get(i);
 
-			Button button = new Button("<span class='glyphicon glyphicon-play'></span>");
+			final Button button = new Button("<span class='glyphicon glyphicon-play'></span>");
 			button.setDebugId("button");
 			button.setHtmlContentAllowed(true);
 			button.setData(WorkbenchDashboard.BUTTON_LIST_MANAGER_COLUMN_ID);
@@ -315,14 +314,14 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public String generateDescription(Component source, Object itemId, Object propertyId) {
+			public String generateDescription(final Component source, final Object itemId, final Object propertyId) {
 				return WorkbenchDashboard.this.messageSource.getMessage(Message.PROGRAM_TABLE_TOOLTIP);
 			}
 		});
 	}
 
 	// hacky hack hack
-	public void initializeDashboardContents(Project selectProgram) {
+	public void initializeDashboardContents(final Project selectProgram) {
 
 		// set this program as selected in dashboard
 		if (selectProgram != null) {
@@ -331,9 +330,9 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
 	}
 
-	protected String findInstituteLogo(String path) {
+	protected String findInstituteLogo(final String path) {
 		final String contextPath = "/WEB-INF" + path;
-		if (servletContext.getResourceAsStream(contextPath) != null) {
+		if (this.servletContext.getResourceAsStream(contextPath) != null) {
 			return contextPath;
 		} else {
 			return "";
@@ -346,7 +345,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 	}
 
 	// For test purposes only
-	public void setInstituteLogo(Embedded instituteLogo){
+	public void setInstituteLogo(final Embedded instituteLogo) {
 		this.instituteLogo = instituteLogo;
 	}
 }

@@ -13,11 +13,9 @@ package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
-import org.generationcp.ibpworkbench.ui.dashboard.listener.LaunchProgramAction;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,22 +27,12 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.Window;
 
-/**
- * <b>Description</b>: Listener class for generating the home page view.
- *
- * <br>
- * <br>
- *
- * <b>Author</b>: Michael Blancaflor <br>
- * <b>File Created</b>: Jun 11, 2012.
- */
 @Configurable
 public class HomeAction implements ClickListener, ActionListener {
 
 	@Autowired
 	private SessionData sessionData;
 
-	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 5592156945270416052L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(HomeAction.class);
@@ -58,8 +46,8 @@ public class HomeAction implements ClickListener, ActionListener {
 	 * @param event the event
 	 */
 	@Override
-	public void buttonClick(ClickEvent event) {
-		Window window = event.getComponent().getWindow();
+	public void buttonClick(final ClickEvent event) {
+		final Window window = event.getComponent().getWindow();
 		this.doAction(window, "/Home", true);
 	}
 
@@ -69,7 +57,7 @@ public class HomeAction implements ClickListener, ActionListener {
 	 * @param event the event
 	 */
 	@Override
-	public void doAction(Event event) {
+	public void doAction(final Event event) {
 		// does nothing
 	}
 
@@ -80,12 +68,12 @@ public class HomeAction implements ClickListener, ActionListener {
 	 * @param uriFragment the uri fragment
 	 */
 	@Override
-	public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
+	public void doAction(final Window window, final String uriFragment, final boolean isLinkAccessed) {
 		// FIXME do not recreate workbench dashboard
 		// we create a new WorkbenchDashboard object here
 		// so that the UI is reset to its initial state
 		// we can remove this if we want to present the last UI state.
-		WorkbenchMainView w = (WorkbenchMainView) window;
+		final WorkbenchMainView w = (WorkbenchMainView) window;
 		WorkbenchDashboard workbenchDashboard = null;
 		try {
 			workbenchDashboard = new WorkbenchDashboard();
@@ -94,15 +82,15 @@ public class HomeAction implements ClickListener, ActionListener {
 			w.showContent(workbenchDashboard);
 
 			// reinitialize dashboard with default values
-			Project lastOpenedProgram = this.sessionData.getLastOpenedProject();
+			final Project lastOpenedProgram = this.sessionData.getLastOpenedProject();
 			if (lastOpenedProgram != null) {
 				workbenchDashboard.initializeDashboardContents(lastOpenedProgram);
-			} 
+			}
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			HomeAction.LOG.error("Exception", e);
 			if (e.getCause() instanceof InternationalizableException) {
-				InternationalizableException i = (InternationalizableException) e.getCause();
+				final InternationalizableException i = (InternationalizableException) e.getCause();
 				MessageNotifier.showError(window, i.getCaption(), i.getDescription());
 			}
 			return;

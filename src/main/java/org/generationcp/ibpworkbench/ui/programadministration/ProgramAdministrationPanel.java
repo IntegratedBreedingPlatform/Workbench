@@ -73,22 +73,22 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 
 		this.basicDetailsPanel = new UpdateProjectPanel();
 		this.basicDetailsPanel.setDebugId("updateProjectPanel");
-		
+
 		this.programMembersPanel = new ProgramMembersPanel(this.sessionData.getLastOpenedProject());
 		this.programMembersPanel.setDebugId("programMembersPanel");
-		
+
 		this.programLocationsView = new ProgramLocationsView(this.sessionData.getLastOpenedProject());
 		this.programLocationsView.setDebugId("programLocationsView");
-		
+
 		this.programMethodsView = new ProgramMethodsView(this.sessionData.getLastOpenedProject());
 		this.programMethodsView.setDebugId("programMethodsView");
-		
+
 		this.systemLabelPanel = new SystemLabelView();
 		this.systemLabelPanel.setDebugId("systemLabelPanel");
-		
-		this.programSummaryView =new ProgramSummaryView();
+
+		this.programSummaryView = new ProgramSummaryView();
 		this.programSummaryView.setDebugId("programSummaryPanel");
-		
+
 	}
 
 	void initializeLayout() {
@@ -110,7 +110,7 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 		// Program Members tab - only for admin users
 		try {
 			this.addProgramMembersTab();
-		} catch (final AccessDeniedException e){
+		} catch (final AccessDeniedException e) {
 			// Do not do anything as the screen should be displayed, just this tab shouldn't appear for non-admins
 		}
 
@@ -127,15 +127,15 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 		// System Labels tab
 		try {
 			this.addSystemLabelsTab();
-		} catch (final AccessDeniedException e){
+		} catch (final AccessDeniedException e) {
 			// Do not do anything as the screen should be displayed, just this tab shouldn't appear for non-admins
 		}
-		
+
 		// Program Summary tab
 		this.tabSheet.addTab(this.programSummaryView);
 		this.tabSheet.getTab(this.programSummaryView).setClosable(false);
 		this.tabSheet.getTab(this.programSummaryView).setCaption(this.messageSource.getMessage("PROGRAM_SUMMARY"));
-		
+
 		this.rootLayout.addComponent(this.titleLayout);
 		this.rootLayout.addComponent(headingDesc);
 		this.rootLayout.addComponent(this.tabSheet);
@@ -178,16 +178,16 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 		this.tabSheet.getTab(this.programMembersPanel).setClosable(false);
 		this.tabSheet.getTab(this.programMembersPanel).setCaption(this.messageSource.getMessage(Message.PROGRAM_MEMBERS));
 	}
-	
+
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	private void addSystemLabelsTab() {
 		this.tabSheet.addTab(this.systemLabelPanel);
 		this.tabSheet.getTab(this.systemLabelPanel).setClosable(false);
 		this.tabSheet.getTab(this.systemLabelPanel).setCaption(this.messageSource.getMessage("SYSTEM_LABELS"));
 	}
-	
+
 	// For Test purposes only
-	public TabSheet getTabSheet(){
+	public TabSheet getTabSheet() {
 		return this.tabSheet;
 	}
 

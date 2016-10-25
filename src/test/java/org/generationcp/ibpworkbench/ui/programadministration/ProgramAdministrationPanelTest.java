@@ -10,8 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
 
 import com.vaadin.ui.TabSheet;
 
@@ -30,9 +28,6 @@ public class ProgramAdministrationPanelTest {
 	private static final String MEMBERS = "Members";
 
 	private static final String BASIC_DETAILS = "Basic Details";
-
-	@Autowired
-	private AuthenticationManager am;
 
 	@Mock
 	private SessionData sessionData;
@@ -64,7 +59,6 @@ public class ProgramAdministrationPanelTest {
 		// Call method to test
 		this.programAdminPanel.initializeLayout();
 
-		// TODO: Verify that Members tab is not shown for non-admin users
 		final TabSheet adminTabSheet = this.programAdminPanel.getTabSheet();
 		Assert.assertEquals(6, adminTabSheet.getComponentCount());
 		Assert.assertEquals(ProgramAdministrationPanelTest.BASIC_DETAILS, adminTabSheet.getTab(0).getCaption());

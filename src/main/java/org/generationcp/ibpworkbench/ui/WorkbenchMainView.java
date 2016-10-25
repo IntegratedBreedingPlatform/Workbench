@@ -44,8 +44,6 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -79,7 +77,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	private static final int SIDEBAR_OPEN_POSITION = 240;
 	private static final long serialVersionUID = 1L;
-	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchMainView.class);
 
 	private static final String HEADER_BTN = " header-btn";
 
@@ -113,7 +110,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	private HorizontalSplitPanel root;
 
 	private VerticalLayout mainContent;
-	
+
 	private HorizontalLayout workbenchHeaderLayout;
 
 	private WorkbenchDashboard workbenchDashboard;
@@ -127,7 +124,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	private Button logoBtn;
 	private Button askSupportBtn;
 	private Button addProgramButton;
-	
+
 	// Hide sidebar toggle button when in Dashboard and Add Program screens where no program has been selected yet
 	private boolean doHideSidebarToggleButton = true;
 	private boolean isWorkbenchDashboardShown = true;
@@ -150,7 +147,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		// initialize dashboard
 		this.workbenchDashboard = new WorkbenchDashboard();
 		this.workbenchDashboard.setDebugId("workbenchDashboard");
-		
+
 		// workbench header components
 		this.initializeHeaderComponents();
 
@@ -177,7 +174,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.sidebarToggleButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + HEADER_BTN);
 		this.sidebarToggleButton.setHtmlContentAllowed(true);
 		this.sidebarToggleButton.setDescription(this.messageSource.getMessage("TOGGLE_SIDEBAR"));
-		
+
 		final Embedded ibpLogo = new Embedded(null, new ThemeResource("../gcp-default/images/ibp_logo2.jpg"));
 		ibpLogo.setDebugId("ibpLogo");
 		this.logoBtn = new Button();
@@ -198,9 +195,10 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.homeButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + HEADER_BTN);
 		this.homeButton.setHtmlContentAllowed(true);
 		this.homeButton.setSizeUndefined();
-		
-		this.addProgramButton = new Button(String.format("<span class='bms-header-btn'><span class='glyphicon glyphicon-plus' style='padding-right: 0px'></span>"
-				+ "<span>%s</span></span>", this.messageSource.getMessage(Message.ADD_A_PROGRAM)));
+
+		this.addProgramButton = new Button(
+				String.format("<span class='bms-header-btn'><span class='glyphicon glyphicon-plus' style='padding-right: 0px'></span>"
+						+ "<span>%s</span></span>", this.messageSource.getMessage(Message.ADD_A_PROGRAM)));
 		this.addProgramButton.setDebugId("addProgramButton");
 		this.addProgramButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + HEADER_BTN);
 		this.addProgramButton.setHtmlContentAllowed(true);
@@ -293,7 +291,8 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		final Label title = new Label(
 				String.format("<span style='font-size: 8pt; color:#9EA5A7; display: inline-block; margin-left: 3px'>%s&nbsp;%s</span>",
 						this.messageSource.getMessage(Message.WORKBENCH_TITLE),
-						this.workbenchProperties.getProperty("workbench.version", "")), Label.CONTENT_XHTML);
+						this.workbenchProperties.getProperty("workbench.version", "")),
+				Label.CONTENT_XHTML);
 
 		sidebarWrap.setFirstComponent(this.sidebar);
 		sidebarWrap.setSecondComponent(title);
@@ -349,11 +348,11 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		final Button.ClickListener homeAction = new HomeAction();
 		this.homeButton.addListener(homeAction);
 		this.logoBtn.addListener(homeAction);
-		
+
 		this.addProgramButton.addListener(new OpenNewProjectAction());
-		
+
 		this.adminButton.addListener(new Button.ClickListener() {
-			
+
 			@Override
 			public void buttonClick(ClickEvent event) {
 				final IContentWindow contentFrame = (IContentWindow) event.getComponent().getWindow();
@@ -442,12 +441,11 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	}
 
 	/*
-	 * Layout the components in Workbench header.
-	 * Button to expand/collapse will be hidden when in Dashboard and Create Program views.
+	 * Layout the components in Workbench header. Button to expand/collapse will be hidden when in Dashboard and Create Program views.
 	 */
 	private void layoutWorkbenchHeaderComponents() {
 		// Button to collapse or expand sidebar
-		if (!this.doHideSidebarToggleButton){
+		if (!this.doHideSidebarToggleButton) {
 			this.workbenchHeaderLayout.addComponent(this.sidebarToggleButton);
 			this.workbenchHeaderLayout.setComponentAlignment(this.sidebarToggleButton, Alignment.MIDDLE_LEFT);
 		}
@@ -464,15 +462,15 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 		try {
 			layoutAdminButton();
-		} catch (final AccessDeniedException e){
-			//do nothing if the user is not authorized to access Admin button
+		} catch (final AccessDeniedException e) {
+			// do nothing if the user is not authorized to access Admin button
 		}
 
-		if (this.isWorkbenchDashboardShown){
+		if (this.isWorkbenchDashboardShown) {
 			try {
 				layoutAddProgramButton();
-			} catch (final AccessDeniedException e){
-				//do nothing if the user is not authorized to access Admin button
+			} catch (final AccessDeniedException e) {
+				// do nothing if the user is not authorized to access Admin button
 			}
 		} else {
 			this.workbenchHeaderLayout.addComponent(this.homeButton);
@@ -487,8 +485,8 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.workbenchHeaderLayout.setComponentAlignment(this.helpButton, Alignment.MIDDLE_RIGHT);
 		this.workbenchHeaderLayout.setComponentAlignment(this.memberButton, Alignment.MIDDLE_RIGHT);
 	}
-	
-	private void refreshHeaderLayout(){
+
+	private void refreshHeaderLayout() {
 		this.workbenchHeaderLayout.removeAllComponents();
 		this.layoutWorkbenchHeaderComponents();
 		this.workbenchHeaderLayout.requestRepaint();
@@ -505,7 +503,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.workbenchHeaderLayout.addComponent(this.addProgramButton);
 		this.workbenchHeaderLayout.setComponentAlignment(this.addProgramButton, Alignment.MIDDLE_RIGHT);
 	}
-	
+
 	/**
 	 * Show the specified {@link Component} on the right side area of the Workbench's split panel.
 	 *
@@ -551,7 +549,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		// Hide sidebar button if in Workbench Dashboard or in Create Program screens
 		this.isWorkbenchDashboardShown = content instanceof WorkbenchDashboard;
 		this.doHideSidebarToggleButton = isWorkbenchDashboardShown || content instanceof AddProgramView;
-		if (doHideSidebarToggleButton){
+		if (doHideSidebarToggleButton) {
 			this.root.setSplitPosition(0, Sizeable.UNITS_PIXELS);
 		} else {
 			this.root.setSplitPosition(SIDEBAR_OPEN_POSITION, Sizeable.UNITS_PIXELS);
@@ -612,27 +610,26 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 				+ "</span><span class='bms-fa-caret-down' style='padding: 0 10px 0 0'></span></span>");
 
 	}
-	
 
 	public WorkbenchSidebar getSidebar() {
 		return this.sidebar;
 	}
-	
+
 	// For test purposes
-	public HorizontalLayout getWorkbenchHeaderLayout(){
+	public HorizontalLayout getWorkbenchHeaderLayout() {
 		return this.workbenchHeaderLayout;
 	}
-	
+
 	// For test purposes
-	public Button getSidebarToggleButton(){
+	public Button getSidebarToggleButton() {
 		return this.sidebarToggleButton;
 	}
-	
-	public Button getAddProgramButton(){
+
+	public Button getAddProgramButton() {
 		return this.addProgramButton;
 	}
-	
-	public Button getHomeButton(){
+
+	public Button getHomeButton() {
 		return this.homeButton;
 	}
 }
