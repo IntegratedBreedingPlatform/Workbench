@@ -44,8 +44,6 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 
 	private TabSheet tabSheet;
 
-	public static final String ROLE_ADMIN = "ROLE_ADMIN";
-
 	// TABS
 	private UpdateProjectPanel basicDetailsPanel;
 	private ProgramMembersPanel programMembersPanel;
@@ -68,7 +66,7 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 		this.initializeLayout();
 	}
 
-	protected void initializeComponents() {
+	void initializeComponents() {
 		this.rootLayout = new VerticalLayout();
 		this.rootLayout.setDebugId("rootLayout");
 		this.tabSheet = this.generateTabSheet();
@@ -93,7 +91,7 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 		
 	}
 
-	protected void initializeLayout() {
+	void initializeLayout() {
 
 		this.setTitleContent();
 
@@ -179,5 +177,9 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 		this.tabSheet.getTab(this.programMembersPanel).setCaption(this.messageSource.getMessage(Message.PROGRAM_MEMBERS));
 	}
 	
+	// For Test purposes only
+	public TabSheet getTabSheet(){
+		return this.tabSheet;
+	}
 
 }

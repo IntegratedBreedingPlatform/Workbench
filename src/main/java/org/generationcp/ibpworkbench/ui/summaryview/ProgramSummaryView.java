@@ -46,6 +46,8 @@ import com.vaadin.ui.themes.BaseTheme;
 @Configurable
 public class ProgramSummaryView extends VerticalLayout implements InitializingBean {
 
+	public static final int COMPONENT_INDEX_OF_TABLES = 1;
+
 	private static final String DESCRIPTION = "description";
 
 	private static final String NAME = "name";
@@ -72,7 +74,6 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 
 	private static final String STUDY_TYPE = "studyType";
 	
-	private static final int COMPONENT_INDEX_OF_TABLES = 1;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -109,7 +110,7 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		this.initializeLayout();
 	}
 
-	private void initializeLayout() {
+	void initializeLayout() {
 		final HorizontalLayout headerArea = new HorizontalLayout();
 		headerArea.setDebugId("headerArea");
 		headerArea.setSizeUndefined();
@@ -570,5 +571,26 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		}
 
 	}
+	
+	// For test purposes only
+	public Table getProgramStudiesTable() {
+		return this.programStudiesTable;
+	}
+	
+	// For test purposes only
+	public Table getProgramActivitiesTable() {
+		return this.programActivitiesTable;
+	}
+	
+	// For test purposes only
+	public Table getProgramTrialsTable() {
+		return this.programTrialsTable;
+	}
+	
+	// For test purposes only
+	public Table getProgramNurseriesTable() {
+		return this.programNurseriesTable;
+	}
+	
 
 }
