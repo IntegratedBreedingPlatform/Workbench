@@ -7,9 +7,9 @@
 		DELAY = 400,
 		NUM_EDITABLE_FIELDS = 3;
 
-	scaleDetailsModule.directive('omScaleDetails', ['scalesService', 'serviceUtilities', 'formUtilities', 'panelService',
+	scaleDetailsModule.directive('omScaleDetails', ['scalesService', 'variablesService', 'serviceUtilities', 'formUtilities', 'panelService',
 		'dataTypesService', '$timeout', 'collectionUtilities',
-		function(scalesService, serviceUtilities, formUtilities, panelService, dataTypesService, $timeout, collectionUtilities) {
+		function(scalesService, variablesService, serviceUtilities, formUtilities, panelService, dataTypesService, $timeout, collectionUtilities) {
 
 			var LISTS_NOT_LOADED_TRANSLATION = 'validation.scale.someListsNotLoaded';
 
@@ -134,6 +134,12 @@
 								$scope.editing = false;
 								resetSubmissionState();
 								$scope.scaleName = model.name;
+
+								var variableIds = model.metadata.usage.variables.map(function(variable) {
+									return parseInt(variable.id);
+								});
+								variablesService.deleteVariablesFromCache(variableIds);
+
 							}, function(response) {
 								resetSubmissionState();
 								$scope.sdForm.$setUntouched();
