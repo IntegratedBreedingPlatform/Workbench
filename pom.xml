@@ -15,7 +15,7 @@
 		<spring.version>3.2.11.RELEASE</spring.version>
 		<spring.security.version>3.2.5.RELEASE</spring.security.version>
 		<modelmapper.version>0.7.3</modelmapper.version>
-		<envConfig>dev-mderamos</envConfig>
+		<envConfig>${user.name}</envConfig>
 	</properties>
 
 	<distributionManagement>
@@ -577,7 +577,6 @@
 				</excludes>
 			</testResource>
 		</testResources>
-		<pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -737,6 +736,5 @@
 				</executions>
 			</plugin>
 		</plugins>
-		</pluginManagement>
 	</build>
 </project>
