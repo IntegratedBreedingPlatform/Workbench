@@ -411,7 +411,32 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 	}
 
+	@Test
+	public void testDisplayAugmentedDesignElements() {
 
+		this.dut.initializeComponents();
+		this.dut.displayAugmentedDesignElements();
+
+		List<Component> components = this.getComponentsListFromGridLayout();
+
+		// The following components should be visible in Design Details' Grid Layout
+		Assert.assertTrue(components.contains(this.dut.getLblBlocks()));
+		Assert.assertTrue(components.contains(this.dut.getSelBlocks()));
+		Assert.assertTrue(components.contains(this.dut.getLblSpecifyGenotypesHeader()));
+		Assert.assertTrue(components.contains(this.dut.getLblGenotypes()));
+		Assert.assertTrue(components.contains(this.dut.getSelGenotypes()));
+
+		// The following components should not be added in Design Details' GridLayout
+		Assert.assertFalse(components.contains(this.dut.getLblSpecifyColumnFactor()));
+		Assert.assertFalse(components.contains(this.dut.getSelColumnFactor()));
+		Assert.assertFalse(components.contains(this.dut.getLblSpecifyRowFactor()));
+		Assert.assertFalse(components.contains(this.dut.getSelRowFactor()));
+		Assert.assertFalse(components.contains(this.dut.getLblReplicates()));
+		Assert.assertFalse(components.contains(this.dut.getSelReplicates()));
+
+		Assert.assertNull("Replicates factor is not needed in Augmented design, so replicates should be unselected (null)", this.dut.getSelReplicates().getValue());
+
+	}
 
 	@Test
 	public void testSubstituteMissingReplicatesWithBlocksNoReplicatesFactor(){
