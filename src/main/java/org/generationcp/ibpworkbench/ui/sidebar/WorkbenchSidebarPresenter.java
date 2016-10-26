@@ -7,7 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.generationcp.commons.security.BMSPreAuthorizeUtil;
+import org.generationcp.commons.security.AuthorizationUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.SessionData;
@@ -116,7 +116,7 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 	protected boolean isCategoryLinkPermissibleForUserRole(final WorkbenchSidebarCategoryLink link) {
 		if (ToolName.GERMPLASM_IMPORT.name().equalsIgnoreCase(link.getSidebarLinkName())) {
 			try {
-				BMSPreAuthorizeUtil.preAuthorize(importGermplasmPermissibleRoles);
+				AuthorizationUtil.preAuthorize(importGermplasmPermissibleRoles);
 			} catch (AccessDeniedException ex) {
 				return false;
 			}
