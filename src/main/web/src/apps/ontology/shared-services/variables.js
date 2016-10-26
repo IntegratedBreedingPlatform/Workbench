@@ -256,6 +256,8 @@
 
 			/*
 			 * Deletes the variable from cache with the specified ID.
+			 * 
+			 * TODO this will work only if user is logged in to Fieldbook
 			 */
 			deleteVariablesFromCache: function(variableIds) {
 				var request;

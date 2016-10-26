@@ -151,12 +151,14 @@
 
 		"method": {
 			"nameRequired": "Please name your method.",
+			"noneditableCategories": "Some categories cannot be edited because there are recorded study measurements associated to them",
 			"noneditableFields": "Some fields cannot be edited as this method is already in use."
 		},
 
 		"property": {
 			"classesEmpty": "Please provide at least one class.",
 			"nameRequired": "Please name your property.",
+			"noneditableCategories": "Some categories cannot be edited because there are recorded study measurements associated to them",
 			"noneditableFields": "Some fields cannot be edited as this property is already in use.",
 			"someListsNotLoaded": "The classes list was not loaded. Please, refresh the page."
 		},
@@ -165,6 +167,7 @@
 			"dataTypeRequired": "Please select a data type.",
 			"emptyValue": "Please provide a name and value for all categories.",
 			"nameRequired": "Please name your scale.",
+			"noneditableCategories": "Some categories cannot be edited because there are recorded study measurements associated to them",
 			"noneditableFields": "Some fields cannot be edited as this scale is already in use.",
 			"nonUniqueName": "All category names must be unique.",
 			"nonUniqueValue": "All category values must be unique.",
@@ -175,6 +178,7 @@
 			"expectedRange": "Note that values must be within the valid range for the selected scale ({{min}} - {{max}}).",
 			"methodRequired": "Method is required.",
 			"nameRequired": "Please name your variable.",
+			"noneditableCategories": "Some categories cannot be edited because there are recorded study measurements associated to them",
 			"noneditableFields": "Some fields cannot be edited as this variable is already in use.",
 			"pattern": "Name must start with a letter and may only contain letters, numbers or underscores.",
 			"propertyRequired": "Property is required.",

@@ -13,8 +13,12 @@
 		<om-error-list om-errors-already-translated="serverErrors.general" om-errors-to-translate="serverErrors.someListsNotLoaded">
 		</om-error-list>
 
-		<div ng-if="showNoneditableFieldsAlert" class="alert alert-warning" role="alert">
+		<div ng-if="showNoneditableFieldsAlert && !showNoneditableCategoriesAlert" class="alert alert-warning" role="alert">
 			<span>{{'validation.scale.noneditableFields' | translate }}</span>
+		</div>
+
+		<div ng-if="showNoneditableCategoriesAlert" class="alert alert-warning" role="alert">
+			<span>{{'validation.scale.noneditableCategories' | translate }}</span>
 		</div>
 
 		<div ng-class="formGroupClass('omName', 'name')">

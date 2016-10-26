@@ -42,6 +42,10 @@
 					$scope.$watch('editing', function() {
 						$scope.showNoneditableFieldsAlert = $scope.editing && $scope.model &&
 							$scope.model.metadata.editableFields.length < NUM_EDITABLE_FIELDS;
+						$scope.showNoneditableCategoriesAlert = $scope.editing && $scope.model &&
+							$scope.model.validValues.categories.some(function(x) {
+								return !x.editable;
+							});
 					});
 
 					$scope.$watch('selectedItem', function(selected) {
