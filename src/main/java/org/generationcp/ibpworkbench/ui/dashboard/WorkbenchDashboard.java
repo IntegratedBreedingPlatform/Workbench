@@ -118,7 +118,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 			this.instituteLogo = new Embedded("", resource);
 			this.instituteLogo.setDebugId("instituteLogo");
 			this.instituteLogo.setMimeType("image/png");
-			this.instituteLogo.setSizeUndefined();
+			this.instituteLogo.setSizeFull();
 		}
 	}
 
@@ -287,10 +287,12 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		final VerticalLayout previewArea = new VerticalLayout();
 		previewArea.setDebugId("previewArea");
 		previewArea.setStyleName("preview-area");
-		previewArea.setSizeFull();
+		previewArea.setHeight("170px");
+		previewArea.setWidth("300px");
 		previewArea.setMargin(new MarginInfo(true, false, false, false));
 		if (this.instituteLogo != null) {
 			previewArea.addComponent(this.instituteLogo);
+			previewArea.setComponentAlignment(this.instituteLogo, Alignment.TOP_CENTER);
 		}
 
 		root.setFirstComponent(programArea);
