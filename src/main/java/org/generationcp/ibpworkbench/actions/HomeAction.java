@@ -73,17 +73,17 @@ public class HomeAction implements ClickListener, ActionListener {
 		// we create a new WorkbenchDashboard object here
 		// so that the UI is reset to its initial state
 		// we can remove this if we want to present the last UI state.
-		final WorkbenchMainView w = (WorkbenchMainView) window;
+		final WorkbenchMainView workbenchMainView = (WorkbenchMainView) window;
 		WorkbenchDashboard workbenchDashboard = null;
 		try {
 			workbenchDashboard = new WorkbenchDashboard();
 
-			w.addTitle("");
-			w.showContent(workbenchDashboard);
+			workbenchMainView.showContent(workbenchDashboard);
 
 			// reinitialize dashboard with default values
 			final Project lastOpenedProgram = this.sessionData.getLastOpenedProject();
 			if (lastOpenedProgram != null) {
+				workbenchMainView.addTitle(lastOpenedProgram.getProjectName());
 				workbenchDashboard.initializeDashboardContents(lastOpenedProgram);
 			}
 

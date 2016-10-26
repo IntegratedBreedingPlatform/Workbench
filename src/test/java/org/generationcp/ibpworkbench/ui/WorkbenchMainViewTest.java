@@ -8,6 +8,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.Project;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -35,15 +36,22 @@ public class WorkbenchMainViewTest {
 	@InjectMocks
 	private WorkbenchMainView workbenchMainView;
 
+	private Project lastOpenedProject;
+
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 
+		// Setup mocks
 		final Person person = new Person("A", "B", "C");
 		person.setEmail("a@leafnode.io");
 		final User currentUser = new User(1);
 		currentUser.setPerson(person);
 		Mockito.doReturn(currentUser).when(this.sessionData).getUserData();
+
+		this.lastOpenedProject = new Project();
+		this.lastOpenedProject.setProjectName("Maize Program 1");
+		Mockito.doReturn(this.lastOpenedProject).when(this.sessionData).getLastOpenedProject();
 
 		this.workbenchMainView.initializeComponents();
 		this.workbenchMainView.initializeLayout();
@@ -51,8 +59,11 @@ public class WorkbenchMainViewTest {
 
 	@Test
 	public void testHeaderLayoutWhenDashboardIsShowing() {
-		// verify header already as dashboard is default content of main window
+		// Verify header already as dashboard is default content of main window
 		this.verifyHeaderLayoutWHenShowingDashboard();
+
+		// Verify that name of last opened project is displayed on header
+		this.verifyLastOpenedProjectNameIsDisplayed();
 	}
 
 	@Test
@@ -60,6 +71,14 @@ public class WorkbenchMainViewTest {
 		this.workbenchMainView.showContent(new VerticalLayout());
 
 		this.verifyHeaderLayoutWhenNotShowingDashboard();
+
+		// Verify that name of last opened project is displayed on header
+		this.verifyLastOpenedProjectNameIsDisplayed();
+	}
+
+	private void verifyLastOpenedProjectNameIsDisplayed() {
+		Assert.assertEquals("<h1>" + this.lastOpenedProject.getProjectName() + "</h1>",
+				this.workbenchMainView.getWorkbenchTitle().getValue());
 	}
 
 	private void verifyHeaderLayoutWHenShowingDashboard() {

@@ -188,6 +188,9 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.workbenchTitle.setDebugId("workbenchTitle");
 		this.workbenchTitle.setStyleName("gcp-window-title");
 		this.workbenchTitle.setContentMode(Label.CONTENT_XHTML);
+		if (this.sessionData.getLastOpenedProject() != null){
+			this.addTitle(this.sessionData.getLastOpenedProject().getProjectName());
+		}
 
 		this.homeButton = new Button(
 				String.format("<span class='bms-header-btn'><span>%s</span></span>", this.messageSource.getMessage("MY_PROGRAMS")));
@@ -488,6 +491,8 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	private void refreshHeaderLayout() {
 		this.workbenchHeaderLayout.removeAllComponents();
+		
+		this.toggleSidebarIcon();
 		this.layoutWorkbenchHeaderComponents();
 		this.workbenchHeaderLayout.requestRepaint();
 	}
@@ -631,5 +636,9 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	public Button getHomeButton() {
 		return this.homeButton;
+	}
+	
+	public Label getWorkbenchTitle(){
+		return this.workbenchTitle;
 	}
 }
