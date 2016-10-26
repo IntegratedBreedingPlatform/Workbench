@@ -269,7 +269,7 @@
 		<property name="userDetailsService" ref="workbenchUserDetailsService" />
 		<property name="passwordEncoder" ref="encoder" />
 	</bean>
-	
+
 	<!-- Nested <beans> elements can only be at the end. -->
 	
 	<!-- Only activate liquibase auto update in non-production environments. 
