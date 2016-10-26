@@ -2,6 +2,7 @@
 package org.generationcp.ibpworkbench.ui.summaryview;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -17,6 +18,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+
+import com.vaadin.ui.Table;
 
 import junit.framework.Assert;
 
@@ -77,13 +80,27 @@ public class ProgramSummaryViewTest {
 
 		// Check that the Program Studies (All) table is the one shown by default
 		Assert.assertNotNull(this.summaryView.getComponent(ProgramSummaryView.COMPONENT_INDEX_OF_TABLES));
-		Assert.assertEquals(this.summaryView.getProgramStudiesTable(),
-				this.summaryView.getComponent(ProgramSummaryView.COMPONENT_INDEX_OF_TABLES));
+		final Table programStudies = this.summaryView.getProgramStudiesTable();
+		Assert.assertEquals(programStudies, this.summaryView.getComponent(ProgramSummaryView.COMPONENT_INDEX_OF_TABLES));
+
 		// Check the sizes of tables
-		Assert.assertEquals(ProgramSummaryViewTest.TRIAL_COUNT.intValue(), this.summaryView.getProgramTrialsTable().size());
-		Assert.assertEquals(ProgramSummaryViewTest.NURSERY_COUNT.intValue(), this.summaryView.getProgramNurseriesTable().size());
-		Assert.assertEquals(ProgramSummaryViewTest.ACTIVITIES_COUNT.intValue(), this.summaryView.getProgramActivitiesTable().size());
-		Assert.assertEquals(ProgramSummaryViewTest.STUDIES_COUNT.intValue(), this.summaryView.getProgramStudiesTable().size());
+		final Table programTrialsTable = this.summaryView.getProgramTrialsTable();
+		final Table programNurseriesTable = this.summaryView.getProgramNurseriesTable();
+		final Table programActivities = this.summaryView.getProgramActivitiesTable();
+		Assert.assertEquals(ProgramSummaryViewTest.TRIAL_COUNT.intValue(), programTrialsTable.size());
+		Assert.assertEquals(ProgramSummaryViewTest.NURSERY_COUNT.intValue(), programNurseriesTable.size());
+		Assert.assertEquals(ProgramSummaryViewTest.ACTIVITIES_COUNT.intValue(), programActivities.size());
+		Assert.assertEquals(ProgramSummaryViewTest.STUDIES_COUNT.intValue(), programStudies.size());
+
+		// Check the displayed table columns
+		Assert.assertTrue(Arrays.equals(ProgramSummaryView.TRIAL_NURSERY_COLUMNS,
+				Arrays.copyOf(programTrialsTable.getVisibleColumns(), programTrialsTable.getVisibleColumns().length, String[].class)));
+		Assert.assertTrue(Arrays.equals(ProgramSummaryView.TRIAL_NURSERY_COLUMNS, Arrays.copyOf(programNurseriesTable.getVisibleColumns(),
+				programNurseriesTable.getVisibleColumns().length, String[].class)));
+		Assert.assertTrue(Arrays.equals(ProgramSummaryView.ACTIVITIES_COLUMNS,
+				Arrays.copyOf(programActivities.getVisibleColumns(), programActivities.getVisibleColumns().length, String[].class)));
+		Assert.assertTrue(Arrays.equals(ProgramSummaryView.ALL_STUDIES_COLUMNS,
+				Arrays.copyOf(programStudies.getVisibleColumns(), programStudies.getVisibleColumns().length, String[].class)));
 	}
 
 	private List<ProjectActivity> getTestProjectActivities(final int noOfActivities) {

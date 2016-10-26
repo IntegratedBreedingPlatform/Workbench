@@ -46,6 +46,18 @@ import com.vaadin.ui.themes.BaseTheme;
 @Configurable
 public class ProgramSummaryView extends VerticalLayout implements InitializingBean {
 
+	// Table Columns Constants
+	public static final String[] ACTIVITIES_COLUMNS =
+			new String[] {ProgramSummaryView.CREATED_AT, ProgramSummaryView.NAME, ProgramSummaryView.DESCRIPTION};
+
+	public static final String[] TRIAL_NURSERY_COLUMNS =
+			new String[] {ProgramSummaryView.STUDY_NAME, ProgramSummaryView.TITLE, ProgramSummaryView.OBJECTIVE,
+					ProgramSummaryView.START_DATE, ProgramSummaryView.END_DATE, ProgramSummaryView.PI_NAME, ProgramSummaryView.SITE_NAME};
+
+	public static final String[] ALL_STUDIES_COLUMNS = new String[] {ProgramSummaryView.STUDY_NAME, ProgramSummaryView.TITLE,
+			ProgramSummaryView.OBJECTIVE, ProgramSummaryView.START_DATE, ProgramSummaryView.END_DATE, ProgramSummaryView.PI_NAME,
+			ProgramSummaryView.SITE_NAME, ProgramSummaryView.STUDY_TYPE};
+
 	public static final int COMPONENT_INDEX_OF_TABLES = 1;
 
 	private static final String DESCRIPTION = "description";
@@ -72,7 +84,7 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 
 	private static final String SITE_NAME = "siteName";
 
-	private static final String STUDY_TYPE = "studyType";
+	public static final String STUDY_TYPE = "studyType";
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -263,7 +275,7 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		container.setBeanIdProperty("projectActivityId");
 		activityTable.setContainerDataSource(container);
 
-		final String[] columns = new String[] {ProgramSummaryView.CREATED_AT, ProgramSummaryView.NAME, ProgramSummaryView.DESCRIPTION};
+		final String[] columns = ProgramSummaryView.ACTIVITIES_COLUMNS;
 		activityTable.setVisibleColumns(columns);
 		activityTable.setWidth("100%");
 
@@ -282,17 +294,16 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		container.setBeanIdProperty("id");
 		trialSummaryTable.setContainerDataSource(container);
 
-		final String[] columns = this.getTrialOrNuseryTableColumns();
-		trialSummaryTable.setVisibleColumns(columns);
+		trialSummaryTable.setVisibleColumns(ProgramSummaryView.TRIAL_NURSERY_COLUMNS);
 		trialSummaryTable.setWidth("100%");
 
-		this.messageSource.setColumnHeader(trialSummaryTable, columns[0], Message.NAME_LABEL);
-		this.messageSource.setColumnHeader(trialSummaryTable, columns[1], Message.TITLE_LABEL);
-		this.messageSource.setColumnHeader(trialSummaryTable, columns[2], Message.OBJECTIVE_LABEL);
-		this.messageSource.setColumnHeader(trialSummaryTable, columns[3], Message.START_DATE_LABEL);
-		this.messageSource.setColumnHeader(trialSummaryTable, columns[4], Message.END_DATE_LABEL);
-		this.messageSource.setColumnHeader(trialSummaryTable, columns[5], Message.PI_NAME_LABEL);
-		this.messageSource.setColumnHeader(trialSummaryTable, columns[6], Message.SITE_NAME_LABEL);
+		this.messageSource.setColumnHeader(trialSummaryTable, ProgramSummaryView.TRIAL_NURSERY_COLUMNS[0], Message.NAME_LABEL);
+		this.messageSource.setColumnHeader(trialSummaryTable, ProgramSummaryView.TRIAL_NURSERY_COLUMNS[1], Message.TITLE_LABEL);
+		this.messageSource.setColumnHeader(trialSummaryTable, ProgramSummaryView.TRIAL_NURSERY_COLUMNS[2], Message.OBJECTIVE_LABEL);
+		this.messageSource.setColumnHeader(trialSummaryTable, ProgramSummaryView.TRIAL_NURSERY_COLUMNS[3], Message.START_DATE_LABEL);
+		this.messageSource.setColumnHeader(trialSummaryTable, ProgramSummaryView.TRIAL_NURSERY_COLUMNS[4], Message.END_DATE_LABEL);
+		this.messageSource.setColumnHeader(trialSummaryTable, ProgramSummaryView.TRIAL_NURSERY_COLUMNS[5], Message.PI_NAME_LABEL);
+		this.messageSource.setColumnHeader(trialSummaryTable, ProgramSummaryView.TRIAL_NURSERY_COLUMNS[6], Message.SITE_NAME_LABEL);
 
 		return trialSummaryTable;
 	}
@@ -305,17 +316,16 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		container.setBeanIdProperty("id");
 		nurserySummaryTable.setContainerDataSource(container);
 
-		final String[] columns = this.getTrialOrNuseryTableColumns();
-		nurserySummaryTable.setVisibleColumns(columns);
+		nurserySummaryTable.setVisibleColumns(ProgramSummaryView.TRIAL_NURSERY_COLUMNS);
 		nurserySummaryTable.setWidth("100%");
 
-		this.messageSource.setColumnHeader(nurserySummaryTable, columns[0], Message.NAME_LABEL);
-		this.messageSource.setColumnHeader(nurserySummaryTable, columns[1], Message.TITLE_LABEL);
-		this.messageSource.setColumnHeader(nurserySummaryTable, columns[2], Message.OBJECTIVE_LABEL);
-		this.messageSource.setColumnHeader(nurserySummaryTable, columns[3], Message.START_DATE_LABEL);
-		this.messageSource.setColumnHeader(nurserySummaryTable, columns[4], Message.END_DATE_LABEL);
-		this.messageSource.setColumnHeader(nurserySummaryTable, columns[5], Message.PI_NAME_LABEL);
-		this.messageSource.setColumnHeader(nurserySummaryTable, columns[6], Message.SITE_NAME_LABEL);
+		this.messageSource.setColumnHeader(nurserySummaryTable, ProgramSummaryView.TRIAL_NURSERY_COLUMNS[0], Message.NAME_LABEL);
+		this.messageSource.setColumnHeader(nurserySummaryTable, ProgramSummaryView.TRIAL_NURSERY_COLUMNS[1], Message.TITLE_LABEL);
+		this.messageSource.setColumnHeader(nurserySummaryTable, ProgramSummaryView.TRIAL_NURSERY_COLUMNS[2], Message.OBJECTIVE_LABEL);
+		this.messageSource.setColumnHeader(nurserySummaryTable, ProgramSummaryView.TRIAL_NURSERY_COLUMNS[3], Message.START_DATE_LABEL);
+		this.messageSource.setColumnHeader(nurserySummaryTable, ProgramSummaryView.TRIAL_NURSERY_COLUMNS[4], Message.END_DATE_LABEL);
+		this.messageSource.setColumnHeader(nurserySummaryTable, ProgramSummaryView.TRIAL_NURSERY_COLUMNS[5], Message.PI_NAME_LABEL);
+		this.messageSource.setColumnHeader(nurserySummaryTable, ProgramSummaryView.TRIAL_NURSERY_COLUMNS[6], Message.SITE_NAME_LABEL);
 
 		return nurserySummaryTable;
 	}
@@ -328,18 +338,17 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		container.setBeanIdProperty("id");
 		allStudiesTable.setContainerDataSource(container);
 
-		final String[] columns = this.getProgramStudiesTableColumns();
-		allStudiesTable.setVisibleColumns(columns);
+		allStudiesTable.setVisibleColumns(ProgramSummaryView.ALL_STUDIES_COLUMNS);
 		allStudiesTable.setWidth("100%");
 
-		this.messageSource.setColumnHeader(allStudiesTable, columns[0], Message.NAME_LABEL);
-		this.messageSource.setColumnHeader(allStudiesTable, columns[1], Message.TITLE_LABEL);
-		this.messageSource.setColumnHeader(allStudiesTable, columns[2], Message.OBJECTIVE_LABEL);
-		this.messageSource.setColumnHeader(allStudiesTable, columns[3], Message.START_DATE_LABEL);
-		this.messageSource.setColumnHeader(allStudiesTable, columns[4], Message.END_DATE_LABEL);
-		this.messageSource.setColumnHeader(allStudiesTable, columns[5], Message.PI_NAME_LABEL);
-		this.messageSource.setColumnHeader(allStudiesTable, columns[6], Message.SITE_NAME_LABEL);
-		this.messageSource.setColumnHeader(allStudiesTable, columns[7], Message.STUDY_TYPE_LABEL);
+		this.messageSource.setColumnHeader(allStudiesTable, ProgramSummaryView.ALL_STUDIES_COLUMNS[0], Message.NAME_LABEL);
+		this.messageSource.setColumnHeader(allStudiesTable, ProgramSummaryView.ALL_STUDIES_COLUMNS[1], Message.TITLE_LABEL);
+		this.messageSource.setColumnHeader(allStudiesTable, ProgramSummaryView.ALL_STUDIES_COLUMNS[2], Message.OBJECTIVE_LABEL);
+		this.messageSource.setColumnHeader(allStudiesTable, ProgramSummaryView.ALL_STUDIES_COLUMNS[3], Message.START_DATE_LABEL);
+		this.messageSource.setColumnHeader(allStudiesTable, ProgramSummaryView.ALL_STUDIES_COLUMNS[4], Message.END_DATE_LABEL);
+		this.messageSource.setColumnHeader(allStudiesTable, ProgramSummaryView.ALL_STUDIES_COLUMNS[5], Message.PI_NAME_LABEL);
+		this.messageSource.setColumnHeader(allStudiesTable, ProgramSummaryView.ALL_STUDIES_COLUMNS[6], Message.SITE_NAME_LABEL);
+		this.messageSource.setColumnHeader(allStudiesTable, ProgramSummaryView.ALL_STUDIES_COLUMNS[7], Message.STUDY_TYPE_LABEL);
 
 		return allStudiesTable;
 	}
@@ -354,15 +363,15 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		this.populateActivityTable(activityList);
 
 		final StudyDetailsQueryFactory trialFactory = new StudyDetailsQueryFactory(this.studyDataManager, StudyType.T,
-				Arrays.asList(this.getTrialOrNuseryTableColumns()), project.getUniqueID());
+				Arrays.asList(ProgramSummaryView.TRIAL_NURSERY_COLUMNS), project.getUniqueID());
 		this.populateTrialSummaryTable(trialFactory);
 
 		final StudyDetailsQueryFactory nurseryFactory = new StudyDetailsQueryFactory(this.studyDataManager, StudyType.N,
-				Arrays.asList(this.getTrialOrNuseryTableColumns()), project.getUniqueID());
+				Arrays.asList(ProgramSummaryView.TRIAL_NURSERY_COLUMNS), project.getUniqueID());
 		this.populateNurserySummaryTable(nurseryFactory);
 
 		final StudyDetailsQueryFactory allStudiesTable = new StudyDetailsQueryFactory(this.studyDataManager, null,
-				Arrays.asList(this.getProgramStudiesTableColumns()), project.getUniqueID());
+				Arrays.asList(ProgramSummaryView.ALL_STUDIES_COLUMNS), project.getUniqueID());
 		this.populateProgramStudiesTable(allStudiesTable);
 	}
 
@@ -378,13 +387,13 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		this.activityCount = activityList.size();
 
 		this.programActivitiesTable.setContainerDataSource(container);
+		this.programActivitiesTable.setVisibleColumns(ProgramSummaryView.ACTIVITIES_COLUMNS);
 	}
 
 	void populateTrialSummaryTable(final StudyDetailsQueryFactory factory) {
 		final LazyQueryContainer container = new LazyQueryContainer(factory, false, 10);
-		final String[] columns = this.getTrialOrNuseryTableColumns();
 
-		for (final String columnId : columns) {
+		for (final String columnId : ProgramSummaryView.TRIAL_NURSERY_COLUMNS) {
 			container.addContainerProperty(columnId, String.class, null);
 		}
 
@@ -398,9 +407,8 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 
 	void populateNurserySummaryTable(final StudyDetailsQueryFactory factory) {
 		final LazyQueryContainer container = new LazyQueryContainer(factory, false, 10);
-		final String[] columns = this.getTrialOrNuseryTableColumns();
 
-		for (final String columnId : columns) {
+		for (final String columnId : ProgramSummaryView.TRIAL_NURSERY_COLUMNS) {
 			container.addContainerProperty(columnId, String.class, null);
 		}
 
@@ -414,9 +422,8 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 
 	void populateProgramStudiesTable(final StudyDetailsQueryFactory factory) {
 		final LazyQueryContainer container = new LazyQueryContainer(factory, false, 10);
-		final String[] columns = this.getProgramStudiesTableColumns();
 
-		for (final String columnId : columns) {
+		for (final String columnId : ProgramSummaryView.ALL_STUDIES_COLUMNS) {
 			container.addContainerProperty(columnId, String.class, null);
 		}
 
@@ -510,17 +517,6 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		}
 
 		table.setPageLength(10);
-	}
-
-	private String[] getTrialOrNuseryTableColumns() {
-		return new String[] {ProgramSummaryView.STUDY_NAME, ProgramSummaryView.TITLE, ProgramSummaryView.OBJECTIVE,
-				ProgramSummaryView.START_DATE, ProgramSummaryView.END_DATE, ProgramSummaryView.PI_NAME, ProgramSummaryView.SITE_NAME};
-	}
-
-	private String[] getProgramStudiesTableColumns() {
-		return new String[] {ProgramSummaryView.STUDY_NAME, ProgramSummaryView.TITLE, ProgramSummaryView.OBJECTIVE,
-				ProgramSummaryView.START_DATE, ProgramSummaryView.END_DATE, ProgramSummaryView.PI_NAME, ProgramSummaryView.SITE_NAME,
-				ProgramSummaryView.STUDY_TYPE};
 	}
 
 	private class PagedTableWithUpdatedControls extends PagedTable {
