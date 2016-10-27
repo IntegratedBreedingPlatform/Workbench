@@ -12,7 +12,7 @@ import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
-import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainClickListener;
+import org.generationcp.ibpworkbench.ui.dashboard.listener.LaunchProgramAction;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsView;
 import org.generationcp.ibpworkbench.ui.programmembers.ProgramMembersPanel;
 import org.generationcp.ibpworkbench.ui.programmethods.ProgramMethodsView;
@@ -155,8 +155,7 @@ public class AddProgramView extends Panel implements InitializingBean {
 			@Override
 			public void buttonClick(Button.ClickEvent clickEvent) {
 				final Project newlyCreatedProgram = AddProgramView.this.sessionData.getSelectedProject();
-				new DashboardMainClickListener(IBPWorkbenchApplication.get().getMainWindow(), newlyCreatedProgram
-						.getProjectId()).buttonClick(clickEvent);
+				new LaunchProgramAction(newlyCreatedProgram).buttonClick(clickEvent);
 			}
 		});
 
