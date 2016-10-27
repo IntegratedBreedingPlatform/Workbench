@@ -255,10 +255,6 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 							ProjectMembersComponent.this.sessionData.setLastOpenedProject(newlyCreatedProgram);
 							ProjectMembersComponent.this.sessionData.setSelectedProject(newlyCreatedProgram);
 
-							if (IBPWorkbenchApplication.get().getMainWindow() instanceof WorkbenchMainView) {
-								((WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow()).getSidebar().populateLinks();
-							}
-
 							ProjectMembersComponent.this.presenter.enableProgramMethodsAndLocationsTab();
 
 						} catch (final Exception e) {

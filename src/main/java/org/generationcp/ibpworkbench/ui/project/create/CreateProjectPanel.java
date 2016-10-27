@@ -150,10 +150,6 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 							CreateProjectPanel.this.sessionData.setLastOpenedProject(newlyCreatedProgram);
 							CreateProjectPanel.this.sessionData.setSelectedProject(newlyCreatedProgram);
 
-							if (IBPWorkbenchApplication.get().getMainWindow() instanceof WorkbenchMainView) {
-								((WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow()).getSidebar().populateLinks();
-							}
-
 							CreateProjectPanel.this.presenter.enableProgramMethodsAndLocationsTab();
 						}
 					});

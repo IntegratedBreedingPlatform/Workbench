@@ -76,7 +76,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
 
 	@Override
 	public void doAction(Event event) {
-		// does nothing
+		this.onAppLaunch(event.getComponent().getWindow());
 	}
 
 	@Override
@@ -98,7 +98,7 @@ public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListen
 
 	}
 
-	protected void onAppLaunch(Window window) {
+	public void onAppLaunch(Window window) {
 		try {
 			final IContentWindow contentFrame = (IContentWindow) window;
 			String url = this.appLauncherService.launchTool(this.toolEnum.getToolName(), this.idParam);

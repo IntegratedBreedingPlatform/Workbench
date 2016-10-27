@@ -11,6 +11,7 @@ import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsView;
 import org.generationcp.ibpworkbench.ui.programmembers.ProgramMembersPanel;
 import org.generationcp.ibpworkbench.ui.programmethods.ProgramMethodsView;
 import org.generationcp.ibpworkbench.ui.project.create.UpdateProjectPanel;
+import org.generationcp.ibpworkbench.ui.summaryview.ProgramSummaryView;
 import org.generationcp.ibpworkbench.ui.systemlabel.SystemLabelView;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,14 +44,13 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 
 	private TabSheet tabSheet;
 
-	public static final String ROLE_ADMIN = "ROLE_ADMIN";
-
 	// TABS
-	private UpdateProjectPanel updateProjectPanel;
+	private UpdateProjectPanel basicDetailsPanel;
 	private ProgramMembersPanel programMembersPanel;
 	private ProgramLocationsView programLocationsView;
 	private ProgramMethodsView programMethodsView;
 	private SystemLabelView systemLabelPanel;
+	private ProgramSummaryView programSummaryView;
 
 	public ProgramAdministrationPanel() {
 
@@ -62,29 +62,36 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 	}
 
 	protected void assemble() {
-
 		this.initializeComponents();
 		this.initializeLayout();
 	}
 
-	protected void initializeComponents() {
+	void initializeComponents() {
 		this.rootLayout = new VerticalLayout();
 		this.rootLayout.setDebugId("rootLayout");
 		this.tabSheet = this.generateTabSheet();
 
-		this.updateProjectPanel = new UpdateProjectPanel();
-		this.updateProjectPanel.setDebugId("updateProjectPanel");
+		this.basicDetailsPanel = new UpdateProjectPanel();
+		this.basicDetailsPanel.setDebugId("updateProjectPanel");
+
 		this.programMembersPanel = new ProgramMembersPanel(this.sessionData.getLastOpenedProject());
 		this.programMembersPanel.setDebugId("programMembersPanel");
+
 		this.programLocationsView = new ProgramLocationsView(this.sessionData.getLastOpenedProject());
 		this.programLocationsView.setDebugId("programLocationsView");
+
 		this.programMethodsView = new ProgramMethodsView(this.sessionData.getLastOpenedProject());
 		this.programMethodsView.setDebugId("programMethodsView");
+
 		this.systemLabelPanel = new SystemLabelView();
 		this.systemLabelPanel.setDebugId("systemLabelPanel");
+
+		this.programSummaryView = new ProgramSummaryView();
+		this.programSummaryView.setDebugId("programSummaryPanel");
+
 	}
 
-	protected void initializeLayout() {
+	void initializeLayout() {
 
 		this.setTitleContent();
 
@@ -95,38 +102,39 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 		this.rootLayout.setWidth("100%");
 		this.rootLayout.setSpacing(true);
 
-		this.updateProjectPanel.setVisible(true);
-		this.programMembersPanel.setVisible(true);
-		this.programLocationsView.setVisible(true);
-		this.programMethodsView.setVisible(true);
-		this.systemLabelPanel.setVisible(true);
+		// Basic Details tab
+		this.tabSheet.addTab(this.basicDetailsPanel);
+		this.tabSheet.getTab(this.basicDetailsPanel).setClosable(false);
+		this.tabSheet.getTab(this.basicDetailsPanel).setCaption(this.messageSource.getMessage(Message.BASIC_DETAILS_LABEL));
 
-		this.tabSheet.addTab(this.updateProjectPanel);
-		this.tabSheet.getTab(this.updateProjectPanel).setClosable(false);
-		this.tabSheet.getTab(this.updateProjectPanel).setCaption(this.messageSource.getMessage(Message.BASIC_DETAILS_LABEL));
-
-		this.tabSheet.addTab(this.programMembersPanel);
-		this.tabSheet.getTab(this.programMembersPanel).setClosable(false);
-		this.tabSheet.getTab(this.programMembersPanel).setCaption(this.messageSource.getMessage(Message.PROGRAM_MEMBERS));
-		this.tabSheet.getTab(this.programMembersPanel).setVisible(false);
-
+		// Program Members tab - only for admin users
 		try {
-			this.AddRestrictedComponents();
-		} catch (final AccessDeniedException e){
-			// Do no do anything as the screen needs to be displayed just the buttons don't
+			this.addProgramMembersTab();
+		} catch (final AccessDeniedException e) {
+			// Do not do anything as the screen should be displayed, just this tab shouldn't appear for non-admins
 		}
 
+		// Locations tab
 		this.tabSheet.addTab(this.programLocationsView);
 		this.tabSheet.getTab(this.programLocationsView).setClosable(false);
 		this.tabSheet.getTab(this.programLocationsView).setCaption(this.messageSource.getMessage(Message.PROGRAM_LOCATIONS));
 
+		// Breeding Methods tab
 		this.tabSheet.addTab(this.programMethodsView);
 		this.tabSheet.getTab(this.programMethodsView).setClosable(false);
 		this.tabSheet.getTab(this.programMethodsView).setCaption(this.messageSource.getMessage(Message.BREEDING_METHODS_LABEL));
 
-		this.tabSheet.addTab(this.systemLabelPanel);
-		this.tabSheet.getTab(this.systemLabelPanel).setClosable(false);
-		this.tabSheet.getTab(this.systemLabelPanel).setCaption("System Labels");
+		// System Labels tab
+		try {
+			this.addSystemLabelsTab();
+		} catch (final AccessDeniedException e) {
+			// Do not do anything as the screen should be displayed, just this tab shouldn't appear for non-admins
+		}
+
+		// Program Summary tab
+		this.tabSheet.addTab(this.programSummaryView);
+		this.tabSheet.getTab(this.programSummaryView).setClosable(false);
+		this.tabSheet.getTab(this.programSummaryView).setCaption(this.messageSource.getMessage("PROGRAM_SUMMARY"));
 
 		this.rootLayout.addComponent(this.titleLayout);
 		this.rootLayout.addComponent(headingDesc);
@@ -165,8 +173,22 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	private void AddRestrictedComponents() {
-		this.tabSheet.getTab(this.programMembersPanel).setVisible(true);
+	private void addProgramMembersTab() {
+		this.tabSheet.addTab(this.programMembersPanel);
+		this.tabSheet.getTab(this.programMembersPanel).setClosable(false);
+		this.tabSheet.getTab(this.programMembersPanel).setCaption(this.messageSource.getMessage(Message.PROGRAM_MEMBERS));
+	}
+
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	private void addSystemLabelsTab() {
+		this.tabSheet.addTab(this.systemLabelPanel);
+		this.tabSheet.getTab(this.systemLabelPanel).setClosable(false);
+		this.tabSheet.getTab(this.systemLabelPanel).setCaption(this.messageSource.getMessage("SYSTEM_LABELS"));
+	}
+
+	// For Test purposes only
+	public TabSheet getTabSheet() {
+		return this.tabSheet;
 	}
 
 }
