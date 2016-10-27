@@ -7,7 +7,16 @@ import java.util.Map;
 
 import org.generationcp.commons.constant.ToolEnum;
 import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.actions.*;
+import org.generationcp.ibpworkbench.actions.ActionListener;
+import org.generationcp.ibpworkbench.actions.ChangeWindowAction;
+import org.generationcp.ibpworkbench.actions.DeleteProjectAction;
+import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
+import org.generationcp.ibpworkbench.actions.OpenProgramLocationsAction;
+import org.generationcp.ibpworkbench.actions.OpenProgramMethodsAction;
+import org.generationcp.ibpworkbench.actions.OpenToolVersionsAction;
+import org.generationcp.ibpworkbench.actions.OpenWindowAction;
+import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
+import org.generationcp.ibpworkbench.actions.PageAction;
 import org.generationcp.ibpworkbench.ui.programadministration.OpenManageProgramPageAction;
 import org.generationcp.ibpworkbench.ui.project.create.OpenUpdateProjectPageAction;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
@@ -32,15 +41,9 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.Window;
 
-/**
- * Created with IntelliJ IDEA. User: cyrus Date: 11/19/13 Time: 7:22 PM To change this template use File | Settings | File Templates.
- */
 @Configurable
 public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 5744204745926145144L;
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchSidebar.class);
 	public static final Map<String, TreeItem> sidebarTreeMap = new HashMap<>();
@@ -50,7 +53,7 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 
 	private final WorkbenchSidebarPresenter presenter;
 	private Tree sidebarTree;
-	
+
 	@Autowired
 	private PlatformTransactionManager transactionManager;
 
@@ -66,17 +69,17 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 					if (event.getItemId() == null) {
 						return;
 					}
-		
+
 					WorkbenchSidebar.LOG.trace(event.getItemId().toString());
-		
+
 					TreeItem treeItem = (TreeItem) event.getItemId();
-		
+
 					if (!WorkbenchSidebar.this.doCollapse(treeItem)) {
 						WorkbenchSidebar.this.presenter.updateProjectLastOpenedDate();
-		
-						ActionListener listener =
-								WorkbenchSidebar.this.getLinkActions(treeItem.getId(), WorkbenchSidebar.this.sessionData.getSelectedProject());
-		
+
+						ActionListener listener = WorkbenchSidebar.this.getLinkActions(treeItem.getId(),
+								WorkbenchSidebar.this.sessionData.getSelectedProject());
+
 						listener.doAction(event.getComponent().getWindow(), "/" + treeItem.getId(), true);
 					}
 				}
@@ -91,6 +94,7 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 	@Override
 	public void afterPropertiesSet() {
 		this.initializeComponents();
+		this.populateLinks();
 	}
 
 	protected void initializeComponents() {
@@ -100,7 +104,7 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 		this.addComponent(this.sidebarTree);
 	}
 
-	public void populateLinks() {
+	void populateLinks() {
 		this.removeAllComponents();
 
 		this.sidebarTree = new Tree();
@@ -145,12 +149,6 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 		this.sidebarTree.addListener(this.treeClickListener);
 
 		this.addComponent(this.sidebarTree);
-	}
-
-	public void clearLinks() {
-		if (this.sidebarTree != null) {
-			this.sidebarTree.setContainerDataSource(new HierarchicalContainer());
-		}
 	}
 
 	public void selectItem(TreeItem item) {
@@ -218,7 +216,7 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 				}
 			} catch (IndexOutOfBoundsException e) {
 				// IGNORE
-				LOG.debug("ignored index out of bounds exception",e);
+				LOG.debug("ignored index out of bounds exception", e);
 			}
 		}
 
