@@ -101,9 +101,7 @@ public class AuthenticationController {
 
 		model.addAttribute("isCreateAccountEnable", this.isAccountCreationEnabled);
 
-		model.addAttribute("instituteLogoPath", this.findInstituteLogo(this.instituteLogoPath));
-		model.addAttribute("footerMessage", this.footerMessage);
-		model.addAttribute("version", this.workbenchVersion);
+		populateCommomModelAttributes(model);
 
 		return "login";
 	}
@@ -130,9 +128,7 @@ public class AuthenticationController {
 
 			model.addAttribute("user", user);
 
-			model.addAttribute("instituteLogoPath", findInstituteLogo(instituteLogoPath));
-			model.addAttribute("footerMessage", this.footerMessage);
-			model.addAttribute("version", this.workbenchVersion);
+			populateCommomModelAttributes(model);
 
 			return "new-password";
 
@@ -140,6 +136,12 @@ public class AuthenticationController {
 			AuthenticationController.LOG.debug(e.getMessage(), e);
 			return "redirect:" + AuthenticationController.URL;
 		}
+	}
+
+	private void populateCommomModelAttributes(Model model) {
+		model.addAttribute("instituteLogoPath", this.findInstituteLogo(this.instituteLogoPath));
+		model.addAttribute("footerMessage", this.footerMessage);
+		model.addAttribute("version", this.workbenchVersion);
 	}
 
 	@ResponseBody
