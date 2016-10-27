@@ -6,12 +6,15 @@ import java.util.Properties;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -32,6 +35,9 @@ public class WorkbenchMainViewTest {
 
 	@Mock
 	private Properties workbenchProperties;
+	
+	@Mock
+	private WorkbenchDataManager workbenchDataManager;
 
 	@InjectMocks
 	private WorkbenchMainView workbenchMainView;
@@ -131,4 +137,25 @@ public class WorkbenchMainViewTest {
 		// Verify that button to toggle sidebar is showing
 		Assert.assertTrue(toggleSidebarButtonShowing);
 	}
+
+	@Test
+	public void testUpdateUserInfoIfNecessary() {
+		final User user = Mockito.mock(User.class);
+		UserInfo userInfo = Mockito.mock(UserInfo.class);
+		Mockito.when(this.workbenchDataManager.getUserInfo(Matchers.anyInt())).thenReturn(userInfo);
+
+		Mockito.when(userInfo.getLoginCount()).thenReturn(0);
+		this.workbenchMainView.updateUserInfoIfNecessary(user);
+		Mockito.verify(userInfo, Mockito.times(1)).setLoginCount(1);
+
+		Mockito.when(userInfo.getLoginCount()).thenReturn(1);
+		this.workbenchMainView.updateUserInfoIfNecessary(user);
+		Mockito.verify(userInfo, Mockito.times(1)).setLoginCount(1);
+
+		userInfo = null;
+		Mockito.when(this.workbenchDataManager.getUserInfo(Matchers.anyInt())).thenReturn(userInfo);
+		this.workbenchMainView.updateUserInfoIfNecessary(user);
+		Mockito.verify(this.workbenchDataManager, Mockito.times(2)).insertOrUpdateUserInfo(Matchers.any(UserInfo.class));
+	}
+	
 }
