@@ -42,8 +42,12 @@
 					$scope.$watch('editing', function() {
 						$scope.showNoneditableFieldsAlert = $scope.editing && $scope.model &&
 							$scope.model.metadata.editableFields.length < NUM_EDITABLE_FIELDS;
-						$scope.showNoneditableCategoriesAlert = $scope.editing && $scope.model &&
-							$scope.model.validValues.categories.some(function(x) {
+						$scope.showNoneditableCategoriesAlert =
+							$scope.editing
+							&& $scope.model
+							&& $scope.model.validValues
+							&& $scope.model.validValues.categories
+							&& $scope.model.validValues.categories.some(function(x) {
 								return !x.editable;
 							});
 					});
@@ -139,10 +143,16 @@
 								resetSubmissionState();
 								$scope.scaleName = model.name;
 
-								var variableIds = model.metadata.usage.variables.map(function(variable) {
-									return parseInt(variable.id);
-								});
-								variablesService.deleteVariablesFromCache(variableIds);
+								if (model.metadata.usage
+										&& model.metadata.usage.variables
+										&& model.metadata.usage.variables.length > 0) {
+
+									var variableIds = model.metadata.usage.variables
+										.map(function(variable) {
+											return parseInt(variable.id);
+										});
+									variablesService.deleteVariablesFromCache(variableIds);
+								}
 
 							}, function(response) {
 								resetSubmissionState();
