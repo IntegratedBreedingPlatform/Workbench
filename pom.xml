@@ -5,7 +5,7 @@
 	<artifactId>ibpworkbench</artifactId>
 	<packaging>war</packaging>
 	<name>Workbench</name>
-        <version>4.0.0.BETA.16.UAT1</version>
+        <version>4.0.0.BETA.16.UAT3</version>
 
 	<properties>
 		<vaadin.version>6.8.13</vaadin.version>
@@ -146,6 +146,7 @@
 			<artifactId>aspectjweaver</artifactId>
 			<version>1.7.0</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>

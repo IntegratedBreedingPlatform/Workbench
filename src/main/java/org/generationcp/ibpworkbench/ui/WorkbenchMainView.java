@@ -27,6 +27,7 @@ import org.generationcp.ibpworkbench.IWorkbenchSession;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.HomeAction;
+import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.actions.OpenWindowAction;
 import org.generationcp.ibpworkbench.actions.OpenWindowAction.WindowEnum;
 import org.generationcp.ibpworkbench.actions.SignoutAction;
@@ -43,8 +44,6 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -76,8 +75,8 @@ import com.vaadin.ui.themes.Reindeer;
 @Configurable
 public class WorkbenchMainView extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
 
+	private static final int SIDEBAR_OPEN_POSITION = 240;
 	private static final long serialVersionUID = 1L;
-	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchMainView.class);
 
 	private static final String HEADER_BTN = " header-btn";
 
@@ -112,16 +111,23 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	private VerticalLayout mainContent;
 
+	private HorizontalLayout workbenchHeaderLayout;
+
 	private WorkbenchDashboard workbenchDashboard;
 
 	private UriFragmentUtility uriFragUtil;
 	private NavUriFragmentChangedListener uriChangeListener;
 
 	private WorkbenchSidebar sidebar;
-	private Button collapseButton;
+	private Button sidebarToggleButton;
 	private Button signoutButton;
 	private Button logoBtn;
 	private Button askSupportBtn;
+	private Button addProgramButton;
+
+	// Hide sidebar toggle button when in Dashboard and Add Program screens where no program has been selected yet
+	private boolean doHideSidebarToggleButton = true;
+	private boolean isWorkbenchDashboardShown = true;
 
 	public WorkbenchMainView() {
 		super("Breeding Management System | Workbench");
@@ -133,13 +139,15 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		this.assemble();
-		this.workbenchDashboard = new WorkbenchDashboard();
-		this.workbenchDashboard.setDebugId("workbenchDashboard");
 		this.onLoadOperations();
 		this.showContent(this.workbenchDashboard);
 	}
 
 	protected void initializeComponents() {
+		// initialize dashboard
+		this.workbenchDashboard = new WorkbenchDashboard();
+		this.workbenchDashboard.setDebugId("workbenchDashboard");
+
 		// workbench header components
 		this.initializeHeaderComponents();
 
@@ -153,12 +161,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.actionsTitle.setStyleName("gcp-section-title");
 		this.actionsTitle.setSizeUndefined();
 
-		this.collapseButton = new Button("<span class='bms-header-btn'><span class='bms-fa-chevron-right ico'/></span>");
-		this.collapseButton.setDebugId("collapseButton");
-		this.collapseButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + HEADER_BTN);
-		this.collapseButton.setHtmlContentAllowed(true);
-		this.collapseButton.setDescription(this.messageSource.getMessage("TOGGLE_SIDEBAR"));
-
 		this.uriFragUtil = new UriFragmentUtility();
 		this.uriFragUtil.setDebugId("uriFragUtil");
 		this.uriChangeListener = new NavUriFragmentChangedListener();
@@ -167,21 +169,43 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	}
 
 	private void initializeHeaderComponents() {
+		this.sidebarToggleButton = new Button("<span class='bms-header-btn'><span class='bms-fa-chevron-right ico'/></span>");
+		this.sidebarToggleButton.setDebugId("collapseButton");
+		this.sidebarToggleButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + HEADER_BTN);
+		this.sidebarToggleButton.setHtmlContentAllowed(true);
+		this.sidebarToggleButton.setDescription(this.messageSource.getMessage("TOGGLE_SIDEBAR"));
 
+		final Embedded ibpLogo = new Embedded(null, new ThemeResource("../gcp-default/images/ibp_logo2.jpg"));
+		ibpLogo.setDebugId("ibpLogo");
 		this.logoBtn = new Button();
 		this.logoBtn.setDebugId("logoBtn");
+		this.logoBtn.setIcon(ibpLogo.getSource());
+		this.logoBtn.setStyleName(BaseTheme.BUTTON_LINK + " bms-logo-btn");
+		this.logoBtn.setWidth("34px");
+		this.logoBtn.setHeight("34px");
 
 		this.workbenchTitle = new Label();
 		this.workbenchTitle.setDebugId("workbenchTitle");
 		this.workbenchTitle.setStyleName("gcp-window-title");
 		this.workbenchTitle.setContentMode(Label.CONTENT_XHTML);
+		if (this.sessionData.getLastOpenedProject() != null){
+			this.addTitle(this.sessionData.getLastOpenedProject().getProjectName());
+		}
 
-		//TODO localise that text
-		this.homeButton = new Button("<span class='bms-header-btn'><span>My Programs</span></span>");
+		this.homeButton = new Button(
+				String.format("<span class='bms-header-btn'><span>%s</span></span>", this.messageSource.getMessage("MY_PROGRAMS")));
 		this.homeButton.setDebugId("homeButton");
 		this.homeButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + HEADER_BTN);
 		this.homeButton.setHtmlContentAllowed(true);
 		this.homeButton.setSizeUndefined();
+
+		this.addProgramButton = new Button(
+				String.format("<span class='bms-header-btn'><span class='glyphicon glyphicon-plus' style='padding-right: 0px'></span>"
+						+ "<span>%s</span></span>", this.messageSource.getMessage(Message.ADD_A_PROGRAM)));
+		this.addProgramButton.setDebugId("addProgramButton");
+		this.addProgramButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + HEADER_BTN);
+		this.addProgramButton.setHtmlContentAllowed(true);
+		this.addProgramButton.setSizeUndefined();
 
 		this.adminButton = new Button(
 				String.format("<span class='bms-header-btn'><span>%s</span></span>", this.messageSource.getMessage("ADMIN_BUTTON")));
@@ -270,7 +294,8 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		final Label title = new Label(
 				String.format("<span style='font-size: 8pt; color:#9EA5A7; display: inline-block; margin-left: 3px'>%s&nbsp;%s</span>",
 						this.messageSource.getMessage(Message.WORKBENCH_TITLE),
-						this.workbenchProperties.getProperty("workbench.version", "")), Label.CONTENT_XHTML);
+						this.workbenchProperties.getProperty("workbench.version", "")),
+				Label.CONTENT_XHTML);
 
 		sidebarWrap.setFirstComponent(this.sidebar);
 		sidebarWrap.setSecondComponent(title);
@@ -282,8 +307,17 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		contentAreaSplit.setLocked(true);
 		contentAreaSplit.addStyleName(Reindeer.SPLITPANEL_SMALL);
 
+		this.workbenchHeaderLayout = new HorizontalLayout();
+		this.workbenchHeaderLayout.setDebugId("headerLayout");
+		this.workbenchHeaderLayout.setStyleName("bms-header");
+		this.workbenchHeaderLayout.setWidth("100%");
+		this.workbenchHeaderLayout.setHeight("100%");
+		this.workbenchHeaderLayout.setMargin(new Layout.MarginInfo(false, false, false, false));
+		this.workbenchHeaderLayout.setSpacing(false);
+		this.layoutWorkbenchHeaderComponents();
+
 		// contentArea contents
-		contentAreaSplit.addComponent(this.layoutWorkbenchHeader());
+		contentAreaSplit.addComponent(this.workbenchHeaderLayout);
 		contentAreaSplit.addComponent(this.mainContent);
 
 		// the root layout
@@ -304,10 +338,10 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	private void toggleSidebarIcon() {
 		if (this.root.getSplitPosition() == 0) {
-			this.collapseButton.setCaption("<span class='bms-header-btn'><span class='bms-fa-chevron-right ico'/></span>");
+			this.sidebarToggleButton.setCaption("<span class='bms-header-btn'><span class='bms-fa-chevron-right ico'/></span>");
 
 		} else {
-			this.collapseButton.setCaption("<span class='bms-header-btn'><span class='bms-fa-chevron-left ico'/></span>");
+			this.sidebarToggleButton.setCaption("<span class='bms-header-btn'><span class='bms-fa-chevron-left ico'/></span>");
 		}
 	}
 
@@ -317,9 +351,11 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		final Button.ClickListener homeAction = new HomeAction();
 		this.homeButton.addListener(homeAction);
 		this.logoBtn.addListener(homeAction);
-		
+
+		this.addProgramButton.addListener(new OpenNewProjectAction());
+
 		this.adminButton.addListener(new Button.ClickListener() {
-			
+
 			@Override
 			public void buttonClick(ClickEvent event) {
 				final IContentWindow contentFrame = (IContentWindow) event.getComponent().getWindow();
@@ -349,7 +385,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 			}
 		});
 
-		this.collapseButton.addListener(new Button.ClickListener() {
+		this.sidebarToggleButton.addListener(new Button.ClickListener() {
 
 			@Override
 			public void buttonClick(ClickEvent clickEvent) {
@@ -386,21 +422,11 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 			throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
 		}
 
-		if (this.sessionData.getLastOpenedProject() != null) {
-			this.workbenchDashboard.initializeDashboardContents(null)
-					.doAction(this.sessionData.getLastOpenedProject().getProjectId(), this);
-		}
-
 	}
 
-	private UserInfo updateUserInfoIfNecessary(User user) throws MiddlewareQueryException {
+	UserInfo updateUserInfoIfNecessary(User user) throws MiddlewareQueryException {
 		UserInfo userInfo = this.workbenchDataManager.getUserInfo(user.getUserid());
 		if (userInfo == null || userInfo.getLoginCount() < 1) {
-			if (WorkbenchUtil.isPasswordEqualToUsername(user) && userInfo != null) {
-				OpenWindowAction ow = new OpenWindowAction(WindowEnum.CHANGE_PASSWORD);
-				ow.launchWindow(this, WindowEnum.CHANGE_PASSWORD);
-			}
-
 			if (userInfo == null) {
 				userInfo = new UserInfo();
 			}
@@ -408,64 +434,76 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 			userInfo.setLoginCount(1);
 			this.workbenchDataManager.insertOrUpdateUserInfo(userInfo);
 
+			OpenWindowAction ow = new OpenWindowAction(WindowEnum.CHANGE_PASSWORD);
+			ow.launchWindow(this, WindowEnum.CHANGE_PASSWORD);
 		}
 		return userInfo;
 	}
 
-	private Component layoutWorkbenchHeader() {
-		HorizontalLayout headerLayout = new HorizontalLayout();
-		headerLayout.setDebugId("headerLayout");
-		headerLayout.setStyleName("bms-header");
-		headerLayout.setWidth("100%");
-		headerLayout.setHeight("100%");
-		headerLayout.setMargin(new Layout.MarginInfo(false, false, false, false));
-		headerLayout.setSpacing(false);
-
-		headerLayout.addComponent(this.collapseButton);
-		headerLayout.setComponentAlignment(this.collapseButton, Alignment.MIDDLE_LEFT);
-
-		final Embedded ibpLogo = new Embedded(null, new ThemeResource("../gcp-default/images/ibp_logo2.jpg"));
-		ibpLogo.setDebugId("ibpLogo");
-
-		this.logoBtn.setIcon(ibpLogo.getSource());
-		this.logoBtn.setStyleName(BaseTheme.BUTTON_LINK + " bms-logo-btn");
-		this.logoBtn.setWidth("34px");
-		this.logoBtn.setHeight("34px");
-
-		headerLayout.addComponent(this.logoBtn);
-		headerLayout.setComponentAlignment(this.logoBtn, Alignment.MIDDLE_LEFT);
-
-		// workbench title area
-		headerLayout.addComponent(this.workbenchTitle);
-		headerLayout.setComponentAlignment(this.workbenchTitle, Alignment.MIDDLE_LEFT);
-		headerLayout.setExpandRatio(this.workbenchTitle, 1.0f);
-
-		headerLayout.addComponent(this.uriFragUtil);
-
-		try {
-			addAdminButton(headerLayout);
-		} catch (final AccessDeniedException e){
-			// no-op
+	/*
+	 * Layout the components in Workbench header. Button to expand/collapse will be hidden when in Dashboard and Create Program views.
+	 */
+	private void layoutWorkbenchHeaderComponents() {
+		// Button to collapse or expand sidebar
+		if (!this.doHideSidebarToggleButton) {
+			this.workbenchHeaderLayout.addComponent(this.sidebarToggleButton);
+			this.workbenchHeaderLayout.setComponentAlignment(this.sidebarToggleButton, Alignment.MIDDLE_LEFT);
 		}
 
-		headerLayout.addComponent(this.homeButton);
+		this.workbenchHeaderLayout.addComponent(this.logoBtn);
+		this.workbenchHeaderLayout.setComponentAlignment(this.logoBtn, Alignment.MIDDLE_LEFT);
 
-		headerLayout.addComponent(this.helpButton);
-		headerLayout.addComponent(this.getAskSupportBtn());
-		headerLayout.addComponent(this.memberButton);
+		// workbench title area
+		this.workbenchHeaderLayout.addComponent(this.workbenchTitle);
+		this.workbenchHeaderLayout.setComponentAlignment(this.workbenchTitle, Alignment.MIDDLE_LEFT);
+		this.workbenchHeaderLayout.setExpandRatio(this.workbenchTitle, 1.0f);
 
-		headerLayout.setComponentAlignment(this.homeButton, Alignment.MIDDLE_RIGHT);
-		headerLayout.setComponentAlignment(this.askSupportBtn, Alignment.MIDDLE_RIGHT);
-		headerLayout.setComponentAlignment(this.helpButton, Alignment.MIDDLE_RIGHT);
-		headerLayout.setComponentAlignment(this.memberButton, Alignment.MIDDLE_RIGHT);
+		this.workbenchHeaderLayout.addComponent(this.uriFragUtil);
 
-		return headerLayout;
+		try {
+			layoutAdminButton();
+		} catch (final AccessDeniedException e) {
+			// do nothing if the user is not authorized to access Admin button
+		}
+
+		if (this.isWorkbenchDashboardShown) {
+			try {
+				layoutAddProgramButton();
+			} catch (final AccessDeniedException e) {
+				// do nothing if the user is not authorized to access Admin button
+			}
+		} else {
+			this.workbenchHeaderLayout.addComponent(this.homeButton);
+			this.workbenchHeaderLayout.setComponentAlignment(this.homeButton, Alignment.MIDDLE_RIGHT);
+		}
+
+		this.workbenchHeaderLayout.addComponent(this.helpButton);
+		this.workbenchHeaderLayout.addComponent(this.getAskSupportBtn());
+		this.workbenchHeaderLayout.addComponent(this.memberButton);
+
+		this.workbenchHeaderLayout.setComponentAlignment(this.askSupportBtn, Alignment.MIDDLE_RIGHT);
+		this.workbenchHeaderLayout.setComponentAlignment(this.helpButton, Alignment.MIDDLE_RIGHT);
+		this.workbenchHeaderLayout.setComponentAlignment(this.memberButton, Alignment.MIDDLE_RIGHT);
+	}
+
+	private void refreshHeaderLayout() {
+		this.workbenchHeaderLayout.removeAllComponents();
+		
+		this.toggleSidebarIcon();
+		this.layoutWorkbenchHeaderComponents();
+		this.workbenchHeaderLayout.requestRepaint();
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	private void addAdminButton(HorizontalLayout headerLayout) {
-		headerLayout.addComponent(this.adminButton);
-		headerLayout.setComponentAlignment(this.adminButton, Alignment.MIDDLE_RIGHT);
+	private void layoutAdminButton() {
+		this.workbenchHeaderLayout.addComponent(this.adminButton);
+		this.workbenchHeaderLayout.setComponentAlignment(this.adminButton, Alignment.MIDDLE_RIGHT);
+	}
+
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	private void layoutAddProgramButton() {
+		this.workbenchHeaderLayout.addComponent(this.addProgramButton);
+		this.workbenchHeaderLayout.setComponentAlignment(this.addProgramButton, Alignment.MIDDLE_RIGHT);
 	}
 
 	/**
@@ -510,13 +548,16 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 			}
 		}
 
-		if (!(content instanceof WorkbenchDashboard || content instanceof AddProgramView)) {
-			this.root.setSplitPosition(240, Sizeable.UNITS_PIXELS);
-		} else {
+		// Hide sidebar button if in Workbench Dashboard or in Create Program screens
+		this.isWorkbenchDashboardShown = content instanceof WorkbenchDashboard;
+		this.doHideSidebarToggleButton = isWorkbenchDashboardShown || content instanceof AddProgramView;
+		if (doHideSidebarToggleButton) {
 			this.root.setSplitPosition(0, Sizeable.UNITS_PIXELS);
+		} else {
+			this.root.setSplitPosition(SIDEBAR_OPEN_POSITION, Sizeable.UNITS_PIXELS);
 		}
-
-		this.toggleSidebarIcon();
+		// Refresh buttons available on header section
+		refreshHeaderLayout();
 	}
 
 	@Override
@@ -576,4 +617,25 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		return this.sidebar;
 	}
 
+	// For test purposes
+	public HorizontalLayout getWorkbenchHeaderLayout() {
+		return this.workbenchHeaderLayout;
+	}
+
+	// For test purposes
+	public Button getSidebarToggleButton() {
+		return this.sidebarToggleButton;
+	}
+
+	public Button getAddProgramButton() {
+		return this.addProgramButton;
+	}
+
+	public Button getHomeButton() {
+		return this.homeButton;
+	}
+	
+	public Label getWorkbenchTitle(){
+		return this.workbenchTitle;
+	}
 }
