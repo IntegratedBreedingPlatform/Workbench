@@ -24,14 +24,7 @@
 	<link th:href="@{/controller/static/css/login.css}" rel="stylesheet">
 </head>
 <body>
-	<div class="login-section">
-		<img class="login-logo" th:src="@{/controller/static/images/logo.png}"
-			alt="Logo" />
-		<img class="institute-logo"
-			onerror="this.style.display = 'none'"
-			th:if="${ instituteLogoPath != '' && instituteLogoPath != null }"
-			th:src="@{ ${instituteLogoPath} }" />
-	</div>
+	<div th:include="login-fragments :: header-logo"></div>
 	<!--/*
 		The novalidate attribute disables form validation on submit which means that red outlines are not
 		applied to input elements in IE.
@@ -117,16 +110,8 @@
 		<a class="js-login-mode-toggle ac-login-mode-toggle login-link login-unselectable" href="#">Create Account</a>
 	</div>
 
-	<div th:include="login-footer-fragment :: message"></div>
-
-	<div class="login-footer">
-		<img class="login-footer-logo"
-			th:src="@{/controller/static/images/logo.png}" alt="Logo" />
-		<div class="login-footer-body">
-			Breeding Management System v<span th:text="${version}"></span> &bull;
-			Provided by the <a href="https://www.integratedbreeding.net/">Integrated Breeding Platform</a>
-		</div>
-	</div>
+	<div th:include="login-fragments :: message"></div>
+	<div th:include="login-fragments :: footer"></div>
 
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/jquery-1.11.1.min.js}"></script>
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/modernizr-custom.js}"></script>
