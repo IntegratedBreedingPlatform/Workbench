@@ -19,6 +19,7 @@ import org.generationcp.ibpworkbench.validator.UserAccountFields;
 import org.generationcp.ibpworkbench.validator.UserAccountValidator;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.User;
+import org.owasp.html.Sanitizers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -85,20 +86,24 @@ public class AuthenticationController {
 
 	private boolean isAccountCreationEnabled;
 
+	private String workbenchVersion;
+
 	@PostConstruct
-	public void initialize(){
+	public void initialize() {
 		// ensuring that the link is disable by default
-		isAccountCreationEnabled = enableCreateAccount==null ? false : Boolean.valueOf(enableCreateAccount);
+		this.isAccountCreationEnabled = this.enableCreateAccount == null ? false : Boolean.valueOf(this.enableCreateAccount);
+		this.workbenchVersion = this.workbenchProperties.getProperty("workbench.version", "");
+		this.footerMessage = Sanitizers.FORMATTING.sanitize(this.footerMessage);
 	}
 
 	@RequestMapping(value = "/login")
 	public String getLoginPage(Model model) {
 
-		model.addAttribute("isCreateAccountEnable", isAccountCreationEnabled);
+		model.addAttribute("isCreateAccountEnable", this.isAccountCreationEnabled);
 
-		model.addAttribute("instituteLogoPath", findInstituteLogo(instituteLogoPath));
-		model.addAttribute("footerMessage", footerMessage);
-		model.addAttribute("version", this.workbenchProperties.getProperty("workbench.version", ""));
+		model.addAttribute("instituteLogoPath", this.findInstituteLogo(this.instituteLogoPath));
+		model.addAttribute("footerMessage", this.footerMessage);
+		model.addAttribute("version", this.workbenchVersion);
 
 		return "login";
 	}
@@ -126,8 +131,8 @@ public class AuthenticationController {
 			model.addAttribute("user", user);
 
 			model.addAttribute("instituteLogoPath", findInstituteLogo(instituteLogoPath));
-			model.addAttribute("footerMessage", footerMessage);
-			model.addAttribute("version", this.workbenchProperties.getProperty("workbench.version", ""));
+			model.addAttribute("footerMessage", this.footerMessage);
+			model.addAttribute("version", this.workbenchVersion);
 
 			return "new-password";
 
