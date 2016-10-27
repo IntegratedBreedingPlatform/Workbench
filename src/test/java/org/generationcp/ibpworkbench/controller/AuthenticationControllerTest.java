@@ -83,6 +83,7 @@ public class AuthenticationControllerTest {
 	public void testGetLoginPage() throws Exception {
 		Model model = Mockito.mock(Model.class);
 		Assert.assertEquals("should return the login url", "login", this.controller.getLoginPage(model));
+		assertCommonAttributesWereAddedToModel(model);
 	}
 
 	@Test
@@ -195,7 +196,16 @@ public class AuthenticationControllerTest {
 		String page = this.controller.getCreateNewPasswordPage(AuthenticationControllerTest.TEST_RESET_PASSWORD_TOKEN, model);
 
 		Mockito.verify(model, Mockito.times(1)).addAttribute("user", user);
+
+		assertCommonAttributesWereAddedToModel(model);
+
 		Assert.assertEquals("should return new-password page", "new-password", page);
+	}
+
+	private void assertCommonAttributesWereAddedToModel(Model model) {
+		Mockito.verify(model).addAttribute(Mockito.eq("instituteLogoPath"), Mockito.anyObject());
+		Mockito.verify(model).addAttribute(Mockito.eq("footerMessage"), Mockito.anyObject());
+		Mockito.verify(model).addAttribute(Mockito.eq("version"), Mockito.anyObject());
 	}
 
 	@Test
