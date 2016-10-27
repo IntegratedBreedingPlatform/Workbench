@@ -117,10 +117,7 @@
 		<a class="js-login-mode-toggle ac-login-mode-toggle login-link login-unselectable" href="#">Create Account</a>
 	</div>
 
-	<div th:if="${ footerMessage != '' && footerMessage != null }">
-		<div th:utext="${footerMessage}" class="login-footer-message">
-		</div>
-	</div>
+	<div th:include="login-footer-fragment :: message"></div>
 
 	<div class="login-footer">
 		<img class="login-footer-logo"
