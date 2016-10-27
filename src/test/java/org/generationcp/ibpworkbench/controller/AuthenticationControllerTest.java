@@ -1,11 +1,17 @@
 
 package org.generationcp.ibpworkbench.controller;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.mail.MessagingException;
+import javax.servlet.ServletContext;
 
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.security.InvalidResetTokenException;
@@ -59,6 +65,12 @@ public class AuthenticationControllerTest {
 	@Mock
 	private ApiAuthenticationService apiAuthenticationService;
 
+	@Mock
+	private ServletContext servletContext;
+
+	@Mock
+	private Properties workbenchProperties;
+
 	@InjectMocks
 	private AuthenticationController controller;
 
@@ -71,6 +83,19 @@ public class AuthenticationControllerTest {
 	public void testGetLoginPage() throws Exception {
 		Model model = Mockito.mock(Model.class);
 		Assert.assertEquals("should return the login url", "login", this.controller.getLoginPage(model));
+		assertCommonAttributesWereAddedToModel(model);
+	}
+
+	@Test
+	public void testFindInstituteLogo() {
+		final String path = "src/main/web/src/images/institute";
+
+		Mockito.when(this.servletContext.getResourceAsStream(Matchers.anyString())).thenReturn(null);
+		Assert.assertThat(this.controller.findInstituteLogo(path), is(""));
+
+		final InputStream inputStream = Mockito.mock(InputStream.class);
+		Mockito.when(this.servletContext.getResourceAsStream(Matchers.anyString())).thenReturn(inputStream);
+		Assert.assertThat(this.controller.findInstituteLogo(path), is(not("")));
 	}
 
 	@Test
@@ -171,7 +196,16 @@ public class AuthenticationControllerTest {
 		String page = this.controller.getCreateNewPasswordPage(AuthenticationControllerTest.TEST_RESET_PASSWORD_TOKEN, model);
 
 		Mockito.verify(model, Mockito.times(1)).addAttribute("user", user);
+
+		assertCommonAttributesWereAddedToModel(model);
+
 		Assert.assertEquals("should return new-password page", "new-password", page);
+	}
+
+	private void assertCommonAttributesWereAddedToModel(Model model) {
+		Mockito.verify(model).addAttribute(Mockito.eq("instituteLogoPath"), Mockito.anyObject());
+		Mockito.verify(model).addAttribute(Mockito.eq("footerMessage"), Mockito.anyObject());
+		Mockito.verify(model).addAttribute(Mockito.eq("version"), Mockito.anyObject());
 	}
 
 	@Test
