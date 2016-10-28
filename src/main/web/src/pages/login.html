@@ -24,8 +24,7 @@
 	<link th:href="@{/controller/static/css/login.css}" rel="stylesheet">
 </head>
 <body>
-	<img class="login-logo" th:src="@{/controller/static/images/logo.png}" alt="Logo"/>
-
+	<div th:include="login-fragments :: header-logo"></div>
 	<!--/*
 		The novalidate attribute disables form validation on submit which means that red outlines are not
 		applied to input elements in IE.
@@ -110,6 +109,9 @@
 	<div class="login-mode-toggle" th:if="${isCreateAccountEnable}">
 		<a class="js-login-mode-toggle ac-login-mode-toggle login-link login-unselectable" href="#">Create Account</a>
 	</div>
+
+	<div th:include="login-fragments :: message"></div>
+	<div th:include="login-fragments :: footer"></div>
 
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/jquery-1.11.1.min.js}"></script>
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/modernizr-custom.js}"></script>

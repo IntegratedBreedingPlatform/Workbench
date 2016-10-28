@@ -4,8 +4,18 @@
 	margin-left: 20%;
 }
 
-.login-logo {
+.login-section {
 	margin-top: 3rem;
+}
+
+.login-logo, .institute-logo {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.institute-logo {
+	margin-top: 0;
+	margin-left: 2rem;
 }
 
 .login-form {

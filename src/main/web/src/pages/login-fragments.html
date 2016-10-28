@@ -1,0 +1,39 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+	<div th:fragment="header-logo">
+		<div class="login-section">
+			<img class="login-logo" th:src="@{/controller/static/images/logo.png}"
+				alt="Logo" />
+			<img class="institute-logo"
+				onerror="this.style.display = 'none'"
+				th:if="${ instituteLogoPath != '' && instituteLogoPath != null }"
+				th:src="@{ ${instituteLogoPath} }" />
+		</div>
+	</div>
+
+	<div th:fragment="message">
+		<div th:if="${ footerMessage != '' && footerMessage != null }">
+			<div th:utext="${footerMessage}" class="login-footer-message">
+			</div>
+		</div>
+	</div>
+
+	<div th:fragment="footer">
+		<div class="login-footer">
+			<img class="login-footer-logo"
+				th:src="@{/controller/static/images/logo.png}" alt="Logo" />
+			<div class="login-footer-body">
+				Breeding Management System v<span th:text="${version}"></span> &bull;
+				Provided by the <a href="https://www.integratedbreeding.net/">Integrated Breeding Platform</a>
+			</div>
+		</div>
+	</div>
+
+</body>
+
+</html>
