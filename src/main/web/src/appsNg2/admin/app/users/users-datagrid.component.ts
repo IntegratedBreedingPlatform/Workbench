@@ -8,7 +8,7 @@ import { RoleService } from './../shared/services/role.service';
 import { Dialog } from './../shared/components/dialog/dialog.component';
 import { PaginationComponent } from './../shared/components/datagrid/pagination.component';
 import { UserCard } from './user-card.component';
-import {UserComparator} from './user-comparator.component';
+import { UserComparator } from './user-comparator.component';
 
 @Component({
     selector: 'users-datagrid',

@@ -7,7 +7,7 @@ import './../shared/utils/array.extensions';
 import { UserService } from './../shared/services/user.service';
 import { RoleService } from './../shared/services/role.service';
 import { Dialog } from './../shared/components/dialog/dialog.component';
-import {UserComparator} from './user-comparator.component';
+import { UserComparator } from './user-comparator.component';
 import { UsersDatagrid } from './users-datagrid.component';
 import { UserCard } from './user-card.component';
 import { MailService } from './../shared/services/mail.service';
@@ -96,11 +96,11 @@ export function main() {
       expect(grid.table.startRow).toBe(0);
     });
 
-    it('Should get items.length equals to 3', function () {
+    it('Should get number of items equals to 3', function () {
       expect(grid.table.items.length).toBe(2);
     });
 
-    it('Should get items.length equals to 2', function () {
+    it('Should get number of items equals to 2', function () {
       grid.table.items = [new User("0", "Vanina", "Maletta", "vmaletta", "admin", "vanina@leafnode.io", "0"),
         new User("1", "Clarysabel", "Tovar", "ctovar", "admin", "clarysabel@leafnode.io", "0")];
       expect(grid.table.items.length).toBe(2);
@@ -163,12 +163,6 @@ export function main() {
       expect(grid.table.items.length).toBe(2);
       expect(grid.roles.length).toBe(3);
     });
-
-    /*it ('Should handleReAuthentication', function () {
-       grid.handleReAuthentication();
-       expect(window.location).toBeDefined();
-       expect (window.top.location.href).toContain('/ibpworkbench/logout');
-    });*/
 
     it('Should open user confirm status popup', function () {
       user = new User("2", "Clarysabel2", "Tovar2", "ctovar2", "admin2", "clarysabel2@leafnode.io", "true")
