@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 
+import com.vaadin.ui.CssLayout;
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.SessionData;
@@ -31,7 +32,6 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
 
 public class WorkbenchDashboardTest {
 
@@ -135,8 +135,8 @@ public class WorkbenchDashboardTest {
 		Assert.assertEquals(2, this.workbenchDashboard.getComponentCount());
 		Assert.assertTrue(this.workbenchDashboard.getComponent(1) instanceof HorizontalSplitPanel);
 		final HorizontalSplitPanel splitPanel = (HorizontalSplitPanel) this.workbenchDashboard.getComponent(1);
-		Assert.assertTrue(splitPanel.getSecondComponent() instanceof VerticalLayout);
-		final VerticalLayout previewArea = (VerticalLayout) splitPanel.getSecondComponent();
+		Assert.assertTrue(splitPanel.getSecondComponent() instanceof CssLayout);
+		final CssLayout previewArea = (CssLayout) splitPanel.getSecondComponent();
 		Assert.assertEquals(0, previewArea.getComponentCount());
 	}
 
@@ -152,8 +152,8 @@ public class WorkbenchDashboardTest {
 		Assert.assertEquals(2, this.workbenchDashboard.getComponentCount());
 		Assert.assertTrue(this.workbenchDashboard.getComponent(1) instanceof HorizontalSplitPanel);
 		final HorizontalSplitPanel splitPanel = (HorizontalSplitPanel) this.workbenchDashboard.getComponent(1);
-		Assert.assertTrue(splitPanel.getSecondComponent() instanceof VerticalLayout);
-		final VerticalLayout previewArea = (VerticalLayout) splitPanel.getSecondComponent();
+		Assert.assertTrue(splitPanel.getSecondComponent() instanceof CssLayout);
+		final CssLayout previewArea = (CssLayout) splitPanel.getSecondComponent();
 		Assert.assertEquals(1, previewArea.getComponentCount());
 		Assert.assertEquals(mockLogo, previewArea.getComponent(0));
 	}

@@ -17,6 +17,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.ServletContext;
 
+import com.vaadin.ui.CssLayout;
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.help.document.HelpButton;
@@ -118,7 +119,9 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 			this.instituteLogo = new Embedded("", resource);
 			this.instituteLogo.setDebugId("instituteLogo");
 			this.instituteLogo.setMimeType("image/png");
-			this.instituteLogo.setSizeFull();
+			this.instituteLogo.setStyleName("v-institute-logo");
+			this.instituteLogo.setSizeUndefined();
+
 		}
 	}
 
@@ -284,15 +287,15 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		programArea.setExpandRatio(this.programsTable, 1.0F);
 
 		// Show institute logo, if any, in preview area
-		final VerticalLayout previewArea = new VerticalLayout();
+		final CssLayout previewArea = new CssLayout();
+		previewArea.setMargin(false);
 		previewArea.setDebugId("previewArea");
-		previewArea.setStyleName("preview-area");
-		previewArea.setHeight("170px");
+		previewArea.setHeight("90%");
 		previewArea.setWidth("300px");
-		previewArea.setMargin(new MarginInfo(true, false, false, false));
+
 		if (this.instituteLogo != null) {
 			previewArea.addComponent(this.instituteLogo);
-			previewArea.setComponentAlignment(this.instituteLogo, Alignment.TOP_CENTER);
+			System.out.println(previewArea.getStyleName());
 		}
 
 		root.setFirstComponent(programArea);
@@ -315,8 +318,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
 			private static final long serialVersionUID = 1L;
 
-			@Override
-			public String generateDescription(final Component source, final Object itemId, final Object propertyId) {
+			@Override public String generateDescription(final Component source, final Object itemId, final Object propertyId) {
 				return WorkbenchDashboard.this.messageSource.getMessage(Message.PROGRAM_TABLE_TOOLTIP);
 			}
 		});

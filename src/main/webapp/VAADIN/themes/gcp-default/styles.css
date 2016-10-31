@@ -100,6 +100,8 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 .v-popupview-popup-btn-dropdown .v-button.v-button-link:hover{background:#bed6b2}
 .v-popupview-popup-btn-dropdown .v-button.v-button-link{border-radius:0}
 .v-popupview-popup-btn-dropdown{padding:5px 0;background:#fff;border-radius:3px}
+.v-institute-logo img{width: 80%; height: auto; display: block; margin-left: auto; margin-right: auto}
+.v-institute-logo {display: block; margin-left: auto; margin-right: auto}
 
 /* Workflow */
 .gcp-section-title-large{font-weight:bold;font-size:16px}
