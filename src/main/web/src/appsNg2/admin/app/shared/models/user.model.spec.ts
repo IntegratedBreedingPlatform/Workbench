@@ -1,5 +1,4 @@
-import { provide }    from '@angular/core';
-import { addProviders, inject, async, TestBed , ComponentFixture } from "@angular/core/testing";
+import { inject, async, TestBed , ComponentFixture } from "@angular/core/testing";
 import { User } from './user.model'
 import 'rxjs/add/operator/map';
 

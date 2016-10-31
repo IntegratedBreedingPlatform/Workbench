@@ -1,5 +1,5 @@
-import { DebugElement, provide }    from '@angular/core';
-import { addProviders, inject, async, TestBed , ComponentFixture } from "@angular/core/testing";
+import { DebugElement }    from '@angular/core';
+import { inject, async, TestBed , ComponentFixture } from "@angular/core/testing";
 import { Observable } from 'rxjs/Rx';
 import { NgDataGridModel } from './ng-datagrid.model';
 import { DefaultObjectComparator } from './default-object-comparator.component';

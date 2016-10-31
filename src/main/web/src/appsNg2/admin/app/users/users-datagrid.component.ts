@@ -1,15 +1,14 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgDataGridModel } from './../shared/components/datagrid/ng-datagrid.model';
-import { PaginationComponent } from './../shared/components/datagrid/pagination.component';
 import { User } from './../shared/models/user.model';
 import { Role } from './../shared/models/role.model';
-import { FORM_DIRECTIVES } from '@angular/forms';
 import './../shared/utils/array.extensions';
 import { UserService } from './../shared/services/user.service';
 import { RoleService } from './../shared/services/role.service';
 import { Dialog } from './../shared/components/dialog/dialog.component';
-import {UserComparator} from './user-comparator.component';
+import { PaginationComponent } from './../shared/components/datagrid/pagination.component';
 import { UserCard } from './user-card.component';
+import { UserComparator } from './user-comparator.component';
 
 @Component({
     selector: 'users-datagrid',
@@ -17,14 +16,11 @@ import { UserCard } from './user-card.component';
     styleUrls: [
         './users-datagrid.component.css'
     ],
-    directives: [PaginationComponent, FORM_DIRECTIVES, Dialog, UserCard],
     moduleId: module.id
 })
 
 export class UsersDatagrid implements OnInit {
 
-    // @ViewChild(UserCard)
-    // userCard: UserCard;
     errorServiceMessage: string = "";
     showNewDialog = false;
     showEditDialog = false;
@@ -38,7 +34,7 @@ export class UsersDatagrid implements OnInit {
     user: User;
     originalUser: User;
 
-    private roles: Role[];
+    public roles: Role[];
     public userSelected: User;
 
     constructor(private userService: UserService, private roleService: RoleService) {
@@ -48,10 +44,11 @@ export class UsersDatagrid implements OnInit {
 
     showNewUserForm(userCreateCard: UserCard) {
         this.initUser();
+        userCreateCard.resetForm();
+        userCreateCard.initialize(false);
+
         this.dialogTitle = "Add User";
-        this.isEditing = false;
         this.showNewDialog = true;
-        userCreateCard.initialize();
     }
 
     showEditUserForm(user: User, userEditCard: UserCard) {
@@ -60,9 +57,8 @@ export class UsersDatagrid implements OnInit {
         this.originalUser = user;
         this.user = new User(user.id, user.firstName, user.lastName,
                         user.username, user.role, user.email, user.status);
-        this.isEditing = true;
+        userEditCard.initialize(true);
         this.showEditDialog = true;
-        userEditCard.initialize();
     }
 
     initUser() {
@@ -148,7 +144,7 @@ export class UsersDatagrid implements OnInit {
         this.table.sortBy = col;
     }
 
-    changedActiveStatus(e: any) {
+    changedActiveStatus() {
         if (this.userSelected.status === "true") {
             this.userSelected.status = "false";
         } else {

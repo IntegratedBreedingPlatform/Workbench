@@ -1,6 +1,6 @@
 import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
 import {
-    Validators, FormGroup, FormControl
+    Validators, FormGroup
 } from '@angular/forms';
 import { User } from '../shared/models/user.model';
 
@@ -18,44 +18,45 @@ import { Response } from '@angular/http';
 })
 
 export class UserCard implements OnInit {
+
+    active: boolean = true;
+
     errorUserMessage: string = '';
     errorClass: string = 'alert alert-danger';
     submitted = false;
     sendingEmail: boolean = false;
+    isEditing: boolean;
+    sendMail: boolean;
+
     @Input() originalUser: User;
     @Input() userSaved: boolean = false;
-    @Input() isEditing: boolean;
     @Input() model: User;
     @Input() roles: Role[];
-    @Input() sendMail: boolean;
     @Output() onUserAdded = new EventEmitter<User>();
     @Output() onUserEdited = new EventEmitter<User>();
     @Output() onCancel = new EventEmitter<void>();
 
     constructor(private userService: UserService, private roleService: RoleService, private mailService: MailService) {
-        this.model = new User("0", "", "", "", "", "", "");
+        // New empty user is built to open a form with empty default values
+        // id, firstName, lastName, username, role, email, status
+        this.model = new User("0", "", "", "", "", "", "true");
         this.errorUserMessage = '';
     }
 
     /**
      * XXX
      * Reset form hack
-     * The first call to initUser() is needed
-     * when coming from edit user
-     * to clean the user loaded
-     * The second call is to rebind
-     * model.status to the form control
-     * after reset
-     *
+     * see https://angular.io/docs/ts/latest/guide/forms.html#!#add-a-hero-and-reset-the-form
      */
-  /*  resetForm() {
-        // see https://angular.io/docs/ts/latest/guide/forms.html#!#add-a-hero-and-reset-the-form
-        this.activeForm = false;
-        setTimeout(() => this.activeForm = true, 0);
-    }*/
+    resetForm() {
+        this.active = false;
+        setTimeout(() => this.active = true, 0);
+    }
 
-    initialize() {
+    initialize(isEditing: boolean) {
+        this.isEditing = isEditing;
         this.errorUserMessage = '';
+        this.sendMail = !this.isEditing;
     }
 
     onSubmit() { this.submitted = true; }

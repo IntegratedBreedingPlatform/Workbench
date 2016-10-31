@@ -22,7 +22,6 @@ import { MailService } from './shared/services/mail.service';
   styleUrls: [
     './app.style.css'
   ],
-  directives: [ SiteAdminHeader, UsersAdmin ],
   template: `
     <div class="container-fluid">
         <site-admin-header></site-admin-header>

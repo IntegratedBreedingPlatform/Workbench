@@ -7,7 +7,6 @@ Array.prototype.remove = function(valueOrPredicate: any): any[] {
                       ? valueOrPredicate
                       : function (value) { return value === valueOrPredicate; };
       let removedValues = [];
-      console.log(valueOrPredicate, this);
       for (let i = 0; i < this.length; i++) {
           let value = this[i];
           if (predicate(value)) {

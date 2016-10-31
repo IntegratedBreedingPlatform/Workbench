@@ -1,7 +1,7 @@
-import { RouterConfig } from '@angular/router';
+import { Routes } from '@angular/router';
 import { UsersAdmin } from './users/index';
 
-export const routes: RouterConfig = [
+export const routes: Routes = [
     {
         path: '',
         redirectTo: '/home',
