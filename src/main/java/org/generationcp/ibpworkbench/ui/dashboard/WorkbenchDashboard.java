@@ -294,7 +294,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		previewArea.setWidth("300px");
 
 		if (this.instituteLogo != null) {
-			previewArea.addComponent(this.instituteLogo);
 			System.out.println(previewArea.getStyleName());
 		}
 
