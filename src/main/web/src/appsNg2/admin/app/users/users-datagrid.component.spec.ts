@@ -78,7 +78,7 @@ export function main() {
       grid.table.items = items;
     });
 
-    it('should have items', () => {
+    it('should have users', () => {
       expect(grid.table.items).not.toBe(null);
     });
 
@@ -96,11 +96,11 @@ export function main() {
       expect(grid.table.startRow).toBe(0);
     });
 
-    it('Should get number of items equals to 3', function () {
+    it('Should get number of users in grid equals to 3', function () {
       expect(grid.table.items.length).toBe(2);
     });
 
-    it('Should get number of items equals to 2', function () {
+    it('Should get number of users in grid equals to 2', function () {
       grid.table.items = [new User("0", "Vanina", "Maletta", "vmaletta", "admin", "vanina@leafnode.io", "0"),
         new User("1", "Clarysabel", "Tovar", "ctovar", "admin", "clarysabel@leafnode.io", "0")];
       expect(grid.table.items.length).toBe(2);
