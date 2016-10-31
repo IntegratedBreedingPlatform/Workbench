@@ -46,7 +46,7 @@ describe('Categories module', function() {
 		isolateScope.categorical = true;
 		isolateScope.$apply();
 
-		expect(angular.equals(isolateScope.model[isolateScope.property].categories, [{}])).toBe(true);
+		expect(angular.equals(isolateScope.model[isolateScope.property].categories, [{ editable: true }])).toBe(true);
 	});
 
 	describe('$scope.addCategory', function() {
@@ -57,7 +57,8 @@ describe('Categories module', function() {
 				validValues: {
 					categories: [{
 						name: '1',
-						description: 'Very low'
+						description: 'Very low',
+						editable: true
 					}]
 				}
 			};
@@ -67,7 +68,7 @@ describe('Categories module', function() {
 			isolateScope.addCategory(fakeEvent);
 
 			expect(scope.model.validValues.categories.length).toEqual(2);
-			expect(scope.model.validValues.categories[1]).toEqual({name: '', description: ''});
+			expect(scope.model.validValues.categories[1]).toEqual({name: '', description: '', editable: true});
 		});
 	});
 
@@ -77,11 +78,13 @@ describe('Categories module', function() {
 
 			var cat1 = {
 					label: 'a',
-					value: 'value a'
+					value: 'value a',
+					editable: true
 				},
 				cat2 = {
 					label: 'b',
-					value: 'value b'
+					value: 'value b',
+					editable: true
 				};
 
 			scope.model = {
@@ -92,7 +95,7 @@ describe('Categories module', function() {
 
 			compileDirective();
 
-			isolateScope.removeCategory(fakeEvent, cat1.label);
+			isolateScope.removeCategory(fakeEvent, cat1.label, cat1);
 
 			expect(scope.model.validValues.categories.length).toEqual(1);
 			expect(scope.model.validValues.categories[0]).toEqual(cat2);
@@ -102,7 +105,8 @@ describe('Categories module', function() {
 
 			var cat1 = {
 					label: 'a',
-					value: 'value a'
+					value: 'value a',
+					editable: true
 				};
 
 			scope.model = {
@@ -113,7 +117,7 @@ describe('Categories module', function() {
 
 			compileDirective();
 
-			isolateScope.removeCategory(fakeEvent, cat1.label);
+			isolateScope.removeCategory(fakeEvent, cat1.label, cat1);
 
 			expect(scope.model.validValues.categories.length).toEqual(1);
 		});

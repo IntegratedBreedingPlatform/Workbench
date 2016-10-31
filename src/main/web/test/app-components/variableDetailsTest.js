@@ -56,6 +56,7 @@ describe('Variable details directive', function() {
 		deferredGetTypes,
 		deferredUpdateVariable,
 		deferredDeleteVariable,
+		deferredDeleteVariablesFromCache,
 		mockTranslateFilter;
 
 	function compileDirective() {
@@ -123,12 +124,18 @@ describe('Variable details directive', function() {
 			return deferredDeleteVariable.promise;
 		};
 
+		variablesService.deleteVariablesFromCache = function() {
+			deferredDeleteVariablesFromCache = q.defer();
+			return deferredDeleteVariablesFromCache.promise;
+		};
+
 		spyOn(propertiesService, 'getProperties').and.callThrough();
 		spyOn(methodsService, 'getMethods').and.callThrough();
 		spyOn(scalesService, 'getScalesWithNonSystemDataTypes').and.callThrough();
 		spyOn(variableTypesService, 'getTypes').and.callThrough();
 		spyOn(variablesService, 'updateVariable').and.callThrough();
 		spyOn(variablesService, 'deleteVariable').and.callThrough();
+		spyOn(variablesService, 'deleteVariablesFromCache').and.callThrough();
 		spyOn(serviceUtilities, 'serverErrorHandler').and.callThrough();
 		spyOn(panelService, 'hidePanel');
 

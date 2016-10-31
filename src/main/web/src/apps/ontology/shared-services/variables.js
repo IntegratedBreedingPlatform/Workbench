@@ -255,6 +255,24 @@
 			},
 
 			/*
+			 * Deletes the variable from cache with the specified ID.
+			 * 
+			 * TODO this will work only if user is logged in to Fieldbook
+			 */
+			deleteVariablesFromCache: function(variableIds) {
+				var request;
+
+				request = $http.post('/Fieldbook/variableCache/deleteVariablesFromCache', variableIds, {
+					headers: {
+						"Content-Type": "application/json"
+					}
+				});
+				return request.then(function(response) {
+					return response.status;
+				}, failureHandler);
+			},
+
+			/*
 			Deletes the variable with the specified ID.
 			*/
 			deleteVariable: function(id) {

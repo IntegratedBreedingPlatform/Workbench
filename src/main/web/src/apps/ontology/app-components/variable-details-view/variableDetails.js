@@ -121,6 +121,9 @@
 								// Remove variable on parent scope if we succeeded
 								panelService.hidePanel();
 								$scope.updateSelectedVariable();
+
+								variablesService.deleteVariablesFromCache([ parseInt(id) ]);
+
 							}, function() {
 								$scope.clientErrors.failedToDelete = true;
 							});
@@ -174,6 +177,9 @@
 								$scope.editing = false;
 								resetSubmissionState();
 								$scope.variableName = model.name;
+
+								variablesService.deleteVariablesFromCache([ parseInt(id) ]);
+
 							}, function(response) {
 								$scope.vdForm.$setUntouched();
 								$scope.serverErrors = serviceUtilities.serverErrorHandler($scope.serverErrors, response);

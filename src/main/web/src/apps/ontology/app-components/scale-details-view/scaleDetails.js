@@ -7,9 +7,9 @@
 		DELAY = 400,
 		NUM_EDITABLE_FIELDS = 3;
 
-	scaleDetailsModule.directive('omScaleDetails', ['scalesService', 'serviceUtilities', 'formUtilities', 'panelService',
+	scaleDetailsModule.directive('omScaleDetails', ['scalesService', 'variablesService', 'serviceUtilities', 'formUtilities', 'panelService',
 		'dataTypesService', '$timeout', 'collectionUtilities',
-		function(scalesService, serviceUtilities, formUtilities, panelService, dataTypesService, $timeout, collectionUtilities) {
+		function(scalesService, variablesService, serviceUtilities, formUtilities, panelService, dataTypesService, $timeout, collectionUtilities) {
 
 			var LISTS_NOT_LOADED_TRANSLATION = 'validation.scale.someListsNotLoaded';
 
@@ -42,6 +42,14 @@
 					$scope.$watch('editing', function() {
 						$scope.showNoneditableFieldsAlert = $scope.editing && $scope.model &&
 							$scope.model.metadata.editableFields.length < NUM_EDITABLE_FIELDS;
+						$scope.showNoneditableCategoriesAlert =
+							$scope.editing
+							&& $scope.model
+							&& $scope.model.validValues
+							&& $scope.model.validValues.categories
+							&& $scope.model.validValues.categories.some(function(x) {
+								return !x.editable;
+							});
 					});
 
 					$scope.$watch('selectedItem', function(selected) {
@@ -134,6 +142,18 @@
 								$scope.editing = false;
 								resetSubmissionState();
 								$scope.scaleName = model.name;
+
+								if (model.metadata.usage
+										&& model.metadata.usage.variables
+										&& model.metadata.usage.variables.length > 0) {
+
+									var variableIds = model.metadata.usage.variables
+										.map(function(variable) {
+											return parseInt(variable.id);
+										});
+									variablesService.deleteVariablesFromCache(variableIds);
+								}
+
 							}, function(response) {
 								resetSubmissionState();
 								$scope.sdForm.$setUntouched();
