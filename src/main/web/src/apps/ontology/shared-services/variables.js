@@ -261,12 +261,15 @@
 			deleteVariablesFromCache: function(variableIds) {
 				var request;
 
-				request = $http.post(
-					'/Fieldbook/variableCache/deleteVariablesFromCache'
+				if (!variableIds || variableIds.length == 0) {
+					return;
+				}
+
+				request = $http.delete(
+					'/Fieldbook/variableCache/' + variableIds.join(",")
 					+ '?authToken=' + configService.getAuthToken()
 					+ '&selectedProjectId=' + configService.getSelectedProjectId()
-					+ '&loggedInUserId=' + configService.getLoggedInUserId()
-					, variableIds);
+					+ '&loggedInUserId=' + configService.getLoggedInUserId() );
 				return request.then(function(response) {
 					return response.status;
 				}, failureHandler);
