@@ -205,6 +205,11 @@
 		<aop:scoped-proxy />
 	</bean>
 
+	<bean id="ontologyVariableManager" factory-bean="managerFactory"
+		factory-method="getOntologyVariableDataManager" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
 
 	<bean id="breedingViewImportService"  class="org.generationcp.commons.service.impl.BreedingViewImportServiceImpl" scope="request">
 		<aop:scoped-proxy />
