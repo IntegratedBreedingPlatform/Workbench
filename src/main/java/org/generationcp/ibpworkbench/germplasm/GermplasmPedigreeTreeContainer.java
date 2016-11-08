@@ -66,7 +66,7 @@ public class GermplasmPedigreeTreeContainer extends VerticalLayout implements In
 		this.displayFullPedigreeButton = new Button("Display Full Pedigree");
 
 		this.includeDerivativeLinesCheckbox = new CheckBox();
-		this.includeDerivativeLinesCheckbox.setCaption("Include Derivative Lines");
+		this.messageSource.setCaption(this.includeDerivativeLinesCheckbox, Message.INCLUDE_DERIVATIVE_AND_MAINTENANCE_LINES);
 
 		this.refreshButton = new Button("Apply");
 		this.refreshButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());

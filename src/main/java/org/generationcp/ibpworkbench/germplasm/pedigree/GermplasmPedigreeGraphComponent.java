@@ -108,7 +108,7 @@ public class GermplasmPedigreeGraphComponent extends VerticalLayout implements I
 	@Override
 	public void updateLabels() {
 		this.messageSource.setCaption(this.pedigreeLevelLabel, Message.PEDIGREE_LEVEL_LABEL);
-		this.messageSource.setCaption(this.pedigreeDerivativeCheckbox, Message.INCLUDE_DERIVATIVE_LINES);
+		this.messageSource.setCaption(this.pedigreeDerivativeCheckbox, Message.INCLUDE_DERIVATIVE_AND_MAINTENANCE_LINES);
 	}
 
 	public void updatePedigreeGraphButtonClickAction() {
