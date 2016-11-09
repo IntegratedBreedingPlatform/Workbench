@@ -18,7 +18,9 @@ import org.generationcp.ibpworkbench.validator.ForgotPasswordAccountValidator;
 import org.generationcp.ibpworkbench.validator.UserAccountFields;
 import org.generationcp.ibpworkbench.validator.UserAccountValidator;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.owasp.html.Sanitizers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +54,9 @@ public class AuthenticationController {
 
 	@Resource
 	private WorkbenchUserService workbenchUserService;
+	
+	@Resource
+	private WorkbenchDataManager workbenchDataManager;
 
 	@Resource
 	private UserAccountValidator userAccountValidator;
@@ -297,6 +302,20 @@ public class AuthenticationController {
 
 			// 2. remove token
 			this.workbenchEmailSenderService.deleteToken(model);
+
+			// 3. Create user info
+			UserInfo userInfo = this.workbenchDataManager.getUserInfoByUsername(model.getUsername());
+
+			if (userInfo == null) {
+				User user = this.workbenchDataManager.getUserByUsername(model.getUsername());
+				userInfo = new UserInfo();
+				userInfo.setUserId(user.getUserid());
+			}
+			
+			if(userInfo.getLoginCount() == 0) {
+				userInfo.setLoginCount(1);	
+				this.workbenchDataManager.insertOrUpdateUserInfo(userInfo);
+			}
 
 			return true;
 
