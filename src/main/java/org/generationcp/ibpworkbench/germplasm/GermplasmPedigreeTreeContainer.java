@@ -226,4 +226,8 @@ public class GermplasmPedigreeTreeContainer extends VerticalLayout implements In
 	public Button getDisplayFullPedigreeButton() {
 		return this.displayFullPedigreeButton;
 	}
+	
+	void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
 }
