@@ -264,7 +264,7 @@ public class AuthenticationController {
 		return sendResetEmail(model.getUsername());
 	}
 
-	@RequestMapping(value = "/sendResetEmail/{username}", method = RequestMethod.GET)
+	@RequestMapping(value = "/sendResetEmail/{username:.+}", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<Map<String, Object>> sendResetPasswordEmail(@PathVariable final String username) {
 		return sendResetEmail(username);
@@ -304,19 +304,20 @@ public class AuthenticationController {
 			this.workbenchEmailSenderService.deleteToken(model);
 
 			// 3. Create user info
-			UserInfo userInfo = this.workbenchDataManager.getUserInfoByUsername(model.getUsername());
+			if (model != null && model.getUsername() != null && !model.getUsername().isEmpty()) {
+				UserInfo userInfo = this.workbenchDataManager.getUserInfoByUsername(model.getUsername());
 
-			if (userInfo == null) {
-				User user = this.workbenchDataManager.getUserByUsername(model.getUsername());
-				userInfo = new UserInfo();
-				userInfo.setUserId(user.getUserid());
-			}
-			
-			if(userInfo.getLoginCount() == 0) {
-				userInfo.setLoginCount(1);	
-				this.workbenchDataManager.insertOrUpdateUserInfo(userInfo);
-			}
+				if (userInfo == null) {
+					User user = this.workbenchDataManager.getUserByUsername(model.getUsername());
+					userInfo = new UserInfo();
+					userInfo.setUserId(user.getUserid());
+				}
 
+				if (userInfo.getLoginCount() == 0) {
+					userInfo.setLoginCount(1);
+					this.workbenchDataManager.insertOrUpdateUserInfo(userInfo);
+				}
+			}
 			return true;
 
 		} catch (MiddlewareQueryException e) {
