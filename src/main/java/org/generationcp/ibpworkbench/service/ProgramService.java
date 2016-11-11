@@ -70,20 +70,34 @@ public class ProgramService {
 		this.saveWorkbenchProject(program);
 		this.setContextInfoAndCurrentCrop(program);
 
-		// Add default "ADMIN" user to selected users of program to give access to new program
-		final User defaultAdminUser = this.workbenchDataManager.getUserByUsername(ProgramService.ADMIN_USERNAME);
-		this.selectedUsers.add(defaultAdminUser);
-
-		// Save workbench project metadata and to crop users, persons (if necessary)
-		this.saveProjectUserRoles(program);
-		final List<Integer> userIDs = this.saveWorkbenchUserToCropUserMapping(program, this.selectedUsers);
-		this.saveProjectUserInfo(program, userIDs);
+		saveProgramMembers(program);
 
 		// After saving, we create folder for program under <install directory>/workspace
 		this.toolUtil.createWorkspaceDirectoriesForProject(program);
 
 		ProgramService.LOG.info("Program created. ID:" + program.getProjectId() + " Name:" + program.getProjectName() + " Start date:"
 				+ program.getStartDate());
+	}
+
+	/**
+	 * Save default "ADMIN" user and other set selected users as members of given program by saving in the ff tables:
+	 * workbench_project_user_role, workbench_project_user_info, workbench_ibdb_user_map and in crop.persons (if applicable)
+	 * 
+	 * @param program : program to add members to
+	 */
+	public void saveProgramMembers(final Project program) {
+		// Add default "ADMIN" user to selected users of program to give access to new program
+		final User defaultAdminUser = this.workbenchDataManager.getUserByUsername(ProgramService.ADMIN_USERNAME);
+		if (defaultAdminUser != null){
+			this.selectedUsers.add(defaultAdminUser);
+		}
+
+		// Save workbench project metadata and to crop users, persons (if necessary)
+		if (!this.selectedUsers.isEmpty()) {
+			this.saveProjectUserRoles(program);
+			final List<Integer> userIDs = this.saveWorkbenchUserToCropUserMapping(program, this.selectedUsers);
+			this.saveProjectUserInfo(program, userIDs);
+		}
 	}
 
 	private void setContextInfoAndCurrentCrop(final Project program) {
