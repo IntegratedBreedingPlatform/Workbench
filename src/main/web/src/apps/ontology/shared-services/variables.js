@@ -4,7 +4,7 @@
 (function() {
 	var app = angular.module('variables', ['utilities', 'config']);
 
-	app.service('variablesService', ['$http', 'serviceUtilities', 'configService', function($http, serviceUtilities, configService) {
+	app.service('variablesService', ['$q', '$http', 'serviceUtilities', 'configService', function($q, $http, serviceUtilities, configService) {
 
 		var successHandler = serviceUtilities.restSuccessHandler,
 			failureHandler = serviceUtilities.restFailureHandler;
@@ -265,13 +265,19 @@
 					return;
 				}
 
-				request = $http.delete(
-					'/Fieldbook/variableCache/' + variableIds.join(",")
+				var params = variableIds.join(",")
 					+ '?authToken=' + configService.getAuthToken()
 					+ '&selectedProjectId=' + configService.getSelectedProjectId()
-					+ '&loggedInUserId=' + configService.getLoggedInUserId() );
-				return request.then(function(response) {
-					return response.status;
+					+ '&loggedInUserId=' + configService.getLoggedInUserId();
+
+				request = [
+					$http.delete('/Fieldbook/variableCache/' + params),
+					$http.delete('/BreedingManager/main/variableCache/' + params),
+					$http.delete('/ibpworkbench/controller/variableCache/' + params)
+				];
+
+				return $q.all(request).then(function(response) {
+					return response.map(function (x) { return x.status } );
 				}, failureHandler);
 			},
 
