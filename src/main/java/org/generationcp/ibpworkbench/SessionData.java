@@ -54,6 +54,7 @@ public class SessionData {
 			ContextUtil.setContextInfo(IBPWorkbenchApplication.get().getRequest(), this.userData.getUserid(),
 					selectedProject.getProjectId(), null);
 			ContextHolder.setCurrentCrop(selectedProject.getCropType().getCropName());
+			ContextHolder.setCurrentProgram(selectedProject.getUniqueID());
 			this.selectedProject = selectedProject;
 		}
 	}
@@ -83,6 +84,7 @@ public class SessionData {
 			ContextUtil.setContextInfo(IBPWorkbenchApplication.get().getRequest(), this.userData.getUserid(),
 					lastOpenedProject.getProjectId(), null);
 			ContextHolder.setCurrentCrop(lastOpenedProject.getCropType().getCropName());
+			ContextHolder.setCurrentProgram(lastOpenedProject.getUniqueID());
 			this.lastOpenedProject = lastOpenedProject;
 		}
 

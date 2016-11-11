@@ -94,6 +94,7 @@ public class ProgramService {
 				authToken != null ? authToken.getValue() : null);
 
 		ContextHolder.setCurrentCrop(program.getCropType().getCropName());
+		ContextHolder.setCurrentProgram(program.getUniqueID());
 	}
 
 	/*
