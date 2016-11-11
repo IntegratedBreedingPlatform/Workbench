@@ -304,20 +304,18 @@ public class AuthenticationController {
 			this.workbenchEmailSenderService.deleteToken(model);
 
 			// 3. Create user info
-			if (model != null && model.getUsername() != null && !model.getUsername().isEmpty()) {
-				UserInfo userInfo = this.workbenchDataManager.getUserInfoByUsername(model.getUsername());
 
-				if (userInfo == null) {
-					User user = this.workbenchDataManager.getUserByUsername(model.getUsername());
-					userInfo = new UserInfo();
-					userInfo.setUserId(user.getUserid());
-				}
+			UserInfo userInfo = this.workbenchDataManager.getUserInfoByUsername(model.getUsername());
 
-				if (userInfo.getLoginCount() == 0) {
-					userInfo.setLoginCount(1);
-					this.workbenchDataManager.insertOrUpdateUserInfo(userInfo);
-				}
+			if (userInfo == null) {
+				User user = this.workbenchDataManager.getUserByUsername(model.getUsername());
+				userInfo = new UserInfo();
+				userInfo.setUserId(user.getUserid());
 			}
+
+			userInfo.setLoginCount(userInfo.getLoginCount() + 1);
+			this.workbenchDataManager.insertOrUpdateUserInfo(userInfo);
+
 			return true;
 
 		} catch (MiddlewareQueryException e) {

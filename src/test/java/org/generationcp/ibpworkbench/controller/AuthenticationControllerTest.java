@@ -20,7 +20,9 @@ import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.ibpworkbench.validator.ForgotPasswordAccountValidator;
 import org.generationcp.ibpworkbench.validator.UserAccountValidator;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -73,6 +75,9 @@ public class AuthenticationControllerTest {
 
 	@InjectMocks
 	private AuthenticationController controller;
+	
+	@Mock
+	private WorkbenchDataManager workbenchDataManager;
 
 	@Before
 	public void beforeEachTest() {
@@ -248,7 +253,9 @@ public class AuthenticationControllerTest {
 	@Test
 	public void testDoResetPassword() throws Exception {
 		UserAccountModel userAccountModel = new UserAccountModel();
-
+		userAccountModel.setUsername("naymesh");
+		userAccountModel.setPassword("b");
+		Mockito.when(this.workbenchDataManager.getUserInfoByUsername(Matchers.anyString())).thenReturn(Mockito.mock(UserInfo.class));
 		boolean result = this.controller.doResetPassword(userAccountModel);
 
 		Mockito.verify(this.workbenchUserService, Mockito.times(1)).updateUserPassword(userAccountModel.getUsername(), userAccountModel.getPassword());
