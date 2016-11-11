@@ -151,17 +151,11 @@ public class AuthenticationController {
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
 		try {
-			if (!this.workbenchUserService.isUserActive(model)) {
-				Map<String, String> errors = new LinkedHashMap<>();
 
-				errors.put(UserAccountFields.USERNAME,
-						this.messageSource.getMessage(UserAccountValidator.LOGIN_ATTEMPT_USER_INACTIVE, new String[] {},
-								"Your user account is not currently active. Please contact your system administrator",
-								LocaleContextHolder.getLocale()));
+			this.userAccountValidator.validateUserActive(model, result);
 
-				out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
-				out.put(AuthenticationController.ERRORS, errors);
-
+			if (result.hasErrors()) {
+				this.generateErrors(result, out);
 			} else if (this.workbenchUserService.isValidUserLogin(model)) {
 				isSuccess = HttpStatus.OK;
 				out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
@@ -241,6 +235,8 @@ public class AuthenticationController {
 
 		this.forgotPasswordAccountValidator.validate(model, result);
 
+		this.userAccountValidator.validateUserActive(model, result);
+
 		if (result.hasErrors()) {
 			this.generateErrors(result, out);
 		} else {
@@ -288,23 +284,38 @@ public class AuthenticationController {
 
 	@ResponseBody
 	@RequestMapping(value = "/reset", method = RequestMethod.POST)
-	public Boolean doResetPassword(@ModelAttribute("userAccount") UserAccountModel model) {
+	public ResponseEntity<Map<String, Object>> doResetPassword(@ModelAttribute("userAccount") final UserAccountModel model,
+			BindingResult result) {
+		final Map<String, Object> out = new LinkedHashMap<>();
+		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
+
 		AuthenticationController.LOG.debug("reset password submitted");
 
 		try {
-			// 1. replace password
-			this.workbenchUserService.updateUserPassword(model.getUsername(), model.getPassword());
 
-			// 2. remove token
-			this.workbenchEmailSenderService.deleteToken(model);
+			this.userAccountValidator.validateUserActive(model, result);
 
-			return true;
+			if (result.hasErrors()) {
+				this.generateErrors(result, out);
+			} else {
+				// 1. replace password
+				this.workbenchUserService.updateUserPassword(model.getUsername(), model.getPassword());
 
-		} catch (MiddlewareQueryException e) {
+				// 2. remove token
+				this.workbenchEmailSenderService.deleteToken(model);
+
+				isSuccess = HttpStatus.OK;
+				out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
+			}
+
+		} catch (final MiddlewareQueryException e) {
+			out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
+			out.put(AuthenticationController.ERRORS, e.getMessage());
+
 			AuthenticationController.LOG.error(e.getMessage(), e);
-
-			return false;
 		}
+
+		return new ResponseEntity<>(out, isSuccess);
 	}
 
 	protected void generateErrors(BindingResult result, Map<String, Object> out) {
