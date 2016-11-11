@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.commons.util.DateUtil;
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.ContextHolder;
 import org.generationcp.middleware.manager.api.UserDataManager;
@@ -49,10 +50,11 @@ public class ProgramService {
 
 	@Autowired
 	private UserDataManager userDataManager;
+	
+	@Autowired
+	private SessionData sessionData;
 
 	private Set<User> selectedUsers;
-
-	private User currentUser;
 
 	// http://cropwiki.irri.org/icis/index.php/TDM_Users_and_Access
 	public static final int PROJECT_USER_ACCESS_NUMBER = 100;
@@ -120,11 +122,10 @@ public class ProgramService {
 	private void saveProjectUserRoles(final Project project) {
 		final List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
 		final Set<User> allProjectMembers = new HashSet<User>();
-		allProjectMembers.add(this.currentUser);
 		allProjectMembers.addAll(this.selectedUsers);
-
+		
 		final List<Role> allRolesList = this.workbenchDataManager.getAllRoles();
-
+		
 		for (final User user : allProjectMembers) {
 			for (final Role role : allRolesList) {
 				final ProjectUserRole projectUserRole = new ProjectUserRole();
@@ -157,7 +158,9 @@ public class ProgramService {
 	 * @param program
 	 */
 	private void saveWorkbenchProject(final Project program) {
-		program.setUserId(this.currentUser.getUserid());
+		// sets current user as program owner
+		program.setUserId(this.sessionData.getUserData().getUserid());
+		
 		final CropType cropType = this.workbenchDataManager.getCropTypeByName(program.getCropType().getCropName());
 		if (cropType == null) {
 			this.workbenchDataManager.addCropType(program.getCropType());
@@ -249,10 +252,6 @@ public class ProgramService {
 
 	public void setSelectedUsers(final Set<User> users) {
 		this.selectedUsers = users;
-	}
-
-	public void setCurrentUser(final User currentUser) {
-		this.currentUser = currentUser;
 	}
 
 	void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {

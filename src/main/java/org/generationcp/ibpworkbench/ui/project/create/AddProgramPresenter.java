@@ -41,7 +41,6 @@ public class AddProgramPresenter {
 		try {
 			final Project program = AddProgramPresenter.this.view.createProjectPanel.projectBasicDetailsComponent.getProjectDetails();
 			final Set<User> users = AddProgramPresenter.this.view.programMembersPanel.getSelectedUsers();
-			AddProgramPresenter.this.programService.setCurrentUser(AddProgramPresenter.this.sessionData.getUserData());
 			AddProgramPresenter.this.programService.setSelectedUsers(users);
 			AddProgramPresenter.this.programService.createNewProgram(program);
 			return program;

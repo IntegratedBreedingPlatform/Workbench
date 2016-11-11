@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.manager.api.UserDataManager;
@@ -44,6 +45,9 @@ public class ProgramServiceTest {
 
 	@Mock
 	private UserDataManager userDataManager;
+	
+	@Mock
+	private SessionData sessionData;
 
 	@InjectMocks
 	private final ProgramService programService = new ProgramService();
@@ -85,12 +89,12 @@ public class ProgramServiceTest {
 		final User memberUser = this.createUser(2, "mrbreederfriend", 2);
 		final User defaultAdminUser = this.createUser(3, ProgramService.ADMIN_USERNAME, 3);
 		Mockito.when(this.workbenchDataManager.getUserByUsername(ProgramService.ADMIN_USERNAME)).thenReturn(defaultAdminUser);
-
+		Mockito.when(this.sessionData.getUserData()).thenReturn(loggedInUser);
+		
 		final Set<User> selectedUsers = new HashSet<User>();
 		selectedUsers.add(loggedInUser);
 		selectedUsers.add(memberUser);
 		this.programService.setSelectedUsers(selectedUsers);
-		this.programService.setCurrentUser(loggedInUser);
 
 		final Person loggedInPerson = this.createPerson(1, "Jan", "Erik");
 		final Person memberPerson = this.createPerson(2, "John", "Doe");
