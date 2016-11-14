@@ -111,7 +111,6 @@ export class UserCard implements OnInit {
 
     private sendEmailToResetPassword (respSaving: Response){
       if (!this.isEditing) {
-          console.log (respSaving.json().id);
           this.model.id = respSaving.json().id;
       }
       if (this.sendMail) {

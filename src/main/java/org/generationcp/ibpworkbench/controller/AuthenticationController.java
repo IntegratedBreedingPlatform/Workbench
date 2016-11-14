@@ -17,6 +17,7 @@ import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.ibpworkbench.validator.ForgotPasswordAccountValidator;
 import org.generationcp.ibpworkbench.validator.UserAccountFields;
 import org.generationcp.ibpworkbench.validator.UserAccountValidator;
+import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.User;
 import org.owasp.html.Sanitizers;
@@ -49,6 +50,8 @@ public class AuthenticationController {
 	public static final String ERRORS = "errors";
 
 	private static final Logger LOG = LoggerFactory.getLogger(AuthenticationController.class);
+
+	private static final String NOT_EXISTENT_USER = "User does not exist";
 
 	@Resource
 	private WorkbenchUserService workbenchUserService;
@@ -261,15 +264,20 @@ public class AuthenticationController {
 
 	@RequestMapping(value = "/sendResetEmail/{userId}", method = RequestMethod.POST) @ResponseBody
 	public ResponseEntity<Map<String, Object>> sendResetPasswordEmail(@PathVariable Integer userId) {
-		User user = this.workbenchUserService.getUserByUserid(userId);
-		if (user == null) {
-			Map<String, Object> out = new LinkedHashMap<>();
-			HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
+		Map<String, Object> out = new LinkedHashMap<>();
+		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
+		try {
+			User user = this.workbenchUserService.getUserByUserid(userId);
+			if (user == null) {
+				out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
+				out.put(AuthenticationController.ERRORS, NOT_EXISTENT_USER);
+			}
+			return sendResetEmail(user.getName());
+		} catch (MiddlewareQueryException e) {
 			out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
-			out.put(AuthenticationController.ERRORS, "User does not exist");
-			return new ResponseEntity<>(out, isSuccess);
+			out.put(AuthenticationController.ERRORS, e.getMessage());
 		}
-		return sendResetEmail(user.getName());
+		return new ResponseEntity<>(out, isSuccess);
 	}
 
 	private ResponseEntity<Map<String, Object>> sendResetEmail(final String username) {
