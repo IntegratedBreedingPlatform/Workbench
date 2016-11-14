@@ -69,7 +69,7 @@
 			}
 
 			doPostResetAction($resetForm.serialize()).done(function(data) {
-				if (true === data) {
+				if (data && data.success) {
 					resetFormRef.submit();
 				} else {
 					displayClientError('Something Went Wrong :(');
