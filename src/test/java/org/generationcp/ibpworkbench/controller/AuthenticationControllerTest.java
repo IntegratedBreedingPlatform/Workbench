@@ -281,8 +281,9 @@ public class AuthenticationControllerTest {
 		testUserAccountModel.setPassword("b");
 		Mockito.when(this.workbenchUserService.isValidUserLogin(testUserAccountModel)).thenReturn(true);
 		final Token testToken = new Token("naymesh:1447734506586:3a7e599e28efc35a2d53e62715ffd3cb", 1447734506586L);
-		Mockito.when(this.apiAuthenticationService.authenticate(Mockito.eq(testUserAccountModel.getUsername()),
-						Mockito.eq(testUserAccountModel.getPassword()))).thenReturn(testToken);
+		Mockito.when(this.apiAuthenticationService
+				.authenticate(Mockito.eq(testUserAccountModel.getUsername()), Mockito.eq(testUserAccountModel.getPassword()))).thenReturn(
+				testToken);
 
 		ResponseEntity<Map<String, Object>> out = this.controller.validateLogin(testUserAccountModel, this.result);
 		Assert.assertEquals(testToken.getToken(), out.getBody().get("token"));
@@ -355,7 +356,7 @@ public class AuthenticationControllerTest {
 		Assert.assertEquals("is successful", Boolean.FALSE, result.getBody().get(AuthenticationController.SUCCESS));
 	}
 
-	@Test public void testSendResetPasswordEmailToNonExistentUser() throws Exception {
+	@Test public void testSendResetPasswordEmailToNullUser() throws Exception {
 		Integer id = RandomUtils.nextInt();
 		Mockito.when(this.workbenchUserService.getUserByUserid(id)).thenReturn(null);
 
@@ -364,5 +365,19 @@ public class AuthenticationControllerTest {
 		Assert.assertEquals("no http errors", HttpStatus.BAD_REQUEST, result.getStatusCode());
 		Assert.assertEquals("is successful", Boolean.FALSE, result.getBody().get(AuthenticationController.SUCCESS));
 
+	}
+
+	@Test
+	public void testSendResetPasswordEmailToNonExistentUser() throws Exception {
+		// houston we have a problem
+		Integer id = RandomUtils.nextInt();
+		Mockito.doThrow(new MiddlewareQueryException("Error when querying the user")).when(this.workbenchUserService)
+				.getUserByUserid(id);
+
+		ResponseEntity<Map<String, Object>> result = this.controller
+				.sendResetPasswordEmail(id);
+
+		Assert.assertEquals("no http errors", HttpStatus.BAD_REQUEST, result.getStatusCode());
+		Assert.assertEquals("is successful", Boolean.FALSE, result.getBody().get(AuthenticationController.SUCCESS));
 	}
 }
