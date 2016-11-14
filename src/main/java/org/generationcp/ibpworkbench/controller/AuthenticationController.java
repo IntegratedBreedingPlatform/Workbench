@@ -259,10 +259,18 @@ public class AuthenticationController {
 		return sendResetEmail(model.getUsername());
 	}
 
-	@RequestMapping(value = "/sendResetEmail/{username}", method = RequestMethod.GET)
+	@RequestMapping(value = "/sendResetEmail/{userId}", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<Map<String, Object>> sendResetPasswordEmail(@PathVariable final String username) {
-		return sendResetEmail(username);
+	public ResponseEntity<Map<String, Object>> sendResetPasswordEmail(@ModelAttribute("userId") final Integer userId) {
+		User user = this.workbenchUserService.getUserByUserid(userId);
+		if (user == null) {
+			Map<String, Object> out = new LinkedHashMap<>();
+			HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
+			out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
+			out.put(AuthenticationController.ERRORS, "User does not exist");
+			return new ResponseEntity<>(out, isSuccess);
+		}
+		return sendResetEmail(user.getName());
 	}
 
 	private ResponseEntity<Map<String, Object>> sendResetEmail(final String username) {
