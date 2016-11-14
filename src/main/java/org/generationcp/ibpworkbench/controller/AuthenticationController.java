@@ -261,7 +261,7 @@ public class AuthenticationController {
 
 	@RequestMapping(value = "/sendResetEmail/{userId}", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<Map<String, Object>> sendResetPasswordEmail(@ModelAttribute("userId") final Integer userId) {
+	public ResponseEntity<Map<String, Object>> sendResetPasswordEmail(@PathVariable Integer userId) {
 		User user = this.workbenchUserService.getUserByUserid(userId);
 		if (user == null) {
 			Map<String, Object> out = new LinkedHashMap<>();
