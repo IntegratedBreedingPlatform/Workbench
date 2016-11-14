@@ -264,7 +264,7 @@ public class AuthenticationController {
 		return sendResetEmail(model.getUsername());
 	}
 
-	@RequestMapping(value = "/sendResetEmail/{username:.+}", method = RequestMethod.GET)
+	@RequestMapping(value = "/sendResetEmail/{username}", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<Map<String, Object>> sendResetPasswordEmail(@PathVariable final String username) {
 		return sendResetEmail(username);
