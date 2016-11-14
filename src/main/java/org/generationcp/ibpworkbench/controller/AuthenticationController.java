@@ -235,15 +235,15 @@ public class AuthenticationController {
 
 		this.forgotPasswordAccountValidator.validate(model, result);
 
-		this.userAccountValidator.validateUserActive(model, result);
+		if (!result.hasErrors()) {
+			this.userAccountValidator.validateUserActive(model, result);
+		}
 
 		if (result.hasErrors()) {
 			this.generateErrors(result, out);
 		} else {
-
 			isSuccess = HttpStatus.OK;
 			out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
-
 		}
 
 		return new ResponseEntity<>(out, isSuccess);
