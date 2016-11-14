@@ -369,7 +369,6 @@ public class AuthenticationControllerTest {
 
 	@Test
 	public void testSendResetPasswordEmailToNonExistentUser() throws Exception {
-		// houston we have a problem
 		Integer id = RandomUtils.nextInt();
 		Mockito.doThrow(new MiddlewareQueryException("Error when querying the user")).when(this.workbenchUserService)
 				.getUserByUserid(id);

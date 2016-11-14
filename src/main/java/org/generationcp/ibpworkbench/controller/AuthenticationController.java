@@ -17,7 +17,6 @@ import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.ibpworkbench.validator.ForgotPasswordAccountValidator;
 import org.generationcp.ibpworkbench.validator.UserAccountFields;
 import org.generationcp.ibpworkbench.validator.UserAccountValidator;
-import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.User;
 import org.owasp.html.Sanitizers;
