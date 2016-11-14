@@ -270,6 +270,7 @@ public class AuthenticationController {
 			if (user == null) {
 				out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
 				out.put(AuthenticationController.ERRORS, NOT_EXISTENT_USER);
+				return new ResponseEntity<>(out, isSuccess);
 			}
 			return sendResetEmail(user.getName());
 		} catch (MiddlewareQueryException e) {
