@@ -259,8 +259,7 @@ public class AuthenticationController {
 		return sendResetEmail(model.getUsername());
 	}
 
-	@RequestMapping(value = "/sendResetEmail/{userId}", method = RequestMethod.POST)
-	@ResponseBody
+	@RequestMapping(value = "/sendResetEmail/{userId}", method = RequestMethod.POST) @ResponseBody
 	public ResponseEntity<Map<String, Object>> sendResetPasswordEmail(@PathVariable Integer userId) {
 		User user = this.workbenchUserService.getUserByUserid(userId);
 		if (user == null) {

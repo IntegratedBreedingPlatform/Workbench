@@ -320,7 +320,7 @@ public class AuthenticationControllerTest {
 	}
 	
 	@Test
-	public void testsendResetPasswordEmail() throws Exception {
+	public void testSendResetPasswordEmail() throws Exception {
 		// default success scenario
 		Integer id = RandomUtils.nextInt();
 		Mockito.when(this.workbenchUserService.getUserByUserName(Matchers.anyString()))
@@ -338,7 +338,7 @@ public class AuthenticationControllerTest {
 	}
 
 	@Test
-	public void testsendResetPasswordEmailWithErrors() throws Exception {
+	public void testSendResetPasswordEmailWithErrors() throws Exception {
 		// houston we have a problem
 		Integer id = RandomUtils.nextInt();
 		Mockito.when(this.workbenchUserService.getUserByUserName(Matchers.anyString()))
@@ -355,15 +355,11 @@ public class AuthenticationControllerTest {
 		Assert.assertEquals("is successful", Boolean.FALSE, result.getBody().get(AuthenticationController.SUCCESS));
 	}
 
-	@Test
-	public void testsendResetPasswordEmailToNonExistentUser() throws Exception {
-		// default success scenario
+	@Test public void testSendResetPasswordEmailToNonExistentUser() throws Exception {
 		Integer id = RandomUtils.nextInt();
-		Mockito.when(this.workbenchUserService.getUserByUserid(id))
-				.thenReturn(null);
+		Mockito.when(this.workbenchUserService.getUserByUserid(id)).thenReturn(null);
 
-		ResponseEntity<Map<String, Object>> result = this.controller
-				.sendResetPasswordEmail(id);
+		ResponseEntity<Map<String, Object>> result = this.controller.sendResetPasswordEmail(id);
 
 		Assert.assertEquals("no http errors", HttpStatus.BAD_REQUEST, result.getStatusCode());
 		Assert.assertEquals("is successful", Boolean.FALSE, result.getBody().get(AuthenticationController.SUCCESS));

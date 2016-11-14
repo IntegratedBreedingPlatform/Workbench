@@ -125,7 +125,6 @@ export class UserCard implements OnInit {
                       this.userSaved = false;
                       this.sendMail = !this.isEditing;
                       if (!this.isEditing) {
-                        //this.model.id = respSaving.json().id;
                         this.onUserAdded.emit(this.model);
                       } else {
                         this.onUserEdited.emit(this.model);
@@ -142,7 +141,6 @@ export class UserCard implements OnInit {
                         this.userSaved = false;
                         this.sendMail = !this.isEditing;
                         if (!this.isEditing) {
-                          //this.model.id = respSaving.json().id;
                           this.onUserAdded.emit(this.model);
                         } else {
                           this.onUserEdited.emit(this.model);
@@ -155,7 +153,6 @@ export class UserCard implements OnInit {
             this.userSaved = false;
             this.sendMail = !this.isEditing;
             if (!this.isEditing) {
-              //this.model.id = respSaving.json().id;
               this.onUserAdded.emit(this.model);
             } else {
               this.onUserEdited.emit(this.model);
