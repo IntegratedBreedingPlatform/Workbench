@@ -3,6 +3,8 @@ package org.generationcp.ibpworkbench.actions;
 
 import java.io.File;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.generationcp.commons.util.MySQLUtil;
@@ -12,7 +14,9 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.database.CropDatabaseGenerator;
+import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
@@ -45,6 +49,9 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 
 	@Autowired
 	private SessionData sessionData;
+	
+	@Autowired
+	private ProgramService programService;
 
 	private final Project project;
 
@@ -84,19 +91,23 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 				final Integer userId = this.workbenchDataManager.getLocalIbdbUserId(this.sessionData.getUserData().getUserid(),
 								this.project.getProjectId());
 
+				MessageNotifier.showMessage(this.sourceWindow, this.messageSource.getMessage(Message.SUCCESS),
+						this.messageSource.getMessage(Message.RESTORE_IBDB_COMPLETE));
 				if (userId != null) {
 					this.mysqlUtil.updateOwnerships(this.project.getDatabaseName(), userId);
 				}
 
+				
 				// the restored database may be old
 				// and needs to be upgraded for it to be usable
 				final WorkbenchSetting setting = this.workbenchDataManager.getWorkbenchSetting();
 				final File schemaDir = new File(setting.getInstallationDirectory(), "database/merged/common-update");
 				this.mysqlUtil.upgradeDatabase(this.project.getDatabaseName(), schemaDir);
-
-				MessageNotifier.showMessage(this.sourceWindow, this.messageSource.getMessage(Message.SUCCESS),
-						this.messageSource.getMessage(Message.RESTORE_IBDB_COMPLETE));
-
+				
+				
+				this.addDefaultAdminAsMemberOfRestoredPrograms();
+				
+				
 				// LOG to project activity
 				// if there is no user id, it means there is no user data
 				if (userId != null) {
@@ -116,6 +127,32 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 		} else {
 			this.hasRestoreError = true;
 		}
+	}
+	
+	
+	/*
+	 *	If the current user is not default ADMIN, call ProgramService to add default ADMIN as program member. 
+	 *  Otherwise, the default ADMIN is already as program member being the current user.
+	 */
+	void addDefaultAdminAsMemberOfRestoredPrograms() {
+		
+		if (!currentUserIsDefaultAdmin()) {
+			final List<Project> projects = this.workbenchDataManager.getProjectsByCrop(this.project.getCropType());
+
+			for (Project project : projects) {
+				// The default "ADMIN" user is being added in ProgramService
+				this.programService.saveProgramMembers(project, new HashSet<User>());
+			}
+		}
+	}
+	
+	
+	boolean currentUserIsDefaultAdmin(){
+		final User defaultAdminUser = this.workbenchDataManager.getUserByUsername(ProgramService.ADMIN_USERNAME);
+		if (defaultAdminUser != null){
+			return defaultAdminUser.equals(this.sessionData.getUserData());
+		}
+		return false;
 	}
 
 	@Override
