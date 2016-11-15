@@ -49,7 +49,7 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 
 	@Autowired
 	private SessionData sessionData;
-	
+
 	@Autowired
 	private ProgramService programService;
 
@@ -89,7 +89,7 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 				});
 
 				final Integer userId = this.workbenchDataManager.getLocalIbdbUserId(this.sessionData.getUserData().getUserid(),
-								this.project.getProjectId());
+						this.project.getProjectId());
 
 				MessageNotifier.showMessage(this.sourceWindow, this.messageSource.getMessage(Message.SUCCESS),
 						this.messageSource.getMessage(Message.RESTORE_IBDB_COMPLETE));
@@ -97,17 +97,14 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 					this.mysqlUtil.updateOwnerships(this.project.getDatabaseName(), userId);
 				}
 
-				
 				// the restored database may be old
 				// and needs to be upgraded for it to be usable
 				final WorkbenchSetting setting = this.workbenchDataManager.getWorkbenchSetting();
 				final File schemaDir = new File(setting.getInstallationDirectory(), "database/merged/common-update");
 				this.mysqlUtil.upgradeDatabase(this.project.getDatabaseName(), schemaDir);
-				
-				
+
 				this.addDefaultAdminAsMemberOfRestoredPrograms();
-				
-				
+
 				// LOG to project activity
 				// if there is no user id, it means there is no user data
 				if (userId != null) {
@@ -121,35 +118,34 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 				this.hasRestoreError = false;
 			} catch (final Exception e) {
 				RestoreIBDBSaveAction.LOG.error(e.getMessage(), e);
-				MessageNotifier.showError(this.sourceWindow, this.messageSource.getMessage(Message.RESTORE_OPERATION_ERROR), e.getMessage());
+				MessageNotifier.showError(this.sourceWindow, this.messageSource.getMessage(Message.RESTORE_OPERATION_ERROR),
+						e.getMessage());
 				this.hasRestoreError = true;
 			}
 		} else {
 			this.hasRestoreError = true;
 		}
 	}
-	
-	
+
 	/*
-	 *	If the current user is not default ADMIN, call ProgramService to add default ADMIN as program member. 
-	 *  Otherwise, the default ADMIN is already as program member being the current user.
+	 * If the current user is not default ADMIN, call ProgramService to add default ADMIN as program member. Otherwise, the default ADMIN is
+	 * already as program member being the current user.
 	 */
 	void addDefaultAdminAsMemberOfRestoredPrograms() {
-		
-		if (!currentUserIsDefaultAdmin()) {
+
+		if (!this.currentUserIsDefaultAdmin()) {
 			final List<Project> projects = this.workbenchDataManager.getProjectsByCrop(this.project.getCropType());
 
-			for (Project project : projects) {
+			for (final Project project : projects) {
 				// The default "ADMIN" user is being added in ProgramService
 				this.programService.saveProgramMembers(project, new HashSet<User>());
 			}
 		}
 	}
-	
-	
-	boolean currentUserIsDefaultAdmin(){
+
+	boolean currentUserIsDefaultAdmin() {
 		final User defaultAdminUser = this.workbenchDataManager.getUserByUsername(ProgramService.ADMIN_USERNAME);
-		if (defaultAdminUser != null){
+		if (defaultAdminUser != null) {
 			return defaultAdminUser.equals(this.sessionData.getUserData());
 		}
 		return false;
@@ -170,10 +166,11 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 		final StringBuilder sb = new StringBuilder();
 		if (new File(saveDir.getAbsolutePath() + "/" + fileName).exists()) {
 			for (int x = 1; x < 10000; x++) {
-				final String temp = fileName.substring(0, fileName.lastIndexOf(".")) + UNDERSCORE + x + SQL_FILE_EXTENSION;
+				final String temp = fileName.substring(0, fileName.lastIndexOf(".")) + RestoreIBDBSaveAction.UNDERSCORE + x
+						+ RestoreIBDBSaveAction.SQL_FILE_EXTENSION;
 				if (!new File(saveDir.getAbsolutePath() + "/" + temp).exists()) {
 					sb.append(fileName.substring(0, fileName.lastIndexOf(".")));
-					sb.append(UNDERSCORE).append(x).append(SQL_FILE_EXTENSION);
+					sb.append(RestoreIBDBSaveAction.UNDERSCORE).append(x).append(RestoreIBDBSaveAction.SQL_FILE_EXTENSION);
 					break;
 				}
 			}
@@ -201,7 +198,7 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 	public void setRestoreFile(final File restoreFile) {
 		this.restoreFile = restoreFile;
 	}
-	
+
 	public void setProgramService(final ProgramService programService) {
 		this.programService = programService;
 	}
