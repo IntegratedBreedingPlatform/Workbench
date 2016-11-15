@@ -2,7 +2,6 @@
 package org.generationcp.ibpworkbench.service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -50,11 +49,9 @@ public class ProgramService {
 
 	@Autowired
 	private UserDataManager userDataManager;
-	
+
 	@Autowired
 	private SessionData sessionData;
-
-	private Set<User> selectedUsers;
 
 	// http://cropwiki.irri.org/icis/index.php/TDM_Users_and_Access
 	public static final int PROJECT_USER_ACCESS_NUMBER = 100;
@@ -62,17 +59,17 @@ public class ProgramService {
 	public static final int PROJECT_USER_STATUS = 1;
 
 	/**
-	 * Create new project in workbench and add selected users as project members. Also creates copy of workbench person and user to currect
+	 * Create new project in workbench and add specified users as project members. Also creates copy of workbench person and user to currect
 	 * crop DB, if not yet existing. Finally, create a new folder under <install directory>/workspace/<program name>
 	 *
 	 * @param program
 	 */
-	public void createNewProgram(final Project program) {
+	public void createNewProgram(final Project program, final Set<User> programUsers) {
 		// Need to save first to workbench_project so project id can be saved in session
 		this.saveWorkbenchProject(program);
 		this.setContextInfoAndCurrentCrop(program);
 
-		saveProgramMembers(program);
+		this.saveProgramMembers(program, programUsers);
 
 		// After saving, we create folder for program under <install directory>/workspace
 		this.toolUtil.createWorkspaceDirectoriesForProject(program);
@@ -84,20 +81,20 @@ public class ProgramService {
 	/**
 	 * Save default "ADMIN" user and other set selected users as members of given program by saving in the ff tables:
 	 * workbench_project_user_role, workbench_project_user_info, workbench_ibdb_user_map and in crop.persons (if applicable)
-	 * 
+	 *
 	 * @param program : program to add members to
 	 */
-	public void saveProgramMembers(final Project program) {
+	public void saveProgramMembers(final Project program, final Set<User> users) {
 		// Add default "ADMIN" user to selected users of program to give access to new program
 		final User defaultAdminUser = this.workbenchDataManager.getUserByUsername(ProgramService.ADMIN_USERNAME);
-		if (defaultAdminUser != null){
-			this.selectedUsers.add(defaultAdminUser);
+		if (defaultAdminUser != null) {
+			users.add(defaultAdminUser);
 		}
 
 		// Save workbench project metadata and to crop users, persons (if necessary)
-		if (!this.selectedUsers.isEmpty()) {
-			this.saveProjectUserRoles(program);
-			final List<Integer> userIDs = this.saveWorkbenchUserToCropUserMapping(program, this.selectedUsers);
+		if (!users.isEmpty()) {
+			this.saveProjectUserRoles(program, users);
+			final List<Integer> userIDs = this.saveWorkbenchUserToCropUserMapping(program, users);
 			this.saveProjectUserInfo(program, userIDs);
 		}
 	}
@@ -119,23 +116,23 @@ public class ProgramService {
 	 *
 	 * @param project
 	 */
-	private void saveProjectUserRoles(final Project project) {
+	private void saveProjectUserRoles(final Project project, final Set<User> users) {
 		final List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
-		final Set<User> allProjectMembers = new HashSet<User>();
-		allProjectMembers.addAll(this.selectedUsers);
-		
 		final List<Role> allRolesList = this.workbenchDataManager.getAllRoles();
-		
-		for (final User user : allProjectMembers) {
-			for (final Role role : allRolesList) {
+
+		if (allRolesList != null && !allRolesList.isEmpty()){
+			// we only need 1 record in workbench_project_user_role table for user to have access to program
+			final Role role = allRolesList.get(0);
+			for (final User user : users) {
 				final ProjectUserRole projectUserRole = new ProjectUserRole();
 				projectUserRole.setUserId(user.getUserid());
 				projectUserRole.setRole(role);
 				projectUserRole.setProject(project);
 				projectUserRoles.add(projectUserRole);
 			}
+			this.workbenchDataManager.addProjectUserRole(projectUserRoles);
 		}
-		this.workbenchDataManager.addProjectUserRole(projectUserRoles);
+
 	}
 
 	/*
@@ -160,7 +157,7 @@ public class ProgramService {
 	private void saveWorkbenchProject(final Project program) {
 		// sets current user as program owner
 		program.setUserId(this.sessionData.getUserData().getUserid());
-		
+
 		final CropType cropType = this.workbenchDataManager.getCropTypeByName(program.getCropType().getCropName());
 		if (cropType == null) {
 			this.workbenchDataManager.addCropType(program.getCropType());
@@ -248,10 +245,6 @@ public class ProgramService {
 
 	private Integer getCurrentDate() {
 		return DateUtil.getCurrentDateAsIntegerValue();
-	}
-
-	public void setSelectedUsers(final Set<User> users) {
-		this.selectedUsers = users;
 	}
 
 	void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {

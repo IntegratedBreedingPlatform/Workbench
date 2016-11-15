@@ -94,7 +94,6 @@ public class ProgramServiceTest {
 		final Set<User> selectedUsers = new HashSet<User>();
 		selectedUsers.add(loggedInUser);
 		selectedUsers.add(memberUser);
-		this.programService.setSelectedUsers(selectedUsers);
 
 		final Person loggedInPerson = this.createPerson(1, "Jan", "Erik");
 		final Person memberPerson = this.createPerson(2, "John", "Doe");
@@ -116,7 +115,7 @@ public class ProgramServiceTest {
 		Mockito.when(this.userDataManager.addUser(Matchers.any(User.class))).thenReturn(2);
 
 		// Call the method to test
-		this.programService.createNewProgram(project);
+		this.programService.createNewProgram(project, selectedUsers);
 
 		// Verify that the key database operations for program creation are invoked.
 		Mockito.verify(this.workbenchDataManager).addProject(project);
