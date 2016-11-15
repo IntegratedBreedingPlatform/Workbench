@@ -62,7 +62,8 @@ public class ProgramService {
 	 * Create new project in workbench and add specified users as project members. Also creates copy of workbench person and user to currect
 	 * crop DB, if not yet existing. Finally, create a new folder under <install directory>/workspace/<program name>
 	 *
-	 * @param program
+	 * @param program : program to save
+	 * @param programUsers : users to add as members of new program
 	 */
 	public void createNewProgram(final Project program, final Set<User> programUsers) {
 		// Need to save first to workbench_project so project id can be saved in session
@@ -83,6 +84,7 @@ public class ProgramService {
 	 * workbench_project_user_role, workbench_project_user_info, workbench_ibdb_user_map and in crop.persons (if applicable)
 	 *
 	 * @param program : program to add members to
+	 * @param users : users to add as members of given program
 	 */
 	public void saveProgramMembers(final Project program, final Set<User> users) {
 		// Add default "ADMIN" user to selected users of program to give access to new program

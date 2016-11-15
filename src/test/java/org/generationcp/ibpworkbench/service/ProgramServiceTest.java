@@ -16,6 +16,8 @@ import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.IbdbUserMap;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
+import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.junit.Assert;
 import org.junit.Before;
@@ -45,17 +47,22 @@ public class ProgramServiceTest {
 
 	@Mock
 	private UserDataManager userDataManager;
-	
+
 	@Mock
 	private SessionData sessionData;
+
+	@Mock
+	private ProjectUserInfoDAO projectUserInfoDAO;
 
 	@InjectMocks
 	private final ProgramService programService = new ProgramService();
 
-	private Person workbenchPerson;
-	private Person cropDBPerson;
-	private User workbenchUser;
-	private User cropDBUser;
+	private Person loggedInPerson;
+	private Person memberPerson;
+	private Person defaultAdminPerson;
+	private User loggedInUser;
+	private User memberUser;
+	private User defaultAdminUser;
 
 	@Before
 	public void setup() throws Exception {
@@ -64,54 +71,42 @@ public class ProgramServiceTest {
 		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
 		this.initializeTestPersonsAndUsers();
+
+		Mockito.when(this.workbenchDataManager.getProjectUserInfoDao()).thenReturn(this.projectUserInfoDAO);
 	}
 
 	private void initializeTestPersonsAndUsers() {
-		this.workbenchPerson = this.createPerson(1, "John", "Doe");
-		this.cropDBPerson = this.createPerson(2, "JOHN", "DOE");
+		// Setup test users and persons
+		this.loggedInPerson = this.createPerson(1, "Jan", "Erik");
+		this.memberPerson = this.createPerson(2, "John", "Doe");
+		this.defaultAdminPerson = this.createPerson(3, "Default", "Admin");
 
-		this.workbenchUser = new User();
-		this.workbenchUser.setName("John");
-		this.workbenchUser.setPersonid(1);
+		this.loggedInUser = this.createUser(1, "mrbreeder", 1);
+		this.memberUser = this.createUser(2, "mrbreederfriend", 2);
+		this.defaultAdminUser = this.createUser(3, ProgramService.ADMIN_USERNAME, 3);
 
-		this.cropDBUser = new User();
-		this.cropDBUser.setName("John");
+		// Setup mocks
+		Mockito.when(this.sessionData.getUserData()).thenReturn(this.loggedInUser);
+		Mockito.when(this.userDataManager.getUserByUserName(this.loggedInUser.getName())).thenReturn(this.loggedInUser);
+		Mockito.when(this.userDataManager.getPersonByEmail(this.loggedInPerson.getEmail())).thenReturn(this.loggedInPerson);
+
+		Mockito.when(this.workbenchDataManager.getUserByUsername(ProgramService.ADMIN_USERNAME)).thenReturn(this.defaultAdminUser);
+		Mockito.when(this.workbenchDataManager.getPersonById(this.loggedInPerson.getId())).thenReturn(this.loggedInPerson);
+		Mockito.when(this.workbenchDataManager.getPersonById(this.memberPerson.getId())).thenReturn(this.memberPerson);
+		Mockito.when(this.workbenchDataManager.getPersonById(this.defaultAdminPerson.getId())).thenReturn(this.defaultAdminPerson);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testCreateNewProgram() throws Exception {
-
+		// Create test data and set up mocks
 		final Project project = this.createProject();
-
-		// Set up test users and persons data and mocks
-		final User loggedInUser = this.createUser(1, "mrbreeder", 1);
-		final User memberUser = this.createUser(2, "mrbreederfriend", 2);
-		final User defaultAdminUser = this.createUser(3, ProgramService.ADMIN_USERNAME, 3);
-		Mockito.when(this.workbenchDataManager.getUserByUsername(ProgramService.ADMIN_USERNAME)).thenReturn(defaultAdminUser);
-		Mockito.when(this.sessionData.getUserData()).thenReturn(loggedInUser);
-		
 		final Set<User> selectedUsers = new HashSet<User>();
-		selectedUsers.add(loggedInUser);
-		selectedUsers.add(memberUser);
-
-		final Person loggedInPerson = this.createPerson(1, "Jan", "Erik");
-		final Person memberPerson = this.createPerson(2, "John", "Doe");
-		final Person defaultAdminPerson = this.createPerson(3, "Default", "Admin");
-		Mockito.when(this.workbenchDataManager.getPersonById(loggedInPerson.getId())).thenReturn(loggedInPerson);
-		Mockito.when(this.workbenchDataManager.getPersonById(memberPerson.getId())).thenReturn(memberPerson);
-		Mockito.when(this.workbenchDataManager.getPersonById(defaultAdminPerson.getId())).thenReturn(defaultAdminPerson);
+		selectedUsers.add(this.loggedInUser);
+		selectedUsers.add(this.memberUser);
+		this.setRoleTestDataAndMocks();
 
 		// Other WorkbenchDataManager mocks
 		Mockito.when(this.workbenchDataManager.getCropTypeByName(Matchers.anyString())).thenReturn(project.getCropType());
-		final ProjectUserInfoDAO puiDao = Mockito.mock(ProjectUserInfoDAO.class);
-		Mockito.when(this.workbenchDataManager.getProjectUserInfoDao()).thenReturn(puiDao);
-
-		final List<Role> allRolesList = new ArrayList<Role>();
-		allRolesList.add(new Role(1, "CB Breeder", null));
-		allRolesList.add(new Role(2, "MAS Breeder", null));
-		Mockito.when(this.workbenchDataManager.getAllRoles()).thenReturn(allRolesList);
-
 		Mockito.when(this.userDataManager.addUser(Matchers.any(User.class))).thenReturn(2);
 
 		// Call the method to test
@@ -120,15 +115,7 @@ public class ProgramServiceTest {
 		// Verify that the key database operations for program creation are invoked.
 		Mockito.verify(this.workbenchDataManager).addProject(project);
 
-		// Add Person and Add User called three times - 1)for current person and user and
-		// 2) for member person and user selected and 3) for default ADMIN user
-		Mockito.verify(this.userDataManager, Mockito.times(3)).addPerson(Matchers.any(Person.class));
-		Mockito.verify(this.userDataManager, Mockito.times(3)).addUser(Matchers.any(User.class));
-
-		// Ibdb_user_map is added for both current, member and default ADMIN users
-		Mockito.verify(this.workbenchDataManager, Mockito.times(3)).addIbdbUserMap(Matchers.any(IbdbUserMap.class));
-
-		Mockito.verify(this.workbenchDataManager).addProjectUserRole(Matchers.anyList());
+		this.verifyMockInteractionsForSavingProgramMembers();
 
 		// Verify that utility to create workspace directory was called
 		Mockito.verify(this.toolUtil).createWorkspaceDirectoriesForProject(project);
@@ -137,53 +124,50 @@ public class ProgramServiceTest {
 
 	@Test
 	public void testCreateCropPersonIfNecessaryWhenPersonIsExisting() {
-
-		Mockito.when(this.userDataManager.getPersonByEmail(this.workbenchPerson.getEmail())).thenReturn(this.cropDBPerson);
-
-		final Person result = this.programService.createCropPersonIfNecessary(this.workbenchPerson);
+		// Call method to test
+		final Person result = this.programService.createCropPersonIfNecessary(this.loggedInPerson);
 
 		Mockito.verify(this.userDataManager, Mockito.times(0)).addPerson(Matchers.any(Person.class));
-		Assert.assertSame(result, this.cropDBPerson);
+		Assert.assertSame(result, this.loggedInPerson);
 
 	}
 
 	@Test
 	public void testCreateCropPersonIfNecessaryWhenPersonIsNotExisting() {
+		// Returning null means person does not exist yet
+		Mockito.when(this.userDataManager.getPersonByEmail(this.loggedInPerson.getEmail())).thenReturn(null);
 
-		Mockito.when(this.userDataManager.getPersonByEmail(this.workbenchPerson.getEmail())).thenReturn(null);
-
-		final Person result = this.programService.createCropPersonIfNecessary(this.workbenchPerson);
+		// Call method to test
+		final Person result = this.programService.createCropPersonIfNecessary(this.loggedInPerson);
 
 		Mockito.verify(this.userDataManager, Mockito.times(1)).addPerson(Matchers.any(Person.class));
-		Assert.assertNotSame(result, this.workbenchPerson);
-		Assert.assertEquals(result.getFirstName(), this.workbenchPerson.getFirstName());
-		Assert.assertEquals(result.getLastName(), this.workbenchPerson.getLastName());
+		Assert.assertNotSame(result, this.loggedInPerson);
+		Assert.assertEquals(result.getFirstName(), this.loggedInPerson.getFirstName());
+		Assert.assertEquals(result.getLastName(), this.loggedInPerson.getLastName());
 
 	}
 
 	@Test
 	public void testCreateCropUserIfNecessaryWhenUserIsExisting() {
-
-		Mockito.when(this.userDataManager.getUserByUserName(this.workbenchUser.getName())).thenReturn(this.cropDBUser);
-
-		final User result = this.programService.createCropUserIfNecessary(this.workbenchUser, this.cropDBPerson);
+		// Call method to test
+		final User result = this.programService.createCropUserIfNecessary(this.loggedInUser, this.loggedInPerson);
 
 		Mockito.verify(this.userDataManager, Mockito.times(0)).addUser(Matchers.any(User.class));
-
-		Assert.assertSame(result, this.cropDBUser);
+		Assert.assertSame(result, this.loggedInUser);
 
 	}
 
 	@Test
 	public void testCreateCropUserIfNecessaryWhenUserIsNotExisting() {
+		// Returning null means user does not exist yet
+		Mockito.when(this.userDataManager.getUserByUserName(this.loggedInUser.getName())).thenReturn(null);
 
-		Mockito.when(this.userDataManager.getUserByUserName(this.workbenchUser.getName())).thenReturn(null);
-
-		final User result = this.programService.createCropUserIfNecessary(this.workbenchUser, this.cropDBPerson);
+		// Call method to test
+		final User result = this.programService.createCropUserIfNecessary(this.loggedInUser, this.memberPerson);
 
 		Mockito.verify(this.userDataManager, Mockito.times(1)).addUser(Matchers.any(User.class));
 
-		Assert.assertEquals(this.cropDBPerson.getId(), result.getPersonid());
+		Assert.assertEquals(this.memberPerson.getId(), result.getPersonid());
 		Assert.assertEquals(Integer.valueOf(ProgramService.PROJECT_USER_ACCESS_NUMBER), result.getAccess());
 		Assert.assertEquals(Integer.valueOf(ProgramService.PROJECT_USER_TYPE), result.getType());
 		Assert.assertEquals(Integer.valueOf(0), result.getInstalid());
@@ -196,18 +180,66 @@ public class ProgramServiceTest {
 	public void testSaveWorkbenchUserToCropUserMapping() {
 
 		final Project project = this.createProject();
-
 		final Set<User> users = new HashSet<>();
-		users.add(this.workbenchUser);
+		users.add(this.loggedInUser);
 
-		Mockito.when(this.workbenchDataManager.getPersonById(this.workbenchUser.getPersonid())).thenReturn(this.workbenchPerson);
-		Mockito.when(this.userDataManager.getPersonByEmail(this.workbenchPerson.getEmail())).thenReturn(this.cropDBPerson);
-		Mockito.when(this.userDataManager.getUserByUserName(this.workbenchUser.getName())).thenReturn(this.cropDBUser);
-
+		// Call method to test
 		this.programService.saveWorkbenchUserToCropUserMapping(project, users);
 
 		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).addIbdbUserMap(Matchers.any(IbdbUserMap.class));
 
+	}
+
+	@Test
+	public void testSaveProgramMembersWhenDefaultAdminPartOfSelectedUsers() {
+		// Setup test project users
+		final Project project = this.createProject();
+		final Set<User> selectedUsers = new HashSet<User>();
+		selectedUsers.add(this.loggedInUser);
+		selectedUsers.add(this.memberUser);
+		selectedUsers.add(this.defaultAdminUser);
+		this.setRoleTestDataAndMocks();
+
+		// call method to test
+		this.programService.saveProgramMembers(project, selectedUsers);
+
+		this.verifyMockInteractionsForSavingProgramMembers();
+	}
+
+	@Test
+	public void testSaveProgramMembersWhenDefaultAdminNotPartOfSelectedUsers() {
+		// Setup test project users
+		final Project project = this.createProject();
+		final Set<User> selectedUsers = new HashSet<User>();
+		selectedUsers.add(this.loggedInUser);
+		selectedUsers.add(this.memberUser);
+		this.setRoleTestDataAndMocks();
+
+		// call method to test
+		this.programService.saveProgramMembers(project, selectedUsers);
+
+		// Verify that in saveProgramMembers, admin user was added to set of users
+		Assert.assertEquals(3, selectedUsers.size());
+		Assert.assertTrue(selectedUsers.contains(this.defaultAdminUser));
+
+		this.verifyMockInteractionsForSavingProgramMembers();
+	}
+
+	// Verify Middleware methods to save as program members were called
+	private void verifyMockInteractionsForSavingProgramMembers() {
+		// Verify Ibdb_user_map is added for both current, member and default ADMIN users
+		Mockito.verify(this.workbenchDataManager, Mockito.times(3)).addIbdbUserMap(Matchers.any(IbdbUserMap.class));
+
+		// Verify Workbench_project_user_info and Workbench_project_user_role recordsd are created
+		Mockito.verify(this.workbenchDataManager, Mockito.times(3)).saveOrUpdateProjectUserInfo(Matchers.any(ProjectUserInfo.class));
+		Mockito.verify(this.workbenchDataManager).addProjectUserRole(Matchers.anyListOf(ProjectUserRole.class));
+	}
+
+	private void setRoleTestDataAndMocks() {
+		final List<Role> allRolesList = new ArrayList<Role>();
+		allRolesList.add(new Role(1, "CB Breeder", null));
+		allRolesList.add(new Role(2, "MAS Breeder", null));
+		Mockito.when(this.workbenchDataManager.getAllRoles()).thenReturn(allRolesList);
 	}
 
 	private Project createProject() {
