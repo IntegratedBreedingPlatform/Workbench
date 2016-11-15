@@ -201,6 +201,10 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 	public void setRestoreFile(final File restoreFile) {
 		this.restoreFile = restoreFile;
 	}
+	
+	public void setProgramService(final ProgramService programService) {
+		this.programService = programService;
+	}
 
 	public void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
 		this.messageSource = messageSource;
