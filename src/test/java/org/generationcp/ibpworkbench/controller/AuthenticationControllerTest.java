@@ -22,7 +22,6 @@ import org.generationcp.ibpworkbench.validator.UserAccountValidator;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.User;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -73,11 +72,6 @@ public class AuthenticationControllerTest {
 
 	@InjectMocks
 	private AuthenticationController controller;
-
-	@Before
-	public void beforeEachTest() {
-		Mockito.when(this.workbenchUserService.isUserActive(Matchers.any(UserAccountModel.class))).thenReturn(true);
-	}
 
 	@Test
 	public void testGetLoginPage() throws Exception {
@@ -170,9 +164,6 @@ public class AuthenticationControllerTest {
 		Mockito.when(this.result.hasErrors()).thenReturn(true);
 		Mockito.when(this.result.getFieldErrors()).thenReturn(Collections.<FieldError>emptyList());
 
-		Mockito.when(this.messageSource.getMessage(Matchers.anyString(), Matchers.any(Object[].class), Matchers.any(Locale.class)))
-		.thenReturn(Matchers.anyString());
-
 		ResponseEntity<Map<String, Object>> out = this.controller.validateLogin(this.userAccountModel, this.result);
 
 		ResponseEntity<Map<String, Object>> out2 = this.controller.validateForgotPasswordForm(this.userAccountModel, this.result);
@@ -249,12 +240,13 @@ public class AuthenticationControllerTest {
 	public void testDoResetPassword() throws Exception {
 		UserAccountModel userAccountModel = new UserAccountModel();
 
-		boolean result = this.controller.doResetPassword(userAccountModel);
+		ResponseEntity<Map<String, Object>> result = this.controller.doResetPassword(userAccountModel, this.result);
 
 		Mockito.verify(this.workbenchUserService, Mockito.times(1)).updateUserPassword(userAccountModel.getUsername(), userAccountModel.getPassword());
 		Mockito.verify(this.workbenchEmailSenderService, Mockito.times(1)).deleteToken(userAccountModel);
 
-		Assert.assertTrue("success!", result);
+		Assert.assertEquals("no http errors", HttpStatus.OK, result.getStatusCode());
+		Assert.assertEquals("is successful", Boolean.TRUE, result.getBody().get(AuthenticationController.SUCCESS));
 	}
 
 	@Test
@@ -264,12 +256,13 @@ public class AuthenticationControllerTest {
 		Mockito.doThrow(new MiddlewareQueryException("oops i did it again")).when(this.workbenchEmailSenderService)
 		.deleteToken(userAccountModel);
 
-		boolean result = this.controller.doResetPassword(userAccountModel);
+		ResponseEntity<Map<String, Object>> result = this.controller.doResetPassword(userAccountModel, this.result);
 
 		Mockito.verify(this.workbenchUserService, Mockito.times(1)).updateUserPassword(userAccountModel.getUsername(), userAccountModel.getPassword());
 		Mockito.verify(this.workbenchEmailSenderService, Mockito.times(1)).deleteToken(userAccountModel);
 
-		Assert.assertFalse("fail!", result);
+		Assert.assertEquals("no http errors", HttpStatus.BAD_REQUEST, result.getStatusCode());
+		Assert.assertEquals("is successful", Boolean.FALSE, result.getBody().get(AuthenticationController.SUCCESS));
 	}
 
 	@Test
