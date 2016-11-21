@@ -19,7 +19,6 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
-import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -96,12 +95,6 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 				if (userId != null) {
 					this.mysqlUtil.updateOwnerships(this.project.getDatabaseName(), userId);
 				}
-
-				// the restored database may be old
-				// and needs to be upgraded for it to be usable
-				final WorkbenchSetting setting = this.workbenchDataManager.getWorkbenchSetting();
-				final File schemaDir = new File(setting.getInstallationDirectory(), "database/merged/common-update");
-				this.mysqlUtil.upgradeDatabase(this.project.getDatabaseName(), schemaDir);
 
 				this.addDefaultAdminAsMemberOfRestoredPrograms();
 

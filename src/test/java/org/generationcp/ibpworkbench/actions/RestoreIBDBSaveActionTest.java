@@ -17,7 +17,6 @@ import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
-import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -72,10 +71,7 @@ public class RestoreIBDBSaveActionTest {
 		// WorkbenchDataManager mocks
 		this.defaultAdminUser = this.createUser(1, ProgramService.ADMIN_USERNAME, 1);
 		this.loggedInUser = this.createUser(2, "mrbreeder", 2);
-		final WorkbenchSetting workbenchSetting = new WorkbenchSetting();
-		workbenchSetting.setInstallationDirectory("D:\\BMS4");
 		Mockito.when(this.workbenchDataManager.getUserByUsername(ProgramService.ADMIN_USERNAME)).thenReturn(this.defaultAdminUser);
-		Mockito.when(this.workbenchDataManager.getWorkbenchSetting()).thenReturn(workbenchSetting);
 		Mockito.when(this.workbenchDataManager.getProjectsByCrop(this.currentProject.getCropType()))
 				.thenReturn(this.createTestProjectsForCrop());
 	}
@@ -124,7 +120,6 @@ public class RestoreIBDBSaveActionTest {
 		// Verify key restore operations
 		Mockito.verify(this.mySqlUtil).restoreDatabase(Matchers.anyString(), Matchers.any(File.class), Matchers.any(Callable.class));
 		Mockito.verify(this.mySqlUtil).updateOwnerships(this.currentProject.getDatabaseName(), this.loggedInUser.getUserid());
-		Mockito.verify(this.mySqlUtil).upgradeDatabase(Matchers.anyString(), Matchers.any(File.class));
 		Mockito.verify(this.workbenchDataManager).addProjectActivity(Matchers.any(ProjectActivity.class));
 		this.verifyDefaultAdminWasAddedToAllPrograms();
 
@@ -145,7 +140,6 @@ public class RestoreIBDBSaveActionTest {
 		// Verify key restore operations
 		Mockito.verify(this.mySqlUtil).restoreDatabase(Matchers.anyString(), Matchers.any(File.class), Matchers.any(Callable.class));
 		Mockito.verify(this.mySqlUtil).updateOwnerships(this.currentProject.getDatabaseName(), this.defaultAdminUser.getUserid());
-		Mockito.verify(this.mySqlUtil).upgradeDatabase(Matchers.anyString(), Matchers.any(File.class));
 		Mockito.verify(this.workbenchDataManager).addProjectActivity(Matchers.any(ProjectActivity.class));
 
 		// Verify that default admin is no longer re-added as program member
