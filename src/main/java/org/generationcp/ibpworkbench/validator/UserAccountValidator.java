@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 
 import org.generationcp.commons.security.Role;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
+import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.slf4j.Logger;
@@ -50,6 +51,9 @@ public class UserAccountValidator implements Validator {
 	@Resource
 	protected WorkbenchDataManager workbenchDataManager;
 
+	@Resource
+	private WorkbenchUserService workbenchUserService;
+
 	@Override
 	public boolean supports(Class<?> aClass) {
 		return UserAccountModel.class.isAssignableFrom(aClass);
@@ -74,6 +78,17 @@ public class UserAccountValidator implements Validator {
 		this.validatePersonEmailIfExists(errors, userAccount);
 
 		this.validateUserRole(errors, userAccount);
+	}
+
+	public void validateUserActive(UserAccountModel userAccount, Errors errors) {
+		try {
+			if (!this.workbenchUserService.isUserActive(userAccount)) {
+				errors.rejectValue(UserAccountFields.USERNAME, UserAccountValidator.LOGIN_ATTEMPT_USER_INACTIVE);
+			}
+		} catch (MiddlewareQueryException e) {
+			errors.rejectValue(UserAccountFields.USERNAME, UserAccountValidator.DATABASE_ERROR);
+			UserAccountValidator.LOG.error(e.getMessage(), e);
+		}
 	}
 
 	protected void validateEmailFormat(Errors errors, UserAccountModel userAccount) {

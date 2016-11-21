@@ -3,6 +3,7 @@ package org.generationcp.ibpworkbench.validator;
 
 import org.generationcp.commons.security.Role;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
+import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.junit.Assert;
@@ -24,6 +25,9 @@ public class UserAccountValidatorTest {
 
 	@Mock
 	private WorkbenchDataManager workbenchDataManager;
+
+	@Mock
+	private WorkbenchUserService workbenchUserService;
 
 	@InjectMocks
 	private UserAccountValidator validator;
@@ -66,6 +70,35 @@ public class UserAccountValidatorTest {
 
 		Mockito.verify(partialValidator).validateUserRole(this.errors, userAccount);
 
+	}
+
+	@Test
+	public void testValidateUserActive() {
+		final ArgumentCaptor<String> arg1 = ArgumentCaptor.forClass(String.class);
+		final ArgumentCaptor<String> arg2 = ArgumentCaptor.forClass(String.class);
+		final UserAccountModel userAccount = new UserAccountModel();
+
+		Mockito.when(this.workbenchUserService.isUserActive(userAccount)).thenReturn(false);
+
+		this.validator.validateUserActive(userAccount, this.errors);
+
+		Mockito.verify(this.errors).rejectValue(arg1.capture(), arg2.capture());
+		Assert.assertEquals("error should output email field", UserAccountFields.USERNAME, arg1.getValue());
+		Assert.assertEquals("show correct error code", UserAccountValidator.LOGIN_ATTEMPT_USER_INACTIVE, arg2.getValue());
+
+		Mockito.when(this.workbenchUserService.isUserActive(userAccount)).thenReturn(true);
+
+		this.validator.validateUserActive(userAccount, this.errors);
+
+		Assert.assertFalse(this.errors.hasErrors());
+
+		Mockito.when(this.workbenchUserService.isUserActive(userAccount)).thenThrow(new MiddlewareQueryException(""));
+
+		this.validator.validateUserActive(userAccount, this.errors);
+
+		Mockito.verify(this.errors, Mockito.times(2)).rejectValue(arg1.capture(), arg2.capture());
+		Assert.assertEquals("error should output email field", UserAccountFields.USERNAME, arg1.getValue());
+		Assert.assertEquals("show correct error code", UserAccountValidator.DATABASE_ERROR, arg2.getValue());
 	}
 
 	@Test
