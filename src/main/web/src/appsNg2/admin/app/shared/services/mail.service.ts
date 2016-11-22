@@ -15,7 +15,7 @@ export class MailService{
 
   send(user: User): Observable<Response>{
     return this.http
-      .get(`${this.baseUrl}/sendResetEmail/${user.username}`, {headers: this.getHeaders()});
+      .post(`${this.baseUrl}/sendResetEmail/${user.id}`, {headers: this.getHeaders()});
   }
 
   private getHeaders(){

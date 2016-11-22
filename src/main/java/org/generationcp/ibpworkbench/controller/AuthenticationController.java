@@ -52,6 +52,8 @@ public class AuthenticationController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AuthenticationController.class);
 
+	private static final String NOT_EXISTENT_USER = "User does not exist";
+
 	@Resource
 	private WorkbenchUserService workbenchUserService;
 	
@@ -262,10 +264,23 @@ public class AuthenticationController {
 		return sendResetEmail(model.getUsername());
 	}
 
-	@RequestMapping(value = "/sendResetEmail/{username}", method = RequestMethod.GET)
-	@ResponseBody
-	public ResponseEntity<Map<String, Object>> sendResetPasswordEmail(@PathVariable final String username) {
-		return sendResetEmail(username);
+	@RequestMapping(value = "/sendResetEmail/{userId}", method = RequestMethod.POST) @ResponseBody
+	public ResponseEntity<Map<String, Object>> sendResetPasswordEmail(@PathVariable Integer userId) {
+		Map<String, Object> out = new LinkedHashMap<>();
+		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
+		try {
+			User user = this.workbenchUserService.getUserByUserid(userId);
+			if (user == null) {
+				out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
+				out.put(AuthenticationController.ERRORS, NOT_EXISTENT_USER);
+				return new ResponseEntity<>(out, isSuccess);
+			}
+			return sendResetEmail(user.getName());
+		} catch (MiddlewareQueryException e) {
+			out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
+			out.put(AuthenticationController.ERRORS, e.getMessage());
+		}
+		return new ResponseEntity<>(out, isSuccess);
 	}
 
 	private ResponseEntity<Map<String, Object>> sendResetEmail(final String username) {

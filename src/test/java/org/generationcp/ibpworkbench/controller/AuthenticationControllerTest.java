@@ -13,6 +13,7 @@ import java.util.Properties;
 import javax.mail.MessagingException;
 import javax.servlet.ServletContext;
 
+import org.apache.commons.lang.math.RandomUtils;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.security.InvalidResetTokenException;
 import org.generationcp.ibpworkbench.security.WorkbenchEmailSenderService;
@@ -280,9 +281,9 @@ public class AuthenticationControllerTest {
 		testUserAccountModel.setPassword("b");
 		Mockito.when(this.workbenchUserService.isValidUserLogin(testUserAccountModel)).thenReturn(true);
 		final Token testToken = new Token("naymesh:1447734506586:3a7e599e28efc35a2d53e62715ffd3cb", 1447734506586L);
-		Mockito.when(
-				this.apiAuthenticationService.authenticate(Mockito.eq(testUserAccountModel.getUsername()),
-						Mockito.eq(testUserAccountModel.getPassword()))).thenReturn(testToken);
+		Mockito.when(this.apiAuthenticationService
+				.authenticate(Mockito.eq(testUserAccountModel.getUsername()), Mockito.eq(testUserAccountModel.getPassword()))).thenReturn(
+				testToken);
 
 		ResponseEntity<Map<String, Object>> out = this.controller.validateLogin(testUserAccountModel, this.result);
 		Assert.assertEquals(testToken.getToken(), out.getBody().get("token"));
@@ -320,14 +321,17 @@ public class AuthenticationControllerTest {
 	}
 	
 	@Test
-	public void testsendResetPasswordEmail() throws Exception {
+	public void testSendResetPasswordEmail() throws Exception {
 		// default success scenario
+		Integer id = RandomUtils.nextInt();
 		Mockito.when(this.workbenchUserService.getUserByUserName(Matchers.anyString()))
+				.thenReturn(Mockito.mock(User.class));
+		Mockito.when(this.workbenchUserService.getUserByUserid(id))
 				.thenReturn(Mockito.mock(User.class));
 		Mockito.doNothing().when(this.workbenchEmailSenderService).doRequestPasswordReset(Matchers.any(User.class));
 
 		ResponseEntity<Map<String, Object>> result = this.controller
-				.sendResetPasswordEmail(Mockito.mock(UserAccountModel.class).getUsername());
+				.sendResetPasswordEmail(id);
 
 		Assert.assertEquals("no http errors", HttpStatus.OK, result.getStatusCode());
 		Assert.assertEquals("is successful", Boolean.TRUE, result.getBody().get(AuthenticationController.SUCCESS));
@@ -335,15 +339,42 @@ public class AuthenticationControllerTest {
 	}
 
 	@Test
-	public void testsendResetPasswordEmailWithErrors() throws Exception {
+	public void testSendResetPasswordEmailWithErrors() throws Exception {
 		// houston we have a problem
+		Integer id = RandomUtils.nextInt();
 		Mockito.when(this.workbenchUserService.getUserByUserName(Matchers.anyString()))
+				.thenReturn(Mockito.mock(User.class));
+		Mockito.when(this.workbenchUserService.getUserByUserid(id))
 				.thenReturn(Mockito.mock(User.class));
 		Mockito.doThrow(new MessagingException("i cant send me message :(")).when(this.workbenchEmailSenderService)
 				.doRequestPasswordReset(Matchers.any(User.class));
 
 		ResponseEntity<Map<String, Object>> result = this.controller
-				.sendResetPasswordEmail(Mockito.mock(UserAccountModel.class).getUsername());
+				.sendResetPasswordEmail(id);
+
+		Assert.assertEquals("no http errors", HttpStatus.BAD_REQUEST, result.getStatusCode());
+		Assert.assertEquals("is successful", Boolean.FALSE, result.getBody().get(AuthenticationController.SUCCESS));
+	}
+
+	@Test public void testSendResetPasswordEmailToNullUser() throws Exception {
+		Integer id = RandomUtils.nextInt();
+		Mockito.when(this.workbenchUserService.getUserByUserid(id)).thenReturn(null);
+
+		ResponseEntity<Map<String, Object>> result = this.controller.sendResetPasswordEmail(id);
+
+		Assert.assertEquals("no http errors", HttpStatus.BAD_REQUEST, result.getStatusCode());
+		Assert.assertEquals("is successful", Boolean.FALSE, result.getBody().get(AuthenticationController.SUCCESS));
+
+	}
+
+	@Test
+	public void testSendResetPasswordEmailToNonExistentUser() throws Exception {
+		Integer id = RandomUtils.nextInt();
+		Mockito.doThrow(new MiddlewareQueryException("Error when querying the user")).when(this.workbenchUserService)
+				.getUserByUserid(id);
+
+		ResponseEntity<Map<String, Object>> result = this.controller
+				.sendResetPasswordEmail(id);
 
 		Assert.assertEquals("no http errors", HttpStatus.BAD_REQUEST, result.getStatusCode());
 		Assert.assertEquals("is successful", Boolean.FALSE, result.getBody().get(AuthenticationController.SUCCESS));
