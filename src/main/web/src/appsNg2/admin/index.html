@@ -14,6 +14,8 @@
 
   <!-- 1. Load libraries -->
   <!-- Polyfill(s) for older browsers -->
+  <script th:src="@{/controller/static/js/lib/shim/shims_for_IE.js}"></script>
+  <script th:src="@{/controller/static/js/lib/polyfill/typedarray.js}"></script>
   <script th:src="@{/controller/pages/angular2/lib/es6-shim/es6-shim.min.js}"></script>
   <script th:src="@{/controller/pages/angular2/lib/zone.js/dist/zone.js}"></script>
   <script th:src="@{/controller/pages/angular2/lib/reflect-metadata/Reflect.js}"></script>
