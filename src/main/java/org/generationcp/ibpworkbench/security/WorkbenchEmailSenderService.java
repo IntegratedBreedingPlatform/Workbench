@@ -77,10 +77,6 @@ public class WorkbenchEmailSenderService {
 	@Value("${mail.server.sender.email}")
 	private String senderEmail;
 
-
-	@Value("${support.mail.server.sender.email}")
-	private String supportEmail;
-
 	@Value("${reset.expiry.hours}")
 	private Integer noOfHoursBeforeExpire;
 
@@ -159,7 +155,7 @@ public class WorkbenchEmailSenderService {
 
 		message.setSubject(askSupportForm.getSummary());
 		message.setFrom(askSupportForm.getEmail());
-		message.setTo(this.supportEmail);
+		message.setTo(this.senderEmail);
 
 		final String htmlContent = this.processTemplate(ctx,"ask-support-email");
 		message.setText(htmlContent,true);
