@@ -35,7 +35,7 @@ public class ApiAuthenticationService {
 	public Token authenticate(String userName, String password) {
 		LOG.debug("Trying to authenticate user {} with BMSAPI to obtain a token.", userName);
 		try {
-			String bmsApiAuthURLFormat = "%s://%s:%s/bmsapi/authenticate?username=%s&password=%s";
+			String bmsApiAuthURLFormat = "%s://%s:%s/bmsapi/brapi/v1/token";
 			/**
 			 * We want to make sure we construct the URL based on the server/port the request was received on. We want to hit the same
 			 * server's authentication end point to obtain token. For servers in networks behind proxies and different cross network access
@@ -43,13 +43,21 @@ public class ApiAuthenticationService {
 			 */
 			String bmsApiAuthURL =
 					String.format(bmsApiAuthURLFormat, this.currentHttpRequest.getScheme(), LOCAL_LOOPBACK_ADDRESS,
-							this.currentHttpRequest.getLocalPort(), userName, password);
-			final Token apiAuthToken = this.restClient.postForObject(bmsApiAuthURL, new HashMap<String, String>(), Token.class);
+							this.currentHttpRequest.getLocalPort());
+
+			HashMap<String, String> body = new HashMap<>();
+			body.put("grant_type", "password");
+			body.put("username", userName);
+			body.put("password", password);
+			body.put("client_id", "");
+
+			final Token apiAuthToken = this.restClient.postForObject(bmsApiAuthURL, body, Token.class);
+
 			if (apiAuthToken != null) {
 				LOG.debug("Successfully authenticated and obtained a token from BMSAPI for user {}.", userName);
 			}
 			return apiAuthToken;
-		} catch (RestClientException e) {
+		} catch (Exception e) {
 			LOG.debug("Error encountered while trying authenticate user {} with BMSAPI to obtain a token: {}", userName, e.getMessage());
 			throw e;
 		}
