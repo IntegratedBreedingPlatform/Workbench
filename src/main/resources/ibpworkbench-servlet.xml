@@ -62,23 +62,6 @@
 		</property>
 	</bean>
 
-	<bean id="supportEmailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-		<property name="host" value="${support.mail.server.host}" />
-		<property name="port" value="${support.mail.server.port}" />
-		<property name="protocol" value="${support.mail.server.protocol}" />
-		<property name="username" value="${support.mail.server.username}" />
-		<property name="password" value="${support.mail.server.password}" />
-		<property name="javaMailProperties">
-			<props>
-				<prop key="mail.smtp.auth">true</prop>
-				<prop key="mail.smtp.starttls.enable">true</prop>
-				<prop key="mail.smtps.ssl.checkserveridentity">true</prop>
-				<prop key="mail.smtps.ssl.trust">*</prop>
-			</props>
-		</property>
-	</bean>
-
-
 	<!-- **************************************************************** -->
 	<!-- THYMELEAF-SPECIFIC ARTIFACTS -->
 	<!-- TemplateResolver <- TemplateEngine <- ViewResolver -->

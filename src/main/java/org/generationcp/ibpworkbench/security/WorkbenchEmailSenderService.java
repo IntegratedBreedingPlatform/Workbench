@@ -69,9 +69,6 @@ public class WorkbenchEmailSenderService {
 	private JavaMailSender mailSender;
 
 	@Resource
-	private JavaMailSender supportEmailSender;
-
-	@Resource
 	private TemplateEngine templateEngine;
 
 	@Resource
@@ -140,7 +137,7 @@ public class WorkbenchEmailSenderService {
 
 		// prepare message
 		// Prepare message using a Spring helper
-		final MimeMessage mimeMessage = this.supportEmailSender.createMimeMessage();
+		final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
 		// true = multipart
 		final MimeMessageHelper message = this.getMimeMessageHelper(mimeMessage);
 
@@ -180,7 +177,7 @@ public class WorkbenchEmailSenderService {
 
 		WorkbenchEmailSenderService.LOG.info("Sent feedback mail from {}", askSupportForm.getEmail());
 
-		this.supportEmailSender.send(mimeMessage);
+		this.mailSender.send(mimeMessage);
 	}
 
 	/**
