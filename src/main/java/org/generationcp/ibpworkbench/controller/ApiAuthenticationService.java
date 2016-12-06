@@ -57,7 +57,7 @@ public class ApiAuthenticationService {
 				LOG.debug("Successfully authenticated and obtained a token from BMSAPI for user {}.", userName);
 			}
 			return apiAuthToken;
-		} catch (Exception e) {
+		} catch (RestClientException e) {
 			LOG.debug("Error encountered while trying authenticate user {} with BMSAPI to obtain a token: {}", userName, e.getMessage());
 			throw e;
 		}
