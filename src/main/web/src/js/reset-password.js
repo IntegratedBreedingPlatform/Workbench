@@ -42,6 +42,17 @@
 		return $.post(resetActionUrl, resetFormData);
 	}
 
+	// Expects an object, the keys of which are names of invalid form inputs
+	function applyValidationErrors(errors) {
+		var errorMessage = '';
+
+		$.each(errors, function(key, value) {
+			$resetForm.find('*[name=' + key + ']').parent('.login-form-control').addClass('login-validation-error');
+			errorMessage +=  errorMessage ? (' ' + value) : value;
+		});
+		displayClientError(errorMessage);
+	}
+
 	/* init on document load */
 	$(document).ready(function() {
 		$passwordField.focus();
@@ -58,11 +69,14 @@
 			}
 
 			doPostResetAction($resetForm.serialize()).done(function(data) {
-				if (true === data) {
+				if (data && data.success) {
 					resetFormRef.submit();
 				} else {
 					displayClientError('Something Went Wrong :(');
 				}
+			})
+			.fail(function(jqXHR) {
+				applyValidationErrors(jqXHR.responseJSON ? jqXHR.responseJSON.errors : {});
 			});
 
 		});

@@ -41,9 +41,7 @@ public class AddProgramPresenter {
 		try {
 			final Project program = AddProgramPresenter.this.view.createProjectPanel.projectBasicDetailsComponent.getProjectDetails();
 			final Set<User> users = AddProgramPresenter.this.view.programMembersPanel.getSelectedUsers();
-			AddProgramPresenter.this.programService.setCurrentUser(AddProgramPresenter.this.sessionData.getUserData());
-			AddProgramPresenter.this.programService.setSelectedUsers(users);
-			AddProgramPresenter.this.programService.createNewProgram(program);
+			AddProgramPresenter.this.programService.createNewProgram(program, users);
 			return program;
 		} catch (RuntimeException e) {
 			throw new AddProgramException("The application could not successfully create"
