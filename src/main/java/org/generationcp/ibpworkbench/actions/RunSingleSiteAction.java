@@ -1,12 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- * 
+ * <p/>
  * Generation Challenge Programme (GCP)
- * 
- * 
+ * <p/>
+ * <p/>
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- * 
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.actions;
@@ -69,9 +68,9 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Window;
 
 /**
- * 
- * @author Jeffrey Morales
- * 
+ *
+ * @author Jeffrey Morales 
+ *
  */
 @Configurable
 public class RunSingleSiteAction implements ClickListener {
@@ -107,7 +106,7 @@ public class RunSingleSiteAction implements ClickListener {
 	@Autowired
 	private OntologyService ontologyService;
 
-	private ZipUtil zipUtil = new ZipUtil();
+	private final ZipUtil zipUtil = new ZipUtil();
 
 	public RunSingleSiteAction(final SingleSiteAnalysisDetailsPanel selectDetailsForBreedingViewWindow, final Project project) {
 		this.source = selectDetailsForBreedingViewWindow;
@@ -152,7 +151,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 	/**
 	 * Generates the CSV input file to be used in Breeding View application.
-	 * 
+	 *
 	 * @param breedingViewInput
 	 */
 	void exportData(final BreedingViewInput breedingViewInput) {
@@ -167,8 +166,9 @@ public class RunSingleSiteAction implements ClickListener {
 				selectedEnvironments.add(m.getTrialno());
 			}
 
-			datasetExporter.exportToCSVForBreedingView(breedingViewInput.getSourceXLSFilePath(), (String) this.source.getSelEnvFactor()
-					.getValue(), selectedEnvironments, breedingViewInput);
+			datasetExporter
+					.exportToCSVForBreedingView(breedingViewInput.getSourceXLSFilePath(), (String) this.source.getSelEnvFactor().getValue(),
+							selectedEnvironments, breedingViewInput);
 
 		} catch (final DatasetExporterException e) {
 			RunSingleSiteAction.LOG.error(RunSingleSiteAction.ERROR, e);
@@ -178,10 +178,12 @@ public class RunSingleSiteAction implements ClickListener {
 
 	/**
 	 * Populate the necessary data in BreedingViewInput that will be used to build the XML Input for Breeding View
-	 * 
+	 *
 	 * @param breedingViewInput
 	 */
 	void populateBreedingViewInputFromUserInput(final BreedingViewInput breedingViewInput) {
+
+		// TODO: Move the creation of breeding view xml objects in BreedingViewXMLWriter.
 
 		breedingViewInput.setBreedingViewAnalysisName(this.source.getTxtAnalysisNameValue());
 
@@ -189,8 +191,10 @@ public class RunSingleSiteAction implements ClickListener {
 
 		breedingViewInput.setReplicates(this.createReplicates(this.source.getSelDesignTypeValue(), this.source.getSelReplicatesValue()));
 
+		breedingViewInput.setReplicatesFactorName(this.source.getSelReplicatesValue());
+
 		final DesignType designType = DesignType.getDesignTypeByName(this.source.getSelDesignTypeValue());
-		breedingViewInput.setDesignType(designType.resolveDesignTypeNameForBreedingView());
+		breedingViewInput.setDesignType(designType.getName());
 
 		breedingViewInput.setBlocks(this.createBlocks(this.source.getSelBlocksValue()));
 
@@ -204,7 +208,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 	}
 
-	void populateRowPosAndColPos(DesignType designType, BreedingViewInput breedingViewInput) {
+	void populateRowPosAndColPos(final DesignType designType, final BreedingViewInput breedingViewInput) {
 
 		if (designType == DesignType.P_REP_DESIGN) {
 
@@ -217,12 +221,11 @@ public class RunSingleSiteAction implements ClickListener {
 			breedingViewInput.setRowPos(null);
 		}
 
-
 	}
 
-	void populateRowAndColumn(DesignType designType, BreedingViewInput breedingViewInput) {
+	void populateRowAndColumn(final DesignType designType, final BreedingViewInput breedingViewInput) {
 
-		if (designType == DesignType.ROW_COLUMN_DESIGN) {
+		if (designType == DesignType.RESOLVABLE_ROW_COLUMN_DESIGN) {
 
 			breedingViewInput.setColumns(this.createColumns(this.source.getSelColumnFactorValue()));
 			breedingViewInput.setRows(this.createRows(this.source.getSelRowFactorValue()));
@@ -245,9 +248,9 @@ public class RunSingleSiteAction implements ClickListener {
 
 	Replicates createReplicates(final String designType, final String replicatesFactor) {
 
-		if (designType.equals(DesignType.P_REP_DESIGN.getName())) {
+		if (designType.equals(DesignType.P_REP_DESIGN.getName()) || designType.equals(DesignType.AUGMENTED_RANDOMIZED_BLOCK.getName())) {
 
-			// Do not include the replicates factor if the design type is P-rep.
+			// Do not include the replicates factor if the design type is P-rep and Augmented Randomized design.
 			return null;
 
 		} else if (!StringUtils.isEmpty(replicatesFactor)) {
@@ -361,7 +364,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 	/**
 	 * Validates the user input from Single-Site Analysis' Design Details form Returns true if the all inputs are valid, otherwise false.
-	 * 
+	 *
 	 * @param window
 	 * @param breedingViewInput
 	 * @return
@@ -403,18 +406,20 @@ public class RunSingleSiteAction implements ClickListener {
 			return false;
 		}
 
+
 		if (StringUtils.isEmpty(blocksFactor)
-				&& (designType.equals(DesignType.INCOMPLETE_BLOCK_DESIGN.getName()) || designType.equals(DesignType.P_REP_DESIGN.getName()))) {
+				&& (designType.equals(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName()) || designType.equals(DesignType.P_REP_DESIGN.getName()))) {
 			this.showErrorMessage(window, "Please specify incomplete block factor.", "");
 			return false;
 		}
 
-		if (StringUtils.isEmpty(columnFactor) && designType.equals(DesignType.ROW_COLUMN_DESIGN.getName())) {
+		if (StringUtils.isEmpty(columnFactor) && designType.equals(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName())) {
 			this.showErrorMessage(window, "Please specify column factor.", "");
 			return false;
 		}
 
-		if (StringUtils.isEmpty(rowFactor) && designType.equals(DesignType.ROW_COLUMN_DESIGN.getName())) {
+
+		if (StringUtils.isEmpty(rowFactor) && designType.equals(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName())) {
 			this.showErrorMessage(window, "Please specify row factor.", "");
 			return false;
 		}
@@ -550,7 +555,7 @@ public class RunSingleSiteAction implements ClickListener {
 				try {
 					ds = new DownloadStream(new FileInputStream(this.getSourceFile()), this.getMIMEType(), this.getFilename());
 
-					ds.setParameter("Content-Disposition", "attachment; filename=" + this.getFilename());
+					ds.setParameter("Content-Disposition", "attachment; filename=\"" + this.getFilename() + "\"");
 					ds.setCacheTime(this.getCacheTime());
 					return ds;
 
@@ -564,16 +569,8 @@ public class RunSingleSiteAction implements ClickListener {
 		application.getMainWindow().open(fr);
 	}
 
-	public void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
-		this.messageSource = messageSource;
-	}
-
 	public void setProject(final Project project) {
 		this.project = project;
-	}
-
-	public void setSource(final SingleSiteAnalysisDetailsPanel source) {
-		this.source = source;
 	}
 
 }

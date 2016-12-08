@@ -62,7 +62,7 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 	private final Panel root = new Panel();
 
 	public BackupAndRestoreView() {
-		this.root.setDebugId("root");
+		this.root.setDebugId("rootBackupAndRestore");
 		this.setCompositionRoot(this.root);
 	}
 
@@ -141,7 +141,6 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 		this.restorePanel.setStyleName(Reindeer.PANEL_LIGHT);
 	}
 
-
 	/**
 	 * If possible, move to a controller class in the future
 	 */
@@ -156,16 +155,15 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 
 		this.backupBtn.addListener(backupAction);
 
-		final RestoreIBDBSaveAction restoreAction =
-				new RestoreIBDBSaveAction(this.sessionData.getLastOpenedProject(), this.getWindow()) {
+		final RestoreIBDBSaveAction restoreAction = new RestoreIBDBSaveAction(this.sessionData.getLastOpenedProject(), this.getWindow()) {
 
-					@Override
-					public void onClose(final ConfirmDialog dialog) {
-						super.onClose(dialog);
-						// go back to dashboard
-						new HomeAction().doAction(BackupAndRestoreView.this.getWindow(), "/Home", true);
-					}
-				};
+			@Override
+			public void onClose(final ConfirmDialog dialog) {
+				super.onClose(dialog);
+				// go back to dashboard
+				new HomeAction().doAction(BackupAndRestoreView.this.getWindow(), "/Home", true);
+			}
+		};
 
 		this.restoreBtn.addListener(new Button.ClickListener() {
 
@@ -193,14 +191,14 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 
 				final String restoreDescMessageFormat = "<b style='color:red'>%s</b><br/><br/>%s";
 
-				final ConfirmDialog dialog =
-						ConfirmDialog.show(clickEvent.getComponent().getWindow(), BackupAndRestoreView.this.messageSource
-								.getMessage(Message.RESTORE_IBDB_WINDOW_CAPTION), String.format(restoreDescMessageFormat,
-								BackupAndRestoreView.this.messageSource.getMessage(Message.RESTORE_IBDB_CONFIRM, 
+				final ConfirmDialog dialog = ConfirmDialog.show(clickEvent.getComponent().getWindow(),
+						BackupAndRestoreView.this.messageSource.getMessage(Message.RESTORE_IBDB_WINDOW_CAPTION),
+						String.format(restoreDescMessageFormat,
+								BackupAndRestoreView.this.messageSource.getMessage(Message.RESTORE_IBDB_CONFIRM,
 										BackupAndRestoreView.this.sessionData.getLastOpenedProject().getDatabaseName()),
 								BackupAndRestoreView.this.messageSource.getMessage(Message.RESTORE_BMS_WARN)),
-								BackupAndRestoreView.this.messageSource.getMessage(Message.RESTORE),
-								BackupAndRestoreView.this.messageSource.getMessage(Message.CANCEL), restoreAction);
+						BackupAndRestoreView.this.messageSource.getMessage(Message.RESTORE),
+						BackupAndRestoreView.this.messageSource.getMessage(Message.CANCEL), restoreAction);
 				dialog.setContentMode(ConfirmDialog.CONTENT_HTML);
 			}
 		});
@@ -213,7 +211,7 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 
 			@Override
 			public void buttonClick(final ClickEvent event) {
-					BackupAndRestoreView.this.restoreBtn.setEnabled(true);
+				BackupAndRestoreView.this.restoreBtn.setEnabled(true);
 			}
 		});
 	}
@@ -262,17 +260,17 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 		rootContent.addComponent(pageTitle);
 
 		this.backupPanel.addComponent(new Label("<div style='height: 10px'></div>", Label.CONTENT_XHTML));
-		this.backupPanel.addComponent(this.setUpHeadings(HelpModule.BACKUP_PROGRAM_DATA, this.messageSource.getMessage("BACKUP_BMS_TITLE"),
-				"124px"));
-		final Label backupTextLabel = new Label(this.messageSource.getMessage("BACKUP_BMS_DESCRIPTION", this.sessionData.getLastOpenedProject()
-				.getProjectName()));
+		this.backupPanel.addComponent(
+				this.setUpHeadings(HelpModule.BACKUP_PROGRAM_DATA, this.messageSource.getMessage("BACKUP_BMS_TITLE"), "124px"));
+		final Label backupTextLabel = new Label(
+				this.messageSource.getMessage("BACKUP_BMS_DESCRIPTION", this.sessionData.getLastOpenedProject().getProjectName()));
 		backupTextLabel.addStyleName(BMS_LABEL_BOTTOM_SPACE_STYLE);
 		this.backupPanel.addComponent(backupTextLabel);
 		this.backupPanel.addComponent(this.backupBtn);
 
 		this.restorePanel.addComponent(new Label("<div style='height: 20px'></div>", Label.CONTENT_XHTML));
-		this.restorePanel.addComponent(this.setUpHeadings(HelpModule.RESTORE_PROGRAM_DATA, this.messageSource.getMessage("RESTORE_BMS_TITLE"),
-				"228px"));
+		this.restorePanel.addComponent(
+				this.setUpHeadings(HelpModule.RESTORE_PROGRAM_DATA, this.messageSource.getMessage("RESTORE_BMS_TITLE"), "228px"));
 		final Label restoreDescriptionLabel = new Label(this.messageSource.getMessage("RESTORE_BMS_DESCRIPTION"));
 		restoreDescriptionLabel.setDebugId("restoreDescriptionLabel");
 		restoreDescriptionLabel.addStyleName(BMS_LABEL_BOTTOM_SPACE_STYLE);
@@ -286,19 +284,19 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 
 	private HorizontalLayout setUpHeadings(final HelpModule module, final String heading, final String width) {
 		final HorizontalLayout titleLayout = new HorizontalLayout();
-		titleLayout.setDebugId("titleLayout");
+		titleLayout.setDebugId("titleLayoutBackupAndRestore");
 		titleLayout.setSpacing(true);
 		titleLayout.setHeight("40px");
 
 		final Label toolTitle = new Label(heading);
-		toolTitle.setDebugId("toolTitle");
+		toolTitle.setDebugId("toolTitleHeadingBackupAndRestore");
 		toolTitle.addStyleName(Bootstrap.Typography.H4.styleName());
 		toolTitle.setContentMode(Label.CONTENT_XHTML);
 		toolTitle.setWidth(width);
 
 		titleLayout.addComponent(toolTitle);
-		final HelpButton helpButton = new HelpButton(module, this.messageSource.getMessage("VIEW") + " " + heading + " " +
-				this.messageSource.getMessage("TUTORIAL"));
+		final HelpButton helpButton = new HelpButton(module,
+				this.messageSource.getMessage("VIEW") + " " + heading + " " + this.messageSource.getMessage("TUTORIAL"));
 		helpButton.addStyleName("bms-backup-restore-help-icon");
 		titleLayout.addComponent(helpButton);
 

@@ -1,6 +1,7 @@
 
 package org.generationcp.ibpworkbench.germplasm;
 
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.middleware.data.initializer.GermplasmPedigreeTreeTestDataInitializer;
 import org.generationcp.middleware.util.MaxPedigreeLevelReachedException;
 import org.junit.Assert;
@@ -22,7 +23,10 @@ public class GermplasmPedigreeTreeContainerTest {
 
 	@Mock
 	GermplasmQueries germplasmQueries;
-
+	
+	@Mock
+	private SimpleResourceBundleMessageSource messageSource;
+	
 	@InjectMocks
 	private GermplasmPedigreeTreeContainer germplasmPedigreeTreeContainer;
 
@@ -31,6 +35,7 @@ public class GermplasmPedigreeTreeContainerTest {
 		this.germplasmPedigreeTreeTestDataInitializer = new GermplasmPedigreeTreeTestDataInitializer();
 		final GermplasmDetailsComponentTree parent = new GermplasmDetailsComponentTree(1, this.germplasmQueries);
 		this.germplasmPedigreeTreeContainer = new GermplasmPedigreeTreeContainer(1, this.germplasmQueries, parent);
+		this.germplasmPedigreeTreeContainer.setMessageSource(messageSource);
 	}
 
 	@Test

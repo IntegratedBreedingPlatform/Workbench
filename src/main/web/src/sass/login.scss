@@ -66,11 +66,52 @@ select {
 	}
 }
 
-.login-logo {
+.login-section {
+    text-align: center;
+    margin-top: 4rem;
+}
+
+.login-footer-message {
+	text-align: center;
+	margin-top: 1rem;
+}
+
+.login-footer a {
+	color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.login-footer {
+	text-align: center;
+    font-size: 0.9rem;
+	margin-top: 6rem;
+}
+
+.login-footer-logo {
+	width: 3rem;
+    border-radius: 4rem;
+    margin-right: 1rem;
+}
+
+.login-footer-body {
+    display: inline-block;
+    vertical-align: top;
+    padding-top: 13px;
+}
+
+.login-logo, .institute-logo {
 	display: block;
+	margin: 0 auto;
+}
+
+.login-logo {
 	width: 8rem;
-	margin: 2rem auto 0;
 	border-radius: 4rem;
+}
+
+.institute-logo {
+	margin-top: 2rem;
 }
 
 .login-form {

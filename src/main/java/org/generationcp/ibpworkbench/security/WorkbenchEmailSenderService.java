@@ -69,9 +69,6 @@ public class WorkbenchEmailSenderService {
 	private JavaMailSender mailSender;
 
 	@Resource
-	private JavaMailSender supportEmailSender;
-
-	@Resource
 	private TemplateEngine templateEngine;
 
 	@Resource
@@ -79,10 +76,6 @@ public class WorkbenchEmailSenderService {
 
 	@Value("${mail.server.sender.email}")
 	private String senderEmail;
-
-
-	@Value("${support.mail.server.sender.email}")
-	private String supportEmail;
 
 	@Value("${reset.expiry.hours}")
 	private Integer noOfHoursBeforeExpire;
@@ -140,7 +133,7 @@ public class WorkbenchEmailSenderService {
 
 		// prepare message
 		// Prepare message using a Spring helper
-		final MimeMessage mimeMessage = this.supportEmailSender.createMimeMessage();
+		final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
 		// true = multipart
 		final MimeMessageHelper message = this.getMimeMessageHelper(mimeMessage);
 
@@ -162,7 +155,7 @@ public class WorkbenchEmailSenderService {
 
 		message.setSubject(askSupportForm.getSummary());
 		message.setFrom(askSupportForm.getEmail());
-		message.setTo(this.supportEmail);
+		message.setTo(this.senderEmail);
 
 		final String htmlContent = this.processTemplate(ctx,"ask-support-email");
 		message.setText(htmlContent,true);
@@ -180,7 +173,7 @@ public class WorkbenchEmailSenderService {
 
 		WorkbenchEmailSenderService.LOG.info("Sent feedback mail from {}", askSupportForm.getEmail());
 
-		this.supportEmailSender.send(mimeMessage);
+		this.mailSender.send(mimeMessage);
 	}
 
 	/**

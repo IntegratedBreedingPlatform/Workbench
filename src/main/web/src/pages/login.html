@@ -24,8 +24,7 @@
 	<link th:href="@{/controller/static/css/login.css}" rel="stylesheet">
 </head>
 <body>
-	<img class="login-logo" th:src="@{/controller/static/images/logo.png}" alt="Logo"/>
-
+	<div th:include="login-fragments :: header-logo"></div>
 	<!--/*
 		The novalidate attribute disables form validation on submit which means that red outlines are not
 		applied to input elements in IE.
@@ -83,7 +82,7 @@
 			<div class="js-login-checkbox-control login-input-inline login-checkbox-control login-unselectable">
 				<input class="js-login-checkbox-input login-checkbox-input" checked="checked" name="remember-me" type="checkbox"></input>
 				<button class="js-login-remember-me ac-login-remember-me login-checkbox login-clickable" type="button">
-					<span class="js-login-check fa">&#xf00c;</span>
+					<span class="js-login-check fa fa-check"></span>
 				</button
 				><span class="js-login-remember-me login-checkbox-label login-unselectable">Remember Me</span>
 			</div>
@@ -110,6 +109,9 @@
 	<div class="login-mode-toggle" th:if="${isCreateAccountEnable}">
 		<a class="js-login-mode-toggle ac-login-mode-toggle login-link login-unselectable" href="#">Create Account</a>
 	</div>
+
+	<div th:include="login-fragments :: message"></div>
+	<div th:include="login-fragments :: footer"></div>
 
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/jquery-1.11.1.min.js}"></script>
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/modernizr-custom.js}"></script>

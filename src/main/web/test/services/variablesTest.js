@@ -363,5 +363,34 @@ describe('Variables Service', function() {
 			expect(serviceUtilities.restFailureHandler.calls.mostRecent().args[0].data).toEqual(error);
 			expect(serviceUtilities.restSuccessHandler.calls.count()).toEqual(0);
 		});
+
+		it('should DELETE variableCache /variableCache/:ids', function() {
+			var ids = [1, 2, 5];
+
+			httpBackend.when('DELETE', /\/variableCache\/1,2,5/).respond(204);
+
+			variablesService.deleteVariablesFromCache(ids);
+
+			httpBackend.flush();
+		});
+
+		it('should return a 204 status if a successful variableCache DELETE is made', function() {
+
+			var ids = [1, 2, 5],
+				expectedResponse = [204, 204, 204],
+				actualResponse;
+
+			httpBackend.when('DELETE', /\/variableCache\/1,2,5/).respond(204);
+
+			variablesService.deleteVariablesFromCache(ids).then(function(res) {
+				actualResponse = res;
+			});
+
+			httpBackend.flush();
+
+			expect(actualResponse).toEqual(expectedResponse);
+			expect(serviceUtilities.restFailureHandler.calls.count()).toEqual(0);
+		});
+
 	});
 });

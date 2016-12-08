@@ -1,32 +1,68 @@
 {
-  "name": "login-page",
+  "name": "bms-frontend",
   "version": "0.0.1",
-  "description": "A new login page for the BMS",
+  "description": "BMS frontend",
   "main": "gulpfile.js",
   "scripts": {
-    "test": "gulp"
+    "default": "gulp",
+    "build": "gulp build",
+    "clean": "gulp clean",
+    "test": "gulp test",
+    "watch": "gulp watch",
+    "test-ng2": "gulp test-ng2",
+    "ng2:clean": "gulp angular2Clean",
+    "ng2:dist": "gulp angular2Dist",
+    "ng2:build": "gulp angular2",
+    "hotswap": "gulp hotswap",
+    "postinstall": "typings install",
+    "typings": "typings"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/leafn0de/login-page"
+    "url": "https://github.com/IntegratedBreedingPlatform/Workbench"
   },
   "keywords": [
-    "login"
+    "login",
+    "ontology",
+    "admin"
   ],
   "author": "goodforenergy and lisaq-leafnode",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/leafn0de/login-page/issues"
+    "url": "https://github.com/IntegratedBreedingPlatform/Workbench"
   },
-  "homepage": "https://github.com/leafn0de/login-page",
+  "homepage": "https://github.com/IntegratedBreedingPlatform/Workbench",
+  "dependencies": {
+    "@angular/common": "2.0.2",
+    "@angular/compiler": "2.0.2",
+    "@angular/core": "2.0.2",
+    "@angular/forms": "2.0.2",
+    "@angular/http": "2.0.2",
+    "@angular/platform-browser": "2.0.2",
+    "@angular/platform-browser-dynamic": "2.0.2",
+    "@angular/router": "3.0.2",
+    "@angular/router-deprecated": "2.0.0-rc.2",
+    "@angular/upgrade": "2.0.2",
+    "angular2-in-memory-web-api": "0.0.21",
+    "babel-polyfill": "^6.13.0",
+    "core-js": "^2.4.0",
+    "es6-shim": "^0.35.0",
+    "reflect-metadata": "^0.1.3",
+    "rxjs": "5.0.0-beta.12",
+    "systemjs": "0.19.39",
+    "zone.js": "^0.6.12"
+  },
   "devDependencies": {
+    "babel-preset-es2015": "^6.14.0",
     "chai": "^1.10.0",
     "chai-as-promised": "^4.1.1",
     "del": "^0.1.3",
+    "es6-shim": "^0.35.0",
     "event-stream": "^3.2.1",
     "fs": "0.0.2",
     "gulp": "^3.8.10",
     "gulp-autoprefixer": "^1.0.1",
+    "gulp-babel": "^6.1.2",
     "gulp-cached": "^1.0.1",
     "gulp-changed": "^1.0.0",
     "gulp-concat": "^2.4.3",
@@ -41,22 +77,27 @@
     "gulp-rename": "^1.2.0",
     "gulp-replace": "^0.5.2",
     "gulp-sass": "^2.0.4",
-    "gulp-uglify": "^1.0.1",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-typescript": "^2.13.6",
+    "gulp-uglify": "^1.5.4",
     "gulp-util": "^3.0.1",
     "jasmine-core": "^2.1.3",
     "jshint-stylish": "^1.0.0",
     "karma": "^0.12.31",
+    "karma-chrome-launcher": "0.2.2",
     "karma-coverage": "^0.2.7",
     "karma-jasmine": "^0.3.5",
     "karma-jasmine-jquery": "^0.1.1",
     "karma-junit-reporter": "^0.2.2",
     "karma-ng-html2js-preprocessor": "^0.1.2",
     "karma-nyan-reporter": "0.0.50",
-    "karma-phantomjs-launcher": "^0.1.4",
+    "karma-phantomjs-launcher": "^1.0.2",
     "lazypipe": "^0.2.2",
     "path": "^0.4.9",
     "pretty-hrtime": "^0.2.2",
     "properties-parser": "^0.2.3",
+    "typescript": "^1.8.10",
+    "typings": "^1.0.4",
     "yargs": "^1.3.2"
   }
 }

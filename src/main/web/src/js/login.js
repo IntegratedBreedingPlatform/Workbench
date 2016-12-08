@@ -34,10 +34,17 @@
 	var failedLoginAttemptCount = 0;
 
 	function toggleCheckbox() {
-		var tick = $checkButton.text() !== '';
+		var tick = $checkButton.hasClass('fa-check');
 
-		$checkButton.text(tick ? '' : '\uF00C');
-		$checkInput.prop('checked', !tick);
+		if(!tick){
+			$checkButton.addClass('fa-check');
+			$checkInput.prop('checked', true);
+		} else {
+			$checkButton.removeClass('fa-check');
+			$checkInput.prop('checked', false);
+		}
+		
+		
 	}
 
 	function isLoginDisplayed() {

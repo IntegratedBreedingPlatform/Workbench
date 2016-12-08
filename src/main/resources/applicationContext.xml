@@ -108,6 +108,9 @@
 		scope="request">
 		<aop:scoped-proxy />
 	</bean>
+	
+	<bean id="toolLicenseUtil" class="org.generationcp.commons.spring.util.ToolLicenseUtil" factory-method="getInstance">
+	</bean>
 
 	<bean id="cloner" class="com.rits.cloning.Cloner" />
 
@@ -156,6 +159,11 @@
 		<aop:scoped-proxy />
 	</bean>
 
+	<bean id="termDataManager" factory-bean="managerFactory"
+		  factory-method="getTermDataManager" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
 	<bean id="scaleDataManager" factory-bean="managerFactory"
 		factory-method="getOntologyScaleDataManager" scope="request">
 		<aop:scoped-proxy />
@@ -199,6 +207,11 @@
 
 	<bean id="crossStudyDataManager" factory-bean="managerFactory"
 		  factory-method="getCrossStudyDataManager" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="ontologyVariableManager" factory-bean="managerFactory"
+		factory-method="getOntologyVariableDataManager" scope="request">
 		<aop:scoped-proxy />
 	</bean>
 
@@ -266,7 +279,7 @@
 		<property name="userDetailsService" ref="workbenchUserDetailsService" />
 		<property name="passwordEncoder" ref="encoder" />
 	</bean>
-	
+
 	<!-- Nested <beans> elements can only be at the end. -->
 	
 	<!-- Only activate liquibase auto update in non-production environments. 

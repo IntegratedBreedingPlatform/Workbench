@@ -1,39 +1,35 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- * 
+ *
  * Generation Challenge Programme (GCP)
- * 
- * 
+ *
+ *
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- * 
+ *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.ui.dashboard;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
+import java.io.File;
 import java.util.List;
-import java.util.Map;
 
+import javax.annotation.Resource;
+import javax.servlet.ServletContext;
+
+import com.vaadin.ui.CssLayout;
+import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.help.document.HelpModule;
-import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
-import org.generationcp.ibpworkbench.actions.OpenSelectProjectForStudyAndDatasetViewAction;
-import org.generationcp.ibpworkbench.actions.ShowProjectDetailAction;
 import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.ProjectTableCellStyleGenerator;
-import org.generationcp.ibpworkbench.ui.dashboard.listener.DashboardMainClickListener;
-import org.generationcp.ibpworkbench.ui.dashboard.preview.GermplasmListPreview;
-import org.generationcp.ibpworkbench.ui.dashboard.preview.NurseryListPreview;
-import org.generationcp.ibpworkbench.ui.dashboard.summaryview.SummaryView;
+import org.generationcp.ibpworkbench.ui.dashboard.listener.LaunchProgramAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
@@ -43,10 +39,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 
-import com.vaadin.data.Property;
+import com.vaadin.Application;
 import com.vaadin.data.util.BeanContainer;
-import com.vaadin.event.ItemClickEvent;
+import com.vaadin.terminal.FileResource;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
@@ -57,7 +54,6 @@ import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
@@ -68,16 +64,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchDashboard.class);
 	private static final long serialVersionUID = 1L;
 
-	private Table tblProject;
-
-	private Project currentProject;
-
-	private Button selectDatasetForBreedingViewButton;
-
-	private TabSheet previewTab;
-
-	private GermplasmListPreview germplasmListPreview;
-	private NurseryListPreview nurseryListPreview;
+	private Table programsTable;
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
@@ -88,15 +75,19 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 	@Autowired
 	private SessionData sessionData;
 
-	private Project lastOpenedProject;
+	@Resource
+	private ServletContext servletContext;
+
+	@Value("${institute.logo.path}")
+	private String instituteLogoPath;
 
 	public static final String PROGRAM_NAME_COLUMN_ID = "Workbench Dashboard Program Name Column Id";
 	public static final String CROP_NAME_COLUMN_ID = "Workbench Dashboard Crop Name Column Id";
 	public static final String BUTTON_LIST_MANAGER_COLUMN_ID = "Workbench Dashboard List Manager Button Column Id";
 
-	private List<Project> projects = null;
-	private SummaryView summaryView;
-	private Button lasSelectedProjectButton = null;
+	private List<Project> programs = null;
+
+	private Embedded instituteLogo;
 
 	public WorkbenchDashboard() {
 		super();
@@ -108,65 +99,53 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 	}
 
 	public void initializeComponents() {
-		this.selectDatasetForBreedingViewButton = new Button("View Studies and Datasets");
-		this.selectDatasetForBreedingViewButton.setDebugId("selectDatasetForBreedingViewButton");
-		this.selectDatasetForBreedingViewButton.setWidth("200px");
-
 		this.initializeProjectTable();
-		this.initializePreviewTable();
+		this.initializeInstituteLogo();
+	}
+
+	/*
+	 * Check if client logo URL is specified from properties file and if the resource exists. Use the image if it exists.
+	 */
+	private void initializeInstituteLogo() {
+		final String instituteLogoURL = this.findInstituteLogo(this.instituteLogoPath);
+
+		if (!StringUtils.isBlank(instituteLogoURL)) {
+			// Image as a file resource
+			final Application application = IBPWorkbenchApplication.get();
+			final String basepath = application.getContext().getBaseDirectory().getAbsolutePath().replace("\\", "/");
+
+			final FileResource resource = new FileResource(new File(basepath + instituteLogoURL), application);
+
+			this.instituteLogo = new Embedded("", resource);
+			this.instituteLogo.setDebugId("instituteLogo");
+			this.instituteLogo.setMimeType("image/png");
+			this.instituteLogo.setStyleName("v-institute-logo");
+			this.instituteLogo.setSizeUndefined();
+
+		}
 	}
 
 	private void initializeProjectTable() {
-		// project table components
-		this.tblProject = new Table() {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected String formatPropertyValue(Object rowId, Object colId, Property property) {
-				if (property.getType() == Date.class) {
-					SimpleDateFormat sdf = DateUtil.getSimpleDateFormat(DateUtil.FRONTEND_DATE_FORMAT);
-					return property.getValue() == null ? "" : sdf.format((Date) property.getValue());
-				}
-
-				return super.formatPropertyValue(rowId, colId, property);
-			}
-		};
+		this.programsTable = new Table();
 		// react at once when something is selected
-		this.tblProject.setImmediate(true);
-		this.tblProject.setSelectable(true);
-		this.tblProject.setStyleName("gcp-tblproject");
+		this.programsTable.setImmediate(true);
+		this.programsTable.setSelectable(true);
+		this.programsTable.setStyleName("gcp-tblproject");
 
-		this.tblProject.addContainerProperty(WorkbenchDashboard.PROGRAM_NAME_COLUMN_ID, String.class, null);
-		this.tblProject.addContainerProperty(WorkbenchDashboard.CROP_NAME_COLUMN_ID, String.class, null);
-		this.tblProject.addContainerProperty(WorkbenchDashboard.BUTTON_LIST_MANAGER_COLUMN_ID, Button.class, null);
+		this.programsTable.addContainerProperty(WorkbenchDashboard.PROGRAM_NAME_COLUMN_ID, String.class, null);
+		this.programsTable.addContainerProperty(WorkbenchDashboard.CROP_NAME_COLUMN_ID, String.class, null);
+		this.programsTable.addContainerProperty(WorkbenchDashboard.BUTTON_LIST_MANAGER_COLUMN_ID, Button.class, null);
 
-		this.tblProject.setColumnHeader(WorkbenchDashboard.PROGRAM_NAME_COLUMN_ID, "PROGRAM NAME");
-		this.tblProject.setColumnHeader(WorkbenchDashboard.CROP_NAME_COLUMN_ID, "CROP");
-		this.tblProject.setColumnHeader(WorkbenchDashboard.BUTTON_LIST_MANAGER_COLUMN_ID, "LAUNCH");
+		this.programsTable.setColumnHeader(WorkbenchDashboard.PROGRAM_NAME_COLUMN_ID, "PROGRAM NAME");
+		this.programsTable.setColumnHeader(WorkbenchDashboard.CROP_NAME_COLUMN_ID, "CROP");
+		this.programsTable.setColumnHeader(WorkbenchDashboard.BUTTON_LIST_MANAGER_COLUMN_ID, "LAUNCH");
 
-		this.tblProject.setColumnExpandRatio(WorkbenchDashboard.PROGRAM_NAME_COLUMN_ID, 1.0F);
-		this.tblProject.setColumnWidth(WorkbenchDashboard.BUTTON_LIST_MANAGER_COLUMN_ID, 55);
+		this.programsTable.setColumnExpandRatio(WorkbenchDashboard.PROGRAM_NAME_COLUMN_ID, 1.0F);
+		this.programsTable.setColumnWidth(WorkbenchDashboard.BUTTON_LIST_MANAGER_COLUMN_ID, 55);
 
-		this.tblProject.setColumnCollapsingAllowed(false);
-		this.tblProject.setCellStyleGenerator(new ProjectTableCellStyleGenerator(this.tblProject, null));
+		this.programsTable.setColumnCollapsingAllowed(false);
+		this.programsTable.setCellStyleGenerator(new ProjectTableCellStyleGenerator(this.programsTable, null));
 
-	}
-
-	private void initializePreviewTable() {
-		this.germplasmListPreview = new GermplasmListPreview(null);
-		this.germplasmListPreview.setDebugId("germplasmListPreview");
-		this.nurseryListPreview = new NurseryListPreview(null);
-		this.nurseryListPreview.setDebugId("nurseryListPreview");
-
-		this.previewTab = new TabSheet();
-		this.previewTab.setDebugId("previewTab");
-		this.previewTab.setHeight(100, Sizeable.UNITS_PERCENTAGE);
-		this.previewTab.addTab(this.germplasmListPreview, "Lists");
-
-		this.previewTab.addTab(this.nurseryListPreview, "Nurseries & Trials");
-
-		this.previewTab.setImmediate(true);
 	}
 
 	protected void initializeLayout() {
@@ -177,20 +156,19 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		this.setTitleContent();
 
 		this.addComponent(this.layoutProjectTableArea());
-		this.addComponent(this.layoutProjectDetailArea());
 	}
 
 	private void setTitleContent() {
-		HorizontalLayout titleLayout = new HorizontalLayout();
+		final HorizontalLayout titleLayout = new HorizontalLayout();
 		titleLayout.setDebugId("titleLayout");
 		titleLayout.setSpacing(true);
 
-		Label toolTitle = new Label(this.messageSource.getMessage(Message.DASHBOARD));
+		final Label toolTitle = new Label(this.messageSource.getMessage(Message.DASHBOARD));
 		toolTitle.setDebugId("toolTitle");
 		toolTitle.setContentMode(Label.CONTENT_XHTML);
 		toolTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 		toolTitle.setDebugId("vaadin-home-lbl");
-		toolTitle.setWidth("80px");
+		toolTitle.setWidth("150px");
 
 		titleLayout.addComponent(toolTitle);
 		titleLayout.addComponent(new HelpButton(HelpModule.DASHBOARD, "Go to Dashboard Tutorial"));
@@ -198,112 +176,54 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		this.addComponent(titleLayout);
 	}
 
+	/**
+	 * Populates Programs table and selects last opened program by user (if any)
+	 */
 	protected void initializeData() {
 		// Get the list of Projects
 
-		this.lastOpenedProject = null;
+		Project lastOpenedProgram = null;
 
 		try {
-			User currentUser = this.sessionData.getUserData();
-			this.projects = this.workbenchDataManager.getProjectsByUser(currentUser);
-			this.lastOpenedProject = this.workbenchDataManager.getLastOpenedProject(currentUser.getUserid());
-		} catch (MiddlewareQueryException e) {
+			final User currentUser = this.sessionData.getUserData();
+			this.programs = this.workbenchDataManager.getProjectsByUser(currentUser);
+			lastOpenedProgram = this.workbenchDataManager.getLastOpenedProject(currentUser.getUserid());
+		} catch (final MiddlewareQueryException e) {
 			WorkbenchDashboard.LOG.error("Exception", e);
 			throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
 		}
 
-		this.sessionData.setLastOpenedProject(this.lastOpenedProject);
-
-		if (this.currentProject == null) {
-			this.currentProject = this.lastOpenedProject;
-		}
-
-		this.sessionData.setSelectedProject(this.currentProject);
-
 		// set the Project Table data source
-		BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);
+		final BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);
 		projectContainer.setBeanIdProperty("projectName");
 
-		int i = 0;
-		Project project;
-		for (i = this.projects.size() - 1; i >= 0; i--) {
-			project = this.projects.get(i);
+		for (int i = this.programs.size() - 1; i >= 0; i--) {
+			final Project project = this.programs.get(i);
 
-			Button button = new Button("<span class='glyphicon glyphicon-play'></span>");
+			final Button button = new Button("<span class='glyphicon glyphicon-play'></span>");
 			button.setDebugId("button");
 			button.setHtmlContentAllowed(true);
 			button.setData(WorkbenchDashboard.BUTTON_LIST_MANAGER_COLUMN_ID);
 			button.setStyleName(Bootstrap.Buttons.LINK.styleName() + " launch");
 			button.setWidth("26px");
 			button.setHeight("26px");
-			button.addListener(new DashboardMainClickListener(this, project.getProjectId()));
-			button.setEnabled(false);
-
-			Long lastOpenedProjectId = this.lastOpenedProject == null ? null : this.lastOpenedProject.getProjectId();
-			boolean sameProject =
-					lastOpenedProjectId == null ? project.getProjectId() == null : lastOpenedProjectId.equals(project.getProjectId());
-
-			if (sameProject) {
-				WorkbenchDashboard.this.lasSelectedProjectButton = button;
-
-				button.setEnabled(true);
-			}
+			button.addListener(new LaunchProgramAction(project));
+			button.setEnabled(true);
 
 			// capitalization done on CSS
-			this.tblProject.addItem(new Object[] {project.getProjectName(), project.getCropType().getCropName(), button},
-					project.getProjectId());
+			this.programsTable.addItem(new Object[] {project.getProjectName(), project.getCropType().getCropName(), button}, project);
 		}
 
-		if (this.lastOpenedProject != null) {
-			this.tblProject.select(this.lastOpenedProject.getProjectId());
+		if (lastOpenedProgram != null) {
+			this.programsTable.select(lastOpenedProgram);
+			this.sessionData.setLastOpenedProject(lastOpenedProgram);
+			this.sessionData.setSelectedProject(lastOpenedProgram);
 		}
 
 	}
 
 	protected void initializeActions() {
-
-		OpenSelectProjectForStudyAndDatasetViewAction openSelectDatasetForBreedingViewAction =
-				new OpenSelectProjectForStudyAndDatasetViewAction(null);
-		this.selectDatasetForBreedingViewButton.addListener(openSelectDatasetForBreedingViewAction);
-
-		this.tblProject.addListener(new ItemClickEvent.ItemClickListener() {
-
-			/**
-			 *
-			 */
-			private static final long serialVersionUID = -7560323455772265841L;
-
-			@Override
-			public void itemClick(ItemClickEvent event) {
-				Object selectedButton =
-						WorkbenchDashboard.this.tblProject.getItem(event.getItemId())
-								.getItemProperty(WorkbenchDashboard.BUTTON_LIST_MANAGER_COLUMN_ID).getValue();
-
-				// disable previously selected button
-
-				if (WorkbenchDashboard.this.lasSelectedProjectButton != null) {
-					WorkbenchDashboard.this.lasSelectedProjectButton.setEnabled(false);
-				}
-
-				if (selectedButton instanceof Button && selectedButton != null) {
-					((Button) selectedButton).setEnabled(true);
-					WorkbenchDashboard.this.lasSelectedProjectButton = (Button) selectedButton;
-
-					if (event.isDoubleClick()) {
-
-						// hack manual trigger button
-						Map vars = new HashMap();
-						vars.put("state", true);
-						((Button) selectedButton).changeVariables(this, vars);
-
-					}
-				}
-			}
-		});
-
-		this.tblProject.addListener(new ShowProjectDetailAction(this.tblProject, this.summaryView, this.selectDatasetForBreedingViewButton,
-				openSelectDatasetForBreedingViewAction, this.currentProject, this.germplasmListPreview, this.nurseryListPreview,
-				this.previewTab, this.projects));
+		this.programsTable.addListener(new LaunchProgramAction());
 
 	}
 
@@ -316,7 +236,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
 	private Component layoutProjectTableArea() {
 		final HorizontalSplitPanel root = new HorizontalSplitPanel();
-		root.setDebugId("root");
+		root.setDebugId("rootProjectTableArea");
 		root.setSplitPosition(300, Sizeable.UNITS_PIXELS, true);
 		root.setStyleName(Reindeer.SPLITPANEL_SMALL + " gcp-program-table-area");
 
@@ -328,23 +248,16 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		final HorizontalLayout programHeaderArea = new HorizontalLayout();
 		programHeaderArea.setDebugId("programHeaderArea");
 		programHeaderArea.setWidth("100%");
-		final Label programLbl = new Label(this.messageSource.getMessage(Message.PROGRAMS_LABEL));
-		programLbl.setDebugId("programLbl");
-		programLbl.setStyleName(Bootstrap.Typography.H2.styleName());
 
-		final Label programDescLbl = new Label(this.messageSource.getMessage(Message.PROGRAM_TABLE_TOOLTIP));
-		programDescLbl.setDebugId("programDescLbl");
-		programDescLbl.setStyleName(Bootstrap.Typography.H6.styleName());
+		final Label programLabel = new Label(this.messageSource.getMessage(Message.PROGRAMS_LABEL));
+		programLabel.setDebugId("programLbl");
+		programLabel.setStyleName(Bootstrap.Typography.H2.styleName());
 
-		final Button addProgramBtn =
-				new Button("<span class='glyphicon glyphicon-plus' style='right: 4px'></span> "
-						+ this.messageSource.getMessage(Message.ADD_A_PROGRAM));
-		addProgramBtn.setHtmlContentAllowed(true);
-		addProgramBtn.addListener(new OpenNewProjectAction());
-		addProgramBtn.addStyleName(Bootstrap.Buttons.INFO.styleName());
-		addProgramBtn.setWidth("145px");
+		final Label programDescriptionLabel = new Label(this.messageSource.getMessage(Message.PROGRAM_TABLE_TOOLTIP));
+		programDescriptionLabel.setDebugId("programDescLbl");
+		programDescriptionLabel.setStyleName(Bootstrap.Typography.H6.styleName());
 
-		programHeaderArea.addComponent(programLbl);
+		programHeaderArea.addComponent(programLabel);
 
 		final HorizontalLayout headerContainer = new HorizontalLayout();
 		headerContainer.setDebugId("headerContainer");
@@ -356,46 +269,39 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		headerImg.setStyleName("header-img");
 
 		headerContainer.addComponent(headerImg);
-		headerContainer.addComponent(programLbl);
-		headerContainer.addComponent(programDescLbl);
+		headerContainer.addComponent(programLabel);
+		headerContainer.addComponent(programDescriptionLabel);
 
 		headerContainer.setComponentAlignment(headerImg, Alignment.BOTTOM_LEFT);
-		headerContainer.setComponentAlignment(programLbl, Alignment.BOTTOM_LEFT);
-		headerContainer.setComponentAlignment(programDescLbl, Alignment.BOTTOM_LEFT);
+		headerContainer.setComponentAlignment(programLabel, Alignment.BOTTOM_LEFT);
+		headerContainer.setComponentAlignment(programDescriptionLabel, Alignment.BOTTOM_LEFT);
 
 		programHeaderArea.addComponent(headerContainer);
-		programHeaderArea.addComponent(addProgramBtn);
-		programHeaderArea.setComponentAlignment(addProgramBtn, Alignment.MIDDLE_LEFT);
 		programHeaderArea.setExpandRatio(headerContainer, 1.0F);
 
-		this.tblProject.setSizeFull();
-		this.tblProject.setStyleName("program-tab");
+		this.programsTable.setSizeFull();
+		this.programsTable.setStyleName("program-tab");
 
 		programArea.addComponent(programHeaderArea);
-		programArea.addComponent(this.tblProject);
-		programArea.setExpandRatio(this.tblProject, 1.0F);
+		programArea.addComponent(this.programsTable);
+		programArea.setExpandRatio(this.programsTable, 1.0F);
 
-		final VerticalLayout previewArea = new VerticalLayout();
+		// Show institute logo, if any, in preview area
+		final CssLayout previewArea = new CssLayout();
+		previewArea.setMargin(false);
 		previewArea.setDebugId("previewArea");
-		previewArea.setStyleName("preview-area");
-		previewArea.setSizeFull();
-		previewArea.setMargin(new MarginInfo(true, false, false, false));
+		previewArea.setHeight("90%");
+		previewArea.setWidth("300px");
 
-		previewArea.addComponent(this.previewTab);
-		this.previewTab.addStyleName("preview-tab");
+		if (this.instituteLogo != null) {
+			previewArea.addComponent(this.instituteLogo);
+		}
 
 		root.setFirstComponent(programArea);
 		root.setSecondComponent(previewArea);
 		root.setHeight("400px");
 
 		return root;
-	}
-
-	private Component layoutProjectDetailArea() {
-		this.summaryView = new SummaryView();
-		this.summaryView.setDebugId("summaryView");
-
-		return this.summaryView;
 	}
 
 	@Override
@@ -407,43 +313,42 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
 	@Override
 	public void updateLabels() {
-		this.messageSource.setColumnHeader(this.tblProject, "startDate", Message.START_DATE);
-		this.messageSource.setColumnHeader(this.tblProject, "projectName", Message.PROJECT);
-		this.messageSource.setColumnHeader(this.tblProject, "action", Message.ACTION);
-		this.messageSource.setColumnHeader(this.tblProject, "status", Message.STATUS);
-		this.messageSource.setColumnHeader(this.tblProject, "owner", Message.OWNER);
-
-		this.tblProject.setItemDescriptionGenerator(new ItemDescriptionGenerator() {
+		this.programsTable.setItemDescriptionGenerator(new ItemDescriptionGenerator() {
 
 			private static final long serialVersionUID = 1L;
 
-			@Override
-			public String generateDescription(Component source, Object itemId, Object propertyId) {
+			@Override public String generateDescription(final Component source, final Object itemId, final Object propertyId) {
 				return WorkbenchDashboard.this.messageSource.getMessage(Message.PROGRAM_TABLE_TOOLTIP);
 			}
 		});
 	}
 
-	public Project getCurrentProject() {
-		return this.currentProject;
-	}
-
-	public void setCurrentProject(Project currentProject) {
-		this.currentProject = currentProject;
-	}
-
 	// hacky hack hack
-	public ShowProjectDetailAction initializeDashboardContents(Project selectProgram) {
+	public void initializeDashboardContents(final Project selectProgram) {
 
 		// set this program as selected in dashboard
 		if (selectProgram != null) {
-			this.tblProject.select(selectProgram.getProjectId());
+			this.programsTable.select(selectProgram);
 		}
 
-		// update other pards
-		return new ShowProjectDetailAction(this.tblProject, this.summaryView, this.selectDatasetForBreedingViewButton,
-				new OpenSelectProjectForStudyAndDatasetViewAction(null), this.lastOpenedProject, this.germplasmListPreview,
-				this.nurseryListPreview, this.previewTab, this.projects);
 	}
 
+	protected String findInstituteLogo(final String path) {
+		final String contextPath = "/WEB-INF" + path;
+		if (this.servletContext.getResourceAsStream(contextPath) != null) {
+			return contextPath;
+		} else {
+			return "";
+		}
+	}
+
+	// For test purposes only
+	public Table getProgramsTable() {
+		return this.programsTable;
+	}
+
+	// For test purposes only
+	public void setInstituteLogo(final Embedded instituteLogo) {
+		this.instituteLogo = instituteLogo;
+	}
 }

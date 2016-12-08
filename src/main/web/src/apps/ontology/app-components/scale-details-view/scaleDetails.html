@@ -13,8 +13,12 @@
 		<om-error-list om-errors-already-translated="serverErrors.general" om-errors-to-translate="serverErrors.someListsNotLoaded">
 		</om-error-list>
 
-		<div ng-if="showNoneditableFieldsAlert" class="alert alert-warning" role="alert">
+		<div ng-if="showNoneditableFieldsAlert && !showNoneditableCategoriesAlert" class="alert alert-warning" role="alert">
 			<span>{{'validation.scale.noneditableFields' | translate }}</span>
+		</div>
+
+		<div ng-if="showNoneditableCategoriesAlert" class="alert alert-warning" role="alert">
+			<span>{{'validation.scale.noneditableCategories' | translate }}</span>
 		</div>
 
 		<div ng-class="formGroupClass('omName', 'name')">
@@ -61,8 +65,8 @@
 				<om-range name="omRange" om-property="validValues" om-editing="editing" ng-model="model" om-numeric="showRangeWidget" om-min="-999999999" om-max="999999999"></om-range>
 
 				<ng-messages for="sdForm.omRange.$error" ng-messages-include="range-validation-messages" multiple ng-if="sdForm.$submitted || sdForm.omRange.$touched"></ng-messages>
+				<p class="text-danger" ng-hide="sdForm.omRange.$touched" ng-repeat="error in serverErrors.validValues">{{error}}</p>
 			</div>
-			<p class="text-danger" ng-hide="sdForm.omRange.$touched" ng-repeat="error in serverErrors.validValues">{{error}}</p>
 		</div>
 
 		<div ng-show="showCategoriesWidget">

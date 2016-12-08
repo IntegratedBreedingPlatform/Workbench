@@ -73,12 +73,14 @@ describe('Scale details directive', function() {
 		types = [angular.copy(CATEGORICAL_TYPE), angular.copy(NUMERIC_TYPE), angular.copy(CHARACTER_TYPE)],
 
 		scalesService = {},
+		variablesService = {},
 		formUtilities,
 		scope,
 		q,
 		directiveElement,
 		deferredUpdateScale,
 		deferredDeleteScale,
+		deferredDeleteVariablesFromCache,
 		deferredGetNonSystemDataTypes,
 		mockTranslateFilter;
 
@@ -104,6 +106,7 @@ describe('Scale details directive', function() {
 			// Provide mocks for the directive controller
 			$provide.value('dataTypesService', dataTypesService);
 			$provide.value('scalesService', scalesService);
+			$provide.value('variablesService', variablesService);
 			$provide.value('serviceUtilities', serviceUtilities);
 			$provide.value('panelService', panelService);
 		});
@@ -124,6 +127,11 @@ describe('Scale details directive', function() {
 			return deferredDeleteScale.promise;
 		};
 
+		variablesService.deleteVariablesFromCache = function() {
+			deferredDeleteVariablesFromCache = q.defer();
+			return deferredDeleteVariablesFromCache.promise;
+		};
+
 		dataTypesService.getNonSystemDataTypes = function() {
 			deferredGetNonSystemDataTypes = q.defer();
 			return deferredGetNonSystemDataTypes.promise;
@@ -131,6 +139,7 @@ describe('Scale details directive', function() {
 
 		spyOn(scalesService, 'updateScale').and.callThrough();
 		spyOn(scalesService, 'deleteScale').and.callThrough();
+		spyOn(variablesService, 'deleteVariablesFromCache').and.callThrough();
 		spyOn(dataTypesService, 'getNonSystemDataTypes').and.callThrough();
 		spyOn(serviceUtilities, 'serverErrorHandler').and.callThrough();
 		spyOn(panelService, 'hidePanel');

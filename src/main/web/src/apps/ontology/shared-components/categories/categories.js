@@ -22,17 +22,22 @@
 					e.preventDefault();
 					$scope.model[$scope.property].categories.push({
 						name: '',
-						description: ''
+						description: '',
+						editable: true
 					});
 				};
 
-				$scope.removable = function() {
-					return $scope.model && $scope.model[$scope.property].categories.length >= 2;
+				$scope.removable = function(category) {
+					return $scope.model && $scope.model[$scope.property].categories.length >= 2 && category.editable;
 				};
 
-				$scope.removeCategory = function(e, index) {
+				$scope.disabled = function(category) {
+					return !category.editable;
+				};
+
+				$scope.removeCategory = function(e, index, category) {
 					e.preventDefault();
-					if ($scope.removable()) {
+					if ($scope.removable(category)) {
 						$scope.model[$scope.property].categories.splice(index, 1);
 					}
 				};
@@ -83,7 +88,7 @@
 							// Categories will be added to a 'categories' property on the specified property. If either the
 							// property or the categories are not present, instantiate them
 							scope.model[scope.property] = scope.model[scope.property] || {};
-							scope.model[scope.property].categories = scope.model[scope.property].categories || [{}];
+							scope.model[scope.property].categories = scope.model[scope.property].categories || [{ editable: true }];
 						}
 
 						if (scope.model && scope.model[scope.property] && scope.model[scope.property].categories &&
