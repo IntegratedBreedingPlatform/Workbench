@@ -46,8 +46,7 @@ public class InventoryViewComponent extends VerticalLayout implements Initializi
 	public static final String LOT_LOCATION = "lotLocation";
 	public static final String ACTUAL_BALANCE = "actualBalance";
 	public static final String AVAILABLE_BALANCE = "availableBalance";
-	public static final String WITHDRAWAL = "withdrawal";
-	public static final String STATUS = "status";
+	public static final String LOT_STATUS = "lotStatus";
 
 	public static final String COMMENTS = "comments";
 	public static final String LOT_ID = "lotId";
@@ -83,8 +82,7 @@ public class InventoryViewComponent extends VerticalLayout implements Initializi
 		this.lotEntriesTable.addContainerProperty(InventoryViewComponent.LOT_LOCATION, String.class, null);
 		this.lotEntriesTable.addContainerProperty(InventoryViewComponent.ACTUAL_BALANCE, String.class, null);
 		this.lotEntriesTable.addContainerProperty(InventoryViewComponent.AVAILABLE_BALANCE, String.class, null);
-		this.lotEntriesTable.addContainerProperty(InventoryViewComponent.WITHDRAWAL, String.class, null);
-		this.lotEntriesTable.addContainerProperty(InventoryViewComponent.STATUS, String.class, null);
+		this.lotEntriesTable.addContainerProperty(InventoryViewComponent.LOT_STATUS, String.class, null);
 		this.lotEntriesTable.addContainerProperty(InventoryViewComponent.COMMENTS, String.class, null);
 		this.lotEntriesTable.addContainerProperty(InventoryViewComponent.STOCKID, Label.class, null);
 		this.lotEntriesTable.addContainerProperty(InventoryViewComponent.LOT_ID, Integer.class, null);
@@ -94,9 +92,7 @@ public class InventoryViewComponent extends VerticalLayout implements Initializi
 		this.lotEntriesTable
 				.setColumnHeader(InventoryViewComponent.ACTUAL_BALANCE, this.getTermNameFromOntology(ColumnLabels.ACTUAL_BALANCE));
 		this.lotEntriesTable.setColumnHeader(InventoryViewComponent.AVAILABLE_BALANCE, this.getTermNameFromOntology(ColumnLabels.TOTAL));
-		this.lotEntriesTable
-				.setColumnHeader(InventoryViewComponent.WITHDRAWAL, this.getTermNameFromOntology(ColumnLabels.SEED_RESERVATION));
-		this.lotEntriesTable.setColumnHeader(InventoryViewComponent.STATUS, this.getTermNameFromOntology(ColumnLabels.STATUS));
+		this.lotEntriesTable.setColumnHeader(InventoryViewComponent.LOT_STATUS, this.getTermNameFromOntology(ColumnLabels.LOT_STATUS));
 		this.lotEntriesTable.setColumnHeader(InventoryViewComponent.COMMENTS, this.getTermNameFromOntology(ColumnLabels.COMMENT));
 		this.lotEntriesTable.setColumnHeader(InventoryViewComponent.STOCKID, this.getTermNameFromOntology(ColumnLabels.STOCKID));
 		this.lotEntriesTable.setColumnHeader(InventoryViewComponent.LOT_ID, this.getTermNameFromOntology(ColumnLabels.LOT_ID));
@@ -131,17 +127,7 @@ public class InventoryViewComponent extends VerticalLayout implements Initializi
 			}
 			newItem.getItemProperty(InventoryViewComponent.AVAILABLE_BALANCE).setValue(availableBalance);
 
-			String withdrawalBalance = "";
-			if (lotEntry.getWithdrawalBalance() != null) {
-				withdrawalBalance = lotEntry.getWithdrawalBalance() + lotEntry.getLotScaleNameAbbr();
-			}
-			newItem.getItemProperty(InventoryViewComponent.WITHDRAWAL).setValue(withdrawalBalance);
-
-			String withdrawalStatus = "";
-			if (lotEntry.getWithdrawalStatus() != null) {
-				withdrawalStatus = lotEntry.getWithdrawalStatus();
-			}
-			newItem.getItemProperty(InventoryViewComponent.STATUS).setValue(withdrawalStatus);
+			newItem.getItemProperty(InventoryViewComponent.LOT_STATUS).setValue(lotEntry.getLotStatus());
 
 			newItem.getItemProperty(InventoryViewComponent.COMMENTS).setValue(lotEntry.getCommentOfLot());
 			newItem.getItemProperty(InventoryViewComponent.STOCKID).setValue(lotEntry.getStockIds());
