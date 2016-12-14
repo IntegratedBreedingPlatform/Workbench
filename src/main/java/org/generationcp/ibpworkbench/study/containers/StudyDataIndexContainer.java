@@ -19,6 +19,7 @@ import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.StudyReference;
+import org.generationcp.middleware.domain.dms.StudySearchMatchingOption;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableList;
 import org.generationcp.middleware.domain.dms.VariableTypeList;
@@ -182,7 +183,7 @@ public class StudyDataIndexContainer {
 		}
 	}
 
-	public IndexedContainer getStudies(String name, String country, Season season, Integer date) throws InternationalizableException {
+	public IndexedContainer getStudies(StudySearchMatchingOption studySearchMatchingOption, String name, String country, Season season, Integer date) throws InternationalizableException {
 		IndexedContainer container = new IndexedContainer();
 
 		// Create the container properties
@@ -195,6 +196,7 @@ public class StudyDataIndexContainer {
 			filter.setCountry(country);
 			filter.setSeason(season);
 			filter.setStartDate(date);
+			filter.setStudySearchMatchingOption(studySearchMatchingOption);
 			StudyResultSet studyResultSet = this.studyDataManager.searchStudies(filter, 50);
 
 			if (studyResultSet != null) {

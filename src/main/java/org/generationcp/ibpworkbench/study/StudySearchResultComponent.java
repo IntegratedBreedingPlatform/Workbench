@@ -18,7 +18,9 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.domain.dms.Study;
+import org.generationcp.middleware.domain.dms.StudySearchMatchingOption;
 import org.generationcp.middleware.domain.oms.StudyType;
+import org.generationcp.middleware.domain.search.filter.BrowseStudyQueryFilter;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Season;
@@ -149,12 +151,12 @@ public class StudySearchResultComponent extends VerticalLayout implements Initia
 		this.addComponent(this.searchResultTable);
 	}
 
-	public void searchStudy(String name, String country, Season season, Integer date) {
+	public void searchStudy(StudySearchMatchingOption studySearchMatchingOption, String name, String country, Season season, Integer date) {
 		if (this.searchResultTable != null) {
 			this.searchResultTable.removeAllItems();
 		}
 
-		IndexedContainer dataSourceResult = this.studyDataIndexContainer.getStudies(name, country, season, date);
+		IndexedContainer dataSourceResult = this.studyDataIndexContainer.getStudies(studySearchMatchingOption, name, country, season, date);
 
 		if (dataSourceResult.size() == 0) {
 			this.updateNoOfEntries(0);

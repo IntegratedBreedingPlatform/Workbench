@@ -306,7 +306,10 @@ public class StudySearchInputComponent extends VerticalLayout implements Initial
 							if (StudySearchInputComponent.this.seasonCombo != null && StudySearchInputComponent.this.seasonCombo.getValue() != null) {
 								seasonValue = (Season) StudySearchInputComponent.this.seasonCombo.getValue();
 							}
-							StudySearchInputComponent.this.parentComponent.getSearchResultComponent().searchStudy(nameValue, countryValue,
+
+							StudySearchMatchingOption studySearchMatchingOption = (StudySearchMatchingOption) studyNameSearchOptionGroup.getValue();
+
+							StudySearchInputComponent.this.parentComponent.getSearchResultComponent().searchStudy(studySearchMatchingOption, nameValue, countryValue,
 									seasonValue, dateValue);
 						}
 
