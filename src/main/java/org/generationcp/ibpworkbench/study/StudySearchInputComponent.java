@@ -23,6 +23,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -36,6 +37,7 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.commons.vaadin.validator.RegexValidator;
 import org.generationcp.middleware.domain.dms.Study;
+import org.generationcp.middleware.domain.dms.StudySearchMatchingOption;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Season;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
@@ -79,6 +81,7 @@ public class StudySearchInputComponent extends VerticalLayout implements Initial
 	private TextField nameField;
 	private ComboBox countryCombo;
 	private ComboBox seasonCombo;
+	private OptionGroup studyNameSearchOptionGroup;
 
 	private Button searchButton;
 	private Button clearButton;
@@ -144,6 +147,14 @@ public class StudySearchInputComponent extends VerticalLayout implements Initial
 
 		this.searchCriteriaLabel = new Label("<b>" + this.messageSource.getMessage(Message.SEARCH_CRITERIA) + "</b>", Label.CONTENT_XHTML);
 		this.searchCriteriaLabel.setWidth("120px");
+
+		this.studyNameSearchOptionGroup = new OptionGroup();
+		this.studyNameSearchOptionGroup.addItem(StudySearchMatchingOption.EXACT_MATCHES);
+		this.studyNameSearchOptionGroup.addItem(StudySearchMatchingOption.MATCHES_STARTING_WITH);
+		this.studyNameSearchOptionGroup.addItem(StudySearchMatchingOption.MATCHES_CONTAINING);
+		this.studyNameSearchOptionGroup.setValue(StudySearchMatchingOption.EXACT_MATCHES);
+
+
 	}
 
 	@Override
@@ -176,17 +187,18 @@ public class StudySearchInputComponent extends VerticalLayout implements Initial
 		dateLayout.addComponent(new Label("Day"), 3, 2);
 
 		this.searchFieldsLayout = new GridLayout();
-		this.searchFieldsLayout.setRows(5);
+		this.searchFieldsLayout.setRows(6);
 		this.searchFieldsLayout.setColumns(3);
 		this.searchFieldsLayout.setSpacing(true);
 		this.searchFieldsLayout.addComponent(this.dateLabel, 1, 1);
 		this.searchFieldsLayout.addComponent(dateLayout, 2, 1);
 		this.searchFieldsLayout.addComponent(this.nameLabel, 1, 2);
 		this.searchFieldsLayout.addComponent(this.nameField, 2, 2);
-		this.searchFieldsLayout.addComponent(this.countryLabel, 1, 3);
-		this.searchFieldsLayout.addComponent(this.countryCombo, 2, 3);
-		this.searchFieldsLayout.addComponent(this.seasonLabel, 1, 4);
-		this.searchFieldsLayout.addComponent(this.seasonCombo, 2, 4);
+		this.searchFieldsLayout.addComponent(this.studyNameSearchOptionGroup, 2, 3);
+		this.searchFieldsLayout.addComponent(this.countryLabel, 1, 4);
+		this.searchFieldsLayout.addComponent(this.countryCombo, 2, 4);
+		this.searchFieldsLayout.addComponent(this.seasonLabel, 1, 5);
+		this.searchFieldsLayout.addComponent(this.seasonCombo, 2, 5);
 
 		this.buttonArea = this.layoutButtonArea();
 
@@ -257,6 +269,12 @@ public class StudySearchInputComponent extends VerticalLayout implements Initial
 
 	@Override
 	public void updateLabels() {
+
+		this.studyNameSearchOptionGroup.setItemCaption(StudySearchMatchingOption.EXACT_MATCHES, this.messageSource.getMessage(Message.EXACT_MATCHES));
+		this.studyNameSearchOptionGroup.setItemCaption(StudySearchMatchingOption.MATCHES_STARTING_WITH, this.messageSource.getMessage(Message.MATCHES_STARTING_WITH));
+		this.studyNameSearchOptionGroup.setItemCaption(StudySearchMatchingOption.MATCHES_CONTAINING,this.messageSource.getMessage(Message.MATCHES_CONTAINING));
+
+
 	}
 
 	private class ButtonClickListener implements ClickListener {
