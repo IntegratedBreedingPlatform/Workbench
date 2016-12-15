@@ -566,3 +566,17 @@ td.v-table-cell-content-accepted-value{
     background: #f6f6f6 !important;
 }
 
+/*Used in New Lot details pop-up view */
+.v-label-lotLabel{
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.lot-border {
+    border-top: 1px solid #e2e2e2;
+    border-top-width: 2px;
+}
+
+.v-label-bold{
+    font-weight: bold;
+}

@@ -1,17 +1,22 @@
 package org.generationcp.ibpworkbench.germplasm.inventory;
 
 import com.vaadin.data.Item;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.BaseTheme;
 
+import org.generationcp.commons.Listener.LotDetailsButtonClickListener;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.commons.constant.ColumnLabels;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.middleware.domain.inventory.LotDetails;
+import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.InventoryDataManager;
 import org.generationcp.middleware.manager.api.OntologyDataManager;
+import org.generationcp.middleware.pojos.Name;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -34,6 +39,9 @@ public class InventoryViewComponent extends VerticalLayout implements Initializi
 
 	@Autowired
 	private OntologyDataManager ontologyDataManager;
+
+	@Autowired
+	private GermplasmDataManager germplasmDataManager;
 
 	private final Integer listId;
 	private Integer recordId; // lrecId
@@ -85,7 +93,7 @@ public class InventoryViewComponent extends VerticalLayout implements Initializi
 		this.lotEntriesTable.addContainerProperty(InventoryViewComponent.LOT_STATUS, String.class, null);
 		this.lotEntriesTable.addContainerProperty(InventoryViewComponent.COMMENTS, String.class, null);
 		this.lotEntriesTable.addContainerProperty(InventoryViewComponent.STOCKID, Label.class, null);
-		this.lotEntriesTable.addContainerProperty(InventoryViewComponent.LOT_ID, Integer.class, null);
+		this.lotEntriesTable.addContainerProperty(InventoryViewComponent.LOT_ID, Button.class, null);
 
 		// Get the name of the headers from the ontology
 		this.lotEntriesTable.setColumnHeader(InventoryViewComponent.LOT_LOCATION, this.getTermNameFromOntology(ColumnLabels.LOT_LOCATION));
@@ -131,9 +139,19 @@ public class InventoryViewComponent extends VerticalLayout implements Initializi
 
 			newItem.getItemProperty(InventoryViewComponent.COMMENTS).setValue(lotEntry.getCommentOfLot());
 			newItem.getItemProperty(InventoryViewComponent.STOCKID).setValue(lotEntry.getStockIds());
-			newItem.getItemProperty(InventoryViewComponent.LOT_ID).setValue(lotEntry.getLotId());
+			//Added link for Lot details popup view
+			final Button lotButton = new Button(lotEntry.getLotId().toString(),
+					new LotDetailsButtonClickListener(lotEntry.getEntityIdOfLot(), this.getGermplasmName(lotEntry.getEntityIdOfLot()),
+							this.lotEntriesTable, lotEntry.getLotId()));
+			lotButton.setStyleName(BaseTheme.BUTTON_LINK);
+			newItem.getItemProperty(InventoryViewComponent.LOT_ID).setValue(lotButton);
 
 		}
+	}
+
+	private String getGermplasmName(Integer gid) {
+		final Name germplasmName = this.germplasmDataManager.getPreferredNameByGID(gid);
+		return germplasmName.getNval();
 	}
 
 	public void layoutComponents() {
