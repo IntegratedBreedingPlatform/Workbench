@@ -209,7 +209,7 @@ public class StudySearchInputComponent extends VerticalLayout implements Initial
 
 		this.searchPanel = new Panel();
 		this.searchPanel.setWidth("300px");
-		this.searchPanel.setHeight("250px");
+		this.searchPanel.setHeight("300px");
 		this.searchPanel.setLayout(searchLayout);
 
 		this.addComponent(this.searchCriteriaLabel);

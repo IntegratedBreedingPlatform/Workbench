@@ -87,7 +87,7 @@ public class StudySearchResultComponent extends VerticalLayout implements Initia
 	private void initializeSearchResultTable() {
 		this.searchResultTable = new Table();
 		this.searchResultTable.setWidth("98%");
-		this.searchResultTable.setHeight("250px");
+		this.searchResultTable.setHeight("300px");
 		this.searchResultTable.setSelectable(true);
 		this.searchResultTable.setMultiSelect(false);
 		this.searchResultTable.setImmediate(true);
