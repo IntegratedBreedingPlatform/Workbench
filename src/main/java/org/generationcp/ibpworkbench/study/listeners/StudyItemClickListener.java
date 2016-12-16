@@ -17,7 +17,7 @@ import org.generationcp.ibpworkbench.germplasm.GermplasmStudyInfoComponent;
 import org.generationcp.ibpworkbench.germplasm.containers.GermplasmIndexContainer;
 import org.generationcp.ibpworkbench.study.StudySearchMainComponent;
 import org.generationcp.ibpworkbench.study.StudyTreeComponent;
-import org.generationcp.ibpworkbench.study.containers.StudyDataIndexContainer;
+import org.generationcp.ibpworkbench.study.containers.StudyDataContainerBuilder;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.slf4j.Logger;
@@ -58,7 +58,7 @@ public class StudyItemClickListener implements ItemClickEvent.ItemClickListener 
 		}
 
 		if (this.source instanceof StudySearchMainComponent && event.getButton() == ClickEvent.BUTTON_LEFT) {
-			int studyId = Integer.valueOf(event.getItem().getItemProperty(StudyDataIndexContainer.STUDY_ID).getValue().toString());
+			int studyId = Integer.valueOf(event.getItem().getItemProperty(StudyDataContainerBuilder.STUDY_ID).getValue().toString());
 			try {
 				((StudySearchMainComponent) this.source).getSearchResultComponent().studyItemClickAction(studyId);
 			} catch (InternationalizableException e) {

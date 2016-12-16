@@ -36,11 +36,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class StudyDataIndexContainer {
+public class StudyDataContainerBuilder {
 
 	public static final String STUDY_ID = "ID";
 	public static final String STUDY_NAME = "NAME";
-	private static final Logger LOG = LoggerFactory.getLogger(StudyDataIndexContainer.class);
+	private static final Logger LOG = LoggerFactory.getLogger(StudyDataContainerBuilder.class);
 	// Factor Object
 	private static final Object FACTOR_NAME = "factorName";
 	private static final Object VARIATE_NAME = "variateName";
@@ -53,49 +53,49 @@ public class StudyDataIndexContainer {
 	private final StudyDataManager studyDataManager;
 	private final int studyId;
 
-	public StudyDataIndexContainer(StudyDataManager studyDataManager, int studyId) {
+	public StudyDataContainerBuilder(StudyDataManager studyDataManager, int studyId) {
 		this.studyDataManager = studyDataManager;
 		this.studyId = studyId;
 	}
 
-	private static void addFactorData(Container container, String factorName, String description, String propertyName, String scale,
+	private static void addFactorDataToContainer(Container container, String factorName, String description, String propertyName, String scale,
 			String method, String datatype, String value) {
 		Object itemId = container.addItem();
 		Item item = container.getItem(itemId);
-		item.getItemProperty(StudyDataIndexContainer.FACTOR_NAME).setValue(factorName);
-		item.getItemProperty(StudyDataIndexContainer.DESCRIPTION).setValue(description);
-		item.getItemProperty(StudyDataIndexContainer.PROPERTY_NAME).setValue(propertyName);
-		item.getItemProperty(StudyDataIndexContainer.SCALE_NAME).setValue(scale);
-		item.getItemProperty(StudyDataIndexContainer.METHOD_NAME).setValue(method);
-		item.getItemProperty(StudyDataIndexContainer.DATATYPE).setValue(datatype);
-		item.getItemProperty(StudyDataIndexContainer.VALUE).setValue(value);
+		item.getItemProperty(StudyDataContainerBuilder.FACTOR_NAME).setValue(factorName);
+		item.getItemProperty(StudyDataContainerBuilder.DESCRIPTION).setValue(description);
+		item.getItemProperty(StudyDataContainerBuilder.PROPERTY_NAME).setValue(propertyName);
+		item.getItemProperty(StudyDataContainerBuilder.SCALE_NAME).setValue(scale);
+		item.getItemProperty(StudyDataContainerBuilder.METHOD_NAME).setValue(method);
+		item.getItemProperty(StudyDataContainerBuilder.DATATYPE).setValue(datatype);
+		item.getItemProperty(StudyDataContainerBuilder.VALUE).setValue(value);
 	}
 
-	private static void addVariateData(Container container, String variateName, String description, String propertyName, String scale,
+	private static void addVariateDataToContainer(Container container, String variateName, String description, String propertyName, String scale,
 			String method, String datatype, String value) {
 		Object itemId = container.addItem();
 		Item item = container.getItem(itemId);
-		item.getItemProperty(StudyDataIndexContainer.VARIATE_NAME).setValue(variateName);
-		item.getItemProperty(StudyDataIndexContainer.DESCRIPTION).setValue(description);
-		item.getItemProperty(StudyDataIndexContainer.PROPERTY_NAME).setValue(propertyName);
-		item.getItemProperty(StudyDataIndexContainer.SCALE_NAME).setValue(scale);
-		item.getItemProperty(StudyDataIndexContainer.METHOD_NAME).setValue(method);
-		item.getItemProperty(StudyDataIndexContainer.DATATYPE).setValue(datatype);
-		item.getItemProperty(StudyDataIndexContainer.VALUE).setValue(value);
+		item.getItemProperty(StudyDataContainerBuilder.VARIATE_NAME).setValue(variateName);
+		item.getItemProperty(StudyDataContainerBuilder.DESCRIPTION).setValue(description);
+		item.getItemProperty(StudyDataContainerBuilder.PROPERTY_NAME).setValue(propertyName);
+		item.getItemProperty(StudyDataContainerBuilder.SCALE_NAME).setValue(scale);
+		item.getItemProperty(StudyDataContainerBuilder.METHOD_NAME).setValue(method);
+		item.getItemProperty(StudyDataContainerBuilder.DATATYPE).setValue(datatype);
+		item.getItemProperty(StudyDataContainerBuilder.VALUE).setValue(value);
 	}
 
-	public IndexedContainer getStudyFactor() throws InternationalizableException {
+	public IndexedContainer buildIndexedContainerForStudyFactor() throws InternationalizableException {
 		try {
 			IndexedContainer container = new IndexedContainer();
 
 			// Create the container properties
-			container.addContainerProperty(StudyDataIndexContainer.FACTOR_NAME, String.class, "");
-			container.addContainerProperty(StudyDataIndexContainer.DESCRIPTION, String.class, "");
-			container.addContainerProperty(StudyDataIndexContainer.PROPERTY_NAME, String.class, "");
-			container.addContainerProperty(StudyDataIndexContainer.SCALE_NAME, String.class, "");
-			container.addContainerProperty(StudyDataIndexContainer.METHOD_NAME, String.class, "");
-			container.addContainerProperty(StudyDataIndexContainer.DATATYPE, String.class, "");
-			container.addContainerProperty(StudyDataIndexContainer.VALUE, String.class, "");
+			container.addContainerProperty(StudyDataContainerBuilder.FACTOR_NAME, String.class, "");
+			container.addContainerProperty(StudyDataContainerBuilder.DESCRIPTION, String.class, "");
+			container.addContainerProperty(StudyDataContainerBuilder.PROPERTY_NAME, String.class, "");
+			container.addContainerProperty(StudyDataContainerBuilder.SCALE_NAME, String.class, "");
+			container.addContainerProperty(StudyDataContainerBuilder.METHOD_NAME, String.class, "");
+			container.addContainerProperty(StudyDataContainerBuilder.DATATYPE, String.class, "");
+			container.addContainerProperty(StudyDataContainerBuilder.VALUE, String.class, "");
 
 			Study study = this.studyDataManager.getStudy(this.studyId);
 			VariableList variableList = study.getConditions();
@@ -124,7 +124,8 @@ public class StudyDataIndexContainer {
 					}
 				}
 
-				StudyDataIndexContainer.addFactorData(container, name, description, propertyName, scaleName, methodName, dataType, value);
+				StudyDataContainerBuilder
+						.addFactorDataToContainer(container, name, description, propertyName, scaleName, methodName, dataType, value);
 			}
 
 			return container;
@@ -134,18 +135,18 @@ public class StudyDataIndexContainer {
 		}
 	}
 
-	public IndexedContainer getStudyVariate() throws InternationalizableException {
+	public IndexedContainer buildIndexedContainerForStudyVariate() throws InternationalizableException {
 		try {
 			IndexedContainer container = new IndexedContainer();
 
 			// Create the container properties
-			container.addContainerProperty(StudyDataIndexContainer.VARIATE_NAME, String.class, "");
-			container.addContainerProperty(StudyDataIndexContainer.DESCRIPTION, String.class, "");
-			container.addContainerProperty(StudyDataIndexContainer.PROPERTY_NAME, String.class, "");
-			container.addContainerProperty(StudyDataIndexContainer.SCALE_NAME, String.class, "");
-			container.addContainerProperty(StudyDataIndexContainer.METHOD_NAME, String.class, "");
-			container.addContainerProperty(StudyDataIndexContainer.DATATYPE, String.class, "");
-			container.addContainerProperty(StudyDataIndexContainer.VALUE, String.class, "");
+			container.addContainerProperty(StudyDataContainerBuilder.VARIATE_NAME, String.class, "");
+			container.addContainerProperty(StudyDataContainerBuilder.DESCRIPTION, String.class, "");
+			container.addContainerProperty(StudyDataContainerBuilder.PROPERTY_NAME, String.class, "");
+			container.addContainerProperty(StudyDataContainerBuilder.SCALE_NAME, String.class, "");
+			container.addContainerProperty(StudyDataContainerBuilder.METHOD_NAME, String.class, "");
+			container.addContainerProperty(StudyDataContainerBuilder.DATATYPE, String.class, "");
+			container.addContainerProperty(StudyDataContainerBuilder.VALUE, String.class, "");
 
 			Study study = this.studyDataManager.getStudy(this.studyId);
 			VariableList variableList = study.getConstants();
@@ -174,7 +175,8 @@ public class StudyDataIndexContainer {
 					}
 				}
 
-				StudyDataIndexContainer.addVariateData(container, name, description, propertyName, scaleName, methodName, dataType, value);
+				StudyDataContainerBuilder
+						.addVariateDataToContainer(container, name, description, propertyName, scaleName, methodName, dataType, value);
 			}
 
 			return container;
@@ -183,12 +185,12 @@ public class StudyDataIndexContainer {
 		}
 	}
 
-	public IndexedContainer getStudies(StudySearchMatchingOption studySearchMatchingOption, String name, String country, Season season, Integer date) throws InternationalizableException {
+	public IndexedContainer buildIndexedContainerForStudies(StudySearchMatchingOption studySearchMatchingOption, String name, String country, Season season, Integer date) throws InternationalizableException {
 		IndexedContainer container = new IndexedContainer();
 
 		// Create the container properties
-		container.addContainerProperty(StudyDataIndexContainer.STUDY_ID, Integer.class, "");
-		container.addContainerProperty(StudyDataIndexContainer.STUDY_NAME, String.class, "");
+		container.addContainerProperty(StudyDataContainerBuilder.STUDY_ID, Integer.class, "");
+		container.addContainerProperty(StudyDataContainerBuilder.STUDY_NAME, String.class, "");
 		Map<String, StudyReference> mapChecker = new HashMap<String, StudyReference>();
 		try {
 			BrowseStudyQueryFilter filter = new BrowseStudyQueryFilter();
@@ -204,23 +206,23 @@ public class StudyDataIndexContainer {
 					StudyReference studyRef = studyResultSet.next();
 					if (mapChecker.get(studyRef.getId().toString()) == null) {
 						mapChecker.put(studyRef.getId().toString(), studyRef);
-						this.addStudyData(container, studyRef.getId(), studyRef.getName());
+						this.addStudyDataToContainer(container, studyRef.getId(), studyRef.getName());
 					}
 				}
 			}
 		} catch (MiddlewareQueryException e) {
-			StudyDataIndexContainer.LOG.error("Error encountered while searching for studies", e);
+			StudyDataContainerBuilder.LOG.error("Error encountered while searching for studies", e);
 			throw new InternationalizableException(e, Message.ERROR_DATABASE, Message.ERROR_PLEASE_CONTACT_ADMINISTRATOR);
 		}
 
 		return container;
 	}
 
-	private void addStudyData(Container container, Integer id, String name) {
+	private void addStudyDataToContainer(Container container, Integer id, String name) {
 		Object itemId = container.addItem();
 		Item item = container.getItem(itemId);
-		item.getItemProperty(StudyDataIndexContainer.STUDY_ID).setValue(id);
-		item.getItemProperty(StudyDataIndexContainer.STUDY_NAME).setValue(name);
+		item.getItemProperty(StudyDataContainerBuilder.STUDY_ID).setValue(id);
+		item.getItemProperty(StudyDataContainerBuilder.STUDY_NAME).setValue(name);
 
 	}
 

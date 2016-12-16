@@ -10,7 +10,7 @@ import com.vaadin.ui.VerticalLayout;
 import org.dellroad.stuff.vaadin.ContextApplication;
 import org.generationcp.ibpworkbench.GermplasmStudyBrowserLayout;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.study.containers.StudyDataIndexContainer;
+import org.generationcp.ibpworkbench.study.containers.StudyDataContainerBuilder;
 import org.generationcp.ibpworkbench.study.listeners.StudyItemClickListener;
 import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -20,7 +20,6 @@ import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.StudySearchMatchingOption;
 import org.generationcp.middleware.domain.oms.StudyType;
-import org.generationcp.middleware.domain.search.filter.BrowseStudyQueryFilter;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Season;
@@ -48,7 +47,7 @@ public class StudySearchResultComponent extends VerticalLayout implements Initia
 
 	private Label totalEntriesLabel;
 	private Table searchResultTable;
-	private StudyDataIndexContainer studyDataIndexContainer;
+	private StudyDataContainerBuilder studyDataContainerBuilder;
 
 	private final StudySearchMainComponent parentComponent;
 
@@ -75,7 +74,7 @@ public class StudySearchResultComponent extends VerticalLayout implements Initia
 
 	@Override
 	public void instantiateComponents() {
-		this.studyDataIndexContainer = new StudyDataIndexContainer(this.studyDataManager, 0);
+		this.studyDataContainerBuilder = new StudyDataContainerBuilder(this.studyDataManager, 0);
 
 		// search Results
 		this.totalEntriesLabel = new Label("", Label.CONTENT_XHTML);
@@ -156,7 +155,7 @@ public class StudySearchResultComponent extends VerticalLayout implements Initia
 			this.searchResultTable.removeAllItems();
 		}
 
-		IndexedContainer dataSourceResult = this.studyDataIndexContainer.getStudies(studySearchMatchingOption, name, country, season, date);
+		IndexedContainer dataSourceResult = this.studyDataContainerBuilder.buildIndexedContainerForStudies(studySearchMatchingOption, name, country, season, date);
 
 		if (dataSourceResult.size() == 0) {
 			this.updateNoOfEntries(0);
@@ -170,7 +169,7 @@ public class StudySearchResultComponent extends VerticalLayout implements Initia
 	}
 
 	public void studyItemClickAction(Integer studyId) {
-		this.studyDataIndexContainer = new StudyDataIndexContainer(this.studyDataManager, studyId);
+		this.studyDataContainerBuilder = new StudyDataContainerBuilder(this.studyDataManager, studyId);
 
 		try {
 			Study study = this.studyDataManager.getStudy(Integer.valueOf(studyId));

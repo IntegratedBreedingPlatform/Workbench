@@ -14,7 +14,7 @@ package org.generationcp.ibpworkbench.study;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Table;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.study.containers.StudyDataIndexContainer;
+import org.generationcp.ibpworkbench.study.containers.StudyDataContainerBuilder;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.middleware.manager.api.StudyDataManager;
@@ -53,10 +53,10 @@ public class StudyFactorComponent extends Table implements InitializingBean, Int
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		StudyDataIndexContainer dataIndexContainer = new StudyDataIndexContainer(this.studyDataManager, this.studyId);
+		StudyDataContainerBuilder studyDataContainerBuilder = new StudyDataContainerBuilder(this.studyDataManager, this.studyId);
 		IndexedContainer dataStudyFactor;
 
-		dataStudyFactor = dataIndexContainer.getStudyFactor();
+		dataStudyFactor = studyDataContainerBuilder.buildIndexedContainerForStudyFactor();
 
 		this.setContainerDataSource(dataStudyFactor);
 
