@@ -1,22 +1,21 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * <p/>
  * Generation Challenge Programme (GCP)
- *
- *
+ * <p/>
+ * <p/>
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.study;
 
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Table;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.study.containers.StudyDataContainerBuilder;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.study.containers.StudyDataContainerBuilder;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,15 +45,15 @@ public class StudyFactorComponent extends Table implements InitializingBean, Int
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	public StudyFactorComponent(StudyDataManager studyDataManager, int studyId) {
+	public StudyFactorComponent(final StudyDataManager studyDataManager, final int studyId) {
 		this.studyDataManager = studyDataManager;
 		this.studyId = studyId;
 	}
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		StudyDataContainerBuilder studyDataContainerBuilder = new StudyDataContainerBuilder(this.studyDataManager, this.studyId);
-		IndexedContainer dataStudyFactor;
+		final StudyDataContainerBuilder studyDataContainerBuilder = new StudyDataContainerBuilder(this.studyDataManager, this.studyId);
+		final IndexedContainer dataStudyFactor;
 
 		dataStudyFactor = studyDataContainerBuilder.buildIndexedContainerForStudyFactor();
 
@@ -66,8 +65,9 @@ public class StudyFactorComponent extends Table implements InitializingBean, Int
 		this.setSizeFull();
 		this.setColumnReorderingAllowed(true);
 		this.setColumnCollapsingAllowed(true);
-		this.setColumnHeaders(new String[] {StudyFactorComponent.NAME, StudyFactorComponent.DESC, StudyFactorComponent.PROP,
-				StudyFactorComponent.SCA, StudyFactorComponent.METH, StudyFactorComponent.DTYPE, StudyFactorComponent.VALUE});
+		this.setColumnHeaders(
+				new String[] {StudyFactorComponent.NAME, StudyFactorComponent.DESC, StudyFactorComponent.PROP, StudyFactorComponent.SCA,
+						StudyFactorComponent.METH, StudyFactorComponent.DTYPE, StudyFactorComponent.VALUE});
 	}
 
 	@Override

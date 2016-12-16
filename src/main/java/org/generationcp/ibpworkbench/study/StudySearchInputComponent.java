@@ -1,12 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * <p/>
  * Generation Challenge Programme (GCP)
- *
- *
+ * <p/>
+ * <p/>
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.study;
@@ -27,8 +26,6 @@ import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import org.generationcp.ibpworkbench.GermplasmStudyBrowserLayout;
-import org.generationcp.ibpworkbench.Message;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -36,7 +33,8 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.commons.vaadin.validator.RegexValidator;
-import org.generationcp.middleware.domain.dms.Study;
+import org.generationcp.ibpworkbench.GermplasmStudyBrowserLayout;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.domain.dms.StudySearchMatchingOption;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Season;
@@ -60,13 +58,11 @@ import java.util.List;
  *
  */
 @Configurable
-public class StudySearchInputComponent extends VerticalLayout implements InitializingBean, InternationalizableComponent,
-		GermplasmStudyBrowserLayout {
+public class StudySearchInputComponent extends VerticalLayout
+		implements InitializingBean, InternationalizableComponent, GermplasmStudyBrowserLayout {
 
 	private static final Logger LOG = LoggerFactory.getLogger(StudySearchInputComponent.class);
 	private static final long serialVersionUID = 1L;
-
-	List<Study> studies;
 
 	private Panel searchPanel;
 	private Label dateLabel;
@@ -95,12 +91,11 @@ public class StudySearchInputComponent extends VerticalLayout implements Initial
 
 	@Autowired
 	private GermplasmDataManager germplasmDataManager;
-	
+
 	@Autowired
 	private PlatformTransactionManager transactionManager;
 
-
-	public StudySearchInputComponent(StudySearchMainComponent parentComponent) {
+	public StudySearchInputComponent(final StudySearchMainComponent parentComponent) {
 		this.parentComponent = parentComponent;
 	}
 
@@ -115,10 +110,11 @@ public class StudySearchInputComponent extends VerticalLayout implements Initial
 	@Override
 	public void instantiateComponents() {
 		this.dateYearField = new TextField();
-		this.dateYearField.setDescription(this.messageSource.getMessage(Message.DATE_YEAR_FIELD_DESCRIPTION)); // "Input at least the year for the search date."
+		this.dateYearField.setDescription(
+				this.messageSource.getMessage(Message.DATE_YEAR_FIELD_DESCRIPTION)); // "Input at least the year for the search date."
 		this.dateYearField.setWidth(1, Sizeable.UNITS_CM);
-		this.dateYearField.addValidator(new RegexValidator(this.messageSource.getMessage(Message.ERROR_YEAR_FORMAT),
-				"[1-3][0-9][0-9][0-9]", true)); // "Year must be in format YYYY"
+		this.dateYearField.addValidator(new RegexValidator(this.messageSource.getMessage(Message.ERROR_YEAR_FORMAT), "[1-3][0-9][0-9][0-9]",
+				true)); // "Year must be in format YYYY"
 
 		this.dateMonthField = new TextField();
 		this.dateMonthField.setWidth(1, Sizeable.UNITS_CM);
@@ -127,8 +123,8 @@ public class StudySearchInputComponent extends VerticalLayout implements Initial
 
 		this.dateDayField = new TextField();
 		this.dateDayField.setWidth(1, Sizeable.UNITS_CM);
-		this.dateDayField
-				.addValidator(new RegexValidator(this.messageSource.getMessage(Message.ERROR_DAY_FORMAT), "[1-9]|[0-3][0-9]", true)); // "Day must be in format DD"
+		this.dateDayField.addValidator(new RegexValidator(this.messageSource.getMessage(Message.ERROR_DAY_FORMAT), "[1-9]|[0-3][0-9]",
+				true)); // "Day must be in format DD"
 
 		this.nameField = new TextField();
 		this.nameField.setDescription(this.messageSource.getMessage(Message.EXACT_STUDY_NAME_TEXT));
@@ -154,7 +150,6 @@ public class StudySearchInputComponent extends VerticalLayout implements Initial
 		this.studyNameSearchOptionGroup.addItem(StudySearchMatchingOption.MATCHES_CONTAINING);
 		this.studyNameSearchOptionGroup.setValue(StudySearchMatchingOption.EXACT_MATCHES);
 
-
 	}
 
 	@Override
@@ -164,7 +159,7 @@ public class StudySearchInputComponent extends VerticalLayout implements Initial
 
 	@Override
 	public void addListeners() {
-		ButtonClickListener buttonClickListener = new ButtonClickListener();
+		final ButtonClickListener buttonClickListener = new ButtonClickListener();
 		this.searchButton.addListener(buttonClickListener);
 		this.clearButton.addListener(buttonClickListener);
 		this.searchButton.setClickShortcut(KeyCode.ENTER);
@@ -176,7 +171,7 @@ public class StudySearchInputComponent extends VerticalLayout implements Initial
 		this.setSpacing(true);
 		this.setWidth("300px");
 
-		GridLayout dateLayout = new GridLayout();
+		final GridLayout dateLayout = new GridLayout();
 		dateLayout.setRows(3);
 		dateLayout.setColumns(4);
 		dateLayout.addComponent(this.dateYearField, 1, 1);
@@ -202,7 +197,7 @@ public class StudySearchInputComponent extends VerticalLayout implements Initial
 
 		this.buttonArea = this.layoutButtonArea();
 
-		VerticalLayout searchLayout = new VerticalLayout();
+		final VerticalLayout searchLayout = new VerticalLayout();
 		searchLayout.addComponent(this.searchFieldsLayout);
 		searchLayout.addComponent(this.buttonArea);
 		searchLayout.setComponentAlignment(this.buttonArea, Alignment.BOTTOM_CENTER);
@@ -217,7 +212,7 @@ public class StudySearchInputComponent extends VerticalLayout implements Initial
 	}
 
 	protected Component layoutButtonArea() {
-		HorizontalLayout buttonLayout = new HorizontalLayout();
+		final HorizontalLayout buttonLayout = new HorizontalLayout();
 		buttonLayout.setSpacing(true);
 		buttonLayout.setMargin(true, false, false, false);
 
@@ -231,17 +226,17 @@ public class StudySearchInputComponent extends VerticalLayout implements Initial
 		List<Country> countries = null;
 		try {
 			countries = this.germplasmDataManager.getAllCountry();
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			StudySearchInputComponent.LOG.error("Error encountered while getting countries", e);
 			throw new InternationalizableException(e, Message.ERROR_DATABASE, Message.ERROR_PLEASE_CONTACT_ADMINISTRATOR);
 		}
 
-		BeanItemContainer<Country> beanItemContainer = new BeanItemContainer<Country>(Country.class);
-		for (Country country : countries) {
+		final BeanItemContainer<Country> beanItemContainer = new BeanItemContainer<Country>(Country.class);
+		for (final Country country : countries) {
 			beanItemContainer.addBean(country);
 		}
 
-		ComboBox comboBox = new ComboBox();
+		final ComboBox comboBox = new ComboBox();
 		comboBox.setContainerDataSource(beanItemContainer);
 		comboBox.setItemCaptionPropertyId("isoabbr");
 		comboBox.setImmediate(true);
@@ -250,10 +245,10 @@ public class StudySearchInputComponent extends VerticalLayout implements Initial
 	}
 
 	private ComboBox createSeasonComboBox() {
-		Season[] seasons = Season.values();
+		final Season[] seasons = Season.values();
 
-		ComboBox comboBox = new ComboBox();
-		for (Season season : seasons) {
+		final ComboBox comboBox = new ComboBox();
+		for (final Season season : seasons) {
 			comboBox.addItem(season);
 		}
 		comboBox.setImmediate(true);
@@ -270,10 +265,12 @@ public class StudySearchInputComponent extends VerticalLayout implements Initial
 	@Override
 	public void updateLabels() {
 
-		this.studyNameSearchOptionGroup.setItemCaption(StudySearchMatchingOption.EXACT_MATCHES, this.messageSource.getMessage(Message.EXACT_MATCHES));
-		this.studyNameSearchOptionGroup.setItemCaption(StudySearchMatchingOption.MATCHES_STARTING_WITH, this.messageSource.getMessage(Message.MATCHES_STARTING_WITH));
-		this.studyNameSearchOptionGroup.setItemCaption(StudySearchMatchingOption.MATCHES_CONTAINING,this.messageSource.getMessage(Message.MATCHES_CONTAINING));
-
+		this.studyNameSearchOptionGroup
+				.setItemCaption(StudySearchMatchingOption.EXACT_MATCHES, this.messageSource.getMessage(Message.EXACT_MATCHES));
+		this.studyNameSearchOptionGroup.setItemCaption(StudySearchMatchingOption.MATCHES_STARTING_WITH,
+				this.messageSource.getMessage(Message.MATCHES_STARTING_WITH));
+		this.studyNameSearchOptionGroup
+				.setItemCaption(StudySearchMatchingOption.MATCHES_CONTAINING, this.messageSource.getMessage(Message.MATCHES_CONTAINING));
 
 	}
 
@@ -285,8 +282,9 @@ public class StudySearchInputComponent extends VerticalLayout implements Initial
 		public void buttonClick(final Button.ClickEvent event) {
 			final TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
 			transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+
 				@Override
-				protected void doInTransactionWithoutResult(TransactionStatus status) {
+				protected void doInTransactionWithoutResult(final TransactionStatus status) {
 					Integer dateValue = null;
 					String nameValue = null;
 					String countryValue = null;
@@ -296,21 +294,24 @@ public class StudySearchInputComponent extends VerticalLayout implements Initial
 						if (StudySearchInputComponent.this.areDateFieldsValid()) {
 							dateValue = StudySearchInputComponent.this.getDateValue();
 
-							if (StudySearchInputComponent.this.nameField != null && StudySearchInputComponent.this.nameField.getValue() != null) {
+							if (StudySearchInputComponent.this.nameField != null
+									&& StudySearchInputComponent.this.nameField.getValue() != null) {
 								nameValue = StudySearchInputComponent.this.nameField.getValue().toString();
 							}
 							if (StudySearchInputComponent.this.countryCombo != null
 									&& StudySearchInputComponent.this.countryCombo.getValue() != null) {
 								countryValue = ((Country) StudySearchInputComponent.this.countryCombo.getValue()).getIsofull();
 							}
-							if (StudySearchInputComponent.this.seasonCombo != null && StudySearchInputComponent.this.seasonCombo.getValue() != null) {
+							if (StudySearchInputComponent.this.seasonCombo != null
+									&& StudySearchInputComponent.this.seasonCombo.getValue() != null) {
 								seasonValue = (Season) StudySearchInputComponent.this.seasonCombo.getValue();
 							}
 
-							StudySearchMatchingOption studySearchMatchingOption = (StudySearchMatchingOption) studyNameSearchOptionGroup.getValue();
+							final StudySearchMatchingOption studySearchMatchingOption =
+									(StudySearchMatchingOption) studyNameSearchOptionGroup.getValue();
 
-							StudySearchInputComponent.this.parentComponent.getSearchResultComponent().searchStudy(studySearchMatchingOption, nameValue, countryValue,
-									seasonValue, dateValue);
+							StudySearchInputComponent.this.parentComponent.getSearchResultComponent()
+									.searchStudy(studySearchMatchingOption, nameValue, countryValue, seasonValue, dateValue);
 						}
 
 					} else if (event.getButton() == StudySearchInputComponent.this.clearButton) {
@@ -334,27 +335,28 @@ public class StudySearchInputComponent extends VerticalLayout implements Initial
 			this.dateMonthField.validate();
 			this.dateDayField.validate();
 
-			Integer yearValue = this.getYearValue();
-			Integer monthValue = this.getMonthValue();
-			Integer dayValue = this.getDayValue();
+			final Integer yearValue = this.getYearValue();
+			final Integer monthValue = this.getMonthValue();
+			final Integer dayValue = this.getDayValue();
 
 			if (monthValue > 0 && yearValue == 0) {
-				MessageNotifier.showRequiredFieldError(this.getWindow(), this.messageSource.getMessage(Message.ERROR_MONTH_WITHOUT_YEAR)); // "Month cannot be specified without the year."
+				MessageNotifier.showRequiredFieldError(this.getWindow(),
+						this.messageSource.getMessage(Message.ERROR_MONTH_WITHOUT_YEAR)); // "Month cannot be specified without the year."
 				return false;
 			}
 
 			if (dayValue > 0 && (yearValue == 0 || monthValue == 0)) {
-				MessageNotifier.showRequiredFieldError(this.getWindow(),
-						this.messageSource.getMessage(Message.ERROR_DAY_WITHOUT_MONTH_YEAR)); // "Day cannot be specified without the year or month."
+				MessageNotifier.showRequiredFieldError(this.getWindow(), this.messageSource
+						.getMessage(Message.ERROR_DAY_WITHOUT_MONTH_YEAR)); // "Day cannot be specified without the year or month."
 				return false;
 			}
 
 			return true;
 
-		} catch (InvalidValueException e) {
+		} catch (final InvalidValueException e) {
 			MessageNotifier.showRequiredFieldError(this.getWindow(), e.getMessage());
 			return false;
-		} catch (NumberFormatException e) {
+		} catch (final NumberFormatException e) {
 			MessageNotifier.showRequiredFieldError(this.getWindow(), e.getMessage());
 			return false;
 		}
@@ -363,9 +365,9 @@ public class StudySearchInputComponent extends VerticalLayout implements Initial
 	// TODO soon to be moved in a Date Utility Class in IBPCommons
 	public Integer getDateValue() {
 		Integer dateValue = null;
-		Integer yearValue = this.getYearValue();
-		Integer monthValue = this.getMonthValue();
-		Integer dayValue = this.getDayValue();
+		final Integer yearValue = this.getYearValue();
+		final Integer monthValue = this.getMonthValue();
+		final Integer dayValue = this.getDayValue();
 
 		dateValue = DateUtil.getIBPDateNoZeroes(yearValue, monthValue, dayValue);
 
@@ -379,7 +381,7 @@ public class StudySearchInputComponent extends VerticalLayout implements Initial
 	// TODO soon to be moved in a Date Utility Class in IBPCommons
 	private Integer getDayValue() {
 		if (this.dateDayField != null && this.dateDayField.getValue() != null) {
-			String value = this.dateDayField.getValue().toString();
+			final String value = this.dateDayField.getValue().toString();
 
 			if (value.length() > 0) {
 				return Integer.valueOf(this.dateDayField.getValue().toString());
@@ -390,7 +392,7 @@ public class StudySearchInputComponent extends VerticalLayout implements Initial
 
 	private Integer getYearValue() {
 		if (this.dateYearField != null && this.dateYearField.getValue() != null) {
-			String value = this.dateYearField.getValue().toString();
+			final String value = this.dateYearField.getValue().toString();
 			if (value.length() > 0) {
 				return Integer.valueOf(value);
 			}
@@ -400,7 +402,7 @@ public class StudySearchInputComponent extends VerticalLayout implements Initial
 
 	private Integer getMonthValue() {
 		if (this.dateMonthField != null && this.dateMonthField.getValue() != null) {
-			String value = this.dateMonthField.getValue().toString();
+			final String value = this.dateMonthField.getValue().toString();
 
 			if (value.length() > 0) {
 				return Integer.valueOf(this.dateMonthField.getValue().toString());
