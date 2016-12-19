@@ -179,4 +179,7 @@ public class InventoryViewComponent extends VerticalLayout implements Initializi
 		return columnLabels.getTermNameFromOntology(this.ontologyDataManager);
 	}
 
+	public void setGermplasmDataManager(GermplasmDataManager germplasmDataManager) {
+		this.germplasmDataManager = germplasmDataManager;
+	}
 }

@@ -9,8 +9,10 @@ import org.generationcp.middleware.data.initializer.ListInventoryDataInitializer
 import org.generationcp.middleware.domain.inventory.LotDetails;
 import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.domain.oms.TermId;
+import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.InventoryDataManager;
 import org.generationcp.middleware.manager.api.OntologyDataManager;
+import org.generationcp.middleware.pojos.Name;
 import org.generationcp.middleware.pojos.ims.LotStatus;
 import org.junit.Assert;
 import org.junit.Before;
@@ -22,6 +24,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.vaadin.data.Item;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Table;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -107,7 +110,11 @@ public class InventoryViewComponentTest {
 	public void testInitializeValues() {
 		final List<? extends LotDetails> inventoryDetails = ListInventoryDataInitializer.createLotDetails(1);
 		Mockito.when(this.inventoryDataManager.getLotDetailsForGermplasm(Mockito.anyInt())).thenReturn((List<LotDetails>) inventoryDetails);
-
+		final GermplasmDataManager germplasmDataManager = Mockito.mock(GermplasmDataManager.class);
+		final Name name = Mockito.mock(Name.class);
+		this.inventoryView.setGermplasmDataManager(germplasmDataManager);
+		Mockito.when(germplasmDataManager.getPreferredNameByGID(Mockito.anyInt())).thenReturn(name);
+		Mockito.when(name.getNval()).thenReturn("");
 		this.inventoryView.initializeValues();
 
 		Item item = this.inventoryView.getTable().getItem(1);
@@ -119,7 +126,8 @@ public class InventoryViewComponentTest {
 		Assert.assertEquals(LotStatus.ACTIVE.name(), item.getItemProperty(InventoryViewComponent.LOT_STATUS).getValue());
 		Assert.assertEquals("Lot Comment1", item.getItemProperty(InventoryViewComponent.COMMENTS).getValue());
 		Assert.assertEquals("STK1-1,STK2-2,STK-3", item.getItemProperty(InventoryViewComponent.STOCKID).getValue().toString());
-		Assert.assertEquals("1", item.getItemProperty(InventoryViewComponent.LOT_ID).getValue().toString());
+		Button lotIdButton = (Button) item.getItemProperty(InventoryViewComponent.LOT_ID).getValue();
+		Assert.assertEquals("1", lotIdButton.getCaption().toString());
 
 	}
 }
