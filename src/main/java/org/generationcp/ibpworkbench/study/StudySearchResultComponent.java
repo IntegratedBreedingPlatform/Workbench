@@ -1,4 +1,3 @@
-
 package org.generationcp.ibpworkbench.study;
 
 import com.vaadin.data.util.IndexedContainer;
@@ -8,16 +7,17 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import org.dellroad.stuff.vaadin.ContextApplication;
-import org.generationcp.ibpworkbench.GermplasmStudyBrowserLayout;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.study.containers.StudyDataIndexContainer;
-import org.generationcp.ibpworkbench.study.listeners.StudyItemClickListener;
 import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.GermplasmStudyBrowserLayout;
+import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.study.containers.StudyDataContainerBuilder;
+import org.generationcp.ibpworkbench.study.listeners.StudyItemClickListener;
 import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.domain.dms.Study;
+import org.generationcp.middleware.domain.dms.StudySearchMatchingOption;
 import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -35,8 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Configurable
-public class StudySearchResultComponent extends VerticalLayout implements InitializingBean, InternationalizableComponent,
-		GermplasmStudyBrowserLayout {
+public class StudySearchResultComponent extends VerticalLayout
+		implements InitializingBean, InternationalizableComponent, GermplasmStudyBrowserLayout {
 
 	private static final long serialVersionUID = 1L;
 	private final static Logger LOG = LoggerFactory.getLogger(StudySearchResultComponent.class);
@@ -46,7 +46,7 @@ public class StudySearchResultComponent extends VerticalLayout implements Initia
 
 	private Label totalEntriesLabel;
 	private Table searchResultTable;
-	private StudyDataIndexContainer studyDataIndexContainer;
+	private StudyDataContainerBuilder studyDataContainerBuilder;
 
 	private final StudySearchMainComponent parentComponent;
 
@@ -59,7 +59,7 @@ public class StudySearchResultComponent extends VerticalLayout implements Initia
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
 
-	public StudySearchResultComponent(StudySearchMainComponent parentComponent) {
+	public StudySearchResultComponent(final StudySearchMainComponent parentComponent) {
 		this.parentComponent = parentComponent;
 	}
 
@@ -73,7 +73,7 @@ public class StudySearchResultComponent extends VerticalLayout implements Initia
 
 	@Override
 	public void instantiateComponents() {
-		this.studyDataIndexContainer = new StudyDataIndexContainer(this.studyDataManager, 0);
+		this.studyDataContainerBuilder = new StudyDataContainerBuilder(this.studyDataManager, 0);
 
 		// search Results
 		this.totalEntriesLabel = new Label("", Label.CONTENT_XHTML);
@@ -86,7 +86,7 @@ public class StudySearchResultComponent extends VerticalLayout implements Initia
 	private void initializeSearchResultTable() {
 		this.searchResultTable = new Table();
 		this.searchResultTable.setWidth("98%");
-		this.searchResultTable.setHeight("250px");
+		this.searchResultTable.setHeight("300px");
 		this.searchResultTable.setSelectable(true);
 		this.searchResultTable.setMultiSelect(false);
 		this.searchResultTable.setImmediate(true);
@@ -104,13 +104,13 @@ public class StudySearchResultComponent extends VerticalLayout implements Initia
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public String generateDescription(Component source, Object itemId, Object propertyId) {
+			public String generateDescription(final Component source, final Object itemId, final Object propertyId) {
 				return StudySearchResultComponent.this.messageSource.getMessage(Message.CLICK_TO_VIEW_STUDY_DETAILS);
 			}
 		});
 	}
 
-	public void setSearchResultDataSource(IndexedContainer dataSource) {
+	public void setSearchResultDataSource(final IndexedContainer dataSource) {
 		this.searchResultTable.setContainerDataSource(dataSource);
 	}
 
@@ -139,7 +139,7 @@ public class StudySearchResultComponent extends VerticalLayout implements Initia
 
 	}
 
-	public void updateNoOfEntries(int count) {
+	public void updateNoOfEntries(final int count) {
 		this.totalEntriesLabel.setValue(this.messageSource.getMessage(Message.SEARCH_RESULT_LABEL) + ": " + "  <b>" + count + "</b>");
 	}
 
@@ -149,12 +149,13 @@ public class StudySearchResultComponent extends VerticalLayout implements Initia
 		this.addComponent(this.searchResultTable);
 	}
 
-	public void searchStudy(String name, String country, Season season, Integer date) {
+	public void searchStudy(final StudySearchMatchingOption studySearchMatchingOption, final String name, final String country, final Season season, final Integer date) {
 		if (this.searchResultTable != null) {
 			this.searchResultTable.removeAllItems();
 		}
 
-		IndexedContainer dataSourceResult = this.studyDataIndexContainer.getStudies(name, country, season, date);
+		final IndexedContainer dataSourceResult =
+				this.studyDataContainerBuilder.buildIndexedContainerForStudies(studySearchMatchingOption, name, country, season, date);
 
 		if (dataSourceResult.size() == 0) {
 			this.updateNoOfEntries(0);
@@ -167,22 +168,22 @@ public class StudySearchResultComponent extends VerticalLayout implements Initia
 		}
 	}
 
-	public void studyItemClickAction(Integer studyId) {
-		this.studyDataIndexContainer = new StudyDataIndexContainer(this.studyDataManager, studyId);
+	public void studyItemClickAction(final Integer studyId) {
+		this.studyDataContainerBuilder = new StudyDataContainerBuilder(this.studyDataManager, studyId);
 
 		try {
-			Study study = this.studyDataManager.getStudy(Integer.valueOf(studyId));
+			final Study study = this.studyDataManager.getStudy(Integer.valueOf(studyId));
 			// don't show study details if study record is a Folder ("F")
-			String studyType = study.getType().getName();
+			final String studyType = study.getType().getName();
 			if (!this.hasChildStudy(studyId) && !this.isFolderType(studyType)) {
 				this.parentComponent.createStudyInfoTab(studyId);
 			}
-		} catch (NumberFormatException e) {
+		} catch (final NumberFormatException e) {
 			StudySearchResultComponent.LOG.error(e.toString() + "\n" + e.getStackTrace());
 			e.printStackTrace();
 			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_INVALID_FORMAT),
 					this.messageSource.getMessage(Message.ERROR_IN_NUMBER_FORMAT));
-		} catch (MiddlewareException e) {
+		} catch (final MiddlewareException e) {
 			StudySearchResultComponent.LOG.error(e.toString() + "\n" + e.getStackTrace());
 			e.printStackTrace();
 			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_IN_GETTING_STUDY_DETAIL_BY_ID),
@@ -194,14 +195,14 @@ public class StudySearchResultComponent extends VerticalLayout implements Initia
 		return ContextUtil.getProjectInContext(this.workbenchDataManager, ContextApplication.currentRequest());
 	}
 
-	private boolean hasChildStudy(int studyId) {
+	private boolean hasChildStudy(final int studyId) {
 
 		List<Reference> studyChildren = new ArrayList<Reference>();
 
 		try {
-			studyChildren
-					.addAll(this.studyDataManager.getChildrenOfFolder(Integer.valueOf(studyId), this.getCurrentProject().getUniqueID(), StudyType.nurseriesAndTrials()));
-		} catch (MiddlewareQueryException e) {
+			studyChildren.addAll(this.studyDataManager
+					.getChildrenOfFolder(Integer.valueOf(studyId), this.getCurrentProject().getUniqueID(), StudyType.nurseriesAndTrials()));
+		} catch (final MiddlewareQueryException e) {
 			StudySearchResultComponent.LOG.error(e.toString() + "\n" + e.getStackTrace());
 			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
 					this.messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
@@ -226,11 +227,4 @@ public class StudySearchResultComponent extends VerticalLayout implements Initia
 		}
 	}
 
-	public void resetSearchResultTable() {
-		this.searchResultTable.removeAllItems();
-	}
-
-	public Table getSearchResultTable() {
-		return this.searchResultTable;
-	}
 }
