@@ -13,10 +13,10 @@ package org.generationcp.ibpworkbench.study;
 
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Table;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.study.containers.StudyDataIndexContainer;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.study.containers.StudyDataContainerBuilder;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,17 +45,17 @@ public class StudyVariateComponent extends Table implements InitializingBean, In
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	public StudyVariateComponent(StudyDataManager studyDataManager, int studyId) {
+	public StudyVariateComponent(final StudyDataManager studyDataManager, final int studyId) {
 		this.studyDataManager = studyDataManager;
 		this.studyId = studyId;
 	}
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		StudyDataIndexContainer dataIndexContainer = new StudyDataIndexContainer(this.studyDataManager, this.studyId);
-		IndexedContainer dataStudyFactor;
+		final StudyDataContainerBuilder studyDataContainerBuilder = new StudyDataContainerBuilder(this.studyDataManager, this.studyId);
+		final IndexedContainer dataStudyFactor;
 
-		dataStudyFactor = dataIndexContainer.getStudyVariate();
+		dataStudyFactor = studyDataContainerBuilder.buildIndexedContainerForStudyVariate();
 		this.setContainerDataSource(dataStudyFactor);
 
 		this.setSelectable(true);
