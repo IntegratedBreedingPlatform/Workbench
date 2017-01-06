@@ -23,7 +23,7 @@ export class RoleService{
   private getHeaders(){
     let headers = new Headers();
     headers.append('Accept', 'application/json');
-    headers.append('X-Auth-Token', JSON.parse(localStorage["bms.xAuthToken"]).token);
+    headers.append('Authorization', 'Bearer ' + JSON.parse(localStorage["bms.xAuthToken"]).token);
     return headers;
   }
 }
