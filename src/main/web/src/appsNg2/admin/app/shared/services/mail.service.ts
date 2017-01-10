@@ -2,6 +2,7 @@ import { Injectable , Inject} from '@angular/core';
 import { Http, Response, Headers } from '@angular/http';
 import { User } from './../models/user.model';
 import { Observable } from 'rxjs/Rx';
+import ServiceHelper from "./service.helper";
 
 @Injectable()
 export class MailService{
@@ -19,9 +20,6 @@ export class MailService{
   }
 
   private getHeaders(){
-    let headers = new Headers();
-    headers.append('Accept', 'application/json');
-    headers.append('X-Auth-Token', JSON.parse(localStorage["bms.xAuthToken"]).token);
-    return headers;
+    return ServiceHelper.getHeaders();
   }
 }

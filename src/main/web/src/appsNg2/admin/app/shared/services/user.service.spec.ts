@@ -31,7 +31,7 @@ export function main() {
         });
         header = new Headers();
         header.append('Accept', 'application/json');
-        header.append('X-Auth-Token', 'token')
+        header.append('Authorization', 'Bearer ' + 'token')
       });
 
       it('Should get an User',

@@ -2,6 +2,7 @@ import { Injectable, Inject } from '@angular/core';
 import { Http, Response, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { User } from './../models/user.model';
+import ServiceHelper from "./service.helper";
 
 @Injectable()
 export class UserService{
@@ -42,11 +43,8 @@ export class UserService{
           .put(`${this.baseUrl}/users/${user.id}`, JSON.stringify(user), { headers: headers });
   }
 
-  private getHeaders(){
-    let headers = new Headers();
-    headers.append('Accept', 'application/json');
-    headers.append('X-Auth-Token', JSON.parse(localStorage["bms.xAuthToken"]).token);
-    return headers;
+  private getHeaders() {
+      return ServiceHelper.getHeaders();
   }
 
   private mapUsers(response:Response): User[]{
