@@ -375,7 +375,7 @@ public class StudySearchInputComponent extends VerticalLayout
 			dateValue = null;
 		}
 
-		return null;
+		return dateValue;
 	}
 
 	// TODO soon to be moved in a Date Utility Class in IBPCommons
