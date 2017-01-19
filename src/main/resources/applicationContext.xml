@@ -108,9 +108,6 @@
 		scope="request">
 		<aop:scoped-proxy />
 	</bean>
-	
-	<bean id="toolLicenseUtil" class="org.generationcp.commons.spring.util.ToolLicenseUtil" factory-method="getInstance">
-	</bean>
 
 	<bean id="cloner" class="com.rits.cloning.Cloner" />
 
