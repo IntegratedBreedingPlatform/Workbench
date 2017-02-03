@@ -130,4 +130,22 @@ public class InventoryViewComponentTest {
 		Assert.assertEquals("1", lotIdButton.getCaption().toString());
 
 	}
+
+	@Test
+	public void testInitializeValuesWithNoScale() {
+		final List<? extends LotDetails> inventoryDetails = ListInventoryDataInitializer.createLotDetails(1);
+		inventoryDetails.get(0).setLotScaleNameAbbr(null);
+		Mockito.when(this.inventoryDataManager.getLotDetailsForGermplasm(Mockito.anyInt())).thenReturn((List<LotDetails>) inventoryDetails);
+		final GermplasmDataManager germplasmDataManager = Mockito.mock(GermplasmDataManager.class);
+		final Name name = Mockito.mock(Name.class);
+		this.inventoryView.setGermplasmDataManager(germplasmDataManager);
+		Mockito.when(germplasmDataManager.getPreferredNameByGID(Mockito.anyInt())).thenReturn(name);
+		Mockito.when(name.getNval()).thenReturn("");
+		this.inventoryView.initializeValues();
+
+		Item item = this.inventoryView.getTable().getItem(1);
+
+		Assert.assertEquals("100.0", item.getItemProperty(InventoryViewComponent.ACTUAL_BALANCE).getValue());
+		Assert.assertEquals("100.0", item.getItemProperty(InventoryViewComponent.AVAILABLE_BALANCE).getValue());
+	}
 }
