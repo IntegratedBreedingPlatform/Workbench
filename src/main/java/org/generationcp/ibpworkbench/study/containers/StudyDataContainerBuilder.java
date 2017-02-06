@@ -14,6 +14,7 @@ import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.Study;
@@ -30,11 +31,14 @@ import org.generationcp.middleware.manager.Season;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Configurable;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Configurable
 public class StudyDataContainerBuilder {
 
 	public static final String STUDY_ID = "ID";
@@ -51,6 +55,9 @@ public class StudyDataContainerBuilder {
 	private static final Object VALUE = "value";
 	private final StudyDataManager studyDataManager;
 	private final int studyId;
+
+	@Resource
+	private ContextUtil contextUtil;
 
 	public StudyDataContainerBuilder(final StudyDataManager studyDataManager, final int studyId) {
 		this.studyDataManager = studyDataManager;
@@ -199,6 +206,7 @@ public class StudyDataContainerBuilder {
 			filter.setSeason(season);
 			filter.setStartDate(date);
 			filter.setStudySearchMatchingOption(studySearchMatchingOption);
+			filter.setProgramUUID(contextUtil.getCurrentProgramUUID());
 			final StudyResultSet studyResultSet = this.studyDataManager.searchStudies(filter, 50);
 
 			if (studyResultSet != null) {
