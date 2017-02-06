@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.dellroad.stuff.vaadin.ContextApplication;
 import org.dellroad.stuff.vaadin.SpringContextApplication;
-import org.generationcp.commons.spring.util.ToolLicenseUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.slf4j.Logger;
@@ -44,9 +43,6 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 
 	@Resource
 	private LogoutHandler rememberMeServices;
-	
-	@Resource
-	private ToolLicenseUtil toolLicenseUtil;
 
 	private HttpServletRequest request;
 	private HttpServletResponse response;
@@ -121,12 +117,7 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 
 	protected void assemble() {
 		this.initialize();
-		this.cacheLicenseInfo();
 		this.setMainWindow(new WorkbenchMainView());
-	}
-	
-	public void cacheLicenseInfo() {
-		toolLicenseUtil.loadToolLicenseCache();
 	}
 
 	public void toggleScripts() {

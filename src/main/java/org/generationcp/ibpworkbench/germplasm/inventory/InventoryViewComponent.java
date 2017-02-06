@@ -123,16 +123,27 @@ public class InventoryViewComponent extends VerticalLayout implements Initializi
 			}
 			newItem.getItemProperty(InventoryViewComponent.LOT_LOCATION).setValue(lotLocation);
 
-			String actualBalance = "";
-			if (lotEntry.getActualLotBalance() != null) {
-				actualBalance = lotEntry.getActualLotBalance() + lotEntry.getLotScaleNameAbbr();
+			String lotScaleAbbr = "";
+
+			if(lotEntry.getLotScaleNameAbbr() != null) {
+				lotScaleAbbr = lotEntry.getLotScaleNameAbbr();
 			}
+
+
+			StringBuilder actualBalance = new StringBuilder("");
+			if (lotEntry.getActualLotBalance() != null) {
+				actualBalance.append(lotEntry.getActualLotBalance());
+				actualBalance.append(lotScaleAbbr);
+			}
+
 			newItem.getItemProperty(InventoryViewComponent.ACTUAL_BALANCE).setValue(actualBalance);
 
-			String availableBalance = "";
+			StringBuilder availableBalance = new StringBuilder("");
 			if (lotEntry.getAvailableLotBalance() != null) {
-				availableBalance = lotEntry.getAvailableLotBalance() + lotEntry.getLotScaleNameAbbr();
+				availableBalance.append(lotEntry.getAvailableLotBalance());
+				availableBalance.append(lotScaleAbbr);
 			}
+
 			newItem.getItemProperty(InventoryViewComponent.AVAILABLE_BALANCE).setValue(availableBalance);
 
 			newItem.getItemProperty(InventoryViewComponent.LOT_STATUS).setValue(lotEntry.getLotStatus());

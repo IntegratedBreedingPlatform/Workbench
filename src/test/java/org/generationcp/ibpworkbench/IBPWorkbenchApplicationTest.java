@@ -4,7 +4,6 @@ package org.generationcp.ibpworkbench;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.generationcp.commons.spring.util.ToolLicenseUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -32,9 +31,6 @@ public class IBPWorkbenchApplicationTest {
 
 	@Mock
 	private Authentication auth;
-	
-	@Mock
-	private ToolLicenseUtil toolLicenseUtil;
 
 	@InjectMocks
 	private IBPWorkbenchApplication workbenchApp;
@@ -52,12 +48,6 @@ public class IBPWorkbenchApplicationTest {
 
 		Mockito.verify(this.rememberMeServices).logout(this.request, this.response, this.auth);
 		Mockito.verify(this.currentContext).setAuthentication(null);
-	}
-	
-	@Test
-	public void testCacheLicenseInfo() {
-		workbenchApp.cacheLicenseInfo();
-		Mockito.verify(this.toolLicenseUtil).loadToolLicenseCache();
 	}
 
 }
