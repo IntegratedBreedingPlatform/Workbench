@@ -18,27 +18,10 @@
 		<envConfig>${user.name}</envConfig>
 	</properties>
 
-	<distributionManagement>
-		<repository>
-			<id>efficio-nexus</id>
-			<name>Releases</name>
-			<url>http://apps.leafnode.io:8081/nexus/content/repositories/releases/</url>
-		</repository>
-		<snapshotRepository>
-			<id>efficio-nexus</id>
-			<name>Snapshots</name>
-			<url>http://apps.leafnode.io:8081/nexus/content/repositories/snapshots/</url>
-		</snapshotRepository>
-	</distributionManagement>
-
 	<repositories>
 		<repository>
 			<id>vaadin-addons</id>
 			<url>http://maven.vaadin.com/vaadin-addons</url>
-		</repository>
-		<repository>
-			<id>gcp-efficio-repo</id>
-			<url>http://apps.leafnode.io:8081/nexus/content/repositories/thirdparty/</url>
 		</repository>
 	</repositories>
 
