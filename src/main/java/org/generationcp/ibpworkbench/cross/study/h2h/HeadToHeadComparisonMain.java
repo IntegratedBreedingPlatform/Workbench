@@ -42,17 +42,23 @@ public class HeadToHeadComparisonMain extends VerticalLayout implements Initiali
 		this.setSpacing(true);
 
 		this.titleLayout = new HorizontalLayout();
+		this.titleLayout.setDebugId("titleLayout");
 		this.titleLayout.setSpacing(true);
 		this.setTitleContent("");
 		this.addComponent(this.titleLayout);
 
 		this.accordion = new Accordion();
+		this.accordion.setDebugId("accordion");
 		this.accordion.setWidth("1000px");
 
 		this.screenFour = new ResultsComponent();
+		this.screenFour.setDebugId("screenFour");
 		this.screenThree = new EnvironmentsAvailableComponent(this, this.screenFour);
+		this.screenThree.setDebugId("screenThree");
 		this.screenTwo = new TraitsAvailableComponent(this, this.screenThree);
+		this.screenTwo.setDebugId("screenTwo");
 		this.screenOne = new SpecifyGermplasmsComponent(this, this.screenTwo, this.screenFour);
+		this.screenOne.setDebugId("screenOne");
 
 		this.firstTab = this.accordion.addTab(this.screenOne, "Specify the Test and Standard Entries to Compare");
 		this.secondTab = this.accordion.addTab(this.screenTwo, "Review Traits Available for Comparison");
@@ -97,6 +103,7 @@ public class HeadToHeadComparisonMain extends VerticalLayout implements Initiali
 
 		String title = "Main Head to Head Query <h2>" + HeadToHeadComparisonMain.VERSION + "</h2>";
 		this.mainTitle = new Label();
+		this.mainTitle.setDebugId("mainTitle");
 		this.mainTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 		this.mainTitle.setWidth("370px");
 		this.mainTitle.setContentMode(Label.CONTENT_XHTML);

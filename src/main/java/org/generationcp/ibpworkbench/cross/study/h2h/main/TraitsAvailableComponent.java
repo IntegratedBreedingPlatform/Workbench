@@ -111,22 +111,27 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 		this.setWidth("1000px");
 
 		this.selectTraitLabel = new Label(this.messageSource.getMessage(Message.HEAD_TO_HEAD_SELECT_TRAITS));
+		this.selectTraitLabel.setDebugId("selectTraitLabel");
 		this.selectTraitLabel.setImmediate(true);
 		this.addComponent(this.selectTraitLabel, "top:20px;left:30px");
 
 		this.selectTraitReminderLabel = new Label(this.messageSource.getMessage(Message.HEAD_TO_HEAD_SELECT_TRAITS_REMINDER));
+		this.selectTraitReminderLabel.setDebugId("selectTraitReminderLabel");
 		this.selectTraitReminderLabel.setImmediate(true);
 		this.selectTraitReminderLabel.setStyleName("gcp-bold-italic");
 		this.addComponent(this.selectTraitReminderLabel, "top:20px;left:400px");
 
 		this.tablePanel = new Panel();
+		this.tablePanel.setDebugId("tablePanel");
 		this.tablePanel.setWidth("950px");
 		this.tablePanel.setHeight("400px");
 
 		this.tableLayout = new AbsoluteLayout();
+		this.tableLayout.setDebugId("tableLayout");
 		this.tableLayout.setWidth("950px");
 
 		this.traitsTable = new Table();
+		this.traitsTable.setDebugId("traitsTable");
 		this.traitsTable.setWidth("948px");
 		this.traitsTable.setHeight("380px");
 		this.traitsTable.setImmediate(true);
@@ -170,6 +175,7 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 		});
 
 		this.tagUnTagAll = new CheckBox();
+		this.tagUnTagAll.setDebugId("tagUnTagAll");
 		this.tagUnTagAll.setValue(false);
 		this.tagUnTagAll.setImmediate(true);
 		this.tagUnTagAll.setData(TraitsAvailableComponent.TAG_ALL);
@@ -181,6 +187,7 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 		this.addComponent(this.tablePanel, "top:40px;left:30px");
 
 		this.nextButton = new Button("Next");
+		this.nextButton.setDebugId("nextButton");
 		this.nextButton.setData(TraitsAvailableComponent.NEXT_BUTTON_ID);
 		this.nextButton.addListener(new HeadToHeadCrossStudyMainButtonClickListener(this));
 		this.nextButton.setEnabled(false);
@@ -189,6 +196,7 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 		this.addComponent(this.nextButton, "top:450px;left:500px");
 
 		this.backButton = new Button("Back");
+		this.backButton.setDebugId("backButton");
 		this.backButton.setData(TraitsAvailableComponent.BACK_BUTTON_ID);
 		this.backButton.addListener(new HeadToHeadCrossStudyMainButtonClickListener(this));
 		this.backButton.setWidth("80px");
@@ -198,6 +206,7 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 
 	private ComboBox getDirectionComboBox() {
 		ComboBox combo = new ComboBox();
+		combo.setDebugId("combo");
 		combo.setNullSelectionAllowed(false);
 		combo.setTextInputAllowed(false);
 		combo.setImmediate(true);
@@ -318,6 +327,7 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 				// we get the 1st one since its all the same for this specific list
 				TraitInfo info = traitInfoList.get(0);
 				CheckBox box = new CheckBox();
+				box.setDebugId("box");
 				ComboBox comboBox = this.getDirectionComboBox();
 				box.setImmediate(true);
 				Integer tableId = Integer.valueOf(id);

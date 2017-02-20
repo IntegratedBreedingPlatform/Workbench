@@ -109,8 +109,10 @@ public class CategoricalVariatesSection extends VerticalLayout implements Initia
 		}
 
 		this.lblSectionTitle = new Label(this.messageSource.getMessage(Message.CATEGORICAL_TRAITS_SECTION_TITLE));
+		this.lblSectionTitle.setDebugId("lblSectionTitle");
 
 		this.traitsTable = new Table();
+		this.traitsTable.setDebugId("traitsTable");
 		this.traitsTable.setImmediate(true);
 		this.traitsTable.setColumnCollapsingAllowed(true);
 		this.traitsTable.setColumnReorderingAllowed(true);
@@ -202,6 +204,7 @@ public class CategoricalVariatesSection extends VerticalLayout implements Initia
 				for (CategoricalTraitInfo traitInfo : this.categoricalValueObjects) {
 
 					Button traitNameLink = new Button(traitInfo.getName());
+					traitNameLink.setDebugId("traitNameLink");
 					traitNameLink.setImmediate(true);
 					traitNameLink.setStyleName(BaseTheme.BUTTON_LINK);
 					traitNameLink.setData(CategoricalVariatesSection.TRAIT_BUTTON_ID);
@@ -213,6 +216,7 @@ public class CategoricalVariatesSection extends VerticalLayout implements Initia
 
 					ComboBox priorityComboBox = CrossStudyUtil.getTraitWeightsComboBox();
 					TextField txtLimits = new TextField();
+					txtLimits.setDebugId("txtLimits");
 					txtLimits.setEnabled(false);
 					txtLimits.setImmediate(true);
 					txtLimits.setRequired(true);

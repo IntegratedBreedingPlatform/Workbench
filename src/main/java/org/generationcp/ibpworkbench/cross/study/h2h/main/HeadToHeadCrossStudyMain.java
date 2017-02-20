@@ -59,12 +59,17 @@ public class HeadToHeadCrossStudyMain extends VerticalLayout implements Initiali
 		this.setTitleContent();
 
 		this.accordion = new Accordion();
+		this.accordion.setDebugId("accordion");
 		this.accordion.setWidth("1000px");
 
 		this.screenFour = new ResultsComponent(this);
+		this.screenFour.setDebugId("screenFour");
 		this.screenThree = new EnvironmentFilter(this, this.screenFour);
+		this.screenThree.setDebugId("screenThree");
 		this.screenTwo = new TraitsAvailableComponent(this, this.screenThree);
+		this.screenTwo.setDebugId("screenTwo");
 		this.screenOne = new SpecifyGermplasmsComponent(this, this.screenTwo);
+		this.screenOne.setDebugId("screenOne");
 
 		this.firstTab = this.accordion.addTab(this.screenOne, this.messageSource.getMessage(Message.SPECIFY_ENTRIES));
 		this.secondTab = this.accordion.addTab(this.screenTwo, this.messageSource.getMessage(Message.SELECT_TRAITS));
@@ -122,10 +127,12 @@ public class HeadToHeadCrossStudyMain extends VerticalLayout implements Initiali
 
 	private void setTitleContent() {
 		this.titleLayout = new HorizontalLayout();
+		this.titleLayout.setDebugId("titleLayout");
 		this.titleLayout.setSpacing(true);
 		this.titleLayout.setHeight("40px");
 
 		this.toolTitle = new Label("Main Head to Head Query");
+		this.toolTitle.setDebugId("toolTitle");
 		this.toolTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 		this.toolTitle.setContentMode(Label.CONTENT_XHTML);
 		this.toolTitle.setWidth("360px");

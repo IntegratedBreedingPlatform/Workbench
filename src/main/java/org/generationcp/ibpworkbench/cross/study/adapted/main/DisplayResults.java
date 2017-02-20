@@ -147,6 +147,7 @@ public class DisplayResults extends AbsoluteLayout implements InitializingBean, 
 
 		// initialize tables
 		this.germplasmColTable = new Table();
+		this.germplasmColTable.setDebugId("germplasmColTable");
 		this.germplasmColTable.setWidth(GERMPLASM_COL_TABLE_WIDTH);
 		this.germplasmColTable.setHeight(GERMPLASM_COL_TABLE_HEIGHT);
 		this.germplasmColTable.setImmediate(true);
@@ -155,6 +156,7 @@ public class DisplayResults extends AbsoluteLayout implements InitializingBean, 
 		this.germplasmColTable.setColumnReorderingAllowed(false);
 
 		this.traitsColTable = new Table();
+		this.traitsColTable.setDebugId("traitsColTable");
 		this.traitsColTable.setWidth("490px");
 		this.traitsColTable.setHeight(GERMPLASM_COL_TABLE_HEIGHT);
 		this.traitsColTable.setImmediate(true);
@@ -163,6 +165,7 @@ public class DisplayResults extends AbsoluteLayout implements InitializingBean, 
 		this.traitsColTable.setColumnReorderingAllowed(false);
 
 		this.combinedScoreTagColTable = new Table();
+		this.combinedScoreTagColTable.setDebugId("combinedScoreTagColTable");
 		this.combinedScoreTagColTable.setWidth("160px");
 		this.combinedScoreTagColTable.setHeight(GERMPLASM_COL_TABLE_HEIGHT);
 		this.combinedScoreTagColTable.setImmediate(true);
@@ -171,27 +174,32 @@ public class DisplayResults extends AbsoluteLayout implements InitializingBean, 
 		this.combinedScoreTagColTable.setColumnReorderingAllowed(false);
 
 		this.tagAllCheckBoxOnCombinedScoreTagColTable = new CheckBox();
+		this.tagAllCheckBoxOnCombinedScoreTagColTable.setDebugId("tagAllCheckBoxOnCombinedScoreTagColTable");
 		this.tagAllCheckBoxOnCombinedScoreTagColTable.setImmediate(true);
 
 		// initialize buttons
 		this.prevEntryBtn = new Button(this.messageSource.getMessage(Message.PREV_ARROW));
+		this.prevEntryBtn.setDebugId("prevEntryBtn");
 		this.prevEntryBtn.setData(DisplayResults.NEXT_ENTRY_BUTTON_ID);
 		this.prevEntryBtn.setWidth("50px");
 		this.prevEntryBtn.setEnabled(true);
 		this.prevEntryBtn.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
 		this.nextEntryBtn = new Button(this.messageSource.getMessage(Message.NEXT_ARROW));
+		this.nextEntryBtn.setDebugId("nextEntryBtn");
 		this.nextEntryBtn.setData(DisplayResults.NEXT_ENTRY_BUTTON_ID);
 		this.nextEntryBtn.setWidth("50px");
 		this.nextEntryBtn.setEnabled(true);
 		this.nextEntryBtn.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
 		this.backButton = new Button(this.messageSource.getMessage(Message.BACK));
+		this.backButton.setDebugId("backButton");
 		this.backButton.setData(DisplayResults.BACK_BUTTON_ID);
 		this.backButton.setWidth("100px");
 		this.backButton.setEnabled(true);
 
 		this.saveButton = new Button(this.messageSource.getMessage(Message.SAVE_GERMPLASMS_TO_NEW_LIST_LABEL));
+		this.saveButton.setDebugId("saveButton");
 		this.saveButton.setData(DisplayResults.SAVE_BUTTON_ID);
 		this.saveButton.setWidth("100px");
 		this.saveButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
@@ -267,6 +275,7 @@ public class DisplayResults extends AbsoluteLayout implements InitializingBean, 
 		this.setWidth("1000px");
 
 		AbsoluteLayout resultTable = new AbsoluteLayout();
+		resultTable.setDebugId("resultTable");
 		resultTable.setHeight("470px");
 		resultTable.setWidth("1000px");
 		resultTable.addComponent(this.germplasmColTable, "top:20px;left:20px");
@@ -531,6 +540,7 @@ public class DisplayResults extends AbsoluteLayout implements InitializingBean, 
 			// make GID as link
 			String gidString = String.valueOf(gid);
 			Button gidButton = new Button(gidString, new GidLinkButtonClickListener(gidString));
+			gidButton.setDebugId("gidButton");
 			gidButton.setStyleName(BaseTheme.BUTTON_LINK);
 			gidButton.setDescription("Click to view Germplasm information");
 			itemObj[1] = gidButton;
@@ -583,6 +593,7 @@ public class DisplayResults extends AbsoluteLayout implements InitializingBean, 
 			itemObj[noOfColumns - 2] = row.getCombinedScore();
 
 			CheckBox box = new CheckBox();
+			box.setDebugId("box");
 			box.setImmediate(true);
 			box.setData(row);
 			if (this.selectedGermplasmMap.containsKey(gid)) {
@@ -1028,6 +1039,7 @@ public class DisplayResults extends AbsoluteLayout implements InitializingBean, 
 		Window parentWindow = this.getWindow();
 
 		this.saveGermplasmListDialog = new SaveToListDialog(this.mainScreen, this, parentWindow, this.selectedGermplasmMap);
+		this.saveGermplasmListDialog.setDebugId("saveGermplasmListDialog");
 		this.saveGermplasmListDialog.addStyleName(Reindeer.WINDOW_LIGHT);
 
 		parentWindow.addWindow(this.saveGermplasmListDialog);

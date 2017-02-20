@@ -59,9 +59,11 @@ public class WelcomeScreen extends AbsoluteLayout implements InitializingBean, I
 		this.setWidth("1000px");
 
 		this.introductionMessage = new Label(this.messageSource.getMessage(Message.QUERY_FOR_ADAPTED_GERMPLASM_INTRODUCTION_MESSAGE));
+		this.introductionMessage.setDebugId("introductionMessage");
 		this.addComponent(this.introductionMessage, "top:30px; left:30px;");
 
 		this.nextButton = new Button(this.messageSource.getMessage(Message.NEXT));
+		this.nextButton.setDebugId("nextButton");
 		this.nextButton.setData(WelcomeScreen.NEXT_BUTTON_ID);
 		this.nextButton.addListener(new AdaptedGermplasmButtonClickListener(this));
 		this.nextButton.setWidth("80px");

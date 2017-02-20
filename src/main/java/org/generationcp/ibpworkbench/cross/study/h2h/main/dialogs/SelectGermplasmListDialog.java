@@ -75,12 +75,17 @@ public class SelectGermplasmListDialog extends BaseSubWindow implements Initiali
 
 	protected void initializeComponents() {
 		this.mainLayout = new VerticalLayout();
+		this.mainLayout.setDebugId("mainLayout");
 		this.selectGermplasmList = new SelectGermplasmListComponent(null, this);
+		this.selectGermplasmList.setDebugId("selectGermplasmList");
 
 		this.buttonArea = new HorizontalLayout();
+		this.buttonArea.setDebugId("buttonArea");
 		this.cancelButton = new Button(); // "Cancel"
+		this.cancelButton.setDebugId("cancelButton");
 		this.cancelButton.setData(SelectGermplasmListDialog.CLOSE_BUTTON_ID);
 		this.doneButton = new Button(); // "Done"
+		this.doneButton.setDebugId("doneButton");
 		this.doneButton.setData(SelectGermplasmListDialog.ADD_BUTTON_ID);
 		this.doneButton.setEnabled(false);
 		this.doneButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
