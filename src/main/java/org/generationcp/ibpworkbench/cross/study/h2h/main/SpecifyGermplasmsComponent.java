@@ -495,36 +495,10 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout implements Initia
 
 	private void deleteAllSingleEntriesInTableListData(boolean isTestEntry, List<GermplasmListData> germplasmListData, int leftSize,
 			int rightSize) {
-		// we delete the single entrie
+		// we delete the single entries
 		for (String idToDelete : this.singleEntriesSet) {
-			for (GermplasmListData listData : germplasmListData) {
-
-				String tempId = "";
-				if (isTestEntry) {
-					tempId = " :" + listData.getGid().toString();
-				} else {
-					tempId = listData.getGid().toString() + ": ";
-				}
-
-				if (idToDelete.equalsIgnoreCase(tempId)) {
-					if (isTestEntry) {
-						if (rightSize != 1) {
-							this.entriesTable.removeItem(idToDelete);
-							this.tableEntriesId.remove(idToDelete);
-						}
-					} else {
-						if (leftSize != 1) {
-							this.entriesTable.removeItem(idToDelete);
-							this.tableEntriesId.remove(idToDelete);
-						}
-					}
-				}
-
-				if (!idToDelete.equalsIgnoreCase(tempId)) {
-					this.entriesTable.removeItem(idToDelete);
-					this.tableEntriesId.remove(idToDelete);
-				}
-			}
+			this.entriesTable.removeItem(idToDelete);
+			this.tableEntriesId.remove(idToDelete);
 		}
 
 		this.entriesTable.setPageLength(0);
