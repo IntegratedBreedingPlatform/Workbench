@@ -89,6 +89,10 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout implements Initia
 
 	private static final String TEST_ENTRY_COLUMN_ID = "SpecifyGermplasmsComponent Test Entry Column Id";
 	private static final String STANDARD_ENTRY_COLUMN_ID = "SpecifyGermplasmsComponent Standard Entry Column Id";
+	private static final String TEST_ENTRY_GID = "SpecifyGermplasmsComponent Test Entry GID";
+	private static final String STANDARD_ENTRY_GID = "SpecifyGermplasmsComponent Standard Entry GID";
+	private static final String TEST_ENTRY_GROUPID = "SpecifyGermplasmsComponent Test Entry Group Id";
+	private static final String STANDARD_ENTRY_GROUPID = "SpecifyGermplasmsComponent Standard Entry Group Id";
 
 	private static final Action ACTION_SELECT_ALL = new Action("Select All");
 	private static final Action ACTION_DELETE = new Action("Delete selected");
@@ -105,6 +109,7 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout implements Initia
 	private static final String STANDARD_ENTRY = "STANDARD";
 
 	private Map<String, String> germplasmIdNameMap;
+	private Map<String, String> germplasmIdMGIDMap;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -193,14 +198,23 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout implements Initia
 		this.entriesTable.setPageLength(0);
 
 		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.TEST_ENTRY_COLUMN_ID, String.class, null);
-		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.STANDARD_ENTRY_COLUMN_ID, String.class, null);
-
 		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.TEST_ENTRY_COLUMN_ID, "Test Entry");
+		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.TEST_ENTRY_GID, String.class, null);
+		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.TEST_ENTRY_GID, "GID");
+		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.TEST_ENTRY_GROUPID, String.class, "-");
+		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.TEST_ENTRY_GROUPID, "GROUP ID");
+		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.STANDARD_ENTRY_COLUMN_ID, String.class, null);
 		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.STANDARD_ENTRY_COLUMN_ID, "Standard Entry");
-
+		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.STANDARD_ENTRY_GID, String.class, null);
+		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.STANDARD_ENTRY_GID, "GID");
+		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.STANDARD_ENTRY_GROUPID, String.class, "-");
+		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.STANDARD_ENTRY_GROUPID, "GROUP ID");
+		
+		this.entriesTable.setVisibleColumns(new Object[] {SpecifyGermplasmsComponent.TEST_ENTRY_COLUMN_ID, SpecifyGermplasmsComponent.TEST_ENTRY_GID, SpecifyGermplasmsComponent.TEST_ENTRY_GROUPID, SpecifyGermplasmsComponent.STANDARD_ENTRY_COLUMN_ID, SpecifyGermplasmsComponent.STANDARD_ENTRY_GID, SpecifyGermplasmsComponent.STANDARD_ENTRY_GROUPID});
 		this.entriesTable.setSelectable(true);
 		this.entriesTable.setMultiSelect(true);
 		this.entriesTable.setNullSelectionAllowed(false);
+		
 
 		this.entriesTable.addActionHandler(new Action.Handler() {
 
@@ -247,6 +261,7 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout implements Initia
 			// we set the new set since we already cleared it
 			this.singleEntriesSet = new HashSet<String>();
 			this.germplasmIdNameMap = new HashMap<String, String>();
+			this.germplasmIdMGIDMap = new HashMap<String, String>();
 		}
 
 		if (this.isEitherTableEntriesEmpty()) {
@@ -387,6 +402,7 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout implements Initia
 
 		if (this.isTableEntriesEmpty()) {
 			this.germplasmIdNameMap = new HashMap<String, String>();
+			this.germplasmIdMGIDMap = new HashMap<String, String>();
 		}
 
 		// create a germplasm list with the germplasm as the sole list item
@@ -397,7 +413,7 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout implements Initia
 			// GID and Designation are fields that will be checked/used
 			germplasmData.setGid(germplasm.getGid());
 			germplasmData.setDesignation(germplasm.getPreferredName().getNval());
-
+			germplasmData.setGroupId(germplasm.getMgid());
 			germplasmListData.add(germplasmData);
 		}
 
@@ -413,7 +429,7 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout implements Initia
 
 	}
 
-	private void permutateGermplasmListToPartnerEntries(boolean isTestEntry, Map<String, String> testMap, Map<String, String> standardMap,
+	void permutateGermplasmListToPartnerEntries(boolean isTestEntry, Map<String, String> testMap, Map<String, String> standardMap,
 			List<TablesEntries> tableEntriesList, List<GermplasmListData> germplasmListData) {
 
 		Map<String, String> ownMap = testMap;
@@ -432,23 +448,32 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout implements Initia
 		if (partnerMap.keySet().isEmpty()) {
 			// just add on one side
 			for (GermplasmListData listData : germplasmListData) {
+				
 				String gid = listData.getGid().toString();
 				String germplasmName = listData.getDesignation() != null ? listData.getDesignation() : gid;
 
 				String testEntryName = germplasmName;
 				String standardEntryName = "";
 				String newId = gid + ": ";
+				String standardEntryGID = null;
+				String testEntryGID = gid;
+				String standardEntryMGID = null;
+				String testEntryMGID = listData.getGroupId() != 0 ? listData.getGroupId().toString() : "-";
+				this.germplasmIdMGIDMap.put(gid, testEntryMGID);
 				if (!isTestEntry) {
 					standardEntryName = germplasmName;
 					testEntryName = "";
 					newId = " :" + gid;
+					standardEntryGID = gid;
+					testEntryGID = null;
+					standardEntryMGID = testEntryMGID;
+					testEntryMGID = null;
 				}
 
-				TablesEntries entry = this.createTableEntries(testEntryName, standardEntryName, newId);
+				TablesEntries entry = new TablesEntries(testEntryName, standardEntryName, newId, testEntryGID, standardEntryGID, testEntryMGID, standardEntryMGID);
 				tableEntriesList.add(entry);
 				this.singleEntriesSet.add(newId);
 				this.germplasmIdNameMap.put(gid, germplasmName);
-
 			}
 
 		} else {
@@ -465,15 +490,24 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout implements Initia
 					String testEntryName = germplasmName;
 					String standardEntryName = partnerName;
 					String newId = gid + ":" + partnerId;
-
+					
+					String standardEntryGID = partnerId;
+					String testEntryGID = gid;
+					String standardEntryMGID = this.germplasmIdMGIDMap.get(partnerId).toString();
+					String testEntryMGID = listData.getGroupId() != 0 ? listData.getGroupId().toString() : "-";
+					this.germplasmIdMGIDMap.put(gid, testEntryMGID);
 					if (!isTestEntry) {
 						testEntryName = partnerName;
 						standardEntryName = germplasmName;
 						newId = partnerId + ":" + gid;
+						standardEntryGID = gid;
+						testEntryGID = partnerId;
+						standardEntryMGID = testEntryMGID;
+						testEntryMGID = this.germplasmIdMGIDMap.get(partnerId).toString();
 					}
 
 					if (!gid.equalsIgnoreCase(partnerId)) {
-						TablesEntries entry = this.createTableEntries(testEntryName, standardEntryName, newId);
+						TablesEntries entry = new TablesEntries(testEntryName, standardEntryName, newId, testEntryGID, standardEntryGID, testEntryMGID, standardEntryMGID);
 						tableEntriesList.add(entry);
 					}
 					this.germplasmIdNameMap.put(partnerId, partnerName);
@@ -483,14 +517,6 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout implements Initia
 			}
 
 		}
-	}
-
-	private TablesEntries createTableEntries(String testName, String standardName, String id) {
-		TablesEntries tableEntry = new TablesEntries();
-		tableEntry.setTestEntryName(testName);
-		tableEntry.setStandardEntryName(standardName);
-		tableEntry.setTestStandardEntry(id);
-		return tableEntry;
 	}
 
 	private void deleteAllSingleEntriesInTableListData(boolean isTestEntry, List<GermplasmListData> germplasmListData, int leftSize,
@@ -547,7 +573,7 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout implements Initia
 			// if not in map, add it in the table
 
 			if (!this.tableEntriesId.contains(newId)) {
-				this.entriesTable.addItem(new Object[] {tableEntry.getTestEntryName(), tableEntry.getStandardEntryName()},
+				this.entriesTable.addItem(new Object[] {tableEntry.getTestEntryName(), tableEntry.getTestEntryGID(), tableEntry.getTestEntryGroupID(), tableEntry.getStandardEntryName(), tableEntry.getStandardEntryGID(), tableEntry.getStandardEntryGroupID()},
 						tableEntry.getTestStandardEntry());
 				this.tableEntriesId.add(newId);
 			}
@@ -574,5 +600,21 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout implements Initia
 			return true;
 		}
 		return false;
+	}
+	
+	void setGermplasmIdMGIDMap(Map<String, String> germplasmIdMGIDMap){
+		this.germplasmIdMGIDMap = germplasmIdMGIDMap;
+	}
+	
+	void setSingleEntriesSet(Set<String> singleEntriesSet){
+		this.singleEntriesSet = singleEntriesSet;
+	}
+	
+	void setGermplasmIdNameMap(Map<String, String> germplasmIdNameMap){
+		this.germplasmIdNameMap = germplasmIdNameMap;
+	}
+	
+	void setEntriesTable(Table entriesTable) {
+		this.entriesTable = entriesTable;
 	}
 }
