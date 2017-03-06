@@ -22,7 +22,10 @@ import org.generationcp.ibpworkbench.cross.study.h2h.main.dialogs.SelectGermplas
 import org.generationcp.ibpworkbench.cross.study.h2h.main.listeners.HeadToHeadCrossStudyMainButtonClickListener;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.pojos.TablesEntries;
 import org.generationcp.middleware.domain.h2h.GermplasmPair;
+import org.generationcp.middleware.domain.oms.Term;
+import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
+import org.generationcp.middleware.manager.api.OntologyDataManager;
 import org.generationcp.middleware.pojos.Germplasm;
 import org.generationcp.middleware.pojos.GermplasmListData;
 import org.slf4j.Logger;
@@ -100,6 +103,9 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 
 	@Autowired
 	private GermplasmListManager germplasmListManager;
+	
+	@Autowired
+	private OntologyDataManager ontologyDataManager;
 
 	private final Set<String> tableEntriesId = new HashSet<String>();
 	private Set<String> singleEntriesSet = new HashSet<String>();
@@ -200,19 +206,21 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 		this.entriesTable.setHeight("330px");
 		this.entriesTable.setImmediate(true);
 		this.entriesTable.setPageLength(0);
-
+		
+		final Term gid = this.ontologyDataManager.getTermById(TermId.GID.getId());
+		final Term groupId = this.ontologyDataManager.getTermById(TermId.GROUP_ID.getId());
 		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.TEST_ENTRY_COLUMN_ID, String.class, null);
 		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.TEST_ENTRY_COLUMN_ID, "Test Entry");
 		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.TEST_ENTRY_GID, String.class, null);
-		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.TEST_ENTRY_GID, "GID");
+		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.TEST_ENTRY_GID, gid.getName());
 		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.TEST_ENTRY_GROUPID, String.class, "-");
-		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.TEST_ENTRY_GROUPID, "GROUP ID");
+		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.TEST_ENTRY_GROUPID, groupId.getName());
 		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.STANDARD_ENTRY_COLUMN_ID, String.class, null);
 		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.STANDARD_ENTRY_COLUMN_ID, "Standard Entry");
 		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.STANDARD_ENTRY_GID, String.class, null);
-		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.STANDARD_ENTRY_GID, "GID");
+		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.STANDARD_ENTRY_GID, gid.getName());
 		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.STANDARD_ENTRY_GROUPID, String.class, "-");
-		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.STANDARD_ENTRY_GROUPID, "GROUP ID");
+		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.STANDARD_ENTRY_GROUPID, groupId.getName());
 
 		this.entriesTable.setVisibleColumns(new Object[] { SpecifyGermplasmsComponent.TEST_ENTRY_COLUMN_ID,
 				SpecifyGermplasmsComponent.TEST_ENTRY_GID, SpecifyGermplasmsComponent.TEST_ENTRY_GROUPID,
@@ -424,6 +432,7 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 			// GID and Designation are fields that will be checked/used
 			germplasmData.setGid(germplasm.getGid());
 			germplasmData.setDesignation(germplasm.getPreferredName().getNval());
+			// Group ID will be displayed in the table
 			germplasmData.setGroupId(germplasm.getMgid());
 			germplasmListData.add(germplasmData);
 		}

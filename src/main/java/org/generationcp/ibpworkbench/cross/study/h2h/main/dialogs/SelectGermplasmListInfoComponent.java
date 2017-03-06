@@ -19,8 +19,11 @@ import com.vaadin.ui.Table;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.middleware.domain.oms.Term;
+import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
+import org.generationcp.middleware.manager.api.OntologyDataManager;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.GermplasmListData;
 import org.slf4j.Logger;
@@ -49,7 +52,10 @@ public class SelectGermplasmListInfoComponent extends GridLayout implements Init
 
 	@Autowired
 	private GermplasmListManager germplasmListManager;
-
+	
+	@Autowired
+	private OntologyDataManager ontologyDataManager;
+	
 	private Label selectedListLabel;
 	private Label selectedListValue;
 	private Label descriptionLabel;
@@ -180,13 +186,17 @@ public class SelectGermplasmListInfoComponent extends GridLayout implements Init
 		listEntryValues.addContainerProperty(SelectGermplasmListInfoComponent.DESIGNATION, String.class, null);
 		listEntryValues.addContainerProperty(SelectGermplasmListInfoComponent.SEED_SOURCE, String.class, null);
 		listEntryValues.addContainerProperty(SelectGermplasmListInfoComponent.GROUP_NAME, String.class, null);
-
-		this.messageSource.setColumnHeader(listEntryValues, SelectGermplasmListInfoComponent.ENTRY_ID, Message.LISTDATA_ENTRY_ID_HEADER);
-		this.messageSource.setColumnHeader(listEntryValues, SelectGermplasmListInfoComponent.GID, Message.LISTDATA_GID_HEADER);
+		
+		final Term entryId = this.ontologyDataManager.getTermById(TermId.ENTRY_NO.getId());
+		this.messageSource.setColumnHeader(listEntryValues, SelectGermplasmListInfoComponent.ENTRY_ID, entryId.getName());
+		final Term gid = this.ontologyDataManager.getTermById(TermId.GID.getId());
+		this.messageSource.setColumnHeader(listEntryValues, SelectGermplasmListInfoComponent.GID, gid.getName());
+		final Term designation = this.ontologyDataManager.getTermById(TermId.DESIG.getId());
 		this.messageSource.setColumnHeader(listEntryValues, SelectGermplasmListInfoComponent.DESIGNATION,
-				Message.LISTDATA_DESIGNATION_HEADER);
+				designation.getName());
+		final Term seedSource = this.ontologyDataManager.getTermById(TermId.SEED_SOURCE.getId());
 		this.messageSource.setColumnHeader(listEntryValues, SelectGermplasmListInfoComponent.SEED_SOURCE,
-				Message.LISTDATA_SEEDSOURCE_HEADER);
+				seedSource.getName());
 		this.messageSource.setColumnHeader(listEntryValues, SelectGermplasmListInfoComponent.GROUP_NAME, Message.LISTDATA_GROUPNAME_HEADER);
 
 		return listEntryValues;
