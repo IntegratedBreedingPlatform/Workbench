@@ -188,14 +188,14 @@ public class SelectGermplasmListInfoComponent extends GridLayout implements Init
 		listEntryValues.addContainerProperty(SelectGermplasmListInfoComponent.GROUP_NAME, String.class, null);
 		
 		final Term entryId = this.ontologyDataManager.getTermById(TermId.ENTRY_NO.getId());
-		this.messageSource.setColumnHeader(listEntryValues, SelectGermplasmListInfoComponent.ENTRY_ID, entryId.getName());
+		listEntryValues.setColumnHeader(SelectGermplasmListInfoComponent.ENTRY_ID, entryId.getName());
 		final Term gid = this.ontologyDataManager.getTermById(TermId.GID.getId());
-		this.messageSource.setColumnHeader(listEntryValues, SelectGermplasmListInfoComponent.GID, gid.getName());
+		listEntryValues.setColumnHeader(SelectGermplasmListInfoComponent.GID, gid.getName());
 		final Term designation = this.ontologyDataManager.getTermById(TermId.DESIG.getId());
-		this.messageSource.setColumnHeader(listEntryValues, SelectGermplasmListInfoComponent.DESIGNATION,
+		listEntryValues.setColumnHeader(SelectGermplasmListInfoComponent.DESIGNATION,
 				designation.getName());
 		final Term seedSource = this.ontologyDataManager.getTermById(TermId.SEED_SOURCE.getId());
-		this.messageSource.setColumnHeader(listEntryValues, SelectGermplasmListInfoComponent.SEED_SOURCE,
+		listEntryValues.setColumnHeader(SelectGermplasmListInfoComponent.SEED_SOURCE,
 				seedSource.getName());
 		this.messageSource.setColumnHeader(listEntryValues, SelectGermplasmListInfoComponent.GROUP_NAME, Message.LISTDATA_GROUPNAME_HEADER);
 
