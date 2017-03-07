@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import org.generationcp.commons.constant.ColumnLabels;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -22,8 +23,6 @@ import org.generationcp.ibpworkbench.cross.study.h2h.main.dialogs.SelectGermplas
 import org.generationcp.ibpworkbench.cross.study.h2h.main.listeners.HeadToHeadCrossStudyMainButtonClickListener;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.pojos.TablesEntries;
 import org.generationcp.middleware.domain.h2h.GermplasmPair;
-import org.generationcp.middleware.domain.oms.Term;
-import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
 import org.generationcp.middleware.manager.api.OntologyDataManager;
 import org.generationcp.middleware.pojos.Germplasm;
@@ -103,9 +102,6 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 
 	@Autowired
 	private GermplasmListManager germplasmListManager;
-	
-	@Autowired
-	private OntologyDataManager ontologyDataManager;
 
 	private final Set<String> tableEntriesId = new HashSet<String>();
 	private Set<String> singleEntriesSet = new HashSet<String>();
@@ -118,6 +114,9 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
+	
+	@Autowired
+	private OntologyDataManager ontologyDataManager;
 
 	public SpecifyGermplasmsComponent(final HeadToHeadCrossStudyMain mainScreen,
 			final TraitsAvailableComponent nextScreen) {
@@ -207,20 +206,26 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 		this.entriesTable.setImmediate(true);
 		this.entriesTable.setPageLength(0);
 		
-		final Term gid = this.ontologyDataManager.getTermById(TermId.GID.getId());
-		final Term groupId = this.ontologyDataManager.getTermById(TermId.GROUP_ID.getId());
+		
 		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.TEST_ENTRY_COLUMN_ID, String.class, null);
 		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.TEST_ENTRY_COLUMN_ID, "Test Entry");
+		
 		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.TEST_ENTRY_GID, String.class, null);
-		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.TEST_ENTRY_GID, gid.getName());
+		final String gid = ColumnLabels.GID.getTermNameFromOntology(this.ontologyDataManager);
+		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.TEST_ENTRY_GID, gid);
+		
 		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.TEST_ENTRY_GROUPID, String.class, "-");
-		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.TEST_ENTRY_GROUPID, groupId.getName());
+		final String mgid = ColumnLabels.GROUP_ID.getTermNameFromOntology(this.ontologyDataManager);
+		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.TEST_ENTRY_GROUPID, mgid);
+		
 		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.STANDARD_ENTRY_COLUMN_ID, String.class, null);
 		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.STANDARD_ENTRY_COLUMN_ID, "Standard Entry");
+		
 		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.STANDARD_ENTRY_GID, String.class, null);
-		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.STANDARD_ENTRY_GID, gid.getName());
+		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.STANDARD_ENTRY_GID, gid);
+		
 		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.STANDARD_ENTRY_GROUPID, String.class, "-");
-		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.STANDARD_ENTRY_GROUPID, groupId.getName());
+		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.STANDARD_ENTRY_GROUPID, mgid);
 
 		this.entriesTable.setVisibleColumns(new Object[] { SpecifyGermplasmsComponent.TEST_ENTRY_COLUMN_ID,
 				SpecifyGermplasmsComponent.TEST_ENTRY_GID, SpecifyGermplasmsComponent.TEST_ENTRY_GROUPID,
