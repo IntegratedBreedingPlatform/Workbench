@@ -79,25 +79,30 @@ public class SetUpTraitFilter extends AbsoluteLayout implements InitializingBean
 
 	public void createTraitsTabs() {
 		this.mainTabSheet = new TabSheet();
+		this.mainTabSheet.setDebugId("mainTabSheet");
 		this.mainTabSheet.setHeight("470px");
 
 		for (int i = 0; i < SetUpTraitFilter.NUM_OF_SECTIONS; i++) {
 			VerticalLayout layout = new VerticalLayout();
+			layout.setDebugId("layout");
 
 			switch (i) {
 				case 0:
 					this.numericSection = new NumericTraitsSection(this.environmentIds, this.getWindow());
+					this.numericSection.setDebugId("numericSection");
 					this.numericSection.showEmptyTraitsMessage();
 					layout = this.numericSection;
 					break;
 
 				case 1:
 					this.characterSection = new CharacterTraitsSection(this.environmentIds, this.getWindow());
+					this.characterSection.setDebugId("characterSection");
 					layout = this.characterSection;
 					break;
 
 				case 2:
 					this.categoricalVariatesSection = new CategoricalVariatesSection(this.environmentIds, this.getWindow());
+					this.categoricalVariatesSection.setDebugId("categoricalVariatesSection");
 					layout = this.categoricalVariatesSection;
 					break;
 
@@ -143,6 +148,7 @@ public class SetUpTraitFilter extends AbsoluteLayout implements InitializingBean
 
 	private void createButtonLayout() {
 		this.nextButton = new Button(this.messageSource.getMessage(Message.NEXT));
+		this.nextButton.setDebugId("nextButton");
 		this.nextButton.setWidth("80px");
 		this.nextButton.setData(SetUpTraitFilter.NEXT_BUTTON_ID);
 		this.nextButton.addListener(new AdaptedGermplasmButtonClickListener(this));

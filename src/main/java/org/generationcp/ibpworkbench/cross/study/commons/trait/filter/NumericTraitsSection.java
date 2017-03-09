@@ -123,6 +123,7 @@ public class NumericTraitsSection extends VerticalLayout implements Initializing
 				double maxValue = trait.getMaxValue();
 
 				Button traitNameLink = new Button(trait.getName());
+				traitNameLink.setDebugId("traitNameLink");
 				traitNameLink.setImmediate(true);
 				traitNameLink.setStyleName(BaseTheme.BUTTON_LINK);
 				traitNameLink.setData(NumericTraitsSection.TRAIT_BUTTON_ID);
@@ -131,6 +132,7 @@ public class NumericTraitsSection extends VerticalLayout implements Initializing
 						this.environmentIds));
 
 				TextField limitsField = new TextField();
+				limitsField.setDebugId("limitsField");
 				limitsField.setWidth("80px");
 				limitsField.setEnabled(false);
 				limitsField.setImmediate(true);
@@ -157,8 +159,10 @@ public class NumericTraitsSection extends VerticalLayout implements Initializing
 
 	private void initializeComponents() {
 		this.lblSectionTitle = new Label(this.messageSource.getMessage(Message.GET_NUMERIC_VARIATES));
+		this.lblSectionTitle.setDebugId("lblSectionTitle");
 
 		this.traitsTable = new Table();
+		this.traitsTable.setDebugId("traitsTable");
 		this.traitsTable.setImmediate(true);
 		this.traitsTable.setColumnCollapsingAllowed(true);
 		this.traitsTable.setColumnReorderingAllowed(true);

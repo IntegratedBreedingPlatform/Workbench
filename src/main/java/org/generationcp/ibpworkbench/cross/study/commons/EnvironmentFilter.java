@@ -208,16 +208,19 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 		this.setWidth("1000px");
 
 		this.headerLabel = new Label(this.messageSource.getMessage(Message.ENVIRONMENT_FILTER));
+		this.headerLabel.setDebugId("headerLabel");
 		this.headerLabel.setImmediate(true);
 		this.addComponent(this.headerLabel, "top:20px;left:20px");
 
 		this.headerValLabel = new Label(this.messageSource.getMessage(Message.ENVIRONMENT_FILTER_VAL));
+		this.headerValLabel.setDebugId("headerValLabel");
 		this.headerValLabel.setStyleName("gcp-bold-italic");
 		this.headerValLabel.setContentMode(Label.CONTENT_XHTML);
 		this.headerValLabel.setImmediate(true);
 		this.addComponent(this.headerValLabel, "top:20px;left:150px");
 
 		this.filterByLocationBtn = new Button(this.messageSource.getMessage(Message.FILTER_BY_LOCATION));
+		this.filterByLocationBtn.setDebugId("filterByLocationBtn");
 		this.filterByLocationBtn.setWidth("150px");
 		this.filterByLocationBtn.setData(EnvironmentFilter.FILTER_LOCATION_BUTTON_ID);
 		this.filterByLocationBtn.addListener(new Button.ClickListener() {
@@ -234,6 +237,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 		this.addComponent(this.filterByLocationBtn, "top:50px;left:20px");
 
 		this.filterByStudyBtn = new Button(this.messageSource.getMessage(Message.FILTER_BY_STUDY));
+		this.filterByStudyBtn.setDebugId("filterByStudyBtn");
 		this.filterByStudyBtn.setWidth("150px");
 		this.filterByStudyBtn.setData(EnvironmentFilter.FILTER_STUDY_BUTTON_ID);
 		this.filterByStudyBtn.addListener(new Button.ClickListener() {
@@ -250,6 +254,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 		this.addComponent(this.filterByStudyBtn, "top:50px;left:180px");
 
 		this.addEnvConditionsBtn = new Button(this.messageSource.getMessage(Message.ADD_ENV_CONDITION));
+		this.addEnvConditionsBtn.setDebugId("addEnvConditionsBtn");
 		this.addEnvConditionsBtn.setWidth("400px");
 		this.addEnvConditionsBtn.setData(EnvironmentFilter.ADD_ENVIRONMENT_BUTTON_ID);
 		this.addEnvConditionsBtn.addListener(new Button.ClickListener() {
@@ -266,10 +271,12 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 		this.addComponent(this.addEnvConditionsBtn, "top:50px;left:580px");
 
 		this.chooseEnvLabel = new Label(this.messageSource.getMessage(Message.CHOOSE_ENVIRONMENTS));
+		this.chooseEnvLabel.setDebugId("chooseEnvLabel");
 		this.chooseEnvLabel.setImmediate(true);
 		this.addComponent(this.chooseEnvLabel, "top:90px;left:20px");
 
 		this.environmentsTable = new Table();
+		this.environmentsTable.setDebugId("environmentsTable");
 		this.environmentsTable.setWidth("960px");
 		this.environmentsTable.setHeight("350px");
 		this.environmentsTable.setImmediate(true);
@@ -292,10 +299,12 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 		});
 
 		this.tablePanel = new Panel();
+		this.tablePanel.setDebugId("tablePanel");
 		this.tablePanel.setWidth("960px");
 		this.tablePanel.setHeight("370px");
 
 		this.tableLayout = new AbsoluteLayout();
+		this.tableLayout.setDebugId("tableLayout");
 
 		if (this.crossStudyToolType == CrossStudyToolType.HEAD_TO_HEAD_QUERY) {
 			Set<TraitInfo> traitInfos = new HashSet<TraitInfo>();
@@ -308,6 +317,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 		this.tableLayout.addComponent(this.environmentsTable, "top:0px;left:0px");
 
 		this.tagAllCheckBox = new CheckBox();
+		this.tagAllCheckBox.setDebugId("tagAllCheckBox");
 		this.tagAllCheckBox.setImmediate(true);
 
 		this.tableLayout.addComponent(this.tagAllCheckBox, "top:5px;left:32px");
@@ -331,14 +341,17 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 		});
 
 		this.noOfEnvLabel = new Label(this.messageSource.getMessage(Message.NO_OF_SELECTED_ENVIRONMENT));
+		this.noOfEnvLabel.setDebugId("noOfEnvLabel");
 		this.noOfEnvLabel.setImmediate(true);
 		this.addComponent(this.noOfEnvLabel, "top:500px;left:20px");
 
 		this.numberOfEnvironmentSelectedLabel = new Label("0");
+		this.numberOfEnvironmentSelectedLabel.setDebugId("numberOfEnvironmentSelectedLabel");
 		this.numberOfEnvironmentSelectedLabel.setImmediate(true);
 		this.addComponent(this.numberOfEnvironmentSelectedLabel, "top:500px;left:230px");
 
 		this.nextButton = new Button(this.messageSource.getMessage(Message.NEXT));
+		this.nextButton.setDebugId("nextButton");
 		this.nextButton.setData(EnvironmentFilter.NEXT_BUTTON_ID);
 		this.nextButton.addListener(new Button.ClickListener() {
 
@@ -356,6 +369,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 
 		if (this.crossStudyToolType == CrossStudyToolType.HEAD_TO_HEAD_QUERY) {
 			this.backButton = new Button(this.messageSource.getMessage(Message.BACK));
+			this.backButton.setDebugId("backButton");
 			this.backButton.setData(EnvironmentFilter.BACK_BUTTON_ID);
 			this.backButton.addListener(new Button.ClickListener() {
 
@@ -540,8 +554,11 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 
 		Window parentWindow = this.getWindow();
 		this.filterLocation = new FilterLocationDialog(this, parentWindow, this.filterLocationCountryMap);
+		this.filterLocation.setDebugId("filterLocation");
 		this.filterStudy = new FilterStudyDialog(this, parentWindow, this.studyEnvironmentMap);
+		this.filterStudy.setDebugId("filterStudy");
 		this.addConditionsDialog = new AddEnvironmentalConditionsDialog(this, parentWindow, environmentIdsList);
+		this.addConditionsDialog.setDebugId("addConditionsDialog");
 
 		this.isFilterLocationClicked = false;
 		this.isFilterStudyClicked = false;
@@ -583,16 +600,20 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 
 		if (this.crossStudyToolType == CrossStudyToolType.HEAD_TO_HEAD_QUERY) {
 			this.filterStudy = new FilterStudyDialog(this, parentWindow, this.studyEnvironmentMap);
+			this.filterStudy.setDebugId("filterStudy");
 		} else if (this.crossStudyToolType == CrossStudyToolType.QUERY_FOR_ADAPTED_GERMPLASM) {
 			this.filterStudy =
 					new FilterStudyDialog(this, parentWindow, this.studyEnvironmentMap,
 							EnvironmentFilter.QUERY_FOR_ADAPTED_GERMPLASM_WINDOW_NAME);
 		} else {
 			this.filterStudy = new FilterStudyDialog(this, parentWindow, this.studyEnvironmentMap);
+			this.filterStudy.setDebugId("filterStudy");
 		}
 
 		this.filterLocation = new FilterLocationDialog(this, parentWindow, this.filterLocationCountryMap);
+		this.filterLocation.setDebugId("filterLocation");
 		this.addConditionsDialog = new AddEnvironmentalConditionsDialog(this, parentWindow, environmentIdsList);
+		this.addConditionsDialog.setDebugId("addConditionsDialog");
 
 		this.filterStudy.addStyleName(Reindeer.WINDOW_LIGHT);
 		this.filterLocation.addStyleName(Reindeer.WINDOW_LIGHT);
@@ -652,6 +673,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 								}
 							} else {
 								CheckBox box = new CheckBox();
+								box.setDebugId("box");
 
 								box.setImmediate(true);
 								final ComboBox comboBox = this.getWeightComboBox();
@@ -742,6 +764,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 								}
 							} else {
 								CheckBox box = new CheckBox();
+								box.setDebugId("box");
 
 								box.setImmediate(true);
 								final ComboBox comboBox = this.getWeightComboBox();
@@ -835,6 +858,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 						} else {
 
 							CheckBox box = new CheckBox();
+							box.setDebugId("box");
 
 							box.setImmediate(true);
 							ComboBox comboBox = this.getWeightComboBox();

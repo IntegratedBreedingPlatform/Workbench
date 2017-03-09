@@ -150,10 +150,12 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		this.setWidth("1000px");
 
 		AbsoluteLayout resultTable = new AbsoluteLayout();
+		resultTable.setDebugId("resultTable");
 		resultTable.setHeight("470px");
 		resultTable.setWidth("1000px");
 
 		this.germplasmColTable = new Table();
+		this.germplasmColTable.setDebugId("germplasmColTable");
 		this.germplasmColTable.setWidth(GERMPLASM_COL_TABLE_WIDTH);
 		this.germplasmColTable.setHeight(GERMPLASM_COL_TABLE_HEIGHT);
 		this.germplasmColTable.setImmediate(true);
@@ -162,6 +164,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		this.germplasmColTable.setColumnReorderingAllowed(false);
 
 		this.traitsColTable = new Table();
+		this.traitsColTable.setDebugId("traitsColTable");
 		this.traitsColTable.setWidth("490px");
 		this.traitsColTable.setHeight(GERMPLASM_COL_TABLE_HEIGHT);
 		this.traitsColTable.setImmediate(true);
@@ -170,6 +173,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		this.traitsColTable.setColumnReorderingAllowed(false);
 
 		this.combinedScoreTagColTable = new Table();
+		this.combinedScoreTagColTable.setDebugId("combinedScoreTagColTable");
 		this.combinedScoreTagColTable.setWidth("160px");
 		this.combinedScoreTagColTable.setHeight(GERMPLASM_COL_TABLE_HEIGHT);
 		this.combinedScoreTagColTable.setImmediate(true);
@@ -191,6 +195,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		this.addTagAllCheckBoxToCombinedScoreTagColTable();
 
 		this.prevEntryBtn = new Button(this.messageSource.getMessage(Message.PREV_ARROW));
+		this.prevEntryBtn.setDebugId("prevEntryBtn");
 		this.prevEntryBtn.setData(TraitDisplayResults.NEXT_ENTRY_BUTTON_ID);
 
 		this.prevEntryBtn.addListener(new ClickListener() {
@@ -209,6 +214,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		this.addComponent(this.prevEntryBtn, "top:470px;left:455px");
 
 		this.nextEntryBtn = new Button(this.messageSource.getMessage(Message.NEXT_ARROW));
+		this.nextEntryBtn.setDebugId("nextEntryBtn");
 		this.nextEntryBtn.setData(TraitDisplayResults.NEXT_ENTRY_BUTTON_ID);
 
 		this.nextEntryBtn.addListener(new ClickListener() {
@@ -227,6 +233,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		this.addComponent(this.nextEntryBtn, "top:470px;left:515x");
 
 		this.backButton = new Button(this.messageSource.getMessage(Message.BACK));
+		this.backButton.setDebugId("backButton");
 		this.backButton.setData(TraitDisplayResults.BACK_BUTTON_ID);
 		this.backButton.addListener(new ClickListener() {
 
@@ -243,6 +250,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		this.addComponent(this.backButton, "top:500px;left:405px");
 
 		this.saveButton = new Button(this.messageSource.getMessage(Message.SAVE_GERMPLASMS_TO_NEW_LIST_LABEL));
+		this.saveButton.setDebugId("saveButton");
 		this.saveButton.setData(TraitDisplayResults.SAVE_BUTTON_ID);
 		this.saveButton.addListener(new ClickListener() {
 
@@ -498,6 +506,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 			// make GID as link
 			String gidString = String.valueOf(gid);
 			Button gidButton = new Button(gidString, new GidLinkButtonClickListener(gidString));
+			gidButton.setDebugId("gidButton");
 			gidButton.setStyleName(BaseTheme.BUTTON_LINK);
 			gidButton.setDescription("Click to view Germplasm information");
 			itemObj[1] = gidButton;
@@ -550,6 +559,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 			itemObj[noOfColumns - 2] = row.getCombinedScore();
 
 			CheckBox box = new CheckBox();
+			box.setDebugId("box");
 			box.setImmediate(true);
 			box.setData(row);
 			if (this.selectedGermplasmMap.containsKey(gid)) {
@@ -992,6 +1002,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		Window parentWindow = this.getWindow();
 
 		this.saveGermplasmListDialog = new SaveToListDialog(this.mainScreen, this, parentWindow, this.selectedGermplasmMap);
+		this.saveGermplasmListDialog.setDebugId("saveGermplasmListDialog");
 		this.saveGermplasmListDialog.addStyleName(Reindeer.WINDOW_LIGHT);
 
 		parentWindow.addWindow(this.saveGermplasmListDialog);
@@ -1000,6 +1011,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 	private void addTagAllCheckBoxToCombinedScoreTagColTable() {
 
 		this.tagAllCheckBoxOnCombinedScoreTagColTable = new CheckBox();
+		this.tagAllCheckBoxOnCombinedScoreTagColTable.setDebugId("tagAllCheckBoxOnCombinedScoreTagColTable");
 		this.tagAllCheckBoxOnCombinedScoreTagColTable.setImmediate(true);
 
 		this.addComponent(this.tagAllCheckBoxOnCombinedScoreTagColTable,

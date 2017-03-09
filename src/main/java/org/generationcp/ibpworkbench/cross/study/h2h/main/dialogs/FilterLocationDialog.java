@@ -83,8 +83,10 @@ public class FilterLocationDialog extends BaseSubWindow implements InitializingB
 		this.center();
 
 		this.popupLabel = new Label("Specify filter by checking or unchecking countries/locations.");
+		this.popupLabel.setDebugId("popupLabel");
 
 		AbsoluteLayout mainLayout = new AbsoluteLayout();
+		mainLayout.setDebugId("mainLayout");
 		mainLayout.setWidth("1000px");
 		mainLayout.setHeight("450px");
 
@@ -93,6 +95,7 @@ public class FilterLocationDialog extends BaseSubWindow implements InitializingB
 		this.showCountryLocationRows();
 
 		this.tagUnTagAll = new CheckBox();
+		this.tagUnTagAll.setDebugId("tagUnTagAll");
 		this.tagUnTagAll.setValue(true);
 		this.tagUnTagAll.setImmediate(true);
 		this.tagUnTagAll.setData(FilterLocationDialog.TAG_ALL);
@@ -104,15 +107,18 @@ public class FilterLocationDialog extends BaseSubWindow implements InitializingB
 		mainLayout.addComponent(this.tagUnTagAll, "top:33px;left:810px");
 
 		HorizontalLayout buttonLayout = new HorizontalLayout();
+		buttonLayout.setDebugId("buttonLayout");
 		buttonLayout.setSpacing(true);
 
 		this.cancelButton = new Button("Cancel");
+		this.cancelButton.setDebugId("cancelButton");
 		this.cancelButton.setData(FilterLocationDialog.CLOSE_SCREEN_BUTTON_ID);
 		this.cancelButton.addListener(new CloseWindowAction());
 
 		String buttonlabel = "Apply";
 
 		this.applyButton = new Button(buttonlabel);
+		this.applyButton.setDebugId("applyButton");
 		this.applyButton.setData(FilterLocationDialog.APPLY_BUTTON_ID);
 		this.applyButton.addListener(new HeadToHeadCrossStudyMainButtonClickListener(this, this.source));
 		this.applyButton.addListener(new CloseWindowAction());
@@ -131,6 +137,7 @@ public class FilterLocationDialog extends BaseSubWindow implements InitializingB
 			FilterByLocation filterByLocation = this.filterLocationCountryMap.get(countryName);
 			FilterLocationDto filterLocationDto = new FilterLocationDto(countryName, null, null, null, 1);
 			CheckBox box = new CheckBox();
+			box.setDebugId("box");
 			box.addListener(new HeadToHeadCrossStudyMainValueChangeListener(this, null, filterLocationDto));
 			box.setValue(true);
 			box.setImmediate(true);
@@ -143,6 +150,7 @@ public class FilterLocationDialog extends BaseSubWindow implements InitializingB
 			List<String> keyList = new ArrayList<String>();
 			for (String locationNames : filterByLocation.getListOfLocationNames()) {
 				CheckBox boxLocation = new CheckBox();
+				boxLocation.setDebugId("boxLocation");
 				FilterLocationDto filterLocationDto1 = new FilterLocationDto(countryName, null, locationNames, null, 3);
 				boxLocation.addListener(new HeadToHeadCrossStudyMainValueChangeListener(this, null, filterLocationDto1));
 				boxLocation.setImmediate(true);
@@ -167,6 +175,7 @@ public class FilterLocationDialog extends BaseSubWindow implements InitializingB
 
 	private void initializeCountryLocationTable() {
 		this.locationTreeTable = new TreeTable();
+		this.locationTreeTable.setDebugId("locationTreeTable");
 		this.locationTreeTable.setWidth("900px");
 		this.locationTreeTable.setHeight("350px");
 		this.locationTreeTable.setImmediate(true);

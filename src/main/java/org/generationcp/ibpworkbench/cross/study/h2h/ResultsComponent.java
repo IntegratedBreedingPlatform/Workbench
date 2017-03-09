@@ -66,20 +66,25 @@ public class ResultsComponent extends AbsoluteLayout implements InitializingBean
 		this.setWidth("1000px");
 
 		this.testEntryLabel = new Label("<b>Test Entry:</b>");
+		this.testEntryLabel.setDebugId("testEntryLabel");
 		this.testEntryLabel.setContentMode(Label.CONTENT_XHTML);
 		this.addComponent(this.testEntryLabel, "top:20px;left:30px");
 
 		this.testEntryNameLabel = new Label();
+		this.testEntryNameLabel.setDebugId("testEntryNameLabel");
 		this.addComponent(this.testEntryNameLabel, "top:20px;left:100px");
 
 		this.standardEntryLabel = new Label("<b>Standard Entry:</b>");
+		this.standardEntryLabel.setDebugId("standardEntryLabel");
 		this.standardEntryLabel.setContentMode(Label.CONTENT_XHTML);
 		this.addComponent(this.standardEntryLabel, "top:20px;left:450px");
 
 		this.standardEntryNameLabel = new Label();
+		this.standardEntryNameLabel.setDebugId("standardEntryNameLabel");
 		this.addComponent(this.standardEntryNameLabel, "top:20px;left:550px");
 
 		this.resultsTable = new Table();
+		this.resultsTable.setDebugId("resultsTable");
 		this.resultsTable.setWidth("800px");
 		this.resultsTable.setHeight("400px");
 		this.resultsTable.setImmediate(true);

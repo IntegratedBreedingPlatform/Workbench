@@ -108,14 +108,18 @@ public class SelectGermplasmEntryDialog extends BaseSubWindow implements Initial
 		this.center();
 
 		this.mainLayout = new VerticalLayout();
+		this.mainLayout.setDebugId("mainLayout");
 		this.mainLayout.setSpacing(true);
 
 		HorizontalLayout searchFormLayout = new HorizontalLayout();
+		searchFormLayout.setDebugId("searchFormLayout");
 
 		this.searchComponent = new GermplasmSearchFormComponent();
+		this.searchComponent.setDebugId("searchComponent");
 		searchFormLayout.addComponent(this.searchComponent);
 
 		this.searchButton = new Button("Search");
+		this.searchButton.setDebugId("searchButton");
 		this.searchButton.setData(SelectGermplasmEntryDialog.SEARCH_BUTTON_ID);
 		this.searchButton.addStyleName("addTopSpace");
 		this.searchButton.addListener(new HeadToHeadCrossStudyMainButtonClickListener(this));
@@ -126,14 +130,17 @@ public class SelectGermplasmEntryDialog extends BaseSubWindow implements Initial
 		this.mainLayout.addComponent(searchFormLayout);
 
 		this.resultComponent = new GermplasmSearchResultComponent(this.germplasmDataManager, SelectGermplasmEntryDialog.GID, "0");
+		this.resultComponent.setDebugId("resultComponent");
 		this.resultComponent.addListener(new GermplasmItemClickListener(this));
 		this.resultComponent.setHeight("320px");
 		this.mainLayout.addComponent(this.resultComponent);
 
 		HorizontalLayout buttonLayout = new HorizontalLayout();
+		buttonLayout.setDebugId("buttonLayout");
 		buttonLayout.setSpacing(true);
 
 		this.cancelButton = new Button("Close Screen");
+		this.cancelButton.setDebugId("cancelButton");
 		this.cancelButton.setData(SelectGermplasmEntryDialog.CLOSE_SCREEN_BUTTON_ID);
 		this.cancelButton.addListener(new CloseWindowAction());
 
@@ -144,6 +151,7 @@ public class SelectGermplasmEntryDialog extends BaseSubWindow implements Initial
 			buttonlabel = "Add as Standard Entry";
 		}
 		this.doneButton = new Button(buttonlabel);
+		this.doneButton.setDebugId("doneButton");
 		this.doneButton.setData(SelectGermplasmEntryDialog.ADD_BUTTON_ID);
 		this.doneButton.addListener(new HeadToHeadCrossStudyMainButtonClickListener(this));
 		this.doneButton.addListener(new CloseWindowAction());
@@ -253,11 +261,13 @@ public class SelectGermplasmEntryDialog extends BaseSubWindow implements Initial
 		Window germplasmWindow = new BaseSubWindow("Germplasm Information - " + gid);
 
 		VerticalLayout layoutForGermplasm = new VerticalLayout();
+		layoutForGermplasm.setDebugId("layoutForGermplasm");
 		layoutForGermplasm.setMargin(false);
 		layoutForGermplasm.setWidth("98%");
 		layoutForGermplasm.setHeight("98%");
 
 		Embedded germplasmInfo = new Embedded("", germplasmBrowserLink);
+		germplasmInfo.setDebugId("germplasmInfo");
 		germplasmInfo.setType(Embedded.TYPE_BROWSER);
 		germplasmInfo.setSizeFull();
 		layoutForGermplasm.addComponent(germplasmInfo);
