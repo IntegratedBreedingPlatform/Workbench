@@ -70,9 +70,11 @@ public class GermplasmListTreeComponent extends VerticalLayout implements Intern
 		this.setSpacing(true);
 
 		this.germplasmListTree = new Tree();
+		this.germplasmListTree.setDebugId("germplasmListTree");
 		this.germplasmListTree.setImmediate(true);
 
 		this.refreshButton = new Button();
+		this.refreshButton.setDebugId("refreshButton");
 		this.refreshButton.setData(GermplasmListTreeComponent.REFRESH_BUTTON_ID);
 		this.refreshButton.addListener(new SelectListButtonClickListener(this));
 
@@ -80,6 +82,7 @@ public class GermplasmListTreeComponent extends VerticalLayout implements Intern
 		this.refreshButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
 		this.treeContainerLayout = new VerticalLayout();
+		this.treeContainerLayout.setDebugId("treeContainerLayout");
 		this.treeContainerLayout.addComponent(this.germplasmListTree);
 
 		this.addComponent(this.treeContainerLayout);
@@ -150,6 +153,7 @@ public class GermplasmListTreeComponent extends VerticalLayout implements Intern
 		}
 
 		Tree currentGermplasmListTree = new Tree();
+		currentGermplasmListTree.setDebugId("currentGermplasmListTree");
 		currentGermplasmListTree.setDragMode(TreeDragMode.NODE);
 
 		currentGermplasmListTree.addItem(GermplasmListTreeComponent.ROOT_FOLDER_NAME);

@@ -81,6 +81,7 @@ public class SelectGermplasmListTreeComponent extends VerticalLayout implements 
 		this.germplasmListTree = this.createGermplasmListTree();
 
 		this.refreshButton = new Button(); // "Refresh"
+		this.refreshButton.setDebugId("refreshButton");
 		this.refreshButton.setData(SelectGermplasmListTreeComponent.REFRESH_BUTTON_ID);
 
 		// add tooltip
@@ -126,6 +127,7 @@ public class SelectGermplasmListTreeComponent extends VerticalLayout implements 
 		}
 
 		Tree currentGermplasmListTree = new Tree();
+		currentGermplasmListTree.setDebugId("currentGermplasmListTree");
 
 		for (GermplasmList parentList : germplasmListParent) {
 			currentGermplasmListTree.addItem(parentList.getId());

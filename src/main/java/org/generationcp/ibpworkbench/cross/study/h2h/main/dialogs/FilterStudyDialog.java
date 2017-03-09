@@ -93,8 +93,10 @@ public class FilterStudyDialog extends BaseSubWindow implements InitializingBean
 		this.center();
 
 		this.popupLabel = new Label("Specify filter by checking or unchecking studies.");
+		this.popupLabel.setDebugId("popupLabel");
 
 		AbsoluteLayout mainLayout = new AbsoluteLayout();
+		mainLayout.setDebugId("mainLayout");
 		mainLayout.setWidth("780px");
 		mainLayout.setHeight("450px");
 
@@ -103,6 +105,7 @@ public class FilterStudyDialog extends BaseSubWindow implements InitializingBean
 		this.showStudyRows();
 
 		this.tagUnTagAll = new CheckBox();
+		this.tagUnTagAll.setDebugId("tagUnTagAll");
 		this.tagUnTagAll.setValue(true);
 		this.tagUnTagAll.setImmediate(true);
 		this.tagUnTagAll.addListener(new HeadToHeadCrossStudyMainValueChangeListener(this, true));
@@ -113,15 +116,18 @@ public class FilterStudyDialog extends BaseSubWindow implements InitializingBean
 		mainLayout.addComponent(this.tagUnTagAll, "top:33px;left:630px");
 
 		HorizontalLayout buttonLayout = new HorizontalLayout();
+		buttonLayout.setDebugId("buttonLayout");
 		buttonLayout.setSpacing(true);
 
 		this.cancelButton = new Button("Cancel");
+		this.cancelButton.setDebugId("cancelButton");
 		this.cancelButton.setData(FilterStudyDialog.CLOSE_SCREEN_BUTTON_ID);
 		this.cancelButton.addListener(new CloseWindowAction());
 
 		String buttonlabel = "Apply";
 
 		this.applyButton = new Button(buttonlabel);
+		this.applyButton.setDebugId("applyButton");
 		this.applyButton.setData(FilterStudyDialog.APPLY_BUTTON_ID);
 		this.applyButton.addListener(new HeadToHeadCrossStudyMainButtonClickListener(this, this.source));
 		this.applyButton.addListener(new CloseWindowAction());
@@ -155,12 +161,14 @@ public class FilterStudyDialog extends BaseSubWindow implements InitializingBean
 			StudyReference studyRef = studyReferenceList.get(0);
 
 			CheckBox box = new CheckBox();
+			box.setDebugId("box");
 			box.setImmediate(true);
 			FilterLocationDto filterLocationDto = new FilterLocationDto(null, null, null, studyRef.getName(), 4);
 
 			box.addListener(new HeadToHeadCrossStudyMainValueChangeListener(this, null, filterLocationDto));
 
 			Button studyNameLink = new Button(studyRef.getName());
+			studyNameLink.setDebugId("studyNameLink");
 			studyNameLink.setImmediate(true);
 			studyNameLink.setStyleName(BaseTheme.BUTTON_LINK);
 			studyNameLink.setData(FilterStudyDialog.STUDY_BUTTON_ID);
@@ -179,12 +187,14 @@ public class FilterStudyDialog extends BaseSubWindow implements InitializingBean
 		}
 
 		StudyInfoDialog studyInfoDialog = new StudyInfoDialog(this, this.parentWindow, studyId, this.h2hCall);
+		studyInfoDialog.setDebugId("studyInfoDialog");
 		studyInfoDialog.addStyleName(Reindeer.WINDOW_LIGHT);
 		this.parentWindow.addWindow(studyInfoDialog);
 	}
 
 	private void initializeStudyTable() {
 		this.studyTable = new Table();
+		this.studyTable.setDebugId("studyTable");
 		this.studyTable.setWidth("700px");
 		this.studyTable.setHeight("350px");
 		this.studyTable.setImmediate(true);

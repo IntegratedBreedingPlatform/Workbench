@@ -95,10 +95,15 @@ public class SelectGermplasmListInfoComponent extends GridLayout implements Init
 
 	protected void initializeComponents() {
 		this.selectedListLabel = new Label(this.messageSource.getMessage(Message.SELECTED_LIST_LABEL));
+		this.selectedListLabel.setDebugId("selectedListLabel");
 		this.selectedListValue = new Label();
+		this.selectedListValue.setDebugId("selectedListValue");
 		this.descriptionLabel = new Label(this.messageSource.getMessage(Message.DESCRIPTION_LABEL));
+		this.descriptionLabel.setDebugId("descriptionLabel");
 		this.descriptionValue = new Label();
+		this.descriptionValue.setDebugId("descriptionValue");
 		this.listEntriesLabel = new Label(this.messageSource.getMessage(Message.LIST_ENTRIES_LABEL));
+		this.listEntriesLabel.setDebugId("listEntriesLabel");
 		this.listEntryValues = this.createEntryTable();
 	}
 
@@ -176,6 +181,7 @@ public class SelectGermplasmListInfoComponent extends GridLayout implements Init
 
 	private Table createEntryTable() {
 		Table listEntryValues = new Table("");
+		listEntryValues.setDebugId("listEntryValues");
 
 		listEntryValues.setPageLength(15); // number of rows to display in the Table
 		listEntryValues.setWidth("495px");

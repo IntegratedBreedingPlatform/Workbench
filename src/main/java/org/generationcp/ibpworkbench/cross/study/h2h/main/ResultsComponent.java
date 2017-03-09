@@ -102,6 +102,7 @@ public class ResultsComponent extends AbsoluteLayout implements InitializingBean
 		this.setWidth("1000px");
 
 		this.exportButton = new Button("Export");
+		this.exportButton.setDebugId("exportButton");
 		this.exportButton.setData(ResultsComponent.EXPORT_BUTTON_ID);
 		this.exportButton
 				.addListener(new org.generationcp.ibpworkbench.cross.study.h2h.main.listeners.HeadToHeadCrossStudyMainButtonClickListener(this));
@@ -110,6 +111,7 @@ public class ResultsComponent extends AbsoluteLayout implements InitializingBean
 		this.exportButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
 		this.backButton = new Button("Back");
+		this.backButton.setDebugId("backButton");
 		this.backButton.setData(ResultsComponent.BACK_BUTTON_ID);
 		this.backButton.setWidth("80px");
 		this.backButton
@@ -125,6 +127,7 @@ public class ResultsComponent extends AbsoluteLayout implements InitializingBean
 		this.addComponent(this.backButton, "top:505px;left:410px");
 
 		this.mainTabs = new TabSheet();
+		this.mainTabs.setDebugId("mainTabs");
 		this.mainTabs.setWidth("957px");
 		this.mainTabs.setHeight("475px");
 		this.addComponent(this.mainTabs, "top:20px;left:20px");
@@ -148,6 +151,7 @@ public class ResultsComponent extends AbsoluteLayout implements InitializingBean
 			TraitForComparison traitForCompare = traitsIteratorArray[counter];
 			if (traitForCompare.isDisplay()) {
 				this.resultsTable[counter] = new Table();
+				this.resultsTable[counter].setDebugId("resultsTable[counter]");
 				this.resultsTable[counter].setWidth("912px");
 				this.resultsTable[counter].setHeight("400px");
 				this.resultsTable[counter].setImmediate(true);

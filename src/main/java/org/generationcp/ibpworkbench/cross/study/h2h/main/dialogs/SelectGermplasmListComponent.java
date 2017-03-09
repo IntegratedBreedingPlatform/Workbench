@@ -59,12 +59,16 @@ public class SelectGermplasmListComponent extends HorizontalLayout implements In
 
 	protected void initializeComponents() {
 		this.mainLayout = new HorizontalLayout();
+		this.mainLayout.setDebugId("mainLayout");
 
 		this.treeComponent = new GermplasmListTreeComponent(this);
+		this.treeComponent.setDebugId("treeComponent");
 		this.treeLabel = new Label(this.messageSource.getMessage(Message.PROJECT_LISTS));
+		this.treeLabel.setDebugId("treeLabel");
 		this.treeLabel.addStyleName(Bootstrap.Typography.H3.styleName());
 
 		this.listInfoComponent = new SelectGermplasmListInfoComponent(this.lastOpenedListId, this.source);
+		this.listInfoComponent.setDebugId("listInfoComponent");
 	}
 
 	protected void initializeValues() {
@@ -83,6 +87,7 @@ public class SelectGermplasmListComponent extends HorizontalLayout implements In
 		this.listInfoComponent.setHeight("420px");
 
 		VerticalLayout treeLayout = new VerticalLayout();
+		treeLayout.setDebugId("treeLayout");
 		treeLayout.setWidth("240px");
 		treeLayout.setHeight("420px");
 		treeLayout.addComponent(this.treeLabel);

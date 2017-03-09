@@ -95,8 +95,10 @@ public class ViewTraitObservationsDialog extends BaseSubWindow implements Initia
 		this.populateLocationTable();
 
 		this.popUpLabel = new Label(this.messageSource.getMessage(Message.LINE_BY_LOCATION_FOR_TRAIT) + " " + this.traitName);
+		this.popUpLabel.setDebugId("popUpLabel");
 
 		AbsoluteLayout mainLayout = new AbsoluteLayout();
+		mainLayout.setDebugId("mainLayout");
 		mainLayout.setWidth("900px");
 		mainLayout.setHeight("420px");
 
@@ -112,6 +114,7 @@ public class ViewTraitObservationsDialog extends BaseSubWindow implements Initia
 		this.locationList = this.getLocations(this.traitObservations);
 
 		this.locationTable = new Table();
+		this.locationTable.setDebugId("locationTable");
 		this.locationTable.setWidth("820px");
 		this.locationTable.setHeight("380px");
 		this.locationTable.setImmediate(true);
@@ -187,6 +190,7 @@ public class ViewTraitObservationsDialog extends BaseSubWindow implements Initia
 		// make GID as link
 		String gidString = String.valueOf(gid);
 		Button gidButton = new Button(gidString, new GidLinkButtonClickListener(gidString));
+		gidButton.setDebugId("gidButton");
 		gidButton.setStyleName(BaseTheme.BUTTON_LINK);
 		gidButton.setDescription("Click to view Germplasm information");
 

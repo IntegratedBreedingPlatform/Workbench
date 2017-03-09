@@ -93,8 +93,10 @@ public class AddEnvironmentalConditionsDialog extends BaseSubWindow implements I
 		this.center();
 
 		this.popupLabel = new Label(this.messageSource.getMessage(Message.SELECTED_ENVT_CONDITIONS_WILL_BE_ADDED));
+		this.popupLabel.setDebugId("popupLabel");
 
 		AbsoluteLayout mainLayout = new AbsoluteLayout();
+		mainLayout.setDebugId("mainLayout");
 		mainLayout.setWidth("780px");
 		mainLayout.setHeight("440px");
 
@@ -102,6 +104,7 @@ public class AddEnvironmentalConditionsDialog extends BaseSubWindow implements I
 		this.populateConditionsTable();
 
 		this.tagUnTagAll = new CheckBox();
+		this.tagUnTagAll.setDebugId("tagUnTagAll");
 		this.tagUnTagAll.setValue(true);
 		this.tagUnTagAll.setImmediate(true);
 		this.tagUnTagAll.addListener(new HeadToHeadCrossStudyMainValueChangeListener(this, true));
@@ -112,13 +115,16 @@ public class AddEnvironmentalConditionsDialog extends BaseSubWindow implements I
 		mainLayout.addComponent(this.tagUnTagAll, "top:33px;left:630px");
 
 		HorizontalLayout buttonLayout = new HorizontalLayout();
+		buttonLayout.setDebugId("buttonLayout");
 		buttonLayout.setSpacing(true);
 
 		this.cancelButton = new Button();
+		this.cancelButton.setDebugId("cancelButton");
 		this.cancelButton.setData(AddEnvironmentalConditionsDialog.CLOSE_SCREEN_BUTTON_ID);
 		this.cancelButton.addListener(new CloseWindowAction());
 
 		this.applyButton = new Button();
+		this.applyButton.setDebugId("applyButton");
 		this.applyButton.setData(AddEnvironmentalConditionsDialog.APPLY_BUTTON_ID);
 		this.applyButton.addListener(new HeadToHeadCrossStudyMainButtonClickListener(this, this.source));
 		this.applyButton.addListener(new CloseWindowAction());
@@ -159,6 +165,7 @@ public class AddEnvironmentalConditionsDialog extends BaseSubWindow implements I
 			String condition = environmentCondition.getName();
 			if (condition != null && !condition.isEmpty()) {
 				CheckBox box = new CheckBox();
+				box.setDebugId("box");
 				box.setImmediate(true);
 				box.setValue(true);
 				box.addListener(new HeadToHeadCrossStudyMainValueChangeListener(this, null, environmentCondition));
@@ -178,6 +185,7 @@ public class AddEnvironmentalConditionsDialog extends BaseSubWindow implements I
 
 	private void initializeConditionsTable() {
 		this.conditionsTable = new Table();
+		this.conditionsTable.setDebugId("conditionsTable");
 		this.conditionsTable.setWidth("700px");
 		this.conditionsTable.setHeight("350px");
 		this.conditionsTable.setImmediate(true);
