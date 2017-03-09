@@ -114,7 +114,7 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
-	
+
 	@Autowired
 	private OntologyDataManager ontologyDataManager;
 
@@ -205,32 +205,31 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 		this.entriesTable.setHeight("330px");
 		this.entriesTable.setImmediate(true);
 		this.entriesTable.setPageLength(0);
-		
-		
-		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.TEST_ENTRY_COLUMN_ID, String.class, null);
-		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.TEST_ENTRY_COLUMN_ID, "Test Entry");
-		
-		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.TEST_ENTRY_GID, String.class, null);
-		final String gid = ColumnLabels.GID.getTermNameFromOntology(this.ontologyDataManager);
-		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.TEST_ENTRY_GID, gid);
-		
+
 		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.TEST_ENTRY_GROUPID, String.class, "-");
 		final String mgid = ColumnLabels.GROUP_ID.getTermNameFromOntology(this.ontologyDataManager);
 		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.TEST_ENTRY_GROUPID, mgid);
-		
-		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.STANDARD_ENTRY_COLUMN_ID, String.class, null);
-		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.STANDARD_ENTRY_COLUMN_ID, "Standard Entry");
-		
-		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.STANDARD_ENTRY_GID, String.class, null);
-		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.STANDARD_ENTRY_GID, gid);
-		
+
+		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.TEST_ENTRY_GID, String.class, null);
+		final String gid = ColumnLabels.GID.getTermNameFromOntology(this.ontologyDataManager);
+		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.TEST_ENTRY_GID, gid);
+
+		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.TEST_ENTRY_COLUMN_ID, String.class, null);
+		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.TEST_ENTRY_COLUMN_ID, "Test Entry");
+
 		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.STANDARD_ENTRY_GROUPID, String.class, "-");
 		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.STANDARD_ENTRY_GROUPID, mgid);
 
-		this.entriesTable.setVisibleColumns(new Object[] { SpecifyGermplasmsComponent.TEST_ENTRY_COLUMN_ID,
-				SpecifyGermplasmsComponent.TEST_ENTRY_GID, SpecifyGermplasmsComponent.TEST_ENTRY_GROUPID,
-				SpecifyGermplasmsComponent.STANDARD_ENTRY_COLUMN_ID, SpecifyGermplasmsComponent.STANDARD_ENTRY_GID,
-				SpecifyGermplasmsComponent.STANDARD_ENTRY_GROUPID });
+		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.STANDARD_ENTRY_GID, String.class, null);
+		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.STANDARD_ENTRY_GID, gid);
+
+		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.STANDARD_ENTRY_COLUMN_ID, String.class, null);
+		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.STANDARD_ENTRY_COLUMN_ID, "Standard Entry");
+
+		this.entriesTable.setVisibleColumns(new Object[] { SpecifyGermplasmsComponent.TEST_ENTRY_GROUPID,
+				SpecifyGermplasmsComponent.TEST_ENTRY_GID, SpecifyGermplasmsComponent.TEST_ENTRY_COLUMN_ID,
+				SpecifyGermplasmsComponent.STANDARD_ENTRY_GROUPID, SpecifyGermplasmsComponent.STANDARD_ENTRY_GID,
+				SpecifyGermplasmsComponent.STANDARD_ENTRY_COLUMN_ID });
 		this.entriesTable.setSelectable(true);
 		this.entriesTable.setMultiSelect(true);
 		this.entriesTable.setNullSelectionAllowed(false);
@@ -606,9 +605,9 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 
 			if (!this.tableEntriesId.contains(newId)) {
 				this.entriesTable.addItem(
-						new Object[] { tableEntry.getTestEntryName(), tableEntry.getTestEntryGID(),
-								tableEntry.getTestEntryGroupID(), tableEntry.getStandardEntryName(),
-								tableEntry.getStandardEntryGID(), tableEntry.getStandardEntryGroupID() },
+						new Object[] { tableEntry.getTestEntryGroupID(), tableEntry.getTestEntryGID(),
+								tableEntry.getTestEntryName(), tableEntry.getStandardEntryGroupID(),
+								tableEntry.getStandardEntryGID(), tableEntry.getStandardEntryName() },
 						tableEntry.getTestStandardEntry());
 				this.tableEntriesId.add(newId);
 			}
