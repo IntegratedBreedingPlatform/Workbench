@@ -212,19 +212,20 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 
 		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.TEST_ENTRY_GID, String.class, null);
 		final String gid = ColumnLabels.GID.getTermNameFromOntology(this.ontologyDataManager);
-		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.TEST_ENTRY_GID, gid);
+		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.TEST_ENTRY_GID, gid + " test");
 
 		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.TEST_ENTRY_COLUMN_ID, String.class, null);
-		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.TEST_ENTRY_COLUMN_ID, "Test Entry");
+		final String designation = ColumnLabels.DESIGNATION.getTermNameFromOntology(this.ontologyDataManager);
+		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.TEST_ENTRY_COLUMN_ID, "Test Entry " + designation);
 
 		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.STANDARD_ENTRY_GROUPID, String.class, "-");
 		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.STANDARD_ENTRY_GROUPID, mgid);
 
 		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.STANDARD_ENTRY_GID, String.class, null);
-		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.STANDARD_ENTRY_GID, gid);
+		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.STANDARD_ENTRY_GID, gid + " standard");
 
 		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.STANDARD_ENTRY_COLUMN_ID, String.class, null);
-		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.STANDARD_ENTRY_COLUMN_ID, "Standard Entry");
+		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.STANDARD_ENTRY_COLUMN_ID, "Standard Entry " + designation);
 
 		this.entriesTable.setVisibleColumns(new Object[] { SpecifyGermplasmsComponent.TEST_ENTRY_GROUPID,
 				SpecifyGermplasmsComponent.TEST_ENTRY_GID, SpecifyGermplasmsComponent.TEST_ENTRY_COLUMN_ID,
