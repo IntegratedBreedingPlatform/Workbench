@@ -92,7 +92,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		public void buttonClick(final ClickEvent event) {
 
 			if (Boolean.parseBoolean(SingleSiteAnalysisDetailsPanel.this.isServerApp)) {
-				new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this, SingleSiteAnalysisDetailsPanel.this.project)
+				new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this)
 						.buttonClick(event);
 				return;
 			}
@@ -129,28 +129,23 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 									@Override
 									public void run() {
 
-										new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this,
-												SingleSiteAnalysisDetailsPanel.this.project).buttonClick(event);
+										new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this).buttonClick(event);
 									}
 
 								});
 					} else {
-						new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this, SingleSiteAnalysisDetailsPanel.this.project)
-								.buttonClick(event);
+						new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this).buttonClick(event);
 					}
 
 				} else {
-					new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this, SingleSiteAnalysisDetailsPanel.this.project)
-							.buttonClick(event);
+					new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this).buttonClick(event);
 				}
 
 			} catch (final MiddlewareQueryException e) {
-				new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this, SingleSiteAnalysisDetailsPanel.this.project)
-						.buttonClick(event);
+				new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this).buttonClick(event);
 				SingleSiteAnalysisDetailsPanel.LOG.error(e.getMessage(), e);
 			} catch (final Exception e) {
-				new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this, SingleSiteAnalysisDetailsPanel.this.project)
-						.buttonClick(event);
+				new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this).buttonClick(event);
 				SingleSiteAnalysisDetailsPanel.LOG.error(e.getMessage(), e);
 			}
 
