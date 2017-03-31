@@ -14,7 +14,7 @@
     "ng2:dist": "gulp angular2Dist",
     "ng2:build": "gulp angular2",
     "hotswap": "gulp hotswap",
-    "postinstall": "typings install",
+    "postinstall": "typings install && npm rebuild node-sass",
     "typings": "typings"
   },
   "repository": {
