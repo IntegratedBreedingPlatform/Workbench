@@ -625,6 +625,9 @@
 						<goals>
 							<goal>npm</goal>
 						</goals>
+						<configuration>
+							<arguments>install --verbose</arguments>
+						</configuration>
 					</execution>
 					<execution>
 						<id>gulp clean</id>
