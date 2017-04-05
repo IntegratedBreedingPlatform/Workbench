@@ -72,7 +72,7 @@ public class RunSingleSiteActionTest {
 	private BreedingViewInput breedingViewInput;
 
 	@InjectMocks
-	private final RunSingleSiteAction runSingleSiteAction = new RunSingleSiteAction(null, null);
+	private final RunSingleSiteAction runSingleSiteAction = new RunSingleSiteAction(null);
 
 	@Before
 	public void setup() {
@@ -89,8 +89,6 @@ public class RunSingleSiteActionTest {
 		project.setUserId(-1);
 
 		this.initializeTestUserInputFromSource();
-
-		this.runSingleSiteAction.setProject(project);
 
 	}
 

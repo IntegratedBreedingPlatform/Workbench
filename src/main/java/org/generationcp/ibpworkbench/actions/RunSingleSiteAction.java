@@ -10,14 +10,15 @@
 
 package org.generationcp.ibpworkbench.actions;
 
-import com.google.common.base.Strings;
-import com.mysql.jdbc.StringUtils;
-import com.vaadin.Application;
-import com.vaadin.terminal.DownloadStream;
-import com.vaadin.terminal.FileResource;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Window;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
 import org.generationcp.commons.breedingview.xml.Blocks;
 import org.generationcp.commons.breedingview.xml.ColPos;
 import org.generationcp.commons.breedingview.xml.Columns;
@@ -35,7 +36,6 @@ import org.generationcp.commons.util.Util;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.exception.ConfigurationChangeException;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDetailsPanel;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
@@ -43,11 +43,9 @@ import org.generationcp.ibpworkbench.util.BreedingViewXMLWriter;
 import org.generationcp.ibpworkbench.util.BreedingViewXMLWriterException;
 import org.generationcp.ibpworkbench.util.DatasetExporter;
 import org.generationcp.ibpworkbench.util.DatasetExporterException;
-import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.ibpworkbench.util.ZipUtil;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.api.StudyDataManager;
-import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolType;
 import org.generationcp.middleware.service.api.OntologyService;
@@ -57,13 +55,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
-import javax.annotation.Resource;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import com.google.common.base.Strings;
+import com.mysql.jdbc.StringUtils;
+import com.vaadin.Application;
+import com.vaadin.terminal.DownloadStream;
+import com.vaadin.terminal.FileResource;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Window;
 
 /**
  *
@@ -81,16 +80,11 @@ public class RunSingleSiteAction implements ClickListener {
 
 	private SingleSiteAnalysisDetailsPanel source;
 
-	private Project project;
-
 	@Value("${bv.web.url}")
 	private String bvWebUrl;
 
 	@Value("${workbench.is.server.app}")
 	private String isServerApp;
-
-	@Autowired
-	private ToolUtil toolUtil;
 
 	@Resource
 	private TomcatUtil tomcatUtil;
@@ -106,9 +100,8 @@ public class RunSingleSiteAction implements ClickListener {
 
 	private final ZipUtil zipUtil = new ZipUtil();
 
-	public RunSingleSiteAction(final SingleSiteAnalysisDetailsPanel selectDetailsForBreedingViewWindow, final Project project) {
+	public RunSingleSiteAction(final SingleSiteAnalysisDetailsPanel selectDetailsForBreedingViewWindow) {
 		this.source = selectDetailsForBreedingViewWindow;
-		this.project = project;
 	}
 
 	@Override
@@ -461,7 +454,7 @@ public class RunSingleSiteAction implements ClickListener {
 			webServiceTool.setToolName("ibpwebservice");
 			webServiceTool.setPath(this.bvWebUrl);
 			webServiceTool.setToolType(ToolType.WEB);
-			this.updateToolConfiguration(event.getButton().getWindow(), webServiceTool);
+			this.deployWebappIfNecessary(event.getButton().getWindow(), webServiceTool);
 
 			// launch breeding view
 			final File absoluteToolFile = new File(this.source.getTool().getPath()).getAbsoluteFile();
@@ -478,22 +471,8 @@ public class RunSingleSiteAction implements ClickListener {
 
 	}
 
-	private boolean updateToolConfiguration(final Window window, final Tool tool) {
-		final Project currentProject = this.project;
-
+	private boolean deployWebappIfNecessary(final Window window, final Tool tool) {
 		final String url = tool.getPath();
-
-		// update the configuration of the tool
-		boolean changedConfig = false;
-		try {
-			changedConfig = this.toolUtil.updateToolConfigurationForProject(tool, currentProject);
-		} catch (final ConfigurationChangeException e1) {
-			RunSingleSiteAction.LOG.error(RunSingleSiteAction.ERROR, e1);
-			this.showErrorMessage(window, "Cannot update configuration for tool: " + tool.getToolName(),
-					"<br />" + this.messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
-			return false;
-		}
-
 		final boolean webTool = Util.isOneOf(tool.getToolType(), ToolType.WEB_WITH_LOGIN, ToolType.WEB);
 
 		WebAppStatusInfo statusInfo = null;
@@ -518,7 +497,7 @@ public class RunSingleSiteAction implements ClickListener {
 				final boolean deployed = statusInfo.isDeployed(contextPath);
 				final boolean running = statusInfo.isRunning(contextPath);
 
-				if (changedConfig || !running) {
+				if (!running) {
 					if (!deployed) {
 						// deploy the webapp
 						this.tomcatUtil.deployLocalWar(contextPath, localWarPath);
@@ -565,10 +544,6 @@ public class RunSingleSiteAction implements ClickListener {
 		};
 
 		application.getMainWindow().open(fr);
-	}
-
-	public void setProject(final Project project) {
-		this.project = project;
 	}
 
 }
