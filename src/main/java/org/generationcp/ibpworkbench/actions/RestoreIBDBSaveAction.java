@@ -96,7 +96,7 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 					this.mysqlUtil.updateOwnerships(this.project.getDatabaseName(), userId);
 				}
 
-				this.addDefaultAdminAsMemberOfRestoredPrograms();
+				this.addDefaultAdminAndCurrentUserAsMembersOfRestoredPrograms();
 
 				// LOG to project activity
 				// if there is no user id, it means there is no user data
@@ -121,18 +121,18 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 	}
 
 	/*
-	 * If the current user is not default ADMIN, call ProgramService to add default ADMIN as program member. Otherwise, the default ADMIN is
-	 * already as program member being the current user.
+	 * Call ProgramService to add default ADMIN and current user (if he is not default ADMIN) as program members
 	 */
-	void addDefaultAdminAsMemberOfRestoredPrograms() {
+	void addDefaultAdminAndCurrentUserAsMembersOfRestoredPrograms() {
 
-		if (!this.currentUserIsDefaultAdmin()) {
-			final List<Project> projects = this.workbenchDataManager.getProjectsByCrop(this.project.getCropType());
-
-			for (final Project project : projects) {
-				// The default "ADMIN" user is being added in ProgramService
-				this.programService.saveProgramMembers(project, new HashSet<User>());
-			}
+		final List<Project> projects = this.workbenchDataManager.getProjectsByCrop(this.project.getCropType());
+		final User currentUser = this.sessionData.getUserData();
+		HashSet<User> users = new HashSet<>();
+		users.add(currentUser);
+		
+		for (final Project project : projects) {
+			// The default "ADMIN" user is being added in ProgramService
+			this.programService.saveProgramMembers(project, users);
 		}
 	}
 

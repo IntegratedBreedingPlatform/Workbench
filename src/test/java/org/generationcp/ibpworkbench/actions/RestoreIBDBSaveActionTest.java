@@ -5,6 +5,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 import org.generationcp.commons.util.MySQLUtil;
@@ -20,6 +21,8 @@ import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -48,6 +51,9 @@ public class RestoreIBDBSaveActionTest {
 
 	@Mock
 	private File restoreFile;
+	
+	@Captor
+	private ArgumentCaptor<Set<User>> userSetCaptor;
 
 	private RestoreIBDBSaveAction restoreAction;
 
@@ -82,11 +88,9 @@ public class RestoreIBDBSaveActionTest {
 		Mockito.when(this.sessionData.getUserData()).thenReturn(this.defaultAdminUser);
 
 		// Call method to test
-		this.restoreAction.addDefaultAdminAsMemberOfRestoredPrograms();
+		this.restoreAction.addDefaultAdminAndCurrentUserAsMembersOfRestoredPrograms();
 
-		// Verify that default admin is no longer re-added as program member
-		// since he's already program member being the current user
-		Mockito.verifyZeroInteractions(this.programService);
+		this.verifyCurrentUserWasAddedToAllPrograms(this.defaultAdminUser);
 	}
 
 	@Test
@@ -95,15 +99,20 @@ public class RestoreIBDBSaveActionTest {
 		Mockito.when(this.sessionData.getUserData()).thenReturn(this.loggedInUser);
 
 		// Call method to test
-		this.restoreAction.addDefaultAdminAsMemberOfRestoredPrograms();
+		this.restoreAction.addDefaultAdminAndCurrentUserAsMembersOfRestoredPrograms();
 
-		this.verifyDefaultAdminWasAddedToAllPrograms();
+		this.verifyCurrentUserWasAddedToAllPrograms(this.loggedInUser);
 	}
 
-	private void verifyDefaultAdminWasAddedToAllPrograms() {
-		// Verify that default admin was added to all programs for crop
+	// Verify that current user was added to all programs for crop
+	private void verifyCurrentUserWasAddedToAllPrograms(final User currentUser) {
 		Mockito.verify(this.programService, Mockito.times(RestoreIBDBSaveActionTest.NO_OF_RESTORED_PROGRAMS))
-				.saveProgramMembers(Matchers.any(Project.class), Matchers.anySetOf(User.class));
+				.saveProgramMembers(Matchers.any(Project.class), this.userSetCaptor.capture());
+		final Set<User> users = this.userSetCaptor.getValue();
+		
+		// "Expecting only the current user to be added."
+		Assert.assertEquals(1, users.size());
+		Assert.assertEquals(currentUser, users.iterator().next());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -121,7 +130,7 @@ public class RestoreIBDBSaveActionTest {
 		Mockito.verify(this.mySqlUtil).restoreDatabase(Matchers.anyString(), Matchers.any(File.class), Matchers.any(Callable.class));
 		Mockito.verify(this.mySqlUtil).updateOwnerships(this.currentProject.getDatabaseName(), this.loggedInUser.getUserid());
 		Mockito.verify(this.workbenchDataManager).addProjectActivity(Matchers.any(ProjectActivity.class));
-		this.verifyDefaultAdminWasAddedToAllPrograms();
+		this.verifyCurrentUserWasAddedToAllPrograms(this.loggedInUser);
 
 		Assert.assertFalse("Expecting not to have error since restore process was succesful.", this.restoreAction.isHasRestoreError());
 	}
@@ -142,9 +151,7 @@ public class RestoreIBDBSaveActionTest {
 		Mockito.verify(this.mySqlUtil).updateOwnerships(this.currentProject.getDatabaseName(), this.defaultAdminUser.getUserid());
 		Mockito.verify(this.workbenchDataManager).addProjectActivity(Matchers.any(ProjectActivity.class));
 
-		// Verify that default admin is no longer re-added as program member
-		// since he's already program member being the current user
-		Mockito.verifyZeroInteractions(this.programService);
+		this.verifyCurrentUserWasAddedToAllPrograms(this.defaultAdminUser);
 
 		Assert.assertFalse("Expecting not to have error since restore process was succesful.", this.restoreAction.isHasRestoreError());
 	}
