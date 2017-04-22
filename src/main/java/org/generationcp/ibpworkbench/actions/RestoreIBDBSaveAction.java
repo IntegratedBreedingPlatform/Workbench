@@ -2,6 +2,8 @@
 package org.generationcp.ibpworkbench.actions;
 
 import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -87,26 +89,19 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 					}
 				});
 
-				final Integer userId = this.workbenchDataManager.getLocalIbdbUserId(this.sessionData.getUserData().getUserid(),
-						this.project.getProjectId());
-
+				// Show success message
 				MessageNotifier.showMessage(this.sourceWindow, this.messageSource.getMessage(Message.SUCCESS),
 						this.messageSource.getMessage(Message.RESTORE_IBDB_COMPLETE));
-				if (userId != null) {
-					this.mysqlUtil.updateOwnerships(this.project.getDatabaseName(), userId);
-				}
+
+				// Set current user as owner of restored germplasm lists
+				final Integer userId = this.workbenchDataManager.getLocalIbdbUserId(this.sessionData.getUserData().getUserid(),
+						this.project.getProjectId());
+				this.updateGermplasmListOwnership(userId);
 
 				this.addDefaultAdminAndCurrentUserAsMembersOfRestoredPrograms();
 
-				// LOG to project activity
-				// if there is no user id, it means there is no user data
-				if (userId != null) {
-					final ProjectActivity projAct =
-							new ProjectActivity(null, this.project, this.messageSource.getMessage(Message.CROP_DATABASE_RESTORE),
-									this.messageSource.getMessage(Message.RESTORED_BACKUP_FROM) + " " + this.restoreFile.getName(),
-									this.sessionData.getUserData(), new Date());
-					this.workbenchDataManager.addProjectActivity(projAct);
-				}
+				// Log a record in ProjectActivity
+				this.logProjectActivity(userId);
 
 				this.hasRestoreError = false;
 			} catch (final Exception e) {
@@ -117,6 +112,22 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 			}
 		} else {
 			this.hasRestoreError = true;
+		}
+	}
+
+	void logProjectActivity(final Integer userId) {
+		if (userId != null) {
+			final ProjectActivity projAct =
+					new ProjectActivity(null, this.project, this.messageSource.getMessage(Message.CROP_DATABASE_RESTORE),
+							this.messageSource.getMessage(Message.RESTORED_BACKUP_FROM) + " " + this.restoreFile.getName(),
+							this.sessionData.getUserData(), new Date());
+			this.workbenchDataManager.addProjectActivity(projAct);
+		}
+	}
+
+	void updateGermplasmListOwnership(final Integer userId) throws IOException, SQLException {
+		if (userId != null) {
+			this.mysqlUtil.updateOwnerships(this.project.getDatabaseName(), userId);
 		}
 	}
 

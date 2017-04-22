@@ -2,6 +2,8 @@
 package org.generationcp.ibpworkbench.actions;
 
 import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -11,6 +13,7 @@ import java.util.concurrent.Callable;
 import org.generationcp.commons.util.MySQLUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -167,6 +170,53 @@ public class RestoreIBDBSaveActionTest {
 		Mockito.verifyNoMoreInteractions(this.workbenchDataManager);
 
 		Assert.assertTrue("Expecting to have error since restore action was not completed.", this.restoreAction.isHasRestoreError());
+	}
+	
+	@Test
+	public void testLogProjectActivityWhenUserIsNotNull() {
+		final String cropRestoreString = "Crop Restore";
+		final String restoredFromString = "Restored backup from";
+		final String backupFileName = "ibdbv2_maize_merged_20170213_014837.sql";
+		Mockito.when(this.sessionData.getUserData()).thenReturn(this.loggedInUser);
+		Mockito.when(this.messageSource.getMessage(Message.CROP_DATABASE_RESTORE)).thenReturn(cropRestoreString);
+		Mockito.when(this.messageSource.getMessage(Message.RESTORED_BACKUP_FROM)).thenReturn(restoredFromString);
+		Mockito.when(this.restoreFile.getName()).thenReturn(backupFileName);
+		
+		// Method to test
+		this.restoreAction.logProjectActivity(this.loggedInUser.getUserid());
+		
+		final ArgumentCaptor<ProjectActivity> projectActivityCaptor = ArgumentCaptor.forClass(ProjectActivity.class);
+		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).addProjectActivity(projectActivityCaptor.capture());
+		final ProjectActivity projectActivity = projectActivityCaptor.getValue();
+		Assert.assertEquals(this.currentProject, projectActivity.getProject());
+		Assert.assertEquals(this.loggedInUser, projectActivity.getUser());
+		Assert.assertEquals(cropRestoreString, projectActivity.getName());
+		Assert.assertEquals(restoredFromString + " " + backupFileName, projectActivity.getDescription());
+	}
+
+	@Test
+	public void testLogProjectActivityWhenUserIsNull(){
+		this.restoreAction.logProjectActivity(null);
+		
+		Mockito.verify(this.workbenchDataManager, Mockito.never()).addProjectActivity(Matchers.any(ProjectActivity.class));
+	}
+	
+	@Test
+	public void testUpdateGermplasmListOwnershipWhenUserIsNotNull() throws IOException, SQLException{
+		this.restoreAction.updateGermplasmListOwnership(this.loggedInUser.getUserid());
+		
+		final ArgumentCaptor<String> databaseNameCaptor = ArgumentCaptor.forClass(String.class);
+		final ArgumentCaptor<Integer> userIdCaptor = ArgumentCaptor.forClass(Integer.class);
+		Mockito.verify(this.mySqlUtil, Mockito.times(1)).updateOwnerships(databaseNameCaptor.capture(), userIdCaptor.capture());
+		Assert.assertEquals(databaseNameCaptor.getValue(), this.currentProject.getDatabaseName());
+		Assert.assertEquals(userIdCaptor.getValue(), this.loggedInUser.getUserid());
+	}
+	
+	@Test
+	public void testUpdateGermplasmListOwnershipWhenUserIsNull() throws IOException, SQLException{
+		this.restoreAction.updateGermplasmListOwnership(null);
+		
+		Mockito.verify(this.workbenchDataManager, Mockito.never()).addProjectActivity(Matchers.any(ProjectActivity.class));
 	}
 
 	private List<Project> createTestProjectsForCrop() {
