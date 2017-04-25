@@ -2,6 +2,8 @@
 package org.generationcp.ibpworkbench.actions;
 
 import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -87,26 +89,19 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 					}
 				});
 
-				final Integer userId = this.workbenchDataManager.getLocalIbdbUserId(this.sessionData.getUserData().getUserid(),
-						this.project.getProjectId());
-
+				// Show success message
 				MessageNotifier.showMessage(this.sourceWindow, this.messageSource.getMessage(Message.SUCCESS),
 						this.messageSource.getMessage(Message.RESTORE_IBDB_COMPLETE));
-				if (userId != null) {
-					this.mysqlUtil.updateOwnerships(this.project.getDatabaseName(), userId);
-				}
 
-				this.addDefaultAdminAsMemberOfRestoredPrograms();
+				// Set current user as owner of restored germplasm lists
+				final Integer userId = this.workbenchDataManager.getLocalIbdbUserId(this.sessionData.getUserData().getUserid(),
+						this.project.getProjectId());
+				this.updateGermplasmListOwnership(userId);
 
-				// LOG to project activity
-				// if there is no user id, it means there is no user data
-				if (userId != null) {
-					final ProjectActivity projAct =
-							new ProjectActivity(null, this.project, this.messageSource.getMessage(Message.CROP_DATABASE_RESTORE),
-									this.messageSource.getMessage(Message.RESTORED_BACKUP_FROM) + " " + this.restoreFile.getName(),
-									this.sessionData.getUserData(), new Date());
-					this.workbenchDataManager.addProjectActivity(projAct);
-				}
+				this.addDefaultAdminAndCurrentUserAsMembersOfRestoredPrograms();
+
+				// Log a record in ProjectActivity
+				this.logProjectActivity(userId);
 
 				this.hasRestoreError = false;
 			} catch (final Exception e) {
@@ -120,19 +115,35 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 		}
 	}
 
+	void logProjectActivity(final Integer userId) {
+		if (userId != null) {
+			final ProjectActivity projAct =
+					new ProjectActivity(null, this.project, this.messageSource.getMessage(Message.CROP_DATABASE_RESTORE),
+							this.messageSource.getMessage(Message.RESTORED_BACKUP_FROM) + " " + this.restoreFile.getName(),
+							this.sessionData.getUserData(), new Date());
+			this.workbenchDataManager.addProjectActivity(projAct);
+		}
+	}
+
+	void updateGermplasmListOwnership(final Integer userId) throws IOException, SQLException {
+		if (userId != null) {
+			this.mysqlUtil.updateOwnerships(this.project.getDatabaseName(), userId);
+		}
+	}
+
 	/*
-	 * If the current user is not default ADMIN, call ProgramService to add default ADMIN as program member. Otherwise, the default ADMIN is
-	 * already as program member being the current user.
+	 * Call ProgramService to add default ADMIN and current user (if he is not default ADMIN) as program members
 	 */
-	void addDefaultAdminAsMemberOfRestoredPrograms() {
+	void addDefaultAdminAndCurrentUserAsMembersOfRestoredPrograms() {
 
-		if (!this.currentUserIsDefaultAdmin()) {
-			final List<Project> projects = this.workbenchDataManager.getProjectsByCrop(this.project.getCropType());
-
-			for (final Project project : projects) {
-				// The default "ADMIN" user is being added in ProgramService
-				this.programService.saveProgramMembers(project, new HashSet<User>());
-			}
+		final List<Project> projects = this.workbenchDataManager.getProjectsByCrop(this.project.getCropType());
+		final User currentUser = this.sessionData.getUserData();
+		HashSet<User> users = new HashSet<>();
+		users.add(currentUser);
+		
+		for (final Project project : projects) {
+			// The default "ADMIN" user is being added in ProgramService
+			this.programService.saveProgramMembers(project, users);
 		}
 	}
 

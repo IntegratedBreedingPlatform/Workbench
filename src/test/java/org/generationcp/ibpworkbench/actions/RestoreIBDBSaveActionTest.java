@@ -2,14 +2,18 @@
 package org.generationcp.ibpworkbench.actions;
 
 import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 import org.generationcp.commons.util.MySQLUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -20,6 +24,8 @@ import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -48,6 +54,9 @@ public class RestoreIBDBSaveActionTest {
 
 	@Mock
 	private File restoreFile;
+	
+	@Captor
+	private ArgumentCaptor<Set<User>> userSetCaptor;
 
 	private RestoreIBDBSaveAction restoreAction;
 
@@ -82,11 +91,9 @@ public class RestoreIBDBSaveActionTest {
 		Mockito.when(this.sessionData.getUserData()).thenReturn(this.defaultAdminUser);
 
 		// Call method to test
-		this.restoreAction.addDefaultAdminAsMemberOfRestoredPrograms();
+		this.restoreAction.addDefaultAdminAndCurrentUserAsMembersOfRestoredPrograms();
 
-		// Verify that default admin is no longer re-added as program member
-		// since he's already program member being the current user
-		Mockito.verifyZeroInteractions(this.programService);
+		this.verifyCurrentUserWasAddedToAllPrograms(this.defaultAdminUser);
 	}
 
 	@Test
@@ -95,15 +102,20 @@ public class RestoreIBDBSaveActionTest {
 		Mockito.when(this.sessionData.getUserData()).thenReturn(this.loggedInUser);
 
 		// Call method to test
-		this.restoreAction.addDefaultAdminAsMemberOfRestoredPrograms();
+		this.restoreAction.addDefaultAdminAndCurrentUserAsMembersOfRestoredPrograms();
 
-		this.verifyDefaultAdminWasAddedToAllPrograms();
+		this.verifyCurrentUserWasAddedToAllPrograms(this.loggedInUser);
 	}
 
-	private void verifyDefaultAdminWasAddedToAllPrograms() {
-		// Verify that default admin was added to all programs for crop
+	// Verify that current user was added to all programs for crop
+	private void verifyCurrentUserWasAddedToAllPrograms(final User currentUser) {
 		Mockito.verify(this.programService, Mockito.times(RestoreIBDBSaveActionTest.NO_OF_RESTORED_PROGRAMS))
-				.saveProgramMembers(Matchers.any(Project.class), Matchers.anySetOf(User.class));
+				.saveProgramMembers(Matchers.any(Project.class), this.userSetCaptor.capture());
+		final Set<User> users = this.userSetCaptor.getValue();
+		
+		// "Expecting only the current user to be added."
+		Assert.assertEquals(1, users.size());
+		Assert.assertEquals(currentUser, users.iterator().next());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -121,7 +133,7 @@ public class RestoreIBDBSaveActionTest {
 		Mockito.verify(this.mySqlUtil).restoreDatabase(Matchers.anyString(), Matchers.any(File.class), Matchers.any(Callable.class));
 		Mockito.verify(this.mySqlUtil).updateOwnerships(this.currentProject.getDatabaseName(), this.loggedInUser.getUserid());
 		Mockito.verify(this.workbenchDataManager).addProjectActivity(Matchers.any(ProjectActivity.class));
-		this.verifyDefaultAdminWasAddedToAllPrograms();
+		this.verifyCurrentUserWasAddedToAllPrograms(this.loggedInUser);
 
 		Assert.assertFalse("Expecting not to have error since restore process was succesful.", this.restoreAction.isHasRestoreError());
 	}
@@ -142,9 +154,7 @@ public class RestoreIBDBSaveActionTest {
 		Mockito.verify(this.mySqlUtil).updateOwnerships(this.currentProject.getDatabaseName(), this.defaultAdminUser.getUserid());
 		Mockito.verify(this.workbenchDataManager).addProjectActivity(Matchers.any(ProjectActivity.class));
 
-		// Verify that default admin is no longer re-added as program member
-		// since he's already program member being the current user
-		Mockito.verifyZeroInteractions(this.programService);
+		this.verifyCurrentUserWasAddedToAllPrograms(this.defaultAdminUser);
 
 		Assert.assertFalse("Expecting not to have error since restore process was succesful.", this.restoreAction.isHasRestoreError());
 	}
@@ -160,6 +170,53 @@ public class RestoreIBDBSaveActionTest {
 		Mockito.verifyNoMoreInteractions(this.workbenchDataManager);
 
 		Assert.assertTrue("Expecting to have error since restore action was not completed.", this.restoreAction.isHasRestoreError());
+	}
+	
+	@Test
+	public void testLogProjectActivityWhenUserIsNotNull() {
+		final String cropRestoreString = "Crop Restore";
+		final String restoredFromString = "Restored backup from";
+		final String backupFileName = "ibdbv2_maize_merged_20170213_014837.sql";
+		Mockito.when(this.sessionData.getUserData()).thenReturn(this.loggedInUser);
+		Mockito.when(this.messageSource.getMessage(Message.CROP_DATABASE_RESTORE)).thenReturn(cropRestoreString);
+		Mockito.when(this.messageSource.getMessage(Message.RESTORED_BACKUP_FROM)).thenReturn(restoredFromString);
+		Mockito.when(this.restoreFile.getName()).thenReturn(backupFileName);
+		
+		// Method to test
+		this.restoreAction.logProjectActivity(this.loggedInUser.getUserid());
+		
+		final ArgumentCaptor<ProjectActivity> projectActivityCaptor = ArgumentCaptor.forClass(ProjectActivity.class);
+		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).addProjectActivity(projectActivityCaptor.capture());
+		final ProjectActivity projectActivity = projectActivityCaptor.getValue();
+		Assert.assertEquals(this.currentProject, projectActivity.getProject());
+		Assert.assertEquals(this.loggedInUser, projectActivity.getUser());
+		Assert.assertEquals(cropRestoreString, projectActivity.getName());
+		Assert.assertEquals(restoredFromString + " " + backupFileName, projectActivity.getDescription());
+	}
+
+	@Test
+	public void testLogProjectActivityWhenUserIsNull(){
+		this.restoreAction.logProjectActivity(null);
+		
+		Mockito.verify(this.workbenchDataManager, Mockito.never()).addProjectActivity(Matchers.any(ProjectActivity.class));
+	}
+	
+	@Test
+	public void testUpdateGermplasmListOwnershipWhenUserIsNotNull() throws IOException, SQLException{
+		this.restoreAction.updateGermplasmListOwnership(this.loggedInUser.getUserid());
+		
+		final ArgumentCaptor<String> databaseNameCaptor = ArgumentCaptor.forClass(String.class);
+		final ArgumentCaptor<Integer> userIdCaptor = ArgumentCaptor.forClass(Integer.class);
+		Mockito.verify(this.mySqlUtil, Mockito.times(1)).updateOwnerships(databaseNameCaptor.capture(), userIdCaptor.capture());
+		Assert.assertEquals(databaseNameCaptor.getValue(), this.currentProject.getDatabaseName());
+		Assert.assertEquals(userIdCaptor.getValue(), this.loggedInUser.getUserid());
+	}
+	
+	@Test
+	public void testUpdateGermplasmListOwnershipWhenUserIsNull() throws IOException, SQLException{
+		this.restoreAction.updateGermplasmListOwnership(null);
+		
+		Mockito.verify(this.workbenchDataManager, Mockito.never()).addProjectActivity(Matchers.any(ProjectActivity.class));
 	}
 
 	private List<Project> createTestProjectsForCrop() {
