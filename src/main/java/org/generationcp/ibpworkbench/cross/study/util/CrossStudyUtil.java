@@ -17,6 +17,7 @@ public class CrossStudyUtil {
 	 */
 	public static ComboBox getWeightComboBox() {
 		ComboBox combo = new ComboBox();
+		combo.setDebugId("combo");
 		combo.setNullSelectionAllowed(false);
 		combo.setTextInputAllowed(false);
 		combo.setImmediate(true);
@@ -39,6 +40,7 @@ public class CrossStudyUtil {
 	 */
 	public static ComboBox getNumericTraitCombobox() {
 		ComboBox combo = new ComboBox();
+		combo.setDebugId("combo");
 		combo.setNullSelectionAllowed(false);
 		combo.setTextInputAllowed(false);
 		combo.setImmediate(true);
@@ -61,6 +63,7 @@ public class CrossStudyUtil {
 	 */
 	public static ComboBox getTraitWeightsComboBox() {
 		ComboBox combo = new ComboBox();
+		combo.setDebugId("combo");
 		combo.setNullSelectionAllowed(false);
 		combo.setTextInputAllowed(false);
 		combo.setImmediate(true);
@@ -84,6 +87,7 @@ public class CrossStudyUtil {
 	 */
 	public static ComboBox getCharacterTraitConditionsComboBox() {
 		ComboBox combo = new ComboBox();
+		combo.setDebugId("combo");
 		combo.setNullSelectionAllowed(false);
 		combo.setTextInputAllowed(false);
 		combo.setImmediate(true);
@@ -107,6 +111,7 @@ public class CrossStudyUtil {
 	 */
 	public static ComboBox getCategoricalVariatesComboBox() {
 		ComboBox combo = new ComboBox();
+		combo.setDebugId("combo");
 		combo.setNullSelectionAllowed(false);
 		combo.setTextInputAllowed(false);
 		combo.setImmediate(true);

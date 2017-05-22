@@ -5,7 +5,7 @@
 	<artifactId>ibpworkbench</artifactId>
 	<packaging>war</packaging>
 	<name>Workbench</name>
-        <version>4.1</version>
+        <version>5.1</version>
 
 	<properties>
 		<vaadin.version>6.8.13</vaadin.version>
@@ -18,27 +18,10 @@
 		<envConfig>${user.name}</envConfig>
 	</properties>
 
-	<distributionManagement>
-		<repository>
-			<id>efficio-nexus</id>
-			<name>Releases</name>
-			<url>http://apps.leafnode.io:8081/nexus/content/repositories/releases/</url>
-		</repository>
-		<snapshotRepository>
-			<id>efficio-nexus</id>
-			<name>Snapshots</name>
-			<url>http://apps.leafnode.io:8081/nexus/content/repositories/snapshots/</url>
-		</snapshotRepository>
-	</distributionManagement>
-
 	<repositories>
 		<repository>
 			<id>vaadin-addons</id>
 			<url>http://maven.vaadin.com/vaadin-addons</url>
-		</repository>
-		<repository>
-			<id>gcp-efficio-repo</id>
-			<url>http://apps.leafnode.io:8081/nexus/content/repositories/thirdparty/</url>
 		</repository>
 	</repositories>
 
@@ -631,8 +614,8 @@
 					        <goal>install-node-and-npm</goal>
 					    </goals>
 					    <configuration>
-					        <nodeVersion>v0.12.7</nodeVersion>
-					        <npmVersion>2.11.3</npmVersion>
+					        <nodeVersion>v6.9.1</nodeVersion>
+					        <npmVersion>4.0.2</npmVersion>
 
 					    </configuration>
 					</execution>

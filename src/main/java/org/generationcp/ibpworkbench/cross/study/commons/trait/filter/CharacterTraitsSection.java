@@ -94,8 +94,10 @@ public class CharacterTraitsSection extends VerticalLayout implements Initializi
 
 	private void initializeComponents() {
 		this.lblSectionTitle = new Label(this.messageSource.getMessage(Message.CHARACTER_TRAITS_SECTION_TITLE));
+		this.lblSectionTitle.setDebugId("lblSectionTitle");
 
 		this.traitsTable = new Table();
+		this.traitsTable.setDebugId("traitsTable");
 		this.traitsTable.setImmediate(true);
 		this.traitsTable.setColumnCollapsingAllowed(true);
 		this.traitsTable.setColumnReorderingAllowed(true);
@@ -190,6 +192,7 @@ public class CharacterTraitsSection extends VerticalLayout implements Initializi
 					}
 
 					Button traitNameLink = new Button(traitInfo.getName());
+					traitNameLink.setDebugId("traitNameLink");
 					traitNameLink.setImmediate(true);
 					traitNameLink.setStyleName(BaseTheme.BUTTON_LINK);
 					traitNameLink.setData(CharacterTraitsSection.TRAIT_BUTTON_ID);
@@ -199,6 +202,7 @@ public class CharacterTraitsSection extends VerticalLayout implements Initializi
 					ComboBox conditionComboBox = CrossStudyUtil.getCharacterTraitConditionsComboBox();
 					ComboBox priorityComboBox = CrossStudyUtil.getTraitWeightsComboBox();
 					TextField txtLimits = new TextField();
+					txtLimits.setDebugId("txtLimits");
 					txtLimits.setImmediate(true);
 					txtLimits.setEnabled(false);
 

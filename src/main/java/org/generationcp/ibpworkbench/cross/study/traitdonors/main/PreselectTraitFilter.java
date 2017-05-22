@@ -96,8 +96,10 @@ public class PreselectTraitFilter extends AbsoluteLayout implements Initializing
 		this.traitMap = new HashMap<String, StandardVariableReference>();
 
 		this.lblSectionTitle = new Label(this.messageSource.getMessage(Message.GET_NUMERIC_VARIATES));
+		this.lblSectionTitle.setDebugId("lblSectionTitle");
 
 		this.traitTreeTable = new TreeTable();
+		this.traitTreeTable.setDebugId("traitTreeTable");
 		this.traitTreeTable.setImmediate(true);
 		this.traitTreeTable.setHeight("360px");
 		this.traitTreeTable.setWidth("470px");
@@ -156,6 +158,7 @@ public class PreselectTraitFilter extends AbsoluteLayout implements Initializing
 		// --- SELECTED TRAITS : setup the table where selections are collected ---
 
 		this.traitSelectTable = new Table();
+		this.traitSelectTable.setDebugId("traitSelectTable");
 		this.traitSelectTable.setImmediate(true);
 		this.traitSelectTable.setHeight("360px");
 		this.traitSelectTable.setWidth("480px");
@@ -183,6 +186,7 @@ public class PreselectTraitFilter extends AbsoluteLayout implements Initializing
 	private void createButtonLayout() {
 
 		this.nextButton = new Button(this.messageSource.getMessage(Message.NEXT));
+		this.nextButton.setDebugId("nextButton");
 		this.nextButton.setWidth("80px");
 		this.nextButton.setData(PreselectTraitFilter.NEXT_BUTTON_ID);
 		this.nextButton.addListener(new TraitDonorButtonClickListener(this));

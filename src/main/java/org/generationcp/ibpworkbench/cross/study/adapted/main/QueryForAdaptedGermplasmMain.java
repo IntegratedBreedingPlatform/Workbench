@@ -59,12 +59,17 @@ public class QueryForAdaptedGermplasmMain extends VerticalLayout implements Init
 		this.setTitleContent();
 
 		this.accordion = new Accordion();
+		this.accordion.setDebugId("accordion");
 		this.accordion.setWidth("1000px");
 
 		this.screenThree = new DisplayResults(this);
+		this.screenThree.setDebugId("screenThree");
 		this.screenTwo = new SetUpTraitFilter(this, this.screenThree);
+		this.screenTwo.setDebugId("screenTwo");
 		this.screenOne = new EnvironmentFilter(this, this.screenTwo);
+		this.screenOne.setDebugId("screenOne");
 		this.welcomeScreen = new WelcomeScreen(this, this.screenOne);
+		this.welcomeScreen.setDebugId("welcomeScreen");
 
 		this.welcomeTab = this.accordion.addTab(this.welcomeScreen, this.messageSource.getMessage(Message.INTRODUCTION));
 		this.firstTab = this.accordion.addTab(this.screenOne, this.messageSource.getMessage(Message.SPECIFY_WEIGHT_ENVIRONMENT));
@@ -124,10 +129,12 @@ public class QueryForAdaptedGermplasmMain extends VerticalLayout implements Init
 
 	private void setTitleContent() {
 		this.titleLayout = new HorizontalLayout();
+		this.titleLayout.setDebugId("titleLayout");
 		this.titleLayout.setSpacing(true);
 		this.titleLayout.setHeight("40px");
 
 		this.toolTitle = new Label("Adapted Germplasm Query");
+		this.toolTitle.setDebugId("toolTitle");
 		this.toolTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 		this.toolTitle.setContentMode(Label.CONTENT_XHTML);
 		this.toolTitle.setWidth("378px");

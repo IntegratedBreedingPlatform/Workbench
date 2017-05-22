@@ -11,16 +11,15 @@
 
 package org.generationcp.ibpworkbench.cross.study.h2h.main.dialogs;
 
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Table;
-import org.generationcp.ibpworkbench.Message;
+import java.util.List;
+
+import org.generationcp.commons.constant.ColumnLabels;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
+import org.generationcp.middleware.manager.api.OntologyDataManager;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.GermplasmListData;
 import org.slf4j.Logger;
@@ -29,7 +28,11 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.util.List;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Table;
 
 @Configurable
 public class SelectGermplasmListInfoComponent extends GridLayout implements InitializingBean, InternationalizableComponent {
@@ -49,7 +52,10 @@ public class SelectGermplasmListInfoComponent extends GridLayout implements Init
 
 	@Autowired
 	private GermplasmListManager germplasmListManager;
-
+	
+	@Autowired
+	private OntologyDataManager ontologyDataManager;
+	
 	private Label selectedListLabel;
 	private Label selectedListValue;
 	private Label descriptionLabel;
@@ -89,10 +95,15 @@ public class SelectGermplasmListInfoComponent extends GridLayout implements Init
 
 	protected void initializeComponents() {
 		this.selectedListLabel = new Label(this.messageSource.getMessage(Message.SELECTED_LIST_LABEL));
+		this.selectedListLabel.setDebugId("selectedListLabel");
 		this.selectedListValue = new Label();
+		this.selectedListValue.setDebugId("selectedListValue");
 		this.descriptionLabel = new Label(this.messageSource.getMessage(Message.DESCRIPTION_LABEL));
+		this.descriptionLabel.setDebugId("descriptionLabel");
 		this.descriptionValue = new Label();
+		this.descriptionValue.setDebugId("descriptionValue");
 		this.listEntriesLabel = new Label(this.messageSource.getMessage(Message.LIST_ENTRIES_LABEL));
+		this.listEntriesLabel.setDebugId("listEntriesLabel");
 		this.listEntryValues = this.createEntryTable();
 	}
 
@@ -170,6 +181,7 @@ public class SelectGermplasmListInfoComponent extends GridLayout implements Init
 
 	private Table createEntryTable() {
 		Table listEntryValues = new Table("");
+		listEntryValues.setDebugId("listEntryValues");
 
 		listEntryValues.setPageLength(15); // number of rows to display in the Table
 		listEntryValues.setWidth("495px");
@@ -180,13 +192,13 @@ public class SelectGermplasmListInfoComponent extends GridLayout implements Init
 		listEntryValues.addContainerProperty(SelectGermplasmListInfoComponent.DESIGNATION, String.class, null);
 		listEntryValues.addContainerProperty(SelectGermplasmListInfoComponent.SEED_SOURCE, String.class, null);
 		listEntryValues.addContainerProperty(SelectGermplasmListInfoComponent.GROUP_NAME, String.class, null);
-
-		this.messageSource.setColumnHeader(listEntryValues, SelectGermplasmListInfoComponent.ENTRY_ID, Message.LISTDATA_ENTRY_ID_HEADER);
-		this.messageSource.setColumnHeader(listEntryValues, SelectGermplasmListInfoComponent.GID, Message.LISTDATA_GID_HEADER);
-		this.messageSource.setColumnHeader(listEntryValues, SelectGermplasmListInfoComponent.DESIGNATION,
-				Message.LISTDATA_DESIGNATION_HEADER);
-		this.messageSource.setColumnHeader(listEntryValues, SelectGermplasmListInfoComponent.SEED_SOURCE,
-				Message.LISTDATA_SEEDSOURCE_HEADER);
+		
+		listEntryValues.setColumnHeader(SelectGermplasmListInfoComponent.ENTRY_ID, ColumnLabels.ENTRY_ID.getTermNameFromOntology(this.ontologyDataManager));
+		listEntryValues.setColumnHeader(SelectGermplasmListInfoComponent.GID, ColumnLabels.GID.getTermNameFromOntology(this.ontologyDataManager));
+		listEntryValues.setColumnHeader(SelectGermplasmListInfoComponent.DESIGNATION,
+				ColumnLabels.DESIGNATION.getTermNameFromOntology(this.ontologyDataManager));
+		listEntryValues.setColumnHeader(SelectGermplasmListInfoComponent.SEED_SOURCE,
+				ColumnLabels.SEED_SOURCE.getTermNameFromOntology(this.ontologyDataManager));
 		this.messageSource.setColumnHeader(listEntryValues, SelectGermplasmListInfoComponent.GROUP_NAME, Message.LISTDATA_GROUPNAME_HEADER);
 
 		return listEntryValues;

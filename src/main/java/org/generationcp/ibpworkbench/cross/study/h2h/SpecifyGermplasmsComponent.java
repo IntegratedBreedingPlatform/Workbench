@@ -52,32 +52,39 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout implements Initia
 		this.setWidth("1000px");
 
 		this.specifyTestEntryLabel = new Label("Specify a test entry:");
+		this.specifyTestEntryLabel.setDebugId("specifyTestEntryLabel");
 		this.addComponent(this.specifyTestEntryLabel, "top:20px;left:30px");
 
 		this.testEntryLabel = new Label();
+		this.testEntryLabel.setDebugId("testEntryLabel");
 		this.testEntryLabel.setWidth("200px");
 		this.testEntryLabel.setImmediate(true);
 		this.addComponent(this.testEntryLabel, "top:20px;left:150px");
 
 		this.specifyStandardEntryLabel = new Label("Specify a standard entry:");
+		this.specifyStandardEntryLabel.setDebugId("specifyStandardEntryLabel");
 		this.addComponent(this.specifyStandardEntryLabel, "top:20px;left:450px");
 
 		this.standardEntryLabel = new Label();
+		this.standardEntryLabel.setDebugId("standardEntryLabel");
 		this.standardEntryLabel.setWidth("200px");
 		this.standardEntryLabel.setImmediate(true);
 		this.addComponent(this.standardEntryLabel, "top:20px;left:600px");
 
 		this.selectTestEntryButton = new Button("Select test entry");
+		this.selectTestEntryButton.setDebugId("selectTestEntryButton");
 		this.selectTestEntryButton.setData(SpecifyGermplasmsComponent.SELECT_TEST_ENTRY_BUTTON_ID);
 		this.selectTestEntryButton.addListener(new H2HComparisonQueryButtonClickListener(this));
 		this.addComponent(this.selectTestEntryButton, "top:70px;left:170px");
 
 		this.selectStandardEntryButton = new Button("Select standard entry");
+		this.selectStandardEntryButton.setDebugId("selectStandardEntryButton");
 		this.selectStandardEntryButton.setData(SpecifyGermplasmsComponent.SELECT_STANDARD_ENTRY_BUTTON_ID);
 		this.selectStandardEntryButton.addListener(new H2HComparisonQueryButtonClickListener(this));
 		this.addComponent(this.selectStandardEntryButton, "top:70px;left:610px");
 
 		this.nextButton = new Button("Next");
+		this.nextButton.setDebugId("nextButton");
 		this.nextButton.setData(SpecifyGermplasmsComponent.NEXT_BUTTON_ID);
 		this.nextButton.addListener(new H2HComparisonQueryButtonClickListener(this));
 		this.addComponent(this.nextButton, "top:150px;left:900px");
@@ -86,12 +93,14 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout implements Initia
 	public void selectTestEntryButtonClickAction() {
 		Window parentWindow = this.getWindow();
 		SelectAGermplasmDialog selectAGermplasmDialog = new SelectAGermplasmDialog(this, parentWindow, this.testEntryLabel);
+		selectAGermplasmDialog.setDebugId("selectAGermplasmDialog");
 		parentWindow.addWindow(selectAGermplasmDialog);
 	}
 
 	public void selectStandardEntryButtonClickAction() {
 		Window parentWindow = this.getWindow();
 		SelectAGermplasmDialog selectAGermplasmDialog = new SelectAGermplasmDialog(this, parentWindow, this.standardEntryLabel);
+		selectAGermplasmDialog.setDebugId("selectAGermplasmDialog");
 		parentWindow.addWindow(selectAGermplasmDialog);
 	}
 

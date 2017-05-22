@@ -69,6 +69,7 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 		this.setWidth("1000px");
 
 		this.traitsTable = new Table();
+		this.traitsTable.setDebugId("traitsTable");
 		this.traitsTable.setWidth("500px");
 		this.traitsTable.setHeight("400px");
 		this.traitsTable.setImmediate(true);
@@ -82,12 +83,14 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 		this.addComponent(this.traitsTable, "top:20px;left:30px");
 
 		this.nextButton = new Button("Next");
+		this.nextButton.setDebugId("nextButton");
 		this.nextButton.setData(TraitsAvailableComponent.NEXT_BUTTON_ID);
 		this.nextButton.addListener(new H2HComparisonQueryButtonClickListener(this));
 		this.nextButton.setEnabled(false);
 		this.addComponent(this.nextButton, "top:450px;left:900px");
 
 		this.backButton = new Button("Back");
+		this.backButton.setDebugId("backButton");
 		this.backButton.setData(TraitsAvailableComponent.BACK_BUTTON_ID);
 		this.backButton.addListener(new H2HComparisonQueryButtonClickListener(this));
 		this.addComponent(this.backButton, "top:450px;left:820px");

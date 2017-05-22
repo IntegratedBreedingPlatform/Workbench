@@ -73,14 +73,20 @@ public class TraitDonorsQueryMain extends VerticalLayout implements Initializing
 		this.setTitleContent();
 
 		this.accordion = new Accordion();
+		this.accordion.setDebugId("accordion");
 		this.accordion.setWidth("1000px");
 
 		// set up the accordion panels and their cascading includes of the previous one
 		this.screenFour = new TraitDisplayResults(this);
+		this.screenFour.setDebugId("screenFour");
 		this.screenThree = new SetUpTraitDonorFilter(this, this.screenFour);
+		this.screenThree.setDebugId("screenThree");
 		this.screenTwo = new EnvironmentFilter(this, this.screenThree);
+		this.screenTwo.setDebugId("screenTwo");
 		this.screenOne = new PreselectTraitFilter(this, this.screenTwo);
+		this.screenOne.setDebugId("screenOne");
 		this.welcomeScreen = new TraitWelcomeScreen(this, this.screenOne);
+		this.welcomeScreen.setDebugId("welcomeScreen");
 
 		this.welcomeTab = this.accordion.addTab(this.welcomeScreen, this.messageSource.getMessage(Message.INTRODUCTION));
 		this.firstTab = this.accordion.addTab(this.screenOne, this.messageSource.getMessage(Message.SETUP_TRAIT_FILTER));
@@ -151,9 +157,11 @@ public class TraitDonorsQueryMain extends VerticalLayout implements Initializing
 
 	private void setTitleContent() {
 		this.titleLayout = new HorizontalLayout();
+		this.titleLayout.setDebugId("titleLayout");
 		this.titleLayout.setSpacing(true);
 
 		this.toolTitle = new Label("Trait Donors Query");
+		this.toolTitle.setDebugId("toolTitle");
 		this.toolTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 		this.toolTitle.setContentMode(Label.CONTENT_XHTML);
 		this.toolTitle.setWidth("283px");

@@ -92,20 +92,24 @@ public class SetUpTraitDonorFilter extends AbsoluteLayout implements Initializin
 	 */
 	public void createTraitsTabs() {
 		this.mainTabSheet = new TabSheet();
+		this.mainTabSheet.setDebugId("mainTabSheet");
 		this.mainTabSheet.setHeight("470px");
 
 		for (int i = 0; i < SetUpTraitDonorFilter.NUM_OF_SECTIONS; i++) {
 			VerticalLayout layout = new VerticalLayout();
+			layout.setDebugId("layout");
 
 			switch (i) {
 				case 0:
 					this.numericSection = new NumericTraitsSection(this.environmentIds, this.selectedTraits, this.getWindow());
+					this.numericSection.setDebugId("numericSection");
 					this.numericSection.showEmptyTraitsMessage();
 					layout = this.numericSection;
 					break;
 
 				case 1:
 					this.characterSection = new CharacterTraitsSection(this.environmentIds, this.selectedTraits, this.getWindow());
+					this.characterSection.setDebugId("characterSection");
 					layout = this.characterSection;
 					break;
 
@@ -159,6 +163,7 @@ public class SetUpTraitDonorFilter extends AbsoluteLayout implements Initializin
 
 	private void createButtonLayout() {
 		this.nextButton = new Button(this.messageSource.getMessage(Message.NEXT));
+		this.nextButton.setDebugId("nextButton");
 		this.nextButton.setWidth("80px");
 		this.nextButton.setData(SetUpTraitDonorFilter.NEXT_BUTTON_ID);
 		this.nextButton.addListener(new TraitDonorButtonClickListener(this));

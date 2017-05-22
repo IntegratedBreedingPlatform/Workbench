@@ -60,6 +60,7 @@ public class StudyInfoDialog extends BaseSubWindow implements InitializingBean, 
 		this.center();
 
 		AbsoluteLayout mainLayout = new AbsoluteLayout();
+		mainLayout.setDebugId("mainLayout");
 		mainLayout.setMargin(true);
 		mainLayout.setWidth("1100px");
 		mainLayout.setHeight("550px");
@@ -87,9 +88,11 @@ public class StudyInfoDialog extends BaseSubWindow implements InitializingBean, 
 		}
 
 		HorizontalLayout buttonLayout = new HorizontalLayout();
+		buttonLayout.setDebugId("buttonLayout");
 		buttonLayout.setSpacing(true);
 
 		this.cancelButton = new Button("Close");
+		this.cancelButton.setDebugId("cancelButton");
 		this.cancelButton.setData(StudyInfoDialog.CLOSE_SCREEN_BUTTON_ID);
 		this.cancelButton.addListener(new CloseWindowAction());
 

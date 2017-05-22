@@ -127,18 +127,23 @@ public class SaveToListDialog extends BaseSubWindow
 		this.center();
 
 		final AbsoluteLayout mainLayout = new AbsoluteLayout();
+		mainLayout.setDebugId("mainLayout");
 		mainLayout.setWidth("550px");
 		mainLayout.setHeight("240px");
 		mainLayout.addStyleName("white-bg");
 
 		this.labelListName = new Label(this.messageSource.getMessage(Message.LIST_NAME_LABEL));
+		this.labelListName.setDebugId("labelListName");
 		this.labelListName.setWidth(SaveToListDialog.ONE_HUNDRED_PX);
 		this.labelDescription = new Label(this.messageSource.getMessage(Message.DESCRIPTION_LABEL));
+		this.labelDescription.setDebugId("labelDescription");
 		this.labelDescription.setWidth(SaveToListDialog.ONE_HUNDRED_PX);
 		this.labelType = new Label(this.messageSource.getMessage(Message.TYPE_LABEL));
+		this.labelType.setDebugId("labelType");
 		this.labelType.setWidth(SaveToListDialog.ONE_HUNDRED_PX);
 
 		this.comboBoxListName = new ComboBox();
+		this.comboBoxListName.setDebugId("comboBoxListName");
 		this.populateComboBoxListName();
 		this.comboBoxListName.setNewItemsAllowed(true);
 		this.comboBoxListName.setNullSelectionAllowed(false);
@@ -186,19 +191,24 @@ public class SaveToListDialog extends BaseSubWindow
 		});
 
 		this.txtDescription = new TextField();
+		this.txtDescription.setDebugId("txtDescription");
 		this.txtDescription.setWidth("400px");
 
 		this.txtName = new TextField();
+		this.txtName.setDebugId("txtName");
 		this.txtName.setWidth("200px");
 
 		this.selectType = new Select();
+		this.selectType.setDebugId("selectType");
 		this.populateSelectType(this.selectType);
 		this.selectType.setNullSelectionAllowed(false);
 		this.selectType.select("LST");
 
 		final HorizontalLayout hButton = new HorizontalLayout();
+		hButton.setDebugId("hButton");
 		hButton.setSpacing(true);
 		this.btnSave = new Button(this.messageSource.getMessage(Message.SAVE));
+		this.btnSave.setDebugId("btnSave");
 		this.btnSave.setWidth("80px");
 		this.btnSave.setData(SaveToListDialog.SAVE_BUTTON_ID);
 		this.btnSave.setDescription("Save Germplasm List ");
@@ -215,6 +225,7 @@ public class SaveToListDialog extends BaseSubWindow
 
 		hButton.addComponent(this.btnSave);
 		this.btnCancel = new Button(this.messageSource.getMessage(Message.CANCEL_LABEL));
+		this.btnCancel.setDebugId("btnCancel");
 		this.btnCancel.setWidth("80px");
 		this.btnCancel.setData(SaveToListDialog.CANCEL_BUTTON_ID);
 		this.btnCancel.setDescription("Cancel Saving Germplasm List");
@@ -222,14 +233,17 @@ public class SaveToListDialog extends BaseSubWindow
 		hButton.addComponent(this.btnCancel);
 
 		this.saveInFolderLabel = new Label(this.messageSource.getMessage(Message.SAVE_IN_WITH_COLON));
+		this.saveInFolderLabel.setDebugId("saveInFolderLabel");
 		this.saveInFolderLabel.setWidth(SaveToListDialog.ONE_HUNDRED_PX);
 
 		this.folderToSaveListTo = new Label("Lists");
+		this.folderToSaveListTo.setDebugId("folderToSaveListTo");
 		this.folderToSaveListTo.setData(null);
 		this.folderToSaveListTo.addStyleName("not-bold");
 		this.folderToSaveListTo.setWidth("300px");
 
 		this.changeLocationFolderButton = new Button(this.messageSource.getMessage(Message.CHANGE_LOCATION));
+		this.changeLocationFolderButton.setDebugId("changeLocationFolderButton");
 		this.changeLocationFolderButton.addStyleName(BaseTheme.BUTTON_LINK);
 		this.changeLocationFolderButton.addListener(new Button.ClickListener() {
 

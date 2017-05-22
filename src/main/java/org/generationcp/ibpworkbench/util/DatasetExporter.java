@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.util.BreedingViewUtil;
@@ -263,10 +264,16 @@ public class DatasetExporter {
 
 	protected void processFactors(final List<String> rowContent, final Experiment currentExperiment,
 			final BreedingViewInput breedingViewInput) {
+		final Map<Short, String> rowContentMap = new TreeMap<>();
 		final List<Variable> factorsOfExperiments = currentExperiment.getFactors().getVariables();
 		final Map<String, Variable> factorsOfExperimentsMap = new HashMap<>();
 		for (final Variable factorVariable : factorsOfExperiments) {
 			factorsOfExperimentsMap.put(factorVariable.getVariableType().getLocalName(), factorVariable);
+		}
+
+		// Special case
+		if (this.columnsMap.get(TermId.PLOT_ID.name()) != null) {
+			rowContentMap.put(this.columnsMap.get(TermId.PLOT_ID.name()).shortValue(), currentExperiment.getPlotId());
 		}
 
 		for (final Variable factorVariable : factorsOfExperiments) {
@@ -289,9 +296,9 @@ public class DatasetExporter {
 											.equalsIgnoreCase(breedingViewInput.getReplicates().getName())) {
 								final Variable variable = factorsOfExperimentsMap.get(breedingViewInput.getBlocks().getName());
 								if (variable != null) {
-									rowContent.add(variable.getValue().trim());
+									rowContentMap.put(columnIndex, variable.getValue().trim());
 								} else {
-									rowContent.add("");
+									rowContentMap.put(columnIndex, "");
 								}
 
 							} else {
@@ -299,22 +306,22 @@ public class DatasetExporter {
 									elemValue = Double.valueOf(factorVariable.getValue());
 
 									if (elemValue == Double.valueOf("-1E+36")) {
-										rowContent.add("");
+										rowContentMap.put(columnIndex, "");
 									} else {
-										rowContent.add(String.valueOf(factorVariable.getValue()));
+										rowContentMap.put(columnIndex, String.valueOf(factorVariable.getValue()));
 									}
 								} catch (final NumberFormatException ex) {
 									String value = factorVariable.getValue();
 									if (value != null) {
 										value = value.trim();
 									}
-									rowContent.add(value);
+									rowContentMap.put(columnIndex, value);
 								}
 							}
 
 						} else {
 							final String nullValue = null;
-							rowContent.add(nullValue);
+							rowContentMap.put(columnIndex, nullValue);
 						}
 					} else {
 						String value = factorVariable.getValue();
@@ -340,10 +347,14 @@ public class DatasetExporter {
 							}
 
 						}
-						rowContent.add(value);
+						rowContentMap.put(columnIndex, value);
 					}
 				}
 			}
+		}
+
+		if (rowContentMap.size() > 0) {
+			rowContent.addAll(rowContentMap.values());
 		}
 	}
 

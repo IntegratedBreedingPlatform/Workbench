@@ -64,9 +64,11 @@ public class TraitWelcomeScreen extends AbsoluteLayout implements InitializingBe
 		this.setWidth("1000px");
 
 		this.introductionMessage = new Label(this.messageSource.getMessage(Message.TRAIT_DONORS_QUERY_INTRODUCTION_MESSAGE));
+		this.introductionMessage.setDebugId("introductionMessage");
 		this.addComponent(this.introductionMessage, "top:30px; left:30px;");
 
 		this.nextButton = new Button(this.messageSource.getMessage(Message.NEXT));
+		this.nextButton.setDebugId("nextButton");
 		this.nextButton.setData(TraitWelcomeScreen.NEXT_BUTTON_ID);
 		this.nextButton.addListener(new TraitDonorButtonClickListener(this));
 		this.nextButton.setWidth("80px");

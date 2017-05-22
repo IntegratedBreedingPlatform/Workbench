@@ -1,53 +1,149 @@
 
 package org.generationcp.ibpworkbench.cross.study.h2h.main;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
-import org.generationcp.ibpworkbench.cross.study.h2h.main.dialogs.SelectGermplasmEntryDialog;
-import org.junit.Assert;
+import org.generationcp.ibpworkbench.cross.study.h2h.main.pojos.TablesEntries;
+import org.generationcp.middleware.data.initializer.GermplasmListDataTestDataInitializer;
+import org.generationcp.middleware.pojos.GermplasmList;
+import org.generationcp.middleware.pojos.GermplasmListData;
+import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import com.vaadin.ui.Window;
+import com.vaadin.ui.Table;
 
+import junit.framework.Assert;
+
+@RunWith(value = MockitoJUnitRunner.class)
 public class SpecifyGermplasmsComponentTest {
 
-	@Test
-	public void testSelectTestEntryButtonClickAction() {
-		SpecifyGermplasmsComponent specifyGermplasm =
-				new SpecifyGermplasmsComponent(Mockito.mock(HeadToHeadCrossStudyMain.class), Mockito.mock(TraitsAvailableComponent.class));
-		SpecifyGermplasmsComponent mockScreen = Mockito.spy(specifyGermplasm);
+	private static final String GERMPLASM2_GID = "2";
+	private static final String GERMPLASM2_NAME = "Germplasm 2";
+	private static final String GERMPLASM2_GROUPID = "2";
 
-		Window parentWindow = new Window();
-		Mockito.doReturn(parentWindow).when(mockScreen).getWindow();
+	@InjectMocks
+	SpecifyGermplasmsComponent specifyGermplasmsComponent;
 
-		mockScreen.selectTestEntryButtonClickAction();
+	Map<String, String> germplasmIdMGIDMap = new HashMap<String, String>();
 
-		Set<Window> childWindows = parentWindow.getChildWindows();
-		Assert.assertTrue("Only 1 child window attached", childWindows.size() == 1);
-		Window selectWindow = childWindows.iterator().next();
-		Assert.assertTrue("Child window is Select Germplasm Entry Dialog", selectWindow instanceof SelectGermplasmEntryDialog);
-		SelectGermplasmEntryDialog selectDialog = (SelectGermplasmEntryDialog) selectWindow;
-		Assert.assertTrue("Dialog is for selecting test entry", selectDialog.isTestEntry());
+	@Before
+	public void setup() {
+		this.germplasmIdMGIDMap.put(SpecifyGermplasmsComponentTest.GERMPLASM2_GID,
+				SpecifyGermplasmsComponentTest.GERMPLASM2_GID);
+		this.specifyGermplasmsComponent.setGermplasmIdMGIDMap(this.germplasmIdMGIDMap);
+		this.specifyGermplasmsComponent.setSingleEntriesSet(new HashSet<String>());
+		this.specifyGermplasmsComponent.setGermplasmIdNameMap(new HashMap<String, String>());
+		this.specifyGermplasmsComponent.setEntriesTable(new Table());
 	}
 
 	@Test
-	public void testSelectStandardEntryButtonClickAction() {
-		SpecifyGermplasmsComponent specifyGermplasm =
-				new SpecifyGermplasmsComponent(Mockito.mock(HeadToHeadCrossStudyMain.class), Mockito.mock(TraitsAvailableComponent.class));
-		SpecifyGermplasmsComponent mockScreen = Mockito.spy(specifyGermplasm);
-
-		Window parentWindow = new Window();
-		Mockito.doReturn(parentWindow).when(mockScreen).getWindow();
-
-		mockScreen.selectStandardEntryButtonClickAction();
-
-		Set<Window> childWindows = parentWindow.getChildWindows();
-		Assert.assertTrue("Only 1 child window attached", childWindows.size() == 1);
-		Window selectWindow = childWindows.iterator().next();
-		Assert.assertTrue("Child window is Select Germplasm Entry Dialog", selectWindow instanceof SelectGermplasmEntryDialog);
-		SelectGermplasmEntryDialog selectDialog = (SelectGermplasmEntryDialog) selectWindow;
-		Assert.assertFalse("Dialog is for selecting test entry", selectDialog.isTestEntry());
+	public void permutateGermplasmListToPartnerEntriesTestWherePartnerMapIsEmptyAndIsTestEntry() {
+		final Map<String, String> testMap = new HashMap<String, String>();
+		final Map<String, String> standardMap = new HashMap<String, String>();
+		final List<TablesEntries> tableEntriesList = new ArrayList<TablesEntries>();
+		final GermplasmListData germplasmData = GermplasmListDataTestDataInitializer
+				.createGermplasmListData(new GermplasmList(), 1, 1, 1);
+		final List<GermplasmListData> germplasmListData = Arrays.asList(germplasmData);
+		this.specifyGermplasmsComponent.permutateGermplasmListToPartnerEntries(true, testMap, standardMap,
+				tableEntriesList, germplasmListData);
+		final TablesEntries tablesEntries = tableEntriesList.get(0);
+		Assert.assertEquals("The table's size should be 1", 1, tableEntriesList.size());
+		Assert.assertEquals("The test entry name should be " + germplasmData.getDesignation(),
+				germplasmData.getDesignation(), tablesEntries.getTestEntryName());
+		Assert.assertEquals("The test entry gid should be " + germplasmData.getGid(), germplasmData.getGid().toString(),
+				tablesEntries.getTestEntryGID());
+		Assert.assertEquals("The test entry group id should be " + germplasmData.getGroupId(),
+				germplasmData.getGroupId().toString(), tablesEntries.getTestEntryGroupID());
+		Assert.assertTrue("The standard entry name should be empty", tablesEntries.getStandardEntryName().isEmpty());
+		Assert.assertNull("The standard entry gid should be null", tablesEntries.getStandardEntryGID());
+		Assert.assertNull("The standard entry group id should be null", tablesEntries.getStandardEntryGroupID());
 	}
 
+	@Test
+	public void permutateGermplasmListToPartnerEntriesTestWherePartnerMapIsEmptyAndIsStandardEntry() {
+		final Map<String, String> testMap = new HashMap<String, String>();
+		final Map<String, String> standardMap = new HashMap<String, String>();
+		final List<TablesEntries> tableEntriesList = new ArrayList<TablesEntries>();
+		final GermplasmListData germplasmData = GermplasmListDataTestDataInitializer
+				.createGermplasmListData(new GermplasmList(), 1, 1, 1);
+		final List<GermplasmListData> germplasmListData = Arrays.asList(germplasmData);
+		this.specifyGermplasmsComponent.permutateGermplasmListToPartnerEntries(false, testMap, standardMap,
+				tableEntriesList, germplasmListData);
+		final TablesEntries tablesEntries = tableEntriesList.get(0);
+		Assert.assertEquals("The table's size should be 1", 1, tableEntriesList.size());
+		Assert.assertTrue("The test entry name should be empty", tablesEntries.getTestEntryName().isEmpty());
+		Assert.assertNull("The test entry gid should be null", tablesEntries.getTestEntryGID());
+		Assert.assertNull("The test entry group id should be null", tablesEntries.getTestEntryGroupID());
+		Assert.assertEquals("The standard entry name should be " + germplasmData.getDesignation(),
+				germplasmData.getDesignation(), tablesEntries.getStandardEntryName());
+		Assert.assertEquals("The standard entry gid should be " + germplasmData.getGid(),
+				germplasmData.getGid().toString(), tablesEntries.getStandardEntryGID());
+		Assert.assertEquals("The standard entry group idshould be " + germplasmData.getGroupId(),
+				germplasmData.getGroupId().toString(), tablesEntries.getStandardEntryGroupID());
+	}
+
+	@Test
+	public void permutateGermplasmListToPartnerEntriesTestWherePartnerMapIsNotEmptyAndIsTestEntry() {
+		final Map<String, String> testMap = new HashMap<String, String>();
+		final Map<String, String> standardMap = new HashMap<String, String>();
+		standardMap.put(SpecifyGermplasmsComponentTest.GERMPLASM2_GID, SpecifyGermplasmsComponentTest.GERMPLASM2_NAME);
+
+		final List<TablesEntries> tableEntriesList = new ArrayList<TablesEntries>();
+		final GermplasmListData germplasmData = GermplasmListDataTestDataInitializer
+				.createGermplasmListData(new GermplasmList(), 1, 1, 1);
+		final List<GermplasmListData> germplasmListData = Arrays.asList(germplasmData);
+		this.specifyGermplasmsComponent.permutateGermplasmListToPartnerEntries(true, testMap, standardMap,
+				tableEntriesList, germplasmListData);
+		final TablesEntries tablesEntries = tableEntriesList.get(0);
+		Assert.assertEquals("The table's size should be 1", 1, tableEntriesList.size());
+		Assert.assertEquals("The test entry name should be " + germplasmData.getDesignation(),
+				germplasmData.getDesignation(), tablesEntries.getTestEntryName());
+		Assert.assertEquals("The test entry gid should be " + germplasmData.getGid(), germplasmData.getGid().toString(),
+				tablesEntries.getTestEntryGID());
+		Assert.assertEquals("The test entry group id should be " + germplasmData.getGroupId(),
+				germplasmData.getGroupId().toString(), tablesEntries.getTestEntryGroupID());
+		Assert.assertEquals("The standard entry name should be " + SpecifyGermplasmsComponentTest.GERMPLASM2_NAME,
+				SpecifyGermplasmsComponentTest.GERMPLASM2_NAME, tablesEntries.getStandardEntryName());
+		Assert.assertEquals("The standard entry gid should be " + SpecifyGermplasmsComponentTest.GERMPLASM2_GID,
+				SpecifyGermplasmsComponentTest.GERMPLASM2_GID, tablesEntries.getStandardEntryGID());
+		Assert.assertEquals(
+				"The standard entry group id should be " + SpecifyGermplasmsComponentTest.GERMPLASM2_GROUPID,
+				SpecifyGermplasmsComponentTest.GERMPLASM2_GROUPID, tablesEntries.getStandardEntryGroupID());
+	}
+
+	@Test
+	public void permutateGermplasmListToPartnerEntriesTestWherePartnerMapIsNotEmptyAndIsStandardEntry() {
+		final Map<String, String> testMap = new HashMap<String, String>();
+		final Map<String, String> standardMap = new HashMap<String, String>();
+		testMap.put(SpecifyGermplasmsComponentTest.GERMPLASM2_GID, SpecifyGermplasmsComponentTest.GERMPLASM2_NAME);
+
+		final List<TablesEntries> tableEntriesList = new ArrayList<TablesEntries>();
+		final GermplasmListData germplasmData = GermplasmListDataTestDataInitializer
+				.createGermplasmListData(new GermplasmList(), 1, 1, 1);
+		final List<GermplasmListData> germplasmListData = Arrays.asList(germplasmData);
+		this.specifyGermplasmsComponent.permutateGermplasmListToPartnerEntries(false, testMap, standardMap,
+				tableEntriesList, germplasmListData);
+		final TablesEntries tablesEntries = tableEntriesList.get(0);
+		Assert.assertEquals("The table's size should be 1", 1, tableEntriesList.size());
+		Assert.assertEquals("The test entry name should be " + SpecifyGermplasmsComponentTest.GERMPLASM2_NAME,
+				SpecifyGermplasmsComponentTest.GERMPLASM2_NAME, tablesEntries.getTestEntryName());
+		Assert.assertEquals("The test entry gid should be " + SpecifyGermplasmsComponentTest.GERMPLASM2_GID,
+				SpecifyGermplasmsComponentTest.GERMPLASM2_GID, tablesEntries.getTestEntryGID());
+		Assert.assertEquals("The test entry group id should be " + SpecifyGermplasmsComponentTest.GERMPLASM2_GROUPID,
+				SpecifyGermplasmsComponentTest.GERMPLASM2_GROUPID, tablesEntries.getTestEntryGroupID());
+		Assert.assertEquals("The standard entry name should be " + germplasmData.getDesignation(),
+				germplasmData.getDesignation(), tablesEntries.getStandardEntryName());
+		Assert.assertEquals("The standard entry gid should be " + germplasmData.getGid(),
+				germplasmData.getGid().toString(), tablesEntries.getStandardEntryGID());
+		Assert.assertEquals("The standard entry group id should be " + germplasmData.getGroupId(),
+				germplasmData.getGroupId().toString(), tablesEntries.getStandardEntryGroupID());
+	}
 }

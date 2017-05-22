@@ -122,17 +122,12 @@ public class AppLauncherService {
 				this.tomcatUtil.deployWebAppIfNecessary(webServiceTool);
 			}
 
-			// this should only affect MBDT
-			this.toolUtil.updateToolConfigurationForProject(tool, this.sessionData.getLastOpenedProject());
-
 			this.toolUtil.launchNativeTool(tool);
 
 		} catch (IOException e) {
 			File absoluteToolFile = new File(tool.getPath()).getAbsoluteFile();
 			throw new AppLaunchException(Message.LAUNCH_TOOL_ERROR_DESC.name(), new String[] {absoluteToolFile.getAbsolutePath()}, e);
-		} catch (ConfigurationChangeException e) {
-			AppLauncherService.LOG.debug(e.getMessage(), e);
-		}
+		} 
 	}
 
 	protected String launchWebapp(Tool tool, Integer idParam) {
