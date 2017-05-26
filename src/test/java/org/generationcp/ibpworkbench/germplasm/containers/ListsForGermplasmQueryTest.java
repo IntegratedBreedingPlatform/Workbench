@@ -4,6 +4,7 @@ package org.generationcp.ibpworkbench.germplasm.containers;
 import java.util.Arrays;
 import java.util.List;
 
+import com.vaadin.ui.Link;
 import org.generationcp.middleware.data.initializer.GermplasmListTestDataInitializer;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
 import org.junit.Before;
@@ -44,7 +45,7 @@ public class ListsForGermplasmQueryTest {
 		Assert.assertEquals("The id should be List 1 Description", "List 1 Description",
 				item.getItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_DESCRIPTION).toString());
 		Assert.assertEquals("The id should be List 1", "List 1",
-				item.getItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_NAME).toString());
+			((Link) item.getItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_NAME).getValue()).getCaption());
 		Assert.assertEquals("The date should be 20150101", "20150101",
 				item.getItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_DATE).toString());
 	}
