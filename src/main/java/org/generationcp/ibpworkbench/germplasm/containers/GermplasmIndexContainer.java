@@ -265,15 +265,13 @@ public final class GermplasmIndexContainer {
 		Item item = container.getItem(itemId);
 		item.getItemProperty(GermplasmIndexContainer.STUDY_ID).setValue(study.getId());
 		final ExternalResource urlToStudy;
-		final String HOST = ContextApplication.currentRequest().getScheme() + "://"
-			+ ContextApplication.currentRequest().getServerName() + ":" + ContextApplication.currentRequest().getServerPort();
 
 		if(study.getStudyType().getName().equals("N")){
 			urlToStudy = new ExternalResource(
-				"javascript:(function(){ parent.location.href = " + "'" + HOST + URL_STUDY_NURSERY + study.getId() + "'" + "; }())");
+				"javascript:(function(){ parent.location.href = " + "'" + URL_STUDY_NURSERY + study.getId() + "'" + "; }())");
 		}else{
 			urlToStudy = new ExternalResource(
-				"javascript:(function(){ parent.location.href = " + "'" + HOST + URL_STUDY_TRIAL + study.getId() + "#/trialSettings" + "'"
+				"javascript:(function(){ parent.location.href = " + "'" + URL_STUDY_TRIAL + study.getId() + "#/trialSettings" + "'"
 					+ "; }())");
 		}
 		Link htmlLink = new Link();
