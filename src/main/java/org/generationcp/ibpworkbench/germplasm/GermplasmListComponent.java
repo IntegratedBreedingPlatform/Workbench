@@ -15,6 +15,7 @@ import com.vaadin.event.ItemClickEvent;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Link;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
@@ -126,7 +127,7 @@ public class GermplasmListComponent extends VerticalLayout implements Initializi
 
 		// add the column ids to the LazyQueryContainer tells the container the columns to display for the Table
 		container.addContainerProperty(ListsForGermplasmQuery.GERMPLASMLIST_ID, String.class, null);
-		container.addContainerProperty(ListsForGermplasmQuery.GERMPLASMLIST_NAME, String.class, null);
+		container.addContainerProperty(ListsForGermplasmQuery.GERMPLASMLIST_NAME, Link.class, null);
 		container.addContainerProperty(ListsForGermplasmQuery.GERMPLASMLIST_DATE, String.class, null);
 		container.addContainerProperty(ListsForGermplasmQuery.GERMPLASMLIST_DESCRIPTION, String.class, null);
 		container.getQueryView().getItem(0); // initialize the first batch of data to be displayed

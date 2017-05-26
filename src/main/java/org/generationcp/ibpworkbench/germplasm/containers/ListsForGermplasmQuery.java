@@ -14,6 +14,9 @@ package org.generationcp.ibpworkbench.germplasm.containers;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.ui.Link;
+import com.vaadin.ui.themes.BaseTheme;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
 import org.generationcp.middleware.pojos.GermplasmList;
@@ -42,6 +45,8 @@ public class ListsForGermplasmQuery implements Query {
 	public static final Object GERMPLASMLIST_DATE = "date";
 	public static final Object GERMPLASMLIST_DESCRIPTION = "description";
 
+	public static final String MANAGER_GERMPLASM = "/BreedingManager/main/list-manager?restartApplication&lists=";
+
 	private final GermplasmListManager dataManager;
 	private final Integer gid;
 	private int size;
@@ -69,7 +74,7 @@ public class ListsForGermplasmQuery implements Query {
 	public Item constructItem() {
 		final PropertysetItem item = new PropertysetItem();
 		item.addItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_ID, new ObjectProperty<String>(""));
-		item.addItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_NAME, new ObjectProperty<String>(""));
+		item.addItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_NAME, new ObjectProperty<Link>(new Link()));
 		item.addItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_DATE, new ObjectProperty<String>(""));
 		item.addItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_DESCRIPTION, new ObjectProperty<String>(""));
 		return item;
@@ -91,7 +96,17 @@ public class ListsForGermplasmQuery implements Query {
 			for (final GermplasmList list : germplasmLists) {
 				final PropertysetItem item = new PropertysetItem();
 				item.addItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_ID, new ObjectProperty<String>(list.getId().toString()));
-				item.addItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_NAME, new ObjectProperty<String>(list.getName()));
+
+				final ExternalResource urlToStudy = new ExternalResource(
+					"javascript:(function(){ parent.location.href = " + "'" + MANAGER_GERMPLASM + list.getId() + "'; }())");
+
+				Link htmlLink = new Link();
+				htmlLink.setResource(urlToStudy);
+				htmlLink.setCaption(list.getName());
+				htmlLink.setDebugId("List");
+				htmlLink.addStyleName(BaseTheme.BUTTON_LINK);
+
+				item.addItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_NAME, new ObjectProperty<Link>(htmlLink));
 				item.addItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_DATE, new ObjectProperty<String>(String.valueOf(list.getDate())));
 				item.addItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_DESCRIPTION, new ObjectProperty<String>(list.getDescription()));
 				items.add(item);
