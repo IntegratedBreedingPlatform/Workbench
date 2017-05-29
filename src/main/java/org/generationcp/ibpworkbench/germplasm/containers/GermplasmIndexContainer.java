@@ -15,15 +15,14 @@ import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.terminal.ExternalResource;
-import com.vaadin.ui.Link;
 import com.vaadin.ui.themes.BaseTheme;
-import org.dellroad.stuff.vaadin.ContextApplication;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.containers.GermplasmEnvironmentSearchQuery;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.containers.GermplasmEnvironmentSearchQueryFactory;
 import org.generationcp.ibpworkbench.germplasm.GermplasmDetailModel;
 import org.generationcp.ibpworkbench.germplasm.GermplasmNamesAttributesModel;
 import org.generationcp.ibpworkbench.germplasm.GermplasmQueries;
 import org.generationcp.ibpworkbench.germplasm.GermplasmSearchResultModel;
+import org.generationcp.ibpworkbench.ui.common.LinkButton;
 import org.generationcp.middleware.domain.dms.StudyReference;
 import org.generationcp.middleware.manager.api.CrossStudyDataManager;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
@@ -66,6 +65,8 @@ public final class GermplasmIndexContainer {
 
 	private static final String URL_STUDY_NURSERY = "/Fieldbook/NurseryManager/editNursery/";
 	private static final String URL_STUDY_TRIAL = "/Fieldbook/TrialManager/openTrial/";
+	private static final String PARENT_WINDOW = "_parent";
+	private static final String STUDY_NURSERY = "N";
 
 
 	private final GermplasmQueries qQuery;
@@ -250,7 +251,7 @@ public final class GermplasmIndexContainer {
 
 		// Create the container properties
 		container.addContainerProperty(GermplasmIndexContainer.STUDY_ID, Integer.class, 0);
-		container.addContainerProperty(GermplasmIndexContainer.STUDY_NAME, Link.class, new Link());
+		container.addContainerProperty(GermplasmIndexContainer.STUDY_NAME, LinkButton.class, new LinkButton( new ExternalResource(""),""));
 		container.addContainerProperty(GermplasmIndexContainer.STUDY_DESCRIPTION, String.class, "");
 
 		final List<StudyReference> studies = this.qQuery.getGermplasmStudyInfo(gModel.getGid());
@@ -264,23 +265,21 @@ public final class GermplasmIndexContainer {
 		Object itemId = container.addItem();
 		Item item = container.getItem(itemId);
 		item.getItemProperty(GermplasmIndexContainer.STUDY_ID).setValue(study.getId());
-		final ExternalResource urlToStudy;
+		final ExternalResource urlToOpenStudy = getURLStudy(study);
 
-		if(study.getStudyType().getName().equals("N")){
-			urlToStudy = new ExternalResource(
-				"javascript:(function(){ parent.location.href = " + "'" + URL_STUDY_NURSERY + study.getId() + "'" + "; }())");
-		}else{
-			urlToStudy = new ExternalResource(
-				"javascript:(function(){ parent.location.href = " + "'" + URL_STUDY_TRIAL + study.getId() + "#/trialSettings" + "'"
-					+ "; }())");
-		}
-		Link htmlLink = new Link();
-		htmlLink.setResource(urlToStudy);
-		htmlLink.setCaption(study.getName());
-		htmlLink.setDebugId("Study");
-		htmlLink.addStyleName(BaseTheme.BUTTON_LINK);
-		item.getItemProperty(GermplasmIndexContainer.STUDY_NAME).setValue(htmlLink);
+		LinkButton linkStudyButton = new LinkButton(urlToOpenStudy,study.getName(), PARENT_WINDOW);
+		linkStudyButton.setDebugId("linkStudyButton");
+		linkStudyButton.addStyleName(BaseTheme.BUTTON_LINK);
+
+		item.getItemProperty(GermplasmIndexContainer.STUDY_NAME).setValue(linkStudyButton);
 		item.getItemProperty(GermplasmIndexContainer.STUDY_DESCRIPTION).setValue(study.getDescription());
+	}
+
+	private static ExternalResource getURLStudy(StudyReference study) {
+		if (study.getStudyType().getName().equals(STUDY_NURSERY)) {
+			return new ExternalResource(URL_STUDY_NURSERY + study.getId());
+		}
+		return new ExternalResource(URL_STUDY_TRIAL + study.getId() + "#/trialSettings");
 	}
 
 }
