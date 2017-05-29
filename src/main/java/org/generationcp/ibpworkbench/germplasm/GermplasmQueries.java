@@ -407,4 +407,12 @@ public class GermplasmQueries implements Serializable, InitializingBean {
 	public void afterPropertiesSet() throws Exception {
 		// Inherited abstract method
 	}
+
+	public PlatformTransactionManager getTransactionManager() {
+		return transactionManager;
+	}
+
+	public void setTransactionManager(PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
+	}
 }
