@@ -24,6 +24,7 @@ import org.generationcp.ibpworkbench.germplasm.GermplasmQueries;
 import org.generationcp.ibpworkbench.germplasm.GermplasmSearchResultModel;
 import org.generationcp.ibpworkbench.ui.common.LinkButton;
 import org.generationcp.middleware.domain.dms.StudyReference;
+import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.manager.api.CrossStudyDataManager;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.pojos.report.LotReportRow;
@@ -66,7 +67,6 @@ public final class GermplasmIndexContainer {
 	private static final String URL_STUDY_NURSERY = "/Fieldbook/NurseryManager/editNursery/";
 	private static final String URL_STUDY_TRIAL = "/Fieldbook/TrialManager/openTrial/";
 	private static final String PARENT_WINDOW = "_parent";
-	private static final String STUDY_NURSERY = "N";
 
 
 	private final GermplasmQueries qQuery;
@@ -276,7 +276,7 @@ public final class GermplasmIndexContainer {
 	}
 
 	private static ExternalResource getURLStudy(StudyReference study) {
-		if (study.getStudyType().getName().equals(STUDY_NURSERY)) {
+		if (study.getStudyType().getName().equals(StudyType.N.name())) {
 			return new ExternalResource(URL_STUDY_NURSERY + study.getId());
 		}
 		return new ExternalResource(URL_STUDY_TRIAL + study.getId() + "#/trialSettings");
