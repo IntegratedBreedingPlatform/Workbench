@@ -14,13 +14,17 @@ package org.generationcp.ibpworkbench.germplasm.containers;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.ui.themes.BaseTheme;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.containers.GermplasmEnvironmentSearchQuery;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.containers.GermplasmEnvironmentSearchQueryFactory;
 import org.generationcp.ibpworkbench.germplasm.GermplasmDetailModel;
 import org.generationcp.ibpworkbench.germplasm.GermplasmNamesAttributesModel;
 import org.generationcp.ibpworkbench.germplasm.GermplasmQueries;
 import org.generationcp.ibpworkbench.germplasm.GermplasmSearchResultModel;
+import org.generationcp.ibpworkbench.ui.common.LinkButton;
 import org.generationcp.middleware.domain.dms.StudyReference;
+import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.manager.api.CrossStudyDataManager;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.pojos.report.LotReportRow;
@@ -59,6 +63,11 @@ public final class GermplasmIndexContainer {
 	public static final String STUDY_DESCRIPTION = "description";
 
 	private static final Object GERMPLASM_PREFNAME = "prefname";
+
+	private static final String URL_STUDY_NURSERY = "/Fieldbook/NurseryManager/editNursery/";
+	private static final String[] URL_STUDY_TRIAL = {"/Fieldbook/TrialManager/openTrial/","#/trialSettings"};
+	private static final String PARENT_WINDOW = "_parent";
+
 
 	private final GermplasmQueries qQuery;
 
@@ -242,10 +251,10 @@ public final class GermplasmIndexContainer {
 
 		// Create the container properties
 		container.addContainerProperty(GermplasmIndexContainer.STUDY_ID, Integer.class, 0);
-		container.addContainerProperty(GermplasmIndexContainer.STUDY_NAME, String.class, "");
+		container.addContainerProperty(GermplasmIndexContainer.STUDY_NAME, LinkButton.class, new LinkButton( new ExternalResource(""),""));
 		container.addContainerProperty(GermplasmIndexContainer.STUDY_DESCRIPTION, String.class, "");
 
-		final List<StudyReference> studies = this.qQuery.getGermplasmStudyInfo(Integer.valueOf(gModel.getGid()));
+		final List<StudyReference> studies = this.qQuery.getGermplasmStudyInfo(gModel.getGid());
 		for (StudyReference study : studies) {
 			GermplasmIndexContainer.addGermplasmStudyInformation(container, study);
 		}
@@ -256,8 +265,21 @@ public final class GermplasmIndexContainer {
 		Object itemId = container.addItem();
 		Item item = container.getItem(itemId);
 		item.getItemProperty(GermplasmIndexContainer.STUDY_ID).setValue(study.getId());
-		item.getItemProperty(GermplasmIndexContainer.STUDY_NAME).setValue(study.getName());
+		final ExternalResource urlToOpenStudy = getURLStudy(study);
+
+		LinkButton linkStudyButton = new LinkButton(urlToOpenStudy,study.getName(), PARENT_WINDOW);
+		linkStudyButton.setDebugId("linkStudyButton");
+		linkStudyButton.addStyleName(BaseTheme.BUTTON_LINK);
+
+		item.getItemProperty(GermplasmIndexContainer.STUDY_NAME).setValue(linkStudyButton);
 		item.getItemProperty(GermplasmIndexContainer.STUDY_DESCRIPTION).setValue(study.getDescription());
+	}
+
+	private static ExternalResource getURLStudy(StudyReference study) {
+		if (study.getStudyType().getName().equals(StudyType.N.name())) {
+			return new ExternalResource(URL_STUDY_NURSERY + study.getId());
+		}
+		return new ExternalResource(URL_STUDY_TRIAL[0] + study.getId() + URL_STUDY_TRIAL[1]);
 	}
 
 }
