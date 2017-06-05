@@ -10,9 +10,8 @@ public class LinkButton extends Button {
 	public LinkButton(final ExternalResource url, final String caption) {
 		super(caption);
 		this.url = url;
-
 		setImmediate(true);
-		setListener(url, "_self");
+		setListener("_self");
 	}
 
 	public LinkButton(final ExternalResource url, final String caption, final String windowName) {
@@ -20,11 +19,11 @@ public class LinkButton extends Button {
 		this.url = url;
 
 		setImmediate(true);
-		setListener(url, windowName);
+		setListener(windowName);
 
 	}
 
-	private void setListener(final ExternalResource url, final String windowName) {
+	private void setListener(final String windowName) {
 		addListener(new Button.ClickListener() {
 
 			public void buttonClick(final ClickEvent event) {

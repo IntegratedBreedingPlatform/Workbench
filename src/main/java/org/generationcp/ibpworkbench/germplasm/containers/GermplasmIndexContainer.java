@@ -65,7 +65,7 @@ public final class GermplasmIndexContainer {
 	private static final Object GERMPLASM_PREFNAME = "prefname";
 
 	private static final String URL_STUDY_NURSERY = "/Fieldbook/NurseryManager/editNursery/";
-	private static final String URL_STUDY_TRIAL = "/Fieldbook/TrialManager/openTrial/";
+	private static final String[] URL_STUDY_TRIAL = {"/Fieldbook/TrialManager/openTrial/","#/trialSettings"};
 	private static final String PARENT_WINDOW = "_parent";
 
 
@@ -279,7 +279,7 @@ public final class GermplasmIndexContainer {
 		if (study.getStudyType().getName().equals(StudyType.N.name())) {
 			return new ExternalResource(URL_STUDY_NURSERY + study.getId());
 		}
-		return new ExternalResource(URL_STUDY_TRIAL + study.getId() + "#/trialSettings");
+		return new ExternalResource(URL_STUDY_TRIAL[0] + study.getId() + URL_STUDY_TRIAL[1]);
 	}
 
 }
