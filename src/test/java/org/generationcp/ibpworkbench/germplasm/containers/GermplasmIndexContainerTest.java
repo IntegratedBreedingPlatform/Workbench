@@ -35,17 +35,20 @@ public class GermplasmIndexContainerTest {
 	private static final String PROGRAM_UUID = "1";
 
 	private static final String URL_STUDY_NURSERY = "/Fieldbook/NurseryManager/editNursery/";
-	private static final String URL_STUDY_TRIAL = "/Fieldbook/TrialManager/openTrial/";
+	private static final String[] URL_STUDY_TRIAL = {"/Fieldbook/TrialManager/openTrial/","#/trialSettings"};
 
 	private GermplasmIndexContainer germplasmIndexContainer;
 
 	private GermplasmDetailModel gDetailModel;
 
-	@Mock private PlatformTransactionManager transactionManager;
+	@Mock
+	private PlatformTransactionManager transactionManager;
 
-	@InjectMocks private final GermplasmQueries germplasmQueries = new GermplasmQueries();
+	@InjectMocks
+	private final GermplasmQueries germplasmQueries = new GermplasmQueries();
 
-	@Mock private StudyDataManager studyDataManager;
+	@Mock
+	private StudyDataManager studyDataManager;
 
 	@Before
 	public void setUp() {
@@ -76,7 +79,7 @@ public class GermplasmIndexContainerTest {
 		for (Object itemId : container.getItemIds()) {
 			Item item = container.getItem(itemId);
 
-			if (item.getItemProperty(GermplasmIndexContainer.STUDY_ID).getValue() == TEST_NURSERY_ID_1) {
+			if ((Integer)item.getItemProperty(GermplasmIndexContainer.STUDY_ID).getValue() == TEST_NURSERY_ID_1) {
 				validateNursery(item);
 			} else {
 				validateTrial(item);
@@ -86,7 +89,7 @@ public class GermplasmIndexContainerTest {
 
 	private void validateTrial(Item item) {
 		assertThat(TEST_TRIAL_ID_2, equalTo(item.getItemProperty(GermplasmIndexContainer.STUDY_ID).getValue()));
-		assertThat(URL_STUDY_TRIAL + TEST_TRIAL_ID_2 + "#/trialSettings",
+		assertThat(URL_STUDY_TRIAL[0] + TEST_TRIAL_ID_2 + URL_STUDY_TRIAL[1],
 			equalTo(((LinkButton) item.getItemProperty(GermplasmIndexContainer.STUDY_NAME).getValue()).getResource().getURL().toString()));
 		assertThat(TEST_TRIAL_NAME, equalTo(item.getItemProperty(GermplasmIndexContainer.STUDY_DESCRIPTION).toString()));
 
