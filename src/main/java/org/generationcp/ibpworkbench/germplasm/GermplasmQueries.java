@@ -412,7 +412,7 @@ public class GermplasmQueries implements Serializable, InitializingBean {
 		return transactionManager;
 	}
 
-	public void setTransactionManager(PlatformTransactionManager transactionManager) {
+	public void setTransactionManager(final PlatformTransactionManager transactionManager) {
 		this.transactionManager = transactionManager;
 	}
 }
