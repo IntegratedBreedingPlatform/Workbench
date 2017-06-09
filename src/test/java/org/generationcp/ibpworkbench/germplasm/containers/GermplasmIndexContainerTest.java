@@ -2,6 +2,8 @@ package org.generationcp.ibpworkbench.germplasm.containers;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
+import org.generationcp.commons.context.ContextInfo;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.germplasm.GermplasmDetailModel;
 import org.generationcp.ibpworkbench.germplasm.GermplasmQueries;
 import org.generationcp.ibpworkbench.ui.common.LinkButton;
@@ -21,7 +23,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GermplasmIndexContainerTest {
@@ -35,7 +38,7 @@ public class GermplasmIndexContainerTest {
 	private static final String PROGRAM_UUID = "1";
 
 	private static final String URL_STUDY_NURSERY = "/Fieldbook/NurseryManager/editNursery/";
-	private static final String[] URL_STUDY_TRIAL = {"/Fieldbook/TrialManager/openTrial/","#/trialSettings"};
+	private static final String[] URL_STUDY_TRIAL = {"/Fieldbook/TrialManager/openTrial/", "#/trialSettings"};
 
 	private GermplasmIndexContainer germplasmIndexContainer;
 
@@ -50,12 +53,19 @@ public class GermplasmIndexContainerTest {
 	@Mock
 	private StudyDataManager studyDataManager;
 
+	@Mock
+	private ContextUtil contextUtil;
+
+	private ContextInfo contextInfo;
+
+	private String aditionalParameters;
+
 	@Before
 	public void setUp() {
 		StudyResultSet studyResultSet = Mockito.mock(StudyResultSet.class);
-		Mockito.when(this.studyDataManager.searchStudies(Mockito.any(StudyQueryFilter.class), Mockito.anyInt())).thenReturn(studyResultSet);
-		Mockito.when(studyResultSet.hasMore()).thenReturn(true).thenReturn(true).thenReturn(false);
-		Mockito.when(studyResultSet.next()).thenReturn(
+		when(this.studyDataManager.searchStudies(Mockito.any(StudyQueryFilter.class), Mockito.anyInt())).thenReturn(studyResultSet);
+		when(studyResultSet.hasMore()).thenReturn(true).thenReturn(true).thenReturn(false);
+		when(studyResultSet.next()).thenReturn(
 			new StudyReference(TEST_NURSERY_ID_1, TEST_NURSERY_NAME, TEST_NURSERY_NAME, PROGRAM_UUID, StudyType.getStudyTypeById(10000)))
 			.thenReturn(
 				new StudyReference(TEST_TRIAL_ID_2, TEST_TRIAL_NAME, TEST_TRIAL_NAME, PROGRAM_UUID, StudyType.getStudyTypeById(10010)));
@@ -65,21 +75,27 @@ public class GermplasmIndexContainerTest {
 
 		germplasmQueries.setTransactionManager(transactionManager);
 		this.germplasmIndexContainer = new GermplasmIndexContainer(germplasmQueries);
+
+		contextInfo = new ContextInfo(1, 10L, "a0z9c8d7f5");
+		doReturn(contextInfo).when(this.contextUtil).getContextInfoFromSession();
+
+		aditionalParameters = "?restartApplication&loggedInUserId=" + contextInfo.getLoggedInUserId() + "&selectedProjectId=" + contextInfo
+			.getSelectedProjectId() + "&authToken=" + contextInfo.getAuthToken();
 	}
 
 	@Test
 	public void testSize() {
-		assertThat(this.germplasmIndexContainer.getGermplasmStudyInformation(gDetailModel).size(), equalTo(2));
+		assertThat(this.germplasmIndexContainer.getGermplasmStudyInformation(gDetailModel, this.contextUtil).size(), equalTo(2));
 	}
 
 	@Test
 	public void testgetGermplasmStudyInformation() {
-		IndexedContainer container = this.germplasmIndexContainer.getGermplasmStudyInformation(gDetailModel);
+		IndexedContainer container = this.germplasmIndexContainer.getGermplasmStudyInformation(gDetailModel, contextUtil);
 
 		for (Object itemId : container.getItemIds()) {
 			Item item = container.getItem(itemId);
 
-			if ((Integer)item.getItemProperty(GermplasmIndexContainer.STUDY_ID).getValue() == TEST_NURSERY_ID_1) {
+			if ((Integer) item.getItemProperty(GermplasmIndexContainer.STUDY_ID).getValue() == TEST_NURSERY_ID_1) {
 				validateNursery(item);
 			} else {
 				validateTrial(item);
@@ -89,7 +105,7 @@ public class GermplasmIndexContainerTest {
 
 	private void validateTrial(Item item) {
 		assertThat(TEST_TRIAL_ID_2, equalTo(item.getItemProperty(GermplasmIndexContainer.STUDY_ID).getValue()));
-		assertThat(URL_STUDY_TRIAL[0] + TEST_TRIAL_ID_2 + URL_STUDY_TRIAL[1],
+		assertThat(URL_STUDY_TRIAL[0] + TEST_TRIAL_ID_2 + aditionalParameters + URL_STUDY_TRIAL[1],
 			equalTo(((LinkButton) item.getItemProperty(GermplasmIndexContainer.STUDY_NAME).getValue()).getResource().getURL().toString()));
 		assertThat(TEST_TRIAL_NAME, equalTo(item.getItemProperty(GermplasmIndexContainer.STUDY_DESCRIPTION).toString()));
 
@@ -97,7 +113,7 @@ public class GermplasmIndexContainerTest {
 
 	private void validateNursery(Item item) {
 		assertThat(TEST_NURSERY_ID_1, equalTo(item.getItemProperty(GermplasmIndexContainer.STUDY_ID).getValue()));
-		assertThat(URL_STUDY_NURSERY + TEST_NURSERY_ID_1,
+		assertThat(URL_STUDY_NURSERY + TEST_NURSERY_ID_1 + aditionalParameters,
 			equalTo(((LinkButton) item.getItemProperty(GermplasmIndexContainer.STUDY_NAME).getValue()).getResource().getURL().toString()));
 		assertThat(TEST_NURSERY_NAME, equalTo(item.getItemProperty(GermplasmIndexContainer.STUDY_DESCRIPTION).toString()));
 

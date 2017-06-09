@@ -19,6 +19,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.germplasm.containers.GermplasmIndexContainer;
 import org.generationcp.ibpworkbench.study.listeners.StudyItemClickListener;
@@ -36,6 +37,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+
+import javax.annotation.Resource;
 
 @Configurable
 public class GermplasmStudyInfoComponent extends VerticalLayout implements InitializingBean, InternationalizableComponent {
@@ -61,6 +64,9 @@ public class GermplasmStudyInfoComponent extends VerticalLayout implements Initi
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
+	@Resource
+	private ContextUtil contextUtil;
+
 	public GermplasmStudyInfoComponent(GermplasmIndexContainer dataIndexContainer, GermplasmDetailModel gDetailModel, boolean fromUrl) {
 		this.dataIndexContainer = dataIndexContainer;
 		this.gDetailModel = gDetailModel;
@@ -75,7 +81,7 @@ public class GermplasmStudyInfoComponent extends VerticalLayout implements Initi
 	}
 
 	private void initializeComponents() {
-		IndexedContainer studies = this.dataIndexContainer.getGermplasmStudyInformation(this.gDetailModel);
+		IndexedContainer studies = this.dataIndexContainer.getGermplasmStudyInformation(this.gDetailModel,this.contextUtil);
 
 		if (!studies.getItemIds().isEmpty()) {
 			this.studiesTable = new Table();

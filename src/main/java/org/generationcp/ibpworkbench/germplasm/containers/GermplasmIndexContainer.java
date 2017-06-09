@@ -16,6 +16,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.themes.BaseTheme;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.containers.GermplasmEnvironmentSearchQuery;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.containers.GermplasmEnvironmentSearchQueryFactory;
 import org.generationcp.ibpworkbench.germplasm.GermplasmDetailModel;
@@ -152,7 +153,7 @@ public final class GermplasmIndexContainer {
 		this.addContainerProperties(container);
 
 		final List<GermplasmNamesAttributesModel> query = this.qQuery.getAttributes(g.getGid());
-		GermplasmIndexContainer.LOG.info("Size of the query" + query.size());
+		LOG.info("Size of the query  {}", query.size());
 		for (GermplasmNamesAttributesModel q : query) {
 			GermplasmIndexContainer.addGermplasmNamesAttributeContainer(container, q.getType(), q.getTypeDesc(), q.getName(), q.getDate(),
 					q.getLocation());
@@ -166,7 +167,7 @@ public final class GermplasmIndexContainer {
 		// Create the container properties
 		this.addContainerProperties(container);
 
-		final List<GermplasmNamesAttributesModel> query = this.qQuery.getNames(Integer.valueOf(g.getGid()));
+		final List<GermplasmNamesAttributesModel> query = this.qQuery.getNames(g.getGid());
 		for (GermplasmNamesAttributesModel q : query) {
 			GermplasmIndexContainer.addGermplasmNamesAttributeContainer(container, q.getName(), q.getDate(), q.getLocation(), q.getType(),
 					q.getTypeDesc());
@@ -246,7 +247,7 @@ public final class GermplasmIndexContainer {
 		item.getItemProperty(GermplasmIndexContainer.GERMPLASM_INVENTORY_LOT_COMMENT).setValue(lotComment);
 	}
 
-	public IndexedContainer getGermplasmStudyInformation(GermplasmDetailModel gModel) {
+	public IndexedContainer getGermplasmStudyInformation(final GermplasmDetailModel gModel, final ContextUtil contextUtil) {
 		IndexedContainer container = new IndexedContainer();
 
 		// Create the container properties
@@ -256,16 +257,16 @@ public final class GermplasmIndexContainer {
 
 		final List<StudyReference> studies = this.qQuery.getGermplasmStudyInfo(gModel.getGid());
 		for (StudyReference study : studies) {
-			GermplasmIndexContainer.addGermplasmStudyInformation(container, study);
+			GermplasmIndexContainer.addGermplasmStudyInformation(container, study, contextUtil);
 		}
 		return container;
 	}
 
-	private static void addGermplasmStudyInformation(Container container, StudyReference study) {
+	private static void addGermplasmStudyInformation(final Container container, final StudyReference study, final ContextUtil contextUtil) {
 		Object itemId = container.addItem();
 		Item item = container.getItem(itemId);
 		item.getItemProperty(GermplasmIndexContainer.STUDY_ID).setValue(study.getId());
-		final ExternalResource urlToOpenStudy = getURLStudy(study);
+		final ExternalResource urlToOpenStudy = getURLStudy(study,contextUtil);
 
 		LinkButton linkStudyButton = new LinkButton(urlToOpenStudy,study.getName(), PARENT_WINDOW);
 		linkStudyButton.setDebugId("linkStudyButton");
@@ -275,11 +276,16 @@ public final class GermplasmIndexContainer {
 		item.getItemProperty(GermplasmIndexContainer.STUDY_DESCRIPTION).setValue(study.getDescription());
 	}
 
-	private static ExternalResource getURLStudy(StudyReference study) {
+	private static ExternalResource getURLStudy(final StudyReference study, final ContextUtil contextUtil) {
+		final String aditionalParameters =
+			"?restartApplication&loggedInUserId=" + contextUtil.getContextInfoFromSession().getLoggedInUserId() + "&selectedProjectId="
+				+ contextUtil.getContextInfoFromSession().getSelectedProjectId() + "&authToken=" + contextUtil.getContextInfoFromSession()
+				.getAuthToken();
+
 		if (study.getStudyType().getName().equals(StudyType.N.name())) {
-			return new ExternalResource(URL_STUDY_NURSERY + study.getId());
+			return new ExternalResource(URL_STUDY_NURSERY + study.getId() + aditionalParameters);
 		}
-		return new ExternalResource(URL_STUDY_TRIAL[0] + study.getId() + URL_STUDY_TRIAL[1]);
+		return new ExternalResource(URL_STUDY_TRIAL[0] + study.getId() + aditionalParameters + URL_STUDY_TRIAL[1]);
 	}
 
 }
