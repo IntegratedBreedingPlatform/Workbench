@@ -303,6 +303,7 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 		boolean filterByTraits = false;
 		boolean filterByAnalysis = false;
 
+		// Checking both checkbox will be equivalent to not checking anything
 		if ((!traitCheckBox && analysisCheckBox) || (traitCheckBox && !analysisCheckBox)) {
 			filterByTraits = traitCheckBox;
 			filterByAnalysis = analysisCheckBox;
@@ -436,10 +437,10 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 
 	private void visibleReminderFilterSelect(boolean visibleReminderFilter) {
 
-		if(visibleReminderFilter){
+		if (visibleReminderFilter) {
 			this.selectTraitReminderLayout.setVisible(true);
 			this.selectTraitReminderLayout.setICON(new ThemeResource("images/warning3.png"));
-		}else{
+		} else {
 			this.selectTraitReminderLayout.setVisible(false);
 			this.selectTraitReminderLayout.setICON(null);
 		}
