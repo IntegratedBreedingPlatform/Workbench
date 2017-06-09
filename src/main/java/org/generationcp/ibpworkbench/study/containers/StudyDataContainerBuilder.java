@@ -10,9 +10,12 @@
 
 package org.generationcp.ibpworkbench.study.containers;
 
-import com.vaadin.data.Container;
-import com.vaadin.data.Item;
-import com.vaadin.data.util.IndexedContainer;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.Message;
@@ -33,10 +36,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.vaadin.data.Container;
+import com.vaadin.data.Item;
+import com.vaadin.data.util.IndexedContainer;
 
 @Configurable
 public class StudyDataContainerBuilder {
@@ -64,8 +66,8 @@ public class StudyDataContainerBuilder {
 		this.studyId = studyId;
 	}
 
-	private static void addFactorDataToContainer(final Container container, final String factorName, final String description, final String propertyName,
-			final String scale, final String method, final String datatype, final String value) {
+	private static void addFactorDataToContainer(final Container container, final String factorName, final String description,
+			final String propertyName, final String scale, final String method, final String datatype, final String value) {
 		final Object itemId = container.addItem();
 		final Item item = container.getItem(itemId);
 		item.getItemProperty(StudyDataContainerBuilder.FACTOR_NAME).setValue(factorName);
@@ -77,8 +79,8 @@ public class StudyDataContainerBuilder {
 		item.getItemProperty(StudyDataContainerBuilder.VALUE).setValue(value);
 	}
 
-	private static void addVariateDataToContainer(final Container container, final String variateName, final String description, final String propertyName,
-			final String scale, final String method, final String datatype, final String value) {
+	private static void addVariateDataToContainer(final Container container, final String variateName, final String description,
+			final String propertyName, final String scale, final String method, final String datatype, final String value) {
 		final Object itemId = container.addItem();
 		final Item item = container.getItem(itemId);
 		item.getItemProperty(StudyDataContainerBuilder.VARIATE_NAME).setValue(variateName);
@@ -106,7 +108,7 @@ public class StudyDataContainerBuilder {
 			final Study study = this.studyDataManager.getStudy(this.studyId);
 			final VariableList variableList = study.getConditions();
 			final List<Variable> conditions = variableList.getVariables();
-			final VariableTypeList factors = this.studyDataManager.getAllStudyFactors(Integer.valueOf(this.studyId));
+			final VariableTypeList factors = this.studyDataManager.getAllStudyFactors(this.studyId);
 			final List<DMSVariableType> factorDetails = factors.getVariableTypes();
 			for (final DMSVariableType factorDetail : factorDetails) {
 				final String name = factorDetail.getLocalName();
@@ -130,8 +132,8 @@ public class StudyDataContainerBuilder {
 					}
 				}
 
-				StudyDataContainerBuilder
-						.addFactorDataToContainer(container, name, description, propertyName, scaleName, methodName, dataType, value);
+				StudyDataContainerBuilder.addFactorDataToContainer(container, name, description, propertyName, scaleName, methodName,
+						dataType, value);
 			}
 
 			return container;
@@ -157,7 +159,7 @@ public class StudyDataContainerBuilder {
 			final Study study = this.studyDataManager.getStudy(this.studyId);
 			final VariableList variableList = study.getConstants();
 			final List<Variable> constants = variableList.getVariables();
-			final VariableTypeList variates = this.studyDataManager.getAllStudyVariates(Integer.valueOf(this.studyId));
+			final VariableTypeList variates = this.studyDataManager.getAllStudyVariates(this.studyId);
 			final List<DMSVariableType> variateDetails = variates.getVariableTypes();
 			for (final DMSVariableType variateDetail : variateDetails) {
 				final String name = variateDetail.getLocalName();
@@ -181,8 +183,8 @@ public class StudyDataContainerBuilder {
 					}
 				}
 
-				StudyDataContainerBuilder
-						.addVariateDataToContainer(container, name, description, propertyName, scaleName, methodName, dataType, value);
+				StudyDataContainerBuilder.addVariateDataToContainer(container, name, description, propertyName, scaleName, methodName,
+						dataType, value);
 			}
 
 			return container;
@@ -198,7 +200,7 @@ public class StudyDataContainerBuilder {
 		// Create the container properties
 		container.addContainerProperty(StudyDataContainerBuilder.STUDY_ID, Integer.class, "");
 		container.addContainerProperty(StudyDataContainerBuilder.STUDY_NAME, String.class, "");
-		final Map<String, StudyReference> mapChecker = new HashMap<String, StudyReference>();
+		final Map<String, StudyReference> mapChecker = new HashMap<>();
 		try {
 			final BrowseStudyQueryFilter filter = new BrowseStudyQueryFilter();
 			filter.setName(name);
@@ -206,7 +208,7 @@ public class StudyDataContainerBuilder {
 			filter.setSeason(season);
 			filter.setStartDate(date);
 			filter.setStudySearchMatchingOption(studySearchMatchingOption);
-			filter.setProgramUUID(contextUtil.getCurrentProgramUUID());
+			filter.setProgramUUID(this.contextUtil.getCurrentProgramUUID());
 			final StudyResultSet studyResultSet = this.studyDataManager.searchStudies(filter, 50);
 
 			if (studyResultSet != null) {
