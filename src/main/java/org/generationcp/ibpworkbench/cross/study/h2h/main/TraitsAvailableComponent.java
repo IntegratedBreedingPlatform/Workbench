@@ -2,7 +2,6 @@
 package org.generationcp.ibpworkbench.cross.study.h2h.main;
 
 import com.vaadin.data.Item;
-import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
@@ -65,14 +64,9 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 	private Table traitsTable;
 
 	private Button nextButton;
-	private Button backButton;
 
 	private final HeadToHeadCrossStudyMain mainScreen;
 	private final EnvironmentFilter nextScreen;
-
-	private Label selectTraitLabel;
-
-	private Label selectTraitReminderLabel;
 
 	private HeaderLabelLayout selectTraitReminderLayout;
 
@@ -102,7 +96,6 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 
 	private CheckBox tagUnTagAll;
 
-	private Panel tablePanel;
 	private AbsoluteLayout tableLayout;
 
 	private CheckBox traitFilterCheckBox;
@@ -118,10 +111,10 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 		this.setHeight("500px");
 		this.setWidth("1000px");
 
-		this.selectTraitLabel = new Label(this.messageSource.getMessage(Message.HEAD_TO_HEAD_SELECT_TRAITS));
-		this.selectTraitLabel.setDebugId("selectTraitLabel");
-		this.selectTraitLabel.setImmediate(true);
-		this.selectTraitLabel.setWidth("400px");
+		Label selectTraitLabel = new Label(this.messageSource.getMessage(Message.HEAD_TO_HEAD_SELECT_TRAITS));
+		selectTraitLabel.setDebugId("selectTraitLabel");
+		selectTraitLabel.setImmediate(true);
+		selectTraitLabel.setWidth("400px");
 
 		this.traitFilterCheckBox = new CheckBox(this.messageSource.getMessage(Message.HEAD_TO_HEAD_CHECK_TRAITS),true);
 		this.traitFilterCheckBox.setImmediate(true);
@@ -157,22 +150,22 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 		horizontalH2HFilters.setDebugId("horizontalH2HFilters");
 		horizontalH2HFilters.setSpacing(true);
 		horizontalH2HFilters.setWidth("800px");
-		horizontalH2HFilters.addComponent(this.selectTraitLabel);
+		horizontalH2HFilters.addComponent(selectTraitLabel);
 		horizontalH2HFilters.addComponent(this.traitFilterCheckBox);
 		horizontalH2HFilters.addComponent(this.analysisFilterCheckBox);
 
 		this.addComponent(horizontalH2HFilters,"top:10px;left:35px");
-		this.selectTraitReminderLabel = new Label(this.messageSource.getMessage(Message.HEAD_TO_HEAD_SELECT_TRAITS_REMINDER));
-		this.selectTraitReminderLabel.setDebugId("selectTraitReminderLabel");
-		this.selectTraitReminderLabel.setImmediate(true);
-		this.selectTraitReminderLabel.setStyleName("gcp-bold-italic");
-		this.selectTraitReminderLayout = new HeaderLabelLayout(new ThemeResource("images/warning3.png"), this.selectTraitReminderLabel);
+		Label selectTraitReminderLabel = new Label(this.messageSource.getMessage(Message.HEAD_TO_HEAD_SELECT_TRAITS_REMINDER));
+		selectTraitReminderLabel.setDebugId("selectTraitReminderLabel");
+		selectTraitReminderLabel.setImmediate(true);
+		selectTraitReminderLabel.setStyleName("gcp-bold-italic");
+		selectTraitReminderLayout = new HeaderLabelLayout(null, selectTraitReminderLabel);
 		this.addComponent(selectTraitReminderLayout,"top:35px;left:35px");
 
-		this.tablePanel = new Panel();
-		this.tablePanel.setDebugId("tablePanel");
-		this.tablePanel.setWidth("950px");
-		this.tablePanel.setHeight("400px");
+		Panel tablePanel = new Panel();
+		tablePanel.setDebugId("tablePanel");
+		tablePanel.setWidth("950px");
+		tablePanel.setHeight("400px");
 
 		this.tableLayout = new AbsoluteLayout();
 		this.tableLayout.setDebugId("tableLayout");
@@ -231,8 +224,8 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 
 		this.tableLayout.addComponent(this.tagUnTagAll, "top:4px;left:30px");
 
-		this.tablePanel.setContent(this.tableLayout);
-		this.addComponent(this.tablePanel, "top:60px;left:30px");
+		tablePanel.setContent(this.tableLayout);
+		this.addComponent(tablePanel, "top:60px;left:30px");
 
 		this.nextButton = new Button("Next");
 		this.nextButton.setDebugId("nextButton");
@@ -243,12 +236,12 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 		this.nextButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 		this.addComponent(this.nextButton, "top:470px;left:500px");
 
-		this.backButton = new Button("Back");
-		this.backButton.setDebugId("backButton");
-		this.backButton.setData(TraitsAvailableComponent.BACK_BUTTON_ID);
-		this.backButton.addListener(new HeadToHeadCrossStudyMainButtonClickListener(this));
-		this.backButton.setWidth("80px");
-		this.addComponent(this.backButton, "top:470px;left:410px");
+		Button backButton = new Button("Back");
+		backButton.setDebugId("backButton");
+		backButton.setData(TraitsAvailableComponent.BACK_BUTTON_ID);
+		backButton.addListener(new HeadToHeadCrossStudyMainButtonClickListener(this));
+		backButton.setWidth("80px");
+		addComponent(backButton, "top:470px;left:410px");
 
 	}
 
@@ -326,13 +319,9 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 			this.germplasmIds.add(Integer.valueOf(pair.getGid1()));
 			this.germplasmIds.add(Integer.valueOf(pair.getGid2()));
 
-			java.util.Iterator<TrialEnvironment> envIterator = env.getTrialEnvironments().iterator();
-			while (envIterator.hasNext()) {
-				TrialEnvironment trialEnv = envIterator.next();
+			for(TrialEnvironment trialEnv: env.getTrialEnvironments()){
 				this.trialEnvironmentMap.put(Integer.toString(trialEnv.getId()), trialEnv);
-				java.util.Iterator<TraitInfo> traitIterator = trialEnv.getTraits().iterator();
-				while (traitIterator.hasNext()) {
-					TraitInfo info = traitIterator.next();
+				for (TraitInfo info : trialEnv.getTraits()) {
 
 					// add here the checking if the trait is non numeric
 					if (info.getType() != TraitType.NUMERIC) {
@@ -363,34 +352,27 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 
 				}
 			}
-
 		}
 	}
 
 	private boolean validateDoRefresh() {
-		boolean doRefresh;
-		if (this.prevfinalGermplasmPair == null) {
-			doRefresh = true;
-		} else {
-			// we checked if its the same
-			if (this.prevfinalGermplasmPair.size() == this.finalGermplasmPair.size()) {
-				doRefresh = false;
-				for (GermplasmPair pairOld : this.prevfinalGermplasmPair) {
-					boolean isMatched = false;
-					for (GermplasmPair pairNew : this.finalGermplasmPair) {
-						if (pairOld.getGid1() == pairNew.getGid1() && pairOld.getGid2() == pairNew.getGid2()) {
-							isMatched = true;
-							break;
-						}
-					}
-					if (!isMatched) {
-						// meaning new pair
-						doRefresh = true;
+		boolean doRefresh = true;
+		// we checked if its the same
+		if (this.prevfinalGermplasmPair != null && (this.prevfinalGermplasmPair.size() == this.finalGermplasmPair.size())) {
+			doRefresh = false;
+			for (GermplasmPair pairOld : this.prevfinalGermplasmPair) {
+				boolean isMatched = false;
+				for (GermplasmPair pairNew : this.finalGermplasmPair) {
+					if (pairOld.getGid1() == pairNew.getGid1() && pairOld.getGid2() == pairNew.getGid2()) {
+						isMatched = true;
 						break;
 					}
 				}
-			} else {
-				doRefresh = true;
+				if (!isMatched) {
+					// meaning new pair
+					doRefresh = true;
+					break;
+				}
 			}
 		}
 		return doRefresh;
@@ -439,10 +421,8 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 
 		if (visibleReminderFilter) {
 			this.selectTraitReminderLayout.setVisible(true);
-			this.selectTraitReminderLayout.setICON(new ThemeResource("images/warning3.png"));
 		} else {
 			this.selectTraitReminderLayout.setVisible(false);
-			this.selectTraitReminderLayout.setICON(null);
 		}
 	}
 
