@@ -2,6 +2,7 @@
 package org.generationcp.ibpworkbench.cross.study.h2h.main;
 
 import com.vaadin.data.Item;
+import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
@@ -55,6 +56,7 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 	public static final String CHECKBOX_ID = "TraitsAvailableComponent Checkbox ID";
 
 	private static final String TRAIT_COLUMN_ID = "TraitsAvailableComponent Trait Column Id";
+	private static final String TRAIT_PROPERTY_COLUMN_ID = "TraitsAvailableComponent Trait Property Column Id";
 	private static final String TRAIT_DESCRIPTION_COLUMN_ID = "TraitsAvailableComponent Trait Description Column Id";
 	private static final String NUMBER_OF_ENV_COLUMN_ID = "TraitsAvailableComponent Number of Environments Column Id";
 	private static final String TAG_COLUMN_ID = "TraitsAvailableComponent Tag Column Id";
@@ -125,7 +127,6 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 
 			@Override
 			public void buttonClick(final com.vaadin.ui.Button.ClickEvent event) {
-				LOG.info("Click button Tratits {} Analysis {} ", traitFilterCheckBox.getValue(), analysisFilterCheckBox.getValue());
 				updatePopulateTraitsAndAnalysisAvailableTable((Boolean) traitFilterCheckBox.getValue(),(Boolean) analysisFilterCheckBox.getValue());
 			}
 
@@ -140,7 +141,6 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 
 			@Override
 			public void buttonClick(final com.vaadin.ui.Button.ClickEvent event) {
-				LOG.info("Click button Tratits {} Analysis {} ", traitFilterCheckBox.getValue(), analysisFilterCheckBox.getValue());
 				updatePopulateTraitsAndAnalysisAvailableTable((Boolean) traitFilterCheckBox.getValue(),(Boolean) analysisFilterCheckBox.getValue());
 			}
 
@@ -159,7 +159,7 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 		selectTraitReminderLabel.setDebugId("selectTraitReminderLabel");
 		selectTraitReminderLabel.setImmediate(true);
 		selectTraitReminderLabel.setStyleName("gcp-bold-italic");
-		selectTraitReminderLayout = new HeaderLabelLayout(null, selectTraitReminderLabel);
+		selectTraitReminderLayout = new HeaderLabelLayout(new ThemeResource("images/warning.png"), selectTraitReminderLabel);
 		this.addComponent(selectTraitReminderLayout,"top:35px;left:35px");
 
 		Panel tablePanel = new Panel();
@@ -179,24 +179,27 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 
 		this.traitsTable.addContainerProperty(TraitsAvailableComponent.TAG_COLUMN_ID, CheckBox.class, null);
 		this.traitsTable.addContainerProperty(TraitsAvailableComponent.TRAIT_COLUMN_ID, String.class, null);
+		this.traitsTable.addContainerProperty(TraitsAvailableComponent.TRAIT_PROPERTY_COLUMN_ID, String.class, null);
 		this.traitsTable.addContainerProperty(TraitsAvailableComponent.TRAIT_DESCRIPTION_COLUMN_ID, String.class, null);
 		this.traitsTable.addContainerProperty(TraitsAvailableComponent.NUMBER_OF_ENV_COLUMN_ID, Integer.class, null);
 		this.traitsTable.addContainerProperty(TraitsAvailableComponent.DIRECTION_COLUMN_ID, ComboBox.class, null);
 
 		this.traitsTable.setColumnHeader(TraitsAvailableComponent.TAG_COLUMN_ID, this.messageSource.getMessage(Message.HEAD_TO_HEAD_TAG));
 		this.traitsTable.setColumnHeader(TraitsAvailableComponent.TRAIT_COLUMN_ID,
-				this.messageSource.getMessage(Message.HEAD_TO_HEAD_TRAIT));
-		this.traitsTable.setColumnHeader(TraitsAvailableComponent.TRAIT_DESCRIPTION_COLUMN_ID, "Description");
+				this.messageSource.getMessage(Message.HEAD_TO_HEAD_VARIABLE_NAME));
+		this.traitsTable.setColumnHeader(TraitsAvailableComponent.TRAIT_PROPERTY_COLUMN_ID, this.messageSource.getMessage(Message.HEAD_TO_HEAD_PROPERTY));
+		this.traitsTable.setColumnHeader(TraitsAvailableComponent.TRAIT_DESCRIPTION_COLUMN_ID, this.messageSource.getMessage(Message.HEAD_TO_HEAD_DESCRIPTION));
 		this.traitsTable.setColumnHeader(TraitsAvailableComponent.NUMBER_OF_ENV_COLUMN_ID,
 				this.messageSource.getMessage(Message.HEAD_TO_HEAD_NO_OF_ENVS));
 		this.traitsTable.setColumnHeader(TraitsAvailableComponent.DIRECTION_COLUMN_ID,
 				this.messageSource.getMessage(Message.HEAD_TO_HEAD_DIRECTION));
 
-		this.traitsTable.setColumnWidth(TraitsAvailableComponent.TAG_COLUMN_ID, 50);
+		this.traitsTable.setColumnWidth(TraitsAvailableComponent.TAG_COLUMN_ID, 40);
 		this.traitsTable.setColumnWidth(TraitsAvailableComponent.TRAIT_COLUMN_ID, 150);
-		this.traitsTable.setColumnWidth(TraitsAvailableComponent.TRAIT_DESCRIPTION_COLUMN_ID, 300);
+		this.traitsTable.setColumnWidth(TraitsAvailableComponent.TRAIT_PROPERTY_COLUMN_ID, 80);
+		this.traitsTable.setColumnWidth(TraitsAvailableComponent.TRAIT_DESCRIPTION_COLUMN_ID, 295);
 		this.traitsTable.setColumnWidth(TraitsAvailableComponent.NUMBER_OF_ENV_COLUMN_ID, 155);
-		this.traitsTable.setColumnWidth(TraitsAvailableComponent.DIRECTION_COLUMN_ID, 200);
+		this.traitsTable.setColumnWidth(TraitsAvailableComponent.DIRECTION_COLUMN_ID, 130);
 
 		this.tableLayout.addComponent(this.traitsTable, "top:0px;left:0px");
 
@@ -393,7 +396,7 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 			Integer tableId = Integer.valueOf(id);
 
 			Integer numOfEnv = traitEnvMap.get(id).size();
-			this.traitsTable.addItem(new Object[] {box, info.getName(), info.getDescription(), numOfEnv, comboBox}, tableId);
+			this.traitsTable.addItem(new Object[] {box, info.getName(),info.getProperty() ,info.getDescription(), numOfEnv, comboBox}, tableId);
 			box.addListener(new HeadToHeadCrossStudyMainValueChangeListener(this, comboBox));
 			this.traitMaps.put(comboBox, info);
 
@@ -421,8 +424,10 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 
 		if (visibleReminderFilter) {
 			this.selectTraitReminderLayout.setVisible(true);
+			this.selectTraitReminderLayout.setICON(new ThemeResource("images/warning.png"));
 		} else {
 			this.selectTraitReminderLayout.setVisible(false);
+			this.selectTraitReminderLayout.setICON(null);
 		}
 	}
 
