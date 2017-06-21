@@ -426,7 +426,7 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 	}
 
 	private void doGermplasmPermutationOnTable(final boolean isTestEntry, final boolean isGermplasm,
-			List<GermplasmListData> listGermplasmListData, final Germplasm germplasm) {
+			List<GermplasmListData> germplasmListDataList, final Germplasm germplasm) {
 
 		final Map<String, Map<String, String>> map = this.getBothMapEntries();
 		final Map<String, String> testMap = map.get(SpecifyGermplasmsComponent.TEST_ENTRY);
@@ -440,7 +440,7 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 
 		// create a germplasm list with the germplasm as the sole list item
 		if (isGermplasm) {
-			listGermplasmListData = new ArrayList<>();
+			germplasmListDataList = new ArrayList<>();
 
 			final GermplasmListData germplasmData = new GermplasmListData();
 			// GID and Designation are fields that will be checked/used
@@ -448,11 +448,11 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 			germplasmData.setDesignation(germplasm.getPreferredName().getNval());
 			// Group ID will be displayed in the table
 			germplasmData.setGroupId(germplasm.getMgid());
-			listGermplasmListData.add(germplasmData);
+			germplasmListDataList.add(germplasmData);
 		}
 
 		this.permutateGermplasmListToPartnerEntries(isTestEntry, testMap, standardMap, tableEntriesList,
-				listGermplasmListData);
+				germplasmListDataList);
 
 		this.addToTable(tableEntriesList);
 
