@@ -7,10 +7,12 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.ColumnResizeEvent;
+import org.generationcp.commons.vaadin.ui.HeaderLabelLayout;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.cross.study.commons.EnvironmentFilter;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.listeners.HeadToHeadCrossStudyMainButtonClickListener;
@@ -62,14 +64,11 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 	private Table traitsTable;
 
 	private Button nextButton;
-	private Button backButton;
 
 	private final HeadToHeadCrossStudyMain mainScreen;
 	private final EnvironmentFilter nextScreen;
 
-	private Label selectTraitLabel;
-
-	private Label selectTraitReminderLabel;
+	private HeaderLabelLayout selectTraitReminderLayout;
 
 	public static final Integer INCREASING = 1;
 	public static final Integer DECREASING = 0;
@@ -97,8 +96,10 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 
 	private CheckBox tagUnTagAll;
 
-	private Panel tablePanel;
 	private AbsoluteLayout tableLayout;
+
+	private CheckBox traitFilterCheckBox;
+	private CheckBox analysisFilterCheckBox;
 
 	public TraitsAvailableComponent(HeadToHeadCrossStudyMain mainScreen, EnvironmentFilter nextScreen) {
 		this.mainScreen = mainScreen;
@@ -110,21 +111,59 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 		this.setHeight("500px");
 		this.setWidth("1000px");
 
-		this.selectTraitLabel = new Label(this.messageSource.getMessage(Message.HEAD_TO_HEAD_SELECT_TRAITS));
-		this.selectTraitLabel.setDebugId("selectTraitLabel");
-		this.selectTraitLabel.setImmediate(true);
-		this.addComponent(this.selectTraitLabel, "top:20px;left:30px");
+		Label selectTraitLabel = new Label(this.messageSource.getMessage(Message.HEAD_TO_HEAD_SELECT_TRAITS));
+		selectTraitLabel.setDebugId("selectTraitLabel");
+		selectTraitLabel.setImmediate(true);
+		selectTraitLabel.setWidth("400px");
 
-		this.selectTraitReminderLabel = new Label(this.messageSource.getMessage(Message.HEAD_TO_HEAD_SELECT_TRAITS_REMINDER));
-		this.selectTraitReminderLabel.setDebugId("selectTraitReminderLabel");
-		this.selectTraitReminderLabel.setImmediate(true);
-		this.selectTraitReminderLabel.setStyleName("gcp-bold-italic");
-		this.addComponent(this.selectTraitReminderLabel, "top:20px;left:400px");
+		this.traitFilterCheckBox = new CheckBox(this.messageSource.getMessage(Message.HEAD_TO_HEAD_CHECK_TRAITS),true);
+		this.traitFilterCheckBox.setImmediate(true);
+		this.traitFilterCheckBox.setDebugId("traitFilterCheckBox");
+		this.traitFilterCheckBox.addListener(new Button.ClickListener() {
 
-		this.tablePanel = new Panel();
-		this.tablePanel.setDebugId("tablePanel");
-		this.tablePanel.setWidth("950px");
-		this.tablePanel.setHeight("400px");
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void buttonClick(final com.vaadin.ui.Button.ClickEvent event) {
+				updatePopulateTraitsAndAnalysisAvailableTable((Boolean) traitFilterCheckBox.getValue(),(Boolean) analysisFilterCheckBox.getValue());
+			}
+
+		});
+
+		this.analysisFilterCheckBox = new CheckBox(this.messageSource.getMessage(Message.HEAD_TO_HEAD_CHECK_ANALYSIS),true);
+		this.analysisFilterCheckBox.setDebugId("analysisFilterCheckBox");
+		this.analysisFilterCheckBox.setImmediate(true);
+		this.analysisFilterCheckBox.addListener(new Button.ClickListener() {
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void buttonClick(final com.vaadin.ui.Button.ClickEvent event) {
+				updatePopulateTraitsAndAnalysisAvailableTable((Boolean) traitFilterCheckBox.getValue(),(Boolean) analysisFilterCheckBox.getValue());
+			}
+
+		});
+
+		HorizontalLayout horizontalH2HFilters = new HorizontalLayout();
+		horizontalH2HFilters.setDebugId("horizontalH2HFilters");
+		horizontalH2HFilters.setSpacing(true);
+		horizontalH2HFilters.setWidth("800px");
+		horizontalH2HFilters.addComponent(selectTraitLabel);
+		horizontalH2HFilters.addComponent(this.traitFilterCheckBox);
+		horizontalH2HFilters.addComponent(this.analysisFilterCheckBox);
+
+		this.addComponent(horizontalH2HFilters,"top:10px;left:35px");
+		Label selectTraitReminderLabel = new Label(this.messageSource.getMessage(Message.HEAD_TO_HEAD_SELECT_TRAITS_REMINDER));
+		selectTraitReminderLabel.setDebugId("selectTraitReminderLabel");
+		selectTraitReminderLabel.setImmediate(true);
+		selectTraitReminderLabel.setStyleName("gcp-bold-italic");
+		selectTraitReminderLayout = new HeaderLabelLayout(null, selectTraitReminderLabel);
+		this.addComponent(selectTraitReminderLayout,"top:35px;left:35px");
+
+		Panel tablePanel = new Panel();
+		tablePanel.setDebugId("tablePanel");
+		tablePanel.setWidth("950px");
+		tablePanel.setHeight("400px");
 
 		this.tableLayout = new AbsoluteLayout();
 		this.tableLayout.setDebugId("tableLayout");
@@ -183,8 +222,8 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 
 		this.tableLayout.addComponent(this.tagUnTagAll, "top:4px;left:30px");
 
-		this.tablePanel.setContent(this.tableLayout);
-		this.addComponent(this.tablePanel, "top:40px;left:30px");
+		tablePanel.setContent(this.tableLayout);
+		this.addComponent(tablePanel, "top:60px;left:30px");
 
 		this.nextButton = new Button("Next");
 		this.nextButton.setDebugId("nextButton");
@@ -193,14 +232,14 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 		this.nextButton.setEnabled(false);
 		this.nextButton.setWidth("80px");
 		this.nextButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-		this.addComponent(this.nextButton, "top:450px;left:500px");
+		this.addComponent(this.nextButton, "top:470px;left:500px");
 
-		this.backButton = new Button("Back");
-		this.backButton.setDebugId("backButton");
-		this.backButton.setData(TraitsAvailableComponent.BACK_BUTTON_ID);
-		this.backButton.addListener(new HeadToHeadCrossStudyMainButtonClickListener(this));
-		this.backButton.setWidth("80px");
-		this.addComponent(this.backButton, "top:450px;left:410px");
+		Button backButton = new Button("Back");
+		backButton.setDebugId("backButton");
+		backButton.setData(TraitsAvailableComponent.BACK_BUTTON_ID);
+		backButton.addListener(new HeadToHeadCrossStudyMainButtonClickListener(this));
+		backButton.setWidth("80px");
+		addComponent(backButton, "top:470px;left:410px");
 
 	}
 
@@ -224,130 +263,150 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 
 	}
 
-	public void populateTraitsAvailableTable(List<GermplasmPair> germplasmPairList, Map<String, String> germplasmIdNameMap) {
-		this.traitsTable.removeAllItems();
-		this.nextButton.setEnabled(false);
+	private void updatePopulateTraitsAndAnalysisAvailableTable(final boolean traitCheckBox, final boolean analysisCheckBox) {
+		this.prevfinalGermplasmPair = null;
+		this.tagUnTagAll.setValue(false);
+		this.populateTraitsAvailableTable(this.finalGermplasmPair, this.germplasmIdNameMap, traitCheckBox, analysisCheckBox);
+	}
 
-		this.selectTraitReminderLabel.setVisible(true);
+	public void populateTraitsAvailableTable(final List<GermplasmPair> germplasmPairList, final Map<String, String> germplasmIdNameMap, final boolean traitCheckBox, final boolean analysisCheckBox) {
+
+		this.initializeVariables();
+		final Map<String, List<TraitInfo>> traitMap = new HashMap<>();
+		final Map<String, Set<String>> traitEnvMap = new HashMap<>();
+
 		this.germplasmIdNameMap = germplasmIdNameMap;
-		this.traitForComparisons = new ArrayList<ComboBox>();
-		this.traitMaps = new HashMap<ComboBox, TraitInfo>();
-
-		Map<String, List<TraitInfo>> traitMap = new HashMap<String, List<TraitInfo>>();
-		Map<String, Set<String>> traitEnvMap = new HashMap<String, Set<String>>();
-		this.traitEnvironmentMap = new HashMap<String, Map<String, TrialEnvironment>>();
-		this.trialEnvironmentMap = new HashMap<String, TrialEnvironment>();
-		this.germplasmIds = new HashSet<Integer>();
-
 		this.finalGermplasmPair = germplasmPairList;
-		boolean doRefresh = false;
-		if (this.prevfinalGermplasmPair == null) {
-			doRefresh = true;
-		} else {
-			// we checked if its the same
-			if (this.prevfinalGermplasmPair.size() == this.finalGermplasmPair.size()) {
-				doRefresh = false;
-				for (GermplasmPair pairOld : this.prevfinalGermplasmPair) {
-					boolean isMatched = false;
-					for (GermplasmPair pairNew : this.finalGermplasmPair) {
-						if (pairOld.getGid1() == pairNew.getGid1() && pairOld.getGid2() == pairNew.getGid2()) {
-							isMatched = true;
-							break;
-						}
+		final boolean doRefresh = this.validateDoRefresh();
+
+		if (doRefresh) {
+			this.prevfinalGermplasmPair = germplasmPairList;
+			this.refreshEnviromentPairList(germplasmPairList, traitCheckBox, analysisCheckBox);
+		}
+		this.createEnviromentMap(traitMap, traitEnvMap);
+		this.initializeTable(traitMap, traitEnvMap);
+
+	}
+
+	private void refreshEnviromentPairList(List<GermplasmPair> germplasmPairList, boolean traitCheckBox, boolean analysisCheckBox) {
+		boolean filterByTraits = false;
+		boolean filterByAnalysis = false;
+
+		// Checking both checkbox will be equivalent to not checking anything
+		if ((!traitCheckBox && analysisCheckBox) || (traitCheckBox && !analysisCheckBox)) {
+			filterByTraits = traitCheckBox;
+			filterByAnalysis = analysisCheckBox;
+		}
+
+		// only call when need to refresh
+		this.prevfinalGermplasmPair = germplasmPairList;
+		try {
+			this.environmentPairList =
+				this.crossStudyDataManager.getEnvironmentsForGermplasmPairs(germplasmPairList, filterByTraits, filterByAnalysis);
+		} catch (MiddlewareQueryException e) {
+			LOG.error(e.getMessage(), e);
+		}
+	}
+
+	private void createEnviromentMap(final Map<String, List<TraitInfo>> traitMap, final Map<String, Set<String>> traitEnvMap) {
+		for (GermplasmPair pair : this.environmentPairList) {
+			TrialEnvironments env = pair.getTrialEnvironments();
+
+			this.germplasmIds.add(Integer.valueOf(pair.getGid1()));
+			this.germplasmIds.add(Integer.valueOf(pair.getGid2()));
+
+			for(TrialEnvironment trialEnv: env.getTrialEnvironments()){
+				this.trialEnvironmentMap.put(Integer.toString(trialEnv.getId()), trialEnv);
+				for (TraitInfo info : trialEnv.getTraits()) {
+
+					// add here the checking if the trait is non numeric
+					if (info.getType() != TraitType.NUMERIC) {
+						continue;
 					}
-					if (!isMatched) {
-						// meaning new pair
-						doRefresh = true;
-						break;
+
+					String id = Integer.toString(info.getId());
+					List<TraitInfo> tempList = new ArrayList<>();
+					if (traitMap.containsKey(id)) {
+						tempList = traitMap.get(id);
 					}
+					tempList.add(info);
+					traitMap.put(id, tempList);
+					Set<String> envIds = traitEnvMap.get(id);
+					if (envIds == null) {
+						envIds = new HashSet<>();
+					}
+					envIds.add(Integer.toString(trialEnv.getId()));
+					traitEnvMap.put(id, envIds);
+
+					// we need to keep track on the environments
+					Map<String, TrialEnvironment> tempEnvMap = new HashMap<>();
+					if (this.traitEnvironmentMap.containsKey(id)) {
+						tempEnvMap = this.traitEnvironmentMap.get(id);
+					}
+					tempEnvMap.put(Integer.toString(trialEnv.getId()), trialEnv);
+					this.traitEnvironmentMap.put(id, tempEnvMap);
+
 				}
-			} else {
-				doRefresh = true;
 			}
+		}
+	}
+
+	private boolean validateDoRefresh() {
+		boolean doRefresh = true;
+		// we checked if its the same
+		if (this.prevfinalGermplasmPair != null && (this.prevfinalGermplasmPair.size() == this.finalGermplasmPair.size())) {
+			if (this.prevfinalGermplasmPair.containsAll(finalGermplasmPair) && this.finalGermplasmPair
+				.containsAll(prevfinalGermplasmPair)) {
+				doRefresh = false;
+			}
+		}
+		return doRefresh;
+	}
+
+	private void initializeTable(final Map<String, List<TraitInfo>> traitMap, final Map<String, Set<String>> traitEnvMap) {
+
+		for (Map.Entry<String, List<TraitInfo>> entry : traitMap.entrySet()){
+			String id = entry.getKey();
+			List<TraitInfo> traitInfoList = entry.getValue();
+			// we get the 1st one since its all the same for this specific list
+			TraitInfo info = traitInfoList.get(0);
+			CheckBox box = new CheckBox();
+			box.setDebugId("box");
+			ComboBox comboBox = this.getDirectionComboBox();
+			box.setImmediate(true);
+			Integer tableId = Integer.valueOf(id);
+
+			Integer numOfEnv = traitEnvMap.get(id).size();
+			this.traitsTable.addItem(new Object[] {box, info.getName(), info.getDescription(), numOfEnv, comboBox}, tableId);
+			box.addListener(new HeadToHeadCrossStudyMainValueChangeListener(this, comboBox));
+			this.traitMaps.put(comboBox, info);
 
 		}
 
-		try {
+		if (this.traitsTable.getItemIds().isEmpty()) {
+			MessageNotifier.showWarning(this.getWindow(), "Warning!",
+				"No environments and traits were found for the pairs of germplasm entries you have specified.");
+		}
+	}
 
-			if (doRefresh) {
-				// only call when need to refresh
-				this.prevfinalGermplasmPair = germplasmPairList;
-				this.environmentPairList = this.crossStudyDataManager.getEnvironmentsForGermplasmPairs(germplasmPairList);
-			}
+	private void initializeVariables() {
+		this.tagUnTagAll.setValue(false);
+		this.traitsTable.removeAllItems();
+		this.nextButton.setEnabled(false);
+		this.visibleReminderFilterSelect(true);
+		this.traitForComparisons = new ArrayList<>();
+		this.traitMaps = new HashMap<>();
+		this.traitEnvironmentMap = new HashMap<>();
+		this.trialEnvironmentMap = new HashMap<>();
+		this.germplasmIds = new HashSet<>();
+	}
 
-			for (GermplasmPair pair : this.environmentPairList) {
-				TrialEnvironments env = pair.getTrialEnvironments();
+	private void visibleReminderFilterSelect(boolean visibleReminderFilter) {
 
-				this.germplasmIds.add(Integer.valueOf(pair.getGid1()));
-				this.germplasmIds.add(Integer.valueOf(pair.getGid2()));
-
-				java.util.Iterator<TrialEnvironment> envIterator = env.getTrialEnvironments().iterator();
-				while (envIterator.hasNext()) {
-					TrialEnvironment trialEnv = envIterator.next();
-					this.trialEnvironmentMap.put(Integer.toString(trialEnv.getId()), trialEnv);
-					java.util.Iterator<TraitInfo> traitIterator = trialEnv.getTraits().iterator();
-					while (traitIterator.hasNext()) {
-						TraitInfo info = traitIterator.next();
-
-						// add here the checking if the trait is non numeric
-						if (info.getType() != TraitType.NUMERIC) {
-							continue;
-						}
-
-						String id = Integer.toString(info.getId());
-						List<TraitInfo> tempList = new ArrayList<TraitInfo>();
-						if (traitMap.containsKey(id)) {
-							tempList = traitMap.get(id);
-						}
-						tempList.add(info);
-						traitMap.put(id, tempList);
-						Set<String> envIds = traitEnvMap.get(id);
-						if (envIds == null) {
-							envIds = new HashSet<String>();
-						}
-						envIds.add(trialEnv.getId() + "");
-						traitEnvMap.put(id, envIds);
-
-						// we need to keep track on the environments
-						Map<String, TrialEnvironment> tempEnvMap = new HashMap<String, TrialEnvironment>();
-						if (this.traitEnvironmentMap.containsKey(id)) {
-							tempEnvMap = this.traitEnvironmentMap.get(id);
-						}
-						tempEnvMap.put(Integer.toString(trialEnv.getId()), trialEnv);
-						this.traitEnvironmentMap.put(id, tempEnvMap);
-
-					}
-				}
-
-			}
-			java.util.Iterator<String> traitsIterator = traitMap.keySet().iterator();
-			while (traitsIterator.hasNext()) {
-				String id = traitsIterator.next();
-				List<TraitInfo> traitInfoList = traitMap.get(id);
-				// we get the 1st one since its all the same for this specific list
-				TraitInfo info = traitInfoList.get(0);
-				CheckBox box = new CheckBox();
-				box.setDebugId("box");
-				ComboBox comboBox = this.getDirectionComboBox();
-				box.setImmediate(true);
-				Integer tableId = Integer.valueOf(id);
-
-				Integer numOfEnv = traitEnvMap.get(id).size();
-				this.traitsTable.addItem(new Object[] {box, info.getName(), info.getDescription(), numOfEnv, comboBox}, tableId);
-
-				box.addListener(new HeadToHeadCrossStudyMainValueChangeListener(this, comboBox));
-
-				this.traitMaps.put(comboBox, info);
-
-			}
-
-			if (this.traitsTable.getItemIds().isEmpty()) {
-				MessageNotifier.showWarning(this.getWindow(), "Warning!",
-						"No environments and traits were found for the pairs of germplasm entries you have specified.");
-				return;
-			}
-		} catch (MiddlewareQueryException e) {
-			TraitsAvailableComponent.LOG.error(e.getMessage(), e);
+		if (visibleReminderFilter) {
+			this.selectTraitReminderLayout.setVisible(true);
+		} else {
+			this.selectTraitReminderLayout.setVisible(false);
 		}
 	}
 
@@ -367,10 +426,10 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 
 			if (this.traitForComparisons.isEmpty()) {
 				this.nextButton.setEnabled(false);
-				this.selectTraitReminderLabel.setVisible(true);
+				this.visibleReminderFilterSelect(true);
 			} else {
 				this.nextButton.setEnabled(true);
-				this.selectTraitReminderLabel.setVisible(false);
+				this.visibleReminderFilterSelect(false);
 			}
 		}
 	}
@@ -385,7 +444,7 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 	}
 
 	public void nextButtonClickAction() {
-		List<TraitForComparison> traitForComparisonsList = new ArrayList<TraitForComparison>();
+		List<TraitForComparison> traitForComparisonsList = new ArrayList<>();
 		for (ComboBox combo : this.traitForComparisons) {
 			TraitInfo info = this.traitMaps.get(combo);
 			TraitForComparison traitForComparison = new TraitForComparison(info, (Integer) combo.getValue());
@@ -405,5 +464,21 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 	@Override
 	public void updateLabels() {
 		// do nothing
+	}
+
+	public CheckBox getTraitFilterCheckBox() {
+		return traitFilterCheckBox;
+	}
+
+	public boolean getTraitFilterValue() {
+		return (Boolean) getTraitFilterCheckBox().getValue();
+	}
+
+	public CheckBox getAnalysisFilterCheckBox() {
+		return analysisFilterCheckBox;
+	}
+
+	public boolean getAnalysisFilterValue() {
+		return (Boolean) getAnalysisFilterCheckBox().getValue();
 	}
 }
