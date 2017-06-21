@@ -125,7 +125,6 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 
 			@Override
 			public void buttonClick(final com.vaadin.ui.Button.ClickEvent event) {
-				LOG.info("Click button Tratits {} Analysis {} ", traitFilterCheckBox.getValue(), analysisFilterCheckBox.getValue());
 				updatePopulateTraitsAndAnalysisAvailableTable((Boolean) traitFilterCheckBox.getValue(),(Boolean) analysisFilterCheckBox.getValue());
 			}
 
@@ -140,7 +139,6 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 
 			@Override
 			public void buttonClick(final com.vaadin.ui.Button.ClickEvent event) {
-				LOG.info("Click button Tratits {} Analysis {} ", traitFilterCheckBox.getValue(), analysisFilterCheckBox.getValue());
 				updatePopulateTraitsAndAnalysisAvailableTable((Boolean) traitFilterCheckBox.getValue(),(Boolean) analysisFilterCheckBox.getValue());
 			}
 
@@ -265,30 +263,28 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 
 	}
 
-	public void updatePopulateTraitsAndAnalysisAvailableTable(boolean traitCheckBox, boolean analysisCheckBox) {
+	private void updatePopulateTraitsAndAnalysisAvailableTable(final boolean traitCheckBox, final boolean analysisCheckBox) {
 		this.prevfinalGermplasmPair = null;
 		this.tagUnTagAll.setValue(false);
 		this.populateTraitsAvailableTable(this.finalGermplasmPair, this.germplasmIdNameMap, traitCheckBox, analysisCheckBox);
 	}
 
-	public void populateTraitsAvailableTable(final List<GermplasmPair> germplasmPairList, final Map<String, String> germplasmIdNameMap,
-		boolean traitCheckBox,
-		boolean analysisCheckBox) {
+	public void populateTraitsAvailableTable(final List<GermplasmPair> germplasmPairList, final Map<String, String> germplasmIdNameMap, final boolean traitCheckBox, final boolean analysisCheckBox) {
 
-		initializeVariables();
+		this.initializeVariables();
 		final Map<String, List<TraitInfo>> traitMap = new HashMap<>();
 		final Map<String, Set<String>> traitEnvMap = new HashMap<>();
 
 		this.germplasmIdNameMap = germplasmIdNameMap;
 		this.finalGermplasmPair = germplasmPairList;
-		boolean doRefresh = validateDoRefresh();
+		final boolean doRefresh = this.validateDoRefresh();
 
 		if (doRefresh) {
 			this.prevfinalGermplasmPair = germplasmPairList;
-			refreshEnviromentPairList(germplasmPairList, traitCheckBox, analysisCheckBox);
+			this.refreshEnviromentPairList(germplasmPairList, traitCheckBox, analysisCheckBox);
 		}
-		createEnviromentMap(traitMap, traitEnvMap);
-		initializeTable(traitMap, traitEnvMap);
+		this.createEnviromentMap(traitMap, traitEnvMap);
+		this.initializeTable(traitMap, traitEnvMap);
 
 	}
 
@@ -359,20 +355,9 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 		boolean doRefresh = true;
 		// we checked if its the same
 		if (this.prevfinalGermplasmPair != null && (this.prevfinalGermplasmPair.size() == this.finalGermplasmPair.size())) {
-			doRefresh = false;
-			for (GermplasmPair pairOld : this.prevfinalGermplasmPair) {
-				boolean isMatched = false;
-				for (GermplasmPair pairNew : this.finalGermplasmPair) {
-					if (pairOld.getGid1() == pairNew.getGid1() && pairOld.getGid2() == pairNew.getGid2()) {
-						isMatched = true;
-						break;
-					}
-				}
-				if (!isMatched) {
-					// meaning new pair
-					doRefresh = true;
-					break;
-				}
+			if (this.prevfinalGermplasmPair.containsAll(finalGermplasmPair) && this.finalGermplasmPair
+				.containsAll(prevfinalGermplasmPair)) {
+				doRefresh = false;
 			}
 		}
 		return doRefresh;
@@ -380,10 +365,9 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 
 	private void initializeTable(final Map<String, List<TraitInfo>> traitMap, final Map<String, Set<String>> traitEnvMap) {
 
-		java.util.Iterator<String> traitsIterator = traitMap.keySet().iterator();
-		while (traitsIterator.hasNext()) {
-			String id = traitsIterator.next();
-			List<TraitInfo> traitInfoList = traitMap.get(id);
+		for (Map.Entry<String, List<TraitInfo>> entry : traitMap.entrySet()){
+			String id = entry.getKey();
+			List<TraitInfo> traitInfoList = entry.getValue();
 			// we get the 1st one since its all the same for this specific list
 			TraitInfo info = traitInfoList.get(0);
 			CheckBox box = new CheckBox();
@@ -409,7 +393,7 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 		this.tagUnTagAll.setValue(false);
 		this.traitsTable.removeAllItems();
 		this.nextButton.setEnabled(false);
-		visibleReminderFilterSelect(true);
+		this.visibleReminderFilterSelect(true);
 		this.traitForComparisons = new ArrayList<>();
 		this.traitMaps = new HashMap<>();
 		this.traitEnvironmentMap = new HashMap<>();
@@ -442,10 +426,10 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 
 			if (this.traitForComparisons.isEmpty()) {
 				this.nextButton.setEnabled(false);
-				visibleReminderFilterSelect(true);
+				this.visibleReminderFilterSelect(true);
 			} else {
 				this.nextButton.setEnabled(true);
-				visibleReminderFilterSelect(false);
+				this.visibleReminderFilterSelect(false);
 			}
 		}
 	}
