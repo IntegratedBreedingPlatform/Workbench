@@ -16,6 +16,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -29,11 +30,13 @@ import java.util.Map;
 @RunWith(MockitoJUnitRunner.class)
 public class DatasetExporterTest {
 
+	public static final int DATASET_ID = 1;
+
 	@Mock
 	private static ManagerFactory factory;
 
 	@Mock
-	private static StudyDataManager manager;
+	private static StudyDataManager studyDataManager;
 
 	@Mock
 	private static WorkbenchDataManager workbenchDataManager;
@@ -46,6 +49,9 @@ public class DatasetExporterTest {
 
 	@Mock
 	private OntologyService ontologyService;
+
+	@InjectMocks
+	private DatasetExporter exporter = new DatasetExporter(DATASET_ID);
 
 	private static final String FILENAME = "datasetExporterTest.csv";
 	private static final String DEFAULT_TRIAL_INSTANCE_NAME = "SITE_NO";
@@ -121,8 +127,8 @@ public class DatasetExporterTest {
 		this.dataSet = this.createDatasetTestData(factors, variates);
 
 		try {
-			Mockito.when(DatasetExporterTest.manager.getDataSet(Matchers.anyInt())).thenReturn(this.dataSet);
-			Mockito.when(DatasetExporterTest.manager.getExperiments(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyInt()))
+			Mockito.when(DatasetExporterTest.studyDataManager.getDataSet(Matchers.anyInt())).thenReturn(this.dataSet);
+			Mockito.when(DatasetExporterTest.studyDataManager.getExperiments(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyInt()))
 					.thenReturn(experiments);
 
 			Mockito.when(this.bvInput.getVariatesActiveState()).thenReturn(variatesActiveState);
@@ -137,9 +143,6 @@ public class DatasetExporterTest {
 			Assert.fail(e.getMessage());
 		}
 
-		final DatasetExporter exporter = new DatasetExporter(DatasetExporterTest.manager, this.ontologyService, 1, 1);
-
-		exporter.setWorkbenchDataManager(DatasetExporterTest.workbenchDataManager);
 		try {
 			exporter.exportToCSVForBreedingView(DatasetExporterTest.FILENAME, DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME,
 					selectedEnvironments, this.bvInput);
@@ -214,8 +217,8 @@ public class DatasetExporterTest {
 		this.dataSet = this.createDatasetTestData(factors, variates);
 
 		try {
-			Mockito.when(DatasetExporterTest.manager.getDataSet(Matchers.anyInt())).thenReturn(this.dataSet);
-			Mockito.when(DatasetExporterTest.manager.getExperiments(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyInt()))
+			Mockito.when(DatasetExporterTest.studyDataManager.getDataSet(Matchers.anyInt())).thenReturn(this.dataSet);
+			Mockito.when(DatasetExporterTest.studyDataManager.getExperiments(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyInt()))
 					.thenReturn(experiments);
 
 			Mockito.when(this.bvInput.getVariatesActiveState()).thenReturn(variatesActiveState);
@@ -230,9 +233,6 @@ public class DatasetExporterTest {
 			Assert.fail(e.getMessage());
 		}
 
-		final DatasetExporter exporter = new DatasetExporter(DatasetExporterTest.manager, this.ontologyService, 1, 1);
-
-		exporter.setWorkbenchDataManager(DatasetExporterTest.workbenchDataManager);
 		try {
 			exporter.exportToCSVForBreedingView(DatasetExporterTest.FILENAME, DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME,
 					selectedEnvironments, this.bvInput);
@@ -284,8 +284,8 @@ public class DatasetExporterTest {
 		this.dataSet = this.createDatasetTestData(factors, variates);
 
 		try {
-			Mockito.when(DatasetExporterTest.manager.getDataSet(Matchers.anyInt())).thenReturn(this.dataSet);
-			Mockito.when(DatasetExporterTest.manager.getExperiments(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyInt()))
+			Mockito.when(DatasetExporterTest.studyDataManager.getDataSet(Matchers.anyInt())).thenReturn(this.dataSet);
+			Mockito.when(DatasetExporterTest.studyDataManager.getExperiments(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyInt()))
 					.thenReturn(experiments);
 
 			Mockito.when(this.bvInput.getVariatesActiveState()).thenReturn(variatesActiveState);
@@ -301,9 +301,6 @@ public class DatasetExporterTest {
 			Assert.fail(e.getMessage());
 		}
 
-		final DatasetExporter exporter = new DatasetExporter(DatasetExporterTest.manager, this.ontologyService, 1, 1);
-
-		exporter.setWorkbenchDataManager(DatasetExporterTest.workbenchDataManager);
 		try {
 			exporter.exportToCSVForBreedingView(DatasetExporterTest.FILENAME,
 					DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME + DatasetExporterTest.VAR_POST_FIX, selectedEnvironments, this.bvInput);
@@ -313,7 +310,6 @@ public class DatasetExporterTest {
 		}
 
 		final List<String[]> tableItems = exporter.getTableItems();
-		final Map<String, String> headerAliasMap = exporter.getHeaderNameAliasMap();
 
 		// Verify the header names
 		final String[] headerRow = tableItems.get(0);
@@ -359,8 +355,8 @@ public class DatasetExporterTest {
 		factors.get(0).setLocalName(DatasetExporterTest.ALT_TRIAL_INSTANCE_NAME);
 
 		try {
-			Mockito.when(DatasetExporterTest.manager.getDataSet(Matchers.anyInt())).thenReturn(this.dataSet);
-			Mockito.when(DatasetExporterTest.manager.getExperiments(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyInt()))
+			Mockito.when(DatasetExporterTest.studyDataManager.getDataSet(Matchers.anyInt())).thenReturn(this.dataSet);
+			Mockito.when(DatasetExporterTest.studyDataManager.getExperiments(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyInt()))
 					.thenReturn(experiments);
 
 			Mockito.when(this.bvInput.getVariatesActiveState()).thenReturn(variatesActiveState);
@@ -376,9 +372,6 @@ public class DatasetExporterTest {
 			Assert.fail(e.getMessage());
 		}
 
-		final DatasetExporter exporter = new DatasetExporter(DatasetExporterTest.manager, this.ontologyService, 1, 1);
-
-		exporter.setWorkbenchDataManager(DatasetExporterTest.workbenchDataManager);
 		try {
 			exporter.exportToCSVForBreedingView(DatasetExporterTest.FILENAME, DatasetExporterTest.ENV_NAME, selectedEnvironments,
 					this.bvInput);

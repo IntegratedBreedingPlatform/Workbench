@@ -43,40 +43,27 @@ public class DatasetExporter {
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
-	private final StudyDataManager studyDataManager;
+
+	@Autowired
+	private StudyDataManager studyDataManager;
+
+	@Autowired
+	private OntologyService ontologyService;
+
 	private final Integer datasetId;
-	private final List<String[]> tableItems;
-	private final Map<String, Integer> columnsMap = new HashMap<>();
+	private final List<String[]> tableItems = new ArrayList<>();
+	private final List<String> columns = new ArrayList<>();
 	private final Map<String, String> headerNameAliasMap = new HashMap<>();
-	private int observationSheetColumnIndex;
 
 	private static final String MISSING_VALUE_STRING = "missing";
-	private final OntologyService ontologyService;
 
-	public DatasetExporter(final StudyDataManager studyDataManager, final OntologyService ontologyService, final Integer studyId,
-			final Integer datasetId) {
-		this.studyDataManager = studyDataManager;
-		this.ontologyService = ontologyService;
+	public DatasetExporter(final Integer datasetId) {
 		this.datasetId = datasetId;
-		this.tableItems = new ArrayList<>();
 	}
 
-	private DataSet getDataSet(final int dataSetId) {
+	protected List<String> generateFactorColumnsList(final DataSet dataset) {
 
-		final DataSet dataset;
-		try {
-			dataset = this.studyDataManager.getDataSet(this.datasetId);
-			return dataset;
-		} catch (final MiddlewareException ex) {
-			DatasetExporter.LOG.error(ex.getMessage(), ex);
-		}
-
-		return null;
-	}
-
-	protected Map<String, Integer> generateFactorColumnsMap(final DataSet dataset) {
-
-		final Map<String, Integer> factorsColumnsMap = new HashMap<>();
+		final List<String> factorsColumns = new ArrayList<>();
 		final List<DMSVariableType> factorVariableTypes = dataset.getVariableTypes().getFactors().getVariableTypes();
 
 		for (final DMSVariableType factor : factorVariableTypes) {
@@ -91,20 +78,19 @@ public class DatasetExporter {
 				factorName = factorName.trim();
 			}
 
-			if (!factorsColumnsMap.containsKey(factorName) && !"STUDY".equals(factorName)) {
+			if (!factorsColumns.contains(factorName) && !"STUDY".equals(factorName)) {
 				// add entry to columns mapping
-				factorsColumnsMap.put(factorName, Integer.valueOf(this.observationSheetColumnIndex));
-				this.observationSheetColumnIndex++;
+				factorsColumns.add(factorName);
 			}
 		}
 
-		return factorsColumnsMap;
+		return factorsColumns;
 
 	}
 
-	protected Map<String, Integer> generateVariateColumnsMap(final DataSet dataset, final BreedingViewInput breedingViewInput) {
+	protected List<String> generateVariateColumnsList(final DataSet dataset, final BreedingViewInput breedingViewInput) {
 
-		final Map<String, Integer> variateColumnsMap = new HashMap<>();
+		final List<String> variateColumns = new ArrayList<>();
 		final List<DMSVariableType> variateVariableTypes = dataset.getVariableTypes().getVariates().getVariableTypes();
 
 		for (final DMSVariableType variate : variateVariableTypes) {
@@ -114,49 +100,23 @@ public class DatasetExporter {
 			// get only the selected traits
 			if (breedingViewInput.getVariatesActiveState().get(variateName).booleanValue()) {
 				// add entry to columns mapping
-				variateColumnsMap.put(variateName, Integer.valueOf(this.observationSheetColumnIndex));
-				this.observationSheetColumnIndex++;
+				variateColumns.add(variateName);
 			}
 
 		}
 
-		return variateColumnsMap;
+		return variateColumns;
 	}
 
-	private List<String> generateRowHeader(final Map<String, String> headerNameAliasMap) {
-
-		final List<String> keys = new ArrayList<>(this.columnsMap.keySet());
-
-		// Sort keys by values.
-		final Map<String, Integer> langForComp = this.columnsMap;
-		Collections.sort(keys, new Comparator<Object>() {
-
-			@Override
-			public int compare(final Object left, final Object right) {
-				final String leftKey = (String) left;
-				final String rightKey = (String) right;
-
-				final Integer leftValue = langForComp.get(leftKey);
-				final Integer rightValue = langForComp.get(rightKey);
-				return leftValue.compareTo(rightValue);
-			}
-		});
-
-		final List<String> rowHeader = new ArrayList<>();
-		for (final Iterator<String> i = keys.iterator(); i.hasNext(); ) {
-			final String k = i.next();
-			final Integer columnIndex = this.columnsMap.get(k).intValue();
-			if (columnIndex >= 0) {
-				final String nameSanitized = BreedingViewUtil.trimAndSanitizeName(k);
-				rowHeader.add(nameSanitized);
-				headerNameAliasMap.put(nameSanitized, k);
-			}
-		}
-
-		return rowHeader;
-
-	}
-
+	/**
+	 * Exports the observation of a Trial to a CSV file.
+	 *
+	 * @param filename
+	 * @param selectedFactor
+	 * @param selectedEnvironment
+	 * @param breedingViewInput
+	 * @throws DatasetExporterException
+	 */
 	public void exportToCSVForBreedingView(final String filename, final String selectedFactor, final List<String> selectedEnvironment,
 			final BreedingViewInput breedingViewInput) throws DatasetExporterException {
 
@@ -167,31 +127,27 @@ public class DatasetExporter {
 			}
 		}
 
-		final DataSet dataset = this.getDataSet(this.datasetId);
+		final DataSet dataset = this.studyDataManager.getDataSet(this.datasetId);
 
 		if (dataset == null) {
 			return;
 		}
 
-		this.observationSheetColumnIndex = 0;
+		final List<String> factorColumns = this.generateFactorColumnsList(dataset);
+		final List<String> variateColumns = this.generateVariateColumnsList(dataset, breedingViewInput);
 
-		final Map<String, Integer> factorColumnsMap = this.generateFactorColumnsMap(dataset);
-		final Map<String, Integer> variateColumnsMap = this.generateVariateColumnsMap(dataset, breedingViewInput);
-
-		this.columnsMap.putAll(factorColumnsMap);
-		this.columnsMap.putAll(variateColumnsMap);
+		this.columns.addAll(factorColumns);
+		this.columns.addAll(variateColumns);
 
 		if (!breedingViewInput.getDesignType().equals(DesignType.P_REP_DESIGN.getName()) && !breedingViewInput.getDesignType()
 				.equals(DesignType.AUGMENTED_RANDOMIZED_BLOCK.getName()) && DatasetExporter.DUMMY_REPLICATES
 				.equals(breedingViewInput.getReplicatesFactorName())) {
-			this.columnsMap.put(DatasetExporter.DUMMY_REPLICATES, Integer.valueOf(this.observationSheetColumnIndex));
-			this.observationSheetColumnIndex++;
+			this.columns.add(DatasetExporter.DUMMY_REPLICATES);
 		}
 
 		boolean trialEnvironmentFactorAlreadyExists = true;
-		if (!selectedFactor.equalsIgnoreCase(breedingViewInput.getTrialInstanceName()) && !this.columnsMap.containsKey(selectedFactor)) {
-			this.columnsMap.put(selectedFactor, Integer.valueOf(this.observationSheetColumnIndex));
-			this.observationSheetColumnIndex++;
+		if (!selectedFactor.equalsIgnoreCase(breedingViewInput.getTrialInstanceName()) && !this.columns.contains(selectedFactor)) {
+			this.columns.add(selectedFactor);
 			trialEnvironmentFactorAlreadyExists = false;
 		}
 
@@ -203,8 +159,9 @@ public class DatasetExporter {
 			DatasetExporter.LOG.error(ex.getMessage(), ex);
 		}
 
-		final List<String> rowHeader = this.generateRowHeader(this.headerNameAliasMap);
-		this.getTableItems().add(rowHeader.toArray(new String[0]));
+		// The first item in the table should be the header
+		// Add the columns list to the table
+		this.getTableItems().add(sanitizeColumnNames(columns));
 
 		for (final Experiment experiment : experiments) {
 
@@ -221,9 +178,9 @@ public class DatasetExporter {
 
 			final List<String> row = new ArrayList<>();
 
-			this.processFactors(factorColumnsMap, row, experiment, breedingViewInput);
+			this.populateRowWithFactorValuesFromExperiment(factorColumns, row, experiment, breedingViewInput);
 
-			this.processVariates(variateColumnsMap, row, experiment, breedingViewInput, this.ontologyService);
+			this.populateRowWithVariateValuesFromExperiment(variateColumns, row, experiment, this.ontologyService);
 
 			if (!breedingViewInput.getDesignType().equals(DesignType.P_REP_DESIGN.getName()) && !breedingViewInput.getDesignType()
 					.equals(DesignType.AUGMENTED_RANDOMIZED_BLOCK.getName()) && DatasetExporter.DUMMY_REPLICATES
@@ -241,6 +198,18 @@ public class DatasetExporter {
 		this.serializeHeaderAliasMap();
 
 		this.writeCSVFile(filename);
+
+	}
+
+	private String[] sanitizeColumnNames(final List<String> columns) {
+
+		List<String> sanitized = new ArrayList<>();
+
+		for (String column : columns) {
+			sanitized.add(BreedingViewUtil.trimAndSanitizeName(column));
+		}
+
+		return sanitized.toArray(new String[0]);
 
 	}
 
@@ -269,24 +238,28 @@ public class DatasetExporter {
 		}
 	}
 
-	protected void processFactors(final Map<String, Integer> factorColumnsMap, final List<String> rowContent,
+	/**
+	 * Adds the values of the factors variables from the Experiment to the target experiment row data list array.
+	 *
+	 * @param factorColumnsMap
+	 * @param experimentRowData
+	 * @param currentExperiment
+	 * @param breedingViewInput
+	 */
+	protected void populateRowWithFactorValuesFromExperiment(final List<String> factorColumns, final List<String> experimentRowData,
 			final Experiment currentExperiment, final BreedingViewInput breedingViewInput) {
-		final Map<Short, String> rowContentMap = new TreeMap<>();
+
 		final List<Variable> factorsOfExperiments = currentExperiment.getFactors().getVariables();
 		final Map<String, Variable> factorsOfExperimentsMap = new HashMap<>();
 		for (final Variable factorVariable : factorsOfExperiments) {
 			factorsOfExperimentsMap.put(factorVariable.getVariableType().getLocalName().trim(), factorVariable);
 		}
 
-		final Map<Integer, String> sortedColumnsByColumnIndex = sortColumnsMapByColumnIndex(factorColumnsMap);
+		for (final String factorName : factorColumns) {
 
-		for (final Map.Entry<Integer, String> entry : sortedColumnsByColumnIndex.entrySet()) {
+			if (factorsOfExperimentsMap.containsKey(factorName)) {
 
-			final short columnIndex = entry.getKey().shortValue();
-
-			if (factorsOfExperimentsMap.containsKey(entry.getValue())) {
-
-				final Variable factorVariable = factorsOfExperimentsMap.get(entry.getValue());
+				final Variable factorVariable = factorsOfExperimentsMap.get(factorName);
 
 				if (factorVariable.getVariableType().getStandardVariable().getDataType().getName()
 						.equals(DatasetExporter.NUMERIC_VARIABLE)) {
@@ -297,9 +270,9 @@ public class DatasetExporter {
 								.equalsIgnoreCase(breedingViewInput.getReplicates().getName())) {
 							final Variable variable = factorsOfExperimentsMap.get(breedingViewInput.getBlocks().getName());
 							if (variable != null) {
-								rowContentMap.put(columnIndex, variable.getValue().trim());
+								experimentRowData.add(variable.getValue().trim());
 							} else {
-								rowContentMap.put(columnIndex, "");
+								experimentRowData.add("");
 							}
 
 						} else {
@@ -307,22 +280,22 @@ public class DatasetExporter {
 								elemValue = Double.valueOf(factorVariable.getValue());
 
 								if (elemValue == Double.valueOf("-1E+36")) {
-									rowContentMap.put(columnIndex, "");
+									experimentRowData.add("");
 								} else {
-									rowContentMap.put(columnIndex, String.valueOf(factorVariable.getValue()));
+									experimentRowData.add(String.valueOf(factorVariable.getValue()));
 								}
 							} catch (final NumberFormatException ex) {
 								String value = factorVariable.getValue();
 								if (value != null) {
 									value = value.trim();
 								}
-								rowContentMap.put(columnIndex, value);
+								experimentRowData.add(value);
 							}
 						}
 
 					} else {
 						final String nullValue = null;
-						rowContentMap.put(columnIndex, nullValue);
+						experimentRowData.add(nullValue);
 					}
 				} else {
 					String value = factorVariable.getValue();
@@ -347,109 +320,95 @@ public class DatasetExporter {
 						}
 
 					}
-					rowContentMap.put(columnIndex, value);
+					experimentRowData.add(value);
 				}
 
-			} else if (TermId.PLOT_ID.name().equals(entry.getValue())) {
+			} else if (TermId.PLOT_ID.name().equals(factorName)) {
 
 				// special case
-				rowContentMap.put(columnIndex, currentExperiment.getPlotId());
+				experimentRowData.add(currentExperiment.getPlotId());
 
 			} else {
 
-				rowContentMap.put(columnIndex, "");
+				experimentRowData.add("");
 			}
 
 		}
 
-		if (rowContentMap.size() > 0) {
-			rowContent.addAll(rowContentMap.values());
-		}
 	}
 
-	Map<Integer, String> sortColumnsMapByColumnIndex(final Map<String, Integer> columnsMap) {
+	/**
+	 * Adds the values of the variate variables from the Experiment to the target experiment row data list array.
+	 *
+	 * @param variateColumnsMap
+	 * @param experimentRowData
+	 * @param currentExperiment
+	 * @param ontologyService
+	 */
+	protected void populateRowWithVariateValuesFromExperiment(final List<String> variateColumns, final List<String> experimentRowData,
+			final Experiment currentExperiment, final OntologyService ontologyService) {
 
-		final Map<Integer, String> sortedMap = new TreeMap<>();
-		// The value in columnsMap is the index of the column.
-		for (final Map.Entry<String, Integer> entry : columnsMap.entrySet()) {
-			sortedMap.put(entry.getValue(), entry.getKey());
-		}
+		for (final String variateColumnName : variateColumns) {
 
-		return sortedMap;
-
-	}
-
-	protected void processVariates(final Map<String, Integer> variateColumnsMap, final List<String> rowContent,
-			final Experiment currentExperiment, final BreedingViewInput breedingViewInput, final OntologyService ontologyService) {
-
-		final Map<Integer, String> sortedColumnsByIndex = sortColumnsMapByColumnIndex(variateColumnsMap);
-
-		for (final Map.Entry<Integer, String> entry : sortedColumnsByIndex.entrySet()) {
-
-			String variateName = "";
-			final Variable variateVariable = currentExperiment.getVariates().findByLocalName(entry.getValue());
+			final Variable variateVariable = currentExperiment.getVariates().findByLocalName(variateColumnName);
 			if (variateVariable != null) {
-				variateName = variateVariable.getVariableType().getLocalName();
 
-				final Integer columnIndexInteger = this.columnsMap.get(variateName);
-				if (columnIndexInteger != null) {
-					final short columnIndex = columnIndexInteger.shortValue();
-					if (columnIndex >= 0) {
+				if (columns.contains(variateColumnName)) {
 
-						if (variateVariable.getVariableType().getStandardVariable().getDataType().getName()
-								.equals(DatasetExporter.NUMERIC_VARIABLE)) {
-							double elemValue = 0;
-							if (variateVariable.getValue() != null) {
-								try {
-									elemValue = Double.valueOf(variateVariable.getValue());
+					if (variateVariable.getVariableType().getStandardVariable().getDataType().getName()
+							.equals(DatasetExporter.NUMERIC_VARIABLE)) {
+						double elemValue = 0;
+						if (variateVariable.getValue() != null) {
+							try {
+								elemValue = Double.valueOf(variateVariable.getValue());
 
-									if (elemValue == Double.valueOf("-1E+36")) {
-										rowContent.add("");
-									} else {
-										rowContent.add(String.valueOf(elemValue));
-									}
-
-								} catch (final NumberFormatException ex) {
-									String value = variateVariable.getValue();
-									if (value != null) {
-										value = value.trim();
-									}
-									rowContent.add(value);
+								if (elemValue == Double.valueOf("-1E+36")) {
+									experimentRowData.add("");
+								} else {
+									experimentRowData.add(String.valueOf(elemValue));
 								}
-							} else {
 
-								rowContent.add("");
-							}
-						} else if (variateVariable.getVariableType().getStandardVariable().getDataType().getId()
-								== TermId.CATEGORICAL_VARIABLE.getId()) {
-							String value = variateVariable.getActualValue();
-
-							if (value == null) {
-								value = "";
-							} else {
-								final List<ValueReference> possibleValues = ontologyService
-										.getDistinctStandardVariableValues(variateVariable.getVariableType().getStandardVariable().getId());
-								if (DatasetExporter.MISSING_VALUE_STRING.equals(value) && this
-										.isCategoricalValueOutOfBounds(value, possibleValues)) {
-									value = "";
+							} catch (final NumberFormatException ex) {
+								String value = variateVariable.getValue();
+								if (value != null) {
+									value = value.trim();
 								}
+								experimentRowData.add(value);
 							}
-
-							rowContent.add(value);
 						} else {
-							String value = variateVariable.getActualValue();
-							if (value != null) {
-								value = value.trim();
-							} else {
+
+							experimentRowData.add("");
+						}
+					} else if (variateVariable.getVariableType().getStandardVariable().getDataType().getId() == TermId.CATEGORICAL_VARIABLE
+							.getId()) {
+						String value = variateVariable.getActualValue();
+
+						if (value == null) {
+							value = "";
+						} else {
+							final List<ValueReference> possibleValues = ontologyService
+									.getDistinctStandardVariableValues(variateVariable.getVariableType().getStandardVariable().getId());
+							if (DatasetExporter.MISSING_VALUE_STRING.equals(value) && this
+									.isCategoricalValueOutOfBounds(value, possibleValues)) {
 								value = "";
 							}
-							rowContent.add(value);
 						}
+
+						experimentRowData.add(value);
+					} else {
+						String value = variateVariable.getActualValue();
+						if (value != null) {
+							value = value.trim();
+						} else {
+							value = "";
+						}
+						experimentRowData.add(value);
 					}
+
 				}
 
 			} else {
-				rowContent.add("");
+				experimentRowData.add("");
 			}
 		}
 	}
