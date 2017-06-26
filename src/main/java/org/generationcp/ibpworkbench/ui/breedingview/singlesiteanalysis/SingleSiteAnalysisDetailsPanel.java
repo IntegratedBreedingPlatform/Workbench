@@ -332,7 +332,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	private Label lblDatasetName;
 	private Label lblDatasourceName;
 
-	private Label lblVersion;
 	private Label lblProjectType;
 	private Label lblAnalysisName;
 	private Label lblSiteEnvironment;
@@ -356,7 +355,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	private Button btnUpload;
 	private Button btnReset;
 	private Button btnBack;
-	private TextField txtVersion;
 	private Label valueProjectType;
 	private TextField txtAnalysisName;
 	private TextField txtNameForAnalysisEnv;
@@ -562,9 +560,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.lblDatasourceName.setContentMode(Label.CONTENT_XHTML);
 		this.lblDatasourceName.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
 
-		this.lblVersion = new Label();
-		this.lblVersion.setDebugId("lblVersion");
-		this.lblVersion.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
 		this.lblProjectType = new Label();
 		this.lblProjectType.setDebugId("lblProjectType");
 		this.lblProjectType.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
@@ -645,23 +640,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 				"<span class='bms-factors' style='color: #39B54A; " + "font-size: 20px; font-weight: bold;'></span><b>&nbsp;"
 						+ this.messageSource.getMessage(Message.BV_SPECIFY_GENOTYPES_HEADER) + "</b>", Label.CONTENT_XHTML);
 		this.lblSpecifyGenotypesHeader.setStyleName(Bootstrap.Typography.H3.styleName());
-
-		this.txtVersion = new TextField();
-		this.txtVersion.setDebugId("txtVersion");
-		this.txtVersion.setNullRepresentation("");
-
-		if (!StringUtils.isNullOrEmpty(this.getBreedingViewInput().getVersion())) {
-
-			this.txtVersion.setValue(this.getBreedingViewInput().getVersion());
-			this.txtVersion.setReadOnly(true);
-			this.txtVersion.setRequired(false);
-
-		} else {
-
-			this.txtVersion.setNullSettingAllowed(false);
-			this.txtVersion.setRequired(false);
-
-		}
 
 		this.valueProjectType = new Label();
 		this.valueProjectType.setDebugId("valueProjectType");
@@ -1106,8 +1084,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		chooseEnvironmentLayout.addComponent(this.selEnvFactor, 1, 2);
 		chooseEnvironmentLayout.addComponent(this.lblChooseEnvironmentForAnalysisDescription, 0, 3, 1, 3);
 		chooseEnvironmentLayout.addComponent(this.tblEnvironmentLayout, 0, 4, 1, 4);
-		chooseEnvironmentLayout.addComponent(this.lblVersion, 0, 5);
-		chooseEnvironmentLayout.addComponent(this.txtVersion, 1, 5);
 
 		final VerticalLayout designDetailsWrapper = new VerticalLayout();
 		designDetailsWrapper.setDebugId("designDetailsWrapper");
@@ -1248,7 +1224,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	@Override
 	public void updateLabels() {
-		this.messageSource.setValue(this.lblVersion, Message.BV_VERSION);
 		this.messageSource.setValue(this.lblProjectType, Message.BV_PROJECT_TYPE);
 		this.messageSource.setValue(this.lblAnalysisName, Message.BV_ANALYSIS_NAME);
 		this.messageSource.setValue(this.lblSiteEnvironment, Message.BV_SITE_ENVIRONMENT);
