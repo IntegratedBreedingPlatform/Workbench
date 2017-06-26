@@ -272,6 +272,11 @@ public final class GermplasmIndexContainer {
 		linkStudyButton.setDebugId("linkStudyButton");
 		linkStudyButton.addStyleName(BaseTheme.BUTTON_LINK);
 
+		if (!contextUtil.getCurrentProgramUUID().equals(study.getProgramUUID())) {
+			linkStudyButton.setCaption(linkStudyButton.getCaption());
+			linkStudyButton.setEnabled(false);
+		}
+
 		item.getItemProperty(GermplasmIndexContainer.STUDY_NAME).setValue(linkStudyButton);
 		item.getItemProperty(GermplasmIndexContainer.STUDY_DESCRIPTION).setValue(study.getDescription());
 	}
