@@ -1,8 +1,10 @@
+
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
-import com.vaadin.ui.Component;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.Select;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -29,9 +31,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.Select;
 
 /**
  * Created by IntelliJ IDEA. User: Daniel Villafuerte Date: 12/17/2014 Time: 1:39 PM
@@ -57,12 +59,11 @@ public class SingleSiteAnalysisDetailsPanelTest {
 	private static final String[] TRIAL_ENV_FACTORS =
 			{SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE, SingleSiteAnalysisDetailsPanelTest.LOC_ID,
 					SingleSiteAnalysisDetailsPanelTest.LOC_NAME, SingleSiteAnalysisDetailsPanelTest.EXPT_DESIGN};
-	private static final String[] DATASET_FACTORS =
-			{SingleSiteAnalysisDetailsPanelTest.DATASET_NAME, SingleSiteAnalysisDetailsPanelTest.DATASET_TITLE,
-					SingleSiteAnalysisDetailsPanelTest.DATASET_TYPE};
+	private static final String[] DATASET_FACTORS = {SingleSiteAnalysisDetailsPanelTest.DATASET_NAME,
+			SingleSiteAnalysisDetailsPanelTest.DATASET_TITLE, SingleSiteAnalysisDetailsPanelTest.DATASET_TYPE};
 
 	@InjectMocks
-	private SingleSiteAnalysisDetailsPanel dut;
+	private SingleSiteAnalysisDetailsPanel ssaPanel;
 
 	private List<DMSVariableType> factors;
 	private List<DMSVariableType> trialFactors;
@@ -83,13 +84,13 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 		final Select selEnvFactor = new Select();
 		selEnvFactor.setValue("TRIAL INSTANCE");
-		this.dut.setSelEnvFactor(selEnvFactor);
+		this.ssaPanel.setSelEnvFactor(selEnvFactor);
 
 		final Project project = new Project();
-		this.dut = new SingleSiteAnalysisDetailsPanel(new Tool(), this.input, this.factors, this.trialFactors, project,
+		this.ssaPanel = new SingleSiteAnalysisDetailsPanel(new Tool(), this.input, this.factors, this.trialFactors, project,
 				new SingleSiteAnalysisPanel(project, null));
-		this.dut.setMessageSource(this.messageSource);
-		this.dut.setStudyDataManager(this.studyDataManager);
+		this.ssaPanel.setMessageSource(this.messageSource);
+		this.ssaPanel.setStudyDataManager(this.studyDataManager);
 
 		this.mockStudyDataManagerCalls();
 		this.mockMessageResource();
@@ -98,8 +99,10 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 	private void mockMessageResource() {
 		Mockito.when(this.messageSource.getMessage(Message.PLEASE_CHOOSE)).thenReturn("Please choose");
-		Mockito.when(this.messageSource.getMessage(Message.BV_SPECIFY_ROW_FACTOR)).thenReturn(ROW_FACTOR_LABEL);
-		Mockito.when(this.messageSource.getMessage(Message.BV_SPECIFY_COLUMN_FACTOR)).thenReturn(COLUMN_FACTOR_LABEL);
+		Mockito.when(this.messageSource.getMessage(Message.BV_SPECIFY_ROW_FACTOR))
+				.thenReturn(SingleSiteAnalysisDetailsPanelTest.ROW_FACTOR_LABEL);
+		Mockito.when(this.messageSource.getMessage(Message.BV_SPECIFY_COLUMN_FACTOR))
+				.thenReturn(SingleSiteAnalysisDetailsPanelTest.COLUMN_FACTOR_LABEL);
 	}
 
 	private void mockStudyDataManagerCalls() {
@@ -127,29 +130,29 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
 				.thenReturn(Integer.toString(TermId.RESOLVABLE_INCOMPLETE_BLOCK.getId()));
 
-		this.dut.initializeComponents();
+		this.ssaPanel.initializeComponents();
 
 		final List<Component> components = this.getComponentsListFromGridLayout();
 
-		Assert.assertTrue(components.contains(this.dut.getLblBlocks()));
-		Assert.assertTrue(components.contains(this.dut.getSelBlocks()));
-		Assert.assertTrue(components.contains(this.dut.getLblSpecifyGenotypesHeader()));
-		Assert.assertTrue(components.contains(this.dut.getLblGenotypes()));
-		Assert.assertTrue(components.contains(this.dut.getSelGenotypes()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getLblBlocks()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getSelBlocks()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getLblSpecifyGenotypesHeader()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getLblGenotypes()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getSelGenotypes()));
 
-		Assert.assertFalse(components.contains(this.dut.getLblSpecifyColumnFactor()));
-		Assert.assertFalse(components.contains(this.dut.getSelColumnFactor()));
-		Assert.assertFalse(components.contains(this.dut.getLblSpecifyRowFactor()));
-		Assert.assertFalse(components.contains(this.dut.getSelRowFactor()));
+		Assert.assertFalse(components.contains(this.ssaPanel.getLblSpecifyColumnFactor()));
+		Assert.assertFalse(components.contains(this.ssaPanel.getSelColumnFactor()));
+		Assert.assertFalse(components.contains(this.ssaPanel.getLblSpecifyRowFactor()));
+		Assert.assertFalse(components.contains(this.ssaPanel.getSelRowFactor()));
 
-		Assert.assertTrue(this.dut.getSelDesignType().getValue().equals(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName()));
+		Assert.assertTrue(this.ssaPanel.getSelDesignType().getValue().equals(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName()));
 
-		if ((!this.dut.getSelReplicates().isEnabled() || this.dut.getSelReplicates().getItemIds().isEmpty()) && !this.dut.getSelBlocks()
-				.getItemIds().isEmpty()) {
-			Assert.assertTrue(this.dut.getSelReplicates().isEnabled());
-			for (final Object itemId : this.dut.getSelBlocks().getItemIds()) {
-				Assert.assertTrue(
-						SingleSiteAnalysisDetailsPanelTest.DEFAULT_REPLICATES.equals(this.dut.getSelReplicates().getItemCaption(itemId)));
+		if ((!this.ssaPanel.getSelReplicates().isEnabled() || this.ssaPanel.getSelReplicates().getItemIds().isEmpty())
+				&& !this.ssaPanel.getSelBlocks().getItemIds().isEmpty()) {
+			Assert.assertTrue(this.ssaPanel.getSelReplicates().isEnabled());
+			for (final Object itemId : this.ssaPanel.getSelBlocks().getItemIds()) {
+				Assert.assertTrue(SingleSiteAnalysisDetailsPanelTest.DEFAULT_REPLICATES
+						.equals(this.ssaPanel.getSelReplicates().getItemCaption(itemId)));
 			}
 		}
 	}
@@ -159,29 +162,29 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
 				.thenReturn(Integer.toString(TermId.RESOLVABLE_INCOMPLETE_BLOCK_LATIN.getId()));
 
-		this.dut.initializeComponents();
+		this.ssaPanel.initializeComponents();
 
 		final List<Component> components = this.getComponentsListFromGridLayout();
 
-		Assert.assertTrue(components.contains(this.dut.getLblBlocks()));
-		Assert.assertTrue(components.contains(this.dut.getSelBlocks()));
-		Assert.assertTrue(components.contains(this.dut.getLblSpecifyGenotypesHeader()));
-		Assert.assertTrue(components.contains(this.dut.getLblGenotypes()));
-		Assert.assertTrue(components.contains(this.dut.getSelGenotypes()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getLblBlocks()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getSelBlocks()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getLblSpecifyGenotypesHeader()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getLblGenotypes()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getSelGenotypes()));
 
-		Assert.assertFalse(components.contains(this.dut.getLblSpecifyColumnFactor()));
-		Assert.assertFalse(components.contains(this.dut.getSelColumnFactor()));
-		Assert.assertFalse(components.contains(this.dut.getLblSpecifyRowFactor()));
-		Assert.assertFalse(components.contains(this.dut.getSelRowFactor()));
+		Assert.assertFalse(components.contains(this.ssaPanel.getLblSpecifyColumnFactor()));
+		Assert.assertFalse(components.contains(this.ssaPanel.getSelColumnFactor()));
+		Assert.assertFalse(components.contains(this.ssaPanel.getLblSpecifyRowFactor()));
+		Assert.assertFalse(components.contains(this.ssaPanel.getSelRowFactor()));
 
-		Assert.assertTrue(this.dut.getSelDesignType().getValue().equals(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName()));
+		Assert.assertTrue(this.ssaPanel.getSelDesignType().getValue().equals(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName()));
 
-		if ((!this.dut.getSelReplicates().isEnabled() || this.dut.getSelReplicates().getItemIds().isEmpty()) && !this.dut.getSelBlocks()
-				.getItemIds().isEmpty()) {
-			Assert.assertTrue(this.dut.getSelReplicates().isEnabled());
-			for (final Object itemId : this.dut.getSelBlocks().getItemIds()) {
-				Assert.assertTrue(
-						SingleSiteAnalysisDetailsPanelTest.DEFAULT_REPLICATES.equals(this.dut.getSelReplicates().getItemCaption(itemId)));
+		if ((!this.ssaPanel.getSelReplicates().isEnabled() || this.ssaPanel.getSelReplicates().getItemIds().isEmpty())
+				&& !this.ssaPanel.getSelBlocks().getItemIds().isEmpty()) {
+			Assert.assertTrue(this.ssaPanel.getSelReplicates().isEnabled());
+			for (final Object itemId : this.ssaPanel.getSelBlocks().getItemIds()) {
+				Assert.assertTrue(SingleSiteAnalysisDetailsPanelTest.DEFAULT_REPLICATES
+						.equals(this.ssaPanel.getSelReplicates().getItemCaption(itemId)));
 			}
 		}
 	}
@@ -191,29 +194,29 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
 				.thenReturn(Integer.toString(TermId.RESOLVABLE_INCOMPLETE_ROW_COL_LATIN.getId()));
 
-		this.dut.initializeComponents();
+		this.ssaPanel.initializeComponents();
 
 		final List<Component> components = this.getComponentsListFromGridLayout();
 
-		Assert.assertTrue(components.contains(this.dut.getLblSpecifyColumnFactor()));
-		Assert.assertTrue(components.contains(this.dut.getSelColumnFactor()));
-		Assert.assertTrue(components.contains(this.dut.getLblSpecifyRowFactor()));
-		Assert.assertTrue(components.contains(this.dut.getSelRowFactor()));
-		Assert.assertTrue(components.contains(this.dut.getLblSpecifyGenotypesHeader()));
-		Assert.assertTrue(components.contains(this.dut.getLblGenotypes()));
-		Assert.assertTrue(components.contains(this.dut.getSelGenotypes()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getLblSpecifyColumnFactor()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getSelColumnFactor()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getLblSpecifyRowFactor()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getSelRowFactor()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getLblSpecifyGenotypesHeader()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getLblGenotypes()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getSelGenotypes()));
 
-		Assert.assertFalse(components.contains(this.dut.getLblBlocks()));
-		Assert.assertFalse(components.contains(this.dut.getSelBlocks()));
+		Assert.assertFalse(components.contains(this.ssaPanel.getLblBlocks()));
+		Assert.assertFalse(components.contains(this.ssaPanel.getSelBlocks()));
 
-		Assert.assertTrue(this.dut.getSelDesignType().getValue().equals(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName()));
+		Assert.assertTrue(this.ssaPanel.getSelDesignType().getValue().equals(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName()));
 
-		if ((!this.dut.getSelReplicates().isEnabled() || this.dut.getSelReplicates().getItemIds().isEmpty()) && !this.dut.getSelBlocks()
-				.getItemIds().isEmpty()) {
-			Assert.assertTrue(this.dut.getSelReplicates().isEnabled());
-			for (final Object itemId : this.dut.getSelBlocks().getItemIds()) {
-				Assert.assertTrue(
-						SingleSiteAnalysisDetailsPanelTest.DEFAULT_REPLICATES.equals(this.dut.getSelReplicates().getItemCaption(itemId)));
+		if ((!this.ssaPanel.getSelReplicates().isEnabled() || this.ssaPanel.getSelReplicates().getItemIds().isEmpty())
+				&& !this.ssaPanel.getSelBlocks().getItemIds().isEmpty()) {
+			Assert.assertTrue(this.ssaPanel.getSelReplicates().isEnabled());
+			for (final Object itemId : this.ssaPanel.getSelBlocks().getItemIds()) {
+				Assert.assertTrue(SingleSiteAnalysisDetailsPanelTest.DEFAULT_REPLICATES
+						.equals(this.ssaPanel.getSelReplicates().getItemCaption(itemId)));
 			}
 		}
 	}
@@ -223,29 +226,29 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
 				.thenReturn(Integer.toString(TermId.RESOLVABLE_INCOMPLETE_ROW_COL.getId()));
 
-		this.dut.initializeComponents();
+		this.ssaPanel.initializeComponents();
 
 		final List<Component> components = this.getComponentsListFromGridLayout();
 
-		Assert.assertTrue(components.contains(this.dut.getLblSpecifyColumnFactor()));
-		Assert.assertTrue(components.contains(this.dut.getSelColumnFactor()));
-		Assert.assertTrue(components.contains(this.dut.getLblSpecifyRowFactor()));
-		Assert.assertTrue(components.contains(this.dut.getSelRowFactor()));
-		Assert.assertTrue(components.contains(this.dut.getLblSpecifyGenotypesHeader()));
-		Assert.assertTrue(components.contains(this.dut.getLblGenotypes()));
-		Assert.assertTrue(components.contains(this.dut.getSelGenotypes()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getLblSpecifyColumnFactor()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getSelColumnFactor()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getLblSpecifyRowFactor()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getSelRowFactor()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getLblSpecifyGenotypesHeader()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getLblGenotypes()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getSelGenotypes()));
 
-		Assert.assertFalse(components.contains(this.dut.getLblBlocks()));
-		Assert.assertFalse(components.contains(this.dut.getSelBlocks()));
+		Assert.assertFalse(components.contains(this.ssaPanel.getLblBlocks()));
+		Assert.assertFalse(components.contains(this.ssaPanel.getSelBlocks()));
 
-		Assert.assertTrue(this.dut.getSelDesignType().getValue().equals(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName()));
+		Assert.assertTrue(this.ssaPanel.getSelDesignType().getValue().equals(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName()));
 
-		if ((!this.dut.getSelReplicates().isEnabled() || this.dut.getSelReplicates().getItemIds().isEmpty()) && !this.dut.getSelBlocks()
-				.getItemIds().isEmpty()) {
-			Assert.assertTrue(this.dut.getSelReplicates().isEnabled());
-			for (final Object itemId : this.dut.getSelBlocks().getItemIds()) {
-				Assert.assertTrue(
-						SingleSiteAnalysisDetailsPanelTest.DEFAULT_REPLICATES.equals(this.dut.getSelReplicates().getItemCaption(itemId)));
+		if ((!this.ssaPanel.getSelReplicates().isEnabled() || this.ssaPanel.getSelReplicates().getItemIds().isEmpty())
+				&& !this.ssaPanel.getSelBlocks().getItemIds().isEmpty()) {
+			Assert.assertTrue(this.ssaPanel.getSelReplicates().isEnabled());
+			for (final Object itemId : this.ssaPanel.getSelBlocks().getItemIds()) {
+				Assert.assertTrue(SingleSiteAnalysisDetailsPanelTest.DEFAULT_REPLICATES
+						.equals(this.ssaPanel.getSelReplicates().getItemCaption(itemId)));
 			}
 		}
 	}
@@ -255,29 +258,29 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
 				.thenReturn(Integer.toString(TermId.RANDOMIZED_COMPLETE_BLOCK.getId()));
 
-		this.dut.initializeComponents();
+		this.ssaPanel.initializeComponents();
 
 		final List<Component> components = this.getComponentsListFromGridLayout();
 
-		Assert.assertTrue(components.contains(this.dut.getLblSpecifyGenotypesHeader()));
-		Assert.assertTrue(components.contains(this.dut.getLblGenotypes()));
-		Assert.assertTrue(components.contains(this.dut.getSelGenotypes()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getLblSpecifyGenotypesHeader()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getLblGenotypes()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getSelGenotypes()));
 
-		Assert.assertFalse(components.contains(this.dut.getLblSpecifyColumnFactor()));
-		Assert.assertFalse(components.contains(this.dut.getSelColumnFactor()));
-		Assert.assertFalse(components.contains(this.dut.getLblSpecifyRowFactor()));
-		Assert.assertFalse(components.contains(this.dut.getSelRowFactor()));
-		Assert.assertFalse(components.contains(this.dut.getLblBlocks()));
-		Assert.assertFalse(components.contains(this.dut.getSelBlocks()));
+		Assert.assertFalse(components.contains(this.ssaPanel.getLblSpecifyColumnFactor()));
+		Assert.assertFalse(components.contains(this.ssaPanel.getSelColumnFactor()));
+		Assert.assertFalse(components.contains(this.ssaPanel.getLblSpecifyRowFactor()));
+		Assert.assertFalse(components.contains(this.ssaPanel.getSelRowFactor()));
+		Assert.assertFalse(components.contains(this.ssaPanel.getLblBlocks()));
+		Assert.assertFalse(components.contains(this.ssaPanel.getSelBlocks()));
 
-		Assert.assertTrue(this.dut.getSelDesignType().getValue().equals(DesignType.RANDOMIZED_BLOCK_DESIGN.getName()));
+		Assert.assertTrue(this.ssaPanel.getSelDesignType().getValue().equals(DesignType.RANDOMIZED_BLOCK_DESIGN.getName()));
 
-		if ((!this.dut.getSelReplicates().isEnabled() || this.dut.getSelReplicates().getItemIds().isEmpty()) && !this.dut.getSelBlocks()
-				.getItemIds().isEmpty()) {
-			Assert.assertTrue(this.dut.getSelReplicates().isEnabled());
-			for (final Object itemId : this.dut.getSelBlocks().getItemIds()) {
-				Assert.assertTrue(
-						SingleSiteAnalysisDetailsPanelTest.DEFAULT_REPLICATES.equals(this.dut.getSelReplicates().getItemCaption(itemId)));
+		if ((!this.ssaPanel.getSelReplicates().isEnabled() || this.ssaPanel.getSelReplicates().getItemIds().isEmpty())
+				&& !this.ssaPanel.getSelBlocks().getItemIds().isEmpty()) {
+			Assert.assertTrue(this.ssaPanel.getSelReplicates().isEnabled());
+			for (final Object itemId : this.ssaPanel.getSelBlocks().getItemIds()) {
+				Assert.assertTrue(SingleSiteAnalysisDetailsPanelTest.DEFAULT_REPLICATES
+						.equals(this.ssaPanel.getSelReplicates().getItemCaption(itemId)));
 			}
 		}
 	}
@@ -287,19 +290,20 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
 				.thenReturn(null);
 
-		this.dut.initializeComponents();
+		this.ssaPanel.initializeComponents();
 
-		Assert.assertNull(this.dut.getSelDesignType().getValue());
+		Assert.assertNull(this.ssaPanel.getSelDesignType().getValue());
 	}
 
 	@Test
 	public void testPopulateChoicesForGenotypes() {
-		this.dut.setSelGenotypes(new Select());
-		this.dut.populateChoicesForGenotypes();
-		Assert.assertTrue("Genotypes dropdown should have 3 factors", this.dut.getSelGenotypes().getItemIds().size() == 3);
-		for (final Object id : this.dut.getSelGenotypes().getItemIds()) {
+		this.ssaPanel.setSelGenotypes(new Select());
+		this.ssaPanel.populateChoicesForGenotypes();
+		Assert.assertTrue("Genotypes dropdown should have 3 factors", this.ssaPanel.getSelGenotypes().getItemIds().size() == 3);
+		for (final Object id : this.ssaPanel.getSelGenotypes().getItemIds()) {
 			final String localName = (String) id;
-			Assert.assertFalse("Entry Type factor should not be included in Genotypes dropdown", TermId.ENTRY_TYPE.name().equals(localName));
+			Assert.assertFalse("Entry Type factor should not be included in Genotypes dropdown",
+					TermId.ENTRY_TYPE.name().equals(localName));
 			Assert.assertFalse("Plot ID factor should not be included in Genotypes dropdown", TermId.PLOT_ID.name().equals(localName));
 		}
 	}
@@ -374,8 +378,8 @@ public class SingleSiteAnalysisDetailsPanelTest {
 				envSelect.getItemIds().size() == SingleSiteAnalysisDetailsPanelTest.TRIAL_ENV_FACTORS.length + 1);
 		for (final Object id : envSelect.getItemIds()) {
 			final String localName = (String) id;
-			Assert.assertTrue(ArrayUtils.contains(SingleSiteAnalysisDetailsPanelTest.TRIAL_ENV_FACTORS, localName) || pleaseChooseOption
-					.equals(localName));
+			Assert.assertTrue(ArrayUtils.contains(SingleSiteAnalysisDetailsPanelTest.TRIAL_ENV_FACTORS, localName)
+					|| pleaseChooseOption.equals(localName));
 			Assert.assertFalse(ArrayUtils.contains(SingleSiteAnalysisDetailsPanelTest.DATASET_FACTORS, localName));
 		}
 	}
@@ -383,121 +387,125 @@ public class SingleSiteAnalysisDetailsPanelTest {
 	@Test
 	public void testDisplayPRepDesignElements() {
 
-		this.dut.initializeComponents();
+		this.ssaPanel.initializeComponents();
 
-		this.dut.displayPRepDesignElements();
+		this.ssaPanel.displayPRepDesignElements();
 
 		final List<Component> components = this.getComponentsListFromGridLayout();
 
 		// The following components should be visible in Design Details' Grid Layout
-		Assert.assertTrue(components.contains(this.dut.getLblBlocks()));
-		Assert.assertTrue(components.contains(this.dut.getSelBlocks()));
-		Assert.assertTrue(components.contains(this.dut.getLblSpecifyColumnFactor()));
-		Assert.assertTrue(components.contains(this.dut.getSelColumnFactor()));
-		Assert.assertTrue(components.contains(this.dut.getLblSpecifyRowFactor()));
-		Assert.assertTrue(components.contains(this.dut.getSelRowFactor()));
-		Assert.assertTrue(components.contains(this.dut.getLblSpecifyGenotypesHeader()));
-		Assert.assertTrue(components.contains(this.dut.getLblGenotypes()));
-		Assert.assertTrue(components.contains(this.dut.getSelGenotypes()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getLblBlocks()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getSelBlocks()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getLblSpecifyColumnFactor()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getSelColumnFactor()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getLblSpecifyRowFactor()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getSelRowFactor()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getLblSpecifyGenotypesHeader()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getLblGenotypes()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getSelGenotypes()));
 
 		// The following components should not be added in Design Details' GridLayout
-		Assert.assertFalse(components.contains(this.dut.getLblReplicates()));
-		Assert.assertFalse(components.contains(this.dut.getSelReplicates()));
+		Assert.assertFalse(components.contains(this.ssaPanel.getLblReplicates()));
+		Assert.assertFalse(components.contains(this.ssaPanel.getSelReplicates()));
 
 		Assert.assertNull("Replicates factor is not needed in P-rep design, so replicates should be unselected (null)",
-				this.dut.getSelReplicates().getValue());
+				this.ssaPanel.getSelReplicates().getValue());
 
 	}
 
 	@Test
 	public void testDisplayAugmentedDesignElements() {
 
-		this.dut.initializeComponents();
-		this.dut.displayAugmentedDesignElements();
+		this.ssaPanel.initializeComponents();
+		this.ssaPanel.displayAugmentedDesignElements();
 
 		final List<Component> components = this.getComponentsListFromGridLayout();
 
 		// The following components should be visible in Design Details' Grid Layout
-		Assert.assertTrue(components.contains(this.dut.getLblBlocks()));
-		Assert.assertTrue(components.contains(this.dut.getSelBlocks()));
-		Assert.assertTrue(components.contains(this.dut.getLblSpecifyGenotypesHeader()));
-		Assert.assertTrue(components.contains(this.dut.getLblGenotypes()));
-		Assert.assertTrue(components.contains(this.dut.getSelGenotypes()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getLblBlocks()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getSelBlocks()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getLblSpecifyGenotypesHeader()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getLblGenotypes()));
+		Assert.assertTrue(components.contains(this.ssaPanel.getSelGenotypes()));
 
 		// The following components should not be added in Design Details' GridLayout
-		Assert.assertFalse(components.contains(this.dut.getLblSpecifyColumnFactor()));
-		Assert.assertFalse(components.contains(this.dut.getSelColumnFactor()));
-		Assert.assertFalse(components.contains(this.dut.getLblSpecifyRowFactor()));
-		Assert.assertFalse(components.contains(this.dut.getSelRowFactor()));
-		Assert.assertFalse(components.contains(this.dut.getLblReplicates()));
-		Assert.assertFalse(components.contains(this.dut.getSelReplicates()));
+		Assert.assertFalse(components.contains(this.ssaPanel.getLblSpecifyColumnFactor()));
+		Assert.assertFalse(components.contains(this.ssaPanel.getSelColumnFactor()));
+		Assert.assertFalse(components.contains(this.ssaPanel.getLblSpecifyRowFactor()));
+		Assert.assertFalse(components.contains(this.ssaPanel.getSelRowFactor()));
+		Assert.assertFalse(components.contains(this.ssaPanel.getLblReplicates()));
+		Assert.assertFalse(components.contains(this.ssaPanel.getSelReplicates()));
 
 		Assert.assertNull("Replicates factor is not needed in Augmented design, so replicates should be unselected (null)",
-				this.dut.getSelReplicates().getValue());
+				this.ssaPanel.getSelReplicates().getValue());
 
 	}
 
 	@Test
 	public void testSubstituteMissingReplicatesWithBlocksNoReplicatesFactor() {
 
-		this.dut.initializeComponents();
+		this.ssaPanel.initializeComponents();
 
-		dut.getSelBlocks().addItem(BLOCK_NO);
-		dut.getSelReplicates().removeAllItems();
+		this.ssaPanel.getSelBlocks().addItem(SingleSiteAnalysisDetailsPanelTest.BLOCK_NO);
+		this.ssaPanel.getSelReplicates().removeAllItems();
 
-		dut.substituteMissingReplicatesWithBlocks();
+		this.ssaPanel.substituteMissingReplicatesWithBlocks();
 
-		Assert.assertEquals("The value of Replicates Factor Select Field should be the same as the Block factor", BLOCK_NO,
-				dut.getSelReplicates().getValue());
-		Assert.assertEquals("If block factor is used as a substitute for replicates, then the item caption should be \""
-						+ SingleSiteAnalysisDetailsPanel.REPLICATES + "\"", SingleSiteAnalysisDetailsPanel.REPLICATES,
-				dut.getSelReplicates().getItemCaption((String) dut.getSelReplicates().getValue()));
+		Assert.assertEquals("The value of Replicates Factor Select Field should be the same as the Block factor",
+				SingleSiteAnalysisDetailsPanelTest.BLOCK_NO, this.ssaPanel.getSelReplicates().getValue());
+		Assert.assertEquals(
+				"If block factor is used as a substitute for replicates, then the item caption should be \""
+						+ SingleSiteAnalysisDetailsPanel.REPLICATES + "\"",
+				SingleSiteAnalysisDetailsPanel.REPLICATES,
+				this.ssaPanel.getSelReplicates().getItemCaption(this.ssaPanel.getSelReplicates().getValue()));
 
 	}
 
 	@Test
 	public void testChangeRowAndColumnLabelsBasedOnDesignTypePRepDesign() {
 
-		this.dut.initializeComponents();
+		this.ssaPanel.initializeComponents();
 
-		dut.changeRowAndColumnLabelsBasedOnDesignType(DesignType.P_REP_DESIGN);
+		this.ssaPanel.changeRowAndColumnLabelsBasedOnDesignType(DesignType.P_REP_DESIGN);
 
 		// Row and Column factors are optional in P-rep Design, the labels should not have required field indicator (red asterisk '*')
-		Assert.assertEquals(COLUMN_FACTOR_LABEL, dut.getLblSpecifyColumnFactor().getValue());
-		Assert.assertEquals(ROW_FACTOR_LABEL, dut.getLblSpecifyRowFactor().getValue());
+		Assert.assertEquals(SingleSiteAnalysisDetailsPanelTest.COLUMN_FACTOR_LABEL, this.ssaPanel.getLblSpecifyColumnFactor().getValue());
+		Assert.assertEquals(SingleSiteAnalysisDetailsPanelTest.ROW_FACTOR_LABEL, this.ssaPanel.getLblSpecifyRowFactor().getValue());
 
 	}
 
 	@Test
 	public void testChangeRowAndColumnLabelsBasedOnDesignTypeRowAndColumnDesign() {
 
-		this.dut.initializeComponents();
+		this.ssaPanel.initializeComponents();
 
-		dut.changeRowAndColumnLabelsBasedOnDesignType(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN);
+		this.ssaPanel.changeRowAndColumnLabelsBasedOnDesignType(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN);
 
-		// Row and Column factors are required in Row-and-Column Design, the labels should have a required field indicator (red asterisk '*')
-		Assert.assertEquals(COLUMN_FACTOR_LABEL + SingleSiteAnalysisDetailsPanel.REQUIRED_FIELD_INDICATOR,
-				dut.getLblSpecifyColumnFactor().getValue());
-		Assert.assertEquals(ROW_FACTOR_LABEL + SingleSiteAnalysisDetailsPanel.REQUIRED_FIELD_INDICATOR,
-				dut.getLblSpecifyRowFactor().getValue());
+		// Row and Column factors are required in Row-and-Column Design, the labels should have a required field indicator (red asterisk
+		// '*')
+		Assert.assertEquals(
+				SingleSiteAnalysisDetailsPanelTest.COLUMN_FACTOR_LABEL + SingleSiteAnalysisDetailsPanel.REQUIRED_FIELD_INDICATOR,
+				this.ssaPanel.getLblSpecifyColumnFactor().getValue());
+		Assert.assertEquals(SingleSiteAnalysisDetailsPanelTest.ROW_FACTOR_LABEL + SingleSiteAnalysisDetailsPanel.REQUIRED_FIELD_INDICATOR,
+				this.ssaPanel.getLblSpecifyRowFactor().getValue());
 
 	}
 
 	@Test
 	public void testChangeRowAndColumnLabelsBasedOnDesignTypeRowAndOtherDesign() {
 
-		this.dut.initializeComponents();
+		this.ssaPanel.initializeComponents();
 
-		dut.changeRowAndColumnLabelsBasedOnDesignType(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN);
+		this.ssaPanel.changeRowAndColumnLabelsBasedOnDesignType(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN);
 
-		Assert.assertEquals(COLUMN_FACTOR_LABEL, dut.getLblSpecifyColumnFactor().getValue());
-		Assert.assertEquals(ROW_FACTOR_LABEL, dut.getLblSpecifyRowFactor().getValue());
+		Assert.assertEquals(SingleSiteAnalysisDetailsPanelTest.COLUMN_FACTOR_LABEL, this.ssaPanel.getLblSpecifyColumnFactor().getValue());
+		Assert.assertEquals(SingleSiteAnalysisDetailsPanelTest.ROW_FACTOR_LABEL, this.ssaPanel.getLblSpecifyRowFactor().getValue());
 
 	}
 
 	private List<Component> getComponentsListFromGridLayout() {
 
-		final GridLayout gLayout = (GridLayout) this.dut.getDesignDetailsContainer().getComponentIterator().next();
+		final GridLayout gLayout = (GridLayout) this.ssaPanel.getDesignDetailsContainer().getComponentIterator().next();
 		final Iterator<Component> componentsIterator = gLayout.getComponentIterator();
 		final List<Component> components = new ArrayList<>();
 		while (componentsIterator.hasNext()) {
@@ -535,7 +543,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		entryTypeVariable.setPhenotypicType(PhenotypicType.GERMPLASM);
 		entryTypeVariable.setProperty(new Term(1, TermId.ENTRY_TYPE.name(), TermId.ENTRY_TYPE.name()));
 		factors.add(new DMSVariableType(TermId.ENTRY_TYPE.name(), TermId.ENTRY_TYPE.name(), entryTypeVariable, rank++));
-		
+
 		final StandardVariable plotIdVariable = new StandardVariable();
 		plotIdVariable.setId(TermId.PLOT_ID.getId());
 		plotIdVariable.setPhenotypicType(PhenotypicType.GERMPLASM);
@@ -576,9 +584,8 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		trialInstanceVar.setId(TermId.TRIAL_INSTANCE_FACTOR.getId());
 		trialInstanceVar.setPhenotypicType(PhenotypicType.TRIAL_ENVIRONMENT);
 		trialInstanceVar.setProperty(new Term(1, "TRIAL INSTANCE", "TRIAL INSTANCE"));
-		factors.add(
-				new DMSVariableType(SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE, SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE,
-						trialInstanceVar, 1));
+		factors.add(new DMSVariableType(SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE,
+				SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE, trialInstanceVar, 1));
 
 		final StandardVariable exptDesignVar = new StandardVariable();
 		exptDesignVar.setId(TermId.EXPERIMENT_DESIGN_FACTOR.getId());
@@ -591,9 +598,8 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		locNameVar.setId(TermId.SITE_NAME.getId());
 		locNameVar.setPhenotypicType(PhenotypicType.TRIAL_ENVIRONMENT);
 		locNameVar.setProperty(new Term(1, "LOCATION", "LOCATION"));
-		factors.add(
-				new DMSVariableType(SingleSiteAnalysisDetailsPanelTest.LOC_NAME, SingleSiteAnalysisDetailsPanelTest.LOC_NAME, locNameVar,
-						3));
+		factors.add(new DMSVariableType(SingleSiteAnalysisDetailsPanelTest.LOC_NAME, SingleSiteAnalysisDetailsPanelTest.LOC_NAME,
+				locNameVar, 3));
 
 		final StandardVariable locIDVar = new StandardVariable();
 		locIDVar.setId(TermId.LOCATION_ID.getId());
