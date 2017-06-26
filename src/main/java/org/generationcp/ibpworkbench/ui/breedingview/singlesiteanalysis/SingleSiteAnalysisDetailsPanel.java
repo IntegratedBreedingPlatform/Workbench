@@ -81,6 +81,7 @@ import com.vaadin.ui.VerticalLayout;
 @Configurable
 public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements InitializingBean, InternationalizableComponent {
 
+	public static final List<Integer> GENOTYPES_TO_HIDE = Lists.newArrayList(TermId.ENTRY_TYPE.getId(), TermId.PLOT_ID.getId()); 
 	private static final String MARGIN_TOP10 = "marginTop10";
 	protected static final String REPLICATES = "REPLICATES";
 
@@ -882,11 +883,9 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	}
 
 	protected void populateChoicesForGenotypes() {
-		final List<Integer> genotypeIdsToHide = Lists.newArrayList(TermId.ENTRY_TYPE.getId(), TermId.PLOT_ID.getId()); 
-		
 		for (final DMSVariableType factor : this.factorsInDataset) {
 			if (PhenotypicType.GERMPLASM.equals(factor.getStandardVariable().getPhenotypicType())
-					&& !genotypeIdsToHide.contains(factor.getId())) {
+					&& !SingleSiteAnalysisDetailsPanel.GENOTYPES_TO_HIDE.contains(factor.getId())) {
 				this.getSelGenotypes().addItem(factor.getLocalName());
 				this.getSelGenotypes().setValue(factor.getLocalName());
 			}

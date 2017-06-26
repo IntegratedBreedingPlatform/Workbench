@@ -16,6 +16,7 @@ import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 public class MultiSiteAnalysisSelectPanelTest {
 
@@ -58,12 +59,20 @@ public class MultiSiteAnalysisSelectPanelTest {
 		Select select = new Select();
 		Mockito.doReturn(select).when(this.selectPanel).getSelectSpecifyGenotypes();
 
-		this.selectPanel.populateGenotypeDropdown(this.dataset, new ArrayList<FactorModel>());
+		final List<FactorModel> factorList = new ArrayList<>();
+		this.selectPanel.populateGenotypeDropdown(this.dataset, factorList);
 
-		Assert.assertTrue("Dropdown should have 3 factors", select.getItemIds().size() == 3);
-		for (Object id : select.getItemIds()) {
-			String localName = (String) id;
-			Assert.assertFalse("Entry Type factor not included in dropdown", "ENTRY_TYPE".equals(localName));
+		Assert.assertTrue("Genotypes dropdown should have 3 factors", select.getItemIds().size() == 3);
+		Assert.assertTrue("Factor list should have 3 factors", factorList.size() == 3);
+		final ListIterator<FactorModel> factorsIterator = factorList.listIterator();
+		for (final Object id : select.getItemIds()) {
+			final String localName = (String) id;
+			Assert.assertFalse("Entry Type factor should not be included in Genotypes dropdown", TermId.ENTRY_TYPE.name().equals(localName));
+			Assert.assertFalse("Plot ID factor should not be included in Genotypes dropdown", TermId.PLOT_ID.name().equals(localName));
+			
+			final FactorModel factor = factorsIterator.next();
+			Assert.assertFalse("Entry Type factor should not be included in FactorModel list.", TermId.ENTRY_TYPE.name().equals(factor.getName()));
+			Assert.assertFalse("Plot ID factor should not be included in FactorModel list.", TermId.PLOT_ID.name().equals(factor.getName()));
 		}
 	}
 
@@ -105,8 +114,9 @@ public class MultiSiteAnalysisSelectPanelTest {
 	}
 
 	private List<DMSVariableType> createTestGenotypeAndPlotFactors() {
-		List<DMSVariableType> factors = new ArrayList<DMSVariableType>();
+		final List<DMSVariableType> factors = new ArrayList<DMSVariableType>();
 
+		int rank = 1;
 		StandardVariable entryNoVariable = new StandardVariable();
 		entryNoVariable.setId(TermId.ENTRY_NO.getId());
 		entryNoVariable.setPhenotypicType(PhenotypicType.GERMPLASM);
@@ -114,7 +124,7 @@ public class MultiSiteAnalysisSelectPanelTest {
 		entryNoVariable.setScale(new Term(2, "NUMBER", ""));
 		entryNoVariable.setMethod(new Term(3, "ENUMERATED", ""));
 		entryNoVariable.setDataType(new Term(TermId.NUMERIC_VARIABLE.getId(), "Numerical variable", ""));
-		factors.add(new DMSVariableType("ENTRY_NO", "ENTRY_NO", entryNoVariable, 1));
+		factors.add(new DMSVariableType(TermId.ENTRY_NO.name(), TermId.ENTRY_NO.name(), entryNoVariable, rank++));
 
 		StandardVariable gidVariable = new StandardVariable();
 		gidVariable.setId(TermId.GID.getId());
@@ -123,7 +133,7 @@ public class MultiSiteAnalysisSelectPanelTest {
 		gidVariable.setScale(new Term(2, "NUMBER", ""));
 		gidVariable.setMethod(new Term(3, "ENUMERATED", ""));
 		gidVariable.setDataType(new Term(TermId.NUMERIC_VARIABLE.getId(), "Numerical variable", ""));
-		factors.add(new DMSVariableType("GID", "GID", gidVariable, 2));
+		factors.add(new DMSVariableType(TermId.GID.name(), TermId.GID.name(), gidVariable, rank++));
 
 		StandardVariable desigVariable = new StandardVariable();
 		desigVariable.setId(TermId.DESIG.getId());
@@ -132,7 +142,7 @@ public class MultiSiteAnalysisSelectPanelTest {
 		desigVariable.setScale(new Term(2, "NUMBER", ""));
 		desigVariable.setMethod(new Term(3, "ENUMERATED", ""));
 		desigVariable.setDataType(new Term(TermId.CHARACTER_VARIABLE.getId(), "Character variable", ""));
-		factors.add(new DMSVariableType("DESIGNATION", "DESIGNATION", desigVariable, 3));
+		factors.add(new DMSVariableType("DESIGNATION", "DESIGNATION", desigVariable, rank++));
 
 		StandardVariable entryTypeVariable = new StandardVariable();
 		entryTypeVariable.setId(TermId.ENTRY_TYPE.getId());
@@ -141,7 +151,16 @@ public class MultiSiteAnalysisSelectPanelTest {
 		entryTypeVariable.setScale(new Term(2, "NUMBER", ""));
 		entryTypeVariable.setMethod(new Term(3, "ENUMERATED", ""));
 		entryTypeVariable.setDataType(new Term(TermId.CATEGORICAL_VARIABLE.getId(), "Categorical variable", ""));
-		factors.add(new DMSVariableType("ENTRY_TYPE", "ENTRY_TYPE", entryTypeVariable, 4));
+		factors.add(new DMSVariableType(TermId.ENTRY_TYPE.name(), TermId.ENTRY_TYPE.name(), entryTypeVariable, rank++));
+		
+		StandardVariable plotIdVariable = new StandardVariable();
+		plotIdVariable.setId(TermId.PLOT_ID.getId());
+		plotIdVariable.setPhenotypicType(PhenotypicType.GERMPLASM);
+		plotIdVariable.setProperty(new Term(1, "ENTRY TYPE", "ENTRY_TYPE"));
+		plotIdVariable.setScale(new Term(2, "NUMBER", ""));
+		plotIdVariable.setMethod(new Term(3, "ENUMERATED", ""));
+		plotIdVariable.setDataType(new Term(TermId.CHARACTER_VARIABLE.getId(), "Character variable", ""));
+		factors.add(new DMSVariableType(TermId.PLOT_ID.name(), TermId.PLOT_ID.name(), plotIdVariable, rank++));
 
 		StandardVariable repVariable = new StandardVariable();
 		repVariable.setId(TermId.REP_NO.getId());
@@ -150,7 +169,7 @@ public class MultiSiteAnalysisSelectPanelTest {
 		repVariable.setScale(new Term(2, "NUMBER", ""));
 		repVariable.setMethod(new Term(3, "ENUMERATED", ""));
 		repVariable.setDataType(new Term(TermId.NUMERIC_VARIABLE.getId(), "Numerical variable", ""));
-		factors.add(new DMSVariableType("REP_NO", "REP_NO", repVariable, 5));
+		factors.add(new DMSVariableType(TermId.REP_NO.name(), TermId.REP_NO.name(), repVariable, rank++));
 
 		StandardVariable blockVariable = new StandardVariable();
 		blockVariable.setId(TermId.BLOCK_NO.getId());
@@ -159,7 +178,7 @@ public class MultiSiteAnalysisSelectPanelTest {
 		blockVariable.setScale(new Term(2, "NUMBER", ""));
 		blockVariable.setMethod(new Term(3, "ENUMERATED", ""));
 		blockVariable.setDataType(new Term(TermId.NUMERIC_VARIABLE.getId(), "Numerical variable", ""));
-		factors.add(new DMSVariableType("BLOCK_NO", "BLOCK_NO", blockVariable, 6));
+		factors.add(new DMSVariableType(TermId.BLOCK_NO.name(), TermId.BLOCK_NO.name(), blockVariable, rank++));
 
 		StandardVariable rowVariable = new StandardVariable();
 		rowVariable.setId(TermId.ROW.getId());
@@ -168,7 +187,7 @@ public class MultiSiteAnalysisSelectPanelTest {
 		rowVariable.setScale(new Term(2, "NUMBER", ""));
 		rowVariable.setMethod(new Term(3, "ENUMERATED", ""));
 		rowVariable.setDataType(new Term(TermId.NUMERIC_VARIABLE.getId(), "Numerical variable", ""));
-		factors.add(new DMSVariableType("ROW_NO", "ROW_NO", rowVariable, 7));
+		factors.add(new DMSVariableType("ROW_NO", "ROW_NO", rowVariable, rank++));
 
 		StandardVariable columnVariable = new StandardVariable();
 		columnVariable.setId(TermId.COLUMN_NO.getId());
@@ -177,7 +196,7 @@ public class MultiSiteAnalysisSelectPanelTest {
 		columnVariable.setScale(new Term(2, "NUMBER", ""));
 		columnVariable.setMethod(new Term(3, "ENUMERATED", ""));
 		columnVariable.setDataType(new Term(TermId.NUMERIC_VARIABLE.getId(), "Numerical variable", ""));
-		factors.add(new DMSVariableType("COLUMN_NO", "COLUMN_NO", columnVariable, 8));
+		factors.add(new DMSVariableType(TermId.COLUMN_NO.name(), TermId.COLUMN_NO.name(), columnVariable, rank++));
 
 		return factors;
 	}

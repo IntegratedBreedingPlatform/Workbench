@@ -26,6 +26,7 @@ import org.generationcp.ibpworkbench.IBPWorkbenchLayout;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
+import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDetailsPanel;
 import org.generationcp.middleware.util.DatasetUtil;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
@@ -717,7 +718,8 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 			fm.setTraitid(factor.getStandardVariable().getProperty().getId());
 			fm.setDataType(factor.getStandardVariable().getDataType().getName());
 
-			if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.GERMPLASM && factor.getId() != TermId.ENTRY_TYPE.getId()) {
+			if (PhenotypicType.GERMPLASM.equals(factor.getStandardVariable().getPhenotypicType())
+					&& !SingleSiteAnalysisDetailsPanel.GENOTYPES_TO_HIDE.contains(factor.getId())) {
 				factorList.add(fm);
 				this.getSelectSpecifyGenotypes().addItem(fm.getName());
 			}
