@@ -54,6 +54,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
+import com.google.common.collect.Lists;
 import com.mysql.jdbc.StringUtils;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -903,15 +904,16 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	}
 
 	protected void populateChoicesForGenotypes() {
-
+		final List<Integer> genotypeIdsToHide = Lists.newArrayList(TermId.ENTRY_TYPE.getId(), TermId.PLOT_ID.getId()); 
+		
 		for (final DMSVariableType factor : this.factorsInDataset) {
-			if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.GERMPLASM && factor.getId() != TermId.ENTRY_TYPE
-					.getId()) {
+			if (PhenotypicType.GERMPLASM.equals(factor.getStandardVariable().getPhenotypicType())
+					&& !genotypeIdsToHide.contains(factor.getId())) {
 				this.getSelGenotypes().addItem(factor.getLocalName());
 				this.getSelGenotypes().setValue(factor.getLocalName());
 			}
 		}
-
+		// Select first item
 		this.getSelGenotypes().select(this.getSelGenotypes().getItemIds().iterator().next());
 
 	}
