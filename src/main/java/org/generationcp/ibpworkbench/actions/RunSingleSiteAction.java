@@ -148,7 +148,7 @@ public class RunSingleSiteAction implements ClickListener {
 	void exportData(final BreedingViewInput breedingViewInput) {
 
 		final DatasetExporter datasetExporter =
-				new DatasetExporter(this.studyDataManager, this.ontologyService, null, breedingViewInput.getDatasetId());
+				new DatasetExporter(breedingViewInput.getDatasetId());
 
 		try {
 
