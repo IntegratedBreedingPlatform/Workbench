@@ -17,7 +17,7 @@ describe('BMS Auth Module Tests', function() {
 			spyOn(localStorageService, 'get');
 		});
 
-		it('Should add x-auth-token to the header when present in local storage and is not expired.', function() {
+		it('Should add x-auth-token to the header when present in local storage', function() {
 			var config = {};
 
 			var oneMinuteFromNow = new Date().getTime() + 1000 * 60;
@@ -33,20 +33,6 @@ describe('BMS Auth Module Tests', function() {
 			expect(config.headers['x-auth-token']).toBe(testToken.token);
 		});
 
-		it('Should not add x-auth-token to the header when present in local storage but is expired.', function() {
-			var config = {};
-
-			var oneMinuteAgo = new Date().getTime() - 1000 * 60;
-			var testToken = { token: 'naymesh:1447734506586:3a7e599e28efc35a2d53e62715ffd3cb', expires: oneMinuteAgo };
-
-			localStorageService.get.and.callFake(function() {
-				return testToken;
-			});
-
-			authInterceptor.request(config);
-			expect(localStorageService.get).toHaveBeenCalledWith('xAuthToken');
-			expect(config.headers['x-auth-token']).toBeUndefined();
-		});
 
 		it('Should not add x-auth-token to the header when it is not present in local storage.', function() {
 			var config = {};
