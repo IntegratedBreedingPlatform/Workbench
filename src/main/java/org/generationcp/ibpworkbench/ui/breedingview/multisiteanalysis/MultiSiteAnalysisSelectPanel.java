@@ -26,7 +26,7 @@ import org.generationcp.ibpworkbench.IBPWorkbenchLayout;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
-import org.generationcp.middleware.util.DatasetUtil;
+import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDetailsPanel;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
@@ -39,6 +39,7 @@ import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.util.DatasetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -66,8 +67,8 @@ import com.vaadin.ui.VerticalLayout;
  *
  */
 @Configurable
-public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements InitializingBean, InternationalizableComponent,
-		IBPWorkbenchLayout {
+public class MultiSiteAnalysisSelectPanel extends VerticalLayout
+		implements InitializingBean, InternationalizableComponent, IBPWorkbenchLayout {
 
 	private static final String TESTEDIN = "testedin";
 	private static final String DESCRIPTION_COLUMN = "description";
@@ -127,15 +128,15 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 	private SimpleResourceBundleMessageSource messageSource;
 
 	private MultiSiteAnalysisPanel gxeAnalysisComponentPanel;
-	
+
 	@Autowired
-	private StudyDataManager studyDataManager;
+	private final StudyDataManager studyDataManager;
 
 	private final List<String> environmentNames = new ArrayList<String>();
 	private TrialEnvironments trialEnvironments = null;
 
-	public MultiSiteAnalysisSelectPanel(StudyDataManager studyDataManager, Project currentProject, Study study,
-			MultiSiteAnalysisPanel gxeAnalysisComponentPanel) {
+	public MultiSiteAnalysisSelectPanel(final StudyDataManager studyDataManager, final Project currentProject, final Study study,
+			final MultiSiteAnalysisPanel gxeAnalysisComponentPanel) {
 		this.studyDataManager = studyDataManager;
 		this.currentProject = currentProject;
 		this.currentStudy = study;
@@ -203,18 +204,16 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 		this.lblReviewSelectedDataset.setDebugId("lblReviewSelectedDataset");
 		this.lblReviewSelectedDataset.setStyleName(Bootstrap.Typography.H2.styleName());
 
-		this.lblFactorTableHeader =
-				new Label("<span class='bms-factors' style='position: relative; top:-2px; color: #39B54A; "
-						+ "font-size: 22px; font-weight: bold;'></span><b>&nbsp;FACTORS</b>", Label.CONTENT_XHTML);
+		this.lblFactorTableHeader = new Label("<span class='bms-factors' style='position: relative; top:-2px; color: #39B54A; "
+				+ "font-size: 22px; font-weight: bold;'></span><b>&nbsp;FACTORS</b>", Label.CONTENT_XHTML);
 		this.lblFactorTableHeader.setStyleName(Bootstrap.Typography.H3.styleName());
 
 		this.lblFactorTableDescription = new Label();
 		this.lblFactorTableDescription.setDebugId("lblFactorTableDescription");
 
-		this.lblVariateTableHeader =
-				new Label(
-						"<span class='bms-variates' style='position: relative; top:-2px; color: #B8D433; font-size: 22px; font-weight: bold;'></span><b>&nbsp;TRAITS</b>",
-						Label.CONTENT_XHTML);
+		this.lblVariateTableHeader = new Label(
+				"<span class='bms-variates' style='position: relative; top:-2px; color: #B8D433; font-size: 22px; font-weight: bold;'></span><b>&nbsp;TRAITS</b>",
+				Label.CONTENT_XHTML);
 		this.lblVariateTableHeader.setStyleName(Bootstrap.Typography.H3.styleName());
 
 		this.lblVariateTableDescription = new Label();
@@ -260,29 +259,29 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 	@Override
 	public void initializeValues() {
 
-		for (Iterator<?> i = this.selectSpecifyEnvironment.getItemIds().iterator(); i.hasNext();) {
+		for (final Iterator<?> i = this.selectSpecifyEnvironment.getItemIds().iterator(); i.hasNext();) {
 			this.selectSpecifyEnvironment.select(i.next());
 			break;
 		}
 
-		for (Iterator<?> i = this.selectSpecifyGenotypes.getItemIds().iterator(); i.hasNext();) {
+		for (final Iterator<?> i = this.selectSpecifyGenotypes.getItemIds().iterator(); i.hasNext();) {
 			this.selectSpecifyGenotypes.select(i.next());
 			break;
 		}
 
-		Object item = "None";
+		final Object item = "None";
 		this.selectSpecifyEnvironmentGroups.addItem(item);
 		this.selectSpecifyEnvironmentGroups.select(item);
 
 		this.environmentNames.clear();
 		try {
 			this.trialEnvironments = this.studyDataManager.getTrialEnvironmentsInDataset(this.getCurrentDataSetId());
-			for (Variable var : this.trialEnvironments.getVariablesByLocalName(this.selectSpecifyEnvironment.getValue().toString())) {
+			for (final Variable var : this.trialEnvironments.getVariablesByLocalName(this.selectSpecifyEnvironment.getValue().toString())) {
 				if (var.getValue() != null && !"".equals(var.getValue())) {
 					this.environmentNames.add(var.getValue());
 				}
 			}
-		} catch (MiddlewareException e) {
+		} catch (final MiddlewareException e) {
 			MultiSiteAnalysisSelectPanel.LOG.error("Error getting trial environments" + e);
 		}
 	}
@@ -294,7 +293,7 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void valueChange(ValueChangeEvent event) {
+			public void valueChange(final ValueChangeEvent event) {
 
 				try {
 					MultiSiteAnalysisSelectPanel.this.factors.removeAllItems();
@@ -305,21 +304,20 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 						return;
 					}
 
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					MultiSiteAnalysisSelectPanel.LOG.error("Error changing values for environment factor", e);
 				}
 
 				try {
-					MultiSiteAnalysisSelectPanel.this.trialEnvironments =
-							MultiSiteAnalysisSelectPanel.this.studyDataManager.getTrialEnvironmentsInDataset(
-									MultiSiteAnalysisSelectPanel.this.getCurrentDataSetId());
-					for (Variable var : MultiSiteAnalysisSelectPanel.this.trialEnvironments
+					MultiSiteAnalysisSelectPanel.this.trialEnvironments = MultiSiteAnalysisSelectPanel.this.studyDataManager
+							.getTrialEnvironmentsInDataset(MultiSiteAnalysisSelectPanel.this.getCurrentDataSetId());
+					for (final Variable var : MultiSiteAnalysisSelectPanel.this.trialEnvironments
 							.getVariablesByLocalName(MultiSiteAnalysisSelectPanel.this.selectSpecifyEnvironment.getValue().toString())) {
 						if (var.getValue() != null && !"".equals(var.getValue())) {
 							MultiSiteAnalysisSelectPanel.this.environmentNames.add(var.getValue());
 						}
 					}
-				} catch (MiddlewareException e) {
+				} catch (final MiddlewareException e) {
 					MultiSiteAnalysisSelectPanel.LOG.error("Error getting trial environments", e);
 				}
 
@@ -335,14 +333,14 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 
 			@SuppressWarnings("unchecked")
 			@Override
-			public void valueChange(ValueChangeEvent event) {
-				Boolean val = (Boolean) event.getProperty().getValue();
-				BeanContainer<Integer, VariateModel> container =
+			public void valueChange(final ValueChangeEvent event) {
+				final Boolean val = (Boolean) event.getProperty().getValue();
+				final BeanContainer<Integer, VariateModel> container =
 						(BeanContainer<Integer, VariateModel>) MultiSiteAnalysisSelectPanel.this.variates.getContainerDataSource();
-				for (Object itemId : container.getItemIds()) {
+				for (final Object itemId : container.getItemIds()) {
 					container.getItem(itemId).getBean().setActive(val);
 				}
-				for (Entry<String, Boolean> entry : MultiSiteAnalysisSelectPanel.this.variatesCheckboxState.entrySet()) {
+				for (final Entry<String, Boolean> entry : MultiSiteAnalysisSelectPanel.this.variatesCheckboxState.entrySet()) {
 					MultiSiteAnalysisSelectPanel.this.variatesCheckboxState.put(entry.getKey(), val);
 				}
 
@@ -360,12 +358,12 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 			private static final long serialVersionUID = 4719456133687409089L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 				MultiSiteAnalysisSelectPanel.this.selectSpecifyEnvironment.select(null);
 				MultiSiteAnalysisSelectPanel.this.selectSpecifyEnvironment
 						.select(MultiSiteAnalysisSelectPanel.this.selectSpecifyEnvironment.getItemIds().iterator().next());
-				MultiSiteAnalysisSelectPanel.this.selectSpecifyGenotypes.select(MultiSiteAnalysisSelectPanel.this.selectSpecifyGenotypes
-						.getItemIds().iterator().next());
+				MultiSiteAnalysisSelectPanel.this.selectSpecifyGenotypes
+						.select(MultiSiteAnalysisSelectPanel.this.selectSpecifyGenotypes.getItemIds().iterator().next());
 				MultiSiteAnalysisSelectPanel.this.selectSpecifyEnvironmentGroups.select("Analyze All");
 				MultiSiteAnalysisSelectPanel.this.chkVariatesSelectAll.setValue(false);
 
@@ -376,7 +374,7 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 			private static final long serialVersionUID = 8377610125826448065L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 				if (MultiSiteAnalysisSelectPanel.this.selectSpecifyEnvironment.getValue() != null
 						&& MultiSiteAnalysisSelectPanel.this.selectSpecifyGenotypes.getValue() != null) {
 					MultiSiteAnalysisSelectPanel.this.getGxeAnalysisComponentPanel().generateTabContent(
@@ -456,12 +454,12 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 		tblFactors.setWidth("100%");
 		tblFactors.setHeight("170px");
 
-		BeanContainer<Integer, FactorModel> container = new BeanContainer<Integer, FactorModel>(FactorModel.class);
+		final BeanContainer<Integer, FactorModel> container = new BeanContainer<Integer, FactorModel>(FactorModel.class);
 		container.setBeanIdProperty("id");
 		tblFactors.setContainerDataSource(container);
 
-		String[] columns = new String[] {"name", MultiSiteAnalysisSelectPanel.DESCRIPTION_COLUMN};
-		String[] columnHeaders = new String[] {"Name", MultiSiteAnalysisSelectPanel.DESCRIPTION};
+		final String[] columns = new String[] {"name", MultiSiteAnalysisSelectPanel.DESCRIPTION_COLUMN};
+		final String[] columnHeaders = new String[] {"Name", MultiSiteAnalysisSelectPanel.DESCRIPTION};
 		tblFactors.setVisibleColumns(columns);
 		tblFactors.setColumnHeaders(columnHeaders);
 
@@ -471,11 +469,12 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 
 			@Override
 			@SuppressWarnings("unchecked")
-			public String generateDescription(Component source, Object itemId, Object propertyId) {
-				BeanContainer<Integer, FactorModel> container = (BeanContainer<Integer, FactorModel>) tblFactors.getContainerDataSource();
-				FactorModel fm = container.getItem(itemId).getBean();
+			public String generateDescription(final Component source, final Object itemId, final Object propertyId) {
+				final BeanContainer<Integer, FactorModel> container =
+						(BeanContainer<Integer, FactorModel>) tblFactors.getContainerDataSource();
+				final FactorModel fm = container.getItem(itemId).getBean();
 
-				StringBuilder sb = new StringBuilder();
+				final StringBuilder sb = new StringBuilder();
 				sb.append(String.format("<span class=\"gcp-table-header-bold\">%s</span><br>", fm.getName()));
 				sb.append(String.format("<span>Property:</span> %s<br>", fm.getTrname()));
 				sb.append(String.format("<span>Scale:</span> %s<br>", fm.getScname()));
@@ -507,16 +506,16 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 
 			@SuppressWarnings("unchecked")
 			@Override
-			public Object generateCell(Table source, Object itemId, Object columnId) {
+			public Object generateCell(final Table source, final Object itemId, final Object columnId) {
 
-				BeanContainer<Integer, VariateModel> container = (BeanContainer<Integer, VariateModel>) source.getContainerDataSource();
-				VariateModel vm = container.getItem(itemId).getBean();
+				final BeanContainer<Integer, VariateModel> container =
+						(BeanContainer<Integer, VariateModel>) source.getContainerDataSource();
+				final VariateModel vm = container.getItem(itemId).getBean();
 
-				int testedIn =
-						MultiSiteAnalysisSelectPanel.this.getTestedIn(MultiSiteAnalysisSelectPanel.this.selectSpecifyEnvironment.getValue()
-								.toString(), MultiSiteAnalysisSelectPanel.this.environmentNames, vm.getVariableId(),
-								MultiSiteAnalysisSelectPanel.this.getCurrentDataSetId(),
-								MultiSiteAnalysisSelectPanel.this.trialEnvironments);
+				final int testedIn = MultiSiteAnalysisSelectPanel.this.getTestedIn(
+						MultiSiteAnalysisSelectPanel.this.selectSpecifyEnvironment.getValue().toString(),
+						MultiSiteAnalysisSelectPanel.this.environmentNames, vm.getVariableId(),
+						MultiSiteAnalysisSelectPanel.this.getCurrentDataSetId(), MultiSiteAnalysisSelectPanel.this.trialEnvironments);
 				if (testedIn > 3) {
 					vm.setActive(true);
 				}
@@ -532,9 +531,9 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 
 			@SuppressWarnings("unchecked")
 			@Override
-			public Object generateCell(Table source, Object itemId, Object columnId) {
+			public Object generateCell(final Table source, final Object itemId, final Object columnId) {
 
-				BeanContainer<Integer, VariateModel> container =
+				final BeanContainer<Integer, VariateModel> container =
 						(BeanContainer<Integer, VariateModel>) MultiSiteAnalysisSelectPanel.this.variates.getContainerDataSource();
 				final VariateModel vm = container.getItem(itemId).getBean();
 
@@ -548,7 +547,7 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 
 					@Override
 					public void valueChange(final ValueChangeEvent event) {
-						Boolean val = (Boolean) event.getProperty().getValue();
+						final Boolean val = (Boolean) event.getProperty().getValue();
 						MultiSiteAnalysisSelectPanel.this.getVariatesCheckboxState().put(vm.getName(), val);
 						vm.setActive(val);
 
@@ -564,11 +563,10 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 				});
 
 				if (!MultiSiteAnalysisSelectPanel.this.refreshing) {
-					int testedIn =
-							MultiSiteAnalysisSelectPanel.this.getTestedIn(MultiSiteAnalysisSelectPanel.this.selectSpecifyEnvironment
-									.getValue().toString(), MultiSiteAnalysisSelectPanel.this.environmentNames, vm.getVariableId(),
-									MultiSiteAnalysisSelectPanel.this.getCurrentDataSetId(),
-									MultiSiteAnalysisSelectPanel.this.trialEnvironments);
+					final int testedIn = MultiSiteAnalysisSelectPanel.this.getTestedIn(
+							MultiSiteAnalysisSelectPanel.this.selectSpecifyEnvironment.getValue().toString(),
+							MultiSiteAnalysisSelectPanel.this.environmentNames, vm.getVariableId(),
+							MultiSiteAnalysisSelectPanel.this.getCurrentDataSetId(), MultiSiteAnalysisSelectPanel.this.trialEnvironments);
 					if (testedIn > 3) {
 						vm.setActive(true);
 					} else {
@@ -596,12 +594,12 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 
 			@Override
 			@SuppressWarnings("unchecked")
-			public String generateDescription(Component source, Object itemId, Object propertyId) {
-				BeanContainer<Integer, VariateModel> container =
+			public String generateDescription(final Component source, final Object itemId, final Object propertyId) {
+				final BeanContainer<Integer, VariateModel> container =
 						(BeanContainer<Integer, VariateModel>) MultiSiteAnalysisSelectPanel.this.variates.getContainerDataSource();
-				VariateModel vm = container.getItem(itemId).getBean();
+				final VariateModel vm = container.getItem(itemId).getBean();
 
-				StringBuilder sb = new StringBuilder();
+				final StringBuilder sb = new StringBuilder();
 				sb.append(String.format("<span class=\"gcp-table-header-bold\">%s</span><br>", vm.getDisplayName()));
 				sb.append(String.format("<span>Property:</span> %s<br>", vm.getTrname()));
 				sb.append(String.format("<span>Scale:</span> %s<br>", vm.getScname()));
@@ -612,14 +610,14 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 			}
 		});
 
-		BeanContainer<Integer, VariateModel> container = new BeanContainer<Integer, VariateModel>(VariateModel.class);
+		final BeanContainer<Integer, VariateModel> container = new BeanContainer<Integer, VariateModel>(VariateModel.class);
 		container.setBeanIdProperty("id");
 		this.variates.setContainerDataSource(container);
 
-		String[] columns =
+		final String[] columns =
 				new String[] {"", "displayName", MultiSiteAnalysisSelectPanel.DESCRIPTION_COLUMN, MultiSiteAnalysisSelectPanel.TESTEDIN};
-		String[] columnHeaders =
-				new String[] {"<span class='glyphicon glyphicon-ok'></span>", "Name", MultiSiteAnalysisSelectPanel.DESCRIPTION, "Tested In"};
+		final String[] columnHeaders = new String[] {"<span class='glyphicon glyphicon-ok'></span>", "Name",
+				MultiSiteAnalysisSelectPanel.DESCRIPTION, "Tested In"};
 		this.variates.setVisibleColumns(columns);
 		this.variates.setColumnHeaders(columnHeaders);
 		this.variates.setColumnWidth("", 18);
@@ -627,13 +625,13 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 	}
 
 	protected Component layoutButtonArea() {
-		HorizontalLayout buttonLayout = new HorizontalLayout();
+		final HorizontalLayout buttonLayout = new HorizontalLayout();
 		buttonLayout.setDebugId("buttonLayout");
 		buttonLayout.setSizeFull();
 		buttonLayout.setSpacing(true);
 		buttonLayout.setMargin(true);
 
-		Label spacer = new Label("&nbsp;", Label.CONTENT_XHTML);
+		final Label spacer = new Label("&nbsp;", Label.CONTENT_XHTML);
 		spacer.setDebugId("spacer");
 		spacer.setSizeFull();
 
@@ -645,18 +643,18 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 		return buttonLayout;
 	}
 
-	public void populateFactorsVariatesByDataSetId(Study study, Table factors, Table variates) {
+	public void populateFactorsVariatesByDataSetId(final Study study, final Table factors, final Table variates) {
 
 		try {
-			DataSet ds = DatasetUtil.getMeansDataSet(this.studyDataManager, study.getId());
-			DataSet trialDs = DatasetUtil.getTrialDataSet(this.studyDataManager, study.getId());
+			final DataSet ds = DatasetUtil.getMeansDataSet(this.studyDataManager, study.getId());
+			final DataSet trialDs = DatasetUtil.getTrialDataSet(this.studyDataManager, study.getId());
 
 			if (ds == null || trialDs == null) {
 				return;
 			}
 
-			List<FactorModel> factorList = new ArrayList<FactorModel>();
-			List<VariateModel> variateList = new ArrayList<VariateModel>();
+			final List<FactorModel> factorList = new ArrayList<FactorModel>();
+			final List<VariateModel> variateList = new ArrayList<VariateModel>();
 
 			this.populateEnvironmentDropdown(trialDs);
 
@@ -670,15 +668,15 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 			this.updateFactorsTable(factorList, factors);
 			this.updateVariatesTable(variateList, factors, variates);
 
-		} catch (MiddlewareException e) {
+		} catch (final MiddlewareException e) {
 			MultiSiteAnalysisSelectPanel.LOG.error("Error getting dataset(s) for MSA screen", e);
 		}
 	}
 
-	protected void populateTraitGroup(DataSet ds, List<VariateModel> variateList) {
-		for (DMSVariableType variate : ds.getVariableTypes().getVariates().getVariableTypes()) {
+	protected void populateTraitGroup(final DataSet ds, final List<VariateModel> variateList) {
+		for (final DMSVariableType variate : ds.getVariableTypes().getVariates().getVariableTypes()) {
 
-			VariateModel vm = new VariateModel();
+			final VariateModel vm = new VariateModel();
 			vm.setId(variate.getRank());
 			vm.setVariableId(variate.getId());
 			vm.setName(variate.getLocalName());
@@ -702,10 +700,10 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 		}
 	}
 
-	protected void populateGenotypeDropdown(DataSet ds, List<FactorModel> factorList) {
-		for (DMSVariableType factor : ds.getVariableTypes().getFactors().getVariableTypes()) {
+	protected void populateGenotypeDropdown(final DataSet ds, final List<FactorModel> factorList) {
+		for (final DMSVariableType factor : ds.getVariableTypes().getFactors().getVariableTypes()) {
 
-			FactorModel fm = new FactorModel();
+			final FactorModel fm = new FactorModel();
 			fm.setId(factor.getRank());
 			fm.setName(factor.getLocalName());
 			fm.setScname(factor.getStandardVariable().getScale().getName());
@@ -717,15 +715,16 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 			fm.setTraitid(factor.getStandardVariable().getProperty().getId());
 			fm.setDataType(factor.getStandardVariable().getDataType().getName());
 
-			if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.GERMPLASM && factor.getId() != TermId.ENTRY_TYPE.getId()) {
+			if (PhenotypicType.GERMPLASM.equals(factor.getStandardVariable().getPhenotypicType())
+					&& !SingleSiteAnalysisDetailsPanel.GENOTYPES_TO_HIDE.contains(factor.getId())) {
 				factorList.add(fm);
 				this.getSelectSpecifyGenotypes().addItem(fm.getName());
 			}
 		}
 	}
 
-	protected void populateEnvironmentDropdown(DataSet trialDs) {
-		for (DMSVariableType factor : trialDs.getVariableTypes().getFactors().getVariableTypes()) {
+	protected void populateEnvironmentDropdown(final DataSet trialDs) {
+		for (final DMSVariableType factor : trialDs.getVariableTypes().getFactors().getVariableTypes()) {
 
 			if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT
 					&& factor.getStandardVariable().getId() != TermId.TRIAL_INSTANCE_FACTOR.getId()) {
@@ -733,29 +732,28 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 			}
 
 			if (factor.getStandardVariable().getId() == TermId.TRIAL_INSTANCE_FACTOR.getId()
-					|| isGeolocationProperty(factor.getStandardVariable())) {
+					|| this.isGeolocationProperty(factor.getStandardVariable())) {
 				this.getSelectSpecifyEnvironment().addItem(factor.getLocalName());
 			}
 		}
 	}
 
-	private boolean isGeolocationProperty(StandardVariable standardVariable) {
-		return standardVariable.getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT && (
-				standardVariable.getId() != TermId.TRIAL_INSTANCE_FACTOR.getId() || standardVariable.getId() != TermId.LATITUDE.getId() &&
-						standardVariable.getId() != TermId.LONGITUDE.getId() &&
-						standardVariable.getId() != TermId.GEODETIC_DATUM.getId() &&
-						standardVariable.getId() != TermId.ALTITUDE.getId());
+	private boolean isGeolocationProperty(final StandardVariable standardVariable) {
+		return standardVariable.getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT
+				&& (standardVariable.getId() != TermId.TRIAL_INSTANCE_FACTOR.getId() || standardVariable.getId() != TermId.LATITUDE.getId()
+						&& standardVariable.getId() != TermId.LONGITUDE.getId() && standardVariable.getId() != TermId.GEODETIC_DATUM.getId()
+						&& standardVariable.getId() != TermId.ALTITUDE.getId());
 	}
 
-	private void updateFactorsTable(List<FactorModel> factorList, Table factors) {
-		Object[] oldColumns = factors.getVisibleColumns();
-		String[] columns = Arrays.copyOf(oldColumns, oldColumns.length, String[].class);
+	private void updateFactorsTable(final List<FactorModel> factorList, final Table factors) {
+		final Object[] oldColumns = factors.getVisibleColumns();
+		final String[] columns = Arrays.copyOf(oldColumns, oldColumns.length, String[].class);
 
-		BeanContainer<Integer, FactorModel> container = new BeanContainer<Integer, FactorModel>(FactorModel.class);
+		final BeanContainer<Integer, FactorModel> container = new BeanContainer<Integer, FactorModel>(FactorModel.class);
 		container.setBeanIdProperty("id");
 		factors.setContainerDataSource(container);
 
-		for (FactorModel f : factorList) {
+		for (final FactorModel f : factorList) {
 			container.addBean(f);
 		}
 
@@ -764,37 +762,37 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 		factors.setVisibleColumns(columns);
 	}
 
-	private void updateVariatesTable(List<VariateModel> variateList, Table factors, Table variates) {
-		BeanContainer<Integer, VariateModel> container = new BeanContainer<Integer, VariateModel>(VariateModel.class);
+	private void updateVariatesTable(final List<VariateModel> variateList, final Table factors, final Table variates) {
+		final BeanContainer<Integer, VariateModel> container = new BeanContainer<Integer, VariateModel>(VariateModel.class);
 		container.setBeanIdProperty("id");
 		this.variates.setContainerDataSource(container);
 
-		for (VariateModel v : variateList) {
+		for (final VariateModel v : variateList) {
 			container.addBean(v);
 		}
 
 		this.variates.setContainerDataSource(container);
 
-		this.variates.setVisibleColumns(new String[] {"", "displayName", MultiSiteAnalysisSelectPanel.DESCRIPTION_COLUMN,
-				MultiSiteAnalysisSelectPanel.TESTEDIN});
+		this.variates.setVisibleColumns(
+				new String[] {"", "displayName", MultiSiteAnalysisSelectPanel.DESCRIPTION_COLUMN, MultiSiteAnalysisSelectPanel.TESTEDIN});
 		this.variates.setColumnHeaders(new String[] {"<span class='glyphicon glyphicon-ok'></span>", "Name",
 				MultiSiteAnalysisSelectPanel.DESCRIPTION, "Tested In"});
 	}
 
-	private int getTestedIn(String envFactorName, List<String> environmentNames, Integer variableId, Integer meansDataSetId,
-			TrialEnvironments trialEnvironments) {
+	private int getTestedIn(final String envFactorName, final List<String> environmentNames, final Integer variableId,
+			final Integer meansDataSetId, final TrialEnvironments trialEnvironments) {
 		int counter = 0;
 
-		for (String environmentName : environmentNames) {
+		for (final String environmentName : environmentNames) {
 			try {
-				TrialEnvironment te = trialEnvironments.findOnlyOneByLocalName(envFactorName, environmentName);
+				final TrialEnvironment te = trialEnvironments.findOnlyOneByLocalName(envFactorName, environmentName);
 				if (te != null) {
-					long count = this.studyDataManager.countStocks(meansDataSetId, te.getId(), variableId);
+					final long count = this.studyDataManager.countStocks(meansDataSetId, te.getId(), variableId);
 					if (count > 0) {
 						counter++;
 					}
 				}
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				MultiSiteAnalysisSelectPanel.LOG.error("Error counting stocks", e);
 			}
 
@@ -808,7 +806,7 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 		return this.currentProject;
 	}
 
-	public void setCurrentProject(Project currentProject) {
+	public void setCurrentProject(final Project currentProject) {
 		this.currentProject = currentProject;
 	}
 
@@ -816,7 +814,7 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 		return this.currentStudy;
 	}
 
-	public void setCurrentStudy(Study currentStudy) {
+	public void setCurrentStudy(final Study currentStudy) {
 		this.currentStudy = currentStudy;
 	}
 
@@ -824,7 +822,7 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 		return this.currentRepresentationId;
 	}
 
-	public void setCurrentRepresentationId(Integer currentRepresentationId) {
+	public void setCurrentRepresentationId(final Integer currentRepresentationId) {
 		this.currentRepresentationId = currentRepresentationId;
 	}
 
@@ -832,7 +830,7 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 		return this.currentDataSetId;
 	}
 
-	public void setCurrentDataSetId(Integer currentDataSetId) {
+	public void setCurrentDataSetId(final Integer currentDataSetId) {
 		this.currentDataSetId = currentDataSetId;
 	}
 
@@ -840,7 +838,7 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 		return this.currentDatasetName;
 	}
 
-	public void setCurrentDatasetName(String currentDatasetName) {
+	public void setCurrentDatasetName(final String currentDatasetName) {
 		this.currentDatasetName = currentDatasetName;
 	}
 
@@ -848,7 +846,7 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 		return this.gxeAnalysisComponentPanel;
 	}
 
-	public void setGxeAnalysisComponentPanel(MultiSiteAnalysisPanel gxeAnalysisComponentPanel) {
+	public void setGxeAnalysisComponentPanel(final MultiSiteAnalysisPanel gxeAnalysisComponentPanel) {
 		this.gxeAnalysisComponentPanel = gxeAnalysisComponentPanel;
 	}
 
@@ -856,7 +854,7 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout implements Init
 		return this.variatesCheckboxState;
 	}
 
-	public void setVariatesCheckboxState(Map<String, Boolean> variatesCheckboxState) {
+	public void setVariatesCheckboxState(final Map<String, Boolean> variatesCheckboxState) {
 		this.variatesCheckboxState = variatesCheckboxState;
 	}
 

@@ -29,7 +29,6 @@ import org.generationcp.ibpworkbench.util.bean.MultiSiteParameters;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.exceptions.MiddlewareException;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +57,8 @@ import com.vaadin.ui.VerticalLayout;
  *
  */
 @Configurable
-public class MultiSiteAnalysisGxePanel extends VerticalLayout implements InitializingBean, InternationalizableComponent, IBPWorkbenchLayout {
+public class MultiSiteAnalysisGxePanel extends VerticalLayout
+		implements InitializingBean, InternationalizableComponent, IBPWorkbenchLayout {
 
 	private static final long serialVersionUID = 1L;
 
@@ -89,7 +89,7 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
-	private StudyDataManager studyDataManager;
+	private final StudyDataManager studyDataManager;
 
 	private final MultiSiteParameters multiSiteParameters;
 
@@ -110,8 +110,8 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 	private Property.ValueChangeListener selectAllEnvironmentsListener;
 	private Property.ValueChangeListener selectAllTraitsListener;
 
-	public MultiSiteAnalysisGxePanel(StudyDataManager studyDataManager, MultiSiteAnalysisSelectPanel gxeSelectEnvironmentPanel,
-			Map<String, Boolean> variatesCheckboxState, MultiSiteParameters multiSiteParameters) {
+	public MultiSiteAnalysisGxePanel(final StudyDataManager studyDataManager, final MultiSiteAnalysisSelectPanel gxeSelectEnvironmentPanel,
+			final Map<String, Boolean> variatesCheckboxState, final MultiSiteParameters multiSiteParameters) {
 		this.studyDataManager = studyDataManager;
 		this.gxeSelectEnvironmentPanel = gxeSelectEnvironmentPanel;
 		this.variatesCheckboxState = variatesCheckboxState;
@@ -198,10 +198,9 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 		this.chkSelectAllTraits.setDebugId("chkSelectAllTraits");
 		this.chkSelectAllTraits.setImmediate(true);
 
-		this.lblAdjustedMeansHeader =
-				new Label("<span class='bms-dataset' style='position:relative; top: -1px; color: #FF4612; "
-						+ "font-size: 22px; font-weight: bold;'></span><b>&nbsp;"
-						+ this.messageSource.getMessage(Message.GXE_ADJUSTED_MEANS_HEADER) + "</b>", Label.CONTENT_XHTML);
+		this.lblAdjustedMeansHeader = new Label("<span class='bms-dataset' style='position:relative; top: -1px; color: #FF4612; "
+				+ "font-size: 22px; font-weight: bold;'></span><b>&nbsp;" + this.messageSource.getMessage(Message.GXE_ADJUSTED_MEANS_HEADER)
+				+ "</b>", Label.CONTENT_XHTML);
 		this.lblAdjustedMeansHeader.setStyleName(Bootstrap.Typography.H2.styleName());
 
 		this.lblAdjustedMeansDescription = new Label();
@@ -224,7 +223,7 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 		this.ds = null;
 		try {
 			this.ds = this.studyDataManager.getDataSetsByType(this.multiSiteParameters.getStudy().getId(), DataSetType.MEANS_DATA);
-		} catch (MiddlewareException e) {
+		} catch (final MiddlewareException e) {
 			MultiSiteAnalysisGxePanel.LOG.error("Error getting means dataset", e);
 		}
 
@@ -235,13 +234,13 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 			this.txtSelectedEnvironmentFactor.setValue(this.multiSiteParameters.getSelectedEnvironmentFactorName());
 			this.txtSelectedEnvironmentGroupFactor.setValue(this.multiSiteParameters.getSelectedEnvGroupFactorName());
 
-			Property.ValueChangeListener envCheckBoxListener = new Property.ValueChangeListener() {
+			final Property.ValueChangeListener envCheckBoxListener = new Property.ValueChangeListener() {
 
 				private static final long serialVersionUID = 1L;
 
 				@Override
-				public void valueChange(ValueChangeEvent event) {
-					Boolean val = (Boolean) event.getProperty().getValue();
+				public void valueChange(final ValueChangeEvent event) {
+					final Boolean val = (Boolean) event.getProperty().getValue();
 					if (!val) {
 						MultiSiteAnalysisGxePanel.this.chkSelectAllEnvironments
 								.removeListener(MultiSiteAnalysisGxePanel.this.selectAllEnvironmentsListener);
@@ -254,22 +253,22 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 
 			};
 
-			this.setGxeTable(new GxeTable(this.studyDataManager, this.multiSiteParameters.getStudy().getId(), this.multiSiteParameters
-					.getSelectedEnvironmentFactorName(), this.multiSiteParameters.getSelectedEnvGroupFactorName(),
+			this.setGxeTable(new GxeTable(this.studyDataManager, this.multiSiteParameters.getStudy().getId(),
+					this.multiSiteParameters.getSelectedEnvironmentFactorName(), this.multiSiteParameters.getSelectedEnvGroupFactorName(),
 					this.variatesCheckboxState, envCheckBoxListener));
 			this.getGxeTable().setHeight("300px");
 		}
 
 		this.selectTraitsTable = new Table();
 		this.selectTraitsTable.setDebugId("selectTraitsTable");
-		IndexedContainer container = new IndexedContainer();
+		final IndexedContainer container = new IndexedContainer();
 
-		Property.ValueChangeListener traitCheckBoxListener = new Property.ValueChangeListener() {
+		final Property.ValueChangeListener traitCheckBoxListener = new Property.ValueChangeListener() {
 
 			private static final long serialVersionUID = -1109780465477901066L;
 
 			@Override
-			public void valueChange(ValueChangeEvent event) {
+			public void valueChange(final ValueChangeEvent event) {
 				if (!(Boolean) event.getProperty().getValue()) {
 					MultiSiteAnalysisGxePanel.this.chkSelectAllTraits
 							.removeListener(MultiSiteAnalysisGxePanel.this.selectAllTraitsListener);
@@ -281,15 +280,15 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 
 		};
 
-		List<CheckBox> cells = new ArrayList<CheckBox>();
-		List<String> columnNames = new ArrayList<String>();
+		final List<CheckBox> cells = new ArrayList<CheckBox>();
+		final List<String> columnNames = new ArrayList<String>();
 
-		SortedSet<String> keys = new TreeSet<String>(this.getVariatesCheckboxState().keySet());
-		for (String key : keys) {
+		final SortedSet<String> keys = new TreeSet<String>(this.getVariatesCheckboxState().keySet());
+		for (final String key : keys) {
 			if (this.getVariatesCheckboxState().get(key)) {
 				container.addContainerProperty(key, CheckBox.class, null);
 				columnNames.add(key.replace("_Means", ""));
-				CheckBox chk = new CheckBox("", true);
+				final CheckBox chk = new CheckBox("", true);
 				chk.setDebugId("chk");
 				chk.setImmediate(true);
 				chk.addListener(traitCheckBoxListener);
@@ -304,7 +303,7 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 		this.selectTraitsTable.setWidth("100%");
 		this.selectTraitsTable.setColumnHeaders(columnNames.toArray(new String[0]));
 		this.selectTraitsTable.setColumnCollapsingAllowed(true);
-		for (Entry<String, Boolean> trait : this.getVariatesCheckboxState().entrySet()) {
+		for (final Entry<String, Boolean> trait : this.getVariatesCheckboxState().entrySet()) {
 			if (trait.getValue()) {
 				this.selectTraitsTable.setColumnWidth(trait.getKey(), 100);
 			}
@@ -318,10 +317,11 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void valueChange(ValueChangeEvent event) {
+			public void valueChange(final ValueChangeEvent event) {
 
-				for (Iterator<?> itr = MultiSiteAnalysisGxePanel.this.gxeTable.getItemIds().iterator(); itr.hasNext();) {
-					CheckBox chk = (CheckBox) MultiSiteAnalysisGxePanel.this.gxeTable.getItem(itr.next()).getItemProperty(" ").getValue();
+				for (final Iterator<?> itr = MultiSiteAnalysisGxePanel.this.gxeTable.getItemIds().iterator(); itr.hasNext();) {
+					final CheckBox chk =
+							(CheckBox) MultiSiteAnalysisGxePanel.this.gxeTable.getItem(itr.next()).getItemProperty(" ").getValue();
 					chk.setValue(event.getProperty().getValue());
 				}
 
@@ -333,10 +333,11 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void valueChange(ValueChangeEvent event) {
+			public void valueChange(final ValueChangeEvent event) {
 
-				for (Iterator<?> itr = MultiSiteAnalysisGxePanel.this.selectTraitsTable.getContainerPropertyIds().iterator(); itr.hasNext();) {
-					CheckBox chk =
+				for (final Iterator<?> itr = MultiSiteAnalysisGxePanel.this.selectTraitsTable.getContainerPropertyIds().iterator(); itr
+						.hasNext();) {
+					final CheckBox chk =
 							(CheckBox) MultiSiteAnalysisGxePanel.this.selectTraitsTable.getItem(1).getItemProperty(itr.next()).getValue();
 					chk.setValue(event.getProperty().getValue());
 				}
@@ -345,17 +346,16 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 		};
 
 		// Generate Buttons
-		this.btnRunMultiSite.addListener(new RunMultiSiteAction(this.gxeTable,
-				this.selectTraitsTable, this.multiSiteParameters));
+		this.btnRunMultiSite.addListener(new RunMultiSiteAction(this.gxeTable, this.selectTraitsTable, this.multiSiteParameters));
 
 		this.btnBack.addListener(new Button.ClickListener() {
 
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 
-				TabSheet tabSheet =
+				final TabSheet tabSheet =
 						MultiSiteAnalysisGxePanel.this.gxeSelectEnvironmentPanel.getGxeAnalysisComponentPanel().getStudiesTabsheet();
 				tabSheet.replaceComponent(tabSheet.getSelectedTab(), MultiSiteAnalysisGxePanel.this.gxeSelectEnvironmentPanel);
 
@@ -367,7 +367,7 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 
 				MultiSiteAnalysisGxePanel.this.chkSelectAllTraits.setValue(true);
 				MultiSiteAnalysisGxePanel.this.chkSelectAllEnvironments.setValue(true);
@@ -385,7 +385,7 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 		this.setSpacing(true);
 		this.setMargin(true);
 
-		GridLayout selectedInfoLayout = new GridLayout(4, 3);
+		final GridLayout selectedInfoLayout = new GridLayout(4, 3);
 		selectedInfoLayout.setDebugId("selectedInfoLayout");
 		selectedInfoLayout.setSizeUndefined();
 		selectedInfoLayout.setSpacing(true);
@@ -424,7 +424,7 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 	}
 
 	protected Component layoutButtonArea() {
-		HorizontalLayout buttonLayout = new HorizontalLayout();
+		final HorizontalLayout buttonLayout = new HorizontalLayout();
 		buttonLayout.setDebugId("buttonLayout");
 
 		buttonLayout.setSizeFull();
@@ -432,7 +432,7 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 		buttonLayout.setMargin(true);
 
 		this.btnRunMultiSite.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-		Label spacer = new Label("&nbsp;", Label.CONTENT_XHTML);
+		final Label spacer = new Label("&nbsp;", Label.CONTENT_XHTML);
 		spacer.setDebugId("spacer");
 		spacer.setSizeFull();
 
@@ -455,7 +455,7 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 		return this.currentRepresentationId;
 	}
 
-	public void setCurrentRepresentationId(Integer currentRepresentationId) {
+	public void setCurrentRepresentationId(final Integer currentRepresentationId) {
 		this.currentRepresentationId = currentRepresentationId;
 	}
 
@@ -463,7 +463,7 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 		return this.currentDataSetId;
 	}
 
-	public void setCurrentDataSetId(Integer currentDataSetId) {
+	public void setCurrentDataSetId(final Integer currentDataSetId) {
 		this.currentDataSetId = currentDataSetId;
 	}
 
@@ -471,7 +471,7 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 		return this.currentDatasetName;
 	}
 
-	public void setCurrentDatasetName(String currentDatasetName) {
+	public void setCurrentDatasetName(final String currentDatasetName) {
 		this.currentDatasetName = currentDatasetName;
 	}
 
@@ -479,7 +479,7 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 		return this.variatesCheckboxState;
 	}
 
-	public void setVariatesCheckboxState(Map<String, Boolean> hashMap) {
+	public void setVariatesCheckboxState(final Map<String, Boolean> hashMap) {
 		this.variatesCheckboxState = hashMap;
 	}
 
@@ -487,7 +487,7 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout implements Initial
 		return this.gxeTable;
 	}
 
-	public void setGxeTable(GxeTable gxeTable) {
+	public void setGxeTable(final GxeTable gxeTable) {
 		this.gxeTable = gxeTable;
 	}
 
