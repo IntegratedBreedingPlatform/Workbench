@@ -18,7 +18,7 @@
 				 */
 				var token = localStorageService.get('xAuthToken');
 
-				if (token && token.expires && token.expires > new Date().getTime()) {
+				if (token && token.expires) {
 					config.headers['x-auth-token'] = token.token;
 				}
 
