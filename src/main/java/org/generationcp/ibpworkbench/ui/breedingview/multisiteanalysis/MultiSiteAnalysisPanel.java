@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- * 
+ *
  * Generation Challenge Programme (GCP)
- * 
- * 
+ *
+ *
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- * 
+ *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis;
@@ -83,7 +83,7 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 
 	private static final Logger LOG = LoggerFactory.getLogger(MultiSiteAnalysisPanel.class);
 
-	public MultiSiteAnalysisPanel(Project project) {
+	public MultiSiteAnalysisPanel(final Project project) {
 		MultiSiteAnalysisPanel.LOG.debug("Project is " + project.getProjectName());
 		this.project = project;
 	}
@@ -107,8 +107,8 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 	public void instantiateComponents() {
 		this.setTitleContent();
 
-		ThemeResource resource = new ThemeResource("../vaadin-retro/images/search-nurseries.png");
-		Label headingLabel = new Label("Select Data for Analysis");
+		final ThemeResource resource = new ThemeResource("../vaadin-retro/images/search-nurseries.png");
+		final Label headingLabel = new Label("Select Data for Analysis");
 		headingLabel.setDebugId("headingLabel");
 		headingLabel.setStyleName(Bootstrap.Typography.H4.styleName());
 		headingLabel.addStyleName("label-bold");
@@ -158,11 +158,10 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 			private static final long serialVersionUID = 1425892265723948423L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 
-				SelectStudyDialog dialog =
-						new SelectStudyDialog(event.getComponent().getWindow(), MultiSiteAnalysisPanel.this,
-								MultiSiteAnalysisPanel.this.project);
+				final SelectStudyDialog dialog = new SelectStudyDialog(event.getComponent().getWindow(), MultiSiteAnalysisPanel.this,
+						MultiSiteAnalysisPanel.this.project);
 				event.getComponent().getWindow().addWindow(dialog);
 			}
 
@@ -176,13 +175,13 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 		this.setSizeUndefined();
 		this.setWidth("100%");
 
-		HorizontalLayout browseLabelLayout = new HorizontalLayout();
+		final HorizontalLayout browseLabelLayout = new HorizontalLayout();
 		browseLabelLayout.setDebugId("browseLabelLayout");
 		browseLabelLayout.addComponent(this.browseLink);
 		browseLabelLayout.addComponent(new Label("for a study to work with."));
 		browseLabelLayout.setSizeUndefined();
 
-		VerticalLayout selectDataForAnalysisLayout = new VerticalLayout();
+		final VerticalLayout selectDataForAnalysisLayout = new VerticalLayout();
 		selectDataForAnalysisLayout.setDebugId("selectDataForAnalysisLayout");
 		selectDataForAnalysisLayout.addComponent(this.heading);
 		selectDataForAnalysisLayout.addComponent(browseLabelLayout);
@@ -191,15 +190,15 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 		this.addComponent(selectDataForAnalysisLayout);
 	}
 
-	protected void repaintTab(Component comp, Study study) {
+	protected void repaintTab(final Component comp, final Study study) {
 
 		if (comp != null) {
-			VerticalLayout container = (VerticalLayout) comp;
+			final VerticalLayout container = (VerticalLayout) comp;
 			container.setSpacing(true);
 			container.setMargin(true, false, false, false);
 			container.removeAllComponents();
 
-			Label tabTitle = new Label("&nbsp;&nbsp;" + "Adjusted means dataset", Label.CONTENT_XHTML);
+			final Label tabTitle = new Label("&nbsp;&nbsp;" + "Adjusted means dataset", Label.CONTENT_XHTML);
 			tabTitle.setDebugId("tabTitle");
 			tabTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 
@@ -212,24 +211,23 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 		}
 	}
 
-	public void generateTabContent(Study study, String selectedEnvFactorName, String selectedGenotypeFactorName,
-			String selectedEnvGroupFactorName, Map<String, Boolean> variatesCheckboxState,
-			MultiSiteAnalysisSelectPanel gxeSelectEnvironmentPanel) {
+	public void generateTabContent(final Study study, final String selectedEnvFactorName, final String selectedGenotypeFactorName,
+			final String selectedEnvGroupFactorName, final Map<String, Boolean> variatesCheckboxState,
+			final MultiSiteAnalysisSelectPanel gxeSelectEnvironmentPanel) {
 
 		if (selectedEnvFactorName == null || "".equals(selectedEnvFactorName)) {
 			return;
 		}
 
-		MultiSiteParameters multiSiteParameters = new MultiSiteParameters();
+		final MultiSiteParameters multiSiteParameters = new MultiSiteParameters();
 		multiSiteParameters.setSelectedEnvironmentFactorName(selectedEnvFactorName);
 		multiSiteParameters.setSelectedGenotypeFactorName(selectedGenotypeFactorName);
 		multiSiteParameters.setSelectedEnvGroupFactorName(selectedEnvGroupFactorName);
 		multiSiteParameters.setProject(this.project);
 		multiSiteParameters.setStudy(study);
 
-		MultiSiteAnalysisGxePanel tabContainer =
-				new MultiSiteAnalysisGxePanel(this.getStudyDataManager(), gxeSelectEnvironmentPanel, variatesCheckboxState,
-						multiSiteParameters);
+		final MultiSiteAnalysisGxePanel tabContainer = new MultiSiteAnalysisGxePanel(this.getStudyDataManager(), gxeSelectEnvironmentPanel,
+				variatesCheckboxState, multiSiteParameters);
 		tabContainer.setVisible(true);
 
 		this.getStudiesTabsheet().setVisible(true);
@@ -238,15 +236,15 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 		this.getStudiesTabsheet().setSelectedTab(tabContainer);
 	}
 
-	public void openStudyMeansDataset(Study study) throws MiddlewareQueryException {
+	public void openStudyMeansDataset(final Study study) throws MiddlewareQueryException {
 
 		if (this.getComponentIndex(this.tabSheetContainer) == -1) {
 			this.addComponent(this.tabSheetContainer);
 		}
 
-		for (Iterator<Component> tabs = this.getStudiesTabsheet().getComponentIterator(); tabs.hasNext();) {
-			Component tab = tabs.next();
-			Study tabStudyData = (Study) ((VerticalLayout) tab).getData();
+		for (final Iterator<Component> tabs = this.getStudiesTabsheet().getComponentIterator(); tabs.hasNext();) {
+			final Component tab = tabs.next();
+			final Study tabStudyData = (Study) ((VerticalLayout) tab).getData();
 			if (tabStudyData.getId() == study.getId()) {
 				this.studiesTabsheet.setSelectedTab(tab);
 				return;
@@ -264,13 +262,13 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 			List<DataSet> dataSets = null;
 			try {
 				dataSets = this.getStudyDataManager().getDataSetsByType(study.getId(), DataSetType.MEANS_DATA);
-			} catch (MiddlewareException e) {
+			} catch (final MiddlewareException e) {
 				MultiSiteAnalysisPanel.LOG.error("Error getting means dataset", e);
 			}
 
 			if (dataSets != null && study.getName() != null && !dataSets.isEmpty()) {
 
-				MultiSiteAnalysisSelectPanel selectEnvironmentPanel =
+				final MultiSiteAnalysisSelectPanel selectEnvironmentPanel =
 						new MultiSiteAnalysisSelectPanel(this.getStudyDataManager(), this.project, study, this);
 
 				selectEnvironmentPanel.setCaption(study.getName());
@@ -281,8 +279,8 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 				throw new MiddlewareQueryException("This study doesnt have an existing MEANS dataset.");
 			}
 
-		} catch (NumberFormatException e) {
-			LOG.error(e.getMessage(),e);
+		} catch (final NumberFormatException e) {
+			MultiSiteAnalysisPanel.LOG.error(e.getMessage(), e);
 		}
 
 		this.requestRepaintAll();
@@ -290,7 +288,7 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 	}
 
 	protected TabSheet generateTabSheet() {
-		TabSheet tab = new TabSheet();
+		final TabSheet tab = new TabSheet();
 		tab.setDebugId("tab");
 
 		tab.setImmediate(true);
@@ -305,7 +303,7 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 		return this.studiesTabsheet;
 	}
 
-	public void setStudiesTabsheet(TabSheet studiesTabsheet) {
+	public void setStudiesTabsheet(final TabSheet studiesTabsheet) {
 		this.studiesTabsheet = studiesTabsheet;
 	}
 
@@ -313,7 +311,7 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 		return this.studyDataManager;
 	}
 
-	public void setStudyDataManager(StudyDataManager studyDataManager) {
+	public void setStudyDataManager(final StudyDataManager studyDataManager) {
 		this.studyDataManager = studyDataManager;
 	}
 }

@@ -307,7 +307,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 		this.tableLayout.setDebugId("tableLayout");
 
 		if (this.crossStudyToolType == CrossStudyToolType.HEAD_TO_HEAD_QUERY) {
-			Set<TraitInfo> traitInfos = new HashSet<TraitInfo>();
+			Set<TraitInfo> traitInfos = new HashSet<>();
 			this.createEnvironmentsTable(traitInfos);
 		} else if (this.crossStudyToolType == CrossStudyToolType.QUERY_FOR_ADAPTED_GERMPLASM
 				|| this.crossStudyToolType == CrossStudyToolType.TRAIT_DONORS_QUERY) {
@@ -332,7 +332,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				if ((Boolean) EnvironmentFilter.this.tagAllCheckBox.getValue() == true) {
+				if ((Boolean) EnvironmentFilter.this.tagAllCheckBox.getValue()) {
 					EnvironmentFilter.this.tagAllEnvironments();
 				} else {
 					EnvironmentFilter.this.untagAllEnvironments();
@@ -398,7 +398,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 	}
 
 	private void createEnvironmentsTable(Set<TraitInfo> traitInfos) {
-		List<Object> propertyIds = new ArrayList<Object>();
+		List<Object> propertyIds = new ArrayList<>();
 		for (Object propertyId : this.environmentsTable.getContainerPropertyIds()) {
 			propertyIds.add(propertyId);
 		}
@@ -447,7 +447,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 	}
 
 	private void createEnvironmentsTable() {
-		List<Object> propertyIds = new ArrayList<Object>();
+		List<Object> propertyIds = new ArrayList<>();
 		for (Object propertyId : this.environmentsTable.getContainerPropertyIds()) {
 			propertyIds.add(propertyId);
 		}
@@ -488,24 +488,24 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 			Map<String, Map<String, TrialEnvironment>> traitEnvMapTemp, Map<String, TrialEnvironment> trialEnvMapTemp,
 			Set<Integer> germplasmIds, List<GermplasmPair> germplasmPairsTemp, Map<String, String> germplasmIdNameMap) {
 
-		Map<String, Map<String, TrialEnvironment>> newTraitEnvMap = new HashMap<String, Map<String, TrialEnvironment>>();
-		this.tableEntriesMap = new HashMap<String, Object[]>();
-		this.trialEnvironmentIds = new HashSet<String>();
-		this.traitInfosNames = new LinkedHashSet<TraitInfo>();
+		Map<String, Map<String, TrialEnvironment>> newTraitEnvMap = new HashMap<>();
+		this.tableEntriesMap = new HashMap<>();
+		this.trialEnvironmentIds = new HashSet<>();
+		this.traitInfosNames = new LinkedHashSet<>();
 
 		this.nextButton.setEnabled(false);
-		this.environmentCheckBoxComparisonMap = new HashMap<String, EnvironmentForComparison>();
-		this.environmentCheckBoxMap = new HashMap<CheckBox, Item>();
-		this.environmentForComparison = new HashSet<String>();
+		this.environmentCheckBoxComparisonMap = new HashMap<>();
+		this.environmentCheckBoxMap = new HashMap<>();
+		this.environmentForComparison = new HashSet<>();
 		this.numberOfEnvironmentSelectedLabel.setValue(Integer.toString(this.environmentForComparison.size()));
 
 		this.germplasmIdNameMap = germplasmIdNameMap;
 		this.finalGermplasmPairs = germplasmPairsTemp;
 
-		List<Integer> traitIds = new ArrayList<Integer>();
-		Set<Integer> environmentIds = new HashSet<Integer>();
-		this.filterLocationCountryMap = new HashMap<String, FilterByLocation>();
-		this.studyEnvironmentMap = new HashMap<String, List<StudyReference>>();
+		List<Integer> traitIds = new ArrayList<>();
+		Set<Integer> environmentIds = new HashSet<>();
+		this.filterLocationCountryMap = new HashMap<>();
+		this.studyEnvironmentMap = new HashMap<>();
 		this.traitEnvMap = traitEnvMapTemp;
 		this.trialEnvMap = trialEnvMapTemp;
 		this.traitForComparisonsList = traitForComparisonsListTemp;
@@ -528,10 +528,10 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 
 			this.traitInfosNames.add(comparison.getTraitInfo());
 		}
-		List<Integer> germplasmIdsList = new ArrayList<Integer>(germplasmIds);
-		List<Integer> environmentIdsList = new ArrayList<Integer>(environmentIds);
+		List<Integer> germplasmIdsList = new ArrayList<>(germplasmIds);
+		List<Integer> environmentIdsList = new ArrayList<>(environmentIds);
 		try {
-			this.observationMap = new HashMap<String, ObservationList>();
+			this.observationMap = new HashMap<>();
 			List<Observation> observationList =
 					this.crossStudyDataManager.getObservationsForTraitOnGermplasms(traitIds, germplasmIdsList, environmentIdsList);
 			for (Observation obs : observationList) {
@@ -582,19 +582,19 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 	 *
 	 */
 	public void populateEnvironmentsTable() {
-		this.tableEntriesMap = new HashMap<String, Object[]>();
+		this.tableEntriesMap = new HashMap<>();
 
-		this.environmentCheckBoxComparisonMap = new HashMap<String, EnvironmentForComparison>();
-		this.environmentCheckBoxMap = new HashMap<CheckBox, Item>();
-		this.environmentForComparison = new HashSet<String>();
+		this.environmentCheckBoxComparisonMap = new HashMap<>();
+		this.environmentCheckBoxMap = new HashMap<>();
+		this.environmentForComparison = new HashSet<>();
 
-		this.filterLocationCountryMap = new HashMap<String, FilterByLocation>();
-		this.studyEnvironmentMap = new HashMap<String, List<StudyReference>>();
-		this.environmentIds = new HashSet<Integer>();
+		this.filterLocationCountryMap = new HashMap<>();
+		this.studyEnvironmentMap = new HashMap<>();
+		this.environmentIds = new HashSet<>();
 
 		this.recreateTable(true, false);
 
-		List<Integer> environmentIdsList = new ArrayList<Integer>(this.environmentIds);
+		List<Integer> environmentIdsList = new ArrayList<>(this.environmentIds);
 
 		Window parentWindow = this.getWindow();
 
@@ -628,12 +628,12 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 		this.environmentsTable.removeAllItems();
 
 		if (recreateFilterLocationMap) {
-			this.environmentCheckBoxComparisonMap = new HashMap<String, EnvironmentForComparison>();
-			this.environmentCheckBoxMap = new HashMap<CheckBox, Item>();
+			this.environmentCheckBoxComparisonMap = new HashMap<>();
+			this.environmentCheckBoxMap = new HashMap<>();
 		}
-		this.environmentForComparison = new HashSet<String>();
+		this.environmentForComparison = new HashSet<>();
 
-		Map<String, Item> trialEnvIdTableMap = new HashMap<String, Item>();
+		Map<String, Item> trialEnvIdTableMap = new HashMap<>();
 
 		if (this.crossStudyToolType == CrossStudyToolType.QUERY_FOR_ADAPTED_GERMPLASM) {
 			try {
@@ -817,7 +817,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 			}
 		} else if (this.crossStudyToolType == CrossStudyToolType.HEAD_TO_HEAD_QUERY) {
 			this.createEnvironmentsTable(this.traitInfosNames);
-
+			this.tagAllCheckBox.setValue(false);
 			// clean the traitEnvMap
 			Iterator<String> trialEnvIdsIter = this.trialEnvironmentIds.iterator();
 			while (trialEnvIdsIter.hasNext()) {
@@ -878,12 +878,12 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 									new EnvironmentForComparison(trialEnv.getId(), trialEnv.getLocation().getLocationName(), trialEnv
 											.getLocation().getCountryName(), trialEnv.getStudy().getName(), comboBox);
 							LinkedHashMap<TraitForComparison, List<ObservationList>> traitAndObservationMap =
-									new LinkedHashMap<TraitForComparison, List<ObservationList>>();
+									new LinkedHashMap<>();
 							Iterator<TraitForComparison> traitForCompareIter = this.traitForComparisonsList.iterator();
 							while (traitForCompareIter.hasNext()) {
 								TraitForComparison traitForCompare = traitForCompareIter.next();
 
-								List<ObservationList> obsList = new ArrayList<ObservationList>();
+								List<ObservationList> obsList = new ArrayList<>();
 								Integer count =
 										this.getTraitCount(traitForCompare.getTraitInfo(), trialEnv.getId(), this.finalGermplasmPairs,
 												obsList);
@@ -1013,7 +1013,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 		String studyKey = study.getName() + FilterLocationDialog.DELIMITER + study.getDescription();
 		List<StudyReference> studyReferenceList = this.studyEnvironmentMap.get(studyKey);
 		if (studyReferenceList == null) {
-			studyReferenceList = new ArrayList<StudyReference>();
+			studyReferenceList = new ArrayList<>();
 		}
 		studyReferenceList.add(study);
 		this.studyEnvironmentMap.put(studyKey, studyReferenceList);
@@ -1043,7 +1043,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 	}
 
 	public void nextButtonClickAction() {
-		final List<EnvironmentForComparison> toBeCompared = new ArrayList<EnvironmentForComparison>();
+		final List<EnvironmentForComparison> toBeCompared = new ArrayList<>();
 
 		int total = 0;
 		// get the total of weights
@@ -1135,8 +1135,8 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 			List<FilterLocationDto> filterLocationDtoListLevel3) {
 
 		this.isFilterLocationClicked = true;
-		this.filterSetLevel1 = new HashMap<String, String>();
-		this.filterSetLevel3 = new HashMap<String, String>();
+		this.filterSetLevel1 = new HashMap<>();
+		this.filterSetLevel3 = new HashMap<>();
 
 		for (FilterLocationDto dto : filterLocationDtoListLevel1) {
 			String countryName = dto.getCountryName();
@@ -1161,7 +1161,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 
 	public void clickFilterByStudyApply(List<FilterLocationDto> filterLocationDtoListLevel4) {
 		this.isFilterStudyClicked = true;
-		this.filterSetLevel4 = new HashMap<String, String>();
+		this.filterSetLevel4 = new HashMap<>();
 		for (FilterLocationDto dto : filterLocationDtoListLevel4) {
 			String studyName = dto.getStudyName();
 
@@ -1244,7 +1244,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 			tableWidth += 133;
 		}
 
-		List<String> cols = new ArrayList<String>();
+		List<String> cols = new ArrayList<>();
 		for (TrialEnvironmentProperty col : columns) {
 			cols.add(col.getName());
 		}
@@ -1274,7 +1274,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 				}
 			}
 		}
-		this.addedEnvironmentColumns = new ArrayList<String>();
+		this.addedEnvironmentColumns = new ArrayList<>();
 	}
 
 	private enum CrossStudyToolType {

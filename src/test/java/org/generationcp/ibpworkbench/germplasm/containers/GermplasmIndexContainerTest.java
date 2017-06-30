@@ -78,7 +78,7 @@ public class GermplasmIndexContainerTest {
 
 		contextInfo = new ContextInfo(1, 10L, "a0z9c8d7f5");
 		doReturn(contextInfo).when(this.contextUtil).getContextInfoFromSession();
-
+		doReturn(PROGRAM_UUID).when(this.contextUtil).getCurrentProgramUUID();
 		aditionalParameters = "?restartApplication&loggedInUserId=" + contextInfo.getLoggedInUserId() + "&selectedProjectId=" + contextInfo
 			.getSelectedProjectId() + "&authToken=" + contextInfo.getAuthToken();
 	}
