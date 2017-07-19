@@ -98,6 +98,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 
 	private Map<String, ObservationList> observationMap;
 	private Map<String, String> germplasmIdNameMap;
+	private Map<String, String> germplasmIdMGIDMap;
 	private List<GermplasmPair> finalGermplasmPairs;
 	private Set<TraitInfo> traitInfosNames;
 	private Set<String> trialEnvironmentIds;
@@ -486,7 +487,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 
 	public void populateEnvironmentsTable(List<TraitForComparison> traitForComparisonsListTemp,
 			Map<String, Map<String, TrialEnvironment>> traitEnvMapTemp, Map<String, TrialEnvironment> trialEnvMapTemp,
-			Set<Integer> germplasmIds, List<GermplasmPair> germplasmPairsTemp, Map<String, String> germplasmIdNameMap) {
+			Set<Integer> germplasmIds, List<GermplasmPair> germplasmPairsTemp, Map<String, String> germplasmIdNameMap, Map<String, String> germplasmIdMGIDMap) {
 
 		Map<String, Map<String, TrialEnvironment>> newTraitEnvMap = new HashMap<>();
 		this.tableEntriesMap = new HashMap<>();
@@ -500,6 +501,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 		this.numberOfEnvironmentSelectedLabel.setValue(Integer.toString(this.environmentForComparison.size()));
 
 		this.germplasmIdNameMap = germplasmIdNameMap;
+		this.germplasmIdMGIDMap = germplasmIdMGIDMap;
 		this.finalGermplasmPairs = germplasmPairsTemp;
 
 		List<Integer> traitIds = new ArrayList<>();
@@ -1089,7 +1091,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 	public void nextTabAction(List<EnvironmentForComparison> toBeCompared) {
 
 		if (this.crossStudyToolType == CrossStudyToolType.HEAD_TO_HEAD_QUERY) {
-			this.nextScreen1.populateResultsTable(toBeCompared, this.germplasmIdNameMap, this.finalGermplasmPairs, this.observationMap);
+			this.nextScreen1.populateResultsTable(toBeCompared, this.germplasmIdNameMap,this.germplasmIdMGIDMap, this.finalGermplasmPairs, this.observationMap);
 			this.mainScreen1.selectFourthTab();
 		} else if (this.crossStudyToolType == CrossStudyToolType.QUERY_FOR_ADAPTED_GERMPLASM) {
 			if (this.nextScreen2 != null) {

@@ -120,7 +120,7 @@ public class ResultsComponent extends AbsoluteLayout implements InitializingBean
 	}
 
 	private void createEnvironmentsResultTable(List<EnvironmentForComparison> environmentForComparisonList,
-			Map<String, String> germplasmNameIdMap, List<GermplasmPair> germplasmPairList, Map<String, ObservationList> observationMap) {
+			Map<String, String> germplasmNameIdMap, Map<String, String> germplasmIdMGIDMap,List<GermplasmPair> germplasmPairList, Map<String, ObservationList> observationMap) {
 
 		this.removeAllComponents();
 		this.addComponent(this.exportButton, "top:505px;left:500px");
@@ -189,8 +189,12 @@ public class ResultsComponent extends AbsoluteLayout implements InitializingBean
 			String uniquieId = germplasmPair.getGid1() + ":" + germplasmPair.getGid2();
 			String testEntry = germplasmNameIdMap.get(Integer.toString(germplasmPair.getGid1()));
 			String standardEntry = germplasmNameIdMap.get(Integer.toString(germplasmPair.getGid2()));
+			String testGroupId = germplasmIdMGIDMap.get(Integer.toString(germplasmPair.getGid1()));
+			String standardGroupId = germplasmIdMGIDMap.get(Integer.toString(germplasmPair.getGid2()));
 			Map<String, String> traitDataMap = new HashMap<String, String>();
-			ResultsData resData = new ResultsData(germplasmPair.getGid1(), testEntry, germplasmPair.getGid2(), standardEntry, traitDataMap);
+			ResultsData resData =
+				new ResultsData(testGroupId, germplasmPair.getGid1(), testEntry, standardGroupId, germplasmPair.getGid2(), standardEntry,
+					traitDataMap);
 
 			for (int i = 0; i < this.resultsTable.length; i++) {
 				Table table = this.resultsTable[i];
@@ -268,9 +272,9 @@ public class ResultsComponent extends AbsoluteLayout implements InitializingBean
 		return false;
 	}
 
-	public void populateResultsTable(List<EnvironmentForComparison> environmentForComparisonList, Map<String, String> germplasmNameIdMap,
+	public void populateResultsTable(List<EnvironmentForComparison> environmentForComparisonList, Map<String, String> germplasmNameIdMap, Map<String, String> germplasmIdMGIDMap,
 			List<GermplasmPair> germplasmPair, Map<String, ObservationList> observationMap) {
-		this.createEnvironmentsResultTable(environmentForComparisonList, germplasmNameIdMap, germplasmPair, observationMap);
+		this.createEnvironmentsResultTable(environmentForComparisonList, germplasmNameIdMap, germplasmIdMGIDMap, germplasmPair, observationMap);
 
 	}
 

@@ -90,6 +90,7 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 	// will contain the map of trial environment
 	private Map<String, TrialEnvironment> trialEnvironmentMap;
 	private Map<String, String> germplasmIdNameMap;
+	private Map<String, String> germplasmIdMGIDMap;
 
 	private Set<Integer> germplasmIds;
 	private List<GermplasmPair> finalGermplasmPair;
@@ -271,16 +272,17 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 	private void updatePopulateTraitsAndAnalysisAvailableTable(final boolean traitCheckBox, final boolean analysisCheckBox) {
 		this.prevfinalGermplasmPair = null;
 		this.tagUnTagAll.setValue(false);
-		this.populateTraitsAvailableTable(this.finalGermplasmPair, this.germplasmIdNameMap, traitCheckBox, analysisCheckBox);
+		this.populateTraitsAvailableTable(this.finalGermplasmPair, this.germplasmIdNameMap, this.germplasmIdMGIDMap,traitCheckBox, analysisCheckBox);
 	}
 
-	public void populateTraitsAvailableTable(final List<GermplasmPair> germplasmPairList, final Map<String, String> germplasmIdNameMap, final boolean traitCheckBox, final boolean analysisCheckBox) {
+	public void populateTraitsAvailableTable(final List<GermplasmPair> germplasmPairList, final Map<String, String> germplasmIdNameMap, final Map<String, String> germplasmIdMGIDMap,final boolean traitCheckBox, final boolean analysisCheckBox) {
 
 		this.initializeVariables();
 		final Map<String, List<TraitInfo>> traitMap = new HashMap<>();
 		final Map<String, Set<String>> traitEnvMap = new HashMap<>();
 
 		this.germplasmIdNameMap = germplasmIdNameMap;
+		this.germplasmIdMGIDMap = germplasmIdMGIDMap;
 		this.finalGermplasmPair = germplasmPairList;
 		final boolean doRefresh = this.validateDoRefresh();
 
@@ -459,7 +461,7 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 		}
 		if (this.nextScreen != null) {
 			this.nextScreen.populateEnvironmentsTable(traitForComparisonsList, this.traitEnvironmentMap, this.trialEnvironmentMap,
-					this.germplasmIds, this.finalGermplasmPair, this.germplasmIdNameMap);
+					this.germplasmIds, this.finalGermplasmPair, this.germplasmIdNameMap,this.germplasmIdMGIDMap);
 		}
 		this.mainScreen.selectThirdTab();
 	}
