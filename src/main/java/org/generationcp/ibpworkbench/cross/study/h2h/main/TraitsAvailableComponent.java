@@ -361,11 +361,10 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 	private boolean validateDoRefresh() {
 		boolean doRefresh = true;
 		// we checked if its the same
-		if (this.prevfinalGermplasmPair != null && (this.prevfinalGermplasmPair.size() == this.finalGermplasmPair.size())) {
-			if (this.prevfinalGermplasmPair.containsAll(finalGermplasmPair) && this.finalGermplasmPair
-				.containsAll(prevfinalGermplasmPair)) {
-				doRefresh = false;
-			}
+		if ((this.prevfinalGermplasmPair != null && (this.prevfinalGermplasmPair.size() == this.finalGermplasmPair.size())) && (
+			this.prevfinalGermplasmPair.containsAll(finalGermplasmPair) && this.finalGermplasmPair.containsAll(prevfinalGermplasmPair))) {
+			doRefresh = false;
+
 		}
 		return doRefresh;
 	}
