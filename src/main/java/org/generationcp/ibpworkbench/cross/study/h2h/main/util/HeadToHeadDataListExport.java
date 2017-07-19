@@ -35,7 +35,7 @@ public class HeadToHeadDataListExport {
 	}
 
 	private HashMap<String, CellStyle> createStyles(HSSFWorkbook wb) {
-		HashMap<String, CellStyle> styles = new HashMap<String, CellStyle>();
+		HashMap<String, CellStyle> styles = new HashMap<>();
 
 		// set cell style for labels in the description sheet
 		CellStyle labelStyle = wb.createCellStyle();
@@ -96,7 +96,19 @@ public class HeadToHeadDataListExport {
 		HSSFRow header = sheet.createRow(startDataRowIndex++);
 
 		Cell cell = header.createCell(cellIndex++);
+		cell.setCellValue("Test GroupID");
+		cell.setCellStyle(sheetStyles.get(HeadToHeadDataListExport.HEADING_STYLE));
+		cell = header.createCell(cellIndex++);
+		cell.setCellValue("Test GID");
+		cell.setCellStyle(sheetStyles.get(HeadToHeadDataListExport.HEADING_STYLE));
+		cell = header.createCell(cellIndex++);
 		cell.setCellValue("Test Entry");
+		cell.setCellStyle(sheetStyles.get(HeadToHeadDataListExport.HEADING_STYLE));
+		cell = header.createCell(cellIndex++);
+		cell.setCellValue("Standard GroupID");
+		cell.setCellStyle(sheetStyles.get(HeadToHeadDataListExport.HEADING_STYLE));
+		cell = header.createCell(cellIndex++);
+		cell.setCellValue("Standard GID");
 		cell.setCellStyle(sheetStyles.get(HeadToHeadDataListExport.HEADING_STYLE));
 		cell = header.createCell(cellIndex++);
 		cell.setCellValue("Standard Entry");
@@ -105,7 +117,7 @@ public class HeadToHeadDataListExport {
 		for (TraitForComparison traitForCompare : traitsIterator) {
 			if (traitForCompare.isDisplay()) {
 				int startCol = cellIndex;
-				int endCol = cellIndex;
+				int endCol;
 				Cell cellHeader = headerColSpan.createCell(cellIndex);
 				cellHeader.setCellValue(traitForCompare.getTraitInfo().getName());
 				cellHeader.setCellStyle(sheetStyles.get(HeadToHeadDataListExport.HEADING_MERGED_STYLE));
@@ -130,17 +142,25 @@ public class HeadToHeadDataListExport {
 		for (ResultsData resData : resultDataList) {
 			// we iterate and permutate against the list
 			cellIndex = 0;
-			HSSFRow rowData = sheet.createRow(startDataRowIndex++);
-			String testEntryName = resData.getGid1Name();
-			String standardEntryName = resData.getGid2Name();
+			final HSSFRow rowData = sheet.createRow(startDataRowIndex++);
+			final String testEntryGroupId = resData.getGroupId1();
+			final Integer testEntryGid = resData.getGid1();
+			final String testEntryName = resData.getGid1Name();
+			final String standardEntryGroupId = resData.getGroupId2();
+			final Integer standardEntryGid = resData.getGid2();
+			final String standardEntryName = resData.getGid2Name();
 
+			rowData.createCell(cellIndex++).setCellValue(testEntryGroupId);
+			rowData.createCell(cellIndex++).setCellValue(testEntryGid);
 			rowData.createCell(cellIndex++).setCellValue(testEntryName);
+			rowData.createCell(cellIndex++).setCellValue(standardEntryGroupId);
+			rowData.createCell(cellIndex++).setCellValue(standardEntryGid);
 			rowData.createCell(cellIndex++).setCellValue(standardEntryName);
 
 			for (TraitForComparison traitForCompare : traitsIterator) {
 				if (traitForCompare.isDisplay()) {
 					for (String colId : columnIdData) {
-						String traitColId = traitForCompare.getTraitInfo().getName() + colId;
+						final String traitColId = traitForCompare.getTraitInfo().getName() + colId;
 						String numVal = resData.getTraitDataMap().get(traitColId);
 						if (numVal == null) {
 							numVal = "0";
