@@ -786,87 +786,71 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	public void populateChoicesForEnvForAnalysis() {
 
-		this.footerCheckBox.setValue(false);
-		String trialInstanceFactor = "";
-
-		try {
-			this.environmentsCheckboxState.clear();
-			this.tblEnvironmentSelection.removeAllItems();
-		} catch (final Exception e) {
-			SingleSiteAnalysisDetailsPanel.LOG.error(e.getMessage(), e);
-		}
-
-		final String envFactorName = (String) this.selEnvFactor.getValue();
-
-		final DMSVariableType factor = this.getVariableByLocalName(this.trialVariablesInDataset, envFactorName);
+		final String selectedEnvironmentFactorName = (String) this.selEnvFactor.getValue();
+		final DMSVariableType factor = this.getVariableByLocalName(this.trialVariablesInDataset, selectedEnvironmentFactorName);
 
 		if (factor == null) {
 			return;
 		}
 
-		try {
+		this.footerCheckBox.setValue(false);
+		this.environmentsCheckboxState.clear();
+		this.tblEnvironmentSelection.removeAllItems();
 
-			final BeanItemContainer<SeaEnvironmentModel> container = new BeanItemContainer<SeaEnvironmentModel>(SeaEnvironmentModel.class);
-			this.tblEnvironmentSelection.setContainerDataSource(container);
+		final String trialInstanceFactorName = this.studyDataManager.getLocalNameByStandardVariableId(this.getBreedingViewInput().getDatasetId(), TermId.TRIAL_INSTANCE_FACTOR.getId());
 
-			final VariableTypeList trialEnvFactors =
-					this.studyDataManager.getDataSet(this.getBreedingViewInput().getDatasetId()).getVariableTypes().getFactors();
+		this.populateEnvironmentSelectionTableWithTrialEnvironmets(this.tblEnvironmentSelection, trialInstanceFactorName, selectedEnvironmentFactorName);
 
-			for (final DMSVariableType f : trialEnvFactors.getVariableTypes()) {
+		this.adjustEnvironmentSelectionTable(this.tblEnvironmentSelection, trialInstanceFactorName, selectedEnvironmentFactorName);
 
-				// Always Show the TRIAL INSTANCE Factor
-				if (f.getStandardVariable().getId() == TermId.TRIAL_INSTANCE_FACTOR.getId()) {
-					trialInstanceFactor = f.getLocalName();
-				}
+		this.getBreedingViewInput().setTrialInstanceName(trialInstanceFactorName);
 
-			}
+	}
 
-			final TrialEnvironments trialEnvironments;
-			trialEnvironments = this.studyDataManager.getTrialEnvironmentsInDataset(this.getBreedingViewInput().getDatasetId());
+	protected void populateEnvironmentSelectionTableWithTrialEnvironmets(final Table table, final String trialInstanceFactorName, final String selectedEnvironmentFactorName) {
 
-			for (final TrialEnvironment trialEnvironment : trialEnvironments.getTrialEnvironments()) {
+		final BeanItemContainer<SeaEnvironmentModel> container = new BeanItemContainer<SeaEnvironmentModel>(SeaEnvironmentModel.class);
+		final TrialEnvironments trialEnvironments = this.studyDataManager.getTrialEnvironmentsInDataset(this.getBreedingViewInput().getDatasetId());
 
-				final Variable trialVar = trialEnvironment.getVariables().findByLocalName(trialInstanceFactor);
-				final Variable selectedEnvVar = trialEnvironment.getVariables().findByLocalName(envFactorName);
+		for (final TrialEnvironment trialEnvironment : trialEnvironments.getTrialEnvironments()) {
 
-				if (trialVar != null && selectedEnvVar != null) {
+			final Variable trialVar = trialEnvironment.getVariables().findByLocalName(trialInstanceFactorName);
+			final Variable selectedEnvVar = trialEnvironment.getVariables().findByLocalName(selectedEnvironmentFactorName);
 
-					final SeaEnvironmentModel bean = new SeaEnvironmentModel();
-					bean.setActive(false);
-					bean.setEnvironmentName(selectedEnvVar.getValue());
-					bean.setTrialno(trialVar.getValue());
-					bean.setLocationId(trialEnvironment.getId());
-					container.addBean(bean);
+			if (trialVar != null && selectedEnvVar != null) {
 
-				}
+				final SeaEnvironmentModel bean = new SeaEnvironmentModel();
+				bean.setActive(false);
+				bean.setEnvironmentName(selectedEnvVar.getValue());
+				bean.setTrialno(trialVar.getValue());
+				bean.setLocationId(trialEnvironment.getId());
+				container.addBean(bean);
 
 			}
 
-			if (trialInstanceFactor.equalsIgnoreCase(envFactorName)) {
-				this.tblEnvironmentSelection.setVisibleColumns(
-						new Object[] {SingleSiteAnalysisDetailsPanel.SELECT_COLUMN, SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN});
-				this.tblEnvironmentSelection.setColumnHeaders(new String[] {"SELECT", trialInstanceFactor});
-				this.tblEnvironmentSelection.setColumnWidth(SingleSiteAnalysisDetailsPanel.SELECT_COLUMN, 45);
-				this.tblEnvironmentSelection.setColumnWidth(SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN, -1);
-				this.tblEnvironmentSelection.setWidth("45%");
-				this.getBreedingViewInput().setTrialInstanceName(trialInstanceFactor);
-			} else {
-				this.tblEnvironmentSelection.setVisibleColumns(new Object[] {SingleSiteAnalysisDetailsPanel.SELECT_COLUMN,
-						SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN, "environmentName"});
-				this.tblEnvironmentSelection.setColumnHeaders(new String[] {"SELECT", trialInstanceFactor, envFactorName});
-				this.tblEnvironmentSelection.setColumnWidth(SingleSiteAnalysisDetailsPanel.SELECT_COLUMN, 45);
-				this.tblEnvironmentSelection.setColumnWidth(SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN, 60);
-				this.tblEnvironmentSelection.setColumnWidth("environmentName", 500);
-				this.tblEnvironmentSelection.setWidth("90%");
+		}
 
-				this.getBreedingViewInput().setTrialInstanceName(trialInstanceFactor);
-			}
+		table.setContainerDataSource(container);
 
-		} catch (final ConfigException e) {
-			SingleSiteAnalysisDetailsPanel.LOG.error(e.getMessage(), e);
-		} catch (final MiddlewareException e) {
-			SingleSiteAnalysisDetailsPanel.LOG.error(e.getMessage(), e);
+	}
 
+	protected void adjustEnvironmentSelectionTable(final Table table, final String trialInstanceFactorName, final String selectedEnvironmentFactorName) {
+
+		if (trialInstanceFactorName.equalsIgnoreCase(selectedEnvironmentFactorName)) {
+			table.setVisibleColumns(
+					new Object[] {SingleSiteAnalysisDetailsPanel.SELECT_COLUMN, SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN});
+			table.setColumnHeaders(new String[] {"SELECT", trialInstanceFactorName});
+			table.setColumnWidth(SingleSiteAnalysisDetailsPanel.SELECT_COLUMN, 45);
+			table.setColumnWidth(SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN, -1);
+			table.setWidth("45%");
+		} else {
+			table.setVisibleColumns(new Object[] {SingleSiteAnalysisDetailsPanel.SELECT_COLUMN,
+					SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN, "environmentName"});
+			table.setColumnHeaders(new String[] {"SELECT", trialInstanceFactorName, selectedEnvironmentFactorName});
+			table.setColumnWidth(SingleSiteAnalysisDetailsPanel.SELECT_COLUMN, 45);
+			table.setColumnWidth(SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN, 60);
+			table.setColumnWidth("environmentName", 500);
+			table.setWidth("90%");
 		}
 
 	}
