@@ -824,23 +824,19 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 			final TrialEnvironments trialEnvironments;
 			trialEnvironments = this.studyDataManager.getTrialEnvironmentsInDataset(this.getBreedingViewInput().getDatasetId());
 
-			for (final TrialEnvironment env : trialEnvironments.getTrialEnvironments()) {
+			for (final TrialEnvironment trialEnvironment : trialEnvironments.getTrialEnvironments()) {
 
-				final Variable trialVar = env.getVariables().findByLocalName(trialInstanceFactor);
-				final Variable selectedEnvVar = env.getVariables().findByLocalName(envFactorName);
+				final Variable trialVar = trialEnvironment.getVariables().findByLocalName(trialInstanceFactor);
+				final Variable selectedEnvVar = trialEnvironment.getVariables().findByLocalName(envFactorName);
 
 				if (trialVar != null && selectedEnvVar != null) {
 
-					final TrialEnvironment temp = trialEnvironments.findOnlyOneByLocalName(envFactorName, selectedEnvVar.getValue());
-
-					if (temp != null) {
-						final SeaEnvironmentModel bean = new SeaEnvironmentModel();
-						bean.setActive(false);
-						bean.setEnvironmentName(selectedEnvVar.getValue());
-						bean.setTrialno(trialVar.getValue());
-						bean.setLocationId(temp.getId());
-						container.addBean(bean);
-					}
+					final SeaEnvironmentModel bean = new SeaEnvironmentModel();
+					bean.setActive(false);
+					bean.setEnvironmentName(selectedEnvVar.getValue());
+					bean.setTrialno(trialVar.getValue());
+					bean.setLocationId(trialEnvironment.getId());
+					container.addBean(bean);
 
 				}
 
