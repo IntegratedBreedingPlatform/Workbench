@@ -1,33 +1,30 @@
 
 package org.generationcp.ibpworkbench.cross.study.h2h.main;
 
-import com.vaadin.data.Item;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Table.ColumnResizeEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.HeaderLabelLayout;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.cross.study.commons.EnvironmentFilter;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.listeners.HeadToHeadCrossStudyMainButtonClickListener;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.listeners.HeadToHeadCrossStudyMainValueChangeListener;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.pojos.TraitForComparison;
-import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.middleware.domain.dms.TrialEnvironment;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
 import org.generationcp.middleware.domain.h2h.GermplasmPair;
 import org.generationcp.middleware.domain.h2h.TraitInfo;
 import org.generationcp.middleware.domain.h2h.TraitType;
+import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.CrossStudyDataManager;
 import org.slf4j.Logger;
@@ -36,19 +33,27 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.AbsoluteLayout;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.OptionGroup;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.ColumnResizeEvent;
 
 @Configurable
 public class TraitsAvailableComponent extends AbsoluteLayout implements InitializingBean, InternationalizableComponent {
 
 	private static final long serialVersionUID = 991899235025710803L;
 
-	@SuppressWarnings("unused")
 	private static final Logger LOG = LoggerFactory.getLogger(org.generationcp.ibpworkbench.cross.study.h2h.main.TraitsAvailableComponent.class);
 
 	public static final String BACK_BUTTON_ID = "TraitsAvailableComponent Back Button ID";
@@ -101,9 +106,8 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 
 	private AbsoluteLayout tableLayout;
 
-	private CheckBox traitFilterCheckBox;
-	private CheckBox analysisFilterCheckBox;
-
+	private OptionGroup variableFilterOptionGroup;
+	
 	public TraitsAvailableComponent(HeadToHeadCrossStudyMain mainScreen, EnvironmentFilter nextScreen) {
 		this.mainScreen = mainScreen;
 		this.nextScreen = nextScreen;
@@ -119,41 +123,14 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 		selectTraitLabel.setImmediate(true);
 		selectTraitLabel.setWidth("400px");
 
-		this.traitFilterCheckBox = new CheckBox(this.messageSource.getMessage(Message.HEAD_TO_HEAD_CHECK_TRAITS),true);
-		this.traitFilterCheckBox.setImmediate(true);
-		this.traitFilterCheckBox.setDebugId("traitFilterCheckBox");
-		this.traitFilterCheckBox.addListener(new Button.ClickListener() {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void buttonClick(final com.vaadin.ui.Button.ClickEvent event) {
-				updatePopulateTraitsAndAnalysisAvailableTable((Boolean) traitFilterCheckBox.getValue(),(Boolean) analysisFilterCheckBox.getValue());
-			}
-
-		});
-
-		this.analysisFilterCheckBox = new CheckBox(this.messageSource.getMessage(Message.HEAD_TO_HEAD_CHECK_ANALYSIS),true);
-		this.analysisFilterCheckBox.setDebugId("analysisFilterCheckBox");
-		this.analysisFilterCheckBox.setImmediate(true);
-		this.analysisFilterCheckBox.addListener(new Button.ClickListener() {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void buttonClick(final com.vaadin.ui.Button.ClickEvent event) {
-				updatePopulateTraitsAndAnalysisAvailableTable((Boolean) traitFilterCheckBox.getValue(),(Boolean) analysisFilterCheckBox.getValue());
-			}
-
-		});
-
+		this.initializeVariableFilterOptionGroup();
+		
 		HorizontalLayout horizontalH2HFilters = new HorizontalLayout();
 		horizontalH2HFilters.setDebugId("horizontalH2HFilters");
 		horizontalH2HFilters.setSpacing(true);
 		horizontalH2HFilters.setWidth("800px");
 		horizontalH2HFilters.addComponent(selectTraitLabel);
-		horizontalH2HFilters.addComponent(this.traitFilterCheckBox);
-		horizontalH2HFilters.addComponent(this.analysisFilterCheckBox);
+		horizontalH2HFilters.addComponent(this.variableFilterOptionGroup);
 
 		this.addComponent(horizontalH2HFilters,"top:10px;left:35px");
 		Label selectTraitReminderLabel = new Label(this.messageSource.getMessage(Message.HEAD_TO_HEAD_SELECT_TRAITS_REMINDER));
@@ -249,6 +226,25 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 
 	}
 
+	void initializeVariableFilterOptionGroup() {
+		this.variableFilterOptionGroup = new OptionGroup(null);
+		this.variableFilterOptionGroup.setImmediate(true);
+		this.variableFilterOptionGroup.addItem(this.messageSource.getMessage(Message.HEAD_TO_HEAD_CHECK_ALL));
+		this.variableFilterOptionGroup.select(this.messageSource.getMessage(Message.HEAD_TO_HEAD_CHECK_ALL));
+		this.variableFilterOptionGroup.addItem(this.messageSource.getMessage(Message.HEAD_TO_HEAD_CHECK_TRAITS));
+		this.variableFilterOptionGroup.addItem(this.messageSource.getMessage(Message.HEAD_TO_HEAD_CHECK_ANALYSIS));
+		this.variableFilterOptionGroup.addStyleName("horizontal");
+		this.variableFilterOptionGroup.addListener(new Property.ValueChangeListener() {
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void valueChange(final ValueChangeEvent event) {
+				updatePopulateTraitsAndAnalysisAvailableTable();
+			}
+		});
+	}
+
 	private ComboBox getDirectionComboBox() {
 		ComboBox combo = new ComboBox();
 		combo.setDebugId("combo");
@@ -269,13 +265,14 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 
 	}
 
-	private void updatePopulateTraitsAndAnalysisAvailableTable(final boolean traitCheckBox, final boolean analysisCheckBox) {
+	private void updatePopulateTraitsAndAnalysisAvailableTable() {
 		this.prevfinalGermplasmPair = null;
 		this.tagUnTagAll.setValue(false);
-		this.populateTraitsAvailableTable(this.finalGermplasmPair, this.germplasmIdNameMap, this.germplasmIdMGIDMap,traitCheckBox, analysisCheckBox);
+		this.populateTraitsAvailableTable(this.finalGermplasmPair, this.germplasmIdNameMap, this.germplasmIdMGIDMap);
 	}
 
-	public void populateTraitsAvailableTable(final List<GermplasmPair> germplasmPairList, final Map<String, String> germplasmIdNameMap, final Map<String, String> germplasmIdMGIDMap,final boolean traitCheckBox, final boolean analysisCheckBox) {
+	public void populateTraitsAvailableTable(final List<GermplasmPair> germplasmPairList, final Map<String, String> germplasmIdNameMap,
+			final Map<String, String> germplasmIdMGIDMap) {
 
 		this.initializeVariables();
 		final Map<String, List<TraitInfo>> traitMap = new HashMap<>();
@@ -288,28 +285,30 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 
 		if (doRefresh) {
 			this.prevfinalGermplasmPair = germplasmPairList;
-			this.refreshEnviromentPairList(germplasmPairList, traitCheckBox, analysisCheckBox);
+			this.refreshEnviromentPairList(germplasmPairList);
 		}
 		this.createEnviromentMap(traitMap, traitEnvMap);
 		this.initializeTable(traitMap, traitEnvMap);
 
 	}
 
-	private void refreshEnviromentPairList(List<GermplasmPair> germplasmPairList, boolean traitCheckBox, boolean analysisCheckBox) {
-		boolean filterByTraits = false;
-		boolean filterByAnalysis = false;
-
-		// Checking both checkbox will be equivalent to not checking anything
-		if ((!traitCheckBox && analysisCheckBox) || (traitCheckBox && !analysisCheckBox)) {
-			filterByTraits = traitCheckBox;
-			filterByAnalysis = analysisCheckBox;
+	void refreshEnviromentPairList(final List<GermplasmPair> germplasmPairList) {
+		// By default both Traits and Analysis variables will be shown
+		List<Integer> experimentTypes = Arrays.asList(TermId.PLOT_EXPERIMENT.getId(), TermId.AVERAGE_EXPERIMENT.getId());
+		final String variableFilterSelected = this.variableFilterOptionGroup.getValue().toString();
+		
+		// Remove the experiment type we will not include based on selected variable filter
+		if (this.messageSource.getMessage(Message.HEAD_TO_HEAD_CHECK_TRAITS).equals(variableFilterSelected)) {
+			experimentTypes = Arrays.asList(TermId.PLOT_EXPERIMENT.getId());
+		} else if (this.messageSource.getMessage(Message.HEAD_TO_HEAD_CHECK_ANALYSIS).equals(variableFilterSelected)) {
+			experimentTypes = Arrays.asList(TermId.AVERAGE_EXPERIMENT.getId());
 		}
 
 		// only call when need to refresh
 		this.prevfinalGermplasmPair = germplasmPairList;
 		try {
 			this.environmentPairList =
-				this.crossStudyDataManager.getEnvironmentsForGermplasmPairs(germplasmPairList, filterByTraits, filterByAnalysis);
+				this.crossStudyDataManager.getEnvironmentsForGermplasmPairs(germplasmPairList, experimentTypes);
 		} catch (MiddlewareQueryException e) {
 			LOG.error(e.getMessage(), e);
 		}
@@ -474,19 +473,19 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 		// do nothing
 	}
 
-	public CheckBox getTraitFilterCheckBox() {
-		return traitFilterCheckBox;
+	
+	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
 	}
 
-	public boolean getTraitFilterValue() {
-		return (Boolean) getTraitFilterCheckBox().getValue();
+	
+	public void setCrossStudyDataManager(CrossStudyDataManager crossStudyDataManager) {
+		this.crossStudyDataManager = crossStudyDataManager;
 	}
 
-	public CheckBox getAnalysisFilterCheckBox() {
-		return analysisFilterCheckBox;
+	
+	public OptionGroup getVariableFilterOptionGroup() {
+		return variableFilterOptionGroup;
 	}
-
-	public boolean getAnalysisFilterValue() {
-		return (Boolean) getAnalysisFilterCheckBox().getValue();
-	}
+	
 }

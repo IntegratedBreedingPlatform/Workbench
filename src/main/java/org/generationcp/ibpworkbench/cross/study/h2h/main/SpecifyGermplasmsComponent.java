@@ -335,8 +335,7 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 
 	public void nextButtonClickAction() {
 		if (this.nextScreen != null) {
-			this.nextScreen.populateTraitsAvailableTable(this.getGermplasmPairs(), this.germplasmIdNameMap, this.germplasmIdMGIDMap,
-				nextScreen.getTraitFilterValue(), nextScreen.getAnalysisFilterValue());
+			this.nextScreen.populateTraitsAvailableTable(this.getGermplasmPairs(), this.germplasmIdNameMap, this.germplasmIdMGIDMap);
 			this.mainScreen.selectSecondTab();
 
 		}

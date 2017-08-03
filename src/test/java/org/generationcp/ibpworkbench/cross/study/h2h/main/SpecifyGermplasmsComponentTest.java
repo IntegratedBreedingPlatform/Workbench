@@ -10,12 +10,15 @@ import java.util.Map;
 
 import org.generationcp.ibpworkbench.cross.study.h2h.main.pojos.TablesEntries;
 import org.generationcp.middleware.data.initializer.GermplasmListDataTestDataInitializer;
+import org.generationcp.middleware.domain.h2h.GermplasmPair;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.GermplasmListData;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.vaadin.ui.Table;
@@ -28,16 +31,23 @@ public class SpecifyGermplasmsComponentTest {
 	private static final String GERMPLASM2_GID = "2";
 	private static final String GERMPLASM2_NAME = "Germplasm 2";
 	private static final String GERMPLASM2_GROUPID = "2";
+	
+	@Mock
+	private HeadToHeadCrossStudyMain mainScreen;
+	
+	@Mock
+	private TraitsAvailableComponent traitsComponent;
 
 	@InjectMocks
-	SpecifyGermplasmsComponent specifyGermplasmsComponent;
+	private SpecifyGermplasmsComponent specifyGermplasmsComponent;
 
-	Map<String, String> germplasmIdMGIDMap = new HashMap<String, String>();
+	Map<String, String> germplasmIdMGIDMap = new HashMap<>();
 
 	@Before
 	public void setup() {
 		this.germplasmIdMGIDMap.put(SpecifyGermplasmsComponentTest.GERMPLASM2_GID,
 				SpecifyGermplasmsComponentTest.GERMPLASM2_GID);
+		this.specifyGermplasmsComponent = new SpecifyGermplasmsComponent(this.mainScreen, this.traitsComponent);
 		this.specifyGermplasmsComponent.setGermplasmIdMGIDMap(this.germplasmIdMGIDMap);
 		this.specifyGermplasmsComponent.setSingleEntriesSet(new HashSet<String>());
 		this.specifyGermplasmsComponent.setGermplasmIdNameMap(new HashMap<String, String>());
@@ -145,5 +155,14 @@ public class SpecifyGermplasmsComponentTest {
 				germplasmData.getGid().toString(), tablesEntries.getStandardEntryGID());
 		Assert.assertEquals("The standard entry group id should be " + germplasmData.getGroupId(),
 				germplasmData.getGroupId().toString(), tablesEntries.getStandardEntryGroupID());
+	}
+	
+	@Test
+	public void testNextButtonClickAction() {
+		this.specifyGermplasmsComponent.nextButtonClickAction();
+		
+		Mockito.verify(this.traitsComponent).populateTraitsAvailableTable(Mockito.anyListOf(GermplasmPair.class),
+				Mockito.anyMapOf(String.class, String.class), Mockito.anyMapOf(String.class, String.class));
+		Mockito.verify(this.mainScreen).selectSecondTab();
 	}
 }
