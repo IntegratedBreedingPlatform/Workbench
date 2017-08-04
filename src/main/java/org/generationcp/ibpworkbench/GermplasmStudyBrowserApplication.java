@@ -17,7 +17,6 @@ import com.vaadin.ui.Window;
 import org.dellroad.stuff.vaadin.ContextApplication;
 import org.dellroad.stuff.vaadin.SpringContextApplication;
 import org.generationcp.ibpworkbench.cross.study.adapted.main.QueryForAdaptedGermplasmMain;
-import org.generationcp.ibpworkbench.cross.study.h2h.HeadToHeadComparisonMain;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.HeadToHeadCrossStudyMain;
 import org.generationcp.ibpworkbench.cross.study.traitdonors.main.TraitDonorsQueryMain;
 import org.generationcp.ibpworkbench.germplasm.GermplasmDetailsComponentTree;
@@ -58,7 +57,6 @@ public class GermplasmStudyBrowserApplication extends SpringContextApplication i
 	public static final String STUDY_DETAILS_PREFIX = "study-";
 	public static final String STUDY_BROWSER_PREFIX = "studybrowser-";
 	public static final String GERMPLASM_DETAILS_PREFIX = "germplasm-";
-	public static final String HEAD_TO_HEAD_CROSS_STUDY_QUERY_WINDOW_NAME = "h2h-query";
 	public static final String HEAD_TO_HEAD_COMPARISON_WINDOW_NAME = "Head_to_head_comparison";
 	public static final String QUERY_FOR_ADAPTED_GERMPLASM_WINDOW_NAME = "Query_For_Adapted_Germplasm";
 	public static final String TRAIT_DONORS_QUERY_NAME = "Trait_Donors_Query";
@@ -200,14 +198,6 @@ public class GermplasmStudyBrowserApplication extends SpringContextApplication i
 					this.addWindow(emptyGermplasmDetailsWindow);
 					return emptyGermplasmDetailsWindow;
 				}
-			} else if (GermplasmStudyBrowserApplication.HEAD_TO_HEAD_CROSS_STUDY_QUERY_WINDOW_NAME.equals(name)) {
-				Window headToHeadQueryToolWindow = new Window("Cross Study: Head-to-Head Comparison");
-				// Browser
-				headToHeadQueryToolWindow.setName(GermplasmStudyBrowserApplication.HEAD_TO_HEAD_CROSS_STUDY_QUERY_WINDOW_NAME);
-				headToHeadQueryToolWindow.setSizeUndefined();
-				headToHeadQueryToolWindow.setContent(new HeadToHeadComparisonMain());
-				this.addWindow(headToHeadQueryToolWindow);
-				return headToHeadQueryToolWindow;
 			} else if (GermplasmStudyBrowserApplication.HEAD_TO_HEAD_COMPARISON_WINDOW_NAME.equals(name)) {
 				Window headToHeadQueryToolWindow = new Window("Cross Study: Head-to-Head Comparison");
 				// Browser
