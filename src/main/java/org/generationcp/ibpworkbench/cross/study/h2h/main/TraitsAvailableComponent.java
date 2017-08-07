@@ -25,10 +25,7 @@ import org.generationcp.middleware.domain.h2h.GermplasmPair;
 import org.generationcp.middleware.domain.h2h.TraitInfo;
 import org.generationcp.middleware.domain.h2h.TraitType;
 import org.generationcp.middleware.domain.oms.TermId;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.CrossStudyDataManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -53,9 +50,6 @@ import com.vaadin.ui.Table.ColumnResizeEvent;
 public class TraitsAvailableComponent extends AbsoluteLayout implements InitializingBean, InternationalizableComponent {
 
 	private static final long serialVersionUID = 991899235025710803L;
-
-	private static final Logger LOG =
-			LoggerFactory.getLogger(org.generationcp.ibpworkbench.cross.study.h2h.main.TraitsAvailableComponent.class);
 
 	public static final String BACK_BUTTON_ID = "TraitsAvailableComponent Back Button ID";
 	public static final String NEXT_BUTTON_ID = "TraitsAvailableComponent Next Button ID";
@@ -309,11 +303,7 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 
 		// only call when need to refresh
 		this.prevfinalGermplasmPair = germplasmPairList;
-		try {
-			this.environmentPairList = this.crossStudyDataManager.getEnvironmentsForGermplasmPairs(germplasmPairList, experimentTypes);
-		} catch (final MiddlewareQueryException e) {
-			TraitsAvailableComponent.LOG.error(e.getMessage(), e);
-		}
+		this.environmentPairList = this.crossStudyDataManager.getEnvironmentsForGermplasmPairs(germplasmPairList, experimentTypes);
 	}
 
 	private void createEnviromentMap(final Map<String, List<TraitInfo>> traitMap, final Map<String, Set<String>> traitEnvMap) {
