@@ -87,8 +87,7 @@ public class WelcomeScreen extends AbsoluteLayout implements InitializingBean, I
 
 							@Override
 							public void onClose(ConfirmDialog dialog) {
-								WelcomeScreen.this.nextScreen.setIncludePublicData(dialog.isConfirmed());
-								WelcomeScreen.this.proceedToNextScreen();
+									WelcomeScreen.this.proceedToNextScreen();
 							}
 						});
 				confirmDialog.getCancelButton().setStyleName(Reindeer.BUTTON_DEFAULT);
