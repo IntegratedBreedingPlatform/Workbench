@@ -88,12 +88,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 		if (this.isUploadedZipFileValid(studyId, project)) {
 
 			final List<Integer> locationIds = new ArrayList<>();
-			try {
-				locationIds.addAll(this.getLocationIdsBasedOnInformationFromMeansDataFile(studyId, this.bmsOutputParser.getMeansFile()));
-			} catch (final IOException e) {
-				// Do nothing here.
-				UploadBreedingViewOutputAction.LOG.error(e.getMessage(), e);
-			}
+			locationIds.addAll(this.getLocationIdsBasedOnInformationFromMeansDataFile(studyId, this.bmsOutputParser.getMeansFile()));
 
 			boolean environmentExists = false;
 
@@ -173,8 +168,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 		return true;
 	}
 
-	protected List<Integer> getLocationIdsBasedOnInformationFromMeansDataFile(final int studyId, final File meansDataFile)
-			throws IOException {
+	protected List<Integer> getLocationIdsBasedOnInformationFromMeansDataFile(final int studyId, final File meansDataFile) {
 
 		final List<Integer> locationIds = new ArrayList<>();
 
