@@ -88,12 +88,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 		if (this.isUploadedZipFileValid(studyId, project)) {
 
 			final List<Integer> locationIds = new ArrayList<>();
-			try {
-				locationIds.addAll(this.getLocationIdsBasedOnInformationFromMeansDataFile(studyId, this.bmsOutputParser.getMeansFile()));
-			} catch (final IOException e) {
-				// Do nothing here.
-				UploadBreedingViewOutputAction.LOG.error(e.getMessage(), e);
-			}
+			locationIds.addAll(this.getLocationIdsBasedOnInformationFromMeansDataFile(studyId, this.bmsOutputParser.getMeansFile()));
 
 			boolean environmentExists = false;
 
@@ -173,8 +168,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 		return true;
 	}
 
-	protected List<Integer> getLocationIdsBasedOnInformationFromMeansDataFile(final int studyId, final File meansDataFile)
-			throws IOException {
+	protected List<Integer> getLocationIdsBasedOnInformationFromMeansDataFile(final int studyId, final File meansDataFile) {
 
 		final List<Integer> locationIds = new ArrayList<>();
 
@@ -230,19 +224,15 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 			@Override
 			protected void doInTransactionWithoutResult(final TransactionStatus arg0) {
-				final Map<String, String> localNameToAliasMap =
-						UploadBreedingViewOutputAction.this.generateNameAliasMap(UploadBreedingViewOutputAction.this.bmsOutputParser
-								.getBmsOutputInformation().getInputDataSetId());
-
 				try {
 					UploadBreedingViewOutputAction.this.breedingViewImportService.importMeansData(
-							UploadBreedingViewOutputAction.this.bmsOutputParser.getMeansFile(), studyId, localNameToAliasMap);
+							UploadBreedingViewOutputAction.this.bmsOutputParser.getMeansFile(), studyId);
 					UploadBreedingViewOutputAction.this.breedingViewImportService.importSummaryStatsData(
-							UploadBreedingViewOutputAction.this.bmsOutputParser.getSummaryStatsFile(), studyId, localNameToAliasMap);
+							UploadBreedingViewOutputAction.this.bmsOutputParser.getSummaryStatsFile(), studyId);
 
 					if (UploadBreedingViewOutputAction.this.bmsOutputParser.getOutlierFile() != null) {
 						UploadBreedingViewOutputAction.this.breedingViewImportService.importOutlierData(
-								UploadBreedingViewOutputAction.this.bmsOutputParser.getOutlierFile(), studyId, localNameToAliasMap);
+								UploadBreedingViewOutputAction.this.bmsOutputParser.getOutlierFile(), studyId);
 					}
 
 					MessageNotifier.showMessage(UploadBreedingViewOutputAction.this.window.getParent(),
@@ -267,33 +257,6 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 			}
 
 		});
-
-	}
-
-	/**
-	 * Breeding View only supports alphanumeric, dash, underscore and percentage characters in trait header names. When we generate the
-	 * input file for Breeding View, we replace the invalid characters in trait header names with underscore. We create this map so that BMS
-	 * knows the original name of the traits.
-	 *
-	 * @param studyId
-	 * @return
-	 */
-	protected Map<String, String> generateNameAliasMap(final int dataSetId) {
-		final Map<String, String> map = new HashMap<>();
-
-		final DataSet dataSet = this.studyDataManager.getDataSet(dataSetId);
-		final VariableTypeList variableTypeList = dataSet.getVariableTypes().getVariates();
-
-		if (variableTypeList.getVariableTypes() != null) {
-			for (final DMSVariableType variableType : variableTypeList.getVariableTypes()) {
-
-				final String nameSanitized =
-						variableType.getLocalName().replaceAll(UploadBreedingViewOutputAction.REGEX_VALID_BREEDING_VIEW_CHARACTERS, "_");
-				map.put(nameSanitized, variableType.getLocalName());
-			}
-		}
-
-		return map;
 
 	}
 

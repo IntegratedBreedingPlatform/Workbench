@@ -159,8 +159,6 @@ public class DatasetExporter {
 		this.generateExperimentRows(selectedEnvironments, breedingViewInput, factorColumns, variateColumns, selectedEnvironmentFactor,
 				selectedEnvFactorInColumnList);
 
-		this.serializeHeaderAliasMap();
-
 		// Create CSV file
 		this.writeCSVFile(filename);
 
@@ -245,18 +243,6 @@ public class DatasetExporter {
 
 		return sanitized.toArray(new String[0]);
 
-	}
-
-	protected void serializeHeaderAliasMap() {
-		try {
-			final String tempFolder =
-					String.format("%s\\temp", this.getWorkbenchDataManager().getWorkbenchSetting().getInstallationDirectory());
-			new File(tempFolder).mkdir();
-			final String fileName = tempFolder + "\\mapping.ser";
-			new ObjectUtil<Map<String, String>>().serializeObject(this.headerNameAliasMap, fileName);
-		} catch (final Exception e) {
-			DatasetExporter.LOG.error(e.getMessage(), e);
-		}
 	}
 
 	protected void writeCSVFile(final String filename) {
