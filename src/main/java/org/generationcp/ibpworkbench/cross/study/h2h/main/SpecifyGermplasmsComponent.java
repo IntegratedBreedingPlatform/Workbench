@@ -44,8 +44,7 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
-public class SpecifyGermplasmsComponent extends AbsoluteLayout
-		implements InitializingBean, InternationalizableComponent {
+public class SpecifyGermplasmsComponent extends AbsoluteLayout implements InitializingBean, InternationalizableComponent {
 
 	private static final String SEARCH_BUTTON_WIDTH = "130px";
 
@@ -57,9 +56,12 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 	public static final String SELECT_STANDARD_ENTRY_BUTTON_ID = "SpecifyGermplasmsComponent Select Standard Entry Button ID";
 
 	public static final String SELECT_TEST_SEARCH_GERMPLASM_BUTTON_ID = "SpecifyGermplasmsComponent Test Search Germplasm Button ID";
-	public static final String SELECT_STANDARD_SEARCH_GERMPLASM_BUTTON_ID = "SpecifyGermplasmsComponent Standard Search Germplasm Button ID";
-	public static final String SELECT_TEST_SEARCH_GERMPLASM_LIST_BUTTON_ID = "SpecifyGermplasmsComponent Test Search Germplasm List Button ID";
-	public static final String SELECT_STANDARD_SEARCH_GERMPLASM_LIST_BUTTON_ID = "SpecifyGermplasmsComponent Standard Search Germplasm List Button ID";
+	public static final String SELECT_STANDARD_SEARCH_GERMPLASM_BUTTON_ID =
+			"SpecifyGermplasmsComponent Standard Search Germplasm Button ID";
+	public static final String SELECT_TEST_SEARCH_GERMPLASM_LIST_BUTTON_ID =
+			"SpecifyGermplasmsComponent Test Search Germplasm List Button ID";
+	public static final String SELECT_STANDARD_SEARCH_GERMPLASM_LIST_BUTTON_ID =
+			"SpecifyGermplasmsComponent Standard Search Germplasm List Button ID";
 
 	// maximum # of pairs can be rendered
 	private static final BigInteger MAX_NUM_OF_PAIRS = new BigInteger("2000");
@@ -86,8 +88,8 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 
 	private static final Action ACTION_SELECT_ALL = new Action("Select All");
 	private static final Action ACTION_DELETE = new Action("Delete selected");
-	private static final Action[] ACTIONS_TABLE_CONTEXT_MENU = new Action[] {
-			SpecifyGermplasmsComponent.ACTION_SELECT_ALL, SpecifyGermplasmsComponent.ACTION_DELETE };
+	private static final Action[] ACTIONS_TABLE_CONTEXT_MENU =
+			new Action[] {SpecifyGermplasmsComponent.ACTION_SELECT_ALL, SpecifyGermplasmsComponent.ACTION_DELETE};
 
 	@Autowired
 	private GermplasmListManager germplasmListManager;
@@ -107,8 +109,7 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 	@Autowired
 	private OntologyDataManager ontologyDataManager;
 
-	public SpecifyGermplasmsComponent(final HeadToHeadCrossStudyMain mainScreen,
-			final TraitsAvailableComponent nextScreen) {
+	public SpecifyGermplasmsComponent(final HeadToHeadCrossStudyMain mainScreen, final TraitsAvailableComponent nextScreen) {
 		this.mainScreen = mainScreen;
 		this.nextScreen = nextScreen;
 	}
@@ -118,12 +119,12 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 		this.setHeight("600px");
 		this.setWidth("1000px");
 
-		Panel testPanel = new Panel("TEST");
+		final Panel testPanel = new Panel("TEST");
 		testPanel.setDebugId("testPanel");
 		testPanel.setWidth("400px");
 		testPanel.setSizeUndefined();
 
-		Panel standardPanel = new Panel("STANDARD");
+		final Panel standardPanel = new Panel("STANDARD");
 		standardPanel.setDebugId("standardPanel");
 		standardPanel.setWidth("470px");
 		testPanel.setSizeUndefined();
@@ -133,12 +134,11 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 		absLayout.setWidth("400px");
 		absLayout.setHeight("90px");
 
-		Label testSearchGermplasmLabel = new Label(this.messageSource.getMessage(Message.SPECIFY_SINGLE_TEST_ENTRY));
+		final Label testSearchGermplasmLabel = new Label(this.messageSource.getMessage(Message.SPECIFY_SINGLE_TEST_ENTRY));
 		testSearchGermplasmLabel.setDebugId("testSearchGermplasmLabel");
 		testSearchGermplasmLabel.setImmediate(true);
 
-		Label testSearchGermplasmListLabel = new Label(
-				this.messageSource.getMessage(Message.SPECIFY_TEST_GERMPLASM_LIST_ENTRY));
+		final Label testSearchGermplasmListLabel = new Label(this.messageSource.getMessage(Message.SPECIFY_TEST_GERMPLASM_LIST_ENTRY));
 		testSearchGermplasmListLabel.setDebugId("testSearchGermplasmListLabel");
 		testSearchGermplasmListLabel.setImmediate(true);
 
@@ -165,13 +165,12 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 		absLayoutStandard.setWidth("450px");
 		absLayoutStandard.setHeight("90px");
 
-		Label standardSearchGermplasmLabel = new Label(
-				this.messageSource.getMessage(Message.SPECIFY_SINGLE_STANDARD_ENTRY));
+		final Label standardSearchGermplasmLabel = new Label(this.messageSource.getMessage(Message.SPECIFY_SINGLE_STANDARD_ENTRY));
 		standardSearchGermplasmLabel.setDebugId("standardSearchGermplasmLabel");
 		standardSearchGermplasmLabel.setImmediate(true);
 
-		Label standardSearchGermplasmListLabel = new Label(
-				this.messageSource.getMessage(Message.SPECIFY_STANDARD_GERMPLASM_LIST_ENTRY));
+		final Label standardSearchGermplasmListLabel =
+				new Label(this.messageSource.getMessage(Message.SPECIFY_STANDARD_GERMPLASM_LIST_ENTRY));
 		standardSearchGermplasmListLabel.setDebugId("standardSearchGermplasmListLabel");
 		standardSearchGermplasmListLabel.setImmediate(true);
 
@@ -183,8 +182,7 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 
 		this.standardSearchGermplasmList = new Button(this.messageSource.getMessage(Message.HEAD_TO_HEAD_BROWSE_LIST));
 		this.standardSearchGermplasmList.setDebugId("standardSearchGermplasmList");
-		this.standardSearchGermplasmList
-				.setData(SpecifyGermplasmsComponent.SELECT_STANDARD_SEARCH_GERMPLASM_LIST_BUTTON_ID);
+		this.standardSearchGermplasmList.setData(SpecifyGermplasmsComponent.SELECT_STANDARD_SEARCH_GERMPLASM_LIST_BUTTON_ID);
 		this.standardSearchGermplasmList.setWidth(SpecifyGermplasmsComponent.SEARCH_BUTTON_WIDTH);
 		this.standardSearchGermplasmList.addListener(new HeadToHeadCrossStudyMainButtonClickListener(this));
 
@@ -194,7 +192,7 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 		absLayoutStandard.addComponent(this.standardSearchGermplasmList, "top:50px;left:290px");
 		standardPanel.addComponent(absLayoutStandard);
 
-		Label headerLabel = new Label(this.messageSource.getMessage(Message.SELECT_TEST_STANDARD_COMPARE));
+		final Label headerLabel = new Label(this.messageSource.getMessage(Message.SELECT_TEST_STANDARD_COMPARE));
 		headerLabel.setDebugId("headerLabel");
 		headerLabel.setImmediate(true);
 
@@ -228,13 +226,12 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.STANDARD_ENTRY_GID, gid + " standard");
 
 		this.entriesTable.addContainerProperty(SpecifyGermplasmsComponent.STANDARD_ENTRY_COLUMN_ID, String.class, null);
-		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.STANDARD_ENTRY_COLUMN_ID,
-				"Standard Entry " + designation);
+		this.entriesTable.setColumnHeader(SpecifyGermplasmsComponent.STANDARD_ENTRY_COLUMN_ID, "Standard Entry " + designation);
 
-		this.entriesTable.setVisibleColumns(new Object[] { SpecifyGermplasmsComponent.TEST_ENTRY_GROUPID,
-				SpecifyGermplasmsComponent.TEST_ENTRY_GID, SpecifyGermplasmsComponent.TEST_ENTRY_COLUMN_ID,
-				SpecifyGermplasmsComponent.STANDARD_ENTRY_GROUPID, SpecifyGermplasmsComponent.STANDARD_ENTRY_GID,
-				SpecifyGermplasmsComponent.STANDARD_ENTRY_COLUMN_ID });
+		this.entriesTable
+				.setVisibleColumns(new Object[] {SpecifyGermplasmsComponent.TEST_ENTRY_GROUPID, SpecifyGermplasmsComponent.TEST_ENTRY_GID,
+						SpecifyGermplasmsComponent.TEST_ENTRY_COLUMN_ID, SpecifyGermplasmsComponent.STANDARD_ENTRY_GROUPID,
+						SpecifyGermplasmsComponent.STANDARD_ENTRY_GID, SpecifyGermplasmsComponent.STANDARD_ENTRY_COLUMN_ID});
 		this.entriesTable.setSelectable(true);
 		this.entriesTable.setMultiSelect(true);
 		this.entriesTable.setNullSelectionAllowed(false);
@@ -254,8 +251,7 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 					SpecifyGermplasmsComponent.this.deleteEntriesAction();
 					SpecifyGermplasmsComponent.this.entriesTable.setPageLength(0);
 				} else if (SpecifyGermplasmsComponent.ACTION_SELECT_ALL == action) {
-					SpecifyGermplasmsComponent.this.entriesTable
-							.setValue(SpecifyGermplasmsComponent.this.entriesTable.getItemIds());
+					SpecifyGermplasmsComponent.this.entriesTable.setValue(SpecifyGermplasmsComponent.this.entriesTable.getItemIds());
 					SpecifyGermplasmsComponent.this.entriesTable.setPageLength(0);
 				}
 			}
@@ -299,8 +295,7 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 
 	public void selectTestEntryButtonClickAction() {
 		final Window parentWindow = this.getWindow();
-		final SelectGermplasmEntryDialog selectTestEntryAGermplasmDialog = new SelectGermplasmEntryDialog(this, parentWindow,
-				true);
+		final SelectGermplasmEntryDialog selectTestEntryAGermplasmDialog = new SelectGermplasmEntryDialog(this, parentWindow, true);
 		selectTestEntryAGermplasmDialog.setDebugId("selectTestEntryAGermplasmDialog");
 		selectTestEntryAGermplasmDialog.addStyleName(Reindeer.WINDOW_LIGHT);
 		parentWindow.addWindow(selectTestEntryAGermplasmDialog);
@@ -308,8 +303,7 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 
 	public void selectStandardEntryButtonClickAction() {
 		final Window parentWindow = this.getWindow();
-		final SelectGermplasmEntryDialog selectStandardEntryAGermplasmDialog = new SelectGermplasmEntryDialog(this, parentWindow,
-				false);
+		final SelectGermplasmEntryDialog selectStandardEntryAGermplasmDialog = new SelectGermplasmEntryDialog(this, parentWindow, false);
 		selectStandardEntryAGermplasmDialog.setDebugId("selectStandardEntryAGermplasmDialog");
 		selectStandardEntryAGermplasmDialog.addStyleName(Reindeer.WINDOW_LIGHT);
 		parentWindow.addWindow(selectStandardEntryAGermplasmDialog);
@@ -317,8 +311,7 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 
 	public void selectTestGermplasmListButtonClickAction() {
 		final Window parentWindow = this.getWindow();
-		final SelectGermplasmListDialog selectTestGermplasmListAGermplasmDialog = new SelectGermplasmListDialog(this, parentWindow,
-				true);
+		final SelectGermplasmListDialog selectTestGermplasmListAGermplasmDialog = new SelectGermplasmListDialog(this, parentWindow, true);
 		selectTestGermplasmListAGermplasmDialog.setDebugId("selectTestGermplasmListAGermplasmDialog");
 		selectTestGermplasmListAGermplasmDialog.addStyleName(Reindeer.WINDOW_LIGHT);
 		parentWindow.addWindow(selectTestGermplasmListAGermplasmDialog);
@@ -326,8 +319,7 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 
 	public void selectStandardGermplasmListButtonClickAction() {
 		final Window parentWindow = this.getWindow();
-		final SelectGermplasmListDialog selectAGermplasmDialog = new SelectGermplasmListDialog(this, parentWindow,
-				false);
+		final SelectGermplasmListDialog selectAGermplasmDialog = new SelectGermplasmListDialog(this, parentWindow, false);
 		selectAGermplasmDialog.setDebugId("selectAGermplasmDialog");
 		selectAGermplasmDialog.addStyleName(Reindeer.WINDOW_LIGHT);
 		parentWindow.addWindow(selectAGermplasmDialog);
@@ -335,8 +327,7 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 
 	public void nextButtonClickAction() {
 		if (this.nextScreen != null) {
-			this.nextScreen.populateTraitsAvailableTable(this.getGermplasmPairs(), this.germplasmIdNameMap, this.germplasmIdMGIDMap,
-				nextScreen.getTraitFilterValue(), nextScreen.getAnalysisFilterValue());
+			this.nextScreen.populateTraitsAvailableTable(this.getGermplasmPairs(), this.germplasmIdNameMap, this.germplasmIdMGIDMap);
 			this.mainScreen.selectSecondTab();
 
 		}
@@ -359,7 +350,7 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 				rightId = tokenizer.nextToken().trim();
 			}
 
-			final GermplasmPair germplasmPair = new GermplasmPair(Integer.valueOf(leftId),Integer.valueOf(rightId));
+			final GermplasmPair germplasmPair = new GermplasmPair(Integer.valueOf(leftId), Integer.valueOf(rightId));
 			pairList.add(germplasmPair);
 
 		}
@@ -392,8 +383,8 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 		if (!this.permutationsWillExceedMax(listSize)) {
 			try {
 
-				final List<GermplasmListData> listGermplasmListData = this.germplasmListManager
-						.getGermplasmListDataByListId(germplasmListId);
+				final List<GermplasmListData> listGermplasmListData =
+						this.germplasmListManager.getGermplasmListDataByListId(germplasmListId);
 
 				if (listGermplasmListData != null && !listGermplasmListData.isEmpty()) {
 					this.doGermplasmPermutationOnTable(isTestEntry, false, listGermplasmListData, null);
@@ -450,8 +441,7 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 			germplasmListDataList.add(germplasmData);
 		}
 
-		this.permutateGermplasmListToPartnerEntries(isTestEntry, testMap, standardMap, tableEntriesList,
-				germplasmListDataList);
+		this.permutateGermplasmListToPartnerEntries(isTestEntry, testMap, standardMap, tableEntriesList, germplasmListDataList);
 
 		this.addToTable(tableEntriesList);
 
@@ -505,8 +495,8 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 					testEntryMGID = null;
 				}
 
-				final TablesEntries entry = new TablesEntries(testEntryName, standardEntryName, newId, testEntryGID,
-						standardEntryGID, testEntryMGID, standardEntryMGID);
+				final TablesEntries entry = new TablesEntries(testEntryName, standardEntryName, newId, testEntryGID, standardEntryGID,
+						testEntryMGID, standardEntryMGID);
 				tableEntriesList.add(entry);
 				this.singleEntriesSet.add(newId);
 				this.germplasmIdNameMap.put(gid, germplasmName);
@@ -543,8 +533,8 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 					}
 
 					if (!gid.equalsIgnoreCase(partnerId)) {
-						final TablesEntries entry = new TablesEntries(testEntryName, standardEntryName, newId,
-								testEntryGID, standardEntryGID, testEntryMGID, standardEntryMGID);
+						final TablesEntries entry = new TablesEntries(testEntryName, standardEntryName, newId, testEntryGID,
+								standardEntryGID, testEntryMGID, standardEntryMGID);
 						tableEntriesList.add(entry);
 					}
 					this.germplasmIdNameMap.put(partnerId, partnerName);
@@ -588,10 +578,8 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 				leftId = tokenizer.nextToken().trim();
 				rightId = tokenizer.nextToken().trim();
 			}
-			final String testEntryName = (String) item.getItemProperty(SpecifyGermplasmsComponent.TEST_ENTRY_COLUMN_ID)
-					.getValue();
-			final String standardEntryName = (String) item
-					.getItemProperty(SpecifyGermplasmsComponent.STANDARD_ENTRY_COLUMN_ID).getValue();
+			final String testEntryName = (String) item.getItemProperty(SpecifyGermplasmsComponent.TEST_ENTRY_COLUMN_ID).getValue();
+			final String standardEntryName = (String) item.getItemProperty(SpecifyGermplasmsComponent.STANDARD_ENTRY_COLUMN_ID).getValue();
 
 			if (leftId != null && !"".equalsIgnoreCase(leftId)) {
 				testMap.put(leftId, testEntryName);
@@ -612,9 +600,8 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout
 
 			if (!this.tableEntriesId.contains(newId)) {
 				this.entriesTable.addItem(
-						new Object[] { tableEntry.getTestEntryGroupID(), tableEntry.getTestEntryGID(),
-								tableEntry.getTestEntryName(), tableEntry.getStandardEntryGroupID(),
-								tableEntry.getStandardEntryGID(), tableEntry.getStandardEntryName() },
+						new Object[] {tableEntry.getTestEntryGroupID(), tableEntry.getTestEntryGID(), tableEntry.getTestEntryName(),
+								tableEntry.getStandardEntryGroupID(), tableEntry.getStandardEntryGID(), tableEntry.getStandardEntryName()},
 						tableEntry.getTestStandardEntry());
 				this.tableEntriesId.add(newId);
 			}

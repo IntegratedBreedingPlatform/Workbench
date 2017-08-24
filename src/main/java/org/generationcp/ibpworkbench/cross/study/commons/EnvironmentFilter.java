@@ -174,9 +174,6 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 	// This list allows us to limit environments based on selected traits (Trait Donors Query)
 	private List<Integer> traitsList;
 
-	// Keeping default to true to keep existing behavior intact for H2H and Trait Donor's queries.
-	private boolean includePublicData = true;
-
 	public EnvironmentFilter(HeadToHeadCrossStudyMain mainScreen, ResultsComponent nextScreen) {
 		this.mainScreen1 = mainScreen;
 		this.nextScreen1 = nextScreen;
@@ -388,14 +385,6 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 		} else {
 			this.addComponent(this.nextButton, "top:490px;left:460px");
 		}
-	}
-
-	public boolean isIncludePublicData() {
-		return this.includePublicData;
-	}
-
-	public void setIncludePublicData(boolean includePublicData) {
-		this.includePublicData = includePublicData;
 	}
 
 	private void createEnvironmentsTable(Set<TraitInfo> traitInfos) {
@@ -639,7 +628,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 
 		if (this.crossStudyToolType == CrossStudyToolType.QUERY_FOR_ADAPTED_GERMPLASM) {
 			try {
-				this.environments = this.crossStudyDataManager.getAllTrialEnvironments(this.includePublicData);
+				this.environments = this.crossStudyDataManager.getAllTrialEnvironments();
 
 				Set<TrialEnvironment> trialEnvSet = this.environments.getTrialEnvironments();
 				Iterator<TrialEnvironment> trialEnvIter = trialEnvSet.iterator();

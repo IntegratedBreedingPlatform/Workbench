@@ -13,6 +13,13 @@ span.v-checkbox-hidecheckbox input{display:none !important}
 .v-select-optiongroup-horizontal,.v-select-option.v-radiobutton{align-bottom:10px}
 .v-select-optiongroup-horizontal,.v-select-option{display:inline-block}
 .v-select-optiongroup-horizontal{white-space:nowrap}
+
+/* Lay the options horizontally */
+.v-select-optiongroup-horizontal .v-select-option {
+    display: inline-block;
+    margin-right: 30px;
+}
+
 .v-button-action .v-button-caption { color: #7C7C7C; font-size: 20px;}
 .v-button-action:hover .v-button-caption,
 .v-button-action:active .v-button-caption,

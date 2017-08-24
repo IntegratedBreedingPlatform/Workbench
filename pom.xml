@@ -5,7 +5,7 @@
 	<artifactId>ibpworkbench</artifactId>
 	<packaging>war</packaging>
 	<name>Workbench</name>
-        <version>6.1</version>
+        <version>6.2</version>
 
 	<properties>
 		<vaadin.version>6.8.13</vaadin.version>
@@ -611,7 +611,7 @@
 			<plugin>
 				<groupId>com.github.eirslett</groupId>
 				<artifactId>frontend-maven-plugin</artifactId>
-				<version>0.0.25</version>
+				<version>1.4</version>
 
 				<configuration>
 					<workingDirectory>src/main/web</workingDirectory>

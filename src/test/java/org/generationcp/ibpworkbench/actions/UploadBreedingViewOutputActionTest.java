@@ -204,12 +204,10 @@ public class UploadBreedingViewOutputActionTest {
 
 		this.uploadBreedingViewOutputAction.buttonClick(this.event);
 
-		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importMeansData(Matchers.any(File.class), Matchers.anyInt(),
-				Matchers.anyMap());
+		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importMeansData(Matchers.any(File.class), Matchers.anyInt());
 		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importSummaryStatsData(Matchers.any(File.class),
-				Matchers.anyInt(), Matchers.anyMap());
-		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importOutlierData(Matchers.any(File.class), Matchers.anyInt(),
-				Matchers.anyMap());
+				Matchers.anyInt());
+		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importOutlierData(Matchers.any(File.class), Matchers.anyInt());
 
 		Mockito.verify(this.bmsOutputParser).deleteTemporaryFiles();
 
@@ -262,12 +260,10 @@ public class UploadBreedingViewOutputActionTest {
 		this.uploadBreedingViewOutputAction.processTheUploadedFile(this.event, UploadBreedingViewOutputActionTest.TEST_STUDY_ID,
 				this.fileUploadBreedingViewOutputWindow.getProject());
 
-		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importMeansData(Matchers.any(File.class), Matchers.anyInt(),
-				Matchers.anyMap());
+		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importMeansData(Matchers.any(File.class), Matchers.anyInt());
 		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importSummaryStatsData(Matchers.any(File.class),
-				Matchers.anyInt(), Matchers.anyMap());
-		Mockito.verify(this.breedingViewImportService, Mockito.times(0)).importOutlierData(Matchers.any(File.class), Matchers.anyInt(),
-				Matchers.anyMap());
+				Matchers.anyInt());
+		Mockito.verify(this.breedingViewImportService, Mockito.times(0)).importOutlierData(Matchers.any(File.class), Matchers.anyInt());
 
 		Mockito.verify(this.messageSource).getMessage(Message.BV_UPLOAD_SUCCESSFUL_HEADER);
 		Mockito.verify(this.parentWindow).removeWindow(Matchers.any(Window.class));
@@ -282,17 +278,15 @@ public class UploadBreedingViewOutputActionTest {
 		Mockito.when(this.bmsOutputParser.getBmsOutputInformation()).thenReturn(this.createBmsOutputInformation());
 
 		Mockito.doThrow(new BreedingViewImportException()).when(this.breedingViewImportService)
-				.importMeansData(Matchers.any(File.class), Matchers.anyInt(), Matchers.anyMap());
+				.importMeansData(Matchers.any(File.class), Matchers.anyInt());
 
 		this.uploadBreedingViewOutputAction.processTheUploadedFile(this.event, UploadBreedingViewOutputActionTest.TEST_STUDY_ID,
 				this.fileUploadBreedingViewOutputWindow.getProject());
 
-		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importMeansData(Matchers.any(File.class), Matchers.anyInt(),
-				Matchers.anyMap());
+		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importMeansData(Matchers.any(File.class), Matchers.anyInt());
 		Mockito.verify(this.breedingViewImportService, Mockito.times(0)).importSummaryStatsData(Matchers.any(File.class),
-				Matchers.anyInt(), Matchers.anyMap());
-		Mockito.verify(this.breedingViewImportService, Mockito.times(0)).importOutlierData(Matchers.any(File.class), Matchers.anyInt(),
-				Matchers.anyMap());
+				Matchers.anyInt());
+		Mockito.verify(this.breedingViewImportService, Mockito.times(0)).importOutlierData(Matchers.any(File.class), Matchers.anyInt());
 
 	}
 
