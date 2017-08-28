@@ -79,8 +79,8 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 
 		this.breedingViewInput = breedingViewInput;
 
-		this.numericTypes = new ArrayList<Integer>();
-		this.characterTypes = new ArrayList<Integer>();
+		this.numericTypes = new ArrayList<>();
+		this.characterTypes = new ArrayList<>();
 
 		this.numericTypes.add(TermId.NUMERIC_VARIABLE.getId());
 		this.numericTypes.add(TermId.MIN_VALUE.getId());
@@ -280,7 +280,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 
 	private Traits createTraits() {
 		final Traits traits = new Traits();
-		final SortedSet<String> keys = new TreeSet<String>(this.breedingViewInput.getVariatesActiveState().keySet());
+		final SortedSet<String> keys = new TreeSet<>(this.breedingViewInput.getVariatesActiveState().keySet());
 		for (final String key : keys) {
 			if (this.breedingViewInput.getVariatesActiveState().get(key)) {
 				final Trait trait = new Trait();
