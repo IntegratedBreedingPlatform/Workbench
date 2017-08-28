@@ -56,6 +56,8 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 
 	private static final String CROP_PLACEHOLDER = "{cropName}";
 
+	private static final String TRIAL_INSTANCE = "TRIAL_INSTANCE";
+
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
 
@@ -218,12 +220,21 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 	private Environments createEnvironments() {
 		final Environments environments = new Environments();
 		environments.setName(this.breedingViewInput.getEnvironment().getName());
+		//Trial name attribute if not needed anymore in the BV if the selected environment factor is Trial instance
+		if(!TRIAL_INSTANCE.equals(this.breedingViewInput.getEnvironment().getName())){
+			environments.setTrialName(this.breedingViewInput.getTrialInstanceName());
+		}
 
-		for (final SeaEnvironmentModel s : this.breedingViewInput.getSelectedEnvironments()) {
+		for (final SeaEnvironmentModel selectedEnvironment : this.breedingViewInput.getSelectedEnvironments()) {
 			final org.generationcp.commons.sea.xml.Environment env = new org.generationcp.commons.sea.xml.Environment();
-			env.setName(s.getEnvironmentName().replace(",", ";"));
+			env.setName(selectedEnvironment.getEnvironmentName().replace(",", ";"));
 			env.setActive(true);
-			if (s.getActive()) {
+			//Trial attribute if not needed anymore in the BV if the selected environment factor is Trial instance
+			if(!TRIAL_INSTANCE.equals(this.breedingViewInput.getEnvironment().getName())){
+				env.setTrial(selectedEnvironment.getTrialno());
+			}
+			
+			if (selectedEnvironment.getActive()) {
 				environments.add(env);
 			}
 		}
