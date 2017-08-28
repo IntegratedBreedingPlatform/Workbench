@@ -363,11 +363,11 @@ public class GxeTable extends Table {
 		GxeEnvironment gxeEnvironment = new GxeEnvironment();
 		List<GxeEnvironmentLabel> environmentLabels = new ArrayList<GxeEnvironmentLabel>();
 
-		Object[] obj = this.getContainerDataSource().getItemIds().toArray();
+		Object[] environments = this.getContainerDataSource().getItemIds().toArray();
 
-		for (Integer i = 0; i < obj.length; i++) {
-			Property cbColumn = this.getContainerProperty(obj[i], " ");
-			Property locationColumn = this.getContainerProperty(obj[i], this.selectedEnvFactorName);
+		for (Integer i = 0; i < environments.length; i++) {
+			Property cbColumn = this.getContainerProperty(environments[i], " ");
+			Property locationColumn = this.getContainerProperty(environments[i], this.selectedEnvFactorName);
 			if ((Boolean) ((CheckBox) cbColumn.getValue()).getValue()) {
 				GxeEnvironmentLabel environmentLabel = new GxeEnvironmentLabel();
 				environmentLabel.setName(((Label) locationColumn.getValue()).getValue().toString());
@@ -396,6 +396,7 @@ public class GxeTable extends Table {
 				environment.setName(((Label) locationColumn.getValue()).getValue().toString());
 				environment.setActive(true);
 				environment.setTrialno(((Label) trialNoColumn.getValue()).getValue().toString());
+				environment.setTrial(((Label) trialNoColumn.getValue()).getValue().toString());
 				selectedEnvironments.add(environment);
 			}
 		}
