@@ -202,10 +202,9 @@ public class GxeTable extends Table {
 				int rowCounter = 3;
 
 				for (Experiment exp : this.exps) {
-
-					String locationValTrial = exp.getFactors().findByLocalName(this.trialInstanceFactorName).getValue();
-					String locationVal = exp.getFactors().findByLocalName(this.selectedEnvFactorName).getValue();
-					if (envNames.contains(locationVal)) {
+					
+					String trialInstanceFactorValue = exp.getFactors().findByLocalName(this.trialInstanceFactorName).getValue();
+					if (envNames.contains(trialInstanceFactorValue)) {
 						continue;
 					}
 
@@ -217,13 +216,11 @@ public class GxeTable extends Table {
 					row[0].setValue(true);
 
 					int cellCounter = 1;
-					int colIndexEnvFactorName = 0;
-
+					
 					for (Map.Entry<Integer, String> f : this.factorLocalNames.entrySet()) {
 						String fValue = exp.getFactors().findByLocalName(f.getValue()).getValue();
 						if (f.getValue().equalsIgnoreCase(this.selectedEnvFactorName)) {
-							envNames.add(fValue);
-							colIndexEnvFactorName = cellCounter;
+							envNames.add(trialInstanceFactorValue);
 						}
 						row[cellCounter] = new TableItems();
 						row[cellCounter].setLabel(fValue);
@@ -244,10 +241,10 @@ public class GxeTable extends Table {
 						}
 						String meansData = "";
 						meansData =
-								this.getMeansData(this.meansDataSetId, envs, this.selectedEnvFactorName,
-										row[colIndexEnvFactorName].getLabel(), varKey);
+								this.getMeansData(this.meansDataSetId, envs, this.trialInstanceFactorName,
+										trialInstanceFactorValue, varKey);
 
-						String heritabilityVal = this.getHeritabilityValues().get(locationValTrial).get(x.getValue());
+						String heritabilityVal = this.getHeritabilityValues().get(trialInstanceFactorValue).get(x.getValue());
 						if (heritabilityVal != null) {
 							meansData = String.format("%s (%s)", meansData, heritabilityVal);
 						}
