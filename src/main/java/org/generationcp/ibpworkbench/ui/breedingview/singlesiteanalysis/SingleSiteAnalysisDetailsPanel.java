@@ -209,7 +209,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 				trialEnvironments = SingleSiteAnalysisDetailsPanel.this.studyDataManager
 						.getTrialEnvironmentsInDataset(SingleSiteAnalysisDetailsPanel.this.getBreedingViewInput().getDatasetId());
 				final TrialEnvironment trialEnv = trialEnvironments.findOnlyOneByLocalName(
-						SingleSiteAnalysisDetailsPanel.this.getSelEnvFactor().getValue().toString(), model.getEnvironmentName());
+						SingleSiteAnalysisDetailsPanel.this.breedingViewInput.getTrialInstanceName(), model.getTrialno());
 
 				if (trialEnv == null) {
 
