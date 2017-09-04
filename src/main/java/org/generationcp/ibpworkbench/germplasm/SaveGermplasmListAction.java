@@ -162,7 +162,7 @@ public class SaveGermplasmListAction implements Serializable, InitializingBean {
 			gids.add(g);
 		}
 
-		Map<Integer, String> results = this.germplasmDataManager.getPrefferedIdsByGIDs(gids);
+		Map<Integer, String> results = this.germplasmDataManager.getPreferredIdsByGIDs(gids);
 
 		if (results.get(gid) != null) {
 			return results.get(gid);
