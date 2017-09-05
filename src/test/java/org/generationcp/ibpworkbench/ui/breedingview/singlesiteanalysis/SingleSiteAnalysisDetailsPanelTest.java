@@ -2,6 +2,7 @@
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -9,13 +10,17 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
+import org.generationcp.middleware.domain.dms.DMSVariableTypeTestDataInitializer;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.StandardVariable;
 import org.generationcp.middleware.domain.dms.TrialEnvironment;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
+import org.generationcp.middleware.domain.dms.Variable;
+import org.generationcp.middleware.domain.dms.VariableList;
 import org.generationcp.middleware.domain.dms.VariableTypeList;
 import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.domain.oms.TermId;
@@ -27,13 +32,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Select;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.ColumnGenerator;
 
 /**
  * Created by IntelliJ IDEA. User: Daniel Villafuerte Date: 12/17/2014 Time: 1:39 PM
@@ -82,16 +92,17 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		this.factors = this.createTestFactors();
 		this.trialFactors = this.createTrialVariables();
 
-		final Select selEnvFactor = new Select();
-		selEnvFactor.setValue("TRIAL INSTANCE");
-		this.ssaPanel.setSelEnvFactor(selEnvFactor);
-
 		final Project project = new Project();
 		this.ssaPanel = new SingleSiteAnalysisDetailsPanel(new Tool(), this.input, this.factors, this.trialFactors, project,
 				new SingleSiteAnalysisPanel(project, null));
 		this.ssaPanel.setMessageSource(this.messageSource);
 		this.ssaPanel.setStudyDataManager(this.studyDataManager);
-
+		
+		final Select selEnvFactor = new Select();
+		selEnvFactor.addItem("TRIAL_INSTANCE");
+		selEnvFactor.setValue("TRIAL_INSTANCE");
+		this.ssaPanel.setSelEnvFactor(selEnvFactor);
+		
 		this.mockStudyDataManagerCalls();
 		this.mockMessageResource();
 
@@ -346,6 +357,109 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		Assert.assertTrue("Dropdown should have 1 factor", rowSelect.getItemIds().size() == 1);
 		Assert.assertNotNull(rowSelect.getItem("ROW_NO"));
 	}
+	
+	@Test
+	public void testPopulateChoicesForEnvForAnalysis() {
+		this.ssaPanel.setTrialVariablesInDataset(DMSVariableTypeTestDataInitializer.createDMSVariableTypeList());
+		this.ssaPanel.setFooterCheckBox(new CheckBox("Select All", false));
+		this.ssaPanel.setEnvironmentsCheckboxState(new HashMap<String, Boolean>());
+		
+		Table table = new Table();
+		table.addGeneratedColumn(SingleSiteAnalysisDetailsPanel.SELECT_COLUMN, new ColumnGenerator() {
+
+			private static final long serialVersionUID = 8164025367842219781L;
+
+			@Override
+			public Object generateCell(final Table source, final Object itemId, final Object columnId) {
+				final SeaEnvironmentModel item = (SeaEnvironmentModel) itemId;
+
+				final CheckBox chk = new CheckBox();
+				chk.setDebugId("chk");
+				chk.setData(item);
+				chk.setValue(item.getActive());
+				chk.setImmediate(true);
+				return chk;
+			}
+
+		});
+		this.ssaPanel.setTblEnvironmentSelection(table);
+		final TrialEnvironments trialEnvironments = new TrialEnvironments();
+		final TrialEnvironment trialEnvironment = Mockito.mock(TrialEnvironment.class);
+		Mockito.when(trialEnvironment.getId()).thenReturn(1);
+		trialEnvironments.add(trialEnvironment);
+		
+		VariableList variableList = Mockito.mock(VariableList.class);
+		Mockito.when(trialEnvironment.getVariables()).thenReturn(variableList);
+		Variable trialInstance = new Variable();
+		trialInstance.setValue("1");
+		Mockito.when(variableList.findByLocalName("TRIAL_INSTANCE")).thenReturn(trialInstance);
+		Mockito.when(this.studyDataManager.getTrialEnvironmentsInDataset(Matchers.anyInt())).thenReturn(trialEnvironments);
+		Mockito.when(this.studyDataManager.getLocalNameByStandardVariableId(Matchers.anyInt(), Matchers.anyInt())).thenReturn("TRIAL_INSTANCE");
+		
+		this.ssaPanel.populateChoicesForEnvForAnalysis();
+		Assert.assertFalse("The footer checkbox value should be false", this.ssaPanel.getFooterCheckBox().booleanValue());
+		Assert.assertEquals("The environment check box state's size should be 0", 0, this.ssaPanel.getEnvironmentsCheckboxState().size());
+		Assert.assertEquals("The trial instance name should be TRIAL_INSTANCE", "TRIAL_INSTANCE", this.ssaPanel.getBreedingViewInput().getTrialInstanceName());
+	}
+	
+	@Test
+	public void testPopulateEnvironmentSelectionTableWithTrialEnvironmets() {
+		Table table = new Table();
+		table.addContainerProperty(SingleSiteAnalysisDetailsPanel.SELECT_COLUMN, Select.class, "");
+		table.addContainerProperty(SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN, Integer.class, "");
+		
+		final TrialEnvironments trialEnvironments = new TrialEnvironments();
+		final TrialEnvironment trialEnvironment = Mockito.mock(TrialEnvironment.class);
+		Mockito.when(trialEnvironment.getId()).thenReturn(1);
+		trialEnvironments.add(trialEnvironment);
+		
+		VariableList variableList = Mockito.mock(VariableList.class);
+		Mockito.when(trialEnvironment.getVariables()).thenReturn(variableList);
+		Variable trialInstance = new Variable();
+		trialInstance.setValue("1");
+		Mockito.when(variableList.findByLocalName("TRIAL_INSTANCE")).thenReturn(trialInstance);
+		Mockito.when(this.studyDataManager.getTrialEnvironmentsInDataset(Matchers.anyInt())).thenReturn(trialEnvironments);
+		
+		this.ssaPanel.populateEnvironmentSelectionTableWithTrialEnvironmets(table, "TRIAL_INSTANCE", "TRIAL_INSTANCE");
+		BeanItemContainer<SeaEnvironmentModel> container = (BeanItemContainer<SeaEnvironmentModel>) table.getContainerDataSource();
+		SeaEnvironmentModel bean = container.getIdByIndex(0);
+		Assert.assertFalse("The active value should be false", bean.getActive());
+		Assert.assertEquals("The environment name should be 1", "1", bean.getEnvironmentName());
+		Assert.assertEquals("The trial no should be 1", "1", bean.getTrialno());
+		Assert.assertEquals("The location id should be 1", "1", bean.getLocationId().toString());
+	}
+	
+	@Test
+	public void testAdjustEnvironmentSelectionTableWhereTrialInstanceFactorNotSelectedEnvFactor() {
+		Table table = new Table();
+		table.addContainerProperty(SingleSiteAnalysisDetailsPanel.SELECT_COLUMN, Select.class, "");
+		table.addContainerProperty(SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN, Integer.class, "");
+		table.addContainerProperty(SingleSiteAnalysisDetailsPanel.ENVIRONMENT_NAME, String.class, "");
+		
+		this.ssaPanel.adjustEnvironmentSelectionTable(table, "TRIAL_INSTANCE", "LOCATION_NAME");
+		Assert.assertEquals("There should be 3 visible columns", 3, table.getVisibleColumns().length);
+		Assert.assertEquals("There should be 3 column headers", 3, table.getColumnHeaders().length);
+		Assert.assertEquals("Select column's width should be 45.", 45, table.getColumnWidth(SingleSiteAnalysisDetailsPanel.SELECT_COLUMN));
+		Assert.assertEquals("Trial No's width should be 60.", 60, table.getColumnWidth(SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN));
+		Assert.assertEquals("Environment Names's width should be 500.", 500, table.getColumnWidth(SingleSiteAnalysisDetailsPanel.ENVIRONMENT_NAME));
+		Assert.assertEquals("Table's width should be 90.0.", "90.0", String.valueOf(table.getWidth()));
+		
+	}
+	
+	@Test
+	public void testAdjustEnvironmentSelectionTableWhereTrialInstanceFactorIsTheSelectedEnvFactor() {
+		Table table = new Table();
+		table.addContainerProperty(SingleSiteAnalysisDetailsPanel.SELECT_COLUMN, Select.class, "");
+		table.addContainerProperty(SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN, Integer.class, "");
+		
+		this.ssaPanel.adjustEnvironmentSelectionTable(table, "TRIAL_INSTANCE", "TRIAL_INSTANCE");
+		Assert.assertEquals("There should be 2 visible columns", 2, table.getVisibleColumns().length);
+		Assert.assertEquals("There should be 2 column headers", 2, table.getColumnHeaders().length);
+		Assert.assertEquals("Select column's width should be 45.", 45, table.getColumnWidth(SingleSiteAnalysisDetailsPanel.SELECT_COLUMN));
+		Assert.assertEquals("Trial No's width should be -1.", -1, table.getColumnWidth(SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN));
+		Assert.assertEquals("Table's width should be 45.0.", "45.0", String.valueOf(table.getWidth()));
+		
+	}
 
 	@Test
 	public void testPopulateChoicesForColumnFactor() {
@@ -583,7 +697,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		final StandardVariable trialInstanceVar = new StandardVariable();
 		trialInstanceVar.setId(TermId.TRIAL_INSTANCE_FACTOR.getId());
 		trialInstanceVar.setPhenotypicType(PhenotypicType.TRIAL_ENVIRONMENT);
-		trialInstanceVar.setProperty(new Term(1, "TRIAL INSTANCE", "TRIAL INSTANCE"));
+		trialInstanceVar.setProperty(new Term(1, "TRIAL_INSTANCE", "TRIAL_INSTANCE"));
 		factors.add(new DMSVariableType(SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE,
 				SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE, trialInstanceVar, 1));
 

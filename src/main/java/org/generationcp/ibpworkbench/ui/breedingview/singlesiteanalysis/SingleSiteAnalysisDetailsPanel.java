@@ -310,8 +310,9 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	private static final String LABEL_BOLD_STYLING = "label-bold";
 	private static final String LABEL_WIDTH = "160px";
 	private static final String SELECT_BOX_WIDTH = "191px";
-	private static final String SELECT_COLUMN = "select";
-	private static final String TRIAL_NO_COLUMN = "trialno";
+	public static final String SELECT_COLUMN = "select";
+	public static final String TRIAL_NO_COLUMN = "trialno";
+	public static final String ENVIRONMENT_NAME = "environmentName";
 	protected static final String REQUIRED_FIELD_INDICATOR = " <span style='color: red'>*</span>";
 
 	@Value("${workbench.is.server.app}")
@@ -437,6 +438,10 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	public void setSelEnvFactor(final Select selEnvFactor) {
 		this.selEnvFactor = selEnvFactor;
 	}
+	
+	public void setTrialVariablesInDataset(List<DMSVariableType> trialVariablesInDataset){
+		this.trialVariablesInDataset = trialVariablesInDataset;
+	}
 
 	public Select getSelReplicates() {
 		return this.selReplicates;
@@ -477,7 +482,31 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	public String getSelGenotypesValue() {
 		return (String) this.selGenotypes.getValue();
 	}
+	
+	public CheckBox getFooterCheckBox() {
+		return footerCheckBox;
+	}
 
+	public void setFooterCheckBox(CheckBox footerCheckBox) {
+		this.footerCheckBox = footerCheckBox;
+	}
+	
+	public Map<String, Boolean> getEnvironmentsCheckboxState() {
+		return environmentsCheckboxState;
+	}
+
+	public void setEnvironmentsCheckboxState(Map<String, Boolean> environmentsCheckboxState) {
+		this.environmentsCheckboxState = environmentsCheckboxState;
+	}
+	
+	public Table getTblEnvironmentSelection() {
+		return tblEnvironmentSelection;
+	}
+
+	public void setTblEnvironmentSelection(Table tblEnvironmentSelection) {
+		this.tblEnvironmentSelection = tblEnvironmentSelection;
+	}
+	
 	public void setStudyDataManager(final StudyDataManager studyDataManager) {
 		this.studyDataManager = studyDataManager;
 	}
@@ -845,11 +874,11 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 			table.setWidth("45%");
 		} else {
 			table.setVisibleColumns(new Object[] {SingleSiteAnalysisDetailsPanel.SELECT_COLUMN,
-					SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN, "environmentName"});
+					SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN, ENVIRONMENT_NAME});
 			table.setColumnHeaders(new String[] {"SELECT", trialInstanceFactorName, selectedEnvironmentFactorName});
 			table.setColumnWidth(SingleSiteAnalysisDetailsPanel.SELECT_COLUMN, 45);
 			table.setColumnWidth(SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN, 60);
-			table.setColumnWidth("environmentName", 500);
+			table.setColumnWidth(ENVIRONMENT_NAME, 500);
 			table.setWidth("90%");
 		}
 
