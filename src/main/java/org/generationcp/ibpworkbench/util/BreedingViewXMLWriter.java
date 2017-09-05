@@ -220,7 +220,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 	private Environments createEnvironments() {
 		final Environments environments = new Environments();
 		environments.setName(this.breedingViewInput.getEnvironment().getName());
-		//Trial name attribute if not needed anymore in the BV if the selected environment factor is Trial instance
+		//Trial name attribute is not needed in the BV if the selected environment factor is Trial instance
 		if(!TRIAL_INSTANCE.equals(this.breedingViewInput.getEnvironment().getName())){
 			environments.setTrialName(this.breedingViewInput.getTrialInstanceName());
 		}
@@ -229,7 +229,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 			final org.generationcp.commons.sea.xml.Environment env = new org.generationcp.commons.sea.xml.Environment();
 			env.setName(selectedEnvironment.getEnvironmentName().replace(",", ";"));
 			env.setActive(true);
-			//Trial attribute if not needed anymore in the BV if the selected environment factor is Trial instance
+			//Trial attribute is not needed in the BV if the selected environment factor is Trial instance
 			if(!TRIAL_INSTANCE.equals(this.breedingViewInput.getEnvironment().getName())){
 				env.setTrial(selectedEnvironment.getTrialno());
 			}
