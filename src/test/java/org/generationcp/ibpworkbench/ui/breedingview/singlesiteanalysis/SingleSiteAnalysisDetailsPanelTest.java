@@ -99,8 +99,8 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		this.ssaPanel.setStudyDataManager(this.studyDataManager);
 		
 		final Select selEnvFactor = new Select();
-		selEnvFactor.addItem("TRIAL_INSTANCE");
-		selEnvFactor.setValue("TRIAL_INSTANCE");
+		selEnvFactor.addItem(SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE);
+		selEnvFactor.setValue(SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE);
 		this.ssaPanel.setSelEnvFactor(selEnvFactor);
 		
 		this.mockStudyDataManagerCalls();
@@ -392,14 +392,14 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		Mockito.when(trialEnvironment.getVariables()).thenReturn(variableList);
 		Variable trialInstance = new Variable();
 		trialInstance.setValue("1");
-		Mockito.when(variableList.findByLocalName("TRIAL_INSTANCE")).thenReturn(trialInstance);
+		Mockito.when(variableList.findByLocalName(SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE)).thenReturn(trialInstance);
 		Mockito.when(this.studyDataManager.getTrialEnvironmentsInDataset(Matchers.anyInt())).thenReturn(trialEnvironments);
-		Mockito.when(this.studyDataManager.getLocalNameByStandardVariableId(Matchers.anyInt(), Matchers.anyInt())).thenReturn("TRIAL_INSTANCE");
+		Mockito.when(this.studyDataManager.getLocalNameByStandardVariableId(Matchers.anyInt(), Matchers.anyInt())).thenReturn(SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE);
 		
 		this.ssaPanel.populateChoicesForEnvForAnalysis();
 		Assert.assertFalse("The footer checkbox value should be false", this.ssaPanel.getFooterCheckBox().booleanValue());
 		Assert.assertEquals("The environment check box state's size should be 0", 0, this.ssaPanel.getEnvironmentsCheckboxState().size());
-		Assert.assertEquals("The trial instance name should be TRIAL_INSTANCE", "TRIAL_INSTANCE", this.ssaPanel.getBreedingViewInput().getTrialInstanceName());
+		Assert.assertEquals("The trial instance name should be TRIAL_INSTANCE", SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE, this.ssaPanel.getBreedingViewInput().getTrialInstanceName());
 	}
 	
 	@Test
@@ -417,10 +417,10 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		Mockito.when(trialEnvironment.getVariables()).thenReturn(variableList);
 		Variable trialInstance = new Variable();
 		trialInstance.setValue("1");
-		Mockito.when(variableList.findByLocalName("TRIAL_INSTANCE")).thenReturn(trialInstance);
+		Mockito.when(variableList.findByLocalName(SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE)).thenReturn(trialInstance);
 		Mockito.when(this.studyDataManager.getTrialEnvironmentsInDataset(Matchers.anyInt())).thenReturn(trialEnvironments);
 		
-		this.ssaPanel.populateEnvironmentSelectionTableWithTrialEnvironmets(table, "TRIAL_INSTANCE", "TRIAL_INSTANCE");
+		this.ssaPanel.populateEnvironmentSelectionTableWithTrialEnvironmets(table, SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE, SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE);
 		BeanItemContainer<SeaEnvironmentModel> container = (BeanItemContainer<SeaEnvironmentModel>) table.getContainerDataSource();
 		SeaEnvironmentModel bean = container.getIdByIndex(0);
 		Assert.assertFalse("The active value should be false", bean.getActive());
@@ -436,7 +436,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		table.addContainerProperty(SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN, Integer.class, "");
 		table.addContainerProperty(SingleSiteAnalysisDetailsPanel.ENVIRONMENT_NAME, String.class, "");
 		
-		this.ssaPanel.adjustEnvironmentSelectionTable(table, "TRIAL_INSTANCE", "LOCATION_NAME");
+		this.ssaPanel.adjustEnvironmentSelectionTable(table, SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE, "LOCATION_NAME");
 		Assert.assertEquals("There should be 3 visible columns", 3, table.getVisibleColumns().length);
 		Assert.assertEquals("There should be 3 column headers", 3, table.getColumnHeaders().length);
 		Assert.assertEquals("Select column's width should be 45.", 45, table.getColumnWidth(SingleSiteAnalysisDetailsPanel.SELECT_COLUMN));
@@ -452,7 +452,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		table.addContainerProperty(SingleSiteAnalysisDetailsPanel.SELECT_COLUMN, Select.class, "");
 		table.addContainerProperty(SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN, Integer.class, "");
 		
-		this.ssaPanel.adjustEnvironmentSelectionTable(table, "TRIAL_INSTANCE", "TRIAL_INSTANCE");
+		this.ssaPanel.adjustEnvironmentSelectionTable(table, SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE, SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE);
 		Assert.assertEquals("There should be 2 visible columns", 2, table.getVisibleColumns().length);
 		Assert.assertEquals("There should be 2 column headers", 2, table.getColumnHeaders().length);
 		Assert.assertEquals("Select column's width should be 45.", 45, table.getColumnWidth(SingleSiteAnalysisDetailsPanel.SELECT_COLUMN));
@@ -697,7 +697,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		final StandardVariable trialInstanceVar = new StandardVariable();
 		trialInstanceVar.setId(TermId.TRIAL_INSTANCE_FACTOR.getId());
 		trialInstanceVar.setPhenotypicType(PhenotypicType.TRIAL_ENVIRONMENT);
-		trialInstanceVar.setProperty(new Term(1, "TRIAL_INSTANCE", "TRIAL_INSTANCE"));
+		trialInstanceVar.setProperty(new Term(1, SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE, SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE));
 		factors.add(new DMSVariableType(SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE,
 				SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE, trialInstanceVar, 1));
 

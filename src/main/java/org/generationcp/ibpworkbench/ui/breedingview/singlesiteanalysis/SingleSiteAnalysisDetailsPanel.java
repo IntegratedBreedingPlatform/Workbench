@@ -39,7 +39,6 @@ import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.TrialEnvironment;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
 import org.generationcp.middleware.domain.dms.Variable;
-import org.generationcp.middleware.domain.dms.VariableTypeList;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.ConfigException;
 import org.generationcp.middleware.exceptions.MiddlewareException;
@@ -140,9 +139,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 					new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this).buttonClick(event);
 				}
 
-			} catch (final MiddlewareQueryException e) {
-				new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this).buttonClick(event);
-				SingleSiteAnalysisDetailsPanel.LOG.error(e.getMessage(), e);
 			} catch (final Exception e) {
 				new RunSingleSiteAction(SingleSiteAnalysisDetailsPanel.this).buttonClick(event);
 				SingleSiteAnalysisDetailsPanel.LOG.error(e.getMessage(), e);
@@ -242,9 +238,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 					}
 
 				}
-			} catch (final ConfigException e) {
-				SingleSiteAnalysisDetailsPanel.LOG.error(e.getMessage(), e);
-			} catch (final MiddlewareException e) {
+			} catch (final ConfigException | MiddlewareException e) {
 				SingleSiteAnalysisDetailsPanel.LOG.error(e.getMessage(), e);
 			}
 
@@ -350,7 +344,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	private Button btnBack;
 	private Label valueProjectType;
 	private TextField txtAnalysisName;
-	private TextField txtNameForAnalysisEnv;
 	private Label valueDatasetName;
 	private Label valueDatasourceName;
 	private Select selDesignType;
@@ -369,7 +362,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	private VerticalLayout tblEnvironmentLayout;
 	private Table tblEnvironmentSelection;
-
 	private BreedingViewInput breedingViewInput;
 	private Tool tool;
 	private List<DMSVariableType> factorsInDataset;
@@ -517,7 +509,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.lblPageTitle.setDebugId("lblPageTitle");
 		this.lblPageTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 
-		this.environmentsCheckboxState = new HashMap<String, Boolean>();
+		this.environmentsCheckboxState = new HashMap<>();
 
 		this.tblEnvironmentLayout = new VerticalLayout();
 		this.tblEnvironmentLayout.setDebugId("tblEnvironmentLayout");
@@ -697,11 +689,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 		this.populateChoicesForEnvForAnalysis();
 
-		this.txtNameForAnalysisEnv = new TextField();
-		this.txtNameForAnalysisEnv.setDebugId("txtNameForAnalysisEnv");
-		this.txtNameForAnalysisEnv.setNullRepresentation("");
-		this.txtNameForAnalysisEnv.setRequired(false);
-
 		this.selDesignType = new Select();
 		this.selDesignType.setDebugId("selDesignType");
 		this.selDesignType.setImmediate(true);
@@ -821,15 +808,13 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		if (factor == null) {
 			return;
 		}
-
+		
 		this.footerCheckBox.setValue(false);
 		this.environmentsCheckboxState.clear();
 		this.tblEnvironmentSelection.removeAllItems();
-
 		final String trialInstanceFactorName = this.studyDataManager.getLocalNameByStandardVariableId(this.getBreedingViewInput().getDatasetId(), TermId.TRIAL_INSTANCE_FACTOR.getId());
 
 		this.populateEnvironmentSelectionTableWithTrialEnvironmets(this.tblEnvironmentSelection, trialInstanceFactorName, selectedEnvironmentFactorName);
-
 		this.adjustEnvironmentSelectionTable(this.tblEnvironmentSelection, trialInstanceFactorName, selectedEnvironmentFactorName);
 
 		this.getBreedingViewInput().setTrialInstanceName(trialInstanceFactorName);
@@ -837,8 +822,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	}
 
 	protected void populateEnvironmentSelectionTableWithTrialEnvironmets(final Table table, final String trialInstanceFactorName, final String selectedEnvironmentFactorName) {
-
-		final BeanItemContainer<SeaEnvironmentModel> container = new BeanItemContainer<SeaEnvironmentModel>(SeaEnvironmentModel.class);
+		final BeanItemContainer<SeaEnvironmentModel> container = new BeanItemContainer<>(SeaEnvironmentModel.class);
 		final TrialEnvironments trialEnvironments = this.studyDataManager.getTrialEnvironmentsInDataset(this.getBreedingViewInput().getDatasetId());
 
 		for (final TrialEnvironment trialEnvironment : trialEnvironments.getTrialEnvironments()) {
@@ -864,7 +848,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	}
 
 	protected void adjustEnvironmentSelectionTable(final Table table, final String trialInstanceFactorName, final String selectedEnvironmentFactorName) {
-
 		if (trialInstanceFactorName.equalsIgnoreCase(selectedEnvironmentFactorName)) {
 			table.setVisibleColumns(
 					new Object[] {SingleSiteAnalysisDetailsPanel.SELECT_COLUMN, SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN});
@@ -899,7 +882,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	protected void populateChoicesForReplicates() {
 		for (final DMSVariableType factor : this.factorsInDataset) {
-			if (factor.getStandardVariable().getProperty().getName().toString().trim()
+			if (factor.getStandardVariable().getProperty().getName().trim()
 					.equalsIgnoreCase(SingleSiteAnalysisDetailsPanel.REPLICATION_FACTOR)) {
 				this.getSelReplicates().addItem(factor.getLocalName());
 				this.getSelReplicates().setValue(factor.getLocalName());
@@ -916,7 +899,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	protected void populateChoicesForBlocks() {
 
 		for (final DMSVariableType factor : this.factorsInDataset) {
-			if (factor.getStandardVariable().getProperty().getName().toString().trim()
+			if (factor.getStandardVariable().getProperty().getName().trim()
 					.equalsIgnoreCase(SingleSiteAnalysisDetailsPanel.BLOCKING_FACTOR)) {
 				this.getSelBlocks().addItem(factor.getLocalName());
 				this.getSelBlocks().setValue(factor.getLocalName());
@@ -929,7 +912,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	protected void populateChoicesForRowFactor() {
 
 		for (final DMSVariableType factor : this.factorsInDataset) {
-			if (factor.getStandardVariable().getProperty().getName().toString().trim()
+			if (factor.getStandardVariable().getProperty().getName().trim()
 					.equalsIgnoreCase(SingleSiteAnalysisDetailsPanel.ROW_FACTOR)) {
 				this.getSelRowFactor().addItem(factor.getLocalName());
 				this.getSelRowFactor().setValue(factor.getLocalName());
@@ -941,7 +924,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	protected void populateChoicesForColumnFactor() {
 
 		for (final DMSVariableType factor : this.factorsInDataset) {
-			if (factor.getStandardVariable().getProperty().getName().toString().trim()
+			if (factor.getStandardVariable().getProperty().getName().trim()
 					.equalsIgnoreCase(SingleSiteAnalysisDetailsPanel.COLUMN_FACTOR)) {
 				this.getSelColumnFactor().addItem(factor.getLocalName());
 				this.getSelColumnFactor().setValue(factor.getLocalName());
@@ -1280,7 +1263,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	public List<SeaEnvironmentModel> getSelectedEnvironments() {
 
-		final List<SeaEnvironmentModel> envs = new ArrayList<SeaEnvironmentModel>();
+		final List<SeaEnvironmentModel> envs = new ArrayList<>();
 		for (final Iterator<?> itr = this.tblEnvironmentSelection.getContainerDataSource().getItemIds().iterator(); itr.hasNext();) {
 			final SeaEnvironmentModel m = (SeaEnvironmentModel) itr.next();
 			if (m.getActive()) {
