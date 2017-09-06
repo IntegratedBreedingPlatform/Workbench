@@ -53,6 +53,7 @@ import com.vaadin.ui.Table.ColumnGenerator;
 @RunWith(MockitoJUnitRunner.class)
 public class SingleSiteAnalysisDetailsPanelTest {
 
+	private static final String LOCATION_NAME = "LOCATION_NAME";
 	private static final String DATASET_TYPE = "DATASET_TYPE";
 	private static final String DATASET_TITLE = "DATASET_TITLE";
 	private static final String DATASET_NAME = "DATASET_NAME";
@@ -419,16 +420,20 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		trialInstance.setValue("1");
 		Mockito.when(variableList.findByLocalName(SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE))
 				.thenReturn(trialInstance);
+		final Variable locationVariable = new Variable();
+		locationVariable.setValue("Africa Rice Center");
+		Mockito.when(variableList.findByLocalName(LOCATION_NAME))
+				.thenReturn(locationVariable);
 		Mockito.when(this.studyDataManager.getTrialEnvironmentsInDataset(Matchers.anyInt()))
 				.thenReturn(trialEnvironments);
 
 		this.ssaPanel.populateEnvironmentSelectionTableWithTrialEnvironmets(table,
-				SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE, SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE);
+				SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE, LOCATION_NAME);
 		final BeanItemContainer<SeaEnvironmentModel> container = (BeanItemContainer<SeaEnvironmentModel>) table
 				.getContainerDataSource();
 		final SeaEnvironmentModel bean = container.getIdByIndex(0);
 		Assert.assertFalse("The active value should be false", bean.getActive());
-		Assert.assertEquals("The environment name should be 1", "1", bean.getEnvironmentName());
+		Assert.assertEquals("The environment name should be Africa Rice Center", "Africa Rice Center", bean.getEnvironmentName());
 		Assert.assertEquals("The trial no should be 1", "1", bean.getTrialno());
 		Assert.assertEquals("The location id should be 1", "1", bean.getLocationId().toString());
 	}
@@ -441,7 +446,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		table.addContainerProperty(SingleSiteAnalysisDetailsPanel.ENVIRONMENT_NAME, String.class, "");
 
 		this.ssaPanel.adjustEnvironmentSelectionTable(table, SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE,
-				"LOCATION_NAME");
+				LOCATION_NAME);
 		Assert.assertEquals("There should be 3 visible columns", 3, table.getVisibleColumns().length);
 		Assert.assertEquals("There should be 3 column headers", 3, table.getColumnHeaders().length);
 		Assert.assertEquals("Select column's width should be 45.", 45,
