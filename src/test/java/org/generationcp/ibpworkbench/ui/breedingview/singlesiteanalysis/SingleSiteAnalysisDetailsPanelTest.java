@@ -375,25 +375,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		this.ssaPanel.setFooterCheckBox(new CheckBox("Select All", false));
 		this.ssaPanel.setEnvironmentsCheckboxState(new HashMap<String, Boolean>());
 
-		final Table table = new Table();
-		table.addGeneratedColumn(SingleSiteAnalysisDetailsPanel.SELECT_COLUMN, new ColumnGenerator() {
-
-			private static final long serialVersionUID = 8164025367842219781L;
-
-			@Override
-			public Object generateCell(final Table source, final Object itemId, final Object columnId) {
-				final SeaEnvironmentModel item = (SeaEnvironmentModel) itemId;
-
-				final CheckBox chk = new CheckBox();
-				chk.setDebugId("chk");
-				chk.setData(item);
-				chk.setValue(item.getActive());
-				chk.setImmediate(true);
-				return chk;
-			}
-
-		});
-		this.ssaPanel.setTblEnvironmentSelection(table);
+		this.ssaPanel.createEnvironmentSelectionTable();
 		final TrialEnvironments trialEnvironments = new TrialEnvironments();
 		final TrialEnvironment trialEnvironment = Mockito.mock(TrialEnvironment.class);
 		Mockito.when(trialEnvironment.getId()).thenReturn(1);

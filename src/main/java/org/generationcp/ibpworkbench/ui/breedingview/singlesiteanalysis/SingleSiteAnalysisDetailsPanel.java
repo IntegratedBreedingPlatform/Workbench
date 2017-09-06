@@ -525,34 +525,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout
 		this.tblEnvironmentLayout.setSpacing(true);
 		this.tblEnvironmentLayout.setWidth("100%");
 
-		this.tblEnvironmentSelection = new Table();
-		this.tblEnvironmentSelection.setDebugId("tblEnvironmentSelection");
-		this.tblEnvironmentSelection.setHeight("200px");
-		this.tblEnvironmentSelection.setWidth("100%");
-
-		this.setDesignDetailsContainer(new VerticalLayout());
-
-		this.envCheckBoxListener = new EnvironmentCheckBoxListener();
-
-		this.tblEnvironmentSelection.addGeneratedColumn(SingleSiteAnalysisDetailsPanel.SELECT_COLUMN,
-				new ColumnGenerator() {
-
-					private static final long serialVersionUID = 8164025367842219781L;
-
-					@Override
-					public Object generateCell(final Table source, final Object itemId, final Object columnId) {
-						final SeaEnvironmentModel item = (SeaEnvironmentModel) itemId;
-
-						final CheckBox chk = new CheckBox();
-						chk.setDebugId("chk");
-						chk.setData(item);
-						chk.setValue(item.getActive());
-						chk.setImmediate(true);
-						chk.addListener(SingleSiteAnalysisDetailsPanel.this.envCheckBoxListener);
-						return chk;
-					}
-
-				});
+		this.createEnvironmentSelectionTable();
 
 		this.footerCheckBoxListener = new FooterCheckBoxListener();
 
@@ -777,6 +750,37 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout
 
 		this.displayDesignElementsBasedOnDesignTypeOfTheStudy();
 
+	}
+
+	protected void createEnvironmentSelectionTable() {
+		this.tblEnvironmentSelection = new Table();
+		this.tblEnvironmentSelection.setDebugId("tblEnvironmentSelection");
+		this.tblEnvironmentSelection.setHeight("200px");
+		this.tblEnvironmentSelection.setWidth("100%");
+
+		this.setDesignDetailsContainer(new VerticalLayout());
+
+		this.envCheckBoxListener = new EnvironmentCheckBoxListener();
+
+		this.tblEnvironmentSelection.addGeneratedColumn(SingleSiteAnalysisDetailsPanel.SELECT_COLUMN,
+				new ColumnGenerator() {
+
+					private static final long serialVersionUID = 8164025367842219781L;
+
+					@Override
+					public Object generateCell(final Table source, final Object itemId, final Object columnId) {
+						final SeaEnvironmentModel item = (SeaEnvironmentModel) itemId;
+
+						final CheckBox chk = new CheckBox();
+						chk.setDebugId("chk");
+						chk.setData(item);
+						chk.setValue(item.getActive());
+						chk.setImmediate(true);
+						chk.addListener(SingleSiteAnalysisDetailsPanel.this.envCheckBoxListener);
+						return chk;
+					}
+
+				});
 	}
 
 	public void populateChoicesForEnvironmentFactor() {
