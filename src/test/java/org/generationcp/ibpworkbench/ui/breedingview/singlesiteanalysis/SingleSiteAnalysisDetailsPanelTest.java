@@ -43,7 +43,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.Table.ColumnGenerator;
 
 /**
  * Created by IntelliJ IDEA. User: Daniel Villafuerte Date: 12/17/2014 Time:
@@ -422,18 +421,19 @@ public class SingleSiteAnalysisDetailsPanelTest {
 				.thenReturn(trialInstance);
 		final Variable locationVariable = new Variable();
 		locationVariable.setValue("Africa Rice Center");
-		Mockito.when(variableList.findByLocalName(LOCATION_NAME))
+		Mockito.when(variableList.findByLocalName(SingleSiteAnalysisDetailsPanelTest.LOCATION_NAME))
 				.thenReturn(locationVariable);
 		Mockito.when(this.studyDataManager.getTrialEnvironmentsInDataset(Matchers.anyInt()))
 				.thenReturn(trialEnvironments);
 
 		this.ssaPanel.populateEnvironmentSelectionTableWithTrialEnvironmets(table,
-				SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE, LOCATION_NAME);
+				SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE, SingleSiteAnalysisDetailsPanelTest.LOCATION_NAME);
 		final BeanItemContainer<SeaEnvironmentModel> container = (BeanItemContainer<SeaEnvironmentModel>) table
 				.getContainerDataSource();
 		final SeaEnvironmentModel bean = container.getIdByIndex(0);
 		Assert.assertFalse("The active value should be false", bean.getActive());
-		Assert.assertEquals("The environment name should be Africa Rice Center", "Africa Rice Center", bean.getEnvironmentName());
+		Assert.assertEquals("The environment name should be Africa Rice Center", "Africa Rice Center",
+				bean.getEnvironmentName());
 		Assert.assertEquals("The trial no should be 1", "1", bean.getTrialno());
 		Assert.assertEquals("The location id should be 1", "1", bean.getLocationId().toString());
 	}
@@ -446,7 +446,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		table.addContainerProperty(SingleSiteAnalysisDetailsPanel.ENVIRONMENT_NAME, String.class, "");
 
 		this.ssaPanel.adjustEnvironmentSelectionTable(table, SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE,
-				LOCATION_NAME);
+				SingleSiteAnalysisDetailsPanelTest.LOCATION_NAME);
 		Assert.assertEquals("There should be 3 visible columns", 3, table.getVisibleColumns().length);
 		Assert.assertEquals("There should be 3 column headers", 3, table.getColumnHeaders().length);
 		Assert.assertEquals("Select column's width should be 45.", 45,
