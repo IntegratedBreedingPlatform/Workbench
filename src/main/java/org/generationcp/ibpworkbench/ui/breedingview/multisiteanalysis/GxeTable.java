@@ -39,12 +39,12 @@ public class GxeTable extends Table {
 	public static final int CELL_LABEL = 6;
 
 	private final StudyDataManager studyDataManager;
-	private final List<String> columnNames = new ArrayList<String>();
-	private final Map<Integer, String> factorLocalNames = new TreeMap<Integer, String>();
-	private final Map<Integer, String> variateLocalNames = new TreeMap<Integer, String>();
-	private Map<String, Boolean> variatesCheckBoxState = new HashMap<String, Boolean>();
+	private final List<String> columnNames = new ArrayList<>();
+	private final Map<Integer, String> factorLocalNames = new TreeMap<>();
+	private final Map<Integer, String> variateLocalNames = new TreeMap<>();
+	private Map<String, Boolean> variatesCheckBoxState = new HashMap<>();
 
-	private Map<String, Map<String, String>> heritabilityValues = new HashMap<String, Map<String, String>>();
+	private Map<String, Map<String, String>> heritabilityValues = new HashMap<>();
 
 	private String trialInstanceFactorName = "";
 
@@ -74,7 +74,7 @@ public class GxeTable extends Table {
 	}
 
 	private static <K, V extends Comparable<? super V>> SortedSet<Map.Entry<K, V>> entriesSortedByValues(Map<K, V> map) {
-		SortedSet<Map.Entry<K, V>> sortedEntries = new TreeSet<Map.Entry<K, V>>(new Comparator<Map.Entry<K, V>>() {
+		SortedSet<Map.Entry<K, V>> sortedEntries = new TreeSet<>(new Comparator<Map.Entry<K, V>>() {
 
 			@Override
 			public int compare(Map.Entry<K, V> e1, Map.Entry<K, V> e2) {
@@ -98,10 +98,10 @@ public class GxeTable extends Table {
 
 	}
 
-	private void initializeHeader(Map<Integer, String> factors, Map<Integer, String> variates, Container container) {
+	private void initializeHeader(Map<Integer, String> factors, Map<Integer, String> variates) {
 
-		List<String> factorsList = new ArrayList<String>(factors.values());
-		List<String> variatesList = new ArrayList<String>(variates.values());
+		List<String> factorsList = new ArrayList<>(factors.values());
+		List<String> variatesList = new ArrayList<>(variates.values());
 
 		Collections.sort(variatesList);
 
@@ -109,7 +109,7 @@ public class GxeTable extends Table {
 		this.columnNames.addAll(factorsList);
 		this.columnNames.addAll(variatesList);
 
-		List<String> columnHeaders = new ArrayList<String>();
+		List<String> columnHeaders = new ArrayList<>();
 		for (String s : this.columnNames) {
 			columnHeaders.add(s.replace("_Means", ""));
 		}
@@ -119,7 +119,7 @@ public class GxeTable extends Table {
 
 	}
 
-	private void createRow(int rowIndex, TableItems[] tableItems, Container container) {
+	private void createRow(int rowIndex, TableItems[] tableItems) {
 
 		Object[] obj = new Object[tableItems.length];
 
@@ -154,7 +154,7 @@ public class GxeTable extends Table {
 
 		this.setHeritabilityValues(this.getHeribilityValuesFromPlotDataSet(studyId));
 
-		Set<String> envNames = new HashSet<String>();
+		Set<String> envNames = new HashSet<>();
 
 		try {
 
@@ -192,7 +192,7 @@ public class GxeTable extends Table {
 					}
 				}
 
-				this.initializeHeader(this.factorLocalNames, this.variateLocalNames, container);
+				this.initializeHeader(this.factorLocalNames, this.variateLocalNames);
 
 				// generate the rows
 				this.exps =
@@ -202,10 +202,9 @@ public class GxeTable extends Table {
 				int rowCounter = 3;
 
 				for (Experiment exp : this.exps) {
-
-					String locationValTrial = exp.getFactors().findByLocalName(this.trialInstanceFactorName).getValue();
-					String locationVal = exp.getFactors().findByLocalName(this.selectedEnvFactorName).getValue();
-					if (envNames.contains(locationVal)) {
+					
+					String trialInstanceFactorValue = exp.getFactors().findByLocalName(this.trialInstanceFactorName).getValue();
+					if (envNames.contains(trialInstanceFactorValue)) {
 						continue;
 					}
 
@@ -217,13 +216,11 @@ public class GxeTable extends Table {
 					row[0].setValue(true);
 
 					int cellCounter = 1;
-					int colIndexEnvFactorName = 0;
-
+					
 					for (Map.Entry<Integer, String> f : this.factorLocalNames.entrySet()) {
 						String fValue = exp.getFactors().findByLocalName(f.getValue()).getValue();
 						if (f.getValue().equalsIgnoreCase(this.selectedEnvFactorName)) {
-							envNames.add(fValue);
-							colIndexEnvFactorName = cellCounter;
+							envNames.add(trialInstanceFactorValue);
 						}
 						row[cellCounter] = new TableItems();
 						row[cellCounter].setLabel(fValue);
@@ -244,10 +241,10 @@ public class GxeTable extends Table {
 						}
 						String meansData = "";
 						meansData =
-								this.getMeansData(this.meansDataSetId, envs, this.selectedEnvFactorName,
-										row[colIndexEnvFactorName].getLabel(), varKey);
+								this.getMeansData(this.meansDataSetId, envs, this.trialInstanceFactorName,
+										trialInstanceFactorValue, varKey);
 
-						String heritabilityVal = this.getHeritabilityValues().get(locationValTrial).get(x.getValue());
+						String heritabilityVal = this.getHeritabilityValues().get(trialInstanceFactorValue).get(x.getValue());
 						if (heritabilityVal != null) {
 							meansData = String.format("%s (%s)", meansData, heritabilityVal);
 						}
@@ -259,7 +256,7 @@ public class GxeTable extends Table {
 					}
 
 					rowCounter++;
-					this.createRow(rowCounter, row, container);
+					this.createRow(rowCounter, row);
 				}
 
 			}
@@ -271,7 +268,7 @@ public class GxeTable extends Table {
 	}
 
 	protected Map<String, Map<String, String>> getHeribilityValuesFromPlotDataSet(int studyId) {
-		List<DataSet> plotDatasets = new ArrayList<DataSet>();
+		List<DataSet> plotDatasets = new ArrayList<>();
 		Map<String, Map<String, String>> heritabilityValues = new HashMap<>();
 
 		try {
@@ -307,14 +304,14 @@ public class GxeTable extends Table {
 
 					String envName = exp.getFactors().findByLocalName(this.trialInstanceFactorName).getValue();
 
-					Map<String, String> vals = new HashMap<String, String>();
+					Map<String, String> vals = new HashMap<>();
 
 					for (Entry<String, Boolean> entry : this.getVariatesCheckBoxState().entrySet()) {
 						String name = entry.getKey().replace("_Means", "_Heritability");
 						Variable var = exp.getVariates().findByLocalName(name);
 						if (var != null) {
 							// heritability value
-							vals.put(entry.getKey(), var.getValue().toString());
+							vals.put(entry.getKey(), var.getValue());
 						}
 
 					}
@@ -364,13 +361,13 @@ public class GxeTable extends Table {
 
 	public GxeEnvironment getGxeEnvironment() {
 		GxeEnvironment gxeEnvironment = new GxeEnvironment();
-		List<GxeEnvironmentLabel> environmentLabels = new ArrayList<GxeEnvironmentLabel>();
+		List<GxeEnvironmentLabel> environmentLabels = new ArrayList<>();
 
-		Object[] obj = this.getContainerDataSource().getItemIds().toArray();
+		Object[] environments = this.getContainerDataSource().getItemIds().toArray();
 
-		for (Integer i = 0; i < obj.length; i++) {
-			Property cbColumn = this.getContainerProperty(obj[i], " ");
-			Property locationColumn = this.getContainerProperty(obj[i], this.selectedEnvFactorName);
+		for (Integer i = 0; i < environments.length; i++) {
+			Property cbColumn = this.getContainerProperty(environments[i], " ");
+			Property locationColumn = this.getContainerProperty(environments[i], this.selectedEnvFactorName);
 			if ((Boolean) ((CheckBox) cbColumn.getValue()).getValue()) {
 				GxeEnvironmentLabel environmentLabel = new GxeEnvironmentLabel();
 				environmentLabel.setName(((Label) locationColumn.getValue()).getValue().toString());
@@ -386,7 +383,7 @@ public class GxeTable extends Table {
 	}
 
 	public List<Environment> getSelectedEnvironments() {
-		List<Environment> selectedEnvironments = new ArrayList<Environment>();
+		List<Environment> selectedEnvironments = new ArrayList<>();
 
 		Object[] obj = this.getContainerDataSource().getItemIds().toArray();
 
@@ -399,6 +396,7 @@ public class GxeTable extends Table {
 				environment.setName(((Label) locationColumn.getValue()).getValue().toString());
 				environment.setActive(true);
 				environment.setTrialno(((Label) trialNoColumn.getValue()).getValue().toString());
+				environment.setTrial(((Label) trialNoColumn.getValue()).getValue().toString());
 				selectedEnvironments.add(environment);
 			}
 		}

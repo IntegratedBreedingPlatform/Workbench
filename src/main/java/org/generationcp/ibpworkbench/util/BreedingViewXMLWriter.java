@@ -56,6 +56,8 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 
 	private static final String CROP_PLACEHOLDER = "{cropName}";
 
+	private static final String TRIAL_INSTANCE = "TRIAL_INSTANCE";
+
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
 
@@ -77,8 +79,8 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 
 		this.breedingViewInput = breedingViewInput;
 
-		this.numericTypes = new ArrayList<Integer>();
-		this.characterTypes = new ArrayList<Integer>();
+		this.numericTypes = new ArrayList<>();
+		this.characterTypes = new ArrayList<>();
 
 		this.numericTypes.add(TermId.NUMERIC_VARIABLE.getId());
 		this.numericTypes.add(TermId.MIN_VALUE.getId());
@@ -116,7 +118,8 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 			fileWriter.flush();
 			fileWriter.close();
 		} catch (final Exception ex) {
-			throw new BreedingViewXMLWriterException("Error with writing xml to: " + filePath + ": " + ex.getMessage(), ex);
+			throw new BreedingViewXMLWriterException("Error with writing xml to: " + filePath + ": " + ex.getMessage(),
+					ex);
 		}
 	}
 
@@ -124,16 +127,19 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 		JAXBContext context = null;
 		Marshaller marshaller = null;
 		try {
-			context = JAXBContext.newInstance(BreedingViewSession.class, Pipelines.class, Environments.class, Pipeline.class);
+			context = JAXBContext.newInstance(BreedingViewSession.class, Pipelines.class, Environments.class,
+					Pipeline.class);
 			marshaller = context.createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		} catch (final JAXBException ex) {
-			throw new BreedingViewXMLWriterException("Error with opening JAXB context and marshaller: " + ex.getMessage(), ex);
+			throw new BreedingViewXMLWriterException(
+					"Error with opening JAXB context and marshaller: " + ex.getMessage(), ex);
 		}
 		return marshaller;
 	}
 
-	private BreedingViewSession createBreedingViewSession(final BreedingViewProject project, final DataFile data, final SSAParameters ssaParameters) {
+	private BreedingViewSession createBreedingViewSession(final BreedingViewProject project, final DataFile data,
+			final SSAParameters ssaParameters) {
 		final BreedingViewSession bvSession = new BreedingViewSession();
 		bvSession.setBreedingViewProject(project);
 		bvSession.setDataFile(data);
@@ -176,8 +182,8 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 		}
 
 		final String installationDirectory = this.getInstallationDirectory();
-		final String outputDirectory =
-				String.format("%s/workspace/%s/breeding_view/output", installationDirectory, workbenchProject.getProjectName());
+		final String outputDirectory = String.format("%s/workspace/%s/breeding_view/output", installationDirectory,
+				workbenchProject.getProjectName());
 		ssaParameters.setOutputDirectory(outputDirectory);
 
 		if (Boolean.parseBoolean(this.isServerApp)) {
@@ -197,33 +203,43 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 	}
 
 	protected String getWebApiUrl() {
-		String url = this.webApiUrl + "?restartApplication";
-		Project project = sessionData.getLastOpenedProject();
-		String webApiUrlWithCropName = replaceCropNameInWebApiUrl(url, project.getCropType().getCropName());
+		final String url = this.webApiUrl + "?restartApplication";
+		final Project project = this.sessionData.getLastOpenedProject();
+		String webApiUrlWithCropName = this.replaceCropNameInWebApiUrl(url, project.getCropType().getCropName());
 		webApiUrlWithCropName += this.sessionData.getWorkbenchContextParameters();
 		return webApiUrlWithCropName;
 	}
 
-	private String replaceCropNameInWebApiUrl(final String webApiUrl, final String cropNameValue){
-		StringBuilder containerWebApiUrl = new StringBuilder(webApiUrl);
+	private String replaceCropNameInWebApiUrl(final String webApiUrl, final String cropNameValue) {
+		final StringBuilder containerWebApiUrl = new StringBuilder(webApiUrl);
 
-		int startIndex = containerWebApiUrl.indexOf(CROP_PLACEHOLDER);
-		int endIndex = startIndex + CROP_PLACEHOLDER.length();
+		final int startIndex = containerWebApiUrl.indexOf(BreedingViewXMLWriter.CROP_PLACEHOLDER);
+		final int endIndex = startIndex + BreedingViewXMLWriter.CROP_PLACEHOLDER.length();
 
 		containerWebApiUrl.replace(startIndex, endIndex, cropNameValue);
 		return containerWebApiUrl.toString();
 	}
 
-
 	private Environments createEnvironments() {
 		final Environments environments = new Environments();
 		environments.setName(this.breedingViewInput.getEnvironment().getName());
+		// Trial name attribute is not needed in the BV if the selected
+		// environment factor is Trial instance
+		if (!BreedingViewXMLWriter.TRIAL_INSTANCE.equals(this.breedingViewInput.getEnvironment().getName())) {
+			environments.setTrialName(this.breedingViewInput.getTrialInstanceName());
+		}
 
-		for (final SeaEnvironmentModel s : this.breedingViewInput.getSelectedEnvironments()) {
+		for (final SeaEnvironmentModel selectedEnvironment : this.breedingViewInput.getSelectedEnvironments()) {
 			final org.generationcp.commons.sea.xml.Environment env = new org.generationcp.commons.sea.xml.Environment();
-			env.setName(s.getEnvironmentName().replace(",", ";"));
+			env.setName(selectedEnvironment.getEnvironmentName().replace(",", ";"));
 			env.setActive(true);
-			if (s.getActive()) {
+			// Trial attribute is not needed in the BV if the selected
+			// environment factor is Trial instance
+			if (!BreedingViewXMLWriter.TRIAL_INSTANCE.equals(this.breedingViewInput.getEnvironment().getName())) {
+				env.setTrial(selectedEnvironment.getTrialno());
+			}
+
+			if (selectedEnvironment.getActive()) {
 				environments.add(env);
 			}
 		}
@@ -252,7 +268,8 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 		return design;
 	}
 
-	private DataConfiguration createDataConfiguration(final Environments environments, final Design design, final Traits traits) {
+	private DataConfiguration createDataConfiguration(final Environments environments, final Design design,
+			final Traits traits) {
 
 		final DataConfiguration dataConfiguration = new DataConfiguration();
 
@@ -269,7 +286,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 
 	private Traits createTraits() {
 		final Traits traits = new Traits();
-		final SortedSet<String> keys = new TreeSet<String>(this.breedingViewInput.getVariatesActiveState().keySet());
+		final SortedSet<String> keys = new TreeSet<>(this.breedingViewInput.getVariatesActiveState().keySet());
 		for (final String key : keys) {
 			if (this.breedingViewInput.getVariatesActiveState().get(key)) {
 				final Trait trait = new Trait();
@@ -301,7 +318,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 		this.workbenchDataManager = workbenchDataManager;
 	}
 
-	public void setWebApiUrl(String webApiUrl) {
+	public void setWebApiUrl(final String webApiUrl) {
 		this.webApiUrl = webApiUrl;
 	}
 }

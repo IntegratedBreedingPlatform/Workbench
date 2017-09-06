@@ -1,10 +1,27 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis;
 
-import com.vaadin.data.Property;
-import com.vaadin.ui.Label;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang3.ArrayUtils;
-import org.generationcp.middleware.domain.dms.*;
+import org.generationcp.commons.gxe.xml.GxeEnvironment;
+import org.generationcp.commons.sea.xml.Environment;
+import org.generationcp.middleware.domain.dms.DMSVariableType;
+import org.generationcp.middleware.domain.dms.DataSet;
+import org.generationcp.middleware.domain.dms.DataSetType;
+import org.generationcp.middleware.domain.dms.DatasetReference;
+import org.generationcp.middleware.domain.dms.Enumeration;
+import org.generationcp.middleware.domain.dms.Experiment;
+import org.generationcp.middleware.domain.dms.PhenotypicType;
+import org.generationcp.middleware.domain.dms.StandardVariable;
+import org.generationcp.middleware.domain.dms.TrialEnvironment;
+import org.generationcp.middleware.domain.dms.TrialEnvironments;
+import org.generationcp.middleware.domain.dms.Variable;
+import org.generationcp.middleware.domain.dms.VariableList;
+import org.generationcp.middleware.domain.dms.VariableTypeList;
 import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareException;
@@ -16,10 +33,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.vaadin.data.Property;
+import com.vaadin.ui.Label;
 
 public class GxeTableTest {
 
@@ -80,7 +95,6 @@ public class GxeTableTest {
 	private static final Term TRIAL_INSTANCE_ROLE = new Term(TermId.TRIAL_INSTANCE_STORAGE.getId(), "", "");
 	private static final Term TRIAL_ENVIRONMENT_ROLE = new Term(TermId.TRIAL_ENVIRONMENT_INFO_STORAGE.getId(), "", "");
 	private static final Term OBSERVATION_VARIATE_ROLE = new Term(TermId.OBSERVATION_VARIATE.getId(), "", "");
-	private static final Term CATEGORICAL_VARIATE_ROLE = new Term(TermId.CATEGORICAL_VARIATE.getId(), "", "");
 
 	@Mock
 	private Property.ValueChangeListener listener;
@@ -174,8 +188,8 @@ public class GxeTableTest {
 	public void testFillTableWithDatasetWithTrialEnvironmentAsSelectedFactor() {
 
 		GxeTable gxeTable =
-				Mockito.spy(new GxeTable(this.studyDataManager, GxeTableTest.STUDY_ID, GxeTableTest.SITE_FACTOR, "",
-						this.variatesCheckBoxState, this.listener));
+				new GxeTable(this.studyDataManager, GxeTableTest.STUDY_ID, GxeTableTest.SITE_FACTOR, "",
+						this.variatesCheckBoxState, this.listener);
 
 		Assert.assertTrue("The Trial Instance Factor should always be visible in the table",
 				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.TRIAL_FACTOR));
@@ -207,8 +221,8 @@ public class GxeTableTest {
 	public void testFillTableWithDatasetAndTrialInstanceAsSelectedFactorAndWithSelectedGroupFactorName() {
 
 		GxeTable gxeTable =
-				Mockito.spy(new GxeTable(this.studyDataManager, GxeTableTest.STUDY_ID, GxeTableTest.TRIAL_FACTOR,
-						GxeTableTest.GROUP_FACTOR, this.variatesCheckBoxState, this.listener));
+				new GxeTable(this.studyDataManager, GxeTableTest.STUDY_ID, GxeTableTest.TRIAL_FACTOR,
+						GxeTableTest.GROUP_FACTOR, this.variatesCheckBoxState, this.listener);
 
 		Assert.assertTrue("The Trial Instance Factor should always be visible in the table",
 				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.TRIAL_FACTOR));
@@ -238,11 +252,31 @@ public class GxeTableTest {
 	}
 
 	@Test
+	public void testGetSelectedEnvironments() {
+		GxeTable gxeTable =
+				new GxeTable(this.studyDataManager, GxeTableTest.STUDY_ID, GxeTableTest.SITE_FACTOR, GxeTableTest.GROUP_FACTOR,
+						this.variatesCheckBoxState, this.listener);
+		List<Environment> environments = gxeTable.getSelectedEnvironments();
+		Assert.assertNotNull(environments);
+		Assert.assertEquals(1, environments.size());
+	}
+	
+	@Test
+	public void testGetGxeENvironment() {
+		GxeTable gxeTable =
+				new GxeTable(this.studyDataManager, GxeTableTest.STUDY_ID, GxeTableTest.SITE_FACTOR, GxeTableTest.GROUP_FACTOR,
+						this.variatesCheckBoxState, this.listener);
+		GxeEnvironment environment = gxeTable.getGxeEnvironment();
+		Assert.assertNotNull(environment);
+		Assert.assertEquals(1, environment.getLabels().size());
+	}
+	
+	@Test
 	public void testFillTableWithDatasetAndTrialEnvironmentAsSelectedFactorAndWithSelectedGroupFactorName() {
 
 		GxeTable gxeTable =
-				Mockito.spy(new GxeTable(this.studyDataManager, GxeTableTest.STUDY_ID, GxeTableTest.SITE_FACTOR, GxeTableTest.GROUP_FACTOR,
-						this.variatesCheckBoxState, this.listener));
+				new GxeTable(this.studyDataManager, GxeTableTest.STUDY_ID, GxeTableTest.SITE_FACTOR, GxeTableTest.GROUP_FACTOR,
+						this.variatesCheckBoxState, this.listener);
 
 		Assert.assertTrue("The Trial Instance Factor should always be visible in the table",
 				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.TRIAL_FACTOR));
