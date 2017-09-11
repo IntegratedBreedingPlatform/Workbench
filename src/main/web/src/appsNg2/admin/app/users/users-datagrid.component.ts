@@ -27,6 +27,7 @@ export class UsersDatagrid implements OnInit {
     isEditing = false;
     dialogTitle: string;
     showConfirmStatusDialog = false;
+    showErrorDialog = false;
     confirmStatusTitle: string = "Confirm";
     table: NgDataGridModel<User>;
     recentlyRemoveUsers: any[];
@@ -145,20 +146,22 @@ export class UsersDatagrid implements OnInit {
     }
 
     changedActiveStatus() {
-        if (this.userSelected.status === "true") {
-            this.userSelected.status = "false";
-        } else {
-            this.userSelected.status = "true";
-        }
         this.userService
             .update(this.userSelected)
             .subscribe(
-            resp => { },
+            resp => {
+                if (this.userSelected.status === "true") {
+                    this.userSelected.status = "false";
+                } else {
+                    this.userSelected.status = "true";
+                }
+                this.userSelected = null;
+            },
             error => {
-                this.errorServiceMessage = error;
+                this.errorServiceMessage = error.json().ERROR.errors[0].message;
+                this.showErrorDialog = true;
             });
 
-        this.userSelected = null;
         this.showConfirmStatusDialog = false;
 
     }

@@ -82,6 +82,13 @@
                           </div>
                       </app-dialog>
                     </div>
+                    <div class="popup">
+                        <error-dialog [(visible)]="showErrorDialog" title="Error">
+                            <div class="modal-body">
+                                <div class='alert alert-danger' role="alert" *ngIf="errorServiceMessage">{{errorServiceMessage}}</div>
+                            </div>
+                        </error-dialog>
+                    </div>
                  </tbody>
             </table>
         </div>
