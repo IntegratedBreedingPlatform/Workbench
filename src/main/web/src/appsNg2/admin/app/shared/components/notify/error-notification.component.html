@@ -1,0 +1,9 @@
+<div [@errorNotificationTrigger] *ngIf="visible" id="default-notification" class="ui-notify">
+	<div class="ui-notify-message ui-notify-message-style ui-notify-click error-notify">
+		<a class="ui-notify-close" href="#" *ngIf="closable" (click)="close()">
+			<span class="glyphicon glyphicon-remove" style="float:right"></span>
+		</a>
+		<h1>{{title}}</h1>
+		<ng-content></ng-content>
+	</div>
+</div>

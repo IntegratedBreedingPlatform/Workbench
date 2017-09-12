@@ -5,8 +5,6 @@ import { Role } from './../shared/models/role.model';
 import './../shared/utils/array.extensions';
 import { UserService } from './../shared/services/user.service';
 import { RoleService } from './../shared/services/role.service';
-import { Dialog } from './../shared/components/dialog/dialog.component';
-import { PaginationComponent } from './../shared/components/datagrid/pagination.component';
 import { UserCard } from './user-card.component';
 import { UserComparator } from './user-comparator.component';
 
@@ -27,10 +25,9 @@ export class UsersDatagrid implements OnInit {
     isEditing = false;
     dialogTitle: string;
     showConfirmStatusDialog = false;
-    showErrorDialog = false;
+    showErrorNotification = false;
     confirmStatusTitle: string = "Confirm";
     table: NgDataGridModel<User>;
-    recentlyRemoveUsers: any[];
     confirmMessage: string = "Please confirm that you would like to deactivate/activate this user account.";
     user: User;
     originalUser: User;
@@ -159,7 +156,7 @@ export class UsersDatagrid implements OnInit {
             },
             error => {
                 this.errorServiceMessage = error.json().ERROR.errors[0].message;
-                this.showErrorDialog = true;
+                this.showErrorNotification = true;
             });
 
         this.showConfirmStatusDialog = false;

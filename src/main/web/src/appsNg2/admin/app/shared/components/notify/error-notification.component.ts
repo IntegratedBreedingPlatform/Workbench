@@ -1,12 +1,12 @@
 import { Component, OnInit, Input, Output, OnChanges, EventEmitter, trigger, state, style, animate, transition } from '@angular/core';
 
 @Component({
-  selector: 'error-dialog',
-  templateUrl: 'errorDialog.component.html',
-  styleUrls: ['errorDialog.component.css'],
+  selector: 'error-notification',
+  templateUrl: 'error-notification.component.html',
+  styleUrls: ['error-notification.component.css'],
   moduleId: module.id,
   animations: [
-    trigger('dialog', [
+    trigger('errorNotificationTrigger', [
       state('in', style({ opacity: 1, transform: 'translateX(0)' })),
       transition('void => *', [
         style({
@@ -24,7 +24,7 @@ import { Component, OnInit, Input, Output, OnChanges, EventEmitter, trigger, sta
     ])
   ]
 })
-export class Dialog implements OnInit {
+export class ErrorNotification implements OnInit {
   @Input() closable = true;
   @Input() visible: boolean;
   @Input() title: string;
