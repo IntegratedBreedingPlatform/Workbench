@@ -143,20 +143,26 @@ export class UsersDatagrid implements OnInit {
     }
 
     changedActiveStatus() {
+        var status = this.userSelected.status;
+
+        // TODO Change status to boolean or int as in the backend
+        if (this.userSelected.status === "true") {
+            this.userSelected.status = "false";
+        } else {
+            this.userSelected.status = "true";
+        }
+
         this.userService
             .update(this.userSelected)
             .subscribe(
             resp => {
-                if (this.userSelected.status === "true") {
-                    this.userSelected.status = "false";
-                } else {
-                    this.userSelected.status = "true";
-                }
                 this.userSelected = null;
             },
             error => {
                 this.errorServiceMessage = error.json().ERROR.errors[0].message;
                 this.showErrorNotification = true;
+                this.userSelected.status = status;
+                this.userSelected = null;
             });
 
         this.showConfirmStatusDialog = false;
