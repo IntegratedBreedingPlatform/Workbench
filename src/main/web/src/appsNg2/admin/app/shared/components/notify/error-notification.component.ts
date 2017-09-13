@@ -28,6 +28,7 @@ export class ErrorNotification implements OnInit {
   @Input() closable = true;
   @Input() visible: boolean;
   @Input() title: string;
+  @Input() classes: string = "error-notify";
   @Output() visibleChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   constructor() { }
