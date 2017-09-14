@@ -5,8 +5,6 @@ import { Role } from './../shared/models/role.model';
 import './../shared/utils/array.extensions';
 import { UserService } from './../shared/services/user.service';
 import { RoleService } from './../shared/services/role.service';
-import { Dialog } from './../shared/components/dialog/dialog.component';
-import { PaginationComponent } from './../shared/components/datagrid/pagination.component';
 import { UserCard } from './user-card.component';
 import { UserComparator } from './user-comparator.component';
 
@@ -27,9 +25,9 @@ export class UsersDatagrid implements OnInit {
     isEditing = false;
     dialogTitle: string;
     showConfirmStatusDialog = false;
+    showErrorNotification = false;
     confirmStatusTitle: string = "Confirm";
     table: NgDataGridModel<User>;
-    recentlyRemoveUsers: any[];
     confirmMessage: string = "Please confirm that you would like to deactivate/activate this user account.";
     user: User;
     originalUser: User;
@@ -145,20 +143,28 @@ export class UsersDatagrid implements OnInit {
     }
 
     changedActiveStatus() {
+        var status = this.userSelected.status;
+
+        // TODO Change status to boolean or int as in the backend
         if (this.userSelected.status === "true") {
             this.userSelected.status = "false";
         } else {
             this.userSelected.status = "true";
         }
+
         this.userService
             .update(this.userSelected)
             .subscribe(
-            resp => { },
+            resp => {
+                this.userSelected = null;
+            },
             error => {
-                this.errorServiceMessage = error;
+                this.errorServiceMessage = error.json().ERROR.errors[0].message;
+                this.showErrorNotification = true;
+                this.userSelected.status = status;
+                this.userSelected = null;
             });
 
-        this.userSelected = null;
         this.showConfirmStatusDialog = false;
 
     }

@@ -82,6 +82,11 @@
                           </div>
                       </app-dialog>
                     </div>
+                    <div class="popup">
+                        <error-notification [(visible)]="showErrorNotification" title="Error" [classes]="'error-notify'">
+							<p>{{errorServiceMessage}}</p>
+                        </error-notification>
+                    </div>
                  </tbody>
             </table>
         </div>
