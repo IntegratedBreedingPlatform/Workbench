@@ -43,6 +43,7 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.middleware.domain.dms.DatasetReference;
 import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
+import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.StudyReference;
 import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -175,9 +176,18 @@ public class StudyTreeComponent extends VerticalLayout implements InitializingBe
 			@Override
 			public void buttonClick(Button.ClickEvent event) {
 				int studyId = Integer.valueOf(StudyTreeComponent.this.selectedStudyTreeNodeId.toString());
-				String name = StudyTreeComponent.this.studyTree.getItemCaption(StudyTreeComponent.this.selectedStudyTreeNodeId);
-				StudyTreeComponent.this.studyTreeUtil
+				Study study = studyDataManager.getStudy(studyId);
+				if (null == study.getProgramUUID()) {
+					if (StudyTreeComponent.this.getWindow() != null) {
+						MessageNotifier
+							.showError(StudyTreeComponent.this.getWindow(), StudyTreeComponent.this.messageSource.getMessage(Message.ERROR),
+								"Program templates cannot be renamed.");
+					}
+				} else {
+					String name = StudyTreeComponent.this.studyTree.getItemCaption(StudyTreeComponent.this.selectedStudyTreeNodeId);
+					StudyTreeComponent.this.studyTreeUtil
 						.renameFolder(studyId, name, StudyTreeComponent.this.getCurrentProject().getUniqueID());
+				}
 			}
 		});
 
