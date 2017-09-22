@@ -16,11 +16,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang3.SystemUtils;
+import org.generationcp.commons.constant.ToolEnum;
 import org.generationcp.commons.util.StringUtil;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.util.bean.ConfigurationChangeParameters;
@@ -43,8 +45,10 @@ public class ToolUtil {
 	public static final String DEFAULT_DRIVER = "com.mysql.jdbc.Driver";
 	public static final String JDBC_FORMAT_STRING = "jdbc:mysql://%s:%s/%s";
 	public static final String INPUT = "input";
+	public static final String OUTPUT = "output";
 	public static final String GDMS_CONFIG_LOCATION = "infrastructure/tomcat/webapps/GDMS/WEB-INF/classes/DatabaseConfig.properties";
 	public static final String MBDT_CONFIG_LOCATION = "tools/mbdt/DatabaseConfig.properties";
+	public static final String WORKSPACE_DIR = "workspace";
 
 	private String jdbcHost;
 	private Long jdbcPort;
@@ -56,7 +60,6 @@ public class ToolUtil {
 	private String workbenchUser = "root";
 	private String workbenchPassword = "";
 
-	private String workspaceDirectory = "workspace";
 
 	private String workbenchInstallationDirectory;
 
@@ -133,14 +136,6 @@ public class ToolUtil {
 
 	public void setWorkbenchPassword(String workbenchPassword) {
 		this.workbenchPassword = workbenchPassword;
-	}
-
-	public String getWorkspaceDirectory() {
-		return this.workspaceDirectory;
-	}
-
-	public void setWorkspaceDirectory(String workspaceDirectory) {
-		this.workspaceDirectory = workspaceDirectory;
 	}
 
 	public String getWorkbenchInstallationDirectory() {
@@ -315,23 +310,21 @@ public class ToolUtil {
 
 		// create the directory for the project
 		String projectDirName = project.getProjectName();
-		File projectDir = new File(installationDirectory + File.separator + this.workspaceDirectory, projectDirName);
-
+		File projectDir = new File(installationDirectory + File.separator + WORKSPACE_DIR, projectDirName);
 		if (projectDir.exists()) {
 			return;
 		}
-
 		projectDir.mkdirs();
 
-		// create the directory for each tool
-		List<Tool> toolList = this.workbenchDataManager.getAllTools();
-		for (Tool tool : toolList) {
-			File toolDir = new File(projectDir, tool.getGroupName());
+		// create the directory only for breeding_view tool
+		final List<String> toolList = Collections.singletonList(ToolEnum.BREEDING_VIEW.getToolName());
+		for (final String toolName : toolList) {
+			File toolDir = new File(projectDir, toolName);
 			toolDir.mkdirs();
 
 			// create the input and output directories
 			new File(toolDir, ToolUtil.INPUT).mkdirs();
-			new File(toolDir, "output").mkdirs();
+			new File(toolDir, ToolUtil.OUTPUT).mkdirs();
 		}
 	}
 
@@ -344,11 +337,11 @@ public class ToolUtil {
 		String installationDirectory = workbenchSetting.getInstallationDirectory();
 
 		File oldDir =
-				new File(installationDirectory + File.separator + this.workspaceDirectory,
+				new File(installationDirectory + File.separator + ToolUtil.WORKSPACE_DIR,
 						String.format("%d-%s", projectId, oldProjectName));
 
 		if (oldDir.exists()) {
-			oldDir.renameTo(new File(installationDirectory + File.separator + this.workspaceDirectory, String.format("%d", projectId)));
+			oldDir.renameTo(new File(installationDirectory + File.separator + ToolUtil.WORKSPACE_DIR, String.format("%d", projectId)));
 		}
 	}
 
@@ -360,7 +353,7 @@ public class ToolUtil {
 
 		String projectDirName = String.format("%s", project.getProjectName());
 
-		File projectDir = new File(this.workspaceDirectory, projectDirName);
+		File projectDir = new File(ToolUtil.WORKSPACE_DIR, projectDirName);
 		File toolDir = new File(projectDir, tool.getGroupName());
 		
 		return new File(toolDir, ToolUtil.INPUT).getAbsolutePath();
@@ -375,7 +368,7 @@ public class ToolUtil {
 		String projectDirName = String.format("%d", project.getProjectId());
 
 		String installationDirectory = workbenchSetting.getInstallationDirectory();
-		File projectDir = new File(installationDirectory + File.separator + this.workspaceDirectory, projectDirName);
+		File projectDir = new File(installationDirectory + File.separator + ToolUtil.WORKSPACE_DIR, projectDirName);
 		File toolDir = new File(projectDir, tool.getGroupName());
 
 		return new File(toolDir, ToolUtil.INPUT).getAbsolutePath();
