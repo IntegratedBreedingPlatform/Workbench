@@ -47,6 +47,10 @@ import com.vaadin.ui.themes.Reindeer;
 @Configurable
 public class SelectStudyDialog extends BaseSubWindow implements InitializingBean, InternationalizableComponent {
 
+	public static final String OBJECTIVE = "Objective";
+	public static final String TITLE = "Title";
+	public static final String STUDY_NAME = "Study Name";
+	
 	private final class TreeTableItemClickListener implements ItemClickListener {
 
 		private final TreeTable tr;
@@ -235,14 +239,14 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		final BreedingViewTreeTable tr = new BreedingViewTreeTable();
 		tr.setDebugId("tr");
 
-		tr.addContainerProperty("Study Name", String.class, "sname");
-		tr.addContainerProperty("Title", String.class, "title");
-		tr.addContainerProperty("Objective", String.class, "description");
+		tr.addContainerProperty(STUDY_NAME, String.class, "sname");
+		tr.addContainerProperty(TITLE, String.class, "title");
+		tr.addContainerProperty(OBJECTIVE, String.class, "description");
 
 		List<Reference> folderRef = null;
 
 		try {
-			folderRef = this.getStudyDataManager().getRootFolders(this.currentProject.getUniqueID(), StudyType.nurseriesAndTrials());
+			folderRef = this.getStudyDataManager().getRootFolders(this.currentProject.getUniqueID(), StudyType.trials());
 		} catch (MiddlewareQueryException e1) {
 			SelectStudyDialog.LOG.error(e1.getMessage(), e1);
 			if (this.getWindow() != null) {
@@ -252,7 +256,6 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		}
 
 		for (Reference fr : folderRef) {
-
 			Study study = null;
 			try {
 				if (fr.isStudy()) {
@@ -280,9 +283,9 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 
 		// reserve excess space for the "treecolumn"
 		tr.setSizeFull();
-		tr.setColumnExpandRatio("Study Name", 1);
-		tr.setColumnExpandRatio("Title", 1);
-		tr.setColumnExpandRatio("Objective", 1);
+		tr.setColumnExpandRatio(STUDY_NAME, 1);
+		tr.setColumnExpandRatio(TITLE, 1);
+		tr.setColumnExpandRatio(OBJECTIVE, 1);
 		tr.setSelectable(true);
 
 		tr.addListener(new StudyTreeExpandAction(this, tr));
