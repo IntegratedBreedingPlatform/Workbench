@@ -321,7 +321,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 
 	public void queryChildrenStudies(Reference parentFolderReference, BreedingViewTreeTable tr) {
 
-		List<Reference> childrenReference = new ArrayList<Reference>();
+		List<Reference> childrenReference = new ArrayList<>();
 
 		try {
 
@@ -388,7 +388,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 
 	public void queryChildrenDatasets(Reference parentFolderReference, TreeTable tr) throws InternationalizableException {
 
-		List<DatasetReference> childrenReference = new ArrayList<DatasetReference>();
+		List<DatasetReference> childrenReference = new ArrayList<>();
 
 		try {
 
