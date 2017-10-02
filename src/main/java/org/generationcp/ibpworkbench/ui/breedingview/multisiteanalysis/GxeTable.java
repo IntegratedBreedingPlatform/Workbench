@@ -396,7 +396,6 @@ public class GxeTable extends Table {
 				environment.setName(((Label) locationColumn.getValue()).getValue().toString());
 				environment.setActive(true);
 				environment.setTrialno(((Label) trialNoColumn.getValue()).getValue().toString());
-				environment.setTrial(((Label) trialNoColumn.getValue()).getValue().toString());
 				selectedEnvironments.add(environment);
 			}
 		}
