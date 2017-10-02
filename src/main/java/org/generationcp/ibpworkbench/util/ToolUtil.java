@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- * 
+ *
  *
  * Generation Challenge Programme (GCP)
  *
@@ -16,11 +16,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang3.SystemUtils;
+import org.generationcp.commons.constant.ToolEnum;
 import org.generationcp.commons.util.StringUtil;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.util.bean.ConfigurationChangeParameters;
@@ -43,8 +45,10 @@ public class ToolUtil {
 	public static final String DEFAULT_DRIVER = "com.mysql.jdbc.Driver";
 	public static final String JDBC_FORMAT_STRING = "jdbc:mysql://%s:%s/%s";
 	public static final String INPUT = "input";
+	public static final String OUTPUT = "output";
 	public static final String GDMS_CONFIG_LOCATION = "infrastructure/tomcat/webapps/GDMS/WEB-INF/classes/DatabaseConfig.properties";
 	public static final String MBDT_CONFIG_LOCATION = "tools/mbdt/DatabaseConfig.properties";
+	public static final String WORKSPACE_DIR = "workspace";
 
 	private String jdbcHost;
 	private Long jdbcPort;
@@ -56,8 +60,6 @@ public class ToolUtil {
 	private String workbenchUser = "root";
 	private String workbenchPassword = "";
 
-	private String workspaceDirectory = "workspace";
-
 	private String workbenchInstallationDirectory;
 
 	@Autowired
@@ -67,7 +69,7 @@ public class ToolUtil {
 		return this.jdbcHost;
 	}
 
-	public void setJdbcHost(String jdbcHost) {
+	public void setJdbcHost(final String jdbcHost) {
 		this.jdbcHost = jdbcHost;
 	}
 
@@ -75,7 +77,7 @@ public class ToolUtil {
 		return this.jdbcPort;
 	}
 
-	public void setJdbcPort(Long jdbcPort) {
+	public void setJdbcPort(final Long jdbcPort) {
 		this.jdbcPort = jdbcPort;
 	}
 
@@ -83,7 +85,7 @@ public class ToolUtil {
 		return this.centralUser;
 	}
 
-	public void setCentralUser(String centralUser) {
+	public void setCentralUser(final String centralUser) {
 		this.centralUser = centralUser;
 	}
 
@@ -91,7 +93,7 @@ public class ToolUtil {
 		return this.centralPassword;
 	}
 
-	public void setCentralPassword(String centralPassword) {
+	public void setCentralPassword(final String centralPassword) {
 		this.centralPassword = centralPassword;
 	}
 
@@ -99,7 +101,7 @@ public class ToolUtil {
 		return this.localUser;
 	}
 
-	public void setLocalUser(String localUser) {
+	public void setLocalUser(final String localUser) {
 		this.localUser = localUser;
 	}
 
@@ -107,7 +109,7 @@ public class ToolUtil {
 		return this.localPassword;
 	}
 
-	public void setLocalPassword(String localPassword) {
+	public void setLocalPassword(final String localPassword) {
 		this.localPassword = localPassword;
 	}
 
@@ -115,7 +117,7 @@ public class ToolUtil {
 		return this.workbenchDbName;
 	}
 
-	public void setWorkbenchDbName(String workbenchDbName) {
+	public void setWorkbenchDbName(final String workbenchDbName) {
 		this.workbenchDbName = workbenchDbName;
 	}
 
@@ -123,7 +125,7 @@ public class ToolUtil {
 		return this.workbenchUser;
 	}
 
-	public void setWorkbenchUser(String workbenchUser) {
+	public void setWorkbenchUser(final String workbenchUser) {
 		this.workbenchUser = workbenchUser;
 	}
 
@@ -131,35 +133,27 @@ public class ToolUtil {
 		return this.workbenchPassword;
 	}
 
-	public void setWorkbenchPassword(String workbenchPassword) {
+	public void setWorkbenchPassword(final String workbenchPassword) {
 		this.workbenchPassword = workbenchPassword;
-	}
-
-	public String getWorkspaceDirectory() {
-		return this.workspaceDirectory;
-	}
-
-	public void setWorkspaceDirectory(String workspaceDirectory) {
-		this.workspaceDirectory = workspaceDirectory;
 	}
 
 	public String getWorkbenchInstallationDirectory() {
 		return this.workbenchInstallationDirectory;
 	}
 
-	public void setWorkbenchInstallationDirectory(String installationDirectory) {
+	public void setWorkbenchInstallationDirectory(final String installationDirectory) {
 		this.workbenchInstallationDirectory = installationDirectory;
 	}
 
 	/**
 	 * Launch the specified native tool.
-	 * 
+	 *
 	 * @param tool
 	 * @return the {@link Process} object created when the tool was launched
 	 * @throws IOException if an I/O error occurs while trying to launch the tool
 	 * @throws IllegalArgumentException if the specified Tool's type is not {@link ToolType#NATIVE}
 	 */
-	public Process launchNativeTool(Tool tool) throws IOException {
+	public Process launchNativeTool(final Tool tool) throws IOException {
 		if (tool.getToolType() != ToolType.NATIVE) {
 			throw new IllegalArgumentException("Tool must be a native tool");
 		}
@@ -169,68 +163,68 @@ public class ToolUtil {
 			parameter = tool.getParameter();
 		}
 
-		String toolPath = this.getComputedToolPath(tool);
-		File absoluteToolFile = new File(toolPath);
+		final String toolPath = this.getComputedToolPath(tool);
+		final File absoluteToolFile = new File(toolPath);
 
-		ProcessBuilder pb = new ProcessBuilder(toolPath, parameter);
+		final ProcessBuilder pb = new ProcessBuilder(toolPath, parameter);
 		pb.directory(absoluteToolFile.getParentFile());
 		return pb.start();
 	}
 
 	public void closeAllNativeTools() throws IOException {
 		try {
-			List<Tool> nativeTools = this.workbenchDataManager.getToolsWithType(ToolType.NATIVE);
+			final List<Tool> nativeTools = this.workbenchDataManager.getToolsWithType(ToolType.NATIVE);
 
-			for (Tool tool : nativeTools) {
+			for (final Tool tool : nativeTools) {
 				this.closeNativeTool(tool);
 			}
 
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			ToolUtil.LOG.error(e.getMessage(), e);
 		}
 	}
 
 	/**
 	 * Close the specified native tool.
-	 * 
+	 *
 	 * @param tool
 	 * @throws IOException if an I/O error occurs while trying to stop the tool
 	 * @throws IllegalArgumentException if the specified Tool's type is not {@link ToolType#NATIVE}
 	 */
-	public void closeNativeTool(Tool tool) throws IOException {
+	public void closeNativeTool(final Tool tool) throws IOException {
 		if (tool.getToolType() != ToolType.NATIVE) {
 			throw new IllegalArgumentException("Tool must be a native tool");
 		}
-		
+
 		if (!SystemUtils.IS_OS_WINDOWS) {
 			return;
 		}
 
-		String toolPath = this.getComputedToolPath(tool);
-		File absoluteToolFile = new File(toolPath);
-		String[] pathTokens = toolPath.split("\\" + File.separator);
+		final String toolPath = this.getComputedToolPath(tool);
+		final File absoluteToolFile = new File(toolPath);
+		final String[] pathTokens = toolPath.split("\\" + File.separator);
 
-		String executableName = pathTokens[pathTokens.length - 1];
+		final String executableName = pathTokens[pathTokens.length - 1];
 
 		// taskkill /T /F /IM <exe name>
-		ProcessBuilder pb = new ProcessBuilder("taskkill", "/T", "/F", "/IM", executableName);
+		final ProcessBuilder pb = new ProcessBuilder("taskkill", "/T", "/F", "/IM", executableName);
 		pb.directory(absoluteToolFile.getParentFile());
 
-		Process process = pb.start();
+		final Process process = pb.start();
 		try {
 			process.waitFor();
-		} catch (InterruptedException e) {
+		} catch (final InterruptedException e) {
 			ToolUtil.LOG.error("Interrupted while waiting for " + tool.getToolName() + " to stop.");
 		}
 	}
 
-	protected String getComputedToolPath(Tool tool) {
+	protected String getComputedToolPath(final Tool tool) {
 		String toolPath = tool.getPath();
 
 		// if the tool path is an absolute path
 		// and the workbench installation directory has been set,
 		// launch the tool from the specified installation directory
-		int startIndex = toolPath.indexOf("tools");
+		final int startIndex = toolPath.indexOf("tools");
 		if (startIndex > 0 && this.workbenchInstallationDirectory != null) {
 			toolPath = this.workbenchInstallationDirectory + File.separator + toolPath.substring(startIndex);
 		}
@@ -239,7 +233,7 @@ public class ToolUtil {
 
 	protected User getCurrentUser() {
 
-		IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+		final IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
 		if (app != null) {
 			return app.getSessionData().getUserData();
 		} else {
@@ -247,23 +241,23 @@ public class ToolUtil {
 		}
 	}
 
-	protected boolean updatePropertyFile(File propertyFile, Map<String, String> newPropertyValues) {
+	protected boolean updatePropertyFile(final File propertyFile, final Map<String, String> newPropertyValues) {
 		boolean changed = false;
 
 		FileInputStream fis = null;
 		FileOutputStream fos = null;
 		try {
 			// load the property files
-			Properties properties = new Properties();
+			final Properties properties = new Properties();
 			fis = new FileInputStream(propertyFile);
 			properties.load(fis);
 
 			// update the property values
-			for (String key : newPropertyValues.keySet()) {
-				String newValue = newPropertyValues.get(key);
-				String oldValue = properties.getProperty(key);
+			for (final String key : newPropertyValues.keySet()) {
+				final String newValue = newPropertyValues.get(key);
+				final String oldValue = properties.getProperty(key);
 
-				boolean equal = newValue == null ? oldValue == null : newValue.equals(oldValue);
+				final boolean equal = newValue == null ? oldValue == null : newValue.equals(oldValue);
 				if (!equal) {
 					changed = true;
 					properties.setProperty(key, newValue);
@@ -278,13 +272,13 @@ public class ToolUtil {
 				properties.store(fos, null);
 				fos.flush();
 			}
-		} catch (IOException e1) {
+		} catch (final IOException e1) {
 			ToolUtil.LOG.error("Cannot update property file: " + propertyFile.getAbsolutePath(), e1);
 		} finally {
 			if (fis != null) {
 				try {
 					fis.close();
-				} catch (IOException e) {
+				} catch (final IOException e) {
 					ToolUtil.LOG.error(e.getMessage(), e);
 				}
 			}
@@ -292,7 +286,7 @@ public class ToolUtil {
 			if (fos != null) {
 				try {
 					fos.close();
-				} catch (IOException e) {
+				} catch (final IOException e) {
 					ToolUtil.LOG.error(e.getMessage(), e);
 				}
 			}
@@ -301,82 +295,79 @@ public class ToolUtil {
 		return changed;
 	}
 
-	public File getConfigurationFile(ConfigurationChangeParameters params) {
+	public File getConfigurationFile(final ConfigurationChangeParameters params) {
 		return new File(params.getPropertyFile()).getAbsoluteFile();
 	}
 
-	public void createWorkspaceDirectoriesForProject(Project project) {
-		WorkbenchSetting workbenchSetting = this.workbenchDataManager.getWorkbenchSetting();
+	public void createWorkspaceDirectoriesForProject(final Project project) {
+		final WorkbenchSetting workbenchSetting = this.workbenchDataManager.getWorkbenchSetting();
 		if (workbenchSetting == null) {
 			return;
 		}
 
-		String installationDirectory = workbenchSetting.getInstallationDirectory();
+		final String installationDirectory = workbenchSetting.getInstallationDirectory();
 
 		// create the directory for the project
-		String projectDirName = project.getProjectName();
-		File projectDir = new File(installationDirectory + File.separator + this.workspaceDirectory, projectDirName);
-
+		final String projectDirName = project.getProjectName();
+		final File projectDir = new File(installationDirectory + File.separator + ToolUtil.WORKSPACE_DIR, projectDirName);
 		if (projectDir.exists()) {
 			return;
 		}
-
 		projectDir.mkdirs();
 
-		// create the directory for each tool
-		List<Tool> toolList = this.workbenchDataManager.getAllTools();
-		for (Tool tool : toolList) {
-			File toolDir = new File(projectDir, tool.getGroupName());
+		// create the directory only for breeding_view tool
+		final List<String> toolList = Collections.singletonList(ToolEnum.BREEDING_VIEW.getToolName());
+		for (final String toolName : toolList) {
+			final File toolDir = new File(projectDir, toolName);
 			toolDir.mkdirs();
 
 			// create the input and output directories
 			new File(toolDir, ToolUtil.INPUT).mkdirs();
-			new File(toolDir, "output").mkdirs();
+			new File(toolDir, ToolUtil.OUTPUT).mkdirs();
 		}
 	}
 
-	public void renameOldWorkspaceDirectoryToNewFormat(long projectId, String oldProjectName) {
-		WorkbenchSetting workbenchSetting = this.workbenchDataManager.getWorkbenchSetting();
+	public void renameOldWorkspaceDirectoryToNewFormat(final long projectId, final String oldProjectName) {
+		final WorkbenchSetting workbenchSetting = this.workbenchDataManager.getWorkbenchSetting();
 		if (workbenchSetting == null) {
 			return;
 		}
 
-		String installationDirectory = workbenchSetting.getInstallationDirectory();
+		final String installationDirectory = workbenchSetting.getInstallationDirectory();
 
-		File oldDir =
-				new File(installationDirectory + File.separator + this.workspaceDirectory,
-						String.format("%d-%s", projectId, oldProjectName));
+		final File oldDir = new File(installationDirectory + File.separator + ToolUtil.WORKSPACE_DIR,
+				String.format("%d-%s", projectId, oldProjectName));
 
 		if (oldDir.exists()) {
-			oldDir.renameTo(new File(installationDirectory + File.separator + this.workspaceDirectory, String.format("%d", projectId)));
+			oldDir.renameTo(new File(installationDirectory + File.separator + ToolUtil.WORKSPACE_DIR, String.format("%d", projectId)));
 		}
 	}
 
-	public String getInputDirectoryForTool(Project project, Tool tool) {
-		WorkbenchSetting workbenchSetting = this.workbenchDataManager.getWorkbenchSetting();
+	public String getInputDirectoryForTool(final Project project, final Tool tool) {
+		final WorkbenchSetting workbenchSetting = this.workbenchDataManager.getWorkbenchSetting();
 		if (workbenchSetting == null) {
 			throw new IllegalStateException("Workbench Setting record was not found!");
 		}
 
-		String projectDirName = String.format("%s", project.getProjectName());
+		final String projectDirName = String.format("%s", project.getProjectName());
 
-		File projectDir = new File(this.workspaceDirectory, projectDirName);
-		File toolDir = new File(projectDir, tool.getGroupName());
-		
+		final File projectDir = new File(ToolUtil.WORKSPACE_DIR, projectDirName);
+		final File toolDir = new File(projectDir, tool.getGroupName());
+
 		return new File(toolDir, ToolUtil.INPUT).getAbsolutePath();
 	}
 
-	public String getOutputDirectoryForTool(Project project, Tool tool) {
-		WorkbenchSetting workbenchSetting = this.workbenchDataManager.getWorkbenchSetting();
+	public String getOutputDirectoryForTool(final Project project, final Tool tool) {
+		final WorkbenchSetting workbenchSetting = this.workbenchDataManager.getWorkbenchSetting();
 		if (workbenchSetting == null) {
 			throw new IllegalStateException("Workbench Setting record was not found!");
 		}
 
-		String projectDirName = String.format("%d", project.getProjectId());
+		final String projectDirName = String.format("%d", project.getProjectId());
 
-		String installationDirectory = workbenchSetting.getInstallationDirectory();
-		File projectDir = new File(installationDirectory + File.separator + this.workspaceDirectory, projectDirName);
-		File toolDir = new File(projectDir, tool.getGroupName());
+		final String installationDirectory = workbenchSetting.getInstallationDirectory();
+		final File projectDir = new File(installationDirectory + File.separator + ToolUtil.WORKSPACE_DIR, projectDirName);
+		final File toolDir = new File(projectDir, tool.getGroupName());
 
 		return new File(toolDir, ToolUtil.INPUT).getAbsolutePath();
 	}
