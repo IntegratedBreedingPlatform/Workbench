@@ -1,7 +1,9 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview;
 
+import org.generationcp.middleware.data.initializer.FolderReferenceTestDataInitializer;
 import org.generationcp.middleware.data.initializer.StudyReferenceTestDataInitializer;
+import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
@@ -9,6 +11,7 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -54,4 +57,30 @@ public class SelectStudyDialogTest {
 				table.getContainerPropertyIds().contains(SelectStudyDialog.TITLE));
 		Assert.assertEquals("The table should contain 5 studies", 5, table.getNodeMap().size());
 	}
+	
+	@Test
+	public void testHasChildStudyFalse() {
+		final boolean hasChildStudy = this.dialog.hasChildStudy(1);
+		Assert.assertFalse("The study should have no child.", hasChildStudy);
+	}
+	
+	@Test
+	public void testHasChildStudyTrue() {
+		Mockito.when(this.studyDataManager.getChildrenOfFolder(1, this.currentProject.getUniqueID(),
+					StudyType.trials())).thenReturn(StudyReferenceTestDataInitializer.createStudyReferenceList(1));
+		final boolean hasChildStudy = this.dialog.hasChildStudy(1);
+		Assert.assertTrue("The study should have a child.", hasChildStudy);
+	}
+	
+	@Test
+	public void testQueryChildrenStudies() {
+		final Reference reference = FolderReferenceTestDataInitializer.createReference(1);
+		Mockito.when(this.studyDataManager.getChildrenOfFolder(1, this.currentProject.getUniqueID(),
+				StudyType.trials())).thenReturn(StudyReferenceTestDataInitializer.createStudyReferenceList(5));
+		dialog.queryChildrenStudies(reference,  Mockito.mock(BreedingViewTreeTable.class));
+		Mockito.verify(this.studyDataManager, Mockito.times(2)).getChildrenOfFolder(1, this.currentProject.getUniqueID(),
+				StudyType.trials());
+		Mockito.verify(this.studyDataManager, Mockito.times(5)).getStudy(Matchers.anyInt());
+	}
+	
 }
