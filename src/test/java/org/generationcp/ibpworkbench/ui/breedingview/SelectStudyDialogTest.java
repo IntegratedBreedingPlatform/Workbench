@@ -57,30 +57,36 @@ public class SelectStudyDialogTest {
 				table.getContainerPropertyIds().contains(SelectStudyDialog.TITLE));
 		Assert.assertEquals("The table should contain 5 studies", 5, table.getNodeMap().size());
 	}
-	
+
 	@Test
 	public void testHasChildStudyFalse() {
 		final boolean hasChildStudy = this.dialog.hasChildStudy(1);
 		Assert.assertFalse("The study should have no child.", hasChildStudy);
 	}
-	
+
 	@Test
 	public void testHasChildStudyTrue() {
-		Mockito.when(this.studyDataManager.getChildrenOfFolder(1, this.currentProject.getUniqueID(),
-					StudyType.trials())).thenReturn(StudyReferenceTestDataInitializer.createStudyReferenceList(1));
+		Mockito.when(
+				this.studyDataManager.getChildrenOfFolder(1, this.currentProject.getUniqueID(), StudyType.trials()))
+				.thenReturn(StudyReferenceTestDataInitializer.createStudyReferenceList(1));
+		
 		final boolean hasChildStudy = this.dialog.hasChildStudy(1);
+		
 		Assert.assertTrue("The study should have a child.", hasChildStudy);
 	}
-	
+
 	@Test
 	public void testQueryChildrenStudies() {
 		final Reference reference = FolderReferenceTestDataInitializer.createReference(1);
-		Mockito.when(this.studyDataManager.getChildrenOfFolder(1, this.currentProject.getUniqueID(),
-				StudyType.trials())).thenReturn(StudyReferenceTestDataInitializer.createStudyReferenceList(5));
-		dialog.queryChildrenStudies(reference,  Mockito.mock(BreedingViewTreeTable.class));
-		Mockito.verify(this.studyDataManager, Mockito.times(2)).getChildrenOfFolder(1, this.currentProject.getUniqueID(),
-				StudyType.trials());
+		Mockito.when(
+				this.studyDataManager.getChildrenOfFolder(1, this.currentProject.getUniqueID(), StudyType.trials()))
+				.thenReturn(StudyReferenceTestDataInitializer.createStudyReferenceList(5));
+		
+		this.dialog.queryChildrenStudies(reference, Mockito.mock(BreedingViewTreeTable.class));
+		
+		Mockito.verify(this.studyDataManager, Mockito.times(2)).getChildrenOfFolder(1,
+				this.currentProject.getUniqueID(), StudyType.trials());
 		Mockito.verify(this.studyDataManager, Mockito.times(5)).getStudy(Matchers.anyInt());
 	}
-	
+
 }
