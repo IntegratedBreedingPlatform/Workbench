@@ -328,7 +328,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		try {
 
 			childrenReference = this.getStudyDataManager().getChildrenOfFolder(parentFolderReference.getId(),
-					this.currentProject.getUniqueID(), StudyType.nurseriesAndTrials());
+					this.currentProject.getUniqueID(), StudyType.trials());
 
 		} catch (final MiddlewareQueryException e) {
 			SelectStudyDialog.LOG.error(e.getMessage(), e);
@@ -426,13 +426,13 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 
 	}
 
-	private boolean hasChildStudy(final int folderId) {
+	protected boolean hasChildStudy(final int folderId) {
 
 		List<Reference> children;
 
 		try {
 			children = this.getStudyDataManager().getChildrenOfFolder(folderId, this.currentProject.getUniqueID(),
-					StudyType.nurseriesAndTrials());
+					StudyType.trials());
 		} catch (final MiddlewareQueryException e) {
 			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
 					this.messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
