@@ -1,24 +1,23 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * <p/>
  * Generation Challenge Programme (GCP)
- *
- *
+ * <p/>
+ * <p/>
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.germplasm;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
+import org.generationcp.middleware.constant.ColumnLabels;
+import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.germplasm.containers.GermplasmSearchQuery;
 import org.generationcp.ibpworkbench.germplasm.containers.GermplasmSearchQueryFactory;
-import org.generationcp.commons.constant.ColumnLabels;
-import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.OntologyDataManager;
 import org.springframework.beans.factory.InitializingBean;
@@ -47,7 +46,8 @@ public class GermplasmSearchResultComponent extends Table implements Initializin
 	@Autowired
 	private OntologyDataManager ontologyDataManager;
 
-	public GermplasmSearchResultComponent(GermplasmDataManager germplasmDataManager, String searchChoice, String searchValue) {
+	public GermplasmSearchResultComponent(final GermplasmDataManager germplasmDataManager, final String searchChoice,
+			final String searchValue) {
 		this.germplasmDataManager = germplasmDataManager;
 		this.searchChoice = searchChoice;
 		this.searchValue = searchValue;
@@ -55,9 +55,9 @@ public class GermplasmSearchResultComponent extends Table implements Initializin
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		GermplasmSearchQueryFactory factory =
+		final GermplasmSearchQueryFactory factory =
 				new GermplasmSearchQueryFactory(this.germplasmDataManager, this.searchChoice, this.searchValue);
-		LazyQueryContainer container = new LazyQueryContainer(factory, false, 50);
+		final LazyQueryContainer container = new LazyQueryContainer(factory, false, 50);
 
 		// add the column ids to the LazyQueryContainer tells the container the columns to display for the Table
 		container.addContainerProperty(GermplasmSearchQuery.GID, String.class, null);
@@ -90,7 +90,7 @@ public class GermplasmSearchResultComponent extends Table implements Initializin
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public String generateDescription(Component source, Object itemId, Object propertyId) {
+			public String generateDescription(final Component source, final Object itemId, final Object propertyId) {
 				return GermplasmSearchResultComponent.this.messageSource.getMessage(Message.CLICK_TO_VIEW_GERMPLASM_DETAILS);
 			}
 		});
@@ -103,7 +103,7 @@ public class GermplasmSearchResultComponent extends Table implements Initializin
 		this.updateLabels();
 	}
 
-	protected String getTermNameFromOntology(ColumnLabels columnLabels) {
+	protected String getTermNameFromOntology(final ColumnLabels columnLabels) {
 		return columnLabels.getTermNameFromOntology(this.ontologyDataManager);
 	}
 

@@ -9,7 +9,7 @@ import com.vaadin.ui.themes.BaseTheme;
 
 import org.generationcp.commons.Listener.LotDetailsButtonClickListener;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.commons.constant.ColumnLabels;
+import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.middleware.domain.inventory.LotDetails;

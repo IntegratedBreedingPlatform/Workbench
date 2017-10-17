@@ -18,7 +18,7 @@ import com.vaadin.data.util.PropertysetItem;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.germplasm.GermplasmQueries;
 import org.generationcp.ibpworkbench.germplasm.GermplasmSearchResultModel;
-import org.generationcp.commons.constant.ColumnLabels;
+import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;

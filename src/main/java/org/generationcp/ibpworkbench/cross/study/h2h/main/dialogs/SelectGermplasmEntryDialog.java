@@ -21,7 +21,7 @@ import org.generationcp.ibpworkbench.germplasm.GermplasmSearchResultComponent;
 import org.generationcp.ibpworkbench.germplasm.containers.GermplasmIndexContainer;
 import org.generationcp.ibpworkbench.germplasm.listeners.GermplasmItemClickListener;
 import org.generationcp.ibpworkbench.util.CloseWindowAction;
-import org.generationcp.commons.constant.ColumnLabels;
+import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
 import org.generationcp.commons.util.WorkbenchAppPathResolver;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
