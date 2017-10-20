@@ -3,7 +3,7 @@ package org.generationcp.ibpworkbench.germplasm.inventory;
 import java.util.Collection;
 import java.util.List;
 
-import org.generationcp.commons.constant.ColumnLabels;
+import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.middleware.data.initializer.ListInventoryDataInitializer;
 import org.generationcp.middleware.domain.inventory.LotDetails;
