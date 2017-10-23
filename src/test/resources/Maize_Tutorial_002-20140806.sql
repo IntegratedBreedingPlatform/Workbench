@@ -2294,37 +2294,6 @@ LOCK TABLES `project_relationship` WRITE;
 UNLOCK TABLES;
 
 --
--- Temporary table structure for view `project_variable_details`
---
-
-DROP TABLE IF EXISTS `project_variable_details`;
-/*!50001 DROP VIEW IF EXISTS `project_variable_details`*/;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-/*!50001 CREATE TABLE `project_variable_details` (
-  `project_id` int(11),
-  `project_name` varchar(255),
-  `description` varchar(255),
-  `variable_name` varchar(255),
-  `cvterm_id` int(11),
-  `cv_id` int(11),
-  `stdvar_name` varchar(200),
-  `stdvar_definition` varchar(255),
-  `property_id` text,
-  `method_id` text,
-  `scale_id` text,
-  `is_a` text,
-  `stored_in` text,
-  `has_type` text,
-  `property` text,
-  `method` text,
-  `scale` text,
-  `type` varchar(19),
-  `datatype_abbrev` varchar(1)
-) ENGINE=MyISAM */;
-SET character_set_client = @saved_cs_client;
-
---
 -- Table structure for table `projectprop`
 --
 
@@ -2819,25 +2788,6 @@ SET character_set_client = @saved_cs_client;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `germplasm_trial_details` AS select `pr`.`object_project_id` AS `study_id`,`ep`.`project_id` AS `project_id`,`e`.`type_id` AS `type_id`,`e`.`nd_geolocation_id` AS `envt_id`,`e`.`type_id` AS `observation_type`,`e`.`nd_experiment_id` AS `experiment_id`,`p`.`phenotype_id` AS `phenotype_id`,`td`.`trait_name` AS `trait_name`,`svd`.`cvterm_id` AS `stdvar_id`,`svd`.`stdvar_name` AS `stdvar_name`,`p`.`value` AS `observed_value`,`s`.`stock_id` AS `stock_id`,`s`.`name` AS `entry_designation`,`g`.`gid` AS `gid` from (((((((((`stock` `s` join `nd_experiment_stock` `es` on((`es`.`stock_id` = `s`.`stock_id`))) join `nd_experiment` `e` on((`e`.`nd_experiment_id` = `es`.`nd_experiment_id`))) join `nd_experiment_project` `ep` on((`ep`.`nd_experiment_id` = `e`.`nd_experiment_id`))) join `nd_experiment_phenotype` `epx` on((`epx`.`nd_experiment_id` = `e`.`nd_experiment_id`))) join `phenotype` `p` on((`p`.`phenotype_id` = `epx`.`phenotype_id`))) join `standard_variable_details` `svd` on((`svd`.`cvterm_id` = `p`.`observable_id`))) join `trait_details` `td` on((`td`.`trait_id` = `svd`.`property_id`))) join `project_relationship` `pr` on((`pr`.`subject_project_id` = `ep`.`project_id`))) join `germplsm` `g` on((`s`.`dbxref_id` = `g`.`gid`))) where ((`e`.`type_id` = 1170) or ((`e`.`type_id` = 1155) and (1 = (select count(0) from `project_relationship` where ((`project_relationship`.`object_project_id` = `pr`.`object_project_id`) and (`project_relationship`.`type_id` = 1150)))))) order by `ep`.`project_id`,`e`.`nd_geolocation_id`,`e`.`type_id`,`td`.`trait_name`,`s`.`name` */;
-/*!50001 SET character_set_client      = @saved_cs_client */;
-/*!50001 SET character_set_results     = @saved_cs_results */;
-/*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `project_variable_details`
---
-
-/*!50001 DROP TABLE IF EXISTS `project_variable_details`*/;
-/*!50001 DROP VIEW IF EXISTS `project_variable_details`*/;
-/*!50001 SET @saved_cs_client          = @@character_set_client */;
-/*!50001 SET @saved_cs_results         = @@character_set_results */;
-/*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8 */;
-/*!50001 SET character_set_results     = utf8 */;
-/*!50001 SET collation_connection      = utf8_general_ci */;
-/*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `project_variable_details` AS select `p`.`project_id` AS `project_id`,`p`.`name` AS `project_name`,`p`.`description` AS `description`,`pp_2`.`value` AS `variable_name`,`svd`.`cvterm_id` AS `cvterm_id`,`svd`.`cv_id` AS `cv_id`,`svd`.`stdvar_name` AS `stdvar_name`,`svd`.`stdvar_definition` AS `stdvar_definition`,`svd`.`property_id` AS `property_id`,`svd`.`method_id` AS `method_id`,`svd`.`scale_id` AS `scale_id`,`svd`.`is_a` AS `is_a`,`svd`.`stored_in` AS `stored_in`,`svd`.`has_type` AS `has_type`,`svd`.`property` AS `property`,`svd`.`method` AS `method`,`svd`.`scale` AS `scale`,`svd`.`type` AS `type`,`svd`.`datatype_abbrev` AS `datatype_abbrev` from (((`project` `p` join `projectprop` `pp_1` on((`pp_1`.`project_id` = `p`.`project_id`))) join `projectprop` `pp_2` on(((`pp_2`.`project_id` = `p`.`project_id`) and (`pp_2`.`rank` = `pp_1`.`rank`)))) join `standard_variable_details` `svd` on((`svd`.`cvterm_id` = `pp_1`.`value`))) where ((`pp_1`.`type_id` = 1070) and (`pp_2`.`type_id` not in (1060,1070)) and (`pp_2`.`type_id` <> `pp_1`.`value`)) order by `p`.`project_id`,`pp_2`.`rank` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
