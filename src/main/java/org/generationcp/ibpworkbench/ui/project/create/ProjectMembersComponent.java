@@ -108,7 +108,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 		this.setSpacing(true);
 		this.setMargin(true);
 
-		this.select = new TwinTableSelect<User>(User.class);
+		this.select = new TwinTableSelect<>(User.class);
 
 		final Table.ColumnGenerator tableLeftUserName = new Table.ColumnGenerator() {
 
@@ -331,7 +331,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 	}
 
 	private Container createUsersContainer() {
-		final List<User> validUserList = new ArrayList<User>();
+		final List<User> validUserList = new ArrayList<>();
 
 		// TODO: This can be improved once we implement proper User-Person mapping
 		final List<User> userList = this.workbenchDataManager.getAllActiveUsersSorted();
@@ -344,7 +344,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 			}
 		}
 
-		final BeanItemContainer<User> beanItemContainer = new BeanItemContainer<User>(User.class);
+		final BeanItemContainer<User> beanItemContainer = new BeanItemContainer<>(User.class);
 		for (final User user : validUserList) {
 			if (user.getUserid().equals(this.sessionData.getUserData().getUserid())) {
 				user.setEnabled(false);

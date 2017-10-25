@@ -127,7 +127,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	}
 
 	protected void initializeComponents() {
-		this.select = new TwinTableSelect<User>(User.class);
+		this.select = new TwinTableSelect<>(User.class);
 
 		final Table.ColumnGenerator tableLeftUserName = new Table.ColumnGenerator() {
 
@@ -216,9 +216,9 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		this.tblMembers.setDebugId("tblMembers");
 		this.tblMembers.setImmediate(true);
 
-		final List<Object> columnIds = new ArrayList<Object>();
+		final List<Object> columnIds = new ArrayList<>();
 		columnIds.add(ProgramMembersPanel.USERNAME);
-		final List<String> columnHeaders = new ArrayList<String>();
+		final List<String> columnHeaders = new ArrayList<>();
 		columnHeaders.add("Member");
 
 		// prepare the container
@@ -304,7 +304,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 		final List<ProjectUserRole> projectUserRoles = this.workbenchDataManager.getProjectUserRolesByProject(this.project);
 
-		final Set<User> selectedItems = new HashSet<User>();
+		final Set<User> selectedItems = new HashSet<>();
 
 		for (final ProjectUserRole projrole : projectUserRoles) {
 			final User userTemp = this.workbenchDataManager.getUserById(projrole.getUserId());
@@ -366,7 +366,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	}
 
 	protected Container createUsersContainer() {
-		final List<User> validUserList = new ArrayList<User>();
+		final List<User> validUserList = new ArrayList<>();
 
 		// TODO: This can be improved once we implement proper User-Person mapping
 		final List<User> userList = this.workbenchDataManager.getAllActiveUsersSorted();
@@ -380,7 +380,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			}
 		}
 
-		final BeanItemContainer<User> beanItemContainer = new BeanItemContainer<User>(User.class);
+		final BeanItemContainer<User> beanItemContainer = new BeanItemContainer<>(User.class);
 		for (final User user : validUserList) {
 			if (user.getUserid().equals(this.sessionData.getUserData().getUserid()) || user.getUserid().equals(this.project.getUserId())) {
 				user.setEnabled(false);
