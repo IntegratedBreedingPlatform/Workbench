@@ -63,6 +63,7 @@ import com.vaadin.ui.themes.Reindeer;
 @Configurable
 public class ProgramMembersPanel extends Panel implements InitializingBean {
 
+	private static final int USER_ACTIVE_STATUS = 0;
 	private static final Logger LOG = LoggerFactory.getLogger(ProgramMembersPanel.class);
 	private static final long serialVersionUID = 1L;
 	private static final String ROLE = "role_";
@@ -307,24 +308,26 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 		for (final ProjectUserRole projrole : projectUserRoles) {
 			final User userTemp = this.workbenchDataManager.getUserById(projrole.getUserId());
-			selectedItems.add(userTemp);
-
-			container.removeItem(userTemp);
-
-			final Item item = container.addItem(userTemp);
-			item.getItemProperty("userId").setValue(1);
-			item.getItemProperty(ProgramMembersPanel.USERNAME).setValue(userTemp.getPerson().getDisplayName());
-			item.getItemProperty(ProgramMembersPanel.ROLE).setValue(userTemp.getRoles().get(0).getCapitalizedRole());
-			
-			/*
-			 * If default ADMIN user, disable selection so it cannot be removed. 
-			 * Disabling is done here so that it can still be selected in Available Users table
-			 */
-			if (ProgramService.ADMIN_USERNAME.equalsIgnoreCase(userTemp.getName())){
-				userTemp.setEnabled(false);
+			if(userTemp.getStatus() == USER_ACTIVE_STATUS) {
+				selectedItems.add(userTemp);
+		
+				container.removeItem(userTemp);
+		
+				final Item item = container.addItem(userTemp);
+				item.getItemProperty("userId").setValue(1);
+				item.getItemProperty(ProgramMembersPanel.USERNAME).setValue(userTemp.getPerson().getDisplayName());
+				item.getItemProperty(ProgramMembersPanel.ROLE).setValue(userTemp.getRoles().get(0).getCapitalizedRole());
+				
+				/*
+				 * If default ADMIN user, disable selection so it cannot be removed. 
+				 * Disabling is done here so that it can still be selected in Available Users table
+				 */
+				if (ProgramService.ADMIN_USERNAME.equalsIgnoreCase(userTemp.getName())){
+					userTemp.setEnabled(false);
+				}
+				
+				this.select.select(userTemp);
 			}
-			
-			this.select.select(userTemp);
 		}
 
 	}
@@ -366,7 +369,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		final List<User> validUserList = new ArrayList<User>();
 
 		// TODO: This can be improved once we implement proper User-Person mapping
-		final List<User> userList = this.workbenchDataManager.getAllUsersSorted();
+		final List<User> userList = this.workbenchDataManager.getAllActiveUsersSorted();
 
 		for (final User user : userList) {
 			final Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
