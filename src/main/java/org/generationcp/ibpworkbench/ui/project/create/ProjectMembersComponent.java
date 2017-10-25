@@ -334,7 +334,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 		final List<User> validUserList = new ArrayList<User>();
 
 		// TODO: This can be improved once we implement proper User-Person mapping
-		final List<User> userList = this.workbenchDataManager.getAllUsersSorted();
+		final List<User> userList = this.workbenchDataManager.getAllActiveUsersSorted();
 		for (final User user : userList) {
 			final Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
 			user.setPerson(person);

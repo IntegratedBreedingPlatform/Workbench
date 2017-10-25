@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.service.ProgramService;
+import org.generationcp.middleware.data.initializer.UserTestDataInitializer;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
@@ -169,7 +170,7 @@ public class ProgramMembersPanelTest {
 
 	private void mockProgramMembers() {
 		final List<User> programMembers = this.createProgramMembersTestData();
-		Mockito.doReturn(programMembers).when(this.workbenchDataManager).getAllUsersSorted();
+		Mockito.doReturn(programMembers).when(this.workbenchDataManager).getAllActiveUsersSorted();
 		for (final User user : programMembers) {
 			Mockito.doReturn(this.createPersonTestData(user.getPersonid())).when(this.workbenchDataManager)
 					.getPersonById(user.getPersonid());
@@ -198,10 +199,7 @@ public class ProgramMembersPanelTest {
 	}
 
 	private User createUsersTestData(final int userId, final String username, final int personId) {
-		final User user = new User(userId);
-		user.setName(username);
-		user.setPersonid(personId);
-		user.setPerson(new Person("Mister", "User", username + userId));
+		final User user = UserTestDataInitializer.createUserWithPerson(userId, username, personId, "Mister", "User");
 		
 		final List<UserRole> userRoleList = new ArrayList<>();
 		userRoleList.add(new UserRole(user, "ADMIN"));
