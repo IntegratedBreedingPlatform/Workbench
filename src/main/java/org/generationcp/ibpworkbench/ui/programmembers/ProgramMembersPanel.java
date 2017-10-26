@@ -301,35 +301,30 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 	protected void initializeUsers() {
 		final Container container = this.tblMembers.getContainerDataSource();
-
-		final List<ProjectUserRole> projectUserRoles = this.workbenchDataManager.getProjectUserRolesByProject(this.project);
-
+		final List<Integer> userIDs = this.workbenchDataManager.getUserIDsByProjectId(this.project.getProjectId());
 		final Set<User> selectedItems = new HashSet<>();
 
-		for (final ProjectUserRole projrole : projectUserRoles) {
-			final User userTemp = this.workbenchDataManager.getUserById(projrole.getUserId());
-			if(userTemp.getStatus() == USER_ACTIVE_STATUS) {
-				selectedItems.add(userTemp);
-		
-				container.removeItem(userTemp);
-		
-				final Item item = container.addItem(userTemp);
-				item.getItemProperty("userId").setValue(1);
-				item.getItemProperty(ProgramMembersPanel.USERNAME).setValue(userTemp.getPerson().getDisplayName());
-				item.getItemProperty(ProgramMembersPanel.ROLE).setValue(userTemp.getRoles().get(0).getCapitalizedRole());
-				
-				/*
-				 * If default ADMIN user, disable selection so it cannot be removed. 
-				 * Disabling is done here so that it can still be selected in Available Users table
-				 */
-				if (ProgramService.ADMIN_USERNAME.equalsIgnoreCase(userTemp.getName())){
-					userTemp.setEnabled(false);
-				}
-				
-				this.select.select(userTemp);
+		for (final Integer userID : userIDs) {
+			final User userTemp = this.workbenchDataManager.getUserById(userID);
+			selectedItems.add(userTemp);
+	
+			container.removeItem(userTemp);
+	
+			final Item item = container.addItem(userTemp);
+			item.getItemProperty("userId").setValue(1);
+			item.getItemProperty(ProgramMembersPanel.USERNAME).setValue(userTemp.getPerson().getDisplayName());
+			item.getItemProperty(ProgramMembersPanel.ROLE).setValue(userTemp.getRoles().get(0).getCapitalizedRole());
+			
+			/*
+			 * If default ADMIN user, disable selection so it cannot be removed. 
+			 * Disabling is done here so that it can still be selected in Available Users table
+			 */
+			if (ProgramService.ADMIN_USERNAME.equalsIgnoreCase(userTemp.getName())){
+				userTemp.setEnabled(false);
 			}
+			
+			this.select.select(userTemp);
 		}
-
 	}
 
 	protected void initializeActions() {

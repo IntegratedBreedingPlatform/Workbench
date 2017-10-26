@@ -15,13 +15,12 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
-import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -120,9 +119,13 @@ public class ProgramMembersPanelTest {
 	@Test
 	public void testInitializeUsers() {
 		// Setup test data and mocks
-		this.mockDataAndReturnTheProjectUserRoles();
+		Mockito.when(this.workbenchDataManager.getUserIDsByProjectId(Matchers.anyLong())).thenReturn(Arrays.asList(ProgramMembersPanelTest.OWNER_USER_ID, ProgramMembersPanelTest.ADMIN_USER_ID, ProgramMembersPanelTest.MEMBER_USER_ID));
 		this.mockCurrentUser(ProgramMembersPanelTest.MEMBER_USER_ID);
-
+		List<User> testProgramMembers = this.createProgramMembersTestData();
+		for(User user: testProgramMembers){
+			Mockito.when(this.workbenchDataManager.getUserById(user.getUserid())).thenReturn(user);
+		}
+		
 		// Initialization in controller
 		this.controller.initializeComponents();
 		this.controller.initializeValues();
@@ -141,31 +144,6 @@ public class ProgramMembersPanelTest {
 				Assert.assertFalse("Default Admin should be disabled and cannot be removed as program member.", user.isEnabled());
 			}
 		}
-	}
-
-	private List<ProjectUserRole> mockDataAndReturnTheProjectUserRoles() {
-		final Role dummyRole = new Role();
-		dummyRole.setRoleId(1);
-		Mockito.doReturn(Arrays.asList(dummyRole)).when(this.workbenchDataManager).getAllRolesOrderedByLabel();
-		
-		final List<ProjectUserRole> projectUserRoles = this.createProjectUserRolesTestData(this.project);
-		Mockito.doReturn(projectUserRoles).when(this.workbenchDataManager).getProjectUserRolesByProject(this.project);
-
-		return projectUserRoles;
-	}
-
-	private List<ProjectUserRole> createProjectUserRolesTestData(final Project project) {
-		final List<ProjectUserRole> projectUserRoles = new ArrayList<>();
-		final List<User> programMembers = this.createProgramMembersTestData();
-		for (final User user : programMembers) {
-			final ProjectUserRole projectUserRole = new ProjectUserRole();
-			projectUserRole.setProject(project);
-			projectUserRole.setUserId(user.getUserid());
-			projectUserRoles.add(projectUserRole);
-
-			Mockito.doReturn(user).when(this.workbenchDataManager).getUserById(user.getUserid());
-		}
-		return projectUserRoles;
 	}
 
 	private void mockProgramMembers() {
