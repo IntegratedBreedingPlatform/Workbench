@@ -85,6 +85,9 @@ public class AuthenticationController {
 	@Value("${workbench.enable.create.account}")
 	private String enableCreateAccount;
 
+	@Value("${workbench.is.single.user.only}")
+	private String isSingleUserOnly;
+
 	@Value("${institute.logo.path}")
 	private String instituteLogoPath;
 
@@ -97,8 +100,14 @@ public class AuthenticationController {
 
 	@PostConstruct
 	public void initialize() {
-		// ensuring that the link is disable by default
-		this.isAccountCreationEnabled = this.enableCreateAccount == null ? false : Boolean.valueOf(this.enableCreateAccount);
+
+		// Do not display the Create Account link if BMS is in single user mode.
+		if (Boolean.parseBoolean(isSingleUserOnly)) {
+			this.isAccountCreationEnabled = false;
+		} else {
+			this.isAccountCreationEnabled = Boolean.parseBoolean(this.enableCreateAccount);
+		}
+
 		this.workbenchVersion = this.workbenchProperties.getProperty("workbench.version", "");
 		this.footerMessage = Sanitizers.FORMATTING.sanitize(this.footerMessage);
 	}

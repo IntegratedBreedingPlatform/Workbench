@@ -11,7 +11,6 @@
 package org.generationcp.ibpworkbench.ui;
 
 import java.util.Objects;
-import java.util.Properties;
 
 import javax.annotation.Resource;
 
@@ -32,13 +31,11 @@ import org.generationcp.ibpworkbench.actions.OpenWindowAction;
 import org.generationcp.ibpworkbench.actions.OpenWindowAction.WindowEnum;
 import org.generationcp.ibpworkbench.actions.SignoutAction;
 import org.generationcp.ibpworkbench.navigation.NavUriFragmentChangedListener;
-import org.generationcp.ibpworkbench.service.AppLauncherService;
 import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
 import org.generationcp.ibpworkbench.ui.project.create.AddProgramView;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
 import org.generationcp.ibpworkbench.ui.window.EmbeddedWindow;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
-import org.generationcp.ibpworkbench.util.WorkbenchUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
@@ -46,7 +43,7 @@ import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.vaadin.hene.popupbutton.PopupButton;
@@ -98,12 +95,11 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	@Resource
 	private SessionData sessionData;
 
-	@Resource
-	private AppLauncherService applauncherService;
+	@Value("${workbench.version}")
+	private String workbenchVersion;
 
-	@Resource
-	@Qualifier("workbenchProperties")
-	private Properties workbenchProperties;
+	@Value("${workbench.is.single.user.only}")
+	private String isSingleUserOnly;
 
 	private Label actionsTitle;
 
@@ -294,7 +290,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		final Label title = new Label(
 				String.format("<span style='font-size: 8pt; color:#9EA5A7; display: inline-block; margin-left: 3px'>%s&nbsp;%s</span>",
 						this.messageSource.getMessage(Message.WORKBENCH_TITLE),
-						this.workbenchProperties.getProperty("workbench.version", "")),
+						workbenchVersion),
 				Label.CONTENT_XHTML);
 
 		sidebarWrap.setFirstComponent(this.sidebar);
@@ -372,8 +368,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				thisWindow.addWindow(new HelpWindow(WorkbenchMainView.this.workbenchDataManager, WorkbenchMainView.this.tomcatUtil,
-						WorkbenchMainView.this.workbenchProperties));
+				thisWindow.addWindow(new HelpWindow(WorkbenchMainView.this.workbenchDataManager, WorkbenchMainView.this.tomcatUtil));
 			}
 		});
 
@@ -496,8 +491,11 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	private void layoutAdminButton() {
-		this.workbenchHeaderLayout.addComponent(this.adminButton);
-		this.workbenchHeaderLayout.setComponentAlignment(this.adminButton, Alignment.MIDDLE_RIGHT);
+		// Do not display the admin button if BMS is in single user mode.
+		if (!Boolean.parseBoolean(isSingleUserOnly)) {
+			this.workbenchHeaderLayout.addComponent(this.adminButton);
+			this.workbenchHeaderLayout.setComponentAlignment(this.adminButton, Alignment.MIDDLE_RIGHT);
+		}
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")

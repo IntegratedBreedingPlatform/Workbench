@@ -16,6 +16,7 @@ import org.generationcp.ibpworkbench.ui.systemlabel.SystemLabelView;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -39,6 +40,9 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
+
+	@Value("${workbench.is.single.user.only}")
+	private String isSingleUserOnly;
 
 	private VerticalLayout rootLayout;
 
@@ -174,9 +178,13 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	private void addProgramMembersTab() {
-		this.tabSheet.addTab(this.programMembersPanel);
-		this.tabSheet.getTab(this.programMembersPanel).setClosable(false);
-		this.tabSheet.getTab(this.programMembersPanel).setCaption(this.messageSource.getMessage(Message.PROGRAM_MEMBERS));
+
+		// Do not display the Program Members tab if BMS is in single user mode.
+		if (!Boolean.parseBoolean(isSingleUserOnly)) {
+			this.tabSheet.addTab(this.programMembersPanel);
+			this.tabSheet.getTab(this.programMembersPanel).setClosable(false);
+			this.tabSheet.getTab(this.programMembersPanel).setCaption(this.messageSource.getMessage(Message.PROGRAM_MEMBERS));
+		}
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
