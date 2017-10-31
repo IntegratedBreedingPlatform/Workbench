@@ -101,6 +101,11 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
 			window.addWindow(mywindow);
 			windowCaption = mywindow.getCaption();
 			logActivity = false;
+		} else if (WindowEnum.CHANGE_CREDENTIALS.equals(windowName)) {
+				mywindow = new ChangePasswordWindow();
+				window.addWindow(mywindow);
+				windowCaption = mywindow.getCaption();
+				logActivity = false;
 		} else if (WindowEnum.USER_TOOLS.equals(windowName)) {
 			mywindow = new UserToolsManagerWindow();
 			window.addWindow(mywindow);
@@ -157,7 +162,7 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
 	}
 
 	public enum WindowEnum {
-		CHANGE_PASSWORD("change_password"), USER_TOOLS("user_tools"), SOFTWARE_LICENSING_AGREEMENT("software_license");
+		CHANGE_PASSWORD("change_password"), USER_TOOLS("user_tools"), SOFTWARE_LICENSING_AGREEMENT("software_license"), CHANGE_CREDENTIALS("change_credentials");
 
 		private String windowName;
 
