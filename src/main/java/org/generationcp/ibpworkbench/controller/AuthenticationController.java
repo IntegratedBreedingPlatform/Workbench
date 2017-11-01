@@ -94,19 +94,10 @@ public class AuthenticationController {
 	@Value("${footer.message}")
 	private String footerMessage;
 
-	private boolean isAccountCreationEnabled;
-
 	private String workbenchVersion;
 
 	@PostConstruct
 	public void initialize() {
-
-		// Do not display the Create Account link if BMS is in single user mode.
-		if (Boolean.parseBoolean(isSingleUserOnly)) {
-			this.isAccountCreationEnabled = false;
-		} else {
-			this.isAccountCreationEnabled = Boolean.parseBoolean(this.enableCreateAccount);
-		}
 
 		this.workbenchVersion = this.workbenchProperties.getProperty("workbench.version", "");
 		this.footerMessage = Sanitizers.FORMATTING.sanitize(this.footerMessage);
@@ -115,7 +106,7 @@ public class AuthenticationController {
 	@RequestMapping(value = "/login")
 	public String getLoginPage(Model model) {
 
-		model.addAttribute("isCreateAccountEnable", this.isAccountCreationEnabled);
+		model.addAttribute("isCreateAccountEnable", this.isAccountCreationEnabled());
 
 		populateCommomModelAttributes(model);
 
@@ -212,7 +203,7 @@ public class AuthenticationController {
 		Map<String, Object> out = new LinkedHashMap<>();
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
-		if(!isAccountCreationEnabled ){
+		if(!isAccountCreationEnabled()){
 			new ResponseEntity<>(out, HttpStatus.FORBIDDEN);
 		}
 
@@ -373,5 +364,24 @@ public class AuthenticationController {
 
 		out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
 		out.put(AuthenticationController.ERRORS, errors);
+	}
+
+	protected boolean isAccountCreationEnabled() {
+
+		// Do not display the Create Account link if BMS is in single user mode.
+		if (Boolean.parseBoolean(isSingleUserOnly)) {
+			return false;
+		} else {
+			return Boolean.parseBoolean(this.enableCreateAccount);
+		}
+
+	}
+
+	protected void setEnableCreateAccount(String enableCreateAccount) {
+		this.enableCreateAccount = enableCreateAccount;
+	}
+
+	protected void setIsSingleUserOnly(String isSingleUserOnly) {
+		this.isSingleUserOnly = isSingleUserOnly;
 	}
 }

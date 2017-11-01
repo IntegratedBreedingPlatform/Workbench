@@ -112,18 +112,18 @@ public class ChangeCredentialsWindow extends BaseSubWindow implements Initializi
 		this.confirmLabel.setDebugId("confirmLabel");
 		this.confirmLabel.setStyleName(V_LABEL);
 
-		this.firstName = new TextField();
-		this.firstName.setMaxLength(20);
-		this.firstName.setDebugId("firstNameText");
-		this.firstName.focus();
+		this.setFirstName(new TextField());
+		this.getFirstName().setMaxLength(20);
+		this.getFirstName().setDebugId("firstNameText");
+		this.getFirstName().focus();
 
-		this.lastName = new TextField();
-		this.lastName.setMaxLength(50);
-		this.lastName.setDebugId("lastNameText");
+		this.setLastName(new TextField());
+		this.getLastName().setMaxLength(50);
+		this.getLastName().setDebugId("lastNameText");
 
-		this.emailAddress = new TextField();
-		this.emailAddress.setMaxLength(40);
-		this.emailAddress.setDebugId("emailAddressText");
+		this.setEmailAddress(new TextField());
+		this.getEmailAddress().setMaxLength(40);
+		this.getEmailAddress().setDebugId("emailAddressText");
 
 		this.password = new PasswordField();
 		this.password.setDebugId("password");
@@ -174,12 +174,12 @@ public class ChangeCredentialsWindow extends BaseSubWindow implements Initializi
 
 		// second
 		fieldsLayout.addComponent(this.fullNameLabel);
-		fieldsLayout.addComponent(this.firstName);
-		fieldsLayout.addComponent(this.lastName);
+		fieldsLayout.addComponent(this.getFirstName());
+		fieldsLayout.addComponent(this.getLastName());
 
 		//third
 		fieldsLayout.addComponent(this.emailAddressLabel);
-		fieldsLayout.addComponent(this.emailAddress);
+		fieldsLayout.addComponent(this.getEmailAddress());
 		fieldsLayout.addComponent(new Label());
 
 		//foourth
@@ -229,9 +229,9 @@ public class ChangeCredentialsWindow extends BaseSubWindow implements Initializi
 
 		try {
 
-			final String firstNameValue = firstName.getValue().toString();
-			final String lastNameValue = lastName.getValue().toString();
-			final String emailAddressValue = emailAddress.getValue().toString();
+			final String firstNameValue = getFirstName().getValue().toString();
+			final String lastNameValue = getLastName().getValue().toString();
+			final String emailAddressValue = getEmailAddress().getValue().toString();
 			final String passwordValue = password.getValue().toString();
 			final String passwordConfirmValue = confirmPassword.getValue().toString();
 
@@ -241,7 +241,7 @@ public class ChangeCredentialsWindow extends BaseSubWindow implements Initializi
 
 			updateUser(firstNameValue, lastNameValue, emailAddressValue, passwordValue);
 
-			MessageNotifier.showMessage(this.getWindow(), messageSource.getMessage(Message.SUCCESS),
+			MessageNotifier.showMessage(this.getParent(), messageSource.getMessage(Message.SUCCESS),
 					messageSource.getMessage(Message.CREDENTIALS_UPDATED_SUCCESS_MESSAGE), 3000);
 
 			closeWindow();
@@ -249,7 +249,7 @@ public class ChangeCredentialsWindow extends BaseSubWindow implements Initializi
 		} catch (final ValidationException e) {
 
 			LOG.debug(e.getMessage(), e);
-			MessageNotifier.showRequiredFieldError(this.getWindow(), e.getMessage());
+			MessageNotifier.showRequiredFieldError(this.getParent(), e.getMessage());
 
 		}
 
@@ -257,7 +257,7 @@ public class ChangeCredentialsWindow extends BaseSubWindow implements Initializi
 
 	protected void updateUser(final String firstName, final String lastName, final String emailAddress, final String password) {
 
-		final User user = this.workbenchDataManager.getUserByUsername(this.contextUtil.getCurrentWorkbenchUser().getName());
+		final User user = this.contextUtil.getCurrentWorkbenchUser();
 		if (!StringUtils.isEmpty(password)) {
 			user.setPassword(passwordEncoder.encode(password));
 		}
@@ -297,6 +297,30 @@ public class ChangeCredentialsWindow extends BaseSubWindow implements Initializi
 			throw new ValidationException(messageSource.getMessage(Message.ERROR_NAME_IS_BLANK));
 		}
 
+	}
+
+	protected TextField getFirstName() {
+		return firstName;
+	}
+
+	protected void setFirstName(TextField firstName) {
+		this.firstName = firstName;
+	}
+
+	protected TextField getLastName() {
+		return lastName;
+	}
+
+	protected void setLastName(TextField lastName) {
+		this.lastName = lastName;
+	}
+
+	protected TextField getEmailAddress() {
+		return emailAddress;
+	}
+
+	protected void setEmailAddress(TextField emailAddress) {
+		this.emailAddress = emailAddress;
 	}
 
 	protected class ValidationException extends Exception {

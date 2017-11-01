@@ -157,5 +157,29 @@ public class WorkbenchMainViewTest {
 		this.workbenchMainView.updateUserInfoIfNecessary(user);
 		Mockito.verify(this.workbenchDataManager, Mockito.times(2)).insertOrUpdateUserInfo(Matchers.any(UserInfo.class));
 	}
+
+	@Test
+	public void testAddAdminButtonSingleUserOnlyIsFalse() {
+
+		HorizontalLayout layout = new HorizontalLayout();
+		this.workbenchMainView.setIsSingleUserOnly("false");
+		this.workbenchMainView.addAdminButton(layout);
+
+		// Verify that Admin button is added in layout
+		Assert.assertTrue(layout.getComponentIndex(this.workbenchMainView.getAdminButton()) != -1);
+
+	}
+
+	@Test
+	public void testAddAdminButtonSingleUserOnlyIsTrue() {
+
+		HorizontalLayout layout = new HorizontalLayout();
+		this.workbenchMainView.setIsSingleUserOnly("true");
+		this.workbenchMainView.addAdminButton(layout);
+
+		// Verify that Admin button is not added in layout
+		Assert.assertTrue(layout.getComponentIndex(this.workbenchMainView.getAdminButton()) == -1);
+
+	}
 	
 }

@@ -206,9 +206,9 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 		this.adminButton = new Button(
 				String.format("<span class='bms-header-btn'><span>%s</span></span>", this.messageSource.getMessage("ADMIN_BUTTON")));
-		this.adminButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + HEADER_BTN);
-		this.adminButton.setHtmlContentAllowed(true);
-		this.adminButton.setSizeUndefined();
+		this.getAdminButton().setStyleName(Bootstrap.Buttons.LINK.styleName() + HEADER_BTN);
+		this.getAdminButton().setHtmlContentAllowed(true);
+		this.getAdminButton().setSizeUndefined();
 
 		this.memberButton = new PopupButton();
 		this.memberButton.setDebugId("memberButton");
@@ -351,7 +351,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 		this.addProgramButton.addListener(new OpenNewProjectAction());
 
-		this.adminButton.addListener(new Button.ClickListener() {
+		this.getAdminButton().addListener(new Button.ClickListener() {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
@@ -497,12 +497,17 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	private void layoutAdminButton() {
+	protected void layoutAdminButton() {
+		addAdminButton(this.workbenchHeaderLayout);
+	}
+
+	protected void addAdminButton(HorizontalLayout layout) {
 		// Do not display the admin button if BMS is in single user mode.
-		if (!Boolean.parseBoolean(isSingleUserOnly)) {
-			this.workbenchHeaderLayout.addComponent(this.adminButton);
-			this.workbenchHeaderLayout.setComponentAlignment(this.adminButton, Alignment.MIDDLE_RIGHT);
+		if (!Boolean.parseBoolean(this.isSingleUserOnly)) {
+			layout.addComponent(this.getAdminButton());
+			layout.setComponentAlignment(this.getAdminButton(), Alignment.MIDDLE_RIGHT);
 		}
+
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -642,5 +647,15 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	
 	public Label getWorkbenchTitle(){
 		return this.workbenchTitle;
+	}
+
+	// For test purposes
+	protected void setIsSingleUserOnly(String isSingleUserOnly) {
+		this.isSingleUserOnly = isSingleUserOnly;
+	}
+
+	// For test purposes
+	protected Button getAdminButton() {
+		return adminButton;
 	}
 }

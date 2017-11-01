@@ -379,4 +379,33 @@ public class AuthenticationControllerTest {
 		Assert.assertEquals("no http errors", HttpStatus.BAD_REQUEST, result.getStatusCode());
 		Assert.assertEquals("is successful", Boolean.FALSE, result.getBody().get(AuthenticationController.SUCCESS));
 	}
+
+	@Test
+	public void testIsAccountCreationEnabled() {
+
+		// If SingleUserOnly mode is enabled, it will override EnableCreateAccount
+		this.controller.setIsSingleUserOnly("true");
+		this.controller.setEnableCreateAccount("true");
+
+		Assert.assertFalse(this.controller.isAccountCreationEnabled());
+
+		this.controller.setIsSingleUserOnly("true");
+		this.controller.setEnableCreateAccount("false");
+
+		Assert.assertFalse(this.controller.isAccountCreationEnabled());
+
+
+		// If SingleUserOnly mode is disabled, return value is EnableCreateAccount
+		this.controller.setIsSingleUserOnly("false");
+		this.controller.setEnableCreateAccount("true");
+
+		Assert.assertTrue(this.controller.isAccountCreationEnabled());
+
+		this.controller.setIsSingleUserOnly("false");
+		this.controller.setEnableCreateAccount("false");
+
+		Assert.assertFalse(this.controller.isAccountCreationEnabled());
+
+
+	}
 }
