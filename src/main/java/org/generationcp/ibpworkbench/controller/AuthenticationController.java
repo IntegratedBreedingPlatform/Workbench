@@ -17,7 +17,6 @@ import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.ibpworkbench.validator.ForgotPasswordAccountValidator;
 import org.generationcp.ibpworkbench.validator.UserAccountFields;
 import org.generationcp.ibpworkbench.validator.UserAccountValidator;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
@@ -56,7 +55,7 @@ public class AuthenticationController {
 
 	@Resource
 	private WorkbenchUserService workbenchUserService;
-	
+
 	@Resource
 	private WorkbenchDataManager workbenchDataManager;
 
@@ -157,41 +156,33 @@ public class AuthenticationController {
 		Map<String, Object> out = new LinkedHashMap<>();
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
-		try {
+		this.userAccountValidator.validateUserActive(model, result);
 
-			this.userAccountValidator.validateUserActive(model, result);
+		if (result.hasErrors()) {
+			this.generateErrors(result, out);
+		} else if (this.workbenchUserService.isValidUserLogin(model)) {
+			isSuccess = HttpStatus.OK;
+			out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
 
-			if (result.hasErrors()) {
-				this.generateErrors(result, out);
-			} else if (this.workbenchUserService.isValidUserLogin(model)) {
-				isSuccess = HttpStatus.OK;
-				out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
-
-				/**
-				 * This is crucial for Ontology Manager UI which needs the authentication token to make calls to BMSAPI Ontology services.
-				 * See login.js and bmsAuth.js client side scripts to see how this token is used by front-end code via the local storage
-				 * service in browsers.
-				 */
-				final Token apiAuthToken = this.apiAuthenticationService.authenticate(model.getUsername(), model.getPassword());
-				if (apiAuthToken != null) {
-					out.put("token", apiAuthToken.getToken());
-					out.put("expires", apiAuthToken.getExpires());
-				}
-
-			} else {
-				Map<String, String> errors = new LinkedHashMap<>();
-
-				errors.put(UserAccountFields.USERNAME, this.messageSource.getMessage(UserAccountValidator.LOGIN_ATTEMPT_UNSUCCESSFUL,
-						new String[] {}, "Your login attempt was not successful. Please try again.", LocaleContextHolder.getLocale()));
-
-				out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
-				out.put(AuthenticationController.ERRORS, errors);
+			/**
+			 * This is crucial for Ontology Manager UI which needs the authentication token to make calls to BMSAPI Ontology services.
+			 * See login.js and bmsAuth.js client side scripts to see how this token is used by front-end code via the local storage
+			 * service in browsers.
+			 */
+			final Token apiAuthToken = this.apiAuthenticationService.authenticate(model.getUsername(), model.getPassword());
+			if (apiAuthToken != null) {
+				out.put("token", apiAuthToken.getToken());
+				out.put("expires", apiAuthToken.getExpires());
 			}
-		} catch (MiddlewareQueryException e) {
-			out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
-			out.put(AuthenticationController.ERRORS, e.getMessage());
 
-			AuthenticationController.LOG.error(e.getMessage(), e);
+		} else {
+			Map<String, String> errors = new LinkedHashMap<>();
+
+			errors.put(UserAccountFields.USERNAME, this.messageSource.getMessage(UserAccountValidator.LOGIN_ATTEMPT_UNSUCCESSFUL,
+					new String[] {}, "Your login attempt was not successful. Please try again.", LocaleContextHolder.getLocale()));
+
+			out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
+			out.put(AuthenticationController.ERRORS, errors);
 		}
 
 		return new ResponseEntity<>(out, isSuccess);
@@ -215,19 +206,11 @@ public class AuthenticationController {
 
 		} else {
 			// attempt to save the user to the database
-			try {
-				this.workbenchUserService.saveUserAccount(model);
+			this.workbenchUserService.saveUserAccount(model);
 
-				isSuccess = HttpStatus.OK;
-				out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
+			isSuccess = HttpStatus.OK;
+			out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
 
-			} catch (MiddlewareQueryException e) {
-
-				out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
-				out.put(AuthenticationController.ERRORS, e.getMessage());
-
-				AuthenticationController.LOG.error(e.getMessage(), e);
-			}
 		}
 
 		return new ResponseEntity<>(out, isSuccess);
@@ -268,19 +251,15 @@ public class AuthenticationController {
 	public ResponseEntity<Map<String, Object>> sendResetPasswordEmail(@PathVariable Integer userId) {
 		Map<String, Object> out = new LinkedHashMap<>();
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
-		try {
-			User user = this.workbenchUserService.getUserByUserid(userId);
-			if (user == null) {
-				out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
-				out.put(AuthenticationController.ERRORS, NOT_EXISTENT_USER);
-				return new ResponseEntity<>(out, isSuccess);
-			}
-			return sendResetEmail(user.getName());
-		} catch (MiddlewareQueryException e) {
+
+		User user = this.workbenchUserService.getUserByUserid(userId);
+		if (user == null) {
 			out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
-			out.put(AuthenticationController.ERRORS, e.getMessage());
+			out.put(AuthenticationController.ERRORS, NOT_EXISTENT_USER);
+			return new ResponseEntity<>(out, isSuccess);
 		}
-		return new ResponseEntity<>(out, isSuccess);
+		return sendResetEmail(user.getName());
+
 	}
 
 	private ResponseEntity<Map<String, Object>> sendResetEmail(final String username) {
@@ -313,41 +292,32 @@ public class AuthenticationController {
 
 		AuthenticationController.LOG.debug("reset password submitted");
 
-		try {
+		this.userAccountValidator.validateUserActive(model, result);
 
-			this.userAccountValidator.validateUserActive(model, result);
+		if (result.hasErrors()) {
+			this.generateErrors(result, out);
+		} else {
+		// 1. replace password
+		this.workbenchUserService.updateUserPassword(model.getUsername(), model.getPassword());
 
-			if (result.hasErrors()) {
-				this.generateErrors(result, out);
-			} else {
-			// 1. replace password
-			this.workbenchUserService.updateUserPassword(model.getUsername(), model.getPassword());
+		// 2. remove token
+		this.workbenchEmailSenderService.deleteToken(model);
 
-			// 2. remove token
-			this.workbenchEmailSenderService.deleteToken(model);
+		// 3. Create user info
 
-			// 3. Create user info
+		UserInfo userInfo = this.workbenchDataManager.getUserInfoByUsername(model.getUsername());
 
-			UserInfo userInfo = this.workbenchDataManager.getUserInfoByUsername(model.getUsername());
+		if (userInfo == null) {
+			User user = this.workbenchDataManager.getUserByUsername(model.getUsername());
+			userInfo = new UserInfo();
+			userInfo.setUserId(user.getUserid());
+		}
 
-			if (userInfo == null) {
-				User user = this.workbenchDataManager.getUserByUsername(model.getUsername());
-				userInfo = new UserInfo();
-				userInfo.setUserId(user.getUserid());
-			}
+		userInfo.setLoginCount(userInfo.getLoginCount() + 1);
+		this.workbenchDataManager.insertOrUpdateUserInfo(userInfo);
 
-			userInfo.setLoginCount(userInfo.getLoginCount() + 1);
-			this.workbenchDataManager.insertOrUpdateUserInfo(userInfo);
-
-				isSuccess = HttpStatus.OK;
-				out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
-			}
-
-		} catch (final MiddlewareQueryException e) {
-			out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
-			out.put(AuthenticationController.ERRORS, e.getMessage());
-
-			AuthenticationController.LOG.error(e.getMessage(), e);
+			isSuccess = HttpStatus.OK;
+			out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
 		}
 
 		return new ResponseEntity<>(out, isSuccess);

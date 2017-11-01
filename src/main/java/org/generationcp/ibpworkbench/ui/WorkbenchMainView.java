@@ -41,6 +41,8 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
@@ -71,6 +73,8 @@ import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
 public class WorkbenchMainView extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
+
+	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchMainView.class);
 
 	private static final int SIDEBAR_OPEN_POSITION = 240;
 	private static final long serialVersionUID = 1L;
@@ -420,7 +424,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	}
 
-	UserInfo updateUserInfoIfNecessary(User user) throws MiddlewareQueryException {
+	UserInfo updateUserInfoIfNecessary(User user) {
 		UserInfo userInfo = this.workbenchDataManager.getUserInfo(user.getUserid());
 		if (userInfo == null || userInfo.getLoginCount() < 1) {
 			if (userInfo == null) {
@@ -466,6 +470,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 			layoutAdminButton();
 		} catch (final AccessDeniedException e) {
 			// do nothing if the user is not authorized to access Admin button
+			LOG.debug(e.getMessage(), e);
 		}
 
 		if (this.isWorkbenchDashboardShown) {
@@ -473,6 +478,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 				layoutAddProgramButton();
 			} catch (final AccessDeniedException e) {
 				// do nothing if the user is not authorized to access Admin button
+				LOG.debug(e.getMessage(), e);
 			}
 		} else {
 			this.workbenchHeaderLayout.addComponent(this.homeButton);

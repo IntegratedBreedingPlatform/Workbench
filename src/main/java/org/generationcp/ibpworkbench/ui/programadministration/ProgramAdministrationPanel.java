@@ -13,6 +13,8 @@ import org.generationcp.ibpworkbench.ui.programmethods.ProgramMethodsView;
 import org.generationcp.ibpworkbench.ui.project.create.UpdateProjectPanel;
 import org.generationcp.ibpworkbench.ui.summaryview.ProgramSummaryView;
 import org.generationcp.ibpworkbench.ui.systemlabel.SystemLabelView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -30,6 +32,8 @@ import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
 public class ProgramAdministrationPanel extends Panel implements InitializingBean {
+
+	private static final Logger LOG = LoggerFactory.getLogger(ProgramAdministrationPanel.class);
 
 	private static final long serialVersionUID = 1L;
 
@@ -55,10 +59,6 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 	private ProgramMethodsView programMethodsView;
 	private SystemLabelView systemLabelPanel;
 	private ProgramSummaryView programSummaryView;
-
-	public ProgramAdministrationPanel() {
-
-	}
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -116,6 +116,7 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 			this.addProgramMembersTab();
 		} catch (final AccessDeniedException e) {
 			// Do not do anything as the screen should be displayed, just this tab shouldn't appear for non-admins
+			LOG.debug(e.getMessage(), e);
 		}
 
 		// Locations tab
@@ -133,6 +134,7 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 			this.addSystemLabelsTab();
 		} catch (final AccessDeniedException e) {
 			// Do not do anything as the screen should be displayed, just this tab shouldn't appear for non-admins
+			LOG.debug(e.getMessage(), e);
 		}
 
 		// Program Summary tab
