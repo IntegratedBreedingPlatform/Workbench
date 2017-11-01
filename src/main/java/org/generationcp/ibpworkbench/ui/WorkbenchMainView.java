@@ -1,19 +1,35 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * <p/>
  * Generation Challenge Programme (GCP)
- *
- *
+ * <p/>
+ * <p/>
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.ui;
 
-import java.util.Objects;
-
-import javax.annotation.Resource;
-
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.terminal.Sizeable;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.UriFragmentUtility;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.VerticalSplitPanel;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.BaseTheme;
+import com.vaadin.ui.themes.Reindeer;
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.help.document.HelpWindow;
@@ -50,26 +66,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.vaadin.hene.popupbutton.PopupButton;
 
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.Sizeable;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.Embedded;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Layout;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.UriFragmentUtility;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.VerticalSplitPanel;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.BaseTheme;
-import com.vaadin.ui.themes.Reindeer;
+import javax.annotation.Resource;
+import java.util.Objects;
 
 @Configurable
 public class WorkbenchMainView extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
@@ -189,7 +187,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.workbenchTitle.setDebugId("workbenchTitle");
 		this.workbenchTitle.setStyleName("gcp-window-title");
 		this.workbenchTitle.setContentMode(Label.CONTENT_XHTML);
-		if (this.sessionData.getLastOpenedProject() != null){
+		if (this.sessionData.getLastOpenedProject() != null) {
 			this.addTitle(this.sessionData.getLastOpenedProject().getProjectName());
 		}
 
@@ -200,8 +198,8 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.homeButton.setHtmlContentAllowed(true);
 		this.homeButton.setSizeUndefined();
 
-		this.addProgramButton = new Button(
-				String.format("<span class='bms-header-btn'><span class='glyphicon glyphicon-plus' style='padding-right: 0px'></span>"
+		this.addProgramButton = new Button(String.format(
+				"<span class='bms-header-btn'><span class='glyphicon glyphicon-plus' style='padding-right: 0px'></span>"
 						+ "<span>%s</span></span>", this.messageSource.getMessage(Message.ADD_A_PROGRAM)));
 		this.addProgramButton.setDebugId("addProgramButton");
 		this.addProgramButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + HEADER_BTN);
@@ -232,7 +230,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.signoutButton.setSizeFull();
 		this.signoutButton.addListener(new SignoutAction());
 
-		Person member = this.sessionData.getUserData().getPerson();
+		final Person member = this.sessionData.getUserData().getPerson();
 		memberPopup.addComponent(
 				new Label(String.format("<h2>%s %s</h2><h4>%s</h4>", member.getFirstName(), member.getLastName(), member.getEmail()),
 						Label.CONTENT_XHTML));
@@ -260,8 +258,8 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 			this.askSupportBtn.addListener(new Button.ClickListener() {
 
 				@Override
-				public void buttonClick(ClickEvent clickEvent) {
-					EmbeddedWindow askSupportWindow = new EmbeddedWindow();
+				public void buttonClick(final ClickEvent clickEvent) {
+					final EmbeddedWindow askSupportWindow = new EmbeddedWindow();
 					askSupportWindow.setDebugId("askSupportWindow");
 					askSupportWindow.setWidth("60%");
 					askSupportWindow.setHeight("80%");
@@ -294,9 +292,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 		final Label title = new Label(
 				String.format("<span style='font-size: 8pt; color:#9EA5A7; display: inline-block; margin-left: 3px'>%s&nbsp;%s</span>",
-						this.messageSource.getMessage(Message.WORKBENCH_TITLE),
-						workbenchVersion),
-				Label.CONTENT_XHTML);
+						this.messageSource.getMessage(Message.WORKBENCH_TITLE), workbenchVersion), Label.CONTENT_XHTML);
 
 		sidebarWrap.setFirstComponent(this.sidebar);
 		sidebarWrap.setSecondComponent(title);
@@ -358,7 +354,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.getAdminButton().addListener(new Button.ClickListener() {
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 				final IContentWindow contentFrame = (IContentWindow) event.getComponent().getWindow();
 				contentFrame.showContent("controller/admin");
 
@@ -372,7 +368,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.helpButton.addListener(new Button.ClickListener() {
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 				thisWindow.addWindow(new HelpWindow(WorkbenchMainView.this.workbenchDataManager, WorkbenchMainView.this.tomcatUtil));
 			}
 		});
@@ -380,7 +376,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.addListener(new CloseListener() {
 
 			@Override
-			public void windowClose(CloseEvent closeEvent) {
+			public void windowClose(final CloseEvent closeEvent) {
 				IBPWorkbenchApplication.get().toggleScripts();
 			}
 		});
@@ -388,7 +384,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.sidebarToggleButton.addListener(new Button.ClickListener() {
 
 			@Override
-			public void buttonClick(ClickEvent clickEvent) {
+			public void buttonClick(final ClickEvent clickEvent) {
 				if (WorkbenchMainView.this.root.getSplitPosition() > 0) {
 					WorkbenchMainView.this.root.setSplitPosition(0, Sizeable.UNITS_PIXELS);
 				} else {
@@ -408,23 +404,23 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	}
 
 	protected void onLoadOperations() {
-		User user = this.sessionData.getUserData();
-		String username = user.getName();
+		final User user = this.sessionData.getUserData();
+		final String username = user.getName();
 
 		if (username == null) {
 			return;
 		}
 
 		try {
-			UserInfo userInfo = this.updateUserInfoIfNecessary(user);
+			final UserInfo userInfo = this.updateUserInfoIfNecessary(user);
 			this.workbenchDataManager.incrementUserLogInCount(userInfo.getUserId());
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
 		}
 
 	}
 
-	UserInfo updateUserInfoIfNecessary(User user) {
+	UserInfo updateUserInfoIfNecessary(final User user) {
 		UserInfo userInfo = this.workbenchDataManager.getUserInfo(user.getUserid());
 		if (userInfo == null || userInfo.getLoginCount() < 1) {
 			if (userInfo == null) {
@@ -435,10 +431,10 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 			this.workbenchDataManager.insertOrUpdateUserInfo(userInfo);
 
 			if (ADMIN_USER_ID.equals(user.getUserid())) {
-				OpenWindowAction ow = new OpenWindowAction(WindowEnum.CHANGE_CREDENTIALS);
+				final OpenWindowAction ow = new OpenWindowAction(WindowEnum.CHANGE_CREDENTIALS);
 				ow.launchWindow(this, WindowEnum.CHANGE_CREDENTIALS);
 			} else {
-				OpenWindowAction ow = new OpenWindowAction(WindowEnum.CHANGE_PASSWORD);
+				final OpenWindowAction ow = new OpenWindowAction(WindowEnum.CHANGE_PASSWORD);
 				ow.launchWindow(this, WindowEnum.CHANGE_PASSWORD);
 			}
 
@@ -496,7 +492,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	private void refreshHeaderLayout() {
 		this.workbenchHeaderLayout.removeAllComponents();
-		
+
 		this.toggleSidebarIcon();
 		this.layoutWorkbenchHeaderComponents();
 		this.workbenchHeaderLayout.requestRepaint();
@@ -507,7 +503,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		addAdminButton(this.workbenchHeaderLayout);
 	}
 
-	protected void addAdminButton(HorizontalLayout layout) {
+	protected void addAdminButton(final HorizontalLayout layout) {
 		// Do not display the admin button if BMS is in single user mode.
 		if (!Boolean.parseBoolean(this.isSingleUserOnly)) {
 			layout.addComponent(this.getAdminButton());
@@ -528,7 +524,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	 * @param content
 	 */
 	@Override
-	public void showContent(Component content) {
+	public void showContent(final Component content) {
 
 		this.mainContent.removeAllComponents();
 
@@ -552,7 +548,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 				if (content instanceof ComponentContainer) {
 					wrap.setContent((ComponentContainer) content);
 				} else {
-					VerticalLayout vl = new VerticalLayout();
+					final VerticalLayout vl = new VerticalLayout();
 					vl.setDebugId("vl");
 					vl.addComponent(content);
 					vl.setSizeUndefined();
@@ -577,9 +573,9 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	}
 
 	@Override
-	public void showContent(String toolUrl) {
+	public void showContent(final String toolUrl) {
 		if (!toolUrl.isEmpty()) {
-			Embedded browser = new Embedded(null, new ExternalResource(toolUrl));
+			final Embedded browser = new Embedded(null, new ExternalResource(toolUrl));
 			browser.setDebugId("browser");
 
 			browser.setType(Embedded.TYPE_BROWSER);
@@ -589,7 +585,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		}
 	}
 
-	public void setUriFragment(String fragment, boolean isLinkAccessed) {
+	public void setUriFragment(final String fragment, final boolean isLinkAccessed) {
 		this.uriFragUtil.setFragment(fragment, !isLinkAccessed);
 	}
 
@@ -600,7 +596,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.updateLabels();
 	}
 
-	public void addTitle(String myTitle) {
+	public void addTitle(final String myTitle) {
 		if (myTitle.length() > 50) {
 			this.workbenchTitle.setDescription(myTitle);
 		} else {
@@ -617,7 +613,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	@Override
 	public void updateLabels() {
-		IWorkbenchSession appSession = (IWorkbenchSession) this.getApplication();
+		final IWorkbenchSession appSession = (IWorkbenchSession) this.getApplication();
 
 		String signoutName = appSession.getSessionData().getUserData().getName();
 		if (signoutName.length() > 10) {
@@ -650,13 +646,13 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	public Button getHomeButton() {
 		return this.homeButton;
 	}
-	
-	public Label getWorkbenchTitle(){
+
+	public Label getWorkbenchTitle() {
 		return this.workbenchTitle;
 	}
 
 	// For test purposes
-	protected void setIsSingleUserOnly(String isSingleUserOnly) {
+	protected void setIsSingleUserOnly(final String isSingleUserOnly) {
 		this.isSingleUserOnly = isSingleUserOnly;
 	}
 

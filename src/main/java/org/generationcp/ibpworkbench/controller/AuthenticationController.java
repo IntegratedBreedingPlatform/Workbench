@@ -1,14 +1,4 @@
-
 package org.generationcp.ibpworkbench.controller;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.mail.MessagingException;
-import javax.servlet.ServletContext;
 
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.security.InvalidResetTokenException;
@@ -39,6 +29,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import javax.mail.MessagingException;
+import javax.servlet.ServletContext;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Properties;
 
 @Controller
 @RequestMapping(AuthenticationController.URL)
@@ -103,7 +101,7 @@ public class AuthenticationController {
 	}
 
 	@RequestMapping(value = "/login")
-	public String getLoginPage(Model model) {
+	public String getLoginPage(final Model model) {
 
 		model.addAttribute("isCreateAccountEnable", this.isAccountCreationEnabled());
 
@@ -114,10 +112,11 @@ public class AuthenticationController {
 
 	/**
 	 * Return img logo or emtpy if file not present
+	 *
 	 * @param path path to logo image
 	 * @return img src
 	 */
-	protected String findInstituteLogo(String path) {
+	protected String findInstituteLogo(final String path) {
 		if (servletContext.getResourceAsStream("/WEB-INF/" + path) != null) {
 			return "/controller/" + path;
 		} else {
@@ -126,11 +125,11 @@ public class AuthenticationController {
 	}
 
 	@RequestMapping(value = "/reset/{token}", method = RequestMethod.GET)
-	public String getCreateNewPasswordPage(@PathVariable String token, Model model) {
+	public String getCreateNewPasswordPage(@PathVariable final String token, final Model model) {
 
 		// verify token if valid
 		try {
-			User user = this.workbenchEmailSenderService.validateResetToken(token);
+			final User user = this.workbenchEmailSenderService.validateResetToken(token);
 
 			model.addAttribute("user", user);
 
@@ -138,13 +137,13 @@ public class AuthenticationController {
 
 			return "new-password";
 
-		} catch (InvalidResetTokenException e) {
+		} catch (final InvalidResetTokenException e) {
 			AuthenticationController.LOG.debug(e.getMessage(), e);
 			return "redirect:" + AuthenticationController.URL;
 		}
 	}
 
-	private void populateCommomModelAttributes(Model model) {
+	private void populateCommomModelAttributes(final Model model) {
 		model.addAttribute("instituteLogoPath", this.findInstituteLogo(this.instituteLogoPath));
 		model.addAttribute("footerMessage", this.footerMessage);
 		model.addAttribute("version", this.workbenchVersion);
@@ -152,8 +151,9 @@ public class AuthenticationController {
 
 	@ResponseBody
 	@RequestMapping(value = "/validateLogin", method = RequestMethod.POST)
-	public ResponseEntity<Map<String, Object>> validateLogin(@ModelAttribute("userAccount") UserAccountModel model, BindingResult result) {
-		Map<String, Object> out = new LinkedHashMap<>();
+	public ResponseEntity<Map<String, Object>> validateLogin(@ModelAttribute("userAccount") final UserAccountModel model,
+			final BindingResult result) {
+		final Map<String, Object> out = new LinkedHashMap<>();
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
 		this.userAccountValidator.validateUserActive(model, result);
@@ -176,10 +176,11 @@ public class AuthenticationController {
 			}
 
 		} else {
-			Map<String, String> errors = new LinkedHashMap<>();
+			final Map<String, String> errors = new LinkedHashMap<>();
 
-			errors.put(UserAccountFields.USERNAME, this.messageSource.getMessage(UserAccountValidator.LOGIN_ATTEMPT_UNSUCCESSFUL,
-					new String[] {}, "Your login attempt was not successful. Please try again.", LocaleContextHolder.getLocale()));
+			errors.put(UserAccountFields.USERNAME, this.messageSource
+					.getMessage(UserAccountValidator.LOGIN_ATTEMPT_UNSUCCESSFUL, new String[] {},
+							"Your login attempt was not successful. Please try again.", LocaleContextHolder.getLocale()));
 
 			out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
 			out.put(AuthenticationController.ERRORS, errors);
@@ -190,11 +191,12 @@ public class AuthenticationController {
 
 	@ResponseBody
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
-	public ResponseEntity<Map<String, Object>> saveUserAccount(@ModelAttribute("userAccount") UserAccountModel model, BindingResult result) {
-		Map<String, Object> out = new LinkedHashMap<>();
+	public ResponseEntity<Map<String, Object>> saveUserAccount(@ModelAttribute("userAccount") final UserAccountModel model,
+			final BindingResult result) {
+		final Map<String, Object> out = new LinkedHashMap<>();
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
-		if(!isAccountCreationEnabled()){
+		if (!isAccountCreationEnabled()) {
 			new ResponseEntity<>(out, HttpStatus.FORBIDDEN);
 		}
 
@@ -218,9 +220,9 @@ public class AuthenticationController {
 
 	@ResponseBody
 	@RequestMapping(value = "/forgotPassword", method = RequestMethod.POST)
-	public ResponseEntity<Map<String, Object>> validateForgotPasswordForm(@ModelAttribute("userAccount") UserAccountModel model,
-			BindingResult result) {
-		Map<String, Object> out = new LinkedHashMap<>();
+	public ResponseEntity<Map<String, Object>> validateForgotPasswordForm(@ModelAttribute("userAccount") final UserAccountModel model,
+			final BindingResult result) {
+		final Map<String, Object> out = new LinkedHashMap<>();
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
 		this.forgotPasswordAccountValidator.validate(model, result);
@@ -243,16 +245,18 @@ public class AuthenticationController {
 
 	@ResponseBody
 	@RequestMapping(value = "/sendResetEmail", method = RequestMethod.POST)
-	public ResponseEntity<Map<String, Object>> doSendResetPasswordRequestEmail(@ModelAttribute("userAccount") UserAccountModel model) {
+	public ResponseEntity<Map<String, Object>> doSendResetPasswordRequestEmail(
+			@ModelAttribute("userAccount") final UserAccountModel model) {
 		return sendResetEmail(model.getUsername());
 	}
 
-	@RequestMapping(value = "/sendResetEmail/{userId}", method = RequestMethod.POST) @ResponseBody
-	public ResponseEntity<Map<String, Object>> sendResetPasswordEmail(@PathVariable Integer userId) {
-		Map<String, Object> out = new LinkedHashMap<>();
-		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
+	@RequestMapping(value = "/sendResetEmail/{userId}", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> sendResetPasswordEmail(@PathVariable final Integer userId) {
+		final Map<String, Object> out = new LinkedHashMap<>();
+		final HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
-		User user = this.workbenchUserService.getUserByUserid(userId);
+		final User user = this.workbenchUserService.getUserByUserid(userId);
 		if (user == null) {
 			out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
 			out.put(AuthenticationController.ERRORS, NOT_EXISTENT_USER);
@@ -263,7 +267,7 @@ public class AuthenticationController {
 	}
 
 	private ResponseEntity<Map<String, Object>> sendResetEmail(final String username) {
-		Map<String, Object> out = new LinkedHashMap<>();
+		final Map<String, Object> out = new LinkedHashMap<>();
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
 		try {
@@ -286,7 +290,7 @@ public class AuthenticationController {
 	@ResponseBody
 	@RequestMapping(value = "/reset", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Object>> doResetPassword(@ModelAttribute("userAccount") final UserAccountModel model,
-			BindingResult result) {
+			final BindingResult result) {
 		final Map<String, Object> out = new LinkedHashMap<>();
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
@@ -297,24 +301,24 @@ public class AuthenticationController {
 		if (result.hasErrors()) {
 			this.generateErrors(result, out);
 		} else {
-		// 1. replace password
-		this.workbenchUserService.updateUserPassword(model.getUsername(), model.getPassword());
+			// 1. replace password
+			this.workbenchUserService.updateUserPassword(model.getUsername(), model.getPassword());
 
-		// 2. remove token
-		this.workbenchEmailSenderService.deleteToken(model);
+			// 2. remove token
+			this.workbenchEmailSenderService.deleteToken(model);
 
-		// 3. Create user info
+			// 3. Create user info
 
-		UserInfo userInfo = this.workbenchDataManager.getUserInfoByUsername(model.getUsername());
+			UserInfo userInfo = this.workbenchDataManager.getUserInfoByUsername(model.getUsername());
 
-		if (userInfo == null) {
-			User user = this.workbenchDataManager.getUserByUsername(model.getUsername());
-			userInfo = new UserInfo();
-			userInfo.setUserId(user.getUserid());
-		}
+			if (userInfo == null) {
+				final User user = this.workbenchDataManager.getUserByUsername(model.getUsername());
+				userInfo = new UserInfo();
+				userInfo.setUserId(user.getUserid());
+			}
 
-		userInfo.setLoginCount(userInfo.getLoginCount() + 1);
-		this.workbenchDataManager.insertOrUpdateUserInfo(userInfo);
+			userInfo.setLoginCount(userInfo.getLoginCount() + 1);
+			this.workbenchDataManager.insertOrUpdateUserInfo(userInfo);
 
 			isSuccess = HttpStatus.OK;
 			out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
@@ -323,13 +327,11 @@ public class AuthenticationController {
 		return new ResponseEntity<>(out, isSuccess);
 	}
 
-	protected void generateErrors(BindingResult result, Map<String, Object> out) {
-		Map<String, String> errors = new LinkedHashMap<>();
-		for (FieldError error : result.getFieldErrors()) {
-			errors.put(
-					error.getField(),
-					this.messageSource.getMessage(error.getCode(), error.getArguments(), error.getDefaultMessage(),
-							LocaleContextHolder.getLocale()));
+	protected void generateErrors(final BindingResult result, final Map<String, Object> out) {
+		final Map<String, String> errors = new LinkedHashMap<>();
+		for (final FieldError error : result.getFieldErrors()) {
+			errors.put(error.getField(), this.messageSource
+					.getMessage(error.getCode(), error.getArguments(), error.getDefaultMessage(), LocaleContextHolder.getLocale()));
 		}
 
 		out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
@@ -347,11 +349,11 @@ public class AuthenticationController {
 
 	}
 
-	protected void setEnableCreateAccount(String enableCreateAccount) {
+	protected void setEnableCreateAccount(final String enableCreateAccount) {
 		this.enableCreateAccount = enableCreateAccount;
 	}
 
-	protected void setIsSingleUserOnly(String isSingleUserOnly) {
+	protected void setIsSingleUserOnly(final String isSingleUserOnly) {
 		this.isSingleUserOnly = isSingleUserOnly;
 	}
 }

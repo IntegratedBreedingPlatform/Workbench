@@ -57,31 +57,31 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
 	public OpenWindowAction() {
 	}
 
-	public OpenWindowAction(WindowEnum windowEnum) {
+	public OpenWindowAction(final WindowEnum windowEnum) {
 		this.windowEnum = windowEnum;
 	}
 
-	public OpenWindowAction(WindowEnum windowEnum, Project project) {
+	public OpenWindowAction(final WindowEnum windowEnum, final Project project) {
 		this.windowEnum = windowEnum;
 		this.project = project;
 
 	}
 
 	@Override
-	public void buttonClick(ClickEvent event) {
+	public void buttonClick(final ClickEvent event) {
 		this.doAction(event);
 	}
 
 	@Override
-	public void doAction(Event event) {
-		Window window = event.getComponent().getWindow();
+	public void doAction(final Event event) {
+		final Window window = event.getComponent().getWindow();
 		this.launchWindow(window, this.windowEnum);
 	}
 
 	@Override
-	public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
+	public void doAction(final Window window, final String uriFragment, final boolean isLinkAccessed) {
 
-		String windowName = uriFragment.split("/")[1];
+		final String windowName = uriFragment.split("/")[1];
 
 		if (WindowEnum.isCorrectTool(windowName)) {
 			this.launchWindow(window, WindowEnum.equivalentWindowEnum(windowName));
@@ -92,8 +92,8 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
 		}
 	}
 
-	public void launchWindow(final Window window, WindowEnum windowName) {
-		Window mywindow;
+	public void launchWindow(final Window window, final WindowEnum windowName) {
+		final Window mywindow;
 		Boolean logActivity = false;
 		String windowCaption = "";
 
@@ -113,7 +113,7 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
 			windowCaption = mywindow.getCaption();
 			logActivity = true;
 		} else if (WindowEnum.SOFTWARE_LICENSING_AGREEMENT.equals(windowName)) {
-			ConfirmDialog dialog =
+			final ConfirmDialog dialog =
 					ConfirmDialog.show(window, this.messageSource.getMessage(Message.SOFTWARE_LICENSE_AGREEMENT),
 							this.messageSource.getMessage(Message.SOFTWARE_LICENSE_AGREEMENT_DETAILS, this.getCutOffDate()),
 									this.messageSource.getMessage(Message.DONE), null, new ConfirmDialog.Listener() {
@@ -121,7 +121,7 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
 								private static final long serialVersionUID = 1L;
 
 						@Override
-						public void onClose(ConfirmDialog dialog) {
+						public void onClose(final ConfirmDialog dialog) {
 
 							if (dialog.isConfirmed()) {
 								window.removeWindow(dialog);
@@ -141,7 +141,7 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
 			try {
 				this.sessionData.logProgramActivity(windowName.getwindowName(),
 						this.messageSource.getMessage(Message.LAUNCHED_APP, windowCaption));
-			} catch (MiddlewareQueryException e) {
+			} catch (final MiddlewareQueryException e) {
 				OpenWindowAction.LOG.error(e.getMessage(), e);
 				MessageNotifier.showError(window, this.messageSource.getMessage(Message.DATABASE_ERROR),
 						"<br />" + this.messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
@@ -153,11 +153,11 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
 
 	protected String getCutOffDate() {
 		// Dec 31, 2015
-		Calendar cal = DateUtil.getCalendarInstance();
+		final Calendar cal = DateUtil.getCalendarInstance();
 		cal.set(Calendar.YEAR, 2015);
 		cal.set(Calendar.MONTH, 11);
 		cal.set(Calendar.DATE, 31);
-		Date cutOffDate = cal.getTime();
+		final Date cutOffDate = cal.getTime();
 		return DateUtil.formatDateAsStringValue(cutOffDate, "MMMMM dd, yyyy");
 
 	}
@@ -165,14 +165,14 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
 	public enum WindowEnum {
 		CHANGE_PASSWORD("change_password"), USER_TOOLS("user_tools"), SOFTWARE_LICENSING_AGREEMENT("software_license"), CHANGE_CREDENTIALS("change_credentials");
 
-		private String windowName;
+		private final String windowName;
 
-		WindowEnum(String windowName) {
+		WindowEnum(final String windowName) {
 			this.windowName = windowName;
 		}
 
-		public static WindowEnum equivalentWindowEnum(String windowName) {
-			for (WindowEnum window : WindowEnum.values()) {
+		public static WindowEnum equivalentWindowEnum(final String windowName) {
+			for (final WindowEnum window : WindowEnum.values()) {
 				if (window.getwindowName().equals(windowName)) {
 					return window;
 				}
@@ -180,9 +180,9 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
 			return null;
 		}
 
-		public static boolean isCorrectTool(String windowName) {
+		public static boolean isCorrectTool(final String windowName) {
 
-			for (WindowEnum winEnum : WindowEnum.values()) {
+			for (final WindowEnum winEnum : WindowEnum.values()) {
 				if (winEnum.getwindowName().equals(windowName)) {
 					return true;
 				}
