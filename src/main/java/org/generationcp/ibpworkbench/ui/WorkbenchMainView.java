@@ -76,6 +76,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	private static final long serialVersionUID = 1L;
 
 	private static final String HEADER_BTN = " header-btn";
+	public static final Integer ADMIN_USER_ID = 1;
 
 	private Label workbenchTitle;
 	private Button homeButton;
