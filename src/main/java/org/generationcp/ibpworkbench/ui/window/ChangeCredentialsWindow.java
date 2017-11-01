@@ -17,11 +17,11 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Layout;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
+import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -32,6 +32,8 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -42,6 +44,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class ChangeCredentialsWindow extends BaseSubWindow implements InitializingBean, InternationalizableComponent {
 
 	private static final long serialVersionUID = 1L;
+	private static final Logger LOG = LoggerFactory.getLogger(ChangeCredentialsWindow.class);
+	public static final String V_LABEL = "v-label";
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
@@ -52,8 +56,6 @@ public class ChangeCredentialsWindow extends BaseSubWindow implements Initializi
 	@Autowired
 	private ContextUtil contextUtil;
 
-	private final boolean isAdminUser = false;
-
 	private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 	private Label fullNameLabel;
@@ -63,17 +65,13 @@ public class ChangeCredentialsWindow extends BaseSubWindow implements Initializi
 	private Label passwordLabel;
 	private Label confirmLabel;
 
-	private Button cancelButton;
 	private Button saveButton;
 
 	private TextField firstName;
 	private TextField lastName;
 	private TextField emailAddress;
 	private PasswordField password;
-	private PasswordField confirm_password;
-
-	public ChangeCredentialsWindow() {
-	}
+	private PasswordField confirmPassword;
 
 	/**
 	 * Assemble the UI after all dependencies has been set.
@@ -83,7 +81,7 @@ public class ChangeCredentialsWindow extends BaseSubWindow implements Initializi
 		this.assemble();
 	}
 
-	protected void initializeComponents() throws Exception {
+	protected void initializeComponents() {
 
 		this.setOverrideFocus(true);
 		this.addStyleName(Reindeer.WINDOW_LIGHT);
@@ -92,31 +90,32 @@ public class ChangeCredentialsWindow extends BaseSubWindow implements Initializi
 
 		this.fullNameLabel = new Label(messageSource.getMessage(Message.USER_ACC_NAME), Label.CONTENT_XHTML);
 		this.fullNameLabel.setDebugId("fullNameLabel");
-		this.fullNameLabel.setStyleName("v-label");
+		this.fullNameLabel.setStyleName(V_LABEL);
 
 		this.firstNameLabel = new Label(messageSource.getMessage(Message.USER_ACC_FNAME), Label.CONTENT_XHTML);
 		this.firstNameLabel.setDebugId("firstNameLabel");
-		this.firstNameLabel.setStyleName("v-label");
+		this.firstNameLabel.setStyleName(V_LABEL);
 
 		this.lastNameLabel = new Label(messageSource.getMessage(Message.USER_ACC_LNAME), Label.CONTENT_XHTML);
 		this.lastNameLabel.setDebugId("lastNameLabel");
-		this.lastNameLabel.setStyleName("v-label");
+		this.lastNameLabel.setStyleName(V_LABEL);
 
 		this.emailAddressLabel = new Label(messageSource.getMessage(Message.USER_ACC_EMAIL), Label.CONTENT_XHTML);
 		this.emailAddressLabel.setDebugId("emailAddressLabel");
-		this.emailAddressLabel.setStyleName("v-label");
+		this.emailAddressLabel.setStyleName(V_LABEL);
 
-		this.passwordLabel = new Label(messageSource.getMessage(Message.USER_ACC_PASSWORD), Label.CONTENT_XHTML);
+		this.passwordLabel = new Label(messageSource.getMessage(Message.USER_ACC_PASSWORD_NOT_REQUIRED), Label.CONTENT_XHTML);
 		this.passwordLabel.setDebugId("passwordLabel");
-		this.passwordLabel.setStyleName("v-label");
+		this.passwordLabel.setStyleName(V_LABEL);
 
-		this.confirmLabel = new Label(messageSource.getMessage(Message.USER_ACC_PASSWORD_CONFIRM), Label.CONTENT_XHTML);
+		this.confirmLabel = new Label(messageSource.getMessage(Message.USER_ACC_PASSWORD_CONFIRM_NOT_REQUIRED), Label.CONTENT_XHTML);
 		this.confirmLabel.setDebugId("confirmLabel");
-		this.confirmLabel.setStyleName("v-label");
+		this.confirmLabel.setStyleName(V_LABEL);
 
 		this.firstName = new TextField();
 		this.firstName.setMaxLength(20);
 		this.firstName.setDebugId("firstNameText");
+		this.firstName.focus();
 
 		this.lastName = new TextField();
 		this.lastName.setMaxLength(50);
@@ -128,17 +127,14 @@ public class ChangeCredentialsWindow extends BaseSubWindow implements Initializi
 
 		this.password = new PasswordField();
 		this.password.setDebugId("password");
-		this.password.focus();
 
-		this.confirm_password = new PasswordField();
-		this.confirm_password.setDebugId("confirm_password");
+		this.confirmPassword = new PasswordField();
+		this.confirmPassword.setDebugId("confirmPassword");
 
 		this.saveButton = new Button("Save");
 		this.saveButton.setDebugId("saveButton");
 		this.saveButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
-		this.cancelButton = new Button("Cancel");
-		this.cancelButton.setDebugId("cancelButton");
 	}
 
 	protected void initializeLayout() {
@@ -155,47 +151,29 @@ public class ChangeCredentialsWindow extends BaseSubWindow implements Initializi
 		layout.setMargin(true);
 		layout.setSpacing(true);
 
-		this.passwordLabel.setWidth("140px");
-		this.password.setWidth("140px");
-		this.confirmLabel.setWidth("140px");
-		this.confirm_password.setWidth("140px");
+		final String width = "140px";
+		this.passwordLabel.setWidth(width);
+		this.password.setWidth(width);
+		this.confirmLabel.setWidth(width);
+		this.confirmPassword.setWidth(width);
 
 		final HorizontalLayout buttonlayout = new HorizontalLayout();
 		buttonlayout.setDebugId("buttonlayout");
 
-		buttonlayout.addComponent(this.cancelButton);
 		buttonlayout.addComponent(this.saveButton);
 		buttonlayout.setSpacing(true);
-
-		final Layout editableFields;
-
-		if (isAdminUser) {
-			editableFields = createEditableFieldsLayoutForAdmin();
-		} else {
-			editableFields = createEditableFieldsLayoutForUser();
-		}
-
-		layout.addComponent(editableFields);
-		layout.addComponent(buttonlayout);
-		layout.setComponentAlignment(buttonlayout, Alignment.MIDDLE_CENTER);
-		layout.setExpandRatio(editableFields, 1.0F);
-
-		this.setContent(layout);
-	}
-
-	protected Layout createEditableFieldsLayoutForAdmin() {
 
 		final GridLayout fieldsLayout = new GridLayout(3, 5);
 		fieldsLayout.setDebugId("passwordGridLayout");
 		fieldsLayout.setMargin(false, false, false, false);
 
 		// first row
-		fieldsLayout.addComponent(this.fullNameLabel);
+		fieldsLayout.addComponent(new Label());
 		fieldsLayout.addComponent(this.firstNameLabel);
 		fieldsLayout.addComponent(this.lastNameLabel);
 
 		// second
-		fieldsLayout.addComponent(new Label());
+		fieldsLayout.addComponent(this.fullNameLabel);
 		fieldsLayout.addComponent(this.firstName);
 		fieldsLayout.addComponent(this.lastName);
 
@@ -211,28 +189,16 @@ public class ChangeCredentialsWindow extends BaseSubWindow implements Initializi
 
 		// fifth
 		fieldsLayout.addComponent(this.confirmLabel);
-		fieldsLayout.addComponent(this.confirm_password);
+		fieldsLayout.addComponent(this.confirmPassword);
 		fieldsLayout.addComponent(new Label());
 		fieldsLayout.setSizeFull();
 
-		return fieldsLayout;
+		layout.addComponent(fieldsLayout);
+		layout.addComponent(buttonlayout);
+		layout.setComponentAlignment(buttonlayout, Alignment.MIDDLE_CENTER);
+		layout.setExpandRatio(fieldsLayout, 1.0F);
 
-	}
-
-	protected Layout createEditableFieldsLayoutForUser() {
-
-		final GridLayout fieldsLayout = new GridLayout(2, 2);
-		fieldsLayout.setDebugId("passwordGridLayout");
-		fieldsLayout.setMargin(false, false, false, false);
-
-		fieldsLayout.addComponent(this.passwordLabel);
-		fieldsLayout.addComponent(this.password);
-		fieldsLayout.addComponent(this.confirmLabel);
-		fieldsLayout.addComponent(this.confirm_password);
-		fieldsLayout.setSizeFull();
-
-		return fieldsLayout;
-
+		this.setContent(layout);
 	}
 
 	protected void initializeActions() {
@@ -248,7 +214,7 @@ public class ChangeCredentialsWindow extends BaseSubWindow implements Initializi
 
 	}
 
-	protected void assemble() throws Exception {
+	protected void assemble() {
 		this.initializeComponents();
 		this.initializeLayout();
 		this.initializeActions();
@@ -267,9 +233,11 @@ public class ChangeCredentialsWindow extends BaseSubWindow implements Initializi
 			final String lastNameValue = lastName.getValue().toString();
 			final String emailAddressValue = emailAddress.getValue().toString();
 			final String passwordValue = password.getValue().toString();
-			final String passwordConfirmValue = password.getValue().toString();
+			final String passwordConfirmValue = confirmPassword.getValue().toString();
 
-			validate(firstNameValue, lastNameValue, emailAddressValue, passwordValue, passwordConfirmValue);
+			validateName(firstNameValue, lastNameValue);
+			validateEmailAdresss(emailAddressValue);
+			validatePassword(passwordValue, passwordConfirmValue);
 
 			updateUser(firstNameValue, lastNameValue, emailAddressValue, passwordValue);
 
@@ -280,6 +248,7 @@ public class ChangeCredentialsWindow extends BaseSubWindow implements Initializi
 
 		} catch (final ValidationException e) {
 
+			LOG.debug(e.getMessage(), e);
 			MessageNotifier.showRequiredFieldError(this.getWindow(), e.getMessage());
 
 		}
@@ -289,7 +258,9 @@ public class ChangeCredentialsWindow extends BaseSubWindow implements Initializi
 	protected void updateUser(final String firstName, final String lastName, final String emailAddress, final String password) {
 
 		final User user = this.workbenchDataManager.getUserByUsername(this.contextUtil.getCurrentWorkbenchUser().getName());
-		user.setPassword(passwordEncoder.encode(password));
+		if (!StringUtils.isEmpty(password)) {
+			user.setPassword(passwordEncoder.encode(password));
+		}
 
 		final Person person = user.getPerson();
 		person.setFirstName(firstName);
@@ -300,25 +271,9 @@ public class ChangeCredentialsWindow extends BaseSubWindow implements Initializi
 
 	}
 
-	protected void validate(final String firstName, final String lastName, final String emailAddress, final String password, final String confirmPassword)
-			throws ValidationException {
-
-		if (isAdminUser) {
-			validateName(firstName, lastName);
-			validateEmailAdresss(emailAddress);
-		}
-
-		validatePassword(password, confirmPassword);
-
-	}
-
 	protected void validatePassword(final String password, final String confirmPassword) throws ValidationException {
 
-		if ("".equals(password) || " ".equals(password)) {
-			throw new ValidationException(messageSource.getMessage(Message.ERROR_PASSWORD_IS_BLANK));
-		}
-
-		if (!password.equals(confirmPassword)) {
+		if (!StringUtils.isEmpty(password) && !password.equals(confirmPassword)) {
 			throw new ValidationException(messageSource.getMessage(Message.ERROR_CONFIRM_PASSWORD));
 		}
 
@@ -326,7 +281,7 @@ public class ChangeCredentialsWindow extends BaseSubWindow implements Initializi
 
 	protected void validateEmailAdresss(final String emailAddress) throws ValidationException {
 
-		if ("".equals(emailAddress)) {
+		if (StringUtils.isEmpty(emailAddress)) {
 			throw new ValidationException(messageSource.getMessage(Message.ERROR_EMAIL_IS_BLANK));
 		}
 

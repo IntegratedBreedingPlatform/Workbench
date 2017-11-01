@@ -24,6 +24,7 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.WorkflowConstants;
+import org.generationcp.ibpworkbench.ui.window.ChangeCredentialsWindow;
 import org.generationcp.ibpworkbench.ui.window.ChangePasswordWindow;
 import org.generationcp.ibpworkbench.ui.window.UserToolsManagerWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -102,10 +103,10 @@ public class OpenWindowAction implements WorkflowConstants, ClickListener, Actio
 			windowCaption = mywindow.getCaption();
 			logActivity = false;
 		} else if (WindowEnum.CHANGE_CREDENTIALS.equals(windowName)) {
-				mywindow = new ChangePasswordWindow();
-				window.addWindow(mywindow);
-				windowCaption = mywindow.getCaption();
-				logActivity = false;
+			mywindow = new ChangeCredentialsWindow();
+			window.addWindow(mywindow);
+			windowCaption = mywindow.getCaption();
+			logActivity = false;
 		} else if (WindowEnum.USER_TOOLS.equals(windowName)) {
 			mywindow = new UserToolsManagerWindow();
 			window.addWindow(mywindow);

@@ -429,7 +429,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 			userInfo.setLoginCount(1);
 			this.workbenchDataManager.insertOrUpdateUserInfo(userInfo);
 
-			if (user.getUserid() == ADMIN_USER_ID) {
+			if (ADMIN_USER_ID.equals(user.getUserid())) {
 				OpenWindowAction ow = new OpenWindowAction(WindowEnum.CHANGE_CREDENTIALS);
 				ow.launchWindow(this, WindowEnum.CHANGE_CREDENTIALS);
 			} else {
