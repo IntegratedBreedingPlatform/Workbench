@@ -31,8 +31,8 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.themes.Reindeer;
 import org.apache.commons.lang3.StringUtils;
-import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.help.document.HelpWindow;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.tomcat.util.TomcatUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -43,16 +43,15 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
-import org.generationcp.ibpworkbench.actions.OpenWindowAction;
-import org.generationcp.ibpworkbench.actions.OpenWindowAction.WindowEnum;
 import org.generationcp.ibpworkbench.actions.SignoutAction;
 import org.generationcp.ibpworkbench.navigation.NavUriFragmentChangedListener;
 import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
 import org.generationcp.ibpworkbench.ui.project.create.AddProgramView;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
+import org.generationcp.ibpworkbench.ui.window.ChangeCredentialsWindow;
+import org.generationcp.ibpworkbench.ui.window.ChangePasswordWindow;
 import org.generationcp.ibpworkbench.ui.window.EmbeddedWindow;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
@@ -96,7 +95,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Resource
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	@Value("${workbench.version}")
 	private String workbenchVersion;
@@ -187,8 +186,10 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.workbenchTitle.setDebugId("workbenchTitle");
 		this.workbenchTitle.setStyleName("gcp-window-title");
 		this.workbenchTitle.setContentMode(Label.CONTENT_XHTML);
-		if (this.sessionData.getLastOpenedProject() != null) {
-			this.addTitle(this.sessionData.getLastOpenedProject().getProjectName());
+
+
+		if (contextUtil.getProjectInContext() != null) {
+			this.addTitle(contextUtil.getProjectInContext().getProjectName());
 		}
 
 		this.homeButton = new Button(
@@ -230,7 +231,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.signoutButton.setSizeFull();
 		this.signoutButton.addListener(new SignoutAction());
 
-		final Person member = this.sessionData.getUserData().getPerson();
+		final Person member = contextUtil.getCurrentWorkbenchUser().getPerson();
 		memberPopup.addComponent(
 				new Label(String.format("<h2>%s %s</h2><h4>%s</h4>", member.getFirstName(), member.getLastName(), member.getEmail()),
 						Label.CONTENT_XHTML));
@@ -404,42 +405,45 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	}
 
 	protected void onLoadOperations() {
-		final User user = this.sessionData.getUserData();
-		final String username = user.getName();
 
-		if (username == null) {
-			return;
-		}
+		final User user = contextUtil.getCurrentWorkbenchUser();
 
-		try {
-			final UserInfo userInfo = this.updateUserInfoIfNecessary(user);
-			this.workbenchDataManager.incrementUserLogInCount(userInfo.getUserId());
-		} catch (final MiddlewareQueryException e) {
-			throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
-		}
+		final UserInfo userInfo = this.createUserInfoIfNecessary(user);
+
+		this.showChangeCredentialsWindowOnFirstLogin(this.getWindow(), userInfo);
+
+		this.workbenchDataManager.incrementUserLogInCount(userInfo.getUserId());
 
 	}
 
-	UserInfo updateUserInfoIfNecessary(final User user) {
-		UserInfo userInfo = this.workbenchDataManager.getUserInfo(user.getUserid());
-		if (userInfo == null || userInfo.getLoginCount() < 1) {
-			if (userInfo == null) {
-				userInfo = new UserInfo();
-			}
-			userInfo.setUserId(user.getUserid());
-			userInfo.setLoginCount(1);
-			this.workbenchDataManager.insertOrUpdateUserInfo(userInfo);
+	protected UserInfo createUserInfoIfNecessary(final User user) {
 
-			if (ADMIN_USER_ID.equals(user.getUserid())) {
-				final OpenWindowAction ow = new OpenWindowAction(WindowEnum.CHANGE_CREDENTIALS);
-				ow.launchWindow(this, WindowEnum.CHANGE_CREDENTIALS);
+		UserInfo userInfo = this.workbenchDataManager.getUserInfo(user.getUserid());
+
+		if (userInfo == null) {
+			userInfo = new UserInfo();
+			userInfo.setUserId(user.getUserid());
+			userInfo.setLoginCount(0);
+			this.workbenchDataManager.insertOrUpdateUserInfo(userInfo);
+		}
+
+		return userInfo;
+	}
+
+	protected void showChangeCredentialsWindowOnFirstLogin(final Window window, final UserInfo userInfo) {
+
+		// Only display the Change Credentials/Password on first login
+		if (userInfo.getLoginCount() < 1) {
+			if (ADMIN_USER_ID.equals(userInfo.getUserId())) {
+				// If the user is the default admin account, force the user to change
+				// the account firstname, lastname, email address and password (optional)
+				window.addWindow(new ChangeCredentialsWindow());
 			} else {
-				final OpenWindowAction ow = new OpenWindowAction(WindowEnum.CHANGE_PASSWORD);
-				ow.launchWindow(this, WindowEnum.CHANGE_PASSWORD);
+				// If not admin user, just ask to change the password.
+				window.addWindow(new ChangePasswordWindow());
 			}
 
 		}
-		return userInfo;
 	}
 
 	/*
