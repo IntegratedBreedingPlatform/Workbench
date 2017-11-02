@@ -14,8 +14,6 @@ import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.actions.OpenProgramLocationsAction;
 import org.generationcp.ibpworkbench.actions.OpenProgramMethodsAction;
 import org.generationcp.ibpworkbench.actions.OpenToolVersionsAction;
-import org.generationcp.ibpworkbench.actions.OpenWindowAction;
-import org.generationcp.ibpworkbench.actions.OpenWorkflowForRoleAction;
 import org.generationcp.ibpworkbench.actions.PageAction;
 import org.generationcp.ibpworkbench.ui.programadministration.OpenManageProgramPageAction;
 import org.generationcp.ibpworkbench.ui.project.create.OpenUpdateProjectPageAction;
@@ -178,8 +176,6 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 			return new LaunchWorkbenchToolAction(ToolEnum.equivalentToolEnum(toolName));
 		} else if (ChangeWindowAction.WindowEnums.isCorrectTool(toolName)) {
 			return new ChangeWindowAction(ChangeWindowAction.WindowEnums.equivalentWindowEnum(toolName), project);
-		} else if (OpenWindowAction.WindowEnum.isCorrectTool(toolName)) {
-			return new OpenWindowAction(OpenWindowAction.WindowEnum.equivalentWindowEnum(toolName), project);
 		} else if (toolName.equals("manage_program")) {
 			return new OpenManageProgramPageAction();
 		} else if (toolName.equals("tool_versions")) {
@@ -194,30 +190,6 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 			return new PageAction("/ibpworkbench/controller/about/");
 		} else if (toolName.equals("delete_project")) {
 			return new DeleteProjectAction();
-		} else {
-			try {
-				List<Role> roles = this.presenter.getRoleByTemplateName(toolName);
-				if (!roles.isEmpty()) {
-					final Role role1 = roles.get(0);
-
-					return new OpenWorkflowForRoleAction(project) {
-
-						@Override
-						public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
-
-							if (role1.getWorkflowTemplate() == null) {
-								WorkbenchSidebar.LOG.warn("No workflow template assigned to role: {}", role1);
-								return;
-							}
-							super.showWorkflowDashboard(super.project, role1, (IContentWindow) window);
-
-						}
-					};
-				}
-			} catch (IndexOutOfBoundsException e) {
-				// IGNORE
-				LOG.debug("ignored index out of bounds exception", e);
-			}
 		}
 
 		return null;
