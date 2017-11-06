@@ -7,6 +7,7 @@ import java.util.Properties;
 import com.vaadin.ui.Window;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.ibpworkbench.ui.window.ChangeCredentialsWindow;
 import org.generationcp.ibpworkbench.ui.window.ChangePasswordWindow;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -47,6 +48,8 @@ public class WorkbenchMainViewTest {
 
 	private Project currentProject;
 
+	private int ADMIN_USER_ID = 1;
+
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
@@ -54,7 +57,7 @@ public class WorkbenchMainViewTest {
 		// Setup mocks
 		final Person person = new Person("A", "B", "C");
 		person.setEmail("a@leafnode.io");
-		final User currentUser = new User(WorkbenchMainView.ADMIN_USER_ID);
+		final User currentUser = new User(ADMIN_USER_ID);
 		currentUser.setPerson(person);
 
 		Mockito.when(contextUtil.getCurrentWorkbenchUser()).thenReturn(currentUser);
@@ -162,12 +165,15 @@ public class WorkbenchMainViewTest {
 	public void testShowChangeCredentialsWindowOnFirstLoginUserIsAdminAccount() {
 
 		final Window window = Mockito.mock(Window.class);
+		final User user = new User();
+		user.setName(ProgramService.ADMIN_USERNAME);
+
 		final UserInfo userInfo = new UserInfo();
-		userInfo.setUserId(WorkbenchMainView.ADMIN_USER_ID);
+		userInfo.setUserId(ADMIN_USER_ID);
 		userInfo.setLoginCount(0);
 
 		// Verify that Change Credentials window is displayed
-		this.workbenchMainView.showChangeCredentialsWindowOnFirstLogin(window, userInfo);
+		this.workbenchMainView.showChangeCredentialsWindowOnFirstLogin(window, user, userInfo);
 
 		Mockito.verify(window).addWindow(Mockito.isA(ChangeCredentialsWindow.class));
 
@@ -177,11 +183,14 @@ public class WorkbenchMainViewTest {
 	public void testShowChangeCredentialsWindowOnFirstLoginUserIsAdminAccountSecondLogin() {
 
 		final Window window = Mockito.mock(Window.class);
+		final User user = new User();
+		user.setName(ProgramService.ADMIN_USERNAME);
+
 		final UserInfo userInfo = new UserInfo();
-		userInfo.setUserId(WorkbenchMainView.ADMIN_USER_ID);
+		userInfo.setUserId(ADMIN_USER_ID);
 		userInfo.setLoginCount(1);
 
-		this.workbenchMainView.showChangeCredentialsWindowOnFirstLogin(window, userInfo);
+		this.workbenchMainView.showChangeCredentialsWindowOnFirstLogin(window, user, userInfo);
 
 		// Verify that Change Credentials window is not displayed
 		Mockito.verify(window, Mockito.times(0)).addWindow(Mockito.isA(ChangeCredentialsWindow.class));
@@ -192,11 +201,14 @@ public class WorkbenchMainViewTest {
 	public void testShowChangeCredentialsWindowOnFirstLoginUserIsNotAdminAccount() {
 
 		final Window window = Mockito.mock(Window.class);
+		final User user = new User();
+		user.setName("Username");
+
 		final UserInfo userInfo = new UserInfo();
 		userInfo.setUserId(1000);
 		userInfo.setLoginCount(0);
 
-		this.workbenchMainView.showChangeCredentialsWindowOnFirstLogin(window, userInfo);
+		this.workbenchMainView.showChangeCredentialsWindowOnFirstLogin(window, user, userInfo);
 
 		// Verify that Change Password window is displayed
 		Mockito.verify(window).addWindow(Mockito.isA(ChangePasswordWindow.class));
@@ -207,11 +219,14 @@ public class WorkbenchMainViewTest {
 	public void testShowChangeCredentialsWindowOnFirstLoginUserIsNotAdminAccountSecondLogin() {
 
 		final Window window = Mockito.mock(Window.class);
+		final User user = new User();
+		user.setName(ProgramService.ADMIN_USERNAME);
+
 		final UserInfo userInfo = new UserInfo();
 		userInfo.setUserId(1000);
 		userInfo.setLoginCount(1);
 
-		this.workbenchMainView.showChangeCredentialsWindowOnFirstLogin(window, userInfo);
+		this.workbenchMainView.showChangeCredentialsWindowOnFirstLogin(window, user, userInfo);
 
 		// Verify that Change Password window is not displayed
 		Mockito.verify(window, Mockito.times(0)).addWindow(Mockito.isA(ChangePasswordWindow.class));
@@ -247,7 +262,7 @@ public class WorkbenchMainViewTest {
 
 		this.workbenchMainView.onLoadOperations();
 
-		Mockito.verify(this.workbenchDataManager).incrementUserLogInCount(WorkbenchMainView.ADMIN_USER_ID);
+		Mockito.verify(this.workbenchDataManager).incrementUserLogInCount(ADMIN_USER_ID);
 
 
 	}

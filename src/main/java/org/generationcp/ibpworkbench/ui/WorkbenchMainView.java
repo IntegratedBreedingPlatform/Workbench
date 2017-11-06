@@ -40,11 +40,11 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.IWorkbenchSession;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.actions.SignoutAction;
 import org.generationcp.ibpworkbench.navigation.NavUriFragmentChangedListener;
+import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
 import org.generationcp.ibpworkbench.ui.project.create.AddProgramView;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
@@ -77,7 +77,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	private static final long serialVersionUID = 1L;
 
 	private static final String HEADER_BTN = " header-btn";
-	public static final Integer ADMIN_USER_ID = 1;
 
 	private Label workbenchTitle;
 	private Button homeButton;
@@ -410,7 +409,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 		final UserInfo userInfo = this.createUserInfoIfNecessary(user);
 
-		this.showChangeCredentialsWindowOnFirstLogin(this.getWindow(), userInfo);
+		this.showChangeCredentialsWindowOnFirstLogin(this.getWindow(), user, userInfo);
 
 		this.workbenchDataManager.incrementUserLogInCount(userInfo.getUserId());
 
@@ -430,11 +429,11 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		return userInfo;
 	}
 
-	protected void showChangeCredentialsWindowOnFirstLogin(final Window window, final UserInfo userInfo) {
+	protected void showChangeCredentialsWindowOnFirstLogin(final Window window, final User user, final UserInfo userInfo) {
 
 		// Only display the Change Credentials/Password on first login
 		if (userInfo.getLoginCount() < 1) {
-			if (ADMIN_USER_ID.equals(userInfo.getUserId())) {
+			if (ProgramService.ADMIN_USERNAME.equalsIgnoreCase(user.getName())) {
 				// If the user is the default admin account, force the user to change
 				// the account firstname, lastname, email address and password (optional)
 				window.addWindow(new ChangeCredentialsWindow());
