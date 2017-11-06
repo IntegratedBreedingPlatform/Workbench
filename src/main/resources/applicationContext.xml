@@ -212,6 +212,20 @@
 		<aop:scoped-proxy />
 	</bean>
 
+	<bean id="sampleListService" factory-bean="managerFactory"
+		  factory-method="getSampleListService" scope="request">
+		<aop:scoped-proxy proxy-target-class="false" />
+	</bean>
+
+	<bean id="sampleService" factory-bean="managerFactory"
+		  factory-method="getSampleService" scope="request">
+		<aop:scoped-proxy proxy-target-class="false" />
+	</bean>
+
+	<bean id="plantService" factory-bean="managerFactory"
+		  factory-method="getPlantService" scope="request">
+		<aop:scoped-proxy proxy-target-class="false" />
+	</bean>
 
 	<bean id="breedingViewImportService"  class="org.generationcp.commons.service.impl.BreedingViewImportServiceImpl" scope="request">
 		<aop:scoped-proxy />
@@ -219,7 +233,7 @@
 
 	<bean id="workbenchUserService" class="org.generationcp.ibpworkbench.service.WorkbenchUserService" />
 
-	<bean id="fieldbookService" factory-bean="managerFactory" 
+	<bean id="fieldbookService" factory-bean="managerFactory"
 		factory-method="getFieldbookMiddlewareService" scope="request">
 		<aop:scoped-proxy />
 	</bean>
