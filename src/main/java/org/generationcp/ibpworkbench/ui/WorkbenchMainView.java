@@ -52,6 +52,7 @@ import org.generationcp.ibpworkbench.ui.window.ChangeCredentialsWindow;
 import org.generationcp.ibpworkbench.ui.window.ChangePasswordWindow;
 import org.generationcp.ibpworkbench.ui.window.EmbeddedWindow;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
@@ -187,8 +188,11 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.workbenchTitle.setContentMode(Label.CONTENT_XHTML);
 
 
-		if (contextUtil.getProjectInContext() != null) {
+		try {
 			this.addTitle(contextUtil.getProjectInContext().getProjectName());
+		} catch (final MiddlewareQueryException e) {
+			// MiddlewareQueryException will be thrown if there's no program exists yet in BMS.
+			LOG.debug(e.getMessage(), e);
 		}
 
 		this.homeButton = new Button(
