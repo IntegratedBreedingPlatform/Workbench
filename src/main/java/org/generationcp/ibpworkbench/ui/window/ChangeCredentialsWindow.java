@@ -29,6 +29,7 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.validator.UserAccountValidator;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
@@ -39,6 +40,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.regex.Pattern;
 
 @Configurable
 public class ChangeCredentialsWindow extends BaseSubWindow implements InitializingBean, InternationalizableComponent {
@@ -237,6 +240,7 @@ public class ChangeCredentialsWindow extends BaseSubWindow implements Initializi
 
 			validateName(firstNameValue, lastNameValue);
 			validateEmailAdresss(emailAddressValue);
+			validateEmailFormat(emailAddressValue);
 			validatePassword(passwordValue, passwordConfirmValue);
 
 			updateUser(firstNameValue, lastNameValue, emailAddressValue, passwordValue);
@@ -289,6 +293,12 @@ public class ChangeCredentialsWindow extends BaseSubWindow implements Initializi
 			throw new ValidationException(messageSource.getMessage(Message.ERROR_EMAIL_ALREADY_EXISTS));
 		}
 
+	}
+
+	protected void validateEmailFormat(final String emailAddress) throws ValidationException {
+		if (!Pattern.compile(UserAccountValidator.EMAIL_PATTERN).matcher(emailAddress).matches()) {
+			throw new ValidationException(messageSource.getMessage(Message.ERROR_EMAIL_IS_INVALID_FORMAT));
+		}
 	}
 
 	protected void validateName(final String firstName, final String lastName) throws ValidationException {

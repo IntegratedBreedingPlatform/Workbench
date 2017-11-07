@@ -155,8 +155,10 @@ public class ChangeCredentialsWindowTest {
 
 		String errorMessageEmailIsBlank = "ERROR_PASSWORD_IS_BLANK";
 		String errorMessageEmailAlreadyExists = "ERROR_EMAIL_ALREADY_EXISTS";
+		String errorMessageEmailIsInvalid = "ERROR_EMAIL_ALREADY_EXISTS";
 		Mockito.when(messageSource.getMessage(Message.ERROR_EMAIL_IS_BLANK)).thenReturn(errorMessageEmailIsBlank);
 		Mockito.when(messageSource.getMessage(Message.ERROR_EMAIL_ALREADY_EXISTS)).thenReturn(errorMessageEmailAlreadyExists);
+		Mockito.when(messageSource.getMessage(Message.ERROR_EMAIL_IS_INVALID_FORMAT)).thenReturn(errorMessageEmailIsInvalid);
 
 		try {
 			changeCredentialsWindow.validateEmailAdresss(EMAIL_ADDRESS);
@@ -179,6 +181,14 @@ public class ChangeCredentialsWindowTest {
 		} catch (ChangeCredentialsWindow.ValidationException e) {
 			Assert.assertEquals(errorMessageEmailAlreadyExists, e.getMessage());
 		}
+
+		try {
+			changeCredentialsWindow.validateEmailAdresss("asdjhasjdh.com");
+			Assert.fail("Email Address format is invalid, the method should throw a validation exception");
+		} catch (ChangeCredentialsWindow.ValidationException e) {
+			Assert.assertEquals(errorMessageEmailIsInvalid, e.getMessage());
+		}
+
 
 	}
 
