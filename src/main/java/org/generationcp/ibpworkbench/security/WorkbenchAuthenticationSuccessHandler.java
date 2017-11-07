@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -52,20 +53,39 @@ public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSucc
 			this.LOG.debug("Response has already been committed. Unable to redirect to " + targetUrl);
 			return;
 		}
-		this.populateWorkbenchSessionData(authentication);
+
+		final User user = retrieveUserFromAuthentication(authentication);
+
+		this.populateWorkbenchSessionData(user);
+
+		// Initialize the ContextInfo to set the userId of the authenticated user.
+		// The projectId and token will be populated later when a program is opened/loaded.
+		ContextUtil.setContextInfo(request, user.getUserid(), null, null);
+
 		this.clearAuthenticationAttributes(request);
+
 		this.redirectStrategy.sendRedirect(request, response, targetUrl);
+	}
+
+
+
+	protected User retrieveUserFromAuthentication(final Authentication authentication) {
+
+		final String username = authentication.getName();
+		User user = this.workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0);
+		Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
+		user.setPerson(person);
+
+		return user;
+
 	}
 
 	/**
 	 * Actions that the old org.generationcp.ibpworkbench.actions.LoginPresenter used to perform on successful login.
 	 */
-	private void populateWorkbenchSessionData(Authentication authentication) {
+	private void populateWorkbenchSessionData(final User user) {
+
 		// 1. Populate Session Data
-		String username = authentication.getName();
-		User user = this.workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0);
-		Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
-		user.setPerson(person);
 		this.sessionData.setUserData(user);
 
 		// 2. Remember Me. TODO under BMS-84.
