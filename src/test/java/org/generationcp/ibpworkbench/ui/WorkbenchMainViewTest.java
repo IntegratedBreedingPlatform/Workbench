@@ -4,12 +4,14 @@ package org.generationcp.ibpworkbench.ui;
 import java.util.Iterator;
 import java.util.Properties;
 
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Window;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.ibpworkbench.ui.window.ChangeCredentialsWindow;
 import org.generationcp.ibpworkbench.ui.window.ChangePasswordWindow;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
@@ -30,6 +32,8 @@ import com.vaadin.ui.VerticalLayout;
 import junit.framework.Assert;
 
 public class WorkbenchMainViewTest {
+
+	public static final String PROJECT_NAME = "Maize Program 1";
 
 	@Mock
 	private SimpleResourceBundleMessageSource messageSource;
@@ -63,7 +67,7 @@ public class WorkbenchMainViewTest {
 		Mockito.when(contextUtil.getCurrentWorkbenchUser()).thenReturn(currentUser);
 
 		this.currentProject = new Project();
-		this.currentProject.setProjectName("Maize Program 1");
+		this.currentProject.setProjectName(PROJECT_NAME);
 		Mockito.when(contextUtil.getProjectInContext()).thenReturn(currentProject);
 
 		this.workbenchMainView.initializeComponents();
@@ -264,6 +268,34 @@ public class WorkbenchMainViewTest {
 
 		Mockito.verify(this.workbenchDataManager).incrementUserLogInCount(ADMIN_USER_ID);
 
+
+	}
+
+	@Test
+	public void testDisplayCurrentProjectTitle() {
+
+		final Label workbenchTitleLabel = new Label();
+
+		this.workbenchMainView.setWorkbenchTitle(workbenchTitleLabel);
+
+		this.workbenchMainView.displayCurrentProjectTitle();
+
+		Assert.assertEquals(String.format("<h1>%s</h1>", PROJECT_NAME), workbenchTitleLabel.getValue());
+
+	}
+
+	@Test
+	public void testDisplayCurrentProjectTitleNoProgramExists() {
+
+		final Label workbenchTitleLabel = new Label();
+		this.workbenchMainView.setWorkbenchTitle(workbenchTitleLabel);
+
+		// Throw MiddlewareQueryException to simulate the case where no program exists yet in BMS.
+		Mockito.when(this.contextUtil.getProjectInContext()).thenThrow(new MiddlewareQueryException(""));
+
+		this.workbenchMainView.displayCurrentProjectTitle();
+
+		Assert.assertEquals("", workbenchTitleLabel.getValue());
 
 	}
 	

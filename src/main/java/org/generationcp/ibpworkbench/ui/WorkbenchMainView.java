@@ -187,13 +187,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.workbenchTitle.setStyleName("gcp-window-title");
 		this.workbenchTitle.setContentMode(Label.CONTENT_XHTML);
 
-
-		try {
-			this.addTitle(contextUtil.getProjectInContext().getProjectName());
-		} catch (final MiddlewareQueryException e) {
-			// MiddlewareQueryException will be thrown if there's no program exists yet in BMS.
-			LOG.debug(e.getMessage(), e);
-		}
+		this.displayCurrentProjectTitle();
 
 		this.homeButton = new Button(
 				String.format("<span class='bms-header-btn'><span>%s</span></span>", this.messageSource.getMessage("MY_PROGRAMS")));
@@ -248,6 +242,17 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.helpButton.setHtmlContentAllowed(true);
 		this.helpButton.setSizeUndefined();
 		this.helpButton.setDebugId("help-button-icon");
+	}
+
+	protected void displayCurrentProjectTitle() {
+
+		try {
+			this.addTitle(contextUtil.getProjectInContext().getProjectName());
+		} catch (final MiddlewareQueryException e) {
+			// MiddlewareQueryException will be thrown if there's no program exists yet in BMS.
+			LOG.debug(e.getMessage(), e);
+		}
+
 	}
 
 	private Button getAskSupportBtn() {
@@ -666,5 +671,10 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	// For test purposes
 	protected Button getAdminButton() {
 		return adminButton;
+	}
+
+	// For test purposes
+	protected void setWorkbenchTitle(final Label workbenchTitle) {
+		this.workbenchTitle = workbenchTitle;
 	}
 }
