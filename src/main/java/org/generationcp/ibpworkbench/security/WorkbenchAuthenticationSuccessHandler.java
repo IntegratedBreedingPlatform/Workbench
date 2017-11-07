@@ -1,11 +1,4 @@
-
 package org.generationcp.ibpworkbench.security;
-
-import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.ibpworkbench.SessionData;
@@ -23,12 +16,17 @@ import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+
 /**
- * Handler for setting up Workbench specific sutff e.g. {@link SessionData} before redirecting to the page requested on successful
+ * Handler for setting up Workbench specific stuff e.g. {@link SessionData} before redirecting to the page requested on successful
  * authentication. Could also be used to redirect to different destinations based on role if needed.
  *
  * @author Naymesh Mistry
- *
  */
 public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
@@ -45,10 +43,10 @@ public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSucc
 	private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
 	@Override
-	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
-			throws IOException, ServletException {
+	public void onAuthenticationSuccess(final HttpServletRequest request, final HttpServletResponse response,
+			final Authentication authentication) throws IOException, ServletException {
 
-		String targetUrl = this.defaultTargetUrl;
+		final String targetUrl = this.defaultTargetUrl;
 		if (response.isCommitted()) {
 			this.LOG.debug("Response has already been committed. Unable to redirect to " + targetUrl);
 			return;
@@ -67,13 +65,11 @@ public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSucc
 		this.redirectStrategy.sendRedirect(request, response, targetUrl);
 	}
 
-
-
 	protected User retrieveUserFromAuthentication(final Authentication authentication) {
 
 		final String username = authentication.getName();
-		User user = this.workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0);
-		Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
+		final User user = this.workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0);
+		final Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
 		user.setPerson(person);
 
 		return user;
@@ -104,23 +100,23 @@ public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSucc
 	/**
 	 * Removes temporary authentication-related data which may have been stored in the session during the authentication process.
 	 */
-	protected final void clearAuthenticationAttributes(HttpServletRequest request) {
-		HttpSession session = request.getSession(false);
+	protected final void clearAuthenticationAttributes(final HttpServletRequest request) {
+		final HttpSession session = request.getSession(false);
 		if (session == null) {
 			return;
 		}
 		session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
 	}
 
-	public void setDefaultTargetUrl(String defaultTargetUrl) {
+	public void setDefaultTargetUrl(final String defaultTargetUrl) {
 		this.defaultTargetUrl = defaultTargetUrl;
 	}
 
-	public void setSessionData(SessionData sessionData) {
+	public void setSessionData(final SessionData sessionData) {
 		this.sessionData = sessionData;
 	}
 
-	public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
+	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
 		this.workbenchDataManager = workbenchDataManager;
 	}
 }
