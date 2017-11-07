@@ -22,6 +22,7 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -44,6 +45,9 @@ public class AddProgramView extends Panel implements InitializingBean {
 
 	@Autowired
 	private SessionData sessionData;
+
+	@Value("${workbench.is.single.user.only}")
+	private String isSingleUserOnly;
 
 	private VerticalLayout rootLayout;
 
@@ -140,11 +144,16 @@ public class AddProgramView extends Panel implements InitializingBean {
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	private void restrictedAccessMethod() {
-		this.programMembersContainer.setVisible(true);
-		this.tabSheet.addTab(this.programMembersContainer);
-		this.tabSheet.getTab(this.programMembersContainer).setClosable(false);
-		this.tabSheet.getTab(this.programMembersContainer).setCaption("Members");
+	protected void addProgramMembersTab(final TabSheet tabSheet, final VerticalLayout programMembersContainer) {
+
+		// Do not display the Program Members tab if BMS is in single user mode.
+		if (!Boolean.parseBoolean(getIsSingleUserOnly())) {
+			programMembersContainer.setVisible(true);
+			tabSheet.addTab(programMembersContainer);
+			tabSheet.getTab(programMembersContainer).setClosable(false);
+			tabSheet.getTab(programMembersContainer).setCaption("Members");
+		}
+
 	}
 
 	protected void initializeActions() {
@@ -186,7 +195,7 @@ public class AddProgramView extends Panel implements InitializingBean {
 
 		try {
 
-			restrictedAccessMethod();
+			addProgramMembersTab(this.tabSheet, this.programMethodsContainer);
 		} catch (AccessDeniedException ex) {
 			//Do nothing, if the user does not have the required roles the screen needs to be displayed as well.
 		}
@@ -307,7 +316,6 @@ public class AddProgramView extends Panel implements InitializingBean {
 
 	public void resetProgramMembers() {
 		this.programMembersContainer.removeAllComponents();
-
 		this.programMembersPanel = new ProjectMembersComponent(this.presenter);
 		this.programMembersPanel.setDebugId("programMembersPanel");
 		this.programMembersContainer.addComponent(this.programMembersPanel);
@@ -328,5 +336,13 @@ public class AddProgramView extends Panel implements InitializingBean {
 		}
 
 		return new ArrayList<Method>();
+	}
+
+	protected String getIsSingleUserOnly() {
+		return isSingleUserOnly;
+	}
+
+	protected void setIsSingleUserOnly(String isSingleUserOnly) {
+		this.isSingleUserOnly = isSingleUserOnly;
 	}
 }
