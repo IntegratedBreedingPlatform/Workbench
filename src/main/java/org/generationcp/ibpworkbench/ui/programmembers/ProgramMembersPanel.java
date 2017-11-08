@@ -185,8 +185,10 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		this.select.getTableRight().addGeneratedColumn(ProgramMembersPanel.USERNAME, tableRightUserName);
 		this.select.getTableRight().addGeneratedColumn(ProgramMembersPanel.ROLE, tableRightRole);
 
-		this.select.setVisibleColumns(new Object[] {"select", ProgramMembersPanel.USERNAME, ProgramMembersPanel.ROLE});
-		this.select.setColumnHeaders(new String[] {"<span class='glyphicon glyphicon-ok'></span>", "User Name", "Role"});
+		this.select
+				.setVisibleColumns(new Object[] { "select", ProgramMembersPanel.USERNAME, ProgramMembersPanel.ROLE });
+		this.select
+				.setColumnHeaders(new String[] { "<span class='glyphicon glyphicon-ok'></span>", "User Name", "Role" });
 
 		this.select.setLeftColumnCaption("Available Users");
 		this.select.setRightColumnCaption("Selected Program Members");
@@ -205,10 +207,9 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 				ProgramMembersPanel.this.select.removeCheckedSelectedItems();
 			}
 		});
-		
+
 		this.initializeMembersTable();
 	}
-
 
 	private Table initializeMembersTable() {
 		this.tblMembers = new Table();
@@ -236,7 +237,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public Field createField(final Container container, final Object itemId, final Object propertyId, final Component uiContext) {
+			public Field createField(final Container container, final Object itemId, final Object propertyId,
+					final Component uiContext) {
 				final int columnIndex = columnIds.indexOf(propertyId);
 				if (columnIndex >= 1) {
 					return new CheckBox();
@@ -263,7 +265,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 		final HorizontalLayout titleContainer = new HorizontalLayout();
 		titleContainer.setDebugId("titleContainer");
-		final Label heading = new Label("<span class='bms-members' style='color: #D1B02A; font-size: 23px'></span>&nbsp;Program Members",
+		final Label heading = new Label(
+				"<span class='bms-members' style='color: #D1B02A; font-size: 23px'></span>&nbsp;Program Members",
 				Label.CONTENT_XHTML);
 		final Label headingDesc = new Label(
 				"Choose team members for this program by dragging available users from the list on the left into the Program Members list on the right.");
@@ -300,28 +303,30 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 	protected void initializeUsers() {
 		final Container container = this.tblMembers.getContainerDataSource();
-		final List<Integer> userIDs = this.workbenchDataManager.getActiveUserIDsByProjectId(this.project.getProjectId());
+		final List<Integer> userIDs = this.workbenchDataManager
+				.getActiveUserIDsByProjectId(this.project.getProjectId());
 		final Set<User> selectedItems = new HashSet<>();
 
 		for (final Integer userID : userIDs) {
 			final User userTemp = this.workbenchDataManager.getUserById(userID);
 			selectedItems.add(userTemp);
-	
+
 			container.removeItem(userTemp);
-	
+
 			final Item item = container.addItem(userTemp);
 			item.getItemProperty("userId").setValue(1);
 			item.getItemProperty(ProgramMembersPanel.USERNAME).setValue(userTemp.getPerson().getDisplayName());
 			item.getItemProperty(ProgramMembersPanel.ROLE).setValue(userTemp.getRoles().get(0).getCapitalizedRole());
-			
+
 			/*
-			 * If default ADMIN user, disable selection so it cannot be removed. 
-			 * Disabling is done here so that it can still be selected in Available Users table
+			 * If default ADMIN user, disable selection so it cannot be removed.
+			 * Disabling is done here so that it can still be selected in
+			 * Available Users table
 			 */
-			if (ProgramService.ADMIN_USERNAME.equalsIgnoreCase(userTemp.getName())){
+			if (ProgramService.ADMIN_USERNAME.equalsIgnoreCase(userTemp.getName())) {
 				userTemp.setEnabled(false);
 			}
-			
+
 			this.select.select(userTemp);
 		}
 	}
@@ -362,7 +367,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	protected Container createUsersContainer() {
 		final List<User> validUserList = new ArrayList<>();
 
-		// TODO: This can be improved once we implement proper User-Person mapping
+		// TODO: This can be improved once we implement proper User-Person
+		// mapping
 		final List<User> userList = this.workbenchDataManager.getAllActiveUsersSorted();
 
 		for (final User user : userList) {
@@ -376,7 +382,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 		final BeanItemContainer<User> beanItemContainer = new BeanItemContainer<>(User.class);
 		for (final User user : validUserList) {
-			if (user.getUserid().equals(this.contextUtil.getCurrentWorkbenchUserId()) || user.getUserid().equals(this.project.getUserId())) {
+			if (user.getUserid().equals(this.contextUtil.getCurrentWorkbenchUserId())
+					|| user.getUserid().equals(this.project.getUserId())) {
 				user.setEnabled(false);
 			}
 
@@ -397,7 +404,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 			this.project.setMembers(members);
 		}
-		// members not required, so even if there are no values, this returns true
+		// members not required, so even if there are no values, this returns
+		// true
 		return true;
 	}
 
@@ -438,14 +446,13 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
 		this.workbenchDataManager = workbenchDataManager;
 	}
-	
-	public void setContextUtil(final ContextUtil contextUtil){
+
+	public void setContextUtil(final ContextUtil contextUtil) {
 		this.contextUtil = contextUtil;
 	}
-	
-	public Set<User> getProgramMembersDisplayed(){
+
+	public Set<User> getProgramMembersDisplayed() {
 		return this.select.getValue();
 	}
-	
 
 }

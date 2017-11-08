@@ -46,12 +46,12 @@ public class ProgramMembersPanelTest {
 
 	@Mock
 	private ContextUtil contextUtil;
-	
+
 	private Project project;
 
 	@InjectMocks
 	private ProgramMembersPanel programMembersPanel;
-	
+
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
@@ -85,7 +85,8 @@ public class ProgramMembersPanelTest {
 		// Check that program owner should be disabled
 		for (final User user : programMembers) {
 			if (user.getUserid().equals(ProgramMembersPanelTest.OWNER_PERSON_ID)) {
-				Assert.assertFalse("Program Owner and Default Admin users should be disabled so they cannot be removed as member.",
+				Assert.assertFalse(
+						"Program Owner and Default Admin users should be disabled so they cannot be removed as member.",
 						user.isEnabled());
 			} else {
 				Assert.assertTrue("Other users should be enabled so they can be removed as members.", user.isEnabled());
@@ -109,65 +110,69 @@ public class ProgramMembersPanelTest {
 		for (final User user : programMembers) {
 			if (user.getUserid().equals(ProgramMembersPanelTest.OWNER_PERSON_ID)
 					|| user.getUserid().equals(ProgramMembersPanelTest.MEMBER_PERSON_ID)) {
-				Assert.assertFalse("Program owner and current user should be disabled and cannot be removed as program members.",
+				Assert.assertFalse(
+						"Program owner and current user should be disabled and cannot be removed as program members.",
 						user.isEnabled());
 			} else {
 				Assert.assertTrue("Other users should be enabled so they can be removed as members.", user.isEnabled());
 			}
 		}
 	}
-	
+
 	@Test
-	public void testGenerateRoleCellForOwner(){
+	public void testGenerateRoleCellForOwner() {
 		this.mockCurrentUser(ProgramMembersPanelTest.OWNER_USER_ID);
-		Object itemId = UserTestDataInitializer.createUserWithRole(ProgramMembersPanelTest.OWNER_USER_ID);
-		Label roleLabel  = this.programMembersPanel.generateRoleCell(itemId);
+		final Object itemId = UserTestDataInitializer.createUserWithRole(ProgramMembersPanelTest.OWNER_USER_ID);
+		final Label roleLabel = this.programMembersPanel.generateRoleCell(itemId);
 		Assert.assertEquals(((User) itemId).getRoles().get(0).getCapitalizedRole(), roleLabel.getValue());
 		Assert.assertEquals("label", roleLabel.getDebugId());
-		Assert.assertEquals("label-bold", roleLabel.getStyleName());	
+		Assert.assertEquals("label-bold", roleLabel.getStyleName());
 	}
-	
+
 	@Test
-	public void testGenerateRoleCellForMember(){
+	public void testGenerateRoleCellForMember() {
 		this.mockCurrentUser(ProgramMembersPanelTest.OWNER_USER_ID);
-		Object itemId = UserTestDataInitializer.createUserWithRole(ProgramMembersPanelTest.MEMBER_PERSON_ID);
-		Label roleLabel  = this.programMembersPanel.generateRoleCell(itemId);
+		final Object itemId = UserTestDataInitializer.createUserWithRole(ProgramMembersPanelTest.MEMBER_PERSON_ID);
+		final Label roleLabel = this.programMembersPanel.generateRoleCell(itemId);
 		Assert.assertEquals(((User) itemId).getRoles().get(0).getCapitalizedRole(), roleLabel.getValue());
 		Assert.assertEquals("label", roleLabel.getDebugId());
-		Assert.assertNotSame("label-bold", roleLabel.getStyleName());	
+		Assert.assertNotSame("label-bold", roleLabel.getStyleName());
 	}
-	
-	
+
 	@Test
 	public void testgenerateUserNameCellForOwner() {
 		this.mockCurrentUser(ProgramMembersPanelTest.OWNER_USER_ID);
-		Object itemId = UserTestDataInitializer.createUserWithPerson(OWNER_PERSON_ID, "UserName", 1, "Firstname", "Middlename");
-		Label roleLabel  = this.programMembersPanel.generateUserNameCell(itemId);
+		final Object itemId = UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.OWNER_PERSON_ID,
+				"UserName", 1, "Firstname", "Middlename");
+		final Label roleLabel = this.programMembersPanel.generateUserNameCell(itemId);
 		Assert.assertEquals(((User) itemId).getPerson().getDisplayName(), roleLabel.getValue());
 		Assert.assertEquals("label", roleLabel.getDebugId());
 		Assert.assertEquals("label-bold", roleLabel.getStyleName());
 	}
-	
+
 	@Test
 	public void testgenerateUserNameCellForMember() {
 		this.mockCurrentUser(ProgramMembersPanelTest.OWNER_USER_ID);
-		Object itemId = UserTestDataInitializer.createUserWithPerson(MEMBER_PERSON_ID, "UserName", 1, "Firstname", "Middlename");
-		Label roleLabel  = this.programMembersPanel.generateUserNameCell(itemId);
+		final Object itemId = UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.MEMBER_PERSON_ID,
+				"UserName", 1, "Firstname", "Middlename");
+		final Label roleLabel = this.programMembersPanel.generateUserNameCell(itemId);
 		Assert.assertEquals(((User) itemId).getPerson().getDisplayName(), roleLabel.getValue());
 		Assert.assertEquals("label", roleLabel.getDebugId());
 		Assert.assertNotSame("label-bold", roleLabel.getStyleName());
 	}
-	
+
 	@Test
 	public void testInitializeUsers() {
 		// Setup test data and mocks
-		Mockito.when(this.workbenchDataManager.getActiveUserIDsByProjectId(Matchers.anyLong())).thenReturn(Arrays.asList(ProgramMembersPanelTest.OWNER_USER_ID, ProgramMembersPanelTest.ADMIN_USER_ID, ProgramMembersPanelTest.MEMBER_USER_ID));
+		Mockito.when(this.workbenchDataManager.getActiveUserIDsByProjectId(Matchers.anyLong()))
+				.thenReturn(Arrays.asList(ProgramMembersPanelTest.OWNER_USER_ID, ProgramMembersPanelTest.ADMIN_USER_ID,
+						ProgramMembersPanelTest.MEMBER_USER_ID));
 		this.mockCurrentUser(ProgramMembersPanelTest.MEMBER_USER_ID);
-		List<User> testProgramMembers = this.createProgramMembersTestData();
-		for(User user: testProgramMembers){
+		final List<User> testProgramMembers = this.createProgramMembersTestData();
+		for (final User user : testProgramMembers) {
 			Mockito.when(this.workbenchDataManager.getUserById(user.getUserid())).thenReturn(user);
 		}
-		
+
 		// Initialization in controller
 		this.programMembersPanel.initializeComponents();
 		this.programMembersPanel.initializeValues();
@@ -183,7 +188,8 @@ public class ProgramMembersPanelTest {
 		// Check that ADMIN user is disabled from selection
 		for (final User user : programMembers) {
 			if (ProgramService.ADMIN_USERNAME.equalsIgnoreCase(user.getName())) {
-				Assert.assertFalse("Default Admin should be disabled and cannot be removed as program member.", user.isEnabled());
+				Assert.assertFalse("Default Admin should be disabled and cannot be removed as program member.",
+						user.isEnabled());
 			}
 		}
 	}
@@ -209,22 +215,22 @@ public class ProgramMembersPanelTest {
 
 	private List<User> createProgramMembersTestData() {
 		final List<User> programMembers = new ArrayList<>();
-		programMembers.add(this.createUsersTestData(ProgramMembersPanelTest.OWNER_USER_ID, ProgramMembersPanelTest.OWNER_NAME,
-				ProgramMembersPanelTest.OWNER_PERSON_ID));
-		programMembers.add(this.createUsersTestData(ProgramMembersPanelTest.MEMBER_USER_ID, ProgramMembersPanelTest.MEMBER_NAME,
-				ProgramMembersPanelTest.MEMBER_PERSON_ID));
-		programMembers.add(this.createUsersTestData(ProgramMembersPanelTest.ADMIN_USER_ID, ProgramService.ADMIN_USERNAME,
-				ProgramMembersPanelTest.ADMIN_PERSON_ID));
+		programMembers.add(this.createUsersTestData(ProgramMembersPanelTest.OWNER_USER_ID,
+				ProgramMembersPanelTest.OWNER_NAME, ProgramMembersPanelTest.OWNER_PERSON_ID));
+		programMembers.add(this.createUsersTestData(ProgramMembersPanelTest.MEMBER_USER_ID,
+				ProgramMembersPanelTest.MEMBER_NAME, ProgramMembersPanelTest.MEMBER_PERSON_ID));
+		programMembers.add(this.createUsersTestData(ProgramMembersPanelTest.ADMIN_USER_ID,
+				ProgramService.ADMIN_USERNAME, ProgramMembersPanelTest.ADMIN_PERSON_ID));
 		return programMembers;
 	}
 
 	private User createUsersTestData(final int userId, final String username, final int personId) {
 		final User user = UserTestDataInitializer.createUserWithPerson(userId, username, personId, "Mister", "User");
-		
+
 		final List<UserRole> userRoleList = new ArrayList<>();
 		userRoleList.add(new UserRole(user, "ADMIN"));
 		user.setRoles(userRoleList);
-		
+
 		return user;
 	}
 
