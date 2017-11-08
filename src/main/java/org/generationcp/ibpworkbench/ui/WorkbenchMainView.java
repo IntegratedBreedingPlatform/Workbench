@@ -211,16 +211,10 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.getAdminButton().setSizeUndefined();
 
 		this.memberButton = new PopupButton();
-		this.memberButton.setDebugId("memberButton");
-		this.memberButton.setStyleName(Bootstrap.Buttons.LINK.styleName() + " bms-header-popuplink");
-		this.memberButton.setHtmlContentAllowed(true);
-		this.memberButton.setSizeUndefined();
-
-		final VerticalLayout memberPopup = new VerticalLayout();
-		memberPopup.setDebugId("memberPopup");
-		memberPopup.setStyleName("bms-memberpopup");
-		memberPopup.setSpacing(true);
-		memberPopup.setSizeUndefined();
+		this.getMemberButton().setDebugId("memberButton");
+		this.getMemberButton().setStyleName(Bootstrap.Buttons.LINK.styleName() + " bms-header-popuplink");
+		this.getMemberButton().setHtmlContentAllowed(true);
+		this.getMemberButton().setSizeUndefined();
 
 		this.signoutButton = new Button(this.messageSource.getMessage(Message.SIGNOUT));
 		this.signoutButton.setDebugId("signoutButton");
@@ -229,12 +223,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.signoutButton.addListener(new SignoutAction());
 
 		final Person member = contextUtil.getCurrentWorkbenchUser().getPerson();
-		memberPopup.addComponent(
-				new Label(String.format("<h2>%s %s</h2><h4>%s</h4>", member.getFirstName(), member.getLastName(), member.getEmail()),
-						Label.CONTENT_XHTML));
-		memberPopup.addComponent(this.signoutButton);
-
-		this.memberButton.addComponent(memberPopup);
+		this.getMemberButton().addComponent(createMemberPopup(member.getFirstName(), member.getLastName(), member.getEmail()));
 
 		this.helpButton = new Button("<span class='bms-header-btn2'><span class='bms-fa-question-circle ico'></span></span>");
 		this.helpButton.setDebugId("helpButton");
@@ -242,6 +231,24 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.helpButton.setHtmlContentAllowed(true);
 		this.helpButton.setSizeUndefined();
 		this.helpButton.setDebugId("help-button-icon");
+	}
+
+	protected VerticalLayout createMemberPopup(final String firstName, final String lastName, final String emailAddress) {
+
+		final VerticalLayout memberPopup = new VerticalLayout();
+		memberPopup.setDebugId("memberPopup");
+		memberPopup.setStyleName("bms-memberpopup");
+		memberPopup.setSpacing(true);
+		memberPopup.setSizeUndefined();
+
+		memberPopup.addComponent(
+				new Label(String.format("<h2>%s %s</h2><h4>%s</h4>", firstName, lastName, emailAddress),
+						Label.CONTENT_XHTML));
+		memberPopup.addComponent(this.signoutButton);
+
+		return memberPopup;
+
+
 	}
 
 	protected void displayCurrentProjectTitle() {
@@ -445,7 +452,17 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 			if (ProgramService.ADMIN_USERNAME.equalsIgnoreCase(user.getName())) {
 				// If the user is the default admin account, force the user to change
 				// the account firstname, lastname, email address and password (optional)
-				window.addWindow(new ChangeCredentialsWindow());
+				window.addWindow(new ChangeCredentialsWindow(new ChangeCredentialsWindow.CredentialsChangedEvent() {
+
+					@Override
+					public void onChanged(final String firstname, final String lastName, final String emailAddress) {
+
+						// Refresh the name and email of member detail popup after the user credrentials are changed.
+						WorkbenchMainView.this.refreshMemberDetailsPopup(firstname, lastName, emailAddress);
+
+					}
+
+				}));
 			} else {
 				// If not admin user, just ask to change the password.
 				window.addWindow(new ChangePasswordWindow());
@@ -495,11 +512,11 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 		this.workbenchHeaderLayout.addComponent(this.helpButton);
 		this.workbenchHeaderLayout.addComponent(this.getAskSupportBtn());
-		this.workbenchHeaderLayout.addComponent(this.memberButton);
+		this.workbenchHeaderLayout.addComponent(this.getMemberButton());
 
 		this.workbenchHeaderLayout.setComponentAlignment(this.askSupportBtn, Alignment.MIDDLE_RIGHT);
 		this.workbenchHeaderLayout.setComponentAlignment(this.helpButton, Alignment.MIDDLE_RIGHT);
-		this.workbenchHeaderLayout.setComponentAlignment(this.memberButton, Alignment.MIDDLE_RIGHT);
+		this.workbenchHeaderLayout.setComponentAlignment(this.getMemberButton(), Alignment.MIDDLE_RIGHT);
 	}
 
 	private void refreshHeaderLayout() {
@@ -632,7 +649,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 			signoutName = signoutName.substring(0, 9) + "...";
 		}
 
-		this.memberButton.setCaption("<span class='bms-header-btn2'><span>" + signoutName
+		this.getMemberButton().setCaption("<span class='bms-header-btn2'><span>" + signoutName
 				+ "</span><span class='bms-fa-caret-down' style='padding: 0 10px 0 0'></span></span>");
 
 	}
@@ -676,5 +693,17 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	// For test purposes
 	protected void setWorkbenchTitle(final Label workbenchTitle) {
 		this.workbenchTitle = workbenchTitle;
+	}
+
+	protected void refreshMemberDetailsPopup(final String firstname, final String lastName, final String emailAddress) {
+
+		WorkbenchMainView.this.getMemberButton().removeAllComponents();
+		WorkbenchMainView.this.getMemberButton().addComponent(createMemberPopup(firstname, lastName, emailAddress));
+
+	}
+
+	// For testing purpose only
+	protected PopupButton getMemberButton() {
+		return memberButton;
 	}
 }

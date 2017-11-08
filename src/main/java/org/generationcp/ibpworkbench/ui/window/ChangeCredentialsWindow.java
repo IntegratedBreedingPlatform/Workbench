@@ -59,6 +59,8 @@ public class ChangeCredentialsWindow extends BaseSubWindow implements Initializi
 	@Autowired
 	private ContextUtil contextUtil;
 
+	private CredentialsChangedEvent credentialsChangedEvent;
+
 	private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 	private Label fullNameLabel;
@@ -75,6 +77,12 @@ public class ChangeCredentialsWindow extends BaseSubWindow implements Initializi
 	private TextField emailAddress;
 	private PasswordField password;
 	private PasswordField confirmPassword;
+
+	public ChangeCredentialsWindow(final CredentialsChangedEvent credentialsChangedEvent) {
+
+		this.credentialsChangedEvent = credentialsChangedEvent;
+
+	}
 
 	/**
 	 * Assemble the UI after all dependencies has been set.
@@ -248,6 +256,8 @@ public class ChangeCredentialsWindow extends BaseSubWindow implements Initializi
 			MessageNotifier.showMessage(this.getParent(), messageSource.getMessage(Message.SUCCESS),
 					messageSource.getMessage(Message.CREDENTIALS_UPDATED_SUCCESS_MESSAGE), 3000);
 
+			credentialsChangedEvent.onChanged(firstNameValue, lastNameValue, emailAddressValue);
+
 			closeWindow();
 
 		} catch (final ValidationException e) {
@@ -338,6 +348,12 @@ public class ChangeCredentialsWindow extends BaseSubWindow implements Initializi
 		ValidationException(final String message) {
 			super(message);
 		}
+
+	}
+
+	public interface CredentialsChangedEvent {
+
+		void onChanged(final String firstname, final String lastName, String emailAddress);
 
 	}
 

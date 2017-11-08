@@ -4,6 +4,7 @@ package org.generationcp.ibpworkbench.ui;
 import java.util.Iterator;
 import java.util.Properties;
 
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Window;
 import org.generationcp.commons.spring.util.ContextUtil;
@@ -296,6 +297,30 @@ public class WorkbenchMainViewTest {
 		this.workbenchMainView.displayCurrentProjectTitle();
 
 		Assert.assertEquals("", workbenchTitleLabel.getValue());
+
+	}
+
+	@Test
+	public void testRefreshMemberDetailsPopup() {
+
+		final String firstName = "firstname";
+		final String lastName = "lastName";
+		final String emailAddress = "emailAddress";
+
+		this.workbenchMainView.refreshMemberDetailsPopup(firstName, lastName, emailAddress);
+
+		final VerticalLayout memberDetailPopup = (VerticalLayout) this.workbenchMainView.getMemberButton().getComponentIterator().next();
+
+		// Make sure that there are 2 components added in the view (Member detail label and signout button)
+		Assert.assertEquals(2, memberDetailPopup.getComponentCount());
+
+		final Label memberDetail = (Label) memberDetailPopup.getComponent(0);
+
+		Assert.assertEquals(String.format("<h2>%s %s</h2><h4>%s</h4>", firstName, lastName, emailAddress), memberDetail.getValue());
+		Assert.assertEquals(Label.CONTENT_XHTML, memberDetail.getContentMode());
+
+		Assert.assertTrue(memberDetailPopup.getComponent(1) instanceof Button);
+
 
 	}
 	

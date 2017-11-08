@@ -25,6 +25,7 @@ public class ChangeCredentialsWindowTest {
 	public static final String LASTNAME = "lastname";
 	public static final String EMAIL_ADDRESS = "dummy@yahoo.com";
 	public static final String PASSWORD = "hellopw";
+
 	@Mock
 	private WorkbenchDataManager workbenchDataManager;
 
@@ -37,8 +38,11 @@ public class ChangeCredentialsWindowTest {
 	@Mock
 	private Window parentWindow;
 
+	@Mock
+	private ChangeCredentialsWindow.CredentialsChangedEvent credentialsChangedEvent;
+
 	@InjectMocks
-	private ChangeCredentialsWindow changeCredentialsWindow;
+	private ChangeCredentialsWindow changeCredentialsWindow = new ChangeCredentialsWindow(credentialsChangedEvent);
 
 	@Before
 	public void init() {
@@ -68,6 +72,7 @@ public class ChangeCredentialsWindowTest {
 		Mockito.verify(workbenchDataManager).updateUser(Mockito.any(User.class));
 		Mockito.verify(parentWindow).showNotification(Mockito.any(Window.Notification.class));
 		Mockito.verify(parentWindow).removeWindow(Mockito.any(Window.class));
+		Mockito.verify(credentialsChangedEvent).onChanged(FIRSTNAME, LASTNAME, EMAIL_ADDRESS);
 
 	}
 
@@ -81,6 +86,7 @@ public class ChangeCredentialsWindowTest {
 		Mockito.verify(workbenchDataManager, Mockito.times(0)).updateUser(Mockito.any(User.class));
 		Mockito.verify(parentWindow).showNotification(Mockito.any(Window.Notification.class));
 		Mockito.verify(parentWindow, Mockito.times(0)).removeWindow(Mockito.any(Window.class));
+		Mockito.verify(credentialsChangedEvent, Mockito.times(0)).onChanged(FIRSTNAME, LASTNAME, EMAIL_ADDRESS);
 
 	}
 
