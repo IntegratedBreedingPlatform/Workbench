@@ -11,13 +11,20 @@
 
 package org.generationcp.ibpworkbench.ui.project.create;
 
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -30,16 +37,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
-
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Layout;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.Reindeer;
 
 /**
  * The create project panel
@@ -155,8 +152,7 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 					});
 
 				} catch (Exception e) {
-
-					if ("basic_details_invalid".equals(e.getMessage())) {
+					if ("Failed Validation on BasicDetailsForm".equals(e.getMessage())) {
 						return;
 					}
 
