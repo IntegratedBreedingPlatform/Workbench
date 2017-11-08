@@ -16,10 +16,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Resource;
+
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -76,8 +78,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
 
-	@Autowired
-	private SessionData sessionData;
+	@Resource
+	private ContextUtil contextUtil;
 
 	private final Project project;
 
@@ -99,25 +101,25 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 	}
 
-	private Label generateRoleCell(final Object itemId) {
+	protected Label generateRoleCell(final Object itemId) {
 		final String role = ((User) itemId).getRoles().get(0).getCapitalizedRole();
 		final Label label = new Label();
 		label.setDebugId("label");
 		label.setValue(role);
 
-		if (((User) itemId).getUserid().equals(ProgramMembersPanel.this.sessionData.getUserData().getUserid())) {
+		if (((User) itemId).getUserid().equals(this.contextUtil.getCurrentWorkbenchUserId())) {
 			label.setStyleName("label-bold");
 		}
 		return label;
 	}
 
-	private Label generateUserNameCell(final Object itemId) {
+	protected Label generateUserNameCell(final Object itemId) {
 		final Person person = ((User) itemId).getPerson();
 		final Label label = new Label();
 		label.setDebugId("label");
 		label.setValue(person.getDisplayName());
 
-		if (((User) itemId).getUserid().equals(ProgramMembersPanel.this.sessionData.getUserData().getUserid())) {
+		if (((User) itemId).getUserid().equals(this.contextUtil.getCurrentWorkbenchUserId())) {
 			label.setStyleName("label-bold");
 		}
 		return label;
@@ -374,7 +376,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 		final BeanItemContainer<User> beanItemContainer = new BeanItemContainer<>(User.class);
 		for (final User user : validUserList) {
-			if (user.getUserid().equals(this.sessionData.getUserData().getUserid()) || user.getUserid().equals(this.project.getUserId())) {
+			if (user.getUserid().equals(this.contextUtil.getCurrentWorkbenchUserId()) || user.getUserid().equals(this.project.getUserId())) {
 				user.setEnabled(false);
 			}
 
@@ -436,9 +438,9 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
 		this.workbenchDataManager = workbenchDataManager;
 	}
-
-	public void setSessionData(final SessionData sessionData) {
-		this.sessionData = sessionData;
+	
+	public void setContextUtil(final ContextUtil contextUtil){
+		this.contextUtil = contextUtil;
 	}
 	
 	public Set<User> getProgramMembersDisplayed(){

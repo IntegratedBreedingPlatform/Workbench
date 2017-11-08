@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.middleware.data.initializer.UserTestDataInitializer;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -44,20 +44,20 @@ public class ProgramMembersPanelTest {
 	private WorkbenchDataManager workbenchDataManager;
 
 	@Mock
-	private SessionData sessionData;
-
+	private ContextUtil contextUtil;
+	
 	private Project project;
 
 	@InjectMocks
-	private ProgramMembersPanel controller;
+	private ProgramMembersPanel programMembersPanel;
 	
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 		this.project = this.createProjectTestData(1, ProgramMembersPanelTest.OWNER_USER_ID);
-		this.controller = new ProgramMembersPanel(this.project);
-		this.controller.setWorkbenchDataManager(this.workbenchDataManager);
-		this.controller.setSessionData(this.sessionData);
+		this.programMembersPanel = new ProgramMembersPanel(this.project);
+		this.programMembersPanel.setWorkbenchDataManager(this.workbenchDataManager);
+		this.programMembersPanel.setContextUtil(this.contextUtil);
 	}
 
 	private Project createProjectTestData(final long projectId, final int owner) {
@@ -75,7 +75,7 @@ public class ProgramMembersPanelTest {
 		this.mockProgramMembers();
 		this.mockCurrentUser(ProgramMembersPanelTest.OWNER_USER_ID);
 
-		final Container usersContainer = this.controller.createUsersContainer();
+		final Container usersContainer = this.programMembersPanel.createUsersContainer();
 
 		final Collection<User> programMembers = (Collection<User>) usersContainer.getItemIds();
 		Assert.assertNotNull(programMembers);
@@ -98,7 +98,7 @@ public class ProgramMembersPanelTest {
 		this.mockProgramMembers();
 		this.mockCurrentUser(ProgramMembersPanelTest.MEMBER_USER_ID);
 
-		final Container usersContainer = this.controller.createUsersContainer();
+		final Container usersContainer = this.programMembersPanel.createUsersContainer();
 
 		final Collection<User> programMembers = (Collection<User>) usersContainer.getItemIds();
 		Assert.assertNotNull(programMembers);
@@ -127,14 +127,14 @@ public class ProgramMembersPanelTest {
 		}
 		
 		// Initialization in controller
-		this.controller.initializeComponents();
-		this.controller.initializeValues();
+		this.programMembersPanel.initializeComponents();
+		this.programMembersPanel.initializeValues();
 
 		// Call method to test
-		this.controller.initializeUsers();
+		this.programMembersPanel.initializeUsers();
 
 		// Check that members are selected in twin table
-		final Set<User> programMembers = this.controller.getProgramMembersDisplayed();
+		final Set<User> programMembers = this.programMembersPanel.getProgramMembersDisplayed();
 		Assert.assertNotNull(programMembers);
 		Assert.assertEquals("There should be 3 program members.", 3, programMembers.size());
 
@@ -156,7 +156,7 @@ public class ProgramMembersPanelTest {
 	}
 
 	private void mockCurrentUser(final int userId) {
-		Mockito.doReturn(new User(userId)).when(this.sessionData).getUserData();
+		Mockito.doReturn(userId).when(this.contextUtil).getCurrentWorkbenchUserId();
 	}
 
 	private Person createPersonTestData(final Integer personid) {
