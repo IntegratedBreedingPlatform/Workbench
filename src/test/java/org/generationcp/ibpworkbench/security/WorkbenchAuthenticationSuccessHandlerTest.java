@@ -8,7 +8,10 @@ import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import org.generationcp.commons.context.ContextConstants;
+import org.generationcp.commons.context.ContextInfo;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;
@@ -30,6 +33,9 @@ public class WorkbenchAuthenticationSuccessHandlerTest {
 		WorkbenchAuthenticationSuccessHandler handler = new WorkbenchAuthenticationSuccessHandler();
 
 		HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+		HttpSession httpSession = Mockito.mock(HttpSession.class);
+		Mockito.when(request.getSession()).thenReturn(httpSession);
+
 		HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 
 		SessionData sessionData = Mockito.mock(SessionData.class);
@@ -56,6 +62,7 @@ public class WorkbenchAuthenticationSuccessHandlerTest {
 		Mockito.verify(sessionData).setUserData(testUserWorkbench);
 		Mockito.verify(workbenchDataManager).getWorkbenchRuntimeData();
 		Mockito.verify(workbenchDataManager).updateWorkbenchRuntimeData(Matchers.any(WorkbenchRuntimeData.class));
+		Mockito.verify(httpSession).setAttribute(Matchers.eq(ContextConstants.SESSION_ATTR_CONTEXT_INFO), Matchers.isA(ContextInfo.class));
 	}
 
 }

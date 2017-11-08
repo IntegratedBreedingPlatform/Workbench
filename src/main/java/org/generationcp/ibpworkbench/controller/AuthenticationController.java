@@ -1,14 +1,4 @@
-
 package org.generationcp.ibpworkbench.controller;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.mail.MessagingException;
-import javax.servlet.ServletContext;
 
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.security.InvalidResetTokenException;
@@ -17,7 +7,6 @@ import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.ibpworkbench.validator.ForgotPasswordAccountValidator;
 import org.generationcp.ibpworkbench.validator.UserAccountFields;
 import org.generationcp.ibpworkbench.validator.UserAccountValidator;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
@@ -41,6 +30,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import javax.mail.MessagingException;
+import javax.servlet.ServletContext;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Properties;
+
 @Controller
 @RequestMapping(AuthenticationController.URL)
 public class AuthenticationController {
@@ -56,7 +53,7 @@ public class AuthenticationController {
 
 	@Resource
 	private WorkbenchUserService workbenchUserService;
-	
+
 	@Resource
 	private WorkbenchDataManager workbenchDataManager;
 
@@ -85,28 +82,28 @@ public class AuthenticationController {
 	@Value("${workbench.enable.create.account}")
 	private String enableCreateAccount;
 
+	@Value("${workbench.is.single.user.only}")
+	private String isSingleUserOnly;
+
 	@Value("${institute.logo.path}")
 	private String instituteLogoPath;
 
 	@Value("${footer.message}")
 	private String footerMessage;
 
-	private boolean isAccountCreationEnabled;
-
 	private String workbenchVersion;
 
 	@PostConstruct
 	public void initialize() {
-		// ensuring that the link is disable by default
-		this.isAccountCreationEnabled = this.enableCreateAccount == null ? false : Boolean.valueOf(this.enableCreateAccount);
+
 		this.workbenchVersion = this.workbenchProperties.getProperty("workbench.version", "");
 		this.footerMessage = Sanitizers.FORMATTING.sanitize(this.footerMessage);
 	}
 
 	@RequestMapping(value = "/login")
-	public String getLoginPage(Model model) {
+	public String getLoginPage(final Model model) {
 
-		model.addAttribute("isCreateAccountEnable", this.isAccountCreationEnabled);
+		model.addAttribute("isCreateAccountEnable", this.isAccountCreationEnabled());
 
 		populateCommomModelAttributes(model);
 
@@ -115,10 +112,11 @@ public class AuthenticationController {
 
 	/**
 	 * Return img logo or emtpy if file not present
+	 *
 	 * @param path path to logo image
 	 * @return img src
 	 */
-	protected String findInstituteLogo(String path) {
+	protected String findInstituteLogo(final String path) {
 		if (servletContext.getResourceAsStream("/WEB-INF/" + path) != null) {
 			return "/controller/" + path;
 		} else {
@@ -127,11 +125,11 @@ public class AuthenticationController {
 	}
 
 	@RequestMapping(value = "/reset/{token}", method = RequestMethod.GET)
-	public String getCreateNewPasswordPage(@PathVariable String token, Model model) {
+	public String getCreateNewPasswordPage(@PathVariable final String token, final Model model) {
 
 		// verify token if valid
 		try {
-			User user = this.workbenchEmailSenderService.validateResetToken(token);
+			final User user = this.workbenchEmailSenderService.validateResetToken(token);
 
 			model.addAttribute("user", user);
 
@@ -139,13 +137,13 @@ public class AuthenticationController {
 
 			return "new-password";
 
-		} catch (InvalidResetTokenException e) {
+		} catch (final InvalidResetTokenException e) {
 			AuthenticationController.LOG.debug(e.getMessage(), e);
 			return "redirect:" + AuthenticationController.URL;
 		}
 	}
 
-	private void populateCommomModelAttributes(Model model) {
+	private void populateCommomModelAttributes(final Model model) {
 		model.addAttribute("instituteLogoPath", this.findInstituteLogo(this.instituteLogoPath));
 		model.addAttribute("footerMessage", this.footerMessage);
 		model.addAttribute("version", this.workbenchVersion);
@@ -153,45 +151,39 @@ public class AuthenticationController {
 
 	@ResponseBody
 	@RequestMapping(value = "/validateLogin", method = RequestMethod.POST)
-	public ResponseEntity<Map<String, Object>> validateLogin(@ModelAttribute("userAccount") UserAccountModel model, BindingResult result) {
-		Map<String, Object> out = new LinkedHashMap<>();
+	public ResponseEntity<Map<String, Object>> validateLogin(@ModelAttribute("userAccount") final UserAccountModel model,
+			final BindingResult result) {
+		final Map<String, Object> out = new LinkedHashMap<>();
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
-		try {
+		this.userAccountValidator.validateUserActive(model, result);
 
-			this.userAccountValidator.validateUserActive(model, result);
+		if (result.hasErrors()) {
+			this.generateErrors(result, out);
+		} else if (this.workbenchUserService.isValidUserLogin(model)) {
+			isSuccess = HttpStatus.OK;
+			out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
 
-			if (result.hasErrors()) {
-				this.generateErrors(result, out);
-			} else if (this.workbenchUserService.isValidUserLogin(model)) {
-				isSuccess = HttpStatus.OK;
-				out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
-
-				/**
-				 * This is crucial for Ontology Manager UI which needs the authentication token to make calls to BMSAPI Ontology services.
-				 * See login.js and bmsAuth.js client side scripts to see how this token is used by front-end code via the local storage
-				 * service in browsers.
-				 */
-				final Token apiAuthToken = this.apiAuthenticationService.authenticate(model.getUsername(), model.getPassword());
-				if (apiAuthToken != null) {
-					out.put("token", apiAuthToken.getToken());
-					out.put("expires", apiAuthToken.getExpires());
-				}
-
-			} else {
-				Map<String, String> errors = new LinkedHashMap<>();
-
-				errors.put(UserAccountFields.USERNAME, this.messageSource.getMessage(UserAccountValidator.LOGIN_ATTEMPT_UNSUCCESSFUL,
-						new String[] {}, "Your login attempt was not successful. Please try again.", LocaleContextHolder.getLocale()));
-
-				out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
-				out.put(AuthenticationController.ERRORS, errors);
+			/**
+			 * This is crucial for Ontology Manager UI which needs the authentication token to make calls to BMSAPI Ontology services.
+			 * See login.js and bmsAuth.js client side scripts to see how this token is used by front-end code via the local storage
+			 * service in browsers.
+			 */
+			final Token apiAuthToken = this.apiAuthenticationService.authenticate(model.getUsername(), model.getPassword());
+			if (apiAuthToken != null) {
+				out.put("token", apiAuthToken.getToken());
+				out.put("expires", apiAuthToken.getExpires());
 			}
-		} catch (MiddlewareQueryException e) {
-			out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
-			out.put(AuthenticationController.ERRORS, e.getMessage());
 
-			AuthenticationController.LOG.error(e.getMessage(), e);
+		} else {
+			final Map<String, String> errors = new LinkedHashMap<>();
+
+			errors.put(UserAccountFields.USERNAME, this.messageSource
+					.getMessage(UserAccountValidator.LOGIN_ATTEMPT_UNSUCCESSFUL, new String[] {},
+							"Your login attempt was not successful. Please try again.", LocaleContextHolder.getLocale()));
+
+			out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
+			out.put(AuthenticationController.ERRORS, errors);
 		}
 
 		return new ResponseEntity<>(out, isSuccess);
@@ -199,11 +191,12 @@ public class AuthenticationController {
 
 	@ResponseBody
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
-	public ResponseEntity<Map<String, Object>> saveUserAccount(@ModelAttribute("userAccount") UserAccountModel model, BindingResult result) {
-		Map<String, Object> out = new LinkedHashMap<>();
+	public ResponseEntity<Map<String, Object>> saveUserAccount(@ModelAttribute("userAccount") final UserAccountModel model,
+			final BindingResult result) {
+		final Map<String, Object> out = new LinkedHashMap<>();
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
-		if(!isAccountCreationEnabled ){
+		if (!isAccountCreationEnabled()) {
 			new ResponseEntity<>(out, HttpStatus.FORBIDDEN);
 		}
 
@@ -215,19 +208,11 @@ public class AuthenticationController {
 
 		} else {
 			// attempt to save the user to the database
-			try {
-				this.workbenchUserService.saveUserAccount(model);
+			this.workbenchUserService.saveUserAccount(model);
 
-				isSuccess = HttpStatus.OK;
-				out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
+			isSuccess = HttpStatus.OK;
+			out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
 
-			} catch (MiddlewareQueryException e) {
-
-				out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
-				out.put(AuthenticationController.ERRORS, e.getMessage());
-
-				AuthenticationController.LOG.error(e.getMessage(), e);
-			}
 		}
 
 		return new ResponseEntity<>(out, isSuccess);
@@ -235,9 +220,9 @@ public class AuthenticationController {
 
 	@ResponseBody
 	@RequestMapping(value = "/forgotPassword", method = RequestMethod.POST)
-	public ResponseEntity<Map<String, Object>> validateForgotPasswordForm(@ModelAttribute("userAccount") UserAccountModel model,
-			BindingResult result) {
-		Map<String, Object> out = new LinkedHashMap<>();
+	public ResponseEntity<Map<String, Object>> validateForgotPasswordForm(@ModelAttribute("userAccount") final UserAccountModel model,
+			final BindingResult result) {
+		final Map<String, Object> out = new LinkedHashMap<>();
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
 		this.forgotPasswordAccountValidator.validate(model, result);
@@ -260,31 +245,29 @@ public class AuthenticationController {
 
 	@ResponseBody
 	@RequestMapping(value = "/sendResetEmail", method = RequestMethod.POST)
-	public ResponseEntity<Map<String, Object>> doSendResetPasswordRequestEmail(@ModelAttribute("userAccount") UserAccountModel model) {
+	public ResponseEntity<Map<String, Object>> doSendResetPasswordRequestEmail(
+			@ModelAttribute("userAccount") final UserAccountModel model) {
 		return sendResetEmail(model.getUsername());
 	}
 
-	@RequestMapping(value = "/sendResetEmail/{userId}", method = RequestMethod.POST) @ResponseBody
-	public ResponseEntity<Map<String, Object>> sendResetPasswordEmail(@PathVariable Integer userId) {
-		Map<String, Object> out = new LinkedHashMap<>();
-		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
-		try {
-			User user = this.workbenchUserService.getUserByUserid(userId);
-			if (user == null) {
-				out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
-				out.put(AuthenticationController.ERRORS, NOT_EXISTENT_USER);
-				return new ResponseEntity<>(out, isSuccess);
-			}
-			return sendResetEmail(user.getName());
-		} catch (MiddlewareQueryException e) {
+	@RequestMapping(value = "/sendResetEmail/{userId}", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> sendResetPasswordEmail(@PathVariable final Integer userId) {
+		final Map<String, Object> out = new LinkedHashMap<>();
+		final HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
+
+		final User user = this.workbenchUserService.getUserByUserid(userId);
+		if (user == null) {
 			out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
-			out.put(AuthenticationController.ERRORS, e.getMessage());
+			out.put(AuthenticationController.ERRORS, NOT_EXISTENT_USER);
+			return new ResponseEntity<>(out, isSuccess);
 		}
-		return new ResponseEntity<>(out, isSuccess);
+		return sendResetEmail(user.getName());
+
 	}
 
 	private ResponseEntity<Map<String, Object>> sendResetEmail(final String username) {
-		Map<String, Object> out = new LinkedHashMap<>();
+		final Map<String, Object> out = new LinkedHashMap<>();
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
 		try {
@@ -307,19 +290,17 @@ public class AuthenticationController {
 	@ResponseBody
 	@RequestMapping(value = "/reset", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Object>> doResetPassword(@ModelAttribute("userAccount") final UserAccountModel model,
-			BindingResult result) {
+			final BindingResult result) {
 		final Map<String, Object> out = new LinkedHashMap<>();
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
 		AuthenticationController.LOG.debug("reset password submitted");
 
-		try {
+		this.userAccountValidator.validateUserActive(model, result);
 
-			this.userAccountValidator.validateUserActive(model, result);
-
-			if (result.hasErrors()) {
-				this.generateErrors(result, out);
-			} else {
+		if (result.hasErrors()) {
+			this.generateErrors(result, out);
+		} else {
 			// 1. replace password
 			this.workbenchUserService.updateUserPassword(model.getUsername(), model.getPassword());
 
@@ -331,7 +312,7 @@ public class AuthenticationController {
 			UserInfo userInfo = this.workbenchDataManager.getUserInfoByUsername(model.getUsername());
 
 			if (userInfo == null) {
-				User user = this.workbenchDataManager.getUserByUsername(model.getUsername());
+				final User user = this.workbenchDataManager.getUserByUsername(model.getUsername());
 				userInfo = new UserInfo();
 				userInfo.setUserId(user.getUserid());
 			}
@@ -339,30 +320,40 @@ public class AuthenticationController {
 			userInfo.setLoginCount(userInfo.getLoginCount() + 1);
 			this.workbenchDataManager.insertOrUpdateUserInfo(userInfo);
 
-				isSuccess = HttpStatus.OK;
-				out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
-			}
-
-		} catch (final MiddlewareQueryException e) {
-			out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
-			out.put(AuthenticationController.ERRORS, e.getMessage());
-
-			AuthenticationController.LOG.error(e.getMessage(), e);
+			isSuccess = HttpStatus.OK;
+			out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
 		}
 
 		return new ResponseEntity<>(out, isSuccess);
 	}
 
-	protected void generateErrors(BindingResult result, Map<String, Object> out) {
-		Map<String, String> errors = new LinkedHashMap<>();
-		for (FieldError error : result.getFieldErrors()) {
-			errors.put(
-					error.getField(),
-					this.messageSource.getMessage(error.getCode(), error.getArguments(), error.getDefaultMessage(),
-							LocaleContextHolder.getLocale()));
+	protected void generateErrors(final BindingResult result, final Map<String, Object> out) {
+		final Map<String, String> errors = new LinkedHashMap<>();
+		for (final FieldError error : result.getFieldErrors()) {
+			errors.put(error.getField(), this.messageSource
+					.getMessage(error.getCode(), error.getArguments(), error.getDefaultMessage(), LocaleContextHolder.getLocale()));
 		}
 
 		out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
 		out.put(AuthenticationController.ERRORS, errors);
+	}
+
+	protected boolean isAccountCreationEnabled() {
+
+		// Do not display the Create Account link if BMS is in single user mode.
+		if (Boolean.parseBoolean(isSingleUserOnly)) {
+			return false;
+		} else {
+			return Boolean.parseBoolean(this.enableCreateAccount);
+		}
+
+	}
+
+	protected void setEnableCreateAccount(final String enableCreateAccount) {
+		this.enableCreateAccount = enableCreateAccount;
+	}
+
+	protected void setIsSingleUserOnly(final String isSingleUserOnly) {
+		this.isSingleUserOnly = isSingleUserOnly;
 	}
 }

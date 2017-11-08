@@ -130,18 +130,6 @@ public class AuthenticationControllerTest {
 
 	}
 
-	@Test
-	public void testSaveUserAccountWithDatabaseError() throws Exception {
-		Mockito.when(this.result.hasErrors()).thenReturn(false);
-
-		Mockito.doThrow(MiddlewareQueryException.class).when(this.workbenchUserService).saveUserAccount(this.userAccountModel);
-
-		ResponseEntity<Map<String, Object>> out = this.controller.saveUserAccount(this.userAccountModel, this.result);
-
-		Assert.assertTrue("should output bad request status", out.getStatusCode().equals(HttpStatus.BAD_REQUEST));
-		Assert.assertFalse("success = false", (Boolean) out.getBody().get("success"));
-
-	}
 
 	@Test
 	public void testValidateLogin() throws Exception {
@@ -258,22 +246,6 @@ public class AuthenticationControllerTest {
 	}
 
 	@Test
-	public void testDoResetPasswordGotError() throws Exception {
-		UserAccountModel userAccountModel = new UserAccountModel();
-
-		Mockito.doThrow(new MiddlewareQueryException("oops i did it again")).when(this.workbenchEmailSenderService)
-		.deleteToken(userAccountModel);
-
-		ResponseEntity<Map<String, Object>> result = this.controller.doResetPassword(userAccountModel, this.result);
-
-		Mockito.verify(this.workbenchUserService, Mockito.times(1)).updateUserPassword(userAccountModel.getUsername(), userAccountModel.getPassword());
-		Mockito.verify(this.workbenchEmailSenderService, Mockito.times(1)).deleteToken(userAccountModel);
-
-		Assert.assertEquals("no http errors", HttpStatus.BAD_REQUEST, result.getStatusCode());
-		Assert.assertEquals("is successful", Boolean.FALSE, result.getBody().get(AuthenticationController.SUCCESS));
-	}
-
-	@Test
 	public void testTokenIsReturnedForSuccessfulAuthentication() {
 
 		UserAccountModel testUserAccountModel = new UserAccountModel();
@@ -368,15 +340,31 @@ public class AuthenticationControllerTest {
 	}
 
 	@Test
-	public void testSendResetPasswordEmailToNonExistentUser() throws Exception {
-		Integer id = RandomUtils.nextInt();
-		Mockito.doThrow(new MiddlewareQueryException("Error when querying the user")).when(this.workbenchUserService)
-				.getUserByUserid(id);
+	public void testIsAccountCreationEnabled() {
 
-		ResponseEntity<Map<String, Object>> result = this.controller
-				.sendResetPasswordEmail(id);
+		// If SingleUserOnly mode is enabled, it will override EnableCreateAccount
+		this.controller.setIsSingleUserOnly("true");
+		this.controller.setEnableCreateAccount("true");
 
-		Assert.assertEquals("no http errors", HttpStatus.BAD_REQUEST, result.getStatusCode());
-		Assert.assertEquals("is successful", Boolean.FALSE, result.getBody().get(AuthenticationController.SUCCESS));
+		Assert.assertFalse(this.controller.isAccountCreationEnabled());
+
+		this.controller.setIsSingleUserOnly("true");
+		this.controller.setEnableCreateAccount("false");
+
+		Assert.assertFalse(this.controller.isAccountCreationEnabled());
+
+
+		// If SingleUserOnly mode is disabled, return value is EnableCreateAccount
+		this.controller.setIsSingleUserOnly("false");
+		this.controller.setEnableCreateAccount("true");
+
+		Assert.assertTrue(this.controller.isAccountCreationEnabled());
+
+		this.controller.setIsSingleUserOnly("false");
+		this.controller.setEnableCreateAccount("false");
+
+		Assert.assertFalse(this.controller.isAccountCreationEnabled());
+
+
 	}
 }

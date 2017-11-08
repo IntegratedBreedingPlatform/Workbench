@@ -1,9 +1,14 @@
-
 package org.generationcp.ibpworkbench.ui.project.create;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.help.document.HelpModule;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -22,18 +27,12 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Layout;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.Reindeer;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Configurable
 public class AddProgramView extends Panel implements InitializingBean {
@@ -44,6 +43,9 @@ public class AddProgramView extends Panel implements InitializingBean {
 
 	@Autowired
 	private SessionData sessionData;
+
+	@Value("${workbench.is.single.user.only}")
+	private String isSingleUserOnly;
 
 	private VerticalLayout rootLayout;
 
@@ -70,7 +72,7 @@ public class AddProgramView extends Panel implements InitializingBean {
 	public AddProgramView() {
 	}
 
-	public AddProgramView(int initialTabView) {
+	public AddProgramView(final int initialTabView) {
 		this.initialTabView = initialTabView;
 	}
 
@@ -140,11 +142,16 @@ public class AddProgramView extends Panel implements InitializingBean {
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	private void restrictedAccessMethod() {
-		this.programMembersContainer.setVisible(true);
-		this.tabSheet.addTab(this.programMembersContainer);
-		this.tabSheet.getTab(this.programMembersContainer).setClosable(false);
-		this.tabSheet.getTab(this.programMembersContainer).setCaption("Members");
+	protected void addProgramMembersTab(final TabSheet tabSheet, final VerticalLayout programMembersContainer) {
+
+		// Do not display the Program Members tab if BMS is in single user mode.
+		if (!Boolean.parseBoolean(getIsSingleUserOnly())) {
+			programMembersContainer.setVisible(true);
+			tabSheet.addTab(programMembersContainer);
+			tabSheet.getTab(programMembersContainer).setClosable(false);
+			tabSheet.getTab(programMembersContainer).setCaption("Members");
+		}
+
 	}
 
 	protected void initializeActions() {
@@ -153,7 +160,7 @@ public class AddProgramView extends Panel implements InitializingBean {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void buttonClick(Button.ClickEvent clickEvent) {
+			public void buttonClick(final Button.ClickEvent clickEvent) {
 				final Project newlyCreatedProgram = AddProgramView.this.sessionData.getSelectedProject();
 				new LaunchProgramAction(newlyCreatedProgram).buttonClick(clickEvent);
 			}
@@ -166,9 +173,8 @@ public class AddProgramView extends Panel implements InitializingBean {
 
 		this.setTitleContent();
 
-		final Label headingDesc =
-				new Label("To provide additional Program configuration, "
-						+ "click on <em>Members, Locations, and Breeding Method</em> tabs."
+		final Label headingDesc = new Label(
+				"To provide additional Program configuration, " + "click on <em>Members, Locations, and Breeding Method</em> tabs."
 						+ " Note that <em>Locations and Methods</em> are optional and will be available once you"
 						+ " complete the <em>Basic Details</em> form by clicking <em>Save</em>."
 						+ " Click <em>Finish</em> to complete the operation.", Label.CONTENT_XHTML);
@@ -186,11 +192,10 @@ public class AddProgramView extends Panel implements InitializingBean {
 
 		try {
 
-			restrictedAccessMethod();
-		} catch (AccessDeniedException ex) {
+			addProgramMembersTab(this.tabSheet, this.programMethodsContainer);
+		} catch (final AccessDeniedException ex) {
 			//Do nothing, if the user does not have the required roles the screen needs to be displayed as well.
 		}
-
 
 		this.tabSheet.addTab(this.programLocationsContainer);
 		this.tabSheet.getTab(this.programLocationsContainer).setClosable(false);
@@ -231,7 +236,7 @@ public class AddProgramView extends Panel implements InitializingBean {
 		this.titleLayout.setDebugId("titleLayout");
 		this.titleLayout.setSpacing(true);
 
-		Label toolTitle = new Label("Add a Program");
+		final Label toolTitle = new Label("Add a Program");
 		toolTitle.setDebugId("toolTitle");
 		toolTitle.setContentMode(Label.CONTENT_XHTML);
 		toolTitle.setStyleName(Bootstrap.Typography.H1.styleName());
@@ -242,7 +247,7 @@ public class AddProgramView extends Panel implements InitializingBean {
 	}
 
 	protected TabSheet generateTabSheet() {
-		TabSheet tab = new TabSheet();
+		final TabSheet tab = new TabSheet();
 		tab.setDebugId("tab");
 
 		tab.setImmediate(true);
@@ -252,10 +257,10 @@ public class AddProgramView extends Panel implements InitializingBean {
 		return tab;
 	}
 
-	public void updateUIOnProgramSave(Project project) {
+	public void updateUIOnProgramSave(final Project project) {
 		if (IBPWorkbenchApplication.get().getMainWindow() instanceof WorkbenchMainView) {
-			((WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow()).addTitle(this.sessionData.getSelectedProject()
-					.getProjectName());
+			((WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow())
+					.addTitle(this.sessionData.getSelectedProject().getProjectName());
 		}
 
 		// initialize program methods and view and set them to the tabs
@@ -274,7 +279,7 @@ public class AddProgramView extends Panel implements InitializingBean {
 
 		// re-initialize program members and basic details (in update mode)
 		this.basicDetailsContainer.removeAllComponents();
-		UpdateProjectPanel updateProjectPanel = new UpdateProjectPanel();
+		final UpdateProjectPanel updateProjectPanel = new UpdateProjectPanel();
 		updateProjectPanel.setDebugId("updateProjectPanel");
 		updateProjectPanel.hideDeleteBtn();
 		this.basicDetailsContainer.addComponent(updateProjectPanel);
@@ -307,7 +312,6 @@ public class AddProgramView extends Panel implements InitializingBean {
 
 	public void resetProgramMembers() {
 		this.programMembersContainer.removeAllComponents();
-
 		this.programMembersPanel = new ProjectMembersComponent(this.presenter);
 		this.programMembersPanel.setDebugId("programMembersPanel");
 		this.programMembersContainer.addComponent(this.programMembersPanel);
@@ -328,5 +332,13 @@ public class AddProgramView extends Panel implements InitializingBean {
 		}
 
 		return new ArrayList<Method>();
+	}
+
+	protected String getIsSingleUserOnly() {
+		return isSingleUserOnly;
+	}
+
+	protected void setIsSingleUserOnly(final String isSingleUserOnly) {
+		this.isSingleUserOnly = isSingleUserOnly;
 	}
 }
