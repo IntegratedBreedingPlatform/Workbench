@@ -26,6 +26,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.vaadin.data.Container;
+import com.vaadin.ui.Label;
 
 public class ProgramMembersPanelTest {
 
@@ -115,7 +116,48 @@ public class ProgramMembersPanelTest {
 			}
 		}
 	}
-
+	
+	@Test
+	public void testGenerateRoleCellForOwner(){
+		this.mockCurrentUser(ProgramMembersPanelTest.OWNER_USER_ID);
+		Object itemId = UserTestDataInitializer.createUserWithRole(ProgramMembersPanelTest.OWNER_USER_ID);
+		Label roleLabel  = this.programMembersPanel.generateRoleCell(itemId);
+		Assert.assertEquals(((User) itemId).getRoles().get(0).getCapitalizedRole(), roleLabel.getValue());
+		Assert.assertEquals("label", roleLabel.getDebugId());
+		Assert.assertEquals("label-bold", roleLabel.getStyleName());	
+	}
+	
+	@Test
+	public void testGenerateRoleCellForMember(){
+		this.mockCurrentUser(ProgramMembersPanelTest.OWNER_USER_ID);
+		Object itemId = UserTestDataInitializer.createUserWithRole(ProgramMembersPanelTest.MEMBER_PERSON_ID);
+		Label roleLabel  = this.programMembersPanel.generateRoleCell(itemId);
+		Assert.assertEquals(((User) itemId).getRoles().get(0).getCapitalizedRole(), roleLabel.getValue());
+		Assert.assertEquals("label", roleLabel.getDebugId());
+		Assert.assertNotSame("label-bold", roleLabel.getStyleName());	
+	}
+	
+	
+	@Test
+	public void testgenerateUserNameCellForOwner() {
+		this.mockCurrentUser(ProgramMembersPanelTest.OWNER_USER_ID);
+		Object itemId = UserTestDataInitializer.createUserWithPerson(OWNER_PERSON_ID, "UserName", 1, "Firstname", "Middlename");
+		Label roleLabel  = this.programMembersPanel.generateUserNameCell(itemId);
+		Assert.assertEquals(((User) itemId).getPerson().getDisplayName(), roleLabel.getValue());
+		Assert.assertEquals("label", roleLabel.getDebugId());
+		Assert.assertEquals("label-bold", roleLabel.getStyleName());
+	}
+	
+	@Test
+	public void testgenerateUserNameCellForMember() {
+		this.mockCurrentUser(ProgramMembersPanelTest.OWNER_USER_ID);
+		Object itemId = UserTestDataInitializer.createUserWithPerson(MEMBER_PERSON_ID, "UserName", 1, "Firstname", "Middlename");
+		Label roleLabel  = this.programMembersPanel.generateUserNameCell(itemId);
+		Assert.assertEquals(((User) itemId).getPerson().getDisplayName(), roleLabel.getValue());
+		Assert.assertEquals("label", roleLabel.getDebugId());
+		Assert.assertNotSame("label-bold", roleLabel.getStyleName());
+	}
+	
 	@Test
 	public void testInitializeUsers() {
 		// Setup test data and mocks
