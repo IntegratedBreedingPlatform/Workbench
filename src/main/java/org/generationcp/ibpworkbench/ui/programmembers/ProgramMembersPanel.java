@@ -27,7 +27,6 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,8 +61,6 @@ import com.vaadin.ui.themes.Reindeer;
  */
 @Configurable
 public class ProgramMembersPanel extends Panel implements InitializingBean {
-
-	private static final int USER_ACTIVE_STATUS = 0;
 	private static final Logger LOG = LoggerFactory.getLogger(ProgramMembersPanel.class);
 	private static final long serialVersionUID = 1L;
 	private static final String ROLE = "role_";
@@ -301,7 +298,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 	protected void initializeUsers() {
 		final Container container = this.tblMembers.getContainerDataSource();
-		final List<Integer> userIDs = this.workbenchDataManager.getUserIDsByProjectId(this.project.getProjectId());
+		final List<Integer> userIDs = this.workbenchDataManager.getActiveUserIDsByProjectId(this.project.getProjectId());
 		final Set<User> selectedItems = new HashSet<>();
 
 		for (final Integer userID : userIDs) {
