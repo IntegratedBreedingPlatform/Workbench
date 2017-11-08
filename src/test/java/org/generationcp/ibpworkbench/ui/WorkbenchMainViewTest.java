@@ -4,8 +4,15 @@ package org.generationcp.ibpworkbench.ui;
 import java.util.Iterator;
 import java.util.Properties;
 
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Window;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.ibpworkbench.service.ProgramService;
+import org.generationcp.ibpworkbench.ui.window.ChangeCredentialsWindow;
+import org.generationcp.ibpworkbench.ui.window.ChangePasswordWindow;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
@@ -27,11 +34,10 @@ import junit.framework.Assert;
 
 public class WorkbenchMainViewTest {
 
-	@Mock
-	private SimpleResourceBundleMessageSource messageSource;
+	public static final String PROJECT_NAME = "Maize Program 1";
 
 	@Mock
-	private SessionData sessionData;
+	private SimpleResourceBundleMessageSource messageSource;
 
 	@Mock
 	private Properties workbenchProperties;
@@ -39,10 +45,15 @@ public class WorkbenchMainViewTest {
 	@Mock
 	private WorkbenchDataManager workbenchDataManager;
 
+	@Mock
+	private ContextUtil contextUtil;
+
 	@InjectMocks
 	private WorkbenchMainView workbenchMainView;
 
-	private Project lastOpenedProject;
+	private Project currentProject;
+
+	private int ADMIN_USER_ID = 1;
 
 	@Before
 	public void setup() {
@@ -51,13 +62,14 @@ public class WorkbenchMainViewTest {
 		// Setup mocks
 		final Person person = new Person("A", "B", "C");
 		person.setEmail("a@leafnode.io");
-		final User currentUser = new User(1);
+		final User currentUser = new User(ADMIN_USER_ID);
 		currentUser.setPerson(person);
-		Mockito.doReturn(currentUser).when(this.sessionData).getUserData();
 
-		this.lastOpenedProject = new Project();
-		this.lastOpenedProject.setProjectName("Maize Program 1");
-		Mockito.doReturn(this.lastOpenedProject).when(this.sessionData).getLastOpenedProject();
+		Mockito.when(contextUtil.getCurrentWorkbenchUser()).thenReturn(currentUser);
+
+		this.currentProject = new Project();
+		this.currentProject.setProjectName(PROJECT_NAME);
+		Mockito.when(contextUtil.getProjectInContext()).thenReturn(currentProject);
 
 		this.workbenchMainView.initializeComponents();
 		this.workbenchMainView.initializeLayout();
@@ -83,7 +95,7 @@ public class WorkbenchMainViewTest {
 	}
 
 	private void verifyLastOpenedProjectNameIsDisplayed() {
-		Assert.assertEquals("<h1>" + this.lastOpenedProject.getProjectName() + "</h1>",
+		Assert.assertEquals("<h1>" + this.currentProject.getProjectName() + "</h1>",
 				this.workbenchMainView.getWorkbenchTitle().getValue());
 	}
 
@@ -139,23 +151,177 @@ public class WorkbenchMainViewTest {
 	}
 
 	@Test
-	public void testUpdateUserInfoIfNecessary() {
-		final User user = Mockito.mock(User.class);
-		UserInfo userInfo = Mockito.mock(UserInfo.class);
-		Mockito.when(this.workbenchDataManager.getUserInfo(Matchers.anyInt())).thenReturn(userInfo);
+	public void testCreateUserInfoIfNecessary() {
 
-		Mockito.when(userInfo.getLoginCount()).thenReturn(0);
-		this.workbenchMainView.updateUserInfoIfNecessary(user);
-		Mockito.verify(userInfo, Mockito.times(1)).setLoginCount(1);
+		final User user = new User();
+		user.setUserid(101);
 
-		Mockito.when(userInfo.getLoginCount()).thenReturn(1);
-		this.workbenchMainView.updateUserInfoIfNecessary(user);
-		Mockito.verify(userInfo, Mockito.times(1)).setLoginCount(1);
+		Mockito.when(this.workbenchDataManager.getUserInfo(Matchers.anyInt())).thenReturn(null);
 
-		userInfo = null;
-		Mockito.when(this.workbenchDataManager.getUserInfo(Matchers.anyInt())).thenReturn(userInfo);
-		this.workbenchMainView.updateUserInfoIfNecessary(user);
-		Mockito.verify(this.workbenchDataManager, Mockito.times(2)).insertOrUpdateUserInfo(Matchers.any(UserInfo.class));
+		final UserInfo newUserInfo = this.workbenchMainView.createUserInfoIfNecessary(user);
+
+		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).insertOrUpdateUserInfo(newUserInfo);
+		Assert.assertEquals(user.getUserid(), newUserInfo.getUserId());
+		Assert.assertEquals(Integer.valueOf(0), newUserInfo.getLoginCount());
+
+	}
+
+	@Test
+	public void testShowChangeCredentialsWindowOnFirstLoginUserIsAdminAccount() {
+
+		final Window window = Mockito.mock(Window.class);
+		final User user = new User();
+		user.setName(ProgramService.ADMIN_USERNAME);
+
+		final UserInfo userInfo = new UserInfo();
+		userInfo.setUserId(ADMIN_USER_ID);
+		userInfo.setLoginCount(0);
+
+		// Verify that Change Credentials window is displayed
+		this.workbenchMainView.showChangeCredentialsWindowOnFirstLogin(window, user, userInfo);
+
+		Mockito.verify(window).addWindow(Mockito.isA(ChangeCredentialsWindow.class));
+
+	}
+
+	@Test
+	public void testShowChangeCredentialsWindowOnFirstLoginUserIsAdminAccountSecondLogin() {
+
+		final Window window = Mockito.mock(Window.class);
+		final User user = new User();
+		user.setName(ProgramService.ADMIN_USERNAME);
+
+		final UserInfo userInfo = new UserInfo();
+		userInfo.setUserId(ADMIN_USER_ID);
+		userInfo.setLoginCount(1);
+
+		this.workbenchMainView.showChangeCredentialsWindowOnFirstLogin(window, user, userInfo);
+
+		// Verify that Change Credentials window is not displayed
+		Mockito.verify(window, Mockito.times(0)).addWindow(Mockito.isA(ChangeCredentialsWindow.class));
+
+	}
+
+	@Test
+	public void testShowChangeCredentialsWindowOnFirstLoginUserIsNotAdminAccount() {
+
+		final Window window = Mockito.mock(Window.class);
+		final User user = new User();
+		user.setName("Username");
+
+		final UserInfo userInfo = new UserInfo();
+		userInfo.setUserId(1000);
+		userInfo.setLoginCount(0);
+
+		this.workbenchMainView.showChangeCredentialsWindowOnFirstLogin(window, user, userInfo);
+
+		// Verify that Change Password window is displayed
+		Mockito.verify(window).addWindow(Mockito.isA(ChangePasswordWindow.class));
+
+	}
+
+	@Test
+	public void testShowChangeCredentialsWindowOnFirstLoginUserIsNotAdminAccountSecondLogin() {
+
+		final Window window = Mockito.mock(Window.class);
+		final User user = new User();
+		user.setName(ProgramService.ADMIN_USERNAME);
+
+		final UserInfo userInfo = new UserInfo();
+		userInfo.setUserId(1000);
+		userInfo.setLoginCount(1);
+
+		this.workbenchMainView.showChangeCredentialsWindowOnFirstLogin(window, user, userInfo);
+
+		// Verify that Change Password window is not displayed
+		Mockito.verify(window, Mockito.times(0)).addWindow(Mockito.isA(ChangePasswordWindow.class));
+
+	}
+
+	@Test
+	public void testAddAdminButtonSingleUserOnlyIsFalse() {
+
+		HorizontalLayout layout = new HorizontalLayout();
+		this.workbenchMainView.setIsSingleUserOnly("false");
+		this.workbenchMainView.addAdminButton(layout);
+
+		// Verify that Admin button is added in layout
+		Assert.assertTrue(layout.getComponentIndex(this.workbenchMainView.getAdminButton()) != -1);
+
+	}
+
+	@Test
+	public void testAddAdminButtonSingleUserOnlyIsTrue() {
+
+		HorizontalLayout layout = new HorizontalLayout();
+		this.workbenchMainView.setIsSingleUserOnly("true");
+		this.workbenchMainView.addAdminButton(layout);
+
+		// Verify that Admin button is not added in layout
+		Assert.assertTrue(layout.getComponentIndex(this.workbenchMainView.getAdminButton()) == -1);
+
+	}
+
+	@Test
+	public void testOnLoadOperations() {
+
+		this.workbenchMainView.onLoadOperations();
+
+		Mockito.verify(this.workbenchDataManager).incrementUserLogInCount(ADMIN_USER_ID);
+
+
+	}
+
+	@Test
+	public void testDisplayCurrentProjectTitle() {
+
+		final Label workbenchTitleLabel = new Label();
+
+		this.workbenchMainView.setWorkbenchTitle(workbenchTitleLabel);
+
+		this.workbenchMainView.displayCurrentProjectTitle();
+
+		Assert.assertEquals(String.format("<h1>%s</h1>", PROJECT_NAME), workbenchTitleLabel.getValue());
+
+	}
+
+	@Test
+	public void testDisplayCurrentProjectTitleNoProgramExists() {
+
+		final Label workbenchTitleLabel = new Label();
+		this.workbenchMainView.setWorkbenchTitle(workbenchTitleLabel);
+
+		// Throw MiddlewareQueryException to simulate the case where no program exists yet in BMS.
+		Mockito.when(this.contextUtil.getProjectInContext()).thenThrow(new MiddlewareQueryException(""));
+
+		this.workbenchMainView.displayCurrentProjectTitle();
+
+		Assert.assertEquals("", workbenchTitleLabel.getValue());
+
+	}
+
+	@Test
+	public void testRefreshMemberDetailsPopup() {
+
+		final String firstName = "firstname";
+		final String lastName = "lastName";
+		final String emailAddress = "emailAddress";
+
+		this.workbenchMainView.refreshMemberDetailsPopup(firstName, lastName, emailAddress);
+
+		final VerticalLayout memberDetailPopup = (VerticalLayout) this.workbenchMainView.getMemberButton().getComponentIterator().next();
+
+		// Make sure that there are 2 components added in the view (Member detail label and signout button)
+		Assert.assertEquals(2, memberDetailPopup.getComponentCount());
+
+		final Label memberDetail = (Label) memberDetailPopup.getComponent(0);
+
+		Assert.assertEquals(String.format("<h2>%s %s</h2><h4>%s</h4>", firstName, lastName, emailAddress), memberDetail.getValue());
+		Assert.assertEquals(Label.CONTENT_XHTML, memberDetail.getContentMode());
+
+		Assert.assertTrue(memberDetailPopup.getComponent(1) instanceof Button);
+
+
 	}
 	
 }

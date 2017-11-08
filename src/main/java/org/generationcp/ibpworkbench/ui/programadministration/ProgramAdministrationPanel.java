@@ -1,23 +1,4 @@
-
 package org.generationcp.ibpworkbench.ui.programadministration;
-
-import org.generationcp.commons.help.document.HelpButton;
-import org.generationcp.commons.help.document.HelpModule;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsView;
-import org.generationcp.ibpworkbench.ui.programmembers.ProgramMembersPanel;
-import org.generationcp.ibpworkbench.ui.programmethods.ProgramMethodsView;
-import org.generationcp.ibpworkbench.ui.project.create.UpdateProjectPanel;
-import org.generationcp.ibpworkbench.ui.summaryview.ProgramSummaryView;
-import org.generationcp.ibpworkbench.ui.systemlabel.SystemLabelView;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -26,19 +7,45 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
+import org.generationcp.commons.help.document.HelpButton;
+import org.generationcp.commons.help.document.HelpModule;
+import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsView;
+import org.generationcp.ibpworkbench.ui.programmembers.ProgramMembersPanel;
+import org.generationcp.ibpworkbench.ui.programmethods.ProgramMethodsView;
+import org.generationcp.ibpworkbench.ui.project.create.UpdateProjectPanel;
+import org.generationcp.ibpworkbench.ui.summaryview.ProgramSummaryView;
+import org.generationcp.ibpworkbench.ui.systemlabel.SystemLabelView;
+import org.generationcp.middleware.pojos.workbench.Project;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @Configurable
 public class ProgramAdministrationPanel extends Panel implements InitializingBean {
+
+	private static final Logger LOG = LoggerFactory.getLogger(ProgramAdministrationPanel.class);
 
 	private static final long serialVersionUID = 1L;
 
 	private HorizontalLayout titleLayout;
 
 	@Autowired
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
+
+	@Value("${workbench.is.single.user.only}")
+	private String isSingleUserOnly;
 
 	private VerticalLayout rootLayout;
 
@@ -51,10 +58,6 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 	private ProgramMethodsView programMethodsView;
 	private SystemLabelView systemLabelPanel;
 	private ProgramSummaryView programSummaryView;
-
-	public ProgramAdministrationPanel() {
-
-	}
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -74,13 +77,15 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 		this.basicDetailsPanel = new UpdateProjectPanel();
 		this.basicDetailsPanel.setDebugId("updateProjectPanel");
 
-		this.programMembersPanel = new ProgramMembersPanel(this.sessionData.getLastOpenedProject());
+		final Project project = this.contextUtil.getProjectInContext();
+
+		this.programMembersPanel = new ProgramMembersPanel(project);
 		this.programMembersPanel.setDebugId("programMembersPanel");
 
-		this.programLocationsView = new ProgramLocationsView(this.sessionData.getLastOpenedProject());
+		this.programLocationsView = new ProgramLocationsView(project);
 		this.programLocationsView.setDebugId("programLocationsView");
 
-		this.programMethodsView = new ProgramMethodsView(this.sessionData.getLastOpenedProject());
+		this.programMethodsView = new ProgramMethodsView(project);
 		this.programMethodsView.setDebugId("programMethodsView");
 
 		this.systemLabelPanel = new SystemLabelView();
@@ -109,9 +114,10 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 
 		// Program Members tab - only for admin users
 		try {
-			this.addProgramMembersTab();
+			this.addProgramMembersTab(this.tabSheet, this.programMembersPanel);
 		} catch (final AccessDeniedException e) {
 			// Do not do anything as the screen should be displayed, just this tab shouldn't appear for non-admins
+			LOG.debug(e.getMessage(), e);
 		}
 
 		// Locations tab
@@ -129,6 +135,7 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 			this.addSystemLabelsTab();
 		} catch (final AccessDeniedException e) {
 			// Do not do anything as the screen should be displayed, just this tab shouldn't appear for non-admins
+			LOG.debug(e.getMessage(), e);
 		}
 
 		// Program Summary tab
@@ -173,10 +180,14 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	private void addProgramMembersTab() {
-		this.tabSheet.addTab(this.programMembersPanel);
-		this.tabSheet.getTab(this.programMembersPanel).setClosable(false);
-		this.tabSheet.getTab(this.programMembersPanel).setCaption(this.messageSource.getMessage(Message.PROGRAM_MEMBERS));
+	protected void addProgramMembersTab(final TabSheet tabSheet, final ProgramMembersPanel programMembersPanel) {
+
+		// Do not display the Program Members tab if BMS is in single user mode.
+		if (!Boolean.parseBoolean(getIsSingleUserOnly())) {
+			tabSheet.addTab(programMembersPanel);
+			tabSheet.getTab(programMembersPanel).setClosable(false);
+			tabSheet.getTab(programMembersPanel).setCaption(this.messageSource.getMessage(Message.PROGRAM_MEMBERS));
+		}
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -191,4 +202,11 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 		return this.tabSheet;
 	}
 
+	protected String getIsSingleUserOnly() {
+		return isSingleUserOnly;
+	}
+
+	protected void setIsSingleUserOnly(String isSingleUserOnly) {
+		this.isSingleUserOnly = isSingleUserOnly;
+	}
 }

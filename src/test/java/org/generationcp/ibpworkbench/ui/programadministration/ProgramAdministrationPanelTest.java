@@ -1,9 +1,11 @@
 
 package org.generationcp.ibpworkbench.ui.programadministration;
 
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.ibpworkbench.ui.programmembers.ProgramMembersPanel;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -30,7 +32,7 @@ public class ProgramAdministrationPanelTest {
 	private static final String BASIC_DETAILS = "Basic Details";
 
 	@Mock
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	@Mock
 	private SimpleResourceBundleMessageSource messageSource;
@@ -67,6 +69,40 @@ public class ProgramAdministrationPanelTest {
 		Assert.assertEquals(ProgramAdministrationPanelTest.METHODS, adminTabSheet.getTab(3).getCaption());
 		Assert.assertEquals(ProgramAdministrationPanelTest.SYSTEM_LABELS, adminTabSheet.getTab(4).getCaption());
 		Assert.assertEquals(ProgramAdministrationPanelTest.PROGRAM_SUMMARY, adminTabSheet.getTab(5).getCaption());
+	}
+
+	@Test
+	public void testAddProgramMembersTabSingleUser() {
+
+		final TabSheet tabSheet = new TabSheet();
+		final ProgramMembersPanel programMembersPanel = Mockito.mock(ProgramMembersPanel.class);
+
+		this.programAdminPanel.setIsSingleUserOnly("true");
+
+		this.programAdminPanel.addProgramMembersTab(tabSheet, programMembersPanel);
+
+		// Verify that programMembersPanel is not added in tabSheet
+		Assert.assertEquals(0, tabSheet.getComponentCount());
+
+
+
+	}
+
+	@Test
+	public void testAddProgramMembersTabNotSingleUser() {
+
+		final TabSheet tabSheet = new TabSheet();
+		final ProgramMembersPanel programMembersPanel = Mockito.mock(ProgramMembersPanel.class);
+
+		this.programAdminPanel.setIsSingleUserOnly("false");
+
+		this.programAdminPanel.addProgramMembersTab(tabSheet, programMembersPanel);
+
+		// Verify that programMembersPanel is added in tabSheet
+		Assert.assertEquals(1, tabSheet.getComponentCount());
+		Assert.assertFalse(tabSheet.getTab(programMembersPanel).isClosable());
+		Assert.assertEquals(MEMBERS, tabSheet.getTab(programMembersPanel).getCaption());
+
 	}
 
 }
