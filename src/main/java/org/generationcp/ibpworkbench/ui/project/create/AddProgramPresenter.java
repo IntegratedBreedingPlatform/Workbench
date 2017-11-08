@@ -3,6 +3,7 @@ package org.generationcp.ibpworkbench.ui.project.create;
 
 import java.util.Set;
 
+import com.vaadin.data.Validator;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.middleware.pojos.User;
@@ -38,15 +39,20 @@ public class AddProgramPresenter {
 	}
 
 	public Project doAddNewProgram() {
+		final Project program;
+		final Set<User> users;
 		try {
-			final Project program = AddProgramPresenter.this.view.createProjectPanel.projectBasicDetailsComponent.getProjectDetails();
-			final Set<User> users = AddProgramPresenter.this.view.programMembersPanel.getSelectedUsers();
+			program = AddProgramPresenter.this.view.createProjectPanel.projectBasicDetailsComponent.getProjectDetails();
+			users = AddProgramPresenter.this.view.programMembersPanel.getSelectedUsers();
 			AddProgramPresenter.this.programService.createNewProgram(program, users);
-			return program;
+
+		} catch (Validator.InvalidValueException e) {
+			throw e;
 		} catch (RuntimeException e) {
-			throw new AddProgramException("The application could not successfully create"
-					+ " a program. Please contact support for further help.",e);
+			throw new AddProgramException(
+				"The application could not successfully create a program. Please contact support for further help.", e);
 		}
+		return program;
 	}
 
 	public void resetBasicDetails() {
