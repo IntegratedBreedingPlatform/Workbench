@@ -108,26 +108,26 @@ public class AddProgramView extends Panel implements InitializingBean {
 		this.programMembersPanel.setDebugId("programMembersPanel");
 
 		this.programLocationsContainer = new VerticalLayout();
-		this.programLocationsContainer.setDebugId("programLocationsContainer");
+		this.getProgramLocationsContainer().setDebugId("programLocationsContainer");
 		this.programMethodsContainer = new VerticalLayout();
-		this.programMethodsContainer.setDebugId("programMethodsContainer");
+		this.getProgramMethodsContainer().setDebugId("programMethodsContainer");
 		this.programMembersContainer = new VerticalLayout();
-		this.programMembersContainer.setDebugId("programMembersContainer");
+		this.getProgramMembersContainer().setDebugId("programMembersContainer");
 		this.basicDetailsContainer = new VerticalLayout();
-		this.basicDetailsContainer.setDebugId("basicDetailsContainer");
+		this.getBasicDetailsContainer().setDebugId("basicDetailsContainer");
 
-		this.programLocationsContainer.setMargin(false);
-		this.programLocationsContainer.setSpacing(false);
+		this.getProgramLocationsContainer().setMargin(false);
+		this.getProgramLocationsContainer().setSpacing(false);
 
-		this.programMethodsContainer.setMargin(false);
-		this.programMethodsContainer.setSpacing(false);
+		this.getProgramMethodsContainer().setMargin(false);
+		this.getProgramMethodsContainer().setSpacing(false);
 
-		this.programMembersContainer.setMargin(false);
-		this.programMembersContainer.setSpacing(false);
-		this.programMembersContainer.setVisible(false);
+		this.getProgramMembersContainer().setMargin(false);
+		this.getProgramMembersContainer().setSpacing(false);
+		this.getProgramMembersContainer().setVisible(false);
 
-		this.basicDetailsContainer.setMargin(false);
-		this.basicDetailsContainer.setSpacing(false);
+		this.getBasicDetailsContainer().setMargin(false);
+		this.getBasicDetailsContainer().setSpacing(false);
 
 		// finish button
 		this.finishButton = new Button("Finish");
@@ -183,34 +183,33 @@ public class AddProgramView extends Panel implements InitializingBean {
 		this.rootLayout.setWidth("100%");
 		this.rootLayout.setSpacing(true);
 
-		this.basicDetailsContainer.addComponent(this.createProjectPanel);
-		this.programMembersContainer.addComponent(this.programMembersPanel);
+		this.getBasicDetailsContainer().addComponent(this.createProjectPanel);
+		this.getProgramMembersContainer().addComponent(this.programMembersPanel);
 
-		this.tabSheet.addTab(this.basicDetailsContainer);
-		this.tabSheet.getTab(this.basicDetailsContainer).setClosable(false);
-		this.tabSheet.getTab(this.basicDetailsContainer).setCaption("Basic Details");
+		this.getTabSheet().addTab(this.getBasicDetailsContainer());
+		this.getTabSheet().getTab(this.getBasicDetailsContainer()).setClosable(false);
+		this.getTabSheet().getTab(this.getBasicDetailsContainer()).setCaption("Basic Details");
 
 		try {
-
 			addProgramMembersTab(this.tabSheet, this.programMembersContainer);
 		} catch (final AccessDeniedException ex) {
 			//Do nothing, if the user does not have the required roles the screen needs to be displayed as well.
 		}
 
-		this.tabSheet.addTab(this.programLocationsContainer);
-		this.tabSheet.getTab(this.programLocationsContainer).setClosable(false);
-		this.tabSheet.getTab(this.programLocationsContainer).setEnabled(false);
-		this.tabSheet.getTab(this.programLocationsContainer).setCaption("Locations");
+		this.getTabSheet().addTab(this.getProgramLocationsContainer());
+		this.getTabSheet().getTab(this.getProgramLocationsContainer()).setClosable(false);
+		this.getTabSheet().getTab(this.getProgramLocationsContainer()).setEnabled(false);
+		this.getTabSheet().getTab(this.getProgramLocationsContainer()).setCaption("Locations");
 
-		this.tabSheet.addTab(this.programMethodsContainer);
-		this.tabSheet.getTab(this.programMethodsContainer).setClosable(false);
-		this.tabSheet.getTab(this.programMethodsContainer).setEnabled(false);
+		this.getTabSheet().addTab(this.getProgramMethodsContainer());
+		this.getTabSheet().getTab(this.getProgramMethodsContainer()).setClosable(false);
+		this.getTabSheet().getTab(this.getProgramMethodsContainer()).setEnabled(false);
 
-		this.tabSheet.getTab(this.programMethodsContainer).setCaption("Breeding Methods");
+		this.getTabSheet().getTab(this.getProgramMethodsContainer()).setCaption("Breeding Methods");
 
 		this.rootLayout.addComponent(this.titleLayout);
 		this.rootLayout.addComponent(headingDesc);
-		this.rootLayout.addComponent(this.tabSheet);
+		this.rootLayout.addComponent(this.getTabSheet());
 
 		final HorizontalLayout btnContainer = new HorizontalLayout();
 		btnContainer.setDebugId("btnContainer");
@@ -224,7 +223,7 @@ public class AddProgramView extends Panel implements InitializingBean {
 		this.rootLayout.setComponentAlignment(btnContainer, Alignment.MIDDLE_CENTER);
 
 		// set initial tab view
-		this.tabSheet.setSelectedTab(this.initialTabView);
+		this.getTabSheet().setSelectedTab(this.initialTabView);
 
 		this.setContent(this.rootLayout);
 		this.setScrollable(true);
@@ -269,31 +268,31 @@ public class AddProgramView extends Panel implements InitializingBean {
 		this.programLocationsView = new ProgramLocationsView(project);
 		this.programLocationsView.setDebugId("programLocationsView");
 
-		this.tabSheet.getTab(this.programMethodsContainer).setEnabled(true);
-		this.programMethodsContainer.removeAllComponents();
-		this.programMethodsContainer.addComponent(this.programMethodsView);
+		this.getTabSheet().getTab(this.getProgramMethodsContainer()).setEnabled(true);
+		this.getProgramMethodsContainer().removeAllComponents();
+		this.getProgramMethodsContainer().addComponent(this.programMethodsView);
 
-		this.tabSheet.getTab(this.programLocationsContainer).setEnabled(true);
-		this.programLocationsContainer.removeAllComponents();
-		this.programLocationsContainer.addComponent(this.programLocationsView);
+		this.getTabSheet().getTab(this.getProgramLocationsContainer()).setEnabled(true);
+		this.getProgramLocationsContainer().removeAllComponents();
+		this.getProgramLocationsContainer().addComponent(this.programLocationsView);
 
 		// re-initialize program members and basic details (in update mode)
-		this.basicDetailsContainer.removeAllComponents();
+		this.getBasicDetailsContainer().removeAllComponents();
 		final UpdateProjectPanel updateProjectPanel = new UpdateProjectPanel();
 		updateProjectPanel.setDebugId("updateProjectPanel");
 		updateProjectPanel.hideDeleteBtn();
-		this.basicDetailsContainer.addComponent(updateProjectPanel);
+		this.getBasicDetailsContainer().addComponent(updateProjectPanel);
 
-		this.programMembersContainer.removeAllComponents();
-		this.programMembersContainer.addComponent(new ProgramMembersPanel(this.sessionData.getLastOpenedProject()));
+		this.getProgramMembersContainer().removeAllComponents();
+		this.getProgramMembersContainer().addComponent(new ProgramMembersPanel(this.sessionData.getLastOpenedProject()));
 
 		this.finishButton.setEnabled(true);
 		this.cancelBtn.setEnabled(false);
 	}
 
 	public void disableOptionalTabsAndFinish() {
-		this.tabSheet.getTab(this.programMethodsContainer).setEnabled(false);
-		this.tabSheet.getTab(this.programLocationsContainer).setEnabled(false);
+		this.getTabSheet().getTab(this.getProgramMethodsContainer()).setEnabled(false);
+		this.getTabSheet().getTab(this.getProgramLocationsContainer()).setEnabled(false);
 
 		this.finishButton.setEnabled(false);
 	}
@@ -303,18 +302,18 @@ public class AddProgramView extends Panel implements InitializingBean {
 	}
 
 	public void resetBasicDetails() {
-		this.basicDetailsContainer.removeAllComponents();
+		this.getBasicDetailsContainer().removeAllComponents();
 
 		this.createProjectPanel = new CreateProjectPanel(this.presenter);
 		this.createProjectPanel.setDebugId("createProjectPanel");
-		this.basicDetailsContainer.addComponent(this.createProjectPanel);
+		this.getBasicDetailsContainer().addComponent(this.createProjectPanel);
 	}
 
 	public void resetProgramMembers() {
-		this.programMembersContainer.removeAllComponents();
+		this.getProgramMembersContainer().removeAllComponents();
 		this.programMembersPanel = new ProjectMembersComponent(this.presenter);
 		this.programMembersPanel.setDebugId("programMembersPanel");
-		this.programMembersContainer.addComponent(this.programMembersPanel);
+		this.getProgramMembersContainer().addComponent(this.programMembersPanel);
 	}
 
 	public Collection<Location> getFavoriteLocations() {
@@ -340,5 +339,25 @@ public class AddProgramView extends Panel implements InitializingBean {
 
 	protected void setIsSingleUserOnly(final String isSingleUserOnly) {
 		this.isSingleUserOnly = isSingleUserOnly;
+	}
+
+	protected TabSheet getTabSheet() {
+		return tabSheet;
+	}
+
+	protected VerticalLayout getProgramMethodsContainer() {
+		return programMethodsContainer;
+	}
+
+	protected VerticalLayout getProgramLocationsContainer() {
+		return programLocationsContainer;
+	}
+
+	protected VerticalLayout getProgramMembersContainer() {
+		return programMembersContainer;
+	}
+
+	protected VerticalLayout getBasicDetailsContainer() {
+		return basicDetailsContainer;
 	}
 }
