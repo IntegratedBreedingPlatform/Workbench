@@ -192,7 +192,7 @@ public class AddProgramView extends Panel implements InitializingBean {
 
 		try {
 
-			addProgramMembersTab(this.tabSheet, this.programMethodsContainer);
+			addProgramMembersTab(this.tabSheet, this.programMembersContainer);
 		} catch (final AccessDeniedException ex) {
 			//Do nothing, if the user does not have the required roles the screen needs to be displayed as well.
 		}
