@@ -24,7 +24,7 @@ import com.vaadin.ui.Label;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProjectMembersComponentTest {
-	
+
 	private static final int OWNER_USER_ID = 1;
 	private static final int OWNER_PERSON_ID = 1;
 	private static final String OWNER_NAME = "USER1";
@@ -36,29 +36,29 @@ public class ProjectMembersComponentTest {
 	private static final int ADMIN_USER_ID = 3;
 	private static final int ADMIN_PERSON_ID = 3;
 	private static final String ADMIN_NAME = "USER3";
-	
+
 	@Mock
 	private WorkbenchDataManager workbenchDataManager;
 
 	@Mock
 	private ContextUtil contextUtil;
-	
+
 	@InjectMocks
 	private ProjectMembersComponent projectMembersComponent;
-	
+
 	@Before
 	public void setUp() {
 		this.projectMembersComponent.setWorkbenchDataManager(this.workbenchDataManager);
 		this.projectMembersComponent.setContextUtil(this.contextUtil);
-		
+
 		final List<User> programMembers = this.createProgramMembersTestData();
 		Mockito.doReturn(programMembers).when(this.workbenchDataManager).getAllActiveUsersSorted();
 		for (final User user : programMembers) {
 			Mockito.doReturn(PersonTestDataInitializer.createPerson(user.getPersonid())).when(this.workbenchDataManager)
-			.getPersonById(user.getPersonid());
+					.getPersonById(user.getPersonid());
 		}
 	}
-	
+
 	@Test
 	public void testGenerateRoleCellForOwner() {
 		this.mockCurrentUser(ProjectMembersComponentTest.OWNER_USER_ID);
@@ -89,7 +89,7 @@ public class ProjectMembersComponentTest {
 		Assert.assertEquals("label", roleLabel.getDebugId());
 		Assert.assertEquals("label-bold", roleLabel.getStyleName());
 	}
-	
+
 	@Test
 	public void testGenerateUserNameCellForMember() {
 		this.mockCurrentUser(ProjectMembersComponentTest.OWNER_USER_ID);
@@ -100,7 +100,7 @@ public class ProjectMembersComponentTest {
 		Assert.assertEquals("label", roleLabel.getDebugId());
 		Assert.assertNotSame("label-bold", roleLabel.getStyleName());
 	}
-	
+
 	@Test
 	@SuppressWarnings("unchecked")
 	public void testCreateUsersContainer() {
@@ -114,27 +114,29 @@ public class ProjectMembersComponentTest {
 
 		for (final User user : programMembers) {
 			if (user.getUserid().equals(ProjectMembersComponentTest.OWNER_PERSON_ID)) {
-				Assert.assertFalse(
-						"Program Owner should be disabled so they cannot be removed as member.",
+				Assert.assertFalse("Program Owner should be disabled so they cannot be removed as member.",
 						user.isEnabled());
 			} else {
 				Assert.assertTrue("Other users should be enabled so they can be removed as members.", user.isEnabled());
 			}
 		}
 	}
-	
+
 	private void mockCurrentUser(final int userId) {
 		Mockito.doReturn(userId).when(this.contextUtil).getCurrentWorkbenchUserId();
 	}
-	
+
 	private List<User> createProgramMembersTestData() {
 		final List<User> programMembers = new ArrayList<>();
 		programMembers.add(UserTestDataInitializer.createUserWithPerson(ProjectMembersComponentTest.OWNER_USER_ID,
-				ProjectMembersComponentTest.OWNER_NAME, ProjectMembersComponentTest.OWNER_PERSON_ID, ProjectMembersComponentTest.OWNER_NAME, ProjectMembersComponentTest.OWNER_NAME));
+				ProjectMembersComponentTest.OWNER_NAME, ProjectMembersComponentTest.OWNER_PERSON_ID,
+				ProjectMembersComponentTest.OWNER_NAME, ProjectMembersComponentTest.OWNER_NAME));
 		programMembers.add(UserTestDataInitializer.createUserWithPerson(ProjectMembersComponentTest.MEMBER_USER_ID,
-				ProjectMembersComponentTest.MEMBER_NAME, ProjectMembersComponentTest.MEMBER_PERSON_ID, ProjectMembersComponentTest.MEMBER_NAME, ProjectMembersComponentTest.MEMBER_NAME));
+				ProjectMembersComponentTest.MEMBER_NAME, ProjectMembersComponentTest.MEMBER_PERSON_ID,
+				ProjectMembersComponentTest.MEMBER_NAME, ProjectMembersComponentTest.MEMBER_NAME));
 		programMembers.add(UserTestDataInitializer.createUserWithPerson(ProjectMembersComponentTest.ADMIN_USER_ID,
-				ProgramService.ADMIN_USERNAME, ProjectMembersComponentTest.ADMIN_PERSON_ID, ProjectMembersComponentTest.ADMIN_NAME, ProjectMembersComponentTest.ADMIN_NAME));
+				ProgramService.ADMIN_USERNAME, ProjectMembersComponentTest.ADMIN_PERSON_ID,
+				ProjectMembersComponentTest.ADMIN_NAME, ProjectMembersComponentTest.ADMIN_NAME));
 		return programMembers;
 	}
 }

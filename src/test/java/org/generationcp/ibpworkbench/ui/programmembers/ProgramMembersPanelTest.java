@@ -210,11 +210,14 @@ public class ProgramMembersPanelTest {
 	private List<User> createProgramMembersTestData() {
 		final List<User> programMembers = new ArrayList<>();
 		programMembers.add(UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.OWNER_USER_ID,
-				ProgramMembersPanelTest.OWNER_NAME, ProgramMembersPanelTest.OWNER_PERSON_ID, ProgramMembersPanelTest.OWNER_NAME, ProgramMembersPanelTest.OWNER_NAME));
+				ProgramMembersPanelTest.OWNER_NAME, ProgramMembersPanelTest.OWNER_PERSON_ID,
+				ProgramMembersPanelTest.OWNER_NAME, ProgramMembersPanelTest.OWNER_NAME));
 		programMembers.add(UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.MEMBER_USER_ID,
-				ProgramMembersPanelTest.MEMBER_NAME, ProgramMembersPanelTest.MEMBER_PERSON_ID, ProgramMembersPanelTest.MEMBER_NAME, ProgramMembersPanelTest.MEMBER_NAME));
+				ProgramMembersPanelTest.MEMBER_NAME, ProgramMembersPanelTest.MEMBER_PERSON_ID,
+				ProgramMembersPanelTest.MEMBER_NAME, ProgramMembersPanelTest.MEMBER_NAME));
 		programMembers.add(UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.ADMIN_USER_ID,
-				ProgramService.ADMIN_USERNAME, ProgramMembersPanelTest.ADMIN_PERSON_ID, ProgramMembersPanelTest.ADMIN_NAME, ProgramMembersPanelTest.ADMIN_NAME));
+				ProgramService.ADMIN_USERNAME, ProgramMembersPanelTest.ADMIN_PERSON_ID,
+				ProgramMembersPanelTest.ADMIN_NAME, ProgramMembersPanelTest.ADMIN_NAME));
 		return programMembers;
 	}
 

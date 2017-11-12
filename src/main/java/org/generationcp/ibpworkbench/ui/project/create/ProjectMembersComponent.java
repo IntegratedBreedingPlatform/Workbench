@@ -20,7 +20,6 @@ import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
@@ -84,7 +83,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
 	@Autowired
 	private ContextUtil contextUtil;
-	
+
 	private AddProgramPresenter presenter;
 
 	public ProjectMembersComponent() {
@@ -165,8 +164,10 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 		this.select.getTableLeft().addGeneratedColumn(ProjectMembersComponent.ROLE, tableLeftRole);
 		this.select.getTableRight().addGeneratedColumn(ProjectMembersComponent.ROLE, tableRightRole);
 
-		this.select.setVisibleColumns(new Object[] {"select", ProjectMembersComponent.USERNAME, ProjectMembersComponent.ROLE});
-		this.select.setColumnHeaders(new String[] {"<span class='glyphicon glyphicon-ok'></span>", "User Name", "Role"});
+		this.select.setVisibleColumns(
+				new Object[] { "select", ProjectMembersComponent.USERNAME, ProjectMembersComponent.ROLE });
+		this.select
+				.setColumnHeaders(new String[] { "<span class='glyphicon glyphicon-ok'></span>", "User Name", "Role" });
 
 		this.select.setLeftColumnCaption("Available Users");
 		this.select.setRightColumnCaption("Selected Program Members");
@@ -214,7 +215,8 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
 		final HorizontalLayout titleContainer = new HorizontalLayout();
 		titleContainer.setDebugId("titleContainer");
-		final Label heading = new Label("<span class='bms-members' style='color: #D1B02A; font-size: 23px'></span>&nbsp;Program Members",
+		final Label heading = new Label(
+				"<span class='bms-members' style='color: #D1B02A; font-size: 23px'></span>&nbsp;Program Members",
 				Label.CONTENT_XHTML);
 		final Label headingDesc = new Label(
 				"Choose team members for this program by dragging available users from the list on the left into the Program Members list on the right.");
@@ -244,13 +246,15 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
 			@Override
 			public void buttonClick(final ClickEvent clickEvent) {
-				final TransactionTemplate transactionTemplate = new TransactionTemplate(ProjectMembersComponent.this.transactionManager);
+				final TransactionTemplate transactionTemplate = new TransactionTemplate(
+						ProjectMembersComponent.this.transactionManager);
 				transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 
 					@Override
 					protected void doInTransactionWithoutResult(final TransactionStatus status) {
 						try {
-							final Project newlyCreatedProgram = ProjectMembersComponent.this.presenter.doAddNewProgram();
+							final Project newlyCreatedProgram = ProjectMembersComponent.this.presenter
+									.doAddNewProgram();
 							MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
 									ProjectMembersComponent.this.messageSource.getMessage(Message.SUCCESS),
 									newlyCreatedProgram.getProjectName() + " program has been successfully created.");
@@ -266,12 +270,13 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 								return;
 							}
 
-							ProjectMembersComponent.LOG
-									.error("Oops there might be serious problem on creating the program, investigate it!", e);
+							ProjectMembersComponent.LOG.error(
+									"Oops there might be serious problem on creating the program, investigate it!", e);
 
 							MessageNotifier.showError(clickEvent.getComponent().getWindow(),
 									ProjectMembersComponent.this.messageSource.getMessage(Message.DATABASE_ERROR),
-									ProjectMembersComponent.this.messageSource.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
+									ProjectMembersComponent.this.messageSource
+											.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
 
 						}
 					}
@@ -336,7 +341,8 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 	Container createUsersContainer() {
 		final List<User> validUserList = new ArrayList<>();
 
-		// TODO: This can be improved once we implement proper User-Person mapping
+		// TODO: This can be improved once we implement proper User-Person
+		// mapping
 		final List<User> userList = this.workbenchDataManager.getAllActiveUsersSorted();
 		for (final User user : userList) {
 			final Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
@@ -363,11 +369,11 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 		return this.select.getValue();
 	}
 
-	public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
+	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
 		this.workbenchDataManager = workbenchDataManager;
 	}
 
-	public void setContextUtil(ContextUtil contextUtil) {
+	public void setContextUtil(final ContextUtil contextUtil) {
 		this.contextUtil = contextUtil;
 	}
 }
