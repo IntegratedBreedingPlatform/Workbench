@@ -362,4 +362,12 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 	public Set<User> getSelectedUsers() {
 		return this.select.getValue();
 	}
+
+	public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
+		this.workbenchDataManager = workbenchDataManager;
+	}
+
+	public void setContextUtil(ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
+	}
 }

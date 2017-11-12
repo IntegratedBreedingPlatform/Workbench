@@ -10,12 +10,11 @@ import java.util.UUID;
 
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.service.ProgramService;
+import org.generationcp.middleware.data.initializer.PersonTestDataInitializer;
 import org.generationcp.middleware.data.initializer.UserTestDataInitializer;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,6 +39,7 @@ public class ProgramMembersPanelTest {
 
 	private static final int ADMIN_USER_ID = 3;
 	private static final int ADMIN_PERSON_ID = 3;
+	private static final String ADMIN_NAME = "USER3";
 
 	@Mock
 	private WorkbenchDataManager workbenchDataManager;
@@ -198,7 +198,7 @@ public class ProgramMembersPanelTest {
 		final List<User> programMembers = this.createProgramMembersTestData();
 		Mockito.doReturn(programMembers).when(this.workbenchDataManager).getAllActiveUsersSorted();
 		for (final User user : programMembers) {
-			Mockito.doReturn(this.createPersonTestData(user.getPersonid())).when(this.workbenchDataManager)
+			Mockito.doReturn(PersonTestDataInitializer.createPerson(user.getPersonid())).when(this.workbenchDataManager)
 					.getPersonById(user.getPersonid());
 		}
 	}
@@ -207,31 +207,15 @@ public class ProgramMembersPanelTest {
 		Mockito.doReturn(userId).when(this.contextUtil).getCurrentWorkbenchUserId();
 	}
 
-	private Person createPersonTestData(final Integer personid) {
-		final Person person = new Person();
-		person.setId(personid);
-		return person;
-	}
-
 	private List<User> createProgramMembersTestData() {
 		final List<User> programMembers = new ArrayList<>();
-		programMembers.add(this.createUsersTestData(ProgramMembersPanelTest.OWNER_USER_ID,
-				ProgramMembersPanelTest.OWNER_NAME, ProgramMembersPanelTest.OWNER_PERSON_ID));
-		programMembers.add(this.createUsersTestData(ProgramMembersPanelTest.MEMBER_USER_ID,
-				ProgramMembersPanelTest.MEMBER_NAME, ProgramMembersPanelTest.MEMBER_PERSON_ID));
-		programMembers.add(this.createUsersTestData(ProgramMembersPanelTest.ADMIN_USER_ID,
-				ProgramService.ADMIN_USERNAME, ProgramMembersPanelTest.ADMIN_PERSON_ID));
+		programMembers.add(UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.OWNER_USER_ID,
+				ProgramMembersPanelTest.OWNER_NAME, ProgramMembersPanelTest.OWNER_PERSON_ID, ProgramMembersPanelTest.OWNER_NAME, ProgramMembersPanelTest.OWNER_NAME));
+		programMembers.add(UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.MEMBER_USER_ID,
+				ProgramMembersPanelTest.MEMBER_NAME, ProgramMembersPanelTest.MEMBER_PERSON_ID, ProgramMembersPanelTest.MEMBER_NAME, ProgramMembersPanelTest.MEMBER_NAME));
+		programMembers.add(UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.ADMIN_USER_ID,
+				ProgramService.ADMIN_USERNAME, ProgramMembersPanelTest.ADMIN_PERSON_ID, ProgramMembersPanelTest.ADMIN_NAME, ProgramMembersPanelTest.ADMIN_NAME));
 		return programMembers;
-	}
-
-	private User createUsersTestData(final int userId, final String username, final int personId) {
-		final User user = UserTestDataInitializer.createUserWithPerson(userId, username, personId, "Mister", "User");
-
-		final List<UserRole> userRoleList = new ArrayList<>();
-		userRoleList.add(new UserRole(user, "ADMIN"));
-		user.setRoles(userRoleList);
-
-		return user;
 	}
 
 }
