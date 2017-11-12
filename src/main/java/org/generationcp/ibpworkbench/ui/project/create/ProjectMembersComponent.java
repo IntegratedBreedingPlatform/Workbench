@@ -16,9 +16,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
@@ -80,6 +82,9 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 	@Autowired
 	private PlatformTransactionManager transactionManager;
 
+	@Autowired
+	private ContextUtil contextUtil;
+	
 	private AddProgramPresenter presenter;
 
 	public ProjectMembersComponent() {
@@ -187,7 +192,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
 			Object selectItem = null;
 			for (final Object itemId : this.select.getTableLeft().getItemIds()) {
-				if (((User) itemId).getUserid().equals(this.sessionData.getUserData().getUserid())) {
+				if (((User) itemId).getUserid().equals(this.contextUtil.getCurrentWorkbenchUserId())) {
 					selectItem = itemId;
 				}
 			}
@@ -304,31 +309,31 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 		return buttonLayout;
 	}
 
-	private Label generateRoleCell(final Object itemId) {
+	Label generateRoleCell(final Object itemId) {
 		final String role = ((User) itemId).getRoles().get(0).getCapitalizedRole();
 		final Label label = new Label();
 		label.setDebugId("label");
 		label.setValue(role);
 
-		if (((User) itemId).getUserid().equals(ProjectMembersComponent.this.sessionData.getUserData().getUserid())) {
+		if (((User) itemId).getUserid().equals(this.contextUtil.getCurrentWorkbenchUserId())) {
 			label.setStyleName("label-bold");
 		}
 		return label;
 	}
 
-	private Label generateUserNameCell(final Object itemId) {
+	Label generateUserNameCell(final Object itemId) {
 		final Person person = ((User) itemId).getPerson();
 		final Label label = new Label();
 		label.setDebugId("label");
 		label.setValue(person.getDisplayName());
 
-		if (((User) itemId).getUserid().equals(ProjectMembersComponent.this.sessionData.getUserData().getUserid())) {
+		if (((User) itemId).getUserid().equals(this.contextUtil.getCurrentWorkbenchUserId())) {
 			label.setStyleName("label-bold");
 		}
 		return label;
 	}
 
-	private Container createUsersContainer() {
+	Container createUsersContainer() {
 		final List<User> validUserList = new ArrayList<>();
 
 		// TODO: This can be improved once we implement proper User-Person mapping
@@ -344,7 +349,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
 		final BeanItemContainer<User> beanItemContainer = new BeanItemContainer<>(User.class);
 		for (final User user : validUserList) {
-			if (user.getUserid().equals(this.sessionData.getUserData().getUserid())) {
+			if (user.getUserid().equals(this.contextUtil.getCurrentWorkbenchUserId())) {
 				user.setEnabled(false);
 			}
 
