@@ -16,13 +16,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -82,6 +81,9 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 	@Autowired
 	private PlatformTransactionManager transactionManager;
 
+	@Autowired
+	private ContextUtil contextUtil;
+
 	private AddProgramPresenter presenter;
 
 	public ProjectMembersComponent() {
@@ -108,7 +110,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 		this.setSpacing(true);
 		this.setMargin(true);
 
-		this.select = new TwinTableSelect<User>(User.class);
+		this.select = new TwinTableSelect<>(User.class);
 
 		final Table.ColumnGenerator tableLeftUserName = new Table.ColumnGenerator() {
 
@@ -162,8 +164,10 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 		this.select.getTableLeft().addGeneratedColumn(ProjectMembersComponent.ROLE, tableLeftRole);
 		this.select.getTableRight().addGeneratedColumn(ProjectMembersComponent.ROLE, tableRightRole);
 
-		this.select.setVisibleColumns(new Object[] {"select", ProjectMembersComponent.USERNAME, ProjectMembersComponent.ROLE});
-		this.select.setColumnHeaders(new String[] {"<span class='glyphicon glyphicon-ok'></span>", "User Name", "Role"});
+		this.select.setVisibleColumns(
+				new Object[] { "select", ProjectMembersComponent.USERNAME, ProjectMembersComponent.ROLE });
+		this.select
+				.setColumnHeaders(new String[] { "<span class='glyphicon glyphicon-ok'></span>", "User Name", "Role" });
 
 		this.select.setLeftColumnCaption("Available Users");
 		this.select.setRightColumnCaption("Selected Program Members");
@@ -189,7 +193,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
 			Object selectItem = null;
 			for (final Object itemId : this.select.getTableLeft().getItemIds()) {
-				if (((User) itemId).getUserid().equals(this.sessionData.getUserData().getUserid())) {
+				if (((User) itemId).getUserid().equals(this.contextUtil.getCurrentWorkbenchUserId())) {
 					selectItem = itemId;
 				}
 			}
@@ -211,7 +215,8 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
 		final HorizontalLayout titleContainer = new HorizontalLayout();
 		titleContainer.setDebugId("titleContainer");
-		final Label heading = new Label("<span class='bms-members' style='color: #D1B02A; font-size: 23px'></span>&nbsp;Program Members",
+		final Label heading = new Label(
+				"<span class='bms-members' style='color: #D1B02A; font-size: 23px'></span>&nbsp;Program Members",
 				Label.CONTENT_XHTML);
 		final Label headingDesc = new Label(
 				"Choose team members for this program by dragging available users from the list on the left into the Program Members list on the right.");
@@ -241,13 +246,15 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
 			@Override
 			public void buttonClick(final ClickEvent clickEvent) {
-				final TransactionTemplate transactionTemplate = new TransactionTemplate(ProjectMembersComponent.this.transactionManager);
+				final TransactionTemplate transactionTemplate = new TransactionTemplate(
+						ProjectMembersComponent.this.transactionManager);
 				transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 
 					@Override
 					protected void doInTransactionWithoutResult(final TransactionStatus status) {
 						try {
-							final Project newlyCreatedProgram = ProjectMembersComponent.this.presenter.doAddNewProgram();
+							final Project newlyCreatedProgram = ProjectMembersComponent.this.presenter
+									.doAddNewProgram();
 							MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
 									ProjectMembersComponent.this.messageSource.getMessage(Message.SUCCESS),
 									newlyCreatedProgram.getProjectName() + " program has been successfully created.");
@@ -263,12 +270,13 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 								return;
 							}
 
-							ProjectMembersComponent.LOG
-									.error("Oops there might be serious problem on creating the program, investigate it!", e);
+							ProjectMembersComponent.LOG.error(
+									"Oops there might be serious problem on creating the program, investigate it!", e);
 
 							MessageNotifier.showError(clickEvent.getComponent().getWindow(),
 									ProjectMembersComponent.this.messageSource.getMessage(Message.DATABASE_ERROR),
-									ProjectMembersComponent.this.messageSource.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
+									ProjectMembersComponent.this.messageSource
+											.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
 
 						}
 					}
@@ -306,35 +314,36 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 		return buttonLayout;
 	}
 
-	private Label generateRoleCell(final Object itemId) {
+	Label generateRoleCell(final Object itemId) {
 		final String role = ((User) itemId).getRoles().get(0).getCapitalizedRole();
 		final Label label = new Label();
 		label.setDebugId("label");
 		label.setValue(role);
 
-		if (((User) itemId).getUserid().equals(ProjectMembersComponent.this.sessionData.getUserData().getUserid())) {
+		if (((User) itemId).getUserid().equals(this.contextUtil.getCurrentWorkbenchUserId())) {
 			label.setStyleName("label-bold");
 		}
 		return label;
 	}
 
-	private Label generateUserNameCell(final Object itemId) {
+	Label generateUserNameCell(final Object itemId) {
 		final Person person = ((User) itemId).getPerson();
 		final Label label = new Label();
 		label.setDebugId("label");
 		label.setValue(person.getDisplayName());
 
-		if (((User) itemId).getUserid().equals(ProjectMembersComponent.this.sessionData.getUserData().getUserid())) {
+		if (((User) itemId).getUserid().equals(this.contextUtil.getCurrentWorkbenchUserId())) {
 			label.setStyleName("label-bold");
 		}
 		return label;
 	}
 
-	private Container createUsersContainer() {
-		final List<User> validUserList = new ArrayList<User>();
+	Container createUsersContainer() {
+		final List<User> validUserList = new ArrayList<>();
 
-		// TODO: This can be improved once we implement proper User-Person mapping
-		final List<User> userList = this.workbenchDataManager.getAllUsersSorted();
+		// TODO: This can be improved once we implement proper User-Person
+		// mapping
+		final List<User> userList = this.workbenchDataManager.getAllActiveUsersSorted();
 		for (final User user : userList) {
 			final Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
 			user.setPerson(person);
@@ -344,9 +353,9 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 			}
 		}
 
-		final BeanItemContainer<User> beanItemContainer = new BeanItemContainer<User>(User.class);
+		final BeanItemContainer<User> beanItemContainer = new BeanItemContainer<>(User.class);
 		for (final User user : validUserList) {
-			if (user.getUserid().equals(this.sessionData.getUserData().getUserid())) {
+			if (user.getUserid().equals(this.contextUtil.getCurrentWorkbenchUserId())) {
 				user.setEnabled(false);
 			}
 
@@ -358,5 +367,13 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
 	public Set<User> getSelectedUsers() {
 		return this.select.getValue();
+	}
+
+	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
+		this.workbenchDataManager = workbenchDataManager;
+	}
+
+	public void setContextUtil(final ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
 	}
 }
