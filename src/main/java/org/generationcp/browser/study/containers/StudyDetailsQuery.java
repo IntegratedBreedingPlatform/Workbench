@@ -68,7 +68,7 @@ public class StudyDetailsQuery implements Query {
 
 	@Override
 	public List<Item> loadItems(int startIndex, int count) {
-		List<Item> items = new ArrayList<Item>();
+		List<Item> items = new ArrayList<>();
 		List<StudyDetails> list = this.getStudyDetailsList(startIndex, count);
 
 		for (StudyDetails studyDetails : list) {
@@ -117,13 +117,13 @@ public class StudyDetailsQuery implements Query {
 				default:
 					break;
 			}
-			item.addItemProperty(this.columnIds.get(i), value != null ? new ObjectProperty<String>(value) : null);
+			item.addItemProperty(this.columnIds.get(i), value != null ? new ObjectProperty<>(value) : null);
 		}
 		return item;
 	}
 
 	protected List<StudyDetails> getStudyDetailsList(int startIndex, int count) {
-		List<StudyDetails> studyDetailsList = new ArrayList<StudyDetails>();
+		List<StudyDetails> studyDetailsList = new ArrayList<>();
 		try {
 			if (this.studyType != null) {
 				studyDetailsList = this.studyDataManager.getStudyDetails(this.studyType, this.programUUID, startIndex, count);
