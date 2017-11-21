@@ -245,9 +245,8 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		// if crop only AKA locationView instantiated from Add new program page, just add the row to the view table.
 
 		if (!this.isCropOnly) {
-			loc.setUniqueID(this.project.getUniqueID());
-			this.locationDataManager.addLocation(loc);
 
+			this.locationDataManager.addLocation(loc);
 			final LocationViewModel locationVModel = this.getLocationDetailsByLocId(loc.getLocid());
 			this.view.addRow(locationVModel, true, 0);
 
@@ -260,31 +259,37 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		return this.locationDataManager.getLocationsByName(locationName, Operation.EQUAL, this.project.getUniqueID());
 	}
 
-	public Location convertLocationViewToLocation(LocationViewModel lvm) {
+	public Location convertLocationViewToLocation(LocationViewModel locationViewModel) {
 		Location location = new Location();
+
 		location.setLrplce(0);
 
-		location.setLocid(lvm.getLocationId());
-		location.setLname(lvm.getLocationName());
-		location.setLabbr(lvm.getLocationAbbreviation());
-		location.setLtype(lvm.getLtype());
-		location.setCntryid(lvm.getCntryid());
+		location.setLocid(locationViewModel.getLocationId());
+		location.setLname(locationViewModel.getLocationName());
+		location.setLabbr(locationViewModel.getLocationAbbreviation());
+		location.setLtype(locationViewModel.getLtype());
+		location.setCntryid(locationViewModel.getCntryid());
 
 		if (location.getCntryid() == null) {
 			location.setCntryid(0);
 		}
 
-		location.setLatitude(lvm.getLatitude());
-		location.setLongitude(lvm.getLongitude());
-		location.setAltitude(lvm.getAltitude());
+		location.setLatitude(locationViewModel.getLatitude());
+		location.setLongitude(locationViewModel.getLongitude());
+		location.setAltitude(locationViewModel.getAltitude());
 
 		// defaults
 		location.setNllp(0);
 		location.setSnl1id(0);
 		location.setSnl2id(0);
-		location.setSnl3id(lvm.getProvinceId());
+		location.setSnl3id(locationViewModel.getProvinceId());
+
 		if (location.getSnl3id() == null) {
 			location.setSnl3id(0);
+		}
+
+		if (!locationViewModel.getCropAccessible()) {
+			location.setUniqueID(this.project.getUniqueID());
 		}
 
 		return location;

@@ -30,6 +30,9 @@ public class LocationViewModel implements BeanFormState {
 	private Double altitude;
 
 	private String programUUID;
+
+	private Boolean cropAccessible = false;
+
 	public LocationViewModel() {
 	}
 
@@ -206,5 +209,13 @@ public class LocationViewModel implements BeanFormState {
 
 	public void setProgramUUID(String programUUID) {
 		this.programUUID = programUUID;
+	}
+
+	public Boolean getCropAccessible() {
+		return cropAccessible;
+	}
+
+	public void setCropAccessible(Boolean cropAccessible) {
+		this.cropAccessible = cropAccessible;
 	}
 }

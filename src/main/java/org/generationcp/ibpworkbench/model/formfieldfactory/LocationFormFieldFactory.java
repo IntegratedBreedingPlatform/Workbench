@@ -22,6 +22,7 @@ import com.vaadin.data.util.BeanContainer;
 import com.vaadin.data.validator.DoubleValidator;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.AbstractSelect;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DefaultFieldFactory;
@@ -29,7 +30,7 @@ import com.vaadin.ui.Field;
 import com.vaadin.ui.TextField;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.fields.SanitizedTextField;
-import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.ui.form.AddLocationForm;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
 import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.Location;
@@ -63,6 +64,8 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
 	private TextField latitude;
 	private TextField longitude;
 	private TextField altitude;
+
+	private CheckBox cropAccessible;
 
 	@SuppressWarnings("unused")
 	private static final Logger LOG = LoggerFactory.getLogger(LocationFormFieldFactory.class);
@@ -215,37 +218,32 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
 		this.altitude.setNullSettingAllowed(true);
 		this.altitude.setNullRepresentation("");
 
+		this.cropAccessible = new CheckBox();
+		this.cropAccessible.setDebugId("cropAccessible");
+
 	}
 
 	@Override
 	public Field createField(Item item, Object propertyId, Component uiContext) {
-		if ("locationName".equals(propertyId)) {
-			this.messageSource.setCaption(this.locationName, Message.LOC_NAME);
+		if (AddLocationForm.LOCATION_NAME.equals(propertyId)) {
 			return this.locationName;
-		} else if ("locationAbbreviation".equals(propertyId)) {
-			this.messageSource.setCaption(this.locationAbbreviation, Message.LOC_ABBR);
+		} else if (AddLocationForm.LOCATION_ABBREVIATION.equals(propertyId)) {
 			return this.locationAbbreviation;
-		} else if ("ltype".equals(propertyId)) {
-			this.messageSource.setCaption(this.lType, Message.LOC_TYPE);
+		} else if (AddLocationForm.LTYPE.equals(propertyId)) {
 			return this.lType;
-		} else if ("cntryid".equals(propertyId)) {
-			this.messageSource.setCaption(this.country, Message.LOC_COUNTRY);
+		} else if (AddLocationForm.CNTRYID.equals(propertyId)) {
 			return this.country;
-		} else if ("provinceId".equals(propertyId)) {
-			this.messageSource.setCaption(this.province, Message.LOC_PROVINCE);
+		} else if (AddLocationForm.PROVINCE_ID.equals(propertyId)) {
 			return this.province;
-		}
-		if ("latitude".equals(propertyId)) {
-			this.messageSource.setCaption(this.latitude, Message.LOC_LATITUDE);
+		} else if (AddLocationForm.LATITUDE.equals(propertyId)) {
 			return this.latitude;
-		} else if ("longitude".equals(propertyId)) {
-			this.messageSource.setCaption(this.longitude, Message.LOC_LONGITUDE);
+		} else if (AddLocationForm.LONGITUDE.equals(propertyId)) {
 			return this.longitude;
-		} else if ("altitude".equals(propertyId)) {
-			this.messageSource.setCaption(this.altitude, Message.LOC_ALTITUDE);
+		} else if (AddLocationForm.ALTITUDE.equals(propertyId)) {
 			return this.altitude;
+		} else if (AddLocationForm.CROP_ACCESSIBLE.equals(propertyId)) {
+			return this.cropAccessible;
 		}
-
 		return super.createField(item, propertyId, uiContext);
 	}
 }

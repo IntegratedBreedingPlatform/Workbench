@@ -42,6 +42,15 @@ import com.vaadin.ui.Layout;
 public class AddLocationForm extends Form {
 
 	private static final long serialVersionUID = 865075321914843448L;
+	public static final String LOCATION_NAME = "locationName";
+	public static final String LOCATION_ABBREVIATION = "locationAbbreviation";
+	public static final String LTYPE = "ltype";
+	public static final String CNTRYID = "cntryid";
+	public static final String PROVINCE_ID = "provinceId";
+	public static final String LATITUDE = "latitude";
+	public static final String LONGITUDE = "longitude";
+	public static final String ALTITUDE = "altitude";
+	public static final String CROP_ACCESSIBLE = "cropAccessible";
 
 	private GridLayout grid;
 
@@ -58,7 +67,7 @@ public class AddLocationForm extends Form {
 
 	protected void initializeComponents() {
 
-		this.grid = new GridLayout(4, 7);
+		this.grid = new GridLayout(4, 8);
 		this.grid.setDebugId("grid");
 		this.grid.setSpacing(true);
 		this.grid.setMargin(new Layout.MarginInfo(true, false, false, false));
@@ -69,8 +78,8 @@ public class AddLocationForm extends Form {
 		this.setComponentError(null);
 		this.setFormFieldFactory(new LocationFormFieldFactory(this.presenter));
 
-		this.setVisibleItemProperties(Arrays.asList(new String[] {"locationName", "locationAbbreviation", "ltype", "cntryid", "provinceId",
-				"latitude", "longitude", "altitude"}));
+		this.setVisibleItemProperties(Arrays.asList(new String[] {LOCATION_NAME, LOCATION_ABBREVIATION, LTYPE, CNTRYID, PROVINCE_ID,
+				LATITUDE, LONGITUDE, ALTITUDE, CROP_ACCESSIBLE}));
 
 		this.setWriteThrough(false);
 		this.setInvalidCommitted(false);
@@ -82,67 +91,61 @@ public class AddLocationForm extends Form {
 	protected void attachField(Object propertyId, Field field) {
 		field.setStyleName("hide-caption");
 		field.setCaption(null);
-		if ("locationName".equals(propertyId)) {
+		if (LOCATION_NAME.equals(propertyId)) {
 			this.grid.addComponent(field, 1, 0, 3, 0);
-		} else if ("locationAbbreviation".equals(propertyId)) {
+		} else if (LOCATION_ABBREVIATION.equals(propertyId)) {
 			this.grid.addComponent(field, 1, 1, 2, 1);
-		} else if ("ltype".equals(propertyId)) {
+		} else if (LTYPE.equals(propertyId)) {
 			this.grid.addComponent(field, 1, 2, 3, 2);
-		} else if ("cntryid".equals(propertyId)) {
+		} else if (CNTRYID.equals(propertyId)) {
 			this.grid.addComponent(field, 1, 3, 3, 3);
-		} else if ("provinceId".equals(propertyId)) {
+		} else if (PROVINCE_ID.equals(propertyId)) {
 			this.grid.addComponent(field, 1, 4, 3, 4);
-		} else if ("latitude".equals(propertyId)) {
+		} else if (LATITUDE.equals(propertyId)) {
 			this.grid.addComponent(field, 1, 5);
-		} else if ("longitude".equals(propertyId)) {
+		} else if (LONGITUDE.equals(propertyId)) {
 			this.grid.addComponent(field, 2, 5);
-		} else if ("altitude".equals(propertyId)) {
+		} else if (ALTITUDE.equals(propertyId)) {
 			this.grid.addComponent(field, 3, 5);
+		} else if (CROP_ACCESSIBLE.equals(propertyId)) {
+			this.grid.addComponent(field, 1, 7, 3, 7);
 		}
+
 	}
 
 	@Override
 	public void attach() {
 
-		if (this.grid.getComponent(0, 0) == null) {
-			this.grid.addComponent(this.createLabel(this.messageSource.getMessage(Message.LOC_NAME), true), 0, 0);
-		}
-		if (this.grid.getComponent(0, 1) == null) {
-			this.grid.addComponent(this.createLabel(this.messageSource.getMessage(Message.LOC_ABBR), true), 0, 1);
-		}
-		if (this.grid.getComponent(0, 2) == null) {
-			this.grid.addComponent(this.createLabel(this.messageSource.getMessage(Message.LOC_TYPE), true), 0, 2);
-		}
-		if (this.grid.getComponent(0, 3) == null) {
-			this.grid.addComponent(this.createLabel(this.messageSource.getMessage(Message.LOC_COUNTRY), false), 0, 3);
-		}
-		if (this.grid.getComponent(0, 4) == null) {
-			this.grid.addComponent(this.createLabel(this.messageSource.getMessage(Message.LOC_PROVINCE), false), 0, 4);
-		}
-		if (this.grid.getComponent(0, 5) == null) {
-			this.grid.addComponent(this.createLabel(this.messageSource.getMessage(Message.LOC_GEOGRAPHICAL_DETAILS), false), 0, 5);
-		}
-		if (this.grid.getComponent(1, 6) == null) {
-			Label lblLatitude = this.createCaption(this.messageSource.getMessage(Message.LOC_LATITUDE), false);
-			this.grid.addComponent(lblLatitude, 1, 6);
-			this.grid.setComponentAlignment(lblLatitude, Alignment.TOP_LEFT);
-		}
-		if (this.grid.getComponent(2, 6) == null) {
-			Label lblLongitude = this.createCaption(this.messageSource.getMessage(Message.LOC_LONGITUDE), false);
-			this.grid.addComponent(lblLongitude, 2, 6);
-			this.grid.setComponentAlignment(lblLongitude, Alignment.TOP_LEFT);
-		}
-		if (this.grid.getComponent(3, 6) == null) {
-			Label lblLongitude = this.createCaption(this.messageSource.getMessage(Message.LOC_ALTITUDE), false);
-			this.grid.addComponent(lblLongitude, 3, 6);
-			this.grid.setComponentAlignment(lblLongitude, Alignment.TOP_LEFT);
-		}
+		this.grid.addComponent(this.createLabel(this.messageSource.getMessage(Message.LOC_NAME), true), 0, 0);
+		this.grid.addComponent(this.createLabel(this.messageSource.getMessage(Message.LOC_ABBR), true), 0, 1);
+		this.grid.addComponent(this.createLabel(this.messageSource.getMessage(Message.LOC_TYPE), true), 0, 2);
+		this.grid.addComponent(this.createLabel(this.messageSource.getMessage(Message.LOC_COUNTRY), false), 0, 3);
+		this.grid.addComponent(this.createLabel(this.messageSource.getMessage(Message.LOC_PROVINCE), false), 0, 4);
+		this.grid.addComponent(this.createLabel(this.messageSource.getMessage(Message.LOC_GEOGRAPHICAL_DETAILS), false), 0, 5);
+
+		Label lblLatitude = this.createCaption(this.messageSource.getMessage(Message.LOC_LATITUDE), false);
+		this.grid.addComponent(lblLatitude, 1, 6);
+		this.grid.setComponentAlignment(lblLatitude, Alignment.TOP_LEFT);
+
+
+		Label lblLongitude = this.createCaption(this.messageSource.getMessage(Message.LOC_LONGITUDE), false);
+		this.grid.addComponent(lblLongitude, 2, 6);
+		this.grid.setComponentAlignment(lblLongitude, Alignment.TOP_LEFT);
+
+
+		Label lblAltitude = this.createCaption(this.messageSource.getMessage(Message.LOC_ALTITUDE), false);
+		this.grid.addComponent(lblAltitude, 3, 6);
+		this.grid.setComponentAlignment(lblLongitude, Alignment.TOP_LEFT);
+
+
+		this.messageSource.setCaption(this.grid.getComponent(1, 7), Message.LOC_CROP_ACCESSIBLE);
+
 
 		super.attach();
 
 	}
 
-	private Label createLabel(String caption, boolean required) {
+	protected Label createLabel(String caption, boolean required) {
 
 		Label label = new Label();
 		label.setDebugId("label");
@@ -159,7 +162,7 @@ public class AddLocationForm extends Form {
 
 	}
 
-	private Label createCaption(String caption, boolean required) {
+	protected Label createCaption(String caption, boolean required) {
 
 		Label label = new Label();
 		label.setDebugId("label");
