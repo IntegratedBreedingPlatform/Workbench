@@ -20,8 +20,6 @@ import org.generationcp.middleware.pojos.dms.ProgramFavorite;
 import org.generationcp.middleware.pojos.dms.ProgramFavorite.FavoriteType;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -82,33 +80,11 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		return result;
 	}
 
-	private Collection<LocationViewModel> createLocationViewModelList(final List<LocationDetails> locationDetails) {
+	protected Collection<LocationViewModel> createLocationViewModelList(final List<LocationDetails> locationDetails) {
 		final Collection<LocationViewModel> result = new ArrayList<LocationViewModel>();
-		final PropertyMap<LocationDetails, LocationViewModel> locationMapper = new PropertyMap<LocationDetails, LocationViewModel>() {
-
-			@Override
-			protected void configure() {
-				this.map(this.source.getLocid(), this.destination.getLocationId());
-				this.map(this.source.getLocationName(), this.destination.getLocationName());
-				this.map(this.source.getLocationAbbreviation(), this.destination.getLocationAbbreviation());
-				this.map(this.source.getCountryFullName(), this.destination.getCntryFullName());
-				this.map(this.source.getLocationType(), this.destination.getLtypeStr());
-				this.map(this.source.getCntryid(), this.destination.getCntryid());
-				this.map(this.source.getLtype(), this.destination.getLtype());
-				this.map(this.source.getLatitude(), this.destination.getLatitude());
-				this.map(this.source.getLongitude(), this.destination.getLongitude());
-				this.map(this.source.getAltitude(), this.destination.getAltitude());
-			}
-
-		};
-
-		final ModelMapper modelMapper = new ModelMapper();
-
-		modelMapper.addMappings(locationMapper);
 
 		for (final Iterator<LocationDetails> iterator = locationDetails.iterator(); iterator.hasNext();) {
-			final LocationDetails detail = iterator.next();
-			result.add(modelMapper.map(detail, LocationViewModel.class));
+			result.add(convertFrom(iterator.next()));
 		}
 		return result;
 	}
@@ -174,22 +150,23 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		return true;
 	}
 
-	private LocationViewModel convertFrom(LocationDetails location) {
+	protected LocationViewModel convertFrom(LocationDetails locationDetails) {
 		LocationViewModel viewModel = new LocationViewModel();
-		viewModel.setLocationId(location.getLocid());
-		viewModel.setLocationName(location.getLocationName());
-		viewModel.setLocationAbbreviation(location.getLocationAbbreviation());
-		viewModel.setCntryFullName(location.getCountryFullName());
-		viewModel.setLtypeStr(location.getLocationType());
-		viewModel.setCntryid(location.getCntryid());
-		viewModel.setLtype(location.getLtype());
-		viewModel.setLatitude(location.getLatitude());
-		viewModel.setLongitude(location.getLongitude());
-		viewModel.setAltitude(location.getAltitude());
+		viewModel.setLocationId(locationDetails.getLocid());
+		viewModel.setLocationName(locationDetails.getLocationName());
+		viewModel.setLocationAbbreviation(locationDetails.getLocationAbbreviation());
+		viewModel.setCntryFullName(locationDetails.getCountryFullName());
+		viewModel.setLtypeStr(locationDetails.getLocationType());
+		viewModel.setCntryid(locationDetails.getCntryid());
+		viewModel.setLtype(locationDetails.getLtype());
+		viewModel.setLatitude(locationDetails.getLatitude());
+		viewModel.setLongitude(locationDetails.getLongitude());
+		viewModel.setAltitude(locationDetails.getAltitude());
+		viewModel.setProgramUUID(locationDetails.getProgramUUID());
 		return viewModel;
 	}
 
-	private LocationViewModel convertFrom(Location location) {
+	protected LocationViewModel convertFrom(Location location) {
 		LocationViewModel viewModel = new LocationViewModel();
 		viewModel.setLocationId(location.getLocid());
 		viewModel.setLocationName(location.getLname());
@@ -200,6 +177,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		viewModel.setLatitude(location.getLatitude());
 		viewModel.setLongitude(location.getLongitude());
 		viewModel.setAltitude(location.getAltitude());
+		viewModel.setProgramUUID(location.getUniqueID());
 
 		Country country = this.locationDataManager.getCountryById(location.getCntryid());
 		UserDefinedField udf = this.locationDataManager.getUserDefinedFieldByID(location.getLtype());

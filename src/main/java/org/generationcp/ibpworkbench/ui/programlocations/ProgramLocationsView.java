@@ -73,6 +73,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 	private static final String SELECT = "select";
 	private static final String LOCATION_NAME = "locationName";
 	private static final String LOCATION_ABBREVIATION = "locationAbbreviation";
+	private static final String PROGRAM_SPECIFIC = "programSpecific";
 	private static final String LATITUDE = "latitude";
 	private static final String LONGITUDE = "longitude";
 	private static final String ALTITUDE = "altitude";
@@ -84,6 +85,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.SELECT, "<span class='glyphicon glyphicon-ok'></span>");
 		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.LOCATION_NAME, "Name");
 		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.LOCATION_ABBREVIATION, "abbr.");
+		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.PROGRAM_SPECIFIC, "Program Specific");
 		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.LATITUDE, "Lat");
 		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.LONGITUDE, "Long");
 		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.ALTITUDE, "Alt");
@@ -699,6 +701,19 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 				return select;
 			}
 		});
+
+		table.addGeneratedColumn(ProgramLocationsView.PROGRAM_SPECIFIC, new Table.ColumnGenerator() {
+
+			@Override
+			public Object generateCell(final Table source, final Object itemId, final Object colId) {
+
+				LocationViewModel locationViewModel = (LocationViewModel) itemId;
+
+				return locationViewModel.getProgramUUID() == null ? "NO" : "YES";
+			}
+		});
+
+		table.setSortContainerPropertyId(ProgramLocationsView.PROGRAM_SPECIFIC);
 
 		// Add behavior to table when selected/has new Value (must be immediate)
 		final Table.ValueChangeListener vcl = new Property.ValueChangeListener() {

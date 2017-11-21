@@ -29,6 +29,7 @@ public class LocationViewModel implements BeanFormState {
 	private Double longitude;
 	private Double altitude;
 
+	private String programUUID;
 	public LocationViewModel() {
 	}
 
@@ -199,4 +200,11 @@ public class LocationViewModel implements BeanFormState {
 		return true;
 	}
 
+	public String getProgramUUID() {
+		return programUUID;
+	}
+
+	public void setProgramUUID(String programUUID) {
+		this.programUUID = programUUID;
+	}
 }
