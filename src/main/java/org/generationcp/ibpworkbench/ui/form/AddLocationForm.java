@@ -54,7 +54,7 @@ public class AddLocationForm extends Form {
 
 	private GridLayout grid;
 
-	private final ProgramLocationsPresenter presenter;
+	private ProgramLocationsPresenter presenter;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -178,4 +178,11 @@ public class AddLocationForm extends Form {
 		return label;
 
 	}
+
+	// For unit test purpose only
+	protected GridLayout getGrid() {
+		return grid;
+	}
+
+
 }

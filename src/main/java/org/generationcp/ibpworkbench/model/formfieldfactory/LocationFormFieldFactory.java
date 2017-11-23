@@ -54,13 +54,12 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
 
 	private static final long serialVersionUID = 3560059243526106791L;
 
+
 	private Field locationName;
 	private Field locationAbbreviation;
-
 	private ComboBox lType;
 	private ComboBox country;
 	private ComboBox province;
-
 	private TextField latitude;
 	private TextField longitude;
 	private TextField altitude;
@@ -245,5 +244,41 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
 			return this.cropAccessible;
 		}
 		return super.createField(item, propertyId, uiContext);
+	}
+
+	public Field getLocationName() {
+		return locationName;
+	}
+
+	public Field getLocationAbbreviation() {
+		return locationAbbreviation;
+	}
+
+	public ComboBox getlType() {
+		return lType;
+	}
+
+	public ComboBox getCountry() {
+		return country;
+	}
+
+	public ComboBox getProvince() {
+		return province;
+	}
+
+	public TextField getLatitude() {
+		return latitude;
+	}
+
+	public TextField getLongitude() {
+		return longitude;
+	}
+
+	public TextField getAltitude() {
+		return altitude;
+	}
+
+	public CheckBox getCropAccessible() {
+		return cropAccessible;
 	}
 }
