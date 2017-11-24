@@ -24,6 +24,7 @@ import com.vaadin.ui.Field;
 import com.vaadin.ui.TextField;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.fields.SanitizedTextField;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.form.AddLocationForm;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
 import org.generationcp.middleware.pojos.Country;
@@ -31,6 +32,7 @@ import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.UserDefinedField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -49,7 +51,7 @@ import java.util.List;
  * <b>File Created</b>: Jul 16, 2012
  */
 @Configurable
-public class LocationFormFieldFactory extends DefaultFieldFactory {
+public class LocationFormFieldFactory extends DefaultFieldFactory implements InitializingBean {
 
 	private static final long serialVersionUID = 3560059243526106791L;
 
@@ -73,7 +75,6 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
 	private SimpleResourceBundleMessageSource messageSource;
 
 	public LocationFormFieldFactory(final ProgramLocationsPresenter presenter) {
-		this.initFields(presenter.getUDFByLocationAndLType(), presenter.getCountryList());
 		this.presenter = presenter;
 	}
 
@@ -91,16 +92,18 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
 		this.locationName.setDebugId("locationName");
 		this.locationName.setWidth("250px");
 		this.locationName.setRequired(true);
-		this.locationName.setRequiredError("Please enter a Location Name.");
-		this.locationName.addValidator(new StringLengthValidator("Location Name must be 1-60 characters.", 1, 60, false));
+		this.locationName.setRequiredError(messageSource.getMessage(Message.ADD_LOCATION_REQUIRED_LOCATION_NAME_ERROR));
+		this.locationName
+				.addValidator(new StringLengthValidator(messageSource.getMessage(Message.ADD_LOCATION_NAME_LENGTH_ERROR), 1, 60, false));
 
 		this.locationAbbreviation = new SanitizedTextField();
 		this.locationAbbreviation.setDebugId("locationAbbreviation");
 
 		this.locationAbbreviation.setWidth("70px");
 		this.locationAbbreviation.setRequired(true);
-		this.locationAbbreviation.setRequiredError("Please enter a Location Abbreviation.");
-		this.locationAbbreviation.addValidator(new StringLengthValidator("Location Abbreviation must be 1-8 characters.", 1, 8, false));
+		this.locationAbbreviation.setRequiredError(messageSource.getMessage(Message.ADD_LOCATION_REQUIRED_LOCATION_ABBR_ERROR));
+		this.locationAbbreviation
+				.addValidator(new StringLengthValidator(messageSource.getMessage(Message.ADD_LOCATION_ABBR_LENGTH_ERROR), 1, 8, false));
 
 		final BeanContainer<String, UserDefinedField> udfBeanContainer =
 				new BeanContainer<String, UserDefinedField>(UserDefinedField.class);
@@ -124,7 +127,7 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
 		this.lType.setItemCaptionPropertyId("fname");
 		this.lType.setNullSelectionAllowed(false);
 		this.lType.setRequired(true);
-		this.lType.setRequiredError("Please a select Location Type.");
+		this.lType.setRequiredError(messageSource.getMessage(Message.ADD_LOCATION_REQUIRED_LOCATION_TYPE_ERROR));
 
 		this.country = new ComboBox();
 		this.country.setDebugId("country");
@@ -174,7 +177,7 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
 		};
 		this.latitude.setWidth("70px");
 		this.latitude.setRequired(false);
-		this.latitude.addValidator(new DoubleValidator("Please enter a valid number"));
+		this.latitude.addValidator(new DoubleValidator(messageSource.getMessage(Message.ADD_LOCATION_INVALID_NUMBER_ERROR)));
 		this.latitude.setNullSettingAllowed(true);
 		this.latitude.setNullRepresentation("");
 
@@ -193,7 +196,7 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
 
 		this.longitude.setWidth("70px");
 		this.longitude.setRequired(false);
-		this.longitude.addValidator(new DoubleValidator("Please enter a valid number"));
+		this.longitude.addValidator(new DoubleValidator(messageSource.getMessage(Message.ADD_LOCATION_INVALID_NUMBER_ERROR)));
 		this.longitude.setNullSettingAllowed(true);
 		this.longitude.setNullRepresentation("");
 
@@ -211,7 +214,7 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
 		};
 		this.altitude.setWidth("70px");
 		this.altitude.setRequired(false);
-		this.altitude.addValidator(new DoubleValidator("Please enter a valid number"));
+		this.altitude.addValidator(new DoubleValidator(messageSource.getMessage(Message.ADD_LOCATION_INVALID_NUMBER_ERROR)));
 		this.altitude.setNullSettingAllowed(true);
 		this.altitude.setNullRepresentation("");
 
@@ -278,5 +281,10 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
 
 	public CheckBox getCropAccessible() {
 		return cropAccessible;
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		this.initFields(presenter.getUDFByLocationAndLType(), presenter.getCountryList());
 	}
 }
