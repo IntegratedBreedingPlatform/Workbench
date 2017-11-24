@@ -152,7 +152,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		this.favoriteSelectAll.setDebugId("favoriteSelectAll");
 		this.favoriteSelectAll.setImmediate(true);
 		try {
-			AddRestrictredComponents();
+			addRestrictredComponents();
 		}catch (AccessDeniedException e){
 			// Do no do anything as the screen needs to be displayed just the buttons don't
 		}
@@ -186,7 +186,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	private void AddRestrictredComponents() {
+	private void addRestrictredComponents() {
 
 		this.addNewLocationsBtn.setVisible(true);
 	}
@@ -503,7 +503,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		return layout;
 	}
 
-	private void initializeValues() throws MiddlewareQueryException {
+	private void initializeValues() {
 		BeanItemContainer<Country> countryContainer = new BeanItemContainer<Country>(Country.class);
 		Country nullItem = new Country();
 		nullItem.setCntryid(0);

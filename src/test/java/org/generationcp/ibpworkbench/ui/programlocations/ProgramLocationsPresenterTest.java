@@ -8,7 +8,6 @@ import java.util.List;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.LocationDataManager;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.LocationDetails;
@@ -53,20 +52,16 @@ public class ProgramLocationsPresenterTest {
 	@Mock
 	private GermplasmDataManager germplasmDataManager;
 
-	@Mock
-	private WorkbenchDataManager workbenchDataManager;
-
-
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 
-		final Project project = this.getProject(ProgramLocationsPresenterTest.DUMMY_PROGRAM_UUID);
+		final Project project = this.getProject();
 		this.controller =
-				new ProgramLocationsPresenter(project, this.germplasmDataManager, this.workbenchDataManager, this.locationDataManager);
+				new ProgramLocationsPresenter(project, this.germplasmDataManager, this.locationDataManager);
 	}
 
-	private Project getProject(final String dummyProgramUuid) {
+	private Project getProject() {
 		final Project project = new Project();
 		project.setProjectId(1L);
 		project.setProjectName("Project Name");

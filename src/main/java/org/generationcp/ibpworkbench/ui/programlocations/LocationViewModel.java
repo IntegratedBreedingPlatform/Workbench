@@ -13,10 +13,10 @@ public class LocationViewModel implements BeanFormState {
 
 	private Integer locationId;
 	private String locationName = "";
-	public String locationAbbreviation = "";
+	private String locationAbbreviation = "";
 
-	public Integer ltype;
-	public String ltypeStr;
+	private Integer ltype;
+	private String ltypeStr;
 
 	private Integer cntryid;
 	private Integer provinceId;
@@ -34,6 +34,7 @@ public class LocationViewModel implements BeanFormState {
 	private Boolean cropAccessible = true;
 
 	public LocationViewModel() {
+		// for unit testing only
 	}
 
 	public Integer getLtype() {

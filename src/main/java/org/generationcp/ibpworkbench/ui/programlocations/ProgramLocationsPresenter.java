@@ -11,7 +11,6 @@ import java.util.List;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.LocationDataManager;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.LocationDetails;
@@ -39,9 +38,6 @@ public class ProgramLocationsPresenter implements InitializingBean {
 	private GermplasmDataManager germplasmDataManager;
 
 	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
-
-	@Autowired
 	private LocationDataManager locationDataManager;
 
 	private Project project;
@@ -58,26 +54,18 @@ public class ProgramLocationsPresenter implements InitializingBean {
 	}
 
 	/* THIS IS ONLY USED FOR JUNIT TESTS */
-	public ProgramLocationsPresenter(Project project, GermplasmDataManager germplasmDataManager, WorkbenchDataManager workbenchDataManager, LocationDataManager locationDataManager) {
+	public ProgramLocationsPresenter(Project project, GermplasmDataManager germplasmDataManager, LocationDataManager locationDataManager) {
 		this.project = project;
-		this.workbenchDataManager = workbenchDataManager;
 		this.germplasmDataManager = germplasmDataManager;
 		this.locationDataManager = locationDataManager;
 	}
 
-	public Collection<LocationViewModel> getFilteredResults(final Integer countryId, final Integer locationType,
-			final String locationName) {
-		return this.getFilteredResults(countryId, locationType, locationName, Collections.<LocationViewModel>emptyList());
-	}
-
-	public Collection<LocationViewModel> getFilteredResults(final Integer countryId, final Integer locationType, final String locationName,
-			final Collection<LocationViewModel> existingItems) {
+	public Collection<LocationViewModel> getFilteredResults(final Integer countryId, final Integer locationType, final String locationName) {
 
 		final List<LocationDetails> locationDetails =
 				this.locationDataManager.getFilteredLocations(countryId, locationType, locationName, this.project.getUniqueID());
-		final Collection<LocationViewModel> result = createLocationViewModelList(locationDetails);
 
-		return result;
+		return createLocationViewModelList(locationDetails);
 	}
 
 	protected Collection<LocationViewModel> createLocationViewModelList(final List<LocationDetails> locationDetails) {
@@ -121,11 +109,10 @@ public class ProgramLocationsPresenter implements InitializingBean {
 	}
 
 	public boolean saveFavouriteLocations(Collection<LocationViewModel> selectedLocations) {
-		return this.saveFavouriteLocations(selectedLocations, this.project, this.workbenchDataManager);
+		return this.saveFavouriteLocations(selectedLocations, this.project);
 	}
 
-	public boolean saveFavouriteLocations(Collection<LocationViewModel> selectedLocations, Project project,
-			WorkbenchDataManager workbenchDataManager) {
+	public boolean saveFavouriteLocations(Collection<LocationViewModel> selectedLocations, Project project) {
 
 		// Delete existing project locations in the database
 		List<ProgramFavorite> favorites = this.germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, project.getUniqueID());
