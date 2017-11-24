@@ -73,7 +73,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 	private static final String SELECT = "select";
 	private static final String LOCATION_NAME = "locationName";
 	private static final String LOCATION_ABBREVIATION = "locationAbbreviation";
-	private static final String PROGRAM_SPECIFIC = "programSpecific";
+	private static final String PROGRAM_SPECIFIC = "programUUID";
 	private static final String LATITUDE = "latitude";
 	private static final String LONGITUDE = "longitude";
 	private static final String ALTITUDE = "altitude";

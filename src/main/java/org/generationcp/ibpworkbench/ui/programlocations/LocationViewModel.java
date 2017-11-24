@@ -31,7 +31,7 @@ public class LocationViewModel implements BeanFormState {
 
 	private String programUUID;
 
-	private Boolean cropAccessible = false;
+	private Boolean cropAccessible = true;
 
 	public LocationViewModel() {
 	}
