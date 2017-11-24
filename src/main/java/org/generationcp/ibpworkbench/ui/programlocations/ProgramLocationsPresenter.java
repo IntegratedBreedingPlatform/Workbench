@@ -1,12 +1,4 @@
-
 package org.generationcp.ibpworkbench.ui.programlocations;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
 
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
@@ -25,6 +17,13 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+
 @Configurable
 public class ProgramLocationsPresenter implements InitializingBean {
 
@@ -42,25 +41,27 @@ public class ProgramLocationsPresenter implements InitializingBean {
 
 	private Project project;
 
-	public ProgramLocationsPresenter(ProgramLocationsView view, Project project) {
+	public ProgramLocationsPresenter(final ProgramLocationsView view, final Project project) {
 		this.view = view;
 		this.project = project;
 	}
 
-	public ProgramLocationsPresenter(ProgramLocationsView view, CropType cropType) {
+	public ProgramLocationsPresenter(final ProgramLocationsView view, final CropType cropType) {
 		this.view = view;
 		this.cropType = cropType;
 		this.isCropOnly = true;
 	}
 
 	/* THIS IS ONLY USED FOR JUNIT TESTS */
-	public ProgramLocationsPresenter(Project project, GermplasmDataManager germplasmDataManager, LocationDataManager locationDataManager) {
+	public ProgramLocationsPresenter(final Project project, final GermplasmDataManager germplasmDataManager,
+			final LocationDataManager locationDataManager) {
 		this.project = project;
 		this.germplasmDataManager = germplasmDataManager;
 		this.locationDataManager = locationDataManager;
 	}
 
-	public Collection<LocationViewModel> getFilteredResults(final Integer countryId, final Integer locationType, final String locationName) {
+	public Collection<LocationViewModel> getFilteredResults(final Integer countryId, final Integer locationType,
+			final String locationName) {
 
 		final List<LocationDetails> locationDetails =
 				this.locationDataManager.getFilteredLocations(countryId, locationType, locationName, this.project.getUniqueID());
@@ -71,7 +72,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 	protected Collection<LocationViewModel> createLocationViewModelList(final List<LocationDetails> locationDetails) {
 		final Collection<LocationViewModel> result = new ArrayList<LocationViewModel>();
 
-		for (final Iterator<LocationDetails> iterator = locationDetails.iterator(); iterator.hasNext();) {
+		for (final Iterator<LocationDetails> iterator = locationDetails.iterator(); iterator.hasNext(); ) {
 			result.add(convertFrom(iterator.next()));
 		}
 		return result;
@@ -82,11 +83,12 @@ public class ProgramLocationsPresenter implements InitializingBean {
 			return new ArrayList<LocationViewModel>();
 		}
 
-		List<LocationViewModel> result = new ArrayList<LocationViewModel>();
-		List<ProgramFavorite> favorites = this.germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, this.project.getUniqueID());
+		final List<LocationViewModel> result = new ArrayList<LocationViewModel>();
+		final List<ProgramFavorite> favorites =
+				this.germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, this.project.getUniqueID());
 
-		for (ProgramFavorite favorite : favorites) {
-			LocationViewModel locationVModel = this.getLocationDetailsByLocId(favorite.getEntityId());
+		for (final ProgramFavorite favorite : favorites) {
+			final LocationViewModel locationVModel = this.getLocationDetailsByLocId(favorite.getEntityId());
 
 			if (locationVModel != null) {
 				result.add(locationVModel);
@@ -96,35 +98,35 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		return result;
 	}
 
-	public LocationViewModel getLocationDetailsByLocId(int locationId) {
+	public LocationViewModel getLocationDetailsByLocId(final int locationId) {
 		try {
-			List<LocationDetails> locList = this.locationDataManager.getLocationDetailsByLocId(locationId, 0, 1);
+			final List<LocationDetails> locList = this.locationDataManager.getLocationDetailsByLocId(locationId, 0, 1);
 			return this.convertFrom(locList.get(0));
-		} catch (IndexOutOfBoundsException e) {
+		} catch (final IndexOutOfBoundsException e) {
 			ProgramLocationsPresenter.LOG.error("Cannot retrieve location info. [locationId=" + locationId + "]", e);
-		} catch (NullPointerException e) {
+		} catch (final NullPointerException e) {
 			ProgramLocationsPresenter.LOG.error("Location [locationId=" + locationId + "]  not found", e);
 		}
 		return null;
 	}
 
-	public boolean saveFavouriteLocations(Collection<LocationViewModel> selectedLocations) {
+	public boolean saveFavouriteLocations(final Collection<LocationViewModel> selectedLocations) {
 		return this.saveFavouriteLocations(selectedLocations, this.project);
 	}
 
-	public boolean saveFavouriteLocations(Collection<LocationViewModel> selectedLocations, Project project) {
+	public boolean saveFavouriteLocations(final Collection<LocationViewModel> selectedLocations, final Project project) {
 
 		// Delete existing project locations in the database
-		List<ProgramFavorite> favorites = this.germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, project.getUniqueID());
+		final List<ProgramFavorite> favorites = this.germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, project.getUniqueID());
 		this.germplasmDataManager.deleteProgramFavorites(favorites);
 
 		/*
 		 * add selected location to local db location table if it does not yet exist add location in workbench_project_loc_map in workbench
 		 * db
 		 */
-		List<ProgramFavorite> list = new ArrayList<ProgramFavorite>();
-		for (LocationViewModel l : selectedLocations) {
-			ProgramFavorite favorite = new ProgramFavorite();
+		final List<ProgramFavorite> list = new ArrayList<ProgramFavorite>();
+		for (final LocationViewModel l : selectedLocations) {
+			final ProgramFavorite favorite = new ProgramFavorite();
 			favorite.setEntityId(l.getLocationId());
 			favorite.setEntityType(FavoriteType.LOCATION.getName());
 			favorite.setUniqueID(project.getUniqueID());
@@ -137,8 +139,8 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		return true;
 	}
 
-	protected LocationViewModel convertFrom(LocationDetails locationDetails) {
-		LocationViewModel viewModel = new LocationViewModel();
+	protected LocationViewModel convertFrom(final LocationDetails locationDetails) {
+		final LocationViewModel viewModel = new LocationViewModel();
 		viewModel.setLocationId(locationDetails.getLocid());
 		viewModel.setLocationName(locationDetails.getLocationName());
 		viewModel.setLocationAbbreviation(locationDetails.getLocationAbbreviation());
@@ -153,8 +155,8 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		return viewModel;
 	}
 
-	protected LocationViewModel convertFrom(Location location) {
-		LocationViewModel viewModel = new LocationViewModel();
+	protected LocationViewModel convertFrom(final Location location) {
+		final LocationViewModel viewModel = new LocationViewModel();
 		viewModel.setLocationId(location.getLocid());
 		viewModel.setLocationName(location.getLname());
 		viewModel.setLocationAbbreviation(location.getLabbr());
@@ -166,8 +168,8 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		viewModel.setAltitude(location.getAltitude());
 		viewModel.setProgramUUID(location.getUniqueID());
 
-		Country country = this.locationDataManager.getCountryById(location.getCntryid());
-		UserDefinedField udf = this.locationDataManager.getUserDefinedFieldByID(location.getLtype());
+		final Country country = this.locationDataManager.getCountryById(location.getCntryid());
+		final UserDefinedField udf = this.locationDataManager.getUserDefinedFieldByID(location.getLtype());
 
 		if (country != null) {
 			viewModel.setCntryFullName(country.getIsofull());
@@ -181,11 +183,11 @@ public class ProgramLocationsPresenter implements InitializingBean {
 	}
 
 	public List<Country> getCountryList() {
-		List<Country> countryList = this.locationDataManager.getAllCountry();
+		final List<Country> countryList = this.locationDataManager.getAllCountry();
 		Collections.sort(countryList, new Comparator<Country>() {
 
 			@Override
-			public int compare(Country o1, Country o2) {
+			public int compare(final Country o1, final Country o2) {
 
 				return o1.getIsoabbr().compareTo(o2.getIsoabbr());
 
@@ -199,7 +201,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		return this.locationDataManager.getAllProvinces();
 	}
 
-	public List<Location> getAllProvincesByCountry(Integer countryId) {
+	public List<Location> getAllProvincesByCountry(final Integer countryId) {
 		return this.locationDataManager.getAllProvincesByCountry(countryId);
 	}
 
@@ -212,11 +214,11 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		return this.project;
 	}
 
-
 	/**
 	 * afterPropertiesSet() is called after Aspect4J weaves spring objects when this class is instantiated since this class is
 	 * a @configurable that implements InitializingBean. Since we do not have any need for additional initialization after the weaving, this
 	 * method remains unimplemented.
+	 *
 	 * @throws Exception
 	 */
 	@Override
@@ -228,7 +230,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		return this.locationDataManager.getUserDefinedFieldByFieldTableNameAndType("LOCATION", "LTYPE");
 	}
 
-	public void addLocation(Location loc) {
+	public void addLocation(final Location loc) {
 		// if crop only AKA locationView instantiated from Add new program page, just add the row to the view table.
 
 		if (!this.isCropOnly) {
@@ -242,12 +244,12 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		}
 	}
 
-	public List<Location> getExistingLocations(String locationName) {
+	public List<Location> getExistingLocations(final String locationName) {
 		return this.locationDataManager.getLocationsByName(locationName, Operation.EQUAL, this.project.getUniqueID());
 	}
 
-	public Location convertLocationViewToLocation(LocationViewModel locationViewModel) {
-		Location location = new Location();
+	public Location convertLocationViewToLocation(final LocationViewModel locationViewModel) {
+		final Location location = new Location();
 
 		location.setLrplce(0);
 
@@ -282,17 +284,17 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		return location;
 	}
 
-	public List<Location> convertTo(Collection<LocationViewModel> locationViewModels) {
-		List<Location> result = new ArrayList<Location>();
+	public List<Location> convertTo(final Collection<LocationViewModel> locationViewModels) {
+		final List<Location> result = new ArrayList<Location>();
 
-		for (LocationViewModel locationViewModel : locationViewModels) {
+		for (final LocationViewModel locationViewModel : locationViewModels) {
 			result.add(this.convertLocationViewToLocation(locationViewModel));
 		}
 
 		return result;
 	}
 
-	public void setCropType(CropType cropType) {
+	public void setCropType(final CropType cropType) {
 		this.cropType = cropType;
 	}
 }

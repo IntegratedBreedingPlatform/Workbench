@@ -1,10 +1,6 @@
-
 package org.generationcp.ibpworkbench.ui.programlocations;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
+import junit.framework.Assert;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.LocationDataManager;
@@ -20,7 +16,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import junit.framework.Assert;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class ProgramLocationsPresenterTest {
 
@@ -40,9 +38,7 @@ public class ProgramLocationsPresenterTest {
 	private static final Integer PROVINCE_ID = 1223;
 	private static final String DUMMY_PROGRAM_UUID = "1234567890";
 
-
 	private ProgramLocationsPresenter controller;
-
 
 	@Mock
 	private static GermplasmDataManager gdm;
@@ -57,8 +53,7 @@ public class ProgramLocationsPresenterTest {
 		MockitoAnnotations.initMocks(this);
 
 		final Project project = this.getProject();
-		this.controller =
-				new ProgramLocationsPresenter(project, this.germplasmDataManager, this.locationDataManager);
+		this.controller = new ProgramLocationsPresenter(project, this.germplasmDataManager, this.locationDataManager);
 	}
 
 	private Project getProject() {
@@ -237,10 +232,8 @@ public class ProgramLocationsPresenterTest {
 	@Test
 	public void testCreateLocationViewModelList() {
 
-
-
-		List<LocationDetails> locationDetailsList = new ArrayList<>();
-		LocationDetails locationDetails = new LocationDetails();
+		final List<LocationDetails> locationDetailsList = new ArrayList<>();
+		final LocationDetails locationDetails = new LocationDetails();
 
 		locationDetails.setLocid(LOCID);
 		locationDetails.setLocationName(LOCATION_NAME);
@@ -255,9 +248,9 @@ public class ProgramLocationsPresenterTest {
 		locationDetails.setProgramUUID(DUMMY_PROGRAM_UUID);
 		locationDetailsList.add(locationDetails);
 
-		Collection<LocationViewModel> result = controller.createLocationViewModelList(locationDetailsList);
+		final Collection<LocationViewModel> result = controller.createLocationViewModelList(locationDetailsList);
 
-		LocationViewModel locationViewModel = result.iterator().next();
+		final LocationViewModel locationViewModel = result.iterator().next();
 
 		Assert.assertEquals(LOCID, locationViewModel.getLocationId());
 		Assert.assertEquals(LOCATION_NAME, locationViewModel.getLocationName());
@@ -271,17 +264,15 @@ public class ProgramLocationsPresenterTest {
 		Assert.assertEquals(ALTITUDE, locationViewModel.getAltitude());
 		Assert.assertEquals(DUMMY_PROGRAM_UUID, locationViewModel.getProgramUUID());
 
-
-
 	}
 
 	@Test
 	public void testConvertLocationViewToLocationProgramAccessible() {
 
-		LocationViewModel locationViewModel = createLocationViewModel();
+		final LocationViewModel locationViewModel = createLocationViewModel();
 		locationViewModel.setCropAccessible(false);
 
-		Location result = controller.convertLocationViewToLocation(locationViewModel);
+		final Location result = controller.convertLocationViewToLocation(locationViewModel);
 
 		Assert.assertEquals((Integer) 0, result.getLrplce());
 		Assert.assertEquals(LOCID, result.getLocid());
@@ -303,10 +294,10 @@ public class ProgramLocationsPresenterTest {
 	@Test
 	public void testConvertLocationViewToLocationCropAccessible() {
 
-		LocationViewModel locationViewModel = createLocationViewModel();
+		final LocationViewModel locationViewModel = createLocationViewModel();
 		locationViewModel.setCropAccessible(true);
 
-		Location result = controller.convertLocationViewToLocation(locationViewModel);
+		final Location result = controller.convertLocationViewToLocation(locationViewModel);
 
 		Assert.assertEquals((Integer) 0, result.getLrplce());
 		Assert.assertEquals(LOCID, result.getLocid());
@@ -327,7 +318,7 @@ public class ProgramLocationsPresenterTest {
 
 	private LocationViewModel createLocationViewModel() {
 
-		LocationViewModel locationViewModel = new LocationViewModel();
+		final LocationViewModel locationViewModel = new LocationViewModel();
 		locationViewModel.setLocationId(LOCID);
 		locationViewModel.setLocationName(LOCATION_NAME);
 		locationViewModel.setLocationAbbreviation(LOCATION_ABBREVIATION);

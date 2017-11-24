@@ -1,34 +1,5 @@
 package org.generationcp.ibpworkbench.ui.programlocations;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
-
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.ui.common.IContainerFittable;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.pojos.Country;
-import org.generationcp.middleware.pojos.Location;
-import org.generationcp.middleware.pojos.UserDefinedField;
-import org.generationcp.middleware.pojos.workbench.CropType;
-import org.generationcp.middleware.pojos.workbench.Project;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
-
 import com.vaadin.data.Container;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItemContainer;
@@ -52,6 +23,34 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.ui.common.IContainerFittable;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.pojos.Country;
+import org.generationcp.middleware.pojos.Location;
+import org.generationcp.middleware.pojos.UserDefinedField;
+import org.generationcp.middleware.pojos.workbench.CropType;
+import org.generationcp.middleware.pojos.workbench.Project;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
 
 @Configurable
 public class ProgramLocationsView extends CustomComponent implements InitializingBean, IContainerFittable {
@@ -78,7 +77,6 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 	private static final String LONGITUDE = "longitude";
 	private static final String ALTITUDE = "altitude";
 	private static final String LTYPE_STR = "ltypeStr";
-
 
 	static {
 		TABLE_COLUMNS = new LinkedHashMap<String, String>();
@@ -120,11 +118,11 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 	private Boolean cropOnly = false;
 	private Button searchGoBtn;
 
-	public ProgramLocationsView(Project project) {
+	public ProgramLocationsView(final Project project) {
 		this.presenter = new ProgramLocationsPresenter(this, project);
 	}
 
-	public ProgramLocationsView(CropType cropType) {
+	public ProgramLocationsView(final CropType cropType) {
 		this.presenter = new ProgramLocationsPresenter(this, cropType);
 		this.cropOnly = true;
 
@@ -153,7 +151,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		this.favoriteSelectAll.setImmediate(true);
 		try {
 			addRestrictredComponents();
-		}catch (AccessDeniedException e){
+		} catch (final AccessDeniedException e) {
 			// Do no do anything as the screen needs to be displayed just the buttons don't
 		}
 		this.availTotalEntriesLabel = new Label(this.messageSource.getMessage(Message.TOTAL_ENTRIES) + ":  <b>0</b>", Label.CONTENT_XHTML);
@@ -176,7 +174,6 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		this.addToFavoriteBtn.setDebugId("addToFavoriteBtn");
 		this.addToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
 
-
 		this.removeToFavoriteBtn = new Button("Remove from Favorite Locations");
 		this.removeToFavoriteBtn.setDebugId("removeToFavoriteBtn");
 		this.removeToFavoriteBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
@@ -192,22 +189,21 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 	}
 
 	private void doLocationSearch() {
-		Country selectedCountry = (Country) this.countryFilter.getValue();
-		UserDefinedField selectedLocationType = (UserDefinedField) this.locationTypeFilter.getValue();
-		String locationName = (String) this.searchField.getValue();
+		final Country selectedCountry = (Country) this.countryFilter.getValue();
+		final UserDefinedField selectedLocationType = (UserDefinedField) this.locationTypeFilter.getValue();
+		final String locationName = (String) this.searchField.getValue();
 
-		Integer cntryId = selectedCountry != null ? selectedCountry.getCntryid() : null;
-		Integer locationTypeId = selectedLocationType != null ? selectedLocationType.getFldno() : null;
+		final Integer cntryId = selectedCountry != null ? selectedCountry.getCntryid() : null;
+		final Integer locationTypeId = selectedLocationType != null ? selectedLocationType.getFldno() : null;
 
 		try {
 			this.availableTableContainer.removeAllItems();
-			this.availableTableContainer.addAll(this.presenter.getFilteredResults(cntryId, locationTypeId, locationName,
-					this.favoritesTableContainer.getItemIds()));
+			this.availableTableContainer.addAll(this.presenter.getFilteredResults(cntryId, locationTypeId, locationName));
 
 			this.resultCountLbl.setValue("Results: " + this.availableTableContainer.getItemIds().size() + " items");
 			this.updateNoOfEntries(this.availTotalEntriesLabel, this.availableTable);
 			this.updateSelectedNoOfEntries(this.availSelectedEntriesLabel, this.availableTable);
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			ProgramLocationsView.LOG.error(e.getMessage(), e);
 		}
 	}
@@ -218,18 +214,18 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 			private static final long serialVersionUID = -7171034021312549121L;
 
 			@Override
-			public void buttonClick(ClickEvent clickEvent) {
+			public void buttonClick(final ClickEvent clickEvent) {
 				clickEvent.getComponent().getWindow()
 						.addWindow(new AddLocationsWindow(ProgramLocationsView.this, ProgramLocationsView.this.presenter));
 			}
 		});
 
-		Property.ValueChangeListener filterAction = new Property.ValueChangeListener() {
+		final Property.ValueChangeListener filterAction = new Property.ValueChangeListener() {
 
 			private static final long serialVersionUID = -913467981172163048L;
 
 			@Override
-			public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
+			public void valueChange(final Property.ValueChangeEvent valueChangeEvent) {
 				ProgramLocationsView.this.doLocationSearch();
 			}
 		};
@@ -243,7 +239,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 			private static final long serialVersionUID = -8196548064100650289L;
 
 			@Override
-			public void buttonClick(ClickEvent clickEvent) {
+			public void buttonClick(final ClickEvent clickEvent) {
 
 				if ((Boolean) ((CheckBox) clickEvent.getComponent()).getValue()) {
 					ProgramLocationsView.this.availableTable.setValue(ProgramLocationsView.this.availableTable.getItemIds());
@@ -261,7 +257,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 			private static final long serialVersionUID = -3779881074831495245L;
 
 			@Override
-			public void buttonClick(ClickEvent clickEvent) {
+			public void buttonClick(final ClickEvent clickEvent) {
 				if ((Boolean) ((CheckBox) clickEvent.getComponent()).getValue()) {
 					ProgramLocationsView.this.favoritesTable.setValue(ProgramLocationsView.this.favoritesTable.getItemIds());
 				} else {
@@ -279,9 +275,9 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 			private static final long serialVersionUID = 131276363615646691L;
 
 			@Override
-			public void buttonClick(Button.ClickEvent clickEvent) {
-				ProgramLocationsView.this.moveSelectedItems(ProgramLocationsView.this.availableTable,
-						ProgramLocationsView.this.favoritesTable);
+			public void buttonClick(final Button.ClickEvent clickEvent) {
+				ProgramLocationsView.this
+						.moveSelectedItems(ProgramLocationsView.this.availableTable, ProgramLocationsView.this.favoritesTable);
 			}
 		});
 
@@ -290,9 +286,9 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 			private static final long serialVersionUID = -2208257555061319115L;
 
 			@Override
-			public void buttonClick(Button.ClickEvent clickEvent) {
-				ProgramLocationsView.this.moveSelectedItems(ProgramLocationsView.this.favoritesTable,
-						ProgramLocationsView.this.availableTable);
+			public void buttonClick(final Button.ClickEvent clickEvent) {
+				ProgramLocationsView.this
+						.moveSelectedItems(ProgramLocationsView.this.favoritesTable, ProgramLocationsView.this.availableTable);
 			}
 		});
 
@@ -301,8 +297,9 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 			private static final long serialVersionUID = -1949478106602489651L;
 
 			@Override
-			public void buttonClick(ClickEvent clickEvent) {
-				if (ProgramLocationsView.this.presenter.saveFavouriteLocations(ProgramLocationsView.this.favoritesTableContainer.getItemIds())) {
+			public void buttonClick(final ClickEvent clickEvent) {
+				if (ProgramLocationsView.this.presenter
+						.saveFavouriteLocations(ProgramLocationsView.this.favoritesTableContainer.getItemIds())) {
 					MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
 							ProgramLocationsView.this.messageSource.getMessage(Message.SUCCESS),
 							ProgramLocationsView.this.messageSource.getMessage(Message.LOCATION_SUCCESSFULLY_CONFIGURED));
@@ -312,17 +309,17 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 	}
 
-	protected void updateNoOfEntries(Label totalEntries, Table table) {
+	protected void updateNoOfEntries(final Label totalEntries, final Table table) {
 		int count = 0;
 		count = table.getItemIds().size();
 
 		totalEntries.setValue(this.messageSource.getMessage(Message.TOTAL_ENTRIES) + ": " + "  <b>" + count + "</b>");
 	}
 
-	private void updateSelectedNoOfEntries(Label selectedEntries, Table table) {
+	private void updateSelectedNoOfEntries(final Label selectedEntries, final Table table) {
 		int count = 0;
 
-		Collection<?> selectedItems = (Collection<?>) table.getValue();
+		final Collection<?> selectedItems = (Collection<?>) table.getValue();
 		count = selectedItems.size();
 
 		selectedEntries.setValue("<i>" + this.messageSource.getMessage(Message.SELECTED) + ": " + "  <b>" + count + "</b></i>");
@@ -338,16 +335,17 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 	}
 
 	@SuppressWarnings("unchecked")
-	protected void moveSelectedItems(Table source, Table target) {
-		List<Object> sourceItems = new LinkedList<Object>((Collection<Object>) source.getValue());
-		ListIterator<Object> sourceItemsIterator = sourceItems.listIterator(sourceItems.size());
+	protected void moveSelectedItems(final Table source, final Table target) {
+		final List<Object> sourceItems = new LinkedList<Object>((Collection<Object>) source.getValue());
+		final ListIterator<Object> sourceItemsIterator = sourceItems.listIterator(sourceItems.size());
 
-		BeanItemContainer<LocationViewModel> targetDataContainer = (BeanItemContainer<LocationViewModel>) target.getContainerDataSource();
-		Container sourceDataContainer = source.getContainerDataSource();
+		final BeanItemContainer<LocationViewModel> targetDataContainer =
+				(BeanItemContainer<LocationViewModel>) target.getContainerDataSource();
+		final Container sourceDataContainer = source.getContainerDataSource();
 
 		int counter = 0;
 		while (sourceItemsIterator.hasPrevious()) {
-			LocationViewModel itemId = (LocationViewModel) sourceItemsIterator.previous();
+			final LocationViewModel itemId = (LocationViewModel) sourceItemsIterator.previous();
 			itemId.setActive(false);
 
 			if (source.getData().toString().equals(ProgramLocationsView.AVAILABLE)) {
@@ -431,8 +429,8 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		this.setCompositionRoot(this.root);
 	}
 
-	private HorizontalLayout buildLocationTableLabels(Label totalEntries, Label selectedEntries) {
-		HorizontalLayout layout = new HorizontalLayout();
+	private HorizontalLayout buildLocationTableLabels(final Label totalEntries, final Label selectedEntries) {
+		final HorizontalLayout layout = new HorizontalLayout();
 		layout.setDebugId("layout");
 		layout.setSpacing(true);
 		layout.setWidth("300px");
@@ -454,8 +452,8 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		titleContainer.setWidth("100%");
 		titleContainer.setMargin(true, false, false, false);
 
-		final Label heading =
-				new Label("<span class='bms-locations' style='color: #D1B02A; font-size: 23px'></span>&nbsp;Locations", Label.CONTENT_XHTML);
+		final Label heading = new Label("<span class='bms-locations' style='color: #D1B02A; font-size: 23px'></span>&nbsp;Locations",
+				Label.CONTENT_XHTML);
 		heading.setStyleName(Bootstrap.Typography.H4.styleName());
 
 		titleContainer.addComponent(heading);
@@ -465,9 +463,8 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 			titleContainer.setComponentAlignment(this.addNewLocationsBtn, Alignment.MIDDLE_RIGHT);
 		}
 
-		String content =
-				"To choose Favorite Locations for your program, "
-						+ "select entries from the Available Locations table at the top and drag them " + "into the lower table.";
+		String content = "To choose Favorite Locations for your program, "
+				+ "select entries from the Available Locations table at the top and drag them " + "into the lower table.";
 
 		if (!this.cropOnly) {
 			content += " You can also add any new locations that you need for managing your program.";
@@ -504,8 +501,8 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 	}
 
 	private void initializeValues() {
-		BeanItemContainer<Country> countryContainer = new BeanItemContainer<Country>(Country.class);
-		Country nullItem = new Country();
+		final BeanItemContainer<Country> countryContainer = new BeanItemContainer<Country>(Country.class);
+		final Country nullItem = new Country();
 		nullItem.setCntryid(0);
 		nullItem.setIsoabbr("All Countries");
 		countryContainer.addItem(nullItem);
@@ -517,15 +514,15 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		this.countryFilter.setNullSelectionItemId(nullItem);
 		this.countryFilter.setNullSelectionAllowed(true);
 
-
-		List<UserDefinedField> locationTypes = new ArrayList<UserDefinedField>();
-		UserDefinedField nullUdf = new UserDefinedField();
+		final List<UserDefinedField> locationTypes = new ArrayList<UserDefinedField>();
+		final UserDefinedField nullUdf = new UserDefinedField();
 		nullUdf.setFname("All Location Types");
 		nullUdf.setFldno(0);
 		locationTypes.add(nullUdf);
 		locationTypes.addAll(this.presenter.getLocationTypeList());
 
-		BeanItemContainer<UserDefinedField> udfContainer = new BeanItemContainer<UserDefinedField>(UserDefinedField.class, locationTypes);
+		final BeanItemContainer<UserDefinedField> udfContainer =
+				new BeanItemContainer<UserDefinedField>(UserDefinedField.class, locationTypes);
 		udfContainer.addAll(locationTypes);
 
 		this.locationTypeFilter.setContainerDataSource(udfContainer);
@@ -541,9 +538,8 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		/* INITIALIZE TABLE DATA */
 		this.favoritesTableContainer =
 				new BeanItemContainer<LocationViewModel>(LocationViewModel.class, this.presenter.getSavedProgramLocations());
-		this.availableTableContainer =
-				new BeanItemContainer<LocationViewModel>(LocationViewModel.class, this.presenter.getFilteredResults(null,
-						this.getSelectedLocationTypeIdFromFilter(), ""));
+		this.availableTableContainer = new BeanItemContainer<LocationViewModel>(LocationViewModel.class,
+				this.presenter.getFilteredResults(null, this.getSelectedLocationTypeIdFromFilter(), ""));
 
 		this.resultCountLbl.setValue("Result: " + this.availableTableContainer.size());
 
@@ -606,7 +602,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 			private static final long serialVersionUID = 4839268740583678422L;
 
 			@Override
-			public void buttonClick(ClickEvent clickEvent) {
+			public void buttonClick(final ClickEvent clickEvent) {
 				ProgramLocationsView.this.doLocationSearch();
 			}
 		});
@@ -628,7 +624,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		field3.setSizeUndefined();
 		field3.addComponent(this.locationTypeFilter);
 
-		HorizontalLayout filterContainer = new HorizontalLayout();
+		final HorizontalLayout filterContainer = new HorizontalLayout();
 		filterContainer.setDebugId("filterContainer");
 		filterContainer.setSpacing(true);
 		filterContainer.setStyleName("pull-right");
@@ -646,7 +642,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		return container;
 	}
 
-	private void setupTableFields(Table table) {
+	private void setupTableFields(final Table table) {
 		table.setVisibleColumns(ProgramLocationsView.TABLE_COLUMNS.keySet().toArray());
 		table.setColumnHeaders(ProgramLocationsView.TABLE_COLUMNS.values().toArray(new String[] {}));
 
@@ -670,7 +666,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 			private static final long serialVersionUID = 346170573915290251L;
 
 			@Override
-			public Object generateCell(final Table source, final Object itemId, Object colId) {
+			public Object generateCell(final Table source, final Object itemId, final Object colId) {
 				final CheckBox select = new CheckBox();
 				select.setDebugId("select");
 				select.setImmediate(true);
@@ -679,8 +675,8 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 					private static final long serialVersionUID = 4839268740583678422L;
 
 					@Override
-					public void buttonClick(ClickEvent clickEvent) {
-						Boolean val = (Boolean) ((CheckBox) clickEvent.getComponent()).getValue();
+					public void buttonClick(final ClickEvent clickEvent) {
+						final Boolean val = (Boolean) ((CheckBox) clickEvent.getComponent()).getValue();
 
 						((LocationViewModel) itemId).setActive(val);
 						if (val) {
@@ -707,7 +703,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 			@Override
 			public Object generateCell(final Table source, final Object itemId, final Object colId) {
 
-				LocationViewModel locationViewModel = (LocationViewModel) itemId;
+				final LocationViewModel locationViewModel = (LocationViewModel) itemId;
 
 				return locationViewModel.getProgramUUID() == null ? "NO" : "YES";
 			}
@@ -722,17 +718,18 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 			@SuppressWarnings("unchecked")
 			@Override
-			public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
-				Table source = (Table) valueChangeEvent.getProperty();
-				BeanItemContainer<LocationViewModel> container = (BeanItemContainer<LocationViewModel>) source.getContainerDataSource();
+			public void valueChange(final Property.ValueChangeEvent valueChangeEvent) {
+				final Table source = (Table) valueChangeEvent.getProperty();
+				final BeanItemContainer<LocationViewModel> container =
+						(BeanItemContainer<LocationViewModel>) source.getContainerDataSource();
 
 				// disable previously selected items
-				for (LocationViewModel beanItem : container.getItemIds()) {
+				for (final LocationViewModel beanItem : container.getItemIds()) {
 					beanItem.setActive(false);
 				}
 
 				// set current selection to true
-				for (LocationViewModel selectedItem : (Collection<LocationViewModel>) source.getValue()) {
+				for (final LocationViewModel selectedItem : (Collection<LocationViewModel>) source.getValue()) {
 					selectedItem.setActive(true);
 				}
 
@@ -754,8 +751,8 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 			@SuppressWarnings("unchecked")
 			@Override
-			public void drop(DragAndDropEvent dragAndDropEvent) {
-				DataBoundTransferable t = (DataBoundTransferable) dragAndDropEvent.getTransferable();
+			public void drop(final DragAndDropEvent dragAndDropEvent) {
+				final DataBoundTransferable t = (DataBoundTransferable) dragAndDropEvent.getTransferable();
 
 				if (t.getSourceComponent() == dragAndDropEvent.getTargetDetails().getTarget()) {
 					return;
@@ -763,21 +760,21 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 				((Table) dragAndDropEvent.getTargetDetails().getTarget()).removeListener(vcl);
 
-				Object itemIdOver = t.getItemId();
-				Set<Object> sourceItemIds = (Set<Object>) ((Table) t.getSourceComponent()).getValue();
+				final Object itemIdOver = t.getItemId();
+				final Set<Object> sourceItemIds = (Set<Object>) ((Table) t.getSourceComponent()).getValue();
 
 				if (itemIdOver != null && sourceItemIds.isEmpty()) {
 					if (((LocationViewModel) itemIdOver).isEnabled()) {
 						if (((Table) t.getSourceComponent()).getData().toString().equals(ProgramLocationsView.FAVORITES)) {
 							((Table) t.getSourceComponent()).getContainerDataSource().removeItem(itemIdOver);
-							ProgramLocationsView.this.updateNoOfEntries(ProgramLocationsView.this.favTotalEntriesLabel,
-									(Table) t.getSourceComponent());
+							ProgramLocationsView.this
+									.updateNoOfEntries(ProgramLocationsView.this.favTotalEntriesLabel, (Table) t.getSourceComponent());
 						}
 						((Table) dragAndDropEvent.getTargetDetails().getTarget()).getContainerDataSource().addItem(itemIdOver);
 					}
 				} else {
-					ProgramLocationsView.this.moveSelectedItems((Table) t.getSourceComponent(), (Table) dragAndDropEvent.getTargetDetails()
-							.getTarget());
+					ProgramLocationsView.this
+							.moveSelectedItems((Table) t.getSourceComponent(), (Table) dragAndDropEvent.getTargetDetails().getTarget());
 				}
 
 				((Table) dragAndDropEvent.getTargetDetails().getTarget()).addListener(vcl);
@@ -795,10 +792,10 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		return table;
 	}
 
-	public void addRow(LocationViewModel item, boolean atAvailableTable, Integer index) {
-		Country selectedCountry = (Country) this.countryFilter.getValue();
-		UserDefinedField selectedLocationType = (UserDefinedField) this.locationTypeFilter.getValue();
-		String locationName = (String) this.searchField.getValue();
+	public void addRow(final LocationViewModel item, final boolean atAvailableTable, final Integer index) {
+		final Country selectedCountry = (Country) this.countryFilter.getValue();
+		final UserDefinedField selectedLocationType = (UserDefinedField) this.locationTypeFilter.getValue();
+		final String locationName = (String) this.searchField.getValue();
 		if (index != null) {
 			if (this.isToBeDisplayedInAvailableLocations(item, locationName, selectedCountry, selectedLocationType)) {
 				this.availableTableContainer.addItemAt(index, item);
@@ -813,11 +810,11 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		this.updateNoOfEntries();
 	}
 
-	protected boolean isToBeDisplayedInAvailableLocations(LocationViewModel item, String locationName, Country selectedCountry,
-			UserDefinedField selectedLocationType) {
+	protected boolean isToBeDisplayedInAvailableLocations(final LocationViewModel item, final String locationName,
+			final Country selectedCountry, final UserDefinedField selectedLocationType) {
 
-		Integer cntryId = selectedCountry != null ? selectedCountry.getCntryid() : null;
-		Integer locationTypeId = selectedLocationType != null ? selectedLocationType.getFldno() : null;
+		final Integer cntryId = selectedCountry != null ? selectedCountry.getCntryid() : null;
+		final Integer locationTypeId = selectedLocationType != null ? selectedLocationType.getFldno() : null;
 
 		if (cntryId != null && !cntryId.equals(item.getCntryid())) {
 			return false;
@@ -860,7 +857,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 	}
 
 	private Integer getSelectedLocationTypeIdFromFilter() {
-		UserDefinedField udf = (UserDefinedField) this.locationTypeFilter.getValue();
+		final UserDefinedField udf = (UserDefinedField) this.locationTypeFilter.getValue();
 
 		return udf != null ? udf.getFldno() : null;
 	}
@@ -869,7 +866,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		return this.messageSource;
 	}
 
-	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+	public void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
 
@@ -877,7 +874,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		return this.favTotalEntriesLabel;
 	}
 
-	public void setFavTotalEntriesLabel(Label favTotalEntriesLabel) {
+	public void setFavTotalEntriesLabel(final Label favTotalEntriesLabel) {
 		this.favTotalEntriesLabel = favTotalEntriesLabel;
 	}
 
@@ -885,7 +882,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		return this.favSelectedEntriesLabel;
 	}
 
-	public void setFavSelectedEntriesLabel(Label favSelectedEntriesLabel) {
+	public void setFavSelectedEntriesLabel(final Label favSelectedEntriesLabel) {
 		this.favSelectedEntriesLabel = favSelectedEntriesLabel;
 	}
 
@@ -893,7 +890,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		return this.availSelectedEntriesLabel;
 	}
 
-	public void setAvailSelectedEntriesLabel(Label availSelectedEntriesLabel) {
+	public void setAvailSelectedEntriesLabel(final Label availSelectedEntriesLabel) {
 		this.availSelectedEntriesLabel = availSelectedEntriesLabel;
 	}
 
@@ -901,7 +898,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		return this.availableTable;
 	}
 
-	public void setAvailableTable(Table availableTable) {
+	public void setAvailableTable(final Table availableTable) {
 		this.availableTable = availableTable;
 	}
 
@@ -909,7 +906,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		return this.favoritesTable;
 	}
 
-	public void setFavoritesTable(Table favoritesTable) {
+	public void setFavoritesTable(final Table favoritesTable) {
 		this.favoritesTable = favoritesTable;
 	}
 
@@ -917,7 +914,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		return this.availTotalEntriesLabel;
 	}
 
-	public void setAvailTotalEntriesLabel(Label availTotalEntriesLabel) {
+	public void setAvailTotalEntriesLabel(final Label availTotalEntriesLabel) {
 		this.availTotalEntriesLabel = availTotalEntriesLabel;
 	}
 
@@ -925,7 +922,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		return this.availableTableContainer;
 	}
 
-	public void setAvailableTableContainer(BeanItemContainer<LocationViewModel> availableTableContainer) {
+	public void setAvailableTableContainer(final BeanItemContainer<LocationViewModel> availableTableContainer) {
 		this.availableTableContainer = availableTableContainer;
 	}
 
@@ -933,19 +930,19 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		return this.favoritesTableContainer;
 	}
 
-	public void setFavoritesTableContainer(BeanItemContainer<LocationViewModel> favoritesTableContainer) {
+	public void setFavoritesTableContainer(final BeanItemContainer<LocationViewModel> favoritesTableContainer) {
 		this.favoritesTableContainer = favoritesTableContainer;
 	}
 
-	public void setCountryFilter(Select countryFilter) {
+	public void setCountryFilter(final Select countryFilter) {
 		this.countryFilter = countryFilter;
 	}
 
-	public void setLocationTypeFilter(Select locationTypeFilter) {
+	public void setLocationTypeFilter(final Select locationTypeFilter) {
 		this.locationTypeFilter = locationTypeFilter;
 	}
 
-	public void setSearchField(TextField searchField) {
+	public void setSearchField(final TextField searchField) {
 		this.searchField = searchField;
 	}
 

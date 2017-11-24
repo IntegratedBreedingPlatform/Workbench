@@ -1,20 +1,14 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * <p/>
  * Generation Challenge Programme (GCP)
- *
- *
+ * <p/>
+ * <p/>
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.model.formfieldfactory;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -40,6 +34,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 /**
  * <b>Description</b>: Field factory for generating Location fields for Location class.
  * <p/>
@@ -53,7 +52,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 public class LocationFormFieldFactory extends DefaultFieldFactory {
 
 	private static final long serialVersionUID = 3560059243526106791L;
-
 
 	private Field locationName;
 	private Field locationAbbreviation;
@@ -69,22 +67,22 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
 	@SuppressWarnings("unused")
 	private static final Logger LOG = LoggerFactory.getLogger(LocationFormFieldFactory.class);
 
-	private ProgramLocationsPresenter presenter;
+	private final ProgramLocationsPresenter presenter;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	public LocationFormFieldFactory(ProgramLocationsPresenter presenter) {
+	public LocationFormFieldFactory(final ProgramLocationsPresenter presenter) {
 		this.initFields(presenter.getUDFByLocationAndLType(), presenter.getCountryList());
 		this.presenter = presenter;
 	}
 
 	@SuppressWarnings("serial")
-	private void initFields(List<UserDefinedField> udfList, List<Country> countryList) {
+	private void initFields(final List<UserDefinedField> udfList, final List<Country> countryList) {
 		Collections.sort(countryList, new Comparator<Country>() {
 
 			@Override
-			public int compare(Country o1, Country o2) {
+			public int compare(final Country o1, final Country o2) {
 				return o1.getIsoabbr().compareTo(o2.getIsoabbr());
 			}
 		});
@@ -104,9 +102,10 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
 		this.locationAbbreviation.setRequiredError("Please enter a Location Abbreviation.");
 		this.locationAbbreviation.addValidator(new StringLengthValidator("Location Abbreviation must be 1-8 characters.", 1, 8, false));
 
-		BeanContainer<String, UserDefinedField> udfBeanContainer = new BeanContainer<String, UserDefinedField>(UserDefinedField.class);
-		BeanContainer<String, Country> countryBeanContainer = new BeanContainer<String, Country>(Country.class);
-		BeanContainer<String, Location> provinceBeanContainer = new BeanContainer<String, Location>(Location.class);
+		final BeanContainer<String, UserDefinedField> udfBeanContainer =
+				new BeanContainer<String, UserDefinedField>(UserDefinedField.class);
+		final BeanContainer<String, Country> countryBeanContainer = new BeanContainer<String, Country>(Country.class);
+		final BeanContainer<String, Location> provinceBeanContainer = new BeanContainer<String, Location>(Location.class);
 
 		udfBeanContainer.setBeanIdProperty("fldno");
 		udfBeanContainer.addAll(udfList);
@@ -142,12 +141,11 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
 			private static final long serialVersionUID = -41619287191762967L;
 
 			@Override
-			public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
+			public void valueChange(final Property.ValueChangeEvent valueChangeEvent) {
 				LocationFormFieldFactory.this.province.setValue(null);
-				Object countryIdValue = LocationFormFieldFactory.this.country.getValue();
+				final Object countryIdValue = LocationFormFieldFactory.this.country.getValue();
 				if (countryIdValue != null) {
-					@SuppressWarnings("unchecked")
-					BeanContainer<String, Location> container =
+					@SuppressWarnings("unchecked") final BeanContainer<String, Location> container =
 							(BeanContainer<String, Location>) LocationFormFieldFactory.this.province.getContainerDataSource();
 					container.removeAllItems();
 					container.addAll(LocationFormFieldFactory.this.presenter.getAllProvincesByCountry((Integer) countryIdValue));
@@ -223,7 +221,7 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
 	}
 
 	@Override
-	public Field createField(Item item, Object propertyId, Component uiContext) {
+	public Field createField(final Item item, final Object propertyId, final Component uiContext) {
 		if (AddLocationForm.LOCATION_NAME.equals(propertyId)) {
 			return this.locationName;
 		} else if (AddLocationForm.LOCATION_ABBREVIATION.equals(propertyId)) {

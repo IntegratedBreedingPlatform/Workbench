@@ -1,9 +1,7 @@
 package org.generationcp.ibpworkbench.ui.form;
 
-import com.vaadin.ui.Field;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
 import junit.framework.Assert;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
@@ -14,7 +12,6 @@ import org.generationcp.middleware.pojos.UserDefinedField;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -65,11 +62,10 @@ public class AddLocationFormTest {
 
 	}
 
-
 	@Test
 	public void testAttachField() {
 
-		LocationFormFieldFactory locationFormFieldFactory = (LocationFormFieldFactory) addLocationForm.getFormFieldFactory();
+		final LocationFormFieldFactory locationFormFieldFactory = (LocationFormFieldFactory) addLocationForm.getFormFieldFactory();
 
 		Assert.assertEquals(locationFormFieldFactory.getLocationName(), addLocationForm.getGrid().getComponent(1, 0));
 		Assert.assertEquals(locationFormFieldFactory.getLocationAbbreviation(), addLocationForm.getGrid().getComponent(1, 1));
@@ -88,14 +84,15 @@ public class AddLocationFormTest {
 
 		addLocationForm.attach();
 
-		GridLayout grid = addLocationForm.getGrid();
+		final GridLayout grid = addLocationForm.getGrid();
 
 		Assert.assertEquals(String.format(AddLocationForm.REQUIRED_LABEL_FORMAT, LOC_NAME), ((Label) grid.getComponent(0, 0)).getValue());
 		Assert.assertEquals(String.format(AddLocationForm.REQUIRED_LABEL_FORMAT, LOC_ABBR), ((Label) grid.getComponent(0, 1)).getValue());
 		Assert.assertEquals(String.format(AddLocationForm.REQUIRED_LABEL_FORMAT, LOC_TYPE), ((Label) grid.getComponent(0, 2)).getValue());
 		Assert.assertEquals(String.format(AddLocationForm.LABEL_FORMAT, LOC_COUNTRY), ((Label) grid.getComponent(0, 3)).getValue());
 		Assert.assertEquals(String.format(AddLocationForm.LABEL_FORMAT, LOC_PROVINCE), ((Label) grid.getComponent(0, 4)).getValue());
-		Assert.assertEquals(String.format(AddLocationForm.LABEL_FORMAT, LOC_GEOGRAPHICAL_DETAILS), ((Label) grid.getComponent(0, 5)).getValue());
+		Assert.assertEquals(String.format(AddLocationForm.LABEL_FORMAT, LOC_GEOGRAPHICAL_DETAILS),
+				((Label) grid.getComponent(0, 5)).getValue());
 
 		Assert.assertEquals(String.format(AddLocationForm.CAPTION_FORMAT, LOC_LATITUDE), ((Label) grid.getComponent(1, 6)).getValue());
 		Assert.assertEquals(String.format(AddLocationForm.CAPTION_FORMAT, LOC_LONGITUDE), ((Label) grid.getComponent(2, 6)).getValue());
@@ -103,8 +100,6 @@ public class AddLocationFormTest {
 
 		Assert.assertEquals(LOC_CROP_ACCESSIBLE, grid.getComponent(1, 7).getCaption());
 
-
 	}
-
 
 }

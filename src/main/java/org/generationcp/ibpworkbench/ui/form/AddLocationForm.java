@@ -1,25 +1,14 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * <p/>
  * Generation Challenge Programme (GCP)
- *
- *
+ * <p/>
+ * <p/>
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.ui.form;
-
-import java.util.Arrays;
-
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.model.formfieldfactory.LocationFormFieldFactory;
-import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
-import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Alignment;
@@ -28,6 +17,15 @@ import com.vaadin.ui.Form;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.model.formfieldfactory.LocationFormFieldFactory;
+import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
+import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import java.util.Arrays;
 
 /**
  * <b>Description</b>: Custom form for adding Locations.
@@ -59,12 +57,12 @@ public class AddLocationForm extends Form {
 
 	private GridLayout grid;
 
-	private ProgramLocationsPresenter presenter;
+	private final ProgramLocationsPresenter presenter;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	public AddLocationForm(ProgramLocationsPresenter presenter) {
+	public AddLocationForm(final ProgramLocationsPresenter presenter) {
 		this.presenter = presenter;
 		this.initializeComponents();
 
@@ -83,8 +81,9 @@ public class AddLocationForm extends Form {
 		this.setComponentError(null);
 		this.setFormFieldFactory(new LocationFormFieldFactory(this.presenter));
 
-		this.setVisibleItemProperties(Arrays.asList(new String[] {LOCATION_NAME, LOCATION_ABBREVIATION, LTYPE, CNTRYID, PROVINCE_ID,
-				LATITUDE, LONGITUDE, ALTITUDE, CROP_ACCESSIBLE}));
+		this.setVisibleItemProperties(Arrays.asList(
+				new String[] {LOCATION_NAME, LOCATION_ABBREVIATION, LTYPE, CNTRYID, PROVINCE_ID, LATITUDE, LONGITUDE, ALTITUDE,
+						CROP_ACCESSIBLE}));
 
 		this.setWriteThrough(false);
 		this.setInvalidCommitted(false);
@@ -93,7 +92,7 @@ public class AddLocationForm extends Form {
 	}
 
 	@Override
-	protected void attachField(Object propertyId, Field field) {
+	protected void attachField(final Object propertyId, final Field field) {
 		field.setStyleName("hide-caption");
 		field.setCaption(null);
 		if (LOCATION_NAME.equals(propertyId)) {
@@ -128,17 +127,15 @@ public class AddLocationForm extends Form {
 		this.grid.addComponent(this.createLabel(this.messageSource.getMessage(Message.LOC_PROVINCE), false), 0, 4);
 		this.grid.addComponent(this.createLabel(this.messageSource.getMessage(Message.LOC_GEOGRAPHICAL_DETAILS), false), 0, 5);
 
-		Label lblLatitude = this.createCaption(this.messageSource.getMessage(Message.LOC_LATITUDE), false);
+		final Label lblLatitude = this.createCaption(this.messageSource.getMessage(Message.LOC_LATITUDE), false);
 		this.grid.addComponent(lblLatitude, 1, 6);
 		this.grid.setComponentAlignment(lblLatitude, Alignment.TOP_LEFT);
 
-
-		Label lblLongitude = this.createCaption(this.messageSource.getMessage(Message.LOC_LONGITUDE), false);
+		final Label lblLongitude = this.createCaption(this.messageSource.getMessage(Message.LOC_LONGITUDE), false);
 		this.grid.addComponent(lblLongitude, 2, 6);
 		this.grid.setComponentAlignment(lblLongitude, Alignment.TOP_LEFT);
 
-
-		Label lblAltitude = this.createCaption(this.messageSource.getMessage(Message.LOC_ALTITUDE), false);
+		final Label lblAltitude = this.createCaption(this.messageSource.getMessage(Message.LOC_ALTITUDE), false);
 		this.grid.addComponent(lblAltitude, 3, 6);
 		this.grid.setComponentAlignment(lblLongitude, Alignment.TOP_LEFT);
 
@@ -148,9 +145,9 @@ public class AddLocationForm extends Form {
 
 	}
 
-	protected Label createLabel(String caption, boolean required) {
+	protected Label createLabel(final String caption, final boolean required) {
 
-		Label label = new Label();
+		final Label label = new Label();
 		label.setDebugId("label");
 		label.setContentMode(Label.CONTENT_XHTML);
 		label.setWidth("220px");
@@ -165,9 +162,9 @@ public class AddLocationForm extends Form {
 
 	}
 
-	protected Label createCaption(String caption, boolean required) {
+	protected Label createCaption(final String caption, final boolean required) {
 
-		Label label = new Label();
+		final Label label = new Label();
 		label.setDebugId("label");
 		label.setContentMode(Label.CONTENT_XHTML);
 		label.setWidth("80px");
@@ -190,7 +187,5 @@ public class AddLocationForm extends Form {
 	protected void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
-
-
 
 }
