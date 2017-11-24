@@ -40,10 +40,16 @@ public class AddLocationFormTest {
 
 	private AddLocationForm addLocationForm;
 
-	@Before
-	public void setUp() {
+	private LocationFormFieldFactory locationFormFieldFactory;
 
-		addLocationForm = new AddLocationForm(programLocationsPresenter);
+	@Before
+	public void setUp() throws Exception {
+
+		locationFormFieldFactory =  new LocationFormFieldFactory(programLocationsPresenter);
+		locationFormFieldFactory.setMessageSource(messageSource);
+		locationFormFieldFactory.afterPropertiesSet();
+
+		addLocationForm = new AddLocationForm(programLocationsPresenter, locationFormFieldFactory);
 		addLocationForm.setMessageSource(messageSource);
 
 		Mockito.when(programLocationsPresenter.getUDFByLocationAndLType()).thenReturn(new ArrayList<UserDefinedField>());
@@ -63,9 +69,7 @@ public class AddLocationFormTest {
 	}
 
 	@Test
-	public void testAttachField() {
-
-		final LocationFormFieldFactory locationFormFieldFactory = (LocationFormFieldFactory) addLocationForm.getFormFieldFactory();
+	public void testAttachField() throws Exception {
 
 		Assert.assertEquals(locationFormFieldFactory.getLocationName(), addLocationForm.getGrid().getComponent(1, 0));
 		Assert.assertEquals(locationFormFieldFactory.getLocationAbbreviation(), addLocationForm.getGrid().getComponent(1, 1));

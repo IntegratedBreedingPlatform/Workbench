@@ -59,11 +59,14 @@ public class AddLocationForm extends Form {
 
 	private final ProgramLocationsPresenter presenter;
 
+	private LocationFormFieldFactory locationFormFieldFactory;
+
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	public AddLocationForm(final ProgramLocationsPresenter presenter) {
+	public AddLocationForm(final ProgramLocationsPresenter presenter, final LocationFormFieldFactory locationFormFieldFactory) {
 		this.presenter = presenter;
+		this.locationFormFieldFactory = locationFormFieldFactory;
 		this.initializeComponents();
 
 	}
@@ -79,7 +82,7 @@ public class AddLocationForm extends Form {
 		this.setItemDataSource(new BeanItem<LocationViewModel>(new LocationViewModel()));
 
 		this.setComponentError(null);
-		this.setFormFieldFactory(new LocationFormFieldFactory(this.presenter));
+		this.setFormFieldFactory(locationFormFieldFactory);
 
 		this.setVisibleItemProperties(Arrays.asList(
 				new String[] {LOCATION_NAME, LOCATION_ABBREVIATION, LTYPE, CNTRYID, PROVINCE_ID, LATITUDE, LONGITUDE, ALTITUDE,

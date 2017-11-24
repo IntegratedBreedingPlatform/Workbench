@@ -287,4 +287,8 @@ public class LocationFormFieldFactory extends DefaultFieldFactory implements Ini
 	public void afterPropertiesSet() throws Exception {
 		this.initFields(presenter.getUDFByLocationAndLType(), presenter.getCountryList());
 	}
+
+	public void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
 }
