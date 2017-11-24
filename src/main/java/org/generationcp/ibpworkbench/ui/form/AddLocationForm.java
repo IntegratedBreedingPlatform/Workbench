@@ -52,6 +52,11 @@ public class AddLocationForm extends Form {
 	public static final String ALTITUDE = "altitude";
 	public static final String CROP_ACCESSIBLE = "cropAccessible";
 
+	public static final String LABEL_FORMAT = "<b>%s</b>";
+	public static final String REQUIRED_LABEL_FORMAT = "<b>%s</b> <span style='color: red'>*</span>";
+	public static final String CAPTION_FORMAT = "<i>%s</i>";
+	public static final String REQUIRED_CAPTION_FORMAT = "<i>%s</i> <span style='color: red'>*</span>";
+
 	private GridLayout grid;
 
 	private ProgramLocationsPresenter presenter;
@@ -137,9 +142,7 @@ public class AddLocationForm extends Form {
 		this.grid.addComponent(lblAltitude, 3, 6);
 		this.grid.setComponentAlignment(lblLongitude, Alignment.TOP_LEFT);
 
-
-		this.messageSource.setCaption(this.grid.getComponent(1, 7), Message.LOC_CROP_ACCESSIBLE);
-
+		this.grid.getComponent(1, 7).setCaption(this.messageSource.getMessage(Message.LOC_CROP_ACCESSIBLE));
 
 		super.attach();
 
@@ -153,9 +156,9 @@ public class AddLocationForm extends Form {
 		label.setWidth("220px");
 
 		if (!required) {
-			label.setValue(String.format("<b>%s</b>", caption));
+			label.setValue(String.format(LABEL_FORMAT, caption));
 		} else {
-			label.setValue(String.format("<b>%s</b> <span style='color: red'>*</span>", caption));
+			label.setValue(String.format(REQUIRED_LABEL_FORMAT, caption));
 		}
 
 		return label;
@@ -170,9 +173,9 @@ public class AddLocationForm extends Form {
 		label.setWidth("80px");
 
 		if (!required) {
-			label.setValue(String.format("<i>%s</i>", caption));
+			label.setValue(String.format(CAPTION_FORMAT, caption));
 		} else {
-			label.setValue(String.format("<i>%s</i> <span style='color: red'>*</span>", caption));
+			label.setValue(String.format(REQUIRED_CAPTION_FORMAT, caption));
 		}
 
 		return label;
@@ -183,6 +186,11 @@ public class AddLocationForm extends Form {
 	protected GridLayout getGrid() {
 		return grid;
 	}
+
+	protected void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+
 
 
 }
