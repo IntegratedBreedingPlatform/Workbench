@@ -40,10 +40,9 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 	private static final String STUDY_NAME = "Study Name";
 	private static final String PLOT_ID = "Plot ID";
 	private static final String PLANT_ID = "Plant ID";
-	//private static final String GENOTYPING_DATASET = "Genotyping Dataset";
-	private static final String GENOTYPING_DATASET = "/GDMS/main/?restartApplication&selectedProjectId=1&loggedInUserId=2&dataSetId=";
+	private static final String GENOTYPING_DATASET = "/GDMS/main/?restartApplication&selectedProjectId=1&loggedInUserId=2&datasetId=";
 
-	public static final String GENOTYPING_DATA = "genotyping dataset";
+	private static final String GENOTYPING_DATA = "genotyping dataset";
 	private static final String PARENT_WINDOW = "_parent";
 
 	private static final String URL_STUDY_NURSERY = "/Fieldbook/NurseryManager/editNursery/";
@@ -126,8 +125,8 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 			this.sampleTable.setPageLength(10);
 		}else{
 			this.sampleTable.setPageLength(sampleList.size());
-
 		}
+
 		for (final SampleGermplasmDetailDTO sample : sampleList) {
 			final StudyReference study = sample.getStudy();
 			final ExternalResource urlToOpenStudy = getURLStudy(study, contextUtil);
