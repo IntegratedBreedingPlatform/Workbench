@@ -207,7 +207,7 @@ public class GermplasmDetail extends Accordion implements InitializingBean, Inte
 				}
 			} else if (((VerticalLayout) tab.getComponent()).getData().equals(GermplasmDetail.ELEVEN_TAB)) {
 				if (this.layoutSamples.getComponentCount() == 0) {
-					this.layoutSamples.addComponent(new SampleInfoComponent(this.gid, this.fromUrl));
+					this.layoutSamples.addComponent(new SampleInfoComponent(this.gid));
 					this.layoutSamples.setMargin(true);
 				}
 			} else if (((VerticalLayout) tab.getComponent()).getData().equals(GermplasmDetail.TWELVE_TAB)) {

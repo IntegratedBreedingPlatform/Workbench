@@ -515,7 +515,7 @@ public class GermplasmDetailsComponentTree extends VerticalLayout implements Int
 	private void showSamples() {
 		if (this.samplesComponent == null) {
 			this.samplesComponent =
-				new SampleInfoComponent( this.gid, true);
+				new SampleInfoComponent( this.gid);
 			this.samplesTreeItem.removeChild(this.tempSamplesTreeItemChild);
 			this.samplesTreeItem.addChild(this.samplesComponent);
 		}
