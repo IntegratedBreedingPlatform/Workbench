@@ -1,10 +1,19 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.generationcp.commons.exceptions.InternationalizableException;
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.TreeTable;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -30,19 +39,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TreeTable;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.Reindeer;
+import java.util.ArrayList;
+import java.util.List;
 
 @Configurable
 public class SelectStudyDialog extends BaseSubWindow implements InitializingBean, InternationalizableComponent {
@@ -269,7 +267,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 
 			final Object[] cells = new Object[3];
 			cells[0] = " " + fr.getName();
-			cells[1] = study != null ? study.getTitle() : "";
+			cells[1] = study != null ? study.getDescription() : "";
 			cells[2] = study != null ? study.getObjective() : "";
 
 			final Object itemId = tr.addFolderReferenceNode(cells, fr);
@@ -350,7 +348,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 			}
 
 			cells[0] = " " + r.getName();
-			cells[1] = s != null ? s.getTitle() : "";
+			cells[1] = s != null ? s.getDescription() : "";
 			cells[2] = s != null ? s.getObjective() : "";
 
 			if (r.isFolder()) {
@@ -388,8 +386,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 
 	}
 
-	public void queryChildrenDatasets(final Reference parentFolderReference, final TreeTable tr)
-			throws InternationalizableException {
+	public void queryChildrenDatasets(final Reference parentFolderReference, final TreeTable tr) {
 
 		List<DatasetReference> childrenReference = new ArrayList<>();
 

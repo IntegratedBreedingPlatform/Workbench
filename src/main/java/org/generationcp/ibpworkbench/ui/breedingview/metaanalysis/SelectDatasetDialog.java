@@ -214,7 +214,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 			}
 			Object[] cells = new Object[3];
 			cells[0] = " " + fr.getName();
-			cells[1] = study != null ? study.getTitle() : "";
+			cells[1] = study != null ? study.getDescription() : "";
 			cells[2] = study != null ? study.getObjective() : "";
 
 			Object itemId = tr.addFolderReferenceNode(cells, fr);
@@ -258,7 +258,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 
 	public void queryChildrenStudies(Reference parentFolderReference, BreedingViewTreeTable tr) {
 
-		List<Reference> childrenReference = new ArrayList<Reference>();
+		List<Reference> childrenReference = new ArrayList<>();
 
 		try {
 
@@ -286,7 +286,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 			}
 
 			cells[0] = " " + r.getName();
-			cells[1] = s != null ? s.getTitle() : "";
+			cells[1] = s != null ? s.getDescription() : "";
 			cells[2] = s != null ? s.getObjective() : "";
 
 			if (r.isFolder()) {
@@ -326,7 +326,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 
 	public void queryChildrenDatasets(Reference parentFolderReference, TreeTable tr) {
 
-		List<DatasetReference> childrenReference = new ArrayList<DatasetReference>();
+		List<DatasetReference> childrenReference = new ArrayList<>();
 
 		try {
 
@@ -363,7 +363,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 
 	private boolean hasChildStudy(int folderId) {
 
-		List<Reference> children = new ArrayList<Reference>();
+		List<Reference> children = new ArrayList<>();
 
 		try {
 			children = studyDataManager.getChildrenOfFolder(folderId, this.currentProject.getUniqueID(), StudyType.nurseriesAndTrials());
@@ -371,14 +371,14 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 			SelectDatasetDialog.LOG.error(e.getMessage(), e);
 			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
 					this.messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
-			children = new ArrayList<Reference>();
+			children = new ArrayList<>();
 		}
 		return !children.isEmpty();
 	}
 
 	private boolean hasChildDataset(int folderId) {
 
-		List<DatasetReference> children = new ArrayList<DatasetReference>();
+		List<DatasetReference> children = new ArrayList<>();
 
 		try {
 			children = studyDataManager.getDatasetReferences(folderId);
@@ -386,7 +386,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 			SelectDatasetDialog.LOG.error(e.getMessage(), e);
 			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
 					this.messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
-			children = new ArrayList<DatasetReference>();
+			children = new ArrayList<>();
 		}
 		return !children.isEmpty();
 	}
