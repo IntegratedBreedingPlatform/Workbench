@@ -18,6 +18,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.commons.vaadin.ui.ComponentTree;
 import org.generationcp.commons.vaadin.ui.ComponentTreeItem;
+import org.generationcp.ibpworkbench.sample.SampleInfoComponent;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -36,6 +37,7 @@ public class GermplasmDetailsComponentTree extends VerticalLayout implements Int
 	private ComponentTreeItem namesTreeItem;
 	private ComponentTreeItem inventoryInformationTreeItem;
 	private ComponentTreeItem listsTreeItem;
+	private ComponentTreeItem samplesTreeItem;
 	private ComponentTreeItem studiesTreeItem;
 	private ComponentTreeItem generationHistoryTreeItem;
 	private ComponentTreeItem managementNeighborsTreeItem;
@@ -43,11 +45,13 @@ public class GermplasmDetailsComponentTree extends VerticalLayout implements Int
 	private ComponentTreeItem maintenanceNeighborhoodTreeItem;
 	private ComponentTreeItem groupRelativesTreeItem;
 
+
 	private ComponentTreeItem tempAttributesChild;
 	private ComponentTreeItem tempPedigreeTreeItemChild;
 	private ComponentTreeItem tempNamesChild;
 	private ComponentTreeItem tempInventoryChild;
 	private ComponentTreeItem tempListsTreeItemChild;
+	private ComponentTreeItem tempSamplesTreeItemChild;
 	private ComponentTreeItem tempStudiesTreeItemChild;
 	private ComponentTreeItem tempGenerationHistoryTreeItemChild;
 	private ComponentTreeItem tempManagementNeighborsTreeItemChild;
@@ -61,6 +65,7 @@ public class GermplasmDetailsComponentTree extends VerticalLayout implements Int
 	private GermplasmNamesComponent namesComponent;
 	private InventoryViewComponent inventoryViewComponent;
 	private GermplasmListComponent listsComponent;
+	private SampleInfoComponent samplesComponent;
 	private GermplasmStudyInfoComponent studiesComponent;
 	private GermplasmGenerationHistoryComponent generationHistoryComponent;
 	private GermplasmManagementNeighborsComponent managementNeighborsComponent;
@@ -121,8 +126,13 @@ public class GermplasmDetailsComponentTree extends VerticalLayout implements Int
 		this.listsTreeItem =
 				this.componentTree.addChild(ComponentTreeItem.createHeaderComponent(this.messageSource.getMessage(Message.LISTS_LABEL)));
 		this.tempListsTreeItemChild = this.listsTreeItem.addChild(new Label());
+
+		this.samplesTreeItem =
+				this.componentTree.addChild(ComponentTreeItem.createHeaderComponent(this.messageSource.getMessage(Message.SAMPLES)));
+		this.tempSamplesTreeItemChild = this.samplesTreeItem.addChild(new Label());
+
 		this.studiesTreeItem =
-				this.componentTree.addChild(ComponentTreeItem.createHeaderComponent(this.messageSource.getMessage(Message.STUDIES)));
+			this.componentTree.addChild(ComponentTreeItem.createHeaderComponent(this.messageSource.getMessage(Message.STUDIES)));
 		this.tempStudiesTreeItemChild = this.studiesTreeItem.addChild(new Label());
 		this.generationHistoryTreeItem =
 				this.componentTree.addChild(ComponentTreeItem.createHeaderComponent(this.messageSource
@@ -152,6 +162,7 @@ public class GermplasmDetailsComponentTree extends VerticalLayout implements Int
 		this.namesComponent = null;
 		this.inventoryViewComponent = null;
 		this.listsComponent = null;
+		this.samplesComponent = null;
 		this.studiesComponent = null;
 		this.generationHistoryComponent = null;
 		this.managementNeighborsComponent = null;
@@ -285,6 +296,29 @@ public class GermplasmDetailsComponentTree extends VerticalLayout implements Int
 			@Override
 			public void buttonClick(ClickEvent event) {
 				GermplasmDetailsComponentTree.this.showLists();
+			}
+		});
+
+		this.samplesTreeItem.addListener(new LayoutClickListener() {
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void layoutClick(LayoutClickEvent event) {
+				if (event.getRelativeY() < GermplasmDetailsComponentTree.TOGGABLE_Y_COORDINATE) {
+					GermplasmDetailsComponentTree.this.showSamples();
+					GermplasmDetailsComponentTree.this.samplesTreeItem.toggleChild();
+				}
+			}
+		});
+
+		this.samplesTreeItem.addExpanderClickListener(new Button.ClickListener() {
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				GermplasmDetailsComponentTree.this.showSamples();
 			}
 		});
 
@@ -475,6 +509,15 @@ public class GermplasmDetailsComponentTree extends VerticalLayout implements Int
 					new GermplasmStudyInfoComponent(new GermplasmIndexContainer(this.germplasmQueries), this.germplasmDetailModel, true);
 			this.studiesTreeItem.removeChild(this.tempStudiesTreeItemChild);
 			this.studiesTreeItem.addChild(this.studiesComponent);
+		}
+	}
+
+	private void showSamples() {
+		if (this.samplesComponent == null) {
+			this.samplesComponent =
+				new SampleInfoComponent( this.gid, true);
+			this.samplesTreeItem.removeChild(this.tempSamplesTreeItemChild);
+			this.samplesTreeItem.addChild(this.samplesComponent);
 		}
 	}
 
