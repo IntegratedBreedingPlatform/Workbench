@@ -40,7 +40,7 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 	private static final String STUDY_NAME = "Study Name";
 	private static final String PLOT_ID = "Plot ID";
 	private static final String PLANT_ID = "Plant ID";
-	private static final String GENOTYPING_DATASET = "/GDMS/main/?restartApplication&selectedProjectId=1&loggedInUserId=2&datasetId=";
+	private static final String GENOTYPING_DATASET = "/GDMS/main/?restartApplication&datasetId=";
 
 	private static final String GENOTYPING_DATA = "genotyping dataset";
 	private static final String PARENT_WINDOW = "_parent";
