@@ -34,6 +34,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.sample.SampleInfoComponent;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
@@ -58,6 +59,7 @@ public class GermplasmDetail extends Accordion implements InitializingBean, Inte
 	private static final int TEN_TAB = 10;
 	private static final int ELEVEN_TAB = 11;
 	private static final int TWELVE_TAB = 12;
+	private static final int THIRTEEN_TAB = 13;
 	public final static String VIEW_PEDIGREE_GRAPH_ID = "View Pedigree Graph";
 	public final static String INCLUDE_DERIVATIVE_LINES = "Include Derivative Lines";
 	public final static String REFRESH_BUTTON_ID = "Refresh";
@@ -70,6 +72,7 @@ public class GermplasmDetail extends Accordion implements InitializingBean, Inte
 	private VerticalLayout layoutGenerationHistory;
 	private VerticalLayout layoutPedigreeTree;
 	private VerticalLayout layoutGermplasmList;
+	private VerticalLayout layoutSamples;
 	private VerticalLayout layoutGroupRelatives;
 	private VerticalLayout layoutManagementNeighbors;
 	private VerticalLayout layoutInventoryInformation;
@@ -203,12 +206,17 @@ public class GermplasmDetail extends Accordion implements InitializingBean, Inte
 					this.layoutInventoryInformation.setMargin(true);
 				}
 			} else if (((VerticalLayout) tab.getComponent()).getData().equals(GermplasmDetail.ELEVEN_TAB)) {
-				if (this.layoutGermplasmStudyInformation.getComponentCount() == 0) {
-					this.layoutGermplasmStudyInformation.addComponent(new GermplasmStudyInfoComponent(this.dataIndexContainer,
-							this.gDetailModel, this.fromUrl));
-					this.layoutGermplasmStudyInformation.setMargin(true);
+				if (this.layoutSamples.getComponentCount() == 0) {
+					this.layoutSamples.addComponent(new SampleInfoComponent(this.gid));
+					this.layoutSamples.setMargin(true);
 				}
 			} else if (((VerticalLayout) tab.getComponent()).getData().equals(GermplasmDetail.TWELVE_TAB)) {
+				if (this.layoutGermplasmStudyInformation.getComponentCount() == 0) {
+					this.layoutGermplasmStudyInformation.addComponent(new GermplasmStudyInfoComponent(this.dataIndexContainer,
+						this.gDetailModel, this.fromUrl));
+					this.layoutGermplasmStudyInformation.setMargin(true);
+				}
+			} else if (((VerticalLayout) tab.getComponent()).getData().equals(GermplasmDetail.THIRTEEN_TAB)) {
 				if (this.layoutMaintenanceNeighborhood.getComponentCount() == 0) {
 					this.layoutMaintenanceNeighborhood.addComponent(new GermplasmMaintenanceNeighborhoodComponent(this.gid, this.qQuery,
 							this.dataResultIndexContainer, this.mainLayout, this.tabSheet));
@@ -281,11 +289,14 @@ public class GermplasmDetail extends Accordion implements InitializingBean, Inte
 		this.layoutInventoryInformation = new VerticalLayout();
 		this.layoutInventoryInformation.setData(GermplasmDetail.TEN_TAB);
 
+		this.layoutSamples = new VerticalLayout();
+		this.layoutSamples.setData(GermplasmDetail.ELEVEN_TAB);
+
 		this.layoutGermplasmStudyInformation = new VerticalLayout();
-		this.layoutGermplasmStudyInformation.setData(GermplasmDetail.ELEVEN_TAB);
+		this.layoutGermplasmStudyInformation.setData(GermplasmDetail.TWELVE_TAB);
 
 		this.layoutMaintenanceNeighborhood = new VerticalLayout();
-		this.layoutMaintenanceNeighborhood.setData(GermplasmDetail.TWELVE_TAB);
+		this.layoutMaintenanceNeighborhood.setData(GermplasmDetail.THIRTEEN_TAB);
 
 		this.layoutPedigreeTree.setMargin(true);
 
@@ -301,6 +312,7 @@ public class GermplasmDetail extends Accordion implements InitializingBean, Inte
 		this.addTab(this.layoutMaintenanceNeighborhood, this.messageSource.getMessage(Message.MAINTENANCE_NEIGHBORHOOD_LABEL));
 		this.addTab(this.layoutInventoryInformation, this.messageSource.getMessage(Message.INVENTORY_INFORMATION_LABEL));
 		this.addTab(this.layoutGermplasmStudyInformation, this.messageSource.getMessage(Message.GERMPLASM_STUDY_INFORMATION_LABEL));
+		this.addTab(this.layoutSamples, this.messageSource.getMessage(Message.SAMPLES));
 
 		this.addListener(new GermplasmSelectedTabChangeListener(this));
 	}
