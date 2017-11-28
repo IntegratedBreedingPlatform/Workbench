@@ -46,7 +46,7 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 	private static final String PARENT_WINDOW = "_parent";
 
 	private static final String URL_STUDY_NURSERY = "/Fieldbook/NurseryManager/editNursery/";
-	private static final String[] URL_STUDY_TRIAL = {"/Fieldbook/TrialManager/openTrial/","#/trialSettings"};
+	private static final String URL_STUDY_TRIAL = "/Fieldbook/TrialManager/openTrial/%s#/trialSettings";
 
 
 	private final Integer gid;
@@ -143,8 +143,8 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 				linkGenotypingDataButton.setDebugId("linkGenotypingDataButton");
 				linkGenotypingDataButton.addStyleName(BaseTheme.BUTTON_LINK);
 				horizontalLayoutForDatasetButton.addComponent(linkGenotypingDataButton);
-				--total;
-				if (total != 0) {
+
+				if (--total != 0) {
 					horizontalLayoutForDatasetButton.addComponent(new Label(","));
 				}
 			}
@@ -174,7 +174,7 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 		if (study.getStudyType().getName().equals(StudyType.N.name())) {
 			return new ExternalResource(URL_STUDY_NURSERY + study.getId() + aditionalParameters);
 		}
-		return new ExternalResource(URL_STUDY_TRIAL[0] + study.getId() + aditionalParameters + URL_STUDY_TRIAL[1]);
+		return new ExternalResource(String.format(URL_STUDY_TRIAL, study.getId() + aditionalParameters));
 	}
 
 	public Table getSampleTable() {
