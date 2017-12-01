@@ -78,18 +78,26 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 	private static final String ALTITUDE = "altitude";
 	private static final String LTYPE_STR = "ltypeStr";
 
+	private static final String LOCATION_ID = "locationId";
+	private static final String PROVINCE = "provinceName";
+	private static final String COUNTRY = "cntryName";
+
+
 	static {
-		TABLE_COLUMNS = new LinkedHashMap<String, String>();
+		TABLE_COLUMNS = new LinkedHashMap<>();
 		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.SELECT, "<span class='glyphicon glyphicon-ok'></span>");
 		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.LOCATION_NAME, "Name");
 		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.LOCATION_ABBREVIATION, "abbr.");
+		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.LOCATION_ID, "Location id");
 		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.PROGRAM_SPECIFIC, "Program Specific");
+		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.COUNTRY, "Country");
+		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.PROVINCE, "Province");
 		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.LATITUDE, "Lat");
 		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.LONGITUDE, "Long");
 		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.ALTITUDE, "Alt");
 		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.LTYPE_STR, "Type");
 
-		TABLE_COLUMN_SIZES = new HashMap<String, Integer>();
+		TABLE_COLUMN_SIZES = new HashMap<>();
 		ProgramLocationsView.TABLE_COLUMN_SIZES.put(ProgramLocationsView.SELECT, 20);
 		ProgramLocationsView.TABLE_COLUMN_SIZES.put(ProgramLocationsView.LOCATION_ABBREVIATION, 80);
 		ProgramLocationsView.TABLE_COLUMN_SIZES.put(ProgramLocationsView.LTYPE_STR, 240);
@@ -165,9 +173,11 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 		// TABLES!
 		this.availableTable = this.buildCustomTable(this.availableSelectAll, this.availTotalEntriesLabel, this.availSelectedEntriesLabel);
+		this.availableTable.setDebugId("availableTable");
 		this.availableTable.setData(ProgramLocationsView.AVAILABLE);
 
 		this.favoritesTable = this.buildCustomTable(this.favoriteSelectAll, this.favTotalEntriesLabel, this.favSelectedEntriesLabel);
+		this.favoritesTable.setDebugId("favoritesTable");
 		this.favoritesTable.setData(ProgramLocationsView.FAVORITES);
 
 		this.addToFavoriteBtn = new Button("Add to Favorite Locations");
@@ -216,7 +226,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 			@Override
 			public void buttonClick(final ClickEvent clickEvent) {
 				clickEvent.getComponent().getWindow()
-						.addWindow(new AddLocationsWindow(ProgramLocationsView.this, ProgramLocationsView.this.presenter));
+						.addWindow(new AddLocationsWindow(ProgramLocationsView.this.presenter));
 			}
 		});
 
@@ -431,7 +441,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 	private HorizontalLayout buildLocationTableLabels(final Label totalEntries, final Label selectedEntries) {
 		final HorizontalLayout layout = new HorizontalLayout();
-		layout.setDebugId("layout");
+		layout.setDebugId("buildLocationTableLabels_layout");
 		layout.setSpacing(true);
 		layout.setWidth("300px");
 
@@ -501,7 +511,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 	}
 
 	private void initializeValues() {
-		final BeanItemContainer<Country> countryContainer = new BeanItemContainer<Country>(Country.class);
+		final BeanItemContainer<Country> countryContainer = new BeanItemContainer<>(Country.class);
 		final Country nullItem = new Country();
 		nullItem.setCntryid(0);
 		nullItem.setIsoabbr("All Countries");
