@@ -17,9 +17,12 @@ public class LocationViewModel implements BeanFormState {
 	private String ltypeStr;
 
 	private Integer cntryid;
-	private Integer provinceId;
-
+	private String cntryName;
 	private String cntryFullName;
+
+	private Integer provinceId;
+	private String provinceName;
+
 	private Boolean isSelected = false;
 	private Boolean isEnabled = true;
 
@@ -214,5 +217,21 @@ public class LocationViewModel implements BeanFormState {
 
 	public void setCropAccessible(final Boolean cropAccessible) {
 		this.cropAccessible = cropAccessible;
+	}
+
+	public String getCntryName() {
+		return cntryName;
+	}
+
+	public void setCntryName(String cntryName) {
+		this.cntryName = cntryName;
+	}
+
+	public String getProvinceName() {
+		return provinceName;
+	}
+
+	public void setProvinceName(String provinceName) {
+		this.provinceName = provinceName;
 	}
 }
