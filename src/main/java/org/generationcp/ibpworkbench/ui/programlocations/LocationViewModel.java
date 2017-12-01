@@ -111,7 +111,7 @@ public class LocationViewModel implements BeanFormState {
 	}
 
 	public static List<LocationViewModel> generateRandomData(final int itemCount) {
-		final List<LocationViewModel> list = new ArrayList<LocationViewModel>();
+		final List<LocationViewModel> list = new ArrayList<>();
 
 		final PodamFactory factory = new PodamFactoryImpl();
 
@@ -124,8 +124,10 @@ public class LocationViewModel implements BeanFormState {
 
 	@Override
 	public String toString() {
-		return "LocationViewModel: [locationId=" + this.locationId + ", locationName=" + this.locationName + ", locationAbbreviation="
-				+ this.locationAbbreviation + ", ltypeStr=" + this.ltypeStr + ", cntryFullName=" + this.cntryFullName + "]";
+		return new StringBuffer("LocationViewModel: [locationId=").append(this.locationId).append(", locationName=")
+			.append(this.locationName).append(", locationAbbreviation=").append(this.locationAbbreviation).append(", ltypeStr=")
+			.append(this.ltypeStr).append(", cntryFullName=").append(this.cntryFullName).append(", cntryName=").append(this.cntryName)
+			.append(", provinceName=").append(this.provinceName).append(", programUUID=").append(this.programUUID).append("]").toString();
 	}
 
 	@Override
@@ -223,7 +225,7 @@ public class LocationViewModel implements BeanFormState {
 		return cntryName;
 	}
 
-	public void setCntryName(String cntryName) {
+	public void setCntryName(final String cntryName) {
 		this.cntryName = cntryName;
 	}
 
@@ -231,7 +233,7 @@ public class LocationViewModel implements BeanFormState {
 		return provinceName;
 	}
 
-	public void setProvinceName(String provinceName) {
+	public void setProvinceName(final String provinceName) {
 		this.provinceName = provinceName;
 	}
 }
