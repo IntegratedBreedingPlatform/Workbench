@@ -11,13 +11,6 @@
 
 package org.generationcp.ibpworkbench.ui.programlocations;
 
-import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.commons.vaadin.ui.BaseSubWindow;
-import org.generationcp.ibpworkbench.actions.SaveNewLocationAction;
-import org.generationcp.ibpworkbench.model.formfieldfactory.LocationFormFieldFactory;
-import org.generationcp.ibpworkbench.ui.form.AddLocationForm;
-import org.generationcp.middleware.manager.api.LocationDataManager;
-
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -26,6 +19,11 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.ui.BaseSubWindow;
+import org.generationcp.ibpworkbench.actions.SaveNewLocationAction;
+import org.generationcp.ibpworkbench.model.formfieldfactory.LocationFormFieldFactory;
+import org.generationcp.ibpworkbench.ui.form.AddLocationForm;
 
 /**
  * @author Jeffrey Morales, Joyce Avestro
@@ -46,12 +44,8 @@ public class AddLocationsWindow extends BaseSubWindow {
 	private VerticalLayout layout;
 
 	private final ProgramLocationsPresenter programLocationsPresenter;
-	private final ProgramLocationsView programLocationsView;
 
-	private LocationDataManager ldm;
-
-	public AddLocationsWindow(ProgramLocationsView programLocationsView, ProgramLocationsPresenter programLocationsPresenter) {
-		this.programLocationsView = programLocationsView;
+	public AddLocationsWindow(final ProgramLocationsPresenter programLocationsPresenter) {
 		this.programLocationsPresenter = programLocationsPresenter;
 
 		this.assemble();
@@ -61,12 +55,6 @@ public class AddLocationsWindow extends BaseSubWindow {
 
 		this.addLocationForm = new AddLocationForm(this.programLocationsPresenter, new LocationFormFieldFactory(this.programLocationsPresenter));
 		this.addLocationForm.setDebugId("addLocationForm");
-
-		this.cancelButton = new Button("Cancel");
-		this.cancelButton.setDebugId("cancelButton");
-		this.addLocationButton = new Button("Save");
-		this.addLocationButton.setDebugId("addLocationButton");
-		this.addLocationButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 		this.buttonArea = this.layoutButtonArea();
 	}
 
@@ -79,18 +67,17 @@ public class AddLocationsWindow extends BaseSubWindow {
 		this.setCaption("Add New Location");
 
 		this.layout = new VerticalLayout();
-		this.layout.setDebugId("layout");
+		this.layout.setDebugId("AddLocationsWindow_layout");
 		this.layout.setWidth("100%");
-		this.layout.setHeight("420px");
+		this.layout.setHeight("450px");
 
 		final Panel p = new Panel();
-		p.setDebugId("p");
+		p.setDebugId("AddLocationsWindow_p");
 		p.setStyleName("form-panel");
 		p.setSizeFull();
 
 		final VerticalLayout vl = new VerticalLayout();
-		vl.setDebugId("vl");
-		vl.setSizeFull();
+		vl.setDebugId("AddLocationsWindow_vl");
 		vl.addComponent(new Label("<i><span style='color:red; font-weight:bold'>*</span> indicates a mandatory field.</i>",
 				Label.CONTENT_XHTML));
 		vl.addComponent(this.addLocationForm);
@@ -129,7 +116,7 @@ public class AddLocationsWindow extends BaseSubWindow {
 
 	protected Component layoutButtonArea() {
 		HorizontalLayout buttonLayout = new HorizontalLayout();
-		buttonLayout.setDebugId("buttonLayout");
+		buttonLayout.setDebugId("addLocationForm_buttonLayout");
 		buttonLayout.setSpacing(true);
 		buttonLayout.setMargin(true, false, false, false);
 
