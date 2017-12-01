@@ -1,22 +1,20 @@
-
 package org.generationcp.ibpworkbench.ui.programlocations;
+
+import org.generationcp.middleware.pojos.BeanFormState;
+import uk.co.jemos.podam.api.PodamFactory;
+import uk.co.jemos.podam.api.PodamFactoryImpl;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.generationcp.middleware.pojos.BeanFormState;
-
-import uk.co.jemos.podam.api.PodamFactory;
-import uk.co.jemos.podam.api.PodamFactoryImpl;
 
 public class LocationViewModel implements BeanFormState {
 
 	private Integer locationId;
 	private String locationName = "";
-	public String locationAbbreviation = "";
+	private String locationAbbreviation = "";
 
-	public Integer ltype;
-	public String ltypeStr;
+	private Integer ltype;
+	private String ltypeStr;
 
 	private Integer cntryid;
 	private Integer provinceId;
@@ -29,24 +27,27 @@ public class LocationViewModel implements BeanFormState {
 	private Double longitude;
 	private Double altitude;
 
+	private String programUUID;
+
+	private Boolean cropAccessible = true;
+
 	public LocationViewModel() {
+		// for unit testing only
 	}
 
 	public Integer getLtype() {
 		return this.ltype;
 	}
 
-	public void setLtype(Integer ltype) {
+	public void setLtype(final Integer ltype) {
 		this.ltype = ltype;
 	}
-
-
 
 	public Integer getLocationId() {
 		return this.locationId;
 	}
 
-	public void setLocationId(Integer locationId) {
+	public void setLocationId(final Integer locationId) {
 		this.locationId = locationId;
 	}
 
@@ -54,7 +55,7 @@ public class LocationViewModel implements BeanFormState {
 		return this.locationName;
 	}
 
-	public void setLocationName(String locationName) {
+	public void setLocationName(final String locationName) {
 		this.locationName = locationName;
 	}
 
@@ -62,7 +63,7 @@ public class LocationViewModel implements BeanFormState {
 		return this.locationAbbreviation;
 	}
 
-	public void setLocationAbbreviation(String locationAbbreviation) {
+	public void setLocationAbbreviation(final String locationAbbreviation) {
 		this.locationAbbreviation = locationAbbreviation;
 	}
 
@@ -70,7 +71,7 @@ public class LocationViewModel implements BeanFormState {
 		return this.ltypeStr;
 	}
 
-	public void setLtypeStr(String ltypeStr) {
+	public void setLtypeStr(final String ltypeStr) {
 		this.ltypeStr = ltypeStr;
 	}
 
@@ -78,7 +79,7 @@ public class LocationViewModel implements BeanFormState {
 		return this.cntryFullName;
 	}
 
-	public void setCntryFullName(String cntryFullName) {
+	public void setCntryFullName(final String cntryFullName) {
 		this.cntryFullName = cntryFullName;
 	}
 
@@ -86,7 +87,7 @@ public class LocationViewModel implements BeanFormState {
 		return this.latitude;
 	}
 
-	public void setLatitude(Double latitude) {
+	public void setLatitude(final Double latitude) {
 		this.latitude = latitude;
 	}
 
@@ -94,7 +95,7 @@ public class LocationViewModel implements BeanFormState {
 		return this.longitude;
 	}
 
-	public void setLongitude(Double longitude) {
+	public void setLongitude(final Double longitude) {
 		this.longitude = longitude;
 	}
 
@@ -102,14 +103,14 @@ public class LocationViewModel implements BeanFormState {
 		return this.altitude;
 	}
 
-	public void setAltitude(Double altitude) {
+	public void setAltitude(final Double altitude) {
 		this.altitude = altitude;
 	}
 
-	public static List<LocationViewModel> generateRandomData(int itemCount) {
-		List<LocationViewModel> list = new ArrayList<LocationViewModel>();
+	public static List<LocationViewModel> generateRandomData(final int itemCount) {
+		final List<LocationViewModel> list = new ArrayList<LocationViewModel>();
 
-		PodamFactory factory = new PodamFactoryImpl();
+		final PodamFactory factory = new PodamFactoryImpl();
 
 		for (int i = 0; i < itemCount; i++) {
 			list.add(factory.manufacturePojo(LocationViewModel.class));
@@ -130,7 +131,7 @@ public class LocationViewModel implements BeanFormState {
 	}
 
 	@Override
-	public void setActive(Boolean val) {
+	public void setActive(final Boolean val) {
 		this.isSelected = val;
 	}
 
@@ -138,7 +139,7 @@ public class LocationViewModel implements BeanFormState {
 		return this.cntryid;
 	}
 
-	public void setCntryid(Integer cntryid) {
+	public void setCntryid(final Integer cntryid) {
 		this.cntryid = cntryid;
 	}
 
@@ -146,7 +147,7 @@ public class LocationViewModel implements BeanFormState {
 		return this.provinceId;
 	}
 
-	public void setProvinceId(Integer provinceId) {
+	public void setProvinceId(final Integer provinceId) {
 		this.provinceId = provinceId;
 	}
 
@@ -154,7 +155,7 @@ public class LocationViewModel implements BeanFormState {
 		return this.isSelected;
 	}
 
-	public void setSelected(Boolean selected) {
+	public void setSelected(final Boolean selected) {
 		this.isSelected = selected;
 	}
 
@@ -164,7 +165,7 @@ public class LocationViewModel implements BeanFormState {
 	}
 
 	@Override
-	public void setEnabled(Boolean val) {
+	public void setEnabled(final Boolean val) {
 		this.isEnabled = val;
 
 	}
@@ -178,7 +179,7 @@ public class LocationViewModel implements BeanFormState {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -188,7 +189,7 @@ public class LocationViewModel implements BeanFormState {
 		if (this.getClass() != obj.getClass()) {
 			return false;
 		}
-		LocationViewModel other = (LocationViewModel) obj;
+		final LocationViewModel other = (LocationViewModel) obj;
 		if (this.locationId == null) {
 			if (other.locationId != null) {
 				return false;
@@ -199,4 +200,19 @@ public class LocationViewModel implements BeanFormState {
 		return true;
 	}
 
+	public String getProgramUUID() {
+		return programUUID;
+	}
+
+	public void setProgramUUID(final String programUUID) {
+		this.programUUID = programUUID;
+	}
+
+	public Boolean getCropAccessible() {
+		return cropAccessible;
+	}
+
+	public void setCropAccessible(final Boolean cropAccessible) {
+		this.cropAccessible = cropAccessible;
+	}
 }

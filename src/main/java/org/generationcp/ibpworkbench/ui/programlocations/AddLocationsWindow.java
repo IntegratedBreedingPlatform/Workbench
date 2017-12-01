@@ -14,6 +14,7 @@ package org.generationcp.ibpworkbench.ui.programlocations;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.ibpworkbench.actions.SaveNewLocationAction;
+import org.generationcp.ibpworkbench.model.formfieldfactory.LocationFormFieldFactory;
 import org.generationcp.ibpworkbench.ui.form.AddLocationForm;
 import org.generationcp.middleware.manager.api.LocationDataManager;
 
@@ -58,7 +59,7 @@ public class AddLocationsWindow extends BaseSubWindow {
 
 	protected void initializeComponents() {
 
-		this.addLocationForm = new AddLocationForm(this.programLocationsPresenter);
+		this.addLocationForm = new AddLocationForm(this.programLocationsPresenter, new LocationFormFieldFactory(this.programLocationsPresenter));
 		this.addLocationForm.setDebugId("addLocationForm");
 
 		this.cancelButton = new Button("Cancel");
