@@ -89,7 +89,7 @@ public class StudyDetailComponent extends GridLayout implements InitializingBean
 			study = this.studyDataManager.getStudy(this.studyId);
 
 			this.studyName = new Label(this.setStudyDetailValue(study.getName()));
-			this.studyTitle = new Label(this.setStudyDetailValue(study.getTitle()));
+			this.studyTitle = new Label(this.setStudyDetailValue(study.getDescription()));
 			this.studyObjective = new Label(this.setStudyDetailValue(study.getObjective()));
 			this.studyType = new Label(this.setStudyDetailValue(study.getType().getName()));
 			this.studyStartDate = new Label(this.setStudyDetailValue(String.valueOf(study.getStartDate())));

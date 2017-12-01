@@ -90,7 +90,7 @@ public class StudyDetailsQuery implements Query {
 					value = studyDetails.getStudyName();
 					break;
 				case 1:
-					value = studyDetails.getTitle();
+					value = studyDetails.getDescription();
 					break;
 				case 2:
 					value = studyDetails.getObjective();
@@ -162,7 +162,7 @@ public class StudyDetailsQuery implements Query {
 		if (this.size == -1) {
 			try {
 				if (this.studyType != null) {
-					Long count = this.studyDataManager.countStudyDetails(this.studyType, this.programUUID);
+					Long count = this.studyDataManager.countAllStudyDetails(this.studyType, this.programUUID);
 					this.size = count.intValue();
 				} else {
 					Long count = this.studyDataManager.countAllNurseryAndTrialStudyDetails(this.programUUID);

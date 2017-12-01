@@ -63,9 +63,9 @@ public class ProgramSummaryViewTest {
 				.countProjectActivitiesByProjectId(project.getProjectId());
 		Mockito.doReturn(this.getTestProjectActivities(ProgramSummaryViewTest.ACTIVITIES_COUNT.intValue())).when(this.workbenchDataManager)
 				.getProjectActivitiesByProjectId(project.getProjectId(), 0, ProgramSummaryViewTest.ACTIVITIES_COUNT.intValue());
-		Mockito.doReturn(ProgramSummaryViewTest.NURSERY_COUNT).when(this.studyDataManager).countStudyDetails(StudyType.N,
+		Mockito.doReturn(ProgramSummaryViewTest.NURSERY_COUNT).when(this.studyDataManager).countAllStudyDetails(StudyType.N,
 				ProgramSummaryViewTest.PROGRAM_UUID);
-		Mockito.doReturn(ProgramSummaryViewTest.TRIAL_COUNT).when(this.studyDataManager).countStudyDetails(StudyType.T,
+		Mockito.doReturn(ProgramSummaryViewTest.TRIAL_COUNT).when(this.studyDataManager).countAllStudyDetails(StudyType.T,
 				ProgramSummaryViewTest.PROGRAM_UUID);
 		Mockito.doReturn(ProgramSummaryViewTest.STUDIES_COUNT).when(this.studyDataManager)
 				.countAllNurseryAndTrialStudyDetails(ProgramSummaryViewTest.PROGRAM_UUID);
