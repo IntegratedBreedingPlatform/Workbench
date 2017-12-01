@@ -152,7 +152,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		viewModel.setLongitude(locationDetails.getLongitude());
 		viewModel.setAltitude(locationDetails.getAltitude());
 		viewModel.setProgramUUID(locationDetails.getProgramUUID());
-		viewModel.setProvinceName(locationDetails.getProvince());
+		viewModel.setProvinceName(locationDetails.getProvinceName());
 		return viewModel;
 	}
 
