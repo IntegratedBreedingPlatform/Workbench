@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
 @Configurable
@@ -70,20 +69,20 @@ public class ProgramLocationsPresenter implements InitializingBean {
 	}
 
 	protected Collection<LocationViewModel> createLocationViewModelList(final List<LocationDetails> locationDetails) {
-		final Collection<LocationViewModel> result = new ArrayList<LocationViewModel>();
+		final Collection<LocationViewModel> result = new ArrayList<>();
 
-		for (final Iterator<LocationDetails> iterator = locationDetails.iterator(); iterator.hasNext(); ) {
-			result.add(convertFrom(iterator.next()));
+		for (final LocationDetails locationDetail:locationDetails) {
+			result.add(convertFrom(locationDetail));
 		}
 		return result;
 	}
 
 	public List<LocationViewModel> getSavedProgramLocations() {
 		if (this.cropType != null) {
-			return new ArrayList<LocationViewModel>();
+			return new ArrayList<>();
 		}
 
-		final List<LocationViewModel> result = new ArrayList<LocationViewModel>();
+		final List<LocationViewModel> result = new ArrayList<>();
 		final List<ProgramFavorite> favorites =
 				this.germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, this.project.getUniqueID());
 
@@ -124,10 +123,10 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		 * add selected location to local db location table if it does not yet exist add location in workbench_project_loc_map in workbench
 		 * db
 		 */
-		final List<ProgramFavorite> list = new ArrayList<ProgramFavorite>();
-		for (final LocationViewModel l : selectedLocations) {
+		final List<ProgramFavorite> list = new ArrayList<>();
+		for (final LocationViewModel locationViewModel : selectedLocations) {
 			final ProgramFavorite favorite = new ProgramFavorite();
-			favorite.setEntityId(l.getLocationId());
+			favorite.setEntityId(locationViewModel.getLocationId());
 			favorite.setEntityType(FavoriteType.LOCATION.getName());
 			favorite.setUniqueID(project.getUniqueID());
 			list.add(favorite);
@@ -147,11 +146,13 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		viewModel.setCntryFullName(locationDetails.getCountryFullName());
 		viewModel.setLtypeStr(locationDetails.getLocationType());
 		viewModel.setCntryid(locationDetails.getCntryid());
+		viewModel.setCntryName(locationDetails.getCountryName());
 		viewModel.setLtype(locationDetails.getLtype());
 		viewModel.setLatitude(locationDetails.getLatitude());
 		viewModel.setLongitude(locationDetails.getLongitude());
 		viewModel.setAltitude(locationDetails.getAltitude());
 		viewModel.setProgramUUID(locationDetails.getProgramUUID());
+		viewModel.setProvinceName(locationDetails.getProvinceName());
 		return viewModel;
 	}
 
@@ -285,7 +286,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 	}
 
 	public List<Location> convertTo(final Collection<LocationViewModel> locationViewModels) {
-		final List<Location> result = new ArrayList<Location>();
+		final List<Location> result = new ArrayList<>();
 
 		for (final LocationViewModel locationViewModel : locationViewModels) {
 			result.add(this.convertLocationViewToLocation(locationViewModel));

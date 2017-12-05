@@ -79,7 +79,7 @@ public class AddLocationForm extends Form {
 		this.grid.setMargin(new Layout.MarginInfo(true, false, false, false));
 		this.setLayout(this.grid);
 
-		this.setItemDataSource(new BeanItem<LocationViewModel>(new LocationViewModel()));
+		this.setItemDataSource(new BeanItem<>(new LocationViewModel()));
 
 		this.setComponentError(null);
 		this.setFormFieldFactory(locationFormFieldFactory);
