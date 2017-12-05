@@ -47,18 +47,12 @@ public class DatasetExporter {
 	private final StudyDataManager studyDataManager;
 	private final Integer studyId;
 	private final Integer datasetId;
-	private final List<String> factors = new ArrayList<String>();
-	private final List<String> variates = new ArrayList<String>();
+	private final List<String> factors = new ArrayList<>();
+	private final List<String> variates = new ArrayList<>();
 	private HSSFCellStyle labelStyle;
 	private HSSFCellStyle headingStyle;
 	private HSSFCellStyle variateHeadingStyle;
 	private int observationSheetColumnIndex;
-
-	public DatasetExporter(StudyDataManager studyDataManager, Object traitDataManager, Integer studyId, Integer representationId) {
-		this.studyDataManager = studyDataManager;
-		this.studyId = studyId;
-		this.datasetId = representationId;
-	}
 
 	public DatasetExporter(StudyDataManager studyDataManager, Integer studyId, Integer datasetId) {
 		this.studyDataManager = studyDataManager;
@@ -102,11 +96,12 @@ public class DatasetExporter {
 
 			// populate the measurements sheet
 			this.createObservationSheet(cellStyleForObservationSheet, observationSheet, name);
+
+
+			this.adjustColumnWidths(descriptionSheet, observationSheet);
+
+			traceSheet(study.getName(), observationSheet);
 		}
-
-		this.adjustColumnWidths(descriptionSheet, observationSheet);
-
-		traceSheet(study.getName(), observationSheet);
 
 		return this.writeExcelFile(filename, workbook);
 	}
@@ -133,7 +128,7 @@ public class DatasetExporter {
 		}
 
 		for (int start = 0; start < totalNumberOfRows; start = start + pageSize) {
-			List<Experiment> experiments = new ArrayList<Experiment>();
+			List<Experiment> experiments = new ArrayList<>();
 			try {
 				experiments = this.studyDataManager.getExperiments(this.datasetId, start, pageSize);
 			} catch (Exception ex) {
@@ -538,7 +533,7 @@ public class DatasetExporter {
 	 */
 	private void createStudyDetailsSection(HSSFCellStyle labelStyle, HSSFSheet descriptionSheet,
 			Study study, String name) {
-		String title = study.getTitle();
+		String title = study.getDescription();
 		String objective = study.getObjective();
 		String pmKey = study.getDisplayValue(TermId.PM_KEY);
 		Integer startDate = study.getStartDate();
