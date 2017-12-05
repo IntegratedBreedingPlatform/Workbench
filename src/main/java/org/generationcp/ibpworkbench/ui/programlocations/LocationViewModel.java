@@ -124,7 +124,7 @@ public class LocationViewModel implements BeanFormState {
 
 	@Override
 	public String toString() {
-		return new StringBuffer("LocationViewModel: [locationId=").append(this.locationId).append(", locationName=")
+		return new StringBuilder("LocationViewModel: [locationId=").append(this.locationId).append(", locationName=")
 			.append(this.locationName).append(", locationAbbreviation=").append(this.locationAbbreviation).append(", ltypeStr=")
 			.append(this.ltypeStr).append(", cntryFullName=").append(this.cntryFullName).append(", cntryName=").append(this.cntryName)
 			.append(", provinceName=").append(this.provinceName).append(", programUUID=").append(this.programUUID).append("]").toString();
