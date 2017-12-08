@@ -284,9 +284,9 @@ public class ProgramLocationsPresenterTest {
 		Assert.assertEquals(LATITUDE, result.getLatitude());
 		Assert.assertEquals(ALTITUDE, result.getAltitude());
 		Assert.assertEquals((Integer) 0, result.getNllp());
-		Assert.assertEquals((Integer) 0, result.getSnl1id());
+		Assert.assertEquals((Integer) 0, result.getSnl3id());
 		Assert.assertEquals((Integer) 0, result.getSnl2id());
-		Assert.assertEquals(PROVINCE_ID, result.getSnl3id());
+		Assert.assertEquals(PROVINCE_ID, result.getSnl1id());
 		Assert.assertEquals(DUMMY_PROGRAM_UUID, result.getUniqueID());
 
 	}
@@ -309,9 +309,9 @@ public class ProgramLocationsPresenterTest {
 		Assert.assertEquals(LATITUDE, result.getLatitude());
 		Assert.assertEquals(ALTITUDE, result.getAltitude());
 		Assert.assertEquals((Integer) 0, result.getNllp());
-		Assert.assertEquals((Integer) 0, result.getSnl1id());
+		Assert.assertEquals((Integer) 0, result.getSnl3id());
 		Assert.assertEquals((Integer) 0, result.getSnl2id());
-		Assert.assertEquals(PROVINCE_ID, result.getSnl3id());
+		Assert.assertEquals(PROVINCE_ID, result.getSnl1id());
 		Assert.assertEquals(null, result.getUniqueID());
 
 	}

@@ -163,7 +163,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		viewModel.setLocationAbbreviation(location.getLabbr());
 		viewModel.setLtype(location.getLtype());
 		viewModel.setCntryid(location.getCntryid());
-		viewModel.setProvinceId(location.getSnl3id());
+		viewModel.setProvinceId(location.getSnl1id());
 		viewModel.setLatitude(location.getLatitude());
 		viewModel.setLongitude(location.getLongitude());
 		viewModel.setAltitude(location.getAltitude());
@@ -270,12 +270,12 @@ public class ProgramLocationsPresenter implements InitializingBean {
 
 		// defaults
 		location.setNllp(0);
-		location.setSnl1id(0);
+		location.setSnl3id(0);
 		location.setSnl2id(0);
-		location.setSnl3id(locationViewModel.getProvinceId());
+		location.setSnl1id(locationViewModel.getProvinceId());
 
-		if (location.getSnl3id() == null) {
-			location.setSnl3id(0);
+		if (location.getSnl1id() == null) {
+			location.setSnl1id(0);
 		}
 
 		if (!locationViewModel.getCropAccessible()) {
