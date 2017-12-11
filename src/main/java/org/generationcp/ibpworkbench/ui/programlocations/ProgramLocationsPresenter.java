@@ -72,7 +72,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		final Collection<LocationViewModel> result = new ArrayList<>();
 
 		for (final LocationDetails locationDetail:locationDetails) {
-			result.add(convertFrom(locationDetail));
+			result.add(convertFromLocationDetailsToLocationViewModel(locationDetail));
 		}
 		return result;
 	}
@@ -100,7 +100,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 	public LocationViewModel getLocationDetailsByLocId(final int locationId) {
 		try {
 			final List<LocationDetails> locList = this.locationDataManager.getLocationDetailsByLocId(locationId, 0, 1);
-			return this.convertFrom(locList.get(0));
+			return this.convertFromLocationDetailsToLocationViewModel(locList.get(0));
 		} catch (final IndexOutOfBoundsException e) {
 			ProgramLocationsPresenter.LOG.error("Cannot retrieve location info. [locationId=" + locationId + "]", e);
 		} catch (final NullPointerException e) {
@@ -138,7 +138,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		return true;
 	}
 
-	protected LocationViewModel convertFrom(final LocationDetails locationDetails) {
+	protected LocationViewModel convertFromLocationDetailsToLocationViewModel(final LocationDetails locationDetails) {
 		final LocationViewModel viewModel = new LocationViewModel();
 		viewModel.setLocationId(locationDetails.getLocid());
 		viewModel.setLocationName(locationDetails.getLocationName());
@@ -156,7 +156,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		return viewModel;
 	}
 
-	protected LocationViewModel convertFrom(final Location location) {
+	protected LocationViewModel convertFromLocationToLocationViewModel(final Location location) {
 		final LocationViewModel viewModel = new LocationViewModel();
 		viewModel.setLocationId(location.getLocid());
 		viewModel.setLocationName(location.getLname());
@@ -241,7 +241,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 			this.view.addRow(locationVModel, true, 0);
 
 		} else {
-			this.view.addRow(this.convertFrom(loc), true, 0);
+			this.view.addRow(this.convertFromLocationToLocationViewModel(loc), true, 0);
 		}
 	}
 
