@@ -143,10 +143,10 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		viewModel.setLocationId(locationDetails.getLocid());
 		viewModel.setLocationName(locationDetails.getLocationName());
 		viewModel.setLocationAbbreviation(locationDetails.getLocationAbbreviation());
-		viewModel.setCntryFullName(locationDetails.getCountryFullName());
+		viewModel.setCountryFullName(locationDetails.getCountryFullName());
 		viewModel.setLtypeStr(locationDetails.getLocationType());
-		viewModel.setCntryid(locationDetails.getCntryid());
-		viewModel.setCntryName(locationDetails.getCountryName());
+		viewModel.setCountryId(locationDetails.getCntryid());
+		viewModel.setCountryName(locationDetails.getCountryName());
 		viewModel.setLtype(locationDetails.getLtype());
 		viewModel.setLatitude(locationDetails.getLatitude());
 		viewModel.setLongitude(locationDetails.getLongitude());
@@ -162,7 +162,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		viewModel.setLocationName(location.getLname());
 		viewModel.setLocationAbbreviation(location.getLabbr());
 		viewModel.setLtype(location.getLtype());
-		viewModel.setCntryid(location.getCntryid());
+		viewModel.setCountryId(location.getCntryid());
 		viewModel.setProvinceId(location.getSnl1id());
 		viewModel.setLatitude(location.getLatitude());
 		viewModel.setLongitude(location.getLongitude());
@@ -173,7 +173,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		final UserDefinedField udf = this.locationDataManager.getUserDefinedFieldByID(location.getLtype());
 
 		if (country != null) {
-			viewModel.setCntryFullName(country.getIsofull());
+			viewModel.setCountryFullName(country.getIsofull());
 		}
 		if (udf != null) {
 			viewModel.setLtypeStr(udf.getFname());
@@ -258,7 +258,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		location.setLname(locationViewModel.getLocationName());
 		location.setLabbr(locationViewModel.getLocationAbbreviation());
 		location.setLtype(locationViewModel.getLtype());
-		location.setCntryid(locationViewModel.getCntryid());
+		location.setCntryid(locationViewModel.getCountryId());
 
 		if (location.getCntryid() == null) {
 			location.setCntryid(0);

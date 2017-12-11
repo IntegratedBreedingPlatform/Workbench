@@ -16,9 +16,9 @@ public class LocationViewModel implements BeanFormState {
 	private Integer ltype;
 	private String ltypeStr;
 
-	private Integer cntryid;
-	private String cntryName;
-	private String cntryFullName;
+	private Integer countryId;
+	private String countryName;
+	private String countryFullName;
 
 	private Integer provinceId;
 	private String provinceName;
@@ -78,12 +78,12 @@ public class LocationViewModel implements BeanFormState {
 		this.ltypeStr = ltypeStr;
 	}
 
-	public String getCntryFullName() {
-		return this.cntryFullName;
+	public String getCountryFullName() {
+		return this.countryFullName;
 	}
 
-	public void setCntryFullName(final String cntryFullName) {
-		this.cntryFullName = cntryFullName;
+	public void setCountryFullName(final String cntryFullName) {
+		this.countryFullName = cntryFullName;
 	}
 
 	public Double getLatitude() {
@@ -126,7 +126,7 @@ public class LocationViewModel implements BeanFormState {
 	public String toString() {
 		return new StringBuilder("LocationViewModel: [locationId=").append(this.locationId).append(", locationName=")
 			.append(this.locationName).append(", locationAbbreviation=").append(this.locationAbbreviation).append(", ltypeStr=")
-			.append(this.ltypeStr).append(", cntryFullName=").append(this.cntryFullName).append(", cntryName=").append(this.cntryName)
+			.append(this.ltypeStr).append(", cntryFullName=").append(this.countryFullName).append(", cntryName=").append(this.countryName)
 			.append(", provinceName=").append(this.provinceName).append(", programUUID=").append(this.programUUID).append("]").toString();
 	}
 
@@ -140,12 +140,12 @@ public class LocationViewModel implements BeanFormState {
 		this.isSelected = val;
 	}
 
-	public Integer getCntryid() {
-		return this.cntryid;
+	public Integer getCountryId() {
+		return this.countryId;
 	}
 
-	public void setCntryid(final Integer cntryid) {
-		this.cntryid = cntryid;
+	public void setCountryId(final Integer cntryid) {
+		this.countryId = cntryid;
 	}
 
 	public Integer getProvinceId() {
@@ -221,12 +221,12 @@ public class LocationViewModel implements BeanFormState {
 		this.cropAccessible = cropAccessible;
 	}
 
-	public String getCntryName() {
-		return cntryName;
+	public String getCountryName() {
+		return countryName;
 	}
 
-	public void setCntryName(final String cntryName) {
-		this.cntryName = cntryName;
+	public void setCountryName(final String cntryName) {
+		this.countryName = cntryName;
 	}
 
 	public String getProvinceName() {

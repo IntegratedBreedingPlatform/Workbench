@@ -826,7 +826,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		final Integer cntryId = selectedCountry != null ? selectedCountry.getCntryid() : null;
 		final Integer locationTypeId = selectedLocationType != null ? selectedLocationType.getFldno() : null;
 
-		if (cntryId != null && !cntryId.equals(item.getCntryid())) {
+		if (cntryId != null && !cntryId.equals(item.getCountryId())) {
 			return false;
 		}
 

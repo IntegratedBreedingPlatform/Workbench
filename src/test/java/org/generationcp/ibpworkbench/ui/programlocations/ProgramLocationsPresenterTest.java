@@ -110,7 +110,7 @@ public class ProgramLocationsPresenterTest {
 		}
 
 		for (final LocationViewModel locationViewModel : result) {
-			Assert.assertEquals(countryIdTest, countryId, locationViewModel.getCntryid());
+			Assert.assertEquals(countryIdTest, countryId, locationViewModel.getCountryId());
 			Assert.assertEquals(locationTypeTest, locationType, locationViewModel.getLtype());
 		}
 
@@ -281,9 +281,9 @@ public class ProgramLocationsPresenterTest {
 		Assert.assertEquals(LOCID, locationViewModel.getLocationId());
 		Assert.assertEquals(LOCATION_NAME, locationViewModel.getLocationName());
 		Assert.assertEquals(LOCATION_ABBREVIATION, locationViewModel.getLocationAbbreviation());
-		Assert.assertEquals(COUNTRY_FULL_NAME, locationViewModel.getCntryFullName());
+		Assert.assertEquals(COUNTRY_FULL_NAME, locationViewModel.getCountryFullName());
 		Assert.assertEquals(LOCATION_TYPE, locationViewModel.getLtypeStr());
-		Assert.assertEquals(CNTRYID, locationViewModel.getCntryid());
+		Assert.assertEquals(CNTRYID, locationViewModel.getCountryId());
 		Assert.assertEquals(LTYPE, locationViewModel.getLtype());
 		Assert.assertEquals(LATITUDE, locationViewModel.getLatitude());
 		Assert.assertEquals(LONGITUDE, locationViewModel.getLongitude());
@@ -351,7 +351,7 @@ public class ProgramLocationsPresenterTest {
 		Assert.assertEquals(LOCATION_NAME, result.getLocationName());
 		Assert.assertEquals(LOCATION_ABBREVIATION, result.getLocationAbbreviation());
 		Assert.assertEquals(LTYPE, result.getLtype());
-		Assert.assertEquals(CNTRYID, result.getCntryid());
+		Assert.assertEquals(CNTRYID, result.getCountryId());
 		Assert.assertEquals(LONGITUDE, result.getLongitude());
 		Assert.assertEquals(LATITUDE, result.getLatitude());
 		Assert.assertEquals(ALTITUDE, result.getAltitude());
@@ -368,8 +368,8 @@ public class ProgramLocationsPresenterTest {
 		Assert.assertEquals(LOCATION_NAME, result.getLocationName());
 		Assert.assertEquals(LOCATION_ABBREVIATION, result.getLocationAbbreviation());
 		Assert.assertEquals(LTYPE, result.getLtype());
-		Assert.assertEquals(CNTRYID, result.getCntryid());
-		Assert.assertEquals(COUNTRY_FULL_NAME, result.getCntryFullName());
+		Assert.assertEquals(CNTRYID, result.getCountryId());
+		Assert.assertEquals(COUNTRY_FULL_NAME, result.getCountryFullName());
 		Assert.assertEquals(LONGITUDE, result.getLongitude());
 		Assert.assertEquals(LATITUDE, result.getLatitude());
 		Assert.assertEquals(ALTITUDE, result.getAltitude());
@@ -384,7 +384,7 @@ public class ProgramLocationsPresenterTest {
 		locationViewModel.setLocationName(LOCATION_NAME);
 		locationViewModel.setLocationAbbreviation(LOCATION_ABBREVIATION);
 		locationViewModel.setLtype(LTYPE);
-		locationViewModel.setCntryid(CNTRYID);
+		locationViewModel.setCountryId(CNTRYID);
 		locationViewModel.setLongitude(LONGITUDE);
 		locationViewModel.setLatitude(LATITUDE);
 		locationViewModel.setAltitude(ALTITUDE);
