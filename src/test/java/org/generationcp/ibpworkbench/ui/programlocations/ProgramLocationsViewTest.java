@@ -265,7 +265,7 @@ public class ProgramLocationsViewTest {
 	public void testIsToBeDisplayedInAvailableLocations_SameCountryAndTypeAndWithNameKeyword() {
 		LocationViewModel locationViewModel = new LocationViewModel();
 		locationViewModel.setLocationName("Pre_" + ProgramLocationsViewTest.LOCATION_NAME + "_Post");
-		locationViewModel.setCountryId(ProgramLocationsViewTest.PHILIPPINES_CNTRYID);
+		locationViewModel.setCntryid(ProgramLocationsViewTest.PHILIPPINES_CNTRYID);
 		locationViewModel.setLtype(ProgramLocationsViewTest.COUNTRY_LTYPEID);
 
 		String locationName = ProgramLocationsViewTest.LOCATION_NAME;
@@ -283,7 +283,7 @@ public class ProgramLocationsViewTest {
 	public void testIsToBeDisplayedInAvailableLocations_AllCountryAndAllTypeAndNoNameKeyword() {
 		LocationViewModel locationViewModel = new LocationViewModel();
 		locationViewModel.setLocationName("Pre_" + ProgramLocationsViewTest.LOCATION_NAME + "_Post");
-		locationViewModel.setCountryId(ProgramLocationsViewTest.PHILIPPINES_CNTRYID);
+		locationViewModel.setCntryid(ProgramLocationsViewTest.PHILIPPINES_CNTRYID);
 		locationViewModel.setLtype(ProgramLocationsViewTest.COUNTRY_LTYPEID);
 
 		String locationName = "";
@@ -299,7 +299,7 @@ public class ProgramLocationsViewTest {
 	public void testIsToBeDisplayedInAvailableLocations_AllCountryAndZeroTypeAndNoNameKeyword() {
 		LocationViewModel locationViewModel = new LocationViewModel();
 		locationViewModel.setLocationName("Pre_" + ProgramLocationsViewTest.LOCATION_NAME + "_Post");
-		locationViewModel.setCountryId(ProgramLocationsViewTest.PHILIPPINES_CNTRYID);
+		locationViewModel.setCntryid(ProgramLocationsViewTest.PHILIPPINES_CNTRYID);
 		locationViewModel.setLtype(ProgramLocationsViewTest.COUNTRY_LTYPEID);
 
 		String locationName = "";
@@ -316,7 +316,7 @@ public class ProgramLocationsViewTest {
 	public void testIsToBeDisplayedInAvailableLocations_DiffCountry() {
 		LocationViewModel locationViewModel = new LocationViewModel();
 		locationViewModel.setLocationName("Pre_" + ProgramLocationsViewTest.LOCATION_NAME + "_Post");
-		locationViewModel.setCountryId(ProgramLocationsViewTest.PHILIPPINES_CNTRYID);
+		locationViewModel.setCntryid(ProgramLocationsViewTest.PHILIPPINES_CNTRYID);
 		locationViewModel.setLtype(ProgramLocationsViewTest.COUNTRY_LTYPEID);
 
 		String locationName = "";
@@ -333,7 +333,7 @@ public class ProgramLocationsViewTest {
 	public void testIsToBeDisplayedInAvailableLocations_DiffType() {
 		LocationViewModel locationViewModel = new LocationViewModel();
 		locationViewModel.setLocationName("Pre_" + ProgramLocationsViewTest.LOCATION_NAME + "_Post");
-		locationViewModel.setCountryId(ProgramLocationsViewTest.PHILIPPINES_CNTRYID);
+		locationViewModel.setCntryid(ProgramLocationsViewTest.PHILIPPINES_CNTRYID);
 		locationViewModel.setLtype(ProgramLocationsViewTest.COUNTRY_LTYPEID);
 
 		String locationName = "";
@@ -350,7 +350,7 @@ public class ProgramLocationsViewTest {
 	public void testIsToBeDisplayedInAvailableLocations_DiffName() {
 		LocationViewModel locationViewModel = new LocationViewModel();
 		locationViewModel.setLocationName("Pre_" + ProgramLocationsViewTest.LOCATION_NAME + "_Post");
-		locationViewModel.setCountryId(ProgramLocationsViewTest.PHILIPPINES_CNTRYID);
+		locationViewModel.setCntryid(ProgramLocationsViewTest.PHILIPPINES_CNTRYID);
 		locationViewModel.setLtype(ProgramLocationsViewTest.COUNTRY_LTYPEID);
 
 		String locationName = "Test";
