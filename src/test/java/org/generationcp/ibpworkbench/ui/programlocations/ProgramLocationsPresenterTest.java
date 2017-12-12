@@ -25,8 +25,8 @@ public class ProgramLocationsPresenterTest {
 	private static final int NO_OF_FAVORITES = 2;
 	private static final int NO_OF_LOCATIONS = 5;
 	private static final int NO_OF_LOCATION_WITH_PROGRAM_UUID = 3;
-	private static final String COUNTRY_FULL_NAME = "countryFullName";
-	private static final String LOCATION_TYPE = "locationType";
+	private static final String COUNTRY_FULL_NAME = "Kenya";
+	private static final String LOCATION_TYPE = "Breeding Location";
 	private static final Integer LOCID = 123;
 	private static final String LOCATION_NAME = "My Location";
 	private static final String LOCATION_ABBREVIATION = "ABC";
@@ -36,6 +36,7 @@ public class ProgramLocationsPresenterTest {
 	private static final double LONGITUDE = 2222.0;
 	private static final double ALTITUDE = 3333.0;
 	private static final Integer PROVINCE_ID = 1223;
+	private static final String PROVINCE_NAME = "Nairobi";
 	private static final String DUMMY_PROGRAM_UUID = "1234567890";
 
 	private ProgramLocationsPresenter controller;
@@ -160,20 +161,11 @@ public class ProgramLocationsPresenterTest {
 			for (int i = 0; i < ProgramLocationsPresenterTest.NO_OF_LOCATIONS; i++) {
 				final Integer locId = i + 1;
 
-				final Location location = new Location();
-				location.setLocid(locId);
-				location.setLname(locationName);
-				location.setLtype(locationType);
-				location.setCntryid(countryId);
-				location.setUniqueID(programUUID);
+				final Location location = this.createTestLocation(countryId, locationType, locationName, programUUID, locId);
 
 				locationList.add(location);
 
-				final LocationDetails locationDetail = new LocationDetails();
-				locationDetail.setLocid(locId);
-				locationDetail.setLocationName(locationName);
-				locationDetail.setLtype(locationType);
-				locationDetail.setCntryid(countryId);
+				final LocationDetails locationDetail = this.createTestLocationDetails(countryId, locationType, locationName, locId);
 
 				locationDetailsList.add(locationDetail);
 
@@ -192,6 +184,40 @@ public class ProgramLocationsPresenterTest {
 		} catch (final MiddlewareQueryException e) {
 			Assert.fail(e.getMessage());
 		}
+	}
+
+	private LocationDetails createTestLocationDetails(final Integer countryId, final Integer locationType, String locationName,
+			final Integer locId) {
+		final LocationDetails locationDetail = new LocationDetails();
+		locationDetail.setLocid(locId);
+		locationDetail.setLocationName(locationName);
+		locationDetail.setLocationAbbreviation(LOCATION_ABBREVIATION);
+		locationDetail.setLtype(locationType);
+		locationDetail.setCntryid(countryId);
+		locationDetail.setLocationType(LOCATION_TYPE);
+		locationDetail.setProvinceName(PROVINCE_NAME);
+		locationDetail.setCountryFullName(COUNTRY_FULL_NAME);
+		locationDetail.setAltitude(ALTITUDE);
+		locationDetail.setLatitude(LATITUDE);
+		locationDetail.setLongitude(LONGITUDE);
+		locationDetail.setProgramUUID(DUMMY_PROGRAM_UUID);
+		return locationDetail;
+	}
+
+	private Location createTestLocation(final Integer countryId, final Integer locationType, String locationName, final String programUUID,
+			final Integer locId) {
+		final Location location = new Location();
+		location.setLocid(locId);
+		location.setLname(locationName);
+		location.setLabbr(LOCATION_ABBREVIATION);
+		location.setLtype(locationType);
+		location.setCntryid(countryId);
+		location.setUniqueID(programUUID);
+		location.setSnl1id(PROVINCE_ID);
+		location.setAltitude(ALTITUDE);
+		location.setLatitude(LATITUDE);
+		location.setLongitude(LONGITUDE);
+		return location;
 	}
 
 	@Test
@@ -284,9 +310,9 @@ public class ProgramLocationsPresenterTest {
 		Assert.assertEquals(LATITUDE, result.getLatitude());
 		Assert.assertEquals(ALTITUDE, result.getAltitude());
 		Assert.assertEquals((Integer) 0, result.getNllp());
-		Assert.assertEquals((Integer) 0, result.getSnl1id());
+		Assert.assertEquals((Integer) 0, result.getSnl3id());
 		Assert.assertEquals((Integer) 0, result.getSnl2id());
-		Assert.assertEquals(PROVINCE_ID, result.getSnl3id());
+		Assert.assertEquals(PROVINCE_ID, result.getSnl1id());
 		Assert.assertEquals(DUMMY_PROGRAM_UUID, result.getUniqueID());
 
 	}
@@ -309,11 +335,46 @@ public class ProgramLocationsPresenterTest {
 		Assert.assertEquals(LATITUDE, result.getLatitude());
 		Assert.assertEquals(ALTITUDE, result.getAltitude());
 		Assert.assertEquals((Integer) 0, result.getNllp());
-		Assert.assertEquals((Integer) 0, result.getSnl1id());
+		Assert.assertEquals((Integer) 0, result.getSnl3id());
 		Assert.assertEquals((Integer) 0, result.getSnl2id());
-		Assert.assertEquals(PROVINCE_ID, result.getSnl3id());
+		Assert.assertEquals(PROVINCE_ID, result.getSnl1id());
 		Assert.assertEquals(null, result.getUniqueID());
 
+	}
+	
+	@Test
+	public void testConvertFromLocationToLocationViewModel() {
+		final Location location = this.createTestLocation(CNTRYID, LTYPE, LOCATION_NAME, DUMMY_PROGRAM_UUID, LOCID);
+		final LocationViewModel result = this.controller.convertFromLocationToLocationViewModel(location);
+		
+		Assert.assertEquals(LOCID,result.getLocationId());
+		Assert.assertEquals(LOCATION_NAME, result.getLocationName());
+		Assert.assertEquals(LOCATION_ABBREVIATION, result.getLocationAbbreviation());
+		Assert.assertEquals(LTYPE, result.getLtype());
+		Assert.assertEquals(CNTRYID, result.getCntryid());
+		Assert.assertEquals(LONGITUDE, result.getLongitude());
+		Assert.assertEquals(LATITUDE, result.getLatitude());
+		Assert.assertEquals(ALTITUDE, result.getAltitude());
+		Assert.assertEquals(PROVINCE_ID, result.getProvinceId());
+		Assert.assertEquals(DUMMY_PROGRAM_UUID, result.getProgramUUID());
+	}
+	
+	@Test
+	public void testConvertFromLocationDetailsToLocationViewModel() {
+		final LocationDetails location = this.createTestLocationDetails(CNTRYID, LTYPE, LOCATION_NAME, LOCID);
+		final LocationViewModel result = this.controller.convertFromLocationDetailsToLocationViewModel(location);
+		
+		Assert.assertEquals(LOCID,result.getLocationId());
+		Assert.assertEquals(LOCATION_NAME, result.getLocationName());
+		Assert.assertEquals(LOCATION_ABBREVIATION, result.getLocationAbbreviation());
+		Assert.assertEquals(LTYPE, result.getLtype());
+		Assert.assertEquals(CNTRYID, result.getCntryid());
+		Assert.assertEquals(COUNTRY_FULL_NAME, result.getCntryFullName());
+		Assert.assertEquals(LONGITUDE, result.getLongitude());
+		Assert.assertEquals(LATITUDE, result.getLatitude());
+		Assert.assertEquals(ALTITUDE, result.getAltitude());
+		Assert.assertEquals(PROVINCE_NAME, result.getProvinceName());
+		Assert.assertEquals(DUMMY_PROGRAM_UUID, result.getProgramUUID());
 	}
 
 	private LocationViewModel createLocationViewModel() {
