@@ -40,7 +40,7 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 	private static final String STUDY_NAME = "Study Name";
 	private static final String PLOT_ID = "Plot ID";
 	private static final String PLANT_ID = "Plant ID";
-	private static final String GENOTYPING_DATASET = "/GDMS/main/?restartApplication&datasetId=";
+	private static final String URL_GENOTYPING_DATASET = "/GDMS/main/?restartApplication&datasetId=";
 
 	private static final String GENOTYPING_DATA = "genotyping dataset";
 	private static final String PARENT_WINDOW = "_parent";
@@ -121,15 +121,17 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 		final List<SampleGermplasmDetailDTO> sampleList = retrieveSampleInformation(this.gid);
 		int count = 1;
 
-		if(sampleList.size() > 10){
+		if (sampleList.size() > 10) {
 			this.sampleTable.setPageLength(10);
-		}else{
+		} else {
 			this.sampleTable.setPageLength(sampleList.size());
 		}
 
+		final String authParams = "&" + getAuthParams(contextUtil);
+
 		for (final SampleGermplasmDetailDTO sample : sampleList) {
 			final StudyReference study = sample.getStudy();
-			final ExternalResource urlToOpenStudy = getURLStudy(study, contextUtil);
+			final ExternalResource urlToOpenStudy = getURLStudy(study, authParams);
 			final LinkButton linkStudyButton = new LinkButton(urlToOpenStudy, study.getName(), PARENT_WINDOW);
 			linkStudyButton.setDebugId("linkStudyButton");
 			linkStudyButton.addStyleName(BaseTheme.BUTTON_LINK);
@@ -138,8 +140,9 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 			horizontalLayoutForDatasetButton.setDebugId("HDatasets");
 			int total = sample.getDatasets().size();
 			for (final SampleGermplasmDetailDTO.Dataset dataset : sample.getDatasets()) {
-				final ExternalResource urlToOpenGenortypingData = new ExternalResource(GENOTYPING_DATASET + dataset.getDatasetId());
-				final LinkButton linkGenotypingDataButton = new LinkButton(urlToOpenGenortypingData, dataset.getDatasetName(), PARENT_WINDOW);
+				final ExternalResource urlToOpenGenotypingData =
+					new ExternalResource(URL_GENOTYPING_DATASET + dataset.getDatasetId() + authParams);
+				final LinkButton linkGenotypingDataButton = new LinkButton(urlToOpenGenotypingData, dataset.getDatasetName(), PARENT_WINDOW);
 				linkGenotypingDataButton.setDebugId("linkGenotypingDataButton");
 				linkGenotypingDataButton.addStyleName(BaseTheme.BUTTON_LINK);
 				horizontalLayoutForDatasetButton.addComponent(linkGenotypingDataButton);
@@ -165,16 +168,19 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 	}
 
 
-	private static ExternalResource getURLStudy(final StudyReference study, final ContextUtil contextUtil) {
-		final String aditionalParameters =
-			"?restartApplication&loggedInUserId=" + contextUtil.getContextInfoFromSession().getLoggedInUserId() + "&selectedProjectId="
-				+ contextUtil.getContextInfoFromSession().getSelectedProjectId() + "&authToken=" + contextUtil.getContextInfoFromSession()
-				.getAuthToken();
+	private static ExternalResource getURLStudy(final StudyReference study, final String authParams) {
+		final String aditionalParameters = "?restartApplication&" + authParams;
 
 		if (study.getStudyType().getName().equals(StudyType.N.name())) {
 			return new ExternalResource(URL_STUDY_NURSERY + study.getId() + aditionalParameters);
 		}
 		return new ExternalResource(String.format(URL_STUDY_TRIAL, study.getId() + aditionalParameters));
+	}
+
+	private static String getAuthParams(final ContextUtil contextUtil) {
+		final String authToken = contextUtil.getContextInfoFromSession().getAuthToken();
+		return "loggedInUserId=" + contextUtil.getContextInfoFromSession().getLoggedInUserId() + "&selectedProjectId=" + contextUtil
+			.getContextInfoFromSession().getSelectedProjectId() + "&authToken=" + (authToken != null ? authToken : "");
 	}
 
 	public Table getSampleTable() {
