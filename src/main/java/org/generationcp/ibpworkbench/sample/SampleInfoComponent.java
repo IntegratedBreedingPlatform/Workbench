@@ -177,8 +177,8 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 		return new ExternalResource(String.format(URL_STUDY_TRIAL, study.getId() + aditionalParameters));
 	}
 
-	private static String getAuthParams(ContextUtil contextUtil) {
-		String authToken = contextUtil.getContextInfoFromSession().getAuthToken();
+	private static String getAuthParams(final ContextUtil contextUtil) {
+		final String authToken = contextUtil.getContextInfoFromSession().getAuthToken();
 		return "loggedInUserId=" + contextUtil.getContextInfoFromSession().getLoggedInUserId() + "&selectedProjectId=" + contextUtil
 			.getContextInfoFromSession().getSelectedProjectId() + "&authToken=" + (authToken != null ? authToken : "");
 	}
