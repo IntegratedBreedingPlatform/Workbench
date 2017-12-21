@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -80,6 +81,9 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
+	
+	@Autowired
+	private ContextUtil contextUtil;
 
 	// will contain all the tagged row
 	private List<ComboBox> traitForComparisons;
@@ -303,7 +307,7 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 
 		// only call when need to refresh
 		this.prevfinalGermplasmPair = germplasmPairList;
-		this.environmentPairList = this.crossStudyDataManager.getEnvironmentsForGermplasmPairs(germplasmPairList, experimentTypes);
+		this.environmentPairList = this.crossStudyDataManager.getEnvironmentsForGermplasmPairs(germplasmPairList, experimentTypes, contextUtil.getCurrentProgramUUID());
 	}
 
 	private void createEnviromentMap(final Map<String, List<TraitInfo>> traitMap, final Map<String, Set<String>> traitEnvMap) {
