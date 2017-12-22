@@ -479,6 +479,11 @@ public class TraitsAvailableComponent extends AbsoluteLayout implements Initiali
 		this.crossStudyDataManager = crossStudyDataManager;
 	}
 
+	
+	public void setContextUtil(ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
+	}
+
 	public OptionGroup getVariableFilterOptionGroup() {
 		return this.variableFilterOptionGroup;
 	}
