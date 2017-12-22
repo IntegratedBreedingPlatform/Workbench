@@ -4,6 +4,7 @@ package org.generationcp.ibpworkbench.cross.study.h2h.main;
 import java.util.Arrays;
 import java.util.List;
 
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.cross.study.commons.EnvironmentFilter;
@@ -29,6 +30,8 @@ public class TraitsAvailableComponentTest {
 
 	private static final String TRAITS = "Traits";
 
+	private static final String PROGRAM_UUID = "abcd-12345";
+
 	@Mock
 	private HeadToHeadCrossStudyMain mainScreen;
 
@@ -41,6 +44,9 @@ public class TraitsAvailableComponentTest {
 	@Mock
 	private SimpleResourceBundleMessageSource messageSource;
 
+	@Mock
+	private ContextUtil contextUtil;
+
 	@InjectMocks
 	private TraitsAvailableComponent traitsAvailableComponent;
 
@@ -52,6 +58,8 @@ public class TraitsAvailableComponentTest {
 		this.traitsAvailableComponent = new TraitsAvailableComponent(this.mainScreen, this.environmentFilter);
 		this.traitsAvailableComponent.setMessageSource(this.messageSource);
 		this.traitsAvailableComponent.setCrossStudyDataManager(this.crossStudyDataManager);
+		this.traitsAvailableComponent.setContextUtil(this.contextUtil);
+		Mockito.doReturn(TraitsAvailableComponentTest.PROGRAM_UUID).when(this.contextUtil).getCurrentProgramUUID();
 
 		// Mock Trait Filter Option Group captions
 		Mockito.doReturn("All").when(this.messageSource).getMessage(Message.HEAD_TO_HEAD_CHECK_ALL);
@@ -66,8 +74,8 @@ public class TraitsAvailableComponentTest {
 		trialEnvs.add(env);
 		final GermplasmPair germplasmPair = this.pairs.get(0);
 		germplasmPair.setTrialEnvironments(trialEnvs);
-		Mockito.doReturn(this.pairs).when(this.crossStudyDataManager)
-				.getEnvironmentsForGermplasmPairs(Matchers.anyListOf(GermplasmPair.class), Matchers.anyListOf(Integer.class));
+		Mockito.doReturn(this.pairs).when(this.crossStudyDataManager).getEnvironmentsForGermplasmPairs(
+				Matchers.anyListOf(GermplasmPair.class), Matchers.anyListOf(Integer.class), Matchers.anyString());
 	}
 
 	@Test
@@ -78,7 +86,8 @@ public class TraitsAvailableComponentTest {
 		this.traitsAvailableComponent.refreshEnviromentPairList(this.pairs);
 
 		final List<Integer> experimentTypes = Arrays.asList(TermId.PLOT_EXPERIMENT.getId(), TermId.AVERAGE_EXPERIMENT.getId());
-		Mockito.verify(this.crossStudyDataManager).getEnvironmentsForGermplasmPairs(Matchers.eq(this.pairs), Matchers.eq(experimentTypes));
+		Mockito.verify(this.crossStudyDataManager).getEnvironmentsForGermplasmPairs(Matchers.eq(this.pairs), Matchers.eq(experimentTypes),
+				Matchers.eq(TraitsAvailableComponentTest.PROGRAM_UUID));
 	}
 
 	@Test
@@ -91,7 +100,8 @@ public class TraitsAvailableComponentTest {
 
 		// Verify that only plot experiments are considered in query so that only trait variables are retrieved
 		final List<Integer> experimentTypes = Arrays.asList(TermId.PLOT_EXPERIMENT.getId());
-		Mockito.verify(this.crossStudyDataManager).getEnvironmentsForGermplasmPairs(Matchers.eq(this.pairs), Matchers.eq(experimentTypes));
+		Mockito.verify(this.crossStudyDataManager).getEnvironmentsForGermplasmPairs(Matchers.eq(this.pairs), Matchers.eq(experimentTypes),
+				Matchers.eq(TraitsAvailableComponentTest.PROGRAM_UUID));
 	}
 
 	@Test
@@ -104,7 +114,8 @@ public class TraitsAvailableComponentTest {
 
 		// Verify that only Means dataset experiments are considered in query so that only Analysis variables are retrieved
 		final List<Integer> experimentTypes = Arrays.asList(TermId.AVERAGE_EXPERIMENT.getId());
-		Mockito.verify(this.crossStudyDataManager).getEnvironmentsForGermplasmPairs(Matchers.eq(this.pairs), Matchers.eq(experimentTypes));
+		Mockito.verify(this.crossStudyDataManager).getEnvironmentsForGermplasmPairs(Matchers.eq(this.pairs), Matchers.eq(experimentTypes),
+				Matchers.eq(TraitsAvailableComponentTest.PROGRAM_UUID));
 	}
 
 }
