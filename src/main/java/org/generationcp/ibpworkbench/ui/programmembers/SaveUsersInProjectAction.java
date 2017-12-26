@@ -11,10 +11,8 @@
 
 package org.generationcp.ibpworkbench.ui.programmembers;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -26,8 +24,6 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
-import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
-import org.generationcp.middleware.pojos.workbench.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,31 +79,17 @@ public class SaveUsersInProjectAction implements ClickListener {
 			transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 				@Override
 				protected void doInTransactionWithoutResult(TransactionStatus status) {
-					List<ProjectUserRole> projectUserRoleList = new ArrayList<ProjectUserRole>();
-
-					// add project user roles to the list
+					// Update project members info (project
 					for (User u : userList) {
-						for (Role role : SaveUsersInProjectAction.this.workbenchDataManager.getAllRoles()) {
-							ProjectUserRole projUsrRole = new ProjectUserRole();
-							projUsrRole.setUserId(u.getUserid());
-							projUsrRole.setRole(role);
-							projUsrRole.setProject(SaveUsersInProjectAction.this.project);
-							projectUserRoleList.add(projUsrRole);
-						}
-
-						if (SaveUsersInProjectAction.this.workbenchDataManager.getProjectUserInfoDao().getByProjectIdAndUserId(SaveUsersInProjectAction.this.project.getProjectId().intValue(),
+						if (SaveUsersInProjectAction.this.workbenchDataManager.getProjectUserInfoDao().getByProjectIdAndUserId(SaveUsersInProjectAction.this.project.getProjectId(),
 								u.getUserid()) == null) {
-							ProjectUserInfo pUserInfo = new ProjectUserInfo(SaveUsersInProjectAction.this.project.getProjectId().intValue(), u.getUserid());
+							ProjectUserInfo pUserInfo = new ProjectUserInfo(SaveUsersInProjectAction.this.project, u.getUserid());
 							SaveUsersInProjectAction.this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
 						}
 					}
 					
 					//use the project service to link new members to the project
 					programService.saveWorkbenchUserToCropUserMapping(project, new HashSet<>(userList));
-
-					// UPDATE workbench DB with the project user roles
-					SaveUsersInProjectAction.this.workbenchDataManager.updateProjectsRolesForProject(project,projectUserRoleList);
-
 
 					MessageNotifier.showMessage(event.getComponent().getWindow(), "Success", "Successfully updated this project's members list.");
 				}

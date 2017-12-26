@@ -1,7 +1,6 @@
 package org.generationcp.ibpworkbench.ui.sidebar;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -16,7 +15,6 @@ import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
-import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategory;
@@ -85,9 +83,6 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 			final List<WorkbenchSidebarCategory> workbenchSidebarCategoryList = this.manager.getAllWorkbenchSidebarCategory();
 
 			for (final WorkbenchSidebarCategory category : workbenchSidebarCategoryList) {
-				if ("workflows".equals(category.getSidebarCategoryName()) && this.sessionData.getSelectedProject() != null) {
-					this.addCategoryLinkBasedOnRole(categoryLinks, category);
-				}
 				if ("admin".equals(category.getSidebarCategoryName())) {
 					this.addAdminCategoryLinks(categoryLinks, category);
 				} else {
@@ -135,28 +130,6 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "about_bms", this.messageSource.getMessage("LINK_ABOUT_BMS")));
 	}
 
-	private void addCategoryLinkBasedOnRole(final List<WorkbenchSidebarCategoryLink> categoryLinks,
-			final WorkbenchSidebarCategory category) {
-		final List<Role> roles =
-				this.manager.getRolesByProjectAndUser(this.sessionData.getSelectedProject(), this.sessionData.getUserData());
-		for (final Role role : roles) {
-			// we don't include the tools anymore
-			if (!"Manager".equalsIgnoreCase(role.getName())) {
-				categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, role.getWorkflowTemplate().getName(), role.getLabel()));
-			}
-		}
-	}
-
-	public List<Role> getRoleByTemplateName(final String templateName) {
-		try {
-			return this.manager.getRolesByWorkflowTemplate(this.manager.getWorkflowTemplateByName(templateName).get(0));
-
-		} catch (final MiddlewareQueryException e) {
-			WorkbenchSidebarPresenter.LOG.error(e.getMessage(), e);
-		}
-		return Collections.emptyList();
-	}
-
 	public void updateProjectLastOpenedDate() {
 
 		final TransactionTemplate transactionTemplate = new TransactionTemplate(this.transactionManager);
@@ -170,7 +143,7 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 
 				final ProjectUserInfoDAO projectUserInfoDao = WorkbenchSidebarPresenter.this.manager.getProjectUserInfoDao();
 				final ProjectUserInfo projectUserInfo = projectUserInfoDao
-						.getByProjectIdAndUserId(project.getProjectId().intValue(), app.getSessionData().getUserData().getUserid());
+						.getByProjectIdAndUserId(project.getProjectId(), app.getSessionData().getUserData().getUserid());
 				if (projectUserInfo != null) {
 					projectUserInfo.setLastOpenDate(new Date());
 					WorkbenchSidebarPresenter.this.manager.saveOrUpdateProjectUserInfo(projectUserInfo);

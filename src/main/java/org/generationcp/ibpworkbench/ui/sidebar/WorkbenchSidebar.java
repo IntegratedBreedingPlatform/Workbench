@@ -17,9 +17,7 @@ import org.generationcp.ibpworkbench.actions.OpenToolVersionsAction;
 import org.generationcp.ibpworkbench.actions.PageAction;
 import org.generationcp.ibpworkbench.ui.programadministration.OpenManageProgramPageAction;
 import org.generationcp.ibpworkbench.ui.project.create.OpenUpdateProjectPageAction;
-import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategory;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategoryLink;
 import org.slf4j.Logger;
@@ -37,7 +35,6 @@ import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Tree;
-import com.vaadin.ui.Window;
 
 @Configurable
 public class WorkbenchSidebar extends CssLayout implements InitializingBean {

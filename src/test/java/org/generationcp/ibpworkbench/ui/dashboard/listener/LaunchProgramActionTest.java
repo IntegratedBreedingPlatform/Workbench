@@ -78,12 +78,12 @@ public class LaunchProgramActionTest {
 		this.selectedProgram.setCropType(cropType);
 
 		this.projectUserInfo = new ProjectUserInfo();
-		this.projectUserInfo.setProjectId(LaunchProgramActionTest.PROJECT_ID.intValue());
+		this.projectUserInfo.setProject(this.selectedProgram);
 		this.projectUserInfo.setUserId(LaunchProgramActionTest.USER_ID);
 
 		// Setup Mock objects to return
 		Mockito.doReturn(this.projectUserInfoDAO).when(this.workbenchDataManager).getProjectUserInfoDao();
-		Mockito.doReturn(this.projectUserInfo).when(this.projectUserInfoDAO).getByProjectIdAndUserId(Matchers.anyInt(), Matchers.anyInt());
+		Mockito.doReturn(this.projectUserInfo).when(this.projectUserInfoDAO).getByProjectIdAndUserId(Matchers.anyLong(), Matchers.anyInt());
 		final User currentUser = new User(LaunchProgramActionTest.USER_ID);
 		Mockito.doReturn(currentUser).when(this.sessionData).getUserData();
 	}

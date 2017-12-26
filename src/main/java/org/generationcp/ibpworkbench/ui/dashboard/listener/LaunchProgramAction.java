@@ -132,7 +132,7 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 		try {
 
 			final ProjectUserInfoDAO projectUserInfoDao = this.workbenchDataManager.getProjectUserInfoDao();
-			final ProjectUserInfo projectUserInfo = projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId().intValue(),
+			final ProjectUserInfo projectUserInfo = projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId(),
 					this.sessionData.getUserData().getUserid());
 			if (projectUserInfo != null) {
 				projectUserInfo.setLastOpenDate(new Date());

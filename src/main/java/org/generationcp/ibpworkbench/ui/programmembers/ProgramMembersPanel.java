@@ -29,7 +29,6 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -38,7 +37,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Alignment;
@@ -407,40 +405,6 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		// members not required, so even if there are no values, this returns
 		// true
 		return true;
-	}
-
-	public void setInheritedRoles(final Item currentItem, final List<Role> myinheritedRoles) {
-
-		if (this.tblMembers != null) {
-			List<Role> roleList = null;
-			try {
-				roleList = this.workbenchDataManager.getAllRoles();
-			} catch (final MiddlewareQueryException e) {
-				ProgramMembersPanel.LOG.error("Error encountered while getting workbench roles", e);
-				throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
-			}
-
-			// Reset old values
-			for (final Role role : roleList) {
-				final String propertyId = ProgramMembersPanel.ROLE + role.getRoleId();
-				final Property property = currentItem.getItemProperty(propertyId);
-				if (property.getType() == Boolean.class) {
-					property.setValue(Boolean.FALSE);
-				}
-			}
-
-			// Set checked boxes based on inherited roles
-			for (final Role inheritedRole : myinheritedRoles) {
-				final String propertyId = ProgramMembersPanel.ROLE + inheritedRole.getRoleId();
-				ProgramMembersPanel.LOG.debug("inheritedRole " + inheritedRole);
-				ProgramMembersPanel.LOG.debug("currentItem " + currentItem);
-				final Property property = currentItem.getItemProperty(propertyId);
-				if (property.getType() == Boolean.class) {
-					property.setValue(Boolean.TRUE);
-				}
-			}
-			this.requestRepaintAll();
-		}
 	}
 
 	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {

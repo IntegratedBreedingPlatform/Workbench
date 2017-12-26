@@ -1,9 +1,7 @@
 
 package org.generationcp.ibpworkbench.service;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.generationcp.ibpworkbench.SessionData;
@@ -17,8 +15,6 @@ import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.IbdbUserMap;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
-import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
-import org.generationcp.middleware.pojos.workbench.Role;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -103,7 +99,6 @@ public class ProgramServiceTest {
 		final Set<User> selectedUsers = new HashSet<User>();
 		selectedUsers.add(this.loggedInUser);
 		selectedUsers.add(this.memberUser);
-		this.setRoleTestDataAndMocks();
 
 		// Other WorkbenchDataManager mocks
 		Mockito.when(this.workbenchDataManager.getCropTypeByName(Matchers.anyString())).thenReturn(project.getCropType());
@@ -198,7 +193,6 @@ public class ProgramServiceTest {
 		selectedUsers.add(this.loggedInUser);
 		selectedUsers.add(this.memberUser);
 		selectedUsers.add(this.defaultAdminUser);
-		this.setRoleTestDataAndMocks();
 
 		// call method to test
 		this.programService.saveProgramMembers(project, selectedUsers);
@@ -213,7 +207,6 @@ public class ProgramServiceTest {
 		final Set<User> selectedUsers = new HashSet<User>();
 		selectedUsers.add(this.loggedInUser);
 		selectedUsers.add(this.memberUser);
-		this.setRoleTestDataAndMocks();
 
 		// call method to test
 		this.programService.saveProgramMembers(project, selectedUsers);
@@ -232,14 +225,6 @@ public class ProgramServiceTest {
 
 		// Verify Workbench_project_user_info and Workbench_project_user_role recordsd are created
 		Mockito.verify(this.workbenchDataManager, Mockito.times(3)).saveOrUpdateProjectUserInfo(Matchers.any(ProjectUserInfo.class));
-		Mockito.verify(this.workbenchDataManager).addProjectUserRole(Matchers.anyListOf(ProjectUserRole.class));
-	}
-
-	private void setRoleTestDataAndMocks() {
-		final List<Role> allRolesList = new ArrayList<Role>();
-		allRolesList.add(new Role(1, "CB Breeder", null));
-		allRolesList.add(new Role(2, "MAS Breeder", null));
-		Mockito.when(this.workbenchDataManager.getAllRoles()).thenReturn(allRolesList);
 	}
 
 	private Project createProject() {

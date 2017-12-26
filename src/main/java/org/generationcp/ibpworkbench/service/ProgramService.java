@@ -22,8 +22,6 @@ import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.IbdbUserMap;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
-import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
-import org.generationcp.middleware.pojos.workbench.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,7 +93,6 @@ public class ProgramService {
 
 		// Save workbench project metadata and to crop users, persons (if necessary)
 		if (!users.isEmpty()) {
-			this.saveProjectUserRoles(program, users);
 			final List<Integer> userIDs = this.saveWorkbenchUserToCropUserMapping(program, users);
 			this.saveProjectUserInfo(program, userIDs);
 		}
@@ -113,39 +110,14 @@ public class ProgramService {
 	}
 
 	/*
-	 * Add records to workbench_project_user_role table. It's a redundant table but currently, a record here is needed in order to get
-	 * projects of user
-	 *
-	 * @param project
-	 */
-	private void saveProjectUserRoles(final Project project, final Set<User> users) {
-		final List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
-		final List<Role> allRolesList = this.workbenchDataManager.getAllRoles();
-
-		if (allRolesList != null && !allRolesList.isEmpty()){
-			// we only need 1 record in workbench_project_user_role table for user to have access to program
-			final Role role = allRolesList.get(0);
-			for (final User user : users) {
-				final ProjectUserRole projectUserRole = new ProjectUserRole();
-				projectUserRole.setUserId(user.getUserid());
-				projectUserRole.setRole(role);
-				projectUserRole.setProject(project);
-				projectUserRoles.add(projectUserRole);
-			}
-			this.workbenchDataManager.addProjectUserRole(projectUserRoles);
-		}
-
-	}
-
-	/*
 	 * Create records for workbench_project_user_info table if combination of project id, user id is not yet existing in workbench DB
 	 */
 	private void saveProjectUserInfo(final Project program, final List<Integer> userIDs) {
 		for (final Integer userID : userIDs) {
-			final int projectID = program.getProjectId().intValue();
+			final Long projectID = program.getProjectId();
 
 			if (this.workbenchDataManager.getProjectUserInfoDao().getByProjectIdAndUserId(projectID, userID) == null) {
-				final ProjectUserInfo pUserInfo = new ProjectUserInfo(projectID, userID);
+				final ProjectUserInfo pUserInfo = new ProjectUserInfo(program, userID);
 				this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
 			}
 		}
