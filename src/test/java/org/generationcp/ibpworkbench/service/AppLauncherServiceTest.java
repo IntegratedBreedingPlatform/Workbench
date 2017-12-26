@@ -5,26 +5,27 @@ import java.util.Properties;
 import javax.servlet.http.HttpServletRequest;
 
 import org.generationcp.commons.constant.ToolEnum;
+import org.generationcp.commons.context.ContextInfo;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.tomcat.util.TomcatUtil;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.exception.AppLaunchException;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
-import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.generationcp.middleware.pojos.workbench.ToolType;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -35,29 +36,49 @@ public class AppLauncherServiceTest {
 	public static final String HOST_NAME = "host-name";
 	public static final int PORT = 18080;
 	public static final String SAMPLE_BASE_URL = "somewhere/out/there";
-	public static final int ID_PARAM = 5;
-	public static final String WORKBENCH_CONTEXT_PARAMS = "&loggedinUserId=1&selectedProjectId=1";
+
+	public static final String WORKBENCH_CONTEXT_PARAMS = "&loggedInUserId=5&selectedProjectId=1&authToken=VXNlck5hbWU";
 	public static final String RESTART_URL_STR = "?restartApplication";
-	public static final Long DUMMY_PROJECT_ID = Long.valueOf(1);
+
+	public static final int LOGGED_IN_USER_ID = 5;
+	public static final Long PROJECT_ID = Long.valueOf(1);
+	public static final String USER_NAME = "UserName";
+
 	@Mock
 	HttpServletRequest request;
+
 	@Mock
 	private WorkbenchDataManager workbenchDataManager;
-	@Mock
-	private SessionData sessionData;
+
 	@Mock
 	private ToolUtil toolUtil;
+
 	@Mock
 	private TomcatUtil tomcatUtil;
+
 	@Mock
 	private Properties workbenchProperties;
+
+	@Mock
+	private ContextUtil contextUtil;
+
+	@Mock
+	private Authentication authentication;
+
 	@InjectMocks
 	private final AppLauncherService appLauncherService = Mockito.spy(new AppLauncherService());
 
 	@Before
 	public void setUp() throws Exception {
-		Mockito.when(this.sessionData.getWorkbenchContextParameters()).thenReturn(AppLauncherServiceTest.WORKBENCH_CONTEXT_PARAMS);
+
+		ContextInfo contextInfo = new ContextInfo(LOGGED_IN_USER_ID, PROJECT_ID);
+
+		Mockito.when(contextUtil.getContextInfoFromSession()).thenReturn(contextInfo);
+
 		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(this.request));
+
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		Mockito.when(authentication.getName()).thenReturn(USER_NAME);
 
 		Mockito.when(this.request.getScheme()).thenReturn(AppLauncherServiceTest.SCHEME);
 		Mockito.when(this.request.getServerName()).thenReturn(AppLauncherServiceTest.HOST_NAME);
@@ -85,9 +106,6 @@ public class AppLauncherServiceTest {
 		Mockito.when(this.workbenchDataManager.getToolWithName(ToolEnum.GDMS.getToolName())).thenReturn(gdmsTool);
 		Mockito.when(this.workbenchDataManager.getToolWithName(ToolEnum.BREEDING_PLANNER.getToolName())).thenReturn(nativeTool);
 
-		Mockito.doNothing().when(this.tomcatUtil).deployWebAppIfNecessary(Matchers.any(Tool.class));
-		Mockito.doNothing().when(this.appLauncherService).updateGermplasmStudyBrowserConfigurationIfNecessary(Matchers.any(Tool.class));
-		Mockito.doNothing().when(this.sessionData).logProgramActivity(Matchers.anyString(), Matchers.anyString());
 
 		Mockito.doNothing().when(this.appLauncherService).launchNativeapp(Matchers.any(Tool.class));
 		Mockito.doReturn("/result").when(this.appLauncherService).launchWebappWithLogin(Matchers.any(Tool.class));
@@ -105,26 +123,6 @@ public class AppLauncherServiceTest {
 	}
 
 	@Test
-	public void testUpdateGermplasmStudyBrowserConfigurationIfNecessary() throws Exception, AppLaunchException {
-		Tool gsbTool = new Tool();
-		gsbTool.setToolName(ToolEnum.GERMPLASM_BROWSER.getToolName());
-		Mockito.when(this.workbenchDataManager.getToolWithName(ToolName.GERMPLASM_BROWSER.name())).thenReturn(gsbTool);
-
-		Mockito.doNothing().when(this.tomcatUtil).deployWebAppIfNecessary(gsbTool);
-
-		Tool aWebTool = new Tool();
-
-		// for vaadin type params with a dash
-		aWebTool.setToolName(ToolEnum.BM_LIST_MANAGER.getToolName());
-		aWebTool.setPath(AppLauncherServiceTest.SAMPLE_BASE_URL);
-		aWebTool.setToolType(ToolType.WEB);
-
-		this.appLauncherService.updateGermplasmStudyBrowserConfigurationIfNecessary(aWebTool);
-
-		Mockito.verify(this.tomcatUtil).deployWebAppIfNecessary(gsbTool);
-	}
-
-	@Test
 	public void testLaunchNativeapp() throws Exception, AppLaunchException {
 		Tool aNativeTool = new Tool();
 
@@ -135,16 +133,9 @@ public class AppLauncherServiceTest {
 
 		Mockito.doNothing().when(this.toolUtil).closeNativeTool(aNativeTool);
 
-		// since the tool is breeding view, ibpwebservice should be updated too
-		ArgumentCaptor<Tool> captor = ArgumentCaptor.forClass(Tool.class);
-		Mockito.doNothing().when(this.tomcatUtil).deployWebAppIfNecessary(Matchers.any(Tool.class));
-		Mockito.when(this.toolUtil.launchNativeTool(aNativeTool)).thenReturn(Mockito.mock(Process.class));
-
 		// launch the native app!
 		this.appLauncherService.launchNativeapp(aNativeTool);
 
-		Mockito.verify(this.tomcatUtil).deployWebAppIfNecessary(captor.capture());
-		Assert.assertEquals("ibpwebservice is configured", "ibpwebservice", captor.getValue().getToolName());
 		Mockito.verify(this.appLauncherService, Mockito.times(1)).launchNativeapp(aNativeTool);
 
 	}
@@ -157,11 +148,11 @@ public class AppLauncherServiceTest {
 		aWebTool.setToolName(ToolEnum.BM_LIST_MANAGER.getToolName());
 		aWebTool.setPath(AppLauncherServiceTest.SAMPLE_BASE_URL);
 		aWebTool.setToolType(ToolType.WEB);
-		String urlResult = this.appLauncherService.launchWebapp(aWebTool, AppLauncherServiceTest.ID_PARAM);
+		String urlResult = this.appLauncherService.launchWebapp(aWebTool, AppLauncherServiceTest.LOGGED_IN_USER_ID);
 
 		Assert.assertEquals("should return correct url for List manager app", String.format("%s://%s:%d/%s-%d%s",
 				AppLauncherServiceTest.SCHEME, AppLauncherServiceTest.HOST_NAME, AppLauncherServiceTest.PORT,
-				AppLauncherServiceTest.SAMPLE_BASE_URL, AppLauncherServiceTest.ID_PARAM, AppLauncherServiceTest.RESTART_URL_STR
+				AppLauncherServiceTest.SAMPLE_BASE_URL, AppLauncherServiceTest.LOGGED_IN_USER_ID, AppLauncherServiceTest.RESTART_URL_STR
 						+ AppLauncherServiceTest.WORKBENCH_CONTEXT_PARAMS), urlResult);
 
 		// for fieldbook apps with params with param
@@ -170,11 +161,11 @@ public class AppLauncherServiceTest {
 		aWebTool.setToolName(ToolEnum.NURSERY_MANAGER_FIELDBOOK_WEB.getToolName());
 		aWebTool.setPath(AppLauncherServiceTest.SAMPLE_BASE_URL);
 		aWebTool.setToolType(ToolType.WEB);
-		urlResult = this.appLauncherService.launchWebapp(aWebTool, AppLauncherServiceTest.ID_PARAM);
+		urlResult = this.appLauncherService.launchWebapp(aWebTool, AppLauncherServiceTest.LOGGED_IN_USER_ID);
 
 		Assert.assertEquals("should return correct url for fieldbook nursery app", String.format("%s://%s:%d/%s/editNursery/%d%s",
 				AppLauncherServiceTest.SCHEME, AppLauncherServiceTest.HOST_NAME, AppLauncherServiceTest.PORT,
-				AppLauncherServiceTest.SAMPLE_BASE_URL, AppLauncherServiceTest.ID_PARAM, AppLauncherServiceTest.RESTART_URL_STR
+				AppLauncherServiceTest.SAMPLE_BASE_URL, AppLauncherServiceTest.LOGGED_IN_USER_ID, AppLauncherServiceTest.RESTART_URL_STR
 						+ AppLauncherServiceTest.WORKBENCH_CONTEXT_PARAMS), urlResult);
 
 		aWebTool = new Tool();
@@ -182,11 +173,11 @@ public class AppLauncherServiceTest {
 		aWebTool.setToolName(ToolEnum.TRIAL_MANAGER_FIELDBOOK_WEB.getToolName());
 		aWebTool.setPath(AppLauncherServiceTest.SAMPLE_BASE_URL);
 		aWebTool.setToolType(ToolType.WEB);
-		urlResult = this.appLauncherService.launchWebapp(aWebTool, AppLauncherServiceTest.ID_PARAM);
+		urlResult = this.appLauncherService.launchWebapp(aWebTool, AppLauncherServiceTest.LOGGED_IN_USER_ID);
 
 		Assert.assertEquals("should return correct url for fieldbook trial app",
 				String.format("%s://%s:%d/%s/openTrial/%d%s", AppLauncherServiceTest.SCHEME, AppLauncherServiceTest.HOST_NAME,
-						AppLauncherServiceTest.PORT, AppLauncherServiceTest.SAMPLE_BASE_URL, AppLauncherServiceTest.ID_PARAM,
+						AppLauncherServiceTest.PORT, AppLauncherServiceTest.SAMPLE_BASE_URL, AppLauncherServiceTest.LOGGED_IN_USER_ID,
 						AppLauncherServiceTest.RESTART_URL_STR + AppLauncherServiceTest.WORKBENCH_CONTEXT_PARAMS), urlResult);
 
 	}
@@ -198,11 +189,11 @@ public class AppLauncherServiceTest {
 		migratorWebTool.setToolName(ToolEnum.MIGRATOR.getToolName());
 		migratorWebTool.setPath(AppLauncherServiceTest.SAMPLE_BASE_URL);
 		migratorWebTool.setToolType(ToolType.WEB);
-		String urlResult = this.appLauncherService.launchMigratorWebapp(migratorWebTool, AppLauncherServiceTest.ID_PARAM);
+		String urlResult = this.appLauncherService.launchMigratorWebapp(migratorWebTool, AppLauncherServiceTest.LOGGED_IN_USER_ID);
 
 		Assert.assertEquals("should return correct url for List manager app",
 				String.format("%s://%s:%d/%s%d", AppLauncherServiceTest.SCHEME, AppLauncherServiceTest.HOST_NAME,
-						AppLauncherServiceTest.PORT, AppLauncherServiceTest.SAMPLE_BASE_URL, AppLauncherServiceTest.ID_PARAM), urlResult);
+						AppLauncherServiceTest.PORT, AppLauncherServiceTest.SAMPLE_BASE_URL, AppLauncherServiceTest.LOGGED_IN_USER_ID), urlResult);
 	}
 
 	@Test
@@ -215,22 +206,19 @@ public class AppLauncherServiceTest {
 		aWebTool.setToolType(ToolType.WEB_WITH_LOGIN);
 
 		User user = new User();
-		user.setUserid(1);
+		user.setUserid(LOGGED_IN_USER_ID);
 		user.setName("a_username");
 		user.setPassword("a_password");
 
 		Project project = Mockito.mock(Project.class);
-		Mockito.when(project.getProjectId()).thenReturn(AppLauncherServiceTest.DUMMY_PROJECT_ID);
-		Mockito.when(this.sessionData.getLastOpenedProject()).thenReturn(project);
-
-		Mockito.when(this.sessionData.getUserData()).thenReturn(user);
+		Mockito.when(project.getProjectId()).thenReturn(AppLauncherServiceTest.PROJECT_ID);
 
 		String urlResult = this.appLauncherService.launchWebappWithLogin(aWebTool);
 
 		Assert.assertEquals("should return correct url for gdms app", String.format(
-				"%s://%s:%d/%s?restartApplication&selectedProjectId=%s&loggedInUserId=%s", AppLauncherServiceTest.SCHEME,
+				"%s://%s:%d/%s?restartApplication&loggedInUserId=%s&selectedProjectId=%s", AppLauncherServiceTest.SCHEME,
 				AppLauncherServiceTest.HOST_NAME, AppLauncherServiceTest.PORT, AppLauncherServiceTest.SAMPLE_BASE_URL,
-				AppLauncherServiceTest.DUMMY_PROJECT_ID, 1), urlResult);
+				LOGGED_IN_USER_ID, AppLauncherServiceTest.PROJECT_ID), urlResult);
 
 	}
 }
