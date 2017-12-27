@@ -11,9 +11,9 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.help.document.HelpModule;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
@@ -42,7 +42,7 @@ public class AddProgramView extends Panel implements InitializingBean {
 	private HorizontalLayout titleLayout;
 
 	@Autowired
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	@Value("${workbench.is.single.user.only}")
 	private String isSingleUserOnly;
@@ -161,7 +161,7 @@ public class AddProgramView extends Panel implements InitializingBean {
 
 			@Override
 			public void buttonClick(final Button.ClickEvent clickEvent) {
-				final Project newlyCreatedProgram = AddProgramView.this.sessionData.getSelectedProject();
+				final Project newlyCreatedProgram = AddProgramView.this.contextUtil.getProjectInContext();
 				new LaunchProgramAction(newlyCreatedProgram).buttonClick(clickEvent);
 			}
 		});
@@ -259,7 +259,7 @@ public class AddProgramView extends Panel implements InitializingBean {
 	public void updateUIOnProgramSave(final Project project) {
 		if (IBPWorkbenchApplication.get().getMainWindow() instanceof WorkbenchMainView) {
 			((WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow())
-					.addTitle(this.sessionData.getSelectedProject().getProjectName());
+					.addTitle(this.contextUtil.getProjectInContext().getProjectName());
 		}
 
 		// initialize program methods and view and set them to the tabs
@@ -284,7 +284,7 @@ public class AddProgramView extends Panel implements InitializingBean {
 		this.getBasicDetailsContainer().addComponent(updateProjectPanel);
 
 		this.getProgramMembersContainer().removeAllComponents();
-		this.getProgramMembersContainer().addComponent(new ProgramMembersPanel(this.sessionData.getLastOpenedProject()));
+		this.getProgramMembersContainer().addComponent(new ProgramMembersPanel(this.contextUtil.getProjectInContext()));
 
 		this.finishButton.setEnabled(true);
 		this.cancelBtn.setEnabled(false);

@@ -1,24 +1,25 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * <p/>
  * Generation Challenge Programme (GCP)
- *
- *
+ * <p/>
+ * <p/>
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.actions;
 
-import java.util.List;
-
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component.Event;
+import com.vaadin.ui.Window;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
@@ -35,10 +36,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component.Event;
-import com.vaadin.ui.Window;
+import java.util.List;
 
 @Configurable
 public class DeleteProjectAction implements ClickListener, ActionListener {
@@ -46,10 +44,12 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 	private static final long serialVersionUID = 1L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(DeleteProjectAction.class);
-	private Project currentProject;
 
 	@Autowired
 	private WorkbenchDataManager manager;
+
+	@Autowired
+	private ContextUtil contextUtil;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -71,11 +71,11 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 
 	@Override
 	public void buttonClick(final ClickEvent event) {
-		try{
+		try {
 			this.doAction(event.getComponent().getWindow(), "delete_program", true);
-		}catch (AccessDeniedException ex){
+		} catch (AccessDeniedException ex) {
 			//the only reason we are catching this is in case someone used this wrongly.
-			MessageNotifier.showError(event.getComponent().getWindow(),"Error!","Operation not allowed for user.");
+			MessageNotifier.showError(event.getComponent().getWindow(), "Error!", "Operation not allowed for user.");
 		}
 
 	}
@@ -95,27 +95,28 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void doAction(final Window window, String uriFragment, boolean isLinkAccessed) {
 		final IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+		final Project currentProject = this.contextUtil.getProjectInContext();
+
 		if (app.getMainWindow() != null) {
-			this.currentProject = app.getSessionData().getSelectedProject();
-			if (this.currentProject == null) {
+			if (currentProject == null) {
 				MessageNotifier.showError(window, this.messageSource.getMessage(Message.INVALID_OPERATION),
 						this.messageSource.getMessage(Message.INVALID_NO_PROGRAM_SELECTED));
 
 			}
 			ConfirmDialog.show(app.getMainWindow(), this.messageSource.getMessage(Message.DELETE_PROJECT_LINK),
-					this.messageSource.getMessage(Message.DELETE_PROGRAM_CONFIRM, this.currentProject.getProjectName()),
+					this.messageSource.getMessage(Message.DELETE_PROGRAM_CONFIRM, currentProject.getProjectName()),
 					this.messageSource.getMessage(Message.YES), this.messageSource.getMessage(Message.NO), new ConfirmDialog.Listener() {
 
 						/**
-				 *
-				 */
-				 private static final long serialVersionUID = 6975196694103407530L;
+						 *
+						 */
+						private static final long serialVersionUID = 6975196694103407530L;
 
 						@Override
 						public void onClose(ConfirmDialog dialog) {
 							if (dialog.isConfirmed()) {
 								try {
-									DeleteProjectAction.this.deleteProgram(app.getSessionData());
+									DeleteProjectAction.this.deleteProgram(currentProject);
 								} catch (MiddlewareQueryException e) {
 									DeleteProjectAction.LOG.error(e.getMessage(), e);
 								}
@@ -127,44 +128,45 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 		}
 	}
 
-	protected void deleteProgram(SessionData sessionData) {
+	protected void deleteProgram(Project project) {
+
 		// soft delete
-		this.deleteAllProgramStudies();
+		this.deleteAllProgramStudies(project);
+
 		//hard delete
-		this.deleteAllProgramFavorites();
+		this.deleteAllProgramFavorites(project);
+
 		//hard delete
-		this.deleteAllProgramLocationsAndMethods();
+		this.deleteAllProgramLocationsAndMethods(project);
+
 		// soft delete
-		this.deleteAllProgramLists();
-		this.manager.deleteProjectDependencies(this.currentProject);
-		Project newProj = new Project();
-		newProj.setProjectId(this.currentProject.getProjectId());
-		newProj.setProjectName(this.currentProject.getProjectName());
-		this.manager.deleteProject(newProj);
-		sessionData.setSelectedProject(this.manager.getLastOpenedProject(sessionData.getUserData().getUserid()));
+		this.deleteAllProgramLists(project);
+
+		this.manager.deleteProjectDependencies(project);
+
+		this.manager.deleteProject(project);
+
 	}
 
-	protected void deleteAllProgramLocationsAndMethods() {
-		locationDataManager.deleteProgramLocationsByUniqueId(this.currentProject.getUniqueID());
-		germplasmDataManager.deleteProgramMethodsByUniqueId(this.currentProject.getUniqueID());
+	protected void deleteAllProgramLocationsAndMethods(Project project) {
+		locationDataManager.deleteProgramLocationsByUniqueId(project.getUniqueID());
+		germplasmDataManager.deleteProgramMethodsByUniqueId(project.getUniqueID());
 	}
 
-	protected void deleteAllProgramFavorites() {
-		List<ProgramFavorite> favoriteLocations =
-				germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, this.currentProject.getUniqueID());
-		List<ProgramFavorite> favoriteMethods =
-				germplasmDataManager.getProgramFavorites(FavoriteType.METHOD, this.currentProject.getUniqueID());
+	protected void deleteAllProgramFavorites(Project project) {
+		List<ProgramFavorite> favoriteLocations = germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, project.getUniqueID());
+		List<ProgramFavorite> favoriteMethods = germplasmDataManager.getProgramFavorites(FavoriteType.METHOD, project.getUniqueID());
 		germplasmDataManager.deleteProgramFavorites(favoriteLocations);
 		germplasmDataManager.deleteProgramFavorites(favoriteMethods);
 
 	}
 
-	protected void deleteAllProgramStudies() {
-		this.studyDataManager.deleteProgramStudies(this.currentProject.getUniqueID());
+	protected void deleteAllProgramStudies(Project project) {
+		this.studyDataManager.deleteProgramStudies(project.getUniqueID());
 	}
 
-	protected void deleteAllProgramLists() {
-		this.germplasmListManager.deleteGermplasmListsByProgram(this.currentProject.getUniqueID());
+	protected void deleteAllProgramLists(Project project) {
+		this.germplasmListManager.deleteGermplasmListsByProgram(project.getUniqueID());
 	}
 
 }

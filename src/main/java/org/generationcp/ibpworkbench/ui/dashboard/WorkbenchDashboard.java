@@ -22,12 +22,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.help.document.HelpModule;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.ProjectTableCellStyleGenerator;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.LaunchProgramAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -72,11 +72,11 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	@Autowired
-	private SessionData sessionData;
-
 	@Resource
 	private ServletContext servletContext;
+
+	@Resource
+	private ContextUtil contextUtil;
 
 	@Value("${institute.logo.path}")
 	private String instituteLogoPath;
@@ -185,7 +185,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		Project lastOpenedProgram = null;
 
 		try {
-			final User currentUser = this.sessionData.getUserData();
+			final User currentUser = contextUtil.getCurrentWorkbenchUser();
 			this.programs = this.workbenchDataManager.getProjectsByUser(currentUser);
 			lastOpenedProgram = this.workbenchDataManager.getLastOpenedProject(currentUser.getUserid());
 		} catch (final MiddlewareQueryException e) {
@@ -216,8 +216,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
 		if (lastOpenedProgram != null) {
 			this.programsTable.select(lastOpenedProgram);
-			this.sessionData.setLastOpenedProject(lastOpenedProgram);
-			this.sessionData.setSelectedProject(lastOpenedProgram);
 		}
 
 	}

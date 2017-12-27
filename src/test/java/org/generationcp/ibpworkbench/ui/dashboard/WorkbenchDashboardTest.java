@@ -8,8 +8,8 @@ import javax.servlet.ServletContext;
 import java.io.InputStream;
 import com.vaadin.ui.CssLayout;
 import org.apache.commons.lang3.StringUtils;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.LaunchProgramAction;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
@@ -43,7 +43,7 @@ public class WorkbenchDashboardTest {
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Mock
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	@Mock
 	private ServletContext servletContext;
@@ -61,7 +61,7 @@ public class WorkbenchDashboardTest {
 
 		// Setup test data and mocks
 		final User currentUser = new User(1);
-		Mockito.doReturn(currentUser).when(this.sessionData).getUserData();
+		Mockito.doReturn(currentUser).when(this.contextUtil).getCurrentWorkbenchUser();
 
 		this.programs = this.createProjects(WorkbenchDashboardTest.NUMBER_OF_PROGRAMS, new CropType(CropType.CropEnum.MAIZE.toString()));
 		this.lastOpenedProgram = this.programs.get(7);

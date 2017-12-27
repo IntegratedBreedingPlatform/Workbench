@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -39,7 +39,7 @@ public class ProgramSummaryViewTest {
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Mock
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	@Mock
 	private WorkbenchDataManager workbenchDataManager;
@@ -58,7 +58,7 @@ public class ProgramSummaryViewTest {
 		final Project project = new Project();
 		project.setProjectId(10L);
 		project.setUniqueID(ProgramSummaryViewTest.PROGRAM_UUID);
-		Mockito.doReturn(project).when(this.sessionData).getSelectedProject();
+		Mockito.doReturn(project).when(this.contextUtil).getProjectInContext();
 		Mockito.doReturn(ProgramSummaryViewTest.ACTIVITIES_COUNT).when(this.workbenchDataManager)
 				.countProjectActivitiesByProjectId(project.getProjectId());
 		Mockito.doReturn(this.getTestProjectActivities(ProgramSummaryViewTest.ACTIVITIES_COUNT.intValue())).when(this.workbenchDataManager)

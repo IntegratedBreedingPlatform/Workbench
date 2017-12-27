@@ -23,7 +23,6 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.commons.vaadin.validator.RegexValidator;
 import org.generationcp.commons.vaadin.validator.ValidationUtil;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.util.SchemaVersionUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -83,9 +82,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 
 	@Autowired
 	protected SimpleResourceBundleMessageSource messageSource;
-
-	@Autowired
-	protected SessionData sessionData;
 
 	@Autowired
 	@Qualifier("workbenchProperties")

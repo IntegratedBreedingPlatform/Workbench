@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.generationcp.commons.security.AuthorizationUtil;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -39,9 +39,6 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 	@Autowired
 	private WorkbenchDataManager manager;
 
-	@Autowired
-	private SessionData sessionData;
-
 	@Value("${workbench.is.backup.and.restore.enabled}")
 	private String isBackupAndRestoreEnabled;
 
@@ -53,6 +50,9 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
+
+	@Autowired
+	private ContextUtil contextUtil;
 
 	public WorkbenchSidebarPresenter() {
 	}
@@ -77,7 +77,7 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 		// get all categories first
 		final Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> sidebarLinks = new LinkedHashMap<>();
 
-		try {
+
 			final List<WorkbenchSidebarCategoryLink> categoryLinks = new ArrayList<>();
 
 			final List<WorkbenchSidebarCategory> workbenchSidebarCategoryList = this.manager.getAllWorkbenchSidebarCategory();
@@ -102,9 +102,7 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 				}
 
 			}
-		} catch (final MiddlewareQueryException e) {
-			WorkbenchSidebarPresenter.LOG.error(e.getMessage(), e);
-		}
+
 		return sidebarLinks;
 	}
 
@@ -130,6 +128,7 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "about_bms", this.messageSource.getMessage("LINK_ABOUT_BMS")));
 	}
 
+
 	public void updateProjectLastOpenedDate() {
 
 		final TransactionTemplate transactionTemplate = new TransactionTemplate(this.transactionManager);
@@ -139,11 +138,12 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 			protected void doInTransactionWithoutResult(final TransactionStatus status) {
 				// set the last opened project in the session
 				final IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-				final Project project = app.getSessionData().getSelectedProject();
+				final Project project = contextUtil.getProjectInContext();
 
 				final ProjectUserInfoDAO projectUserInfoDao = WorkbenchSidebarPresenter.this.manager.getProjectUserInfoDao();
 				final ProjectUserInfo projectUserInfo = projectUserInfoDao
-						.getByProjectIdAndUserId(project.getProjectId(), app.getSessionData().getUserData().getUserid());
+						.getByProjectIdAndUserId(project.getProjectId(), contextUtil.getCurrentWorkbenchUserId());
+
 				if (projectUserInfo != null) {
 					projectUserInfo.setLastOpenDate(new Date());
 					WorkbenchSidebarPresenter.this.manager.saveOrUpdateProjectUserInfo(projectUserInfo);
@@ -152,7 +152,6 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 				project.setLastOpenDate(new Date());
 				WorkbenchSidebarPresenter.this.manager.mergeProject(project);
 
-				app.getSessionData().setLastOpenedProject(project);
 			}
 		});
 

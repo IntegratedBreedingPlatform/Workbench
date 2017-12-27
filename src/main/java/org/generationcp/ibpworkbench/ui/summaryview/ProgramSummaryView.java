@@ -18,11 +18,11 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 import org.generationcp.browser.study.containers.StudyDetailsQueryFactory;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.domain.etl.StudyDetails;
 import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.manager.api.StudyDataManager;
@@ -87,7 +87,7 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
@@ -248,7 +248,7 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 			@Override
 			public void buttonClick(final Button.ClickEvent event) {
 				final String tableName = ProgramSummaryView.this.header.getValue().toString().split("\\[")[0].trim();
-				final String programName = ProgramSummaryView.this.sessionData.getSelectedProject().getProjectName();
+				final String programName = ProgramSummaryView.this.contextUtil.getProjectInContext().getProjectName();
 
 				final ExcelExport export = new ExcelExport((Table) ProgramSummaryView.this.getComponent(1), tableName);
 				export.setReportTitle(programName + " - " + tableName);
@@ -352,7 +352,7 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 
 	void initializeData() {
 		long projectActivitiesCount;
-		final Project project = this.sessionData.getSelectedProject();
+		final Project project = this.contextUtil.getProjectInContext();
 		projectActivitiesCount = this.workbenchDataManager.countProjectActivitiesByProjectId(project.getProjectId());
 
 		final List<ProjectActivity> activityList =

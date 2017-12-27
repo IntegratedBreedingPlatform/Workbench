@@ -1,8 +1,8 @@
 
 package org.generationcp.ibpworkbench.ui.dashboard.listener;
 
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.util.ToolUtil;
@@ -14,11 +14,13 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.vaadin.event.ItemClickEvent;
@@ -26,11 +28,21 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Table;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+@RunWith(MockitoJUnitRunner.class)
 public class LaunchProgramActionTest {
 
 	private static final Long PROJECT_ID = 10L;
 
 	private static final Integer USER_ID = 1;
+
+	@Mock
+	private HttpSession httpSession;
+
+	@Mock
+	private HttpServletRequest request;
 
 	@Mock
 	private WorkbenchDataManager workbenchDataManager;
@@ -42,7 +54,7 @@ public class LaunchProgramActionTest {
 	private ToolUtil toolUtil;
 
 	@Mock
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	@Mock
 	private SimpleResourceBundleMessageSource messageSource;
@@ -65,7 +77,6 @@ public class LaunchProgramActionTest {
 
 	@Before
 	public void setup() {
-		MockitoAnnotations.initMocks(this);
 
 		this.setMockDependenciesToTestModule();
 
@@ -85,14 +96,17 @@ public class LaunchProgramActionTest {
 		Mockito.doReturn(this.projectUserInfoDAO).when(this.workbenchDataManager).getProjectUserInfoDao();
 		Mockito.doReturn(this.projectUserInfo).when(this.projectUserInfoDAO).getByProjectIdAndUserId(Matchers.anyLong(), Matchers.anyInt());
 		final User currentUser = new User(LaunchProgramActionTest.USER_ID);
-		Mockito.doReturn(currentUser).when(this.sessionData).getUserData();
+		Mockito.doReturn(currentUser).when(this.contextUtil).getCurrentWorkbenchUser();
+		Mockito.doReturn(USER_ID).when(this.contextUtil).getCurrentWorkbenchUserId();
+		Mockito.when(request.getSession()).thenReturn(httpSession);
 	}
 
 	private void setMockDependenciesToTestModule() {
 		this.launchProgramAction.setTransactionManager(this.transactionManager);
-		this.launchProgramAction.setSessionData(this.sessionData);
 		this.launchProgramAction.setWorkbenchDataManager(this.workbenchDataManager);
 		this.launchProgramAction.setLaunchWorkbenchToolAction(this.launchWorkbenchToolAction);
+		this.launchProgramAction.setContextUtil(this.contextUtil);
+		this.launchProgramAction.setRequest(request);
 	}
 
 	@Test
@@ -141,8 +155,6 @@ public class LaunchProgramActionTest {
 	 * project user was updated and 3. List Manager was launched
 	 */
 	private void verifyMockInteractionsWhenOpeningProgram() {
-		Mockito.verify(this.sessionData, Mockito.times(1)).setSelectedProject(this.selectedProgram);
-		Mockito.verify(this.sessionData, Mockito.times(1)).setLastOpenedProject(this.selectedProgram);
 		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).saveOrUpdateProjectUserInfo(this.projectUserInfo);
 		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).mergeProject(this.selectedProgram);
 		Mockito.verify(this.launchWorkbenchToolAction, Mockito.times(1)).onAppLaunch(this.window);

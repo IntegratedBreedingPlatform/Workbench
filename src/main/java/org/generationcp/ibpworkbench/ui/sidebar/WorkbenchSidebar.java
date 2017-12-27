@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.generationcp.commons.constant.ToolEnum;
-import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.actions.ActionListener;
 import org.generationcp.ibpworkbench.actions.ChangeWindowAction;
 import org.generationcp.ibpworkbench.actions.DeleteProjectAction;
@@ -43,14 +43,14 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchSidebar.class);
 	public static final Map<String, TreeItem> sidebarTreeMap = new HashMap<>();
 
-	@Autowired
-	private SessionData sessionData;
-
 	private final WorkbenchSidebarPresenter presenter;
 	private Tree sidebarTree;
 
 	@Autowired
 	private PlatformTransactionManager transactionManager;
+
+	@Autowired
+	private ContextUtil contextUtil;
 
 	private final ItemClickEvent.ItemClickListener treeClickListener = new ItemClickEvent.ItemClickListener() {
 
@@ -72,8 +72,7 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 					if (!WorkbenchSidebar.this.doCollapse(treeItem)) {
 						WorkbenchSidebar.this.presenter.updateProjectLastOpenedDate();
 
-						ActionListener listener = WorkbenchSidebar.this.getLinkActions(treeItem.getId(),
-								WorkbenchSidebar.this.sessionData.getSelectedProject());
+						ActionListener listener = WorkbenchSidebar.this.getLinkActions(treeItem.getId(), contextUtil.getProjectInContext());
 
 						listener.doAction(event.getComponent().getWindow(), "/" + treeItem.getId(), true);
 					}
@@ -182,7 +181,7 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 		} else if (toolName.equals("project_method")) {
 			return new OpenProgramMethodsAction(project);
 		} else if (toolName.equals("project_location")) {
-			return new OpenProgramLocationsAction(project, this.sessionData.getUserData());
+			return new OpenProgramLocationsAction(project, contextUtil.getCurrentWorkbenchUser());
 		} else if (toolName.equals("about_bms")) {
 			return new PageAction("/ibpworkbench/controller/about/");
 		} else if (toolName.equals("delete_project")) {

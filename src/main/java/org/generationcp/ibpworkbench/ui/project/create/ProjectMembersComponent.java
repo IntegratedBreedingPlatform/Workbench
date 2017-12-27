@@ -21,7 +21,6 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -71,9 +70,6 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
-
-	@Autowired
-	private SessionData sessionData;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -258,9 +254,6 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 							MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
 									ProjectMembersComponent.this.messageSource.getMessage(Message.SUCCESS),
 									newlyCreatedProgram.getProjectName() + " program has been successfully created.");
-
-							ProjectMembersComponent.this.sessionData.setLastOpenedProject(newlyCreatedProgram);
-							ProjectMembersComponent.this.sessionData.setSelectedProject(newlyCreatedProgram);
 
 							ProjectMembersComponent.this.presenter.enableProgramMethodsAndLocationsTab();
 

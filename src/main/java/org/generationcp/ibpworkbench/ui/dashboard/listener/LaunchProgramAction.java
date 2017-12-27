@@ -15,16 +15,15 @@ import java.util.Date;
 
 import org.generationcp.commons.constant.ToolEnum;
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
 import org.generationcp.ibpworkbench.util.SchemaVersionUtil;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
@@ -43,22 +42,27 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Window;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Configurable
 public class LaunchProgramAction implements ItemClickListener, ClickListener {
 
 	private static final long serialVersionUID = 5742093045098439073L;
 
 	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
+	private HttpServletRequest request;
 
 	@Autowired
-	private SessionData sessionData;
+	private WorkbenchDataManager workbenchDataManager;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
 	private PlatformTransactionManager transactionManager;
+
+	@Autowired
+	private ContextUtil contextUtil;
 
 	private static final Logger LOG = LoggerFactory.getLogger(LaunchProgramAction.class);
 
@@ -83,8 +87,8 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 				@Override
 				protected void doInTransactionWithoutResult(final TransactionStatus status) {
 
-					// Sets selected program/project to session
-					LaunchProgramAction.this.sessionData.setSelectedProject(project);
+					// Sets selected program/project to context
+					org.generationcp.commons.util.ContextUtil.setContextInfo(request, contextUtil.getCurrentWorkbenchUserId(), project.getProjectId(), null);
 
 					// Warn if the selected program's crop is outdated
 					final String minimumCropVersion = SchemaVersionUtil.getMinimumCropVersion();
@@ -124,29 +128,23 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 	}
 
 	/**
-	 * Updates last opened project for user in DB and last opened project in session.
+	 * Updates last opened project for user in DB
 	 *
 	 * @param project : the program selected in dashboard
 	 */
 	void updateProjectLastOpenedDate(final Project project) {
-		try {
 
-			final ProjectUserInfoDAO projectUserInfoDao = this.workbenchDataManager.getProjectUserInfoDao();
-			final ProjectUserInfo projectUserInfo = projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId(),
-					this.sessionData.getUserData().getUserid());
-			if (projectUserInfo != null) {
-				projectUserInfo.setLastOpenDate(new Date());
-				this.workbenchDataManager.saveOrUpdateProjectUserInfo(projectUserInfo);
-			}
-
-			project.setLastOpenDate(new Date());
-			this.workbenchDataManager.mergeProject(project);
-
-			this.sessionData.setLastOpenedProject(project);
-
-		} catch (final MiddlewareQueryException e) {
-			LaunchProgramAction.LOG.error(e.toString(), e);
+		final ProjectUserInfoDAO projectUserInfoDao = this.workbenchDataManager.getProjectUserInfoDao();
+		final ProjectUserInfo projectUserInfo = projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId(),
+				contextUtil.getCurrentWorkbenchUserId());
+		if (projectUserInfo != null) {
+			projectUserInfo.setLastOpenDate(new Date());
+			this.workbenchDataManager.saveOrUpdateProjectUserInfo(projectUserInfo);
 		}
+
+		project.setLastOpenDate(new Date());
+		this.workbenchDataManager.mergeProject(project);
+
 	}
 
 	@Override
@@ -167,15 +165,19 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 		this.transactionManager = transactionManager;
 	}
 
-	public void setSessionData(final SessionData sessionData) {
-		this.sessionData = sessionData;
-	}
-
 	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
 		this.workbenchDataManager = workbenchDataManager;
 	}
 
 	public void setLaunchWorkbenchToolAction(final LaunchWorkbenchToolAction launchWorkbenchToolAction) {
 		this.launchListManagerToolAction = launchWorkbenchToolAction;
+	}
+
+	public void setContextUtil(ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
+	}
+
+	public void setRequest(final HttpServletRequest request) {
+		this.request = request;
 	}
 }

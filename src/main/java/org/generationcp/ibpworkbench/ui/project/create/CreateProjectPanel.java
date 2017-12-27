@@ -11,13 +11,11 @@
 
 package org.generationcp.ibpworkbench.ui.project.create;
 
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -41,6 +39,8 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * The create project panel
  *
@@ -60,20 +60,17 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 	protected Button saveProjectButton;
 	protected Component buttonArea;
 
-	// the project created
-	protected Project project;
-
-	// should be the currently logged in user that will try to add / update a new project
-	protected User currentUser;
+	@Autowired
+	private HttpServletRequest request;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
-	private SessionData sessionData;
+	private PlatformTransactionManager transactionManager;
 
 	@Autowired
-	private PlatformTransactionManager transactionManager;
+	private ContextUtil contextUtil;
 
 	private Label heading;
 
@@ -101,8 +98,6 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 		this.newProjectTitleArea = new HorizontalLayout();
 		this.newProjectTitleArea.setDebugId("newProjectTitleArea");
 		this.newProjectTitleArea.setSpacing(true);
-
-		this.project = new Project();
 
 		this.projectBasicDetailsComponent = new ProjectBasicDetailsComponent(this);
 		this.projectBasicDetailsComponent.setDebugId("projectBasicDetailsComponent");
@@ -146,10 +141,7 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 							MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
 									CreateProjectPanel.this.messageSource.getMessage(Message.SUCCESS),
 									newlyCreatedProgram.getProjectName() + " program has been successfully created.");
-
-							CreateProjectPanel.this.sessionData.setLastOpenedProject(newlyCreatedProgram);
-							CreateProjectPanel.this.sessionData.setSelectedProject(newlyCreatedProgram);
-
+							
 							CreateProjectPanel.this.presenter.enableProgramMethodsAndLocationsTab();
 						}
 					});

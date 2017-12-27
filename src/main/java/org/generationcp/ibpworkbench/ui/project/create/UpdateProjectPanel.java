@@ -1,10 +1,9 @@
 
 package org.generationcp.ibpworkbench.ui.project.create;
 
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.DeleteProjectAction;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.security.access.AccessDeniedException;
@@ -28,10 +27,7 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 	private static final long serialVersionUID = 1L;
 
 	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
-
-	@Autowired
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	private Label heading;
 
@@ -77,8 +73,7 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				UpdateProjectPanel.this.projectBasicDetailsComponent.updateProjectDetailsFormField(UpdateProjectPanel.this.sessionData
-						.getSelectedProject());
+				UpdateProjectPanel.this.projectBasicDetailsComponent.updateProjectDetailsFormField(contextUtil.getProjectInContext());
 
 			}
 		});
@@ -106,7 +101,7 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 		this.projectBasicDetailsComponent = new ProjectBasicDetailsComponent(this, true);
 		this.projectBasicDetailsComponent.setDebugId("projectBasicDetailsComponent");
 
-		this.projectBasicDetailsComponent.updateProjectDetailsFormField(this.sessionData.getSelectedProject());
+		this.projectBasicDetailsComponent.updateProjectDetailsFormField(contextUtil.getProjectInContext());
 		this.projectBasicDetailsComponent.disableForm();
 		this.buttonArea = this.layoutButtonArea();
 
@@ -153,9 +148,6 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 
 	@Override
 	public void afterPropertiesSet() {
-		// initialize state
-		// get hibernate managed version of user
-		this.currentUser = this.workbenchDataManager.getUserById(this.sessionData.getUserData().getUserid());
 
 		this.initializeComponents();
 		this.initializeLayout();
@@ -164,7 +156,7 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 	}
 
 	public String getOldProjectName() {
-		return this.sessionData.getSelectedProject().getProjectName();
+		return contextUtil.getProjectInContext().getProjectName();
 	}
 
 	public boolean validate() {

@@ -4,12 +4,11 @@ package org.generationcp.ibpworkbench.ui.project.create;
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.util.ToolUtil;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
@@ -36,7 +35,7 @@ public class UpdateProjectAction implements Button.ClickListener {
 	private ToolUtil toolUtil;
 
 	@Autowired
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	private static final long serialVersionUID = 1L;
 
@@ -53,33 +52,35 @@ public class UpdateProjectAction implements Button.ClickListener {
 
 	}
 
-	private void doUpdate() throws MiddlewareQueryException {
+	private void doUpdate() {
+
+		final Project project = this.contextUtil.getProjectInContext();
 
 		UpdateProjectAction.LOG.debug("doUpdate >");
-		UpdateProjectAction.LOG.debug(String.format("Project: [%s]", this.sessionData.getSelectedProject()));
+		UpdateProjectAction.LOG.debug(String.format("Project: [%s]", project));
 
 		if (this.projectPanel.validate()) {
 			// rename old workspace directory if found
-			this.toolUtil.renameOldWorkspaceDirectoryToNewFormat(this.sessionData.getSelectedProject().getProjectId(),
+			this.toolUtil.renameOldWorkspaceDirectoryToNewFormat(project.getProjectId(),
 					this.projectPanel.getOldProjectName());
 
 			// update the project
 			Project updatedProject = this.projectPanel.projectBasicDetailsComponent.getProjectDetails();
-			this.sessionData.getSelectedProject().setProjectName(updatedProject.getProjectName());
-			this.sessionData.getSelectedProject().setStartDate(updatedProject.getStartDate());
-			this.workbenchDataManager.saveOrUpdateProject(this.sessionData.getSelectedProject());
+			project.setProjectName(updatedProject.getProjectName());
+			project.setStartDate(updatedProject.getStartDate());
+			this.workbenchDataManager.saveOrUpdateProject(project);
 
 			MessageNotifier.showMessage(this.projectPanel.getWindow(), "Program update is successful",
-					String.format("%s is updated.", StringUtils.abbreviate(this.sessionData.getSelectedProject().getProjectName(), 50)));
+					String.format("%s is updated.", StringUtils.abbreviate(project.getProjectName(), 50)));
 
 			ProjectActivity projAct =
-					new ProjectActivity(new Integer(this.sessionData.getSelectedProject().getProjectId().intValue()),
-							this.sessionData.getSelectedProject(), "Update Program", "Updated Program - "
-									+ this.sessionData.getSelectedProject().getProjectName(), this.sessionData.getUserData(), new Date());
+					new ProjectActivity(new Integer(project.getProjectId().intValue()),
+							project, "Update Program", "Updated Program - "
+									+ project.getProjectName(), this.contextUtil.getCurrentWorkbenchUser(), new Date());
 			this.workbenchDataManager.addProjectActivity(projAct);
 
 			if (IBPWorkbenchApplication.get().getMainWindow() instanceof WorkbenchMainView) {
-				((WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow()).addTitle(this.sessionData.getSelectedProject()
+				((WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow()).addTitle(project
 						.getProjectName());
 			}
 		}

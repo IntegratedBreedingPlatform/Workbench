@@ -4,7 +4,6 @@ package org.generationcp.ibpworkbench.ui.programadministration;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.programmembers.ProgramMembersPanel;
 import org.junit.Before;
 import org.junit.Test;

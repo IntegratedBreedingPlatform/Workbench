@@ -3,7 +3,7 @@ package org.generationcp.ibpworkbench.ui.project.create;
 
 import java.util.Set;
 
-import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -22,15 +22,14 @@ public class AddProgramPresenter {
 	private ProgramService programService;
 
 	@Autowired
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	public AddProgramPresenter(AddProgramView view) {
 		this.view = view;
 	}
 
-
 	public void enableProgramMethodsAndLocationsTab() {
-		this.view.updateUIOnProgramSave(this.sessionData.getSelectedProject());
+		this.view.updateUIOnProgramSave(contextUtil.getProjectInContext());
 	}
 
 	public void disableProgramMethodsAndLocationsTab() {

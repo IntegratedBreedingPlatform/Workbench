@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.commons.util.DateUtil;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.ContextHolder;
 import org.generationcp.middleware.manager.api.UserDataManager;
@@ -27,8 +26,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.util.WebUtils;
 
 @Service
@@ -49,7 +46,10 @@ public class ProgramService {
 	private UserDataManager userDataManager;
 
 	@Autowired
-	private SessionData sessionData;
+	private HttpServletRequest request;
+
+	@Autowired
+	private org.generationcp.commons.spring.util.ContextUtil contextUtil;
 
 	// http://cropwiki.irri.org/icis/index.php/TDM_Users_and_Access
 	public static final int PROJECT_USER_ACCESS_NUMBER = 100;
@@ -99,10 +99,8 @@ public class ProgramService {
 	}
 
 	private void setContextInfoAndCurrentCrop(final Project program) {
-		final HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-		final Cookie userIdCookie = WebUtils.getCookie(request, ContextConstants.PARAM_LOGGED_IN_USER_ID);
 		final Cookie authToken = WebUtils.getCookie(request, ContextConstants.PARAM_AUTH_TOKEN);
-		ContextUtil.setContextInfo(request, userIdCookie != null ? Integer.valueOf(userIdCookie.getValue()) : null, program.getProjectId(),
+		ContextUtil.setContextInfo(request, contextUtil.getCurrentWorkbenchUserId(), program.getProjectId(),
 				authToken != null ? authToken.getValue() : null);
 
 		ContextHolder.setCurrentCrop(program.getCropType().getCropName());
@@ -130,7 +128,7 @@ public class ProgramService {
 	 */
 	private void saveWorkbenchProject(final Project program) {
 		// sets current user as program owner
-		program.setUserId(this.sessionData.getUserData().getUserid());
+		program.setUserId(contextUtil.getCurrentWorkbenchUserId());
 
 		final CropType cropType = this.workbenchDataManager.getCropTypeByName(program.getCropType().getCropName());
 		if (cropType == null) {

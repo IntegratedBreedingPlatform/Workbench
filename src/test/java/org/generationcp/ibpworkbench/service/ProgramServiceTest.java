@@ -4,7 +4,7 @@ package org.generationcp.ibpworkbench.service;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.manager.api.UserDataManager;
@@ -29,8 +29,17 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 @RunWith(MockitoJUnitRunner.class)
 public class ProgramServiceTest {
+
+	@Mock
+	private HttpServletRequest request;
+
+	@Mock
+	private HttpSession httpSession;
 
 	@Mock
 	private RequestAttributes attrs;
@@ -45,7 +54,7 @@ public class ProgramServiceTest {
 	private UserDataManager userDataManager;
 
 	@Mock
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	@Mock
 	private ProjectUserInfoDAO projectUserInfoDAO;
@@ -63,8 +72,7 @@ public class ProgramServiceTest {
 	@Before
 	public void setup() throws Exception {
 
-		final MockHttpServletRequest request = new MockHttpServletRequest();
-		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+		Mockito.when(request.getSession()).thenReturn(httpSession);
 
 		this.initializeTestPersonsAndUsers();
 
@@ -82,7 +90,7 @@ public class ProgramServiceTest {
 		this.defaultAdminUser = this.createUser(3, ProgramService.ADMIN_USERNAME, 3);
 
 		// Setup mocks
-		Mockito.when(this.sessionData.getUserData()).thenReturn(this.loggedInUser);
+		Mockito.when(this.contextUtil.getCurrentWorkbenchUser()).thenReturn(this.loggedInUser);
 		Mockito.when(this.userDataManager.getUserByUserName(this.loggedInUser.getName())).thenReturn(this.loggedInUser);
 		Mockito.when(this.userDataManager.getPersonByEmail(this.loggedInPerson.getEmail())).thenReturn(this.loggedInPerson);
 
