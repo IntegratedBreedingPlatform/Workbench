@@ -23,13 +23,7 @@ public class TomcatUtilTest {
 		for (WebAppStatus status : webAppStatusList) {
 			System.out.println(status);
 		}
-
-		String contextPath = "/GermplasmStudyBrowser";
-		if (statusInfo.isRunning(contextPath)) {
-			tomcatUtil.stopWebApp(contextPath);
-		} else {
-			tomcatUtil.startWebApp(contextPath);
-		}
+		
 	}
 
 	@Test
