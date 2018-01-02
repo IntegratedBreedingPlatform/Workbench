@@ -144,7 +144,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		this.programsTable.setColumnWidth(WorkbenchDashboard.BUTTON_LIST_MANAGER_COLUMN_ID, 55);
 
 		this.programsTable.setColumnCollapsingAllowed(false);
-		this.programsTable.setCellStyleGenerator(new ProjectTableCellStyleGenerator(this.programsTable, null));
+		this.programsTable.setCellStyleGenerator(new ProjectTableCellStyleGenerator());
 
 	}
 
@@ -216,6 +216,10 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
 		if (lastOpenedProgram != null) {
 			this.programsTable.select(lastOpenedProgram);
+
+			// If there's a last opened project (program), then set it to the current project in context.
+			org.generationcp.commons.util.ContextUtil.setContextInfo(IBPWorkbenchApplication.get().getRequest(), contextUtil.getCurrentWorkbenchUserId(),
+					lastOpenedProgram.getProjectId(), null);
 		}
 
 	}

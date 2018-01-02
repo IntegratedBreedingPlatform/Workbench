@@ -15,10 +15,12 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.ServletContext;
 
+import com.vaadin.terminal.gwt.server.WebBrowser;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.WorkbenchAppPathResolver;
-import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.model.AskSupportFormModel;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.service.WorkbenchUserService;
@@ -60,9 +62,6 @@ public class WorkbenchEmailSenderService {
 	private Properties workbenchProperties;
 
 	@Resource
-	private SessionData sessionData;
-
-	@Resource
 	private ServletContext servletContext;
 
 	@Resource
@@ -73,6 +72,9 @@ public class WorkbenchEmailSenderService {
 
 	@Resource
 	private MessageSource messageSource;
+
+	@Resource
+	private ContextUtil contextUtil;
 
 	@Value("${mail.server.sender.email}")
 	private String senderEmail;
@@ -118,15 +120,19 @@ public class WorkbenchEmailSenderService {
 
 
 	public void sendFeedback(final AskSupportFormModel askSupportForm) throws MessagingException {
-		Project lastOpenedProject = sessionData.getLastOpenedProject();
+		Project lastOpenedProject = contextUtil.getProjectInContext();
 		List<ProjectActivity> projectActivitiesByProjectId = workbenchDataManager.getProjectActivitiesByProjectId(lastOpenedProject.getProjectId(), 0, 1);
 
+		User currentUser = contextUtil.getCurrentWorkbenchUser();
 		// bms user account used
-		String accountFullName = sessionData.getUserData().getPerson().getDisplayName();
-		String accountUsername = sessionData.getUserData().getName();
-		String accountEmail = sessionData.getUserData().getPerson().getEmail();
-		String browser = sessionData.getBrowserInfo().get("browser");
-		String screenResolution = sessionData.getBrowserInfo().get("screenResolution");
+		String accountFullName = currentUser.getPerson().getDisplayName();
+		String accountUsername = currentUser.getName();
+		String accountEmail = currentUser.getPerson().getEmail();
+
+		WebBrowser webBrowser = (WebBrowser) IBPWorkbenchApplication.get().getMainWindow().getTerminal();
+		String browser = webBrowser.getBrowserApplication();
+		String screenResolution = String.format("%s width x %s height",webBrowser.getScreenWidth(), webBrowser.getScreenHeight());
+
 		String lastOpenedProgram = !Objects.equals(lastOpenedProject,null) ? lastOpenedProject.getProjectName(): "N/A";
 		String lastOpenedCrop =  !Objects.equals(lastOpenedProject,null) ? lastOpenedProject.getCropType().getCropName() : "N/A";
 		String lastOpenedModule = (!projectActivitiesByProjectId.isEmpty()) ? projectActivitiesByProjectId.get(0).getName() : "N/A";

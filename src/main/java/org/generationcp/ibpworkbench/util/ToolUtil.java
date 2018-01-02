@@ -23,6 +23,7 @@ import java.util.Properties;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.generationcp.commons.constant.ToolEnum;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.StringUtil;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.util.bean.ConfigurationChangeParameters;
@@ -64,6 +65,9 @@ public class ToolUtil {
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
+
+	@Autowired
+	private ContextUtil contextUtil;
 
 	public String getJdbcHost() {
 		return this.jdbcHost;
@@ -229,16 +233,6 @@ public class ToolUtil {
 			toolPath = this.workbenchInstallationDirectory + File.separator + toolPath.substring(startIndex);
 		}
 		return toolPath;
-	}
-
-	protected User getCurrentUser() {
-
-		final IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-		if (app != null) {
-			return app.getSessionData().getUserData();
-		} else {
-			return null;
-		}
 	}
 
 	protected boolean updatePropertyFile(final File propertyFile, final Map<String, String> newPropertyValues) {

@@ -38,7 +38,6 @@ import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.IWorkbenchSession;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
@@ -642,9 +641,8 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	@Override
 	public void updateLabels() {
-		final IWorkbenchSession appSession = (IWorkbenchSession) this.getApplication();
 
-		String signoutName = appSession.getSessionData().getUserData().getName();
+		String signoutName = contextUtil.getCurrentWorkbenchUser().getName();
 		if (signoutName.length() > 10) {
 			signoutName = signoutName.substring(0, 9) + "...";
 		}

@@ -40,8 +40,6 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 	private static final Logger LOG = LoggerFactory.getLogger(ContentWindow.class);
 	private Map<String, String[]> queryMap;
 	private String path;
-	private URL url;
-	private IWorkbenchSession appSession;
 
 	public ContentWindow() {
 		super("Breeding Management System | Workbench");
@@ -86,8 +84,6 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 	@Override
 	public void attach() {
 		super.attach();
-
-		this.appSession = (IWorkbenchSession) this.getApplication();
 	}
 
 	@Override
@@ -108,7 +104,6 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 	@Override
 	public DownloadStream handleURI(URL url, String s) {
 		this.path = s;
-		this.url = url;
 
 		String errorMessage = "";
 		ContentWindow.LOG.debug("path: " + this.path);
@@ -129,14 +124,6 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 						throw new Exception("No Program Exists with <strong>programId=" + this.queryMap.get("programId")[0] + "</strong>");
 					}
 
-					if (this.appSession.getSessionData().getLastOpenedProject() == null) {
-						this.appSession.getSessionData().setLastOpenedProject(project);
-					}
-
-					if (this.appSession.getSessionData().getSelectedProject() == null) {
-						this.appSession.getSessionData().setSelectedProject(project);
-					}
-
 					// execute
 					new OpenProgramLocationsAction(project, null).doAction(this, "/" + this.path, false);
 
@@ -153,14 +140,6 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 
 					if (project == null) {
 						throw new Exception("No Program Exists with <strong>programId=" + this.queryMap.get("programId")[0] + "</strong>");
-					}
-
-					if (this.appSession.getSessionData().getLastOpenedProject() == null) {
-						this.appSession.getSessionData().setLastOpenedProject(project);
-					}
-
-					if (this.appSession.getSessionData().getSelectedProject() == null) {
-						this.appSession.getSessionData().setSelectedProject(project);
 					}
 
 					new OpenProgramMethodsAction(project, null).doAction(this, "/" + this.path, false);

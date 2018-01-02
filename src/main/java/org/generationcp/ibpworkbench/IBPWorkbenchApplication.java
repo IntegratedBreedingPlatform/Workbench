@@ -30,16 +30,10 @@ import org.springframework.web.context.ConfigurableWebApplicationContext;
 import com.vaadin.terminal.gwt.server.WebBrowser;
 import com.vaadin.ui.Window;
 
-public class IBPWorkbenchApplication extends SpringContextApplication implements IWorkbenchSession {
+public class IBPWorkbenchApplication extends SpringContextApplication {
 
 	private static final long serialVersionUID = 1L;
 	private final static Logger LOG = LoggerFactory.getLogger(IBPWorkbenchApplication.class);
-
-	@Resource
-	private SimpleResourceBundleMessageSource messageSource;
-
-	@Resource
-	private SessionData sessionData;
 
 	@Resource
 	private LogoutHandler rememberMeServices;
@@ -74,15 +68,6 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 	@Override
 	public void terminalError(com.vaadin.terminal.Terminal.ErrorEvent event) {
 		IBPWorkbenchApplication.LOG.error("Encountered error", event.getThrowable());
-	}
-
-	@Override
-	public SessionData getSessionData() {
-		return this.sessionData;
-	}
-
-	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
-		this.messageSource = messageSource;
 	}
 
 	public HttpServletResponse getResponse() {
@@ -126,7 +111,6 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 
 	@Override
 	public Window getWindow(String name) {
-		sessionData.setBrowserInfo((WebBrowser) this.getMainWindow().getTerminal());
 
 		Window w = super.getWindow(name);
 
