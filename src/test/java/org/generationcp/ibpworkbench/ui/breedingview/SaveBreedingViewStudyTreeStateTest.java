@@ -12,7 +12,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
-import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
@@ -38,7 +38,7 @@ public class SaveBreedingViewStudyTreeStateTest {
 	private ManagerFactoryProvider provider;
 
 	@Mock
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	@InjectMocks
 	private SaveBreedingViewStudyTreeState dut = constructTestObject();
@@ -55,9 +55,9 @@ public class SaveBreedingViewStudyTreeStateTest {
 		Project project = mock(Project.class);
 		User userData = mock(User.class);
 		ManagerFactory factory = mock(ManagerFactory.class);
-		when(sessionData.getSelectedProject()).thenReturn(project);
+		when(contextUtil.getProjectInContext()).thenReturn(project);
 		when(project.getProjectId()).thenReturn((long) 1);
-		when(sessionData.getUserData()).thenReturn(userData);
+		when(contextUtil.getCurrentWorkbenchUser()).thenReturn(userData);
 
 		when(provider.getManagerFactoryForProject(project)).thenReturn(factory);
 		when(factory.getUserProgramStateDataManager()).thenReturn(programStateDataManager);

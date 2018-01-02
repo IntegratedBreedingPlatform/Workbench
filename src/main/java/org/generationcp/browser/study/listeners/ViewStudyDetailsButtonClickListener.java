@@ -4,9 +4,11 @@ package org.generationcp.browser.study.listeners;
 import javax.annotation.Resource;
 
 import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
+import org.generationcp.commons.context.ContextConstants;
+import org.generationcp.commons.security.SecurityUtil;
+import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.commons.util.WorkbenchAppPathResolver;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Tool;
@@ -34,7 +36,7 @@ public class ViewStudyDetailsButtonClickListener implements ClickListener {
 	private WorkbenchDataManager workbenchDataManager;
 
 	@Resource
-	private SessionData sessionData;
+	private org.generationcp.commons.spring.util.ContextUtil contextUtil;
 
 	private final int studyId;
 	private final String studyName;
@@ -54,7 +56,12 @@ public class ViewStudyDetailsButtonClickListener implements ClickListener {
 			ViewStudyDetailsButtonClickListener.LOG.error("QueryException", qe);
 		}
 
-		String addtlParams = this.sessionData.getWorkbenchContextParameters();
+		String contextParameterString =
+				ContextUtil.getContextParameterString(contextUtil.getCurrentWorkbenchUserId(), contextUtil.getProjectInContext().getProjectId());
+
+		String authenticationTokenString = ContextUtil.addQueryParameter(ContextConstants.PARAM_AUTH_TOKEN, SecurityUtil.getEncodedToken());
+
+		String addtlParams = contextParameterString + authenticationTokenString;
 		ExternalResource studyLink;
 		if (tool == null) {
 			studyLink =

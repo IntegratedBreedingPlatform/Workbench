@@ -6,9 +6,11 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.workbench.Project;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,12 +35,14 @@ public class ViewStudyDetailsButtonClickListenerTest {
 	private static final String STUDY_NAME = "Dummy Study";
 
 	private static final int STUDY_ID = 1;
+	public static final int USER_ID = 12;
+	public static final long PROJECT_ID = 123l;
 
 	@Mock
 	private WorkbenchDataManager workbenchManager;
 
 	@Mock
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	@Mock
 	private HttpServletRequest request;
@@ -49,12 +53,16 @@ public class ViewStudyDetailsButtonClickListenerTest {
 
 	@Before
 	public void setUp() {
-		Mockito.when(this.sessionData.getWorkbenchContextParameters()).thenReturn("&loggedinUserId=1&selectedProjectId=1");
 		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(this.request));
 
 		Mockito.when(this.request.getScheme()).thenReturn("http");
 		Mockito.when(this.request.getServerName()).thenReturn("my-host");
 		Mockito.when(this.request.getServerPort()).thenReturn(18080);
+
+		Mockito.when(contextUtil.getCurrentWorkbenchUserId()).thenReturn(USER_ID);
+		Project project = new Project();
+		project.setProjectId(PROJECT_ID);
+		Mockito.when(contextUtil.getProjectInContext()).thenReturn(project);
 	}
 
 	@Test

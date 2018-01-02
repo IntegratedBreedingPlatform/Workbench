@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.constant.ListTreeState;
-import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.UserProgramStateDataManager;
@@ -29,7 +29,7 @@ public class BreedingViewTreeTable extends TreeTable {
 	private Map<Integer, Reference> nodeMap;
 
 	@Autowired
-    private SessionData sessionData;
+	private ContextUtil contextUtil;
     
     @Autowired
     private UserProgramStateDataManager programStateDataManager;
@@ -65,8 +65,8 @@ public class BreedingViewTreeTable extends TreeTable {
 
 		try {
 			List<String> parsedState =
-					programStateDataManager.getUserProgramTreeStateByUserIdProgramUuidAndType(sessionData.getUserData().getUserid(),
-							sessionData.getSelectedProject().getUniqueID(), ListTreeState.STUDY_LIST.name());
+					programStateDataManager.getUserProgramTreeStateByUserIdProgramUuidAndType(contextUtil.getCurrentWorkbenchUserId(),
+							contextUtil.getProjectInContext().getUniqueID(), ListTreeState.STUDY_LIST.name());
 
 			if (parsedState.isEmpty() || (parsedState.size() == 1 && !StringUtils.isEmpty(parsedState.get(0)))) {
 				return;

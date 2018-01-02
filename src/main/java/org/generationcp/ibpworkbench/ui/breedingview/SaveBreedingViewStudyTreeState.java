@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.generationcp.commons.constant.ListTreeState;
-import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.domain.dms.StudyReference;
@@ -29,7 +29,7 @@ public class SaveBreedingViewStudyTreeState implements Window.CloseListener {
 	private UserProgramStateDataManager userProgramStateManager;
 
 	@Autowired
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	public SaveBreedingViewStudyTreeState(BreedingViewTreeTable treeTable) {
 		this.treeTable = treeTable;
@@ -39,8 +39,8 @@ public class SaveBreedingViewStudyTreeState implements Window.CloseListener {
 	public void windowClose(Window.CloseEvent e) {
 		List<String> itemIds = getExpandedIds();
 
-		userProgramStateManager.saveOrUpdateUserProgramTreeState(sessionData.getUserData().getUserid(), sessionData
-				.getSelectedProject().getUniqueID(), ListTreeState.STUDY_LIST.name(), itemIds);
+		userProgramStateManager.saveOrUpdateUserProgramTreeState(contextUtil.getCurrentWorkbenchUserId(),
+				contextUtil.getProjectInContext().getUniqueID(), ListTreeState.STUDY_LIST.name(), itemIds);
 	}
 
 	protected List<String> getExpandedIds() {

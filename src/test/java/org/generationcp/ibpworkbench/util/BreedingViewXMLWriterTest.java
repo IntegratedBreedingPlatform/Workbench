@@ -19,7 +19,7 @@ import org.generationcp.commons.breedingview.xml.Replicates;
 import org.generationcp.commons.breedingview.xml.RowPos;
 import org.generationcp.commons.breedingview.xml.Rows;
 import org.generationcp.commons.sea.xml.Design;
-import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.CropType;
@@ -62,15 +62,15 @@ public class BreedingViewXMLWriterTest {
 	@Before
 	public void setUp() throws Exception {
 
-		SessionData sessionData = Mockito.mock(SessionData.class);
+		ContextUtil contextUtil = Mockito.mock(ContextUtil.class);
 		WorkbenchDataManager workbenchDataManager = Mockito.mock(WorkbenchDataManager.class);
-		Mockito.when(sessionData.getLastOpenedProject()).thenReturn(this.createProject());
+		Mockito.when(contextUtil.getProjectInContext()).thenReturn(this.createProject());
 		Mockito.when(workbenchDataManager.getWorkbenchSetting()).thenReturn(this.createWorkbenchSetting());
 
 		this.breedingViewInput = this.createBreedingViewInput();
 		this.breedingViewXMLWriter = new BreedingViewXMLWriter(this.breedingViewInput);
 		this.breedingViewXMLWriter.setWebApiUrl(WEB_API_URL);
-		breedingViewXMLWriter.setSessionData(sessionData);
+		breedingViewXMLWriter.setContextUtil(contextUtil);
 		breedingViewXMLWriter.setWorkbenchDataManager(workbenchDataManager);
 		this.createBreedingViewDirectories();
 

@@ -25,6 +25,7 @@ import javax.xml.bind.Marshaller;
 
 import org.generationcp.commons.breedingview.xml.SSAParameters;
 import org.generationcp.commons.breedingview.xml.Trait;
+import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.sea.xml.BreedingViewProject;
 import org.generationcp.commons.sea.xml.BreedingViewSession;
 import org.generationcp.commons.sea.xml.DataConfiguration;
@@ -34,8 +35,9 @@ import org.generationcp.commons.sea.xml.Environments;
 import org.generationcp.commons.sea.xml.Pipeline;
 import org.generationcp.commons.sea.xml.Pipelines;
 import org.generationcp.commons.sea.xml.Traits;
+import org.generationcp.commons.security.SecurityUtil;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.BreedingViewUtil;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -62,7 +64,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 	private WorkbenchDataManager workbenchDataManager;
 
 	@Autowired
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	@Value("${web.api.url}")
 	private String webApiUrl;
@@ -195,7 +197,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 	}
 
 	protected Project getLastOpenedProject() {
-		return this.sessionData.getLastOpenedProject();
+		return contextUtil.getProjectInContext();
 	}
 
 	protected String getInstallationDirectory() {
@@ -204,9 +206,17 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 
 	protected String getWebApiUrl() {
 		final String url = this.webApiUrl + "?restartApplication";
-		final Project project = this.sessionData.getLastOpenedProject();
+		final Project project = contextUtil.getProjectInContext();
+
+		final String contextParameterString =
+				org.generationcp.commons.util.ContextUtil
+						.getContextParameterString(contextUtil.getCurrentWorkbenchUserId(), project.getProjectId());
+
+		final String authenticationTokenString = org.generationcp.commons.util.ContextUtil
+				.addQueryParameter(ContextConstants.PARAM_AUTH_TOKEN, SecurityUtil.getEncodedToken());
+
 		String webApiUrlWithCropName = this.replaceCropNameInWebApiUrl(url, project.getCropType().getCropName());
-		webApiUrlWithCropName += this.sessionData.getWorkbenchContextParameters();
+		webApiUrlWithCropName += contextParameterString + authenticationTokenString;
 		return webApiUrlWithCropName;
 	}
 
@@ -300,15 +310,15 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 		// overridden method from interface
 	}
 
-	public void setSessionData(final SessionData sessionData) {
-		this.sessionData = sessionData;
-	}
-
 	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
 		this.workbenchDataManager = workbenchDataManager;
 	}
 
 	public void setWebApiUrl(final String webApiUrl) {
 		this.webApiUrl = webApiUrl;
+	}
+
+	public void setContextUtil(final ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
 	}
 }
