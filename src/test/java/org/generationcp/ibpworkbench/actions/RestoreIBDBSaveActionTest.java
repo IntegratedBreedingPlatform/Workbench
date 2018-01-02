@@ -10,11 +10,11 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.MySQLUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
@@ -38,7 +38,7 @@ public class RestoreIBDBSaveActionTest {
 	private static final int NO_OF_RESTORED_PROGRAMS = 10;
 
 	@Mock
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	@Mock
 	private WorkbenchDataManager workbenchDataManager;
@@ -71,7 +71,7 @@ public class RestoreIBDBSaveActionTest {
 		this.currentProject = this.createProject();
 		this.restoreAction = new RestoreIBDBSaveAction(this.currentProject, Mockito.mock(Window.class));
 		this.restoreAction.setWorkbenchDataManager(this.workbenchDataManager);
-		this.restoreAction.setSessionData(this.sessionData);
+		this.restoreAction.setContextUtil(this.contextUtil);
 		this.restoreAction.setProgramService(this.programService);
 		this.restoreAction.setMysqlUtil(this.mySqlUtil);
 		this.restoreAction.setMessageSource(this.messageSource);
@@ -88,7 +88,7 @@ public class RestoreIBDBSaveActionTest {
 	@Test
 	public void testAddDefaultAdminToProgramsWhenCurrentUserIsDefaultAdmin() {
 		// Setup default admin as current user
-		Mockito.when(this.sessionData.getUserData()).thenReturn(this.defaultAdminUser);
+		Mockito.when(this.contextUtil.getCurrentWorkbenchUser()).thenReturn(this.defaultAdminUser);
 
 		// Call method to test
 		this.restoreAction.addDefaultAdminAndCurrentUserAsMembersOfRestoredPrograms();
@@ -99,7 +99,7 @@ public class RestoreIBDBSaveActionTest {
 	@Test
 	public void testAddDefaultAdminToProgramsWhenCurrentUserIsNotDefaultAdmin() {
 		// Setup another user (not the default admin) as current user
-		Mockito.when(this.sessionData.getUserData()).thenReturn(this.loggedInUser);
+		Mockito.when(this.contextUtil.getCurrentWorkbenchUser()).thenReturn(this.loggedInUser);
 
 		// Call method to test
 		this.restoreAction.addDefaultAdminAndCurrentUserAsMembersOfRestoredPrograms();
@@ -122,7 +122,8 @@ public class RestoreIBDBSaveActionTest {
 	@Test
 	public void testRestoreProcessWhenCurrentUserIsNotDefaultAdmin() throws Exception {
 		// Setup another user (not the default admin) as current user
-		Mockito.when(this.sessionData.getUserData()).thenReturn(this.loggedInUser);
+		Mockito.when(this.contextUtil.getCurrentWorkbenchUserId()).thenReturn(this.loggedInUser.getUserid());
+		Mockito.when(this.contextUtil.getCurrentWorkbenchUser()).thenReturn(this.loggedInUser);
 		Mockito.when(this.workbenchDataManager.getLocalIbdbUserId(this.loggedInUser.getUserid(), this.currentProject.getProjectId()))
 				.thenReturn(this.loggedInUser.getUserid());
 
@@ -142,7 +143,8 @@ public class RestoreIBDBSaveActionTest {
 	@Test
 	public void testRestoreProcessWhenCurrentUserIsDefaultAdmin() throws Exception {
 		// Setup another user (not the default admin) as current user
-		Mockito.when(this.sessionData.getUserData()).thenReturn(this.defaultAdminUser);
+		Mockito.when(this.contextUtil.getCurrentWorkbenchUserId()).thenReturn(this.defaultAdminUser.getUserid());
+		Mockito.when(this.contextUtil.getCurrentWorkbenchUser()).thenReturn(this.defaultAdminUser);
 		Mockito.when(this.workbenchDataManager.getLocalIbdbUserId(this.defaultAdminUser.getUserid(), this.currentProject.getProjectId()))
 				.thenReturn(this.defaultAdminUser.getUserid());
 
@@ -177,7 +179,7 @@ public class RestoreIBDBSaveActionTest {
 		final String cropRestoreString = "Crop Restore";
 		final String restoredFromString = "Restored backup from";
 		final String backupFileName = "ibdbv2_maize_merged_20170213_014837.sql";
-		Mockito.when(this.sessionData.getUserData()).thenReturn(this.loggedInUser);
+		Mockito.when(this.contextUtil.getCurrentWorkbenchUser()).thenReturn(this.loggedInUser);
 		Mockito.when(this.messageSource.getMessage(Message.CROP_DATABASE_RESTORE)).thenReturn(cropRestoreString);
 		Mockito.when(this.messageSource.getMessage(Message.RESTORED_BACKUP_FROM)).thenReturn(restoredFromString);
 		Mockito.when(this.restoreFile.getName()).thenReturn(backupFileName);

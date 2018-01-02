@@ -16,10 +16,10 @@ import java.util.UUID;
 import junit.framework.Assert;
 
 import org.apache.commons.io.FileUtils;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.MySQLUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.RestoreIBDBSaveAction;
 import org.generationcp.ibpworkbench.database.CropDatabaseGenerator;
 import org.generationcp.middleware.hibernate.HibernateSessionPerThreadProvider;
@@ -214,10 +214,10 @@ public class RestoreUtilTest {
 				ConfirmDialog confirmDialog = new CustomConfirmDialog(true);
 
 				RestoreIBDBSaveAction restoreAction = new RestoreIBDBSaveAction(project, new Window());
-				SessionData sessionData = new SessionData();
-				sessionData.setLastOpenedProject(project);
-				sessionData.setUserData(new User(1));
-				restoreAction.setSessionData(sessionData);
+				ContextUtil contextUtil = Mockito.mock(ContextUtil.class);
+				Mockito.when(contextUtil.getProjectInContext()).thenReturn(project);
+				Mockito.when(contextUtil.getCurrentWorkbenchUser()).thenReturn(new User(1));
+				restoreAction.setContextUtil(contextUtil);
 				restoreAction.setMysqlUtil(this.mySqlUtil);
 				restoreAction.setWorkbenchDataManager(this.workbenchDataManager);
 				restoreAction.setMessageSource(this.messageSource);

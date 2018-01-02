@@ -4,13 +4,13 @@ package org.generationcp.ibpworkbench.ui.window;
 import java.util.List;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.RestoreIBDBSaveAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -54,7 +54,7 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	private Upload upload;
 
@@ -72,7 +72,7 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 
 	protected void initializeData() {
 		try {
-			final List<Project> projects = this.workbenchDataManager.getProjectsByUser(this.sessionData.getUserData());
+			final List<Project> projects = this.workbenchDataManager.getProjectsByUser(this.contextUtil.getCurrentWorkbenchUser());
 
 			// set the Project Table data source
 			final BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);

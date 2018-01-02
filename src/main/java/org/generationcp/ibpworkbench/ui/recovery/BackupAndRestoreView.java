@@ -3,18 +3,19 @@ package org.generationcp.ibpworkbench.ui.recovery;
 
 import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.help.document.HelpModule;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.BackupIBDBSaveAction;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.RestoreIBDBSaveAction;
 import org.generationcp.ibpworkbench.ui.common.UploadField;
 import org.generationcp.ibpworkbench.ui.programmethods.ProgramMethodsView;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -54,11 +55,11 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 	private Panel restorePanel;
 
 	@Autowired
-	private SessionData sessionData;
-	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
+
 	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
+	private ContextUtil contextUtil;
+
 	private final Panel root = new Panel();
 
 	public BackupAndRestoreView() {
@@ -145,7 +146,10 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 	 * If possible, move to a controller class in the future
 	 */
 	public void initializeActions() {
-		final BackupIBDBSaveAction backupAction = new BackupIBDBSaveAction(this.sessionData.getLastOpenedProject(), this.getWindow()) {
+
+		final Project project = contextUtil.getProjectInContext();
+
+		final BackupIBDBSaveAction backupAction = new BackupIBDBSaveAction(project, this.getWindow()) {
 
 			@Override
 			public void doAction() {
@@ -155,7 +159,7 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 
 		this.backupBtn.addListener(backupAction);
 
-		final RestoreIBDBSaveAction restoreAction = new RestoreIBDBSaveAction(this.sessionData.getLastOpenedProject(), this.getWindow()) {
+		final RestoreIBDBSaveAction restoreAction = new RestoreIBDBSaveAction(project, this.getWindow()) {
 
 			@Override
 			public void onClose(final ConfirmDialog dialog) {
@@ -195,7 +199,7 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 						BackupAndRestoreView.this.messageSource.getMessage(Message.RESTORE_IBDB_WINDOW_CAPTION),
 						String.format(restoreDescMessageFormat,
 								BackupAndRestoreView.this.messageSource.getMessage(Message.RESTORE_IBDB_CONFIRM,
-										BackupAndRestoreView.this.sessionData.getLastOpenedProject().getDatabaseName()),
+										project.getDatabaseName()),
 								BackupAndRestoreView.this.messageSource.getMessage(Message.RESTORE_BMS_WARN)),
 						BackupAndRestoreView.this.messageSource.getMessage(Message.RESTORE),
 						BackupAndRestoreView.this.messageSource.getMessage(Message.CANCEL), restoreAction);
@@ -263,7 +267,7 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 		this.backupPanel.addComponent(
 				this.setUpHeadings(HelpModule.BACKUP_PROGRAM_DATA, this.messageSource.getMessage("BACKUP_BMS_TITLE"), "124px"));
 		final Label backupTextLabel = new Label(
-				this.messageSource.getMessage("BACKUP_BMS_DESCRIPTION", this.sessionData.getLastOpenedProject().getProjectName()));
+				this.messageSource.getMessage("BACKUP_BMS_DESCRIPTION", contextUtil.getProjectInContext().getProjectName()));
 		backupTextLabel.addStyleName(BMS_LABEL_BOTTOM_SPACE_STYLE);
 		this.backupPanel.addComponent(backupTextLabel);
 		this.backupPanel.addComponent(this.backupBtn);

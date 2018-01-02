@@ -9,12 +9,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.commons.util.MySQLUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.database.CropDatabaseGenerator;
 import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -49,7 +49,7 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 	private MySQLUtil mysqlUtil;
 
 	@Autowired
-	private SessionData sessionData;
+	private org.generationcp.commons.spring.util.ContextUtil contextUtil;
 
 	@Autowired
 	private ProgramService programService;
@@ -83,7 +83,7 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 					@Override
 					public Boolean call() throws Exception {
 						final CropDatabaseGenerator cropDatabaseGenerator =
-								new CropDatabaseGenerator(RestoreIBDBSaveAction.this.sessionData.getLastOpenedProject().getCropType());
+								new CropDatabaseGenerator(contextUtil.getProjectInContext().getCropType());
 						cropDatabaseGenerator.setWorkbenchDataManager(RestoreIBDBSaveAction.this.workbenchDataManager);
 						return cropDatabaseGenerator.generateDatabase();
 					}
@@ -94,7 +94,7 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 						this.messageSource.getMessage(Message.RESTORE_IBDB_COMPLETE));
 
 				// Set current user as owner of restored germplasm lists
-				final Integer userId = this.workbenchDataManager.getLocalIbdbUserId(this.sessionData.getUserData().getUserid(),
+				final Integer userId = this.workbenchDataManager.getLocalIbdbUserId(contextUtil.getCurrentWorkbenchUserId(),
 						this.project.getProjectId());
 				this.updateGermplasmListOwnership(userId);
 
@@ -120,7 +120,7 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 			final ProjectActivity projAct =
 					new ProjectActivity(null, this.project, this.messageSource.getMessage(Message.CROP_DATABASE_RESTORE),
 							this.messageSource.getMessage(Message.RESTORED_BACKUP_FROM) + " " + this.restoreFile.getName(),
-							this.sessionData.getUserData(), new Date());
+							contextUtil.getCurrentWorkbenchUser(), new Date());
 			this.workbenchDataManager.addProjectActivity(projAct);
 		}
 	}
@@ -137,7 +137,7 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 	void addDefaultAdminAndCurrentUserAsMembersOfRestoredPrograms() {
 
 		final List<Project> projects = this.workbenchDataManager.getProjectsByCrop(this.project.getCropType());
-		final User currentUser = this.sessionData.getUserData();
+		final User currentUser = contextUtil.getCurrentWorkbenchUser();
 		HashSet<User> users = new HashSet<>();
 		users.add(currentUser);
 		
@@ -145,14 +145,6 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 			// The default "ADMIN" user is being added in ProgramService
 			this.programService.saveProgramMembers(project, users);
 		}
-	}
-
-	boolean currentUserIsDefaultAdmin() {
-		final User defaultAdminUser = this.workbenchDataManager.getUserByUsername(ProgramService.ADMIN_USERNAME);
-		if (defaultAdminUser != null) {
-			return defaultAdminUser.equals(this.sessionData.getUserData());
-		}
-		return false;
 	}
 
 	@Override
@@ -191,8 +183,8 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 		this.mysqlUtil = mysqlUtil;
 	}
 
-	public void setSessionData(final SessionData sessionData) {
-		this.sessionData = sessionData;
+	public void setContextUtil(final org.generationcp.commons.spring.util.ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
 	}
 
 	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
