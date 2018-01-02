@@ -41,6 +41,9 @@ public class UsernameValidator extends AbstractValidator {
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
 
+	@Autowired
+	private ValidatorCounter validatorCounter;
+
 	public UsernameValidator() {
 		super("User with Username \"{0}\" already exists.");
 	}
@@ -50,22 +53,19 @@ public class UsernameValidator extends AbstractValidator {
 
 		int usernameCounter;
 		IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-		usernameCounter = app.getSessionData().getUsernameCounter();
+		usernameCounter = validatorCounter.getUsernameCounter();
 		usernameCounter++;
-		app.getSessionData().setUsernameCounter(usernameCounter);
+		validatorCounter.setUsernameCounter(usernameCounter);
 
 		if (usernameCounter > 2) {
-			app.getSessionData().setUsernameCounter(0);
+			validatorCounter.setUsernameCounter(0);
 			return true;
 		}
-		try {
-			if (this.workbenchDataManager.isUsernameExists(value.toString().trim())) {
-				return false;
-			}
-		} catch (MiddlewareQueryException e) {
-			UsernameValidator.LOG.error(e.getMessage());
-			throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
+
+		if (this.workbenchDataManager.isUsernameExists(value.toString().trim())) {
+			return false;
 		}
+
 
 		return true;
 	}

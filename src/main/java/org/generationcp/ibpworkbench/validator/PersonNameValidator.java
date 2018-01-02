@@ -41,6 +41,9 @@ public class PersonNameValidator extends AbstractValidator {
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
 
+	@Autowired
+	private ValidatorCounter validatorCounter;
+
 	private final Field firstName;
 	private final Field lastName;
 
@@ -64,21 +67,17 @@ public class PersonNameValidator extends AbstractValidator {
 	public boolean isValid(Object value) {
 		int personCounter;
 		IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-		personCounter = app.getSessionData().getNameValidationCounter();
+		personCounter = validatorCounter.getNameValidationCounter();
 		personCounter++;
-		app.getSessionData().setNameValidationCounter(personCounter);
+		validatorCounter.setNameValidationCounter(personCounter);
 
 		if (personCounter > 2) {
-			app.getSessionData().setNameValidationCounter(0);
+			validatorCounter.setNameValidationCounter(0);
 			return true;
 		}
 
-		try {
-			return !this.workbenchDataManager.isPersonExists(this.firstName.getValue().toString(), this.lastName.getValue().toString());
-		} catch (Exception e) {
-			PersonNameValidator.LOG.error(e.getMessage(), e);
-			throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
-		}
+		return !this.workbenchDataManager.isPersonExists(this.firstName.getValue().toString(), this.lastName.getValue().toString());
+
 	}
 
 }
