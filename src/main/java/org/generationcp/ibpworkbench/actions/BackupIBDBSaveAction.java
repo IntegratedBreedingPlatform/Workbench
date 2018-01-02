@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Date;
 
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.MySQLUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
@@ -43,6 +44,9 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.Clic
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
+	private ContextUtil contextUtil;
+
+	@Autowired
 	private MySQLUtil mysqlUtil;
 
 	private final Project selectedProject;
@@ -74,7 +78,7 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.Clic
 			final ProjectActivity projAct =
 					new ProjectActivity(null, this.selectedProject, this.messageSource.getMessage(Message.CROP_DATABASE_BACKUP),
 							this.messageSource.getMessage(Message.BACKUP_PERFORMED_ON) + " " + this.selectedProject.getDatabaseName(),
-							app.getSessionData().getUserData(), new Date());
+							contextUtil.getCurrentWorkbenchUser(), new Date());
 
 			this.workbenchDataManager.addProjectActivity(projAct);
 
