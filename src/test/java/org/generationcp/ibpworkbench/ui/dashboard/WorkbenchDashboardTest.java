@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.InputStream;
 import com.vaadin.ui.CssLayout;
 import org.apache.commons.lang3.StringUtils;
@@ -48,6 +50,12 @@ public class WorkbenchDashboardTest {
 	@Mock
 	private ServletContext servletContext;
 
+	@Mock
+	private HttpServletRequest httpServletRequest;
+
+	@Mock
+	private HttpSession httpSession;
+
 	@InjectMocks
 	private WorkbenchDashboard workbenchDashboard;
 
@@ -67,6 +75,7 @@ public class WorkbenchDashboardTest {
 		this.lastOpenedProgram = this.programs.get(7);
 		Mockito.doReturn(this.programs).when(this.workbenchDataManager).getProjectsByUser(currentUser);
 		Mockito.doReturn(this.lastOpenedProgram).when(this.workbenchDataManager).getLastOpenedProject(currentUser.getUserid());
+		Mockito.when(httpServletRequest.getSession()).thenReturn(httpSession);
 
 		// Initialize UI components
 		this.workbenchDashboard.initializeComponents();

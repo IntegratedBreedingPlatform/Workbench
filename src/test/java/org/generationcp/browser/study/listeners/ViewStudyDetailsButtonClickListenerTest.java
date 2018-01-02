@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
 import org.generationcp.commons.spring.util.ContextUtil;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -20,6 +19,9 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -37,12 +39,16 @@ public class ViewStudyDetailsButtonClickListenerTest {
 	private static final int STUDY_ID = 1;
 	public static final int USER_ID = 12;
 	public static final long PROJECT_ID = 123l;
+	public static final String USERNAME = "username";
 
 	@Mock
 	private WorkbenchDataManager workbenchManager;
 
 	@Mock
 	private ContextUtil contextUtil;
+
+	@Mock
+	private SecurityContext securityContext;
 
 	@Mock
 	private HttpServletRequest request;
@@ -63,6 +69,11 @@ public class ViewStudyDetailsButtonClickListenerTest {
 		Project project = new Project();
 		project.setProjectId(PROJECT_ID);
 		Mockito.when(contextUtil.getProjectInContext()).thenReturn(project);
+
+		Authentication authentication = Mockito.mock(Authentication.class);
+		Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+		Mockito.when(authentication.getName()).thenReturn(USERNAME);
+		SecurityContextHolder.setContext(securityContext);
 	}
 
 	@Test
@@ -92,7 +103,7 @@ public class ViewStudyDetailsButtonClickListenerTest {
 		ExternalResource externalResource = (ExternalResource) embeddedResource.getSource();
 		String expectedStudyURL =
 				"http://my-host:18080/" + DefaultGermplasmStudyBrowserPath.STUDY_BROWSER_LINK
-				+ ViewStudyDetailsButtonClickListenerTest.STUDY_ID + "?restartApplication&loggedinUserId=1&selectedProjectId=1";
+				+ ViewStudyDetailsButtonClickListenerTest.STUDY_ID + "?restartApplication&loggedInUserId=12&selectedProjectId=123&authToken=dXNlcm5hbWU";
 		Assert.assertEquals("URL to StudyBrowser resource should be", expectedStudyURL, externalResource.getURL());
 
 	}

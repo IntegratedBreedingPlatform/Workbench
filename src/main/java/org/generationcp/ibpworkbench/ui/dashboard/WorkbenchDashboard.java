@@ -16,6 +16,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
 import com.vaadin.ui.CssLayout;
 import org.apache.commons.lang3.StringUtils;
@@ -77,6 +78,9 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
 	@Resource
 	private ContextUtil contextUtil;
+
+	@Resource
+	private HttpServletRequest httpServletRequest;
 
 	@Value("${institute.logo.path}")
 	private String instituteLogoPath;
@@ -218,7 +222,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 			this.programsTable.select(lastOpenedProgram);
 
 			// If there's a last opened project (program), then set it to the current project in context.
-			org.generationcp.commons.util.ContextUtil.setContextInfo(IBPWorkbenchApplication.get().getRequest(), contextUtil.getCurrentWorkbenchUserId(),
+			org.generationcp.commons.util.ContextUtil.setContextInfo(httpServletRequest, contextUtil.getCurrentWorkbenchUserId(),
 					lastOpenedProgram.getProjectId(), null);
 		}
 

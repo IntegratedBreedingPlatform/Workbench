@@ -25,6 +25,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -63,6 +64,9 @@ public class AppLauncherServiceTest {
 	private ContextUtil contextUtil;
 
 	@Mock
+	private SecurityContext securityContext;
+
+	@Mock
 	private Authentication authentication;
 
 	@InjectMocks
@@ -77,8 +81,11 @@ public class AppLauncherServiceTest {
 
 		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(this.request));
 
-		SecurityContextHolder.getContext().setAuthentication(authentication);
+		Authentication authentication = Mockito.mock(Authentication.class);
+		Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
 		Mockito.when(authentication.getName()).thenReturn(USER_NAME);
+		SecurityContextHolder.setContext(securityContext);
+
 
 		Mockito.when(this.request.getScheme()).thenReturn(AppLauncherServiceTest.SCHEME);
 		Mockito.when(this.request.getServerName()).thenReturn(AppLauncherServiceTest.HOST_NAME);
