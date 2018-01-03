@@ -179,9 +179,9 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 		} else if (toolName.equals("update_project")) {
 			return new OpenUpdateProjectPageAction();
 		} else if (toolName.equals("project_method")) {
-			return new OpenProgramMethodsAction(project);
+			return new OpenProgramMethodsAction();
 		} else if (toolName.equals("project_location")) {
-			return new OpenProgramLocationsAction(project, contextUtil.getCurrentWorkbenchUser());
+			return new OpenProgramLocationsAction();
 		} else if (toolName.equals("about_bms")) {
 			return new PageAction("/ibpworkbench/controller/about/");
 		} else if (toolName.equals("delete_project")) {

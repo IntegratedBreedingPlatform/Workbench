@@ -125,7 +125,7 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 					}
 
 					// execute
-					new OpenProgramLocationsAction(project, null).doAction(this, "/" + this.path, false);
+					new OpenProgramLocationsAction().doAction(this, "/" + this.path, false);
 
 					return null;
 				}
@@ -142,7 +142,7 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 						throw new Exception("No Program Exists with <strong>programId=" + this.queryMap.get("programId")[0] + "</strong>");
 					}
 
-					new OpenProgramMethodsAction(project, null).doAction(this, "/" + this.path, false);
+					new OpenProgramMethodsAction().doAction(this, "/" + this.path, false);
 
 					return null;
 				}
