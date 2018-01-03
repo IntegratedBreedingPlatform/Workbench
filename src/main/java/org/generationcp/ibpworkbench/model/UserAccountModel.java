@@ -44,9 +44,6 @@ public class UserAccountModel implements Serializable {
 
 	private String role;
 
-	private String securityQuestion;
-	private String securityAnswer;
-
 	/**
 	 * Initialize fields so that the "null" String value does not appear.
 	 */
@@ -59,8 +56,6 @@ public class UserAccountModel implements Serializable {
 		this.username = "";
 		this.password = "";
 		this.passwordConfirmation = "";
-		this.securityQuestion = "";
-		this.securityAnswer = "";
 
 		// default
 		this.role = Role.TECHNICIAN.name();
@@ -122,22 +117,6 @@ public class UserAccountModel implements Serializable {
 		this.passwordConfirmation = passwordConfirmation;
 	}
 
-	public String getSecurityQuestion() {
-		return this.securityQuestion;
-	}
-
-	public void setSecurityQuestion(String securityQuestion) {
-		this.securityQuestion = securityQuestion;
-	}
-
-	public String getSecurityAnswer() {
-		return this.securityAnswer;
-	}
-
-	public void setSecurityAnswer(String securityAnswer) {
-		this.securityAnswer = securityAnswer;
-	}
-
 	public String getRole() {
 		return this.role;
 	}
@@ -155,7 +134,5 @@ public class UserAccountModel implements Serializable {
 		this.username = this.username.trim();
 		this.password = this.password.trim();
 		this.passwordConfirmation = this.passwordConfirmation.trim();
-		this.securityQuestion = this.securityQuestion.trim();
-		this.securityAnswer = this.securityAnswer.trim();
 	}
 }
