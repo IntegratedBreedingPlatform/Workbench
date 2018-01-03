@@ -104,6 +104,16 @@
 
 	<bean id="cloner" class="com.rits.cloning.Cloner" />
 
+	<bean id="validatorCounter" class="org.generationcp.ibpworkbench.validator.ValidatorCounter"
+		  scope="session">
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="breedingMethodTracker" class="org.generationcp.ibpworkbench.ui.programmethods.BreedingMethodTracker"
+		  scope="session">
+		<aop:scoped-proxy />
+	</bean>
+
 	<bean id="studyDataManager" factory-bean="managerFactory"
 		factory-method="getStudyDataManager" scope="request">
 		<aop:scoped-proxy />
