@@ -16,7 +16,6 @@ import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
-import org.generationcp.middleware.pojos.workbench.WorkbenchRuntimeData;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
@@ -52,11 +51,9 @@ public class WorkbenchAuthenticationSuccessHandlerTest {
 		handler.setWorkbenchDataManager(workbenchDataManager);
 		handler.onAuthenticationSuccess(request, response, authentication);
 
-		// Just make sure following methods are invoked to populate session data and workbench runtime data for now.
+		// Just make sure following methods are invoked to populate session data for now.
 		Mockito.verify(workbenchDataManager).getUserByName(WorkbenchAuthenticationSuccessHandlerTest.TEST_USER, 0, 1, Operation.EQUAL);
 		Mockito.verify(workbenchDataManager).getPersonById(testUserWorkbench.getPersonid());
-		Mockito.verify(workbenchDataManager).getWorkbenchRuntimeData();
-		Mockito.verify(workbenchDataManager).updateWorkbenchRuntimeData(Matchers.any(WorkbenchRuntimeData.class));
 		Mockito.verify(httpSession).setAttribute(Matchers.eq(ContextConstants.SESSION_ATTR_CONTEXT_INFO), Matchers.isA(ContextInfo.class));
 	}
 
