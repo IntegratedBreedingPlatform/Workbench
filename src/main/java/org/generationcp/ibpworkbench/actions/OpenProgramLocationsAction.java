@@ -11,21 +11,11 @@
 
 package org.generationcp.ibpworkbench.actions;
 
-import java.util.Date;
-
-import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.ui.WorkflowConstants;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsView;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.User;
-import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +30,7 @@ import com.vaadin.ui.Window;
  * @author Joyce Avestro
  */
 @Configurable
-public class OpenProgramLocationsAction implements WorkflowConstants, ClickListener, ActionListener {
+public class OpenProgramLocationsAction implements ClickListener, ActionListener {
 
 	private static final long serialVersionUID = 1L;
 

@@ -18,7 +18,6 @@ import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.ui.WorkflowConstants;
 import org.generationcp.ibpworkbench.ui.breedingview.metaanalysis.MetaAnalysisPanel;
 import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.MultiSiteAnalysisPanel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
@@ -38,7 +37,7 @@ import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.Window;
 
 @Configurable
-public class ChangeWindowAction implements WorkflowConstants, ClickListener, ActionListener {
+public class ChangeWindowAction implements ClickListener, ActionListener {
 
 	private static final long serialVersionUID = 1L;
 
