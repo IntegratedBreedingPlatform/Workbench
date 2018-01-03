@@ -1,7 +1,6 @@
 package org.generationcp.ibpworkbench.security;
 
 import org.generationcp.commons.util.ContextUtil;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
@@ -23,7 +22,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
- * Handler for setting up Workbench specific stuff e.g. {@link SessionData} before redirecting to the page requested on successful
+ * Handler for setting up Workbench specific stuff e.g. {@link org.generationcp.commons.spring.util.ContextUtil} before redirecting to the page requested on successful
  * authentication. Could also be used to redirect to different destinations based on role if needed.
  *
  * @author Naymesh Mistry
@@ -31,9 +30,6 @@ import java.io.IOException;
 public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchAuthenticationSuccessHandler.class);
-
-	@Autowired
-	private SessionData sessionData;
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
@@ -54,7 +50,7 @@ public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSucc
 
 		final User user = retrieveUserFromAuthentication(authentication);
 
-		this.populateWorkbenchSessionData(user);
+		this.updateWorkbenchRuntimeData(user);
 
 		// Initialize the ContextInfo to set the userId of the authenticated user.
 		// The projectId and token will be populated later when a program is opened/loaded.
@@ -79,10 +75,7 @@ public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSucc
 	/**
 	 * Actions that the old org.generationcp.ibpworkbench.actions.LoginPresenter used to perform on successful login.
 	 */
-	private void populateWorkbenchSessionData(final User user) {
-
-		// 1. Populate Session Data
-		this.sessionData.setUserData(user);
+	private void updateWorkbenchRuntimeData(final User user) {
 
 		// 2. Remember Me. TODO under BMS-84.
 		// See the cookie based scheme in org.generationcp.ibpworkbench.actions.LoginPresenter.doLogin(): line 97-111 for ref.
@@ -106,14 +99,6 @@ public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSucc
 			return;
 		}
 		session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
-	}
-
-	public void setDefaultTargetUrl(final String defaultTargetUrl) {
-		this.defaultTargetUrl = defaultTargetUrl;
-	}
-
-	public void setSessionData(final SessionData sessionData) {
-		this.sessionData = sessionData;
 	}
 
 	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {

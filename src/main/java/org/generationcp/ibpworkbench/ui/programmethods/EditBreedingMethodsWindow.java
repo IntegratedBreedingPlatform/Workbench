@@ -7,7 +7,6 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +47,7 @@ public class EditBreedingMethodsWindow extends BaseSubWindow {
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
-	private SessionData sessionData;
+	private BreedingMethodTracker breedingMethodTracker;
 
 	private final static String[] VISIBLE_ITEM_PROPERTIES = new String[] {"methodName", "methodDescription", "methodType", "methodCode"};
 
@@ -136,8 +135,8 @@ public class EditBreedingMethodsWindow extends BaseSubWindow {
 					return;
 				}
 
-				EditBreedingMethodsWindow.this.sessionData.getUniqueBreedingMethods().remove(EditBreedingMethodsWindow.this.modelBean);
-				EditBreedingMethodsWindow.this.sessionData.getProjectBreedingMethodData().remove(
+				breedingMethodTracker.getUniqueBreedingMethods().remove(EditBreedingMethodsWindow.this.modelBean);
+				breedingMethodTracker.getProjectBreedingMethodData().remove(
 						EditBreedingMethodsWindow.this.modelBean.getMid());
 
 				MethodView bean = ((BeanItem<MethodView>) EditBreedingMethodsWindow.this.breedingMethodForm.getItemDataSource()).getBean();
@@ -196,7 +195,4 @@ public class EditBreedingMethodsWindow extends BaseSubWindow {
 		this.initializeActions();
 	}
 
-	public void refreshVisibleItems() {
-		this.breedingMethodForm.setVisibleItemProperties(EditBreedingMethodsWindow.VISIBLE_ITEM_PROPERTIES);
-	}
 }

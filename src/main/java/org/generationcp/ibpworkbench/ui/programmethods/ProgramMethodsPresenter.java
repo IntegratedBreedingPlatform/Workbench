@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtilsBean;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.DateUtil;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
@@ -44,10 +44,13 @@ public class ProgramMethodsPresenter {
 	private WorkbenchDataManager workbenchDataManager;
 
 	@Autowired
-	private SessionData sessionData;
+	private GermplasmDataManager gerplasmDataManager;
 
 	@Autowired
-	private GermplasmDataManager gerplasmDataManager;
+	private BreedingMethodTracker breedingMethodTracker;
+
+	@Autowired
+	private ContextUtil contextUtil;
 
 	public ProgramMethodsPresenter(ProgramMethodsView view, Project project) {
 		this.view = view;
@@ -58,19 +61,6 @@ public class ProgramMethodsPresenter {
 		this.view = view;
 		this.cropType = cropType;
 		this.isCropOnly = true;
-	}
-
-	public void doMoveToSelectedMethod(Integer id) {
-		Method selectedMethod = null;
-		try {
-			selectedMethod = this.gerplasmDataManager.getMethodByID(id);
-
-			this.view.addRow(this.convertMethod(selectedMethod), false, 0);
-
-		} catch (MiddlewareQueryException e) {
-			ProgramMethodsPresenter.LOG.error(e.getMessage(), e);
-		}
-
 	}
 
 	public List<MethodView> getSavedProgramMethods() {
@@ -124,9 +114,9 @@ public class ProgramMethodsPresenter {
 			ProgramMethodsPresenter.LOG.error(e.getMessage(), e);
 		}
 
-		if (!this.sessionData.getUniqueBreedingMethods().contains(result.getMname())) {
-			this.sessionData.getUniqueBreedingMethods().add(result.getMname());
-			this.sessionData.getProjectBreedingMethodData().put(result.getMid(), result);
+		if (!this.breedingMethodTracker.getUniqueBreedingMethods().contains(result.getMname())) {
+			this.breedingMethodTracker.getUniqueBreedingMethods().add(result.getMname());
+			this.breedingMethodTracker.getProjectBreedingMethodData().put(result.getMid(), result);
 		}
 
 		this.view.refreshTable();
@@ -161,11 +151,7 @@ public class ProgramMethodsPresenter {
 			newBreedingMethod.setMgrp(method.getMgrp());
 			newBreedingMethod.setMtype(method.getMtype());
 			newBreedingMethod.setGeneq(method.getGeneq());
-
-			if (this.sessionData.getUserData() != null) {
-				newBreedingMethod.setUser(this.sessionData.getUserData().getUserid());
-			}
-
+			newBreedingMethod.setUser(contextUtil.getCurrentWorkbenchUserId());
 			newBreedingMethod.setLmid(0);
 			newBreedingMethod.setMattr(0);
 			newBreedingMethod.setMprgn(0);
@@ -192,11 +178,11 @@ public class ProgramMethodsPresenter {
 	}
 
 	public boolean saveFavoriteBreedingMethod(Collection<MethodView> selectedMethodIds) {
-		return ProgramMethodsPresenter.saveFavoriteBreedingMethod(selectedMethodIds, this.project, this.sessionData,
+		return ProgramMethodsPresenter.saveFavoriteBreedingMethod(selectedMethodIds, this.project, this.contextUtil,
 				this.workbenchDataManager, this.gerplasmDataManager);
 	}
 
-	public static boolean saveFavoriteBreedingMethod(Collection<MethodView> selectedMethodIds, Project project, SessionData sessionData,
+	public static boolean saveFavoriteBreedingMethod(Collection<MethodView> selectedMethodIds, Project project, ContextUtil contextUtil,
 			WorkbenchDataManager workbenchDataManager, GermplasmDataManager gdm) {
 		List<ProgramFavorite> favorites = null;
 		try {
@@ -213,10 +199,8 @@ public class ProgramMethodsPresenter {
 					}
 				}
 
-				if (!mExists && sessionData.getUserData() != null) {
-					workbenchDataManager.addProjectActivity(new ProjectActivity(project.getProjectId().intValue(), project,
-							"Project Methods", String.format("Added a Breeding Method (%s) to the project", m.getMname()), sessionData
-									.getUserData(), new Date()));
+				if (!mExists) {
+					contextUtil.logProgramActivity("Project Methods", String.format("Added a Breeding Method (%s) to the project", m.getMname()));
 				}
 			}
 			// code block just adds a log activity, replace by just tracking newly added methods id so no need to fetch all methods from DB
