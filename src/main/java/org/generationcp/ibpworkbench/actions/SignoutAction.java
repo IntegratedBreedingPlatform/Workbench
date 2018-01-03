@@ -12,14 +12,10 @@
 package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.commons.util.WorkbenchAppPathResolver;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import org.springframework.beans.factory.annotation.Configurable;
-
-import javax.annotation.Resource;
 
 /**
  * <b>Description</b>: Listener class for closing the application.

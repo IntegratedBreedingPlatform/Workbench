@@ -14,10 +14,10 @@ package org.generationcp.ibpworkbench.actions;
 import java.util.Date;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.WorkflowConstants;
 import org.generationcp.ibpworkbench.ui.programmethods.ProgramMethodsView;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
@@ -43,31 +43,15 @@ import com.vaadin.ui.Window;
 public class OpenProgramMethodsAction implements WorkflowConstants, ClickListener, ActionListener {
 
 	private static final long serialVersionUID = 1L;
-	private static final Logger LOG = LoggerFactory.getLogger(OpenProgramMethodsAction.class);
-
-	private User user;
-	private Project project;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
 
 	@Autowired
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	public OpenProgramMethodsAction() {
-	}
-
-	public OpenProgramMethodsAction(Project project) {
-		this.project = project;
-
-	}
-
-	public OpenProgramMethodsAction(Project project, User user) {
-		this.project = project;
-		this.user = user;
 	}
 
 	@Override
@@ -82,46 +66,15 @@ public class OpenProgramMethodsAction implements WorkflowConstants, ClickListene
 
 	@Override
 	public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
+
 		IContentWindow w = (IContentWindow) window;
+		ProgramMethodsView methodsView = new ProgramMethodsView(this.contextUtil.getProjectInContext());
+		methodsView.setDebugId("methodsView");
+		w.showContent(methodsView);
 
-		if (this.project == null) {
-			this.project = this.sessionData.getLastOpenedProject();
-		}
+		this.contextUtil.logProgramActivity(this.messageSource.getMessage(Message.PROJECT_METHODS_LINK), this.messageSource.getMessage(
+				Message.LAUNCHED_APP, this.messageSource.getMessage(Message.PROJECT_METHODS_LINK)));
 
-		if (this.user == null) {
-			this.user = this.sessionData.getUserData();
-		}
 
-		try {
-			ProgramMethodsView methodsView = new ProgramMethodsView(this.project);
-			methodsView.setDebugId("methodsView");
-
-			w.showContent(methodsView);
-
-			if (this.user != null) {
-				try {
-					// only log activity if there's a user
-					Project currentProject = this.sessionData.getLastOpenedProject();
-					ProjectActivity projAct =
-							new ProjectActivity(currentProject.getProjectId().intValue(), currentProject,
-									this.messageSource.getMessage(Message.PROJECT_METHODS_LINK), this.messageSource.getMessage(
-											Message.LAUNCHED_APP, this.messageSource.getMessage(Message.PROJECT_METHODS_LINK)), this.user,
-									new Date());
-					this.workbenchDataManager.addProjectActivity(projAct);
-				} catch (MiddlewareQueryException e1) {
-					MessageNotifier.showError(window, "Database Error", "<br />" + "Please see error logs");
-					LOG.error(e1.getMessage(),e1);
-				}
-
-			}
-
-		} catch (Exception e) {
-			OpenProgramMethodsAction.LOG.error("Exception", e);
-			if (e.getCause() instanceof InternationalizableException) {
-				InternationalizableException i = (InternationalizableException) e.getCause();
-				MessageNotifier.showError(window, i.getCaption(), i.getDescription());
-			}
-			return;
-		}
 	}
 }

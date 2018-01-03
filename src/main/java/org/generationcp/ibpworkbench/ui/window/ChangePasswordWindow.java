@@ -11,10 +11,10 @@
 
 package org.generationcp.ibpworkbench.ui.window;
 
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.ChangePasswordAction;
 import org.generationcp.middleware.pojos.User;
 import org.springframework.beans.factory.InitializingBean;
@@ -36,7 +36,7 @@ import com.vaadin.ui.themes.Reindeer;
 public class ChangePasswordWindow extends BaseSubWindow implements InitializingBean, InternationalizableComponent {
 
 	@Autowired
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	private static final long serialVersionUID = 1L;
 
@@ -128,7 +128,7 @@ public class ChangePasswordWindow extends BaseSubWindow implements InitializingB
 	}
 
 	protected void initializeActions() {
-		User user = this.sessionData.getUserData();
+		User user = contextUtil.getCurrentWorkbenchUser();
 
 		this.saveButton.addListener(new ChangePasswordAction(user.getName(), this.password, this.confirm_password));
 		this.cancelButton.addListener(new RemoveWindowListener());

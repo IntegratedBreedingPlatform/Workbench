@@ -14,10 +14,10 @@ package org.generationcp.ibpworkbench.actions;
 import java.util.Arrays;
 
 import org.apache.commons.lang.StringUtils;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.WorkflowConstants;
 import org.generationcp.ibpworkbench.ui.breedingview.metaanalysis.MetaAnalysisPanel;
 import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.MultiSiteAnalysisPanel;
@@ -25,7 +25,6 @@ import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSi
 import org.generationcp.ibpworkbench.ui.programmembers.ProgramMembersPanel;
 import org.generationcp.ibpworkbench.ui.recovery.BackupAndRestoreView;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -46,7 +45,8 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
 	private static final Logger LOG = LoggerFactory.getLogger(ChangeWindowAction.class);
 
 	@Autowired
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
+
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
@@ -58,14 +58,6 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
 		this.project = project;
 	}
 
-	/**
-	 * @Depricated, toolConfiguration is no longer necessary
-	 */
-	@Deprecated
-	public ChangeWindowAction(WindowEnums windowEnum, Project project, String toolConfiguration) {
-		this.windowEnums = windowEnum;
-		this.project = project;
-	}
 
 	@Override
 	public void buttonClick(ClickEvent event) {
@@ -124,14 +116,7 @@ public class ChangeWindowAction implements WorkflowConstants, ClickListener, Act
 			w.showContent(metaAnalyis);
 		}
 
-		try {
-
-			this.sessionData.logProgramActivity(windowName, this.messageSource.getMessage(Message.LAUNCHED_APP, appLaunched));
-
-		} catch (MiddlewareQueryException e1) {
-			MessageNotifier.showError(window, this.messageSource.getMessage(Message.DATABASE_ERROR),
-					"<br />" + this.messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
-		}
+		this.contextUtil.logProgramActivity(windowName, this.messageSource.getMessage(Message.LAUNCHED_APP, appLaunched));
 
 	}
 

@@ -15,10 +15,10 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.form.AddLocationForm;
 import org.generationcp.ibpworkbench.ui.programlocations.AddLocationsWindow;
 import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
@@ -52,7 +52,7 @@ public class SaveNewLocationAction implements ClickListener {
 	private final ProgramLocationsPresenter programLocationsPresenter;
 
 	@Resource
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	@Resource
 	private SimpleResourceBundleMessageSource messageSource;
@@ -98,7 +98,7 @@ public class SaveNewLocationAction implements ClickListener {
 		final LocationViewModel locModel = this.getLocationFromForm();
 		Location loc = this.programLocationsPresenter.convertLocationViewToLocation(locModel);
 		this.programLocationsPresenter.addLocation(loc);
-		this.sessionData.logProgramActivity(this.messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK), "Added new Location ("
+		this.contextUtil.logProgramActivity(this.messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK), "Added new Location ("
 				+ locModel.getLocationName() + ")");
 		this.window.getParent().removeWindow(this.window);
 	}
@@ -109,10 +109,6 @@ public class SaveNewLocationAction implements ClickListener {
 		LocationViewModel locModel = locationBean.getBean();
 
 		return locModel;
-	}
-
-	void setSessionData(SessionData sessionData) {
-		this.sessionData = sessionData;
 	}
 
 	void setMessageSource(SimpleResourceBundleMessageSource messageSource) {

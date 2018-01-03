@@ -11,23 +11,21 @@
 
 package org.generationcp.ibpworkbench.actions;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.commons.vaadin.validator.ValidationUtil;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +63,7 @@ public class SaveNewProjectAddUserAction implements ClickListener {
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	public SaveNewProjectAddUserAction(Form userAccountForm, TwinTableSelect<User> membersSelect) {
 		this.userAccountForm = userAccountForm;
@@ -104,20 +102,8 @@ public class SaveNewProjectAddUserAction implements ClickListener {
 			return;
 		}
 
-		try {
-			User user = this.sessionData.getUserData();
-			Project currentProject = this.sessionData.getLastOpenedProject();
-
-			if (currentProject != null) {
-				ProjectActivity projAct =
-						new ProjectActivity(new Integer(currentProject.getProjectId().intValue()), currentProject, "Program Member",
-								"Added a new user (" + userAccount.getUsername() + ") to " + currentProject.getProjectName(), user,
-								new Date());
-				this.workbenchUserService.addProjectActivity(projAct);
-			}
-		} catch (MiddlewareQueryException e) {
-			SaveNewProjectAddUserAction.LOG.error("Cannot log project activity", e);
-		}
+		contextUtil.logProgramActivity( "Program Member",
+							 "Added a new user (" + userAccount.getUsername() + ") to " + contextUtil.getProjectInContext().getProjectName());
 
 		CloseWindowAction action = new CloseWindowAction();
 		action.buttonClick(event);

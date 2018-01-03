@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
-import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -33,7 +33,7 @@ public class ProgramMethodsPresenterTest {
 	private WorkbenchDataManager workbenchDataManager;
 
 	@Mock
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	@Mock
 	private GermplasmDataManager gerplasmDataManager;

@@ -49,7 +49,6 @@ public class SaveNewLocationActionTest {
 		MockitoAnnotations.initMocks(this);
 		Mockito.doNothing().when(this.sessionData).logProgramActivity(Matchers.anyString(), Matchers.anyString());
 		this.saveNewLocationAction = new SaveNewLocationAction(this.newLocationForm, this.window, this.programLocationsPresenter);
-		this.saveNewLocationAction.setSessionData(this.sessionData);
 		this.saveNewLocationAction.setMessageSource(this.messageSource);
 	}
 

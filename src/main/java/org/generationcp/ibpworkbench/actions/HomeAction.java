@@ -12,8 +12,8 @@
 package org.generationcp.ibpworkbench.actions;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -31,7 +31,7 @@ import com.vaadin.ui.Window;
 public class HomeAction implements ClickListener, ActionListener {
 
 	@Autowired
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	private static final long serialVersionUID = 5592156945270416052L;
 
@@ -81,7 +81,7 @@ public class HomeAction implements ClickListener, ActionListener {
 			workbenchMainView.showContent(workbenchDashboard);
 
 			// reinitialize dashboard with default values
-			final Project lastOpenedProgram = this.sessionData.getLastOpenedProject();
+			final Project lastOpenedProgram = contextUtil.getProjectInContext();
 			if (lastOpenedProgram != null) {
 				workbenchMainView.addTitle(lastOpenedProgram.getProjectName());
 				workbenchDashboard.initializeDashboardContents(lastOpenedProgram);

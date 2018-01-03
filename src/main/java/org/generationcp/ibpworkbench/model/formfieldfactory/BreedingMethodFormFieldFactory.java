@@ -24,9 +24,8 @@ import com.vaadin.ui.DefaultFieldFactory;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.TextArea;
-import com.vaadin.ui.TextField;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.ui.fields.SanitizedTextField;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
@@ -67,7 +66,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 
 
 	@Resource
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	public BreedingMethodFormFieldFactory(Map<Integer, String> classMap) {
 		this.initFields(classMap);
@@ -113,7 +112,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 
 				Method method = null;
 				try {
-					Project currentProject = BreedingMethodFormFieldFactory.this.sessionData.getSelectedProject();
+					Project currentProject = contextUtil.getProjectInContext();
 					method = germplasmDataManager.getMethodByName(value.toString(), currentProject.getUniqueID());
 				} catch (MiddlewareQueryException e) {
 					BreedingMethodFormFieldFactory.LOG.error(e.getMessage(), e);
@@ -177,7 +176,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 
 				Method method = null;
 				try {
-					Project currentProject = BreedingMethodFormFieldFactory.this.sessionData.getSelectedProject();
+					Project currentProject = contextUtil.getProjectInContext();
 					method = germplasmDataManager.getMethodByCode(value.toString(), currentProject.getUniqueID());
 				} catch (MiddlewareQueryException e) {
 					BreedingMethodFormFieldFactory.LOG.error(e.getMessage(), e);

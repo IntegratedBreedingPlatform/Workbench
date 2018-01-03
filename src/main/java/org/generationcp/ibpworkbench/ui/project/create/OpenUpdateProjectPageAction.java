@@ -4,9 +4,8 @@ package org.generationcp.ibpworkbench.ui.project.create;
 import java.util.Date;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.ActionListener;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -28,13 +27,8 @@ public class OpenUpdateProjectPageAction implements Button.ClickListener, Action
 
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger LOG = LoggerFactory.getLogger(OpenUpdateProjectPageAction.class);
-
 	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
-
-	@Autowired
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	@Override
 	public void buttonClick(Button.ClickEvent event) {
@@ -48,27 +42,14 @@ public class OpenUpdateProjectPageAction implements Button.ClickListener, Action
 
 	@Override
 	public void doAction(Window window, String uriFragment, boolean isLinkAccessed) {
+
 		final IContentWindow w = (IContentWindow) window;
+		UpdateProjectPanel projectPanel = new UpdateProjectPanel();
+		projectPanel.setDebugId("projectPanel");
+		w.showContent(projectPanel);
 
-		try {
-			UpdateProjectPanel projectPanel = new UpdateProjectPanel();
-			projectPanel.setDebugId("projectPanel");
-			w.showContent(projectPanel);
+		contextUtil.logProgramActivity("Update Program", "Launched Update Program");
 
-			ProjectActivity projAct =
-					new ProjectActivity(new Integer(this.sessionData.getSelectedProject().getProjectId().intValue()),
-							this.sessionData.getSelectedProject(), "Update Program", "Launched Update Program",
-							this.sessionData.getUserData(), new Date());
-			this.workbenchDataManager.addProjectActivity(projAct);
-
-		} catch (Exception e) {
-			OpenUpdateProjectPageAction.LOG.error("Exception", e);
-			if (e.getCause() instanceof InternationalizableException) {
-				InternationalizableException i = (InternationalizableException) e.getCause();
-				MessageNotifier.showError(window, i.getCaption(), i.getDescription());
-			}
-			return;
-		}
 
 	}
 
