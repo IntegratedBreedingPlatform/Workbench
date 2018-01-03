@@ -3,8 +3,8 @@ package org.generationcp.ibpworkbench.actions;
 
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Window;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.form.AddLocationForm;
 import org.generationcp.ibpworkbench.ui.programlocations.AddLocationsWindow;
 import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
@@ -25,7 +25,7 @@ public class SaveNewLocationActionTest {
 
 	public static final String TEST_LOCATION = "Test Location";
 	@Mock
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	@Mock
 	private SimpleResourceBundleMessageSource messageSource;
@@ -47,9 +47,10 @@ public class SaveNewLocationActionTest {
 	@Before
 	public void beforeEachTest() {
 		MockitoAnnotations.initMocks(this);
-		Mockito.doNothing().when(this.sessionData).logProgramActivity(Matchers.anyString(), Matchers.anyString());
+		Mockito.doNothing().when(this.contextUtil).logProgramActivity(Matchers.anyString(), Matchers.anyString());
 		this.saveNewLocationAction = new SaveNewLocationAction(this.newLocationForm, this.window, this.programLocationsPresenter);
 		this.saveNewLocationAction.setMessageSource(this.messageSource);
+		this.saveNewLocationAction.setContextUtil(this.contextUtil);
 	}
 
 	@Test
@@ -88,7 +89,7 @@ public class SaveNewLocationActionTest {
 
 		// assertions
 		Mockito.verify(this.programLocationsPresenter, Mockito.times(1)).addLocation(Mockito.any(Location.class));
-		Mockito.verify(this.sessionData, Mockito.times(1)).logProgramActivity(Matchers.anyString(), Matchers.anyString());
+		Mockito.verify(this.contextUtil, Mockito.times(1)).logProgramActivity(Matchers.anyString(), Matchers.anyString());
 		Mockito.verify(mockParentWindow, Mockito.times(1)).removeWindow(Matchers.any(Window.class));
 	}
 }

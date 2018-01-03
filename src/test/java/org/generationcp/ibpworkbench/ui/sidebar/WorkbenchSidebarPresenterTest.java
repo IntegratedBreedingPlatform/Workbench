@@ -22,6 +22,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public class WorkbenchSidebarPresenterTest {
@@ -90,7 +91,9 @@ public class WorkbenchSidebarPresenterTest {
 		SimpleGrantedAuthority roleAuthority = new SimpleGrantedAuthority(SecurityUtil.ROLE_PREFIX+"ADMIN");
 
 		this.loggedInUser = new UsernamePasswordAuthenticationToken("admin", "admin", Lists.newArrayList(roleAuthority));
-		SecurityContextHolder.getContext().setAuthentication(this.loggedInUser);
+		SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+		Mockito.when(securityContext.getAuthentication()).thenReturn(this.loggedInUser);
+		SecurityContextHolder.setContext(securityContext);
 
 		boolean categoryLinkPermissibleForUserRole = this.workbenchSidebarPresenter.isCategoryLinkPermissibleForUserRole(link);
 		Assert.assertTrue("Germplasm Import link should be added in Workbench sidebar and should return true",
@@ -103,7 +106,9 @@ public class WorkbenchSidebarPresenterTest {
 		SimpleGrantedAuthority roleAuthority = new SimpleGrantedAuthority(SecurityUtil.ROLE_PREFIX+"ADMIN");
 
 		this.loggedInUser = new UsernamePasswordAuthenticationToken("technician", "technician", Lists.newArrayList(roleAuthority));
-		SecurityContextHolder.getContext().setAuthentication(this.loggedInUser);
+		SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+		Mockito.when(securityContext.getAuthentication()).thenReturn(this.loggedInUser);
+		SecurityContextHolder.setContext(securityContext);
 
 		final WorkbenchSidebarCategoryLink link = new WorkbenchSidebarCategoryLink();
 		link.setSidebarLinkName("germplasm_import");

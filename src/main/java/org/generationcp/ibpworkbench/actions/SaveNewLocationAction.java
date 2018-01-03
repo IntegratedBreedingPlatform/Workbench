@@ -114,4 +114,8 @@ public class SaveNewLocationAction implements ClickListener {
 	void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
+
+	void setContextUtil(final ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
+	}
 }
