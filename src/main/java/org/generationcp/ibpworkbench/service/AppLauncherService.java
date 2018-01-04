@@ -22,6 +22,7 @@ import java.io.IOException;
 public class AppLauncherService {
 
 	private final static Logger LOG = LoggerFactory.getLogger(AppLauncherService.class);
+	public static final String LAUNCHED = "Launched ";
 
 	@Resource
 	private WorkbenchDataManager workbenchDataManager;
@@ -63,7 +64,7 @@ public class AppLauncherService {
 
 		if (logProgramActivity) {
 			// log project activity
-			this.contextUtil.logProgramActivity(tool.getTitle(), "Launched " + tool.getTitle());
+			this.contextUtil.logProgramActivity(tool.getTitle(), LAUNCHED + tool.getTitle());
 		}
 
 
