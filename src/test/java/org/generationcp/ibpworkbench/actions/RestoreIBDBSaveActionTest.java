@@ -133,7 +133,7 @@ public class RestoreIBDBSaveActionTest {
 		// Verify key restore operations
 		Mockito.verify(this.mySqlUtil).restoreDatabase(Matchers.anyString(), Matchers.any(File.class), Matchers.any(Callable.class));
 		Mockito.verify(this.mySqlUtil).updateOwnerships(this.currentProject.getDatabaseName(), this.loggedInUser.getUserid());
-		Mockito.verify(this.workbenchDataManager).addProjectActivity(Matchers.any(ProjectActivity.class));
+		Mockito.verify(this.contextUtil).logProgramActivity(Mockito.anyString(), Mockito.anyString());
 		this.verifyCurrentUserWasAddedToAllPrograms(this.loggedInUser);
 
 		Assert.assertFalse("Expecting not to have error since restore process was succesful.", this.restoreAction.isHasRestoreError());
@@ -154,7 +154,7 @@ public class RestoreIBDBSaveActionTest {
 		// Verify key restore operations
 		Mockito.verify(this.mySqlUtil).restoreDatabase(Matchers.anyString(), Matchers.any(File.class), Matchers.any(Callable.class));
 		Mockito.verify(this.mySqlUtil).updateOwnerships(this.currentProject.getDatabaseName(), this.defaultAdminUser.getUserid());
-		Mockito.verify(this.workbenchDataManager).addProjectActivity(Matchers.any(ProjectActivity.class));
+		Mockito.verify(this.contextUtil).logProgramActivity(Mockito.anyString(), Mockito.anyString());
 
 		this.verifyCurrentUserWasAddedToAllPrograms(this.defaultAdminUser);
 
@@ -172,35 +172,6 @@ public class RestoreIBDBSaveActionTest {
 		Mockito.verifyNoMoreInteractions(this.workbenchDataManager);
 
 		Assert.assertTrue("Expecting to have error since restore action was not completed.", this.restoreAction.isHasRestoreError());
-	}
-	
-	@Test
-	public void testLogProjectActivityWhenUserIsNotNull() {
-		final String cropRestoreString = "Crop Restore";
-		final String restoredFromString = "Restored backup from";
-		final String backupFileName = "ibdbv2_maize_merged_20170213_014837.sql";
-		Mockito.when(this.contextUtil.getCurrentWorkbenchUser()).thenReturn(this.loggedInUser);
-		Mockito.when(this.messageSource.getMessage(Message.CROP_DATABASE_RESTORE)).thenReturn(cropRestoreString);
-		Mockito.when(this.messageSource.getMessage(Message.RESTORED_BACKUP_FROM)).thenReturn(restoredFromString);
-		Mockito.when(this.restoreFile.getName()).thenReturn(backupFileName);
-		
-		// Method to test
-		this.restoreAction.logProjectActivity(this.loggedInUser.getUserid());
-		
-		final ArgumentCaptor<ProjectActivity> projectActivityCaptor = ArgumentCaptor.forClass(ProjectActivity.class);
-		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).addProjectActivity(projectActivityCaptor.capture());
-		final ProjectActivity projectActivity = projectActivityCaptor.getValue();
-		Assert.assertEquals(this.currentProject, projectActivity.getProject());
-		Assert.assertEquals(this.loggedInUser, projectActivity.getUser());
-		Assert.assertEquals(cropRestoreString, projectActivity.getName());
-		Assert.assertEquals(restoredFromString + " " + backupFileName, projectActivity.getDescription());
-	}
-
-	@Test
-	public void testLogProjectActivityWhenUserIsNull(){
-		this.restoreAction.logProjectActivity(null);
-		
-		Mockito.verify(this.workbenchDataManager, Mockito.never()).addProjectActivity(Matchers.any(ProjectActivity.class));
 	}
 	
 	@Test

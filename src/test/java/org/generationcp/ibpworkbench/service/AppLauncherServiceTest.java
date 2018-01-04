@@ -113,7 +113,6 @@ public class AppLauncherServiceTest {
 		Mockito.when(this.workbenchDataManager.getToolWithName(ToolEnum.GDMS.getToolName())).thenReturn(gdmsTool);
 		Mockito.when(this.workbenchDataManager.getToolWithName(ToolEnum.BREEDING_PLANNER.getToolName())).thenReturn(nativeTool);
 
-
 		Mockito.doNothing().when(this.appLauncherService).launchNativeapp(Matchers.any(Tool.class));
 		Mockito.doReturn("/result").when(this.appLauncherService).launchWebappWithLogin(Matchers.any(Tool.class));
 		Mockito.doReturn("/result").when(this.appLauncherService).launchWebapp(Matchers.any(Tool.class), Matchers.any(Integer.class));
@@ -121,12 +120,15 @@ public class AppLauncherServiceTest {
 		// the tests itself
 		this.appLauncherService.launchTool(ToolEnum.BREEDING_PLANNER.getToolName(), null);
 		Mockito.verify(this.appLauncherService).launchNativeapp(nativeTool);
+		Mockito.verify(this.contextUtil, Mockito.atLeastOnce()).logProgramActivity(nativeTool.getTitle(), AppLauncherService.LAUNCHED + nativeTool.getTitle());
 
 		this.appLauncherService.launchTool(ToolEnum.BM_LIST_MANAGER.getToolName(), null);
 		Mockito.verify(this.appLauncherService).launchWebapp(aWebTool, null);
+		Mockito.verify(this.contextUtil, Mockito.atLeastOnce()).logProgramActivity(aWebTool.getTitle(), AppLauncherService.LAUNCHED + aWebTool.getTitle());
 
 		this.appLauncherService.launchTool(ToolEnum.GDMS.getToolName(), null);
 		Mockito.verify(this.appLauncherService).launchWebappWithLogin(gdmsTool);
+		Mockito.verify(this.contextUtil, Mockito.atLeastOnce()).logProgramActivity(gdmsTool.getTitle(), AppLauncherService.LAUNCHED + gdmsTool.getTitle());
 	}
 
 	@Test

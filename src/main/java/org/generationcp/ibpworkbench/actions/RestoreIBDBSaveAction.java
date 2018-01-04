@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.commons.util.MySQLUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
@@ -101,7 +100,8 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 				this.addDefaultAdminAndCurrentUserAsMembersOfRestoredPrograms();
 
 				// Log a record in ProjectActivity
-				this.logProjectActivity(userId);
+				this.contextUtil.logProgramActivity(this.messageSource.getMessage(Message.CROP_DATABASE_RESTORE),
+						this.messageSource.getMessage(Message.RESTORED_BACKUP_FROM) + " " + this.restoreFile.getName());
 
 				this.hasRestoreError = false;
 			} catch (final Exception e) {
@@ -112,16 +112,6 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 			}
 		} else {
 			this.hasRestoreError = true;
-		}
-	}
-
-	void logProjectActivity(final Integer userId) {
-		if (userId != null) {
-			final ProjectActivity projAct =
-					new ProjectActivity(null, this.project, this.messageSource.getMessage(Message.CROP_DATABASE_RESTORE),
-							this.messageSource.getMessage(Message.RESTORED_BACKUP_FROM) + " " + this.restoreFile.getName(),
-							contextUtil.getCurrentWorkbenchUser(), new Date());
-			this.workbenchDataManager.addProjectActivity(projAct);
 		}
 	}
 
