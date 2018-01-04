@@ -176,10 +176,6 @@ public class WorkbenchUserService {
 
 	}
 
-	public Integer addProjectActivity(ProjectActivity projectActivity) {
-		return this.workbenchDataManager.addProjectActivity(projectActivity);
-	}
-
 	private Person createPerson(UserAccountModel userAccount){
 		Person person = new Person();
 		person.setFirstName(userAccount.getFirstName());

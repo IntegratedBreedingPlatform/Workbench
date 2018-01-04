@@ -11,7 +11,6 @@ import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,11 +72,8 @@ public class UpdateProjectAction implements Button.ClickListener {
 			MessageNotifier.showMessage(this.projectPanel.getWindow(), "Program update is successful",
 					String.format("%s is updated.", StringUtils.abbreviate(project.getProjectName(), 50)));
 
-			ProjectActivity projAct =
-					new ProjectActivity(new Integer(project.getProjectId().intValue()),
-							project, "Update Program", "Updated Program - "
-									+ project.getProjectName(), this.contextUtil.getCurrentWorkbenchUser(), new Date());
-			this.workbenchDataManager.addProjectActivity(projAct);
+			this.contextUtil.logProgramActivity( "Update Program", "Updated Program - "
+					+ project.getProjectName());
 
 			if (IBPWorkbenchApplication.get().getMainWindow() instanceof WorkbenchMainView) {
 				((WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow()).addTitle(project

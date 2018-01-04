@@ -4,18 +4,15 @@ package org.generationcp.ibpworkbench.actions;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.Date;
 
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.MySQLUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -72,15 +69,8 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.Clic
 			backupFile = this.mysqlUtil.backupDatabase(this.selectedProject.getDatabaseName(),
 					this.mysqlUtil.getBackupFilename(this.selectedProject.getDatabaseName(), ".sql", "temp"), true);
 
-			// TODO: remove test code
-			final IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-
-			final ProjectActivity projAct =
-					new ProjectActivity(null, this.selectedProject, this.messageSource.getMessage(Message.CROP_DATABASE_BACKUP),
-							this.messageSource.getMessage(Message.BACKUP_PERFORMED_ON) + " " + this.selectedProject.getDatabaseName(),
-							contextUtil.getCurrentWorkbenchUser(), new Date());
-
-			this.workbenchDataManager.addProjectActivity(projAct);
+			this.contextUtil.logProgramActivity(this.messageSource.getMessage(Message.CROP_DATABASE_BACKUP),
+					this.messageSource.getMessage(Message.BACKUP_PERFORMED_ON) + " " + this.selectedProject.getDatabaseName());
 
 			MessageNotifier.showMessage(this.sourceWindow, this.messageSource.getMessage(Message.SUCCESS),
 					this.messageSource.getMessage(Message.BACKUP_IBDB_COMPLETE));
