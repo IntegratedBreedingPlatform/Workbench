@@ -4,6 +4,9 @@ package org.generationcp.ibpworkbench.service;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
@@ -24,13 +27,7 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProgramServiceTest {
@@ -231,7 +228,7 @@ public class ProgramServiceTest {
 		// Verify Ibdb_user_map is added for both current, member and default ADMIN users
 		Mockito.verify(this.workbenchDataManager, Mockito.times(3)).addIbdbUserMap(Matchers.any(IbdbUserMap.class));
 
-		// Verify Workbench_project_user_info and Workbench_project_user_role recordsd are created
+		// Verify Workbench_project_user_info records are created
 		Mockito.verify(this.workbenchDataManager, Mockito.times(3)).saveOrUpdateProjectUserInfo(Matchers.any(ProjectUserInfo.class));
 	}
 

@@ -106,4 +106,19 @@ public class SaveUsersInProjectAction implements ClickListener {
 		}
 	}
 
+	
+	public void setTransactionManager(PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
+	}
+
+	
+	public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
+		this.workbenchDataManager = workbenchDataManager;
+	}
+
+	
+	public void setProgramService(ProgramService programService) {
+		this.programService = programService;
+	}
+
 }

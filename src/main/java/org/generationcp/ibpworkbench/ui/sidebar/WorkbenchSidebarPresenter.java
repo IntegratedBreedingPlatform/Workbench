@@ -9,9 +9,7 @@ import java.util.Map;
 import org.generationcp.commons.security.AuthorizationUtil;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
@@ -33,6 +31,14 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 @Configurable
 public class WorkbenchSidebarPresenter implements InitializingBean {
+
+	protected static final String ADMIN_CATEGORY = "admin";
+
+	protected static final String ABOUT_BMS_LINK = "about_bms";
+
+	protected static final String RECOVERY_LINK = "recovery";
+
+	protected static final String MANAGE_PROGRAM_LINK = "manage_program";
 
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchSidebarPresenter.class);
 
@@ -83,7 +89,7 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 			final List<WorkbenchSidebarCategory> workbenchSidebarCategoryList = this.manager.getAllWorkbenchSidebarCategory();
 
 			for (final WorkbenchSidebarCategory category : workbenchSidebarCategoryList) {
-				if ("admin".equals(category.getSidebarCategoryName())) {
+				if (ADMIN_CATEGORY.equals(category.getSidebarCategoryName())) {
 					this.addAdminCategoryLinks(categoryLinks, category);
 				} else {
 					categoryLinks.addAll(this.manager.getAllWorkbenchSidebarLinksByCategoryId(category));
@@ -100,7 +106,6 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 					}
 					sidebarLinks.get(link.getWorkbenchSidebarCategory()).add(link);
 				}
-
 			}
 
 		return sidebarLinks;
@@ -119,13 +124,13 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 	}
 
 	protected void addAdminCategoryLinks(final List<WorkbenchSidebarCategoryLink> categoryLinks, final WorkbenchSidebarCategory category) {
-		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "manage_program",
+		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, MANAGE_PROGRAM_LINK,
 				this.messageSource.getMessage("LINK_MANAGE_SETTINGS")));
 		if (this.isBackupAndRestoreEnabled != null && Boolean.valueOf(this.isBackupAndRestoreEnabled)) {
-			categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "recovery",
+			categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, RECOVERY_LINK,
 					this.messageSource.getMessage("LINK_BACKUP_RESTORE")));
 		}
-		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "about_bms", this.messageSource.getMessage("LINK_ABOUT_BMS")));
+		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, ABOUT_BMS_LINK, this.messageSource.getMessage("LINK_ABOUT_BMS")));
 	}
 
 
@@ -136,8 +141,6 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 		transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 
 			protected void doInTransactionWithoutResult(final TransactionStatus status) {
-				// set the last opened project in the session
-				final IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
 				final Project project = contextUtil.getProjectInContext();
 
 				final ProjectUserInfoDAO projectUserInfoDao = WorkbenchSidebarPresenter.this.manager.getProjectUserInfoDao();

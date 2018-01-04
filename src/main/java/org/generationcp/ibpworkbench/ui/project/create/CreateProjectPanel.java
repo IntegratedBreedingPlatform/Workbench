@@ -203,4 +203,9 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 	public void cropTypeChanged(CropType newCropType) {
 		this.presenter.disableProgramMethodsAndLocationsTab();
 	}
+
+	
+	public ProjectBasicDetailsComponent getProjectBasicDetailsComponent() {
+		return projectBasicDetailsComponent;
+	}
 }

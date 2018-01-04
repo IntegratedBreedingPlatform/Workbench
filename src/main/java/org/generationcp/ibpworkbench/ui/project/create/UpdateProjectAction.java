@@ -64,7 +64,7 @@ public class UpdateProjectAction implements Button.ClickListener {
 					this.projectPanel.getOldProjectName());
 
 			// update the project
-			Project updatedProject = this.projectPanel.projectBasicDetailsComponent.getProjectDetails();
+			Project updatedProject = this.projectPanel.getProjectBasicDetailsComponent().getProjectDetails();
 			project.setProjectName(updatedProject.getProjectName());
 			project.setStartDate(updatedProject.getStartDate());
 			this.workbenchDataManager.saveOrUpdateProject(project);
@@ -80,6 +80,21 @@ public class UpdateProjectAction implements Button.ClickListener {
 						.getProjectName());
 			}
 		}
+	}
+
+	
+	public void setContextUtil(ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
+	}
+
+	
+	public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
+		this.workbenchDataManager = workbenchDataManager;
+	}
+
+	
+	public void setToolUtil(ToolUtil toolUtil) {
+		this.toolUtil = toolUtil;
 	}
 	
 }
