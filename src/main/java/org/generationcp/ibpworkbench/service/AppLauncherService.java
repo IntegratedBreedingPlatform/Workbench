@@ -34,6 +34,7 @@ public class AppLauncherService {
 
 	public String launchTool(String toolName, Integer idParam) throws AppLaunchException {
 
+		boolean logProgramActivity = true;
 		String url = "";
 		Tool tool = this.workbenchDataManager.getToolWithName(toolName);
 
@@ -50,6 +51,7 @@ public class AppLauncherService {
 				break;
 			case WEB:
 				if ("migrator".equals(tool.getToolName())) {
+					logProgramActivity = false;
 					url = this.launchMigratorWebapp(tool, idParam);
 				} else {
 					url = this.launchWebapp(tool, idParam);
@@ -58,6 +60,13 @@ public class AppLauncherService {
 			default:
 				// empty default case
 		}
+
+		if (logProgramActivity) {
+			// log project activity
+			this.contextUtil.logProgramActivity(tool.getTitle(), "Launched " + tool.getTitle());
+		}
+
+
 		return url;
 
 	}
