@@ -100,8 +100,10 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 				this.addDefaultAdminAndCurrentUserAsMembersOfRestoredPrograms();
 
 				// Log a record in ProjectActivity
-				this.contextUtil.logProgramActivity(this.messageSource.getMessage(Message.CROP_DATABASE_RESTORE),
-						this.messageSource.getMessage(Message.RESTORED_BACKUP_FROM) + " " + this.restoreFile.getName());
+				if (userId != null) {
+					this.contextUtil.logProgramActivity(this.messageSource.getMessage(Message.CROP_DATABASE_RESTORE),
+							this.messageSource.getMessage(Message.RESTORED_BACKUP_FROM) + " " + this.restoreFile.getName());
+				}
 
 				this.hasRestoreError = false;
 			} catch (final Exception e) {
