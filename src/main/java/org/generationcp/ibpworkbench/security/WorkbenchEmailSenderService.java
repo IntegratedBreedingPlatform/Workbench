@@ -20,7 +20,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.WorkbenchAppPathResolver;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.common.WebClientInfo;
 import org.generationcp.ibpworkbench.model.AskSupportFormModel;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.service.WorkbenchUserService;
@@ -76,6 +76,9 @@ public class WorkbenchEmailSenderService {
 	@Resource
 	private ContextUtil contextUtil;
 
+	@Resource
+	private WebClientInfo webClientInfo;
+
 	@Value("${mail.server.sender.email}")
 	private String senderEmail;
 
@@ -129,9 +132,9 @@ public class WorkbenchEmailSenderService {
 		String accountUsername = currentUser.getName();
 		String accountEmail = currentUser.getPerson().getEmail();
 
-		WebBrowser webBrowser = (WebBrowser) IBPWorkbenchApplication.get().getMainWindow().getTerminal();
+		WebBrowser webBrowser = webClientInfo.getWebBrowser();
 		String browser = webBrowser.getBrowserApplication();
-		String screenResolution = String.format("%s width x %s height",webBrowser.getScreenWidth(), webBrowser.getScreenHeight());
+		String screenResolution = String.format("%s width x %s height", webBrowser.getScreenWidth(), webBrowser.getScreenHeight());
 
 		String lastOpenedProgram = !Objects.equals(lastOpenedProject,null) ? lastOpenedProject.getProjectName(): "N/A";
 		String lastOpenedCrop =  !Objects.equals(lastOpenedProject,null) ? lastOpenedProject.getCropType().getCropName() : "N/A";

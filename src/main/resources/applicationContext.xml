@@ -114,6 +114,11 @@
 		<aop:scoped-proxy />
 	</bean>
 
+	<bean id="webClientInfo" class="org.generationcp.ibpworkbench.common.WebClientInfo"
+		  scope="session">
+		<aop:scoped-proxy />
+	</bean>
+
 	<bean id="studyDataManager" factory-bean="managerFactory"
 		factory-method="getStudyDataManager" scope="request">
 		<aop:scoped-proxy />

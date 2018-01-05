@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.dellroad.stuff.vaadin.ContextApplication;
 import org.dellroad.stuff.vaadin.SpringContextApplication;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.common.WebClientInfo;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +38,9 @@ public class IBPWorkbenchApplication extends SpringContextApplication {
 
 	@Resource
 	private LogoutHandler rememberMeServices;
+
+	@Resource
+	private WebClientInfo webClientInfo;
 
 	private HttpServletRequest request;
 	private HttpServletResponse response;
@@ -111,6 +115,8 @@ public class IBPWorkbenchApplication extends SpringContextApplication {
 
 	@Override
 	public Window getWindow(String name) {
+
+		webClientInfo.setWebBrowser((WebBrowser) this.getMainWindow().getTerminal());
 
 		Window w = super.getWindow(name);
 
