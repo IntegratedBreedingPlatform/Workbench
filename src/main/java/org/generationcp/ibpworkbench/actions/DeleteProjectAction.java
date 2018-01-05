@@ -67,6 +67,7 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 	private GermplasmListManager germplasmListManager;
 
 	public DeleteProjectAction() {
+		// does nothing here
 	}
 
 	@Override
@@ -74,6 +75,7 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 		try {
 			this.doAction(event.getComponent().getWindow(), "delete_program", true);
 		} catch (AccessDeniedException ex) {
+			LOG.error(ex.getMessage(), ex);
 			//the only reason we are catching this is in case someone used this wrongly.
 			MessageNotifier.showError(event.getComponent().getWindow(), "Error!", "Operation not allowed for user.");
 		}

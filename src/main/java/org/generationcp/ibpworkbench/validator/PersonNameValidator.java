@@ -13,12 +13,7 @@ package org.generationcp.ibpworkbench.validator;
 
 import com.vaadin.data.validator.AbstractValidator;
 import com.vaadin.ui.Field;
-import org.generationcp.commons.exceptions.InternationalizableException;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -36,8 +31,6 @@ public class PersonNameValidator extends AbstractValidator {
 
 	private static final long serialVersionUID = 4065915808146235650L;
 
-	private static final Logger LOG = LoggerFactory.getLogger(PersonNameValidator.class);
-
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
 
@@ -54,7 +47,7 @@ public class PersonNameValidator extends AbstractValidator {
 	}
 
 	@Override
-	public void validate(Object value) throws InvalidValueException {
+	public void validate(Object value) {
 		if (!this.isValid(value)) {
 			String message =
 					this.getErrorMessage().replace("{0}", this.firstName.getValue().toString())
@@ -66,7 +59,6 @@ public class PersonNameValidator extends AbstractValidator {
 	@Override
 	public boolean isValid(Object value) {
 		int personCounter;
-		IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
 		personCounter = validatorCounter.getNameValidationCounter();
 		personCounter++;
 		validatorCounter.setNameValidationCounter(personCounter);

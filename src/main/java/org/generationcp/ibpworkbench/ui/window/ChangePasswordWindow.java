@@ -47,9 +47,10 @@ public class ChangePasswordWindow extends BaseSubWindow implements InitializingB
 	private Button saveButton;
 
 	private PasswordField password;
-	private PasswordField confirm_password;
+	private PasswordField confirmPassword;
 
 	public ChangePasswordWindow() {
+		// does nothing
 	}
 
 	/**
@@ -76,8 +77,8 @@ public class ChangePasswordWindow extends BaseSubWindow implements InitializingB
 		this.password.setDebugId("password");
 		this.password.focus();
 
-		this.confirm_password = new PasswordField();
-		this.confirm_password.setDebugId("confirm_password");
+		this.confirmPassword = new PasswordField();
+		this.confirmPassword.setDebugId("confirmPassword");
 
 		this.saveButton = new Button("Save");
 		this.saveButton.setDebugId("saveButton");
@@ -101,7 +102,7 @@ public class ChangePasswordWindow extends BaseSubWindow implements InitializingB
 		this.passwordLabel.setWidth("140px");
 		this.password.setWidth("140px");
 		this.confirmLabel.setWidth("140px");
-		this.confirm_password.setWidth("140px");
+		this.confirmPassword.setWidth("140px");
 
 		GridLayout passwordGridLayout = new GridLayout(2, 2);
 		passwordGridLayout.setDebugId("passwordGridLayout");
@@ -109,7 +110,7 @@ public class ChangePasswordWindow extends BaseSubWindow implements InitializingB
 		passwordGridLayout.addComponent(this.passwordLabel);
 		passwordGridLayout.addComponent(this.password);
 		passwordGridLayout.addComponent(this.confirmLabel);
-		passwordGridLayout.addComponent(this.confirm_password);
+		passwordGridLayout.addComponent(this.confirmPassword);
 		passwordGridLayout.setSizeFull();
 
 		HorizontalLayout buttonlayout = new HorizontalLayout();
@@ -130,7 +131,7 @@ public class ChangePasswordWindow extends BaseSubWindow implements InitializingB
 	protected void initializeActions() {
 		User user = contextUtil.getCurrentWorkbenchUser();
 
-		this.saveButton.addListener(new ChangePasswordAction(user.getName(), this.password, this.confirm_password));
+		this.saveButton.addListener(new ChangePasswordAction(user.getName(), this.password, this.confirmPassword));
 		this.cancelButton.addListener(new RemoveWindowListener());
 	}
 

@@ -12,13 +12,7 @@
 package org.generationcp.ibpworkbench.validator;
 
 import com.vaadin.data.validator.AbstractValidator;
-import org.generationcp.commons.exceptions.InternationalizableException;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -36,8 +30,6 @@ public class UsernameValidator extends AbstractValidator {
 
 	private static final long serialVersionUID = -1537885028422014862L;
 
-	private static final Logger LOG = LoggerFactory.getLogger(UsernameValidator.class);
-
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
 
@@ -52,7 +44,6 @@ public class UsernameValidator extends AbstractValidator {
 	public boolean isValid(Object value) {
 
 		int usernameCounter;
-		IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
 		usernameCounter = validatorCounter.getUsernameCounter();
 		usernameCounter++;
 		validatorCounter.setUsernameCounter(usernameCounter);

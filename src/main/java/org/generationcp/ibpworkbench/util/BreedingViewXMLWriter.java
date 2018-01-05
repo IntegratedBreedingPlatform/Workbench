@@ -58,8 +58,6 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 
 	private static final String CROP_PLACEHOLDER = "{cropName}";
 
-	private static final String TRIAL_INSTANCE = "TRIAL_INSTANCE";
-
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
 
@@ -171,7 +169,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 		return pipelines;
 	}
 
-	private SSAParameters createSSAParameters() throws BreedingViewXMLWriterException {
+	private SSAParameters createSSAParameters() {
 		final SSAParameters ssaParameters = new SSAParameters();
 		ssaParameters.setWebApiUrl(this.getWebApiUrl());
 		ssaParameters.setStudyId(this.breedingViewInput.getStudyId());

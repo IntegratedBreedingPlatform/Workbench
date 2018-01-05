@@ -4,6 +4,8 @@ package org.generationcp.ibpworkbench.ui.project.create;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.actions.DeleteProjectAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.security.access.AccessDeniedException;
@@ -25,6 +27,8 @@ import com.vaadin.ui.themes.Reindeer;
 public class UpdateProjectPanel extends CreateProjectPanel {
 
 	private static final long serialVersionUID = 1L;
+
+	private static final Logger LOG = LoggerFactory.getLogger(UpdateProjectPanel.class);
 
 	@Autowired
 	private ContextUtil contextUtil;
@@ -50,6 +54,7 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 			super.saveProjectButton.setVisible(false);
 			saveAndDeleteProjectActionUpdate();
 		}catch(AccessDeniedException ex){
+			LOG.debug(ex.getMessage(), ex);
 			// Do nothing the screen needs to be display but the
 		}
 
@@ -112,6 +117,7 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 			 * Do nothing: the screen needs to be displayed, only some of the components needs to be hidden.
 			 * If a user with unauthorize access is trying to access this method an ${@link AccessDeniedException} will be thrown.
 	 		 */
+			LOG.debug(ex.getMessage(), ex);
 		}
 	}
 	/**

@@ -61,6 +61,7 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 	private ContextUtil contextUtil;
 
 	public WorkbenchSidebarPresenter() {
+		// does nothing
 	}
 
 	/**
@@ -116,6 +117,7 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 			try {
 				AuthorizationUtil.preAuthorize(importGermplasmPermissibleRoles);
 			} catch (AccessDeniedException ex) {
+				LOG.debug(ex.getMessage(), ex);
 				return false;
 			}
 

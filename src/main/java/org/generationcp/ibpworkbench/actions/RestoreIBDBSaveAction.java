@@ -4,7 +4,6 @@ package org.generationcp.ibpworkbench.actions;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -133,9 +132,9 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 		HashSet<User> users = new HashSet<>();
 		users.add(currentUser);
 		
-		for (final Project project : projects) {
+		for (final Project proj : projects) {
 			// The default "ADMIN" user is being added in ProgramService
-			this.programService.saveProgramMembers(project, users);
+			this.programService.saveProgramMembers(proj, users);
 		}
 	}
 

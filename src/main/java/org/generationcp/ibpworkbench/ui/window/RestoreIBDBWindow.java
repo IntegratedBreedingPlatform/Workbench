@@ -77,8 +77,8 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 			// set the Project Table data source
 			final BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);
 			projectContainer.setBeanIdProperty("projectName");
-			for (final Project project : projects) {
-				projectContainer.addBean(project);
+			for (final Project proj : projects) {
+				projectContainer.addBean(proj);
 			}
 
 		} catch (final MiddlewareQueryException e) {

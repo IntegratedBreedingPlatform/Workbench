@@ -16,8 +16,6 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsView;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -34,8 +32,6 @@ public class OpenProgramLocationsAction implements ClickListener, ActionListener
 
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger LOG = LoggerFactory.getLogger(OpenProgramLocationsAction.class);
-
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
@@ -43,6 +39,7 @@ public class OpenProgramLocationsAction implements ClickListener, ActionListener
 	private ContextUtil contextUtil;
 
 	public OpenProgramLocationsAction() {
+		// does nothing here
 	}
 
 	@Override

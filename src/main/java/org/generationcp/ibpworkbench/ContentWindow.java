@@ -41,9 +41,13 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 	private Map<String, String[]> queryMap;
 	private String path;
 
+	@Autowired
+	private WorkbenchDataManager workbenchDataManager;
+
 	public ContentWindow() {
 		super("Breeding Management System | Workbench");
 	}
+
 
 	@Override
 	public void showContent(Component content) {
@@ -128,9 +132,7 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 					new OpenProgramLocationsAction().doAction(this, "/" + this.path, false);
 
 					return null;
-				}
-
-				else if ("ProgramMethods".equals(this.path)) {
+				} else if ("ProgramMethods".equals(this.path)) {
 
 					if (this.queryMap.get("programId") == null) {
 						throw new Exception("Wrong query string, should be <strong>programId=[ID]<strong/>.");
@@ -174,9 +176,6 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 
 		return null;
 	}
-
-	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {

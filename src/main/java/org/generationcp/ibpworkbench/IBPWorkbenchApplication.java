@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.dellroad.stuff.vaadin.ContextApplication;
 import org.dellroad.stuff.vaadin.SpringContextApplication;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.common.WebClientInfo;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.slf4j.Logger;
@@ -34,7 +33,7 @@ import com.vaadin.ui.Window;
 public class IBPWorkbenchApplication extends SpringContextApplication {
 
 	private static final long serialVersionUID = 1L;
-	private final static Logger LOG = LoggerFactory.getLogger(IBPWorkbenchApplication.class);
+	private static final Logger LOG = LoggerFactory.getLogger(IBPWorkbenchApplication.class);
 
 	@Resource
 	private LogoutHandler rememberMeServices;
@@ -88,11 +87,6 @@ public class IBPWorkbenchApplication extends SpringContextApplication {
 
 		this.response = response;
 		this.request = request;
-	}
-
-	@Override
-	protected void doOnRequestEnd(HttpServletRequest request, HttpServletResponse response) {
-		super.doOnRequestEnd(request, response);
 	}
 
 	@Override

@@ -378,13 +378,13 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 			this.startDateField.validate();
 		} catch (final InvalidValueException e) {
 			errorMessage = e.getMessage();
-			ProjectBasicDetailsComponent.LOG.debug(e.getMessage());
+			ProjectBasicDetailsComponent.LOG.debug(e.getMessage(), e);
 		}
 
 		return errorMessage;
 	}
 
-	Project getProjectDetails() throws InvalidValueException {
+	Project getProjectDetails() {
 		if (!this.validate()) {
 			throw new InvalidValueException(this.messageSource.getMessage("INVALID_BASIC_DETAILS_FORM_EXCEPTION"));
 		}

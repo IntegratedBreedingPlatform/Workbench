@@ -18,6 +18,7 @@ public class ProjectTableCellStyleGenerator implements CellStyleGenerator {
 	private ContextUtil contextUtil;
 
 	public ProjectTableCellStyleGenerator() {
+		// does nothing
 	}
 
 	@Override

@@ -40,6 +40,7 @@ public class OpenProgramMethodsAction implements ClickListener, ActionListener {
 	private ContextUtil contextUtil;
 
 	public OpenProgramMethodsAction() {
+		// does nothing here
 	}
 
 	@Override

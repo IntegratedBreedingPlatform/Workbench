@@ -32,7 +32,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 @Configurable
 public class ProgramMethodsPresenter {
 
-	private boolean isCropOnly;
+
 	private Project project;
 	private CropType cropType;
 	private final ProgramMethodsView view;
@@ -59,7 +59,6 @@ public class ProgramMethodsPresenter {
 	public ProgramMethodsPresenter(ProgramMethodsView view, CropType cropType) {
 		this.view = view;
 		this.cropType = cropType;
-		this.isCropOnly = true;
 	}
 
 	public List<MethodView> getSavedProgramMethods() {

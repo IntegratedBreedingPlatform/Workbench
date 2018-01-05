@@ -38,6 +38,7 @@ public class HomeAction implements ClickListener, ActionListener {
 	private static final Logger LOG = LoggerFactory.getLogger(HomeAction.class);
 
 	public HomeAction() {
+		// does nothing here
 	}
 
 	/**

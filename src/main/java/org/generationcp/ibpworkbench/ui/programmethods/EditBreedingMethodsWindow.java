@@ -49,8 +49,6 @@ public class EditBreedingMethodsWindow extends BaseSubWindow {
 	@Autowired
 	private BreedingMethodTracker breedingMethodTracker;
 
-	private final static String[] VISIBLE_ITEM_PROPERTIES = new String[] {"methodName", "methodDescription", "methodType", "methodCode"};
-
 	public EditBreedingMethodsWindow(ProgramMethodsPresenter presenter, MethodView methodView) {
 		this.presenter = presenter;
 
