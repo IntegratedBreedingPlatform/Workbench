@@ -1,6 +1,7 @@
-
 package org.generationcp.ibpworkbench.ui.programadministration;
 
+import com.vaadin.ui.TabSheet;
+import junit.framework.Assert;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
@@ -11,10 +12,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-
-import com.vaadin.ui.TabSheet;
-
-import junit.framework.Assert;
 
 public class ProgramAdministrationPanelTest {
 
@@ -82,8 +79,6 @@ public class ProgramAdministrationPanelTest {
 
 		// Verify that programMembersPanel is not added in tabSheet
 		Assert.assertEquals(0, tabSheet.getComponentCount());
-
-
 
 	}
 

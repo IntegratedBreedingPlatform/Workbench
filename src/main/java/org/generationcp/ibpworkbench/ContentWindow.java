@@ -1,9 +1,15 @@
-
 package org.generationcp.ibpworkbench;
 
-import java.net.URL;
-import java.util.Map;
-
+import com.vaadin.terminal.DownloadStream;
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.terminal.ParameterHandler;
+import com.vaadin.terminal.URIHandler;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.CustomLayout;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Window;
 import org.generationcp.ibpworkbench.actions.OpenProgramLocationsAction;
 import org.generationcp.ibpworkbench.actions.OpenProgramMethodsAction;
 import org.generationcp.ibpworkbench.ui.common.IContainerFittable;
@@ -16,16 +22,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.terminal.DownloadStream;
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.ParameterHandler;
-import com.vaadin.terminal.URIHandler;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.CustomLayout;
-import com.vaadin.ui.Embedded;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Window;
+import java.net.URL;
+import java.util.Map;
 
 /**
  * Created by cyrus on 1/24/14.
@@ -48,15 +46,14 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 		super("Breeding Management System | Workbench");
 	}
 
-
 	@Override
-	public void showContent(Component content) {
+	public void showContent(final Component content) {
 
 		try {
 			this.removeAllComponents();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			// swallow the exception
-			LOG.warn(e.getMessage(),e);
+			LOG.warn(e.getMessage(), e);
 		}
 
 		if (content instanceof ComponentContainer) {
@@ -73,9 +70,9 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 	}
 
 	@Override
-	public void showContent(String toolUrl) {
+	public void showContent(final String toolUrl) {
 		if (!toolUrl.isEmpty()) {
-			Embedded browser = new Embedded(null, new ExternalResource(toolUrl));
+			final Embedded browser = new Embedded(null, new ExternalResource(toolUrl));
 			browser.setDebugId("browser");
 
 			browser.setType(Embedded.TYPE_BROWSER);
@@ -91,11 +88,11 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 	}
 
 	@Override
-	public void handleParameters(Map<String, String[]> stringMap) {
-		for (String key : stringMap.keySet()) {
+	public void handleParameters(final Map<String, String[]> stringMap) {
+		for (final String key : stringMap.keySet()) {
 
 			String values = "";
-			for (String val : stringMap.get(key)) {
+			for (final String val : stringMap.get(key)) {
 				values += val + " ";
 			}
 
@@ -106,7 +103,7 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 	}
 
 	@Override
-	public DownloadStream handleURI(URL url, String s) {
+	public DownloadStream handleURI(final URL url, final String s) {
 		this.path = s;
 
 		String errorMessage = "";
@@ -122,7 +119,7 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 						throw new Exception("Wrong query string, should be <strong>programId=[ID]<strong/>.");
 					}
 
-					Project project = this.workbenchDataManager.getProjectById(Long.parseLong(this.queryMap.get("programId")[0]));
+					final Project project = this.workbenchDataManager.getProjectById(Long.parseLong(this.queryMap.get("programId")[0]));
 
 					if (project == null) {
 						throw new Exception("No Program Exists with <strong>programId=" + this.queryMap.get("programId")[0] + "</strong>");
@@ -138,7 +135,7 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 						throw new Exception("Wrong query string, should be <strong>programId=[ID]<strong/>.");
 					}
 
-					Project project = this.workbenchDataManager.getProjectById(Long.parseLong(this.queryMap.get("programId")[0]));
+					final Project project = this.workbenchDataManager.getProjectById(Long.parseLong(this.queryMap.get("programId")[0]));
 
 					if (project == null) {
 						throw new Exception("No Program Exists with <strong>programId=" + this.queryMap.get("programId")[0] + "</strong>");
@@ -154,18 +151,18 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 			errorMessage =
 					"Incorrect URL. Correct format should be<br/> <strong>/ibpworkbench/content/ProgramLocations?programId=[ID]</strong> or <strong>/ibpworkbench/content/ProgramMethods?programId=[ID]</strong>";
 
-		} catch (NumberFormatException e) {
+		} catch (final NumberFormatException e) {
 			errorMessage = "The value you entered for programId is not a number.";
-		} catch (Exception e) {
+		} catch (final Exception e) {
 
 			// error happened
 			errorMessage = e.getMessage();
 
-			LOG.error(e.getMessage(),e);
+			LOG.error(e.getMessage(), e);
 
 		}
 
-		CustomLayout errorPage = new CustomLayout("error");
+		final CustomLayout errorPage = new CustomLayout("error");
 		errorPage.setDebugId("errorPage");
 		errorPage.setSizeUndefined();
 		errorPage.setWidth("100%");

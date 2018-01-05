@@ -1,16 +1,4 @@
-
 package org.generationcp.ibpworkbench.ui.breedingview;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.spring.util.ContextUtil;
@@ -26,6 +14,15 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by Daniel Villafuerte on 6/22/2015.
@@ -50,9 +47,9 @@ public class BreedingViewTreeTableTest {
 
 	@Before
 	public void setUp() throws Exception {
-		Project project = mock(Project.class);
-		User userData = mock(User.class);
-		ManagerFactory factory = mock(ManagerFactory.class);
+		final Project project = mock(Project.class);
+		final User userData = mock(User.class);
+		final ManagerFactory factory = mock(ManagerFactory.class);
 		when(contextUtil.getProjectInContext()).thenReturn(project);
 		when(project.getProjectId()).thenReturn((long) 1);
 		when(contextUtil.getCurrentWorkbenchUser()).thenReturn(userData);
@@ -64,7 +61,7 @@ public class BreedingViewTreeTableTest {
 
 	@Test
 	public void testAddFolderReference() {
-		FolderReference testReference = constructTestReference();
+		final FolderReference testReference = constructTestReference();
 		treeTable.addFolderReferenceNode(new Object[] {}, testReference);
 
 		assertTrue(treeTable.getNodeMap().containsKey(testReference.getId()));
@@ -73,7 +70,7 @@ public class BreedingViewTreeTableTest {
 
 	@Test
 	public void testSetCollapsedTrue() {
-		FolderReference testReference = constructTestReference();
+		final FolderReference testReference = constructTestReference();
 		treeTable.addFolderReferenceNode(new Object[] {}, testReference);
 
 		treeTable.setCollapsedFolder(TEST_FOLDER_ITEM_ID, true);
@@ -82,7 +79,7 @@ public class BreedingViewTreeTableTest {
 
 	@Test
 	public void testSetCollapsedFalse() {
-		FolderReference testReference = constructTestReference();
+		final FolderReference testReference = constructTestReference();
 		treeTable.addFolderReferenceNode(new Object[] {}, testReference);
 
 		treeTable.setCollapsedFolder(TEST_FOLDER_ITEM_ID, false);
@@ -91,15 +88,15 @@ public class BreedingViewTreeTableTest {
 
 	@Test
 	public void testReinitializeTreeExists() throws MiddlewareQueryException {
-		FolderReference testReference = constructTestReference();
+		final FolderReference testReference = constructTestReference();
 		treeTable.addFolderReferenceNode(new Object[] {}, testReference);
 
-		List<String> forExpansion = new ArrayList<>();
+		final List<String> forExpansion = new ArrayList<>();
 		forExpansion.add("STUDY");
 		forExpansion.add(Integer.toString(TEST_FOLDER_ITEM_ID));
 
-		when(programStateDataManager.getUserProgramTreeStateByUserIdProgramUuidAndType(anyInt(), anyString(), anyString())).thenReturn(
-				forExpansion);
+		when(programStateDataManager.getUserProgramTreeStateByUserIdProgramUuidAndType(anyInt(), anyString(), anyString()))
+				.thenReturn(forExpansion);
 
 		treeTable.reinitializeTree();
 

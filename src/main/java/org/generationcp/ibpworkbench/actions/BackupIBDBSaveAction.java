@@ -1,10 +1,9 @@
-
 package org.generationcp.ibpworkbench.actions;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-
+import com.vaadin.terminal.DownloadStream;
+import com.vaadin.terminal.FileResource;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Window;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.MySQLUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -19,10 +18,9 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.terminal.DownloadStream;
-import com.vaadin.terminal.FileResource;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Window;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 @Configurable
 public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.ClickListener, InitializingBean {
@@ -30,7 +28,6 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.Clic
 	private static final long serialVersionUID = 3502237968419196524L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(BackupIBDBSaveAction.class);
-
 
 	private final Window sourceWindow;
 
@@ -82,15 +79,15 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.Clic
 				@Override
 				public DownloadStream getStream() {
 					try {
-						final DownloadStream ds = new DownloadStream(new FileInputStream(this.getSourceFile()), this.getMIMEType(), this
-								.getFilename());
+						final DownloadStream ds =
+								new DownloadStream(new FileInputStream(this.getSourceFile()), this.getMIMEType(), this.getFilename());
 
 						ds.setParameter("Content-Disposition", "attachment; filename=" + this.getFilename());
 						ds.setCacheTime(this.getCacheTime());
 						return ds;
 
 					} catch (final FileNotFoundException e) {
-						LOG.warn(e.getMessage(),e);
+						LOG.warn(e.getMessage(), e);
 						return null;
 					}
 				}
@@ -99,18 +96,18 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.Clic
 			this.sourceWindow.getApplication().getMainWindow().open(fr);
 
 		} catch (final Exception e) {
-			LOG.error(e.getMessage(),e);
+			LOG.error(e.getMessage(), e);
 			MessageNotifier.showMessage(this.sourceWindow, this.messageSource.getMessage(Message.BACKUP_IBDB_CANNOT_PERFORM_OPERATION),
 					e.getMessage());
 
 		}
 	}
 
-
 	/**
 	 * afterPropertiesSet() is called after Aspect4J weaves spring objects when this class is instantiated since this class is
 	 * a @configurable that implements InitializingBean. Since we do not have any need for additional initialization after the weaving, this
 	 * method remains unimplemented.
+	 *
 	 * @throws Exception
 	 */
 	@Override

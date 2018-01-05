@@ -1,20 +1,17 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * <p/>
  * Generation Challenge Programme (GCP)
- *
- *
+ * <p/>
+ * <p/>
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.vaadin.terminal.gwt.server.WebBrowser;
+import com.vaadin.ui.Window;
 import org.dellroad.stuff.vaadin.ContextApplication;
 import org.dellroad.stuff.vaadin.SpringContextApplication;
 import org.generationcp.ibpworkbench.common.WebClientInfo;
@@ -27,8 +24,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 
-import com.vaadin.terminal.gwt.server.WebBrowser;
-import com.vaadin.ui.Window;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class IBPWorkbenchApplication extends SpringContextApplication {
 
@@ -57,7 +55,7 @@ public class IBPWorkbenchApplication extends SpringContextApplication {
 	}
 
 	protected void logout() {
-		Authentication auth = this.getCurrentSecurityContext().getAuthentication();
+		final Authentication auth = this.getCurrentSecurityContext().getAuthentication();
 		if (auth != null) {
 			this.rememberMeServices.logout(this.getRequest(), this.getResponse(), auth);
 		}
@@ -69,7 +67,7 @@ public class IBPWorkbenchApplication extends SpringContextApplication {
 	}
 
 	@Override
-	public void terminalError(com.vaadin.terminal.Terminal.ErrorEvent event) {
+	public void terminalError(final com.vaadin.terminal.Terminal.ErrorEvent event) {
 		IBPWorkbenchApplication.LOG.error("Encountered error", event.getThrowable());
 	}
 
@@ -82,7 +80,7 @@ public class IBPWorkbenchApplication extends SpringContextApplication {
 	}
 
 	@Override
-	protected void doOnRequestStart(HttpServletRequest request, HttpServletResponse response) {
+	protected void doOnRequestStart(final HttpServletRequest request, final HttpServletResponse response) {
 		super.doOnRequestStart(request, response);
 
 		this.response = response;
@@ -90,7 +88,7 @@ public class IBPWorkbenchApplication extends SpringContextApplication {
 	}
 
 	@Override
-	protected void initSpringApplication(ConfigurableWebApplicationContext context) {
+	protected void initSpringApplication(final ConfigurableWebApplicationContext context) {
 		this.assemble();
 	}
 
@@ -108,11 +106,11 @@ public class IBPWorkbenchApplication extends SpringContextApplication {
 	}
 
 	@Override
-	public Window getWindow(String name) {
+	public Window getWindow(final String name) {
 
 		webClientInfo.setWebBrowser((WebBrowser) this.getMainWindow().getTerminal());
 
-		Window w = super.getWindow(name);
+		final Window w = super.getWindow(name);
 
 		final String prefetchScript = "/ibpworkbench/VAADIN/js/prefetch-resources.js";
 

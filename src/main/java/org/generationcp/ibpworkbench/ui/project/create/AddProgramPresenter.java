@@ -1,7 +1,4 @@
-
 package org.generationcp.ibpworkbench.ui.project.create;
-
-import java.util.Set;
 
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.service.ProgramService;
@@ -9,6 +6,8 @@ import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+
+import java.util.Set;
 
 /**
  * Created by cyrus on 5/19/14.
@@ -24,7 +23,7 @@ public class AddProgramPresenter {
 	@Autowired
 	private ContextUtil contextUtil;
 
-	public AddProgramPresenter(AddProgramView view) {
+	public AddProgramPresenter(final AddProgramView view) {
 		this.view = view;
 	}
 
@@ -42,9 +41,9 @@ public class AddProgramPresenter {
 			final Set<User> users = AddProgramPresenter.this.view.programMembersPanel.getSelectedUsers();
 			AddProgramPresenter.this.programService.createNewProgram(program, users);
 			return program;
-		} catch (RuntimeException e) {
-			throw new AddProgramException("The application could not successfully create"
-					+ " a program. Please contact support for further help.",e);
+		} catch (final RuntimeException e) {
+			throw new AddProgramException(
+					"The application could not successfully create" + " a program. Please contact support for further help.", e);
 		}
 	}
 

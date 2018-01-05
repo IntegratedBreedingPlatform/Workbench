@@ -1,11 +1,10 @@
-
 package org.generationcp.ibpworkbench.ui.dashboard.listener;
 
-import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Table;
+import junit.framework.Assert;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
@@ -27,12 +26,9 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Table;
-
-import junit.framework.Assert;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.Date;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LaunchProgramActionTest {

@@ -1,25 +1,14 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * <p/>
  * Generation Challenge Programme (GCP)
- *
- *
+ * <p/>
+ * <p/>
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.ui.window;
-
-import org.generationcp.commons.spring.util.ContextUtil;
-import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
-import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.commons.vaadin.ui.BaseSubWindow;
-import org.generationcp.ibpworkbench.actions.ChangePasswordAction;
-import org.generationcp.middleware.pojos.User;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -31,6 +20,15 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
+import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.ui.BaseSubWindow;
+import org.generationcp.ibpworkbench.actions.ChangePasswordAction;
+import org.generationcp.middleware.pojos.User;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 @Configurable
 public class ChangePasswordWindow extends BaseSubWindow implements InitializingBean, InternationalizableComponent {
@@ -93,7 +91,7 @@ public class ChangePasswordWindow extends BaseSubWindow implements InitializingB
 		this.setHeight("200px");
 		this.setModal(true);
 
-		VerticalLayout layout = new VerticalLayout();
+		final VerticalLayout layout = new VerticalLayout();
 		layout.setDebugId("layout");
 		layout.setSizeFull();
 		layout.setMargin(true);
@@ -104,7 +102,7 @@ public class ChangePasswordWindow extends BaseSubWindow implements InitializingB
 		this.confirmLabel.setWidth("140px");
 		this.confirmPassword.setWidth("140px");
 
-		GridLayout passwordGridLayout = new GridLayout(2, 2);
+		final GridLayout passwordGridLayout = new GridLayout(2, 2);
 		passwordGridLayout.setDebugId("passwordGridLayout");
 		passwordGridLayout.setMargin(false, false, false, false);
 		passwordGridLayout.addComponent(this.passwordLabel);
@@ -113,7 +111,7 @@ public class ChangePasswordWindow extends BaseSubWindow implements InitializingB
 		passwordGridLayout.addComponent(this.confirmPassword);
 		passwordGridLayout.setSizeFull();
 
-		HorizontalLayout buttonlayout = new HorizontalLayout();
+		final HorizontalLayout buttonlayout = new HorizontalLayout();
 		buttonlayout.setDebugId("buttonlayout");
 
 		buttonlayout.addComponent(this.cancelButton);
@@ -129,7 +127,7 @@ public class ChangePasswordWindow extends BaseSubWindow implements InitializingB
 	}
 
 	protected void initializeActions() {
-		User user = contextUtil.getCurrentWorkbenchUser();
+		final User user = contextUtil.getCurrentWorkbenchUser();
 
 		this.saveButton.addListener(new ChangePasswordAction(user.getName(), this.password, this.confirmPassword));
 		this.cancelButton.addListener(new RemoveWindowListener());
@@ -140,7 +138,7 @@ public class ChangePasswordWindow extends BaseSubWindow implements InitializingB
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public void buttonClick(ClickEvent event) {
+		public void buttonClick(final ClickEvent event) {
 			event.getComponent().getWindow().getParent().removeWindow(ChangePasswordWindow.this.getWindow());
 		}
 

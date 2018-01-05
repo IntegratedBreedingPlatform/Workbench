@@ -1,6 +1,17 @@
-
 package org.generationcp.ibpworkbench.ui.recovery;
 
+import com.vaadin.data.Validator;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.Upload;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.help.document.HelpModule;
 import org.generationcp.commons.spring.util.ContextUtil;
@@ -20,19 +31,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import com.vaadin.data.Validator;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Layout;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.Upload;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
 public class BackupAndRestoreView extends CustomComponent implements InitializingBean {
@@ -197,8 +195,7 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 				final ConfirmDialog dialog = ConfirmDialog.show(clickEvent.getComponent().getWindow(),
 						BackupAndRestoreView.this.messageSource.getMessage(Message.RESTORE_IBDB_WINDOW_CAPTION),
 						String.format(restoreDescMessageFormat,
-								BackupAndRestoreView.this.messageSource.getMessage(Message.RESTORE_IBDB_CONFIRM,
-										project.getDatabaseName()),
+								BackupAndRestoreView.this.messageSource.getMessage(Message.RESTORE_IBDB_CONFIRM, project.getDatabaseName()),
 								BackupAndRestoreView.this.messageSource.getMessage(Message.RESTORE_BMS_WARN)),
 						BackupAndRestoreView.this.messageSource.getMessage(Message.RESTORE),
 						BackupAndRestoreView.this.messageSource.getMessage(Message.CANCEL), restoreAction);
@@ -265,8 +262,8 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 		this.backupPanel.addComponent(new Label("<div style='height: 10px'></div>", Label.CONTENT_XHTML));
 		this.backupPanel.addComponent(
 				this.setUpHeadings(HelpModule.BACKUP_PROGRAM_DATA, this.messageSource.getMessage("BACKUP_BMS_TITLE"), "124px"));
-		final Label backupTextLabel = new Label(
-				this.messageSource.getMessage("BACKUP_BMS_DESCRIPTION", contextUtil.getProjectInContext().getProjectName()));
+		final Label backupTextLabel =
+				new Label(this.messageSource.getMessage("BACKUP_BMS_DESCRIPTION", contextUtil.getProjectInContext().getProjectName()));
 		backupTextLabel.addStyleName(BMS_LABEL_BOTTOM_SPACE_STYLE);
 		this.backupPanel.addComponent(backupTextLabel);
 		this.backupPanel.addComponent(this.backupBtn);

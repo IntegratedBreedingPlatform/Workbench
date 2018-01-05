@@ -1,10 +1,6 @@
-
 package org.generationcp.ibpworkbench.ui.breedingview;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.vaadin.ui.TreeTable;
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.constant.ListTreeState;
 import org.generationcp.commons.spring.util.ContextUtil;
@@ -17,7 +13,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.ui.TreeTable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Daniel Villafuerte on 6/22/2015.
@@ -26,19 +24,19 @@ import com.vaadin.ui.TreeTable;
 public class BreedingViewTreeTable extends TreeTable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(BreedingViewTreeTable.class);
-	private Map<Integer, Reference> nodeMap;
+	private final Map<Integer, Reference> nodeMap;
 
 	@Autowired
 	private ContextUtil contextUtil;
-    
-    @Autowired
-    private UserProgramStateDataManager programStateDataManager;
+
+	@Autowired
+	private UserProgramStateDataManager programStateDataManager;
 
 	public BreedingViewTreeTable() {
 		nodeMap = new HashMap<>();
 	}
 
-	public Object addFolderReferenceNode(Object[] cells, Reference folderReference) {
+	public Object addFolderReferenceNode(final Object[] cells, final Reference folderReference) {
 		nodeMap.put(folderReference.getId(), folderReference);
 		return super.addItem(cells, folderReference);
 	}
@@ -47,12 +45,12 @@ public class BreedingViewTreeTable extends TreeTable {
 		return nodeMap.get(DmsProject.SYSTEM_FOLDER_ID);
 	}
 
-	public Reference getFolderNode(Integer itemId) {
+	public Reference getFolderNode(final Integer itemId) {
 		return nodeMap.get(itemId);
 	}
 
-	public void setCollapsedFolder(Integer itemId, boolean collapsed) {
-		Reference referenceObject = nodeMap.get(itemId);
+	public void setCollapsedFolder(final Integer itemId, final boolean collapsed) {
+		final Reference referenceObject = nodeMap.get(itemId);
 
 		if (referenceObject == null) {
 			return;
@@ -64,25 +62,25 @@ public class BreedingViewTreeTable extends TreeTable {
 	public void reinitializeTree() {
 
 		try {
-			List<String> parsedState =
-					programStateDataManager.getUserProgramTreeStateByUserIdProgramUuidAndType(contextUtil.getCurrentWorkbenchUserId(),
+			final List<String> parsedState = programStateDataManager
+					.getUserProgramTreeStateByUserIdProgramUuidAndType(contextUtil.getCurrentWorkbenchUserId(),
 							contextUtil.getProjectInContext().getUniqueID(), ListTreeState.STUDY_LIST.name());
 
 			if (parsedState.isEmpty() || (parsedState.size() == 1 && !StringUtils.isEmpty(parsedState.get(0)))) {
 				return;
 			}
 
-			for (String s : parsedState) {
-				String trimmed = s.trim();
+			for (final String s : parsedState) {
+				final String trimmed = s.trim();
 				if (!StringUtils.isNumeric(trimmed)) {
 					continue;
 				}
 
-				int itemId = Integer.parseInt(trimmed);
+				final int itemId = Integer.parseInt(trimmed);
 
 				setCollapsedFolder(itemId, false);
 			}
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			LOG.error(e.getMessage(), e);
 		}
 	}

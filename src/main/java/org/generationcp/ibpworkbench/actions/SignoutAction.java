@@ -1,21 +1,19 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * <p/>
  * Generation Challenge Programme (GCP)
- *
- *
+ * <p/>
+ * <p/>
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.actions;
 
-import org.generationcp.commons.util.WorkbenchAppPathResolver;
-import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
-
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import org.generationcp.commons.util.WorkbenchAppPathResolver;
+import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 
 /**
  * <b>Description</b>: Listener class for closing the application.
@@ -37,11 +35,11 @@ public class SignoutAction implements ClickListener {
 	 * @param event the event
 	 */
 	@Override
-	public void buttonClick(ClickEvent event) {
-		WorkbenchMainView window = (WorkbenchMainView) event.getButton().getWindow();
+	public void buttonClick(final ClickEvent event) {
+		final WorkbenchMainView window = (WorkbenchMainView) event.getButton().getWindow();
 		window.setUriFragment("", true);
 
-		String fullLogoutUrl = WorkbenchAppPathResolver.getFullWebAddress("ibpworkbench/controller/logout", "");
+		final String fullLogoutUrl = WorkbenchAppPathResolver.getFullWebAddress("ibpworkbench/controller/logout", "");
 
 		window.showContent(fullLogoutUrl);
 	}

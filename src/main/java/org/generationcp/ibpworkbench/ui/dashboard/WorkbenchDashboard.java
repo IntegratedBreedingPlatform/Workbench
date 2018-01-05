@@ -1,24 +1,32 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * <p/>
  * Generation Challenge Programme (GCP)
- *
- *
+ * <p/>
+ * <p/>
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.ui.dashboard;
 
-import java.io.File;
-import java.util.List;
-
-import javax.annotation.Resource;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-
+import com.vaadin.Application;
+import com.vaadin.data.util.BeanContainer;
+import com.vaadin.terminal.FileResource;
+import com.vaadin.terminal.Sizeable;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.Reindeer;
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.help.document.HelpButton;
@@ -42,22 +50,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
-import com.vaadin.Application;
-import com.vaadin.data.util.BeanContainer;
-import com.vaadin.terminal.FileResource;
-import com.vaadin.terminal.Sizeable;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Embedded;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.Reindeer;
+import javax.annotation.Resource;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.util.List;
 
 @Configurable
 public class WorkbenchDashboard extends VerticalLayout implements InitializingBean, InternationalizableComponent {
@@ -222,8 +219,8 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 			this.programsTable.select(lastOpenedProgram);
 
 			// If there's a last opened project (program), then set it to the current project in context.
-			org.generationcp.commons.util.ContextUtil.setContextInfo(httpServletRequest, contextUtil.getCurrentWorkbenchUserId(),
-					lastOpenedProgram.getProjectId(), null);
+			org.generationcp.commons.util.ContextUtil
+					.setContextInfo(httpServletRequest, contextUtil.getCurrentWorkbenchUserId(), lastOpenedProgram.getProjectId(), null);
 		}
 
 	}
@@ -323,7 +320,8 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
 			private static final long serialVersionUID = 1L;
 
-			@Override public String generateDescription(final Component source, final Object itemId, final Object propertyId) {
+			@Override
+			public String generateDescription(final Component source, final Object itemId, final Object propertyId) {
 				return WorkbenchDashboard.this.messageSource.getMessage(Message.PROGRAM_TABLE_TOOLTIP);
 			}
 		});

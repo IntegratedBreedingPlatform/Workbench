@@ -1,18 +1,14 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * <p/>
  * Generation Challenge Programme (GCP)
- *
- *
+ * <p/>
+ * <p/>
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.model.formfieldfactory;
-
-import java.util.Map;
-import javax.annotation.Resource;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -35,6 +31,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+
+import javax.annotation.Resource;
+import java.util.Map;
 
 /**
  * <b>Description</b>: Field factory for generating Breeding Method fields for Breeding Method class.
@@ -60,19 +59,18 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 	private Select methodSelectClass;
 
 	private Boolean isEditMode;
-	
+
 	@Autowired
 	private GermplasmDataManager germplasmDataManager;
-
 
 	@Resource
 	private ContextUtil contextUtil;
 
-	public BreedingMethodFormFieldFactory(Map<Integer, String> classMap) {
+	public BreedingMethodFormFieldFactory(final Map<Integer, String> classMap) {
 		this.initFields(classMap);
 	}
 
-	public BreedingMethodFormFieldFactory(Map<Integer, String> classMap, Boolean isEditMode) {
+	public BreedingMethodFormFieldFactory(final Map<Integer, String> classMap, final Boolean isEditMode) {
 		this.isEditMode = isEditMode;
 		this.initFields(classMap);
 	}
@@ -92,7 +90,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 			private static final long serialVersionUID = 1243756382212441154L;
 
 			@Override
-			public void validate(Object value) {
+			public void validate(final Object value) {
 
 				if (value == null) {
 					return;
@@ -104,7 +102,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 			}
 
 			@Override
-			public boolean isValid(Object value) {
+			public boolean isValid(final Object value) {
 
 				if (value == null) {
 					return true;
@@ -112,9 +110,9 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 
 				Method method = null;
 				try {
-					Project currentProject = contextUtil.getProjectInContext();
+					final Project currentProject = contextUtil.getProjectInContext();
 					method = germplasmDataManager.getMethodByName(value.toString(), currentProject.getUniqueID());
-				} catch (MiddlewareQueryException e) {
+				} catch (final MiddlewareQueryException e) {
 					BreedingMethodFormFieldFactory.LOG.error(e.getMessage(), e);
 				}
 
@@ -138,8 +136,8 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 		this.methodDescription.setDebugId("methodDescription");
 		this.methodDescription.setRequired(true);
 		this.methodDescription.setRequiredError("Please enter a Breeding Method Description.");
-		this.methodDescription.addValidator(new StringLengthValidator("Breeding Method Description must be 1-255 characters.", 1, 255,
-				false));
+		this.methodDescription
+				.addValidator(new StringLengthValidator("Breeding Method Description must be 1-255 characters.", 1, 255, false));
 		this.methodDescription.setWidth("375px");
 		this.methodDescription.setHeight("100px");
 
@@ -156,7 +154,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 			private static final long serialVersionUID = -830998093233311135L;
 
 			@Override
-			public void validate(Object value) {
+			public void validate(final Object value) {
 
 				if (value == null) {
 					return;
@@ -168,7 +166,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 			}
 
 			@Override
-			public boolean isValid(Object value) {
+			public boolean isValid(final Object value) {
 
 				if (value == null) {
 					return true;
@@ -176,9 +174,9 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 
 				Method method = null;
 				try {
-					Project currentProject = contextUtil.getProjectInContext();
+					final Project currentProject = contextUtil.getProjectInContext();
 					method = germplasmDataManager.getMethodByCode(value.toString(), currentProject.getUniqueID());
-				} catch (MiddlewareQueryException e) {
+				} catch (final MiddlewareQueryException e) {
 					BreedingMethodFormFieldFactory.LOG.error(e.getMessage(), e);
 				}
 
@@ -220,34 +218,33 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 			private static final long serialVersionUID = 3918955977372077902L;
 
 			@Override
-			public void valueChange(ValueChangeEvent event) {
+			public void valueChange(final ValueChangeEvent event) {
 				BreedingMethodFormFieldFactory.this.methodSelectClass.removeAllItems();
 				if ("GEN".equals(event.getProperty().getValue().toString())) {
-					for (Integer key : classMap.keySet()) {
-						String value = classMap.get(key);
+					for (final Integer key : classMap.keySet()) {
+						final String value = classMap.get(key);
 
-						if (key.equals(TermId.CROSSING_METHODS_CLASS.getId()) || key.equals(TermId.MUTATION_METHODS_CLASS.getId())
-								|| key.equals(TermId.GENETIC_MODIFICATION_CLASS.getId())
-								|| key.equals(TermId.CYTOGENETIC_MANIPULATION.getId())) {
+						if (key.equals(TermId.CROSSING_METHODS_CLASS.getId()) || key.equals(TermId.MUTATION_METHODS_CLASS.getId()) || key
+								.equals(TermId.GENETIC_MODIFICATION_CLASS.getId()) || key.equals(TermId.CYTOGENETIC_MANIPULATION.getId())) {
 							BreedingMethodFormFieldFactory.this.methodSelectClass.addItem(key);
 							BreedingMethodFormFieldFactory.this.methodSelectClass.setItemCaption(key, value);
 						}
 					}
 				} else if ("DER".equals(event.getProperty().getValue().toString())) {
-					for (Integer key : classMap.keySet()) {
-						String value = classMap.get(key);
-						if (key.equals(TermId.BULKING_BREEDING_METHOD_CLASS.getId())
-								|| key.equals(TermId.NON_BULKING_BREEDING_METHOD_CLASS.getId())) {
+					for (final Integer key : classMap.keySet()) {
+						final String value = classMap.get(key);
+						if (key.equals(TermId.BULKING_BREEDING_METHOD_CLASS.getId()) || key
+								.equals(TermId.NON_BULKING_BREEDING_METHOD_CLASS.getId())) {
 							BreedingMethodFormFieldFactory.this.methodSelectClass.addItem(key);
 							BreedingMethodFormFieldFactory.this.methodSelectClass.setItemCaption(key, value);
 						}
 					}
 				} else if ("MAN".equals(event.getProperty().getValue().toString())) {
-					for (Integer key : classMap.keySet()) {
-						String value = classMap.get(key);
-						if (key.equals(TermId.SEED_INCREASE_METHOD_CLASS.getId())
-								|| key.equals(TermId.SEED_ACQUISITION_METHOD_CLASS.getId())
-								|| key.equals(TermId.CULTIVAR_FORMATION_METHOD_CLASS.getId())) {
+					for (final Integer key : classMap.keySet()) {
+						final String value = classMap.get(key);
+						if (key.equals(TermId.SEED_INCREASE_METHOD_CLASS.getId()) || key
+								.equals(TermId.SEED_ACQUISITION_METHOD_CLASS.getId()) || key
+								.equals(TermId.CULTIVAR_FORMATION_METHOD_CLASS.getId())) {
 							BreedingMethodFormFieldFactory.this.methodSelectClass.addItem(key);
 							BreedingMethodFormFieldFactory.this.methodSelectClass.setItemCaption(key, value);
 						}
@@ -282,9 +279,9 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 	}
 
 	@Override
-	public Field createField(Item item, Object propertyId, Component uiContext) {
+	public Field createField(final Item item, final Object propertyId, final Component uiContext) {
 
-		Field field = super.createField(item, propertyId, uiContext);
+		final Field field = super.createField(item, propertyId, uiContext);
 
 		if ("mname".equals(propertyId)) {
 			return this.methodName;

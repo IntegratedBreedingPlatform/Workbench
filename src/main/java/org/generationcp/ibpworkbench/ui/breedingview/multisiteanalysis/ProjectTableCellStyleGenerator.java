@@ -1,10 +1,8 @@
-
 package org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis;
 
+import com.vaadin.ui.Table.CellStyleGenerator;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.middleware.pojos.workbench.Project;
-
-import com.vaadin.ui.Table.CellStyleGenerator;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.annotation.Resource;
@@ -22,10 +20,10 @@ public class ProjectTableCellStyleGenerator implements CellStyleGenerator {
 	}
 
 	@Override
-	public String getStyle(Object itemId, Object propertyId) {
-		Object projectId = itemId;
+	public String getStyle(final Object itemId, final Object propertyId) {
+		final Object projectId = itemId;
 
-		Project currentProject = contextUtil.getProjectInContext();
+		final Project currentProject = contextUtil.getProjectInContext();
 
 		if (projectId == null) {
 			return "project-table";

@@ -1,4 +1,3 @@
-
 package org.generationcp.ibpworkbench.ui.summaryview;
 
 import com.jensjansson.pagedtable.PagedTable;
@@ -53,9 +52,10 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 			new String[] {ProgramSummaryView.STUDY_NAME, ProgramSummaryView.DESCRIPTION, ProgramSummaryView.OBJECTIVE,
 					ProgramSummaryView.START_DATE, ProgramSummaryView.END_DATE, ProgramSummaryView.PI_NAME, ProgramSummaryView.SITE_NAME};
 
-	protected static final String[] ALL_STUDIES_COLUMNS = new String[] {ProgramSummaryView.STUDY_NAME, ProgramSummaryView.DESCRIPTION,
-			ProgramSummaryView.OBJECTIVE, ProgramSummaryView.START_DATE, ProgramSummaryView.END_DATE, ProgramSummaryView.PI_NAME,
-			ProgramSummaryView.SITE_NAME, ProgramSummaryView.STUDY_TYPE};
+	protected static final String[] ALL_STUDIES_COLUMNS =
+			new String[] {ProgramSummaryView.STUDY_NAME, ProgramSummaryView.DESCRIPTION, ProgramSummaryView.OBJECTIVE,
+					ProgramSummaryView.START_DATE, ProgramSummaryView.END_DATE, ProgramSummaryView.PI_NAME, ProgramSummaryView.SITE_NAME,
+					ProgramSummaryView.STUDY_TYPE};
 
 	public static final int COMPONENT_INDEX_OF_TABLES = 1;
 
@@ -213,8 +213,8 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 									ProgramSummaryView.this.activityCount, ProgramSummaryView.this.programActivitiesTable);
 							break;
 						case 1:
-							ProgramSummaryView.this.addComponent(ProgramSummaryView.this.programTrialsTable,
-									ProgramSummaryView.COMPONENT_INDEX_OF_TABLES);
+							ProgramSummaryView.this
+									.addComponent(ProgramSummaryView.this.programTrialsTable, ProgramSummaryView.COMPONENT_INDEX_OF_TABLES);
 							ProgramSummaryView.this.updateHeaderAndTableControls(
 									ProgramSummaryView.this.messageSource.getMessage(Message.PROGRAM_SUMMARY_TRIALS),
 									ProgramSummaryView.this.trialCount, ProgramSummaryView.this.programTrialsTable);
@@ -351,7 +351,7 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 	}
 
 	void initializeData() {
-		long projectActivitiesCount;
+		final long projectActivitiesCount;
 		final Project project = this.contextUtil.getProjectInContext();
 		projectActivitiesCount = this.workbenchDataManager.countProjectActivitiesByProjectId(project.getProjectId());
 
@@ -359,16 +359,19 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 				this.workbenchDataManager.getProjectActivitiesByProjectId(project.getProjectId(), 0, (int) projectActivitiesCount);
 		this.populateActivityTable(activityList);
 
-		final StudyDetailsQueryFactory trialFactory = new StudyDetailsQueryFactory(this.studyDataManager, StudyType.T,
-				Arrays.asList(ProgramSummaryView.TRIAL_NURSERY_COLUMNS), project.getUniqueID());
+		final StudyDetailsQueryFactory trialFactory =
+				new StudyDetailsQueryFactory(this.studyDataManager, StudyType.T, Arrays.asList(ProgramSummaryView.TRIAL_NURSERY_COLUMNS),
+						project.getUniqueID());
 		this.populateTrialSummaryTable(trialFactory);
 
-		final StudyDetailsQueryFactory nurseryFactory = new StudyDetailsQueryFactory(this.studyDataManager, StudyType.N,
-				Arrays.asList(ProgramSummaryView.TRIAL_NURSERY_COLUMNS), project.getUniqueID());
+		final StudyDetailsQueryFactory nurseryFactory =
+				new StudyDetailsQueryFactory(this.studyDataManager, StudyType.N, Arrays.asList(ProgramSummaryView.TRIAL_NURSERY_COLUMNS),
+						project.getUniqueID());
 		this.populateNurserySummaryTable(nurseryFactory);
 
-		final StudyDetailsQueryFactory allStudiesTable = new StudyDetailsQueryFactory(this.studyDataManager, null,
-				Arrays.asList(ProgramSummaryView.ALL_STUDIES_COLUMNS), project.getUniqueID());
+		final StudyDetailsQueryFactory allStudiesTable =
+				new StudyDetailsQueryFactory(this.studyDataManager, null, Arrays.asList(ProgramSummaryView.ALL_STUDIES_COLUMNS),
+						project.getUniqueID());
 		this.populateProgramStudiesTable(allStudiesTable);
 	}
 

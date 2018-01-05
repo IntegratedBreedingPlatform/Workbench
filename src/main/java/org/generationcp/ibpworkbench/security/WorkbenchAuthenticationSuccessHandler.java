@@ -1,12 +1,5 @@
 package org.generationcp.ibpworkbench.security;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -21,6 +14,12 @@ import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+
 /**
  * Handler for setting up Workbench specific stuff e.g. {@link org.generationcp.commons.spring.util.ContextUtil} before redirecting to the page requested on successful
  * authentication. Could also be used to redirect to different destinations based on role if needed.
@@ -34,7 +33,7 @@ public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSucc
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
 
-	private String defaultTargetUrl = "/main";
+	private final String defaultTargetUrl = "/main";
 
 	private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 

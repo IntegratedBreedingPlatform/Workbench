@@ -1,10 +1,10 @@
-
 package org.generationcp.ibpworkbench.ui.sidebar;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.vaadin.data.Item;
+import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Tree;
 import org.generationcp.commons.constant.ToolEnum;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.actions.ActionListener;
@@ -30,11 +30,9 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Tree;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Configurable
 public class WorkbenchSidebar extends CssLayout implements InitializingBean {

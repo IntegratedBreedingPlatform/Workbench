@@ -241,12 +241,10 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		memberPopup.setSizeUndefined();
 
 		memberPopup.addComponent(
-				new Label(String.format("<h2>%s %s</h2><h4>%s</h4>", firstName, lastName, emailAddress),
-						Label.CONTENT_XHTML));
+				new Label(String.format("<h2>%s %s</h2><h4>%s</h4>", firstName, lastName, emailAddress), Label.CONTENT_XHTML));
 		memberPopup.addComponent(this.signoutButton);
 
 		return memberPopup;
-
 
 	}
 

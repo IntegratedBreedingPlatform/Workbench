@@ -1,4 +1,3 @@
-
 package org.generationcp.ibpworkbench.actions;
 
 import com.vaadin.data.util.BeanItem;
@@ -55,9 +54,9 @@ public class SaveNewLocationActionTest {
 
 	@Test
 	public void testGetLocationFromForm() throws Exception {
-		BeanItem<LocationViewModel> locationFormBean = Mockito.mock(BeanItem.class);
+		final BeanItem<LocationViewModel> locationFormBean = Mockito.mock(BeanItem.class);
 
-		LocationViewModel lvm = new LocationViewModel();
+		final LocationViewModel lvm = new LocationViewModel();
 		lvm.setLocationName(TEST_LOCATION);
 
 		Mockito.when(locationFormBean.getBean()).thenReturn(lvm);
@@ -65,22 +64,21 @@ public class SaveNewLocationActionTest {
 
 		this.locationViewModelResult = this.saveNewLocationAction.getLocationFromForm();
 
-		Assert.assertEquals("location name is set", TEST_LOCATION,
-				this.locationViewModelResult.getLocationName());
+		Assert.assertEquals("location name is set", TEST_LOCATION, this.locationViewModelResult.getLocationName());
 	}
 
 	@Test
 	public void testSaveLocation() throws Exception {
 
-		LocationViewModel lvm = new LocationViewModel();
+		final LocationViewModel lvm = new LocationViewModel();
 		lvm.setLocationName(TEST_LOCATION);
 		lvm.setLocationAbbreviation("TSTL");
 
-		BeanItem<LocationViewModel> locationFormBean = Mockito.mock(BeanItem.class);
+		final BeanItem<LocationViewModel> locationFormBean = Mockito.mock(BeanItem.class);
 		Mockito.when(locationFormBean.getBean()).thenReturn(lvm);
 		Mockito.when(this.newLocationForm.getItemDataSource()).thenReturn(locationFormBean);
 
-		Window mockParentWindow = Mockito.mock(Window.class);
+		final Window mockParentWindow = Mockito.mock(Window.class);
 		Mockito.when(this.window.getParent()).thenReturn(mockParentWindow);
 		Mockito.when(mockParentWindow.removeWindow(this.window)).thenReturn(true);
 

@@ -74,7 +74,7 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 	public void buttonClick(final ClickEvent event) {
 		try {
 			this.doAction(event.getComponent().getWindow(), "delete_program", true);
-		} catch (AccessDeniedException ex) {
+		} catch (final AccessDeniedException ex) {
 			LOG.error(ex.getMessage(), ex);
 			//the only reason we are catching this is in case someone used this wrongly.
 			MessageNotifier.showError(event.getComponent().getWindow(), "Error!", "Operation not allowed for user.");
@@ -89,13 +89,13 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 	 * @param event the event
 	 */
 	@Override
-	public void doAction(Event event) {
+	public void doAction(final Event event) {
 		// No state or initial values are required to be initialized for this layout
 	}
 
 	@Override
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public void doAction(final Window window, String uriFragment, boolean isLinkAccessed) {
+	public void doAction(final Window window, final String uriFragment, final boolean isLinkAccessed) {
 		final IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
 		final Project currentProject = this.contextUtil.getProjectInContext();
 
@@ -115,11 +115,11 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 						private static final long serialVersionUID = 6975196694103407530L;
 
 						@Override
-						public void onClose(ConfirmDialog dialog) {
+						public void onClose(final ConfirmDialog dialog) {
 							if (dialog.isConfirmed()) {
 								try {
 									DeleteProjectAction.this.deleteProgram(currentProject);
-								} catch (MiddlewareQueryException e) {
+								} catch (final MiddlewareQueryException e) {
 									DeleteProjectAction.LOG.error(e.getMessage(), e);
 								}
 								// go back to dashboard
@@ -130,7 +130,7 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 		}
 	}
 
-	protected void deleteProgram(Project project) {
+	protected void deleteProgram(final Project project) {
 
 		// soft delete
 		this.deleteAllProgramStudies(project);
@@ -150,24 +150,25 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 
 	}
 
-	protected void deleteAllProgramLocationsAndMethods(Project project) {
+	protected void deleteAllProgramLocationsAndMethods(final Project project) {
 		locationDataManager.deleteProgramLocationsByUniqueId(project.getUniqueID());
 		germplasmDataManager.deleteProgramMethodsByUniqueId(project.getUniqueID());
 	}
 
-	protected void deleteAllProgramFavorites(Project project) {
-		List<ProgramFavorite> favoriteLocations = germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, project.getUniqueID());
-		List<ProgramFavorite> favoriteMethods = germplasmDataManager.getProgramFavorites(FavoriteType.METHOD, project.getUniqueID());
+	protected void deleteAllProgramFavorites(final Project project) {
+		final List<ProgramFavorite> favoriteLocations =
+				germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, project.getUniqueID());
+		final List<ProgramFavorite> favoriteMethods = germplasmDataManager.getProgramFavorites(FavoriteType.METHOD, project.getUniqueID());
 		germplasmDataManager.deleteProgramFavorites(favoriteLocations);
 		germplasmDataManager.deleteProgramFavorites(favoriteMethods);
 
 	}
 
-	protected void deleteAllProgramStudies(Project project) {
+	protected void deleteAllProgramStudies(final Project project) {
 		this.studyDataManager.deleteProgramStudies(project.getUniqueID());
 	}
 
-	protected void deleteAllProgramLists(Project project) {
+	protected void deleteAllProgramLists(final Project project) {
 		this.germplasmListManager.deleteGermplasmListsByProgram(project.getUniqueID());
 	}
 

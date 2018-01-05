@@ -1,20 +1,10 @@
-
 package org.generationcp.ibpworkbench.actions;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.concurrent.Callable;
-
+import com.vaadin.ui.Window;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.MySQLUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
-import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
@@ -31,7 +21,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import com.vaadin.ui.Window;
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.Callable;
 
 public class RestoreIBDBSaveActionTest {
 
@@ -54,7 +51,7 @@ public class RestoreIBDBSaveActionTest {
 
 	@Mock
 	private File restoreFile;
-	
+
 	@Captor
 	private ArgumentCaptor<Set<User>> userSetCaptor;
 
@@ -112,7 +109,7 @@ public class RestoreIBDBSaveActionTest {
 		Mockito.verify(this.programService, Mockito.times(RestoreIBDBSaveActionTest.NO_OF_RESTORED_PROGRAMS))
 				.saveProgramMembers(Matchers.any(Project.class), this.userSetCaptor.capture());
 		final Set<User> users = this.userSetCaptor.getValue();
-		
+
 		// "Expecting only the current user to be added."
 		Assert.assertEquals(1, users.size());
 		Assert.assertEquals(currentUser, users.iterator().next());
@@ -173,22 +170,22 @@ public class RestoreIBDBSaveActionTest {
 
 		Assert.assertTrue("Expecting to have error since restore action was not completed.", this.restoreAction.isHasRestoreError());
 	}
-	
+
 	@Test
-	public void testUpdateGermplasmListOwnershipWhenUserIsNotNull() throws IOException, SQLException{
+	public void testUpdateGermplasmListOwnershipWhenUserIsNotNull() throws IOException, SQLException {
 		this.restoreAction.updateGermplasmListOwnership(this.loggedInUser.getUserid());
-		
+
 		final ArgumentCaptor<String> databaseNameCaptor = ArgumentCaptor.forClass(String.class);
 		final ArgumentCaptor<Integer> userIdCaptor = ArgumentCaptor.forClass(Integer.class);
 		Mockito.verify(this.mySqlUtil, Mockito.times(1)).updateOwnerships(databaseNameCaptor.capture(), userIdCaptor.capture());
 		Assert.assertEquals(databaseNameCaptor.getValue(), this.currentProject.getDatabaseName());
 		Assert.assertEquals(userIdCaptor.getValue(), this.loggedInUser.getUserid());
 	}
-	
+
 	@Test
-	public void testUpdateGermplasmListOwnershipWhenUserIsNull() throws IOException, SQLException{
+	public void testUpdateGermplasmListOwnershipWhenUserIsNull() throws IOException, SQLException {
 		this.restoreAction.updateGermplasmListOwnership(null);
-		
+
 		Mockito.verify(this.workbenchDataManager, Mockito.never()).addProjectActivity(Matchers.any(ProjectActivity.class));
 	}
 

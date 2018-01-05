@@ -1,11 +1,4 @@
-
 package org.generationcp.ibpworkbench.service;
-
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.util.ToolUtil;
@@ -28,6 +21,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.web.context.request.RequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.HashSet;
+import java.util.Set;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProgramServiceTest {

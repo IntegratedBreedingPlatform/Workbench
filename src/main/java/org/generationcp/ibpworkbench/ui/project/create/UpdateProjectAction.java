@@ -1,8 +1,6 @@
-
 package org.generationcp.ibpworkbench.ui.project.create;
 
-import java.util.Date;
-
+import com.vaadin.ui.Button;
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -15,8 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import com.vaadin.ui.Button;
 
 /**
  * Created with IntelliJ IDEA. User: cyrus Date: 10/28/13 Time: 11:07 AM To change this template use File | Settings | File Templates.
@@ -38,12 +34,12 @@ public class UpdateProjectAction implements Button.ClickListener {
 
 	private static final long serialVersionUID = 1L;
 
-	public UpdateProjectAction(UpdateProjectPanel projectPanel) {
+	public UpdateProjectAction(final UpdateProjectPanel projectPanel) {
 		this.projectPanel = projectPanel;
 	}
 
 	@Override
-	public void buttonClick(Button.ClickEvent event) {
+	public void buttonClick(final Button.ClickEvent event) {
 
 		if (this.projectPanel.validate()) {
 			this.doUpdate();
@@ -60,11 +56,10 @@ public class UpdateProjectAction implements Button.ClickListener {
 
 		if (this.projectPanel.validate()) {
 			// rename old workspace directory if found
-			this.toolUtil.renameOldWorkspaceDirectoryToNewFormat(project.getProjectId(),
-					this.projectPanel.getOldProjectName());
+			this.toolUtil.renameOldWorkspaceDirectoryToNewFormat(project.getProjectId(), this.projectPanel.getOldProjectName());
 
 			// update the project
-			Project updatedProject = this.projectPanel.getProjectBasicDetailsComponent().getProjectDetails();
+			final Project updatedProject = this.projectPanel.getProjectBasicDetailsComponent().getProjectDetails();
 			project.setProjectName(updatedProject.getProjectName());
 			project.setStartDate(updatedProject.getStartDate());
 			this.workbenchDataManager.saveOrUpdateProject(project);
@@ -72,29 +67,24 @@ public class UpdateProjectAction implements Button.ClickListener {
 			MessageNotifier.showMessage(this.projectPanel.getWindow(), "Program update is successful",
 					String.format("%s is updated.", StringUtils.abbreviate(project.getProjectName(), 50)));
 
-			this.contextUtil.logProgramActivity( "Update Program", "Updated Program - "
-					+ project.getProjectName());
+			this.contextUtil.logProgramActivity("Update Program", "Updated Program - " + project.getProjectName());
 
 			if (IBPWorkbenchApplication.get().getMainWindow() instanceof WorkbenchMainView) {
-				((WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow()).addTitle(project
-						.getProjectName());
+				((WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow()).addTitle(project.getProjectName());
 			}
 		}
 	}
 
-	
-	public void setContextUtil(ContextUtil contextUtil) {
+	public void setContextUtil(final ContextUtil contextUtil) {
 		this.contextUtil = contextUtil;
 	}
 
-	
-	public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
+	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
 		this.workbenchDataManager = workbenchDataManager;
 	}
 
-	
-	public void setToolUtil(ToolUtil toolUtil) {
+	public void setToolUtil(final ToolUtil toolUtil) {
 		this.toolUtil = toolUtil;
 	}
-	
+
 }

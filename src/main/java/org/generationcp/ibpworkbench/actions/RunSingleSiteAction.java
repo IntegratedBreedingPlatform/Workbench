@@ -10,15 +10,14 @@
 
 package org.generationcp.ibpworkbench.actions;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Resource;
-
+import com.google.common.base.Strings;
+import com.mysql.jdbc.StringUtils;
+import com.vaadin.Application;
+import com.vaadin.terminal.DownloadStream;
+import com.vaadin.terminal.FileResource;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Window;
 import org.generationcp.commons.breedingview.xml.Blocks;
 import org.generationcp.commons.breedingview.xml.ColPos;
 import org.generationcp.commons.breedingview.xml.Columns;
@@ -51,19 +50,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
-import com.google.common.base.Strings;
-import com.mysql.jdbc.StringUtils;
-import com.vaadin.Application;
-import com.vaadin.terminal.DownloadStream;
-import com.vaadin.terminal.FileResource;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Window;
+import javax.annotation.Resource;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- *
  * @author Jeffrey Morales
- *
  */
 @Configurable
 public class RunSingleSiteAction implements ClickListener {
@@ -74,7 +70,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RunSingleSiteAction.class);
 
-	private SingleSiteAnalysisDetailsPanel source;
+	private final SingleSiteAnalysisDetailsPanel source;
 
 	@Value("${bv.web.url}")
 	private String bvWebUrl;
@@ -143,8 +139,7 @@ public class RunSingleSiteAction implements ClickListener {
 	 */
 	void exportData(final BreedingViewInput breedingViewInput) {
 
-		final DatasetExporter datasetExporter =
-				new DatasetExporter(breedingViewInput.getDatasetId());
+		final DatasetExporter datasetExporter = new DatasetExporter(breedingViewInput.getDatasetId());
 
 		try {
 

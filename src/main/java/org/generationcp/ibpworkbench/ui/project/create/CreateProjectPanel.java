@@ -1,17 +1,24 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * <p/>
  * Generation Challenge Programme (GCP)
- *
- *
+ * <p/>
+ * <p/>
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.ui.project.create;
 
-import org.generationcp.commons.spring.util.ContextUtil;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -27,18 +34,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
-
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Layout;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.Reindeer;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * The create project panel
@@ -60,16 +55,10 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 	protected Component buttonArea;
 
 	@Autowired
-	private HttpServletRequest request;
-
-	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
 	private PlatformTransactionManager transactionManager;
-
-	@Autowired
-	private ContextUtil contextUtil;
 
 	private Label heading;
 
@@ -78,7 +67,7 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 	public CreateProjectPanel() {
 	}
 
-	public CreateProjectPanel(AddProgramPresenter presenter) {
+	public CreateProjectPanel(final AddProgramPresenter presenter) {
 		this.presenter = presenter;
 	}
 
@@ -89,9 +78,8 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 
 	protected void initializeComponents() {
 
-		this.heading =
-				new Label("<span class=\"bms-fa-text-o\" style=\"color: #009DDA; font-size: 23px \" ></span>&nbsp;Basic Details",
-						Label.CONTENT_XHTML);
+		this.heading = new Label("<span class=\"bms-fa-text-o\" style=\"color: #009DDA; font-size: 23px \" ></span>&nbsp;Basic Details",
+				Label.CONTENT_XHTML);
 		this.heading.setStyleName(Bootstrap.Typography.H4.styleName());
 
 		this.newProjectTitleArea = new HorizontalLayout();
@@ -105,7 +93,7 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 	}
 
 	protected void initializeLayout() {
-		VerticalLayout root = new VerticalLayout();
+		final VerticalLayout root = new VerticalLayout();
 		root.setDebugId("root");
 		root.setMargin(new Layout.MarginInfo(true, true, true, true));
 		root.setSpacing(true);
@@ -134,18 +122,18 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 					transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 
 						@Override
-						protected void doInTransactionWithoutResult(TransactionStatus status) {
+						protected void doInTransactionWithoutResult(final TransactionStatus status) {
 							final Project newlyCreatedProgram = CreateProjectPanel.this.presenter.doAddNewProgram();
 
 							MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
 									CreateProjectPanel.this.messageSource.getMessage(Message.SUCCESS),
 									newlyCreatedProgram.getProjectName() + " program has been successfully created.");
-							
+
 							CreateProjectPanel.this.presenter.enableProgramMethodsAndLocationsTab();
 						}
 					});
 
-				} catch (Exception e) {
+				} catch (final Exception e) {
 
 					if ("basic_details_invalid".equals(e.getMessage())) {
 						return;
@@ -166,7 +154,7 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void buttonClick(Button.ClickEvent clickEvent) {
+			public void buttonClick(final Button.ClickEvent clickEvent) {
 
 				CreateProjectPanel.this.presenter.resetBasicDetails();
 				CreateProjectPanel.this.presenter.disableProgramMethodsAndLocationsTab();
@@ -175,7 +163,7 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 	}
 
 	protected Component layoutButtonArea() {
-		HorizontalLayout buttonLayout = new HorizontalLayout();
+		final HorizontalLayout buttonLayout = new HorizontalLayout();
 		buttonLayout.setDebugId("buttonLayout");
 		buttonLayout.setSpacing(true);
 		buttonLayout.setMargin(true, false, false, false);
@@ -199,11 +187,10 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 
 	}
 
-	public void cropTypeChanged(CropType newCropType) {
+	public void cropTypeChanged(final CropType newCropType) {
 		this.presenter.disableProgramMethodsAndLocationsTab();
 	}
 
-	
 	public ProjectBasicDetailsComponent getProjectBasicDetailsComponent() {
 		return projectBasicDetailsComponent;
 	}

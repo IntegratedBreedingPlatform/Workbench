@@ -1,14 +1,13 @@
-
 package org.generationcp.ibpworkbench.ui.dashboard;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.io.InputStream;
+import com.vaadin.data.Item;
+import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Table;
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -26,13 +25,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import com.vaadin.data.Item;
-import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Embedded;
-import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.Table;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WorkbenchDashboardTest {
 

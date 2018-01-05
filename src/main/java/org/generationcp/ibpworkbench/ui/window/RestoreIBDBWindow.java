@@ -1,8 +1,15 @@
-
 package org.generationcp.ibpworkbench.ui.window;
 
-import java.util.List;
-
+import com.vaadin.data.util.BeanContainer;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Upload;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -21,16 +28,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.util.BeanContainer;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Upload;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.Reindeer;
+import java.util.List;
 
 @Configurable
 public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean, InternationalizableComponent {
@@ -148,6 +146,7 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 
 		// DO button listeners + actions here
 		this.cancelBtn.addListener(new Button.ClickListener() {
+
 			private static final long serialVersionUID = 3986272934965189089L;
 
 			@Override
@@ -157,6 +156,7 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 		});
 
 		this.saveBtn.addListener(new Button.ClickListener() {
+
 			private static final long serialVersionUID = 2139337955546100675L;
 
 			@Override

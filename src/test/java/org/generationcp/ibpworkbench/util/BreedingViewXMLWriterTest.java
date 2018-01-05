@@ -1,13 +1,4 @@
-
 package org.generationcp.ibpworkbench.util;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-
 
 import org.generationcp.commons.breedingview.xml.Blocks;
 import org.generationcp.commons.breedingview.xml.ColPos;
@@ -30,6 +21,13 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class BreedingViewXMLWriterTest {
 
@@ -55,15 +53,15 @@ public class BreedingViewXMLWriterTest {
 	private static final String ENVIRONMENT_NAME = "TRIAL_INSTANCE";
 	private static final String SOURCE_FILE_PATH = BreedingViewXMLWriterTest.INPUT_DIRECTORY + "/test.csv";
 	private static final String DEST_FILE_PATH = BreedingViewXMLWriterTest.INPUT_DIRECTORY + "/test.xml";
-	private static final String WEB_API_URL = "http://localhost:18080/"
-			+ "bmsapi/breeding_view/{cropName}/ssa/save_result_summary&loggedInUserId=1&selectedProjectId=1";
+	private static final String WEB_API_URL =
+			"http://localhost:18080/" + "bmsapi/breeding_view/{cropName}/ssa/save_result_summary&loggedInUserId=1&selectedProjectId=1";
 	private static final String INSTALLATION_DIRECTORY = "C://Breeding Management System/";
 
 	@Before
 	public void setUp() throws Exception {
 
-		ContextUtil contextUtil = Mockito.mock(ContextUtil.class);
-		WorkbenchDataManager workbenchDataManager = Mockito.mock(WorkbenchDataManager.class);
+		final ContextUtil contextUtil = Mockito.mock(ContextUtil.class);
+		final WorkbenchDataManager workbenchDataManager = Mockito.mock(WorkbenchDataManager.class);
 		Mockito.when(contextUtil.getProjectInContext()).thenReturn(this.createProject());
 		Mockito.when(workbenchDataManager.getWorkbenchSetting()).thenReturn(this.createWorkbenchSetting());
 
@@ -79,17 +77,17 @@ public class BreedingViewXMLWriterTest {
 	@Test
 	public void testCreateDesign() {
 
-		Design result = breedingViewXMLWriter.createDesign();
+		final Design result = breedingViewXMLWriter.createDesign();
 
 		// Make sure these properties have correct values.
-		Assert.assertEquals(COLUMN_FACTOR,result.getColumns().getName());
-		Assert.assertEquals(BLOCKS_FACTOR,result.getBlocks().getName());
-		Assert.assertEquals(COL_POS_FACTOR,result.getColPos().getName());
+		Assert.assertEquals(COLUMN_FACTOR, result.getColumns().getName());
+		Assert.assertEquals(BLOCKS_FACTOR, result.getBlocks().getName());
+		Assert.assertEquals(COL_POS_FACTOR, result.getColPos().getName());
 		Assert.assertEquals(ROWS_FACTOR, result.getRows().getName());
-		Assert.assertEquals(ROW_POS_FACTOR,result.getRowPos().getName());
+		Assert.assertEquals(ROW_POS_FACTOR, result.getRowPos().getName());
 		Assert.assertEquals(REPLICATES_FACTOR, result.getReplicates().getName());
-		Assert.assertEquals(PLOT_FACTOR,result.getPlot().getName());
-		Assert.assertEquals(DesignType.RANDOMIZED_BLOCK_DESIGN.getName(),result.getType());
+		Assert.assertEquals(PLOT_FACTOR, result.getPlot().getName());
+		Assert.assertEquals(DesignType.RANDOMIZED_BLOCK_DESIGN.getName(), result.getType());
 
 	}
 
@@ -97,17 +95,17 @@ public class BreedingViewXMLWriterTest {
 	public void testRemovePreviousDatastore() throws Exception {
 
 		this.breedingViewXMLWriter.removePreviousDatastore(BreedingViewXMLWriterTest.OUTPUT_DIRECTORY);
-		Assert.assertFalse(BreedingViewXMLWriterTest.DATASTORE_FILE + " should not exist", new File(
-				BreedingViewXMLWriterTest.OUTPUT_DIRECTORY + "/" + BreedingViewXMLWriterTest.DATASTORE_FILE).exists());
+		Assert.assertFalse(BreedingViewXMLWriterTest.DATASTORE_FILE + " should not exist",
+				new File(BreedingViewXMLWriterTest.OUTPUT_DIRECTORY + "/" + BreedingViewXMLWriterTest.DATASTORE_FILE).exists());
 		this.createDummyDatastoreFile(BreedingViewXMLWriterTest.OUTPUT_DIRECTORY);
 		this.breedingViewXMLWriter.removePreviousDatastore(BreedingViewXMLWriterTest.OUTPUT_DIRECTORY);
-		Assert.assertFalse(BreedingViewXMLWriterTest.DATASTORE_FILE + " should not exist", new File(
-				BreedingViewXMLWriterTest.OUTPUT_DIRECTORY + "/" + BreedingViewXMLWriterTest.DATASTORE_FILE).exists());
+		Assert.assertFalse(BreedingViewXMLWriterTest.DATASTORE_FILE + " should not exist",
+				new File(BreedingViewXMLWriterTest.OUTPUT_DIRECTORY + "/" + BreedingViewXMLWriterTest.DATASTORE_FILE).exists());
 	}
 
 	@Test
 	public void testWriteProjectXML() throws Exception {
-		String filePath = this.breedingViewInput.getDestXMLFilePath();
+		final String filePath = this.breedingViewInput.getDestXMLFilePath();
 		this.breedingViewXMLWriter.writeProjectXML();
 		Assert.assertTrue(filePath + " should exist", new File(filePath).exists());
 	}
@@ -117,31 +115,30 @@ public class BreedingViewXMLWriterTest {
 		this.deleteBreedingViewDirectories();
 	}
 
-	private void createDummyDatastoreFile(String outputDirectory) throws IOException {
-		File dataStoreFile = new File(outputDirectory + "/" + BreedingViewXMLWriterTest.DATASTORE_FILE);
-		BufferedWriter output = new BufferedWriter(new FileWriter(dataStoreFile));
+	private void createDummyDatastoreFile(final String outputDirectory) throws IOException {
+		final File dataStoreFile = new File(outputDirectory + "/" + BreedingViewXMLWriterTest.DATASTORE_FILE);
+		final BufferedWriter output = new BufferedWriter(new FileWriter(dataStoreFile));
 		output.write("Datastore content");
 		output.close();
 	}
 
 	private void deleteBreedingViewDirectories() {
-		File bvDir = new File(BreedingViewXMLWriterTest.BV_FOLDER);
+		final File bvDir = new File(BreedingViewXMLWriterTest.BV_FOLDER);
 		this.deleteFile(bvDir);
 	}
 
-	private void deleteFile(File fileToBeDeleted) {
-		File[] files = fileToBeDeleted.listFiles();
+	private void deleteFile(final File fileToBeDeleted) {
+		final File[] files = fileToBeDeleted.listFiles();
 		if (files != null && files.length > 0) {
-			for (File file : files) {
+			for (final File file : files) {
 				this.deleteFile(file);
 			}
 		}
 		fileToBeDeleted.delete();
 	}
 
-
 	private BreedingViewInput createBreedingViewInput() {
-		BreedingViewInput breedingViewInput = new BreedingViewInput();
+		final BreedingViewInput breedingViewInput = new BreedingViewInput();
 		breedingViewInput.setBreedingViewProjectName(BreedingViewXMLWriterTest.PROJECT_NAME);
 		breedingViewInput.setBreedingViewAnalysisName(BreedingViewXMLWriterTest.ANALYSIS_NAME);
 		breedingViewInput.setStudyId(BreedingViewXMLWriterTest.STUDY_ID);
@@ -150,39 +147,38 @@ public class BreedingViewXMLWriterTest {
 		breedingViewInput.setSourceXLSFilePath(BreedingViewXMLWriterTest.SOURCE_FILE_PATH);
 		breedingViewInput.setDestXMLFilePath(BreedingViewXMLWriterTest.DEST_FILE_PATH);
 
-		Environment environment = new Environment();
+		final Environment environment = new Environment();
 		environment.setName(BreedingViewXMLWriterTest.ENVIRONMENT_NAME);
-
 
 		breedingViewInput.setEnvironment(environment);
 		breedingViewInput.setSelectedEnvironments(new ArrayList<SeaEnvironmentModel>());
 		breedingViewInput.setVariatesActiveState(new HashMap<String, Boolean>());
 
-		Columns columns = new Columns();
+		final Columns columns = new Columns();
 		columns.setName(COLUMN_FACTOR);
 		breedingViewInput.setColumns(columns);
 
-		Blocks blocks = new Blocks();
+		final Blocks blocks = new Blocks();
 		blocks.setName(BLOCKS_FACTOR);
 		breedingViewInput.setBlocks(blocks);
 
-		ColPos colPos = new ColPos();
+		final ColPos colPos = new ColPos();
 		colPos.setName(COL_POS_FACTOR);
 		breedingViewInput.setColPos(colPos);
 
-		Rows rows = new Rows();
+		final Rows rows = new Rows();
 		rows.setName(ROWS_FACTOR);
 		breedingViewInput.setRows(rows);
 
-		RowPos rowPos = new RowPos();
+		final RowPos rowPos = new RowPos();
 		rowPos.setName(ROW_POS_FACTOR);
 		breedingViewInput.setRowPos(rowPos);
 
-		Replicates replicates = new Replicates();
+		final Replicates replicates = new Replicates();
 		replicates.setName(REPLICATES_FACTOR);
 		breedingViewInput.setReplicates(replicates);
 
-		Plot plot = new Plot();
+		final Plot plot = new Plot();
 		plot.setName(PLOT_FACTOR);
 		breedingViewInput.setPlot(plot);
 
@@ -193,25 +189,25 @@ public class BreedingViewXMLWriterTest {
 
 	private WorkbenchSetting createWorkbenchSetting() {
 
-		WorkbenchSetting workbenchSetting = new WorkbenchSetting();
+		final WorkbenchSetting workbenchSetting = new WorkbenchSetting();
 		workbenchSetting.setInstallationDirectory(INSTALLATION_DIRECTORY);
 
 		return workbenchSetting;
 	}
 
 	private Project createProject() {
-		Project workbenchProject = new Project();
+		final Project workbenchProject = new Project();
 		workbenchProject.setCropType(new CropType(CropType.CropEnum.MAIZE.name()));
 		workbenchProject.setProjectId(1L);
 		return workbenchProject;
 	}
 
 	private void createBreedingViewDirectories() {
-		File inputDir = new File(BreedingViewXMLWriterTest.INPUT_DIRECTORY);
+		final File inputDir = new File(BreedingViewXMLWriterTest.INPUT_DIRECTORY);
 		if (!inputDir.exists()) {
 			inputDir.mkdirs();
 		}
-		File outputDir = new File(BreedingViewXMLWriterTest.OUTPUT_DIRECTORY);
+		final File outputDir = new File(BreedingViewXMLWriterTest.OUTPUT_DIRECTORY);
 		if (!outputDir.exists()) {
 			outputDir.mkdirs();
 		}

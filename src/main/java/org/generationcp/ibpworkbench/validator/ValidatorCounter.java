@@ -14,7 +14,7 @@ public class ValidatorCounter {
 		return this.usernameCounter;
 	}
 
-	public void setUsernameCounter(Integer username_counter) {
+	public void setUsernameCounter(final Integer username_counter) {
 		this.usernameCounter = username_counter;
 	}
 
@@ -22,7 +22,7 @@ public class ValidatorCounter {
 		return this.nameValidationCounter;
 	}
 
-	public void setNameValidationCounter(Integer namevalidation_counter) {
+	public void setNameValidationCounter(final Integer namevalidation_counter) {
 		this.nameValidationCounter = namevalidation_counter;
 	}
 

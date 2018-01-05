@@ -1,12 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * <p/>
  * Generation Challenge Programme (GCP)
- *
- *
+ * <p/>
+ * <p/>
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.validator;
@@ -40,24 +39,23 @@ public class PersonNameValidator extends AbstractValidator {
 	private final Field firstName;
 	private final Field lastName;
 
-	public PersonNameValidator(Field firstName, Field lastName) {
+	public PersonNameValidator(final Field firstName, final Field lastName) {
 		super("Person with First Name \"{0}\" and Last Name \"{1}\" already exists.");
 		this.firstName = firstName;
 		this.lastName = lastName;
 	}
 
 	@Override
-	public void validate(Object value) {
+	public void validate(final Object value) {
 		if (!this.isValid(value)) {
-			String message =
-					this.getErrorMessage().replace("{0}", this.firstName.getValue().toString())
-							.replace("{1}", this.lastName.getValue().toString());
+			final String message = this.getErrorMessage().replace("{0}", this.firstName.getValue().toString())
+					.replace("{1}", this.lastName.getValue().toString());
 			throw new InvalidValueException(message);
 		}
 	}
 
 	@Override
-	public boolean isValid(Object value) {
+	public boolean isValid(final Object value) {
 		int personCounter;
 		personCounter = validatorCounter.getNameValidationCounter();
 		personCounter++;

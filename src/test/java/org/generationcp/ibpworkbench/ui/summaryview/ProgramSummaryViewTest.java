@@ -1,10 +1,7 @@
-
 package org.generationcp.ibpworkbench.ui.summaryview;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import com.vaadin.ui.Table;
+import junit.framework.Assert;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.middleware.domain.oms.StudyType;
@@ -19,9 +16,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import com.vaadin.ui.Table;
-
-import junit.framework.Assert;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ProgramSummaryViewTest {
 
@@ -63,10 +60,10 @@ public class ProgramSummaryViewTest {
 				.countProjectActivitiesByProjectId(project.getProjectId());
 		Mockito.doReturn(this.getTestProjectActivities(ProgramSummaryViewTest.ACTIVITIES_COUNT.intValue())).when(this.workbenchDataManager)
 				.getProjectActivitiesByProjectId(project.getProjectId(), 0, ProgramSummaryViewTest.ACTIVITIES_COUNT.intValue());
-		Mockito.doReturn(ProgramSummaryViewTest.NURSERY_COUNT).when(this.studyDataManager).countAllStudyDetails(StudyType.N,
-				ProgramSummaryViewTest.PROGRAM_UUID);
-		Mockito.doReturn(ProgramSummaryViewTest.TRIAL_COUNT).when(this.studyDataManager).countAllStudyDetails(StudyType.T,
-				ProgramSummaryViewTest.PROGRAM_UUID);
+		Mockito.doReturn(ProgramSummaryViewTest.NURSERY_COUNT).when(this.studyDataManager)
+				.countAllStudyDetails(StudyType.N, ProgramSummaryViewTest.PROGRAM_UUID);
+		Mockito.doReturn(ProgramSummaryViewTest.TRIAL_COUNT).when(this.studyDataManager)
+				.countAllStudyDetails(StudyType.T, ProgramSummaryViewTest.PROGRAM_UUID);
 		Mockito.doReturn(ProgramSummaryViewTest.STUDIES_COUNT).when(this.studyDataManager)
 				.countAllNurseryAndTrialStudyDetails(ProgramSummaryViewTest.PROGRAM_UUID);
 
@@ -95,8 +92,9 @@ public class ProgramSummaryViewTest {
 		// Check the displayed table columns
 		Assert.assertTrue(Arrays.equals(ProgramSummaryView.TRIAL_NURSERY_COLUMNS,
 				Arrays.copyOf(programTrialsTable.getVisibleColumns(), programTrialsTable.getVisibleColumns().length, String[].class)));
-		Assert.assertTrue(Arrays.equals(ProgramSummaryView.TRIAL_NURSERY_COLUMNS, Arrays.copyOf(programNurseriesTable.getVisibleColumns(),
-				programNurseriesTable.getVisibleColumns().length, String[].class)));
+		Assert.assertTrue(Arrays.equals(ProgramSummaryView.TRIAL_NURSERY_COLUMNS,
+				Arrays.copyOf(programNurseriesTable.getVisibleColumns(), programNurseriesTable.getVisibleColumns().length,
+						String[].class)));
 		Assert.assertTrue(Arrays.equals(ProgramSummaryView.ACTIVITIES_COLUMNS,
 				Arrays.copyOf(programActivities.getVisibleColumns(), programActivities.getVisibleColumns().length, String[].class)));
 		Assert.assertTrue(Arrays.equals(ProgramSummaryView.ALL_STUDIES_COLUMNS,

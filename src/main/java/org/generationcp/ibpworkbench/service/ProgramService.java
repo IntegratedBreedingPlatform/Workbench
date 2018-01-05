@@ -1,12 +1,4 @@
-
 package org.generationcp.ibpworkbench.service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 
 import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.util.ContextUtil;
@@ -27,6 +19,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.WebUtils;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -60,7 +58,7 @@ public class ProgramService {
 	 * Create new project in workbench and add specified users as project members. Also creates copy of workbench person and user to currect
 	 * crop DB, if not yet existing. Finally, create a new folder under <install directory>/workspace/<program name>
 	 *
-	 * @param program : program to save
+	 * @param program      : program to save
 	 * @param programUsers : users to add as members of new program
 	 */
 	public void createNewProgram(final Project program, final Set<User> programUsers) {
@@ -73,8 +71,9 @@ public class ProgramService {
 		// After saving, we create folder for program under <install directory>/workspace
 		this.toolUtil.createWorkspaceDirectoriesForProject(program);
 
-		ProgramService.LOG.info("Program created. ID:" + program.getProjectId() + " Name:" + program.getProjectName() + " Start date:"
-				+ program.getStartDate());
+		ProgramService.LOG
+				.info("Program created. ID:" + program.getProjectId() + " Name:" + program.getProjectName() + " Start date:" + program
+						.getStartDate());
 	}
 
 	/**
@@ -82,7 +81,7 @@ public class ProgramService {
 	 * workbench_project_user_role, workbench_project_user_info, workbench_ibdb_user_map and in crop.persons (if applicable)
 	 *
 	 * @param program : program to add members to
-	 * @param users : users to add as members of given program
+	 * @param users   : users to add as members of given program
 	 */
 	public void saveProgramMembers(final Project program, final Set<User> users) {
 		// Add default "ADMIN" user to selected users of program to give access to new program

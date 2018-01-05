@@ -1,21 +1,27 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * <p/>
  * Generation Challenge Programme (GCP)
- *
- *
+ * <p/>
+ * <p/>
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.ui.project.create;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
-import java.util.regex.Pattern;
-
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Validator.InvalidValueException;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.validator.AbstractValidator;
+import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.fields.BmsDateField;
@@ -35,18 +41,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Validator.InvalidValueException;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.validator.AbstractValidator;
-import com.vaadin.data.validator.StringLengthValidator;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
+import java.util.Date;
+import java.util.List;
+import java.util.Properties;
+import java.util.regex.Pattern;
 
 /**
  * The first tab (Basic Details) in Create Project Accordion Component.
@@ -129,9 +127,10 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		this.projectNameField.setImmediate(true);
 		this.projectNameField.setRequired(true);
 		this.projectNameField.setRequiredError(this.messageSource.getMessage("PROGRAM_NAME_REQUIRED_ERROR"));
-		this.projectNameField.addValidator(new StringLengthValidator(this.messageSource.getMessage("PROGRAM_NAME_LENGTH_ERROR"), 3, 65, false));
-		this.projectNameField.addValidator(new RegexValidator(this.messageSource.getMessage("PROGRAM_NAME_INVALID_ERROR"),
-				projectNameInvalidCharPattern, true));
+		this.projectNameField
+				.addValidator(new StringLengthValidator(this.messageSource.getMessage("PROGRAM_NAME_LENGTH_ERROR"), 3, 65, false));
+		this.projectNameField.addValidator(
+				new RegexValidator(this.messageSource.getMessage("PROGRAM_NAME_INVALID_ERROR"), projectNameInvalidCharPattern, true));
 		this.projectNameField.setStyleName("hide-caption");
 		this.projectNameField.setWidth("250px");
 		this.projectNameField.setDebugId("vaadin_projectname_txt");
@@ -141,9 +140,10 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		this.otherCropNameField.setImmediate(true);
 		this.otherCropNameField.setRequired(false);
 		this.otherCropNameField.setRequiredError(this.messageSource.getMessage("CROP_NAME_REQUIRED_ERROR"));
-		this.otherCropNameField.addValidator(new StringLengthValidator(this.messageSource.getMessage("CROP_NAME_LENGTH_ERROR"), 3, 70, false));
-		this.otherCropNameField.addValidator(new RegexValidator(this.messageSource.getMessage("CROP_NAME_INVALID_ERROR"),
-				cropNameInvalidCharPattern, true));
+		this.otherCropNameField
+				.addValidator(new StringLengthValidator(this.messageSource.getMessage("CROP_NAME_LENGTH_ERROR"), 3, 70, false));
+		this.otherCropNameField.addValidator(
+				new RegexValidator(this.messageSource.getMessage("CROP_NAME_INVALID_ERROR"), cropNameInvalidCharPattern, true));
 		this.otherCropNameField.addValidator(new ValueRangeValidator(this.messageSource.getMessage("CROP_NAME_RESERVED_ERROR")));
 		this.otherCropNameField.setStyleName("hide-caption");
 		this.otherCropNameField.setVisible(false);
@@ -285,10 +285,10 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 					final String currentCropVersion = ProjectBasicDetailsComponent.this.getCropTypeBasedOnInput().getVersion();
 					if (!SchemaVersionUtil.checkIfVersionIsSupported(currentCropVersion, minimumCropVersion)) {
 						MessageNotifier.showWarning(ProjectBasicDetailsComponent.this.getWindow(), "",
-								ProjectBasicDetailsComponent.this.messageSource.getMessage(
-										Message.MINIMUM_CROP_VERSION_WARNING,
-										currentCropVersion != null ? currentCropVersion : ProjectBasicDetailsComponent.this.messageSource
-												.getMessage(Message.NOT_AVAILABLE)));
+								ProjectBasicDetailsComponent.this.messageSource.getMessage(Message.MINIMUM_CROP_VERSION_WARNING,
+										currentCropVersion != null ?
+												currentCropVersion :
+												ProjectBasicDetailsComponent.this.messageSource.getMessage(Message.NOT_AVAILABLE)));
 					}
 				}
 
@@ -460,8 +460,8 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 
 			for (final CropType.CropEnum crop : CropType.CropEnum.values()) {
 				if (crop.toString().equalsIgnoreCase(trimmedValue)) {
-					this.setErrorMessage(ProjectBasicDetailsComponent.this.messageSource.getMessage("SPECIFIC_CROP_NAME_RESERVED_ERROR",
-							trimmedValue));
+					this.setErrorMessage(
+							ProjectBasicDetailsComponent.this.messageSource.getMessage("SPECIFIC_CROP_NAME_RESERVED_ERROR", trimmedValue));
 					return false;
 				}
 			}

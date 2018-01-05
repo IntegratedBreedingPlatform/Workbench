@@ -1,18 +1,20 @@
 /*******************************************************************************
  * Copyright (c) 2013, All Rights Reserved.
- *
+ * <p/>
  * Generation Challenge Programme (GCP)
- *
- *
+ * <p/>
+ * <p/>
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.ui.dashboard.listener;
 
-import java.util.Date;
-
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Window;
 import org.generationcp.commons.constant.ToolEnum;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.spring.util.ContextUtil;
@@ -36,13 +38,8 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Window;
-
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 
 @Configurable
 public class LaunchProgramAction implements ItemClickListener, ClickListener {
@@ -88,16 +85,17 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 				protected void doInTransactionWithoutResult(final TransactionStatus status) {
 
 					// Sets selected program/project to context
-					org.generationcp.commons.util.ContextUtil.setContextInfo(request, contextUtil.getCurrentWorkbenchUserId(), project.getProjectId(), null);
+					org.generationcp.commons.util.ContextUtil
+							.setContextInfo(request, contextUtil.getCurrentWorkbenchUserId(), project.getProjectId(), null);
 
 					// Warn if the selected program's crop is outdated
 					final String minimumCropVersion = SchemaVersionUtil.getMinimumCropVersion();
 					final String currentCropVersion = project.getCropType().getVersion();
 					if (!SchemaVersionUtil.checkIfVersionIsSupported(currentCropVersion, minimumCropVersion)) {
-						MessageNotifier.showWarning(window, "",
-								LaunchProgramAction.this.messageSource.getMessage(Message.MINIMUM_CROP_VERSION_WARNING,
-										currentCropVersion != null ? currentCropVersion
-												: LaunchProgramAction.this.messageSource.getMessage(Message.NOT_AVAILABLE)));
+						MessageNotifier.showWarning(window, "", LaunchProgramAction.this.messageSource
+								.getMessage(Message.MINIMUM_CROP_VERSION_WARNING, currentCropVersion != null ?
+										currentCropVersion :
+										LaunchProgramAction.this.messageSource.getMessage(Message.NOT_AVAILABLE)));
 					}
 
 					LaunchProgramAction.this.updateProjectLastOpenedDate(project);
@@ -135,8 +133,8 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 	void updateProjectLastOpenedDate(final Project project) {
 
 		final ProjectUserInfoDAO projectUserInfoDao = this.workbenchDataManager.getProjectUserInfoDao();
-		final ProjectUserInfo projectUserInfo = projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId(),
-				contextUtil.getCurrentWorkbenchUserId());
+		final ProjectUserInfo projectUserInfo =
+				projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId(), contextUtil.getCurrentWorkbenchUserId());
 		if (projectUserInfo != null) {
 			projectUserInfo.setLastOpenDate(new Date());
 			this.workbenchDataManager.saveOrUpdateProjectUserInfo(projectUserInfo);
@@ -173,7 +171,7 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 		this.launchListManagerToolAction = launchWorkbenchToolAction;
 	}
 
-	public void setContextUtil(ContextUtil contextUtil) {
+	public void setContextUtil(final ContextUtil contextUtil) {
 		this.contextUtil = contextUtil;
 	}
 

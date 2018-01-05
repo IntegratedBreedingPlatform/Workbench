@@ -1,12 +1,4 @@
-
 package org.generationcp.ibpworkbench.ui.programmethods;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.generationcp.commons.spring.util.ContextUtil;
@@ -25,13 +17,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created with IntelliJ IDEA. User: cyrus Date: 11/11/13 Time: 9:48 AM To change this template use File | Settings | File Templates.
  */
 
 @Configurable
 public class ProgramMethodsPresenter {
-
 
 	private Project project;
 	private CropType cropType;
@@ -51,12 +48,12 @@ public class ProgramMethodsPresenter {
 	@Autowired
 	private ContextUtil contextUtil;
 
-	public ProgramMethodsPresenter(ProgramMethodsView view, Project project) {
+	public ProgramMethodsPresenter(final ProgramMethodsView view, final Project project) {
 		this.view = view;
 		this.project = project;
 	}
 
-	public ProgramMethodsPresenter(ProgramMethodsView view, CropType cropType) {
+	public ProgramMethodsPresenter(final ProgramMethodsView view, final CropType cropType) {
 		this.view = view;
 		this.cropType = cropType;
 	}
@@ -66,49 +63,51 @@ public class ProgramMethodsPresenter {
 			return new ArrayList<>();
 		}
 
-		List<Method> result = new ArrayList<>();
+		final List<Method> result = new ArrayList<>();
 		try {
-			List<ProgramFavorite> favorites = this.gerplasmDataManager.getProgramFavorites(FavoriteType.METHOD, this.project.getUniqueID());
+			final List<ProgramFavorite> favorites =
+					this.gerplasmDataManager.getProgramFavorites(FavoriteType.METHOD, this.project.getUniqueID());
 
-			for (ProgramFavorite favorite : favorites) {
-				Method m = this.gerplasmDataManager.getMethodByID(favorite.getEntityId());
+			for (final ProgramFavorite favorite : favorites) {
+				final Method m = this.gerplasmDataManager.getMethodByID(favorite.getEntityId());
 
 				if (m != null) {
 					result.add(m);
 				}
 			}
 
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			ProgramMethodsPresenter.LOG.error(e.getMessage(), e);
 		}
 
 		return this.convertFrom(result);
 	}
 
-	public Collection<MethodView> getFilteredResults(String mgroup, String mtype, String mname) {
-		Map<Integer, MethodView> resultsMap = new LinkedHashMap<Integer, MethodView>();
+	public Collection<MethodView> getFilteredResults(final String mgroup, final String mtype, final String mname) {
+		final Map<Integer, MethodView> resultsMap = new LinkedHashMap<Integer, MethodView>();
 
 		try {
-			List<MethodView> result = this.convertFrom(this.gerplasmDataManager.getMethodsByGroupAndTypeAndName(mgroup, mtype, mname));
+			final List<MethodView> result =
+					this.convertFrom(this.gerplasmDataManager.getMethodsByGroupAndTypeAndName(mgroup, mtype, mname));
 
-			for (MethodView method : result) {
+			for (final MethodView method : result) {
 				if (method.getUniqueID() == null || method.getUniqueID().equals(this.project.getUniqueID())) {
 					resultsMap.put(method.getMid(), method);
 				}
 			}
 
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			ProgramMethodsPresenter.LOG.error(e.getMessage(), e);
 		}
 
 		return resultsMap.values();
 	}
 
-	public MethodView editBreedingMethod(MethodView method) {
+	public MethodView editBreedingMethod(final MethodView method) {
 		MethodView result = null;
 		try {
 			result = this.convertMethod(this.gerplasmDataManager.editMethod(method.copy()));
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			ProgramMethodsPresenter.LOG.error(e.getMessage(), e);
 		}
 
@@ -122,8 +121,8 @@ public class ProgramMethodsPresenter {
 		return this.convertMethod(result);
 	}
 
-	public boolean isExistingMethod(String methodName) {
-		Method existingMethod;
+	public boolean isExistingMethod(final String methodName) {
+		final Method existingMethod;
 		try {
 			existingMethod = this.gerplasmDataManager.getMethodByName(methodName, this.project.getUniqueID());
 
@@ -131,17 +130,17 @@ public class ProgramMethodsPresenter {
 				return true;
 			}
 
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			ProgramMethodsPresenter.LOG.error(e.getMessage(), e);
 		}
 
 		return false;
 	}
 
-	public MethodView saveNewBreedingMethod(MethodView method) {
+	public MethodView saveNewBreedingMethod(final MethodView method) {
 
 		if (!this.isExistingMethod(method.getMname())) {
-			MethodView newBreedingMethod = new MethodView();
+			final MethodView newBreedingMethod = new MethodView();
 
 			newBreedingMethod.setMname(method.getMname());
 			newBreedingMethod.setMdesc(method.getMdesc());
@@ -175,30 +174,32 @@ public class ProgramMethodsPresenter {
 		return method;
 	}
 
-	public boolean saveFavoriteBreedingMethod(Collection<MethodView> selectedMethodIds) {
-		return ProgramMethodsPresenter.saveFavoriteBreedingMethod(selectedMethodIds, this.project, this.contextUtil,
-				this.workbenchDataManager, this.gerplasmDataManager);
+	public boolean saveFavoriteBreedingMethod(final Collection<MethodView> selectedMethodIds) {
+		return ProgramMethodsPresenter
+				.saveFavoriteBreedingMethod(selectedMethodIds, this.project, this.contextUtil, this.workbenchDataManager,
+						this.gerplasmDataManager);
 	}
 
-	public static boolean saveFavoriteBreedingMethod(Collection<MethodView> selectedMethodIds, Project project, ContextUtil contextUtil,
-			WorkbenchDataManager workbenchDataManager, GermplasmDataManager gdm) {
+	public static boolean saveFavoriteBreedingMethod(final Collection<MethodView> selectedMethodIds, final Project project,
+			final ContextUtil contextUtil, final WorkbenchDataManager workbenchDataManager, final GermplasmDataManager gdm) {
 		List<ProgramFavorite> favorites = null;
 		try {
 			favorites = gdm.getProgramFavorites(ProgramFavorite.FavoriteType.METHOD, project.getUniqueID());
 
 			// TODO: THIS IS A VERY UGLY CODE THAT WAS INHERITED IN THE OLD ProjectBreedingMethodsPanel Code, Replace the logic if possible
 
-			for (Method m : selectedMethodIds) {
+			for (final Method m : selectedMethodIds) {
 				boolean mExists = false;
 
-				for (ProgramFavorite favorite : favorites) {
+				for (final ProgramFavorite favorite : favorites) {
 					if (favorite.getEntityId().equals(m.getMid())) {
 						mExists = true;
 					}
 				}
 
 				if (!mExists) {
-					contextUtil.logProgramActivity("Project Methods", String.format("Added a Breeding Method (%s) to the project", m.getMname()));
+					contextUtil.logProgramActivity("Project Methods",
+							String.format("Added a Breeding Method (%s) to the project", m.getMname()));
 				}
 			}
 			// code block just adds a log activity, replace by just tracking newly added methods id so no need to fetch all methods from DB
@@ -206,16 +207,16 @@ public class ProgramMethodsPresenter {
 			gdm.deleteProgramFavorites(favorites);
 
 			// Repopulate the project methods table
-			List<ProgramFavorite> list = new ArrayList<ProgramFavorite>();
+			final List<ProgramFavorite> list = new ArrayList<ProgramFavorite>();
 			int mID = 0;
 
-			for (Method m : selectedMethodIds) {
-				ProgramFavorite favorite = new ProgramFavorite();
+			for (final Method m : selectedMethodIds) {
+				final ProgramFavorite favorite = new ProgramFavorite();
 				if (m.getMid() < 1) {
-					Method m2 = gdm.getMethodByID(m.getMid());
+					final Method m2 = gdm.getMethodByID(m.getMid());
 
 					if (m2 == null) {
-						Method newMethod =
+						final Method newMethod =
 								new Method(m.getMid(), m.getMtype(), m.getMgrp(), m.getMcode(), m.getMname(), m.getMdesc(), 0, 0, 0, 0, 0,
 										0, 0, m.getMdate(), project.getUniqueID());
 						mID = gdm.addMethod(newMethod);
@@ -234,7 +235,7 @@ public class ProgramMethodsPresenter {
 
 			gdm.saveProgramFavorites(list);
 
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			ProgramMethodsPresenter.LOG.error(e.getMessage(), e);
 			return false;
 		}
@@ -242,62 +243,62 @@ public class ProgramMethodsPresenter {
 		return true;
 	}
 
-	public MethodView convertMethod(Method method) {
-		PropertyUtilsBean pub = new PropertyUtilsBean();
-		MethodView methodView = new MethodView();
+	public MethodView convertMethod(final Method method) {
+		final PropertyUtilsBean pub = new PropertyUtilsBean();
+		final MethodView methodView = new MethodView();
 		try {
 			pub.copyProperties(methodView, method);
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			ProgramMethodsPresenter.LOG.error(e.getMessage(), e);
 		}
 
 		return methodView;
 	}
 
-	public List<MethodView> convertFrom(List<Method> list) {
-		List<MethodView> result = new ArrayList<MethodView>();
-		for (Method method : list) {
-			MethodView methodView = new MethodView();
+	public List<MethodView> convertFrom(final List<Method> list) {
+		final List<MethodView> result = new ArrayList<MethodView>();
+		for (final Method method : list) {
+			final MethodView methodView = new MethodView();
 
-			PropertyUtilsBean pub = new PropertyUtilsBean();
+			final PropertyUtilsBean pub = new PropertyUtilsBean();
 			try {
 				pub.copyProperties(methodView, method);
 
 				result.add(methodView);
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				ProgramMethodsPresenter.LOG.error(e.getMessage(), e);
 			}
 		}
 		return result;
 	}
 
-	public Collection<Method> convertTo(Collection<MethodView> list) {
-		List<Method> result = new ArrayList<Method>();
+	public Collection<Method> convertTo(final Collection<MethodView> list) {
+		final List<Method> result = new ArrayList<Method>();
 
-		for (MethodView methodView : list) {
+		for (final MethodView methodView : list) {
 			result.add(methodView.copy());
 		}
 		return result;
 	}
 
 	public Map<Integer, String> getMethodClasses() {
-		Map<Integer, String> methodClasses = new LinkedHashMap<Integer, String>();
+		final Map<Integer, String> methodClasses = new LinkedHashMap<Integer, String>();
 		try {
-			List<Term> terms = this.gerplasmDataManager.getMethodClasses();
+			final List<Term> terms = this.gerplasmDataManager.getMethodClasses();
 			if (terms != null) {
-				for (Term term : terms) {
+				for (final Term term : terms) {
 					methodClasses.put(term.getId(), term.getName());
 				}
 			}
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			ProgramMethodsPresenter.LOG.error(e.getMessage(), e);
 		}
 
 		return methodClasses;
 	}
 
-	public void setGerplasmDataManager(GermplasmDataManager gerplasmDataManager) {
+	public void setGerplasmDataManager(final GermplasmDataManager gerplasmDataManager) {
 		this.gerplasmDataManager = gerplasmDataManager;
 	}
 }

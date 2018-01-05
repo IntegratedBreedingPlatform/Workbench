@@ -1,11 +1,5 @@
 package org.generationcp.ibpworkbench.ui.sidebar;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.generationcp.commons.security.AuthorizationUtil;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -28,6 +22,12 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Configurable
 public class WorkbenchSidebarPresenter implements InitializingBean {
@@ -84,30 +84,29 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 		// get all categories first
 		final Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> sidebarLinks = new LinkedHashMap<>();
 
+		final List<WorkbenchSidebarCategoryLink> categoryLinks = new ArrayList<>();
 
-			final List<WorkbenchSidebarCategoryLink> categoryLinks = new ArrayList<>();
+		final List<WorkbenchSidebarCategory> workbenchSidebarCategoryList = this.manager.getAllWorkbenchSidebarCategory();
 
-			final List<WorkbenchSidebarCategory> workbenchSidebarCategoryList = this.manager.getAllWorkbenchSidebarCategory();
-
-			for (final WorkbenchSidebarCategory category : workbenchSidebarCategoryList) {
-				if (ADMIN_CATEGORY.equals(category.getSidebarCategoryName())) {
-					this.addAdminCategoryLinks(categoryLinks, category);
-				} else {
-					categoryLinks.addAll(this.manager.getAllWorkbenchSidebarLinksByCategoryId(category));
-				}
+		for (final WorkbenchSidebarCategory category : workbenchSidebarCategoryList) {
+			if (ADMIN_CATEGORY.equals(category.getSidebarCategoryName())) {
+				this.addAdminCategoryLinks(categoryLinks, category);
+			} else {
+				categoryLinks.addAll(this.manager.getAllWorkbenchSidebarLinksByCategoryId(category));
 			}
+		}
 
-			for (final WorkbenchSidebarCategoryLink link : categoryLinks) {
-				if (isCategoryLinkPermissibleForUserRole(link)) {
-					if (sidebarLinks.get(link.getWorkbenchSidebarCategory()) == null) {
-						sidebarLinks.put(link.getWorkbenchSidebarCategory(), new ArrayList<WorkbenchSidebarCategoryLink>());
-					}
-					if (link.getTool() == null) {
-						link.setTool(new Tool(link.getSidebarLinkName(), link.getSidebarLinkTitle(), ""));
-					}
-					sidebarLinks.get(link.getWorkbenchSidebarCategory()).add(link);
+		for (final WorkbenchSidebarCategoryLink link : categoryLinks) {
+			if (isCategoryLinkPermissibleForUserRole(link)) {
+				if (sidebarLinks.get(link.getWorkbenchSidebarCategory()) == null) {
+					sidebarLinks.put(link.getWorkbenchSidebarCategory(), new ArrayList<WorkbenchSidebarCategoryLink>());
 				}
+				if (link.getTool() == null) {
+					link.setTool(new Tool(link.getSidebarLinkName(), link.getSidebarLinkTitle(), ""));
+				}
+				sidebarLinks.get(link.getWorkbenchSidebarCategory()).add(link);
 			}
+		}
 
 		return sidebarLinks;
 	}
@@ -116,7 +115,7 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 		if (ToolName.GERMPLASM_IMPORT.name().equalsIgnoreCase(link.getSidebarLinkName())) {
 			try {
 				AuthorizationUtil.preAuthorize(importGermplasmPermissibleRoles);
-			} catch (AccessDeniedException ex) {
+			} catch (final AccessDeniedException ex) {
 				LOG.debug(ex.getMessage(), ex);
 				return false;
 			}
@@ -132,9 +131,9 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 			categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, RECOVERY_LINK,
 					this.messageSource.getMessage("LINK_BACKUP_RESTORE")));
 		}
-		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, ABOUT_BMS_LINK, this.messageSource.getMessage("LINK_ABOUT_BMS")));
+		categoryLinks
+				.add(new WorkbenchSidebarCategoryLink(null, category, ABOUT_BMS_LINK, this.messageSource.getMessage("LINK_ABOUT_BMS")));
 	}
-
 
 	public void updateProjectLastOpenedDate() {
 
@@ -146,8 +145,8 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 				final Project project = contextUtil.getProjectInContext();
 
 				final ProjectUserInfoDAO projectUserInfoDao = WorkbenchSidebarPresenter.this.manager.getProjectUserInfoDao();
-				final ProjectUserInfo projectUserInfo = projectUserInfoDao
-						.getByProjectIdAndUserId(project.getProjectId(), contextUtil.getCurrentWorkbenchUserId());
+				final ProjectUserInfo projectUserInfo =
+						projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId(), contextUtil.getCurrentWorkbenchUserId());
 
 				if (projectUserInfo != null) {
 					projectUserInfo.setLastOpenDate(new Date());
@@ -170,7 +169,7 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 		this.manager = manager;
 	}
 
-	public void setImportGermplasmPermissibleRoles(String importGermplasmPermissibleRoles) {
+	public void setImportGermplasmPermissibleRoles(final String importGermplasmPermissibleRoles) {
 		this.importGermplasmPermissibleRoles = importGermplasmPermissibleRoles;
 	}
 }
