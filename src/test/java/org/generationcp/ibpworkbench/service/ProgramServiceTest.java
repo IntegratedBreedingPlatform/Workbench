@@ -1,5 +1,14 @@
 package org.generationcp.ibpworkbench.service;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.generationcp.commons.context.ContextConstants;
+import org.generationcp.commons.context.ContextInfo;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
@@ -15,6 +24,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -22,13 +32,11 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.web.context.request.RequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.util.HashSet;
-import java.util.Set;
-
 @RunWith(MockitoJUnitRunner.class)
 public class ProgramServiceTest {
+
+	private static final int USER_ID = 123;
+	private static final String SAMPLE_AUTH_TOKEN_VALUE = "RANDOM_TOKEN";
 
 	@Mock
 	private HttpServletRequest request;
@@ -53,7 +61,10 @@ public class ProgramServiceTest {
 
 	@Mock
 	private ProjectUserInfoDAO projectUserInfoDAO;
-
+	
+	@Mock
+	private Cookie cookie;
+	
 	@InjectMocks
 	private final ProgramService programService = new ProgramService();
 
@@ -67,11 +78,15 @@ public class ProgramServiceTest {
 	@Before
 	public void setup() throws Exception {
 
-		Mockito.when(request.getSession()).thenReturn(httpSession);
+		Mockito.when(this.request.getSession()).thenReturn(this.httpSession);
+		Mockito.when(this.cookie.getName()).thenReturn(ContextConstants.PARAM_AUTH_TOKEN);;
+		Mockito.when(this.cookie.getValue()).thenReturn(SAMPLE_AUTH_TOKEN_VALUE);
+		Mockito.when(this.request.getCookies()).thenReturn(new Cookie[]{this.cookie});
 
 		this.initializeTestPersonsAndUsers();
 
 		Mockito.when(this.workbenchDataManager.getProjectUserInfoDao()).thenReturn(this.projectUserInfoDAO);
+		Mockito.when(this.contextUtil.getCurrentWorkbenchUserId()).thenReturn(USER_ID);
 	}
 
 	private void initializeTestPersonsAndUsers() {
@@ -112,12 +127,21 @@ public class ProgramServiceTest {
 
 		// Verify that the key database operations for program creation are invoked.
 		Mockito.verify(this.workbenchDataManager).addProject(project);
-
+		Assert.assertEquals(USER_ID, project.getUserId());
+		Assert.assertNull(project.getLastOpenDate());
+		
 		this.verifyMockInteractionsForSavingProgramMembers();
 
 		// Verify that utility to create workspace directory was called
 		Mockito.verify(this.toolUtil).createWorkspaceDirectoriesForProject(project);
-
+		
+		// Verify session attribute was set
+		final ArgumentCaptor<Object> contextInfoCaptor = ArgumentCaptor.forClass(Object.class);
+		Mockito.verify(this.httpSession).setAttribute(Matchers.eq(ContextConstants.SESSION_ATTR_CONTEXT_INFO), contextInfoCaptor.capture());
+		final ContextInfo contextInfo = (ContextInfo) contextInfoCaptor.getValue();
+		Assert.assertEquals(USER_ID, contextInfo.getLoggedInUserId().intValue());
+		Assert.assertEquals(project.getProjectId(), contextInfo.getSelectedProjectId());
+		Assert.assertEquals(SAMPLE_AUTH_TOKEN_VALUE, contextInfo.getAuthToken());
 	}
 
 	@Test

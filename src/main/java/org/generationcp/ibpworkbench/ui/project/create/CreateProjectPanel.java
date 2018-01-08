@@ -124,12 +124,11 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 						@Override
 						protected void doInTransactionWithoutResult(final TransactionStatus status) {
 							final Project newlyCreatedProgram = CreateProjectPanel.this.presenter.doAddNewProgram();
+							CreateProjectPanel.this.presenter.enableProgramMethodsAndLocationsTab();
 
 							MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
 									CreateProjectPanel.this.messageSource.getMessage(Message.SUCCESS),
 									newlyCreatedProgram.getProjectName() + " program has been successfully created.");
-
-							CreateProjectPanel.this.presenter.enableProgramMethodsAndLocationsTab();
 						}
 					});
 
@@ -193,5 +192,27 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 
 	public ProjectBasicDetailsComponent getProjectBasicDetailsComponent() {
 		return projectBasicDetailsComponent;
+	}
+	
+	public void setProjectBasicDetailsComponent(ProjectBasicDetailsComponent projectBasicDetailsComponent) {
+		this.projectBasicDetailsComponent = projectBasicDetailsComponent;
+	}
+	
+	public void setCancelButton(Button cancelButton) {
+		this.cancelButton = cancelButton;
+	}
+	
+	public void setSaveProjectButton(Button saveProjectButton) {
+		this.saveProjectButton = saveProjectButton;
+	}
+
+	
+	public void setPresenter(AddProgramPresenter presenter) {
+		this.presenter = presenter;
+	}
+
+	
+	public void setTransactionManager(PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
 	}
 }

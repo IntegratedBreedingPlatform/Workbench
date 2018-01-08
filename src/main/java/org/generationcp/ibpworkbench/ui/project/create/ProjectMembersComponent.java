@@ -64,8 +64,8 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
 	private TwinTableSelect<User> select;
 
-	private Button btnCancel;
-	private Button btnSave;
+	private Button cancelButton;
+	private Button saveButton;
 	private Component buttonArea;
 
 	@Autowired
@@ -236,7 +236,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 	}
 
 	protected void initializeActions() {
-		this.btnSave.addListener(new ClickListener() {
+		this.saveButton.addListener(new ClickListener() {
 
 			private static final long serialVersionUID = 1L;
 
@@ -251,11 +251,10 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 						try {
 							final Project newlyCreatedProgram = ProjectMembersComponent.this.presenter
 									.doAddNewProgram();
+							ProjectMembersComponent.this.presenter.enableProgramMethodsAndLocationsTab();
 							MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
 									ProjectMembersComponent.this.messageSource.getMessage(Message.SUCCESS),
 									newlyCreatedProgram.getProjectName() + " program has been successfully created.");
-
-							ProjectMembersComponent.this.presenter.enableProgramMethodsAndLocationsTab();
 
 						} catch (final Exception e) {
 
@@ -277,7 +276,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 			}
 		});
 
-		this.btnCancel.addListener(new ClickListener() {
+		this.cancelButton.addListener(new ClickListener() {
 
 			private static final long serialVersionUID = 1L;
 
@@ -295,14 +294,14 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 		buttonLayout.setSpacing(true);
 		buttonLayout.setMargin(true, false, false, false);
 
-		this.btnCancel = new Button("Reset");
-		this.btnCancel.setDebugId("btnCancel");
-		this.btnSave = new Button("Save");
-		this.btnSave.setDebugId("btnSave");
-		this.btnSave.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+		this.cancelButton = new Button("Reset");
+		this.cancelButton.setDebugId("btnCancel");
+		this.saveButton = new Button("Save");
+		this.saveButton.setDebugId("btnSave");
+		this.saveButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
-		buttonLayout.addComponent(this.btnCancel);
-		buttonLayout.addComponent(this.btnSave);
+		buttonLayout.addComponent(this.cancelButton);
+		buttonLayout.addComponent(this.saveButton);
 
 		return buttonLayout;
 	}
@@ -368,5 +367,20 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
 	public void setContextUtil(final ContextUtil contextUtil) {
 		this.contextUtil = contextUtil;
+	}
+
+	
+	public void setCancelButton(Button cancelButton) {
+		this.cancelButton = cancelButton;
+	}
+
+	
+	public void setSaveButton(Button saveButton) {
+		this.saveButton = saveButton;
+	}
+
+	
+	public void setTransactionManager(PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
 	}
 }

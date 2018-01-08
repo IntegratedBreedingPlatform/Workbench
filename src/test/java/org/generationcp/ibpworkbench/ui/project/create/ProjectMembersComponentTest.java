@@ -18,8 +18,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import com.vaadin.data.Container;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -42,14 +44,26 @@ public class ProjectMembersComponentTest {
 
 	@Mock
 	private ContextUtil contextUtil;
+	
+	@Mock
+	private AddProgramPresenter presenter;
+	
+	@Mock
+	private PlatformTransactionManager transactionManager;
 
 	@InjectMocks
 	private ProjectMembersComponent projectMembersComponent;
+	
+	private Button saveButton = new Button();
+	private Button cancelButton = new Button();
 
 	@Before
 	public void setUp() {
 		this.projectMembersComponent.setWorkbenchDataManager(this.workbenchDataManager);
+		this.projectMembersComponent.setTransactionManager(this.transactionManager);
 		this.projectMembersComponent.setContextUtil(this.contextUtil);
+		this.projectMembersComponent.setCancelButton(this.cancelButton);
+		this.projectMembersComponent.setSaveButton(this.saveButton);
 
 		final List<User> programMembers = this.createProgramMembersTestData();
 		Mockito.doReturn(programMembers).when(this.workbenchDataManager).getAllActiveUsersSorted();
@@ -138,5 +152,26 @@ public class ProjectMembersComponentTest {
 				ProgramService.ADMIN_USERNAME, ProjectMembersComponentTest.ADMIN_PERSON_ID,
 				ProjectMembersComponentTest.ADMIN_NAME, ProjectMembersComponentTest.ADMIN_NAME));
 		return programMembers;
+	}
+	
+	@Test
+	public void testSaveButtonClick() {
+		this.projectMembersComponent.initializeActions();
+		try {
+			this.saveButton.click();
+		} catch (final Exception e) {
+			// Expecting NPE because click event has no component with window. 
+			// Window is needed for notifying successful program saving
+		}
+		Mockito.verify(this.presenter).doAddNewProgram();
+		Mockito.verify(this.presenter).enableProgramMethodsAndLocationsTab();
+	}
+	
+	@Test
+	public void testCancelButtonClick() {
+		this.projectMembersComponent.initializeActions();
+		this.cancelButton .click();
+		Mockito.verify(this.presenter).resetProgramMembers();
+		Mockito.verify(this.presenter).disableProgramMethodsAndLocationsTab();
 	}
 }

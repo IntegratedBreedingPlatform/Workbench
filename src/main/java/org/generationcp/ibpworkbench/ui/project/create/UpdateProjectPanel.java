@@ -65,7 +65,7 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 	 * If a user with unauthorize access is trying to access this method an ${@link AccessDeniedException} will be thrown.
 	 */
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	private void saveAndDeleteProjectActionUpdate() {
+	void saveAndDeleteProjectActionUpdate() {
 		super.saveProjectButton.addListener(new UpdateProjectAction(this));
 		super.saveProjectButton.setCaption("Save");
 		super.saveProjectButton.setVisible(true);
@@ -106,8 +106,7 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 		this.projectBasicDetailsComponent = new ProjectBasicDetailsComponent(this, true);
 		this.projectBasicDetailsComponent.setDebugId("projectBasicDetailsComponent");
 
-		this.projectBasicDetailsComponent.updateProjectDetailsFormField(contextUtil.getProjectInContext());
-		this.projectBasicDetailsComponent.disableForm();
+		this.initializeBasicDetailsComponent();
 		this.buttonArea = this.layoutButtonArea();
 
 		try {
@@ -119,6 +118,11 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 	 		 */
 			LOG.debug(ex.getMessage(), ex);
 		}
+	}
+
+	void initializeBasicDetailsComponent() {
+		this.projectBasicDetailsComponent.updateProjectDetailsFormField(contextUtil.getProjectInContext());
+		this.projectBasicDetailsComponent.disableForm();
 	}
 	/**
 	 * Only the Delete button need to be restricted
@@ -174,6 +178,11 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 		if(this.deleteProgramButton!=null){
 			this.deleteProgramButton.setVisible(false);
 		}
+	}
+
+	
+	public void setDeleteProgramButton(Button deleteProgramButton) {
+		this.deleteProgramButton = deleteProgramButton;
 	}
 
 }
