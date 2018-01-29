@@ -18,6 +18,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.net.URL;
+import java.util.Map;
 
 /**
  * Created by cyrus on 1/24/14.
@@ -75,6 +76,11 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 
 			this.showContent(browser);
 		}
+	}
+
+	@Override
+	public void handleParameters(Map<String, String[]> stringMap) {
+		// does nothing
 	}
 
 	@Override
