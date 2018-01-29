@@ -124,11 +124,12 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 						@Override
 						protected void doInTransactionWithoutResult(final TransactionStatus status) {
 							final Project newlyCreatedProgram = CreateProjectPanel.this.presenter.doAddNewProgram();
-							CreateProjectPanel.this.presenter.enableProgramMethodsAndLocationsTab();
 
 							MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
 									CreateProjectPanel.this.messageSource.getMessage(Message.SUCCESS),
 									newlyCreatedProgram.getProjectName() + " program has been successfully created.");
+
+							CreateProjectPanel.this.presenter.enableProgramMethodsAndLocationsTab();
 						}
 					});
 
