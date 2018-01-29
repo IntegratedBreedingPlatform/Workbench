@@ -236,45 +236,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 	}
 
 	protected void initializeActions() {
-		this.saveButton.addListener(new ClickListener() {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void buttonClick(final ClickEvent clickEvent) {
-				final TransactionTemplate transactionTemplate = new TransactionTemplate(
-						ProjectMembersComponent.this.transactionManager);
-				transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-
-					@Override
-					protected void doInTransactionWithoutResult(final TransactionStatus status) {
-						try {
-							final Project newlyCreatedProgram = ProjectMembersComponent.this.presenter
-									.doAddNewProgram();
-							ProjectMembersComponent.this.presenter.enableProgramMethodsAndLocationsTab();
-							MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
-									ProjectMembersComponent.this.messageSource.getMessage(Message.SUCCESS),
-									newlyCreatedProgram.getProjectName() + " program has been successfully created.");
-
-						} catch (final Exception e) {
-
-							if ("basic_details_invalid".equals(e.getMessage())) {
-								return;
-							}
-
-							ProjectMembersComponent.LOG.error(
-									"Oops there might be serious problem on creating the program, investigate it!", e);
-
-							MessageNotifier.showError(clickEvent.getComponent().getWindow(),
-									ProjectMembersComponent.this.messageSource.getMessage(Message.DATABASE_ERROR),
-									ProjectMembersComponent.this.messageSource
-											.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
-
-						}
-					}
-				});
-			}
-		});
+		this.saveButton.addListener(new SaveProjectButtonListener());
 
 		this.cancelButton.addListener(new ClickListener() {
 
@@ -369,18 +331,62 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 		this.contextUtil = contextUtil;
 	}
 
-	
 	public void setCancelButton(Button cancelButton) {
 		this.cancelButton = cancelButton;
 	}
 
-	
 	public void setSaveButton(Button saveButton) {
 		this.saveButton = saveButton;
 	}
 
-	
 	public void setTransactionManager(PlatformTransactionManager transactionManager) {
 		this.transactionManager = transactionManager;
+	}
+
+	public void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+
+	class SaveProjectButtonListener implements Button.ClickListener {
+
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public void buttonClick(final ClickEvent clickEvent) {
+			final TransactionTemplate transactionTemplate = new TransactionTemplate(
+					ProjectMembersComponent.this.transactionManager);
+			transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+
+				@Override
+				protected void doInTransactionWithoutResult(final TransactionStatus status) {
+					try {
+						final Project newlyCreatedProgram = ProjectMembersComponent.this.presenter
+								.doAddNewProgram();
+
+						MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
+								ProjectMembersComponent.this.messageSource.getMessage(Message.SUCCESS),
+								newlyCreatedProgram.getProjectName() + " program has been successfully created.");
+
+						ProjectMembersComponent.this.presenter.enableProgramMethodsAndLocationsTab();
+
+					} catch (final Exception e) {
+
+						if ("basic_details_invalid".equals(e.getMessage())) {
+							return;
+						}
+
+						ProjectMembersComponent.LOG.error(
+								"Oops there might be serious problem on creating the program, investigate it!", e);
+
+						MessageNotifier.showError(clickEvent.getComponent().getWindow(),
+								ProjectMembersComponent.this.messageSource.getMessage(Message.DATABASE_ERROR),
+								ProjectMembersComponent.this.messageSource
+										.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
+
+					}
+				}
+			});
+		}
+
 	}
 }

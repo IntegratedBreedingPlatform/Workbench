@@ -110,44 +110,7 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 
 	protected void initializeActions() {
 
-		this.saveProjectButton.addListener(new Button.ClickListener() {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-
-			public void buttonClick(final Button.ClickEvent clickEvent) {
-				try {
-					final TransactionTemplate transactionTemplate = new TransactionTemplate(CreateProjectPanel.this.transactionManager);
-					transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-
-						@Override
-						protected void doInTransactionWithoutResult(final TransactionStatus status) {
-							final Project newlyCreatedProgram = CreateProjectPanel.this.presenter.doAddNewProgram();
-
-							MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
-									CreateProjectPanel.this.messageSource.getMessage(Message.SUCCESS),
-									newlyCreatedProgram.getProjectName() + " program has been successfully created.");
-
-							CreateProjectPanel.this.presenter.enableProgramMethodsAndLocationsTab();
-						}
-					});
-
-				} catch (final Exception e) {
-
-					if ("basic_details_invalid".equals(e.getMessage())) {
-						return;
-					}
-
-					CreateProjectPanel.LOG.error("Oops there might be serious problem on creating the program, investigate it!", e);
-
-					MessageNotifier.showError(clickEvent.getComponent().getWindow(),
-							CreateProjectPanel.this.messageSource.getMessage(Message.DATABASE_ERROR),
-							CreateProjectPanel.this.messageSource.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
-
-				}
-			}
-		});
+		this.saveProjectButton.addListener(new SaveProjectButtonListener());
 
 		this.cancelButton.addListener(new Button.ClickListener() {
 
@@ -215,5 +178,47 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 	
 	public void setTransactionManager(PlatformTransactionManager transactionManager) {
 		this.transactionManager = transactionManager;
+	}
+
+	public void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+
+
+	class SaveProjectButtonListener implements Button.ClickListener {
+
+		@Override
+		public void buttonClick(final Button.ClickEvent clickEvent) {
+			try {
+				final TransactionTemplate transactionTemplate = new TransactionTemplate(CreateProjectPanel.this.transactionManager);
+				transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+
+					@Override
+					protected void doInTransactionWithoutResult(final TransactionStatus status) {
+						final Project newlyCreatedProgram = CreateProjectPanel.this.presenter.doAddNewProgram();
+
+						MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
+								CreateProjectPanel.this.messageSource.getMessage(Message.SUCCESS),
+								newlyCreatedProgram.getProjectName() + " program has been successfully created.");
+
+						CreateProjectPanel.this.presenter.enableProgramMethodsAndLocationsTab();
+					}
+				});
+
+			} catch (final Exception e) {
+
+				if ("basic_details_invalid".equals(e.getMessage())) {
+					return;
+				}
+
+				CreateProjectPanel.LOG.error("Oops there might be serious problem on creating the program, investigate it!", e);
+
+				MessageNotifier.showError(clickEvent.getComponent().getWindow(),
+						CreateProjectPanel.this.messageSource.getMessage(Message.DATABASE_ERROR),
+						CreateProjectPanel.this.messageSource.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
+
+			}
+		}
+
 	}
 }

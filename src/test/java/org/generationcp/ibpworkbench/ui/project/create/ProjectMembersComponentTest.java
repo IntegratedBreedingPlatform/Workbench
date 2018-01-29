@@ -4,16 +4,22 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Window;
 import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.middleware.data.initializer.PersonTestDataInitializer;
 import org.generationcp.middleware.data.initializer.UserTestDataInitializer;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.Project;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -38,6 +44,14 @@ public class ProjectMembersComponentTest {
 	private static final int ADMIN_USER_ID = 3;
 	private static final int ADMIN_PERSON_ID = 3;
 	private static final String ADMIN_NAME = "USER3";
+	public static final String PROJECT_NAME = "ProjectName";
+	private static final String SUCCESS = "success";
+
+	@Mock
+	private Window window;
+
+	@Mock
+	private Component component;
 
 	@Mock
 	private WorkbenchDataManager workbenchDataManager;
@@ -50,6 +64,9 @@ public class ProjectMembersComponentTest {
 	
 	@Mock
 	private PlatformTransactionManager transactionManager;
+
+	@Mock
+	private SimpleResourceBundleMessageSource messageSource;
 
 	@InjectMocks
 	private ProjectMembersComponent projectMembersComponent;
@@ -64,6 +81,9 @@ public class ProjectMembersComponentTest {
 		this.projectMembersComponent.setContextUtil(this.contextUtil);
 		this.projectMembersComponent.setCancelButton(this.cancelButton);
 		this.projectMembersComponent.setSaveButton(this.saveButton);
+		this.projectMembersComponent.setMessageSource(this.messageSource);
+
+		Mockito.when(messageSource.getMessage(Message.SUCCESS)).thenReturn(SUCCESS);
 
 		final List<User> programMembers = this.createProgramMembersTestData();
 		Mockito.doReturn(programMembers).when(this.workbenchDataManager).getAllActiveUsersSorted();
@@ -153,18 +173,33 @@ public class ProjectMembersComponentTest {
 				ProjectMembersComponentTest.ADMIN_NAME, ProjectMembersComponentTest.ADMIN_NAME));
 		return programMembers;
 	}
-	
+
 	@Test
-	public void testSaveButtonClick() {
-		this.projectMembersComponent.initializeActions();
-		try {
-			this.saveButton.click();
-		} catch (final Exception e) {
-			// Expecting NPE because click event has no component with window. 
-			// Window is needed for notifying successful program saving
-		}
+	public void testSaveProjectButtonListener() {
+
+		final Project project = new Project();
+		project.setProjectName(PROJECT_NAME);
+
+		final ProjectMembersComponent.SaveProjectButtonListener listener = this.projectMembersComponent.new SaveProjectButtonListener();
+		final Button.ClickEvent event = Mockito.mock(Button.ClickEvent.class);
+		Mockito.when(event.getComponent()).thenReturn(this.component);
+		Mockito.when(this.component.getWindow()).thenReturn(this.window);
+		Mockito.when(this.presenter.doAddNewProgram()).thenReturn(project);
+
+		listener.buttonClick(event);
+
 		Mockito.verify(this.presenter).doAddNewProgram();
 		Mockito.verify(this.presenter).enableProgramMethodsAndLocationsTab();
+
+		final ArgumentCaptor<Window.Notification> captor = ArgumentCaptor.forClass(Window.Notification.class);
+
+		Mockito.verify(window).showNotification(captor.capture());
+
+		final Window.Notification notification = captor.getValue();
+
+		junit.framework.Assert.assertEquals(SUCCESS, notification.getCaption());
+		junit.framework.Assert.assertEquals("</br>" + PROJECT_NAME + " program has been successfully created.", notification.getDescription());
+
 	}
 	
 	@Test
