@@ -10,21 +10,17 @@
 
 package org.generationcp.ibpworkbench.ui.dashboard.listener;
 
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Window;
+import java.util.Date;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.generationcp.commons.constant.ToolEnum;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.spring.util.ContextUtil;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
-import org.generationcp.ibpworkbench.util.SchemaVersionUtil;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -38,8 +34,11 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Window;
 
 @Configurable
 public class LaunchProgramAction implements ItemClickListener, ClickListener {
@@ -51,9 +50,6 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
-
-	@Autowired
-	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
 	private PlatformTransactionManager transactionManager;
@@ -87,16 +83,6 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 					// Sets selected program/project to context
 					org.generationcp.commons.util.ContextUtil
 							.setContextInfo(request, contextUtil.getCurrentWorkbenchUserId(), project.getProjectId(), null);
-
-					// Warn if the selected program's crop is outdated
-					final String minimumCropVersion = SchemaVersionUtil.getMinimumCropVersion();
-					final String currentCropVersion = project.getCropType().getVersion();
-					if (!SchemaVersionUtil.checkIfVersionIsSupported(currentCropVersion, minimumCropVersion)) {
-						MessageNotifier.showWarning(window, "", LaunchProgramAction.this.messageSource
-								.getMessage(Message.MINIMUM_CROP_VERSION_WARNING, currentCropVersion != null ?
-										currentCropVersion :
-										LaunchProgramAction.this.messageSource.getMessage(Message.NOT_AVAILABLE)));
-					}
 
 					LaunchProgramAction.this.updateProjectLastOpenedDate(project);
 
