@@ -32,6 +32,8 @@
 	<bean id="workbenchMain" class="org.generationcp.ibpworkbench.IBPWorkbenchApplication"
 		scope="prototype" />
 
+	<bean id="workbenchContent" class="org.generationcp.ibpworkbench.WorkbenchContentApp"
+		scope="prototype" />
 	<!-- GPSB -->
 	<bean id="application_gpsb"
 		  class="org.generationcp.ibpworkbench.GermplasmStudyBrowserApplication"
