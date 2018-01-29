@@ -29,7 +29,6 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.commons.vaadin.validator.RegexValidator;
 import org.generationcp.commons.vaadin.validator.ValidationUtil;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.util.SchemaVersionUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.CropType;
@@ -208,7 +207,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		this.setComponentAlignment(this.gridLayout, Alignment.TOP_LEFT);
 	}
 
-	private ComboBox createCropTypeComboBox() {
+	ComboBox createCropTypeComboBox() {
 		final List<CropType> cropTypes;
 		try {
 			cropTypes = this.workbenchDataManager.getInstalledCropDatabses();
@@ -280,18 +279,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 					}
 
 				}
-				if (ProjectBasicDetailsComponent.this.getWindow() != null) {
-					final String minimumCropVersion = SchemaVersionUtil.getMinimumCropVersion();
-					final String currentCropVersion = ProjectBasicDetailsComponent.this.getCropTypeBasedOnInput().getVersion();
-					if (!SchemaVersionUtil.checkIfVersionIsSupported(currentCropVersion, minimumCropVersion)) {
-						MessageNotifier.showWarning(ProjectBasicDetailsComponent.this.getWindow(), "",
-								ProjectBasicDetailsComponent.this.messageSource.getMessage(Message.MINIMUM_CROP_VERSION_WARNING,
-										currentCropVersion != null ?
-												currentCropVersion :
-												ProjectBasicDetailsComponent.this.messageSource.getMessage(Message.NOT_AVAILABLE)));
-					}
-				}
-
 			}
 		});
 
