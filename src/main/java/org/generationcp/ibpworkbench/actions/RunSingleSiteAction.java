@@ -70,7 +70,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RunSingleSiteAction.class);
 
-	private final SingleSiteAnalysisDetailsPanel source;
+	private SingleSiteAnalysisDetailsPanel source;
 
 	@Value("${bv.web.url}")
 	private String bvWebUrl;
