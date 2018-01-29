@@ -6,24 +6,18 @@ import com.vaadin.terminal.ParameterHandler;
 import com.vaadin.terminal.URIHandler;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Embedded;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Window;
 import org.generationcp.ibpworkbench.actions.OpenProgramLocationsAction;
 import org.generationcp.ibpworkbench.actions.OpenProgramMethodsAction;
 import org.generationcp.ibpworkbench.ui.common.IContainerFittable;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.net.URL;
-import java.util.Map;
 
 /**
  * Created by cyrus on 1/24/14.
@@ -36,11 +30,12 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 	 */
 	private static final long serialVersionUID = -4166591931885992086L;
 	private static final Logger LOG = LoggerFactory.getLogger(ContentWindow.class);
-	private Map<String, String[]> queryMap;
+	public static final String PROGRAM_LOCATIONS = "ProgramLocations";
+	public static final String PROGRAM_METHODS = "ProgramMethods";
 	private String path;
 
-	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
+	private OpenProgramLocationsAction openProgramLocationsAction = new OpenProgramLocationsAction();
+	private OpenProgramMethodsAction openProgramMethodsAction = new OpenProgramMethodsAction();
 
 	public ContentWindow() {
 		super("Breeding Management System | Workbench");
@@ -83,93 +78,25 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 	}
 
 	@Override
-	public void attach() {
-		super.attach();
-	}
-
-	@Override
-	public void handleParameters(final Map<String, String[]> stringMap) {
-		for (final String key : stringMap.keySet()) {
-
-			String values = "";
-			for (final String val : stringMap.get(key)) {
-				values += val + " ";
-			}
-
-			ContentWindow.LOG.debug("query: " + key + " value(s): " + values);
-		}
-
-		this.queryMap = stringMap;
-	}
-
-	@Override
 	public DownloadStream handleURI(final URL url, final String s) {
 		this.path = s;
 
-		String errorMessage = "";
 		ContentWindow.LOG.debug("path: " + this.path);
 
-		// perform navigation here
-		try {
+		if (this.path != null) {
+			if (PROGRAM_LOCATIONS.equals(this.path)) {
 
-			if (this.path != null) {
-				if (this.path.equals("ProgramLocations")) {
+				this.openProgramLocationsAction.doAction(this, "/" + this.path, false);
 
-					if (this.queryMap.get("programId") == null) {
-						throw new Exception("Wrong query string, should be <strong>programId=[ID]<strong/>.");
-					}
+				return null;
+			} else if (PROGRAM_METHODS.equals(this.path)) {
 
-					final Project project = this.workbenchDataManager.getProjectById(Long.parseLong(this.queryMap.get("programId")[0]));
+				this.openProgramMethodsAction.doAction(this, "/" + this.path, false);
 
-					if (project == null) {
-						throw new Exception("No Program Exists with <strong>programId=" + this.queryMap.get("programId")[0] + "</strong>");
-					}
-
-					// execute
-					new OpenProgramLocationsAction().doAction(this, "/" + this.path, false);
-
-					return null;
-				} else if ("ProgramMethods".equals(this.path)) {
-
-					if (this.queryMap.get("programId") == null) {
-						throw new Exception("Wrong query string, should be <strong>programId=[ID]<strong/>.");
-					}
-
-					final Project project = this.workbenchDataManager.getProjectById(Long.parseLong(this.queryMap.get("programId")[0]));
-
-					if (project == null) {
-						throw new Exception("No Program Exists with <strong>programId=" + this.queryMap.get("programId")[0] + "</strong>");
-					}
-
-					new OpenProgramMethodsAction().doAction(this, "/" + this.path, false);
-
-					return null;
-				}
-
+				return null;
 			}
 
-			errorMessage =
-					"Incorrect URL. Correct format should be<br/> <strong>/ibpworkbench/content/ProgramLocations?programId=[ID]</strong> or <strong>/ibpworkbench/content/ProgramMethods?programId=[ID]</strong>";
-
-		} catch (final NumberFormatException e) {
-			errorMessage = "The value you entered for programId is not a number.";
-		} catch (final Exception e) {
-
-			// error happened
-			errorMessage = e.getMessage();
-
-			LOG.error(e.getMessage(), e);
-
 		}
-
-		final CustomLayout errorPage = new CustomLayout("error");
-		errorPage.setDebugId("errorPage");
-		errorPage.setSizeUndefined();
-		errorPage.setWidth("100%");
-		errorPage.setStyleName("error-page");
-		errorPage.addComponent(new Label(errorMessage, Label.CONTENT_XHTML), "error_message");
-
-		this.showContent(errorPage);
 
 		return null;
 	}
@@ -179,4 +106,13 @@ public class ContentWindow extends Window implements IContentWindow, Initializin
 		this.addURIHandler(this);
 		this.addParameterHandler(this);
 	}
+
+	public void setOpenProgramLocationsAction(final OpenProgramLocationsAction openProgramLocationsAction) {
+		this.openProgramLocationsAction = openProgramLocationsAction;
+	}
+
+	public void setOpenProgramMethodsAction(final OpenProgramMethodsAction openProgramMethodsAction) {
+		this.openProgramMethodsAction = openProgramMethodsAction;
+	}
+
 }

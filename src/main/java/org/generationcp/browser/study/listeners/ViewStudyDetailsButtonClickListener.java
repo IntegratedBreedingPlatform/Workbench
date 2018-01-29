@@ -47,12 +47,7 @@ public class ViewStudyDetailsButtonClickListener implements ClickListener {
 
 	@Override
 	public void buttonClick(final ClickEvent event) {
-		Tool tool = null;
-		try {
-			tool = this.workbenchDataManager.getToolWithName(ToolName.STUDY_BROWSER_WITH_ID.toString());
-		} catch (final MiddlewareQueryException qe) {
-			ViewStudyDetailsButtonClickListener.LOG.error("QueryException", qe);
-		}
+		Tool tool = this.workbenchDataManager.getToolWithName(ToolName.STUDY_BROWSER_WITH_ID.toString());
 
 		final String contextParameterString = ContextUtil
 				.getContextParameterString(contextUtil.getCurrentWorkbenchUserId(), contextUtil.getProjectInContext().getProjectId());
