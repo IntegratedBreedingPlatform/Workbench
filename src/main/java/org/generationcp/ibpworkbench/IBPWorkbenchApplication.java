@@ -41,7 +41,11 @@ public class IBPWorkbenchApplication extends SpringContextApplication {
 
 	private HttpServletRequest request;
 	private HttpServletResponse response;
+
 	private boolean scriptsRun = false;
+	public static final String PREFETCH_SCRIPT = "/ibpworkbench/VAADIN/js/prefetch-resources.js";
+	public static final String SCRIPT =
+			"try{var fileref=document.createElement('script'); fileref.setAttribute(\"type\",\"text/javascript\"); fileref.setAttribute(\"src\", \" %s \"); document.getElementsByTagName(\"head\")[0].appendChild(fileref);}catch(e){alert(e);}";
 
 	public static IBPWorkbenchApplication get() {
 		return ContextApplication.get(IBPWorkbenchApplication.class);
@@ -112,17 +116,15 @@ public class IBPWorkbenchApplication extends SpringContextApplication {
 
 		final Window w = super.getWindow(name);
 
-		final String prefetchScript = "/ibpworkbench/VAADIN/js/prefetch-resources.js";
-
-		final String script =
-				"try{var fileref=document.createElement('script'); fileref.setAttribute(\"type\",\"text/javascript\"); fileref.setAttribute(\"src\", \" %s \"); document.getElementsByTagName(\"head\")[0].appendChild(fileref);}catch(e){alert(e);}";
-
 		if (!this.scriptsRun) {
-			w.executeJavaScript(String.format(script, prefetchScript));
-
+			w.executeJavaScript(String.format(SCRIPT, PREFETCH_SCRIPT));
 			this.scriptsRun = true;
 		}
 
 		return w;
+	}
+
+	boolean isScriptsRun() {
+		return scriptsRun;
 	}
 }
