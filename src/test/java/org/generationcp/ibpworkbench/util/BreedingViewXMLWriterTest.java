@@ -21,6 +21,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -38,6 +41,7 @@ public class BreedingViewXMLWriterTest {
 	public static final String ROW_POS_FACTOR = "RowPos_Factor";
 	public static final String REPLICATES_FACTOR = "Replicates_Factor";
 	public static final String PLOT_FACTOR = "Plot_Factor";
+	public static final String USER_NAME = "UserName";
 	private BreedingViewXMLWriter breedingViewXMLWriter;
 	private BreedingViewInput breedingViewInput;
 
@@ -71,6 +75,13 @@ public class BreedingViewXMLWriterTest {
 		breedingViewXMLWriter.setContextUtil(contextUtil);
 		breedingViewXMLWriter.setWorkbenchDataManager(workbenchDataManager);
 		this.createBreedingViewDirectories();
+
+		final SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+		final Authentication authentication = Mockito.mock(Authentication.class);
+		Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+		Mockito.when(authentication.getName()).thenReturn(USER_NAME);
+
+		SecurityContextHolder.setContext(securityContext);
 
 	}
 
