@@ -1,5 +1,12 @@
 package org.generationcp.ibpworkbench.util;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import org.generationcp.commons.breedingview.xml.Blocks;
 import org.generationcp.commons.breedingview.xml.ColPos;
 import org.generationcp.commons.breedingview.xml.Columns;
@@ -12,26 +19,23 @@ import org.generationcp.commons.breedingview.xml.Rows;
 import org.generationcp.commons.sea.xml.Design;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
+import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-
+@RunWith(MockitoJUnitRunner.class)
 public class BreedingViewXMLWriterTest {
 
 	public static final String COLUMN_FACTOR = "Column_Factor";
@@ -44,7 +48,7 @@ public class BreedingViewXMLWriterTest {
 	public static final String USER_NAME = "UserName";
 	private BreedingViewXMLWriter breedingViewXMLWriter;
 	private BreedingViewInput breedingViewInput;
-
+	
 	private static final String DATASTORE_FILE = "Datastore.qsv";
 	private static final String BV_FOLDER = System.getProperty("user.dir") + "/breeding_view/";
 	private static final String INPUT_DIRECTORY = BreedingViewXMLWriterTest.BV_FOLDER + "input";
@@ -61,12 +65,13 @@ public class BreedingViewXMLWriterTest {
 			"http://localhost:18080/" + "bmsapi/breeding_view/{cropName}/ssa/save_result_summary&loggedInUserId=1&selectedProjectId=1";
 	private static final String INSTALLATION_DIRECTORY = "C://Breeding Management System/";
 
+	@Mock
+	private ContextUtil contextUtil;
+	
 	@Before
 	public void setUp() throws Exception {
-
-		final ContextUtil contextUtil = Mockito.mock(ContextUtil.class);
 		final WorkbenchDataManager workbenchDataManager = Mockito.mock(WorkbenchDataManager.class);
-		Mockito.when(contextUtil.getProjectInContext()).thenReturn(this.createProject());
+		Mockito.when(contextUtil.getProjectInContext()).thenReturn(ProjectTestDataInitializer.createProjectWithCropType());
 		Mockito.when(workbenchDataManager.getWorkbenchSetting()).thenReturn(this.createWorkbenchSetting());
 
 		this.breedingViewInput = this.createBreedingViewInput();
@@ -119,6 +124,15 @@ public class BreedingViewXMLWriterTest {
 		final String filePath = this.breedingViewInput.getDestXMLFilePath();
 		this.breedingViewXMLWriter.writeProjectXML();
 		Assert.assertTrue(filePath + " should exist", new File(filePath).exists());
+	}
+	
+	@Test
+	public void testGetWebApiUrl() {
+		final Project project = ProjectTestDataInitializer.createProjectWithCropType();
+		Mockito.when(contextUtil.getProjectInContext()).thenReturn(project);
+		final String url = this.breedingViewXMLWriter.getWebApiUrl();
+		Mockito.verify(this.contextUtil).getProjectInContext();
+		Assert.assertTrue(url.contains(project.getCropType().getCropName()));
 	}
 
 	@After
@@ -204,13 +218,6 @@ public class BreedingViewXMLWriterTest {
 		workbenchSetting.setInstallationDirectory(INSTALLATION_DIRECTORY);
 
 		return workbenchSetting;
-	}
-
-	private Project createProject() {
-		final Project workbenchProject = new Project();
-		workbenchProject.setCropType(new CropType(CropType.CropEnum.MAIZE.name()));
-		workbenchProject.setProjectId(1L);
-		return workbenchProject;
 	}
 
 	private void createBreedingViewDirectories() {

@@ -10,13 +10,15 @@
 
 package org.generationcp.ibpworkbench.validator;
 
-import com.vaadin.data.validator.AbstractValidator;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import com.vaadin.data.validator.AbstractValidator;
+
 /**
- * <b>Description</b>: Tests if a Users record with the same Username already exists.
+ * <b>Description</b>: Tests if a Users record with the same Username already
+ * exists.
  *
  * <br>
  * <br>
@@ -43,12 +45,12 @@ public class UsernameValidator extends AbstractValidator {
 	public boolean isValid(final Object value) {
 
 		int usernameCounter;
-		usernameCounter = validatorCounter.getUsernameCounter();
+		usernameCounter = this.validatorCounter.getUsernameCounter();
 		usernameCounter++;
-		validatorCounter.setUsernameCounter(usernameCounter);
+		this.validatorCounter.setUsernameCounter(usernameCounter);
 
 		if (usernameCounter > 2) {
-			validatorCounter.setUsernameCounter(0);
+			this.validatorCounter.setUsernameCounter(0);
 			return true;
 		}
 
@@ -57,6 +59,14 @@ public class UsernameValidator extends AbstractValidator {
 		}
 
 		return true;
+	}
+
+	void setValidatorCounter(final ValidatorCounter validatorCounter) {
+		this.validatorCounter = validatorCounter;
+	}
+
+	void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
+		this.workbenchDataManager = workbenchDataManager;
 	}
 
 }

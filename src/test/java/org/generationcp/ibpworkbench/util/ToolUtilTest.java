@@ -4,6 +4,7 @@ package org.generationcp.ibpworkbench.util;
 import java.io.File;
 
 import org.generationcp.commons.constant.ToolEnum;
+import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
@@ -81,7 +82,7 @@ public class ToolUtilTest {
 	
 	@Test
 	public void testCreateWorkspaceDirectoriesForProject() {
-		final Project project = this.createTestProject();
+		final Project project = ProjectTestDataInitializer.createProject(DUMMY_PROJECT_ID, DUMMY_PROJECT_NAME);
 		this.toolUtil.createWorkspaceDirectoriesForProject(project);
 		
 		final File projectWorkspaceDirectory = new File(this.currentRandomDirectory + File.separator + ToolUtil.WORKSPACE_DIR, DUMMY_PROJECT_NAME);
@@ -105,7 +106,7 @@ public class ToolUtilTest {
 		// Already create project directory. Test method should not continue with creating sub-contents
 		final File projectWorkspaceDirectory = new File(this.currentRandomDirectory + File.separator + ToolUtil.WORKSPACE_DIR, DUMMY_PROJECT_NAME);
 		projectWorkspaceDirectory.mkdirs();
-		final Project project = this.createTestProject();
+		final Project project = ProjectTestDataInitializer.createProject(DUMMY_PROJECT_ID, DUMMY_PROJECT_NAME);
 		this.toolUtil.createWorkspaceDirectoriesForProject(project);
 		
 		Assert.assertTrue(projectWorkspaceDirectory.exists());
@@ -120,6 +121,46 @@ public class ToolUtilTest {
 		// Delete test installation directory and its contents as part of cleanup
 		final File testInstallationDirectory = new File(this.currentRandomDirectory);
 		this.recursiveFileDelete(testInstallationDirectory);
+	}
+	
+	@Test
+	public void testGetInputDirectoryForTool() {
+		final Project project = Mockito.mock(Project.class);
+		Mockito.when(project.getProjectName()).thenReturn(DUMMY_PROJECT_NAME);
+		Tool tool = this.constructDummyNativeTool();
+		tool.setGroupName("GROUPNAME");
+		try {
+			String inputDirectory = this.toolUtil.getInputDirectoryForTool(project, tool);
+			Mockito.verify(this.workbenchDataManager).getWorkbenchSetting();
+			Mockito.verify(project).getProjectName();
+			Assert.assertNotNull(inputDirectory);
+			
+			// Delete test installation directory and its contents as part of cleanup
+			final File testInstallationDirectory = new File(this.currentRandomDirectory);
+			this.recursiveFileDelete(testInstallationDirectory);
+		} catch (IllegalStateException e) {
+			Assert.fail("There should be no exception thrown");
+		}
+	}
+	
+	@Test
+	public void testGetOutputDirectoryForTool() {
+		final Project project = Mockito.mock(Project.class);
+		Mockito.when(project.getProjectId()).thenReturn(DUMMY_PROJECT_ID);
+		Tool tool = this.constructDummyNativeTool();
+		tool.setGroupName("GROUPNAME");
+		try {
+			String inputDirectory = this.toolUtil.getOutputDirectoryForTool(project, tool);
+			Mockito.verify(this.workbenchDataManager).getWorkbenchSetting();
+			Mockito.verify(project).getProjectId();
+			Assert.assertNotNull(inputDirectory);
+			
+			// Delete test installation directory and its contents as part of cleanup
+			final File testInstallationDirectory = new File(this.currentRandomDirectory);
+			this.recursiveFileDelete(testInstallationDirectory);
+		} catch (IllegalStateException e) {
+			Assert.fail("There should be no exception thrown");
+		}
 	}
 	
 	private void recursiveFileDelete(File file) {
@@ -138,12 +179,7 @@ public class ToolUtilTest {
         file.delete();
     }
 
-	private Project createTestProject() {
-		final Project project = new Project();
-		project.setProjectId(DUMMY_PROJECT_ID);
-		project.setProjectName(DUMMY_PROJECT_NAME);
-		return project;
-	}
+	
 
 	protected Tool constructDummyNativeTool() {
 		return new Tool(ToolName.GDMS.name(), ToolUtilTest.DUMMY_TOOL_TITLE, ToolUtilTest.DUMMY_NATIVE_TOOL_PATH);
