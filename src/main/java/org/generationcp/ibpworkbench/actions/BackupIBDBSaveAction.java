@@ -10,7 +10,6 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,9 +29,6 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.Clic
 	private static final Logger LOG = LoggerFactory.getLogger(BackupIBDBSaveAction.class);
 
 	private final Window sourceWindow;
-
-	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -118,5 +114,17 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.Clic
 	@Override
 	public void buttonClick(final Button.ClickEvent clickEvent) {
 		this.doAction();
+	}
+
+	public void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+
+	public void setContextUtil(final ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
+	}
+
+	public void setMysqlUtil(final MySQLUtil mysqlUtil) {
+		this.mysqlUtil = mysqlUtil;
 	}
 }

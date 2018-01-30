@@ -10,6 +10,7 @@
 
 package org.generationcp.ibpworkbench.actions;
 
+import com.vaadin.Application;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component.Event;
@@ -96,7 +97,7 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 	@Override
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void doAction(final Window window, final String uriFragment, final boolean isLinkAccessed) {
-		final IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
+		final Application app = window.getApplication();
 		final Project currentProject = this.contextUtil.getProjectInContext();
 
 		if (app.getMainWindow() != null) {

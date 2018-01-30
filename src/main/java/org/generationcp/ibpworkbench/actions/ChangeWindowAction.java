@@ -71,7 +71,7 @@ public class ChangeWindowAction implements ClickListener, ActionListener {
 				StringUtils.isNotBlank(uriFragment) ? StringUtils.removeStart(uriFragment, "/") : this.windowEnums.getwindowName();
 
 		if (WindowEnums.isCorrectTool(windowName)) {
-			this.launchWindow(window, windowName, isLinkAccessed);
+			this.launchWindow((IContentWindow) window, windowName, isLinkAccessed);
 		} else {
 			ChangeWindowAction.LOG.debug("Cannot launch window due to invalid window name: {}", windowName);
 			MessageNotifier.showError(window, this.messageSource.getMessage(Message.LAUNCH_TOOL_ERROR),
@@ -80,8 +80,7 @@ public class ChangeWindowAction implements ClickListener, ActionListener {
 
 	}
 
-	public void launchWindow(final Window window, final String windowName, final boolean isLinkAccessed) {
-		final IContentWindow w = (IContentWindow) window;
+	public void launchWindow(final IContentWindow window, final String windowName, final boolean isLinkAccessed) {
 
 		// TASK: get messagesource equivalent
 		String appLaunched = windowName;
@@ -89,27 +88,27 @@ public class ChangeWindowAction implements ClickListener, ActionListener {
 			appLaunched = this.messageSource.getMessage(Message.MEMBERS_LINK);
 			final ProgramMembersPanel projectLocationPanel = new ProgramMembersPanel(this.project);
 			projectLocationPanel.setDebugId("projectLocationPanel");
-			w.showContent(projectLocationPanel);
+			window.showContent(projectLocationPanel);
 		} else if (WindowEnums.RECOVERY.getwindowName().equals(windowName)) {
 			appLaunched = this.messageSource.getMessage("BACKUP_RESTORE_TITLE");
 			final BackupAndRestoreView backupAndRestoreView = new BackupAndRestoreView();
 			backupAndRestoreView.setDebugId("backupAndRestoreView");
-			w.showContent(backupAndRestoreView);
+			window.showContent(backupAndRestoreView);
 		} else if (WindowEnums.BREEDING_GXE.getwindowName().equals(windowName)) {
 			appLaunched = this.messageSource.getMessage(Message.TITLE_GXE);
 			final MultiSiteAnalysisPanel gxeAnalysisPanel = new MultiSiteAnalysisPanel(this.project);
 			gxeAnalysisPanel.setDebugId("gxeAnalysisPanel");
-			w.showContent(gxeAnalysisPanel);
+			window.showContent(gxeAnalysisPanel);
 		} else if (WindowEnums.BREEDING_VIEW.getwindowName().equals(windowName)) {
 			appLaunched = this.messageSource.getMessage(Message.TITLE_SSA);
 			final SingleSiteAnalysisPanel breedingViewPanel = new SingleSiteAnalysisPanel(this.project, Database.LOCAL);
 			breedingViewPanel.setDebugId("breedingViewPanel");
-			w.showContent(breedingViewPanel);
+			window.showContent(breedingViewPanel);
 		} else if (WindowEnums.BV_META_ANALYSIS.getwindowName().equals(windowName)) {
 			appLaunched = this.messageSource.getMessage(Message.TITLE_METAANALYSIS);
 			final MetaAnalysisPanel metaAnalyis = new MetaAnalysisPanel(this.project, Database.LOCAL);
 			metaAnalyis.setDebugId("metaAnalyis");
-			w.showContent(metaAnalyis);
+			window.showContent(metaAnalyis);
 		}
 
 		this.contextUtil.logProgramActivity(windowName, this.messageSource.getMessage(Message.LAUNCHED_APP, appLaunched));
@@ -149,6 +148,15 @@ public class ChangeWindowAction implements ClickListener, ActionListener {
 		public String getwindowName() {
 			return this.windowName;
 		}
+
+	}
+
+	public void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+
+	public void setContextUtil(final ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
 	}
 
 }
