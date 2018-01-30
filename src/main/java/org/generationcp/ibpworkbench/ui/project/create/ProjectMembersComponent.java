@@ -367,7 +367,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 								ProjectMembersComponent.this.messageSource.getMessage(Message.SUCCESS),
 								newlyCreatedProgram.getProjectName() + " program has been successfully created.");
 
-						ProjectMembersComponent.this.presenter.enableProgramMethodsAndLocationsTab();
+						ProjectMembersComponent.this.presenter.enableProgramMethodsAndLocationsTab(clickEvent.getComponent().getWindow());
 
 					} catch (final Exception e) {
 

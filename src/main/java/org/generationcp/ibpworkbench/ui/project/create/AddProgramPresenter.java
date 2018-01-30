@@ -7,6 +7,8 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import com.vaadin.ui.Window;
+
 import java.util.Set;
 
 /**
@@ -27,8 +29,8 @@ public class AddProgramPresenter {
 		this.view = view;
 	}
 
-	public void enableProgramMethodsAndLocationsTab() {
-		this.view.updateUIOnProgramSave(contextUtil.getProjectInContext());
+	public void enableProgramMethodsAndLocationsTab(final Window window) {
+		this.view.updateUIOnProgramSave(this.contextUtil.getProjectInContext(), window);
 	}
 
 	public void disableProgramMethodsAndLocationsTab() {
@@ -53,6 +55,16 @@ public class AddProgramPresenter {
 
 	public void resetProgramMembers() {
 		this.view.resetProgramMembers();
+	}
+
+	
+	public void setProgramService(ProgramService programService) {
+		this.programService = programService;
+	}
+
+	
+	public void setContextUtil(ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
 	}
 
 }

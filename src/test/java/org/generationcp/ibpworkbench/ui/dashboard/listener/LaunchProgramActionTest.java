@@ -1,10 +1,13 @@
 package org.generationcp.ibpworkbench.ui.dashboard.listener;
 
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Table;
-import junit.framework.Assert;
+import java.util.Date;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.generationcp.commons.context.ContextConstants;
+import org.generationcp.commons.context.ContextInfo;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
@@ -19,6 +22,7 @@ import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -26,14 +30,18 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.util.Date;
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Table;
+
+import junit.framework.Assert;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LaunchProgramActionTest {
 
 	private static final Integer USER_ID = 100;
+	private static final String SAMPLE_AUTH_TOKEN_VALUE = "RANDOM_TOKEN";
 
 	@Mock
 	private HttpSession httpSession;
@@ -64,6 +72,9 @@ public class LaunchProgramActionTest {
 
 	@Mock
 	private WorkbenchMainView window;
+	
+	@Mock
+	private Cookie cookie;
 
 	@InjectMocks
 	private LaunchProgramAction launchProgramAction;
@@ -89,7 +100,11 @@ public class LaunchProgramActionTest {
 		final User currentUser = new User(LaunchProgramActionTest.USER_ID);
 		Mockito.doReturn(currentUser).when(this.contextUtil).getCurrentWorkbenchUser();
 		Mockito.doReturn(LaunchProgramActionTest.USER_ID).when(this.contextUtil).getCurrentWorkbenchUserId();
+		
 		Mockito.when(this.request.getSession()).thenReturn(this.httpSession);
+		Mockito.when(this.cookie.getName()).thenReturn(ContextConstants.PARAM_AUTH_TOKEN);;
+		Mockito.when(this.cookie.getValue()).thenReturn(SAMPLE_AUTH_TOKEN_VALUE);
+		Mockito.when(this.request.getCookies()).thenReturn(new Cookie[]{this.cookie});
 	}
 
 	private void setMockDependenciesToTestModule() {
@@ -137,7 +152,6 @@ public class LaunchProgramActionTest {
 	public void testOpenSelectedProgram() {
 		// Call method to test
 		this.launchProgramAction.openSelectedProgram(this.selectedProgram, this.window);
-
 		this.verifyMockInteractionsWhenOpeningProgram();
 	}
 
@@ -148,11 +162,23 @@ public class LaunchProgramActionTest {
 	}
 
 	/*
-	 * Verify from mock interactions that launch program processing was done on: 1. Check that session data was set, 2. Last open date for
-	 * project user was updated and 3. Sidebar and workbench header updated 4. List Manager was launched
+	 * Verify from mock interactions that launch program processing was done on: 
+	 * 1. Check that session data was set, 
+	 * 2. Last open date for project user was updated,
+	 * 3. Sidebar and workbench header updated 
+	 * 4. List Manager was launched
 	 */
 	private void verifyMockInteractionsWhenOpeningProgram() {
 		Mockito.verify(this.window).addTitle(this.selectedProgram.getProjectName());
+		
+		// Verify session attribute was set
+		final ArgumentCaptor<Object> contextInfoCaptor = ArgumentCaptor.forClass(Object.class);
+		Mockito.verify(this.httpSession).setAttribute(Matchers.eq(ContextConstants.SESSION_ATTR_CONTEXT_INFO), contextInfoCaptor.capture());
+		final ContextInfo contextInfo = (ContextInfo) contextInfoCaptor.getValue();
+		Assert.assertEquals(USER_ID.intValue(), contextInfo.getLoggedInUserId().intValue());
+		Assert.assertEquals(this.selectedProgram.getProjectId(), contextInfo.getSelectedProjectId());
+		Assert.assertNull(contextInfo.getAuthToken());
+		
 		this.verifyMockInteractionsForUpdatingProgram();
 		Mockito.verify(this.launchWorkbenchToolAction, Mockito.times(1)).onAppLaunch(this.window);
 	}

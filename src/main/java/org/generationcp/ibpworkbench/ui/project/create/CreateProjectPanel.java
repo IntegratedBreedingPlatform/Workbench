@@ -201,7 +201,7 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 								CreateProjectPanel.this.messageSource.getMessage(Message.SUCCESS),
 								newlyCreatedProgram.getProjectName() + " program has been successfully created.");
 
-						CreateProjectPanel.this.presenter.enableProgramMethodsAndLocationsTab();
+						CreateProjectPanel.this.presenter.enableProgramMethodsAndLocationsTab(clickEvent.getComponent().getWindow());
 					}
 				});
 
