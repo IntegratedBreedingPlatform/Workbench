@@ -69,9 +69,10 @@ public class SaveNewProjectAddUserAction implements ClickListener {
 
 	// Code reviewed by Cyrus: Logic quite similar to SaveUserAccountAction,
 	// this can be consolidated to avoid redundant code
+	@SuppressWarnings("unchecked") 
 	@Override
 	public void buttonClick(final ClickEvent event) {
-		@SuppressWarnings("unchecked") final BeanItem<UserAccountModel> bean =
+		final BeanItem<UserAccountModel> bean =
 				(BeanItem<UserAccountModel>) this.userAccountForm.getItemDataSource();
 		final UserAccountModel userAccount = bean.getBean();
 
@@ -116,9 +117,19 @@ public class SaveNewProjectAddUserAction implements ClickListener {
 		membersSelect.addItem(user);
 
 		// get currently selected users and add the new user
-		@SuppressWarnings("unchecked") final Set<User> selectedMembers = new HashSet<User>(membersSelect.getValue());
+		final Set<User> selectedMembers = new HashSet<>(membersSelect.getValue());
 		selectedMembers.add(user);
 		membersSelect.setValue(selectedMembers);
+	}
+
+	
+	public void setWorkbenchUserService(WorkbenchUserService workbenchUserService) {
+		this.workbenchUserService = workbenchUserService;
+	}
+
+	
+	public void setContextUtil(ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
 	}
 
 }
