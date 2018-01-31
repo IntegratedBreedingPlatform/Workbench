@@ -9,6 +9,8 @@ import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Table;
 import org.apache.commons.lang3.StringUtils;
+import org.generationcp.commons.context.ContextConstants;
+import org.generationcp.commons.context.ContextInfo;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.LaunchProgramAction;
@@ -31,6 +33,8 @@ import javax.servlet.http.HttpSession;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.generationcp.commons.context.ContextConstants.*;
 
 public class WorkbenchDashboardTest {
 
@@ -104,6 +108,9 @@ public class WorkbenchDashboardTest {
 			Assert.assertNotNull(launchButton.getListeners(ClickListener.class));
 			Assert.assertNotNull(launchButton.getListeners(LaunchProgramAction.class));
 		}
+
+		Assert.assertEquals(this.lastOpenedProgram, programsTable.getValue());
+		Mockito.verify(httpSession).setAttribute(Mockito.eq(SESSION_ATTR_CONTEXT_INFO), Mockito.any(ContextInfo.class));
 
 	}
 

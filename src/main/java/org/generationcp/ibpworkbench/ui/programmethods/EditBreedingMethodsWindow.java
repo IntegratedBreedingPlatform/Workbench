@@ -110,47 +110,7 @@ public class EditBreedingMethodsWindow extends BaseSubWindow {
 
 	protected void initializeActions() {
 
-		this.editBreedingMethodButton.addListener(new Button.ClickListener() {
-
-			/**
-			 *
-			 */
-			private static final long serialVersionUID = 5290520698158469871L;
-
-			@Override
-			public void buttonClick(final Button.ClickEvent clickEvent) {
-				try {
-					EditBreedingMethodsWindow.this.breedingMethodForm.commit();
-				} catch (final Validator.EmptyValueException e) {
-					MessageNotifier.showRequiredFieldError(clickEvent.getComponent().getWindow(), e.getLocalizedMessage());
-					LOG.warn(e.getMessage(), e);
-					return;
-				} catch (final Validator.InvalidValueException e) {
-					MessageNotifier.showRequiredFieldError(clickEvent.getComponent().getWindow(), e.getLocalizedMessage());
-					LOG.warn(e.getMessage(), e);
-					return;
-				}
-
-				breedingMethodTracker.getUniqueBreedingMethods().remove(EditBreedingMethodsWindow.this.modelBean);
-				breedingMethodTracker.getProjectBreedingMethodData().remove(EditBreedingMethodsWindow.this.modelBean.getMid());
-
-				final MethodView bean =
-						((BeanItem<MethodView>) EditBreedingMethodsWindow.this.breedingMethodForm.getItemDataSource()).getBean();
-				if (StringUtils.isEmpty(bean.getMtype())) {
-					MessageNotifier
-							.showRequiredFieldError(clickEvent.getComponent().getWindow(), "Please select a Generation Advancement Type");
-					return;
-				}
-
-				final MethodView result = EditBreedingMethodsWindow.this.presenter.editBreedingMethod(bean);
-
-				MessageNotifier.showMessage(clickEvent.getComponent().getWindow().getParent().getWindow(),
-						EditBreedingMethodsWindow.this.messageSource.getMessage(Message.SUCCESS),
-						result.getMname() + " breeding method is updated.");
-
-				EditBreedingMethodsWindow.this.getParent().removeWindow(EditBreedingMethodsWindow.this);
-			}
-		});
+		this.editBreedingMethodButton.addListener(new EditBreedingMethodButtonListener());
 
 		this.cancelButton.addListener(new Button.ClickListener() {
 
@@ -189,6 +149,65 @@ public class EditBreedingMethodsWindow extends BaseSubWindow {
 		this.initializeComponents();
 		this.initializeLayout();
 		this.initializeActions();
+	}
+
+	public void setBreedingMethodForm(final BreedingMethodForm breedingMethodForm) {
+		this.breedingMethodForm = breedingMethodForm;
+	}
+
+	public void setBreedingMethodTracker(final BreedingMethodTracker breedingMethodTracker) {
+		this.breedingMethodTracker = breedingMethodTracker;
+	}
+
+	public void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+
+	class EditBreedingMethodButtonListener implements Button.ClickListener {
+
+
+		/**
+		 *
+		 */
+		private static final long serialVersionUID = 5290520698158469871L;
+		public static final String BREEDING_METHOD_IS_UPDATED = " breeding method is updated.";
+		public static final String PLEASE_SELECT_A_GENERATION_ADVANCEMENT_TYPE = "Please select a Generation Advancement Type";
+
+		@Override
+		public void buttonClick(final Button.ClickEvent clickEvent) {
+
+			try {
+				EditBreedingMethodsWindow.this.breedingMethodForm.commit();
+			} catch (final Validator.EmptyValueException e) {
+				MessageNotifier.showRequiredFieldError(clickEvent.getComponent().getWindow(), e.getLocalizedMessage());
+				LOG.warn(e.getMessage(), e);
+				return;
+			} catch (final Validator.InvalidValueException e) {
+				MessageNotifier.showRequiredFieldError(clickEvent.getComponent().getWindow(), e.getLocalizedMessage());
+				LOG.warn(e.getMessage(), e);
+				return;
+			}
+
+			breedingMethodTracker.getUniqueBreedingMethods().remove(EditBreedingMethodsWindow.this.modelBean);
+			breedingMethodTracker.getProjectBreedingMethodData().remove(EditBreedingMethodsWindow.this.modelBean.getMid());
+
+			final MethodView bean =
+					((BeanItem<MethodView>) EditBreedingMethodsWindow.this.breedingMethodForm.getItemDataSource()).getBean();
+			if (StringUtils.isEmpty(bean.getMtype())) {
+				MessageNotifier
+						.showRequiredFieldError(clickEvent.getComponent().getWindow(), PLEASE_SELECT_A_GENERATION_ADVANCEMENT_TYPE);
+				return;
+			}
+
+			final MethodView result = EditBreedingMethodsWindow.this.presenter.editBreedingMethod(bean);
+
+			MessageNotifier.showMessage(clickEvent.getComponent().getWindow().getParent().getWindow(),
+					EditBreedingMethodsWindow.this.messageSource.getMessage(Message.SUCCESS),
+					result.getMname() + BREEDING_METHOD_IS_UPDATED);
+
+			EditBreedingMethodsWindow.this.getParent().removeWindow(EditBreedingMethodsWindow.this);
+		}
+
 	}
 
 }

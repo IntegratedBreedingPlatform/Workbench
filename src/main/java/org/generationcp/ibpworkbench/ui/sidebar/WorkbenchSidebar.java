@@ -41,7 +41,8 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchSidebar.class);
 	public static final Map<String, TreeItem> sidebarTreeMap = new HashMap<>();
 
-	private final WorkbenchSidebarPresenter presenter;
+	private WorkbenchSidebarPresenter presenter;
+
 	private Tree sidebarTree;
 
 	@Autowired
@@ -49,35 +50,6 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 
 	@Autowired
 	private ContextUtil contextUtil;
-
-	private final ItemClickEvent.ItemClickListener treeClickListener = new ItemClickEvent.ItemClickListener() {
-
-		@Override
-		public void itemClick(final ItemClickEvent event) {
-			final TransactionTemplate transactionTemplate = new TransactionTemplate(WorkbenchSidebar.this.transactionManager);
-			transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-
-				@Override
-				protected void doInTransactionWithoutResult(TransactionStatus status) {
-					if (event.getItemId() == null) {
-						return;
-					}
-
-					WorkbenchSidebar.LOG.trace(event.getItemId().toString());
-
-					TreeItem treeItem = (TreeItem) event.getItemId();
-
-					if (!WorkbenchSidebar.this.doCollapse(treeItem)) {
-						WorkbenchSidebar.this.presenter.updateProjectLastOpenedDate();
-
-						ActionListener listener = WorkbenchSidebar.this.getLinkActions(treeItem.getId(), contextUtil.getProjectInContext());
-
-						listener.doAction(event.getComponent().getWindow(), "/" + treeItem.getId(), true);
-					}
-				}
-			});
-		}
-	};
 
 	public WorkbenchSidebar() {
 		this.presenter = new WorkbenchSidebarPresenter();
@@ -138,7 +110,7 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 		}
 
 		this.sidebarTree.setSelectable(true);
-		this.sidebarTree.addListener(this.treeClickListener);
+		this.sidebarTree.addListener(new TreeItemClickListener(this));
 
 		this.addComponent(this.sidebarTree);
 	}
@@ -147,7 +119,7 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 		this.sidebarTree.setValue(item);
 	}
 
-	private boolean doCollapse(TreeItem treeItem) {
+	protected boolean doCollapse(TreeItem treeItem) {
 		if (treeItem.getValue() != null) {
 			return false;
 		}
@@ -161,7 +133,7 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 		return true;
 	}
 
-	private ActionListener getLinkActions(final String toolName, Project project) {
+	protected ActionListener getLinkActions(final String toolName, Project project) {
 		if (toolName == null) {
 			return null;
 		}
@@ -188,6 +160,23 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 
 		return null;
 	}
+
+	public void setSidebarTree(final Tree sidebarTree) {
+		this.sidebarTree = sidebarTree;
+	}
+
+	public void setContextUtil(final ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
+	}
+
+	public void setPresenter(final WorkbenchSidebarPresenter presenter) {
+		this.presenter = presenter;
+	}
+
+	public void setTransactionManager(final PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
+	}
+
 
 	public class TreeItem {
 
@@ -224,5 +213,41 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 		public String getCaption() {
 			return this.caption;
 		}
+	}
+
+	class TreeItemClickListener implements ItemClickEvent.ItemClickListener {
+
+		private WorkbenchSidebar workbenchSidebar;
+
+		public TreeItemClickListener(final WorkbenchSidebar workbenchSidebar) {
+			TreeItemClickListener.this.workbenchSidebar = workbenchSidebar;
+		}
+
+		@Override
+		public void itemClick(final ItemClickEvent event) {
+			final TransactionTemplate transactionTemplate = new TransactionTemplate(WorkbenchSidebar.this.transactionManager);
+			transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+
+				@Override
+				protected void doInTransactionWithoutResult(TransactionStatus status) {
+					if (event.getItemId() == null) {
+						return;
+					}
+
+					WorkbenchSidebar.LOG.trace(event.getItemId().toString());
+
+					TreeItem treeItem = (TreeItem) event.getItemId();
+
+					if (!TreeItemClickListener.this.workbenchSidebar.doCollapse(treeItem)) {
+						WorkbenchSidebar.this.presenter.updateProjectLastOpenedDate();
+
+						ActionListener listener = TreeItemClickListener.this.workbenchSidebar.getLinkActions(treeItem.getId(), contextUtil.getProjectInContext());
+
+						listener.doAction(event.getComponent().getWindow(), "/" + treeItem.getId(), true);
+					}
+				}
+			});
+		}
+
 	}
 }

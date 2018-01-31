@@ -702,4 +702,8 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	protected PopupButton getMemberButton() {
 		return memberButton;
 	}
+
+	public void setMemberButton(final PopupButton memberButton) {
+		this.memberButton = memberButton;
+	}
 }

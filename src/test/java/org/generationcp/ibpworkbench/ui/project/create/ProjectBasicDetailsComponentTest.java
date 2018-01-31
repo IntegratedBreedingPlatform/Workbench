@@ -188,6 +188,7 @@ public class ProjectBasicDetailsComponentTest {
 		final CropType newCropType = this.cropTypes.get(1);
 		this.testProject.setCropType(newCropType);
 		this.basicDetailsComponent.updateProjectDetailsFormField(this.testProject);
+
 		Mockito.verify(this.createProjectPanel).cropTypeChanged(newCropType);
 	}
 

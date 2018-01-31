@@ -59,7 +59,7 @@ public class ChangePasswordWindow extends BaseSubWindow implements InitializingB
 		this.assemble();
 	}
 
-	protected void initializeComponents() throws Exception {
+	protected void initializeComponents() {
 		this.setOverrideFocus(true);
 		this.addStyleName(Reindeer.WINDOW_LIGHT);
 		this.setCaption("Change Password");
@@ -126,6 +126,7 @@ public class ChangePasswordWindow extends BaseSubWindow implements InitializingB
 		this.setContent(layout);
 	}
 
+
 	protected void initializeActions() {
 		final User user = contextUtil.getCurrentWorkbenchUser();
 
@@ -144,7 +145,7 @@ public class ChangePasswordWindow extends BaseSubWindow implements InitializingB
 
 	}
 
-	protected void assemble() throws Exception {
+	protected void assemble() {
 		this.initializeComponents();
 		this.initializeLayout();
 		this.initializeActions();
@@ -153,6 +154,18 @@ public class ChangePasswordWindow extends BaseSubWindow implements InitializingB
 	@Override
 	public void updateLabels() {
 		// currently does nothing
+	}
+
+	public void setContextUtil(final ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
+	}
+
+	public Button getSaveButton() {
+		return saveButton;
+	}
+
+	public Button getCancelButton() {
+		return cancelButton;
 	}
 
 }

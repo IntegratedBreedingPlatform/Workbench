@@ -4,6 +4,7 @@ import com.jensjansson.pagedtable.PagedTable;
 import com.vaadin.addon.tableexport.ExcelExport;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanContainer;
+import com.vaadin.event.FieldEvents;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -241,26 +242,8 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 			}
 		});
 
-		this.exportBtn.addListener(new Button.ClickListener() {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void buttonClick(final Button.ClickEvent event) {
-				final String tableName = ProgramSummaryView.this.header.getValue().toString().split("\\[")[0].trim();
-				final String programName = ProgramSummaryView.this.contextUtil.getProjectInContext().getProjectName();
-
-				final ExcelExport export = new ExcelExport((Table) ProgramSummaryView.this.getComponent(1), tableName);
-				export.setReportTitle(programName + " - " + tableName);
-				export.setExportFileName((tableName + " " + programName + ".xls").replaceAll(" ", "_"));
-				export.setDisplayTotals(false);
-
-				ProgramSummaryView.LOG
-						.info("Exporting " + tableName + ": " + export.getExportFileName() + ".xls will be downloaded in a moment.");
-				export.export();
-
-			}
-		});
+		final String tableName = ProgramSummaryView.this.header.getValue().toString().split("\\[")[0].trim();
+		this.exportBtn.addListener(new ExportButtonListener(new ExcelExport((Table) ProgramSummaryView.this.getComponent(1), tableName), tableName));
 
 	}
 
@@ -591,4 +574,32 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		return this.programNurseriesTable;
 	}
 
+	class ExportButtonListener
+			implements Button.ClickListener {
+
+		private static final long serialVersionUID = 1L;
+
+		private ExcelExport excelExport;
+		private String tableName;
+
+		ExportButtonListener(final ExcelExport excelExport, final String tableName) {
+			ExportButtonListener.this.excelExport = excelExport;
+			ExportButtonListener.this.tableName = tableName;
+		}
+
+		@Override
+		public void buttonClick(final Button.ClickEvent event) {
+			final String programName = ProgramSummaryView.this.contextUtil.getProjectInContext().getProjectName();
+
+			excelExport.setReportTitle(programName + " - " + tableName);
+			excelExport.setExportFileName((tableName + " " + programName + ".xls").replaceAll(" ", "_"));
+			excelExport.setDisplayTotals(false);
+
+			ProgramSummaryView.LOG
+					.info("Exporting " + tableName + ": " + excelExport.getExportFileName() + ".xls will be downloaded in a moment.");
+			excelExport.export();
+
+		}
+
+	}
 }

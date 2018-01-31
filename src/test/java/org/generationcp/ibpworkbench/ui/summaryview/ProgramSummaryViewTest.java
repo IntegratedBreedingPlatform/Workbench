@@ -1,5 +1,6 @@
 package org.generationcp.ibpworkbench.ui.summaryview;
 
+import com.vaadin.addon.tableexport.ExcelExport;
 import com.vaadin.ui.Table;
 import junit.framework.Assert;
 import org.generationcp.commons.spring.util.ContextUtil;
@@ -20,6 +21,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 public class ProgramSummaryViewTest {
 
 	private static final String PROGRAM_UUID = "abcd-12345";
@@ -31,6 +36,7 @@ public class ProgramSummaryViewTest {
 	private static final Long TRIAL_COUNT = 10L;
 
 	private static final Long STUDIES_COUNT = 10L;
+	public static final String PROJECT_NAME = "ProjectName";
 
 	@Mock
 	private SimpleResourceBundleMessageSource messageSource;
@@ -54,6 +60,7 @@ public class ProgramSummaryViewTest {
 		// Setup mocks
 		final Project project = new Project();
 		project.setProjectId(10L);
+		project.setProjectName(PROJECT_NAME);
 		project.setUniqueID(ProgramSummaryViewTest.PROGRAM_UUID);
 		Mockito.doReturn(project).when(this.contextUtil).getProjectInContext();
 		Mockito.doReturn(ProgramSummaryViewTest.ACTIVITIES_COUNT).when(this.workbenchDataManager)
@@ -99,6 +106,35 @@ public class ProgramSummaryViewTest {
 				Arrays.copyOf(programActivities.getVisibleColumns(), programActivities.getVisibleColumns().length, String[].class)));
 		Assert.assertTrue(Arrays.equals(ProgramSummaryView.ALL_STUDIES_COLUMNS,
 				Arrays.copyOf(programStudies.getVisibleColumns(), programStudies.getVisibleColumns().length, String[].class)));
+	}
+
+	@Test
+	public void testInitializeData() {
+
+		this.summaryView.initializeData();
+
+		// Make sure the container data source of tables are initialized
+		assertNotNull(this.summaryView.getProgramTrialsTable().getContainerDataSource());
+		assertNotNull(this.summaryView.getProgramStudiesTable().getContainerDataSource());
+		assertNotNull(this.summaryView.getProgramNurseriesTable().getContainerDataSource());
+		assertNotNull(this.summaryView.getProgramActivitiesTable().getContainerDataSource());
+
+	}
+
+	@Test
+	public void testExportButtonListener() {
+
+		final ExcelExport excelExport = mock(ExcelExport.class);
+		final String tableName = "tableName";
+		final ProgramSummaryView.ExportButtonListener listener = this.summaryView.new ExportButtonListener(excelExport, tableName);
+
+		listener.buttonClick(null);
+
+		verify(excelExport).setReportTitle(PROJECT_NAME + " - " + tableName);
+		verify(excelExport).setExportFileName(tableName + "_" + PROJECT_NAME + ".xls");
+		verify(excelExport).setDisplayTotals(false);
+		verify(excelExport).export();
+
 	}
 
 	private List<ProjectActivity> getTestProjectActivities(final int noOfActivities) {
