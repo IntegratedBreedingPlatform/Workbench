@@ -10,14 +10,16 @@
 
 package org.generationcp.ibpworkbench.validator;
 
-import com.vaadin.data.validator.AbstractValidator;
-import com.vaadin.ui.Field;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import com.vaadin.data.validator.AbstractValidator;
+import com.vaadin.ui.Field;
+
 /**
- * <b>Description</b>: Tests if a Persons record with the same First Name and Last Name already exists.
+ * <b>Description</b>: Tests if a Persons record with the same First Name and
+ * Last Name already exists.
  *
  * <br>
  * <br>
@@ -36,8 +38,8 @@ public class PersonNameValidator extends AbstractValidator {
 	@Autowired
 	private ValidatorCounter validatorCounter;
 
-	private final Field firstName;
-	private final Field lastName;
+	private Field firstName;
+	private Field lastName;
 
 	public PersonNameValidator(final Field firstName, final Field lastName) {
 		super("Person with First Name \"{0}\" and Last Name \"{1}\" already exists.");
@@ -57,17 +59,34 @@ public class PersonNameValidator extends AbstractValidator {
 	@Override
 	public boolean isValid(final Object value) {
 		int personCounter;
-		personCounter = validatorCounter.getNameValidationCounter();
+
+		personCounter = this.validatorCounter.getNameValidationCounter();
 		personCounter++;
-		validatorCounter.setNameValidationCounter(personCounter);
+		this.validatorCounter.setNameValidationCounter(personCounter);
 
 		if (personCounter > 2) {
-			validatorCounter.setNameValidationCounter(0);
+			this.validatorCounter.setNameValidationCounter(0);
 			return true;
 		}
 
-		return !this.workbenchDataManager.isPersonExists(this.firstName.getValue().toString(), this.lastName.getValue().toString());
+		return !this.workbenchDataManager.isPersonExists(this.firstName.getValue().toString(),
+				this.lastName.getValue().toString());
 
 	}
 
+	void setFirstName(final Field firstName) {
+		this.firstName = firstName;
+	}
+
+	void setLastName(final Field lastName) {
+		this.lastName = lastName;
+	}
+
+	void setValidatorCounter(final ValidatorCounter validatorCounter) {
+		this.validatorCounter = validatorCounter;
+	}
+
+	void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
+		this.workbenchDataManager = workbenchDataManager;
+	}
 }

@@ -419,4 +419,9 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		return this.select.getValue();
 	}
 
+	
+	public Project getProject() {
+		return project;
+	}
+
 }

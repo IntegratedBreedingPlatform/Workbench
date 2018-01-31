@@ -76,7 +76,7 @@ public class CreateProjectPanelTest {
 		listener.buttonClick(event);
 
 		Mockito.verify(this.presenter).doAddNewProgram();
-		Mockito.verify(this.presenter).enableProgramMethodsAndLocationsTab();
+		Mockito.verify(this.presenter).enableProgramMethodsAndLocationsTab(this.window);
 
 		final ArgumentCaptor<Window.Notification> captor = ArgumentCaptor.forClass(Window.Notification.class);
 

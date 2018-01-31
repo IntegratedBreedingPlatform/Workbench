@@ -11,6 +11,9 @@ import javax.annotation.Resource;
 @Configurable
 public class ProjectTableCellStyleGenerator implements CellStyleGenerator {
 
+	public static final String GCP_SELECTED_PROJECT = "gcp-selected-project";
+	public static final String PROJECT_TABLE = "project-table";
+
 	private static final long serialVersionUID = 1L;
 
 	@Resource
@@ -35,11 +38,11 @@ public class ProjectTableCellStyleGenerator implements CellStyleGenerator {
 
 
 		if (projectId == null) {
-			return "project-table";
+			return PROJECT_TABLE;
 		} else if (currentProject != null && projectId.equals(currentProject.getProjectId())) {
-			return "gcp-selected-project";
+			return GCP_SELECTED_PROJECT;
 		}
 
-		return "project-table";
+		return PROJECT_TABLE;
 	}
 }
