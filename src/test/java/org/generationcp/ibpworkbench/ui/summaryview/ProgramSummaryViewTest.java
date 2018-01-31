@@ -1,6 +1,7 @@
 package org.generationcp.ibpworkbench.ui.summaryview;
 
 import com.vaadin.addon.tableexport.ExcelExport;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import junit.framework.Assert;
 import org.generationcp.commons.spring.util.ContextUtil;
@@ -22,8 +23,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 public class ProgramSummaryViewTest {
 
@@ -124,11 +125,33 @@ public class ProgramSummaryViewTest {
 	@Test
 	public void testExportButtonListener() {
 
-		final ExcelExport excelExport = mock(ExcelExport.class);
+		this.summaryView.initializeLayout();
+
 		final String tableName = "tableName";
-		final ProgramSummaryView.ExportButtonListener listener = this.summaryView.new ExportButtonListener(excelExport, tableName);
+		final Label header = new Label();
+		header.setValue(tableName);
+		this.summaryView.setHeader(header);
+		this.summaryView.addComponent(new Table());
+
+		final ProgramSummaryView.ExportButtonListener listener = Mockito.spy(this.summaryView.new ExportButtonListener());
+
+		doNothing().when(listener).doExport(Mockito.any(ExcelExport.class), eq(tableName));
 
 		listener.buttonClick(null);
+
+		// Make sure that doExport is called when the button is clicked
+		verify(listener).doExport(Mockito.any(ExcelExport.class), eq(tableName));
+
+	}
+
+	@Test
+	public void testExportButtonListenerDoExport() {
+
+		final ExcelExport excelExport = mock(ExcelExport.class);
+		final String tableName = "tableName";
+		final ProgramSummaryView.ExportButtonListener listener = this.summaryView.new ExportButtonListener();
+
+		listener.doExport(excelExport, tableName);
 
 		verify(excelExport).setReportTitle(PROJECT_NAME + " - " + tableName);
 		verify(excelExport).setExportFileName(tableName + "_" + PROJECT_NAME + ".xls");

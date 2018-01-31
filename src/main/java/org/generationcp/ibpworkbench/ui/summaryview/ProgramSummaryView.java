@@ -242,8 +242,7 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 			}
 		});
 
-		final String tableName = ProgramSummaryView.this.header.getValue().toString().split("\\[")[0].trim();
-		this.exportBtn.addListener(new ExportButtonListener(new ExcelExport((Table) ProgramSummaryView.this.getComponent(1), tableName), tableName));
+		this.exportBtn.addListener(new ExportButtonListener());
 
 	}
 
@@ -574,21 +573,25 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		return this.programNurseriesTable;
 	}
 
+	public void setHeader(final Label header) {
+		this.header = header;
+	}
+
 	class ExportButtonListener
 			implements Button.ClickListener {
 
 		private static final long serialVersionUID = 1L;
 
-		private ExcelExport excelExport;
-		private String tableName;
-
-		ExportButtonListener(final ExcelExport excelExport, final String tableName) {
-			ExportButtonListener.this.excelExport = excelExport;
-			ExportButtonListener.this.tableName = tableName;
-		}
-
 		@Override
 		public void buttonClick(final Button.ClickEvent event) {
+
+			final String tableName = ProgramSummaryView.this.header.getValue().toString().split("\\[")[0].trim();
+			ExportButtonListener.this.doExport(new ExcelExport((Table) ProgramSummaryView.this.getComponent(1), tableName), tableName);
+
+		}
+
+		void doExport(final ExcelExport excelExport, final String tableName) {
+
 			final String programName = ProgramSummaryView.this.contextUtil.getProjectInContext().getProjectName();
 
 			excelExport.setReportTitle(programName + " - " + tableName);
@@ -600,6 +603,7 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 			excelExport.export();
 
 		}
+
 
 	}
 }
