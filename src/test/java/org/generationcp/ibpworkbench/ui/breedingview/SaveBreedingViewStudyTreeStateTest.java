@@ -1,14 +1,26 @@
 package org.generationcp.ibpworkbench.ui.breedingview;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
+
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.middleware.domain.dms.FolderReference;
+import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.UserProgramStateDataManager;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.dms.DmsProject;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,14 +28,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
 
 /**
  * Created by Daniel Villafuerte on 6/22/2015.
@@ -112,6 +116,29 @@ public class SaveBreedingViewStudyTreeStateTest {
 		assertEquals("STUDY", savedTreeState.get(0));
 		assertEquals(testReference1.getId().toString(), savedTreeState.get(1));
 		assertEquals(testReference2.getId().toString(), savedTreeState.get(2));
+	}
+	
+	@Test
+	public void testGetExpandedIdsWithNoExpandedFolder() {
+		testTable.setCollapsed(testReference1, true);
+		List<String> expandedIds = this.dut.getExpandedIds();
+		Assert.assertEquals(1, expandedIds.size());
+	}
+	
+	@Test
+	public void testGetExpandedIdsWithExpandedFolders() {
+		testTable.setCollapsed(testReference1, false);
+		testTable.setCollapsed(testReference2, false);
+		List<String> expandedIds = this.dut.getExpandedIds();
+		Assert.assertEquals(3, expandedIds.size());
+	}
+	
+	@Test
+	public void testGetFirstLevelFolders() {
+		List<Reference> firstLevelFolders = this.dut.getFirstLevelFolders();
+		Assert.assertEquals(1, firstLevelFolders.size());
+		Reference folder = firstLevelFolders.get(0);
+		Assert.assertEquals(testReference1.getId(), folder.getId());
 	}
 
 	protected SaveBreedingViewStudyTreeState constructTestObject() {

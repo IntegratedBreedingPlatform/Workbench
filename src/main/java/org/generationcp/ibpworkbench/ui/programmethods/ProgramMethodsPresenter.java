@@ -298,7 +298,11 @@ public class ProgramMethodsPresenter {
 		return methodClasses;
 	}
 
-	public void setGerplasmDataManager(final GermplasmDataManager gerplasmDataManager) {
+	public void setGermplasmDataManager(final GermplasmDataManager gerplasmDataManager) {
 		this.gerplasmDataManager = gerplasmDataManager;
+	}
+	
+	public void setContextUtil(ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
 	}
 }

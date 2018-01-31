@@ -2,6 +2,9 @@ package org.generationcp.ibpworkbench.ui.programmethods;
 
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.ibpworkbench.data.initializer.MethodViewTestDataInitializer;
+import org.generationcp.middleware.data.initializer.MethodTestDataInitializer;
+import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -12,16 +15,21 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public class ProgramMethodsPresenterTest {
 
+	private static final Integer USER_ID = 1;
 	private static final int NO_OF_METHODS = 5;
 	private static final int NO_OF_METHODS_WITH_PROGRAM_UUID = 3;
 
@@ -39,6 +47,9 @@ public class ProgramMethodsPresenterTest {
 
 	@Mock
 	private ProgramMethodsView programMethodsView;
+	
+	@Mock
+	private BreedingMethodTracker breedingMethodTracker;
 
 	private static final String DUMMY_PROGRAM_UUID = "1234567890";
 	private static final Integer NO_OF_FAVORITES = 2;
@@ -49,17 +60,11 @@ public class ProgramMethodsPresenterTest {
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
-		this.project = this.getProject(ProgramMethodsPresenterTest.DUMMY_PROGRAM_UUID);
+		this.project = ProjectTestDataInitializer.getProject(ProgramMethodsPresenterTest.DUMMY_PROGRAM_UUID);
 		this.controller = Mockito.spy(new ProgramMethodsPresenter(this.programMethodsView, this.project));
-		this.controller.setGerplasmDataManager(this.gerplasmDataManager);
-	}
-
-	private Project getProject(final String dummyProgramUuid) {
-		final Project project = new Project();
-		project.setProjectId(1L);
-		project.setProjectName("Project Name");
-		project.setUniqueID(ProgramMethodsPresenterTest.DUMMY_PROGRAM_UUID);
-		return project;
+		this.controller.setGermplasmDataManager(this.gerplasmDataManager);
+		this.controller.setContextUtil(this.contextUtil);
+		Mockito.when(contextUtil.getCurrentWorkbenchUserId()).thenReturn(USER_ID);
 	}
 
 	@Test
@@ -118,6 +123,17 @@ public class ProgramMethodsPresenterTest {
 
 		Mockito.when(this.gerplasmDataManager.getMethodByName(methodName, this.project.getUniqueID())).thenReturn(new Method());
 		Assert.assertFalse("Expected to return true for existing method but didn't.", this.controller.isExistingMethod(methodName));
+	}
+	
+	@Test
+	public void testSaveNewBreedingMethod() {
+		MethodView method = MethodViewTestDataInitializer.createMethodView();
+		Mockito.when(this.gerplasmDataManager.getMethodByName(Matchers.anyString(), Matchers.anyString())).thenReturn(new Method());
+		MethodView result = this.controller.saveNewBreedingMethod(method);
+		Assert.assertEquals(method.getMname(), result.getMname());
+		Assert.assertEquals(method.getMcode(), result.getMcode());
+		Assert.assertEquals(ProgramMethodsPresenterTest.USER_ID, result.getUser());
+		
 	}
 
 	private void setUpFavoriteMethods(final String entityType) throws MiddlewareQueryException {
