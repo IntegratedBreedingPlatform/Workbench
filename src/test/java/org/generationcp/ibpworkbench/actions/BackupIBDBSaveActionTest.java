@@ -96,7 +96,7 @@ public class BackupIBDBSaveActionTest {
 
 		final Window.Notification notification = captor.getValue();
 		assertEquals(SUCCESS, notification.getCaption());
-		assertEquals("<br/>" + BACKUP_COMPLETE, notification.getDescription());
+		assertEquals("</br>" + BACKUP_COMPLETE, notification.getDescription());
 
 	}
 
