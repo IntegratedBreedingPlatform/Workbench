@@ -127,4 +127,9 @@ public class BackupIBDBSaveAction implements ConfirmDialog.Listener, Button.Clic
 	public void setMysqlUtil(final MySQLUtil mysqlUtil) {
 		this.mysqlUtil = mysqlUtil;
 	}
+
+	
+	public Project getSelectedProject() {
+		return selectedProject;
+	}
 }

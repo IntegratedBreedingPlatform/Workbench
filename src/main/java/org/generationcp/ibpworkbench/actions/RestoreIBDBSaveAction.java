@@ -195,4 +195,9 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 		return this.hasRestoreError;
 	}
 
+	
+	public Project getProject() {
+		return project;
+	}
+
 }
