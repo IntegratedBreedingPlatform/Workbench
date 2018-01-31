@@ -65,6 +65,7 @@ public class ProjectBasicDetailsComponentTest {
 		Mockito.when(this.messageSource.getMessage(Message.DUPLICATE_PROGRAM_NAME_ERROR)).thenReturn(DUPLICATE_NAME_ERROR);
 		Mockito.when(this.messageSource.getMessage("NO_PROGRAM_NAME_ERROR")).thenReturn(NO_PROGRAM_NAME_ERROR);
 		Mockito.when(this.messageSource.getMessage("PROGRAM_NAME_INVALID_ERROR")).thenReturn(INVALID_PROGRAM_NAME);
+		this.basicDetailsComponent = new ProjectBasicDetailsComponent(this.createProjectPanel);
 		this.basicDetailsComponent.setIsUpdate(false);
 		this.basicDetailsComponent.setMessageSource(this.messageSource);
 		this.basicDetailsComponent.setWorkbenchDataManager(this.workbenchDataManager);
@@ -180,6 +181,7 @@ public class ProjectBasicDetailsComponentTest {
 	
 	@Test
 	public void testCropTypeChanged() {
+		// Say that another crop was chosen before
 		this.basicDetailsComponent.setOldCropType(this.cropTypes.get(0));
 		
 		// Change selected crop type
