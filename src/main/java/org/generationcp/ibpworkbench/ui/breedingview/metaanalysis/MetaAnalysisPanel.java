@@ -34,7 +34,6 @@ import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.middleware.domain.dms.*;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareException;
-import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -92,7 +91,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 	@Autowired
 	private StudyDataManager studyDataManager;
 
-	public MetaAnalysisPanel(Project currentProject, Database database) {
+	public MetaAnalysisPanel(final Project currentProject) {
 		this.currentProject = currentProject;
 	}
 

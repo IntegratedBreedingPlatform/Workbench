@@ -30,10 +30,11 @@ public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSucc
 
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchAuthenticationSuccessHandler.class);
 
+	private static final String DEFAULT_TARGET_URL = "/main";
+	
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
 
-	private final String defaultTargetUrl = "/main";
 
 	private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
@@ -41,9 +42,9 @@ public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSucc
 	public void onAuthenticationSuccess(final HttpServletRequest request, final HttpServletResponse response,
 			final Authentication authentication) throws IOException, ServletException {
 
-		final String targetUrl = this.defaultTargetUrl;
+		final String targetUrl = DEFAULT_TARGET_URL;
 		if (response.isCommitted()) {
-			this.LOG.debug("Response has already been committed. Unable to redirect to " + targetUrl);
+			LOG.debug("Response has already been committed. Unable to redirect to " + targetUrl);
 			return;
 		}
 

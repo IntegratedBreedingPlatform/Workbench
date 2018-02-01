@@ -101,7 +101,8 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 
 		this.newProjectTitleArea.setSizeUndefined();
 		this.newProjectTitleArea.setWidth("100%");
-		this.newProjectTitleArea.setMargin(false, false, false, false); // move this to css
+		// move this to css
+		this.newProjectTitleArea.setMargin(false, false, false, false);
 
 		this.projectBasicDetailsComponent = new ProjectBasicDetailsComponent(this, true);
 		this.projectBasicDetailsComponent.setDebugId("projectBasicDetailsComponent");

@@ -95,7 +95,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 		final Project project = new Project();
 		this.ssaPanel = new SingleSiteAnalysisDetailsPanel(new Tool(), this.input, this.factors, this.trialFactors,
-				project, new SingleSiteAnalysisPanel(project, null));
+				project, new SingleSiteAnalysisPanel(project));
 		this.ssaPanel.setMessageSource(this.messageSource);
 		this.ssaPanel.setStudyDataManager(this.studyDataManager);
 

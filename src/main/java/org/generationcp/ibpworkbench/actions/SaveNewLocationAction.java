@@ -103,9 +103,7 @@ public class SaveNewLocationAction implements ClickListener {
 	protected LocationViewModel getLocationFromForm() {
 		@SuppressWarnings("unchecked") final BeanItem<LocationViewModel> locationBean =
 				(BeanItem<LocationViewModel>) this.newLocationForm.getItemDataSource();
-		final LocationViewModel locModel = locationBean.getBean();
-
-		return locModel;
+		return locationBean.getBean();
 	}
 
 	void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {

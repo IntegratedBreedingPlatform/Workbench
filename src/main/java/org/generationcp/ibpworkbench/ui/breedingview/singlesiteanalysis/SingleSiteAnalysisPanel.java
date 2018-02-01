@@ -38,7 +38,6 @@ import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.exceptions.MiddlewareException;
-import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -256,7 +255,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 	private static final String CAMEL_CASE_NAMED_COLUMN_2 = "Description";
 	private static final String CAMEL_CASE_NAMED_COLUMN_3 = "Scale";
 
-	public SingleSiteAnalysisPanel(Project currentProject, Database database) {
+	public SingleSiteAnalysisPanel(final Project currentProject) {
 		this.currentProject = currentProject;
 	}
 

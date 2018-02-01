@@ -37,6 +37,13 @@ import java.util.Map;
 @Configurable
 public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 
+	private static final String DELETE_PROJECT = "delete_project";
+	private static final String ABOUT_BMS = "about_bms";
+	private static final String PROJECT_LOCATION = "project_location";
+	private static final String PROJECT_METHOD = "project_method";
+	private static final String UPDATE_PROJECT = "update_project";
+	private static final String TOOL_VERSIONS = "tool_versions";
+	private static final String MANAGE_PROGRAM = "manage_program";
 	private static final long serialVersionUID = 5744204745926145144L;
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchSidebar.class);
 	public static final Map<String, TreeItem> sidebarTreeMap = new HashMap<>();
@@ -142,19 +149,19 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 			return new LaunchWorkbenchToolAction(ToolEnum.equivalentToolEnum(toolName));
 		} else if (ChangeWindowAction.WindowEnums.isCorrectTool(toolName)) {
 			return new ChangeWindowAction(ChangeWindowAction.WindowEnums.equivalentWindowEnum(toolName), project);
-		} else if (toolName.equals("manage_program")) {
+		} else if (MANAGE_PROGRAM.equals(toolName)) {
 			return new OpenManageProgramPageAction();
-		} else if (toolName.equals("tool_versions")) {
+		} else if (TOOL_VERSIONS.equals(toolName)) {
 			return new OpenToolVersionsAction();
-		} else if (toolName.equals("update_project")) {
+		} else if (UPDATE_PROJECT.equals(toolName)) {
 			return new OpenUpdateProjectPageAction();
-		} else if (toolName.equals("project_method")) {
+		} else if (PROJECT_METHOD.equals(toolName)) {
 			return new OpenProgramMethodsAction();
-		} else if (toolName.equals("project_location")) {
+		} else if (PROJECT_LOCATION.equals(toolName)) {
 			return new OpenProgramLocationsAction();
-		} else if (toolName.equals("about_bms")) {
+		} else if (ABOUT_BMS.equals(toolName)) {
 			return new PageAction("/ibpworkbench/controller/about/");
-		} else if (toolName.equals("delete_project")) {
+		} else if (DELETE_PROJECT.equals(toolName)) {
 			return new DeleteProjectAction();
 		}
 

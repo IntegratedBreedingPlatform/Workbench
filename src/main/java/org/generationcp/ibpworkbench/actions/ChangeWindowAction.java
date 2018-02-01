@@ -25,7 +25,6 @@ import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSi
 import org.generationcp.ibpworkbench.ui.programmembers.ProgramMembersPanel;
 import org.generationcp.ibpworkbench.ui.recovery.BackupAndRestoreView;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
-import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,12 +100,12 @@ public class ChangeWindowAction implements ClickListener, ActionListener {
 			window.showContent(gxeAnalysisPanel);
 		} else if (WindowEnums.BREEDING_VIEW.getwindowName().equals(windowName)) {
 			appLaunched = this.messageSource.getMessage(Message.TITLE_SSA);
-			final SingleSiteAnalysisPanel breedingViewPanel = new SingleSiteAnalysisPanel(this.project, Database.LOCAL);
+			final SingleSiteAnalysisPanel breedingViewPanel = new SingleSiteAnalysisPanel(this.project);
 			breedingViewPanel.setDebugId("breedingViewPanel");
 			window.showContent(breedingViewPanel);
 		} else if (WindowEnums.BV_META_ANALYSIS.getwindowName().equals(windowName)) {
 			appLaunched = this.messageSource.getMessage(Message.TITLE_METAANALYSIS);
-			final MetaAnalysisPanel metaAnalyis = new MetaAnalysisPanel(this.project, Database.LOCAL);
+			final MetaAnalysisPanel metaAnalyis = new MetaAnalysisPanel(this.project);
 			metaAnalyis.setDebugId("metaAnalyis");
 			window.showContent(metaAnalyis);
 		}

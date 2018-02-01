@@ -21,7 +21,7 @@ import java.io.IOException;
  */
 public class AppLauncherService {
 
-	private final static Logger LOG = LoggerFactory.getLogger(AppLauncherService.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AppLauncherService.class);
 	public static final String LAUNCHED = "Launched ";
 
 	@Resource
