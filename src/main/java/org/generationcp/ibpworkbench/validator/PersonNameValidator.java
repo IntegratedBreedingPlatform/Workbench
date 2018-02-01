@@ -1,29 +1,25 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * <p/>
  * Generation Challenge Programme (GCP)
- *
- *
+ * <p/>
+ * <p/>
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.validator;
 
-import com.vaadin.data.validator.AbstractValidator;
-import com.vaadin.ui.Field;
-import org.generationcp.commons.exceptions.InternationalizableException;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import com.vaadin.data.validator.AbstractValidator;
+import com.vaadin.ui.Field;
+
 /**
- * <b>Description</b>: Tests if a Persons record with the same First Name and Last Name already exists.
+ * <b>Description</b>: Tests if a Persons record with the same First Name and
+ * Last Name already exists.
  *
  * <br>
  * <br>
@@ -36,49 +32,61 @@ public class PersonNameValidator extends AbstractValidator {
 
 	private static final long serialVersionUID = 4065915808146235650L;
 
-	private static final Logger LOG = LoggerFactory.getLogger(PersonNameValidator.class);
-
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
 
-	private final Field firstName;
-	private final Field lastName;
+	@Autowired
+	private ValidatorCounter validatorCounter;
 
-	public PersonNameValidator(Field firstName, Field lastName) {
+	private Field firstName;
+	private Field lastName;
+
+	public PersonNameValidator(final Field firstName, final Field lastName) {
 		super("Person with First Name \"{0}\" and Last Name \"{1}\" already exists.");
 		this.firstName = firstName;
 		this.lastName = lastName;
 	}
 
 	@Override
-	public void validate(Object value) throws InvalidValueException {
+	public void validate(final Object value) {
 		if (!this.isValid(value)) {
-			String message =
-					this.getErrorMessage().replace("{0}", this.firstName.getValue().toString())
-							.replace("{1}", this.lastName.getValue().toString());
+			final String message = this.getErrorMessage().replace("{0}", this.firstName.getValue().toString())
+					.replace("{1}", this.lastName.getValue().toString());
 			throw new InvalidValueException(message);
 		}
 	}
 
 	@Override
-	public boolean isValid(Object value) {
+	public boolean isValid(final Object value) {
 		int personCounter;
-		IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-		personCounter = app.getSessionData().getNameValidationCounter();
+
+		personCounter = this.validatorCounter.getNameValidationCounter();
 		personCounter++;
-		app.getSessionData().setNameValidationCounter(personCounter);
+		this.validatorCounter.setNameValidationCounter(personCounter);
 
 		if (personCounter > 2) {
-			app.getSessionData().setNameValidationCounter(0);
+			this.validatorCounter.setNameValidationCounter(0);
 			return true;
 		}
 
-		try {
-			return !this.workbenchDataManager.isPersonExists(this.firstName.getValue().toString(), this.lastName.getValue().toString());
-		} catch (Exception e) {
-			PersonNameValidator.LOG.error(e.getMessage(), e);
-			throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
-		}
+		return !this.workbenchDataManager.isPersonExists(this.firstName.getValue().toString(),
+				this.lastName.getValue().toString());
+
 	}
 
+	void setFirstName(final Field firstName) {
+		this.firstName = firstName;
+	}
+
+	void setLastName(final Field lastName) {
+		this.lastName = lastName;
+	}
+
+	void setValidatorCounter(final ValidatorCounter validatorCounter) {
+		this.validatorCounter = validatorCounter;
+	}
+
+	void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
+		this.workbenchDataManager = workbenchDataManager;
+	}
 }

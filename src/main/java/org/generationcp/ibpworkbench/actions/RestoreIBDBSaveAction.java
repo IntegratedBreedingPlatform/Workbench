@@ -1,26 +1,16 @@
-
 package org.generationcp.ibpworkbench.actions;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.concurrent.Callable;
-
+import com.vaadin.ui.Window;
 import org.generationcp.commons.util.MySQLUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.database.CropDatabaseGenerator;
 import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -28,7 +18,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.vaadin.easyuploads.FileFactory;
 
-import com.vaadin.ui.Window;
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 @Configurable
 public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, InitializingBean, FileFactory {
@@ -49,7 +44,7 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 	private MySQLUtil mysqlUtil;
 
 	@Autowired
-	private SessionData sessionData;
+	private org.generationcp.commons.spring.util.ContextUtil contextUtil;
 
 	@Autowired
 	private ProgramService programService;
@@ -83,7 +78,7 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 					@Override
 					public Boolean call() throws Exception {
 						final CropDatabaseGenerator cropDatabaseGenerator =
-								new CropDatabaseGenerator(RestoreIBDBSaveAction.this.sessionData.getLastOpenedProject().getCropType());
+								new CropDatabaseGenerator(contextUtil.getProjectInContext().getCropType());
 						cropDatabaseGenerator.setWorkbenchDataManager(RestoreIBDBSaveAction.this.workbenchDataManager);
 						return cropDatabaseGenerator.generateDatabase();
 					}
@@ -94,34 +89,27 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 						this.messageSource.getMessage(Message.RESTORE_IBDB_COMPLETE));
 
 				// Set current user as owner of restored germplasm lists
-				final Integer userId = this.workbenchDataManager.getLocalIbdbUserId(this.sessionData.getUserData().getUserid(),
-						this.project.getProjectId());
+				final Integer userId =
+						this.workbenchDataManager.getLocalIbdbUserId(contextUtil.getCurrentWorkbenchUserId(), this.project.getProjectId());
 				this.updateGermplasmListOwnership(userId);
 
 				this.addDefaultAdminAndCurrentUserAsMembersOfRestoredPrograms();
 
 				// Log a record in ProjectActivity
-				this.logProjectActivity(userId);
+				if (userId != null) {
+					this.contextUtil.logProgramActivity(this.messageSource.getMessage(Message.CROP_DATABASE_RESTORE),
+							this.messageSource.getMessage(Message.RESTORED_BACKUP_FROM) + " " + this.restoreFile.getName());
+				}
 
 				this.hasRestoreError = false;
 			} catch (final Exception e) {
 				RestoreIBDBSaveAction.LOG.error(e.getMessage(), e);
-				MessageNotifier.showError(this.sourceWindow, this.messageSource.getMessage(Message.RESTORE_OPERATION_ERROR),
-						e.getMessage());
+				MessageNotifier
+						.showError(this.sourceWindow, this.messageSource.getMessage(Message.RESTORE_OPERATION_ERROR), e.getMessage());
 				this.hasRestoreError = true;
 			}
 		} else {
 			this.hasRestoreError = true;
-		}
-	}
-
-	void logProjectActivity(final Integer userId) {
-		if (userId != null) {
-			final ProjectActivity projAct =
-					new ProjectActivity(null, this.project, this.messageSource.getMessage(Message.CROP_DATABASE_RESTORE),
-							this.messageSource.getMessage(Message.RESTORED_BACKUP_FROM) + " " + this.restoreFile.getName(),
-							this.sessionData.getUserData(), new Date());
-			this.workbenchDataManager.addProjectActivity(projAct);
 		}
 	}
 
@@ -137,22 +125,14 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 	void addDefaultAdminAndCurrentUserAsMembersOfRestoredPrograms() {
 
 		final List<Project> projects = this.workbenchDataManager.getProjectsByCrop(this.project.getCropType());
-		final User currentUser = this.sessionData.getUserData();
-		HashSet<User> users = new HashSet<>();
+		final User currentUser = contextUtil.getCurrentWorkbenchUser();
+		final HashSet<User> users = new HashSet<>();
 		users.add(currentUser);
-		
-		for (final Project project : projects) {
-			// The default "ADMIN" user is being added in ProgramService
-			this.programService.saveProgramMembers(project, users);
-		}
-	}
 
-	boolean currentUserIsDefaultAdmin() {
-		final User defaultAdminUser = this.workbenchDataManager.getUserByUsername(ProgramService.ADMIN_USERNAME);
-		if (defaultAdminUser != null) {
-			return defaultAdminUser.equals(this.sessionData.getUserData());
+		for (final Project proj : projects) {
+			// The default "ADMIN" user is being added in ProgramService
+			this.programService.saveProgramMembers(proj, users);
 		}
-		return false;
 	}
 
 	@Override
@@ -191,8 +171,8 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 		this.mysqlUtil = mysqlUtil;
 	}
 
-	public void setSessionData(final SessionData sessionData) {
-		this.sessionData = sessionData;
+	public void setContextUtil(final org.generationcp.commons.spring.util.ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
 	}
 
 	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
@@ -213,6 +193,11 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 
 	public boolean isHasRestoreError() {
 		return this.hasRestoreError;
+	}
+
+	
+	public Project getProject() {
+		return project;
 	}
 
 }

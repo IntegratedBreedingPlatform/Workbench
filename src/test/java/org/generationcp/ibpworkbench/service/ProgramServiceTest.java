@@ -1,12 +1,15 @@
-
 package org.generationcp.ibpworkbench.service;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import org.generationcp.ibpworkbench.SessionData;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.generationcp.commons.context.ContextConstants;
+import org.generationcp.commons.context.ContextInfo;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.manager.api.UserDataManager;
@@ -17,24 +20,29 @@ import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.IbdbUserMap;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
-import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
-import org.generationcp.middleware.pojos.workbench.Role;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProgramServiceTest {
+
+	private static final int USER_ID = 123;
+	private static final String SAMPLE_AUTH_TOKEN_VALUE = "RANDOM_TOKEN";
+
+	@Mock
+	private HttpServletRequest request;
+
+	@Mock
+	private HttpSession httpSession;
 
 	@Mock
 	private RequestAttributes attrs;
@@ -49,11 +57,14 @@ public class ProgramServiceTest {
 	private UserDataManager userDataManager;
 
 	@Mock
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	@Mock
 	private ProjectUserInfoDAO projectUserInfoDAO;
-
+	
+	@Mock
+	private Cookie cookie;
+	
 	@InjectMocks
 	private final ProgramService programService = new ProgramService();
 
@@ -67,12 +78,15 @@ public class ProgramServiceTest {
 	@Before
 	public void setup() throws Exception {
 
-		final MockHttpServletRequest request = new MockHttpServletRequest();
-		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+		Mockito.when(this.request.getSession()).thenReturn(this.httpSession);
+		Mockito.when(this.cookie.getName()).thenReturn(ContextConstants.PARAM_AUTH_TOKEN);;
+		Mockito.when(this.cookie.getValue()).thenReturn(SAMPLE_AUTH_TOKEN_VALUE);
+		Mockito.when(this.request.getCookies()).thenReturn(new Cookie[]{this.cookie});
 
 		this.initializeTestPersonsAndUsers();
 
 		Mockito.when(this.workbenchDataManager.getProjectUserInfoDao()).thenReturn(this.projectUserInfoDAO);
+		Mockito.when(this.contextUtil.getCurrentWorkbenchUserId()).thenReturn(USER_ID);
 	}
 
 	private void initializeTestPersonsAndUsers() {
@@ -86,7 +100,7 @@ public class ProgramServiceTest {
 		this.defaultAdminUser = this.createUser(3, ProgramService.ADMIN_USERNAME, 3);
 
 		// Setup mocks
-		Mockito.when(this.sessionData.getUserData()).thenReturn(this.loggedInUser);
+		Mockito.when(this.contextUtil.getCurrentWorkbenchUser()).thenReturn(this.loggedInUser);
 		Mockito.when(this.userDataManager.getUserByUserName(this.loggedInUser.getName())).thenReturn(this.loggedInUser);
 		Mockito.when(this.userDataManager.getPersonByEmail(this.loggedInPerson.getEmail())).thenReturn(this.loggedInPerson);
 
@@ -103,7 +117,6 @@ public class ProgramServiceTest {
 		final Set<User> selectedUsers = new HashSet<User>();
 		selectedUsers.add(this.loggedInUser);
 		selectedUsers.add(this.memberUser);
-		this.setRoleTestDataAndMocks();
 
 		// Other WorkbenchDataManager mocks
 		Mockito.when(this.workbenchDataManager.getCropTypeByName(Matchers.anyString())).thenReturn(project.getCropType());
@@ -114,12 +127,21 @@ public class ProgramServiceTest {
 
 		// Verify that the key database operations for program creation are invoked.
 		Mockito.verify(this.workbenchDataManager).addProject(project);
-
+		Assert.assertEquals(USER_ID, project.getUserId());
+		Assert.assertNull(project.getLastOpenDate());
+		
 		this.verifyMockInteractionsForSavingProgramMembers();
 
 		// Verify that utility to create workspace directory was called
 		Mockito.verify(this.toolUtil).createWorkspaceDirectoriesForProject(project);
-
+		
+		// Verify session attribute was set
+		final ArgumentCaptor<Object> contextInfoCaptor = ArgumentCaptor.forClass(Object.class);
+		Mockito.verify(this.httpSession).setAttribute(Matchers.eq(ContextConstants.SESSION_ATTR_CONTEXT_INFO), contextInfoCaptor.capture());
+		final ContextInfo contextInfo = (ContextInfo) contextInfoCaptor.getValue();
+		Assert.assertEquals(USER_ID, contextInfo.getLoggedInUserId().intValue());
+		Assert.assertEquals(project.getProjectId(), contextInfo.getSelectedProjectId());
+		Assert.assertEquals(SAMPLE_AUTH_TOKEN_VALUE, contextInfo.getAuthToken());
 	}
 
 	@Test
@@ -198,7 +220,6 @@ public class ProgramServiceTest {
 		selectedUsers.add(this.loggedInUser);
 		selectedUsers.add(this.memberUser);
 		selectedUsers.add(this.defaultAdminUser);
-		this.setRoleTestDataAndMocks();
 
 		// call method to test
 		this.programService.saveProgramMembers(project, selectedUsers);
@@ -213,7 +234,6 @@ public class ProgramServiceTest {
 		final Set<User> selectedUsers = new HashSet<User>();
 		selectedUsers.add(this.loggedInUser);
 		selectedUsers.add(this.memberUser);
-		this.setRoleTestDataAndMocks();
 
 		// call method to test
 		this.programService.saveProgramMembers(project, selectedUsers);
@@ -230,16 +250,8 @@ public class ProgramServiceTest {
 		// Verify Ibdb_user_map is added for both current, member and default ADMIN users
 		Mockito.verify(this.workbenchDataManager, Mockito.times(3)).addIbdbUserMap(Matchers.any(IbdbUserMap.class));
 
-		// Verify Workbench_project_user_info and Workbench_project_user_role recordsd are created
+		// Verify Workbench_project_user_info records are created
 		Mockito.verify(this.workbenchDataManager, Mockito.times(3)).saveOrUpdateProjectUserInfo(Matchers.any(ProjectUserInfo.class));
-		Mockito.verify(this.workbenchDataManager).addProjectUserRole(Matchers.anyListOf(ProjectUserRole.class));
-	}
-
-	private void setRoleTestDataAndMocks() {
-		final List<Role> allRolesList = new ArrayList<Role>();
-		allRolesList.add(new Role(1, "CB Breeder", null));
-		allRolesList.add(new Role(2, "MAS Breeder", null));
-		Mockito.when(this.workbenchDataManager.getAllRoles()).thenReturn(allRolesList);
 	}
 
 	private Project createProject() {

@@ -21,7 +21,6 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -65,15 +64,12 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
 	private TwinTableSelect<User> select;
 
-	private Button btnCancel;
-	private Button btnSave;
+	private Button cancelButton;
+	private Button saveButton;
 	private Component buttonArea;
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
-
-	@Autowired
-	private SessionData sessionData;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -240,51 +236,9 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 	}
 
 	protected void initializeActions() {
-		this.btnSave.addListener(new ClickListener() {
+		this.saveButton.addListener(new SaveProjectButtonListener());
 
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void buttonClick(final ClickEvent clickEvent) {
-				final TransactionTemplate transactionTemplate = new TransactionTemplate(
-						ProjectMembersComponent.this.transactionManager);
-				transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-
-					@Override
-					protected void doInTransactionWithoutResult(final TransactionStatus status) {
-						try {
-							final Project newlyCreatedProgram = ProjectMembersComponent.this.presenter
-									.doAddNewProgram();
-							MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
-									ProjectMembersComponent.this.messageSource.getMessage(Message.SUCCESS),
-									newlyCreatedProgram.getProjectName() + " program has been successfully created.");
-
-							ProjectMembersComponent.this.sessionData.setLastOpenedProject(newlyCreatedProgram);
-							ProjectMembersComponent.this.sessionData.setSelectedProject(newlyCreatedProgram);
-
-							ProjectMembersComponent.this.presenter.enableProgramMethodsAndLocationsTab();
-
-						} catch (final Exception e) {
-
-							if ("basic_details_invalid".equals(e.getMessage())) {
-								return;
-							}
-
-							ProjectMembersComponent.LOG.error(
-									"Oops there might be serious problem on creating the program, investigate it!", e);
-
-							MessageNotifier.showError(clickEvent.getComponent().getWindow(),
-									ProjectMembersComponent.this.messageSource.getMessage(Message.DATABASE_ERROR),
-									ProjectMembersComponent.this.messageSource
-											.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
-
-						}
-					}
-				});
-			}
-		});
-
-		this.btnCancel.addListener(new ClickListener() {
+		this.cancelButton.addListener(new ClickListener() {
 
 			private static final long serialVersionUID = 1L;
 
@@ -302,14 +256,14 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 		buttonLayout.setSpacing(true);
 		buttonLayout.setMargin(true, false, false, false);
 
-		this.btnCancel = new Button("Reset");
-		this.btnCancel.setDebugId("btnCancel");
-		this.btnSave = new Button("Save");
-		this.btnSave.setDebugId("btnSave");
-		this.btnSave.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+		this.cancelButton = new Button("Reset");
+		this.cancelButton.setDebugId("btnCancel");
+		this.saveButton = new Button("Save");
+		this.saveButton.setDebugId("btnSave");
+		this.saveButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
-		buttonLayout.addComponent(this.btnCancel);
-		buttonLayout.addComponent(this.btnSave);
+		buttonLayout.addComponent(this.cancelButton);
+		buttonLayout.addComponent(this.saveButton);
 
 		return buttonLayout;
 	}
@@ -375,5 +329,64 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
 	public void setContextUtil(final ContextUtil contextUtil) {
 		this.contextUtil = contextUtil;
+	}
+
+	public void setCancelButton(Button cancelButton) {
+		this.cancelButton = cancelButton;
+	}
+
+	public void setSaveButton(Button saveButton) {
+		this.saveButton = saveButton;
+	}
+
+	public void setTransactionManager(PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
+	}
+
+	public void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+
+	class SaveProjectButtonListener implements Button.ClickListener {
+
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public void buttonClick(final ClickEvent clickEvent) {
+			final TransactionTemplate transactionTemplate = new TransactionTemplate(
+					ProjectMembersComponent.this.transactionManager);
+			transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+
+				@Override
+				protected void doInTransactionWithoutResult(final TransactionStatus status) {
+					try {
+						final Project newlyCreatedProgram = ProjectMembersComponent.this.presenter
+								.doAddNewProgram();
+
+						MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
+								ProjectMembersComponent.this.messageSource.getMessage(Message.SUCCESS),
+								newlyCreatedProgram.getProjectName() + " program has been successfully created.");
+
+						ProjectMembersComponent.this.presenter.enableProgramMethodsAndLocationsTab(clickEvent.getComponent().getWindow());
+
+					} catch (final Exception e) {
+
+						if ("basic_details_invalid".equals(e.getMessage())) {
+							return;
+						}
+
+						ProjectMembersComponent.LOG.error(
+								"Oops there might be serious problem on creating the program, investigate it!", e);
+
+						MessageNotifier.showError(clickEvent.getComponent().getWindow(),
+								ProjectMembersComponent.this.messageSource.getMessage(Message.DATABASE_ERROR),
+								ProjectMembersComponent.this.messageSource
+										.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
+
+					}
+				}
+			});
+		}
+
 	}
 }

@@ -1,12 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * <p/>
  * Generation Challenge Programme (GCP)
- *
- *
+ * <p/>
+ * <p/>
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.ui.project.create;
@@ -23,8 +22,6 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.commons.vaadin.validator.RegexValidator;
 import org.generationcp.commons.vaadin.validator.ValidationUtil;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.util.SchemaVersionUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.CropType;
@@ -40,7 +37,6 @@ import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.validator.AbstractValidator;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.ComboBox;
@@ -66,12 +62,9 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 
 	private GridLayout gridLayout;
 	private TextField projectNameField;
-	private TextField otherCropNameField;
 	private BmsDateField startDateField;
 	private ComboBox cropTypeCombo;
-
-	private Label lblOtherCrop;
-
+	
 	private Boolean isUpdate = false;
 
 	private StringBuilder errorDescription;
@@ -83,9 +76,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 
 	@Autowired
 	protected SimpleResourceBundleMessageSource messageSource;
-
-	@Autowired
-	protected SessionData sessionData;
 
 	@Autowired
 	@Qualifier("workbenchProperties")
@@ -126,31 +116,19 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		this.gridLayout.addStyleName("basic-details");
 
 		final Pattern projectNameInvalidCharPattern = Pattern.compile("^[^\\\\/:\\*\\?\"<>\\|]+$", Pattern.DOTALL);
-		final Pattern cropNameInvalidCharPattern = Pattern.compile("^[^<>'\":;,\\./\\|\\-=\\(\\)\\\\]+$", Pattern.DOTALL);
 
 		this.projectNameField = new TextField();
 		this.projectNameField.setDebugId("projectNameField");
 		this.projectNameField.setImmediate(true);
 		this.projectNameField.setRequired(true);
 		this.projectNameField.setRequiredError(this.messageSource.getMessage("PROGRAM_NAME_REQUIRED_ERROR"));
-		this.projectNameField.addValidator(new StringLengthValidator(this.messageSource.getMessage("PROGRAM_NAME_LENGTH_ERROR"), 3, 65, false));
-		this.projectNameField.addValidator(new RegexValidator(this.messageSource.getMessage("PROGRAM_NAME_INVALID_ERROR"),
-				projectNameInvalidCharPattern, true));
+		this.projectNameField
+				.addValidator(new StringLengthValidator(this.messageSource.getMessage("PROGRAM_NAME_LENGTH_ERROR"), 3, 65, false));
+		this.projectNameField.addValidator(
+				new RegexValidator(this.messageSource.getMessage("PROGRAM_NAME_INVALID_ERROR"), projectNameInvalidCharPattern, true));
 		this.projectNameField.setStyleName("hide-caption");
 		this.projectNameField.setWidth("250px");
 		this.projectNameField.setDebugId("vaadin_projectname_txt");
-
-		this.otherCropNameField = new TextField();
-		this.otherCropNameField.setDebugId("otherCropNameField");
-		this.otherCropNameField.setImmediate(true);
-		this.otherCropNameField.setRequired(false);
-		this.otherCropNameField.setRequiredError(this.messageSource.getMessage("CROP_NAME_REQUIRED_ERROR"));
-		this.otherCropNameField.addValidator(new StringLengthValidator(this.messageSource.getMessage("CROP_NAME_LENGTH_ERROR"), 3, 70, false));
-		this.otherCropNameField.addValidator(new RegexValidator(this.messageSource.getMessage("CROP_NAME_INVALID_ERROR"),
-				cropNameInvalidCharPattern, true));
-		this.otherCropNameField.addValidator(new ValueRangeValidator(this.messageSource.getMessage("CROP_NAME_RESERVED_ERROR")));
-		this.otherCropNameField.setStyleName("hide-caption");
-		this.otherCropNameField.setVisible(false);
 
 		this.startDateField = new BmsDateField();
 		this.startDateField.setDebugId("startDateField");
@@ -171,12 +149,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		lblCrop.setStyleName("label-bold");
 		lblCrop.setContentMode(Label.CONTENT_XHTML);
 
-		this.lblOtherCrop = new Label();
-		this.lblOtherCrop.setDebugId("lblOtherCrop");
-		this.lblOtherCrop.setValue(this.messageSource.getMessage(Message.BASIC_DETAILS_OTHER_CROP_NAME));
-		this.lblOtherCrop.setContentMode(Label.CONTENT_XHTML);
-		this.lblOtherCrop.setVisible(false);
-
 		final Label lblProjectName = new Label();
 		lblProjectName.setDebugId("lblProjectName");
 		lblProjectName.setValue(this.messageSource.getMessage(Message.BASIC_DETAILS_PROGRAM_NAME));
@@ -191,8 +163,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 
 		this.gridLayout.addComponent(lblCrop, 1, 1);
 		this.gridLayout.addComponent(this.cropTypeCombo, 2, 1);
-		this.gridLayout.addComponent(this.lblOtherCrop, 3, 1);
-		this.gridLayout.addComponent(this.otherCropNameField, 4, 1);
 		this.gridLayout.addComponent(lblProjectName, 1, 2);
 		this.gridLayout.addComponent(this.projectNameField, 2, 2);
 		this.gridLayout.addComponent(lblStartDate, 1, 3);
@@ -212,7 +182,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		this.setComponentAlignment(this.gridLayout, Alignment.TOP_LEFT);
 	}
 
-	private ComboBox createCropTypeComboBox() {
+	ComboBox createCropTypeComboBox() {
 		final List<CropType> cropTypes;
 		try {
 			cropTypes = this.workbenchDataManager.getInstalledCropDatabses();
@@ -257,18 +227,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 					return;
 				}
 
-				if (ProjectBasicDetailsComponent.this.messageSource.getMessage("GENERIC_CROP_DESCRIPTION")
-						.equals(((CropType) event.getProperty().getValue()).getCropName())) {
-					ProjectBasicDetailsComponent.this.otherCropNameField.setVisible(true);
-					ProjectBasicDetailsComponent.this.otherCropNameField.setRequired(true);
-					ProjectBasicDetailsComponent.this.lblOtherCrop.setVisible(true);
-				} else {
-					ProjectBasicDetailsComponent.this.otherCropNameField.setVisible(false);
-					ProjectBasicDetailsComponent.this.otherCropNameField.setRequired(false);
-					ProjectBasicDetailsComponent.this.otherCropNameField.setValue("");
-					ProjectBasicDetailsComponent.this.lblOtherCrop.setVisible(false);
-				}
-
 				if (!ProjectBasicDetailsComponent.this.isUpdate) {
 					if (ProjectBasicDetailsComponent.this.oldCropType == null) {
 						ProjectBasicDetailsComponent.this.oldCropType = ProjectBasicDetailsComponent.this.getCropTypeBasedOnInput();
@@ -277,25 +235,12 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 
 						if (!ProjectBasicDetailsComponent.this.oldCropType.getCropName().equalsIgnoreCase(newCropType.getCropName())) {
 							ProjectBasicDetailsComponent.this.createProjectPanel.cropTypeChanged(newCropType);
-							ProjectBasicDetailsComponent.LOG.debug("changed");
 						}
 
 						ProjectBasicDetailsComponent.this.oldCropType = newCropType;
 					}
 
 				}
-				if (ProjectBasicDetailsComponent.this.getWindow() != null) {
-					final String minimumCropVersion = SchemaVersionUtil.getMinimumCropVersion();
-					final String currentCropVersion = ProjectBasicDetailsComponent.this.getCropTypeBasedOnInput().getVersion();
-					if (!SchemaVersionUtil.checkIfVersionIsSupported(currentCropVersion, minimumCropVersion)) {
-						MessageNotifier.showWarning(ProjectBasicDetailsComponent.this.getWindow(), "",
-								ProjectBasicDetailsComponent.this.messageSource.getMessage(
-										Message.MINIMUM_CROP_VERSION_WARNING,
-										currentCropVersion != null ? currentCropVersion : ProjectBasicDetailsComponent.this.messageSource
-												.getMessage(Message.NOT_AVAILABLE)));
-					}
-				}
-
 			}
 		});
 
@@ -319,7 +264,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 
 		this.errorDescription = new StringBuilder();
 
-		if (projectName == null || projectName.equals("")) {
+		if (projectName == null || projectName.isEmpty()) {
 			this.errorDescription.append(this.messageSource.getMessage("NO_PROGRAM_NAME_ERROR")).append(" ");
 			success = false;
 		} else {
@@ -334,13 +279,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 				throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
 			}
 			// Run assigned validators
-
-			try {
-				this.otherCropNameField.validate();
-			} catch (final InvalidValueException e) {
-				this.errorDescription.append(ValidationUtil.getMessageFor(e));
-				success = false;
-			}
 
 			try {
 				this.projectNameField.validate();
@@ -382,13 +320,13 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 			this.startDateField.validate();
 		} catch (final InvalidValueException e) {
 			errorMessage = e.getMessage();
-			ProjectBasicDetailsComponent.LOG.debug(e.getMessage());
+			ProjectBasicDetailsComponent.LOG.debug(e.getMessage(), e);
 		}
 
 		return errorMessage;
 	}
 
-	Project getProjectDetails() throws InvalidValueException {
+	Project getProjectDetails() {
 		if (!this.validate()) {
 			throw new InvalidValueException(this.messageSource.getMessage("INVALID_BASIC_DETAILS_FORM_EXCEPTION"));
 		}
@@ -405,27 +343,14 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 	}
 
 	private CropType getCropTypeBasedOnInput() {
-
-		if (((CropType) this.cropTypeCombo.getValue()).getCropName()
-				.equalsIgnoreCase(this.messageSource.getMessage("GENERIC_CROP_DESCRIPTION"))) {
-			final String bmsVersion = this.workbenchProperties.getProperty("workbench.version", null);
-
-			final String newItemCaption = (String) this.otherCropNameField.getValue();
-			final CropType cropType = new CropType(newItemCaption);
-			cropType.setDbName("ibdbv2_" + newItemCaption.toLowerCase().replaceAll("\\s+", "_") + "_merged");
-			cropType.setVersion(bmsVersion);
-			return cropType;
-		} else {
-			return (CropType) this.cropTypeCombo.getValue();
-		}
-
+		return (CropType) this.cropTypeCombo.getValue();
 	}
 
 	private void disableCropTypeCombo() {
 		this.cropTypeCombo.setEnabled(false);
 	}
 
-	private void setIsUpdate(final Boolean isUpdate) {
+	protected void setIsUpdate(final Boolean isUpdate) {
 		this.isUpdate = isUpdate;
 	}
 
@@ -445,36 +370,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		this.projectNameField.setEnabled(false);
 	}
 
-	private class ValueRangeValidator extends AbstractValidator {
-
-		private static final long serialVersionUID = 1L;
-
-		ValueRangeValidator(final String errorMessage) {
-			super(errorMessage);
-		}
-
-		@Override
-		public boolean isValid(final Object value) {
-			final String trimmedValue = value.toString().trim();
-			final CropType cropType = ProjectBasicDetailsComponent.this.workbenchDataManager.getCropTypeByName(trimmedValue);
-			if (cropType != null) {
-				this.setErrorMessage(ProjectBasicDetailsComponent.this.messageSource.getMessage("CROP_TYPE_EXISTS_ERROR", trimmedValue));
-				return false;
-			}
-
-			for (final CropType.CropEnum crop : CropType.CropEnum.values()) {
-				if (crop.toString().equalsIgnoreCase(trimmedValue)) {
-					this.setErrorMessage(ProjectBasicDetailsComponent.this.messageSource.getMessage("SPECIFIC_CROP_NAME_RESERVED_ERROR",
-							trimmedValue));
-					return false;
-				}
-			}
-
-			return true;
-		}
-
-	}
-
 	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
 		this.workbenchDataManager = workbenchDataManager;
 	}
@@ -485,5 +380,30 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 
 	StringBuilder getErrorDescription() {
 		return this.errorDescription;
+	}
+
+	
+	public TextField getProjectNameField() {
+		return projectNameField;
+	}
+
+	
+	public BmsDateField getStartDateField() {
+		return startDateField;
+	}
+
+	
+	public ComboBox getCropTypeCombo() {
+		return cropTypeCombo;
+	}
+
+	
+	public CropType getOldCropType() {
+		return oldCropType;
+	}
+
+	
+	public void setOldCropType(CropType oldCropType) {
+		this.oldCropType = oldCropType;
 	}
 }

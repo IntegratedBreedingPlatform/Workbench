@@ -1,12 +1,12 @@
-
 package org.generationcp.ibpworkbench.ui;
 
-import java.util.Iterator;
-import java.util.Properties;
-
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import junit.framework.Assert;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.service.ProgramService;
@@ -25,23 +25,22 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.vaadin.hene.popupbutton.PopupButton;
 
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.VerticalLayout;
-
-import junit.framework.Assert;
+import java.util.Iterator;
+import java.util.Properties;
 
 public class WorkbenchMainViewTest {
 
 	public static final String PROJECT_NAME = "Maize Program 1";
+	public static final String CURRENT_USER_NAME = "John Doe";
 
 	@Mock
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Mock
 	private Properties workbenchProperties;
-	
+
 	@Mock
 	private WorkbenchDataManager workbenchDataManager;
 
@@ -63,6 +62,7 @@ public class WorkbenchMainViewTest {
 		final Person person = new Person("A", "B", "C");
 		person.setEmail("a@leafnode.io");
 		final User currentUser = new User(ADMIN_USER_ID);
+		currentUser.setName(CURRENT_USER_NAME);
 		currentUser.setPerson(person);
 
 		Mockito.when(contextUtil.getCurrentWorkbenchUser()).thenReturn(currentUser);
@@ -95,8 +95,7 @@ public class WorkbenchMainViewTest {
 	}
 
 	private void verifyLastOpenedProjectNameIsDisplayed() {
-		Assert.assertEquals("<h1>" + this.currentProject.getProjectName() + "</h1>",
-				this.workbenchMainView.getWorkbenchTitle().getValue());
+		Assert.assertEquals("<h1>" + this.currentProject.getProjectName() + "</h1>", this.workbenchMainView.getWorkbenchTitle().getValue());
 	}
 
 	private void verifyHeaderLayoutWHenShowingDashboard() {
@@ -269,7 +268,6 @@ public class WorkbenchMainViewTest {
 
 		Mockito.verify(this.workbenchDataManager).incrementUserLogInCount(ADMIN_USER_ID);
 
-
 	}
 
 	@Test
@@ -321,7 +319,20 @@ public class WorkbenchMainViewTest {
 
 		Assert.assertTrue(memberDetailPopup.getComponent(1) instanceof Button);
 
+	}
+
+	@Test
+	public void testUpdateLabels() {
+
+		final PopupButton popupButton = new PopupButton();
+
+		this.workbenchMainView.setMemberButton(popupButton);
+		this.workbenchMainView.updateLabels();
+
+		Assert.assertEquals(
+				"<span class='bms-header-btn2'><span>John Doe</span><span class='bms-fa-caret-down' style='padding: 0 10px 0 0'></span></span>",
+				popupButton.getCaption());
 
 	}
-	
+
 }

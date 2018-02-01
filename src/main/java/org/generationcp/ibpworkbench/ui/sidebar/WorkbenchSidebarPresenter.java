@@ -1,22 +1,12 @@
 package org.generationcp.ibpworkbench.ui.sidebar;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.generationcp.commons.security.AuthorizationUtil;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
-import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategory;
@@ -33,16 +23,27 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 @Configurable
 public class WorkbenchSidebarPresenter implements InitializingBean {
+
+	protected static final String ADMIN_CATEGORY = "admin";
+
+	protected static final String ABOUT_BMS_LINK = "about_bms";
+
+	protected static final String RECOVERY_LINK = "recovery";
+
+	protected static final String MANAGE_PROGRAM_LINK = "manage_program";
 
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchSidebarPresenter.class);
 
 	@Autowired
 	private WorkbenchDataManager manager;
-
-	@Autowired
-	private SessionData sessionData;
 
 	@Value("${workbench.is.backup.and.restore.enabled}")
 	private String isBackupAndRestoreEnabled;
@@ -56,7 +57,11 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
+	@Autowired
+	private ContextUtil contextUtil;
+
 	public WorkbenchSidebarPresenter() {
+		// does nothing
 	}
 
 	/**
@@ -79,37 +84,30 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 		// get all categories first
 		final Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> sidebarLinks = new LinkedHashMap<>();
 
-		try {
-			final List<WorkbenchSidebarCategoryLink> categoryLinks = new ArrayList<>();
+		final List<WorkbenchSidebarCategoryLink> categoryLinks = new ArrayList<>();
 
-			final List<WorkbenchSidebarCategory> workbenchSidebarCategoryList = this.manager.getAllWorkbenchSidebarCategory();
+		final List<WorkbenchSidebarCategory> workbenchSidebarCategoryList = this.manager.getAllWorkbenchSidebarCategory();
 
-			for (final WorkbenchSidebarCategory category : workbenchSidebarCategoryList) {
-				if ("workflows".equals(category.getSidebarCategoryName()) && this.sessionData.getSelectedProject() != null) {
-					this.addCategoryLinkBasedOnRole(categoryLinks, category);
-				}
-				if ("admin".equals(category.getSidebarCategoryName())) {
-					this.addAdminCategoryLinks(categoryLinks, category);
-				} else {
-					categoryLinks.addAll(this.manager.getAllWorkbenchSidebarLinksByCategoryId(category));
-				}
+		for (final WorkbenchSidebarCategory category : workbenchSidebarCategoryList) {
+			if (ADMIN_CATEGORY.equals(category.getSidebarCategoryName())) {
+				this.addAdminCategoryLinks(categoryLinks, category);
+			} else {
+				categoryLinks.addAll(this.manager.getAllWorkbenchSidebarLinksByCategoryId(category));
 			}
-
-			for (final WorkbenchSidebarCategoryLink link : categoryLinks) {
-				if (isCategoryLinkPermissibleForUserRole(link)) {
-					if (sidebarLinks.get(link.getWorkbenchSidebarCategory()) == null) {
-						sidebarLinks.put(link.getWorkbenchSidebarCategory(), new ArrayList<WorkbenchSidebarCategoryLink>());
-					}
-					if (link.getTool() == null) {
-						link.setTool(new Tool(link.getSidebarLinkName(), link.getSidebarLinkTitle(), ""));
-					}
-					sidebarLinks.get(link.getWorkbenchSidebarCategory()).add(link);
-				}
-
-			}
-		} catch (final MiddlewareQueryException e) {
-			WorkbenchSidebarPresenter.LOG.error(e.getMessage(), e);
 		}
+
+		for (final WorkbenchSidebarCategoryLink link : categoryLinks) {
+			if (isCategoryLinkPermissibleForUserRole(link)) {
+				if (sidebarLinks.get(link.getWorkbenchSidebarCategory()) == null) {
+					sidebarLinks.put(link.getWorkbenchSidebarCategory(), new ArrayList<WorkbenchSidebarCategoryLink>());
+				}
+				if (link.getTool() == null) {
+					link.setTool(new Tool(link.getSidebarLinkName(), link.getSidebarLinkTitle(), ""));
+				}
+				sidebarLinks.get(link.getWorkbenchSidebarCategory()).add(link);
+			}
+		}
+
 		return sidebarLinks;
 	}
 
@@ -117,7 +115,8 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 		if (ToolName.GERMPLASM_IMPORT.name().equalsIgnoreCase(link.getSidebarLinkName())) {
 			try {
 				AuthorizationUtil.preAuthorize(importGermplasmPermissibleRoles);
-			} catch (AccessDeniedException ex) {
+			} catch (final AccessDeniedException ex) {
+				LOG.debug(ex.getMessage(), ex);
 				return false;
 			}
 
@@ -126,35 +125,14 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 	}
 
 	protected void addAdminCategoryLinks(final List<WorkbenchSidebarCategoryLink> categoryLinks, final WorkbenchSidebarCategory category) {
-		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "manage_program",
+		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, MANAGE_PROGRAM_LINK,
 				this.messageSource.getMessage("LINK_MANAGE_SETTINGS")));
 		if (this.isBackupAndRestoreEnabled != null && Boolean.valueOf(this.isBackupAndRestoreEnabled)) {
-			categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "recovery",
+			categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, RECOVERY_LINK,
 					this.messageSource.getMessage("LINK_BACKUP_RESTORE")));
 		}
-		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, "about_bms", this.messageSource.getMessage("LINK_ABOUT_BMS")));
-	}
-
-	private void addCategoryLinkBasedOnRole(final List<WorkbenchSidebarCategoryLink> categoryLinks,
-			final WorkbenchSidebarCategory category) {
-		final List<Role> roles =
-				this.manager.getRolesByProjectAndUser(this.sessionData.getSelectedProject(), this.sessionData.getUserData());
-		for (final Role role : roles) {
-			// we don't include the tools anymore
-			if (!"Manager".equalsIgnoreCase(role.getName())) {
-				categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, role.getWorkflowTemplate().getName(), role.getLabel()));
-			}
-		}
-	}
-
-	public List<Role> getRoleByTemplateName(final String templateName) {
-		try {
-			return this.manager.getRolesByWorkflowTemplate(this.manager.getWorkflowTemplateByName(templateName).get(0));
-
-		} catch (final MiddlewareQueryException e) {
-			WorkbenchSidebarPresenter.LOG.error(e.getMessage(), e);
-		}
-		return Collections.emptyList();
+		categoryLinks
+				.add(new WorkbenchSidebarCategoryLink(null, category, ABOUT_BMS_LINK, this.messageSource.getMessage("LINK_ABOUT_BMS")));
 	}
 
 	public void updateProjectLastOpenedDate() {
@@ -164,13 +142,12 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 		transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 
 			protected void doInTransactionWithoutResult(final TransactionStatus status) {
-				// set the last opened project in the session
-				final IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-				final Project project = app.getSessionData().getSelectedProject();
+				final Project project = contextUtil.getProjectInContext();
 
 				final ProjectUserInfoDAO projectUserInfoDao = WorkbenchSidebarPresenter.this.manager.getProjectUserInfoDao();
-				final ProjectUserInfo projectUserInfo = projectUserInfoDao
-						.getByProjectIdAndUserId(project.getProjectId().intValue(), app.getSessionData().getUserData().getUserid());
+				final ProjectUserInfo projectUserInfo =
+						projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId(), contextUtil.getCurrentWorkbenchUserId());
+
 				if (projectUserInfo != null) {
 					projectUserInfo.setLastOpenDate(new Date());
 					WorkbenchSidebarPresenter.this.manager.saveOrUpdateProjectUserInfo(projectUserInfo);
@@ -179,7 +156,6 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 				project.setLastOpenDate(new Date());
 				WorkbenchSidebarPresenter.this.manager.mergeProject(project);
 
-				app.getSessionData().setLastOpenedProject(project);
 			}
 		});
 
@@ -193,7 +169,7 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 		this.manager = manager;
 	}
 
-	public void setImportGermplasmPermissibleRoles(String importGermplasmPermissibleRoles) {
+	public void setImportGermplasmPermissibleRoles(final String importGermplasmPermissibleRoles) {
 		this.importGermplasmPermissibleRoles = importGermplasmPermissibleRoles;
 	}
 }

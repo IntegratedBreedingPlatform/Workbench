@@ -22,7 +22,6 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.exception.AppLaunchException;
 import org.generationcp.ibpworkbench.service.AppLauncherService;
-import org.generationcp.ibpworkbench.ui.WorkflowConstants;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +34,7 @@ import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.Window;
 
 @Configurable
-public class LaunchWorkbenchToolAction implements WorkflowConstants, ClickListener, ActionListener {
+public class LaunchWorkbenchToolAction implements ClickListener, ActionListener {
 
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOG = LoggerFactory.getLogger(LaunchWorkbenchToolAction.class);

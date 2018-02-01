@@ -38,7 +38,6 @@ import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.IWorkbenchSession;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
@@ -242,12 +241,10 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		memberPopup.setSizeUndefined();
 
 		memberPopup.addComponent(
-				new Label(String.format("<h2>%s %s</h2><h4>%s</h4>", firstName, lastName, emailAddress),
-						Label.CONTENT_XHTML));
+				new Label(String.format("<h2>%s %s</h2><h4>%s</h4>", firstName, lastName, emailAddress), Label.CONTENT_XHTML));
 		memberPopup.addComponent(this.signoutButton);
 
 		return memberPopup;
-
 
 	}
 
@@ -642,9 +639,8 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	@Override
 	public void updateLabels() {
-		final IWorkbenchSession appSession = (IWorkbenchSession) this.getApplication();
 
-		String signoutName = appSession.getSessionData().getUserData().getName();
+		String signoutName = contextUtil.getCurrentWorkbenchUser().getName();
 		if (signoutName.length() > 10) {
 			signoutName = signoutName.substring(0, 9) + "...";
 		}
@@ -705,5 +701,9 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	// For testing purpose only
 	protected PopupButton getMemberButton() {
 		return memberButton;
+	}
+
+	public void setMemberButton(final PopupButton memberButton) {
+		this.memberButton = memberButton;
 	}
 }

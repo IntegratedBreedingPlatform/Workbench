@@ -1,10 +1,11 @@
 
 package org.generationcp.ibpworkbench.ui.project.create;
 
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.DeleteProjectAction;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.security.access.AccessDeniedException;
@@ -27,11 +28,10 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
+	private static final Logger LOG = LoggerFactory.getLogger(UpdateProjectPanel.class);
 
 	@Autowired
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	private Label heading;
 
@@ -54,6 +54,7 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 			super.saveProjectButton.setVisible(false);
 			saveAndDeleteProjectActionUpdate();
 		}catch(AccessDeniedException ex){
+			LOG.debug(ex.getMessage(), ex);
 			// Do nothing the screen needs to be display but the
 		}
 
@@ -64,7 +65,7 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 	 * If a user with unauthorize access is trying to access this method an ${@link AccessDeniedException} will be thrown.
 	 */
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	private void saveAndDeleteProjectActionUpdate() {
+	void saveAndDeleteProjectActionUpdate() {
 		super.saveProjectButton.addListener(new UpdateProjectAction(this));
 		super.saveProjectButton.setCaption("Save");
 		super.saveProjectButton.setVisible(true);
@@ -77,8 +78,7 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				UpdateProjectPanel.this.projectBasicDetailsComponent.updateProjectDetailsFormField(UpdateProjectPanel.this.sessionData
-						.getSelectedProject());
+				UpdateProjectPanel.this.projectBasicDetailsComponent.updateProjectDetailsFormField(contextUtil.getProjectInContext());
 
 			}
 		});
@@ -101,13 +101,13 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 
 		this.newProjectTitleArea.setSizeUndefined();
 		this.newProjectTitleArea.setWidth("100%");
-		this.newProjectTitleArea.setMargin(false, false, false, false); // move this to css
+		// move this to css
+		this.newProjectTitleArea.setMargin(false, false, false, false);
 
 		this.projectBasicDetailsComponent = new ProjectBasicDetailsComponent(this, true);
 		this.projectBasicDetailsComponent.setDebugId("projectBasicDetailsComponent");
 
-		this.projectBasicDetailsComponent.updateProjectDetailsFormField(this.sessionData.getSelectedProject());
-		this.projectBasicDetailsComponent.disableForm();
+		this.initializeBasicDetailsComponent();
 		this.buttonArea = this.layoutButtonArea();
 
 		try {
@@ -117,7 +117,13 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 			 * Do nothing: the screen needs to be displayed, only some of the components needs to be hidden.
 			 * If a user with unauthorize access is trying to access this method an ${@link AccessDeniedException} will be thrown.
 	 		 */
+			LOG.debug(ex.getMessage(), ex);
 		}
+	}
+
+	void initializeBasicDetailsComponent() {
+		this.projectBasicDetailsComponent.updateProjectDetailsFormField(contextUtil.getProjectInContext());
+		this.projectBasicDetailsComponent.disableForm();
 	}
 	/**
 	 * Only the Delete button need to be restricted
@@ -153,9 +159,6 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 
 	@Override
 	public void afterPropertiesSet() {
-		// initialize state
-		// get hibernate managed version of user
-		this.currentUser = this.workbenchDataManager.getUserById(this.sessionData.getUserData().getUserid());
 
 		this.initializeComponents();
 		this.initializeLayout();
@@ -164,7 +167,7 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 	}
 
 	public String getOldProjectName() {
-		return this.sessionData.getSelectedProject().getProjectName();
+		return contextUtil.getProjectInContext().getProjectName();
 	}
 
 	public boolean validate() {
@@ -176,6 +179,11 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 		if(this.deleteProgramButton!=null){
 			this.deleteProgramButton.setVisible(false);
 		}
+	}
+
+	
+	public void setDeleteProgramButton(Button deleteProgramButton) {
+		this.deleteProgramButton = deleteProgramButton;
 	}
 
 }

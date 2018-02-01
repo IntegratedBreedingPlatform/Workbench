@@ -41,7 +41,7 @@ public class SingleSiteAnalysisPanelTest {
 		Mockito.when(studyDataManager.getDataSet(StudyUtil.DATASET_ID)).thenReturn(this.currentDataset);
 		Mockito.when(studyDataManager.getStudy(this.currentDataset.getStudyId())).thenReturn(this.currentStudy);
 
-		this.singleSiteAnalysisPanel = new SingleSiteAnalysisPanel(currentProject, null);
+		this.singleSiteAnalysisPanel = new SingleSiteAnalysisPanel(currentProject);
 		this.singleSiteAnalysisPanel.setStudyDataManager(studyDataManager);
 		this.singleSiteAnalysisPanel.setManagerFactoryProvider(managerFactoryProvider);
 		this.singleSiteAnalysisPanel.instantiateComponents();

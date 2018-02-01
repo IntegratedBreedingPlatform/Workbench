@@ -1,17 +1,8 @@
-
 package org.generationcp.ibpworkbench.service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 
 import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.commons.util.DateUtil;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.ContextHolder;
 import org.generationcp.middleware.manager.api.UserDataManager;
@@ -22,16 +13,18 @@ import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.IbdbUserMap;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
-import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
-import org.generationcp.middleware.pojos.workbench.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.util.WebUtils;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -51,7 +44,10 @@ public class ProgramService {
 	private UserDataManager userDataManager;
 
 	@Autowired
-	private SessionData sessionData;
+	private HttpServletRequest request;
+
+	@Autowired
+	private org.generationcp.commons.spring.util.ContextUtil contextUtil;
 
 	// http://cropwiki.irri.org/icis/index.php/TDM_Users_and_Access
 	public static final int PROJECT_USER_ACCESS_NUMBER = 100;
@@ -62,7 +58,7 @@ public class ProgramService {
 	 * Create new project in workbench and add specified users as project members. Also creates copy of workbench person and user to currect
 	 * crop DB, if not yet existing. Finally, create a new folder under <install directory>/workspace/<program name>
 	 *
-	 * @param program : program to save
+	 * @param program      : program to save
 	 * @param programUsers : users to add as members of new program
 	 */
 	public void createNewProgram(final Project program, final Set<User> programUsers) {
@@ -75,8 +71,9 @@ public class ProgramService {
 		// After saving, we create folder for program under <install directory>/workspace
 		this.toolUtil.createWorkspaceDirectoriesForProject(program);
 
-		ProgramService.LOG.info("Program created. ID:" + program.getProjectId() + " Name:" + program.getProjectName() + " Start date:"
-				+ program.getStartDate());
+		ProgramService.LOG
+				.info("Program created. ID:" + program.getProjectId() + " Name:" + program.getProjectName() + " Start date:" + program
+						.getStartDate());
 	}
 
 	/**
@@ -84,7 +81,7 @@ public class ProgramService {
 	 * workbench_project_user_role, workbench_project_user_info, workbench_ibdb_user_map and in crop.persons (if applicable)
 	 *
 	 * @param program : program to add members to
-	 * @param users : users to add as members of given program
+	 * @param users   : users to add as members of given program
 	 */
 	public void saveProgramMembers(final Project program, final Set<User> users) {
 		// Add default "ADMIN" user to selected users of program to give access to new program
@@ -95,17 +92,14 @@ public class ProgramService {
 
 		// Save workbench project metadata and to crop users, persons (if necessary)
 		if (!users.isEmpty()) {
-			this.saveProjectUserRoles(program, users);
 			final List<Integer> userIDs = this.saveWorkbenchUserToCropUserMapping(program, users);
 			this.saveProjectUserInfo(program, userIDs);
 		}
 	}
 
 	private void setContextInfoAndCurrentCrop(final Project program) {
-		final HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-		final Cookie userIdCookie = WebUtils.getCookie(request, ContextConstants.PARAM_LOGGED_IN_USER_ID);
 		final Cookie authToken = WebUtils.getCookie(request, ContextConstants.PARAM_AUTH_TOKEN);
-		ContextUtil.setContextInfo(request, userIdCookie != null ? Integer.valueOf(userIdCookie.getValue()) : null, program.getProjectId(),
+		ContextUtil.setContextInfo(request, contextUtil.getCurrentWorkbenchUserId(), program.getProjectId(),
 				authToken != null ? authToken.getValue() : null);
 
 		ContextHolder.setCurrentCrop(program.getCropType().getCropName());
@@ -113,39 +107,14 @@ public class ProgramService {
 	}
 
 	/*
-	 * Add records to workbench_project_user_role table. It's a redundant table but currently, a record here is needed in order to get
-	 * projects of user
-	 *
-	 * @param project
-	 */
-	private void saveProjectUserRoles(final Project project, final Set<User> users) {
-		final List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
-		final List<Role> allRolesList = this.workbenchDataManager.getAllRoles();
-
-		if (allRolesList != null && !allRolesList.isEmpty()){
-			// we only need 1 record in workbench_project_user_role table for user to have access to program
-			final Role role = allRolesList.get(0);
-			for (final User user : users) {
-				final ProjectUserRole projectUserRole = new ProjectUserRole();
-				projectUserRole.setUserId(user.getUserid());
-				projectUserRole.setRole(role);
-				projectUserRole.setProject(project);
-				projectUserRoles.add(projectUserRole);
-			}
-			this.workbenchDataManager.addProjectUserRole(projectUserRoles);
-		}
-
-	}
-
-	/*
 	 * Create records for workbench_project_user_info table if combination of project id, user id is not yet existing in workbench DB
 	 */
 	private void saveProjectUserInfo(final Project program, final List<Integer> userIDs) {
 		for (final Integer userID : userIDs) {
-			final int projectID = program.getProjectId().intValue();
+			final Long projectID = program.getProjectId();
 
 			if (this.workbenchDataManager.getProjectUserInfoDao().getByProjectIdAndUserId(projectID, userID) == null) {
-				final ProjectUserInfo pUserInfo = new ProjectUserInfo(projectID, userID);
+				final ProjectUserInfo pUserInfo = new ProjectUserInfo(program, userID);
 				this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
 			}
 		}
@@ -158,7 +127,7 @@ public class ProgramService {
 	 */
 	private void saveWorkbenchProject(final Project program) {
 		// sets current user as program owner
-		program.setUserId(this.sessionData.getUserData().getUserid());
+		program.setUserId(contextUtil.getCurrentWorkbenchUserId());
 
 		final CropType cropType = this.workbenchDataManager.getCropTypeByName(program.getCropType().getCropName());
 		if (cropType == null) {

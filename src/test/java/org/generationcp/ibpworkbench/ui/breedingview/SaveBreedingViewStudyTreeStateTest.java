@@ -1,4 +1,3 @@
-
 package org.generationcp.ibpworkbench.ui.breedingview;
 
 import static org.junit.Assert.assertEquals;
@@ -12,14 +11,16 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
-import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.middleware.domain.dms.FolderReference;
+import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.UserProgramStateDataManager;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.dms.DmsProject;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,10 +39,10 @@ public class SaveBreedingViewStudyTreeStateTest {
 	private ManagerFactoryProvider provider;
 
 	@Mock
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	@InjectMocks
-	private SaveBreedingViewStudyTreeState dut = constructTestObject();
+	private final SaveBreedingViewStudyTreeState dut = constructTestObject();
 
 	@Mock
 	private UserProgramStateDataManager programStateDataManager;
@@ -52,12 +53,12 @@ public class SaveBreedingViewStudyTreeStateTest {
 
 	@Before
 	public void setUp() throws Exception {
-		Project project = mock(Project.class);
-		User userData = mock(User.class);
-		ManagerFactory factory = mock(ManagerFactory.class);
-		when(sessionData.getSelectedProject()).thenReturn(project);
+		final Project project = mock(Project.class);
+		final User userData = mock(User.class);
+		final ManagerFactory factory = mock(ManagerFactory.class);
+		when(contextUtil.getProjectInContext()).thenReturn(project);
 		when(project.getProjectId()).thenReturn((long) 1);
-		when(sessionData.getUserData()).thenReturn(userData);
+		when(contextUtil.getCurrentWorkbenchUser()).thenReturn(userData);
 
 		when(provider.getManagerFactoryForProject(project)).thenReturn(factory);
 		when(factory.getUserProgramStateDataManager()).thenReturn(programStateDataManager);
@@ -71,11 +72,11 @@ public class SaveBreedingViewStudyTreeStateTest {
 
 		dut.windowClose(null);
 
-		ArgumentCaptor<List> stringListCaptor = ArgumentCaptor.forClass(List.class);
+		final ArgumentCaptor<List> stringListCaptor = ArgumentCaptor.forClass(List.class);
 
 		verify(programStateDataManager).saveOrUpdateUserProgramTreeState(anyInt(), anyString(), anyString(), stringListCaptor.capture());
 
-		List savedTreeState = stringListCaptor.getValue();
+		final List savedTreeState = stringListCaptor.getValue();
 
 		assertTrue(savedTreeState.size() == 1);
 		assertEquals("STUDY", savedTreeState.get(0));
@@ -88,11 +89,11 @@ public class SaveBreedingViewStudyTreeStateTest {
 
 		dut.windowClose(null);
 
-		ArgumentCaptor<List> stringListCaptor = ArgumentCaptor.forClass(List.class);
+		final ArgumentCaptor<List> stringListCaptor = ArgumentCaptor.forClass(List.class);
 
 		verify(programStateDataManager).saveOrUpdateUserProgramTreeState(anyInt(), anyString(), anyString(), stringListCaptor.capture());
 
-		List savedTreeState = stringListCaptor.getValue();
+		final List savedTreeState = stringListCaptor.getValue();
 
 		assertTrue(savedTreeState.size() == 1);
 		assertEquals("STUDY", savedTreeState.get(0));
@@ -105,16 +106,39 @@ public class SaveBreedingViewStudyTreeStateTest {
 
 		dut.windowClose(null);
 
-		ArgumentCaptor<List> stringListCaptor = ArgumentCaptor.forClass(List.class);
+		final ArgumentCaptor<List> stringListCaptor = ArgumentCaptor.forClass(List.class);
 
 		verify(programStateDataManager).saveOrUpdateUserProgramTreeState(anyInt(), anyString(), anyString(), stringListCaptor.capture());
 
-		List savedTreeState = stringListCaptor.getValue();
+		final List savedTreeState = stringListCaptor.getValue();
 
 		assertTrue(savedTreeState.size() == 3);
 		assertEquals("STUDY", savedTreeState.get(0));
 		assertEquals(testReference1.getId().toString(), savedTreeState.get(1));
 		assertEquals(testReference2.getId().toString(), savedTreeState.get(2));
+	}
+	
+	@Test
+	public void testGetExpandedIdsWithNoExpandedFolder() {
+		testTable.setCollapsed(testReference1, true);
+		List<String> expandedIds = this.dut.getExpandedIds();
+		Assert.assertEquals(1, expandedIds.size());
+	}
+	
+	@Test
+	public void testGetExpandedIdsWithExpandedFolders() {
+		testTable.setCollapsed(testReference1, false);
+		testTable.setCollapsed(testReference2, false);
+		List<String> expandedIds = this.dut.getExpandedIds();
+		Assert.assertEquals(3, expandedIds.size());
+	}
+	
+	@Test
+	public void testGetFirstLevelFolders() {
+		List<Reference> firstLevelFolders = this.dut.getFirstLevelFolders();
+		Assert.assertEquals(1, firstLevelFolders.size());
+		Reference folder = firstLevelFolders.get(0);
+		Assert.assertEquals(testReference1.getId(), folder.getId());
 	}
 
 	protected SaveBreedingViewStudyTreeState constructTestObject() {

@@ -46,7 +46,7 @@ public class OpenSelectDatasetForExportActionTest {
 		final Study study = this.createStudy();
 
 		this.studyUtil = StudyUtil.getInstance();
-		this.singleSiteAnalysisPanel = new SingleSiteAnalysisPanel(project, null);
+		this.singleSiteAnalysisPanel = new SingleSiteAnalysisPanel(project);
 		this.openSelectDatasetForExportAction = new OpenSelectDatasetForExportAction(this.singleSiteAnalysisPanel);
 
 		openSelectDatasetForExportAction.setProject(project);

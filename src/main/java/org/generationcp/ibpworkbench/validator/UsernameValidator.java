@@ -1,29 +1,24 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * <p/>
  * Generation Challenge Programme (GCP)
- *
- *
+ * <p/>
+ * <p/>
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.validator;
 
-import com.vaadin.data.validator.AbstractValidator;
-import org.generationcp.commons.exceptions.InternationalizableException;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import com.vaadin.data.validator.AbstractValidator;
+
 /**
- * <b>Description</b>: Tests if a Users record with the same Username already exists.
+ * <b>Description</b>: Tests if a Users record with the same Username already
+ * exists.
  *
  * <br>
  * <br>
@@ -36,38 +31,42 @@ public class UsernameValidator extends AbstractValidator {
 
 	private static final long serialVersionUID = -1537885028422014862L;
 
-	private static final Logger LOG = LoggerFactory.getLogger(UsernameValidator.class);
-
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
+
+	@Autowired
+	private ValidatorCounter validatorCounter;
 
 	public UsernameValidator() {
 		super("User with Username \"{0}\" already exists.");
 	}
 
 	@Override
-	public boolean isValid(Object value) {
+	public boolean isValid(final Object value) {
 
 		int usernameCounter;
-		IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-		usernameCounter = app.getSessionData().getUsernameCounter();
+		usernameCounter = this.validatorCounter.getUsernameCounter();
 		usernameCounter++;
-		app.getSessionData().setUsernameCounter(usernameCounter);
+		this.validatorCounter.setUsernameCounter(usernameCounter);
 
 		if (usernameCounter > 2) {
-			app.getSessionData().setUsernameCounter(0);
+			this.validatorCounter.setUsernameCounter(0);
 			return true;
 		}
-		try {
-			if (this.workbenchDataManager.isUsernameExists(value.toString().trim())) {
-				return false;
-			}
-		} catch (MiddlewareQueryException e) {
-			UsernameValidator.LOG.error(e.getMessage());
-			throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
+
+		if (this.workbenchDataManager.isUsernameExists(value.toString().trim())) {
+			return false;
 		}
 
 		return true;
+	}
+
+	void setValidatorCounter(final ValidatorCounter validatorCounter) {
+		this.validatorCounter = validatorCounter;
+	}
+
+	void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
+		this.workbenchDataManager = workbenchDataManager;
 	}
 
 }

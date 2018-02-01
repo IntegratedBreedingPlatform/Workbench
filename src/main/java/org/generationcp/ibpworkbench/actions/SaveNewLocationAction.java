@@ -1,24 +1,24 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * <p/>
  * Generation Challenge Programme (GCP)
- *
- *
+ * <p/>
+ * <p/>
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.actions;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
+import com.vaadin.data.Validator;
+import com.vaadin.data.util.BeanItem;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.form.AddLocationForm;
 import org.generationcp.ibpworkbench.ui.programlocations.AddLocationsWindow;
 import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
@@ -29,11 +29,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.Validator;
-import com.vaadin.data.util.BeanItem;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author Jeffrey Morales, Joyce Avestro
@@ -52,25 +49,25 @@ public class SaveNewLocationAction implements ClickListener {
 	private final ProgramLocationsPresenter programLocationsPresenter;
 
 	@Resource
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	@Resource
 	private SimpleResourceBundleMessageSource messageSource;
 
-	public SaveNewLocationAction(AddLocationForm newLocationForm, AddLocationsWindow window,
-			ProgramLocationsPresenter programLocationsPresenter) {
+	public SaveNewLocationAction(final AddLocationForm newLocationForm, final AddLocationsWindow window,
+			final ProgramLocationsPresenter programLocationsPresenter) {
 		this.newLocationForm = newLocationForm;
 		this.window = window;
 		this.programLocationsPresenter = programLocationsPresenter;
 	}
 
 	@Override
-	public void buttonClick(ClickEvent event) {
+	public void buttonClick(final ClickEvent event) {
 
 		try {
 			this.newLocationForm.commit();
-			LocationViewModel location = this.getLocationFromForm();
-			List<Location> existingLocations = this.programLocationsPresenter.getExistingLocations(location.getLocationName());
+			final LocationViewModel location = this.getLocationFromForm();
+			final List<Location> existingLocations = this.programLocationsPresenter.getExistingLocations(location.getLocationName());
 
 			// there exists a location with the same name?
 			if (!existingLocations.isEmpty()) {
@@ -79,7 +76,7 @@ public class SaveNewLocationAction implements ClickListener {
 					private static final long serialVersionUID = 1L;
 
 					@Override
-					public void buttonClick(ClickEvent event) {
+					public void buttonClick(final ClickEvent event) {
 						SaveNewLocationAction.this.saveLocation();
 					}
 				}).show();
@@ -88,34 +85,32 @@ public class SaveNewLocationAction implements ClickListener {
 				this.saveLocation();
 			}
 
-		} catch (Validator.InvalidValueException e) {
+		} catch (final Validator.InvalidValueException e) {
 			MessageNotifier.showRequiredFieldError(event.getComponent().getWindow(), e.getLocalizedMessage());
-			LOG.warn(e.getMessage(),e);
+			LOG.warn(e.getMessage(), e);
 		}
 	}
 
 	protected void saveLocation() {
 		final LocationViewModel locModel = this.getLocationFromForm();
-		Location loc = this.programLocationsPresenter.convertLocationViewToLocation(locModel);
+		final Location loc = this.programLocationsPresenter.convertLocationViewToLocation(locModel);
 		this.programLocationsPresenter.addLocation(loc);
-		this.sessionData.logProgramActivity(this.messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK), "Added new Location ("
-				+ locModel.getLocationName() + ")");
+		this.contextUtil.logProgramActivity(this.messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK),
+				"Added new Location (" + locModel.getLocationName() + ")");
 		this.window.getParent().removeWindow(this.window);
 	}
 
 	protected LocationViewModel getLocationFromForm() {
-		@SuppressWarnings("unchecked")
-		BeanItem<LocationViewModel> locationBean = (BeanItem<LocationViewModel>) this.newLocationForm.getItemDataSource();
-		LocationViewModel locModel = locationBean.getBean();
-
-		return locModel;
+		@SuppressWarnings("unchecked") final BeanItem<LocationViewModel> locationBean =
+				(BeanItem<LocationViewModel>) this.newLocationForm.getItemDataSource();
+		return locationBean.getBean();
 	}
 
-	void setSessionData(SessionData sessionData) {
-		this.sessionData = sessionData;
-	}
-
-	void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+	void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
 		this.messageSource = messageSource;
+	}
+
+	void setContextUtil(final ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
 	}
 }

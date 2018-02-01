@@ -1,21 +1,47 @@
 package org.generationcp.ibpworkbench.ui.project.create;
 
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.VerticalLayout;
-import junit.framework.Assert;
+import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.ibpworkbench.actions.HomeAction;
+import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
+import org.generationcp.ibpworkbench.ui.programmembers.ProgramMembersPanel;
+import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
+import org.generationcp.middleware.pojos.workbench.Project;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.VerticalLayout;
+
+import junit.framework.Assert;
 
 public class AddProgramViewTest {
+	
+	@Mock
+	private ContextUtil contextUtil;
+	
+	@Mock
+	private WorkbenchMainView window;
 
-	private final AddProgramView addProgramView = new AddProgramView();
+	private AddProgramView addProgramView = new AddProgramView();
+	
+	private Project selectedProgram;
 
 	@Before
 	public void init() {
-
+		MockitoAnnotations.initMocks(this);
+		this.addProgramView.setContextUtil(this.contextUtil);
+		
 		this.addProgramView.initializeComponents();
 		this.addProgramView.setIsSingleUserOnly("false");
-
+		this.selectedProgram = ProjectTestDataInitializer.createProject();
+		Mockito.doReturn(this.selectedProgram).when(this.contextUtil).getProjectInContext();
 	}
 
 	@Test
@@ -61,10 +87,13 @@ public class AddProgramViewTest {
 		final TabSheet.Tab basicDetails = this.addProgramView.getTabSheet().getTab(this.addProgramView.getBasicDetailsContainer());
 		Assert.assertNotNull(basicDetails);
 		Assert.assertFalse(basicDetails.isClosable());
+		Assert.assertTrue(this.addProgramView.getBasicDetailsContainer().getComponent(0) instanceof CreateProjectPanel);
 
 		final TabSheet.Tab programMembers = this.addProgramView.getTabSheet().getTab(this.addProgramView.getProgramMembersContainer());
 		Assert.assertNotNull(programMembers);
 		Assert.assertFalse(programMembers.isClosable());
+		Assert.assertTrue(this.addProgramView.getProgramMembersContainer().getComponent(0) instanceof ProjectMembersComponent);
+		
 
 		final TabSheet.Tab programLocations = this.addProgramView.getTabSheet().getTab(this.addProgramView.getProgramLocationsContainer());
 		Assert.assertNotNull(programLocations);
@@ -104,5 +133,74 @@ public class AddProgramViewTest {
 		Assert.assertNull(this.addProgramView.getTabSheet().getTab(this.addProgramView.getProgramMembersContainer()));
 
 	}
+	
+	@Test
+	public void testInitializeActions() {
+		this.addProgramView.initializeActions();
+		
+		// Verify Cancel button click listener
+		final Button cancelButton = this.addProgramView.getCancelButton();
+		Assert.assertNotNull(cancelButton.getListeners(ClickListener.class));
+		Assert.assertNotNull(cancelButton.getListeners(HomeAction.class));
+		
+		// Verify Finish button click listener
+		final Button finishButton = this.addProgramView.getFinishButton();
+		Assert.assertNotNull(finishButton.getListeners(Button.ClickListener.class));
+	}
+	
+	@Test
+	public void testDisableOptionalTabsAndFinish() {
+		this.addProgramView.initializeLayout();
+		this.addProgramView.disableOptionalTabsAndFinish();
+		
+		final TabSheet.Tab programLocations = this.addProgramView.getTabSheet().getTab(this.addProgramView.getProgramLocationsContainer());
+		Assert.assertNotNull(programLocations);
+		Assert.assertFalse(programLocations.isEnabled());
+		
+		final TabSheet.Tab programMethods = this.addProgramView.getTabSheet().getTab(this.addProgramView.getProgramMethodsContainer());
+		Assert.assertNotNull(programMethods);
+		Assert.assertFalse(programMethods.isEnabled());
+		Assert.assertFalse(this.addProgramView.getFinishButton().isEnabled());
+	}
+	
+	@Test
+	public void testEnableFinishBtn() {
+		this.addProgramView.enableFinishBtn();
+		Assert.assertTrue(this.addProgramView.getFinishButton().isEnabled());
+	}
+	
+	@Test
+	public void testUpdateUIOnProgramSave() {
+		final VerticalLayout basicDetailsContainer = Mockito.mock(VerticalLayout.class);
+		this.addProgramView.setBasicDetailsContainer(basicDetailsContainer);
+		final VerticalLayout membersComponentContainer = Mockito.mock(VerticalLayout.class);
+		this.addProgramView.setProgramMembersContainer(membersComponentContainer);
+		
+		this.addProgramView.initializeLayout();
+		this.addProgramView.updateUIOnProgramSave(this.selectedProgram, this.window);
+		
+		Mockito.verify(this.window).addTitle(this.selectedProgram.getProjectName());
+		final TabSheet.Tab programLocations = this.addProgramView.getTabSheet().getTab(this.addProgramView.getProgramLocationsContainer());
+		Assert.assertNotNull(programLocations);
+		Assert.assertTrue(programLocations.isEnabled());
+		final TabSheet.Tab programMethods = this.addProgramView.getTabSheet().getTab(this.addProgramView.getProgramMethodsContainer());
+		Assert.assertNotNull(programMethods);
+		Assert.assertTrue(programMethods.isEnabled());
+
+		Mockito.verify(basicDetailsContainer).removeAllComponents();
+		final ArgumentCaptor<Component> componentCaptor = ArgumentCaptor.forClass(Component.class);
+		Mockito.verify(basicDetailsContainer, Mockito.times(2)).addComponent(componentCaptor.capture());
+		Assert.assertTrue(componentCaptor.getAllValues().get(1) instanceof UpdateProjectPanel);
+		
+		Mockito.verify(membersComponentContainer).removeAllComponents();
+		final ArgumentCaptor<Component> membersComponentCaptor = ArgumentCaptor.forClass(Component.class);
+		Mockito.verify(membersComponentContainer, Mockito.times(2)).addComponent(membersComponentCaptor.capture());
+		Assert.assertTrue(membersComponentCaptor.getAllValues().get(1) instanceof ProgramMembersPanel);
+		Assert.assertEquals(this.selectedProgram, ((ProgramMembersPanel)membersComponentCaptor.getValue()).getProject() );
+		
+		Assert.assertTrue(this.addProgramView.getFinishButton().isEnabled());
+		Assert.assertFalse(this.addProgramView.getCancelButton().isEnabled());
+	}
+	
 
 }

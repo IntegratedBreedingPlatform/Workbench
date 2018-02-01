@@ -1,10 +1,9 @@
-
 package org.generationcp.ibpworkbench.actions;
 
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Window;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.form.AddLocationForm;
 import org.generationcp.ibpworkbench.ui.programlocations.AddLocationsWindow;
 import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
@@ -25,7 +24,7 @@ public class SaveNewLocationActionTest {
 
 	public static final String TEST_LOCATION = "Test Location";
 	@Mock
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	@Mock
 	private SimpleResourceBundleMessageSource messageSource;
@@ -47,17 +46,17 @@ public class SaveNewLocationActionTest {
 	@Before
 	public void beforeEachTest() {
 		MockitoAnnotations.initMocks(this);
-		Mockito.doNothing().when(this.sessionData).logProgramActivity(Matchers.anyString(), Matchers.anyString());
+		Mockito.doNothing().when(this.contextUtil).logProgramActivity(Matchers.anyString(), Matchers.anyString());
 		this.saveNewLocationAction = new SaveNewLocationAction(this.newLocationForm, this.window, this.programLocationsPresenter);
-		this.saveNewLocationAction.setSessionData(this.sessionData);
 		this.saveNewLocationAction.setMessageSource(this.messageSource);
+		this.saveNewLocationAction.setContextUtil(this.contextUtil);
 	}
 
 	@Test
 	public void testGetLocationFromForm() throws Exception {
-		BeanItem<LocationViewModel> locationFormBean = Mockito.mock(BeanItem.class);
+		final BeanItem<LocationViewModel> locationFormBean = Mockito.mock(BeanItem.class);
 
-		LocationViewModel lvm = new LocationViewModel();
+		final LocationViewModel lvm = new LocationViewModel();
 		lvm.setLocationName(TEST_LOCATION);
 
 		Mockito.when(locationFormBean.getBean()).thenReturn(lvm);
@@ -65,22 +64,21 @@ public class SaveNewLocationActionTest {
 
 		this.locationViewModelResult = this.saveNewLocationAction.getLocationFromForm();
 
-		Assert.assertEquals("location name is set", TEST_LOCATION,
-				this.locationViewModelResult.getLocationName());
+		Assert.assertEquals("location name is set", TEST_LOCATION, this.locationViewModelResult.getLocationName());
 	}
 
 	@Test
 	public void testSaveLocation() throws Exception {
 
-		LocationViewModel lvm = new LocationViewModel();
+		final LocationViewModel lvm = new LocationViewModel();
 		lvm.setLocationName(TEST_LOCATION);
 		lvm.setLocationAbbreviation("TSTL");
 
-		BeanItem<LocationViewModel> locationFormBean = Mockito.mock(BeanItem.class);
+		final BeanItem<LocationViewModel> locationFormBean = Mockito.mock(BeanItem.class);
 		Mockito.when(locationFormBean.getBean()).thenReturn(lvm);
 		Mockito.when(this.newLocationForm.getItemDataSource()).thenReturn(locationFormBean);
 
-		Window mockParentWindow = Mockito.mock(Window.class);
+		final Window mockParentWindow = Mockito.mock(Window.class);
 		Mockito.when(this.window.getParent()).thenReturn(mockParentWindow);
 		Mockito.when(mockParentWindow.removeWindow(this.window)).thenReturn(true);
 
@@ -89,7 +87,7 @@ public class SaveNewLocationActionTest {
 
 		// assertions
 		Mockito.verify(this.programLocationsPresenter, Mockito.times(1)).addLocation(Mockito.any(Location.class));
-		Mockito.verify(this.sessionData, Mockito.times(1)).logProgramActivity(Matchers.anyString(), Matchers.anyString());
+		Mockito.verify(this.contextUtil, Mockito.times(1)).logProgramActivity(Matchers.anyString(), Matchers.anyString());
 		Mockito.verify(mockParentWindow, Mockito.times(1)).removeWindow(Matchers.any(Window.class));
 	}
 }

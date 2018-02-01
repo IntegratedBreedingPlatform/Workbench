@@ -30,9 +30,7 @@ import org.generationcp.commons.breedingview.xml.Replicates;
 import org.generationcp.commons.breedingview.xml.RowPos;
 import org.generationcp.commons.breedingview.xml.Rows;
 import org.generationcp.commons.tomcat.util.TomcatUtil;
-import org.generationcp.commons.tomcat.util.WebAppStatusInfo;
 import org.generationcp.commons.util.BreedingViewUtil;
-import org.generationcp.commons.util.Util;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
@@ -46,9 +44,6 @@ import org.generationcp.ibpworkbench.util.DatasetExporterException;
 import org.generationcp.ibpworkbench.util.ZipUtil;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.api.StudyDataManager;
-import org.generationcp.middleware.pojos.workbench.Tool;
-import org.generationcp.middleware.pojos.workbench.ToolType;
-import org.generationcp.middleware.service.api.OntologyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,9 +60,7 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Window;
 
 /**
- *
  * @author Jeffrey Morales
- *
  */
 @Configurable
 public class RunSingleSiteAction implements ClickListener {
@@ -94,9 +87,6 @@ public class RunSingleSiteAction implements ClickListener {
 
 	@Autowired
 	private StudyDataManager studyDataManager;
-
-	@Autowired
-	private OntologyService ontologyService;
 
 	private final ZipUtil zipUtil = new ZipUtil();
 
@@ -147,8 +137,7 @@ public class RunSingleSiteAction implements ClickListener {
 	 */
 	void exportData(final BreedingViewInput breedingViewInput) {
 
-		final DatasetExporter datasetExporter =
-				new DatasetExporter(breedingViewInput.getDatasetId());
+		final DatasetExporter datasetExporter = new DatasetExporter(breedingViewInput.getDatasetId());
 
 		try {
 
@@ -449,12 +438,6 @@ public class RunSingleSiteAction implements ClickListener {
 		final BreedingViewInput breedingViewInput = this.source.getBreedingViewInput();
 
 		try {
-			// when launching BreedingView, update the web service tool first
-			final Tool webServiceTool = new Tool();
-			webServiceTool.setToolName("ibpwebservice");
-			webServiceTool.setPath(this.bvWebUrl);
-			webServiceTool.setToolType(ToolType.WEB);
-			this.deployWebappIfNecessary(event.getButton().getWindow(), webServiceTool);
 
 			// launch breeding view
 			final File absoluteToolFile = new File(this.source.getTool().getPath()).getAbsoluteFile();
@@ -469,55 +452,6 @@ public class RunSingleSiteAction implements ClickListener {
 			this.showErrorMessage(event.getComponent().getWindow(), e.getMessage(), "");
 		}
 
-	}
-
-	private boolean deployWebappIfNecessary(final Window window, final Tool tool) {
-		final String url = tool.getPath();
-		final boolean webTool = Util.isOneOf(tool.getToolType(), ToolType.WEB_WITH_LOGIN, ToolType.WEB);
-
-		WebAppStatusInfo statusInfo = null;
-		String contextPath = null;
-		String localWarPath = null;
-		try {
-			statusInfo = this.tomcatUtil.getWebAppStatus();
-			if (webTool) {
-				contextPath = TomcatUtil.getContextPathFromUrl(url);
-				localWarPath = TomcatUtil.getLocalWarPathFromUrl(url);
-
-			}
-		} catch (final Exception e1) {
-			RunSingleSiteAction.LOG.error(RunSingleSiteAction.ERROR, e1);
-			this.showErrorMessage(window, "Cannot get webapp status.",
-					"<br />" + this.messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
-			return false;
-		}
-
-		if (webTool) {
-			try {
-				final boolean deployed = statusInfo.isDeployed(contextPath);
-				final boolean running = statusInfo.isRunning(contextPath);
-
-				if (!running) {
-					if (!deployed) {
-						// deploy the webapp
-						this.tomcatUtil.deployLocalWar(contextPath, localWarPath);
-					} else if (running) {
-						// reload the webapp
-						this.tomcatUtil.reloadWebApp(contextPath);
-					} else {
-						// start the webapp
-						this.tomcatUtil.startWebApp(contextPath);
-					}
-				}
-			} catch (final Exception e) {
-				RunSingleSiteAction.LOG.error(RunSingleSiteAction.ERROR, e);
-				this.showErrorMessage(window, "Cannot load tool: " + tool.getToolName(),
-						"<br />" + this.messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
-				return false;
-			}
-		}
-
-		return true;
 	}
 
 	private void downloadInputFile(final File file, final Application application) {

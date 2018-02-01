@@ -8,12 +8,13 @@ import com.vaadin.ui.Layout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.help.document.HelpModule;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
@@ -42,7 +43,7 @@ public class AddProgramView extends Panel implements InitializingBean {
 	private HorizontalLayout titleLayout;
 
 	@Autowired
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	@Value("${workbench.is.single.user.only}")
 	private String isSingleUserOnly;
@@ -65,7 +66,7 @@ public class AddProgramView extends Panel implements InitializingBean {
 
 	private AddProgramPresenter presenter;
 	private Button finishButton;
-	private Button cancelBtn;
+	private Button cancelButton;
 
 	private int initialTabView = OpenNewProjectAction.BASIC_DETAILS_TAB;
 
@@ -137,8 +138,8 @@ public class AddProgramView extends Panel implements InitializingBean {
 		this.finishButton.setDebugId("vaadin_finish_btn");
 
 		// finish button
-		this.cancelBtn = new Button("Cancel");
-		this.cancelBtn.setDebugId("cancelBtn");
+		this.cancelButton = new Button("Cancel");
+		this.cancelButton.setDebugId("cancelBtn");
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -161,12 +162,12 @@ public class AddProgramView extends Panel implements InitializingBean {
 
 			@Override
 			public void buttonClick(final Button.ClickEvent clickEvent) {
-				final Project newlyCreatedProgram = AddProgramView.this.sessionData.getSelectedProject();
+				final Project newlyCreatedProgram = AddProgramView.this.contextUtil.getProjectInContext();
 				new LaunchProgramAction(newlyCreatedProgram).buttonClick(clickEvent);
 			}
 		});
 
-		this.cancelBtn.addListener(new HomeAction());
+		this.cancelButton.addListener(new HomeAction());
 	}
 
 	protected void initializeLayout() {
@@ -216,7 +217,7 @@ public class AddProgramView extends Panel implements InitializingBean {
 		btnContainer.setSpacing(true);
 		btnContainer.setSizeUndefined();
 
-		btnContainer.addComponent(this.cancelBtn);
+		btnContainer.addComponent(this.cancelButton);
 		btnContainer.addComponent(this.finishButton);
 
 		this.rootLayout.addComponent(btnContainer);
@@ -256,10 +257,9 @@ public class AddProgramView extends Panel implements InitializingBean {
 		return tab;
 	}
 
-	public void updateUIOnProgramSave(final Project project) {
-		if (IBPWorkbenchApplication.get().getMainWindow() instanceof WorkbenchMainView) {
-			((WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow())
-					.addTitle(this.sessionData.getSelectedProject().getProjectName());
+	public void updateUIOnProgramSave(final Project project, final Window window) {
+		if (window instanceof WorkbenchMainView) {
+			((WorkbenchMainView) window).addTitle(this.contextUtil.getProjectInContext().getProjectName());
 		}
 
 		// initialize program methods and view and set them to the tabs
@@ -284,10 +284,10 @@ public class AddProgramView extends Panel implements InitializingBean {
 		this.getBasicDetailsContainer().addComponent(updateProjectPanel);
 
 		this.getProgramMembersContainer().removeAllComponents();
-		this.getProgramMembersContainer().addComponent(new ProgramMembersPanel(this.sessionData.getLastOpenedProject()));
+		this.getProgramMembersContainer().addComponent(new ProgramMembersPanel(this.contextUtil.getProjectInContext()));
 
 		this.finishButton.setEnabled(true);
-		this.cancelBtn.setEnabled(false);
+		this.cancelButton.setEnabled(false);
 	}
 
 	public void disableOptionalTabsAndFinish() {
@@ -357,7 +357,32 @@ public class AddProgramView extends Panel implements InitializingBean {
 		return programMembersContainer;
 	}
 
+	
+	public void setProgramMembersContainer(VerticalLayout programMembersContainer) {
+		this.programMembersContainer = programMembersContainer;
+	}
+
 	protected VerticalLayout getBasicDetailsContainer() {
 		return basicDetailsContainer;
+	}
+
+	
+	
+	public void setBasicDetailsContainer(VerticalLayout basicDetailsContainer) {
+		this.basicDetailsContainer = basicDetailsContainer;
+	}
+
+	public Button getFinishButton() {
+		return this.finishButton;
+	}
+
+	
+	public Button getCancelButton() {
+		return this.cancelButton;
+	}
+
+	
+	public void setContextUtil(ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
 	}
 }

@@ -11,20 +11,9 @@
 
 package org.generationcp.ibpworkbench.util;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-
 import org.generationcp.commons.breedingview.xml.SSAParameters;
 import org.generationcp.commons.breedingview.xml.Trait;
+import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.sea.xml.BreedingViewProject;
 import org.generationcp.commons.sea.xml.BreedingViewSession;
 import org.generationcp.commons.sea.xml.DataConfiguration;
@@ -34,8 +23,9 @@ import org.generationcp.commons.sea.xml.Environments;
 import org.generationcp.commons.sea.xml.Pipeline;
 import org.generationcp.commons.sea.xml.Pipelines;
 import org.generationcp.commons.sea.xml.Traits;
+import org.generationcp.commons.security.SecurityUtil;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.BreedingViewUtil;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -47,6 +37,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 @Configurable
 public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 
@@ -56,13 +57,11 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 
 	private static final String CROP_PLACEHOLDER = "{cropName}";
 
-	private static final String TRIAL_INSTANCE = "TRIAL_INSTANCE";
-
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
 
 	@Autowired
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	@Value("${web.api.url}")
 	private String webApiUrl;
@@ -118,8 +117,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 			fileWriter.flush();
 			fileWriter.close();
 		} catch (final Exception ex) {
-			throw new BreedingViewXMLWriterException("Error with writing xml to: " + filePath + ": " + ex.getMessage(),
-					ex);
+			throw new BreedingViewXMLWriterException("Error with writing xml to: " + filePath + ": " + ex.getMessage(), ex);
 		}
 	}
 
@@ -127,13 +125,11 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 		JAXBContext context = null;
 		Marshaller marshaller = null;
 		try {
-			context = JAXBContext.newInstance(BreedingViewSession.class, Pipelines.class, Environments.class,
-					Pipeline.class);
+			context = JAXBContext.newInstance(BreedingViewSession.class, Pipelines.class, Environments.class, Pipeline.class);
 			marshaller = context.createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		} catch (final JAXBException ex) {
-			throw new BreedingViewXMLWriterException(
-					"Error with opening JAXB context and marshaller: " + ex.getMessage(), ex);
+			throw new BreedingViewXMLWriterException("Error with opening JAXB context and marshaller: " + ex.getMessage(), ex);
 		}
 		return marshaller;
 	}
@@ -169,7 +165,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 		return pipelines;
 	}
 
-	private SSAParameters createSSAParameters() throws BreedingViewXMLWriterException {
+	private SSAParameters createSSAParameters() {
 		final SSAParameters ssaParameters = new SSAParameters();
 		ssaParameters.setWebApiUrl(this.getWebApiUrl());
 		ssaParameters.setStudyId(this.breedingViewInput.getStudyId());
@@ -182,8 +178,8 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 		}
 
 		final String installationDirectory = this.getInstallationDirectory();
-		final String outputDirectory = String.format("%s/workspace/%s/breeding_view/output", installationDirectory,
-				workbenchProject.getProjectName());
+		final String outputDirectory =
+				String.format("%s/workspace/%s/breeding_view/output", installationDirectory, workbenchProject.getProjectName());
 		ssaParameters.setOutputDirectory(outputDirectory);
 
 		if (Boolean.parseBoolean(this.isServerApp)) {
@@ -195,7 +191,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 	}
 
 	protected Project getLastOpenedProject() {
-		return this.sessionData.getLastOpenedProject();
+		return contextUtil.getProjectInContext();
 	}
 
 	protected String getInstallationDirectory() {
@@ -204,9 +200,16 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 
 	protected String getWebApiUrl() {
 		final String url = this.webApiUrl + "?restartApplication";
-		final Project project = this.sessionData.getLastOpenedProject();
+		final Project project = contextUtil.getProjectInContext();
+
+		final String contextParameterString = org.generationcp.commons.util.ContextUtil
+				.getContextParameterString(contextUtil.getCurrentWorkbenchUserId(), project.getProjectId());
+
+		final String authenticationTokenString = org.generationcp.commons.util.ContextUtil
+				.addQueryParameter(ContextConstants.PARAM_AUTH_TOKEN, SecurityUtil.getEncodedToken());
+
 		String webApiUrlWithCropName = this.replaceCropNameInWebApiUrl(url, project.getCropType().getCropName());
-		webApiUrlWithCropName += this.sessionData.getWorkbenchContextParameters();
+		webApiUrlWithCropName += contextParameterString + authenticationTokenString;
 		return webApiUrlWithCropName;
 	}
 
@@ -258,8 +261,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 		return design;
 	}
 
-	private DataConfiguration createDataConfiguration(final Environments environments, final Design design,
-			final Traits traits) {
+	private DataConfiguration createDataConfiguration(final Environments environments, final Design design, final Traits traits) {
 
 		final DataConfiguration dataConfiguration = new DataConfiguration();
 
@@ -300,15 +302,15 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 		// overridden method from interface
 	}
 
-	public void setSessionData(final SessionData sessionData) {
-		this.sessionData = sessionData;
-	}
-
 	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
 		this.workbenchDataManager = workbenchDataManager;
 	}
 
 	public void setWebApiUrl(final String webApiUrl) {
 		this.webApiUrl = webApiUrl;
+	}
+
+	public void setContextUtil(final ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
 	}
 }

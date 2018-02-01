@@ -39,11 +39,6 @@
 		  class="org.generationcp.ibpworkbench.GermplasmStudyBrowserApplication"
 		  scope="prototype" />
 
-	<bean id="sessionData" class="org.generationcp.ibpworkbench.SessionData"
-		scope="session">
-		<aop:scoped-proxy />
-	</bean>
-
 	<!-- Reuseable UI components can be declared here, but don't do it just 
 		so you can have auto-wiring. Add @Configurable annotation to your class if 
 		you only need auto-wiring. -->
@@ -110,6 +105,21 @@
 	</bean>
 
 	<bean id="cloner" class="com.rits.cloning.Cloner" />
+
+	<bean id="validatorCounter" class="org.generationcp.ibpworkbench.validator.ValidatorCounter"
+		  scope="session">
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="breedingMethodTracker" class="org.generationcp.ibpworkbench.ui.programmethods.BreedingMethodTracker"
+		  scope="session">
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="webClientInfo" class="org.generationcp.ibpworkbench.common.WebClientInfo"
+		  scope="session">
+		<aop:scoped-proxy />
+	</bean>
 
 	<bean id="studyDataManager" factory-bean="managerFactory"
 		factory-method="getStudyDataManager" scope="request">

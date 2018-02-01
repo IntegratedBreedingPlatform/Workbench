@@ -1,16 +1,31 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
- *
+ * <p/>
+ * <p/>
  * Generation Challenge Programme (GCP)
- *
- *
+ * <p/>
+ * <p/>
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.util;
+
+import org.apache.commons.lang3.SystemUtils;
+import org.generationcp.commons.constant.ToolEnum;
+import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.util.StringUtil;
+import org.generationcp.ibpworkbench.util.bean.ConfigurationChangeParameters;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.Tool;
+import org.generationcp.middleware.pojos.workbench.ToolType;
+import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,23 +35,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
-import org.apache.commons.lang3.SystemUtils;
-import org.generationcp.commons.constant.ToolEnum;
-import org.generationcp.commons.util.StringUtil;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.util.bean.ConfigurationChangeParameters;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.User;
-import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.Tool;
-import org.generationcp.middleware.pojos.workbench.ToolType;
-import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 
 @Configurable
 public class ToolUtil {
@@ -64,6 +62,9 @@ public class ToolUtil {
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
+
+	@Autowired
+	private ContextUtil contextUtil;
 
 	public String getJdbcHost() {
 		return this.jdbcHost;
@@ -229,16 +230,6 @@ public class ToolUtil {
 			toolPath = this.workbenchInstallationDirectory + File.separator + toolPath.substring(startIndex);
 		}
 		return toolPath;
-	}
-
-	protected User getCurrentUser() {
-
-		final IBPWorkbenchApplication app = IBPWorkbenchApplication.get();
-		if (app != null) {
-			return app.getSessionData().getUserData();
-		} else {
-			return null;
-		}
 	}
 
 	protected boolean updatePropertyFile(final File propertyFile, final Map<String, String> newPropertyValues) {
