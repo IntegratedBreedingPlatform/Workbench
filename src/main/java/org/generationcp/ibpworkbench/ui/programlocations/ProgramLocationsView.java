@@ -23,6 +23,7 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.BaseTheme;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -671,6 +672,34 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		table.setMultiSelect(true);
 		table.setDragMode(Table.TableDragMode.MULTIROW);
 
+		table.addGeneratedColumn(ProgramLocationsView.LOCATION_NAME, new Table.ColumnGenerator() {
+
+			private static final long serialVersionUID = 346170573915290251L;
+
+			@Override
+			public Object generateCell(final Table source, final Object itemId, final Object colId) {
+
+				final LocationViewModel locationViewModelToEdit = ((LocationViewModel) itemId);
+
+				final Button locationNameButtonLink = new Button();
+				locationNameButtonLink.setStyleName(BaseTheme.BUTTON_LINK);
+				locationNameButtonLink.setImmediate(true);
+				locationNameButtonLink.setCaption(locationViewModelToEdit.getLocationName());
+				locationNameButtonLink.addListener(new Button.ClickListener() {
+
+					private static final long serialVersionUID = 4839268740583678422L;
+
+					@Override
+					public void buttonClick(final ClickEvent clickEvent) {
+						clickEvent.getComponent().getWindow().addWindow(new EditLocationsWindow(locationViewModelToEdit,  presenter));
+
+					}
+				});
+
+				return locationNameButtonLink;
+			}
+		});
+
 		table.addGeneratedColumn(ProgramLocationsView.SELECT, new Table.ColumnGenerator() {
 
 			private static final long serialVersionUID = 346170573915290251L;
@@ -836,6 +865,27 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 		return !(locationName != null && !locationName.isEmpty() && !item.getLocationName().toLowerCase()
 				.contains(locationName.toLowerCase()));
+
+	}
+
+	protected void refreshLocationItemInView(final LocationViewModel locationViewModel) {
+
+		// Re-add the location view to the container datasource so that its updated values will be reflected in the UI.
+		if (this.availableTable.containsId(locationViewModel)) {
+			((BeanItemContainer<LocationViewModel>) this.availableTable.getContainerDataSource()).addBean(locationViewModel);
+		}
+		if (this.favoritesTable.containsId(locationViewModel)) {
+			((BeanItemContainer<LocationViewModel>) this.favoritesTable.getContainerDataSource()).addBean(locationViewModel);
+		}
+
+	}
+
+	protected void refreshTable() {
+		// do table repaint
+		this.availableTable.requestRepaint();
+		this.availableTable.refreshRowCache();
+		this.favoritesTable.requestRepaint();
+		this.favoritesTable.refreshRowCache();
 
 	}
 
