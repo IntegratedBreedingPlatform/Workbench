@@ -37,7 +37,7 @@ import java.util.Arrays;
  * <b>File Created</b>: August 20, 2012
  */
 @Configurable
-public class AddLocationForm extends Form {
+public class LocationForm extends Form {
 
 	private static final long serialVersionUID = 865075321914843448L;
 	public static final String LOCATION_NAME = "locationName";
@@ -61,12 +61,17 @@ public class AddLocationForm extends Form {
 
 	private LocationFormFieldFactory locationFormFieldFactory;
 
+	private LocationViewModel locationViewModel = new LocationViewModel();
+
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	public AddLocationForm(final ProgramLocationsPresenter presenter, final LocationFormFieldFactory locationFormFieldFactory) {
+	public LocationForm(final LocationViewModel locationViewModel, final ProgramLocationsPresenter presenter, final LocationFormFieldFactory locationFormFieldFactory) {
 		this.presenter = presenter;
 		this.locationFormFieldFactory = locationFormFieldFactory;
+		if (locationViewModel != null) {
+			this.locationViewModel = locationViewModel;
+		}
 		this.initializeComponents();
 
 	}
@@ -79,7 +84,7 @@ public class AddLocationForm extends Form {
 		this.grid.setMargin(new Layout.MarginInfo(true, false, false, false));
 		this.setLayout(this.grid);
 
-		this.setItemDataSource(new BeanItem<>(new LocationViewModel()));
+		this.setItemDataSource(new BeanItem<>(this.locationViewModel));
 
 		this.setComponentError(null);
 		this.setFormFieldFactory(locationFormFieldFactory);

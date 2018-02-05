@@ -25,7 +25,7 @@ import com.vaadin.ui.TextField;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.fields.SanitizedTextField;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.ui.form.AddLocationForm;
+import org.generationcp.ibpworkbench.ui.form.LocationForm;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
 import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.Location;
@@ -225,23 +225,23 @@ public class LocationFormFieldFactory extends DefaultFieldFactory implements Ini
 
 	@Override
 	public Field createField(final Item item, final Object propertyId, final Component uiContext) {
-		if (AddLocationForm.LOCATION_NAME.equals(propertyId)) {
+		if (LocationForm.LOCATION_NAME.equals(propertyId)) {
 			return this.locationName;
-		} else if (AddLocationForm.LOCATION_ABBREVIATION.equals(propertyId)) {
+		} else if (LocationForm.LOCATION_ABBREVIATION.equals(propertyId)) {
 			return this.locationAbbreviation;
-		} else if (AddLocationForm.LTYPE.equals(propertyId)) {
+		} else if (LocationForm.LTYPE.equals(propertyId)) {
 			return this.lType;
-		} else if (AddLocationForm.CNTRYID.equals(propertyId)) {
+		} else if (LocationForm.CNTRYID.equals(propertyId)) {
 			return this.country;
-		} else if (AddLocationForm.PROVINCE_ID.equals(propertyId)) {
+		} else if (LocationForm.PROVINCE_ID.equals(propertyId)) {
 			return this.province;
-		} else if (AddLocationForm.LATITUDE.equals(propertyId)) {
+		} else if (LocationForm.LATITUDE.equals(propertyId)) {
 			return this.latitude;
-		} else if (AddLocationForm.LONGITUDE.equals(propertyId)) {
+		} else if (LocationForm.LONGITUDE.equals(propertyId)) {
 			return this.longitude;
-		} else if (AddLocationForm.ALTITUDE.equals(propertyId)) {
+		} else if (LocationForm.ALTITUDE.equals(propertyId)) {
 			return this.altitude;
-		} else if (AddLocationForm.CROP_ACCESSIBLE.equals(propertyId)) {
+		} else if (LocationForm.CROP_ACCESSIBLE.equals(propertyId)) {
 			return this.cropAccessible;
 		}
 		return super.createField(item, propertyId, uiContext);
