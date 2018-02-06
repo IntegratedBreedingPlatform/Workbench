@@ -135,6 +135,7 @@ public class LocationFormFieldFactory extends DefaultFieldFactory implements Ini
 		this.country.setContainerDataSource(countryBeanContainer);
 		this.country.setItemCaptionMode(AbstractSelect.ITEM_CAPTION_MODE_PROPERTY);
 		this.country.setItemCaptionPropertyId("isoabbr");
+		this.country.setImmediate(true);
 
 		this.country.addListener(new Property.ValueChangeListener() {
 
@@ -162,6 +163,7 @@ public class LocationFormFieldFactory extends DefaultFieldFactory implements Ini
 		this.province.setContainerDataSource(provinceBeanContainer);
 		this.province.setItemCaptionMode(AbstractSelect.ITEM_CAPTION_MODE_PROPERTY);
 		this.province.setItemCaptionPropertyId("lname");
+		this.province.setImmediate(true);
 
 		this.latitude = new TextField() {
 

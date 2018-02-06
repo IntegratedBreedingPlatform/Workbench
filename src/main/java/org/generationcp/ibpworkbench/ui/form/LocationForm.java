@@ -22,6 +22,8 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.formfieldfactory.LocationFormFieldFactory;
 import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
+import org.generationcp.middleware.manager.api.LocationDataManager;
+import org.generationcp.middleware.pojos.Location;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -65,6 +67,9 @@ public class LocationForm extends Form {
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
+
+	@Autowired
+	private LocationDataManager locationDataManager;
 
 	public LocationForm(final LocationViewModel locationViewModel, final ProgramLocationsPresenter presenter, final LocationFormFieldFactory locationFormFieldFactory) {
 		this.presenter = presenter;
@@ -148,6 +153,11 @@ public class LocationForm extends Form {
 		this.grid.setComponentAlignment(lblLongitude, Alignment.TOP_LEFT);
 
 		this.grid.getComponent(1, 7).setCaption(this.messageSource.getMessage(Message.LOC_CROP_ACCESSIBLE));
+
+		// Set the selected value of Province combobox after all fields in the form are initialized. The option items of Province
+		// will only be available after the Country combobox is initialized.
+		final Location provinceValue = this.locationDataManager.getLocationByID(this.locationViewModel.getProvinceId());
+		this.locationFormFieldFactory.getProvince().setValue(provinceValue);
 
 		super.attach();
 
