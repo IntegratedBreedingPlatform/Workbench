@@ -17,13 +17,16 @@ import com.vaadin.ui.Form;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.formfieldfactory.LocationFormFieldFactory;
 import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
 import org.generationcp.middleware.manager.api.LocationDataManager;
+import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.Location;
+import org.generationcp.middleware.pojos.UserDefinedField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -67,6 +70,9 @@ public class LocationForm extends Form {
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
+
+	@Autowired
+	private ContextUtil contextUtil;
 
 	@Autowired
 	private LocationDataManager locationDataManager;
@@ -163,6 +169,15 @@ public class LocationForm extends Form {
 
 	}
 
+	@Override
+	public void commit() {
+
+		super.commit();
+
+		this.updateLocationModelView();
+
+	}
+
 	protected Label createLabel(final String caption, final boolean required) {
 
 		final Label label = new Label();
@@ -194,6 +209,40 @@ public class LocationForm extends Form {
 		}
 
 		return label;
+
+	}
+
+	public void updateLocationModelView() {
+
+		// The LocationViewModel's country name, province name and location type name and programUUID properties are not bound to the Form,
+		// so when they are changed in the UI, they are not automatically updated. So we have to manually update them.
+
+		final Country country = this.locationFormFieldFactory.retrieveCountryValue();
+		if (country != null) {
+			this.locationViewModel.setCntryName(country.getIsoabbr());
+			this.locationViewModel.setCntryFullName(country.getIsofull());
+		} else {
+			this.locationViewModel.setCntryName(null);
+			this.locationViewModel.setCntryFullName(null);
+		}
+
+		final Location province = this.locationFormFieldFactory.retrieveProvinceValue();
+		if (province != null) {
+			this.locationViewModel.setProvinceName(province.getLname());
+		} else {
+			this.locationViewModel.setProvinceName(null);
+		}
+
+		final UserDefinedField locationType = this.locationFormFieldFactory.retrieveLocationType();
+		if (locationType != null) {
+			this.locationViewModel.setLtypeStr(locationType.getFname());
+		}
+
+		if (this.locationViewModel.getCropAccessible()) {
+			this.locationViewModel.setProgramUUID(null);
+		} else {
+			this.locationViewModel.setProgramUUID(contextUtil.getCurrentProgramUUID());
+		}
 
 	}
 

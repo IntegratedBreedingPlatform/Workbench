@@ -13,6 +13,7 @@ package org.generationcp.ibpworkbench.model.formfieldfactory;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanContainer;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.validator.DoubleValidator;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.AbstractSelect;
@@ -283,6 +284,24 @@ public class LocationFormFieldFactory extends DefaultFieldFactory implements Ini
 
 	public CheckBox getCropAccessible() {
 		return cropAccessible;
+	}
+
+	public Country retrieveCountryValue() {
+		final BeanContainer<String, Country> beanContainer = (BeanContainer<String, Country>) this.country.getContainerDataSource();
+		final BeanItem<Country> beanItem = beanContainer.getItem(this.country.getValue());
+		return beanItem == null ? null : beanItem.getBean();
+	}
+
+	public Location retrieveProvinceValue() {
+		final BeanContainer<String, Location> beanContainer = (BeanContainer<String, Location>) this.province.getContainerDataSource();
+		final BeanItem<Location> beanItem = beanContainer.getItem(this.province.getValue());
+		return beanItem == null ? null : beanItem.getBean();
+	}
+
+	public UserDefinedField retrieveLocationType() {
+		final BeanContainer<String, UserDefinedField> beanContainer = (BeanContainer<String, UserDefinedField>) this.lType.getContainerDataSource();
+		final BeanItem<UserDefinedField> beanItem = beanContainer.getItem(this.lType.getValue());
+		return beanItem == null ? null : beanItem.getBean();
 	}
 
 	@Override

@@ -691,7 +691,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 					@Override
 					public void buttonClick(final ClickEvent clickEvent) {
-						clickEvent.getComponent().getWindow().addWindow(new EditLocationsWindow(locationViewModelToEdit,  presenter));
+						clickEvent.getComponent().getWindow().addWindow(new EditLocationsWindow(locationViewModelToEdit,  presenter, table));
 
 					}
 				});
@@ -868,24 +868,46 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 	}
 
-	protected void refreshLocationItemInView(final LocationViewModel locationViewModel) {
-
-		// Re-add the location view to the container datasource so that its updated values will be reflected in the UI.
-		if (this.availableTable.containsId(locationViewModel)) {
-			((BeanItemContainer<LocationViewModel>) this.availableTable.getContainerDataSource()).addBean(locationViewModel);
-		}
-		if (this.favoritesTable.containsId(locationViewModel)) {
-			((BeanItemContainer<LocationViewModel>) this.favoritesTable.getContainerDataSource()).addBean(locationViewModel);
-		}
-
-	}
-
 	protected void refreshTable() {
 		// do table repaint
 		this.availableTable.requestRepaint();
 		this.availableTable.refreshRowCache();
 		this.favoritesTable.requestRepaint();
 		this.favoritesTable.refreshRowCache();
+	}
+
+	public void refreshLocationViewItemInTable(final boolean isEditedFromAvailableTable, final LocationViewModel locationViewModel) {
+
+		if (isEditedFromAvailableTable) {
+			// If the Location is edited and updated from the Available table, make sure that the location in Favorites table is also updated.
+			copyLocationViewModelToTableItem(this.favoritesTableContainer, locationViewModel);
+		} else {
+			// If the Location is edited and updated from the Favorites table, make sure that the location in Available table is also updated.
+			copyLocationViewModelToTableItem(this.availableTableContainer, locationViewModel);
+		}
+
+		this.refreshTable();
+	}
+
+	public void copyLocationViewModelToTableItem(final BeanItemContainer<LocationViewModel> beanItemContainer, final LocationViewModel locationViewModel) {
+
+		if (beanItemContainer.containsId(locationViewModel)) {
+			LocationViewModel beanToUpdate = beanItemContainer.getItem(locationViewModel).getBean();
+			beanToUpdate.setLocationName(locationViewModel.getLocationName());
+			beanToUpdate.setLocationAbbreviation(locationViewModel.getLocationAbbreviation());
+			beanToUpdate.setLtype(locationViewModel.getLtype());
+			beanToUpdate.setLtypeStr(locationViewModel.getLtypeStr());
+			beanToUpdate.setCntryid(locationViewModel.getCntryid());
+			beanToUpdate.setCntryName(locationViewModel.getCntryName());
+			beanToUpdate.setCntryFullName(locationViewModel.getCntryFullName());
+			beanToUpdate.setProvinceId(locationViewModel.getProvinceId());
+			beanToUpdate.setProvinceName(locationViewModel.getProvinceName());
+			beanToUpdate.setAltitude(locationViewModel.getAltitude());
+			beanToUpdate.setLatitude(locationViewModel.getLatitude());
+			beanToUpdate.setLongitude(locationViewModel.getLongitude());
+			beanToUpdate.setCropAccessible(locationViewModel.getCropAccessible());
+			beanToUpdate.setProgramUUID(locationViewModel.getProgramUUID());
+		}
 
 	}
 

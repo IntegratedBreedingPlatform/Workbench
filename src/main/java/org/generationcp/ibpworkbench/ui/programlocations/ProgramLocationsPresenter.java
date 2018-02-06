@@ -246,13 +246,9 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		}
 	}
 
-	public void updateLocation(final Location location) {
-
-			this.locationDataManager.addLocation(location);
-			final LocationViewModel locationVModel = this.getLocationDetailsByLocId(location.getLocid());
-			this.view.refreshLocationItemInView(locationVModel);
-			this.view.refreshTable();
-
+	public void updateLocation(final LocationViewModel locationViewModel, final boolean isEditedFromAvailableTable) {
+			this.locationDataManager.addLocation(convertLocationViewToLocation(locationViewModel));
+			this.view.refreshLocationViewItemInTable(isEditedFromAvailableTable, locationViewModel);
 	}
 
 	public List<Location> getExistingLocations(final String locationName) {

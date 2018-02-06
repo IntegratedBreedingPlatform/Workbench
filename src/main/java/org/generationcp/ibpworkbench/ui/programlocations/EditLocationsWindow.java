@@ -19,6 +19,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.spring.util.ContextUtil;
@@ -62,9 +63,12 @@ public class EditLocationsWindow extends BaseSubWindow {
 
 	private LocationViewModel locationToEdit;
 
-	public EditLocationsWindow(final LocationViewModel locationToEdit, final ProgramLocationsPresenter programLocationsPresenter) {
+	private Table sourceTable;
+
+	public EditLocationsWindow(final LocationViewModel locationToEdit, final ProgramLocationsPresenter programLocationsPresenter, final Table sourceTable) {
 		this.programLocationsPresenter = programLocationsPresenter;
 		this.locationToEdit = locationToEdit;
+		this.sourceTable = sourceTable;
 		this.assemble();
 	}
 
@@ -82,7 +86,7 @@ public class EditLocationsWindow extends BaseSubWindow {
 		this.setWidth("600px");
 		this.setResizable(false);
 		this.center();
-		this.setCaption("Edit New Location");
+		this.setCaption("Edit Location");
 
 		this.layout = new VerticalLayout();
 		this.layout.setDebugId("EditLocationsWindow_layout");
@@ -168,9 +172,7 @@ public class EditLocationsWindow extends BaseSubWindow {
 						(BeanItem<LocationViewModel>) EditLocationsWindow.this.locationForm.getItemDataSource();
 				LocationViewModel locationViewModel = locationBean.getBean();
 
-				final Location location =
-						EditLocationsWindow.this.programLocationsPresenter.convertLocationViewToLocation(locationViewModel);
-				EditLocationsWindow.this.programLocationsPresenter.updateLocation(location);
+				EditLocationsWindow.this.programLocationsPresenter.updateLocation(locationViewModel, ProgramLocationsView.AVAILABLE.equals(sourceTable.getData()));
 
 				EditLocationsWindow.this.contextUtil
 						.logProgramActivity(EditLocationsWindow.this.messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK),
