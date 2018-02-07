@@ -324,7 +324,7 @@ public class ToolUtil {
 		return new File(installationDirectory + File.separator + ToolUtil.WORKSPACE_DIR + File.separator + cropName, projectName);
 	}
 
-	public void renameOldWorkspaceDirectoryToNewFormat(final long projectId, final String oldProjectName) {
+	public void renameOldWorkspaceDirectory(final String oldProjectName, final Project project) {
 		final WorkbenchSetting workbenchSetting = this.workbenchDataManager.getWorkbenchSetting();
 		if (workbenchSetting == null) {
 			return;
@@ -332,11 +332,15 @@ public class ToolUtil {
 
 		final String installationDirectory = workbenchSetting.getInstallationDirectory();
 
-		final File oldDir = new File(installationDirectory + File.separator + ToolUtil.WORKSPACE_DIR,
-				String.format("%d-%s", projectId, oldProjectName));
+		final String cropName = project.getCropType().getCropName();
+		final File oldDir = this.getFileForWorkspaceProjectDirectory(installationDirectory, cropName, oldProjectName);
 
+		// Rename old project name folder if found, otherwise create folder for latest project name
 		if (oldDir.exists()) {
-			oldDir.renameTo(new File(installationDirectory + File.separator + ToolUtil.WORKSPACE_DIR, String.format("%d", projectId)));
+			final String newName = project.getProjectName();
+			oldDir.renameTo(this.getFileForWorkspaceProjectDirectory(installationDirectory, cropName, newName));
+		} else {
+			this.createWorkspaceDirectoriesForProject(project);
 		}
 	}
 

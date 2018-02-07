@@ -83,8 +83,7 @@ public class UpdateProjectActionTest {
 		try {
 			this.updateProjectAction.buttonClick(this.clickEvent);
 
-			Mockito.verify(this.toolUtil).renameOldWorkspaceDirectoryToNewFormat(this.project.getProjectId(),
-					UpdateProjectActionTest.OLD_PROGRAM_NAME);
+			Mockito.verify(this.toolUtil).renameOldWorkspaceDirectory(UpdateProjectActionTest.OLD_PROGRAM_NAME, this.project);
 			final ArgumentCaptor<Project> projectCaptor = ArgumentCaptor.forClass(Project.class);
 			Mockito.verify(this.workbenchDataManager).saveOrUpdateProject(projectCaptor.capture());
 			final Project projectUpdated = projectCaptor.getValue();
@@ -103,7 +102,7 @@ public class UpdateProjectActionTest {
 		Mockito.doReturn(false).when(this.projectPanel).validate();
 		this.updateProjectAction.buttonClick(this.clickEvent);
 
-		Mockito.verify(this.toolUtil, Mockito.never()).renameOldWorkspaceDirectoryToNewFormat(Matchers.anyLong(), Matchers.anyString());
+		Mockito.verify(this.toolUtil, Mockito.never()).renameOldWorkspaceDirectory(Matchers.anyString(), Matchers.any(Project.class));
 		Mockito.verify(this.workbenchDataManager, Mockito.never()).saveOrUpdateProject(Matchers.any(Project.class));
 		Mockito.verify(this.contextUtil, Mockito.never()).logProgramActivity(Matchers.anyString(), Matchers.anyString());
 	}

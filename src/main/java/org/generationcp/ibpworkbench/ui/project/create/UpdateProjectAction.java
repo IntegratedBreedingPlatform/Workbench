@@ -55,14 +55,17 @@ public class UpdateProjectAction implements Button.ClickListener {
 		UpdateProjectAction.LOG.debug(String.format("Project: [%s]", project));
 
 		if (this.projectPanel.validate()) {
-			// rename old workspace directory if found
-			this.toolUtil.renameOldWorkspaceDirectoryToNewFormat(project.getProjectId(), this.projectPanel.getOldProjectName());
-
-			// update the project
+			// It is important to store old project name before updating the project
+			final String oldProjectName = this.projectPanel.getOldProjectName();
+			
+			// Update the project
 			final Project updatedProject = this.projectPanel.getProjectBasicDetailsComponent().getProjectDetails();
 			project.setProjectName(updatedProject.getProjectName());
 			project.setStartDate(updatedProject.getStartDate());
 			this.workbenchDataManager.saveOrUpdateProject(project);
+
+			// Rename old workspace directory if found
+			this.toolUtil.renameOldWorkspaceDirectory(oldProjectName, project);
 
 			MessageNotifier.showMessage(this.projectPanel.getWindow(), "Program update is successful",
 					String.format("%s is updated.", StringUtils.abbreviate(project.getProjectName(), 50)));

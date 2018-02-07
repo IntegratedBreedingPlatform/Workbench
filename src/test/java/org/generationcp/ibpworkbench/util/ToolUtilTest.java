@@ -110,6 +110,7 @@ public class ToolUtilTest {
 		final File projectWorkspaceDirectory = new File(
 				this.currentRandomDirectory + File.separator + ToolUtil.WORKSPACE_DIR + File.separator + cropName, DUMMY_PROJECT_NAME);
 		projectWorkspaceDirectory.mkdirs();
+		
 		final Project project = ProjectTestDataInitializer.createProject();
 		project.setProjectName(DUMMY_PROJECT_NAME);
 		this.toolUtil.createWorkspaceDirectoriesForProject(project);
@@ -126,6 +127,43 @@ public class ToolUtilTest {
 		// Delete test installation directory and its contents as part of cleanup
 		final File testInstallationDirectory = new File(this.currentRandomDirectory);
 		this.recursiveFileDelete(testInstallationDirectory);
+	}
+	
+	@Test
+	public void testRenameOldWorkspaceDirectoryWhenOldProgramFolderExists() {
+		// Existing directory should be renamed to new program name
+		final String oldProjectName = "Old Maize Program";
+		final Project project = ProjectTestDataInitializer.createProject();
+		final File oldProjectWorkspaceDirectory = new File(this.currentRandomDirectory + File.separator + ToolUtil.WORKSPACE_DIR
+				+ File.separator + project.getCropType().getCropName(), oldProjectName);
+		oldProjectWorkspaceDirectory.mkdirs();
+		Assert.assertTrue(oldProjectWorkspaceDirectory.exists());
+		
+		project.setProjectName(DUMMY_PROJECT_NAME);
+		this.toolUtil.renameOldWorkspaceDirectory(oldProjectName, project);
+		// Folder for old project name should not exist anymore
+		Assert.assertFalse(oldProjectWorkspaceDirectory.exists());
+		final File newProjectWorkspaceDirectory = new File(this.currentRandomDirectory + File.separator + ToolUtil.WORKSPACE_DIR
+				+ File.separator + project.getCropType().getCropName(), DUMMY_PROJECT_NAME);
+		Assert.assertTrue(newProjectWorkspaceDirectory.exists());
+	}
+	
+	@Test
+	public void testRenameOldWorkspaceDirectoryWhenOldProgramFolderDoesNotExist() {
+		final String oldProjectName = "Old Maize Program";
+		final Project project = ProjectTestDataInitializer.createProject();
+		final File oldProjectWorkspaceDirectory = new File(this.currentRandomDirectory + File.separator + ToolUtil.WORKSPACE_DIR
+				+ File.separator + project.getCropType().getCropName(), oldProjectName);
+		Assert.assertFalse(oldProjectWorkspaceDirectory.exists());
+		
+		project.setProjectName(DUMMY_PROJECT_NAME);
+		this.toolUtil.renameOldWorkspaceDirectory(oldProjectName, project);
+		// Folder for old project name should still not exist
+		Assert.assertFalse(oldProjectWorkspaceDirectory.exists());
+		final File newProjectWorkspaceDirectory = new File(this.currentRandomDirectory + File.separator + ToolUtil.WORKSPACE_DIR
+				+ File.separator + project.getCropType().getCropName(), DUMMY_PROJECT_NAME);
+		// Folder for new project name should now exist
+		Assert.assertTrue(newProjectWorkspaceDirectory.exists());
 	}
 	
 	@Test
