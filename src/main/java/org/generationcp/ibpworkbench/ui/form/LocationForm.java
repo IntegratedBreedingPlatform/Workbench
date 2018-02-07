@@ -174,6 +174,7 @@ public class LocationForm extends Form {
 		this.locationFormFieldFactory.getProvince().setValue(provinceValue);
 
 		this.disableCropAccessibleIfLocationIsUsedInOtherProgram();
+		this.populateCropAccessibleCheckbox();
 
 		super.attach();
 
@@ -265,8 +266,19 @@ public class LocationForm extends Form {
 				locationUsedInOtherProgram = true;
 			}
 		}
-
 	}
+
+	protected void populateCropAccessibleCheckbox() {
+
+		if (this.locationViewModel.getLocationId() != null) {
+			if (this.locationViewModel.getProgramUUID() == null) {
+				locationFormFieldFactory.getCropAccessible().setValue(true);
+			} else {
+				locationFormFieldFactory.getCropAccessible().setValue(false);
+			}
+		}
+	}
+
 
 	public boolean isLocationUsedInOtherProgram() {
 		return locationUsedInOtherProgram;
