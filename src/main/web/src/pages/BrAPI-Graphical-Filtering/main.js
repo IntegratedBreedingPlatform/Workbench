@@ -50,7 +50,6 @@ function loadBrAPIData(parameters, success) {
 // filters and modifies the response and then creates the root filter object
 // and datatable
 function useBrAPIData(response, groupByAccession) {
-	console.log(response);
 	var traits = {};
 	var data = response.result.data
 		.map(function (observeUnit) {

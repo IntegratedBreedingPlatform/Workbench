@@ -451,7 +451,6 @@ function GraphicalFilter(){
       var v = frself.valueAccessor(d)
       return v!=null && !isNaN(v);
     });
-    console.log(visible_data);
     var negate = (this.operator.indexOf("not", this.operator.length - 3) != -1);
     var extent = d3.extent(visible_data, this.valueAccessor);
     if (visible_data.length<2) extent = [-1,1];
@@ -607,7 +606,6 @@ function GraphicalFilter(){
           brushExtent[0]-=1;
         }
       }
-      console.log(brushExtent)
       this.brush.move(transition,brushExtent);
     } else {
       status.text("Nothing");
@@ -643,7 +641,6 @@ function GraphicalFilter(){
             }
             //if there arent enough items in the selection (2) expand the selection to include the nearest ones.
             if (hist.getFilter()&&hist.data.filter(hist.getFilter()).length<2){
-              console.log("adjusted")
               var values = hist.data.map(hist.valueAccessor);
               values.sort(function(a,b){return a-b;});
               var midVal = d3.mean(hist.brushRange);
