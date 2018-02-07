@@ -48,7 +48,9 @@ import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class creates the Vaadin Table where a dataset can be displayed.
@@ -62,6 +64,8 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 	public static final String EXPORT_CSV_BUTTON_ID = "RepresentationDatasetComponent Export CSV Button";
 	public static final String EXPORT_EXCEL_BUTTON_ID = "RepresentationDatasetComponent Export to FieldBook Excel File Button";
 	public static final String OPEN_TABLE_VIEWER_BUTTON_ID = "RepresentationDatasetComponent Open Table Viewer Button";
+	public static final String OPEN_GRAPHICAL_FILTERING_BUTTON_ID = "RepresentationDatasetComponent Open Graphical Filtering Button";
+
 	private static final Logger LOG = LoggerFactory.getLogger(RepresentationDatasetComponent.class);
 	private static final long serialVersionUID = -8476739652987572690L;
 	private static final List<PhenotypicType> EXCLUDED_ROLE = new ArrayList<PhenotypicType>();
@@ -81,9 +85,13 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 	private Button exportCsvButton;
 	private Button exportExcelButton;
 	private Button openTableViewerButton;
+	private Button openGraphicalFilteringTool;
 	private StringBuilder reportTitle;
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
+
+	private Map<String, Integer> studiesMappedByInstance = new HashMap<>();
+
 
 	public RepresentationDatasetComponent(StudyDataManager studyDataManager, Integer datasetId, String datasetTitle, Integer studyId,
 			boolean fromUrl, boolean h2hCall) {
@@ -197,6 +205,7 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 		this.setData(this.reportName);
 		this.setWidth("97%");
 		this.setHeight("97%");
+		datasetTable.setSelectable(true);
 
 		if (!this.h2hCall) {
 			// "Export to CSV"
@@ -213,6 +222,10 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 			this.openTableViewerButton.setData(RepresentationDatasetComponent.OPEN_TABLE_VIEWER_BUTTON_ID);
 			this.openTableViewerButton.addListener(new StudyButtonClickListener(this));
 
+			this.openGraphicalFilteringTool = new Button();
+			this.openGraphicalFilteringTool.setData(RepresentationDatasetComponent.OPEN_GRAPHICAL_FILTERING_BUTTON_ID);
+			this.openGraphicalFilteringTool.addListener(new StudyButtonClickListener(this));
+
 			HorizontalLayout buttonLayout = new HorizontalLayout();
 			buttonLayout.setSpacing(true);
 
@@ -220,6 +233,7 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 			if (!this.fromUrl) {
 				buttonLayout.addComponent(this.exportExcelButton);
 				buttonLayout.addComponent(this.openTableViewerButton);
+				buttonLayout.addComponent(this.openGraphicalFilteringTool);
 			}
 
 			this.addComponent(buttonLayout);
@@ -230,9 +244,10 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 		// set the column header ids
 		List<DMSVariableType> variables;
 		List<String> columnIds = new ArrayList<String>();
-
 		try {
 			DataSet dataset = this.studyDataManager.getDataSet(this.datasetId);
+			studiesMappedByInstance = this.studyDataManager.getMappedEnvironmentInstances(dataset.getStudyId());
+
 			variables = dataset.getVariableTypes().getVariableTypes();
 		} catch (MiddlewareException e) {
 			RepresentationDatasetComponent.LOG.error("Error in getting variables of dataset: " + this.datasetId + "\n" + e.toString()
@@ -290,6 +305,17 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 		return newTable;
 	}
 
+	public void openGraphicalFilteringTool () {
+		if (datasetTable.getValue() == null) {
+			System.out.println("error");
+		} else {
+			final String itemPropertyValue = (String) datasetTable.getItem(datasetTable.getValue()).
+					getItemProperty("8170-TRIAL_INSTANCE").getValue();
+			final Integer studyId = this.studiesMappedByInstance.get(itemPropertyValue);
+			System.out.println(studyId);
+		}
+	}
+
 	@Override
 	public void attach() {
 		super.attach();
@@ -301,6 +327,7 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 		this.messageSource.setCaption(this.exportCsvButton, Message.EXPORT_TO_CSV_LABEL);
 		this.messageSource.setCaption(this.exportExcelButton, Message.EXPORT_TO_EXCEL_LABEL);
 		this.messageSource.setCaption(this.openTableViewerButton, Message.OPEN_TABLE_VIEWER_LABEL);
+		this.messageSource.setCaption(this.openGraphicalFilteringTool, Message.OPEN_GRAPHICAL_FILTERING_TOOL);
 	}
 
 }
