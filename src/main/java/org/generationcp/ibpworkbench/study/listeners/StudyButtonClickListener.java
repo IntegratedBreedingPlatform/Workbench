@@ -78,7 +78,7 @@ public class StudyButtonClickListener implements Button.ClickListener {
 			((RepresentationDatasetComponent) this.source).openTableViewerAction();
 			// " Open Graphical Filtering Tool"
 		} else if (event.getButton().getData().equals(RepresentationDatasetComponent.OPEN_GRAPHICAL_FILTERING_BUTTON_ID)) {
-			((RepresentationDatasetComponent) this.source).openGraphicalFilteringTool();
+			((RepresentationDatasetComponent) this.source).openGraphicalFilteringToolAction();
 		} else {
 			StudyButtonClickListener.LOG.error("StudyButtonClickListener: Error with buttonClick action. Source not identified.");
 		}

@@ -305,15 +305,23 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 		return newTable;
 	}
 
-	public void openGraphicalFilteringTool () {
+	public void openGraphicalFilteringToolAction() {
 		if (datasetTable.getValue() == null) {
-			System.out.println("error");
+			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.GRAPHICAL_FILTERING_INSTANCE_REQUIRED),
+					this.messageSource.getMessage(Message.ERROR_IN_GETTING_VARIABLES_OF_DATASET));
 		} else {
 			final String itemPropertyValue = (String) datasetTable.getItem(datasetTable.getValue()).
 					getItemProperty("8170-TRIAL_INSTANCE").getValue();
 			final Integer studyId = this.studiesMappedByInstance.get(itemPropertyValue);
-			System.out.println(studyId);
+			this.openGraphicalFilteringTool(studyId);
 		}
+	}
+
+	private void openGraphicalFilteringTool( final Integer studyId) {
+		Window mainWindow = this.getWindow();
+		Window graphicalFilteringToolWindow = new GraphicalFilteringToolComponent(studyId);
+		graphicalFilteringToolWindow.addStyleName(Reindeer.WINDOW_LIGHT);
+		mainWindow.addWindow(graphicalFilteringToolWindow);
 	}
 
 	@Override
