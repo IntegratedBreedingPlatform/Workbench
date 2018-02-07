@@ -1,17 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<!--<html>-->
     <head>
         <meta charset="utf-8">
         <title>BrAPI Graphical Filtering</title>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.css" />
-        <link th:href="@{/controller/pages/BrAPI-Graphical-Filtering/style.css}" rel="stylesheet"></link>
-        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+        <link th:href="@{/controller/static/lib/bootstrap-3.3.7.min.css}" rel="stylesheet" />
+        <link th:href="@{/controller/pages/BrAPI-Graphical-Filtering/style.css}" rel="stylesheet" />
+        <link th:href="@{/controller/static/lib/jquery.dataTables-1.10.16.min.css}" rel="stylesheet" />
     </head>
     <body>
         <div style="margin:1em">
             <h1>BrAPI Graphical Filtering</h1>
-            <h4><a href="https://github.com/solgenomics/BrAPI-Graphical-Filtering">Source</a> ( Requires: D3, jQuery, Bootstrap [css & js], Datables [js] )</h4>
             <form id="brapi-form" action="#"  class="form-inline">
                 <div class="form-group">
                     <label>
@@ -24,12 +22,10 @@
             <table id="filtered_results"></table>
         </div>
     </body>
-    <!-- TODO download -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.12.0/d3.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js" charset="utf-8"></script>
-    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js" charset="utf-8"></script>
+    <script th:src="@{/controller/static/js/lib/jquery-3.2.1.min.js}"></script>
+	<script th:src="@{/controller/static/js/lib/d3-4.12.0.min.js}"></script>
+	<script th:src="@{/controller/static/js/lib/bootstrap-3.3.7.min.js}"></script>
+    <script th:src="@{/controller/static/js/lib/jquery.dataTables-1.10.16.min.js}" charset="utf-8"></script>
     <script th:src="@{/controller/pages/BrAPI-Graphical-Filtering/GraphicalFilter.js}"></script>
     <script th:src="@{/controller/pages/BrAPI-Graphical-Filtering/main.js}"></script>
 </html>
