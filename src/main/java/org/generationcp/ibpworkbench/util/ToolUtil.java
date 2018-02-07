@@ -18,6 +18,7 @@ import org.generationcp.commons.util.StringUtil;
 import org.generationcp.ibpworkbench.util.bean.ConfigurationChangeParameters;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolType;
@@ -321,7 +322,11 @@ public class ToolUtil {
 
 	private File getFileForWorkspaceProjectDirectory(final String installationDirectory, final String cropName,
 			final String projectName) {
-		return new File(installationDirectory + File.separator + ToolUtil.WORKSPACE_DIR + File.separator + cropName, projectName);
+		return new File(this.buildWorkspaceCropDirectoryPath(installationDirectory, cropName), projectName);
+	}
+
+	private String buildWorkspaceCropDirectoryPath(final String installationDirectory, final String cropName) {
+		return installationDirectory + File.separator + ToolUtil.WORKSPACE_DIR + File.separator + cropName;
 	}
 
 	public void renameOldWorkspaceDirectory(final String oldProjectName, final Project project) {
@@ -340,6 +345,25 @@ public class ToolUtil {
 			final String newName = project.getProjectName();
 			oldDir.renameTo(this.getFileForWorkspaceProjectDirectory(installationDirectory, cropName, newName));
 		} else {
+			this.createWorkspaceDirectoriesForProject(project);
+		}
+	}
+	
+	public void resetWorkspaceDirectoryForCrop(final CropType cropType, final List<Project> projects) {
+		final WorkbenchSetting workbenchSetting = this.workbenchDataManager.getWorkbenchSetting();
+		if (workbenchSetting == null) {
+			return;
+		}
+
+		final String installationDirectory = workbenchSetting.getInstallationDirectory();
+
+		final String cropName = cropType.getCropName();
+		final File cropDirectory = new File(this.buildWorkspaceCropDirectoryPath(installationDirectory, cropName));
+		// Delete all contents of given crop directory and recreate folders for each of the project names
+		if (cropDirectory.exists()) {
+			this.recursiveFileDelete(cropDirectory);
+		}
+		for (final Project project : projects) {
 			this.createWorkspaceDirectoriesForProject(project);
 		}
 	}
@@ -372,4 +396,21 @@ public class ToolUtil {
 
 		return new File(toolDir, ToolUtil.INPUT).getAbsolutePath();
 	}
+	
+	void recursiveFileDelete(File file) {
+        //to end the recursive loop
+        if (!file.exists()){
+        	return;
+        }
+         
+        //if directory, go inside and call recursively
+        if (file.isDirectory()) {
+            for (File f : file.listFiles()) {
+                //call recursively
+                recursiveFileDelete(f);
+            }
+        }
+        //call delete to delete files and empty directory
+        file.delete();
+    }
 }

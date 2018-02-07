@@ -2,10 +2,13 @@
 package org.generationcp.ibpworkbench.util;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 import org.generationcp.commons.constant.ToolEnum;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
@@ -89,18 +92,22 @@ public class ToolUtilTest {
 		final File projectWorkspaceDirectory = new File(this.currentRandomDirectory + File.separator + ToolUtil.WORKSPACE_DIR
 				+ File.separator + project.getCropType().getCropName(), DUMMY_PROJECT_NAME);
 		Assert.assertTrue(projectWorkspaceDirectory.exists());
-		// Check that only "breeding_view" directory is under program with "input" and "output" subdirectories
-		Assert.assertEquals(1, projectWorkspaceDirectory.list().length);
-		final File breedingViewDirectory = new File(projectWorkspaceDirectory, ToolEnum.BREEDING_VIEW.getToolName());
-		Assert.assertTrue(breedingViewDirectory.exists());
-		final File bvInputDirectory = new File(breedingViewDirectory, ToolUtil.INPUT);
-		Assert.assertTrue(bvInputDirectory.exists());
-		final File bvOutputDirectory = new File(breedingViewDirectory, ToolUtil.OUTPUT);
-		Assert.assertTrue(bvOutputDirectory.exists());
+		this.verifyProjectFolderSubdirectories(projectWorkspaceDirectory, true);
 		
-		// Delete test installation directory and its contents as part of cleanup
-		final File testInstallationDirectory = new File(this.currentRandomDirectory);
-		this.recursiveFileDelete(testInstallationDirectory);
+		this.deleteTestInstallationDirectory();
+	}
+
+	// Check the existence of "breeding_view" directory under program with "input" and "output" subdirectories
+	private void verifyProjectFolderSubdirectories(final File projectWorkspaceDirectory, final boolean exists) {
+		if (exists) {
+			Assert.assertEquals(1, projectWorkspaceDirectory.list().length);
+		}
+		final File breedingViewDirectory = new File(projectWorkspaceDirectory, ToolEnum.BREEDING_VIEW.getToolName());
+		Assert.assertEquals(exists, breedingViewDirectory.exists());
+		final File bvInputDirectory = new File(breedingViewDirectory, ToolUtil.INPUT);
+		Assert.assertEquals(exists, bvInputDirectory.exists());
+		final File bvOutputDirectory = new File(breedingViewDirectory, ToolUtil.OUTPUT);
+		Assert.assertEquals(exists, bvOutputDirectory.exists());
 	}
 	
 	@Test
@@ -117,16 +124,9 @@ public class ToolUtilTest {
 		
 		Assert.assertTrue(projectWorkspaceDirectory.exists());
 		// Check that "breeding_view" directory and sub-folders will not be created anymore
-		final File breedingViewDirectory = new File(projectWorkspaceDirectory, ToolEnum.BREEDING_VIEW.getToolName());
-		Assert.assertFalse(breedingViewDirectory.exists());
-		final File bvInputDirectory = new File(breedingViewDirectory, ToolUtil.INPUT);
-		Assert.assertFalse(bvInputDirectory.exists());
-		final File bvOutputDirectory = new File(breedingViewDirectory, ToolUtil.OUTPUT);
-		Assert.assertFalse(bvOutputDirectory.exists());
+		this.verifyProjectFolderSubdirectories(projectWorkspaceDirectory, false);
 		
-		// Delete test installation directory and its contents as part of cleanup
-		final File testInstallationDirectory = new File(this.currentRandomDirectory);
-		this.recursiveFileDelete(testInstallationDirectory);
+		this.deleteTestInstallationDirectory();
 	}
 	
 	@Test
@@ -141,11 +141,15 @@ public class ToolUtilTest {
 		
 		project.setProjectName(DUMMY_PROJECT_NAME);
 		this.toolUtil.renameOldWorkspaceDirectory(oldProjectName, project);
-		// Folder for old project name should not exist anymore
+		// Folder for old project name should not exist anymore since it was renamed
 		Assert.assertFalse(oldProjectWorkspaceDirectory.exists());
 		final File newProjectWorkspaceDirectory = new File(this.currentRandomDirectory + File.separator + ToolUtil.WORKSPACE_DIR
 				+ File.separator + project.getCropType().getCropName(), DUMMY_PROJECT_NAME);
 		Assert.assertTrue(newProjectWorkspaceDirectory.exists());
+		// Check that "breeding_view" directory and sub-folders will not be created anymore
+		this.verifyProjectFolderSubdirectories(newProjectWorkspaceDirectory, false);
+		
+		this.deleteTestInstallationDirectory();
 	}
 	
 	@Test
@@ -164,6 +168,85 @@ public class ToolUtilTest {
 				+ File.separator + project.getCropType().getCropName(), DUMMY_PROJECT_NAME);
 		// Folder for new project name should now exist
 		Assert.assertTrue(newProjectWorkspaceDirectory.exists());
+		this.verifyProjectFolderSubdirectories(newProjectWorkspaceDirectory, true);
+		
+		this.deleteTestInstallationDirectory();
+	}
+	
+	@Test
+	public void testResetWorkspaceDirectoryForCropWhenOldProgramFoldersExists() {
+		// Create crop workspace directory with existing programs
+		final String oldProjectName1 = "Old Maize Program 1";
+		final Project project = ProjectTestDataInitializer.createProject();
+		final CropType cropType = project.getCropType();
+		final File oldProjectWorkspaceDirectory1 = new File(this.currentRandomDirectory + File.separator + ToolUtil.WORKSPACE_DIR
+				+ File.separator + cropType.getCropName(), oldProjectName1);
+		oldProjectWorkspaceDirectory1.mkdirs();
+		Assert.assertTrue(oldProjectWorkspaceDirectory1.exists());
+		final String oldProjectName2 = "Old Maize Program 2";
+		final File oldProjectWorkspaceDirectory2 = new File(this.currentRandomDirectory + File.separator + ToolUtil.WORKSPACE_DIR
+				+ File.separator + cropType.getCropName(), oldProjectName2);
+		oldProjectWorkspaceDirectory2.mkdirs();
+		Assert.assertTrue(oldProjectWorkspaceDirectory2.exists());
+		
+		project.setProjectName(DUMMY_PROJECT_NAME + "1");
+		final Project project2 = ProjectTestDataInitializer.createProject();
+		project2.setProjectName(DUMMY_PROJECT_NAME + "2");
+		final Project project3 = ProjectTestDataInitializer.createProject();
+		project3.setProjectName(DUMMY_PROJECT_NAME + "3");
+		final List<Project> projects = Arrays.asList(project, project2, project3);
+		this.toolUtil.resetWorkspaceDirectoryForCrop(cropType, projects);
+		
+		// Folder for old project names should not exist anymore and folders for new programs should have been generated
+		Assert.assertFalse(oldProjectWorkspaceDirectory1.exists());
+		Assert.assertFalse(oldProjectWorkspaceDirectory2.exists());
+		final File cropWorkspaceDirectory = new File(this.currentRandomDirectory + File.separator + ToolUtil.WORKSPACE_DIR
+				+ File.separator + cropType.getCropName());
+		Assert.assertTrue(cropWorkspaceDirectory.exists());
+		Assert.assertEquals(projects.size(), cropWorkspaceDirectory.list().length);
+		for (final Project newProject : projects) {
+			final File newProjectWorkspaceDirectory = new File(this.currentRandomDirectory + File.separator + ToolUtil.WORKSPACE_DIR
+					+ File.separator + cropType.getCropName(), newProject.getProjectName());
+			Assert.assertTrue(newProjectWorkspaceDirectory.exists());
+			this.verifyProjectFolderSubdirectories(newProjectWorkspaceDirectory, true);
+		}
+		
+		this.deleteTestInstallationDirectory();
+	}
+	
+	@Test
+	public void testResetWorkspaceDirectoryForCropWhenCropDirectoryDoesNotExist() {
+		// Create crop workspace directory with existing programs
+		final Project project = ProjectTestDataInitializer.createProject();
+		final CropType cropType = project.getCropType();
+		final File cropWorkspaceDirectory = new File(this.currentRandomDirectory + File.separator + ToolUtil.WORKSPACE_DIR
+				+ File.separator + cropType.getCropName());
+		Assert.assertFalse(cropWorkspaceDirectory.exists());
+		
+		project.setProjectName(DUMMY_PROJECT_NAME + "1");
+		final Project project2 = ProjectTestDataInitializer.createProject();
+		project2.setProjectName(DUMMY_PROJECT_NAME + "2");
+		final Project project3 = ProjectTestDataInitializer.createProject();
+		project3.setProjectName(DUMMY_PROJECT_NAME + "3");
+		final List<Project> projects = Arrays.asList(project, project2, project3);
+		this.toolUtil.resetWorkspaceDirectoryForCrop(cropType, projects);
+		
+		// Folders for crop and new programs should have been generated
+		Assert.assertTrue(cropWorkspaceDirectory.exists());
+		for (final Project newProject : projects) {
+			final File newProjectWorkspaceDirectory = new File(this.currentRandomDirectory + File.separator + ToolUtil.WORKSPACE_DIR
+					+ File.separator + cropType.getCropName(), newProject.getProjectName());
+			Assert.assertTrue(newProjectWorkspaceDirectory.exists());
+			this.verifyProjectFolderSubdirectories(newProjectWorkspaceDirectory, true);
+		}
+		
+		this.deleteTestInstallationDirectory();
+	}
+
+	private void deleteTestInstallationDirectory() {
+		// Delete test installation directory and its contents as part of cleanup
+		final File testInstallationDirectory = new File(this.currentRandomDirectory);
+		this.toolUtil.recursiveFileDelete(testInstallationDirectory);
 	}
 	
 	@Test
@@ -178,9 +261,7 @@ public class ToolUtilTest {
 			Mockito.verify(project).getProjectName();
 			Assert.assertNotNull(inputDirectory);
 			
-			// Delete test installation directory and its contents as part of cleanup
-			final File testInstallationDirectory = new File(this.currentRandomDirectory);
-			this.recursiveFileDelete(testInstallationDirectory);
+			deleteTestInstallationDirectory();
 		} catch (IllegalStateException e) {
 			Assert.fail("There should be no exception thrown");
 		}
@@ -198,32 +279,12 @@ public class ToolUtilTest {
 			Mockito.verify(project).getProjectId();
 			Assert.assertNotNull(inputDirectory);
 			
-			// Delete test installation directory and its contents as part of cleanup
-			final File testInstallationDirectory = new File(this.currentRandomDirectory);
-			this.recursiveFileDelete(testInstallationDirectory);
+			deleteTestInstallationDirectory();
 		} catch (IllegalStateException e) {
 			Assert.fail("There should be no exception thrown");
 		}
 	}
 	
-	private void recursiveFileDelete(File file) {
-        //to end the recursive loop
-        if (!file.exists())
-            return;
-         
-        //if directory, go inside and call recursively
-        if (file.isDirectory()) {
-            for (File f : file.listFiles()) {
-                //call recursively
-                recursiveFileDelete(f);
-            }
-        }
-        //call delete to delete files and empty directory
-        file.delete();
-    }
-
-	
-
 	protected Tool constructDummyNativeTool() {
 		return new Tool(ToolName.GDMS.name(), ToolUtilTest.DUMMY_TOOL_TITLE, ToolUtilTest.DUMMY_NATIVE_TOOL_PATH);
 	}
