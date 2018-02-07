@@ -13,6 +13,7 @@ package org.generationcp.ibpworkbench.ui.programlocations;
 
 import com.vaadin.data.Validator;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.event.FieldEvents;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -28,14 +29,17 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.actions.SaveNewLocationAction;
 import org.generationcp.ibpworkbench.model.formfieldfactory.LocationFormFieldFactory;
 import org.generationcp.ibpworkbench.ui.form.LocationForm;
+import org.generationcp.ibpworkbench.ui.window.ConfirmLocationsWindow;
 import org.generationcp.middleware.pojos.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Configurable
 public class EditLocationsWindow extends BaseSubWindow {
@@ -65,7 +69,8 @@ public class EditLocationsWindow extends BaseSubWindow {
 
 	private Table sourceTable;
 
-	public EditLocationsWindow(final LocationViewModel locationToEdit, final ProgramLocationsPresenter programLocationsPresenter, final Table sourceTable) {
+	public EditLocationsWindow(final LocationViewModel locationToEdit, final ProgramLocationsPresenter programLocationsPresenter,
+			final Table sourceTable) {
 		this.programLocationsPresenter = programLocationsPresenter;
 		this.locationToEdit = locationToEdit;
 		this.sourceTable = sourceTable;
@@ -78,6 +83,8 @@ public class EditLocationsWindow extends BaseSubWindow {
 				new LocationFormFieldFactory(this.programLocationsPresenter));
 		this.locationForm.setDebugId("locationForm");
 		this.buttonArea = this.layoutButtonArea();
+
+		this.addListener(new WindowOnFocusListener());
 	}
 
 	protected void initializeLayout() {
@@ -166,24 +173,61 @@ public class EditLocationsWindow extends BaseSubWindow {
 
 			try {
 
-				locationForm.commit();
+				final List<Location> existingLocationsWithSameName = EditLocationsWindow.this.programLocationsPresenter
+						.getExistingLocations(EditLocationsWindow.this.locationForm.getLocationNameValue());
 
-				final BeanItem<LocationViewModel> locationBean =
-						(BeanItem<LocationViewModel>) EditLocationsWindow.this.locationForm.getItemDataSource();
-				LocationViewModel locationViewModel = locationBean.getBean();
+				if (!existingLocationsWithSameName.isEmpty() && EditLocationsWindow.this.locationForm.isLocationNameModified()) {
+					new ConfirmLocationsWindow(EditLocationsWindow.this, existingLocationsWithSameName,
+							EditLocationsWindow.this.programLocationsPresenter, new Button.ClickListener() {
 
-				EditLocationsWindow.this.programLocationsPresenter.updateLocation(locationViewModel, ProgramLocationsView.AVAILABLE.equals(sourceTable.getData()));
+						private static final long serialVersionUID = 1L;
 
-				EditLocationsWindow.this.contextUtil
-						.logProgramActivity(EditLocationsWindow.this.messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK),
-								"Updated location (" + locationViewModel.getLocationName() + ")");
-
-				EditLocationsWindow.this.getParent().removeWindow(EditLocationsWindow.this);
+						@Override
+						public void buttonClick(final Button.ClickEvent event) {
+							UpdateLocationAction.this.saveLocation();
+						}
+					}).show();
+				} else {
+					this.saveLocation();
+				}
 
 			} catch (final Validator.InvalidValueException e) {
 				LOG.warn(e.getMessage(), e);
 				MessageNotifier.showRequiredFieldError(clickEvent.getComponent().getWindow(), e.getLocalizedMessage());
 			}
+		}
+
+		void saveLocation() {
+
+			EditLocationsWindow.this.locationForm.commit();
+
+			final BeanItem<LocationViewModel> locationBean =
+					(BeanItem<LocationViewModel>) EditLocationsWindow.this.locationForm.getItemDataSource();
+			final LocationViewModel locationViewModel = locationBean.getBean();
+
+			EditLocationsWindow.this.programLocationsPresenter
+					.updateLocation(locationViewModel, ProgramLocationsView.AVAILABLE.equals(sourceTable.getData()));
+
+			EditLocationsWindow.this.contextUtil
+					.logProgramActivity(EditLocationsWindow.this.messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK),
+							"Updated location (" + locationViewModel.getLocationName() + ")");
+
+			EditLocationsWindow.this.getParent().removeWindow(EditLocationsWindow.this);
+
+		}
+
+	}
+
+
+	class WindowOnFocusListener implements FieldEvents.FocusListener {
+
+		@Override
+		public void focus(final FieldEvents.FocusEvent focusEvent) {
+			if (locationForm.isLocationUsedInOtherProgram()) {
+				MessageNotifier.showWarning(EditLocationsWindow.this, messageSource.getMessage(Message.WARNING),
+						EditLocationsWindow.this.messageSource.getMessage(Message.LOCATION_IS_USED_IN_OTHER_PROGRAM));
+			}
+
 		}
 
 	}

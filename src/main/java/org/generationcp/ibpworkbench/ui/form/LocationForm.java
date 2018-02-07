@@ -23,7 +23,9 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.formfieldfactory.LocationFormFieldFactory;
 import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
+import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.api.LocationDataManager;
+import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.UserDefinedField;
@@ -34,10 +36,10 @@ import java.util.Arrays;
 
 /**
  * <b>Description</b>: Custom form for adding Locations.
- *
+ * <p>
  * <br>
  * <br>
- *
+ * <p>
  * <b>Author</b>: Jeffrey Morales <br>
  * <b>File Created</b>: August 20, 2012
  */
@@ -66,6 +68,8 @@ public class LocationForm extends Form {
 
 	private LocationFormFieldFactory locationFormFieldFactory;
 
+	private boolean locationUsedInOtherProgram = false;
+
 	private LocationViewModel locationViewModel = new LocationViewModel();
 
 	@Autowired
@@ -77,7 +81,11 @@ public class LocationForm extends Form {
 	@Autowired
 	private LocationDataManager locationDataManager;
 
-	public LocationForm(final LocationViewModel locationViewModel, final ProgramLocationsPresenter presenter, final LocationFormFieldFactory locationFormFieldFactory) {
+	@Autowired
+	private StudyDataManager studyDataManager;
+
+	public LocationForm(final LocationViewModel locationViewModel, final ProgramLocationsPresenter presenter,
+			final LocationFormFieldFactory locationFormFieldFactory) {
 		this.presenter = presenter;
 		this.locationFormFieldFactory = locationFormFieldFactory;
 		if (locationViewModel != null) {
@@ -165,6 +173,8 @@ public class LocationForm extends Form {
 		final Location provinceValue = this.locationDataManager.getLocationByID(this.locationViewModel.getProvinceId());
 		this.locationFormFieldFactory.getProvince().setValue(provinceValue);
 
+		this.disableCropAccessibleIfLocationIsUsedInOtherProgram();
+
 		super.attach();
 
 	}
@@ -246,6 +256,22 @@ public class LocationForm extends Form {
 
 	}
 
+	protected void disableCropAccessibleIfLocationIsUsedInOtherProgram() {
+
+		if (this.locationViewModel.getLocationId() != null) {
+			if (this.studyDataManager.isVariableUsedInOtherPrograms(String.valueOf(TermId.LOCATION_ID.getId()),
+					String.valueOf(this.locationViewModel.getLocationId()), this.contextUtil.getCurrentProgramUUID())) {
+				locationFormFieldFactory.disableCropAccessible();
+				locationUsedInOtherProgram = true;
+			}
+		}
+
+	}
+
+	public boolean isLocationUsedInOtherProgram() {
+		return locationUsedInOtherProgram;
+	}
+
 	// For unit test purpose only
 	protected GridLayout getGrid() {
 		return grid;
@@ -255,4 +281,11 @@ public class LocationForm extends Form {
 		this.messageSource = messageSource;
 	}
 
+	public boolean isLocationNameModified() {
+		return this.locationFormFieldFactory.getLocationName().isModified();
+	}
+
+	public String getLocationNameValue() {
+		return (String) this.locationFormFieldFactory.getLocationName().getValue();
+	}
 }

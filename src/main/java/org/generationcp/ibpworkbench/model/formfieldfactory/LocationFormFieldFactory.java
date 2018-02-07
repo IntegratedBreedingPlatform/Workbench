@@ -222,6 +222,7 @@ public class LocationFormFieldFactory extends DefaultFieldFactory implements Ini
 		this.altitude.setNullRepresentation("");
 
 		this.cropAccessible = new CheckBox();
+		this.cropAccessible.setImmediate(true);
 		this.cropAccessible.setDebugId("cropAccessible");
 
 	}
@@ -302,6 +303,10 @@ public class LocationFormFieldFactory extends DefaultFieldFactory implements Ini
 		final BeanContainer<String, UserDefinedField> beanContainer = (BeanContainer<String, UserDefinedField>) this.lType.getContainerDataSource();
 		final BeanItem<UserDefinedField> beanItem = beanContainer.getItem(this.lType.getValue());
 		return beanItem == null ? null : beanItem.getBean();
+	}
+
+	public void disableCropAccessible() {
+		this.cropAccessible.setEnabled(false);
 	}
 
 	@Override
