@@ -82,12 +82,14 @@ public class ToolUtilTest {
 	
 	@Test
 	public void testCreateWorkspaceDirectoriesForProject() {
-		final Project project = ProjectTestDataInitializer.createProject(DUMMY_PROJECT_ID, DUMMY_PROJECT_NAME);
+		final Project project = ProjectTestDataInitializer.createProject();
+		project.setProjectName(DUMMY_PROJECT_NAME);
 		this.toolUtil.createWorkspaceDirectoriesForProject(project);
 		
-		final File projectWorkspaceDirectory = new File(this.currentRandomDirectory + File.separator + ToolUtil.WORKSPACE_DIR, DUMMY_PROJECT_NAME);
+		final File projectWorkspaceDirectory = new File(this.currentRandomDirectory + File.separator + ToolUtil.WORKSPACE_DIR
+				+ File.separator + project.getCropType().getCropName(), DUMMY_PROJECT_NAME);
 		Assert.assertTrue(projectWorkspaceDirectory.exists());
-		// Check that only "breeding_view" directory is under program
+		// Check that only "breeding_view" directory is under program with "input" and "output" subdirectories
 		Assert.assertEquals(1, projectWorkspaceDirectory.list().length);
 		final File breedingViewDirectory = new File(projectWorkspaceDirectory, ToolEnum.BREEDING_VIEW.getToolName());
 		Assert.assertTrue(breedingViewDirectory.exists());
@@ -104,9 +106,12 @@ public class ToolUtilTest {
 	@Test
 	public void testCreateWorkspaceDirectoriesForProjectWhenDirectoryAlreadyExists() {
 		// Already create project directory. Test method should not continue with creating sub-contents
-		final File projectWorkspaceDirectory = new File(this.currentRandomDirectory + File.separator + ToolUtil.WORKSPACE_DIR, DUMMY_PROJECT_NAME);
+		final String cropName = "banana";
+		final File projectWorkspaceDirectory = new File(
+				this.currentRandomDirectory + File.separator + ToolUtil.WORKSPACE_DIR + File.separator + cropName, DUMMY_PROJECT_NAME);
 		projectWorkspaceDirectory.mkdirs();
-		final Project project = ProjectTestDataInitializer.createProject(DUMMY_PROJECT_ID, DUMMY_PROJECT_NAME);
+		final Project project = ProjectTestDataInitializer.createProject();
+		project.setProjectName(DUMMY_PROJECT_NAME);
 		this.toolUtil.createWorkspaceDirectoriesForProject(project);
 		
 		Assert.assertTrue(projectWorkspaceDirectory.exists());

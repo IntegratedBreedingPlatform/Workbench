@@ -299,8 +299,9 @@ public class ToolUtil {
 		final String installationDirectory = workbenchSetting.getInstallationDirectory();
 
 		// create the directory for the project
-		final String projectDirName = project.getProjectName();
-		final File projectDir = new File(installationDirectory + File.separator + ToolUtil.WORKSPACE_DIR, projectDirName);
+		final String projectName = project.getProjectName();
+		final String cropName = project.getCropType().getCropName();
+		final File projectDir = this.getFileForWorkspaceProjectDirectory(installationDirectory, cropName, projectName);
 		if (projectDir.exists()) {
 			return;
 		}
@@ -316,6 +317,11 @@ public class ToolUtil {
 			new File(toolDir, ToolUtil.INPUT).mkdirs();
 			new File(toolDir, ToolUtil.OUTPUT).mkdirs();
 		}
+	}
+
+	private File getFileForWorkspaceProjectDirectory(final String installationDirectory, final String cropName,
+			final String projectName) {
+		return new File(installationDirectory + File.separator + ToolUtil.WORKSPACE_DIR + File.separator + cropName, projectName);
 	}
 
 	public void renameOldWorkspaceDirectoryToNewFormat(final long projectId, final String oldProjectName) {
