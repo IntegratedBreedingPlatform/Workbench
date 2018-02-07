@@ -1,7 +1,5 @@
 # Graphical Filtering of Observations through [BrAPI](https://github.com/plantbreeding/API)
-Try it out [here](https://solgenomics.github.io/BrAPI-Graphical-Filtering/)
-
-![GIF of Example Implementation](readme_assets/example.gif)
+Original Implementation: https://github.com/solgenomics/BrAPI-Graphical-Filtering
 
 ### Requirements
 - [Bootstrap](https://github.com/twbs/bootstrap) (3.3) (CSS & JS)
