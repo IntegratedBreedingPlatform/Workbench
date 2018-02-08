@@ -20,6 +20,12 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
+import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.util.FileDownloadResource;
+import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.ui.ConfirmDialog;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.GermplasmStudyBrowserApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.study.containers.RepresentationDatasetQueryFactory;
@@ -28,11 +34,6 @@ import org.generationcp.ibpworkbench.study.listeners.StudyButtonClickListener;
 import org.generationcp.ibpworkbench.study.util.DatasetExporter;
 import org.generationcp.ibpworkbench.study.util.DatasetExporterException;
 import org.generationcp.ibpworkbench.util.Util;
-import org.generationcp.commons.util.FileDownloadResource;
-import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.ui.ConfirmDialog;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
@@ -46,6 +47,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -87,8 +89,12 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 	private Button openTableViewerButton;
 	private Button openGraphicalFilteringTool;
 	private StringBuilder reportTitle;
+
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
+
+	@Resource
+	private ContextUtil contextUtil;
 
 	private Map<String, Integer> studiesMappedByInstance = new HashMap<>();
 
@@ -319,7 +325,8 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 
 	private void openGraphicalFilteringTool( final Integer studyId) {
 		Window mainWindow = this.getWindow();
-		Window graphicalFilteringToolWindow = new GraphicalFilteringToolComponent(studyId);
+		final String crop = this.contextUtil.getProjectInContext().getCropType().getCropName();
+		Window graphicalFilteringToolWindow = new GraphicalFilteringToolComponent(studyId, crop);
 		graphicalFilteringToolWindow.addStyleName(Reindeer.WINDOW_LIGHT);
 		mainWindow.addWindow(graphicalFilteringToolWindow);
 	}

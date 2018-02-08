@@ -5,6 +5,7 @@ import com.vaadin.ui.Embedded;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.WorkbenchAppPathResolver;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -13,13 +14,16 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import javax.annotation.Resource;
+
 /**
  * Created by clarysabel on 2/7/18.
  */
 @Configurable
 public class GraphicalFilteringToolComponent extends BaseSubWindow implements InitializingBean, InternationalizableComponent {
 
-	private Integer studyId;
+	private final String crop;
+	private final Integer studyId;
 
 	@Override
 	public void updateLabels() {
@@ -28,14 +32,15 @@ public class GraphicalFilteringToolComponent extends BaseSubWindow implements In
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	GraphicalFilteringToolComponent(final Integer studyId) {
+	GraphicalFilteringToolComponent(final Integer studyId, final String crop) {
 		this.studyId = studyId;
+		this.crop = crop;
 	}
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		final ExternalResource graphicalFilteringToolLink = new ExternalResource(
-				WorkbenchAppPathResolver.getFullWebAddress(DefaultGermplasmStudyBrowserPath.GRAPHICAL_FILTERING_TOOL_LINK + this.studyId));
+		final ExternalResource graphicalFilteringToolLink = new ExternalResource(WorkbenchAppPathResolver
+			.getFullWebAddress(String.format(DefaultGermplasmStudyBrowserPath.GRAPHICAL_FILTERING_TOOL_LINK, this.studyId, crop)));
 		final VerticalLayout graphicalFilteringLayout = new VerticalLayout();
 		graphicalFilteringLayout.setMargin(false);
 		graphicalFilteringLayout.setWidth("100%");

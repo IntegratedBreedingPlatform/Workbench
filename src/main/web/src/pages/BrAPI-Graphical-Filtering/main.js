@@ -17,10 +17,11 @@ $(document).ready(function () {
 		});
 		return false;
 	})
+	$("#brapi-form").submit();
 });
 
 function loadBrAPIData(parameters, success) {
-	var load_url = "/bmsapi/maize/brapi/v1/phenotypes-search";
+	var load_url = "/bmsapi/" + getUrlParameter("crop") + "/brapi/v1/phenotypes-search";
 	var data = {
 		"pageSize": 1000,
 		"page": 0
