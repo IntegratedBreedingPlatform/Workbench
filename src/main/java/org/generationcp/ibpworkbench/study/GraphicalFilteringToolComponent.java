@@ -9,7 +9,6 @@ import org.generationcp.commons.util.WorkbenchAppPathResolver;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
-import org.generationcp.ibpworkbench.Message;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -39,22 +38,26 @@ public class GraphicalFilteringToolComponent extends BaseSubWindow implements In
 				WorkbenchAppPathResolver.getFullWebAddress(DefaultGermplasmStudyBrowserPath.GRAPHICAL_FILTERING_TOOL_LINK + this.studyId));
 		final VerticalLayout graphicalFilteringLayout = new VerticalLayout();
 		graphicalFilteringLayout.setMargin(false);
-		graphicalFilteringLayout.setWidth("98%");
-		graphicalFilteringLayout.setHeight("98%");
+		graphicalFilteringLayout.setWidth("100%");
+		graphicalFilteringLayout.setHeight("100%");
 
-		final Embedded germplasmInfo = new Embedded("", graphicalFilteringToolLink);
-		germplasmInfo.setType(Embedded.TYPE_BROWSER);
-		germplasmInfo.setSizeFull();
-		graphicalFilteringLayout.addComponent(germplasmInfo);
+		final Embedded graphicalFilteringToolEmbedded = new Embedded("", graphicalFilteringToolLink);
+		graphicalFilteringToolEmbedded.setType(Embedded.TYPE_BROWSER);
+		graphicalFilteringToolEmbedded.setSizeFull();
+		graphicalFilteringLayout.addComponent(graphicalFilteringToolEmbedded);
 
 		this.setContent(graphicalFilteringLayout);
 
-		this.setWidth("75%");
-		this.setHeight("75%");
+		this.setWidth("98%");
+		this.setHeight("98%");
+
+		this.setName("BrAPI Graphical Filtering");
+		this.setCaption("BrAPI Graphical Filtering");
 
 		this.center();
 		this.setResizable(true);
 		this.addStyleName(Reindeer.WINDOW_LIGHT);
 		this.setModal(true);
+		
 	}
 }

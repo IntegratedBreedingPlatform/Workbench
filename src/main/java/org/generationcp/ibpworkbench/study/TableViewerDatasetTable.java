@@ -194,15 +194,13 @@ public class TableViewerDatasetTable extends Table implements InitializingBean {
 				int start = 0;
 
 				for (int i = 1; i <= batchRecordCount; i++) {
-					List<Experiment> experimentList = new ArrayList<Experiment>();
-					experimentList = this.studyDataManager.getExperiments(this.datasetId, start, TableViewerDatasetTable.BATCH_SIZE);
+					List<Experiment> experimentList = this.studyDataManager.getExperiments(this.datasetId, start, TableViewerDatasetTable.BATCH_SIZE);
 					start += TableViewerDatasetTable.BATCH_SIZE;
 					experiments.addAll(experimentList);
 				}
 
 				if (remainingRecCount > 0) {
-					List<Experiment> experimentList = new ArrayList<Experiment>();
-					experimentList = this.studyDataManager.getExperiments(this.datasetId, start, remainingRecCount);
+					List<Experiment> experimentList = this.studyDataManager.getExperiments(this.datasetId, start, remainingRecCount);
 					experiments.addAll(experimentList);
 				}
 
@@ -211,7 +209,7 @@ public class TableViewerDatasetTable extends Table implements InitializingBean {
 			// Log error in log file
 			TableViewerDatasetTable.LOG.error("Error with getting ounitids for representation: " + this.datasetId + "\n" + ex.toString(),
 					ex);
-			experiments = new ArrayList<Experiment>();
+			experiments = new ArrayList<>();
 		}
 		return experiments;
 	}
