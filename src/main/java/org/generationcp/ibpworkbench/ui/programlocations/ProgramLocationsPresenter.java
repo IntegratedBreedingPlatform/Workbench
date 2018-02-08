@@ -304,4 +304,8 @@ public class ProgramLocationsPresenter implements InitializingBean {
 	public void setCropType(final CropType cropType) {
 		this.cropType = cropType;
 	}
+
+	public void setView(final ProgramLocationsView view) {
+		this.view = view;
+	}
 }

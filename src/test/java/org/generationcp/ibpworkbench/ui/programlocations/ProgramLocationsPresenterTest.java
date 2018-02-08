@@ -49,12 +49,16 @@ public class ProgramLocationsPresenterTest {
 	@Mock
 	private GermplasmDataManager germplasmDataManager;
 
+	@Mock
+	private ProgramLocationsView programLocationsView;
+
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 
 		final Project project = this.getProject();
 		this.controller = new ProgramLocationsPresenter(project, this.germplasmDataManager, this.locationDataManager);
+		this.controller.setView(this.programLocationsView);
 	}
 
 	private Project getProject() {
@@ -201,6 +205,7 @@ public class ProgramLocationsPresenterTest {
 		locationDetail.setLatitude(LATITUDE);
 		locationDetail.setLongitude(LONGITUDE);
 		locationDetail.setProgramUUID(DUMMY_PROGRAM_UUID);
+		locationDetail.setProvinceId(PROVINCE_ID);
 		return locationDetail;
 	}
 
@@ -373,8 +378,22 @@ public class ProgramLocationsPresenterTest {
 		Assert.assertEquals(LONGITUDE, result.getLongitude());
 		Assert.assertEquals(LATITUDE, result.getLatitude());
 		Assert.assertEquals(ALTITUDE, result.getAltitude());
+		Assert.assertEquals(PROVINCE_ID, result.getProvinceId());
 		Assert.assertEquals(PROVINCE_NAME, result.getProvinceName());
 		Assert.assertEquals(DUMMY_PROGRAM_UUID, result.getProgramUUID());
+	}
+
+	@Test
+	public void testUpdateLocation() {
+
+		final boolean isEditedFromAvailableTable = true;
+		final LocationViewModel locationViewModel = createLocationViewModel();
+
+		this.controller.updateLocation(locationViewModel, isEditedFromAvailableTable);
+
+		Mockito.verify(this.locationDataManager).addLocation(this.controller.convertLocationViewToLocation(locationViewModel));
+		Mockito.verify(this.programLocationsView).refreshLocationViewItemInTable(isEditedFromAvailableTable, locationViewModel);
+
 	}
 
 	private LocationViewModel createLocationViewModel() {

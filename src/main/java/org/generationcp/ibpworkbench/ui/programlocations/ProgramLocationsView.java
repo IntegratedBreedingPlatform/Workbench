@@ -672,33 +672,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		table.setMultiSelect(true);
 		table.setDragMode(Table.TableDragMode.MULTIROW);
 
-		table.addGeneratedColumn(ProgramLocationsView.LOCATION_NAME, new Table.ColumnGenerator() {
-
-			private static final long serialVersionUID = 346170573915290251L;
-
-			@Override
-			public Object generateCell(final Table source, final Object itemId, final Object colId) {
-
-				final LocationViewModel locationViewModelToEdit = ((LocationViewModel) itemId);
-
-				final Button locationNameButtonLink = new Button();
-				locationNameButtonLink.setStyleName(BaseTheme.BUTTON_LINK);
-				locationNameButtonLink.setImmediate(true);
-				locationNameButtonLink.setCaption(locationViewModelToEdit.getLocationName());
-				locationNameButtonLink.addListener(new Button.ClickListener() {
-
-					private static final long serialVersionUID = 4839268740583678422L;
-
-					@Override
-					public void buttonClick(final ClickEvent clickEvent) {
-						clickEvent.getComponent().getWindow().addWindow(new EditLocationsWindow(locationViewModelToEdit,  presenter, table));
-
-					}
-				});
-
-				return locationNameButtonLink;
-			}
-		});
+		table.addGeneratedColumn(ProgramLocationsView.LOCATION_NAME, new LocationNameColumnGenerator(table));
 
 		table.addGeneratedColumn(ProgramLocationsView.SELECT, new Table.ColumnGenerator() {
 
@@ -1026,6 +1000,52 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 	public void setSearchField(final TextField searchField) {
 		this.searchField = searchField;
+	}
+
+	class LocationNameColumnGenerator implements Table.ColumnGenerator {
+
+		private static final long serialVersionUID = 346170573915290251L;
+
+		private Table table;
+
+		LocationNameColumnGenerator(final Table table) {
+			this.table = table;
+		}
+
+		@Override
+		public Object generateCell(final Table source, final Object itemId, final Object colId) {
+
+			final LocationViewModel locationViewModelToEdit = ((LocationViewModel) itemId);
+
+			final Button locationNameButtonLink = new Button();
+			locationNameButtonLink.setStyleName(BaseTheme.BUTTON_LINK);
+			locationNameButtonLink.setImmediate(true);
+			locationNameButtonLink.setCaption(locationViewModelToEdit.getLocationName());
+			locationNameButtonLink.addListener(new LocationNameEditClickListener(locationViewModelToEdit, this.table));
+
+			return locationNameButtonLink;
+		}
+
+	}
+
+	class LocationNameEditClickListener implements Button.ClickListener {
+
+		private static final long serialVersionUID = 4839268740583678422L;
+
+		private LocationViewModel locationViewModel;
+		private Table table;
+
+		LocationNameEditClickListener(final LocationViewModel locationViewModel, final Table table) {
+			this.locationViewModel = locationViewModel;
+			this.table = table;
+		}
+
+		@Override
+		public void buttonClick(final ClickEvent clickEvent) {
+			clickEvent.getComponent().getWindow().addWindow(new EditLocationsWindow(locationViewModel,  presenter, table));
+
+		}
+
 	}
 
 }

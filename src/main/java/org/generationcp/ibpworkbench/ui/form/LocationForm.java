@@ -300,4 +300,20 @@ public class LocationForm extends Form {
 	public String getLocationNameValue() {
 		return (String) this.locationFormFieldFactory.getLocationName().getValue();
 	}
+
+	public void setLocationFormFieldFactory(final LocationFormFieldFactory locationFormFieldFactory) {
+		this.locationFormFieldFactory = locationFormFieldFactory;
+	}
+
+	public void setStudyDataManager(final StudyDataManager studyDataManager) {
+		this.studyDataManager = studyDataManager;
+	}
+
+	public void setContextUtil(final ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
+	}
+
+	public void setLocationDataManager(final LocationDataManager locationDataManager) {
+		this.locationDataManager = locationDataManager;
+	}
 }

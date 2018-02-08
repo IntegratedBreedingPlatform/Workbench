@@ -224,12 +224,25 @@ public class EditLocationsWindow extends BaseSubWindow {
 		@Override
 		public void focus(final FieldEvents.FocusEvent focusEvent) {
 			if (locationForm.isLocationUsedInOtherProgram()) {
-				MessageNotifier.showWarning(EditLocationsWindow.this, messageSource.getMessage(Message.WARNING),
+				MessageNotifier.showWarning(focusEvent.getComponent().getWindow(), messageSource.getMessage(Message.WARNING),
 						EditLocationsWindow.this.messageSource.getMessage(Message.LOCATION_IS_USED_IN_OTHER_PROGRAM));
 			}
 
 		}
 
 	}
+
+	public void setLocationForm(final LocationForm locationForm) {
+		this.locationForm = locationForm;
+	}
+
+	public void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+
+	public void setContextUtil(final ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
+	}
+
 
 }
