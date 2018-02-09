@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class GraphicalFilteringController {
 
 	@RequestMapping(method = RequestMethod.GET)
-	public String angular2poc(Model model) throws MiddlewareQueryException {
+	public String index(Model model) throws MiddlewareQueryException {
 		return "BrAPI-Graphical-Filtering/index";
 	}
 }
