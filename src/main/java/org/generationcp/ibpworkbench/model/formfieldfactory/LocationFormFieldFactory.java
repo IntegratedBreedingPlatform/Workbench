@@ -300,7 +300,8 @@ public class LocationFormFieldFactory extends DefaultFieldFactory implements Ini
 	}
 
 	public UserDefinedField retrieveLocationType() {
-		final BeanContainer<String, UserDefinedField> beanContainer = (BeanContainer<String, UserDefinedField>) this.lType.getContainerDataSource();
+		final BeanContainer<String, UserDefinedField> beanContainer =
+				(BeanContainer<String, UserDefinedField>) this.lType.getContainerDataSource();
 		final BeanItem<UserDefinedField> beanItem = beanContainer.getItem(this.lType.getValue());
 		return beanItem == null ? null : beanItem.getBean();
 	}

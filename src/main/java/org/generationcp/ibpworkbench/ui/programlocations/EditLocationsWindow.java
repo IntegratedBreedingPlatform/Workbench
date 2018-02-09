@@ -244,5 +244,4 @@ public class EditLocationsWindow extends BaseSubWindow {
 		this.contextUtil = contextUtil;
 	}
 
-
 }

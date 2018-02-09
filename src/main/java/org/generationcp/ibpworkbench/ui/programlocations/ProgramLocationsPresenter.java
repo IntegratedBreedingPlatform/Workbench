@@ -71,7 +71,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 	protected Collection<LocationViewModel> createLocationViewModelList(final List<LocationDetails> locationDetails) {
 		final Collection<LocationViewModel> result = new ArrayList<>();
 
-		for (final LocationDetails locationDetail:locationDetails) {
+		for (final LocationDetails locationDetail : locationDetails) {
 			result.add(convertFromLocationDetailsToLocationViewModel(locationDetail));
 		}
 		return result;
@@ -247,8 +247,8 @@ public class ProgramLocationsPresenter implements InitializingBean {
 	}
 
 	public void updateLocation(final LocationViewModel locationViewModel, final boolean isEditedFromAvailableTable) {
-			this.locationDataManager.addLocation(convertLocationViewToLocation(locationViewModel));
-			this.view.refreshLocationViewItemInTable(isEditedFromAvailableTable, locationViewModel);
+		this.locationDataManager.addLocation(convertLocationViewToLocation(locationViewModel));
+		this.view.refreshLocationViewItemInTable(isEditedFromAvailableTable, locationViewModel);
 	}
 
 	public List<Location> getExistingLocations(final String locationName) {

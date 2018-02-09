@@ -83,7 +83,6 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 	private static final String PROVINCE = "provinceName";
 	private static final String COUNTRY = "cntryName";
 
-
 	static {
 		TABLE_COLUMNS = new LinkedHashMap<>();
 		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.SELECT, "<span class='glyphicon glyphicon-ok'></span>");
@@ -226,8 +225,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 			@Override
 			public void buttonClick(final ClickEvent clickEvent) {
-				clickEvent.getComponent().getWindow()
-						.addWindow(new AddLocationsWindow(ProgramLocationsView.this.presenter));
+				clickEvent.getComponent().getWindow().addWindow(new AddLocationsWindow(ProgramLocationsView.this.presenter));
 			}
 		});
 
@@ -863,7 +861,8 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		this.refreshTable();
 	}
 
-	public void copyLocationViewModelToTableItem(final BeanItemContainer<LocationViewModel> beanItemContainer, final LocationViewModel locationViewModel) {
+	public void copyLocationViewModelToTableItem(final BeanItemContainer<LocationViewModel> beanItemContainer,
+			final LocationViewModel locationViewModel) {
 
 		if (beanItemContainer.containsId(locationViewModel)) {
 			LocationViewModel beanToUpdate = beanItemContainer.getItem(locationViewModel).getBean();
@@ -1028,6 +1027,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 	}
 
+
 	class LocationNameEditClickListener implements Button.ClickListener {
 
 		private static final long serialVersionUID = 4839268740583678422L;
@@ -1042,7 +1042,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 		@Override
 		public void buttonClick(final ClickEvent clickEvent) {
-			clickEvent.getComponent().getWindow().addWindow(new EditLocationsWindow(locationViewModel,  presenter, table));
+			clickEvent.getComponent().getWindow().addWindow(new EditLocationsWindow(locationViewModel, presenter, table));
 
 		}
 

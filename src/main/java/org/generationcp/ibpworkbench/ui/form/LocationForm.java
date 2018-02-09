@@ -279,7 +279,6 @@ public class LocationForm extends Form {
 		}
 	}
 
-
 	public boolean isLocationUsedInOtherProgram() {
 		return locationUsedInOtherProgram;
 	}

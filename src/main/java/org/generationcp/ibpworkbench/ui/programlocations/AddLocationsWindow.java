@@ -27,7 +27,6 @@ import org.generationcp.ibpworkbench.ui.form.LocationForm;
 
 /**
  * @author Jeffrey Morales, Joyce Avestro
- * 
  */
 public class AddLocationsWindow extends BaseSubWindow {
 
@@ -53,7 +52,8 @@ public class AddLocationsWindow extends BaseSubWindow {
 
 	protected void initializeComponents() {
 
-		this.locationForm = new LocationForm(null, this.programLocationsPresenter, new LocationFormFieldFactory(this.programLocationsPresenter));
+		this.locationForm =
+				new LocationForm(null, this.programLocationsPresenter, new LocationFormFieldFactory(this.programLocationsPresenter));
 		this.locationForm.setDebugId("locationForm");
 		this.buttonArea = this.layoutButtonArea();
 	}
@@ -78,8 +78,8 @@ public class AddLocationsWindow extends BaseSubWindow {
 
 		final VerticalLayout vl = new VerticalLayout();
 		vl.setDebugId("AddLocationsWindow_vl");
-		vl.addComponent(new Label("<i><span style='color:red; font-weight:bold'>*</span> indicates a mandatory field.</i>",
-				Label.CONTENT_XHTML));
+		vl.addComponent(
+				new Label("<i><span style='color:red; font-weight:bold'>*</span> indicates a mandatory field.</i>", Label.CONTENT_XHTML));
 		vl.addComponent(this.locationForm);
 		vl.setExpandRatio(this.locationForm, 1.0F);
 

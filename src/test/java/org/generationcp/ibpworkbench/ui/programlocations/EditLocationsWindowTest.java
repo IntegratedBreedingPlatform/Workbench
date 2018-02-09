@@ -93,7 +93,7 @@ public class EditLocationsWindowTest {
 		when(this.locationForm.isLocationNameModified()).thenReturn(true);
 		when(this.presenter.getExistingLocations(locationName)).thenReturn(existingLocationWithSameName);
 
-		EditLocationsWindow.UpdateLocationAction updateLocationAction = this.editLocationsWindow.new UpdateLocationAction();
+		final EditLocationsWindow.UpdateLocationAction updateLocationAction = this.editLocationsWindow.new UpdateLocationAction();
 
 		updateLocationAction.buttonClick(null);
 
@@ -119,7 +119,7 @@ public class EditLocationsWindowTest {
 		// Set an existing location list with items to simulate location name with duplicate name in existing locations.
 		when(this.presenter.getExistingLocations(locationName)).thenReturn(existingLocationWithSameName);
 
-		EditLocationsWindow.UpdateLocationAction updateLocationAction = this.editLocationsWindow.new UpdateLocationAction();
+		final EditLocationsWindow.UpdateLocationAction updateLocationAction = this.editLocationsWindow.new UpdateLocationAction();
 
 		updateLocationAction.buttonClick(null);
 
@@ -149,7 +149,7 @@ public class EditLocationsWindowTest {
 		// Set an empty existing location list to simulate location name with no duplicate in existing locations.
 		when(this.presenter.getExistingLocations(locationName)).thenReturn(new ArrayList<Location>());
 
-		EditLocationsWindow.UpdateLocationAction updateLocationAction = this.editLocationsWindow.new UpdateLocationAction();
+		final EditLocationsWindow.UpdateLocationAction updateLocationAction = this.editLocationsWindow.new UpdateLocationAction();
 
 		updateLocationAction.buttonClick(null);
 
@@ -172,7 +172,7 @@ public class EditLocationsWindowTest {
 		when(this.locationForm.getItemDataSource()).thenReturn(item);
 		when(item.getBean()).thenReturn(locationViewModel);
 
-		EditLocationsWindow.UpdateLocationAction updateLocationAction = this.editLocationsWindow.new UpdateLocationAction();
+		final EditLocationsWindow.UpdateLocationAction updateLocationAction = this.editLocationsWindow.new UpdateLocationAction();
 
 		updateLocationAction.saveLocation();
 

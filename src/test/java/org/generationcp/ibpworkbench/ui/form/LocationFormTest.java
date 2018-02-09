@@ -107,7 +107,7 @@ public class LocationFormTest {
 	@Test
 	public void testAttachField() throws Exception {
 
-		final LocationFormFieldFactory locationFormFieldFactory =  new LocationFormFieldFactory(programLocationsPresenter);
+		final LocationFormFieldFactory locationFormFieldFactory = new LocationFormFieldFactory(programLocationsPresenter);
 		locationFormFieldFactory.setMessageSource(messageSource);
 		locationFormFieldFactory.afterPropertiesSet();
 
@@ -132,7 +132,7 @@ public class LocationFormTest {
 		locationFormFieldFactory.setMessageSource(messageSource);
 		locationFormFieldFactory.afterPropertiesSet();
 
-		LocationForm testLocationForm = new LocationForm(locationViewModel, programLocationsPresenter, locationFormFieldFactory);
+		final LocationForm testLocationForm = new LocationForm(locationViewModel, programLocationsPresenter, locationFormFieldFactory);
 		testLocationForm.setMessageSource(this.messageSource);
 		testLocationForm.setStudyDataManager(this.studyDataManager);
 		testLocationForm.setContextUtil(this.contextUtil);
@@ -167,7 +167,6 @@ public class LocationFormTest {
 
 		Assert.assertEquals(this.locationViewModel.getProvinceId(), ((ComboBox) grid.getComponent(1, 4)).getValue());
 
-
 	}
 
 	@Test
@@ -184,7 +183,6 @@ public class LocationFormTest {
 		this.locationForm.populateCropAccessibleCheckbox();
 
 		assertTrue((Boolean) cropAccessibleCheckbox.getValue());
-
 
 	}
 
