@@ -252,7 +252,7 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 		List<String> columnIds = new ArrayList<String>();
 		try {
 			DataSet dataset = this.studyDataManager.getDataSet(this.datasetId);
-			studiesMappedByInstance = this.studyDataManager.getMappedEnvironmentInstances(dataset.getStudyId());
+			studiesMappedByInstance = this.studyDataManager.getInstanceGeolocationIdsMap(dataset.getStudyId());
 
 			variables = dataset.getVariableTypes().getVariableTypes();
 		} catch (MiddlewareException e) {
