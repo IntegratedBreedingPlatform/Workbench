@@ -13,22 +13,34 @@ import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
 import org.generationcp.commons.util.BreedingViewUtil;
+import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.ibpworkbench.util.bean.MultiSiteParameters;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.Experiment;
 import org.generationcp.middleware.domain.dms.Variable;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.Tool;
+import org.generationcp.middleware.pojos.workbench.ToolName;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
+@Configurable
 public class MultiSiteDataExporter {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MultiSiteDataExporter.class);
+	
+	@Autowired
+	private WorkbenchDataManager workbenchDataManager;
+	
+	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
 	/**
-	 * Generates GxE Multi-site analysis XML data, stored in IBWorkflowSystem\workspace\{PROJECT}\breeding_view\input
+	 * Generates GxE Multi-site analysis XML data, stored in workpace directory
 	 *
 	 * @return void
 	 */
@@ -136,14 +148,7 @@ public class MultiSiteDataExporter {
 		}
 
 		try {
-			final String dir =
-					"workspace" + File.separator + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator
-							+ "input";
-
-			MultiSiteDataExporter.LOG.debug("save to" + dir);
-
-			new File(dir).mkdirs();
-
+			final String dir = this.getWorkspaceInputDirectoryPath(currentProject);
 			final File csvFile = new File(dir + File.separator + inputFileName + ".csv");
 
 			final CSVWriter csvWriter =
@@ -214,15 +219,7 @@ public class MultiSiteDataExporter {
 			}
 
 		}
-
-		final String dir =
-				"workspace" + File.separator + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator
-						+ "input";
-
-		MultiSiteDataExporter.LOG.debug("save to " + dir);
-
-		new File(dir).mkdirs();
-
+		final String dir = this.getWorkspaceInputDirectoryPath(currentProject);
 		final File csvFile = new File(dir + File.separator + inputFileName + "_SummaryStats.csv");
 
 		CSVWriter csvWriter = null;
@@ -238,6 +235,11 @@ public class MultiSiteDataExporter {
 			MultiSiteDataExporter.LOG.warn(e.getMessage(), e);
 			return null;
 		}
+	}
+
+	private String getWorkspaceInputDirectoryPath(final Project currentProject) {
+		final Tool breedingViewTool = this.workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
+		return this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(currentProject, breedingViewTool);
 	}
 
 }

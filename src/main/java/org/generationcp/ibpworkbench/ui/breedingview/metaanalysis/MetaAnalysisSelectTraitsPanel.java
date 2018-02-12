@@ -19,6 +19,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -34,7 +35,10 @@ import org.generationcp.middleware.domain.dms.TrialEnvironments;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.Tool;
+import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -101,9 +105,12 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 
 	@Autowired
 	private StudyDataManager studyDataManager;
-
+	
+	@Autowired
+	private WorkbenchDataManager workbenchDataManager;
 
 	private final MetaAnalysisPanel selectDatasetsForMetaAnalysisPanel;
+	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
 	public MetaAnalysisSelectTraitsPanel(Project project, List<MetaEnvironmentModel> metaEnvironments,
 			MetaAnalysisPanel selectDatasetsForMetaAnalysisPanel) {
@@ -797,11 +804,8 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 		}// while
 
 		try {
-			// NOTE: Directory location is hardcoded to workspace/<projectId/breeding_view/input>
-			String dir =
-					"workspace" + File.separator + this.currentProject.getProjectName().toString() + File.separator + "breeding_view"
-							+ File.separator + "input";
-			new File(dir).mkdirs();
+			final Tool breedingViewTool = this.workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
+			String dir = this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(this.currentProject, breedingViewTool);
 			File xlsFile = new File(dir + File.separator + "mergedDataSets.xls");
 			FileOutputStream fos = new FileOutputStream(xlsFile);
 			workbook.write(fos);
