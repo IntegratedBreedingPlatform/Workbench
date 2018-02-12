@@ -22,12 +22,9 @@ import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.exceptions.SQLFileException;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.CropType;
-import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 @Configurable
@@ -39,14 +36,8 @@ public class CropDatabaseGenerator extends IBDBGenerator {
 
 	private CropType cropType;
 
-	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
-
 	@Resource
 	private Properties workbenchProperties;
-
-	public CropDatabaseGenerator() {
-	}
 
 	public CropDatabaseGenerator(CropType cropType) {
 		this.cropType = cropType;
@@ -146,12 +137,7 @@ public class CropDatabaseGenerator extends IBDBGenerator {
 
 	protected void runSchemaCreationScripts() {
 		try {
-			WorkbenchSetting setting = this.workbenchDataManager.getWorkbenchSetting();
-			if (setting == null) {
-				throw new IllegalStateException("Workbench setting record not found");
-			}
-
-			File localDatabaseDirectory = new File(setting.getInstallationDirectory(), CropDatabaseGenerator.DB_SCRIPT_FOLDER);
+			File localDatabaseDirectory = new File(CropDatabaseGenerator.DB_SCRIPT_FOLDER);
 			// run the common scripts
 			this.runScriptsInDirectory(this.generatedDatabaseName, new File(localDatabaseDirectory, "common"));
 
@@ -180,7 +166,4 @@ public class CropDatabaseGenerator extends IBDBGenerator {
 		this.cropType = cropType;
 	}
 
-	public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
-		this.workbenchDataManager = workbenchDataManager;
-	}
 }

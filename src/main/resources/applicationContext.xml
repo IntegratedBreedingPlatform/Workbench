@@ -61,7 +61,6 @@
 		class="org.generationcp.middleware.manager.WorkbenchDataManagerImpl"
 		destroy-method="close">
 		<constructor-arg ref="workbenchHibernateSessionProvider" />
-		<property name="installationDirectory" value="${workbench.installation_dir}" />
 	</bean>
 
 	<bean id="toolUtil" class="org.generationcp.ibpworkbench.util.ToolUtil">

@@ -87,7 +87,6 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 					public Boolean call() throws Exception {
 						final CropDatabaseGenerator cropDatabaseGenerator =
 								new CropDatabaseGenerator(contextUtil.getProjectInContext().getCropType());
-						cropDatabaseGenerator.setWorkbenchDataManager(RestoreIBDBSaveAction.this.workbenchDataManager);
 						return cropDatabaseGenerator.generateDatabase();
 					}
 				});

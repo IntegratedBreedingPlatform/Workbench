@@ -1,15 +1,6 @@
 
 package org.generationcp.ibpworkbench.germplasm.pedigree;
 
-import com.vaadin.ui.Window;
-import org.generationcp.commons.util.StringUtil;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
@@ -19,6 +10,14 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
+
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import com.vaadin.ui.Window;
 
 @Configurable
 public class GraphVizUtility {
@@ -63,13 +62,6 @@ public class GraphVizUtility {
 		final String graphvizPath = "infrastructure/graphviz/bin/dot.exe";
 
 		File dotFile = new File(graphvizPath).getAbsoluteFile();
-
-		// use the GraphViz dot executable included in the workbench if it is available.
-		final WorkbenchSetting workbenchSetting = this.workbenchDataManager.getWorkbenchSetting();
-		if (workbenchSetting != null && !StringUtil.isEmpty(workbenchSetting.getInstallationDirectory())) {
-			dotFile = new File(workbenchSetting.getInstallationDirectory(), graphvizPath).getAbsoluteFile();
-		}
-
 		this.dotPath = dotFile.getAbsolutePath();
 	}
 

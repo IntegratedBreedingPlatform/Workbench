@@ -1,11 +1,11 @@
 package org.generationcp.ibpworkbench.controller;
 
 import java.util.Properties;
+
 import javax.annotation.Resource;
 
 import org.generationcp.commons.help.document.HelpDocumentUtil;
 import org.generationcp.commons.help.document.HelpModule;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -22,9 +22,6 @@ public class OfflineHelpController {
 
 	public static final String URL = "/help";
 	private static final Logger LOG = LoggerFactory.getLogger(OfflineHelpController.URL);
-
-	@Resource
-	private WorkbenchDataManager workbenchDataManager;
 
 	@Resource
 	private Properties helpProperties;
@@ -54,7 +51,7 @@ public class OfflineHelpController {
 	}
 
 	private boolean isDocumentsFolderFound() {
-		return HelpDocumentUtil.isDocumentsFolderFound(HelpDocumentUtil.getInstallationDirectory(workbenchDataManager));
+		return HelpDocumentUtil.isDocumentsFolderFound();
 	}
 
 	@RequestMapping(value = "/headerText")

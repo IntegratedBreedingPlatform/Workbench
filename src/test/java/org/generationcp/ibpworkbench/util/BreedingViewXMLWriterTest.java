@@ -22,7 +22,6 @@ import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -72,7 +71,6 @@ public class BreedingViewXMLWriterTest {
 	public void setUp() throws Exception {
 		final WorkbenchDataManager workbenchDataManager = Mockito.mock(WorkbenchDataManager.class);
 		Mockito.when(contextUtil.getProjectInContext()).thenReturn(ProjectTestDataInitializer.createProjectWithCropType());
-		Mockito.when(workbenchDataManager.getWorkbenchSetting()).thenReturn(this.createWorkbenchSetting());
 
 		this.breedingViewInput = this.createBreedingViewInput();
 		this.breedingViewXMLWriter = new BreedingViewXMLWriter(this.breedingViewInput);
@@ -210,14 +208,6 @@ public class BreedingViewXMLWriterTest {
 		breedingViewInput.setDesignType(DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
 
 		return breedingViewInput;
-	}
-
-	private WorkbenchSetting createWorkbenchSetting() {
-
-		final WorkbenchSetting workbenchSetting = new WorkbenchSetting();
-		workbenchSetting.setInstallationDirectory(INSTALLATION_DIRECTORY);
-
-		return workbenchSetting;
 	}
 
 	private void createBreedingViewDirectories() {
