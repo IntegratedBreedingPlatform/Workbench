@@ -73,7 +73,6 @@
 		<property name="workbenchDbName" value="workbench" />
 		<property name="workbenchUser" value="${db.username}" />
 		<property name="workbenchPassword" value="${db.password}" />
-		<property name="workbenchInstallationDirectory" value="${workbench.installation_dir}" />
 	</bean>
 
 	<bean id="mysqlUtil" class="org.generationcp.commons.util.MySQLUtil">

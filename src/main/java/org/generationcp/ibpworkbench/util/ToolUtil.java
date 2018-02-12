@@ -53,8 +53,6 @@ public class ToolUtil {
 	private String workbenchUser = "root";
 	private String workbenchPassword = "";
 
-	private String workbenchInstallationDirectory;
-
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
 
@@ -128,14 +126,6 @@ public class ToolUtil {
 
 	public void setWorkbenchPassword(final String workbenchPassword) {
 		this.workbenchPassword = workbenchPassword;
-	}
-
-	public String getWorkbenchInstallationDirectory() {
-		return this.workbenchInstallationDirectory;
-	}
-
-	public void setWorkbenchInstallationDirectory(final String installationDirectory) {
-		this.workbenchInstallationDirectory = installationDirectory;
 	}
 
 	/**
