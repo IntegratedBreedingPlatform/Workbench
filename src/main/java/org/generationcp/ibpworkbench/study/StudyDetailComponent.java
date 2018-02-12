@@ -13,6 +13,7 @@ package org.generationcp.ibpworkbench.study;
 
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
+import org.apache.commons.lang3.StringUtils;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -93,7 +94,13 @@ public class StudyDetailComponent extends GridLayout implements InitializingBean
 			this.studyObjective = new Label(this.setStudyDetailValue(study.getObjective()));
 			this.studyType = new Label(this.setStudyDetailValue(study.getType().getName()));
 			this.studyStartDate = new Label(this.setStudyDetailValue(String.valueOf(study.getStartDate())));
-			this.studyEndDate = new Label(this.setStudyDetailValue(String.valueOf(study.getEndDate())));
+			if (study.getEndDate() != null) {
+				this.studyEndDate = new Label(this.setStudyDetailValue(String.valueOf(study.getEndDate())));
+			}
+			else {
+				this.studyEndDate = new Label(this.setStudyDetailValue(StringUtils.EMPTY));
+			}
+
 
 		} catch (MiddlewareQueryException e) {
 			throw new InternationalizableException(e, Message.ERROR_IN_GETTING_STUDY_DETAIL_BY_ID, Message.EMPTY_STRING);
