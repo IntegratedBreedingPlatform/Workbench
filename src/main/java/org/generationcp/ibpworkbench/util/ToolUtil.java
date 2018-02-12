@@ -11,31 +11,25 @@
 
 package org.generationcp.ibpworkbench.util;
 
-import org.apache.commons.lang3.SystemUtils;
-import org.generationcp.commons.constant.ToolEnum;
-import org.generationcp.commons.spring.util.ContextUtil;
-import org.generationcp.commons.util.StringUtil;
-import org.generationcp.ibpworkbench.util.bean.ConfigurationChangeParameters;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.workbench.CropType;
-import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.Tool;
-import org.generationcp.middleware.pojos.workbench.ToolType;
-import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
+import org.apache.commons.lang3.SystemUtils;
+import org.generationcp.commons.util.StringUtil;
+import org.generationcp.ibpworkbench.util.bean.ConfigurationChangeParameters;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.workbench.Tool;
+import org.generationcp.middleware.pojos.workbench.ToolType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 @Configurable
 public class ToolUtil {
@@ -63,9 +57,6 @@ public class ToolUtil {
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
-
-	@Autowired
-	private ContextUtil contextUtil;
 
 	public String getJdbcHost() {
 		return this.jdbcHost;
@@ -165,7 +156,7 @@ public class ToolUtil {
 			parameter = tool.getParameter();
 		}
 
-		final String toolPath = this.getComputedToolPath(tool);
+		final String toolPath = tool.getPath();
 		final File absoluteToolFile = new File(toolPath);
 
 		final ProcessBuilder pb = new ProcessBuilder(toolPath, parameter);
@@ -202,7 +193,7 @@ public class ToolUtil {
 			return;
 		}
 
-		final String toolPath = this.getComputedToolPath(tool);
+		final String toolPath = tool.getPath();
 		final File absoluteToolFile = new File(toolPath);
 		final String[] pathTokens = toolPath.split("\\" + File.separator);
 
@@ -218,19 +209,6 @@ public class ToolUtil {
 		} catch (final InterruptedException e) {
 			ToolUtil.LOG.error("Interrupted while waiting for " + tool.getToolName() + " to stop.");
 		}
-	}
-
-	protected String getComputedToolPath(final Tool tool) {
-		String toolPath = tool.getPath();
-
-		// if the tool path is an absolute path
-		// and the workbench installation directory has been set,
-		// launch the tool from the specified installation directory
-		final int startIndex = toolPath.indexOf("tools");
-		if (startIndex > 0 && this.workbenchInstallationDirectory != null) {
-			toolPath = this.workbenchInstallationDirectory + File.separator + toolPath.substring(startIndex);
-		}
-		return toolPath;
 	}
 
 	protected boolean updatePropertyFile(final File propertyFile, final Map<String, String> newPropertyValues) {
@@ -290,127 +268,5 @@ public class ToolUtil {
 	public File getConfigurationFile(final ConfigurationChangeParameters params) {
 		return new File(params.getPropertyFile()).getAbsoluteFile();
 	}
-
-	public void createWorkspaceDirectoriesForProject(final Project project) {
-		final WorkbenchSetting workbenchSetting = this.workbenchDataManager.getWorkbenchSetting();
-		if (workbenchSetting == null) {
-			return;
-		}
-
-		final String installationDirectory = workbenchSetting.getInstallationDirectory();
-
-		// create the directory for the project
-		final String projectName = project.getProjectName();
-		final String cropName = project.getCropType().getCropName();
-		final File projectDir = this.getFileForWorkspaceProjectDirectory(installationDirectory, cropName, projectName);
-		if (projectDir.exists()) {
-			return;
-		}
-		projectDir.mkdirs();
-
-		// create the directory only for breeding_view tool
-		final List<String> toolList = Collections.singletonList(ToolEnum.BREEDING_VIEW.getToolName());
-		for (final String toolName : toolList) {
-			final File toolDir = new File(projectDir, toolName);
-			toolDir.mkdirs();
-
-			// create the input and output directories
-			new File(toolDir, ToolUtil.INPUT).mkdirs();
-			new File(toolDir, ToolUtil.OUTPUT).mkdirs();
-		}
-	}
-
-	private File getFileForWorkspaceProjectDirectory(final String installationDirectory, final String cropName,
-			final String projectName) {
-		return new File(this.buildWorkspaceCropDirectoryPath(installationDirectory, cropName), projectName);
-	}
-
-	private String buildWorkspaceCropDirectoryPath(final String installationDirectory, final String cropName) {
-		return installationDirectory + File.separator + ToolUtil.WORKSPACE_DIR + File.separator + cropName;
-	}
-
-	public void renameOldWorkspaceDirectory(final String oldProjectName, final Project project) {
-		final WorkbenchSetting workbenchSetting = this.workbenchDataManager.getWorkbenchSetting();
-		if (workbenchSetting == null) {
-			return;
-		}
-
-		final String installationDirectory = workbenchSetting.getInstallationDirectory();
-
-		final String cropName = project.getCropType().getCropName();
-		final File oldDir = this.getFileForWorkspaceProjectDirectory(installationDirectory, cropName, oldProjectName);
-
-		// Rename old project name folder if found, otherwise create folder for latest project name
-		if (oldDir.exists()) {
-			final String newName = project.getProjectName();
-			oldDir.renameTo(this.getFileForWorkspaceProjectDirectory(installationDirectory, cropName, newName));
-		} else {
-			this.createWorkspaceDirectoriesForProject(project);
-		}
-	}
 	
-	public void resetWorkspaceDirectoryForCrop(final CropType cropType, final List<Project> projects) {
-		final WorkbenchSetting workbenchSetting = this.workbenchDataManager.getWorkbenchSetting();
-		if (workbenchSetting == null) {
-			return;
-		}
-
-		final String installationDirectory = workbenchSetting.getInstallationDirectory();
-
-		final String cropName = cropType.getCropName();
-		final File cropDirectory = new File(this.buildWorkspaceCropDirectoryPath(installationDirectory, cropName));
-		// Delete all contents of given crop directory and recreate folders for each of the project names
-		if (cropDirectory.exists()) {
-			this.recursiveFileDelete(cropDirectory);
-		}
-		for (final Project project : projects) {
-			this.createWorkspaceDirectoriesForProject(project);
-		}
-	}
-
-	public String getInputDirectoryForTool(final Project project, final Tool tool) {
-		final WorkbenchSetting workbenchSetting = this.workbenchDataManager.getWorkbenchSetting();
-		if (workbenchSetting == null) {
-			throw new IllegalStateException("Workbench Setting record was not found!");
-		}
-
-		final String projectDirName = String.format("%s", project.getProjectName());
-
-		final File projectDir = new File(ToolUtil.WORKSPACE_DIR, projectDirName);
-		final File toolDir = new File(projectDir, tool.getGroupName());
-
-		return new File(toolDir, ToolUtil.INPUT).getAbsolutePath();
-	}
-
-	public String getOutputDirectoryForTool(final Project project, final Tool tool) {
-		final WorkbenchSetting workbenchSetting = this.workbenchDataManager.getWorkbenchSetting();
-		if (workbenchSetting == null) {
-			throw new IllegalStateException("Workbench Setting record was not found!");
-		}
-
-		final String projectDirName = String.format("%d", project.getProjectId());
-
-		final String installationDirectory = workbenchSetting.getInstallationDirectory();
-		final File projectDir = new File(installationDirectory + File.separator + ToolUtil.WORKSPACE_DIR, projectDirName);
-		final File toolDir = new File(projectDir, tool.getGroupName());
-
-		return new File(toolDir, ToolUtil.INPUT).getAbsolutePath();
-	}
-	
-	void recursiveFileDelete(File file) {
-        //to end the recursive loop
-        if (!file.exists()){
-        	return;
-        }
-         
-        //if directory, go inside and call recursively
-        if (file.isDirectory()) {
-            for (File f : file.listFiles()) {
-                //call recursively
-                recursiveFileDelete(f);
-            }
-        }
-        //call delete to delete files and empty directory
-        file.delete();
-    }
 }

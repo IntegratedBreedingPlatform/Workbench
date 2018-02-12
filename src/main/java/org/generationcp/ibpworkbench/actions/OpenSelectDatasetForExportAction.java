@@ -10,12 +10,14 @@
 
 package org.generationcp.ibpworkbench.actions;
 
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Window.Notification;
+import java.io.File;
+import java.util.List;
+import java.util.Map;
+
 import org.generationcp.commons.breedingview.xml.ProjectType;
 import org.generationcp.commons.util.BreedingViewUtil;
 import org.generationcp.commons.util.DateUtil;
+import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
@@ -24,17 +26,16 @@ import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSi
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
-import org.generationcp.middleware.domain.dms.Study;
-import org.generationcp.middleware.util.DatasetUtil;
-import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
+import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
+import org.generationcp.middleware.util.DatasetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +43,9 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.unbescape.html.HtmlEscape;
 
-import java.io.File;
-import java.util.List;
-import java.util.Map;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Window.Notification;
 
 /**
  *
@@ -64,9 +65,6 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 	private WorkbenchDataManager workbenchDataManager;
 
 	@Autowired
-	private ToolUtil toolUtil;
-
-	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
@@ -74,6 +72,8 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 
 	@Value("${workbench.is.server.app}")
 	private String isServerApp;
+
+	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
 	private Project project;
 
@@ -104,7 +104,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 		try {
 
 			final Tool breedingViewTool = this.workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
-			final String inputDir = this.toolUtil.getInputDirectoryForTool(project, breedingViewTool);
+			final String inputDir = this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(project, breedingViewTool);
 
 			// List of factors from the new schema
 			final List<DMSVariableType> factorsInDataset =

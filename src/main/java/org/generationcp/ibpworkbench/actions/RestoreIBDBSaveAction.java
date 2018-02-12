@@ -1,6 +1,13 @@
 package org.generationcp.ibpworkbench.actions;
 
-import com.vaadin.ui.Window;
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.concurrent.Callable;
+
+import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.commons.util.MySQLUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
@@ -8,7 +15,6 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.database.CropDatabaseGenerator;
 import org.generationcp.ibpworkbench.service.ProgramService;
-import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.CropType;
@@ -20,12 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.vaadin.easyuploads.FileFactory;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.concurrent.Callable;
+import com.vaadin.ui.Window;
 
 @Configurable
 public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, InitializingBean, FileFactory {
@@ -51,9 +52,8 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 	@Autowired
 	private ProgramService programService;
 	
-	@Autowired
-	private ToolUtil toolUtil;
-
+	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
+	
 	private final Project project;
 
 	private File restoreFile;
@@ -106,7 +106,7 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 				this.addDefaultAdminAndCurrentUserAsMembersOfRestoredPrograms(restoredPrograms);
 				
 				// Remove directories for old programs and generate new folders for programs of restored backup file
-				this.toolUtil.resetWorkspaceDirectoryForCrop(cropType, restoredPrograms);
+				this.installationDirectoryUtil.resetWorkspaceDirectoryForCrop(cropType, restoredPrograms);
 
 				// Log a record in ProjectActivity
 				if (userId != null) {
@@ -203,11 +203,6 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 		this.messageSource = messageSource;
 	}
 
-	
-	public void setToolUtil(ToolUtil toolUtil) {
-		this.toolUtil = toolUtil;
-	}
-
 	public boolean isHasRestoreError() {
 		return this.hasRestoreError;
 	}
@@ -215,6 +210,11 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 	
 	public Project getProject() {
 		return project;
+	}
+
+	
+	public void setInstallationDirectoryUtil(InstallationDirectoryUtil installationDirectoryUtil) {
+		this.installationDirectoryUtil = installationDirectoryUtil;
 	}
 
 }

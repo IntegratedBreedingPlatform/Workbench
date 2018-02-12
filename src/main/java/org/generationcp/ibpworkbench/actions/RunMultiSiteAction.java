@@ -14,28 +14,28 @@ import org.generationcp.commons.breedingview.xml.Genotypes;
 import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.util.BreedingViewUtil;
+import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.GxeTable;
-import org.generationcp.middleware.util.DatasetUtil;
 import org.generationcp.ibpworkbench.util.GxeInput;
 import org.generationcp.ibpworkbench.util.MultiSiteDataExporter;
-import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.ibpworkbench.util.ZipUtil;
 import org.generationcp.ibpworkbench.util.bean.MultiSiteParameters;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.domain.dms.Experiment;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
+import org.generationcp.middleware.util.DatasetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
+import org.unbescape.html.HtmlEscape;
 
 import com.vaadin.Application;
 import com.vaadin.terminal.DownloadStream;
@@ -45,7 +45,6 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
-import org.unbescape.html.HtmlEscape;
 
 @Configurable
 public class RunMultiSiteAction implements ClickListener {
@@ -60,9 +59,6 @@ public class RunMultiSiteAction implements ClickListener {
 	private boolean isServerApp;
 
 	@Resource
-	private ToolUtil toolUtil;
-
-	@Resource
 	private WorkbenchDataManager workbenchDataManager;
 
 	@Resource
@@ -71,6 +67,8 @@ public class RunMultiSiteAction implements ClickListener {
 	private IBPWorkbenchApplication workbenchApplication;
 
 	private MultiSiteDataExporter multiSiteDataExporter = new MultiSiteDataExporter();
+	
+	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
 	private MultiSiteParameters multiSiteParameters;
 
@@ -127,7 +125,7 @@ public class RunMultiSiteAction implements ClickListener {
 		this.downloadInputFile(new File(outputFilename), workbenchApplication);
 	}
 
-	protected GxeInput generateInputFiles() throws MiddlewareQueryException {
+	protected GxeInput generateInputFiles() {
 
 		final GxeEnvironment gxeEnvironment = this.gxeTable.getGxeEnvironment();
 		final List<Trait> selectedTraits = this.getSelectedTraits();
@@ -148,7 +146,7 @@ public class RunMultiSiteAction implements ClickListener {
 	 */
 	void exportMultiSiteProjectFile(final MultiSiteParameters multiSiteParameters, final GxeInput gxeInput) {
 
-		final String inputDir = this.toolUtil.getInputDirectoryForTool(multiSiteParameters.getProject(), this.breedingViewTool);
+		final String inputDir = this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(multiSiteParameters.getProject(), this.breedingViewTool);
 		final String inputFileName = this.generateInputFileName(multiSiteParameters.getProject());
 
 		gxeInput.setDestXMLFilePath(inputDir + File.separator + inputFileName + ".xml");

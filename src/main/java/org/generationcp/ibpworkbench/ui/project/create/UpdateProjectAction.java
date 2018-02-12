@@ -3,10 +3,10 @@ package org.generationcp.ibpworkbench.ui.project.create;
 import com.vaadin.ui.Button;
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
-import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -27,10 +27,9 @@ public class UpdateProjectAction implements Button.ClickListener {
 	private WorkbenchDataManager workbenchDataManager;
 
 	@Autowired
-	private ToolUtil toolUtil;
-
-	@Autowired
 	private ContextUtil contextUtil;
+	
+	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
 	private static final long serialVersionUID = 1L;
 
@@ -65,7 +64,7 @@ public class UpdateProjectAction implements Button.ClickListener {
 			this.workbenchDataManager.saveOrUpdateProject(project);
 
 			// Rename old workspace directory if found
-			this.toolUtil.renameOldWorkspaceDirectory(oldProjectName, project);
+			this.installationDirectoryUtil.renameOldWorkspaceDirectory(oldProjectName, project);
 
 			MessageNotifier.showMessage(this.projectPanel.getWindow(), "Program update is successful",
 					String.format("%s is updated.", StringUtils.abbreviate(project.getProjectName(), 50)));
@@ -86,8 +85,9 @@ public class UpdateProjectAction implements Button.ClickListener {
 		this.workbenchDataManager = workbenchDataManager;
 	}
 
-	public void setToolUtil(final ToolUtil toolUtil) {
-		this.toolUtil = toolUtil;
+	
+	public void setInstallationDirectoryUtil(InstallationDirectoryUtil installationDirectoryUtil) {
+		this.installationDirectoryUtil = installationDirectoryUtil;
 	}
 
 }

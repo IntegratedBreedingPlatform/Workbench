@@ -1,9 +1,16 @@
 package org.generationcp.ibpworkbench.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+
 import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.commons.util.DateUtil;
-import org.generationcp.ibpworkbench.util.ToolUtil;
+import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.middleware.ContextHolder;
 import org.generationcp.middleware.manager.api.UserDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -20,12 +27,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.WebUtils;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 @Service
 @Transactional
 public class ProgramService {
@@ -36,9 +37,6 @@ public class ProgramService {
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
-
-	@Autowired
-	private ToolUtil toolUtil;
 
 	@Autowired
 	private UserDataManager userDataManager;
@@ -53,6 +51,8 @@ public class ProgramService {
 	public static final int PROJECT_USER_ACCESS_NUMBER = 100;
 	public static final int PROJECT_USER_TYPE = 422;
 	public static final int PROJECT_USER_STATUS = 1;
+	
+	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
 	/**
 	 * Create new project in workbench and add specified users as project members. Also creates copy of workbench person and user to currect
@@ -69,7 +69,7 @@ public class ProgramService {
 		this.saveProgramMembers(program, programUsers);
 
 		// After saving, we create folder for program under <install directory>/workspace
-		this.toolUtil.createWorkspaceDirectoriesForProject(program);
+		this.installationDirectoryUtil.createWorkspaceDirectoriesForProject(program);
 
 		ProgramService.LOG
 				.info("Program created. ID:" + program.getProjectId() + " Name:" + program.getProjectName() + " Start date:" + program
@@ -222,8 +222,9 @@ public class ProgramService {
 		this.workbenchDataManager = workbenchDataManager;
 	}
 
-	void setToolUtil(final ToolUtil toolUtil) {
-		this.toolUtil = toolUtil;
+	
+	public void setInstallationDirectoryUtil(InstallationDirectoryUtil installationDirectoryUtil) {
+		this.installationDirectoryUtil = installationDirectoryUtil;
 	}
 
 }

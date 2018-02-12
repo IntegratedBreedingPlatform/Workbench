@@ -1,18 +1,18 @@
 package org.generationcp.ibpworkbench.actions;
 
-import com.vaadin.terminal.FileResource;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Table;
-import junit.framework.Assert;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.sea.xml.Environment;
+import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.GxeTable;
 import org.generationcp.ibpworkbench.util.GxeInput;
 import org.generationcp.ibpworkbench.util.MultiSiteDataExporter;
-import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.ibpworkbench.util.ZipUtil;
 import org.generationcp.ibpworkbench.util.bean.MultiSiteParameters;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
@@ -35,12 +35,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.vaadin.terminal.FileResource;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import junit.framework.Assert;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RunMultiSiteActionTest {
@@ -73,9 +74,6 @@ public class RunMultiSiteActionTest {
 	private MultiSiteDataExporter multiSiteDataExporter;
 
 	@Mock
-	private ToolUtil toolUtil;
-
-	@Mock
 	private Tool breedingViewTool;
 
 	@Mock
@@ -86,6 +84,9 @@ public class RunMultiSiteActionTest {
 
 	@Mock
 	Window window;
+	
+	@Mock
+	private InstallationDirectoryUtil installationDirectoryUtil;
 
 	@InjectMocks
 	private final RunMultiSiteAction runMultiSiteAction = new RunMultiSiteAction();
@@ -118,7 +119,7 @@ public class RunMultiSiteActionTest {
 		Mockito.when(this.gxeTable.getMeansDataSet()).thenReturn(this.createMeansDataSet(MEANS_DATASET_NAME));
 		Mockito.when(this.gxeTable.getGxeEnvironment()).thenReturn(this.gxeEnvironment);
 
-		Mockito.when(this.toolUtil.getInputDirectoryForTool(this.createProject(PROJECT_NAME), breedingViewTool))
+		Mockito.when(this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(this.createProject(PROJECT_NAME), breedingViewTool))
 				.thenReturn(BMS_INPUT_FILES_DIR);
 
 		Mockito.when(this.studyDataManager.getDataSetsByType(STUDY_ID, DataSetType.SUMMARY_DATA)).thenReturn(this.createDataSets());
@@ -157,7 +158,7 @@ public class RunMultiSiteActionTest {
 
 		Mockito.verify(multiSiteDataExporter).generateXmlFieldBook(gxeInput);
 
-		Assert.assertEquals("/someDirectory/input/TEST TRIAL_0_TEST TRIAL-MEANS.xml", gxeInput.getDestXMLFilePath());
+		Assert.assertEquals("/someDirectory/input" + File.separator + "TEST TRIAL_0_TEST TRIAL-MEANS.xml", gxeInput.getDestXMLFilePath());
 
 	}
 

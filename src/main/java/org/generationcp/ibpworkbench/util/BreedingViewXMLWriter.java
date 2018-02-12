@@ -26,10 +26,13 @@ import org.generationcp.commons.sea.xml.Traits;
 import org.generationcp.commons.security.SecurityUtil;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.BreedingViewUtil;
+import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.Tool;
+import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -57,9 +60,11 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 
 	private static final String CROP_PLACEHOLDER = "{cropName}";
 
+	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
+	
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
-
+	
 	@Autowired
 	private ContextUtil contextUtil;
 
@@ -177,9 +182,8 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 			ssaParameters.setWorkbenchProjectId(workbenchProject.getProjectId());
 		}
 
-		final String installationDirectory = this.getInstallationDirectory();
-		final String outputDirectory =
-				String.format("%s/workspace/%s/breeding_view/output", installationDirectory, workbenchProject.getProjectName());
+		final Tool breedingViewTool = this.workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
+		final String outputDirectory = this.installationDirectoryUtil.getOutputDirectoryForProjectAndTool(workbenchProject, breedingViewTool);
 		ssaParameters.setOutputDirectory(outputDirectory);
 
 		if (Boolean.parseBoolean(this.isServerApp)) {
@@ -192,10 +196,6 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 
 	protected Project getLastOpenedProject() {
 		return contextUtil.getProjectInContext();
-	}
-
-	protected String getInstallationDirectory() {
-		return this.workbenchDataManager.getWorkbenchSetting().getInstallationDirectory();
 	}
 
 	protected String getWebApiUrl() {
