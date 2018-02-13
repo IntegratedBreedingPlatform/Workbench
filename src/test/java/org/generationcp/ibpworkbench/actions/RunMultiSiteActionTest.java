@@ -124,14 +124,12 @@ public class RunMultiSiteActionTest {
 
 		Mockito.when(this.studyDataManager.getDataSetsByType(STUDY_ID, DataSetType.SUMMARY_DATA)).thenReturn(this.createDataSets());
 
-		Mockito.when(multiSiteDataExporter
-				.exportMeansDatasetToCsv(Mockito.anyString(), Mockito.any(MultiSiteParameters.class), Mockito.any(DataSet.class),
-						Mockito.anyList(), Mockito.eq(ENVIRONMENT_NAME), Mockito.any(GxeEnvironment.class), Mockito.anyList()))
+		Mockito.when(multiSiteDataExporter.exportMeansDatasetToCsv(Mockito.anyString(), Mockito.any(MultiSiteParameters.class),
+				Mockito.anyList(), Mockito.eq(ENVIRONMENT_NAME), Mockito.any(GxeEnvironment.class), Mockito.anyList()))
 				.thenReturn(MEANS_DATA_FILEPATH);
 
-		Mockito.when(multiSiteDataExporter
-				.exportTrialDatasetToSummaryStatsCsv(Mockito.anyString(), Mockito.any(DataSet.class), Mockito.anyList(),
-						Mockito.eq(ENVIRONMENT_NAME), Mockito.anyList(), Mockito.any(Project.class))).thenReturn(SUMMARY_DATA_FILEPATH);
+		Mockito.when(multiSiteDataExporter.exportTrialDatasetToSummaryStatsCsv(Mockito.anyString(), Mockito.anyList(),
+				Mockito.eq(ENVIRONMENT_NAME), Mockito.anyList(), Mockito.any(Project.class))).thenReturn(SUMMARY_DATA_FILEPATH);
 
 	}
 
@@ -157,8 +155,10 @@ public class RunMultiSiteActionTest {
 		runMultiSiteAction.exportMultiSiteProjectFile(multiSiteParameters, gxeInput);
 
 		Mockito.verify(multiSiteDataExporter).generateXmlFieldBook(gxeInput);
+		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.multiSiteParameters.getProject(),
+				this.breedingViewTool);
 
-		Assert.assertEquals("/someDirectory/input" + File.separator + "TEST TRIAL_0_TEST TRIAL-MEANS.xml", gxeInput.getDestXMLFilePath());
+		Assert.assertEquals(BMS_INPUT_FILES_DIR + File.separator + "TEST TRIAL_0_TEST TRIAL-MEANS.xml", gxeInput.getDestXMLFilePath());
 
 	}
 
@@ -170,14 +170,12 @@ public class RunMultiSiteActionTest {
 		this.runMultiSiteAction.exportDataFiles(multiSiteParameters, gxeInput, gxeEnvironment, selectedTraits);
 
 		// Make sure the Means DataSet is exported to CSV
-		Mockito.verify(multiSiteDataExporter)
-				.exportMeansDatasetToCsv(Mockito.anyString(), Mockito.eq(multiSiteParameters), Mockito.any(DataSet.class),
-						Mockito.anyList(), Mockito.eq(ENVIRONMENT_NAME), Mockito.any(GxeEnvironment.class), Mockito.anyList());
+		Mockito.verify(multiSiteDataExporter).exportMeansDatasetToCsv(Mockito.anyString(), Mockito.eq(multiSiteParameters),
+				Mockito.anyList(), Mockito.eq(ENVIRONMENT_NAME), Mockito.any(GxeEnvironment.class), Mockito.anyList());
 
 		// Make sure the Summary Data is exported to CSV
-		Mockito.verify(multiSiteDataExporter)
-				.exportTrialDatasetToSummaryStatsCsv(Mockito.anyString(), Mockito.any(DataSet.class), Mockito.anyList(),
-						Mockito.eq(ENVIRONMENT_NAME), Mockito.anyList(), Mockito.any(Project.class));
+		Mockito.verify(multiSiteDataExporter).exportTrialDatasetToSummaryStatsCsv(Mockito.anyString(), Mockito.anyList(),
+				Mockito.eq(ENVIRONMENT_NAME), Mockito.anyList(), Mockito.any(Project.class));
 
 		Assert.assertEquals(MEANS_DATA_FILEPATH, gxeInput.getSourceCSVFilePath());
 		Assert.assertEquals(SUMMARY_DATA_FILEPATH, gxeInput.getSourceCSVSummaryStatsFilePath());
