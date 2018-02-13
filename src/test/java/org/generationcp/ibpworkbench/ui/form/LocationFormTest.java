@@ -216,7 +216,7 @@ public class LocationFormTest {
 		when(studyDataManager.isVariableUsedInOtherPrograms(String.valueOf(TermId.LOCATION_ID.getId()),
 				String.valueOf(this.locationViewModel.getLocationId()), PROGRAM_UUID)).thenReturn(true);
 		when(studyDataManager.isVariableUsedInOtherPrograms(String.valueOf(TermId.LOCATION_ID.getId()),
-				String.valueOf(this.locationViewModel.getLocationId()), null)).thenReturn(true);
+				String.valueOf(this.locationViewModel.getLocationId()), "")).thenReturn(true);
 
 		this.locationForm.disableCropAccessibleIfLocationIsUsedInOtherProgram();
 
@@ -231,7 +231,7 @@ public class LocationFormTest {
 		when(studyDataManager.isVariableUsedInOtherPrograms(String.valueOf(TermId.LOCATION_ID.getId()),
 				String.valueOf(this.locationViewModel.getLocationId()), PROGRAM_UUID)).thenReturn(false);
 		when(studyDataManager.isVariableUsedInOtherPrograms(String.valueOf(TermId.LOCATION_ID.getId()),
-				String.valueOf(this.locationViewModel.getLocationId()), null)).thenReturn(true);
+				String.valueOf(this.locationViewModel.getLocationId()), "")).thenReturn(true);
 
 		this.locationForm.disableCropAccessibleIfLocationIsUsedInOtherProgram();
 
