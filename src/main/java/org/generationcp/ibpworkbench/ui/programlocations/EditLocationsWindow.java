@@ -29,7 +29,6 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.actions.SaveNewLocationAction;
 import org.generationcp.ibpworkbench.model.formfieldfactory.LocationFormFieldFactory;
 import org.generationcp.ibpworkbench.ui.form.LocationForm;
 import org.generationcp.ibpworkbench.ui.window.ConfirmLocationsWindow;
@@ -223,7 +222,7 @@ public class EditLocationsWindow extends BaseSubWindow {
 
 		@Override
 		public void focus(final FieldEvents.FocusEvent focusEvent) {
-			if (locationForm.isLocationUsedInOtherProgram()) {
+			if (locationForm.isLocationUsedInAnyProgram()) {
 				MessageNotifier.showWarning(focusEvent.getComponent().getWindow(), messageSource.getMessage(Message.WARNING),
 						EditLocationsWindow.this.messageSource.getMessage(Message.LOCATION_IS_USED_IN_OTHER_PROGRAM));
 			}

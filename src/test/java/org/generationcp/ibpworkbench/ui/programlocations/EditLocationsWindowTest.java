@@ -1,8 +1,6 @@
 package org.generationcp.ibpworkbench.ui.programlocations;
 
-import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItem;
-import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
@@ -20,9 +18,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.omg.PortableInterceptor.SUCCESSFUL;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -189,7 +184,7 @@ public class EditLocationsWindowTest {
 
 		final FieldEvents.FocusEvent focusEvent = mock(FieldEvents.FocusEvent.class);
 		when(focusEvent.getComponent()).thenReturn(this.component);
-		when(locationForm.isLocationUsedInOtherProgram()).thenReturn(true);
+		when(locationForm.isLocationUsedInAnyProgram()).thenReturn(true);
 
 		final EditLocationsWindow.WindowOnFocusListener listener = this.editLocationsWindow.new WindowOnFocusListener();
 

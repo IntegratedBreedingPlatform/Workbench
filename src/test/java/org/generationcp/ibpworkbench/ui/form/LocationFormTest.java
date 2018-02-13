@@ -24,16 +24,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
-
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -225,11 +215,28 @@ public class LocationFormTest {
 
 		when(studyDataManager.isVariableUsedInOtherPrograms(String.valueOf(TermId.LOCATION_ID.getId()),
 				String.valueOf(this.locationViewModel.getLocationId()), PROGRAM_UUID)).thenReturn(true);
+		when(studyDataManager.isVariableUsedInOtherPrograms(String.valueOf(TermId.LOCATION_ID.getId()),
+				String.valueOf(this.locationViewModel.getLocationId()), null)).thenReturn(true);
 
 		this.locationForm.disableCropAccessibleIfLocationIsUsedInOtherProgram();
 
 		verify(locationFormFieldFactoryMock).disableCropAccessible();
-		assertTrue(locationForm.isLocationUsedInOtherProgram());
+		assertTrue(locationForm.isLocationUsedInAnyProgram());
+
+	}
+
+	@Test
+	public void testDisableCropAccessibleIfLocationIsUsedInOtherProgramLocationIsOnlyUsedInCurrentProgram() {
+
+		when(studyDataManager.isVariableUsedInOtherPrograms(String.valueOf(TermId.LOCATION_ID.getId()),
+				String.valueOf(this.locationViewModel.getLocationId()), PROGRAM_UUID)).thenReturn(false);
+		when(studyDataManager.isVariableUsedInOtherPrograms(String.valueOf(TermId.LOCATION_ID.getId()),
+				String.valueOf(this.locationViewModel.getLocationId()), null)).thenReturn(true);
+
+		this.locationForm.disableCropAccessibleIfLocationIsUsedInOtherProgram();
+
+		verify(locationFormFieldFactoryMock, never()).disableCropAccessible();
+		assertTrue(locationForm.isLocationUsedInAnyProgram());
 
 	}
 
@@ -242,7 +249,7 @@ public class LocationFormTest {
 		this.locationForm.disableCropAccessibleIfLocationIsUsedInOtherProgram();
 
 		verify(locationFormFieldFactoryMock, never()).disableCropAccessible();
-		assertFalse(locationForm.isLocationUsedInOtherProgram());
+		assertFalse(locationForm.isLocationUsedInAnyProgram());
 
 	}
 
