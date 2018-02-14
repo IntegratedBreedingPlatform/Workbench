@@ -67,9 +67,9 @@ public class RunMultiSiteAction implements ClickListener {
 
 	private IBPWorkbenchApplication workbenchApplication;
 
-	private final MultiSiteDataExporter multiSiteDataExporter = new MultiSiteDataExporter();
+	private MultiSiteDataExporter multiSiteDataExporter = new MultiSiteDataExporter();
 
-	private final InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
+	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
 	private MultiSiteParameters multiSiteParameters;
 
@@ -77,7 +77,7 @@ public class RunMultiSiteAction implements ClickListener {
 
 	private Table selectTraitsTable;
 
-	private final ZipUtil zipUtil = new ZipUtil();
+	private ZipUtil zipUtil = new ZipUtil();
 
 	public RunMultiSiteAction() {
 		// for unit testing
