@@ -21,7 +21,6 @@ import java.util.Properties;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.generationcp.commons.util.StringUtil;
-import org.generationcp.ibpworkbench.util.bean.ConfigurationChangeParameters;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Tool;
@@ -35,98 +34,9 @@ import org.springframework.beans.factory.annotation.Configurable;
 public class ToolUtil {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ToolUtil.class);
-	public static final String DEFAULT_DRIVER = "com.mysql.jdbc.Driver";
-	public static final String JDBC_FORMAT_STRING = "jdbc:mysql://%s:%s/%s";
-	public static final String INPUT = "input";
-	public static final String OUTPUT = "output";
-	public static final String GDMS_CONFIG_LOCATION = "infrastructure/tomcat/webapps/GDMS/WEB-INF/classes/DatabaseConfig.properties";
-	public static final String MBDT_CONFIG_LOCATION = "tools/mbdt/DatabaseConfig.properties";
-	public static final String WORKSPACE_DIR = "workspace";
-
-	private String jdbcHost;
-	private Long jdbcPort;
-	private String centralUser;
-	private String centralPassword;
-	private String localUser;
-	private String localPassword;
-	private String workbenchDbName = "workbench";
-	private String workbenchUser = "root";
-	private String workbenchPassword = "";
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
-
-	public String getJdbcHost() {
-		return this.jdbcHost;
-	}
-
-	public void setJdbcHost(final String jdbcHost) {
-		this.jdbcHost = jdbcHost;
-	}
-
-	public Long getJdbcPort() {
-		return this.jdbcPort;
-	}
-
-	public void setJdbcPort(final Long jdbcPort) {
-		this.jdbcPort = jdbcPort;
-	}
-
-	public String getCentralUser() {
-		return this.centralUser;
-	}
-
-	public void setCentralUser(final String centralUser) {
-		this.centralUser = centralUser;
-	}
-
-	public String getCentralPassword() {
-		return this.centralPassword;
-	}
-
-	public void setCentralPassword(final String centralPassword) {
-		this.centralPassword = centralPassword;
-	}
-
-	public String getLocalUser() {
-		return this.localUser;
-	}
-
-	public void setLocalUser(final String localUser) {
-		this.localUser = localUser;
-	}
-
-	public String getLocalPassword() {
-		return this.localPassword;
-	}
-
-	public void setLocalPassword(final String localPassword) {
-		this.localPassword = localPassword;
-	}
-
-	public String getWorkbenchDbName() {
-		return this.workbenchDbName;
-	}
-
-	public void setWorkbenchDbName(final String workbenchDbName) {
-		this.workbenchDbName = workbenchDbName;
-	}
-
-	public String getWorkbenchUser() {
-		return this.workbenchUser;
-	}
-
-	public void setWorkbenchUser(final String workbenchUser) {
-		this.workbenchUser = workbenchUser;
-	}
-
-	public String getWorkbenchPassword() {
-		return this.workbenchPassword;
-	}
-
-	public void setWorkbenchPassword(final String workbenchPassword) {
-		this.workbenchPassword = workbenchPassword;
-	}
 
 	/**
 	 * Launch the specified native tool.
@@ -253,10 +163,6 @@ public class ToolUtil {
 		}
 
 		return changed;
-	}
-
-	public File getConfigurationFile(final ConfigurationChangeParameters params) {
-		return new File(params.getPropertyFile()).getAbsoluteFile();
 	}
 	
 }
