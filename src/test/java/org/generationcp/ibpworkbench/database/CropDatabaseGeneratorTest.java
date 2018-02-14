@@ -4,7 +4,6 @@ package org.generationcp.ibpworkbench.database;
 import java.io.File;
 import java.sql.Connection;
 
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,9 +18,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class CropDatabaseGeneratorTest {
 
 	private final CropType cropType = new CropType();
-
-	@Mock
-	private WorkbenchDataManager workbenchManager;
 
 	@Mock
 	private Connection connection;

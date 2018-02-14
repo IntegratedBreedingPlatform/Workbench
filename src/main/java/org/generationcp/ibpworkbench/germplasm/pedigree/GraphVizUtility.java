@@ -11,10 +11,8 @@ import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.ui.Window;
@@ -39,9 +37,6 @@ public class GraphVizUtility {
 	private StringBuilder graph = new StringBuilder();
 
 	private String imageOutputPath = null;
-
-	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
 
 	/**
 	 * Constructor: creates a new GraphViz object that will contain a graph.

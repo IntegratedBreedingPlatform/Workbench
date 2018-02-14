@@ -469,7 +469,7 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 				Boolean val = (Boolean) event.getProperty().getValue();
 				CheckBox chk = (CheckBox) event.getProperty();
 				MetaAnalysisSelectTraitsPanel.this.factorsCheckBoxState.put(chk.getData().toString(), val);
-				if (val == false) {
+				if (!val) {
 					MetaAnalysisSelectTraitsPanel.this.chkSelectAllFactors
 							.removeListener(MetaAnalysisSelectTraitsPanel.this.selectAllFactorsListener);
 					MetaAnalysisSelectTraitsPanel.this.chkSelectAllFactors.setValue(false);
@@ -801,7 +801,7 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 
 				}
 			}
-		}// while
+		}
 
 		try {
 			File xlsFile = this.getMergedDatasetsExcelFile();
