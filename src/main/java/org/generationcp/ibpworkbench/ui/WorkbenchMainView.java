@@ -708,4 +708,14 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	public void setMemberButton(final PopupButton memberButton) {
 		this.memberButton = memberButton;
 	}
+
+	
+	public Button getLogoBtn() {
+		return logoBtn;
+	}
+
+	
+	public Button getHelpButton() {
+		return helpButton;
+	}
 }

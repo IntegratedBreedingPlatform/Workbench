@@ -246,4 +246,19 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 	public void setProject(final Project project) {
 		this.project = project;
 	}
+
+	
+	public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
+		this.workbenchDataManager = workbenchDataManager;
+	}
+
+	
+	public void setStudyDataManager(StudyDataManager studyDataManager) {
+		this.studyDataManager = studyDataManager;
+	}
+
+	
+	public void setInstallationDirectoryUtil(InstallationDirectoryUtil installationDirectoryUtil) {
+		this.installationDirectoryUtil = installationDirectoryUtil;
+	}
 }

@@ -804,9 +804,7 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 		}// while
 
 		try {
-			final Tool breedingViewTool = this.workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
-			String dir = this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(this.currentProject, breedingViewTool);
-			File xlsFile = new File(dir + File.separator + "mergedDataSets.xls");
+			File xlsFile = this.getMergedDatasetsExcelFile();
 			FileOutputStream fos = new FileOutputStream(xlsFile);
 			workbook.write(fos);
 			fos.close();
@@ -818,6 +816,12 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 			return null;
 		}
 
+	}
+
+	File getMergedDatasetsExcelFile() {
+		final Tool breedingViewTool = this.workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
+		String dir = this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(this.currentProject, breedingViewTool);
+		return new File(dir + File.separator + "mergedDataSets.xls");
 	}
 
 	@Override
@@ -852,6 +856,16 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 		super.attach();
 
 		this.updateLabels();
+	}
+
+	
+	public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
+		this.workbenchDataManager = workbenchDataManager;
+	}
+
+	
+	public void setInstallationDirectoryUtil(InstallationDirectoryUtil installationDirectoryUtil) {
+		this.installationDirectoryUtil = installationDirectoryUtil;
 	}
 
 }

@@ -313,4 +313,9 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 	public void setContextUtil(final ContextUtil contextUtil) {
 		this.contextUtil = contextUtil;
 	}
+
+	
+	public void setInstallationDirectoryUtil(InstallationDirectoryUtil installationDirectoryUtil) {
+		this.installationDirectoryUtil = installationDirectoryUtil;
+	}
 }
