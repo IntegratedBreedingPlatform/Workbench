@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.actions;
 
 import java.io.File;
@@ -66,9 +67,9 @@ public class RunMultiSiteAction implements ClickListener {
 
 	private IBPWorkbenchApplication workbenchApplication;
 
-	private MultiSiteDataExporter multiSiteDataExporter = new MultiSiteDataExporter();
-	
-	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
+	private final MultiSiteDataExporter multiSiteDataExporter = new MultiSiteDataExporter();
+
+	private final InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
 	private MultiSiteParameters multiSiteParameters;
 
@@ -76,7 +77,7 @@ public class RunMultiSiteAction implements ClickListener {
 
 	private Table selectTraitsTable;
 
-	private ZipUtil zipUtil = new ZipUtil();
+	private final ZipUtil zipUtil = new ZipUtil();
 
 	public RunMultiSiteAction() {
 		// for unit testing
@@ -122,7 +123,7 @@ public class RunMultiSiteAction implements ClickListener {
 
 		this.zipUtil.zipIt(outputFilename, filenameList);
 
-		this.downloadInputFile(new File(outputFilename), workbenchApplication);
+		this.downloadInputFile(new File(outputFilename), this.workbenchApplication);
 	}
 
 	protected GxeInput generateInputFiles() {
@@ -146,17 +147,19 @@ public class RunMultiSiteAction implements ClickListener {
 	 */
 	void exportMultiSiteProjectFile(final MultiSiteParameters multiSiteParameters, final GxeInput gxeInput) {
 
-		final String inputDir = this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(multiSiteParameters.getProject(), this.breedingViewTool);
+		final String inputDir =
+				this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(multiSiteParameters.getProject(), this.breedingViewTool);
 		final String inputFileName = this.generateInputFileName(multiSiteParameters.getProject());
 
 		gxeInput.setDestXMLFilePath(inputDir + File.separator + inputFileName + ".xml");
 
-		multiSiteDataExporter.generateXmlFieldBook(gxeInput);
+		this.multiSiteDataExporter.generateXmlFieldBook(gxeInput);
 
 	}
 
 	/**
-	 * Exports the Means Dataset and Summary Stats data into CSV files. These are the input files required for running Multi-Site Analsysis in Breeding View.
+	 * Exports the Means Dataset and Summary Stats data into CSV files. These are the input files required for running Multi-Site Analsysis
+	 * in Breeding View.
 	 *
 	 * @param multiSiteParameters
 	 * @param gxeInput
@@ -165,15 +168,15 @@ public class RunMultiSiteAction implements ClickListener {
 	 */
 	void exportDataFiles(final MultiSiteParameters multiSiteParameters, final GxeInput gxeInput, final GxeEnvironment gxeEnvironment,
 			final List<Trait> selectedTraits) {
-		
+
 		final String inputFileName = this.generateInputFileName(multiSiteParameters.getProject());
 
-		final String meansDataFilePath = multiSiteDataExporter.exportMeansDatasetToCsv(inputFileName, multiSiteParameters,
+		final String meansDataFilePath = this.multiSiteDataExporter.exportMeansDatasetToCsv(inputFileName, multiSiteParameters,
 				this.gxeTable.getExperiments(), this.gxeTable.getEnvironmentName(), gxeEnvironment, selectedTraits);
 
 		final DataSet summaryStatsDataSet = this.getSummaryStatsDataSet(multiSiteParameters.getStudy().getId());
 
-		final String summaryStatsDataFilePath = multiSiteDataExporter.exportTrialDatasetToSummaryStatsCsv(inputFileName,
+		final String summaryStatsDataFilePath = this.multiSiteDataExporter.exportTrialDatasetToSummaryStatsCsv(inputFileName,
 				this.getSummaryStatsExperiments(summaryStatsDataSet.getId()), this.gxeTable.getEnvironmentName(), selectedTraits,
 				multiSiteParameters.getProject());
 

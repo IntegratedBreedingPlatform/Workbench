@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.controller;
 
 import java.util.Properties;
@@ -31,21 +32,21 @@ public class OfflineHelpController {
 
 	@RequestMapping(value = "/getUrl/{helpDomain}")
 	@ResponseBody
-	public String getUrl(@PathVariable String helpDomain) {
+	public String getUrl(@PathVariable final String helpDomain) {
 		try {
-			HelpModule helpModule = HelpModule.valueOf(helpDomain);
+			final HelpModule helpModule = HelpModule.valueOf(helpDomain);
 			assert helpModule != null;
 
-			String helpUrl = helpProperties.getProperty(helpModule.getPropertyName());
+			final String helpUrl = this.helpProperties.getProperty(helpModule.getPropertyName());
 			if (HelpDocumentUtil.isIBPDomainReachable(HelpDocumentUtil.getOnLineLink(helpUrl))) {
 				return HelpDocumentUtil.getOnLineLink(helpUrl);
 			} else if (this.isDocumentsFolderFound()) {
 				return String.format("/BMS_HTML/%s.html", helpUrl);
 			}
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			// exception is valid in case of no-net or link un-available so we just log.debug it
-			LOG.debug(e.getMessage(),e);
+			OfflineHelpController.LOG.debug(e.getMessage(), e);
 		}
 		return "";
 	}
@@ -57,7 +58,7 @@ public class OfflineHelpController {
 	@RequestMapping(value = "/headerText")
 	@ResponseBody
 	public String getHeader() {
-		String version = this.workbenchProperties.getProperty("workbench.version", "");
+		final String version = this.workbenchProperties.getProperty("workbench.version", "");
 		return String.format("<h1>%s</h1><h2>%s</h2>", "BREEDING MANAGEMENT SYSTEM | WORKBENCH", version);
 	}
 }

@@ -1,6 +1,6 @@
+
 package org.generationcp.ibpworkbench.ui.project.create;
 
-import com.vaadin.ui.Button;
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+
+import com.vaadin.ui.Button;
 
 /**
  * Created with IntelliJ IDEA. User: cyrus Date: 10/28/13 Time: 11:07 AM To change this template use File | Settings | File Templates.
@@ -28,7 +30,7 @@ public class UpdateProjectAction implements Button.ClickListener {
 
 	@Autowired
 	private ContextUtil contextUtil;
-	
+
 	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
 	private static final long serialVersionUID = 1L;
@@ -56,7 +58,7 @@ public class UpdateProjectAction implements Button.ClickListener {
 		if (this.projectPanel.validate()) {
 			// It is important to store old project name before updating the project
 			final String oldProjectName = this.projectPanel.getOldProjectName();
-			
+
 			// Update the project
 			final Project updatedProject = this.projectPanel.getProjectBasicDetailsComponent().getProjectDetails();
 			project.setProjectName(updatedProject.getProjectName());
@@ -85,8 +87,7 @@ public class UpdateProjectAction implements Button.ClickListener {
 		this.workbenchDataManager = workbenchDataManager;
 	}
 
-	
-	public void setInstallationDirectoryUtil(InstallationDirectoryUtil installationDirectoryUtil) {
+	public void setInstallationDirectoryUtil(final InstallationDirectoryUtil installationDirectoryUtil) {
 		this.installationDirectoryUtil = installationDirectoryUtil;
 	}
 
