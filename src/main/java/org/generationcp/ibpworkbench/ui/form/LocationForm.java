@@ -22,7 +22,6 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.formfieldfactory.LocationFormFieldFactory;
 import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
-import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.manager.api.StudyDataManager;
@@ -259,12 +258,12 @@ public class LocationForm extends Form {
 
 		if (locationId != null) {
 			// Check if the LOCATION variable is used in any study programs except for the current program.
-			if (this.studyDataManager.isVariableUsedInOtherPrograms(String.valueOf(TermId.LOCATION_ID.getId()),
+			if (this.studyDataManager.isVariableUsedInStudyOrTrialEnvironmentInOtherPrograms(String.valueOf(TermId.LOCATION_ID.getId()),
 					String.valueOf(locationId), this.contextUtil.getCurrentProgramUUID())) {
 				locationFormFieldFactory.disableCropAccessible();
 			}
 			// Check if the LOCATION variable is used in any study across all programs.
-			locationUsedInAnyProgram = this.studyDataManager.isVariableUsedInOtherPrograms(String.valueOf(TermId.LOCATION_ID.getId()),
+			locationUsedInAnyProgram = this.studyDataManager.isVariableUsedInStudyOrTrialEnvironmentInOtherPrograms(String.valueOf(TermId.LOCATION_ID.getId()),
 					String.valueOf(locationId), "");
 		}
 	}
