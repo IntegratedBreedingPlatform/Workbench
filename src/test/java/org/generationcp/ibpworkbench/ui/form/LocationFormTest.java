@@ -71,7 +71,7 @@ public class LocationFormTest {
 
 		locationViewModel = this.createLocationViewModelTestData();
 
-		locationForm = new LocationForm(locationViewModel, programLocationsPresenter, locationFormFieldFactoryMock);
+		locationForm = new LocationForm(locationViewModel, locationFormFieldFactoryMock);
 		locationForm.setMessageSource(this.messageSource);
 		locationForm.setStudyDataManager(this.studyDataManager);
 		locationForm.setContextUtil(this.contextUtil);
@@ -122,7 +122,7 @@ public class LocationFormTest {
 		locationFormFieldFactory.setMessageSource(messageSource);
 		locationFormFieldFactory.afterPropertiesSet();
 
-		final LocationForm testLocationForm = new LocationForm(locationViewModel, programLocationsPresenter, locationFormFieldFactory);
+		final LocationForm testLocationForm = new LocationForm(locationViewModel, locationFormFieldFactory);
 		testLocationForm.setMessageSource(this.messageSource);
 		testLocationForm.setStudyDataManager(this.studyDataManager);
 		testLocationForm.setContextUtil(this.contextUtil);

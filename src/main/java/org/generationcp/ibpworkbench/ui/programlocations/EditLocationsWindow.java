@@ -78,7 +78,7 @@ public class EditLocationsWindow extends BaseSubWindow {
 
 	protected void initializeComponents() {
 
-		this.locationForm = new LocationForm(locationToEdit, this.programLocationsPresenter,
+		this.locationForm = new LocationForm(locationToEdit,
 				new LocationFormFieldFactory(this.programLocationsPresenter));
 		this.locationForm.setDebugId("locationForm");
 		this.buttonArea = this.layoutButtonArea();

@@ -53,7 +53,7 @@ public class AddLocationsWindow extends BaseSubWindow {
 	protected void initializeComponents() {
 
 		this.locationForm =
-				new LocationForm(null, this.programLocationsPresenter, new LocationFormFieldFactory(this.programLocationsPresenter));
+				new LocationForm(null, new LocationFormFieldFactory(this.programLocationsPresenter));
 		this.locationForm.setDebugId("locationForm");
 		this.buttonArea = this.layoutButtonArea();
 	}

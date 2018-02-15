@@ -64,8 +64,6 @@ public class LocationForm extends Form {
 
 	private GridLayout grid;
 
-	private final ProgramLocationsPresenter presenter;
-
 	private LocationFormFieldFactory locationFormFieldFactory;
 
 	private boolean locationUsedInAnyProgram = false;
@@ -84,9 +82,7 @@ public class LocationForm extends Form {
 	@Autowired
 	private StudyDataManager studyDataManager;
 
-	public LocationForm(final LocationViewModel locationViewModel, final ProgramLocationsPresenter presenter,
-			final LocationFormFieldFactory locationFormFieldFactory) {
-		this.presenter = presenter;
+	public LocationForm(final LocationViewModel locationViewModel, final LocationFormFieldFactory locationFormFieldFactory) {
 		this.locationFormFieldFactory = locationFormFieldFactory;
 		if (locationViewModel != null) {
 			this.locationViewModel = locationViewModel;
@@ -259,15 +255,17 @@ public class LocationForm extends Form {
 
 	protected void disableCropAccessibleIfLocationIsUsedInOtherProgram() {
 
-		if (this.locationViewModel.getLocationId() != null) {
+		final Integer locationId = this.locationViewModel.getLocationId();
+
+		if (locationId != null) {
 			// Check if the LOCATION variable is used in any study programs except for the current program.
 			if (this.studyDataManager.isVariableUsedInOtherPrograms(String.valueOf(TermId.LOCATION_ID.getId()),
-					String.valueOf(this.locationViewModel.getLocationId()), this.contextUtil.getCurrentProgramUUID())) {
+					String.valueOf(locationId), this.contextUtil.getCurrentProgramUUID())) {
 				locationFormFieldFactory.disableCropAccessible();
 			}
 			// Check if the LOCATION variable is used in any study across all programs.
 			locationUsedInAnyProgram = this.studyDataManager.isVariableUsedInOtherPrograms(String.valueOf(TermId.LOCATION_ID.getId()),
-					String.valueOf(this.locationViewModel.getLocationId()), "");
+					String.valueOf(locationId), "");
 		}
 	}
 
