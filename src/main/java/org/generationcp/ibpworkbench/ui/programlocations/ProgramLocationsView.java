@@ -23,6 +23,7 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.BaseTheme;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -81,7 +82,6 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 	private static final String LOCATION_ID = "locationId";
 	private static final String PROVINCE = "provinceName";
 	private static final String COUNTRY = "cntryName";
-
 
 	static {
 		TABLE_COLUMNS = new LinkedHashMap<>();
@@ -225,8 +225,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 			@Override
 			public void buttonClick(final ClickEvent clickEvent) {
-				clickEvent.getComponent().getWindow()
-						.addWindow(new AddLocationsWindow(ProgramLocationsView.this.presenter));
+				clickEvent.getComponent().getWindow().addWindow(new AddLocationsWindow(ProgramLocationsView.this.presenter));
 			}
 		});
 
@@ -671,6 +670,8 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		table.setMultiSelect(true);
 		table.setDragMode(Table.TableDragMode.MULTIROW);
 
+		table.addGeneratedColumn(ProgramLocationsView.LOCATION_NAME, new LocationNameColumnGenerator(table));
+
 		table.addGeneratedColumn(ProgramLocationsView.SELECT, new Table.ColumnGenerator() {
 
 			private static final long serialVersionUID = 346170573915290251L;
@@ -839,6 +840,50 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 	}
 
+	protected void refreshTable() {
+		// do table repaint
+		this.availableTable.requestRepaint();
+		this.availableTable.refreshRowCache();
+		this.favoritesTable.requestRepaint();
+		this.favoritesTable.refreshRowCache();
+	}
+
+	public void refreshLocationViewItemInTable(final boolean isEditedFromAvailableTable, final LocationViewModel locationViewModel) {
+
+		if (isEditedFromAvailableTable) {
+			// If the Location is edited and updated from the Available table, make sure that the location in Favorites table is also updated.
+			copyLocationViewModelToTableItem(this.favoritesTableContainer, locationViewModel);
+		} else {
+			// If the Location is edited and updated from the Favorites table, make sure that the location in Available table is also updated.
+			copyLocationViewModelToTableItem(this.availableTableContainer, locationViewModel);
+		}
+
+		this.refreshTable();
+	}
+
+	public void copyLocationViewModelToTableItem(final BeanItemContainer<LocationViewModel> beanItemContainer,
+			final LocationViewModel locationViewModel) {
+
+		if (beanItemContainer.containsId(locationViewModel)) {
+			LocationViewModel beanToUpdate = beanItemContainer.getItem(locationViewModel).getBean();
+			beanToUpdate.setLocationName(locationViewModel.getLocationName());
+			beanToUpdate.setLocationAbbreviation(locationViewModel.getLocationAbbreviation());
+			beanToUpdate.setLtype(locationViewModel.getLtype());
+			beanToUpdate.setLtypeStr(locationViewModel.getLtypeStr());
+			beanToUpdate.setCntryid(locationViewModel.getCntryid());
+			beanToUpdate.setCntryName(locationViewModel.getCntryName());
+			beanToUpdate.setCntryFullName(locationViewModel.getCntryFullName());
+			beanToUpdate.setProvinceId(locationViewModel.getProvinceId());
+			beanToUpdate.setProvinceName(locationViewModel.getProvinceName());
+			beanToUpdate.setAltitude(locationViewModel.getAltitude());
+			beanToUpdate.setLatitude(locationViewModel.getLatitude());
+			beanToUpdate.setLongitude(locationViewModel.getLongitude());
+			beanToUpdate.setCropAccessible(locationViewModel.getCropAccessible());
+			beanToUpdate.setProgramUUID(locationViewModel.getProgramUUID());
+		}
+
+	}
+
 	private void updateNoOfEntries() {
 		this.updateNoOfEntries(this.favTotalEntriesLabel, this.favoritesTable);
 		this.updateNoOfEntries(this.availTotalEntriesLabel, this.availableTable);
@@ -954,6 +999,53 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 	public void setSearchField(final TextField searchField) {
 		this.searchField = searchField;
+	}
+
+	class LocationNameColumnGenerator implements Table.ColumnGenerator {
+
+		private static final long serialVersionUID = 346170573915290251L;
+
+		private Table table;
+
+		LocationNameColumnGenerator(final Table table) {
+			this.table = table;
+		}
+
+		@Override
+		public Object generateCell(final Table source, final Object itemId, final Object colId) {
+
+			final LocationViewModel locationViewModelToEdit = ((LocationViewModel) itemId);
+
+			final Button locationNameButtonLink = new Button();
+			locationNameButtonLink.setStyleName(BaseTheme.BUTTON_LINK);
+			locationNameButtonLink.setImmediate(true);
+			locationNameButtonLink.setCaption(locationViewModelToEdit.getLocationName());
+			locationNameButtonLink.addListener(new LocationNameEditClickListener(locationViewModelToEdit, this.table));
+
+			return locationNameButtonLink;
+		}
+
+	}
+
+
+	class LocationNameEditClickListener implements Button.ClickListener {
+
+		private static final long serialVersionUID = 4839268740583678422L;
+
+		private LocationViewModel locationViewModel;
+		private Table table;
+
+		LocationNameEditClickListener(final LocationViewModel locationViewModel, final Table table) {
+			this.locationViewModel = locationViewModel;
+			this.table = table;
+		}
+
+		@Override
+		public void buttonClick(final ClickEvent clickEvent) {
+			clickEvent.getComponent().getWindow().addWindow(new EditLocationsWindow(locationViewModel, presenter, table));
+
+		}
+
 	}
 
 }

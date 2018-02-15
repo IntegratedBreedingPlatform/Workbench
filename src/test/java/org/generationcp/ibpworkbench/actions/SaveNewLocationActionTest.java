@@ -4,7 +4,7 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Window;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.ibpworkbench.ui.form.AddLocationForm;
+import org.generationcp.ibpworkbench.ui.form.LocationForm;
 import org.generationcp.ibpworkbench.ui.programlocations.AddLocationsWindow;
 import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
@@ -30,7 +30,7 @@ public class SaveNewLocationActionTest {
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Mock
-	private AddLocationForm newLocationForm;
+	private LocationForm newLocationForm;
 
 	@Mock
 	private AddLocationsWindow window;

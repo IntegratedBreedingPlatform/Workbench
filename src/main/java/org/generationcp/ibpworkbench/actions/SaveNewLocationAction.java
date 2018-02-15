@@ -19,7 +19,7 @@ import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.ui.form.AddLocationForm;
+import org.generationcp.ibpworkbench.ui.form.LocationForm;
 import org.generationcp.ibpworkbench.ui.programlocations.AddLocationsWindow;
 import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
@@ -42,7 +42,7 @@ public class SaveNewLocationAction implements ClickListener {
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOG = LoggerFactory.getLogger(SaveNewLocationAction.class);
 
-	private final AddLocationForm newLocationForm;
+	private final LocationForm newLocationForm;
 
 	private final AddLocationsWindow window;
 
@@ -54,7 +54,7 @@ public class SaveNewLocationAction implements ClickListener {
 	@Resource
 	private SimpleResourceBundleMessageSource messageSource;
 
-	public SaveNewLocationAction(final AddLocationForm newLocationForm, final AddLocationsWindow window,
+	public SaveNewLocationAction(final LocationForm newLocationForm, final AddLocationsWindow window,
 			final ProgramLocationsPresenter programLocationsPresenter) {
 		this.newLocationForm = newLocationForm;
 		this.window = window;
