@@ -2,6 +2,7 @@ package org.generationcp.ibpworkbench.ui.form;
 
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Field;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import junit.framework.Assert;
@@ -303,6 +304,35 @@ public class LocationFormTest {
 		assertNull(this.locationViewModel.getProvinceName());
 		assertNotNull(this.locationViewModel.getLtypeStr());
 		assertEquals(PROGRAM_UUID, this.locationViewModel.getProgramUUID());
+
+	}
+
+	@Test
+	public void testIsLocationNameModified() {
+
+		final Field field = mock(Field.class);
+		when(locationFormFieldFactoryMock.getLocationName()).thenReturn(field);
+		when(field.isModified()).thenReturn(true);
+
+		assertTrue(this.locationForm.isLocationNameModified());
+
+		verify(this.locationFormFieldFactoryMock).getLocationName();
+		verify(field).isModified();
+
+	}
+
+	@Test
+	public void testGetLocationNameValue() {
+
+		final Field field = mock(Field.class);
+		final String fieldValue = "myValue";
+		when(locationFormFieldFactoryMock.getLocationName()).thenReturn(field);
+		when(field.getValue()).thenReturn(fieldValue);
+
+		assertEquals(fieldValue, this.locationForm.getLocationNameValue());
+
+		verify(this.locationFormFieldFactoryMock).getLocationName();
+		verify(field).getValue();
 
 	}
 
