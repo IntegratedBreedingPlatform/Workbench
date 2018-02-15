@@ -13,6 +13,7 @@ package org.generationcp.ibpworkbench.model.formfieldfactory;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanContainer;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.validator.DoubleValidator;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.AbstractSelect;
@@ -25,7 +26,7 @@ import com.vaadin.ui.TextField;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.fields.SanitizedTextField;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.ui.form.AddLocationForm;
+import org.generationcp.ibpworkbench.ui.form.LocationForm;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
 import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.Location;
@@ -135,6 +136,7 @@ public class LocationFormFieldFactory extends DefaultFieldFactory implements Ini
 		this.country.setContainerDataSource(countryBeanContainer);
 		this.country.setItemCaptionMode(AbstractSelect.ITEM_CAPTION_MODE_PROPERTY);
 		this.country.setItemCaptionPropertyId("isoabbr");
+		this.country.setImmediate(true);
 
 		this.country.addListener(new Property.ValueChangeListener() {
 
@@ -162,6 +164,7 @@ public class LocationFormFieldFactory extends DefaultFieldFactory implements Ini
 		this.province.setContainerDataSource(provinceBeanContainer);
 		this.province.setItemCaptionMode(AbstractSelect.ITEM_CAPTION_MODE_PROPERTY);
 		this.province.setItemCaptionPropertyId("lname");
+		this.province.setImmediate(true);
 
 		this.latitude = new TextField() {
 
@@ -219,29 +222,30 @@ public class LocationFormFieldFactory extends DefaultFieldFactory implements Ini
 		this.altitude.setNullRepresentation("");
 
 		this.cropAccessible = new CheckBox();
+		this.cropAccessible.setImmediate(true);
 		this.cropAccessible.setDebugId("cropAccessible");
 
 	}
 
 	@Override
 	public Field createField(final Item item, final Object propertyId, final Component uiContext) {
-		if (AddLocationForm.LOCATION_NAME.equals(propertyId)) {
+		if (LocationForm.LOCATION_NAME.equals(propertyId)) {
 			return this.locationName;
-		} else if (AddLocationForm.LOCATION_ABBREVIATION.equals(propertyId)) {
+		} else if (LocationForm.LOCATION_ABBREVIATION.equals(propertyId)) {
 			return this.locationAbbreviation;
-		} else if (AddLocationForm.LTYPE.equals(propertyId)) {
+		} else if (LocationForm.LTYPE.equals(propertyId)) {
 			return this.lType;
-		} else if (AddLocationForm.CNTRYID.equals(propertyId)) {
+		} else if (LocationForm.CNTRYID.equals(propertyId)) {
 			return this.country;
-		} else if (AddLocationForm.PROVINCE_ID.equals(propertyId)) {
+		} else if (LocationForm.PROVINCE_ID.equals(propertyId)) {
 			return this.province;
-		} else if (AddLocationForm.LATITUDE.equals(propertyId)) {
+		} else if (LocationForm.LATITUDE.equals(propertyId)) {
 			return this.latitude;
-		} else if (AddLocationForm.LONGITUDE.equals(propertyId)) {
+		} else if (LocationForm.LONGITUDE.equals(propertyId)) {
 			return this.longitude;
-		} else if (AddLocationForm.ALTITUDE.equals(propertyId)) {
+		} else if (LocationForm.ALTITUDE.equals(propertyId)) {
 			return this.altitude;
-		} else if (AddLocationForm.CROP_ACCESSIBLE.equals(propertyId)) {
+		} else if (LocationForm.CROP_ACCESSIBLE.equals(propertyId)) {
 			return this.cropAccessible;
 		}
 		return super.createField(item, propertyId, uiContext);
@@ -281,6 +285,29 @@ public class LocationFormFieldFactory extends DefaultFieldFactory implements Ini
 
 	public CheckBox getCropAccessible() {
 		return cropAccessible;
+	}
+
+	public Country retrieveCountryValue() {
+		final BeanContainer<String, Country> beanContainer = (BeanContainer<String, Country>) this.country.getContainerDataSource();
+		final BeanItem<Country> beanItem = beanContainer.getItem(this.country.getValue());
+		return beanItem == null ? null : beanItem.getBean();
+	}
+
+	public Location retrieveProvinceValue() {
+		final BeanContainer<String, Location> beanContainer = (BeanContainer<String, Location>) this.province.getContainerDataSource();
+		final BeanItem<Location> beanItem = beanContainer.getItem(this.province.getValue());
+		return beanItem == null ? null : beanItem.getBean();
+	}
+
+	public UserDefinedField retrieveLocationType() {
+		final BeanContainer<String, UserDefinedField> beanContainer =
+				(BeanContainer<String, UserDefinedField>) this.lType.getContainerDataSource();
+		final BeanItem<UserDefinedField> beanItem = beanContainer.getItem(this.lType.getValue());
+		return beanItem == null ? null : beanItem.getBean();
+	}
+
+	public void disableCropAccessible() {
+		this.cropAccessible.setEnabled(false);
 	}
 
 	@Override

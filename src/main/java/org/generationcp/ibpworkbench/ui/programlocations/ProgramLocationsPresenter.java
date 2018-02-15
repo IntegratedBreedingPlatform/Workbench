@@ -71,7 +71,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 	protected Collection<LocationViewModel> createLocationViewModelList(final List<LocationDetails> locationDetails) {
 		final Collection<LocationViewModel> result = new ArrayList<>();
 
-		for (final LocationDetails locationDetail:locationDetails) {
+		for (final LocationDetails locationDetail : locationDetails) {
 			result.add(convertFromLocationDetailsToLocationViewModel(locationDetail));
 		}
 		return result;
@@ -152,6 +152,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		viewModel.setLongitude(locationDetails.getLongitude());
 		viewModel.setAltitude(locationDetails.getAltitude());
 		viewModel.setProgramUUID(locationDetails.getProgramUUID());
+		viewModel.setProvinceId(locationDetails.getProvinceId());
 		viewModel.setProvinceName(locationDetails.getProvinceName());
 		return viewModel;
 	}
@@ -245,6 +246,11 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		}
 	}
 
+	public void updateLocation(final LocationViewModel locationViewModel, final boolean isEditedFromAvailableTable) {
+		this.locationDataManager.addLocation(convertLocationViewToLocation(locationViewModel));
+		this.view.refreshLocationViewItemInTable(isEditedFromAvailableTable, locationViewModel);
+	}
+
 	public List<Location> getExistingLocations(final String locationName) {
 		return this.locationDataManager.getLocationsByName(locationName, Operation.EQUAL, this.project.getUniqueID());
 	}
@@ -297,5 +303,9 @@ public class ProgramLocationsPresenter implements InitializingBean {
 
 	public void setCropType(final CropType cropType) {
 		this.cropType = cropType;
+	}
+
+	public void setView(final ProgramLocationsView view) {
+		this.view = view;
 	}
 }

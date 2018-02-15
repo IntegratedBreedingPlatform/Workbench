@@ -1,10 +1,12 @@
-
 package org.generationcp.ibpworkbench.ui.programlocations;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Window;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.UserDefinedField;
@@ -12,6 +14,8 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import com.vaadin.data.util.BeanItemContainer;
@@ -19,9 +23,19 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
+import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@RunWith(MockitoJUnitRunner.class)
 public class ProgramLocationsViewTest {
 
+	public static final String PROGRAM_UUID = "812472357-72384632-387247384";
 	private ProgramLocationsView view;
 	private SimpleResourceBundleMessageSource messageSource;
 	private Label favTotalEntriesLabel;
@@ -33,32 +47,46 @@ public class ProgramLocationsViewTest {
 	private static final Integer PHILIPPINES_CNTRYID = 171;
 	private static final Integer COUNTRY_LTYPEID = 405;
 
+	@Mock
+	private Table availableTable;
+
+	@Mock
+	private Table favoritesTable;
+
+	@Mock
+	private Component component;
+
+	@Mock
+	private Window window;
+
 	@Before
 	public void setUp() {
 		this.favTotalEntriesLabel = new Label();
 		this.favSelectedEntriesLabel = new Label();
 		this.availTotalEntriesLabel = new Label();
 		this.view = new ProgramLocationsView(new Project());
-		this.messageSource = Mockito.mock(SimpleResourceBundleMessageSource.class);
+		this.messageSource = mock(SimpleResourceBundleMessageSource.class);
 		this.view.setMessageSource(this.messageSource);
 		this.view.setFavTotalEntriesLabel(this.favTotalEntriesLabel);
 		this.view.setFavSelectedEntriesLabel(this.favSelectedEntriesLabel);
 		this.view.setAvailTotalEntriesLabel(this.availTotalEntriesLabel);
+		this.view.setAvailableTable(this.availableTable);
+		this.view.setFavoritesTable(this.favoritesTable);
 		this.setupFilters();
 	}
 
 	@Test
 	public void testUpdateNoOfEntries() throws Exception {
 
-		Table customTable = this.createTableTestData();
+		final Table customTable = this.createTableTestData();
 		this.view.updateNoOfEntries(this.favTotalEntriesLabel, customTable);
 
 		int actualNoOfEntries = this.getNoOfEntries(customTable);
 		int expectedNoOfEntries = ProgramLocationsViewTest.NO_OF_ROWS;
 
-		Assert.assertEquals("The number of rows must be equal to " + expectedNoOfEntries, expectedNoOfEntries, actualNoOfEntries);
-		Assert.assertTrue("The number of entries must be " + expectedNoOfEntries, String.valueOf(this.favTotalEntriesLabel.getValue())
-				.contains(String.valueOf(expectedNoOfEntries)));
+		assertEquals("The number of rows must be equal to " + expectedNoOfEntries, expectedNoOfEntries, actualNoOfEntries);
+		Assert.assertTrue("The number of entries must be " + expectedNoOfEntries,
+				String.valueOf(this.favTotalEntriesLabel.getValue()).contains(String.valueOf(expectedNoOfEntries)));
 
 		customTable.removeItem(ProgramLocationsViewTest.TABLE_ROW + 1);
 		customTable.removeItem(ProgramLocationsViewTest.TABLE_ROW + 2);
@@ -68,30 +96,30 @@ public class ProgramLocationsViewTest {
 		expectedNoOfEntries -= 2;
 
 		actualNoOfEntries = this.getNoOfEntries(customTable);
-		Assert.assertEquals("The number of rows must be equal to " + expectedNoOfEntries, expectedNoOfEntries, actualNoOfEntries);
-		Assert.assertTrue("The number of entries must be " + expectedNoOfEntries, String.valueOf(this.favTotalEntriesLabel.getValue())
-				.contains(String.valueOf(expectedNoOfEntries)));
+		assertEquals("The number of rows must be equal to " + expectedNoOfEntries, expectedNoOfEntries, actualNoOfEntries);
+		Assert.assertTrue("The number of entries must be " + expectedNoOfEntries,
+				String.valueOf(this.favTotalEntriesLabel.getValue()).contains(String.valueOf(expectedNoOfEntries)));
 
 		customTable.addItem(ProgramLocationsViewTest.TABLE_ROW + 1);
 		this.view.updateNoOfEntries(this.favTotalEntriesLabel, customTable);
 
 		actualNoOfEntries = this.getNoOfEntries(customTable);
 		expectedNoOfEntries += 1;
-		Assert.assertEquals("The number of rows must be equal to " + expectedNoOfEntries, expectedNoOfEntries, actualNoOfEntries);
-		Assert.assertTrue("The number of entries must be " + expectedNoOfEntries, String.valueOf(this.favTotalEntriesLabel.getValue())
-				.contains(String.valueOf(expectedNoOfEntries)));
+		assertEquals("The number of rows must be equal to " + expectedNoOfEntries, expectedNoOfEntries, actualNoOfEntries);
+		Assert.assertTrue("The number of entries must be " + expectedNoOfEntries,
+				String.valueOf(this.favTotalEntriesLabel.getValue()).contains(String.valueOf(expectedNoOfEntries)));
 	}
 
-	private int getNoOfEntries(Table customTable) {
+	private int getNoOfEntries(final Table customTable) {
 		return customTable.getItemIds().size();
 	}
 
 	private Table createTableTestData() {
-		Table table = new Table();
-		BeanItemContainer<String> containerDataSource = new BeanItemContainer<String>(String.class);
+		final Table table = new Table();
+		final BeanItemContainer<String> containerDataSource = new BeanItemContainer<String>(String.class);
 		table.setContainerDataSource(containerDataSource);
 		for (int i = 0; i < ProgramLocationsViewTest.NO_OF_ROWS; i++) {
-			String item = ProgramLocationsViewTest.TABLE_ROW + i;
+			final String item = ProgramLocationsViewTest.TABLE_ROW + i;
 			table.addItem(item);
 			containerDataSource.addBean(item);
 		}
@@ -100,18 +128,18 @@ public class ProgramLocationsViewTest {
 
 	@Test
 	public void testMoveSelectedItems() {
-		Table availableTable = this.createTableLocationViewModelTestData(ProgramLocationsView.AVAILABLE);
-		Table favoritesTable = this.createEmptyTableLocationViewModelTestData(ProgramLocationsView.FAVORITES);
+		final Table availableTable = this.createTableLocationViewModelTestData(ProgramLocationsView.AVAILABLE);
+		final Table favoritesTable = this.createEmptyTableLocationViewModelTestData(ProgramLocationsView.FAVORITES);
 
 		this.selectAllItems(availableTable);
 		this.view.moveSelectedItems(availableTable, favoritesTable);
 
 		int expectedNoOfEntries = ProgramLocationsViewTest.NO_OF_ROWS;
 		int actualNoOfEntries = this.getNoOfEntries(favoritesTable);
-		int expectedSelectedNoOfEntries = 0;
-		Assert.assertEquals("The number of rows must be equal to " + expectedNoOfEntries, expectedNoOfEntries, actualNoOfEntries);
-		Assert.assertTrue("The number of entries must be " + expectedNoOfEntries, String.valueOf(this.favTotalEntriesLabel.getValue())
-				.contains(String.valueOf(expectedNoOfEntries)));
+		final int expectedSelectedNoOfEntries = 0;
+		assertEquals("The number of rows must be equal to " + expectedNoOfEntries, expectedNoOfEntries, actualNoOfEntries);
+		Assert.assertTrue("The number of entries must be " + expectedNoOfEntries,
+				String.valueOf(this.favTotalEntriesLabel.getValue()).contains(String.valueOf(expectedNoOfEntries)));
 		Assert.assertTrue("The number of selected entries must be " + expectedSelectedNoOfEntries,
 				String.valueOf(this.favSelectedEntriesLabel.getValue()).contains(String.valueOf(expectedSelectedNoOfEntries)));
 
@@ -120,9 +148,9 @@ public class ProgramLocationsViewTest {
 
 		expectedNoOfEntries -= 2;
 		actualNoOfEntries = this.getNoOfEntries(favoritesTable);
-		Assert.assertEquals("The number of rows must be equal to " + expectedNoOfEntries, expectedNoOfEntries, actualNoOfEntries);
-		Assert.assertTrue("The number of entries must be " + expectedNoOfEntries, String.valueOf(this.favTotalEntriesLabel.getValue())
-				.contains(String.valueOf(expectedNoOfEntries)));
+		assertEquals("The number of rows must be equal to " + expectedNoOfEntries, expectedNoOfEntries, actualNoOfEntries);
+		Assert.assertTrue("The number of entries must be " + expectedNoOfEntries,
+				String.valueOf(this.favTotalEntriesLabel.getValue()).contains(String.valueOf(expectedNoOfEntries)));
 		Assert.assertTrue("The number of selected entries must be " + expectedSelectedNoOfEntries,
 				String.valueOf(this.favSelectedEntriesLabel.getValue()).contains(String.valueOf(expectedSelectedNoOfEntries)));
 
@@ -131,50 +159,49 @@ public class ProgramLocationsViewTest {
 
 		expectedNoOfEntries = 0;
 		actualNoOfEntries = this.getNoOfEntries(favoritesTable);
-		Assert.assertEquals("The number of rows must be equal to " + expectedNoOfEntries, expectedNoOfEntries, actualNoOfEntries);
-		Assert.assertTrue("The number of entries must be " + expectedNoOfEntries, String.valueOf(this.favTotalEntriesLabel.getValue())
-				.contains(String.valueOf(expectedNoOfEntries)));
+		assertEquals("The number of rows must be equal to " + expectedNoOfEntries, expectedNoOfEntries, actualNoOfEntries);
+		Assert.assertTrue("The number of entries must be " + expectedNoOfEntries,
+				String.valueOf(this.favTotalEntriesLabel.getValue()).contains(String.valueOf(expectedNoOfEntries)));
 		Assert.assertTrue("The number of selected entries must be " + expectedSelectedNoOfEntries,
 				String.valueOf(this.favSelectedEntriesLabel.getValue()).contains(String.valueOf(expectedSelectedNoOfEntries)));
 
 	}
 
-	private void selectAllItems(Table table) {
+	private void selectAllItems(final Table table) {
 		table.setValue(table.getItemIds());
 	}
 
-	private void selectItems(Table table, int noOfItems) {
-		List<Object> items = new ArrayList<Object>();
-		@SuppressWarnings("unchecked")
-		Iterator<Integer> itemIterator = (Iterator<Integer>) table.getItemIds().iterator();
+	private void selectItems(final Table table, final int noOfItems) {
+		final List<Object> items = new ArrayList<Object>();
+		@SuppressWarnings("unchecked") final Iterator<Integer> itemIterator = (Iterator<Integer>) table.getItemIds().iterator();
 		for (int i = 0; i < noOfItems; i++) {
 			items.add(itemIterator.next());
 		}
 		table.setValue(items);
 	}
 
-	private Table createTableLocationViewModelTestData(String data) {
-		Table table = new Table();
+	private Table createTableLocationViewModelTestData(final String data) {
+		final Table table = new Table();
 		table.setSelectable(true);
 		table.setMultiSelect(true);
 		table.setData(data);
-		BeanItemContainer<LocationViewModel> containerDataSource = new BeanItemContainer<LocationViewModel>(LocationViewModel.class);
+		final BeanItemContainer<LocationViewModel> containerDataSource = new BeanItemContainer<LocationViewModel>(LocationViewModel.class);
 		table.setContainerDataSource(containerDataSource);
 		for (int itemId = 0; itemId < ProgramLocationsViewTest.NO_OF_ROWS; itemId++) {
 			table.addItem(itemId);
-			LocationViewModel model = new LocationViewModel();
+			final LocationViewModel model = new LocationViewModel();
 			model.setLocationId(itemId);
 			containerDataSource.addBean(model);
 		}
 		return table;
 	}
 
-	private Table createEmptyTableLocationViewModelTestData(String data) {
-		Table table = new Table();
+	private Table createEmptyTableLocationViewModelTestData(final String data) {
+		final Table table = new Table();
 		table.setSelectable(true);
 		table.setMultiSelect(true);
 		table.setData(data);
-		BeanItemContainer<LocationViewModel> containerDataSource = new BeanItemContainer<LocationViewModel>(LocationViewModel.class);
+		final BeanItemContainer<LocationViewModel> containerDataSource = new BeanItemContainer<LocationViewModel>(LocationViewModel.class);
 		table.setContainerDataSource(containerDataSource);
 		return table;
 	}
@@ -185,20 +212,20 @@ public class ProgramLocationsViewTest {
 		int expectedNoOfAvailableEntries = this.getNoOfEntries(this.view.getAvailableTable());
 		int expectedNoOfFavoritesEntries = this.getNoOfEntries(this.view.getFavoritesTable());
 
-		LocationViewModel model = this.createLocationViewModelTestData();
+		final LocationViewModel model = this.createLocationViewModelTestData();
 
 		this.view.addRow(model, true, 0);
 		expectedNoOfAvailableEntries++;
 		expectedNoOfFavoritesEntries++;
 
-		int actualNoOfAvailableEntries = this.getNoOfEntries(this.view.getAvailableTable());
-		Assert.assertEquals("The number of rows for available locations must be equal to " + expectedNoOfAvailableEntries,
+		final int actualNoOfAvailableEntries = this.getNoOfEntries(this.view.getAvailableTable());
+		assertEquals("The number of rows for available locations must be equal to " + expectedNoOfAvailableEntries,
 				expectedNoOfAvailableEntries, actualNoOfAvailableEntries);
 		Assert.assertTrue("The number of entries for available locations must be " + expectedNoOfAvailableEntries,
 				String.valueOf(this.view.getAvailTotalEntriesLabel().getValue()).contains(String.valueOf(expectedNoOfAvailableEntries)));
 
-		int actualNoOfFavoritesEntries = this.getNoOfEntries(this.view.getFavoritesTable());
-		Assert.assertEquals("The number of rows for favorites locations must be equal to " + expectedNoOfFavoritesEntries,
+		final int actualNoOfFavoritesEntries = this.getNoOfEntries(this.view.getFavoritesTable());
+		assertEquals("The number of rows for favorites locations must be equal to " + expectedNoOfFavoritesEntries,
 				expectedNoOfFavoritesEntries, actualNoOfFavoritesEntries);
 		Assert.assertTrue("The number of entries for favorites locations must be " + expectedNoOfFavoritesEntries,
 				String.valueOf(this.view.getFavTotalEntriesLabel().getValue()).contains(String.valueOf(expectedNoOfFavoritesEntries)));
@@ -206,15 +233,15 @@ public class ProgramLocationsViewTest {
 	}
 
 	private void setupFilters() {
-		Select countryFilter = new Select();
+		final Select countryFilter = new Select();
 		countryFilter.setValue(0);
 		this.view.setCountryFilter(countryFilter);
 
-		Select locationTypeFilter = new Select();
+		final Select locationTypeFilter = new Select();
 		locationTypeFilter.setValue(0);
 		this.view.setLocationTypeFilter(locationTypeFilter);
 
-		TextField searchField = new TextField();
+		final TextField searchField = new TextField();
 		searchField.setValue("");
 		this.view.setSearchField(searchField);
 
@@ -226,19 +253,19 @@ public class ProgramLocationsViewTest {
 		int expectedNoOfAvailableEntries = this.getNoOfEntries(this.view.getAvailableTable());
 		int expectedNoOfFavoritesEntries = this.getNoOfEntries(this.view.getFavoritesTable());
 
-		LocationViewModel model = this.createLocationViewModelTestData();
+		final LocationViewModel model = this.createLocationViewModelTestData();
 		this.view.addRow(model, true, null);
 		expectedNoOfAvailableEntries++;
 		expectedNoOfFavoritesEntries++;
 
-		int actualNoOfAvailableEntries = this.getNoOfEntries(this.view.getAvailableTable());
-		Assert.assertEquals("The number of rows for available locations must be equal to " + expectedNoOfAvailableEntries,
+		final int actualNoOfAvailableEntries = this.getNoOfEntries(this.view.getAvailableTable());
+		assertEquals("The number of rows for available locations must be equal to " + expectedNoOfAvailableEntries,
 				expectedNoOfAvailableEntries, actualNoOfAvailableEntries);
 		Assert.assertTrue("The number of entries for available locations must be " + expectedNoOfAvailableEntries,
 				String.valueOf(this.view.getAvailTotalEntriesLabel().getValue()).contains(String.valueOf(expectedNoOfAvailableEntries)));
 
-		int actualNoOfFavoritesEntries = this.getNoOfEntries(this.view.getFavoritesTable());
-		Assert.assertEquals("The number of rows for favorites locations must be equal to " + expectedNoOfFavoritesEntries,
+		final int actualNoOfFavoritesEntries = this.getNoOfEntries(this.view.getFavoritesTable());
+		assertEquals("The number of rows for favorites locations must be equal to " + expectedNoOfFavoritesEntries,
 				expectedNoOfFavoritesEntries, actualNoOfFavoritesEntries);
 		Assert.assertTrue("The number of entries for favorites locations must be " + expectedNoOfFavoritesEntries,
 				String.valueOf(this.view.getFavTotalEntriesLabel().getValue()).contains(String.valueOf(expectedNoOfFavoritesEntries)));
@@ -246,119 +273,251 @@ public class ProgramLocationsViewTest {
 	}
 
 	private LocationViewModel createLocationViewModelTestData() {
-		LocationViewModel model = new LocationViewModel();
-		model.setLocationId(new Double(Math.random() * 10).intValue());
-		return model;
+		final LocationViewModel locationViewModel = new LocationViewModel();
+		locationViewModel.setLocationId(new Double(Math.random() * 10).intValue());
+		locationViewModel.setLocationName("LocationName");
+		locationViewModel.setLocationAbbreviation("locationAbbreviation");
+		locationViewModel.setLtype(1);
+		locationViewModel.setLtypeStr("locationType");
+		locationViewModel.setCntryid(2);
+		locationViewModel.setCntryName("countryName");
+		locationViewModel.setCntryFullName("countryFullName");
+		locationViewModel.setProvinceId(3);
+		locationViewModel.setProvinceName("provinceName");
+		locationViewModel.setAltitude(5d);
+		locationViewModel.setLatitude(6d);
+		locationViewModel.setLongitude(7d);
+		locationViewModel.setCropAccessible(true);
+		locationViewModel.setProgramUUID(PROGRAM_UUID);
+		return locationViewModel;
 	}
 
 	@SuppressWarnings("unchecked")
 	private void setUpTables() {
-		Table availableTable = this.createEmptyTableLocationViewModelTestData(ProgramLocationsView.AVAILABLE);
+		final Table availableTable = this.createEmptyTableLocationViewModelTestData(ProgramLocationsView.AVAILABLE);
 		this.view.setAvailableTable(availableTable);
 		this.view.setAvailableTableContainer((BeanItemContainer<LocationViewModel>) availableTable.getContainerDataSource());
-		Table favoritesTable = this.createEmptyTableLocationViewModelTestData(ProgramLocationsView.FAVORITES);
+		final Table favoritesTable = this.createEmptyTableLocationViewModelTestData(ProgramLocationsView.FAVORITES);
 		this.view.setFavoritesTable(favoritesTable);
 		this.view.setFavoritesTableContainer((BeanItemContainer<LocationViewModel>) favoritesTable.getContainerDataSource());
 	}
 
 	@Test
 	public void testIsToBeDisplayedInAvailableLocations_SameCountryAndTypeAndWithNameKeyword() {
-		LocationViewModel locationViewModel = new LocationViewModel();
+		final LocationViewModel locationViewModel = new LocationViewModel();
 		locationViewModel.setLocationName("Pre_" + ProgramLocationsViewTest.LOCATION_NAME + "_Post");
 		locationViewModel.setCntryid(ProgramLocationsViewTest.PHILIPPINES_CNTRYID);
 		locationViewModel.setLtype(ProgramLocationsViewTest.COUNTRY_LTYPEID);
 
-		String locationName = ProgramLocationsViewTest.LOCATION_NAME;
-		Country selectedCountry = new Country();
+		final String locationName = ProgramLocationsViewTest.LOCATION_NAME;
+		final Country selectedCountry = new Country();
 		selectedCountry.setCntryid(ProgramLocationsViewTest.PHILIPPINES_CNTRYID);
-		UserDefinedField selectedLocationType = new UserDefinedField();
+		final UserDefinedField selectedLocationType = new UserDefinedField();
 		selectedLocationType.setFldno(ProgramLocationsViewTest.COUNTRY_LTYPEID);
 
-		boolean isToBeDisplayed =
+		final boolean isToBeDisplayed =
 				this.view.isToBeDisplayedInAvailableLocations(locationViewModel, locationName, selectedCountry, selectedLocationType);
 		Assert.assertTrue("The location should be displayed", isToBeDisplayed);
 	}
 
 	@Test
 	public void testIsToBeDisplayedInAvailableLocations_AllCountryAndAllTypeAndNoNameKeyword() {
-		LocationViewModel locationViewModel = new LocationViewModel();
+		final LocationViewModel locationViewModel = new LocationViewModel();
 		locationViewModel.setLocationName("Pre_" + ProgramLocationsViewTest.LOCATION_NAME + "_Post");
 		locationViewModel.setCntryid(ProgramLocationsViewTest.PHILIPPINES_CNTRYID);
 		locationViewModel.setLtype(ProgramLocationsViewTest.COUNTRY_LTYPEID);
 
-		String locationName = "";
-		Country selectedCountry = null;
-		UserDefinedField selectedLocationType = null;
+		final String locationName = "";
+		final Country selectedCountry = null;
+		final UserDefinedField selectedLocationType = null;
 
-		boolean isToBeDisplayed =
+		final boolean isToBeDisplayed =
 				this.view.isToBeDisplayedInAvailableLocations(locationViewModel, locationName, selectedCountry, selectedLocationType);
 		Assert.assertTrue("The location should be displayed", isToBeDisplayed);
 	}
 
 	@Test
 	public void testIsToBeDisplayedInAvailableLocations_AllCountryAndZeroTypeAndNoNameKeyword() {
-		LocationViewModel locationViewModel = new LocationViewModel();
+		final LocationViewModel locationViewModel = new LocationViewModel();
 		locationViewModel.setLocationName("Pre_" + ProgramLocationsViewTest.LOCATION_NAME + "_Post");
 		locationViewModel.setCntryid(ProgramLocationsViewTest.PHILIPPINES_CNTRYID);
 		locationViewModel.setLtype(ProgramLocationsViewTest.COUNTRY_LTYPEID);
 
-		String locationName = "";
-		Country selectedCountry = null;
-		UserDefinedField selectedLocationType = new UserDefinedField();
+		final String locationName = "";
+		final Country selectedCountry = null;
+		final UserDefinedField selectedLocationType = new UserDefinedField();
 		selectedLocationType.setFldno(0);
 
-		boolean isToBeDisplayed =
+		final boolean isToBeDisplayed =
 				this.view.isToBeDisplayedInAvailableLocations(locationViewModel, locationName, selectedCountry, selectedLocationType);
 		Assert.assertTrue("The location should be displayed", isToBeDisplayed);
 	}
 
 	@Test
 	public void testIsToBeDisplayedInAvailableLocations_DiffCountry() {
-		LocationViewModel locationViewModel = new LocationViewModel();
+		final LocationViewModel locationViewModel = new LocationViewModel();
 		locationViewModel.setLocationName("Pre_" + ProgramLocationsViewTest.LOCATION_NAME + "_Post");
 		locationViewModel.setCntryid(ProgramLocationsViewTest.PHILIPPINES_CNTRYID);
 		locationViewModel.setLtype(ProgramLocationsViewTest.COUNTRY_LTYPEID);
 
-		String locationName = "";
-		Country selectedCountry = new Country();
+		final String locationName = "";
+		final Country selectedCountry = new Country();
 		selectedCountry.setCntryid(1);
-		UserDefinedField selectedLocationType = null;
+		final UserDefinedField selectedLocationType = null;
 
-		boolean isToBeDisplayed =
+		final boolean isToBeDisplayed =
 				this.view.isToBeDisplayedInAvailableLocations(locationViewModel, locationName, selectedCountry, selectedLocationType);
 		Assert.assertFalse("The location should not be displayed", isToBeDisplayed);
 	}
 
 	@Test
 	public void testIsToBeDisplayedInAvailableLocations_DiffType() {
-		LocationViewModel locationViewModel = new LocationViewModel();
+		final LocationViewModel locationViewModel = new LocationViewModel();
 		locationViewModel.setLocationName("Pre_" + ProgramLocationsViewTest.LOCATION_NAME + "_Post");
 		locationViewModel.setCntryid(ProgramLocationsViewTest.PHILIPPINES_CNTRYID);
 		locationViewModel.setLtype(ProgramLocationsViewTest.COUNTRY_LTYPEID);
 
-		String locationName = "";
-		Country selectedCountry = null;
-		UserDefinedField selectedLocationType = new UserDefinedField();
+		final String locationName = "";
+		final Country selectedCountry = null;
+		final UserDefinedField selectedLocationType = new UserDefinedField();
 		selectedLocationType.setFldno(1);
 
-		boolean isToBeDisplayed =
+		final boolean isToBeDisplayed =
 				this.view.isToBeDisplayedInAvailableLocations(locationViewModel, locationName, selectedCountry, selectedLocationType);
 		Assert.assertFalse("The location should not be displayed", isToBeDisplayed);
 	}
 
 	@Test
 	public void testIsToBeDisplayedInAvailableLocations_DiffName() {
-		LocationViewModel locationViewModel = new LocationViewModel();
+		final LocationViewModel locationViewModel = new LocationViewModel();
 		locationViewModel.setLocationName("Pre_" + ProgramLocationsViewTest.LOCATION_NAME + "_Post");
 		locationViewModel.setCntryid(ProgramLocationsViewTest.PHILIPPINES_CNTRYID);
 		locationViewModel.setLtype(ProgramLocationsViewTest.COUNTRY_LTYPEID);
 
-		String locationName = "Test";
-		Country selectedCountry = null;
-		UserDefinedField selectedLocationType = null;
+		final String locationName = "Test";
+		final Country selectedCountry = null;
+		final UserDefinedField selectedLocationType = null;
 
-		boolean isToBeDisplayed =
+		final boolean isToBeDisplayed =
 				this.view.isToBeDisplayedInAvailableLocations(locationViewModel, locationName, selectedCountry, selectedLocationType);
 		Assert.assertFalse("The location should not be displayed", isToBeDisplayed);
 	}
+
+	@Test
+	public void testCopyLocationViewModelToTableItem() {
+
+		final LocationViewModel locationViewModel = createLocationViewModelTestData();
+
+		final BeanItemContainer<LocationViewModel> beanItemContainer = new BeanItemContainer<LocationViewModel>(LocationViewModel.class);
+		final LocationViewModel bean = new LocationViewModel();
+		bean.setLocationId(locationViewModel.getLocationId());
+		beanItemContainer.addBean(bean);
+
+		this.view.copyLocationViewModelToTableItem(beanItemContainer, locationViewModel);
+
+		assertEqualLocationViewModel(bean, locationViewModel);
+
+	}
+
+	@Test
+	public void testRefreshTable() {
+
+		this.view.refreshTable();
+
+		Mockito.verify(this.availableTable).requestRepaint();
+		Mockito.verify(this.availableTable).refreshRowCache();
+		Mockito.verify(this.favoritesTable).requestRepaint();
+		Mockito.verify(this.favoritesTable).refreshRowCache();
+
+	}
+
+	@Test
+	public void testRefreshLocationViewItemInTableEditedFromAvailableTable() {
+
+		final LocationViewModel locationViewModel = createLocationViewModelTestData();
+
+		final BeanItemContainer<LocationViewModel> beanItemContainer = new BeanItemContainer<LocationViewModel>(LocationViewModel.class);
+		final LocationViewModel bean = new LocationViewModel();
+		bean.setLocationId(locationViewModel.getLocationId());
+		beanItemContainer.addBean(bean);
+
+		this.view.setFavoritesTableContainer(beanItemContainer);
+
+		this.view.refreshLocationViewItemInTable(true, locationViewModel);
+
+		assertEqualLocationViewModel(bean, locationViewModel);
+	}
+
+	@Test
+	public void testRefreshLocationViewItemInTableEditedFromFavoritesTable() {
+
+		final LocationViewModel locationViewModel = createLocationViewModelTestData();
+
+		final BeanItemContainer<LocationViewModel> beanItemContainer = new BeanItemContainer<LocationViewModel>(LocationViewModel.class);
+		final LocationViewModel bean = new LocationViewModel();
+		bean.setLocationId(locationViewModel.getLocationId());
+		beanItemContainer.addBean(bean);
+
+		this.view.setAvailableTableContainer(beanItemContainer);
+
+		this.view.refreshLocationViewItemInTable(false, locationViewModel);
+
+		assertEqualLocationViewModel(bean, locationViewModel);
+
+	}
+
+	@Test
+	public void testLocationNameColumnGenerator() {
+
+		final Table table = mock(Table.class);
+		final LocationViewModel locationViewModel = createLocationViewModelTestData();
+
+		final ProgramLocationsView.LocationNameColumnGenerator generator = this.view.new LocationNameColumnGenerator(table);
+
+		final Button locationNameLinkButton = (Button) generator.generateCell(null, locationViewModel, null);
+
+		assertNotNull(locationNameLinkButton);
+		assertEquals(locationViewModel.getLocationName(), locationNameLinkButton.getCaption());
+		assertNotNull(locationNameLinkButton.getListeners(ProgramLocationsView.LocationNameEditClickListener.class));
+
+	}
+
+	@Test
+	public void testLocationNameEditClickListener() {
+
+		final Button.ClickEvent clickEvent = mock(Button.ClickEvent.class);
+		when(clickEvent.getComponent()).thenReturn(this.component);
+		when(this.component.getWindow()).thenReturn(this.window);
+
+		final Table table = mock(Table.class);
+		final LocationViewModel locationViewModel = createLocationViewModelTestData();
+
+		final ProgramLocationsView.LocationNameEditClickListener listener =
+				this.view.new LocationNameEditClickListener(locationViewModel, table);
+
+		listener.buttonClick(clickEvent);
+
+		Mockito.verify(this.window).addWindow(any(EditLocationsWindow.class));
+
+	}
+
+	void assertEqualLocationViewModel(final LocationViewModel object1, final LocationViewModel object2) {
+
+		assertEquals(object1.getLocationName(), object2.getLocationName());
+		assertEquals(object1.getLocationAbbreviation(), object2.getLocationAbbreviation());
+		assertEquals(object1.getLtype(), object2.getLtype());
+		assertEquals(object1.getLtypeStr(), object2.getLtypeStr());
+		assertEquals(object1.getCntryid(), object2.getCntryid());
+		assertEquals(object1.getCntryName(), object2.getCntryName());
+		assertEquals(object1.getCntryFullName(), object2.getCntryFullName());
+		assertEquals(object1.getProvinceId(), object2.getProvinceId());
+		assertEquals(object1.getProvinceName(), object2.getProvinceName());
+		assertEquals(object1.getAltitude(), object2.getAltitude());
+		assertEquals(object1.getLatitude(), object2.getLatitude());
+		assertEquals(object1.getLongitude(), object2.getLongitude());
+		assertEquals(object1.getCropAccessible(), object2.getCropAccessible());
+		assertEquals(object1.getProgramUUID(), object2.getProgramUUID());
+
+	}
+
 }

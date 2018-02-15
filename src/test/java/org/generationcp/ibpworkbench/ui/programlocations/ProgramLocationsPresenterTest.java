@@ -42,12 +42,13 @@ public class ProgramLocationsPresenterTest {
 	private ProgramLocationsPresenter controller;
 
 	@Mock
-	private static GermplasmDataManager gdm;
-	@Mock
 	private LocationDataManager locationDataManager;
 
 	@Mock
 	private GermplasmDataManager germplasmDataManager;
+
+	@Mock
+	private ProgramLocationsView programLocationsView;
 
 	@Before
 	public void setUp() {
@@ -55,6 +56,7 @@ public class ProgramLocationsPresenterTest {
 
 		final Project project = this.getProject();
 		this.controller = new ProgramLocationsPresenter(project, this.germplasmDataManager, this.locationDataManager);
+		this.controller.setView(this.programLocationsView);
 	}
 
 	private Project getProject() {
@@ -186,7 +188,7 @@ public class ProgramLocationsPresenterTest {
 		}
 	}
 
-	private LocationDetails createTestLocationDetails(final Integer countryId, final Integer locationType, String locationName,
+	private LocationDetails createTestLocationDetails(final Integer countryId, final Integer locationType, final String locationName,
 			final Integer locId) {
 		final LocationDetails locationDetail = new LocationDetails();
 		locationDetail.setLocid(locId);
@@ -201,10 +203,11 @@ public class ProgramLocationsPresenterTest {
 		locationDetail.setLatitude(LATITUDE);
 		locationDetail.setLongitude(LONGITUDE);
 		locationDetail.setProgramUUID(DUMMY_PROGRAM_UUID);
+		locationDetail.setProvinceId(PROVINCE_ID);
 		return locationDetail;
 	}
 
-	private Location createTestLocation(final Integer countryId, final Integer locationType, String locationName, final String programUUID,
+	private Location createTestLocation(final Integer countryId, final Integer locationType, final String locationName, final String programUUID,
 			final Integer locId) {
 		final Location location = new Location();
 		location.setLocid(locId);
@@ -341,13 +344,13 @@ public class ProgramLocationsPresenterTest {
 		Assert.assertEquals(null, result.getUniqueID());
 
 	}
-	
+
 	@Test
 	public void testConvertFromLocationToLocationViewModel() {
 		final Location location = this.createTestLocation(CNTRYID, LTYPE, LOCATION_NAME, DUMMY_PROGRAM_UUID, LOCID);
 		final LocationViewModel result = this.controller.convertFromLocationToLocationViewModel(location);
-		
-		Assert.assertEquals(LOCID,result.getLocationId());
+
+		Assert.assertEquals(LOCID, result.getLocationId());
 		Assert.assertEquals(LOCATION_NAME, result.getLocationName());
 		Assert.assertEquals(LOCATION_ABBREVIATION, result.getLocationAbbreviation());
 		Assert.assertEquals(LTYPE, result.getLtype());
@@ -358,13 +361,13 @@ public class ProgramLocationsPresenterTest {
 		Assert.assertEquals(PROVINCE_ID, result.getProvinceId());
 		Assert.assertEquals(DUMMY_PROGRAM_UUID, result.getProgramUUID());
 	}
-	
+
 	@Test
 	public void testConvertFromLocationDetailsToLocationViewModel() {
 		final LocationDetails location = this.createTestLocationDetails(CNTRYID, LTYPE, LOCATION_NAME, LOCID);
 		final LocationViewModel result = this.controller.convertFromLocationDetailsToLocationViewModel(location);
-		
-		Assert.assertEquals(LOCID,result.getLocationId());
+
+		Assert.assertEquals(LOCID, result.getLocationId());
 		Assert.assertEquals(LOCATION_NAME, result.getLocationName());
 		Assert.assertEquals(LOCATION_ABBREVIATION, result.getLocationAbbreviation());
 		Assert.assertEquals(LTYPE, result.getLtype());
@@ -373,8 +376,22 @@ public class ProgramLocationsPresenterTest {
 		Assert.assertEquals(LONGITUDE, result.getLongitude());
 		Assert.assertEquals(LATITUDE, result.getLatitude());
 		Assert.assertEquals(ALTITUDE, result.getAltitude());
+		Assert.assertEquals(PROVINCE_ID, result.getProvinceId());
 		Assert.assertEquals(PROVINCE_NAME, result.getProvinceName());
 		Assert.assertEquals(DUMMY_PROGRAM_UUID, result.getProgramUUID());
+	}
+
+	@Test
+	public void testUpdateLocation() {
+
+		final boolean isEditedFromAvailableTable = true;
+		final LocationViewModel locationViewModel = createLocationViewModel();
+
+		this.controller.updateLocation(locationViewModel, isEditedFromAvailableTable);
+
+		Mockito.verify(this.locationDataManager).addLocation(this.controller.convertLocationViewToLocation(locationViewModel));
+		Mockito.verify(this.programLocationsView).refreshLocationViewItemInTable(isEditedFromAvailableTable, locationViewModel);
+
 	}
 
 	private LocationViewModel createLocationViewModel() {
