@@ -296,17 +296,6 @@ public class RunMultiSiteActionTest {
 		final Variable studyNameVariable = new Variable();
 		studyNameVariable.setValue(name);
 
-		final DMSVariableType studyNameVariableType = new DMSVariableType();
-		final StandardVariable studyNameStandardVariable = new StandardVariable();
-
-		studyNameStandardVariable.setId(TermId.STUDY_NAME.getId());
-
-		studyNameVariableType.setStandardVariable(studyNameStandardVariable);
-
-		studyNameVariable.setVariableType(studyNameVariableType);
-
-		conditions.add(studyNameVariable);
-
 		study.setConditions(conditions);
 
 		return study;

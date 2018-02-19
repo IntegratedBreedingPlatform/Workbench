@@ -1,9 +1,6 @@
 package org.generationcp.ibpworkbench.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.ArrayUtils;
 import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.breedingview.xml.Replicates;
@@ -34,7 +31,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.google.common.collect.Lists;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DatasetExporterTest {
@@ -137,8 +136,6 @@ public class DatasetExporterTest {
 		Assert.assertEquals("Expecting only selected variates will be included in factor columns.", (numberOfFactorsInDataset - 2), factorColumnsToWrite.size());
 		Assert.assertFalse("Not expecting " + TermId.DATASET_NAME.name() + " to be included in factor columns but was included.",
 				factorColumnsToWrite.contains(TermId.DATASET_NAME.name()));
-		Assert.assertFalse("Not expecting " + TermId.STUDY_NAME.name() + " to be included in factor columns but was included.",
-				factorColumnsToWrite.contains(TermId.STUDY_NAME.name()));
 	}
 	
 	@Test
@@ -393,12 +390,6 @@ public class DatasetExporterTest {
 						DatasetExporterTest.CHARACTER_VARIABLE);
 		final DMSVariableType datasetNameVariableType =
 				this.createVariableTypeTestData(TermId.DATASET_NAME.name(), rank++, datasetNameStandardVariable);
-		
-		final StandardVariable studyNameStandardVariable =
-				this.createStardardVariableTestData(PhenotypicType.STUDY, TermId.STUDY_NAME.name(),
-						DatasetExporterTest.CHARACTER_VARIABLE);
-		final DMSVariableType studyNameVariableType =
-				this.createVariableTypeTestData(TermId.STUDY_NAME.name(), rank++, studyNameStandardVariable);
 	
 		final StandardVariable trialEnvironmentStandardVariable =
 				this.createStardardVariableTestData(PhenotypicType.TRIAL_ENVIRONMENT, DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME,
@@ -418,13 +409,13 @@ public class DatasetExporterTest {
 		final DMSVariableType fieldmapRangeVariableType =
 				this.createVariableTypeTestData(TermId.FIELDMAP_RANGE.name(), rank++, fieldmapRangeStandardVariable);
 
-		return Lists.newArrayList(datasetNameVariableType, studyNameVariableType, trialEnvironmentVariableType, fieldmapColumnVariableType, fieldmapRangeVariableType);
+		return Lists.newArrayList(datasetNameVariableType, trialEnvironmentVariableType, fieldmapColumnVariableType, fieldmapRangeVariableType);
 	}
 
 	private List<Variable> createFactorVariablesForExperiment(final List<DMSVariableType> factors) {
 		final List<Variable> variables = this.createFactorVariablesWithoutFieldmapVariables(factors);
-		variables.add(this.createVariableTestData(factors.get(DatasetExporterTest.INDEX_OF_TRIAL_INSTANCE_FACTOR+1), FIELDMAP_COLUMN_VALUE));
-		variables.add(this.createVariableTestData(factors.get(DatasetExporterTest.INDEX_OF_TRIAL_INSTANCE_FACTOR+2), FIELDMAP_RANGE_VALUE));
+		variables.add(this.createVariableTestData(factors.get(DatasetExporterTest.INDEX_OF_TRIAL_INSTANCE_FACTOR), FIELDMAP_COLUMN_VALUE));
+		variables.add(this.createVariableTestData(factors.get(DatasetExporterTest.INDEX_OF_TRIAL_INSTANCE_FACTOR), FIELDMAP_RANGE_VALUE));
 		return variables;
 	}
 
