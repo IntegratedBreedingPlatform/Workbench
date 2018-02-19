@@ -1,9 +1,17 @@
+
 package org.generationcp.ibpworkbench.service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 
 import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.commons.util.DateUtil;
-import org.generationcp.ibpworkbench.util.ToolUtil;
+import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.middleware.ContextHolder;
 import org.generationcp.middleware.manager.api.UserDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -20,12 +28,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.WebUtils;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 @Service
 @Transactional
 public class ProgramService {
@@ -36,9 +38,6 @@ public class ProgramService {
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
-
-	@Autowired
-	private ToolUtil toolUtil;
 
 	@Autowired
 	private UserDataManager userDataManager;
@@ -54,11 +53,13 @@ public class ProgramService {
 	public static final int PROJECT_USER_TYPE = 422;
 	public static final int PROJECT_USER_STATUS = 1;
 
+	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
+
 	/**
 	 * Create new project in workbench and add specified users as project members. Also creates copy of workbench person and user to currect
 	 * crop DB, if not yet existing. Finally, create a new folder under <install directory>/workspace/<program name>
 	 *
-	 * @param program      : program to save
+	 * @param program : program to save
 	 * @param programUsers : users to add as members of new program
 	 */
 	public void createNewProgram(final Project program, final Set<User> programUsers) {
@@ -69,11 +70,10 @@ public class ProgramService {
 		this.saveProgramMembers(program, programUsers);
 
 		// After saving, we create folder for program under <install directory>/workspace
-		this.toolUtil.createWorkspaceDirectoriesForProject(program);
+		this.installationDirectoryUtil.createWorkspaceDirectoriesForProject(program);
 
-		ProgramService.LOG
-				.info("Program created. ID:" + program.getProjectId() + " Name:" + program.getProjectName() + " Start date:" + program
-						.getStartDate());
+		ProgramService.LOG.info("Program created. ID:" + program.getProjectId() + " Name:" + program.getProjectName() + " Start date:"
+				+ program.getStartDate());
 	}
 
 	/**
@@ -81,7 +81,7 @@ public class ProgramService {
 	 * workbench_project_user_role, workbench_project_user_info, workbench_ibdb_user_map and in crop.persons (if applicable)
 	 *
 	 * @param program : program to add members to
-	 * @param users   : users to add as members of given program
+	 * @param users : users to add as members of given program
 	 */
 	public void saveProgramMembers(final Project program, final Set<User> users) {
 		// Add default "ADMIN" user to selected users of program to give access to new program
@@ -98,8 +98,8 @@ public class ProgramService {
 	}
 
 	private void setContextInfoAndCurrentCrop(final Project program) {
-		final Cookie authToken = WebUtils.getCookie(request, ContextConstants.PARAM_AUTH_TOKEN);
-		ContextUtil.setContextInfo(request, contextUtil.getCurrentWorkbenchUserId(), program.getProjectId(),
+		final Cookie authToken = WebUtils.getCookie(this.request, ContextConstants.PARAM_AUTH_TOKEN);
+		ContextUtil.setContextInfo(this.request, this.contextUtil.getCurrentWorkbenchUserId(), program.getProjectId(),
 				authToken != null ? authToken.getValue() : null);
 
 		ContextHolder.setCurrentCrop(program.getCropType().getCropName());
@@ -127,7 +127,7 @@ public class ProgramService {
 	 */
 	private void saveWorkbenchProject(final Project program) {
 		// sets current user as program owner
-		program.setUserId(contextUtil.getCurrentWorkbenchUserId());
+		program.setUserId(this.contextUtil.getCurrentWorkbenchUserId());
 
 		final CropType cropType = this.workbenchDataManager.getCropTypeByName(program.getCropType().getCropName());
 		if (cropType == null) {
@@ -222,8 +222,8 @@ public class ProgramService {
 		this.workbenchDataManager = workbenchDataManager;
 	}
 
-	void setToolUtil(final ToolUtil toolUtil) {
-		this.toolUtil = toolUtil;
+	public void setInstallationDirectoryUtil(final InstallationDirectoryUtil installationDirectoryUtil) {
+		this.installationDirectoryUtil = installationDirectoryUtil;
 	}
 
 }

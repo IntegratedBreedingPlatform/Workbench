@@ -4,12 +4,24 @@
  * Generation Challenge Programme (GCP)
  *
  * @author Kevin L. Manansala
- * <p/>
- * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of
- * Part F of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
+ *         <p/>
+ *         This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of
+ *         Part F of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
  **************************************************************/
 
 package org.generationcp.ibpworkbench.util;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 
 import org.generationcp.commons.breedingview.xml.SSAParameters;
 import org.generationcp.commons.breedingview.xml.Trait;
@@ -26,27 +38,19 @@ import org.generationcp.commons.sea.xml.Traits;
 import org.generationcp.commons.security.SecurityUtil;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.BreedingViewUtil;
+import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.Tool;
+import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 @Configurable
 public class BreedingViewXMLWriter implements InitializingBean, Serializable {
@@ -56,6 +60,8 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 	private static final Logger LOG = LoggerFactory.getLogger(BreedingViewXMLWriter.class);
 
 	private static final String CROP_PLACEHOLDER = "{cropName}";
+
+	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
@@ -177,9 +183,9 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 			ssaParameters.setWorkbenchProjectId(workbenchProject.getProjectId());
 		}
 
-		final String installationDirectory = this.getInstallationDirectory();
+		final Tool breedingViewTool = this.workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
 		final String outputDirectory =
-				String.format("%s/workspace/%s/breeding_view/output", installationDirectory, workbenchProject.getProjectName());
+				this.installationDirectoryUtil.getOutputDirectoryForProjectAndTool(workbenchProject, breedingViewTool);
 		ssaParameters.setOutputDirectory(outputDirectory);
 
 		if (Boolean.parseBoolean(this.isServerApp)) {
@@ -191,19 +197,15 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 	}
 
 	protected Project getLastOpenedProject() {
-		return contextUtil.getProjectInContext();
-	}
-
-	protected String getInstallationDirectory() {
-		return this.workbenchDataManager.getWorkbenchSetting().getInstallationDirectory();
+		return this.contextUtil.getProjectInContext();
 	}
 
 	protected String getWebApiUrl() {
 		final String url = this.webApiUrl + "?restartApplication";
-		final Project project = contextUtil.getProjectInContext();
+		final Project project = this.contextUtil.getProjectInContext();
 
 		final String contextParameterString = org.generationcp.commons.util.ContextUtil
-				.getContextParameterString(contextUtil.getCurrentWorkbenchUserId(), project.getProjectId());
+				.getContextParameterString(this.contextUtil.getCurrentWorkbenchUserId(), project.getProjectId());
 
 		final String authenticationTokenString = org.generationcp.commons.util.ContextUtil
 				.addQueryParameter(ContextConstants.PARAM_AUTH_TOKEN, SecurityUtil.getEncodedToken());
@@ -312,5 +314,9 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 
 	public void setContextUtil(final ContextUtil contextUtil) {
 		this.contextUtil = contextUtil;
+	}
+
+	public void setInstallationDirectoryUtil(final InstallationDirectoryUtil installationDirectoryUtil) {
+		this.installationDirectoryUtil = installationDirectoryUtil;
 	}
 }

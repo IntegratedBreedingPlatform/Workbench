@@ -18,11 +18,12 @@ import org.generationcp.commons.breedingview.xml.RowPos;
 import org.generationcp.commons.breedingview.xml.Rows;
 import org.generationcp.commons.sea.xml.Design;
 import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
+import org.generationcp.middleware.pojos.workbench.Tool;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -63,22 +64,24 @@ public class BreedingViewXMLWriterTest {
 	private static final String DEST_FILE_PATH = BreedingViewXMLWriterTest.INPUT_DIRECTORY + "/test.xml";
 	private static final String WEB_API_URL =
 			"http://localhost:18080/" + "bmsapi/breeding_view/{cropName}/ssa/save_result_summary&loggedInUserId=1&selectedProjectId=1";
-	private static final String INSTALLATION_DIRECTORY = "C://Breeding Management System/";
 
 	@Mock
 	private ContextUtil contextUtil;
+	
+	@Mock
+	private InstallationDirectoryUtil installationDirectoryUtil;
 	
 	@Before
 	public void setUp() throws Exception {
 		final WorkbenchDataManager workbenchDataManager = Mockito.mock(WorkbenchDataManager.class);
 		Mockito.when(contextUtil.getProjectInContext()).thenReturn(ProjectTestDataInitializer.createProjectWithCropType());
-		Mockito.when(workbenchDataManager.getWorkbenchSetting()).thenReturn(this.createWorkbenchSetting());
 
 		this.breedingViewInput = this.createBreedingViewInput();
 		this.breedingViewXMLWriter = new BreedingViewXMLWriter(this.breedingViewInput);
 		this.breedingViewXMLWriter.setWebApiUrl(WEB_API_URL);
-		breedingViewXMLWriter.setContextUtil(contextUtil);
-		breedingViewXMLWriter.setWorkbenchDataManager(workbenchDataManager);
+		this.breedingViewXMLWriter.setContextUtil(contextUtil);
+		this.breedingViewXMLWriter.setWorkbenchDataManager(workbenchDataManager);
+		this.breedingViewXMLWriter.setInstallationDirectoryUtil(this.installationDirectoryUtil);
 		this.createBreedingViewDirectories();
 
 		final SecurityContext securityContext = Mockito.mock(SecurityContext.class);
@@ -121,8 +124,13 @@ public class BreedingViewXMLWriterTest {
 
 	@Test
 	public void testWriteProjectXML() throws Exception {
+		Mockito.doReturn(OUTPUT_DIRECTORY).when(this.installationDirectoryUtil)
+				.getOutputDirectoryForProjectAndTool(Mockito.any(Project.class), Mockito.any(Tool.class));
 		final String filePath = this.breedingViewInput.getDestXMLFilePath();
 		this.breedingViewXMLWriter.writeProjectXML();
+		
+		Mockito.verify(this.installationDirectoryUtil).getOutputDirectoryForProjectAndTool(Mockito.any(Project.class),
+				Mockito.any(Tool.class));
 		Assert.assertTrue(filePath + " should exist", new File(filePath).exists());
 	}
 	
@@ -210,14 +218,6 @@ public class BreedingViewXMLWriterTest {
 		breedingViewInput.setDesignType(DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
 
 		return breedingViewInput;
-	}
-
-	private WorkbenchSetting createWorkbenchSetting() {
-
-		final WorkbenchSetting workbenchSetting = new WorkbenchSetting();
-		workbenchSetting.setInstallationDirectory(INSTALLATION_DIRECTORY);
-
-		return workbenchSetting;
 	}
 
 	private void createBreedingViewDirectories() {

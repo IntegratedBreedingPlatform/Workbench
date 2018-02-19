@@ -1,15 +1,6 @@
 
 package org.generationcp.ibpworkbench.germplasm.pedigree;
 
-import com.vaadin.ui.Window;
-import org.generationcp.commons.util.StringUtil;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
@@ -19,6 +10,12 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import com.vaadin.ui.Window;
 
 @Configurable
 public class GraphVizUtility {
@@ -41,12 +38,9 @@ public class GraphVizUtility {
 
 	private String imageOutputPath = null;
 
-	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
-
 	/**
 	 * Constructor: creates a new GraphViz object that will contain a graph.
-	 * 
+	 *
 	 * @throws URISyntaxException
 	 * @throws FileNotFoundException
 	 */
@@ -55,21 +49,14 @@ public class GraphVizUtility {
 
 	/**
 	 * Initialize this GraphVizUtility instance.
-	 * 
+	 *
 	 * This method should set the path of GraphViz dot executable.
 	 */
 	public void initialize() {
 		// set the GraphViz' dot executable path
 		final String graphvizPath = "infrastructure/graphviz/bin/dot.exe";
 
-		File dotFile = new File(graphvizPath).getAbsoluteFile();
-
-		// use the GraphViz dot executable included in the workbench if it is available.
-		final WorkbenchSetting workbenchSetting = this.workbenchDataManager.getWorkbenchSetting();
-		if (workbenchSetting != null && !StringUtil.isEmpty(workbenchSetting.getInstallationDirectory())) {
-			dotFile = new File(workbenchSetting.getInstallationDirectory(), graphvizPath).getAbsoluteFile();
-		}
-
+		final File dotFile = new File(graphvizPath).getAbsoluteFile();
 		this.dotPath = dotFile.getAbsolutePath();
 	}
 
@@ -83,7 +70,7 @@ public class GraphVizUtility {
 
 	/**
 	 * Returns the graph's source description in dot language.
-	 * 
+	 *
 	 * @return Source of the graph in dot language.
 	 */
 	public String getDotSource() {
@@ -113,7 +100,7 @@ public class GraphVizUtility {
 
 	/**
 	 * Returns the graph as an image in binary format.
-	 * 
+	 *
 	 * @param dotSource Source of the graph to be drawn.
 	 * @param type Type of the output image to be produced, e.g.: gif, dot, fig, pdf, ps, svg, png.
 	 * @return A byte array containing the image of the graph.
@@ -127,20 +114,20 @@ public class GraphVizUtility {
 			if (dot != null) {
 				imgStream = this.getImgStream(dot, type);
 				if (!dot.delete()) {
-					LOG.error("Warning: " + dot.getAbsolutePath() + " could not be deleted!");
+					GraphVizUtility.LOG.error("Warning: " + dot.getAbsolutePath() + " could not be deleted!");
 				}
 				return imgStream;
 			}
 			return new byte[0];
 		} catch (final java.io.IOException ioe) {
-			LOG.error(ioe.getMessage(), ioe);
+			GraphVizUtility.LOG.error(ioe.getMessage(), ioe);
 			return new byte[0];
 		}
 	}
 
 	/**
 	 * Writes the graph's image in a file.
-	 * 
+	 *
 	 * @param img A byte array containing the image of the graph.
 	 * @param file Name of the file to where we want to write.
 	 * @return Success: 1, Failure: -1
@@ -152,7 +139,7 @@ public class GraphVizUtility {
 
 	/**
 	 * Writes the graph's image in a file.
-	 * 
+	 *
 	 * @param img A byte array containing the image of the graph.
 	 * @param to A File object to where we want to write.
 	 * @return Success: 1, Failure: -1
@@ -163,7 +150,7 @@ public class GraphVizUtility {
 			fos.write(img);
 			fos.close();
 		} catch (final java.io.IOException ioe) {
-			LOG.error(ioe.getMessage(), ioe);
+			GraphVizUtility.LOG.error(ioe.getMessage(), ioe);
 			return -1;
 		}
 		return 1;
@@ -171,7 +158,7 @@ public class GraphVizUtility {
 
 	/**
 	 * It will call the external dot program, and return the image in binary format.
-	 * 
+	 *
 	 * @param dot Source of the graph (in dot language).
 	 * @param type Type of the output image to be produced, e.g.: gif, dot, fig, pdf, ps, svg, png.
 	 * @return The image of the graph in .gif format.
@@ -196,12 +183,13 @@ public class GraphVizUtility {
 			}
 
 			if (!img.delete()) {
-				LOG.error("Warning: " + img.getAbsolutePath() + " could not be deleted!");
+				GraphVizUtility.LOG.error("Warning: " + img.getAbsolutePath() + " could not be deleted!");
 			}
 		} catch (final java.io.IOException ioe) {
-			LOG.error("Error: In I/O processing of tempfile in dir " + GraphVizUtility.TEMP_DIR + "\n or in calling external command", ioe);
+			GraphVizUtility.LOG.error(
+					"Error: In I/O processing of tempfile in dir " + GraphVizUtility.TEMP_DIR + "\n or in calling external command", ioe);
 		} catch (final InterruptedException ie) {
-			LOG.error("Error: the execution of the external program was interrupted", ie);
+			GraphVizUtility.LOG.error("Error: the execution of the external program was interrupted", ie);
 		}
 
 		return imgStream;
@@ -209,7 +197,7 @@ public class GraphVizUtility {
 
 	/**
 	 * Writes the source of the graph in a file, and returns the written file as a File object.
-	 * 
+	 *
 	 * @param str Source of the graph (in dot language).
 	 * @return The file (as a File object) that contains the source of the graph.
 	 */
@@ -221,7 +209,7 @@ public class GraphVizUtility {
 			fout.write(str);
 			fout.close();
 		} catch (final Exception e) {
-			LOG.error("Error: I/O error while writing the dot source to temp file!", e);
+			GraphVizUtility.LOG.error("Error: I/O error while writing the dot source to temp file!", e);
 			return null;
 		}
 		return temp;
@@ -229,7 +217,7 @@ public class GraphVizUtility {
 
 	/**
 	 * Returns a string that is used to start a graph.
-	 * 
+	 *
 	 * @return A string to open a graph.
 	 */
 	public String startGraph() {
@@ -238,7 +226,7 @@ public class GraphVizUtility {
 
 	/**
 	 * Returns a string that is used to end a graph.
-	 * 
+	 *
 	 * @return A string to close a graph.
 	 */
 	public String endGraph() {
@@ -247,7 +235,7 @@ public class GraphVizUtility {
 
 	/**
 	 * Read a DOT graph from a text file.
-	 * 
+	 *
 	 * @param input Input text file containing the DOT graph source.
 	 */
 	public void readSource(final String input) {
@@ -263,15 +251,15 @@ public class GraphVizUtility {
 			}
 			dis.close();
 		} catch (final Exception e) {
-			LOG.error("Error: " + e.getMessage(), e);
+			GraphVizUtility.LOG.error("Error: " + e.getMessage(), e);
 		}
 
 		this.graph = sb;
 	}
 
 	public static String createImageOutputPathForWindow(final Window window) {
-		return window.getWindow().getApplication().getContext().getBaseDirectory().getAbsolutePath().replace(BSLASH, FSLASH)
-				+ "/WEB-INF/image";
+		return window.getWindow().getApplication().getContext().getBaseDirectory().getAbsolutePath().replace(GraphVizUtility.BSLASH,
+				GraphVizUtility.FSLASH) + "/WEB-INF/image";
 	}
 
 	public String graphVizOutputPath(final String fileName) throws URISyntaxException {

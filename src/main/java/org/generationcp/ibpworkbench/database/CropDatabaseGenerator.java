@@ -22,12 +22,9 @@ import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.exceptions.SQLFileException;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.CropType;
-import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 @Configurable
@@ -39,16 +36,10 @@ public class CropDatabaseGenerator extends IBDBGenerator {
 
 	private CropType cropType;
 
-	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
-
 	@Resource
 	private Properties workbenchProperties;
 
-	public CropDatabaseGenerator() {
-	}
-
-	public CropDatabaseGenerator(CropType cropType) {
+	public CropDatabaseGenerator(final CropType cropType) {
 		this.cropType = cropType;
 	}
 
@@ -63,10 +54,10 @@ public class CropDatabaseGenerator extends IBDBGenerator {
 			this.generatedDatabaseName = this.cropType.getDbName();
 			this.connection.setCatalog(this.generatedDatabaseName);
 			isGenerationSuccess = true;
-		} catch (InternationalizableException e) {
+		} catch (final InternationalizableException e) {
 			isGenerationSuccess = false;
 			throw e;
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			isGenerationSuccess = false;
 			CropDatabaseGenerator.handleDatabaseError(e);
 		} finally {
@@ -78,8 +69,8 @@ public class CropDatabaseGenerator extends IBDBGenerator {
 
 	protected void createCropDatabase() {
 
-		String databaseName = this.cropType.getDbName();
-		StringBuilder createDatabaseSyntax = new StringBuilder();
+		final String databaseName = this.cropType.getDbName();
+		final StringBuilder createDatabaseSyntax = new StringBuilder();
 
 		Statement statement = null;
 
@@ -93,15 +84,13 @@ public class CropDatabaseGenerator extends IBDBGenerator {
 			if (this.isLanInstallerMode(this.workbenchProperties)) {
 				statement.addBatch(createDatabaseSyntax.toString());
 
-				String grantFormat = "GRANT ALL ON %s.* TO %s@'%s' IDENTIFIED BY '%s'";
+				final String grantFormat = "GRANT ALL ON %s.* TO %s@'%s' IDENTIFIED BY '%s'";
 
 				// grant the user
-				String allGrant =
-						String.format(grantFormat, databaseName, IBDBGenerator.DEFAULT_LOCAL_USER, "%",
-								IBDBGenerator.DEFAULT_LOCAL_PASSWORD);
-				String localGrant =
-						String.format(grantFormat, databaseName, IBDBGenerator.DEFAULT_LOCAL_USER, IBDBGenerator.DEFAULT_LOCAL_HOST,
-								IBDBGenerator.DEFAULT_LOCAL_PASSWORD);
+				final String allGrant = String.format(grantFormat, databaseName, IBDBGenerator.DEFAULT_LOCAL_USER, "%",
+						IBDBGenerator.DEFAULT_LOCAL_PASSWORD);
+				final String localGrant = String.format(grantFormat, databaseName, IBDBGenerator.DEFAULT_LOCAL_USER,
+						IBDBGenerator.DEFAULT_LOCAL_HOST, IBDBGenerator.DEFAULT_LOCAL_PASSWORD);
 
 				statement.execute(allGrant);
 				statement.execute(localGrant);
@@ -109,8 +98,8 @@ public class CropDatabaseGenerator extends IBDBGenerator {
 
 				statement.executeBatch();
 			} else {
-				StringBuilder createGrantSyntax = new StringBuilder();
-				StringBuilder createFlushSyntax = new StringBuilder();
+				final StringBuilder createGrantSyntax = new StringBuilder();
+				final StringBuilder createFlushSyntax = new StringBuilder();
 				statement.executeUpdate(createDatabaseSyntax.toString());
 
 				createGrantSyntax.append(IBDBGenerator.SQL_GRANT_ALL).append(databaseName).append(IBDBGenerator.SQL_PERIOD)
@@ -131,13 +120,13 @@ public class CropDatabaseGenerator extends IBDBGenerator {
 			this.generatedDatabaseName = databaseName;
 
 			this.connection.setCatalog(databaseName);
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			CropDatabaseGenerator.handleDatabaseError(e);
 		} finally {
 			if (statement != null) {
 				try {
 					statement.close();
-				} catch (SQLException e) {
+				} catch (final SQLException e) {
 					CropDatabaseGenerator.handleDatabaseError(e);
 				}
 			}
@@ -146,12 +135,7 @@ public class CropDatabaseGenerator extends IBDBGenerator {
 
 	protected void runSchemaCreationScripts() {
 		try {
-			WorkbenchSetting setting = this.workbenchDataManager.getWorkbenchSetting();
-			if (setting == null) {
-				throw new IllegalStateException("Workbench setting record not found");
-			}
-
-			File localDatabaseDirectory = new File(setting.getInstallationDirectory(), CropDatabaseGenerator.DB_SCRIPT_FOLDER);
+			final File localDatabaseDirectory = new File(CropDatabaseGenerator.DB_SCRIPT_FOLDER);
 			// run the common scripts
 			this.runScriptsInDirectory(this.generatedDatabaseName, new File(localDatabaseDirectory, "common"));
 
@@ -166,21 +150,18 @@ public class CropDatabaseGenerator extends IBDBGenerator {
 		}
 	}
 
-	public static void handleDatabaseError(Exception e) {
+	public static void handleDatabaseError(final Exception e) {
 		CropDatabaseGenerator.LOG.error(e.toString(), e);
 		throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
 	}
 
-	public static void handleConfigurationError(Exception e) {
+	public static void handleConfigurationError(final Exception e) {
 		CropDatabaseGenerator.LOG.error(e.toString(), e);
 		throw new InternationalizableException(e, Message.CONFIG_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
 	}
 
-	public void setCropType(CropType cropType) {
+	public void setCropType(final CropType cropType) {
 		this.cropType = cropType;
 	}
 
-	public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
-		this.workbenchDataManager = workbenchDataManager;
-	}
 }
