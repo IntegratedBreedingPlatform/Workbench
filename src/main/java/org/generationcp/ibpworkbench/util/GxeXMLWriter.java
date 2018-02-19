@@ -34,13 +34,10 @@ import org.generationcp.commons.sea.xml.Pipelines;
 import org.generationcp.commons.sea.xml.Traits;
 import org.generationcp.commons.util.BreedingViewUtil;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -54,9 +51,6 @@ public class GxeXMLWriter implements InitializingBean, Serializable {
 	@Value("${workbench.is.server.app}")
 	private String isServerAppString;
 
-	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
-	
 	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
 	private final GxeInput gxeInput;
@@ -137,9 +131,8 @@ public class GxeXMLWriter implements InitializingBean, Serializable {
 		if (!isServerApp) {
 			try {
 				
-				final Tool breedingViewTool = this.workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
 				final String outputDirectory =
-						this.installationDirectoryUtil.getOutputDirectoryForProjectAndTool(this.gxeInput.getProject(), breedingViewTool);
+						this.installationDirectoryUtil.getOutputDirectoryForProjectAndTool(this.gxeInput.getProject(), ToolName.BREEDING_VIEW);
 
 				ssaParameters.setOutputDirectory(outputDirectory);
 			} catch (final Exception e) {

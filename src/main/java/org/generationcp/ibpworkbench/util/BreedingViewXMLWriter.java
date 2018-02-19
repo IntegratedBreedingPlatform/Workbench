@@ -41,9 +41,7 @@ import org.generationcp.commons.util.BreedingViewUtil;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.domain.oms.TermId;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,9 +60,6 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 	private static final String CROP_PLACEHOLDER = "{cropName}";
 
 	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
-
-	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
 
 	@Autowired
 	private ContextUtil contextUtil;
@@ -183,9 +178,8 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 			ssaParameters.setWorkbenchProjectId(workbenchProject.getProjectId());
 		}
 
-		final Tool breedingViewTool = this.workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
 		final String outputDirectory =
-				this.installationDirectoryUtil.getOutputDirectoryForProjectAndTool(workbenchProject, breedingViewTool);
+				this.installationDirectoryUtil.getOutputDirectoryForProjectAndTool(workbenchProject, ToolName.BREEDING_VIEW);
 		ssaParameters.setOutputDirectory(outputDirectory);
 
 		if (Boolean.parseBoolean(this.isServerApp)) {
@@ -302,10 +296,6 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		// overridden method from interface
-	}
-
-	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
-		this.workbenchDataManager = workbenchDataManager;
 	}
 
 	public void setWebApiUrl(final String webApiUrl) {

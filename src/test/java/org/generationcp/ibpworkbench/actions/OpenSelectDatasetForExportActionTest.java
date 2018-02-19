@@ -154,7 +154,7 @@ public class OpenSelectDatasetForExportActionTest {
 		this.bvTool = new Tool();
 		this.bvTool.setVersion(BV_VERSION);
 		Mockito.doReturn(this.bvTool).when(this.workbenchDataManager).getToolWithName(Matchers.anyString());
-		Mockito.doReturn(INPUT_DIRECTORY).when(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.project, this.bvTool);
+		Mockito.doReturn(INPUT_DIRECTORY).when(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
 		Mockito.doReturn(this.component).when(this.clickEvent).getComponent();
 		Mockito.doReturn(this.window).when(this.component).getWindow();
 	}
@@ -200,8 +200,8 @@ public class OpenSelectDatasetForExportActionTest {
 	public void testButtonClick() {
 		this.openSelectDatasetForExportAction.buttonClick(clickEvent);
 		
-		Mockito.verify(this.workbenchDataManager).getToolWithName(ToolName.breeding_view.toString());
-		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.project, this.bvTool);
+		Mockito.verify(this.workbenchDataManager).getToolWithName(ToolName.BREEDING_VIEW.getName());
+		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
 		Mockito.verify(this.studyDataManager).getDataSetsByType(Matchers.eq(STUDY_ID), Matchers.any(DataSetType.class));
 		
 		Mockito.verify(this.window).showContent(this.componentCaptor.capture());

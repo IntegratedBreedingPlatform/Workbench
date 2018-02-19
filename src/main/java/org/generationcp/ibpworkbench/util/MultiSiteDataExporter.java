@@ -17,13 +17,10 @@ import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.ibpworkbench.util.bean.MultiSiteParameters;
 import org.generationcp.middleware.domain.dms.Experiment;
 import org.generationcp.middleware.domain.dms.Variable;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import au.com.bytecode.opencsv.CSVWriter;
@@ -34,9 +31,6 @@ public class MultiSiteDataExporter {
 	protected static final String SUMMARY_STATS = "_SummaryStats";
 
 	private static final Logger LOG = LoggerFactory.getLogger(MultiSiteDataExporter.class);
-	
-	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
 	
 	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
@@ -226,8 +220,7 @@ public class MultiSiteDataExporter {
 	}
 
 	File getCsvFileInWorkbenchDirectory(final Project currentProject, final String inputFileName, final boolean isSummaryStatsFile) {
-		final Tool breedingViewTool = this.workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
-		final String directory = installationDirectoryUtil.getInputDirectoryForProjectAndTool(currentProject, breedingViewTool);
+		final String directory = installationDirectoryUtil.getInputDirectoryForProjectAndTool(currentProject, ToolName.BREEDING_VIEW);
 		final StringBuilder sb = new StringBuilder(inputFileName);
 		if (isSummaryStatsFile) {
 			sb.append(SUMMARY_STATS);

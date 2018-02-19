@@ -27,6 +27,7 @@ import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
+import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -119,7 +120,7 @@ public class RunMultiSiteActionTest {
 		Mockito.when(this.gxeTable.getMeansDataSet()).thenReturn(this.createMeansDataSet(MEANS_DATASET_NAME));
 		Mockito.when(this.gxeTable.getGxeEnvironment()).thenReturn(this.gxeEnvironment);
 
-		Mockito.when(this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(this.createProject(PROJECT_NAME), breedingViewTool))
+		Mockito.when(this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(this.createProject(PROJECT_NAME), ToolName.BREEDING_VIEW))
 				.thenReturn(BMS_INPUT_FILES_DIR);
 
 		Mockito.when(this.studyDataManager.getDataSetsByType(STUDY_ID, DataSetType.SUMMARY_DATA)).thenReturn(this.createDataSets());
@@ -156,7 +157,7 @@ public class RunMultiSiteActionTest {
 
 		Mockito.verify(multiSiteDataExporter).generateXmlFieldBook(gxeInput);
 		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.multiSiteParameters.getProject(),
-				this.breedingViewTool);
+				ToolName.BREEDING_VIEW);
 
 		Assert.assertEquals(BMS_INPUT_FILES_DIR + File.separator + "TEST TRIAL_0_TEST TRIAL-MEANS.xml", gxeInput.getDestXMLFilePath());
 

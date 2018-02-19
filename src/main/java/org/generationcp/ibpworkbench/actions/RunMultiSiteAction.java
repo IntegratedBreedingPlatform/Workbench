@@ -94,7 +94,7 @@ public class RunMultiSiteAction implements ClickListener {
 	public void buttonClick(final ClickEvent event) {
 		final ClickEvent buttonClickEvent = event;
 
-		this.breedingViewTool = this.workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
+		this.breedingViewTool = this.workbenchDataManager.getToolWithName(ToolName.BREEDING_VIEW.getName());
 
 		final GxeInput gxeInput;
 		gxeInput = this.generateInputFiles();
@@ -148,7 +148,7 @@ public class RunMultiSiteAction implements ClickListener {
 	void exportMultiSiteProjectFile(final MultiSiteParameters multiSiteParameters, final GxeInput gxeInput) {
 
 		final String inputDir =
-				this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(multiSiteParameters.getProject(), this.breedingViewTool);
+				this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(multiSiteParameters.getProject(), ToolName.BREEDING_VIEW);
 		final String inputFileName = this.generateInputFileName(multiSiteParameters.getProject());
 
 		gxeInput.setDestXMLFilePath(inputDir + File.separator + inputFileName + ".xml");
@@ -158,7 +158,7 @@ public class RunMultiSiteAction implements ClickListener {
 	}
 
 	/**
-	 * Exports the Means Dataset and Summary Stats data into CSV files. These are the input files required for running Multi-Site Analsysis
+	 * Exports the Means Dataset and Summary Stats data into CSV files. These are the input files required for running Multi-Site Analysis
 	 * in Breeding View.
 	 *
 	 * @param multiSiteParameters

@@ -21,9 +21,8 @@ import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.Tool;
+import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -73,14 +72,12 @@ public class BreedingViewXMLWriterTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		final WorkbenchDataManager workbenchDataManager = Mockito.mock(WorkbenchDataManager.class);
 		Mockito.when(contextUtil.getProjectInContext()).thenReturn(ProjectTestDataInitializer.createProjectWithCropType());
 
 		this.breedingViewInput = this.createBreedingViewInput();
 		this.breedingViewXMLWriter = new BreedingViewXMLWriter(this.breedingViewInput);
 		this.breedingViewXMLWriter.setWebApiUrl(WEB_API_URL);
 		this.breedingViewXMLWriter.setContextUtil(contextUtil);
-		this.breedingViewXMLWriter.setWorkbenchDataManager(workbenchDataManager);
 		this.breedingViewXMLWriter.setInstallationDirectoryUtil(this.installationDirectoryUtil);
 		this.createBreedingViewDirectories();
 
@@ -125,12 +122,12 @@ public class BreedingViewXMLWriterTest {
 	@Test
 	public void testWriteProjectXML() throws Exception {
 		Mockito.doReturn(OUTPUT_DIRECTORY).when(this.installationDirectoryUtil)
-				.getOutputDirectoryForProjectAndTool(Mockito.any(Project.class), Mockito.any(Tool.class));
+				.getOutputDirectoryForProjectAndTool(Mockito.any(Project.class), Mockito.any(ToolName.class));
 		final String filePath = this.breedingViewInput.getDestXMLFilePath();
 		this.breedingViewXMLWriter.writeProjectXML();
 		
 		Mockito.verify(this.installationDirectoryUtil).getOutputDirectoryForProjectAndTool(Mockito.any(Project.class),
-				Mockito.any(Tool.class));
+				Mockito.any(ToolName.class));
 		Assert.assertTrue(filePath + " should exist", new File(filePath).exists());
 	}
 	
