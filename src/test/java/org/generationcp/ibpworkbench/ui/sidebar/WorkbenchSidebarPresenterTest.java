@@ -1,7 +1,12 @@
 package org.generationcp.ibpworkbench.ui.sidebar;
 
-import com.google.common.collect.Lists;
-import org.generationcp.commons.constant.ToolEnum;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.generationcp.commons.security.SecurityUtil;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -11,6 +16,7 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
 import org.generationcp.middleware.pojos.workbench.Tool;
+import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategory;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategoryLink;
 import org.junit.Assert;
@@ -27,12 +33,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.google.common.collect.Lists;
 
 public class WorkbenchSidebarPresenterTest {
 
@@ -104,14 +105,14 @@ public class WorkbenchSidebarPresenterTest {
 				.addAll(Arrays.asList(this.adminCategory, this.categoryWithNoLinks, this.activitiesCategory, this.infoMgtCategory));
 
 		this.sidebarLinksFromDB.put(this.activitiesCategory, Arrays.asList(
-				new WorkbenchSidebarCategoryLink(new Tool(ToolEnum.BM_LIST_MANAGER.toString(), "manage_germplasm", "/ManageGermplasm"),
+				new WorkbenchSidebarCategoryLink(new Tool(ToolName.BM_LIST_MANAGER_MAIN.toString(), "manage_germplasm", "/ManageGermplasm"),
 						this.activitiesCategory, "manage_list", "Manage Germplasm"),
-				new WorkbenchSidebarCategoryLink(new Tool(ToolEnum.TRIAL_MANAGER_FIELDBOOK_WEB.toString(), "trial_mgr", "/TrialManager"),
+				new WorkbenchSidebarCategoryLink(new Tool(ToolName.TRIAL_MANAGER_FIELDBOOK_WEB.toString(), "trial_mgr", "/TrialManager"),
 						this.activitiesCategory, "trial_manager", "Trial Manager")));
 		this.sidebarLinksFromDB.put(this.infoMgtCategory, Arrays.asList(
-				new WorkbenchSidebarCategoryLink(new Tool(ToolEnum.GDMS.toString(), "gdms", "/GDMS"), this.infoMgtCategory, "gdms",
+				new WorkbenchSidebarCategoryLink(new Tool(ToolName.GDMS.toString(), "gdms", "/GDMS"), this.infoMgtCategory, "gdms",
 						"Genotyping Data Management"),
-				new WorkbenchSidebarCategoryLink(new Tool(ToolEnum.TRIAL_MANAGER_FIELDBOOK_WEB.toString(), "h2h", "/H2HMain"),
+				new WorkbenchSidebarCategoryLink(new Tool(ToolName.TRIAL_MANAGER_FIELDBOOK_WEB.toString(), "h2h", "/H2HMain"),
 						this.infoMgtCategory, "h2h", "Head To Head Query")));
 		Mockito.doReturn(this.sidebarCategories).when(this.workbenchDataManager).getAllWorkbenchSidebarCategory();
 		Mockito.doReturn(this.sidebarLinksFromDB.get(this.activitiesCategory)).when(this.workbenchDataManager)
