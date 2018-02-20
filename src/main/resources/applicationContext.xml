@@ -61,21 +61,9 @@
 		class="org.generationcp.middleware.manager.WorkbenchDataManagerImpl"
 		destroy-method="close">
 		<constructor-arg ref="workbenchHibernateSessionProvider" />
-		<property name="installationDirectory" value="${workbench.installation_dir}" />
 	</bean>
 
-	<bean id="toolUtil" class="org.generationcp.ibpworkbench.util.ToolUtil">
-		<property name="jdbcHost" value="${db.host}" />
-		<property name="jdbcPort" value="${db.port}" />
-		<property name="centralUser" value="" />
-		<property name="centralPassword" value="" />
-		<property name="localUser" value="" />
-		<property name="localPassword" value="" />
-		<property name="workbenchDbName" value="workbench" />
-		<property name="workbenchUser" value="${db.username}" />
-		<property name="workbenchPassword" value="${db.password}" />
-		<property name="workbenchInstallationDirectory" value="${workbench.installation_dir}" />
-	</bean>
+	<bean id="toolUtil" class="org.generationcp.ibpworkbench.util.ToolUtil" />
 
 	<bean id="mysqlUtil" class="org.generationcp.commons.util.MySQLUtil">
 		<property name="mysqlDriver" value="com.mysql.jdbc.Driver" />

@@ -1,7 +1,17 @@
 package org.generationcp.ibworkbench.restore;
 
-import com.vaadin.ui.Window;
-import junit.framework.Assert;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.URISyntaxException;
+import java.util.Date;
+import java.util.Properties;
+import java.util.UUID;
+
 import org.apache.commons.io.FileUtils;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.MySQLUtil;
@@ -17,7 +27,6 @@ import org.generationcp.middleware.manager.WorkbenchDataManagerImpl;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
 import org.generationcp.middleware.util.ResourceFinder;
 import org.junit.After;
 import org.junit.Before;
@@ -32,17 +41,9 @@ import org.tmatesoft.svn.core.wc2.SvnCheckout;
 import org.tmatesoft.svn.core.wc2.SvnOperationFactory;
 import org.tmatesoft.svn.core.wc2.SvnTarget;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.URISyntaxException;
-import java.util.Date;
-import java.util.Properties;
-import java.util.UUID;
+import com.vaadin.ui.Window;
+
+import junit.framework.Assert;
 
 @Ignore
 public class RestoreUtilTest {
@@ -124,10 +125,6 @@ public class RestoreUtilTest {
 		this.gitUrl += "/trunk/local";
 		this.tempInstallationDir = new File(RestoreUtilTest.prefixDirectory);
 		this.tempDir = new File("temp");
-
-		final WorkbenchSetting setting = new WorkbenchSetting();
-		setting.setInstallationDirectory(this.tempInstallationDir.getAbsolutePath());
-		Mockito.doReturn(setting).when(this.workbenchDataManager).getWorkbenchSetting();
 	}
 
 	private String getTestProjectName() {
@@ -203,7 +200,6 @@ public class RestoreUtilTest {
 				this.workbenchDataManager.saveOrUpdateProject(project);
 
 				final CropDatabaseGenerator generator = new CropDatabaseGenerator(project.getCropType());
-				generator.setWorkbenchDataManager(this.workbenchDataManager);
 				generator.generateDatabase();
 
 				final String fullFilePath = this.copyRestoreFile();
@@ -256,7 +252,6 @@ public class RestoreUtilTest {
 
 				final CropDatabaseGenerator generator;
 				generator = new CropDatabaseGenerator(project.getCropType());
-				generator.setWorkbenchDataManager(this.workbenchDataManager);
 				generator.generateDatabase();
 
 				final ConfirmDialog confirmDialog = new CustomConfirmDialog(false);

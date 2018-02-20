@@ -33,7 +33,10 @@ import org.generationcp.commons.sea.xml.Pipeline;
 import org.generationcp.commons.sea.xml.Pipelines;
 import org.generationcp.commons.sea.xml.Traits;
 import org.generationcp.commons.util.BreedingViewUtil;
+import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.workbench.Tool;
+import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -53,6 +56,8 @@ public class GxeXMLWriter implements InitializingBean, Serializable {
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
+	
+	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
 	private final GxeInput gxeInput;
 
@@ -131,10 +136,11 @@ public class GxeXMLWriter implements InitializingBean, Serializable {
 		// output directory is not needed if deployed on server
 		if (!isServerApp) {
 			try {
-				final String installationDirectory = this.workbenchDataManager.getWorkbenchSetting().getInstallationDirectory();
+				
+				final Tool breedingViewTool = this.workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
 				final String outputDirectory =
-						String.format("%s/workspace/%s/breeding_view/output", installationDirectory, this.gxeInput.getProject()
-								.getProjectName());
+						this.installationDirectoryUtil.getOutputDirectoryForProjectAndTool(this.gxeInput.getProject(), breedingViewTool);
+
 				ssaParameters.setOutputDirectory(outputDirectory);
 			} catch (final Exception e) {
 				GxeXMLWriter.LOG.error("Error getting BMS installation directory", e);
