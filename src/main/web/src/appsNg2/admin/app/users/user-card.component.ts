@@ -70,8 +70,8 @@ export class UserCard implements OnInit {
     }
 
     addUser(form: FormGroup) {
-        this.userService
-            .save(this.model)
+    	this.userService
+            .save(this.trimAll(this.model))
             .subscribe(
                 resp => {
                     this.userSaved = true;
@@ -86,7 +86,7 @@ export class UserCard implements OnInit {
 
     editUser() {
         this.userService
-            .update(this.model)
+            .update(this.trimAll(this.model))
             .subscribe(
                 resp => {
                     this.userSaved = true;
@@ -159,5 +159,13 @@ export class UserCard implements OnInit {
         }, 1000);
       }
     }
+    
+    private trimAll(model: User) {
+		model.firstName = model.firstName.trim();
+		model.lastName = model.lastName.trim();
+		model.email = model.email.trim();
+		model.username = model.username.trim();
+		return model;
+	}
 
 }

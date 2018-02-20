@@ -1,6 +1,13 @@
 package org.generationcp.ibpworkbench.actions;
 
-import com.vaadin.ui.Window;
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.concurrent.Callable;
+
+import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.commons.util.MySQLUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
@@ -10,6 +17,7 @@ import org.generationcp.ibpworkbench.database.CropDatabaseGenerator;
 import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,12 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.vaadin.easyuploads.FileFactory;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.concurrent.Callable;
+import com.vaadin.ui.Window;
 
 @Configurable
 public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, InitializingBean, FileFactory {
@@ -48,7 +51,9 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 
 	@Autowired
 	private ProgramService programService;
-
+	
+	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
+	
 	private final Project project;
 
 	private File restoreFile;
@@ -72,14 +77,16 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 			RestoreIBDBSaveAction.LOG.debug("onClick > do Restore IBDB");
 
 			try {
-				// restore the database
+				// Store the crop type of current program before restoring
+				final CropType cropType = this.project.getCropType();
+				
+				// Restore the database
 				this.mysqlUtil.restoreDatabase(this.project.getDatabaseName(), this.restoreFile, new Callable<Boolean>() {
 
 					@Override
 					public Boolean call() throws Exception {
 						final CropDatabaseGenerator cropDatabaseGenerator =
 								new CropDatabaseGenerator(contextUtil.getProjectInContext().getCropType());
-						cropDatabaseGenerator.setWorkbenchDataManager(RestoreIBDBSaveAction.this.workbenchDataManager);
 						return cropDatabaseGenerator.generateDatabase();
 					}
 				});
@@ -93,7 +100,12 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 						this.workbenchDataManager.getLocalIbdbUserId(contextUtil.getCurrentWorkbenchUserId(), this.project.getProjectId());
 				this.updateGermplasmListOwnership(userId);
 
-				this.addDefaultAdminAndCurrentUserAsMembersOfRestoredPrograms();
+				// Add current user and default admin as members of all restored programs
+				final List<Project> restoredPrograms = this.workbenchDataManager.getProjectsByCrop(cropType);
+				this.addDefaultAdminAndCurrentUserAsMembersOfRestoredPrograms(restoredPrograms);
+				
+				// Remove directories for old programs and generate new folders for programs of restored backup file
+				this.installationDirectoryUtil.resetWorkspaceDirectoryForCrop(cropType, restoredPrograms);
 
 				// Log a record in ProjectActivity
 				if (userId != null) {
@@ -122,9 +134,8 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 	/*
 	 * Call ProgramService to add default ADMIN and current user (if he is not default ADMIN) as program members
 	 */
-	void addDefaultAdminAndCurrentUserAsMembersOfRestoredPrograms() {
+	void addDefaultAdminAndCurrentUserAsMembersOfRestoredPrograms(final List<Project> projects) {
 
-		final List<Project> projects = this.workbenchDataManager.getProjectsByCrop(this.project.getCropType());
 		final User currentUser = contextUtil.getCurrentWorkbenchUser();
 		final HashSet<User> users = new HashSet<>();
 		users.add(currentUser);
@@ -198,6 +209,11 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 	
 	public Project getProject() {
 		return project;
+	}
+
+	
+	public void setInstallationDirectoryUtil(InstallationDirectoryUtil installationDirectoryUtil) {
+		this.installationDirectoryUtil = installationDirectoryUtil;
 	}
 
 }

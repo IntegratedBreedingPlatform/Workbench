@@ -17,11 +17,17 @@ import com.vaadin.ui.Form;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.formfieldfactory.LocationFormFieldFactory;
 import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
-import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
+import org.generationcp.middleware.domain.oms.TermId;
+import org.generationcp.middleware.manager.api.LocationDataManager;
+import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.pojos.Country;
+import org.generationcp.middleware.pojos.Location;
+import org.generationcp.middleware.pojos.UserDefinedField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -29,15 +35,15 @@ import java.util.Arrays;
 
 /**
  * <b>Description</b>: Custom form for adding Locations.
- *
+ * <p>
  * <br>
  * <br>
- *
+ * <p>
  * <b>Author</b>: Jeffrey Morales <br>
  * <b>File Created</b>: August 20, 2012
  */
 @Configurable
-public class AddLocationForm extends Form {
+public class LocationForm extends Form {
 
 	private static final long serialVersionUID = 865075321914843448L;
 	public static final String LOCATION_NAME = "locationName";
@@ -57,16 +63,29 @@ public class AddLocationForm extends Form {
 
 	private GridLayout grid;
 
-	private final ProgramLocationsPresenter presenter;
-
 	private LocationFormFieldFactory locationFormFieldFactory;
+
+	private boolean locationUsedInAnyProgram = false;
+
+	private LocationViewModel locationViewModel = new LocationViewModel();
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	public AddLocationForm(final ProgramLocationsPresenter presenter, final LocationFormFieldFactory locationFormFieldFactory) {
-		this.presenter = presenter;
+	@Autowired
+	private ContextUtil contextUtil;
+
+	@Autowired
+	private LocationDataManager locationDataManager;
+
+	@Autowired
+	private StudyDataManager studyDataManager;
+
+	public LocationForm(final LocationViewModel locationViewModel, final LocationFormFieldFactory locationFormFieldFactory) {
 		this.locationFormFieldFactory = locationFormFieldFactory;
+		if (locationViewModel != null) {
+			this.locationViewModel = locationViewModel;
+		}
 		this.initializeComponents();
 
 	}
@@ -79,7 +98,7 @@ public class AddLocationForm extends Form {
 		this.grid.setMargin(new Layout.MarginInfo(true, false, false, false));
 		this.setLayout(this.grid);
 
-		this.setItemDataSource(new BeanItem<>(new LocationViewModel()));
+		this.setItemDataSource(new BeanItem<>(this.locationViewModel));
 
 		this.setComponentError(null);
 		this.setFormFieldFactory(locationFormFieldFactory);
@@ -144,7 +163,24 @@ public class AddLocationForm extends Form {
 
 		this.grid.getComponent(1, 7).setCaption(this.messageSource.getMessage(Message.LOC_CROP_ACCESSIBLE));
 
+		// Set the selected value of Province combobox after all fields in the form are initialized. The option items of Province
+		// will only be available after the Country combobox is initialized.
+		final Location provinceValue = this.locationDataManager.getLocationByID(this.locationViewModel.getProvinceId());
+		this.locationFormFieldFactory.getProvince().setValue(provinceValue);
+
+		this.disableCropAccessibleIfLocationIsUsedInOtherProgram();
+		this.populateCropAccessibleCheckbox();
+
 		super.attach();
+
+	}
+
+	@Override
+	public void commit() {
+
+		super.commit();
+
+		this.updateLocationModelView();
 
 	}
 
@@ -182,6 +218,71 @@ public class AddLocationForm extends Form {
 
 	}
 
+	public void updateLocationModelView() {
+
+		// The LocationViewModel's country name, province name and location type name and programUUID properties are not bound to the Form,
+		// so when they are changed in the UI, they are not automatically updated. So we have to manually update them.
+
+		final Country country = this.locationFormFieldFactory.retrieveCountryValue();
+		if (country != null) {
+			this.locationViewModel.setCntryName(country.getIsoabbr());
+			this.locationViewModel.setCntryFullName(country.getIsofull());
+		} else {
+			this.locationViewModel.setCntryName(null);
+			this.locationViewModel.setCntryFullName(null);
+		}
+
+		final Location province = this.locationFormFieldFactory.retrieveProvinceValue();
+		if (province != null) {
+			this.locationViewModel.setProvinceName(province.getLname());
+		} else {
+			this.locationViewModel.setProvinceName(null);
+		}
+
+		final UserDefinedField locationType = this.locationFormFieldFactory.retrieveLocationType();
+		if (locationType != null) {
+			this.locationViewModel.setLtypeStr(locationType.getFname());
+		}
+
+		if (this.locationViewModel.getCropAccessible()) {
+			this.locationViewModel.setProgramUUID(null);
+		} else {
+			this.locationViewModel.setProgramUUID(contextUtil.getCurrentProgramUUID());
+		}
+
+	}
+
+	protected void disableCropAccessibleIfLocationIsUsedInOtherProgram() {
+
+		final Integer locationId = this.locationViewModel.getLocationId();
+
+		if (locationId != null) {
+			// Check if the LOCATION variable is used in any study programs except for the current program.
+			if (this.studyDataManager.isVariableUsedInStudyOrTrialEnvironmentInOtherPrograms(String.valueOf(TermId.LOCATION_ID.getId()),
+					String.valueOf(locationId), this.contextUtil.getCurrentProgramUUID())) {
+				locationFormFieldFactory.disableCropAccessible();
+			}
+			// Check if the LOCATION variable is used in any study across all programs.
+			locationUsedInAnyProgram = this.studyDataManager.isVariableUsedInStudyOrTrialEnvironmentInOtherPrograms(String.valueOf(TermId.LOCATION_ID.getId()),
+					String.valueOf(locationId), "");
+		}
+	}
+
+	protected void populateCropAccessibleCheckbox() {
+
+		if (this.locationViewModel.getLocationId() != null) {
+			if (this.locationViewModel.getProgramUUID() == null) {
+				locationFormFieldFactory.getCropAccessible().setValue(true);
+			} else {
+				locationFormFieldFactory.getCropAccessible().setValue(false);
+			}
+		}
+	}
+
+	public boolean isLocationUsedInAnyProgram() {
+		return locationUsedInAnyProgram;
+	}
+
 	// For unit test purpose only
 	protected GridLayout getGrid() {
 		return grid;
@@ -191,4 +292,27 @@ public class AddLocationForm extends Form {
 		this.messageSource = messageSource;
 	}
 
+	public boolean isLocationNameModified() {
+		return this.locationFormFieldFactory.getLocationName().isModified();
+	}
+
+	public String getLocationNameValue() {
+		return (String) this.locationFormFieldFactory.getLocationName().getValue();
+	}
+
+	public void setLocationFormFieldFactory(final LocationFormFieldFactory locationFormFieldFactory) {
+		this.locationFormFieldFactory = locationFormFieldFactory;
+	}
+
+	public void setStudyDataManager(final StudyDataManager studyDataManager) {
+		this.studyDataManager = studyDataManager;
+	}
+
+	public void setContextUtil(final ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
+	}
+
+	public void setLocationDataManager(final LocationDataManager locationDataManager) {
+		this.locationDataManager = locationDataManager;
+	}
 }

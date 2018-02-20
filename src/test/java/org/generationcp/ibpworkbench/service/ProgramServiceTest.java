@@ -10,7 +10,7 @@ import javax.servlet.http.HttpSession;
 import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.context.ContextInfo;
 import org.generationcp.commons.spring.util.ContextUtil;
-import org.generationcp.ibpworkbench.util.ToolUtil;
+import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.manager.api.UserDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -51,9 +51,6 @@ public class ProgramServiceTest {
 	private WorkbenchDataManager workbenchDataManager;
 
 	@Mock
-	private ToolUtil toolUtil;
-
-	@Mock
 	private UserDataManager userDataManager;
 
 	@Mock
@@ -64,6 +61,9 @@ public class ProgramServiceTest {
 	
 	@Mock
 	private Cookie cookie;
+	
+	@Mock
+	private InstallationDirectoryUtil installationDirectoryUtil;
 	
 	@InjectMocks
 	private final ProgramService programService = new ProgramService();
@@ -133,7 +133,7 @@ public class ProgramServiceTest {
 		this.verifyMockInteractionsForSavingProgramMembers();
 
 		// Verify that utility to create workspace directory was called
-		Mockito.verify(this.toolUtil).createWorkspaceDirectoriesForProject(project);
+		Mockito.verify(this.installationDirectoryUtil).createWorkspaceDirectoriesForProject(project);
 		
 		// Verify session attribute was set
 		final ArgumentCaptor<Object> contextInfoCaptor = ArgumentCaptor.forClass(Object.class);

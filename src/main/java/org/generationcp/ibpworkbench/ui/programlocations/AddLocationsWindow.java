@@ -23,17 +23,16 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.ibpworkbench.actions.SaveNewLocationAction;
 import org.generationcp.ibpworkbench.model.formfieldfactory.LocationFormFieldFactory;
-import org.generationcp.ibpworkbench.ui.form.AddLocationForm;
+import org.generationcp.ibpworkbench.ui.form.LocationForm;
 
 /**
  * @author Jeffrey Morales, Joyce Avestro
- * 
  */
 public class AddLocationsWindow extends BaseSubWindow {
 
 	private static final long serialVersionUID = 3983198771242295731L;
 
-	private AddLocationForm addLocationForm;
+	private LocationForm locationForm;
 
 	private Button cancelButton;
 
@@ -53,8 +52,9 @@ public class AddLocationsWindow extends BaseSubWindow {
 
 	protected void initializeComponents() {
 
-		this.addLocationForm = new AddLocationForm(this.programLocationsPresenter, new LocationFormFieldFactory(this.programLocationsPresenter));
-		this.addLocationForm.setDebugId("addLocationForm");
+		this.locationForm =
+				new LocationForm(null, new LocationFormFieldFactory(this.programLocationsPresenter));
+		this.locationForm.setDebugId("locationForm");
 		this.buttonArea = this.layoutButtonArea();
 	}
 
@@ -78,10 +78,10 @@ public class AddLocationsWindow extends BaseSubWindow {
 
 		final VerticalLayout vl = new VerticalLayout();
 		vl.setDebugId("AddLocationsWindow_vl");
-		vl.addComponent(new Label("<i><span style='color:red; font-weight:bold'>*</span> indicates a mandatory field.</i>",
-				Label.CONTENT_XHTML));
-		vl.addComponent(this.addLocationForm);
-		vl.setExpandRatio(this.addLocationForm, 1.0F);
+		vl.addComponent(
+				new Label("<i><span style='color:red; font-weight:bold'>*</span> indicates a mandatory field.</i>", Label.CONTENT_XHTML));
+		vl.addComponent(this.locationForm);
+		vl.setExpandRatio(this.locationForm, 1.0F);
 
 		p.addComponent(vl);
 		this.layout.addComponent(p);
@@ -98,7 +98,7 @@ public class AddLocationsWindow extends BaseSubWindow {
 
 	protected void initializeActions() {
 
-		this.addLocationButton.addListener(new SaveNewLocationAction(this.addLocationForm, this, this.programLocationsPresenter));
+		this.addLocationButton.addListener(new SaveNewLocationAction(this.locationForm, this, this.programLocationsPresenter));
 		this.cancelButton.addListener(new Button.ClickListener() {
 
 			/**
