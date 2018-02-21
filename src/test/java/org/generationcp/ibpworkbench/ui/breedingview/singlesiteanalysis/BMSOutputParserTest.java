@@ -27,8 +27,6 @@ public class BMSOutputParserTest {
 
 		final BMSOutputParser bmsOutputParser = new BMSOutputParser();
 
-		bmsOutputParser.setUploadDirectory(ClassLoader.getSystemResource("").getPath());
-
 		final BMSOutputInformation bmsInformation = bmsOutputParser.parseZipFile(BMSOutputParserTest.bmsOutputZipFile);
 
 		Assert.assertEquals(3, bmsInformation.getInputDataSetId());
@@ -48,7 +46,6 @@ public class BMSOutputParserTest {
 	public void testParseZipFileInvalidZipFile() throws URISyntaxException, ZipFileInvalidContentException {
 
 		final BMSOutputParser bmsOutputParser = new BMSOutputParser();
-		bmsOutputParser.setUploadDirectory(ClassLoader.getSystemResource("").getPath());
 
 		bmsOutputParser.parseZipFile(BMSOutputParserTest.bmsOutputZipFileNoContent);
 
@@ -58,8 +55,6 @@ public class BMSOutputParserTest {
 	public void testExtractEnvironmentInfoFromFile() throws URISyntaxException, IOException, ZipFileInvalidContentException {
 
 		final BMSOutputParser bmsOutputParser = new BMSOutputParser();
-
-		bmsOutputParser.setUploadDirectory(ClassLoader.getSystemResource("").getPath());
 
 		bmsOutputParser.parseZipFile(BMSOutputParserTest.bmsOutputZipFile);
 
