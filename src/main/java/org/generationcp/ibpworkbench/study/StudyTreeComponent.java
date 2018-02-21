@@ -322,7 +322,7 @@ public class StudyTreeComponent extends VerticalLayout implements InitializingBe
 	public void populateRootNode(Tree studyTree, String rootNodeId) {
 		List<Reference> rootFolders = new ArrayList<Reference>();
 		try {
-			rootFolders = this.studyDataManager.getRootFolders(this.getCurrentProject().getUniqueID(), StudyType.nurseriesAndTrials());
+			rootFolders = this.studyDataManager.getRootFolders(this.getCurrentProject().getUniqueID());
 		} catch (MiddlewareQueryException e) {
 			StudyTreeComponent.LOG.error(e.getMessage(), e);
 			if (this.getWindow() != null) {
@@ -402,7 +402,7 @@ public class StudyTreeComponent extends VerticalLayout implements InitializingBe
 		List<Reference> studyChildren = new ArrayList<Reference>();
 		try {
 			studyChildren =
-					this.studyDataManager.getChildrenOfFolder(Integer.valueOf(parentStudyId), this.getCurrentProject().getUniqueID(), StudyType.nurseriesAndTrials());
+					this.studyDataManager.getChildrenOfFolder(Integer.valueOf(parentStudyId), this.getCurrentProject().getUniqueID());
 		} catch (MiddlewareQueryException e) {
 			StudyTreeComponent.LOG.error(e.getMessage(), e);
 			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
@@ -465,12 +465,12 @@ public class StudyTreeComponent extends VerticalLayout implements InitializingBe
 		List<Reference> studyChildren = new ArrayList<Reference>();
 
 		try {
-			studyChildren = this.studyDataManager.getChildrenOfFolder(new Integer(studyId), this.getCurrentProject().getUniqueID(), StudyType.nurseriesAndTrials());
+			studyChildren = this.studyDataManager.getChildrenOfFolder(new Integer(studyId), this.getCurrentProject().getUniqueID());
 		} catch (MiddlewareQueryException e) {
 			StudyTreeComponent.LOG.error(e.getMessage(), e);
 			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
 					this.messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
-			studyChildren = new ArrayList<Reference>();
+			studyChildren = new ArrayList<>();
 		}
 		if (!studyChildren.isEmpty()) {
 			return true;
