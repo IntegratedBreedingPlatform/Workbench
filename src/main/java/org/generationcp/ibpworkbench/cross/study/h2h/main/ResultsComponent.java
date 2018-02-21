@@ -1,14 +1,21 @@
 
 package org.generationcp.ibpworkbench.cross.study.h2h.main;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
+import java.io.File;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.lang3.StringUtils;
+import org.generationcp.commons.util.VaadinFileDownloadResource;
+import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.GermplasmStudyBrowserApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.pojos.EnvironmentForComparison;
@@ -18,11 +25,6 @@ import org.generationcp.ibpworkbench.cross.study.h2h.main.pojos.TraitForComparis
 import org.generationcp.ibpworkbench.cross.study.h2h.main.util.HeadToHeadDataListExport;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.util.HeadToHeadDataListExportException;
 import org.generationcp.ibpworkbench.cross.study.util.HeadToHeadResultsUtil;
-import org.generationcp.commons.util.FileDownloadResource;
-import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.middleware.domain.h2h.GermplasmPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,14 +32,13 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.io.File;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import com.vaadin.data.Item;
+import com.vaadin.ui.AbsoluteLayout;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
 
 @Configurable
 public class ResultsComponent extends AbsoluteLayout implements InitializingBean, InternationalizableComponent {
@@ -298,15 +299,15 @@ public class ResultsComponent extends AbsoluteLayout implements InitializingBean
 					this.messageSource.getMessage(Message.H2H_NUM_OF_TRAITS_EXCEEDED));
 
 		} else {
-			String tempFileName = System.getProperty(ResultsComponent.USER_HOME) + "/HeadToHeadDataList.xls";
+			String tempFileName = "HeadToHeadDataList";
 			HeadToHeadDataListExport listExporter = new HeadToHeadDataListExport();
 
 			try {
 
-				listExporter.exportHeadToHeadDataListExcel(tempFileName, this.resultsDataList, traitsIterator, columnIdData,
+				final String temporaryFileName = listExporter.exportHeadToHeadDataListExcel(tempFileName, this.resultsDataList, traitsIterator, columnIdData,
 						this.columnIdDataMsgMap);
-				FileDownloadResource fileDownloadResource =
-						new FileDownloadResource(new File(tempFileName), "HeadToHeadDataList.xls", this.getApplication());
+				VaadinFileDownloadResource fileDownloadResource =
+						new VaadinFileDownloadResource(new File(temporaryFileName), tempFileName + ".xls", this.getApplication());
 
 				this.getWindow().open(fileDownloadResource);
 				this.mainScreen.selectFirstTab();

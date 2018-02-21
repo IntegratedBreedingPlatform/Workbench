@@ -12,26 +12,37 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.ibpworkbench.study.TableViewerDatasetTable;
+import org.generationcp.middleware.pojos.workbench.ToolName;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 
+import javax.annotation.Resource;
+
+@Configurable
 public class TableViewerExporter {
 
 	private final TableViewerDatasetTable table;
 	private final TableViewerCellSelectorUtil tableViewerCellSelectorUtil;
+	
+	@Autowired
+	private ContextUtil contextUtil;
+	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
 	public TableViewerExporter(TableViewerDatasetTable table, TableViewerCellSelectorUtil tableViewerCellSelectorUtil) {
 		this.table = table;
 		this.tableViewerCellSelectorUtil = tableViewerCellSelectorUtil;
 	}
 
-	public FileOutputStream exportToExcel(String filename) throws DatasetExporterException {
+	public String exportToExcel(String filename) throws DatasetExporterException {
 
 		// create workbook
 		Workbook workbook = new XSSFWorkbook();
-		CellStyle cellStyleForObservationSheet = workbook.createCellStyle();
 
 		// Create first sheet
 		Sheet sheet1 = workbook.createSheet("Sheet 1");
@@ -111,10 +122,13 @@ public class TableViewerExporter {
 
 		try {
 			// write the excel file
-			FileOutputStream fileOutputStream = new FileOutputStream(filename);
+			final String fileNameUnderWorkspaceDirectory = this.installationDirectoryUtil.getTempFileInOutputDirectoryForProjectAndTool(
+					filename, ".xlsx", this.contextUtil.getProjectInContext(), ToolName.STUDY_BROWSER);
+			FileOutputStream fileOutputStream = new FileOutputStream(fileNameUnderWorkspaceDirectory);
 			workbook.write(fileOutputStream);
 			fileOutputStream.close();
-			return fileOutputStream;
+			
+			return fileNameUnderWorkspaceDirectory;
 		} catch (Exception ex) {
 			throw new DatasetExporterException("Error with writing to: " + filename, ex);
 		}

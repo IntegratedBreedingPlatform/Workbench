@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import org.generationcp.ibpworkbench.GermplasmStudyBrowserApplication;
 import org.generationcp.ibpworkbench.util.Util;
-import org.generationcp.commons.util.FileDownloadResource;
+import org.generationcp.commons.util.VaadinFileDownloadResource;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +19,7 @@ public class UtilTester {
 	private File tempFile;
 	private GermplasmStudyBrowserApplication browserApplication;
 	private Window window;
-	private FileDownloadResource fileDownloadResource;
+	private VaadinFileDownloadResource fileDownloadResource;
 
 	@Before
 	public void setUp() throws IOException {
@@ -27,7 +27,7 @@ public class UtilTester {
 		this.tempFile.createNewFile();
 		this.browserApplication = new GermplasmStudyBrowserApplication();
 		this.window = Mockito.mock(Window.class);
-		this.fileDownloadResource = new FileDownloadResource(this.tempFile, this.browserApplication);
+		this.fileDownloadResource = new VaadinFileDownloadResource(this.tempFile, this.browserApplication);
 	}
 
 	@Test

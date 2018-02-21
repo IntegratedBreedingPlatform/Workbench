@@ -10,9 +10,13 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.ResultsComponent;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.pojos.ResultsData;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.pojos.TraitForComparison;
+import org.generationcp.middleware.pojos.workbench.ToolName;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.io.FileOutputStream;
@@ -20,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.annotation.Resource;
 
 @Configurable
 public class HeadToHeadDataListExport {
@@ -29,6 +35,10 @@ public class HeadToHeadDataListExport {
 	private static final String HEADING_MERGED_STYLE = "headingMergedStyle";
 	private static final String NUMERIC_STYLE = "numericStyle";
 	private static final String NUMERIC_DOUBLE_STYLE = "numericDoubleStyle";
+	
+	@Autowired
+	private ContextUtil contextUtil;
+	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
 	public HeadToHeadDataListExport() {
 		// empty constructor
@@ -81,7 +91,7 @@ public class HeadToHeadDataListExport {
 		return styles;
 	}
 
-	public FileOutputStream exportHeadToHeadDataListExcel(String filename, List<ResultsData> resultDataList,
+	public String exportHeadToHeadDataListExcel(String filename, List<ResultsData> resultDataList,
 			Set<TraitForComparison> traitsIterator, String[] columnIdData, Map<String, String> columnIdDataMsgMap)
 			throws HeadToHeadDataListExportException {
 
@@ -193,11 +203,15 @@ public class HeadToHeadDataListExport {
 		}
 
 		try {
+			final String fileNameUnderWorkspaceDirectory = this.installationDirectoryUtil.getTempFileInOutputDirectoryForProjectAndTool(
+					filename, ".xls", this.contextUtil.getProjectInContext(), ToolName.MAIN_HEAD_TO_HEAD_BROWSER);
+			
 			// write the excel file
-			FileOutputStream fileOutputStream = new FileOutputStream(filename);
+			FileOutputStream fileOutputStream = new FileOutputStream(fileNameUnderWorkspaceDirectory);
 			wb.write(fileOutputStream);
 			fileOutputStream.close();
-			return fileOutputStream;
+			
+			return fileNameUnderWorkspaceDirectory;
 		} catch (Exception ex) {
 			throw new HeadToHeadDataListExportException("Error with writing to: " + filename, ex);
 		}

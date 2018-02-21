@@ -11,9 +11,14 @@
 
 package org.generationcp.ibpworkbench.study;
 
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Layout.MarginInfo;
-import com.vaadin.ui.VerticalLayout;
+import java.io.File;
+
+import org.generationcp.commons.util.VaadinFileDownloadResource;
+import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.ui.BaseSubWindow;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.GermplasmStudyBrowserApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.study.listeners.StudyButtonClickListener;
@@ -21,19 +26,15 @@ import org.generationcp.ibpworkbench.study.util.DatasetExporterException;
 import org.generationcp.ibpworkbench.study.util.TableViewerCellSelectorUtil;
 import org.generationcp.ibpworkbench.study.util.TableViewerExporter;
 import org.generationcp.ibpworkbench.util.Util;
-import org.generationcp.commons.util.FileDownloadResource;
-import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.commons.vaadin.ui.BaseSubWindow;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.io.File;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Layout.MarginInfo;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * This creates a Vaadin sub-window that displays the Table Viewer.
@@ -135,22 +136,21 @@ public class TableViewerComponent extends BaseSubWindow implements InitializingB
 	@SuppressWarnings("deprecation")
 	public void exportToExcelAction() {
 
-		String tempFilename = "TVDataset.xlsx";
+		String filename = "TVDataset";
 
 		try {
 			TableViewerExporter tableViewerExporter = new TableViewerExporter(this.displayTable, this.tableViewerCellSelectorUtil);
-
-			tableViewerExporter.exportToExcel(tempFilename);
+			final String temporaryFileName = tableViewerExporter.exportToExcel(filename);
 
 			String downloadFilename;
 			if (this.studyName != null) {
-				downloadFilename = "TVDataset_" + this.studyName.replace(" ", "_").trim() + ".xlsx";
+				downloadFilename = filename + "_" + this.studyName.replace(" ", "_").trim() + ".xlsx";
 			} else {
-				downloadFilename = tempFilename;
+				downloadFilename = filename;
 			}
 
-			FileDownloadResource fileDownloadResource = new FileDownloadResource(new File(tempFilename), downloadFilename, this.getApplication());
-
+			VaadinFileDownloadResource fileDownloadResource =
+					new VaadinFileDownloadResource(new File(temporaryFileName), downloadFilename, this.getApplication());
 
 			Util.showExportExcelDownloadFile(fileDownloadResource, this.getParent().getWindow());
 

@@ -11,15 +11,15 @@
 
 package org.generationcp.ibpworkbench.study;
 
-import com.vaadin.addon.tableexport.CsvExport;
-import com.vaadin.addon.tableexport.TableExport;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Link;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.Reindeer;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.generationcp.commons.util.VaadinFileDownloadResource;
+import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.ui.ConfirmDialog;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.GermplasmStudyBrowserApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.study.containers.RepresentationDatasetQueryFactory;
@@ -28,11 +28,6 @@ import org.generationcp.ibpworkbench.study.listeners.StudyButtonClickListener;
 import org.generationcp.ibpworkbench.study.util.DatasetExporter;
 import org.generationcp.ibpworkbench.study.util.DatasetExporterException;
 import org.generationcp.ibpworkbench.util.Util;
-import org.generationcp.commons.util.FileDownloadResource;
-import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.ui.ConfirmDialog;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
@@ -46,9 +41,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import com.vaadin.addon.tableexport.CsvExport;
+import com.vaadin.addon.tableexport.TableExport;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Link;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.Reindeer;
 
 /**
  * This class creates the Vaadin Table where a dataset can be displayed.
@@ -119,13 +120,12 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 	@SuppressWarnings("deprecation")
 	public void exportToExcelAction() {
 
-		String tempFilename = "dataset-temp.xls";
-
 		DatasetExporter datasetExporter;
 		datasetExporter = new DatasetExporter(this.studyDataManager, this.studyIdHolder, this.datasetId);
 		try {
-			datasetExporter.exportToFieldBookExcelUsingIBDBv2(tempFilename);
-			FileDownloadResource fileDownloadResource = new FileDownloadResource(new File(tempFilename), "export.xls", this.getApplication());
+			final String temporaryFileName = datasetExporter.exportToFieldBookExcelUsingIBDBv2("dataset-temp");
+			VaadinFileDownloadResource fileDownloadResource =
+					new VaadinFileDownloadResource(new File(temporaryFileName), "export.xls", this.getApplication());
 
 			Util.showExportExcelDownloadFile(fileDownloadResource, this.getWindow());
 

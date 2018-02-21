@@ -1,6 +1,11 @@
 
 package org.generationcp.ibpworkbench.study.util;
 
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
@@ -14,6 +19,8 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.ibpworkbench.study.constants.StudyTemplateConstants;
 import org.generationcp.ibpworkbench.util.Util;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
@@ -29,15 +36,14 @@ import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.generationcp.middleware.util.PoiUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
-import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
+@Configurable
 public class DatasetExporter {
 	
 	public static final Logger LOG = LoggerFactory.getLogger(DatasetExporter.class);
@@ -53,6 +59,11 @@ public class DatasetExporter {
 	private HSSFCellStyle headingStyle;
 	private HSSFCellStyle variateHeadingStyle;
 	private int observationSheetColumnIndex;
+	
+	@Autowired
+	private ContextUtil contextUtil;
+	
+	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
 	public DatasetExporter(StudyDataManager studyDataManager, Integer studyId, Integer datasetId) {
 		this.studyDataManager = studyDataManager;
@@ -60,7 +71,7 @@ public class DatasetExporter {
 		this.datasetId = datasetId;
 	}
 
-	public FileOutputStream exportToFieldBookExcelUsingIBDBv2(String filename) throws DatasetExporterException {
+	public String exportToFieldBookExcelUsingIBDBv2(String filename) throws DatasetExporterException {
 
 		if (this.studyDataManager == null) {
 			throw new DatasetExporterException("studyDataManager should not be null.");
@@ -176,12 +187,15 @@ public class DatasetExporter {
 		}
 	}
 
-	private FileOutputStream writeExcelFile(String filename, HSSFWorkbook workbook) throws DatasetExporterException {
+	private String writeExcelFile(String filename, HSSFWorkbook workbook) throws DatasetExporterException {
 		try {
-			FileOutputStream fileOutputStream = new FileOutputStream(filename);
+			final String fileNameUnderWorkspaceDirectory = this.installationDirectoryUtil.getTempFileInOutputDirectoryForProjectAndTool(
+					filename, ".xls", this.contextUtil.getProjectInContext(), ToolName.STUDY_BROWSER);
+			FileOutputStream fileOutputStream = new FileOutputStream(fileNameUnderWorkspaceDirectory);
 			workbook.write(fileOutputStream);
 			fileOutputStream.close();
-			return fileOutputStream;
+			
+			return fileNameUnderWorkspaceDirectory;
 		} catch (Exception ex) {
 			throw new DatasetExporterException("Error with writing to: " + filename, ex);
 		}
