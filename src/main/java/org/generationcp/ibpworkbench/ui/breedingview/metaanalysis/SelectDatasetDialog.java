@@ -195,7 +195,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 		List<Reference> folderRef = null;
 
 		try {
-			folderRef = studyDataManager.getRootFolders(this.currentProject.getUniqueID(), StudyType.nurseriesAndTrials());
+			folderRef = studyDataManager.getRootFolders(this.currentProject.getUniqueID());
 		} catch (MiddlewareQueryException e1) {
 			SelectDatasetDialog.LOG.error(e1.getMessage(), e1);
 			if (this.getWindow() != null) {
@@ -263,7 +263,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 		try {
 
 			childrenReference =
-					studyDataManager.getChildrenOfFolder(parentFolderReference.getId(), this.currentProject.getUniqueID(), StudyType.nurseriesAndTrials());
+					studyDataManager.getChildrenOfFolder(parentFolderReference.getId(), this.currentProject.getUniqueID());
 
 		} catch (MiddlewareQueryException e) {
 			SelectDatasetDialog.LOG.error(e.getMessage(), e);
@@ -366,7 +366,7 @@ public class SelectDatasetDialog extends BaseSubWindow implements InitializingBe
 		List<Reference> children = new ArrayList<>();
 
 		try {
-			children = studyDataManager.getChildrenOfFolder(folderId, this.currentProject.getUniqueID(), StudyType.nurseriesAndTrials());
+			children = studyDataManager.getChildrenOfFolder(folderId, this.currentProject.getUniqueID());
 		} catch (MiddlewareQueryException e) {
 			SelectDatasetDialog.LOG.error(e.getMessage(), e);
 			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
