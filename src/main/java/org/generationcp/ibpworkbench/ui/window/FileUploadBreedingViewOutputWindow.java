@@ -14,6 +14,8 @@ package org.generationcp.ibpworkbench.ui.window;
 import java.io.File;
 import java.util.Map;
 
+import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
@@ -22,6 +24,7 @@ import org.generationcp.ibpworkbench.actions.UploadBreedingViewOutputAction;
 import org.generationcp.ibpworkbench.ui.common.UploadField;
 import org.generationcp.ibpworkbench.ui.recovery.BackupAndRestoreView;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -79,6 +82,11 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
+	
+	@Autowired
+	private ContextUtil contextUtil;
+	
+	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
 	public FileUploadBreedingViewOutputWindow(Window window, int studyId, Project project, Map<String, Boolean> variatesStateMap) {
 		this.window = window;
@@ -254,13 +262,13 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
 
 	public class CustomFileFactory implements FileFactory {
 
-		private static final String UPLOAD_DIR = "temp";
-
 		private File file;
 
 		@Override
 		public File createFile(String fileName, String mimeType) {
-			File saveDir = new File(new File(CustomFileFactory.UPLOAD_DIR).getAbsolutePath());
+			File saveDir =
+					new File(new File(FileUploadBreedingViewOutputWindow.this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(
+							FileUploadBreedingViewOutputWindow.this.contextUtil.getProjectInContext(), ToolName.BV_SSA)).getAbsolutePath());
 			if (!saveDir.exists() || !saveDir.isDirectory()) {
 				saveDir.mkdirs();
 			}
