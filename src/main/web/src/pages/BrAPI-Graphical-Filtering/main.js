@@ -44,6 +44,13 @@ function loadBrAPIData(parameters, success) {
 			},
 			data: JSON.stringify(data),
 			success: success,
+			error: function (data) {
+				if (data.status == 401) {
+					// TODO BMS-4743
+					alert('Breeding Management System needs to authenticate you again. Redirecting to login page.');
+					window.top.location.href = '/ibpworkbench/logout';
+				}
+			},
 		});
 	}
 };
