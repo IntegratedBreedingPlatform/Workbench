@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -13,22 +13,35 @@ import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
 import org.generationcp.commons.util.BreedingViewUtil;
+import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.ibpworkbench.util.bean.MultiSiteParameters;
-import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.Experiment;
 import org.generationcp.middleware.domain.dms.Variable;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
-
-import au.com.bytecode.opencsv.CSVWriter;
+import org.generationcp.middleware.pojos.workbench.Tool;
+import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
+import au.com.bytecode.opencsv.CSVWriter;
+
+@Configurable
 public class MultiSiteDataExporter {
 
+	protected static final String SUMMARY_STATS = "_SummaryStats";
+
 	private static final Logger LOG = LoggerFactory.getLogger(MultiSiteDataExporter.class);
+	
+	@Autowired
+	private WorkbenchDataManager workbenchDataManager;
+	
+	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
 	/**
-	 * Generates GxE Multi-site analysis XML data, stored in IBWorkflowSystem\workspace\{PROJECT}\breeding_view\input
+	 * Generates GxE Multi-site analysis XML data, stored in workpace directory
 	 *
 	 * @return void
 	 */
@@ -44,7 +57,7 @@ public class MultiSiteDataExporter {
 	}
 
 	public String exportMeansDatasetToCsv(final String inputFileName, final MultiSiteParameters multiSiteParameters,
-			final DataSet gxeDataset, final List<Experiment> experiments, final String environmentName, final GxeEnvironment gxeEnv,
+			final List<Experiment> experiments, final String environmentName, final GxeEnvironment gxeEnv,
 			final List<Trait> selectedTraits) {
 
 		Project currentProject = multiSiteParameters.getProject();
@@ -57,11 +70,11 @@ public class MultiSiteDataExporter {
 
 		final List<String[]> tableItems = new ArrayList<String[]>();
 
-		final Map<String, Integer> traitToColNoMap = new Hashtable<String, Integer>();
+		final Map<String, Integer> traitToColNoMap = new HashMap<>();
 
 		int i = 0, j = 0;
 		// create header row
-		final List<String> headerRow = new ArrayList<String>();
+		final List<String> headerRow = new ArrayList<>();
 		// site no && site code insert to columnMap
 		if (environmentName != null && !environmentName.isEmpty()) {
 			traitToColNoMap.put(environmentName, j);
@@ -135,33 +148,11 @@ public class MultiSiteDataExporter {
 			i++;
 		}
 
-		try {
-			final String dir =
-					"workspace" + File.separator + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator
-							+ "input";
-
-			MultiSiteDataExporter.LOG.debug("save to" + dir);
-
-			new File(dir).mkdirs();
-
-			final File csvFile = new File(dir + File.separator + inputFileName + ".csv");
-
-			final CSVWriter csvWriter =
-					new CSVWriter(new FileWriter(csvFile), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER, "\r\n");
-			csvWriter.writeAll(tableItems);
-			csvWriter.flush();
-			csvWriter.close();
-
-			return csvFile.getAbsolutePath();
-		} catch (final IOException e) {
-			MultiSiteDataExporter.LOG.warn(e.getMessage(), e);
-			return null;
-		}
+		return this.writeToCsvFile(inputFileName, currentProject, tableItems, false);
 	}
 
-	public String exportTrialDatasetToSummaryStatsCsv(final String inputFileName, final DataSet trialDataSet,
-			final List<Experiment> experiments, final String environmentName, final List<Trait> selectedTraits,
-			final Project currentProject) {
+	public String exportTrialDatasetToSummaryStatsCsv(final String inputFileName, final List<Experiment> experiments,
+			final String environmentName, final List<Trait> selectedTraits, final Project currentProject) {
 
 		if (currentProject == null) {
 			throw new IllegalArgumentException("current project is null");
@@ -209,21 +200,15 @@ public class MultiSiteDataExporter {
 						row.add("");
 					}
 				}
-
 				tableItems.add(row.toArray(new String[0]));
 			}
 
 		}
+		return this.writeToCsvFile(inputFileName, currentProject, tableItems, true);
+	}
 
-		final String dir =
-				"workspace" + File.separator + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator
-						+ "input";
-
-		MultiSiteDataExporter.LOG.debug("save to " + dir);
-
-		new File(dir).mkdirs();
-
-		final File csvFile = new File(dir + File.separator + inputFileName + "_SummaryStats.csv");
+	String writeToCsvFile(final String inputFileName, final Project currentProject, final List<String[]> tableItems, final boolean isSummaryStatsFile) {
+		final File csvFile = this.getCsvFileInWorkbenchDirectory(currentProject, inputFileName, isSummaryStatsFile);
 
 		CSVWriter csvWriter = null;
 		try {
@@ -238,6 +223,18 @@ public class MultiSiteDataExporter {
 			MultiSiteDataExporter.LOG.warn(e.getMessage(), e);
 			return null;
 		}
+	}
+
+	File getCsvFileInWorkbenchDirectory(final Project currentProject, final String inputFileName, final boolean isSummaryStatsFile) {
+		final Tool breedingViewTool = this.workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
+		final String directory = installationDirectoryUtil.getInputDirectoryForProjectAndTool(currentProject, breedingViewTool);
+		final StringBuilder sb = new StringBuilder(inputFileName);
+		if (isSummaryStatsFile) {
+			sb.append(SUMMARY_STATS);
+		}
+		sb.append(".csv");
+		
+		return new File(directory + File.separator + sb.toString());
 	}
 
 }

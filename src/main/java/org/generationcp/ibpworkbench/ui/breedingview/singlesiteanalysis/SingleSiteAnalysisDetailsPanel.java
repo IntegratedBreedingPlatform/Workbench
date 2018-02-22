@@ -1549,4 +1549,24 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout
 		return invalidEnvs;
 
 	}
+
+	
+	public SingleSiteAnalysisPanel getSelectDatasetForBreedingViewPanel() {
+		return selectDatasetForBreedingViewPanel;
+	}
+
+	
+	public List<DMSVariableType> getFactorsInDataset() {
+		return factorsInDataset;
+	}
+
+	
+	public List<DMSVariableType> getTrialVariablesInDataset() {
+		return trialVariablesInDataset;
+	}
+
+	
+	public Project getProject() {
+		return project;
+	}
 }

@@ -4,9 +4,7 @@ package org.generationcp.ibpworkbench.database;
 import java.io.File;
 import java.sql.Connection;
 
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.CropType;
-import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,9 +20,6 @@ public class CropDatabaseGeneratorTest {
 	private final CropType cropType = new CropType();
 
 	@Mock
-	private WorkbenchDataManager workbenchManager;
-
-	@Mock
 	private Connection connection;
 
 	@InjectMocks
@@ -38,11 +33,6 @@ public class CropDatabaseGeneratorTest {
 
 	@Test
 	public void testGenerateDatabase() throws Exception {
-
-		WorkbenchSetting setting = new WorkbenchSetting();
-		setting.setInstallationDirectory("C:/BMS");
-		Mockito.doReturn(setting).when(this.workbenchManager).getWorkbenchSetting();
-
 		Mockito.doNothing().when(this.cropDbGenerator).createConnection();
 		Mockito.doNothing().when(this.cropDbGenerator).createCropDatabase();
 		Mockito.doNothing().when(this.cropDbGenerator).runScriptsInDirectory(Matchers.anyString(), Matchers.any(File.class));
@@ -54,7 +44,7 @@ public class CropDatabaseGeneratorTest {
 		Mockito.verify(this.cropDbGenerator, Mockito.times(1)).createCropDatabase();
 		Mockito.verify(this.cropDbGenerator, Mockito.times(1)).runSchemaCreationScripts();
 
-		File localDatabaseDirectory = new File(setting.getInstallationDirectory(), CropDatabaseGenerator.DB_SCRIPT_FOLDER);
+		File localDatabaseDirectory = new File(CropDatabaseGenerator.DB_SCRIPT_FOLDER);
 		Mockito.verify(this.cropDbGenerator, Mockito.times(1)).runScriptsInDirectory(null, new File(localDatabaseDirectory, "common"));
 		Mockito.verify(this.cropDbGenerator, Mockito.times(1)).runScriptsInDirectory(null,
 				new File(localDatabaseDirectory, this.cropType.getCropName()));

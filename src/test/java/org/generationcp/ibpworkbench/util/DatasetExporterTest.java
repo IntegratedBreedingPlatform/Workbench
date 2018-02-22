@@ -22,7 +22,6 @@ import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
 import org.generationcp.middleware.service.api.OntologyService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -539,9 +538,6 @@ public class DatasetExporterTest {
 	private void setupMocks() {
 		// Setup Middleware mocks
 		Mockito.when(DatasetExporterTest.studyDataManager.getDataSet(Matchers.anyInt())).thenReturn(this.dataSet);
-		
-		Mockito.when(DatasetExporterTest.workbenchDataManager.getWorkbenchSetting()).thenReturn(Mockito.mock(WorkbenchSetting.class));
-		Mockito.when(DatasetExporterTest.workbenchDataManager.getWorkbenchSetting().getInstallationDirectory()).thenReturn("");
 		
 		// Setup BreedingViewInput mocks
 		Mockito.when(this.bvInput.getReplicates()).thenReturn(Mockito.mock(Replicates.class));
