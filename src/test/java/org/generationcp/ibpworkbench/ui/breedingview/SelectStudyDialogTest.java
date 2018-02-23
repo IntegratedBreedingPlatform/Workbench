@@ -43,11 +43,11 @@ public class SelectStudyDialogTest {
 	@Test
 	public void testCreateStudyTreeTable() throws MiddlewareQueryException {
 		Mockito.when(this.currentProject.getUniqueID()).thenReturn(SelectStudyDialogTest.UNIQUE_ID);
-		Mockito.when(this.studyDataManager.getRootFolders(this.currentProject.getUniqueID(), StudyType.trials()))
+		Mockito.when(this.studyDataManager.getRootFolders(this.currentProject.getUniqueID()))
 				.thenReturn(StudyReferenceTestDataInitializer.createStudyReferenceList(5));
 		final BreedingViewTreeTable table = this.dialog.createStudyTreeTable();
-		Mockito.verify(this.studyDataManager, Mockito.times(1)).getRootFolders(SelectStudyDialogTest.UNIQUE_ID,
-				StudyType.trials());
+		Mockito.verify(this.studyDataManager, Mockito.times(1)).getRootFolders(SelectStudyDialogTest.UNIQUE_ID
+				);
 		Assert.assertEquals("There should be 33 property ids.", 3, table.getContainerPropertyIds().size());
 		Assert.assertTrue("The property ids should contain " + SelectStudyDialog.STUDY_NAME,
 				table.getContainerPropertyIds().contains(SelectStudyDialog.STUDY_NAME));
@@ -67,7 +67,7 @@ public class SelectStudyDialogTest {
 	@Test
 	public void testHasChildStudyTrue() {
 		Mockito.when(
-				this.studyDataManager.getChildrenOfFolder(1, this.currentProject.getUniqueID(), StudyType.trials()))
+				this.studyDataManager.getChildrenOfFolder(1, this.currentProject.getUniqueID()))
 				.thenReturn(StudyReferenceTestDataInitializer.createStudyReferenceList(1));
 		
 		final boolean hasChildStudy = this.dialog.hasChildStudy(1);
@@ -79,13 +79,13 @@ public class SelectStudyDialogTest {
 	public void testQueryChildrenStudies() {
 		final Reference reference = FolderReferenceTestDataInitializer.createReference(1);
 		Mockito.when(
-				this.studyDataManager.getChildrenOfFolder(1, this.currentProject.getUniqueID(), StudyType.trials()))
+				this.studyDataManager.getChildrenOfFolder(1, this.currentProject.getUniqueID()))
 				.thenReturn(StudyReferenceTestDataInitializer.createStudyReferenceList(5));
 		
 		this.dialog.queryChildrenStudies(reference, Mockito.mock(BreedingViewTreeTable.class));
 		
 		Mockito.verify(this.studyDataManager, Mockito.times(2)).getChildrenOfFolder(1,
-				this.currentProject.getUniqueID(), StudyType.trials());
+				this.currentProject.getUniqueID());
 		Mockito.verify(this.studyDataManager, Mockito.times(5)).getStudy(Matchers.anyInt());
 	}
 
