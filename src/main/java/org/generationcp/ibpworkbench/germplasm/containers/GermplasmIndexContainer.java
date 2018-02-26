@@ -287,9 +287,6 @@ public final class GermplasmIndexContainer {
 				+ contextUtil.getContextInfoFromSession().getSelectedProjectId() + "&authToken=" + contextUtil.getContextInfoFromSession()
 				.getAuthToken();
 
-		if (study.getStudyType().getName().equals(StudyType.N.name())) {
-			return new ExternalResource(URL_STUDY_NURSERY + study.getId() + aditionalParameters);
-		}
 		return new ExternalResource(URL_STUDY_TRIAL[0] + study.getId() + aditionalParameters + URL_STUDY_TRIAL[1]);
 	}
 
