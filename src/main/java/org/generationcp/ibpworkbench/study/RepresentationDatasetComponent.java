@@ -324,9 +324,9 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 	}
 
 	private void openGraphicalFilteringTool( final Integer studyId) {
-		Window mainWindow = this.getWindow();
+		final Window mainWindow = this.getWindow();
 		final String crop = this.contextUtil.getProjectInContext().getCropType().getCropName();
-		Window graphicalFilteringToolWindow = new GraphicalFilteringToolComponent(studyId, crop);
+		final Window graphicalFilteringToolWindow = new GraphicalFilteringToolComponent(studyId, crop);
 		graphicalFilteringToolWindow.addStyleName(Reindeer.WINDOW_LIGHT);
 		mainWindow.addWindow(graphicalFilteringToolWindow);
 	}
