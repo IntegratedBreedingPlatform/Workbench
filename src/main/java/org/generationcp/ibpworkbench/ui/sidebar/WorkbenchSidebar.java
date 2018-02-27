@@ -146,7 +146,7 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 			return null;
 		}
 
-		if (ToolName.isCorrectTool(toolName)) {
+		if (ToolName.isURLAccessibleTool(toolName)) {
 			return new LaunchWorkbenchToolAction(ToolName.equivalentToolEnum(toolName));
 		} else if (ChangeWindowAction.WindowEnums.isCorrectTool(toolName)) {
 			return new ChangeWindowAction(ChangeWindowAction.WindowEnums.equivalentWindowEnum(toolName), project);
