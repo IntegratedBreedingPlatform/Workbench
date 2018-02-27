@@ -23,6 +23,7 @@
 	<!-- **************************************************************** -->
 	<mvc:resources mapping="/static/**" location="/WEB-INF/static/"/>
 	<mvc:resources mapping="/pages/angular2/**" location="/WEB-INF/pages/angular2/"/>
+	<mvc:resources mapping="/pages/BrAPI-Graphical-Filtering/**" location="/WEB-INF/pages/BrAPI-Graphical-Filtering/"/>
 
 	<!-- **************************************************************** -->
 	<!--  SPRING ANNOTATION PROCESSING                                    -->

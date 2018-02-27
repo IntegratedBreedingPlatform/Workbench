@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8">
+        <title>BrAPI Graphical Filtering</title>
+        <link th:href="@{/controller/static/lib/bootstrap-3.3.7.min.css}" rel="stylesheet" />
+        <link th:href="@{/controller/pages/BrAPI-Graphical-Filtering/style.css}" rel="stylesheet" />
+        <link th:href="@{/controller/static/lib/jquery.dataTables-1.10.16.min.css}" rel="stylesheet" />
+    </head>
+    <body>
+        <div style="margin:1em">
+            <form id="brapi-form" action="#"  class="form-inline">
+                <div class="form-group">
+                    <label>
+                      <input type="checkbox" name="group"> Group By Accession
+                    </label>
+                </div>
+                <input type="submit" action="#" id="load-brapi" class="btn btn-primary" value="Load"/>
+            </form>
+            <div id="filter_div" style="margin:1em"></div>
+            <table id="filtered_results" width="100%"></table>
+			<hr/>
+			<div>
+				<a href="https://github.com/solgenomics/BrAPI-Graphical-Filtering" target="_blank">
+					<img style="width: 40px;"
+						 th:src="@{/controller/static/images/nextgen_cassava_icon.png}"/></a>
+			</div>
+        </div>
+    </body>
+    <script th:src="@{/controller/static/js/lib/jquery-3.2.1.min.js}"></script>
+	<script th:src="@{/controller/static/js/lib/d3-4.12.0.min.js}"></script>
+	<script th:src="@{/controller/static/js/lib/bootstrap-3.3.7.min.js}"></script>
+    <script th:src="@{/controller/static/js/lib/jquery.dataTables-1.10.16.min.js}" charset="utf-8"></script>
+	<script th:src="@{/controller/static/js/lib/get-url-parameter.js}" charset="utf-8"></script>
+    <script th:src="@{/controller/pages/BrAPI-Graphical-Filtering/GraphicalFilter.js}"></script>
+    <script th:src="@{/controller/pages/BrAPI-Graphical-Filtering/main.js}"></script>
+</html>
