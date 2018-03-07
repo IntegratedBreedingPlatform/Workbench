@@ -239,6 +239,7 @@ typings
 
 node_modules
 node
+package-lock.json
 
 src/main/webapp/WEB-INF/pages
 src/main/webapp/WEB-INF/static
