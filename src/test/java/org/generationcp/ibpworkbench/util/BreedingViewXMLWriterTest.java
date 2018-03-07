@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import org.generationcp.commons.breedingview.xml.Blocks;
@@ -17,8 +18,10 @@ import org.generationcp.commons.breedingview.xml.Replicates;
 import org.generationcp.commons.breedingview.xml.RowPos;
 import org.generationcp.commons.breedingview.xml.Rows;
 import org.generationcp.commons.sea.xml.Design;
+import org.generationcp.commons.sea.xml.Environments;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
+import org.generationcp.ibpworkbench.data.initializer.SeaEnvironmentModelTestDataInitializer;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -142,7 +145,36 @@ public class BreedingViewXMLWriterTest {
 		Mockito.verify(this.contextUtil).getProjectInContext();
 		Assert.assertTrue(url.contains(project.getCropType().getCropName()));
 	}
-
+	
+	@Test
+	public void testCreateEnvironmentsWhereTrialFactorIsTrialInstance() {
+		SeaEnvironmentModel seaEnvironmentModel = SeaEnvironmentModelTestDataInitializer.createSeaEnvironmentModel();
+		this.breedingViewInput.setSelectedEnvironments(Arrays.asList(seaEnvironmentModel));
+		Environments environments = this.breedingViewXMLWriter.createEnvironments();
+		Assert.assertEquals(this.breedingViewInput.getEnvironment().getName(), environments.getName());
+		Assert.assertNull(environments.getTrialName());
+		Assert.assertEquals(1, environments.getEnvironments().size());
+		org.generationcp.commons.sea.xml.Environment environment = environments.getEnvironments().get(0);
+		Assert.assertEquals(seaEnvironmentModel.getEnvironmentName(), environment.getName());
+		Assert.assertTrue(environment.getActive());
+		Assert.assertNull(environment.getTrial());
+	}
+	
+	@Test
+	public void testCreateEnvironmentsWhereTrialFactorIsNotTrialInstance() {
+		SeaEnvironmentModel seaEnvironmentModel = SeaEnvironmentModelTestDataInitializer.createSeaEnvironmentModel();
+		this.breedingViewInput.setSelectedEnvironments(Arrays.asList(seaEnvironmentModel));
+		this.breedingViewInput.getEnvironment().setName("LOCATION_NAME");;
+		Environments environments = this.breedingViewXMLWriter.createEnvironments();
+		Assert.assertEquals(this.breedingViewInput.getEnvironment().getName(), environments.getName());
+		Assert.assertEquals(this.breedingViewInput.getTrialInstanceName(), environments.getTrialName());
+		Assert.assertEquals(1, environments.getEnvironments().size());
+		org.generationcp.commons.sea.xml.Environment environment = environments.getEnvironments().get(0);
+		Assert.assertEquals(seaEnvironmentModel.getEnvironmentName(), environment.getName());
+		Assert.assertTrue(environment.getActive());
+		Assert.assertEquals(seaEnvironmentModel.getTrialno(), environment.getTrial());
+	}
+	
 	@After
 	public void cleanUp() throws Exception {
 		this.deleteBreedingViewDirectories();

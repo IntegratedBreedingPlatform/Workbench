@@ -392,10 +392,12 @@ public class GxeTable extends Table {
 			Property locationColumn = this.getContainerProperty(obj[i], this.selectedEnvFactorName);
 			Property trialNoColumn = this.getContainerProperty(obj[i], this.trialInstanceFactorName);
 			if ((Boolean) ((CheckBox) cbColumn.getValue()).getValue()) {
+				System.out.println("HERE");
 				Environment environment = new Environment();
 				environment.setName(((Label) locationColumn.getValue()).getValue().toString());
 				environment.setActive(true);
 				environment.setTrialno(((Label) trialNoColumn.getValue()).getValue().toString());
+				environment.setTrial(((Label) trialNoColumn.getValue()).getValue().toString());
 				selectedEnvironments.add(environment);
 			}
 		}

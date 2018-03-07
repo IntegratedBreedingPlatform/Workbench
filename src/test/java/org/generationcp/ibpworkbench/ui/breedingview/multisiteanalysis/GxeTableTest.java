@@ -259,6 +259,11 @@ public class GxeTableTest {
 		List<Environment> environments = gxeTable.getSelectedEnvironments();
 		Assert.assertNotNull(environments);
 		Assert.assertEquals(1, environments.size());
+		final Environment environment = environments.get(0);
+		Assert.assertEquals(SITE_FACTOR_VALUE, environment.getName());
+		Assert.assertTrue(environment.getActive());
+		Assert.assertEquals(TRIAL_FACTOR_VALUE, environment.getTrial());
+		Assert.assertEquals(TRIAL_FACTOR_VALUE, environment.getTrialno());
 	}
 	
 	@Test
