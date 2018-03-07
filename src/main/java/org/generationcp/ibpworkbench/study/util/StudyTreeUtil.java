@@ -128,7 +128,7 @@ public class StudyTreeUtil implements Serializable {
 
 					newFolderId =
 							Integer.valueOf(StudyTreeUtil.this.studyDataManager.addSubFolder(parentFolderId, newFolderName, newFolderName,
-									programUUID));
+									programUUID, newFolderName));
 				} catch (MiddlewareQueryException ex) {
 					StudyTreeUtil.LOG.error("Error with adding a study folder.", ex);
 					MessageNotifier.showError(StudyTreeUtil.this.source.getWindow(),
