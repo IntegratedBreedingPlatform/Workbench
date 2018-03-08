@@ -161,7 +161,7 @@ public class AppLauncherServiceTest {
 		String urlResult = this.appLauncherService.launchWebapp(aWebTool, AppLauncherServiceTest.LOGGED_IN_USER_ID);
 
 		Assert.assertEquals("should return correct url for List manager app",
-				String.format("%s://%s:%d/%s-%d%s", AppLauncherServiceTest.SCHEME, AppLauncherServiceTest.HOST_NAME,
+				String.format("%s://%s:%d/%s%d%s", AppLauncherServiceTest.SCHEME, AppLauncherServiceTest.HOST_NAME,
 						AppLauncherServiceTest.PORT, AppLauncherServiceTest.SAMPLE_BASE_URL, AppLauncherServiceTest.LOGGED_IN_USER_ID,
 						AppLauncherServiceTest.RESTART_URL_STR + AppLauncherServiceTest.WORKBENCH_CONTEXT_PARAMS), urlResult);
 

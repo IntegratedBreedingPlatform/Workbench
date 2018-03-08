@@ -9,21 +9,21 @@ import java.util.List;
 import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.sea.xml.Environment;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
+import org.generationcp.commons.util.VaadinFileDownloadResource;
 import org.generationcp.commons.util.ZipUtil;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.GxeTable;
 import org.generationcp.ibpworkbench.util.GxeInput;
 import org.generationcp.ibpworkbench.util.MultiSiteDataExporter;
 import org.generationcp.ibpworkbench.util.bean.MultiSiteParameters;
-import org.generationcp.middleware.domain.dms.DMSVariableType;
+import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
-import org.generationcp.middleware.domain.dms.StandardVariable;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableList;
-import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -32,6 +32,8 @@ import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -52,16 +54,18 @@ public class RunMultiSiteActionTest {
 	private static final String ENVIRONMENT_GROUP_NAME = "MegaEnvironment";
 	private static final String ENVIRONMENT_NAME = "SITE";
 	private static final String GENOTYPE_NAME = "GID";
-	private static final String PROJECT_NAME = "TEST TRIAL";
+	private static final String PROJECT_NAME = "TEST MAIZE PROGRAM";
 	private static final String MEANS_DATASET_NAME = "TEST TRIAL-MEANS";
 	private static final String SUMMARY_DATASET_NAME = "TEST TRIAL-SUMMARY";
 	private static final String TEST_SPECIAL_CHARACTERS = "\\ &amp;/:*?'\"<>|[]{},.?~`!@#$%^&()-=_+111";
 	private static final int STUDY_ID = 98;
 	private static final int MEANS_DATASET_ID = 99;
 	private static final String BMS_INPUT_FILES_DIR = "/someDirectory/input";
-	private static final String SUMMARY_DATA_FILEPATH = "means.csv";
-	private static final String MEANS_DATA_FILEPATH = "summary.csv";
+	private static final String SUMMARY_DATA_FILEPATH = BMS_INPUT_FILES_DIR + "summary.csv";
+	private static final String MEANS_DATA_FILEPATH = BMS_INPUT_FILES_DIR + "means.csv";
 	private static final String STUDY_NAME = "TEST STUDY";
+	private static final String ZIP_FILE_PATH = "/someDirectory/output/" + STUDY_NAME + ".zip";
+	
 
 	@Mock
 	private StudyDataManager studyDataManager;
@@ -89,20 +93,27 @@ public class RunMultiSiteActionTest {
 	
 	@Mock
 	private InstallationDirectoryUtil installationDirectoryUtil;
+	
+	@Mock
+	private ContextUtil contextUtil;
 
 	@InjectMocks
 	private final RunMultiSiteAction runMultiSiteAction = new RunMultiSiteAction();
+	
+	@Captor
+	private ArgumentCaptor<List<String>> filesInZipCaptor;
 
-	List<Trait> selectedTraits;
-	GxeEnvironment gxeEnvironment;
-	MultiSiteParameters multiSiteParameters;
+	private List<Trait> selectedTraits;
+	private GxeEnvironment gxeEnvironment;
+	private MultiSiteParameters multiSiteParameters;
 
 	@Before
-	public void init() {
+	public void init() throws IOException {
 
 		final Table selectTraitsTable = this.createTestSelectedTraitsTable();
 		runMultiSiteAction.setSelectTraitsTable(selectTraitsTable);
 		runMultiSiteAction.setBreedingViewTool(breedingViewTool);
+		
 		selectedTraits = runMultiSiteAction.getSelectedTraits();
 		gxeEnvironment = this.createGxeEnvironment();
 		multiSiteParameters = this.createMultiSiteParameters();
@@ -112,7 +123,7 @@ public class RunMultiSiteActionTest {
 
 	}
 
-	void initMocks() {
+	void initMocks() throws IOException {
 
 		Mockito.when(this.workbenchApplication.getMainWindow()).thenReturn(window);
 
@@ -132,21 +143,41 @@ public class RunMultiSiteActionTest {
 
 		Mockito.when(multiSiteDataExporter.exportTrialDatasetToSummaryStatsCsv(Mockito.anyString(), Mockito.anyList(),
 				Mockito.eq(ENVIRONMENT_NAME), Mockito.anyList(), Mockito.any(Project.class))).thenReturn(SUMMARY_DATA_FILEPATH);
+		
+		Mockito.when(this.zipUtil.zipIt(Mockito.anyString(), Mockito.anyListOf(String.class), Mockito.any(Project.class),
+				Mockito.any(ToolName.class))).thenReturn(ZIP_FILE_PATH);
 
 	}
 
 	@Test
 	public void testButtonClickServerAppIsTrue() throws IOException {
-
+		final Project project = ProjectTestDataInitializer.createProject();
+		Mockito.doReturn(project).when(this.contextUtil).getProjectInContext();
 		runMultiSiteAction.setIsServerApp(true);
 
 		runMultiSiteAction.buttonClick(Mockito.mock(Button.ClickEvent.class));
 
-		// Make sure that the files are compressed in zip
-		Mockito.verify(this.zipUtil).zipIt(Mockito.anyString(), Mockito.anyListOf(String.class), Mockito.any(Project.class), Mockito.any(ToolName.class));
-		// and the zip file is downloaded to the browser.
-		Mockito.verify(this.window).open(Mockito.any(FileResource.class));
-
+		// Make sure that the expected files are compressed in zip
+		final ArgumentCaptor<String> filenameCaptor = ArgumentCaptor.forClass(String.class);
+		final ArgumentCaptor<Project> projectCaptor = ArgumentCaptor.forClass(Project.class);
+		final ArgumentCaptor<ToolName> toolCaptor = ArgumentCaptor.forClass(ToolName.class);
+		Mockito.verify(this.zipUtil).zipIt(filenameCaptor.capture(), filesInZipCaptor.capture(), projectCaptor.capture(),
+				toolCaptor.capture());
+		Assert.assertEquals(STUDY_NAME, filenameCaptor.getValue());
+		Assert.assertEquals(project, projectCaptor.getValue());
+		final List<String> filesInZip = filesInZipCaptor.getValue();
+		Assert.assertEquals(3, filesInZip.size());
+		Assert.assertTrue(filesInZip.contains(SUMMARY_DATA_FILEPATH));
+		Assert.assertTrue(filesInZip.contains(MEANS_DATA_FILEPATH));
+		Assert.assertTrue(filesInZip.contains(BMS_INPUT_FILES_DIR + File.separator + getExpectedBVInputXmlFilename() + ".xml"));
+		Assert.assertEquals(ToolName.BV_GXE, toolCaptor.getValue());
+		
+		// Verify zip file is downloaded to the browser with proper filename
+		final ArgumentCaptor<VaadinFileDownloadResource> fileDownloadResourceCaptor = ArgumentCaptor.forClass(VaadinFileDownloadResource.class);
+		Mockito.verify(this.window).open(fileDownloadResourceCaptor.capture());
+		final VaadinFileDownloadResource downloadResource = fileDownloadResourceCaptor.getValue();
+		Assert.assertEquals(new File(ZIP_FILE_PATH).getAbsolutePath(), downloadResource.getSourceFile().getAbsolutePath());
+		Assert.assertEquals(STUDY_NAME + ".zip", downloadResource.getFilename());
 	}
 
 	@Test
@@ -160,7 +191,7 @@ public class RunMultiSiteActionTest {
 		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.multiSiteParameters.getProject(),
 				ToolName.BREEDING_VIEW);
 
-		Assert.assertEquals(BMS_INPUT_FILES_DIR + File.separator + "TEST TRIAL_0_TEST TRIAL-MEANS.xml", gxeInput.getDestXMLFilePath());
+		Assert.assertEquals(BMS_INPUT_FILES_DIR + File.separator + PROJECT_NAME + "_0_TEST TRIAL-MEANS.xml", gxeInput.getDestXMLFilePath());
 
 	}
 
@@ -189,8 +220,12 @@ public class RunMultiSiteActionTest {
 
 		final String result = runMultiSiteAction.generateInputFileName(this.createProject(PROJECT_NAME));
 
-		Assert.assertEquals("TEST TRIAL_0_TEST TRIAL-MEANS", result);
+		Assert.assertEquals(getExpectedBVInputXmlFilename(), result);
 
+	}
+
+	private String getExpectedBVInputXmlFilename() {
+		return PROJECT_NAME + "_0_" + MEANS_DATASET_NAME;
 	}
 
 	@Test
@@ -199,7 +234,7 @@ public class RunMultiSiteActionTest {
 		Mockito.when(this.gxeTable.getMeansDataSet()).thenReturn(this.createMeansDataSet(MEANS_DATASET_NAME + TEST_SPECIAL_CHARACTERS));
 		final String result = runMultiSiteAction.generateInputFileName(this.createProject(PROJECT_NAME));
 
-		Assert.assertEquals("TEST TRIAL_0_TEST TRIAL-MEANS_ _-_111", result);
+		Assert.assertEquals(getExpectedBVInputXmlFilename() + "_ _-_111", result);
 
 	}
 
@@ -292,7 +327,8 @@ public class RunMultiSiteActionTest {
 
 		final Study study = new Study();
 		study.setId(STUDY_ID);
-
+		study.setName(name);
+		
 		final VariableList conditions = new VariableList();
 		final Variable studyNameVariable = new Variable();
 		studyNameVariable.setValue(name);

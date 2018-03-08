@@ -127,18 +127,7 @@ public class GxeXMLWriter implements InitializingBean, Serializable {
 		bvSession.setDataFile(data);
 
 		final SSAParameters ssaParameters = new SSAParameters();
-		// output directory is not needed if deployed on server
-		if (!isServerApp) {
-			try {
-				
-				final String outputDirectory =
-						this.installationDirectoryUtil.getOutputDirectoryForProjectAndTool(this.gxeInput.getProject(), ToolName.BREEDING_VIEW);
-
-				ssaParameters.setOutputDirectory(outputDirectory);
-			} catch (final Exception e) {
-				GxeXMLWriter.LOG.error("Error getting BMS installation directory", e);
-			}
-		}
+		this.setOutputDirectory(isServerApp, ssaParameters);
 		bvSession.setIbws(ssaParameters);
 
 		// prepare the writing of the xml
@@ -163,8 +152,28 @@ public class GxeXMLWriter implements InitializingBean, Serializable {
 		}
 	}
 
+	void setOutputDirectory(final boolean isServerApp, final SSAParameters ssaParameters) {
+		// output directory is not needed if deployed on server
+		if (!isServerApp) {
+			try {
+				
+				final String outputDirectory =
+						this.installationDirectoryUtil.getOutputDirectoryForProjectAndTool(this.gxeInput.getProject(), ToolName.BREEDING_VIEW);
+
+				ssaParameters.setOutputDirectory(outputDirectory);
+			} catch (final Exception e) {
+				GxeXMLWriter.LOG.error("Error getting BMS installation directory", e);
+			}
+		}
+	}
+
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		// do nothing - inherited abstract method
+	}
+
+	
+	public void setInstallationDirectoryUtil(InstallationDirectoryUtil installationDirectoryUtil) {
+		this.installationDirectoryUtil = installationDirectoryUtil;
 	}
 }

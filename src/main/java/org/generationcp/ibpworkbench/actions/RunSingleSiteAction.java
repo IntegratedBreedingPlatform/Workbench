@@ -89,7 +89,9 @@ public class RunSingleSiteAction implements ClickListener {
 	@Autowired
 	private ContextUtil contextUtil;
 
-	private final ZipUtil zipUtil = new ZipUtil();
+	private ZipUtil zipUtil = new ZipUtil();
+	private DatasetExporter datasetExporter = new DatasetExporter();
+	private BreedingViewXMLWriter breedingViewXMLWriter = new BreedingViewXMLWriter();
 
 	public RunSingleSiteAction(final SingleSiteAnalysisDetailsPanel selectDetailsForBreedingViewWindow) {
 		this.source = selectDetailsForBreedingViewWindow;
@@ -142,7 +144,7 @@ public class RunSingleSiteAction implements ClickListener {
 	 */
 	void exportData(final BreedingViewInput breedingViewInput) {
 
-		final DatasetExporter datasetExporter = new DatasetExporter(breedingViewInput.getDatasetId());
+		this.datasetExporter.setDatasetId(breedingViewInput.getDatasetId());
 
 		try {
 
@@ -422,14 +424,11 @@ public class RunSingleSiteAction implements ClickListener {
 	}
 
 	void writeProjectXML(final Window window, final BreedingViewInput breedingViewInput) {
-
-		final BreedingViewXMLWriter breedingViewXMLWriter;
-
 		// write the XML input for breeding view
-		breedingViewXMLWriter = new BreedingViewXMLWriter(breedingViewInput);
+		this.breedingViewXMLWriter.setBreedingViewInput(breedingViewInput);
 
 		try {
-			breedingViewXMLWriter.writeProjectXML();
+			this.breedingViewXMLWriter.writeProjectXML();
 		} catch (final BreedingViewXMLWriterException e) {
 			RunSingleSiteAction.LOG.debug("Cannot write Breeding View input XML", e);
 
@@ -463,6 +462,21 @@ public class RunSingleSiteAction implements ClickListener {
 		VaadinFileDownloadResource fileDownloadResource =
 				new VaadinFileDownloadResource(file, filename + ZipUtil.ZIP_EXTENSION, this.source.getApplication());
 		this.source.getApplication().getMainWindow().open(fileDownloadResource);
+	}
+
+	
+	public void setIsServerApp(String isServerApp) {
+		this.isServerApp = isServerApp;
+	}
+
+	
+	public void setSource(SingleSiteAnalysisDetailsPanel source) {
+		this.source = source;
+	}
+
+	
+	public void setZipUtil(ZipUtil zipUtil) {
+		this.zipUtil = zipUtil;
 	}
 
 }

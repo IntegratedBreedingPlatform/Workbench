@@ -35,7 +35,7 @@ public class MultiSiteDataExporter {
 	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
 	/**
-	 * Generates GxE Multi-site analysis XML data, stored in workpace directory
+	 * Generates GxE Multi-site analysis XML data, stored in workspace directory
 	 *
 	 * @return void
 	 */
@@ -228,6 +228,11 @@ public class MultiSiteDataExporter {
 		sb.append(".csv");
 		
 		return new File(directory + File.separator + sb.toString());
+	}
+
+	
+	public void setInstallationDirectoryUtil(InstallationDirectoryUtil installationDirectoryUtil) {
+		this.installationDirectoryUtil = installationDirectoryUtil;
 	}
 
 }

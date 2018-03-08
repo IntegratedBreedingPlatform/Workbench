@@ -58,7 +58,7 @@ public class DatasetExporterTest {
 	private OntologyService ontologyService;
 
 	@InjectMocks
-	private DatasetExporter exporter = new DatasetExporter(DATASET_ID);
+	private DatasetExporter exporter = new DatasetExporter();
 
 	private static final String FILENAME = "datasetExporterTest.csv";
 	private static final String DEFAULT_TRIAL_INSTANCE_NAME = "SITE_NO";
@@ -100,7 +100,7 @@ public class DatasetExporterTest {
 
 	@Before
 	public void setUp() throws Exception {
-
+		this.exporter.setDatasetId(DATASET_ID);
 		this.factors = this.createFactors(1);
 		this.variates = this.createVariates(2);
 		this.factorVariables = this.createFactorVariablesForExperiment(this.factors);

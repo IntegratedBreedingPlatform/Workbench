@@ -70,15 +70,12 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 	@Value("${workbench.is.server.app}")
 	private String isServerApp;
 
-	private final BreedingViewInput breedingViewInput;
+	private BreedingViewInput breedingViewInput;
 
 	private final List<Integer> numericTypes;
 	private final List<Integer> characterTypes;
 
-	public BreedingViewXMLWriter(final BreedingViewInput breedingViewInput) {
-
-		this.breedingViewInput = breedingViewInput;
-
+	public BreedingViewXMLWriter() {
 		this.numericTypes = new ArrayList<>();
 		this.characterTypes = new ArrayList<>();
 
@@ -308,5 +305,10 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 
 	public void setInstallationDirectoryUtil(final InstallationDirectoryUtil installationDirectoryUtil) {
 		this.installationDirectoryUtil = installationDirectoryUtil;
+	}
+
+	
+	public void setBreedingViewInput(BreedingViewInput breedingViewInput) {
+		this.breedingViewInput = breedingViewInput;
 	}
 }

@@ -38,7 +38,7 @@ public class MetaAnalysisSelectTraitsPanelTest {
 	public void testGetMergedDatasetsExcelFile() {
 		final File file = this.metaAnalysisTraitsPanel.getMergedDatasetsExcelFile();
 		
-		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.project, Matchers.eq(ToolName.BREEDING_VIEW));
+		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
 		Assert.assertTrue(file.getAbsolutePath().contains("mergedDataSets.xls"));
 	}
 

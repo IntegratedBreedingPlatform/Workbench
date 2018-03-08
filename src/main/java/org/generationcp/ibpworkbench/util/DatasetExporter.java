@@ -45,16 +45,12 @@ public class DatasetExporter {
 	@Autowired
 	private OntologyService ontologyService;
 
-	private final Integer datasetId;
 	private final List<String[]> rowsToWrite = new ArrayList<>();
 	private final List<String> columns = new ArrayList<>();
 	private final Map<String, String> headerNameAliasMap = new HashMap<>();
 
 	private static final String MISSING_VALUE_STRING = "missing";
-
-	public DatasetExporter(final Integer datasetId) {
-		this.datasetId = datasetId;
-	}
+	private Integer datasetId;
 
 	/**
 	 * Return list of factor names in given dataset
@@ -454,6 +450,11 @@ public class DatasetExporter {
 
 	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
 		this.workbenchDataManager = workbenchDataManager;
+	}
+
+	
+	public void setDatasetId(Integer datasetId) {
+		this.datasetId = datasetId;
 	}
 
 }
