@@ -1,6 +1,6 @@
 {
-  "name": "SampleManager",
-  "short_name": "SampleManager",
+  "name": "BmsjHipster",
+  "short_name": "BmsjHipster",
   "icons": [
       {
           "src": "./content/images/logo-jhipster.png",
