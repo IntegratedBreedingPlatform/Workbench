@@ -16,7 +16,9 @@ export class AuthInterceptor implements HttpInterceptor {
             return next.handle(request);
         }
 
-        const token = this.localStorage.retrieve('authenticationToken') || this.sessionStorage.retrieve('authenticationToken');
+        // FIXME localStorage is null
+        // const xAuthToken = this.localStorage.retrieve('bms.xAuthToken') || this.sessionStorage.retrieve('bms.xAuthToken');
+        const token = JSON.parse(localStorage["bms.xAuthToken"]).token;
         if (!!token) {
             request = request.clone({
                 setHeaders: {

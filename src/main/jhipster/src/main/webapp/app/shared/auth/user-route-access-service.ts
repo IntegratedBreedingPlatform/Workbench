@@ -20,7 +20,10 @@ export class UserRouteAccessService implements CanActivate {
         // We need to call the checkLogin / and so the principal.identity() function, to ensure,
         // that the client has a principal too, if they already logged in by the server.
         // This could happen on a page refresh.
-        return this.checkLogin(authorities, state.url);
+
+        // TODO do we need this?
+        // return this.checkLogin(authorities, state.url);
+        return Promise.resolve(true);
     }
 
     checkLogin(authorities: string[], url: string): Promise<boolean> {
