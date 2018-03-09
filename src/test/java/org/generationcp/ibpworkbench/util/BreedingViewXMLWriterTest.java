@@ -32,6 +32,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -52,7 +53,7 @@ public class BreedingViewXMLWriterTest {
 	public static final String USER_NAME = "UserName";
 	private BreedingViewXMLWriter breedingViewXMLWriter;
 	private BreedingViewInput breedingViewInput;
-	
+
 	private static final String DATASTORE_FILE = "Datastore.qsv";
 	private static final String BV_FOLDER = System.getProperty("user.dir") + "/breeding_view/";
 	private static final String INPUT_DIRECTORY = BreedingViewXMLWriterTest.BV_FOLDER + "input";
@@ -65,24 +66,25 @@ public class BreedingViewXMLWriterTest {
 	private static final String ENVIRONMENT_NAME = "TRIAL_INSTANCE";
 	private static final String SOURCE_FILE_PATH = BreedingViewXMLWriterTest.INPUT_DIRECTORY + "/test.csv";
 	private static final String DEST_FILE_PATH = BreedingViewXMLWriterTest.INPUT_DIRECTORY + "/test.xml";
-	private static final String WEB_API_URL =
-			"http://localhost:18080/" + "bmsapi/breeding_view/{cropName}/ssa/save_result_summary&loggedInUserId=1&selectedProjectId=1";
+	private static final String WEB_API_URL = "http://localhost:18080/"
+			+ "bmsapi/breeding_view/{cropName}/ssa/save_result_summary&loggedInUserId=1&selectedProjectId=1";
 
 	@Mock
 	private ContextUtil contextUtil;
-	
+
 	@Mock
 	private InstallationDirectoryUtil installationDirectoryUtil;
-	
+
 	@Before
 	public void setUp() throws Exception {
 		final WorkbenchDataManager workbenchDataManager = Mockito.mock(WorkbenchDataManager.class);
-		Mockito.when(contextUtil.getProjectInContext()).thenReturn(ProjectTestDataInitializer.createProjectWithCropType());
+		Mockito.when(this.contextUtil.getProjectInContext())
+				.thenReturn(ProjectTestDataInitializer.createProjectWithCropType());
 
 		this.breedingViewInput = this.createBreedingViewInput();
 		this.breedingViewXMLWriter = new BreedingViewXMLWriter(this.breedingViewInput);
-		this.breedingViewXMLWriter.setWebApiUrl(WEB_API_URL);
-		this.breedingViewXMLWriter.setContextUtil(contextUtil);
+		this.breedingViewXMLWriter.setWebApiUrl(BreedingViewXMLWriterTest.WEB_API_URL);
+		this.breedingViewXMLWriter.setContextUtil(this.contextUtil);
 		this.breedingViewXMLWriter.setWorkbenchDataManager(workbenchDataManager);
 		this.breedingViewXMLWriter.setInstallationDirectoryUtil(this.installationDirectoryUtil);
 		this.createBreedingViewDirectories();
@@ -90,7 +92,7 @@ public class BreedingViewXMLWriterTest {
 		final SecurityContext securityContext = Mockito.mock(SecurityContext.class);
 		final Authentication authentication = Mockito.mock(Authentication.class);
 		Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
-		Mockito.when(authentication.getName()).thenReturn(USER_NAME);
+		Mockito.when(authentication.getName()).thenReturn(BreedingViewXMLWriterTest.USER_NAME);
 
 		SecurityContextHolder.setContext(securityContext);
 
@@ -99,16 +101,16 @@ public class BreedingViewXMLWriterTest {
 	@Test
 	public void testCreateDesign() {
 
-		final Design result = breedingViewXMLWriter.createDesign();
+		final Design result = this.breedingViewXMLWriter.createDesign();
 
 		// Make sure these properties have correct values.
-		Assert.assertEquals(COLUMN_FACTOR, result.getColumns().getName());
-		Assert.assertEquals(BLOCKS_FACTOR, result.getBlocks().getName());
-		Assert.assertEquals(COL_POS_FACTOR, result.getColPos().getName());
-		Assert.assertEquals(ROWS_FACTOR, result.getRows().getName());
-		Assert.assertEquals(ROW_POS_FACTOR, result.getRowPos().getName());
-		Assert.assertEquals(REPLICATES_FACTOR, result.getReplicates().getName());
-		Assert.assertEquals(PLOT_FACTOR, result.getPlot().getName());
+		Assert.assertEquals(BreedingViewXMLWriterTest.COLUMN_FACTOR, result.getColumns().getName());
+		Assert.assertEquals(BreedingViewXMLWriterTest.BLOCKS_FACTOR, result.getBlocks().getName());
+		Assert.assertEquals(BreedingViewXMLWriterTest.COL_POS_FACTOR, result.getColPos().getName());
+		Assert.assertEquals(BreedingViewXMLWriterTest.ROWS_FACTOR, result.getRows().getName());
+		Assert.assertEquals(BreedingViewXMLWriterTest.ROW_POS_FACTOR, result.getRowPos().getName());
+		Assert.assertEquals(BreedingViewXMLWriterTest.REPLICATES_FACTOR, result.getReplicates().getName());
+		Assert.assertEquals(BreedingViewXMLWriterTest.PLOT_FACTOR, result.getPlot().getName());
 		Assert.assertEquals(DesignType.RANDOMIZED_BLOCK_DESIGN.getName(), result.getType());
 
 	}
@@ -118,63 +120,68 @@ public class BreedingViewXMLWriterTest {
 
 		this.breedingViewXMLWriter.removePreviousDatastore(BreedingViewXMLWriterTest.OUTPUT_DIRECTORY);
 		Assert.assertFalse(BreedingViewXMLWriterTest.DATASTORE_FILE + " should not exist",
-				new File(BreedingViewXMLWriterTest.OUTPUT_DIRECTORY + "/" + BreedingViewXMLWriterTest.DATASTORE_FILE).exists());
+				new File(BreedingViewXMLWriterTest.OUTPUT_DIRECTORY + "/" + BreedingViewXMLWriterTest.DATASTORE_FILE)
+						.exists());
 		this.createDummyDatastoreFile(BreedingViewXMLWriterTest.OUTPUT_DIRECTORY);
 		this.breedingViewXMLWriter.removePreviousDatastore(BreedingViewXMLWriterTest.OUTPUT_DIRECTORY);
 		Assert.assertFalse(BreedingViewXMLWriterTest.DATASTORE_FILE + " should not exist",
-				new File(BreedingViewXMLWriterTest.OUTPUT_DIRECTORY + "/" + BreedingViewXMLWriterTest.DATASTORE_FILE).exists());
+				new File(BreedingViewXMLWriterTest.OUTPUT_DIRECTORY + "/" + BreedingViewXMLWriterTest.DATASTORE_FILE)
+						.exists());
 	}
 
 	@Test
 	public void testWriteProjectXML() throws Exception {
-		Mockito.doReturn(OUTPUT_DIRECTORY).when(this.installationDirectoryUtil)
-				.getOutputDirectoryForProjectAndTool(Mockito.any(Project.class), Mockito.any(Tool.class));
+		Mockito.doReturn(BreedingViewXMLWriterTest.OUTPUT_DIRECTORY).when(this.installationDirectoryUtil)
+				.getOutputDirectoryForProjectAndTool(Matchers.any(Project.class), Matchers.any(Tool.class));
 		final String filePath = this.breedingViewInput.getDestXMLFilePath();
 		this.breedingViewXMLWriter.writeProjectXML();
-		
-		Mockito.verify(this.installationDirectoryUtil).getOutputDirectoryForProjectAndTool(Mockito.any(Project.class),
-				Mockito.any(Tool.class));
+
+		Mockito.verify(this.installationDirectoryUtil).getOutputDirectoryForProjectAndTool(Matchers.any(Project.class),
+				Matchers.any(Tool.class));
 		Assert.assertTrue(filePath + " should exist", new File(filePath).exists());
 	}
-	
+
 	@Test
 	public void testGetWebApiUrl() {
 		final Project project = ProjectTestDataInitializer.createProjectWithCropType();
-		Mockito.when(contextUtil.getProjectInContext()).thenReturn(project);
+		Mockito.when(this.contextUtil.getProjectInContext()).thenReturn(project);
 		final String url = this.breedingViewXMLWriter.getWebApiUrl();
 		Mockito.verify(this.contextUtil).getProjectInContext();
 		Assert.assertTrue(url.contains(project.getCropType().getCropName()));
 	}
-	
+
 	@Test
 	public void testCreateEnvironmentsWhereTrialFactorIsTrialInstance() {
-		SeaEnvironmentModel seaEnvironmentModel = SeaEnvironmentModelTestDataInitializer.createSeaEnvironmentModel();
+		final SeaEnvironmentModel seaEnvironmentModel = SeaEnvironmentModelTestDataInitializer
+				.createSeaEnvironmentModel();
 		this.breedingViewInput.setSelectedEnvironments(Arrays.asList(seaEnvironmentModel));
-		Environments environments = this.breedingViewXMLWriter.createEnvironments();
+		final Environments environments = this.breedingViewXMLWriter.createEnvironments();
 		Assert.assertEquals(this.breedingViewInput.getEnvironment().getName(), environments.getName());
 		Assert.assertNull(environments.getTrialName());
 		Assert.assertEquals(1, environments.getEnvironments().size());
-		org.generationcp.commons.sea.xml.Environment environment = environments.getEnvironments().get(0);
+		final org.generationcp.commons.sea.xml.Environment environment = environments.getEnvironments().get(0);
 		Assert.assertEquals(seaEnvironmentModel.getEnvironmentName(), environment.getName());
 		Assert.assertTrue(environment.getActive());
 		Assert.assertNull(environment.getTrial());
 	}
-	
+
 	@Test
 	public void testCreateEnvironmentsWhereTrialFactorIsNotTrialInstance() {
-		SeaEnvironmentModel seaEnvironmentModel = SeaEnvironmentModelTestDataInitializer.createSeaEnvironmentModel();
+		final SeaEnvironmentModel seaEnvironmentModel = SeaEnvironmentModelTestDataInitializer
+				.createSeaEnvironmentModel();
 		this.breedingViewInput.setSelectedEnvironments(Arrays.asList(seaEnvironmentModel));
-		this.breedingViewInput.getEnvironment().setName("LOCATION_NAME");;
-		Environments environments = this.breedingViewXMLWriter.createEnvironments();
+		this.breedingViewInput.getEnvironment().setName("LOCATION_NAME");
+		;
+		final Environments environments = this.breedingViewXMLWriter.createEnvironments();
 		Assert.assertEquals(this.breedingViewInput.getEnvironment().getName(), environments.getName());
 		Assert.assertEquals(this.breedingViewInput.getTrialInstanceName(), environments.getTrialName());
 		Assert.assertEquals(1, environments.getEnvironments().size());
-		org.generationcp.commons.sea.xml.Environment environment = environments.getEnvironments().get(0);
+		final org.generationcp.commons.sea.xml.Environment environment = environments.getEnvironments().get(0);
 		Assert.assertEquals(seaEnvironmentModel.getEnvironmentName(), environment.getName());
 		Assert.assertTrue(environment.getActive());
 		Assert.assertEquals(seaEnvironmentModel.getTrialno(), environment.getTrial());
 	}
-	
+
 	@After
 	public void cleanUp() throws Exception {
 		this.deleteBreedingViewDirectories();
@@ -220,31 +227,31 @@ public class BreedingViewXMLWriterTest {
 		breedingViewInput.setVariatesActiveState(new HashMap<String, Boolean>());
 
 		final Columns columns = new Columns();
-		columns.setName(COLUMN_FACTOR);
+		columns.setName(BreedingViewXMLWriterTest.COLUMN_FACTOR);
 		breedingViewInput.setColumns(columns);
 
 		final Blocks blocks = new Blocks();
-		blocks.setName(BLOCKS_FACTOR);
+		blocks.setName(BreedingViewXMLWriterTest.BLOCKS_FACTOR);
 		breedingViewInput.setBlocks(blocks);
 
 		final ColPos colPos = new ColPos();
-		colPos.setName(COL_POS_FACTOR);
+		colPos.setName(BreedingViewXMLWriterTest.COL_POS_FACTOR);
 		breedingViewInput.setColPos(colPos);
 
 		final Rows rows = new Rows();
-		rows.setName(ROWS_FACTOR);
+		rows.setName(BreedingViewXMLWriterTest.ROWS_FACTOR);
 		breedingViewInput.setRows(rows);
 
 		final RowPos rowPos = new RowPos();
-		rowPos.setName(ROW_POS_FACTOR);
+		rowPos.setName(BreedingViewXMLWriterTest.ROW_POS_FACTOR);
 		breedingViewInput.setRowPos(rowPos);
 
 		final Replicates replicates = new Replicates();
-		replicates.setName(REPLICATES_FACTOR);
+		replicates.setName(BreedingViewXMLWriterTest.REPLICATES_FACTOR);
 		breedingViewInput.setReplicates(replicates);
 
 		final Plot plot = new Plot();
-		plot.setName(PLOT_FACTOR);
+		plot.setName(BreedingViewXMLWriterTest.PLOT_FACTOR);
 		breedingViewInput.setPlot(plot);
 
 		breedingViewInput.setDesignType(DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
