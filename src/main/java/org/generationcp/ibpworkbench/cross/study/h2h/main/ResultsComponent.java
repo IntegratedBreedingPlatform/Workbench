@@ -43,10 +43,11 @@ import com.vaadin.ui.VerticalLayout;
 @Configurable
 public class ResultsComponent extends AbsoluteLayout implements InitializingBean, InternationalizableComponent {
 
+	public static final String HEAD_TO_HEAD_DATA_LIST = "HeadToHeadDataList";
+
 	private static final long serialVersionUID = 2305982279660448571L;
 
-	@SuppressWarnings("unused")
-	private final static Logger LOG = LoggerFactory.getLogger(org.generationcp.ibpworkbench.cross.study.h2h.main.ResultsComponent.class);
+	private static final Logger LOG = LoggerFactory.getLogger(org.generationcp.ibpworkbench.cross.study.h2h.main.ResultsComponent.class);
 
 	private static final String MEAN_TEST_COLUMN_ID = "ResultsComponent Mean Test Column ID";
 	private static final String MEAN_STD_COLUMN_ID = "ResultsComponent Mean STD Column ID";
@@ -83,6 +84,8 @@ public class ResultsComponent extends AbsoluteLayout implements InitializingBean
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
+	
+	private HeadToHeadDataListExport listExporter = new HeadToHeadDataListExport();
 
 	public ResultsComponent(HeadToHeadCrossStudyMain mainScreen) {
 		this.mainScreen = mainScreen;
@@ -299,9 +302,7 @@ public class ResultsComponent extends AbsoluteLayout implements InitializingBean
 					this.messageSource.getMessage(Message.H2H_NUM_OF_TRAITS_EXCEEDED));
 
 		} else {
-			String tempFileName = "HeadToHeadDataList";
-			HeadToHeadDataListExport listExporter = new HeadToHeadDataListExport();
-
+			String tempFileName = HEAD_TO_HEAD_DATA_LIST;
 			try {
 
 				final String temporaryFileName = listExporter.exportHeadToHeadDataListExcel(tempFileName, this.resultsDataList, traitsIterator, columnIdData,
@@ -311,8 +312,8 @@ public class ResultsComponent extends AbsoluteLayout implements InitializingBean
 
 				this.getWindow().open(fileDownloadResource);
 				this.mainScreen.selectFirstTab();
-				// TODO must figure out other way to clean-up file because deleting it here makes it unavailable for download
-			} catch (HeadToHeadDataListExportException e) {
+			} catch (final HeadToHeadDataListExportException e) {
+				LOG.error(e.getMessage(), e);
 				MessageNotifier.showError(
 						this.getApplication().getWindow(GermplasmStudyBrowserApplication.HEAD_TO_HEAD_COMPARISON_WINDOW_NAME),
 						"Error with exporting list.", e.getMessage());
@@ -324,5 +325,15 @@ public class ResultsComponent extends AbsoluteLayout implements InitializingBean
 
 	public void backButtonClickAction() {
 		this.mainScreen.selectThirdTab();
+	}
+
+	
+	public void setFinalEnvironmentForComparisonList(List<EnvironmentForComparison> finalEnvironmentForComparisonList) {
+		this.finalEnvironmentForComparisonList = finalEnvironmentForComparisonList;
+	}
+
+	
+	public void setListExporter(HeadToHeadDataListExport listExporter) {
+		this.listExporter = listExporter;
 	}
 }

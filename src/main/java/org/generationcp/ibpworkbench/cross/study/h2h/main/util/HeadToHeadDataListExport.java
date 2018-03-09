@@ -1,6 +1,12 @@
 
 package org.generationcp.ibpworkbench.cross.study.h2h.main.util;
 
+import java.io.FileOutputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -18,14 +24,6 @@ import org.generationcp.ibpworkbench.cross.study.h2h.main.pojos.TraitForComparis
 import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import java.io.FileOutputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Resource;
 
 @Configurable
 public class HeadToHeadDataListExport {
@@ -91,10 +89,29 @@ public class HeadToHeadDataListExport {
 		return styles;
 	}
 
-	public String exportHeadToHeadDataListExcel(String filename, List<ResultsData> resultDataList,
+	public String exportHeadToHeadDataListExcel(String filenameWithoutExtension, List<ResultsData> resultDataList,
 			Set<TraitForComparison> traitsIterator, String[] columnIdData, Map<String, String> columnIdDataMsgMap)
 			throws HeadToHeadDataListExportException {
 
+		final HSSFWorkbook wb = this.createExcelWorkbookContents(resultDataList, traitsIterator, columnIdData, columnIdDataMsgMap);
+
+		try {
+			final String fileNameUnderWorkspaceDirectory = this.installationDirectoryUtil.getTempFileInOutputDirectoryForProjectAndTool(
+					filenameWithoutExtension, ".xls", this.contextUtil.getProjectInContext(), ToolName.MAIN_HEAD_TO_HEAD_BROWSER);
+			
+			// write the excel file
+			FileOutputStream fileOutputStream = new FileOutputStream(fileNameUnderWorkspaceDirectory);
+			wb.write(fileOutputStream);
+			fileOutputStream.close();
+			
+			return fileNameUnderWorkspaceDirectory;
+		} catch (Exception ex) {
+			throw new HeadToHeadDataListExportException("Error with writing to: " + filenameWithoutExtension, ex);
+		}
+	}
+
+	HSSFWorkbook createExcelWorkbookContents(List<ResultsData> resultDataList, Set<TraitForComparison> traitsIterator,
+			String[] columnIdData, Map<String, String> columnIdDataMsgMap) {
 		HSSFWorkbook wb = new HSSFWorkbook();
 		HashMap<String, CellStyle> sheetStyles = this.createStyles(wb);
 		HSSFSheet sheet = wb.createSheet("Data List");
