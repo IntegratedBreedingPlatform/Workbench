@@ -8,14 +8,15 @@ import org.generationcp.ibpworkbench.germplasm.GermplasmDetailModel;
 import org.generationcp.ibpworkbench.germplasm.GermplasmQueries;
 import org.generationcp.ibpworkbench.ui.common.LinkButton;
 import org.generationcp.middleware.domain.dms.StudyReference;
-import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.domain.search.StudyResultSet;
 import org.generationcp.middleware.domain.search.filter.StudyQueryFilter;
+import org.generationcp.middleware.domain.study.StudyTypeDto;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -62,13 +63,15 @@ public class GermplasmIndexContainerTest {
 
 	@Before
 	public void setUp() {
-		StudyResultSet studyResultSet = Mockito.mock(StudyResultSet.class);
-		when(this.studyDataManager.searchStudies(Mockito.any(StudyQueryFilter.class), Mockito.anyInt())).thenReturn(studyResultSet);
+		final StudyResultSet studyResultSet = Mockito.mock(StudyResultSet.class);
+		when(this.studyDataManager.searchStudies(Matchers.any(StudyQueryFilter.class), Matchers.anyInt())).thenReturn(studyResultSet);
 		when(studyResultSet.hasMore()).thenReturn(true).thenReturn(true).thenReturn(false);
+		final StudyTypeDto studyTypeDTONursery = new StudyTypeDto("N");
+		final StudyTypeDto studyTypeDTOTrial = new StudyTypeDto("T");
 		when(studyResultSet.next()).thenReturn(
-			new StudyReference(TEST_NURSERY_ID_1, TEST_NURSERY_NAME, TEST_NURSERY_NAME, PROGRAM_UUID, StudyType.N))
+			new StudyReference(TEST_NURSERY_ID_1, TEST_NURSERY_NAME, TEST_NURSERY_NAME, PROGRAM_UUID, studyTypeDTONursery))
 			.thenReturn(
-				new StudyReference(TEST_TRIAL_ID_2, TEST_TRIAL_NAME, TEST_TRIAL_NAME, PROGRAM_UUID, StudyType.T));
+				new StudyReference(TEST_TRIAL_ID_2, TEST_TRIAL_NAME, TEST_TRIAL_NAME, PROGRAM_UUID, studyTypeDTOTrial));
 
 		this.gDetailModel = new GermplasmDetailModel();
 		this.gDetailModel.setGid(1);
@@ -90,10 +93,10 @@ public class GermplasmIndexContainerTest {
 
 	@Test
 	public void testgetGermplasmStudyInformation() {
-		IndexedContainer container = this.germplasmIndexContainer.getGermplasmStudyInformation(gDetailModel, contextUtil);
+		final IndexedContainer container = this.germplasmIndexContainer.getGermplasmStudyInformation(gDetailModel, contextUtil);
 
-		for (Object itemId : container.getItemIds()) {
-			Item item = container.getItem(itemId);
+		for (final Object itemId : container.getItemIds()) {
+			final Item item = container.getItem(itemId);
 
 			if ((Integer) item.getItemProperty(GermplasmIndexContainer.STUDY_ID).getValue() == TEST_NURSERY_ID_1) {
 				validateNursery(item);
@@ -103,7 +106,7 @@ public class GermplasmIndexContainerTest {
 		}
 	}
 
-	private void validateTrial(Item item) {
+	private void validateTrial(final Item item) {
 		assertThat(TEST_TRIAL_ID_2, equalTo(item.getItemProperty(GermplasmIndexContainer.STUDY_ID).getValue()));
 		assertThat(URL_STUDY_TRIAL[0] + TEST_TRIAL_ID_2 + aditionalParameters + URL_STUDY_TRIAL[1],
 			equalTo(((LinkButton) item.getItemProperty(GermplasmIndexContainer.STUDY_NAME).getValue()).getResource().getURL().toString()));
@@ -111,7 +114,7 @@ public class GermplasmIndexContainerTest {
 
 	}
 
-	private void validateNursery(Item item) {
+	private void validateNursery(final Item item) {
 		assertThat(TEST_NURSERY_ID_1, equalTo(item.getItemProperty(GermplasmIndexContainer.STUDY_ID).getValue()));
 		assertThat(URL_STUDY_NURSERY + TEST_NURSERY_ID_1 + aditionalParameters,
 			equalTo(((LinkButton) item.getItemProperty(GermplasmIndexContainer.STUDY_NAME).getValue()).getResource().getURL().toString()));

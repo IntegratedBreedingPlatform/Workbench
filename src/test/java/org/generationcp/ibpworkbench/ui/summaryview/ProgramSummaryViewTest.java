@@ -6,7 +6,7 @@ import com.vaadin.ui.Table;
 import junit.framework.Assert;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.middleware.domain.oms.StudyType;
+import org.generationcp.middleware.domain.study.StudyTypeDto;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -14,6 +14,7 @@ import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -23,7 +24,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 public class ProgramSummaryViewTest {
@@ -69,9 +69,9 @@ public class ProgramSummaryViewTest {
 		Mockito.doReturn(this.getTestProjectActivities(ProgramSummaryViewTest.ACTIVITIES_COUNT.intValue())).when(this.workbenchDataManager)
 				.getProjectActivitiesByProjectId(project.getProjectId(), 0, ProgramSummaryViewTest.ACTIVITIES_COUNT.intValue());
 		Mockito.doReturn(ProgramSummaryViewTest.NURSERY_COUNT).when(this.studyDataManager)
-				.countAllStudyDetails(StudyType.N, ProgramSummaryViewTest.PROGRAM_UUID);
+				.countAllStudyDetails(new StudyTypeDto("N"), ProgramSummaryViewTest.PROGRAM_UUID);
 		Mockito.doReturn(ProgramSummaryViewTest.TRIAL_COUNT).when(this.studyDataManager)
-				.countAllStudyDetails(StudyType.T, ProgramSummaryViewTest.PROGRAM_UUID);
+				.countAllStudyDetails(new StudyTypeDto("T"), ProgramSummaryViewTest.PROGRAM_UUID);
 		Mockito.doReturn(ProgramSummaryViewTest.STUDIES_COUNT).when(this.studyDataManager)
 				.countAllNurseryAndTrialStudyDetails(ProgramSummaryViewTest.PROGRAM_UUID);
 
@@ -135,12 +135,12 @@ public class ProgramSummaryViewTest {
 
 		final ProgramSummaryView.ExportButtonListener listener = Mockito.spy(this.summaryView.new ExportButtonListener());
 
-		doNothing().when(listener).doExport(Mockito.any(ExcelExport.class), eq(tableName));
+		doNothing().when(listener).doExport(Matchers.any(ExcelExport.class), eq(tableName));
 
 		listener.buttonClick(null);
 
 		// Make sure that doExport is called when the button is clicked
-		verify(listener).doExport(Mockito.any(ExcelExport.class), eq(tableName));
+		verify(listener).doExport(Matchers.any(ExcelExport.class), eq(tableName));
 
 	}
 
