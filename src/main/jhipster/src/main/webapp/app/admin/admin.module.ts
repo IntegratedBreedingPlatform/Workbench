@@ -7,12 +7,6 @@ import { BmsjHipsterSharedModule } from '../shared';
 import {
     adminState,
     AuditsComponent,
-    UserMgmtComponent,
-    UserDialogComponent,
-    UserDeleteDialogComponent,
-    UserMgmtDetailComponent,
-    UserMgmtDialogComponent,
-    UserMgmtDeleteDialogComponent,
     LogsComponent,
     JhiMetricsMonitoringModalComponent,
     JhiMetricsMonitoringComponent,
@@ -25,9 +19,6 @@ import {
     JhiHealthService,
     JhiMetricsService,
     LogsService,
-    UserResolvePagingParams,
-    UserResolve,
-    UserModalService
 } from './';
 
 @NgModule({
@@ -38,12 +29,6 @@ import {
     ],
     declarations: [
         AuditsComponent,
-        UserMgmtComponent,
-        UserDialogComponent,
-        UserDeleteDialogComponent,
-        UserMgmtDetailComponent,
-        UserMgmtDialogComponent,
-        UserMgmtDeleteDialogComponent,
         LogsComponent,
         JhiConfigurationComponent,
         JhiHealthCheckComponent,
@@ -53,8 +38,6 @@ import {
         JhiMetricsMonitoringModalComponent
     ],
     entryComponents: [
-        UserMgmtDialogComponent,
-        UserMgmtDeleteDialogComponent,
         JhiHealthModalComponent,
         JhiMetricsMonitoringModalComponent,
     ],
@@ -64,9 +47,6 @@ import {
         JhiHealthService,
         JhiMetricsService,
         LogsService,
-        UserResolvePagingParams,
-        UserResolve,
-        UserModalService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

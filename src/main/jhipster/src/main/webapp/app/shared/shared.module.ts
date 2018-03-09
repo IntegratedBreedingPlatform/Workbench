@@ -7,7 +7,6 @@ import {
     CSRFService,
     AuthServerProvider,
     AccountService,
-    UserService,
     StateStorageService,
     LoginService,
     LoginModalService,
@@ -33,7 +32,6 @@ import {
         Principal,
         CSRFService,
         AuthServerProvider,
-        UserService,
         DatePipe
     ],
     entryComponents: [JhiLoginModalComponent],

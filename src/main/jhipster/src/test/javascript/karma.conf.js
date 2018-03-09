@@ -35,7 +35,7 @@ module.exports = (config) => {
         reporters: ['dots', 'junit', 'progress', 'karma-remap-istanbul', 'notify'],
 
         junitReporter: {
-            outputFile: '../../../../target/test-results/karma/TESTS-results.xml'
+            outputFile: '../../../../build/test-results/karma/TESTS-results.xml'
         },
 
         notifyReporter: {
@@ -46,8 +46,8 @@ module.exports = (config) => {
 
         remapIstanbulReporter: {
             reports: { // eslint-disable-line
-                'lcovonly': 'target/test-results/coverage/report-lcov/lcov.info',
-                'html': 'target/test-results/coverage',
+                'lcovonly': 'build/test-results/coverage/report-lcov/lcov.info',
+                'html': 'build/test-results/coverage',
                 'text-summary': null
             }
         },
