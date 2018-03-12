@@ -104,8 +104,10 @@ public class TableViewerCellSelectorUtil {
 		}
 
 		Object[] columnHeadersObjectArray = this.table.getVisibleColumns();
-		for (int i = 0; i < columnHeadersObjectArray.length; i++) {
-			this.columnHeaders.add(columnHeadersObjectArray[i].toString());
+		if (columnHeadersObjectArray != null) {
+			for (int i = 0; i < columnHeadersObjectArray.length; i++) {
+				this.columnHeaders.add(columnHeadersObjectArray[i].toString());
+			}
 		}
 
 		this.table.addListener(new ItemClickEvent.ItemClickListener() {

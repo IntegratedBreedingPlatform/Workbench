@@ -60,6 +60,8 @@ public class HeadToHeadDataListExportTest {
 		
 		final File excelFile = new File(excelFilePath);
 		Assert.assertTrue(excelFile.exists());
+		Assert.assertTrue(excelFile.getName().startsWith(ResultsComponent.HEAD_TO_HEAD_DATA_LIST));
+		Assert.assertTrue(excelFile.getName().endsWith(".xls"));
 		final String outputDirectory = this.installationDirectoryUtil.getOutputDirectoryForProjectAndTool(this.contextUtil.getProjectInContext(), ToolName.MAIN_HEAD_TO_HEAD_BROWSER);
 		final File outputDirectoryFile = new File(outputDirectory);
 		Assert.assertTrue(outputDirectoryFile.exists());

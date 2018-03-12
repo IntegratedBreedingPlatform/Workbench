@@ -1,7 +1,9 @@
 
 package org.generationcp.ibpworkbench.study.util;
 
-import com.vaadin.ui.Button;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
@@ -19,10 +21,7 @@ import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.io.FileOutputStream;
-import java.util.ArrayList;
-
-import javax.annotation.Resource;
+import com.vaadin.ui.Button;
 
 @Configurable
 public class TableViewerExporter {
@@ -120,6 +119,10 @@ public class TableViewerExporter {
 
 		}
 
+		return writeExcelFile(filename, workbook);
+	}
+
+	String writeExcelFile(final String filename, final Workbook workbook) throws DatasetExporterException {
 		try {
 			// write the excel file
 			final String fileNameUnderWorkspaceDirectory = this.installationDirectoryUtil.getTempFileInOutputDirectoryForProjectAndTool(
@@ -142,5 +145,10 @@ public class TableViewerExporter {
 		}
 		// only got here if we didn't return false
 		return true;
+	}
+
+	
+	public void setContextUtil(ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
 	}
 }

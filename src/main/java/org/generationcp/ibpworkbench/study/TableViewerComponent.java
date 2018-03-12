@@ -45,7 +45,8 @@ import com.vaadin.ui.VerticalLayout;
 @Configurable
 public class TableViewerComponent extends BaseSubWindow implements InitializingBean, InternationalizableComponent {
 
-	private final static Logger LOG = LoggerFactory.getLogger(TableViewerComponent.class);
+	protected static final String FILENAME_PREFIX = "TVDataset";
+	private static final Logger LOG = LoggerFactory.getLogger(TableViewerComponent.class);
 	private static final long serialVersionUID = 477658402146083181L;
 	public static final String TABLE_VIEWER_WINDOW_NAME = "table-viewer";
 	public static final String EXPORT_EXCEL_BUTTON_ID = "Export Dataset to Excel";
@@ -58,15 +59,19 @@ public class TableViewerComponent extends BaseSubWindow implements InitializingB
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
+	
+	private TableViewerExporter tableViewerExporter;
 
 	public TableViewerComponent(TableViewerDatasetTable displayTable) {
 		this.displayTable = displayTable;
 		this.tableViewerCellSelectorUtil = new TableViewerCellSelectorUtil(this, displayTable);
+		tableViewerExporter = new TableViewerExporter(this.displayTable, this.tableViewerCellSelectorUtil);
 	}
 
 	public TableViewerComponent(TableViewerDatasetTable displayTable, String studyName) {
 		this.displayTable = displayTable;
 		this.tableViewerCellSelectorUtil = new TableViewerCellSelectorUtil(this, displayTable);
+		tableViewerExporter = new TableViewerExporter(this.displayTable, this.tableViewerCellSelectorUtil);
 		this.studyName = studyName;
 	}
 
@@ -133,20 +138,18 @@ public class TableViewerComponent extends BaseSubWindow implements InitializingB
 		// for now, not needed to add any code here
 	}
 
-	@SuppressWarnings("deprecation")
 	public void exportToExcelAction() {
 
-		String filename = "TVDataset";
+		String filename = FILENAME_PREFIX;
 
 		try {
-			TableViewerExporter tableViewerExporter = new TableViewerExporter(this.displayTable, this.tableViewerCellSelectorUtil);
 			final String temporaryFileName = tableViewerExporter.exportToExcel(filename);
 
 			String downloadFilename;
 			if (this.studyName != null) {
 				downloadFilename = filename + "_" + this.studyName.replace(" ", "_").trim() + ".xlsx";
 			} else {
-				downloadFilename = filename;
+				downloadFilename = filename + ".xlsx";
 			}
 
 			VaadinFileDownloadResource fileDownloadResource =
@@ -159,5 +162,15 @@ public class TableViewerComponent extends BaseSubWindow implements InitializingB
 			MessageNotifier.showError(this.getApplication().getWindow(GermplasmStudyBrowserApplication.STUDY_WINDOW_NAME), e.getMessage(),
 					"");
 		}
+	}
+
+	
+	public void setTableViewerExporter(TableViewerExporter tableViewerExporter) {
+		this.tableViewerExporter = tableViewerExporter;
+	}
+
+	
+	public void setStudyName(String studyName) {
+		this.studyName = studyName;
 	}
 }

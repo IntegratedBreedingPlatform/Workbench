@@ -65,6 +65,8 @@ import com.vaadin.ui.themes.Reindeer;
 @Configurable
 public class RepresentationDatasetComponent extends VerticalLayout implements InitializingBean, InternationalizableComponent {
 
+	protected static final String XLS_DOWNLOAD_FILENAME = "export.xls";
+	protected static final String TEMP_FILENAME = "dataset-temp";
 	public static final String EXPORT_CSV_BUTTON_ID = "RepresentationDatasetComponent Export CSV Button";
 	public static final String EXPORT_EXCEL_BUTTON_ID = "RepresentationDatasetComponent Export to FieldBook Excel File Button";
 	public static final String OPEN_TABLE_VIEWER_BUTTON_ID = "RepresentationDatasetComponent Open Table Viewer Button";
@@ -86,6 +88,7 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 	private final boolean fromUrl;
 	private final boolean h2hCall;
 	private Table datasetTable;
+	// TODO - remove code for exporting to CSV as this has long been not displayed on screen
 	private Button exportCsvButton;
 	private Button exportExcelButton;
 	private Button openTableViewerButton;
@@ -99,8 +102,9 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 	private ContextUtil contextUtil;
 
 	private Map<String, Integer> studiesMappedByInstance = new HashMap<>();
+	private DatasetExporter datasetExporter;
 
-
+	//FIXME - Autowire StudyDataManager instead of passing it as parameter from other class
 	public RepresentationDatasetComponent(StudyDataManager studyDataManager, Integer datasetId, String datasetTitle, Integer studyId,
 			boolean fromUrl, boolean h2hCall) {
 		this.reportName = datasetTitle;
@@ -109,6 +113,8 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 		this.studyDataManager = studyDataManager;
 		this.fromUrl = fromUrl;
 		this.h2hCall = h2hCall;
+		
+		this.datasetExporter = new DatasetExporter(this.studyDataManager, this.studyIdHolder, this.datasetId);
 	}
 
 	// Called by StudyButtonClickListener
@@ -130,17 +136,11 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 		csvExport.export();
 	}
 
-	// Called by StudyButtonClickListener
-
-	@SuppressWarnings("deprecation")
 	public void exportToExcelAction() {
-
-		DatasetExporter datasetExporter;
-		datasetExporter = new DatasetExporter(this.studyDataManager, this.studyIdHolder, this.datasetId);
 		try {
-			 final String temporaryFileName = datasetExporter.exportToFieldBookExcelUsingIBDBv2("dataset-temp");
+			 final String temporaryFileName = this.datasetExporter.exportToFieldBookExcelUsingIBDBv2(TEMP_FILENAME);
 			 VaadinFileDownloadResource fileDownloadResource =
-	                    new VaadinFileDownloadResource(new File(temporaryFileName), "export.xls", this.getApplication());
+	                    new VaadinFileDownloadResource(new File(temporaryFileName), XLS_DOWNLOAD_FILENAME, this.getApplication());
 			Util.showExportExcelDownloadFile(fileDownloadResource, this.getWindow());
 
 		} catch (DatasetExporterException e) {
@@ -343,6 +343,11 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 		this.messageSource.setCaption(this.exportExcelButton, Message.EXPORT_TO_EXCEL_LABEL);
 		this.messageSource.setCaption(this.openTableViewerButton, Message.OPEN_TABLE_VIEWER_LABEL);
 		this.messageSource.setCaption(this.openGraphicalFilteringTool, Message.OPEN_GRAPHICAL_FILTERING_TOOL);
+	}
+
+	
+	public void setDatasetExporter(DatasetExporter datasetExporter) {
+		this.datasetExporter = datasetExporter;
 	}
 
 }

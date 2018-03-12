@@ -71,7 +71,7 @@ public class DatasetExporter {
 		this.datasetId = datasetId;
 	}
 
-	public String exportToFieldBookExcelUsingIBDBv2(String filename) throws DatasetExporterException {
+	public String exportToFieldBookExcelUsingIBDBv2(String filenameWithoutExtension) throws DatasetExporterException {
 
 		if (this.studyDataManager == null) {
 			throw new DatasetExporterException("studyDataManager should not be null.");
@@ -114,7 +114,7 @@ public class DatasetExporter {
 			traceSheet(study.getName(), observationSheet);
 		}
 
-		return this.writeExcelFile(filename, workbook);
+		return this.writeExcelFile(filenameWithoutExtension, workbook);
 	}
 
 	/*
@@ -187,17 +187,17 @@ public class DatasetExporter {
 		}
 	}
 
-	private String writeExcelFile(String filename, HSSFWorkbook workbook) throws DatasetExporterException {
+	String writeExcelFile(String filenameWithoutExtension, HSSFWorkbook workbook) throws DatasetExporterException {
 		try {
 			final String fileNameUnderWorkspaceDirectory = this.installationDirectoryUtil.getTempFileInOutputDirectoryForProjectAndTool(
-					filename, ".xls", this.contextUtil.getProjectInContext(), ToolName.STUDY_BROWSER);
+					filenameWithoutExtension, ".xls", this.contextUtil.getProjectInContext(), ToolName.STUDY_BROWSER);
 			FileOutputStream fileOutputStream = new FileOutputStream(fileNameUnderWorkspaceDirectory);
 			workbook.write(fileOutputStream);
 			fileOutputStream.close();
 			
 			return fileNameUnderWorkspaceDirectory;
 		} catch (Exception ex) {
-			throw new DatasetExporterException("Error with writing to: " + filename, ex);
+			throw new DatasetExporterException("Error with writing to: " + filenameWithoutExtension, ex);
 		}
 	}
 
@@ -624,6 +624,11 @@ public class DatasetExporter {
 			}
 		}
 		
+	}
+
+	
+	public void setContextUtil(ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
 	}
 
 }
