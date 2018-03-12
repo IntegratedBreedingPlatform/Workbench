@@ -72,6 +72,7 @@ export class SampleService {
         const copy: Sample = Object.assign({}, sample);
         copy.samplingDate = this.dateUtils
             .convertDateTimeFromServer(sample.samplingDate);
+        copy.id = sample.sampleId;
         return copy;
     }
 
