@@ -9,12 +9,19 @@ describe('administration', () => {
         browser.get('/');
         browser.waitForAngular();
         navBarPage = new NavBarPage(true);
-        navBarPage.getSignInPage().loginWithOAuth('admin', 'admin');
+        navBarPage.getSignInPage().autoSignInUsing('admin', 'admin');
         browser.waitForAngular();
     });
 
     beforeEach(() => {
         navBarPage.clickOnAdminMenu();
+    });
+    it('should load user management', () => {
+        navBarPage.clickOnAdmin('user-management');
+        const expect1 = /userManagement.home.title/;
+        element.all(by.css('h2 span')).first().getAttribute('jhiTranslate').then((value) => {
+            expect(value).toMatch(expect1);
+        });
     });
 
     it('should load metrics', () => {
