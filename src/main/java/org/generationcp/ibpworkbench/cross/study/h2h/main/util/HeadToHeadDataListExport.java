@@ -158,10 +158,15 @@ public class HeadToHeadDataListExport {
 				}
 
 				endCol = cellIndex;
-				sheet.addMergedRegion(new CellRangeAddress(0, // first row (0-based)
-						0, // last row (0-based)
-						startCol, // first column (0-based)
-						endCol - 1 // last column (0-based)
+				sheet.addMergedRegion(new CellRangeAddress(
+						// first row (0-based)
+						0,
+						// last row (0-based)
+						0,
+						// first column (0-based)
+						startCol,
+						// last column (0-based)
+						endCol - 1
 				));
 			}
 		}
@@ -218,19 +223,11 @@ public class HeadToHeadDataListExport {
 		for (int ctr = 0; ctr < cellIndex; ctr++) {
 			sheet.autoSizeColumn(ctr);
 		}
+		return wb;
+	}
 
-		try {
-			final String fileNameUnderWorkspaceDirectory = this.installationDirectoryUtil.getTempFileInOutputDirectoryForProjectAndTool(
-					filename, ".xls", this.contextUtil.getProjectInContext(), ToolName.MAIN_HEAD_TO_HEAD_BROWSER);
-			
-			// write the excel file
-			FileOutputStream fileOutputStream = new FileOutputStream(fileNameUnderWorkspaceDirectory);
-			wb.write(fileOutputStream);
-			fileOutputStream.close();
-			
-			return fileNameUnderWorkspaceDirectory;
-		} catch (Exception ex) {
-			throw new HeadToHeadDataListExportException("Error with writing to: " + filename, ex);
-		}
+	
+	public void setContextUtil(ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
 	}
 }
