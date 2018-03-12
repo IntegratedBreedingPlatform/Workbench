@@ -138,8 +138,9 @@ currentAccount: any;
     }
 
     private onSuccess(data, headers) {
-        this.links = this.parseLinks.parse(headers.get('link'));
-        this.totalItems = headers.get('X-Total-Count');
+        // FIXME
+        // this.links = this.parseLinks.parse(headers.get('link'));
+        // this.totalItems = headers.get('X-Total-Count');
         this.queryCount = this.totalItems;
         // this.page = pagingParams.page;
         this.samples = data;
