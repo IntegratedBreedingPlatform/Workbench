@@ -1,14 +1,17 @@
 <div>
     <h2>
-        <span jhiTranslate="bmsjHipsterApp.sample.home.title">Samples</span>
+        <!--<span jhiTranslate="bmsjHipsterApp.sample.home.title">Samples</span>-->
+        <!--
         <button class="btn btn-primary float-right jh-create-entity create-sample" [routerLink]="['/', { outlets: { popup: ['sample-new'] } }]">
             <span class="fa fa-plus"></span>
             <span class="hidden-sm-down"  jhiTranslate="bmsjHipsterApp.sample.home.createLabel">
             Create new Sample
             </span>
         </button>
+        -->
     </h2>
     <jhi-alert></jhi-alert>
+    <!--
     <div class="row">
         <div class="col-sm-12">
             <form name="searchForm" class="form-inline">
@@ -24,30 +27,47 @@
             </form>
         </div>
     </div>
+    -->
     <br/>
     <div class="table-responsive" *ngIf="samples">
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="sampleName"><span jhiTranslate="bmsjHipsterApp.sample.sampleName">Sample Name</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="sampleBusinessKey"><span jhiTranslate="bmsjHipsterApp.sample.sampleBusinessKey">Sample Business Key</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="takenBy"><span jhiTranslate="bmsjHipsterApp.sample.takenBy">Taken By</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="plantNumber"><span jhiTranslate="bmsjHipsterApp.sample.plantNumber">Plant Number</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="plantBusinessKey"><span jhiTranslate="bmsjHipsterApp.sample.plantBusinessKey">Plant Business Key</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="samplingDate"><span jhiTranslate="bmsjHipsterApp.sample.samplingDate">Sampling Date</span> <span class="fa fa-sort"></span></th>
-            <th></th>
+                
+                <!-- WITH PAGINATION -->
+                <!--
+                <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
+                <th jhiSortBy="sampleName"><span jhiTranslate="bmsjHipsterApp.sample.sampleName">Sample Name</span> <span class="fa fa-sort"></span></th>
+                <th jhiSortBy="sampleBusinessKey"><span jhiTranslate="bmsjHipsterApp.sample.sampleBusinessKey">Sample Business Key</span> <span class="fa fa-sort"></span></th>
+                <th jhiSortBy="takenBy"><span jhiTranslate="bmsjHipsterApp.sample.takenBy">Taken By</span> <span class="fa fa-sort"></span></th>
+                <th jhiSortBy="plantNumber"><span jhiTranslate="bmsjHipsterApp.sample.plantNumber">Plant Number</span> <span class="fa fa-sort"></span></th>
+                <th jhiSortBy="plantBusinessKey"><span jhiTranslate="bmsjHipsterApp.sample.plantBusinessKey">Plant Business Key</span> <span class="fa fa-sort"></span></th>
+                <th jhiSortBy="samplingDate"><span jhiTranslate="bmsjHipsterApp.sample.samplingDate">Sampling Date</span> <span class="fa fa-sort"></span></th>
+                -->
+                <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> </th>
+                <th jhiSortBy="sampleName"><span jhiTranslate="bmsjHipsterApp.sample.sampleName">Sample Name</span> </th>
+                <th jhiSortBy="sampleBusinessKey"><span jhiTranslate="bmsjHipsterApp.sample.sampleBusinessKey">Sample Business Key</span> </th>
+                <th jhiSortBy="takenBy"><span jhiTranslate="bmsjHipsterApp.sample.takenBy">Taken By</span> </th>
+                <th jhiSortBy="plantNumber"><span jhiTranslate="bmsjHipsterApp.sample.plantNumber">Plant Number</span> </th>
+                <th jhiSortBy="plantBusinessKey"><span jhiTranslate="bmsjHipsterApp.sample.plantBusinessKey">Plant Business Key</span> </th>
+                <th jhiSortBy="samplingDate"><span jhiTranslate="bmsjHipsterApp.sample.samplingDate">Sampling Date</span> </th>
+                
+                <!--<th></th>-->
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let sample of samples ;trackBy: trackId">
-                <td><a [routerLink]="['../sample', sample.id ]">{{sample.id}}</a></td>
+                <td>
+                    <!--<a [routerLink]="['../sample', sample.id ]">{{sample.id}}</a>-->
+                    {{sample.id}}
+                </td>
                 <td>{{sample.sampleName}}</td>
                 <td>{{sample.sampleBusinessKey}}</td>
                 <td>{{sample.takenBy}}</td>
                 <td>{{sample.plantNumber}}</td>
                 <td>{{sample.plantBusinessKey}}</td>
                 <td>{{sample.samplingDate | date:'medium'}}</td>
+                <!--
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
@@ -74,10 +94,12 @@
                         </button>
                     </div>
                 </td>
+                -->
             </tr>
             </tbody>
         </table>
     </div>
+    <!--
     <div *ngIf="samples && samples.length">
         <div class="row justify-content-center">
             <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
@@ -86,4 +108,5 @@
             <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
         </div>
     </div>
+    -->
 </div>

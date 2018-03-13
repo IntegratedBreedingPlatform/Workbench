@@ -3,6 +3,7 @@ import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { JhiEventManager, JhiParseLinks, JhiAlertService } from 'ng-jhipster';
+import { JhiLanguageService } from 'ng-jhipster';
 
 import { Sample } from './sample.model';
 import { SampleService } from './sample.service';
@@ -32,6 +33,7 @@ currentAccount: any;
 
     constructor(
         private sampleService: SampleService,
+        private languageService: JhiLanguageService,
         private parseLinks: JhiParseLinks,
         private jhiAlertService: JhiAlertService,
         private principal: Principal,
