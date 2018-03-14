@@ -13,7 +13,7 @@ export type EntityResponseType = HttpResponse<Sample>;
 @Injectable()
 export class SampleService {
 
-    private resourceUrl =  SERVER_API_URL + 'sample/maize/samples?listId=4';
+    private resourceUrl =  SERVER_API_URL + 'sample/maize/samples';
     private resourceSearchUrl = this.resourceUrl;
 
     constructor(private http: HttpClient, private dateUtils: JhiDateUtils) { }

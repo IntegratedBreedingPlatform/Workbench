@@ -30,6 +30,7 @@ currentAccount: any;
     predicate: any;
     previousPage: any;
     reverse: any;
+    listId: number = 1;
 
     constructor(
         private sampleService: SampleService,
@@ -48,6 +49,10 @@ currentAccount: any;
             this.reverse = data.pagingParams.ascending;
             this.predicate = data.pagingParams.predicate;
         });
+        this.activatedRoute.queryParams.subscribe((params) => {
+            this.listId = params["listId"];
+            this.loadAll(); // XXX it's ok to load here?
+        })
         this.currentSearch = this.activatedRoute.snapshot && this.activatedRoute.snapshot.params['search'] ?
             this.activatedRoute.snapshot.params['search'] : '';
     }
@@ -58,6 +63,7 @@ currentAccount: any;
                 page: this.page - 1,
                 query: this.currentSearch,
                 size: this.itemsPerPage,
+                listId: this.listId,
                 sort: this.sort()}).subscribe(
                     (res: HttpResponse<Sample[]>) => this.onSuccess(res.body, res.headers),
                     (res: HttpErrorResponse) => this.onError(res.message)
@@ -67,6 +73,7 @@ currentAccount: any;
         this.sampleService.query({
             page: this.page - 1,
             size: this.itemsPerPage,
+            listId: this.listId,
             sort: this.sort()}).subscribe(
                 (res: HttpResponse<Sample[]>) => this.onSuccess(res.body, res.headers),
                 (res: HttpErrorResponse) => this.onError(res.message)
@@ -84,7 +91,8 @@ currentAccount: any;
                 page: this.page,
                 size: this.itemsPerPage,
                 search: this.currentSearch,
-                sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
+                sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc'),
+                listId: this.listId
             }
         });
         this.loadAll();
