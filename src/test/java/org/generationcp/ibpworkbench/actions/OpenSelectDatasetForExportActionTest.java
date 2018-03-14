@@ -197,6 +197,18 @@ public class OpenSelectDatasetForExportActionTest {
 	}
 	
 	@Test
+	public void testPopulateProjectNameAndFilePathsForServerAppConfig() {
+
+		final BreedingViewInput breedingViewInput = new BreedingViewInput();
+		this.openSelectDatasetForExportAction.setIsServerApp("true");
+		this.openSelectDatasetForExportAction.populateProjectNameAndFilePaths(breedingViewInput, this.project, INPUT_DIRECTORY);
+
+		Assert.assertEquals(this.project.getProjectName() + "_99_" + SANITIZED_DATASET_NAME, breedingViewInput.getBreedingViewProjectName());
+		Assert.assertEquals(INPUT_DIRECTORY + File.separator + this.project.getProjectName() + "_99_" + SANITIZED_DATASET_NAME + ".xml", breedingViewInput.getDestXMLFilePath());
+		Assert.assertEquals(this.project.getProjectName() + "_99_" + SANITIZED_DATASET_NAME + ".csv", breedingViewInput.getSourceXLSFilePath());
+	}
+	
+	@Test
 	public void testButtonClick() {
 		this.openSelectDatasetForExportAction.buttonClick(clickEvent);
 		

@@ -162,7 +162,11 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 		breedingViewInput.setBreedingViewProjectName(breedingViewProjectName);
 
 		String sourceCSVFile = "";
-        sourceCSVFile = inputDirectory + defaultFilePath + ".csv";
+		if (Boolean.parseBoolean(this.isServerApp)) {
+			sourceCSVFile = breedingViewProjectName + ".csv";
+		} else {
+			sourceCSVFile = inputDirectory + defaultFilePath + ".csv";
+		}
 		breedingViewInput.setSourceXLSFilePath(sourceCSVFile);
 
 		final String destXMLFilePath = inputDirectory + defaultFilePath + ".xml";
@@ -253,5 +257,10 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 
 	public void setInstallationDirectoryUtil(final InstallationDirectoryUtil installationDirectoryUtil) {
 		this.installationDirectoryUtil = installationDirectoryUtil;
+	}
+
+	
+	public void setIsServerApp(String isServerApp) {
+		this.isServerApp = isServerApp;
 	}
 }
