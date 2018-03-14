@@ -33,7 +33,7 @@
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-                
+
                 <!-- WITH PAGINATION -->
                 <!--
                 <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
@@ -44,14 +44,16 @@
                 <th jhiSortBy="plantBusinessKey"><span jhiTranslate="bmsjHipsterApp.sample.plantBusinessKey">Plant Business Key</span> <span class="fa fa-sort"></span></th>
                 <th jhiSortBy="samplingDate"><span jhiTranslate="bmsjHipsterApp.sample.samplingDate">Sampling Date</span> <span class="fa fa-sort"></span></th>
                 -->
-                <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> </th>
+
+                <!--<th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> </th>-->
+                <th jhiSortBy="sampleId"><span jhiTranslate="bmsjHipsterApp.sample.sampleId">Sample ID</span> </th>
                 <th jhiSortBy="sampleName"><span jhiTranslate="bmsjHipsterApp.sample.sampleName">Sample Name</span> </th>
                 <th jhiSortBy="sampleBusinessKey"><span jhiTranslate="bmsjHipsterApp.sample.sampleBusinessKey">Sample Business Key</span> </th>
                 <th jhiSortBy="takenBy"><span jhiTranslate="bmsjHipsterApp.sample.takenBy">Taken By</span> </th>
                 <th jhiSortBy="plantNumber"><span jhiTranslate="bmsjHipsterApp.sample.plantNumber">Plant Number</span> </th>
                 <th jhiSortBy="plantBusinessKey"><span jhiTranslate="bmsjHipsterApp.sample.plantBusinessKey">Plant Business Key</span> </th>
                 <th jhiSortBy="samplingDate"><span jhiTranslate="bmsjHipsterApp.sample.samplingDate">Sampling Date</span> </th>
-                
+
                 <!--<th></th>-->
             </tr>
             </thead>
@@ -109,4 +111,70 @@
         </div>
     </div>
     -->
+    <!--<div class="modal fade" id="saveSampleListTreeModal" tabindex="-1" role="dialog"-->
+         <!--aria-labelledby="saveSampleListTreeModal" aria-hidden="true">-->
+        <!--<div class="modal-dialog modal-large">-->
+            <!--<div class="modal-content">-->
+                <div class="row form-group">
+                    <div class="col-xs-6 col-md-6">
+                        <div class="form-horizontal form-group">
+                            <div id="addSampleFolderDiv" class="fbk-hide">
+                                <div class="col-xs-4 col-md-4 nopadding">
+                                    <label class="control-label label-bold"
+                                           th:utext="#{browse.nursery.add.folder.name}">Folder
+                                        Name: <span class="required">*</span></label>
+                                </div>
+                                <div class="col-xs-8 col-md-8 nopadding">
+                                    <div class="input-group">
+                                        <input id="addFolderName" name="addFolderName" type="text"
+                                               class="form-control select2"
+                                               placeholder="Folder Name"
+                                               onkeypress="SaveSampleList.folderChangeKeypress(event, '1');"/>
+                                        <span class="input-group-btn">
+                                     <button class="btn btn-success" id="addSampleFolderOkButton"
+                                             onclick="javascript: ListTreeOperation.createSampleFolder()">
+                                         <span class="glyphicon glyphicon-ok"></span>
+                                     </button>
+                                     <button class="btn btn-danger" id="addSampleFolderCancelButton"
+                                             onclick="javascript: ListTreeOperation.hideFolderDiv('#addSampleFolderDiv')">
+                                         <span class="glyphicon glyphicon-remove"></span>
+                                     </button>
+                                 </span>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div id="renameSampleFolderDiv" class="fbk-hide">
+                                <div class="col-xs-4 col-md-4 nopadding">
+                                    <label class="control-label  label-bold"
+                                           th:utext="#{browse.nursery.rename.folder.input.label}">Folder
+                                        Name: <span class="required">*</span></label>
+                                </div>
+                                <div class="col-xs-8 col-md-8 nopadding">
+                                    <div class="input-group">
+                                        <input id="renameFolderName" name="renameFolderName" type="text"
+                                               class="form-control select2" placeholder="Folder Name"
+                                               onkeypress="SaveSampleList.folderChangeKeypress(event, '2');"/>
+                                        <span class="input-group-btn">
+                                      <button class="btn btn-success" id="renameSampleFolderOkButton"
+                                              onclick="javascript: ListTreeOperation.submitRenameSampleListFolder()">
+                                          <span class="glyphicon glyphicon-ok"></span>
+                                      </button>
+                                      <button class="btn btn-danger" id="renameSampleFolderCancelButton"
+                                              onclick="javascript: ListTreeOperation.hideFolderDiv('#renameSampleFolderDiv')">
+                                          <span class="glyphicon glyphicon-remove"></span>
+                                      </button>
+                                  </span>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div id="sampleFolderTree"></div>
+                    </div>
+                </div>
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
 </div>

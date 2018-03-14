@@ -17,6 +17,7 @@
             "detail": {
                 "title": "Sample"
             },
+            "sampleId": "Sample ID",
             "sampleName": "Sample Name",
             "sampleBusinessKey": "Sample Business Key",
             "takenBy": "Taken By",

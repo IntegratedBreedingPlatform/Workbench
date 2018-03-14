@@ -39,5 +39,27 @@
         r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
         ga('create','UA-XXXXX-X');ga('send','pageview');
     </script>-->
+
+    <!-- browse sample -->
+    <!-- TODO implement in angular -->
+    <script type="text/javascript" src="/Fieldbook/static/js/trialmanager/saveSampleList.js"></script>
+    <script type="text/javascript" src="/Fieldbook/static/js/nursery-manager/listTreeOperation.js"></script>
+    <script type="text/javascript" src="/Fieldbook/static/js/listTreeInclude.js"></script>
+    <script type="text/javascript" src="/Fieldbook/static/js/lib/jquery/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="/Fieldbook/static/js/lib/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/Fieldbook/static/js/lib/jquery/jquery.dynatree.min.js"></script>
+    <script type="text/javascript" src="/Fieldbook/static/js/fieldbook-common.js"></script>
+    <script type="text/javascript" src="/Fieldbook/static/js/spinner-manager.js"></script>
+    <script type="text/javascript" src="/Fieldbook/static/js/spinner.js"></script>
+    <script type="text/javascript" src="/Fieldbook/static/js/lib/jquery/jquery.blockUI.js"></script>
+    <script type="text/javascript" src="/Fieldbook/static/js/bootstrap-popover.js"></script>
+    <script type="application/javascript">
+        function chooseList(node) {
+            window.location.hash = window.location.hash.replace(/listId=[0-9]*/, "listId=" + node.data.key);
+        }
+        $(function () {
+            SaveSampleList.initializeSampleListTree()
+        });
+    </script>
 </body>
 </html>
