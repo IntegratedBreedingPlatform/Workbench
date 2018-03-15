@@ -25,6 +25,13 @@ import com.vaadin.ui.Tree.TreeDragMode;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 import org.apache.commons.lang3.StringUtils;
+import org.generationcp.commons.constant.ListTreeState;
+import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.GermplasmStudyBrowserLayout;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.cross.study.util.StudyBrowserTabCloseHandler;
@@ -33,19 +40,11 @@ import org.generationcp.ibpworkbench.study.listeners.StudyTreeCollapseListener;
 import org.generationcp.ibpworkbench.study.listeners.StudyTreeExpandListener;
 import org.generationcp.ibpworkbench.study.util.StudyTreeUtil;
 import org.generationcp.ibpworkbench.util.Util;
-import org.generationcp.commons.constant.ListTreeState;
-import org.generationcp.commons.exceptions.InternationalizableException;
-import org.generationcp.commons.spring.util.ContextUtil;
-import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.middleware.domain.dms.DatasetReference;
 import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.StudyReference;
-import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.UserProgramStateDataManager;
@@ -111,7 +110,7 @@ public class StudyTreeComponent extends VerticalLayout implements InitializingBe
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	public StudyTreeComponent(StudyBrowserMain studyBrowserMain) {
+	public StudyTreeComponent(final StudyBrowserMain studyBrowserMain) {
 		this.studyBrowserMain = studyBrowserMain;
 	}
 
@@ -141,7 +140,7 @@ public class StudyTreeComponent extends VerticalLayout implements InitializingBe
 			private static final long serialVersionUID = -2669417630841097077L;
 
 			@Override
-			public String generateDescription(Component source, Object itemId, Object propertyId) {
+			public String generateDescription(final Component source, final Object itemId, final Object propertyId) {
 				return StudyTreeComponent.this.messageSource.getMessage(Message.STUDY_DETAILS_LABEL);
 			}
 		});
@@ -162,8 +161,10 @@ public class StudyTreeComponent extends VerticalLayout implements InitializingBe
 
 		this.refreshButton.addListener(new Button.ClickListener() {
 
+			private static final long serialVersionUID = 6234584415922997899L;
+
 			@Override
-			public void buttonClick(Button.ClickEvent event) {
+			public void buttonClick(final Button.ClickEvent event) {
 				createTree();
 				reinitializeTree();
 			}
@@ -174,9 +175,9 @@ public class StudyTreeComponent extends VerticalLayout implements InitializingBe
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void buttonClick(Button.ClickEvent event) {
-				int studyId = Integer.valueOf(StudyTreeComponent.this.selectedStudyTreeNodeId.toString());
-				Study study = studyDataManager.getStudy(studyId);
+			public void buttonClick(final Button.ClickEvent event) {
+				final int studyId = Integer.valueOf(StudyTreeComponent.this.selectedStudyTreeNodeId.toString());
+				final Study study = studyDataManager.getStudy(studyId);
 				if (null == study.getProgramUUID()) {
 					if (StudyTreeComponent.this.getWindow() != null) {
 						MessageNotifier
@@ -184,7 +185,7 @@ public class StudyTreeComponent extends VerticalLayout implements InitializingBe
 								"Program templates cannot be renamed.");
 					}
 				} else {
-					String name = StudyTreeComponent.this.studyTree.getItemCaption(StudyTreeComponent.this.selectedStudyTreeNodeId);
+					final String name = StudyTreeComponent.this.studyTree.getItemCaption(StudyTreeComponent.this.selectedStudyTreeNodeId);
 					StudyTreeComponent.this.studyTreeUtil
 						.renameFolder(studyId, name, StudyTreeComponent.this.getCurrentProject().getUniqueID());
 				}
@@ -196,7 +197,7 @@ public class StudyTreeComponent extends VerticalLayout implements InitializingBe
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void buttonClick(Button.ClickEvent event) {
+			public void buttonClick(final Button.ClickEvent event) {
 				StudyTreeComponent.this.studyTreeUtil.addFolder(StudyTreeComponent.this.selectedStudyTreeNodeId, StudyTreeComponent.this
 						.getCurrentProject().getUniqueID());
 			}
@@ -207,8 +208,8 @@ public class StudyTreeComponent extends VerticalLayout implements InitializingBe
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void buttonClick(Button.ClickEvent event) {
-				int studyId = Integer.valueOf(StudyTreeComponent.this.selectedStudyTreeNodeId.toString());
+			public void buttonClick(final Button.ClickEvent event) {
+				final int studyId = Integer.valueOf(StudyTreeComponent.this.selectedStudyTreeNodeId.toString());
 				StudyTreeComponent.this.studyTreeUtil.deleteFolder(studyId, StudyTreeComponent.this.getCurrentProject().getUniqueID());
 			}
 		});
@@ -216,7 +217,7 @@ public class StudyTreeComponent extends VerticalLayout implements InitializingBe
 
 	public void reinitializeTree() {
 		try {
-			List<String> parsedState =
+			final List<String> parsedState =
 					programStateManager.getUserProgramTreeStateByUserIdProgramUuidAndType(contextUtil.getCurrentWorkbenchUserId(),
 							contextUtil.getCurrentProgramUUID(), ListTreeState.STUDY_LIST.name());
 
@@ -226,18 +227,18 @@ public class StudyTreeComponent extends VerticalLayout implements InitializingBe
 			}
 
 			studyTree.expandItem(STUDY_ROOT_NODE);
-			for (String s : parsedState) {
-				String trimmed = s.trim();
+			for (final String s : parsedState) {
+				final String trimmed = s.trim();
 				if (!StringUtils.isNumeric(trimmed)) {
 					continue;
 				}
 
-				int itemId = Integer.parseInt(trimmed);
+				final int itemId = Integer.parseInt(trimmed);
 				studyTree.expandItem(itemId);
 			}
 
 			studyTree.select(null);
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			e.printStackTrace();
 		}
 	}
@@ -309,7 +310,7 @@ public class StudyTreeComponent extends VerticalLayout implements InitializingBe
 	private Project getCurrentProject() {
 		try {
 			return contextUtil.getProjectInContext();
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			StudyTreeComponent.LOG.error(e.getMessage(), e);
 			if (this.getWindow() != null) {
 				MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
@@ -319,11 +320,11 @@ public class StudyTreeComponent extends VerticalLayout implements InitializingBe
 		}
 	}
 
-	public void populateRootNode(Tree studyTree, String rootNodeId) {
+	public void populateRootNode(final Tree studyTree, final String rootNodeId) {
 		List<Reference> rootFolders = new ArrayList<Reference>();
 		try {
 			rootFolders = this.studyDataManager.getRootFolders(this.getCurrentProject().getUniqueID());
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			StudyTreeComponent.LOG.error(e.getMessage(), e);
 			if (this.getWindow() != null) {
 				MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
@@ -331,7 +332,7 @@ public class StudyTreeComponent extends VerticalLayout implements InitializingBe
 			}
 		}
 
-		for (Reference ps : rootFolders) {
+		for (final Reference ps : rootFolders) {
 			studyTree.addItem(ps.getId());
 			studyTree.setItemCaption(ps.getId(), ps.getName());
 
@@ -350,27 +351,27 @@ public class StudyTreeComponent extends VerticalLayout implements InitializingBe
 
 	// FIXME - Performance problem if such checking is done per tree node. The query that retrieves tree metadata should have all the information already.
 	// Can not get rid of it until Vaadin tree object is constructed with appropriate information already available from Middleware service.
-	public Boolean isFolder(Integer studyId) {
+	public Boolean isFolder(final Integer studyId) {
 		try {
-			boolean isStudy = this.studyDataManager.isStudy(studyId);
+			final boolean isStudy = this.studyDataManager.isStudy(studyId);
 			return !isStudy;
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			return false;
 		}
 	}
 
 	// Called by StudyItemClickListener
-	public void studyTreeItemClickAction(Object itemId) {
+	public void studyTreeItemClickAction(final Object itemId) {
 
 		try {
 			this.expandOrCollapseStudyTreeNode(itemId);
-			int studyId = Integer.valueOf(itemId.toString());
+			final int studyId = Integer.valueOf(itemId.toString());
 
 			if (!this.hasChildStudy(studyId) && !this.isFolder(studyId)) {
 				this.createStudyInfoTab(studyId);
 			}
 
-		} catch (NumberFormatException e) {
+		} catch (final NumberFormatException e) {
 			StudyTreeComponent.LOG.error(e.getMessage(), e);
 		} finally {
 			this.updateButtons(itemId);
@@ -378,9 +379,9 @@ public class StudyTreeComponent extends VerticalLayout implements InitializingBe
 		}
 	}
 
-	public Boolean studyExists(int studyId) throws InternationalizableException {
+	public Boolean studyExists(final int studyId) throws InternationalizableException {
 		try {
-			DmsProject study = this.studyDataManager.getProject(studyId);
+			final DmsProject study = this.studyDataManager.getProject(studyId);
 			if (study == null) {
 				return false;
 			} else {
@@ -389,7 +390,7 @@ public class StudyTreeComponent extends VerticalLayout implements InitializingBe
 				}
 				return false;
 			}
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			StudyTreeComponent.LOG.error(e.getMessage(), e);
 			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_IN_GETTING_STUDY_DETAIL_BY_ID),
 					this.messageSource.getMessage(Message.ERROR_IN_GETTING_STUDY_DETAIL_BY_ID));
@@ -397,20 +398,20 @@ public class StudyTreeComponent extends VerticalLayout implements InitializingBe
 		}
 	}
 
-	public void addStudyNode(int parentStudyId) {
+	public void addStudyNode(final int parentStudyId) {
 
 		List<Reference> studyChildren = new ArrayList<Reference>();
 		try {
 			studyChildren =
 					this.studyDataManager.getChildrenOfFolder(Integer.valueOf(parentStudyId), this.getCurrentProject().getUniqueID());
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			StudyTreeComponent.LOG.error(e.getMessage(), e);
 			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
 					this.messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
 			studyChildren = new ArrayList<Reference>();
 		}
 
-		for (Reference sc : studyChildren) {
+		for (final Reference sc : studyChildren) {
 			this.studyTree.addItem(sc.getId());
 			this.studyTree.setItemCaption(sc.getId(), sc.getName());
 			this.studyTree.setParent(sc.getId(), parentStudyId);
@@ -427,13 +428,13 @@ public class StudyTreeComponent extends VerticalLayout implements InitializingBe
 		}
 	}
 
-	private void createStudyInfoTab(int studyId) {
-		VerticalLayout layout = new VerticalLayout();
+	private void createStudyInfoTab(final int studyId) {
+		final VerticalLayout layout = new VerticalLayout();
 
 		if (!Util.isTabExist(this.tabSheetStudy, this.getStudyName(studyId))) {
 			layout.addComponent(new StudyAccordionMenu(studyId, new StudyDetailComponent(this.studyDataManager, studyId),
 					this.studyDataManager, false, false));
-			Tab tab = this.tabSheetStudy.addTab(layout, this.getStudyName(studyId), null);
+			final Tab tab = this.tabSheetStudy.addTab(layout, this.getStudyName(studyId), null);
 			tab.setClosable(true);
 
 			this.studyBrowserMainLayout.addStudyInfoTabSheet(this.tabSheetStudy);
@@ -441,32 +442,32 @@ public class StudyTreeComponent extends VerticalLayout implements InitializingBe
 			this.tabSheetStudy.setSelectedTab(layout);
 			this.tabSheetStudy.setCloseHandler(new StudyBrowserTabCloseHandler(this.studyBrowserMainLayout));
 		} else {
-			Tab tab = Util.getTabAlreadyExist(this.tabSheetStudy, this.getStudyName(studyId));
+			final Tab tab = Util.getTabAlreadyExist(this.tabSheetStudy, this.getStudyName(studyId));
 			this.tabSheetStudy.setSelectedTab(tab.getComponent());
 		}
 	}
 
-	private String getStudyName(int studyId) {
+	private String getStudyName(final int studyId) {
 		try {
-			DmsProject studyDetails = this.studyDataManager.getProject(studyId);
+			final DmsProject studyDetails = this.studyDataManager.getProject(studyId);
 			if (studyDetails != null) {
 				return studyDetails.getName();
 			} else {
 				return null;
 			}
 
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			throw new InternationalizableException(e, Message.ERROR_DATABASE, Message.ERROR_IN_GETTING_STUDY_DETAIL_BY_ID);
 		}
 	}
 
-	public boolean hasChildStudy(int studyId) {
+	public boolean hasChildStudy(final int studyId) {
 
 		List<Reference> studyChildren = new ArrayList<Reference>();
 
 		try {
 			studyChildren = this.studyDataManager.getChildrenOfFolder(new Integer(studyId), this.getCurrentProject().getUniqueID());
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			StudyTreeComponent.LOG.error(e.getMessage(), e);
 			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
 					this.messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
@@ -528,9 +529,9 @@ public class StudyTreeComponent extends VerticalLayout implements InitializingBe
 		return this.tabSheetStudy;
 	}
 
-	public void showChild(Integer childItemId) {
+	public void showChild(final Integer childItemId) {
 		this.buildChildMap(childItemId, true);
-		Integer rootItemId = this.rootNodeProjectId;
+		final Integer rootItemId = this.rootNodeProjectId;
 
 		this.studyTree.expandItem(StudyTreeComponent.STUDY_ROOT_NODE);
 
@@ -558,27 +559,27 @@ public class StudyTreeComponent extends VerticalLayout implements InitializingBe
 
 	}
 
-	private void buildChildMap(Integer studyId, Boolean endNode) {
+	private void buildChildMap(final Integer studyId, final Boolean endNode) {
 		if (endNode) {
 			this.parentChildItemIdMap = new HashMap<Integer, Integer>();
 		}
 		try {
-			DmsProject studyParent = this.studyDataManager.getParentFolder(studyId);
+			final DmsProject studyParent = this.studyDataManager.getParentFolder(studyId);
 			if (studyParent != null && (studyId < 0 && studyParent.getProjectId() != 1 || studyId > 0)) {
-				int parentProjectId = studyParent.getProjectId();
+				final int parentProjectId = studyParent.getProjectId();
 				this.parentChildItemIdMap.put(parentProjectId, studyId);
 				this.buildChildMap(studyParent.getProjectId(), false);
 			} else {
 				this.rootNodeProjectId = studyId;
 			}
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			StudyTreeComponent.LOG.error(e.getMessage(), e);
 			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
 					this.messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
 		}
 	}
 
-	public void expandOrCollapseStudyTreeNode(Object itemId) {
+	public void expandOrCollapseStudyTreeNode(final Object itemId) {
 		if (!this.studyTree.isExpanded(itemId)) {
 			this.studyTree.expandItem(itemId);
 		} else {
@@ -586,11 +587,11 @@ public class StudyTreeComponent extends VerticalLayout implements InitializingBe
 		}
 	}
 
-	public void setSelectedStudyTreeNodeId(Object id) {
+	public void setSelectedStudyTreeNodeId(final Object id) {
 		this.selectedStudyTreeNodeId = id;
 	}
 
-	public void updateButtons(Object itemId) {
+	public void updateButtons(final Object itemId) {
 		this.setSelectedStudyTreeNodeId(itemId);
 		if (itemId instanceof String) {
 			// this means its the ROOT Folder
@@ -613,20 +614,20 @@ public class StudyTreeComponent extends VerticalLayout implements InitializingBe
 	/*
 	 * Update the tab header and displayed study name with new name. This is called by rename function in study tree
 	 */
-	public void renameStudyTab(String oldName, String newName) {
-		Tab studyTab = Util.getTabAlreadyExist(this.tabSheetStudy, oldName);
+	public void renameStudyTab(final String oldName, final String newName) {
+		final Tab studyTab = Util.getTabAlreadyExist(this.tabSheetStudy, oldName);
 		if (studyTab != null) {
 			studyTab.setCaption(newName);
 		}
-		Component component = studyTab.getComponent();
+		final Component component = studyTab.getComponent();
 
 		if (component instanceof VerticalLayout) {
-			VerticalLayout layout = (VerticalLayout) component;
-			Iterator<Component> componentIterator = layout.getComponentIterator();
+			final VerticalLayout layout = (VerticalLayout) component;
+			final Iterator<Component> componentIterator = layout.getComponentIterator();
 			while (componentIterator.hasNext()) {
-				Component child = componentIterator.next();
+				final Component child = componentIterator.next();
 				if (child instanceof StudyAccordionMenu) {
-					StudyAccordionMenu accordion = (StudyAccordionMenu) child;
+					final StudyAccordionMenu accordion = (StudyAccordionMenu) child;
 					accordion.updateStudyName(newName);
 				}
 			}
@@ -637,7 +638,7 @@ public class StudyTreeComponent extends VerticalLayout implements InitializingBe
 		return this.studyTree;
 	}
 
-	private ThemeResource getThemeResourceByReference(Reference r) {
+	private ThemeResource getThemeResourceByReference(final Reference r) {
 
 		if (r instanceof FolderReference) {
 			StudyTreeComponent.LOG.debug("r is FolderReference");
