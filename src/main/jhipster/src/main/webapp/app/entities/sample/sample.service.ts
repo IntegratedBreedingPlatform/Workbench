@@ -13,10 +13,15 @@ export type EntityResponseType = HttpResponse<Sample>;
 @Injectable()
 export class SampleService {
 
-    private resourceUrl =  SERVER_API_URL + 'sample/maize/samples';
-    private resourceSearchUrl = this.resourceUrl;
+    private resourceUrl;
+    private resourceSearchUrl;
 
     constructor(private http: HttpClient, private dateUtils: JhiDateUtils) { }
+
+    setCrop(crop: string) {
+        this.resourceUrl =  SERVER_API_URL + `sample/${crop}/samples`;
+        this.resourceSearchUrl = this.resourceUrl;
+    }
 
     create(sample: Sample): Observable<EntityResponseType> {
         const copy = this.convert(sample);

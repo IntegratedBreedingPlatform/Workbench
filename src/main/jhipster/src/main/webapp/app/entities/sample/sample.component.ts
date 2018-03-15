@@ -31,6 +31,9 @@ currentAccount: any;
     previousPage: any;
     reverse: any;
     listId: number = 1;
+    crop: string;
+    private queryParamSubscription: Subscription;
+    private paramSubscription: Subscription;
 
     constructor(
         private sampleService: SampleService,
@@ -49,10 +52,16 @@ currentAccount: any;
             this.reverse = data.pagingParams.ascending;
             this.predicate = data.pagingParams.predicate;
         });
-        this.activatedRoute.queryParams.subscribe((params) => {
+        this.paramSubscription = this.activatedRoute.params.subscribe((params) => {
+            this.crop = params['crop'];
+            this.sampleService.setCrop(this.crop);
+            this.loadAll();
+        });
+        this.queryParamSubscription = this.activatedRoute.queryParams.subscribe((params) => {
             this.listId = params["listId"];
-            this.loadAll(); // XXX it's ok to load here?
-        })
+            this.loadAll();
+        });
+
         this.currentSearch = this.activatedRoute.snapshot && this.activatedRoute.snapshot.params['search'] ?
             this.activatedRoute.snapshot.params['search'] : '';
     }
@@ -130,6 +139,8 @@ currentAccount: any;
 
     ngOnDestroy() {
         this.eventManager.destroy(this.eventSubscriber);
+        this.queryParamSubscription.unsubscribe();
+        this.paramSubscription.unsubscribe();
     }
 
     trackId(index: number, item: Sample) {
