@@ -22,9 +22,9 @@ import au.com.bytecode.opencsv.CSVReader;
 
 /**
  * Parser for Breeding View's output file.
- * 
+ *
  * @author Aldrin Batac
- * 
+ *
  */
 @Configurable
 public class BMSOutputParser {
@@ -58,11 +58,11 @@ public class BMSOutputParser {
 	private File bmsInformationFile;
 
 	private File zipFile;
-	
+
 	@Autowired
 	private ContextUtil contextUtil;
 
-	private ZipUtil zipUtil = new ZipUtil();
+	private final ZipUtil zipUtil = new ZipUtil();
 
 	private BMSOutputInformation bmsOutputInformation;
 
@@ -118,16 +118,16 @@ public class BMSOutputParser {
 
 		final String zipFilePath = zipFile.getAbsolutePath();
 
-		this.bmsInformationFile = zipUtil.extractZipSpecificFile(zipFilePath, BMSOutputParser.BMS_INFORMATION_FILENAME,
+		this.bmsInformationFile = this.zipUtil.extractZipSpecificFile(zipFilePath, BMSOutputParser.BMS_INFORMATION_FILENAME,
 				this.contextUtil.getProjectInContext(), ToolName.BV_SSA);
 
-		this.meansFile = zipUtil.extractZipSpecificFile(zipFilePath, BMSOutputParser.BMS_OUTPUT_FILENAME,
+		this.meansFile = this.zipUtil.extractZipSpecificFile(zipFilePath, BMSOutputParser.BMS_OUTPUT_FILENAME,
 				this.contextUtil.getProjectInContext(), ToolName.BV_SSA);
 
-		this.summaryStatsFile = zipUtil.extractZipSpecificFile(zipFilePath, BMSOutputParser.BMS_SUMMARY_FILENAME,
+		this.summaryStatsFile = this.zipUtil.extractZipSpecificFile(zipFilePath, BMSOutputParser.BMS_SUMMARY_FILENAME,
 				this.contextUtil.getProjectInContext(), ToolName.BV_SSA);
 
-		this.outlierFile = zipUtil.extractZipSpecificFile(zipFilePath, BMSOutputParser.BMS_OUTLIER_FILENAME,
+		this.outlierFile = this.zipUtil.extractZipSpecificFile(zipFilePath, BMSOutputParser.BMS_OUTLIER_FILENAME,
 				this.contextUtil.getProjectInContext(), ToolName.BV_SSA);
 
 		if (this.bmsInformationFile == null || this.meansFile == null) {

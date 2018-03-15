@@ -259,8 +259,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 		this.installationDirectoryUtil = installationDirectoryUtil;
 	}
 
-	
-	public void setIsServerApp(String isServerApp) {
+	public void setIsServerApp(final String isServerApp) {
 		this.isServerApp = isServerApp;
 	}
 }

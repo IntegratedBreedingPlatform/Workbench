@@ -47,7 +47,7 @@ import com.vaadin.ui.themes.Reindeer;
 
 /**
  * @author Aldrin Batac
- * 
+ *
  */
 @Configurable
 public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements InitializingBean {
@@ -82,13 +82,14 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
-	
+
 	@Autowired
 	private ContextUtil contextUtil;
-	
-	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
-	public FileUploadBreedingViewOutputWindow(Window window, int studyId, Project project, Map<String, Boolean> variatesStateMap) {
+	private final InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
+
+	public FileUploadBreedingViewOutputWindow(final Window window, final int studyId, final Project project,
+			final Map<String, Boolean> variatesStateMap) {
 		this.window = window;
 		this.studyId = studyId;
 		this.project = project;
@@ -181,7 +182,7 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
 	}
 
 	protected Component layoutButtonArea() {
-		HorizontalLayout buttonLayout = new HorizontalLayout();
+		final HorizontalLayout buttonLayout = new HorizontalLayout();
 		buttonLayout.setDebugId("buttonLayout");
 		buttonLayout.setSpacing(true);
 		buttonLayout.setMargin(true, false, false, false);
@@ -203,7 +204,7 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public void buttonClick(ClickEvent event) {
+		public void buttonClick(final ClickEvent event) {
 			// not implemented
 		}
 	}
@@ -213,7 +214,7 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public void buttonClick(ClickEvent event) {
+		public void buttonClick(final ClickEvent event) {
 			FileUploadBreedingViewOutputWindow.this.focus();
 			FileUploadBreedingViewOutputWindow.this.getParent().removeWindow(FileUploadBreedingViewOutputWindow.this);
 		}
@@ -224,7 +225,7 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public void uploadFinished(Upload.FinishedEvent event) {
+		public void uploadFinished(final Upload.FinishedEvent event) {
 			super.uploadFinished(event);
 			FileUploadBreedingViewOutputWindow.LOG.debug("Upload is finished");
 		}
@@ -245,9 +246,9 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
 			return this.getLastFileName() != null;
 		}
 
-		private String getExtension(String f) {
+		private String getExtension(final String f) {
 			String ext = null;
-			int i = f.lastIndexOf('.');
+			final int i = f.lastIndexOf('.');
 
 			if (i > 0 && i < f.length() - 1) {
 				ext = f.substring(i + 1).toLowerCase();
@@ -265,18 +266,18 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
 		private File file;
 
 		@Override
-		public File createFile(String fileName, String mimeType) {
-			File saveDir =
+		public File createFile(final String fileName, final String mimeType) {
+			final File saveDir =
 					new File(new File(FileUploadBreedingViewOutputWindow.this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(
 							FileUploadBreedingViewOutputWindow.this.contextUtil.getProjectInContext(), ToolName.BV_SSA)).getAbsolutePath());
 			if (!saveDir.exists() || !saveDir.isDirectory()) {
 				saveDir.mkdirs();
 			}
 
-			StringBuilder sb = new StringBuilder();
+			final StringBuilder sb = new StringBuilder();
 			if (new File(saveDir.getAbsolutePath() + "/" + fileName).exists()) {
 				for (int x = 1; x < 10000; x++) {
-					String temp = fileName.substring(0, fileName.lastIndexOf(".")) + "_" + x + ".zip";
+					final String temp = fileName.substring(0, fileName.lastIndexOf(".")) + "_" + x + ".zip";
 					if (!new File(saveDir.getAbsolutePath() + "/" + temp).exists()) {
 						sb.append(fileName.substring(0, fileName.lastIndexOf(".")));
 						sb.append("_" + x + ".zip");

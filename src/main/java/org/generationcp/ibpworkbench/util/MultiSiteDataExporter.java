@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.util;
 
 import java.io.File;
@@ -31,7 +32,7 @@ public class MultiSiteDataExporter {
 	protected static final String SUMMARY_STATS = "_SummaryStats";
 
 	private static final Logger LOG = LoggerFactory.getLogger(MultiSiteDataExporter.class);
-	
+
 	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
 	/**
@@ -54,9 +55,9 @@ public class MultiSiteDataExporter {
 			final List<Experiment> experiments, final String environmentName, final GxeEnvironment gxeEnv,
 			final List<Trait> selectedTraits) {
 
-		Project currentProject = multiSiteParameters.getProject();
-		String environmentGroup = multiSiteParameters.getSelectedEnvGroupFactorName();
-		String genotypeName = multiSiteParameters.getSelectedGenotypeFactorName();
+		final Project currentProject = multiSiteParameters.getProject();
+		final String environmentGroup = multiSiteParameters.getSelectedEnvGroupFactorName();
+		final String genotypeName = multiSiteParameters.getSelectedGenotypeFactorName();
 
 		if (currentProject == null) {
 			throw new IllegalArgumentException("current project is null");
@@ -76,8 +77,8 @@ public class MultiSiteDataExporter {
 			j++;
 		}
 
-		if (!environmentGroup.equalsIgnoreCase(environmentName) && environmentGroup != null && !environmentGroup.isEmpty() && !"None"
-				.equalsIgnoreCase(environmentGroup)) {
+		if (!environmentGroup.equalsIgnoreCase(environmentName) && environmentGroup != null && !environmentGroup.isEmpty()
+				&& !"None".equalsIgnoreCase(environmentGroup)) {
 			traitToColNoMap.put(environmentGroup, j);
 			headerRow.add(BreedingViewUtil.sanitizeName(environmentGroup));
 			j++;
@@ -154,12 +155,11 @@ public class MultiSiteDataExporter {
 
 		final List<String[]> tableItems = new ArrayList<String[]>();
 
-		final String[] header =
-				new String[] {environmentName, "Trait", "NumValues", "NumMissing", "Mean", "Variance", "SD", "Min", "Max", "Range",
-						"Median", "LowerQuartile", "UpperQuartile", "MeanRep", "MinRep", "MaxRep", "MeanSED", "MinSED", "MaxSED", "MeanLSD",
-						"MinLSD", "MaxLSD", "CV", "Heritability", "WaldStatistic", "WaldDF", "Pvalue"
+		final String[] header = new String[] {environmentName, "Trait", "NumValues", "NumMissing", "Mean", "Variance", "SD", "Min", "Max",
+				"Range", "Median", "LowerQuartile", "UpperQuartile", "MeanRep", "MinRep", "MaxRep", "MeanSED", "MinSED", "MaxSED",
+				"MeanLSD", "MinLSD", "MaxLSD", "CV", "Heritability", "WaldStatistic", "WaldDF", "Pvalue"
 
-				};
+		};
 
 		tableItems.add(header);
 
@@ -201,7 +201,8 @@ public class MultiSiteDataExporter {
 		return this.writeToCsvFile(inputFileName, currentProject, tableItems, true);
 	}
 
-	String writeToCsvFile(final String inputFileName, final Project currentProject, final List<String[]> tableItems, final boolean isSummaryStatsFile) {
+	String writeToCsvFile(final String inputFileName, final Project currentProject, final List<String[]> tableItems,
+			final boolean isSummaryStatsFile) {
 		final File csvFile = this.getCsvFileInWorkbenchDirectory(currentProject, inputFileName, isSummaryStatsFile);
 
 		CSVWriter csvWriter = null;
@@ -220,18 +221,17 @@ public class MultiSiteDataExporter {
 	}
 
 	File getCsvFileInWorkbenchDirectory(final Project currentProject, final String inputFileName, final boolean isSummaryStatsFile) {
-		final String directory = installationDirectoryUtil.getInputDirectoryForProjectAndTool(currentProject, ToolName.BREEDING_VIEW);
+		final String directory = this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(currentProject, ToolName.BREEDING_VIEW);
 		final StringBuilder sb = new StringBuilder(inputFileName);
 		if (isSummaryStatsFile) {
-			sb.append(SUMMARY_STATS);
+			sb.append(MultiSiteDataExporter.SUMMARY_STATS);
 		}
 		sb.append(".csv");
-		
+
 		return new File(directory + File.separator + sb.toString());
 	}
 
-	
-	public void setInstallationDirectoryUtil(InstallationDirectoryUtil installationDirectoryUtil) {
+	public void setInstallationDirectoryUtil(final InstallationDirectoryUtil installationDirectoryUtil) {
 		this.installationDirectoryUtil = installationDirectoryUtil;
 	}
 

@@ -62,15 +62,15 @@ public class RunMultiSiteAction implements ClickListener {
 
 	@Resource
 	private StudyDataManager studyDataManager;
-	
+
 	@Autowired
 	private ContextUtil contextUtil;
 
 	private IBPWorkbenchApplication workbenchApplication;
 
-	private MultiSiteDataExporter multiSiteDataExporter = new MultiSiteDataExporter();
+	private final MultiSiteDataExporter multiSiteDataExporter = new MultiSiteDataExporter();
 
-	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
+	private final InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
 	private MultiSiteParameters multiSiteParameters;
 
@@ -78,7 +78,7 @@ public class RunMultiSiteAction implements ClickListener {
 
 	private Table selectTraitsTable;
 
-	private ZipUtil zipUtil = new ZipUtil();
+	private final ZipUtil zipUtil = new ZipUtil();
 
 	public RunMultiSiteAction() {
 		// for unit testing
@@ -118,14 +118,14 @@ public class RunMultiSiteAction implements ClickListener {
 		filenameList.add(gxeInput.getSourceCSVSummaryStatsFilePath());
 
 		final String studyName = HtmlEscape.unescapeHtml(this.multiSiteParameters.getStudy().getName());
-        final String outputFilename = BreedingViewUtil.sanitizeNameAlphaNumericOnly(studyName);
+		final String outputFilename = BreedingViewUtil.sanitizeNameAlphaNumericOnly(studyName);
 
 		try {
 			final String finalZipfileName =
 					this.zipUtil.zipIt(outputFilename, filenameList, this.contextUtil.getProjectInContext(), ToolName.BV_GXE);
 			this.downloadInputFile(new File(finalZipfileName), outputFilename);
 		} catch (final IOException e) {
-			LOG.error("Error creating zip file " + outputFilename + ZipUtil.ZIP_EXTENSION, e);
+			RunMultiSiteAction.LOG.error("Error creating zip file " + outputFilename + ZipUtil.ZIP_EXTENSION, e);
 			MessageNotifier.showMessage(this.workbenchApplication.getMainWindow(), "Error creating zip file.", "");
 		}
 	}
@@ -278,7 +278,7 @@ public class RunMultiSiteAction implements ClickListener {
 	}
 
 	void downloadInputFile(final File file, final String filename) {
-		VaadinFileDownloadResource fileDownloadResource =
+		final VaadinFileDownloadResource fileDownloadResource =
 				new VaadinFileDownloadResource(file, filename + ZipUtil.ZIP_EXTENSION, this.workbenchApplication);
 		this.workbenchApplication.getMainWindow().open(fileDownloadResource);
 	}

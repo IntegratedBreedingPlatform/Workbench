@@ -82,13 +82,13 @@ public class RunSingleSiteAction implements ClickListener {
 
 	@Autowired
 	private StudyDataManager studyDataManager;
-	
+
 	@Autowired
 	private ContextUtil contextUtil;
 
 	private ZipUtil zipUtil = new ZipUtil();
-	private DatasetExporter datasetExporter = new DatasetExporter();
-	private BreedingViewXMLWriter breedingViewXMLWriter = new BreedingViewXMLWriter();
+	private final DatasetExporter datasetExporter = new DatasetExporter();
+	private final BreedingViewXMLWriter breedingViewXMLWriter = new BreedingViewXMLWriter();
 
 	public RunSingleSiteAction(final SingleSiteAnalysisDetailsPanel selectDetailsForBreedingViewWindow) {
 		this.source = selectDetailsForBreedingViewWindow;
@@ -118,10 +118,11 @@ public class RunSingleSiteAction implements ClickListener {
 
 				final String outputFilename = BreedingViewUtil.sanitizeNameAlphaNumericOnly(breedingViewInput.getDatasetSource());
 				try {
-					final String finalZipfileName = this.zipUtil.zipIt(outputFilename, filenameList, this.contextUtil.getProjectInContext(), ToolName.BV_SSA);
+					final String finalZipfileName =
+							this.zipUtil.zipIt(outputFilename, filenameList, this.contextUtil.getProjectInContext(), ToolName.BV_SSA);
 					this.downloadInputFile(new File(finalZipfileName), outputFilename);
 				} catch (final IOException e) {
-					LOG.error("Error creating zip file " + outputFilename + ZipUtil.ZIP_EXTENSION, e);
+					RunSingleSiteAction.LOG.error("Error creating zip file " + outputFilename + ZipUtil.ZIP_EXTENSION, e);
 					this.showErrorMessage(this.source.getApplication().getMainWindow(), "Error creating zip file.", "");
 				}
 
@@ -148,7 +149,7 @@ public class RunSingleSiteAction implements ClickListener {
 			selectedEnvironments.add(m.getTrialno());
 		}
 
-		datasetExporter.exportToCSVForBreedingView(breedingViewInput.getSourceXLSFilePath(),
+		this.datasetExporter.exportToCSVForBreedingView(breedingViewInput.getSourceXLSFilePath(),
 				(String) this.source.getSelEnvFactor().getValue(), selectedEnvironments, breedingViewInput);
 	}
 
@@ -174,9 +175,9 @@ public class RunSingleSiteAction implements ClickListener {
 
 		breedingViewInput.setBlocks(this.createBlocks(this.source.getSelBlocksValue()));
 
-		populateRowAndColumn(designType, breedingViewInput);
+		this.populateRowAndColumn(designType, breedingViewInput);
 
-		populateRowPosAndColPos(designType, breedingViewInput);
+		this.populateRowPosAndColPos(designType, breedingViewInput);
 
 		breedingViewInput.setGenotypes(this.createGenotypes(breedingViewInput.getDatasetId(), this.source.getSelGenotypesValue()));
 
@@ -378,8 +379,8 @@ public class RunSingleSiteAction implements ClickListener {
 			return false;
 		}
 
-		if (StringUtils.isNullOrEmpty(replicatesFactor) && designType.equals(DesignType.RANDOMIZED_BLOCK_DESIGN.getName()) && this.source
-				.getSelReplicates().isEnabled()) {
+		if (StringUtils.isNullOrEmpty(replicatesFactor) && designType.equals(DesignType.RANDOMIZED_BLOCK_DESIGN.getName())
+				&& this.source.getSelReplicates().isEnabled()) {
 			this.showErrorMessage(window, "Please specify replicates factor.", "");
 			return false;
 		}
@@ -448,23 +449,20 @@ public class RunSingleSiteAction implements ClickListener {
 	}
 
 	private void downloadInputFile(final File file, final String filename) {
-		VaadinFileDownloadResource fileDownloadResource =
+		final VaadinFileDownloadResource fileDownloadResource =
 				new VaadinFileDownloadResource(file, filename + ZipUtil.ZIP_EXTENSION, this.source.getApplication());
 		this.source.getApplication().getMainWindow().open(fileDownloadResource);
 	}
 
-	
-	public void setIsServerApp(String isServerApp) {
+	public void setIsServerApp(final String isServerApp) {
 		this.isServerApp = isServerApp;
 	}
 
-	
-	public void setSource(SingleSiteAnalysisDetailsPanel source) {
+	public void setSource(final SingleSiteAnalysisDetailsPanel source) {
 		this.source = source;
 	}
 
-	
-	public void setZipUtil(ZipUtil zipUtil) {
+	public void setZipUtil(final ZipUtil zipUtil) {
 		this.zipUtil = zipUtil;
 	}
 

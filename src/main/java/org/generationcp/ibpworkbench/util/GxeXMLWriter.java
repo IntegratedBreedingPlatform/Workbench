@@ -94,8 +94,7 @@ public class GxeXMLWriter implements InitializingBean, Serializable {
 		dataConfiguration.setName("GxE Analysis");
 		dataConfiguration.setEnvironments(environments);
 		if (this.gxeInput.getGenotypes() != null) {
-			this.gxeInput.getGenotypes().setName(
-					BreedingViewUtil.sanitizeName(this.gxeInput.getGenotypes().getName()));
+			this.gxeInput.getGenotypes().setName(BreedingViewUtil.sanitizeName(this.gxeInput.getGenotypes().getName()));
 		}
 		dataConfiguration.setGenotypes(this.gxeInput.getGenotypes());
 		dataConfiguration.setTraits(traits);
@@ -156,9 +155,9 @@ public class GxeXMLWriter implements InitializingBean, Serializable {
 		// output directory is not needed if deployed on server
 		if (!isServerApp) {
 			try {
-				
-				final String outputDirectory =
-						this.installationDirectoryUtil.getOutputDirectoryForProjectAndTool(this.gxeInput.getProject(), ToolName.BREEDING_VIEW);
+
+				final String outputDirectory = this.installationDirectoryUtil
+						.getOutputDirectoryForProjectAndTool(this.gxeInput.getProject(), ToolName.BREEDING_VIEW);
 
 				ssaParameters.setOutputDirectory(outputDirectory);
 			} catch (final Exception e) {
@@ -172,8 +171,7 @@ public class GxeXMLWriter implements InitializingBean, Serializable {
 		// do nothing - inherited abstract method
 	}
 
-	
-	public void setInstallationDirectoryUtil(InstallationDirectoryUtil installationDirectoryUtil) {
+	public void setInstallationDirectoryUtil(final InstallationDirectoryUtil installationDirectoryUtil) {
 		this.installationDirectoryUtil = installationDirectoryUtil;
 	}
 }

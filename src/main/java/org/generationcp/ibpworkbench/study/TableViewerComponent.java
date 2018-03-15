@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- * 
+ *
  * Generation Challenge Programme (GCP)
- * 
- * 
+ *
+ *
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- * 
+ *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.study;
@@ -38,9 +38,9 @@ import com.vaadin.ui.VerticalLayout;
 
 /**
  * This creates a Vaadin sub-window that displays the Table Viewer.
- * 
+ *
  * @author Mark Agarrado
- * 
+ *
  */
 @Configurable
 public class TableViewerComponent extends BaseSubWindow implements InitializingBean, InternationalizableComponent {
@@ -59,19 +59,19 @@ public class TableViewerComponent extends BaseSubWindow implements InitializingB
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
-	
+
 	private TableViewerExporter tableViewerExporter;
 
-	public TableViewerComponent(TableViewerDatasetTable displayTable) {
+	public TableViewerComponent(final TableViewerDatasetTable displayTable) {
 		this.displayTable = displayTable;
 		this.tableViewerCellSelectorUtil = new TableViewerCellSelectorUtil(this, displayTable);
-		tableViewerExporter = new TableViewerExporter(this.displayTable, this.tableViewerCellSelectorUtil);
+		this.tableViewerExporter = new TableViewerExporter(this.displayTable, this.tableViewerCellSelectorUtil);
 	}
 
-	public TableViewerComponent(TableViewerDatasetTable displayTable, String studyName) {
+	public TableViewerComponent(final TableViewerDatasetTable displayTable, final String studyName) {
 		this.displayTable = displayTable;
 		this.tableViewerCellSelectorUtil = new TableViewerCellSelectorUtil(this, displayTable);
-		tableViewerExporter = new TableViewerExporter(this.displayTable, this.tableViewerCellSelectorUtil);
+		this.tableViewerExporter = new TableViewerExporter(this.displayTable, this.tableViewerCellSelectorUtil);
 		this.studyName = studyName;
 	}
 
@@ -140,10 +140,10 @@ public class TableViewerComponent extends BaseSubWindow implements InitializingB
 
 	public void exportToExcelAction() {
 
-		String filename = FILENAME_PREFIX;
+		final String filename = TableViewerComponent.FILENAME_PREFIX;
 
 		try {
-			final String temporaryFileName = tableViewerExporter.exportToExcel(filename);
+			final String temporaryFileName = this.tableViewerExporter.exportToExcel(filename);
 
 			String downloadFilename;
 			if (this.studyName != null) {
@@ -152,25 +152,23 @@ public class TableViewerComponent extends BaseSubWindow implements InitializingB
 				downloadFilename = filename + ".xlsx";
 			}
 
-			VaadinFileDownloadResource fileDownloadResource =
+			final VaadinFileDownloadResource fileDownloadResource =
 					new VaadinFileDownloadResource(new File(temporaryFileName), downloadFilename, this.getApplication());
 
 			Util.showExportExcelDownloadFile(fileDownloadResource, this.getParent().getWindow());
 
-		} catch (DatasetExporterException e) {
+		} catch (final DatasetExporterException e) {
 			TableViewerComponent.LOG.error(e.getMessage(), e);
 			MessageNotifier.showError(this.getApplication().getWindow(GermplasmStudyBrowserApplication.STUDY_WINDOW_NAME), e.getMessage(),
 					"");
 		}
 	}
 
-	
-	public void setTableViewerExporter(TableViewerExporter tableViewerExporter) {
+	public void setTableViewerExporter(final TableViewerExporter tableViewerExporter) {
 		this.tableViewerExporter = tableViewerExporter;
 	}
 
-	
-	public void setStudyName(String studyName) {
+	public void setStudyName(final String studyName) {
 		this.studyName = studyName;
 	}
 }
