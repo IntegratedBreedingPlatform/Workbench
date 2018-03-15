@@ -1,27 +1,26 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- * 
+ *
  * Generation Challenge Programme (GCP)
- * 
- * 
+ *
+ *
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- * 
+ *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.study;
 
-import com.vaadin.addon.tableexport.CsvExport;
-import com.vaadin.addon.tableexport.TableExport;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Link;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.Reindeer;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
 import org.generationcp.commons.spring.util.ContextUtil;
-import org.generationcp.commons.util.FileDownloadResource;
+import org.generationcp.commons.util.VaadinFileDownloadResource;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
@@ -47,22 +46,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
 
-import javax.annotation.Resource;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.vaadin.addon.tableexport.CsvExport;
+import com.vaadin.addon.tableexport.TableExport;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Link;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.Reindeer;
 
 /**
  * This class creates the Vaadin Table where a dataset can be displayed.
- * 
+ *
  * @author Kevin Manansala
- * 
+ *
  */
 @Configurable
 public class RepresentationDatasetComponent extends VerticalLayout implements InitializingBean, InternationalizableComponent {
 
+	protected static final String XLS_DOWNLOAD_FILENAME = "export.xls";
+	protected static final String TEMP_FILENAME = "dataset-temp";
 	public static final String EXPORT_CSV_BUTTON_ID = "RepresentationDatasetComponent Export CSV Button";
 	public static final String EXPORT_EXCEL_BUTTON_ID = "RepresentationDatasetComponent Export to FieldBook Excel File Button";
 	public static final String OPEN_TABLE_VIEWER_BUTTON_ID = "RepresentationDatasetComponent Open Table Viewer Button";
@@ -84,6 +88,7 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 	private final boolean fromUrl;
 	private final boolean h2hCall;
 	private Table datasetTable;
+	// TODO - remove code for exporting to CSV as this has long been not displayed on screen
 	private Button exportCsvButton;
 	private Button exportExcelButton;
 	private Button openTableViewerButton;
@@ -97,26 +102,28 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 	private ContextUtil contextUtil;
 
 	private Map<String, Integer> studiesMappedByInstance = new HashMap<>();
+	private DatasetExporter datasetExporter;
 
-
-	public RepresentationDatasetComponent(StudyDataManager studyDataManager, Integer datasetId, String datasetTitle, Integer studyId,
-			boolean fromUrl, boolean h2hCall) {
+	// FIXME - Autowire StudyDataManager instead of passing it as parameter from other class
+	public RepresentationDatasetComponent(final StudyDataManager studyDataManager, final Integer datasetId, final String datasetTitle,
+			final Integer studyId, final boolean fromUrl, final boolean h2hCall) {
 		this.reportName = datasetTitle;
 		this.studyIdHolder = studyId;
 		this.datasetId = datasetId;
 		this.studyDataManager = studyDataManager;
 		this.fromUrl = fromUrl;
 		this.h2hCall = h2hCall;
+
+		this.datasetExporter = new DatasetExporter(this.studyDataManager, this.studyIdHolder, this.datasetId);
 	}
 
 	// Called by StudyButtonClickListener
 	public void exportToCSVAction() {
 		CsvExport csvExport;
 
-		this.reportTitle =
-				new StringBuilder().append(this.messageSource.getMessage(Message.REPORT_TITLE1_TEXT)).append("[")
-						.append(this.studyIdHolder).append("]-").append(this.messageSource.getMessage(Message.REPORT_TITLE2_TEXT))
-						.append("[").append(this.datasetId).append("]-");
+		this.reportTitle = new StringBuilder().append(this.messageSource.getMessage(Message.REPORT_TITLE1_TEXT)).append("[")
+				.append(this.studyIdHolder).append("]-").append(this.messageSource.getMessage(Message.REPORT_TITLE2_TEXT)).append("[")
+				.append(this.datasetId).append("]-");
 
 		StringBuilder fileName = new StringBuilder();
 
@@ -128,22 +135,15 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 		csvExport.export();
 	}
 
-	// Called by StudyButtonClickListener
-
-	@SuppressWarnings("deprecation")
 	public void exportToExcelAction() {
-
-		String tempFilename = "dataset-temp.xls";
-
-		DatasetExporter datasetExporter;
-		datasetExporter = new DatasetExporter(this.studyDataManager, this.studyIdHolder, this.datasetId);
 		try {
-			datasetExporter.exportToFieldBookExcelUsingIBDBv2(tempFilename);
-			FileDownloadResource fileDownloadResource = new FileDownloadResource(new File(tempFilename), "export.xls", this.getApplication());
-
+			final String temporaryFileName =
+					this.datasetExporter.exportToFieldBookExcelUsingIBDBv2(RepresentationDatasetComponent.TEMP_FILENAME);
+			final VaadinFileDownloadResource fileDownloadResource = new VaadinFileDownloadResource(new File(temporaryFileName),
+					RepresentationDatasetComponent.XLS_DOWNLOAD_FILENAME, this.getApplication());
 			Util.showExportExcelDownloadFile(fileDownloadResource, this.getWindow());
 
-		} catch (DatasetExporterException e) {
+		} catch (final DatasetExporterException e) {
 			RepresentationDatasetComponent.LOG.error(e.getMessage(), e);
 			MessageNotifier.showError(this.getApplication().getWindow(GermplasmStudyBrowserApplication.STUDY_WINDOW_NAME), e.getMessage(),
 					"");
@@ -154,11 +154,11 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 	// Called by StudyButtonClickListener
 	public void openTableViewerAction() {
 		try {
-			long expCount = this.studyDataManager.countExperiments(this.datasetId);
+			final long expCount = this.studyDataManager.countExperiments(this.datasetId);
 			if (expCount > 1000) {
 				// ask confirmation from user for generating large datasets
-				String confirmDialogCaption = this.messageSource.getMessage(Message.TABLE_VIEWER_CAPTION);
-				String confirmDialogMessage = this.messageSource.getMessage(Message.CONFIRM_DIALOG_MESSAGE_OPEN_TABLE_VIEWER);
+				final String confirmDialogCaption = this.messageSource.getMessage(Message.TABLE_VIEWER_CAPTION);
+				final String confirmDialogMessage = this.messageSource.getMessage(Message.CONFIRM_DIALOG_MESSAGE_OPEN_TABLE_VIEWER);
 
 				ConfirmDialog.show(this.getWindow(), confirmDialogCaption, confirmDialogMessage,
 						this.messageSource.getMessage(Message.TABLE_VIEWER_OK_LABEL), this.messageSource.getMessage(Message.CANCEL_LABEL),
@@ -167,7 +167,7 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 							private static final long serialVersionUID = 1L;
 
 							@Override
-							public void onClose(ConfirmDialog dialog) {
+							public void onClose(final ConfirmDialog dialog) {
 								if (dialog.isConfirmed()) {
 									RepresentationDatasetComponent.this.openTableViewer();
 								}
@@ -176,7 +176,7 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 			} else {
 				this.openTableViewer();
 			}
-		} catch (MiddlewareQueryException ex) {
+		} catch (final MiddlewareQueryException ex) {
 			RepresentationDatasetComponent.LOG.error(ex.getMessage(), ex);
 			RepresentationDatasetComponent.LOG
 					.error("Error with getting experiments for dataset: " + this.datasetId + "\n" + ex.toString());
@@ -184,16 +184,17 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 	}
 
 	private void openTableViewer() {
-		Window mainWindow = this.getWindow();
-		TableViewerDatasetTable tableViewerDataset = new TableViewerDatasetTable(this.studyDataManager, this.studyIdHolder, this.datasetId);
+		final Window mainWindow = this.getWindow();
+		final TableViewerDatasetTable tableViewerDataset =
+				new TableViewerDatasetTable(this.studyDataManager, this.studyIdHolder, this.datasetId);
 		String studyName;
 		try {
 			studyName = this.studyDataManager.getStudy(this.studyIdHolder).getName();
-			Window tableViewer = new TableViewerComponent(tableViewerDataset, studyName);
+			final Window tableViewer = new TableViewerComponent(tableViewerDataset, studyName);
 			tableViewer.addStyleName(Reindeer.WINDOW_LIGHT);
 			mainWindow.addWindow(tableViewer);
-		} catch (MiddlewareException e) {
-			Window tableViewer = new TableViewerComponent(tableViewerDataset);
+		} catch (final MiddlewareException e) {
+			final Window tableViewer = new TableViewerComponent(tableViewerDataset);
 			tableViewer.addStyleName(Reindeer.WINDOW_LIGHT);
 			mainWindow.addWindow(tableViewer);
 			RepresentationDatasetComponent.LOG.error(e.getMessage(), e);
@@ -211,7 +212,7 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 		this.setData(this.reportName);
 		this.setWidth("97%");
 		this.setHeight("97%");
-		datasetTable.setSelectable(true);
+		this.datasetTable.setSelectable(true);
 
 		if (!this.h2hCall) {
 			// "Export to CSV"
@@ -232,7 +233,7 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 			this.openGraphicalFilteringTool.setData(RepresentationDatasetComponent.OPEN_GRAPHICAL_FILTERING_BUTTON_ID);
 			this.openGraphicalFilteringTool.addListener(new StudyButtonClickListener(this));
 
-			HorizontalLayout buttonLayout = new HorizontalLayout();
+			final HorizontalLayout buttonLayout = new HorizontalLayout();
 			buttonLayout.setSpacing(true);
 
 			// only show Fieldbook Export to Excel button if study page not accessed directly from URL
@@ -246,18 +247,18 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 		}
 	}
 
-	protected Table generateLazyDatasetTable(boolean fromUrl) {
+	protected Table generateLazyDatasetTable(final boolean fromUrl) {
 		// set the column header ids
 		List<DMSVariableType> variables;
-		List<String> columnIds = new ArrayList<String>();
+		final List<String> columnIds = new ArrayList<String>();
 		try {
-			DataSet dataset = this.studyDataManager.getDataSet(this.datasetId);
-			studiesMappedByInstance = this.studyDataManager.getInstanceGeolocationIdsMap(dataset.getStudyId());
+			final DataSet dataset = this.studyDataManager.getDataSet(this.datasetId);
+			this.studiesMappedByInstance = this.studyDataManager.getInstanceGeolocationIdsMap(dataset.getStudyId());
 
 			variables = dataset.getVariableTypes().getVariableTypes();
-		} catch (MiddlewareException e) {
-			RepresentationDatasetComponent.LOG.error("Error in getting variables of dataset: " + this.datasetId + "\n" + e.toString()
-					+ "\n" + e.getStackTrace(), e);
+		} catch (final MiddlewareException e) {
+			RepresentationDatasetComponent.LOG
+					.error("Error in getting variables of dataset: " + this.datasetId + "\n" + e.toString() + "\n" + e.getStackTrace(), e);
 			variables = new ArrayList<DMSVariableType>();
 			if (this.getWindow() != null) {
 				MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
@@ -265,9 +266,9 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 			}
 		}
 
-		for (DMSVariableType variable : variables) {
+		for (final DMSVariableType variable : variables) {
 			if (!RepresentationDatasetComponent.EXCLUDED_ROLE.contains(variable.getStandardVariable().getPhenotypicType())) {
-				String columnId = new StringBuffer().append(variable.getId()).append("-").append(variable.getLocalName()).toString();
+				final String columnId = new StringBuffer().append(variable.getId()).append("-").append(variable.getLocalName()).toString();
 				if (!columnIds.contains(columnId)) {
 					columnIds.add(columnId);
 				}
@@ -275,12 +276,12 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 		}
 
 		// create item container for dataset table
-		RepresentationDatasetQueryFactory factory =
+		final RepresentationDatasetQueryFactory factory =
 				new RepresentationDatasetQueryFactory(this.studyDataManager, this.datasetId, columnIds, fromUrl);
-		LazyQueryContainer datasetContainer = new LazyQueryContainer(factory, false, 50);
+		final LazyQueryContainer datasetContainer = new LazyQueryContainer(factory, false, 50);
 
 		// add the column ids to the LazyQueryContainer tells the container the columns to display for the Table
-		for (String columnId : columnIds) {
+		for (final String columnId : columnIds) {
 			if (columnId.contains("GID") && !fromUrl) {
 				datasetContainer.addContainerProperty(columnId, Link.class, null);
 			} else {
@@ -291,7 +292,7 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 		datasetContainer.getQueryView().getItem(0);
 
 		// create the Vaadin Table to display the dataset, pass the container object created
-		Table newTable = new Table("", datasetContainer);
+		final Table newTable = new Table("", datasetContainer);
 		newTable.setColumnCollapsingAllowed(true);
 		newTable.setColumnReorderingAllowed(true);
 		// number of rows to display in the Table
@@ -300,9 +301,9 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 		newTable.setSizeFull();
 
 		// set column headers for the Table
-		for (DMSVariableType variable : variables) {
-			String columnId = new StringBuffer().append(variable.getId()).append("-").append(variable.getLocalName()).toString();
-			String columnHeader = variable.getLocalName();
+		for (final DMSVariableType variable : variables) {
+			final String columnId = new StringBuffer().append(variable.getId()).append("-").append(variable.getLocalName()).toString();
+			final String columnHeader = variable.getLocalName();
 			newTable.setColumnHeader(columnId, columnHeader);
 		}
 
@@ -312,18 +313,18 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 	}
 
 	public void openGraphicalFilteringToolAction() {
-		if (datasetTable.getValue() == null) {
+		if (this.datasetTable.getValue() == null) {
 			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.GRAPHICAL_FILTERING_INSTANCE_REQUIRED),
 					this.messageSource.getMessage(Message.ERROR_IN_GETTING_VARIABLES_OF_DATASET));
 		} else {
-			final String itemPropertyValue = (String) datasetTable.getItem(datasetTable.getValue()).
-					getItemProperty("8170-TRIAL_INSTANCE").getValue();
+			final String itemPropertyValue =
+					(String) this.datasetTable.getItem(this.datasetTable.getValue()).getItemProperty("8170-TRIAL_INSTANCE").getValue();
 			final Integer studyId = this.studiesMappedByInstance.get(itemPropertyValue);
 			this.openGraphicalFilteringTool(studyId);
 		}
 	}
 
-	private void openGraphicalFilteringTool( final Integer studyId) {
+	private void openGraphicalFilteringTool(final Integer studyId) {
 		final Window mainWindow = this.getWindow();
 		final String crop = this.contextUtil.getProjectInContext().getCropType().getCropName();
 		final Window graphicalFilteringToolWindow = new GraphicalFilteringToolComponent(studyId, crop);
@@ -343,6 +344,10 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 		this.messageSource.setCaption(this.exportExcelButton, Message.EXPORT_TO_EXCEL_LABEL);
 		this.messageSource.setCaption(this.openTableViewerButton, Message.OPEN_TABLE_VIEWER_LABEL);
 		this.messageSource.setCaption(this.openGraphicalFilteringTool, Message.OPEN_GRAPHICAL_FILTERING_TOOL);
+	}
+
+	public void setDatasetExporter(final DatasetExporter datasetExporter) {
+		this.datasetExporter = datasetExporter;
 	}
 
 }

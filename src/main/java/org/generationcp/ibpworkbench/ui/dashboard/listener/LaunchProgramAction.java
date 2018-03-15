@@ -14,7 +14,6 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.generationcp.commons.constant.ToolEnum;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -25,6 +24,7 @@ import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
+import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +61,7 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 
 	private Project selectedProgram;
 
-	private LaunchWorkbenchToolAction launchListManagerToolAction = new LaunchWorkbenchToolAction(ToolEnum.BM_LIST_MANAGER_MAIN);
+	private LaunchWorkbenchToolAction launchListManagerToolAction = new LaunchWorkbenchToolAction(ToolName.BM_LIST_MANAGER_MAIN);
 
 	public LaunchProgramAction() {
 		super();
