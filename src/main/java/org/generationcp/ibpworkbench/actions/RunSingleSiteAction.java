@@ -41,7 +41,6 @@ import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.ibpworkbench.util.BreedingViewXMLWriter;
 import org.generationcp.ibpworkbench.util.BreedingViewXMLWriterException;
 import org.generationcp.ibpworkbench.util.DatasetExporter;
-import org.generationcp.ibpworkbench.util.DatasetExporterException;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.ToolName;
@@ -62,8 +61,6 @@ import com.vaadin.ui.Window;
  */
 @Configurable
 public class RunSingleSiteAction implements ClickListener {
-
-	private static final String ERROR = "ERROR: ";
 
 	private static final long serialVersionUID = 1L;
 
@@ -146,21 +143,13 @@ public class RunSingleSiteAction implements ClickListener {
 
 		this.datasetExporter.setDatasetId(breedingViewInput.getDatasetId());
 
-		try {
-
-			final List<String> selectedEnvironments = new ArrayList<String>();
-			for (final SeaEnvironmentModel m : breedingViewInput.getSelectedEnvironments()) {
-				selectedEnvironments.add(m.getTrialno());
-			}
-
-			datasetExporter
-					.exportToCSVForBreedingView(breedingViewInput.getSourceXLSFilePath(), (String) this.source.getSelEnvFactor().getValue(),
-							selectedEnvironments, breedingViewInput);
-
-		} catch (final DatasetExporterException e) {
-			RunSingleSiteAction.LOG.error(RunSingleSiteAction.ERROR, e);
+		final List<String> selectedEnvironments = new ArrayList<String>();
+		for (final SeaEnvironmentModel m : breedingViewInput.getSelectedEnvironments()) {
+			selectedEnvironments.add(m.getTrialno());
 		}
 
+		datasetExporter.exportToCSVForBreedingView(breedingViewInput.getSourceXLSFilePath(),
+				(String) this.source.getSelEnvFactor().getValue(), selectedEnvironments, breedingViewInput);
 	}
 
 	/**
