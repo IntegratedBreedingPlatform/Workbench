@@ -11,6 +11,12 @@
     <meta name="theme-color" content="#000000">
     <link rel="shortcut icon" href="favicon.ico" />
     <link rel="manifest" href="manifest.webapp" />
+
+    <!-- browse sample -->
+    <!-- TODO implement in angular. See scripts at the end of page too -->
+    <link href="/Fieldbook/static/css/lib/bootstrap/bootstrap.min.css" rel="stylesheet" media="screen"/>
+    <link href="/Fieldbook/static/css/fieldbook-tree.css" rel="stylesheet"/>
+
     <!-- jhipster-needle-add-resources-to-root - JHipster will add new resources here -->
 </head>
 <body>
@@ -52,14 +58,21 @@
     <script type="text/javascript" src="/Fieldbook/static/js/spinner-manager.js"></script>
     <script type="text/javascript" src="/Fieldbook/static/js/spinner.js"></script>
     <script type="text/javascript" src="/Fieldbook/static/js/lib/jquery/jquery.blockUI.js"></script>
+    <script type="text/javascript" src="/Fieldbook/static/js/lib/bootstrap/bootstrap.min.js"></script>
     <script type="text/javascript" src="/Fieldbook/static/js/bootstrap-popover.js"></script>
-    <script type="application/javascript">
+    <script type="text/javascript" src="/Fieldbook/static/js/bootstrap-tooltip.js"></script>
+    <script type="text/javascript" src="/Fieldbook/static/js/tree-persist.js"></script>
+	<!-- get crop name, used in listTreeOperation.js -->
+    <script src="/ibpworkbench/controller/static/js/lib/get-url-parameter.js" charset="utf-8"></script>
+    <script type="text/javascript">
         function chooseList(node) {
             window.location.hash = window.location.hash.replace(/listId=[0-9]*/, "listId=" + node.data.key);
         }
-        $(function () {
+        function openList() {
             SaveSampleList.initializeSampleListTree()
-        });
+            SaveSampleList.openSaveSampleListModal();
+        }
+        var cropName = getUrlParameter("crop");
     </script>
 </body>
 </html>
