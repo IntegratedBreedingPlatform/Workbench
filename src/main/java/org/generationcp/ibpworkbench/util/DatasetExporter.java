@@ -9,7 +9,6 @@ import java.util.Map;
 
 import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.util.BreedingViewUtil;
-import org.generationcp.commons.util.ObjectUtil;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
@@ -119,10 +118,9 @@ public class DatasetExporter {
 	 * @param selectedEnvironmentFactor - name of factor selected that will uniquely identify each environment in dataset
 	 * @param selectedEnvironments - list of environments to generate observations for
 	 * @param breedingViewInput - contains configurations for exporting dataset
-	 * @throws DatasetExporterException
 	 */
 	public void exportToCSVForBreedingView(final String filename, final String selectedEnvironmentFactor, final List<String> selectedEnvironments,
-			final BreedingViewInput breedingViewInput) throws DatasetExporterException {
+			final BreedingViewInput breedingViewInput) {
 
 		final DataSet dataset = this.studyDataManager.getDataSet(this.datasetId);
 		if (dataset == null) {

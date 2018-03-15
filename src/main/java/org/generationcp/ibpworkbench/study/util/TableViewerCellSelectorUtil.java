@@ -1,6 +1,14 @@
 
 package org.generationcp.ibpworkbench.study.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.generationcp.ibpworkbench.study.pojos.CellCoordinate;
+import org.generationcp.ibpworkbench.study.pojos.CellCoordinateColorAssignment;
+
 import com.vaadin.addon.colorpicker.ColorPicker;
 import com.vaadin.addon.colorpicker.events.ColorChangeEvent;
 import com.vaadin.event.ItemClickEvent;
@@ -11,13 +19,6 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.CellStyleGenerator;
 import com.vaadin.ui.Table.HeaderClickEvent;
 import com.vaadin.ui.Window;
-import org.apache.poi.xssf.usermodel.XSSFColor;
-import org.generationcp.ibpworkbench.study.pojos.CellCoordinate;
-import org.generationcp.ibpworkbench.study.pojos.CellCoordinateColorAssignment;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 public class TableViewerCellSelectorUtil {
 
@@ -130,11 +131,7 @@ public class TableViewerCellSelectorUtil {
 				}
 
 				if (event.getButton() == ClickEvent.BUTTON_RIGHT) {
-					if (TableViewerCellSelectorUtil.this.highlightedCellCoordinates.size() == 0) {
-						@SuppressWarnings("unused")
-						CellCoordinate currentCellCoordinate =
-								new CellCoordinate(TableViewerCellSelectorUtil.this.currentColumn,
-										TableViewerCellSelectorUtil.this.currentRow);
+					if (TableViewerCellSelectorUtil.this.highlightedCellCoordinates.isEmpty()) {
 						TableViewerCellSelectorUtil.this.updateTableCellColors();
 					}
 
@@ -324,7 +321,7 @@ public class TableViewerCellSelectorUtil {
 					}
 				}
 
-				if (hasColorSet == false) {
+				if (!hasColorSet) {
 					if (TableViewerCellSelectorUtil.this.currentColumn != null
 							&& TableViewerCellSelectorUtil.this.currentColumn.equals(propertyId)
 							&& TableViewerCellSelectorUtil.this.currentRow != null
@@ -348,23 +345,23 @@ public class TableViewerCellSelectorUtil {
 	/**
 	 * Adds color to CSS and creates a color class It checks if color is already added before adding a new class
 	 * 
-	 * @param R - red decimal (int) value
-	 * @param G - green decimal (int) value
-	 * @param B - blue decimal (int) value
+	 * @param r - red decimal (int) value
+	 * @param g - green decimal (int) value
+	 * @param b - blue decimal (int) value
 	 * 
 	 * @return - String css class name
 	 */
 
-	private String addColor(int R, int G, int B) {
-		String className = String.valueOf(R) + String.valueOf(G) + String.valueOf(B);
+	private String addColor(int r, int g, int b) {
+		String className = String.valueOf(r) + String.valueOf(g) + String.valueOf(b);
 		if (this.customCSSClassNames.indexOf(className) == -1) {
 			this.customCSSClassNames.add(className);
 			if (this.source instanceof Window) {
-				((Window) this.source).addComponent(new Label("<style> .v-table-cell-content-" + className + " { background: rgb(" + R
-						+ "," + G + "," + B + ");  border-bottom:1px solid #e0e0e0; } </style>", Label.CONTENT_XHTML));
+				((Window) this.source).addComponent(new Label("<style> .v-table-cell-content-" + className + " { background: rgb(" + r
+						+ "," + g + "," + b + ");  border-bottom:1px solid #e0e0e0; } </style>", Label.CONTENT_XHTML));
 			} else {
 				((AbstractOrderedLayout) this.source).addComponent(new Label("<style> .v-table-cell-content-" + className
-						+ " { background: rgb(" + R + "," + G + "," + B + "); border-bottom:1px solid #e0e0e0; } </style>",
+						+ " { background: rgb(" + r + "," + g + "," + b + "); border-bottom:1px solid #e0e0e0; } </style>",
 						Label.CONTENT_XHTML));
 			}
 		}
@@ -392,7 +389,7 @@ public class TableViewerCellSelectorUtil {
 				}
 
 			}
-			if (inColorAssigmentsList == false) {
+			if (!inColorAssigmentsList) {
 				CellCoordinateColorAssignment cellCoordinateColorAssigment =
 						new CellCoordinateColorAssignment(this.highlightedCellCoordinates.get(i), className, redValue, greenValue,
 								blueValue);
@@ -403,7 +400,7 @@ public class TableViewerCellSelectorUtil {
 		this.updateTableCellColors();
 	}
 
-	public ArrayList<CellCoordinateColorAssignment> getCellCoordinateColorAssigments() {
+	public List<CellCoordinateColorAssignment> getCellCoordinateColorAssigments() {
 		return this.cellCoordinateColorAssigments;
 	}
 

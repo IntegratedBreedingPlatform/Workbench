@@ -167,7 +167,7 @@ public class DatasetExporterTest {
 	}
 	
 	@Test
-	public void testExportToCSVForBreedingViewWithNumericAndCategoricalVariates() throws DatasetExporterException {
+	public void testExportToCSVForBreedingViewWithNumericAndCategoricalVariates() {
 		final Experiment firstRowObservation = this.createExperimentTestData(this.factorVariables, this.variateVariables);
 		final Experiment secondRowObservation = this.createExperimentTestData(this.factorVariables, this.variateVariables);
 		Mockito.when(DatasetExporterTest.studyDataManager.getExperiments(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyInt()))
@@ -189,7 +189,7 @@ public class DatasetExporterTest {
 	}
 	
 	@Test
-	public void testExportToCSVForBreedingViewExperimentsDontHaveSomeDatasetFactors() throws DatasetExporterException {
+	public void testExportToCSVForBreedingViewExperimentsDontHaveSomeDatasetFactors() {
 		// 2nd row experiment doesn't have FIELDMAP_COLUMN and FIELMAP_RANGE variables which are present in dataset/column headers
 		final List<Variable> factorVariablesWithoutFieldmapVariables = this.createFactorVariablesWithoutFieldmapVariables(this.factors);
 		final Experiment firstRowObservation = this.createExperimentTestData(this.factorVariables, this.variateVariables);
@@ -228,7 +228,7 @@ public class DatasetExporterTest {
 	}
 
 	@Test
-	public void testExportToCSVForBreedingViewNoExperimentsForSelectedEnvironment() throws DatasetExporterException {
+	public void testExportToCSVForBreedingViewNoExperimentsForSelectedEnvironment() {
 		// Sselected TRIAL_INSTANCE is 2 but there are no experiments found for it
 		this.exporter.exportToCSVForBreedingView(DatasetExporterTest.FILENAME, DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME,
 				Lists.newArrayList(DatasetExporterTest.TRIAL_INSTANCE_2), this.bvInput);
@@ -243,7 +243,7 @@ public class DatasetExporterTest {
 	}
 
 	@Test
-	public void testExportToCSVForBreedingViewTraitNamesWithSpecialCharactersAndWhiteSpace() throws DatasetExporterException {
+	public void testExportToCSVForBreedingViewTraitNamesWithSpecialCharactersAndWhiteSpace() {
 		this.appendSpecialCharactersToVariableName(this.factors);
 		this.appendSpecialCharactersToVariableName(this.variates);
 		// Setup selected variates
@@ -277,7 +277,7 @@ public class DatasetExporterTest {
 	}
 
 	@Test
-	public void testExportToCSVForBreedingViewTheSelectedFactorIsNotTrialInstance() throws DatasetExporterException {
+	public void testExportToCSVForBreedingViewTheSelectedFactorIsNotTrialInstance() {
 		// Setup selected environments
 		final List<SeaEnvironmentModel> selectedEnvironmentsList = new ArrayList<SeaEnvironmentModel>();
 		final SeaEnvironmentModel envModel = new SeaEnvironmentModel();
@@ -308,7 +308,7 @@ public class DatasetExporterTest {
 	}
 	
 	@Test
-	public void testExportToCSVForBreedingViewDummyReplicateFactorUsed() throws DatasetExporterException {
+	public void testExportToCSVForBreedingViewDummyReplicateFactorUsed() {
 		Mockito.when(this.bvInput.getReplicatesFactorName()).thenReturn(DatasetExporter.DUMMY_REPLICATES);
 
 		// Method to test

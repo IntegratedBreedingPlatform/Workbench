@@ -46,7 +46,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 @Configurable
 public class DatasetExporter {
 	
-	public static final Logger LOG = LoggerFactory.getLogger(DatasetExporter.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DatasetExporter.class);
 
 	private static final int CONDITION_LIST_HEADER_ROW_INDEX = 8;
 
