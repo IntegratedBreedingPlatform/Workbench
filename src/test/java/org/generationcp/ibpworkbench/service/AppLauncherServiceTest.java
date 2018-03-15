@@ -1,6 +1,5 @@
 package org.generationcp.ibpworkbench.service;
 
-import org.generationcp.commons.constant.ToolEnum;
 import org.generationcp.commons.context.ContextInfo;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.tomcat.util.TomcatUtil;
@@ -10,6 +9,7 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
+import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.generationcp.middleware.pojos.workbench.ToolType;
 import org.junit.Assert;
 import org.junit.Before;
@@ -94,39 +94,39 @@ public class AppLauncherServiceTest {
 	public void testLaunchTool() throws Exception, AppLaunchException {
 		// case 1: web tool
 		final Tool aWebTool = new Tool();
-		aWebTool.setToolName(ToolEnum.BM_LIST_MANAGER.getToolName());
+		aWebTool.setToolName(ToolName.BM_LIST_MANAGER_MAIN.getName());
 		aWebTool.setToolType(ToolType.WEB);
 
 		// case 2: gdms
 		final Tool gdmsTool = new Tool();
-		gdmsTool.setToolName(ToolEnum.GDMS.getToolName());
+		gdmsTool.setToolName(ToolName.GDMS.getName());
 		gdmsTool.setToolType(ToolType.WEB_WITH_LOGIN);
 
 		// case 3: NATIVE
 		final Tool nativeTool = new Tool();
-		nativeTool.setToolName(ToolEnum.BREEDING_PLANNER.getToolName());
+		nativeTool.setToolName(ToolName.BREEDING_VIEW.getName());
 		nativeTool.setToolType(ToolType.NATIVE);
 
-		Mockito.when(this.workbenchDataManager.getToolWithName(ToolEnum.BM_LIST_MANAGER.getToolName())).thenReturn(aWebTool);
-		Mockito.when(this.workbenchDataManager.getToolWithName(ToolEnum.GDMS.getToolName())).thenReturn(gdmsTool);
-		Mockito.when(this.workbenchDataManager.getToolWithName(ToolEnum.BREEDING_PLANNER.getToolName())).thenReturn(nativeTool);
+		Mockito.when(this.workbenchDataManager.getToolWithName(ToolName.BM_LIST_MANAGER_MAIN.getName())).thenReturn(aWebTool);
+		Mockito.when(this.workbenchDataManager.getToolWithName(ToolName.GDMS.getName())).thenReturn(gdmsTool);
+		Mockito.when(this.workbenchDataManager.getToolWithName(ToolName.BREEDING_VIEW.getName())).thenReturn(nativeTool);
 
 		Mockito.doNothing().when(this.appLauncherService).launchNativeapp(Matchers.any(Tool.class));
 		Mockito.doReturn("/result").when(this.appLauncherService).launchWebappWithLogin(Matchers.any(Tool.class));
 		Mockito.doReturn("/result").when(this.appLauncherService).launchWebapp(Matchers.any(Tool.class), Matchers.any(Integer.class));
 
 		// the tests itself
-		this.appLauncherService.launchTool(ToolEnum.BREEDING_PLANNER.getToolName(), null);
+		this.appLauncherService.launchTool(ToolName.BREEDING_VIEW.getName(), null);
 		Mockito.verify(this.appLauncherService).launchNativeapp(nativeTool);
 		Mockito.verify(this.contextUtil, Mockito.atLeastOnce())
 				.logProgramActivity(nativeTool.getTitle(), AppLauncherService.LAUNCHED + nativeTool.getTitle());
 
-		this.appLauncherService.launchTool(ToolEnum.BM_LIST_MANAGER.getToolName(), null);
+		this.appLauncherService.launchTool(ToolName.BM_LIST_MANAGER_MAIN.getName(), null);
 		Mockito.verify(this.appLauncherService).launchWebapp(aWebTool, null);
 		Mockito.verify(this.contextUtil, Mockito.atLeastOnce())
 				.logProgramActivity(aWebTool.getTitle(), AppLauncherService.LAUNCHED + aWebTool.getTitle());
 
-		this.appLauncherService.launchTool(ToolEnum.GDMS.getToolName(), null);
+		this.appLauncherService.launchTool(ToolName.GDMS.getName(), null);
 		Mockito.verify(this.appLauncherService).launchWebappWithLogin(gdmsTool);
 		Mockito.verify(this.contextUtil, Mockito.atLeastOnce())
 				.logProgramActivity(gdmsTool.getTitle(), AppLauncherService.LAUNCHED + gdmsTool.getTitle());
@@ -137,7 +137,7 @@ public class AppLauncherServiceTest {
 		final Tool aNativeTool = new Tool();
 
 		// for vaadin type params with a dash
-		aNativeTool.setToolName(ToolEnum.BREEDING_VIEW.getToolName());
+		aNativeTool.setToolName(ToolName.BREEDING_VIEW.getName());
 		aNativeTool.setPath(AppLauncherServiceTest.SAMPLE_BASE_URL);
 		aNativeTool.setToolType(ToolType.NATIVE);
 
@@ -155,20 +155,20 @@ public class AppLauncherServiceTest {
 		Tool aWebTool = new Tool();
 
 		// for vaadin type params with a dash
-		aWebTool.setToolName(ToolEnum.BM_LIST_MANAGER.getToolName());
+		aWebTool.setToolName(ToolName.BM_LIST_MANAGER_MAIN.getName());
 		aWebTool.setPath(AppLauncherServiceTest.SAMPLE_BASE_URL);
 		aWebTool.setToolType(ToolType.WEB);
 		String urlResult = this.appLauncherService.launchWebapp(aWebTool, AppLauncherServiceTest.LOGGED_IN_USER_ID);
 
 		Assert.assertEquals("should return correct url for List manager app",
-				String.format("%s://%s:%d/%s-%d%s", AppLauncherServiceTest.SCHEME, AppLauncherServiceTest.HOST_NAME,
+				String.format("%s://%s:%d/%s%d%s", AppLauncherServiceTest.SCHEME, AppLauncherServiceTest.HOST_NAME,
 						AppLauncherServiceTest.PORT, AppLauncherServiceTest.SAMPLE_BASE_URL, AppLauncherServiceTest.LOGGED_IN_USER_ID,
 						AppLauncherServiceTest.RESTART_URL_STR + AppLauncherServiceTest.WORKBENCH_CONTEXT_PARAMS), urlResult);
 
 		// for fieldbook apps with params with param
 		aWebTool = new Tool();
 
-		aWebTool.setToolName(ToolEnum.NURSERY_MANAGER_FIELDBOOK_WEB.getToolName());
+		aWebTool.setToolName(ToolName.NURSERY_MANAGER_FIELDBOOK_WEB.getName());
 		aWebTool.setPath(AppLauncherServiceTest.SAMPLE_BASE_URL);
 		aWebTool.setToolType(ToolType.WEB);
 		urlResult = this.appLauncherService.launchWebapp(aWebTool, AppLauncherServiceTest.LOGGED_IN_USER_ID);
@@ -180,7 +180,7 @@ public class AppLauncherServiceTest {
 
 		aWebTool = new Tool();
 
-		aWebTool.setToolName(ToolEnum.TRIAL_MANAGER_FIELDBOOK_WEB.getToolName());
+		aWebTool.setToolName(ToolName.TRIAL_MANAGER_FIELDBOOK_WEB.getName());
 		aWebTool.setPath(AppLauncherServiceTest.SAMPLE_BASE_URL);
 		aWebTool.setToolType(ToolType.WEB);
 		urlResult = this.appLauncherService.launchWebapp(aWebTool, AppLauncherServiceTest.LOGGED_IN_USER_ID);
@@ -196,7 +196,7 @@ public class AppLauncherServiceTest {
 	public void testLaunchMigratorWebapp() {
 		final Tool migratorWebTool = new Tool();
 
-		migratorWebTool.setToolName(ToolEnum.MIGRATOR.getToolName());
+		migratorWebTool.setToolName(ToolName.MIGRATOR.getName());
 		migratorWebTool.setPath(AppLauncherServiceTest.SAMPLE_BASE_URL);
 		migratorWebTool.setToolType(ToolType.WEB);
 		final String urlResult = this.appLauncherService.launchMigratorWebapp(migratorWebTool, AppLauncherServiceTest.LOGGED_IN_USER_ID);
@@ -212,7 +212,7 @@ public class AppLauncherServiceTest {
 		final Tool aWebTool = new Tool();
 
 		// for vaadin type params with a dash
-		aWebTool.setToolName(ToolEnum.GDMS.getToolName());
+		aWebTool.setToolName(ToolName.GDMS.getName());
 		aWebTool.setPath(AppLauncherServiceTest.SAMPLE_BASE_URL);
 		aWebTool.setToolType(ToolType.WEB_WITH_LOGIN);
 

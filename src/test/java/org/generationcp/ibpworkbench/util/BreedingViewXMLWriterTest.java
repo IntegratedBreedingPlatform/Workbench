@@ -24,15 +24,14 @@ import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.ibpworkbench.data.initializer.SeaEnvironmentModelTestDataInitializer;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.Tool;
+import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -74,18 +73,19 @@ public class BreedingViewXMLWriterTest {
 
 	@Mock
 	private InstallationDirectoryUtil installationDirectoryUtil;
-
+	
+	private Project project;
+	
 	@Before
 	public void setUp() throws Exception {
-		final WorkbenchDataManager workbenchDataManager = Mockito.mock(WorkbenchDataManager.class);
-		Mockito.when(this.contextUtil.getProjectInContext())
-				.thenReturn(ProjectTestDataInitializer.createProjectWithCropType());
+		this.project = ProjectTestDataInitializer.createProjectWithCropType();
+		Mockito.when(contextUtil.getProjectInContext()).thenReturn(project);
 
 		this.breedingViewInput = this.createBreedingViewInput();
-		this.breedingViewXMLWriter = new BreedingViewXMLWriter(this.breedingViewInput);
-		this.breedingViewXMLWriter.setWebApiUrl(BreedingViewXMLWriterTest.WEB_API_URL);
-		this.breedingViewXMLWriter.setContextUtil(this.contextUtil);
-		this.breedingViewXMLWriter.setWorkbenchDataManager(workbenchDataManager);
+		this.breedingViewXMLWriter = new BreedingViewXMLWriter();
+		this.breedingViewXMLWriter.setBreedingViewInput(this.breedingViewInput);
+		this.breedingViewXMLWriter.setWebApiUrl(WEB_API_URL);
+		this.breedingViewXMLWriter.setContextUtil(contextUtil);
 		this.breedingViewXMLWriter.setInstallationDirectoryUtil(this.installationDirectoryUtil);
 		this.createBreedingViewDirectories();
 
@@ -131,13 +131,17 @@ public class BreedingViewXMLWriterTest {
 
 	@Test
 	public void testWriteProjectXML() throws Exception {
-		Mockito.doReturn(BreedingViewXMLWriterTest.OUTPUT_DIRECTORY).when(this.installationDirectoryUtil)
-				.getOutputDirectoryForProjectAndTool(Matchers.any(Project.class), Matchers.any(Tool.class));
+		Mockito.doReturn(OUTPUT_DIRECTORY).when(this.installationDirectoryUtil)
+				.getOutputDirectoryForProjectAndTool(Mockito.any(Project.class), Mockito.any(ToolName.class));
 		final String filePath = this.breedingViewInput.getDestXMLFilePath();
 		this.breedingViewXMLWriter.writeProjectXML();
-
-		Mockito.verify(this.installationDirectoryUtil).getOutputDirectoryForProjectAndTool(Matchers.any(Project.class),
-				Matchers.any(Tool.class));
+		
+		final ArgumentCaptor<Project> projectCaptor = ArgumentCaptor.forClass(Project.class);
+		final ArgumentCaptor<ToolName> toolCaptor = ArgumentCaptor.forClass(ToolName.class);
+		Mockito.verify(this.installationDirectoryUtil).getOutputDirectoryForProjectAndTool(projectCaptor.capture(),
+				toolCaptor.capture());
+		Assert.assertEquals(this.project, projectCaptor.getValue());
+		Assert.assertEquals(ToolName.BREEDING_VIEW, toolCaptor.getValue());
 		Assert.assertTrue(filePath + " should exist", new File(filePath).exists());
 	}
 

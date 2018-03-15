@@ -2,8 +2,6 @@
 package org.generationcp.ibpworkbench.actions;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -14,14 +12,16 @@ import javax.annotation.Resource;
 import org.generationcp.commons.breedingview.xml.Genotypes;
 import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.BreedingViewUtil;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
+import org.generationcp.commons.util.VaadinFileDownloadResource;
+import org.generationcp.commons.util.ZipUtil;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.GxeTable;
 import org.generationcp.ibpworkbench.util.GxeInput;
 import org.generationcp.ibpworkbench.util.MultiSiteDataExporter;
-import org.generationcp.ibpworkbench.util.ZipUtil;
 import org.generationcp.ibpworkbench.util.bean.MultiSiteParameters;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
@@ -34,13 +34,11 @@ import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.generationcp.middleware.util.DatasetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.unbescape.html.HtmlEscape;
 
-import com.vaadin.Application;
-import com.vaadin.terminal.DownloadStream;
-import com.vaadin.terminal.FileResource;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
@@ -64,6 +62,9 @@ public class RunMultiSiteAction implements ClickListener {
 
 	@Resource
 	private StudyDataManager studyDataManager;
+
+	@Autowired
+	private ContextUtil contextUtil;
 
 	private IBPWorkbenchApplication workbenchApplication;
 
@@ -94,7 +95,7 @@ public class RunMultiSiteAction implements ClickListener {
 	public void buttonClick(final ClickEvent event) {
 		final ClickEvent buttonClickEvent = event;
 
-		this.breedingViewTool = this.workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
+		this.breedingViewTool = this.workbenchDataManager.getToolWithName(ToolName.BREEDING_VIEW.getName());
 
 		final GxeInput gxeInput;
 		gxeInput = this.generateInputFiles();
@@ -111,19 +112,22 @@ public class RunMultiSiteAction implements ClickListener {
 	}
 
 	protected void zipInputFilesAndDownload(final GxeInput gxeInput) {
-
-		final String studyName = HtmlEscape.unescapeHtml(this.multiSiteParameters.getStudy().getName());
-
-		final String outputFilename = BreedingViewUtil.sanitizeNameAlphaNumericOnly(studyName) + ".zip";
-
 		final List<String> filenameList = new ArrayList<>();
 		filenameList.add(gxeInput.getDestXMLFilePath());
 		filenameList.add(gxeInput.getSourceCSVFilePath());
 		filenameList.add(gxeInput.getSourceCSVSummaryStatsFilePath());
 
-		this.zipUtil.zipIt(outputFilename, filenameList);
+		final String studyName = HtmlEscape.unescapeHtml(this.multiSiteParameters.getStudy().getName());
+		final String outputFilename = BreedingViewUtil.sanitizeNameAlphaNumericOnly(studyName);
 
-		this.downloadInputFile(new File(outputFilename), this.workbenchApplication);
+		try {
+			final String finalZipfileName =
+					this.zipUtil.zipIt(outputFilename, filenameList, this.contextUtil.getProjectInContext(), ToolName.BV_GXE);
+			this.downloadInputFile(new File(finalZipfileName), outputFilename);
+		} catch (final IOException e) {
+			RunMultiSiteAction.LOG.error("Error creating zip file " + outputFilename + ZipUtil.ZIP_EXTENSION, e);
+			MessageNotifier.showMessage(this.workbenchApplication.getMainWindow(), "Error creating zip file.", "");
+		}
 	}
 
 	protected GxeInput generateInputFiles() {
@@ -148,7 +152,7 @@ public class RunMultiSiteAction implements ClickListener {
 	void exportMultiSiteProjectFile(final MultiSiteParameters multiSiteParameters, final GxeInput gxeInput) {
 
 		final String inputDir =
-				this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(multiSiteParameters.getProject(), this.breedingViewTool);
+				this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(multiSiteParameters.getProject(), ToolName.BREEDING_VIEW);
 		final String inputFileName = this.generateInputFileName(multiSiteParameters.getProject());
 
 		gxeInput.setDestXMLFilePath(inputDir + File.separator + inputFileName + ".xml");
@@ -158,7 +162,7 @@ public class RunMultiSiteAction implements ClickListener {
 	}
 
 	/**
-	 * Exports the Means Dataset and Summary Stats data into CSV files. These are the input files required for running Multi-Site Analsysis
+	 * Exports the Means Dataset and Summary Stats data into CSV files. These are the input files required for running Multi-Site Analysis
 	 * in Breeding View.
 	 *
 	 * @param multiSiteParameters
@@ -273,30 +277,10 @@ public class RunMultiSiteAction implements ClickListener {
 		return selectedTraits;
 	}
 
-	void downloadInputFile(final File file, final Application application) {
-
-		final FileResource fr = new FileResource(file, application) {
-
-			private static final long serialVersionUID = 765143030552676513L;
-
-			@Override
-			public DownloadStream getStream() {
-				final DownloadStream ds;
-				try {
-					ds = new DownloadStream(new FileInputStream(this.getSourceFile()), this.getMIMEType(), this.getFilename());
-
-					ds.setParameter("Content-Disposition", "attachment; filename=" + this.getFilename());
-					ds.setCacheTime(this.getCacheTime());
-					return ds;
-
-				} catch (final FileNotFoundException e) {
-					RunMultiSiteAction.LOG.error(e.getMessage(), e);
-					return null;
-				}
-			}
-		};
-
-		application.getMainWindow().open(fr);
+	void downloadInputFile(final File file, final String filename) {
+		final VaadinFileDownloadResource fileDownloadResource =
+				new VaadinFileDownloadResource(file, filename + ZipUtil.ZIP_EXTENSION, this.workbenchApplication);
+		this.workbenchApplication.getMainWindow().open(fileDownloadResource);
 	}
 
 	protected void setIsServerApp(final boolean isServerApp) {

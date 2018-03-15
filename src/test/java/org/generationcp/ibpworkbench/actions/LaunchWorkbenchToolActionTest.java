@@ -1,10 +1,10 @@
 
 package org.generationcp.ibpworkbench.actions;
 
-import org.generationcp.commons.constant.ToolEnum;
 import org.generationcp.ibpworkbench.ContentWindow;
 import org.generationcp.ibpworkbench.exception.AppLaunchException;
 import org.generationcp.ibpworkbench.service.AppLauncherService;
+import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -16,7 +16,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class LaunchWorkbenchToolActionTest {
 
 	public static final String SAMPLE_RETURN_URL = "sample_return_url";
-	private final ToolEnum sampleTool = ToolEnum.BREEDING_VIEW;
+	private final ToolName sampleTool = ToolName.BREEDING_VIEW;
 
 	@Mock
 	private AppLauncherService appLauncherService;
@@ -32,7 +32,7 @@ public class LaunchWorkbenchToolActionTest {
 
 	@Test
 	public void testDoAction() throws Exception {
-		String urlFragment = "/" + this.sampleTool.getToolName();
+		String urlFragment = "/" + this.sampleTool.getName();
 		Mockito.doNothing().when(this.launchWorkbenchToolAction).onAppLaunch(this.window);
 
 		this.launchWorkbenchToolAction.doAction(this.window, urlFragment, true);
@@ -42,12 +42,12 @@ public class LaunchWorkbenchToolActionTest {
 
 	@Test
 	public void testOnAppLaunch() throws Exception, AppLaunchException {
-		Mockito.when(this.appLauncherService.launchTool(this.sampleTool.getToolName(), this.idParam)).thenReturn(
+		Mockito.when(this.appLauncherService.launchTool(this.sampleTool.getName(), this.idParam)).thenReturn(
 				LaunchWorkbenchToolActionTest.SAMPLE_RETURN_URL);
 
 		this.launchWorkbenchToolAction.onAppLaunch(this.window);
 
-		Mockito.verify(this.appLauncherService, Mockito.times(1)).launchTool(this.sampleTool.getToolName(), this.idParam);
+		Mockito.verify(this.appLauncherService, Mockito.times(1)).launchTool(this.sampleTool.getName(), this.idParam);
 		Mockito.verify(this.window, Mockito.times(1)).showContent(LaunchWorkbenchToolActionTest.SAMPLE_RETURN_URL);
 
 	}

@@ -1,5 +1,6 @@
 package org.generationcp.ibpworkbench.util;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -8,6 +9,7 @@ import java.util.List;
 import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
+import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.ibpworkbench.util.bean.MultiSiteParameters;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
@@ -16,11 +18,13 @@ import org.generationcp.middleware.domain.dms.StandardVariable;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableList;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Matchers;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
@@ -38,6 +42,7 @@ public class MultiSiteDataExporterTest {
 	private static final String[] SUMMARY_SUFFIX = {"_Mean", "_MeanSED", "_CV", "_Heritability", "_Pvalue"};
 	private static final String[] ENVIRONMENTS = {"1", "2", "3"};
 	private static final String[] GIDS = {"101", "102", "103", "104", "105"};
+	private static final String BMS_INPUT_FILES_DIR = "/someDirectory/breeding_view/input";
 	
 	private MultiSiteDataExporter multiSiteDataExporter;
 	
@@ -46,6 +51,9 @@ public class MultiSiteDataExporterTest {
 	
 	@Captor
 	private ArgumentCaptor<List<String[]>> summaryRowsCaptor;
+	
+	@Mock
+	private InstallationDirectoryUtil installationDirectoryUtil;
 	
 	private Project project;
 	
@@ -63,12 +71,10 @@ public class MultiSiteDataExporterTest {
 		
 		// Need to spy so that actual writing of CSV files won't be performed during tests execution
 		this.multiSiteDataExporter = Mockito.spy(new MultiSiteDataExporter());
-		Mockito.doReturn(BASIC_FILE_NAME + ".csv").when(this.multiSiteDataExporter).writeToCsvFile(Matchers.anyString(), Matchers.any(Project.class), Matchers.anyList(),
-				Matchers.eq(false));
-		Mockito.doReturn(BASIC_FILE_NAME + MultiSiteDataExporter.SUMMARY_STATS + ".csv").when(this.multiSiteDataExporter).writeToCsvFile(Matchers.anyString(), Matchers.any(Project.class), Matchers.anyList(),
-				Matchers.eq(true));
+		this.multiSiteDataExporter.setInstallationDirectoryUtil(this.installationDirectoryUtil);
 		
 		this.createMultiSiteParameters();
+		this.setupFileUtilMocks();
 		this.meansTraits = this.createTraits(Arrays.asList(MEANS));
 		this.summaryTraits = this.createTraits(Arrays.asList(SUMMARY_SUFFIX));
 		this.gxeEnvironment = new GxeEnvironment();
@@ -76,6 +82,14 @@ public class MultiSiteDataExporterTest {
 	
 		this.createMeansExperiments();
 		this.createSummaryExperiments();
+	}
+
+	private void setupFileUtilMocks() {
+		Mockito.doReturn(BASIC_FILE_NAME + ".csv").when(this.multiSiteDataExporter).writeToCsvFile(Matchers.anyString(), Matchers.any(Project.class), Matchers.anyList(),
+				Matchers.eq(false));
+		Mockito.doReturn(BASIC_FILE_NAME + MultiSiteDataExporter.SUMMARY_STATS + ".csv").when(this.multiSiteDataExporter).writeToCsvFile(Matchers.anyString(), Matchers.any(Project.class), Matchers.anyList(),
+				Matchers.eq(true));
+		Mockito.doReturn(BMS_INPUT_FILES_DIR).when(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
 	}
 
 	private void createMeansExperiments() {
@@ -255,6 +269,23 @@ public class MultiSiteDataExporterTest {
 				Assert.assertEquals(Double.valueOf((Integer.valueOf(env) * 10)+ "." + k++).toString(), row[j++]);
 			}
 		}
+	}
+	
+	@Test
+	public void testGetCsvFileInWorkbenchDirectoryForMeans() {
+		final File meansFile = this.multiSiteDataExporter.getCsvFileInWorkbenchDirectory(project, BASIC_FILE_NAME, false);
+		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
+		Assert.assertEquals(new File(BMS_INPUT_FILES_DIR + File.separator + BASIC_FILE_NAME + ".csv").getAbsolutePath(),
+				meansFile.getAbsolutePath());
+	}
+	
+	@Test
+	public void testGetCsvFileInWorkbenchDirectoryForSummaryStats() {
+		final File meansFile = this.multiSiteDataExporter.getCsvFileInWorkbenchDirectory(project, BASIC_FILE_NAME, true);
+		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
+		
+		Assert.assertEquals(new File(BMS_INPUT_FILES_DIR + File.separator + BASIC_FILE_NAME + MultiSiteDataExporter.SUMMARY_STATS + ".csv")
+				.getAbsolutePath(), meansFile.getAbsolutePath());
 	}
 	
 	private void createMultiSiteParameters() {

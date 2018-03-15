@@ -14,6 +14,8 @@ package org.generationcp.ibpworkbench.ui.window;
 import java.io.File;
 import java.util.Map;
 
+import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
@@ -22,6 +24,7 @@ import org.generationcp.ibpworkbench.actions.UploadBreedingViewOutputAction;
 import org.generationcp.ibpworkbench.ui.common.UploadField;
 import org.generationcp.ibpworkbench.ui.recovery.BackupAndRestoreView;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -44,7 +47,7 @@ import com.vaadin.ui.themes.Reindeer;
 
 /**
  * @author Aldrin Batac
- * 
+ *
  */
 @Configurable
 public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements InitializingBean {
@@ -80,7 +83,13 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	public FileUploadBreedingViewOutputWindow(Window window, int studyId, Project project, Map<String, Boolean> variatesStateMap) {
+	@Autowired
+	private ContextUtil contextUtil;
+
+	private final InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
+
+	public FileUploadBreedingViewOutputWindow(final Window window, final int studyId, final Project project,
+			final Map<String, Boolean> variatesStateMap) {
 		this.window = window;
 		this.studyId = studyId;
 		this.project = project;
@@ -173,7 +182,7 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
 	}
 
 	protected Component layoutButtonArea() {
-		HorizontalLayout buttonLayout = new HorizontalLayout();
+		final HorizontalLayout buttonLayout = new HorizontalLayout();
 		buttonLayout.setDebugId("buttonLayout");
 		buttonLayout.setSpacing(true);
 		buttonLayout.setMargin(true, false, false, false);
@@ -195,7 +204,7 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public void buttonClick(ClickEvent event) {
+		public void buttonClick(final ClickEvent event) {
 			// not implemented
 		}
 	}
@@ -205,7 +214,7 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public void buttonClick(ClickEvent event) {
+		public void buttonClick(final ClickEvent event) {
 			FileUploadBreedingViewOutputWindow.this.focus();
 			FileUploadBreedingViewOutputWindow.this.getParent().removeWindow(FileUploadBreedingViewOutputWindow.this);
 		}
@@ -216,7 +225,7 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public void uploadFinished(Upload.FinishedEvent event) {
+		public void uploadFinished(final Upload.FinishedEvent event) {
 			super.uploadFinished(event);
 			FileUploadBreedingViewOutputWindow.LOG.debug("Upload is finished");
 		}
@@ -237,9 +246,9 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
 			return this.getLastFileName() != null;
 		}
 
-		private String getExtension(String f) {
+		private String getExtension(final String f) {
 			String ext = null;
-			int i = f.lastIndexOf('.');
+			final int i = f.lastIndexOf('.');
 
 			if (i > 0 && i < f.length() - 1) {
 				ext = f.substring(i + 1).toLowerCase();
@@ -254,21 +263,21 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
 
 	public class CustomFileFactory implements FileFactory {
 
-		private static final String UPLOAD_DIR = "temp";
-
 		private File file;
 
 		@Override
-		public File createFile(String fileName, String mimeType) {
-			File saveDir = new File(new File(CustomFileFactory.UPLOAD_DIR).getAbsolutePath());
+		public File createFile(final String fileName, final String mimeType) {
+			final File saveDir =
+					new File(new File(FileUploadBreedingViewOutputWindow.this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(
+							FileUploadBreedingViewOutputWindow.this.contextUtil.getProjectInContext(), ToolName.BV_SSA)).getAbsolutePath());
 			if (!saveDir.exists() || !saveDir.isDirectory()) {
 				saveDir.mkdirs();
 			}
 
-			StringBuilder sb = new StringBuilder();
+			final StringBuilder sb = new StringBuilder();
 			if (new File(saveDir.getAbsolutePath() + "/" + fileName).exists()) {
 				for (int x = 1; x < 10000; x++) {
-					String temp = fileName.substring(0, fileName.lastIndexOf(".")) + "_" + x + ".zip";
+					final String temp = fileName.substring(0, fileName.lastIndexOf(".")) + "_" + x + ".zip";
 					if (!new File(saveDir.getAbsolutePath() + "/" + temp).exists()) {
 						sb.append(fileName.substring(0, fileName.lastIndexOf(".")));
 						sb.append("_" + x + ".zip");

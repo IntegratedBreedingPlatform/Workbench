@@ -41,9 +41,7 @@ import org.generationcp.commons.util.BreedingViewUtil;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.domain.oms.TermId;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,13 +58,10 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 	private static final Logger LOG = LoggerFactory.getLogger(BreedingViewXMLWriter.class);
 
 	private static final String CROP_PLACEHOLDER = "{cropName}";
-	
+
 	public static final String TRIAL_INSTANCE = "TRIAL_INSTANCE";
 
 	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
-
-	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
 
 	@Autowired
 	private ContextUtil contextUtil;
@@ -77,15 +72,12 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 	@Value("${workbench.is.server.app}")
 	private String isServerApp;
 
-	private final BreedingViewInput breedingViewInput;
+	private BreedingViewInput breedingViewInput;
 
 	private final List<Integer> numericTypes;
 	private final List<Integer> characterTypes;
 
-	public BreedingViewXMLWriter(final BreedingViewInput breedingViewInput) {
-
-		this.breedingViewInput = breedingViewInput;
-
+	public BreedingViewXMLWriter() {
 		this.numericTypes = new ArrayList<>();
 		this.characterTypes = new ArrayList<>();
 
@@ -185,9 +177,8 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 			ssaParameters.setWorkbenchProjectId(workbenchProject.getProjectId());
 		}
 
-		final Tool breedingViewTool = this.workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
 		final String outputDirectory =
-				this.installationDirectoryUtil.getOutputDirectoryForProjectAndTool(workbenchProject, breedingViewTool);
+				this.installationDirectoryUtil.getOutputDirectoryForProjectAndTool(workbenchProject, ToolName.BREEDING_VIEW);
 		ssaParameters.setOutputDirectory(outputDirectory);
 
 		if (Boolean.parseBoolean(this.isServerApp)) {
@@ -230,24 +221,24 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 	Environments createEnvironments() {
 		final Environments environments = new Environments();
 		environments.setName(this.breedingViewInput.getEnvironment().getName());
-		
+
 		// Trial name attribute is not needed in the BV if the selected
 		// environment factor is Trial instance
 		if (!BreedingViewXMLWriter.TRIAL_INSTANCE.equals(this.breedingViewInput.getEnvironment().getName())) {
 			environments.setTrialName(this.breedingViewInput.getTrialInstanceName());
 		}
-		
+
 		for (final SeaEnvironmentModel selectedEnvironment : this.breedingViewInput.getSelectedEnvironments()) {
 			final org.generationcp.commons.sea.xml.Environment env = new org.generationcp.commons.sea.xml.Environment();
 			env.setName(selectedEnvironment.getEnvironmentName().replace(",", ";"));
 			env.setActive(true);
-			
+
 			// Trial name attribute is not needed in the BV if the selected
 			// environment factor is Trial instance
 			if (!BreedingViewXMLWriter.TRIAL_INSTANCE.equals(this.breedingViewInput.getEnvironment().getName())) {
 				env.setTrial(selectedEnvironment.getTrialno());
 			}
-			
+
 			if (selectedEnvironment.getActive()) {
 				environments.add(env);
 			}
@@ -318,10 +309,6 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 		// overridden method from interface
 	}
 
-	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
-		this.workbenchDataManager = workbenchDataManager;
-	}
-
 	public void setWebApiUrl(final String webApiUrl) {
 		this.webApiUrl = webApiUrl;
 	}
@@ -332,5 +319,9 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 
 	public void setInstallationDirectoryUtil(final InstallationDirectoryUtil installationDirectoryUtil) {
 		this.installationDirectoryUtil = installationDirectoryUtil;
+	}
+
+	public void setBreedingViewInput(final BreedingViewInput breedingViewInput) {
+		this.breedingViewInput = breedingViewInput;
 	}
 }

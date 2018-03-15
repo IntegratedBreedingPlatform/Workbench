@@ -103,8 +103,8 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 
 		try {
 
-			final Tool breedingViewTool = this.workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
-			final String inputDir = this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(this.project, breedingViewTool);
+			final Tool breedingViewTool = this.workbenchDataManager.getToolWithName(ToolName.BREEDING_VIEW.getName());
+			final String inputDir = this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
 
 			// List of factors from the new schema
 			final List<DMSVariableType> factorsInDataset =
@@ -167,11 +167,9 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 		} else {
 			sourceCSVFile = inputDirectory + defaultFilePath + ".csv";
 		}
-
 		breedingViewInput.setSourceXLSFilePath(sourceCSVFile);
 
 		final String destXMLFilePath = inputDirectory + defaultFilePath + ".xml";
-
 		breedingViewInput.setDestXMLFilePath(destXMLFilePath);
 
 	}
@@ -259,5 +257,9 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 
 	public void setInstallationDirectoryUtil(final InstallationDirectoryUtil installationDirectoryUtil) {
 		this.installationDirectoryUtil = installationDirectoryUtil;
+	}
+
+	public void setIsServerApp(final String isServerApp) {
+		this.isServerApp = isServerApp;
 	}
 }

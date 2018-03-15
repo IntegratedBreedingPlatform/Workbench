@@ -16,13 +16,13 @@ import java.util.Properties;
 
 import javax.annotation.Resource;
 
-import org.generationcp.commons.constant.ToolEnum;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.exception.AppLaunchException;
 import org.generationcp.ibpworkbench.service.AppLauncherService;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
+import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
 
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOG = LoggerFactory.getLogger(LaunchWorkbenchToolAction.class);
-	private ToolEnum toolEnum;
+	private ToolName tool;
 
 	/**
 	 * An id passed to the tool. We assume that the tool recognizes: <tool url>-idParam format and gets the id parameter from there. This is
@@ -59,12 +59,12 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
 	public LaunchWorkbenchToolAction() {
 	}
 
-	public LaunchWorkbenchToolAction(ToolEnum toolEnum) {
-		this.toolEnum = toolEnum;
+	public LaunchWorkbenchToolAction(ToolName tool) {
+		this.tool = tool;
 	}
 
-	public LaunchWorkbenchToolAction(ToolEnum toolEnum, int idParam) {
-		this(toolEnum);
+	public LaunchWorkbenchToolAction(ToolName tool, int idParam) {
+		this(tool);
 		this.idParam = idParam;
 	}
 
@@ -85,9 +85,9 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
 
 		String toolName = a.split("\\?")[0];
 
-		this.toolEnum = ToolEnum.equivalentToolEnum(toolName);
+		this.tool = ToolName.equivalentToolEnum(toolName);
 
-		if (this.toolEnum != null) {
+		if (this.tool != null) {
 			this.onAppLaunch(window);
 		} else {
 			LaunchWorkbenchToolAction.LOG.debug("Cannot launch tool due to invalid tool: {}", uriFragment.split("/")[1]);
@@ -100,7 +100,7 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
 	public void onAppLaunch(Window window) {
 		try {
 			final IContentWindow contentFrame = (IContentWindow) window;
-			String url = this.appLauncherService.launchTool(this.toolEnum.getToolName(), this.idParam);
+			String url = this.appLauncherService.launchTool(this.tool.getName(), this.idParam);
 			if (!"".equals(url)) {
 				contentFrame.showContent(url);
 			}
