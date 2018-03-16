@@ -11,8 +11,6 @@
 package org.generationcp.ibpworkbench.actions;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +27,11 @@ import org.generationcp.commons.breedingview.xml.Plot;
 import org.generationcp.commons.breedingview.xml.Replicates;
 import org.generationcp.commons.breedingview.xml.RowPos;
 import org.generationcp.commons.breedingview.xml.Rows;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.tomcat.util.TomcatUtil;
 import org.generationcp.commons.util.BreedingViewUtil;
+import org.generationcp.commons.util.VaadinFileDownloadResource;
+import org.generationcp.commons.util.ZipUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
@@ -40,10 +41,9 @@ import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.ibpworkbench.util.BreedingViewXMLWriter;
 import org.generationcp.ibpworkbench.util.BreedingViewXMLWriterException;
 import org.generationcp.ibpworkbench.util.DatasetExporter;
-import org.generationcp.ibpworkbench.util.DatasetExporterException;
-import org.generationcp.ibpworkbench.util.ZipUtil;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,9 +52,6 @@ import org.springframework.beans.factory.annotation.Value;
 
 import com.google.common.base.Strings;
 import com.mysql.jdbc.StringUtils;
-import com.vaadin.Application;
-import com.vaadin.terminal.DownloadStream;
-import com.vaadin.terminal.FileResource;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Window;
@@ -64,8 +61,6 @@ import com.vaadin.ui.Window;
  */
 @Configurable
 public class RunSingleSiteAction implements ClickListener {
-
-	private static final String ERROR = "ERROR: ";
 
 	private static final long serialVersionUID = 1L;
 
@@ -88,7 +83,12 @@ public class RunSingleSiteAction implements ClickListener {
 	@Autowired
 	private StudyDataManager studyDataManager;
 
-	private final ZipUtil zipUtil = new ZipUtil();
+	@Autowired
+	private ContextUtil contextUtil;
+
+	private ZipUtil zipUtil = new ZipUtil();
+	private DatasetExporter datasetExporter = new DatasetExporter();
+	private BreedingViewXMLWriter breedingViewXMLWriter = new BreedingViewXMLWriter();
 
 	public RunSingleSiteAction(final SingleSiteAnalysisDetailsPanel selectDetailsForBreedingViewWindow) {
 		this.source = selectDetailsForBreedingViewWindow;
@@ -112,14 +112,19 @@ public class RunSingleSiteAction implements ClickListener {
 
 			if (Boolean.parseBoolean(this.isServerApp)) {
 
-				final String outputFilename = BreedingViewUtil.sanitizeNameAlphaNumericOnly(breedingViewInput.getDatasetSource()) + ".zip";
 				final List<String> filenameList = new ArrayList<>();
 				filenameList.add(breedingViewInput.getDestXMLFilePath());
 				filenameList.add(breedingViewInput.getSourceXLSFilePath());
 
-				this.zipUtil.zipIt(outputFilename, filenameList);
-
-				this.downloadInputFile(new File(outputFilename), this.source.getApplication());
+				final String outputFilename = BreedingViewUtil.sanitizeNameAlphaNumericOnly(breedingViewInput.getDatasetSource());
+				try {
+					final String finalZipfileName =
+							this.zipUtil.zipIt(outputFilename, filenameList, this.contextUtil.getProjectInContext(), ToolName.BV_SSA);
+					this.downloadInputFile(new File(finalZipfileName), outputFilename);
+				} catch (final IOException e) {
+					RunSingleSiteAction.LOG.error("Error creating zip file " + outputFilename + ZipUtil.ZIP_EXTENSION, e);
+					this.showErrorMessage(this.source.getApplication().getMainWindow(), "Error creating zip file.", "");
+				}
 
 			} else {
 
@@ -137,23 +142,15 @@ public class RunSingleSiteAction implements ClickListener {
 	 */
 	void exportData(final BreedingViewInput breedingViewInput) {
 
-		final DatasetExporter datasetExporter = new DatasetExporter(breedingViewInput.getDatasetId());
+		this.datasetExporter.setDatasetId(breedingViewInput.getDatasetId());
 
-		try {
-
-			final List<String> selectedEnvironments = new ArrayList<String>();
-			for (final SeaEnvironmentModel m : breedingViewInput.getSelectedEnvironments()) {
-				selectedEnvironments.add(m.getTrialno());
-			}
-
-			datasetExporter
-					.exportToCSVForBreedingView(breedingViewInput.getSourceXLSFilePath(), (String) this.source.getSelEnvFactor().getValue(),
-							selectedEnvironments, breedingViewInput);
-
-		} catch (final DatasetExporterException e) {
-			RunSingleSiteAction.LOG.error(RunSingleSiteAction.ERROR, e);
+		final List<String> selectedEnvironments = new ArrayList<String>();
+		for (final SeaEnvironmentModel m : breedingViewInput.getSelectedEnvironments()) {
+			selectedEnvironments.add(m.getTrialno());
 		}
 
+		this.datasetExporter.exportToCSVForBreedingView(breedingViewInput.getSourceXLSFilePath(),
+				(String) this.source.getSelEnvFactor().getValue(), selectedEnvironments, breedingViewInput);
 	}
 
 	/**
@@ -178,9 +175,9 @@ public class RunSingleSiteAction implements ClickListener {
 
 		breedingViewInput.setBlocks(this.createBlocks(this.source.getSelBlocksValue()));
 
-		populateRowAndColumn(designType, breedingViewInput);
+		this.populateRowAndColumn(designType, breedingViewInput);
 
-		populateRowPosAndColPos(designType, breedingViewInput);
+		this.populateRowPosAndColPos(designType, breedingViewInput);
 
 		breedingViewInput.setGenotypes(this.createGenotypes(breedingViewInput.getDatasetId(), this.source.getSelGenotypesValue()));
 
@@ -382,8 +379,8 @@ public class RunSingleSiteAction implements ClickListener {
 			return false;
 		}
 
-		if (StringUtils.isNullOrEmpty(replicatesFactor) && designType.equals(DesignType.RANDOMIZED_BLOCK_DESIGN.getName()) && this.source
-				.getSelReplicates().isEnabled()) {
+		if (StringUtils.isNullOrEmpty(replicatesFactor) && designType.equals(DesignType.RANDOMIZED_BLOCK_DESIGN.getName())
+				&& this.source.getSelReplicates().isEnabled()) {
 			this.showErrorMessage(window, "Please specify replicates factor.", "");
 			return false;
 		}
@@ -417,14 +414,11 @@ public class RunSingleSiteAction implements ClickListener {
 	}
 
 	void writeProjectXML(final Window window, final BreedingViewInput breedingViewInput) {
-
-		final BreedingViewXMLWriter breedingViewXMLWriter;
-
 		// write the XML input for breeding view
-		breedingViewXMLWriter = new BreedingViewXMLWriter(breedingViewInput);
+		this.breedingViewXMLWriter.setBreedingViewInput(breedingViewInput);
 
 		try {
-			breedingViewXMLWriter.writeProjectXML();
+			this.breedingViewXMLWriter.writeProjectXML();
 		} catch (final BreedingViewXMLWriterException e) {
 			RunSingleSiteAction.LOG.debug("Cannot write Breeding View input XML", e);
 
@@ -454,30 +448,22 @@ public class RunSingleSiteAction implements ClickListener {
 
 	}
 
-	private void downloadInputFile(final File file, final Application application) {
+	private void downloadInputFile(final File file, final String filename) {
+		final VaadinFileDownloadResource fileDownloadResource =
+				new VaadinFileDownloadResource(file, filename + ZipUtil.ZIP_EXTENSION, this.source.getApplication());
+		this.source.getApplication().getMainWindow().open(fileDownloadResource);
+	}
 
-		final FileResource fr = new FileResource(file, application) {
+	public void setIsServerApp(final String isServerApp) {
+		this.isServerApp = isServerApp;
+	}
 
-			private static final long serialVersionUID = 765143030552676513L;
+	public void setSource(final SingleSiteAnalysisDetailsPanel source) {
+		this.source = source;
+	}
 
-			@Override
-			public DownloadStream getStream() {
-				final DownloadStream ds;
-				try {
-					ds = new DownloadStream(new FileInputStream(this.getSourceFile()), this.getMIMEType(), this.getFilename());
-
-					ds.setParameter("Content-Disposition", "attachment; filename=\"" + this.getFilename() + "\"");
-					ds.setCacheTime(this.getCacheTime());
-					return ds;
-
-				} catch (final FileNotFoundException e) {
-					RunSingleSiteAction.LOG.error(e.getMessage(), e);
-					return null;
-				}
-			}
-		};
-
-		application.getMainWindow().open(fr);
+	public void setZipUtil(final ZipUtil zipUtil) {
+		this.zipUtil = zipUtil;
 	}
 
 }

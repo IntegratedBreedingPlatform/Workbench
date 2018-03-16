@@ -1,11 +1,9 @@
 package org.generationcp.ibpworkbench.ui.sidebar;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Tree;
-import org.generationcp.commons.constant.ToolEnum;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.actions.ActionListener;
 import org.generationcp.ibpworkbench.actions.ChangeWindowAction;
@@ -18,6 +16,7 @@ import org.generationcp.ibpworkbench.actions.PageAction;
 import org.generationcp.ibpworkbench.ui.programadministration.OpenManageProgramPageAction;
 import org.generationcp.ibpworkbench.ui.project.create.OpenUpdateProjectPageAction;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategory;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategoryLink;
 import org.slf4j.Logger;
@@ -30,9 +29,11 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.vaadin.data.Item;
+import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Tree;
 
 @Configurable
 public class WorkbenchSidebar extends CssLayout implements InitializingBean {
@@ -145,8 +146,8 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 			return null;
 		}
 
-		if (ToolEnum.isCorrectTool(toolName)) {
-			return new LaunchWorkbenchToolAction(ToolEnum.equivalentToolEnum(toolName));
+		if (ToolName.isURLAccessibleTool(toolName)) {
+			return new LaunchWorkbenchToolAction(ToolName.equivalentToolEnum(toolName));
 		} else if (ChangeWindowAction.WindowEnums.isCorrectTool(toolName)) {
 			return new ChangeWindowAction(ChangeWindowAction.WindowEnums.equivalentWindowEnum(toolName), project);
 		} else if (MANAGE_PROGRAM.equals(toolName)) {

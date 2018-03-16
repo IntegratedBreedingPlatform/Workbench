@@ -35,9 +35,7 @@ import org.generationcp.middleware.domain.dms.TrialEnvironments;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.api.StudyDataManager;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,9 +103,6 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 
 	@Autowired
 	private StudyDataManager studyDataManager;
-
-	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
 
 	private final MetaAnalysisPanel selectDatasetsForMetaAnalysisPanel;
 	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
@@ -811,8 +806,7 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 	}
 
 	File getMergedDatasetsExcelFile() {
-		final Tool breedingViewTool = this.workbenchDataManager.getToolWithName(ToolName.breeding_view.toString());
-		final String dir = this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(this.currentProject, breedingViewTool);
+		final String dir = this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(this.currentProject, ToolName.BREEDING_VIEW);
 		return new File(dir + File.separator + "mergedDataSets.xls");
 	}
 
@@ -848,10 +842,6 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 		super.attach();
 
 		this.updateLabels();
-	}
-
-	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
-		this.workbenchDataManager = workbenchDataManager;
 	}
 
 	public void setInstallationDirectoryUtil(final InstallationDirectoryUtil installationDirectoryUtil) {
