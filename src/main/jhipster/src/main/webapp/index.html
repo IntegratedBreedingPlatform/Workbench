@@ -62,9 +62,10 @@
     <script type="text/javascript" src="/Fieldbook/static/js/bootstrap-popover.js"></script>
     <script type="text/javascript" src="/Fieldbook/static/js/bootstrap-tooltip.js"></script>
     <script type="text/javascript" src="/Fieldbook/static/js/tree-persist.js"></script>
-	<!-- get crop name, used in listTreeOperation.js -->
+    <!-- get crop name, used in listTreeOperation.js -->
     <script src="/ibpworkbench/controller/static/js/lib/get-url-parameter.js" charset="utf-8"></script>
-    <script type="text/javascript">
+	<script type="text/javascript" th:inline="javascript">
+		//<![CDATA[
         function chooseList(node) {
             window.location.hash = window.location.hash.replace(/listId=[0-9]*/, "listId=" + node.data.key);
         }
@@ -72,7 +73,13 @@
             SaveSampleList.initializeSampleListTree()
             SaveSampleList.openSaveSampleListModal();
         }
-        var cropName = getUrlParameter("crop");
+        var loggedInUserId = getUrlParameter("loggedInUserId"),
+            authToken = getUrlParameter("authToken"),
+            selectedProjectId = getUrlParameter("selectedProjectId"),
+            cropName = /*[[${cropName}]]*/ '';
+
+        window.location.hash = window.location.hash + cropName + "/sample?listId=";
+		//]]>
     </script>
 </body>
 </html>
