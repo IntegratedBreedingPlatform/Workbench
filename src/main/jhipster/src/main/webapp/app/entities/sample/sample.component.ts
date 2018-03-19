@@ -30,7 +30,7 @@ currentAccount: any;
     predicate: any;
     previousPage: any;
     reverse: any;
-    listId: number = 1;
+    listId: number;
     crop: string;
     private queryParamSubscription: Subscription;
     private paramSubscription: Subscription;
@@ -45,7 +45,8 @@ currentAccount: any;
         private router: Router,
         private eventManager: JhiEventManager
     ) {
-        this.itemsPerPage = ITEMS_PER_PAGE;
+        // this.itemsPerPage = ITEMS_PER_PAGE; // TODO implement pagination
+        this.itemsPerPage = 9999;
         this.routeData = this.activatedRoute.data.subscribe((data) => {
             this.page = data.pagingParams.page;
             this.previousPage = data.pagingParams.page;
@@ -67,6 +68,9 @@ currentAccount: any;
     }
 
     loadAll() {
+        if (!this.listId) {
+            return;
+        }
         if (this.currentSearch) {
             this.sampleService.search({
                 page: this.page - 1,
