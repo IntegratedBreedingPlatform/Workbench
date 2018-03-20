@@ -215,5 +215,19 @@ input[type="text"], input[type="password"], .ui-autocomplete-input, textarea, .u
 .fbk-hide {
     display: none;
 }
+.modal-footer {
+    text-align: center;
+    padding: 10px;
+}
+.btn-primary {
+    color: #ffffff;
+    background-color: #ff8109;
+    border-color: #ff8109;
+}
+.btn-default {
+    color: #ffffff;
+    background-color: #828282;
+    border-color: #828282;
+}
 
 /* jhipster-needle-css-add-main JHipster will add new css style */
