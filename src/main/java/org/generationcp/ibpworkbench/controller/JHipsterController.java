@@ -22,6 +22,11 @@ public class JHipsterController {
 		return this.contextUtil.getProjectInContext().getCropType().getCropName();
 	}
 
+	@ModelAttribute("currentProgramId")
+	public String getCurrentProgramId() {
+		return this.contextUtil.getProjectInContext().getUniqueID();
+	}
+
 	@RequestMapping(method = RequestMethod.GET)
 	public String index(Model model) throws MiddlewareQueryException {
 		return "jhipster/index";
