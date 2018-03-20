@@ -17,13 +17,16 @@
             "detail": {
                 "title": "Sample"
             },
-            "sampleId": "Sample ID",
-            "sampleName": "Sample Name",
-            "sampleBusinessKey": "Sample Business Key",
-            "takenBy": "Taken By",
-            "plantNumber": "Plant Number",
-            "plantBusinessKey": "Plant Business Key",
-            "samplingDate": "Sampling Date"
+            "sampleId": "SAMPLE_ID",
+            "entryNo": "SAMPLE_ENTRY",
+            "designation": "DESIGNATION",
+            "gid": "GID",
+            "sampleName": "SAMPLE_NAME",
+            "sampleBusinessKey": "SAMPLE_UID",
+            "takenBy": "TAKEN_BY",
+            "plantNumber": "PLANT_NUMBER",
+            "plantBusinessKey": "PLANT_UID",
+            "samplingDate": "SAMPLING_DATE"
         }
     }
 }

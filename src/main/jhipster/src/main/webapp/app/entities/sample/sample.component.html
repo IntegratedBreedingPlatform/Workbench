@@ -17,6 +17,7 @@
 		-->
 	</h2>
 	<jhi-alert></jhi-alert>
+	<!-- TODO SEARCH -->
 	<!--
 	<div class="row">
 		<div class="col-sm-12">
@@ -40,25 +41,17 @@
 			<thead>
 			<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
 
-				<!-- WITH PAGINATION -->
-				<!--
-				<th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="sampleName"><span jhiTranslate="bmsjHipsterApp.sample.sampleName">Sample Name</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="sampleBusinessKey"><span jhiTranslate="bmsjHipsterApp.sample.sampleBusinessKey">Sample Business Key</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="takenBy"><span jhiTranslate="bmsjHipsterApp.sample.takenBy">Taken By</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="plantNumber"><span jhiTranslate="bmsjHipsterApp.sample.plantNumber">Plant Number</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="plantBusinessKey"><span jhiTranslate="bmsjHipsterApp.sample.plantBusinessKey">Plant Business Key</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="samplingDate"><span jhiTranslate="bmsjHipsterApp.sample.samplingDate">Sampling Date</span> <span class="fa fa-sort"></span></th>
-				-->
+				<!-- TODO sorting -->
+				<!-- <th jhiSortBy="sampleName"><span jhiTranslate="bmsjHipsterApp.sample.sampleName">Sample Name</span> <span class="fa fa-sort"></span></th> -->
 
 				<!--<th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> </th>-->
-				<th jhiSortBy="sampleId"><span jhiTranslate="bmsjHipsterApp.sample.sampleId">Sample ID</span> </th>
-				<th jhiSortBy="sampleName"><span jhiTranslate="bmsjHipsterApp.sample.sampleName">Sample Name</span> </th>
-				<th jhiSortBy="sampleBusinessKey"><span jhiTranslate="bmsjHipsterApp.sample.sampleBusinessKey">Sample Business Key</span> </th>
-				<th jhiSortBy="takenBy"><span jhiTranslate="bmsjHipsterApp.sample.takenBy">Taken By</span> </th>
-				<th jhiSortBy="plantNumber"><span jhiTranslate="bmsjHipsterApp.sample.plantNumber">Plant Number</span> </th>
-				<th jhiSortBy="plantBusinessKey"><span jhiTranslate="bmsjHipsterApp.sample.plantBusinessKey">Plant Business Key</span> </th>
-				<th jhiSortBy="samplingDate"><span jhiTranslate="bmsjHipsterApp.sample.samplingDate">Sampling Date</span> </th>
+				<th jhiSortBy="entryNo"><span jhiTranslate="bmsjHipsterApp.sample.entryNo">SAMPLE_ENTRY</span> </th>
+				<th jhiSortBy="designation"><span jhiTranslate="bmsjHipsterApp.sample.designation">DESIGNATION</span> </th>
+				<th jhiSortBy="gid"><span jhiTranslate="bmsjHipsterApp.sample.gid">GID</span> </th>
+				<th jhiSortBy="sampleName"><span jhiTranslate="bmsjHipsterApp.sample.sampleName">SAMPLE_NAME</span> </th>
+				<th jhiSortBy="takenBy"><span jhiTranslate="bmsjHipsterApp.sample.takenBy">TAKEN_BY</span> </th>
+				<th jhiSortBy="samplingDate"><span jhiTranslate="bmsjHipsterApp.sample.samplingDate">SAMPLING_DATE</span> </th>
+				<th jhiSortBy="sampleBusinessKey"><span jhiTranslate="bmsjHipsterApp.sample.sampleBusinessKey">SAMPLE_UID</span> </th>
 
 				<!--<th></th>-->
 			</tr>
@@ -67,14 +60,17 @@
 			<tr *ngFor="let sample of samples ;trackBy: trackId">
 				<td>
 					<!--<a [routerLink]="['../sample', sample.id ]">{{sample.id}}</a>-->
-					{{sample.id}}
+					{{sample.entryNo}}
 				</td>
+				<td>{{sample.designation}}</td>
+				<td>{{sample.gid}}</td>
 				<td>{{sample.sampleName}}</td>
-				<td>{{sample.sampleBusinessKey}}</td>
 				<td>{{sample.takenBy}}</td>
-				<td>{{sample.plantNumber}}</td>
-				<td>{{sample.plantBusinessKey}}</td>
-				<td>{{sample.samplingDate | date:'medium'}}</td>
+				<!--<td>{{sample.samplingDate | date:'medium'}}</td>-->
+				<td>{{sample.samplingDate}}</td>
+				<td>{{sample.sampleBusinessKey}}</td>
+
+				<!-- TODO ACTIONS -->
 				<!--
 				<td class="text-right">
 					<div class="btn-group flex-btn-group-container">
@@ -107,6 +103,7 @@
 			</tbody>
 		</table>
 	</div>
+	<!-- TODO PAGINATION -->
 	<!--
 	<div *ngIf="samples && samples.length">
 		<div class="row justify-content-center">
