@@ -99,7 +99,7 @@ currentAccount: any;
         }
     }
     transition() {
-        this.router.navigate(['/sample'], {queryParams:
+        this.router.navigate(['/' + this.crop + '/sample'], {queryParams:
             {
                 page: this.page,
                 size: this.itemsPerPage,
@@ -114,7 +114,7 @@ currentAccount: any;
     clear() {
         this.page = 0;
         this.currentSearch = '';
-        this.router.navigate(['/sample', {
+        this.router.navigate(['/' + this.crop + '/sample', {
             page: this.page,
             sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
         }]);
@@ -126,7 +126,7 @@ currentAccount: any;
         }
         this.page = 0;
         this.currentSearch = query;
-        this.router.navigate(['/sample', {
+        this.router.navigate(['/' + this.crop + '/sample', {
             search: this.currentSearch,
             page: this.page,
             sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
