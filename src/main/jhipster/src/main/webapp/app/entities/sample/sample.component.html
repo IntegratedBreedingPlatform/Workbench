@@ -2,7 +2,7 @@
 	<div class="row">
 		<div class="col-xs-12 col-md-12">
 			<h2><img class="image-padding image-padding-with-text" src="/Fieldbook/static/img/review-list-details.png">Manage Samples</h2>
-			<div class="control-label"><a href="javascript: openList()">Browse</a> a sample list to work with.</div>
+			<div class="control-label"><a href="javascript: browseList()">Browse</a> a sample list to work with.</div>
 		</div>
 	</div>
 	<h2>
@@ -114,6 +114,10 @@
 		</div>
 	</div>
 	-->
+
+
+	<!-- TODO implement in angular -->
+
 	<div class="modal fade" id="saveSampleListTreeModal" tabindex="-1" role="dialog" aria-labelledby="saveSampleListTreeModal" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content modal-extra-small">
@@ -184,6 +188,41 @@
 						</div>
 					</div>
 				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal"  th:text="#{common.form.cancel.text}">Cancel</button>
+					<button type="button" class="btn btn-primary" aria-hidden="true" th:text="#{common.form.ok.text}" onclick="openList()">Ok</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="deleteSampleListFolderModal" role="dialog" aria-labelledby="deleteSampleListFolderModal" aria-hidden="true" style="overflow: hidden">
+	<div class="modal-dialog modal-extra-small">
+		<div class="modal-content">
+			<div class="modal-body" id="manageCheckTypesModalBody">
+				<div class="row form-group">
+					<div class="col-xs-11 col-md-11">
+						<label class="modal-title fbk-modal-title" id="heading-modal" th:text="#{browse.nursery.delete.folder.name}"></label>
+					</div>
+					<div class="col-xs-1 col-md-1">
+						<button id="closeDeleteFolderModal" type="button" class="close  pull-right glyphicon glyphicon-remove"  onclick="javascript: closeModal('deleteSampleListFolderModal')"></button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div id="page-delete-message-modal" class="col-xs-12 col-md-12">
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-xs-12 col-md-12 add_top_padding text-center">
+						<label class="control-label" id="delete-SampleList-folder-confirm"></label>
+					</div>
+				</div>
+
+			</div>
+			<div class="modal-footer addVariable-footer">
+				<button type="button" class="btn btn-default" onclick="closeModal('deleteSampleListFolderModal')" th:text="#{common.form.cancel.text}">Cancel</button>
+				<button type="button" class="btn btn-primary" aria-hidden="true" th:text="#{common.form.ok.text}" onclick="ListTreeOperation.submitDeleteSampleFolder();">Ok</button>
 			</div>
 		</div>
 	</div>
