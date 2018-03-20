@@ -75,8 +75,11 @@ export class SampleService {
      */
     private convertItemFromServer(sample: Sample): Sample {
         const copy: Sample = Object.assign({}, sample);
+        // TODO for now it's a string
+        /*
         copy.samplingDate = this.dateUtils
             .convertDateTimeFromServer(sample.samplingDate);
+            */
         copy.id = sample.sampleId;
         return copy;
     }
@@ -87,7 +90,9 @@ export class SampleService {
     private convert(sample: Sample): Sample {
         const copy: Sample = Object.assign({}, sample);
 
+        /*
         copy.samplingDate = this.dateUtils.toDate(sample.samplingDate);
+        */
         return copy;
     }
 }
