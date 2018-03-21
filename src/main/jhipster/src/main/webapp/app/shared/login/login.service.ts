@@ -40,7 +40,11 @@ export class LoginService {
     }
 
     logout() {
-        this.authServerProvider.logout().subscribe();
-        this.principal.authenticate(null);
+        this.authServerProvider.logout().subscribe(() => {}, () => {}, () => {
+            // TODO BMS-4743
+            alert('Breeding Management System needs to authenticate you again. Redirecting to login page.');
+            window.top.location.href = '/ibpworkbench/logout';
+        });
+        // this.principal.authenticate(null);
     }
 }
