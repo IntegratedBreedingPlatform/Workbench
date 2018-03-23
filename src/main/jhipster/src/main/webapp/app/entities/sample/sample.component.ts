@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
@@ -8,6 +8,7 @@ import { JhiLanguageService } from 'ng-jhipster';
 import { Sample } from './sample.model';
 import { SampleService } from './sample.service';
 import { ITEMS_PER_PAGE, Principal } from '../../shared';
+import { SampleList } from "./sample-list.model";
 
 @Component({
     selector: 'jhi-sample',
@@ -15,8 +16,13 @@ import { ITEMS_PER_PAGE, Principal } from '../../shared';
 })
 export class SampleComponent implements OnInit, OnDestroy {
 
-currentAccount: any;
+    @Input()
+    sampleList: SampleList;
+
+    listId: number;
     samples: Sample[];
+
+    currentAccount: any;
     error: any;
     success: any;
     eventSubscriber: Subscription;
@@ -30,9 +36,7 @@ currentAccount: any;
     predicate: any;
     previousPage: any;
     reverse: any;
-    listId: number;
     crop: string;
-    private queryParamSubscription: Subscription;
     private paramSubscription: Subscription;
 
     constructor(
@@ -47,6 +51,7 @@ currentAccount: any;
     ) {
         // this.itemsPerPage = ITEMS_PER_PAGE; // TODO implement pagination
         this.itemsPerPage = 9999;
+
         this.routeData = this.activatedRoute.data.subscribe((data) => {
             this.page = data.pagingParams.page;
             this.previousPage = data.pagingParams.page;
@@ -58,17 +63,13 @@ currentAccount: any;
             this.sampleService.setCrop(this.crop);
             this.loadAll();
         });
-        this.queryParamSubscription = this.activatedRoute.queryParams.subscribe((params) => {
-            this.listId = params["listId"];
-            this.loadAll();
-        });
 
         this.currentSearch = this.activatedRoute.snapshot && this.activatedRoute.snapshot.params['search'] ?
             this.activatedRoute.snapshot.params['search'] : '';
     }
 
     loadAll() {
-        if (!this.listId) {
+        if (!this.sampleList || !this.sampleList.id) {
             return;
         }
         if (this.currentSearch) {
@@ -76,7 +77,7 @@ currentAccount: any;
                 page: this.page - 1,
                 query: this.currentSearch,
                 size: this.itemsPerPage,
-                listId: this.listId,
+                listId: this.sampleList.id,
                 sort: this.sort()}).subscribe(
                     (res: HttpResponse<Sample[]>) => this.onSuccess(res.body, res.headers),
                     (res: HttpErrorResponse) => this.onError(res.message)
@@ -86,7 +87,7 @@ currentAccount: any;
         this.sampleService.query({
             page: this.page - 1,
             size: this.itemsPerPage,
-            listId: this.listId,
+            listId: this.sampleList.id,
             sort: this.sort()}).subscribe(
                 (res: HttpResponse<Sample[]>) => this.onSuccess(res.body, res.headers),
                 (res: HttpErrorResponse) => this.onError(res.message)
@@ -99,13 +100,13 @@ currentAccount: any;
         }
     }
     transition() {
-        this.router.navigate(['/' + this.crop + '/sample'], {queryParams:
+        this.router.navigate(['/' + this.crop + '/sample-browse'], {queryParams:
             {
                 page: this.page,
                 size: this.itemsPerPage,
                 search: this.currentSearch,
                 sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc'),
-                listId: this.listId
+                listId: this.sampleList.id
             }
         });
         this.loadAll();
@@ -114,7 +115,7 @@ currentAccount: any;
     clear() {
         this.page = 0;
         this.currentSearch = '';
-        this.router.navigate(['/' + this.crop + '/sample', {
+        this.router.navigate(['/' + this.crop + '/sample-browse', {
             page: this.page,
             sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
         }]);
@@ -126,7 +127,7 @@ currentAccount: any;
         }
         this.page = 0;
         this.currentSearch = query;
-        this.router.navigate(['/' + this.crop + '/sample', {
+        this.router.navigate(['/' + this.crop + '/sample-browse', {
             search: this.currentSearch,
             page: this.page,
             sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
@@ -143,7 +144,6 @@ currentAccount: any;
 
     ngOnDestroy() {
         this.eventManager.destroy(this.eventSubscriber);
-        this.queryParamSubscription.unsubscribe();
         this.paramSubscription.unsubscribe();
     }
 
@@ -168,7 +168,8 @@ currentAccount: any;
         // this.totalItems = headers.get('X-Total-Count');
         this.queryCount = this.totalItems;
         // this.page = pagingParams.page;
-        this.samples = data;
+
+        this.sampleList.samples = data;
     }
     private onError(error) {
         this.jhiAlertService.error(error.message, null, null);

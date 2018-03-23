@@ -3,7 +3,7 @@ import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@a
 import { JhiPaginationUtil } from 'ng-jhipster';
 
 import { UserRouteAccessService } from '../../shared';
-import { SampleComponent } from './sample.component';
+import { SampleComponent, SampleBrowseComponent } from './';
 import { SampleDetailComponent } from './sample-detail.component';
 import { SamplePopupComponent } from './sample-dialog.component';
 import { SampleDeletePopupComponent } from './sample-delete-dialog.component';
@@ -26,6 +26,17 @@ export class SampleResolvePagingParams implements Resolve<any> {
 
 export const sampleRoute: Routes = [
     {
+        path: ':crop/sample-browse',
+        component: SampleBrowseComponent,
+        resolve: {
+            'pagingParams': SampleResolvePagingParams
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'bmsjHipsterApp.sample.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    }, {
         path: ':crop/sample',
         component: SampleComponent,
         resolve: {

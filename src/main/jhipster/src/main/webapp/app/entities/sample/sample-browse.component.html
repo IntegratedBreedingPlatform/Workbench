@@ -1,0 +1,144 @@
+<div>
+	<div class="row">
+		<div class="col-xs-12 col-md-12">
+			<h2><img class="image-padding image-padding-with-text" src="/Fieldbook/static/img/review-list-details.png">Manage Samples</h2>
+			<div class="control-label"><a href="javascript: browseList()">Browse</a> a sample list to work with.</div>
+		</div>
+	</div>
+
+	<div *ngIf="lists && lists.length" class="add_top_padding">
+		<div class="row">
+			<div class="col-xs-12 col-md-12">
+				<!-- Nav tabs -->
+				<ul class="nav nav-tabs" role="tablist">
+					<li *ngFor="let list of lists" role="presentation" [class.active]="list.active">
+						<a href="#list-{{list.id}}" aria-controls="home" role="tab" data-toggle="tab">{{list.name}}</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="row">
+			<!-- Tab panes -->
+			<div class="col-xs-12 col-md-12">
+				<div class="tab-content">
+					<div *ngFor="let list of lists; trackBy: trackId" role="tabpanel" class="tab-pane" [class.active]="list.active" id="list-{{list.id}}">
+						<jhi-sample [sampleList]="list"></jhi-sample>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Browse sample - TODO implement in angular -->
+
+<div class="modal fade" id="saveSampleListTreeModal" tabindex="-1" role="dialog" aria-labelledby="saveSampleListTreeModal" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content modal-extra-small">
+			<div class="modal-body">
+				<div class="row form-group">
+					<div class="col-xs-11 col-md-11">
+						<label class="modal-title fbk-modal-title" id="heading-modal">Open sample list</label>
+					</div>
+					<div class="col-xs-1 col-md-1">
+						<button type="button" class="close pull-right glyphicon glyphicon-remove" data-dismiss="modal" aria-hidden="true"></button>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-xs-12 col-md-12">
+						<div style="margin-left: 10px" class="col-xs-12 col-md-12">
+							<div style="float: right; ">
+								<img onclick="javascript: ListTreeOperation.addSampleFolder(this)" src="/Fieldbook/static/img/add2.png" class="image-padding browse-sample-action create-germplasm-folder"/>
+								<img onclick="javascript: ListTreeOperation.renameSampleFolder(this)" src="/Fieldbook/static/img/edit.png" class="image-padding browse-sample-action edit-germplasm-folder"/>
+								<img onclick="javascript: ListTreeOperation.deleteSampleFolder(this)" src="/Fieldbook/static/img/delete.png" class="image-padding browse-sample-action delete-germplasm-folder"/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-xs-12 col-md-12">
+						<div class="form-horizontal form-group">
+							<div id="addSampleFolderDiv" class="fbk-hide">
+								<div class="col-xs-4 col-md-4 nopadding">
+									<label class="control-label label-bold">Folder Name: <span class="required">*</span></label>
+								</div>
+								<div class="col-xs-8 col-md-8 nopadding">
+									<div class="input-group">
+										<input id="addFolderName" name="addFolderName" type="text" class="form-control select2" placeholder="Folder Name" style="height: 34px" onkeypress="SaveSampleList.folderChangeKeypress(event, '1');"/>
+										<div class="input-group-btn">
+											<button class="btn btn-success" id="addSampleFolderOkButton" onclick="javascript: ListTreeOperation.createSampleFolder()">
+												<span class="glyphicon glyphicon-ok"></span>
+											</button>
+											<button class="btn btn-danger" id="addSampleFolderCancelButton" onclick="javascript: ListTreeOperation.hideFolderDiv('#addSampleFolderDiv')">
+												<span class="glyphicon glyphicon-remove"></span>
+											</button>
+										</div>
+									</div>
+								</div>
+								<div class="clearfix"></div>
+							</div>
+							<div id="renameSampleFolderDiv" class="fbk-hide">
+								<div class="col-xs-4 col-md-4 nopadding">
+									<label class="control-label  label-bold">Folder Name: <span class="required">*</span></label>
+								</div>
+								<div class="col-xs-8 col-md-8 nopadding">
+									<div class="input-group">
+										<input id="renameFolderName" name="renameFolderName" type="text" class="form-control select2" placeholder="Folder Name" onkeypress="SaveSampleList.folderChangeKeypress(event, '2');"/>
+										<div class="input-group-btn">
+											<button class="btn btn-success" id="renameSampleFolderOkButton" onclick="javascript: ListTreeOperation.submitRenameSampleListFolder()">
+												<span class="glyphicon glyphicon-ok"></span>
+											</button>
+											<button class="btn btn-danger" id="renameSampleFolderCancelButton" onclick="javascript: ListTreeOperation.hideFolderDiv('#renameSampleFolderDiv')">
+												<span class="glyphicon glyphicon-remove"></span>
+											</button>
+										</div>
+									</div>
+								</div>
+								<div class="clearfix"></div>
+							</div>
+						</div>
+						<div class="clearfix"></div>
+						<div id="sampleFolderTree"></div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.form.cancel.text}">Cancel</button>
+				<button type="button" class="btn btn-primary" aria-hidden="true" th:text="#{common.form.ok.text}" onclick="openList()">Ok</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="deleteSampleListFolderModal" role="dialog" aria-labelledby="deleteSampleListFolderModal" aria-hidden="true" style="overflow: hidden">
+	<div class="modal-dialog modal-extra-small">
+		<div class="modal-content">
+			<div class="modal-body" id="manageCheckTypesModalBody">
+				<div class="row form-group">
+					<div class="col-xs-11 col-md-11">
+						<label class="modal-title fbk-modal-title" id="heading-modal" th:text="#{browse.nursery.delete.folder.name}"></label>
+					</div>
+					<div class="col-xs-1 col-md-1">
+						<button id="closeDeleteFolderModal" type="button" class="close  pull-right glyphicon glyphicon-remove" onclick="javascript: closeModal('deleteSampleListFolderModal')"></button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div id="page-delete-message-modal" class="col-xs-12 col-md-12">
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-xs-12 col-md-12 add_top_padding text-center">
+						<label class="control-label" id="delete-SampleList-folder-confirm"></label>
+					</div>
+				</div>
+
+			</div>
+			<div class="modal-footer addVariable-footer">
+				<button type="button" class="btn btn-default" onclick="closeModal('deleteSampleListFolderModal')" th:text="#{common.form.cancel.text}">Cancel</button>
+				<button type="button" class="btn btn-primary" aria-hidden="true" th:text="#{common.form.ok.text}" onclick="ListTreeOperation.submitDeleteSampleFolder();">Ok</button>
+			</div>
+		</div>
+	</div>
+</div>

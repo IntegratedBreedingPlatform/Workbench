@@ -14,6 +14,7 @@ import {
     sampleRoute,
     samplePopupRoute,
     SampleResolvePagingParams,
+    SampleBrowseComponent
 } from './';
 
 const ENTITY_STATES = [
@@ -33,6 +34,7 @@ const ENTITY_STATES = [
         SampleDeleteDialogComponent,
         SamplePopupComponent,
         SampleDeletePopupComponent,
+        SampleBrowseComponent
     ],
     entryComponents: [
         SampleComponent,
@@ -40,6 +42,7 @@ const ENTITY_STATES = [
         SamplePopupComponent,
         SampleDeleteDialogComponent,
         SampleDeletePopupComponent,
+        SampleBrowseComponent
     ],
     providers: [
         SampleService,
