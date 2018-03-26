@@ -58,7 +58,7 @@ public class CategoricalTraitLimitsValidator implements Validator {
 				this.errorDetails = CategoricalTraitLimitsValidator.DEFAULT_ERROR;
 
 				for (String val : values) {
-					if (!this.isAPossibleValue(val)) {
+					if (!this.isAPossibleValue(val.trim())) {
 						allValid = false;
 						break;
 					}
