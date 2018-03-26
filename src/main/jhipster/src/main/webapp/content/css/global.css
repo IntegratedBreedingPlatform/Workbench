@@ -236,5 +236,11 @@ input[type="text"], input[type="password"], .ui-autocomplete-input, textarea, .u
 .add-top-padding-small {
     padding-top: 5px;
 }
+table > thead > tr > th > span.fa.fa-sort {
+    padding-left: 5px;
+}
+table > thead > tr > th[jhisortby] {
+    cursor: pointer;
+}
 
 /* jhipster-needle-css-add-main JHipster will add new css style */
