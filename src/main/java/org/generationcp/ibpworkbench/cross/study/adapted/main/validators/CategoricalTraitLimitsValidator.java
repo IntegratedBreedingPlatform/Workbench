@@ -105,7 +105,7 @@ public class CategoricalTraitLimitsValidator implements Validator {
 		StringTokenizer st = new StringTokenizer(valueString, this.delimiter);
 
 		while (st.hasMoreTokens()) {
-			values.add(st.nextToken().toString());
+			values.add(st.nextToken().toString().trim());
 		}
 		return values;
 	}
