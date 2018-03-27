@@ -12,7 +12,10 @@
 				<!-- Nav tabs -->
 				<ul class="nav nav-tabs" role="tablist">
 					<li *ngFor="let list of lists" role="presentation" [class.active]="list.active">
-						<a href="#list-{{list.id}}" aria-controls="home" role="tab" data-toggle="tab">{{list.name}}</a>
+						<a href="#list-{{list.id}}" aria-controls="home" (click)="setActive(list.id)" role="tab" data-toggle="tab">
+							{{list.name}}
+							<i class="glyphicon glyphicon-remove fbk-close-tab" (click)="closeTab(list)"></i>
+						</a>
 					</li>
 				</ul>
 			</div>

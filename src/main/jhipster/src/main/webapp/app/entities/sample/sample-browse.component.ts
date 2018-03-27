@@ -32,6 +32,14 @@ export class SampleBrowseComponent implements OnInit {
         });
     }
 
+    closeTab(list: SampleList) {
+        this.lists.splice(this.lists.indexOf(list), 1);
+        if (list.active) {
+            let first = this.lists[0];
+            if (first) first.active = true;
+        }
+    }
+
     private setActive(listId: number) {
         this.lists.forEach((list) => {
             list.active = false;
