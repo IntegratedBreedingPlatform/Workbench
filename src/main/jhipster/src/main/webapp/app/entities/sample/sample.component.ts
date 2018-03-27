@@ -170,6 +170,9 @@ export class SampleComponent implements OnInit, OnDestroy {
         // this.page = pagingParams.page;
 
         this.sampleList.samples = data;
+        if (data.length) {
+            this.sampleList.name = data[0].sampleList;
+        }
     }
     private onError(error) {
         this.jhiAlertService.error(error.message, null, null);

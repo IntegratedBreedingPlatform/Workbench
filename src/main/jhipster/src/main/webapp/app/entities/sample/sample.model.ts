@@ -13,6 +13,7 @@ export class Sample implements BaseEntity {
         public plantNumber?: number,
         public plantBusinessKey?: string,
         public samplingDate?: any,
+        public sampleList?: string
     ) {
     }
 }
