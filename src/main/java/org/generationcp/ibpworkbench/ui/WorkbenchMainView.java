@@ -104,6 +104,10 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	@Value("${workbench.is.single.user.only}")
 	private String isSingleUserOnly;
 
+	@Value("${workbench.is.add.program.enabled}")
+	private String isAddProgramEnabled;
+
+
 	private Label actionsTitle;
 
 	private HorizontalSplitPanel root;
@@ -500,7 +504,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 		if (this.isWorkbenchDashboardShown) {
 			try {
-				layoutAddProgramButton();
+				layoutAddProgramButton(this.workbenchHeaderLayout);
 			} catch (final AccessDeniedException e) {
 				// do nothing if the user is not authorized to access Admin button
 				LOG.debug(e.getMessage(), e);
@@ -542,9 +546,14 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	private void layoutAddProgramButton() {
-		this.workbenchHeaderLayout.addComponent(this.addProgramButton);
-		this.workbenchHeaderLayout.setComponentAlignment(this.addProgramButton, Alignment.MIDDLE_RIGHT);
+	protected void layoutAddProgramButton(final HorizontalLayout layout) {
+
+		if (Boolean.parseBoolean(this.isAddProgramEnabled)) {
+			// Only display the Add A Program Button if user is admin and isAddProgramEnabled is true
+			layout.addComponent(this.addProgramButton);
+			layout.setComponentAlignment(this.addProgramButton, Alignment.MIDDLE_RIGHT);
+		}
+
 	}
 
 	/**
@@ -692,6 +701,11 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	// For test purposes
 	protected void setWorkbenchTitle(final Label workbenchTitle) {
 		this.workbenchTitle = workbenchTitle;
+	}
+
+	// For test purposes
+	public void setIsAddProgramEnabled(final String isAddProgramEnabled) {
+		this.isAddProgramEnabled = isAddProgramEnabled;
 	}
 
 	protected void refreshMemberDetailsPopup(final String firstname, final String lastName, final String emailAddress) {

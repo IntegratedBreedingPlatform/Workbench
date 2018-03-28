@@ -76,8 +76,10 @@ public class WorkbenchMainViewTest {
 		this.currentProject.setProjectName(PROJECT_NAME);
 		Mockito.when(contextUtil.getProjectInContext()).thenReturn(currentProject);
 
+		this.workbenchMainView.setIsAddProgramEnabled("true");
 		this.workbenchMainView.initializeComponents();
 		this.workbenchMainView.initializeLayout();
+
 	}
 
 	@Test
@@ -265,6 +267,31 @@ public class WorkbenchMainViewTest {
 		Assert.assertTrue(layout.getComponentIndex(this.workbenchMainView.getAdminButton()) == -1);
 
 	}
+
+	@Test
+	public void testLayoutAddProgramButtonAddProgramEnabledIsTrue() {
+
+		HorizontalLayout layout = new HorizontalLayout();
+		this.workbenchMainView.setIsAddProgramEnabled("true");
+		this.workbenchMainView.layoutAddProgramButton(layout);
+
+		// Verify that Add Program Button button is added in layout
+		Assert.assertTrue(layout.getComponentIndex(this.workbenchMainView.getAddProgramButton()) != -1);
+
+	}
+
+	@Test
+	public void testLayoutAddProgramButtonAddProgramEnabledIsFalse() {
+
+		HorizontalLayout layout = new HorizontalLayout();
+		this.workbenchMainView.setIsAddProgramEnabled("false");
+		this.workbenchMainView.layoutAddProgramButton(layout);
+
+		// Verify that Add Program Button button is added in layout
+		Assert.assertTrue(layout.getComponentIndex(this.workbenchMainView.getAddProgramButton()) == -1);
+
+	}
+
 
 	@Test
 	public void testOnLoadOperations() {
