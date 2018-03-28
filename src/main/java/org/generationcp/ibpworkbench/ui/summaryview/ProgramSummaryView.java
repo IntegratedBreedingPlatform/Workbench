@@ -340,6 +340,8 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 				this.workbenchDataManager.getProjectActivitiesByProjectId(project.getProjectId(), 0, (int) projectActivitiesCount);
 		this.populateActivityTable(activityList);
 
+		// We still need to differentiate by T and N, because there are 2 explicit filters in the menu. It will be managed as an improvement
+		// DO NOT CHANGE
 		final StudyDetailsQueryFactory trialFactory =
 				new StudyDetailsQueryFactory(this.studyDataManager, this.studyDataManager.getStudyTypeByName("T"), Arrays.asList(ProgramSummaryView.TRIAL_NURSERY_COLUMNS),
 						project.getUniqueID());
