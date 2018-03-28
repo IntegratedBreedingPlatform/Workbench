@@ -341,12 +341,12 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		this.populateActivityTable(activityList);
 
 		final StudyDetailsQueryFactory trialFactory =
-				new StudyDetailsQueryFactory(this.studyDataManager, new StudyTypeDto("T"), Arrays.asList(ProgramSummaryView.TRIAL_NURSERY_COLUMNS),
+				new StudyDetailsQueryFactory(this.studyDataManager, this.studyDataManager.getStudyTypeByName("T"), Arrays.asList(ProgramSummaryView.TRIAL_NURSERY_COLUMNS),
 						project.getUniqueID());
 		this.populateTrialSummaryTable(trialFactory);
 
 		final StudyDetailsQueryFactory nurseryFactory =
-				new StudyDetailsQueryFactory(this.studyDataManager, new StudyTypeDto("N"), Arrays.asList(ProgramSummaryView.TRIAL_NURSERY_COLUMNS),
+				new StudyDetailsQueryFactory(this.studyDataManager, this.studyDataManager.getStudyTypeByName("N"), Arrays.asList(ProgramSummaryView.TRIAL_NURSERY_COLUMNS),
 						project.getUniqueID());
 		this.populateNurserySummaryTable(nurseryFactory);
 

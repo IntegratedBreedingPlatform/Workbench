@@ -57,7 +57,7 @@ public class StudyDetailsQuery implements Query {
 	public Item constructItem() {
 		final PropertysetItem item = new PropertysetItem();
 		for (final String id : this.columnIds) {
-			item.addItemProperty(id, new ObjectProperty<String>(""));
+			item.addItemProperty(id, new ObjectProperty<>(""));
 		}
 		return item;
 	}

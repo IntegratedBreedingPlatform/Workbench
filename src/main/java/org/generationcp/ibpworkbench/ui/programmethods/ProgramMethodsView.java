@@ -96,7 +96,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 	private Button.ClickListener editMethodListener;
 
 	static {
-		TABLE_COLUMNS = new LinkedHashMap<String, String>();
+		TABLE_COLUMNS = new LinkedHashMap<>();
 		ProgramMethodsView.TABLE_COLUMNS.put(ProgramMethodsView.SELECT, "<span class='glyphicon glyphicon-ok'></span>");
 		ProgramMethodsView.TABLE_COLUMNS.put(ProgramMethodsView.GMNAME, "Method Name");
 		ProgramMethodsView.TABLE_COLUMNS.put(ProgramMethodsView.DESC, "Description");
@@ -106,7 +106,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 		ProgramMethodsView.TABLE_COLUMNS.put(ProgramMethodsView.DATE, "Date");
 		ProgramMethodsView.TABLE_COLUMNS.put(ProgramMethodsView.CLASS, "Class");
 
-		TABLE_COLUMN_SIZES = new HashMap<String, Integer>();
+		TABLE_COLUMN_SIZES = new HashMap<>();
 		ProgramMethodsView.TABLE_COLUMN_SIZES.put(ProgramMethodsView.SELECT, 20);
 		ProgramMethodsView.TABLE_COLUMN_SIZES.put(ProgramMethodsView.GMNAME, 210);
 		ProgramMethodsView.TABLE_COLUMN_SIZES.put(ProgramMethodsView.MGRP, 45);
@@ -974,17 +974,14 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 	}
 
 	protected void updateNoOfEntries(Label totalEntries, Table table) {
-		int count = 0;
-		count = table.getItemIds().size();
+		int count = table.getItemIds().size();
 
 		totalEntries.setValue(this.messageSource.getMessage(Message.TOTAL_ENTRIES) + ": " + "  <b>" + count + "</b>");
 	}
 
 	private void updateSelectedNoOfEntries(Label selectedEntries, Table table) {
-		int count = 0;
-
 		Collection<?> selectedItems = (Collection<?>) table.getValue();
-		count = selectedItems.size();
+		int count = selectedItems.size();
 
 		selectedEntries.setValue("<i>" + this.messageSource.getMessage(Message.SELECTED) + ": " + "  <b>" + count + "</b></i>");
 	}
