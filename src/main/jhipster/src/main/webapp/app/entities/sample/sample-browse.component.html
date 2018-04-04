@@ -2,7 +2,9 @@
 	<div class="row">
 		<div class="col-xs-12 col-md-12">
 			<h2><img class="image-padding image-padding-with-text" src="/Fieldbook/static/img/review-list-details.png">Manage Samples</h2>
-			<div class="control-label"><a href="javascript: browseList()">Browse</a> a sample list to work with.</div>
+			<div class="control-label">
+				<a [routerLink]="['/', { outlets: { popup: crop + '/sample-browse-dialog' } }]">Browse</a> a sample list to work with.
+			</div>
 		</div>
 	</div>
 

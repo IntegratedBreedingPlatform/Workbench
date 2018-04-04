@@ -5,5 +5,6 @@ export * from './sample-dialog.component';
 export * from './sample-delete-dialog.component';
 export * from './sample-detail.component';
 export * from './sample-browse.component';
+export * from './sample-browse/sample-browse-dialog.component';
 export * from './sample.component';
 export * from './sample.route';

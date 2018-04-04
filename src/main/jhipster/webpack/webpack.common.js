@@ -87,10 +87,16 @@ module.exports = (options) => ({
             // jhipster-needle-add-assets-to-webpack - JHipster will add/remove third-party resources in this array
             { from: './src/main/webapp/robots.txt', to: 'robots.txt' }
         ]),
+        /*
+            TODO provide jquery plugins along with jquery
+            For now we are including jquery and plugins in index.html
+        */
+        /*
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery"
         }),
+        */
         new MergeJsonWebpackPlugin({
             output: {
                 groupBy: [

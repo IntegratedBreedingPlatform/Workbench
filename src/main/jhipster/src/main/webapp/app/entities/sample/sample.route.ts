@@ -7,6 +7,7 @@ import { SampleComponent, SampleBrowseComponent } from './';
 import { SampleDetailComponent } from './sample-detail.component';
 import { SamplePopupComponent } from './sample-dialog.component';
 import { SampleDeletePopupComponent } from './sample-delete-dialog.component';
+import { SampleBrowsePopupComponent } from './sample-browse/sample-browse-dialog.component';
 
 @Injectable()
 export class SampleResolvePagingParams implements Resolve<any> {
@@ -59,6 +60,16 @@ export const sampleRoute: Routes = [
 ];
 
 export const samplePopupRoute: Routes = [
+    {
+        path: ':crop/sample-browse-dialog',
+        component: SampleBrowsePopupComponent,
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'bmsjHipsterApp.sample.home.title'
+        },
+        canActivate: [UserRouteAccessService],
+        outlet: 'popup'
+    },
     {
         path: ':crop/sample-new',
         component: SamplePopupComponent,

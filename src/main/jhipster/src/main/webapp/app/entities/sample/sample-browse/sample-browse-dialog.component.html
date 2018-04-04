@@ -1,0 +1,42 @@
+<div class="modal-body">
+	<div class="row form-group">
+		<div class="col-xs-11 col-md-11">
+			<label class="modal-title fbk-modal-title" id="heading-modal">Open sample list</label>
+		</div>
+		<div class="col-xs-1 col-md-1">
+			<button type="button" class="close pull-right glyphicon glyphicon-remove" data-dismiss="modal" aria-hidden="true" (click)="clear()"></button>
+		</div>
+	</div>
+
+
+	<table id="treeTable" class="my-class table table-curved table-condensed">
+		<thead>
+		<tr>
+			<th th:utext="#{browse.list.name}">NAME</th>
+			<th th:utext="#{browse.list.owner}">OWNER</th>
+			<th th:utext="#{browse.list.description}">DESCRIPTION</th>
+			<th th:utext="#{browse.list.type}">TYPE</th>
+			<th th:utext="#{browse.list.no.of.entries}"># OF ENTRIES</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr class="sample-list-row" *ngFor="let list of nodes"
+			[attr.data-tt-id]="list.id"
+			[attr.data-tt-parent-id]="list.parentId">
+
+			<td [ngClass]="{ odd: odd, even: even }">
+				<span [ngClass]="list.isFolder == '1' ? 'folder name' : 'file name'">{{list.name}}</span>
+			</td>
+			<td [ngClass]="{ odd: odd, even: even }">{{list.owner}}</td>
+			<td [ngClass]="{ odd: odd, even: even }">{{list.description}}</td>
+			<td [ngClass]="{ odd: odd, even: even }">{{list.type}}</td>
+			<td [ngClass]="{ odd: odd, even: even }">{{list.noOfEntries}}</td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.form.cancel.text}" (click)="clear()">Cancel
+	</button>
+	<button type="button" class="btn btn-primary" aria-hidden="true" th:text="#{common.form.ok.text}" onclick="openList()">Ok</button>
+</div>
