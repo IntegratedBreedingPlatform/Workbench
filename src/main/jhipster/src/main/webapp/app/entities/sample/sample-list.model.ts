@@ -1,5 +1,5 @@
 import { BaseEntity } from './../../shared';
-import { Sample } from "./sample.model";
+import { Sample } from './sample.model';
 
 export class SampleList implements BaseEntity {
     constructor(

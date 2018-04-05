@@ -8,7 +8,7 @@ import { JhiLanguageService } from 'ng-jhipster';
 import { Sample } from './sample.model';
 import { SampleService } from './sample.service';
 import { ITEMS_PER_PAGE, Principal } from '../../shared';
-import { SampleList } from "./sample-list.model";
+import { SampleList } from './sample-list.model';
 
 @Component({
     selector: 'jhi-sample',
