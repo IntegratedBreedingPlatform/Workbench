@@ -246,5 +246,23 @@ table > thead > tr > th[jhisortby] {
     float: right;
     cursor: pointer;
 }
+.modal-extra-large {
+    width: 950px;
+}
+.modal-large {
+    width: 800px;
+}
+.modal-extra-medium {
+    width: 700px;
+}
+.modal-medium {
+    width: 650px;
+}
+.modal-small {
+    width: 500px;
+}
+.modal-extra-small{
+    width: 400px;
+}
 
 /* jhipster-needle-css-add-main JHipster will add new css style */
