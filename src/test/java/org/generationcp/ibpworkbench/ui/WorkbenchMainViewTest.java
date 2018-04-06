@@ -1,9 +1,12 @@
 package org.generationcp.ibpworkbench.ui;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Properties;
-
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import junit.framework.Assert;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.actions.HomeAction;
@@ -26,14 +29,9 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.vaadin.hene.popupbutton.PopupButton;
 
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-
-import junit.framework.Assert;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Properties;
 
 public class WorkbenchMainViewTest {
 
@@ -76,8 +74,10 @@ public class WorkbenchMainViewTest {
 		this.currentProject.setProjectName(PROJECT_NAME);
 		Mockito.when(contextUtil.getProjectInContext()).thenReturn(currentProject);
 
+		this.workbenchMainView.setIsAddProgramEnabled("true");
 		this.workbenchMainView.initializeComponents();
 		this.workbenchMainView.initializeLayout();
+
 	}
 
 	@Test
@@ -267,6 +267,30 @@ public class WorkbenchMainViewTest {
 	}
 
 	@Test
+	public void testLayoutAddProgramButtonAddProgramEnabledIsTrue() {
+
+		HorizontalLayout layout = new HorizontalLayout();
+		this.workbenchMainView.setIsAddProgramEnabled("true");
+		this.workbenchMainView.layoutAddProgramButton(layout);
+
+		// Verify that Add Program Button button is added in layout
+		Assert.assertTrue(layout.getComponentIndex(this.workbenchMainView.getAddProgramButton()) != -1);
+
+	}
+
+	@Test
+	public void testLayoutAddProgramButtonAddProgramEnabledIsFalse() {
+
+		HorizontalLayout layout = new HorizontalLayout();
+		this.workbenchMainView.setIsAddProgramEnabled("false");
+		this.workbenchMainView.layoutAddProgramButton(layout);
+
+		// Verify that Add Program Button button is added in layout
+		Assert.assertTrue(layout.getComponentIndex(this.workbenchMainView.getAddProgramButton()) == -1);
+
+	}
+
+	@Test
 	public void testOnLoadOperations() {
 
 		this.workbenchMainView.onLoadOperations();
@@ -338,34 +362,35 @@ public class WorkbenchMainViewTest {
 				"<span class='bms-header-btn2'><span>John Doe</span><span class='bms-fa-caret-down' style='padding: 0 10px 0 0'></span></span>",
 				popupButton.getCaption());
 	}
-	
+
 	@Test
 	public void testInitializeActions() {
 		this.workbenchMainView.initializeActions();
-		
+
 		final Collection<?> homeButtonListeneners = this.workbenchMainView.getHomeButton().getListeners(Button.ClickEvent.class);
 		Assert.assertNotNull(homeButtonListeneners);
 		Assert.assertTrue(homeButtonListeneners.size() == 1);
 		Assert.assertTrue(homeButtonListeneners.iterator().next() instanceof HomeAction);
-		
+
 		final Collection<?> logoButtonListeners = this.workbenchMainView.getLogoBtn().getListeners(Button.ClickEvent.class);
 		Assert.assertNotNull(logoButtonListeners);
 		Assert.assertTrue(logoButtonListeners.size() == 1);
 		Assert.assertTrue(logoButtonListeners.iterator().next() instanceof HomeAction);
-		
+
 		final Collection<?> adminButtonListeners = this.workbenchMainView.getAdminButton().getListeners(Button.ClickEvent.class);
 		Assert.assertNotNull(adminButtonListeners);
 		Assert.assertTrue(adminButtonListeners.size() == 1);
-		
-		final Collection<?> programAdminButtonListeners = this.workbenchMainView.getAddProgramButton().getListeners(Button.ClickEvent.class);
+
+		final Collection<?> programAdminButtonListeners =
+				this.workbenchMainView.getAddProgramButton().getListeners(Button.ClickEvent.class);
 		Assert.assertNotNull(programAdminButtonListeners);
 		Assert.assertTrue(programAdminButtonListeners.size() == 1);
 		Assert.assertTrue(programAdminButtonListeners.iterator().next() instanceof OpenNewProjectAction);
-		
+
 		final Collection<?> helpButtonListeners = this.workbenchMainView.getHelpButton().getListeners(Button.ClickEvent.class);
 		Assert.assertNotNull(helpButtonListeners);
 		Assert.assertTrue(helpButtonListeners.size() == 1);
-		
+
 		final Collection<?> closeEventListeners = this.workbenchMainView.getListeners(Window.CloseEvent.class);
 		Assert.assertNotNull(closeEventListeners);
 		Assert.assertTrue(closeEventListeners.size() == 1);
