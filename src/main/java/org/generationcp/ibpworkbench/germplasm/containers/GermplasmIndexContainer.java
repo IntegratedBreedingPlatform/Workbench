@@ -64,7 +64,6 @@ public final class GermplasmIndexContainer {
 
 	private static final Object GERMPLASM_PREFNAME = "prefname";
 
-	private static final String URL_STUDY_NURSERY = "/Fieldbook/NurseryManager/editNursery/";
 	private static final String[] URL_STUDY_TRIAL = {"/Fieldbook/TrialManager/openTrial/","#/trialSettings"};
 	private static final String PARENT_WINDOW = "_parent";
 
