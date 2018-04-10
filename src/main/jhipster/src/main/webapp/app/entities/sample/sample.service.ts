@@ -3,7 +3,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { SERVER_API_URL } from '../../app.constants';
 
-import { JhiDateUtils } from 'ng-jhipster';
+// import { JhiDateUtils } from 'ng-jhipster';
 
 import { Sample } from './sample.model';
 import { createRequestOption } from '../../shared';
@@ -16,7 +16,10 @@ export class SampleService {
     private resourceUrl;
     private resourceSearchUrl;
 
-    constructor(private http: HttpClient, private dateUtils: JhiDateUtils) { }
+    constructor(
+        private http: HttpClient
+        // ,private dateUtils: JhiDateUtils
+    ) { }
 
     setCrop(crop: string) {
         this.resourceUrl =  SERVER_API_URL + `sample/${crop}/samples`;

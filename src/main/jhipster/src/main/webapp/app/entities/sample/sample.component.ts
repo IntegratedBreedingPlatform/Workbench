@@ -2,12 +2,13 @@ import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
-import { JhiEventManager, JhiParseLinks, JhiAlertService } from 'ng-jhipster';
-import { JhiLanguageService } from 'ng-jhipster';
+import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
+// import { JhiLanguageService } from 'ng-jhipster';
 
 import { Sample } from './sample.model';
 import { SampleService } from './sample.service';
-import { ITEMS_PER_PAGE, Principal } from '../../shared';
+// import { ITEMS_PER_PAGE } from '../../shared';
+import { Principal } from '../../shared';
 import { SampleList } from './sample-list.model';
 
 @Component({
@@ -41,8 +42,8 @@ export class SampleComponent implements OnInit, OnDestroy {
 
     constructor(
         private sampleService: SampleService,
-        private languageService: JhiLanguageService,
-        private parseLinks: JhiParseLinks,
+        // private languageService: JhiLanguageService,
+        // private parseLinks: JhiParseLinks,
         private jhiAlertService: JhiAlertService,
         private principal: Principal,
         private activatedRoute: ActivatedRoute,

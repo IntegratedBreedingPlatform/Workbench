@@ -11,7 +11,7 @@ import { ActivatedRoute } from '@angular/router';
 export class SampleBrowseComponent implements OnInit, OnDestroy {
 
     private listId: number;
-    private crop: string;
+    // private crop: string;
     private queryParamSubscription: Subscription;
     private paramSubscription: Subscription;
 
@@ -32,7 +32,7 @@ export class SampleBrowseComponent implements OnInit, OnDestroy {
             this.setActive(this.listId);
         });
         this.paramSubscription = this.activatedRoute.params.subscribe((params) => {
-            this.crop = params['crop'];
+            // this.crop = params['crop'];
         });
     }
 

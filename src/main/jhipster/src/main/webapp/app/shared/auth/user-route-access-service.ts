@@ -16,7 +16,7 @@ export class UserRouteAccessService implements CanActivate {
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | Promise<boolean> {
 
-        const authorities = route.data['authorities'];
+        // const authorities = route.data['authorities'];
         // We need to call the checkLogin / and so the principal.identity() function, to ensure,
         // that the client has a principal too, if they already logged in by the server.
         // This could happen on a page refresh.
