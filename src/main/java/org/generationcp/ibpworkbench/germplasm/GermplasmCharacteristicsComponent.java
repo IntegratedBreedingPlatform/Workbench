@@ -95,7 +95,7 @@ public class GermplasmCharacteristicsComponent extends GridLayout implements Ini
 		this.lblReference.setContentMode(Label.CONTENT_XHTML);
 		this.lblReference.setDescription(referenceFullString);
 
-		this.chkFixedLines = new CheckBox(this.messageSource.getMessage(Message.FIXED_LINE_LABEL));
+		this.chkFixedLines = new CheckBox(this.messageSource.getMessage(Message.GROUPED_LINE_LABEL));
 
 		this.lblGroupId =
 				new Label("<b>" + this.messageSource.getMessage(Message.GROUP_ID_LABEL) + ":</b> "
