@@ -49,7 +49,7 @@
 		<property name="basenames">
 			<list>
 				<value>I18NMessages</value>
-				<value>VaadinCommonMessages</value>
+				<value>CommonMessages</value>
 			</list>
 		</property>
 		<property name="locale">
