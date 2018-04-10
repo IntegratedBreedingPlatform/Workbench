@@ -31,14 +31,10 @@
 	-->
 	<br/>
 	<div class="table-responsive" *ngIf="sampleList.samples">
-		<table class="table table-striped">
+		<table class="table table-striped table-curved">
 			<thead>
 			<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
 
-				<!-- TODO sorting -->
-				<!-- <th jhiSortBy="sampleName"><span jhiTranslate="bmsjHipsterApp.sample.sampleName">Sample Name</span> <span class="fa fa-sort"></span></th> -->
-
-				<!--<th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> </th>-->
 				<th><span jhiTranslate="bmsjHipsterApp.sample.entryNo">SAMPLE_ENTRY</span> </th>
 				<th jhiSortBy="stock.name"><span jhiTranslate="bmsjHipsterApp.sample.designation">DESIGNATION</span><span class="fa fa-sort"></span> </th>
 				<th jhiSortBy="stock.dbxrefId"><span jhiTranslate="bmsjHipsterApp.sample.gid">GID</span><span class="fa fa-sort"></span> </th>
@@ -51,18 +47,18 @@
 			</tr>
 			</thead>
 			<tbody>
-			<tr *ngFor="let sample of sampleList.samples ;trackBy: trackId">
-				<td>
+			<tr *ngFor="let sample of sampleList.samples ;trackBy: trackId; odd as odd; even as even">
+				<td [ngClass]="{ odd: odd, even: even }">
 					<!--<a [routerLink]="['../sample', sample.id ]">{{sample.id}}</a>-->
 					{{sample.entryNo}}
 				</td>
-				<td>{{sample.designation}}</td>
-				<td>{{sample.gid}}</td>
-				<td>{{sample.sampleName}}</td>
-				<td>{{sample.takenBy}}</td>
+				<td [ngClass]="{ odd: odd, even: even }">{{sample.designation}}</td>
+				<td [ngClass]="{ odd: odd, even: even }">{{sample.gid}}</td>
+				<td [ngClass]="{ odd: odd, even: even }">{{sample.sampleName}}</td>
+				<td [ngClass]="{ odd: odd, even: even }">{{sample.takenBy}}</td>
 				<!--<td>{{sample.samplingDate | date:'medium'}}</td>-->
-				<td>{{sample.samplingDate}}</td>
-				<td>{{sample.sampleBusinessKey}}</td>
+				<td [ngClass]="{ odd: odd, even: even }">{{sample.samplingDate}}</td>
+				<td [ngClass]="{ odd: odd, even: even }">{{sample.sampleBusinessKey}}</td>
 
 				<!-- TODO ACTIONS -->
 				<!--

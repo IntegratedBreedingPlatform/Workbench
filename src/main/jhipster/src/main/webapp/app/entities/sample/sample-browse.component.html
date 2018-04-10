@@ -1,32 +1,37 @@
 <div>
 	<div class="row">
 		<div class="col-xs-12 col-md-12">
-			<h2><img class="image-padding image-padding-with-text" src="/Fieldbook/static/img/review-list-details.png">Manage Samples</h2>
-			<div class="control-label"><a href="javascript: browseList()">Browse</a> a sample list to work with.</div>
+			<h1>Manage Samples</h1>
+		</div>
+		<div class="col-xs-12 col-md-12">
+			<h2><img class="image-padding image-padding-with-text" src="/Fieldbook/static/img/review-list-details.png">List Details</h2>
+		</div>
+		<div class="col-xs-12 col-md-12">
+			<div class="control-label"><a href="javascript: browseList()">Browse</a> for a list of samples to work with.</div>
 		</div>
 	</div>
 
-	<div *ngIf="lists && lists.length" class="add_top_padding">
-		<div class="row">
-			<div class="col-xs-12 col-md-12">
-				<!-- Nav tabs -->
-				<ul class="nav nav-tabs" role="tablist">
-					<li *ngFor="let list of lists" role="presentation" [class.active]="list.active">
-						<a href="#list-{{list.id}}" aria-controls="home" (click)="setActive(list.id)" role="tab" data-toggle="tab">
-							{{list.name}}
-							<i class="glyphicon glyphicon-remove fbk-close-tab" (click)="closeTab(list)"></i>
-						</a>
-					</li>
-				</ul>
-			</div>
-		</div>
+	<div class="row">
+		<div class="col-xs-12 col-md-12">
+			<div *ngIf="lists && lists.length" class="add_top_padding">
+				<div class="col-xs-12 col-md-12">
+					<!-- Nav tabs -->
+					<ul class="nav nav-tabs row fb-tabs-headers" role="tablist">
+						<li *ngFor="let list of lists" role="presentation" [class.active]="list.active">
+							<a href="#list-{{list.id}}" aria-controls="home" (click)="setActive(list.id)" role="tab" data-toggle="tab">
+								{{list.name}}
+								<i class="glyphicon glyphicon-remove fbk-close-tab" (click)="closeTab(list)"></i>
+							</a>
+						</li>
+					</ul>
 
-		<div class="row">
-			<!-- Tab panes -->
-			<div class="col-xs-12 col-md-12">
-				<div class="tab-content">
-					<div *ngFor="let list of lists; trackBy: trackId" role="tabpanel" class="tab-pane" [class.active]="list.active" id="list-{{list.id}}">
-						<jhi-sample [sampleList]="list"></jhi-sample>
+					<div class="tab-content fb-tabs row">
+						<!-- Tab panes -->
+						<div *ngFor="let list of lists; trackBy: trackId" role="tabpanel" class="tab-pane" [class.active]="list.active" id="list-{{list.id}}">
+							<div class="col-xs-12 col-md-12">
+								<jhi-sample [sampleList]="list"></jhi-sample>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -102,9 +107,8 @@
 								</div>
 							</div>
 							<div class="clearfix"></div>
-							<div id="sampleFolderTree"></div>
-							<div class="row form-group">
-								<div class="col-md-12 col-xs-12 germplasm-tree-section" id="germplasmTree" style=""></div>
+							<div class="form-group">
+								<div id="treeTableContainer" style=""></div>
 							</div>
 						</div>
 					</div>

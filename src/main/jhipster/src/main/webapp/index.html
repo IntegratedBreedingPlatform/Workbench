@@ -18,11 +18,13 @@
 		}
 	</style>
 
-	<!-- browse sample -->
-	<!-- TODO implement in angular. See scripts at the end of page too -->
+	<!-- TODO Remove Fieldbook dependencies -->
 	<link href="/Fieldbook/static/css/lib/bootstrap/bootstrap.min.css" rel="stylesheet" media="screen"/>
 	<link href="/Fieldbook/static/css/lib/notify/ui.notify.css" rel="stylesheet"/>
+	<link href="/Fieldbook/static/css/fieldbook.css" rel="stylesheet"/>
 
+	<!-- browse sample -->
+	<!-- TODO implement in angular -->
 	<link href="/Fieldbook/static/css/lib/jquery/jquery.treetable.css" rel="stylesheet"/>
 	<link href="/Fieldbook/static/css/lib/jquery/jquery.treetable.theme.custom.css" rel="stylesheet"/>
 	<link href="/Fieldbook/static/css/lib/jquery-ui/jquery-ui.css" rel="stylesheet"/>
@@ -34,7 +36,8 @@
 		<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
 	<![endif]-->
 	<jhi-main>
-		<span class="throbber throbber-lg"></span>
+		<!--TODO use workbench styleguide or bootstrap 4-->
+		<!--<span class="throbber throbber-lg"></span>-->
 	</jhi-main>
 	<noscript>
 		<h1>You must enable javascript to view this page.</h1>
@@ -59,7 +62,7 @@
 	</script>-->
 
 	<!-- browse sample -->
-	<!-- TODO implement in angular - https://angular2-tree.readme.io/docs/drag-drop -->
+	<!-- TODO implement treetable, notify (see Site Admin) in angular. Remove Fieldbook dependencies -->
 	<script type="text/javascript" src="/Fieldbook/static/js/lib/jquery/jquery-1.10.2.min.js"></script>
 	<script type="text/javascript" src="/Fieldbook/static/js/lib/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="/Fieldbook/static/js/fieldbook-common.js"></script>
@@ -71,13 +74,13 @@
 	<script type="text/javascript" src="/Fieldbook/static/js/lib/bootstrap/bootstrap.min.js"></script>
 	<script type="text/javascript" src="/Fieldbook/static/js/bootstrap-popover.js"></script>
 	<script type="text/javascript" src="/Fieldbook/static/js/bootstrap-tooltip.js"></script>
-	<script type="text/javascript" src="/Fieldbook/static/js/tree-persist.js"></script>
-	<!-- get crop name, used in listTreeOperation.js -->
-	<script src="/ibpworkbench/controller/static/js/lib/get-url-parameter.js" charset="utf-8"></script>
-
+	<!--TODO-->
+	<!--<script type="text/javascript" src="/Fieldbook/static/js/tree-persist.js"></script>-->
 	<script type="text/javascript" src="/Fieldbook/static/js/lib/jquery/jquery.treetable.js"></script>
 	<script type="text/javascript" src="/Fieldbook/static/js/treetable.js"></script>
 
+	<!-- get crop name, used in listTreeOperation.js -->
+	<script src="/ibpworkbench/controller/static/js/lib/get-url-parameter.js" charset="utf-8"></script>
 	<script type="text/javascript" src="/Fieldbook/static/js/bmsAuth.js"></script>
 
 	<script type="text/javascript" th:inline="javascript">
@@ -121,7 +124,7 @@
 			treeTable = new TreeTable({
 				baseurl: baseurl,
 				treeTableSelector: '#treeTable',
-				tableContainer: $('#germplasmTree'),
+				tableContainer: $('#treeTableContainer'),
 				authparams: authParams,
 				context: $('#listTreeContext'),
 				crop: cropName,

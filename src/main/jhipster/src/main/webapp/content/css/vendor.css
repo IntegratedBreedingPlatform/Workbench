@@ -1,6 +1,6 @@
 /* after changing this file run 'yarn run webpack:build' */
 /* TODO use bootstrap 4  */
 /*@import '~bootstrap/dist/css/bootstrap.min.css';*/
-@import '/ibpworkbench/controller/static/lib/styleGuide/css/styleGuide.min.css';
+/*@import '/ibpworkbench/controller/static/lib/styleGuide/css/styleGuide.min.css';*/
 @import '~font-awesome/css/font-awesome.css';
 
