@@ -21,8 +21,11 @@
 	<!-- browse sample -->
 	<!-- TODO implement in angular. See scripts at the end of page too -->
 	<link href="/Fieldbook/static/css/lib/bootstrap/bootstrap.min.css" rel="stylesheet" media="screen"/>
-	<link href="/Fieldbook/static/css/fieldbook-tree.css" rel="stylesheet"/>
 	<link href="/Fieldbook/static/css/lib/notify/ui.notify.css" rel="stylesheet"/>
+
+	<link href="/Fieldbook/static/css/lib/jquery/jquery.treetable.css" rel="stylesheet"/>
+	<link href="/Fieldbook/static/css/lib/jquery/jquery.treetable.theme.custom.css" rel="stylesheet"/>
+	<link href="/Fieldbook/static/css/lib/jquery-ui/jquery-ui.css" rel="stylesheet"/>
 
 	<!-- jhipster-needle-add-resources-to-root - JHipster will add new resources here -->
 </head>
@@ -57,12 +60,8 @@
 
 	<!-- browse sample -->
 	<!-- TODO implement in angular - https://angular2-tree.readme.io/docs/drag-drop -->
-	<script type="text/javascript" src="/Fieldbook/static/js/trialmanager/saveSampleList.js"></script>
-	<script type="text/javascript" src="/Fieldbook/static/js/nursery-manager/listTreeOperation.js"></script>
-	<script type="text/javascript" src="/Fieldbook/static/js/listTreeInclude.js"></script>
 	<script type="text/javascript" src="/Fieldbook/static/js/lib/jquery/jquery-1.10.2.min.js"></script>
 	<script type="text/javascript" src="/Fieldbook/static/js/lib/jquery-ui.min.js"></script>
-	<script type="text/javascript" src="/Fieldbook/static/js/lib/jquery/jquery.dynatree.min.js"></script>
 	<script type="text/javascript" src="/Fieldbook/static/js/fieldbook-common.js"></script>
 	<script type="text/javascript" src="/Fieldbook/static/js/lib/notify/jquery.notify.min.js"></script>
 	<script type="text/javascript" src="/Fieldbook/static/js/base.js"></script>
@@ -75,22 +74,111 @@
 	<script type="text/javascript" src="/Fieldbook/static/js/tree-persist.js"></script>
 	<!-- get crop name, used in listTreeOperation.js -->
 	<script src="/ibpworkbench/controller/static/js/lib/get-url-parameter.js" charset="utf-8"></script>
+
+	<script type="text/javascript" src="/Fieldbook/static/js/lib/jquery/jquery.treetable.js"></script>
+	<script type="text/javascript" src="/Fieldbook/static/js/treetable.js"></script>
+
+	<script type="text/javascript" src="/Fieldbook/static/js/bmsAuth.js"></script>
+
 	<script type="text/javascript" th:inline="javascript">
 		//<![CDATA[
-		function chooseList(node) {
-			if (node.data.isFolder) {
+
+		// global for TODO copy to angular component
+		var treeTable;
+
+		function chooseList() {
+			var node = treeTable.getSelectedList();
+
+			if (node === null || treeTable.isSelectedListAFolder()) {
+				showErrorMessage('', chooseAList);
 				return false;
 			}
-			window.location.hash = window.location.hash.replace(/listId=[0-9]*/, "listId=" + node.data.key);
+			var id = treeTable.getSelectedListId();
+
+			window.location.hash = window.location.hash.replace(/listId=[0-9]*/, "listId=" + id);
 			return true;
 		}
 		function browseList() {
-			SaveSampleList.initializeSampleListTree()
-			SaveSampleList.openSaveSampleListModal();
+			$('#listTreeModal').modal({ backdrop: 'static', keyboard: true });
+			$('#listTreeModal').off().on('shown.bs.modal', function () {
+				setTimeout(displayTreeTable);
+			});
 		}
+
+		function displayTreeTable() {
+			'use strict';
+
+			var baseurl = '/Fieldbook/SampleListTreeManager';
+
+			var authParams = {
+				authToken: authToken,
+				selectedProjectId: selectedProjectId,
+				loggedInUserId: loggedInUserId
+			};
+
+			var xAuthToken = JSON.parse(localStorage["bms.xAuthToken"]).token;
+
+			treeTable = new TreeTable({
+				baseurl: baseurl,
+				treeTableSelector: '#treeTable',
+				tableContainer: $('#germplasmTree'),
+				authparams: authParams,
+				context: $('#listTreeContext'),
+				crop: cropName,
+				ondblclick: chooseList,
+				create: function (parentFolderId, folderName) {
+					return $.ajax({
+						url: '/bmsapi/sampleLists/' + cropName + '/sampleListFolder?folderName=' + folderName + '&parentId=' + parentFolderId + '&programUUID=' + currentProgramId,
+						type: 'POST',
+						dataType: "json",
+						beforeSend: function (xhr) {
+							xhr.setRequestHeader('X-Auth-Token', xAuthToken);
+						},
+						error: null
+					}).fail(failHandler);
+				},
+				move: function (sourceNode, targetNode) {
+					return moveSamplesListFolder({data: {key: sourceNode.id}}, {data: {key: targetNode.id}});
+				},
+				rename: function (id, folderName) {
+					return $.ajax({
+						url: '/bmsapi/sampleLists/' + cropName + '/sampleListFolder/' + id + '?newFolderName=' + folderName,
+						type: 'PUT',
+						beforeSend: function (xhr) {
+							xhr.setRequestHeader('X-Auth-Token', xAuthToken);
+						},
+						error: null
+					}).fail(failHandler);
+				},
+				delete: function (folderId) {
+					return $.ajax({
+						url: '/bmsapi/sampleLists/' + cropName + '/sampleListFolder/' + folderId,
+						type: 'DELETE',
+						beforeSend: function (xhr) {
+							xhr.setRequestHeader('X-Auth-Token', xAuthToken);
+						},
+						error: null
+					}).fail(failHandler);
+				}
+			});
+			treeTable.init().done(function () {
+				setTimeout(function () {
+					treeTable.expandListInTreeTable('LISTS');
+					treeTable.expandListInTreeTable('CROPLISTS');
+				});
+			});
+		}
+		function failHandler(data) {
+			if (data.status == 401) {
+				bmsAuth.handleReAuthentication();
+			} else {
+				showErrorMessage('', data.responseJSON.errors[0].message);
+			}
+		}
+		// TODO import globals.html
 		function openList() {
-			if (chooseList($('#sampleFolderTree').dynatree('getTree').getActiveNode())) {
-				closeModal('saveSampleListTreeModal');
+			if (chooseList()) {
+				closeModal('listTreeModal');
 			}
 		}
 		var loggedInUserId = getUrlParameter("loggedInUserId"),
@@ -111,10 +199,13 @@
 			deleteConfirmation = /*[[#{browse.nursery.delete.folder.name.confirmation}]]*/ '',
 			cannotMove = /*[[#{browse.nursery.move.can.not}]]*/'',
 			hasChildrenString = /*[[#{browse.nursery.move.has.children}]]*/'',
-			renameItemSuccessful = /*[[#{rename.item.successful}]]*/ '';
+			renameItemSuccessful = /*[[#{rename.item.successful}]]*/ '',
+			chooseAList = /*[[#{choose.a.list}]]*/ '',
+			ajaxGenericErrorMsg = /*[[#{ajax.generic.exception.error.message}]]*/ ''
+		;
 
-		window.location.hash = window.location.hash + cropName + "/sample-browse?listId=";
-		//]]>
+		window.location.hash = cropName + "/sample-browse?listId=";
+	//]]>
 	</script>
 	<div id="notification-container" style="display:none">
 		<div id="default-notification">

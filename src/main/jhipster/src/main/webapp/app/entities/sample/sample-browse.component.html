@@ -35,112 +35,116 @@
 </div>
 
 <!-- Browse sample - TODO implement in angular -->
-
-<div class="modal fade" id="saveSampleListTreeModal" tabindex="-1" role="dialog" aria-labelledby="saveSampleListTreeModal" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content modal-extra-small">
-			<div class="modal-body">
-				<div class="row form-group">
-					<div class="col-xs-11 col-md-11">
-						<label class="modal-title fbk-modal-title" id="heading-modal">Open sample list</label>
+<div id="listTreeContext">
+	<div class="modal fade" id="listTreeModal" tabindex="-1" role="dialog" aria-labelledby="listTreeModal" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content modal-extra-medium">
+				<div class="modal-body">
+					<div class="row form-group">
+						<div class="col-xs-11 col-md-11">
+							<label class="modal-title fbk-modal-title" id="heading-modal">Open sample list</label>
+						</div>
+						<div class="col-xs-1 col-md-1">
+							<button type="button" class="close pull-right glyphicon glyphicon-remove" data-dismiss="modal" aria-hidden="true" onclick="javascript: closeModal('listTreeModal')"></button>
+						</div>
 					</div>
-					<div class="col-xs-1 col-md-1">
-						<button type="button" class="close pull-right glyphicon glyphicon-remove" data-dismiss="modal" aria-hidden="true"></button>
+					<div class="row form-group modal-popover ">
+						<div class="col-xs-7 col-md-7">
+						</div>
+						<div class="col-xs-5 col-md-5">
+							<div class="pull-right">
+								<img onclick="javascript: treeTable.addFolderInTreeTable(this)" src="/Fieldbook/static/img/add2.png" class="image-padding browse-action create-folder"/>
+								<img onclick="javascript: treeTable.renameFolderInTreeTable(this)" src="/Fieldbook/static/img/edit.png" class="image-padding browse-action edit-folder"/>
+								<img onclick="javascript: treeTable.deleteFolderInTreeTable(this)" src="/Fieldbook/static/img/delete.png" class="image-padding browse-action delete-folder"/>
+							</div>
+						</div>
 					</div>
-				</div>
-				<div class="row form-group">
-					<div class="col-xs-12 col-md-12">
-						<div style="margin-left: 10px" class="col-xs-12 col-md-12">
-							<div style="float: right; ">
-								<img onclick="javascript: ListTreeOperation.addSampleFolder(this)" src="/Fieldbook/static/img/add2.png" class="image-padding browse-sample-action create-germplasm-folder"/>
-								<img onclick="javascript: ListTreeOperation.renameSampleFolder(this)" src="/Fieldbook/static/img/edit.png" class="image-padding browse-sample-action edit-germplasm-folder"/>
-								<img onclick="javascript: ListTreeOperation.deleteSampleFolder(this)" src="/Fieldbook/static/img/delete.png" class="image-padding browse-sample-action delete-germplasm-folder"/>
+					<div class="row form-group">
+						<div class="col-xs-12 col-md-12">
+							<div class="form-horizontal form-group">
+								<div id="addFolderDiv" class="fbk-hide">
+									<div class="col-xs-4 col-md-4 nopadding">
+										<label class="control-label label-bold">Folder Name: <span class="required">*</span></label>
+									</div>
+									<div class="col-xs-8 col-md-8 nopadding">
+										<div class="input-group">
+											<input id="addFolderName" name="addFolderName" type="text" class="form-control select2" placeholder="Folder Name" style="height: 34px"/>
+											<div class="input-group-btn">
+												<button class="btn btn-success" id="addFolderOkButton" onclick="javascript: treeTable.createFolderInTreeTable()">
+													<span class="glyphicon glyphicon-ok"></span>
+												</button>
+												<button class="btn btn-danger" id="addFolderCancelButton" onclick="javascript: treeTable.hideFolderDiv('#addFolderDiv')">
+													<span class="glyphicon glyphicon-remove"></span>
+												</button>
+											</div>
+										</div>
+									</div>
+									<div class="clearfix"></div>
+								</div>
+								<div id="renameFolderDiv" class="fbk-hide">
+									<div class="col-xs-4 col-md-4 nopadding">
+										<label class="control-label  label-bold">Folder Name: <span class="required">*</span></label>
+									</div>
+									<div class="col-xs-8 col-md-8 nopadding">
+										<div class="input-group">
+											<input id="newFolderName" name="newFolderName" type="text" class="form-control select2" placeholder="Folder Name"/>
+											<div class="input-group-btn">
+												<button class="btn btn-success" id="renameFolderOkButton" onclick="javascript: treeTable.submitRenameFolderInTreeTable()">
+													<span class="glyphicon glyphicon-ok"></span>
+												</button>
+												<button class="btn btn-danger" id="renameFolderCancelButton" onclick="javascript: treeTable.hideFolderDiv('#renameFolderDiv')">
+													<span class="glyphicon glyphicon-remove"></span>
+												</button>
+											</div>
+										</div>
+									</div>
+									<div class="clearfix"></div>
+								</div>
+							</div>
+							<div class="clearfix"></div>
+							<div id="sampleFolderTree"></div>
+							<div class="row form-group">
+								<div class="col-md-12 col-xs-12 germplasm-tree-section" id="germplasmTree" style=""></div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="row form-group">
-					<div class="col-xs-12 col-md-12">
-						<div class="form-horizontal form-group">
-							<div id="addSampleFolderDiv" class="fbk-hide">
-								<div class="col-xs-4 col-md-4 nopadding">
-									<label class="control-label label-bold">Folder Name: <span class="required">*</span></label>
-								</div>
-								<div class="col-xs-8 col-md-8 nopadding">
-									<div class="input-group">
-										<input id="addFolderName" name="addFolderName" type="text" class="form-control select2" placeholder="Folder Name" style="height: 34px" onkeypress="SaveSampleList.folderChangeKeypress(event, '1');"/>
-										<div class="input-group-btn">
-											<button class="btn btn-success" id="addSampleFolderOkButton" onclick="javascript: ListTreeOperation.createSampleFolder()">
-												<span class="glyphicon glyphicon-ok"></span>
-											</button>
-											<button class="btn btn-danger" id="addSampleFolderCancelButton" onclick="javascript: ListTreeOperation.hideFolderDiv('#addSampleFolderDiv')">
-												<span class="glyphicon glyphicon-remove"></span>
-											</button>
-										</div>
-									</div>
-								</div>
-								<div class="clearfix"></div>
-							</div>
-							<div id="renameSampleFolderDiv" class="fbk-hide">
-								<div class="col-xs-4 col-md-4 nopadding">
-									<label class="control-label  label-bold">Folder Name: <span class="required">*</span></label>
-								</div>
-								<div class="col-xs-8 col-md-8 nopadding">
-									<div class="input-group">
-										<input id="renameFolderName" name="renameFolderName" type="text" class="form-control select2" placeholder="Folder Name" onkeypress="SaveSampleList.folderChangeKeypress(event, '2');"/>
-										<div class="input-group-btn">
-											<button class="btn btn-success" id="renameSampleFolderOkButton" onclick="javascript: ListTreeOperation.submitRenameSampleListFolder()">
-												<span class="glyphicon glyphicon-ok"></span>
-											</button>
-											<button class="btn btn-danger" id="renameSampleFolderCancelButton" onclick="javascript: ListTreeOperation.hideFolderDiv('#renameSampleFolderDiv')">
-												<span class="glyphicon glyphicon-remove"></span>
-											</button>
-										</div>
-									</div>
-								</div>
-								<div class="clearfix"></div>
-							</div>
-						</div>
-						<div class="clearfix"></div>
-						<div id="sampleFolderTree"></div>
-					</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.form.cancel.text}" onclick="javascript: closeModal('listTreeModal')">Cancel</button>
+					<button type="button" class="btn btn-primary" aria-hidden="true" th:text="#{common.form.ok.text}" onclick="javascript: openList()">Ok</button>
 				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.form.cancel.text}">Cancel</button>
-				<button type="button" class="btn btn-primary" aria-hidden="true" th:text="#{common.form.ok.text}" onclick="openList()">Ok</button>
 			</div>
 		</div>
 	</div>
-</div>
 
-<div class="modal fade" id="deleteSampleListFolderModal" role="dialog" aria-labelledby="deleteSampleListFolderModal" aria-hidden="true" style="overflow: hidden">
-	<div class="modal-dialog modal-extra-small">
-		<div class="modal-content">
-			<div class="modal-body" id="manageCheckTypesModalBody">
-				<div class="row form-group">
-					<div class="col-xs-11 col-md-11">
-						<label class="modal-title fbk-modal-title" id="heading-modal" th:text="#{browse.nursery.delete.folder.name}"></label>
+	<div class="modal fade" id="deleteFolder" role="dialog" aria-labelledby="deleteFolder" aria-hidden="true" style="overflow: hidden">
+		<div class="modal-dialog modal-extra-small">
+			<div class="modal-content">
+				<div class="modal-body" id="manageCheckTypesModalBody">
+					<div class="row form-group">
+						<div class="col-xs-11 col-md-11">
+							<label class="modal-title fbk-modal-title" id="heading-modal" th:text="#{browse.nursery.delete.folder.name}"></label>
+						</div>
+						<div class="col-xs-1 col-md-1">
+							<button id="closeDeleteFolderModal" type="button" class="close  pull-right glyphicon glyphicon-remove" onclick="javascript: closeModal('deleteSampleListFolderModal')"></button>
+						</div>
 					</div>
-					<div class="col-xs-1 col-md-1">
-						<button id="closeDeleteFolderModal" type="button" class="close  pull-right glyphicon glyphicon-remove" onclick="javascript: closeModal('deleteSampleListFolderModal')"></button>
-					</div>
-				</div>
 
-				<div class="row">
-					<div id="page-delete-message-modal" class="col-xs-12 col-md-12">
+					<div class="row">
+						<div id="page-delete-message-modal" class="col-xs-12 col-md-12">
+						</div>
 					</div>
-				</div>
-				<div class="row form-group">
-					<div class="col-xs-12 col-md-12 add_top_padding text-center">
-						<label class="control-label" id="delete-SampleList-folder-confirm"></label>
+					<div class="row form-group">
+						<div class="col-xs-12 col-md-12 add_top_padding text-center">
+							<label class="control-label" id="delete-folder-confirmation"></label>
+						</div>
 					</div>
-				</div>
 
-			</div>
-			<div class="modal-footer addVariable-footer">
-				<button type="button" class="btn btn-default" onclick="closeModal('deleteSampleListFolderModal')" th:text="#{common.form.cancel.text}">Cancel</button>
-				<button type="button" class="btn btn-primary" aria-hidden="true" th:text="#{common.form.ok.text}" onclick="ListTreeOperation.submitDeleteSampleFolder();">Ok</button>
+				</div>
+				<div class="modal-footer addVariable-footer">
+					<button type="button" class="btn btn-default" onclick="javascript: closeModal('deleteFolder')" th:text="#{common.form.cancel.text}">Cancel</button>
+					<button type="button" class="btn btn-primary" aria-hidden="true" th:text="#{common.form.ok.text}" onclick="javascript: treeTable.submitDeleteFolderInTreeTable();">Ok</button>
+				</div>
 			</div>
 		</div>
 	</div>
