@@ -21,7 +21,6 @@ export class SampleComponent implements OnInit, OnDestroy {
     sampleList: SampleList;
 
     listId: number;
-    samples: Sample[];
 
     currentAccount: any;
     error: any;

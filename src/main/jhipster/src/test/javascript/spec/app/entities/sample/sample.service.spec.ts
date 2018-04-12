@@ -1,6 +1,4 @@
 /* tslint:disable max-line-length */
-// FIXME
-/*
 import { TestBed, getTestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { JhiDateUtils } from 'ng-jhipster';
@@ -14,6 +12,7 @@ describe('Service Tests', () => {
         let injector: TestBed;
         let service: SampleService;
         let httpMock: HttpTestingController;
+        const crop = 'maize';
 
         beforeEach(() => {
             TestBed.configureTestingModule({
@@ -28,6 +27,7 @@ describe('Service Tests', () => {
             injector = getTestBed();
             service = injector.get(SampleService);
             httpMock = injector.get(HttpTestingController);
+            service.setCrop(crop)
         });
 
         describe('Service methods', () => {
@@ -36,17 +36,17 @@ describe('Service Tests', () => {
 
                 const req  = httpMock.expectOne({ method: 'GET' });
 
-                const resourceUrl = SERVER_API_URL + 'sample/maize/samples';
+                const resourceUrl = SERVER_API_URL + `sample/${crop}/samples`;
                 expect(req.request.url).toEqual(resourceUrl + '/' + 123);
             });
             it('should return Sample', () => {
 
                 service.find(123).subscribe((received) => {
-                    expect(received.body.id).toEqual(123);
+                    expect(received.body.sampleId).toEqual(123);
                 });
 
                 const req = httpMock.expectOne({ method: 'GET' });
-                req.flush({id: 123});
+                req.flush({sampleId: 123});
             });
 
             it('should propagate not found response', () => {
@@ -70,4 +70,3 @@ describe('Service Tests', () => {
     });
 
 });
-*/
