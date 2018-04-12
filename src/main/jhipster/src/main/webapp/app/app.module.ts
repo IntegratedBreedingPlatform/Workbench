@@ -13,8 +13,6 @@ import { NotificationInterceptor } from './blocks/interceptor/notification.inter
 import { BmsjHipsterSharedModule, UserRouteAccessService } from './shared';
 import { BmsjHipsterAppRoutingModule} from './app-routing.module';
 import { BmsjHipsterHomeModule } from './home/home.module';
-import { BmsjHipsterAdminModule } from './admin/admin.module';
-import { BmsjHipsterAccountModule } from './account/account.module';
 import { BmsjHipsterEntityModule } from './entities/entity.module';
 import { PaginationConfig } from './blocks/config/uib-pagination.config';
 // jhipster-needle-angular-add-module-import JHipster will add new module here
@@ -35,8 +33,6 @@ import {
         Ng2Webstorage.forRoot({ prefix: 'jhi', separator: '-'}),
         BmsjHipsterSharedModule,
         BmsjHipsterHomeModule,
-        BmsjHipsterAdminModule,
-        BmsjHipsterAccountModule,
         BmsjHipsterEntityModule,
         // jhipster-needle-angular-add-module JHipster will add new module here
     ],
