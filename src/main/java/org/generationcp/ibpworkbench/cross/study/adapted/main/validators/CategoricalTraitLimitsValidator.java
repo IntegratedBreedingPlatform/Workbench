@@ -1,19 +1,21 @@
 
 package org.generationcp.ibpworkbench.cross.study.adapted.main.validators;
 
-import com.vaadin.data.Validator;
-import com.vaadin.ui.ComboBox;
-import org.generationcp.ibpworkbench.cross.study.constants.CategoricalVariatesCondition;
-import org.generationcp.middleware.domain.h2h.CategoricalValue;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.generationcp.ibpworkbench.cross.study.constants.CategoricalVariatesCondition;
+import org.generationcp.middleware.domain.h2h.CategoricalValue;
+
+import com.vaadin.data.Validator;
+import com.vaadin.ui.ComboBox;
+
 /**
- * The value must be present to the existing categorical values of the fields The value must not be blank
- * */
+ * The value must be present to the existing categorical values of the fields
+ * The value must not be blank
+ */
 
 public class CategoricalTraitLimitsValidator implements Validator {
 
@@ -31,14 +33,14 @@ public class CategoricalTraitLimitsValidator implements Validator {
 	private String errorDetails;
 	private String delimiter;
 
-	public CategoricalTraitLimitsValidator(ComboBox conditionBox, List<CategoricalValue> distinctValues) {
+	public CategoricalTraitLimitsValidator(final ComboBox conditionBox, final List<CategoricalValue> distinctValues) {
 		super();
 		this.conditionBox = conditionBox;
 		this.distinctValues = distinctValues;
 	}
 
 	@Override
-	public void validate(Object value) throws InvalidValueException {
+	public void validate(final Object value) throws InvalidValueException {
 
 		if (!this.isValid(value)) {
 			throw new InvalidValueException(this.errorDetails);
@@ -47,17 +49,17 @@ public class CategoricalTraitLimitsValidator implements Validator {
 	}
 
 	@Override
-	public boolean isValid(Object value) {
-		String stringValue = ((String) value).trim();
+	public boolean isValid(final Object value) {
+		final String stringValue = ((String) value).trim();
 
 		if (this.isValidFormat(stringValue)) {
-			List<String> values = this.parseValues(stringValue);
+			final List<String> values = this.parseValues(stringValue);
 			boolean allValid = true;
 
-			if (values != null && !values.isEmpty()) {
+			if (!values.isEmpty()) {
 				this.errorDetails = CategoricalTraitLimitsValidator.DEFAULT_ERROR;
 
-				for (String val : values) {
+				for (final String val : values) {
 					if (!this.isAPossibleValue(val)) {
 						allValid = false;
 						break;
@@ -71,12 +73,12 @@ public class CategoricalTraitLimitsValidator implements Validator {
 		return false;
 	}
 
-	public boolean isAPossibleValue(String val) {
+	public boolean isAPossibleValue(final String val) {
 
-		Iterator<CategoricalValue> valueIterator = this.distinctValues.iterator();
+		final Iterator<CategoricalValue> valueIterator = this.distinctValues.iterator();
 
 		while (valueIterator.hasNext()) {
-			CategoricalValue categoricalValue = valueIterator.next();
+			final CategoricalValue categoricalValue = valueIterator.next();
 
 			if (categoricalValue.getName().equals(val)) {
 				return true;
@@ -86,8 +88,8 @@ public class CategoricalTraitLimitsValidator implements Validator {
 		return false;
 	}
 
-	public boolean isValidFormat(String value) {
-		CategoricalVariatesCondition criteria = (CategoricalVariatesCondition) this.conditionBox.getValue();
+	public boolean isValidFormat(final String value) {
+		final CategoricalVariatesCondition criteria = (CategoricalVariatesCondition) this.conditionBox.getValue();
 		this.errorDetails = CategoricalTraitLimitsValidator.INVALID_FORMAT;
 
 		if (CategoricalVariatesCondition.IN.equals(criteria) || CategoricalVariatesCondition.NOT_IN.equals(criteria)) {
@@ -100,12 +102,12 @@ public class CategoricalTraitLimitsValidator implements Validator {
 
 	}
 
-	private List<String> parseValues(String valueString) {
-		List<String> values = new ArrayList<String>();
-		StringTokenizer st = new StringTokenizer(valueString, this.delimiter);
+	private List<String> parseValues(final String valueString) {
+		final List<String> values = new ArrayList<>();
+		final StringTokenizer st = new StringTokenizer(valueString, this.delimiter);
 
 		while (st.hasMoreTokens()) {
-			values.add(st.nextToken().toString());
+			values.add(st.nextToken().trim());
 		}
 		return values;
 	}

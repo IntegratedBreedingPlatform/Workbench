@@ -1,0 +1,32 @@
+
+{
+    "bmsjHipsterApp": {
+        "sample" : {
+            "home": {
+                "title": "Samples",
+                "createLabel": "Create a new Sample",
+                "createOrEditLabel": "Create or edit a Sample",
+                "search": "Search for Sample"
+            },
+            "created": "A new Sample is created with identifier {{ param }}",
+            "updated": "A Sample is updated with identifier {{ param }}",
+            "deleted": "A Sample is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Sample {{ id }}?"
+            },
+            "detail": {
+                "title": "Sample"
+            },
+            "sampleId": "SAMPLE_ID",
+            "entryNo": "SAMPLE_ENTRY",
+            "designation": "DESIGNATION",
+            "gid": "GID",
+            "sampleName": "SAMPLE_NAME",
+            "sampleBusinessKey": "SAMPLE_UID",
+            "takenBy": "TAKEN_BY",
+            "plantNumber": "PLANT_NUMBER",
+            "plantBusinessKey": "PLANT_UID",
+            "samplingDate": "SAMPLING_DATE"
+        }
+    }
+}
