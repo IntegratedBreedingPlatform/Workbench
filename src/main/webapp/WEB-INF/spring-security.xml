@@ -9,6 +9,7 @@
 
 	<http pattern="/controller/static/**" security="none" />
 	<http pattern="/controller/pages/angular2/lib/**" security="none" />
+	<http pattern="/controller/pages/jhipster/**" security="none" />
 	<http pattern="/controller/pages/BrAPI-Graphical-Filtering/**" security="none" />
 	<http pattern="/VAADIN/themes/**" security="none" />
 
@@ -19,6 +20,8 @@
 		<intercept-url pattern="/controller/ontology/**" access="hasRole('ROLE_ADMIN')"/>
 		<intercept-url pattern="/controller/admin/*" access="hasRole('ROLE_ADMIN')"/>
 		<intercept-url pattern="/controller/admin/**" access="hasRole('ROLE_ADMIN')"/>
+		<intercept-url pattern="/controller/jhipster/*" access="hasRole('ROLE_ADMIN')"/>
+		<intercept-url pattern="/controller/jhipster/**" access="hasRole('ROLE_ADMIN')"/>
 		<intercept-url pattern="/controller/BrAPI-Graphical-Filtering/*" access="hasRole('ROLE_ADMIN')"/>
 		<intercept-url pattern="/controller/BrAPI-Graphical-Filtering/**" access="hasRole('ROLE_ADMIN')"/>
 		<intercept-url pattern="/**" access="isAuthenticated()" />

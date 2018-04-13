@@ -1,0 +1,221 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" class="no-js" lang="en" dir="ltr">
+<head>
+	<base href="./pages/jhipster/" />
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>BMSJHipster</title>
+	<meta name="description" content="">
+	<meta name="google" value="notranslate">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="theme-color" content="#000000">
+	<link rel="shortcut icon" href="favicon.ico" />
+	<link rel="manifest" href="manifest.webapp" />
+
+	<style type="text/css">
+		.throbber {
+			margin: 20px;
+		}
+	</style>
+
+	<!-- TODO Remove Fieldbook dependencies -->
+	<link href="/Fieldbook/static/css/lib/bootstrap/bootstrap.min.css" rel="stylesheet" media="screen"/>
+	<link href="/Fieldbook/static/css/lib/notify/ui.notify.css" rel="stylesheet"/>
+	<link href="/Fieldbook/static/css/fieldbook.css" rel="stylesheet"/>
+
+	<!-- browse sample -->
+	<!-- TODO implement in angular -->
+	<link href="/Fieldbook/static/css/lib/jquery/jquery.treetable.css" rel="stylesheet"/>
+	<link href="/Fieldbook/static/css/lib/jquery/jquery.treetable.theme.custom.css" rel="stylesheet"/>
+	<link href="/Fieldbook/static/css/lib/jquery-ui/jquery-ui.css" rel="stylesheet"/>
+
+	<!-- jhipster-needle-add-resources-to-root - JHipster will add new resources here -->
+</head>
+<body>
+	<!--[if lt IE 9]>
+		<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+	<![endif]-->
+	<jhi-main>
+		<!--TODO use workbench styleguide or bootstrap 4-->
+		<!--<span class="throbber throbber-lg"></span>-->
+	</jhi-main>
+	<noscript>
+		<h1>You must enable javascript to view this page.</h1>
+	</noscript>
+	<!-- uncomment this for adding service worker
+		<script>
+			if ('serviceWorker' in navigator) {
+				 navigator.serviceWorker
+					.register('./sw.js')
+					.then(function() { console.log('Service Worker Registered'); });
+			}
+		</script>
+	-->
+	<!-- Google Analytics: uncomment and change UA-XXXXX-X to be your site's ID.
+	<script>
+		(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+		function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+		e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+		e.src='//www.google-analytics.com/analytics.js';
+		r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+		ga('create','UA-XXXXX-X');ga('send','pageview');
+	</script>-->
+
+	<!-- browse sample -->
+	<!-- TODO implement treetable, notify (see Site Admin) in angular. Remove Fieldbook dependencies -->
+	<script type="text/javascript" src="/Fieldbook/static/js/lib/jquery/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="/Fieldbook/static/js/lib/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="/Fieldbook/static/js/fieldbook-common.js"></script>
+	<script type="text/javascript" src="/Fieldbook/static/js/lib/notify/jquery.notify.min.js"></script>
+	<script type="text/javascript" src="/Fieldbook/static/js/base.js"></script>
+	<script type="text/javascript" src="/Fieldbook/static/js/spinner-manager.js"></script>
+	<script type="text/javascript" src="/Fieldbook/static/js/spinner.js"></script>
+	<script type="text/javascript" src="/Fieldbook/static/js/lib/jquery/jquery.blockUI.js"></script>
+	<script type="text/javascript" src="/Fieldbook/static/js/lib/bootstrap/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/Fieldbook/static/js/bootstrap-popover.js"></script>
+	<script type="text/javascript" src="/Fieldbook/static/js/bootstrap-tooltip.js"></script>
+	<!--TODO-->
+	<!--<script type="text/javascript" src="/Fieldbook/static/js/tree-persist.js"></script>-->
+	<script type="text/javascript" src="/Fieldbook/static/js/lib/jquery/jquery.treetable.js"></script>
+	<script type="text/javascript" src="/Fieldbook/static/js/treetable.js"></script>
+
+	<!-- get crop name, used in listTreeOperation.js -->
+	<script src="/ibpworkbench/controller/static/js/lib/get-url-parameter.js" charset="utf-8"></script>
+	<script type="text/javascript" src="/Fieldbook/static/js/bmsAuth.js"></script>
+
+	<script type="text/javascript" th:inline="javascript">
+		//<![CDATA[
+
+		// global for TODO copy to angular component
+		var treeTable;
+
+		function chooseList() {
+			var node = treeTable.getSelectedList();
+
+			if (node === null || treeTable.isSelectedListAFolder()) {
+				showErrorMessage('', chooseAList);
+				return false;
+			}
+			var id = treeTable.getSelectedListId();
+
+			window.location.hash = window.location.hash.replace(/listId=[0-9]*/, "listId=" + id);
+			return true;
+		}
+		function browseList() {
+			$('#listTreeModal').modal({ backdrop: 'static', keyboard: true });
+			$('#listTreeModal').off().on('shown.bs.modal', function () {
+				setTimeout(displayTreeTable);
+			});
+		}
+
+		function displayTreeTable() {
+			'use strict';
+
+			var baseurl = '/Fieldbook/SampleListTreeManager';
+
+			var authParams = {
+				authToken: authToken,
+				selectedProjectId: selectedProjectId,
+				loggedInUserId: loggedInUserId
+			};
+
+			var xAuthToken = JSON.parse(localStorage["bms.xAuthToken"]).token;
+
+			treeTable = new TreeTable({
+				baseurl: baseurl,
+				treeTableSelector: '#treeTable',
+				tableContainer: $('#treeTableContainer'),
+				authparams: authParams,
+				context: $('#listTreeContext'),
+				crop: cropName,
+				ondblclick: chooseList,
+				create: function (parentFolderId, folderName) {
+					return $.ajax({
+						url: '/bmsapi/sampleLists/' + cropName + '/sampleListFolder?folderName=' + folderName + '&parentId=' + parentFolderId + '&programUUID=' + currentProgramId,
+						type: 'POST',
+						dataType: "json",
+						beforeSend: function (xhr) {
+							xhr.setRequestHeader('X-Auth-Token', xAuthToken);
+						},
+						error: null
+					}).fail(failHandler);
+				},
+				move: function (sourceNode, targetNode) {
+					return moveSamplesListFolder({data: {key: sourceNode.id}}, {data: {key: targetNode.id}});
+				},
+				rename: function (id, folderName) {
+					return $.ajax({
+						url: '/bmsapi/sampleLists/' + cropName + '/sampleListFolder/' + id + '?newFolderName=' + folderName,
+						type: 'PUT',
+						beforeSend: function (xhr) {
+							xhr.setRequestHeader('X-Auth-Token', xAuthToken);
+						},
+						error: null
+					}).fail(failHandler);
+				},
+				delete: function (folderId) {
+					return $.ajax({
+						url: '/bmsapi/sampleLists/' + cropName + '/sampleListFolder/' + folderId,
+						type: 'DELETE',
+						beforeSend: function (xhr) {
+							xhr.setRequestHeader('X-Auth-Token', xAuthToken);
+						},
+						error: null
+					}).fail(failHandler);
+				}
+			});
+			treeTable.init().done(function () {
+				setTimeout(function () {
+					treeTable.expandListInTreeTable('LISTS');
+					treeTable.expandListInTreeTable('CROPLISTS');
+				});
+			});
+		}
+		function failHandler(data) {
+			if (data.status == 401) {
+				bmsAuth.handleReAuthentication();
+			} else {
+				showErrorMessage('', data.responseJSON.errors[0].message);
+			}
+		}
+		// TODO import globals.html
+		function openList() {
+			if (chooseList()) {
+				closeModal('listTreeModal');
+			}
+		}
+		var loggedInUserId = getUrlParameter("loggedInUserId"),
+			authToken = getUrlParameter("authToken"),
+			selectedProjectId = getUrlParameter("selectedProjectId"),
+			cropName = /*[[${cropName}]]*/ '',
+			currentProgramId = /*[[${currentProgramId}]]*/ '',
+
+			addFolderSuccessful = /*[[#{add.folder.successful}]]*/ '',
+			successMsgHeader = /*[[#{common.form.success.text}]]*/ '',
+			renameGermplasmInvalidFolderMessage = /*[[#{nursery.germplasm.list.tree.invalid.public}]]*/ '',
+			invalidNodeGermplasmTreeMessage = /*[[#{nursery.germplasm.list.tree.invalid.node}]]*/ '',
+			folderNameRequiredMessage = /*[[#{browse.nursery.add.folder.name.blank}]]*/ '',
+			addGermplasmInvalidFolderMessage = /*[[#{nursery.germplasm.list.tree.invalid.public}]]*/ '',
+			invalidFolderNameCharacterMessage = /*[[#{nursery.addfolder.error.invalidcharacters}]]*/'',
+			deleteItemSuccessful = /*[[#{delete.item.successful}]]*/ '',
+			errorMsgHeader = /*[[#{common.error.header}]]*/ '',
+			deleteConfirmation = /*[[#{browse.nursery.delete.folder.name.confirmation}]]*/ '',
+			cannotMove = /*[[#{browse.nursery.move.can.not}]]*/'',
+			hasChildrenString = /*[[#{browse.nursery.move.has.children}]]*/'',
+			renameItemSuccessful = /*[[#{rename.item.successful}]]*/ '',
+			chooseAList = /*[[#{choose.a.list}]]*/ '',
+			ajaxGenericErrorMsg = /*[[#{ajax.generic.exception.error.message}]]*/ ''
+		;
+
+		window.location.hash = cropName + "/sample-browse?listId=";
+	//]]>
+	</script>
+	<div id="notification-container" style="display:none">
+		<div id="default-notification">
+			<a class="ui-notify-close" href="#"><span class="glyphicon glyphicon-remove" style="float:right"></span></a>
+			<h1>#{title}</h1>
+			<p>#{text}</p>
+		</div>
+	</div>
+</body>
+</html>
