@@ -10,12 +10,24 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
+import com.google.common.collect.Lists;
+import com.mysql.jdbc.StringUtils;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Select;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.ColumnGenerator;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.util.StringUtil;
@@ -40,8 +52,6 @@ import org.generationcp.middleware.domain.dms.TrialEnvironment;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.oms.TermId;
-import org.generationcp.middleware.exceptions.ConfigException;
-import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -53,24 +63,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
-import com.google.common.collect.Lists;
-import com.mysql.jdbc.StringUtils;
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.event.ShortcutAction.KeyCode;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Select;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Table.ColumnGenerator;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -205,48 +202,26 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout
 
 			final SeaEnvironmentModel model = (SeaEnvironmentModel) chk.getData();
 
-			final TrialEnvironments trialEnvironments;
-			try {
-				trialEnvironments = SingleSiteAnalysisDetailsPanel.this.studyDataManager.getTrialEnvironmentsInDataset(
-						SingleSiteAnalysisDetailsPanel.this.getBreedingViewInput().getDatasetId());
-				final TrialEnvironment trialEnv = trialEnvironments.findOnlyOneByLocalName(
-						SingleSiteAnalysisDetailsPanel.this.breedingViewInput.getTrialInstanceName(),
-						model.getTrialno());
 
-				if (trialEnv == null) {
+			final int germplasmTermId = SingleSiteAnalysisDetailsPanel.this.getTermId(
+					SingleSiteAnalysisDetailsPanel.this.selGenotypes.getValue().toString(),
+					SingleSiteAnalysisDetailsPanel.this.factorsInDataset);
 
-					MessageNotifier.showError(SingleSiteAnalysisDetailsPanel.this.getWindow(),
-							SingleSiteAnalysisDetailsPanel.INVALID_SELECTION_STRING,
-							"\"" + model.getEnvironmentName() + "\" value is not a valid selection for breeding view.");
-					chk.setValue(false);
-					model.setActive(false);
+			final Boolean valid = SingleSiteAnalysisDetailsPanel.this.studyDataManager
+					.containsAtLeast2CommonEntriesWithValues(
+							SingleSiteAnalysisDetailsPanel.this.getBreedingViewInput().getDatasetId(),
+							model.getLocationId(), germplasmTermId);
 
-				} else {
-
-					final int germplasmTermId = SingleSiteAnalysisDetailsPanel.this.getTermId(
-							SingleSiteAnalysisDetailsPanel.this.selGenotypes.getValue().toString(),
-							SingleSiteAnalysisDetailsPanel.this.factorsInDataset);
-
-					final Boolean valid = SingleSiteAnalysisDetailsPanel.this.studyDataManager
-							.containsAtLeast2CommonEntriesWithValues(
-									SingleSiteAnalysisDetailsPanel.this.getBreedingViewInput().getDatasetId(),
-									model.getLocationId(), germplasmTermId);
-
-					if (!valid) {
-						MessageNotifier.showError(SingleSiteAnalysisDetailsPanel.this.getWindow(),
-								SingleSiteAnalysisDetailsPanel.INVALID_SELECTION_STRING,
-								SingleSiteAnalysisDetailsPanel.this.getSelEnvFactor().getValue().toString() + " \""
-										+ model.getEnvironmentName()
-										+ "\" cannot be used for analysis because the plot data is not complete. The data must contain at least 2 common entries with values.");
-						chk.setValue(false);
-						model.setActive(false);
-					} else {
-						model.setActive(val);
-					}
-
-				}
-			} catch (final ConfigException | MiddlewareException e) {
-				SingleSiteAnalysisDetailsPanel.LOG.error(e.getMessage(), e);
+			if (!valid) {
+				MessageNotifier.showError(SingleSiteAnalysisDetailsPanel.this.getWindow(),
+						SingleSiteAnalysisDetailsPanel.INVALID_SELECTION_STRING,
+						SingleSiteAnalysisDetailsPanel.this.getSelEnvFactor().getValue().toString() + " \""
+								+ model.getEnvironmentName()
+								+ "\" cannot be used for analysis because the plot data is not complete. The data must contain at least 2 common entries with values.");
+				chk.setValue(false);
+				model.setActive(false);
+			} else {
+				model.setActive(val);
 			}
 
 		}
