@@ -98,6 +98,10 @@
 			}
 			var id = treeTable.getSelectedListId();
 
+			if (!id) {
+				return false;
+			}
+
 			window.location.hash = window.location.hash.replace(/listId=[0-9]*/, "listId=" + id);
 			return true;
 		}
