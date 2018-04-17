@@ -181,47 +181,51 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout
 		}
 	}
 
-	private final class EnvironmentCheckBoxListener implements Property.ValueChangeListener {
+	protected final class EnvironmentCheckBoxListener implements Property.ValueChangeListener {
 
 		private static final long serialVersionUID = 1L;
 
 		@Override
 		public void valueChange(final ValueChangeEvent event) {
 
-			final CheckBox chk = (CheckBox) event.getProperty();
-			final Boolean val = (Boolean) event.getProperty().getValue();
+			final CheckBox checkbox = (CheckBox) event.getProperty();
+			final Boolean isChecked = (Boolean) event.getProperty().getValue();
 
-			if (!val) {
+			final SeaEnvironmentModel checkboxEnvironmentModel = (SeaEnvironmentModel) checkbox.getData();
+			checkboxEnvironmentModel.setActive(isChecked);
+
+			if (!isChecked) {
+
+				// If any of the checkbox options is unchecked, make sure the "Check All" checkbox is also unchecked.
+				// Remove the footer checkbox listener temporarily to avoid firing of value change event
 				SingleSiteAnalysisDetailsPanel.this.footerCheckBox
 						.removeListener(SingleSiteAnalysisDetailsPanel.this.footerCheckBoxListener);
 				SingleSiteAnalysisDetailsPanel.this.footerCheckBox.setValue(false);
-				SingleSiteAnalysisDetailsPanel.this.footerCheckBox
-						.addListener(SingleSiteAnalysisDetailsPanel.this.footerCheckBoxListener);
-				return;
-			}
 
-			final SeaEnvironmentModel model = (SeaEnvironmentModel) chk.getData();
+				// Then add again the footer checkbox listener
+				SingleSiteAnalysisDetailsPanel.this.footerCheckBox.addListener(SingleSiteAnalysisDetailsPanel.this.footerCheckBoxListener);
 
-
-			final int germplasmTermId = SingleSiteAnalysisDetailsPanel.this.getTermId(
-					SingleSiteAnalysisDetailsPanel.this.selGenotypes.getValue().toString(),
-					SingleSiteAnalysisDetailsPanel.this.factorsInDataset);
-
-			final Boolean valid = SingleSiteAnalysisDetailsPanel.this.studyDataManager
-					.containsAtLeast2CommonEntriesWithValues(
-							SingleSiteAnalysisDetailsPanel.this.getBreedingViewInput().getDatasetId(),
-							model.getLocationId(), germplasmTermId);
-
-			if (!valid) {
-				MessageNotifier.showError(SingleSiteAnalysisDetailsPanel.this.getWindow(),
-						SingleSiteAnalysisDetailsPanel.INVALID_SELECTION_STRING,
-						SingleSiteAnalysisDetailsPanel.this.getSelEnvFactor().getValue().toString() + " \""
-								+ model.getEnvironmentName()
-								+ "\" cannot be used for analysis because the plot data is not complete. The data must contain at least 2 common entries with values.");
-				chk.setValue(false);
-				model.setActive(false);
 			} else {
-				model.setActive(val);
+
+				final int termIdOfSelectedGermplasmFactor = SingleSiteAnalysisDetailsPanel.this
+						.getTermId(SingleSiteAnalysisDetailsPanel.this.selGenotypes.getValue().toString(),
+								SingleSiteAnalysisDetailsPanel.this.factorsInDataset);
+
+				// Check if the study has minimum data required to run Single Site Analysis.
+				final Boolean studyContainsMinimumData = SingleSiteAnalysisDetailsPanel.this.studyDataManager
+						.containsAtLeast2CommonEntriesWithValues(SingleSiteAnalysisDetailsPanel.this.getBreedingViewInput().getDatasetId(),
+								checkboxEnvironmentModel.getLocationId(), termIdOfSelectedGermplasmFactor);
+
+				if (!studyContainsMinimumData) {
+					MessageNotifier.showError(SingleSiteAnalysisDetailsPanel.this.getWindow(),
+							SingleSiteAnalysisDetailsPanel.INVALID_SELECTION_STRING,
+							SingleSiteAnalysisDetailsPanel.this.getSelEnvFactor().getValue().toString() + " \"" + checkboxEnvironmentModel
+									.getEnvironmentName()
+									+ "\" cannot be used for analysis because the plot data is not complete. The data must contain at least 2 common entries with values.");
+					checkbox.setValue(false);
+					checkboxEnvironmentModel.setActive(false);
+				}
+
 			}
 
 		}

@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import com.vaadin.data.Property;
+import com.vaadin.ui.Window;
 import org.apache.commons.lang3.ArrayUtils;
 import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -31,6 +33,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -43,6 +46,9 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.Table;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by IntelliJ IDEA. User: Daniel Villafuerte Date: 12/17/2014 Time:
@@ -72,6 +78,8 @@ public class SingleSiteAnalysisDetailsPanelTest {
 			SingleSiteAnalysisDetailsPanelTest.EXPT_DESIGN };
 	private static final String[] DATASET_FACTORS = { SingleSiteAnalysisDetailsPanelTest.DATASET_NAME,
 			SingleSiteAnalysisDetailsPanelTest.DATASET_TITLE, SingleSiteAnalysisDetailsPanelTest.DATASET_TYPE };
+	public static final int DATASET_ID = 3;
+	public static final int STUDY_ID = 1;
 
 	@InjectMocks
 	private SingleSiteAnalysisDetailsPanel ssaPanel;
@@ -87,6 +95,13 @@ public class SingleSiteAnalysisDetailsPanelTest {
 	@Mock
 	private StudyDataManager studyDataManager;
 
+	@Mock
+	private Component parentComponent;
+
+	@Mock
+	private Window window;
+
+
 	@Before
 	public void setup() {
 		this.initializeBreedingViewInput();
@@ -98,6 +113,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 				project, new SingleSiteAnalysisPanel(project));
 		this.ssaPanel.setMessageSource(this.messageSource);
 		this.ssaPanel.setStudyDataManager(this.studyDataManager);
+		this.ssaPanel.setParent(this.parentComponent);
 
 		final Select selEnvFactor = new Select();
 		selEnvFactor.addItem(SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE);
@@ -107,13 +123,15 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		this.mockStudyDataManagerCalls();
 		this.mockMessageResource();
 
+		when(parentComponent.getWindow()).thenReturn(this.window);
+
 	}
 
 	private void mockMessageResource() {
-		Mockito.when(this.messageSource.getMessage(Message.PLEASE_CHOOSE)).thenReturn("Please choose");
-		Mockito.when(this.messageSource.getMessage(Message.BV_SPECIFY_ROW_FACTOR))
+		when(this.messageSource.getMessage(Message.PLEASE_CHOOSE)).thenReturn("Please choose");
+		when(this.messageSource.getMessage(Message.BV_SPECIFY_ROW_FACTOR))
 				.thenReturn(SingleSiteAnalysisDetailsPanelTest.ROW_FACTOR_LABEL);
-		Mockito.when(this.messageSource.getMessage(Message.BV_SPECIFY_COLUMN_FACTOR))
+		when(this.messageSource.getMessage(Message.BV_SPECIFY_COLUMN_FACTOR))
 				.thenReturn(SingleSiteAnalysisDetailsPanelTest.COLUMN_FACTOR_LABEL);
 	}
 
@@ -122,25 +140,25 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		final VariableTypeList variableTypes = new VariableTypeList();
 		variableTypes.setVariableTypes(this.factors);
 		dataset.setVariableTypes(variableTypes);
-		Mockito.when(this.studyDataManager.getDataSet(this.input.getDatasetId())).thenReturn(dataset);
+		when(this.studyDataManager.getDataSet(this.input.getDatasetId())).thenReturn(dataset);
 
 		final TrialEnvironments trialEnvironments = new TrialEnvironments();
 		final TrialEnvironment trialEnvironment = new TrialEnvironment(2);
 		trialEnvironments.add(trialEnvironment);
-		Mockito.when(this.studyDataManager.getTrialEnvironmentsInDataset(this.input.getDatasetId()))
+		when(this.studyDataManager.getTrialEnvironmentsInDataset(this.input.getDatasetId()))
 				.thenReturn(trialEnvironments);
 	}
 
 	private void initializeBreedingViewInput() {
 		this.input = new BreedingViewInput();
-		this.input.setStudyId(1);
-		this.input.setDatasetId(3);
+		this.input.setStudyId(STUDY_ID);
+		this.input.setDatasetId(DATASET_ID);
 	}
 
 	@Test
 	public void testDesignTypeIncompleteBlockDesignResolvableNonLatin() {
 
-		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(),
+		when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(),
 				this.input.getStudyId())).thenReturn(Integer.toString(TermId.RESOLVABLE_INCOMPLETE_BLOCK.getId()));
 
 		this.ssaPanel.initializeComponents();
@@ -173,7 +191,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 	@Test
 	public void testDesignTypeIncompleteBlockDesignResolvableLatin() {
-		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(),
+		when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(),
 				this.input.getStudyId()))
 				.thenReturn(Integer.toString(TermId.RESOLVABLE_INCOMPLETE_BLOCK_LATIN.getId()));
 
@@ -207,7 +225,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 	@Test
 	public void testDesignTypeRowColumnDesignLatin() {
-		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(),
+		when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(),
 				this.input.getStudyId()))
 				.thenReturn(Integer.toString(TermId.RESOLVABLE_INCOMPLETE_ROW_COL_LATIN.getId()));
 
@@ -241,7 +259,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 	@Test
 	public void testDesignTypeRowColumnDesignNonLatin() {
-		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(),
+		when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(),
 				this.input.getStudyId())).thenReturn(Integer.toString(TermId.RESOLVABLE_INCOMPLETE_ROW_COL.getId()));
 
 		this.ssaPanel.initializeComponents();
@@ -274,7 +292,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 	@Test
 	public void testDesignTypeRandomizedBlockDesign() {
-		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(),
+		when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(),
 				this.input.getStudyId())).thenReturn(Integer.toString(TermId.RANDOMIZED_COMPLETE_BLOCK.getId()));
 
 		this.ssaPanel.initializeComponents();
@@ -307,7 +325,7 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 	@Test
 	public void testDesignTypeInvalid() {
-		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(),
+		when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(),
 				this.input.getStudyId())).thenReturn(null);
 
 		this.ssaPanel.initializeComponents();
@@ -378,18 +396,18 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		this.ssaPanel.createEnvironmentSelectionTable();
 		final TrialEnvironments trialEnvironments = new TrialEnvironments();
 		final TrialEnvironment trialEnvironment = Mockito.mock(TrialEnvironment.class);
-		Mockito.when(trialEnvironment.getId()).thenReturn(1);
+		when(trialEnvironment.getId()).thenReturn(1);
 		trialEnvironments.add(trialEnvironment);
 
 		final VariableList variableList = Mockito.mock(VariableList.class);
-		Mockito.when(trialEnvironment.getVariables()).thenReturn(variableList);
+		when(trialEnvironment.getVariables()).thenReturn(variableList);
 		final Variable trialInstance = new Variable();
 		trialInstance.setValue("1");
-		Mockito.when(variableList.findByLocalName(SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE))
+		when(variableList.findByLocalName(SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE))
 				.thenReturn(trialInstance);
-		Mockito.when(this.studyDataManager.getTrialEnvironmentsInDataset(Matchers.anyInt()))
+		when(this.studyDataManager.getTrialEnvironmentsInDataset(Matchers.anyInt()))
 				.thenReturn(trialEnvironments);
-		Mockito.when(this.studyDataManager.getLocalNameByStandardVariableId(Matchers.anyInt(), Matchers.anyInt()))
+		when(this.studyDataManager.getLocalNameByStandardVariableId(Matchers.anyInt(), Matchers.anyInt()))
 				.thenReturn(SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE);
 
 		this.ssaPanel.populateChoicesForEnvForAnalysis();
@@ -410,20 +428,20 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 		final TrialEnvironments trialEnvironments = new TrialEnvironments();
 		final TrialEnvironment trialEnvironment = Mockito.mock(TrialEnvironment.class);
-		Mockito.when(trialEnvironment.getId()).thenReturn(1);
+		when(trialEnvironment.getId()).thenReturn(1);
 		trialEnvironments.add(trialEnvironment);
 
 		final VariableList variableList = Mockito.mock(VariableList.class);
-		Mockito.when(trialEnvironment.getVariables()).thenReturn(variableList);
+		when(trialEnvironment.getVariables()).thenReturn(variableList);
 		final Variable trialInstance = new Variable();
 		trialInstance.setValue("1");
-		Mockito.when(variableList.findByLocalName(SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE))
+		when(variableList.findByLocalName(SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE))
 				.thenReturn(trialInstance);
 		final Variable locationVariable = new Variable();
 		locationVariable.setValue("Africa Rice Center");
-		Mockito.when(variableList.findByLocalName(SingleSiteAnalysisDetailsPanelTest.LOCATION_NAME))
+		when(variableList.findByLocalName(SingleSiteAnalysisDetailsPanelTest.LOCATION_NAME))
 				.thenReturn(locationVariable);
-		Mockito.when(this.studyDataManager.getTrialEnvironmentsInDataset(Matchers.anyInt()))
+		when(this.studyDataManager.getTrialEnvironmentsInDataset(Matchers.anyInt()))
 				.thenReturn(trialEnvironments);
 
 		this.ssaPanel.populateEnvironmentSelectionTableWithTrialEnvironmets(table,
@@ -646,6 +664,102 @@ public class SingleSiteAnalysisDetailsPanelTest {
 				this.ssaPanel.getLblSpecifyRowFactor().getValue());
 
 	}
+
+	@Test
+	public void testEnvironmentCheckBoxListenerUnchecked() {
+
+		final SeaEnvironmentModel model = new SeaEnvironmentModel();
+
+		final CheckBox checkBox = new CheckBox();
+		checkBox.setData(model);
+		// Uncheck the checkbox
+		checkBox.setValue(false);
+		final Property.ValueChangeEvent event = Mockito.mock(Property.ValueChangeEvent.class);
+		when(event.getProperty()).thenReturn(checkBox);
+
+		final CheckBox footerCheckBox = Mockito.mock(CheckBox.class);
+		this.ssaPanel.setFooterCheckBox(footerCheckBox);
+
+		final SingleSiteAnalysisDetailsPanel.EnvironmentCheckBoxListener listener = this.ssaPanel.new EnvironmentCheckBoxListener();
+
+		listener.valueChange(event);
+
+		Assert.assertFalse(model.getActive());
+		verify(footerCheckBox).removeListener(Mockito.any(Property.ValueChangeListener.class));
+		verify(footerCheckBox).setValue(false);
+		verify(footerCheckBox).addListener(Mockito.any(Property.ValueChangeListener.class));
+
+	}
+
+	@Test
+	public void testEnvironmentCheckBoxListenerChecked() {
+
+		final Integer locationId = 1;
+		final SeaEnvironmentModel model = new SeaEnvironmentModel();
+		model.setLocationId(1);
+
+		final CheckBox checkBox = new CheckBox();
+		checkBox.setData(model);
+		// Check the checkbox
+		checkBox.setValue(true);
+		final Property.ValueChangeEvent event = Mockito.mock(Property.ValueChangeEvent.class);
+		when(event.getProperty()).thenReturn(checkBox);
+
+		final Select selectGenotype = Mockito.mock(Select.class);
+		when(selectGenotype.getValue()).thenReturn("GID");
+		this.ssaPanel.setSelGenotypes(selectGenotype);
+
+		when(this.studyDataManager.containsAtLeast2CommonEntriesWithValues(DATASET_ID, locationId, TermId.GID.getId())).thenReturn(true);
+
+		final SingleSiteAnalysisDetailsPanel.EnvironmentCheckBoxListener listener = this.ssaPanel.new EnvironmentCheckBoxListener();
+		listener.valueChange(event);
+
+		Assert.assertTrue(model.getActive());
+		Assert.assertTrue((Boolean) checkBox.getValue());
+
+	}
+
+	@Test
+	public void testEnvironmentCheckBoxListenerCheckedStudyHasNoData() {
+
+		final Integer locationId = 1234;
+		final String trialInstanceNumber = "1";
+		final SeaEnvironmentModel model = new SeaEnvironmentModel();
+		model.setLocationId(locationId);
+		model.setTrialno(trialInstanceNumber);
+		model.setEnvironmentName(trialInstanceNumber);
+
+		final CheckBox checkBox = new CheckBox();
+		checkBox.setData(model);
+		// Check the checkbox
+		checkBox.setValue(true);
+		final Property.ValueChangeEvent event = Mockito.mock(Property.ValueChangeEvent.class);
+		when(event.getProperty()).thenReturn(checkBox);
+
+		final Select selectGenotype = Mockito.mock(Select.class);
+		when(selectGenotype.getValue()).thenReturn("GID");
+		this.ssaPanel.setSelGenotypes(selectGenotype);
+
+		when(this.studyDataManager.containsAtLeast2CommonEntriesWithValues(DATASET_ID, locationId, TermId.GID.getId())).thenReturn(false);
+
+		final SingleSiteAnalysisDetailsPanel.EnvironmentCheckBoxListener listener = this.ssaPanel.new EnvironmentCheckBoxListener();
+
+		listener.valueChange(event);
+
+		Assert.assertFalse(model.getActive());
+		Assert.assertFalse((Boolean) checkBox.getValue());
+
+		final ArgumentCaptor<Window.Notification> captor = ArgumentCaptor.forClass(Window.Notification.class);
+
+		verify(this.window).showNotification(captor.capture());
+
+		final Window.Notification notification = captor.getValue();
+
+		Assert.assertEquals("Invalid Selection", notification.getCaption());
+		Assert.assertEquals("</br>TRIAL_INSTANCE \"1\" cannot be used for analysis because the plot data is not complete. The data must contain at least 2 common entries with values.", notification.getDescription());
+
+	}
+
 
 	private List<Component> getComponentsListFromGridLayout() {
 
