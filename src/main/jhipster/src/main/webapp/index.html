@@ -98,7 +98,17 @@
 			}
 			var id = treeTable.getSelectedListId();
 
-			window.location.hash = window.location.hash.replace(/listId=[0-9]*/, "listId=" + id);
+			if (!id) {
+				return false;
+			}
+
+			if (window.location.hash.indexOf('listId') < 0) {
+				// TODO merge with page params?
+				window.location.hash = cropName + "/sample-browse?listId=" + id;
+			} else {
+				window.location.hash = window.location.hash.replace(/listId=[0-9]*/, "listId=" + id);
+			}
+
 			return true;
 		}
 		function browseList() {
