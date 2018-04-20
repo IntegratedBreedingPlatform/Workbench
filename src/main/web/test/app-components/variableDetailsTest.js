@@ -29,7 +29,7 @@ describe('Variable details directive', function() {
 		}, {
 			id: 9,
 			name: 'Treatment Factor',
-			description: 'Treatments to be applied to members of a trial.'
+			description: 'Treatments to be applied to members of a study.'
 		}],
 
 		VARIABLE_TYPES_WITHOUT_TREATMENT_FACTOR = [{
