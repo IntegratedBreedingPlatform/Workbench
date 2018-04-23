@@ -274,6 +274,7 @@ public class MultiSiteDataExporterTest {
 	@Test
 	public void testGetCsvFileInWorkbenchDirectoryForMeans() {
 		final File meansFile = this.multiSiteDataExporter.getCsvFileInWorkbenchDirectory(project, BASIC_FILE_NAME, false);
+		Mockito.verify(this.installationDirectoryUtil).createWorkspaceDirectoriesForProject(this.project);
 		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
 		Assert.assertEquals(new File(BMS_INPUT_FILES_DIR + File.separator + BASIC_FILE_NAME + ".csv").getAbsolutePath(),
 				meansFile.getAbsolutePath());
@@ -282,8 +283,8 @@ public class MultiSiteDataExporterTest {
 	@Test
 	public void testGetCsvFileInWorkbenchDirectoryForSummaryStats() {
 		final File meansFile = this.multiSiteDataExporter.getCsvFileInWorkbenchDirectory(project, BASIC_FILE_NAME, true);
+		Mockito.verify(this.installationDirectoryUtil).createWorkspaceDirectoriesForProject(this.project);
 		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
-		
 		Assert.assertEquals(new File(BMS_INPUT_FILES_DIR + File.separator + BASIC_FILE_NAME + MultiSiteDataExporter.SUMMARY_STATS + ".csv")
 				.getAbsolutePath(), meansFile.getAbsolutePath());
 	}
