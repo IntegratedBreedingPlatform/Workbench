@@ -221,6 +221,8 @@ public class MultiSiteDataExporter {
 	}
 
 	File getCsvFileInWorkbenchDirectory(final Project currentProject, final String inputFileName, final boolean isSummaryStatsFile) {
+
+		this.installationDirectoryUtil.createWorkspaceDirectoriesForProject(currentProject);
 		final String directory = this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(currentProject, ToolName.BREEDING_VIEW);
 		final StringBuilder sb = new StringBuilder(inputFileName);
 		if (isSummaryStatsFile) {
