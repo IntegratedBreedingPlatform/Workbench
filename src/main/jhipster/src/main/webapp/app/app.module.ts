@@ -25,10 +25,12 @@ import {
     ActiveMenuDirective,
     ErrorComponent
 } from './layouts';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
     imports: [
         BrowserModule,
+        BrowserAnimationsModule,
         BmsjHipsterAppRoutingModule,
         Ng2Webstorage.forRoot({ prefix: 'jhi', separator: '-'}),
         BmsjHipsterSharedModule,

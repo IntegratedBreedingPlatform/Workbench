@@ -16,6 +16,8 @@ import {
     SampleResolvePagingParams,
     SampleBrowseComponent
 } from './';
+import { TreeTableComponent } from './tree-table/tree-table.component';
+import { SampleTreeService } from './tree-table/sample-tree.service';
 
 const ENTITY_STATES = [
     ...sampleRoute,
@@ -34,7 +36,8 @@ const ENTITY_STATES = [
         SampleDeleteDialogComponent,
         SamplePopupComponent,
         SampleDeletePopupComponent,
-        SampleBrowseComponent
+        SampleBrowseComponent,
+        TreeTableComponent
     ],
     entryComponents: [
         SampleComponent,
@@ -42,12 +45,14 @@ const ENTITY_STATES = [
         SamplePopupComponent,
         SampleDeleteDialogComponent,
         SampleDeletePopupComponent,
-        SampleBrowseComponent
+        SampleBrowseComponent,
+        TreeTableComponent
     ],
     providers: [
         SampleService,
         SamplePopupService,
         SampleResolvePagingParams,
+        SampleTreeService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

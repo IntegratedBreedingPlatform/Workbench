@@ -14,6 +14,7 @@ import {
     Principal,
     HasAnyAuthorityDirective,
 } from './';
+import { DragDropModule, TreeTableModule } from 'primeng/primeng';
 
 @NgModule({
     imports: [
@@ -39,7 +40,9 @@ import {
         BmsjHipsterSharedCommonModule,
         JhiLoginModalComponent,
         HasAnyAuthorityDirective,
-        DatePipe
+        DatePipe,
+        TreeTableModule,
+        DragDropModule,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 

@@ -52,7 +52,7 @@ export class SampleComponent implements OnInit, OnDestroy {
         // this.itemsPerPage = ITEMS_PER_PAGE; // TODO implement pagination
         this.itemsPerPage = 9999;
 
-        this.routeData = this.activatedRoute.data.subscribe((data) => {
+        this.routeData = this.activatedRoute.data.subscribe((data: any) => {
             this.page = data.pagingParams.page;
             this.previousPage = data.pagingParams.page;
             this.reverse = data.pagingParams.ascending;

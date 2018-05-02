@@ -27,7 +27,7 @@
 	<!-- TODO implement in angular -->
 	<link href="/Fieldbook/static/css/lib/jquery/jquery.treetable.css" rel="stylesheet"/>
 	<link href="/Fieldbook/static/css/lib/jquery/jquery.treetable.theme.custom.css" rel="stylesheet"/>
-	<link href="/Fieldbook/static/css/lib/jquery-ui/jquery-ui.css" rel="stylesheet"/>
+	<!--<link href="/Fieldbook/static/css/lib/jquery-ui/jquery-ui.css" rel="stylesheet"/>-->
 
 	<!-- jhipster-needle-add-resources-to-root - JHipster will add new resources here -->
 </head>
@@ -113,9 +113,6 @@
 		}
 		function browseList() {
 			$('#listTreeModal').modal({ backdrop: 'static', keyboard: true });
-			$('#listTreeModal').off().on('shown.bs.modal', function () {
-				setTimeout(displayTreeTable);
-			});
 		}
 
 		function displayTreeTable() {
