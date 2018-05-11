@@ -321,7 +321,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			 * Disabling is done here so that it can still be selected in
 			 * Available Users table
 			 */
-			if (ProgramService.ADMIN_USERNAME.equalsIgnoreCase(userTemp.getName())) {
+			if (userID == ProgramService.ADMIN_ID) {
 				userTemp.setEnabled(false);
 			}
 

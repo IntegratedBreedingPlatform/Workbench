@@ -29,17 +29,17 @@ import com.vaadin.ui.Label;
 
 public class ProgramMembersPanelTest {
 
-	private static final int OWNER_USER_ID = 1;
-	private static final int OWNER_PERSON_ID = 1;
-	private static final String OWNER_NAME = "USER1";
+	private static final int ADMIN_USER_ID = 1;
+	private static final int ADMIN_PERSON_ID = 1;
+	private static final String ADMIN_NAME = "ADMIN";
+	
+	private static final int OWNER_USER_ID = 2;
+	private static final int OWNER_PERSON_ID = 2;
+	private static final String OWNER_NAME = "USER2";
 
-	private static final int MEMBER_USER_ID = 2;
-	private static final int MEMBER_PERSON_ID = 2;
-	private static final String MEMBER_NAME = "USER2";
-
-	private static final int ADMIN_USER_ID = 3;
-	private static final int ADMIN_PERSON_ID = 3;
-	private static final String ADMIN_NAME = "USER3";
+	private static final int MEMBER_USER_ID = 3;
+	private static final int MEMBER_PERSON_ID = 3;
+	private static final String MEMBER_NAME = "USER3";
 
 	@Mock
 	private WorkbenchDataManager workbenchDataManager;
