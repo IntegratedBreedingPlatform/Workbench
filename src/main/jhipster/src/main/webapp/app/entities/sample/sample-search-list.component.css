@@ -1,0 +1,17 @@
+.searchbar {
+    display: grid;
+    width: 100%;
+    padding: 13px 13px 13px 13px;
+    background-color: #e3e3e3;
+}
+
+.searchbody {
+    display: grid;
+    width: 100%;
+    padding: 20px 13px 13px 13px;
+    background-color: #f6f6f6;
+}
+
+.highlight {
+    background-color: #02AC1E !important;
+}
