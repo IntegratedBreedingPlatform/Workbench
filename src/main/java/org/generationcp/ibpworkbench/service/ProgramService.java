@@ -33,7 +33,7 @@ import org.springframework.web.util.WebUtils;
 public class ProgramService {
 
 	public static final String ADMIN_USERNAME = "ADMIN";
-
+	public static final int ADMIN_ID = 1;
 	private static final Logger LOG = LoggerFactory.getLogger(ProgramService.class);
 
 	@Autowired
@@ -85,7 +85,7 @@ public class ProgramService {
 	 */
 	public void saveProgramMembers(final Project program, final Set<User> users) {
 		// Add default "ADMIN" user to selected users of program to give access to new program
-		final User defaultAdminUser = this.workbenchDataManager.getUserByUsername(ProgramService.ADMIN_USERNAME);
+		final User defaultAdminUser = this.userDataManager.getUserById(ProgramService.ADMIN_ID);
 		if (defaultAdminUser != null) {
 			users.add(defaultAdminUser);
 		}

@@ -95,9 +95,10 @@ public class ProgramServiceTest {
 		this.memberPerson = this.createPerson(2, "John", "Doe");
 		this.defaultAdminPerson = this.createPerson(3, "Default", "Admin");
 
-		this.loggedInUser = this.createUser(1, "mrbreeder", 1);
-		this.memberUser = this.createUser(2, "mrbreederfriend", 2);
-		this.defaultAdminUser = this.createUser(3, ProgramService.ADMIN_USERNAME, 3);
+		this.defaultAdminUser = this.createUser(ProgramService.ADMIN_ID, ProgramService.ADMIN_USERNAME, 1);
+		this.loggedInUser = this.createUser(2, "mrbreeder", 2);
+		this.memberUser = this.createUser(3, "mrbreederfriend", 3);
+		
 
 		// Setup mocks
 		Mockito.when(this.contextUtil.getCurrentWorkbenchUser()).thenReturn(this.loggedInUser);
@@ -121,7 +122,7 @@ public class ProgramServiceTest {
 		// Other WorkbenchDataManager mocks
 		Mockito.when(this.workbenchDataManager.getCropTypeByName(Matchers.anyString())).thenReturn(project.getCropType());
 		Mockito.when(this.userDataManager.addUser(Matchers.any(User.class))).thenReturn(2);
-
+		Mockito.when(this.userDataManager.getUserById(ProgramService.ADMIN_ID)).thenReturn(defaultAdminUser);
 		// Call the method to test
 		this.programService.createNewProgram(project, selectedUsers);
 
@@ -235,6 +236,7 @@ public class ProgramServiceTest {
 		selectedUsers.add(this.loggedInUser);
 		selectedUsers.add(this.memberUser);
 
+		Mockito.when(this.userDataManager.getUserById(ProgramService.ADMIN_ID)).thenReturn(defaultAdminUser);
 		// call method to test
 		this.programService.saveProgramMembers(project, selectedUsers);
 
