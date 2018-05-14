@@ -13,7 +13,6 @@ export class SampleSearchListComponent {
 
     searchString: string;
     exactMatch: boolean;
-    totalResults: number = 0;
     sampleListResults: SampleList[] = [];
     selectedListId: number = 0;
     private paramSubscription: Subscription;
@@ -45,7 +44,6 @@ export class SampleSearchListComponent {
     reset() {
         this.searchString = '';
         this.exactMatch = false;
-        this.totalResults = 0;
         this.sampleListResults = [];
         this.selectedListId = 0;
     }

@@ -15,3 +15,30 @@
 .highlight {
     background-color: #02AC1E !important;
 }
+
+table {
+    width: 725px !important;
+}
+
+thead tr {
+    width: 100%;
+    display: block;
+}
+
+tbody {
+    display: block;
+    height: 400px;
+    width: 100%;
+    overflow: auto;
+    background-color: #e3e3e3;;
+}
+
+td, th {
+    width: 300px;
+}
+
+td + td, th + th {
+    width: 425px;
+}
+
+
