@@ -171,7 +171,7 @@ export class SampleComponent implements OnInit, OnDestroy {
 
         this.sampleList.samples = data;
         if (data.length) {
-            this.sampleList.name = data[0].sampleList;
+            this.sampleList.listName = data[0].sampleList;
         }
     }
     private onError(error) {

@@ -19,7 +19,7 @@
 					<ul class="nav nav-tabs row fb-tabs-headers" role="tablist">
 						<li *ngFor="let list of lists" role="presentation" [class.active]="list.active">
 							<a href="#list-{{list.id}}" aria-controls="home" (click)="setActive(list.id)" role="tab" data-toggle="tab">
-								{{list.name}}
+								{{list.listName}}
 								<i class="glyphicon glyphicon-remove fbk-close-tab" (click)="closeTab(list)"></i>
 							</a>
 						</li>

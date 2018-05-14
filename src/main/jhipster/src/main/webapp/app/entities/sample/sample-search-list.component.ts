@@ -3,6 +3,8 @@ import {SampleList} from './sample-list.model';
 import {SampleListService} from './sample-list.service';
 import {Subscription} from 'rxjs/Subscription';
 import {ActivatedRoute, Router} from '@angular/router';
+import {Sample} from "./sample.model";
+import {HttpResponse} from "@angular/common/http";
 
 @Component({
     selector: 'jhi-sample-search-list',
@@ -30,7 +32,10 @@ export class SampleSearchListComponent {
     }
 
     searchList() {
-        this.sampleListResults = this.sampleListService.search('', true);
+        this.sampleListService.search('', true).subscribe(
+            (res: HttpResponse<SampleList[]>) =>
+                { this.sampleListResults = res.body;}
+        )
     }
 
     selectList(selectedSampleList: SampleList) {
