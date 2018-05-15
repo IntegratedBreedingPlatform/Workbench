@@ -3,8 +3,7 @@ import {HttpClient, HttpParams, HttpResponse} from '@angular/common/http';
 import {SERVER_API_URL} from '../../app.constants';
 import {SampleList} from './sample-list.model';
 import {Observable} from 'rxjs/Observable';
-import {Sample} from "./sample.model";
-import {EntityResponseType} from "./sample.service";
+import {Sample} from './sample.model';
 
 @Injectable()
 export class SampleListService {
@@ -22,9 +21,9 @@ export class SampleListService {
     search(searchString: string, exactMatch: boolean): Observable<HttpResponse<SampleList[]>> {
         const params = new HttpParams()
             .append('searchString', searchString)
-            .append('exactMatch', 'true');
+            .append('exactMatch', <any>exactMatch);
 
-        return this.http.get<SampleList[]>(this.resourceUrl, {params: params, observe: 'response'})
+        return this.http.get<SampleList[]>(this.resourceUrl, {params, observe: 'response'})
             .map((res: HttpResponse<SampleList[]>) => this.convertArrayResponse(res));
     }
 
@@ -44,6 +43,4 @@ export class SampleListService {
         const copy: SampleList = Object.assign({}, sample);
         return copy;
     }
-
-
 }
