@@ -31,6 +31,12 @@ export class SampleSearchListComponent {
     }
 
     searchList() {
+
+        if (this.searchString.trim().length === 0) {
+            this.sampleListResults = [];
+            return;
+        }
+
         this.sampleListService.search(this.searchString, this.exactMatch).subscribe(
             (res: HttpResponse<SampleList[]>) => {
                     this.sampleListResults = res.body;

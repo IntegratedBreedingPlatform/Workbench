@@ -22,7 +22,7 @@
                                 <form #searchListForm="ngForm">
                                     <div class="col-md-6">
                                         <div class="float-component">
-                                            <input type="text" [(ngModel)]="searchString" name="searchString" style="float: left;"/>&nbsp;
+                                            <input type="text" [(ngModel)]="searchString" (keydown.enter)="searchList()" name="searchString" style="float: left;"/>&nbsp;
                                         </div>
                                         <div class="float-component">
                                             <button type="button" class="btn btn-info" (click)="searchList()" style="float: left;">Search
