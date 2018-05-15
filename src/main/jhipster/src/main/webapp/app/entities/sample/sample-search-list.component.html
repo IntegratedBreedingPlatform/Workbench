@@ -21,12 +21,24 @@
                             <div class="searchbar">
                                 <form #searchListForm="ngForm">
                                     <div class="col-md-6">
-                                        <input type="text" [(ngModel)]="searchString" name="searchString"/>&nbsp;
-                                        <button type="button" class="btn btn-info" (click)="searchList()">Search</button>
+                                        <div class="float-component">
+                                            <input type="text" [(ngModel)]="searchString" name="searchString" style="float: left;"/>&nbsp;
+                                        </div>
+                                        <div class="float-component">
+                                            <button type="button" class="btn btn-info" (click)="searchList()" style="float: left;">Search
+                                            </button>&nbsp;
+                                        </div>
+                                        <div class="float-component">
+                                            <div class="popup-help-button"> ?</div>
+                                        </div>
                                     </div>
                                     <div class="col-md-4">
-                                        <input type="checkbox" [(ngModel)]="exactMatch" name="exactMatch" checked=""/>&nbsp;Exact matches
-                                        only
+                                        <div class="float-component">
+                                            <input type="checkbox" [(ngModel)]="exactMatch" name="exactMatch" checked=""/>
+                                        </div>
+                                        <div class="float-component">
+                                            Exact matches only
+                                        </div>
                                     </div>
                                 </form>
                             </div>
@@ -37,23 +49,38 @@
                     <br/>
                     <!--<div class="row">
                         <div class="col-md-12">-->
-                            <table class="table table-striped table-curved">
-                                <thead>
-                                <tr>
-                                    <th>NAME</th>
-                                    <th>DESCRIPTION</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr *ngFor="let sampleList of sampleListResults" (click)="selectList(sampleList)" class="selected"
-                                    [ngClass] = "{'highlight' : sampleList.id == selectedListId}">
-                                    <td [ngClass]="{ odd: odd, even: even }">{{sampleList.listName}}</td>
-                                    <td [ngClass]="{ odd: odd, even: even }">{{sampleList.description}}</td>
-                                </tr>
-                                </tbody>
-                            </table>
+                    <table class="table table-striped table-curved">
+                        <thead>
+                        <tr>
+                            <th>NAME</th>
+                            <th>DESCRIPTION</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let sampleList of sampleListResults" (click)="selectList(sampleList)" class="selected"
+                            [ngClass]="{'highlight' : sampleList.id == selectedListId}">
+                            <td [ngClass]="{ odd: odd, even: even }">{{sampleList.listName}}</td>
+                            <td [ngClass]="{ odd: odd, even: even }">{{sampleList.description}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
                     <!--   </div>
                     </div>-->
+                    <div class="popup"
+                         style="margin-left: 0px; margin-top: 0px; z-index: 20000; visibility: hidden; clip: rect(auto, auto, auto, auto); overflow: visible; position: absolute; left: 97px; top: 82px;">
+                        <div class="popupContent">
+                            <div class="v-label" aria-hidden="false" id="descLbl" style="width: 300px;">You may search for germplasm and
+                                germplasm lists using
+                                GIDs, Stock IDs, or partial or full germplasm names.<br><br><b>The search results will show:</b>
+                                <ul>
+                                    <li>Germplasm with matching GIDs</li>
+                                    <li>Germplasm with matching Stock IDs</li>
+                                    <li>Germplasm with name(s) containing the search term</li>
+                                    <li>Parents of the matching germplasm (if selected)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
