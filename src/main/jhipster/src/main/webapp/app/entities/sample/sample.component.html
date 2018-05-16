@@ -93,9 +93,7 @@
 			</tbody>
 		</table>
 	</div>
-	<!-- TODO PAGINATION -->
-	<!--
-	<div *ngIf="sampleList.samples && sampleList.samples.length">
+	<div *ngIf="sampleList.samples && sampleList.samples.length" style="text-align: center;">
 		<div class="row justify-content-center">
 			<jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
 		</div>
@@ -103,6 +101,5 @@
 			<ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
 		</div>
 	</div>
-	-->
 
 </div>

@@ -8,7 +8,7 @@ import { JhiLanguageService } from 'ng-jhipster';
 import { Sample } from './sample.model';
 import { SampleService } from './sample.service';
 // import { ITEMS_PER_PAGE } from '../../shared';
-import { Principal } from '../../shared';
+import { Principal, ITEMS_PER_PAGE } from '../../shared';
 import { SampleList } from './sample-list.model';
 
 @Component({
@@ -49,8 +49,7 @@ export class SampleComponent implements OnInit, OnDestroy {
         private router: Router,
         private eventManager: JhiEventManager
     ) {
-        // this.itemsPerPage = ITEMS_PER_PAGE; // TODO implement pagination
-        this.itemsPerPage = 9999;
+        this.itemsPerPage = ITEMS_PER_PAGE;
 
         this.routeData = this.activatedRoute.data.subscribe((data) => {
             this.page = data.pagingParams.page;
@@ -103,15 +102,6 @@ export class SampleComponent implements OnInit, OnDestroy {
         }
     }
     transition() {
-        this.router.navigate(['/' + this.crop + '/sample-browse'], {queryParams:
-            {
-                page: this.page,
-                size: this.itemsPerPage,
-                search: this.currentSearch,
-                sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc'),
-                listId: this.sampleList.id
-            }
-        });
         this.loadAll();
     }
 
@@ -166,11 +156,10 @@ export class SampleComponent implements OnInit, OnDestroy {
     }
 
     private onSuccess(data, headers) {
-        // FIXME
+        // TODO
         // this.links = this.parseLinks.parse(headers.get('link'));
-        // this.totalItems = headers.get('X-Total-Count');
+        this.totalItems = headers.get('X-Total-Count');
         this.queryCount = this.totalItems;
-        // this.page = pagingParams.page;
 
         this.sampleList.samples = data;
         if (data.length) {
