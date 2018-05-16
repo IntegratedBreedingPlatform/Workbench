@@ -22,12 +22,12 @@
                                 <form #searchListForm="ngForm">
                                     <div class="col-md-6">
                                         <div class="float-component">
-                                            <input type="text" [(ngModel)]="searchString" (keydown.enter)="searchList()" name="searchString" id="searchString"
-                                                   style="float: left;"/>&nbsp;
+                                            <input type="text" [(ngModel)]="searchString" (keydown.enter)="searchList()" name="searchString"
+                                                   id="searchString" maxlength="100"/>
                                         </div>
                                         <div class="float-component">
-                                            <button type="button" class="btn btn-info" (click)="searchList()" style="float: left;">Search
-                                            </button>&nbsp;
+                                            <button type="button" class="btn btn-info" (click)="searchList()">Search
+                                            </button>
                                         </div>
                                         <div class="float-component" (click)="displayHelpPopup = true;">
                                             <div class="popup-help-button"> ?</div>
@@ -52,13 +52,13 @@
                         <div class="col-md-12">-->
                     <table class="table table-striped table-curved">
                         <thead>
-                        <tr>
-                            <th>NAME</th>
-                            <th>DESCRIPTION</th>
+                        <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="searchList.bind(this)">
+                            <th jhiSortBy="listName"><span>NAME</span> <span class="fa fa-sort"></span></th>
+                            <th jhiSortBy="description"><span>DESCRIPTION</span> <span class="fa fa-sort"></span></th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr *ngFor="let sampleList of sampleListResults" (click)="selectList(sampleList)" class="selected"
+                        <tr *ngFor="let sampleList of sampleListResults; trackBy: trackId;" (click)="selectList(sampleList)" class="selected"
                             [ngClass]="{'highlight' : sampleList.id == selectedListId}">
                             <td [ngClass]="{ odd: odd, even: even }">{{sampleList.listName}}</td>
                             <td [ngClass]="{ odd: odd, even: even }">{{sampleList.description}}</td>

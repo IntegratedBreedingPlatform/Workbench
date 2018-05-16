@@ -1,9 +1,10 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpParams, HttpResponse} from '@angular/common/http';
+import {HttpClient, HttpResponse} from '@angular/common/http';
 import {SERVER_API_URL} from '../../app.constants';
 import {SampleList} from './sample-list.model';
 import {Observable} from 'rxjs/Observable';
 import {Sample} from './sample.model';
+import {createRequestOption} from '../../shared';
 
 @Injectable()
 export class SampleListService {
@@ -18,12 +19,10 @@ export class SampleListService {
         this.resourceUrl = SERVER_API_URL + `sampleLists/${crop}/search`;
     }
 
-    search(searchString: string, exactMatch: boolean): Observable<HttpResponse<SampleList[]>> {
-        const params = new HttpParams()
-            .append('searchString', searchString)
-            .append('exactMatch', <any>exactMatch);
+    search(params: any): Observable<HttpResponse<SampleList[]>> {
+        const options = createRequestOption(params);
 
-        return this.http.get<SampleList[]>(this.resourceUrl, {params, observe: 'response'})
+        return this.http.get<SampleList[]>(this.resourceUrl, {params: options, observe: 'response'})
             .map((res: HttpResponse<SampleList[]>) => this.convertArrayResponse(res));
     }
 

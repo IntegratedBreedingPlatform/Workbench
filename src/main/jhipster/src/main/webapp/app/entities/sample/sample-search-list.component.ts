@@ -1,4 +1,4 @@
-import {AfterViewInit, Component} from '@angular/core';
+import {Component} from '@angular/core';
 import {SampleList} from './sample-list.model';
 import {SampleListService} from './sample-list.service';
 import {Subscription} from 'rxjs/Subscription';
@@ -17,6 +17,9 @@ export class SampleSearchListComponent {
     sampleListResults: SampleList[] = [];
     selectedListId = 0;
     displayHelpPopup = false;
+    predicate: any;
+    reverse: any;
+
     private paramSubscription: Subscription;
     private crop: string;
 
@@ -28,6 +31,10 @@ export class SampleSearchListComponent {
             this.crop = params['crop'];
             this.sampleListService.setCrop(this.crop);
         });
+        this.activatedRoute.data.subscribe((data) => {
+            this.reverse = data.pagingParams.ascending;
+            this.predicate = data.pagingParams.predicate;
+        });
 
     }
 
@@ -38,7 +45,12 @@ export class SampleSearchListComponent {
             return;
         }
 
-        this.sampleListService.search(this.searchString, this.exactMatch).subscribe(
+        const params = {
+            searchString: this.searchString,
+            exactMatch: this.exactMatch,
+            sort: this.sort()
+        }
+        this.sampleListService.search(params).subscribe(
             (res: HttpResponse<SampleList[]>) => {
                     this.sampleListResults = res.body;
                 }
@@ -62,5 +74,17 @@ export class SampleSearchListComponent {
 
     hideHelpPopup() {
         this.displayHelpPopup = false;
+    }
+
+    sort() {
+        const result = [this.predicate + ',' + (this.reverse ? 'asc' : 'desc')];
+        if (this.predicate !== 'id') {
+            result.push('id');
+        }
+        return result;
+    }
+
+    trackId(index: number, item: SampleList) {
+        return item.id;
     }
 }
