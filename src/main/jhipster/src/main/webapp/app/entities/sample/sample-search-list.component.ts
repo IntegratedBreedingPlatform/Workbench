@@ -3,7 +3,8 @@ import {SampleList} from './sample-list.model';
 import {SampleListService} from './sample-list.service';
 import {Subscription} from 'rxjs/Subscription';
 import {ActivatedRoute, Router} from '@angular/router';
-import {HttpResponse} from '@angular/common/http';
+import {HttpErrorResponse, HttpResponse} from '@angular/common/http';
+import {JhiAlertService, JhiLanguageService} from 'ng-jhipster';
 
 @Component({
     selector: 'jhi-sample-search-list',
@@ -25,7 +26,9 @@ export class SampleSearchListComponent {
 
     constructor(private sampleListService: SampleListService,
                 private activatedRoute: ActivatedRoute,
-                private router: Router) {
+                private router: Router,
+                private jhiAlertService: JhiAlertService,
+                private languageservice: JhiLanguageService) {
 
         this.paramSubscription = this.activatedRoute.params.subscribe((params) => {
             this.crop = params['crop'];
@@ -51,9 +54,8 @@ export class SampleSearchListComponent {
             sort: this.sort()
         }
         this.sampleListService.search(params).subscribe(
-            (res: HttpResponse<SampleList[]>) => {
-                    this.sampleListResults = res.body;
-                }
+            (res: HttpResponse<SampleList[]>) => { this.sampleListResults = res.body; } ,
+            (res: HttpErrorResponse) => this.jhiAlertService.error(res.message, null, null)
         )
     }
 
