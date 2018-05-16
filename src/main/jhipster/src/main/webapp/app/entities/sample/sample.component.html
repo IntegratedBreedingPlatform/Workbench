@@ -35,7 +35,7 @@
 			<thead>
 			<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
 
-				<th><span jhiTranslate="bmsjHipsterApp.sample.entryNo">SAMPLE_ENTRY</span> </th>
+				<th jhiSortBy="entryNumber"><span jhiTranslate="bmsjHipsterApp.sample.entryNo">SAMPLE_ENTRY</span><span class="fa fa-sort"></span></th>
 				<th jhiSortBy="stock.name"><span jhiTranslate="bmsjHipsterApp.sample.designation">DESIGNATION</span><span class="fa fa-sort"></span> </th>
 				<th jhiSortBy="stock.dbxrefId"><span jhiTranslate="bmsjHipsterApp.sample.gid">GID</span><span class="fa fa-sort"></span> </th>
 				<th jhiSortBy="sampleName"><span jhiTranslate="bmsjHipsterApp.sample.sampleName">SAMPLE_NAME</span><span class="fa fa-sort"></span> </th>
