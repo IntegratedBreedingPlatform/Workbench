@@ -22,6 +22,16 @@
     color: white;
     font-size: 13px;
     background-color: #5a5a5a;
+    margin-left: 0px;
+    margin-top: 0px;
+    z-index: 20000;
+    clip: rect(auto, auto, auto, auto);
+    overflow: visible;
+    position: absolute;
+    left: 97px;
+    top: 82px;
+    padding: 20px 20px 20px 20px;
+    border-radius: 3%;
 }
 
 .popup-help-button {
@@ -36,6 +46,7 @@
     border-radius: 50%;
     width: 20px;
     text-align: center;
+    cursor: pointer;
 }
 
 .float-component {

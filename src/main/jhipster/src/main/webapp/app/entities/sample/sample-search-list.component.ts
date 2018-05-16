@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {AfterViewInit, Component} from '@angular/core';
 import {SampleList} from './sample-list.model';
 import {SampleListService} from './sample-list.service';
 import {Subscription} from 'rxjs/Subscription';
@@ -16,6 +16,7 @@ export class SampleSearchListComponent {
     exactMatch = false;
     sampleListResults: SampleList[] = [];
     selectedListId = 0;
+    displayHelpPopup = false;
     private paramSubscription: Subscription;
     private crop: string;
 
@@ -59,4 +60,7 @@ export class SampleSearchListComponent {
         this.selectedListId = 0;
     }
 
+    hideHelpPopup() {
+        this.displayHelpPopup = false;
+    }
 }

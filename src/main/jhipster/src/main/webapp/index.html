@@ -119,6 +119,9 @@
 		}
         function searchList() {
             $('#sampleSearchListModal').modal({ backdrop: 'static', keyboard: true });
+            $('#sampleSearchListModal').one('shown.bs.modal', function (e) {
+               $('#searchString').focus();
+            });
         }
 
 		function displayTreeTable() {

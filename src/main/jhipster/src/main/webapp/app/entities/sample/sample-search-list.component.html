@@ -22,13 +22,14 @@
                                 <form #searchListForm="ngForm">
                                     <div class="col-md-6">
                                         <div class="float-component">
-                                            <input type="text" [(ngModel)]="searchString" (keydown.enter)="searchList()" name="searchString" style="float: left;"/>&nbsp;
+                                            <input type="text" [(ngModel)]="searchString" (keydown.enter)="searchList()" name="searchString" id="searchString"
+                                                   style="float: left;"/>&nbsp;
                                         </div>
                                         <div class="float-component">
                                             <button type="button" class="btn btn-info" (click)="searchList()" style="float: left;">Search
                                             </button>&nbsp;
                                         </div>
-                                        <div class="float-component">
+                                        <div class="float-component" (click)="displayHelpPopup = true;">
                                             <div class="popup-help-button"> ?</div>
                                         </div>
                                     </div>
@@ -66,18 +67,19 @@
                     </table>
                     <!--   </div>
                     </div>-->
-                    <div class="popup"
-                         style="margin-left: 0px; margin-top: 0px; z-index: 20000; visibility: hidden; clip: rect(auto, auto, auto, auto); overflow: visible; position: absolute; left: 97px; top: 82px;">
+                    <div class="popup" *ngIf="displayHelpPopup" (mouseleave)="hideHelpPopup()" (click)="hideHelpPopup()">
                         <div class="popupContent">
-                            <div class="v-label" aria-hidden="false" id="descLbl" style="width: 300px;">You may search for germplasm and
-                                germplasm lists using
-                                GIDs, Stock IDs, or partial or full germplasm names.<br><br><b>The search results will show:</b>
+                            <div class="v-label" aria-hidden="false" id="descLbl" style="width: 300px;">You may search for sample lists
+                                using partial or full sample names, or list names, or Sample UIDs<br><br><b>The search results will show
+                                    lists in which:</b>
                                 <ul>
-                                    <li>Germplasm with matching GIDs</li>
-                                    <li>Germplasm with matching Stock IDs</li>
-                                    <li>Germplasm with name(s) containing the search term</li>
-                                    <li>Parents of the matching germplasm (if selected)</li>
+                                    <li>The list name contains the search term</li>
+                                    <li>The list contains samples with names that contain the search term</li>
+                                    <li>The list contains samples with Sample UIDs that contain the search term</li>
                                 </ul>
+                                <br>
+                                The <b>Exact matches only</b> checkbox shows results that match the search term exactly when checked. If you
+                                uncheck this option, the search will show results that contain the search term you enter.
                             </div>
                         </div>
                     </div>
