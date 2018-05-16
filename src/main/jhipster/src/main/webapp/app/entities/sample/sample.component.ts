@@ -72,6 +72,8 @@ export class SampleComponent implements OnInit, OnDestroy {
         if (!this.sampleList || !this.sampleList.id) {
             return;
         }
+        // TODO jhipster elastic search
+        /*
         if (this.currentSearch) {
             this.sampleService.search({
                 page: this.page - 1,
@@ -84,6 +86,7 @@ export class SampleComponent implements OnInit, OnDestroy {
                 );
             return;
         }
+        */
         this.sampleService.query({
             page: this.page - 1,
             size: this.itemsPerPage,
