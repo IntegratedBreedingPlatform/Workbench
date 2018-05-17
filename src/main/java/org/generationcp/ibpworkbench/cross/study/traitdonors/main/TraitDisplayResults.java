@@ -305,11 +305,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		this.combinedScoreTagColTable = this.createResultsTable(this.combinedScoreTagColTable);
 		addTablesToResultsTable();
 		for (Object propertyId : this.germplasmColTable.getContainerPropertyIds()) {
-			if (propertyId.toString().equals(TraitDisplayResults.LINE_NO)) {
-				this.germplasmColTable.setColumnCollapsed(propertyId, false);
-			} else if (propertyId.toString().equals(TraitDisplayResults.LINE_GID)) {
-				this.germplasmColTable.setColumnCollapsed(propertyId, false);
-			} else if (propertyId.toString().equals(TraitDisplayResults.LINE_DESIGNATION)) {
+			if (propertyId.toString().equals(TraitDisplayResults.LINE_NO)|| propertyId.toString().equals(TraitDisplayResults.LINE_GID) || propertyId.toString().equals(TraitDisplayResults.LINE_DESIGNATION)) {
 				this.germplasmColTable.setColumnCollapsed(propertyId, false);
 			} else {
 				this.germplasmColTable.setColumnCollapsed(propertyId, true);
@@ -317,15 +313,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		}
 
 		for (Object propertyId : this.traitsColTable.getContainerPropertyIds()) {
-			if (propertyId.toString().equals(TraitDisplayResults.LINE_NO)) {
-				this.traitsColTable.setColumnCollapsed(propertyId, true);
-			} else if (propertyId.toString().equals(TraitDisplayResults.LINE_GID)) {
-				this.traitsColTable.setColumnCollapsed(propertyId, true);
-			} else if (propertyId.toString().equals(TraitDisplayResults.LINE_DESIGNATION)) {
-				this.traitsColTable.setColumnCollapsed(propertyId, true);
-			} else if (propertyId.toString().equals(TraitDisplayResults.TAG_COLUMN_ID)) {
-				this.traitsColTable.setColumnCollapsed(propertyId, true);
-			} else if (propertyId.toString().equals(TraitDisplayResults.COMBINED_SCORE_COLUMN_ID)) {
+			if (propertyId.toString().equals(TraitDisplayResults.LINE_NO) || propertyId.toString().equals(TraitDisplayResults.LINE_GID) || propertyId.toString().equals(TraitDisplayResults.LINE_DESIGNATION) || propertyId.toString().equals(TraitDisplayResults.TAG_COLUMN_ID) || propertyId.toString().equals(TraitDisplayResults.COMBINED_SCORE_COLUMN_ID)) {
 				this.traitsColTable.setColumnCollapsed(propertyId, true);
 			} else {
 				this.traitsColTable.setColumnCollapsed(propertyId, false);
@@ -333,9 +321,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		}
 
 		for (Object propertyId : this.combinedScoreTagColTable.getContainerPropertyIds()) {
-			if (propertyId.toString().equals(TraitDisplayResults.TAG_COLUMN_ID)) {
-				this.combinedScoreTagColTable.setColumnCollapsed(propertyId, false);
-			} else if (propertyId.toString().equals(TraitDisplayResults.COMBINED_SCORE_COLUMN_ID)) {
+			if (propertyId.toString().equals(TraitDisplayResults.TAG_COLUMN_ID) || propertyId.toString().equals(TraitDisplayResults.COMBINED_SCORE_COLUMN_ID)) {
 				this.combinedScoreTagColTable.setColumnCollapsed(propertyId, false);
 			} else {
 				this.combinedScoreTagColTable.setColumnCollapsed(propertyId, true);
@@ -573,7 +559,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 						box.setValue(false);
 					}
 
-					TraitDisplayResults.this.addItemForSelectedGermplasm(box, row);
+					TraitDisplayResults.this.addItemForSelectedGermplasm(row);
 				}
 			});
 
@@ -586,7 +572,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 	}
 
 	public List<String> getColumnHeaders(String[] headers) {
-		List<String> columns = new ArrayList<String>();
+		List<String> columns = new ArrayList<>();
 
 		for (int i = 0; i < headers.length; i++) {
 			columns.add(headers[i].trim());
@@ -597,7 +583,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 	@SuppressWarnings("rawtypes")
 	public List<String> getColumnProperties(Collection properties) {
-		List<String> columns = new ArrayList<String>();
+		List<String> columns = new ArrayList<>();
 
 		for (Object prop : properties) {
 			columns.add(prop.toString());
@@ -642,13 +628,13 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 				Map<NumericTraitFilter, TraitObservationScore> numericTOSMap = new HashMap<NumericTraitFilter, TraitObservationScore>();
 				Map<CharacterTraitFilter, TraitObservationScore> characterTOSMap =
-						new HashMap<CharacterTraitFilter, TraitObservationScore>();
+						new HashMap<>();
 				Map<CategoricalTraitFilter, TraitObservationScore> categoricalTOSMap =
-						new HashMap<CategoricalTraitFilter, TraitObservationScore>();
+						new HashMap<>();
 
 				// NUMERIC TRAIT
 				for (NumericTraitFilter trait : this.numericTraitFilter) {
-					Double envWt = 0.0;
+					Double envWt;
 					Integer noOfObservation = 0;
 					Integer noObsForAllEnvs = 0;
 					Double scorePerTrait = 0.0;
@@ -691,7 +677,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 				// CHARACTER TRAIT
 				for (CharacterTraitFilter trait : this.characterTraitFilter) {
-					Double envWt = 0.0;
+					Double envWt;
 					Integer noOfObservation = 0;
 					Integer noObsForAllEnvs = 0;
 					Double scorePerTrait = 0.0;
@@ -734,7 +720,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 				// CATEGORICAL TRAIT
 				for (CategoricalTraitFilter trait : this.categoricalTraitFilter) {
-					Double envWt = 0.0;
+					Double envWt;
 					Integer noOfObservation = 0;
 					Integer noObsForAllEnvs = 0;
 					Double scorePerTrait = 0.0;
@@ -813,7 +799,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 	}
 
 	public Map<ObservationKey, ObservationList> getObservationsMap(List<Observation> observations) {
-		Map<ObservationKey, ObservationList> keyObservationsMap = new HashMap<ObservationKey, ObservationList>();
+		Map<ObservationKey, ObservationList> keyObservationsMap = new HashMap<>();
 
 		for (Observation obs : observations) {
 			ObservationKey key = obs.getId();
@@ -837,7 +823,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 	public List<Integer> getTraitIds(List<NumericTraitFilter> numericTraitFilter, List<CharacterTraitFilter> characterTraitFilter,
 			List<CategoricalTraitFilter> categoricalTraitFilter) {
-		List<Integer> ids = new ArrayList<Integer>();
+		List<Integer> ids = new ArrayList<>();
 
 		for (NumericTraitFilter trait : numericTraitFilter) {
 			ids.add(trait.getTraitInfo().getId());
@@ -855,7 +841,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 	}
 
 	public List<Integer> getEnvironmentIds(List<EnvironmentForComparison> environments) {
-		List<Integer> envIds = new ArrayList<Integer>();
+		List<Integer> envIds = new ArrayList<>();
 
 		for (EnvironmentForComparison env : environments) {
 			envIds.add(env.getEnvironmentNumber());
@@ -865,10 +851,10 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 	}
 
 	public Map<Integer, String> getGermplasm(List<Integer> traitIds, List<Integer> environmentIds) {
-		Map<Integer, String> gidNameMap = new HashMap<Integer, String>();
+		Map<Integer, String> gidNameMap = new HashMap<>();
 
-		List<Integer> germplasmIds = new ArrayList<Integer>();
-		List<Integer> traitIdList = new ArrayList<Integer>();
+		List<Integer> germplasmIds = new ArrayList<>();
+		List<Integer> traitIdList = new ArrayList<>();
 		traitIdList.addAll(traitIds);
 
 		try {
@@ -894,7 +880,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 	}
 
 	public Map<String, Integer> getSortedGermplasmList(Map<Integer, String> germplasmList) {
-		Map<String, Integer> sorted = new TreeMap<String, Integer>();
+		Map<String, Integer> sorted = new TreeMap<>();
 
 		for (Map.Entry<Integer, String> entry : germplasmList.entrySet()) {
 			String name = entry.getValue();
@@ -910,7 +896,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 	}
 
 	public void nextEntryButtonClickAction() {
-		if (!(this.currentLineIndex + 15 > this.tableRows.size())) {
+		if (this.currentLineIndex + 15 <= this.tableRows.size()) {
 			this.germplasmColTable.removeAllItems();
 			this.traitsColTable.removeAllItems();
 			this.combinedScoreTagColTable.removeAllItems();
@@ -928,7 +914,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 	public void prevEntryButtonClickAction() {
 		this.currentLineIndex -= 15;
-		if (!(this.currentLineIndex < 0)) {
+		if (this.currentLineIndex >= 0) {
 			this.germplasmColTable.removeAllItems();
 			this.traitsColTable.removeAllItems();
 			this.combinedScoreTagColTable.removeAllItems();
@@ -951,7 +937,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		this.openDialogSaveList();
 	}
 
-	public void addItemForSelectedGermplasm(CheckBox box, TableResultRow row) {
+	public void addItemForSelectedGermplasm(TableResultRow row) {
 		Integer gid = row.getGermplasmId();
 		String preferredName = this.germplasmIdNameMap.get(gid);
 
