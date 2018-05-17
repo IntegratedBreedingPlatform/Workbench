@@ -132,8 +132,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 	private SaveToListDialog saveGermplasmListDialog;
 	private Map<Integer, String> selectedGermplasmMap;
-	private Map<Object, Boolean> columnOrdering;
-
+	
 	private CheckBox tagAllCheckBoxOnCombinedScoreTagColTable;
 
 	public TraitDisplayResults(TraitDonorsQueryMain mainScreen) {
@@ -344,23 +343,17 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		}
 
 		// header column listener
-		this.initializeColumnOrdering();
-
 		this.germplasmColTable.addListener(new Table.HeaderClickListener() {
 
 			private static final long serialVersionUID = -9165077040691158639L;
 
 			@Override
 			public void headerClick(HeaderClickEvent event) {
-				Object property = event.getPropertyId();
-				Object[] properties = new Object[] {property};
+				final Object property = event.getPropertyId();
+				final Object[] properties = new Object[] {property};
 
-				boolean order = TraitDisplayResults.this.columnOrdering.get(property);
-				order = order ? false : true;
-
-				TraitDisplayResults.this.columnOrdering.put(property, order);
-
-				boolean[] ordering = new boolean[] {order};
+				final boolean order = TraitDisplayResults.this.germplasmColTable.isSortAscending();
+				final boolean[] ordering = new boolean[] {order};
 
 				TraitDisplayResults.this.traitsColTable.sort(properties, ordering);
 				TraitDisplayResults.this.combinedScoreTagColTable.sort(properties, ordering);
@@ -373,15 +366,11 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 			@Override
 			public void headerClick(HeaderClickEvent event) {
-				Object property = event.getPropertyId();
-				Object[] properties = new Object[] {property};
+				final Object property = event.getPropertyId();
+				final Object[] properties = new Object[] {property};
 
-				boolean order = TraitDisplayResults.this.columnOrdering.get(property);
-				order = order ? false : true;
-
-				TraitDisplayResults.this.columnOrdering.put(property, order);
-
-				boolean[] ordering = new boolean[] {order};
+				final boolean order = TraitDisplayResults.this.traitsColTable.isSortAscending();
+				final boolean[] ordering = new boolean[] {order};
 
 				TraitDisplayResults.this.germplasmColTable.sort(properties, ordering);
 				TraitDisplayResults.this.combinedScoreTagColTable.sort(properties, ordering);
@@ -394,15 +383,11 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 			@Override
 			public void headerClick(HeaderClickEvent event) {
-				Object property = event.getPropertyId();
-				Object[] properties = new Object[] {property};
+				final Object property = event.getPropertyId();
+				final Object[] properties = new Object[] {property};
 
-				boolean order = TraitDisplayResults.this.columnOrdering.get(property);
-				order = order ? false : true;
-
-				TraitDisplayResults.this.columnOrdering.put(property, order);
-
-				boolean[] ordering = new boolean[] {order};
+				final boolean order = TraitDisplayResults.this.combinedScoreTagColTable.isSortAscending();
+				final boolean[] ordering = new boolean[] {order};
 
 				TraitDisplayResults.this.traitsColTable.sort(properties, ordering);
 				TraitDisplayResults.this.germplasmColTable.sort(properties, ordering);
@@ -619,19 +604,6 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		}
 
 		return columns;
-	}
-
-	public void initializeColumnOrdering() {
-		this.columnOrdering = new HashMap<Object, Boolean>();
-
-		for (Object column : this.germplasmColTable.getContainerPropertyIds()) {
-			if (column.equals(TraitDisplayResults.LINE_DESIGNATION)) {
-				this.columnOrdering.put(column, false);
-			} else {
-				this.columnOrdering.put(column, true);
-			}
-
-		}
 	}
 
 	private Double getTotalEnvWeightForTrait(Integer traitId, Integer gid) {
