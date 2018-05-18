@@ -3,7 +3,6 @@ import {HttpClient, HttpResponse} from '@angular/common/http';
 import {SERVER_API_URL} from '../../app.constants';
 import {SampleList} from './sample-list.model';
 import {Observable} from 'rxjs/Observable';
-import {Sample} from './sample.model';
 import {createRequestOption} from '../../shared';
 
 @Injectable()
@@ -27,7 +26,7 @@ export class SampleListService {
     }
 
     private convertArrayResponse(res: HttpResponse<SampleList[]>): HttpResponse<SampleList[]> {
-        const jsonResponse: Sample[] = res.body;
+        const jsonResponse: SampleList[] = res.body;
         const body: SampleList[] = [];
         for (let i = 0; i < jsonResponse.length; i++) {
             body.push(this.convertItemFromServer(jsonResponse[i]));

@@ -89,4 +89,8 @@ export class SampleSearchListComponent {
     trackId(index: number, item: SampleList) {
         return item.id;
     }
+
+    setCrop(crop: string) {
+        this.crop = crop;
+    }
 }
