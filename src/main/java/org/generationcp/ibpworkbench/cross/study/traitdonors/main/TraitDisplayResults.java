@@ -1025,5 +1025,28 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		this.selectedGermplasmMap.clear();
 		this.toggleSaveButton();
 	}
-
+	
+	public void setTraitIds(final List<Integer> traitIds) {
+		this.traitIds = traitIds;
+	}
+	
+	public void setEnvironmentIds(final List<Integer> environmentIds) {
+		this.environmentIds = environmentIds;
+	}
+	
+	public void setCrossStudyDataManager(final CrossStudyDataManager crossStudyDataManager) {
+		this.crossStudyDataManager = crossStudyDataManager;
+	}
+	
+	public void setGermplasmDataManager(final GermplasmDataManager germplasmDataManager) {
+		this.germplasmDataManager = germplasmDataManager;
+	}
+	
+	public void setResultsTable(final AbsoluteLayout resultsTable) {
+		this.resultsTable = resultsTable;
+	}
+	
+	public AbsoluteLayout getResultsTable() {
+		return this.resultsTable;
+	}
 }
