@@ -73,7 +73,8 @@ module.exports = webpackMerge(commonConfig({ env: ENV }), {
                 output: {
                     comments: false,
                     beautify: false,
-                    indent_level: 2
+                    indent_level: 2,
+                    ascii_only: true
                 }
             }
         }),
