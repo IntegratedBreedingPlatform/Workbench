@@ -24,12 +24,14 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Table;
 
 import junit.framework.Assert;
 
 @RunWith(value = MockitoJUnitRunner.class)
 public class TraitDisplayResultsTest {
 
+	private static final String GERMPLASM_COL_TABLE_HEIGHT = "445";
 	@Mock
 	private CrossStudyDataManager crossStudyDataManager;
 
@@ -72,5 +74,47 @@ public class TraitDisplayResultsTest {
 			Assert.assertTrue(debugIds.contains(componentIterator.next().getDebugId()));
 		}
 
+	}
+
+	@Test
+	public void testCreateCombinedScoreTagColTable() {
+		this.traitDisplayResults.createCombinedScoreTagColTable();
+		final Table combinedScoreTagColTable = this.traitDisplayResults.getCreateCombinedScoreTagColTable();
+		Assert.assertEquals("combinedScoreTagColTable", combinedScoreTagColTable.getDebugId());
+		Assert.assertEquals(Float.valueOf("160"), combinedScoreTagColTable.getWidth());
+		Assert.assertEquals(Float.valueOf(TraitDisplayResultsTest.GERMPLASM_COL_TABLE_HEIGHT),
+				combinedScoreTagColTable.getHeight());
+		Assert.assertTrue(combinedScoreTagColTable.isImmediate());
+		Assert.assertEquals(15, combinedScoreTagColTable.getPageLength());
+		Assert.assertTrue(combinedScoreTagColTable.isColumnCollapsingAllowed());
+		Assert.assertFalse(combinedScoreTagColTable.isColumnReorderingAllowed());
+	}
+
+	@Test
+	public void testCreateTraitsColTable() {
+		this.traitDisplayResults.createTraitsColTable();
+		final Table createTraitsColTable = this.traitDisplayResults.getTraitsColTable();
+		Assert.assertEquals("traitsColTable", createTraitsColTable.getDebugId());
+		Assert.assertEquals(Float.valueOf("490"), createTraitsColTable.getWidth());
+		Assert.assertEquals(Float.valueOf(TraitDisplayResultsTest.GERMPLASM_COL_TABLE_HEIGHT),
+				createTraitsColTable.getHeight());
+		Assert.assertTrue(createTraitsColTable.isImmediate());
+		Assert.assertEquals(15, createTraitsColTable.getPageLength());
+		Assert.assertTrue(createTraitsColTable.isColumnCollapsingAllowed());
+		Assert.assertFalse(createTraitsColTable.isColumnReorderingAllowed());
+	}
+
+	@Test
+	public void testCreateGermplasmColTable() {
+		this.traitDisplayResults.createGermplasmColTable();
+		final Table germplasmColTable = this.traitDisplayResults.getGermplasmColTable();
+		Assert.assertEquals("germplasmColTable", germplasmColTable.getDebugId());
+		Assert.assertEquals(Float.valueOf("340"), germplasmColTable.getWidth());
+		Assert.assertEquals(Float.valueOf(TraitDisplayResultsTest.GERMPLASM_COL_TABLE_HEIGHT),
+				germplasmColTable.getHeight());
+		Assert.assertTrue(germplasmColTable.isImmediate());
+		Assert.assertEquals(15, germplasmColTable.getPageLength());
+		Assert.assertTrue(germplasmColTable.isColumnCollapsingAllowed());
+		Assert.assertFalse(germplasmColTable.isColumnReorderingAllowed());
 	}
 }

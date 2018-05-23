@@ -1049,4 +1049,16 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 	public AbsoluteLayout getResultsTable() {
 		return this.resultsTable;
 	}
+	
+	public Table getCreateCombinedScoreTagColTable() {
+		return this.combinedScoreTagColTable;
+	}
+	
+	public Table getGermplasmColTable() {
+		return this.germplasmColTable;
+	}
+	
+	public Table getTraitsColTable() {
+		return this.traitsColTable;
+	}
 }
