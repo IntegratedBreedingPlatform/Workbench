@@ -98,7 +98,8 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 	@Autowired
 	private GermplasmDataManager germplasmDataManager;
-
+	
+	private AbsoluteLayout resultsTable;
 	private Table germplasmColTable;
 	private Table traitsColTable;
 	private Table combinedScoreTagColTable;
@@ -131,8 +132,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 	private SaveToListDialog saveGermplasmListDialog;
 	private Map<Integer, String> selectedGermplasmMap;
-	private Map<Object, Boolean> columnOrdering;
-
+	
 	private CheckBox tagAllCheckBoxOnCombinedScoreTagColTable;
 
 	public TraitDisplayResults(TraitDonorsQueryMain mainScreen) {
@@ -149,48 +149,23 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		this.setHeight("550px");
 		this.setWidth("1000px");
 
-		AbsoluteLayout resultTable = new AbsoluteLayout();
-		resultTable.setDebugId("resultTable");
-		resultTable.setHeight("470px");
-		resultTable.setWidth("1000px");
+		resultsTable = new AbsoluteLayout();
+		resultsTable.setDebugId("resultTable");
+		resultsTable.setHeight("470px");
+		resultsTable.setWidth("1000px");
+		
+		createGermplasmColTable();
+		createTraitsColTable();
+		createCombinedScoreTagColTable();
 
-		this.germplasmColTable = new Table();
-		this.germplasmColTable.setDebugId("germplasmColTable");
-		this.germplasmColTable.setWidth(GERMPLASM_COL_TABLE_WIDTH);
-		this.germplasmColTable.setHeight(GERMPLASM_COL_TABLE_HEIGHT);
-		this.germplasmColTable.setImmediate(true);
-		this.germplasmColTable.setPageLength(15);
-		this.germplasmColTable.setColumnCollapsingAllowed(true);
-		this.germplasmColTable.setColumnReorderingAllowed(false);
-
-		this.traitsColTable = new Table();
-		this.traitsColTable.setDebugId("traitsColTable");
-		this.traitsColTable.setWidth("490px");
-		this.traitsColTable.setHeight(GERMPLASM_COL_TABLE_HEIGHT);
-		this.traitsColTable.setImmediate(true);
-		this.traitsColTable.setPageLength(15);
-		this.traitsColTable.setColumnCollapsingAllowed(true);
-		this.traitsColTable.setColumnReorderingAllowed(false);
-
-		this.combinedScoreTagColTable = new Table();
-		this.combinedScoreTagColTable.setDebugId("combinedScoreTagColTable");
-		this.combinedScoreTagColTable.setWidth("160px");
-		this.combinedScoreTagColTable.setHeight(GERMPLASM_COL_TABLE_HEIGHT);
-		this.combinedScoreTagColTable.setImmediate(true);
-		this.combinedScoreTagColTable.setPageLength(15);
-		this.combinedScoreTagColTable.setColumnCollapsingAllowed(true);
-		this.combinedScoreTagColTable.setColumnReorderingAllowed(false);
-
-		resultTable.addComponent(this.germplasmColTable, "top:20px;left:20px");
-		resultTable.addComponent(this.traitsColTable, "top:20px;left:345px");
-		resultTable.addComponent(this.combinedScoreTagColTable, "top:20px;left:819px");
+		addTablesToResultsTable();
 
 		this.addComponent(new Label("<style> .v-table-column-selector { width:0; height:0; overflow:hidden; }"
 				+ ".v-table-row, .v-table-row-odd { height: 25px; } " + ".v-table-header { height: auto; background-color: #dcdee0;} "
 				+ ".v-table-header-wrap { height: auto; background-color: #dcdee0; } "
 				+ ".v-table-caption-container { height: auto; background-color: #dcdee0; } " + ".v-table { border-radius: 0px; } "
 				+ " </style>", Label.CONTENT_XHTML));
-		this.addComponent(resultTable, "top:0px;left:0px");
+		this.addComponent(resultsTable, "top:0px;left:0px");
 
 		this.addTagAllCheckBoxToCombinedScoreTagColTable();
 
@@ -268,6 +243,45 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		this.addComponent(this.saveButton, "top:500px;left:515px");
 	}
 
+	protected void addTablesToResultsTable() {
+		resultsTable.addComponent(this.germplasmColTable, "top:20px;left:20px");
+		resultsTable.addComponent(this.traitsColTable, "top:20px;left:345px");
+		resultsTable.addComponent(this.combinedScoreTagColTable, "top:20px;left:819px");
+	}
+
+	protected void createCombinedScoreTagColTable() {
+		this.combinedScoreTagColTable = new Table();
+		this.combinedScoreTagColTable.setDebugId("combinedScoreTagColTable");
+		this.combinedScoreTagColTable.setWidth("160px");
+		this.combinedScoreTagColTable.setHeight(GERMPLASM_COL_TABLE_HEIGHT);
+		this.combinedScoreTagColTable.setImmediate(true);
+		this.combinedScoreTagColTable.setPageLength(15);
+		this.combinedScoreTagColTable.setColumnCollapsingAllowed(true);
+		this.combinedScoreTagColTable.setColumnReorderingAllowed(false);
+	}
+
+	protected void createTraitsColTable() {
+		this.traitsColTable = new Table();
+		this.traitsColTable.setDebugId("traitsColTable");
+		this.traitsColTable.setWidth("490px");
+		this.traitsColTable.setHeight(GERMPLASM_COL_TABLE_HEIGHT);
+		this.traitsColTable.setImmediate(true);
+		this.traitsColTable.setPageLength(15);
+		this.traitsColTable.setColumnCollapsingAllowed(true);
+		this.traitsColTable.setColumnReorderingAllowed(false);
+	}
+
+	protected void createGermplasmColTable() {
+		this.germplasmColTable = new Table();
+		this.germplasmColTable.setDebugId("germplasmColTable");
+		this.germplasmColTable.setWidth(GERMPLASM_COL_TABLE_WIDTH);
+		this.germplasmColTable.setHeight(GERMPLASM_COL_TABLE_HEIGHT);
+		this.germplasmColTable.setImmediate(true);
+		this.germplasmColTable.setPageLength(15);
+		this.germplasmColTable.setColumnCollapsingAllowed(true);
+		this.germplasmColTable.setColumnReorderingAllowed(false);
+	}
+
 	public void populateResultsTable(List<EnvironmentForComparison> environments, List<NumericTraitFilter> numericTraitFilter,
 			List<CharacterTraitFilter> characterTraitFilter, List<CategoricalTraitFilter> categoricalTraitFilter) {
 		this.environments = environments;
@@ -281,17 +295,17 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		this.germplasmIdNameMap = this.getGermplasm(this.traitIds, this.environmentIds);
 		this.germplasmNameIdMap = this.getSortedGermplasmList(this.germplasmIdNameMap);
 		this.selectedGermplasmMap = new HashMap<Integer, String>();
-
+		
+		this.resultsTable.removeAllComponents();
+		this.createGermplasmColTable();
 		this.germplasmColTable = this.createResultsTable(this.germplasmColTable);
+		this.createTraitsColTable();
 		this.traitsColTable = this.createResultsTable(this.traitsColTable);
+		this.createCombinedScoreTagColTable();
 		this.combinedScoreTagColTable = this.createResultsTable(this.combinedScoreTagColTable);
-
+		addTablesToResultsTable();
 		for (Object propertyId : this.germplasmColTable.getContainerPropertyIds()) {
-			if (propertyId.toString().equals(TraitDisplayResults.LINE_NO)) {
-				this.germplasmColTable.setColumnCollapsed(propertyId, false);
-			} else if (propertyId.toString().equals(TraitDisplayResults.LINE_GID)) {
-				this.germplasmColTable.setColumnCollapsed(propertyId, false);
-			} else if (propertyId.toString().equals(TraitDisplayResults.LINE_DESIGNATION)) {
+			if (propertyId.toString().equals(TraitDisplayResults.LINE_NO)|| propertyId.toString().equals(TraitDisplayResults.LINE_GID) || propertyId.toString().equals(TraitDisplayResults.LINE_DESIGNATION)) {
 				this.germplasmColTable.setColumnCollapsed(propertyId, false);
 			} else {
 				this.germplasmColTable.setColumnCollapsed(propertyId, true);
@@ -299,15 +313,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		}
 
 		for (Object propertyId : this.traitsColTable.getContainerPropertyIds()) {
-			if (propertyId.toString().equals(TraitDisplayResults.LINE_NO)) {
-				this.traitsColTable.setColumnCollapsed(propertyId, true);
-			} else if (propertyId.toString().equals(TraitDisplayResults.LINE_GID)) {
-				this.traitsColTable.setColumnCollapsed(propertyId, true);
-			} else if (propertyId.toString().equals(TraitDisplayResults.LINE_DESIGNATION)) {
-				this.traitsColTable.setColumnCollapsed(propertyId, true);
-			} else if (propertyId.toString().equals(TraitDisplayResults.TAG_COLUMN_ID)) {
-				this.traitsColTable.setColumnCollapsed(propertyId, true);
-			} else if (propertyId.toString().equals(TraitDisplayResults.COMBINED_SCORE_COLUMN_ID)) {
+			if (propertyId.toString().equals(TraitDisplayResults.LINE_NO) || propertyId.toString().equals(TraitDisplayResults.LINE_GID) || propertyId.toString().equals(TraitDisplayResults.LINE_DESIGNATION) || propertyId.toString().equals(TraitDisplayResults.TAG_COLUMN_ID) || propertyId.toString().equals(TraitDisplayResults.COMBINED_SCORE_COLUMN_ID)) {
 				this.traitsColTable.setColumnCollapsed(propertyId, true);
 			} else {
 				this.traitsColTable.setColumnCollapsed(propertyId, false);
@@ -315,9 +321,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		}
 
 		for (Object propertyId : this.combinedScoreTagColTable.getContainerPropertyIds()) {
-			if (propertyId.toString().equals(TraitDisplayResults.TAG_COLUMN_ID)) {
-				this.combinedScoreTagColTable.setColumnCollapsed(propertyId, false);
-			} else if (propertyId.toString().equals(TraitDisplayResults.COMBINED_SCORE_COLUMN_ID)) {
+			if (propertyId.toString().equals(TraitDisplayResults.TAG_COLUMN_ID) || propertyId.toString().equals(TraitDisplayResults.COMBINED_SCORE_COLUMN_ID)) {
 				this.combinedScoreTagColTable.setColumnCollapsed(propertyId, false);
 			} else {
 				this.combinedScoreTagColTable.setColumnCollapsed(propertyId, true);
@@ -325,23 +329,17 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		}
 
 		// header column listener
-		this.initializeColumnOrdering();
-
 		this.germplasmColTable.addListener(new Table.HeaderClickListener() {
 
 			private static final long serialVersionUID = -9165077040691158639L;
 
 			@Override
 			public void headerClick(HeaderClickEvent event) {
-				Object property = event.getPropertyId();
-				Object[] properties = new Object[] {property};
+				final Object property = event.getPropertyId();
+				final Object[] properties = new Object[] {property};
 
-				boolean order = TraitDisplayResults.this.columnOrdering.get(property);
-				order = order ? false : true;
-
-				TraitDisplayResults.this.columnOrdering.put(property, order);
-
-				boolean[] ordering = new boolean[] {order};
+				final boolean order = TraitDisplayResults.this.germplasmColTable.isSortAscending();
+				final boolean[] ordering = new boolean[] {order};
 
 				TraitDisplayResults.this.traitsColTable.sort(properties, ordering);
 				TraitDisplayResults.this.combinedScoreTagColTable.sort(properties, ordering);
@@ -354,15 +352,11 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 			@Override
 			public void headerClick(HeaderClickEvent event) {
-				Object property = event.getPropertyId();
-				Object[] properties = new Object[] {property};
+				final Object property = event.getPropertyId();
+				final Object[] properties = new Object[] {property};
 
-				boolean order = TraitDisplayResults.this.columnOrdering.get(property);
-				order = order ? false : true;
-
-				TraitDisplayResults.this.columnOrdering.put(property, order);
-
-				boolean[] ordering = new boolean[] {order};
+				final boolean order = TraitDisplayResults.this.traitsColTable.isSortAscending();
+				final boolean[] ordering = new boolean[] {order};
 
 				TraitDisplayResults.this.germplasmColTable.sort(properties, ordering);
 				TraitDisplayResults.this.combinedScoreTagColTable.sort(properties, ordering);
@@ -375,15 +369,11 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 			@Override
 			public void headerClick(HeaderClickEvent event) {
-				Object property = event.getPropertyId();
-				Object[] properties = new Object[] {property};
+				final Object property = event.getPropertyId();
+				final Object[] properties = new Object[] {property};
 
-				boolean order = TraitDisplayResults.this.columnOrdering.get(property);
-				order = order ? false : true;
-
-				TraitDisplayResults.this.columnOrdering.put(property, order);
-
-				boolean[] ordering = new boolean[] {order};
+				final boolean order = TraitDisplayResults.this.combinedScoreTagColTable.isSortAscending();
+				final boolean[] ordering = new boolean[] {order};
 
 				TraitDisplayResults.this.traitsColTable.sort(properties, ordering);
 				TraitDisplayResults.this.germplasmColTable.sort(properties, ordering);
@@ -393,18 +383,6 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 	}
 
 	public Table createResultsTable(Table resultTable) {
-
-		List<Object> propertyIds = new ArrayList<Object>();
-		for (Object propertyId : resultTable.getContainerPropertyIds()) {
-			propertyIds.add(propertyId);
-		}
-		for (Object propertyId : propertyIds) {
-			resultTable.removeContainerProperty(propertyId);
-			resultTable.removeGeneratedColumn(propertyId);
-		}
-
-		resultTable.removeAllItems();
-
 		resultTable.addContainerProperty(TraitDisplayResults.LINE_NO, Integer.class, null);
 		resultTable.addContainerProperty(TraitDisplayResults.LINE_GID, Button.class, null);
 		resultTable.addContainerProperty(TraitDisplayResults.LINE_DESIGNATION, String.class, null);
@@ -581,7 +559,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 						box.setValue(false);
 					}
 
-					TraitDisplayResults.this.addItemForSelectedGermplasm(box, row);
+					TraitDisplayResults.this.addItemForSelectedGermplasm(row);
 				}
 			});
 
@@ -594,7 +572,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 	}
 
 	public List<String> getColumnHeaders(String[] headers) {
-		List<String> columns = new ArrayList<String>();
+		List<String> columns = new ArrayList<>();
 
 		for (int i = 0; i < headers.length; i++) {
 			columns.add(headers[i].trim());
@@ -605,26 +583,13 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 	@SuppressWarnings("rawtypes")
 	public List<String> getColumnProperties(Collection properties) {
-		List<String> columns = new ArrayList<String>();
+		List<String> columns = new ArrayList<>();
 
 		for (Object prop : properties) {
 			columns.add(prop.toString());
 		}
 
 		return columns;
-	}
-
-	public void initializeColumnOrdering() {
-		this.columnOrdering = new HashMap<Object, Boolean>();
-
-		for (Object column : this.germplasmColTable.getContainerPropertyIds()) {
-			if (column.equals(TraitDisplayResults.LINE_DESIGNATION)) {
-				this.columnOrdering.put(column, false);
-			} else {
-				this.columnOrdering.put(column, true);
-			}
-
-		}
 	}
 
 	private Double getTotalEnvWeightForTrait(Integer traitId, Integer gid) {
@@ -663,13 +628,13 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 				Map<NumericTraitFilter, TraitObservationScore> numericTOSMap = new HashMap<NumericTraitFilter, TraitObservationScore>();
 				Map<CharacterTraitFilter, TraitObservationScore> characterTOSMap =
-						new HashMap<CharacterTraitFilter, TraitObservationScore>();
+						new HashMap<>();
 				Map<CategoricalTraitFilter, TraitObservationScore> categoricalTOSMap =
-						new HashMap<CategoricalTraitFilter, TraitObservationScore>();
+						new HashMap<>();
 
 				// NUMERIC TRAIT
 				for (NumericTraitFilter trait : this.numericTraitFilter) {
-					Double envWt = 0.0;
+					Double envWt;
 					Integer noOfObservation = 0;
 					Integer noObsForAllEnvs = 0;
 					Double scorePerTrait = 0.0;
@@ -712,7 +677,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 				// CHARACTER TRAIT
 				for (CharacterTraitFilter trait : this.characterTraitFilter) {
-					Double envWt = 0.0;
+					Double envWt;
 					Integer noOfObservation = 0;
 					Integer noObsForAllEnvs = 0;
 					Double scorePerTrait = 0.0;
@@ -755,7 +720,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 				// CATEGORICAL TRAIT
 				for (CategoricalTraitFilter trait : this.categoricalTraitFilter) {
-					Double envWt = 0.0;
+					Double envWt;
 					Integer noOfObservation = 0;
 					Integer noObsForAllEnvs = 0;
 					Double scorePerTrait = 0.0;
@@ -834,7 +799,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 	}
 
 	public Map<ObservationKey, ObservationList> getObservationsMap(List<Observation> observations) {
-		Map<ObservationKey, ObservationList> keyObservationsMap = new HashMap<ObservationKey, ObservationList>();
+		Map<ObservationKey, ObservationList> keyObservationsMap = new HashMap<>();
 
 		for (Observation obs : observations) {
 			ObservationKey key = obs.getId();
@@ -858,7 +823,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 	public List<Integer> getTraitIds(List<NumericTraitFilter> numericTraitFilter, List<CharacterTraitFilter> characterTraitFilter,
 			List<CategoricalTraitFilter> categoricalTraitFilter) {
-		List<Integer> ids = new ArrayList<Integer>();
+		List<Integer> ids = new ArrayList<>();
 
 		for (NumericTraitFilter trait : numericTraitFilter) {
 			ids.add(trait.getTraitInfo().getId());
@@ -876,7 +841,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 	}
 
 	public List<Integer> getEnvironmentIds(List<EnvironmentForComparison> environments) {
-		List<Integer> envIds = new ArrayList<Integer>();
+		List<Integer> envIds = new ArrayList<>();
 
 		for (EnvironmentForComparison env : environments) {
 			envIds.add(env.getEnvironmentNumber());
@@ -886,10 +851,10 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 	}
 
 	public Map<Integer, String> getGermplasm(List<Integer> traitIds, List<Integer> environmentIds) {
-		Map<Integer, String> gidNameMap = new HashMap<Integer, String>();
+		Map<Integer, String> gidNameMap = new HashMap<>();
 
-		List<Integer> germplasmIds = new ArrayList<Integer>();
-		List<Integer> traitIdList = new ArrayList<Integer>();
+		List<Integer> germplasmIds = new ArrayList<>();
+		List<Integer> traitIdList = new ArrayList<>();
 		traitIdList.addAll(traitIds);
 
 		try {
@@ -915,7 +880,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 	}
 
 	public Map<String, Integer> getSortedGermplasmList(Map<Integer, String> germplasmList) {
-		Map<String, Integer> sorted = new TreeMap<String, Integer>();
+		Map<String, Integer> sorted = new TreeMap<>();
 
 		for (Map.Entry<Integer, String> entry : germplasmList.entrySet()) {
 			String name = entry.getValue();
@@ -931,7 +896,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 	}
 
 	public void nextEntryButtonClickAction() {
-		if (!(this.currentLineIndex + 15 > this.tableRows.size())) {
+		if (this.currentLineIndex + 15 <= this.tableRows.size()) {
 			this.germplasmColTable.removeAllItems();
 			this.traitsColTable.removeAllItems();
 			this.combinedScoreTagColTable.removeAllItems();
@@ -949,7 +914,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 	public void prevEntryButtonClickAction() {
 		this.currentLineIndex -= 15;
-		if (!(this.currentLineIndex < 0)) {
+		if (this.currentLineIndex >= 0) {
 			this.germplasmColTable.removeAllItems();
 			this.traitsColTable.removeAllItems();
 			this.combinedScoreTagColTable.removeAllItems();
@@ -972,7 +937,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		this.openDialogSaveList();
 	}
 
-	public void addItemForSelectedGermplasm(CheckBox box, TableResultRow row) {
+	public void addItemForSelectedGermplasm(TableResultRow row) {
 		Integer gid = row.getGermplasmId();
 		String preferredName = this.germplasmIdNameMap.get(gid);
 
@@ -1060,5 +1025,40 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		this.selectedGermplasmMap.clear();
 		this.toggleSaveButton();
 	}
-
+	
+	public void setTraitIds(final List<Integer> traitIds) {
+		this.traitIds = traitIds;
+	}
+	
+	public void setEnvironmentIds(final List<Integer> environmentIds) {
+		this.environmentIds = environmentIds;
+	}
+	
+	public void setCrossStudyDataManager(final CrossStudyDataManager crossStudyDataManager) {
+		this.crossStudyDataManager = crossStudyDataManager;
+	}
+	
+	public void setGermplasmDataManager(final GermplasmDataManager germplasmDataManager) {
+		this.germplasmDataManager = germplasmDataManager;
+	}
+	
+	public void setResultsTable(final AbsoluteLayout resultsTable) {
+		this.resultsTable = resultsTable;
+	}
+	
+	public AbsoluteLayout getResultsTable() {
+		return this.resultsTable;
+	}
+	
+	public Table getCreateCombinedScoreTagColTable() {
+		return this.combinedScoreTagColTable;
+	}
+	
+	public Table getGermplasmColTable() {
+		return this.germplasmColTable;
+	}
+	
+	public Table getTraitsColTable() {
+		return this.traitsColTable;
+	}
 }

@@ -17,6 +17,9 @@ import {
     SampleBrowseComponent
 } from './';
 
+import {SampleSearchListComponent} from './sample-search-list.component';
+import {SampleListService} from './sample-list.service';
+
 const ENTITY_STATES = [
     ...sampleRoute,
     ...samplePopupRoute,
@@ -34,7 +37,8 @@ const ENTITY_STATES = [
         SampleDeleteDialogComponent,
         SamplePopupComponent,
         SampleDeletePopupComponent,
-        SampleBrowseComponent
+        SampleBrowseComponent,
+        SampleSearchListComponent
     ],
     entryComponents: [
         SampleComponent,
@@ -46,6 +50,7 @@ const ENTITY_STATES = [
     ],
     providers: [
         SampleService,
+        SampleListService,
         SamplePopupService,
         SampleResolvePagingParams,
     ],
