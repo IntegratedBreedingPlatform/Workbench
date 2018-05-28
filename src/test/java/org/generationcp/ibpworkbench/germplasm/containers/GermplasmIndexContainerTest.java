@@ -66,8 +66,8 @@ public class GermplasmIndexContainerTest {
 		final StudyResultSet studyResultSet = Mockito.mock(StudyResultSet.class);
 		when(this.studyDataManager.searchStudies(Matchers.any(StudyQueryFilter.class), Matchers.anyInt())).thenReturn(studyResultSet);
 		when(studyResultSet.hasMore()).thenReturn(true).thenReturn(true).thenReturn(false);
-		final StudyTypeDto studyTypeDTONursery = new StudyTypeDto("N");
-		final StudyTypeDto studyTypeDTOTrial = new StudyTypeDto("T");
+		final StudyTypeDto studyTypeDTONursery = new StudyTypeDto(StudyTypeDto.NURSERY_NAME);
+		final StudyTypeDto studyTypeDTOTrial = new StudyTypeDto(StudyTypeDto.TRIAL_NAME);
 		when(studyResultSet.next()).thenReturn(
 			new StudyReference(TEST_NURSERY_ID_1, TEST_NURSERY_NAME, TEST_NURSERY_NAME, PROGRAM_UUID, studyTypeDTONursery))
 			.thenReturn(
