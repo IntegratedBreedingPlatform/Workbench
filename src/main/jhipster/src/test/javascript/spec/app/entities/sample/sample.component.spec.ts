@@ -36,7 +36,7 @@ describe('Component Tests', () => {
 
         describe('OnInit', () => {
             it('Should call load all on init', () => {
-                comp.sampleList = new SampleList(1, 'name', true, null)
+                comp.sampleList = new SampleList(1, 'name', '', true, null);
                 // GIVEN
                 const headers = new HttpHeaders().append('link', 'link;link');
                 spyOn(service, 'query').and.returnValue(Observable.of(new HttpResponse({

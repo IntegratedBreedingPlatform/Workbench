@@ -1,0 +1,83 @@
+.searchbar {
+    display: grid;
+    width: 100%;
+    padding: 13px 13px 13px 13px;
+    background-color: #e3e3e3;
+    border: 1px solid #e4e4e4;
+}
+
+.searchbody {
+    display: grid;
+    width: 100%;
+    padding: 20px 13px 13px 13px;
+    background-color: #f6f6f6;
+    border: 1px solid #e4e4e4;
+}
+
+.highlight {
+    background-color: #02AC1E !important;
+}
+
+.popup {
+    color: white;
+    font-size: 13px;
+    background-color: #5a5a5a;
+    margin-left: 0px;
+    margin-top: 0px;
+    z-index: 20000;
+    clip: rect(auto, auto, auto, auto);
+    overflow: visible;
+    position: absolute;
+    left: 97px;
+    top: 82px;
+    padding: 20px 20px 20px 20px;
+    border-radius: 3%;
+}
+
+.popup-help-button {
+    background-color: #5A5A5A;
+    box-shadow: 0px 0px 3px #000000;
+    color: white;
+    font-size: 14px;
+    margin: 2px 20px;
+    margin-left: 2px;
+    padding: 0px 5px;
+    text-decoration: none;
+    border-radius: 50%;
+    width: 20px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.float-component {
+    display: block;
+    float: left;
+    padding-right: 10px
+}
+
+table {
+    width: 725px !important;
+}
+
+thead tr {
+    width: 100%;
+    display: block;
+}
+
+tbody {
+    display: block;
+    height: 400px;
+    width: 100%;
+    overflow: auto;
+    background-color: #e3e3e3;;
+}
+
+td, th {
+    width: 300px;
+}
+
+td + td, th + th {
+    width: 425px;
+}
+
+
