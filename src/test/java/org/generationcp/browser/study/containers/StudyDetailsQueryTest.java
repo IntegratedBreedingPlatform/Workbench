@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.generationcp.middleware.domain.etl.StudyDetails;
-import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.domain.study.StudyTypeDto;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.junit.Assert;
@@ -22,7 +21,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class StudyDetailsQueryTest {
 
 	private final String programUUID = "sample_program_uuid";
-	private final StudyTypeDto studyType = new StudyTypeDto(StudyType.S.getLabel());
+	private final StudyTypeDto studyType = new StudyTypeDto("Survey");
 
 	// unit under tests
 	protected StudyDetailsQuery studyDetailsQueryWithStudyType;
