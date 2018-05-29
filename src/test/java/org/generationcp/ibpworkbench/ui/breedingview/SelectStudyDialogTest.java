@@ -1,10 +1,12 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview;
 
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Window;
+import junit.framework.Assert;
 import org.generationcp.middleware.data.initializer.FolderReferenceTestDataInitializer;
 import org.generationcp.middleware.data.initializer.StudyReferenceTestDataInitializer;
 import org.generationcp.middleware.domain.dms.Reference;
-import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -15,11 +17,6 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Window;
-
-import junit.framework.Assert;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SelectStudyDialogTest {
