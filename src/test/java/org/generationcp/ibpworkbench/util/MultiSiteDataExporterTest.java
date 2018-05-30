@@ -207,7 +207,7 @@ public class MultiSiteDataExporterTest {
 	
 	@Test
 	public void testExportTrialDatasetToSummaryStatsCsv() {
-		this.multiSiteDataExporter.exportTrialDatasetToSummaryStatsCsv(BASIC_FILE_NAME, this.summaryExperiments, ENV_FACTOR,
+		this.multiSiteDataExporter.exportTrialDatasetToSummaryStatsCsv(1, BASIC_FILE_NAME, this.summaryExperiments, ENV_FACTOR,
 				this.meansTraits, this.project);
 		
 		Mockito.verify(this.multiSiteDataExporter).writeToCsvFile(Matchers.eq(BASIC_FILE_NAME), Matchers.eq(this.project), this.summaryRowsCaptor.capture(),

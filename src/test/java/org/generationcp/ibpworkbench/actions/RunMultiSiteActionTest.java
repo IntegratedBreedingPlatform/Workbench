@@ -141,7 +141,7 @@ public class RunMultiSiteActionTest {
 				Mockito.anyList(), Mockito.eq(ENVIRONMENT_NAME), Mockito.any(GxeEnvironment.class), Mockito.anyList()))
 				.thenReturn(MEANS_DATA_FILEPATH);
 
-		Mockito.when(multiSiteDataExporter.exportTrialDatasetToSummaryStatsCsv(Mockito.anyString(), Mockito.anyList(),
+		Mockito.when(multiSiteDataExporter.exportTrialDatasetToSummaryStatsCsv(Mockito.anyInt(), Mockito.anyString(), Mockito.anyList(),
 				Mockito.eq(ENVIRONMENT_NAME), Mockito.anyList(), Mockito.any(Project.class))).thenReturn(SUMMARY_DATA_FILEPATH);
 		
 		Mockito.when(this.zipUtil.zipIt(Mockito.anyString(), Mockito.anyListOf(String.class), Mockito.any(Project.class),
@@ -207,7 +207,7 @@ public class RunMultiSiteActionTest {
 				Mockito.anyList(), Mockito.eq(ENVIRONMENT_NAME), Mockito.any(GxeEnvironment.class), Mockito.anyList());
 
 		// Make sure the Summary Data is exported to CSV
-		Mockito.verify(multiSiteDataExporter).exportTrialDatasetToSummaryStatsCsv(Mockito.anyString(), Mockito.anyList(),
+		Mockito.verify(multiSiteDataExporter).exportTrialDatasetToSummaryStatsCsv(Mockito.anyInt(), Mockito.anyString(), Mockito.anyList(),
 				Mockito.eq(ENVIRONMENT_NAME), Mockito.anyList(), Mockito.any(Project.class));
 
 		Assert.assertEquals(MEANS_DATA_FILEPATH, gxeInput.getSourceCSVFilePath());

@@ -173,14 +173,16 @@ public class RunMultiSiteAction implements ClickListener {
 	void exportDataFiles(final MultiSiteParameters multiSiteParameters, final GxeInput gxeInput, final GxeEnvironment gxeEnvironment,
 			final List<Trait> selectedTraits) {
 
+		final int studyId = multiSiteParameters.getStudy().getId();
+
 		final String inputFileName = this.generateInputFileName(multiSiteParameters.getProject());
 
 		final String meansDataFilePath = this.multiSiteDataExporter.exportMeansDatasetToCsv(inputFileName, multiSiteParameters,
 				this.gxeTable.getExperiments(), this.gxeTable.getEnvironmentName(), gxeEnvironment, selectedTraits);
 
-		final DataSet summaryStatsDataSet = this.getSummaryStatsDataSet(multiSiteParameters.getStudy().getId());
+		final DataSet summaryStatsDataSet = this.getSummaryStatsDataSet(studyId);
 
-		final String summaryStatsDataFilePath = this.multiSiteDataExporter.exportTrialDatasetToSummaryStatsCsv(inputFileName,
+		final String summaryStatsDataFilePath = this.multiSiteDataExporter.exportTrialDatasetToSummaryStatsCsv(studyId, inputFileName,
 				this.getSummaryStatsExperiments(summaryStatsDataSet.getId()), this.gxeTable.getEnvironmentName(), selectedTraits,
 				multiSiteParameters.getProject());
 

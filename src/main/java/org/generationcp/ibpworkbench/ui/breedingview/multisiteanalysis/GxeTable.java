@@ -20,11 +20,15 @@ import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.util.DatasetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.*;
 import java.util.Map.Entry;
 
-public class GxeTable extends Table {
+@Configurable
+public class GxeTable extends Table implements InitializingBean {
 
 	private static final String LS_BLUPS = "ls blups";
 	private static final String ERROR_ESTIMATE = "error estimate";
@@ -32,19 +36,19 @@ public class GxeTable extends Table {
 	private static final long serialVersionUID = 1274131837702381485L;
 
 	public static final int CELL_CHECKBOX = 1;
-	public static final int CELL_CHECKBOX_HEADER = 2;
-	public static final int CELL_CHECKBOX_COLUMN = 3;
-	public static final int CELL_CHECKBOX_ROW = 4;
-	public static final int CELL_CHECKBOX_ALL = 5;
 	public static final int CELL_LABEL = 6;
 
-	private final StudyDataManager studyDataManager;
+	@Autowired
+	private StudyDataManager studyDataManager;
+
 	private final List<String> columnNames = new ArrayList<>();
 	private final Map<Integer, String> factorLocalNames = new TreeMap<>();
 	private final Map<Integer, String> variateLocalNames = new TreeMap<>();
 	private Map<String, Boolean> variatesCheckBoxState = new HashMap<>();
 
 	private Map<String, Map<String, String>> heritabilityValues = new HashMap<>();
+
+	private Integer studyId;
 
 	private String trialInstanceFactorName = "";
 
@@ -62,15 +66,13 @@ public class GxeTable extends Table {
 
 	private final Property.ValueChangeListener gxeCheckBoxColumnListener;
 
-	public GxeTable(StudyDataManager studyDataManager, Integer studyId, String selectedEnvFactorName, String selectedEnvGroupFactorName,
+	public GxeTable(Integer studyId, String selectedEnvFactorName, String selectedEnvGroupFactorName,
 			Map<String, Boolean> variatesCheckBoxState, Property.ValueChangeListener gxeCheckBoxColumnListener) {
 		this.selectedEnvFactorName = selectedEnvFactorName;
 		this.selectedEnvGroupFactorName = selectedEnvGroupFactorName;
-		this.studyDataManager = studyDataManager;
 		this.variatesCheckBoxState = variatesCheckBoxState;
 		this.gxeCheckBoxColumnListener = gxeCheckBoxColumnListener;
-		this.initializeTable();
-		this.fillTableWithDataset(studyId);
+		this.studyId = studyId;
 	}
 
 	private static <K, V extends Comparable<? super V>> SortedSet<Map.Entry<K, V>> entriesSortedByValues(Map<K, V> map) {
@@ -85,7 +87,7 @@ public class GxeTable extends Table {
 		return sortedEntries;
 	}
 
-	private void initializeTable() {
+	public void initializeTable() {
 
 		this.setImmediate(true);
 		this.setWidth("100%");
@@ -95,6 +97,8 @@ public class GxeTable extends Table {
 		this.setColumnReorderingAllowed(true);
 		this.setSortDisabled(true);
 		this.setColumnCollapsingAllowed(true);
+
+		this.fillTableWithDataset(this.studyId);
 
 	}
 
@@ -164,7 +168,10 @@ public class GxeTable extends Table {
 				this.meansDataSet = meansDataSets.get(0);
 				this.meansDataSetId = this.meansDataSet.getId();
 
-				TrialEnvironments envs = this.studyDataManager.getTrialEnvironmentsInDataset(this.meansDataSetId);
+				TrialEnvironments trialEnvironments = this.studyDataManager.getTrialEnvironmentsInDataset(this.meansDataSetId);
+				final boolean isSelectedEnvironmentFactorALocation = this.studyDataManager.isLocationIdVariable(studyId, selectedEnvFactorName);
+				final Map<String, String> locationNameMap = this.studyDataManager.createInstanceLocationIdToNameMapFromStudy(studyId);
+
 				// get the SITE NAME and SITE NO
 
 				DataSet trialDataSet = DatasetUtil.getTrialDataSet(this.studyDataManager, studyId);
@@ -218,9 +225,14 @@ public class GxeTable extends Table {
 					int cellCounter = 1;
 					
 					for (Map.Entry<Integer, String> f : this.factorLocalNames.entrySet()) {
+
 						String fValue = exp.getFactors().findByLocalName(f.getValue()).getValue();
+
 						if (f.getValue().equalsIgnoreCase(this.selectedEnvFactorName)) {
 							envNames.add(trialInstanceFactorValue);
+							if (isSelectedEnvironmentFactorALocation) {
+								fValue = locationNameMap.get(fValue);
+							}
 						}
 						row[cellCounter] = new TableItems();
 						row[cellCounter].setLabel(fValue);
@@ -241,7 +253,7 @@ public class GxeTable extends Table {
 						}
 						String meansData = "";
 						meansData =
-								this.getMeansData(this.meansDataSetId, envs, this.trialInstanceFactorName,
+								this.getMeansData(this.meansDataSetId, trialEnvironments, this.trialInstanceFactorName,
 										trialInstanceFactorValue, varKey);
 
 						String heritabilityVal = this.getHeritabilityValues().get(trialInstanceFactorValue).get(x.getValue());
@@ -455,5 +467,10 @@ public class GxeTable extends Table {
 
 	protected Property.ValueChangeListener getGxeCheckBoxColumnListener() {
 		return this.gxeCheckBoxColumnListener;
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		this.initializeTable();
 	}
 }
