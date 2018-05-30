@@ -291,7 +291,7 @@ public class StudyTreeComponent extends VerticalLayout implements InitializingBe
 		this.studyTree.setDragMode(TreeDragMode.NODE);
 
 		this.studyTree.addItem(StudyTreeComponent.STUDY_ROOT_NODE);
-		this.studyTree.setItemCaption(StudyTreeComponent.STUDY_ROOT_NODE, this.messageSource.getMessage(Message.NURSERIES_AND_TRIALS));
+		this.studyTree.setItemCaption(StudyTreeComponent.STUDY_ROOT_NODE, this.messageSource.getMessage(Message.STUDIES));
 		this.studyTree.setItemIcon(StudyTreeComponent.STUDY_ROOT_NODE, this.getThemeResourceByReference(new FolderReference(null, null)));
 
 		this.populateRootNode(this.studyTree, StudyTreeComponent.STUDY_ROOT_NODE);
