@@ -343,13 +343,13 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		// We still need to differentiate by T and N, because there are 2 explicit filters in the menu. It will be managed as an improvement
 		// DO NOT CHANGE
 		final StudyDetailsQueryFactory trialFactory =
-				new StudyDetailsQueryFactory(this.studyDataManager, this.studyDataManager.getStudyTypeByName(StudyTypeDto.TRIAL_NAME), Arrays.asList
+				new StudyDetailsQueryFactory(this.studyDataManager, StudyTypeDto.getTrialDto(), Arrays.asList
 					(ProgramSummaryView.TRIAL_NURSERY_COLUMNS),
 						project.getUniqueID());
 		this.populateTrialSummaryTable(trialFactory);
 
 		final StudyDetailsQueryFactory nurseryFactory =
-				new StudyDetailsQueryFactory(this.studyDataManager, this.studyDataManager.getStudyTypeByName(StudyTypeDto.NURSERY_NAME),
+				new StudyDetailsQueryFactory(this.studyDataManager, StudyTypeDto.getNurseryDto(),
 					Arrays.asList(ProgramSummaryView.TRIAL_NURSERY_COLUMNS),
 						project.getUniqueID());
 		this.populateNurserySummaryTable(nurseryFactory);

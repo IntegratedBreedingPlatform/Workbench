@@ -165,22 +165,9 @@ public class AppLauncherServiceTest {
 						AppLauncherServiceTest.PORT, AppLauncherServiceTest.SAMPLE_BASE_URL, AppLauncherServiceTest.LOGGED_IN_USER_ID,
 						AppLauncherServiceTest.RESTART_URL_STR + AppLauncherServiceTest.WORKBENCH_CONTEXT_PARAMS), urlResult);
 
-		// for fieldbook apps with params with param
 		aWebTool = new Tool();
 
-		aWebTool.setToolName(ToolName.NURSERY_MANAGER_FIELDBOOK_WEB.getName());
-		aWebTool.setPath(AppLauncherServiceTest.SAMPLE_BASE_URL);
-		aWebTool.setToolType(ToolType.WEB);
-		urlResult = this.appLauncherService.launchWebapp(aWebTool, AppLauncherServiceTest.LOGGED_IN_USER_ID);
-
-		Assert.assertEquals("should return correct url for fieldbook nursery app",
-				String.format("%s://%s:%d/%s/editNursery/%d%s", AppLauncherServiceTest.SCHEME, AppLauncherServiceTest.HOST_NAME,
-						AppLauncherServiceTest.PORT, AppLauncherServiceTest.SAMPLE_BASE_URL, AppLauncherServiceTest.LOGGED_IN_USER_ID,
-						AppLauncherServiceTest.RESTART_URL_STR + AppLauncherServiceTest.WORKBENCH_CONTEXT_PARAMS), urlResult);
-
-		aWebTool = new Tool();
-
-		aWebTool.setToolName(ToolName.TRIAL_MANAGER_FIELDBOOK_WEB.getName());
+		aWebTool.setToolName(ToolName.STUDY_MANAGER_FIELDBOOK_WEB.getName());
 		aWebTool.setPath(AppLauncherServiceTest.SAMPLE_BASE_URL);
 		aWebTool.setToolType(ToolType.WEB);
 		urlResult = this.appLauncherService.launchWebapp(aWebTool, AppLauncherServiceTest.LOGGED_IN_USER_ID);
