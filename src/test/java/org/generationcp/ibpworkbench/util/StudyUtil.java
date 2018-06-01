@@ -36,7 +36,7 @@ public class StudyUtil {
 	public static final String TRIAL_INSTANCE_VAR_DESC = "Trial instance - enumerated (number)";
 
 	public static final String GERMPLASM_ENTRY_VAR_PREFIX = "GERMP_ENTRY_VAR_";
-	public static final String TRIAL_DESIGN_VAR_PREFIX = "TRIAL_DESIGN_VAR_";
+	public static final String STUDY_DESIGN_VAR_PREFIX = "TRIAL_DESIGN_VAR_";
 	public static final String VARIATE_VAR_PREFIX = "VARIATE_VAR_";
 	public static final String VAR_NAME = "NAME";
 	public static final String VAR_DESCRIPTION = "DESC";
@@ -63,13 +63,13 @@ public class StudyUtil {
 	}
 
 	public Study createStudyTestData() {
-		Study study = new Study();
+		final Study study = new Study();
 		study.setId(StudyUtil.STUDY_ID);
 		return study;
 	}
 
 	public DataSet createDatasetTestData() {
-		DataSet dataset = new DataSet();
+		final DataSet dataset = new DataSet();
 		dataset.setId(StudyUtil.DATASET_ID);
 		dataset.setName(StudyUtil.DATASET_NAME);
 		dataset.setDescription(StudyUtil.DATASET_DESCRIPTION);
@@ -80,28 +80,28 @@ public class StudyUtil {
 	}
 
 	public VariableTypeList createDatasetVariableTypesTestData() {
-		VariableTypeList variableTypes = new VariableTypeList();
+		final VariableTypeList variableTypes = new VariableTypeList();
 		this.rank = 1;
 		variableTypes.addAll(this.createDatasetVarsTestData());
-		variableTypes.addAll(this.createTrialEnvironmentVarsTestData());
+		variableTypes.addAll(this.createEnvironmentVarsTestData());
 		variableTypes.addAll(this.createGermplasmEntryVarsTestData());
-		variableTypes.addAll(this.createTrialDesignVarsTestData());
+		variableTypes.addAll(this.createStudyDesignVarsTestData());
 		variableTypes.addAll(this.createVariateVarsTestData());
 		return variableTypes.sort();
 	}
 
 	public VariableTypeList createVariateVarsTestData() {
-		VariableTypeList variableTypes = new VariableTypeList();
+		final VariableTypeList variableTypes = new VariableTypeList();
 		variableTypes.add(this.createNumericVariateTestData());
 		variableTypes.add(this.createCategoricalNumericVariateTestData());
 		variableTypes.add(this.createCategoricalNonNumericVariateTestData());
 		return variableTypes;
 	}
 
-	public List<VariateModel> transformVariableTypeListToVariateModels(VariableTypeList variableTypeList) {
-		List<VariateModel> variateList = new ArrayList<VariateModel>();
-		for (DMSVariableType variate : variableTypeList.getVariates().getVariableTypes()) {
-			VariateModel vm = new VariateModel();
+	public List<VariateModel> transformVariableTypeListToVariateModels(final VariableTypeList variableTypeList) {
+		final List<VariateModel> variateList = new ArrayList<VariateModel>();
+		for (final DMSVariableType variate : variableTypeList.getVariates().getVariableTypes()) {
+			final VariateModel vm = new VariateModel();
 			vm.setId(variate.getRank());
 			vm.setName(variate.getLocalName());
 			vm.setDescription(variate.getLocalDescription());
@@ -126,7 +126,7 @@ public class StudyUtil {
 	}
 
 	public DMSVariableType createCategoricalNonNumericVariateTestData() {
-		DMSVariableType variableType = new DMSVariableType();
+		final DMSVariableType variableType = new DMSVariableType();
 		variableType.setLocalName(StudyUtil.VARIATE_VAR_PREFIX + StudyUtil.CATEGORICAL_NON_NUMERIC_PREFIX + StudyUtil.VAR_NAME);
 		variableType.setLocalDescription(
 				StudyUtil.VARIATE_VAR_PREFIX + StudyUtil.CATEGORICAL_NON_NUMERIC_PREFIX + StudyUtil.VAR_DESCRIPTION);
@@ -140,14 +140,14 @@ public class StudyUtil {
 	}
 
 	public DMSVariableType createCategoricalNumericVariateTestData() {
-		DMSVariableType variableType = new DMSVariableType();
+		final DMSVariableType variableType = new DMSVariableType();
 		variableType.setLocalName(StudyUtil.VARIATE_VAR_PREFIX + StudyUtil.CATEGORICAL_NUMERIC_PREFIX + StudyUtil.VAR_NAME);
 		variableType.setLocalDescription(StudyUtil.VARIATE_VAR_PREFIX + StudyUtil.CATEGORICAL_NUMERIC_PREFIX + StudyUtil.VAR_DESCRIPTION);
 		variableType.setRank(this.rank++);
 		variableType.setStandardVariable(this.createStandardVariableTestData(variableType.getRank(), variableType.getLocalName(),
 				variableType.getLocalDescription(), TermId.CATEGORICAL_VARIABLE.getId(), TermId.CATEGORICAL_VARIATE.getId(),
 				PhenotypicType.VARIATE));
-		List<Enumeration> validValues = new ArrayList<Enumeration>();
+		final List<Enumeration> validValues = new ArrayList<Enumeration>();
 		validValues.add(new Enumeration(1, StudyUtil.CATEGORICAL_VAR_NUMERIC_ENUM_NAME, StudyUtil.CATEGORICAL_VAR_NUMERIC_ENUM_DEF, 1));
 		variableType.getStandardVariable().setEnumerations(validValues);
 		variableType.setRole(PhenotypicType.VARIATE);
@@ -156,7 +156,7 @@ public class StudyUtil {
 	}
 
 	public DMSVariableType createNumericVariateTestData() {
-		DMSVariableType variableType = new DMSVariableType();
+		final DMSVariableType variableType = new DMSVariableType();
 		variableType.setLocalName(StudyUtil.VARIATE_VAR_PREFIX + StudyUtil.NUMERIC_PREFIX + StudyUtil.VAR_NAME);
 		variableType.setLocalDescription(StudyUtil.VARIATE_VAR_PREFIX + StudyUtil.NUMERIC_PREFIX + StudyUtil.VAR_DESCRIPTION);
 		variableType.setRank(this.rank++);
@@ -168,11 +168,11 @@ public class StudyUtil {
 		return variableType;
 	}
 
-	public VariableTypeList createTrialDesignVarsTestData() {
-		VariableTypeList variableTypes = new VariableTypeList();
-		DMSVariableType variableType = new DMSVariableType();
-		variableType.setLocalName(StudyUtil.TRIAL_DESIGN_VAR_PREFIX + StudyUtil.VAR_NAME);
-		variableType.setLocalDescription(StudyUtil.TRIAL_DESIGN_VAR_PREFIX + StudyUtil.VAR_DESCRIPTION);
+	public VariableTypeList createStudyDesignVarsTestData() {
+		final VariableTypeList variableTypes = new VariableTypeList();
+		final DMSVariableType variableType = new DMSVariableType();
+		variableType.setLocalName(StudyUtil.STUDY_DESIGN_VAR_PREFIX + StudyUtil.VAR_NAME);
+		variableType.setLocalDescription(StudyUtil.STUDY_DESIGN_VAR_PREFIX + StudyUtil.VAR_DESCRIPTION);
 		variableType.setRank(this.rank++);
 		variableType.setStandardVariable(
 				this.createStandardVariableTestData(TermId.PLOT_NO.getId(), variableType.getLocalName(), variableType.getLocalDescription(),
@@ -184,8 +184,8 @@ public class StudyUtil {
 	}
 
 	public VariableTypeList createGermplasmEntryVarsTestData() {
-		VariableTypeList variableTypes = new VariableTypeList();
-		DMSVariableType variableType = new DMSVariableType();
+		final VariableTypeList variableTypes = new VariableTypeList();
+		final DMSVariableType variableType = new DMSVariableType();
 		variableType.setLocalName(StudyUtil.GERMPLASM_ENTRY_VAR_PREFIX + StudyUtil.VAR_NAME);
 		variableType.setLocalDescription(StudyUtil.GERMPLASM_ENTRY_VAR_PREFIX + StudyUtil.VAR_DESCRIPTION);
 		variableType.setRank(this.rank++);
@@ -198,9 +198,9 @@ public class StudyUtil {
 		return variableTypes;
 	}
 
-	public VariableTypeList createTrialEnvironmentVarsTestData() {
-		VariableTypeList variableTypes = new VariableTypeList();
-		DMSVariableType variableType = new DMSVariableType();
+	public VariableTypeList createEnvironmentVarsTestData() {
+		final VariableTypeList variableTypes = new VariableTypeList();
+		final DMSVariableType variableType = new DMSVariableType();
 		variableType.setLocalName(StudyUtil.TRIAL_INSTANCE_VAR_NAME);
 		variableType.setLocalDescription(StudyUtil.TRIAL_INSTANCE_VAR_DESC);
 		variableType.setRank(this.rank++);
@@ -215,7 +215,7 @@ public class StudyUtil {
 	}
 
 	public VariableTypeList createDatasetVarsTestData() {
-		VariableTypeList variableTypes = new VariableTypeList();
+		final VariableTypeList variableTypes = new VariableTypeList();
 		variableTypes.add(this.createDatasetNameVariableTypeTestData());
 		variableTypes.add(this.createDatasetTitleVariableTypeTestData());
 		variableTypes.add(this.createDatasetTypeVariableTypeTestData());
@@ -223,7 +223,7 @@ public class StudyUtil {
 	}
 
 	public DMSVariableType createDatasetTypeVariableTypeTestData() {
-		DMSVariableType variableType = new DMSVariableType();
+		final DMSVariableType variableType = new DMSVariableType();
 		variableType.setLocalName(StudyUtil.DATASET_VAR_TYPE);
 		variableType.setLocalDescription(StudyUtil.DATASET_VAR_TYPE_DESC);
 		variableType.setRank(this.rank++);
@@ -236,7 +236,7 @@ public class StudyUtil {
 	}
 
 	public DMSVariableType createDatasetTitleVariableTypeTestData() {
-		DMSVariableType variableType = new DMSVariableType();
+		final DMSVariableType variableType = new DMSVariableType();
 		variableType.setLocalName(StudyUtil.DATASET_VAR_TITLE);
 		variableType.setLocalDescription(StudyUtil.DATASET_VAR_TITLE_DESC);
 		variableType.setRank(this.rank++);
@@ -249,7 +249,7 @@ public class StudyUtil {
 	}
 
 	public DMSVariableType createDatasetNameVariableTypeTestData() {
-		DMSVariableType variableType = new DMSVariableType();
+		final DMSVariableType variableType = new DMSVariableType();
 		variableType.setLocalName(StudyUtil.DATASET_VAR_NAME);
 		variableType.setLocalDescription(StudyUtil.DATASET_VAR_NAME_DESC);
 		variableType.setRank(this.rank++);
@@ -261,9 +261,9 @@ public class StudyUtil {
 		return variableType;
 	}
 
-	public StandardVariable createStandardVariableTestData(int id, String name, String description, Integer dataTypeId, Integer storedIn,
-			PhenotypicType phenotypicType) {
-		StandardVariable var = new StandardVariable();
+	public StandardVariable createStandardVariableTestData(int id, final String name, final String description, final Integer dataTypeId, final Integer storedIn,
+			final PhenotypicType phenotypicType) {
+		final StandardVariable var = new StandardVariable();
 		var.setId(id);
 		var.setName(name);
 		var.setDescription(description);

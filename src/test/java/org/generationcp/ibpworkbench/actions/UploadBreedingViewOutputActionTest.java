@@ -110,7 +110,7 @@ public class UploadBreedingViewOutputActionTest {
 	private PlatformTransactionManager transactionManager;
 
 	@InjectMocks
-	private UploadBreedingViewOutputAction uploadBreedingViewOutputAction = new UploadBreedingViewOutputAction();
+	private final UploadBreedingViewOutputAction uploadBreedingViewOutputAction = new UploadBreedingViewOutputAction();
 
 	@Before
 	public void setUp() {
@@ -200,7 +200,7 @@ public class UploadBreedingViewOutputActionTest {
 		Mockito.when(this.studyDataManager.getDataSetsByType(UploadBreedingViewOutputActionTest.TEST_STUDY_ID, DataSetType.MEANS_DATA))
 				.thenReturn(this.createDataSetList());
 		Mockito.when(this.studyDataManager.getTrialEnvironmentsInDataset(UploadBreedingViewOutputActionTest.TEST_MEANS_DATASET_ID))
-				.thenReturn(this.createTrialEnvironments());
+				.thenReturn(this.createEnvironments());
 
 		this.uploadBreedingViewOutputAction.buttonClick(this.event);
 
@@ -234,7 +234,7 @@ public class UploadBreedingViewOutputActionTest {
 		Mockito.when(this.studyDataManager.getDataSetsByType(UploadBreedingViewOutputActionTest.TEST_STUDY_ID, DataSetType.MEANS_DATA))
 				.thenReturn(this.createDataSetList());
 		Mockito.when(this.studyDataManager.getTrialEnvironmentsInDataset(UploadBreedingViewOutputActionTest.TEST_MEANS_DATASET_ID))
-				.thenReturn(this.createTrialEnvironments());
+				.thenReturn(this.createEnvironments());
 		Mockito.when(
 				this.studyDataManager.checkIfAnyLocationIDsExistInExperiments(Matchers.anyInt(), Matchers.any(DataSetType.class),
 						Matchers.anyList())).thenReturn(true);
@@ -297,7 +297,7 @@ public class UploadBreedingViewOutputActionTest {
 		Mockito.when(this.studyDataManager.getDataSetsByType(UploadBreedingViewOutputActionTest.TEST_STUDY_ID, DataSetType.MEANS_DATA))
 				.thenReturn(this.createDataSetList());
 		Mockito.when(this.studyDataManager.getTrialEnvironmentsInDataset(UploadBreedingViewOutputActionTest.TEST_MEANS_DATASET_ID))
-				.thenReturn(this.createTrialEnvironments());
+				.thenReturn(this.createEnvironments());
 
 		final List<Integer> locationIds =
 				this.uploadBreedingViewOutputAction.getLocationIdsBasedOnInformationFromMeansDataFile(
@@ -314,23 +314,23 @@ public class UploadBreedingViewOutputActionTest {
 		return project;
 	}
 
-	private TrialEnvironments createTrialEnvironments() {
+	private TrialEnvironments createEnvironments() {
 
-		final TrialEnvironments trialEnvironments = new TrialEnvironments();
+		final TrialEnvironments environments = new TrialEnvironments();
 
 		final VariableList variableList = new VariableList();
 		variableList.add(this.createVariable(TermId.TRIAL_INSTANCE_FACTOR.getId(), "TRIAL_INSTANCE", "1"));
 
-		final TrialEnvironment trialEnvironment1 = new TrialEnvironment(UploadBreedingViewOutputActionTest.LOCATION_ID1, variableList);
-		trialEnvironments.add(trialEnvironment1);
+		final TrialEnvironment environment = new TrialEnvironment(UploadBreedingViewOutputActionTest.LOCATION_ID1, variableList);
+		environments.add(environment);
 
 		final VariableList variableList2 = new VariableList();
 		variableList2.add(this.createVariable(TermId.TRIAL_INSTANCE_FACTOR.getId(), "TRIAL_INSTANCE", "2"));
 
-		final TrialEnvironment trialEnvironment2 = new TrialEnvironment(UploadBreedingViewOutputActionTest.LOCATION_ID2, variableList2);
-		trialEnvironments.add(trialEnvironment2);
+		final TrialEnvironment environment1 = new TrialEnvironment(UploadBreedingViewOutputActionTest.LOCATION_ID2, variableList2);
+		environments.add(environment1);
 
-		return trialEnvironments;
+		return environments;
 	}
 
 	private List<DataSet> createDataSetList() {

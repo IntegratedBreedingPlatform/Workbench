@@ -52,7 +52,7 @@ public class MultiSiteAnalysisSelectPanelTest {
 		this.dataset = new DataSet();
 		final VariableTypeList varTypeList = new VariableTypeList();
 		final List<DMSVariableType> factors = this.createTestGenotypeAndPlotFactors();
-		factors.addAll(this.createTrialVariables());
+		factors.addAll(this.createStudyVariables());
 		factors.addAll(this.createTraitVariables());
 		varTypeList.setVariableTypes(factors);
 		this.dataset.setVariableTypes(varTypeList);
@@ -67,8 +67,8 @@ public class MultiSiteAnalysisSelectPanelTest {
 		final List<FactorModel> factorList = new ArrayList<>();
 		this.selectPanel.populateGenotypeDropdown(this.dataset, factorList);
 
-		Assert.assertTrue("Genotypes dropdown should have 3 factors", select.getItemIds().size() == 3);
-		Assert.assertTrue("Factor list should have 3 factors", factorList.size() == 3);
+		Assert.assertEquals("Genotypes dropdown should have 3 factors", 3, select.getItemIds().size());
+		Assert.assertEquals("Factor list should have 3 factors", 3, factorList.size());
 		final ListIterator<FactorModel> factorsIterator = factorList.listIterator();
 		for (final Object id : select.getItemIds()) {
 			final String localName = (String) id;
@@ -93,15 +93,15 @@ public class MultiSiteAnalysisSelectPanelTest {
 
 		this.selectPanel.populateEnvironmentDropdown(this.dataset);
 
-		Assert.assertTrue("Dropdown should return fixed # of env factors",
-				envSelect.getItemIds().size() == MultiSiteAnalysisSelectPanelTest.TRIAL_ENV_FACTORS.length);
+		Assert.assertEquals("Dropdown should return fixed # of env factors", envSelect.getItemIds().size(),
+			MultiSiteAnalysisSelectPanelTest.TRIAL_ENV_FACTORS.length);
 		for (final Object id : envSelect.getItemIds()) {
 			final String localName = (String) id;
 			Assert.assertTrue(ArrayUtils.contains(MultiSiteAnalysisSelectPanelTest.TRIAL_ENV_FACTORS, localName));
 		}
 
-		Assert.assertTrue("Dropdown should return fixed # of env group factors",
-				envGroupSelect.getItemIds().size() == MultiSiteAnalysisSelectPanelTest.TRIAL_ENV_FACTORS.length - 1);
+		Assert.assertEquals("Dropdown should return fixed # of env group factors", envGroupSelect.getItemIds().size(),
+			MultiSiteAnalysisSelectPanelTest.TRIAL_ENV_FACTORS.length - 1);
 		for (final Object id : envGroupSelect.getItemIds()) {
 			final String localName = (String) id;
 			Assert.assertTrue(ArrayUtils.contains(MultiSiteAnalysisSelectPanelTest.TRIAL_ENV_FACTORS, localName));
@@ -114,7 +114,7 @@ public class MultiSiteAnalysisSelectPanelTest {
 		final ArrayList<VariateModel> variateList = new ArrayList<VariateModel>();
 		this.selectPanel.populateTraitGroup(this.dataset, variateList);
 
-		Assert.assertTrue("Dropdown should return fixed # traits", variateList.size() == MultiSiteAnalysisSelectPanelTest.VARIATES.length);
+		Assert.assertEquals("Dropdown should return fixed # traits", variateList.size(), MultiSiteAnalysisSelectPanelTest.VARIATES.length);
 		for (final VariateModel variate : variateList) {
 			final String displayName = variate.getDisplayName();
 			Assert.assertTrue(ArrayUtils.contains(MultiSiteAnalysisSelectPanelTest.VARIATES, displayName));
@@ -209,7 +209,7 @@ public class MultiSiteAnalysisSelectPanelTest {
 		return factors;
 	}
 
-	private List<DMSVariableType> createTrialVariables() {
+	private List<DMSVariableType> createStudyVariables() {
 		final List<DMSVariableType> factors = new ArrayList<DMSVariableType>();
 
 		final StandardVariable trialInstanceVar = new StandardVariable();

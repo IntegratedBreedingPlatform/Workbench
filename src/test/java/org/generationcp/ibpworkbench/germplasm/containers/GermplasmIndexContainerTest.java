@@ -31,11 +31,11 @@ import static org.mockito.Mockito.when;
 public class GermplasmIndexContainerTest {
 
 	private static final int TEST_STUDY_ID_2 = 2;
-	private static final String TEST_STUDY_NAME = "TRIAL 2";
+	private static final String TEST_STUDY_NAME = "Study 2";
 
 	private static final String PROGRAM_UUID = "1";
 
-	private static final String[] URL_STUDY_TRIAL = {"/Fieldbook/TrialManager/openTrial/", "#/trialSettings"};
+	private static final String[] URL_STUDY_STUDY = {"/Fieldbook/TrialManager/openTrial/", "#/trialSettings"};
 
 	private GermplasmIndexContainer germplasmIndexContainer;
 
@@ -91,7 +91,7 @@ public class GermplasmIndexContainerTest {
 		for (final Object itemId : container.getItemIds()) {
 			final Item item = container.getItem(itemId);
 			assertThat(TEST_STUDY_ID_2, equalTo(item.getItemProperty(GermplasmIndexContainer.STUDY_ID).getValue()));
-			assertThat(URL_STUDY_TRIAL[0] + TEST_STUDY_ID_2 + aditionalParameters + URL_STUDY_TRIAL[1],
+			assertThat(URL_STUDY_STUDY[0] + TEST_STUDY_ID_2 + aditionalParameters + URL_STUDY_STUDY[1],
 					equalTo(((LinkButton) item.getItemProperty(GermplasmIndexContainer.STUDY_NAME).getValue()).getResource().getURL().toString()));
 			assertThat(TEST_STUDY_NAME, equalTo(item.getItemProperty(GermplasmIndexContainer.STUDY_DESCRIPTION).toString()));
 		}

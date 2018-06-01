@@ -21,7 +21,7 @@ import com.vaadin.ui.Window;
 
 public class StudyTreeUtilTest {
 
-	private static final String ROOT_FOLDER_NAME = "Nurseries and Trials";
+	private static final String ROOT_FOLDER_NAME = "Studies";
 
 	@Mock
 	private SimpleResourceBundleMessageSource messageSource;

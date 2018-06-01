@@ -172,7 +172,7 @@ public class AppLauncherServiceTest {
 		aWebTool.setToolType(ToolType.WEB);
 		urlResult = this.appLauncherService.launchWebapp(aWebTool, AppLauncherServiceTest.LOGGED_IN_USER_ID);
 
-		Assert.assertEquals("should return correct url for fieldbook trial app",
+		Assert.assertEquals("should return correct url for fieldbook Study app",
 				String.format("%s://%s:%d/%s/openTrial/%d%s", AppLauncherServiceTest.SCHEME, AppLauncherServiceTest.HOST_NAME,
 						AppLauncherServiceTest.PORT, AppLauncherServiceTest.SAMPLE_BASE_URL, AppLauncherServiceTest.LOGGED_IN_USER_ID,
 						AppLauncherServiceTest.RESTART_URL_STR + AppLauncherServiceTest.WORKBENCH_CONTEXT_PARAMS), urlResult);

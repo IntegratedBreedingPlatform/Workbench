@@ -34,7 +34,7 @@ public class ProgramSummaryViewTest {
 
 	private static final Long NURSERY_COUNT = 5L;
 
-	private static final Long TRIAL_COUNT = 10L;
+	private static final Long STUDY_COUNT = 10L;
 
 	private static final Long STUDIES_COUNT = 10L;
 	public static final String PROJECT_NAME = "ProjectName";
@@ -70,7 +70,7 @@ public class ProgramSummaryViewTest {
 				.getProjectActivitiesByProjectId(project.getProjectId(), 0, ProgramSummaryViewTest.ACTIVITIES_COUNT.intValue());
 		Mockito.doReturn(ProgramSummaryViewTest.NURSERY_COUNT).when(this.studyDataManager)
 				.countAllStudyDetails(StudyTypeDto.getNurseryDto(), ProgramSummaryViewTest.PROGRAM_UUID);
-		Mockito.doReturn(ProgramSummaryViewTest.TRIAL_COUNT).when(this.studyDataManager)
+		Mockito.doReturn(ProgramSummaryViewTest.STUDY_COUNT).when(this.studyDataManager)
 				.countAllStudyDetails(StudyTypeDto.getTrialDto(), ProgramSummaryViewTest.PROGRAM_UUID);
 		Mockito.doReturn(ProgramSummaryViewTest.STUDIES_COUNT).when(this.studyDataManager)
 				.countAllNurseryAndTrialStudyDetails(ProgramSummaryViewTest.PROGRAM_UUID);
@@ -92,7 +92,7 @@ public class ProgramSummaryViewTest {
 		final Table programTrialsTable = this.summaryView.getProgramTrialsTable();
 		final Table programNurseriesTable = this.summaryView.getProgramNurseriesTable();
 		final Table programActivities = this.summaryView.getProgramActivitiesTable();
-		Assert.assertEquals(ProgramSummaryViewTest.TRIAL_COUNT.intValue(), programTrialsTable.size());
+		Assert.assertEquals(ProgramSummaryViewTest.STUDY_COUNT.intValue(), programTrialsTable.size());
 		Assert.assertEquals(ProgramSummaryViewTest.NURSERY_COUNT.intValue(), programNurseriesTable.size());
 		Assert.assertEquals(ProgramSummaryViewTest.ACTIVITIES_COUNT.intValue(), programActivities.size());
 		Assert.assertEquals(ProgramSummaryViewTest.STUDIES_COUNT.intValue(), programStudies.size());
