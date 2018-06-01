@@ -7,7 +7,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
-import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,7 +47,7 @@ public class ChangeCredentialsWindowTest {
 	@Before
 	public void init() {
 
-		User user = new User();
+		WorkbenchUser user = new WorkbenchUser();
 		user.setUserid(1);
 		user.setName("testUsername");
 		user.setPerson(new Person());
@@ -69,7 +69,7 @@ public class ChangeCredentialsWindowTest {
 		changeCredentialsWindow.saveCredentials();
 
 		// Verify that updateUser is called if there are no validation error.
-		Mockito.verify(workbenchDataManager).updateUser(Mockito.any(User.class));
+		Mockito.verify(workbenchDataManager).updateUser(Mockito.any(WorkbenchUser.class));
 		Mockito.verify(parentWindow).showNotification(Mockito.any(Window.Notification.class));
 		Mockito.verify(parentWindow).removeWindow(Mockito.any(Window.class));
 		Mockito.verify(credentialsChangedEvent).onChanged(FIRSTNAME, LASTNAME, EMAIL_ADDRESS);
@@ -83,7 +83,7 @@ public class ChangeCredentialsWindowTest {
 		changeCredentialsWindow.saveCredentials();
 
 		// Verify that updateUser is not called if there is validation error.
-		Mockito.verify(workbenchDataManager, Mockito.times(0)).updateUser(Mockito.any(User.class));
+		Mockito.verify(workbenchDataManager, Mockito.times(0)).updateUser(Mockito.any(WorkbenchUser.class));
 		Mockito.verify(parentWindow).showNotification(Mockito.any(Window.Notification.class));
 		Mockito.verify(parentWindow, Mockito.times(0)).removeWindow(Mockito.any(Window.class));
 		Mockito.verify(credentialsChangedEvent, Mockito.times(0)).onChanged(FIRSTNAME, LASTNAME, EMAIL_ADDRESS);
@@ -95,11 +95,11 @@ public class ChangeCredentialsWindowTest {
 
 		changeCredentialsWindow.updateUser(FIRSTNAME, LASTNAME, EMAIL_ADDRESS, PASSWORD);
 
-		ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
+		ArgumentCaptor<WorkbenchUser> captor = ArgumentCaptor.forClass(WorkbenchUser.class);
 
 		Mockito.verify(workbenchDataManager).updateUser(captor.capture());
 
-		User userToBeUpdated = captor.getValue();
+		WorkbenchUser userToBeUpdated = captor.getValue();
 
 		Assert.assertTrue(new BCryptPasswordEncoder().matches(PASSWORD, userToBeUpdated.getPassword()));
 		Assert.assertEquals(FIRSTNAME, userToBeUpdated.getPerson().getFirstName());
@@ -114,11 +114,11 @@ public class ChangeCredentialsWindowTest {
 
 		changeCredentialsWindow.updateUser(FIRSTNAME, LASTNAME, EMAIL_ADDRESS, "");
 
-		ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
+		ArgumentCaptor<WorkbenchUser> captor = ArgumentCaptor.forClass(WorkbenchUser.class);
 
 		Mockito.verify(workbenchDataManager).updateUser(captor.capture());
 
-		User userToBeUpdated = captor.getValue();
+		WorkbenchUser userToBeUpdated = captor.getValue();
 
 		Assert.assertEquals(null, userToBeUpdated.getPassword());
 		Assert.assertEquals(FIRSTNAME, userToBeUpdated.getPerson().getFirstName());

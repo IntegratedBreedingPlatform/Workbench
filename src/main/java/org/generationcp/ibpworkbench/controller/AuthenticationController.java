@@ -8,8 +8,8 @@ import org.generationcp.ibpworkbench.validator.ForgotPasswordAccountValidator;
 import org.generationcp.ibpworkbench.validator.UserAccountFields;
 import org.generationcp.ibpworkbench.validator.UserAccountValidator;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.owasp.html.Sanitizers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,7 +129,7 @@ public class AuthenticationController {
 
 		// verify token if valid
 		try {
-			final User user = this.workbenchEmailSenderService.validateResetToken(token);
+			final WorkbenchUser user = this.workbenchEmailSenderService.validateResetToken(token);
 
 			model.addAttribute("user", user);
 
@@ -256,7 +256,7 @@ public class AuthenticationController {
 		final Map<String, Object> out = new LinkedHashMap<>();
 		final HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
-		final User user = this.workbenchUserService.getUserByUserid(userId);
+		final WorkbenchUser user = this.workbenchUserService.getUserByUserid(userId);
 		if (user == null) {
 			out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
 			out.put(AuthenticationController.ERRORS, NOT_EXISTENT_USER);
@@ -312,7 +312,7 @@ public class AuthenticationController {
 			UserInfo userInfo = this.workbenchDataManager.getUserInfoByUsername(model.getUsername());
 
 			if (userInfo == null) {
-				final User user = this.workbenchDataManager.getUserByUsername(model.getUsername());
+				final WorkbenchUser user = this.workbenchDataManager.getUserByUsername(model.getUsername());
 				userInfo = new UserInfo();
 				userInfo.setUserId(user.getUserid());
 			}

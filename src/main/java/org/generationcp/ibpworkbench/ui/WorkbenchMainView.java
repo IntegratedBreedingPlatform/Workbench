@@ -54,8 +54,8 @@ import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -421,7 +421,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	protected void onLoadOperations() {
 
-		final User user = contextUtil.getCurrentWorkbenchUser();
+		final WorkbenchUser user = contextUtil.getCurrentWorkbenchUser();
 
 		final UserInfo userInfo = this.createUserInfoIfNecessary(user);
 
@@ -431,7 +431,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	}
 
-	protected UserInfo createUserInfoIfNecessary(final User user) {
+	protected UserInfo createUserInfoIfNecessary(final WorkbenchUser user) {
 
 		UserInfo userInfo = this.workbenchDataManager.getUserInfo(user.getUserid());
 
@@ -445,7 +445,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		return userInfo;
 	}
 
-	protected void showChangeCredentialsWindowOnFirstLogin(final Window window, final User user, final UserInfo userInfo) {
+	protected void showChangeCredentialsWindowOnFirstLogin(final Window window, final WorkbenchUser user, final UserInfo userInfo) {
 
 		// Only display the Change Credentials/Password on first login
 		if (userInfo.getLoginCount() < 1) {
