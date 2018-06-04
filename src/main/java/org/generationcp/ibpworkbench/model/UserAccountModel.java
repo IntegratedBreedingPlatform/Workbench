@@ -13,7 +13,8 @@ package org.generationcp.ibpworkbench.model;
 
 import java.io.Serializable;
 
-import org.generationcp.commons.security.Role;
+import org.generationcp.middleware.pojos.workbench.Role;
+
 
 /**
  * <b>Description</b>: A combined Users and Persons POJO.
@@ -41,8 +42,8 @@ public class UserAccountModel implements Serializable {
 	private String password;
 
 	private String passwordConfirmation;
-
-	private String role;
+	
+	private Role role;
 
 	/**
 	 * Initialize fields so that the "null" String value does not appear.
@@ -56,9 +57,6 @@ public class UserAccountModel implements Serializable {
 		this.username = "";
 		this.password = "";
 		this.passwordConfirmation = "";
-
-		// default
-		this.role = Role.TECHNICIAN.name();
 	}
 
 	public String getFirstName() {
@@ -117,11 +115,11 @@ public class UserAccountModel implements Serializable {
 		this.passwordConfirmation = passwordConfirmation;
 	}
 
-	public String getRole() {
+	public Role getRole() {
 		return this.role;
 	}
 
-	public void setRole(String role) {
+	public void setRole(final Role role) {
 		this.role = role;
 	}
 
