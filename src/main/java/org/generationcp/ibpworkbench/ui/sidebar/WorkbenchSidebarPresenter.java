@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
@@ -45,9 +44,6 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 
 	@Autowired
 	private WorkbenchDataManager manager;
-
-	@Value("${workbench.is.backup.and.restore.enabled}")
-	private String isBackupAndRestoreEnabled;
 
 	@Autowired
 	private PlatformTransactionManager transactionManager;
@@ -136,10 +132,8 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 	protected void addAdminCategoryLinks(final List<WorkbenchSidebarCategoryLink> categoryLinks, final WorkbenchSidebarCategory category) {
 		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, MANAGE_PROGRAM_LINK,
 				this.messageSource.getMessage("LINK_MANAGE_SETTINGS")));
-		if (this.isBackupAndRestoreEnabled != null && Boolean.valueOf(this.isBackupAndRestoreEnabled)) {
-			categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, RECOVERY_LINK,
-					this.messageSource.getMessage("LINK_BACKUP_RESTORE")));
-		}
+		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, RECOVERY_LINK,
+				this.messageSource.getMessage("LINK_BACKUP_RESTORE")));
 		categoryLinks
 				.add(new WorkbenchSidebarCategoryLink(null, category, ABOUT_BMS_LINK, this.messageSource.getMessage("LINK_ABOUT_BMS")));
 	}
@@ -168,10 +162,6 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 			}
 		});
 
-	}
-
-	public void setIsBackupAndRestoreEnabled(final String isBackupAndRestoreEnabled) {
-		this.isBackupAndRestoreEnabled = isBackupAndRestoreEnabled;
 	}
 
 	public void setManager(final WorkbenchDataManager manager) {

@@ -123,20 +123,6 @@ public class WorkbenchSidebarPresenterTest {
 
 	@Test
 	public void testAddAdminCategoryLinks() {
-		// default with no backup and restore
-		this.workbenchSidebarPresenter.setIsBackupAndRestoreEnabled("false");
-		final List<WorkbenchSidebarCategoryLink> categoryLinks = new ArrayList<>();
-
-		this.workbenchSidebarPresenter.addAdminCategoryLinks(categoryLinks, this.adminCategory);
-		for (final WorkbenchSidebarCategoryLink workbenchSidebarCategoryLink : categoryLinks) {
-			Assert.assertFalse(WorkbenchSidebarPresenter.RECOVERY_LINK.equals(workbenchSidebarCategoryLink.getSidebarLinkName()));
-		}
-	}
-
-	@Test
-	public void testAddAdminCategoryLinksWithBackAndRestore() {
-		// default with no backup and restore
-		this.workbenchSidebarPresenter.setIsBackupAndRestoreEnabled("true");
 		final List<WorkbenchSidebarCategoryLink> categoryLinks = new ArrayList<>();
 		this.workbenchSidebarPresenter.addAdminCategoryLinks(categoryLinks, this.adminCategory);
 		boolean hasBackupAndRestore = false;
@@ -183,7 +169,6 @@ public class WorkbenchSidebarPresenterTest {
 
 	@Test
 	public void testGetCategoryLinkItems() {
-		this.workbenchSidebarPresenter.setIsBackupAndRestoreEnabled("true");
 		final Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> linksMap =
 				this.workbenchSidebarPresenter.getCategoryLinkItems();
 
