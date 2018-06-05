@@ -93,7 +93,7 @@ public class WorkbenchSidebarPresenterTest {
 
 	private void setupTestSidebarLinks() {
 		Mockito.doReturn("Dummy Message").when(this.messageSource).getMessage(Matchers.anyString());
-		this.adminCategory = new WorkbenchSidebarCategory(WorkbenchSidebarPresenter.ADMIN_CATEGORY, "Program Administration");
+		this.adminCategory = new WorkbenchSidebarCategory("Admin", "Program Administration");
 		this.adminCategory.setSidebarCategoryId(1);
 		this.categoryWithNoLinks = new WorkbenchSidebarCategory("tools", "Breeding Tools");
 		this.categoryWithNoLinks.setSidebarCategoryId(2);
@@ -119,19 +119,6 @@ public class WorkbenchSidebarPresenterTest {
 				.getAllWorkbenchSidebarLinksByCategoryId(this.activitiesCategory);
 		Mockito.doReturn(this.sidebarLinksFromDB.get(this.infoMgtCategory)).when(this.workbenchDataManager)
 				.getAllWorkbenchSidebarLinksByCategoryId(this.infoMgtCategory);
-	}
-
-	@Test
-	public void testAddAdminCategoryLinks() {
-		final List<WorkbenchSidebarCategoryLink> categoryLinks = new ArrayList<>();
-		this.workbenchSidebarPresenter.addAdminCategoryLinks(categoryLinks, this.adminCategory);
-		boolean hasBackupAndRestore = false;
-		for (final WorkbenchSidebarCategoryLink workbenchSidebarCategoryLink : categoryLinks) {
-			if (WorkbenchSidebarPresenter.RECOVERY_LINK.equals(workbenchSidebarCategoryLink.getSidebarLinkName())) {
-				hasBackupAndRestore = true;
-			}
-		}
-		Assert.assertTrue(hasBackupAndRestore);
 	}
 
 	@Test
@@ -181,15 +168,7 @@ public class WorkbenchSidebarPresenterTest {
 		boolean manageProgramLinkFound = false;
 		boolean backupRestoreLinkFound = false;
 		boolean aboutBMSLinkFound = false;
-		for (final WorkbenchSidebarCategoryLink link : adminLinks) {
-			if (WorkbenchSidebarPresenter.MANAGE_PROGRAM_LINK.equals(link.getSidebarLinkName())) {
-				manageProgramLinkFound = true;
-			} else if (WorkbenchSidebarPresenter.RECOVERY_LINK.equals(link.getSidebarLinkName())) {
-				backupRestoreLinkFound = true;
-			} else if (WorkbenchSidebarPresenter.ABOUT_BMS_LINK.equals(link.getSidebarLinkName())) {
-				aboutBMSLinkFound = true;
-			}
-		}
+		
 		Assert.assertTrue(manageProgramLinkFound);
 		Assert.assertTrue(backupRestoreLinkFound);
 		Assert.assertTrue(aboutBMSLinkFound);

@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.generationcp.commons.security.AuthorizationUtil;
 import org.generationcp.commons.spring.util.ContextUtil;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -32,14 +31,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 @Configurable
 public class WorkbenchSidebarPresenter implements InitializingBean {
 
-	protected static final String ADMIN_CATEGORY = "admin";
-
-	protected static final String ABOUT_BMS_LINK = "about_bms";
-
-	protected static final String RECOVERY_LINK = "recovery";
-
-	protected static final String MANAGE_PROGRAM_LINK = "manage_program";
-
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchSidebarPresenter.class);
 
 	@Autowired
@@ -47,9 +38,6 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 
 	@Autowired
 	private PlatformTransactionManager transactionManager;
-
-	@Autowired
-	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
 	private ContextUtil contextUtil;
@@ -83,18 +71,11 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 		final List<WorkbenchSidebarCategory> workbenchSidebarCategoryList = this.manager.getAllWorkbenchSidebarCategory();
 
 		for (final WorkbenchSidebarCategory category : workbenchSidebarCategoryList) {
-			if (isAdminCategory(category)) {
-				this.addAdminCategoryLinks(categoryLinks, category);
-			} else {
-				categoryLinks.addAll(this.manager.getAllWorkbenchSidebarLinksByCategoryId(category));
-			}
+			categoryLinks.addAll(this.manager.getAllWorkbenchSidebarLinksByCategoryId(category));
 		}
 		
 		for (final WorkbenchSidebarCategoryLink link : categoryLinks) {
-			// For now, we don't check user roles for ADMIN category links 
-			// since we add its links manually in this class and not retrieved from the DB
-			if (this.isAdminCategory(link.getWorkbenchSidebarCategory()) || 
-					isCategoryLinkPermissibleForUserRole(link)) {
+			if (this.isCategoryLinkPermissibleForUserRole(link)) {
 				if (sidebarLinks.get(link.getWorkbenchSidebarCategory()) == null) {
 					sidebarLinks.put(link.getWorkbenchSidebarCategory(), new ArrayList<WorkbenchSidebarCategoryLink>());
 				}
@@ -106,10 +87,6 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 		}
 
 		return sidebarLinks;
-	}
-
-	private boolean isAdminCategory(final WorkbenchSidebarCategory category) {
-		return ADMIN_CATEGORY.equals(category.getSidebarCategoryName());
 	}
 
 	protected boolean isCategoryLinkPermissibleForUserRole(final WorkbenchSidebarCategoryLink link) {
@@ -127,15 +104,6 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 		}
 
 		return true;
-	}
-
-	protected void addAdminCategoryLinks(final List<WorkbenchSidebarCategoryLink> categoryLinks, final WorkbenchSidebarCategory category) {
-		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, MANAGE_PROGRAM_LINK,
-				this.messageSource.getMessage("LINK_MANAGE_SETTINGS")));
-		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, RECOVERY_LINK,
-				this.messageSource.getMessage("LINK_BACKUP_RESTORE")));
-		categoryLinks
-				.add(new WorkbenchSidebarCategoryLink(null, category, ABOUT_BMS_LINK, this.messageSource.getMessage("LINK_ABOUT_BMS")));
 	}
 
 	public void updateProjectLastOpenedDate() {
