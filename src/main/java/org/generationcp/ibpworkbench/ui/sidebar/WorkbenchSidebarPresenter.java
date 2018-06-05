@@ -1,5 +1,11 @@
 package org.generationcp.ibpworkbench.ui.sidebar;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.generationcp.commons.security.AuthorizationUtil;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -7,10 +13,11 @@ import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
+import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.Tool;
-import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategory;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategoryLink;
+import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategoryLinkRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -22,12 +29,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 @Configurable
 public class WorkbenchSidebarPresenter implements InitializingBean {
@@ -47,9 +48,6 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 
 	@Value("${workbench.is.backup.and.restore.enabled}")
 	private String isBackupAndRestoreEnabled;
-
-	@Value("${workbench.import.germplasm.permissible.roles}")
-	private String importGermplasmPermissibleRoles;
 
 	@Autowired
 	private PlatformTransactionManager transactionManager;
@@ -89,15 +87,18 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 		final List<WorkbenchSidebarCategory> workbenchSidebarCategoryList = this.manager.getAllWorkbenchSidebarCategory();
 
 		for (final WorkbenchSidebarCategory category : workbenchSidebarCategoryList) {
-			if (ADMIN_CATEGORY.equals(category.getSidebarCategoryName())) {
+			if (isAdminCategory(category)) {
 				this.addAdminCategoryLinks(categoryLinks, category);
 			} else {
 				categoryLinks.addAll(this.manager.getAllWorkbenchSidebarLinksByCategoryId(category));
 			}
 		}
-
+		
 		for (final WorkbenchSidebarCategoryLink link : categoryLinks) {
-			if (isCategoryLinkPermissibleForUserRole(link)) {
+			// For now, we don't check user roles for ADMIN category links 
+			// since we add its links manually in this class and not retrieved from the DB
+			if (this.isAdminCategory(link.getWorkbenchSidebarCategory()) || 
+					isCategoryLinkPermissibleForUserRole(link)) {
 				if (sidebarLinks.get(link.getWorkbenchSidebarCategory()) == null) {
 					sidebarLinks.put(link.getWorkbenchSidebarCategory(), new ArrayList<WorkbenchSidebarCategoryLink>());
 				}
@@ -111,16 +112,24 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 		return sidebarLinks;
 	}
 
-	protected boolean isCategoryLinkPermissibleForUserRole(final WorkbenchSidebarCategoryLink link) {
-		if (ToolName.GERMPLASM_IMPORT.name().equalsIgnoreCase(link.getSidebarLinkName())) {
-			try {
-				AuthorizationUtil.preAuthorize(importGermplasmPermissibleRoles);
-			} catch (final AccessDeniedException ex) {
-				LOG.debug(ex.getMessage(), ex);
-				return false;
-			}
+	private boolean isAdminCategory(final WorkbenchSidebarCategory category) {
+		return ADMIN_CATEGORY.equals(category.getSidebarCategoryName());
+	}
 
+	protected boolean isCategoryLinkPermissibleForUserRole(final WorkbenchSidebarCategoryLink link) {
+		final List<Role> permittedRoles = new ArrayList<>();
+		final List<WorkbenchSidebarCategoryLinkRole> sidebarRoles = link.getRoles();
+		for (final WorkbenchSidebarCategoryLinkRole sidebarRole : sidebarRoles) {
+			permittedRoles.add(sidebarRole.getRole());
 		}
+
+		try {
+			AuthorizationUtil.preAuthorize(permittedRoles);
+		} catch (final AccessDeniedException ex) {
+			LOG.debug(ex.getMessage(), ex);
+			return false;
+		}
+
 		return true;
 	}
 
@@ -169,7 +178,4 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 		this.manager = manager;
 	}
 
-	public void setImportGermplasmPermissibleRoles(final String importGermplasmPermissibleRoles) {
-		this.importGermplasmPermissibleRoles = importGermplasmPermissibleRoles;
-	}
 }

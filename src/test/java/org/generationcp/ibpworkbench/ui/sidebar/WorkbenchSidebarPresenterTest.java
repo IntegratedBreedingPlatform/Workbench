@@ -150,8 +150,6 @@ public class WorkbenchSidebarPresenterTest {
 
 	@Test
 	public void testIsCategoryLinkPermissibleForUserRoleWithAdminAndPermissibleRolesAdmin() {
-		this.workbenchSidebarPresenter.setImportGermplasmPermissibleRoles("Admin");
-
 		final WorkbenchSidebarCategoryLink link = new WorkbenchSidebarCategoryLink();
 		link.setSidebarLinkName("germplasm_import");
 		final SimpleGrantedAuthority roleAuthority = new SimpleGrantedAuthority(SecurityUtil.ROLE_PREFIX + "ADMIN");
@@ -168,7 +166,6 @@ public class WorkbenchSidebarPresenterTest {
 
 	@Test
 	public void testIsCategoryLinkPermissibleForUserRoleWithAdminAndPermissibleRolesTechnician() {
-		this.workbenchSidebarPresenter.setImportGermplasmPermissibleRoles("Technician");
 		final SimpleGrantedAuthority roleAuthority = new SimpleGrantedAuthority(SecurityUtil.ROLE_PREFIX + "ADMIN");
 
 		this.loggedInUser = new UsernamePasswordAuthenticationToken("technician", "technician", Lists.newArrayList(roleAuthority));
