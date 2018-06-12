@@ -37,12 +37,6 @@ public class MultiSiteDataExporter {
 
 	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
-	/**
-	 * Generates GxE Multi-site analysis XML data, stored in workspace directory
-	 *
-	 * @return void
-	 */
-
 	@Autowired
 	private StudyDataManager studyDataManager;
 
@@ -269,4 +263,7 @@ public class MultiSiteDataExporter {
 		this.installationDirectoryUtil = installationDirectoryUtil;
 	}
 
+	public void setStudyDataManager(final StudyDataManager studyDataManager) {
+		this.studyDataManager = studyDataManager;
+	}
 }

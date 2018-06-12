@@ -162,10 +162,12 @@ public class GxeTableTest {
 	}
 
 	@Test
-	public void testFillTableWithDatasetWithTrialInstanceAsSelectedFactor() {
+	public void testFillTableWithDatasetWithTrialInstanceAsSelectedFactor() throws Exception {
 
 		final GxeTable gxeTable = new GxeTable(GxeTableTest.STUDY_ID, GxeTableTest.TRIAL_FACTOR,
 				"", this.variatesCheckBoxState, this.listener);
+		gxeTable.setStudyDataManager(this.studyDataManager);
+		gxeTable.afterPropertiesSet();
 
 		Assert.assertTrue("The Trial Instance Factor should always be visible in the table",
 				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.TRIAL_FACTOR));
@@ -195,10 +197,12 @@ public class GxeTableTest {
 	}
 
 	@Test
-	public void testFillTableWithDatasetWithTrialEnvironmentAsSelectedFactor() {
+	public void testFillTableWithDatasetWithTrialEnvironmentAsSelectedFactor() throws Exception {
 
 		final GxeTable gxeTable = new GxeTable(GxeTableTest.STUDY_ID, GxeTableTest.SITE_FACTOR,
 				"", this.variatesCheckBoxState, this.listener);
+		gxeTable.setStudyDataManager(this.studyDataManager);
+		gxeTable.afterPropertiesSet();
 
 		Assert.assertTrue("The Trial Instance Factor should always be visible in the table",
 				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.TRIAL_FACTOR));
@@ -230,10 +234,12 @@ public class GxeTableTest {
 	}
 
 	@Test
-	public void testFillTableWithDatasetAndTrialInstanceAsSelectedFactorAndWithSelectedGroupFactorName() {
+	public void testFillTableWithDatasetAndTrialInstanceAsSelectedFactorAndWithSelectedGroupFactorName() throws Exception {
 
 		final GxeTable gxeTable = new GxeTable(GxeTableTest.STUDY_ID, GxeTableTest.TRIAL_FACTOR,
 				GxeTableTest.GROUP_FACTOR, this.variatesCheckBoxState, this.listener);
+		gxeTable.setStudyDataManager(this.studyDataManager);
+		gxeTable.afterPropertiesSet();
 
 		Assert.assertTrue("The Trial Instance Factor should always be visible in the table",
 				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.TRIAL_FACTOR));
@@ -266,9 +272,11 @@ public class GxeTableTest {
 	}
 
 	@Test
-	public void testGetSelectedEnvironments() {
+	public void testGetSelectedEnvironments() throws Exception {
 		final GxeTable gxeTable = new GxeTable(GxeTableTest.STUDY_ID, GxeTableTest.SITE_FACTOR,
 				GxeTableTest.GROUP_FACTOR, this.variatesCheckBoxState, this.listener);
+		gxeTable.setStudyDataManager(this.studyDataManager);
+		gxeTable.afterPropertiesSet();
 		final List<Environment> environments = gxeTable.getSelectedEnvironments();
 		Assert.assertNotNull(environments);
 		Assert.assertEquals(1, environments.size());
@@ -280,19 +288,23 @@ public class GxeTableTest {
 	}
 
 	@Test
-	public void testGetGxeENvironment() {
+	public void testGetGxeENvironment() throws Exception {
 		final GxeTable gxeTable = new GxeTable(GxeTableTest.STUDY_ID, GxeTableTest.SITE_FACTOR,
 				GxeTableTest.GROUP_FACTOR, this.variatesCheckBoxState, this.listener);
+		gxeTable.setStudyDataManager(this.studyDataManager);
+		gxeTable.afterPropertiesSet();
 		final GxeEnvironment environment = gxeTable.getGxeEnvironment();
 		Assert.assertNotNull(environment);
 		Assert.assertEquals(1, environment.getLabels().size());
 	}
 
 	@Test
-	public void testFillTableWithDatasetAndTrialEnvironmentAsSelectedFactorAndWithSelectedGroupFactorName() {
+	public void testFillTableWithDatasetAndTrialEnvironmentAsSelectedFactorAndWithSelectedGroupFactorName() throws Exception {
 
 		final GxeTable gxeTable = new GxeTable(GxeTableTest.STUDY_ID, GxeTableTest.SITE_FACTOR,
 				GxeTableTest.GROUP_FACTOR, this.variatesCheckBoxState, this.listener);
+		gxeTable.setStudyDataManager(this.studyDataManager);
+		gxeTable.afterPropertiesSet();
 
 		Assert.assertTrue("The Trial Instance Factor should always be visible in the table",
 				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.TRIAL_FACTOR));

@@ -473,4 +473,8 @@ public class GxeTable extends Table implements InitializingBean {
 	public void afterPropertiesSet() throws Exception {
 		this.initializeTable();
 	}
+
+	protected void setStudyDataManager(final StudyDataManager studyDataManager) {
+		this.studyDataManager = studyDataManager;
+	}
 }

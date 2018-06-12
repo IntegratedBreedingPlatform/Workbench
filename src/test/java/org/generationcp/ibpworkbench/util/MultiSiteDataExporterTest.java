@@ -15,8 +15,10 @@ import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.Experiment;
 import org.generationcp.middleware.domain.dms.StandardVariable;
+import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableList;
+import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.junit.Before;
@@ -31,7 +33,7 @@ import org.mockito.MockitoAnnotations;
 import junit.framework.Assert;
 
 public class MultiSiteDataExporterTest {
-	
+
 	private static final String BREEDING_LOCATION = "Breeding Location ";
 	private static final String BASIC_FILE_NAME = "MaizeProgram_25124_Trial8-MEANS";
 	private static final String ENV_FACTOR = "TRIAL_INSTANCE";
@@ -43,7 +45,8 @@ public class MultiSiteDataExporterTest {
 	private static final String[] ENVIRONMENTS = {"1", "2", "3"};
 	private static final String[] GIDS = {"101", "102", "103", "104", "105"};
 	private static final String BMS_INPUT_FILES_DIR = "/someDirectory/breeding_view/input";
-	
+	public static final int STUDY_ID = 1;
+
 	private MultiSiteDataExporter multiSiteDataExporter;
 	
 	@Captor
@@ -54,6 +57,9 @@ public class MultiSiteDataExporterTest {
 	
 	@Mock
 	private InstallationDirectoryUtil installationDirectoryUtil;
+
+	@Mock
+	private StudyDataManager studyDataManager;
 	
 	private Project project;
 	
@@ -72,6 +78,7 @@ public class MultiSiteDataExporterTest {
 		// Need to spy so that actual writing of CSV files won't be performed during tests execution
 		this.multiSiteDataExporter = Mockito.spy(new MultiSiteDataExporter());
 		this.multiSiteDataExporter.setInstallationDirectoryUtil(this.installationDirectoryUtil);
+		this.multiSiteDataExporter.setStudyDataManager(studyDataManager);
 		
 		this.createMultiSiteParameters();
 		this.setupFileUtilMocks();
@@ -292,10 +299,12 @@ public class MultiSiteDataExporterTest {
 	private void createMultiSiteParameters() {
 		this.multiSiteParameters = new MultiSiteParameters();
 		this.project = ProjectTestDataInitializer.createProject();
+		final Study study = new Study();
+		study.setId(STUDY_ID);
 		multiSiteParameters.setProject(this.project);
 		multiSiteParameters.setSelectedEnvGroupFactorName(ENV_GROUP_FACTOR);
 		multiSiteParameters.setSelectedGenotypeFactorName(GENOTYPE_FACTOR);
-		
+		multiSiteParameters.setStudy(study);
 	}
 
 }
