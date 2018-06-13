@@ -22,7 +22,7 @@ import junit.framework.Assert;
 
 public class TableViewerComponentTest {
 	
-	private static final String STUDY_NAME = "TEST_TRIAL  ";
+	private static final String STUDY_NAME = "TEST_STUDY  ";
 	
 	private static final String XLS_FILEPATH = "/someDirectory/output/" + TableViewerComponent.FILENAME_PREFIX + ".xlsx";
 	

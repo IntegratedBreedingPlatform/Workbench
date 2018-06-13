@@ -27,7 +27,6 @@ import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.StudyReference;
-import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
@@ -245,8 +244,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		List<Reference> folderRef = null;
 
 		try {
-			folderRef = this.getStudyDataManager().getRootFolders(this.currentProject.getUniqueID(),
-					StudyType.trials());
+			folderRef = this.getStudyDataManager().getRootFolders(this.currentProject.getUniqueID());
 		} catch (final MiddlewareQueryException e1) {
 			SelectStudyDialog.LOG.error(e1.getMessage(), e1);
 			if (this.getWindow() != null) {
@@ -326,7 +324,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		try {
 
 			childrenReference = this.getStudyDataManager().getChildrenOfFolder(parentFolderReference.getId(),
-					this.currentProject.getUniqueID(), StudyType.trials());
+					this.currentProject.getUniqueID());
 
 		} catch (final MiddlewareQueryException e) {
 			SelectStudyDialog.LOG.error(e.getMessage(), e);
@@ -428,8 +426,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		List<Reference> children;
 
 		try {
-			children = this.getStudyDataManager().getChildrenOfFolder(folderId, this.currentProject.getUniqueID(),
-					StudyType.trials());
+			children = this.getStudyDataManager().getChildrenOfFolder(folderId, this.currentProject.getUniqueID());
 		} catch (final MiddlewareQueryException e) {
 			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
 					this.messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));

@@ -35,7 +35,7 @@ import junit.framework.Assert;
 public class MultiSiteDataExporterTest {
 
 	private static final String BREEDING_LOCATION = "Breeding Location ";
-	private static final String BASIC_FILE_NAME = "MaizeProgram_25124_Trial8-MEANS";
+	private static final String BASIC_FILE_NAME = "MaizeProgram_25124_Study8-MEANS";
 	private static final String ENV_FACTOR = "TRIAL_INSTANCE";
 	private static final String ENV_GROUP_FACTOR = "LOCATION_NAME";
 	private static final String GENOTYPE_FACTOR = "GID";
@@ -104,13 +104,13 @@ public class MultiSiteDataExporterTest {
 		for (final String env : ENVIRONMENTS) {
 			for (final String gid : GIDS) {
 				final VariableList factors = new VariableList();
-				DMSVariableType trialInstanceVariable = new DMSVariableType();
+				final DMSVariableType trialInstanceVariable = new DMSVariableType();
 				trialInstanceVariable.setLocalName(ENV_FACTOR);
 				factors.add(new Variable(trialInstanceVariable, env));
-				DMSVariableType gidVariable = new DMSVariableType();
+				final DMSVariableType gidVariable = new DMSVariableType();
 				gidVariable.setLocalName(GENOTYPE_FACTOR);
 				factors.add(new Variable(gidVariable, gid));
-				DMSVariableType locationVariable = new DMSVariableType();
+				final DMSVariableType locationVariable = new DMSVariableType();
 				locationVariable.setLocalName(ENV_GROUP_FACTOR);
 				factors.add(new Variable(locationVariable, BREEDING_LOCATION + env));
 				
@@ -136,7 +136,7 @@ public class MultiSiteDataExporterTest {
 		for (final String env : ENVIRONMENTS) {
 			final VariableList factors = new VariableList();
 		final VariableList variates = new VariableList();
-			DMSVariableType trialInstanceVariable = new DMSVariableType();
+			final DMSVariableType trialInstanceVariable = new DMSVariableType();
 			trialInstanceVariable.setLocalName(ENV_FACTOR);
 			factors.add(new Variable(trialInstanceVariable, env));
 			
@@ -213,6 +213,7 @@ public class MultiSiteDataExporterTest {
 	}
 	
 	@Test
+
 	public void testExportTrialDatasetToSummaryStatsCsv() {
 		this.multiSiteDataExporter.exportTrialDatasetToSummaryStatsCsv(1, BASIC_FILE_NAME, this.summaryExperiments, ENV_FACTOR,
 				this.meansTraits, this.project);

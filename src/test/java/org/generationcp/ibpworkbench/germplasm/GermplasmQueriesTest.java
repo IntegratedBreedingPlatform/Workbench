@@ -29,11 +29,11 @@ import org.springframework.transaction.PlatformTransactionManager;
 @RunWith(MockitoJUnitRunner.class)
 public class GermplasmQueriesTest {
 
-	private static final int TEST_TRIAL_ID_2 = 2;
-	private static final String TEST_TRIAL_NAME_2 = "TRIAL 2";
+	private static final int TEST_STUDY_ID_2 = 2;
+	private static final String TEST_STUDY_NAME_2 = "STUDY 2";
 
-	private static final int TEST_TRIAL_ID_1 = 1;
-	private static final String TEST_TRIAL_NAME_1 = "TRIAL 1";
+	private static final int TEST_STUDY_ID_1 = 1;
+	private static final String TEST_STUDY_NAME_1 = "STUDY 1";
 
 	@Mock
 	private PlatformTransactionManager transactionManager;
@@ -58,29 +58,29 @@ public class GermplasmQueriesTest {
 		Mockito.when(this.pedigreeDataManager.countPedigreeLevel(Matchers.anyInt(), Matchers.anyBoolean(), Matchers.anyBoolean()))
 				.thenThrow(MaxPedigreeLevelReachedException.class);
 
-		String label = this.dut.getPedigreeLevelCountLabel(1, true, false);
+		final String label = this.dut.getPedigreeLevelCountLabel(1, true, false);
 
 		Assert.assertEquals(GermplasmQueries.MAX_PEDIGREE_LABEL, label);
 	}
 
 	@Test
 	public void testGetPedigreeCountLabelMaxNotReached() throws MiddlewareQueryException {
-		int dummyPedigreeCount = 4;
+		final int dummyPedigreeCount = 4;
 		Mockito.when(this.pedigreeDataManager.countPedigreeLevel(Matchers.anyInt(), Matchers.anyBoolean(), Matchers.anyBoolean()))
 				.thenReturn(dummyPedigreeCount);
 
-		String label = this.dut.getPedigreeLevelCountLabel(1, true, false);
+		final String label = this.dut.getPedigreeLevelCountLabel(1, true, false);
 
 		Assert.assertEquals(dummyPedigreeCount + " generations", label);
 	}
 
 	@Test
 	public void testGetPedigreeCountLabelMaxNotReachedOneGenerationOnly() throws MiddlewareQueryException {
-		int dummyPedigreeCount = 1;
+		final int dummyPedigreeCount = 1;
 		Mockito.when(this.pedigreeDataManager.countPedigreeLevel(Matchers.anyInt(), Matchers.anyBoolean(), Matchers.anyBoolean()))
 				.thenReturn(dummyPedigreeCount);
 
-		String label = this.dut.getPedigreeLevelCountLabel(1, true, false);
+		final String label = this.dut.getPedigreeLevelCountLabel(1, true, false);
 
 		Assert.assertEquals(dummyPedigreeCount + " generation", label);
 	}
@@ -88,20 +88,20 @@ public class GermplasmQueriesTest {
 	@Test
 	public void testGetGermplasmStudyInfo() throws MiddlewareQueryException {
 
-		int testGid = 1;
-		StudyResultSet studyResultSet = Mockito.mock(StudyResultSet.class);
+		final int testGid = 1;
+		final StudyResultSet studyResultSet = Mockito.mock(StudyResultSet.class);
 		Mockito.when(this.studyDataManager.searchStudies(Mockito.any(StudyQueryFilter.class), Mockito.anyInt())).thenReturn(studyResultSet);
 		Mockito.when(studyResultSet.hasMore()).thenReturn(true).thenReturn(true).thenReturn(false);
-		Mockito.when(studyResultSet.next()).thenReturn(new StudyReference(TEST_TRIAL_ID_1, TEST_TRIAL_NAME_1))
-				.thenReturn(new StudyReference(TEST_TRIAL_ID_2, TEST_TRIAL_NAME_2));
+		Mockito.when(studyResultSet.next()).thenReturn(new StudyReference(TEST_STUDY_ID_1, TEST_STUDY_NAME_1))
+				.thenReturn(new StudyReference(TEST_STUDY_ID_2, TEST_STUDY_NAME_2));
 
-		List<StudyReference> result = this.dut.getGermplasmStudyInfo(testGid);
+		final List<StudyReference> result = this.dut.getGermplasmStudyInfo(testGid);
 
 		Assert.assertEquals(2, result.size());
-		Assert.assertEquals(TEST_TRIAL_ID_1, result.get(0).getId().intValue());
-		Assert.assertEquals(TEST_TRIAL_NAME_1, result.get(0).getName());
-		Assert.assertEquals(TEST_TRIAL_ID_2, result.get(1).getId().intValue());
-		Assert.assertEquals(TEST_TRIAL_NAME_2, result.get(1).getName());
+		Assert.assertEquals(TEST_STUDY_ID_1, result.get(0).getId().intValue());
+		Assert.assertEquals(TEST_STUDY_NAME_1, result.get(0).getName());
+		Assert.assertEquals(TEST_STUDY_ID_2, result.get(1).getId().intValue());
+		Assert.assertEquals(TEST_STUDY_NAME_2, result.get(1).getName());
 	}
 
 }

@@ -55,8 +55,8 @@ public class RunMultiSiteActionTest {
 	private static final String ENVIRONMENT_NAME = "SITE";
 	private static final String GENOTYPE_NAME = "GID";
 	private static final String PROJECT_NAME = "TEST MAIZE PROGRAM";
-	private static final String MEANS_DATASET_NAME = "TEST TRIAL-MEANS";
-	private static final String SUMMARY_DATASET_NAME = "TEST TRIAL-SUMMARY";
+	private static final String MEANS_DATASET_NAME = "TEST STUDY-MEANS";
+	private static final String SUMMARY_DATASET_NAME = "TEST STUDY-SUMMARY";
 	private static final String TEST_SPECIAL_CHARACTERS = "\\ &amp;/:*?'\"<>|[]{},.?~`!@#$%^&()-=_+111";
 	private static final int STUDY_ID = 98;
 	private static final int MEANS_DATASET_ID = 99;
@@ -191,7 +191,7 @@ public class RunMultiSiteActionTest {
 		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.multiSiteParameters.getProject(),
 				ToolName.BREEDING_VIEW);
 
-		Assert.assertEquals(BMS_INPUT_FILES_DIR + File.separator + PROJECT_NAME + "_0_TEST TRIAL-MEANS.xml", gxeInput.getDestXMLFilePath());
+		Assert.assertEquals(BMS_INPUT_FILES_DIR + File.separator + PROJECT_NAME + "_0_TEST STUDY-MEANS.xml", gxeInput.getDestXMLFilePath());
 
 	}
 

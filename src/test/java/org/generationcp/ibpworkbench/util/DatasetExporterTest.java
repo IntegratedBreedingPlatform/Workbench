@@ -495,10 +495,10 @@ public class DatasetExporterTest {
 
 	}
 
-	private Variable createVariableTestData(final DMSVariableType trial, final String value) {
+	private Variable createVariableTestData(final DMSVariableType study, final String value) {
 		final Variable variable = new Variable();
 		variable.setValue(value);
-		variable.setVariableType(trial);
+		variable.setVariableType(study);
 		return variable;
 	}
 
