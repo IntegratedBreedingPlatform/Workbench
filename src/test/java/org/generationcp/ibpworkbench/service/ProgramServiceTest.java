@@ -75,6 +75,7 @@ public class ProgramServiceTest {
 	private WorkbenchUser loggedInUser;
 	private WorkbenchUser memberUser;
 	private WorkbenchUser defaultAdminUser;
+	private User cropUser;
 
 	@Before
 	public void setup() throws Exception {
@@ -99,10 +100,12 @@ public class ProgramServiceTest {
 		this.loggedInUser = this.createUser(1, "mrbreeder", 1);
 		this.memberUser = this.createUser(2, "mrbreederfriend", 2);
 		this.defaultAdminUser = this.createUser(3, ProgramService.ADMIN_USERNAME, 3);
+		this.cropUser = this.loggedInUser.copyToUser();
+		this.cropUser.setUserid(1);
 
 		// Setup mocks
 		Mockito.when(this.contextUtil.getCurrentWorkbenchUser()).thenReturn(this.loggedInUser);
-		Mockito.when(this.userDataManager.getUserByUserName(this.loggedInUser.getName())).thenReturn(this.loggedInUser.copyToUser());
+		Mockito.when(this.userDataManager.getUserByUserName(this.loggedInUser.getName())).thenReturn(this.cropUser);
 		Mockito.when(this.userDataManager.getPersonByEmail(this.loggedInPerson.getEmail())).thenReturn(this.loggedInPerson);
 
 		Mockito.when(this.workbenchDataManager.getUserByUsername(ProgramService.ADMIN_USERNAME)).thenReturn(this.defaultAdminUser);
@@ -176,8 +179,7 @@ public class ProgramServiceTest {
 		final User user = this.programService.createCropUserIfNecessary(this.loggedInUser, this.loggedInPerson);
 
 		Mockito.verify(this.userDataManager, Mockito.times(0)).addUser(Matchers.any(User.class));
-		Assert.assertSame(user, this.loggedInUser.copyToUser());
-
+		Assert.assertSame(this.cropUser, user);
 	}
 
 	@Test

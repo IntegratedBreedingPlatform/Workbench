@@ -4,6 +4,7 @@ package org.generationcp.ibpworkbench.ui.programmembers;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -14,6 +15,8 @@ import org.generationcp.middleware.data.initializer.PersonTestDataInitializer;
 import org.generationcp.middleware.data.initializer.UserTestDataInitializer;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.Role;
+import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.junit.Assert;
 import org.junit.Before;
@@ -209,15 +212,21 @@ public class ProgramMembersPanelTest {
 
 	private List<WorkbenchUser> createProgramMembersTestData() {
 		final List<WorkbenchUser> programMembers = new ArrayList<>();
-		programMembers.add(UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.OWNER_USER_ID,
+		final WorkbenchUser user1 = UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.OWNER_USER_ID,
 				ProgramMembersPanelTest.OWNER_NAME, ProgramMembersPanelTest.OWNER_PERSON_ID,
-				ProgramMembersPanelTest.OWNER_NAME, ProgramMembersPanelTest.OWNER_NAME));
-		programMembers.add(UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.MEMBER_USER_ID,
+				ProgramMembersPanelTest.OWNER_NAME, ProgramMembersPanelTest.OWNER_NAME);
+		user1.setRoles(Collections.singletonList(new UserRole(user1, new Role(2, "Breeder"))));
+		programMembers.add(user1);
+		final WorkbenchUser user2 = UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.MEMBER_USER_ID,
 				ProgramMembersPanelTest.MEMBER_NAME, ProgramMembersPanelTest.MEMBER_PERSON_ID,
-				ProgramMembersPanelTest.MEMBER_NAME, ProgramMembersPanelTest.MEMBER_NAME));
-		programMembers.add(UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.ADMIN_USER_ID,
+				ProgramMembersPanelTest.MEMBER_NAME, ProgramMembersPanelTest.MEMBER_NAME);
+		user2.setRoles(Collections.singletonList(new UserRole(user2, new Role(3, "Technician"))));
+		programMembers.add(user2);
+		final WorkbenchUser user3 = UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.ADMIN_USER_ID,
 				ProgramService.ADMIN_USERNAME, ProgramMembersPanelTest.ADMIN_PERSON_ID,
-				ProgramMembersPanelTest.ADMIN_NAME, ProgramMembersPanelTest.ADMIN_NAME));
+				ProgramMembersPanelTest.ADMIN_NAME, ProgramMembersPanelTest.ADMIN_NAME);
+		user3.setRoles(Collections.singletonList(new UserRole(user3, new Role(1, "Admin"))));
+		programMembers.add(user3);
 		return programMembers;
 	}
 
