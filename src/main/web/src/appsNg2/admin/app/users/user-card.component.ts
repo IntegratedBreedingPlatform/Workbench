@@ -77,6 +77,7 @@ export class UserCard implements OnInit {
                     this.userSaved = true;
                     this.errorUserMessage = '';
                     this.sendEmailToResetPassword(resp);
+                    this.model.roleName = this.model.role.description;
                 },
                 error =>  {this.errorUserMessage =  this.mapErrorUser(error.json().ERROR.errors);
 
@@ -92,6 +93,7 @@ export class UserCard implements OnInit {
                     this.userSaved = true;
                     this.errorUserMessage = '';
                     this.sendEmailToResetPassword(resp);
+                    this.model.roleName = this.model.role.description;
                 },
                 error =>  {this.errorUserMessage =  this.mapErrorUser(error.json().ERROR.errors);
             });

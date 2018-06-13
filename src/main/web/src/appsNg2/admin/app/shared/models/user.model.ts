@@ -1,6 +1,8 @@
 import { Role } from './../shared/models/role.model';
 
 export class User {
+	// transient field for easy sorting and filtering
+	public roleName : String = "";
 
     constructor(public id: string,
                 public firstName: string,
@@ -9,6 +11,9 @@ export class User {
                 public role: Role,
                 public email: string,
                 public status: string ) {
+        if (role.description) {
+	        this.roleName = role.description;
+        }
     }
 
 }
