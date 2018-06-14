@@ -21,9 +21,9 @@ import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ public class SaveUsersInProjectAction implements ClickListener {
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOG = LoggerFactory.getLogger(SaveUsersInProjectAction.class);
 
-	private final TwinTableSelect<User> select;
+	private final TwinTableSelect<WorkbenchUser> select;
 
 	private final Project project;
 	
@@ -58,7 +58,7 @@ public class SaveUsersInProjectAction implements ClickListener {
 	@Autowired
 	private PlatformTransactionManager transactionManager;
 
-	public SaveUsersInProjectAction(Project project, TwinTableSelect<User> select) {
+	public SaveUsersInProjectAction(Project project, TwinTableSelect<WorkbenchUser> select) {
 		this.project = project;
 		this.select = select;
 	}
@@ -73,14 +73,14 @@ public class SaveUsersInProjectAction implements ClickListener {
 			return;
 		}
 
-		final Collection<User> userList = this.select.getValue();
+		final Collection<WorkbenchUser> userList = this.select.getValue();
 		try {
 			final TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
 			transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 				@Override
 				protected void doInTransactionWithoutResult(TransactionStatus status) {
 					// Update project members info (project
-					for (User u : userList) {
+					for (WorkbenchUser u : userList) {
 						if (SaveUsersInProjectAction.this.workbenchDataManager.getProjectUserInfoDao().getByProjectIdAndUserId(SaveUsersInProjectAction.this.project.getProjectId(),
 								u.getUserid()) == null) {
 							ProjectUserInfo pUserInfo = new ProjectUserInfo(SaveUsersInProjectAction.this.project, u.getUserid());

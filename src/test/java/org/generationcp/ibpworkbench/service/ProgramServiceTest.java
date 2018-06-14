@@ -20,6 +20,7 @@ import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.IbdbUserMap;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,9 +72,10 @@ public class ProgramServiceTest {
 	private Person loggedInPerson;
 	private Person memberPerson;
 	private Person defaultAdminPerson;
-	private User loggedInUser;
-	private User memberUser;
-	private User defaultAdminUser;
+	private WorkbenchUser loggedInUser;
+	private WorkbenchUser memberUser;
+	private WorkbenchUser defaultAdminUser;
+	private User cropUser;
 
 	@Before
 	public void setup() throws Exception {
@@ -98,10 +100,12 @@ public class ProgramServiceTest {
 		this.loggedInUser = this.createUser(1, "mrbreeder", 1);
 		this.memberUser = this.createUser(2, "mrbreederfriend", 2);
 		this.defaultAdminUser = this.createUser(3, ProgramService.ADMIN_USERNAME, 3);
+		this.cropUser = this.loggedInUser.copyToUser();
+		this.cropUser.setUserid(1);
 
 		// Setup mocks
 		Mockito.when(this.contextUtil.getCurrentWorkbenchUser()).thenReturn(this.loggedInUser);
-		Mockito.when(this.userDataManager.getUserByUserName(this.loggedInUser.getName())).thenReturn(this.loggedInUser);
+		Mockito.when(this.userDataManager.getUserByUserName(this.loggedInUser.getName())).thenReturn(this.cropUser);
 		Mockito.when(this.userDataManager.getPersonByEmail(this.loggedInPerson.getEmail())).thenReturn(this.loggedInPerson);
 
 		Mockito.when(this.workbenchDataManager.getUserByUsername(ProgramService.ADMIN_USERNAME)).thenReturn(this.defaultAdminUser);
@@ -114,7 +118,7 @@ public class ProgramServiceTest {
 	public void testCreateNewProgram() throws Exception {
 		// Create test data and set up mocks
 		final Project project = this.createProject();
-		final Set<User> selectedUsers = new HashSet<User>();
+		final Set<WorkbenchUser> selectedUsers = new HashSet<WorkbenchUser>();
 		selectedUsers.add(this.loggedInUser);
 		selectedUsers.add(this.memberUser);
 
@@ -172,11 +176,10 @@ public class ProgramServiceTest {
 	@Test
 	public void testCreateCropUserIfNecessaryWhenUserIsExisting() {
 		// Call method to test
-		final User result = this.programService.createCropUserIfNecessary(this.loggedInUser, this.loggedInPerson);
+		final User user = this.programService.createCropUserIfNecessary(this.loggedInUser, this.loggedInPerson);
 
 		Mockito.verify(this.userDataManager, Mockito.times(0)).addUser(Matchers.any(User.class));
-		Assert.assertSame(result, this.loggedInUser);
-
+		Assert.assertSame(this.cropUser, user);
 	}
 
 	@Test
@@ -185,16 +188,16 @@ public class ProgramServiceTest {
 		Mockito.when(this.userDataManager.getUserByUserName(this.loggedInUser.getName())).thenReturn(null);
 
 		// Call method to test
-		final User result = this.programService.createCropUserIfNecessary(this.loggedInUser, this.memberPerson);
+		final User user = this.programService.createCropUserIfNecessary(this.loggedInUser, this.memberPerson);
 
 		Mockito.verify(this.userDataManager, Mockito.times(1)).addUser(Matchers.any(User.class));
 
-		Assert.assertEquals(this.memberPerson.getId(), result.getPersonid());
-		Assert.assertEquals(Integer.valueOf(ProgramService.PROJECT_USER_ACCESS_NUMBER), result.getAccess());
-		Assert.assertEquals(Integer.valueOf(ProgramService.PROJECT_USER_TYPE), result.getType());
-		Assert.assertEquals(Integer.valueOf(0), result.getInstalid());
-		Assert.assertEquals(Integer.valueOf(ProgramService.PROJECT_USER_STATUS), result.getStatus());
-		Assert.assertNotNull(result.getAssignDate());
+		Assert.assertEquals(this.memberPerson.getId(), user.getPersonid());
+		Assert.assertEquals(Integer.valueOf(ProgramService.PROJECT_USER_ACCESS_NUMBER), user.getAccess());
+		Assert.assertEquals(Integer.valueOf(ProgramService.PROJECT_USER_TYPE), user.getType());
+		Assert.assertEquals(Integer.valueOf(0), user.getInstalid());
+		Assert.assertEquals(Integer.valueOf(ProgramService.PROJECT_USER_STATUS), user.getStatus());
+		Assert.assertNotNull(user.getAssignDate());
 
 	}
 
@@ -202,7 +205,7 @@ public class ProgramServiceTest {
 	public void testSaveWorkbenchUserToCropUserMapping() {
 
 		final Project project = this.createProject();
-		final Set<User> users = new HashSet<>();
+		final Set<WorkbenchUser> users = new HashSet<>();
 		users.add(this.loggedInUser);
 
 		// Call method to test
@@ -216,7 +219,7 @@ public class ProgramServiceTest {
 	public void testSaveProgramMembersWhenDefaultAdminPartOfSelectedUsers() {
 		// Setup test project users
 		final Project project = this.createProject();
-		final Set<User> selectedUsers = new HashSet<User>();
+		final Set<WorkbenchUser> selectedUsers = new HashSet<WorkbenchUser>();
 		selectedUsers.add(this.loggedInUser);
 		selectedUsers.add(this.memberUser);
 		selectedUsers.add(this.defaultAdminUser);
@@ -231,7 +234,7 @@ public class ProgramServiceTest {
 	public void testSaveProgramMembersWhenDefaultAdminNotPartOfSelectedUsers() {
 		// Setup test project users
 		final Project project = this.createProject();
-		final Set<User> selectedUsers = new HashSet<User>();
+		final Set<WorkbenchUser> selectedUsers = new HashSet<WorkbenchUser>();
 		selectedUsers.add(this.loggedInUser);
 		selectedUsers.add(this.memberUser);
 
@@ -273,8 +276,8 @@ public class ProgramServiceTest {
 		return person;
 	}
 
-	private User createUser(final Integer userId, final String username, final Integer personId) {
-		final User loggedInUser = new User();
+	private WorkbenchUser createUser(final Integer userId, final String username, final Integer personId) {
+		final WorkbenchUser loggedInUser = new WorkbenchUser();
 		loggedInUser.setUserid(userId);
 		loggedInUser.setName(username);
 		loggedInUser.setPersonid(personId);

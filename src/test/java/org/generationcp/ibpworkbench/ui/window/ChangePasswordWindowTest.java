@@ -3,7 +3,7 @@ package org.generationcp.ibpworkbench.ui.window;
 import junit.framework.Assert;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.actions.ChangePasswordAction;
-import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +28,7 @@ public class ChangePasswordWindowTest {
 		changePasswordWindow.setContextUtil(contextUtil);
 		changePasswordWindow.initializeComponents();
 
-		final User user = new User();
+		final WorkbenchUser user = new WorkbenchUser();
 		user.setName(USER_NAME);
 		when(contextUtil.getCurrentWorkbenchUser()).thenReturn(user);
 

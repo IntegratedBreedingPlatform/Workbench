@@ -16,9 +16,9 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.database.CropDatabaseGenerator;
 import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -136,8 +136,8 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 	 */
 	void addDefaultAdminAndCurrentUserAsMembersOfRestoredPrograms(final List<Project> projects) {
 
-		final User currentUser = contextUtil.getCurrentWorkbenchUser();
-		final HashSet<User> users = new HashSet<>();
+		final WorkbenchUser currentUser = contextUtil.getCurrentWorkbenchUser();
+		final HashSet<WorkbenchUser> users = new HashSet<>();
 		users.add(currentUser);
 
 		for (final Project proj : projects) {

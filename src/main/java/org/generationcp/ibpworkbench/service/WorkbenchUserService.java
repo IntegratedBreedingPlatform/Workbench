@@ -11,10 +11,9 @@ import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
-import org.generationcp.middleware.pojos.User;
-import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.generationcp.middleware.pojos.workbench.UserRole;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -33,7 +32,6 @@ public class WorkbenchUserService {
 	 * Cretes new user account
 	 * 
 	 * @param userAccount
-	 * @throws org.generationcp.middleware.exceptions.MiddlewareQueryException
 	 */
 	public void saveUserAccount(UserAccountModel userAccount) {
 		// user.access =  0 - Default User
@@ -45,7 +43,7 @@ public class WorkbenchUserService {
 		Integer currentDate = DateUtil.getCurrentDateAsIntegerValue();
 		Person person = this.createPerson(userAccount);
 
-		User user = new User();
+		WorkbenchUser user = new WorkbenchUser();
 		user.setPersonid(person.getId());
 		user.setPerson(person);
 		user.setName(userAccount.getUsername());
@@ -63,10 +61,10 @@ public class WorkbenchUserService {
 
 	}
 
-	public User saveNewUserAccount(UserAccountModel userAccount) {
+	public WorkbenchUser saveNewUserAccount(UserAccountModel userAccount) {
 		Person person = this.createPerson(userAccount);
 
-		User user = new User();
+		WorkbenchUser user = new WorkbenchUser();
 		user.setPersonid(person.getId());
 		user.setPerson(person);
 		user.setName(userAccount.getUsername());
@@ -112,7 +110,7 @@ public class WorkbenchUserService {
 	 * @throws MiddlewareQueryException
 	 */
 	public boolean isUserActive(UserAccountModel userAccount) {
-		User user = this.getUserByUserName(userAccount.getUsername());
+		WorkbenchUser user = this.getUserByUserName(userAccount.getUsername());
 
 		if (user != null) {
 			Integer status = user.getStatus();
@@ -130,7 +128,7 @@ public class WorkbenchUserService {
 	 * @throws MiddlewareQueryException
 	 */
 	public boolean isValidUserLogin(UserAccountModel userAccount) {
-		User user = this.getUserByUserName(userAccount.getUsername());
+		WorkbenchUser user = this.getUserByUserName(userAccount.getUsername());
 
 		if (user != null) {
 			return passwordEncoder.matches(userAccount.getPassword(), user.getPassword());
@@ -146,11 +144,11 @@ public class WorkbenchUserService {
 	 * @return
 	 * @throws MiddlewareQueryException
 	 */
-	public User getUserByUserName(String username) throws MiddlewareQueryException {
-		List<User> userList = this.workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL);
+	public WorkbenchUser getUserByUserName(String username) throws MiddlewareQueryException {
+		List<WorkbenchUser> userList = this.workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL);
 
 		if (!userList.isEmpty()) {
-			User user = userList.get(0);
+			WorkbenchUser user = userList.get(0);
 			Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
 			user.setPerson(person);
 			return user;
@@ -166,9 +164,9 @@ public class WorkbenchUserService {
 	 * @return
 	 * @throws MiddlewareQueryException
 	 */
-	public User getUserByUserid(Integer userId) {
+	public WorkbenchUser getUserByUserid(Integer userId) {
 
-		User user = this.workbenchDataManager.getUserById(userId);
+		WorkbenchUser user = this.workbenchDataManager.getUserById(userId);
 		Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
 		user.setPerson(person);
 

@@ -27,7 +27,7 @@
                 <div class="form-group">
                   <label class="">Role: </label>
                   &nbsp;
-                  <select  class="form-control" name="role" [(ngModel)]="table.searchValue.role">
+                  <select  class="form-control" name="role" [(ngModel)]="table.searchValue.roleName">
                     <option value="undefined">All</option>
                     <option  *ngFor="let role of roles" [value]="role.description">{{role.description}}</option>
                   </select>
@@ -45,7 +45,7 @@
                         <th [ngClass]="{ sort: isSorted('firstName'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('firstName')">First Name</th>
                         <th [ngClass]="{ sort: isSorted('lastName'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('lastName')">Last Name</th>
                         <th [ngClass]="{ sort: isSorted('email'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('email')">Email</th>
-                        <th [ngClass]="{ sort: isSorted('role'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('role')">Role</th>
+                        <th [ngClass]="{ sort: isSorted('roleName'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('roleName')">Role</th>
                         <th [ngClass]="{ sort: isSorted('status'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('status')">Status</th>
                     </tr>
                 </thead>
@@ -58,7 +58,7 @@
                         <td>{{user.firstName}}</td>
                         <td>{{user.lastName}}</td>
                         <td>{{user.email}}</td>
-                        <td>{{user.role}}</td>
+                        <td>{{user.roleName}}</td>
                         <td>
                           <a href="javascript:void(0)" *ngIf="user.status == 'true'" (click)="showUserStatusConfirmPopUp(user)">Deactivate</a>
                           <a href="javascript:void(0)" *ngIf="user.status == 'false'" (click)="showUserStatusConfirmPopUp(user)">Activate</a>

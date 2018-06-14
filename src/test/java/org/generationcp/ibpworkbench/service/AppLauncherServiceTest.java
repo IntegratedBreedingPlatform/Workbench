@@ -6,11 +6,11 @@ import org.generationcp.commons.tomcat.util.TomcatUtil;
 import org.generationcp.ibpworkbench.exception.AppLaunchException;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.generationcp.middleware.pojos.workbench.ToolType;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -216,7 +216,7 @@ public class AppLauncherServiceTest {
 		aWebTool.setPath(AppLauncherServiceTest.SAMPLE_BASE_URL);
 		aWebTool.setToolType(ToolType.WEB_WITH_LOGIN);
 
-		final User user = new User();
+		final WorkbenchUser user = new WorkbenchUser();
 		user.setUserid(LOGGED_IN_USER_ID);
 		user.setName("a_username");
 		user.setPassword("a_password");

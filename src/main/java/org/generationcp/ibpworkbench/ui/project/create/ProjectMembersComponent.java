@@ -25,8 +25,8 @@ import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -62,7 +62,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 	private static final String ROLE = "role";
 	private static final String USERNAME = "userName";
 
-	private TwinTableSelect<User> select;
+	private TwinTableSelect<WorkbenchUser> select;
 
 	private Button cancelButton;
 	private Button saveButton;
@@ -106,7 +106,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 		this.setSpacing(true);
 		this.setMargin(true);
 
-		this.select = new TwinTableSelect<>(User.class);
+		this.select = new TwinTableSelect<>(WorkbenchUser.class);
 
 		final Table.ColumnGenerator tableLeftUserName = new Table.ColumnGenerator() {
 
@@ -189,7 +189,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
 			Object selectItem = null;
 			for (final Object itemId : this.select.getTableLeft().getItemIds()) {
-				if (((User) itemId).getUserid().equals(this.contextUtil.getCurrentWorkbenchUserId())) {
+				if (((WorkbenchUser) itemId).getUserid().equals(this.contextUtil.getCurrentWorkbenchUserId())) {
 					selectItem = itemId;
 				}
 			}
@@ -269,36 +269,36 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 	}
 
 	Label generateRoleCell(final Object itemId) {
-		final String role = ((User) itemId).getRoles().get(0).getCapitalizedRole();
+		final String role = ((WorkbenchUser) itemId).getRoles().get(0).getCapitalizedRole();
 		final Label label = new Label();
 		label.setDebugId("label");
 		label.setValue(role);
 
-		if (((User) itemId).getUserid().equals(this.contextUtil.getCurrentWorkbenchUserId())) {
+		if (((WorkbenchUser) itemId).getUserid().equals(this.contextUtil.getCurrentWorkbenchUserId())) {
 			label.setStyleName("label-bold");
 		}
 		return label;
 	}
 
 	Label generateUserNameCell(final Object itemId) {
-		final Person person = ((User) itemId).getPerson();
+		final Person person = ((WorkbenchUser) itemId).getPerson();
 		final Label label = new Label();
 		label.setDebugId("label");
 		label.setValue(person.getDisplayName());
 
-		if (((User) itemId).getUserid().equals(this.contextUtil.getCurrentWorkbenchUserId())) {
+		if (((WorkbenchUser) itemId).getUserid().equals(this.contextUtil.getCurrentWorkbenchUserId())) {
 			label.setStyleName("label-bold");
 		}
 		return label;
 	}
 
 	Container createUsersContainer() {
-		final List<User> validUserList = new ArrayList<>();
+		final List<WorkbenchUser> validUserList = new ArrayList<>();
 
 		// TODO: This can be improved once we implement proper User-Person
 		// mapping
-		final List<User> userList = this.workbenchDataManager.getAllActiveUsersSorted();
-		for (final User user : userList) {
+		final List<WorkbenchUser> userList = this.workbenchDataManager.getAllActiveUsersSorted();
+		for (final WorkbenchUser user : userList) {
 			final Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
 			user.setPerson(person);
 
@@ -307,8 +307,8 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 			}
 		}
 
-		final BeanItemContainer<User> beanItemContainer = new BeanItemContainer<>(User.class);
-		for (final User user : validUserList) {
+		final BeanItemContainer<WorkbenchUser> beanItemContainer = new BeanItemContainer<>(WorkbenchUser.class);
+		for (final WorkbenchUser user : validUserList) {
 			if (user.getUserid().equals(this.contextUtil.getCurrentWorkbenchUserId())) {
 				user.setEnabled(false);
 			}
@@ -319,7 +319,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 		return beanItemContainer;
 	}
 
-	public Set<User> getSelectedUsers() {
+	public Set<WorkbenchUser> getSelectedUsers() {
 		return this.select.getValue();
 	}
 

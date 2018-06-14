@@ -25,7 +25,7 @@ import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.ibpworkbench.actions.ChangePasswordAction;
-import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -128,7 +128,7 @@ public class ChangePasswordWindow extends BaseSubWindow implements InitializingB
 
 
 	protected void initializeActions() {
-		final User user = contextUtil.getCurrentWorkbenchUser();
+		final WorkbenchUser user = contextUtil.getCurrentWorkbenchUser();
 
 		this.saveButton.addListener(new ChangePasswordAction(user.getName(), this.password, this.confirmPassword));
 		this.cancelButton.addListener(new RemoveWindowListener());

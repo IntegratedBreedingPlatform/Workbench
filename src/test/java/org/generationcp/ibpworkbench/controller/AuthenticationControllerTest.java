@@ -22,8 +22,8 @@ import org.generationcp.ibpworkbench.validator.ForgotPasswordAccountValidator;
 import org.generationcp.ibpworkbench.validator.UserAccountValidator;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -173,7 +173,7 @@ public class AuthenticationControllerTest {
 	@Test
 	public void testGetCreateNewPasswordPage() throws Exception {
 		// assume everything is well
-		User user = new User();
+		WorkbenchUser user = new WorkbenchUser();
 		Model model = Mockito.mock(Model.class);
 		Mockito.when(this.workbenchEmailSenderService.validateResetToken(AuthenticationControllerTest.TEST_RESET_PASSWORD_TOKEN))
 		.thenReturn(user);
@@ -207,8 +207,8 @@ public class AuthenticationControllerTest {
 	@Test
 	public void testDoSendResetPasswordRequestEmail() throws Exception {
 		// default success scenario
-		Mockito.when(this.workbenchUserService.getUserByUserName(Matchers.anyString())).thenReturn(Mockito.mock(User.class));
-		Mockito.doNothing().when(this.workbenchEmailSenderService).doRequestPasswordReset(Matchers.any(User.class));
+		Mockito.when(this.workbenchUserService.getUserByUserName(Matchers.anyString())).thenReturn(Mockito.mock(WorkbenchUser.class));
+		Mockito.doNothing().when(this.workbenchEmailSenderService).doRequestPasswordReset(Matchers.any(WorkbenchUser.class));
 
 		ResponseEntity<Map<String, Object>> result = this.controller.doSendResetPasswordRequestEmail(Mockito.mock(UserAccountModel.class));
 
@@ -220,9 +220,9 @@ public class AuthenticationControllerTest {
 	@Test
 	public void testDoSendResetPasswordRequestEmailWithErrors() throws Exception {
 		// houston we have a problem
-		Mockito.when(this.workbenchUserService.getUserByUserName(Matchers.anyString())).thenReturn(Mockito.mock(User.class));
+		Mockito.when(this.workbenchUserService.getUserByUserName(Matchers.anyString())).thenReturn(Mockito.mock(WorkbenchUser.class));
 		Mockito.doThrow(new MessagingException("i cant send me message :(")).when(this.workbenchEmailSenderService)
-		.doRequestPasswordReset(Matchers.any(User.class));
+		.doRequestPasswordReset(Matchers.any(WorkbenchUser.class));
 
 		ResponseEntity<Map<String, Object>> result = this.controller.doSendResetPasswordRequestEmail(Mockito.mock(UserAccountModel.class));
 
@@ -297,10 +297,10 @@ public class AuthenticationControllerTest {
 		// default success scenario
 		Integer id = RandomUtils.nextInt();
 		Mockito.when(this.workbenchUserService.getUserByUserName(Matchers.anyString()))
-				.thenReturn(Mockito.mock(User.class));
+				.thenReturn(Mockito.mock(WorkbenchUser.class));
 		Mockito.when(this.workbenchUserService.getUserByUserid(id))
-				.thenReturn(Mockito.mock(User.class));
-		Mockito.doNothing().when(this.workbenchEmailSenderService).doRequestPasswordReset(Matchers.any(User.class));
+				.thenReturn(Mockito.mock(WorkbenchUser.class));
+		Mockito.doNothing().when(this.workbenchEmailSenderService).doRequestPasswordReset(Matchers.any(WorkbenchUser.class));
 
 		ResponseEntity<Map<String, Object>> result = this.controller
 				.sendResetPasswordEmail(id);
@@ -315,11 +315,11 @@ public class AuthenticationControllerTest {
 		// houston we have a problem
 		Integer id = RandomUtils.nextInt();
 		Mockito.when(this.workbenchUserService.getUserByUserName(Matchers.anyString()))
-				.thenReturn(Mockito.mock(User.class));
+				.thenReturn(Mockito.mock(WorkbenchUser.class));
 		Mockito.when(this.workbenchUserService.getUserByUserid(id))
-				.thenReturn(Mockito.mock(User.class));
+				.thenReturn(Mockito.mock(WorkbenchUser.class));
 		Mockito.doThrow(new MessagingException("i cant send me message :(")).when(this.workbenchEmailSenderService)
-				.doRequestPasswordReset(Matchers.any(User.class));
+				.doRequestPasswordReset(Matchers.any(WorkbenchUser.class));
 
 		ResponseEntity<Map<String, Object>> result = this.controller
 				.sendResetPasswordEmail(id);

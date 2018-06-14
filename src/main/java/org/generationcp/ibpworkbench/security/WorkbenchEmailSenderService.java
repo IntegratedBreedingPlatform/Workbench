@@ -11,10 +11,10 @@ import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -84,7 +84,7 @@ public class WorkbenchEmailSenderService {
 	@Value("${reset.expiry.hours}")
 	private Integer noOfHoursBeforeExpire;
 
-	public void doRequestPasswordReset(final User user) throws MessagingException {
+	public void doRequestPasswordReset(final WorkbenchUser user) throws MessagingException {
 
 		UserInfo userInfo = null;
 		try {
@@ -125,7 +125,7 @@ public class WorkbenchEmailSenderService {
 		final List<ProjectActivity> projectActivitiesByProjectId =
 				workbenchDataManager.getProjectActivitiesByProjectId(lastOpenedProject.getProjectId(), 0, 1);
 
-		final User currentUser = contextUtil.getCurrentWorkbenchUser();
+		final WorkbenchUser currentUser = contextUtil.getCurrentWorkbenchUser();
 		// bms user account used
 		final String accountFullName = currentUser.getPerson().getDisplayName();
 		final String accountUsername = currentUser.getName();
@@ -238,7 +238,7 @@ public class WorkbenchEmailSenderService {
 		return new MimeMessageHelper(mimeMessage, true, "UTF-8");
 	}
 
-	public User validateResetToken(final String token) throws InvalidResetTokenException {
+	public WorkbenchUser validateResetToken(final String token) throws InvalidResetTokenException {
 		UserInfo userInfo = null;
 		try {
 			userInfo = this.workbenchDataManager.getUserInfoByResetToken(token);
