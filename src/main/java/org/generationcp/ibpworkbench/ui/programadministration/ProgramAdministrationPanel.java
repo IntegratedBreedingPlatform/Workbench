@@ -179,7 +179,7 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 		return tab;
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
 	protected void addProgramMembersTab(final TabSheet tabSheet, final ProgramMembersPanel programMembersPanel) {
 
 		// Do not display the Program Members tab if BMS is in single user mode.
@@ -190,7 +190,7 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 		}
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
 	private void addSystemLabelsTab() {
 		this.tabSheet.addTab(this.systemLabelPanel);
 		this.tabSheet.getTab(this.systemLabelPanel).setClosable(false);

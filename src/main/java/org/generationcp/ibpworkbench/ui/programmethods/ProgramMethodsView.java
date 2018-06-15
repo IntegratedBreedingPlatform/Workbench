@@ -225,7 +225,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 		this.initializeFilterForm();
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
 	private void initializeRestrictedComponents() {
 		this.addNewMethodsBtn.setVisible(true);
 	}
@@ -826,7 +826,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 			private static final long serialVersionUID = -6938448455072630697L;
 
 			@Override
-			@PreAuthorize("hasRole('ROLE_ADMIN')")
+			@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
 			public void buttonClick(Button.ClickEvent event) {
 				event.getComponent()
 						.getWindow()

@@ -192,7 +192,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		this.initializeFilterForm();
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
 	private void addRestrictredComponents() {
 
 		this.addNewLocationsBtn.setVisible(true);

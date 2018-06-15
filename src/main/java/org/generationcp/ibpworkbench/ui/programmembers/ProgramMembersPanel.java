@@ -316,11 +316,11 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			item.getItemProperty(ProgramMembersPanel.ROLE).setValue(userTemp.getRoles().get(0).getCapitalizedRole());
 
 			/*
-			 * If user has SUPERADMINE role, disable selection so it cannot be removed.
+			 * If user has SUPERADMIN role, disable selection so it cannot be removed.
 			 * Disabling is done here so that it can still be selected in
 			 * Available Users table
 			 */
-			if (this.workbenchDataManager.isSuperAdminUser(userID)) {
+			if (userTemp.getRoles().get(0).getRole().isSuperAdminUser()) {
 				userTemp.setEnabled(false);
 			}
 

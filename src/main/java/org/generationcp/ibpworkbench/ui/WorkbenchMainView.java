@@ -528,7 +528,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.workbenchHeaderLayout.requestRepaint();
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
 	protected void layoutAdminButton() {
 		addAdminButton(this.workbenchHeaderLayout);
 	}
@@ -542,7 +542,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
 	protected void layoutAddProgramButton(final HorizontalLayout layout) {
 
 		if (Boolean.parseBoolean(this.isAddProgramEnabled)) {
