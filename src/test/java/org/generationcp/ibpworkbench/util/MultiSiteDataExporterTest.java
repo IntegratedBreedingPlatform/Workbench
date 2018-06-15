@@ -1,11 +1,8 @@
 package org.generationcp.ibpworkbench.util;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import junit.framework.Assert;
 import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
@@ -30,7 +27,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import junit.framework.Assert;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 public class MultiSiteDataExporterTest {
 
@@ -38,6 +39,7 @@ public class MultiSiteDataExporterTest {
 	private static final String BASIC_FILE_NAME = "MaizeProgram_25124_Study8-MEANS";
 	private static final String ENV_FACTOR = "TRIAL_INSTANCE";
 	private static final String ENV_GROUP_FACTOR = "LOCATION_NAME";
+	private static final String LOCATION_ID = "LOCATION_ID";
 	private static final String GENOTYPE_FACTOR = "GID";
 	private static final String MEANS = "_Means";
 	private static final String[] TRAITS = {"Aflatox_M_ppb", "EDia_M_cm", "SilkLng_M_cm"};
@@ -64,8 +66,7 @@ public class MultiSiteDataExporterTest {
 	private Project project;
 	
 	private MultiSiteParameters multiSiteParameters;
-	
-	private List<Experiment> meansExperiments;
+
 	private List<Experiment> summaryExperiments;
 	private List<Trait> meansTraits;
 	private List<Trait> summaryTraits;
@@ -86,8 +87,7 @@ public class MultiSiteDataExporterTest {
 		this.summaryTraits = this.createTraits(Arrays.asList(SUMMARY_SUFFIX));
 		this.gxeEnvironment = new GxeEnvironment();
 		this.gxeEnvironment.setLabel(this.createGxeEnviornments(ENVIRONMENTS));
-	
-		this.createMeansExperiments();
+
 		this.createSummaryExperiments();
 	}
 
@@ -98,97 +98,27 @@ public class MultiSiteDataExporterTest {
 				Matchers.eq(true));
 		Mockito.doReturn(BMS_INPUT_FILES_DIR).when(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
 	}
-
-	private void createMeansExperiments() {
-		this.meansExperiments = new ArrayList<>();
-		for (final String env : ENVIRONMENTS) {
-			for (final String gid : GIDS) {
-				final VariableList factors = new VariableList();
-				final DMSVariableType trialInstanceVariable = new DMSVariableType();
-				trialInstanceVariable.setLocalName(ENV_FACTOR);
-				factors.add(new Variable(trialInstanceVariable, env));
-				final DMSVariableType gidVariable = new DMSVariableType();
-				gidVariable.setLocalName(GENOTYPE_FACTOR);
-				factors.add(new Variable(gidVariable, gid));
-				final DMSVariableType locationVariable = new DMSVariableType();
-				locationVariable.setLocalName(ENV_GROUP_FACTOR);
-				factors.add(new Variable(locationVariable, BREEDING_LOCATION + env));
-				
-				final VariableList variates = new VariableList();
-				for (int i = 1; i <= this.meansTraits.size(); i++) {
-					final DMSVariableType traitVariable = new DMSVariableType();
-					traitVariable.setLocalName(this.meansTraits.get(i-1).getName());
-					final StandardVariable standardVar = new StandardVariable();
-					standardVar.setId(Integer.valueOf(gid + i));
-					traitVariable.setStandardVariable(standardVar);
-					variates.add(new Variable(traitVariable, Double.valueOf(gid + "." + i)));
-				}
-				final Experiment experiment = new Experiment();
-				experiment.setFactors(factors);
-				experiment.setVariates(variates);
-				this.meansExperiments.add(experiment);
-			}
-		}
-	}
-	
-	private void createSummaryExperiments() {
-		this.summaryExperiments = new ArrayList<>();
-		for (final String env : ENVIRONMENTS) {
-			final VariableList factors = new VariableList();
-		final VariableList variates = new VariableList();
-			final DMSVariableType trialInstanceVariable = new DMSVariableType();
-			trialInstanceVariable.setLocalName(ENV_FACTOR);
-			factors.add(new Variable(trialInstanceVariable, env));
-			
-			for (int j = 1; j <= this.summaryTraits.size(); j++) {
-				final DMSVariableType traitVariable = new DMSVariableType();
-				traitVariable.setLocalName(this.summaryTraits.get(j-1).getName());
-				final StandardVariable standardVar = new StandardVariable();
-				standardVar.setId(j);
-				traitVariable.setStandardVariable(standardVar);
-				variates.add(new Variable(traitVariable, Double.valueOf((Integer.valueOf(env) * 10) + "." + j)));
-			}
-			final Experiment experiment = new Experiment();
-			experiment.setFactors(factors);
-			experiment.setVariates(variates);
-			this.summaryExperiments.add(experiment);
-		}
-	}
-	
-	private List<Trait> createTraits(final List<String> suffixes) {
-		final List<Trait> traits = new ArrayList<>();
-		for (final String var : TRAITS) {
-			for (final String suffix : suffixes) {
-				final Trait trait = new Trait();
-				trait.setName(var + suffix);
-				traits.add(trait);
-			}		
-		}
-		return traits;
-	}
-	
-	private List<GxeEnvironmentLabel> createGxeEnviornments(final String[] environments) {
-		final List<GxeEnvironmentLabel> gxeEnvironments = new ArrayList<>();
-		for (final String name : environments) {
-			final GxeEnvironmentLabel gxeEnvironment = new GxeEnvironmentLabel();
-			gxeEnvironment.setName(name);
-			gxeEnvironments.add(gxeEnvironment);
-		}		
-		return gxeEnvironments;
-	}
 	
 	@Test
 	public void testExportMeansDatasetToCsv() {
-		this.multiSiteDataExporter.exportMeansDatasetToCsv(BASIC_FILE_NAME, this.multiSiteParameters, this.meansExperiments, ENV_FACTOR,
+
+		final List<String> environmentNames = new ArrayList<>();
+		environmentNames.add("1");
+		environmentNames.add("2");
+		environmentNames.add("3");
+
+		final List<Experiment> meansExperiments = this.createMeansExperiments(ENV_FACTOR, environmentNames);
+
+		this.multiSiteDataExporter.exportMeansDatasetToCsv(BASIC_FILE_NAME, this.multiSiteParameters, meansExperiments, ENV_FACTOR,
 				this.gxeEnvironment, this.meansTraits);
 		
 		Mockito.verify(this.multiSiteDataExporter).writeToCsvFile(Matchers.eq(BASIC_FILE_NAME), Matchers.eq(this.project), this.meansRowsCaptor.capture(),
 				Matchers.eq(false));
 		final List<String[]> csvRows = this.meansRowsCaptor.getValue();
 		Assert.assertNotNull(csvRows);
-		Assert.assertEquals(1 + (GIDS.length * ENVIRONMENTS.length), csvRows.size());
+		Assert.assertEquals(1 + (GIDS.length * environmentNames.size()), csvRows.size());
 		final Iterator<String[]> rowsIterator = csvRows.iterator();
-		
+
 		// Verify the header row
 		final List<String> headers = new ArrayList<>();
 		headers.add(ENV_FACTOR);
@@ -199,11 +129,67 @@ public class MultiSiteDataExporterTest {
 		}
 		Assert.assertEquals(headers, Arrays.asList(rowsIterator.next()));
 		// Verify data rows
-		for (final String env : ENVIRONMENTS) {
+		for (final String environmentName : environmentNames) {
 			for (final String gid : GIDS) {
 				final String[] row = rowsIterator.next();
-				Assert.assertEquals(env, row[0]);
-				Assert.assertEquals(BREEDING_LOCATION + env, row[1]);
+				Assert.assertEquals(environmentName, row[0]);
+				Assert.assertEquals(BREEDING_LOCATION + environmentName, row[1]);
+				Assert.assertEquals(gid, row[2]);
+				for (int j = 1; j <= this.meansTraits.size(); j++) {
+					Assert.assertEquals(gid + "." + j, row[2 + j]);
+				}
+			}
+		}
+	}
+
+	@Test
+	public void testExportMeansDatasetToCsvEnvironmentFactorIsLocationID() {
+
+		final List<String> environmentNames = new ArrayList<>();
+		environmentNames.add("100");
+		environmentNames.add("747");
+		environmentNames.add("999");
+
+		final List<Experiment> meansExperiments = this.createMeansExperiments(LOCATION_ID, environmentNames);
+
+		final int studyId = 1;
+
+		final BiMap<String, String> locationIdToNameMap = HashBiMap.create();
+		locationIdToNameMap.put("100", "Agua Fria");
+		locationIdToNameMap.put("747", "Philippines");
+		locationIdToNameMap.put("999", "Thailand");
+
+		final GxeEnvironment testGxeEnvironment = new GxeEnvironment();
+		testGxeEnvironment.setLabel(this.createGxeEnviornments(new String[]{ "Agua Fria", "Philippines", "Thailand"}));
+
+		Mockito.when(this.studyDataManager.isLocationIdVariable(studyId, LOCATION_ID)).thenReturn(true);
+		Mockito.when(this.studyDataManager.createInstanceLocationIdToNameMapFromStudy(studyId)).thenReturn(locationIdToNameMap);
+
+		this.multiSiteDataExporter.exportMeansDatasetToCsv(BASIC_FILE_NAME, this.multiSiteParameters, meansExperiments, LOCATION_ID,
+				testGxeEnvironment, this.meansTraits);
+
+		Mockito.verify(this.multiSiteDataExporter).writeToCsvFile(Matchers.eq(BASIC_FILE_NAME), Matchers.eq(this.project), this.meansRowsCaptor.capture(),
+				Matchers.eq(false));
+		final List<String[]> csvRows = this.meansRowsCaptor.getValue();
+		Assert.assertNotNull(csvRows);
+		Assert.assertEquals(1 + (GIDS.length * environmentNames.size()), csvRows.size());
+		final Iterator<String[]> rowsIterator = csvRows.iterator();
+
+		// Verify the header row
+		final List<String> headers = new ArrayList<>();
+		headers.add(LOCATION_ID);
+		headers.add(ENV_GROUP_FACTOR);
+		headers.add(GENOTYPE_FACTOR);
+		for (final Trait trait : this.meansTraits) {
+			headers.add(trait.getName());
+		}
+		Assert.assertEquals(headers, Arrays.asList(rowsIterator.next()));
+		// Verify data rows
+		for (final String environmentName : environmentNames) {
+			for (final String gid : GIDS) {
+				final String[] row = rowsIterator.next();
+				Assert.assertEquals(locationIdToNameMap.get(environmentName), row[0]);
+				Assert.assertEquals(BREEDING_LOCATION + environmentName, row[1]);
 				Assert.assertEquals(gid, row[2]);
 				for (int j = 1; j <= this.meansTraits.size(); j++) {
 					Assert.assertEquals(gid + "." + j, row[2 + j]);
@@ -213,7 +199,6 @@ public class MultiSiteDataExporterTest {
 	}
 	
 	@Test
-
 	public void testExportTrialDatasetToSummaryStatsCsv() {
 		this.multiSiteDataExporter.exportTrialDatasetToSummaryStatsCsv(1, BASIC_FILE_NAME, this.summaryExperiments, ENV_FACTOR,
 				this.meansTraits, this.project);
@@ -278,6 +263,82 @@ public class MultiSiteDataExporterTest {
 			}
 		}
 	}
+
+	@Test
+	public void testExportTrialDatasetToSummaryStatsCsvEnvironmentFactorIsLocationID() {
+
+		final int studyId = 1;
+
+		final BiMap<String, String> locationIdToNameMap = HashBiMap.create();
+		locationIdToNameMap.put("100", "Agua Fria");
+
+		Mockito.when(this.studyDataManager.isLocationIdVariable(studyId, LOCATION_ID)).thenReturn(true);
+		Mockito.when(this.studyDataManager.createInstanceLocationIdToNameMapFromStudy(studyId)).thenReturn(locationIdToNameMap);
+
+		this.multiSiteDataExporter.exportTrialDatasetToSummaryStatsCsv(studyId, BASIC_FILE_NAME, this.summaryExperiments, LOCATION_ID,
+				this.meansTraits, this.project);
+
+		Mockito.verify(this.multiSiteDataExporter).writeToCsvFile(Matchers.eq(BASIC_FILE_NAME), Matchers.eq(this.project), this.summaryRowsCaptor.capture(),
+				Matchers.eq(true));
+
+		final List<String[]> csvRows = this.summaryRowsCaptor.getValue();
+		Assert.assertNotNull(csvRows);
+		Assert.assertEquals(1 + (this.meansTraits.size() * ENVIRONMENTS.length), csvRows.size());
+		final Iterator<String[]> rowsIterator = csvRows.iterator();
+
+		// Verify the header row
+		final List<String> headers = new ArrayList<>();
+		headers.add(LOCATION_ID);
+		headers.add("Trait");
+		headers.addAll(Arrays.asList("NumValues", "NumMissing", "Mean", "Variance", "SD", "Min", "Max", "Range",
+				"Median", "LowerQuartile", "UpperQuartile", "MeanRep", "MinRep", "MaxRep", "MeanSED", "MinSED", "MaxSED", "MeanLSD",
+				"MinLSD", "MaxLSD", "CV", "Heritability", "WaldStatistic", "WaldDF", "Pvalue"));
+		Assert.assertEquals(headers, Arrays.asList(rowsIterator.next()));
+		// Verify data rows
+		for (final String env : ENVIRONMENTS) {
+			int k = 1;
+			for (int i = 1; i <= this.meansTraits.size(); i++) {
+				final String[] row = rowsIterator.next();
+				Assert.assertEquals("Agua Fria", row[0]);
+				Assert.assertEquals(this.meansTraits.get(i-1).getName(), row[1]);
+				int j = 2;
+				// <Trait>_NumValue, <Trait>_NumMissing will always have blank values
+				Assert.assertTrue(row[j++].isEmpty());
+				Assert.assertTrue(row[j++].isEmpty());
+				// <Trait>_Mean value
+				Assert.assertEquals((Integer.valueOf(env) * 10)+ "." + k++, row[j++]);
+				// <Trait>_Variance, <Trait>_SD, <Trait>_Min, <Trait>_Max, <Trait>_Range, <Trait>_Median, <Trait>_LowerQuartile
+				// <Trait>_UpperQuartile, <Trait>_MeanRep, <Trait>_MinRep, <Trait>_MaxRep will always have blank values
+				Assert.assertTrue(row[j++].isEmpty());
+				Assert.assertTrue(row[j++].isEmpty());
+				Assert.assertTrue(row[j++].isEmpty());
+				Assert.assertTrue(row[j++].isEmpty());
+				Assert.assertTrue(row[j++].isEmpty());
+				Assert.assertTrue(row[j++].isEmpty());
+				Assert.assertTrue(row[j++].isEmpty());
+				Assert.assertTrue(row[j++].isEmpty());
+				Assert.assertTrue(row[j++].isEmpty());
+				Assert.assertTrue(row[j++].isEmpty());
+				Assert.assertTrue(row[j++].isEmpty());
+				// <Trait>_MeanSED value
+				Assert.assertEquals(Double.valueOf((Integer.valueOf(env) * 10)+ "." + k++).toString(), row[j++]);
+				// <Trait>_MinSED, <Trait>_MaxSED, <Trait>_MeanLSD, <Trait>_MinLSD, <Trait>_MaxLSD will always have blank values
+				Assert.assertTrue(row[j++].isEmpty());
+				Assert.assertTrue(row[j++].isEmpty());
+				Assert.assertTrue(row[j++].isEmpty());
+				Assert.assertTrue(row[j++].isEmpty());
+				Assert.assertTrue(row[j++].isEmpty());
+				// <Trait>_CV, <Trait>_Heritability values
+				Assert.assertEquals(Double.valueOf((Integer.valueOf(env) * 10)+ "." + k++).toString(), row[j++]);
+				Assert.assertEquals(Double.valueOf((Integer.valueOf(env) * 10)+ "." + k++).toString(), row[j++]);
+				// <Trait>_WaldStatistic, <Trait>_WaldDF will always have blank values
+				Assert.assertTrue(row[j++].isEmpty());
+				Assert.assertTrue(row[j++].isEmpty());
+				// <Trait>_PValue value
+				Assert.assertEquals(Double.valueOf((Integer.valueOf(env) * 10)+ "." + k++).toString(), row[j++]);
+			}
+		}
+	}
 	
 	@Test
 	public void testGetCsvFileInWorkbenchDirectoryForMeans() {
@@ -295,6 +356,92 @@ public class MultiSiteDataExporterTest {
 		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
 		Assert.assertEquals(new File(BMS_INPUT_FILES_DIR + File.separator + BASIC_FILE_NAME + MultiSiteDataExporter.SUMMARY_STATS + ".csv")
 				.getAbsolutePath(), meansFile.getAbsolutePath());
+	}
+
+	private List<Experiment> createMeansExperiments(final String environmentFactor, final List<String> environmentNames) {
+		final List<Experiment> meansExperiments = new ArrayList<>();
+
+		for (final String environmentName : environmentNames) {
+			for (final String gid : GIDS) {
+				final VariableList factors = new VariableList();
+				final DMSVariableType trialInstanceVariable = new DMSVariableType();
+				trialInstanceVariable.setLocalName(environmentFactor);
+				factors.add(new Variable(trialInstanceVariable, environmentName));
+				final DMSVariableType gidVariable = new DMSVariableType();
+				gidVariable.setLocalName(GENOTYPE_FACTOR);
+				factors.add(new Variable(gidVariable, gid));
+				final DMSVariableType locationVariable = new DMSVariableType();
+				locationVariable.setLocalName(ENV_GROUP_FACTOR);
+				factors.add(new Variable(locationVariable, BREEDING_LOCATION + environmentName));
+
+				final VariableList variates = new VariableList();
+				for (int i = 1; i <= this.meansTraits.size(); i++) {
+					final DMSVariableType traitVariable = new DMSVariableType();
+					traitVariable.setLocalName(this.meansTraits.get(i-1).getName());
+					final StandardVariable standardVar = new StandardVariable();
+					standardVar.setId(Integer.valueOf(gid + i));
+					traitVariable.setStandardVariable(standardVar);
+					variates.add(new Variable(traitVariable, Double.valueOf(gid + "." + i)));
+				}
+				final Experiment experiment = new Experiment();
+				experiment.setFactors(factors);
+				experiment.setVariates(variates);
+				meansExperiments.add(experiment);
+			}
+		}
+
+		return meansExperiments;
+	}
+
+	private void createSummaryExperiments() {
+		this.summaryExperiments = new ArrayList<>();
+		for (final String env : ENVIRONMENTS) {
+			final VariableList factors = new VariableList();
+			final VariableList variates = new VariableList();
+			final DMSVariableType trialInstanceVariable = new DMSVariableType();
+			trialInstanceVariable.setLocalName(ENV_FACTOR);
+
+			final DMSVariableType locationIdVariable = new DMSVariableType();
+			locationIdVariable.setLocalName(LOCATION_ID);
+
+			factors.add(new Variable(trialInstanceVariable, env));
+			factors.add(new Variable(locationIdVariable, "100"));
+
+			for (int j = 1; j <= this.summaryTraits.size(); j++) {
+				final DMSVariableType traitVariable = new DMSVariableType();
+				traitVariable.setLocalName(this.summaryTraits.get(j-1).getName());
+				final StandardVariable standardVar = new StandardVariable();
+				standardVar.setId(j);
+				traitVariable.setStandardVariable(standardVar);
+				variates.add(new Variable(traitVariable, Double.valueOf((Integer.valueOf(env) * 10) + "." + j)));
+			}
+			final Experiment experiment = new Experiment();
+			experiment.setFactors(factors);
+			experiment.setVariates(variates);
+			this.summaryExperiments.add(experiment);
+		}
+	}
+
+	private List<Trait> createTraits(final List<String> suffixes) {
+		final List<Trait> traits = new ArrayList<>();
+		for (final String var : TRAITS) {
+			for (final String suffix : suffixes) {
+				final Trait trait = new Trait();
+				trait.setName(var + suffix);
+				traits.add(trait);
+			}
+		}
+		return traits;
+	}
+
+	private List<GxeEnvironmentLabel> createGxeEnviornments(final String[] environments) {
+		final List<GxeEnvironmentLabel> gxeEnvironments = new ArrayList<>();
+		for (final String name : environments) {
+			final GxeEnvironmentLabel gxeEnvironment = new GxeEnvironmentLabel();
+			gxeEnvironment.setName(name);
+			gxeEnvironments.add(gxeEnvironment);
+		}
+		return gxeEnvironments;
 	}
 	
 	private void createMultiSiteParameters() {

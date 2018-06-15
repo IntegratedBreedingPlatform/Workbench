@@ -1,5 +1,7 @@
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.CheckBox;
@@ -429,6 +431,43 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		final SeaEnvironmentModel bean = container.getIdByIndex(0);
 		Assert.assertFalse("The active value should be false", bean.getActive());
 		Assert.assertEquals("The environment name should be Africa Rice Center", "Africa Rice Center", bean.getEnvironmentName());
+		Assert.assertEquals("The study no should be 1", "1", bean.getTrialno());
+		Assert.assertEquals("The location id should be 1", "1", bean.getLocationId().toString());
+	}
+
+	@Test
+	public void testPopulateEnvironmentSelectionTableSelectedFactorIsLocationID() {
+		final Table table = new Table();
+		table.addContainerProperty(SingleSiteAnalysisDetailsPanel.SELECT_COLUMN, Select.class, "");
+		table.addContainerProperty(SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN, Integer.class, "");
+
+		final TrialEnvironments environments = new TrialEnvironments();
+		final TrialEnvironment environment = Mockito.mock(TrialEnvironment.class);
+		when(environment.getId()).thenReturn(1);
+		environments.add(environment);
+
+		final VariableList variableList = Mockito.mock(VariableList.class);
+		when(environment.getVariables()).thenReturn(variableList);
+		final Variable trialInstance = new Variable();
+		trialInstance.setValue("1");
+		when(variableList.findByLocalName(SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE)).thenReturn(trialInstance);
+		final Variable locationIDVariable = new Variable();
+		locationIDVariable.setValue("100");
+		when(variableList.findByLocalName(SingleSiteAnalysisDetailsPanelTest.LOCATION_NAME)).thenReturn(locationIDVariable);
+		when(this.studyDataManager.getTrialEnvironmentsInDataset(Matchers.anyInt())).thenReturn(environments);
+
+		final BiMap<String, String> locationIdToNameMap = HashBiMap.create();
+		locationIdToNameMap.put("100", "Agua Fria");
+
+		when(this.studyDataManager.isLocationIdVariable(STUDY_ID, SingleSiteAnalysisDetailsPanelTest.LOCATION_NAME)).thenReturn(true);
+		when(this.studyDataManager.createInstanceLocationIdToNameMapFromStudy(STUDY_ID)).thenReturn(locationIdToNameMap);
+
+		this.ssaPanel.populateEnvironmentSelectionTableWithTrialEnvironmets(table, SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE,
+				SingleSiteAnalysisDetailsPanelTest.LOCATION_NAME);
+		final BeanItemContainer<SeaEnvironmentModel> container = (BeanItemContainer<SeaEnvironmentModel>) table.getContainerDataSource();
+		final SeaEnvironmentModel bean = container.getIdByIndex(0);
+		Assert.assertFalse("The active value should be false", bean.getActive());
+		Assert.assertEquals("The environment name should be Agua Fria", "Agua Fria", bean.getEnvironmentName());
 		Assert.assertEquals("The study no should be 1", "1", bean.getTrialno());
 		Assert.assertEquals("The location id should be 1", "1", bean.getLocationId().toString());
 	}

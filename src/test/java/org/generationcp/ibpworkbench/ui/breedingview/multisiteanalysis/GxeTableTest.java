@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import org.apache.commons.lang3.ArrayUtils;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.sea.xml.Environment;
@@ -51,6 +53,9 @@ public class GxeTableTest {
 	private static final String GROUP_FACTOR = "MegaEnv";
 	private static final int GROUP_FACTOR_ID = 7777;
 	private static final String GROUP_FACTOR_VALUE = "Wet Season";
+	private static final String LOCATION_ID_FACTOR = "LOCATION_ID";
+	private static final int LOCATION_ID_FACTOR_ID = 9999;
+	private static final String LOCATION_ID_FACTOR_VALUE = "100";
 
 	private static final String VARIATE_NAME_1 = "EPP";
 	private static final String VARIATE_NAME_1_MEANS = "EPP_Means";
@@ -164,6 +169,8 @@ public class GxeTableTest {
 	@Test
 	public void testFillTableWithDatasetWithTrialInstanceAsSelectedFactor() throws Exception {
 
+		Mockito.when(studyDataManager.isLocationIdVariable(GxeTableTest.STUDY_ID, STUDY_FACTOR)).thenReturn(false);
+
 		final GxeTable gxeTable = new GxeTable(GxeTableTest.STUDY_ID, GxeTableTest.STUDY_FACTOR,
 
 				"", this.variatesCheckBoxState, this.listener);
@@ -200,6 +207,8 @@ public class GxeTableTest {
 	@Test
 	public void testFillTableWithDatasetWithTrialEnvironmentAsSelectedFactor() throws Exception {
 
+		Mockito.when(studyDataManager.isLocationIdVariable(GxeTableTest.STUDY_ID, SITE_FACTOR)).thenReturn(false);
+
 		final GxeTable gxeTable = new GxeTable(GxeTableTest.STUDY_ID, GxeTableTest.SITE_FACTOR,
 				"", this.variatesCheckBoxState, this.listener);
 		gxeTable.setStudyDataManager(this.studyDataManager);
@@ -223,6 +232,49 @@ public class GxeTableTest {
 				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.STUDY_FACTOR).getValue()).getValue());
 		Assert.assertEquals("", GxeTableTest.SITE_FACTOR_VALUE,
 				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.SITE_FACTOR).getValue()).getValue());
+		Assert.assertEquals("", "0 (" + GxeTableTest.VARIATE_NAME_1_HERITABILITY_VALUE + ")",
+				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.VARIATE_NAME_1_MEANS).getValue())
+						.getValue());
+		Assert.assertEquals("", "0 (" + GxeTableTest.VARIATE_NAME_2_HERITABILITY_VALUE + ")",
+				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.VARIATE_NAME_2_MEANS).getValue())
+						.getValue());
+		Assert.assertEquals("", "0 (" + GxeTableTest.VARIATE_NAME_3_HERITABILITY_VALUE + ")",
+				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.VARIATE_NAME_3_MEANS).getValue())
+						.getValue());
+	}
+
+	@Test
+	public void testFillTableWithDatasetWithTrialLocationIDAsSelectedFactor() throws Exception {
+
+		final BiMap<String, String> locationIdToNameMap = HashBiMap.create();
+		locationIdToNameMap.put(LOCATION_ID_FACTOR_VALUE, "Some Location");
+
+		Mockito.when(studyDataManager.isLocationIdVariable(GxeTableTest.STUDY_ID, LOCATION_ID_FACTOR)).thenReturn(true);
+		Mockito.when(studyDataManager.createInstanceLocationIdToNameMapFromStudy(GxeTableTest.STUDY_ID)).thenReturn(locationIdToNameMap);
+
+		final GxeTable gxeTable = new GxeTable(GxeTableTest.STUDY_ID, GxeTableTest.LOCATION_ID_FACTOR,
+				"", this.variatesCheckBoxState, this.listener);
+		gxeTable.setStudyDataManager(this.studyDataManager);
+		gxeTable.afterPropertiesSet();
+
+		Assert.assertTrue("The Trial Instance Factor should always be visible in the table",
+				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.STUDY_FACTOR));
+		Assert.assertTrue("The Location ID Factor is  selected so it should be visible",
+				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.LOCATION_ID_FACTOR));
+		Assert.assertFalse("The Group Factor is not selected so it should not be visible",
+				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.GROUP_FACTOR));
+		Assert.assertTrue(GxeTableTest.VARIATE_NAME_1_MEANS + " is selected so it should be visible in the table",
+				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.VARIATE_NAME_1_MEANS));
+		Assert.assertTrue(GxeTableTest.VARIATE_NAME_2_MEANS + " is selected so it should be visible in the table",
+				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.VARIATE_NAME_2_MEANS));
+		Assert.assertTrue(GxeTableTest.VARIATE_NAME_3_MEANS + " is selected so it should be visible in the table",
+				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.VARIATE_NAME_3_MEANS));
+
+		final Object itemId = gxeTable.getItemIds().iterator().next();
+		Assert.assertEquals("", GxeTableTest.STUDY_FACTOR_VALUE,
+				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.STUDY_FACTOR).getValue()).getValue());
+		Assert.assertEquals("", "Some Location",
+				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.LOCATION_ID_FACTOR).getValue()).getValue());
 		Assert.assertEquals("", "0 (" + GxeTableTest.VARIATE_NAME_1_HERITABILITY_VALUE + ")",
 				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.VARIATE_NAME_1_MEANS).getValue())
 						.getValue());
@@ -412,6 +464,10 @@ public class GxeTableTest {
 				GxeTableTest.SITE_FACTOR_VALUE, PhenotypicType.TRIAL_ENVIRONMENT, GxeTableTest.CHARACTER_VARIABLE,
 				GxeTableTest.TRIAL_ENVIRONMENT_ROLE, null, null, null);
 
+		this.addVariableToList(factors, factorVariables, GxeTableTest.LOCATION_ID_FACTOR_ID, GxeTableTest.LOCATION_ID_FACTOR, rank++,
+				GxeTableTest.LOCATION_ID_FACTOR_VALUE, PhenotypicType.TRIAL_ENVIRONMENT, GxeTableTest.NUMERIC_VARIABLE,
+				GxeTableTest.TRIAL_ENVIRONMENT_ROLE, null, null, null);
+
 		this.addVariableToList(factors, factorVariables, GxeTableTest.GROUP_FACTOR_ID, GxeTableTest.GROUP_FACTOR,
 				rank++, GxeTableTest.GROUP_FACTOR_VALUE, PhenotypicType.TRIAL_ENVIRONMENT,
 				GxeTableTest.CHARACTER_VARIABLE, GxeTableTest.TRIAL_ENVIRONMENT_ROLE, null, null, null);
@@ -457,6 +513,10 @@ public class GxeTableTest {
 
 		this.addVariableToList(factors, factorVariables, GxeTableTest.SITE_FACTOR_ID, GxeTableTest.SITE_FACTOR, rank++,
 				GxeTableTest.SITE_FACTOR_VALUE, PhenotypicType.TRIAL_ENVIRONMENT, GxeTableTest.CHARACTER_VARIABLE,
+				GxeTableTest.TRIAL_ENVIRONMENT_ROLE, null, null, null);
+
+		this.addVariableToList(factors, factorVariables, GxeTableTest.LOCATION_ID_FACTOR_ID, GxeTableTest.LOCATION_ID_FACTOR, rank++,
+				GxeTableTest.LOCATION_ID_FACTOR_VALUE, PhenotypicType.TRIAL_ENVIRONMENT, GxeTableTest.NUMERIC_VARIABLE,
 				GxeTableTest.TRIAL_ENVIRONMENT_ROLE, null, null, null);
 
 		this.addVariableToList(factors, factorVariables, GxeTableTest.GROUP_FACTOR_ID, GxeTableTest.GROUP_FACTOR,
