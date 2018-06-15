@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.generationcp.commons.spring.util.ContextUtil;
-import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.middleware.data.initializer.PersonTestDataInitializer;
 import org.generationcp.middleware.data.initializer.UserTestDataInitializer;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -54,6 +53,8 @@ public class ProgramMembersPanelTest {
 
 	@InjectMocks
 	private ProgramMembersPanel programMembersPanel;
+	
+	private WorkbenchUser superAdminUser;
 
 	@Before
 	public void setUp() {
@@ -190,8 +191,11 @@ public class ProgramMembersPanelTest {
 
 		// Check that ADMIN user is disabled from selection
 		for (final WorkbenchUser user : programMembers) {
-			if (ProgramService.ADMIN_USERNAME.equalsIgnoreCase(user.getName())) {
-				Assert.assertFalse("Default Admin should be disabled and cannot be removed as program member.",
+			if (this.superAdminUser.equals(user)) {
+				Assert.assertFalse("SuperAdmin user should be disabled and cannot be removed as program member.",
+						user.isEnabled());
+			} else {
+				Assert.assertTrue("Non-SuperAdmin user should be enabled and can be removed as program member.",
 						user.isEnabled());
 			}
 		}
@@ -217,16 +221,20 @@ public class ProgramMembersPanelTest {
 				ProgramMembersPanelTest.OWNER_NAME, ProgramMembersPanelTest.OWNER_NAME);
 		user1.setRoles(Collections.singletonList(new UserRole(user1, new Role(2, "Breeder"))));
 		programMembers.add(user1);
+
 		final WorkbenchUser user2 = UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.MEMBER_USER_ID,
 				ProgramMembersPanelTest.MEMBER_NAME, ProgramMembersPanelTest.MEMBER_PERSON_ID,
 				ProgramMembersPanelTest.MEMBER_NAME, ProgramMembersPanelTest.MEMBER_NAME);
 		user2.setRoles(Collections.singletonList(new UserRole(user2, new Role(3, "Technician"))));
 		programMembers.add(user2);
-		final WorkbenchUser user3 = UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.ADMIN_USER_ID,
-				ProgramService.ADMIN_USERNAME, ProgramMembersPanelTest.ADMIN_PERSON_ID,
+		
+		this.superAdminUser = UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.ADMIN_USER_ID,
+				ProgramMembersPanelTest.ADMIN_NAME, ProgramMembersPanelTest.ADMIN_PERSON_ID,
 				ProgramMembersPanelTest.ADMIN_NAME, ProgramMembersPanelTest.ADMIN_NAME);
-		user3.setRoles(Collections.singletonList(new UserRole(user3, new Role(1, "Admin"))));
-		programMembers.add(user3);
+		this.superAdminUser.setRoles(Collections.singletonList(new UserRole(this.superAdminUser, new Role(5, "SuperAdmin"))));
+		Mockito.when(this.workbenchDataManager.isSuperAdminUser(this.superAdminUser.getUserid())).thenReturn(true);
+		programMembers.add(this.superAdminUser);
+		
 		return programMembers;
 	}
 

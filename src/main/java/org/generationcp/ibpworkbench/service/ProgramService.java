@@ -33,8 +33,6 @@ import org.springframework.web.util.WebUtils;
 @Transactional
 public class ProgramService {
 
-	public static final String ADMIN_USERNAME = "ADMIN";
-
 	private static final Logger LOG = LoggerFactory.getLogger(ProgramService.class);
 
 	@Autowired
@@ -78,18 +76,16 @@ public class ProgramService {
 	}
 
 	/**
-	 * Save default "ADMIN" user and other set selected users as members of given program by saving in the ff tables:
+	 * Save user(s) with SUPERADMIN role and other selected users as members of given program by saving in the ff tables:
 	 * workbench_project_user_role, workbench_project_user_info, workbench_ibdb_user_map and in crop.persons (if applicable)
 	 *
 	 * @param program : program to add members to
 	 * @param users : users to add as members of given program
 	 */
 	public void saveProgramMembers(final Project program, final Set<WorkbenchUser> users) {
-		// Add default "ADMIN" user to selected users of program to give access to new program
-		final WorkbenchUser defaultAdminUser = this.workbenchDataManager.getUserByUsername(ProgramService.ADMIN_USERNAME);
-		if (defaultAdminUser != null) {
-			users.add(defaultAdminUser);
-		}
+		// Add user(s) with SUPERADMIN role to selected users of program to give access to new program
+		final List<WorkbenchUser> superAdminUsers = this.workbenchDataManager.getSuperAdminUsers();
+		users.addAll(superAdminUsers);
 
 		// Save workbench project metadata and to crop users, persons (if necessary)
 		if (!users.isEmpty()) {

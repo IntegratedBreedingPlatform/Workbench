@@ -169,7 +169,7 @@ public class ProjectMembersComponentTest {
 				ProjectMembersComponentTest.MEMBER_NAME, ProjectMembersComponentTest.MEMBER_PERSON_ID,
 				ProjectMembersComponentTest.MEMBER_NAME, ProjectMembersComponentTest.MEMBER_NAME));
 		programMembers.add(UserTestDataInitializer.createUserWithPerson(ProjectMembersComponentTest.ADMIN_USER_ID,
-				ProgramService.ADMIN_USERNAME, ProjectMembersComponentTest.ADMIN_PERSON_ID,
+				ProjectMembersComponentTest.ADMIN_NAME, ProjectMembersComponentTest.ADMIN_PERSON_ID,
 				ProjectMembersComponentTest.ADMIN_NAME, ProjectMembersComponentTest.ADMIN_NAME));
 		return programMembers;
 	}
