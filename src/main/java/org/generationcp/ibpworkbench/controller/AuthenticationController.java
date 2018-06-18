@@ -1,5 +1,15 @@
 package org.generationcp.ibpworkbench.controller;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import javax.mail.MessagingException;
+import javax.servlet.ServletContext;
+
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.security.InvalidResetTokenException;
 import org.generationcp.ibpworkbench.security.WorkbenchEmailSenderService;
@@ -8,6 +18,7 @@ import org.generationcp.ibpworkbench.validator.ForgotPasswordAccountValidator;
 import org.generationcp.ibpworkbench.validator.UserAccountFields;
 import org.generationcp.ibpworkbench.validator.UserAccountValidator;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.owasp.html.Sanitizers;
@@ -30,13 +41,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.mail.MessagingException;
-import javax.servlet.ServletContext;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Properties;
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 
 @Controller
 @RequestMapping(AuthenticationController.URL)
@@ -91,12 +98,14 @@ public class AuthenticationController {
 	@Value("${footer.message}")
 	private String footerMessage;
 
+	@Value("${workbench.version}")
 	private String workbenchVersion;
+	
+	private List<Role> roles;
 
 	@PostConstruct
 	public void initialize() {
-
-		this.workbenchVersion = this.workbenchProperties.getProperty("workbench.version", "");
+		this.roles = this.workbenchDataManager.getAssignableRoles();
 		this.footerMessage = Sanitizers.FORMATTING.sanitize(this.footerMessage);
 	}
 
@@ -104,7 +113,7 @@ public class AuthenticationController {
 	public String getLoginPage(final Model model) {
 
 		model.addAttribute("isCreateAccountEnable", this.isAccountCreationEnabled());
-
+		model.addAttribute("roles", this.roles);
 		populateCommomModelAttributes(model);
 
 		return "login";
@@ -199,7 +208,13 @@ public class AuthenticationController {
 		if (!isAccountCreationEnabled()) {
 			new ResponseEntity<>(out, HttpStatus.FORBIDDEN);
 		}
-
+		final ImmutableMap<Integer, Role> roleMap = Maps.uniqueIndex(this.roles, new Function<Role, Integer>() {
+			@Override
+			public Integer apply(final Role role) {
+				return role.getId();
+			}
+		});
+		model.setRole(roleMap.get(model.getRoleId()));
 		this.userAccountValidator.validate(model, result);
 
 		if (result.hasErrors()) {
@@ -355,5 +370,15 @@ public class AuthenticationController {
 
 	protected void setIsSingleUserOnly(final String isSingleUserOnly) {
 		this.isSingleUserOnly = isSingleUserOnly;
+	}
+
+	
+	
+	public List<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<Role> roles) {
+		this.roles = roles;
 	}
 }

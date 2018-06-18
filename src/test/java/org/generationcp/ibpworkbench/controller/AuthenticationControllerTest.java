@@ -5,7 +5,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
@@ -22,9 +24,11 @@ import org.generationcp.ibpworkbench.validator.ForgotPasswordAccountValidator;
 import org.generationcp.ibpworkbench.validator.UserAccountValidator;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -78,11 +82,27 @@ public class AuthenticationControllerTest {
 	
 	@Mock
 	private WorkbenchDataManager workbenchDataManager;
+	
+	private List<Role> roles;
+	
+	@Before
+	public void setup() {
+		this.createTestRoles();
+		Mockito.doReturn(this.roles).when(this.workbenchDataManager).getAssignableRoles();
+	}
+	
+	@Test
+	public void testIntialize() {
+		this.controller.initialize();
+		Mockito.verify(this.workbenchDataManager).getAssignableRoles();
+		Assert.assertEquals(this.roles, this.controller.getRoles());
+	}
 
 	@Test
 	public void testGetLoginPage() throws Exception {
 		Model model = Mockito.mock(Model.class);
 		Assert.assertEquals("should return the login url", "login", this.controller.getLoginPage(model));
+		Mockito.verify(model).addAttribute(Mockito.eq("roles"), Mockito.anyObject());
 		assertCommonAttributesWereAddedToModel(model);
 	}
 
@@ -108,6 +128,7 @@ public class AuthenticationControllerTest {
 
 	@Test
 	public void testSaveUserAccount() throws Exception {
+		this.controller.setRoles(this.roles);
 		Mockito.when(this.result.hasErrors()).thenReturn(false);
 
 		ResponseEntity<Map<String, Object>> out = this.controller.saveUserAccount(this.userAccountModel, this.result);
@@ -120,6 +141,7 @@ public class AuthenticationControllerTest {
 
 	@Test
 	public void testSaveUserAccountWithErrors() throws Exception {
+		this.controller.setRoles(this.roles);
 		Mockito.when(this.result.hasErrors()).thenReturn(true);
 		Mockito.when(this.result.getFieldErrors()).thenReturn(Collections.<FieldError>emptyList());
 
@@ -364,7 +386,12 @@ public class AuthenticationControllerTest {
 		this.controller.setEnableCreateAccount("false");
 
 		Assert.assertFalse(this.controller.isAccountCreationEnabled());
-
-
+	}
+	
+	private void createTestRoles() {
+		this.roles = new ArrayList<>();
+		this.roles.add(new Role(1, "Admin"));
+		this.roles.add(new Role(2, "Breeder"));
+		this.roles.add(new Role(3, "Technician"));
 	}
 }

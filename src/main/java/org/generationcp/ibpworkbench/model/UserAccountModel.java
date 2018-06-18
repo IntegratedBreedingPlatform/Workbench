@@ -43,6 +43,8 @@ public class UserAccountModel implements Serializable {
 
 	private String passwordConfirmation;
 	
+	private String roleId;
+	
 	private Role role;
 
 	/**
@@ -115,6 +117,15 @@ public class UserAccountModel implements Serializable {
 		this.passwordConfirmation = passwordConfirmation;
 	}
 
+	public String getRoleId() {
+		return this.roleId;
+	}
+
+	public void setRoleId(final String roleId) {
+		this.roleId = roleId;
+	}
+
+	
 	public Role getRole() {
 		return this.role;
 	}
