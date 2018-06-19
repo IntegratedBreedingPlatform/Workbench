@@ -50,37 +50,37 @@ public class MultiSiteDataExporterTest {
 	public static final int STUDY_ID = 1;
 
 	private MultiSiteDataExporter multiSiteDataExporter;
-	
+
 	@Captor
 	private ArgumentCaptor<List<String[]>> meansRowsCaptor;
-	
+
 	@Captor
 	private ArgumentCaptor<List<String[]>> summaryRowsCaptor;
-	
+
 	@Mock
 	private InstallationDirectoryUtil installationDirectoryUtil;
 
 	@Mock
 	private StudyDataManager studyDataManager;
-	
+
 	private Project project;
-	
+
 	private MultiSiteParameters multiSiteParameters;
 
 	private List<Experiment> summaryExperiments;
 	private List<Trait> meansTraits;
 	private List<Trait> summaryTraits;
 	private GxeEnvironment gxeEnvironment;
-	
+
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		
+
 		// Need to spy so that actual writing of CSV files won't be performed during tests execution
 		this.multiSiteDataExporter = Mockito.spy(new MultiSiteDataExporter());
 		this.multiSiteDataExporter.setInstallationDirectoryUtil(this.installationDirectoryUtil);
 		this.multiSiteDataExporter.setStudyDataManager(studyDataManager);
-		
+
 		this.createMultiSiteParameters();
 		this.setupFileUtilMocks();
 		this.meansTraits = this.createTraits(Arrays.asList(MEANS));
@@ -92,13 +92,14 @@ public class MultiSiteDataExporterTest {
 	}
 
 	private void setupFileUtilMocks() {
-		Mockito.doReturn(BASIC_FILE_NAME + ".csv").when(this.multiSiteDataExporter).writeToCsvFile(Matchers.anyString(), Matchers.any(Project.class), Matchers.anyList(),
-				Matchers.eq(false));
-		Mockito.doReturn(BASIC_FILE_NAME + MultiSiteDataExporter.SUMMARY_STATS + ".csv").when(this.multiSiteDataExporter).writeToCsvFile(Matchers.anyString(), Matchers.any(Project.class), Matchers.anyList(),
-				Matchers.eq(true));
-		Mockito.doReturn(BMS_INPUT_FILES_DIR).when(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
+		Mockito.doReturn(BASIC_FILE_NAME + ".csv").when(this.multiSiteDataExporter)
+				.writeToCsvFile(Matchers.anyString(), Matchers.any(Project.class), Matchers.anyList(), Matchers.eq(false));
+		Mockito.doReturn(BASIC_FILE_NAME + MultiSiteDataExporter.SUMMARY_STATS + ".csv").when(this.multiSiteDataExporter)
+				.writeToCsvFile(Matchers.anyString(), Matchers.any(Project.class), Matchers.anyList(), Matchers.eq(true));
+		Mockito.doReturn(BMS_INPUT_FILES_DIR).when(this.installationDirectoryUtil)
+				.getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
 	}
-	
+
 	@Test
 	public void testExportMeansDatasetToCsv() {
 
@@ -109,11 +110,13 @@ public class MultiSiteDataExporterTest {
 
 		final List<Experiment> meansExperiments = this.createMeansExperiments(ENV_FACTOR, environmentNames);
 
-		this.multiSiteDataExporter.exportMeansDatasetToCsv(BASIC_FILE_NAME, this.multiSiteParameters, meansExperiments, ENV_FACTOR,
-				this.gxeEnvironment, this.meansTraits);
-		
-		Mockito.verify(this.multiSiteDataExporter).writeToCsvFile(Matchers.eq(BASIC_FILE_NAME), Matchers.eq(this.project), this.meansRowsCaptor.capture(),
-				Matchers.eq(false));
+		this.multiSiteDataExporter
+				.exportMeansDatasetToCsv(BASIC_FILE_NAME, this.multiSiteParameters, meansExperiments, ENV_FACTOR, this.gxeEnvironment,
+						this.meansTraits);
+
+		Mockito.verify(this.multiSiteDataExporter)
+				.writeToCsvFile(Matchers.eq(BASIC_FILE_NAME), Matchers.eq(this.project), this.meansRowsCaptor.capture(),
+						Matchers.eq(false));
 		final List<String[]> csvRows = this.meansRowsCaptor.getValue();
 		Assert.assertNotNull(csvRows);
 		Assert.assertEquals(1 + (GIDS.length * environmentNames.size()), csvRows.size());
@@ -160,16 +163,18 @@ public class MultiSiteDataExporterTest {
 		locationIdToNameMap.put("999", "Thailand");
 
 		final GxeEnvironment testGxeEnvironment = new GxeEnvironment();
-		testGxeEnvironment.setLabel(this.createGxeEnviornments(new String[]{ "Agua Fria", "Philippines", "Thailand"}));
+		testGxeEnvironment.setLabel(this.createGxeEnviornments(new String[] {"Agua Fria", "Philippines", "Thailand"}));
 
 		Mockito.when(this.studyDataManager.isLocationIdVariable(studyId, LOCATION_ID)).thenReturn(true);
 		Mockito.when(this.studyDataManager.createInstanceLocationIdToNameMapFromStudy(studyId)).thenReturn(locationIdToNameMap);
 
-		this.multiSiteDataExporter.exportMeansDatasetToCsv(BASIC_FILE_NAME, this.multiSiteParameters, meansExperiments, LOCATION_ID,
-				testGxeEnvironment, this.meansTraits);
+		this.multiSiteDataExporter
+				.exportMeansDatasetToCsv(BASIC_FILE_NAME, this.multiSiteParameters, meansExperiments, LOCATION_ID, testGxeEnvironment,
+						this.meansTraits);
 
-		Mockito.verify(this.multiSiteDataExporter).writeToCsvFile(Matchers.eq(BASIC_FILE_NAME), Matchers.eq(this.project), this.meansRowsCaptor.capture(),
-				Matchers.eq(false));
+		Mockito.verify(this.multiSiteDataExporter)
+				.writeToCsvFile(Matchers.eq(BASIC_FILE_NAME), Matchers.eq(this.project), this.meansRowsCaptor.capture(),
+						Matchers.eq(false));
 		final List<String[]> csvRows = this.meansRowsCaptor.getValue();
 		Assert.assertNotNull(csvRows);
 		Assert.assertEquals(1 + (GIDS.length * environmentNames.size()), csvRows.size());
@@ -197,26 +202,28 @@ public class MultiSiteDataExporterTest {
 			}
 		}
 	}
-	
+
 	@Test
 	public void testExportTrialDatasetToSummaryStatsCsv() {
-		this.multiSiteDataExporter.exportTrialDatasetToSummaryStatsCsv(1, BASIC_FILE_NAME, this.summaryExperiments, ENV_FACTOR,
-				this.meansTraits, this.project);
-		
-		Mockito.verify(this.multiSiteDataExporter).writeToCsvFile(Matchers.eq(BASIC_FILE_NAME), Matchers.eq(this.project), this.summaryRowsCaptor.capture(),
-				Matchers.eq(true));
+		this.multiSiteDataExporter
+				.exportTrialDatasetToSummaryStatsCsv(1, BASIC_FILE_NAME, this.summaryExperiments, ENV_FACTOR, this.meansTraits,
+						this.project);
+
+		Mockito.verify(this.multiSiteDataExporter)
+				.writeToCsvFile(Matchers.eq(BASIC_FILE_NAME), Matchers.eq(this.project), this.summaryRowsCaptor.capture(),
+						Matchers.eq(true));
 		final List<String[]> csvRows = this.summaryRowsCaptor.getValue();
 		Assert.assertNotNull(csvRows);
 		Assert.assertEquals(1 + (this.meansTraits.size() * ENVIRONMENTS.length), csvRows.size());
 		final Iterator<String[]> rowsIterator = csvRows.iterator();
-		
+
 		// Verify the header row
 		final List<String> headers = new ArrayList<>();
 		headers.add(ENV_FACTOR);
 		headers.add("Trait");
-		headers.addAll(Arrays.asList("NumValues", "NumMissing", "Mean", "Variance", "SD", "Min", "Max", "Range",
-						"Median", "LowerQuartile", "UpperQuartile", "MeanRep", "MinRep", "MaxRep", "MeanSED", "MinSED", "MaxSED", "MeanLSD",
-						"MinLSD", "MaxLSD", "CV", "Heritability", "WaldStatistic", "WaldDF", "Pvalue"));
+		headers.addAll(Arrays.asList("NumValues", "NumMissing", "Mean", "Variance", "SD", "Min", "Max", "Range", "Median", "LowerQuartile",
+				"UpperQuartile", "MeanRep", "MinRep", "MaxRep", "MeanSED", "MinSED", "MaxSED", "MeanLSD", "MinLSD", "MaxLSD", "CV",
+				"Heritability", "WaldStatistic", "WaldDF", "Pvalue"));
 		Assert.assertEquals(headers, Arrays.asList(rowsIterator.next()));
 		// Verify data rows
 		for (final String env : ENVIRONMENTS) {
@@ -224,13 +231,13 @@ public class MultiSiteDataExporterTest {
 			for (int i = 1; i <= this.meansTraits.size(); i++) {
 				final String[] row = rowsIterator.next();
 				Assert.assertEquals(env, row[0]);
-				Assert.assertEquals(this.meansTraits.get(i-1).getName(), row[1]);
+				Assert.assertEquals(this.meansTraits.get(i - 1).getName(), row[1]);
 				int j = 2;
 				// <Trait>_NumValue, <Trait>_NumMissing will always have blank values
 				Assert.assertTrue(row[j++].isEmpty());
 				Assert.assertTrue(row[j++].isEmpty());
 				// <Trait>_Mean value
-				Assert.assertEquals((Integer.valueOf(env) * 10)+ "." + k++, row[j++]);
+				Assert.assertEquals((Integer.valueOf(env) * 10) + "." + k++, row[j++]);
 				// <Trait>_Variance, <Trait>_SD, <Trait>_Min, <Trait>_Max, <Trait>_Range, <Trait>_Median, <Trait>_LowerQuartile
 				// <Trait>_UpperQuartile, <Trait>_MeanRep, <Trait>_MinRep, <Trait>_MaxRep will always have blank values
 				Assert.assertTrue(row[j++].isEmpty());
@@ -245,7 +252,7 @@ public class MultiSiteDataExporterTest {
 				Assert.assertTrue(row[j++].isEmpty());
 				Assert.assertTrue(row[j++].isEmpty());
 				// <Trait>_MeanSED value
-				Assert.assertEquals(Double.valueOf((Integer.valueOf(env) * 10)+ "." + k++).toString(), row[j++]);
+				Assert.assertEquals(Double.valueOf((Integer.valueOf(env) * 10) + "." + k++).toString(), row[j++]);
 				// <Trait>_MinSED, <Trait>_MaxSED, <Trait>_MeanLSD, <Trait>_MinLSD, <Trait>_MaxLSD will always have blank values
 				Assert.assertTrue(row[j++].isEmpty());
 				Assert.assertTrue(row[j++].isEmpty());
@@ -253,13 +260,13 @@ public class MultiSiteDataExporterTest {
 				Assert.assertTrue(row[j++].isEmpty());
 				Assert.assertTrue(row[j++].isEmpty());
 				// <Trait>_CV, <Trait>_Heritability values
-				Assert.assertEquals(Double.valueOf((Integer.valueOf(env) * 10)+ "." + k++).toString(), row[j++]);
-				Assert.assertEquals(Double.valueOf((Integer.valueOf(env) * 10)+ "." + k++).toString(), row[j++]);
+				Assert.assertEquals(Double.valueOf((Integer.valueOf(env) * 10) + "." + k++).toString(), row[j++]);
+				Assert.assertEquals(Double.valueOf((Integer.valueOf(env) * 10) + "." + k++).toString(), row[j++]);
 				// <Trait>_WaldStatistic, <Trait>_WaldDF will always have blank values
 				Assert.assertTrue(row[j++].isEmpty());
 				Assert.assertTrue(row[j++].isEmpty());
 				// <Trait>_PValue value
-				Assert.assertEquals(Double.valueOf((Integer.valueOf(env) * 10)+ "." + k++).toString(), row[j++]);
+				Assert.assertEquals(Double.valueOf((Integer.valueOf(env) * 10) + "." + k++).toString(), row[j++]);
 			}
 		}
 	}
@@ -275,11 +282,13 @@ public class MultiSiteDataExporterTest {
 		Mockito.when(this.studyDataManager.isLocationIdVariable(studyId, LOCATION_ID)).thenReturn(true);
 		Mockito.when(this.studyDataManager.createInstanceLocationIdToNameMapFromStudy(studyId)).thenReturn(locationIdToNameMap);
 
-		this.multiSiteDataExporter.exportTrialDatasetToSummaryStatsCsv(studyId, BASIC_FILE_NAME, this.summaryExperiments, LOCATION_ID,
-				this.meansTraits, this.project);
+		this.multiSiteDataExporter
+				.exportTrialDatasetToSummaryStatsCsv(studyId, BASIC_FILE_NAME, this.summaryExperiments, LOCATION_ID, this.meansTraits,
+						this.project);
 
-		Mockito.verify(this.multiSiteDataExporter).writeToCsvFile(Matchers.eq(BASIC_FILE_NAME), Matchers.eq(this.project), this.summaryRowsCaptor.capture(),
-				Matchers.eq(true));
+		Mockito.verify(this.multiSiteDataExporter)
+				.writeToCsvFile(Matchers.eq(BASIC_FILE_NAME), Matchers.eq(this.project), this.summaryRowsCaptor.capture(),
+						Matchers.eq(true));
 
 		final List<String[]> csvRows = this.summaryRowsCaptor.getValue();
 		Assert.assertNotNull(csvRows);
@@ -290,9 +299,9 @@ public class MultiSiteDataExporterTest {
 		final List<String> headers = new ArrayList<>();
 		headers.add(LOCATION_ID);
 		headers.add("Trait");
-		headers.addAll(Arrays.asList("NumValues", "NumMissing", "Mean", "Variance", "SD", "Min", "Max", "Range",
-				"Median", "LowerQuartile", "UpperQuartile", "MeanRep", "MinRep", "MaxRep", "MeanSED", "MinSED", "MaxSED", "MeanLSD",
-				"MinLSD", "MaxLSD", "CV", "Heritability", "WaldStatistic", "WaldDF", "Pvalue"));
+		headers.addAll(Arrays.asList("NumValues", "NumMissing", "Mean", "Variance", "SD", "Min", "Max", "Range", "Median", "LowerQuartile",
+				"UpperQuartile", "MeanRep", "MinRep", "MaxRep", "MeanSED", "MinSED", "MaxSED", "MeanLSD", "MinLSD", "MaxLSD", "CV",
+				"Heritability", "WaldStatistic", "WaldDF", "Pvalue"));
 		Assert.assertEquals(headers, Arrays.asList(rowsIterator.next()));
 		// Verify data rows
 		for (final String env : ENVIRONMENTS) {
@@ -300,13 +309,13 @@ public class MultiSiteDataExporterTest {
 			for (int i = 1; i <= this.meansTraits.size(); i++) {
 				final String[] row = rowsIterator.next();
 				Assert.assertEquals("Agua Fria", row[0]);
-				Assert.assertEquals(this.meansTraits.get(i-1).getName(), row[1]);
+				Assert.assertEquals(this.meansTraits.get(i - 1).getName(), row[1]);
 				int j = 2;
 				// <Trait>_NumValue, <Trait>_NumMissing will always have blank values
 				Assert.assertTrue(row[j++].isEmpty());
 				Assert.assertTrue(row[j++].isEmpty());
 				// <Trait>_Mean value
-				Assert.assertEquals((Integer.valueOf(env) * 10)+ "." + k++, row[j++]);
+				Assert.assertEquals((Integer.valueOf(env) * 10) + "." + k++, row[j++]);
 				// <Trait>_Variance, <Trait>_SD, <Trait>_Min, <Trait>_Max, <Trait>_Range, <Trait>_Median, <Trait>_LowerQuartile
 				// <Trait>_UpperQuartile, <Trait>_MeanRep, <Trait>_MinRep, <Trait>_MaxRep will always have blank values
 				Assert.assertTrue(row[j++].isEmpty());
@@ -321,7 +330,7 @@ public class MultiSiteDataExporterTest {
 				Assert.assertTrue(row[j++].isEmpty());
 				Assert.assertTrue(row[j++].isEmpty());
 				// <Trait>_MeanSED value
-				Assert.assertEquals(Double.valueOf((Integer.valueOf(env) * 10)+ "." + k++).toString(), row[j++]);
+				Assert.assertEquals(Double.valueOf((Integer.valueOf(env) * 10) + "." + k++).toString(), row[j++]);
 				// <Trait>_MinSED, <Trait>_MaxSED, <Trait>_MeanLSD, <Trait>_MinLSD, <Trait>_MaxLSD will always have blank values
 				Assert.assertTrue(row[j++].isEmpty());
 				Assert.assertTrue(row[j++].isEmpty());
@@ -329,17 +338,17 @@ public class MultiSiteDataExporterTest {
 				Assert.assertTrue(row[j++].isEmpty());
 				Assert.assertTrue(row[j++].isEmpty());
 				// <Trait>_CV, <Trait>_Heritability values
-				Assert.assertEquals(Double.valueOf((Integer.valueOf(env) * 10)+ "." + k++).toString(), row[j++]);
-				Assert.assertEquals(Double.valueOf((Integer.valueOf(env) * 10)+ "." + k++).toString(), row[j++]);
+				Assert.assertEquals(Double.valueOf((Integer.valueOf(env) * 10) + "." + k++).toString(), row[j++]);
+				Assert.assertEquals(Double.valueOf((Integer.valueOf(env) * 10) + "." + k++).toString(), row[j++]);
 				// <Trait>_WaldStatistic, <Trait>_WaldDF will always have blank values
 				Assert.assertTrue(row[j++].isEmpty());
 				Assert.assertTrue(row[j++].isEmpty());
 				// <Trait>_PValue value
-				Assert.assertEquals(Double.valueOf((Integer.valueOf(env) * 10)+ "." + k++).toString(), row[j++]);
+				Assert.assertEquals(Double.valueOf((Integer.valueOf(env) * 10) + "." + k++).toString(), row[j++]);
 			}
 		}
 	}
-	
+
 	@Test
 	public void testGetCsvFileInWorkbenchDirectoryForMeans() {
 		final File meansFile = this.multiSiteDataExporter.getCsvFileInWorkbenchDirectory(project, BASIC_FILE_NAME, false);
@@ -348,7 +357,7 @@ public class MultiSiteDataExporterTest {
 		Assert.assertEquals(new File(BMS_INPUT_FILES_DIR + File.separator + BASIC_FILE_NAME + ".csv").getAbsolutePath(),
 				meansFile.getAbsolutePath());
 	}
-	
+
 	@Test
 	public void testGetCsvFileInWorkbenchDirectoryForSummaryStats() {
 		final File meansFile = this.multiSiteDataExporter.getCsvFileInWorkbenchDirectory(project, BASIC_FILE_NAME, true);
@@ -377,7 +386,7 @@ public class MultiSiteDataExporterTest {
 				final VariableList variates = new VariableList();
 				for (int i = 1; i <= this.meansTraits.size(); i++) {
 					final DMSVariableType traitVariable = new DMSVariableType();
-					traitVariable.setLocalName(this.meansTraits.get(i-1).getName());
+					traitVariable.setLocalName(this.meansTraits.get(i - 1).getName());
 					final StandardVariable standardVar = new StandardVariable();
 					standardVar.setId(Integer.valueOf(gid + i));
 					traitVariable.setStandardVariable(standardVar);
@@ -409,7 +418,7 @@ public class MultiSiteDataExporterTest {
 
 			for (int j = 1; j <= this.summaryTraits.size(); j++) {
 				final DMSVariableType traitVariable = new DMSVariableType();
-				traitVariable.setLocalName(this.summaryTraits.get(j-1).getName());
+				traitVariable.setLocalName(this.summaryTraits.get(j - 1).getName());
 				final StandardVariable standardVar = new StandardVariable();
 				standardVar.setId(j);
 				traitVariable.setStandardVariable(standardVar);
@@ -443,7 +452,7 @@ public class MultiSiteDataExporterTest {
 		}
 		return gxeEnvironments;
 	}
-	
+
 	private void createMultiSiteParameters() {
 		this.multiSiteParameters = new MultiSiteParameters();
 		this.project = ProjectTestDataInitializer.createProject();

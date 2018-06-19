@@ -815,11 +815,12 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 			final String selectedEnvironmentFactorName) {
 		final BeanItemContainer<SeaEnvironmentModel> container = new BeanItemContainer<>(SeaEnvironmentModel.class);
 		final int datasetId = this.getBreedingViewInput().getDatasetId();
-		final TrialEnvironments trialEnvironments =
-				this.studyDataManager.getTrialEnvironmentsInDataset(datasetId);
+		final TrialEnvironments trialEnvironments = this.studyDataManager.getTrialEnvironmentsInDataset(datasetId);
 
-		final boolean isSelectedEnvironmentFactorALocation = this.studyDataManager.isLocationIdVariable(this.breedingViewInput.getStudyId(), selectedEnvironmentFactorName);
-		final Map<String, String> locationNameMap = this.studyDataManager.createInstanceLocationIdToNameMapFromStudy(this.breedingViewInput.getStudyId());
+		final boolean isSelectedEnvironmentFactorALocation =
+				this.studyDataManager.isLocationIdVariable(this.breedingViewInput.getStudyId(), selectedEnvironmentFactorName);
+		final Map<String, String> locationNameMap =
+				this.studyDataManager.createInstanceLocationIdToNameMapFromStudy(this.breedingViewInput.getStudyId());
 
 		for (final TrialEnvironment trialEnvironment : trialEnvironments.getTrialEnvironments()) {
 

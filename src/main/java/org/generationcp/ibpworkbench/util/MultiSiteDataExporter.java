@@ -1,4 +1,3 @@
-
 package org.generationcp.ibpworkbench.util;
 
 import java.io.File;
@@ -76,8 +75,8 @@ public class MultiSiteDataExporter {
 			j++;
 		}
 
-		if (!environmentGroup.equalsIgnoreCase(environmentName) && environmentGroup != null && !environmentGroup.isEmpty()
-				&& !"None".equalsIgnoreCase(environmentGroup)) {
+		if (!environmentGroup.equalsIgnoreCase(environmentName) && environmentGroup != null && !environmentGroup.isEmpty() && !"None"
+				.equalsIgnoreCase(environmentGroup)) {
 			traitToColNoMap.put(environmentGroup, j);
 			headerRow.add(BreedingViewUtil.sanitizeName(environmentGroup));
 			j++;
@@ -104,9 +103,9 @@ public class MultiSiteDataExporter {
 			gxeEnvLabels.add(env.getName());
 		}
 
-		int studyId = multiSiteParameters.getStudy().getId();
-		boolean isEnvironmentFactorALocationIdVariable = this.studyDataManager.isLocationIdVariable(studyId, environmentName);
-		Map<String, String> locationNameMap = this.studyDataManager.createInstanceLocationIdToNameMapFromStudy(studyId);
+		final int studyId = multiSiteParameters.getStudy().getId();
+		final boolean isEnvironmentFactorALocationIdVariable = this.studyDataManager.isLocationIdVariable(studyId, environmentName);
+		final Map<String, String> locationNameMap = this.studyDataManager.createInstanceLocationIdToNameMapFromStudy(studyId);
 
 		// create table content
 		for (final Experiment experiment : experiments) {
@@ -172,16 +171,17 @@ public class MultiSiteDataExporter {
 
 		final List<String[]> tableItems = new ArrayList<String[]>();
 
-		final String[] header = new String[] {environmentName, "Trait", "NumValues", "NumMissing", "Mean", "Variance", "SD", "Min", "Max",
-				"Range", "Median", "LowerQuartile", "UpperQuartile", "MeanRep", "MinRep", "MaxRep", "MeanSED", "MinSED", "MaxSED",
-				"MeanLSD", "MinLSD", "MaxLSD", "CV", "Heritability", "WaldStatistic", "WaldDF", "Pvalue"
+		final String[] header =
+				new String[] {environmentName, "Trait", "NumValues", "NumMissing", "Mean", "Variance", "SD", "Min", "Max", "Range",
+						"Median", "LowerQuartile", "UpperQuartile", "MeanRep", "MinRep", "MaxRep", "MeanSED", "MinSED", "MaxSED", "MeanLSD",
+						"MinLSD", "MaxLSD", "CV", "Heritability", "WaldStatistic", "WaldDF", "Pvalue"
 
-		};
+				};
 
 		tableItems.add(header);
 
-		boolean isEnvironmentFactorALocationIdVariable = this.studyDataManager.isLocationIdVariable(studyId, environmentName);
-		Map<String, String> locationNameMap = this.studyDataManager.createInstanceLocationIdToNameMapFromStudy(studyId);
+		final boolean isEnvironmentFactorALocationIdVariable = this.studyDataManager.isLocationIdVariable(studyId, environmentName);
+		final Map<String, String> locationNameMap = this.studyDataManager.createInstanceLocationIdToNameMapFromStudy(studyId);
 
 		for (final Experiment exp : experiments) {
 
@@ -191,9 +191,10 @@ public class MultiSiteDataExporter {
 
 				final List<String> row = new ArrayList<String>();
 
-				Variable factorVariable = exp.getFactors().findByLocalName(environmentName);
+				final Variable factorVariable = exp.getFactors().findByLocalName(environmentName);
 				String envValue = factorVariable.getValue();
-				if (factorVariable.getVariableType().getLocalName().equalsIgnoreCase(environmentName) && isEnvironmentFactorALocationIdVariable) {
+				if (factorVariable.getVariableType().getLocalName().equalsIgnoreCase(environmentName)
+						&& isEnvironmentFactorALocationIdVariable) {
 					envValue = locationNameMap.get(factorVariable.getValue());
 				}
 
