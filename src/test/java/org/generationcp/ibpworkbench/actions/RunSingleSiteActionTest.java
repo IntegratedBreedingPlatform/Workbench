@@ -48,7 +48,7 @@ import com.vaadin.ui.Window;
 @RunWith(MockitoJUnitRunner.class)
 public class RunSingleSiteActionTest {
 
-	private static final String BASE_FILENAME = "MaizeProgram_0_TestTrial-PLOTDATA";
+	private static final String BASE_FILENAME = "MaizeProgram_0_TestStudy-PLOTDATA";
 	private static final String ENVIRONMENT_FACTOR = "Environment Factor";
 	private static final String ANALYSIS_NAME = "Analysis Name";
 	private static final String ROW_FACTOR = "Row Factor";
@@ -111,7 +111,7 @@ public class RunSingleSiteActionTest {
 	private Application application;
 	
 	@InjectMocks
-	private RunSingleSiteAction runSingleSiteAction = new RunSingleSiteAction(null);
+	private final RunSingleSiteAction runSingleSiteAction = new RunSingleSiteAction(null);
 	
 	@Captor
 	private ArgumentCaptor<List<String>> filesInZipCaptor;

@@ -136,29 +136,19 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 	}
 
 	public void updateProjectLastOpenedDate() {
+		final Project project = contextUtil.getProjectInContext();
 
-		final TransactionTemplate transactionTemplate = new TransactionTemplate(this.transactionManager);
+		final ProjectUserInfoDAO projectUserInfoDao = WorkbenchSidebarPresenter.this.manager.getProjectUserInfoDao();
+		final ProjectUserInfo projectUserInfo =
+				projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId(), contextUtil.getCurrentWorkbenchUserId());
 
-		transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+		if (projectUserInfo != null) {
+			projectUserInfo.setLastOpenDate(new Date());
+			WorkbenchSidebarPresenter.this.manager.saveOrUpdateProjectUserInfo(projectUserInfo);
+		}
 
-			protected void doInTransactionWithoutResult(final TransactionStatus status) {
-				final Project project = contextUtil.getProjectInContext();
-
-				final ProjectUserInfoDAO projectUserInfoDao = WorkbenchSidebarPresenter.this.manager.getProjectUserInfoDao();
-				final ProjectUserInfo projectUserInfo =
-						projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId(), contextUtil.getCurrentWorkbenchUserId());
-
-				if (projectUserInfo != null) {
-					projectUserInfo.setLastOpenDate(new Date());
-					WorkbenchSidebarPresenter.this.manager.saveOrUpdateProjectUserInfo(projectUserInfo);
-				}
-
-				project.setLastOpenDate(new Date());
-				WorkbenchSidebarPresenter.this.manager.mergeProject(project);
-
-			}
-		});
-
+		project.setLastOpenDate(new Date());
+		WorkbenchSidebarPresenter.this.manager.mergeProject(project);
 	}
 
 	public void setIsBackupAndRestoreEnabled(final String isBackupAndRestoreEnabled) {

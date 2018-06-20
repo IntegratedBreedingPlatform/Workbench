@@ -29,28 +29,28 @@ public class HeadToHeadResultsUtilTest {
 	private static final TraitForComparison TRAIT2 = new TraitForComparison(new TraitInfo(HeadToHeadResultsUtilTest.TID2),
 			TraitsAvailableComponent.DECREASING);
 
-	private static Map<String, ObservationList> data = MockCrossStudyDataUtil.getHeadToHeadData(HeadToHeadResultsUtilTest.TID1,
+	private static final Map<String, ObservationList> data = MockCrossStudyDataUtil.getHeadToHeadData(HeadToHeadResultsUtilTest.TID1,
 			HeadToHeadResultsUtilTest.TID2, HeadToHeadResultsUtilTest.GID1, HeadToHeadResultsUtilTest.GID2);
 	private static final GermplasmPair pair = new GermplasmPair(HeadToHeadResultsUtilTest.GID1, HeadToHeadResultsUtilTest.GID2);
 	private static final List<EnvironmentForComparison> equalWeightEnvts = MockCrossStudyDataUtil.getEqualEnvironmentForComparisons();
 	private static final List<EnvironmentForComparison> variedWeightEnvts = MockCrossStudyDataUtil.getVariedEnvironmentForComparisons();
 
-	private static DecimalFormat decimalFormatter = new DecimalFormat("#,##0.00");
+	private static final DecimalFormat decimalFormatter = new DecimalFormat("#,##0.00");
 
 	@Test
 	public void testGetPvalue() {
-		int trials =
+		final int studies =
 				HeadToHeadResultsUtil.getTotalNumOfEnv(HeadToHeadResultsUtilTest.pair, HeadToHeadResultsUtilTest.TRAIT1,
 						HeadToHeadResultsUtilTest.data, HeadToHeadResultsUtilTest.equalWeightEnvts);
-		int successes =
+		final int successes =
 				HeadToHeadResultsUtil.getTotalNumOfSup(HeadToHeadResultsUtilTest.pair, HeadToHeadResultsUtilTest.TRAIT1,
 						HeadToHeadResultsUtilTest.data, HeadToHeadResultsUtilTest.equalWeightEnvts);
 
-		double pValue = HeadToHeadResultsUtil.getPvalue(trials, successes);
-		String pValueFormatted = HeadToHeadResultsUtilTest.decimalFormatter.format(pValue);
+		final double pValue = HeadToHeadResultsUtil.getPvalue(studies, successes);
+		final String pValueFormatted = HeadToHeadResultsUtilTest.decimalFormatter.format(pValue);
 		Assert.assertEquals("0.09", pValueFormatted);
 
-		System.out.println("PVAL for (trial= " + trials + ", succeses=" + successes + "): " + pValueFormatted);
+		System.out.println("PVAL for (trial= " + studies + ", succeses=" + successes + "): " + pValueFormatted);
 	}
 
 	@Test

@@ -13,7 +13,7 @@ package org.generationcp.browser.study.containers;
 
 import java.util.List;
 
-import org.generationcp.middleware.domain.oms.StudyType;
+import org.generationcp.middleware.domain.study.StudyTypeDto;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.vaadin.addons.lazyquerycontainer.Query;
 import org.vaadin.addons.lazyquerycontainer.QueryDefinition;
@@ -28,12 +28,12 @@ import org.vaadin.addons.lazyquerycontainer.QueryFactory;
 public class StudyDetailsQueryFactory implements QueryFactory {
 
 	private final StudyDataManager studyDataManager;
-	private final StudyType studyType;
+	private final StudyTypeDto studyType;
 	private final List<String> columnIds;
 	private final String programUUID;
 	private Query query;
 
-	public StudyDetailsQueryFactory(StudyDataManager studyDataManager, StudyType studyType, List<String> columnIds, String programUUID) {
+	public StudyDetailsQueryFactory(final StudyDataManager studyDataManager, final StudyTypeDto studyType, final List<String> columnIds, final String programUUID) {
 		super();
 		this.studyDataManager = studyDataManager;
 		this.studyType = studyType;
@@ -46,13 +46,13 @@ public class StudyDetailsQueryFactory implements QueryFactory {
 	 * used.
 	 */
 	@Override
-	public Query constructQuery(Object[] sortPropertyIds, boolean[] sortStates) {
+	public Query constructQuery(final Object[] sortPropertyIds, final boolean[] sortStates) {
 		this.query = new StudyDetailsQuery(this.studyDataManager, this.studyType, this.columnIds, this.programUUID);
 		return this.query;
 	}
 
 	@Override
-	public void setQueryDefinition(QueryDefinition arg0) {
+	public void setQueryDefinition(final QueryDefinition arg0) {
 		// no yet used
 	}
 

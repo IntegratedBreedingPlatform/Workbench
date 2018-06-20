@@ -18,7 +18,6 @@ import org.generationcp.ibpworkbench.study.listeners.StudyItemClickListener;
 import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.StudySearchMatchingOption;
-import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Season;
@@ -39,7 +38,7 @@ public class StudySearchResultComponent extends VerticalLayout
 		implements InitializingBean, InternationalizableComponent, GermplasmStudyBrowserLayout {
 
 	private static final long serialVersionUID = 1L;
-	private final static Logger LOG = LoggerFactory.getLogger(StudySearchResultComponent.class);
+	private static final Logger LOG = LoggerFactory.getLogger(StudySearchResultComponent.class);
 
 	private static final String STUDY_ID = "ID";
 	private static final String STUDY_NAME = "NAME";
@@ -197,16 +196,16 @@ public class StudySearchResultComponent extends VerticalLayout
 
 	private boolean hasChildStudy(final int studyId) {
 
-		List<Reference> studyChildren = new ArrayList<Reference>();
+		List<Reference> studyChildren = new ArrayList<>();
 
 		try {
 			studyChildren.addAll(this.studyDataManager
-					.getChildrenOfFolder(Integer.valueOf(studyId), this.getCurrentProject().getUniqueID(), StudyType.nurseriesAndTrials()));
+					.getChildrenOfFolder(Integer.valueOf(studyId), this.getCurrentProject().getUniqueID()));
 		} catch (final MiddlewareQueryException e) {
 			StudySearchResultComponent.LOG.error(e.toString() + "\n" + e.getStackTrace());
 			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
 					this.messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
-			studyChildren = new ArrayList<Reference>();
+			studyChildren = new ArrayList<>();
 		}
 		if (!studyChildren.isEmpty()) {
 			return true;

@@ -23,7 +23,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.domain.etl.StudyDetails;
-import org.generationcp.middleware.domain.oms.StudyType;
+import org.generationcp.middleware.domain.study.StudyTypeDto;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -340,13 +340,17 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 				this.workbenchDataManager.getProjectActivitiesByProjectId(project.getProjectId(), 0, (int) projectActivitiesCount);
 		this.populateActivityTable(activityList);
 
+		// We still need to differentiate by T and N, because there are 2 explicit filters in the menu. It will be managed as an improvement
+		// DO NOT CHANGE
 		final StudyDetailsQueryFactory trialFactory =
-				new StudyDetailsQueryFactory(this.studyDataManager, StudyType.T, Arrays.asList(ProgramSummaryView.TRIAL_NURSERY_COLUMNS),
+				new StudyDetailsQueryFactory(this.studyDataManager, StudyTypeDto.getTrialDto(), Arrays.asList
+					(ProgramSummaryView.TRIAL_NURSERY_COLUMNS),
 						project.getUniqueID());
 		this.populateTrialSummaryTable(trialFactory);
 
 		final StudyDetailsQueryFactory nurseryFactory =
-				new StudyDetailsQueryFactory(this.studyDataManager, StudyType.N, Arrays.asList(ProgramSummaryView.TRIAL_NURSERY_COLUMNS),
+				new StudyDetailsQueryFactory(this.studyDataManager, StudyTypeDto.getNurseryDto(),
+					Arrays.asList(ProgramSummaryView.TRIAL_NURSERY_COLUMNS),
 						project.getUniqueID());
 		this.populateNurserySummaryTable(nurseryFactory);
 
