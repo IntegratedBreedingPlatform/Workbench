@@ -21,7 +21,7 @@ import com.vaadin.ui.Window;
 
 public class StudyTreeUtilTest {
 
-	private static final String ROOT_FOLDER_NAME = "Nurseries and Trials";
+	private static final String ROOT_FOLDER_NAME = "Studies";
 
 	@Mock
 	private SimpleResourceBundleMessageSource messageSource;
@@ -49,32 +49,32 @@ public class StudyTreeUtilTest {
 
 	@Test
 	public void testSetParentIfSourceIsRootFolderShouldReturnFalse() {
-		boolean response = this.util.setParent(StudyTreeComponent.STUDY_ROOT_NODE, null, true);
+		final boolean response = this.util.setParent(StudyTreeComponent.STUDY_ROOT_NODE, null, true);
 		Assert.assertFalse("Should return false since the folder being move is the main root folder", response);
 	}
 
 	@Test
 	public void testSetParentIfSourceIsNotRootFolderButHaveChildShouldReturnFalse() {
 		Mockito.when(this.component.hasChildStudy(Matchers.anyInt())).thenReturn(true);
-		boolean response = this.util.setParent(new Integer(2), null, true);
+		final boolean response = this.util.setParent(new Integer(2), null, true);
 		Assert.assertFalse("Should return false since the folder being move has child folder", response);
 	}
 
 	@Test
 	public void testSetParentIfSourceIsNotRootFolderAndValidTargetFolderReturnTrue() {
 		Mockito.when(this.component.hasChildStudy(Matchers.anyInt())).thenReturn(false);
-		boolean response = this.util.setParent(new Integer(2), new Integer(3), true);
+		final boolean response = this.util.setParent(new Integer(2), new Integer(3), true);
 		Assert.assertTrue("Should return true since the folder being move and target folder are both valid", response);
 	}
 
 	@Test
 	public void testValidateForDeleteNurseryListIsNotExistingShouldThrowError() throws MiddlewareQueryException {
 		Mockito.when(this.studyDataManager.getProject(Matchers.anyInt())).thenReturn(null);
-		Integer id = 1;
+		final Integer id = 1;
 		boolean throwsException = false;
 		try {
 			this.util.validateForDeleteNurseryList(id);
-		} catch (GermplasmStudyBrowserException e) {
+		} catch (final GermplasmStudyBrowserException e) {
 			throwsException = true;
 		}
 		Assert.assertTrue("Should throw exception since project is not existing", throwsException);
@@ -84,11 +84,11 @@ public class StudyTreeUtilTest {
 	public void testValidateForDeleteNurseryListIsExistingAndIsNotFolderShouldThrowError() throws MiddlewareQueryException {
 		Mockito.when(this.studyDataManager.getProject(Matchers.anyInt())).thenReturn(Mockito.mock(DmsProject.class));
 		Mockito.when(this.component.isFolder(Matchers.anyInt())).thenReturn(false);
-		Integer id = 1;
+		final Integer id = 1;
 		boolean throwsException = false;
 		try {
 			this.util.validateForDeleteNurseryList(id);
-		} catch (GermplasmStudyBrowserException e) {
+		} catch (final GermplasmStudyBrowserException e) {
 			throwsException = true;
 		}
 		Assert.assertTrue("Should throw exception since project is not folder", throwsException);
@@ -99,11 +99,11 @@ public class StudyTreeUtilTest {
 		Mockito.when(this.studyDataManager.getProject(Matchers.anyInt())).thenReturn(Mockito.mock(DmsProject.class));
 		Mockito.when(this.component.isFolder(Matchers.anyInt())).thenReturn(true);
 		Mockito.when(this.component.hasChildStudy(Matchers.anyInt())).thenReturn(false);
-		Integer id = 1;
+		final Integer id = 1;
 		boolean throwsException = false;
 		try {
 			this.util.validateForDeleteNurseryList(id);
-		} catch (GermplasmStudyBrowserException e) {
+		} catch (final GermplasmStudyBrowserException e) {
 			throwsException = true;
 		}
 		Assert.assertFalse("Should not throw exception since project is a folder", throwsException);
@@ -114,11 +114,11 @@ public class StudyTreeUtilTest {
 		Mockito.when(this.studyDataManager.getProject(Matchers.anyInt())).thenReturn(Mockito.mock(DmsProject.class));
 		Mockito.when(this.component.isFolder(Matchers.anyInt())).thenReturn(true);
 		Mockito.when(this.component.hasChildStudy(Matchers.anyInt())).thenReturn(true);
-		Integer id = 1;
+		final Integer id = 1;
 		boolean throwsException = false;
 		try {
 			this.util.validateForDeleteNurseryList(id);
-		} catch (GermplasmStudyBrowserException e) {
+		} catch (final GermplasmStudyBrowserException e) {
 			throwsException = true;
 		}
 		Assert.assertTrue("Should throw exception since project is a folder with child studies", throwsException);
@@ -131,7 +131,7 @@ public class StudyTreeUtilTest {
 
 	@Test
 	public void testIsValidNameInputReturnsFalseforStudyNameWithLongNames() throws MiddlewareQueryException {
-		String studyName =
+		final String studyName =
 				"Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium,"
 						+ " totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. "
 						+ "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos "
@@ -142,7 +142,7 @@ public class StudyTreeUtilTest {
 
 	@Test
 	public void testIsValidNameInputReturnsFalseforExistingStudyName() throws MiddlewareQueryException {
-		String itemName = "Sample Folder Name";
+		final String itemName = "Sample Folder Name";
 		Mockito.when(this.studyDataManager.checkIfProjectNameIsExistingInProgram(itemName, StudyTreeUtilTest.PROGRAM_UUID))
 				.thenReturn(true);
 		Assert.assertFalse("Expected to return false for existing study name",
@@ -151,8 +151,8 @@ public class StudyTreeUtilTest {
 
 	@Test
 	public void testIsValidNameInputReturnsFalseforUsingRootFolderName() throws MiddlewareQueryException {
-		String itemName = StudyTreeUtilTest.ROOT_FOLDER_NAME;
-		Mockito.when(this.messageSource.getMessage(Message.NURSERIES_AND_TRIALS)).thenReturn(StudyTreeUtilTest.ROOT_FOLDER_NAME);
+		final String itemName = StudyTreeUtilTest.ROOT_FOLDER_NAME;
+		Mockito.when(this.messageSource.getMessage(Message.STUDIES)).thenReturn(StudyTreeUtilTest.ROOT_FOLDER_NAME);
 		Assert.assertFalse("Expected to return false for using root folder name.",
 				this.util.isValidNameInput(itemName, StudyTreeUtilTest.PROGRAM_UUID));
 	}

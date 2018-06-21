@@ -11,7 +11,6 @@ import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.ui.common.LinkButton;
 import org.generationcp.middleware.domain.dms.StudyReference;
-import org.generationcp.middleware.domain.oms.StudyType;
 import org.generationcp.middleware.domain.sample.SampleGermplasmDetailDTO;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.service.api.SampleService;
@@ -45,9 +44,7 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 	private static final String GENOTYPING_DATA = "genotyping dataset";
 	private static final String PARENT_WINDOW = "_parent";
 
-	private static final String URL_STUDY_NURSERY = "/Fieldbook/NurseryManager/editNursery/";
 	private static final String URL_STUDY_TRIAL = "/Fieldbook/TrialManager/openTrial/%s#/trialSettings";
-
 
 	private final Integer gid;
 
@@ -171,9 +168,6 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 	private static ExternalResource getURLStudy(final StudyReference study, final String authParams) {
 		final String aditionalParameters = "?restartApplication&" + authParams;
 
-		if (study.getStudyType().getName().equals(StudyType.N.name())) {
-			return new ExternalResource(URL_STUDY_NURSERY + study.getId() + aditionalParameters);
-		}
 		return new ExternalResource(String.format(URL_STUDY_TRIAL, study.getId() + aditionalParameters));
 	}
 
