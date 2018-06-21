@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
@@ -22,7 +21,6 @@ import org.generationcp.ibpworkbench.security.WorkbenchEmailSenderService;
 import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.ibpworkbench.validator.ForgotPasswordAccountValidator;
 import org.generationcp.ibpworkbench.validator.UserAccountValidator;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
@@ -84,10 +82,12 @@ public class AuthenticationControllerTest {
 	private WorkbenchDataManager workbenchDataManager;
 	
 	private List<Role> roles;
+	private Role selectedRole;
 	
 	@Before
 	public void setup() {
 		this.createTestRoles();
+		Mockito.doReturn(this.selectedRole.getId()).when(this.userAccountModel).getRoleId();
 		Mockito.doReturn(this.roles).when(this.workbenchDataManager).getAssignableRoles();
 	}
 	
@@ -132,7 +132,7 @@ public class AuthenticationControllerTest {
 		Mockito.when(this.result.hasErrors()).thenReturn(false);
 
 		ResponseEntity<Map<String, Object>> out = this.controller.saveUserAccount(this.userAccountModel, this.result);
-
+		Mockito.verify(this.userAccountModel).setRole(this.selectedRole);
 		Assert.assertTrue("ok status", out.getStatusCode().equals(HttpStatus.OK));
 
 		Assert.assertTrue("success = true", (Boolean) out.getBody().get("success"));
@@ -391,7 +391,8 @@ public class AuthenticationControllerTest {
 	private void createTestRoles() {
 		this.roles = new ArrayList<>();
 		this.roles.add(new Role(1, "Admin"));
-		this.roles.add(new Role(2, "Breeder"));
+		this.selectedRole = new Role(2, "Breeder");
+		this.roles.add(this.selectedRole);
 		this.roles.add(new Role(3, "Technician"));
 	}
 }
