@@ -56,7 +56,7 @@ public class StudyTreeUtil implements Serializable {
 	private final Tree targetTree;
 	private final StudyTreeComponent source;
 
-	public StudyTreeUtil(Tree targetTree, StudyTreeComponent source) {
+	public StudyTreeUtil(final Tree targetTree, final StudyTreeComponent source) {
 		this.targetTree = targetTree;
 		this.source = source;
 		this.setupTreeDragAndDropHandler();
@@ -72,14 +72,14 @@ public class StudyTreeUtil implements Serializable {
 		w.setResizable(false);
 		w.setStyleName(Reindeer.WINDOW_LIGHT);
 
-		VerticalLayout container = new VerticalLayout();
+		final VerticalLayout container = new VerticalLayout();
 		container.setSpacing(true);
 		container.setMargin(true);
 
-		HorizontalLayout formContainer = new HorizontalLayout();
+		final HorizontalLayout formContainer = new HorizontalLayout();
 		formContainer.setSpacing(true);
 
-		Label l = new Label("Folder Name");
+		final Label l = new Label("Folder Name");
 		l.addStyleName("gcp-form-title");
 		final TextField name = new TextField();
 		name.setMaxLength(50);
@@ -89,15 +89,15 @@ public class StudyTreeUtil implements Serializable {
 		formContainer.addComponent(l);
 		formContainer.addComponent(name);
 
-		HorizontalLayout btnContainer = new HorizontalLayout();
+		final HorizontalLayout btnContainer = new HorizontalLayout();
 		btnContainer.setSpacing(true);
 		btnContainer.setWidth("100%");
 
-		Label spacer = new Label("");
+		final Label spacer = new Label("");
 		btnContainer.addComponent(spacer);
 		btnContainer.setExpandRatio(spacer, 1.0F);
 
-		Button ok = new Button("Ok");
+		final Button ok = new Button("Ok");
 		ok.setClickShortcut(KeyCode.ENTER);
 		ok.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 		ok.addListener(new Button.ClickListener() {
@@ -105,9 +105,9 @@ public class StudyTreeUtil implements Serializable {
 			private static final long serialVersionUID = -6313787074401316900L;
 
 			@Override
-			public void buttonClick(Button.ClickEvent event) {
+			public void buttonClick(final Button.ClickEvent event) {
 				Integer newFolderId = null;
-				String newFolderName = name.getValue().toString();
+				final String newFolderName = name.getValue().toString();
 				// 1 by default because root study folder has id = 1
 				int parentFolderId = 1;
 
@@ -120,8 +120,8 @@ public class StudyTreeUtil implements Serializable {
 						if (StudyTreeUtil.this.source.isFolder((Integer) parentItemId)) {
 							parentFolderId = ((Integer) parentItemId).intValue();
 						} else {
-							int selectItemId = ((Integer) parentItemId).intValue();
-							DmsProject parentFolder = StudyTreeUtil.this.studyDataManager.getParentFolder(selectItemId);
+							final int selectItemId = ((Integer) parentItemId).intValue();
+							final DmsProject parentFolder = StudyTreeUtil.this.studyDataManager.getParentFolder(selectItemId);
 							parentFolderId = parentFolder.getProjectId().intValue();
 						}
 					}
@@ -129,7 +129,7 @@ public class StudyTreeUtil implements Serializable {
 					newFolderId =
 							Integer.valueOf(StudyTreeUtil.this.studyDataManager.addSubFolder(parentFolderId, newFolderName, newFolderName,
 									programUUID, newFolderName));
-				} catch (MiddlewareQueryException ex) {
+				} catch (final MiddlewareQueryException ex) {
 					StudyTreeUtil.LOG.error("Error with adding a study folder.", ex);
 					MessageNotifier.showError(StudyTreeUtil.this.source.getWindow(),
 							StudyTreeUtil.this.messageSource.getMessage(Message.ERROR_DATABASE),
@@ -172,14 +172,14 @@ public class StudyTreeUtil implements Serializable {
 
 		});
 
-		Button cancel = new Button("Cancel");
+		final Button cancel = new Button("Cancel");
 		cancel.setClickShortcut(KeyCode.ESCAPE);
 		cancel.addListener(new Button.ClickListener() {
 
 			private static final long serialVersionUID = -6542741100092010158L;
 
 			@Override
-			public void buttonClick(Button.ClickEvent event) {
+			public void buttonClick(final Button.ClickEvent event) {
 				StudyTreeUtil.this.source.getWindow().focus();
 				StudyTreeUtil.this.source.getParentComponent().getWindow().removeWindow(w);
 			}
@@ -197,7 +197,7 @@ public class StudyTreeUtil implements Serializable {
 		this.source.getParentComponent().getWindow().addWindow(w);
 	}
 
-	protected boolean isValidNameInput(String newFolderName, String programUUID) throws MiddlewareQueryException {
+	protected boolean isValidNameInput(final String newFolderName, final String programUUID) throws MiddlewareQueryException {
 		if ("".equals(newFolderName.replace(" ", ""))) {
 			MessageNotifier.showRequiredFieldError(this.source.getWindow(), this.messageSource.getMessage(Message.INVALID_ITEM_NAME));
 			return false;
@@ -212,7 +212,7 @@ public class StudyTreeUtil implements Serializable {
 					this.messageSource.getMessage(Message.EXISTING_STUDY_ERROR_MESSAGE));
 			return false;
 
-		} else if (newFolderName.equalsIgnoreCase(this.messageSource.getMessage(Message.NURSERIES_AND_TRIALS))) {
+		} else if (newFolderName.equalsIgnoreCase(this.messageSource.getMessage(Message.STUDIES))) {
 			MessageNotifier.showRequiredFieldError(this.source.getWindow(),
 					this.messageSource.getMessage(Message.EXISTING_STUDY_ERROR_MESSAGE));
 			return false;
@@ -221,7 +221,7 @@ public class StudyTreeUtil implements Serializable {
 		return true;
 	}
 
-	protected boolean setParent(Object sourceItemId, Object targetItemId, boolean isStudy) {
+	protected boolean setParent(final Object sourceItemId, final Object targetItemId, final boolean isStudy) {
 
 		if (sourceItemId.equals(StudyTreeComponent.STUDY_ROOT_NODE)) {
 			MessageNotifier.showWarning(this.source.getWindow(), this.messageSource.getMessage(Message.ERROR_WITH_MODIFYING_STUDY_TREE),
@@ -250,7 +250,7 @@ public class StudyTreeUtil implements Serializable {
 			if (targetId != null && sourceId != null) {
 				this.studyDataManager.moveDmsProject(sourceId.intValue(), targetId.intValue(), isStudy);
 			}
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			StudyTreeUtil.LOG.error("Error with moving node to target folder.", e);
 			MessageNotifier.showError(this.source.getWindow(), this.messageSource.getMessage(Message.ERROR_INTERNAL),
 					this.messageSource.getMessage(Message.ERROR_REPORT_TO));
@@ -276,31 +276,31 @@ public class StudyTreeUtil implements Serializable {
 			private static final long serialVersionUID = -6676297159926786216L;
 
 			@Override
-			public void drop(DragAndDropEvent dropEvent) {
-				Transferable t = dropEvent.getTransferable();
+			public void drop(final DragAndDropEvent dropEvent) {
+				final Transferable t = dropEvent.getTransferable();
 				if (t.getSourceComponent() != StudyTreeUtil.this.targetTree) {
 					return;
 				}
 
-				TreeTargetDetails target = (TreeTargetDetails) dropEvent.getTargetDetails();
+				final TreeTargetDetails target = (TreeTargetDetails) dropEvent.getTargetDetails();
 
-				Object sourceItemId = t.getData("itemId");
-				Object targetItemId = target.getItemIdOver();
+				final Object sourceItemId = t.getData("itemId");
+				final Object targetItemId = target.getItemIdOver();
 
-				VerticalDropLocation location = target.getDropLocation();
+				final VerticalDropLocation location = target.getDropLocation();
 
 				if (location != VerticalDropLocation.MIDDLE || sourceItemId.equals(targetItemId)) {
 					return;
 				}
 
-				boolean sourceIsStudy = !StudyTreeUtil.this.source.isFolder((Integer) sourceItemId);
+				final boolean sourceIsStudy = !StudyTreeUtil.this.source.isFolder((Integer) sourceItemId);
 				if (targetItemId instanceof Integer) {
-					Boolean targetIsFolder = StudyTreeUtil.this.source.isFolder((Integer) targetItemId);
+					final Boolean targetIsFolder = StudyTreeUtil.this.source.isFolder((Integer) targetItemId);
 					if (targetIsFolder) {
 						StudyTreeUtil.this.setParent(sourceItemId, targetItemId, sourceIsStudy);
 					} else {
 						try {
-							DmsProject parentFolder =
+							final DmsProject parentFolder =
 									StudyTreeUtil.this.studyDataManager.getParentFolder(((Integer) targetItemId).intValue());
 							if (parentFolder != null) {
 								if (parentFolder.getProjectId().equals(Integer.valueOf(1))) {
@@ -311,7 +311,7 @@ public class StudyTreeUtil implements Serializable {
 							} else {
 								StudyTreeUtil.this.setParent(sourceItemId, StudyTreeComponent.STUDY_ROOT_NODE, sourceIsStudy);
 							}
-						} catch (MiddlewareQueryException e) {
+						} catch (final MiddlewareQueryException e) {
 							StudyTreeUtil.LOG.error("Error with getting parent folder of a project record.", e);
 							MessageNotifier.showError(StudyTreeUtil.this.source.getWindow(),
 									StudyTreeUtil.this.messageSource.getMessage(Message.ERROR_INTERNAL),
@@ -341,14 +341,14 @@ public class StudyTreeUtil implements Serializable {
 		w.setResizable(false);
 		w.setStyleName(Reindeer.WINDOW_LIGHT);
 
-		VerticalLayout container = new VerticalLayout();
+		final VerticalLayout container = new VerticalLayout();
 		container.setSpacing(true);
 		container.setMargin(true);
 
-		HorizontalLayout formContainer = new HorizontalLayout();
+		final HorizontalLayout formContainer = new HorizontalLayout();
 		formContainer.setSpacing(true);
 
-		Label l = new Label(this.messageSource.getMessage(Message.ITEM_NAME));
+		final Label l = new Label(this.messageSource.getMessage(Message.ITEM_NAME));
 		l.addStyleName("gcp-form-title");
 
 		final TextField nameField = new TextField();
@@ -361,15 +361,15 @@ public class StudyTreeUtil implements Serializable {
 		formContainer.addComponent(l);
 		formContainer.addComponent(nameField);
 
-		HorizontalLayout btnContainer = new HorizontalLayout();
+		final HorizontalLayout btnContainer = new HorizontalLayout();
 		btnContainer.setSpacing(true);
 		btnContainer.setWidth("100%");
 
-		Label spacer = new Label("");
+		final Label spacer = new Label("");
 		btnContainer.addComponent(spacer);
 		btnContainer.setExpandRatio(spacer, 1.0F);
 
-		Button ok = new Button("Ok");
+		final Button ok = new Button("Ok");
 		ok.setClickShortcut(KeyCode.ENTER);
 		ok.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 		ok.addListener(new Button.ClickListener() {
@@ -377,10 +377,10 @@ public class StudyTreeUtil implements Serializable {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void buttonClick(Button.ClickEvent event) {
+			public void buttonClick(final Button.ClickEvent event) {
 
 				try {
-					String newName = nameField.getValue().toString().trim();
+					final String newName = nameField.getValue().toString().trim();
 					if (!name.equals(newName)) {
 						if (!StudyTreeUtil.this.isValidNameInput(newName, programUUID)) {
 							return;
@@ -397,11 +397,11 @@ public class StudyTreeUtil implements Serializable {
 						}
 					}
 
-				} catch (MiddlewareQueryException e) {
+				} catch (final MiddlewareQueryException e) {
 					MessageNotifier.showWarning(StudyTreeUtil.this.source.getWindow(),
 							StudyTreeUtil.this.messageSource.getMessage(Message.ERROR_DATABASE),
 							StudyTreeUtil.this.messageSource.getMessage(Message.ERROR_REPORT_TO));
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					MessageNotifier.showError(StudyTreeUtil.this.source.getWindow(),
 							StudyTreeUtil.this.messageSource.getMessage(Message.ERROR_INTERNAL),
 							StudyTreeUtil.this.messageSource.getMessage(Message.ERROR_REPORT_TO));
@@ -413,13 +413,13 @@ public class StudyTreeUtil implements Serializable {
 			}
 		});
 
-		Button cancel = new Button("Cancel");
+		final Button cancel = new Button("Cancel");
 		cancel.addListener(new Button.ClickListener() {
 
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void buttonClick(Button.ClickEvent event) {
+			public void buttonClick(final Button.ClickEvent event) {
 				StudyTreeUtil.this.source.getWindow().focus();
 				StudyTreeUtil.this.source.getParentComponent().getWindow().removeWindow(w);
 			}
@@ -446,7 +446,7 @@ public class StudyTreeUtil implements Serializable {
 	 * @param id
 	 * @throws GermplasmStudyBrowserException
 	 */
-	public void validateForDeleteNurseryList(Integer id) throws GermplasmStudyBrowserException {
+	public void validateForDeleteNurseryList(final Integer id) throws GermplasmStudyBrowserException {
 		StudyTreeUtil.LOG.info("id = " + id);
 		if (id == null) {
 			throw new GermplasmStudyBrowserException(StudyTreeUtil.NO_SELECTION);
@@ -456,7 +456,7 @@ public class StudyTreeUtil implements Serializable {
 		try {
 			project = this.studyDataManager.getProject(id);
 
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			throw new GermplasmStudyBrowserException(this.messageSource.getMessage(Message.ERROR_DATABASE));
 		}
 
@@ -482,7 +482,7 @@ public class StudyTreeUtil implements Serializable {
 	public void deleteFolder(final Integer studyId, final String programUUID) {
 		try {
 			this.validateForDeleteNurseryList(studyId);
-		} catch (GermplasmStudyBrowserException e) {
+		} catch (final GermplasmStudyBrowserException e) {
 			StudyTreeUtil.LOG.error(e.getMessage());
 			MessageNotifier.showError(this.source.getWindow(), this.messageSource.getMessage(Message.ERROR), e.getMessage());
 			return;
@@ -495,16 +495,16 @@ public class StudyTreeUtil implements Serializable {
 					private static final long serialVersionUID = 1L;
 
 					@Override
-					public void onClose(ConfirmDialog dialog) {
+					public void onClose(final ConfirmDialog dialog) {
 						if (dialog.isConfirmed()) {
 							try {
 
-								DmsProject parent = StudyTreeUtil.this.studyDataManager.getParentFolder(studyId);
+								final DmsProject parent = StudyTreeUtil.this.studyDataManager.getParentFolder(studyId);
 								StudyTreeUtil.this.studyDataManager.deleteEmptyFolder(studyId, programUUID);
 
 								StudyTreeUtil.this.targetTree.removeItem(StudyTreeUtil.this.targetTree.getValue());
 								if (parent != null) {
-									Integer parentId = parent.getProjectId();
+									final Integer parentId = parent.getProjectId();
 									if (parentId == 1) {
 										StudyTreeUtil.this.targetTree.select(StudyTreeComponent.STUDY_ROOT_NODE);
 									} else {
@@ -515,7 +515,7 @@ public class StudyTreeUtil implements Serializable {
 								StudyTreeUtil.this.targetTree.setImmediate(true);
 								StudyTreeUtil.this.source.updateButtons(StudyTreeUtil.this.targetTree.getValue());
 
-							} catch (MiddlewareQueryException e) {
+							} catch (final MiddlewareQueryException e) {
 								MessageNotifier.showError(StudyTreeUtil.this.source.getWindow(),
 										StudyTreeUtil.this.messageSource.getMessage(Message.ERROR_DATABASE),
 										StudyTreeUtil.this.messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
@@ -525,11 +525,11 @@ public class StudyTreeUtil implements Serializable {
 				});
 	}
 
-	protected void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+	protected void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
 
-	protected void setStudyDataManager(StudyDataManager studyDataManager) {
+	protected void setStudyDataManager(final StudyDataManager studyDataManager) {
 		this.studyDataManager = studyDataManager;
 	}
 

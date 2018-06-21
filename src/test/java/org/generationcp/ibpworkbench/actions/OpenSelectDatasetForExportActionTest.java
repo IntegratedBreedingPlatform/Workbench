@@ -52,7 +52,7 @@ import com.vaadin.ui.Component;
 
 public class OpenSelectDatasetForExportActionTest {
 
-	private static final String STUDY_NAME = "TRIAL 88";
+	private static final String STUDY_NAME = "STUDY 88";
 
 	private static final String BV_VERSION = "1.7";
 
@@ -88,7 +88,7 @@ public class OpenSelectDatasetForExportActionTest {
 	private VariableTypeList summaryVariables;
 	
 	@Mock
-	private VariableTypeList trialVariables;
+	private VariableTypeList studyVariables;
 	
 	@Mock
 	private VariableTypeList factors;
@@ -103,7 +103,7 @@ public class OpenSelectDatasetForExportActionTest {
 	private DataSet summaryDataset;
 	
 	@Mock
-	private DataSet trialDataset;
+	private DataSet studyDataset;
 	
 	@Mock
 	private Study study;
@@ -146,9 +146,9 @@ public class OpenSelectDatasetForExportActionTest {
 		Mockito.doReturn(this.summaryVariables).when(this.summaryDataset).getVariableTypes();
 		Mockito.doReturn(this.factors).when(this.summaryVariables).getFactors();
 		Mockito.doReturn(this.factorVariableTypes).when(this.factors).getVariableTypes();
-		Mockito.doReturn(Arrays.asList(this.trialDataset)).when(this.studyDataManager).getDataSetsByType(Matchers.eq(STUDY_ID), Matchers.any(DataSetType.class));
-		Mockito.doReturn(this.trialVariables).when(this.trialDataset).getVariableTypes();
-		Mockito.doReturn(this.trialVariableTypes).when(this.trialVariables).getVariableTypes();
+		Mockito.doReturn(Arrays.asList(this.studyDataset)).when(this.studyDataManager).getDataSetsByType(Matchers.eq(STUDY_ID), Matchers.any(DataSetType.class));
+		Mockito.doReturn(this.studyVariables).when(this.studyDataset).getVariableTypes();
+		Mockito.doReturn(this.trialVariableTypes).when(this.studyVariables).getVariableTypes();
 		
 		
 		this.bvTool = new Tool();

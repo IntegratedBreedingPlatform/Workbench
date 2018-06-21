@@ -70,10 +70,10 @@ public class TraitsAvailableComponentTest {
 		final TraitInfo trait = new TraitInfo(1, "TRAIT1", "TRAIT1-DESC", "Percentage", TermId.NUMERIC_VARIABLE.getId());
 		final TrialEnvironment env = new TrialEnvironment(1);
 		env.setTraits(Arrays.asList(trait));
-		final TrialEnvironments trialEnvs = new TrialEnvironments();
-		trialEnvs.add(env);
+		final TrialEnvironments environments = new TrialEnvironments();
+		environments.add(env);
 		final GermplasmPair germplasmPair = this.pairs.get(0);
-		germplasmPair.setTrialEnvironments(trialEnvs);
+		germplasmPair.setTrialEnvironments(environments);
 		Mockito.doReturn(this.pairs).when(this.crossStudyDataManager).getEnvironmentsForGermplasmPairs(
 				Matchers.anyListOf(GermplasmPair.class), Matchers.anyListOf(Integer.class), Matchers.anyString());
 	}

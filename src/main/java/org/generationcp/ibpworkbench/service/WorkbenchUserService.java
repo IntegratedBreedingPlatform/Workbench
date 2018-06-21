@@ -107,7 +107,6 @@ public class WorkbenchUserService {
 	 * 
 	 * @param userAccount
 	 * @return
-	 * @throws MiddlewareQueryException
 	 */
 	public boolean isUserActive(UserAccountModel userAccount) {
 		WorkbenchUser user = this.getUserByUserName(userAccount.getUsername());
@@ -125,7 +124,6 @@ public class WorkbenchUserService {
 	 * 
 	 * @param userAccount
 	 * @return
-	 * @throws MiddlewareQueryException
 	 */
 	public boolean isValidUserLogin(UserAccountModel userAccount) {
 		WorkbenchUser user = this.getUserByUserName(userAccount.getUsername());
@@ -142,9 +140,8 @@ public class WorkbenchUserService {
 	 * 
 	 * @param username
 	 * @return
-	 * @throws MiddlewareQueryException
 	 */
-	public WorkbenchUser getUserByUserName(String username) throws MiddlewareQueryException {
+	public WorkbenchUser getUserByUserName(String username) {
 		List<WorkbenchUser> userList = this.workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL);
 
 		if (!userList.isEmpty()) {
@@ -162,7 +159,6 @@ public class WorkbenchUserService {
 	 * 
 	 * @param userId
 	 * @return
-	 * @throws MiddlewareQueryException
 	 */
 	public WorkbenchUser getUserByUserid(Integer userId) {
 
@@ -174,7 +170,7 @@ public class WorkbenchUserService {
 
 	}
 
-	private Person createPerson(UserAccountModel userAccount){
+	private Person createPerson(UserAccountModel userAccount) {
 		Person person = new Person();
 		person.setFirstName(userAccount.getFirstName());
 		person.setMiddleName(userAccount.getMiddleName());

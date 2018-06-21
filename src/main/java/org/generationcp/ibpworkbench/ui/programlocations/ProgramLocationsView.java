@@ -319,17 +319,14 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 	}
 
 	protected void updateNoOfEntries(final Label totalEntries, final Table table) {
-		int count = 0;
-		count = table.getItemIds().size();
+		int count = table.getItemIds().size();
 
 		totalEntries.setValue(this.messageSource.getMessage(Message.TOTAL_ENTRIES) + ": " + "  <b>" + count + "</b>");
 	}
 
 	private void updateSelectedNoOfEntries(final Label selectedEntries, final Table table) {
-		int count = 0;
-
 		final Collection<?> selectedItems = (Collection<?>) table.getValue();
-		count = selectedItems.size();
+		int count = selectedItems.size();
 
 		selectedEntries.setValue("<i>" + this.messageSource.getMessage(Message.SELECTED) + ": " + "  <b>" + count + "</b></i>");
 	}
@@ -546,8 +543,8 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 		/* INITIALIZE TABLE DATA */
 		this.favoritesTableContainer =
-				new BeanItemContainer<LocationViewModel>(LocationViewModel.class, this.presenter.getSavedProgramLocations());
-		this.availableTableContainer = new BeanItemContainer<LocationViewModel>(LocationViewModel.class,
+				new BeanItemContainer<>(LocationViewModel.class, this.presenter.getSavedProgramLocations());
+		this.availableTableContainer = new BeanItemContainer<>(LocationViewModel.class,
 				this.presenter.getFilteredResults(null, this.getSelectedLocationTypeIdFromFilter(), ""));
 
 		this.resultCountLbl.setValue("Result: " + this.availableTableContainer.size());
