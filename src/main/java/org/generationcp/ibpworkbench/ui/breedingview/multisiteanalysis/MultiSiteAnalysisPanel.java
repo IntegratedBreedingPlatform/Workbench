@@ -226,8 +226,9 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 		multiSiteParameters.setProject(this.project);
 		multiSiteParameters.setStudy(study);
 
-		final MultiSiteAnalysisGxePanel tabContainer = new MultiSiteAnalysisGxePanel(this.getStudyDataManager(), gxeSelectEnvironmentPanel,
-				variatesCheckboxState, multiSiteParameters);
+		final MultiSiteAnalysisGxePanel tabContainer =
+				new MultiSiteAnalysisGxePanel(this.getStudyDataManager(), gxeSelectEnvironmentPanel, variatesCheckboxState,
+						multiSiteParameters);
 		tabContainer.setVisible(true);
 
 		this.getStudiesTabsheet().setVisible(true);
@@ -236,13 +237,13 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 		this.getStudiesTabsheet().setSelectedTab(tabContainer);
 	}
 
-	public void openStudyMeansDataset(final Study study) throws MiddlewareQueryException {
+	public void openStudyMeansDataset(final Study study) {
 
 		if (this.getComponentIndex(this.tabSheetContainer) == -1) {
 			this.addComponent(this.tabSheetContainer);
 		}
 
-		for (final Iterator<Component> tabs = this.getStudiesTabsheet().getComponentIterator(); tabs.hasNext();) {
+		for (final Iterator<Component> tabs = this.getStudiesTabsheet().getComponentIterator(); tabs.hasNext(); ) {
 			final Component tab = tabs.next();
 			final Study tabStudyData = (Study) ((VerticalLayout) tab).getData();
 			if (tabStudyData.getId() == study.getId()) {

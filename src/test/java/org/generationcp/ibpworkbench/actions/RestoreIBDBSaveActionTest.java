@@ -16,10 +16,10 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,12 +58,12 @@ public class RestoreIBDBSaveActionTest {
 	private InstallationDirectoryUtil installationDirectoryUtil;
 
 	@Captor
-	private ArgumentCaptor<Set<User>> userSetCaptor;
+	private ArgumentCaptor<Set<WorkbenchUser>> userSetCaptor;
 
 	private RestoreIBDBSaveAction restoreAction;
 
-	private User defaultAdminUser;
-	private User loggedInUser;
+	private WorkbenchUser defaultAdminUser;
+	private WorkbenchUser loggedInUser;
 	private Project currentProject;
 	private List<Project> restoredProjects;
 
@@ -113,10 +113,10 @@ public class RestoreIBDBSaveActionTest {
 	}
 
 	// Verify that current user was added to all programs for crop
-	private void verifyCurrentUserWasAddedToAllPrograms(final User currentUser) {
+	private void verifyCurrentUserWasAddedToAllPrograms(final WorkbenchUser currentUser) {
 		Mockito.verify(this.programService, Mockito.times(RestoreIBDBSaveActionTest.NO_OF_RESTORED_PROGRAMS))
 				.saveProgramMembers(Matchers.any(Project.class), this.userSetCaptor.capture());
-		final Set<User> users = this.userSetCaptor.getValue();
+		final Set<WorkbenchUser> users = this.userSetCaptor.getValue();
 
 		// "Expecting only the current user to be added."
 		Assert.assertEquals(1, users.size());
@@ -209,8 +209,8 @@ public class RestoreIBDBSaveActionTest {
 		return projects;
 	}
 
-	private User createUser(final Integer userId, final String username, final Integer personId) {
-		final User loggedInUser = new User();
+	private WorkbenchUser createUser(final Integer userId, final String username, final Integer personId) {
+		final WorkbenchUser loggedInUser = new WorkbenchUser();
 		loggedInUser.setUserid(userId);
 		loggedInUser.setName(username);
 		loggedInUser.setPersonid(personId);

@@ -15,9 +15,9 @@ import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.LaunchProgramAction;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -70,7 +70,7 @@ public class WorkbenchDashboardTest {
 		MockitoAnnotations.initMocks(this);
 
 		// Setup test data and mocks
-		final User currentUser = new User(1);
+		final WorkbenchUser currentUser = new WorkbenchUser(1);
 		Mockito.doReturn(currentUser).when(this.contextUtil).getCurrentWorkbenchUser();
 
 		this.programs = this.createProjects(WorkbenchDashboardTest.NUMBER_OF_PROGRAMS, new CropType(CropType.CropEnum.MAIZE.toString()));

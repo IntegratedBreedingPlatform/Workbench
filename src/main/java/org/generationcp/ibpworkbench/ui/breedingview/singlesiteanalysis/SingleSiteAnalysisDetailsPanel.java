@@ -814,8 +814,13 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	protected void populateEnvironmentSelectionTableWithTrialEnvironmets(final Table table, final String trialInstanceFactorName,
 			final String selectedEnvironmentFactorName) {
 		final BeanItemContainer<SeaEnvironmentModel> container = new BeanItemContainer<>(SeaEnvironmentModel.class);
-		final TrialEnvironments trialEnvironments =
-				this.studyDataManager.getTrialEnvironmentsInDataset(this.getBreedingViewInput().getDatasetId());
+		final int datasetId = this.getBreedingViewInput().getDatasetId();
+		final TrialEnvironments trialEnvironments = this.studyDataManager.getTrialEnvironmentsInDataset(datasetId);
+
+		final boolean isSelectedEnvironmentFactorALocation =
+				this.studyDataManager.isLocationIdVariable(this.breedingViewInput.getStudyId(), selectedEnvironmentFactorName);
+		final Map<String, String> locationNameMap =
+				this.studyDataManager.createInstanceLocationIdToNameMapFromStudy(this.breedingViewInput.getStudyId());
 
 		for (final TrialEnvironment trialEnvironment : trialEnvironments.getTrialEnvironments()) {
 
@@ -826,7 +831,13 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 				final SeaEnvironmentModel bean = new SeaEnvironmentModel();
 				bean.setActive(false);
-				bean.setEnvironmentName(selectedEnvVar.getValue());
+				if (isSelectedEnvironmentFactorALocation) {
+					// Get the location name of the location id
+					bean.setEnvironmentName(locationNameMap.get(selectedEnvVar.getValue()));
+				} else {
+					bean.setEnvironmentName(selectedEnvVar.getValue());
+				}
+
 				bean.setTrialno(trialVar.getValue());
 				bean.setLocationId(trialEnvironment.getId());
 				container.addBean(bean);

@@ -46,11 +46,9 @@
 		<div class="login-form-control login-create-account-control login-clear-float">
 			<span class="login-icon fa" title="Role">&#xf023;</span>
 			<span class="fa login-select-icon">&#xf063;</span>
-			<select class="login-select login-flat-control" name="role">
+			<select class="login-select login-flat-control" name="roleId">
 				<option></option>
-				<option value="ADMIN">Admin</option>
-				<option value="BREEDER">Breeder</option>
-				<option value="TECHNICIAN">Technician</option>
+				<option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.description}"/>
 			</select>
 		</div>
 

@@ -9,8 +9,8 @@ import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,10 +39,10 @@ public class SaveNewProjectAddUserActionTest {
 	private Form userAccountForm;
 	
 	@Mock
-	private TwinTableSelect<User> membersSelect;
+	private TwinTableSelect<WorkbenchUser> membersSelect;
 	
 	@Mock
-	private User user;
+	private WorkbenchUser user;
 	
 	@Mock
 	private BeanItem<UserAccountModel> bean;
@@ -102,7 +102,7 @@ public class SaveNewProjectAddUserActionTest {
 
 	private void setupTestUserAccount() {
 		this.userAccount = new UserAccountModel();
-		Set<User> userSet = new HashSet<>();
+		Set<WorkbenchUser> userSet = new HashSet<>();
 		userSet.add(this.user);
 
 		Mockito.when(this.workbenchUserService.saveNewUserAccount(this.userAccount)).thenReturn(this.user);

@@ -32,7 +32,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.validator.UserAccountValidator;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
-import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -271,7 +271,7 @@ public class ChangeCredentialsWindow extends BaseSubWindow implements Initializi
 
 	protected void updateUser(final String firstName, final String lastName, final String emailAddress, final String password) {
 
-		final User user = this.contextUtil.getCurrentWorkbenchUser();
+		final WorkbenchUser user = this.contextUtil.getCurrentWorkbenchUser();
 		if (!StringUtils.isEmpty(password)) {
 			user.setPassword(passwordEncoder.encode(password));
 		}

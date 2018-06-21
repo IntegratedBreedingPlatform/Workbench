@@ -41,8 +41,8 @@ import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.ProjectTa
 import org.generationcp.ibpworkbench.ui.dashboard.listener.LaunchProgramAction;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -186,7 +186,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		Project lastOpenedProgram = null;
 
 		try {
-			final User currentUser = contextUtil.getCurrentWorkbenchUser();
+			final WorkbenchUser currentUser = contextUtil.getCurrentWorkbenchUser();
 			this.programs = this.workbenchDataManager.getProjectsByUser(currentUser);
 			lastOpenedProgram = this.workbenchDataManager.getLastOpenedProject(currentUser.getUserid());
 		} catch (final MiddlewareQueryException e) {

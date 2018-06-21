@@ -1,7 +1,7 @@
 
 package org.generationcp.ibpworkbench.util;
 
-import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -11,7 +11,7 @@ public class WorkbenchUtil {
 		// default private constructor so we cant instantiate this
 	}
 
-	public static boolean isPasswordEqualToUsername(User user) {
+	public static boolean isPasswordEqualToUsername(WorkbenchUser user) {
 		PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		return passwordEncoder.matches(user.getName(), user.getPassword());
 	}
