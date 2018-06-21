@@ -1,4 +1,3 @@
-
 package org.generationcp.ibpworkbench.util;
 
 import java.io.File;
@@ -18,10 +17,12 @@ import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.ibpworkbench.util.bean.MultiSiteParameters;
 import org.generationcp.middleware.domain.dms.Experiment;
 import org.generationcp.middleware.domain.dms.Variable;
+import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import au.com.bytecode.opencsv.CSVWriter;
@@ -35,11 +36,8 @@ public class MultiSiteDataExporter {
 
 	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
-	/**
-	 * Generates GxE Multi-site analysis XML data, stored in workspace directory
-	 *
-	 * @return void
-	 */
+	@Autowired
+	private StudyDataManager studyDataManager;
 
 	public void generateXmlFieldBook(final GxeInput gxeInput) {
 		try {
@@ -77,8 +75,8 @@ public class MultiSiteDataExporter {
 			j++;
 		}
 
-		if (!environmentGroup.equalsIgnoreCase(environmentName) && environmentGroup != null && !environmentGroup.isEmpty()
-				&& !"None".equalsIgnoreCase(environmentGroup)) {
+		if (!environmentGroup.equalsIgnoreCase(environmentName) && environmentGroup != null && !environmentGroup.isEmpty() && !"None"
+				.equalsIgnoreCase(environmentGroup)) {
 			traitToColNoMap.put(environmentGroup, j);
 			headerRow.add(BreedingViewUtil.sanitizeName(environmentGroup));
 			j++;
@@ -105,6 +103,10 @@ public class MultiSiteDataExporter {
 			gxeEnvLabels.add(env.getName());
 		}
 
+		final int studyId = multiSiteParameters.getStudy().getId();
+		final boolean isEnvironmentFactorALocationIdVariable = this.studyDataManager.isLocationIdVariable(studyId, environmentName);
+		final Map<String, String> locationNameMap = this.studyDataManager.createInstanceLocationIdToNameMapFromStudy(studyId);
+
 		// create table content
 		for (final Experiment experiment : experiments) {
 			final String[] row = new String[headerRow.size()];
@@ -118,22 +120,36 @@ public class MultiSiteDataExporter {
 				}
 
 				if (var != null && var.getValue() != null) {
-					if (!gxeEnvLabels.contains(var.getValue())) {
+
+					String variableValue = var.getValue();
+
+					if (var.getVariableType().getLocalName().equalsIgnoreCase(environmentName) && isEnvironmentFactorALocationIdVariable) {
+						variableValue = locationNameMap.get(variableValue);
+					}
+
+					if (!gxeEnvLabels.contains(variableValue)) {
 						continue;
 					}
-					row[traitToColNoMap.get(environmentName)] = var.getValue().replace(",", ";");
+
+					row[traitToColNoMap.get(environmentName)] = variableValue.replace(",", ";");
+
 				}
 			}
 
 			for (final Entry<String, Integer> traitMapEntry : traitToColNoMap.entrySet()) {
+
 				Variable var = experiment.getFactors().findByLocalName(traitMapEntry.getKey());
 
 				if (var == null) {
 					var = experiment.getVariates().findByLocalName(traitMapEntry.getKey());
 				}
 
-				if (var != null && var.getValue() != null && !var.getValue().trim().matches("\\-1(\\.0+)?(E|e)(\\+36)")) {
-					row[traitMapEntry.getValue()] = var.getValue().replace(",", ";");
+				if (!(var.getVariableType().getLocalName().equalsIgnoreCase(environmentName) && isEnvironmentFactorALocationIdVariable)) {
+
+					if (var != null && var.getValue() != null && !var.getValue().trim().matches("\\-1(\\.0+)?(E|e)(\\+36)")) {
+						row[traitMapEntry.getValue()] = var.getValue().replace(",", ";");
+					}
+
 				}
 
 			}
@@ -146,7 +162,7 @@ public class MultiSiteDataExporter {
 		return this.writeToCsvFile(inputFileName, currentProject, tableItems, false);
 	}
 
-	public String exportTrialDatasetToSummaryStatsCsv(final String inputFileName, final List<Experiment> experiments,
+	public String exportTrialDatasetToSummaryStatsCsv(final int studyId, final String inputFileName, final List<Experiment> experiments,
 			final String environmentName, final List<Trait> selectedTraits, final Project currentProject) {
 
 		if (currentProject == null) {
@@ -155,13 +171,17 @@ public class MultiSiteDataExporter {
 
 		final List<String[]> tableItems = new ArrayList<String[]>();
 
-		final String[] header = new String[] {environmentName, "Trait", "NumValues", "NumMissing", "Mean", "Variance", "SD", "Min", "Max",
-				"Range", "Median", "LowerQuartile", "UpperQuartile", "MeanRep", "MinRep", "MaxRep", "MeanSED", "MinSED", "MaxSED",
-				"MeanLSD", "MinLSD", "MaxLSD", "CV", "Heritability", "WaldStatistic", "WaldDF", "Pvalue"
+		final String[] header =
+				new String[] {environmentName, "Trait", "NumValues", "NumMissing", "Mean", "Variance", "SD", "Min", "Max", "Range",
+						"Median", "LowerQuartile", "UpperQuartile", "MeanRep", "MinRep", "MaxRep", "MeanSED", "MinSED", "MaxSED", "MeanLSD",
+						"MinLSD", "MaxLSD", "CV", "Heritability", "WaldStatistic", "WaldDF", "Pvalue"
 
-		};
+				};
 
 		tableItems.add(header);
+
+		final boolean isEnvironmentFactorALocationIdVariable = this.studyDataManager.isLocationIdVariable(studyId, environmentName);
+		final Map<String, String> locationNameMap = this.studyDataManager.createInstanceLocationIdToNameMapFromStudy(studyId);
 
 		for (final Experiment exp : experiments) {
 
@@ -170,7 +190,14 @@ public class MultiSiteDataExporter {
 			for (final Trait trait : selectedTraits) {
 
 				final List<String> row = new ArrayList<String>();
-				String envValue = exp.getFactors().findByLocalName(environmentName).getValue();
+
+				final Variable factorVariable = exp.getFactors().findByLocalName(environmentName);
+				String envValue = factorVariable.getValue();
+				if (factorVariable.getVariableType().getLocalName().equalsIgnoreCase(environmentName)
+						&& isEnvironmentFactorALocationIdVariable) {
+					envValue = locationNameMap.get(factorVariable.getValue());
+				}
+
 				String traitValue = BreedingViewUtil.sanitizeName(trait.getName());
 				if (envValue != null) {
 					envValue = envValue.replaceAll(",", ";");
@@ -237,4 +264,7 @@ public class MultiSiteDataExporter {
 		this.installationDirectoryUtil = installationDirectoryUtil;
 	}
 
+	public void setStudyDataManager(final StudyDataManager studyDataManager) {
+		this.studyDataManager = studyDataManager;
+	}
 }
