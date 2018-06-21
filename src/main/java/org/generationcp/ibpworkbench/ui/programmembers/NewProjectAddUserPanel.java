@@ -11,7 +11,8 @@
 
 package org.generationcp.ibpworkbench.ui.programmembers;
 
-import org.generationcp.commons.security.Role;
+import java.util.List;
+
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
@@ -20,7 +21,9 @@ import org.generationcp.ibpworkbench.actions.SaveNewProjectAddUserAction;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.ibpworkbench.ui.form.UserAccountForm;
-import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.workbench.Role;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -58,14 +61,17 @@ public class NewProjectAddUserPanel extends Panel {
 
 	private HorizontalLayout buttonLayout;
 
-	private final TwinTableSelect<User> membersSelect;
+	private final TwinTableSelect<WorkbenchUser> membersSelect;
 
 	private static final Object[] VISIBLE_ITEM_PROPERTIES = new Object[] {"firstName", "lastName", "role", "email", "username"};
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
+	
+	@Autowired
+	private WorkbenchDataManager workbenchDataManager;
 
-	public NewProjectAddUserPanel(TwinTableSelect<User> membersSelect) {
+	public NewProjectAddUserPanel(TwinTableSelect<WorkbenchUser> membersSelect) {
 		this.membersSelect = membersSelect;
 
 		this.assemble();
@@ -128,9 +134,10 @@ public class NewProjectAddUserPanel extends Panel {
 	protected void initializeValues() {
 
 		ComboBox roleField = (ComboBox) this.userForm.getField("role");
-		roleField.addItem(Role.ADMIN.name());
-		roleField.addItem(Role.BREEDER.name());
-		roleField.addItem(Role.TECHNICIAN.name());
+		final List<Role> roles = this.workbenchDataManager.getAssignableRoles();
+		for (final Role role : roles){
+			roleField.addItem(role);
+		}
 		roleField.select(null);
 
 	}

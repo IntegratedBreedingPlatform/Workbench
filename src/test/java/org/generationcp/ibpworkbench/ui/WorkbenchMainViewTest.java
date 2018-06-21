@@ -17,9 +17,9 @@ import org.generationcp.ibpworkbench.ui.window.ChangePasswordWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -64,7 +64,7 @@ public class WorkbenchMainViewTest {
 		// Setup mocks
 		final Person person = new Person("A", "B", "C");
 		person.setEmail("a@leafnode.io");
-		final User currentUser = new User(ADMIN_USER_ID);
+		final WorkbenchUser currentUser = new WorkbenchUser(ADMIN_USER_ID);
 		currentUser.setName(CURRENT_USER_NAME);
 		currentUser.setPerson(person);
 
@@ -157,7 +157,7 @@ public class WorkbenchMainViewTest {
 	@Test
 	public void testCreateUserInfoIfNecessary() {
 
-		final User user = new User();
+		final WorkbenchUser user = new WorkbenchUser();
 		user.setUserid(101);
 
 		Mockito.when(this.workbenchDataManager.getUserInfo(Matchers.anyInt())).thenReturn(null);
@@ -174,7 +174,7 @@ public class WorkbenchMainViewTest {
 	public void testShowChangeCredentialsWindowOnFirstLoginUserIsAdminAccount() {
 
 		final Window window = Mockito.mock(Window.class);
-		final User user = new User();
+		final WorkbenchUser user = new WorkbenchUser();
 		user.setName(ProgramService.ADMIN_USERNAME);
 
 		final UserInfo userInfo = new UserInfo();
@@ -192,7 +192,7 @@ public class WorkbenchMainViewTest {
 	public void testShowChangeCredentialsWindowOnFirstLoginUserIsAdminAccountSecondLogin() {
 
 		final Window window = Mockito.mock(Window.class);
-		final User user = new User();
+		final WorkbenchUser user = new WorkbenchUser();
 		user.setName(ProgramService.ADMIN_USERNAME);
 
 		final UserInfo userInfo = new UserInfo();
@@ -210,7 +210,7 @@ public class WorkbenchMainViewTest {
 	public void testShowChangeCredentialsWindowOnFirstLoginUserIsNotAdminAccount() {
 
 		final Window window = Mockito.mock(Window.class);
-		final User user = new User();
+		final WorkbenchUser user = new WorkbenchUser();
 		user.setName("Username");
 
 		final UserInfo userInfo = new UserInfo();
@@ -228,7 +228,7 @@ public class WorkbenchMainViewTest {
 	public void testShowChangeCredentialsWindowOnFirstLoginUserIsNotAdminAccountSecondLogin() {
 
 		final Window window = Mockito.mock(Window.class);
-		final User user = new User();
+		final WorkbenchUser user = new WorkbenchUser();
 		user.setName(ProgramService.ADMIN_USERNAME);
 
 		final UserInfo userInfo = new UserInfo();

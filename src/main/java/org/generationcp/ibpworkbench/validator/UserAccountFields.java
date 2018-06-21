@@ -11,7 +11,7 @@ public final class UserAccountFields {
 	public static final String USERNAME = "username";
 	public static final String PASSWORD = "password";
 	public static final String PASSWORD_CONFIRMATION = "passwordConfirmation";
-	public static final String ROLE = "role";
+	public static final String ROLE = "roleId";
 
 	private UserAccountFields() {
 		// default private constructor so we cant instantiate this

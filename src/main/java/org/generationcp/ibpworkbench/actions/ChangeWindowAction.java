@@ -88,7 +88,7 @@ public class ChangeWindowAction implements ClickListener, ActionListener {
 			final ProgramMembersPanel projectLocationPanel = new ProgramMembersPanel(this.project);
 			projectLocationPanel.setDebugId("projectLocationPanel");
 			window.showContent(projectLocationPanel);
-		} else if (WindowEnums.RECOVERY.getwindowName().equals(windowName)) {
+		} else if (WindowEnums.BACKUP_RESTORE.getwindowName().equals(windowName)) {
 			appLaunched = this.messageSource.getMessage("BACKUP_RESTORE_TITLE");
 			final BackupAndRestoreView backupAndRestoreView = new BackupAndRestoreView();
 			backupAndRestoreView.setDebugId("backupAndRestoreView");
@@ -116,7 +116,7 @@ public class ChangeWindowAction implements ClickListener, ActionListener {
 
 	public enum WindowEnums {
 		BREEDING_VIEW("breeding_view_wb"), BREEDING_GXE("breeding_gxe"), BV_META_ANALYSIS("bv_meta_analysis"), MEMBER(
-				"program_member"), RECOVERY("recovery");
+				"program_member"), BACKUP_RESTORE("backup_restore");
 
 		String windowName;
 
