@@ -3,6 +3,7 @@ package org.generationcp.ibpworkbench.ui.programmethods;
 
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -12,6 +13,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.generationcp.commons.security.AuthorizationUtil;
 import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -21,6 +23,7 @@ import org.generationcp.ibpworkbench.ui.common.IContainerFittable;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.Role;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -54,8 +57,6 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-
-import com.google.common.collect.Lists;
 
 /**
  * Created with IntelliJ IDEA. User: cyrus Date: 11/11/13 Time: 9:48 AM To change this template use File | Settings | File Templates.
@@ -91,7 +92,6 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 	private static final String DATE = "date";
 	private static final String CLASS = "class";
 	private static final String FIELD = "field";
-	public static final String ROLE_ADMIN = "ROLE_ADMIN";
 
 	private Button.ClickListener editMethodListener;
 
@@ -225,7 +225,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 		this.initializeFilterForm();
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
 	private void initializeRestrictedComponents() {
 		this.addNewMethodsBtn.setVisible(true);
 	}
@@ -299,18 +299,16 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 
 			@Override
 			public Object generateCell(final Table source, final Object itemId, Object colId) {
-				Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-				Button mNameBtn = null;
-				for (GrantedAuthority grantedAuthority : auth.getAuthorities()) {
-					if(grantedAuthority.getAuthority().equalsIgnoreCase(ROLE_ADMIN)){
-						mNameBtn = new Button(((MethodView) itemId).getMname());
-						mNameBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
-						mNameBtn.setData(itemId);
-						mNameBtn.addListener(ProgramMethodsView.this.editMethodListener);
-
-					}
-				}
-				if(mNameBtn==null){
+				try {
+					AuthorizationUtil.preAuthorizeAdminAuthority();
+					final Button mNameBtn = new Button(((MethodView) itemId).getMname());
+					mNameBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
+					mNameBtn.setData(itemId);
+					mNameBtn.addListener(ProgramMethodsView.this.editMethodListener);
+					return mNameBtn;
+					
+				} catch (final AccessDeniedException ex) {
+					// If logged in user does not have admin authority, do not render as link
 					final Label mNameLabel = new Label();
 					mNameLabel.setDebugId("mNameLabel");
 					mNameLabel.setDescription(((MethodView) itemId).getMname());
@@ -318,8 +316,6 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 
 					return mNameLabel;
 				}
-
-				return mNameBtn;
 
 			}
 		});
@@ -826,7 +822,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 			private static final long serialVersionUID = -6938448455072630697L;
 
 			@Override
-			@PreAuthorize("hasRole('ROLE_ADMIN')")
+			@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
 			public void buttonClick(Button.ClickEvent event) {
 				event.getComponent()
 						.getWindow()
@@ -840,13 +836,9 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 			private static final long serialVersionUID = 6467414813762353127L;
 
 			@Override
+			@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
 			public void buttonClick(Button.ClickEvent event) {
-				Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-				for (GrantedAuthority grantedAuthority : auth.getAuthorities()) {
-					if (grantedAuthority.getAuthority().compareToIgnoreCase(ROLE_ADMIN)==0) {
-						event.getComponent().getWindow().addWindow(new AddBreedingMethodsWindow(ProgramMethodsView.this));
-					}
-				}
+				event.getComponent().getWindow().addWindow(new AddBreedingMethodsWindow(ProgramMethodsView.this));
 			}
 		});
 

@@ -16,7 +16,7 @@ export class RoleService{
 
   getAll(): Observable<Role[]>{
     let Roles$ = this.http
-      .get(`${this.baseUrl}/roles`, {headers: this.getHeaders()})
+      .get(`${this.baseUrl}/roles/assignable`, {headers: this.getHeaders()})
       .map(mapRoles);
       return Roles$;
   }

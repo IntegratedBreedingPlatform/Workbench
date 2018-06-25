@@ -1,17 +1,13 @@
 package org.generationcp.ibpworkbench.ui;
 
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-import junit.framework.Assert;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Properties;
+
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
-import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.ibpworkbench.ui.window.ChangeCredentialsWindow;
 import org.generationcp.ibpworkbench.ui.window.ChangePasswordWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -29,9 +25,14 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.vaadin.hene.popupbutton.PopupButton;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Properties;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+
+import junit.framework.Assert;
 
 public class WorkbenchMainViewTest {
 
@@ -171,11 +172,11 @@ public class WorkbenchMainViewTest {
 	}
 
 	@Test
-	public void testShowChangeCredentialsWindowOnFirstLoginUserIsAdminAccount() {
+	public void testShowChangeCredentialsWindowOnFirstLoginUserIsSuperAdminAccount() {
 
 		final Window window = Mockito.mock(Window.class);
-		final WorkbenchUser user = new WorkbenchUser();
-		user.setName(ProgramService.ADMIN_USERNAME);
+		final WorkbenchUser user = new WorkbenchUser(ADMIN_USER_ID);
+		Mockito.doReturn(true).when(this.workbenchDataManager).isSuperAdminUser(ADMIN_USER_ID);
 
 		final UserInfo userInfo = new UserInfo();
 		userInfo.setUserId(ADMIN_USER_ID);
@@ -189,11 +190,11 @@ public class WorkbenchMainViewTest {
 	}
 
 	@Test
-	public void testShowChangeCredentialsWindowOnFirstLoginUserIsAdminAccountSecondLogin() {
+	public void testShowChangeCredentialsWindowOnFirstLoginUserIsSuperAdminAccountSecondLogin() {
 
 		final Window window = Mockito.mock(Window.class);
-		final WorkbenchUser user = new WorkbenchUser();
-		user.setName(ProgramService.ADMIN_USERNAME);
+		final WorkbenchUser user = new WorkbenchUser(ADMIN_USER_ID);
+		Mockito.doReturn(true).when(this.workbenchDataManager).isSuperAdminUser(ADMIN_USER_ID);
 
 		final UserInfo userInfo = new UserInfo();
 		userInfo.setUserId(ADMIN_USER_ID);
@@ -207,14 +208,15 @@ public class WorkbenchMainViewTest {
 	}
 
 	@Test
-	public void testShowChangeCredentialsWindowOnFirstLoginUserIsNotAdminAccount() {
+	public void testShowChangeCredentialsWindowOnFirstLoginUserIsNotSuperAdminAccount() {
 
 		final Window window = Mockito.mock(Window.class);
-		final WorkbenchUser user = new WorkbenchUser();
-		user.setName("Username");
+		final int userId = 1000;
+		final WorkbenchUser user = new WorkbenchUser(userId);
+		Mockito.doReturn(false).when(this.workbenchDataManager).isSuperAdminUser(userId);
 
 		final UserInfo userInfo = new UserInfo();
-		userInfo.setUserId(1000);
+		userInfo.setUserId(userId);
 		userInfo.setLoginCount(0);
 
 		this.workbenchMainView.showChangeCredentialsWindowOnFirstLogin(window, user, userInfo);
@@ -225,14 +227,16 @@ public class WorkbenchMainViewTest {
 	}
 
 	@Test
-	public void testShowChangeCredentialsWindowOnFirstLoginUserIsNotAdminAccountSecondLogin() {
+	public void testShowChangeCredentialsWindowOnFirstLoginUserIsNotSuperAdminAccountSecondLogin() {
 
 		final Window window = Mockito.mock(Window.class);
-		final WorkbenchUser user = new WorkbenchUser();
-		user.setName(ProgramService.ADMIN_USERNAME);
+		final int userId = 1000;
+		final WorkbenchUser user = new WorkbenchUser(userId);
+		Mockito.doReturn(false).when(this.workbenchDataManager).isSuperAdminUser(userId);
+
 
 		final UserInfo userInfo = new UserInfo();
-		userInfo.setUserId(1000);
+		userInfo.setUserId(userId);
 		userInfo.setLoginCount(1);
 
 		this.workbenchMainView.showChangeCredentialsWindowOnFirstLogin(window, user, userInfo);

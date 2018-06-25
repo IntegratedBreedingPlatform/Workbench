@@ -54,12 +54,17 @@
                         <td colspan="6" class="text-center">No records found.</td>
                     </tr>
                     <tr *ngFor="let user of table.itemsOnCurrentPage">
-						<td><a href="javascript:void(0)"  (click)="showEditUserForm(user, userEditCard)"> {{user.username}} </a></td>
+						            <td *ngIf="user.roleName.toUpperCase() == 'SUPERADMIN'"> {{user.username}} </td>
+                        <td *ngIf="user.roleName.toUpperCase() != 'SUPERADMIN'">
+                          <a href="javascript:void(0)"  (click)="showEditUserForm(user, userEditCard)"> {{user.username}} </a>
+                        </td>
                         <td>{{user.firstName}}</td>
                         <td>{{user.lastName}}</td>
                         <td>{{user.email}}</td>
                         <td>{{user.roleName}}</td>
-                        <td>
+                        <td *ngIf="user.roleName.toUpperCase() == 'SUPERADMIN' && user.status == 'true'">Active</td>
+                        <td *ngIf="user.roleName.toUpperCase() == 'SUPERADMIN' && user.status == 'false'">Inactive</td>
+                        <td *ngIf="user.roleName.toUpperCase() != 'SUPERADMIN'">
                           <a href="javascript:void(0)" *ngIf="user.status == 'true'" (click)="showUserStatusConfirmPopUp(user)">Deactivate</a>
                           <a href="javascript:void(0)" *ngIf="user.status == 'false'" (click)="showUserStatusConfirmPopUp(user)">Activate</a>
                         </td>

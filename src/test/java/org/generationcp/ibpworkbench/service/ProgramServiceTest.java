@@ -1,5 +1,6 @@
 package org.generationcp.ibpworkbench.service;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,6 +37,7 @@ import org.springframework.web.context.request.RequestAttributes;
 @RunWith(MockitoJUnitRunner.class)
 public class ProgramServiceTest {
 
+	private static final String SUPERADMIN_USERNAME = "superadmin";
 	private static final int USER_ID = 123;
 	private static final String SAMPLE_AUTH_TOKEN_VALUE = "RANDOM_TOKEN";
 
@@ -71,10 +73,10 @@ public class ProgramServiceTest {
 
 	private Person loggedInPerson;
 	private Person memberPerson;
-	private Person defaultAdminPerson;
+	private Person superAdminPerson;
 	private WorkbenchUser loggedInUser;
 	private WorkbenchUser memberUser;
-	private WorkbenchUser defaultAdminUser;
+	private WorkbenchUser superAdminUser;
 	private User cropUser;
 
 	@Before
@@ -95,11 +97,11 @@ public class ProgramServiceTest {
 		// Setup test users and persons
 		this.loggedInPerson = this.createPerson(1, "Jan", "Erik");
 		this.memberPerson = this.createPerson(2, "John", "Doe");
-		this.defaultAdminPerson = this.createPerson(3, "Default", "Admin");
+		this.superAdminPerson = this.createPerson(3, "Default", "SuperAdmin");
 
 		this.loggedInUser = this.createUser(1, "mrbreeder", 1);
 		this.memberUser = this.createUser(2, "mrbreederfriend", 2);
-		this.defaultAdminUser = this.createUser(3, ProgramService.ADMIN_USERNAME, 3);
+		this.superAdminUser = this.createUser(3, SUPERADMIN_USERNAME, 3);
 		this.cropUser = this.loggedInUser.copyToUser();
 		this.cropUser.setUserid(1);
 
@@ -108,10 +110,10 @@ public class ProgramServiceTest {
 		Mockito.when(this.userDataManager.getUserByUserName(this.loggedInUser.getName())).thenReturn(this.cropUser);
 		Mockito.when(this.userDataManager.getPersonByEmail(this.loggedInPerson.getEmail())).thenReturn(this.loggedInPerson);
 
-		Mockito.when(this.workbenchDataManager.getUserByUsername(ProgramService.ADMIN_USERNAME)).thenReturn(this.defaultAdminUser);
 		Mockito.when(this.workbenchDataManager.getPersonById(this.loggedInPerson.getId())).thenReturn(this.loggedInPerson);
 		Mockito.when(this.workbenchDataManager.getPersonById(this.memberPerson.getId())).thenReturn(this.memberPerson);
-		Mockito.when(this.workbenchDataManager.getPersonById(this.defaultAdminPerson.getId())).thenReturn(this.defaultAdminPerson);
+		Mockito.when(this.workbenchDataManager.getPersonById(this.superAdminPerson.getId())).thenReturn(this.superAdminPerson);
+		Mockito.when(this.workbenchDataManager.getSuperAdminUsers()).thenReturn(Collections.singletonList(this.superAdminUser));
 	}
 
 	@Test
@@ -216,13 +218,13 @@ public class ProgramServiceTest {
 	}
 
 	@Test
-	public void testSaveProgramMembersWhenDefaultAdminPartOfSelectedUsers() {
+	public void testSaveProgramMembersWhenSuperAdminPartOfSelectedUsers() {
 		// Setup test project users
 		final Project project = this.createProject();
 		final Set<WorkbenchUser> selectedUsers = new HashSet<WorkbenchUser>();
 		selectedUsers.add(this.loggedInUser);
 		selectedUsers.add(this.memberUser);
-		selectedUsers.add(this.defaultAdminUser);
+		selectedUsers.add(this.superAdminUser);
 
 		// call method to test
 		this.programService.saveProgramMembers(project, selectedUsers);
@@ -231,7 +233,7 @@ public class ProgramServiceTest {
 	}
 
 	@Test
-	public void testSaveProgramMembersWhenDefaultAdminNotPartOfSelectedUsers() {
+	public void testSaveProgramMembersWhenSuperAdminNotPartOfSelectedUsers() {
 		// Setup test project users
 		final Project project = this.createProject();
 		final Set<WorkbenchUser> selectedUsers = new HashSet<WorkbenchUser>();
@@ -241,16 +243,16 @@ public class ProgramServiceTest {
 		// call method to test
 		this.programService.saveProgramMembers(project, selectedUsers);
 
-		// Verify that in saveProgramMembers, admin user was added to set of users
+		// Verify that in saveProgramMembers, superadmin user was added to set of users
 		Assert.assertEquals(3, selectedUsers.size());
-		Assert.assertTrue(selectedUsers.contains(this.defaultAdminUser));
+		Assert.assertTrue(selectedUsers.contains(this.superAdminUser));
 
 		this.verifyMockInteractionsForSavingProgramMembers();
 	}
 
 	// Verify Middleware methods to save as program members were called
 	private void verifyMockInteractionsForSavingProgramMembers() {
-		// Verify Ibdb_user_map is added for both current, member and default ADMIN users
+		// Verify Ibdb_user_map is added for both current, member and SUPERADMIN user
 		Mockito.verify(this.workbenchDataManager, Mockito.times(3)).addIbdbUserMap(Matchers.any(IbdbUserMap.class));
 
 		// Verify Workbench_project_user_info records are created

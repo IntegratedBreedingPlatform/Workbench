@@ -22,7 +22,6 @@ import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -317,11 +316,11 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			item.getItemProperty(ProgramMembersPanel.ROLE).setValue(userTemp.getRoles().get(0).getCapitalizedRole());
 
 			/*
-			 * If default ADMIN user, disable selection so it cannot be removed.
+			 * If user has SUPERADMIN role, disable selection so it cannot be removed.
 			 * Disabling is done here so that it can still be selected in
 			 * Available Users table
 			 */
-			if (ProgramService.ADMIN_USERNAME.equalsIgnoreCase(userTemp.getName())) {
+			if (userTemp.getRoles().get(0).getRole().isSuperAdminUser()) {
 				userTemp.setEnabled(false);
 			}
 
