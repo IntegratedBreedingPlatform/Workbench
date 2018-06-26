@@ -11,20 +11,20 @@
 
 package org.generationcp.ibpworkbench.study;
 
-import com.vaadin.ui.Accordion;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.VerticalLayout;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.study.listeners.StudySelectedTabChangeListener;
-import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.study.listeners.StudySelectedTabChangeListener;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+
+import com.vaadin.ui.Accordion;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.VerticalLayout;
 
 @Configurable
 public class StudyAccordionMenu extends Accordion implements InitializingBean, InternationalizableComponent {
@@ -36,31 +36,33 @@ public class StudyAccordionMenu extends Accordion implements InitializingBean, I
 	private static final String STUDY_VARIATES = "Study Variates";
 	private static final String STUDY_FACTORS = "Study Factors";
 	private static final String STUDY_EFFECTS = "Study Effects";
+	
+	@Autowired
+	private StudyDataManager studyDataManager;
+	
+	@Autowired
+	private SimpleResourceBundleMessageSource messageSource;
 
 	private final int studyId;
 	private VerticalLayout layoutVariate;
 	private VerticalLayout layoutFactor;
 	private VerticalLayout layoutEffect;
 
-	private final StudyDataManager studyDataManager;
 	private final StudyDetailComponent studyDetailComponent;
 
-	private final boolean fromUrl; // this is true if this component is created by accessing the Study Details page directly from the URL
-
-	@Autowired
-	private SimpleResourceBundleMessageSource messageSource;
+	// this is true if this component is created by accessing the Study Details page directly from the URL
+	private final boolean fromUrl;
 	private final boolean h2hCall;
 
-	public StudyAccordionMenu(int studyId, StudyDetailComponent studyDetailComponent, StudyDataManager studyDataManager, boolean fromUrl,
-			boolean h2hCall) {
+	public StudyAccordionMenu(final int studyId, final StudyDetailComponent studyDetailComponent, final boolean fromUrl,
+			final boolean h2hCall) {
 		this.studyId = studyId;
-		this.studyDataManager = studyDataManager;
 		this.studyDetailComponent = studyDetailComponent;
 		this.fromUrl = fromUrl;
 		this.h2hCall = h2hCall;
 	}
 
-	public void selectedTabChangeAction() throws InternationalizableException {
+	public void selectedTabChangeAction() {
 		Component selected = this.getSelectedTab();
 		Tab tab = this.getTab(selected);
 		if (tab.getComponent() instanceof VerticalLayout) {

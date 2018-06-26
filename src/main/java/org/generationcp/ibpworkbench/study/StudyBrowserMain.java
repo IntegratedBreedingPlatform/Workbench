@@ -25,6 +25,8 @@ import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.ibpworkbench.GermplasmStudyBrowserLayout;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.study.tree.BrowseStudyTreeComponent;
+import org.generationcp.ibpworkbench.study.tree.StudyTree;
 import org.generationcp.commons.constant.ListTreeState;
 import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.help.document.HelpModule;
@@ -51,7 +53,7 @@ public class StudyBrowserMain extends VerticalLayout implements InitializingBean
 	private Button searchForStudy;
 	private Label browseStudyDescriptionLabel;
 
-	private StudyTreeComponent studyTreeComponent;
+	private BrowseStudyTreeComponent browseTreeComponent;
 	private StudySearchMainComponent searchStudyComponent;
 
 	private StudyBrowserMainLayout mainLayout;
@@ -100,7 +102,7 @@ public class StudyBrowserMain extends VerticalLayout implements InitializingBean
 
 		this.mainLayout = new StudyBrowserMainLayout(this);
 
-		this.studyTreeComponent = new StudyTreeComponent(this);
+		this.browseTreeComponent = new BrowseStudyTreeComponent(this);
 		this.searchStudyComponent = new StudySearchMainComponent(this);
 	}
 
@@ -183,11 +185,11 @@ public class StudyBrowserMain extends VerticalLayout implements InitializingBean
 	}
 
 	public void openBrowseForStudyWindow() {
-		this.studyTreeComponent.reinitializeTree();
+		this.browseTreeComponent.reinitializeTree();
 		SaveTreeStateListener saveTreeStateListener =
-				new SaveTreeStateListener(this.studyTreeComponent.getStudyTree(), ListTreeState.STUDY_LIST.name(),
-						StudyTreeComponent.STUDY_ROOT_NODE);
-		this.launchListSelectionWindow(this.getWindow(), this.studyTreeComponent, this.messageSource.getMessage(Message.BROWSE_STUDIES))
+				new SaveTreeStateListener(this.browseTreeComponent.getStudyTree(), ListTreeState.STUDY_LIST.name(),
+						StudyTree.STUDY_ROOT_NODE);
+		this.launchListSelectionWindow(this.getWindow(), this.browseTreeComponent, this.messageSource.getMessage(Message.BROWSE_STUDIES))
 				.addListener(saveTreeStateListener);
 	}
 
@@ -227,8 +229,8 @@ public class StudyBrowserMain extends VerticalLayout implements InitializingBean
 		return popupWindow;
 	}
 
-	public StudyTreeComponent getCombinedStudyTreeComponent() {
-		return this.studyTreeComponent;
+	public BrowseStudyTreeComponent getBrowseTreeComponent() {
+		return this.browseTreeComponent;
 	}
 
 	public StudySearchMainComponent getStudySearchComponent() {

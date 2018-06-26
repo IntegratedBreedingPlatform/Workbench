@@ -11,41 +11,39 @@
 
 package org.generationcp.ibpworkbench.study.listeners;
 
-import com.vaadin.ui.Layout;
-import com.vaadin.ui.Tree;
-import com.vaadin.ui.Tree.ExpandEvent;
-import org.generationcp.ibpworkbench.study.StudyTreeComponent;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.study.tree.StudyTree;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.vaadin.ui.Tree;
+import com.vaadin.ui.Tree.ExpandEvent;
 
 public class StudyTreeExpandListener implements Tree.ExpandListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(StudyTreeExpandListener.class);
 	private static final long serialVersionUID = -5091664285613837786L;
 
-	private final Layout source;
+	private final StudyTree source;
 
-	public StudyTreeExpandListener(Layout source) {
+	public StudyTreeExpandListener(StudyTree source) {
 		this.source = source;
 	}
 
 	@Override
 	public void nodeExpand(ExpandEvent event) {
-		if (this.source instanceof StudyTreeComponent) {
+			final Object itemId = event.getItemId();
 			try {
-				((StudyTreeComponent) this.source).addStudyNode(Integer.valueOf(event.getItemId().toString()));
+				this.source.addStudyNode(Integer.valueOf(itemId.toString()));
 			} catch (InternationalizableException e) {
 				StudyTreeExpandListener.LOG.error(e.toString() + "\n" + e.getStackTrace());
 				e.printStackTrace();
 				MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription()); // TESTED
 			} catch (NumberFormatException e) {
 			}
-			((StudyTreeComponent) this.source).getStudyTree().select(event.getItemId());
-			((StudyTreeComponent) this.source).getStudyTree().setValue(event.getItemId());
-			((StudyTreeComponent) this.source).updateButtons(event.getItemId());
-		}
+			this.source.selectStudy(itemId);
+			this.source.select(itemId);
 	}
 
 }
