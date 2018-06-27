@@ -24,6 +24,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.study.StudyBrowserMain;
 import org.generationcp.ibpworkbench.study.StudyBrowserMainLayout;
 import org.generationcp.ibpworkbench.study.StudyTabSheet;
+import org.generationcp.ibpworkbench.study.constants.StudyTypeFilter;
 import org.generationcp.ibpworkbench.util.Util;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
@@ -40,7 +41,7 @@ import com.vaadin.ui.VerticalLayout;
 
 @Configurable
 public class BrowseStudyTreeComponent extends VerticalLayout implements InitializingBean, InternationalizableComponent,
-		GermplasmStudyBrowserLayout {
+		GermplasmStudyBrowserLayout, StudyTypeChangeListener {
 
 	private static final long serialVersionUID = -3481988646509402160L;
 
@@ -66,6 +67,7 @@ public class BrowseStudyTreeComponent extends VerticalLayout implements Initiali
 	private Integer rootNodeProjectId;
 	private Map<Integer, Integer> parentChildItemIdMap;
 	private StudyTreeButtonsPanel buttonsPanel;
+	private StudyTypeFilterComponent studyTypeFilter;
 
 	public BrowseStudyTreeComponent(final StudyBrowserMain studyBrowserMain) {
 		this.studyBrowserMain = studyBrowserMain;
@@ -85,8 +87,9 @@ public class BrowseStudyTreeComponent extends VerticalLayout implements Initiali
 		this.studyBrowserMainLayout = this.studyBrowserMain.getMainLayout();
 
 		this.tabSheetStudy = new StudyTabSheet();
+		this.studyTypeFilter = new StudyTypeFilterComponent(this);
 
-		this.studyTree = new StudyTree(this);
+		this.studyTree = new StudyTree(this, this.getFilteredStudyType());
 		this.buttonsPanel = new StudyTreeButtonsPanel(this);
 
 		this.refreshButton = new Button();
@@ -107,15 +110,19 @@ public class BrowseStudyTreeComponent extends VerticalLayout implements Initiali
 
 			@Override
 			public void buttonClick(final Button.ClickEvent event) {
-				createTree();
-				reinitializeTree();
+				refreshTree();
 			}
 		});
 		
 	}
+	
+	protected void refreshTree() {
+		createTree();
+		expandSavedTreeState();
+	}
 
-	public void reinitializeTree() {
-		this.studyTree.reinitializeTree();
+	public void expandSavedTreeState() {
+		this.studyTree.expandSavedTreeState();
 	}
 
 	@Override
@@ -135,7 +142,7 @@ public class BrowseStudyTreeComponent extends VerticalLayout implements Initiali
 		this.treeContainer.removeComponent(this.studyTree);
 		this.studyTree.removeAllItems();
 
-		this.studyTree = new StudyTree(this);
+		this.studyTree = new StudyTree(this, this.getFilteredStudyType());
 		this.studyTree.setNullSelectionAllowed(false);
 
 		this.treeContainer.addComponent(this.studyTree);
@@ -271,6 +278,10 @@ public class BrowseStudyTreeComponent extends VerticalLayout implements Initiali
 					this.messageSource.getMessage(Message.NO_STUDIES_FOUND));
 		}
 	}
+	
+	private StudyTypeFilter getFilteredStudyType() {
+		return (StudyTypeFilter) this.studyTypeFilter.getStudyTypeComboBox().getValue();
+	}
 
 	public StudyTree getStudyTree() {
 		return this.studyTree;
@@ -286,5 +297,15 @@ public class BrowseStudyTreeComponent extends VerticalLayout implements Initiali
 	
 	protected void setStudyBrowserMainLayout(StudyBrowserMainLayout studyBrowserMainLayout) {
 		this.studyBrowserMainLayout = studyBrowserMainLayout;
+	}
+
+	
+	protected StudyTypeFilterComponent getStudyTypeFilterComponent() {
+		return studyTypeFilter;
+	}
+
+	@Override
+	public void studyTypeChange(StudyTypeFilter type) {
+		this.refreshTree();
 	}
 }

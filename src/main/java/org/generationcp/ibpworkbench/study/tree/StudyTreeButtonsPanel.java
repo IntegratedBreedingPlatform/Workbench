@@ -2,7 +2,6 @@
 package org.generationcp.ibpworkbench.study.tree;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.GermplasmStudyBrowserLayout;
 import org.generationcp.ibpworkbench.Message;
@@ -16,11 +15,11 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.themes.BaseTheme;
 
 @Configurable
-public class StudyTreeButtonsPanel extends HorizontalLayout implements InitializingBean, GermplasmStudyBrowserLayout {
+public class StudyTreeButtonsPanel extends HorizontalLayout
+		implements InitializingBean, GermplasmStudyBrowserLayout {
 
 	private static final long serialVersionUID = 1L;
 
@@ -34,7 +33,6 @@ public class StudyTreeButtonsPanel extends HorizontalLayout implements Initializ
 	private StudyTabSheet studyTabSheet;
 	private BrowseStudyTreeComponent browseTreeComponent;
 
-	private Label controlButtonsHeading;
 	private HorizontalLayout controlButtonsSubLayout;
 	private Button addFolderBtn;
 	private Button deleteFolderBtn;
@@ -48,11 +46,6 @@ public class StudyTreeButtonsPanel extends HorizontalLayout implements Initializ
 
 	@Override
 	public void instantiateComponents() {
-		this.controlButtonsHeading = new Label();
-		this.controlButtonsHeading.setValue(this.messageSource.getMessage(Message.ALL_STUDIES));
-		this.controlButtonsHeading.setStyleName(Bootstrap.Typography.H4.styleName());
-		this.controlButtonsHeading.setWidth("177px");
-
 		this.renameFolderBtn =
 				new Button("<span class='bms-edit' style='left: 2px; color: #0083c0;font-size: 18px; font-weight: bold;'></span>");
 		this.renameFolderBtn.setHtmlContentAllowed(true);
@@ -151,11 +144,11 @@ public class StudyTreeButtonsPanel extends HorizontalLayout implements Initializ
 		this.setHeight("30px");
 		this.setSpacing(true);
 
-		this.addComponent(this.controlButtonsHeading);
+		final StudyTypeFilterComponent studyTypeComponent = this.browseTreeComponent.getStudyTypeFilterComponent();
+		this.addComponent(studyTypeComponent);
 		this.addComponent(this.controlButtonsSubLayout);
-		this.setComponentAlignment(this.controlButtonsHeading, Alignment.BOTTOM_LEFT);
+		this.setComponentAlignment(studyTypeComponent, Alignment.BOTTOM_LEFT);
 		this.setComponentAlignment(this.controlButtonsSubLayout, Alignment.BOTTOM_RIGHT);
-
 	}
 
 	@Override

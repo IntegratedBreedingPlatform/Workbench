@@ -68,11 +68,7 @@ public class StudyButtonClickListener implements Button.ClickListener {
 				&& this.source instanceof SaveRepresentationDatasetExcelDialog) {
 			((SaveRepresentationDatasetExcelDialog) this.source).browseDirectoryButtonClickAction();
 
-			// "Refresh")
-		} else if (event.getButton().getData().equals(BrowseStudyTreeComponent.REFRESH_BUTTON_ID) && this.source instanceof BrowseStudyTreeComponent) {
-			((BrowseStudyTreeComponent) this.source).createTree();
-
-			// "Open in Table Viewer"
+		// "Open in Table Viewer"
 		} else if (event.getButton().getData().equals(RepresentationDatasetComponent.OPEN_TABLE_VIEWER_BUTTON_ID)
 				&& this.source instanceof RepresentationDatasetComponent) {
 			((RepresentationDatasetComponent) this.source).openTableViewerAction();
