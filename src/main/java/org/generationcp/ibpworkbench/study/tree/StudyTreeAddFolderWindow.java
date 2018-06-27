@@ -171,7 +171,7 @@ public class StudyTreeAddFolderWindow extends BaseSubWindow implements Initializ
 						targetTree.expandItem(StudyTree.STUDY_ROOT_NODE);
 					}
 
-					targetTree.selectStudy(newFolderId);
+					targetTree.selectItem(newFolderId);
 				}
 
 				// close popup

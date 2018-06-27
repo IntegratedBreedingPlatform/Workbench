@@ -110,6 +110,8 @@ public class BrowseStudyTreeComponent extends VerticalLayout implements Initiali
 
 			@Override
 			public void buttonClick(final Button.ClickEvent event) {
+				// Reset selected study type to "All"
+				studyTypeFilter.getStudyTypeComboBox().select(StudyTypeFilter.ALL);
 				refreshTree();
 			}
 		});
@@ -232,7 +234,7 @@ public class BrowseStudyTreeComponent extends VerticalLayout implements Initiali
 				this.studyTree.expandItem(currentItemId);
 			}
 		}
-		this.studyTree.selectStudy(childItemId);
+		this.studyTree.selectItem(childItemId);
 
 	}
 

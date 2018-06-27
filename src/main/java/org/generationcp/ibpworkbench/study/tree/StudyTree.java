@@ -192,19 +192,19 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 
 		try {
 			this.expandOrCollapseStudyTreeNode(itemId);
-			// TODO fix NumberFormatException happening when clicking ROOT node
-			final int studyId = Integer.valueOf(itemId.toString());
-
-			if (!this.hasChildStudy(studyId) && !this.isFolder(studyId)) {
-				this.browseStudyTreeComponent.createStudyInfoTab(studyId);
+			if (!STUDY_ROOT_NODE.equals(itemId)) {
+				final int studyId = Integer.valueOf(itemId.toString());
+				if (!this.hasChildStudy(studyId) && !this.isFolder(studyId)) {
+					this.browseStudyTreeComponent.createStudyInfoTab(studyId);
+				}
 			}
-			this.selectStudy(itemId);
+			this.selectItem(itemId);
 		} catch (final NumberFormatException e) {
 			StudyTree.LOG.error(e.getMessage(), e);
 		} 
 	}
 
-	public void selectStudy(final Object itemId) {
+	public void selectItem(final Object itemId) {
 		this.browseStudyTreeComponent.updateButtons(itemId);
 		this.setSelectedNodeId(itemId);
 		this.setNullSelectionAllowed(false);
