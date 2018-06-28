@@ -14,6 +14,7 @@ import com.vaadin.ui.Label;
 @Configurable
 public class StudyTypeFilterComponent extends HorizontalLayout implements InitializingBean, GermplasmStudyBrowserLayout {
 
+	private static final long serialVersionUID = 1L;
 	private ComboBox studyTypeComboBox;
 	private StudyTypeChangeListener listener;
 	private Label studyTypeLabel;

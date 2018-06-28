@@ -113,20 +113,16 @@ public class BrowseStudyTreeComponent extends VerticalLayout implements Initiali
 
 			@Override
 			public void buttonClick(final Button.ClickEvent event) {
-				// Reset selected study type to "All"
-				studyTypeFilter.getStudyTypeComboBox().select(StudyTypeFilter.ALL);
 				refreshTree();
 			}
 		});
 		
 	}
 	
-	protected void refreshTree() {
+	public void refreshTree() {
+		// Reset selected study type to "All"
+		studyTypeFilter.getStudyTypeComboBox().select(StudyTypeFilter.ALL);
 		createTree();
-		expandSavedTreeState();
-	}
-
-	public void expandSavedTreeState() {
 		this.studyTree.expandSavedTreeState();
 	}
 

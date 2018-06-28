@@ -183,7 +183,7 @@ public class StudyBrowserMain extends VerticalLayout implements InitializingBean
 	}
 
 	public void openBrowseForStudyWindow() {
-		this.browseTreeComponent.expandSavedTreeState();
+		this.browseTreeComponent.refreshTree();
 		this.launchListSelectionWindow(this.getWindow(), this.browseTreeComponent, this.messageSource.getMessage(Message.BROWSE_STUDIES))
 				.addListener(this.browseTreeComponent.getSaveTreeStateListener());
 	}
