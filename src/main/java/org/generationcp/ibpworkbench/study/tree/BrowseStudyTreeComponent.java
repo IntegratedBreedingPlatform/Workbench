@@ -12,13 +12,15 @@
 package org.generationcp.ibpworkbench.study.tree;
 
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.Map;	
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.commons.vaadin.util.SaveTreeStateListener;
 import org.generationcp.ibpworkbench.GermplasmStudyBrowserLayout;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.study.StudyBrowserMain;
@@ -68,6 +70,7 @@ public class BrowseStudyTreeComponent extends VerticalLayout implements Initiali
 	private Map<Integer, Integer> parentChildItemIdMap;
 	private StudyTreeButtonsPanel buttonsPanel;
 	private StudyTypeFilterComponent studyTypeFilter;
+			
 
 	public BrowseStudyTreeComponent(final StudyBrowserMain studyBrowserMain) {
 		this.studyBrowserMain = studyBrowserMain;
@@ -306,8 +309,16 @@ public class BrowseStudyTreeComponent extends VerticalLayout implements Initiali
 		return studyTypeFilter;
 	}
 
+	
+	public SaveTreeStateListener getSaveTreeStateListener() {
+		return this.studyTree.getSaveTreeStateListener();
+	}
+
 	@Override
 	public void studyTypeChange(StudyTypeFilter type) {
-		this.refreshTree();
+		// Save the list of expanded nodes prior to recreating tree
+		final List<String> expandedNodeIds = this.getSaveTreeStateListener().getExpandedIds();
+		createTree();
+		this.studyTree.expandNodes(expandedNodeIds);
 	}
 }

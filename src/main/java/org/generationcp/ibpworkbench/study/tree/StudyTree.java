@@ -8,6 +8,7 @@ import org.generationcp.commons.constant.ListTreeState;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.commons.vaadin.util.SaveTreeStateListener;
 import org.generationcp.ibpworkbench.GermplasmStudyBrowserLayout;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.study.constants.StudyTypeFilter;
@@ -61,6 +62,7 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 	private BrowseStudyTreeComponent browseStudyTreeComponent;
 	private Object selectedStudyNodeId;
 	private StudyTypeFilter studyTypeFilter;
+	private SaveTreeStateListener saveTreeStateListener;
 	
 	public StudyTree(final BrowseStudyTreeComponent browseStudyTreeComponent, final StudyTypeFilter filter) {
 		this.browseStudyTreeComponent = browseStudyTreeComponent;
@@ -71,6 +73,8 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 	public void instantiateComponents() {
 		this.setDragMode(TreeDragMode.NODE);
 		this.dropHandler = new StudyTreeDragAndDropHandler(this);
+		this.saveTreeStateListener =
+				new SaveTreeStateListener(this, ListTreeState.STUDY_LIST.name(), StudyTree.STUDY_ROOT_NODE);
 
 		this.addItem(STUDY_ROOT_NODE);
 		this.setItemCaption(STUDY_ROOT_NODE, this.studyTypeFilter.getDescription());
@@ -286,26 +290,30 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 					programStateManager.getUserProgramTreeStateByUserIdProgramUuidAndType(contextUtil.getCurrentWorkbenchUserId(),
 							contextUtil.getCurrentProgramUUID(), ListTreeState.STUDY_LIST.name());
 
-			if (parsedState.isEmpty() || (parsedState.size() == 1 && StringUtils.isEmpty(parsedState.get(0)))) {
-				this.collapseItem(STUDY_ROOT_NODE);
-				return;
-			}
-
-			this.expandItem(STUDY_ROOT_NODE);
-			for (final String s : parsedState) {
-				final String trimmed = s.trim();
-				if (!StringUtils.isNumeric(trimmed)) {
-					continue;
-				}
-
-				final int itemId = Integer.parseInt(trimmed);
-				this.expandItem(itemId);
-			}
-
-			this.select(null);
+			this.expandNodes(parsedState);
 		} catch (final MiddlewareQueryException e) {
 			LOG.error("Error creating study tree", e);
 		}
+	}
+
+	protected void expandNodes(final List<String> nodesToExpand) {
+		if (nodesToExpand.isEmpty() || (nodesToExpand.size() == 1 && StringUtils.isEmpty(nodesToExpand.get(0)))) {
+			this.collapseItem(STUDY_ROOT_NODE);
+			return;
+		}
+
+		this.expandItem(STUDY_ROOT_NODE);
+		for (final String s : nodesToExpand) {
+			final String trimmed = s.trim();
+			if (!StringUtils.isNumeric(trimmed)) {
+				continue;
+			}
+
+			final int itemId = Integer.parseInt(trimmed);
+			this.expandItem(itemId);
+		}
+
+		this.select(null);
 	}
 	
 	public void setSelectedNodeId(final Object id) {
@@ -315,6 +323,11 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 	
 	protected Object getSelectedNodeId() {
 		return selectedStudyNodeId;
+	}
+
+	
+	protected SaveTreeStateListener getSaveTreeStateListener() {
+		return saveTreeStateListener;
 	}
 
 }
