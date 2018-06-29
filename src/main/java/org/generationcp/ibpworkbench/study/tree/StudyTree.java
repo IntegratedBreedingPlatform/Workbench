@@ -15,7 +15,6 @@ import org.generationcp.ibpworkbench.study.constants.StudyTypeFilter;
 import org.generationcp.ibpworkbench.study.listeners.StudyItemClickListener;
 import org.generationcp.ibpworkbench.study.listeners.StudyTreeCollapseListener;
 import org.generationcp.ibpworkbench.study.listeners.StudyTreeExpandListener;
-import org.generationcp.middleware.domain.dms.DatasetReference;
 import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.domain.dms.StudyReference;
@@ -55,8 +54,6 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 	
 	private final ThemeResource folderResource = new ThemeResource("../vaadin-retro/svg/folder-icon.svg");
 	private final ThemeResource studyResource = new ThemeResource("../vaadin-retro/svg/study-icon.svg");
-	//TODO remove logic expecting dataset nodes as Middleware returns only StudyReference or FolderReference
-	private final ThemeResource dataSetResource = new ThemeResource("../vaadin-retro/svg/dataset-icon.svg");
 
 	private StudyTreeDragAndDropHandler dropHandler;
 	private BrowseStudyTreeComponent browseStudyTreeComponent;
@@ -163,9 +160,6 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 		} else if (r instanceof StudyReference) {
 			StudyTree.LOG.debug("r is StudyReference");
 			return this.studyResource;
-		} else if (r instanceof DatasetReference) {
-			StudyTree.LOG.debug("r is DatasetReference");
-			return this.dataSetResource;
 		} else {
 			return this.folderResource;
 		}
