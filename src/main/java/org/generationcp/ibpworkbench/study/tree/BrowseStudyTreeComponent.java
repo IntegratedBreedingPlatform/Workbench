@@ -168,7 +168,7 @@ public class BrowseStudyTreeComponent extends VerticalLayout implements Initiali
 		}
 	}
 
-	protected void createStudyInfoTab(final int studyId) {
+	public void createStudyInfoTab(final int studyId) {
 		final String studyName = this.getStudyName(studyId);
 		if (!Util.isTabExist(this.tabSheetStudy, studyName)) {
 			this.tabSheetStudy.createStudyInfoTab(studyId, studyName, this.studyBrowserMainLayout);
@@ -216,20 +216,20 @@ public class BrowseStudyTreeComponent extends VerticalLayout implements Initiali
 		this.studyTree.expandItem(StudyTree.STUDY_ROOT_NODE);
 
 		if (rootItemId != null) {
-			this.studyTree.addStudyNode(rootItemId);
+			this.studyTree.addChildren(rootItemId);
 			this.studyTree.expandItem(rootItemId);
 		}
 
 		Integer currentItemId = this.parentChildItemIdMap.get(rootItemId);
 		if (currentItemId != null) {
-			this.studyTree.addStudyNode(currentItemId);
+			this.studyTree.addChildren(currentItemId);
 			this.studyTree.expandItem(currentItemId);
 		}
 
 		while (this.parentChildItemIdMap.get(currentItemId) != childItemId && currentItemId != null) {
 			currentItemId = this.parentChildItemIdMap.get(currentItemId);
 			if (currentItemId != null) {
-				this.studyTree.addStudyNode(currentItemId);
+				this.studyTree.addChildren(currentItemId);
 				this.studyTree.expandItem(currentItemId);
 			}
 		}

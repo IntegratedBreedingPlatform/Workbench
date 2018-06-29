@@ -12,9 +12,9 @@ import org.generationcp.commons.vaadin.util.SaveTreeStateListener;
 import org.generationcp.ibpworkbench.GermplasmStudyBrowserLayout;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.study.constants.StudyTypeFilter;
-import org.generationcp.ibpworkbench.study.listeners.StudyItemClickListener;
-import org.generationcp.ibpworkbench.study.listeners.StudyTreeCollapseListener;
-import org.generationcp.ibpworkbench.study.listeners.StudyTreeExpandListener;
+import org.generationcp.ibpworkbench.study.tree.listeners.StudyTreeCollapseListener;
+import org.generationcp.ibpworkbench.study.tree.listeners.StudyTreeExpandListener;
+import org.generationcp.ibpworkbench.study.tree.listeners.StudyTreeItemClickListener;
 import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.domain.dms.StudyReference;
@@ -60,6 +60,8 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 	private Object selectedStudyNodeId;
 	private StudyTypeFilter studyTypeFilter;
 	private SaveTreeStateListener saveTreeStateListener;
+	private StudyTreeExpandListener expandListener;
+	private StudyTreeItemClickListener clickListener;
 	
 	public StudyTree(final BrowseStudyTreeComponent browseStudyTreeComponent, final StudyTypeFilter filter) {
 		this.browseStudyTreeComponent = browseStudyTreeComponent;
@@ -101,8 +103,10 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 
 	@Override
 	public void addListeners() {
-		this.addListener(new StudyTreeExpandListener(this));
-		this.addListener(new StudyItemClickListener(this));
+		this.expandListener = new StudyTreeExpandListener(this);
+		this.addListener(this.expandListener);
+		this.clickListener = new StudyTreeItemClickListener(this, browseStudyTreeComponent);
+		this.addListener(this.clickListener);
 		this.addListener(new StudyTreeCollapseListener(this));
 		this.dropHandler.setupTreeDragAndDropHandler();
 	}
@@ -152,7 +156,7 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 		}
 	}
 	
-	private ThemeResource getThemeResourceByReference(final Reference r) {
+	public ThemeResource getThemeResourceByReference(final Reference r) {
 
 		if (r instanceof FolderReference) {
 			StudyTree.LOG.debug("r is FolderReference");
@@ -185,21 +189,8 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 		return false;
 	}
 	
-	// Called by StudyItemClickListener
 	public void studyTreeItemClickAction(final Object itemId) {
-
-		try {
-			this.expandOrCollapseStudyTreeNode(itemId);
-			if (!STUDY_ROOT_NODE.equals(itemId)) {
-				final int studyId = Integer.valueOf(itemId.toString());
-				if (!this.hasChildStudy(studyId) && !this.isFolder(studyId)) {
-					this.browseStudyTreeComponent.createStudyInfoTab(studyId);
-				}
-			}
-			this.selectItem(itemId);
-		} catch (final NumberFormatException e) {
-			StudyTree.LOG.error(e.getMessage(), e);
-		} 
+		this.clickListener.studyTreeItemClickAction(itemId);
 	}
 
 	public void selectItem(final Object itemId) {
@@ -230,40 +221,11 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 		}
 	}
 	
-	public void addStudyNode(final int parentStudyId) {
-
-		List<Reference> studyChildren = new ArrayList<Reference>();
-		try {
-			final String programUUID = this.contextUtil.getProjectInContext().getUniqueID();
-			studyChildren =
-					this.studyDataManager.getChildrenOfFolder(Integer.valueOf(parentStudyId), programUUID);
-		} catch (final MiddlewareQueryException e) {
-			StudyTree.LOG.error(e.getMessage(), e);
-			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
-					this.messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
-			studyChildren = new ArrayList<Reference>();
-		}
-
-		for (final Reference item : studyChildren) {
-			if (this.itemMatchesStudyTypeFilter(item)){
-				this.addItem(item.getId());
-				this.setItemCaption(item.getId(), item.getName());
-				this.setParent(item.getId(), parentStudyId);
-				
-				// check if the study has sub study
-				if (this.hasChildStudy(item.getId())) {
-					this.setChildrenAllowed(item.getId(), true);
-					this.setItemIcon(item.getId(), this.getThemeResourceByReference(item));
-				} else {
-					this.setChildrenAllowed(item.getId(), false);
-					this.setItemIcon(item.getId(), this.getThemeResourceByReference(item));
-				}
-			}
-
-		}
+	public void addChildren(final int parentStudyId) {
+		this.expandListener.addChildren(parentStudyId, this.getWindow());
 	}
 	
-	private boolean itemMatchesStudyTypeFilter(final Reference item) {
+	public boolean itemMatchesStudyTypeFilter(final Reference item) {
 		if (item.isFolder() || StudyTypeFilter.ALL.equals(studyTypeFilter)) {
 			return true;
 			

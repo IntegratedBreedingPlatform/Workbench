@@ -9,7 +9,7 @@
  *
  *******************************************************************************/
 
-package org.generationcp.ibpworkbench.study.listeners;
+package org.generationcp.ibpworkbench.study.tree.listeners;
 
 import org.generationcp.ibpworkbench.study.tree.StudyTree;
 
