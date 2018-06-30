@@ -19,6 +19,9 @@ import {
 import { TreeTableComponent } from './tree-table/tree-table.component';
 import { SampleTreeService } from './tree-table/sample-tree.service';
 
+import {SampleSearchListComponent} from './sample-search-list.component';
+import {SampleListService} from './sample-list.service';
+
 const ENTITY_STATES = [
     ...sampleRoute,
     ...samplePopupRoute,
@@ -37,6 +40,7 @@ const ENTITY_STATES = [
         SamplePopupComponent,
         SampleDeletePopupComponent,
         SampleBrowseComponent,
+        SampleSearchListComponent,
         TreeTableComponent
     ],
     entryComponents: [
@@ -50,6 +54,7 @@ const ENTITY_STATES = [
     ],
     providers: [
         SampleService,
+        SampleListService,
         SamplePopupService,
         SampleResolvePagingParams,
         SampleTreeService

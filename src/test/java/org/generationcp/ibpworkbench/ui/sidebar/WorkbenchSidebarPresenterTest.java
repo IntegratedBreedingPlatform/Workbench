@@ -15,10 +15,12 @@ import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
+import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategory;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategoryLink;
+import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategoryLinkRole;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -93,7 +95,7 @@ public class WorkbenchSidebarPresenterTest {
 
 	private void setupTestSidebarLinks() {
 		Mockito.doReturn("Dummy Message").when(this.messageSource).getMessage(Matchers.anyString());
-		this.adminCategory = new WorkbenchSidebarCategory(WorkbenchSidebarPresenter.ADMIN_CATEGORY, "Program Administration");
+		this.adminCategory = new WorkbenchSidebarCategory("Admin", "Program Administration");
 		this.adminCategory.setSidebarCategoryId(1);
 		this.categoryWithNoLinks = new WorkbenchSidebarCategory("tools", "Breeding Tools");
 		this.categoryWithNoLinks.setSidebarCategoryId(2);
@@ -104,117 +106,91 @@ public class WorkbenchSidebarPresenterTest {
 		this.sidebarCategories
 				.addAll(Arrays.asList(this.adminCategory, this.categoryWithNoLinks, this.activitiesCategory, this.infoMgtCategory));
 
-		this.sidebarLinksFromDB.put(this.activitiesCategory, Arrays.asList(
-				new WorkbenchSidebarCategoryLink(new Tool(ToolName.BM_LIST_MANAGER_MAIN.toString(), "manage_germplasm", "/ManageGermplasm"),
-						this.activitiesCategory, "manage_list", "Manage Germplasm"),
-				new WorkbenchSidebarCategoryLink(new Tool(ToolName.TRIAL_MANAGER_FIELDBOOK_WEB.toString(), "trial_mgr", "/TrialManager"),
-						this.activitiesCategory, "trial_manager", "Trial Manager")));
-		this.sidebarLinksFromDB.put(this.infoMgtCategory, Arrays.asList(
-				new WorkbenchSidebarCategoryLink(new Tool(ToolName.GDMS.toString(), "gdms", "/GDMS"), this.infoMgtCategory, "gdms",
-						"Genotyping Data Management"),
-				new WorkbenchSidebarCategoryLink(new Tool(ToolName.TRIAL_MANAGER_FIELDBOOK_WEB.toString(), "h2h", "/H2HMain"),
-						this.infoMgtCategory, "h2h", "Head To Head Query")));
+		// Breeding Activities Links
+		final WorkbenchSidebarCategoryLink manageGermplasmLink = new WorkbenchSidebarCategoryLink(new Tool(ToolName.BM_LIST_MANAGER_MAIN.toString(), "manage_germplasm", "/ManageGermplasm"),
+				this.activitiesCategory, "manage_list", "Manage Germplasm");
+		manageGermplasmLink.setRoles(Arrays.asList(new WorkbenchSidebarCategoryLinkRole(manageGermplasmLink, new Role(1, "Admin")),
+				new WorkbenchSidebarCategoryLinkRole(manageGermplasmLink, new Role(2, "Breeder"))));
+		final WorkbenchSidebarCategoryLink trialManagerLink = new WorkbenchSidebarCategoryLink(new Tool(ToolName.TRIAL_MANAGER_FIELDBOOK_WEB.toString(), "trial_mgr", "/TrialManager"),
+				this.activitiesCategory, "trial_manager", "Trial Manager");
+		trialManagerLink.setRoles(Arrays.asList(new WorkbenchSidebarCategoryLinkRole(trialManagerLink, new Role(1, "Admin"))));
+		this.sidebarLinksFromDB.put(this.activitiesCategory, Arrays.asList(manageGermplasmLink, trialManagerLink));
+		
+		// Info Management Links
+		final WorkbenchSidebarCategoryLink gdmsLink = new WorkbenchSidebarCategoryLink(new Tool(ToolName.GDMS.toString(), "gdms", "/GDMS"), this.infoMgtCategory, "gdms",
+				"Genotyping Data Management");
+		gdmsLink.setRoles(Arrays.asList(new WorkbenchSidebarCategoryLinkRole(gdmsLink, new Role(1, "Admin"))));
+		final WorkbenchSidebarCategoryLink h2hLink = new WorkbenchSidebarCategoryLink(new Tool(ToolName.TRIAL_MANAGER_FIELDBOOK_WEB.toString(), "h2h", "/H2HMain"),
+				this.infoMgtCategory, "h2h", "Head To Head Query");
+		h2hLink.setRoles(Arrays.asList(new WorkbenchSidebarCategoryLinkRole(h2hLink, new Role(1, "Admin")),
+				new WorkbenchSidebarCategoryLinkRole(h2hLink, new Role(2, "Breeder"))));
+		this.sidebarLinksFromDB.put(this.infoMgtCategory, Arrays.asList(gdmsLink, h2hLink));
+		
+		// Program Admin links
+		final WorkbenchSidebarCategoryLink manageProgramLink = new WorkbenchSidebarCategoryLink(new Tool(ToolName.BM_LIST_MANAGER_MAIN.toString(), "manage_germplasm", "/ManageGermplasm"),
+				this.adminCategory, "manage_program", "Manage Program");
+		manageProgramLink.setRoles(Arrays.asList(new WorkbenchSidebarCategoryLinkRole(manageProgramLink, new Role(1, "Admin"))));
+		final WorkbenchSidebarCategoryLink backupRestoreLink = new WorkbenchSidebarCategoryLink(new Tool(ToolName.TRIAL_MANAGER_FIELDBOOK_WEB.toString(), "trial_mgr", "/TrialManager"),
+				this.adminCategory, "backup_restore", "Backup and Restore");
+		backupRestoreLink.setRoles(new ArrayList<WorkbenchSidebarCategoryLinkRole>());
+		this.sidebarLinksFromDB.put(this.adminCategory, Arrays.asList(manageProgramLink, backupRestoreLink));
+		
 		Mockito.doReturn(this.sidebarCategories).when(this.workbenchDataManager).getAllWorkbenchSidebarCategory();
 		Mockito.doReturn(this.sidebarLinksFromDB.get(this.activitiesCategory)).when(this.workbenchDataManager)
 				.getAllWorkbenchSidebarLinksByCategoryId(this.activitiesCategory);
 		Mockito.doReturn(this.sidebarLinksFromDB.get(this.infoMgtCategory)).when(this.workbenchDataManager)
 				.getAllWorkbenchSidebarLinksByCategoryId(this.infoMgtCategory);
+		Mockito.doReturn(this.sidebarLinksFromDB.get(this.adminCategory)).when(this.workbenchDataManager)
+		.getAllWorkbenchSidebarLinksByCategoryId(this.adminCategory);
 	}
-
+	
 	@Test
-	public void testAddAdminCategoryLinks() {
-		// default with no backup and restore
-		this.workbenchSidebarPresenter.setIsBackupAndRestoreEnabled("false");
-		final List<WorkbenchSidebarCategoryLink> categoryLinks = new ArrayList<>();
-
-		this.workbenchSidebarPresenter.addAdminCategoryLinks(categoryLinks, this.adminCategory);
-		for (final WorkbenchSidebarCategoryLink workbenchSidebarCategoryLink : categoryLinks) {
-			Assert.assertFalse(WorkbenchSidebarPresenter.RECOVERY_LINK.equals(workbenchSidebarCategoryLink.getSidebarLinkName()));
-		}
-	}
-
-	@Test
-	public void testAddAdminCategoryLinksWithBackAndRestore() {
-		// default with no backup and restore
-		this.workbenchSidebarPresenter.setIsBackupAndRestoreEnabled("true");
-		final List<WorkbenchSidebarCategoryLink> categoryLinks = new ArrayList<>();
-		this.workbenchSidebarPresenter.addAdminCategoryLinks(categoryLinks, this.adminCategory);
-		boolean hasBackupAndRestore = false;
-		for (final WorkbenchSidebarCategoryLink workbenchSidebarCategoryLink : categoryLinks) {
-			if (WorkbenchSidebarPresenter.RECOVERY_LINK.equals(workbenchSidebarCategoryLink.getSidebarLinkName())) {
-				hasBackupAndRestore = true;
-			}
-		}
-		Assert.assertTrue(hasBackupAndRestore);
-	}
-
-	@Test
-	public void testIsCategoryLinkPermissibleForUserRoleWithAdminAndPermissibleRolesAdmin() {
-		this.workbenchSidebarPresenter.setImportGermplasmPermissibleRoles("Admin");
-
-		final WorkbenchSidebarCategoryLink link = new WorkbenchSidebarCategoryLink();
-		link.setSidebarLinkName("germplasm_import");
+	public void testGetCategoryLinkItemsForAdmin() {
 		final SimpleGrantedAuthority roleAuthority = new SimpleGrantedAuthority(SecurityUtil.ROLE_PREFIX + "ADMIN");
-
 		this.loggedInUser = new UsernamePasswordAuthenticationToken("admin", "admin", Lists.newArrayList(roleAuthority));
 		final SecurityContext securityContext = Mockito.mock(SecurityContext.class);
 		Mockito.when(securityContext.getAuthentication()).thenReturn(this.loggedInUser);
 		SecurityContextHolder.setContext(securityContext);
-
-		final boolean categoryLinkPermissibleForUserRole = this.workbenchSidebarPresenter.isCategoryLinkPermissibleForUserRole(link);
-		Assert.assertTrue("Germplasm Import link should be added in Workbench sidebar and should return true",
-				categoryLinkPermissibleForUserRole);
-	}
-
-	@Test
-	public void testIsCategoryLinkPermissibleForUserRoleWithAdminAndPermissibleRolesTechnician() {
-		this.workbenchSidebarPresenter.setImportGermplasmPermissibleRoles("Technician");
-		final SimpleGrantedAuthority roleAuthority = new SimpleGrantedAuthority(SecurityUtil.ROLE_PREFIX + "ADMIN");
-
-		this.loggedInUser = new UsernamePasswordAuthenticationToken("technician", "technician", Lists.newArrayList(roleAuthority));
-		final SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-		Mockito.when(securityContext.getAuthentication()).thenReturn(this.loggedInUser);
-		SecurityContextHolder.setContext(securityContext);
-
-		final WorkbenchSidebarCategoryLink link = new WorkbenchSidebarCategoryLink();
-		link.setSidebarLinkName("germplasm_import");
-
-		final boolean categoryLinkPermissibleForUserRole = this.workbenchSidebarPresenter.isCategoryLinkPermissibleForUserRole(link);
-		Assert.assertFalse("Germplasm Import link should not be added in Workbench sidebar and should return false",
-				categoryLinkPermissibleForUserRole);
-	}
-
-	@Test
-	public void testGetCategoryLinkItems() {
-		this.workbenchSidebarPresenter.setIsBackupAndRestoreEnabled("true");
+		
 		final Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> linksMap =
 				this.workbenchSidebarPresenter.getCategoryLinkItems();
 
 		// Expecting categories without links to not be included
 		Assert.assertEquals(this.sidebarCategories.size() - 1, linksMap.keySet().size());
+		Assert.assertNull(linksMap.get(this.categoryWithNoLinks));
+		
 		final List<WorkbenchSidebarCategoryLink> adminLinks = linksMap.get(this.adminCategory);
 		Assert.assertNotNull(adminLinks);
-		// "ADMIN" links are hardcoded and not from DB
-		Assert.assertEquals(3, adminLinks.size());
-		boolean manageProgramLinkFound = false;
-		boolean backupRestoreLinkFound = false;
-		boolean aboutBMSLinkFound = false;
-		for (final WorkbenchSidebarCategoryLink link : adminLinks) {
-			if (WorkbenchSidebarPresenter.MANAGE_PROGRAM_LINK.equals(link.getSidebarLinkName())) {
-				manageProgramLinkFound = true;
-			} else if (WorkbenchSidebarPresenter.RECOVERY_LINK.equals(link.getSidebarLinkName())) {
-				backupRestoreLinkFound = true;
-			} else if (WorkbenchSidebarPresenter.ABOUT_BMS_LINK.equals(link.getSidebarLinkName())) {
-				aboutBMSLinkFound = true;
-			}
-		}
-		Assert.assertTrue(manageProgramLinkFound);
-		Assert.assertTrue(backupRestoreLinkFound);
-		Assert.assertTrue(aboutBMSLinkFound);
+		// Expecting backup restore not to be included as no role configured to access it
+		Assert.assertEquals(1, adminLinks.size());
 		Assert.assertNotNull(linksMap.get(this.activitiesCategory));
 		Assert.assertNotNull(linksMap.get(this.infoMgtCategory));
 		Assert.assertEquals(this.sidebarLinksFromDB.get(this.activitiesCategory), linksMap.get(this.activitiesCategory));
 		Assert.assertEquals(this.sidebarLinksFromDB.get(this.infoMgtCategory), linksMap.get(this.infoMgtCategory));
+	}
+	
+	@Test
+	public void testGetCategoryLinkItemsForBreeder() {
+		final SimpleGrantedAuthority roleAuthority = new SimpleGrantedAuthority(SecurityUtil.ROLE_PREFIX + "BREEDER");
+		this.loggedInUser = new UsernamePasswordAuthenticationToken("breeder", "breeder", Lists.newArrayList(roleAuthority));
+		final SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+		Mockito.when(securityContext.getAuthentication()).thenReturn(this.loggedInUser);
+		SecurityContextHolder.setContext(securityContext);
+		
+		final Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> linksMap =
+				this.workbenchSidebarPresenter.getCategoryLinkItems();
+
+		// Expecting categories without links and with no links he has access to to not be included
+		Assert.assertEquals(this.sidebarCategories.size() - 2, linksMap.keySet().size());
+		Assert.assertNull(linksMap.get(this.categoryWithNoLinks));
+		Assert.assertNull(linksMap.get(this.adminCategory));
+		
+		final List<WorkbenchSidebarCategoryLink> activitiesLinks = linksMap.get(this.activitiesCategory);
+		Assert.assertNotNull(activitiesLinks);
+		Assert.assertEquals(1, activitiesLinks.size());
+		final List<WorkbenchSidebarCategoryLink> infoLinks = linksMap.get(this.infoMgtCategory);
+		Assert.assertNotNull(infoLinks);
+		Assert.assertEquals(1, infoLinks.size());
 	}
 
 	@Test

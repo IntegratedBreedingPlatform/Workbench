@@ -10,8 +10,8 @@ import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -87,7 +87,7 @@ public class WorkbenchEmailSenderServiceTest {
 		String generatedUrl = "http://a.generated.com";
 
 		UserInfo userInfo = Mockito.mock(UserInfo.class);
-		User testUser = new User();
+		WorkbenchUser testUser = new WorkbenchUser();
 		Person testPerson = new Person();
 		testPerson.setFirstName("hello");
 		testPerson.setLastName("world");

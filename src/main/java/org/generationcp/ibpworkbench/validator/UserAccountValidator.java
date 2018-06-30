@@ -5,7 +5,6 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
-import org.generationcp.commons.security.Role;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -77,7 +76,6 @@ public class UserAccountValidator implements Validator {
 
 		this.validatePersonEmailIfExists(errors, userAccount);
 
-		this.validateUserRole(errors, userAccount);
 	}
 
 	public void validateUserActive(UserAccountModel userAccount, Errors errors) {
@@ -119,13 +117,6 @@ public class UserAccountValidator implements Validator {
 		if (maxLength < fieldValue.length()) {
 			errors.rejectValue(fieldProperty, UserAccountValidator.SIGNUP_FIELD_LENGTH_EXCEED, new String[] {Integer.toString(maxLength),
 					fieldName}, null);
-		}
-	}
-
-	protected void validateUserRole(Errors errors, UserAccountModel userAccount) {
-		if (!Role.ADMIN.name().equals(userAccount.getRole()) && !Role.BREEDER.name().equals(userAccount.getRole())
-				&& !Role.TECHNICIAN.name().equals(userAccount.getRole())) {
-			errors.rejectValue(UserAccountFields.ROLE, UserAccountValidator.SIGNUP_FIELD_INVALID_ROLE);
 		}
 	}
 

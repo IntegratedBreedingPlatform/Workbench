@@ -1,6 +1,6 @@
 package org.generationcp.ibpworkbench.util;
 
-import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.junit.Test;
 
 import junit.framework.Assert;
@@ -11,7 +11,7 @@ public class WorkbenchUtilTest {
 
 	@Test
 	public void testIsPasswordEqualToUsername() throws Exception {
-		User user = new User();
+		WorkbenchUser user = new WorkbenchUser();
 		user.setName(PASSWORD);
 		user.setPassword(HASHED_PASSWORD);
 

@@ -4,7 +4,7 @@ import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
-import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +48,7 @@ public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSucc
 			return;
 		}
 
-		final User user = retrieveUserFromAuthentication(authentication);
+		final WorkbenchUser user = retrieveUserFromAuthentication(authentication);
 
 		// Initialize the ContextInfo to set the userId of the authenticated user.
 		// The projectId and token will be populated later when a program is opened/loaded.
@@ -59,10 +59,10 @@ public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSucc
 		this.redirectStrategy.sendRedirect(request, response, targetUrl);
 	}
 
-	protected User retrieveUserFromAuthentication(final Authentication authentication) {
+	protected WorkbenchUser retrieveUserFromAuthentication(final Authentication authentication) {
 
 		final String username = authentication.getName();
-		final User user = this.workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0);
+		final WorkbenchUser user = this.workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0);
 		final Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
 		user.setPerson(person);
 

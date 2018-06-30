@@ -21,6 +21,7 @@ import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.IbdbUserMap;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +32,6 @@ import org.springframework.web.util.WebUtils;
 @Service
 @Transactional
 public class ProgramService {
-
-	public static final String ADMIN_USERNAME = "ADMIN";
 
 	private static final Logger LOG = LoggerFactory.getLogger(ProgramService.class);
 
@@ -62,7 +61,7 @@ public class ProgramService {
 	 * @param program : program to save
 	 * @param programUsers : users to add as members of new program
 	 */
-	public void createNewProgram(final Project program, final Set<User> programUsers) {
+	public void createNewProgram(final Project program, final Set<WorkbenchUser> programUsers) {
 		// Need to save first to workbench_project so project id can be saved in session
 		this.saveWorkbenchProject(program);
 		this.setContextInfoAndCurrentCrop(program);
@@ -77,18 +76,16 @@ public class ProgramService {
 	}
 
 	/**
-	 * Save default "ADMIN" user and other set selected users as members of given program by saving in the ff tables:
+	 * Save user(s) with SUPERADMIN role and other selected users as members of given program by saving in the ff tables:
 	 * workbench_project_user_role, workbench_project_user_info, workbench_ibdb_user_map and in crop.persons (if applicable)
 	 *
 	 * @param program : program to add members to
 	 * @param users : users to add as members of given program
 	 */
-	public void saveProgramMembers(final Project program, final Set<User> users) {
-		// Add default "ADMIN" user to selected users of program to give access to new program
-		final User defaultAdminUser = this.workbenchDataManager.getUserByUsername(ProgramService.ADMIN_USERNAME);
-		if (defaultAdminUser != null) {
-			users.add(defaultAdminUser);
-		}
+	public void saveProgramMembers(final Project program, final Set<WorkbenchUser> users) {
+		// Add user(s) with SUPERADMIN role to selected users of program to give access to new program
+		final List<WorkbenchUser> superAdminUsers = this.workbenchDataManager.getSuperAdminUsers();
+		users.addAll(superAdminUsers);
 
 		// Save workbench project metadata and to crop users, persons (if necessary)
 		if (!users.isEmpty()) {
@@ -146,10 +143,10 @@ public class ProgramService {
 	 * @param users
 	 * @return
 	 */
-	public List<Integer> saveWorkbenchUserToCropUserMapping(final Project project, final Set<User> users) {
+	public List<Integer> saveWorkbenchUserToCropUserMapping(final Project project, final Set<WorkbenchUser> users) {
 		final List<Integer> userIDs = new ArrayList<>();
 
-		for (final User user : users) {
+		for (final WorkbenchUser user : users) {
 			// Create person and user records in crop DB if not yet existing.
 			final Person workbenchPerson = this.workbenchDataManager.getPersonById(user.getPersonid());
 			final Person cropPerson = this.createCropPersonIfNecessary(workbenchPerson);
@@ -187,11 +184,11 @@ public class ProgramService {
 	 * @param cropPerson
 	 * @return
 	 */
-	User createCropUserIfNecessary(final User user, final Person cropPerson) {
+	User createCropUserIfNecessary(final WorkbenchUser user, final Person cropPerson) {
 		User cropUser = this.userDataManager.getUserByUserName(user.getName());
 
 		if (cropUser == null) {
-			cropUser = user.copy();
+			cropUser = user.copyToUser();
 			cropUser.setPersonid(cropPerson.getId());
 			cropUser.setAccess(ProgramService.PROJECT_USER_ACCESS_NUMBER);
 			cropUser.setType(ProgramService.PROJECT_USER_TYPE);

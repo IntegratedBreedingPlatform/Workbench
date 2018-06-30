@@ -7,7 +7,7 @@
 			<h2><img class="image-padding image-padding-with-text" src="/Fieldbook/static/img/review-list-details.png">List Details</h2>
 		</div>
 		<div class="col-xs-12 col-md-12">
-			<div class="control-label"><a href="javascript: browseList()">Browse</a> for a list of samples to work with.</div>
+			<div class="control-label"><a href="javascript: browseList()">Browse</a> or <a href="javascript: searchList()">search</a> for a list of samples to work with.</div>
 		</div>
 	</div>
 
@@ -19,7 +19,7 @@
 					<ul class="nav nav-tabs row fb-tabs-headers" role="tablist">
 						<li *ngFor="let list of lists" role="presentation" [class.active]="list.active">
 							<a href="#list-{{list.id}}" aria-controls="home" (click)="setActive(list.id)" role="tab" data-toggle="tab">
-								{{list.name}}
+								{{list.listName}}
 								<i class="glyphicon glyphicon-remove fbk-close-tab" (click)="closeTab(list)"></i>
 							</a>
 						</li>
@@ -40,3 +40,5 @@
 </div>
 
 <jhi-tree-table></jhi-tree-table>
+
+<jhi-sample-search-list></jhi-sample-search-list>

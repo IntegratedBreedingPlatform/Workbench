@@ -1,61 +1,36 @@
 package org.generationcp.ibpworkbench.ui.sidebar;
 
-import org.generationcp.commons.security.AuthorizationUtil;
-import org.generationcp.commons.spring.util.ContextUtil;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.middleware.dao.ProjectUserInfoDAO;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
-import org.generationcp.middleware.pojos.workbench.Tool;
-import org.generationcp.middleware.pojos.workbench.ToolName;
-import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategory;
-import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategoryLink;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.TransactionCallbackWithoutResult;
-import org.springframework.transaction.support.TransactionTemplate;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.generationcp.commons.security.AuthorizationUtil;
+import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.middleware.dao.ProjectUserInfoDAO;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
+import org.generationcp.middleware.pojos.workbench.Role;
+import org.generationcp.middleware.pojos.workbench.Tool;
+import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategory;
+import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategoryLink;
+import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategoryLinkRole;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.security.access.AccessDeniedException;
+
 @Configurable
 public class WorkbenchSidebarPresenter implements InitializingBean {
-
-	protected static final String ADMIN_CATEGORY = "admin";
-
-	protected static final String ABOUT_BMS_LINK = "about_bms";
-
-	protected static final String RECOVERY_LINK = "recovery";
-
-	protected static final String MANAGE_PROGRAM_LINK = "manage_program";
 
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchSidebarPresenter.class);
 
 	@Autowired
 	private WorkbenchDataManager manager;
-
-	@Value("${workbench.is.backup.and.restore.enabled}")
-	private String isBackupAndRestoreEnabled;
-
-	@Value("${workbench.import.germplasm.permissible.roles}")
-	private String importGermplasmPermissibleRoles;
-
-	@Autowired
-	private PlatformTransactionManager transactionManager;
-
-	@Autowired
-	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
 	private ContextUtil contextUtil;
@@ -89,15 +64,11 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 		final List<WorkbenchSidebarCategory> workbenchSidebarCategoryList = this.manager.getAllWorkbenchSidebarCategory();
 
 		for (final WorkbenchSidebarCategory category : workbenchSidebarCategoryList) {
-			if (ADMIN_CATEGORY.equals(category.getSidebarCategoryName())) {
-				this.addAdminCategoryLinks(categoryLinks, category);
-			} else {
-				categoryLinks.addAll(this.manager.getAllWorkbenchSidebarLinksByCategoryId(category));
-			}
+			categoryLinks.addAll(this.manager.getAllWorkbenchSidebarLinksByCategoryId(category));
 		}
-
+		
 		for (final WorkbenchSidebarCategoryLink link : categoryLinks) {
-			if (isCategoryLinkPermissibleForUserRole(link)) {
+			if (this.isCategoryLinkPermissibleForUserRole(link)) {
 				if (sidebarLinks.get(link.getWorkbenchSidebarCategory()) == null) {
 					sidebarLinks.put(link.getWorkbenchSidebarCategory(), new ArrayList<WorkbenchSidebarCategoryLink>());
 				}
@@ -112,64 +83,40 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 	}
 
 	protected boolean isCategoryLinkPermissibleForUserRole(final WorkbenchSidebarCategoryLink link) {
-		if (ToolName.GERMPLASM_IMPORT.name().equalsIgnoreCase(link.getSidebarLinkName())) {
-			try {
-				AuthorizationUtil.preAuthorize(importGermplasmPermissibleRoles);
-			} catch (final AccessDeniedException ex) {
-				LOG.debug(ex.getMessage(), ex);
-				return false;
-			}
-
+		final List<Role> permittedRoles = new ArrayList<>();
+		final List<WorkbenchSidebarCategoryLinkRole> sidebarRoles = link.getRoles();
+		for (final WorkbenchSidebarCategoryLinkRole sidebarRole : sidebarRoles) {
+			permittedRoles.add(sidebarRole.getRole());
 		}
+
+		try {
+			AuthorizationUtil.preAuthorize(permittedRoles);
+		} catch (final AccessDeniedException ex) {
+			LOG.debug(ex.getMessage(), ex);
+			return false;
+		}
+
 		return true;
 	}
 
-	protected void addAdminCategoryLinks(final List<WorkbenchSidebarCategoryLink> categoryLinks, final WorkbenchSidebarCategory category) {
-		categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, MANAGE_PROGRAM_LINK,
-				this.messageSource.getMessage("LINK_MANAGE_SETTINGS")));
-		if (this.isBackupAndRestoreEnabled != null && Boolean.valueOf(this.isBackupAndRestoreEnabled)) {
-			categoryLinks.add(new WorkbenchSidebarCategoryLink(null, category, RECOVERY_LINK,
-					this.messageSource.getMessage("LINK_BACKUP_RESTORE")));
-		}
-		categoryLinks
-				.add(new WorkbenchSidebarCategoryLink(null, category, ABOUT_BMS_LINK, this.messageSource.getMessage("LINK_ABOUT_BMS")));
-	}
-
 	public void updateProjectLastOpenedDate() {
+		final Project project = contextUtil.getProjectInContext();
 
-		final TransactionTemplate transactionTemplate = new TransactionTemplate(this.transactionManager);
+		final ProjectUserInfoDAO projectUserInfoDao = WorkbenchSidebarPresenter.this.manager.getProjectUserInfoDao();
+		final ProjectUserInfo projectUserInfo =
+				projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId(), contextUtil.getCurrentWorkbenchUserId());
 
-		transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+		if (projectUserInfo != null) {
+			projectUserInfo.setLastOpenDate(new Date());
+			WorkbenchSidebarPresenter.this.manager.saveOrUpdateProjectUserInfo(projectUserInfo);
+		}
 
-			protected void doInTransactionWithoutResult(final TransactionStatus status) {
-				final Project project = contextUtil.getProjectInContext();
-
-				final ProjectUserInfoDAO projectUserInfoDao = WorkbenchSidebarPresenter.this.manager.getProjectUserInfoDao();
-				final ProjectUserInfo projectUserInfo =
-						projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId(), contextUtil.getCurrentWorkbenchUserId());
-
-				if (projectUserInfo != null) {
-					projectUserInfo.setLastOpenDate(new Date());
-					WorkbenchSidebarPresenter.this.manager.saveOrUpdateProjectUserInfo(projectUserInfo);
-				}
-
-				project.setLastOpenDate(new Date());
-				WorkbenchSidebarPresenter.this.manager.mergeProject(project);
-
-			}
-		});
-
-	}
-
-	public void setIsBackupAndRestoreEnabled(final String isBackupAndRestoreEnabled) {
-		this.isBackupAndRestoreEnabled = isBackupAndRestoreEnabled;
+		project.setLastOpenDate(new Date());
+		WorkbenchSidebarPresenter.this.manager.mergeProject(project);
 	}
 
 	public void setManager(final WorkbenchDataManager manager) {
 		this.manager = manager;
 	}
 
-	public void setImportGermplasmPermissibleRoles(final String importGermplasmPermissibleRoles) {
-		this.importGermplasmPermissibleRoles = importGermplasmPermissibleRoles;
-	}
 }

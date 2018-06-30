@@ -5,7 +5,7 @@ import org.generationcp.commons.context.ContextInfo;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
@@ -38,8 +38,8 @@ public class WorkbenchAuthenticationSuccessHandlerTest {
 		Mockito.when(authentication.getName()).thenReturn(WorkbenchAuthenticationSuccessHandlerTest.TEST_USER);
 
 		final WorkbenchDataManager workbenchDataManager = Mockito.mock(WorkbenchDataManager.class);
-		final List<User> matchingUsers = new ArrayList<User>();
-		final User testUserWorkbench = new User();
+		final List<WorkbenchUser> matchingUsers = new ArrayList<WorkbenchUser>();
+		final WorkbenchUser testUserWorkbench = new WorkbenchUser();
 		testUserWorkbench.setName(WorkbenchAuthenticationSuccessHandlerTest.TEST_USER);
 		testUserWorkbench.setPersonid(1);
 		matchingUsers.add(testUserWorkbench);

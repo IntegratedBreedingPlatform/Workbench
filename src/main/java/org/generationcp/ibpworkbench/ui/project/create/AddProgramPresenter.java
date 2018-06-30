@@ -2,8 +2,8 @@ package org.generationcp.ibpworkbench.ui.project.create;
 
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.service.ProgramService;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -40,7 +40,7 @@ public class AddProgramPresenter {
 	public Project doAddNewProgram() {
 		try {
 			final Project program = AddProgramPresenter.this.view.createProjectPanel.projectBasicDetailsComponent.getProjectDetails();
-			final Set<User> users = AddProgramPresenter.this.view.programMembersPanel.getSelectedUsers();
+			final Set<WorkbenchUser> users = AddProgramPresenter.this.view.programMembersPanel.getSelectedUsers();
 			AddProgramPresenter.this.programService.createNewProgram(program, users);
 			return program;
 		} catch (final RuntimeException e) {

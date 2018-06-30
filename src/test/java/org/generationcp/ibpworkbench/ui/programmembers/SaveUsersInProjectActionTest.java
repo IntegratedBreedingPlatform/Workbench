@@ -11,9 +11,9 @@ import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.data.initializer.UserTestDataInitializer;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -47,7 +47,7 @@ public class SaveUsersInProjectActionTest {
 	private PlatformTransactionManager transactionManager;
 
 	@Mock
-	private TwinTableSelect<User> twinTable;
+	private TwinTableSelect<WorkbenchUser> twinTable;
 
 	@Mock
 	private ClickEvent clickEvent;
@@ -63,7 +63,7 @@ public class SaveUsersInProjectActionTest {
 
 	private Project project;
 
-	private Set<User> userList;
+	private Set<WorkbenchUser> userList;
 
 	private ProjectUserInfo projectUserInfo;
 
@@ -82,10 +82,10 @@ public class SaveUsersInProjectActionTest {
 		this.projectUserInfo.setUserId(SaveUsersInProjectActionTest.USER_ID);
 
 		this.userList = new HashSet<>();
-		final User user1 = UserTestDataInitializer.createUser();
+		final WorkbenchUser user1 = UserTestDataInitializer.createWorkbenchUser();
 		user1.setUserid(1);
 		this.userList.add(user1);
-		final User user2 = UserTestDataInitializer.createUser();
+		final WorkbenchUser user2 = UserTestDataInitializer.createWorkbenchUser();
 		user2.setUserid(2);
 		this.userList.add(user2);
 

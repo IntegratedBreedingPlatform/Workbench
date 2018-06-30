@@ -13,8 +13,8 @@ import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.middleware.data.initializer.PersonTestDataInitializer;
 import org.generationcp.middleware.data.initializer.UserTestDataInitializer;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -85,9 +85,9 @@ public class ProjectMembersComponentTest {
 
 		Mockito.when(messageSource.getMessage(Message.SUCCESS)).thenReturn(SUCCESS);
 
-		final List<User> programMembers = this.createProgramMembersTestData();
+		final List<WorkbenchUser> programMembers = this.createProgramMembersTestData();
 		Mockito.doReturn(programMembers).when(this.workbenchDataManager).getAllActiveUsersSorted();
-		for (final User user : programMembers) {
+		for (final WorkbenchUser user : programMembers) {
 			Mockito.doReturn(PersonTestDataInitializer.createPerson(user.getPersonid())).when(this.workbenchDataManager)
 					.getPersonById(user.getPersonid());
 		}
@@ -98,7 +98,7 @@ public class ProjectMembersComponentTest {
 		this.mockCurrentUser(ProjectMembersComponentTest.OWNER_USER_ID);
 		final Object itemId = UserTestDataInitializer.createUserWithRole(ProjectMembersComponentTest.OWNER_USER_ID);
 		final Label roleLabel = this.projectMembersComponent.generateRoleCell(itemId);
-		Assert.assertEquals(((User) itemId).getRoles().get(0).getCapitalizedRole(), roleLabel.getValue());
+		Assert.assertEquals(((WorkbenchUser) itemId).getRoles().get(0).getCapitalizedRole(), roleLabel.getValue());
 		Assert.assertEquals("label", roleLabel.getDebugId());
 		Assert.assertEquals("label-bold", roleLabel.getStyleName());
 	}
@@ -108,7 +108,7 @@ public class ProjectMembersComponentTest {
 		this.mockCurrentUser(ProjectMembersComponentTest.OWNER_USER_ID);
 		final Object itemId = UserTestDataInitializer.createUserWithRole(ProjectMembersComponentTest.MEMBER_PERSON_ID);
 		final Label roleLabel = this.projectMembersComponent.generateRoleCell(itemId);
-		Assert.assertEquals(((User) itemId).getRoles().get(0).getCapitalizedRole(), roleLabel.getValue());
+		Assert.assertEquals(((WorkbenchUser) itemId).getRoles().get(0).getCapitalizedRole(), roleLabel.getValue());
 		Assert.assertEquals("label", roleLabel.getDebugId());
 		Assert.assertNotSame("label-bold", roleLabel.getStyleName());
 	}
@@ -119,7 +119,7 @@ public class ProjectMembersComponentTest {
 		final Object itemId = UserTestDataInitializer.createUserWithPerson(ProjectMembersComponentTest.OWNER_PERSON_ID,
 				"UserName", 1, "Firstname", "Middlename");
 		final Label roleLabel = this.projectMembersComponent.generateUserNameCell(itemId);
-		Assert.assertEquals(((User) itemId).getPerson().getDisplayName(), roleLabel.getValue());
+		Assert.assertEquals(((WorkbenchUser) itemId).getPerson().getDisplayName(), roleLabel.getValue());
 		Assert.assertEquals("label", roleLabel.getDebugId());
 		Assert.assertEquals("label-bold", roleLabel.getStyleName());
 	}
@@ -130,7 +130,7 @@ public class ProjectMembersComponentTest {
 		final Object itemId = UserTestDataInitializer.createUserWithPerson(ProjectMembersComponentTest.MEMBER_PERSON_ID,
 				"UserName", 1, "Firstname", "Middlename");
 		final Label roleLabel = this.projectMembersComponent.generateUserNameCell(itemId);
-		Assert.assertEquals(((User) itemId).getPerson().getDisplayName(), roleLabel.getValue());
+		Assert.assertEquals(((WorkbenchUser) itemId).getPerson().getDisplayName(), roleLabel.getValue());
 		Assert.assertEquals("label", roleLabel.getDebugId());
 		Assert.assertNotSame("label-bold", roleLabel.getStyleName());
 	}
@@ -142,11 +142,11 @@ public class ProjectMembersComponentTest {
 
 		final Container usersContainer = this.projectMembersComponent.createUsersContainer();
 
-		final Collection<User> programMembers = (Collection<User>) usersContainer.getItemIds();
+		final Collection<WorkbenchUser> programMembers = (Collection<WorkbenchUser>) usersContainer.getItemIds();
 		Assert.assertNotNull(programMembers);
 		Assert.assertEquals("There should be 3 program members.", 3, programMembers.size());
 
-		for (final User user : programMembers) {
+		for (final WorkbenchUser user : programMembers) {
 			if (user.getUserid().equals(ProjectMembersComponentTest.OWNER_PERSON_ID)) {
 				Assert.assertFalse("Program Owner should be disabled so they cannot be removed as member.",
 						user.isEnabled());
@@ -160,8 +160,8 @@ public class ProjectMembersComponentTest {
 		Mockito.doReturn(userId).when(this.contextUtil).getCurrentWorkbenchUserId();
 	}
 
-	private List<User> createProgramMembersTestData() {
-		final List<User> programMembers = new ArrayList<>();
+	private List<WorkbenchUser> createProgramMembersTestData() {
+		final List<WorkbenchUser> programMembers = new ArrayList<>();
 		programMembers.add(UserTestDataInitializer.createUserWithPerson(ProjectMembersComponentTest.OWNER_USER_ID,
 				ProjectMembersComponentTest.OWNER_NAME, ProjectMembersComponentTest.OWNER_PERSON_ID,
 				ProjectMembersComponentTest.OWNER_NAME, ProjectMembersComponentTest.OWNER_NAME));
@@ -169,7 +169,7 @@ public class ProjectMembersComponentTest {
 				ProjectMembersComponentTest.MEMBER_NAME, ProjectMembersComponentTest.MEMBER_PERSON_ID,
 				ProjectMembersComponentTest.MEMBER_NAME, ProjectMembersComponentTest.MEMBER_NAME));
 		programMembers.add(UserTestDataInitializer.createUserWithPerson(ProjectMembersComponentTest.ADMIN_USER_ID,
-				ProgramService.ADMIN_USERNAME, ProjectMembersComponentTest.ADMIN_PERSON_ID,
+				ProjectMembersComponentTest.ADMIN_NAME, ProjectMembersComponentTest.ADMIN_PERSON_ID,
 				ProjectMembersComponentTest.ADMIN_NAME, ProjectMembersComponentTest.ADMIN_NAME));
 		return programMembers;
 	}

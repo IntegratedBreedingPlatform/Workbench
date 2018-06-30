@@ -26,7 +26,7 @@ export class SampleBrowseComponent implements OnInit, OnDestroy {
             }
 
             if (!this.exists(this.listId)) {
-                this.lists.push(new SampleList(this.listId, 'List ' + this.listId, true, []));
+                this.lists.push(new SampleList(this.listId, 'List ' + this.listId, '', true, []));
             }
 
             this.setActive(this.listId);

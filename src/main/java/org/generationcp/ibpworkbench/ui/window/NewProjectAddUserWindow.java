@@ -4,7 +4,7 @@ package org.generationcp.ibpworkbench.ui.window;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.ibpworkbench.ui.programmembers.NewProjectAddUserPanel;
-import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
@@ -18,11 +18,11 @@ public class NewProjectAddUserWindow extends BaseSubWindow {
 
 	private NewProjectAddUserPanel newUserPanel;
 
-	private final TwinTableSelect<User> membersSelect;
+	private final TwinTableSelect<WorkbenchUser> membersSelect;
 
 	private VerticalLayout layout;
 
-	public NewProjectAddUserWindow(TwinTableSelect<User> membersSelect) {
+	public NewProjectAddUserWindow(TwinTableSelect<WorkbenchUser> membersSelect) {
 		this.addStyleName(Reindeer.WINDOW_LIGHT);
 
 		this.membersSelect = membersSelect;

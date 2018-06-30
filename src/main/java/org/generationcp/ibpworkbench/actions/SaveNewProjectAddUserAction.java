@@ -25,7 +25,7 @@ import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +51,7 @@ public class SaveNewProjectAddUserAction implements ClickListener {
 	private static final long serialVersionUID = 5386242653138617919L;
 
 	private final Form userAccountForm;
-	private final TwinTableSelect<User> membersSelect;
+	private final TwinTableSelect<WorkbenchUser> membersSelect;
 
 	@Autowired
 	private WorkbenchUserService workbenchUserService;
@@ -62,7 +62,7 @@ public class SaveNewProjectAddUserAction implements ClickListener {
 	@Autowired
 	private ContextUtil contextUtil;
 
-	public SaveNewProjectAddUserAction(final Form userAccountForm, final TwinTableSelect<User> membersSelect) {
+	public SaveNewProjectAddUserAction(final Form userAccountForm, final TwinTableSelect<WorkbenchUser> membersSelect) {
 		this.userAccountForm = userAccountForm;
 		this.membersSelect = membersSelect;
 	}
@@ -108,16 +108,16 @@ public class SaveNewProjectAddUserAction implements ClickListener {
 
 	}
 
-	protected void saveUserAccount(final UserAccountModel userAccount, final TwinTableSelect<User> membersSelect) {
+	protected void saveUserAccount(final UserAccountModel userAccount, final TwinTableSelect<WorkbenchUser> membersSelect) {
 		userAccount.trimAll();
 
-		final User user = this.workbenchUserService.saveNewUserAccount(userAccount);
+		final WorkbenchUser user = this.workbenchUserService.saveNewUserAccount(userAccount);
 
 		// add new user to the TwinColumnSelect
 		membersSelect.addItem(user);
 
 		// get currently selected users and add the new user
-		final Set<User> selectedMembers = new HashSet<>(membersSelect.getValue());
+		final Set<WorkbenchUser> selectedMembers = new HashSet<>(membersSelect.getValue());
 		selectedMembers.add(user);
 		membersSelect.setValue(selectedMembers);
 	}

@@ -10,6 +10,44 @@
 
 package org.generationcp.ibpworkbench.ui;
 
+import java.util.Objects;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang3.StringUtils;
+import org.generationcp.commons.help.document.HelpWindow;
+import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.tomcat.util.TomcatUtil;
+import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.actions.HomeAction;
+import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
+import org.generationcp.ibpworkbench.actions.SignoutAction;
+import org.generationcp.ibpworkbench.navigation.NavUriFragmentChangedListener;
+import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
+import org.generationcp.ibpworkbench.ui.project.create.AddProgramView;
+import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
+import org.generationcp.ibpworkbench.ui.window.ChangeCredentialsWindow;
+import org.generationcp.ibpworkbench.ui.window.ChangePasswordWindow;
+import org.generationcp.ibpworkbench.ui.window.EmbeddedWindow;
+import org.generationcp.ibpworkbench.ui.window.IContentWindow;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.Person;
+import org.generationcp.middleware.pojos.workbench.UserInfo;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.vaadin.hene.popupbutton.PopupButton;
+
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.ThemeResource;
@@ -30,43 +68,6 @@ import com.vaadin.ui.VerticalSplitPanel;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.themes.Reindeer;
-import org.apache.commons.lang3.StringUtils;
-import org.generationcp.commons.help.document.HelpWindow;
-import org.generationcp.commons.spring.util.ContextUtil;
-import org.generationcp.commons.tomcat.util.TomcatUtil;
-import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.actions.HomeAction;
-import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
-import org.generationcp.ibpworkbench.actions.SignoutAction;
-import org.generationcp.ibpworkbench.navigation.NavUriFragmentChangedListener;
-import org.generationcp.ibpworkbench.service.ProgramService;
-import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
-import org.generationcp.ibpworkbench.ui.project.create.AddProgramView;
-import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
-import org.generationcp.ibpworkbench.ui.window.ChangeCredentialsWindow;
-import org.generationcp.ibpworkbench.ui.window.ChangePasswordWindow;
-import org.generationcp.ibpworkbench.ui.window.EmbeddedWindow;
-import org.generationcp.ibpworkbench.ui.window.IContentWindow;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.Person;
-import org.generationcp.middleware.pojos.User;
-import org.generationcp.middleware.pojos.workbench.UserInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.vaadin.hene.popupbutton.PopupButton;
-
-import javax.annotation.Resource;
-import java.util.Objects;
 
 @Configurable
 public class WorkbenchMainView extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
@@ -421,7 +422,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	protected void onLoadOperations() {
 
-		final User user = contextUtil.getCurrentWorkbenchUser();
+		final WorkbenchUser user = contextUtil.getCurrentWorkbenchUser();
 
 		final UserInfo userInfo = this.createUserInfoIfNecessary(user);
 
@@ -431,7 +432,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	}
 
-	protected UserInfo createUserInfoIfNecessary(final User user) {
+	protected UserInfo createUserInfoIfNecessary(final WorkbenchUser user) {
 
 		UserInfo userInfo = this.workbenchDataManager.getUserInfo(user.getUserid());
 
@@ -445,12 +446,12 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		return userInfo;
 	}
 
-	protected void showChangeCredentialsWindowOnFirstLogin(final Window window, final User user, final UserInfo userInfo) {
+	protected void showChangeCredentialsWindowOnFirstLogin(final Window window, final WorkbenchUser user, final UserInfo userInfo) {
 
-		// Only display the Change Credentials/Password on first login
+		// Only display the Change Credentials/Password on first login of user
 		if (userInfo.getLoginCount() < 1) {
-			if (ProgramService.ADMIN_USERNAME.equalsIgnoreCase(user.getName())) {
-				// If the user is the default admin account, force the user to change
+			if (this.workbenchDataManager.isSuperAdminUser(user.getUserid())) {
+				// If the user has SUPERADMIN role, on first login, force the user to change
 				// the account firstname, lastname, email address and password (optional)
 				window.addWindow(new ChangeCredentialsWindow(new ChangeCredentialsWindow.CredentialsChangedEvent() {
 
@@ -527,7 +528,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.workbenchHeaderLayout.requestRepaint();
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
 	protected void layoutAdminButton() {
 		addAdminButton(this.workbenchHeaderLayout);
 	}
@@ -541,7 +542,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
 	protected void layoutAddProgramButton(final HorizontalLayout layout) {
 
 		if (Boolean.parseBoolean(this.isAddProgramEnabled)) {

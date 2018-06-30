@@ -1,11 +1,11 @@
 
 package org.generationcp.ibpworkbench.validator;
 
-import org.generationcp.commons.security.Role;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.workbench.Role;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,7 +45,8 @@ public class UserAccountValidatorTest {
 		userAccount.setFirstName("firstName");
 		userAccount.setLastName("lastName");
 		userAccount.setEmail("email@email.com");
-		userAccount.setRole("ADMIN");
+		// Role ID 1 = ADMIN
+		userAccount.setRole(new Role(1));
 		userAccount.setUsername("username");
 		userAccount.setPassword("password");
 		userAccount.setPasswordConfirmation("password");
@@ -67,8 +68,6 @@ public class UserAccountValidatorTest {
 		Mockito.verify(partialValidator).validateUsernameIfExists(this.errors, userAccount);
 
 		Mockito.verify(partialValidator).validatePersonEmailIfExists(this.errors, userAccount);
-
-		Mockito.verify(partialValidator).validateUserRole(this.errors, userAccount);
 
 	}
 
@@ -179,34 +178,6 @@ public class UserAccountValidatorTest {
 		partialValidator.validateUsernameIfExists(this.errors, userAccount);
 
 		Mockito.verify(this.errors, Mockito.never()).rejectValue(Matchers.anyString(), Matchers.anyString());
-	}
-
-	@Test
-	public void testValidateUserRole() throws Exception {
-		UserAccountModel userAccount = new UserAccountModel();
-		userAccount.setRole(Role.ADMIN.name());
-
-		UserAccountValidator partialValidator = Mockito.spy(this.validator);
-		partialValidator.validateUserRole(this.errors, userAccount);
-
-		Mockito.verify(this.errors, Mockito.never()).rejectValue(Matchers.anyString(), Matchers.anyString());
-	}
-
-	@Test
-	public void testValidateUserRoleNotExists() throws Exception {
-		ArgumentCaptor<String> arg1 = ArgumentCaptor.forClass(String.class);
-		ArgumentCaptor<String> arg2 = ArgumentCaptor.forClass(String.class);
-
-		UserAccountModel userAccount = new UserAccountModel();
-		userAccount.setRole("NON_EXISTING_ROLE");
-
-		UserAccountValidator partialValidator = Mockito.spy(this.validator);
-		partialValidator.validateUserRole(this.errors, userAccount);
-
-		Mockito.verify(this.errors).rejectValue(arg1.capture(), arg2.capture());
-
-		Assert.assertEquals("error should output role field", UserAccountFields.ROLE, arg1.getValue());
-		Assert.assertEquals("show correct error code", UserAccountValidator.SIGNUP_FIELD_INVALID_ROLE, arg2.getValue());
 	}
 
 	@Test

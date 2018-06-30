@@ -17,7 +17,7 @@ import org.mockito.MockitoAnnotations;
 
 public class TableViewerExporterTest {
 	
-	private static final String STUDY_NAME = "Test Trial";
+	private static final String STUDY_NAME = "Test Study";
 
 	@Mock
 	private ContextUtil contextUtil;
@@ -25,7 +25,7 @@ public class TableViewerExporterTest {
 	@InjectMocks
 	private TableViewerExporter tableViewerExporter;
 	
-	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
+	private final InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 	
 	@Before
 	public void setup() {

@@ -17,9 +17,9 @@ import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.UserProgramStateDataManager;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.dms.DmsProject;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,7 +54,7 @@ public class SaveBreedingViewStudyTreeStateTest {
 	@Before
 	public void setUp() throws Exception {
 		final Project project = mock(Project.class);
-		final User userData = mock(User.class);
+		final WorkbenchUser userData = mock(WorkbenchUser.class);
 		final ManagerFactory factory = mock(ManagerFactory.class);
 		when(contextUtil.getProjectInContext()).thenReturn(project);
 		when(project.getProjectId()).thenReturn((long) 1);

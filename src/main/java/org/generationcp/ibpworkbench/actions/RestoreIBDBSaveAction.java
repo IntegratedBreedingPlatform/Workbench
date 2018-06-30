@@ -16,9 +16,9 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.database.CropDatabaseGenerator;
 import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -100,9 +100,9 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 						this.workbenchDataManager.getLocalIbdbUserId(contextUtil.getCurrentWorkbenchUserId(), this.project.getProjectId());
 				this.updateGermplasmListOwnership(userId);
 
-				// Add current user and default admin as members of all restored programs
+				// Add current user and users with SUPERADMIN role as members of all restored programs
 				final List<Project> restoredPrograms = this.workbenchDataManager.getProjectsByCrop(cropType);
-				this.addDefaultAdminAndCurrentUserAsMembersOfRestoredPrograms(restoredPrograms);
+				this.addSuperAdminAndCurrentUserAsMembersOfRestoredPrograms(restoredPrograms);
 				
 				// Remove directories for old programs and generate new folders for programs of restored backup file
 				this.installationDirectoryUtil.resetWorkspaceDirectoryForCrop(cropType, restoredPrograms);
@@ -132,16 +132,16 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 	}
 
 	/*
-	 * Call ProgramService to add default ADMIN and current user (if he is not default ADMIN) as program members
+	 * Call ProgramService to add SUPERADMIN user(s) and current user (if he is not a super admin user) as program members
 	 */
-	void addDefaultAdminAndCurrentUserAsMembersOfRestoredPrograms(final List<Project> projects) {
+	void addSuperAdminAndCurrentUserAsMembersOfRestoredPrograms(final List<Project> projects) {
 
-		final User currentUser = contextUtil.getCurrentWorkbenchUser();
-		final HashSet<User> users = new HashSet<>();
+		final WorkbenchUser currentUser = contextUtil.getCurrentWorkbenchUser();
+		final HashSet<WorkbenchUser> users = new HashSet<>();
 		users.add(currentUser);
 
 		for (final Project proj : projects) {
-			// The default "ADMIN" user is being added in ProgramService
+			// The SUPERADMIN user(s) is being added in ProgramService
 			this.programService.saveProgramMembers(proj, users);
 		}
 	}

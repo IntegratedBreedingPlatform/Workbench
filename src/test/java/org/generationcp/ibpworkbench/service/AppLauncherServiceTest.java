@@ -6,11 +6,11 @@ import org.generationcp.commons.tomcat.util.TomcatUtil;
 import org.generationcp.ibpworkbench.exception.AppLaunchException;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.generationcp.middleware.pojos.workbench.ToolType;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -165,27 +165,14 @@ public class AppLauncherServiceTest {
 						AppLauncherServiceTest.PORT, AppLauncherServiceTest.SAMPLE_BASE_URL, AppLauncherServiceTest.LOGGED_IN_USER_ID,
 						AppLauncherServiceTest.RESTART_URL_STR + AppLauncherServiceTest.WORKBENCH_CONTEXT_PARAMS), urlResult);
 
-		// for fieldbook apps with params with param
 		aWebTool = new Tool();
 
-		aWebTool.setToolName(ToolName.NURSERY_MANAGER_FIELDBOOK_WEB.getName());
+		aWebTool.setToolName(ToolName.STUDY_MANAGER_FIELDBOOK_WEB.getName());
 		aWebTool.setPath(AppLauncherServiceTest.SAMPLE_BASE_URL);
 		aWebTool.setToolType(ToolType.WEB);
 		urlResult = this.appLauncherService.launchWebapp(aWebTool, AppLauncherServiceTest.LOGGED_IN_USER_ID);
 
-		Assert.assertEquals("should return correct url for fieldbook nursery app",
-				String.format("%s://%s:%d/%s/editNursery/%d%s", AppLauncherServiceTest.SCHEME, AppLauncherServiceTest.HOST_NAME,
-						AppLauncherServiceTest.PORT, AppLauncherServiceTest.SAMPLE_BASE_URL, AppLauncherServiceTest.LOGGED_IN_USER_ID,
-						AppLauncherServiceTest.RESTART_URL_STR + AppLauncherServiceTest.WORKBENCH_CONTEXT_PARAMS), urlResult);
-
-		aWebTool = new Tool();
-
-		aWebTool.setToolName(ToolName.TRIAL_MANAGER_FIELDBOOK_WEB.getName());
-		aWebTool.setPath(AppLauncherServiceTest.SAMPLE_BASE_URL);
-		aWebTool.setToolType(ToolType.WEB);
-		urlResult = this.appLauncherService.launchWebapp(aWebTool, AppLauncherServiceTest.LOGGED_IN_USER_ID);
-
-		Assert.assertEquals("should return correct url for fieldbook trial app",
+		Assert.assertEquals("should return correct url for fieldbook Study app",
 				String.format("%s://%s:%d/%s/openTrial/%d%s", AppLauncherServiceTest.SCHEME, AppLauncherServiceTest.HOST_NAME,
 						AppLauncherServiceTest.PORT, AppLauncherServiceTest.SAMPLE_BASE_URL, AppLauncherServiceTest.LOGGED_IN_USER_ID,
 						AppLauncherServiceTest.RESTART_URL_STR + AppLauncherServiceTest.WORKBENCH_CONTEXT_PARAMS), urlResult);
@@ -216,7 +203,7 @@ public class AppLauncherServiceTest {
 		aWebTool.setPath(AppLauncherServiceTest.SAMPLE_BASE_URL);
 		aWebTool.setToolType(ToolType.WEB_WITH_LOGIN);
 
-		final User user = new User();
+		final WorkbenchUser user = new WorkbenchUser();
 		user.setUserid(LOGGED_IN_USER_ID);
 		user.setName("a_username");
 		user.setPassword("a_password");

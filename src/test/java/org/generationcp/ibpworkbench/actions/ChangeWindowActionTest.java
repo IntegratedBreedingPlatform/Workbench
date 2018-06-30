@@ -63,10 +63,10 @@ public class ChangeWindowActionTest {
 	@Test
 	public void testLaunchRecovery() {
 
-		changeWindowAction.launchWindow(window, ChangeWindowAction.WindowEnums.RECOVERY.getwindowName(), false);
+		changeWindowAction.launchWindow(window, ChangeWindowAction.WindowEnums.BACKUP_RESTORE.getwindowName(), false);
 
 		verify(window).showContent(any(BackupAndRestoreView.class));
-		verify(contextUtil).logProgramActivity(eq(ChangeWindowAction.WindowEnums.RECOVERY.getwindowName()), anyString());
+		verify(contextUtil).logProgramActivity(eq(ChangeWindowAction.WindowEnums.BACKUP_RESTORE.getwindowName()), anyString());
 
 	}
 
