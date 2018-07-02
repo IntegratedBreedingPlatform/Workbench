@@ -52,8 +52,8 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 	@Autowired
 	private UserProgramStateDataManager programStateManager;
 	
-	private final ThemeResource folderResource = new ThemeResource("../vaadin-retro/svg/folder-icon.svg");
-	private final ThemeResource studyResource = new ThemeResource("../vaadin-retro/svg/study-icon.svg");
+	protected static final ThemeResource FOLDER_ICON = new ThemeResource("../vaadin-retro/svg/folder-icon.svg");
+	protected static final ThemeResource STUDY_ICON = new ThemeResource("../vaadin-retro/svg/study-icon.svg");
 
 	private StudyTreeDragAndDropHandler dropHandler;
 	private BrowseStudyTreeComponent browseStudyTreeComponent;
@@ -143,7 +143,7 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 				this.setItemCaption(item.getId(), item.getName());
 				
 				if (!item.isFolder()) {
-					this.setItemIcon(item.getId(), this.studyResource);
+					this.setItemIcon(item.getId(), STUDY_ICON);
 				} else {
 					this.setItemIcon(item.getId(), this.getThemeResourceByReference(item));
 				}
@@ -160,12 +160,12 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 
 		if (r instanceof FolderReference) {
 			StudyTree.LOG.debug("r is FolderReference");
-			return this.folderResource;
+			return FOLDER_ICON;
 		} else if (r instanceof StudyReference) {
 			StudyTree.LOG.debug("r is StudyReference");
-			return this.studyResource;
+			return STUDY_ICON;
 		} else {
-			return this.folderResource;
+			return FOLDER_ICON;
 		}
 
 	}
@@ -284,6 +284,41 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 	
 	protected SaveTreeStateListener getSaveTreeStateListener() {
 		return saveTreeStateListener;
+	}
+
+	
+	protected void setStudyDataManager(StudyDataManager studyDataManager) {
+		this.studyDataManager = studyDataManager;
+	}
+
+	
+	protected void setContextUtil(ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
+	}
+
+	
+	protected void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+
+	
+	protected void setExpandListener(StudyTreeExpandListener expandListener) {
+		this.expandListener = expandListener;
+	}
+
+	
+	protected void setClickListener(StudyTreeItemClickListener clickListener) {
+		this.clickListener = clickListener;
+	}
+
+	
+	protected void setStudyTypeFilter(StudyTypeFilter studyTypeFilter) {
+		this.studyTypeFilter = studyTypeFilter;
+	}
+
+	
+	protected void setProgramStateManager(UserProgramStateDataManager programStateManager) {
+		this.programStateManager = programStateManager;
 	}
 
 }

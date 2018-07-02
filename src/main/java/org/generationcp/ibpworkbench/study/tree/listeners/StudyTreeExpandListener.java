@@ -48,18 +48,17 @@ public class StudyTreeExpandListener implements Tree.ExpandListener {
 
 	private final StudyTree studyTree;
 
-	public StudyTreeExpandListener(StudyTree source) {
+	public StudyTreeExpandListener(final StudyTree source) {
 		this.studyTree = source;
 	}
 
 	@Override
-	public void nodeExpand(ExpandEvent event) {
+	public void nodeExpand(final ExpandEvent event) {
 			final Object itemId = event.getItemId();
 			if (!StudyTree.STUDY_ROOT_NODE.equals(itemId)) {
 				this.addChildren(Integer.valueOf(itemId.toString()), event.getComponent().getWindow());
 			}
 			this.studyTree.selectItem(itemId);
-			this.studyTree.select(itemId);
 	}
 	
 	public void addChildren(final int parentStudyId, final Window window) {
@@ -93,6 +92,21 @@ public class StudyTreeExpandListener implements Tree.ExpandListener {
 			}
 
 		}
+	}
+
+	
+	protected void setStudyDataManager(StudyDataManager studyDataManager) {
+		this.studyDataManager = studyDataManager;
+	}
+
+	
+	protected void setContextUtil(ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
+	}
+
+	
+	protected void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
 	}
 
 }

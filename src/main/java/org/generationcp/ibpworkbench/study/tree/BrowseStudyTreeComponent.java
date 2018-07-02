@@ -69,7 +69,7 @@ public class BrowseStudyTreeComponent extends VerticalLayout implements Initiali
 	private Integer rootNodeProjectId;
 	private Map<Integer, Integer> parentChildItemIdMap;
 	private StudyTreeButtonsPanel buttonsPanel;
-	private StudyTypeFilterComponent studyTypeFilter;
+	private StudyTypeFilterComponent studyTypeFilterComponent;
 			
 
 	public BrowseStudyTreeComponent(final StudyBrowserMain studyBrowserMain) {
@@ -90,11 +90,15 @@ public class BrowseStudyTreeComponent extends VerticalLayout implements Initiali
 		this.studyBrowserMainLayout = this.studyBrowserMain.getMainLayout();
 
 		this.tabSheetStudy = new StudyTabSheet();
-		this.studyTypeFilter = new StudyTypeFilterComponent(this);
+		this.studyTypeFilterComponent = new StudyTypeFilterComponent(this);
 
 		this.studyTree = new StudyTree(this, this.getFilteredStudyType());
 		this.buttonsPanel = new StudyTreeButtonsPanel(this);
 
+		createRefreshButton();
+	}
+
+	protected void createRefreshButton() {
 		this.refreshButton = new Button();
 		this.refreshButton.setData(BrowseStudyTreeComponent.REFRESH_BUTTON_ID);
 		this.refreshButton.addStyleName(Bootstrap.Buttons.INFO.styleName());
@@ -121,7 +125,7 @@ public class BrowseStudyTreeComponent extends VerticalLayout implements Initiali
 	
 	public void refreshTree() {
 		// Reset selected study type to "All"
-		studyTypeFilter.getStudyTypeComboBox().select(StudyTypeFilter.ALL);
+		studyTypeFilterComponent.getStudyTypeComboBox().select(StudyTypeFilter.ALL);
 		createTree();
 		this.studyTree.expandSavedTreeState();
 	}
@@ -138,7 +142,6 @@ public class BrowseStudyTreeComponent extends VerticalLayout implements Initiali
 		this.addComponent(this.refreshButton);
 	}
 
-	// Called by StudyButtonClickListener
 	public void createTree() {
 		this.treeContainer.removeComponent(this.studyTree);
 		this.studyTree.removeAllItems();
@@ -280,8 +283,16 @@ public class BrowseStudyTreeComponent extends VerticalLayout implements Initiali
 		}
 	}
 	
-	private StudyTypeFilter getFilteredStudyType() {
-		return (StudyTypeFilter) this.studyTypeFilter.getStudyTypeComboBox().getValue();
+	@Override
+	public void studyTypeChange(StudyTypeFilter type) {
+		// Save the list of expanded nodes prior to recreating tree
+		final List<String> expandedNodeIds = this.getSaveTreeStateListener().getExpandedIds();
+		createTree();
+		this.studyTree.expandNodes(expandedNodeIds);
+	}
+	
+	protected StudyTypeFilter getFilteredStudyType() {
+		return (StudyTypeFilter) this.studyTypeFilterComponent.getStudyTypeComboBox().getValue();
 	}
 
 	public StudyTree getStudyTree() {
@@ -302,7 +313,7 @@ public class BrowseStudyTreeComponent extends VerticalLayout implements Initiali
 
 	
 	protected StudyTypeFilterComponent getStudyTypeFilterComponent() {
-		return studyTypeFilter;
+		return studyTypeFilterComponent;
 	}
 
 	
@@ -310,11 +321,44 @@ public class BrowseStudyTreeComponent extends VerticalLayout implements Initiali
 		return this.studyTree.getSaveTreeStateListener();
 	}
 
-	@Override
-	public void studyTypeChange(StudyTypeFilter type) {
-		// Save the list of expanded nodes prior to recreating tree
-		final List<String> expandedNodeIds = this.getSaveTreeStateListener().getExpandedIds();
-		createTree();
-		this.studyTree.expandNodes(expandedNodeIds);
+	
+	protected StudyTreeButtonsPanel getButtonsPanel() {
+		return buttonsPanel;
 	}
+
+	
+	protected Button getRefreshButton() {
+		return refreshButton;
+	}
+
+	
+	protected void setStudyTypeFilterComponent(StudyTypeFilterComponent studyTypeFilterComponent) {
+		this.studyTypeFilterComponent = studyTypeFilterComponent;
+	}
+
+	
+	protected void setStudyTree(StudyTree studyTree) {
+		this.studyTree = studyTree;
+	}
+
+	
+	protected void setTreeContainer(VerticalLayout treeContainer) {
+		this.treeContainer = treeContainer;
+	}
+
+	
+	protected void setStudyDataManager(StudyDataManager studyDataManager) {
+		this.studyDataManager = studyDataManager;
+	}
+
+	
+	protected void setTabSheetStudy(StudyTabSheet tabSheetStudy) {
+		this.tabSheetStudy = tabSheetStudy;
+	}
+
+	
+	protected void setButtonsPanel(StudyTreeButtonsPanel buttonsPanel) {
+		this.buttonsPanel = buttonsPanel;
+	}
+	
 }

@@ -14,7 +14,7 @@ public class StudyTreeItemClickListener implements ItemClickListener {
 	private StudyTree studyTree;
 	private BrowseStudyTreeComponent browseStudyTreeComponent;
 
-	public StudyTreeItemClickListener(StudyTree studyTree, BrowseStudyTreeComponent browseStudyTreeComponent) {
+	public StudyTreeItemClickListener(final StudyTree studyTree, final BrowseStudyTreeComponent browseStudyTreeComponent) {
 		super();
 		this.studyTree = studyTree;
 		this.browseStudyTreeComponent = browseStudyTreeComponent;
