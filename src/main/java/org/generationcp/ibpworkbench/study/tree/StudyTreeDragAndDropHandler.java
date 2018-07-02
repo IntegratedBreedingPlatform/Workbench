@@ -29,7 +29,6 @@ public class StudyTreeDragAndDropHandler implements Serializable {
 	private static final Logger LOG = LoggerFactory.getLogger(StudyTreeDragAndDropHandler.class);
 
 	
-	private static final String NO_PARENT = "Selected item is a root item, please choose another item on the tree";
 	private static final String HAS_CHILDREN = "Folder has child items.";
 
 	@Autowired

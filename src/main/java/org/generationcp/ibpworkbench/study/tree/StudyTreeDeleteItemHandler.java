@@ -19,6 +19,23 @@ import com.vaadin.ui.Window;
 @Configurable
 public class StudyTreeDeleteItemHandler {
 	
+	protected final class DeleteItemConfirmHandler implements ConfirmDialog.Listener {
+
+		private final Integer studyId;
+		private static final long serialVersionUID = 1L;
+
+		protected DeleteItemConfirmHandler(Integer studyId) {
+			this.studyId = studyId;
+		}
+
+		@Override
+		public void onClose(final ConfirmDialog dialog) {
+			if (dialog.isConfirmed()) {
+				performDeleteAction(studyId);
+			}
+		}
+	}
+
 	private static final Logger LOG = LoggerFactory.getLogger(StudyTreeDeleteItemHandler.class);
 	
 	private static final String NO_SELECTION = "Please select a folder item";
@@ -68,7 +85,7 @@ public class StudyTreeDeleteItemHandler {
 			project = this.studyDataManager.getProject(id);
 
 		} catch (final MiddlewareQueryException e) {
-			LOG.error(e.getMessage());
+			LOG.error(e.getMessage(), e);
 			throw new GermplasmStudyBrowserException(this.messageSource.getMessage(Message.ERROR_DATABASE));
 		}
 
@@ -91,52 +108,71 @@ public class StudyTreeDeleteItemHandler {
 	 * 
 	 * @param studyId
 	 */
-	public void deleteFolder(final Integer studyId) {
+	public void showConfirmDeletionDialog(final Integer studyId) {
 		try {
 			this.validateItemForDeletion(studyId);
 		} catch (final GermplasmStudyBrowserException e) {
-			LOG.error(e.getMessage());
+			LOG.error(e.getMessage(), e);
 			MessageNotifier.showError(this.targetTree.getWindow(), this.messageSource.getMessage(Message.ERROR), e.getMessage());
 			return;
 		}
 
 		ConfirmDialog.show(this.parentWindow, this.messageSource.getMessage(Message.DELETE_ITEM),
 				this.messageSource.getMessage(Message.DELETE_ITEM_CONFIRM), this.messageSource.getMessage(Message.YES),
-				this.messageSource.getMessage(Message.NO), new ConfirmDialog.Listener() {
+				this.messageSource.getMessage(Message.NO), new DeleteItemConfirmHandler(studyId));
+	}
+	
+	protected void performDeleteAction(final Integer studyId) {
+		try {
 
-					private static final long serialVersionUID = 1L;
+			final DmsProject parent = studyDataManager.getParentFolder(studyId);
+			final String programUUID = contextUtil.getProjectInContext().getUniqueID();
+			studyDataManager.deleteEmptyFolder(studyId, programUUID);
 
-					@Override
-					public void onClose(final ConfirmDialog dialog) {
-						if (dialog.isConfirmed()) {
-							try {
+			targetTree.removeItem(targetTree.getValue());
+			if (parent != null) {
+				final Integer parentId = parent.getProjectId();
+				if (DmsProject.SYSTEM_FOLDER_ID.equals(parentId)) {
+					targetTree.select(StudyTree.STUDY_ROOT_NODE);
+				} else {
+					targetTree.select(parentId);
+					targetTree.expandItem(parentId);
+				}
+			}
+			targetTree.setImmediate(true);
+			buttonsPanel.updateButtons(targetTree.getValue());
 
-								final DmsProject parent = studyDataManager.getParentFolder(studyId);
-								final String programUUID = contextUtil.getProjectInContext().getUniqueID();
-								studyDataManager.deleteEmptyFolder(studyId, programUUID);
+		} catch (final MiddlewareQueryException e) {
+			LOG.error(e.getMessage(), e);
+			MessageNotifier.showError(targetTree.getWindow(),
+					messageSource.getMessage(Message.ERROR_DATABASE),
+					messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
+		}
+	}
 
-								targetTree.removeItem(targetTree.getValue());
-								if (parent != null) {
-									final Integer parentId = parent.getProjectId();
-									if (parentId == 1) {
-										targetTree.select(StudyTree.STUDY_ROOT_NODE);
-									} else {
-										targetTree.select(parentId);
-										targetTree.expandItem(parentId);
-									}
-								}
-								targetTree.setImmediate(true);
-								buttonsPanel.updateButtons(targetTree.getValue());
+	
+	protected void setTargetTree(StudyTree targetTree) {
+		this.targetTree = targetTree;
+	}
 
-							} catch (final MiddlewareQueryException e) {
-								LOG.error(e.getMessage());
-								MessageNotifier.showError(targetTree.getWindow(),
-										messageSource.getMessage(Message.ERROR_DATABASE),
-										messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
-							}
-						}
-					}
-				});
+	
+	protected void setButtonsPanel(StudyTreeButtonsPanel buttonsPanel) {
+		this.buttonsPanel = buttonsPanel;
+	}
+
+	
+	protected void setStudyDataManager(StudyDataManager studyDataManager) {
+		this.studyDataManager = studyDataManager;
+	}
+
+	
+	protected void setContextUtil(ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
+	}
+
+	
+	protected void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
 	}
 
 

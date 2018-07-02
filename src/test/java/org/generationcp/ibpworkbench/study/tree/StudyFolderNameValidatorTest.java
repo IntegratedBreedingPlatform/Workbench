@@ -1,17 +1,25 @@
 package org.generationcp.ibpworkbench.study.tree;
 
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.pojos.workbench.Project;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import com.vaadin.ui.Window;
 
 public class StudyFolderNameValidatorTest {
+	private static final String PROGRAM_UUID = "abcd-efgh-189";
+
 	private static final String ROOT_FOLDER_NAME = "Studies";
 	
 	@Mock
@@ -23,7 +31,19 @@ public class StudyFolderNameValidatorTest {
 	@Mock
 	private Window window;
 	
+	@Mock
+	private ContextUtil contextUtil;
+	
+	@InjectMocks
 	private StudyFolderNameValidator validator;
+	
+	@Before
+	public void setup() {
+		MockitoAnnotations.initMocks(this);
+		final Project project = ProjectTestDataInitializer.createProject();
+		project.setUniqueID(PROGRAM_UUID);
+		Mockito.doReturn(project).when(this.contextUtil).getProjectInContext();
+	}
 	
 	@Test
 	public void testIsValidNameInputReturnsFalseforEmptyString() {
@@ -44,7 +64,7 @@ public class StudyFolderNameValidatorTest {
 	@Test
 	public void testIsValidNameInputReturnsFalseforExistingStudyName() {
 		final String itemName = "Sample Folder Name";
-		Mockito.when(this.studyDataManager.checkIfProjectNameIsExistingInProgram(itemName, Matchers.anyString()))
+		Mockito.when(this.studyDataManager.checkIfProjectNameIsExistingInProgram(Matchers.eq(itemName), Matchers.anyString()))
 				.thenReturn(true);
 		Assert.assertFalse("Expected to return false for existing study name",
 				this.validator.isValidNameInput(itemName, this.window));

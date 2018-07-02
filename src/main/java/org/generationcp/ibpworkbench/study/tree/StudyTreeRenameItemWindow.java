@@ -9,6 +9,8 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.study.StudyTabSheet;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -26,6 +28,8 @@ import com.vaadin.ui.themes.Reindeer;
 public class StudyTreeRenameItemWindow extends BaseSubWindow implements InitializingBean {
 	
 	private static final long serialVersionUID = 1L;
+	private static final Logger LOG = LoggerFactory.getLogger(StudyTreeRenameItemWindow.class);
+
 
 	@Autowired
 	private ContextUtil contextUtil;
@@ -43,6 +47,7 @@ public class StudyTreeRenameItemWindow extends BaseSubWindow implements Initiali
 	private StudyTabSheet tabSheet;
 	private Integer itemId;
 	private String currentName;
+	private StudyFolderNameValidator validator = new StudyFolderNameValidator();
 	
 	public StudyTreeRenameItemWindow(final Integer itemId, final String currentName, final StudyTree targetTree, final StudyTabSheet tabSheet) {
 		this.itemId = itemId;
@@ -100,7 +105,7 @@ public class StudyTreeRenameItemWindow extends BaseSubWindow implements Initiali
 		
 
 		this.cancelButton = new Button("Cancel");
-		cancelButton.setClickShortcut(KeyCode.ESCAPE);
+		this.cancelButton.setClickShortcut(KeyCode.ESCAPE);
 
 		btnContainer.addComponent(this.okButton);
 		btnContainer.addComponent(cancelButton);
@@ -125,7 +130,6 @@ public class StudyTreeRenameItemWindow extends BaseSubWindow implements Initiali
 					final String newName = nameTextField.getValue().toString().trim();
 					final String programUUID = contextUtil.getProjectInContext().getUniqueID();
 					if (!currentName.equals(newName)) {
-						final StudyFolderNameValidator validator = new StudyFolderNameValidator();
 						if (!validator.isValidNameInput(newName, StudyTreeRenameItemWindow.this)) {
 							return;
 						}
@@ -142,18 +146,19 @@ public class StudyTreeRenameItemWindow extends BaseSubWindow implements Initiali
 					}
 
 				} catch (final MiddlewareQueryException e) {
+					LOG.error(e.getMessage(), e);
 					MessageNotifier.showWarning(targetTree.getWindow(),
 							messageSource.getMessage(Message.ERROR_DATABASE),
 							messageSource.getMessage(Message.ERROR_REPORT_TO));
 				} catch (final Exception e) {
+					LOG.error(e.getMessage(), e);
 					MessageNotifier.showError(targetTree.getWindow(),
 							messageSource.getMessage(Message.ERROR_INTERNAL),
 							messageSource.getMessage(Message.ERROR_REPORT_TO));
 					return;
 				}
 
-				// close popup
-				StudyTreeRenameItemWindow.this.getParent().removeWindow(StudyTreeRenameItemWindow.this);
+				closePopup();
 			}
 		});
 		
@@ -163,11 +168,70 @@ public class StudyTreeRenameItemWindow extends BaseSubWindow implements Initiali
 
 			@Override
 			public void buttonClick(final Button.ClickEvent event) {
-				final Window parentWindow = StudyTreeRenameItemWindow.this.getParent();
-				parentWindow.focus();
-				parentWindow.removeWindow(StudyTreeRenameItemWindow.this);
+				closePopup();
 			}
 		});
+	}
+	
+	void closePopup() {
+		final Window parentWindow = StudyTreeRenameItemWindow.this.getParent();
+		parentWindow.focus();
+		parentWindow.removeWindow(StudyTreeRenameItemWindow.this);
+	}
+	
+	
+	protected StudyTree getTargetTree() {
+		return targetTree;
+	}
+
+	
+	protected StudyTabSheet getTabSheet() {
+		return tabSheet;
+	}
+
+	
+	protected Integer getItemId() {
+		return itemId;
+	}
+
+	
+	protected String getCurrentName() {
+		return currentName;
+	}
+
+	
+	protected void setContextUtil(ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
+	}
+
+	
+	protected void setStudyDataManager(StudyDataManager studyDataManager) {
+		this.studyDataManager = studyDataManager;
+	}
+
+	
+	protected void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+
+	
+	protected Button getOkButton() {
+		return okButton;
+	}
+
+	
+	protected Button getCancelButton() {
+		return cancelButton;
+	}
+
+	
+	protected TextField getNameTextField() {
+		return nameTextField;
+	}
+
+	
+	protected void setValidator(StudyFolderNameValidator validator) {
+		this.validator = validator;
 	}
 
 }

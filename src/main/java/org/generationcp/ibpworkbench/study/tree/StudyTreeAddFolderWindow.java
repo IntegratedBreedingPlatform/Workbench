@@ -194,6 +194,16 @@ public class StudyTreeAddFolderWindow extends BaseSubWindow implements Initializ
 		});
 		
 	}
+
+	
+	protected Object getParentItemId() {
+		return parentItemId;
+	}
+
+	
+	protected StudyTree getTargetTree() {
+		return targetTree;
+	}
 	
 
 }

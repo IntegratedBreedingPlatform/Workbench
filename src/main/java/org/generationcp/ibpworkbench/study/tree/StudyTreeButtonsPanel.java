@@ -124,7 +124,7 @@ public class StudyTreeButtonsPanel extends HorizontalLayout
 				final int studyId = Integer.valueOf(StudyTreeButtonsPanel.this.studyTree.getSelectedNodeId().toString());
 				final StudyTreeDeleteItemHandler deleteHandler = new StudyTreeDeleteItemHandler(studyTree, StudyTreeButtonsPanel.this,
 						StudyTreeButtonsPanel.this.browseTreeComponent.getParentComponent().getWindow());
-				deleteHandler.deleteFolder(studyId);
+				deleteHandler.showConfirmDeletionDialog(studyId);
 			}
 		});
 
@@ -178,6 +178,51 @@ public class StudyTreeButtonsPanel extends HorizontalLayout
 			this.deleteFolderBtn.setEnabled(false);
 		}
 
+	}
+
+	
+	protected Button getAddFolderBtn() {
+		return addFolderBtn;
+	}
+
+	
+	protected void setAddFolderBtn(Button addFolderBtn) {
+		this.addFolderBtn = addFolderBtn;
+	}
+
+	
+	protected Button getDeleteFolderBtn() {
+		return deleteFolderBtn;
+	}
+
+	
+	protected void setDeleteFolderBtn(Button deleteFolderBtn) {
+		this.deleteFolderBtn = deleteFolderBtn;
+	}
+
+	
+	protected Button getRenameFolderBtn() {
+		return renameFolderBtn;
+	}
+
+	
+	protected void setRenameFolderBtn(Button renameFolderBtn) {
+		this.renameFolderBtn = renameFolderBtn;
+	}
+
+	
+	protected void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+
+	
+	protected HorizontalLayout getControlButtonsSubLayout() {
+		return controlButtonsSubLayout;
+	}
+
+	
+	protected void setStudyDataManager(StudyDataManager studyDataManager) {
+		this.studyDataManager = studyDataManager;
 	}
 
 }

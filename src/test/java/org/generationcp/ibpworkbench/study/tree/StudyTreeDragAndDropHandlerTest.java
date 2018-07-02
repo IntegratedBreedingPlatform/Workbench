@@ -11,6 +11,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import com.vaadin.ui.Window;
+
 public class StudyTreeDragAndDropHandlerTest {
 
 	@Mock
@@ -21,6 +23,9 @@ public class StudyTreeDragAndDropHandlerTest {
 	
 	@Mock
 	private StudyTree studyTree;
+	
+	@Mock
+	private Window window;
 
 	private StudyTreeDragAndDropHandler dropHandler;
 
@@ -31,6 +36,7 @@ public class StudyTreeDragAndDropHandlerTest {
 		this.dropHandler = Mockito.spy(new StudyTreeDragAndDropHandler(studyTree));
 		this.dropHandler.setMessageSource(this.messageSource);
 		this.dropHandler.setStudyDataManager(this.studyDataManager);
+		Mockito.doReturn(this.window).when(this.studyTree).getWindow();
 	}
 
 	@Test
