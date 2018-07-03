@@ -10,7 +10,6 @@ import org.generationcp.commons.constant.ListTreeState;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.SaveTreeStateListener;
-import org.generationcp.ibpworkbench.study.constants.StudyTypeFilter;
 import org.generationcp.ibpworkbench.study.tree.listeners.StudyTreeCollapseListener;
 import org.generationcp.ibpworkbench.study.tree.listeners.StudyTreeExpandListener;
 import org.generationcp.ibpworkbench.study.tree.listeners.StudyTreeItemClickListener;
@@ -35,8 +34,8 @@ import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Tree.CollapseEvent;
 import com.vaadin.ui.Tree.ExpandEvent;
 import com.vaadin.ui.Tree.TreeDragMode;
-import com.vaadin.ui.Window.Notification;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.Notification;
 
 import junit.framework.Assert;
 
@@ -50,7 +49,9 @@ public class StudyTreeTest {
 	private static final StudyReference NURSERY =
 			new StudyReference(101, "F2 Nusery", "Nursery Description", PROGRAM_UUID, StudyTypeDto.getNurseryDto());
 	private static final List<Reference> STUDY_REFERENCES = Arrays.asList(FOLDER1, TRIAL, NURSERY, FOLDER2);
-
+	private static final StudyTypeDto TRIAL_FILTER = new StudyTypeDto(1, "Trial", "T");
+	private static final StudyTypeDto NURSERY_FILTER = new StudyTypeDto(2, "Nursery", "N");
+	
 	@Mock
 	private StudyDataManager studyDataManager;
 
@@ -80,7 +81,7 @@ public class StudyTreeTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		this.studyTree = new StudyTree(this.browseStudyTreeComponent, StudyTypeFilter.ALL);
+		this.studyTree = new StudyTree(this.browseStudyTreeComponent, StudyTypeFilterComponent.ALL_OPTION);
 		this.studyTree.setContextUtil(contextUtil);
 		this.studyTree.setStudyDataManager(studyDataManager);
 		this.studyTree.setMessageSource(messageSource);
@@ -98,7 +99,7 @@ public class StudyTreeTest {
 
 		Assert.assertEquals(TreeDragMode.NODE, this.studyTree.getDragMode());
 		Assert.assertTrue(this.studyTree.containsId(StudyTree.STUDY_ROOT_NODE));
-		Assert.assertEquals(StudyTypeFilter.ALL.getDescription(), this.studyTree.getItemCaption(StudyTree.STUDY_ROOT_NODE));
+		Assert.assertEquals(StudyTypeFilterComponent.ALL_OPTION.getLabel(), this.studyTree.getItemCaption(StudyTree.STUDY_ROOT_NODE));
 		Assert.assertTrue(this.studyTree.isImmediate());
 
 		// Verify tree action listeners
@@ -118,7 +119,7 @@ public class StudyTreeTest {
 
 	@Test
 	public void testPopulateRootNode() {
-		Mockito.doReturn(STUDY_REFERENCES).when(this.studyDataManager).getRootFolders(Matchers.anyString());
+		Mockito.doReturn(STUDY_REFERENCES).when(this.studyDataManager).getRootFoldersByStudyType(Matchers.anyString(), Matchers.anyInt());
 		// manually add root node to become the parent
 		this.studyTree.addItem(StudyTree.STUDY_ROOT_NODE);
 
@@ -225,29 +226,18 @@ public class StudyTreeTest {
 		Mockito.doThrow(new MiddlewareQueryException("ERROR")).when(this.studyDataManager).isStudy(Matchers.anyInt());
 		Assert.assertFalse(this.studyTree.isFolder(id));
 	}
-
+	
 	@Test
-	public void testItemMatchesStudyTypeFilterWhenFilterSetToAll() {
-		this.studyTree.setStudyTypeFilter(StudyTypeFilter.ALL);
-		Assert.assertTrue(this.studyTree.itemMatchesStudyTypeFilter(FOLDER1));
-		Assert.assertTrue(this.studyTree.itemMatchesStudyTypeFilter(TRIAL));
-		Assert.assertTrue(this.studyTree.itemMatchesStudyTypeFilter(NURSERY));
-	}
-
-	@Test
-	public void testItemMatchesStudyTypeFilterWhenFilterToTrialsOnly() {
-		this.studyTree.setStudyTypeFilter(StudyTypeFilter.TRIAL);
-		Assert.assertTrue(this.studyTree.itemMatchesStudyTypeFilter(FOLDER1));
-		Assert.assertTrue(this.studyTree.itemMatchesStudyTypeFilter(TRIAL));
-		Assert.assertFalse(this.studyTree.itemMatchesStudyTypeFilter(NURSERY));
-	}
-
-	@Test
-	public void testItemMatchesStudyTypeFilterWhenFilterToNurseriesOnly() {
-		this.studyTree.setStudyTypeFilter(StudyTypeFilter.NURSERY);
-		Assert.assertTrue(this.studyTree.itemMatchesStudyTypeFilter(FOLDER1));
-		Assert.assertFalse(this.studyTree.itemMatchesStudyTypeFilter(TRIAL));
-		Assert.assertTrue(this.studyTree.itemMatchesStudyTypeFilter(NURSERY));
+	public void testGenerateStudyTypeFilterLabel(){
+		this.studyTree.setStudyTypeFilter(TRIAL_FILTER);
+		Assert.assertEquals("Trials", this.studyTree.generateStudyTypeFilterLabel());
+		
+		this.studyTree.setStudyTypeFilter(NURSERY_FILTER);
+		Assert.assertEquals("Nurseries", this.studyTree.generateStudyTypeFilterLabel());
+		
+		this.studyTree.setStudyTypeFilter(StudyTypeFilterComponent.ALL_OPTION);
+		Assert.assertEquals("Studies", this.studyTree.generateStudyTypeFilterLabel());
+		
 	}
 
 	@Test

@@ -1,8 +1,13 @@
 package org.generationcp.ibpworkbench.study.tree;
 
+import java.util.List;
+
 import org.generationcp.ibpworkbench.GermplasmStudyBrowserLayout;
-import org.generationcp.ibpworkbench.study.constants.StudyTypeFilter;
+import org.generationcp.middleware.domain.study.StudyTypeDto;
+import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.pojos.dms.StudyType;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.Property;
@@ -14,7 +19,14 @@ import com.vaadin.ui.Label;
 @Configurable
 public class StudyTypeFilterComponent extends HorizontalLayout implements InitializingBean, GermplasmStudyBrowserLayout {
 
+	public static final String ALL = "All";
+	// Dummy StudyTypeDto for "All" option in ComboBox
+	public static final StudyTypeDto ALL_OPTION = new StudyTypeDto(1, "Studies", ALL);
 	private static final long serialVersionUID = 1L;
+	
+	@Autowired
+	private StudyDataManager studyDataManager;
+	
 	private ComboBox studyTypeComboBox;
 	private StudyTypeChangeListener listener;
 	private Label studyTypeLabel;
@@ -49,12 +61,14 @@ public class StudyTypeFilterComponent extends HorizontalLayout implements Initia
 
 	@Override
 	public void initializeValues() {
-		for (final StudyTypeFilter type : StudyTypeFilter.values()) {
+		this.studyTypeComboBox.addItem(ALL_OPTION);
+		this.studyTypeComboBox.setItemCaption(ALL_OPTION, ALL_OPTION.getName());
+		final List<StudyTypeDto> studyTypes = this.studyDataManager.getAllVisibleStudyTypes();
+		for (final StudyTypeDto type : studyTypes) {
 			this.studyTypeComboBox.addItem(type);
 			this.studyTypeComboBox.setItemCaption(type, type.getLabel());
 		}
-		this.studyTypeComboBox.select(StudyTypeFilter.ALL);
-		
+		this.studyTypeComboBox.select(ALL_OPTION);
 	}
 
 	@Override
@@ -73,7 +87,7 @@ public class StudyTypeFilterComponent extends HorizontalLayout implements Initia
 					return;
 				}
 
-				listener.studyTypeChange((StudyTypeFilter)studyTypeComboBox.getValue());
+				listener.studyTypeChange((StudyTypeDto)studyTypeComboBox.getValue());
 			}
 		});
 		
@@ -88,6 +102,15 @@ public class StudyTypeFilterComponent extends HorizontalLayout implements Initia
 	
 	public ComboBox getStudyTypeComboBox() {
 		return studyTypeComboBox;
+	}
+	
+	public boolean isAllOptionChosen(final StudyType type) {
+		return ALL_OPTION.equals(type);
+	}
+
+	
+	protected void setStudyDataManager(StudyDataManager studyDataManager) {
+		this.studyDataManager = studyDataManager;
 	}
 
 }

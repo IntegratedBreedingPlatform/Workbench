@@ -13,7 +13,7 @@ package org.generationcp.ibpworkbench.study.tree;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;	
+import java.util.Map;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -26,8 +26,8 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.study.StudyBrowserMain;
 import org.generationcp.ibpworkbench.study.StudyBrowserMainLayout;
 import org.generationcp.ibpworkbench.study.StudyTabSheet;
-import org.generationcp.ibpworkbench.study.constants.StudyTypeFilter;
 import org.generationcp.ibpworkbench.util.Util;
+import org.generationcp.middleware.domain.study.StudyTypeDto;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.dms.DmsProject;
@@ -125,7 +125,7 @@ public class BrowseStudyTreeComponent extends VerticalLayout implements Initiali
 	
 	public void refreshTree() {
 		// Reset selected study type to "All"
-		studyTypeFilterComponent.getStudyTypeComboBox().select(StudyTypeFilter.ALL);
+		studyTypeFilterComponent.getStudyTypeComboBox().select(StudyTypeFilterComponent.ALL_OPTION);
 		createTree();
 		this.studyTree.expandSavedTreeState();
 	}
@@ -285,15 +285,15 @@ public class BrowseStudyTreeComponent extends VerticalLayout implements Initiali
 	}
 	
 	@Override
-	public void studyTypeChange(StudyTypeFilter type) {
+	public void studyTypeChange(StudyTypeDto type) {
 		// Save the list of expanded nodes prior to recreating tree
 		final List<String> expandedNodeIds = this.getSaveTreeStateListener().getExpandedIds();
 		createTree();
 		this.studyTree.expandNodes(expandedNodeIds);
 	}
 	
-	protected StudyTypeFilter getFilteredStudyType() {
-		return (StudyTypeFilter) this.studyTypeFilterComponent.getStudyTypeComboBox().getValue();
+	protected StudyTypeDto getFilteredStudyType() {
+		return (StudyTypeDto) this.studyTypeFilterComponent.getStudyTypeComboBox().getValue();
 	}
 
 	public StudyTree getStudyTree() {

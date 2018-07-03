@@ -9,7 +9,7 @@ import org.generationcp.commons.vaadin.util.SaveTreeStateListener;
 import org.generationcp.ibpworkbench.study.StudyBrowserMain;
 import org.generationcp.ibpworkbench.study.StudyBrowserMainLayout;
 import org.generationcp.ibpworkbench.study.StudyTabSheet;
-import org.generationcp.ibpworkbench.study.constants.StudyTypeFilter;
+import org.generationcp.middleware.domain.study.StudyTypeDto;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.dms.DmsProject;
 import org.junit.Before;
@@ -91,7 +91,7 @@ public class BrowseStudyTreeComponentTest {
 	@Test
 	public void testAfterPropertiesSet() {
 		final BrowseStudyTreeComponent spyComponent = Mockito.spy(this.browseTreeComponent);
-		Mockito.doReturn(StudyTypeFilter.ALL).when(spyComponent).getFilteredStudyType();
+		Mockito.doReturn(StudyTypeFilterComponent.ALL_OPTION).when(spyComponent).getFilteredStudyType();
 		spyComponent.afterPropertiesSet();
 		
 		Assert.assertEquals(this.studyBrowserMainLayout, spyComponent.getStudyBrowserMainLayout());
@@ -116,7 +116,7 @@ public class BrowseStudyTreeComponentTest {
 		
 		// Method to test
 		spyComponent.getRefreshButton().click();
-		Mockito.verify(this.comboBox).select(StudyTypeFilter.ALL);
+		Mockito.verify(this.comboBox).select(StudyTypeFilterComponent.ALL_OPTION);
 		Mockito.verify(spyComponent).createTree();
 		Mockito.verify(this.studyTree).expandSavedTreeState();
 	}
@@ -233,7 +233,7 @@ public class BrowseStudyTreeComponentTest {
 		final List<String> expandedIds = Arrays.asList("1", "2", "3");
 		Mockito.doReturn(expandedIds).when(this.treeStateListener).getExpandedIds();
 		
-		spyComponent.studyTypeChange(StudyTypeFilter.TRIAL);
+		spyComponent.studyTypeChange(new StudyTypeDto());
 		Mockito.verify(spyComponent).createTree();
 		Mockito.verify(this.studyTree).expandNodes(expandedIds);
 	}

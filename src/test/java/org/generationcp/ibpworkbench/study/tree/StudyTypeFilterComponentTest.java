@@ -1,6 +1,9 @@
 package org.generationcp.ibpworkbench.study.tree;
 
-import org.generationcp.ibpworkbench.study.constants.StudyTypeFilter;
+import java.util.Arrays;
+
+import org.generationcp.middleware.domain.study.StudyTypeDto;
+import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -14,8 +17,14 @@ import junit.framework.Assert;
 
 public class StudyTypeFilterComponentTest {
 	
+	private static final StudyTypeDto TRIAL = new StudyTypeDto(1, "Trial", "T");
+	private static final StudyTypeDto NURSERY = new StudyTypeDto(2, "Nursery", "N");
+	
 	@Mock
 	private StudyTypeChangeListener listener;
+	
+	@Mock
+	private StudyDataManager studyDataManager;
 	
 	@InjectMocks
 	private StudyTypeFilterComponent filterComponent;
@@ -23,6 +32,8 @@ public class StudyTypeFilterComponentTest {
 	@Before
 	public void setup() throws Exception {
 		MockitoAnnotations.initMocks(this);
+		this.filterComponent.setStudyDataManager(studyDataManager);
+		Mockito.doReturn(Arrays.asList(TRIAL, NURSERY)).when(this.studyDataManager).getAllVisibleStudyTypes();
 		this.filterComponent.afterPropertiesSet();
 	}
 	
@@ -30,17 +41,20 @@ public class StudyTypeFilterComponentTest {
 	public void testAfterPropertiesSet() {
 		final ComboBox studyTypeComboBox = this.filterComponent.getStudyTypeComboBox();
 		Assert.assertNotNull(studyTypeComboBox);
-		Assert.assertEquals(StudyTypeFilter.values().length, studyTypeComboBox.size());
-		for (final StudyTypeFilter filter : StudyTypeFilter.values()) {
-			studyTypeComboBox.containsId(filter);
-		}
-		Assert.assertEquals(StudyTypeFilter.ALL, studyTypeComboBox.getValue());
+		Assert.assertEquals(3, studyTypeComboBox.size());
+		Assert.assertTrue(studyTypeComboBox.containsId(StudyTypeFilterComponent.ALL_OPTION));
+		Assert.assertEquals(StudyTypeFilterComponent.ALL, studyTypeComboBox.getItemCaption(StudyTypeFilterComponent.ALL_OPTION));
+		Assert.assertTrue(studyTypeComboBox.containsId(TRIAL));
+		Assert.assertEquals(TRIAL.getLabel(), studyTypeComboBox.getItemCaption(TRIAL));
+		Assert.assertTrue(studyTypeComboBox.containsId(NURSERY));
+		Assert.assertEquals(NURSERY.getLabel(), studyTypeComboBox.getItemCaption(NURSERY));
+		Assert.assertEquals(StudyTypeFilterComponent.ALL_OPTION, studyTypeComboBox.getValue());
 	}
 	
 	@Test
 	public void testStudyTypeFilterValueChange() {
-		this.filterComponent.getStudyTypeComboBox().setValue(StudyTypeFilter.TRIAL);
-		Mockito.verify(this.listener).studyTypeChange(StudyTypeFilter.TRIAL);
+		this.filterComponent.getStudyTypeComboBox().setValue(TRIAL);
+		Mockito.verify(this.listener).studyTypeChange(TRIAL);
 	}
 
 }

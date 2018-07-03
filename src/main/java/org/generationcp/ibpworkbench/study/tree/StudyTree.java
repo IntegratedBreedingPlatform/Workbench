@@ -11,7 +11,6 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.commons.vaadin.util.SaveTreeStateListener;
 import org.generationcp.ibpworkbench.GermplasmStudyBrowserLayout;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.study.constants.StudyTypeFilter;
 import org.generationcp.ibpworkbench.study.tree.listeners.StudyTreeCollapseListener;
 import org.generationcp.ibpworkbench.study.tree.listeners.StudyTreeExpandListener;
 import org.generationcp.ibpworkbench.study.tree.listeners.StudyTreeItemClickListener;
@@ -57,12 +56,12 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 
 	private StudyTreeDragAndDropHandler dropHandler;
 	private BrowseStudyTreeComponent browseStudyTreeComponent;
-	private StudyTypeFilter studyTypeFilter;
+	private StudyTypeDto studyTypeFilter;
 	private SaveTreeStateListener saveTreeStateListener;
 	private StudyTreeExpandListener expandListener;
 	private StudyTreeItemClickListener clickListener;
 	
-	public StudyTree(final BrowseStudyTreeComponent browseStudyTreeComponent, final StudyTypeFilter filter) {
+	public StudyTree(final BrowseStudyTreeComponent browseStudyTreeComponent, final StudyTypeDto filter) {
 		this.browseStudyTreeComponent = browseStudyTreeComponent;
 		this.studyTypeFilter = filter;
 	}
@@ -75,7 +74,7 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 				new SaveTreeStateListener(this, ListTreeState.STUDY_LIST.name(), StudyTree.STUDY_ROOT_NODE);
 
 		this.addItem(STUDY_ROOT_NODE);
-		this.setItemCaption(STUDY_ROOT_NODE, this.studyTypeFilter.getDescription());
+		this.setItemCaption(STUDY_ROOT_NODE, this.generateStudyTypeFilterLabel());
 		this.setItemIcon(STUDY_ROOT_NODE, this.getThemeResourceByReference(new FolderReference(null, null)));
 
 		this.addStyleName("studyBrowserTree");
@@ -93,6 +92,13 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 			}
 		});
 		
+	}
+
+	protected String generateStudyTypeFilterLabel() {
+		if (StudyTypeFilterComponent.ALL_OPTION.equals(this.studyTypeFilter)) {
+			return this.studyTypeFilter.getLabel();
+		}
+		return this.studyTypeFilter.getPluralFormOfLabel();
 	}
 
 	@Override
@@ -127,7 +133,8 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 		List<Reference> rootFolders = new ArrayList<Reference>();
 		try {
 			final String programUUID = this.contextUtil.getProjectInContext().getUniqueID();
-			rootFolders = this.studyDataManager.getRootFolders(programUUID);
+			final StudyTypeDto studyTypeDto = this.studyDataManager.getStudyTypeByLabel(this.studyTypeFilter.getLabel());
+			rootFolders = this.studyDataManager.getRootFoldersByStudyType(programUUID, (studyTypeDto == null) ? null : studyTypeDto.getId());
 		} catch (final MiddlewareQueryException e) {
 			StudyTree.LOG.error(e.getMessage(), e);
 			if (this.getWindow() != null) {
@@ -137,20 +144,18 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 		}
 
 		for (final Reference item : rootFolders) {
-			if (this.itemMatchesStudyTypeFilter(item)) {
-				this.addItem(item.getId());
-				this.setItemCaption(item.getId(), item.getName());
-				
-				if (!item.isFolder()) {
-					this.setItemIcon(item.getId(), STUDY_ICON);
-				} else {
-					this.setItemIcon(item.getId(), this.getThemeResourceByReference(item));
-				}
-				
-				this.setParent(item.getId(), STUDY_ROOT_NODE);
-				if (!this.hasChildStudy(item.getId())) {
-					this.setChildrenAllowed(item.getId(), false);
-				}
+			this.addItem(item.getId());
+			this.setItemCaption(item.getId(), item.getName());
+			
+			if (!item.isFolder()) {
+				this.setItemIcon(item.getId(), STUDY_ICON);
+			} else {
+				this.setItemIcon(item.getId(), this.getThemeResourceByReference(item));
+			}
+			
+			this.setParent(item.getId(), STUDY_ROOT_NODE);
+			if (!this.hasChildStudy(item.getId())) {
+				this.setChildrenAllowed(item.getId(), false);
 			}
 		}
 	}
@@ -223,21 +228,6 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 		this.expandListener.addChildren(parentStudyId, this.getWindow());
 	}
 	
-	public boolean itemMatchesStudyTypeFilter(final Reference item) {
-		if (item.isFolder() || StudyTypeFilter.ALL.equals(studyTypeFilter)) {
-			return true;
-			
-		} else if (item.isStudy()) {
-			final StudyReference study = (StudyReference) item;
-			final String studyTypeName = study.getStudyType().getName();
-			if ((StudyTypeFilter.TRIAL.equals(studyTypeFilter) && StudyTypeDto.TRIAL_NAME.equals(studyTypeName)) || 
-					(StudyTypeFilter.NURSERY.equals(studyTypeFilter) && StudyTypeDto.NURSERY_NAME.equals(studyTypeName))) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
 	public void expandSavedTreeState() {
 		try {
 			final List<String> parsedState =
@@ -300,13 +290,18 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 	}
 
 	
-	protected void setStudyTypeFilter(StudyTypeFilter studyTypeFilter) {
+	protected void setStudyTypeFilter(StudyTypeDto studyTypeFilter) {
 		this.studyTypeFilter = studyTypeFilter;
 	}
 
 	
 	protected void setProgramStateManager(UserProgramStateDataManager programStateManager) {
 		this.programStateManager = programStateManager;
+	}
+
+	
+	public StudyTypeDto getStudyTypeFilter() {
+		return studyTypeFilter;
 	}
 
 }

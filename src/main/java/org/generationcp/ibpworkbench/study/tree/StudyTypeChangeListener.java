@@ -1,9 +1,9 @@
 package org.generationcp.ibpworkbench.study.tree;
 
-import org.generationcp.ibpworkbench.study.constants.StudyTypeFilter;
+import org.generationcp.middleware.domain.study.StudyTypeDto;
 
 public interface StudyTypeChangeListener {
 	
-	void studyTypeChange(StudyTypeFilter type);
+	void studyTypeChange(StudyTypeDto studyType);
 
 }

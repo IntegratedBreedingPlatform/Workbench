@@ -20,6 +20,7 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.study.tree.StudyTree;
 import org.generationcp.middleware.domain.dms.Reference;
+import org.generationcp.middleware.domain.study.StudyTypeDto;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.slf4j.Logger;
@@ -66,8 +67,9 @@ public class StudyTreeExpandListener implements Tree.ExpandListener {
 		List<Reference> studyChildren = new ArrayList<Reference>();
 		try {
 			final String programUUID = this.contextUtil.getProjectInContext().getUniqueID();
-			studyChildren =
-					this.studyDataManager.getChildrenOfFolder(Integer.valueOf(parentStudyId), programUUID);
+			final StudyTypeDto studyTypeDto = this.studyDataManager.getStudyTypeByLabel(this.studyTree.getStudyTypeFilter().getLabel());
+			studyChildren = this.studyDataManager.getChildrenOfFolderByStudyType(new Integer(parentStudyId), programUUID, (studyTypeDto == null) ? null : studyTypeDto.getId());
+
 		} catch (final MiddlewareQueryException e) {
 			StudyTreeExpandListener.LOG.error(e.getMessage(), e);
 			MessageNotifier.showWarning(window, this.messageSource.getMessage(Message.ERROR_DATABASE),
@@ -76,19 +78,17 @@ public class StudyTreeExpandListener implements Tree.ExpandListener {
 		}
 
 		for (final Reference item : studyChildren) {
-			if (this.studyTree.itemMatchesStudyTypeFilter(item)){
-				this.studyTree.addItem(item.getId());
-				this.studyTree.setItemCaption(item.getId(), item.getName());
-				this.studyTree.setParent(item.getId(), parentStudyId);
-				
-				// check if the study has sub study
-				if (this.studyTree.hasChildStudy(item.getId())) {
-					this.studyTree.setChildrenAllowed(item.getId(), true);
-					this.studyTree.setItemIcon(item.getId(), this.studyTree.getThemeResourceByReference(item));
-				} else {
-					this.studyTree.setChildrenAllowed(item.getId(), false);
-					this.studyTree.setItemIcon(item.getId(), this.studyTree.getThemeResourceByReference(item));
-				}
+			this.studyTree.addItem(item.getId());
+			this.studyTree.setItemCaption(item.getId(), item.getName());
+			this.studyTree.setParent(item.getId(), parentStudyId);
+			
+			// check if the study has sub study
+			if (this.studyTree.hasChildStudy(item.getId())) {
+				this.studyTree.setChildrenAllowed(item.getId(), true);
+				this.studyTree.setItemIcon(item.getId(), this.studyTree.getThemeResourceByReference(item));
+			} else {
+				this.studyTree.setChildrenAllowed(item.getId(), false);
+				this.studyTree.setItemIcon(item.getId(), this.studyTree.getThemeResourceByReference(item));
 			}
 
 		}

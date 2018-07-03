@@ -6,6 +6,7 @@ import java.util.List;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.study.tree.StudyTree;
+import org.generationcp.ibpworkbench.study.tree.StudyTypeFilterComponent;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
@@ -33,7 +34,7 @@ public class StudyTreeExpandListenerTest {
 	private static final StudyReference TRIAL = new StudyReference(100, "F1 Trial", "Trial Description", PROGRAM_UUID, StudyTypeDto.getTrialDto());
 	private static final StudyReference NURSERY = new StudyReference(101, "F2 Nusery", "Nursery Description", PROGRAM_UUID, StudyTypeDto.getNurseryDto());
 	private static final List<Reference> STUDY_REFERENCES = Arrays.asList(FOLDER, TRIAL, NURSERY);
-	
+	private static final StudyTypeDto TRIAL_FILTER = new StudyTypeDto(1, "Trial", "T");
 	
 	@Mock
 	private StudyTree studyTree;
@@ -75,8 +76,10 @@ public class StudyTreeExpandListenerTest {
 		final Project project = ProjectTestDataInitializer.createProject();
 		project.setUniqueID(PROGRAM_UUID);
 		Mockito.doReturn(project).when(this.contextUtil).getProjectInContext();
-		Mockito.doReturn(STUDY_REFERENCES).when(this.studyDataManager).getChildrenOfFolder(Matchers.anyInt(), Matchers.anyString());
-		Mockito.doReturn(true).when(this.studyTree).itemMatchesStudyTypeFilter(Matchers.any(Reference.class));
+		Mockito.doReturn(StudyTypeFilterComponent.ALL_OPTION).when(this.studyTree).getStudyTypeFilter();
+		Mockito.doReturn(STUDY_REFERENCES).when(this.studyDataManager).getChildrenOfFolderByStudyType(Matchers.anyInt(),
+				Matchers.anyString(), Matchers.anyInt());
+		
 	}
 	
 	@Test
@@ -91,8 +94,8 @@ public class StudyTreeExpandListenerTest {
 	
 	@Test
 	public void testNodeExpandWithMiddlewareException() {
-		Mockito.doThrow(new MiddlewareQueryException("ERROR")).when(this.studyDataManager).getChildrenOfFolder(Matchers.anyInt(),
-				Matchers.anyString());
+		Mockito.doThrow(new MiddlewareQueryException("ERROR")).when(this.studyDataManager).getChildrenOfFolderByStudyType(Matchers.anyInt(),
+				Matchers.anyString(), Matchers.anyInt());
 		this.expandListener.nodeExpand(expandEvent);
 		Mockito.verify(this.studyTree, Mockito.never()).addItem(Matchers.anyInt());
 		Mockito.verify(this.studyTree, Mockito.never()).setItemCaption(Matchers.anyInt(), Matchers.anyString());
@@ -107,20 +110,23 @@ public class StudyTreeExpandListenerTest {
 		verifyItemWasAddedToTree(FOLDER.getId(), FOLDER.getName());
 		verifyItemWasAddedToTree(TRIAL.getId(), TRIAL.getName());
 		verifyItemWasAddedToTree(NURSERY.getId(), NURSERY.getName());
+		Mockito.verify(this.studyDataManager).getChildrenOfFolderByStudyType(STUDY_ID, PROGRAM_UUID, null);
 		Mockito.verify(this.studyTree).selectItem(STUDY_ID);	
 	}
 	
 	@Test
 	public void testNodeExpandWithFilterOnStudyType() {
-		Mockito.doReturn(false).when(this.studyTree).itemMatchesStudyTypeFilter(NURSERY);
-		this.expandListener.nodeExpand(expandEvent);
+		Mockito.doReturn(TRIAL_FILTER).when(this.studyTree).getStudyTypeFilter();
+		Mockito.doReturn(TRIAL_FILTER).when(this.studyDataManager).getStudyTypeByLabel(Matchers.anyString());
 		
-		// Check that only FOLDER and TRIAL were added
+		this.expandListener.nodeExpand(expandEvent);
 		verifyItemWasAddedToTree(FOLDER.getId(), FOLDER.getName());
 		verifyItemWasAddedToTree(TRIAL.getId(), TRIAL.getName());
+		verifyItemWasAddedToTree(NURSERY.getId(), NURSERY.getName());
+		Mockito.verify(this.studyDataManager).getChildrenOfFolderByStudyType(STUDY_ID, PROGRAM_UUID, TRIAL_FILTER.getId());
 		Mockito.verify(this.studyTree).selectItem(STUDY_ID);	
 	}
-
+	
 	private void verifyItemWasAddedToTree(final Integer id, final String name) {
 		Mockito.verify(this.studyTree).addItem(id);
 		Mockito.verify(this.studyTree).setItemCaption(id, name);

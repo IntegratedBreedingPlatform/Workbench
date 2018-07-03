@@ -1,26 +1,15 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview;
 
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TreeTable;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.Reindeer;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.study.constants.StudyTypeFilter;
 import org.generationcp.ibpworkbench.study.tree.StudyTypeChangeListener;
 import org.generationcp.ibpworkbench.study.tree.StudyTypeFilterComponent;
 import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.MultiSiteAnalysisPanel;
@@ -42,8 +31,19 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.TreeTable;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.Reindeer;
 
 @Configurable
 public class SelectStudyDialog extends BaseSubWindow implements InitializingBean, InternationalizableComponent, StudyTypeChangeListener {
@@ -474,7 +474,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 	}
 
 	@Override
-	public void studyTypeChange(final StudyTypeFilter type) {
+	public void studyTypeChange(final StudyTypeDto type) {
 		final List<Integer> expandedNodeIds = this.treeTable.getExpandedIds();
 		createTree();
 		this.treeTable.expandNodes(expandedNodeIds);
@@ -489,8 +489,8 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		this.studyDataManager = studyDataManager;
 	}
 
-	protected StudyTypeFilter getFilteredStudyType() {
-		return (StudyTypeFilter) this.studyTypeFilterComponent.getStudyTypeComboBox().getValue();
+	protected StudyTypeDto getFilteredStudyType() {
+		return (StudyTypeDto) this.studyTypeFilterComponent.getStudyTypeComboBox().getValue();
 	}
 
 
