@@ -133,9 +133,9 @@ public class StudyTreeDeleteItemHandler {
 			if (parent != null) {
 				final Integer parentId = parent.getProjectId();
 				if (DmsProject.SYSTEM_FOLDER_ID.equals(parentId)) {
-					targetTree.select(StudyTree.STUDY_ROOT_NODE);
+					targetTree.selectItem(StudyTree.STUDY_ROOT_NODE);
 				} else {
-					targetTree.select(parentId);
+					targetTree.selectItem(parentId);
 					targetTree.expandItem(parentId);
 				}
 			}

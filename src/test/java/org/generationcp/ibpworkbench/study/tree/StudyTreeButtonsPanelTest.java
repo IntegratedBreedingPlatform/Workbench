@@ -69,7 +69,7 @@ public class StudyTreeButtonsPanelTest {
 		final Study study = new Study();
 		study.setProgramUUID("abcd-efghij");
 		Mockito.doReturn(study).when(this.studyDataManager).getStudy(Matchers.anyInt());
-		Mockito.doReturn(SELECTED_ID).when(this.studyTree).getSelectedNodeId();
+		Mockito.doReturn(SELECTED_ID).when(this.studyTree).getValue();
 		Mockito.doReturn(this.component).when(this.browseTreeComponent).getParentComponent();
 		Mockito.doReturn(this.window).when(this.component).getWindow();
 	}

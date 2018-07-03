@@ -148,6 +148,7 @@ public class BrowseStudyTreeComponent extends VerticalLayout implements Initiali
 
 		this.studyTree = new StudyTree(this, this.getFilteredStudyType());
 		this.studyTree.setNullSelectionAllowed(false);
+		this.buttonsPanel.setStudyTree(this.studyTree);
 
 		this.treeContainer.addComponent(this.studyTree);
 	}

@@ -196,7 +196,6 @@ public class StudyTreeTest {
 
 		this.studyTree.selectItem(id);
 		Mockito.verify(this.browseStudyTreeComponent).updateButtons(id);
-		Assert.assertEquals(id, this.studyTree.getSelectedNodeId());
 		Assert.assertEquals(id, this.studyTree.getValue());
 	}
 

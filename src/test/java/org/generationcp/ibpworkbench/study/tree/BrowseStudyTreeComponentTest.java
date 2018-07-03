@@ -125,6 +125,7 @@ public class BrowseStudyTreeComponentTest {
 	public void testCreateTree() {
 		this.browseTreeComponent.setTreeContainer(this.treeLayout);
 		this.browseTreeComponent.setStudyTree(this.studyTree);
+		this.browseTreeComponent.setButtonsPanel(this.buttonsPanel);
 		this.browseTreeComponent.setStudyTypeFilterComponent(this.studyTypeFilterComponent);
 		this.browseTreeComponent.createTree();
 		
@@ -135,6 +136,7 @@ public class BrowseStudyTreeComponentTest {
 		Assert.assertNotSame(this.studyTree, newStudyTree);
 		Assert.assertFalse(newStudyTree.isNullSelectionAllowed());
 		Mockito.verify(this.treeLayout).addComponent(newStudyTree);
+		Mockito.verify(this.buttonsPanel).setStudyTree(newStudyTree);
 	}
 	
 	@Test

@@ -138,7 +138,7 @@ public class StudyTreeDeleteItemHandlerTest {
 		this.deleteItemHandler.performDeleteAction(SELECTED_ID);
 		Mockito.verify(this.studyDataManager).deleteEmptyFolder(SELECTED_ID, PROGRAM_UUID);
 		Mockito.verify(this.studyTree).removeItem(SELECTED_ID);
-		Mockito.verify(this.studyTree).select(PARENT_ID);
+		Mockito.verify(this.studyTree).selectItem(PARENT_ID);
 		Mockito.verify(this.studyTree).expandItem(PARENT_ID);
 		Mockito.verify(this.studyTree).setImmediate(true);
 		Mockito.verify(this.buttonsPanel).updateButtons(SELECTED_ID);
@@ -151,7 +151,7 @@ public class StudyTreeDeleteItemHandlerTest {
 		this.deleteItemHandler.performDeleteAction(SELECTED_ID);
 		Mockito.verify(this.studyDataManager).deleteEmptyFolder(SELECTED_ID, PROGRAM_UUID);
 		Mockito.verify(this.studyTree).removeItem(SELECTED_ID);
-		Mockito.verify(this.studyTree).select(StudyTree.STUDY_ROOT_NODE);
+		Mockito.verify(this.studyTree).selectItem(StudyTree.STUDY_ROOT_NODE);
 		Mockito.verify(this.studyTree, Mockito.never()).expandItem(Matchers.any());
 		Mockito.verify(this.studyTree).setImmediate(true);
 		Mockito.verify(this.buttonsPanel).updateButtons(SELECTED_ID);

@@ -46,6 +46,8 @@ public class StudyTreeAddFolderWindow extends BaseSubWindow implements Initializ
 	private Object parentItemId;
 	private StudyTree targetTree;
 	
+	private StudyFolderNameValidator validator = new StudyFolderNameValidator();
+	
 	public StudyTreeAddFolderWindow(final Object parentItemId, final StudyTree studyTree) {
 		super("Add new folder");
 		this.parentItemId = parentItemId;
@@ -116,11 +118,9 @@ public class StudyTreeAddFolderWindow extends BaseSubWindow implements Initializ
 			public void buttonClick(final Button.ClickEvent event) {
 				Integer newFolderId = null;
 				final String newFolderName = folderTextField.getValue().toString();
-				// 1 by default because root study folder has id = 1
-				int parentFolderId = 1;
+				int parentFolderId = DmsProject.SYSTEM_FOLDER_ID;
 				final String programUUID = contextUtil.getProjectInContext().getUniqueID();
 				try {
-					final StudyFolderNameValidator validator = new StudyFolderNameValidator();
 					if (!validator.isValidNameInput(newFolderName, StudyTreeAddFolderWindow.this.getWindow())) {
 						return;
 					}
@@ -153,9 +153,7 @@ public class StudyTreeAddFolderWindow extends BaseSubWindow implements Initializ
 					targetTree.setItemIcon(newFolderId, new ThemeResource("../vaadin-retro/svg/folder-icon.svg"));
 					targetTree.setChildrenAllowed(newFolderId, true);
 
-					targetTree.setSelectedNodeId(newFolderId);
-
-					if (parentFolderId == 1) {
+					if (DmsProject.SYSTEM_FOLDER_ID.equals(parentItemId)) {
 						targetTree.setChildrenAllowed(StudyTree.STUDY_ROOT_NODE, true);
 						targetTree.setParent(newFolderId, StudyTree.STUDY_ROOT_NODE);
 					} else {
@@ -174,8 +172,7 @@ public class StudyTreeAddFolderWindow extends BaseSubWindow implements Initializ
 					targetTree.selectItem(newFolderId);
 				}
 
-				// close popup
-				StudyTreeAddFolderWindow.this.getParent().removeWindow(StudyTreeAddFolderWindow.this);
+				closePopup();
 			}
 
 		});
@@ -186,13 +183,17 @@ public class StudyTreeAddFolderWindow extends BaseSubWindow implements Initializ
 
 			@Override
 			public void buttonClick(final Button.ClickEvent event) {
-				final Window parentWindow = StudyTreeAddFolderWindow.this.getParent();
-				parentWindow.focus();
-				parentWindow.removeWindow(StudyTreeAddFolderWindow.this);
+				closePopup();
 
 			}
 		});
 		
+	}
+	
+	void closePopup() {
+		final Window parentWindow = StudyTreeAddFolderWindow.this.getParent();
+		parentWindow.focus();
+		parentWindow.removeWindow(StudyTreeAddFolderWindow.this);
 	}
 
 	
@@ -203,6 +204,46 @@ public class StudyTreeAddFolderWindow extends BaseSubWindow implements Initializ
 	
 	protected StudyTree getTargetTree() {
 		return targetTree;
+	}
+
+	
+	protected Button getOkButton() {
+		return okButton;
+	}
+
+	
+	protected Button getCancelButton() {
+		return cancelButton;
+	}
+
+	
+	protected TextField getFolderTextField() {
+		return folderTextField;
+	}
+
+	
+	protected void setContextUtil(ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
+	}
+
+	
+	protected void setStudyDataManager(StudyDataManager studyDataManager) {
+		this.studyDataManager = studyDataManager;
+	}
+
+	
+	protected void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+
+	
+	protected void setTargetTree(StudyTree targetTree) {
+		this.targetTree = targetTree;
+	}
+
+	
+	protected void setValidator(StudyFolderNameValidator validator) {
+		this.validator = validator;
 	}
 	
 

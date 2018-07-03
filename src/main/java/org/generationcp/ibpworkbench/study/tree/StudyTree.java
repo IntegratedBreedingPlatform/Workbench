@@ -57,7 +57,6 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 
 	private StudyTreeDragAndDropHandler dropHandler;
 	private BrowseStudyTreeComponent browseStudyTreeComponent;
-	private Object selectedStudyNodeId;
 	private StudyTypeFilter studyTypeFilter;
 	private SaveTreeStateListener saveTreeStateListener;
 	private StudyTreeExpandListener expandListener;
@@ -195,7 +194,6 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 
 	public void selectItem(final Object itemId) {
 		this.browseStudyTreeComponent.updateButtons(itemId);
-		this.setSelectedNodeId(itemId);
 		this.setNullSelectionAllowed(false);
 		this.select(itemId);
 		this.setValue(itemId);
@@ -271,16 +269,6 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 
 		this.select(null);
 	}
-	
-	public void setSelectedNodeId(final Object id) {
-		this.selectedStudyNodeId = id;
-	}
-
-	
-	protected Object getSelectedNodeId() {
-		return selectedStudyNodeId;
-	}
-
 	
 	protected SaveTreeStateListener getSaveTreeStateListener() {
 		return saveTreeStateListener;

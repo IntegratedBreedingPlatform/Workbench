@@ -54,7 +54,7 @@ public class StudyTreeDragAndDropHandler implements Serializable {
 		Integer sourceId = null;
 		Integer targetId = null;
 
-		if (sourceItemId != null && !sourceItemId.equals(StudyTree.STUDY_ROOT_NODE)) {
+		if (sourceItemId != null) {
 			sourceId = Integer.valueOf(sourceItemId.toString());
 		}
 
@@ -63,8 +63,10 @@ public class StudyTreeDragAndDropHandler implements Serializable {
 					StudyTreeDragAndDropHandler.HAS_CHILDREN);
 			return false;
 		}
-
-		if (targetItemId != null && !StudyTree.STUDY_ROOT_NODE.equals(targetItemId)) {
+		
+		if (StudyTree.STUDY_ROOT_NODE.equals(targetItemId)) {
+			targetId = DmsProject.SYSTEM_FOLDER_ID;
+		} else if (targetItemId != null) {
 			targetId = Integer.valueOf(targetItemId.toString());
 		}
 

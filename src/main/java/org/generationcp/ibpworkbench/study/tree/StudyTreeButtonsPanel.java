@@ -87,7 +87,7 @@ public class StudyTreeButtonsPanel extends HorizontalLayout
 
 			@Override
 			public void buttonClick(final Button.ClickEvent event) {
-				final Object selectedStudyTreeNodeId = StudyTreeButtonsPanel.this.studyTree.getSelectedNodeId();
+				final Object selectedStudyTreeNodeId = StudyTreeButtonsPanel.this.studyTree.getValue();
 				final int studyId = Integer.valueOf(selectedStudyTreeNodeId.toString());
 				final Study study = studyDataManager.getStudy(studyId);
 				if (null == study.getProgramUUID()) {
@@ -98,7 +98,7 @@ public class StudyTreeButtonsPanel extends HorizontalLayout
 				} else {
 					final String name = StudyTreeButtonsPanel.this.studyTree.getItemCaption(selectedStudyTreeNodeId);
 					StudyTreeButtonsPanel.this.browseTreeComponent.getParentComponent().getWindow()
-							.addWindow(new StudyTreeRenameItemWindow(studyId, name, studyTree, studyTabSheet));
+					.addWindow(new StudyTreeRenameItemWindow(studyId, name, studyTree, studyTabSheet));
 				}
 			}
 		});
@@ -109,7 +109,7 @@ public class StudyTreeButtonsPanel extends HorizontalLayout
 
 			@Override
 			public void buttonClick(final Button.ClickEvent event) {
-				final Object parentId = StudyTreeButtonsPanel.this.studyTree.getSelectedNodeId();
+				final Object parentId = StudyTreeButtonsPanel.this.studyTree.getValue();
 				StudyTreeButtonsPanel.this.browseTreeComponent.getParentComponent().getWindow()
 						.addWindow(new StudyTreeAddFolderWindow(parentId, studyTree));
 			}
@@ -121,7 +121,8 @@ public class StudyTreeButtonsPanel extends HorizontalLayout
 
 			@Override
 			public void buttonClick(final Button.ClickEvent event) {
-				final int studyId = Integer.valueOf(StudyTreeButtonsPanel.this.studyTree.getSelectedNodeId().toString());
+				final Object selectedStudyTreeNodeId = StudyTreeButtonsPanel.this.studyTree.getValue();
+				final int studyId = Integer.valueOf(StudyTreeButtonsPanel.this.studyTree.getValue().toString());
 				final StudyTreeDeleteItemHandler deleteHandler = new StudyTreeDeleteItemHandler(studyTree, StudyTreeButtonsPanel.this,
 						StudyTreeButtonsPanel.this.browseTreeComponent.getParentComponent().getWindow());
 				deleteHandler.showConfirmDeletionDialog(studyId);
@@ -223,6 +224,11 @@ public class StudyTreeButtonsPanel extends HorizontalLayout
 	
 	protected void setStudyDataManager(StudyDataManager studyDataManager) {
 		this.studyDataManager = studyDataManager;
+	}
+
+	
+	protected void setStudyTree(StudyTree studyTree) {
+		this.studyTree = studyTree;
 	}
 
 }
