@@ -1,9 +1,11 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview;
 
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Window;
 import junit.framework.Assert;
+import org.generationcp.ibpworkbench.study.tree.StudyTypeFilterComponent;
 import org.generationcp.middleware.data.initializer.FolderReferenceTestDataInitializer;
 import org.generationcp.middleware.data.initializer.StudyReferenceTestDataInitializer;
 import org.generationcp.middleware.domain.dms.Reference;
@@ -30,21 +32,30 @@ public class SelectStudyDialogTest {
 	@Mock
 	private StudyDataManager studyDataManager;
 
+	@Mock
+	private StudyTypeFilterComponent studyTypeFilterComponent;
+
+	@Mock
+	private ComboBox comboBox;
+
 	@Before
 	public void setUp() throws Exception {
 		this.dialog = new SelectStudyDialog(Mockito.mock(Window.class), Mockito.mock(Component.class),
 				this.currentProject);
 		this.dialog.setStudyDataManager(this.studyDataManager);
+		this.dialog.setStudyTypeFilterComponent(studyTypeFilterComponent);
 	}
 
 	@Test
 	public void testCreateStudyTreeTable() throws MiddlewareQueryException {
 		Mockito.when(this.currentProject.getUniqueID()).thenReturn(SelectStudyDialogTest.UNIQUE_ID);
-		Mockito.when(this.studyDataManager.getRootFolders(this.currentProject.getUniqueID()))
+		Mockito.when(this.studyTypeFilterComponent.getStudyTypeComboBox()).thenReturn(comboBox);
+		Mockito.when(comboBox.getValue()).thenReturn(StudyTypeFilterComponent.ALL_OPTION);
+		Mockito.when(this.studyDataManager.getRootFoldersByStudyType(Matchers.eq(this.currentProject.getUniqueID()), Mockito.anyInt()))
 				.thenReturn(StudyReferenceTestDataInitializer.createStudyReferenceList(5));
 		final BreedingViewTreeTable table = this.dialog.createStudyTreeTable();
-		Mockito.verify(this.studyDataManager, Mockito.times(1)).getRootFolders(SelectStudyDialogTest.UNIQUE_ID
-				);
+		Mockito.verify(this.studyDataManager, Mockito.times(1))
+				.getRootFoldersByStudyType(Matchers.eq(SelectStudyDialogTest.UNIQUE_ID), Mockito.anyInt());
 		Assert.assertEquals("There should be 33 property ids.", 3, table.getContainerPropertyIds().size());
 		Assert.assertTrue("The property ids should contain " + SelectStudyDialog.STUDY_NAME,
 				table.getContainerPropertyIds().contains(SelectStudyDialog.STUDY_NAME));
@@ -57,14 +68,18 @@ public class SelectStudyDialogTest {
 
 	@Test
 	public void testHasChildStudyFalse() {
+		Mockito.when(this.studyTypeFilterComponent.getStudyTypeComboBox()).thenReturn(comboBox);
+		Mockito.when(comboBox.getValue()).thenReturn(StudyTypeFilterComponent.ALL_OPTION);
 		final boolean hasChildStudy = this.dialog.hasChildStudy(1);
 		Assert.assertFalse("The study should have no child.", hasChildStudy);
 	}
 
 	@Test
 	public void testHasChildStudyTrue() {
+		Mockito.when(this.studyTypeFilterComponent.getStudyTypeComboBox()).thenReturn(comboBox);
+		Mockito.when(comboBox.getValue()).thenReturn(StudyTypeFilterComponent.ALL_OPTION);
 		Mockito.when(
-				this.studyDataManager.getChildrenOfFolder(1, this.currentProject.getUniqueID()))
+				this.studyDataManager.getChildrenOfFolderByStudyType(1, this.currentProject.getUniqueID(), null))
 				.thenReturn(StudyReferenceTestDataInitializer.createStudyReferenceList(1));
 		
 		final boolean hasChildStudy = this.dialog.hasChildStudy(1);
@@ -74,15 +89,17 @@ public class SelectStudyDialogTest {
 
 	@Test
 	public void testQueryChildrenStudies() {
+		Mockito.when(this.studyTypeFilterComponent.getStudyTypeComboBox()).thenReturn(comboBox);
+		Mockito.when(comboBox.getValue()).thenReturn(StudyTypeFilterComponent.ALL_OPTION);
 		final Reference reference = FolderReferenceTestDataInitializer.createReference(1);
 		Mockito.when(
-				this.studyDataManager.getChildrenOfFolder(1, this.currentProject.getUniqueID()))
+				this.studyDataManager.getChildrenOfFolderByStudyType(1, this.currentProject.getUniqueID(), null))
 				.thenReturn(StudyReferenceTestDataInitializer.createStudyReferenceList(5));
 		
 		this.dialog.queryChildrenStudies(reference, Mockito.mock(BreedingViewTreeTable.class));
 		
-		Mockito.verify(this.studyDataManager, Mockito.times(2)).getChildrenOfFolder(1,
-				this.currentProject.getUniqueID());
+		Mockito.verify(this.studyDataManager, Mockito.times(2)).getChildrenOfFolderByStudyType(1,
+				this.currentProject.getUniqueID(), null);
 		Mockito.verify(this.studyDataManager, Mockito.times(5)).getStudy(Matchers.anyInt());
 	}
 

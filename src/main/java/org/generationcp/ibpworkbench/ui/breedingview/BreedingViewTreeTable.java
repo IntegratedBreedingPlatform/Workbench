@@ -4,11 +4,9 @@ import com.vaadin.ui.TreeTable;
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.constant.ListTreeState;
 import org.generationcp.commons.spring.util.ContextUtil;
-import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.UserProgramStateDataManager;
-import org.generationcp.middleware.pojos.dms.DmsProject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +32,26 @@ public class BreedingViewTreeTable extends TreeTable {
 
 	@Autowired
 	private UserProgramStateDataManager programStateDataManager;
+
+	private interface TableFunction {
+
+		boolean isExpanded(Object itemId);
+
+		Collection getChildren(Object itemId);
+	}
+
+	private class TreeTableFunction implements TableFunction {
+
+		@Override
+		public Collection getChildren(final Object itemId) {
+			return BreedingViewTreeTable.this.getChildren(itemId);
+		}
+
+		@Override
+		public boolean isExpanded(final Object itemId) {
+			return !BreedingViewTreeTable.this.isCollapsed(itemId);
+		}
+	}
 
 	public BreedingViewTreeTable() {
 		nodeMap = new HashMap<>();
@@ -85,12 +103,8 @@ public class BreedingViewTreeTable extends TreeTable {
 	}
 
 	public List<Integer> getExpandedIds() {
-		return this.getTableItemIds(new TreeTableFunction());
-	}
-
-	protected List<Integer> getTableItemIds(TableFunction function)  {
-
-		List<Integer> returnVal = new ArrayList<>();
+		final TableFunction function = new TreeTableFunction();
+		final List<Integer> returnVal = new ArrayList<>();
 
 		for (final Reference reference : nodeMap.values()) {
 			final List<Integer> tempVal = new ArrayList<>();
@@ -100,44 +114,25 @@ public class BreedingViewTreeTable extends TreeTable {
 		return returnVal;
 	}
 
-	public void recurseSaveOpenNodes(Object itemId, TableFunction tableFunction, List<Integer> openNodes) {
+	public void expandNodes(final List<Integer> nodesToExpand) {
+		for (final Integer s : nodesToExpand) {
+			this.setCollapsed(nodeMap.get(s), false);
+		}
+		this.select(null);
+	}
+
+	private void recurseSaveOpenNodes(final Object itemId, final TableFunction tableFunction, final List<Integer> openNodes) {
 		if (!tableFunction.isExpanded(itemId)) {
 			return;
 		}
 
 		openNodes.add(((Reference) itemId).getId());
-		Collection children = tableFunction.getChildren(itemId);
+		final Collection children = tableFunction.getChildren(itemId);
 		if (children != null && !children.isEmpty()) {
 			for (Object child : children) {
 				recurseSaveOpenNodes(child, tableFunction, openNodes);
 			}
 		}
-	}
-
-	public interface TableFunction  {
-		public boolean isExpanded(Object itemId);
-		public Collection getChildren(Object itemId);
-	}
-
-	class TreeTableFunction implements  TableFunction {
-		@Override
-		public Collection getChildren(Object itemId) {
-			return BreedingViewTreeTable.this.getChildren(itemId);
-		}
-
-		@Override
-		public boolean isExpanded(Object itemId) {
-			return !BreedingViewTreeTable.this.isCollapsed(itemId);
-		}
-	}
-
-	protected void expandNodes(final List<Integer> nodesToExpand) {
-
-		for (final Integer s : nodesToExpand) {
-			this.setCollapsed(nodeMap.get(s), false);
-		}
-
-		this.select(null);
 	}
 
 }

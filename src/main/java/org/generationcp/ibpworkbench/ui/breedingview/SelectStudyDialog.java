@@ -40,7 +40,6 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
@@ -237,16 +236,6 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		this.assemble();
 	}
 
-	public void createTree() {
-		this.treeContainer.removeComponent(treeTable);
-		this.treeTable.removeAllItems();
-
-		this.treeTable = createStudyTreeTable();
-		this.treeTable.setNullSelectionAllowed(false);
-
-		this.treeContainer.addComponent(treeTable);
-	}
-
 	protected BreedingViewTreeTable createStudyTreeTable() {
 
 		final BreedingViewTreeTable tr = new BreedingViewTreeTable();
@@ -259,8 +248,8 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		List<Reference> folderRef = null;
 
 		try {
-			final StudyTypeDto studyTypeDto = this.getStudyDataManager().getStudyTypeByLabel(this.getFilteredStudyType().getLabel());
-			folderRef = this.getStudyDataManager().getRootFoldersByStudyType(this.currentProject.getUniqueID(), (studyTypeDto == null) ? null : studyTypeDto.getId());
+			folderRef = this.getStudyDataManager().getRootFoldersByStudyType(this.currentProject.getUniqueID(),
+					this.getStudyTypeId());
 		} catch (final MiddlewareQueryException e1) {
 			SelectStudyDialog.LOG.error(e1.getMessage(), e1);
 			if (this.getWindow() != null) {
@@ -307,6 +296,16 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		return tr;
 	}
 
+	public void recreateTree() {
+		this.treeContainer.removeComponent(treeTable);
+		this.treeTable.removeAllItems();
+
+		this.treeTable = createStudyTreeTable();
+		this.treeTable.setNullSelectionAllowed(false);
+
+		this.treeContainer.addComponent(treeTable);
+	}
+
 	protected void openStudy(final Reference r) {
 		if (this.source instanceof SingleSiteAnalysisPanel) {
 			final Integer dataSetId = this.getPlotDataSetId(r.getId());
@@ -338,9 +337,9 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		List<Reference> childrenReference = new ArrayList<>();
 
 		try {
-			final StudyTypeDto studyTypeDto = this.getStudyDataManager().getStudyTypeByLabel(this.getFilteredStudyType().getLabel());
-			childrenReference = this.getStudyDataManager().getChildrenOfFolderByStudyType(parentFolderReference.getId(),
-					this.currentProject.getUniqueID(), (studyTypeDto == null) ? null : studyTypeDto.getId());
+			childrenReference = this.getStudyDataManager()
+					.getChildrenOfFolderByStudyType(parentFolderReference.getId(), this.currentProject.getUniqueID(),
+							this.getStudyTypeId());
 
 		} catch (final MiddlewareQueryException e) {
 			SelectStudyDialog.LOG.error(e.getMessage(), e);
@@ -400,51 +399,13 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 
 	}
 
-	public void queryChildrenDatasets(final Reference parentFolderReference, final TreeTable tr) {
-
-		List<DatasetReference> childrenReference = new ArrayList<>();
-
-		try {
-
-			childrenReference = this.getStudyDataManager().getDatasetReferences(parentFolderReference.getId());
-
-		} catch (final MiddlewareQueryException e) {
-			SelectStudyDialog.LOG.error(e.getMessage(), e);
-			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
-					this.messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
-		}
-
-		for (final java.util.Iterator<DatasetReference> i = childrenReference.iterator(); i.hasNext();) {
-
-			final Reference r = i.next();
-
-			final Object[] cells = new Object[3];
-
-			cells[0] = " " + r.getName();
-			cells[1] = "";
-			cells[2] = "";
-
-			if (r instanceof DatasetReference) {
-				SelectStudyDialog.LOG.debug("r is DatasetReference");
-			}
-
-			tr.addItem(cells, r);
-			tr.setParent(r, parentFolderReference);
-			tr.setChildrenAllowed(r, false);
-			tr.setItemIcon(r, this.getThemeResourceByReference(r));
-
-		}
-
-	}
-
 	protected boolean hasChildStudy(final int folderId) {
 
 		List<Reference> children;
 
 		try {
-			final StudyTypeDto studyTypeDto = this.getStudyDataManager().getStudyTypeByLabel(this.getFilteredStudyType().getLabel());
-			children = this.getStudyDataManager().getChildrenOfFolderByStudyType(folderId, this.currentProject.getUniqueID(),
-					(studyTypeDto == null) ? null : studyTypeDto.getId());
+			children = this.getStudyDataManager()
+					.getChildrenOfFolderByStudyType(folderId, this.currentProject.getUniqueID(), this.getStudyTypeId());
 		} catch (final MiddlewareQueryException e) {
 			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
 					this.messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
@@ -476,7 +437,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 	@Override
 	public void studyTypeChange(final StudyTypeDto type) {
 		final List<Integer> expandedNodeIds = this.treeTable.getExpandedIds();
-		createTree();
+		this.recreateTree();
 		this.treeTable.expandNodes(expandedNodeIds);
 		treeTable.requestRepaint();
 	}
@@ -489,9 +450,13 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		this.studyDataManager = studyDataManager;
 	}
 
-	protected StudyTypeDto getFilteredStudyType() {
-		return (StudyTypeDto) this.studyTypeFilterComponent.getStudyTypeComboBox().getValue();
+	public void setStudyTypeFilterComponent(final StudyTypeFilterComponent studyTypeFilterComponent) {
+		this.studyTypeFilterComponent = studyTypeFilterComponent;
 	}
 
+	private Integer getStudyTypeId() {
+		final StudyTypeDto studyTypeDto = (StudyTypeDto) this.studyTypeFilterComponent.getStudyTypeComboBox().getValue();
+		return (studyTypeDto.getName().equals(StudyTypeFilterComponent.ALL)) ? null : studyTypeDto.getId();
+	}
 
 }
