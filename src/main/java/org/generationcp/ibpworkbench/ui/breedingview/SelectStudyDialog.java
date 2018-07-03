@@ -20,6 +20,9 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.study.constants.StudyTypeFilter;
+import org.generationcp.ibpworkbench.study.tree.StudyTypeChangeListener;
+import org.generationcp.ibpworkbench.study.tree.StudyTypeFilterComponent;
 import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.MultiSiteAnalysisPanel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
 import org.generationcp.middleware.domain.dms.DatasetReference;
@@ -27,6 +30,7 @@ import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.StudyReference;
+import org.generationcp.middleware.domain.study.StudyTypeDto;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
@@ -42,7 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Configurable
-public class SelectStudyDialog extends BaseSubWindow implements InitializingBean, InternationalizableComponent {
+public class SelectStudyDialog extends BaseSubWindow implements InitializingBean, InternationalizableComponent, StudyTypeChangeListener {
 
 	public static final String OBJECTIVE = "Objective";
 	public static final String TITLE = "Title";
@@ -50,10 +54,10 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 
 	private final class TreeTableItemClickListener implements ItemClickListener {
 
-		private final TreeTable tr;
+		private final BreedingViewTreeTable tr;
 		private static final long serialVersionUID = 1L;
 
-		private TreeTableItemClickListener(final TreeTable tr) {
+		private TreeTableItemClickListener(final BreedingViewTreeTable tr) {
 			this.tr = tr;
 		}
 
@@ -66,17 +70,8 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 			if (event.isDoubleClick() && isStudy) {
 				SelectStudyDialog.this.openStudy(r);
 			} else {
-				if (this.tr.isCollapsed(r)) {
-					this.tr.setCollapsed(r, false);
-				} else {
-					this.tr.setCollapsed(r, true);
-				}
-
-				if (isStudy) {
-					SelectStudyDialog.this.selectButton.setEnabled(true);
-				} else {
-					SelectStudyDialog.this.selectButton.setEnabled(false);
-				}
+				this.tr.setCollapsedFolder(r.getId(), !this.tr.isCollapsed(r));
+				SelectStudyDialog.this.selectButton.setEnabled(isStudy);
 			}
 
 		}
@@ -99,6 +94,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 	protected Button selectButton;
 	protected BreedingViewTreeTable treeTable;
 	protected VerticalLayout rootLayout;
+	protected VerticalLayout treeContainer;
 
 	protected Component source;
 
@@ -107,6 +103,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 	protected ThemeResource dataSetResource;
 
 	protected Label lblStudyTreeDetailDescription;
+	private StudyTypeFilterComponent studyTypeFilterComponent;
 
 	private final Project currentProject;
 
@@ -140,6 +137,8 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 
 		this.lblStudyTreeDetailDescription = new Label();
 		this.lblStudyTreeDetailDescription.setDebugId("lblStudyTreeDetailDescription");
+
+		this.studyTypeFilterComponent = new StudyTypeFilterComponent(this);
 
 		this.folderResource = new ThemeResource("../vaadin-retro/svg/folder-icon.svg");
 		this.studyResource = new ThemeResource("../vaadin-retro/svg/study-icon.svg");
@@ -214,8 +213,14 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		this.selectButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 		this.selectButton.setEnabled(false);
 
+		this.rootLayout.addComponent(studyTypeFilterComponent);
+
 		this.rootLayout.addComponent(this.lblStudyTreeDetailDescription);
-		this.rootLayout.addComponent(this.treeTable);
+
+		this.treeContainer = new VerticalLayout();
+		this.treeContainer.addComponent(this.treeTable);
+
+		this.rootLayout.addComponent(treeContainer);
 
 		buttonLayout.addComponent(this.cancelButton);
 		buttonLayout.addComponent(this.selectButton);
@@ -232,6 +237,16 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		this.assemble();
 	}
 
+	public void createTree() {
+		this.treeContainer.removeComponent(treeTable);
+		this.treeTable.removeAllItems();
+
+		this.treeTable = createStudyTreeTable();
+		this.treeTable.setNullSelectionAllowed(false);
+
+		this.treeContainer.addComponent(treeTable);
+	}
+
 	protected BreedingViewTreeTable createStudyTreeTable() {
 
 		final BreedingViewTreeTable tr = new BreedingViewTreeTable();
@@ -244,7 +259,8 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		List<Reference> folderRef = null;
 
 		try {
-			folderRef = this.getStudyDataManager().getRootFolders(this.currentProject.getUniqueID());
+			final StudyTypeDto studyTypeDto = this.getStudyDataManager().getStudyTypeByLabel(this.getFilteredStudyType().getLabel());
+			folderRef = this.getStudyDataManager().getRootFoldersByStudyType(this.currentProject.getUniqueID(), (studyTypeDto == null) ? null : studyTypeDto.getId());
 		} catch (final MiddlewareQueryException e1) {
 			SelectStudyDialog.LOG.error(e1.getMessage(), e1);
 			if (this.getWindow() != null) {
@@ -322,9 +338,9 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		List<Reference> childrenReference = new ArrayList<>();
 
 		try {
-
-			childrenReference = this.getStudyDataManager().getChildrenOfFolder(parentFolderReference.getId(),
-					this.currentProject.getUniqueID());
+			final StudyTypeDto studyTypeDto = this.getStudyDataManager().getStudyTypeByLabel(this.getFilteredStudyType().getLabel());
+			childrenReference = this.getStudyDataManager().getChildrenOfFolderByStudyType(parentFolderReference.getId(),
+					this.currentProject.getUniqueID(), (studyTypeDto == null) ? null : studyTypeDto.getId());
 
 		} catch (final MiddlewareQueryException e) {
 			SelectStudyDialog.LOG.error(e.getMessage(), e);
@@ -426,7 +442,9 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		List<Reference> children;
 
 		try {
-			children = this.getStudyDataManager().getChildrenOfFolder(folderId, this.currentProject.getUniqueID());
+			final StudyTypeDto studyTypeDto = this.getStudyDataManager().getStudyTypeByLabel(this.getFilteredStudyType().getLabel());
+			children = this.getStudyDataManager().getChildrenOfFolderByStudyType(folderId, this.currentProject.getUniqueID(),
+					(studyTypeDto == null) ? null : studyTypeDto.getId());
 		} catch (final MiddlewareQueryException e) {
 			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
 					this.messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
@@ -455,6 +473,14 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		}
 	}
 
+	@Override
+	public void studyTypeChange(final StudyTypeFilter type) {
+		final List<Integer> expandedNodeIds = this.treeTable.getExpandedIds();
+		createTree();
+		this.treeTable.expandNodes(expandedNodeIds);
+		treeTable.requestRepaint();
+	}
+
 	private StudyDataManager getStudyDataManager() {
 		return this.studyDataManager;
 	}
@@ -462,4 +488,10 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 	public void setStudyDataManager(final StudyDataManager studyDataManager) {
 		this.studyDataManager = studyDataManager;
 	}
+
+	protected StudyTypeFilter getFilteredStudyType() {
+		return (StudyTypeFilter) this.studyTypeFilterComponent.getStudyTypeComboBox().getValue();
+	}
+
+
 }

@@ -86,7 +86,7 @@ public class StudyTypeFilterComponent extends HorizontalLayout implements Initia
 		this.addComponent(this.studyTypeComboBox);
 	}
 	
-	protected ComboBox getStudyTypeComboBox() {
+	public ComboBox getStudyTypeComboBox() {
 		return studyTypeComboBox;
 	}
 
