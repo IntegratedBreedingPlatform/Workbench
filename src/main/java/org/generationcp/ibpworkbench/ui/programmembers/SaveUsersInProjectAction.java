@@ -81,19 +81,19 @@ public class SaveUsersInProjectAction implements ClickListener {
 			transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 				@Override
 				protected void doInTransactionWithoutResult(TransactionStatus status) {
-					// Update project members info (project
+					final Long projectId = SaveUsersInProjectAction.this.project.getProjectId();
 					for (WorkbenchUser u : userList) {
-						if (SaveUsersInProjectAction.this.workbenchDataManager.getProjectUserInfoDao().getByProjectIdAndUserId(SaveUsersInProjectAction.this.project.getProjectId(),
+						if (SaveUsersInProjectAction.this.workbenchDataManager.getProjectUserInfoByProjectIdAndUserId(projectId,
 								u.getUserid()) == null) {
 							ProjectUserInfo pUserInfo = new ProjectUserInfo(SaveUsersInProjectAction.this.project, u.getUserid());
 							SaveUsersInProjectAction.this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
 						}
 					}
 					programService.saveWorkbenchUserToCropUserMapping(project, new HashSet<>(userList));
-					final List<Integer> activeUserIds = SaveUsersInProjectAction.this.workbenchDataManager.getProjectUserInfoDao().getActiveUserIDsByProjectId(SaveUsersInProjectAction.this.project.getProjectId());
+					final List<Integer> activeUserIds = SaveUsersInProjectAction.this.workbenchDataManager.getActiveUserIDsByProjectId(projectId);
 					final List<Integer> removedUserIds = SaveUsersInProjectAction.this.getRemovedUserIds(activeUserIds, userList);
 					if(!removedUserIds.isEmpty()) {
-						List<ProjectUserInfo> projectUserInfos = SaveUsersInProjectAction.this.workbenchDataManager.getProjectUserInfoByProjectIdAndUserIds(SaveUsersInProjectAction.this.project.getProjectId(), removedUserIds);
+						List<ProjectUserInfo> projectUserInfos = SaveUsersInProjectAction.this.workbenchDataManager.getProjectUserInfoByProjectIdAndUserIds(projectId, removedUserIds);
 						SaveUsersInProjectAction.this.workbenchDataManager.deleteProjectUserInfos(projectUserInfos);
 					}
 					
