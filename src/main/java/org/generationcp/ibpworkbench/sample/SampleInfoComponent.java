@@ -39,6 +39,8 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 	private static final String STUDY_NAME = "Study Name";
 	private static final String PLOT_ID = "Plot ID";
 	private static final String PLANT_ID = "Plant ID";
+	private static final String PLATE_ID = "Plate ID";
+	private static final String WELL = "WELL";
 	private static final String URL_GENOTYPING_DATASET = "/GDMS/main/?restartApplication&datasetId=";
 
 	private static final String GENOTYPING_DATA = "genotyping dataset";
@@ -87,7 +89,7 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 
 		// add the column ids to the LazyQueryContainer tells the container the columns to display for the Table
 		this.setSampleTable(new Table());
-		this.getSampleTable().setWidth("90%");
+		this.getSampleTable().setWidth("100%");
 
 		// prepare the container
 		this.getSampleTable().addContainerProperty(SampleInfoComponent.SAMPLE_ID, String.class, null);
@@ -95,6 +97,8 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 		this.getSampleTable().addContainerProperty(SampleInfoComponent.STUDY_NAME, LinkButton.class, null);
 		this.getSampleTable().addContainerProperty(SampleInfoComponent.PLOT_ID, String.class, null);
 		this.getSampleTable().addContainerProperty(SampleInfoComponent.PLANT_ID, String.class, null);
+		this.getSampleTable().addContainerProperty(SampleInfoComponent.PLATE_ID, String.class, null);
+		this.getSampleTable().addContainerProperty(SampleInfoComponent.WELL, String.class, null);
 		this.getSampleTable().addContainerProperty(SampleInfoComponent.GENOTYPING_DATA, HorizontalLayout.class, null);
 		this.getSampleTable().setSelectable(true);
 		this.getSampleTable().setMultiSelect(false);
@@ -107,11 +111,14 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 		this.getSampleTable().setColumnHeader(SampleInfoComponent.STUDY_NAME, SampleInfoComponent.STUDY_NAME);
 		this.getSampleTable().setColumnHeader(SampleInfoComponent.PLOT_ID,SampleInfoComponent.PLOT_ID);
 		this.getSampleTable().setColumnHeader(SampleInfoComponent.PLANT_ID, SampleInfoComponent.PLANT_ID);
+		this.getSampleTable().setColumnHeader(SampleInfoComponent.PLATE_ID, SampleInfoComponent.PLATE_ID);
+		this.getSampleTable().setColumnHeader(SampleInfoComponent.WELL, SampleInfoComponent.WELL);
 		this.getSampleTable().setColumnHeader(SampleInfoComponent.GENOTYPING_DATA, SampleInfoComponent.GENOTYPING_DATA);
 
 		this.getSampleTable().setVisibleColumns(
 			new String[] {SampleInfoComponent.SAMPLE_ID, SampleInfoComponent.SAMPLE_LIST, SampleInfoComponent.STUDY_NAME,
-				SampleInfoComponent.PLOT_ID, SampleInfoComponent.PLANT_ID, SampleInfoComponent.GENOTYPING_DATA});
+				SampleInfoComponent.PLOT_ID, SampleInfoComponent.PLANT_ID, SampleInfoComponent.PLATE_ID, SampleInfoComponent.WELL,
+				SampleInfoComponent.GENOTYPING_DATA});
 	}
 
 	private void initializeValues() {
@@ -150,7 +157,7 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 			}
 
 			this.sampleTable.addItem(
-				new Object[] {sample.getSampleBk(), sample.getSampleListName(), linkStudyButton, sample.getPlotId(), sample.getPlantBk(),
+				new Object[] {sample.getSampleBk(), sample.getSampleListName(), linkStudyButton, sample.getPlotId(), sample.getPlantBk(),sample.getPlateId(),sample.getWell(),
 					horizontalLayoutForDatasetButton}, count);
 			count++;
 		}
