@@ -230,6 +230,7 @@ public class GermplasmDetail extends Accordion implements InitializingBean, Inte
 		this.treeDisplayLayout.setMargin(true);
 		this.treeDisplayLayout.setSpacing(true);
 		this.treeDisplayLayout.setHeight("100%");
+		this.treeDisplayLayout.setWidth("100%");
 	}
 
 	@Override
