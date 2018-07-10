@@ -74,7 +74,7 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 				new SaveTreeStateListener(this, ListTreeState.STUDY_LIST.name(), StudyTree.STUDY_ROOT_NODE);
 
 		this.addItem(STUDY_ROOT_NODE);
-		this.setItemCaption(STUDY_ROOT_NODE, this.generateStudyTypeFilterLabel());
+		this.setItemCaption(STUDY_ROOT_NODE, this.messageSource.getMessage(Message.STUDIES));
 		this.setItemIcon(STUDY_ROOT_NODE, this.getThemeResourceByReference(new FolderReference(null, null)));
 
 		this.addStyleName("studyBrowserTree");
@@ -92,13 +92,6 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 			}
 		});
 		
-	}
-
-	protected String generateStudyTypeFilterLabel() {
-		if (StudyTypeFilterComponent.ALL_OPTION.equals(this.studyTypeFilter)) {
-			return this.studyTypeFilter.getLabel();
-		}
-		return this.studyTypeFilter.getPluralFormOfLabel();
 	}
 
 	@Override

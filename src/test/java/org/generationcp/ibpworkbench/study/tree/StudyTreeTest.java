@@ -10,6 +10,7 @@ import org.generationcp.commons.constant.ListTreeState;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.SaveTreeStateListener;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.study.tree.listeners.StudyTreeCollapseListener;
 import org.generationcp.ibpworkbench.study.tree.listeners.StudyTreeExpandListener;
 import org.generationcp.ibpworkbench.study.tree.listeners.StudyTreeItemClickListener;
@@ -41,6 +42,7 @@ import junit.framework.Assert;
 
 public class StudyTreeTest {
 
+	private static final String STUDIES = "Studies";
 	private static final String PROGRAM_UUID = "abcd-efg-12345";
 	private static final FolderReference FOLDER1 = new FolderReference(1, "Folder 1", "Folder 1 Description", PROGRAM_UUID);
 	private static final FolderReference FOLDER2 = new FolderReference(2, "Folder 2", "Folder 2 Description", PROGRAM_UUID);
@@ -49,8 +51,6 @@ public class StudyTreeTest {
 	private static final StudyReference NURSERY =
 			new StudyReference(101, "F2 Nusery", "Nursery Description", PROGRAM_UUID, StudyTypeDto.getNurseryDto());
 	private static final List<Reference> STUDY_REFERENCES = Arrays.asList(FOLDER1, TRIAL, NURSERY, FOLDER2);
-	private static final StudyTypeDto TRIAL_FILTER = new StudyTypeDto(1, "Trial", "T");
-	private static final StudyTypeDto NURSERY_FILTER = new StudyTypeDto(2, "Nursery", "N");
 	
 	@Mock
 	private StudyDataManager studyDataManager;
@@ -91,6 +91,7 @@ public class StudyTreeTest {
 		Mockito.doReturn(PROGRAM_UUID).when(this.contextUtil).getCurrentProgramUUID();
 		Mockito.doReturn(project).when(this.contextUtil).getProjectInContext();
 		Mockito.doReturn(new ArrayList<Reference>()).when(this.studyDataManager).getRootFolders(Matchers.anyString());
+		Mockito.doReturn(STUDIES).when(this.messageSource).getMessage(Message.STUDIES);
 	}
 
 	@Test
@@ -99,7 +100,7 @@ public class StudyTreeTest {
 
 		Assert.assertEquals(TreeDragMode.NODE, this.studyTree.getDragMode());
 		Assert.assertTrue(this.studyTree.containsId(StudyTree.STUDY_ROOT_NODE));
-		Assert.assertEquals(StudyTypeFilterComponent.ALL_OPTION.getLabel(), this.studyTree.getItemCaption(StudyTree.STUDY_ROOT_NODE));
+		Assert.assertEquals(STUDIES, this.studyTree.getItemCaption(StudyTree.STUDY_ROOT_NODE));
 		Assert.assertTrue(this.studyTree.isImmediate());
 
 		// Verify tree action listeners
@@ -227,19 +228,6 @@ public class StudyTreeTest {
 		Assert.assertFalse(this.studyTree.isFolder(id));
 	}
 	
-	@Test
-	public void testGenerateStudyTypeFilterLabel(){
-		this.studyTree.setStudyTypeFilter(TRIAL_FILTER);
-		Assert.assertEquals("Trials", this.studyTree.generateStudyTypeFilterLabel());
-		
-		this.studyTree.setStudyTypeFilter(NURSERY_FILTER);
-		Assert.assertEquals("Nurseries", this.studyTree.generateStudyTypeFilterLabel());
-		
-		this.studyTree.setStudyTypeFilter(StudyTypeFilterComponent.ALL_OPTION);
-		Assert.assertEquals("Studies", this.studyTree.generateStudyTypeFilterLabel());
-		
-	}
-
 	@Test
 	public void testExpandNodesWhenEmptyList() {
 		populateTestTree();
