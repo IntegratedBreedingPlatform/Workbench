@@ -26,7 +26,9 @@
             "takenBy": "TAKEN_BY",
             "plantNumber": "PLANT_NUMBER",
             "plantBusinessKey": "PLANT_UID",
-            "samplingDate": "SAMPLING_DATE"
+            "samplingDate": "SAMPLING_DATE",
+            "plateId": "PLATE_ID",
+            "well": "WELL"
         }
     }
 }
