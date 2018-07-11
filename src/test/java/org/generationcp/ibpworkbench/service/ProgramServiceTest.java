@@ -1,7 +1,10 @@
 package org.generationcp.ibpworkbench.service;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.Cookie;
@@ -13,6 +16,8 @@ import org.generationcp.commons.context.ContextInfo;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
+import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
+import org.generationcp.middleware.data.initializer.WorkbenchUserTestDataInitializer;
 import org.generationcp.middleware.manager.api.UserDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
@@ -201,6 +206,33 @@ public class ProgramServiceTest {
 		Assert.assertEquals(Integer.valueOf(ProgramService.PROJECT_USER_STATUS), user.getStatus());
 		Assert.assertNotNull(user.getAssignDate());
 
+	}
+	
+	@Test
+	public void testUpdateMembersUserInfo() {
+		Mockito.when(this.workbenchDataManager.getActiveUserIDsByProjectId(Matchers.anyLong())).thenReturn(Arrays.asList(1,2,3));
+		final Project project = ProjectTestDataInitializer.createProject();
+		final Set<WorkbenchUser> userList = new HashSet<>();
+		userList.add(WorkbenchUserTestDataInitializer.createWorkbenchUser());
+		this.programService.updateMembersUserInfo(userList, project);
+		final int numberOfUsers = userList.size();
+		Mockito.verify(this.workbenchDataManager, Mockito.times(numberOfUsers)).getProjectUserInfoByProjectIdAndUserId(Matchers.anyLong(),
+				Matchers.anyInt());
+		// Expecting to save only the 2nd user as the 1st user is already saved as a member
+		Mockito.verify(this.workbenchDataManager, Mockito.times(numberOfUsers))
+				.saveOrUpdateProjectUserInfo(Matchers.any(ProjectUserInfo.class));
+		Mockito.verify(this.workbenchDataManager).getActiveUserIDsByProjectId(Matchers.anyLong());
+		Mockito.verify(this.workbenchDataManager).getProjectUserInfoByProjectIdAndUserIds(Matchers.anyLong(), Matchers.anyList());
+		Mockito.verify(this.workbenchDataManager).deleteProjectUserInfos(Matchers.anyList());
+	}
+	
+	@Test
+	public void testGetRemovedUserIds() {
+		final List<Integer> activeUserIds = Arrays.asList(1, 2);
+		final Collection<WorkbenchUser> userList = Arrays.asList(new WorkbenchUser(1));
+		final List<Integer> removedUserIds = this.programService.getRemovedUserIds(activeUserIds, userList);
+		Assert.assertEquals(1, removedUserIds.size());
+		Assert.assertEquals("2", removedUserIds.get(0).toString());
 	}
 
 	@Test
