@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.study.tree;
 
 import java.util.List;
@@ -21,17 +22,17 @@ public class StudyTypeFilterComponent extends HorizontalLayout implements Initia
 
 	public static final String ALL = "All";
 	// Dummy StudyTypeDto for "All" option in ComboBox
-	public static final StudyTypeDto ALL_OPTION = new StudyTypeDto(1, "Studies", ALL);
+	public static final StudyTypeDto ALL_OPTION = new StudyTypeDto(1, "Studies", StudyTypeFilterComponent.ALL);
 	private static final long serialVersionUID = 1L;
-	
+
 	@Autowired
 	private StudyDataManager studyDataManager;
-	
+
 	private ComboBox studyTypeComboBox;
-	private StudyTypeChangeListener listener;
+	private final StudyTypeChangeListener listener;
 	private Label studyTypeLabel;
-	
-	public StudyTypeFilterComponent(StudyTypeChangeListener listener) {
+
+	public StudyTypeFilterComponent(final StudyTypeChangeListener listener) {
 		super();
 		this.listener = listener;
 	}
@@ -51,24 +52,24 @@ public class StudyTypeFilterComponent extends HorizontalLayout implements Initia
 		this.studyTypeComboBox.setNullSelectionAllowed(false);
 		this.studyTypeComboBox.setNewItemsAllowed(false);
 		this.studyTypeComboBox.setImmediate(true);
-		
+
 		this.studyTypeLabel = new Label("Study type");
 		this.studyTypeLabel.setDebugId("studyTypeLabel");
 		this.studyTypeLabel.setStyleName("label-bold");
 		this.studyTypeLabel.setWidth("75px");
-		
+
 	}
 
 	@Override
 	public void initializeValues() {
-		this.studyTypeComboBox.addItem(ALL_OPTION);
-		this.studyTypeComboBox.setItemCaption(ALL_OPTION, ALL_OPTION.getName());
+		this.studyTypeComboBox.addItem(StudyTypeFilterComponent.ALL_OPTION);
+		this.studyTypeComboBox.setItemCaption(StudyTypeFilterComponent.ALL_OPTION, StudyTypeFilterComponent.ALL_OPTION.getName());
 		final List<StudyTypeDto> studyTypes = this.studyDataManager.getAllVisibleStudyTypes();
 		for (final StudyTypeDto type : studyTypes) {
 			this.studyTypeComboBox.addItem(type);
 			this.studyTypeComboBox.setItemCaption(type, type.getLabel());
 		}
-		this.studyTypeComboBox.select(ALL_OPTION);
+		this.studyTypeComboBox.select(StudyTypeFilterComponent.ALL_OPTION);
 	}
 
 	@Override
@@ -87,10 +88,11 @@ public class StudyTypeFilterComponent extends HorizontalLayout implements Initia
 					return;
 				}
 
-				listener.studyTypeChange((StudyTypeDto)studyTypeComboBox.getValue());
+				StudyTypeFilterComponent.this.listener
+						.studyTypeChange((StudyTypeDto) StudyTypeFilterComponent.this.studyTypeComboBox.getValue());
 			}
 		});
-		
+
 	}
 
 	@Override
@@ -99,17 +101,16 @@ public class StudyTypeFilterComponent extends HorizontalLayout implements Initia
 		this.addComponent(this.studyTypeLabel);
 		this.addComponent(this.studyTypeComboBox);
 	}
-	
+
 	public ComboBox getStudyTypeComboBox() {
-		return studyTypeComboBox;
-	}
-	
-	public boolean isAllOptionChosen(final StudyType type) {
-		return ALL_OPTION.equals(type);
+		return this.studyTypeComboBox;
 	}
 
-	
-	protected void setStudyDataManager(StudyDataManager studyDataManager) {
+	public boolean isAllOptionChosen(final StudyType type) {
+		return StudyTypeFilterComponent.ALL_OPTION.equals(type);
+	}
+
+	protected void setStudyDataManager(final StudyDataManager studyDataManager) {
 		this.studyDataManager = studyDataManager;
 	}
 

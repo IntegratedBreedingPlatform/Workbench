@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.study.tree.listeners;
 
 import org.generationcp.ibpworkbench.study.tree.BrowseStudyTreeComponent;
@@ -7,12 +8,11 @@ import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.MouseEvents.ClickEvent;
 
-
 public class StudyTreeItemClickListener implements ItemClickListener {
-	
+
 	private static final long serialVersionUID = 1L;
-	private StudyTree studyTree;
-	private BrowseStudyTreeComponent browseStudyTreeComponent;
+	private final StudyTree studyTree;
+	private final BrowseStudyTreeComponent browseStudyTreeComponent;
 
 	public StudyTreeItemClickListener(final StudyTree studyTree, final BrowseStudyTreeComponent browseStudyTreeComponent) {
 		super();
@@ -21,12 +21,12 @@ public class StudyTreeItemClickListener implements ItemClickListener {
 	}
 
 	@Override
-	public void itemClick(ItemClickEvent event) {
+	public void itemClick(final ItemClickEvent event) {
 		if (event.getButton() == ClickEvent.BUTTON_LEFT) {
 			this.studyTreeItemClickAction(event.getItemId());
 		}
 	}
-	
+
 	public void studyTreeItemClickAction(final Object itemId) {
 		this.studyTree.expandOrCollapseStudyTreeNode(itemId);
 		if (!StudyTree.STUDY_ROOT_NODE.equals(itemId)) {

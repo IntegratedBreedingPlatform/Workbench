@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.study.tree;
 
 import java.util.ArrayList;
@@ -41,46 +42,45 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 
 	@Autowired
 	private StudyDataManager studyDataManager;
-	
+
 	@Autowired
 	private ContextUtil contextUtil;
-	
+
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
-	
+
 	@Autowired
 	private UserProgramStateDataManager programStateManager;
-	
+
 	protected static final ThemeResource FOLDER_ICON = new ThemeResource("../vaadin-retro/svg/folder-icon.svg");
 	protected static final ThemeResource STUDY_ICON = new ThemeResource("../vaadin-retro/svg/study-icon.svg");
 
 	private StudyTreeDragAndDropHandler dropHandler;
-	private BrowseStudyTreeComponent browseStudyTreeComponent;
+	private final BrowseStudyTreeComponent browseStudyTreeComponent;
 	private StudyTypeDto studyTypeFilter;
 	private SaveTreeStateListener saveTreeStateListener;
 	private StudyTreeExpandListener expandListener;
 	private StudyTreeItemClickListener clickListener;
-	
+
 	public StudyTree(final BrowseStudyTreeComponent browseStudyTreeComponent, final StudyTypeDto filter) {
 		this.browseStudyTreeComponent = browseStudyTreeComponent;
 		this.studyTypeFilter = filter;
 	}
-	
+
 	@Override
 	public void instantiateComponents() {
 		this.setDragMode(TreeDragMode.NODE);
 		this.dropHandler = new StudyTreeDragAndDropHandler(this);
-		this.saveTreeStateListener =
-				new SaveTreeStateListener(this, ListTreeState.STUDY_LIST.name(), StudyTree.STUDY_ROOT_NODE);
+		this.saveTreeStateListener = new SaveTreeStateListener(this, ListTreeState.STUDY_LIST.name(), StudyTree.STUDY_ROOT_NODE);
 
-		this.addItem(STUDY_ROOT_NODE);
-		this.setItemCaption(STUDY_ROOT_NODE, this.messageSource.getMessage(Message.STUDIES));
-		this.setItemIcon(STUDY_ROOT_NODE, this.getThemeResourceByReference(new FolderReference(null, null)));
+		this.addItem(StudyTree.STUDY_ROOT_NODE);
+		this.setItemCaption(StudyTree.STUDY_ROOT_NODE, this.messageSource.getMessage(Message.STUDIES));
+		this.setItemIcon(StudyTree.STUDY_ROOT_NODE, this.getThemeResourceByReference(new FolderReference(null, null)));
 
 		this.addStyleName("studyBrowserTree");
 		this.setImmediate(true);
 		this.setWidth("98%");
-		
+
 		// add tooltip
 		this.setItemDescriptionGenerator(new AbstractSelect.ItemDescriptionGenerator() {
 
@@ -91,7 +91,7 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 				return StudyTree.this.messageSource.getMessage(Message.STUDY_DETAILS_LABEL);
 			}
 		});
-		
+
 	}
 
 	@Override
@@ -103,7 +103,7 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 	public void addListeners() {
 		this.expandListener = new StudyTreeExpandListener(this);
 		this.addListener(this.expandListener);
-		this.clickListener = new StudyTreeItemClickListener(this, browseStudyTreeComponent);
+		this.clickListener = new StudyTreeItemClickListener(this, this.browseStudyTreeComponent);
 		this.addListener(this.clickListener);
 		this.addListener(new StudyTreeCollapseListener(this));
 		this.dropHandler.setupTreeDragAndDropHandler();
@@ -121,13 +121,13 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 		this.addListeners();
 		this.layoutComponents();
 	}
-	
+
 	public void populateRootNode() {
 		List<Reference> rootFolders = new ArrayList<Reference>();
 		try {
 			final String programUUID = this.contextUtil.getProjectInContext().getUniqueID();
 			final StudyTypeDto studyTypeDto = this.studyDataManager.getStudyTypeByLabel(this.studyTypeFilter.getLabel());
-			rootFolders = this.studyDataManager.getRootFoldersByStudyType(programUUID, (studyTypeDto == null) ? null : studyTypeDto.getId());
+			rootFolders = this.studyDataManager.getRootFoldersByStudyType(programUUID, studyTypeDto == null ? null : studyTypeDto.getId());
 		} catch (final MiddlewareQueryException e) {
 			StudyTree.LOG.error(e.getMessage(), e);
 			if (this.getWindow() != null) {
@@ -139,34 +139,34 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 		for (final Reference item : rootFolders) {
 			this.addItem(item.getId());
 			this.setItemCaption(item.getId(), item.getName());
-			
+
 			if (!item.isFolder()) {
-				this.setItemIcon(item.getId(), STUDY_ICON);
+				this.setItemIcon(item.getId(), StudyTree.STUDY_ICON);
 			} else {
 				this.setItemIcon(item.getId(), this.getThemeResourceByReference(item));
 			}
-			
-			this.setParent(item.getId(), STUDY_ROOT_NODE);
+
+			this.setParent(item.getId(), StudyTree.STUDY_ROOT_NODE);
 			if (!this.hasChildStudy(item.getId())) {
 				this.setChildrenAllowed(item.getId(), false);
 			}
 		}
 	}
-	
+
 	public ThemeResource getThemeResourceByReference(final Reference r) {
 
 		if (r instanceof FolderReference) {
 			StudyTree.LOG.debug("r is FolderReference");
-			return FOLDER_ICON;
+			return StudyTree.FOLDER_ICON;
 		} else if (r instanceof StudyReference) {
 			StudyTree.LOG.debug("r is StudyReference");
-			return STUDY_ICON;
+			return StudyTree.STUDY_ICON;
 		} else {
-			return FOLDER_ICON;
+			return StudyTree.FOLDER_ICON;
 		}
 
 	}
-	
+
 	public boolean hasChildStudy(final int studyId) {
 
 		List<Reference> studyChildren = new ArrayList<Reference>();
@@ -185,7 +185,7 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 		}
 		return false;
 	}
-	
+
 	public void studyTreeItemClickAction(final Object itemId) {
 		this.clickListener.studyTreeItemClickAction(itemId);
 	}
@@ -196,7 +196,7 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 		this.select(itemId);
 		this.setValue(itemId);
 	}
-	
+
 	public void expandOrCollapseStudyTreeNode(final Object itemId) {
 		if (!this.isExpanded(itemId)) {
 			this.expandItem(itemId);
@@ -204,42 +204,43 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 			this.collapseItem(itemId);
 		}
 	}
-	
-	// FIXME - Performance problem if such checking is done per tree node. The query that retrieves tree metadata should have all the information already.
+
+	// FIXME - Performance problem if such checking is done per tree node. The query that retrieves tree metadata should have all the
+	// information already.
 	// Can not get rid of it until Vaadin tree object is constructed with appropriate information already available from Middleware service.
 	public Boolean isFolder(final Integer studyId) {
 		try {
 			final boolean isStudy = this.studyDataManager.isStudy(studyId);
 			return !isStudy;
 		} catch (final MiddlewareQueryException e) {
-			LOG.error(e.getMessage(), e);
+			StudyTree.LOG.error(e.getMessage(), e);
 			return false;
 		}
 	}
-	
+
 	public void addChildren(final int parentStudyId) {
 		this.expandListener.addChildren(parentStudyId, this.getWindow());
 	}
-	
+
 	public void expandSavedTreeState() {
 		try {
 			final List<String> parsedState =
-					programStateManager.getUserProgramTreeStateByUserIdProgramUuidAndType(contextUtil.getCurrentWorkbenchUserId(),
-							contextUtil.getCurrentProgramUUID(), ListTreeState.STUDY_LIST.name());
+					this.programStateManager.getUserProgramTreeStateByUserIdProgramUuidAndType(this.contextUtil.getCurrentWorkbenchUserId(),
+							this.contextUtil.getCurrentProgramUUID(), ListTreeState.STUDY_LIST.name());
 
 			this.expandNodes(parsedState);
 		} catch (final MiddlewareQueryException e) {
-			LOG.error("Error creating study tree", e);
+			StudyTree.LOG.error("Error creating study tree", e);
 		}
 	}
 
 	protected void expandNodes(final List<String> nodesToExpand) {
-		if (nodesToExpand.isEmpty() || (nodesToExpand.size() == 1 && StringUtils.isEmpty(nodesToExpand.get(0)))) {
-			this.collapseItem(STUDY_ROOT_NODE);
+		if (nodesToExpand.isEmpty() || nodesToExpand.size() == 1 && StringUtils.isEmpty(nodesToExpand.get(0))) {
+			this.collapseItem(StudyTree.STUDY_ROOT_NODE);
 			return;
 		}
 
-		this.expandItem(STUDY_ROOT_NODE);
+		this.expandItem(StudyTree.STUDY_ROOT_NODE);
 		for (final String s : nodesToExpand) {
 			final String trimmed = s.trim();
 			if (!StringUtils.isNumeric(trimmed)) {
@@ -252,49 +253,41 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 
 		this.select(null);
 	}
-	
+
 	protected SaveTreeStateListener getSaveTreeStateListener() {
-		return saveTreeStateListener;
+		return this.saveTreeStateListener;
 	}
 
-	
-	protected void setStudyDataManager(StudyDataManager studyDataManager) {
+	protected void setStudyDataManager(final StudyDataManager studyDataManager) {
 		this.studyDataManager = studyDataManager;
 	}
 
-	
-	protected void setContextUtil(ContextUtil contextUtil) {
+	protected void setContextUtil(final ContextUtil contextUtil) {
 		this.contextUtil = contextUtil;
 	}
 
-	
-	protected void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+	protected void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
 
-	
-	protected void setExpandListener(StudyTreeExpandListener expandListener) {
+	protected void setExpandListener(final StudyTreeExpandListener expandListener) {
 		this.expandListener = expandListener;
 	}
 
-	
-	protected void setClickListener(StudyTreeItemClickListener clickListener) {
+	protected void setClickListener(final StudyTreeItemClickListener clickListener) {
 		this.clickListener = clickListener;
 	}
 
-	
-	protected void setStudyTypeFilter(StudyTypeDto studyTypeFilter) {
+	protected void setStudyTypeFilter(final StudyTypeDto studyTypeFilter) {
 		this.studyTypeFilter = studyTypeFilter;
 	}
 
-	
-	protected void setProgramStateManager(UserProgramStateDataManager programStateManager) {
+	protected void setProgramStateManager(final UserProgramStateDataManager programStateManager) {
 		this.programStateManager = programStateManager;
 	}
 
-	
 	public StudyTypeDto getStudyTypeFilter() {
-		return studyTypeFilter;
+		return this.studyTypeFilter;
 	}
 
 }

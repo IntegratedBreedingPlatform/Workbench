@@ -37,13 +37,13 @@ public class StudyTreeExpandListener implements Tree.ExpandListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(StudyTreeExpandListener.class);
 	private static final long serialVersionUID = -5091664285613837786L;
-	
+
 	@Autowired
 	private StudyDataManager studyDataManager;
-	
+
 	@Autowired
 	private ContextUtil contextUtil;
-	
+
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
@@ -55,20 +55,21 @@ public class StudyTreeExpandListener implements Tree.ExpandListener {
 
 	@Override
 	public void nodeExpand(final ExpandEvent event) {
-			final Object itemId = event.getItemId();
-			if (!StudyTree.STUDY_ROOT_NODE.equals(itemId)) {
-				this.addChildren(Integer.valueOf(itemId.toString()), event.getComponent().getWindow());
-			}
-			this.studyTree.selectItem(itemId);
+		final Object itemId = event.getItemId();
+		if (!StudyTree.STUDY_ROOT_NODE.equals(itemId)) {
+			this.addChildren(Integer.valueOf(itemId.toString()), event.getComponent().getWindow());
+		}
+		this.studyTree.selectItem(itemId);
 	}
-	
+
 	public void addChildren(final int parentStudyId, final Window window) {
 
 		List<Reference> studyChildren = new ArrayList<Reference>();
 		try {
 			final String programUUID = this.contextUtil.getProjectInContext().getUniqueID();
 			final StudyTypeDto studyTypeDto = this.studyDataManager.getStudyTypeByLabel(this.studyTree.getStudyTypeFilter().getLabel());
-			studyChildren = this.studyDataManager.getChildrenOfFolderByStudyType(new Integer(parentStudyId), programUUID, (studyTypeDto == null) ? null : studyTypeDto.getId());
+			studyChildren = this.studyDataManager.getChildrenOfFolderByStudyType(new Integer(parentStudyId), programUUID,
+					studyTypeDto == null ? null : studyTypeDto.getId());
 
 		} catch (final MiddlewareQueryException e) {
 			StudyTreeExpandListener.LOG.error(e.getMessage(), e);
@@ -81,7 +82,7 @@ public class StudyTreeExpandListener implements Tree.ExpandListener {
 			this.studyTree.addItem(item.getId());
 			this.studyTree.setItemCaption(item.getId(), item.getName());
 			this.studyTree.setParent(item.getId(), parentStudyId);
-			
+
 			// check if the study has sub study
 			if (this.studyTree.hasChildStudy(item.getId())) {
 				this.studyTree.setChildrenAllowed(item.getId(), true);
@@ -94,18 +95,15 @@ public class StudyTreeExpandListener implements Tree.ExpandListener {
 		}
 	}
 
-	
-	protected void setStudyDataManager(StudyDataManager studyDataManager) {
+	protected void setStudyDataManager(final StudyDataManager studyDataManager) {
 		this.studyDataManager = studyDataManager;
 	}
 
-	
-	protected void setContextUtil(ContextUtil contextUtil) {
+	protected void setContextUtil(final ContextUtil contextUtil) {
 		this.contextUtil = contextUtil;
 	}
 
-	
-	protected void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+	protected void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
 

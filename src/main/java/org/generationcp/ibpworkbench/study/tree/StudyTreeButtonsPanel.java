@@ -18,8 +18,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 
 @Configurable
-public class StudyTreeButtonsPanel extends HorizontalLayout
-		implements InitializingBean, GermplasmStudyBrowserLayout {
+public class StudyTreeButtonsPanel extends HorizontalLayout implements InitializingBean, GermplasmStudyBrowserLayout {
 
 	private static final long serialVersionUID = 1L;
 
@@ -30,8 +29,8 @@ public class StudyTreeButtonsPanel extends HorizontalLayout
 	private StudyDataManager studyDataManager;
 
 	private StudyTree studyTree;
-	private StudyTabSheet studyTabSheet;
-	private BrowseStudyTreeComponent browseTreeComponent;
+	private final StudyTabSheet studyTabSheet;
+	private final BrowseStudyTreeComponent browseTreeComponent;
 
 	private HorizontalLayout controlButtonsSubLayout;
 	private Button addFolderBtn;
@@ -89,7 +88,7 @@ public class StudyTreeButtonsPanel extends HorizontalLayout
 			public void buttonClick(final Button.ClickEvent event) {
 				final Object selectedStudyTreeNodeId = StudyTreeButtonsPanel.this.studyTree.getValue();
 				final int studyId = Integer.valueOf(selectedStudyTreeNodeId.toString());
-				final Study study = studyDataManager.getStudy(studyId);
+				final Study study = StudyTreeButtonsPanel.this.studyDataManager.getStudy(studyId);
 				if (null == study.getProgramUUID()) {
 					if (StudyTreeButtonsPanel.this.getWindow() != null) {
 						MessageNotifier.showError(StudyTreeButtonsPanel.this.getWindow(),
@@ -97,8 +96,8 @@ public class StudyTreeButtonsPanel extends HorizontalLayout
 					}
 				} else {
 					final String name = StudyTreeButtonsPanel.this.studyTree.getItemCaption(selectedStudyTreeNodeId);
-					StudyTreeButtonsPanel.this.browseTreeComponent.getParentComponent().getWindow()
-					.addWindow(new StudyTreeRenameItemWindow(studyId, name, studyTree, studyTabSheet));
+					StudyTreeButtonsPanel.this.browseTreeComponent.getParentComponent().getWindow().addWindow(new StudyTreeRenameItemWindow(
+							studyId, name, StudyTreeButtonsPanel.this.studyTree, StudyTreeButtonsPanel.this.studyTabSheet));
 				}
 			}
 		});
@@ -111,7 +110,7 @@ public class StudyTreeButtonsPanel extends HorizontalLayout
 			public void buttonClick(final Button.ClickEvent event) {
 				final Object parentId = StudyTreeButtonsPanel.this.studyTree.getValue();
 				StudyTreeButtonsPanel.this.browseTreeComponent.getParentComponent().getWindow()
-						.addWindow(new StudyTreeAddFolderWindow(parentId, studyTree));
+						.addWindow(new StudyTreeAddFolderWindow(parentId, StudyTreeButtonsPanel.this.studyTree));
 			}
 		});
 
@@ -121,10 +120,9 @@ public class StudyTreeButtonsPanel extends HorizontalLayout
 
 			@Override
 			public void buttonClick(final Button.ClickEvent event) {
-				final Object selectedStudyTreeNodeId = StudyTreeButtonsPanel.this.studyTree.getValue();
 				final int studyId = Integer.valueOf(StudyTreeButtonsPanel.this.studyTree.getValue().toString());
-				final StudyTreeDeleteItemHandler deleteHandler = new StudyTreeDeleteItemHandler(studyTree, StudyTreeButtonsPanel.this,
-						StudyTreeButtonsPanel.this.browseTreeComponent.getParentComponent().getWindow());
+				final StudyTreeDeleteItemHandler deleteHandler = new StudyTreeDeleteItemHandler(StudyTreeButtonsPanel.this.studyTree,
+						StudyTreeButtonsPanel.this, StudyTreeButtonsPanel.this.browseTreeComponent.getParentComponent().getWindow());
 				deleteHandler.showConfirmDeletionDialog(studyId);
 			}
 		});
@@ -181,53 +179,43 @@ public class StudyTreeButtonsPanel extends HorizontalLayout
 
 	}
 
-	
 	protected Button getAddFolderBtn() {
-		return addFolderBtn;
+		return this.addFolderBtn;
 	}
 
-	
-	protected void setAddFolderBtn(Button addFolderBtn) {
+	protected void setAddFolderBtn(final Button addFolderBtn) {
 		this.addFolderBtn = addFolderBtn;
 	}
 
-	
 	protected Button getDeleteFolderBtn() {
-		return deleteFolderBtn;
+		return this.deleteFolderBtn;
 	}
 
-	
-	protected void setDeleteFolderBtn(Button deleteFolderBtn) {
+	protected void setDeleteFolderBtn(final Button deleteFolderBtn) {
 		this.deleteFolderBtn = deleteFolderBtn;
 	}
 
-	
 	protected Button getRenameFolderBtn() {
-		return renameFolderBtn;
+		return this.renameFolderBtn;
 	}
 
-	
-	protected void setRenameFolderBtn(Button renameFolderBtn) {
+	protected void setRenameFolderBtn(final Button renameFolderBtn) {
 		this.renameFolderBtn = renameFolderBtn;
 	}
 
-	
-	protected void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+	protected void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
 
-	
 	protected HorizontalLayout getControlButtonsSubLayout() {
-		return controlButtonsSubLayout;
+		return this.controlButtonsSubLayout;
 	}
 
-	
-	protected void setStudyDataManager(StudyDataManager studyDataManager) {
+	protected void setStudyDataManager(final StudyDataManager studyDataManager) {
 		this.studyDataManager = studyDataManager;
 	}
 
-	
-	protected void setStudyTree(StudyTree studyTree) {
+	protected void setStudyTree(final StudyTree studyTree) {
 		this.studyTree = studyTree;
 	}
 

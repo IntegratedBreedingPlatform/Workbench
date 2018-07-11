@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.study.tree;
 
 import org.generationcp.commons.spring.util.ContextUtil;
@@ -30,30 +31,30 @@ public class StudyTreeAddFolderWindow extends BaseSubWindow implements Initializ
 
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOG = LoggerFactory.getLogger(StudyTreeAddFolderWindow.class);
-	
+
 	@Autowired
 	private ContextUtil contextUtil;
-	
+
 	@Autowired
 	private StudyDataManager studyDataManager;
-	
+
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
-	
+
 	private Button okButton;
 	private Button cancelButton;
 	private TextField folderTextField;
-	private Object parentItemId;
+	private final Object parentItemId;
 	private StudyTree targetTree;
-	
+
 	private StudyFolderNameValidator validator = new StudyFolderNameValidator();
-	
+
 	public StudyTreeAddFolderWindow(final Object parentItemId, final StudyTree studyTree) {
 		super("Add new folder");
 		this.parentItemId = parentItemId;
 		this.targetTree = studyTree;
 	}
-	
+
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		this.instantiateComponents();
@@ -67,7 +68,7 @@ public class StudyTreeAddFolderWindow extends BaseSubWindow implements Initializ
 		this.setModal(true);
 		this.setResizable(false);
 		this.setStyleName(Reindeer.WINDOW_LIGHT);
-		
+
 		final VerticalLayout container = new VerticalLayout();
 		container.setSpacing(true);
 		container.setMargin(true);
@@ -96,10 +97,10 @@ public class StudyTreeAddFolderWindow extends BaseSubWindow implements Initializ
 		this.okButton = new Button("Ok");
 		this.okButton.setClickShortcut(KeyCode.ENTER);
 		this.okButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-		
+
 		this.cancelButton = new Button("Cancel");
 		this.cancelButton.setClickShortcut(KeyCode.ESCAPE);
-		
+
 		btnContainer.addComponent(this.okButton);
 		btnContainer.addComponent(this.cancelButton);
 
@@ -117,134 +118,125 @@ public class StudyTreeAddFolderWindow extends BaseSubWindow implements Initializ
 			@Override
 			public void buttonClick(final Button.ClickEvent event) {
 				Integer newFolderId = null;
-				final String newFolderName = folderTextField.getValue().toString();
+				final String newFolderName = StudyTreeAddFolderWindow.this.folderTextField.getValue().toString();
 				int parentFolderId = DmsProject.SYSTEM_FOLDER_ID;
-				final String programUUID = contextUtil.getProjectInContext().getUniqueID();
+				final String programUUID = StudyTreeAddFolderWindow.this.contextUtil.getProjectInContext().getUniqueID();
 				try {
-					if (!validator.isValidNameInput(newFolderName, StudyTreeAddFolderWindow.this.getWindow())) {
+					if (!StudyTreeAddFolderWindow.this.validator.isValidNameInput(newFolderName,
+							StudyTreeAddFolderWindow.this.getWindow())) {
 						return;
 					}
 
-					if (parentItemId != null && parentItemId instanceof Integer) {
-						if (targetTree.isFolder((Integer) parentItemId)) {
-							parentFolderId = ((Integer) parentItemId).intValue();
+					if (StudyTreeAddFolderWindow.this.parentItemId != null
+							&& StudyTreeAddFolderWindow.this.parentItemId instanceof Integer) {
+						if (StudyTreeAddFolderWindow.this.targetTree.isFolder((Integer) StudyTreeAddFolderWindow.this.parentItemId)) {
+							parentFolderId = ((Integer) StudyTreeAddFolderWindow.this.parentItemId).intValue();
 						} else {
-							final int selectItemId = ((Integer) parentItemId).intValue();
-							final DmsProject parentFolder = studyDataManager.getParentFolder(selectItemId);
+							final int selectItemId = ((Integer) StudyTreeAddFolderWindow.this.parentItemId).intValue();
+							final DmsProject parentFolder = StudyTreeAddFolderWindow.this.studyDataManager.getParentFolder(selectItemId);
 							parentFolderId = parentFolder.getProjectId().intValue();
 						}
 					}
 
-					newFolderId =
-							Integer.valueOf(studyDataManager.addSubFolder(parentFolderId, newFolderName, newFolderName,
-									programUUID, newFolderName));
+					newFolderId = Integer.valueOf(StudyTreeAddFolderWindow.this.studyDataManager.addSubFolder(parentFolderId, newFolderName,
+							newFolderName, programUUID, newFolderName));
 				} catch (final MiddlewareQueryException ex) {
 					StudyTreeAddFolderWindow.LOG.error("Error with adding a study folder.", ex);
 					MessageNotifier.showError(StudyTreeAddFolderWindow.this,
-							messageSource.getMessage(Message.ERROR_DATABASE),
-							messageSource.getMessage(Message.PLEASE_SEE_ERROR_LOG));
+							StudyTreeAddFolderWindow.this.messageSource.getMessage(Message.ERROR_DATABASE),
+							StudyTreeAddFolderWindow.this.messageSource.getMessage(Message.PLEASE_SEE_ERROR_LOG));
 					return;
 				}
 
 				// update UI
 				if (newFolderId != null) {
-					targetTree.addItem(newFolderId);
-					targetTree.setItemCaption(newFolderId, newFolderName);
-					targetTree.setItemIcon(newFolderId, new ThemeResource("../vaadin-retro/svg/folder-icon.svg"));
-					targetTree.setChildrenAllowed(newFolderId, true);
+					StudyTreeAddFolderWindow.this.targetTree.addItem(newFolderId);
+					StudyTreeAddFolderWindow.this.targetTree.setItemCaption(newFolderId, newFolderName);
+					StudyTreeAddFolderWindow.this.targetTree.setItemIcon(newFolderId,
+							new ThemeResource("../vaadin-retro/svg/folder-icon.svg"));
+					StudyTreeAddFolderWindow.this.targetTree.setChildrenAllowed(newFolderId, true);
 
-					if (DmsProject.SYSTEM_FOLDER_ID.equals(parentItemId)) {
-						targetTree.setChildrenAllowed(StudyTree.STUDY_ROOT_NODE, true);
-						targetTree.setParent(newFolderId, StudyTree.STUDY_ROOT_NODE);
+					if (DmsProject.SYSTEM_FOLDER_ID.equals(StudyTreeAddFolderWindow.this.parentItemId)) {
+						StudyTreeAddFolderWindow.this.targetTree.setChildrenAllowed(StudyTree.STUDY_ROOT_NODE, true);
+						StudyTreeAddFolderWindow.this.targetTree.setParent(newFolderId, StudyTree.STUDY_ROOT_NODE);
 					} else {
-						targetTree.setChildrenAllowed(Integer.valueOf(parentFolderId), true);
-						targetTree.setParent(newFolderId, Integer.valueOf(parentFolderId));
+						StudyTreeAddFolderWindow.this.targetTree.setChildrenAllowed(Integer.valueOf(parentFolderId), true);
+						StudyTreeAddFolderWindow.this.targetTree.setParent(newFolderId, Integer.valueOf(parentFolderId));
 					}
 
-					if (targetTree.getValue() != null) {
-						if (!targetTree.isExpanded(targetTree.getValue())) {
-							targetTree.expandItem(parentItemId);
+					if (StudyTreeAddFolderWindow.this.targetTree.getValue() != null) {
+						if (!StudyTreeAddFolderWindow.this.targetTree.isExpanded(StudyTreeAddFolderWindow.this.targetTree.getValue())) {
+							StudyTreeAddFolderWindow.this.targetTree.expandItem(StudyTreeAddFolderWindow.this.parentItemId);
 						}
 					} else {
-						targetTree.expandItem(StudyTree.STUDY_ROOT_NODE);
+						StudyTreeAddFolderWindow.this.targetTree.expandItem(StudyTree.STUDY_ROOT_NODE);
 					}
 
-					targetTree.selectItem(newFolderId);
+					StudyTreeAddFolderWindow.this.targetTree.selectItem(newFolderId);
 				}
 
-				closePopup();
+				StudyTreeAddFolderWindow.this.closePopup();
 			}
 
 		});
-		
+
 		this.cancelButton.addListener(new Button.ClickListener() {
 
 			private static final long serialVersionUID = -6542741100092010158L;
 
 			@Override
 			public void buttonClick(final Button.ClickEvent event) {
-				closePopup();
+				StudyTreeAddFolderWindow.this.closePopup();
 
 			}
 		});
-		
+
 	}
-	
+
 	void closePopup() {
 		final Window parentWindow = StudyTreeAddFolderWindow.this.getParent();
 		parentWindow.focus();
 		parentWindow.removeWindow(StudyTreeAddFolderWindow.this);
 	}
 
-	
 	protected Object getParentItemId() {
-		return parentItemId;
+		return this.parentItemId;
 	}
 
-	
 	protected StudyTree getTargetTree() {
-		return targetTree;
+		return this.targetTree;
 	}
 
-	
 	protected Button getOkButton() {
-		return okButton;
+		return this.okButton;
 	}
 
-	
 	protected Button getCancelButton() {
-		return cancelButton;
+		return this.cancelButton;
 	}
 
-	
 	protected TextField getFolderTextField() {
-		return folderTextField;
+		return this.folderTextField;
 	}
 
-	
-	protected void setContextUtil(ContextUtil contextUtil) {
+	protected void setContextUtil(final ContextUtil contextUtil) {
 		this.contextUtil = contextUtil;
 	}
 
-	
-	protected void setStudyDataManager(StudyDataManager studyDataManager) {
+	protected void setStudyDataManager(final StudyDataManager studyDataManager) {
 		this.studyDataManager = studyDataManager;
 	}
 
-	
-	protected void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+	protected void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
 
-	
-	protected void setTargetTree(StudyTree targetTree) {
+	protected void setTargetTree(final StudyTree targetTree) {
 		this.targetTree = targetTree;
 	}
 
-	
-	protected void setValidator(StudyFolderNameValidator validator) {
+	protected void setValidator(final StudyFolderNameValidator validator) {
 		this.validator = validator;
 	}
-	
 
 }

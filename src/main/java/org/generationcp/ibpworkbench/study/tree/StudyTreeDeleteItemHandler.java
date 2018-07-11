@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.study.tree;
 
 import org.generationcp.commons.spring.util.ContextUtil;
@@ -18,45 +19,43 @@ import com.vaadin.ui.Window;
 
 @Configurable
 public class StudyTreeDeleteItemHandler {
-	
+
 	protected final class DeleteItemConfirmHandler implements ConfirmDialog.Listener {
 
 		private final Integer studyId;
 		private static final long serialVersionUID = 1L;
 
-		protected DeleteItemConfirmHandler(Integer studyId) {
+		protected DeleteItemConfirmHandler(final Integer studyId) {
 			this.studyId = studyId;
 		}
 
 		@Override
 		public void onClose(final ConfirmDialog dialog) {
 			if (dialog.isConfirmed()) {
-				performDeleteAction(studyId);
+				StudyTreeDeleteItemHandler.this.performDeleteAction(this.studyId);
 			}
 		}
 	}
 
 	private static final Logger LOG = LoggerFactory.getLogger(StudyTreeDeleteItemHandler.class);
-	
+
 	private static final String NO_SELECTION = "Please select a folder item";
 	private static final String NOT_FOLDER = "Selected item is not a folder.";
 	private static final String HAS_CHILDREN = "Folder has child items.";
-	
+
 	@Autowired
 	private StudyDataManager studyDataManager;
-	
+
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
-	
+
 	@Autowired
 	private ContextUtil contextUtil;
 
 	private StudyTree targetTree;
 	private StudyTreeButtonsPanel buttonsPanel;
-	private Window parentWindow;
-	
-	
-	
+	private final Window parentWindow;
+
 	public StudyTreeDeleteItemHandler(final StudyTree targetTree, final StudyTreeButtonsPanel buttonsPanel, final Window parentWindow) {
 		super();
 		this.targetTree = targetTree;
@@ -65,10 +64,7 @@ public class StudyTreeDeleteItemHandler {
 	}
 
 	/**
-	 * Checks if given id is: 
-	 * 1. existing in the database 
-	 * 2. is a folder and 
-	 * 3. does not has have children items
+	 * Checks if given id is: 1. existing in the database 2. is a folder and 3. does not has have children items
 	 *
 	 * If any of the checking failed, throws exception
 	 *
@@ -77,7 +73,7 @@ public class StudyTreeDeleteItemHandler {
 	 */
 	void validateItemForDeletion(final Integer id) throws GermplasmStudyBrowserException {
 		if (id == null) {
-			throw new GermplasmStudyBrowserException(NO_SELECTION);
+			throw new GermplasmStudyBrowserException(StudyTreeDeleteItemHandler.NO_SELECTION);
 		}
 		DmsProject project = null;
 
@@ -85,7 +81,7 @@ public class StudyTreeDeleteItemHandler {
 			project = this.studyDataManager.getProject(id);
 
 		} catch (final MiddlewareQueryException e) {
-			LOG.error(e.getMessage(), e);
+			StudyTreeDeleteItemHandler.LOG.error(e.getMessage(), e);
 			throw new GermplasmStudyBrowserException(this.messageSource.getMessage(Message.ERROR_DATABASE));
 		}
 
@@ -94,25 +90,25 @@ public class StudyTreeDeleteItemHandler {
 		}
 
 		if (!this.targetTree.isFolder(id)) {
-			throw new GermplasmStudyBrowserException(NOT_FOLDER);
+			throw new GermplasmStudyBrowserException(StudyTreeDeleteItemHandler.NOT_FOLDER);
 		}
 
 		if (this.targetTree.hasChildStudy(id)) {
-			throw new GermplasmStudyBrowserException(HAS_CHILDREN);
+			throw new GermplasmStudyBrowserException(StudyTreeDeleteItemHandler.HAS_CHILDREN);
 		}
 
 	}
-	
+
 	/**
 	 * Performs validations on folder to be deleted. If folder can be deleted, deletes it from database and adjusts tree view
-	 * 
+	 *
 	 * @param studyId
 	 */
 	public void showConfirmDeletionDialog(final Integer studyId) {
 		try {
 			this.validateItemForDeletion(studyId);
 		} catch (final GermplasmStudyBrowserException e) {
-			LOG.error(e.getMessage(), e);
+			StudyTreeDeleteItemHandler.LOG.error(e.getMessage(), e);
 			MessageNotifier.showError(this.targetTree.getWindow(), this.messageSource.getMessage(Message.ERROR), e.getMessage());
 			return;
 		}
@@ -121,59 +117,52 @@ public class StudyTreeDeleteItemHandler {
 				this.messageSource.getMessage(Message.DELETE_ITEM_CONFIRM), this.messageSource.getMessage(Message.YES),
 				this.messageSource.getMessage(Message.NO), new DeleteItemConfirmHandler(studyId));
 	}
-	
+
 	protected void performDeleteAction(final Integer studyId) {
 		try {
 
-			final DmsProject parent = studyDataManager.getParentFolder(studyId);
-			final String programUUID = contextUtil.getProjectInContext().getUniqueID();
-			studyDataManager.deleteEmptyFolder(studyId, programUUID);
+			final DmsProject parent = this.studyDataManager.getParentFolder(studyId);
+			final String programUUID = this.contextUtil.getProjectInContext().getUniqueID();
+			this.studyDataManager.deleteEmptyFolder(studyId, programUUID);
 
-			targetTree.removeItem(targetTree.getValue());
+			this.targetTree.removeItem(this.targetTree.getValue());
 			if (parent != null) {
 				final Integer parentId = parent.getProjectId();
 				if (DmsProject.SYSTEM_FOLDER_ID.equals(parentId)) {
-					targetTree.selectItem(StudyTree.STUDY_ROOT_NODE);
+					this.targetTree.selectItem(StudyTree.STUDY_ROOT_NODE);
 				} else {
-					targetTree.selectItem(parentId);
-					targetTree.expandItem(parentId);
+					this.targetTree.selectItem(parentId);
+					this.targetTree.expandItem(parentId);
 				}
 			}
-			targetTree.setImmediate(true);
-			buttonsPanel.updateButtons(targetTree.getValue());
+			this.targetTree.setImmediate(true);
+			this.buttonsPanel.updateButtons(this.targetTree.getValue());
 
 		} catch (final MiddlewareQueryException e) {
-			LOG.error(e.getMessage(), e);
-			MessageNotifier.showError(targetTree.getWindow(),
-					messageSource.getMessage(Message.ERROR_DATABASE),
-					messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
+			StudyTreeDeleteItemHandler.LOG.error(e.getMessage(), e);
+			MessageNotifier.showError(this.targetTree.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
+					this.messageSource.getMessage(Message.ERROR_IN_GETTING_STUDIES_BY_PARENT_FOLDER_ID));
 		}
 	}
 
-	
-	protected void setTargetTree(StudyTree targetTree) {
+	protected void setTargetTree(final StudyTree targetTree) {
 		this.targetTree = targetTree;
 	}
 
-	
-	protected void setButtonsPanel(StudyTreeButtonsPanel buttonsPanel) {
+	protected void setButtonsPanel(final StudyTreeButtonsPanel buttonsPanel) {
 		this.buttonsPanel = buttonsPanel;
 	}
 
-	
-	protected void setStudyDataManager(StudyDataManager studyDataManager) {
+	protected void setStudyDataManager(final StudyDataManager studyDataManager) {
 		this.studyDataManager = studyDataManager;
 	}
 
-	
-	protected void setContextUtil(ContextUtil contextUtil) {
+	protected void setContextUtil(final ContextUtil contextUtil) {
 		this.contextUtil = contextUtil;
 	}
 
-	
-	protected void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+	protected void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
-
 
 }

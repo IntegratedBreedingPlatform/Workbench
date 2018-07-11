@@ -27,7 +27,7 @@ public class StudyTreeCollapseListener implements Tree.CollapseListener {
 	}
 
 	@Override
-	public void nodeCollapse(CollapseEvent event) {
+	public void nodeCollapse(final CollapseEvent event) {
 		this.source.selectItem(event.getItemId());
 	}
 

@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.study;
 
 import java.util.Iterator;
@@ -15,20 +16,17 @@ public class StudyTabSheet extends TabSheet {
 
 	private static final long serialVersionUID = 1L;
 
-
 	public void createStudyInfoTab(final int studyId, final String studyName, final StudyBrowserMainLayout mainLayout) {
 		final VerticalLayout layout = new VerticalLayout();
 
-		layout.addComponent(new StudyAccordionMenu(studyId, new StudyDetailComponent(studyId), 
-				false, false));
+		layout.addComponent(new StudyAccordionMenu(studyId, new StudyDetailComponent(studyId), false, false));
 		final Tab tab = this.addTab(layout, studyName, null);
 		tab.setClosable(true);
 
 		this.setSelectedTab(layout);
 		this.setCloseHandler(new StudyBrowserTabCloseHandler(mainLayout));
 	}
-	
-	
+
 	public void renameStudyTab(final String oldName, final String newName) {
 		final Tab studyTab = Util.getTabAlreadyExist(this, oldName);
 		if (studyTab != null) {

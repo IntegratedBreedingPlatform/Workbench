@@ -28,7 +28,6 @@ public class StudyTreeDragAndDropHandler implements Serializable {
 	private static final long serialVersionUID = -4427723835290060592L;
 	private static final Logger LOG = LoggerFactory.getLogger(StudyTreeDragAndDropHandler.class);
 
-	
 	private static final String HAS_CHILDREN = "Folder has child items.";
 
 	@Autowired
@@ -36,7 +35,7 @@ public class StudyTreeDragAndDropHandler implements Serializable {
 
 	@Autowired
 	private StudyDataManager studyDataManager;
-	
+
 	private final StudyTree targetTree;
 
 	public StudyTreeDragAndDropHandler(final StudyTree targetTree) {
@@ -63,7 +62,7 @@ public class StudyTreeDragAndDropHandler implements Serializable {
 					StudyTreeDragAndDropHandler.HAS_CHILDREN);
 			return false;
 		}
-		
+
 		if (StudyTree.STUDY_ROOT_NODE.equals(targetItemId)) {
 			targetId = DmsProject.SYSTEM_FOLDER_ID;
 		} else if (targetItemId != null) {
