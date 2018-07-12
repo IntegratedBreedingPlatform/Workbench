@@ -10,6 +10,8 @@ import { SampleService } from './sample.service';
 // import { ITEMS_PER_PAGE } from '../../shared';
 import { Principal, ITEMS_PER_PAGE } from '../../shared';
 import { SampleList } from './sample-list.model';
+import { SampleListService } from './sample-list.service';
+import { FileDownloadHelper } from './file-download.helper';
 
 @Component({
     selector: 'jhi-sample',
@@ -41,13 +43,15 @@ export class SampleComponent implements OnInit, OnDestroy {
 
     constructor(
         private sampleService: SampleService,
+        private sampleListService: SampleListService,
         private languageservice: JhiLanguageService,
         // private parseLinks: JhiParseLinks,
         private jhiAlertService: JhiAlertService,
         private principal: Principal,
         private activatedRoute: ActivatedRoute,
         private router: Router,
-        private eventManager: JhiEventManager
+        private eventManager: JhiEventManager,
+        private fileDownloadHelper: FileDownloadHelper
     ) {
         this.itemsPerPage = ITEMS_PER_PAGE;
 
@@ -126,6 +130,14 @@ export class SampleComponent implements OnInit, OnDestroy {
             sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
         }]);
         this.loadAll();
+    }
+    export() {
+        this.sampleListService.download(this.sampleList.id, this.sampleList.listName).subscribe((response) => {
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(response.body);
+            link.download = this.fileDownloadHelper.getFileNameFromResponseContentDisposition(response);
+            link.click();
+        })
     }
     ngOnInit() {
         this.loadAll();
