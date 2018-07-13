@@ -11,23 +11,24 @@
 
 package org.generationcp.ibpworkbench.study;
 
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TabSheet.Tab;
-import com.vaadin.ui.VerticalLayout;
+import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.GermplasmStudyBrowserLayout;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.cross.study.util.StudyBrowserTabCloseHandler;
 import org.generationcp.ibpworkbench.util.Util;
-import org.generationcp.commons.exceptions.InternationalizableException;
-import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.TabSheet.Tab;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  *
@@ -68,7 +69,7 @@ public class StudySearchMainComponent extends HorizontalLayout implements Initia
 
 	@Override
 	public void instantiateComponents() {
-		this.tabSheetStudy = this.studyBrowserMain.getCombinedStudyTreeComponent().getTabSheetStudy();
+		this.tabSheetStudy = this.studyBrowserMain.getBrowseTreeComponent().getTabSheetStudy();
 		this.searchInputComponent = new StudySearchInputComponent(this);
 		this.searchResultComponent = new StudySearchResultComponent(this);
 	}
@@ -121,8 +122,7 @@ public class StudySearchMainComponent extends HorizontalLayout implements Initia
 		VerticalLayout layout = new VerticalLayout();
 
 		if (!Util.isTabExist(this.tabSheetStudy, this.getStudyName(studyId))) {
-			layout.addComponent(new StudyAccordionMenu(studyId, new StudyDetailComponent(this.studyDataManager, studyId),
-					this.studyDataManager, false, false));
+			layout.addComponent(new StudyAccordionMenu(studyId, new StudyDetailComponent(studyId), false, false));
 			Tab tab = this.tabSheetStudy.addTab(layout, this.getStudyName(studyId), null);
 			tab.setClosable(true);
 
