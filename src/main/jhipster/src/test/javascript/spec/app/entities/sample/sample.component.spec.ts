@@ -84,17 +84,13 @@ describe('Component Tests', () => {
                 }).and.returnValue(Observable.of(httpResponse));
 
                 spyOn(fileDownloadHelper, 'getFileNameFromResponseContentDisposition').and.returnValue(fileName);
-
-                const link = document.createElement('a');
-                document.createElement = jasmine.createSpy('a').and.returnValue(link);
-                spyOn(link, 'click');
+                spyOn(fileDownloadHelper, 'save').and.callThrough();
 
                 comp.export();
 
                 expect(sampleListService.download).toHaveBeenCalled();
                 expect(fileDownloadHelper.getFileNameFromResponseContentDisposition).toHaveBeenCalled();
-                expect(link.click).toHaveBeenCalled();
-                expect(link.download).toEqual(fileName);
+                expect(fileDownloadHelper.save).toHaveBeenCalled();
 
             });
 

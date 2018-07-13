@@ -133,10 +133,10 @@ export class SampleComponent implements OnInit, OnDestroy {
     }
     export() {
         this.sampleListService.download(this.sampleList.id, this.sampleList.listName).subscribe((response) => {
-            const link = document.createElement('a');
-            link.href = window.URL.createObjectURL(response.body);
-            link.download = this.fileDownloadHelper.getFileNameFromResponseContentDisposition(response);
-            link.click();
+
+            const fileName = this.fileDownloadHelper.getFileNameFromResponseContentDisposition(response);
+            this.fileDownloadHelper.save(response.body, fileName);
+
         })
     }
     ngOnInit() {

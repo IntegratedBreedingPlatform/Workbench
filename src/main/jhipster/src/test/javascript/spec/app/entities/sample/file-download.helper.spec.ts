@@ -25,6 +25,23 @@ describe('File Download Helper Test', () => {
             expect(result).toEqual(testFileName);
 
         });
+
+        it('Should save the blob in the browser', () => {
+
+            const blob: Blob = new Blob();
+            const fileName = 'fileName.csv';
+
+            const link = document.createElement('a');
+            spyOn(link, 'click');
+
+            document.createElement = jasmine.createSpy('a').and.returnValue(link);
+
+            fileDownloadHelper.save(blob, fileName);
+
+            expect(link.click).toHaveBeenCalled();
+            expect(link.download).toEqual(fileName);
+
+        });
     });
 
 });
