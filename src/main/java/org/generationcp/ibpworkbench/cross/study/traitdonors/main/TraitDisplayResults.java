@@ -1,6 +1,7 @@
 
 package org.generationcp.ibpworkbench.cross.study.traitdonors.main;
 
+import com.jensjansson.pagedtable.PagedTable;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.AbsoluteLayout;
@@ -100,9 +101,9 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 	private GermplasmDataManager germplasmDataManager;
 	
 	private AbsoluteLayout resultsTable;
-	private Table germplasmColTable;
-	private Table traitsColTable;
-	private Table combinedScoreTagColTable;
+	private PagedTable germplasmColTable;
+	private PagedTable traitsColTable;
+	private PagedTable combinedScoreTagColTable;
 
 	private Integer noOfTraitColumns;
 	private List<String> columnHeaders;
@@ -250,7 +251,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 	}
 
 	protected void createCombinedScoreTagColTable() {
-		this.combinedScoreTagColTable = new Table();
+		this.combinedScoreTagColTable = new PagedTable();
 		this.combinedScoreTagColTable.setDebugId("combinedScoreTagColTable");
 		this.combinedScoreTagColTable.setWidth("160px");
 		this.combinedScoreTagColTable.setHeight(GERMPLASM_COL_TABLE_HEIGHT);
@@ -261,7 +262,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 	}
 
 	protected void createTraitsColTable() {
-		this.traitsColTable = new Table();
+		this.traitsColTable = new PagedTable();
 		this.traitsColTable.setDebugId("traitsColTable");
 		this.traitsColTable.setWidth("490px");
 		this.traitsColTable.setHeight(GERMPLASM_COL_TABLE_HEIGHT);
@@ -272,7 +273,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 	}
 
 	protected void createGermplasmColTable() {
-		this.germplasmColTable = new Table();
+		this.germplasmColTable = new PagedTable();
 		this.germplasmColTable.setDebugId("germplasmColTable");
 		this.germplasmColTable.setWidth(GERMPLASM_COL_TABLE_WIDTH);
 		this.germplasmColTable.setHeight(GERMPLASM_COL_TABLE_HEIGHT);
@@ -382,7 +383,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 	}
 
-	public Table createResultsTable(Table resultTable) {
+	public PagedTable createResultsTable(PagedTable resultTable) {
 		resultTable.addContainerProperty(TraitDisplayResults.LINE_NO, Integer.class, null);
 		resultTable.addContainerProperty(TraitDisplayResults.LINE_GID, Button.class, null);
 		resultTable.addContainerProperty(TraitDisplayResults.LINE_DESIGNATION, String.class, null);
@@ -465,15 +466,10 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		return "DisplayResults " + name + traitId + " " + traitType.toString().toLowerCase();
 	}
 
-	public void populateRowsResultsTable(Table resultTable, Integer noOfColumns) {
+	public void populateRowsResultsTable(PagedTable resultTable, Integer noOfColumns) {
 		int lineNo = this.currentLineIndex + 1;
-		int endOfListIndex = this.currentLineIndex + 15;
-
-		if (endOfListIndex > this.tableRows.size()) {
-			endOfListIndex = this.tableRows.size();
-		}
-
-		for (TableResultRow row : this.tableRows.subList(this.currentLineIndex, endOfListIndex)) {
+		
+		for (TableResultRow row : this.tableRows) {
 			int gid = row.getGermplasmId();
 			String germplasmName = this.germplasmIdNameMap.get(gid);
 
@@ -897,32 +893,21 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 	public void nextEntryButtonClickAction() {
 		if (this.currentLineIndex + 15 <= this.tableRows.size()) {
-			this.germplasmColTable.removeAllItems();
-			this.traitsColTable.removeAllItems();
-			this.combinedScoreTagColTable.removeAllItems();
-
+			this.germplasmColTable.nextPage();
+			this.traitsColTable.nextPage();
+			this.combinedScoreTagColTable.nextPage();
 			this.currentLineIndex += 15;
-
-			int noOfColumns = this.noOfTraitColumns + 5;
-			this.populateRowsResultsTable(this.germplasmColTable, noOfColumns);
-			this.populateRowsResultsTable(this.traitsColTable, noOfColumns);
-			this.populateRowsResultsTable(this.combinedScoreTagColTable, noOfColumns);
 		} else {
 			MessageNotifier.showWarning(this.getWindow(), "Notification", "No More Rows to display.");
 		}
 	}
 
 	public void prevEntryButtonClickAction() {
-		this.currentLineIndex -= 15;
-		if (this.currentLineIndex >= 0) {
-			this.germplasmColTable.removeAllItems();
-			this.traitsColTable.removeAllItems();
-			this.combinedScoreTagColTable.removeAllItems();
-
-			int noOfColumns = this.noOfTraitColumns + 5;
-			this.populateRowsResultsTable(this.germplasmColTable, noOfColumns);
-			this.populateRowsResultsTable(this.traitsColTable, noOfColumns);
-			this.populateRowsResultsTable(this.combinedScoreTagColTable, noOfColumns);
+		if (this.currentLineIndex - 15  >= 0) {
+			this.currentLineIndex -= 15;
+			this.germplasmColTable.previousPage();
+			this.traitsColTable.previousPage();
+			this.combinedScoreTagColTable.previousPage();
 		} else {
 			this.currentLineIndex = 0;
 			MessageNotifier.showWarning(this.getWindow(), "Notification", "No More Rows to preview.");
@@ -932,7 +917,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 	public void backButtonClickAction() {
 		this.mainScreen.selectSecondTab();
 	}
-
+	
 	public void saveButtonClickAction() {
 		this.openDialogSaveList();
 	}
@@ -1050,15 +1035,35 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		return this.resultsTable;
 	}
 	
-	public Table getCreateCombinedScoreTagColTable() {
+	public PagedTable getCreateCombinedScoreTagColTable() {
 		return this.combinedScoreTagColTable;
 	}
 	
-	public Table getGermplasmColTable() {
+	public PagedTable getGermplasmColTable() {
 		return this.germplasmColTable;
 	}
 	
-	public Table getTraitsColTable() {
+	public PagedTable getTraitsColTable() {
 		return this.traitsColTable;
+	}
+	
+	public void setTableRows(final List<TableResultRow> tableRows) {
+		this.tableRows = tableRows;
+	}
+	
+	public void setCurrentLineIndex(final Integer currentLineIndex) {
+		this.currentLineIndex = currentLineIndex;
+	}
+	
+	public void setGermplasmIdNameMap(final Map<Integer, String> germplasmIdNameMap) {
+		this.germplasmIdNameMap = germplasmIdNameMap;
+	}
+	
+	public void setSelectedGermplasmMap(final Map<Integer, String> selectedGermplasmMap) {
+		this.selectedGermplasmMap = selectedGermplasmMap;
+	}
+	
+	public Integer getCurrentLineIndex() {
+		return this.currentLineIndex;
 	}
 }
