@@ -11,11 +11,14 @@
 
 package org.generationcp.ibpworkbench;
 
-import com.vaadin.terminal.Terminal;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Window;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.dellroad.stuff.vaadin.ContextApplication;
 import org.dellroad.stuff.vaadin.SpringContextApplication;
+import org.generationcp.commons.hibernate.util.HttpRequestAwareUtil;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.cross.study.adapted.main.QueryForAdaptedGermplasmMain;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.HeadToHeadCrossStudyMain;
 import org.generationcp.ibpworkbench.cross.study.traitdonors.main.TraitDonorsQueryMain;
@@ -24,13 +27,8 @@ import org.generationcp.ibpworkbench.germplasm.GermplasmQueries;
 import org.generationcp.ibpworkbench.study.StudyAccordionMenu;
 import org.generationcp.ibpworkbench.study.StudyBrowserMain;
 import org.generationcp.ibpworkbench.study.StudyDetailComponent;
-import org.generationcp.ibpworkbench.study.StudyTreeComponent;
+import org.generationcp.ibpworkbench.study.tree.BrowseStudyTreeComponent;
 import org.generationcp.ibpworkbench.util.awhere.AWhereFormComponent;
-import org.generationcp.commons.hibernate.DynamicManagerFactoryProviderConcurrency;
-import org.generationcp.commons.hibernate.util.HttpRequestAwareUtil;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +37,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.vaadin.terminal.Terminal;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Window;
 
 /**
  * The main Vaadin application class for the project.
@@ -67,15 +66,9 @@ public class GermplasmStudyBrowserApplication extends SpringContextApplication i
 	private Window window;
 
 	@Autowired
-	private DynamicManagerFactoryProviderConcurrency managerFactoryProvider;
-
-	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
 	private ApplicationContext applicationContext;
-
-	@Autowired
-	private StudyDataManager studyDataManager;
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) {
@@ -129,7 +122,7 @@ public class GermplasmStudyBrowserApplication extends SpringContextApplication i
 					this.addWindow(studyBrowserWindow);
 				}
 
-				StudyTreeComponent studyTreeComponent = null;
+				BrowseStudyTreeComponent studyTreeComponent = null;
 
 				try {
 					studyId = Integer.parseInt(studyIdPart);
@@ -140,15 +133,9 @@ public class GermplasmStudyBrowserApplication extends SpringContextApplication i
 					return studyBrowserWindow;
 				}
 
-				studyTreeComponent = studyBrowserMain.getCombinedStudyTreeComponent();
-
-				if (studyTreeComponent.studyExists(studyId)) {
-					studyTreeComponent.studyTreeItemClickAction(studyId);
-					studyTreeComponent.showChild(studyId);
-				} else {
-					MessageNotifier.showError(this.getWindow(windowName), this.messageSource.getMessage(Message.ERROR_INTERNAL),
-							this.messageSource.getMessage(Message.NO_STUDIES_FOUND));
-				}
+				studyTreeComponent = studyBrowserMain.getBrowseTreeComponent();
+				studyTreeComponent.openStudy(studyId);
+				
 				return studyBrowserWindow;
 
 			} else if (name.startsWith(GermplasmStudyBrowserApplication.STUDY_DETAILS_PREFIX)) {
@@ -160,7 +147,7 @@ public class GermplasmStudyBrowserApplication extends SpringContextApplication i
 					studyDetailsWindow.setSizeUndefined();
 					// TODO should disable export functions for this screen
 					studyDetailsWindow.addComponent(new StudyAccordionMenu(studyId,
-							new StudyDetailComponent(this.studyDataManager, studyId), this.studyDataManager, true, false));
+							new StudyDetailComponent(studyId), true, false));
 					this.addWindow(studyDetailsWindow);
 					return studyDetailsWindow;
 				} catch (Exception ex) {

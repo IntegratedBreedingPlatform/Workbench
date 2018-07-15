@@ -2,6 +2,8 @@
 package org.generationcp.ibpworkbench.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -222,5 +224,39 @@ public class ProgramService {
 	public void setInstallationDirectoryUtil(final InstallationDirectoryUtil installationDirectoryUtil) {
 		this.installationDirectoryUtil = installationDirectoryUtil;
 	}
-
+	
+	public void updateMembersUserInfo(final Collection<WorkbenchUser> userList, final Project project) {
+		//Addition of new members
+		for (WorkbenchUser u : userList) {
+			if (this.workbenchDataManager.getProjectUserInfoByProjectIdAndUserId(project.getProjectId(),
+					u.getUserid()) == null) {
+				ProjectUserInfo pUserInfo = new ProjectUserInfo(project, u.getUserid());
+				this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
+			}
+		}
+		this.saveWorkbenchUserToCropUserMapping(project, new HashSet<>(userList));
+		
+		//Removal of users
+		final List<Integer> activeUserIds = this.workbenchDataManager.getActiveUserIDsByProjectId(project.getProjectId());
+		final List<Integer> removedUserIds = this.getRemovedUserIds(activeUserIds, userList);
+		if(!removedUserIds.isEmpty()) {
+			List<ProjectUserInfo> projectUserInfos = this.workbenchDataManager.getProjectUserInfoByProjectIdAndUserIds(project.getProjectId(), removedUserIds);
+			this.workbenchDataManager.deleteProjectUserInfos(projectUserInfos);
+		}
+	}
+	
+	public List<Integer> getRemovedUserIds(List<Integer> activeUserIds, Collection<WorkbenchUser> userList) {
+		List<Integer> removedUserIds = new ArrayList<>();
+		for(Integer activeUserId: activeUserIds) {
+			boolean isProgramMember = false;
+			for(WorkbenchUser user: userList) {
+				if(user.getUserid().equals(activeUserId)) {
+					isProgramMember = true;
+					break;
+				}
+			}
+			if(!isProgramMember) removedUserIds.add(activeUserId);
+		}
+		return removedUserIds;
+	}
 }

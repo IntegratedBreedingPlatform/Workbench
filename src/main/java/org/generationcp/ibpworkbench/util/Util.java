@@ -11,26 +11,26 @@
 
 package org.generationcp.ibpworkbench.util;
 
+import java.io.File;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.dellroad.stuff.vaadin.ContextApplication;
+import org.generationcp.ibpworkbench.exception.GermplasmStudyBrowserException;
+import org.generationcp.middleware.domain.oms.TermId;
+
 import com.vaadin.Application;
 import com.vaadin.terminal.FileResource;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Window;
-import org.apache.commons.lang3.ArrayUtils;
-import org.dellroad.stuff.vaadin.ContextApplication;
-import org.generationcp.ibpworkbench.exception.GermplasmStudyBrowserException;
-import org.generationcp.middleware.domain.oms.TermId;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 
 public class Util {
 
 	public static final String USER_HOME = "user.home";
-	private final static Logger LOG = LoggerFactory.getLogger(Util.class);
 
 	public static boolean isTabExist(TabSheet tabSheet, String tabCaption) {
 
@@ -110,9 +110,11 @@ public class Util {
 	public static boolean isDirectory(String path) {
 		boolean isValid = true;
 		File f = new File(path);
-		if (!f.exists()) { // The directory does not exist
+		// The directory does not exist
+		if (!f.exists()) {
 			isValid = false;
-		} else if (!f.isDirectory()) { // The path is not a directory (it is a file)
+		// The path is not a directory (it is a file)
+		} else if (!f.isDirectory()) {
 			isValid = false;
 		}
 		return isValid;
@@ -178,8 +180,8 @@ public class Util {
 				newPath = "";
 			}
 		}
-
-		if (newPath.equals("")) { // already at the root directory
+		// already at the root directory
+		if (StringUtils.isEmpty(newPath)) {
 			newPath = File.separator;
 		}
 

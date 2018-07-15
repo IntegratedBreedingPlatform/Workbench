@@ -99,7 +99,7 @@ public class StudyBrowserMainLayout extends HorizontalLayout implements Initiali
 
 	public void showDetailsLayout() {
 		this.studyDetailsLayout.setVisible(true);
-		if (this.studyBrowserMain.getCombinedStudyTreeComponent().getTabSheetStudy().getComponentCount() > 1) {
+		if (this.studyBrowserMain.getBrowseTreeComponent().getTabSheetStudy().getComponentCount() > 1) {
 			this.closeAllTabsButton.setVisible(true);
 		}
 	}
@@ -110,7 +110,7 @@ public class StudyBrowserMainLayout extends HorizontalLayout implements Initiali
 	}
 
 	public void closeAllDetailTabs() {
-		Util.closeAllTab(this.studyBrowserMain.getCombinedStudyTreeComponent().getTabSheetStudy());
+		Util.closeAllTab(this.studyBrowserMain.getBrowseTreeComponent().getTabSheetStudy());
 		this.hideDetailsLayout();
 	}
 }

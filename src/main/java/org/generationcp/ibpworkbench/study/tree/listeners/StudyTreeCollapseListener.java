@@ -9,30 +9,26 @@
  *
  *******************************************************************************/
 
-package org.generationcp.ibpworkbench.study.listeners;
+package org.generationcp.ibpworkbench.study.tree.listeners;
 
-import com.vaadin.ui.Layout;
+import org.generationcp.ibpworkbench.study.tree.StudyTree;
+
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.Tree.CollapseEvent;
-import org.generationcp.ibpworkbench.study.StudyTreeComponent;
 
 public class StudyTreeCollapseListener implements Tree.CollapseListener {
 
 	private static final long serialVersionUID = -5091664285613837786L;
 
-	private final Layout source;
+	private final StudyTree source;
 
-	public StudyTreeCollapseListener(Layout source) {
-		this.source = source;
+	public StudyTreeCollapseListener(final StudyTree tree) {
+		this.source = tree;
 	}
 
 	@Override
-	public void nodeCollapse(CollapseEvent event) {
-		if (this.source instanceof StudyTreeComponent) {
-			((StudyTreeComponent) this.source).getStudyTree().select(event.getItemId());
-			((StudyTreeComponent) this.source).getStudyTree().setValue(event.getItemId());
-			((StudyTreeComponent) this.source).updateButtons(event.getItemId());
-		}
+	public void nodeCollapse(final CollapseEvent event) {
+		this.source.selectItem(event.getItemId());
 	}
 
 }

@@ -20,6 +20,7 @@ import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -32,6 +33,9 @@ public class StudyDetailComponent extends GridLayout implements InitializingBean
 	@SuppressWarnings("unused")
 	private static final Logger LOG = LoggerFactory.getLogger(StudyDetailComponent.class);
 	private static final long serialVersionUID = 1738426765643928293L;
+	
+	@Autowired
+	private StudyDataManager studyDataManager;
 
 	private Label lblName;
 	private Label lblTitle;
@@ -47,14 +51,12 @@ public class StudyDetailComponent extends GridLayout implements InitializingBean
 	private Label studyStartDate;
 	private Label studyEndDate;
 
-	private final org.generationcp.middleware.manager.api.StudyDataManager studyDataManager;
 	private final int studyId;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	public StudyDetailComponent(org.generationcp.middleware.manager.api.StudyDataManager studyDataManager, int studyId) {
-		this.studyDataManager = studyDataManager;
+	public StudyDetailComponent(int studyId) {
 		this.studyId = studyId;
 	}
 
