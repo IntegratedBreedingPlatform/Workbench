@@ -31,10 +31,26 @@
 	-->
 	<br/>
 	<div>
-		<span class="control-label">Total Entries: </span>
-		<span class="control-label control-label-bold ">{{totalItems}}</span>
 	</div>
 	<br/>
+	<div class="row">
+		<div class="col-xs-11 col-md-11">
+			<span class="control-label">Total Entries: </span>
+			<span class="control-label control-label-bold ">{{totalItems}}</span>
+		</div>
+		<div class="col-xs-1 col-md-1">
+			<div class="btn-group">
+				<button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" id="listActionButton">
+					<span>Actions</span>
+				</button>
+				<ul class="dropdown-menu dropdown-menu-right">
+					<li>
+						<a (click)="export()">Export list</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
 	<div class="row">
 		<div style="float: left; padding-left: 15px;">
 			<select [(ngModel)]="itemsPerPage" (change)="loadAll()">

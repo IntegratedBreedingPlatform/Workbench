@@ -78,6 +78,23 @@ describe('Service Tests', () => {
                 });
 
             });
+
+            it('should call correct URL for download', () => {
+
+                const listId = 1;
+                const listName = 'listName';
+
+                service.download(listId, listName).subscribe(() => {});
+
+                const req = httpMock.expectOne({ method: 'GET' });
+                const resourceUrl = SERVER_API_URL + `sampleLists/${crop}/download`;
+
+                console.log('myurl:' + req.request.url);
+                expect(req.request.url).toEqual(resourceUrl);
+
+                const expectedParams = 'listId=1&listName=listName';
+                expect(req.request.params.toString()).toBe(expectedParams);
+            });
         });
 
         afterEach(() => {
