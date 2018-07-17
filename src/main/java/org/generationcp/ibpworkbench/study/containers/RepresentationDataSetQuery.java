@@ -164,8 +164,8 @@ public class RepresentationDataSetQuery implements Query {
 						this.setAcceptedItemProperty(value, variable.getVariableType().getStandardVariable(), item, columnId);
 						if (value != null) {
 							try {
-								Double doubleValue = Double.valueOf(value);
-								if (doubleValue % 1.0 > 0) {
+								double doubleValue = Double.parseDouble(value);
+								if (Math.round(doubleValue) != doubleValue) {
 									item.addItemProperty(columnId, new ObjectProperty<String>(value));
 								} else {
 									item.addItemProperty(columnId, new ObjectProperty<String>(String.format("%.0f", doubleValue)));
