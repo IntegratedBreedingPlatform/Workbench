@@ -113,7 +113,17 @@ public class RepresentationDataSetQuery implements Query {
 		if (!experiments.isEmpty()) {
 
 			for (Experiment experiment : experiments) {
-				final List<Variable> variables = this.getVariables(experiment);
+				final List<Variable> variables = new ArrayList<>();
+
+				VariableList factors = experiment.getFactors();
+				if (factors != null) {
+					variables.addAll(factors.getVariables());
+				}
+
+				VariableList variates = experiment.getVariates();
+				if (variates != null) {
+					variables.addAll(variates.getVariables());
+				}
 				populateItemMap(itemMap, experiment, variables);
 			}
 		}
@@ -134,6 +144,7 @@ public class RepresentationDataSetQuery implements Query {
 				item = new PropertysetItem();
 				itemMap.put(Integer.valueOf(experiment.getId()), item);
 			}
+			
 			if(variable.getValue() == null) {
 				item.addItemProperty(columnId, null);
 			} else {
@@ -164,21 +175,6 @@ public class RepresentationDataSetQuery implements Query {
 				}
 			}
 		}
-	}
-
-	protected List<Variable> getVariables(Experiment experiment) {
-		List<Variable> variables = new ArrayList<>();
-
-		VariableList factors = experiment.getFactors();
-		if (factors != null) {
-			variables.addAll(factors.getVariables());
-		}
-
-		VariableList variates = experiment.getVariates();
-		if (variates != null) {
-			variables.addAll(variates.getVariables());
-		}
-		return variables;
 	}
 
 	protected boolean setAcceptedItemProperty(String value, StandardVariable standardVariable, Item item, String columnId) {
