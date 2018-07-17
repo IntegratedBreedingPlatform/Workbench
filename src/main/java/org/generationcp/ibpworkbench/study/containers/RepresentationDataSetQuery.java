@@ -97,9 +97,9 @@ public class RepresentationDataSetQuery implements Query {
 	 */
 	@Override
 	public List<Item> loadItems(int start, int numOfRows) {
-		List<Item> items = new ArrayList<Item>();
-		Map<Integer, Item> itemMap = new LinkedHashMap<Integer, Item>();
-		List<Experiment> experiments = new ArrayList<Experiment>();
+		List<Item> items = new ArrayList<>();
+		Map<Integer, Item> itemMap = new LinkedHashMap<>();
+		List<Experiment> experiments = new ArrayList<>();
 
 		try {
 			experiments = this.studyDataManager.getExperiments(this.datasetId, start, numOfRows);
@@ -107,7 +107,7 @@ public class RepresentationDataSetQuery implements Query {
 			// Log error in log file
 			RepresentationDataSetQuery.LOG
 					.error("Error with getting ounitids for representation: " + this.datasetId + "\n" + ex.toString());
-			experiments = new ArrayList<Experiment>();
+			experiments = new ArrayList<>();
 		}
 
 		if (!experiments.isEmpty()) {
@@ -179,10 +179,7 @@ public class RepresentationDataSetQuery implements Query {
 
 	protected boolean setAcceptedItemProperty(String value, StandardVariable standardVariable, Item item, String columnId) {
 		boolean isAccepted = false;
-		if (this.isCategoricalAcceptedValue(value, standardVariable)) {
-			item.addItemProperty(columnId + RepresentationDataSetQuery.IS_ACCEPTED_VALUE_KEY, new ObjectProperty<Boolean>(true));
-			isAccepted = true;
-		} else if (this.isNumericalAcceptedValue(value, standardVariable)) {
+		if (this.isCategoricalAcceptedValue(value, standardVariable) || this.isNumericalAcceptedValue(value, standardVariable)) {
 			item.addItemProperty(columnId + RepresentationDataSetQuery.IS_ACCEPTED_VALUE_KEY, new ObjectProperty<Boolean>(true));
 			isAccepted = true;
 		} else {
@@ -193,7 +190,7 @@ public class RepresentationDataSetQuery implements Query {
 
 	protected boolean isCategoricalAcceptedValue(String displayValue, StandardVariable standardVariable) {
 		if (standardVariable.getDataType().getId() == TermId.CATEGORICAL_VARIABLE.getId() && displayValue != null
-				&& !displayValue.equalsIgnoreCase("") && !RepresentationDataSetQuery.MISSING_VALUE.equals(displayValue)) {
+				&& !displayValue.isEmpty() && !RepresentationDataSetQuery.MISSING_VALUE.equals(displayValue)) {
 			if (standardVariable.getEnumerations() == null) {
 				return true;
 			}
