@@ -9,10 +9,12 @@ import java.util.Map;
 
 import org.generationcp.middleware.data.initializer.DMSVariableTestDataInitializer;
 import org.generationcp.middleware.data.initializer.ExperimentTestDataInitializer;
+import org.generationcp.middleware.data.initializer.StandardVariableTestDataInitializer;
 import org.generationcp.middleware.data.initializer.VariableListTestDataInitializer;
 import org.generationcp.middleware.domain.dms.Enumeration;
 import org.generationcp.middleware.domain.dms.Experiment;
 import org.generationcp.middleware.domain.dms.StandardVariable;
+import org.generationcp.middleware.domain.dms.StandardVariableTest;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableConstraints;
 import org.generationcp.middleware.domain.dms.VariableList;
@@ -45,29 +47,20 @@ public class RepresentationDatasetQueryTest {
 
 	@Test
 	public void testIsCategoricalAcceptedValueIfVariableIsNotCategorical() {
-		StandardVariable standardVariable = new StandardVariable();
-		Term term = new Term();
-		term.setId(TermId.DATE_VARIABLE.getId());
-		standardVariable.setDataType(term);
+		StandardVariable standardVariable = StandardVariableTestDataInitializer.createStandardVariable(TermId.DATE_VARIABLE);
 		Assert.assertFalse("Should return false since its a non categorical variable",
 				this.query.isCategoricalAcceptedValue("1", standardVariable));
 	}
 
 	@Test
 	public void testIsCategoricalAcceptedValueIfVariableIsCategoricalAndDisplayValueIsNull() {
-		StandardVariable standardVariable = new StandardVariable();
-		Term term = new Term();
-		term.setId(TermId.CATEGORICAL_VARIABLE.getId());
-		standardVariable.setDataType(term);
+		StandardVariable standardVariable = StandardVariableTestDataInitializer.createStandardVariable(TermId.CATEGORICAL_VARIABLE);
 		Assert.assertFalse("Should return false since its a value is null", this.query.isCategoricalAcceptedValue(null, standardVariable));
 	}
 
 	@Test
 	public void testIsCategoricalAcceptedValueIfVariableIsCategoricalAndDisplayValueIsNotNullAndMatchingResults() {
-		StandardVariable standardVariable = new StandardVariable();
-		Term term = new Term();
-		term.setId(TermId.CATEGORICAL_VARIABLE.getId());
-		standardVariable.setDataType(term);
+		StandardVariable standardVariable = StandardVariableTestDataInitializer.createStandardVariable(TermId.CATEGORICAL_VARIABLE);
 		List<Enumeration> enumerations = new ArrayList<Enumeration>();
 		enumerations.add(new Enumeration(1, "name", "desc", 1));
 		standardVariable.setEnumerations(enumerations);
@@ -76,10 +69,7 @@ public class RepresentationDatasetQueryTest {
 
 	@Test
 	public void testIsCategoricalAcceptedValueIfVariableIsCategoricalAndDisplayValueIsNotNullAndNoMatchingResults() {
-		StandardVariable standardVariable = new StandardVariable();
-		Term term = new Term();
-		term.setId(TermId.CATEGORICAL_VARIABLE.getId());
-		standardVariable.setDataType(term);
+		StandardVariable standardVariable = StandardVariableTestDataInitializer.createStandardVariable(TermId.CATEGORICAL_VARIABLE);
 		List<Enumeration> enumerations = new ArrayList<Enumeration>();
 		enumerations.add(new Enumeration(1, "name", "desc", 1));
 		standardVariable.setEnumerations(enumerations);
@@ -89,10 +79,7 @@ public class RepresentationDatasetQueryTest {
 
 	@Test
 	public void testIsCategoricalAcceptedValueIfVariableIsCategoricalAndDisplayValueIsNotNullAndNoEnumerations() {
-		StandardVariable standardVariable = new StandardVariable();
-		Term term = new Term();
-		term.setId(TermId.CATEGORICAL_VARIABLE.getId());
-		standardVariable.setDataType(term);
+		StandardVariable standardVariable = StandardVariableTestDataInitializer.createStandardVariable(TermId.CATEGORICAL_VARIABLE);
 		standardVariable.setEnumerations(null);
 		Assert.assertTrue("Should return true since its a value is not matching any valid values",
 				this.query.isCategoricalAcceptedValue("Desc1", standardVariable));
@@ -100,10 +87,7 @@ public class RepresentationDatasetQueryTest {
 
 	@Test
 	public void testSetAcceptedItemPropertyIfCategoricalAcceptedValueIfVariableIsNotCategorical() {
-		StandardVariable standardVariable = new StandardVariable();
-		Term term = new Term();
-		term.setId(TermId.DATE_VARIABLE.getId());
-		standardVariable.setDataType(term);
+		StandardVariable standardVariable = StandardVariableTestDataInitializer.createStandardVariable(TermId.NUMERIC_VARIABLE);
 		Item item = Mockito.mock(Item.class);
 		boolean isAccepted = this.query.setAcceptedItemProperty("1", standardVariable, item, "1");
 		Assert.assertFalse("Should return false since its a non categorical variable", isAccepted);
@@ -111,10 +95,7 @@ public class RepresentationDatasetQueryTest {
 
 	@Test
 	public void testSetAcceptedItemPropertyIfCategoricalAcceptedValueIfVariableIsCategoricalAndDisplayValueIsNull() {
-		StandardVariable standardVariable = new StandardVariable();
-		Term term = new Term();
-		term.setId(TermId.CATEGORICAL_VARIABLE.getId());
-		standardVariable.setDataType(term);
+		StandardVariable standardVariable = StandardVariableTestDataInitializer.createStandardVariable(TermId.CATEGORICAL_VARIABLE);
 		Item item = Mockito.mock(Item.class);
 		boolean isAccepted = query.setAcceptedItemProperty(null, standardVariable, item, "1");
 		Assert.assertFalse("Should return false since its a value is null", isAccepted);
@@ -122,10 +103,7 @@ public class RepresentationDatasetQueryTest {
 
 	@Test
 	public void testSetAcceptedItemPropertyIfCategoricalAcceptedValueIfVariableIsCategoricalAndDisplayValueIsNotNullAndMatchingResults() {
-		StandardVariable standardVariable = new StandardVariable();
-		Term term = new Term();
-		term.setId(TermId.CATEGORICAL_VARIABLE.getId());
-		standardVariable.setDataType(term);
+		StandardVariable standardVariable = StandardVariableTestDataInitializer.createStandardVariable(TermId.CATEGORICAL_VARIABLE);
 		List<Enumeration> enumerations = new ArrayList<Enumeration>();
 		enumerations.add(new Enumeration(1, "name", "desc", 1));
 		standardVariable.setEnumerations(enumerations);
@@ -136,10 +114,7 @@ public class RepresentationDatasetQueryTest {
 
 	@Test
 	public void testSetAcceptedItemPropertyIfCategoricalAcceptedValueIfVariableIsCategoricalAndDisplayValueIsNotNullAndNoMatchingResults() {
-		StandardVariable standardVariable = new StandardVariable();
-		Term term = new Term();
-		term.setId(TermId.CATEGORICAL_VARIABLE.getId());
-		standardVariable.setDataType(term);
+		StandardVariable standardVariable = StandardVariableTestDataInitializer.createStandardVariable(TermId.CATEGORICAL_VARIABLE);
 		List<Enumeration> enumerations = new ArrayList<Enumeration>();
 		enumerations.add(new Enumeration(1, "name", "desc", 1));
 		standardVariable.setEnumerations(enumerations);
@@ -150,10 +125,7 @@ public class RepresentationDatasetQueryTest {
 
 	@Test
 	public void testSetAcceptedItemPropertyIfCategoricalAcceptedValueIfVariableIsCategoricalAndDisplayValueIsNotNullAndNoEnumerations() {
-		StandardVariable standardVariable = new StandardVariable();
-		Term term = new Term();
-		term.setId(TermId.CATEGORICAL_VARIABLE.getId());
-		standardVariable.setDataType(term);
+		StandardVariable standardVariable = StandardVariableTestDataInitializer.createStandardVariable(TermId.CATEGORICAL_VARIABLE);
 		standardVariable.setEnumerations(null);
 		Item item = Mockito.mock(Item.class);
 		boolean isAccepted = query.setAcceptedItemProperty("Desc1", standardVariable, item, "1");
@@ -162,10 +134,7 @@ public class RepresentationDatasetQueryTest {
 
 	@Test
 	public void testIsNumericalAcceptedValueIfVariableIsNumericAndWithinMinMax() {
-		StandardVariable standardVariable = new StandardVariable();
-		Term term = new Term();
-		term.setId(TermId.NUMERIC_VARIABLE.getId());
-		standardVariable.setDataType(term);
+		StandardVariable standardVariable = StandardVariableTestDataInitializer.createStandardVariable(TermId.NUMERIC_VARIABLE);
 		VariableConstraints constraints = new VariableConstraints(new Double(1), new Double(10));
 		standardVariable.setConstraints(constraints);
 		boolean isAccepted = query.isNumericalAcceptedValue("2", standardVariable);
@@ -174,10 +143,7 @@ public class RepresentationDatasetQueryTest {
 
 	@Test
 	public void testIsNumericalAcceptedValueIfVariableIsNonNumericAndNotWithinMinMax() {
-		StandardVariable standardVariable = new StandardVariable();
-		Term term = new Term();
-		term.setId(TermId.CATEGORICAL_VARIABLE.getId());
-		standardVariable.setDataType(term);
+		StandardVariable standardVariable = StandardVariableTestDataInitializer.createStandardVariable(TermId.CATEGORICAL_VARIABLE);
 		VariableConstraints constraints = new VariableConstraints(new Double(1), new Double(10));
 		standardVariable.setConstraints(constraints);
 		boolean isAccepted = query.isNumericalAcceptedValue("20", standardVariable);
@@ -186,10 +152,7 @@ public class RepresentationDatasetQueryTest {
 
 	@Test
 	public void testIsNumericalAcceptedValueIfVariableIsNumericAndNotWithinMinMax() {
-		StandardVariable standardVariable = new StandardVariable();
-		Term term = new Term();
-		term.setId(TermId.NUMERIC_VARIABLE.getId());
-		standardVariable.setDataType(term);
+		StandardVariable standardVariable = StandardVariableTestDataInitializer.createStandardVariable(TermId.NUMERIC_VARIABLE);
 		VariableConstraints constraints = new VariableConstraints(new Double(1), new Double(10));
 		standardVariable.setConstraints(constraints);
 		boolean isAccepted = query.isNumericalAcceptedValue("20", standardVariable);
@@ -198,10 +161,7 @@ public class RepresentationDatasetQueryTest {
 
 	@Test
 	public void testIsNumericalAcceptedValueIfVariableIsNumericAndNoWithinMinMax() {
-		StandardVariable standardVariable = new StandardVariable();
-		Term term = new Term();
-		term.setId(TermId.NUMERIC_VARIABLE.getId());
-		standardVariable.setDataType(term);
+		StandardVariable standardVariable = StandardVariableTestDataInitializer.createStandardVariable(TermId.NUMERIC_VARIABLE);
 		boolean isAccepted = query.isNumericalAcceptedValue("20", standardVariable);
 		Assert.assertFalse("Should return false since it has no limit", isAccepted);
 	}
