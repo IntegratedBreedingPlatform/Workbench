@@ -113,77 +113,72 @@ public class RepresentationDataSetQuery implements Query {
 		if (!experiments.isEmpty()) {
 
 			for (Experiment experiment : experiments) {
-				List<Variable> variables = new ArrayList<Variable>();
-
-				VariableList factors = experiment.getFactors();
-				if (factors != null) {
-					variables.addAll(factors.getVariables());
-				}
-
-				VariableList variates = experiment.getVariates();
-				if (variates != null) {
-					variables.addAll(variates.getVariables());
-				}
-
-				for (Variable variable : variables) {
-					String columnId =
-							new StringBuffer().append(variable.getVariableType().getId()).append("-")
-									.append(variable.getVariableType().getLocalName()).toString();
-
-					// check factor name, if it's a GID, then make the GID as a link. else, show it as a value only
-					// make GID as link only if the page wasn't directly accessed from the URL
-					if ("GID".equals(variable.getVariableType().getLocalName().trim()) && !this.fromUrl) {
-						// get Item for ounitid
-						Item item = itemMap.get(Integer.valueOf(experiment.getId()));
-						if (item == null) {
-							// not yet in map so create a new Item and add to map
-							item = new PropertysetItem();
-							itemMap.put(Integer.valueOf(experiment.getId()), item);
-						}
-
-						String value = variable.getValue();
-						if (value != null) {
-							Button gidButton = new Button(value.trim(), new GidLinkButtonClickListener(value.trim()));
-							gidButton.setStyleName(BaseTheme.BUTTON_LINK);
-							gidButton.setDescription("Click to view Germplasm information");
-							item.addItemProperty(columnId, new ObjectProperty<Button>(gidButton));
-						} else {
-							item.addItemProperty(columnId, null);
-						}
-						// end GID link creation
-					} else {
-						Item item = itemMap.get(Integer.valueOf(experiment.getId()));
-						if (item == null) {
-							// not yet in map so create a new Item and add to map
-							item = new PropertysetItem();
-							itemMap.put(Integer.valueOf(experiment.getId()), item);
-						}
-
-						// check if the variable value is a number to remove decimal portion if there is no value after the decimal point
-						String value = variable.getDisplayValue();
-						this.setAcceptedItemProperty(value, variable.getVariableType().getStandardVariable(), item, columnId);
-						if (value != null) {
-							try {
-								double doubleValue = Double.parseDouble(value);
-								if (Math.round(doubleValue) != doubleValue) {
-									item.addItemProperty(columnId, new ObjectProperty<String>(value));
-								} else {
-									item.addItemProperty(columnId, new ObjectProperty<String>(String.format("%.0f", doubleValue)));
-								}
-							} catch (NumberFormatException ex) {
-								// add value as String
-								item.addItemProperty(columnId, new ObjectProperty<String>(value));
-							}
-						} else {
-							item.addItemProperty(columnId, null);
-						}
-					}
-				}
+				final List<Variable> variables = this.getVariables(experiment);
+				populateItemMap(itemMap, experiment, variables);
 			}
 		}
 
 		items.addAll(itemMap.values());
 		return items;
+	}
+
+	protected void populateItemMap(Map<Integer, Item> itemMap, Experiment experiment, List<Variable> variables) {
+		for (Variable variable : variables) {
+			String columnId =
+					new StringBuffer().append(variable.getVariableType().getId()).append("-")
+							.append(variable.getVariableType().getLocalName()).toString();
+			
+			Item item = itemMap.get(Integer.valueOf(experiment.getId()));
+			if (item == null) {
+				// not yet in map so create a new Item and add to map
+				item = new PropertysetItem();
+				itemMap.put(Integer.valueOf(experiment.getId()), item);
+			}
+			if(variable.getValue() == null) {
+				item.addItemProperty(columnId, null);
+			} else {
+				// check factor name, if it's a GID, then make the GID as a link. else, show it as a value only
+				// make GID as link only if the page wasn't directly accessed from the URL
+				if ("GID".equals(variable.getVariableType().getLocalName().trim()) && !this.fromUrl) {
+					String value = variable.getValue();
+					Button gidButton = new Button(value.trim(), new GidLinkButtonClickListener(value.trim()));
+					gidButton.setStyleName(BaseTheme.BUTTON_LINK);
+					gidButton.setDescription("Click to view Germplasm information");
+					item.addItemProperty(columnId, new ObjectProperty<Button>(gidButton));
+					// end GID link creation
+				} else {
+					// check if the variable value is a number to remove decimal portion if there is no value after the decimal point
+					String value = variable.getDisplayValue();
+					this.setAcceptedItemProperty(value, variable.getVariableType().getStandardVariable(), item, columnId);
+					try {
+						double doubleValue = Double.parseDouble(value);
+						if (Math.round(doubleValue) != doubleValue) {
+							item.addItemProperty(columnId, new ObjectProperty<String>(value));
+						} else {
+							item.addItemProperty(columnId, new ObjectProperty<String>(String.format("%.0f", doubleValue)));
+						}
+					} catch (NumberFormatException ex) {
+						// add value as String
+						item.addItemProperty(columnId, new ObjectProperty<String>(value));
+					}
+				}
+			}
+		}
+	}
+
+	protected List<Variable> getVariables(Experiment experiment) {
+		List<Variable> variables = new ArrayList<>();
+
+		VariableList factors = experiment.getFactors();
+		if (factors != null) {
+			variables.addAll(factors.getVariables());
+		}
+
+		VariableList variates = experiment.getVariates();
+		if (variates != null) {
+			variables.addAll(variates.getVariables());
+		}
+		return variables;
 	}
 
 	protected boolean setAcceptedItemProperty(String value, StandardVariable standardVariable, Item item, String columnId) {
