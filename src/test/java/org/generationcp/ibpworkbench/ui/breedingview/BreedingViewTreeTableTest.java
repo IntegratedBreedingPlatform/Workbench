@@ -103,8 +103,33 @@ public class BreedingViewTreeTableTest {
 		assertFalse(treeTable.isCollapsed(testReference));
 	}
 
+	@Test
+	public void testGetExpandedIds() {
+		final FolderReference testReference = constructTestReference();
+		treeTable.addFolderReferenceNode(new Object[] {}, testReference);
+		final List<Integer> ids = this.getIntegerIdsList();
+		treeTable.expandNodes(ids);
+		final List<Integer> expandedIds = treeTable.getExpandedIds();
+		assertTrue(expandedIds.contains(TEST_FOLDER_ITEM_ID));
+	}
+
+	@Test
+	public void testExpandNodes() {
+		final FolderReference testReference = constructTestReference();
+		treeTable.addFolderReferenceNode(new Object[] {}, testReference);
+		final List<Integer> ids = this.getIntegerIdsList();
+		treeTable.expandNodes(ids);
+		assertFalse(treeTable.isCollapsed(testReference));
+	}
+
 	protected FolderReference constructTestReference() {
 		return new FolderReference(TEST_FOLDER_ITEM_ID, "TEST", "TEST");
+	}
+
+	protected List<Integer> getIntegerIdsList() {
+		final List<Integer> ids = new ArrayList<>();
+		ids.add(TEST_FOLDER_ITEM_ID);
+		return ids;
 	}
 
 }

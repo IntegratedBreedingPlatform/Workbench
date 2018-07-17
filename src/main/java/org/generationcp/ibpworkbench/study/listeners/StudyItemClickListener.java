@@ -10,17 +10,17 @@
 
 package org.generationcp.ibpworkbench.study.listeners;
 
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.MouseEvents.ClickEvent;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.germplasm.GermplasmStudyInfoComponent;
 import org.generationcp.ibpworkbench.germplasm.containers.GermplasmIndexContainer;
 import org.generationcp.ibpworkbench.study.StudySearchMainComponent;
-import org.generationcp.ibpworkbench.study.StudyTreeComponent;
 import org.generationcp.ibpworkbench.study.containers.StudyDataContainerBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.MouseEvents.ClickEvent;
 
 /**
  *
@@ -41,20 +41,6 @@ public class StudyItemClickListener implements ItemClickEvent.ItemClickListener 
 
 	@Override
 	public void itemClick(final ItemClickEvent event) {
-
-		if (this.source instanceof StudyTreeComponent) {
-			if (event.getButton() == ClickEvent.BUTTON_LEFT) {
-				try {
-					((StudyTreeComponent) this.source).studyTreeItemClickAction(event.getItemId());
-				} catch (final InternationalizableException e) {
-					StudyItemClickListener.LOG.error(e.getMessage(), e);
-					MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription()); // TESTED
-				}
-				((StudyTreeComponent) this.source).getStudyTree().setNullSelectionAllowed(false);
-				((StudyTreeComponent) this.source).getStudyTree().select(event.getItemId());
-				((StudyTreeComponent) this.source).getStudyTree().setValue(event.getItemId());
-			}
-		}
 
 		if (this.source instanceof StudySearchMainComponent && event.getButton() == ClickEvent.BUTTON_LEFT) {
 			final int studyId = Integer.valueOf(event.getItem().getItemProperty(StudyDataContainerBuilder.STUDY_ID).getValue().toString());

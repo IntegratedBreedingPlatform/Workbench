@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpResponse} from '@angular/common/http';
+import {HttpClient, HttpParams, HttpResponse} from '@angular/common/http';
 import {SERVER_API_URL} from '../../app.constants';
 import {SampleList} from './sample-list.model';
 import {Observable} from 'rxjs/Observable';
@@ -15,14 +15,27 @@ export class SampleListService {
     ) { }
 
     setCrop(crop: string) {
-        this.resourceUrl = SERVER_API_URL + `sampleLists/${crop}/search`;
+        this.resourceUrl = SERVER_API_URL + `sampleLists/${crop}`;
     }
 
     search(params: any): Observable<HttpResponse<SampleList[]>> {
         const options = createRequestOption(params);
 
-        return this.http.get<SampleList[]>(this.resourceUrl, {params: options, observe: 'response'})
+        return this.http.get<SampleList[]>(`${this.resourceUrl}/search`, {params: options, observe: 'response'})
             .map((res: HttpResponse<SampleList[]>) => this.convertArrayResponse(res));
+    }
+
+    download(listId: number, listName: string): Observable<HttpResponse<Blob>> {
+        const options: HttpParams = new HttpParams()
+            .append('listId', listId.toString())
+            .append('listName', listName);
+
+        return this.http
+            .get(`${this.resourceUrl}/download`, {
+                params: options,
+                responseType: 'blob',
+                observe: 'response'
+            });
     }
 
     private convertArrayResponse(res: HttpResponse<SampleList[]>): HttpResponse<SampleList[]> {

@@ -11,8 +11,10 @@
 
 package org.generationcp.ibpworkbench.ui.programmembers;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -72,25 +74,16 @@ public class SaveUsersInProjectAction implements ClickListener {
 		if (this.project == null) {
 			return;
 		}
-
+		
 		final Collection<WorkbenchUser> userList = this.select.getValue();
 		try {
 			final TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
 			transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 				@Override
 				protected void doInTransactionWithoutResult(TransactionStatus status) {
-					// Update project members info (project
-					for (WorkbenchUser u : userList) {
-						if (SaveUsersInProjectAction.this.workbenchDataManager.getProjectUserInfoDao().getByProjectIdAndUserId(SaveUsersInProjectAction.this.project.getProjectId(),
-								u.getUserid()) == null) {
-							ProjectUserInfo pUserInfo = new ProjectUserInfo(SaveUsersInProjectAction.this.project, u.getUserid());
-							SaveUsersInProjectAction.this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
-						}
-					}
 					
-					//use the project service to link new members to the project
-					programService.saveWorkbenchUserToCropUserMapping(project, new HashSet<>(userList));
-
+					SaveUsersInProjectAction.this.programService.updateMembersUserInfo(userList, project);
+					
 					MessageNotifier.showMessage(event.getComponent().getWindow(), "Success", "Successfully updated this project's members list.");
 				}
 			});
@@ -107,6 +100,21 @@ public class SaveUsersInProjectAction implements ClickListener {
 	}
 
 	
+	public List<Integer> getRemovedUserIds(List<Integer> activeUserIds, Collection<WorkbenchUser> userList) {
+		List<Integer> removedUserIds = new ArrayList<>();
+		for(Integer activeUserId: activeUserIds) {
+			boolean isProgramMember = false;
+			for(WorkbenchUser user: userList) {
+				if(user.getUserid().equals(activeUserId)) {
+					isProgramMember = true;
+					break;
+				}
+			}
+			if(!isProgramMember) removedUserIds.add(activeUserId);
+		}
+		return removedUserIds;
+	}
+
 	public void setTransactionManager(PlatformTransactionManager transactionManager) {
 		this.transactionManager = transactionManager;
 	}

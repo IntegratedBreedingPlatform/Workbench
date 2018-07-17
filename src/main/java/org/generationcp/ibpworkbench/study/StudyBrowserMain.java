@@ -11,6 +11,20 @@
 
 package org.generationcp.ibpworkbench.study;
 
+import org.generationcp.commons.help.document.HelpButton;
+import org.generationcp.commons.help.document.HelpModule;
+import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.ui.BaseSubWindow;
+import org.generationcp.commons.vaadin.ui.HeaderLabelLayout;
+import org.generationcp.ibpworkbench.GermplasmStudyBrowserLayout;
+import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.study.tree.BrowseStudyTreeComponent;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -23,20 +37,6 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.themes.Reindeer;
-import org.generationcp.ibpworkbench.GermplasmStudyBrowserLayout;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.commons.constant.ListTreeState;
-import org.generationcp.commons.help.document.HelpButton;
-import org.generationcp.commons.help.document.HelpModule;
-import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.commons.vaadin.ui.BaseSubWindow;
-import org.generationcp.commons.vaadin.ui.HeaderLabelLayout;
-import org.generationcp.commons.vaadin.util.SaveTreeStateListener;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 
 @Configurable
 public class StudyBrowserMain extends VerticalLayout implements InitializingBean, InternationalizableComponent, GermplasmStudyBrowserLayout {
@@ -51,7 +51,7 @@ public class StudyBrowserMain extends VerticalLayout implements InitializingBean
 	private Button searchForStudy;
 	private Label browseStudyDescriptionLabel;
 
-	private StudyTreeComponent studyTreeComponent;
+	private BrowseStudyTreeComponent browseTreeComponent;
 	private StudySearchMainComponent searchStudyComponent;
 
 	private StudyBrowserMainLayout mainLayout;
@@ -100,7 +100,7 @@ public class StudyBrowserMain extends VerticalLayout implements InitializingBean
 
 		this.mainLayout = new StudyBrowserMainLayout(this);
 
-		this.studyTreeComponent = new StudyTreeComponent(this);
+		this.browseTreeComponent = new BrowseStudyTreeComponent(this);
 		this.searchStudyComponent = new StudySearchMainComponent(this);
 	}
 
@@ -183,12 +183,9 @@ public class StudyBrowserMain extends VerticalLayout implements InitializingBean
 	}
 
 	public void openBrowseForStudyWindow() {
-		this.studyTreeComponent.reinitializeTree();
-		SaveTreeStateListener saveTreeStateListener =
-				new SaveTreeStateListener(this.studyTreeComponent.getStudyTree(), ListTreeState.STUDY_LIST.name(),
-						StudyTreeComponent.STUDY_ROOT_NODE);
-		this.launchListSelectionWindow(this.getWindow(), this.studyTreeComponent, this.messageSource.getMessage(Message.BROWSE_STUDIES))
-				.addListener(saveTreeStateListener);
+		this.browseTreeComponent.refreshTree();
+		this.launchListSelectionWindow(this.getWindow(), this.browseTreeComponent, this.messageSource.getMessage(Message.BROWSE_STUDIES))
+				.addListener(this.browseTreeComponent.getSaveTreeStateListener());
 	}
 
 	public void openSearchForStudyWindow() {
@@ -227,8 +224,8 @@ public class StudyBrowserMain extends VerticalLayout implements InitializingBean
 		return popupWindow;
 	}
 
-	public StudyTreeComponent getCombinedStudyTreeComponent() {
-		return this.studyTreeComponent;
+	public BrowseStudyTreeComponent getBrowseTreeComponent() {
+		return this.browseTreeComponent;
 	}
 
 	public StudySearchMainComponent getStudySearchComponent() {

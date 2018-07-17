@@ -19,6 +19,7 @@ import {
 
 import {SampleSearchListComponent} from './sample-search-list.component';
 import {SampleListService} from './sample-list.service';
+import {FileDownloadHelper} from './file-download.helper';
 
 const ENTITY_STATES = [
     ...sampleRoute,
@@ -53,6 +54,7 @@ const ENTITY_STATES = [
         SampleListService,
         SamplePopupService,
         SampleResolvePagingParams,
+        FileDownloadHelper
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
