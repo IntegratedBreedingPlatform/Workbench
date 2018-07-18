@@ -11,11 +11,11 @@
 
 package org.generationcp.ibpworkbench.study.containers;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.util.ObjectProperty;
-import com.vaadin.data.util.PropertysetItem;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.themes.BaseTheme;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang.math.NumberUtils;
 import org.generationcp.ibpworkbench.study.listeners.GidLinkButtonClickListener;
 import org.generationcp.middleware.domain.dms.Enumeration;
@@ -31,15 +31,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vaadin.addons.lazyquerycontainer.Query;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import com.vaadin.data.Item;
+import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.data.util.PropertysetItem;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.themes.BaseTheme;
 
 /**
  * An implementation of Query which is needed for using the LazyQueryContainer.
  *
- * Reference: https://vaadin.com/wiki/-/wiki/Main/Lazy%20Query%20Container/#section
+ * Reference:
+ * https://vaadin.com/wiki/-/wiki/Main/Lazy%20Query%20Container/#section
  * -Lazy+Query+Container-HowToImplementCustomQueryAndQueryFactory
  *
  * @author Kevin Manansala
@@ -52,7 +54,9 @@ public class RepresentationDataSetQuery implements Query {
 	private final StudyDataManager studyDataManager;
 	private final Integer datasetId;
 	private final List<String> columnIds;
-	private final boolean fromUrl; // this is true if this component is created by accessing the Study Details page directly from the URL
+	private final boolean fromUrl; // this is true if this component is created
+									// by accessing the Study Details page
+									// directly from the URL
 	private int size;
 
 	public static final String IS_ACCEPTED_VALUE_KEY = "isAcceptedValue";
@@ -60,13 +64,15 @@ public class RepresentationDataSetQuery implements Query {
 	public static final String MISSING_VALUE = "missing";
 
 	/**
-	 * These parameters are passed by the QueryFactory which instantiates objects of this class.
-	 * 
+	 * These parameters are passed by the QueryFactory which instantiates
+	 * objects of this class.
+	 *
 	 * @param dataManager
 	 * @param datasetId
 	 * @param columnIds
 	 */
-	public RepresentationDataSetQuery(StudyDataManager studyDataManager, Integer datasetId, List<String> columnIds, boolean fromUrl) {
+	public RepresentationDataSetQuery(final StudyDataManager studyDataManager, final Integer datasetId,
+			final List<String> columnIds, final boolean fromUrl) {
 		super();
 		this.studyDataManager = studyDataManager;
 		this.datasetId = datasetId;
@@ -80,8 +86,8 @@ public class RepresentationDataSetQuery implements Query {
 	 */
 	@Override
 	public Item constructItem() {
-		PropertysetItem item = new PropertysetItem();
-		for (String id : this.columnIds) {
+		final PropertysetItem item = new PropertysetItem();
+		for (final String id : this.columnIds) {
 			item.addItemProperty(id, new ObjectProperty<String>(""));
 		}
 		return item;
@@ -93,17 +99,18 @@ public class RepresentationDataSetQuery implements Query {
 	}
 
 	/**
-	 * Retrieves the dataset by batches of rows. Used for lazy loading the dataset.
+	 * Retrieves the dataset by batches of rows. Used for lazy loading the
+	 * dataset.
 	 */
 	@Override
-	public List<Item> loadItems(int start, int numOfRows) {
-		List<Item> items = new ArrayList<>();
-		Map<Integer, Item> itemMap = new LinkedHashMap<>();
+	public List<Item> loadItems(final int start, final int numOfRows) {
+		final List<Item> items = new ArrayList<>();
+		final Map<Integer, Item> itemMap = new LinkedHashMap<>();
 		List<Experiment> experiments = new ArrayList<>();
 
 		try {
 			experiments = this.studyDataManager.getExperiments(this.datasetId, start, numOfRows);
-		} catch (MiddlewareException ex) {
+		} catch (final MiddlewareException ex) {
 			// Log error in log file
 			RepresentationDataSetQuery.LOG
 					.error("Error with getting ounitids for representation: " + this.datasetId + "\n" + ex.toString());
@@ -112,19 +119,19 @@ public class RepresentationDataSetQuery implements Query {
 
 		if (!experiments.isEmpty()) {
 
-			for (Experiment experiment : experiments) {
+			for (final Experiment experiment : experiments) {
 				final List<Variable> variables = new ArrayList<>();
 
-				VariableList factors = experiment.getFactors();
+				final VariableList factors = experiment.getFactors();
 				if (factors != null) {
 					variables.addAll(factors.getVariables());
 				}
 
-				VariableList variates = experiment.getVariates();
+				final VariableList variates = experiment.getVariates();
 				if (variates != null) {
 					variables.addAll(variates.getVariables());
 				}
-				populateItemMap(itemMap, experiment, variables);
+				this.populateItemMap(itemMap, experiment, variables);
 			}
 		}
 
@@ -132,43 +139,48 @@ public class RepresentationDataSetQuery implements Query {
 		return items;
 	}
 
-	protected void populateItemMap(Map<Integer, Item> itemMap, Experiment experiment, List<Variable> variables) {
-		for (Variable variable : variables) {
-			String columnId =
-					new StringBuffer().append(variable.getVariableType().getId()).append("-")
-							.append(variable.getVariableType().getLocalName()).toString();
-			
+	protected void populateItemMap(final Map<Integer, Item> itemMap, final Experiment experiment,
+			final List<Variable> variables) {
+		for (final Variable variable : variables) {
+			final String columnId = new StringBuffer().append(variable.getVariableType().getId()).append("-")
+					.append(variable.getVariableType().getLocalName()).toString();
+
 			Item item = itemMap.get(Integer.valueOf(experiment.getId()));
 			if (item == null) {
 				// not yet in map so create a new Item and add to map
 				item = new PropertysetItem();
 				itemMap.put(Integer.valueOf(experiment.getId()), item);
 			}
-			
-			if(variable.getValue() == null) {
+
+			if (variable.getValue() == null) {
 				item.addItemProperty(columnId, null);
 			} else {
-				// check factor name, if it's a GID, then make the GID as a link. else, show it as a value only
-				// make GID as link only if the page wasn't directly accessed from the URL
+				// check factor name, if it's a GID, then make the GID as a
+				// link. else, show it as a value only
+				// make GID as link only if the page wasn't directly accessed
+				// from the URL
 				if ("GID".equals(variable.getVariableType().getLocalName().trim()) && !this.fromUrl) {
-					String value = variable.getValue();
-					Button gidButton = new Button(value.trim(), new GidLinkButtonClickListener(value.trim()));
+					final String value = variable.getValue();
+					final Button gidButton = new Button(value.trim(), new GidLinkButtonClickListener(value.trim()));
 					gidButton.setStyleName(BaseTheme.BUTTON_LINK);
 					gidButton.setDescription("Click to view Germplasm information");
 					item.addItemProperty(columnId, new ObjectProperty<Button>(gidButton));
 					// end GID link creation
 				} else {
-					// check if the variable value is a number to remove decimal portion if there is no value after the decimal point
-					String value = variable.getDisplayValue();
-					this.setAcceptedItemProperty(value, variable.getVariableType().getStandardVariable(), item, columnId);
+					// check if the variable value is a number to remove decimal
+					// portion if there is no value after the decimal point
+					final String value = variable.getDisplayValue();
+					this.setAcceptedItemProperty(value, variable.getVariableType().getStandardVariable(), item,
+							columnId);
 					try {
-						double doubleValue = Double.parseDouble(value);
+						final double doubleValue = Double.parseDouble(value);
 						if (Math.round(doubleValue) != doubleValue) {
 							item.addItemProperty(columnId, new ObjectProperty<String>(value));
 						} else {
-							item.addItemProperty(columnId, new ObjectProperty<String>(String.format("%.0f", doubleValue)));
+							item.addItemProperty(columnId,
+									new ObjectProperty<String>(String.format("%.0f", doubleValue)));
 						}
-					} catch (NumberFormatException ex) {
+					} catch (final NumberFormatException ex) {
 						// add value as String
 						item.addItemProperty(columnId, new ObjectProperty<String>(value));
 					}
@@ -177,24 +189,28 @@ public class RepresentationDataSetQuery implements Query {
 		}
 	}
 
-	protected boolean setAcceptedItemProperty(String value, StandardVariable standardVariable, Item item, String columnId) {
+	protected boolean setAcceptedItemProperty(final String value, final StandardVariable standardVariable,
+			final Item item, final String columnId) {
 		boolean isAccepted = false;
-		if (this.isCategoricalAcceptedValue(value, standardVariable) || this.isNumericalAcceptedValue(value, standardVariable)) {
-			item.addItemProperty(columnId + RepresentationDataSetQuery.IS_ACCEPTED_VALUE_KEY, new ObjectProperty<Boolean>(true));
+		if (this.isCategoricalAcceptedValue(value, standardVariable)
+				|| this.isNumericalAcceptedValue(value, standardVariable)) {
+			item.addItemProperty(columnId + RepresentationDataSetQuery.IS_ACCEPTED_VALUE_KEY,
+					new ObjectProperty<Boolean>(true));
 			isAccepted = true;
 		} else {
-			item.addItemProperty(columnId + RepresentationDataSetQuery.IS_ACCEPTED_VALUE_KEY, new ObjectProperty<Boolean>(false));
+			item.addItemProperty(columnId + RepresentationDataSetQuery.IS_ACCEPTED_VALUE_KEY,
+					new ObjectProperty<Boolean>(false));
 		}
 		return isAccepted;
 	}
 
-	protected boolean isCategoricalAcceptedValue(String displayValue, StandardVariable standardVariable) {
+	protected boolean isCategoricalAcceptedValue(final String displayValue, final StandardVariable standardVariable) {
 		if (standardVariable.getDataType().getId() == TermId.CATEGORICAL_VARIABLE.getId() && displayValue != null
 				&& !displayValue.isEmpty() && !RepresentationDataSetQuery.MISSING_VALUE.equals(displayValue)) {
 			if (standardVariable.getEnumerations() == null) {
 				return true;
 			}
-			for (Enumeration enumeration : standardVariable.getEnumerations()) {
+			for (final Enumeration enumeration : standardVariable.getEnumerations()) {
 				if (enumeration.getDescription().equalsIgnoreCase(displayValue)) {
 					return false;
 				}
@@ -204,12 +220,12 @@ public class RepresentationDataSetQuery implements Query {
 		return false;
 	}
 
-	protected boolean isNumericalAcceptedValue(String displayValue, StandardVariable standardVariable) {
+	protected boolean isNumericalAcceptedValue(final String displayValue, final StandardVariable standardVariable) {
 		if (standardVariable.getDataType().getId() == TermId.NUMERIC_VARIABLE.getId() && displayValue != null
 				&& !displayValue.equalsIgnoreCase("") && !RepresentationDataSetQuery.MISSING_VALUE.equals(displayValue)
 				&& standardVariable.getConstraints() != null) {
-			if (standardVariable.getConstraints().getMaxValue() != null && standardVariable.getConstraints().getMinValue() != null
-					&& NumberUtils.isNumber(displayValue)) {
+			if (standardVariable.getConstraints().getMaxValue() != null
+					&& standardVariable.getConstraints().getMinValue() != null && NumberUtils.isNumber(displayValue)) {
 
 				if (Double.parseDouble(displayValue) < standardVariable.getConstraints().getMinValue()
 						|| Double.parseDouble(displayValue) > standardVariable.getConstraints().getMaxValue()) {
@@ -222,7 +238,7 @@ public class RepresentationDataSetQuery implements Query {
 	}
 
 	@Override
-	public void saveItems(List<Item> arg0, List<Item> arg1, List<Item> arg2) {
+	public void saveItems(final List<Item> arg0, final List<Item> arg1, final List<Item> arg2) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -233,9 +249,9 @@ public class RepresentationDataSetQuery implements Query {
 	public int size() {
 		if (this.size == -1) {
 			try {
-				Long count = Long.valueOf(this.studyDataManager.countExperiments(this.datasetId));
+				final Long count = Long.valueOf(this.studyDataManager.countExperiments(this.datasetId));
 				this.size = count.intValue();
-			} catch (MiddlewareQueryException ex) {
+			} catch (final MiddlewareQueryException ex) {
 				RepresentationDataSetQuery.LOG
 						.error("Error with getting experiments for dataset: " + this.datasetId + "\n" + ex.toString());
 
