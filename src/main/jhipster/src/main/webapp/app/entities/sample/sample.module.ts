@@ -20,6 +20,9 @@ import {
 import {SampleSearchListComponent} from './sample-search-list.component';
 import {SampleListService} from './sample-list.service';
 import {FileDownloadHelper} from './file-download.helper';
+import {SampleImportPlateComponent} from './sample-import-plate.component';
+import {ModalComponent} from '../../shared/modal/modal.component';
+import {ModalService} from '../../shared/modal/modal.service';
 
 const ENTITY_STATES = [
     ...sampleRoute,
@@ -39,7 +42,9 @@ const ENTITY_STATES = [
         SamplePopupComponent,
         SampleDeletePopupComponent,
         SampleBrowseComponent,
-        SampleSearchListComponent
+        SampleSearchListComponent,
+        SampleImportPlateComponent,
+        ModalComponent
     ],
     entryComponents: [
         SampleComponent,
@@ -47,14 +52,17 @@ const ENTITY_STATES = [
         SamplePopupComponent,
         SampleDeleteDialogComponent,
         SampleDeletePopupComponent,
-        SampleBrowseComponent
+        SampleBrowseComponent,
+        SampleImportPlateComponent,
+        ModalComponent
     ],
     providers: [
         SampleService,
         SampleListService,
         SamplePopupService,
         SampleResolvePagingParams,
-        FileDownloadHelper
+        FileDownloadHelper,
+        ModalService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

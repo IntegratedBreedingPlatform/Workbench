@@ -47,6 +47,9 @@
 					<li>
 						<a (click)="export()">Export list</a>
 					</li>
+					<li>
+						<a (click)="importPlate()">Import Plate Information</a>
+					</li>
 				</ul>
 			</div>
 		</div>
@@ -137,5 +140,4 @@
 			<ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
 		</div>
 	</div>
-
 </div>

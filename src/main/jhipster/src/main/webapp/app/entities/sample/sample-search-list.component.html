@@ -1,91 +1,77 @@
-<div class="modal fade" id="sampleSearchListModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content modal-large">
-            <div class="modal-body">
-                <jhi-alert></jhi-alert>
-                <div class="row form-group-lg">
-                    <div class="col-md-11">
-                        <label class="modal-title fbk-modal-title" id="heading-modal">Search for lists of Samples</label>
-                    </div>
-                    <div class="col-md-1">
-                        <button type="button" class="close pull-right glyphicon glyphicon-remove" data-dismiss="modal" aria-hidden="true"
-                                onclick="javascript: closeModal('sampleSearchListModal')" (click)="reset()"></button>
-                    </div>
+<jhi-app-modal modalId="{{modalId}}" modalTitle="Search for lists of Samples" closebtn="true" (onClose)="reset()">
+    <jhi-alert></jhi-alert>
+    <div class="clearfix"></div>
+    <br/>
+    <div>Click results to work with.<br/></div>
+    <br/>
+    <div class="searchbody">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="searchbar">
+                    <form #searchListForm="ngForm">
+                        <div class="col-md-6">
+                            <div class="float-component">
+                                <input type="text" [(ngModel)]="searchString" (keydown.enter)="searchList()" name="searchString"
+                                       id="searchString" maxlength="100"/>
+                            </div>
+                            <div class="float-component">
+                                <button type="button" class="btn btn-info" (click)="searchList()">Search
+                                </button>
+                            </div>
+                            <div class="float-component" (click)="displayHelpPopup = true;">
+                                <div class="popup-help-button"> ?</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="float-component">
+                                <input type="checkbox" [(ngModel)]="exactMatch" name="exactMatch" checked=""/>
+                            </div>
+                            <div class="float-component">
+                                Exact matches only
+                            </div>
+                        </div>
+                    </form>
                 </div>
-                <div class="clearfix"></div>
-                <br/>
-                <div>Click results to work with.<br/></div>
-                <br/>
-                <div class="searchbody">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="searchbar">
-                                <form #searchListForm="ngForm">
-                                    <div class="col-md-6">
-                                        <div class="float-component">
-                                            <input type="text" [(ngModel)]="searchString" (keydown.enter)="searchList()" name="searchString"
-                                                   id="searchString" maxlength="100"/>
-                                        </div>
-                                        <div class="float-component">
-                                            <button type="button" class="btn btn-info" (click)="searchList()">Search
-                                            </button>
-                                        </div>
-                                        <div class="float-component" (click)="displayHelpPopup = true;">
-                                            <div class="popup-help-button"> ?</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="float-component">
-                                            <input type="checkbox" [(ngModel)]="exactMatch" name="exactMatch" checked=""/>
-                                        </div>
-                                        <div class="float-component">
-                                            Exact matches only
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <br/>
-                    <span>Total Results: <b>{{sampleListResults.length}}</b></span>
-                    <br/>
-                    <!--<div class="row">
-                        <div class="col-md-12">-->
-                    <table class="table table-striped table-curved">
-                        <thead>
-                        <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="searchList.bind(this)">
-                            <th jhiSortBy="listName"><span>NAME</span> <span class="fa fa-sort"></span></th>
-                            <th jhiSortBy="description"><span>DESCRIPTION</span> <span class="fa fa-sort"></span></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr *ngFor="let sampleList of sampleListResults; trackBy: trackId;" (click)="selectList(sampleList)" class="selected"
-                            [ngClass]="{'highlight' : sampleList.id == selectedListId}">
-                            <td [ngClass]="{ odd: odd, even: even }">{{sampleList.listName}}</td>
-                            <td [ngClass]="{ odd: odd, even: even }">{{sampleList.description}}</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <!--   </div>
-                    </div>-->
-                    <div class="popup" *ngIf="displayHelpPopup" (mouseleave)="hideHelpPopup()" (click)="hideHelpPopup()">
-                        <div class="popupContent">
-                            <div class="v-label" aria-hidden="false" id="descLbl" style="width: 300px;">You may search for sample lists
-                                using partial or full sample names, or list names, or Sample UIDs<br><br><b>The search results will show
-                                    lists in which:</b>
-                                <ul>
-                                    <li>The list name contains the search term</li>
-                                    <li>The list contains samples with names that contain the search term</li>
-                                    <li>The list contains samples with Sample UIDs that contain the search term</li>
-                                </ul>
-                                <br>
-                                The <b>Exact matches only</b> checkbox shows results that match the search term exactly when checked. If you
-                                uncheck this option, the search will show results that contain the search term you enter.
-                            </div>
-                        </div>
-                    </div>
+            </div>
+        </div>
+        <br/>
+        <span>Total Results: <b>{{sampleListResults.length}}</b></span>
+        <br/>
+        <!--<div class="row">
+            <div class="col-md-12">-->
+        <table class="table table-striped table-curved">
+            <thead>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="searchList.bind(this)">
+                <th jhiSortBy="listName"><span>NAME</span> <span class="fa fa-sort"></span></th>
+                <th jhiSortBy="description"><span>DESCRIPTION</span> <span class="fa fa-sort"></span></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let sampleList of sampleListResults; trackBy: trackId;" (click)="selectList(sampleList)" class="selected"
+                [ngClass]="{'highlight' : sampleList.id == selectedListId}">
+                <td [ngClass]="{ odd: odd, even: even }">{{sampleList.listName}}</td>
+                <td [ngClass]="{ odd: odd, even: even }">{{sampleList.description}}</td>
+            </tr>
+            </tbody>
+        </table>
+        <!--   </div>
+        </div>-->
+        <div class="popup" *ngIf="displayHelpPopup" (mouseleave)="hideHelpPopup()" (click)="hideHelpPopup()">
+            <div class="popupContent">
+                <div class="v-label" aria-hidden="false" id="descLbl" style="width: 300px;">You may search for sample lists
+                    using partial or full sample names, or list names, or Sample UIDs<br><br><b>The search results will show
+                        lists in which:</b>
+                    <ul>
+                        <li>The list name contains the search term</li>
+                        <li>The list contains samples with names that contain the search term</li>
+                        <li>The list contains samples with Sample UIDs that contain the search term</li>
+                    </ul>
+                    <br>
+                    The <b>Exact matches only</b> checkbox shows results that match the search term exactly when checked. If you
+                    uncheck this option, the search will show results that contain the search term you enter.
                 </div>
             </div>
         </div>
     </div>
-</div>
+</jhi-app-modal>
+

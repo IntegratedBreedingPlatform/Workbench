@@ -12,6 +12,7 @@ import { Principal, ITEMS_PER_PAGE } from '../../shared';
 import { SampleList } from './sample-list.model';
 import { SampleListService } from './sample-list.service';
 import { FileDownloadHelper } from './file-download.helper';
+import {ModalService} from '../../shared/modal/modal.service';
 
 @Component({
     selector: 'jhi-sample',
@@ -51,7 +52,8 @@ export class SampleComponent implements OnInit, OnDestroy {
         private activatedRoute: ActivatedRoute,
         private router: Router,
         private eventManager: JhiEventManager,
-        private fileDownloadHelper: FileDownloadHelper
+        private fileDownloadHelper: FileDownloadHelper,
+        private modalService: ModalService
     ) {
         this.itemsPerPage = ITEMS_PER_PAGE;
 
@@ -138,6 +140,9 @@ export class SampleComponent implements OnInit, OnDestroy {
             this.fileDownloadHelper.save(response.body, fileName);
 
         })
+    }
+    importPlate() {
+        this.modalService.open('import-plate-modal');
     }
     ngOnInit() {
         this.loadAll();

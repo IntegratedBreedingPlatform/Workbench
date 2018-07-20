@@ -1,68 +1,54 @@
-<div class="modal fade import-study-data import-window" id="sampleImportPlateModal" role="dialog" aria-labelledby="sampleImportPlateModal"
-	 aria-hidden="true">
-	<div class="modal-dialog modal-medium">
-		<div class="modal-content">
-			<div class="modal-body" id="sampleImportPlateModalBody">
-				<jhi-alert></jhi-alert>
-				<div class="row form-group">
-					<div class="col-xs-11 col-md-11">
-						<label class="modal-title fbk-modal-title" id="heading-sampleImportPlateModal">Select Data File to Import</label>
-					</div>
-					<div class="col-md-1">
-						<button type="button" class="close pull-right glyphicon glyphicon-remove" data-dismiss="modal" aria-hidden="true"></button>
-					</div>
-				</div>
+<jhi-app-modal modalId="{{modalId}}" modalTitle="Select Data File to Import" closebtn="true">
+    <jhi-alert></jhi-alert>
+    <div class="row form-group">
+        <div id="page-import-study-message-modal" class="col-xs-12 col-md-12">
+        </div>
+    </div>
 
-				<div class="row form-group">
-					<div id="page-import-study-message-modal" class="col-xs-12 col-md-12">
-					</div>
-				</div>
+    <div class="row form-group">
+        <div class="col-xs-12 col-md-12">
+            <label class=""><em> <span class='required'>*</span> indicates a mandatory field</em></label>
+        </div>
+    </div>
 
-				<div class="row form-group">
-					<div class="col-xs-12 col-md-12">
-						<label class=""><em> <span class='required'>*</span> indicates a mandatory field</em></label>
-					</div>
-				</div>
+    <div class="row form-group">
+        <div class="col-xs-7 col-md-7">
+            <label class="control-label add_top_padding label-bold">Please specify the format you are importing:</label><span
+                class="required">*</span>
+        </div>
+        <div class="col-xs-5 col-md-5">
+            <select class="form-control" style="width: 205px" id="importType">
+                <option>Please Choose</option>
+                <option selected="selected" value="1">CSV</option>
+            </select>
+        </div>
+    </div>
 
-				<div class="row form-group">
-					<div class="col-xs-7 col-md-7">
-						<label class="control-label add_top_padding label-bold">Please specify the format you are importing:</label><span
-						class="required">*</span>
-					</div>
-					<div class="col-xs-5 col-md-5">
-						<select style="width: 205px" id="importType">
-							<option>Please Choose</option>
-							<option selected="selected" value="1">CSV</option>
-						</select>
-					</div>
-				</div>
+    <div class='row form-group add_top_padding'>
 
-				<div class='row form-group add_top_padding'>
-
-					<div class="col-md-12">
-						<div class="fileupload fileupload-new fbk-import-upload-file" data-provides="fileupload">
+        <div class="col-md-12">
+            <div class="fileupload fileupload-new fbk-import-upload-file" data-provides="fileupload">
 							<span class="btn btn-info btn-file ">
 							<span class="fileupload-new">Browse</span>
 								<input id="fileupload" th:field="*{file}" type="file" class="file-input"/>file</input>
 							</span>
-							<span class="fileupload-preview-wrap"><b>
+                <span class="fileupload-preview-wrap"><b>
 								<span>Selected import file</span>:</b> <i
-								class="fileupload-preview"></i></span>
-							<span style="display: inline-block; margin-left: 15px">
-								<a href="#" class="btn btn-default fileupload-exists" data-dismiss="fileupload" >Clear</a>
+                        class="fileupload-preview"></i></span>
+                <span style="display: inline-block; margin-left: 15px">
+								<a href="#" class="btn btn-default fileupload-exists" data-dismiss="fileupload">Clear</a>
 							</span>
-						</div>
-					</div>
-				</div>
-			</div>
+            </div>
+        </div>
+    </div>
 
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancel
-				</button>
-				<button type="button" class="btn btn-primary" aria-hidden="true">Import
-				</button>
-			</div>
-		</div>
-	</div>
-</div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" (click)="close()">Cancel
+        </button>
+        <button type="button" class="btn btn-primary" aria-hidden="true">Import
+        </button>
+    </div>
+</jhi-app-modal>
+
+
 
