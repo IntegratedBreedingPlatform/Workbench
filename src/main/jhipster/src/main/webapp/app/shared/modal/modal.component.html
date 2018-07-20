@@ -1,0 +1,20 @@
+<div [ngClass]="(isOpen ? 'modal modal-bgcolor fade in' : 'modal modal-bgcolor fade')"
+     [ngStyle]="{'display': (isOpen ? 'block' : 'none'), 'opacity' : (isOpen ?  1 : 0)}" id="{{modalId}}" tabindex="-1" role="dialog"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-large">
+            <div class="modal-body">
+                <div class="row form-group-lg">
+                    <div class="col-md-11">
+                        <label class="modal-title fbk-modal-title" id="heading-modal">{{modalTitle}}</label>
+                    </div>
+                    <div class="col-md-1">
+                        <button *ngIf="closebtn" type="button" class="close pull-right glyphicon glyphicon-remove" data-dismiss="modal"
+                                aria-hidden="true" (click)="close()"></button>
+                    </div>
+                </div>
+                <ng-content></ng-content>
+            </div>
+        </div>
+    </div>
+</div>
