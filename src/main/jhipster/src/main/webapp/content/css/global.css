@@ -82,22 +82,23 @@ Custom alerts for notification
 .alerts .toast {
     position: fixed;
     width: 100%;
+    z-index: 10000000;
 }
 .alerts .toast.left {
-    left: 5px;
+    left: 20px;
 }
 .alerts .toast.right {
-    right: 5px;
+    right: 20px;
 }
 .alerts .toast.top {
-    top: 55px;
+    top: 20px;
 }
 .alerts .toast.bottom {
     bottom: 55px;
 }
 @media screen and (min-width: 480px) {
     .alerts .toast {
-        width: 50%;
+        width: 400px;
     }
 }
 /* ==========================================================================
