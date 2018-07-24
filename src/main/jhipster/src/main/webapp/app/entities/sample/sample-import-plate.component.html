@@ -11,9 +11,9 @@
                 class="required">*</span>
         </div>
         <div class="col-xs-5 col-md-5">
-            <select class="form-control" style="width: 205px" id="importType">
-                <option>Please Choose</option>
-                <option selected="selected" value="1">CSV</option>
+            <select [(ngModel)]="fileFormat" class="form-control" style="width: 205px">
+                <option value="">Please Choose</option>
+                <option value="csv">CSV</option>
             </select>
         </div>
     </div>

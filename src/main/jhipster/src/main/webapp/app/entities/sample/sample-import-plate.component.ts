@@ -2,7 +2,6 @@ import {Component, ElementRef, ViewChild} from '@angular/core';
 import {ModalService} from '../../shared/modal/modal.service';
 import {ExcelService} from './excel.service';
 import {JhiAlertService} from 'ng-jhipster';
-import {JhiAlert} from 'ng-jhipster/src/service/alert.service';
 
 @Component({
     selector: 'jhi-sample-import-plate',
@@ -12,10 +11,11 @@ import {JhiAlert} from 'ng-jhipster/src/service/alert.service';
 
 export class SampleImportPlateComponent {
 
-    @ViewChild('fileUpload')
-    fileUpload: ElementRef;
-
     modalId = 'import-plate-modal';
+
+    @ViewChild('fileUpload') fileUpload: ElementRef;
+
+    fileFormat = '';
     importData = new Array<Array<any>>();
 
     constructor(private modalService: ModalService,
@@ -31,18 +31,37 @@ export class SampleImportPlateComponent {
     }
 
     import() {
-        
-        this.modalService.close(this.modalId);
-        this.modalService.open('import-plate-mapping-modal');
+        if (this.validate()) {
+            this.modalService.close(this.modalId);
+            this.modalService.open('import-plate-mapping-modal');
+        }
+    }
 
+    validate() {
+
+        let errorMessage = '';
+        const fileName = this.fileUpload.nativeElement.value;
+
+        if (this.fileFormat === '') {
+            errorMessage = 'bmsjHipsterApp.sample.importPlate.noSelectedFormat';
+        } else if (fileName === '') {
+            errorMessage = 'bmsjHipsterApp.sample.importPlate.noFileSelected';
+        } else if (!fileName.toLowerCase().endsWith('.' + this.fileFormat)) {
+            errorMessage = 'bmsjHipsterApp.sample.importPlate.invalidFileFormat';
+        } else if (this.importData.length === 0) {
+            errorMessage = 'bmsjHipsterApp.sample.importPlate.noContent';
+        }
+        if (errorMessage !== '') {
+            this.alertService.error(errorMessage);
+            return false;
+        }
+        return true;
     }
 
     onFileChange(evt: any) {
-
         const target: DataTransfer = <DataTransfer>(evt.target);
         this.excelService.parse(target).subscribe((value) => {
             this.importData = value;
         });
-
     }
 }

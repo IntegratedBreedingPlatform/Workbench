@@ -28,7 +28,14 @@
             "plantBusinessKey": "PLANT_UID",
             "samplingDate": "SAMPLING_DATE",
             "plateId": "PLATE_ID",
-            "well": "WELL"
+            "well": "WELL",
+            "importPlate": {
+                "noSelectedFormat": "Please specify the format you are importing.",
+                "noFileSelected": "Please select the data file to be imported.",
+                "noContent": "The data file should have at least one row.",
+                "headerNotSpecified": "Please specify the headers.",
+                "invalidFileFormat": "The file selected has invalid format."
+            }
         }
     }
 }
