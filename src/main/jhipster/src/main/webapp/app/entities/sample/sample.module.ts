@@ -23,6 +23,8 @@ import {FileDownloadHelper} from './file-download.helper';
 import {SampleImportPlateComponent} from './sample-import-plate.component';
 import {ModalComponent} from '../../shared/modal/modal.component';
 import {ModalService} from '../../shared/modal/modal.service';
+import {ExcelService} from './excel.service';
+import {SampleImportPlateMappingComponent} from './sample-import-plate-mapping.component';
 
 const ENTITY_STATES = [
     ...sampleRoute,
@@ -44,6 +46,7 @@ const ENTITY_STATES = [
         SampleBrowseComponent,
         SampleSearchListComponent,
         SampleImportPlateComponent,
+        SampleImportPlateMappingComponent,
         ModalComponent
     ],
     entryComponents: [
@@ -54,6 +57,7 @@ const ENTITY_STATES = [
         SampleDeletePopupComponent,
         SampleBrowseComponent,
         SampleImportPlateComponent,
+        SampleImportPlateMappingComponent,
         ModalComponent
     ],
     providers: [
@@ -62,7 +66,8 @@ const ENTITY_STATES = [
         SamplePopupService,
         SampleResolvePagingParams,
         FileDownloadHelper,
-        ModalService
+        ModalService,
+        ExcelService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

@@ -2,7 +2,7 @@
      [ngStyle]="{'display': (isOpen ? 'block' : 'none'), 'opacity' : (isOpen ?  1 : 0)}" id="{{modalId}}" tabindex="-1" role="dialog"
      aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content modal-large">
+        <div class="modal-content modal-{{modalSize}}">
             <div class="modal-body">
                 <div class="row form-group-lg">
                     <div class="col-md-11">

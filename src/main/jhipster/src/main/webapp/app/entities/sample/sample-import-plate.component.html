@@ -1,10 +1,4 @@
-<jhi-app-modal modalId="{{modalId}}" modalTitle="Select Data File to Import" closebtn="true">
-    <jhi-alert></jhi-alert>
-    <div class="row form-group">
-        <div id="page-import-study-message-modal" class="col-xs-12 col-md-12">
-        </div>
-    </div>
-
+<jhi-app-modal modalId="{{modalId}}" modalTitle="Select Data File to Import" modalSize="large" closebtn="true">
     <div class="row form-group">
         <div class="col-xs-12 col-md-12">
             <label class=""><em> <span class='required'>*</span> indicates a mandatory field</em></label>
@@ -30,7 +24,7 @@
             <div class="fileupload fileupload-new fbk-import-upload-file" data-provides="fileupload">
 							<span class="btn btn-info btn-file ">
 							<span class="fileupload-new">Browse</span>
-								<input id="fileupload" th:field="*{file}" type="file" class="file-input"/>file</input>
+								<input #fileUpload id="fileupload" type="file" class="file-input" (change)="onFileChange($event)" multiple="false" />file</input>
 							</span>
                 <span class="fileupload-preview-wrap"><b>
 								<span>Selected import file</span>:</b> <i
@@ -45,10 +39,13 @@
     <div class="modal-footer">
         <button type="button" class="btn btn-default" (click)="close()">Cancel
         </button>
-        <button type="button" class="btn btn-primary" aria-hidden="true">Import
+        <button type="button" class="btn btn-primary" (click)="import()" aria-hidden="true" #importButton>Import
         </button>
     </div>
 </jhi-app-modal>
+
+<!-- The first row in the file is assumed to be the header row -->
+<jhi-sample-import-plate-mapping  [importData]="importData" [header]="importData[0]" (onClose)="close()"></jhi-sample-import-plate-mapping>
 
 
 

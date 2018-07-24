@@ -1,0 +1,50 @@
+<jhi-app-modal modalId="{{modalId}}" modalTitle="Select Mapping" modalSize="medium" closebtn="true" (onClose)="close()">
+    <div class="row form-group">
+        <div class="col-xs-12 col-md-12">
+            <label class=""><em> <span class='required'>*</span> indicates a mandatory field</em></label>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-xs-7 col-md-7">
+            <label class="control-label add_top_padding label-bold">Please specify the header for SAMPLE_ID:</label><span
+                class="required"> *</span>
+        </div>
+        <div class="col-xs-5 col-md-5">
+            <select class="form-control" style="width: 205px" id="sampleIdMapping">
+                <option [value]="">Please Choose</option>
+                <option *ngFor="let item of header" [value]="item">{{item}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-xs-7 col-md-7">
+            <label class="control-label add_top_padding label-bold">Please specify the header for PLATE_ID:</label><span
+                class="required"> *</span>
+        </div>
+        <div class="col-xs-5 col-md-5">
+            <select class="form-control" style="width: 205px" id="plateIdMapping">
+                <option [value]="">Please Choose</option>
+                <option *ngFor="let item of header" [value]="item">{{item}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-xs-7 col-md-7">
+            <label class="control-label add_top_padding label-bold">Please specify the header for WELL:</label><span
+                class="required"> *</span>
+        </div>
+        <div class="col-xs-5 col-md-5">
+            <select class="form-control" style="width: 205px" id="wellMapping">
+                <option [value]="">Please Choose</option>
+                <option *ngFor="let item of header" [value]="item">{{item}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" (click)="close()">Cancel
+        </button>
+        <button type="button" class="btn btn-primary" (click)="proceed()" aria-hidden="true">Proceed
+        </button>
+    </div>
+</jhi-app-modal>

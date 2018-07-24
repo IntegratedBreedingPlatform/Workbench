@@ -18,6 +18,7 @@ export class ModalComponent implements OnInit {
     @Input() closebtn: boolean;
     @Input() modalId: string;
     @Input() modalTitle: string;
+    @Input() modalSize: string;
     @Output() onClose = new EventEmitter();
     @HostListener('document:keyup', ['$event'])
     /**
