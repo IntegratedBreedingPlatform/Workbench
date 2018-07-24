@@ -8,12 +8,12 @@ import { ModalService } from './modal.service';
 
 @Component({
     selector: 'jhi-app-modal',
-    styles: [`.modal-bgcolor { background: rgba(0,0,0,0.6); }`],
     templateUrl: './modal.component.html'
 })
 export class ModalComponent implements OnInit {
 
     isOpen = false;
+    animate = false;
 
     @Input() closebtn: boolean;
     @Input() modalId: string;

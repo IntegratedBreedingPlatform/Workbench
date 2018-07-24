@@ -24,6 +24,7 @@ export class ModalService {
         const modal = this.findModal(modalId);
 
         if (modal) {
+            modal.animate = false;
             setTimeout(() => {
                 modal.isOpen = false;
             }, 250);
@@ -55,8 +56,9 @@ export class ModalService {
         const modal = this.findModal(modalId);
 
         if (modal) {
+            modal.isOpen = true;
             setTimeout(() => {
-                modal.isOpen = true;
+                modal.animate = true;
             }, 250);
         }
     }
