@@ -1,0 +1,57 @@
+<div class="om-av-view">
+
+	<h2 class="om-title">{{'addNew.formula.title' | translate}}</h2>
+
+	<om-error-list om-errors-already-translated="serverErrors.general" om-errors-to-translate="serverErrors.someListsNotLoaded">
+	</om-error-list>
+
+	<form class="form-horizontal" name="avForm" ng-submit="saveFormula($event, formula)" novalidate>
+
+		<div ng-class="formGroupClass('omName', 'name')">
+			<label for="omName" class="col-sm-2 control-label">
+				{{'addNew.formula.targetVariable' | translate}}
+			</label>
+			<div class="col-sm-9">
+				<om-input om-name="omName" om-property="name" om-editing="editing" om-model="variable" om-required="true" om-max-length="32"
+						  om-pattern="^[a-zA-Z_%][a-zA-Z_%0-9]*$"></om-input>
+				<ng-messages for="vdForm.omName.$error" ng-if="vdForm.$submitted || vdForm.omName.$touched">
+					<ng-message when="required"><p class="text-danger">{{'validation.variable.nameRequired' | translate}}</p></ng-message>
+					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "32"}'}}</p>
+					</ng-message>
+					<ng-message when="pattern"><p class="text-danger">{{'validation.variable.pattern' | translate}}</p></ng-message>
+				</ng-messages>
+				<p class="text-danger" ng-hide="vdForm.omName.$touched" ng-repeat="error in serverErrors.name">{{error}}</p>
+			</div>
+		</div>
+
+		<div ng-class="formGroupClass('omCalculation', 'calculation')">
+			<label for="omCalculation" class="col-sm-2 control-label label-required">{{'formField.calculation' | translate}}</label>
+			<div class="col-sm-5">
+				<om-text-area om-name="omCalculation" om-property="definition" om-adding="true" om-model="variable.formula" om-max-length="255"></om-text-area>
+				<ng-messages for="avForm.omCalculation.$error" ng-if="avForm.$submitted || avForm.omCalculation.$touched">
+					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "255"}'}}</p></ng-message>
+				</ng-messages>
+				<p class="text-danger" ng-hide="avForm.omCalculation.$touched" ng-repeat="error in serverErrors.calculation">{{error}}</p>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div ng-hide="confirmationNecessary" class="col-sm-offset-2 col-sm-7">
+				<button class="btn btn-primary" type="submit">
+					{{'button.save' | translate}}
+					<span ng-show="submitted" class="throbber-btn-wrapper">
+						<span class="throbber throbber-btn throbber-white"></span>
+					</span>
+				</button>
+				<a href="#" ng-click="cancel($event)">{{'button.cancel' | translate}}</a>
+			</div>
+			<div ng-show="confirmationNecessary" class="col-sm-offset-2 col-sm-7">
+				<div class="alert alert-danger">{{'warnings.discardConfirmation' | translate}}</div>
+				<button class="btn btn-danger" ng-click="confirm($event)">
+					{{'button.discard' | translate}}
+				</button>
+				<a href="#" ng-click="deny($event)">{{'button.continueEditing' | translate}}</a>
+			</div>
+		</div>
+	</form>
+</div>
