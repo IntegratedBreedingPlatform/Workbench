@@ -54,10 +54,13 @@
 			var ctrl = this;
 
 			ctrl.variables = [];
+			ctrl.formula = null;
+			ctrl.formulaInputVariables = null;
 			ctrl.favouriteVariables = [];
 			ctrl.showAllVariablesThrobberWrapper = true;
 			ctrl.showFavouritesThrobberWrapper = true;
 			ctrl.colHeaders = ['name', 'property', 'method', 'scale', 'action-favourite'];
+			ctrl.colFormulaHeaders = ['calculation','inputVariables','buttons'];
 			ctrl.problemGettingList = false;
 
 			$scope.filterByProperties = ['name', 'alias', 'property', 'method', 'scale'];
@@ -254,6 +257,20 @@
 
 				variablesService.getVariable($scope.selectedItem.id).then(function(variable) {
 					$scope.selectedVariable = variable;
+					ctrl.formula = variable.formula;
+					ctrl.formulaInputVariables = null;
+
+					if(ctrl.formula){
+
+						angular.forEach(variable.formula.inputs, function(input,idx) {
+							if(idx === 0){
+								ctrl.formulaInputVariables = input.name;
+							}else{
+								ctrl.formulaInputVariables += ', ' + input.name;
+							}
+
+						});
+					}
 				});
 
 				panelService.showPanel($scope.panelName);
