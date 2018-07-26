@@ -39,6 +39,9 @@
 					$scope.$watch('selectedVariable', function(variable) {
 						// Should always open in read-only view
 						$scope.editing = false;
+						$scope.deletingFormula = false;
+						$scope.deletingVariable = false;
+
 						resetErrors($scope);
 
 						// If a confirmation handler was in effect, get rid of it
@@ -115,6 +118,8 @@
 					$scope.deleteVariable = function(e, id) {
 						e.preventDefault();
 						resetErrors($scope);
+						$scope.deletingVariable = true;
+						$scope.deletingFormula = false;
 
 						formUtilities.confirmationHandler($scope, 'confirmDelete').then(function() {
 							variablesService.deleteVariable(id).then(function() {
@@ -137,10 +142,14 @@
 						// The user hasn't changed anything
 						if (angular.equals($scope.model, $scope.selectedVariable)) {
 							$scope.editing = false;
+							$scope.deletingVariable = false;
+							$scope.deletingFormula = false;
 						} else {
 							formUtilities.confirmationHandler($scope, 'confirmCancel').then(function() {
 								$scope.model = angular.copy($scope.selectedVariable);
 								$scope.editing = false;
+								$scope.deletingVariable = false;
+								$scope.deletingFormula = false;
 							});
 						}
 					};
