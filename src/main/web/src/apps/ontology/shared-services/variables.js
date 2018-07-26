@@ -271,6 +271,7 @@
 					+ '&loggedInUserId=' + configService.getLoggedInUserId();
 
 				request = [
+					$http.delete('/bmsapi/' + 'variableCache/' + configService.getCropName() + '/' + variableIds + '?programId=' + configService.getProgramId()),
 					$http.delete('/Fieldbook/variableCache/' + params),
 					$http.delete('/BreedingManager/main/variableCache/' + params),
 					$http.delete('/ibpworkbench/controller/variableCache/' + params)
