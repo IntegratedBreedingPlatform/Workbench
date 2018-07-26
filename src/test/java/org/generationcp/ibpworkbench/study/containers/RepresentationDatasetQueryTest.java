@@ -41,7 +41,7 @@ public class RepresentationDatasetQueryTest {
 	@Before
 	public void setUp() {
 		this.query = new RepresentationDataSetQuery(this.studyDataManager, new Integer(1), new ArrayList<String>(),
-				false);
+				false, 1);
 	}
 
 	@Test
@@ -187,7 +187,7 @@ public class RepresentationDatasetQueryTest {
 				VariableListTestDataInitializer.createVariableList(TermId.CROSS), Mockito.mock(VariableList.class));
 		Mockito.when(this.studyDataManager.getExperiments(1, 0, 1)).thenReturn(Arrays.asList(experiment));
 		final RepresentationDataSetQuery query = new RepresentationDataSetQuery(this.studyDataManager, new Integer(1),
-				new ArrayList<String>(), false);
+				new ArrayList<String>(), false, 1);
 		final List<Item> items = query.loadItems(0, 1);
 		Mockito.verify(this.studyDataManager).getExperiments(1, 0, 1);
 		Assert.assertEquals(1, items.size());
@@ -200,7 +200,7 @@ public class RepresentationDatasetQueryTest {
 		final Map<Integer, Item> itemMap = new HashMap<>();
 		final Variable variable = DMSVariableTestDataInitializer.createVariableWithStandardVariable(TermId.GID, "1");
 		final List<Variable> variables = Arrays.asList(variable);
-		this.query.populateItemMap(itemMap, experiment, variables);
+		this.query.populateItemMap(itemMap, experiment, variables, new HashMap<String, String>());
 		Assert.assertEquals(1, itemMap.size());
 		Assert.assertTrue(itemMap.get(1).getItemPropertyIds().contains("8240-GID"));
 		Assert.assertEquals(Button.class, itemMap.get(1).getItemProperty("8240-GID").getValue().getClass());
@@ -213,7 +213,7 @@ public class RepresentationDatasetQueryTest {
 		final Variable variable = DMSVariableTestDataInitializer.createVariableWithStandardVariable(TermId.DESIG,
 				"designation");
 		final List<Variable> variables = Arrays.asList(variable);
-		this.query.populateItemMap(itemMap, experiment, variables);
+		this.query.populateItemMap(itemMap, experiment, variables, new HashMap<String, String>());
 		Assert.assertEquals(1, itemMap.size());
 		Assert.assertTrue(itemMap.get(1).getItemPropertyIds().contains("8250-DESIG"));
 		Assert.assertEquals("designation", itemMap.get(1).getItemProperty("8250-DESIG").getValue());
@@ -226,7 +226,7 @@ public class RepresentationDatasetQueryTest {
 		final Variable variable = DMSVariableTestDataInitializer.createVariableWithStandardVariable(TermId.LATITUDE,
 				"1");
 		final List<Variable> variables = Arrays.asList(variable);
-		this.query.populateItemMap(itemMap, experiment, variables);
+		this.query.populateItemMap(itemMap, experiment, variables, new HashMap<String, String>());
 		Assert.assertEquals(1, itemMap.size());
 		Assert.assertTrue(itemMap.get(1).getItemPropertyIds().contains("8191-LATITUDE"));
 		Assert.assertEquals("1", itemMap.get(1).getItemProperty("8191-LATITUDE").getValue());
@@ -239,9 +239,24 @@ public class RepresentationDatasetQueryTest {
 		final Variable variable = DMSVariableTestDataInitializer.createVariableWithStandardVariable(TermId.LATITUDE,
 				"1.001");
 		final List<Variable> variables = Arrays.asList(variable);
-		this.query.populateItemMap(itemMap, experiment, variables);
+		this.query.populateItemMap(itemMap, experiment, variables, new HashMap<String, String>());
 		Assert.assertEquals(1, itemMap.size());
 		Assert.assertTrue(itemMap.get(1).getItemPropertyIds().contains("8191-LATITUDE"));
 		Assert.assertEquals("1.001", itemMap.get(1).getItemProperty("8191-LATITUDE").getValue());
+	}
+	
+	@Test
+	public void testPopulateItemMapWithLocation() {
+		final Experiment experiment = ExperimentTestDataInitializer.createExperiment();
+		final Map<Integer, Item> itemMap = new HashMap<>();
+		final Variable variable = DMSVariableTestDataInitializer.createVariableWithStandardVariable(TermId.LOCATION_ID,
+				"9015");
+		Map<String, String> locationNameMap = new HashMap<>();
+		locationNameMap.put("9015", "INT WATER MANAGEMENT INSTITUTE");
+		final List<Variable> variables = Arrays.asList(variable);
+		this.query.populateItemMap(itemMap, experiment, variables, locationNameMap);
+		Assert.assertEquals(1, itemMap.size());
+		Assert.assertTrue(itemMap.get(1).getItemPropertyIds().contains("8190-LOCATION_ID"));
+		Assert.assertEquals("INT WATER MANAGEMENT INSTITUTE", itemMap.get(1).getItemProperty("8190-LOCATION_ID").getValue());
 	}
 }
