@@ -354,6 +354,18 @@
 				var request = $http.get('/bmsapi/ontology/' + configService.getCropName() + '/variables/' + id + '?programId=' +
 					configService.getProgramId());
 				return request.then(successHandler, failureHandler);
+			},
+
+			/*
+			 *	Deletes the formula from a variable with the specified formulaId of the variable.
+			 */
+			deleteFormula: function(formulaId) {
+				var request;
+
+				request = $http.delete('/bmsapi/ontology/' + configService.getCropName() + '/formula/' + formulaId);
+				return request.then(function(response) {
+					return response.status;
+				}, failureHandler);
 			}
 		};
 	}]);
