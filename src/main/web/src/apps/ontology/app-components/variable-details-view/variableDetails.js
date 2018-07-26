@@ -9,9 +9,9 @@
 		NUM_EDITABLE_FIELDS = 6;
 
 	variableDetails.directive('omVariableDetails', ['variablesService', 'variableTypesService', 'propertiesService', 'methodsService',
-		'scalesService', 'serviceUtilities', 'formUtilities', 'panelService', '$timeout', 'debounce',
-		function(variablesService, variableTypesService, propertiesService, methodsService, scalesService, serviceUtilities, formUtilities,
-			panelService, $timeout, debounce) {
+		'scalesService', 'serviceUtilities', 'formUtilities', 'panelService', '$timeout', 'debounce', 'variableStateService',
+		function (variablesService, variableTypesService, propertiesService, methodsService, scalesService, serviceUtilities, formUtilities,
+				  panelService, $timeout, debounce, variableStateService) {
 
 			var TREATMENT_FACTOR_ID = 9,
 				LISTS_NOT_LOADED_TRANSLATION = 'validation.variable.someListsNotLoaded';
@@ -78,6 +78,28 @@
 								$scope.model.metadata.editableFields.indexOf('alias') !== -1;
 
 						return $scope.editing && aliasIsEditable || aliasHasValue;
+					};
+
+					$scope.showIfIsATraitVariable = function () {
+						var traitVariable = false;
+						if ($scope.model && $scope.model.variableTypes) {
+							angular.forEach($scope.model.variableTypes, function (variableType) {
+								if (variableType.id === '1808') {
+									traitVariable = true;
+								}
+							});
+						}
+						return traitVariable;
+					};
+
+					$scope.traitHasFormula = function () {
+						return !!($scope.model && $scope.model.formula);
+					};
+
+					$scope.addNewFormula = function (e, path) {
+						resetErrors($scope);
+						variableStateService.storeVariableState($scope.model, $scope.data);
+						$scope.addNew(e,path);
 					};
 
 					$scope.editVariable = function(e) {
