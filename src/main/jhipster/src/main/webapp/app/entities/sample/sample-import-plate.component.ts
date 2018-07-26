@@ -38,25 +38,6 @@ export class SampleImportPlateComponent {
         }
     }
 
-    validate() {
-
-        let errorMessage = '';
-        const fileName = this.fileUpload.nativeElement.value;
-
-        if (this.selectedFileType === '') {
-            errorMessage = 'bmsjHipsterApp.sample.importPlate.noSelectedFormat';
-        } else if (fileName === '') {
-            errorMessage = 'bmsjHipsterApp.sample.importPlate.noFileSelected';
-        } else if (this.importData.length === 0) {
-            errorMessage = 'bmsjHipsterApp.sample.importPlate.noContent';
-        }
-        if (errorMessage !== '') {
-            this.alertService.error(errorMessage);
-            return false;
-        }
-        return true;
-    }
-
     clearSelectedFile() {
         this.fileUpload.nativeElement.value = '';
         this.importData.length = 0;
@@ -80,5 +61,24 @@ export class SampleImportPlateComponent {
         this.excelService.parse(target).subscribe((value) => {
             this.importData = value;
         });
+    }
+
+    private validate() {
+
+        let errorMessage = '';
+        const fileName = this.fileUpload.nativeElement.value;
+
+        if (this.selectedFileType === '') {
+            errorMessage = 'bmsjHipsterApp.sample.importPlate.noSelectedFormat';
+        } else if (fileName === '') {
+            errorMessage = 'bmsjHipsterApp.sample.importPlate.noFileSelected';
+        } else if (this.importData.length === 0) {
+            errorMessage = 'bmsjHipsterApp.sample.importPlate.noContent';
+        }
+        if (errorMessage !== '') {
+            this.alertService.error(errorMessage);
+            return false;
+        }
+        return true;
     }
 }

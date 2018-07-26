@@ -7,7 +7,7 @@ import { JhiAlertService } from 'ng-jhipster';
         <div class="alerts" role="alert">
             <div *ngFor="let alert of alerts" [ngClass]="{\'alert.position\': true, \'toast\': alert.toast}" class="top right">
                 <ngb-alert *ngIf="alert && alert.type && alert.msg" [type]="alert.type" (close)="alert.close(alerts)">
-                    <pre [innerHTML]="alert.msg"></pre>
+                    <span [innerHTML]="alert.msg"></span>
                 </ngb-alert>
             </div>
         </div>`

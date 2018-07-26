@@ -23,8 +23,6 @@ export class SampleComponent implements OnInit, OnDestroy {
     @Input()
     sampleList: SampleList;
 
-    listId: number;
-
     currentAccount: any;
     error: any;
     success: any;

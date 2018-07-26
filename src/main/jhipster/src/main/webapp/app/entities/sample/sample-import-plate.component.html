@@ -28,7 +28,7 @@
 
         <div class="col-md-12">
             <div class="fileupload fileupload-new fbk-import-upload-file" data-provides="fileupload">
-							<span class="btn btn-info btn-file" [ngClass]="{ 'disabled': selectedFileType === '' }">
+							<span [ngStyle]="{'display': fileName ? 'none' : ''}" class="btn btn-info btn-file" [ngClass]="{ 'disabled': selectedFileType === '' }">
 							<span class="fileupload-new">Browse</span>
 								<input #fileUpload id="fileupload" type="file" class="file-input" (change)="onFileChange($event)"
                                        multiple="false" accept=".csv" [disabled]="selectedFileType === '' ? 'disabled' : null">file</input>

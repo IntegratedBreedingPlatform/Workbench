@@ -25,7 +25,6 @@ export class ModalComponent implements OnInit {
      * keyup - Checks keys entered for the 'esc' key, attached to hostlistener
      */
     keyup(event: KeyboardEvent): void {
-        console.log('esc');
         if (event.keyCode === 27) {
             this.modalService.close(this.modalId);
         }

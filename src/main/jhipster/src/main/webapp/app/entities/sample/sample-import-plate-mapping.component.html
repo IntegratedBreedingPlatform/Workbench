@@ -1,4 +1,10 @@
 <jhi-app-modal modalId="{{modalId}}" modalTitle="Select Mapping" modalSize="medium" closebtn="true" (onClose)="close()">
+
+    <div class="row form-group clearfix">
+        <div class="col-xs-12 col-md-12">
+        </div>
+    </div>
+
     <div class="row form-group">
         <div class="col-xs-12 col-md-12">
             <label class=""><em> <span class='required'>*</span> indicates a mandatory field</em></label>
@@ -11,8 +17,8 @@
                 class="required"> *</span>
         </div>
         <div class="col-xs-5 col-md-5">
-            <select class="form-control" style="width: 205px" id="sampleIdMapping">
-                <option [value]="">Please Choose</option>
+            <select class="form-control" style="width: 205px" id="sampleIdMapping" [(ngModel)]="sampleIdMapping">
+                <option value="">Please Choose</option>
                 <option *ngFor="let item of header" [value]="item">{{item}}</option>
             </select>
         </div>
@@ -23,8 +29,8 @@
                 class="required"> *</span>
         </div>
         <div class="col-xs-5 col-md-5">
-            <select class="form-control" style="width: 205px" id="plateIdMapping">
-                <option [value]="">Please Choose</option>
+            <select class="form-control" style="width: 205px" id="plateIdMapping" [(ngModel)]="plateIdMapping">
+                <option value="">Please Choose</option>
                 <option *ngFor="let item of header" [value]="item">{{item}}</option>
             </select>
         </div>
@@ -35,8 +41,8 @@
                 class="required"> *</span>
         </div>
         <div class="col-xs-5 col-md-5">
-            <select class="form-control" style="width: 205px" id="wellMapping">
-                <option [value]="">Please Choose</option>
+            <select class="form-control" style="width: 205px" id="wellMapping" [(ngModel)]="wellMapping">
+                <option value="">Please Choose</option>
                 <option *ngFor="let item of header" [value]="item">{{item}}</option>
             </select>
         </div>

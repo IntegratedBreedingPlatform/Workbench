@@ -34,8 +34,11 @@
                 "noFileSelected": "Please select the data file to be imported.",
                 "noContent": "The data file should have at least one row.",
                 "headerNotSpecified": "Please specify the headers.",
-                "invalidFileFormat": "The file selected has invalid format."
-            }
+                "headersNotMapped": "One or more of the file headers is not mapped. Please finish the mapping and try again.",
+                "recordHasNoSampleId": "One or more of the records do not include a Sample ID. Please check the file and try again.",
+                "success": "Sample Plate Information has been imported successfully."
+            },
+            "error": "{{ param }}"
         }
     }
 }
