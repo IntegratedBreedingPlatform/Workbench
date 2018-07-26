@@ -75,6 +75,7 @@ Custom alerts for notification
     color: inherit;
     padding: 0;
     margin: 0;
+    white-space: pre-wrap;
 }
 .alert .popover pre {
     font-size: 10px;

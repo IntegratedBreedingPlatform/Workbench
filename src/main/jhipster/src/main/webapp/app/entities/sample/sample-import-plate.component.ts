@@ -15,7 +15,9 @@ export class SampleImportPlateComponent {
 
     @ViewChild('fileUpload') fileUpload: ElementRef;
 
-    fileFormat = '';
+    selectedFileType = '.csv'; // Set the default file type to CSV.
+    fileName = '';
+
     importData = new Array<Array<any>>();
 
     constructor(private modalService: ModalService,
@@ -26,8 +28,7 @@ export class SampleImportPlateComponent {
 
     close() {
         this.modalService.close(this.modalId);
-        this.fileUpload.nativeElement.value = '';
-        this.importData.length = 0;
+        this.clearSelectedFile();
     }
 
     import() {
@@ -42,12 +43,10 @@ export class SampleImportPlateComponent {
         let errorMessage = '';
         const fileName = this.fileUpload.nativeElement.value;
 
-        if (this.fileFormat === '') {
+        if (this.selectedFileType === '') {
             errorMessage = 'bmsjHipsterApp.sample.importPlate.noSelectedFormat';
         } else if (fileName === '') {
             errorMessage = 'bmsjHipsterApp.sample.importPlate.noFileSelected';
-        } else if (!fileName.toLowerCase().endsWith('.' + this.fileFormat)) {
-            errorMessage = 'bmsjHipsterApp.sample.importPlate.invalidFileFormat';
         } else if (this.importData.length === 0) {
             errorMessage = 'bmsjHipsterApp.sample.importPlate.noContent';
         }
@@ -58,7 +57,25 @@ export class SampleImportPlateComponent {
         return true;
     }
 
+    clearSelectedFile() {
+        this.fileUpload.nativeElement.value = '';
+        this.importData.length = 0;
+        this.fileName = '';
+    }
+
+    onFileTypeChange() {
+        if (this.selectedFileType !== '') {
+            this.fileUpload.nativeElement.accept = this.selectedFileType;
+        } else {
+            this.clearSelectedFile();
+        }
+    }
+
     onFileChange(evt: any) {
+
+        let file = evt.target.files[0];
+        this.fileName = file.name;
+
         const target: DataTransfer = <DataTransfer>(evt.target);
         this.excelService.parse(target).subscribe((value) => {
             this.importData = value;
