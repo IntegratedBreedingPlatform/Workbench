@@ -137,6 +137,26 @@
 						$scope.editing = true;
 					};
 
+					$scope.deleteFormula = function (e, variableId) {
+						e.preventDefault();
+						resetErrors($scope);
+						$scope.deletingFormula = true;
+						$scope.deletingVariable = false;
+						var formulaId = $scope.model.formula.formulaId;
+						formUtilities.confirmationHandler($scope, 'confirmDeleteFormula').then(function () {
+							$scope.deletingFormula = false;
+							variablesService.deleteFormula(formulaId).then(function () {
+								$scope.model.formula = null;
+								variablesService.deleteVariablesFromCache([parseInt(variableId)]);
+
+							}, function (failureHandler) {
+								console.log(failureHandler);
+								$scope.clientErrors.deleteErrorMessage = failureHandler.errors[0].message;
+								$scope.clientErrors.failedToDeleteFormula = true;
+							});
+						});
+					};
+
 					$scope.deleteVariable = function(e, id) {
 						e.preventDefault();
 						resetErrors($scope);
