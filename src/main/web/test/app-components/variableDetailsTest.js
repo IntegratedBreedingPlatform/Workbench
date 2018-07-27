@@ -45,6 +45,7 @@ describe('Variable details directive', function() {
 		scalesService = {},
 		variableTypesService = {},
 		variablesService = {},
+		variableStateService = {},
 
 		formUtilities,
 		scope,
@@ -86,6 +87,7 @@ describe('Variable details directive', function() {
 			$provide.value('variablesService', variablesService);
 			$provide.value('variableTypesService', variableTypesService);
 			$provide.value('panelService', panelService);
+			$provide.value('variableStateService', variableStateService);
 		});
 	});
 
