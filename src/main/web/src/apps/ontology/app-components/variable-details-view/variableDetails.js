@@ -217,7 +217,9 @@
 								model.favourite = true;
 							}
 
-							variablesService.updateVariable(id, model).then(function() {
+							variablesService.updateVariable(id, model).then(function () {
+								return variablesService.getVariable(id);
+							}).then(function(model) {
 
 								// Update variable on parent scope if we succeeded
 								$scope.updateSelectedVariable(model);

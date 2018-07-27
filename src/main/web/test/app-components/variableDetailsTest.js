@@ -56,6 +56,7 @@ describe('Variable details directive', function() {
 		deferredGetScalesWithNonSystemDataTypes,
 		deferredGetTypes,
 		deferredUpdateVariable,
+		deferredGetVariable,
 		deferredDeleteVariable,
 		deferredDeleteVariablesFromCache,
 		mockTranslateFilter;
@@ -119,6 +120,11 @@ describe('Variable details directive', function() {
 		variablesService.updateVariable = function() {
 			deferredUpdateVariable = q.defer();
 			return deferredUpdateVariable.promise;
+		};
+
+		variablesService.getVariable = function() {
+			deferredGetVariable = q.defer();
+			return deferredGetVariable.promise;
 		};
 
 		variablesService.deleteVariable = function() {
@@ -517,6 +523,8 @@ describe('Variable details directive', function() {
 			scope.saveChanges(fakeEvent, PLANT_VIGOR.id, PLANT_VIGOR);
 
 			deferredUpdateVariable.resolve();
+			scope.$apply();
+			deferredGetVariable.resolve(PLANT_VIGOR);
 			scope.$apply();
 
 			expect(scope.updateSelectedVariable).toHaveBeenCalledWith(PLANT_VIGOR);
