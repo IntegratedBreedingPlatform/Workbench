@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -207,6 +208,7 @@ public class DatasetExporter {
 	private int writeExperiments(final HSSFCellStyle cellStyleForObservationSheet, final HSSFSheet observationSheet,
 			final int sheetRowIndex, final List<Experiment> experiments) {
 		int newSheetRowIndex = sheetRowIndex;
+		final Map<String, String> locationNameMap = this.studyDataManager.createInstanceLocationIdToNameMapFromStudy(this.studyId);
 		for (final Experiment experiment : experiments) {
 			final HSSFRow row = observationSheet.createRow(newSheetRowIndex);
 			newSheetRowIndex++;
@@ -222,32 +224,7 @@ public class DatasetExporter {
 					final short columnIndex = columnIndexInteger.shortValue();
 					if (columnIndex >= 0) {
 						final HSSFCell cell = row.createCell(columnIndex);
-						final boolean isNumeric =
-								Util.isNumericVariable(factorVariable.getVariableType().getStandardVariable().getDataType().getId());
-						if (isNumeric) {
-							double elemValue = 0;
-							if (factorVariable.getValue() != null) {
-								try {
-									elemValue = Double.valueOf(factorVariable.getValue());
-									cell.setCellValue(elemValue);
-								} catch (final NumberFormatException ex) {
-									String value = factorVariable.getValue();
-									if (value != null) {
-										value = value.trim();
-									}
-									cell.setCellValue(value);
-								}
-							} else {
-								final String nullValue = null;
-								cell.setCellValue(nullValue);
-							}
-						} else {
-							String value = factorVariable.getDisplayValue();
-							if (value != null) {
-								value = value.trim();
-							}
-							cell.setCellValue(value);
-						}
+						populateCellValue(locationNameMap, factorVariable, cell, Util.isNumericVariable(factorVariable.getVariableType().getStandardVariable().getDataType().getId()));
 					}
 				}
 			}
@@ -265,37 +242,35 @@ public class DatasetExporter {
 					if (columnIndex >= 0) {
 						final Cell cell = PoiUtil.createCell(cellStyleForObservationSheet, row, columnIndex, CellStyle.ALIGN_CENTER,
 								CellStyle.ALIGN_CENTER);
-						final boolean isNumeric =
-								Util.isNumericVariable(variateVariable.getVariableType().getStandardVariable().getDataType().getId());
-						if (isNumeric) {
-							double elemValue = 0;
-							if (variateVariable.getValue() != null) {
-								try {
-									elemValue = Double.valueOf(variateVariable.getDisplayValue());
-									cell.setCellValue(elemValue);
-								} catch (final NumberFormatException ex) {
-									String value = variateVariable.getValue();
-									if (value != null) {
-										value = value.trim();
-									}
-									cell.setCellValue(value);
-								}
-							} else {
-								final String nullValue = null;
-								cell.setCellValue(nullValue);
-							}
-						} else {
-							String value = variateVariable.getDisplayValue();
-							if (value != null) {
-								value = value.trim();
-							}
-							cell.setCellValue(value);
-						}
+						this.populateCellValue(locationNameMap, variateVariable, cell, Util.isNumericVariable(variateVariable.getVariableType().getStandardVariable().getDataType().getId()));
 					}
 				}
 			}
 		}
 		return newSheetRowIndex;
+	}
+
+	protected void populateCellValue(final Map<String, String> locationNameMap, final Variable variable,
+			final Cell cell, final boolean isNumeric) {
+		if(variable.getValue() == null) {
+			cell.setCellValue("");
+			return;
+		}
+		if (isNumeric) {
+			double elemValue = 0;
+			try {
+				elemValue = Double.valueOf(variable.getValue());
+				cell.setCellValue(elemValue);
+			} catch (final NumberFormatException ex) {
+				cell.setCellValue(variable.getValue().trim());
+			}
+		} else {
+			String value = variable.getDisplayValue().trim();
+			if (TermId.LOCATION_ID.getId() == variable.getVariableType().getId()) {
+				value = locationNameMap.get(value);
+			}
+			cell.setCellValue(value);
+		}
 	}
 
 	/*

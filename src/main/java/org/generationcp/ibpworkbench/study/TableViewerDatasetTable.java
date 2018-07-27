@@ -11,21 +11,23 @@
 
 package org.generationcp.ibpworkbench.study;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.themes.BaseTheme;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang.math.NumberUtils;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.study.listeners.GidLinkButtonClickListener;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.study.listeners.GidLinkButtonClickListener;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.Experiment;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableList;
+import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
@@ -35,9 +37,10 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import com.vaadin.data.Item;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.themes.BaseTheme;
 
 /**
  * @author Mark Agarrado
@@ -50,7 +53,7 @@ public class TableViewerDatasetTable extends Table implements InitializingBean {
 
 	private static final long serialVersionUID = 9114757066977945573L;
 	private static final Logger LOG = LoggerFactory.getLogger(TableViewerDatasetTable.class);
-	private static final String NUMERIC_VARIABLE = "Numeric variable";
+	public static final String NUMERIC_VARIABLE = "Numeric variable";
 
 	private final StudyDataManager studyDataManager;
 	private final Integer studyId;
@@ -117,11 +120,11 @@ public class TableViewerDatasetTable extends Table implements InitializingBean {
 		this.populateDatasetTable();
 	}
 
-	private void populateDatasetTable() {
+	void populateDatasetTable() {
 		List<Experiment> experiments = this.getExperimentsByBatch();
 
 		if (!experiments.isEmpty()) {
-
+			final Map<String, String> locationNameMap = this.studyDataManager.createInstanceLocationIdToNameMapFromStudy(this.studyId);
 			for (Experiment experiment : experiments) {
 				List<Variable> variables = new ArrayList<>();
 
@@ -136,38 +139,44 @@ public class TableViewerDatasetTable extends Table implements InitializingBean {
 				}
 
 				Item item = this.addItem(experiment.getId());
-				if (item != null) {
-					for (Variable variable : variables) {
-						String columnId =
-								new StringBuffer().append(variable.getVariableType().getId()).append("-")
-										.append(variable.getVariableType().getLocalName()).toString();
+				setItemValues(locationNameMap, variables, item);
+			}
+		}
+	}
 
-						if (TableViewerDatasetTable.NUMERIC_VARIABLE.equals(variable.getVariableType().getStandardVariable().getDataType()
-								.getName())) {
-							String cellValue = variable.getDisplayValue();
+	void setItemValues(final Map<String, String> locationNameMap, List<Variable> variables, Item item) {
+		if (item != null) {
+			for (Variable variable : variables) {
+				String columnId =
+						new StringBuffer().append(variable.getVariableType().getId()).append("-")
+								.append(variable.getVariableType().getLocalName()).toString();
 
-							// value is in date format but defined as Numeric Variable eg. 10/21/2004
-							if (cellValue.contains("/")) {
-								item.getItemProperty(columnId).setValue(this.formatDateToNumber(cellValue));
-							} else if (NumberUtils.isNumber(cellValue)) {
-								BigDecimal decimalValue = new BigDecimal(cellValue);
-								item.getItemProperty(columnId).setValue(decimalValue);
-							}
+				if (TableViewerDatasetTable.NUMERIC_VARIABLE.equals(variable.getVariableType().getStandardVariable().getDataType()
+						.getName())) {
+					String cellValue = variable.getDisplayValue();
 
-						} else {
-							String stringValue = variable.getDisplayValue();
-							if (stringValue != null) {
-								stringValue = stringValue.trim();
-								// display value as Link if GID, else display as string
-								if ("GID".equals(variable.getVariableType().getLocalName().trim())) {
-									Button gidButton = new Button(stringValue, new GidLinkButtonClickListener(stringValue));
-									gidButton.setStyleName(BaseTheme.BUTTON_LINK);
-									gidButton.setDescription("Click to view Germplasm information");
-									item.getItemProperty(columnId).setValue(gidButton);
-								} else {
-									item.getItemProperty(columnId).setValue(stringValue);
-								}
-							}
+					// value is in date format but defined as Numeric Variable eg. 10/21/2004
+					if (cellValue.contains("/")) {
+						item.getItemProperty(columnId).setValue(this.formatDateToNumber(cellValue));
+					} else if (NumberUtils.isNumber(cellValue)) {
+						BigDecimal decimalValue = new BigDecimal(cellValue);
+						item.getItemProperty(columnId).setValue(decimalValue);
+					}
+
+				} else {
+					String stringValue = variable.getDisplayValue();
+					if (stringValue != null) {
+						stringValue = stringValue.trim();
+						// display value as Link if GID, else display as string
+						if (TermId.GID.getId() == variable.getVariableType().getId()) {
+							Button gidButton = new Button(stringValue, new GidLinkButtonClickListener(stringValue));
+							gidButton.setStyleName(BaseTheme.BUTTON_LINK);
+							gidButton.setDescription("Click to view Germplasm information");
+							item.getItemProperty(columnId).setValue(gidButton);
+						} else if (TermId.LOCATION_ID.getId() == variable.getVariableType().getId()) {
+							item.getItemProperty(columnId).setValue(locationNameMap.get(stringValue));
+						}	else {
+							item.getItemProperty(columnId).setValue(stringValue);
 						}
 					}
 				}
