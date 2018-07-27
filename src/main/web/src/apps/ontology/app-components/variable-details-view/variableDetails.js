@@ -80,18 +80,6 @@
 						return $scope.editing && aliasIsEditable || aliasHasValue;
 					};
 
-					$scope.showIfIsATraitVariable = function () {
-						var traitVariable = false;
-						if ($scope.model && $scope.model.variableTypes) {
-							angular.forEach($scope.model.variableTypes, function (variableType) {
-								if (variableType.id === '1808') {
-									traitVariable = true;
-								}
-							});
-						}
-						return traitVariable;
-					};
-
 					$scope.traitHasFormula = function () {
 						return !!($scope.model && $scope.model.formula);
 					};
