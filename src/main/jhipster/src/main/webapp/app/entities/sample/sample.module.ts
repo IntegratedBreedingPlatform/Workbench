@@ -25,7 +25,7 @@ import {ModalComponent} from '../../shared/modal/modal.component';
 import {ModalService} from '../../shared/modal/modal.service';
 import {ExcelService} from './excel.service';
 import {SampleImportPlateMappingComponent} from './sample-import-plate-mapping.component';
-import {SampleContext} from "./sample.context";
+import {SampleContext} from './sample.context';
 
 const ENTITY_STATES = [
     ...sampleRoute,

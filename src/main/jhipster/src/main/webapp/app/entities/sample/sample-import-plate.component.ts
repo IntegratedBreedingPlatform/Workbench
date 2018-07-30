@@ -54,7 +54,7 @@ export class SampleImportPlateComponent {
 
     onFileChange(evt: any) {
 
-        let file = evt.target.files[0];
+        const file = evt.target.files[0];
         this.fileName = file.name;
 
         const target: DataTransfer = <DataTransfer>(evt.target);
@@ -63,7 +63,7 @@ export class SampleImportPlateComponent {
         });
     }
 
-    private validate() {
+    validate() {
 
         let errorMessage = '';
         const fileName = this.fileUpload.nativeElement.value;

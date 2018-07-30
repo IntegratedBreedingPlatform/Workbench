@@ -40,12 +40,12 @@ export class SampleImportPlateMappingComponent {
                 plateIdHeader: this.plateIdMapping,
                 wellHeader: this.wellMapping,
                 importData: this.importData
-            }).subscribe(observer => {
+            }).subscribe((observer) => {
                 this.close();
                 // Refresh the sample list table.
                 this.eventManager.broadcast({name: 'sampleListModification', content: ''});
                 this.alertService.success('bmsjHipsterApp.sample.importPlate.success');
-            }, response => {
+            }, (response) => {
                 if (response.status === 409) {
                     this.alertService.error('bmsjHipsterApp.sample.error', { param : response.error.errors[0].message});
                 }
@@ -67,7 +67,7 @@ export class SampleImportPlateMappingComponent {
         this.onClose.emit();
     }
 
-    private validate() {
+    validate() {
         if (this.sampleIdMapping === '' || this.plateIdMapping === '' || this.wellMapping === '') {
             this.alertService.error('bmsjHipsterApp.sample.importPlate.headersNotMapped');
             return false;
@@ -78,11 +78,11 @@ export class SampleImportPlateMappingComponent {
         return true;
     }
 
-    private columnHasEmptyData(headerName: string) {
+    columnHasEmptyData(headerName: string) {
         let hasEmptyData = false;
         const headerRow = this.importData[0];
         const columnIndex = headerRow.indexOf(headerName);
-        for (let row of this.importData) {
+        for (const row of this.importData) {
             if (!row[columnIndex]) {
                 hasEmptyData = true;
                 break;
@@ -90,6 +90,5 @@ export class SampleImportPlateMappingComponent {
         }
         return hasEmptyData;
     }
-
 
 }
