@@ -392,10 +392,8 @@
 				}]
 			}
 			*/
-			addFormula: function(formula) {
-				//var convertedVariable = convertVariableForUpdating(variable),
-					var request = $http.post('/bmsapi/ontology/' + configService.getCropName() + '/formula', formula);
-
+			addFormula: function (formula) {
+				var request = $http.post('/bmsapi/ontology/' + configService.getCropName() + '/formula', formula);
 				return request.then(successHandler, failureHandler);
 			},
 
