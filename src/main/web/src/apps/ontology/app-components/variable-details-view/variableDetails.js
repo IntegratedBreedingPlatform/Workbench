@@ -39,9 +39,6 @@
 					$scope.$watch('selectedVariable', function(variable) {
 						// Should always open in read-only view
 						$scope.editing = false;
-						$scope.deletingFormula = false;
-						$scope.deletingVariable = false;
-
 						resetErrors($scope);
 
 						// If a confirmation handler was in effect, get rid of it
@@ -128,17 +125,13 @@
 					$scope.deleteFormula = function (e, variableId) {
 						e.preventDefault();
 						resetErrors($scope);
-						$scope.deletingFormula = true;
-						$scope.deletingVariable = false;
 						var formulaId = $scope.model.formula.formulaId;
 						formUtilities.confirmationHandler($scope, 'confirmDeleteFormula').then(function () {
-							$scope.deletingFormula = false;
 							variablesService.deleteFormula(formulaId).then(function () {
 								$scope.model.formula = null;
 								variablesService.deleteVariablesFromCache([parseInt(variableId)]);
 
 							}, function (failureHandler) {
-								console.log(failureHandler);
 								$scope.clientErrors.deleteErrorMessage = failureHandler.errors[0].message;
 								$scope.clientErrors.failedToDeleteFormula = true;
 							});
@@ -148,9 +141,6 @@
 					$scope.deleteVariable = function(e, id) {
 						e.preventDefault();
 						resetErrors($scope);
-						$scope.deletingVariable = true;
-						$scope.deletingFormula = false;
-
 						formUtilities.confirmationHandler($scope, 'confirmDelete').then(function() {
 							variablesService.deleteVariable(id).then(function() {
 								// Remove variable on parent scope if we succeeded
@@ -172,14 +162,10 @@
 						// The user hasn't changed anything
 						if (angular.equals($scope.model, $scope.selectedVariable)) {
 							$scope.editing = false;
-							$scope.deletingVariable = false;
-							$scope.deletingFormula = false;
 						} else {
 							formUtilities.confirmationHandler($scope, 'confirmCancel').then(function() {
 								$scope.model = angular.copy($scope.selectedVariable);
 								$scope.editing = false;
-								$scope.deletingVariable = false;
-								$scope.deletingFormula = false;
 							});
 						}
 					};

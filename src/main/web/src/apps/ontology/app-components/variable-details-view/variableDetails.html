@@ -160,7 +160,7 @@
 					</div>
 				</div>
 
-				<div ng-show="deletingVariable && confirmationNecessary ">
+				<div ng-show="!confirmDeleteFormula && confirmationNecessary ">
 					<div class="alert alert-danger">
 						<span ng-show="confirmCancel">{{'warnings.discardConfirmation' | translate}}</span>
 						<span ng-show="confirmDelete">{{'warnings.variables.deleteConfirmation' | translate}}</span>
@@ -219,7 +219,7 @@
 											<span class="om-li-data-cell-test">{{varsCtrl.formulaInputVariables}}</span>
 										</td>
 										<td align="right" >
-											<button ng-hide="editing || confirmationNecessary" type="button" class="btn btn-danger btn-icon" aria-label="{{'button.delete' | translate}}"
+											<button ng-hide="editing || confirmDeleteFormula" type="button" class="btn btn-danger btn-icon" aria-label="{{'button.delete' | translate}}"
 													ng-click="deleteFormula($event,variableId)">
 												<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
 											</button>
@@ -230,16 +230,14 @@
 								<div ng-if="clientErrors.failedToDeleteFormula" class="alert alert-danger" role="alert">
 									{{clientErrors.deleteErrorMessage}}
 								</div>
-								<div ng-show="deletingFormula && confirmationNecessary ">
+								<div ng-show="confirmDeleteFormula">
 									<div class="alert alert-danger">
 										<span ng-show="confirmDeleteFormula">{{'warnings.formulas.deleteConfirmation' | translate}}</span>
 									</div>
 									<button class="btn btn-danger" ng-click="confirm($event)">
-										<span ng-show="confirmCancelFormula">{{'button.discard' | translate}}</span>
 										<span ng-show="confirmDeleteFormula">{{'button.delete' | translate}}</span>
 									</button>
 									<a href="#" ng-click="deny($event)">
-										<span ng-show="confirmCancelFormula">{{'button.continueEditing' | translate}}</span>
 										<span ng-show="confirmDeleteFormula">{{'button.cancel' | translate}}</span>
 									</a>
 								</div>
