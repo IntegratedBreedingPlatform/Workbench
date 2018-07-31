@@ -358,6 +358,48 @@
 			},
 
 			/*
+			Expects a variable in the format:
+
+			{
+				"definition": "",
+				"inputs": [
+					{
+						"id": 0,
+						"targetTermId": 0,
+						"definition": "",
+						"vocabularyId": 0,
+						"obsolete": false,
+						"name": "",
+						"dateCreated": "",
+						"dateLastModified": ""
+					}
+				],
+				"targetTermId": 0,
+				"description": "",
+				"name": "",
+				"active": false,
+				"formulaId": 0
+			}
+
+			If the response has a 400 status, the response data will contain an errors property which is an
+			array of error objects, each with a message and optional fieldName, linking the message to a
+			specific field on the page (by HTML name).
+
+			{
+				'errors': [{
+					'fieldNames': ['name'],
+					'message': 'A variable with that name already exists.'
+				}]
+			}
+			*/
+			addFormula: function(formula) {
+				//var convertedVariable = convertVariableForUpdating(variable),
+					var request = $http.post('/bmsapi/ontology/' + configService.getCropName() + '/formula', formula);
+
+				return request.then(successHandler, failureHandler);
+			},
+
+			/*
 			 *	Deletes the formula from a variable with the specified formulaId of the variable.
 			 */
 			deleteFormula: function(formulaId) {
