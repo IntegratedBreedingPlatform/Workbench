@@ -11,7 +11,7 @@
 		function ($scope, $window, $location, variablesService, variableTypesService, propertiesService, methodsService, scalesService,
 				  variableStateService, serviceUtilities, formUtilities) {
 
-			var VARIABLES_PATH = '/formula', storedData;
+			var VARIABLES_PATH = '/variables/', storedData;
 			$scope.serverErrors = {};
 			storedData = variableStateService.getVariableState();
 
@@ -32,7 +32,7 @@
 
 					variablesService.addFormula(formula).then(function () {
 						variableStateService.reset();
-						$location.path(VARIABLES_PATH);
+						$location.path(VARIABLES_PATH+$scope.variable.id);
 						variablesService.deleteVariablesFromCache([parseInt($scope.variable.id)]);
 					}, function (response) {
 						$scope.avForm.$setUntouched();
@@ -45,6 +45,8 @@
 			$scope.cancel = function (e) {
 				e.preventDefault();
 				variableStateService.reset();
+				$location.path(VARIABLES_PATH+$scope.variable.id);
+
 			};
 
 			$scope.formGroupClass = formUtilities.formGroupClassGenerator($scope, 'avForm');
@@ -52,25 +54,12 @@
 			function creatingFormula(variable) {
 				var formula = {
 					"definition": "",
-					"inputs": [
-						{
-							"id": 0,
-							"targetTermId": 0,
-							"definition": "",
-							"vocabularyId": 0,
-							"obsolete": false,
-							"name": "",
-							"dateCreated": "",
-							"dateLastModified": ""
-						}
-					],
 					"targetTermId": variable.id,
 					"description": "",
 					"name": "",
 					"active": true,
 					"formulaId": 0
 				};
-
 				return formula;
 			};
 		}
