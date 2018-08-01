@@ -81,7 +81,7 @@ export class SampleImportPlateMappingComponent {
     columnHasEmptyData(headerName: string) {
         const headerRow = this.importData[0];
         const columnIndex = headerRow.indexOf(headerName);
-        return this.importData.some(row => {
+        return this.importData.some((row) => {
             return !row[columnIndex];
         });
     }
