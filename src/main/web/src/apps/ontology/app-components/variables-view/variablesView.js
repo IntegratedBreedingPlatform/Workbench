@@ -49,8 +49,8 @@
 		}
 	}
 
-	app.controller('VariablesController', ['$scope', 'variablesService', 'panelService', '$timeout', 'collectionUtilities',
-		function($scope, variablesService, panelService, $timeout, collectionUtilities) {
+	app.controller('VariablesController', ['$scope', 'variablesService', 'panelService', '$timeout', 'collectionUtilities', '$routeParams',
+		function ($scope, variablesService, panelService, $timeout, collectionUtilities, $routeParams) {
 			var ctrl = this;
 
 			ctrl.variables = [];
@@ -330,6 +330,11 @@
 			$scope.selectedItem = {id: null};
 			// Contains the entire selected variable object once it has been updated.
 			$scope.selectedVariable = {};
+
+			if($routeParams.id){
+				$scope.selectedItem.id = $routeParams.id;
+				$scope.showVariableDetails();
+			}
 		}
 	]);
 
