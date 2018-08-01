@@ -19,6 +19,11 @@
 				controllerAs: 'varsCtrl',
 				templateUrl: VIEWS_LOCATION + 'variablesView.html'
 			})
+			.when('/variables/:id', {
+				controller: 'VariablesController',
+				controllerAs: 'varsCtrl',
+				templateUrl: VIEWS_LOCATION + 'variablesView.html'
+			})
 			.when('/methods', {
 				controller: 'MethodsController',
 				controllerAs: 'methodsCtrl',
