@@ -83,8 +83,23 @@
 
 					$scope.addNewFormula = function (e, path) {
 						resetErrors($scope);
-						variableStateService.storeVariableState($scope.model, $scope.data);
+						$scope.model.formula = creatingFormula();
+						variableStateService.storeVariableState($scope.model, null);
 						$scope.addNew(e,path);
+					};
+
+					function creatingFormula() {
+						var formula = {
+							"definition": "",
+							"target":  {
+								id: $scope.model.id
+							},
+							"description": "",
+							"name": "",
+							"active": true,
+							"formulaId": 0
+						};
+						return formula;
 					};
 
 					$scope.editVariable = function(e) {
