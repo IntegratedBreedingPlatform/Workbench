@@ -38,6 +38,10 @@ export class SampleListService {
             });
     }
 
+    importPlateInfo(importData: any) {
+        return this.http.post(`${this.resourceUrl}/plate-information/import`, importData);
+    }
+
     private convertArrayResponse(res: HttpResponse<SampleList[]>): HttpResponse<SampleList[]> {
         const jsonResponse: SampleList[] = res.body;
         const body: SampleList[] = [];
