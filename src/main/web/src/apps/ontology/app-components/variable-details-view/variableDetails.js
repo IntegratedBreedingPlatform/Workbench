@@ -164,7 +164,8 @@
 
 								variablesService.deleteVariablesFromCache([ parseInt(id) ]);
 
-							}, function() {
+							}, function(failureHandler) {
+								$scope.clientErrors.deleteErrorMessage = failureHandler.errors[0].message;
 								$scope.clientErrors.failedToDelete = true;
 							});
 						});
