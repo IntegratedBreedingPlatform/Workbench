@@ -607,6 +607,7 @@ describe('Variable details directive', function() {
 			deferredDeleteVariable.reject();
 			scope.$apply();
 
+			expect(serviceUtilities.serverErrorHandler).toHaveBeenCalled();
 			expect(scope.clientErrors.failedToDelete).toBe(true);
 		});
 
