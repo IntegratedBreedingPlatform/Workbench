@@ -54,7 +54,9 @@
 			function creatingFormula(variable) {
 				var formula = {
 					"definition": "",
-					"targetTermId": variable.id,
+					"target":  {
+						id: variable.id
+					},
 					"description": "",
 					"name": "",
 					"active": true,

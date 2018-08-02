@@ -358,7 +358,7 @@
 			},
 
 			/*
-			Expects a variable in the format:
+			Expects a formula in the format:
 
 			{
 				"definition": "",
@@ -374,21 +374,28 @@
 						"dateLastModified": ""
 					}
 				],
-				"targetTermId": 0,
+				"target": {
+					"id": 0,
+					"targetTermId": 0,
+					"definition": "",
+					"vocabularyId": 0,
+					"obsolete": false,
+					"name": "",
+					"dateCreated": "",
+					"dateLastModified": ""
+				},
 				"description": "",
 				"name": "",
 				"active": false,
 				"formulaId": 0
 			}
 
-			If the response has a 400 status, the response data will contain an errors property which is an
-			array of error objects, each with a message and optional fieldName, linking the message to a
-			specific field on the page (by HTML name).
+
 
 			{
 				'errors': [{
 					'fieldNames': ['name'],
-					'message': 'A variable with that name already exists.'
+					'message': 'validation message'
 				}]
 			}
 			*/
