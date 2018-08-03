@@ -104,16 +104,6 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 		this.selDesignType.setImmediate(true);
 		this.selDesignType.setNullSelectionAllowed(true);
 		this.selDesignType.setNewItemsAllowed(false);
-		this.selDesignType.addItem(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName());
-		this.selDesignType.setItemCaption(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName(), "Incomplete block design");
-		this.selDesignType.addItem(DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
-		this.selDesignType.setItemCaption(DesignType.RANDOMIZED_BLOCK_DESIGN.getName(), "Randomized block design");
-		this.selDesignType.addItem(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName());
-		this.selDesignType.setItemCaption(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName(), "Row-column design");
-		this.selDesignType.addItem(DesignType.P_REP_DESIGN.getName());
-		this.selDesignType.setItemCaption(DesignType.P_REP_DESIGN.getName(), "P-rep design");
-		this.selDesignType.addItem(DesignType.AUGMENTED_RANDOMIZED_BLOCK.getName());
-		this.selDesignType.setItemCaption(DesignType.AUGMENTED_RANDOMIZED_BLOCK.getName(), "Augmented design");
 		this.selDesignType.setWidth(SingleSiteAnalysisDetailsPanel.SELECT_BOX_WIDTH);
 
 		this.selReplicates = new Select();
@@ -151,6 +141,17 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 
 	@Override
 	public void initializeValues() {
+		this.selDesignType.addItem(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName());
+		this.selDesignType.setItemCaption(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName(), "Incomplete block design");
+		this.selDesignType.addItem(DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
+		this.selDesignType.setItemCaption(DesignType.RANDOMIZED_BLOCK_DESIGN.getName(), "Randomized block design");
+		this.selDesignType.addItem(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName());
+		this.selDesignType.setItemCaption(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName(), "Row-column design");
+		this.selDesignType.addItem(DesignType.P_REP_DESIGN.getName());
+		this.selDesignType.setItemCaption(DesignType.P_REP_DESIGN.getName(), "P-rep design");
+		this.selDesignType.addItem(DesignType.AUGMENTED_RANDOMIZED_BLOCK.getName());
+		this.selDesignType.setItemCaption(DesignType.AUGMENTED_RANDOMIZED_BLOCK.getName(), "Augmented design");
+		
 		this.populateChoicesForReplicates();
 		this.populateChoicesForBlocks();
 		this.populateChoicesForRowFactor();
@@ -249,14 +250,23 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 
 	}
 	
+	private void addSpatialVariablesToLayout(final GridLayout gLayout, final int startRowIndex, final Boolean isMandatory) {
+		gLayout.addComponent(this.lblSpecifyRowFactor, 0, startRowIndex);
+		gLayout.addComponent(this.selRowFactor, 1, startRowIndex);
+		gLayout.addComponent(this.lblSpecifyColumnFactor, 0, startRowIndex + 1);
+		gLayout.addComponent(this.selColumnFactor, 1, startRowIndex + 1);
+		this.markRowAndColumnFactorsAsMandatory(isMandatory);
+	}
+	
 	public void displayRandomizedBlockDesignElements() {
 
 		this.designDetailsContainer.removeAllComponents();
 
 		// Add visible components for Randomized Block Design
-		final GridLayout gLayout = this.createGridLayout(2, 1);
+		final GridLayout gLayout = this.createGridLayout(2, 3);
 		gLayout.addComponent(this.lblReplicates, 0, 0);
 		gLayout.addComponent(this.selReplicates, 1, 0);
+		this.addSpatialVariablesToLayout(gLayout, 1, false);
 
 		this.designDetailsContainer.addComponent(gLayout);
 
@@ -267,13 +277,14 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 
 		this.designDetailsContainer.removeAllComponents();
 
-		final GridLayout gLayout = this.createGridLayout(2, 2);
+		final GridLayout gLayout = this.createGridLayout(2, 4);
 
 		// Add visible components for Incomplete Block Design
 		gLayout.addComponent(this.lblReplicates, 0, 0);
 		gLayout.addComponent(this.selReplicates, 1, 0);
 		gLayout.addComponent(this.lblBlocks, 0, 1);
 		gLayout.addComponent(this.selBlocks, 1, 1);
+		this.addSpatialVariablesToLayout(gLayout, 2, false);
 
 		this.designDetailsContainer.addComponent(gLayout);
 
@@ -284,11 +295,12 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 
 		this.designDetailsContainer.removeAllComponents();
 
-		final GridLayout gLayout = this.createGridLayout(2, 2);
+		final GridLayout gLayout = this.createGridLayout(2, 4);
 
 		// Add visible components for Augmented Design
 		gLayout.addComponent(this.lblBlocks, 0, 1);
 		gLayout.addComponent(this.selBlocks, 1, 1);
+		this.addSpatialVariablesToLayout(gLayout, 2, false);
 
 		// Augmented design does not need a replicates factor, make the
 		// replicates factor select box unselected
@@ -307,12 +319,7 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 		// Add visible components for Row-and-column Design
 		gLayout.addComponent(this.lblReplicates, 0, 0);
 		gLayout.addComponent(this.selReplicates, 1, 0);
-		gLayout.addComponent(this.lblSpecifyColumnFactor, 0, 1);
-		gLayout.addComponent(this.selColumnFactor, 1, 1);
-		gLayout.addComponent(this.lblSpecifyRowFactor, 0, 2);
-		gLayout.addComponent(this.selRowFactor, 1, 2);
-
-		this.changeRowAndColumnLabelsBasedOnDesignType(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN);
+		this.addSpatialVariablesToLayout(gLayout, 1, true);
 
 		this.designDetailsContainer.addComponent(gLayout);
 
@@ -328,12 +335,7 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 		// Add visible components for P-rep Design
 		gLayout.addComponent(this.lblBlocks, 0, 0);
 		gLayout.addComponent(this.selBlocks, 1, 0);
-		gLayout.addComponent(this.lblSpecifyColumnFactor, 0, 1);
-		gLayout.addComponent(this.selColumnFactor, 1, 1);
-		gLayout.addComponent(this.lblSpecifyRowFactor, 0, 2);
-		gLayout.addComponent(this.selRowFactor, 1, 2);
-
-		this.changeRowAndColumnLabelsBasedOnDesignType(DesignType.P_REP_DESIGN);
+		this.addSpatialVariablesToLayout(gLayout, 1, false);
 
 		// P-rep design do not need a replicates factor, make the select box
 		// unselected
@@ -343,31 +345,15 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 
 	}
 
-	void changeRowAndColumnLabelsBasedOnDesignType(final DesignType designType) {
-
-		if (designType == DesignType.P_REP_DESIGN) {
-			// When the design type is P-rep, the row and column factors are
-			// optional. So we
-			// need to change the text label to NOT have red asterisk (*)
-			// appended to the text label.
-			this.lblSpecifyRowFactor.setValue(this.messageSource.getMessage(Message.BV_SPECIFY_ROW_FACTOR));
-			this.lblSpecifyColumnFactor.setValue(this.messageSource.getMessage(Message.BV_SPECIFY_COLUMN_FACTOR));
-
-		} else if (designType == DesignType.RESOLVABLE_ROW_COLUMN_DESIGN) {
-
-			// For Row and Column Design, row and column factors are all
-			// required so their text labels should have a
-			// red asterisk (*)
+	void markRowAndColumnFactorsAsMandatory(final Boolean isMandatory) {
+		if (isMandatory) {
 			this.lblSpecifyRowFactor.setValue(
 					this.messageSource.getMessage(Message.BV_SPECIFY_ROW_FACTOR) + SingleSiteAnalysisDetailsPanel.REQUIRED_FIELD_INDICATOR);
 			this.lblSpecifyColumnFactor.setValue(this.messageSource.getMessage(Message.BV_SPECIFY_COLUMN_FACTOR)
 					+ SingleSiteAnalysisDetailsPanel.REQUIRED_FIELD_INDICATOR);
-
 		} else {
-			// Default labels
 			this.lblSpecifyRowFactor.setValue(this.messageSource.getMessage(Message.BV_SPECIFY_ROW_FACTOR));
 			this.lblSpecifyColumnFactor.setValue(this.messageSource.getMessage(Message.BV_SPECIFY_COLUMN_FACTOR));
-
 		}
 
 	}
