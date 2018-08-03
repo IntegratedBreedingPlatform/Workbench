@@ -36,7 +36,7 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 	@Autowired
 	private StudyDataManager studyDataManager;
 	
-	private Label lblDesign;
+	private Label lblSpecifyDesignDescription;
 	private Label lblDesignType;
 	private Label lblReplicates;
 	private Label lblBlocks;
@@ -61,8 +61,8 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 	
 	@Override
 	public void instantiateComponents() {
-		this.lblDesign = new Label();
-		this.lblDesign.setDebugId("lblDesign");
+		this.lblSpecifyDesignDescription = new Label();
+		this.lblSpecifyDesignDescription.setDebugId("lblDesignDescription");
 		
 		this.lblDesignType = new Label();
 		this.lblDesignType.setDebugId("lblDesignType");
@@ -166,7 +166,7 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 
 	@Override
 	public void layoutComponents() {
-		final GridLayout designDetailsLayout = new GridLayout(2, 3);
+		final GridLayout designDetailsLayout = new GridLayout(2, 4);
 		designDetailsLayout.setDebugId("designDetailsLayout");
 		designDetailsLayout.setColumnExpandRatio(0, 0);
 		designDetailsLayout.setColumnExpandRatio(1, 1);
@@ -174,8 +174,9 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 		designDetailsLayout.setSpacing(true);
 		designDetailsLayout.setMargin(false, false, false, false);
 		designDetailsLayout.addComponent(this.lblSpecifyDesignDetailsHeader, 0, 0, 1, 0);
-		designDetailsLayout.addComponent(this.lblDesignType, 0, 1);
-		designDetailsLayout.addComponent(this.selDesignType, 1, 1);
+		designDetailsLayout.addComponent(this.lblSpecifyDesignDescription, 0, 1, 1, 1);
+		designDetailsLayout.addComponent(this.lblDesignType, 0, 2);
+		designDetailsLayout.addComponent(this.selDesignType, 1, 2);
 
 		this.addComponent(designDetailsLayout);
 		this.addComponent(this.designDetailsContainer);
@@ -189,7 +190,7 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 
 	@Override
 	public void updateLabels() {
-		this.messageSource.setValue(this.lblDesign, Message.BV_DESIGN);
+		this.messageSource.setValue(this.lblSpecifyDesignDescription, Message.BV_DESIGN_DETAILS_DESCRIPTION);
 		this.messageSource.setValue(this.lblDesignType, Message.DESIGN_TYPE);
 		this.messageSource.setValue(this.lblReplicates, Message.BV_SPECIFY_REPLICATES);
 		this.messageSource.setValue(this.lblBlocks, Message.BV_SPECIFY_BLOCKS);

@@ -208,24 +208,24 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.mainLayout.setSpacing(true);
 		this.mainLayout.addComponent(this.lblPageTitle);
 		this.mainLayout.addComponent(new Label(""));
+		this.mainLayout.addComponent(this.lblTitle);
 
-		final VerticalLayout subMainLayout = new VerticalLayout();
-		subMainLayout.setDebugId("subMainLayout");
-		subMainLayout.addComponent(this.lblTitle);
-		subMainLayout.addComponent(studyDetailsComponent);
-		this.mainLayout.addComponent(subMainLayout);
+		final HorizontalLayout topLayout = new HorizontalLayout();
+		topLayout.setDebugId("topLayout");
+		topLayout.setSizeUndefined();
+		topLayout.setWidth("100%");
+		topLayout.addComponent(studyDetailsComponent);
+		topLayout.addComponent(environmentsComponent);
+		this.mainLayout.addComponent(topLayout);
 
-		final VerticalLayout rightLayout = new VerticalLayout();
-		rightLayout.addComponent(designDetailsComponent);
-		rightLayout.addComponent(genotypesComponent);
-		
-		final HorizontalLayout combineLayout = new HorizontalLayout();
-		combineLayout.setDebugId("combineLayout");
-		combineLayout.setSizeUndefined();
-		combineLayout.setWidth("100%");
-		combineLayout.addComponent(environmentsComponent);
-		combineLayout.addComponent(rightLayout);
-		this.mainLayout.addComponent(combineLayout);
+		final HorizontalLayout bottomLayout = new HorizontalLayout();
+		bottomLayout.setDebugId("combineLayout");
+		bottomLayout.setSizeUndefined();
+		bottomLayout.setSpacing(true);
+		bottomLayout.setWidth("100%");
+		bottomLayout.addComponent(designDetailsComponent);
+		bottomLayout.addComponent(genotypesComponent);
+		this.mainLayout.addComponent(bottomLayout);
 
 		final HorizontalLayout combineLayout2 = new HorizontalLayout();
 		combineLayout2.setDebugId("combineLayout2");
@@ -316,7 +316,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 			this.messageSource.setCaption(this.btnRun, Message.RUN_BREEDING_VIEW);
 			this.btnUpload.setVisible(false);
 		}
-		this.messageSource.setCaption(this.btnReset, Message.RESET);
+		this.messageSource.setCaption(this.btnReset, Message.CANCEL);
 		this.messageSource.setCaption(this.btnBack, Message.BACK);
 
 		this.messageSource.setValue(this.lblTitle, Message.BV_TITLE);
