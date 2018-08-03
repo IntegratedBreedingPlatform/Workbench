@@ -10,6 +10,7 @@ import { Sample } from '../../../../../../main/webapp/app/entities/sample/sample
 import { SampleList } from '../../../../../../main/webapp/app/entities/sample/sample-list.model';
 import { SampleListService } from '../../../../../../main/webapp/app/entities/sample/sample-list.service';
 import { FileDownloadHelper } from '../../../../../../main/webapp/app/entities/sample/file-download.helper';
+import {ModalService} from '../../../../../../main/webapp/app/shared/modal/modal.service';
 
 describe('Component Tests', () => {
 
@@ -19,6 +20,7 @@ describe('Component Tests', () => {
         let sampleService: SampleService;
         let sampleListService: SampleListService;
         let fileDownloadHelper: FileDownloadHelper;
+        let modalService: ModalService;
 
         beforeEach(async(() => {
             TestBed.configureTestingModule({
@@ -27,7 +29,8 @@ describe('Component Tests', () => {
                 providers: [
                     SampleService,
                     SampleListService,
-                    FileDownloadHelper
+                    FileDownloadHelper,
+                    ModalService
                 ]
             })
             .overrideTemplate(SampleComponent, '')
@@ -40,6 +43,7 @@ describe('Component Tests', () => {
             sampleService = fixture.debugElement.injector.get(SampleService);
             sampleListService = fixture.debugElement.injector.get(SampleListService);
             fileDownloadHelper = fixture.debugElement.injector.get(FileDownloadHelper);
+            modalService = fixture.debugElement.injector.get(ModalService);
         });
 
         describe('OnInit', () => {
@@ -92,6 +96,18 @@ describe('Component Tests', () => {
                 expect(fileDownloadHelper.getFileNameFromResponseContentDisposition).toHaveBeenCalled();
                 expect(fileDownloadHelper.save).toHaveBeenCalled();
 
+            });
+
+        });
+
+        describe('When importing plate information', () => {
+
+            it('The import plate modal should be shown.', () => {
+                spyOn(modalService, 'open').and.callThrough();
+
+                comp.importPlate();
+
+                expect(modalService.open).toHaveBeenCalledWith('import-plate-modal');
             });
 
         });

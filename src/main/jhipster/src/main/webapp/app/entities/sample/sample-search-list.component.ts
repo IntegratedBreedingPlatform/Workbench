@@ -13,6 +13,7 @@ import {JhiAlertService, JhiLanguageService} from 'ng-jhipster';
 })
 export class SampleSearchListComponent {
 
+    modalId = 'search-sample-modal';
     searchString: string;
     exactMatch = false;
     sampleListResults: SampleList[] = [];

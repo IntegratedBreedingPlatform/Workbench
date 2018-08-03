@@ -13,7 +13,9 @@ export class Sample implements BaseEntity {
         public plantNumber?: number,
         public plantBusinessKey?: string,
         public samplingDate?: any,
-        public sampleList?: string
+        public sampleList?: string,
+        public plateId?: string,
+        public well?: string
     ) {
     }
 }
