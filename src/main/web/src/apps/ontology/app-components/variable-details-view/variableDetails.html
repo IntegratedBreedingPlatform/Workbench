@@ -215,7 +215,11 @@
 											<span class="om-li-data-cell-test">{{varsCtrl.formula.definition}}</span>
 										</td>
 										<td>
-											<span class="om-li-data-cell-test">{{varsCtrl.formulaInputVariables}}</span>
+											<span class="om-li-data-cell-test">
+												<span ng-if="varsCtrl.formula && varsCtrl.formula.inputs" ng-repeat="input in varsCtrl.formula.inputs" >
+													<a href='#/variables/{{input.id}}'>{{input.name}}</a>{{$last ? '' : ', '}}
+												</span>
+											</span>
 										</td>
 										<td align="right" >
 											<button ng-hide="editing || confirmDeleteFormula" type="button" class="btn btn-danger btn-icon" aria-label="{{'button.delete' | translate}}"
