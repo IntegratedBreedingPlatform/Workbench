@@ -252,14 +252,8 @@ public class RepresentationDataSetQuery implements Query {
 	@Override
 	public int size() {
 		if (this.size == -1) {
-			try {
-				final Long count = Long.valueOf(this.studyDataManager.countExperiments(this.datasetId));
-				this.size = count.intValue();
-			} catch (final MiddlewareQueryException ex) {
-				RepresentationDataSetQuery.LOG
-						.error("Error with getting experiments for dataset: " + this.datasetId + "\n" + ex.toString());
-
-			}
+			final Long count = Long.valueOf(this.studyDataManager.countExperiments(this.datasetId));
+			this.size = count.intValue();
 		}
 
 		return this.size;
