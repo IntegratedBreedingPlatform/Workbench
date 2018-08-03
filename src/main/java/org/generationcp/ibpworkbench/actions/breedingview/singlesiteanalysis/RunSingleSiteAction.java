@@ -8,7 +8,7 @@
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
  *******************************************************************************/
 
-package org.generationcp.ibpworkbench.actions;
+package org.generationcp.ibpworkbench.actions.breedingview.singlesiteanalysis;
 
 import java.io.File;
 import java.io.IOException;
@@ -150,7 +150,7 @@ public class RunSingleSiteAction implements ClickListener {
 		}
 
 		this.datasetExporter.exportToCSVForBreedingView(breedingViewInput.getSourceXLSFilePath(),
-				(String) this.source.getSelEnvFactor().getValue(), selectedEnvironments, breedingViewInput);
+				this.source.getSelEnvFactorValue(), selectedEnvironments, breedingViewInput);
 	}
 
 	/**
@@ -380,7 +380,7 @@ public class RunSingleSiteAction implements ClickListener {
 		}
 
 		if (StringUtils.isNullOrEmpty(replicatesFactor) && designType.equals(DesignType.RANDOMIZED_BLOCK_DESIGN.getName())
-				&& this.source.getSelReplicates().isEnabled()) {
+				&& this.source.replicateFactorEnabled()) {
 			this.showErrorMessage(window, "Please specify replicates factor.", "");
 			return false;
 		}

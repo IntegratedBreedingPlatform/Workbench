@@ -1,4 +1,4 @@
-package org.generationcp.ibpworkbench.actions;
+package org.generationcp.ibpworkbench.actions.breedingview.singlesiteanalysis;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +17,7 @@ import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.VaadinFileDownloadResource;
 import org.generationcp.commons.util.ZipUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.actions.breedingview.singlesiteanalysis.RunSingleSiteAction;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDetailsPanel;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
@@ -168,7 +169,6 @@ public class RunSingleSiteActionTest {
 		Mockito.when(this.source.getSelColumnFactorValue()).thenReturn(COLUMN_FACTOR);
 		Mockito.when(this.source.getSelRowFactorValue()).thenReturn(ROW_FACTOR);
 		Mockito.when(this.source.getSelGenotypesValue()).thenReturn(GENOTYPES_FACTOR);
-		Mockito.when(this.source.getSelEnvFactor()).thenReturn(envFactorSelectComponent);
 		Mockito.when(this.envFactorSelectComponent.getValue()).thenReturn(ENVIRONMENT_FACTOR);
 	}
 
@@ -212,7 +212,8 @@ public class RunSingleSiteActionTest {
 
 		Mockito.when(this.source.getSelDesignTypeValue()).thenReturn(DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
 		Mockito.when(this.source.getSelReplicatesValue()).thenReturn(null);
-		Mockito.when(this.source.getSelReplicates()).thenReturn(new Select());
+		//FIXME
+//		Mockito.when(this.source.getSelReplicates()).thenReturn(new Select());
 
 		Assert.assertFalse("Replicates factor is required if the design type is " + DesignType.RANDOMIZED_BLOCK_DESIGN.getName(),
 				runSingleSiteAction.validateDesignInput(this.window, breedingViewInput));
@@ -224,7 +225,8 @@ public class RunSingleSiteActionTest {
 
 		Mockito.when(this.source.getSelDesignTypeValue()).thenReturn(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName());
 		Mockito.when(this.source.getSelReplicatesValue()).thenReturn(null);
-		Mockito.when(this.source.getSelReplicates()).thenReturn(new Select());
+		//FIXME
+//		Mockito.when(this.source.getSelReplicates()).thenReturn(new Select());
 
 		Assert.assertTrue("Replicates factor is not required if the design type is not " + DesignType.RANDOMIZED_BLOCK_DESIGN.getName(),
 				runSingleSiteAction.validateDesignInput(this.window, breedingViewInput));

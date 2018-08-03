@@ -1,7 +1,7 @@
 
-package org.generationcp.ibpworkbench.actions;
+package org.generationcp.ibpworkbench.actions.breedingview.singlesiteanalysis;
 
-import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDetailsPanel;
+import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisEnvironmentsComponent;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -10,9 +10,9 @@ public class BreedingViewEnvFactorValueChangeListener implements ValueChangeList
 
 	private static final long serialVersionUID = -6425208753343322313L;
 
-	SingleSiteAnalysisDetailsPanel source;
+	private SingleSiteAnalysisEnvironmentsComponent source;
 
-	public BreedingViewEnvFactorValueChangeListener(SingleSiteAnalysisDetailsPanel source) {
+	public BreedingViewEnvFactorValueChangeListener(final SingleSiteAnalysisEnvironmentsComponent source) {
 		this.source = source;
 	}
 

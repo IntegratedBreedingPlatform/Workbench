@@ -1,19 +1,18 @@
-package org.generationcp.ibpworkbench.actions;
+package org.generationcp.ibpworkbench.actions.breedingview.singlesiteanalysis;
 
 import org.generationcp.commons.breedingview.xml.DesignType;
-import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDetailsPanel;
+import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDesignDetails;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.ui.GridLayout;
 
 public class BreedingViewDesignTypeValueChangeListener implements ValueChangeListener {
 
 	private static final long serialVersionUID = -6425208753343322313L;
 
-	SingleSiteAnalysisDetailsPanel source;
+	private SingleSiteAnalysisDesignDetails source;
 
-	public BreedingViewDesignTypeValueChangeListener(final SingleSiteAnalysisDetailsPanel source) {
+	public BreedingViewDesignTypeValueChangeListener(final SingleSiteAnalysisDesignDetails source) {
 		this.source = source;
 	}
 
