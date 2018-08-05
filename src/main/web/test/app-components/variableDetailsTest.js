@@ -529,27 +529,6 @@ describe('Variable details directive', function() {
 
 			expect(scope.updateSelectedVariable).toHaveBeenCalledWith(PLANT_VIGOR);
 		});
-
-		it('should clear cache for variable and formula inputs', function () {
-			var variable = {
-				id: 1,
-				formula: {
-					inputs: [
-						{id: 2},
-						{id: 3}
-					]
-				}
-			}
-
-			scope.saveChanges(fakeEvent, variable.id, variable);
-
-			deferredUpdateVariable.resolve();
-			scope.$apply();
-			deferredGetVariable.resolve(variable);
-			scope.$apply();
-
-			expect(variablesService.deleteVariablesFromCache).toHaveBeenCalledWith([1, 2, 3]);
-		})
 	});
 
 	describe('$scope.toggleFavourites', function() {

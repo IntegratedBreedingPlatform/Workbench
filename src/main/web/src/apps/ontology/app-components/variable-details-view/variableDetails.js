@@ -225,14 +225,7 @@
 								resetSubmissionState();
 								$scope.variableName = model.name;
 
-								var idsToRemoveFromCache =  [ parseInt(id) ];
-								if (model.formula && model.formula.inputs) {
-									var inputIds = model.formula.inputs.map(function (input) {
-										return input.id;
-									});
-									Array.prototype.push.apply(idsToRemoveFromCache, inputIds);
-								}
-								variablesService.deleteVariablesFromCache(idsToRemoveFromCache);
+								variablesService.deleteVariablesFromCache([ parseInt(id) ]);
 
 							}, function(response) {
 								$scope.vdForm.$setUntouched();
