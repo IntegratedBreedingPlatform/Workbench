@@ -249,7 +249,11 @@
 				}
 			};
 
-			$scope.showVariableDetails = function() {
+			$scope.showVariableDetails = function(id) {
+
+				if (id) {
+					$scope.selectedItem.id = id;
+				}
 
 				// Ensure the previously selected variable doesn't show in the panel before we've retrieved the new one
 				$scope.selectedVariable = null;
@@ -317,9 +321,8 @@
 			// Contains the entire selected variable object once it has been updated.
 			$scope.selectedVariable = {};
 
-			if($routeParams.id){
-				$scope.selectedItem.id = $routeParams.id;
-				$scope.showVariableDetails();
+			if ($routeParams.id) {
+				$scope.showVariableDetails($routeParams.id);
 			}
 		}
 	]);

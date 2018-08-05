@@ -217,7 +217,7 @@
 										<td>
 											<span class="om-li-data-cell-test">
 												<span ng-if="varsCtrl.formula && varsCtrl.formula.inputs" ng-repeat="input in varsCtrl.formula.inputs" >
-													<a href='#/variables/{{input.id}}'>{{input.name}}</a>{{$last ? '' : ', '}}
+													<a style="cursor: pointer" ng-click="showVariableDetails(input.id)">{{input.name}}</a>{{$last ? '' : ', '}}
 												</span>
 											</span>
 										</td>
