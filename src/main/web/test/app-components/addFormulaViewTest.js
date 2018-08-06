@@ -120,41 +120,6 @@ describe('Add Formula View', function() {
 			spyOn(variableStateService, 'getVariableState').and.returnValue(state);
 			compileController();
 		});
-
-		/*it('should hide the range widget by default', function() {
-			expect(scope.showRangeWidget).toBe(false);
-		});
-
-		it('should show the range widget if the variable changes to have a Numeric data type', function() {
-			scope.variable.scale = PERCENTAGE;
-			scope.$apply();
-
-			expect(scope.showRangeWidget).toBe(true);
-		});
-
-		it('should hide the range widget if the variable changes to have a non Numeric data type', function() {
-			scope.variable.scale = CATEGORICAL;
-			scope.$apply();
-
-			expect(scope.showRangeWidget).toBe(false);
-		});
-
-		it('should hide the Treatment Factor warning message by default', function() {
-			expect(scope.showTreatmentFactorAlert).toBeFalsy();
-		});
-
-		it('should show the Treatment Factor warning message if the variable types include Treatment Factor', function() {
-			scope.variable.variableTypes = VARIABLE_TYPES_INC_TREATMENT_FACTOR;
-			scope.$apply();
-
-			expect(scope.showTreatmentFactorAlert).toBe(true);
-		});
-
-		it('should hide the Treatment Factor warning message if the variable types do not include Treatment Factor', function() {
-			scope.variable.variableTypes = VARIABLE_TYPES_WITHOUT_TREATMENT_FACTOR;
-			scope.$apply();
-
-			expect(scope.showTreatmentFactorAlert).toBe(false);
-		});*/
+		// TODO make test.
 	});
 });
