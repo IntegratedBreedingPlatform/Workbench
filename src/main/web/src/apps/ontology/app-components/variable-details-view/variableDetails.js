@@ -147,7 +147,7 @@
 								variablesService.deleteVariablesFromCache([parseInt(variableId)]);
 
 							}, function (response) {
-								let error = {};
+								var error = {};
 								serviceUtilities.serverErrorHandler(error, response);
 								$scope.clientErrors.deleteFormulaErrorMessage = error.general;
 								$scope.clientErrors.failedToDeleteFormula = true;
@@ -167,7 +167,7 @@
 								variablesService.deleteVariablesFromCache([ parseInt(id) ]);
 
 							}, function(response) {
-								let error = {};
+								var error = {};
 								serviceUtilities.serverErrorHandler(error, response);
 								$scope.clientErrors.deleteVariableErrorMessage = error.general;
 								$scope.clientErrors.failedToDelete = true;
