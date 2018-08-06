@@ -9,9 +9,9 @@
 		NUM_EDITABLE_FIELDS = 6;
 
 	variableDetails.directive('omVariableDetails', ['variablesService', 'variableTypesService', 'propertiesService', 'methodsService',
-		'scalesService', 'serviceUtilities', 'formUtilities', 'panelService', '$timeout', 'debounce',
-		function(variablesService, variableTypesService, propertiesService, methodsService, scalesService, serviceUtilities, formUtilities,
-			panelService, $timeout, debounce) {
+		'scalesService', 'serviceUtilities', 'formUtilities', 'panelService', '$timeout', 'debounce', 'variableStateService',
+		function (variablesService, variableTypesService, propertiesService, methodsService, scalesService, serviceUtilities, formUtilities,
+				  panelService, $timeout, debounce, variableStateService) {
 
 			var TREATMENT_FACTOR_ID = 9,
 				LISTS_NOT_LOADED_TRANSLATION = 'validation.variable.someListsNotLoaded';
@@ -77,6 +77,31 @@
 						return $scope.editing && aliasIsEditable || aliasHasValue;
 					};
 
+					$scope.traitHasFormula = function () {
+						return !!($scope.model && $scope.model.formula);
+					};
+
+					$scope.addNewFormula = function (e, path) {
+						resetErrors($scope);
+						$scope.model.formula = creatingFormula();
+						variableStateService.storeVariableState($scope.model, null);
+						$scope.addNew(e,path);
+					};
+
+					function creatingFormula() {
+						var formula = {
+							"definition": "",
+							"target":  {
+								id: $scope.model.id
+							},
+							"description": "",
+							"name": "",
+							"active": true,
+							"formulaId": 0
+						};
+						return formula;
+					};
+
 					$scope.editVariable = function(e) {
 						e.preventDefault();
 						resetErrors($scope);
@@ -112,10 +137,27 @@
 						$scope.editing = true;
 					};
 
+					$scope.deleteFormula = function (e, variableId) {
+						e.preventDefault();
+						resetErrors($scope);
+						var formulaId = $scope.model.formula.formulaId;
+						formUtilities.confirmationHandler($scope, 'confirmDeleteFormula').then(function () {
+							variablesService.deleteFormula(formulaId).then(function () {
+								$scope.model.formula = null;
+								variablesService.deleteVariablesFromCache([parseInt(variableId)]);
+
+							}, function (response) {
+								var error = {};
+								serviceUtilities.serverErrorHandler(error, response);
+								$scope.clientErrors.deleteFormulaErrorMessage = error.general;
+								$scope.clientErrors.failedToDeleteFormula = true;
+							});
+						});
+					};
+
 					$scope.deleteVariable = function(e, id) {
 						e.preventDefault();
 						resetErrors($scope);
-
 						formUtilities.confirmationHandler($scope, 'confirmDelete').then(function() {
 							variablesService.deleteVariable(id).then(function() {
 								// Remove variable on parent scope if we succeeded
@@ -124,7 +166,10 @@
 
 								variablesService.deleteVariablesFromCache([ parseInt(id) ]);
 
-							}, function() {
+							}, function(response) {
+								var error = {};
+								serviceUtilities.serverErrorHandler(error, response);
+								$scope.clientErrors.deleteVariableErrorMessage = error.general;
 								$scope.clientErrors.failedToDelete = true;
 							});
 						});
@@ -166,7 +211,9 @@
 								model.favourite = true;
 							}
 
-							variablesService.updateVariable(id, model).then(function() {
+							variablesService.updateVariable(id, model).then(function () {
+								return variablesService.getVariable(id);
+							}).then(function(model) {
 
 								// Update variable on parent scope if we succeeded
 								$scope.updateSelectedVariable(model);

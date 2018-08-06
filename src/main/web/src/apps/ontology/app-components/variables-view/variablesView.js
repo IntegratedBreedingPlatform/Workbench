@@ -49,15 +49,17 @@
 		}
 	}
 
-	app.controller('VariablesController', ['$scope', 'variablesService', 'panelService', '$timeout', 'collectionUtilities',
-		function($scope, variablesService, panelService, $timeout, collectionUtilities) {
+	app.controller('VariablesController', ['$scope', 'variablesService', 'panelService', '$timeout', 'collectionUtilities', '$routeParams',
+		function ($scope, variablesService, panelService, $timeout, collectionUtilities, $routeParams) {
 			var ctrl = this;
 
 			ctrl.variables = [];
+			ctrl.formula = null;
 			ctrl.favouriteVariables = [];
 			ctrl.showAllVariablesThrobberWrapper = true;
 			ctrl.showFavouritesThrobberWrapper = true;
 			ctrl.colHeaders = ['name', 'property', 'method', 'scale', 'action-favourite'];
+			ctrl.colFormulaHeaders = ['calculation','inputVariables','buttons'];
 			ctrl.problemGettingList = false;
 
 			$scope.filterByProperties = ['name', 'alias', 'property', 'method', 'scale'];
@@ -247,13 +249,18 @@
 				}
 			};
 
-			$scope.showVariableDetails = function() {
+			$scope.showVariableDetails = function(id) {
+
+				if (id) {
+					$scope.selectedItem.id = id;
+				}
 
 				// Ensure the previously selected variable doesn't show in the panel before we've retrieved the new one
 				$scope.selectedVariable = null;
 
 				variablesService.getVariable($scope.selectedItem.id).then(function(variable) {
 					$scope.selectedVariable = variable;
+					ctrl.formula = variable.formula;
 				});
 
 				panelService.showPanel($scope.panelName);
@@ -313,6 +320,10 @@
 			$scope.selectedItem = {id: null};
 			// Contains the entire selected variable object once it has been updated.
 			$scope.selectedVariable = {};
+
+			if ($routeParams.id) {
+				$scope.showVariableDetails($routeParams.id);
+			}
 		}
 	]);
 

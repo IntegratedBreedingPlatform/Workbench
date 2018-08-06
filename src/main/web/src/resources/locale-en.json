@@ -32,6 +32,13 @@
 			"addMethod": "Add a new method",
 			"addScale": "Add a new scale",
 			"expectedRange": "@:variablesList.details.expectedRange"
+		},
+
+		"formula": {
+			"menuItem": "Formula",
+			"title": "Add New Formula",
+			"targetVariable": "Target Variable",
+			"calculation": "Calculation"
 		}
 	},
 
@@ -41,6 +48,7 @@
 	},
 
 	"button": {
+		"add": "Add",
 		"addNew": "Add New",
 		"back": "Back",
 		"cancel": "Cancel",
@@ -79,7 +87,8 @@
 			"from": "From",
 			"to": "To"
 		},
-		"inUseInVariables": "Used in Variables"
+		"inUseInVariables": "Used in Variables",
+		"calculation": "Calculation"
 	},
 
 	"list": {
@@ -190,6 +199,10 @@
 
 		"filter": {
 			"someListsNotLoaded": "Something went wrong, please refresh the page."
+		},
+
+		"formula": {
+			"calculationRequired": "calculation is required."
 		}
 	},
 
@@ -232,6 +245,16 @@
 
 		"variables": {
 			"deleteConfirmation": "Are you sure you want to delete this variable?"
+		},
+
+		"formulas": {
+			"deleteConfirmation": "Please confirm that you would like to delete this formula."
 		}
+	},
+
+	"formula": {
+		"calculation": "Calculation",
+		"inputVariables": "Input Variables",
+		"buttons": " "
 	}
 }
