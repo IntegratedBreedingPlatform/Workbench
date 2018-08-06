@@ -147,9 +147,9 @@
 								variablesService.deleteVariablesFromCache([parseInt(variableId)]);
 
 							}, function (response) {
-								var error = {};
+								let error = {};
 								serviceUtilities.serverErrorHandler(error, response);
-								$scope.clientErrors.deleteErrorMessage = error.general;
+								$scope.clientErrors.deleteFormulaErrorMessage = error.general;
 								$scope.clientErrors.failedToDeleteFormula = true;
 							});
 						});
@@ -167,9 +167,9 @@
 								variablesService.deleteVariablesFromCache([ parseInt(id) ]);
 
 							}, function(response) {
-								var error = {};
+								let error = {};
 								serviceUtilities.serverErrorHandler(error, response);
-								$scope.clientErrors.deleteErrorMessage = error.general;
+								$scope.clientErrors.deleteVariableErrorMessage = error.general;
 								$scope.clientErrors.failedToDelete = true;
 							});
 						});

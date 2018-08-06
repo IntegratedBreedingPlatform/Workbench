@@ -135,11 +135,8 @@
 
 		<div class="form-group">
 			<div class="col-sm-offset-3 col-sm-9">
-
-				<div ng-if="clientErrors.failedToDelete" class="alert alert-danger" role="alert">
-					{{clientErrors.deleteErrorMessage}}
-				</div>
-
+				<om-error-list om-errors-already-translated="clientErrors.deleteVariableErrorMessage">
+				</om-error-list>
 				<div ng-hide="editing || confirmationNecessary">
 					<button class="btn btn-primary" ng-click="editVariable($event)">{{'button.edit' | translate}}</button>
 
@@ -222,7 +219,7 @@
 											</span>
 										</td>
 										<td align="right" >
-											<button ng-hide="editing || confirmDeleteFormula" type="button" class="btn btn-danger btn-icon" aria-label="{{'button.delete' | translate}}"
+											<button ng-hide="editing || confirmDeleteFormula || confirmationNecessary" type="button" class="btn btn-danger btn-icon" aria-label="{{'button.delete' | translate}}"
 													ng-click="deleteFormula($event,variableId)">
 												<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
 											</button>
@@ -230,9 +227,8 @@
 									</tr>
 									</tbody>
 								</table>
-								<div ng-if="clientErrors.failedToDeleteFormula" class="alert alert-danger" role="alert">
-									{{clientErrors.deleteErrorMessage}}
-								</div>
+								<om-error-list om-errors-already-translated="clientErrors.deleteFormulaErrorMessage">
+								</om-error-list>
 								<div ng-show="confirmDeleteFormula">
 									<div class="alert alert-danger">
 										<span ng-show="confirmDeleteFormula">{{'warnings.formulas.deleteConfirmation' | translate}}</span>
