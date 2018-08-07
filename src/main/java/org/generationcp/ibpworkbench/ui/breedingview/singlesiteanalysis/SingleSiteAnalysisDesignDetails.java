@@ -15,6 +15,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Select;
@@ -44,11 +45,11 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 	private Label lblSpecifyColumnFactor;
 	private Label lblSpecifyDesignDetailsHeader;
 	
-	private Select selDesignType;
-	private Select selReplicates;
-	private Select selBlocks;
-	private Select selRowFactor;
-	private Select selColumnFactor;
+	private ComboBox selDesignType;
+	private ComboBox selReplicates;
+	private ComboBox selBlocks;
+	private ComboBox selRowFactor;
+	private ComboBox selColumnFactor;
 	
 	private VerticalLayout designDetailsContainer;
 	
@@ -99,41 +100,47 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 						+ this.messageSource.getMessage(Message.BV_SPECIFY_DESIGN_DETAILS_HEADER) + "</b>", Label.CONTENT_XHTML);
 		this.lblSpecifyDesignDetailsHeader.setStyleName(Bootstrap.Typography.H3.styleName());
 
-		this.selDesignType = new Select();
+		final String pleaseChoose = this.messageSource.getMessage(Message.PLEASE_CHOOSE);
+		this.selDesignType = new ComboBox();
 		this.selDesignType.setDebugId("selDesignType");
 		this.selDesignType.setImmediate(true);
 		this.selDesignType.setNullSelectionAllowed(true);
 		this.selDesignType.setNewItemsAllowed(false);
 		this.selDesignType.setWidth(SingleSiteAnalysisDetailsPanel.SELECT_BOX_WIDTH);
+		this.selDesignType.setInputPrompt(pleaseChoose);
 
-		this.selReplicates = new Select();
+		this.selReplicates = new ComboBox();
 		this.selReplicates.setDebugId("selReplicates");
 		this.selReplicates.setImmediate(true);
 		this.selReplicates.setNullSelectionAllowed(true);
 		this.selReplicates.setNewItemsAllowed(false);
 		this.selReplicates.setWidth(SingleSiteAnalysisDetailsPanel.SELECT_BOX_WIDTH);
+		this.selReplicates.setInputPrompt(pleaseChoose);
 
-		this.selBlocks = new Select();
+		this.selBlocks = new ComboBox();
 		this.selBlocks.setDebugId("selBlocks");
 		this.selBlocks.setImmediate(true);
 		this.selBlocks.setEnabled(false);
 		this.selBlocks.setNullSelectionAllowed(false);
 		this.selBlocks.setNewItemsAllowed(false);
 		this.selBlocks.setWidth(SingleSiteAnalysisDetailsPanel.SELECT_BOX_WIDTH);
+		this.selBlocks.setInputPrompt(pleaseChoose);
 
-		this.selRowFactor = new Select();
+		this.selRowFactor = new ComboBox();
 		this.selRowFactor.setDebugId("selRowFactor");
 		this.selRowFactor.setImmediate(true);
-		this.selRowFactor.setNullSelectionAllowed(false);
+		this.selRowFactor.setNullSelectionAllowed(true);
 		this.selRowFactor.setNewItemsAllowed(false);
 		this.selRowFactor.setWidth(SingleSiteAnalysisDetailsPanel.SELECT_BOX_WIDTH);
-
-		this.selColumnFactor = new Select();
+		this.selRowFactor.setInputPrompt(pleaseChoose);
+		
+		this.selColumnFactor = new ComboBox();
 		this.selColumnFactor.setDebugId("selColumnFactor");
 		this.selColumnFactor.setImmediate(true);
-		this.selColumnFactor.setNullSelectionAllowed(false);
+		this.selColumnFactor.setNullSelectionAllowed(true);
 		this.selColumnFactor.setNewItemsAllowed(false);
 		this.selColumnFactor.setWidth(SingleSiteAnalysisDetailsPanel.SELECT_BOX_WIDTH);
+		this.selColumnFactor.setInputPrompt(pleaseChoose);
 
 		designDetailsContainer = new VerticalLayout();
 		
@@ -141,6 +148,16 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 
 	@Override
 	public void initializeValues() {
+		this.populateDesignTypeOptions();
+		this.populateChoicesForReplicates();
+		this.populateChoicesForBlocks();
+		this.populateChoicesForRowFactor();
+		this.populateChoicesForColumnFactor();
+		this.refineChoicesForBlocksReplicationRowAndColumnFactors();
+		this.displayDesignElementsBasedOnDesignTypeOfTheStudy();
+	}
+
+	private void populateDesignTypeOptions() {
 		this.selDesignType.addItem(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName());
 		this.selDesignType.setItemCaption(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName(), "Incomplete block design");
 		this.selDesignType.addItem(DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
@@ -151,13 +168,6 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 		this.selDesignType.setItemCaption(DesignType.P_REP_DESIGN.getName(), "P-rep design");
 		this.selDesignType.addItem(DesignType.AUGMENTED_RANDOMIZED_BLOCK.getName());
 		this.selDesignType.setItemCaption(DesignType.AUGMENTED_RANDOMIZED_BLOCK.getName(), "Augmented design");
-		
-		this.populateChoicesForReplicates();
-		this.populateChoicesForBlocks();
-		this.populateChoicesForRowFactor();
-		this.populateChoicesForColumnFactor();
-		this.refineChoicesForBlocksReplicationRowAndColumnFactors();
-		this.displayDesignElementsBasedOnDesignTypeOfTheStudy();
 	}
 
 	@Override
@@ -422,27 +432,30 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 	}
 
 	protected void populateChoicesForRowFactor() {
-
 		for (final DMSVariableType factor : this.ssaDetailsPanel.getFactorsInDataset()) {
 			if (factor.getStandardVariable().getProperty().getName().trim()
 					.equalsIgnoreCase(ROW_FACTOR)) {
 				this.selRowFactor.addItem(factor.getLocalName());
-				this.selRowFactor.setValue(factor.getLocalName());
 			}
+		}
+		// If there is exactly one row factor, remove the "Please choose" option and automatically select only factor
+		if (this.selRowFactor.getItemIds().size() == 1) {
+			this.selRowFactor.select(this.selRowFactor.getItemIds().iterator().next());
 		}
 
 	}
 
 	protected void populateChoicesForColumnFactor() {
-
 		for (final DMSVariableType factor : this.ssaDetailsPanel.getFactorsInDataset()) {
 			if (factor.getStandardVariable().getProperty().getName().trim()
 					.equalsIgnoreCase(COLUMN_FACTOR)) {
 				this.selColumnFactor.addItem(factor.getLocalName());
-				this.selColumnFactor.setValue(factor.getLocalName());
 			}
 		}
-
+		// If there is exactly one column factor, remove the "Please choose" option and automatically select only factor
+		if (this.selColumnFactor.getItemIds().size() == 1) {
+			this.selColumnFactor.select(this.selColumnFactor.getItemIds().iterator().next());
+		}
 	}
 
 	public void refineChoicesForBlocksReplicationRowAndColumnFactors() {
