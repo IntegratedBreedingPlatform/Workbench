@@ -52,13 +52,14 @@ public class RepresentationDataSetQuery implements Query {
 	private final static Logger LOG = LoggerFactory.getLogger(RepresentationDataSetQuery.class);
 
 	private final StudyDataManager studyDataManager;
+	private final Integer studyId;
 	private final Integer datasetId;
 	private final List<String> columnIds;
 	private final boolean fromUrl; // this is true if this component is created
 									// by accessing the Study Details page
 									// directly from the URL
 	private int size;
-
+	
 	public static final String IS_ACCEPTED_VALUE_KEY = "isAcceptedValue";
 
 	public static final String MISSING_VALUE = "missing";
@@ -72,9 +73,10 @@ public class RepresentationDataSetQuery implements Query {
 	 * @param columnIds
 	 */
 	public RepresentationDataSetQuery(final StudyDataManager studyDataManager, final Integer datasetId,
-			final List<String> columnIds, final boolean fromUrl) {
+			final List<String> columnIds, final boolean fromUrl, final Integer studyId) {
 		super();
 		this.studyDataManager = studyDataManager;
+		this.studyId = studyId;
 		this.datasetId = datasetId;
 		this.columnIds = columnIds;
 		this.fromUrl = fromUrl;
@@ -107,7 +109,6 @@ public class RepresentationDataSetQuery implements Query {
 		final List<Item> items = new ArrayList<>();
 		final Map<Integer, Item> itemMap = new LinkedHashMap<>();
 		List<Experiment> experiments = new ArrayList<>();
-
 		try {
 			experiments = this.studyDataManager.getExperiments(this.datasetId, start, numOfRows);
 		} catch (final MiddlewareException ex) {
@@ -118,7 +119,7 @@ public class RepresentationDataSetQuery implements Query {
 		}
 
 		if (!experiments.isEmpty()) {
-
+			final Map<String, String> locationNameMap = this.studyDataManager.createInstanceLocationIdToNameMapFromStudy(this.studyId);
 			for (final Experiment experiment : experiments) {
 				final List<Variable> variables = new ArrayList<>();
 
@@ -131,7 +132,7 @@ public class RepresentationDataSetQuery implements Query {
 				if (variates != null) {
 					variables.addAll(variates.getVariables());
 				}
-				this.populateItemMap(itemMap, experiment, variables);
+				this.populateItemMap(itemMap, experiment, variables, locationNameMap);
 			}
 		}
 
@@ -140,7 +141,7 @@ public class RepresentationDataSetQuery implements Query {
 	}
 
 	protected void populateItemMap(final Map<Integer, Item> itemMap, final Experiment experiment,
-			final List<Variable> variables) {
+			final List<Variable> variables, final Map<String, String> locationNameMap) {
 		for (final Variable variable : variables) {
 			final String columnId = new StringBuffer().append(variable.getVariableType().getId()).append("-")
 					.append(variable.getVariableType().getLocalName()).toString();
@@ -159,13 +160,16 @@ public class RepresentationDataSetQuery implements Query {
 				// link. else, show it as a value only
 				// make GID as link only if the page wasn't directly accessed
 				// from the URL
-				if ("GID".equals(variable.getVariableType().getLocalName().trim()) && !this.fromUrl) {
+				if (TermId.GID.getId() == variable.getVariableType().getId() && !this.fromUrl) {
 					final String value = variable.getValue();
 					final Button gidButton = new Button(value.trim(), new GidLinkButtonClickListener(value.trim()));
 					gidButton.setStyleName(BaseTheme.BUTTON_LINK);
 					gidButton.setDescription("Click to view Germplasm information");
 					item.addItemProperty(columnId, new ObjectProperty<Button>(gidButton));
 					// end GID link creation
+				} else if (TermId.LOCATION_ID.getId() == variable.getVariableType().getId()) {
+					final String value = variable.getDisplayValue();
+					item.addItemProperty(columnId, new ObjectProperty<String>(locationNameMap.get(value)));
 				} else {
 					// check if the variable value is a number to remove decimal
 					// portion if there is no value after the decimal point
@@ -248,14 +252,8 @@ public class RepresentationDataSetQuery implements Query {
 	@Override
 	public int size() {
 		if (this.size == -1) {
-			try {
-				final Long count = Long.valueOf(this.studyDataManager.countExperiments(this.datasetId));
-				this.size = count.intValue();
-			} catch (final MiddlewareQueryException ex) {
-				RepresentationDataSetQuery.LOG
-						.error("Error with getting experiments for dataset: " + this.datasetId + "\n" + ex.toString());
-
-			}
+			final Long count = Long.valueOf(this.studyDataManager.countExperiments(this.datasetId));
+			this.size = count.intValue();
 		}
 
 		return this.size;

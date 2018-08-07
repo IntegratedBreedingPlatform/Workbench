@@ -277,7 +277,7 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 
 		// create item container for dataset table
 		final RepresentationDatasetQueryFactory factory =
-				new RepresentationDatasetQueryFactory(this.studyDataManager, this.datasetId, columnIds, fromUrl);
+				new RepresentationDatasetQueryFactory(this.studyDataManager, this.datasetId, columnIds, fromUrl, studyIdHolder);
 		final LazyQueryContainer datasetContainer = new LazyQueryContainer(factory, false, 50);
 
 		// add the column ids to the LazyQueryContainer tells the container the columns to display for the Table
