@@ -400,6 +400,12 @@ public class RunSingleSiteAction implements ClickListener {
 			this.showErrorMessage(window, "Please specify row factor.", "");
 			return false;
 		}
+		
+		if ((!StringUtils.isNullOrEmpty(rowFactor) && StringUtils.isNullOrEmpty(columnFactor))
+				|| (StringUtils.isNullOrEmpty(rowFactor) && !StringUtils.isNullOrEmpty(columnFactor))) {
+			this.showErrorMessage(window, "Row and Column factors must be specified together.", "");
+			return false;
+		}
 
 		if (StringUtils.isNullOrEmpty(genotypeFactor)) {
 			this.showErrorMessage(window, "Please specify Genotypes factor.", "");
