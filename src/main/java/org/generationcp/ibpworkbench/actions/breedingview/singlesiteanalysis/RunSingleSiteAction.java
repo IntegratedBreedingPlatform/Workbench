@@ -186,17 +186,17 @@ public class RunSingleSiteAction implements ClickListener {
 	}
 
 	void populateRowPosAndColPos(final DesignType designType, final BreedingViewInput breedingViewInput) {
-
-		if (designType == DesignType.P_REP_DESIGN) {
-
-			breedingViewInput.setColPos(this.createColPos(this.source.getSelColumnFactorValue()));
-			breedingViewInput.setRowPos(this.createRowPos(this.source.getSelRowFactorValue()));
-
-		} else {
-
-			breedingViewInput.setColPos(null);
-			breedingViewInput.setRowPos(null);
-		}
+		final String columnValue = this.source.getSelColumnFactorValue();
+		final String rowValue = this.source.getSelRowFactorValue();
+		// Do not generate RowPos and ColPos tags for Row-Col Design type
+		if (!StringUtils.isNullOrEmpty(rowValue) && !StringUtils.isNullOrEmpty(columnValue)
+				&& !DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.equals(designType)) {
+			breedingViewInput.setColPos(this.createColPos(columnValue));
+			breedingViewInput.setRowPos(this.createRowPos(rowValue));
+	        } else {
+	            breedingViewInput.setColPos(null);
+	            breedingViewInput.setRowPos(null);
+	        }
 
 	}
 
