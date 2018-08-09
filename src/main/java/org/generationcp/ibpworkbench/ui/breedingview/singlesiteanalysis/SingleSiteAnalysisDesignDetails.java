@@ -206,8 +206,6 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 		this.messageSource.setValue(this.lblDesignType, Message.DESIGN_TYPE);
 		this.messageSource.setValue(this.lblReplicates, Message.BV_SPECIFY_REPLICATES);
 		this.messageSource.setValue(this.lblBlocks, Message.BV_SPECIFY_BLOCKS);
-		this.messageSource.setValue(this.lblSpecifyRowFactor, Message.BV_SPECIFY_ROW_FACTOR);
-		this.messageSource.setValue(this.lblSpecifyColumnFactor, Message.BV_SPECIFY_COLUMN_FACTOR);
 	}
 
 	@Override

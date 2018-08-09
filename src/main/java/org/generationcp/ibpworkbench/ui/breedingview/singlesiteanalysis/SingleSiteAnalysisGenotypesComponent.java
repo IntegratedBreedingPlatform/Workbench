@@ -40,7 +40,7 @@ public class SingleSiteAnalysisGenotypesComponent extends VerticalLayout impleme
 	public void instantiateComponents() {
 		this.lblGenotypes = new Label();
 		this.lblGenotypes.setDebugId("lblGenotypes");
-		this.lblGenotypes.setWidth(SingleSiteAnalysisDetailsPanel.LABEL_WIDTH);
+		this.lblGenotypes.setWidth("150px");
 		this.lblGenotypes.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
 
 		this.lblSpecifyGenotypesHeader = new Label(

@@ -58,7 +58,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	public static final String INVALID_SELECTION_STRING = "Invalid Selection";
 	public static final String LABEL_BOLD_STYLING = "label-bold";
-	public static final String LABEL_WIDTH = "160px";
+	public static final String LABEL_WIDTH = "185px";
 	public static final String SELECT_BOX_WIDTH = "191px";
 	public static final String SELECT_COLUMN = "select";
 	public static final String TRIAL_NO_COLUMN = "trialno";
