@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Select;
 import com.vaadin.ui.VerticalLayout;
 
 @Configurable
@@ -153,6 +152,8 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 		this.populateChoicesForBlocks();
 		this.populateChoicesForRowFactor();
 		this.populateChoicesForColumnFactor();
+		this.setDefaultValueForRowAndColumnFactors();
+		
 		this.refineChoicesForBlocksReplicationRowAndColumnFactors();
 		this.displayDesignElementsBasedOnDesignTypeOfTheStudy();
 	}
@@ -220,6 +221,7 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 	public void reset() {
 		this.displayDesignElementsBasedOnDesignTypeOfTheStudy();
 		this.selReplicates.select(this.selReplicates.getItemIds().iterator().next());
+		this.setDefaultValueForRowAndColumnFactors();
 	}
 	
 	protected int retrieveExperimentalDesignTypeID() {
@@ -438,11 +440,6 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 				this.selRowFactor.addItem(factor.getLocalName());
 			}
 		}
-		// If there is exactly one row factor, remove the "Please choose" option and automatically select only factor
-		if (this.selRowFactor.getItemIds().size() == 1) {
-			this.selRowFactor.select(this.selRowFactor.getItemIds().iterator().next());
-		}
-
 	}
 
 	protected void populateChoicesForColumnFactor() {
@@ -451,6 +448,13 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 					.equalsIgnoreCase(COLUMN_FACTOR)) {
 				this.selColumnFactor.addItem(factor.getLocalName());
 			}
+		}
+	}
+	
+	private void setDefaultValueForRowAndColumnFactors() {
+		// If there is exactly one row factor, remove the "Please choose" option and automatically select only factor
+		if (this.selRowFactor.getItemIds().size() == 1) {
+			this.selRowFactor.select(this.selRowFactor.getItemIds().iterator().next());
 		}
 		// If there is exactly one column factor, remove the "Please choose" option and automatically select only factor
 		if (this.selColumnFactor.getItemIds().size() == 1) {
