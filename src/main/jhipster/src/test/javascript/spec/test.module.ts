@@ -12,6 +12,7 @@ import { MockAccountService } from './helpers/mock-account.service';
 import { MockActivatedRoute, MockRouter } from './helpers/mock-route.service';
 import { MockActiveModal } from './helpers/mock-active-modal.service';
 import { MockEventManager } from './helpers/mock-event-manager.service';
+import {MockAlertService} from './helpers/mock-alert.service';
 
 @NgModule({
     providers: [
@@ -65,7 +66,7 @@ import { MockEventManager } from './helpers/mock-event-manager.service';
         },
         {
             provide: JhiAlertService,
-            useValue: null
+            useValue: new MockAlertService()
         },
         {
             provide: NgbModal,
