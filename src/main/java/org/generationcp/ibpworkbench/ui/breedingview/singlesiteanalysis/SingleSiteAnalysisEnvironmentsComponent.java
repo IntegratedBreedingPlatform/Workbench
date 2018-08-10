@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
 import java.util.ArrayList;
@@ -33,30 +34,31 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Table.ColumnGenerator;
+import com.vaadin.ui.VerticalLayout;
 
 @Configurable
-public class SingleSiteAnalysisEnvironmentsComponent extends VerticalLayout implements InitializingBean, InternationalizableComponent, GermplasmStudyBrowserLayout {
+public class SingleSiteAnalysisEnvironmentsComponent extends VerticalLayout
+		implements InitializingBean, InternationalizableComponent, GermplasmStudyBrowserLayout {
 
 	private static final long serialVersionUID = 1L;
 
 	private static final String LABEL_BOLD_STYLING = "label-bold";
-	
+
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
-	
+
 	@Autowired
 	private StudyDataManager studyDataManager;
-	
+
 	private Label lblSiteEnvironment;
 	private Label lblSpecifyEnvFactor;
 	private Label lblSelectEnvironmentForAnalysis;
-	
+
 	private Label lblChooseEnvironmentHeader;
 	private Label lblChooseEnvironmentDescription;
 	private Label lblChooseEnvironmentForAnalysisDescription;
-	
+
 	private Map<String, Boolean> environmentsCheckboxState;
 	private Table tblEnvironmentSelection;
 	private Select selEnvFactor;
@@ -64,32 +66,32 @@ public class SingleSiteAnalysisEnvironmentsComponent extends VerticalLayout impl
 	private Property.ValueChangeListener envCheckBoxListener;
 	private Property.ValueChangeListener footerCheckBoxListener;
 	private VerticalLayout tblEnvironmentLayout;
-	
-	private SingleSiteAnalysisDetailsPanel ssaDetailsPanel;
+
+	private final SingleSiteAnalysisDetailsPanel ssaDetailsPanel;
 
 	public SingleSiteAnalysisEnvironmentsComponent(final SingleSiteAnalysisDetailsPanel ssaDetailsPanel) {
 		super();
 		this.ssaDetailsPanel = ssaDetailsPanel;
 	}
-	
+
 	@Override
 	public void instantiateComponents() {
 		this.environmentsCheckboxState = new HashMap<>();
-		
+
 		this.footerCheckBox = new CheckBox("Select All", false);
 		this.footerCheckBox.setDebugId("footerCheckBox");
 		this.footerCheckBox.setImmediate(true);
-		
+
 		this.lblSiteEnvironment = new Label();
 		this.lblSiteEnvironment.setDebugId("lblSiteEnvironment");
 		this.lblSpecifyEnvFactor = new Label();
 		this.lblSpecifyEnvFactor.setDebugId("lblSpecifyEnvFactor");
 		this.lblSpecifyEnvFactor.setContentMode(Label.CONTENT_XHTML);
-		this.lblSpecifyEnvFactor.setStyleName(LABEL_BOLD_STYLING);
+		this.lblSpecifyEnvFactor.setStyleName(SingleSiteAnalysisEnvironmentsComponent.LABEL_BOLD_STYLING);
 		this.lblSelectEnvironmentForAnalysis = new Label();
 		this.lblSelectEnvironmentForAnalysis.setDebugId("lblSelectEnvironmentForAnalysis");
 		this.lblSelectEnvironmentForAnalysis.setContentMode(Label.CONTENT_XHTML);
-		this.lblSelectEnvironmentForAnalysis.setStyleName(LABEL_BOLD_STYLING);
+		this.lblSelectEnvironmentForAnalysis.setStyleName(SingleSiteAnalysisEnvironmentsComponent.LABEL_BOLD_STYLING);
 
 		this.lblChooseEnvironmentHeader = new Label("<span class='bms-environments' style='position:relative; top: -2px; color: #0076A9; "
 				+ "font-size: 25px; font-weight: bold;'></span><b>&nbsp;" + "<span style='position:relative; top: -3px;'>"
@@ -101,19 +103,19 @@ public class SingleSiteAnalysisEnvironmentsComponent extends VerticalLayout impl
 		this.lblChooseEnvironmentForAnalysisDescription = new Label();
 		this.lblChooseEnvironmentForAnalysisDescription.setDebugId("lblChooseEnvironmentForAnalysisDescription");
 		this.lblChooseEnvironmentForAnalysisDescription.setContentMode(Label.CONTENT_XHTML);
-		this.lblChooseEnvironmentForAnalysisDescription.setStyleName(LABEL_BOLD_STYLING);
+		this.lblChooseEnvironmentForAnalysisDescription.setStyleName(SingleSiteAnalysisEnvironmentsComponent.LABEL_BOLD_STYLING);
 
 		this.selEnvFactor = new Select();
 		this.selEnvFactor.setDebugId("selEnvFactor");
 		this.selEnvFactor.setImmediate(true);
 		this.selEnvFactor.setNullSelectionAllowed(false);
 		this.selEnvFactor.setNewItemsAllowed(false);
-		
+
 		this.tblEnvironmentSelection = new Table();
 		this.tblEnvironmentSelection.setDebugId("tblEnvironmentSelection");
 		this.tblEnvironmentSelection.setHeight("200px");
 		this.tblEnvironmentSelection.setWidth("100%");
-		
+
 		this.tblEnvironmentLayout = new VerticalLayout();
 		this.tblEnvironmentLayout.setDebugId("tblEnvironmentLayout");
 		this.tblEnvironmentLayout.setSizeUndefined();
@@ -125,16 +127,16 @@ public class SingleSiteAnalysisEnvironmentsComponent extends VerticalLayout impl
 	public void initializeValues() {
 		this.populateChoicesForEnvironmentFactor();
 		this.populateChoicesForEnvForAnalysis();
-		
+
 	}
 
 	@Override
 	public void addListeners() {
 		this.selEnvFactor.addListener(new BreedingViewEnvFactorValueChangeListener(this));
-		
+
 		this.footerCheckBoxListener = new SSAEnvironmentsFooterCheckboxListener(this);
 		this.footerCheckBox.addListener(this.footerCheckBoxListener);
-		
+
 		this.envCheckBoxListener = new SSAEnvironmentsCheckboxValueChangeListener(this);
 		this.tblEnvironmentSelection.addGeneratedColumn(SingleSiteAnalysisDetailsPanel.SELECT_COLUMN, new ColumnGenerator() {
 
@@ -154,14 +156,14 @@ public class SingleSiteAnalysisEnvironmentsComponent extends VerticalLayout impl
 			}
 
 		});
-		
+
 	}
 
 	@Override
 	public void layoutComponents() {
 		this.tblEnvironmentLayout.addComponent(this.tblEnvironmentSelection);
 		this.tblEnvironmentLayout.addComponent(this.footerCheckBox);
-		
+
 		final GridLayout chooseEnvironmentLayout = new GridLayout(2, 9);
 		chooseEnvironmentLayout.setDebugId("chooseEnvironmentLayout");
 		chooseEnvironmentLayout.setColumnExpandRatio(0, 4);
@@ -175,7 +177,7 @@ public class SingleSiteAnalysisEnvironmentsComponent extends VerticalLayout impl
 		chooseEnvironmentLayout.addComponent(this.selEnvFactor, 1, 2);
 		chooseEnvironmentLayout.addComponent(this.lblChooseEnvironmentForAnalysisDescription, 0, 3, 1, 3);
 		chooseEnvironmentLayout.addComponent(this.tblEnvironmentLayout, 0, 4, 1, 4);
-		
+
 		this.addComponent(chooseEnvironmentLayout);
 	}
 
@@ -184,7 +186,7 @@ public class SingleSiteAnalysisEnvironmentsComponent extends VerticalLayout impl
 		super.attach();
 		this.updateLabels();
 	}
-	
+
 	@Override
 	public void updateLabels() {
 		this.messageSource.setValue(this.lblSiteEnvironment, Message.BV_SITE_ENVIRONMENT);
@@ -201,12 +203,12 @@ public class SingleSiteAnalysisEnvironmentsComponent extends VerticalLayout impl
 		this.addListeners();
 		this.layoutComponents();
 	}
-	
+
 	public void reset() {
 		this.selEnvFactor.select(this.selEnvFactor.getItemIds().iterator().next());
 		this.footerCheckBox.setValue(false);
 	}
-	
+
 	void populateChoicesForEnvironmentFactor() {
 
 		if (this.ssaDetailsPanel.getTrialVariablesInDataset() == null) {
@@ -234,7 +236,7 @@ public class SingleSiteAnalysisEnvironmentsComponent extends VerticalLayout impl
 		}
 
 	}
-	
+
 	public DMSVariableType getVariableByLocalName(final List<DMSVariableType> variables, final String name) {
 		for (final DMSVariableType factor : variables) {
 			if (factor.getLocalName().equals(name)) {
@@ -243,11 +245,12 @@ public class SingleSiteAnalysisEnvironmentsComponent extends VerticalLayout impl
 		}
 		return null;
 	}
-	
+
 	public void populateChoicesForEnvForAnalysis() {
 
 		final String selectedEnvironmentFactorName = (String) this.selEnvFactor.getValue();
-		final DMSVariableType factor = this.getVariableByLocalName(this.ssaDetailsPanel.getTrialVariablesInDataset(), selectedEnvironmentFactorName);
+		final DMSVariableType factor =
+				this.getVariableByLocalName(this.ssaDetailsPanel.getTrialVariablesInDataset(), selectedEnvironmentFactorName);
 
 		if (factor == null) {
 			return;
@@ -256,8 +259,8 @@ public class SingleSiteAnalysisEnvironmentsComponent extends VerticalLayout impl
 		this.footerCheckBox.setValue(false);
 		this.environmentsCheckboxState.clear();
 		this.tblEnvironmentSelection.removeAllItems();
-		final String trialInstanceFactorName = this.studyDataManager
-				.getLocalNameByStandardVariableId(this.ssaDetailsPanel.getBreedingViewInput().getDatasetId(), TermId.TRIAL_INSTANCE_FACTOR.getId());
+		final String trialInstanceFactorName = this.studyDataManager.getLocalNameByStandardVariableId(
+				this.ssaDetailsPanel.getBreedingViewInput().getDatasetId(), TermId.TRIAL_INSTANCE_FACTOR.getId());
 
 		this.populateEnvironmentSelectionTableWithTrialEnvironments(this.tblEnvironmentSelection, trialInstanceFactorName,
 				selectedEnvironmentFactorName);
@@ -265,7 +268,7 @@ public class SingleSiteAnalysisEnvironmentsComponent extends VerticalLayout impl
 
 		this.ssaDetailsPanel.getBreedingViewInput().setTrialInstanceName(trialInstanceFactorName);
 	}
-	
+
 	protected void adjustEnvironmentSelectionTable(final Table table, final String trialInstanceFactorName,
 			final String selectedEnvironmentFactorName) {
 		if (trialInstanceFactorName.equalsIgnoreCase(selectedEnvironmentFactorName)) {
@@ -276,9 +279,8 @@ public class SingleSiteAnalysisEnvironmentsComponent extends VerticalLayout impl
 			table.setColumnWidth(SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN, -1);
 			table.setWidth("45%");
 		} else {
-			table.setVisibleColumns(
-					new Object[] {SingleSiteAnalysisDetailsPanel.SELECT_COLUMN, SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN,
-							SingleSiteAnalysisDetailsPanel.ENVIRONMENT_NAME});
+			table.setVisibleColumns(new Object[] {SingleSiteAnalysisDetailsPanel.SELECT_COLUMN,
+					SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN, SingleSiteAnalysisDetailsPanel.ENVIRONMENT_NAME});
 			table.setColumnHeaders(new String[] {"SELECT", trialInstanceFactorName, selectedEnvironmentFactorName});
 			table.setColumnWidth(SingleSiteAnalysisDetailsPanel.SELECT_COLUMN, 45);
 			table.setColumnWidth(SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN, 60);
@@ -287,15 +289,15 @@ public class SingleSiteAnalysisEnvironmentsComponent extends VerticalLayout impl
 		}
 
 	}
-	
+
 	protected void populateEnvironmentSelectionTableWithTrialEnvironments(final Table table, final String trialInstanceFactorName,
 			final String selectedEnvironmentFactorName) {
 		final BeanItemContainer<SeaEnvironmentModel> container = new BeanItemContainer<>(SeaEnvironmentModel.class);
 		final int datasetId = this.ssaDetailsPanel.getBreedingViewInput().getDatasetId();
 		final TrialEnvironments trialEnvironments = this.studyDataManager.getTrialEnvironmentsInDataset(datasetId);
 
-		final boolean isSelectedEnvironmentFactorALocation =
-				this.studyDataManager.isLocationIdVariable(this.ssaDetailsPanel.getBreedingViewInput().getStudyId(), selectedEnvironmentFactorName);
+		final boolean isSelectedEnvironmentFactorALocation = this.studyDataManager
+				.isLocationIdVariable(this.ssaDetailsPanel.getBreedingViewInput().getStudyId(), selectedEnvironmentFactorName);
 		final Map<String, String> locationNameMap =
 				this.studyDataManager.createInstanceLocationIdToNameMapFromStudy(this.ssaDetailsPanel.getBreedingViewInput().getStudyId());
 
@@ -330,7 +332,7 @@ public class SingleSiteAnalysisEnvironmentsComponent extends VerticalLayout impl
 	public List<SeaEnvironmentModel> getSelectedEnvironments() {
 
 		final List<SeaEnvironmentModel> envs = new ArrayList<>();
-		for (final Iterator<?> itr = this.tblEnvironmentSelection.getContainerDataSource().getItemIds().iterator(); itr.hasNext(); ) {
+		for (final Iterator<?> itr = this.tblEnvironmentSelection.getContainerDataSource().getItemIds().iterator(); itr.hasNext();) {
 			final SeaEnvironmentModel m = (SeaEnvironmentModel) itr.next();
 			if (m.getActive()) {
 				envs.add(m);
@@ -338,12 +340,12 @@ public class SingleSiteAnalysisEnvironmentsComponent extends VerticalLayout impl
 		}
 		return envs;
 	}
-	
+
 	public List<String> getInvalidEnvironments() {
 
 		final List<String> invalidEnvs = new ArrayList<>();
 
-		for (final Iterator<?> itr = this.tblEnvironmentSelection.getContainerDataSource().getItemIds().iterator(); itr.hasNext(); ) {
+		for (final Iterator<?> itr = this.tblEnvironmentSelection.getContainerDataSource().getItemIds().iterator(); itr.hasNext();) {
 			final SeaEnvironmentModel m = (SeaEnvironmentModel) itr.next();
 
 			final Boolean valid = this.ssaDetailsPanel.environmentContainsValidDataForAnalysis(m);
@@ -361,19 +363,19 @@ public class SingleSiteAnalysisEnvironmentsComponent extends VerticalLayout impl
 		return invalidEnvs;
 
 	}
-	
+
 	public boolean environmentContainsValidDataForAnalysis(final SeaEnvironmentModel model) {
 		return this.ssaDetailsPanel.environmentContainsValidDataForAnalysis(model);
 	}
-	
+
 	public String getSelEnvFactorValue() {
 		return (String) this.selEnvFactor.getValue();
 	}
-	
+
 	public Table getTblEnvironmentSelection() {
 		return this.tblEnvironmentSelection;
 	}
-	
+
 	public CheckBox getFooterCheckBox() {
 		return this.footerCheckBox;
 	}
@@ -381,38 +383,32 @@ public class SingleSiteAnalysisEnvironmentsComponent extends VerticalLayout impl
 	public void setFooterCheckBox(final CheckBox footerCheckBox) {
 		this.footerCheckBox = footerCheckBox;
 	}
-	
+
 	public Property.ValueChangeListener getFooterCheckBoxListener() {
-		return footerCheckBoxListener;
+		return this.footerCheckBoxListener;
 	}
 
-	
-	
-	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+	public void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
 
-	
-	public void setStudyDataManager(StudyDataManager studyDataManager) {
+	public void setStudyDataManager(final StudyDataManager studyDataManager) {
 		this.studyDataManager = studyDataManager;
 	}
 
-	public void setSelEnvFactor(Select selEnvFactor) {
+	public void setSelEnvFactor(final Select selEnvFactor) {
 		this.selEnvFactor = selEnvFactor;
 	}
 
-	
-	
 	public Map<String, Boolean> getEnvironmentsCheckboxState() {
-		return environmentsCheckboxState;
+		return this.environmentsCheckboxState;
 	}
 
-	public void setEnvironmentsCheckboxState(Map<String, Boolean> environmentsCheckboxState) {
+	public void setEnvironmentsCheckboxState(final Map<String, Boolean> environmentsCheckboxState) {
 		this.environmentsCheckboxState = environmentsCheckboxState;
 	}
 
-	
 	protected Select getSelEnvFactor() {
-		return selEnvFactor;
+		return this.selEnvFactor;
 	}
 }

@@ -87,8 +87,8 @@ public class RunSingleSiteAction implements ClickListener {
 	private ContextUtil contextUtil;
 
 	private ZipUtil zipUtil = new ZipUtil();
-	private DatasetExporter datasetExporter = new DatasetExporter();
-	private BreedingViewXMLWriter breedingViewXMLWriter = new BreedingViewXMLWriter();
+	private final DatasetExporter datasetExporter = new DatasetExporter();
+	private final BreedingViewXMLWriter breedingViewXMLWriter = new BreedingViewXMLWriter();
 
 	public RunSingleSiteAction(final SingleSiteAnalysisDetailsPanel selectDetailsForBreedingViewWindow) {
 		this.source = selectDetailsForBreedingViewWindow;
@@ -149,8 +149,8 @@ public class RunSingleSiteAction implements ClickListener {
 			selectedEnvironments.add(m.getTrialno());
 		}
 
-		this.datasetExporter.exportToCSVForBreedingView(breedingViewInput.getSourceXLSFilePath(),
-				this.source.getSelEnvFactorValue(), selectedEnvironments, breedingViewInput);
+		this.datasetExporter.exportToCSVForBreedingView(breedingViewInput.getSourceXLSFilePath(), this.source.getSelEnvFactorValue(),
+				selectedEnvironments, breedingViewInput);
 	}
 
 	/**
@@ -193,10 +193,10 @@ public class RunSingleSiteAction implements ClickListener {
 				&& !DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.equals(designType)) {
 			breedingViewInput.setColPos(this.createColPos(columnValue));
 			breedingViewInput.setRowPos(this.createRowPos(rowValue));
-	        } else {
-	            breedingViewInput.setColPos(null);
-	            breedingViewInput.setRowPos(null);
-	        }
+		} else {
+			breedingViewInput.setColPos(null);
+			breedingViewInput.setRowPos(null);
+		}
 
 	}
 
@@ -400,9 +400,9 @@ public class RunSingleSiteAction implements ClickListener {
 			this.showErrorMessage(window, "Please specify row factor.", "");
 			return false;
 		}
-		
-		if ((!StringUtils.isNullOrEmpty(rowFactor) && StringUtils.isNullOrEmpty(columnFactor))
-				|| (StringUtils.isNullOrEmpty(rowFactor) && !StringUtils.isNullOrEmpty(columnFactor))) {
+
+		if (!StringUtils.isNullOrEmpty(rowFactor) && StringUtils.isNullOrEmpty(columnFactor)
+				|| StringUtils.isNullOrEmpty(rowFactor) && !StringUtils.isNullOrEmpty(columnFactor)) {
 			this.showErrorMessage(window, "Row and Column factors must be specified together.", "");
 			return false;
 		}

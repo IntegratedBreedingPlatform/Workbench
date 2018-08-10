@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -18,24 +19,25 @@ import com.vaadin.ui.Select;
 import com.vaadin.ui.VerticalLayout;
 
 @Configurable
-public class SingleSiteAnalysisGenotypesComponent extends VerticalLayout implements InitializingBean, InternationalizableComponent, GermplasmStudyBrowserLayout {
-	
+public class SingleSiteAnalysisGenotypesComponent extends VerticalLayout
+		implements InitializingBean, InternationalizableComponent, GermplasmStudyBrowserLayout {
+
 	private static final long serialVersionUID = 1L;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
-	
+
 	private Label lblGenotypes;
 	private Label lblSpecifyGenotypesHeader;
 	private Select selGenotypes;
-	
-	private SingleSiteAnalysisDetailsPanel ssaDetailsPanel;
+
+	private final SingleSiteAnalysisDetailsPanel ssaDetailsPanel;
 
 	public SingleSiteAnalysisGenotypesComponent(final SingleSiteAnalysisDetailsPanel ssaDetailsPanel) {
 		super();
 		this.ssaDetailsPanel = ssaDetailsPanel;
 	}
-	
+
 	@Override
 	public void instantiateComponents() {
 		this.lblGenotypes = new Label();
@@ -43,29 +45,31 @@ public class SingleSiteAnalysisGenotypesComponent extends VerticalLayout impleme
 		this.lblGenotypes.setWidth("150px");
 		this.lblGenotypes.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
 
-		this.lblSpecifyGenotypesHeader = new Label(
-				"<span class='bms-factors' style='color: #39B54A; " + "font-size: 20px; font-weight: bold;'></span><b>&nbsp;"
+		this.lblSpecifyGenotypesHeader =
+				new Label("<span class='bms-factors' style='color: #39B54A; " + "font-size: 20px; font-weight: bold;'></span><b>&nbsp;"
 						+ this.messageSource.getMessage(Message.BV_SPECIFY_GENOTYPES_HEADER) + "</b>", Label.CONTENT_XHTML);
 		this.lblSpecifyGenotypesHeader.setStyleName(Bootstrap.Typography.H3.styleName());
-		
+
 		this.selGenotypes = new Select();
 		this.selGenotypes.setImmediate(true);
 		this.selGenotypes.setNullSelectionAllowed(true);
 		this.selGenotypes.setNewItemsAllowed(false);
 		this.selGenotypes.setWidth(SingleSiteAnalysisDetailsPanel.SELECT_BOX_WIDTH);
 
-		
 	}
+
 	@Override
 	public void initializeValues() {
 		this.populateChoicesForGenotypes();
-		
+
 	}
+
 	@Override
 	public void addListeners() {
 		this.selGenotypes.addListener(new GenotypeFactorValueChangeListener(this.ssaDetailsPanel.getEnvironmentsComponent()));
-		
+
 	}
+
 	@Override
 	public void layoutComponents() {
 		final GridLayout gLayout = new GridLayout(2, 2);
@@ -80,18 +84,19 @@ public class SingleSiteAnalysisGenotypesComponent extends VerticalLayout impleme
 		gLayout.addComponent(this.selGenotypes, 1, 1);
 		this.addComponent(gLayout);
 	}
-	
+
 	@Override
 	public void attach() {
 		super.attach();
 		this.updateLabels();
 	}
-	
+
 	@Override
 	public void updateLabels() {
 		this.messageSource.setValue(this.lblGenotypes, Message.BV_GENOTYPES);
-		
+
 	}
+
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		this.instantiateComponents();
@@ -99,11 +104,11 @@ public class SingleSiteAnalysisGenotypesComponent extends VerticalLayout impleme
 		this.addListeners();
 		this.layoutComponents();
 	}
-	
+
 	public void selectFirstItem() {
 		this.selGenotypes.select(this.selGenotypes.getItemIds().iterator().next());
 	}
-	
+
 	protected void populateChoicesForGenotypes() {
 		for (final DMSVariableType factor : this.ssaDetailsPanel.getFactorsInDataset()) {
 			if (PhenotypicType.GERMPLASM.equals(factor.getStandardVariable().getPhenotypicType())
@@ -114,18 +119,16 @@ public class SingleSiteAnalysisGenotypesComponent extends VerticalLayout impleme
 		}
 		this.selectFirstItem();
 	}
-	
+
 	public String getSelGenotypesValue() {
 		return (String) this.selGenotypes.getValue();
 	}
 
-	
 	protected Select getSelGenotypes() {
-		return selGenotypes;
+		return this.selGenotypes;
 	}
 
-	
-	protected void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+	protected void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
 

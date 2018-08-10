@@ -55,7 +55,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	public static final String MARGIN_TOP10 = "marginTop10";
 	protected static final String REPLICATES = "REPLICATES";
 
-
 	public static final String INVALID_SELECTION_STRING = "Invalid Selection";
 	public static final String LABEL_BOLD_STYLING = "label-bold";
 	public static final String LABEL_WIDTH = "185px";
@@ -77,7 +76,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	private SingleSiteAnalysisEnvironmentsComponent environmentsComponent;
 	private SingleSiteAnalysisDesignDetails designDetailsComponent;
 	private SingleSiteAnalysisGenotypesComponent genotypesComponent;
-	
+
 	private Button btnRun;
 	private Button btnUpload;
 	private Button btnReset;
@@ -136,8 +135,8 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.lblTitle.setStyleName(Bootstrap.Typography.H4.styleName());
 		this.lblTitle.addStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
 		this.lblTitle.setHeight("25px");
-		
-		instantiateActionButtons();
+
+		this.instantiateActionButtons();
 	}
 
 	protected void instantiateActionButtons() {
@@ -166,8 +165,8 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		topLayout.setDebugId("topLayout");
 		topLayout.setSizeUndefined();
 		topLayout.setWidth("100%");
-		topLayout.addComponent(studyDetailsComponent);
-		topLayout.addComponent(environmentsComponent);
+		topLayout.addComponent(this.studyDetailsComponent);
+		topLayout.addComponent(this.environmentsComponent);
 		this.mainLayout.addComponent(topLayout);
 
 		final HorizontalLayout bottomLayout = new HorizontalLayout();
@@ -175,8 +174,8 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		bottomLayout.setSizeUndefined();
 		bottomLayout.setSpacing(true);
 		bottomLayout.setWidth("100%");
-		bottomLayout.addComponent(designDetailsComponent);
-		bottomLayout.addComponent(genotypesComponent);
+		bottomLayout.addComponent(this.designDetailsComponent);
+		bottomLayout.addComponent(this.genotypesComponent);
 		this.mainLayout.addComponent(bottomLayout);
 
 		final HorizontalLayout combineLayout2 = new HorizontalLayout();
@@ -300,15 +299,14 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	public Boolean environmentContainsValidDataForAnalysis(final SeaEnvironmentModel m) {
 		final int germplasmTermId = this.getTermId(this.getSelGenotypesValue(), this.factorsInDataset);
 
-		return this.studyDataManager
-				.containsAtLeast2CommonEntriesWithValues(this.getBreedingViewInput().getDatasetId(), m.getLocationId(),
-						germplasmTermId);
+		return this.studyDataManager.containsAtLeast2CommonEntriesWithValues(this.getBreedingViewInput().getDatasetId(), m.getLocationId(),
+				germplasmTermId);
 	}
-	
+
 	public Boolean replicateFactorEnabled() {
 		return this.designDetailsComponent.replicateFactorEnabled();
 	}
-	
+
 	public Tool getTool() {
 		return this.tool;
 	}
@@ -360,73 +358,65 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	public void setStudyDataManager(final StudyDataManager studyDataManager) {
 		this.studyDataManager = studyDataManager;
 	}
-		
 
 	public SingleSiteAnalysisPanel getSelectDatasetForBreedingViewPanel() {
-		return selectDatasetForBreedingViewPanel;
+		return this.selectDatasetForBreedingViewPanel;
 	}
 
 	public List<DMSVariableType> getFactorsInDataset() {
-		return factorsInDataset;
+		return this.factorsInDataset;
 	}
 
 	public List<DMSVariableType> getTrialVariablesInDataset() {
-		return trialVariablesInDataset;
+		return this.trialVariablesInDataset;
 	}
 
 	public Project getProject() {
-		return project;
+		return this.project;
 	}
-	
+
 	public String getIsServerApp() {
-		return isServerApp;
+		return this.isServerApp;
 	}
-	
-	protected void setIsServerApp(String isServerApp) {
+
+	protected void setIsServerApp(final String isServerApp) {
 		this.isServerApp = isServerApp;
 	}
 
 	public SingleSiteAnalysisEnvironmentsComponent getEnvironmentsComponent() {
-		return environmentsComponent;
+		return this.environmentsComponent;
 	}
-	
-	protected void setStudyDetailsComponent(SingleSiteAnalysisStudyDetailsComponent studyDetailsComponent) {
+
+	protected void setStudyDetailsComponent(final SingleSiteAnalysisStudyDetailsComponent studyDetailsComponent) {
 		this.studyDetailsComponent = studyDetailsComponent;
 	}
 
-	
-	protected void setEnvironmentsComponent(SingleSiteAnalysisEnvironmentsComponent environmentsComponent) {
+	protected void setEnvironmentsComponent(final SingleSiteAnalysisEnvironmentsComponent environmentsComponent) {
 		this.environmentsComponent = environmentsComponent;
 	}
 
-	
-	protected void setDesignDetailsComponent(SingleSiteAnalysisDesignDetails designDetailsComponent) {
+	protected void setDesignDetailsComponent(final SingleSiteAnalysisDesignDetails designDetailsComponent) {
 		this.designDetailsComponent = designDetailsComponent;
 	}
 
-	
-	protected void setGenotypesComponent(SingleSiteAnalysisGenotypesComponent genotypesComponent) {
+	protected void setGenotypesComponent(final SingleSiteAnalysisGenotypesComponent genotypesComponent) {
 		this.genotypesComponent = genotypesComponent;
 	}
 
-	
 	protected Button getBtnRun() {
-		return btnRun;
+		return this.btnRun;
 	}
 
-	
 	protected Button getBtnUpload() {
-		return btnUpload;
+		return this.btnUpload;
 	}
 
-	
 	protected Button getBtnReset() {
-		return btnReset;
+		return this.btnReset;
 	}
 
-	
 	protected Button getBtnBack() {
-		return btnBack;
+		return this.btnBack;
 	}
-	
+
 }

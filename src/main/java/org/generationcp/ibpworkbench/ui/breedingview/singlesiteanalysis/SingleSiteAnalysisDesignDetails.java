@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
 import org.apache.commons.lang3.math.NumberUtils;
@@ -21,21 +22,22 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
 @Configurable
-public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements InitializingBean, InternationalizableComponent, GermplasmStudyBrowserLayout {
+public class SingleSiteAnalysisDesignDetails extends VerticalLayout
+		implements InitializingBean, InternationalizableComponent, GermplasmStudyBrowserLayout {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final String REPLICATION_FACTOR = "replication factor";
 	public static final String BLOCKING_FACTOR = "blocking factor";
 	public static final String ROW_FACTOR = "row in layout";
 	public static final String COLUMN_FACTOR = "column in layout";
-	
+
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
-	
+
 	@Autowired
 	private StudyDataManager studyDataManager;
-	
+
 	private Label lblSpecifyDesignDescription;
 	private Label lblDesignType;
 	private Label lblReplicates;
@@ -43,59 +45,59 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 	private Label lblSpecifyRowFactor;
 	private Label lblSpecifyColumnFactor;
 	private Label lblSpecifyDesignDetailsHeader;
-	
+
 	private ComboBox selDesignType;
 	private ComboBox selReplicates;
 	private ComboBox selBlocks;
 	private ComboBox selRowFactor;
 	private ComboBox selColumnFactor;
-	
+
 	private VerticalLayout designDetailsContainer;
-	
-	private SingleSiteAnalysisDetailsPanel ssaDetailsPanel;
+
+	private final SingleSiteAnalysisDetailsPanel ssaDetailsPanel;
 
 	public SingleSiteAnalysisDesignDetails(final SingleSiteAnalysisDetailsPanel ssaDetailsPanel) {
 		super();
 		this.ssaDetailsPanel = ssaDetailsPanel;
 	}
-	
+
 	@Override
 	public void instantiateComponents() {
 		this.lblSpecifyDesignDescription = new Label();
 		this.lblSpecifyDesignDescription.setDebugId("lblDesignDescription");
-		
+
 		this.lblDesignType = new Label();
 		this.lblDesignType.setDebugId("lblDesignType");
 		this.lblDesignType.setContentMode(Label.CONTENT_XHTML);
 		this.lblDesignType.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
 		this.lblDesignType.setWidth(SingleSiteAnalysisDetailsPanel.LABEL_WIDTH);
-		
+
 		this.lblReplicates = new Label();
 		this.lblReplicates.setDebugId("lblReplicates");
 		this.lblReplicates.setContentMode(Label.CONTENT_XHTML);
 		this.lblReplicates.setWidth(SingleSiteAnalysisDetailsPanel.LABEL_WIDTH);
 		this.lblReplicates.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
-		
+
 		this.lblBlocks = new Label();
 		this.lblBlocks.setDebugId("lblBlocks");
 		this.lblBlocks.setContentMode(Label.CONTENT_XHTML);
 		this.lblBlocks.setWidth(SingleSiteAnalysisDetailsPanel.LABEL_WIDTH);
 		this.lblBlocks.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
-		
+
 		this.lblSpecifyRowFactor = new Label();
 		this.lblSpecifyRowFactor.setDebugId("lblSpecifyRowFactor");
 		this.lblSpecifyRowFactor.setContentMode(Label.CONTENT_XHTML);
 		this.lblSpecifyRowFactor.setWidth(SingleSiteAnalysisDetailsPanel.LABEL_WIDTH);
 		this.lblSpecifyRowFactor.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
-		
+
 		this.lblSpecifyColumnFactor = new Label();
 		this.lblSpecifyColumnFactor.setDebugId("lblSpecifyColumnFactor");
 		this.lblSpecifyColumnFactor.setContentMode(Label.CONTENT_XHTML);
 		this.lblSpecifyColumnFactor.setWidth(SingleSiteAnalysisDetailsPanel.LABEL_WIDTH);
 		this.lblSpecifyColumnFactor.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
-		
-		this.lblSpecifyDesignDetailsHeader = new Label(
-				"<span class='bms-exp-design' style='color: #9A8478; " + "font-size: 22px; font-weight: bold;'></span><b>&nbsp;"
+
+		this.lblSpecifyDesignDetailsHeader =
+				new Label("<span class='bms-exp-design' style='color: #9A8478; " + "font-size: 22px; font-weight: bold;'></span><b>&nbsp;"
 						+ this.messageSource.getMessage(Message.BV_SPECIFY_DESIGN_DETAILS_HEADER) + "</b>", Label.CONTENT_XHTML);
 		this.lblSpecifyDesignDetailsHeader.setStyleName(Bootstrap.Typography.H3.styleName());
 
@@ -132,7 +134,7 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 		this.selRowFactor.setNewItemsAllowed(false);
 		this.selRowFactor.setWidth(SingleSiteAnalysisDetailsPanel.SELECT_BOX_WIDTH);
 		this.selRowFactor.setInputPrompt(pleaseChoose);
-		
+
 		this.selColumnFactor = new ComboBox();
 		this.selColumnFactor.setDebugId("selColumnFactor");
 		this.selColumnFactor.setImmediate(true);
@@ -141,8 +143,8 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 		this.selColumnFactor.setWidth(SingleSiteAnalysisDetailsPanel.SELECT_BOX_WIDTH);
 		this.selColumnFactor.setInputPrompt(pleaseChoose);
 
-		designDetailsContainer = new VerticalLayout();
-		
+		this.designDetailsContainer = new VerticalLayout();
+
 	}
 
 	@Override
@@ -153,7 +155,7 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 		this.populateChoicesForRowFactor();
 		this.populateChoicesForColumnFactor();
 		this.setDefaultValueForRowAndColumnFactors();
-		
+
 		this.refineChoicesForBlocksReplicationRowAndColumnFactors();
 		this.displayDesignElementsBasedOnDesignTypeOfTheStudy();
 	}
@@ -193,7 +195,7 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 		this.addComponent(designDetailsLayout);
 		this.addComponent(this.designDetailsContainer);
 	}
-	
+
 	@Override
 	public void attach() {
 		super.attach();
@@ -215,23 +217,23 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 		this.addListeners();
 		this.layoutComponents();
 	}
-	
+
 	public void reset() {
 		this.displayDesignElementsBasedOnDesignTypeOfTheStudy();
 		this.selReplicates.select(this.selReplicates.getItemIds().iterator().next());
 		this.setDefaultValueForRowAndColumnFactors();
 	}
-	
+
 	protected int retrieveExperimentalDesignTypeID() {
-		final String expDesign = this.studyDataManager
-				.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.ssaDetailsPanel.getBreedingViewInput().getStudyId());
+		final String expDesign = this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(),
+				this.ssaDetailsPanel.getBreedingViewInput().getStudyId());
 		if (expDesign != null && !"".equals(expDesign.trim()) && NumberUtils.isNumber(expDesign)) {
 			return Integer.parseInt(expDesign);
 		}
 
 		return 0;
 	}
-	
+
 	protected void displayDesignElementsBasedOnDesignTypeOfTheStudy() {
 		String designFactor = null;
 		final int designType = this.retrieveExperimentalDesignTypeID();
@@ -240,8 +242,8 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 			if (designType == TermId.RANDOMIZED_COMPLETE_BLOCK.getId()) {
 				designFactor = DesignType.RANDOMIZED_BLOCK_DESIGN.getName();
 				this.displayRandomizedBlockDesignElements();
-			} else if (designType == TermId.RESOLVABLE_INCOMPLETE_BLOCK.getId() || designType == TermId.RESOLVABLE_INCOMPLETE_BLOCK_LATIN
-					.getId()) {
+			} else if (designType == TermId.RESOLVABLE_INCOMPLETE_BLOCK.getId()
+					|| designType == TermId.RESOLVABLE_INCOMPLETE_BLOCK_LATIN.getId()) {
 				designFactor = DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName();
 				this.displayIncompleteBlockDesignElements();
 			} else if (designType == TermId.RESOLVABLE_INCOMPLETE_ROW_COL.getId()
@@ -259,7 +261,7 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 		}
 
 	}
-	
+
 	private void addSpatialVariablesToLayout(final GridLayout gLayout, final int startRowIndex, final Boolean isMandatory) {
 		gLayout.addComponent(this.lblSpecifyRowFactor, 0, startRowIndex);
 		gLayout.addComponent(this.selRowFactor, 1, startRowIndex);
@@ -267,7 +269,7 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 		gLayout.addComponent(this.selColumnFactor, 1, startRowIndex + 1);
 		this.markRowAndColumnFactorsAsMandatory(isMandatory);
 	}
-	
+
 	public void displayRandomizedBlockDesignElements() {
 
 		this.designDetailsContainer.removeAllComponents();
@@ -367,7 +369,7 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 		}
 
 	}
-	
+
 	private GridLayout createGridLayout(final int col, final int row) {
 
 		final GridLayout gLayout = new GridLayout(col, row);
@@ -385,8 +387,7 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 	void substituteMissingReplicatesWithBlocks() {
 
 		/**
-		 * If a trial doesn't have a replicates factor, this will use the block
-		 * factor as a substitute for replicates factor.
+		 * If a trial doesn't have a replicates factor, this will use the block factor as a substitute for replicates factor.
 		 */
 
 		if (!this.selReplicates.isEnabled() || this.selReplicates.getItemIds().isEmpty()) {
@@ -401,11 +402,10 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 
 	}
 
-	
 	protected void populateChoicesForReplicates() {
 		for (final DMSVariableType factor : this.ssaDetailsPanel.getFactorsInDataset()) {
 			if (factor.getStandardVariable().getProperty().getName().trim()
-					.equalsIgnoreCase(REPLICATION_FACTOR)) {
+					.equalsIgnoreCase(SingleSiteAnalysisDesignDetails.REPLICATION_FACTOR)) {
 				this.selReplicates.addItem(factor.getLocalName());
 				this.selReplicates.setValue(factor.getLocalName());
 			}
@@ -422,7 +422,7 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 
 		for (final DMSVariableType factor : this.ssaDetailsPanel.getFactorsInDataset()) {
 			if (factor.getStandardVariable().getProperty().getName().trim()
-					.equalsIgnoreCase(BLOCKING_FACTOR)) {
+					.equalsIgnoreCase(SingleSiteAnalysisDesignDetails.BLOCKING_FACTOR)) {
 				this.selBlocks.addItem(factor.getLocalName());
 				this.selBlocks.setValue(factor.getLocalName());
 				this.selBlocks.setEnabled(true);
@@ -433,8 +433,7 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 
 	protected void populateChoicesForRowFactor() {
 		for (final DMSVariableType factor : this.ssaDetailsPanel.getFactorsInDataset()) {
-			if (factor.getStandardVariable().getProperty().getName().trim()
-					.equalsIgnoreCase(ROW_FACTOR)) {
+			if (factor.getStandardVariable().getProperty().getName().trim().equalsIgnoreCase(SingleSiteAnalysisDesignDetails.ROW_FACTOR)) {
 				this.selRowFactor.addItem(factor.getLocalName());
 			}
 		}
@@ -443,12 +442,12 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 	protected void populateChoicesForColumnFactor() {
 		for (final DMSVariableType factor : this.ssaDetailsPanel.getFactorsInDataset()) {
 			if (factor.getStandardVariable().getProperty().getName().trim()
-					.equalsIgnoreCase(COLUMN_FACTOR)) {
+					.equalsIgnoreCase(SingleSiteAnalysisDesignDetails.COLUMN_FACTOR)) {
 				this.selColumnFactor.addItem(factor.getLocalName());
 			}
 		}
 	}
-	
+
 	private void setDefaultValueForRowAndColumnFactors() {
 		// If there is exactly one row factor, remove the "Please choose" option and automatically select only factor
 		if (this.selRowFactor.getItemIds().size() == 1) {
@@ -486,88 +485,75 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 		}
 	}
 
-
 	public String getSelDesignTypeValue() {
 		return (String) this.selDesignType.getValue();
 	}
-	
+
 	public String getSelReplicatesValue() {
 		return (String) this.selReplicates.getValue();
 	}
-	
+
 	public String getSelBlocksValue() {
 		return (String) this.selBlocks.getValue();
 	}
-	
+
 	public String getSelRowFactorValue() {
 		return (String) this.selRowFactor.getValue();
 	}
-	
+
 	public String getSelColumnFactorValue() {
 		return (String) this.selColumnFactor.getValue();
 	}
-	
+
 	public Boolean replicateFactorEnabled() {
 		return this.selReplicates.isEnabled();
 	}
 
-	
 	protected VerticalLayout getDesignDetailsContainer() {
-		return designDetailsContainer;
+		return this.designDetailsContainer;
 	}
 
-	
 	protected Label getLblReplicates() {
-		return lblReplicates;
+		return this.lblReplicates;
 	}
 
-	
 	protected Label getLblBlocks() {
-		return lblBlocks;
+		return this.lblBlocks;
 	}
 
-	
 	protected Label getLblSpecifyRowFactor() {
-		return lblSpecifyRowFactor;
+		return this.lblSpecifyRowFactor;
 	}
 
-	
 	protected Label getLblSpecifyColumnFactor() {
-		return lblSpecifyColumnFactor;
+		return this.lblSpecifyColumnFactor;
 	}
 
-	
 	protected ComboBox getSelReplicates() {
-		return selReplicates;
+		return this.selReplicates;
 	}
 
-	
 	protected ComboBox getSelBlocks() {
-		return selBlocks;
+		return this.selBlocks;
 	}
 
-	
 	protected ComboBox getSelRowFactor() {
-		return selRowFactor;
+		return this.selRowFactor;
 	}
 
-	
 	protected ComboBox getSelColumnFactor() {
-		return selColumnFactor;
+		return this.selColumnFactor;
 	}
 
-	
 	protected ComboBox getSelDesignType() {
-		return selDesignType;
+		return this.selDesignType;
 	}
 
-	
-	protected void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+	protected void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
 
-	
-	protected void setStudyDataManager(StudyDataManager studyDataManager) {
+	protected void setStudyDataManager(final StudyDataManager studyDataManager) {
 		this.studyDataManager = studyDataManager;
 	}
 }

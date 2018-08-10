@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.actions.breedingview.singlesiteanalysis;
 
 import org.generationcp.commons.breedingview.xml.DesignType;
@@ -10,7 +11,7 @@ public class BreedingViewDesignTypeValueChangeListener implements ValueChangeLis
 
 	private static final long serialVersionUID = -6425208753343322313L;
 
-	private SingleSiteAnalysisDesignDetails source;
+	private final SingleSiteAnalysisDesignDetails source;
 
 	public BreedingViewDesignTypeValueChangeListener(final SingleSiteAnalysisDesignDetails source) {
 		this.source = source;

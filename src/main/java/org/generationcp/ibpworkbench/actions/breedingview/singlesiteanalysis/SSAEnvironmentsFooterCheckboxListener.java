@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.actions.breedingview.singlesiteanalysis;
 
 import java.util.Iterator;
@@ -15,13 +16,12 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Table;
 
-
 public class SSAEnvironmentsFooterCheckboxListener implements ValueChangeListener {
 
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOG = LoggerFactory.getLogger(SSAEnvironmentsFooterCheckboxListener.class);
-	
-	private SingleSiteAnalysisEnvironmentsComponent ssaEnvironmentsComponent;
+
+	private final SingleSiteAnalysisEnvironmentsComponent ssaEnvironmentsComponent;
 
 	public SSAEnvironmentsFooterCheckboxListener(final SingleSiteAnalysisEnvironmentsComponent ssaEnvironmentsComponent) {
 		super();
@@ -41,11 +41,11 @@ public class SSAEnvironmentsFooterCheckboxListener implements ValueChangeListene
 
 			final List<String> invalidEnvironments = this.ssaEnvironmentsComponent.getInvalidEnvironments();
 			if (!invalidEnvironments.isEmpty()) {
-				MessageNotifier.showError(ssaEnvironmentsComponent.getWindow(),
-						SingleSiteAnalysisDetailsPanel.INVALID_SELECTION_STRING,
-						ssaEnvironmentsComponent.getSelEnvFactorValue() + " " + StringUtil
-								.joinIgnoreEmpty(",", invalidEnvironments)
-								+ " " + SingleSiteAnalysisDetailsPanel.INCOMPLETE_PLOT_DATA_ERROR);
+				MessageNotifier
+						.showError(this.ssaEnvironmentsComponent.getWindow(), SingleSiteAnalysisDetailsPanel.INVALID_SELECTION_STRING,
+								this.ssaEnvironmentsComponent.getSelEnvFactorValue() + " "
+										+ StringUtil.joinIgnoreEmpty(",", invalidEnvironments) + " "
+										+ SingleSiteAnalysisDetailsPanel.INCOMPLETE_PLOT_DATA_ERROR);
 			}
 
 		} catch (final Exception e) {
@@ -53,7 +53,7 @@ public class SSAEnvironmentsFooterCheckboxListener implements ValueChangeListene
 		}
 
 	}
-	
+
 	private void disableEnvironmentEntries() {
 		final Table environmentsTable = this.ssaEnvironmentsComponent.getTblEnvironmentSelection();
 		for (final Iterator<?> itr = environmentsTable.getContainerDataSource().getItemIds().iterator(); itr.hasNext();) {
@@ -62,6 +62,5 @@ public class SSAEnvironmentsFooterCheckboxListener implements ValueChangeListene
 		}
 		environmentsTable.refreshRowCache();
 	}
-
 
 }

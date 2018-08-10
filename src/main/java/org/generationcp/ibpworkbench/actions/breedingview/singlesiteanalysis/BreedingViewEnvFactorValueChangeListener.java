@@ -10,14 +10,14 @@ public class BreedingViewEnvFactorValueChangeListener implements ValueChangeList
 
 	private static final long serialVersionUID = -6425208753343322313L;
 
-	private SingleSiteAnalysisEnvironmentsComponent source;
+	private final SingleSiteAnalysisEnvironmentsComponent source;
 
 	public BreedingViewEnvFactorValueChangeListener(final SingleSiteAnalysisEnvironmentsComponent source) {
 		this.source = source;
 	}
 
 	@Override
-	public void valueChange(ValueChangeEvent event) {
+	public void valueChange(final ValueChangeEvent event) {
 		this.source.populateChoicesForEnvForAnalysis();
 	}
 

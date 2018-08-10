@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.actions.breedingview.singlesiteanalysis;
 
 import java.util.List;
@@ -23,11 +24,11 @@ public class RunBreedingViewButtonClickListener implements ClickListener {
 
 	private static final long serialVersionUID = -6682011023617457906L;
 	private static final Logger LOG = LoggerFactory.getLogger(RunBreedingViewButtonClickListener.class);
-	
+
 	@Autowired
 	private StudyDataManager studyDataManager;
-	
-	private SingleSiteAnalysisDetailsPanel ssaDetailsPanel;
+
+	private final SingleSiteAnalysisDetailsPanel ssaDetailsPanel;
 	private RunSingleSiteAction runSingleSiteAction;
 
 	public RunBreedingViewButtonClickListener(final SingleSiteAnalysisDetailsPanel ssaDetailsPanel) {
@@ -47,20 +48,18 @@ public class RunBreedingViewButtonClickListener implements ClickListener {
 		final List<DataSet> dataSets;
 		try {
 
-			dataSets = this.studyDataManager
-					.getDataSetsByType(ssaDetailsPanel.getBreedingViewInput().getStudyId(), DataSetType.MEANS_DATA);
+			dataSets = this.studyDataManager.getDataSetsByType(this.ssaDetailsPanel.getBreedingViewInput().getStudyId(),
+					DataSetType.MEANS_DATA);
 			if (!dataSets.isEmpty()) {
 
 				final DataSet meansDataSet = dataSets.get(0);
-				final TrialEnvironments envs =
-						this.studyDataManager.getTrialEnvironmentsInDataset(meansDataSet.getId());
+				final TrialEnvironments envs = this.studyDataManager.getTrialEnvironmentsInDataset(meansDataSet.getId());
 
 				Boolean environmentExists = false;
-				for (final SeaEnvironmentModel model : ssaDetailsPanel.getSelectedEnvironments()) {
+				for (final SeaEnvironmentModel model : this.ssaDetailsPanel.getSelectedEnvironments()) {
 
-					final TrialEnvironment env =
-							envs.findOnlyOneByLocalName(ssaDetailsPanel.getBreedingViewInput().getTrialInstanceName(),
-									model.getTrialno());
+					final TrialEnvironment env = envs
+							.findOnlyOneByLocalName(this.ssaDetailsPanel.getBreedingViewInput().getTrialInstanceName(), model.getTrialno());
 					if (env != null) {
 						environmentExists = true;
 						break;
@@ -76,7 +75,7 @@ public class RunBreedingViewButtonClickListener implements ClickListener {
 								@Override
 								public void run() {
 
-									new RunSingleSiteAction(ssaDetailsPanel).buttonClick(event);
+									new RunSingleSiteAction(RunBreedingViewButtonClickListener.this.ssaDetailsPanel).buttonClick(event);
 								}
 
 							});
@@ -95,8 +94,7 @@ public class RunBreedingViewButtonClickListener implements ClickListener {
 
 	}
 
-	
-	protected void setRunSingleSiteAction(RunSingleSiteAction runSingleSiteAction) {
+	protected void setRunSingleSiteAction(final RunSingleSiteAction runSingleSiteAction) {
 		this.runSingleSiteAction = runSingleSiteAction;
 	}
 

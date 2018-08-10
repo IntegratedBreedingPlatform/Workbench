@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -16,13 +17,14 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 @Configurable
-public class SingleSiteAnalysisStudyDetailsComponent extends VerticalLayout implements InitializingBean, InternationalizableComponent, GermplasmStudyBrowserLayout {
-	
+public class SingleSiteAnalysisStudyDetailsComponent extends VerticalLayout
+		implements InitializingBean, InternationalizableComponent, GermplasmStudyBrowserLayout {
+
 	private static final long serialVersionUID = 1L;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
-	
+
 	private Label lblDataSelectedForAnalysisHeader;
 	private Label lblDatasetName;
 	private Label lblStudyName;
@@ -30,27 +32,27 @@ public class SingleSiteAnalysisStudyDetailsComponent extends VerticalLayout impl
 	private Label lblAnalysisName;
 	private Label lblDescription;
 	private Label lblObjective;
-	
+
 	private Label valueProjectType;
 	private TextField txtAnalysisName;
 	private Label valueDatasetName;
 	private Label valueStudyName;
 	private Label valueObjective;
 	private Label valueDescription;
-	
-	private SingleSiteAnalysisDetailsPanel ssaDetailsPanel;
+
+	private final SingleSiteAnalysisDetailsPanel ssaDetailsPanel;
 
 	public SingleSiteAnalysisStudyDetailsComponent(final SingleSiteAnalysisDetailsPanel ssaDetailsPanel) {
 		super();
 		this.ssaDetailsPanel = ssaDetailsPanel;
 	}
-	
+
 	@Override
 	public void attach() {
 		super.attach();
 		this.updateLabels();
 	}
-	
+
 	@Override
 	public void updateLabels() {
 		this.messageSource.setValue(this.lblProjectType, Message.BV_PROJECT_TYPE);
@@ -68,9 +70,12 @@ public class SingleSiteAnalysisStudyDetailsComponent extends VerticalLayout impl
 
 	@Override
 	public void instantiateComponents() {
-		this.lblDataSelectedForAnalysisHeader = new Label("<span class='bms-dataset' style='position:relative; top: -1px; color: #FF4612; "
-				+ "font-size: 20px; font-weight: bold;'></span><b>&nbsp;" + this.messageSource
-				.getMessage(Message.BV_DATA_SELECTED_FOR_ANALYSIS_HEADER) + "</b>", Label.CONTENT_XHTML);
+		this.lblDataSelectedForAnalysisHeader =
+				new Label(
+						"<span class='bms-dataset' style='position:relative; top: -1px; color: #FF4612; "
+								+ "font-size: 20px; font-weight: bold;'></span><b>&nbsp;"
+								+ this.messageSource.getMessage(Message.BV_DATA_SELECTED_FOR_ANALYSIS_HEADER) + "</b>",
+						Label.CONTENT_XHTML);
 		this.lblDataSelectedForAnalysisHeader.setStyleName(Bootstrap.Typography.H3.styleName());
 
 		this.lblDatasetName = new Label();
@@ -86,41 +91,41 @@ public class SingleSiteAnalysisStudyDetailsComponent extends VerticalLayout impl
 		this.lblProjectType.setDebugId("lblProjectType");
 		this.lblProjectType.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
 		this.lblProjectType.setWidth("100px");
-		
+
 		this.lblAnalysisName = new Label();
 		this.lblAnalysisName.setDebugId("lblAnalysisName");
 		this.lblAnalysisName.setContentMode(Label.CONTENT_XHTML);
 		this.lblAnalysisName.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
-		
+
 		this.lblDescription = new Label();
 		this.lblDescription.setDebugId("lblDescription");
 		this.lblDescription.setContentMode(Label.CONTENT_XHTML);
 		this.lblDescription.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
-		
+
 		this.lblObjective = new Label();
 		this.lblObjective.setDebugId("lblObjective");
 		this.lblObjective.setContentMode(Label.CONTENT_XHTML);
 		this.lblObjective.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
-		
+
 		this.valueProjectType = new Label();
 		this.valueProjectType.setDebugId("valueProjectType");
 
 		this.valueDatasetName = new Label();
 		this.valueDatasetName.setDebugId("valueDatasetName");
 		this.valueDatasetName.setWidth("100%");
-	
+
 		this.valueStudyName = new Label();
 		this.valueStudyName.setDebugId("valueStudyName");
 		this.valueStudyName.setWidth("100%");
-		
+
 		this.valueDescription = new Label();
 		this.valueDescription.setDebugId("valueDescription");
 		this.valueDescription.setWidth("100%");
-		
+
 		this.valueObjective = new Label();
 		this.valueObjective.setDebugId("valueObjective");
 		this.valueObjective.setWidth("100%");
-		
+
 		this.txtAnalysisName = new TextField();
 		this.txtAnalysisName.setDebugId("txtAnalysisName");
 		this.txtAnalysisName.setNullRepresentation("");
@@ -133,14 +138,14 @@ public class SingleSiteAnalysisStudyDetailsComponent extends VerticalLayout impl
 		this.lblStudyName.setValue(this.messageSource.getMessage(Message.STUDY_NAME_LABEL) + ":");
 		this.lblDescription.setValue(this.messageSource.getMessage(Message.DESCRIPTION_HEADER) + ":");
 		this.lblObjective.setValue(this.messageSource.getMessage(Message.OBJECTIVE_LABEL) + ":");
-		
+
 		this.valueProjectType.setValue("Field Trial");
 		this.valueDatasetName.setValue(this.ssaDetailsPanel.getBreedingViewInput().getDatasetName());
 		this.valueDescription.setValue(this.ssaDetailsPanel.getBreedingViewInput().getDescription());
 		this.valueObjective.setValue(this.ssaDetailsPanel.getBreedingViewInput().getObjective());
 		this.valueStudyName.setValue(this.ssaDetailsPanel.getBreedingViewInput().getDatasetSource());
-		
-		setAnalysisName();
+
+		this.setAnalysisName();
 	}
 
 	public void setAnalysisName() {
@@ -166,7 +171,7 @@ public class SingleSiteAnalysisStudyDetailsComponent extends VerticalLayout impl
 		row1.setDebugId("row1");
 		row1.setSpacing(true);
 		row1.addComponent(this.lblDataSelectedForAnalysisHeader);
-		
+
 		final HorizontalLayout row2 = new HorizontalLayout();
 		row2.setDebugId("row2");
 		row2.setSpacing(true);
@@ -178,26 +183,26 @@ public class SingleSiteAnalysisStudyDetailsComponent extends VerticalLayout impl
 		row3.setSpacing(true);
 		row3.addComponent(this.lblDatasetName);
 		row3.addComponent(this.valueDatasetName);
-		
+
 		final HorizontalLayout row4 = new HorizontalLayout();
 		row4.setDebugId("row4");
 		row4.setSpacing(true);
 		row4.addComponent(this.lblProjectType);
 		row4.addComponent(this.valueProjectType);
-		
+
 		final HorizontalLayout row5 = new HorizontalLayout();
 		row5.setDebugId("row5");
 		row5.setSpacing(true);
 		row5.addComponent(this.lblDescription);
 		row5.addComponent(this.valueDescription);
-		
+
 		final HorizontalLayout row6 = new HorizontalLayout();
 		row6.setDebugId("row6");
 		row6.setSpacing(true);
 		row6.setHeight("40px");
 		row6.addComponent(this.lblObjective);
 		row6.addComponent(this.valueObjective);
-		
+
 		final HorizontalLayout row7 = new HorizontalLayout();
 		row7.setDebugId("row7");
 		row7.setSpacing(true);
@@ -207,7 +212,7 @@ public class SingleSiteAnalysisStudyDetailsComponent extends VerticalLayout impl
 		row8.setDebugId("row8");
 		row8.setSpacing(true);
 		row8.addComponent(this.txtAnalysisName);
-		
+
 		this.addComponent(row1);
 		this.addComponent(row2);
 		this.addComponent(row3);
@@ -217,34 +222,33 @@ public class SingleSiteAnalysisStudyDetailsComponent extends VerticalLayout impl
 		this.addComponent(row7);
 		this.addComponent(row8);
 	}
-	
+
 	public String getTxtAnalysisName() {
 		return (String) this.txtAnalysisName.getValue();
 	}
-	
+
 	protected String getProjectTypeValue() {
 		return (String) this.valueProjectType.getValue();
 	}
-	
+
 	protected String getDatasetNameValue() {
 		return (String) this.valueDatasetName.getValue();
 	}
-	
+
 	protected String getDescriptionValue() {
 		return (String) this.valueDescription.getValue();
 	}
-	
+
 	protected String getObjectiveValue() {
 		return (String) this.valueObjective.getValue();
 	}
-	
+
 	protected String getStudyNameValue() {
 		return (String) this.valueStudyName.getValue();
 	}
 
-	
-	protected void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+	protected void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
-	
+
 }

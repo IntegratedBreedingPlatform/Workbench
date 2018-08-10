@@ -1,3 +1,4 @@
+
 package org.generationcp.ibpworkbench.actions.breedingview.singlesiteanalysis;
 
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -12,8 +13,8 @@ import com.vaadin.ui.CheckBox;
 public class SSAEnvironmentsCheckboxValueChangeListener implements ValueChangeListener {
 
 	private static final long serialVersionUID = 1L;
-	
-	private SingleSiteAnalysisEnvironmentsComponent ssaEnvironmentsComponent;
+
+	private final SingleSiteAnalysisEnvironmentsComponent ssaEnvironmentsComponent;
 
 	public SSAEnvironmentsCheckboxValueChangeListener(final SingleSiteAnalysisEnvironmentsComponent ssaEnvironmentsComponent) {
 		super();
@@ -40,16 +41,15 @@ public class SSAEnvironmentsCheckboxValueChangeListener implements ValueChangeLi
 			this.ssaEnvironmentsComponent.getFooterCheckBox().addListener(this.ssaEnvironmentsComponent.getFooterCheckBoxListener());
 
 		} else {
-			
-			final Boolean studyContainsMinimumData = 
+
+			final Boolean studyContainsMinimumData =
 					this.ssaEnvironmentsComponent.environmentContainsValidDataForAnalysis(checkboxEnvironmentModel);
 
 			if (!studyContainsMinimumData) {
 				MessageNotifier.showError(this.ssaEnvironmentsComponent.getWindow(),
 						SingleSiteAnalysisDetailsPanel.INVALID_SELECTION_STRING,
-						this.ssaEnvironmentsComponent.getSelEnvFactorValue() + " \"" + checkboxEnvironmentModel
-								.getEnvironmentName()
-								+ "\"" + SingleSiteAnalysisDetailsPanel.INCOMPLETE_PLOT_DATA_ERROR);
+						this.ssaEnvironmentsComponent.getSelEnvFactorValue() + " \"" + checkboxEnvironmentModel.getEnvironmentName() + "\""
+								+ SingleSiteAnalysisDetailsPanel.INCOMPLETE_PLOT_DATA_ERROR);
 				checkbox.setValue(false);
 				checkboxEnvironmentModel.setActive(false);
 			}
