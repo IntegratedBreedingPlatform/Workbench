@@ -117,58 +117,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	}
 
-	public Tool getTool() {
-		return this.tool;
-	}
-
-	public String getSelDesignTypeValue() {
-		return this.designDetailsComponent.getSelDesignTypeValue();
-	}
-
-	public BreedingViewInput getBreedingViewInput() {
-		return this.breedingViewInput;
-	}
-
-	public String getTxtAnalysisNameValue() {
-		return this.studyDetailsComponent.getTxtAnalysisName();
-	}
-
-	public String getSelEnvFactorValue() {
-		return this.environmentsComponent.getSelEnvFactorValue();
-	}
-
-	public void setTrialVariablesInDataset(final List<DMSVariableType> trialVariablesInDataset) {
-		this.trialVariablesInDataset = trialVariablesInDataset;
-	}
-
-	public String getSelReplicatesValue() {
-		return this.designDetailsComponent.getSelReplicatesValue();
-	}
-
-	public String getSelBlocksValue() {
-		return this.designDetailsComponent.getSelBlocksValue();
-	}
-
-	public String getSelRowFactorValue() {
-		return this.designDetailsComponent.getSelRowFactorValue();
-	}
-
-	public String getSelColumnFactorValue() {
-		return this.designDetailsComponent.getSelColumnFactorValue();
-	}
-
-	public String getSelGenotypesValue() {
-		return this.genotypesComponent.getSelGenotypesValue();
-	}
-
-	public Table getTblEnvironmentSelection() {
-		return this.environmentsComponent.getTblEnvironmentSelection();
-	}
-
-	public void setStudyDataManager(final StudyDataManager studyDataManager) {
-		this.studyDataManager = studyDataManager;
-	}
-
 	protected void initializeComponents() {
 
 		this.lblPageTitle = new Label();
@@ -189,6 +137,10 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.lblTitle.addStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
 		this.lblTitle.setHeight("25px");
 		
+		instantiateActionButtons();
+	}
+
+	protected void instantiateActionButtons() {
 		this.btnRun = new Button();
 		this.btnRun.setDebugId("btnRun");
 		this.btnRun.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
@@ -245,7 +197,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.addComponent(this.mainLayout);
 	}
 
-	private void reset() {
+	void reset() {
 		this.environmentsComponent.reset();
 		this.designDetailsComponent.reset();
 		this.genotypesComponent.selectFirstItem();
@@ -335,7 +287,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.messageSource = messageSource;
 	}
 
-	public int getTermId(final String localName, final List<DMSVariableType> list) {
+	int getTermId(final String localName, final List<DMSVariableType> list) {
 		for (final DMSVariableType variable : list) {
 			if (variable.getLocalName().equals(localName)) {
 				return variable.getId();
@@ -356,6 +308,58 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	public Boolean replicateFactorEnabled() {
 		return this.designDetailsComponent.replicateFactorEnabled();
 	}
+	
+	public Tool getTool() {
+		return this.tool;
+	}
+
+	public String getSelDesignTypeValue() {
+		return this.designDetailsComponent.getSelDesignTypeValue();
+	}
+
+	public BreedingViewInput getBreedingViewInput() {
+		return this.breedingViewInput;
+	}
+
+	public String getTxtAnalysisNameValue() {
+		return this.studyDetailsComponent.getTxtAnalysisName();
+	}
+
+	public String getSelEnvFactorValue() {
+		return this.environmentsComponent.getSelEnvFactorValue();
+	}
+
+	public void setTrialVariablesInDataset(final List<DMSVariableType> trialVariablesInDataset) {
+		this.trialVariablesInDataset = trialVariablesInDataset;
+	}
+
+	public String getSelReplicatesValue() {
+		return this.designDetailsComponent.getSelReplicatesValue();
+	}
+
+	public String getSelBlocksValue() {
+		return this.designDetailsComponent.getSelBlocksValue();
+	}
+
+	public String getSelRowFactorValue() {
+		return this.designDetailsComponent.getSelRowFactorValue();
+	}
+
+	public String getSelColumnFactorValue() {
+		return this.designDetailsComponent.getSelColumnFactorValue();
+	}
+
+	public String getSelGenotypesValue() {
+		return this.genotypesComponent.getSelGenotypesValue();
+	}
+
+	public Table getTblEnvironmentSelection() {
+		return this.environmentsComponent.getTblEnvironmentSelection();
+	}
+
+	public void setStudyDataManager(final StudyDataManager studyDataManager) {
+		this.studyDataManager = studyDataManager;
+	}
 		
 
 	public SingleSiteAnalysisPanel getSelectDatasetForBreedingViewPanel() {
@@ -373,15 +377,56 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	public Project getProject() {
 		return project;
 	}
-
 	
 	public String getIsServerApp() {
 		return isServerApp;
 	}
-
 	
+	protected void setIsServerApp(String isServerApp) {
+		this.isServerApp = isServerApp;
+	}
+
 	public SingleSiteAnalysisEnvironmentsComponent getEnvironmentsComponent() {
 		return environmentsComponent;
+	}
+	
+	protected void setStudyDetailsComponent(SingleSiteAnalysisStudyDetailsComponent studyDetailsComponent) {
+		this.studyDetailsComponent = studyDetailsComponent;
+	}
+
+	
+	protected void setEnvironmentsComponent(SingleSiteAnalysisEnvironmentsComponent environmentsComponent) {
+		this.environmentsComponent = environmentsComponent;
+	}
+
+	
+	protected void setDesignDetailsComponent(SingleSiteAnalysisDesignDetails designDetailsComponent) {
+		this.designDetailsComponent = designDetailsComponent;
+	}
+
+	
+	protected void setGenotypesComponent(SingleSiteAnalysisGenotypesComponent genotypesComponent) {
+		this.genotypesComponent = genotypesComponent;
+	}
+
+	
+	protected Button getBtnRun() {
+		return btnRun;
+	}
+
+	
+	protected Button getBtnUpload() {
+		return btnUpload;
+	}
+
+	
+	protected Button getBtnReset() {
+		return btnReset;
+	}
+
+	
+	protected Button getBtnBack() {
+		return btnBack;
 	}
 	
 }

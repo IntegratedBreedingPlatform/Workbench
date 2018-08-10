@@ -28,17 +28,19 @@ public class RunBreedingViewButtonClickListener implements ClickListener {
 	private StudyDataManager studyDataManager;
 	
 	private SingleSiteAnalysisDetailsPanel ssaDetailsPanel;
+	private RunSingleSiteAction runSingleSiteAction;
 
 	public RunBreedingViewButtonClickListener(final SingleSiteAnalysisDetailsPanel ssaDetailsPanel) {
 		super();
 		this.ssaDetailsPanel = ssaDetailsPanel;
+		this.runSingleSiteAction = new RunSingleSiteAction(ssaDetailsPanel);
 	}
 
 	@Override
 	public void buttonClick(final ClickEvent event) {
 
 		if (Boolean.parseBoolean(this.ssaDetailsPanel.getIsServerApp())) {
-			new RunSingleSiteAction(ssaDetailsPanel).buttonClick(event);
+			this.runSingleSiteAction.buttonClick(event);
 			return;
 		}
 
@@ -79,18 +81,23 @@ public class RunBreedingViewButtonClickListener implements ClickListener {
 
 							});
 				} else {
-					new RunSingleSiteAction(ssaDetailsPanel).buttonClick(event);
+					this.runSingleSiteAction.buttonClick(event);
 				}
 
 			} else {
-				new RunSingleSiteAction(ssaDetailsPanel).buttonClick(event);
+				this.runSingleSiteAction.buttonClick(event);
 			}
 
 		} catch (final Exception e) {
-			new RunSingleSiteAction(ssaDetailsPanel).buttonClick(event);
+			this.runSingleSiteAction.buttonClick(event);
 			RunBreedingViewButtonClickListener.LOG.error(e.getMessage(), e);
 		}
 
+	}
+
+	
+	protected void setRunSingleSiteAction(RunSingleSiteAction runSingleSiteAction) {
+		this.runSingleSiteAction = runSingleSiteAction;
 	}
 
 }

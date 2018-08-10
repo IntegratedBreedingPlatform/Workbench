@@ -119,4 +119,14 @@ public class SingleSiteAnalysisGenotypesComponent extends VerticalLayout impleme
 		return (String) this.selGenotypes.getValue();
 	}
 
+	
+	protected Select getSelGenotypes() {
+		return selGenotypes;
+	}
+
+	
+	protected void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+
 }

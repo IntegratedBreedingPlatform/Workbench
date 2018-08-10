@@ -222,4 +222,29 @@ public class SingleSiteAnalysisStudyDetailsComponent extends VerticalLayout impl
 		return (String) this.txtAnalysisName.getValue();
 	}
 	
+	protected String getProjectTypeValue() {
+		return (String) this.valueProjectType.getValue();
+	}
+	
+	protected String getDatasetNameValue() {
+		return (String) this.valueDatasetName.getValue();
+	}
+	
+	protected String getDescriptionValue() {
+		return (String) this.valueDescription.getValue();
+	}
+	
+	protected String getObjectiveValue() {
+		return (String) this.valueObjective.getValue();
+	}
+	
+	protected String getStudyNameValue() {
+		return (String) this.valueStudyName.getValue();
+	}
+
+	
+	protected void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+	
 }

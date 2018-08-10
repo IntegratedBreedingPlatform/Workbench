@@ -510,4 +510,64 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout implements I
 	public Boolean replicateFactorEnabled() {
 		return this.selReplicates.isEnabled();
 	}
+
+	
+	protected VerticalLayout getDesignDetailsContainer() {
+		return designDetailsContainer;
+	}
+
+	
+	protected Label getLblReplicates() {
+		return lblReplicates;
+	}
+
+	
+	protected Label getLblBlocks() {
+		return lblBlocks;
+	}
+
+	
+	protected Label getLblSpecifyRowFactor() {
+		return lblSpecifyRowFactor;
+	}
+
+	
+	protected Label getLblSpecifyColumnFactor() {
+		return lblSpecifyColumnFactor;
+	}
+
+	
+	protected ComboBox getSelReplicates() {
+		return selReplicates;
+	}
+
+	
+	protected ComboBox getSelBlocks() {
+		return selBlocks;
+	}
+
+	
+	protected ComboBox getSelRowFactor() {
+		return selRowFactor;
+	}
+
+	
+	protected ComboBox getSelColumnFactor() {
+		return selColumnFactor;
+	}
+
+	
+	protected ComboBox getSelDesignType() {
+		return selDesignType;
+	}
+
+	
+	protected void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+
+	
+	protected void setStudyDataManager(StudyDataManager studyDataManager) {
+		this.studyDataManager = studyDataManager;
+	}
 }

@@ -207,7 +207,7 @@ public class SingleSiteAnalysisEnvironmentsComponent extends VerticalLayout impl
 		this.footerCheckBox.setValue(false);
 	}
 	
-	private void populateChoicesForEnvironmentFactor() {
+	void populateChoicesForEnvironmentFactor() {
 
 		if (this.ssaDetailsPanel.getTrialVariablesInDataset() == null) {
 			return;
@@ -259,7 +259,7 @@ public class SingleSiteAnalysisEnvironmentsComponent extends VerticalLayout impl
 		final String trialInstanceFactorName = this.studyDataManager
 				.getLocalNameByStandardVariableId(this.ssaDetailsPanel.getBreedingViewInput().getDatasetId(), TermId.TRIAL_INSTANCE_FACTOR.getId());
 
-		this.populateEnvironmentSelectionTableWithTrialEnvironmets(this.tblEnvironmentSelection, trialInstanceFactorName,
+		this.populateEnvironmentSelectionTableWithTrialEnvironments(this.tblEnvironmentSelection, trialInstanceFactorName,
 				selectedEnvironmentFactorName);
 		this.adjustEnvironmentSelectionTable(this.tblEnvironmentSelection, trialInstanceFactorName, selectedEnvironmentFactorName);
 
@@ -288,7 +288,7 @@ public class SingleSiteAnalysisEnvironmentsComponent extends VerticalLayout impl
 
 	}
 	
-	protected void populateEnvironmentSelectionTableWithTrialEnvironmets(final Table table, final String trialInstanceFactorName,
+	protected void populateEnvironmentSelectionTableWithTrialEnvironments(final Table table, final String trialInstanceFactorName,
 			final String selectedEnvironmentFactorName) {
 		final BeanItemContainer<SeaEnvironmentModel> container = new BeanItemContainer<>(SeaEnvironmentModel.class);
 		final int datasetId = this.ssaDetailsPanel.getBreedingViewInput().getDatasetId();
@@ -384,5 +384,35 @@ public class SingleSiteAnalysisEnvironmentsComponent extends VerticalLayout impl
 	
 	public Property.ValueChangeListener getFooterCheckBoxListener() {
 		return footerCheckBoxListener;
+	}
+
+	
+	
+	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+
+	
+	public void setStudyDataManager(StudyDataManager studyDataManager) {
+		this.studyDataManager = studyDataManager;
+	}
+
+	public void setSelEnvFactor(Select selEnvFactor) {
+		this.selEnvFactor = selEnvFactor;
+	}
+
+	
+	
+	public Map<String, Boolean> getEnvironmentsCheckboxState() {
+		return environmentsCheckboxState;
+	}
+
+	public void setEnvironmentsCheckboxState(Map<String, Boolean> environmentsCheckboxState) {
+		this.environmentsCheckboxState = environmentsCheckboxState;
+	}
+
+	
+	protected Select getSelEnvFactor() {
+		return selEnvFactor;
 	}
 }

@@ -34,7 +34,6 @@ public class SSAEnvironmentsFooterCheckboxListener implements ValueChangeListene
 		final boolean selected = (Boolean) event.getProperty().getValue();
 		if (!selected) {
 			this.disableEnvironmentEntries();
-			this.ssaEnvironmentsComponent.getTblEnvironmentSelection().refreshRowCache();
 			return;
 		}
 
