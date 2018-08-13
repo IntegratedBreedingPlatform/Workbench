@@ -32,7 +32,6 @@ import org.generationcp.ibpworkbench.ui.project.create.AddProgramView;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
 import org.generationcp.ibpworkbench.ui.window.ChangeCredentialsWindow;
 import org.generationcp.ibpworkbench.ui.window.ChangePasswordWindow;
-import org.generationcp.ibpworkbench.ui.window.EmbeddedWindow;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -72,6 +71,8 @@ import com.vaadin.ui.themes.Reindeer;
 @Configurable
 public class WorkbenchMainView extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
 
+	private static final String BLANK = "_blank";
+
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchMainView.class);
 
 	private static final int SIDEBAR_OPEN_POSITION = 240;
@@ -105,6 +106,13 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	@Value("${workbench.is.add.program.enabled}")
 	private String isAddProgramEnabled;
+	
+	@Value("${ask.for.support.url}")
+	private String askForSupportURL;
+	
+	@Value("${about.bms.url}")
+	private String aboutBmsURL;
+	
 
 	private Label actionsTitle;
 
@@ -276,14 +284,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 				@Override
 				public void buttonClick(final ClickEvent clickEvent) {
-					final EmbeddedWindow askSupportWindow = new EmbeddedWindow();
-					askSupportWindow.setDebugId("askSupportWindow");
-					askSupportWindow.setWidth("60%");
-					askSupportWindow.setHeight("80%");
-					askSupportWindow.setCaption("Ask Support/Feedback");
-					askSupportWindow.showContent("/ibpworkbench/controller/support/");
-
-					WorkbenchMainView.this.addWindow(askSupportWindow);
+					WorkbenchMainView.this.open(new ExternalResource(askForSupportURL), BLANK);
 				}
 			});
 		}
@@ -386,7 +387,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 			@Override
 			public void buttonClick(final ClickEvent event) {
-				thisWindow.addWindow(new HelpWindow(WorkbenchMainView.this.tomcatUtil));
+				thisWindow.open(new ExternalResource(aboutBmsURL), BLANK);
 			}
 		});
 
