@@ -2,11 +2,8 @@
 package org.generationcp.ibpworkbench.actions;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.generationcp.commons.exceptions.BreedingViewImportException;
@@ -20,13 +17,11 @@ import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.BMSOutpu
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.BMSOutputParser.ZipFileInvalidContentException;
 import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow;
 import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow.CustomFileFactory;
-import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.domain.dms.TrialEnvironment;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
 import org.generationcp.middleware.domain.dms.Variable;
-import org.generationcp.middleware.domain.dms.VariableTypeList;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
@@ -48,8 +43,6 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 	private static final long serialVersionUID = 1L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(UploadBreedingViewOutputAction.class);
-
-	private static final String REGEX_VALID_BREEDING_VIEW_CHARACTERS = "[^a-zA-Z0-9-_%']+";
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -106,12 +99,12 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 								@Override
 								public void run() {
-									UploadBreedingViewOutputAction.this.processTheUploadedFile(event, studyId, project);
+									UploadBreedingViewOutputAction.this.processTheUploadedFile(studyId, project);
 								}
 
 							});
 				} else {
-					this.processTheUploadedFile(event, studyId, project);
+					this.processTheUploadedFile(studyId, project);
 				}
 
 			} catch (final RuntimeException e) {
@@ -217,7 +210,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 	}
 
-	public void processTheUploadedFile(final ClickEvent event, final int studyId, final Project project) {
+	public void processTheUploadedFile(final int studyId, final Project project) {
 
 		final TransactionTemplate transactionTemplate = new TransactionTemplate(this.transactionManager);
 		transactionTemplate.execute(new TransactionCallbackWithoutResult() {

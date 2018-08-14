@@ -259,7 +259,7 @@ public class UploadBreedingViewOutputActionTest {
 		Mockito.when(this.bmsOutputParser.getBmsOutputInformation()).thenReturn(this.createBmsOutputInformation());
 
 		Assert.assertEquals(this.fileUploadBreedingViewOutputWindow, this.uploadBreedingViewOutputAction.getWindow());
-		this.uploadBreedingViewOutputAction.processTheUploadedFile(this.event, UploadBreedingViewOutputActionTest.TEST_STUDY_ID,
+		this.uploadBreedingViewOutputAction.processTheUploadedFile(UploadBreedingViewOutputActionTest.TEST_STUDY_ID,
 				this.fileUploadBreedingViewOutputWindow.getProject());
 
 		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importMeansData(Matchers.any(File.class), Matchers.anyInt());
@@ -285,7 +285,7 @@ public class UploadBreedingViewOutputActionTest {
 		Mockito.doThrow(new BreedingViewImportException()).when(this.breedingViewImportService)
 				.importMeansData(Matchers.any(File.class), Matchers.anyInt());
 
-		this.uploadBreedingViewOutputAction.processTheUploadedFile(this.event, UploadBreedingViewOutputActionTest.TEST_STUDY_ID,
+		this.uploadBreedingViewOutputAction.processTheUploadedFile(UploadBreedingViewOutputActionTest.TEST_STUDY_ID,
 				this.fileUploadBreedingViewOutputWindow.getProject());
 
 		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importMeansData(Matchers.any(File.class), Matchers.anyInt());
