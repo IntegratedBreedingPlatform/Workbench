@@ -241,7 +241,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 					UploadBreedingViewOutputAction.this.bmsOutputParser.deleteUploadedZipFile();
 
-					event.getComponent().getWindow().getParent().removeWindow(UploadBreedingViewOutputAction.this.window);
+					UploadBreedingViewOutputAction.this.window.getParent().removeWindow(UploadBreedingViewOutputAction.this.window);
 
 				} catch (final BreedingViewImportException e) {
 
