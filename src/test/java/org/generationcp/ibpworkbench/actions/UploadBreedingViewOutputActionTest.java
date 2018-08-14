@@ -114,6 +114,7 @@ public class UploadBreedingViewOutputActionTest {
 
 	@Before
 	public void setUp() {
+		this.uploadBreedingViewOutputAction.setWindow(this.fileUploadBreedingViewOutputWindow);
 		
 		final Project project = this.createProject();
 
@@ -209,11 +210,11 @@ public class UploadBreedingViewOutputActionTest {
 				Matchers.anyInt());
 		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importOutlierData(Matchers.any(File.class), Matchers.anyInt());
 
+		Mockito.verify(this.bmsOutputParser).deleteUploadedZipFile();
 		Mockito.verify(this.bmsOutputParser).deleteTemporaryFiles();
 
 		Mockito.verify(this.messageSource).getMessage(Message.BV_UPLOAD_SUCCESSFUL_HEADER);
-		Mockito.verify(this.parentWindow).removeWindow(Matchers.any(Window.class));
-
+		Mockito.verify(this.window).removeWindow(this.fileUploadBreedingViewOutputWindow);
 	}
 
 	@Test
@@ -257,6 +258,7 @@ public class UploadBreedingViewOutputActionTest {
 		Mockito.when(this.bmsOutputParser.getOutlierFile()).thenReturn(null);
 		Mockito.when(this.bmsOutputParser.getBmsOutputInformation()).thenReturn(this.createBmsOutputInformation());
 
+		Assert.assertEquals(this.fileUploadBreedingViewOutputWindow, this.uploadBreedingViewOutputAction.getWindow());
 		this.uploadBreedingViewOutputAction.processTheUploadedFile(this.event, UploadBreedingViewOutputActionTest.TEST_STUDY_ID,
 				this.fileUploadBreedingViewOutputWindow.getProject());
 
@@ -265,8 +267,11 @@ public class UploadBreedingViewOutputActionTest {
 				Matchers.anyInt());
 		Mockito.verify(this.breedingViewImportService, Mockito.times(0)).importOutlierData(Matchers.any(File.class), Matchers.anyInt());
 
+		Mockito.verify(this.bmsOutputParser).deleteUploadedZipFile();
+		Mockito.verify(this.bmsOutputParser).deleteTemporaryFiles();
+		
 		Mockito.verify(this.messageSource).getMessage(Message.BV_UPLOAD_SUCCESSFUL_HEADER);
-		Mockito.verify(this.parentWindow).removeWindow(Matchers.any(Window.class));
+		Mockito.verify(this.window).removeWindow(this.fileUploadBreedingViewOutputWindow);
 	}
 
 	@Test(expected = RuntimeException.class)

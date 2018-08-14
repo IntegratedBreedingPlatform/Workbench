@@ -260,6 +260,11 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 	}
 
+	
+	public FileUploadBreedingViewOutputWindow getWindow() {
+		return window;
+	}
+
 	public void setWindow(FileUploadBreedingViewOutputWindow window) {
 		this.window = window;
 	}
