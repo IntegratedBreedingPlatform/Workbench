@@ -15,7 +15,6 @@ import java.util.Objects;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
-import org.generationcp.commons.help.document.HelpWindow;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.tomcat.util.TomcatUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -23,6 +22,8 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.actions.AskForSupportAction;
+import org.generationcp.ibpworkbench.actions.HelpButtonClickAction;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.actions.SignoutAction;
@@ -271,7 +272,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	}
 
-	private Button getAskSupportBtn() {
+	Button getAskSupportBtn() {
 		if (Objects.equals(this.askSupportBtn, null)) {
 			this.askSupportBtn = new Button("<span class='bms-header-btn2'><span class='fa fa-comments ico'></span></span>");
 			this.askSupportBtn.setDebugId("askSupportBtn");
@@ -280,13 +281,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 			this.askSupportBtn.setSizeUndefined();
 			this.askSupportBtn.setDebugId("support-icon");
 			this.askSupportBtn.setDescription("Ask support/Feedback");
-			this.askSupportBtn.addListener(new Button.ClickListener() {
-
-				@Override
-				public void buttonClick(final ClickEvent clickEvent) {
-					WorkbenchMainView.this.open(new ExternalResource(askForSupportURL), BLANK);
-				}
-			});
+			this.askSupportBtn.addListener(new AskForSupportAction(this, askForSupportURL));
 		}
 
 		return this.askSupportBtn;
@@ -383,13 +378,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 			}
 		});
 
-		this.helpButton.addListener(new Button.ClickListener() {
-
-			@Override
-			public void buttonClick(final ClickEvent event) {
-				thisWindow.open(new ExternalResource(aboutBmsURL), BLANK);
-			}
-		});
+		this.helpButton.addListener(new HelpButtonClickAction(this, aboutBmsURL));
 
 		this.addListener(new CloseListener() {
 
@@ -728,5 +717,15 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	public Button getHelpButton() {
 		return helpButton;
+	}
+
+	
+	protected void setAskForSupportURL(String askForSupportURL) {
+		this.askForSupportURL = askForSupportURL;
+	}
+
+	
+	protected void setAboutBmsURL(String aboutBmsURL) {
+		this.aboutBmsURL = aboutBmsURL;
 	}
 }
