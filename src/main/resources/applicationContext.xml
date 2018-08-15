@@ -169,8 +169,8 @@
 		<aop:scoped-proxy />
 	</bean>
 	
-	<bean id="ontologyDaoFactory" factory-bean="managerFactory"
-		factory-method="getOntologyDaoFactory" scope="request">
+	<bean id="daoFactory" factory-bean="managerFactory"
+		factory-method="getDaoFactory" scope="request">
 		<aop:scoped-proxy />
 	</bean>
 	
