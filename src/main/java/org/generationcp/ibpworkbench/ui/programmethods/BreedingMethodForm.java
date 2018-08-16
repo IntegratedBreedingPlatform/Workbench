@@ -74,13 +74,13 @@ public class BreedingMethodForm extends Form {
 		this.setItemDataSource(new BeanItem<MethodView>(this.modelBean));
 
 		this.setComponentError(null);
-		if (this.modelBean.getMid() != null) {
-			this.setFormFieldFactory(new BreedingMethodFormFieldFactory(this.classMap, true, this.modelBean.getMid()));
-		} else {
-			this.setFormFieldFactory(new BreedingMethodFormFieldFactory(this.classMap, false));
-		}
 
-		this.setVisibleItemProperties(Arrays.asList(new String[] {"mname", "mcode", "mdesc", "mtype", "mgrp", "geneq"}));
+		final BreedingMethodFormFieldFactory factory = new BreedingMethodFormFieldFactory(this.classMap);
+		factory.setMethodId(this.modelBean.getMid());
+		factory.setEditMode(this.modelBean.getMid() != null);
+		this.setFormFieldFactory(factory);
+
+ 		this.setVisibleItemProperties(Arrays.asList(new String[] {"mname", "mcode", "mdesc", "mtype", "mgrp", "geneq"}));
 
 		this.setWriteThrough(false);
 		this.setInvalidCommitted(false);

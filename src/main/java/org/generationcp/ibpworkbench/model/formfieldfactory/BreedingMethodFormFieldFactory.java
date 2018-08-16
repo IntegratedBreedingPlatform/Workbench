@@ -71,17 +71,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 		this.initFields(classMap);
 	}
 
-	public BreedingMethodFormFieldFactory(final Map<Integer, String> classMap, final Boolean isEditMode) {
-		this.isEditMode = isEditMode;
-		this.initFields(classMap);
-	}
-
-	public BreedingMethodFormFieldFactory(final Map<Integer, String> classMap, final boolean isEditMode, final Integer methodId) {
-		this(classMap, isEditMode);
-		this.setMethodId(methodId);
-	}
-
-	private void setMethodId(final Integer mid) {
+	public void setMethodId(final Integer mid) {
 		this.methodId = mid;
 	}
 
