@@ -50,14 +50,14 @@ public class BreedingMethodForm extends Form {
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	public BreedingMethodForm(Map<Integer, String> classMap) {
+	public BreedingMethodForm(final Map<Integer, String> classMap) {
 		this.classMap = classMap;
 		this.modelBean = new MethodView();
 		this.initializeComponents();
 
 	}
 
-	public BreedingMethodForm(Map<Integer, String> classMap, MethodView methodView) {
+	public BreedingMethodForm(final Map<Integer, String> classMap, final MethodView methodView) {
 		this.classMap = classMap;
 		this.modelBean = methodView;
 		this.initializeComponents();
@@ -75,7 +75,7 @@ public class BreedingMethodForm extends Form {
 
 		this.setComponentError(null);
 		if (this.modelBean.getMid() != null) {
-			this.setFormFieldFactory(new BreedingMethodFormFieldFactory(this.classMap, true));
+			this.setFormFieldFactory(new BreedingMethodFormFieldFactory(this.classMap, true, this.modelBean.getMid()));
 		} else {
 			this.setFormFieldFactory(new BreedingMethodFormFieldFactory(this.classMap, false));
 		}
@@ -89,7 +89,7 @@ public class BreedingMethodForm extends Form {
 	}
 
 	@Override
-	protected void attachField(Object propertyId, Field field) {
+	protected void attachField(final Object propertyId, final Field field) {
 		field.setStyleName("hide-caption");
 		field.setCaption(null);
 		if ("mname".equals(propertyId)) {
@@ -138,13 +138,13 @@ public class BreedingMethodForm extends Form {
 
 	}
 
-	private Label createLabel(String caption) {
+	private Label createLabel(final String caption) {
 		return this.createLabel(caption, false);
 	}
 
-	private Label createLabel(String caption, boolean required) {
+	private Label createLabel(final String caption, final boolean required) {
 
-		Label label = new Label();
+		final Label label = new Label();
 		label.setDebugId("label");
 		label.setContentMode(Label.CONTENT_XHTML);
 		label.setWidth("220px");
