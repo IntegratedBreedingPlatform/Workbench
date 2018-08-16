@@ -258,7 +258,7 @@
 	</bean>
 
 	<bean id="atomikosUserTransaction" class="com.atomikos.icatch.jta.J2eeUserTransaction">
-		<property name="transactionTimeout" value="${workbench.atomikos.transaction.timeout}" />
+		<property name="transactionTimeout" value="${atomikos.transaction.timeout}" />
 	</bean>
 
 	<bean id="transactionManager"
