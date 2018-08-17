@@ -48,6 +48,7 @@ public class BreedingMethodFormFieldFactoryTest {
 		this.breedingMethodFormFieldFactory.setGermplasmDataManager(this.germplasmDataManager);
 		this.breedingMethodFormFieldFactory.setMethodName(this.methodNameField);
 		this.breedingMethodFormFieldFactory.setMethodCode(this.methodCodeField);
+		this.breedingMethodFormFieldFactory.setMethodId(1234);
 
 		final Project project = new Project();
 		project.setUniqueID(PROGRAM_UUID);
