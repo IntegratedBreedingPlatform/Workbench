@@ -89,7 +89,7 @@ describe('Component Tests', () => {
         it('should not proceed with import if there is server validation error', () => {
 
             const errorResponse = new HttpErrorResponse({
-                status: 409,
+                status: 400,
                 error: {
                     errors: [
                         {
