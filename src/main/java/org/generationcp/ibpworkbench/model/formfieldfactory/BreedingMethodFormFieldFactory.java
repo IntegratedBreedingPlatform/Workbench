@@ -65,14 +65,14 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 
 	@Resource
 	private ContextUtil contextUtil;
+	private Integer methodId;
 
 	public BreedingMethodFormFieldFactory(final Map<Integer, String> classMap) {
 		this.initFields(classMap);
 	}
 
-	public BreedingMethodFormFieldFactory(final Map<Integer, String> classMap, final Boolean isEditMode) {
-		this.isEditMode = isEditMode;
-		this.initFields(classMap);
+	public void setMethodId(final Integer mid) {
+		this.methodId = mid;
 	}
 
 	private void initFields(final Map<Integer, String> classMap) {
@@ -235,8 +235,8 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 
 			Method method = null;
 			try {
-				final Project currentProject = contextUtil.getProjectInContext();
-				method = germplasmDataManager.getMethodByName(value.toString(), currentProject.getUniqueID());
+				final Project currentProject = BreedingMethodFormFieldFactory.this.contextUtil.getProjectInContext();
+				method = BreedingMethodFormFieldFactory.this.germplasmDataManager.getMethodByName(value.toString(), currentProject.getUniqueID());
 			} catch (final MiddlewareQueryException e) {
 				BreedingMethodFormFieldFactory.LOG.error(e.getMessage(), e);
 			}
@@ -244,7 +244,9 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 			// If Method ID is not null, then Method already exists
 			if (method != null && method.getMid() != null) {
 
-				if (BreedingMethodFormFieldFactory.this.isEditMode && BreedingMethodFormFieldFactory.this.methodName.isModified()) {
+				if (BreedingMethodFormFieldFactory.this.isEditMode && BreedingMethodFormFieldFactory.this.methodName.isModified()
+					&& BreedingMethodFormFieldFactory.this.methodId != null
+					&& !BreedingMethodFormFieldFactory.this.methodId.equals(method.getMid())) {
 					return false;
 				} else if (!BreedingMethodFormFieldFactory.this.isEditMode) {
 					return false;
@@ -285,8 +287,8 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 
 			Method method = null;
 			try {
-				final Project currentProject = contextUtil.getProjectInContext();
-				method = germplasmDataManager.getMethodByCode(value.toString(), currentProject.getUniqueID());
+				final Project currentProject = BreedingMethodFormFieldFactory.this.contextUtil.getProjectInContext();
+				method = BreedingMethodFormFieldFactory.this.germplasmDataManager.getMethodByCode(value.toString(), currentProject.getUniqueID());
 			} catch (final MiddlewareQueryException e) {
 				BreedingMethodFormFieldFactory.LOG.error(e.getMessage(), e);
 			}
@@ -315,7 +317,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 	}
 
 	public void setEditMode(final Boolean editMode) {
-		isEditMode = editMode;
+		this.isEditMode = editMode;
 	}
 
 	public void setMethodName(final Field methodName) {
