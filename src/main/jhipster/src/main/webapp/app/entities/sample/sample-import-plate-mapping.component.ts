@@ -46,9 +46,8 @@ export class SampleImportPlateMappingComponent {
                 this.eventManager.broadcast({name: 'sampleListModification', content: ''});
                 this.alertService.success('bmsjHipsterApp.sample.importPlate.success');
             }, (response) => {
-                if (response.status === 400) {
-                    this.alertService.error('bmsjHipsterApp.sample.error', { param : response.error.errors[0].message});
-                }
+                const errorMessage = response.error.errors[0].message ? response.error.errors[0].message : 'Something went wrong, please try again';
+                this.alertService.error('bmsjHipsterApp.sample.error', {param: errorMessage});
             });
 
         }
