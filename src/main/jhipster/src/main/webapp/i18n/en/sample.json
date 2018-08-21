@@ -36,7 +36,8 @@
                 "headerNotSpecified": "Please specify the headers.",
                 "headersNotMapped": "One or more of the file headers is not mapped. Please finish the mapping and try again.",
                 "recordHasNoSampleId": "One or more of the records do not include a Sample ID. Please check the file and try again.",
-                "success": "Sample Plate Information has been imported successfully."
+                "success": "Sample Plate Information has been imported successfully.",
+                "error":"Something went wrong, please try again."
             },
             "error": "{{ param }}"
         }
