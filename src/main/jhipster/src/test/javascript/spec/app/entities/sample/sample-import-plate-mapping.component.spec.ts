@@ -112,6 +112,32 @@ describe('Component Tests', () => {
 
         });
 
+        it('should not proceed with import if there is Internal Server Error', () => {
+
+            const errorResponse = new HttpErrorResponse({
+                status: 500,
+                error: {
+                    errors: [
+                        {
+                            message: 'errorMessage'
+                        }
+                    ]
+                }
+            });
+
+            spyOn(comp, 'validate').and.returnValue(true);
+            spyOn(comp, 'close').and.callThrough();
+            spyOn(eventManager, 'broadcast').and.callThrough();
+            spyOn(sampleListService, 'importPlateInfo').and.returnValue(Observable.throw(errorResponse));
+
+            comp.proceed();
+
+            expect(alertService.error).toHaveBeenCalledWith('bmsjHipsterApp.sample.error', { param : errorResponse.error.errors[0].message});
+            expect(comp.close).toHaveBeenCalledTimes(0);
+            expect(eventManager.broadcast).toHaveBeenCalledTimes(0);
+
+        });
+
         it('should close the modal window', () => {
 
             spyOn(comp, 'reset').and.callThrough();
