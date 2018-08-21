@@ -46,8 +46,11 @@ export class SampleImportPlateMappingComponent {
                 this.eventManager.broadcast({name: 'sampleListModification', content: ''});
                 this.alertService.success('bmsjHipsterApp.sample.importPlate.success');
             }, (response) => {
-                const errorMessage = response.error.errors[0].message ? response.error.errors[0].message : 'Something went wrong, please try again';
-                this.alertService.error('bmsjHipsterApp.sample.error', {param: errorMessage});
+                if (response.error.errors[0].message) {
+                    this.alertService.error('bmsjHipsterApp.sample.error', {param: response.error.errors[0].message});
+                } else {
+                    this.alertService.error('bmsjHipsterApp.sample.importPlate.error');
+                }
             });
 
         }
