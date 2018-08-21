@@ -51,6 +51,7 @@ describe('Component Tests', () => {
             sampleList.id = 1;
 
             spyOn(modalService, 'close').and.callThrough();
+            spyOn(modalService, 'open').and.callThrough();
             spyOn(alertService, 'error').and.callThrough();
             spyOn(alertService, 'success').and.callThrough();
             spyOn(sampelContext, 'getActiveList').and.returnValue(sampleList);
@@ -180,6 +181,20 @@ describe('Component Tests', () => {
             return data;
         }
 
+        it('should back the previous modal window', () => {
+
+            spyOn(comp, 'reset').and.callThrough();
+            spyOn(comp.onBack, 'emit').and.callThrough();
+
+            comp.back();
+
+            expect(modalService.close).toHaveBeenCalledWith(comp.modalId);
+            expect(modalService.open).toHaveBeenCalledWith('import-plate-modal');
+
+            expect(comp.reset).toHaveBeenCalled();
+            expect(comp.onBack.emit).toHaveBeenCalled();
+
+        });
     });
 
 });
