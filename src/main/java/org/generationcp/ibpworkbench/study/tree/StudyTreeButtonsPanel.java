@@ -86,18 +86,25 @@ public class StudyTreeButtonsPanel extends HorizontalLayout implements Initializ
 
 			@Override
 			public void buttonClick(final Button.ClickEvent event) {
-				final Object selectedStudyTreeNodeId = StudyTreeButtonsPanel.this.studyTree.getValue();
-				final int studyId = Integer.valueOf(selectedStudyTreeNodeId.toString());
-				final Study study = StudyTreeButtonsPanel.this.studyDataManager.getStudy(studyId);
-				if (null == study.getProgramUUID()) {
-					if (StudyTreeButtonsPanel.this.getWindow() != null) {
-						MessageNotifier.showError(StudyTreeButtonsPanel.this.getWindow(),
+				if (StudyTreeButtonsPanel.this.studyTree != null && StudyTreeButtonsPanel.this.studyTree.getValue() != null) {
+					final Object selectedStudyTreeNodeId = StudyTreeButtonsPanel.this.studyTree.getValue();
+					final int studyId = Integer.valueOf(selectedStudyTreeNodeId.toString());
+					final Study study = StudyTreeButtonsPanel.this.studyDataManager.getStudy(studyId);
+					if (null == study.getProgramUUID()) {
+						if (StudyTreeButtonsPanel.this.getWindow() != null) {
+							MessageNotifier.showError(StudyTreeButtonsPanel.this.getWindow(),
 								StudyTreeButtonsPanel.this.messageSource.getMessage(Message.ERROR), "Program templates cannot be renamed.");
+						}
+					} else {
+						final String name = StudyTreeButtonsPanel.this.studyTree.getItemCaption(selectedStudyTreeNodeId);
+						StudyTreeButtonsPanel.this.browseTreeComponent.getParentComponent().getWindow()
+							.addWindow(new StudyTreeRenameItemWindow(
+								studyId, name, StudyTreeButtonsPanel.this.studyTree, StudyTreeButtonsPanel.this.studyTabSheet));
 					}
-				} else {
-					final String name = StudyTreeButtonsPanel.this.studyTree.getItemCaption(selectedStudyTreeNodeId);
-					StudyTreeButtonsPanel.this.browseTreeComponent.getParentComponent().getWindow().addWindow(new StudyTreeRenameItemWindow(
-							studyId, name, StudyTreeButtonsPanel.this.studyTree, StudyTreeButtonsPanel.this.studyTabSheet));
+				}
+				else {
+					MessageNotifier.showError(StudyTreeButtonsPanel.this.getWindow(),
+						StudyTreeButtonsPanel.this.messageSource.getMessage(Message.ERROR), "Please choose a Program folder.");
 				}
 			}
 		});
@@ -120,10 +127,16 @@ public class StudyTreeButtonsPanel extends HorizontalLayout implements Initializ
 
 			@Override
 			public void buttonClick(final Button.ClickEvent event) {
-				final int studyId = Integer.valueOf(StudyTreeButtonsPanel.this.studyTree.getValue().toString());
-				final StudyTreeDeleteItemHandler deleteHandler = new StudyTreeDeleteItemHandler(StudyTreeButtonsPanel.this.studyTree,
+				if (StudyTreeButtonsPanel.this.studyTree != null && StudyTreeButtonsPanel.this.studyTree.getValue() != null) {
+					final int studyId = Integer.valueOf(StudyTreeButtonsPanel.this.studyTree.getValue().toString());
+					final StudyTreeDeleteItemHandler deleteHandler = new StudyTreeDeleteItemHandler(StudyTreeButtonsPanel.this.studyTree,
 						StudyTreeButtonsPanel.this, StudyTreeButtonsPanel.this.browseTreeComponent.getParentComponent().getWindow());
-				deleteHandler.showConfirmDeletionDialog(studyId);
+					deleteHandler.showConfirmDeletionDialog(studyId);
+				}
+				else {
+					MessageNotifier.showError(StudyTreeButtonsPanel.this.getWindow(),
+						StudyTreeButtonsPanel.this.messageSource.getMessage(Message.ERROR), "Please choose a Program folder.");
+				}
 			}
 		});
 
