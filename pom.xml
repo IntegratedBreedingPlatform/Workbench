@@ -5,7 +5,7 @@
 	<artifactId>ibpworkbench</artifactId>
 	<packaging>war</packaging>
 	<name>Workbench</name>
-        <version>7.1</version>
+        <version>9.4</version>
 
 	<properties>
 		<vaadin.version>6.8.13</vaadin.version>
@@ -15,6 +15,9 @@
 		<spring.version>3.2.11.RELEASE</spring.version>
 		<spring.security.version>3.2.5.RELEASE</spring.security.version>
 		<modelmapper.version>0.7.3</modelmapper.version>
+		<node.version>v6.9.1</node.version>
+		<yarn.version>v1.3.2</yarn.version>
+		<frontend-maven-plugin.version>1.6</frontend-maven-plugin.version>
 		<envConfig>${user.name}</envConfig>
 	</properties>
 
@@ -611,31 +614,56 @@
 			<plugin>
 				<groupId>com.github.eirslett</groupId>
 				<artifactId>frontend-maven-plugin</artifactId>
-				<version>1.4</version>
+				<version>${frontend-maven-plugin.version}</version>
 
-				<configuration>
-					<workingDirectory>src/main/web</workingDirectory>
-				</configuration>
+				<executions>
 
-		        <executions>
-		        	<execution>
-					    <id>install node and npm</id>
-					    <goals>
-					        <goal>install-node-and-npm</goal>
-					    </goals>
-					    <configuration>
-					        <nodeVersion>v6.9.1</nodeVersion>
-					        <npmVersion>4.0.2</npmVersion>
-
-					    </configuration>
+					<execution>
+						<id>install node and yarn</id>
+						<goals>
+							<goal>install-node-and-yarn</goal>
+						</goals>
+						<configuration>
+							<workingDirectory>src/main/web</workingDirectory>
+							<nodeVersion>${node.version}</nodeVersion>
+							<yarnVersion>${yarn.version}</yarnVersion>
+						</configuration>
 					</execution>
 
 					<execution>
-						<id>npm install</id>
+						<id>install node and yarn jhipster</id>
 						<goals>
-							<goal>npm</goal>
+							<goal>install-node-and-yarn</goal>
 						</goals>
+						<configuration>
+							<workingDirectory>src/main/jhipster</workingDirectory>
+							<nodeVersion>${node.version}</nodeVersion>
+							<yarnVersion>${yarn.version}</yarnVersion>
+						</configuration>
 					</execution>
+
+					<execution>
+						<id>yarn install</id>
+						<goals>
+							<goal>yarn</goal>
+						</goals>
+						<configuration>
+							<workingDirectory>src/main/web</workingDirectory>
+							<arguments>install</arguments>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>yarn install jhipster</id>
+						<goals>
+							<goal>yarn</goal>
+						</goals>
+						<configuration>
+							<workingDirectory>src/main/jhipster</workingDirectory>
+							<arguments>install</arguments>
+						</configuration>
+					</execution>
+
 					<execution>
 						<id>gulp clean</id>
 						<goals>
@@ -643,9 +671,11 @@
 						</goals>
 
 						<configuration>
+							<workingDirectory>src/main/web</workingDirectory>
 							<arguments>clean</arguments>
 						</configuration>
 					</execution>
+
 					<execution>
 						<id>gulp build</id>
 						<goals>
@@ -653,29 +683,59 @@
 						</goals>
 
 						<configuration>
+							<workingDirectory>src/main/web</workingDirectory>
 							<!-- When the envConfig is set to 'release' then the JS and CSS files are minified -->
 							<arguments>build</arguments>
 							<arguments>--${envConfig}</arguments>
 						</configuration>
 					</execution>
+
+					<execution>
+						<id>jhipster build</id>
+						<goals>
+							<goal>yarn</goal>
+						</goals>
+						<phase>generate-resources</phase>
+						<configuration>
+							<workingDirectory>src/main/jhipster</workingDirectory>
+							<arguments>run webpack:prod</arguments>
+						</configuration>
+					</execution>
+
 					<execution>
 						<id>javascript tests</id>
 						<goals>
 							<goal>karma</goal>
 						</goals>
 						<configuration>
+							<workingDirectory>src/main/web</workingDirectory>
 							<karmaConfPath>karma.conf.ci.js</karmaConfPath>
 						</configuration>
 					</execution>
+
 					<execution>
 						<id>javascript tests angular 2</id>
 						<goals>
 							<goal>karma</goal>
 						</goals>
 						<configuration>
+							<workingDirectory>src/main/web</workingDirectory>
 							<karmaConfPath>karma.conf-ng2.ci.js</karmaConfPath>
 						</configuration>
 					</execution>
+
+					<execution>
+						<id>jhipster test</id>
+						<goals>
+							<goal>yarn</goal>
+						</goals>
+						<phase>test</phase>
+						<configuration>
+							<workingDirectory>src/main/jhipster</workingDirectory>
+							<arguments>run webpack:test</arguments>
+						</configuration>
+					</execution>
+
 				</executions>
 			</plugin>
 			

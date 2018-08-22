@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -13,25 +13,31 @@ import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
 import org.generationcp.commons.util.BreedingViewUtil;
+import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.ibpworkbench.util.bean.MultiSiteParameters;
-import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.Experiment;
 import org.generationcp.middleware.domain.dms.Variable;
+import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
-
-import au.com.bytecode.opencsv.CSVWriter;
+import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
+import au.com.bytecode.opencsv.CSVWriter;
+
+@Configurable
 public class MultiSiteDataExporter {
+
+	protected static final String SUMMARY_STATS = "_SummaryStats";
 
 	private static final Logger LOG = LoggerFactory.getLogger(MultiSiteDataExporter.class);
 
-	/**
-	 * Generates GxE Multi-site analysis XML data, stored in IBWorkflowSystem\workspace\{PROJECT}\breeding_view\input
-	 *
-	 * @return void
-	 */
+	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
+
+	@Autowired
+	private StudyDataManager studyDataManager;
 
 	public void generateXmlFieldBook(final GxeInput gxeInput) {
 		try {
@@ -44,12 +50,12 @@ public class MultiSiteDataExporter {
 	}
 
 	public String exportMeansDatasetToCsv(final String inputFileName, final MultiSiteParameters multiSiteParameters,
-			final DataSet gxeDataset, final List<Experiment> experiments, final String environmentName, final GxeEnvironment gxeEnv,
+			final List<Experiment> experiments, final String environmentName, final GxeEnvironment gxeEnv,
 			final List<Trait> selectedTraits) {
 
-		Project currentProject = multiSiteParameters.getProject();
-		String environmentGroup = multiSiteParameters.getSelectedEnvGroupFactorName();
-		String genotypeName = multiSiteParameters.getSelectedGenotypeFactorName();
+		final Project currentProject = multiSiteParameters.getProject();
+		final String environmentGroup = multiSiteParameters.getSelectedEnvGroupFactorName();
+		final String genotypeName = multiSiteParameters.getSelectedGenotypeFactorName();
 
 		if (currentProject == null) {
 			throw new IllegalArgumentException("current project is null");
@@ -57,11 +63,11 @@ public class MultiSiteDataExporter {
 
 		final List<String[]> tableItems = new ArrayList<String[]>();
 
-		final Map<String, Integer> traitToColNoMap = new Hashtable<String, Integer>();
+		final Map<String, Integer> traitToColNoMap = new HashMap<>();
 
 		int i = 0, j = 0;
 		// create header row
-		final List<String> headerRow = new ArrayList<String>();
+		final List<String> headerRow = new ArrayList<>();
 		// site no && site code insert to columnMap
 		if (environmentName != null && !environmentName.isEmpty()) {
 			traitToColNoMap.put(environmentName, j);
@@ -97,6 +103,10 @@ public class MultiSiteDataExporter {
 			gxeEnvLabels.add(env.getName());
 		}
 
+		final int studyId = multiSiteParameters.getStudy().getId();
+		final boolean isEnvironmentFactorALocationIdVariable = this.studyDataManager.isLocationIdVariable(studyId, environmentName);
+		final Map<String, String> locationNameMap = this.studyDataManager.createInstanceLocationIdToNameMapFromStudy(studyId);
+
 		// create table content
 		for (final Experiment experiment : experiments) {
 			final String[] row = new String[headerRow.size()];
@@ -110,22 +120,36 @@ public class MultiSiteDataExporter {
 				}
 
 				if (var != null && var.getValue() != null) {
-					if (!gxeEnvLabels.contains(var.getValue())) {
+
+					String variableValue = var.getValue();
+
+					if (var.getVariableType().getLocalName().equalsIgnoreCase(environmentName) && isEnvironmentFactorALocationIdVariable) {
+						variableValue = locationNameMap.get(variableValue);
+					}
+
+					if (!gxeEnvLabels.contains(variableValue)) {
 						continue;
 					}
-					row[traitToColNoMap.get(environmentName)] = var.getValue().replace(",", ";");
+
+					row[traitToColNoMap.get(environmentName)] = variableValue.replace(",", ";");
+
 				}
 			}
 
 			for (final Entry<String, Integer> traitMapEntry : traitToColNoMap.entrySet()) {
+
 				Variable var = experiment.getFactors().findByLocalName(traitMapEntry.getKey());
 
 				if (var == null) {
 					var = experiment.getVariates().findByLocalName(traitMapEntry.getKey());
 				}
 
-				if (var != null && var.getValue() != null && !var.getValue().trim().matches("\\-1(\\.0+)?(E|e)(\\+36)")) {
-					row[traitMapEntry.getValue()] = var.getValue().replace(",", ";");
+				if (!(var.getVariableType().getLocalName().equalsIgnoreCase(environmentName) && isEnvironmentFactorALocationIdVariable)) {
+
+					if (var != null && var.getValue() != null && !var.getValue().trim().matches("\\-1(\\.0+)?(E|e)(\\+36)")) {
+						row[traitMapEntry.getValue()] = var.getValue().replace(",", ";");
+					}
+
 				}
 
 			}
@@ -135,33 +159,11 @@ public class MultiSiteDataExporter {
 			i++;
 		}
 
-		try {
-			final String dir =
-					"workspace" + File.separator + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator
-							+ "input";
-
-			MultiSiteDataExporter.LOG.debug("save to" + dir);
-
-			new File(dir).mkdirs();
-
-			final File csvFile = new File(dir + File.separator + inputFileName + ".csv");
-
-			final CSVWriter csvWriter =
-					new CSVWriter(new FileWriter(csvFile), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER, "\r\n");
-			csvWriter.writeAll(tableItems);
-			csvWriter.flush();
-			csvWriter.close();
-
-			return csvFile.getAbsolutePath();
-		} catch (final IOException e) {
-			MultiSiteDataExporter.LOG.warn(e.getMessage(), e);
-			return null;
-		}
+		return this.writeToCsvFile(inputFileName, currentProject, tableItems, false);
 	}
 
-	public String exportTrialDatasetToSummaryStatsCsv(final String inputFileName, final DataSet trialDataSet,
-			final List<Experiment> experiments, final String environmentName, final List<Trait> selectedTraits,
-			final Project currentProject) {
+	public String exportTrialDatasetToSummaryStatsCsv(final int studyId, final String inputFileName, final List<Experiment> experiments,
+			final String environmentName, final List<Trait> selectedTraits, final Project currentProject) {
 
 		if (currentProject == null) {
 			throw new IllegalArgumentException("current project is null");
@@ -178,6 +180,9 @@ public class MultiSiteDataExporter {
 
 		tableItems.add(header);
 
+		final boolean isEnvironmentFactorALocationIdVariable = this.studyDataManager.isLocationIdVariable(studyId, environmentName);
+		final Map<String, String> locationNameMap = this.studyDataManager.createInstanceLocationIdToNameMapFromStudy(studyId);
+
 		for (final Experiment exp : experiments) {
 
 			final Map<String, Variable> map = exp.getVariatesMap();
@@ -185,7 +190,14 @@ public class MultiSiteDataExporter {
 			for (final Trait trait : selectedTraits) {
 
 				final List<String> row = new ArrayList<String>();
-				String envValue = exp.getFactors().findByLocalName(environmentName).getValue();
+
+				final Variable factorVariable = exp.getFactors().findByLocalName(environmentName);
+				String envValue = factorVariable.getValue();
+				if (factorVariable.getVariableType().getLocalName().equalsIgnoreCase(environmentName)
+						&& isEnvironmentFactorALocationIdVariable) {
+					envValue = locationNameMap.get(factorVariable.getValue());
+				}
+
 				String traitValue = BreedingViewUtil.sanitizeName(trait.getName());
 				if (envValue != null) {
 					envValue = envValue.replaceAll(",", ";");
@@ -209,21 +221,16 @@ public class MultiSiteDataExporter {
 						row.add("");
 					}
 				}
-
 				tableItems.add(row.toArray(new String[0]));
 			}
 
 		}
+		return this.writeToCsvFile(inputFileName, currentProject, tableItems, true);
+	}
 
-		final String dir =
-				"workspace" + File.separator + currentProject.getProjectName() + File.separator + "breeding_view" + File.separator
-						+ "input";
-
-		MultiSiteDataExporter.LOG.debug("save to " + dir);
-
-		new File(dir).mkdirs();
-
-		final File csvFile = new File(dir + File.separator + inputFileName + "_SummaryStats.csv");
+	String writeToCsvFile(final String inputFileName, final Project currentProject, final List<String[]> tableItems,
+			final boolean isSummaryStatsFile) {
+		final File csvFile = this.getCsvFileInWorkbenchDirectory(currentProject, inputFileName, isSummaryStatsFile);
 
 		CSVWriter csvWriter = null;
 		try {
@@ -240,4 +247,24 @@ public class MultiSiteDataExporter {
 		}
 	}
 
+	File getCsvFileInWorkbenchDirectory(final Project currentProject, final String inputFileName, final boolean isSummaryStatsFile) {
+
+		this.installationDirectoryUtil.createWorkspaceDirectoriesForProject(currentProject);
+		final String directory = this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(currentProject, ToolName.BREEDING_VIEW);
+		final StringBuilder sb = new StringBuilder(inputFileName);
+		if (isSummaryStatsFile) {
+			sb.append(MultiSiteDataExporter.SUMMARY_STATS);
+		}
+		sb.append(".csv");
+
+		return new File(directory + File.separator + sb.toString());
+	}
+
+	public void setInstallationDirectoryUtil(final InstallationDirectoryUtil installationDirectoryUtil) {
+		this.installationDirectoryUtil = installationDirectoryUtil;
+	}
+
+	public void setStudyDataManager(final StudyDataManager studyDataManager) {
+		this.studyDataManager = studyDataManager;
+	}
 }

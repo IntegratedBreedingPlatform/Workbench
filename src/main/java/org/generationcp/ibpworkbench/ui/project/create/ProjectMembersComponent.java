@@ -16,19 +16,17 @@ import java.util.List;
 import java.util.Set;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -64,23 +62,23 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 	private static final String ROLE = "role";
 	private static final String USERNAME = "userName";
 
-	private TwinTableSelect<User> select;
+	private TwinTableSelect<WorkbenchUser> select;
 
-	private Button btnCancel;
-	private Button btnSave;
+	private Button cancelButton;
+	private Button saveButton;
 	private Component buttonArea;
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
 
 	@Autowired
-	private SessionData sessionData;
-
-	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
 	private PlatformTransactionManager transactionManager;
+
+	@Autowired
+	private ContextUtil contextUtil;
 
 	private AddProgramPresenter presenter;
 
@@ -108,7 +106,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 		this.setSpacing(true);
 		this.setMargin(true);
 
-		this.select = new TwinTableSelect<User>(User.class);
+		this.select = new TwinTableSelect<>(WorkbenchUser.class);
 
 		final Table.ColumnGenerator tableLeftUserName = new Table.ColumnGenerator() {
 
@@ -162,8 +160,10 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 		this.select.getTableLeft().addGeneratedColumn(ProjectMembersComponent.ROLE, tableLeftRole);
 		this.select.getTableRight().addGeneratedColumn(ProjectMembersComponent.ROLE, tableRightRole);
 
-		this.select.setVisibleColumns(new Object[] {"select", ProjectMembersComponent.USERNAME, ProjectMembersComponent.ROLE});
-		this.select.setColumnHeaders(new String[] {"<span class='glyphicon glyphicon-ok'></span>", "User Name", "Role"});
+		this.select.setVisibleColumns(
+				new Object[] { "select", ProjectMembersComponent.USERNAME, ProjectMembersComponent.ROLE });
+		this.select
+				.setColumnHeaders(new String[] { "<span class='glyphicon glyphicon-ok'></span>", "User Name", "Role" });
 
 		this.select.setLeftColumnCaption("Available Users");
 		this.select.setRightColumnCaption("Selected Program Members");
@@ -189,7 +189,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
 			Object selectItem = null;
 			for (final Object itemId : this.select.getTableLeft().getItemIds()) {
-				if (((User) itemId).getUserid().equals(this.sessionData.getUserData().getUserid())) {
+				if (((WorkbenchUser) itemId).getUserid().equals(this.contextUtil.getCurrentWorkbenchUserId())) {
 					selectItem = itemId;
 				}
 			}
@@ -211,7 +211,8 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 
 		final HorizontalLayout titleContainer = new HorizontalLayout();
 		titleContainer.setDebugId("titleContainer");
-		final Label heading = new Label("<span class='bms-members' style='color: #D1B02A; font-size: 23px'></span>&nbsp;Program Members",
+		final Label heading = new Label(
+				"<span class='bms-members' style='color: #D1B02A; font-size: 23px'></span>&nbsp;Program Members",
 				Label.CONTENT_XHTML);
 		final Label headingDesc = new Label(
 				"Choose team members for this program by dragging available users from the list on the left into the Program Members list on the right.");
@@ -235,48 +236,9 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 	}
 
 	protected void initializeActions() {
-		this.btnSave.addListener(new ClickListener() {
+		this.saveButton.addListener(new SaveProjectButtonListener());
 
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void buttonClick(final ClickEvent clickEvent) {
-				final TransactionTemplate transactionTemplate = new TransactionTemplate(ProjectMembersComponent.this.transactionManager);
-				transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-
-					@Override
-					protected void doInTransactionWithoutResult(final TransactionStatus status) {
-						try {
-							final Project newlyCreatedProgram = ProjectMembersComponent.this.presenter.doAddNewProgram();
-							MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
-									ProjectMembersComponent.this.messageSource.getMessage(Message.SUCCESS),
-									newlyCreatedProgram.getProjectName() + " program has been successfully created.");
-
-							ProjectMembersComponent.this.sessionData.setLastOpenedProject(newlyCreatedProgram);
-							ProjectMembersComponent.this.sessionData.setSelectedProject(newlyCreatedProgram);
-
-							ProjectMembersComponent.this.presenter.enableProgramMethodsAndLocationsTab();
-
-						} catch (final Exception e) {
-
-							if ("basic_details_invalid".equals(e.getMessage())) {
-								return;
-							}
-
-							ProjectMembersComponent.LOG
-									.error("Oops there might be serious problem on creating the program, investigate it!", e);
-
-							MessageNotifier.showError(clickEvent.getComponent().getWindow(),
-									ProjectMembersComponent.this.messageSource.getMessage(Message.DATABASE_ERROR),
-									ProjectMembersComponent.this.messageSource.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
-
-						}
-					}
-				});
-			}
-		});
-
-		this.btnCancel.addListener(new ClickListener() {
+		this.cancelButton.addListener(new ClickListener() {
 
 			private static final long serialVersionUID = 1L;
 
@@ -294,48 +256,49 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 		buttonLayout.setSpacing(true);
 		buttonLayout.setMargin(true, false, false, false);
 
-		this.btnCancel = new Button("Reset");
-		this.btnCancel.setDebugId("btnCancel");
-		this.btnSave = new Button("Save");
-		this.btnSave.setDebugId("btnSave");
-		this.btnSave.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+		this.cancelButton = new Button("Reset");
+		this.cancelButton.setDebugId("btnCancel");
+		this.saveButton = new Button("Save");
+		this.saveButton.setDebugId("btnSave");
+		this.saveButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
-		buttonLayout.addComponent(this.btnCancel);
-		buttonLayout.addComponent(this.btnSave);
+		buttonLayout.addComponent(this.cancelButton);
+		buttonLayout.addComponent(this.saveButton);
 
 		return buttonLayout;
 	}
 
-	private Label generateRoleCell(final Object itemId) {
-		final String role = ((User) itemId).getRoles().get(0).getCapitalizedRole();
+	Label generateRoleCell(final Object itemId) {
+		final String role = ((WorkbenchUser) itemId).getRoles().get(0).getCapitalizedRole();
 		final Label label = new Label();
 		label.setDebugId("label");
 		label.setValue(role);
 
-		if (((User) itemId).getUserid().equals(ProjectMembersComponent.this.sessionData.getUserData().getUserid())) {
+		if (((WorkbenchUser) itemId).getUserid().equals(this.contextUtil.getCurrentWorkbenchUserId())) {
 			label.setStyleName("label-bold");
 		}
 		return label;
 	}
 
-	private Label generateUserNameCell(final Object itemId) {
-		final Person person = ((User) itemId).getPerson();
+	Label generateUserNameCell(final Object itemId) {
+		final Person person = ((WorkbenchUser) itemId).getPerson();
 		final Label label = new Label();
 		label.setDebugId("label");
 		label.setValue(person.getDisplayName());
 
-		if (((User) itemId).getUserid().equals(ProjectMembersComponent.this.sessionData.getUserData().getUserid())) {
+		if (((WorkbenchUser) itemId).getUserid().equals(this.contextUtil.getCurrentWorkbenchUserId())) {
 			label.setStyleName("label-bold");
 		}
 		return label;
 	}
 
-	private Container createUsersContainer() {
-		final List<User> validUserList = new ArrayList<User>();
+	Container createUsersContainer() {
+		final List<WorkbenchUser> validUserList = new ArrayList<>();
 
-		// TODO: This can be improved once we implement proper User-Person mapping
-		final List<User> userList = this.workbenchDataManager.getAllUsersSorted();
-		for (final User user : userList) {
+		// TODO: This can be improved once we implement proper User-Person
+		// mapping
+		final List<WorkbenchUser> userList = this.workbenchDataManager.getAllActiveUsersSorted();
+		for (final WorkbenchUser user : userList) {
 			final Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
 			user.setPerson(person);
 
@@ -344,9 +307,9 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 			}
 		}
 
-		final BeanItemContainer<User> beanItemContainer = new BeanItemContainer<User>(User.class);
-		for (final User user : validUserList) {
-			if (user.getUserid().equals(this.sessionData.getUserData().getUserid())) {
+		final BeanItemContainer<WorkbenchUser> beanItemContainer = new BeanItemContainer<>(WorkbenchUser.class);
+		for (final WorkbenchUser user : validUserList) {
+			if (user.getUserid().equals(this.contextUtil.getCurrentWorkbenchUserId())) {
 				user.setEnabled(false);
 			}
 
@@ -356,7 +319,74 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 		return beanItemContainer;
 	}
 
-	public Set<User> getSelectedUsers() {
+	public Set<WorkbenchUser> getSelectedUsers() {
 		return this.select.getValue();
+	}
+
+	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
+		this.workbenchDataManager = workbenchDataManager;
+	}
+
+	public void setContextUtil(final ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
+	}
+
+	public void setCancelButton(Button cancelButton) {
+		this.cancelButton = cancelButton;
+	}
+
+	public void setSaveButton(Button saveButton) {
+		this.saveButton = saveButton;
+	}
+
+	public void setTransactionManager(PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
+	}
+
+	public void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+
+	class SaveProjectButtonListener implements Button.ClickListener {
+
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public void buttonClick(final ClickEvent clickEvent) {
+			final TransactionTemplate transactionTemplate = new TransactionTemplate(
+					ProjectMembersComponent.this.transactionManager);
+			transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+
+				@Override
+				protected void doInTransactionWithoutResult(final TransactionStatus status) {
+					try {
+						final Project newlyCreatedProgram = ProjectMembersComponent.this.presenter
+								.doAddNewProgram();
+
+						MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
+								ProjectMembersComponent.this.messageSource.getMessage(Message.SUCCESS),
+								newlyCreatedProgram.getProjectName() + " program has been successfully created.");
+
+						ProjectMembersComponent.this.presenter.enableProgramMethodsAndLocationsTab(clickEvent.getComponent().getWindow());
+
+					} catch (final Exception e) {
+
+						if ("basic_details_invalid".equals(e.getMessage())) {
+							return;
+						}
+
+						ProjectMembersComponent.LOG.error(
+								"Oops there might be serious problem on creating the program, investigate it!", e);
+
+						MessageNotifier.showError(clickEvent.getComponent().getWindow(),
+								ProjectMembersComponent.this.messageSource.getMessage(Message.DATABASE_ERROR),
+								ProjectMembersComponent.this.messageSource
+										.getMessage(Message.SAVE_PROJECT_ERROR_DESC));
+
+					}
+				}
+			});
+		}
+
 	}
 }

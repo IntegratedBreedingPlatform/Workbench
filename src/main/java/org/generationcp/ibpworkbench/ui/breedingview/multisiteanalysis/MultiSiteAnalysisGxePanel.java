@@ -253,7 +253,7 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout
 
 			};
 
-			this.setGxeTable(new GxeTable(this.studyDataManager, this.multiSiteParameters.getStudy().getId(),
+			this.setGxeTable(new GxeTable(this.multiSiteParameters.getStudy().getId(),
 					this.multiSiteParameters.getSelectedEnvironmentFactorName(), this.multiSiteParameters.getSelectedEnvGroupFactorName(),
 					this.variatesCheckboxState, envCheckBoxListener));
 			this.getGxeTable().setHeight("300px");

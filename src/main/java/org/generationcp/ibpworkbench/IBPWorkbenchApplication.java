@@ -1,23 +1,20 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * <p/>
  * Generation Challenge Programme (GCP)
- *
- *
+ * <p/>
+ * <p/>
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.vaadin.terminal.gwt.server.WebBrowser;
+import com.vaadin.ui.Window;
 import org.dellroad.stuff.vaadin.ContextApplication;
 import org.dellroad.stuff.vaadin.SpringContextApplication;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.common.WebClientInfo;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,26 +24,28 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 
-import com.vaadin.terminal.gwt.server.WebBrowser;
-import com.vaadin.ui.Window;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-public class IBPWorkbenchApplication extends SpringContextApplication implements IWorkbenchSession {
+public class IBPWorkbenchApplication extends SpringContextApplication {
 
 	private static final long serialVersionUID = 1L;
-	private final static Logger LOG = LoggerFactory.getLogger(IBPWorkbenchApplication.class);
-
-	@Resource
-	private SimpleResourceBundleMessageSource messageSource;
-
-	@Resource
-	private SessionData sessionData;
+	private static final Logger LOG = LoggerFactory.getLogger(IBPWorkbenchApplication.class);
 
 	@Resource
 	private LogoutHandler rememberMeServices;
 
+	@Resource
+	private WebClientInfo webClientInfo;
+
 	private HttpServletRequest request;
 	private HttpServletResponse response;
+
 	private boolean scriptsRun = false;
+	public static final String PREFETCH_SCRIPT = "/ibpworkbench/VAADIN/js/prefetch-resources.js";
+	public static final String SCRIPT =
+			"try{var fileref=document.createElement('script'); fileref.setAttribute(\"type\",\"text/javascript\"); fileref.setAttribute(\"src\", \" %s \"); document.getElementsByTagName(\"head\")[0].appendChild(fileref);}catch(e){alert(e);}";
 
 	public static IBPWorkbenchApplication get() {
 		return ContextApplication.get(IBPWorkbenchApplication.class);
@@ -60,7 +59,7 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 	}
 
 	protected void logout() {
-		Authentication auth = this.getCurrentSecurityContext().getAuthentication();
+		final Authentication auth = this.getCurrentSecurityContext().getAuthentication();
 		if (auth != null) {
 			this.rememberMeServices.logout(this.getRequest(), this.getResponse(), auth);
 		}
@@ -72,17 +71,8 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 	}
 
 	@Override
-	public void terminalError(com.vaadin.terminal.Terminal.ErrorEvent event) {
+	public void terminalError(final com.vaadin.terminal.Terminal.ErrorEvent event) {
 		IBPWorkbenchApplication.LOG.error("Encountered error", event.getThrowable());
-	}
-
-	@Override
-	public SessionData getSessionData() {
-		return this.sessionData;
-	}
-
-	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
-		this.messageSource = messageSource;
 	}
 
 	public HttpServletResponse getResponse() {
@@ -94,7 +84,7 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 	}
 
 	@Override
-	protected void doOnRequestStart(HttpServletRequest request, HttpServletResponse response) {
+	protected void doOnRequestStart(final HttpServletRequest request, final HttpServletResponse response) {
 		super.doOnRequestStart(request, response);
 
 		this.response = response;
@@ -102,12 +92,7 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 	}
 
 	@Override
-	protected void doOnRequestEnd(HttpServletRequest request, HttpServletResponse response) {
-		super.doOnRequestEnd(request, response);
-	}
-
-	@Override
-	protected void initSpringApplication(ConfigurableWebApplicationContext context) {
+	protected void initSpringApplication(final ConfigurableWebApplicationContext context) {
 		this.assemble();
 	}
 
@@ -125,22 +110,21 @@ public class IBPWorkbenchApplication extends SpringContextApplication implements
 	}
 
 	@Override
-	public Window getWindow(String name) {
-		sessionData.setBrowserInfo((WebBrowser) this.getMainWindow().getTerminal());
+	public Window getWindow(final String name) {
 
-		Window w = super.getWindow(name);
+		webClientInfo.setWebBrowser((WebBrowser) this.getMainWindow().getTerminal());
 
-		final String prefetchScript = "/ibpworkbench/VAADIN/js/prefetch-resources.js";
-
-		final String script =
-				"try{var fileref=document.createElement('script'); fileref.setAttribute(\"type\",\"text/javascript\"); fileref.setAttribute(\"src\", \" %s \"); document.getElementsByTagName(\"head\")[0].appendChild(fileref);}catch(e){alert(e);}";
+		final Window w = super.getWindow(name);
 
 		if (!this.scriptsRun) {
-			w.executeJavaScript(String.format(script, prefetchScript));
-
+			w.executeJavaScript(String.format(SCRIPT, PREFETCH_SCRIPT));
 			this.scriptsRun = true;
 		}
 
 		return w;
+	}
+
+	boolean isScriptsRun() {
+		return scriptsRun;
 	}
 }

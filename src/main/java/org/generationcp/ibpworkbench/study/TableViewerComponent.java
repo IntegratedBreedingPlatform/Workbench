@@ -1,19 +1,24 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- * 
+ *
  * Generation Challenge Programme (GCP)
- * 
- * 
+ *
+ *
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- * 
+ *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.study;
 
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Layout.MarginInfo;
-import com.vaadin.ui.VerticalLayout;
+import java.io.File;
+
+import org.generationcp.commons.util.VaadinFileDownloadResource;
+import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.ui.BaseSubWindow;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.GermplasmStudyBrowserApplication;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.study.listeners.StudyButtonClickListener;
@@ -21,30 +26,27 @@ import org.generationcp.ibpworkbench.study.util.DatasetExporterException;
 import org.generationcp.ibpworkbench.study.util.TableViewerCellSelectorUtil;
 import org.generationcp.ibpworkbench.study.util.TableViewerExporter;
 import org.generationcp.ibpworkbench.util.Util;
-import org.generationcp.commons.util.FileDownloadResource;
-import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.commons.vaadin.ui.BaseSubWindow;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.io.File;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Layout.MarginInfo;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * This creates a Vaadin sub-window that displays the Table Viewer.
- * 
+ *
  * @author Mark Agarrado
- * 
+ *
  */
 @Configurable
 public class TableViewerComponent extends BaseSubWindow implements InitializingBean, InternationalizableComponent {
 
-	private final static Logger LOG = LoggerFactory.getLogger(TableViewerComponent.class);
+	protected static final String FILENAME_PREFIX = "TVDataset";
+	private static final Logger LOG = LoggerFactory.getLogger(TableViewerComponent.class);
 	private static final long serialVersionUID = 477658402146083181L;
 	public static final String TABLE_VIEWER_WINDOW_NAME = "table-viewer";
 	public static final String EXPORT_EXCEL_BUTTON_ID = "Export Dataset to Excel";
@@ -58,14 +60,18 @@ public class TableViewerComponent extends BaseSubWindow implements InitializingB
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	public TableViewerComponent(TableViewerDatasetTable displayTable) {
+	private TableViewerExporter tableViewerExporter;
+
+	public TableViewerComponent(final TableViewerDatasetTable displayTable) {
 		this.displayTable = displayTable;
 		this.tableViewerCellSelectorUtil = new TableViewerCellSelectorUtil(this, displayTable);
+		this.tableViewerExporter = new TableViewerExporter(this.displayTable, this.tableViewerCellSelectorUtil);
 	}
 
-	public TableViewerComponent(TableViewerDatasetTable displayTable, String studyName) {
+	public TableViewerComponent(final TableViewerDatasetTable displayTable, final String studyName) {
 		this.displayTable = displayTable;
 		this.tableViewerCellSelectorUtil = new TableViewerCellSelectorUtil(this, displayTable);
+		this.tableViewerExporter = new TableViewerExporter(this.displayTable, this.tableViewerCellSelectorUtil);
 		this.studyName = studyName;
 	}
 
@@ -132,32 +138,37 @@ public class TableViewerComponent extends BaseSubWindow implements InitializingB
 		// for now, not needed to add any code here
 	}
 
-	@SuppressWarnings("deprecation")
 	public void exportToExcelAction() {
 
-		String tempFilename = "TVDataset.xlsx";
+		final String filename = TableViewerComponent.FILENAME_PREFIX;
 
 		try {
-			TableViewerExporter tableViewerExporter = new TableViewerExporter(this.displayTable, this.tableViewerCellSelectorUtil);
-
-			tableViewerExporter.exportToExcel(tempFilename);
+			final String temporaryFileName = this.tableViewerExporter.exportToExcel(filename);
 
 			String downloadFilename;
 			if (this.studyName != null) {
-				downloadFilename = "TVDataset_" + this.studyName.replace(" ", "_").trim() + ".xlsx";
+				downloadFilename = filename + "_" + this.studyName.replace(" ", "_").trim() + ".xlsx";
 			} else {
-				downloadFilename = tempFilename;
+				downloadFilename = filename + ".xlsx";
 			}
 
-			FileDownloadResource fileDownloadResource = new FileDownloadResource(new File(tempFilename), downloadFilename, this.getApplication());
-
+			final VaadinFileDownloadResource fileDownloadResource =
+					new VaadinFileDownloadResource(new File(temporaryFileName), downloadFilename, this.getApplication());
 
 			Util.showExportExcelDownloadFile(fileDownloadResource, this.getParent().getWindow());
 
-		} catch (DatasetExporterException e) {
+		} catch (final DatasetExporterException e) {
 			TableViewerComponent.LOG.error(e.getMessage(), e);
 			MessageNotifier.showError(this.getApplication().getWindow(GermplasmStudyBrowserApplication.STUDY_WINDOW_NAME), e.getMessage(),
 					"");
 		}
+	}
+
+	public void setTableViewerExporter(final TableViewerExporter tableViewerExporter) {
+		this.tableViewerExporter = tableViewerExporter;
+	}
+
+	public void setStudyName(final String studyName) {
+		this.studyName = studyName;
 	}
 }

@@ -2,25 +2,39 @@
 package org.generationcp.ibpworkbench.study;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import junit.framework.Assert;
-
+import org.generationcp.middleware.data.initializer.DMSVariableTestDataInitializer;
 import org.generationcp.middleware.domain.dms.Experiment;
+import org.generationcp.middleware.domain.dms.Variable;
+import org.generationcp.middleware.domain.dms.VariableList;
+import org.generationcp.middleware.domain.oms.Term;
+import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareException;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Matchers;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.vaadin.data.Item;
+import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.data.util.PropertysetItem;
+import com.vaadin.ui.Button;
+
+import junit.framework.Assert;
+
 @RunWith(MockitoJUnitRunner.class)
 public class TableViewerDatasetTableTest {
-
+	
+	@Mock
 	private StudyDataManager studyDataManager;
 
 	@InjectMocks
@@ -28,8 +42,6 @@ public class TableViewerDatasetTableTest {
 
 	@Before
 	public void setUp() {
-		this.studyDataManager = Mockito.mock(StudyDataManager.class);
-
 		this.tableViewerTable = new TableViewerDatasetTable(this.studyDataManager, 1, 1);
 	}
 
@@ -61,7 +73,82 @@ public class TableViewerDatasetTableTest {
 
 		this.validateBatchRetrieval(size);
 	}
+	
+	@Test
+	public void testPopulateDatasetTable() {
+		Mockito.doReturn(new Long(1)).when(this.studyDataManager).countExperiments(Matchers.anyInt());
+		final Experiment experiment = Mockito.mock(Experiment.class);
+		Mockito.when(experiment.getFactors()).thenReturn(Mockito.mock(VariableList.class));
+		Mockito.when(experiment.getVariates()).thenReturn(Mockito.mock(VariableList.class));
+		Mockito.doReturn(Arrays.asList(experiment)).when(this.studyDataManager).getExperiments(1, 0, 1);
+		this.tableViewerTable.populateDatasetTable();
+		Mockito.verify(this.studyDataManager).createInstanceLocationIdToNameMapFromStudy(Matchers.anyInt());
+		Mockito.verify(experiment).getFactors();
+		Mockito.verify(experiment).getVariates();
+	}
+	
+	@Test
+	public void testSetItemValuesForLocation() {
+		Map<String, String> locationNameMap = new HashMap<>();
+		locationNameMap.put("9015", "INT WATER MANAGEMENT INSTITUTE");
+		final List<Variable> variables = Arrays.asList(DMSVariableTestDataInitializer.createVariableWithStandardVariable(TermId.LOCATION_ID,
+				"9015"));
+		Item item = new PropertysetItem();
+		final String columnId = "8190-LOCATION_ID";
+		item.addItemProperty(columnId, new ObjectProperty<String>(""));
+		this.tableViewerTable.setItemValues(locationNameMap, variables, item);
+		Assert.assertEquals("INT WATER MANAGEMENT INSTITUTE", item.getItemProperty(columnId).getValue());
+	}
 
+	@Test
+	public void testSetItemValuesForGID() {
+		final List<Variable> variables = Arrays.asList(DMSVariableTestDataInitializer.createVariableWithStandardVariable(TermId.GID, "1"));
+		Item item = new PropertysetItem();
+		final String columnId = "8240-GID";
+		item.addItemProperty(columnId, new ObjectProperty<Button>(new Button()));
+		this.tableViewerTable.setItemValues(new HashMap<String, String>(), variables, item);
+		Assert.assertEquals("1", ((Button)item.getItemProperty(columnId).getValue()).getCaption());
+	}
+	
+	@Test
+	public void testSetItemValues() {
+		final List<Variable> variables = Arrays.asList(DMSVariableTestDataInitializer.createVariableWithStandardVariable(TermId.DESIG,
+				"designation"));
+		Item item = new PropertysetItem();
+		final String columnId = "8250-DESIG";
+		item.addItemProperty(columnId, new ObjectProperty<String>(""));
+		this.tableViewerTable.setItemValues(new HashMap<String, String>(), variables, item);
+		Assert.assertEquals("designation", item.getItemProperty(columnId).getValue());
+	}
+	
+	@Test
+	public void testSetItemValuesForNumeric() {
+		final Variable variable = DMSVariableTestDataInitializer.createVariableWithStandardVariable(TermId.LATITUDE,
+				"10");
+		variable.getVariableType().getStandardVariable().setDataType(new Term(TermId.NUMERIC_VARIABLE.getId(), TableViewerDatasetTable.NUMERIC_VARIABLE,
+				"variable with numeric values"));
+		final List<Variable> variables = Arrays.asList(variable);
+		Item item = new PropertysetItem();
+		final String columnId = "8191-LATITUDE";
+		item.addItemProperty(columnId, new ObjectProperty<String>(""));
+		this.tableViewerTable.setItemValues(new HashMap<String, String>(), variables, item);
+		Assert.assertEquals("10", item.getItemProperty(columnId).getValue());
+	}
+	
+	@Test
+	public void testSetItemValuesForDate() {
+		final Variable variable = DMSVariableTestDataInitializer.createVariableWithStandardVariable(TermId.DATE_VARIABLE,
+				"07/27/2018");
+		variable.getVariableType().getStandardVariable().setDataType(new Term(TermId.NUMERIC_VARIABLE.getId(), TableViewerDatasetTable.NUMERIC_VARIABLE,
+				"variable with numeric values"));
+		final List<Variable> variables = Arrays.asList(variable);
+		Item item = new PropertysetItem();
+		final String columnId = "1117-DATE_VARIABLE";
+		item.addItemProperty(columnId, new ObjectProperty<String>(""));
+		this.tableViewerTable.setItemValues(new HashMap<String, String>(), variables, item);
+		Assert.assertEquals("20180727", item.getItemProperty(columnId).getValue());
+	}
+	
 	private void validateBatchRetrieval(int size) throws MiddlewareException {
 		int batchSize = TableViewerDatasetTable.BATCH_SIZE;
 		int batchCount = size / batchSize;

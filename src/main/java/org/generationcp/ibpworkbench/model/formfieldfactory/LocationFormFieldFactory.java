@@ -1,27 +1,23 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * <p/>
  * Generation Challenge Programme (GCP)
- *
- *
+ * <p/>
+ * <p/>
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.model.formfieldfactory;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanContainer;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.validator.DoubleValidator;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.AbstractSelect;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DefaultFieldFactory;
@@ -30,14 +26,21 @@ import com.vaadin.ui.TextField;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.fields.SanitizedTextField;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.ui.form.LocationForm;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
 import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.UserDefinedField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * <b>Description</b>: Field factory for generating Location fields for Location class.
@@ -49,40 +52,39 @@ import org.springframework.beans.factory.annotation.Configurable;
  * <b>File Created</b>: Jul 16, 2012
  */
 @Configurable
-public class LocationFormFieldFactory extends DefaultFieldFactory {
+public class LocationFormFieldFactory extends DefaultFieldFactory implements InitializingBean {
 
 	private static final long serialVersionUID = 3560059243526106791L;
 
 	private Field locationName;
 	private Field locationAbbreviation;
-
 	private ComboBox lType;
 	private ComboBox country;
 	private ComboBox province;
-
 	private TextField latitude;
 	private TextField longitude;
 	private TextField altitude;
 
+	private CheckBox cropAccessible;
+
 	@SuppressWarnings("unused")
 	private static final Logger LOG = LoggerFactory.getLogger(LocationFormFieldFactory.class);
 
-	private ProgramLocationsPresenter presenter;
+	private final ProgramLocationsPresenter presenter;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	public LocationFormFieldFactory(ProgramLocationsPresenter presenter) {
-		this.initFields(presenter.getUDFByLocationAndLType(), presenter.getCountryList());
+	public LocationFormFieldFactory(final ProgramLocationsPresenter presenter) {
 		this.presenter = presenter;
 	}
 
 	@SuppressWarnings("serial")
-	private void initFields(List<UserDefinedField> udfList, List<Country> countryList) {
+	private void initFields(final List<UserDefinedField> udfList, final List<Country> countryList) {
 		Collections.sort(countryList, new Comparator<Country>() {
 
 			@Override
-			public int compare(Country o1, Country o2) {
+			public int compare(final Country o1, final Country o2) {
 				return o1.getIsoabbr().compareTo(o2.getIsoabbr());
 			}
 		});
@@ -91,20 +93,23 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
 		this.locationName.setDebugId("locationName");
 		this.locationName.setWidth("250px");
 		this.locationName.setRequired(true);
-		this.locationName.setRequiredError("Please enter a Location Name.");
-		this.locationName.addValidator(new StringLengthValidator("Location Name must be 1-60 characters.", 1, 60, false));
+		this.locationName.setRequiredError(messageSource.getMessage(Message.ADD_LOCATION_REQUIRED_LOCATION_NAME_ERROR));
+		this.locationName
+				.addValidator(new StringLengthValidator(messageSource.getMessage(Message.ADD_LOCATION_NAME_LENGTH_ERROR), 1, 60, false));
 
 		this.locationAbbreviation = new SanitizedTextField();
 		this.locationAbbreviation.setDebugId("locationAbbreviation");
 
 		this.locationAbbreviation.setWidth("70px");
 		this.locationAbbreviation.setRequired(true);
-		this.locationAbbreviation.setRequiredError("Please enter a Location Abbreviation.");
-		this.locationAbbreviation.addValidator(new StringLengthValidator("Location Abbreviation must be 1-8 characters.", 1, 8, false));
+		this.locationAbbreviation.setRequiredError(messageSource.getMessage(Message.ADD_LOCATION_REQUIRED_LOCATION_ABBR_ERROR));
+		this.locationAbbreviation
+				.addValidator(new StringLengthValidator(messageSource.getMessage(Message.ADD_LOCATION_ABBR_LENGTH_ERROR), 1, 8, false));
 
-		BeanContainer<String, UserDefinedField> udfBeanContainer = new BeanContainer<String, UserDefinedField>(UserDefinedField.class);
-		BeanContainer<String, Country> countryBeanContainer = new BeanContainer<String, Country>(Country.class);
-		BeanContainer<String, Location> provinceBeanContainer = new BeanContainer<String, Location>(Location.class);
+		final BeanContainer<String, UserDefinedField> udfBeanContainer =
+				new BeanContainer<String, UserDefinedField>(UserDefinedField.class);
+		final BeanContainer<String, Country> countryBeanContainer = new BeanContainer<String, Country>(Country.class);
+		final BeanContainer<String, Location> provinceBeanContainer = new BeanContainer<String, Location>(Location.class);
 
 		udfBeanContainer.setBeanIdProperty("fldno");
 		udfBeanContainer.addAll(udfList);
@@ -123,7 +128,7 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
 		this.lType.setItemCaptionPropertyId("fname");
 		this.lType.setNullSelectionAllowed(false);
 		this.lType.setRequired(true);
-		this.lType.setRequiredError("Please a select Location Type.");
+		this.lType.setRequiredError(messageSource.getMessage(Message.ADD_LOCATION_REQUIRED_LOCATION_TYPE_ERROR));
 
 		this.country = new ComboBox();
 		this.country.setDebugId("country");
@@ -131,6 +136,7 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
 		this.country.setContainerDataSource(countryBeanContainer);
 		this.country.setItemCaptionMode(AbstractSelect.ITEM_CAPTION_MODE_PROPERTY);
 		this.country.setItemCaptionPropertyId("isoabbr");
+		this.country.setImmediate(true);
 
 		this.country.addListener(new Property.ValueChangeListener() {
 
@@ -140,12 +146,11 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
 			private static final long serialVersionUID = -41619287191762967L;
 
 			@Override
-			public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
+			public void valueChange(final Property.ValueChangeEvent valueChangeEvent) {
 				LocationFormFieldFactory.this.province.setValue(null);
-				Object countryIdValue = LocationFormFieldFactory.this.country.getValue();
+				final Object countryIdValue = LocationFormFieldFactory.this.country.getValue();
 				if (countryIdValue != null) {
-					@SuppressWarnings("unchecked")
-					BeanContainer<String, Location> container =
+					@SuppressWarnings("unchecked") final BeanContainer<String, Location> container =
 							(BeanContainer<String, Location>) LocationFormFieldFactory.this.province.getContainerDataSource();
 					container.removeAllItems();
 					container.addAll(LocationFormFieldFactory.this.presenter.getAllProvincesByCountry((Integer) countryIdValue));
@@ -159,6 +164,7 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
 		this.province.setContainerDataSource(provinceBeanContainer);
 		this.province.setItemCaptionMode(AbstractSelect.ITEM_CAPTION_MODE_PROPERTY);
 		this.province.setItemCaptionPropertyId("lname");
+		this.province.setImmediate(true);
 
 		this.latitude = new TextField() {
 
@@ -174,7 +180,7 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
 		};
 		this.latitude.setWidth("70px");
 		this.latitude.setRequired(false);
-		this.latitude.addValidator(new DoubleValidator("Please enter a valid number"));
+		this.latitude.addValidator(new DoubleValidator(messageSource.getMessage(Message.ADD_LOCATION_INVALID_NUMBER_ERROR)));
 		this.latitude.setNullSettingAllowed(true);
 		this.latitude.setNullRepresentation("");
 
@@ -193,7 +199,7 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
 
 		this.longitude.setWidth("70px");
 		this.longitude.setRequired(false);
-		this.longitude.addValidator(new DoubleValidator("Please enter a valid number"));
+		this.longitude.addValidator(new DoubleValidator(messageSource.getMessage(Message.ADD_LOCATION_INVALID_NUMBER_ERROR)));
 		this.longitude.setNullSettingAllowed(true);
 		this.longitude.setNullRepresentation("");
 
@@ -211,41 +217,105 @@ public class LocationFormFieldFactory extends DefaultFieldFactory {
 		};
 		this.altitude.setWidth("70px");
 		this.altitude.setRequired(false);
-		this.altitude.addValidator(new DoubleValidator("Please enter a valid number"));
+		this.altitude.addValidator(new DoubleValidator(messageSource.getMessage(Message.ADD_LOCATION_INVALID_NUMBER_ERROR)));
 		this.altitude.setNullSettingAllowed(true);
 		this.altitude.setNullRepresentation("");
+
+		this.cropAccessible = new CheckBox();
+		this.cropAccessible.setImmediate(true);
+		this.cropAccessible.setDebugId("cropAccessible");
 
 	}
 
 	@Override
-	public Field createField(Item item, Object propertyId, Component uiContext) {
-		if ("locationName".equals(propertyId)) {
-			this.messageSource.setCaption(this.locationName, Message.LOC_NAME);
+	public Field createField(final Item item, final Object propertyId, final Component uiContext) {
+		if (LocationForm.LOCATION_NAME.equals(propertyId)) {
 			return this.locationName;
-		} else if ("locationAbbreviation".equals(propertyId)) {
-			this.messageSource.setCaption(this.locationAbbreviation, Message.LOC_ABBR);
+		} else if (LocationForm.LOCATION_ABBREVIATION.equals(propertyId)) {
 			return this.locationAbbreviation;
-		} else if ("ltype".equals(propertyId)) {
-			this.messageSource.setCaption(this.lType, Message.LOC_TYPE);
+		} else if (LocationForm.LTYPE.equals(propertyId)) {
 			return this.lType;
-		} else if ("cntryid".equals(propertyId)) {
-			this.messageSource.setCaption(this.country, Message.LOC_COUNTRY);
+		} else if (LocationForm.CNTRYID.equals(propertyId)) {
 			return this.country;
-		} else if ("provinceId".equals(propertyId)) {
-			this.messageSource.setCaption(this.province, Message.LOC_PROVINCE);
+		} else if (LocationForm.PROVINCE_ID.equals(propertyId)) {
 			return this.province;
-		}
-		if ("latitude".equals(propertyId)) {
-			this.messageSource.setCaption(this.latitude, Message.LOC_LATITUDE);
+		} else if (LocationForm.LATITUDE.equals(propertyId)) {
 			return this.latitude;
-		} else if ("longitude".equals(propertyId)) {
-			this.messageSource.setCaption(this.longitude, Message.LOC_LONGITUDE);
+		} else if (LocationForm.LONGITUDE.equals(propertyId)) {
 			return this.longitude;
-		} else if ("altitude".equals(propertyId)) {
-			this.messageSource.setCaption(this.altitude, Message.LOC_ALTITUDE);
+		} else if (LocationForm.ALTITUDE.equals(propertyId)) {
 			return this.altitude;
+		} else if (LocationForm.CROP_ACCESSIBLE.equals(propertyId)) {
+			return this.cropAccessible;
 		}
-
 		return super.createField(item, propertyId, uiContext);
+	}
+
+	public Field getLocationName() {
+		return locationName;
+	}
+
+	public Field getLocationAbbreviation() {
+		return locationAbbreviation;
+	}
+
+	public ComboBox getlType() {
+		return lType;
+	}
+
+	public ComboBox getCountry() {
+		return country;
+	}
+
+	public ComboBox getProvince() {
+		return province;
+	}
+
+	public TextField getLatitude() {
+		return latitude;
+	}
+
+	public TextField getLongitude() {
+		return longitude;
+	}
+
+	public TextField getAltitude() {
+		return altitude;
+	}
+
+	public CheckBox getCropAccessible() {
+		return cropAccessible;
+	}
+
+	public Country retrieveCountryValue() {
+		final BeanContainer<String, Country> beanContainer = (BeanContainer<String, Country>) this.country.getContainerDataSource();
+		final BeanItem<Country> beanItem = beanContainer.getItem(this.country.getValue());
+		return beanItem == null ? null : beanItem.getBean();
+	}
+
+	public Location retrieveProvinceValue() {
+		final BeanContainer<String, Location> beanContainer = (BeanContainer<String, Location>) this.province.getContainerDataSource();
+		final BeanItem<Location> beanItem = beanContainer.getItem(this.province.getValue());
+		return beanItem == null ? null : beanItem.getBean();
+	}
+
+	public UserDefinedField retrieveLocationType() {
+		final BeanContainer<String, UserDefinedField> beanContainer =
+				(BeanContainer<String, UserDefinedField>) this.lType.getContainerDataSource();
+		final BeanItem<UserDefinedField> beanItem = beanContainer.getItem(this.lType.getValue());
+		return beanItem == null ? null : beanItem.getBean();
+	}
+
+	public void disableCropAccessible() {
+		this.cropAccessible.setEnabled(false);
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		this.initFields(presenter.getUDFByLocationAndLType(), presenter.getCountryList());
+	}
+
+	public void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
 	}
 }

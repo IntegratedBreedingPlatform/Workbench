@@ -1,26 +1,24 @@
-
 package org.generationcp.ibpworkbench.actions;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.commons.util.MySQLUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.database.CropDatabaseGenerator;
 import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectActivity;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -49,11 +47,13 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 	private MySQLUtil mysqlUtil;
 
 	@Autowired
-	private SessionData sessionData;
+	private org.generationcp.commons.spring.util.ContextUtil contextUtil;
 
 	@Autowired
 	private ProgramService programService;
-
+	
+	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
+	
 	private final Project project;
 
 	private File restoreFile;
@@ -77,14 +77,16 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 			RestoreIBDBSaveAction.LOG.debug("onClick > do Restore IBDB");
 
 			try {
-				// restore the database
+				// Store the crop type of current program before restoring
+				final CropType cropType = this.project.getCropType();
+				
+				// Restore the database
 				this.mysqlUtil.restoreDatabase(this.project.getDatabaseName(), this.restoreFile, new Callable<Boolean>() {
 
 					@Override
 					public Boolean call() throws Exception {
 						final CropDatabaseGenerator cropDatabaseGenerator =
-								new CropDatabaseGenerator(RestoreIBDBSaveAction.this.sessionData.getLastOpenedProject().getCropType());
-						cropDatabaseGenerator.setWorkbenchDataManager(RestoreIBDBSaveAction.this.workbenchDataManager);
+								new CropDatabaseGenerator(contextUtil.getProjectInContext().getCropType());
 						return cropDatabaseGenerator.generateDatabase();
 					}
 				});
@@ -94,34 +96,32 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 						this.messageSource.getMessage(Message.RESTORE_IBDB_COMPLETE));
 
 				// Set current user as owner of restored germplasm lists
-				final Integer userId = this.workbenchDataManager.getLocalIbdbUserId(this.sessionData.getUserData().getUserid(),
-						this.project.getProjectId());
+				final Integer userId =
+						this.workbenchDataManager.getLocalIbdbUserId(contextUtil.getCurrentWorkbenchUserId(), this.project.getProjectId());
 				this.updateGermplasmListOwnership(userId);
 
-				this.addDefaultAdminAndCurrentUserAsMembersOfRestoredPrograms();
+				// Add current user and users with SUPERADMIN role as members of all restored programs
+				final List<Project> restoredPrograms = this.workbenchDataManager.getProjectsByCrop(cropType);
+				this.addSuperAdminAndCurrentUserAsMembersOfRestoredPrograms(restoredPrograms);
+				
+				// Remove directories for old programs and generate new folders for programs of restored backup file
+				this.installationDirectoryUtil.resetWorkspaceDirectoryForCrop(cropType, restoredPrograms);
 
 				// Log a record in ProjectActivity
-				this.logProjectActivity(userId);
+				if (userId != null) {
+					this.contextUtil.logProgramActivity(this.messageSource.getMessage(Message.CROP_DATABASE_RESTORE),
+							this.messageSource.getMessage(Message.RESTORED_BACKUP_FROM) + " " + this.restoreFile.getName());
+				}
 
 				this.hasRestoreError = false;
 			} catch (final Exception e) {
 				RestoreIBDBSaveAction.LOG.error(e.getMessage(), e);
-				MessageNotifier.showError(this.sourceWindow, this.messageSource.getMessage(Message.RESTORE_OPERATION_ERROR),
-						e.getMessage());
+				MessageNotifier
+						.showError(this.sourceWindow, this.messageSource.getMessage(Message.RESTORE_OPERATION_ERROR), e.getMessage());
 				this.hasRestoreError = true;
 			}
 		} else {
 			this.hasRestoreError = true;
-		}
-	}
-
-	void logProjectActivity(final Integer userId) {
-		if (userId != null) {
-			final ProjectActivity projAct =
-					new ProjectActivity(null, this.project, this.messageSource.getMessage(Message.CROP_DATABASE_RESTORE),
-							this.messageSource.getMessage(Message.RESTORED_BACKUP_FROM) + " " + this.restoreFile.getName(),
-							this.sessionData.getUserData(), new Date());
-			this.workbenchDataManager.addProjectActivity(projAct);
 		}
 	}
 
@@ -132,27 +132,18 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 	}
 
 	/*
-	 * Call ProgramService to add default ADMIN and current user (if he is not default ADMIN) as program members
+	 * Call ProgramService to add SUPERADMIN user(s) and current user (if he is not a super admin user) as program members
 	 */
-	void addDefaultAdminAndCurrentUserAsMembersOfRestoredPrograms() {
+	void addSuperAdminAndCurrentUserAsMembersOfRestoredPrograms(final List<Project> projects) {
 
-		final List<Project> projects = this.workbenchDataManager.getProjectsByCrop(this.project.getCropType());
-		final User currentUser = this.sessionData.getUserData();
-		HashSet<User> users = new HashSet<>();
+		final WorkbenchUser currentUser = contextUtil.getCurrentWorkbenchUser();
+		final HashSet<WorkbenchUser> users = new HashSet<>();
 		users.add(currentUser);
-		
-		for (final Project project : projects) {
-			// The default "ADMIN" user is being added in ProgramService
-			this.programService.saveProgramMembers(project, users);
-		}
-	}
 
-	boolean currentUserIsDefaultAdmin() {
-		final User defaultAdminUser = this.workbenchDataManager.getUserByUsername(ProgramService.ADMIN_USERNAME);
-		if (defaultAdminUser != null) {
-			return defaultAdminUser.equals(this.sessionData.getUserData());
+		for (final Project proj : projects) {
+			// The SUPERADMIN user(s) is being added in ProgramService
+			this.programService.saveProgramMembers(proj, users);
 		}
-		return false;
 	}
 
 	@Override
@@ -191,8 +182,8 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 		this.mysqlUtil = mysqlUtil;
 	}
 
-	public void setSessionData(final SessionData sessionData) {
-		this.sessionData = sessionData;
+	public void setContextUtil(final org.generationcp.commons.spring.util.ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
 	}
 
 	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
@@ -213,6 +204,16 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 
 	public boolean isHasRestoreError() {
 		return this.hasRestoreError;
+	}
+
+	
+	public Project getProject() {
+		return project;
+	}
+
+	
+	public void setInstallationDirectoryUtil(InstallationDirectoryUtil installationDirectoryUtil) {
+		this.installationDirectoryUtil = installationDirectoryUtil;
 	}
 
 }

@@ -1,25 +1,14 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- *
+ * <p/>
  * Generation Challenge Programme (GCP)
- *
- *
+ * <p/>
+ * <p/>
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.ui.window;
-
-import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
-import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.commons.vaadin.ui.BaseSubWindow;
-import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.actions.ChangePasswordAction;
-import org.generationcp.middleware.pojos.User;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -31,12 +20,21 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
+import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.ui.BaseSubWindow;
+import org.generationcp.ibpworkbench.actions.ChangePasswordAction;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 @Configurable
 public class ChangePasswordWindow extends BaseSubWindow implements InitializingBean, InternationalizableComponent {
 
 	@Autowired
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	private static final long serialVersionUID = 1L;
 
@@ -47,9 +45,10 @@ public class ChangePasswordWindow extends BaseSubWindow implements InitializingB
 	private Button saveButton;
 
 	private PasswordField password;
-	private PasswordField confirm_password;
+	private PasswordField confirmPassword;
 
 	public ChangePasswordWindow() {
+		// does nothing
 	}
 
 	/**
@@ -60,7 +59,7 @@ public class ChangePasswordWindow extends BaseSubWindow implements InitializingB
 		this.assemble();
 	}
 
-	protected void initializeComponents() throws Exception {
+	protected void initializeComponents() {
 		this.setOverrideFocus(true);
 		this.addStyleName(Reindeer.WINDOW_LIGHT);
 		this.setCaption("Change Password");
@@ -76,8 +75,8 @@ public class ChangePasswordWindow extends BaseSubWindow implements InitializingB
 		this.password.setDebugId("password");
 		this.password.focus();
 
-		this.confirm_password = new PasswordField();
-		this.confirm_password.setDebugId("confirm_password");
+		this.confirmPassword = new PasswordField();
+		this.confirmPassword.setDebugId("confirmPassword");
 
 		this.saveButton = new Button("Save");
 		this.saveButton.setDebugId("saveButton");
@@ -92,7 +91,7 @@ public class ChangePasswordWindow extends BaseSubWindow implements InitializingB
 		this.setHeight("200px");
 		this.setModal(true);
 
-		VerticalLayout layout = new VerticalLayout();
+		final VerticalLayout layout = new VerticalLayout();
 		layout.setDebugId("layout");
 		layout.setSizeFull();
 		layout.setMargin(true);
@@ -101,18 +100,18 @@ public class ChangePasswordWindow extends BaseSubWindow implements InitializingB
 		this.passwordLabel.setWidth("140px");
 		this.password.setWidth("140px");
 		this.confirmLabel.setWidth("140px");
-		this.confirm_password.setWidth("140px");
+		this.confirmPassword.setWidth("140px");
 
-		GridLayout passwordGridLayout = new GridLayout(2, 2);
+		final GridLayout passwordGridLayout = new GridLayout(2, 2);
 		passwordGridLayout.setDebugId("passwordGridLayout");
 		passwordGridLayout.setMargin(false, false, false, false);
 		passwordGridLayout.addComponent(this.passwordLabel);
 		passwordGridLayout.addComponent(this.password);
 		passwordGridLayout.addComponent(this.confirmLabel);
-		passwordGridLayout.addComponent(this.confirm_password);
+		passwordGridLayout.addComponent(this.confirmPassword);
 		passwordGridLayout.setSizeFull();
 
-		HorizontalLayout buttonlayout = new HorizontalLayout();
+		final HorizontalLayout buttonlayout = new HorizontalLayout();
 		buttonlayout.setDebugId("buttonlayout");
 
 		buttonlayout.addComponent(this.cancelButton);
@@ -127,10 +126,11 @@ public class ChangePasswordWindow extends BaseSubWindow implements InitializingB
 		this.setContent(layout);
 	}
 
-	protected void initializeActions() {
-		User user = this.sessionData.getUserData();
 
-		this.saveButton.addListener(new ChangePasswordAction(user.getName(), this.password, this.confirm_password));
+	protected void initializeActions() {
+		final WorkbenchUser user = contextUtil.getCurrentWorkbenchUser();
+
+		this.saveButton.addListener(new ChangePasswordAction(user.getName(), this.password, this.confirmPassword));
 		this.cancelButton.addListener(new RemoveWindowListener());
 	}
 
@@ -139,13 +139,13 @@ public class ChangePasswordWindow extends BaseSubWindow implements InitializingB
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public void buttonClick(ClickEvent event) {
+		public void buttonClick(final ClickEvent event) {
 			event.getComponent().getWindow().getParent().removeWindow(ChangePasswordWindow.this.getWindow());
 		}
 
 	}
 
-	protected void assemble() throws Exception {
+	protected void assemble() {
 		this.initializeComponents();
 		this.initializeLayout();
 		this.initializeActions();
@@ -154,6 +154,18 @@ public class ChangePasswordWindow extends BaseSubWindow implements InitializingB
 	@Override
 	public void updateLabels() {
 		// currently does nothing
+	}
+
+	public void setContextUtil(final ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
+	}
+
+	public Button getSaveButton() {
+		return saveButton;
+	}
+
+	public Button getCancelButton() {
+		return cancelButton;
 	}
 
 }

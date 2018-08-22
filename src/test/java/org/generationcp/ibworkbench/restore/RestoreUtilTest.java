@@ -1,4 +1,3 @@
-
 package org.generationcp.ibworkbench.restore;
 
 import java.io.File;
@@ -13,13 +12,11 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.UUID;
 
-import junit.framework.Assert;
-
 import org.apache.commons.io.FileUtils;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.MySQLUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.RestoreIBDBSaveAction;
 import org.generationcp.ibpworkbench.database.CropDatabaseGenerator;
 import org.generationcp.middleware.hibernate.HibernateSessionPerThreadProvider;
@@ -27,10 +24,9 @@ import org.generationcp.middleware.hibernate.HibernateSessionProvider;
 import org.generationcp.middleware.hibernate.HibernateUtil;
 import org.generationcp.middleware.manager.DatabaseConnectionParameters;
 import org.generationcp.middleware.manager.WorkbenchDataManagerImpl;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.WorkbenchSetting;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.generationcp.middleware.util.ResourceFinder;
 import org.junit.After;
 import org.junit.Before;
@@ -46,6 +42,8 @@ import org.tmatesoft.svn.core.wc2.SvnOperationFactory;
 import org.tmatesoft.svn.core.wc2.SvnTarget;
 
 import com.vaadin.ui.Window;
+
+import junit.framework.Assert;
 
 @Ignore
 public class RestoreUtilTest {
@@ -83,15 +81,15 @@ public class RestoreUtilTest {
 
 	@Before
 	public void setUp() throws Exception {
-		String propertyFile = "workbench.properties";
-		String testPropertyFile = "test.properties";
-		String prefix = "workbench";
+		final String propertyFile = "workbench.properties";
+		final String testPropertyFile = "test.properties";
+		final String prefix = "workbench";
 
-		DatabaseConnectionParameters workbenchDb = new DatabaseConnectionParameters(propertyFile, prefix);
+		final DatabaseConnectionParameters workbenchDb = new DatabaseConnectionParameters(propertyFile, prefix);
 		this.hibernateUtil =
 				new HibernateUtil(workbenchDb.getHost(), workbenchDb.getPort(), workbenchDb.getDbName(), workbenchDb.getUsername(),
 						workbenchDb.getPassword());
-		HibernateSessionProvider sessionProvider = new HibernateSessionPerThreadProvider(this.hibernateUtil.getSessionFactory());
+		final HibernateSessionProvider sessionProvider = new HibernateSessionPerThreadProvider(this.hibernateUtil.getSessionFactory());
 		this.workbenchDataManager = Mockito.spy(new WorkbenchDataManagerImpl(sessionProvider));
 
 		this.mySqlUtil = new MySQLUtil();
@@ -101,12 +99,12 @@ public class RestoreUtilTest {
 		this.mySqlUtil.setMysqlHost(workbenchDb.getHost());
 		this.mySqlUtil.setMysqlPort(Integer.valueOf(workbenchDb.getPort()));
 
-		InputStream in = new FileInputStream(new File(ResourceFinder.locateFile(testPropertyFile).toURI()));
-		Properties prop = new Properties();
+		final InputStream in = new FileInputStream(new File(ResourceFinder.locateFile(testPropertyFile).toURI()));
+		final Properties prop = new Properties();
 		prop.load(in);
 
-		String mysqlDumpPath = prop.getProperty("test.mysqlDumpPath", null);
-		String mysqlPath = prop.getProperty("test.mysqlExePath", null);
+		final String mysqlDumpPath = prop.getProperty("test.mysqlDumpPath", null);
+		final String mysqlPath = prop.getProperty("test.mysqlExePath", null);
 
 		this.mySqlUtil.setMysqlDumpPath(mysqlDumpPath);
 		this.mySqlUtil.setMysqlPath(mysqlPath);
@@ -116,7 +114,7 @@ public class RestoreUtilTest {
 		this.scriptsDir = new File(RestoreUtilTest.prefixDirectory + "/database/local");
 		this.scriptsDir.mkdir();
 
-		String ibdbScriptsGitUrl = prop.getProperty("test.ibdb.scripts.git.url", null);
+		final String ibdbScriptsGitUrl = prop.getProperty("test.ibdb.scripts.git.url", null);
 		if (ibdbScriptsGitUrl == null) {
 			// we use the default url
 			this.gitUrl = RestoreUtilTest.DEFAULT_IBDB_GIT_URL;
@@ -127,10 +125,6 @@ public class RestoreUtilTest {
 		this.gitUrl += "/trunk/local";
 		this.tempInstallationDir = new File(RestoreUtilTest.prefixDirectory);
 		this.tempDir = new File("temp");
-
-		WorkbenchSetting setting = new WorkbenchSetting();
-		setting.setInstallationDirectory(this.tempInstallationDir.getAbsolutePath());
-		Mockito.doReturn(setting).when(this.workbenchDataManager).getWorkbenchSetting();
 	}
 
 	private String getTestProjectName() {
@@ -138,14 +132,14 @@ public class RestoreUtilTest {
 	}
 
 	private void doIbdbScriptsCheckout() throws SVNException {
-		SvnOperationFactory svnOperationFactory = new SvnOperationFactory();
+		final SvnOperationFactory svnOperationFactory = new SvnOperationFactory();
 		try {
-			SvnCheckout checkout = svnOperationFactory.createCheckout();
+			final SvnCheckout checkout = svnOperationFactory.createCheckout();
 			checkout.setSingleTarget(SvnTarget.fromFile(this.scriptsDir));
-			SVNURL url = SVNURL.parseURIEncoded(this.gitUrl);
+			final SVNURL url = SVNURL.parseURIEncoded(this.gitUrl);
 			checkout.setSource(SvnTarget.fromURL(url));
 			checkout.run();
-		} catch (SVNException e) {
+		} catch (final SVNException e) {
 			throw e;
 		} finally {
 			svnOperationFactory.dispose();
@@ -156,32 +150,32 @@ public class RestoreUtilTest {
 	private String copyRestoreFile() {
 		File newRestoreFile = null;
 		try {
-			File restoreFile = new File(ResourceFinder.locateFile(RestoreUtilTest.filename).toURI());
+			final File restoreFile = new File(ResourceFinder.locateFile(RestoreUtilTest.filename).toURI());
 			// copy to the checkout directory
 			newRestoreFile = new File(this.tempInstallationDir.getAbsolutePath(), RestoreUtilTest.filename);
 			FileUtils.copyFile(restoreFile, newRestoreFile);
-		} catch (FileNotFoundException e) {
+		} catch (final FileNotFoundException e) {
 			RestoreUtilTest.LOG.error(e.getMessage(), e);
-		} catch (URISyntaxException e) {
+		} catch (final URISyntaxException e) {
 			RestoreUtilTest.LOG.error(e.getMessage(), e);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			RestoreUtilTest.LOG.error(e.getMessage(), e);
 		}
 		return newRestoreFile != null ? newRestoreFile.getAbsolutePath() : "";
 	}
 
 	private boolean hasInternetConnection() {
-		Socket sock = new Socket();
-		InetSocketAddress addr = new InetSocketAddress("www.google.com", 80);
+		final Socket sock = new Socket();
+		final InetSocketAddress addr = new InetSocketAddress("www.google.com", 80);
 		try {
 			sock.connect(addr, 3000);
 			return true;
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			return false;
 		} finally {
 			try {
 				sock.close();
-			} catch (IOException e) {
+			} catch (final IOException e) {
 			}
 		}
 	}
@@ -195,29 +189,28 @@ public class RestoreUtilTest {
 			}
 			try {
 				this.doIbdbScriptsCheckout();
-				Project newProject = new Project();
+				final Project newProject = new Project();
 				newProject.setCropType(new CropType(RestoreUtilTest.cropType));
 				newProject.setLastOpenDate(new Date());
 				newProject.setStartDate(new Date());
 				newProject.setProjectName(this.getTestProjectName());
 				newProject.setUserId(1);
 
-				Project project = this.workbenchDataManager.addProject(newProject);
+				final Project project = this.workbenchDataManager.addProject(newProject);
 				this.workbenchDataManager.saveOrUpdateProject(project);
 
-				CropDatabaseGenerator generator = new CropDatabaseGenerator(project.getCropType());
-				generator.setWorkbenchDataManager(this.workbenchDataManager);
+				final CropDatabaseGenerator generator = new CropDatabaseGenerator(project.getCropType());
 				generator.generateDatabase();
 
-				String fullFilePath = this.copyRestoreFile();
+				final String fullFilePath = this.copyRestoreFile();
 
-				ConfirmDialog confirmDialog = new CustomConfirmDialog(true);
+				final ConfirmDialog confirmDialog = new CustomConfirmDialog(true);
 
-				RestoreIBDBSaveAction restoreAction = new RestoreIBDBSaveAction(project, new Window());
-				SessionData sessionData = new SessionData();
-				sessionData.setLastOpenedProject(project);
-				sessionData.setUserData(new User(1));
-				restoreAction.setSessionData(sessionData);
+				final RestoreIBDBSaveAction restoreAction = new RestoreIBDBSaveAction(project, new Window());
+				final ContextUtil contextUtil = Mockito.mock(ContextUtil.class);
+				Mockito.when(contextUtil.getProjectInContext()).thenReturn(project);
+				Mockito.when(contextUtil.getCurrentWorkbenchUser()).thenReturn(new WorkbenchUser(1));
+				restoreAction.setContextUtil(contextUtil);
 				restoreAction.setMysqlUtil(this.mySqlUtil);
 				restoreAction.setWorkbenchDataManager(this.workbenchDataManager);
 				restoreAction.setMessageSource(this.messageSource);
@@ -228,11 +221,11 @@ public class RestoreUtilTest {
 
 				Assert.assertFalse("There is a restore process error", restoreAction.isHasRestoreError());
 
-			} catch (SVNException e) {
+			} catch (final SVNException e) {
 				Assert.fail("Error during checkout of ibdbscripts => " + e.getMessage());
-			} catch (Exception e) {
-				Assert.fail("Error happened during the restore process, please check the sql scripts: More error details => "
-						+ e.getMessage());
+			} catch (final Exception e) {
+				Assert.fail(
+						"Error happened during the restore process, please check the sql scripts: More error details => " + e.getMessage());
 			}
 		} else {
 			Assert.fail("Server does not have internet connection");
@@ -247,35 +240,34 @@ public class RestoreUtilTest {
 			}
 			try {
 				this.doIbdbScriptsCheckout();
-				Project newProject = new Project();
+				final Project newProject = new Project();
 				newProject.setCropType(new CropType(RestoreUtilTest.cropType));
 				newProject.setLastOpenDate(new Date());
 				newProject.setStartDate(new Date());
 				newProject.setProjectName(this.getTestProjectName());
 				newProject.setUserId(1);
 
-				Project project = this.workbenchDataManager.addProject(newProject);
+				final Project project = this.workbenchDataManager.addProject(newProject);
 				this.workbenchDataManager.saveOrUpdateProject(project);
 
-				CropDatabaseGenerator generator;
+				final CropDatabaseGenerator generator;
 				generator = new CropDatabaseGenerator(project.getCropType());
-				generator.setWorkbenchDataManager(this.workbenchDataManager);
 				generator.generateDatabase();
 
-				ConfirmDialog confirmDialog = new CustomConfirmDialog(false);
+				final ConfirmDialog confirmDialog = new CustomConfirmDialog(false);
 
-				RestoreIBDBSaveAction restoreAction = new RestoreIBDBSaveAction(project, new Window());
+				final RestoreIBDBSaveAction restoreAction = new RestoreIBDBSaveAction(project, new Window());
 				restoreAction.onClose(confirmDialog);
 
 				this.workbenchDataManager.deleteProject(project);
 
 				Assert.assertTrue("Should return false since user did not confirm the restore process", restoreAction.isHasRestoreError());
 
-			} catch (SVNException e) {
+			} catch (final SVNException e) {
 				Assert.fail("Error during checkout of ibdbscripts => " + e.getMessage());
-			} catch (Exception e) {
-				Assert.fail("Error happened during the restore process, please check the sql scripts: More error details => "
-						+ e.getMessage());
+			} catch (final Exception e) {
+				Assert.fail(
+						"Error happened during the restore process, please check the sql scripts: More error details => " + e.getMessage());
 			}
 		} else {
 			Assert.fail("Server does not have internet connection");
@@ -287,7 +279,7 @@ public class RestoreUtilTest {
 
 		private static final long serialVersionUID = 1L;
 
-		CustomConfirmDialog(boolean isConfirmed) {
+		CustomConfirmDialog(final boolean isConfirmed) {
 			super();
 			this.setConfirmed(isConfirmed);
 		}

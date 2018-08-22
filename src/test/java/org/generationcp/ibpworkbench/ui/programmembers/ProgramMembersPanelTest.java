@@ -4,28 +4,30 @@ package org.generationcp.ibpworkbench.ui.programmembers;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.service.ProgramService;
+import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.middleware.data.initializer.PersonTestDataInitializer;
+import org.generationcp.middleware.data.initializer.UserTestDataInitializer;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.Person;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.UserRole;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.vaadin.data.Container;
+import com.vaadin.ui.Label;
 
 public class ProgramMembersPanelTest {
 
@@ -39,25 +41,28 @@ public class ProgramMembersPanelTest {
 
 	private static final int ADMIN_USER_ID = 3;
 	private static final int ADMIN_PERSON_ID = 3;
+	private static final String ADMIN_NAME = "USER3";
 
 	@Mock
 	private WorkbenchDataManager workbenchDataManager;
 
 	@Mock
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	private Project project;
 
 	@InjectMocks
-	private ProgramMembersPanel controller;
+	private ProgramMembersPanel programMembersPanel;
 	
+	private WorkbenchUser superAdminUser;
+
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 		this.project = this.createProjectTestData(1, ProgramMembersPanelTest.OWNER_USER_ID);
-		this.controller = new ProgramMembersPanel(this.project);
-		this.controller.setWorkbenchDataManager(this.workbenchDataManager);
-		this.controller.setSessionData(this.sessionData);
+		this.programMembersPanel = new ProgramMembersPanel(this.project);
+		this.programMembersPanel.setWorkbenchDataManager(this.workbenchDataManager);
+		this.programMembersPanel.setContextUtil(this.contextUtil);
 	}
 
 	private Project createProjectTestData(final long projectId, final int owner) {
@@ -75,16 +80,17 @@ public class ProgramMembersPanelTest {
 		this.mockProgramMembers();
 		this.mockCurrentUser(ProgramMembersPanelTest.OWNER_USER_ID);
 
-		final Container usersContainer = this.controller.createUsersContainer();
+		final Container usersContainer = this.programMembersPanel.createUsersContainer();
 
-		final Collection<User> programMembers = (Collection<User>) usersContainer.getItemIds();
+		final Collection<WorkbenchUser> programMembers = (Collection<WorkbenchUser>) usersContainer.getItemIds();
 		Assert.assertNotNull(programMembers);
 		Assert.assertEquals("There should be 3 program members.", 3, programMembers.size());
 
 		// Check that program owner should be disabled
-		for (final User user : programMembers) {
+		for (final WorkbenchUser user : programMembers) {
 			if (user.getUserid().equals(ProgramMembersPanelTest.OWNER_PERSON_ID)) {
-				Assert.assertFalse("Program Owner and Default Admin users should be disabled so they cannot be removed as member.",
+				Assert.assertFalse(
+						"Program Owner and Default Admin users should be disabled so they cannot be removed as member.",
 						user.isEnabled());
 			} else {
 				Assert.assertTrue("Other users should be enabled so they can be removed as members.", user.isEnabled());
@@ -98,17 +104,18 @@ public class ProgramMembersPanelTest {
 		this.mockProgramMembers();
 		this.mockCurrentUser(ProgramMembersPanelTest.MEMBER_USER_ID);
 
-		final Container usersContainer = this.controller.createUsersContainer();
+		final Container usersContainer = this.programMembersPanel.createUsersContainer();
 
-		final Collection<User> programMembers = (Collection<User>) usersContainer.getItemIds();
+		final Collection<WorkbenchUser> programMembers = (Collection<WorkbenchUser>) usersContainer.getItemIds();
 		Assert.assertNotNull(programMembers);
 		Assert.assertEquals("There should be 3 program members.", 3, programMembers.size());
 
 		// Two users should be disabled - current user and program owner
-		for (final User user : programMembers) {
+		for (final WorkbenchUser user : programMembers) {
 			if (user.getUserid().equals(ProgramMembersPanelTest.OWNER_PERSON_ID)
 					|| user.getUserid().equals(ProgramMembersPanelTest.MEMBER_PERSON_ID)) {
-				Assert.assertFalse("Program owner and current user should be disabled and cannot be removed as program members.",
+				Assert.assertFalse(
+						"Program owner and current user should be disabled and cannot be removed as program members.",
 						user.isEnabled());
 			} else {
 				Assert.assertTrue("Other users should be enabled so they can be removed as members.", user.isEnabled());
@@ -117,97 +124,118 @@ public class ProgramMembersPanelTest {
 	}
 
 	@Test
+	public void testGenerateRoleCellForOwner() {
+		this.mockCurrentUser(ProgramMembersPanelTest.OWNER_USER_ID);
+		final Object itemId = UserTestDataInitializer.createUserWithRole(ProgramMembersPanelTest.OWNER_USER_ID);
+		final Label roleLabel = this.programMembersPanel.generateRoleCell(itemId);
+		Assert.assertEquals(((WorkbenchUser) itemId).getRoles().get(0).getCapitalizedRole(), roleLabel.getValue());
+		Assert.assertEquals("label", roleLabel.getDebugId());
+		Assert.assertEquals("label-bold", roleLabel.getStyleName());
+	}
+
+	@Test
+	public void testGenerateRoleCellForMember() {
+		this.mockCurrentUser(ProgramMembersPanelTest.OWNER_USER_ID);
+		final Object itemId = UserTestDataInitializer.createUserWithRole(ProgramMembersPanelTest.MEMBER_PERSON_ID);
+		final Label roleLabel = this.programMembersPanel.generateRoleCell(itemId);
+		Assert.assertEquals(((WorkbenchUser) itemId).getRoles().get(0).getCapitalizedRole(), roleLabel.getValue());
+		Assert.assertEquals("label", roleLabel.getDebugId());
+		Assert.assertNotSame("label-bold", roleLabel.getStyleName());
+	}
+
+	@Test
+	public void testgenerateUserNameCellForOwner() {
+		this.mockCurrentUser(ProgramMembersPanelTest.OWNER_USER_ID);
+		final Object itemId = UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.OWNER_PERSON_ID,
+				"UserName", 1, "Firstname", "Middlename");
+		final Label roleLabel = this.programMembersPanel.generateUserNameCell(itemId);
+		Assert.assertEquals(((WorkbenchUser) itemId).getPerson().getDisplayName(), roleLabel.getValue());
+		Assert.assertEquals("label", roleLabel.getDebugId());
+		Assert.assertEquals("label-bold", roleLabel.getStyleName());
+	}
+
+	@Test
+	public void testgenerateUserNameCellForMember() {
+		this.mockCurrentUser(ProgramMembersPanelTest.OWNER_USER_ID);
+		final Object itemId = UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.MEMBER_PERSON_ID,
+				"UserName", 1, "Firstname", "Middlename");
+		final Label roleLabel = this.programMembersPanel.generateUserNameCell(itemId);
+		Assert.assertEquals(((WorkbenchUser) itemId).getPerson().getDisplayName(), roleLabel.getValue());
+		Assert.assertEquals("label", roleLabel.getDebugId());
+		Assert.assertNotSame("label-bold", roleLabel.getStyleName());
+	}
+
+	@Test
 	public void testInitializeUsers() {
 		// Setup test data and mocks
-		this.mockDataAndReturnTheProjectUserRoles();
+		Mockito.when(this.workbenchDataManager.getActiveUserIDsByProjectId(Matchers.anyLong()))
+				.thenReturn(Arrays.asList(ProgramMembersPanelTest.OWNER_USER_ID, ProgramMembersPanelTest.ADMIN_USER_ID,
+						ProgramMembersPanelTest.MEMBER_USER_ID));
 		this.mockCurrentUser(ProgramMembersPanelTest.MEMBER_USER_ID);
+		final List<WorkbenchUser> testProgramMembers = this.createProgramMembersTestData();
+		for (final WorkbenchUser user : testProgramMembers) {
+			Mockito.when(this.workbenchDataManager.getUserById(user.getUserid())).thenReturn(user);
+		}
 
 		// Initialization in controller
-		this.controller.initializeComponents();
-		this.controller.initializeValues();
+		this.programMembersPanel.initializeComponents();
+		this.programMembersPanel.initializeValues();
 
 		// Call method to test
-		this.controller.initializeUsers();
+		this.programMembersPanel.initializeUsers();
 
 		// Check that members are selected in twin table
-		final Set<User> programMembers = this.controller.getProgramMembersDisplayed();
+		final Set<WorkbenchUser> programMembers = this.programMembersPanel.getProgramMembersDisplayed();
 		Assert.assertNotNull(programMembers);
 		Assert.assertEquals("There should be 3 program members.", 3, programMembers.size());
 
 		// Check that ADMIN user is disabled from selection
-		for (final User user : programMembers) {
-			if (ProgramService.ADMIN_USERNAME.equalsIgnoreCase(user.getName())) {
-				Assert.assertFalse("Default Admin should be disabled and cannot be removed as program member.", user.isEnabled());
+		for (final WorkbenchUser user : programMembers) {
+			if (this.superAdminUser.equals(user)) {
+				Assert.assertFalse("SuperAdmin user should be disabled and cannot be removed as program member.",
+						user.isEnabled());
+			} else {
+				Assert.assertTrue("Non-SuperAdmin user should be enabled and can be removed as program member.",
+						user.isEnabled());
 			}
 		}
 	}
 
-	private List<ProjectUserRole> mockDataAndReturnTheProjectUserRoles() {
-		final Role dummyRole = new Role();
-		dummyRole.setRoleId(1);
-		Mockito.doReturn(Arrays.asList(dummyRole)).when(this.workbenchDataManager).getAllRolesOrderedByLabel();
-		
-		final List<ProjectUserRole> projectUserRoles = this.createProjectUserRolesTestData(this.project);
-		Mockito.doReturn(projectUserRoles).when(this.workbenchDataManager).getProjectUserRolesByProject(this.project);
-
-		return projectUserRoles;
-	}
-
-	private List<ProjectUserRole> createProjectUserRolesTestData(final Project project) {
-		final List<ProjectUserRole> projectUserRoles = new ArrayList<>();
-		final List<User> programMembers = this.createProgramMembersTestData();
-		for (final User user : programMembers) {
-			final ProjectUserRole projectUserRole = new ProjectUserRole();
-			projectUserRole.setProject(project);
-			projectUserRole.setUserId(user.getUserid());
-			projectUserRoles.add(projectUserRole);
-
-			Mockito.doReturn(user).when(this.workbenchDataManager).getUserById(user.getUserid());
-		}
-		return projectUserRoles;
-	}
-
 	private void mockProgramMembers() {
-		final List<User> programMembers = this.createProgramMembersTestData();
-		Mockito.doReturn(programMembers).when(this.workbenchDataManager).getAllUsersSorted();
-		for (final User user : programMembers) {
-			Mockito.doReturn(this.createPersonTestData(user.getPersonid())).when(this.workbenchDataManager)
+		final List<WorkbenchUser> programMembers = this.createProgramMembersTestData();
+		Mockito.doReturn(programMembers).when(this.workbenchDataManager).getAllActiveUsersSorted();
+		for (final WorkbenchUser user : programMembers) {
+			Mockito.doReturn(PersonTestDataInitializer.createPerson(user.getPersonid())).when(this.workbenchDataManager)
 					.getPersonById(user.getPersonid());
 		}
 	}
 
 	private void mockCurrentUser(final int userId) {
-		Mockito.doReturn(new User(userId)).when(this.sessionData).getUserData();
+		Mockito.doReturn(userId).when(this.contextUtil).getCurrentWorkbenchUserId();
 	}
 
-	private Person createPersonTestData(final Integer personid) {
-		final Person person = new Person();
-		person.setId(personid);
-		return person;
-	}
+	private List<WorkbenchUser> createProgramMembersTestData() {
+		final List<WorkbenchUser> programMembers = new ArrayList<>();
+		final WorkbenchUser user1 = UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.OWNER_USER_ID,
+				ProgramMembersPanelTest.OWNER_NAME, ProgramMembersPanelTest.OWNER_PERSON_ID,
+				ProgramMembersPanelTest.OWNER_NAME, ProgramMembersPanelTest.OWNER_NAME);
+		user1.setRoles(Collections.singletonList(new UserRole(user1, new Role(2, "Breeder"))));
+		programMembers.add(user1);
 
-	private List<User> createProgramMembersTestData() {
-		final List<User> programMembers = new ArrayList<>();
-		programMembers.add(this.createUsersTestData(ProgramMembersPanelTest.OWNER_USER_ID, ProgramMembersPanelTest.OWNER_NAME,
-				ProgramMembersPanelTest.OWNER_PERSON_ID));
-		programMembers.add(this.createUsersTestData(ProgramMembersPanelTest.MEMBER_USER_ID, ProgramMembersPanelTest.MEMBER_NAME,
-				ProgramMembersPanelTest.MEMBER_PERSON_ID));
-		programMembers.add(this.createUsersTestData(ProgramMembersPanelTest.ADMIN_USER_ID, ProgramService.ADMIN_USERNAME,
-				ProgramMembersPanelTest.ADMIN_PERSON_ID));
+		final WorkbenchUser user2 = UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.MEMBER_USER_ID,
+				ProgramMembersPanelTest.MEMBER_NAME, ProgramMembersPanelTest.MEMBER_PERSON_ID,
+				ProgramMembersPanelTest.MEMBER_NAME, ProgramMembersPanelTest.MEMBER_NAME);
+		user2.setRoles(Collections.singletonList(new UserRole(user2, new Role(3, "Technician"))));
+		programMembers.add(user2);
+		
+		this.superAdminUser = UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.ADMIN_USER_ID,
+				ProgramMembersPanelTest.ADMIN_NAME, ProgramMembersPanelTest.ADMIN_PERSON_ID,
+				ProgramMembersPanelTest.ADMIN_NAME, ProgramMembersPanelTest.ADMIN_NAME);
+		this.superAdminUser.setRoles(Collections.singletonList(new UserRole(this.superAdminUser, new Role(5, "SuperAdmin"))));
+		Mockito.when(this.workbenchDataManager.isSuperAdminUser(this.superAdminUser.getUserid())).thenReturn(true);
+		programMembers.add(this.superAdminUser);
+		
 		return programMembers;
-	}
-
-	private User createUsersTestData(final int userId, final String username, final int personId) {
-		final User user = new User(userId);
-		user.setName(username);
-		user.setPersonid(personId);
-		user.setPerson(new Person("Mister", "User", username + userId));
-		
-		final List<UserRole> userRoleList = new ArrayList<>();
-		userRoleList.add(new UserRole(user, "ADMIN"));
-		user.setRoles(userRoleList);
-		
-		return user;
 	}
 
 }

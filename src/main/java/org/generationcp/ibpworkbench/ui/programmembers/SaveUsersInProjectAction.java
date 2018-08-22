@@ -23,11 +23,9 @@ import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
-import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
-import org.generationcp.middleware.pojos.workbench.Role;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +44,7 @@ public class SaveUsersInProjectAction implements ClickListener {
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOG = LoggerFactory.getLogger(SaveUsersInProjectAction.class);
 
-	private final TwinTableSelect<User> select;
+	private final TwinTableSelect<WorkbenchUser> select;
 
 	private final Project project;
 	
@@ -62,7 +60,7 @@ public class SaveUsersInProjectAction implements ClickListener {
 	@Autowired
 	private PlatformTransactionManager transactionManager;
 
-	public SaveUsersInProjectAction(Project project, TwinTableSelect<User> select) {
+	public SaveUsersInProjectAction(Project project, TwinTableSelect<WorkbenchUser> select) {
 		this.project = project;
 		this.select = select;
 	}
@@ -76,39 +74,16 @@ public class SaveUsersInProjectAction implements ClickListener {
 		if (this.project == null) {
 			return;
 		}
-
-		final Collection<User> userList = this.select.getValue();
+		
+		final Collection<WorkbenchUser> userList = this.select.getValue();
 		try {
 			final TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
 			transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 				@Override
 				protected void doInTransactionWithoutResult(TransactionStatus status) {
-					List<ProjectUserRole> projectUserRoleList = new ArrayList<ProjectUserRole>();
-
-					// add project user roles to the list
-					for (User u : userList) {
-						for (Role role : SaveUsersInProjectAction.this.workbenchDataManager.getAllRoles()) {
-							ProjectUserRole projUsrRole = new ProjectUserRole();
-							projUsrRole.setUserId(u.getUserid());
-							projUsrRole.setRole(role);
-							projUsrRole.setProject(SaveUsersInProjectAction.this.project);
-							projectUserRoleList.add(projUsrRole);
-						}
-
-						if (SaveUsersInProjectAction.this.workbenchDataManager.getProjectUserInfoDao().getByProjectIdAndUserId(SaveUsersInProjectAction.this.project.getProjectId().intValue(),
-								u.getUserid()) == null) {
-							ProjectUserInfo pUserInfo = new ProjectUserInfo(SaveUsersInProjectAction.this.project.getProjectId().intValue(), u.getUserid());
-							SaveUsersInProjectAction.this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
-						}
-					}
 					
-					//use the project service to link new members to the project
-					programService.saveWorkbenchUserToCropUserMapping(project, new HashSet<>(userList));
-
-					// UPDATE workbench DB with the project user roles
-					SaveUsersInProjectAction.this.workbenchDataManager.updateProjectsRolesForProject(project,projectUserRoleList);
-
-
+					SaveUsersInProjectAction.this.programService.updateMembersUserInfo(userList, project);
+					
 					MessageNotifier.showMessage(event.getComponent().getWindow(), "Success", "Successfully updated this project's members list.");
 				}
 			});
@@ -122,6 +97,36 @@ public class SaveUsersInProjectAction implements ClickListener {
 		} catch (Exception e) {
 			SaveUsersInProjectAction.LOG.error(e.getMessage(), e);
 		}
+	}
+
+	
+	public List<Integer> getRemovedUserIds(List<Integer> activeUserIds, Collection<WorkbenchUser> userList) {
+		List<Integer> removedUserIds = new ArrayList<>();
+		for(Integer activeUserId: activeUserIds) {
+			boolean isProgramMember = false;
+			for(WorkbenchUser user: userList) {
+				if(user.getUserid().equals(activeUserId)) {
+					isProgramMember = true;
+					break;
+				}
+			}
+			if(!isProgramMember) removedUserIds.add(activeUserId);
+		}
+		return removedUserIds;
+	}
+
+	public void setTransactionManager(PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
+	}
+
+	
+	public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
+		this.workbenchDataManager = workbenchDataManager;
+	}
+
+	
+	public void setProgramService(ProgramService programService) {
+		this.programService = programService;
 	}
 
 }

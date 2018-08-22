@@ -4,7 +4,7 @@
 (function() {
 	var VIEWS_LOCATION = 'static/views/ontology/',
 		app = angular.module('ontology', ['ngRoute', 'variablesView', 'propertiesView', 'methodsView', 'scalesView', 'addVariable',
-		'addProperty', 'addMethod', 'addScale', 'pascalprecht.translate', 'keyTrap', 'config', 'panel', 'bmsAuth', 'help']);
+		'addProperty', 'addMethod', 'addScale', 'addFormula', 'pascalprecht.translate', 'keyTrap', 'config', 'panel', 'bmsAuth', 'help']);
 
 	app.config(['$routeProvider', function($routeProvider) {
 
@@ -15,6 +15,11 @@
 				templateUrl: VIEWS_LOCATION + 'propertiesView.html'
 			})
 			.when('/variables', {
+				controller: 'VariablesController',
+				controllerAs: 'varsCtrl',
+				templateUrl: VIEWS_LOCATION + 'variablesView.html'
+			})
+			.when('/variables/:id', {
 				controller: 'VariablesController',
 				controllerAs: 'varsCtrl',
 				templateUrl: VIEWS_LOCATION + 'variablesView.html'
@@ -44,6 +49,10 @@
 			.when('/add/scale', {
 				controller: 'AddScaleController',
 				templateUrl: VIEWS_LOCATION + 'addScaleView.html'
+			})
+			.when('/add/formula', {
+				controller: 'AddFormulaController',
+				templateUrl: VIEWS_LOCATION + 'addFormulaView.html'
 			})
 			.otherwise({
 				redirectTo: '/variables'

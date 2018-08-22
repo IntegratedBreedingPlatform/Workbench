@@ -1,6 +1,12 @@
 
 package org.generationcp.ibpworkbench.cross.study.h2h.main.util;
 
+import java.io.FileOutputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -10,16 +16,14 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.ResultsComponent;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.pojos.ResultsData;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.pojos.TraitForComparison;
+import org.generationcp.middleware.pojos.workbench.ToolName;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import java.io.FileOutputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @Configurable
 public class HeadToHeadDataListExport {
@@ -30,50 +34,54 @@ public class HeadToHeadDataListExport {
 	private static final String NUMERIC_STYLE = "numericStyle";
 	private static final String NUMERIC_DOUBLE_STYLE = "numericDoubleStyle";
 
+	@Autowired
+	private ContextUtil contextUtil;
+	private final InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
+
 	public HeadToHeadDataListExport() {
 		// empty constructor
 	}
 
-	private HashMap<String, CellStyle> createStyles(HSSFWorkbook wb) {
-		HashMap<String, CellStyle> styles = new HashMap<>();
+	private HashMap<String, CellStyle> createStyles(final HSSFWorkbook wb) {
+		final HashMap<String, CellStyle> styles = new HashMap<>();
 
 		// set cell style for labels in the description sheet
-		CellStyle labelStyle = wb.createCellStyle();
+		final CellStyle labelStyle = wb.createCellStyle();
 		labelStyle.setFillForegroundColor(IndexedColors.BROWN.getIndex());
 		labelStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
-		Font labelFont = wb.createFont();
+		final Font labelFont = wb.createFont();
 		labelFont.setColor(IndexedColors.WHITE.getIndex());
 		labelFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
 		labelStyle.setFont(labelFont);
 		styles.put(HeadToHeadDataListExport.LABEL_STYLE, labelStyle);
 
 		// set cell style for headings in the description sheet
-		CellStyle headingStyle = wb.createCellStyle();
+		final CellStyle headingStyle = wb.createCellStyle();
 		headingStyle.setFillForegroundColor(IndexedColors.SEA_GREEN.getIndex());
 		headingStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
-		Font headingFont = wb.createFont();
+		final Font headingFont = wb.createFont();
 		headingFont.setColor(IndexedColors.WHITE.getIndex());
 		headingFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
 		headingStyle.setFont(headingFont);
 		styles.put(HeadToHeadDataListExport.HEADING_STYLE, headingStyle);
 
-		CellStyle headingMergedStyle = wb.createCellStyle();
+		final CellStyle headingMergedStyle = wb.createCellStyle();
 		headingMergedStyle.setFillForegroundColor(IndexedColors.DARK_GREEN.getIndex());
 		headingMergedStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
 		headingMergedStyle.setAlignment(CellStyle.ALIGN_CENTER);
-		Font headingMergedFont = wb.createFont();
+		final Font headingMergedFont = wb.createFont();
 		headingMergedFont.setColor(IndexedColors.WHITE.getIndex());
 		headingMergedFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
 		headingMergedStyle.setFont(headingMergedFont);
 		styles.put(HeadToHeadDataListExport.HEADING_MERGED_STYLE, headingMergedStyle);
 
 		// set cell style for numeric values (left alignment)
-		CellStyle numericStyle = wb.createCellStyle();
+		final CellStyle numericStyle = wb.createCellStyle();
 		numericStyle.setAlignment(CellStyle.ALIGN_RIGHT);
 		numericStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("0"));
 		styles.put(HeadToHeadDataListExport.NUMERIC_STYLE, numericStyle);
 
-		CellStyle numericDoubleStyle = wb.createCellStyle();
+		final CellStyle numericDoubleStyle = wb.createCellStyle();
 		numericDoubleStyle.setAlignment(CellStyle.ALIGN_RIGHT);
 		numericDoubleStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("#,##0.00"));
 		styles.put(HeadToHeadDataListExport.NUMERIC_DOUBLE_STYLE, numericDoubleStyle);
@@ -81,19 +89,38 @@ public class HeadToHeadDataListExport {
 		return styles;
 	}
 
-	public FileOutputStream exportHeadToHeadDataListExcel(String filename, List<ResultsData> resultDataList,
-			Set<TraitForComparison> traitsIterator, String[] columnIdData, Map<String, String> columnIdDataMsgMap)
+	public String exportHeadToHeadDataListExcel(final String filenameWithoutExtension, final List<ResultsData> resultDataList,
+			final Set<TraitForComparison> traitsIterator, final String[] columnIdData, final Map<String, String> columnIdDataMsgMap)
 			throws HeadToHeadDataListExportException {
 
-		HSSFWorkbook wb = new HSSFWorkbook();
-		HashMap<String, CellStyle> sheetStyles = this.createStyles(wb);
-		HSSFSheet sheet = wb.createSheet("Data List");
+		final HSSFWorkbook wb = this.createExcelWorkbookContents(resultDataList, traitsIterator, columnIdData, columnIdDataMsgMap);
+
+		try {
+			final String fileNameUnderWorkspaceDirectory = this.installationDirectoryUtil.getTempFileInOutputDirectoryForProjectAndTool(
+					filenameWithoutExtension, ".xls", this.contextUtil.getProjectInContext(), ToolName.MAIN_HEAD_TO_HEAD_BROWSER);
+
+			// write the excel file
+			final FileOutputStream fileOutputStream = new FileOutputStream(fileNameUnderWorkspaceDirectory);
+			wb.write(fileOutputStream);
+			fileOutputStream.close();
+
+			return fileNameUnderWorkspaceDirectory;
+		} catch (final Exception ex) {
+			throw new HeadToHeadDataListExportException("Error with writing to: " + filenameWithoutExtension, ex);
+		}
+	}
+
+	HSSFWorkbook createExcelWorkbookContents(final List<ResultsData> resultDataList, final Set<TraitForComparison> traitsIterator,
+			final String[] columnIdData, final Map<String, String> columnIdDataMsgMap) {
+		final HSSFWorkbook wb = new HSSFWorkbook();
+		final HashMap<String, CellStyle> sheetStyles = this.createStyles(wb);
+		final HSSFSheet sheet = wb.createSheet("Data List");
 
 		int cellIndex = 0;
 		int startDataRowIndex = 0;
 
-		HSSFRow headerColSpan = sheet.createRow(startDataRowIndex++);
-		HSSFRow header = sheet.createRow(startDataRowIndex++);
+		final HSSFRow headerColSpan = sheet.createRow(startDataRowIndex++);
+		final HSSFRow header = sheet.createRow(startDataRowIndex++);
 
 		Cell cell = header.createCell(cellIndex++);
 		cell.setCellValue("Test GroupID");
@@ -114,32 +141,36 @@ public class HeadToHeadDataListExport {
 		cell.setCellValue("Standard Entry");
 		cell.setCellStyle(sheetStyles.get(HeadToHeadDataListExport.HEADING_STYLE));
 
-		for (TraitForComparison traitForCompare : traitsIterator) {
+		for (final TraitForComparison traitForCompare : traitsIterator) {
 			if (traitForCompare.isDisplay()) {
-				int startCol = cellIndex;
+				final int startCol = cellIndex;
 				int endCol;
-				Cell cellHeader = headerColSpan.createCell(cellIndex);
+				final Cell cellHeader = headerColSpan.createCell(cellIndex);
 				cellHeader.setCellValue(traitForCompare.getTraitInfo().getName());
 				cellHeader.setCellStyle(sheetStyles.get(HeadToHeadDataListExport.HEADING_MERGED_STYLE));
 
 				for (int k = 0; k < columnIdData.length; k++) {
-					String colId = columnIdData[k];
-					String msg = columnIdDataMsgMap.get(colId);
+					final String colId = columnIdData[k];
+					final String msg = columnIdDataMsgMap.get(colId);
 					cell = header.createCell(cellIndex++);
 					cell.setCellValue(msg);
 					cell.setCellStyle(sheetStyles.get(HeadToHeadDataListExport.HEADING_STYLE));
 				}
 
 				endCol = cellIndex;
-				sheet.addMergedRegion(new CellRangeAddress(0, // first row (0-based)
-						0, // last row (0-based)
-						startCol, // first column (0-based)
-						endCol - 1 // last column (0-based)
-				));
+				sheet.addMergedRegion(new CellRangeAddress(
+						// first row (0-based)
+						0,
+						// last row (0-based)
+						0,
+						// first column (0-based)
+						startCol,
+						// last column (0-based)
+						endCol - 1));
 			}
 		}
 
-		for (ResultsData resData : resultDataList) {
+		for (final ResultsData resData : resultDataList) {
 			// we iterate and permutate against the list
 			cellIndex = 0;
 			final HSSFRow rowData = sheet.createRow(startDataRowIndex++);
@@ -157,9 +188,9 @@ public class HeadToHeadDataListExport {
 			rowData.createCell(cellIndex++).setCellValue(standardEntryGid);
 			rowData.createCell(cellIndex++).setCellValue(standardEntryName);
 
-			for (TraitForComparison traitForCompare : traitsIterator) {
+			for (final TraitForComparison traitForCompare : traitsIterator) {
 				if (traitForCompare.isDisplay()) {
-					for (String colId : columnIdData) {
+					for (final String colId : columnIdData) {
 						final String traitColId = traitForCompare.getTraitInfo().getName() + colId;
 						String numVal = resData.getTraitDataMap().get(traitColId);
 						if (numVal == null) {
@@ -191,15 +222,10 @@ public class HeadToHeadDataListExport {
 		for (int ctr = 0; ctr < cellIndex; ctr++) {
 			sheet.autoSizeColumn(ctr);
 		}
+		return wb;
+	}
 
-		try {
-			// write the excel file
-			FileOutputStream fileOutputStream = new FileOutputStream(filename);
-			wb.write(fileOutputStream);
-			fileOutputStream.close();
-			return fileOutputStream;
-		} catch (Exception ex) {
-			throw new HeadToHeadDataListExportException("Error with writing to: " + filename, ex);
-		}
+	public void setContextUtil(final ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
 	}
 }

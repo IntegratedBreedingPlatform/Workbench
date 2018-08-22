@@ -1,12 +1,10 @@
 package org.generationcp.ibpworkbench.security;
 
 import org.generationcp.commons.util.ContextUtil;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
-import org.generationcp.middleware.pojos.User;
-import org.generationcp.middleware.pojos.workbench.WorkbenchRuntimeData;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +21,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
- * Handler for setting up Workbench specific stuff e.g. {@link SessionData} before redirecting to the page requested on successful
+ * Handler for setting up Workbench specific stuff e.g. {@link org.generationcp.commons.spring.util.ContextUtil} before redirecting to the page requested on successful
  * authentication. Could also be used to redirect to different destinations based on role if needed.
  *
  * @author Naymesh Mistry
@@ -32,13 +30,11 @@ public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSucc
 
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchAuthenticationSuccessHandler.class);
 
-	@Autowired
-	private SessionData sessionData;
-
+	private static final String DEFAULT_TARGET_URL = "/main";
+	
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
 
-	private String defaultTargetUrl = "/main";
 
 	private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
@@ -46,15 +42,13 @@ public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSucc
 	public void onAuthenticationSuccess(final HttpServletRequest request, final HttpServletResponse response,
 			final Authentication authentication) throws IOException, ServletException {
 
-		final String targetUrl = this.defaultTargetUrl;
+		final String targetUrl = DEFAULT_TARGET_URL;
 		if (response.isCommitted()) {
-			this.LOG.debug("Response has already been committed. Unable to redirect to " + targetUrl);
+			LOG.debug("Response has already been committed. Unable to redirect to " + targetUrl);
 			return;
 		}
 
-		final User user = retrieveUserFromAuthentication(authentication);
-
-		this.populateWorkbenchSessionData(user);
+		final WorkbenchUser user = retrieveUserFromAuthentication(authentication);
 
 		// Initialize the ContextInfo to set the userId of the authenticated user.
 		// The projectId and token will be populated later when a program is opened/loaded.
@@ -65,36 +59,15 @@ public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSucc
 		this.redirectStrategy.sendRedirect(request, response, targetUrl);
 	}
 
-	protected User retrieveUserFromAuthentication(final Authentication authentication) {
+	protected WorkbenchUser retrieveUserFromAuthentication(final Authentication authentication) {
 
 		final String username = authentication.getName();
-		final User user = this.workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0);
+		final WorkbenchUser user = this.workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0);
 		final Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
 		user.setPerson(person);
 
 		return user;
 
-	}
-
-	/**
-	 * Actions that the old org.generationcp.ibpworkbench.actions.LoginPresenter used to perform on successful login.
-	 */
-	private void populateWorkbenchSessionData(final User user) {
-
-		// 1. Populate Session Data
-		this.sessionData.setUserData(user);
-
-		// 2. Remember Me. TODO under BMS-84.
-		// See the cookie based scheme in org.generationcp.ibpworkbench.actions.LoginPresenter.doLogin(): line 97-111 for ref.
-		// We want this replaced using Spring Security's "Remember Me services" options.
-
-		// 3. Update WorkbenchRuntimeData
-		WorkbenchRuntimeData data = this.workbenchDataManager.getWorkbenchRuntimeData();
-		if (data == null) {
-			data = new WorkbenchRuntimeData();
-		}
-		data.setUserId(user.getUserid());
-		this.workbenchDataManager.updateWorkbenchRuntimeData(data);
 	}
 
 	/**
@@ -106,14 +79,6 @@ public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSucc
 			return;
 		}
 		session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
-	}
-
-	public void setDefaultTargetUrl(final String defaultTargetUrl) {
-		this.defaultTargetUrl = defaultTargetUrl;
-	}
-
-	public void setSessionData(final SessionData sessionData) {
-		this.sessionData = sessionData;
 	}
 
 	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {

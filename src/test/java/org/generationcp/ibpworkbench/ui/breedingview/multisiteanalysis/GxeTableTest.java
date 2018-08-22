@@ -1,4 +1,3 @@
-
 package org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis;
 
 import java.util.ArrayList;
@@ -6,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import org.apache.commons.lang3.ArrayUtils;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.sea.xml.Environment;
@@ -40,17 +41,20 @@ public class GxeTableTest {
 
 	private static final int STUDY_ID = 1;
 	private static final int MEANS_DATASET_ID = 2;
-	private static final int TRIAL_DATASET_ID = 1;
+	private static final int STUDY_DATASET_ID = 1;
 
-	private static final String TRIAL_FACTOR = "TRIAL";
-	private static final int TRIAL_FACTOR_ID = TermId.TRIAL_INSTANCE_FACTOR.getId();
-	private static final String TRIAL_FACTOR_VALUE = "1";
+	private static final String STUDY_FACTOR = "TRIAL";
+	private static final int STUDY_FACTOR_ID = TermId.TRIAL_INSTANCE_FACTOR.getId();
+	private static final String STUDY_FACTOR_VALUE = "1";
 	private static final String SITE_FACTOR = "SITE";
 	private static final int SITE_FACTOR_ID = 8888;
 	private static final String SITE_FACTOR_VALUE = "CIMMYT, Harrare";
 	private static final String GROUP_FACTOR = "MegaEnv";
 	private static final int GROUP_FACTOR_ID = 7777;
 	private static final String GROUP_FACTOR_VALUE = "Wet Season";
+	private static final String LOCATION_ID_FACTOR = "LOCATION_ID";
+	private static final int LOCATION_ID_FACTOR_ID = 9999;
+	private static final String LOCATION_ID_FACTOR_VALUE = "100";
 
 	private static final String VARIATE_NAME_1 = "EPP";
 	private static final String VARIATE_NAME_1_MEANS = "EPP_Means";
@@ -109,59 +113,64 @@ public class GxeTableTest {
 		MockitoAnnotations.initMocks(this);
 
 		// means dataset
-		List<DMSVariableType> factors = new ArrayList<DMSVariableType>();
-		List<DMSVariableType> variates = new ArrayList<DMSVariableType>();
-		List<Variable> factorVariables = new ArrayList<Variable>();
-		List<Variable> variateVariables = new ArrayList<Variable>();
+		final List<DMSVariableType> factors = new ArrayList<DMSVariableType>();
+		final List<DMSVariableType> variates = new ArrayList<DMSVariableType>();
+		final List<Variable> factorVariables = new ArrayList<Variable>();
+		final List<Variable> variateVariables = new ArrayList<Variable>();
 
-		// trial dataset
-		List<DMSVariableType> trialFactors = new ArrayList<DMSVariableType>();
-		List<DMSVariableType> trialVariates = new ArrayList<DMSVariableType>();
-		List<Variable> trialFactorVariables = new ArrayList<Variable>();
-		List<Variable> trialVariateVariables = new ArrayList<Variable>();
+		// study dataset
+		final List<DMSVariableType> studyFactors = new ArrayList<DMSVariableType>();
+		final List<DMSVariableType> studyVariates = new ArrayList<DMSVariableType>();
+		final List<Variable> trialFactorVariables = new ArrayList<Variable>();
+		final List<Variable> studyVariateVariables = new ArrayList<Variable>();
 
-		List<DatasetReference> datasetRefs = this.createDataSetRef();
+		final List<DatasetReference> datasetRefs = this.createDataSetRef();
 
 		this.createFactorsAndVariatesTestDataForMeans(factors, factorVariables, variates, variateVariables);
-		this.createFactorsAndVariatesTestDataForTrial(trialFactors, trialFactorVariables, trialVariates, trialVariateVariables);
-		DataSet trialDataSet = this.createTrialDataSet(trialFactors, trialFactorVariables, trialVariates, trialVariateVariables);
-		DataSet meansDataSet = this.createMeansDataSet(factors, factorVariables, variates, variateVariables);
-		List<DataSet> meansDataSets = this.createMeansDataSets(factors, factorVariables, variates, variateVariables);
-		List<DataSet> trialDataSets = this.createTrialDataSets(trialFactors, trialFactorVariables, trialVariates, trialVariateVariables);
+		this.createFactorsAndVariatesTestDataForStudy(studyFactors, trialFactorVariables, studyVariates, studyVariateVariables);
+		final DataSet dataSet = this.createDataSet(studyFactors, trialFactorVariables, studyVariates, studyVariateVariables);
+		final DataSet meansDataSet = this.createMeansDataSet(factors, factorVariables, variates, variateVariables);
+		final List<DataSet> meansDataSets = this.createMeansDataSets(factors, factorVariables, variates, variateVariables);
+		final List<DataSet> dataSets = this.createTrialDataSets(studyFactors, trialFactorVariables, studyVariates, studyVariateVariables);
 
 		this.variatesCheckBoxState = this.createVariatesCheckBoxState(variates);
 
 		Mockito.doReturn(datasetRefs).when(this.studyDataManager).getDatasetReferences(GxeTableTest.STUDY_ID);
-		Mockito.doReturn(trialDataSet).when(this.studyDataManager).getDataSet(GxeTableTest.TRIAL_DATASET_ID);
+		Mockito.doReturn(dataSet).when(this.studyDataManager).getDataSet(GxeTableTest.STUDY_DATASET_ID);
 		Mockito.doReturn(meansDataSet).when(this.studyDataManager).getDataSet(GxeTableTest.MEANS_DATASET_ID);
 		Mockito.doReturn(meansDataSets).when(this.studyDataManager).getDataSetsByType(GxeTableTest.STUDY_ID, DataSetType.MEANS_DATA);
-		Mockito.doReturn(trialDataSets).when(this.studyDataManager).getDataSetsByType(GxeTableTest.STUDY_ID, DataSetType.SUMMARY_DATA);
-		Mockito.doReturn(this.createTrialEnvironments(factorVariables, variateVariables)).when(this.studyDataManager)
+		Mockito.doReturn(dataSets).when(this.studyDataManager).getDataSetsByType(GxeTableTest.STUDY_ID, DataSetType.SUMMARY_DATA);
+		Mockito.doReturn(this.createStudyEnvironments(factorVariables, variateVariables)).when(this.studyDataManager)
 				.getTrialEnvironmentsInDataset(GxeTableTest.MEANS_DATASET_ID);
-		Mockito.doReturn(this.createExperimentsWithTrialEnvironment(factors, factorVariables, variates, variateVariables))
+		Mockito.doReturn(this.createExperimentsWithStudyEnvironment(factors, factorVariables, variates, variateVariables))
 				.when(this.studyDataManager)
-				.getExperimentsWithTrialEnvironment(GxeTableTest.TRIAL_DATASET_ID, GxeTableTest.MEANS_DATASET_ID, 0, Integer.MAX_VALUE);
+				.getExperimentsWithTrialEnvironment(GxeTableTest.STUDY_DATASET_ID, GxeTableTest.MEANS_DATASET_ID, 0, Integer.MAX_VALUE);
 		Mockito.doReturn(
-				this.createExperimentsWithTrialEnvironment(trialFactors, trialFactorVariables, trialVariates, trialVariateVariables))
-				.when(this.studyDataManager).getExperiments(GxeTableTest.TRIAL_DATASET_ID, 0, Integer.MAX_VALUE);
+				this.createExperimentsWithStudyEnvironment(studyFactors, trialFactorVariables, studyVariates, studyVariateVariables))
+				.when(this.studyDataManager).getExperiments(GxeTableTest.STUDY_DATASET_ID, 0, Integer.MAX_VALUE);
 
 	}
 
 	private List<DatasetReference> createDataSetRef() {
-		List<DatasetReference> datasetRefs = new ArrayList<>();
-		datasetRefs.add(new DatasetReference(GxeTableTest.TRIAL_DATASET_ID, ""));
+		final List<DatasetReference> datasetRefs = new ArrayList<>();
+		datasetRefs.add(new DatasetReference(GxeTableTest.STUDY_DATASET_ID, ""));
 		datasetRefs.add(new DatasetReference(GxeTableTest.MEANS_DATASET_ID, ""));
 		return datasetRefs;
 	}
 
 	@Test
-	public void testFillTableWithDatasetWithTrialInstanceAsSelectedFactor() {
+	public void testFillTableWithDatasetWithTrialInstanceAsSelectedFactor() throws Exception {
 
-		GxeTable gxeTable = new GxeTable(this.studyDataManager, GxeTableTest.STUDY_ID, GxeTableTest.TRIAL_FACTOR, "",
-						this.variatesCheckBoxState, this.listener);
+		Mockito.when(studyDataManager.isLocationIdVariable(GxeTableTest.STUDY_ID, STUDY_FACTOR)).thenReturn(false);
+
+		final GxeTable gxeTable = new GxeTable(GxeTableTest.STUDY_ID, GxeTableTest.STUDY_FACTOR,
+
+				"", this.variatesCheckBoxState, this.listener);
+		gxeTable.setStudyDataManager(this.studyDataManager);
+		gxeTable.afterPropertiesSet();
 
 		Assert.assertTrue("The Trial Instance Factor should always be visible in the table",
-				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.TRIAL_FACTOR));
+				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.STUDY_FACTOR));
 		Assert.assertFalse("The Site Factor is not selected so it should not be visible",
 				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.SITE_FACTOR));
 		Assert.assertFalse("The Group Factor is not selected so it should not be visible",
@@ -173,26 +182,29 @@ public class GxeTableTest {
 		Assert.assertTrue(GxeTableTest.VARIATE_NAME_3_MEANS + " is selected so it should be visible in the table",
 				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.VARIATE_NAME_3_MEANS));
 
-		Object itemId = gxeTable.getItemIds().iterator().next();
-		Assert.assertEquals("", GxeTableTest.TRIAL_FACTOR_VALUE,
-				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.TRIAL_FACTOR).getValue()).getValue());
-		Assert.assertEquals("", "0 (" + GxeTableTest.VARIATE_NAME_1_HERITABILITY_VALUE + ")", ((Label) gxeTable.getItem(itemId)
-				.getItemProperty(GxeTableTest.VARIATE_NAME_1_MEANS).getValue()).getValue());
-		Assert.assertEquals("", "0 (" + GxeTableTest.VARIATE_NAME_2_HERITABILITY_VALUE + ")", ((Label) gxeTable.getItem(itemId)
-				.getItemProperty(GxeTableTest.VARIATE_NAME_2_MEANS).getValue()).getValue());
-		Assert.assertEquals("", "0 (" + GxeTableTest.VARIATE_NAME_3_HERITABILITY_VALUE + ")", ((Label) gxeTable.getItem(itemId)
-				.getItemProperty(GxeTableTest.VARIATE_NAME_3_MEANS).getValue()).getValue());
+		final Object itemId = gxeTable.getItemIds().iterator().next();
+		Assert.assertEquals("", GxeTableTest.STUDY_FACTOR_VALUE,
+				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.STUDY_FACTOR).getValue()).getValue());
+		Assert.assertEquals("", "0 (" + GxeTableTest.VARIATE_NAME_1_HERITABILITY_VALUE + ")",
+				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.VARIATE_NAME_1_MEANS).getValue()).getValue());
+		Assert.assertEquals("", "0 (" + GxeTableTest.VARIATE_NAME_2_HERITABILITY_VALUE + ")",
+				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.VARIATE_NAME_2_MEANS).getValue()).getValue());
+		Assert.assertEquals("", "0 (" + GxeTableTest.VARIATE_NAME_3_HERITABILITY_VALUE + ")",
+				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.VARIATE_NAME_3_MEANS).getValue()).getValue());
 	}
 
 	@Test
-	public void testFillTableWithDatasetWithTrialEnvironmentAsSelectedFactor() {
+	public void testFillTableWithDatasetWithTrialEnvironmentAsSelectedFactor() throws Exception {
 
-		GxeTable gxeTable =
-				new GxeTable(this.studyDataManager, GxeTableTest.STUDY_ID, GxeTableTest.SITE_FACTOR, "",
-						this.variatesCheckBoxState, this.listener);
+		Mockito.when(studyDataManager.isLocationIdVariable(GxeTableTest.STUDY_ID, SITE_FACTOR)).thenReturn(false);
+
+		final GxeTable gxeTable =
+				new GxeTable(GxeTableTest.STUDY_ID, GxeTableTest.SITE_FACTOR, "", this.variatesCheckBoxState, this.listener);
+		gxeTable.setStudyDataManager(this.studyDataManager);
+		gxeTable.afterPropertiesSet();
 
 		Assert.assertTrue("The Trial Instance Factor should always be visible in the table",
-				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.TRIAL_FACTOR));
+				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.STUDY_FACTOR));
 		Assert.assertTrue("The Site Factor is  selected so it should be visible",
 				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.SITE_FACTOR));
 		Assert.assertFalse("The Group Factor is not selected so it should not be visible",
@@ -204,28 +216,70 @@ public class GxeTableTest {
 		Assert.assertTrue(GxeTableTest.VARIATE_NAME_3_MEANS + " is selected so it should be visible in the table",
 				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.VARIATE_NAME_3_MEANS));
 
-		Object itemId = gxeTable.getItemIds().iterator().next();
-		Assert.assertEquals("", GxeTableTest.TRIAL_FACTOR_VALUE,
-				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.TRIAL_FACTOR).getValue()).getValue());
-		Assert.assertEquals("", GxeTableTest.SITE_FACTOR_VALUE, ((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.SITE_FACTOR)
-				.getValue()).getValue());
-		Assert.assertEquals("", "0 (" + GxeTableTest.VARIATE_NAME_1_HERITABILITY_VALUE + ")", ((Label) gxeTable.getItem(itemId)
-				.getItemProperty(GxeTableTest.VARIATE_NAME_1_MEANS).getValue()).getValue());
-		Assert.assertEquals("", "0 (" + GxeTableTest.VARIATE_NAME_2_HERITABILITY_VALUE + ")", ((Label) gxeTable.getItem(itemId)
-				.getItemProperty(GxeTableTest.VARIATE_NAME_2_MEANS).getValue()).getValue());
-		Assert.assertEquals("", "0 (" + GxeTableTest.VARIATE_NAME_3_HERITABILITY_VALUE + ")", ((Label) gxeTable.getItem(itemId)
-				.getItemProperty(GxeTableTest.VARIATE_NAME_3_MEANS).getValue()).getValue());
+		final Object itemId = gxeTable.getItemIds().iterator().next();
+		Assert.assertEquals("", GxeTableTest.STUDY_FACTOR_VALUE,
+				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.STUDY_FACTOR).getValue()).getValue());
+		Assert.assertEquals("", GxeTableTest.SITE_FACTOR_VALUE,
+				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.SITE_FACTOR).getValue()).getValue());
+		Assert.assertEquals("", "0 (" + GxeTableTest.VARIATE_NAME_1_HERITABILITY_VALUE + ")",
+				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.VARIATE_NAME_1_MEANS).getValue()).getValue());
+		Assert.assertEquals("", "0 (" + GxeTableTest.VARIATE_NAME_2_HERITABILITY_VALUE + ")",
+				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.VARIATE_NAME_2_MEANS).getValue()).getValue());
+		Assert.assertEquals("", "0 (" + GxeTableTest.VARIATE_NAME_3_HERITABILITY_VALUE + ")",
+				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.VARIATE_NAME_3_MEANS).getValue()).getValue());
 	}
 
 	@Test
-	public void testFillTableWithDatasetAndTrialInstanceAsSelectedFactorAndWithSelectedGroupFactorName() {
+	public void testFillTableWithDatasetWithTrialLocationIDAsSelectedFactor() throws Exception {
 
-		GxeTable gxeTable =
-				new GxeTable(this.studyDataManager, GxeTableTest.STUDY_ID, GxeTableTest.TRIAL_FACTOR,
-						GxeTableTest.GROUP_FACTOR, this.variatesCheckBoxState, this.listener);
+		final BiMap<String, String> locationIdToNameMap = HashBiMap.create();
+		locationIdToNameMap.put(LOCATION_ID_FACTOR_VALUE, "Some Location");
+
+		Mockito.when(studyDataManager.isLocationIdVariable(GxeTableTest.STUDY_ID, LOCATION_ID_FACTOR)).thenReturn(true);
+		Mockito.when(studyDataManager.createInstanceLocationIdToNameMapFromStudy(GxeTableTest.STUDY_ID)).thenReturn(locationIdToNameMap);
+
+		final GxeTable gxeTable =
+				new GxeTable(GxeTableTest.STUDY_ID, GxeTableTest.LOCATION_ID_FACTOR, "", this.variatesCheckBoxState, this.listener);
+		gxeTable.setStudyDataManager(this.studyDataManager);
+		gxeTable.afterPropertiesSet();
 
 		Assert.assertTrue("The Trial Instance Factor should always be visible in the table",
-				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.TRIAL_FACTOR));
+				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.STUDY_FACTOR));
+		Assert.assertTrue("The Location ID Factor is  selected so it should be visible",
+				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.LOCATION_ID_FACTOR));
+		Assert.assertFalse("The Group Factor is not selected so it should not be visible",
+				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.GROUP_FACTOR));
+		Assert.assertTrue(GxeTableTest.VARIATE_NAME_1_MEANS + " is selected so it should be visible in the table",
+				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.VARIATE_NAME_1_MEANS));
+		Assert.assertTrue(GxeTableTest.VARIATE_NAME_2_MEANS + " is selected so it should be visible in the table",
+				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.VARIATE_NAME_2_MEANS));
+		Assert.assertTrue(GxeTableTest.VARIATE_NAME_3_MEANS + " is selected so it should be visible in the table",
+				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.VARIATE_NAME_3_MEANS));
+
+		final Object itemId = gxeTable.getItemIds().iterator().next();
+		Assert.assertEquals("", GxeTableTest.STUDY_FACTOR_VALUE,
+				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.STUDY_FACTOR).getValue()).getValue());
+		Assert.assertEquals("", "Some Location",
+				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.LOCATION_ID_FACTOR).getValue()).getValue());
+		Assert.assertEquals("", "0 (" + GxeTableTest.VARIATE_NAME_1_HERITABILITY_VALUE + ")",
+				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.VARIATE_NAME_1_MEANS).getValue()).getValue());
+		Assert.assertEquals("", "0 (" + GxeTableTest.VARIATE_NAME_2_HERITABILITY_VALUE + ")",
+				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.VARIATE_NAME_2_MEANS).getValue()).getValue());
+		Assert.assertEquals("", "0 (" + GxeTableTest.VARIATE_NAME_3_HERITABILITY_VALUE + ")",
+				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.VARIATE_NAME_3_MEANS).getValue()).getValue());
+	}
+
+	@Test
+	public void testFillTableWithDatasetAndTrialInstanceAsSelectedFactorAndWithSelectedGroupFactorName() throws Exception {
+
+		final GxeTable gxeTable = new GxeTable(GxeTableTest.STUDY_ID, GxeTableTest.STUDY_FACTOR,
+
+				GxeTableTest.GROUP_FACTOR, this.variatesCheckBoxState, this.listener);
+		gxeTable.setStudyDataManager(this.studyDataManager);
+		gxeTable.afterPropertiesSet();
+
+		Assert.assertTrue("The Trial Instance Factor should always be visible in the table",
+				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.STUDY_FACTOR));
 		Assert.assertFalse("The Site Factor is not selected so it should not be visible",
 				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.SITE_FACTOR));
 		Assert.assertTrue("The Group Factor is  selected so it should be visible",
@@ -237,49 +291,61 @@ public class GxeTableTest {
 		Assert.assertTrue(GxeTableTest.VARIATE_NAME_3_MEANS + " is selected so it should be visible in the table",
 				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.VARIATE_NAME_3_MEANS));
 
-		Object itemId = gxeTable.getItemIds().iterator().next();
-		Assert.assertEquals("", GxeTableTest.TRIAL_FACTOR_VALUE,
-				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.TRIAL_FACTOR).getValue()).getValue());
+		final Object itemId = gxeTable.getItemIds().iterator().next();
+		Assert.assertEquals("", GxeTableTest.STUDY_FACTOR_VALUE,
+				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.STUDY_FACTOR).getValue()).getValue());
 		Assert.assertEquals("", GxeTableTest.GROUP_FACTOR_VALUE,
 				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.GROUP_FACTOR).getValue()).getValue());
-		Assert.assertEquals("", "0 (" + GxeTableTest.VARIATE_NAME_1_HERITABILITY_VALUE + ")", ((Label) gxeTable.getItem(itemId)
-				.getItemProperty(GxeTableTest.VARIATE_NAME_1_MEANS).getValue()).getValue());
-		Assert.assertEquals("", "0 (" + GxeTableTest.VARIATE_NAME_2_HERITABILITY_VALUE + ")", ((Label) gxeTable.getItem(itemId)
-				.getItemProperty(GxeTableTest.VARIATE_NAME_2_MEANS).getValue()).getValue());
-		Assert.assertEquals("", "0 (" + GxeTableTest.VARIATE_NAME_3_HERITABILITY_VALUE + ")", ((Label) gxeTable.getItem(itemId)
-				.getItemProperty(GxeTableTest.VARIATE_NAME_3_MEANS).getValue()).getValue());
+		Assert.assertEquals("", "0 (" + GxeTableTest.VARIATE_NAME_1_HERITABILITY_VALUE + ")",
+				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.VARIATE_NAME_1_MEANS).getValue()).getValue());
+		Assert.assertEquals("", "0 (" + GxeTableTest.VARIATE_NAME_2_HERITABILITY_VALUE + ")",
+				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.VARIATE_NAME_2_MEANS).getValue()).getValue());
+		Assert.assertEquals("", "0 (" + GxeTableTest.VARIATE_NAME_3_HERITABILITY_VALUE + ")",
+				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.VARIATE_NAME_3_MEANS).getValue()).getValue());
 
 	}
 
 	@Test
-	public void testGetSelectedEnvironments() {
-		GxeTable gxeTable =
-				new GxeTable(this.studyDataManager, GxeTableTest.STUDY_ID, GxeTableTest.SITE_FACTOR, GxeTableTest.GROUP_FACTOR,
-						this.variatesCheckBoxState, this.listener);
-		List<Environment> environments = gxeTable.getSelectedEnvironments();
+	public void testGetSelectedEnvironments() throws Exception {
+		final GxeTable gxeTable =
+				new GxeTable(GxeTableTest.STUDY_ID, GxeTableTest.SITE_FACTOR, GxeTableTest.GROUP_FACTOR, this.variatesCheckBoxState,
+						this.listener);
+		gxeTable.setStudyDataManager(this.studyDataManager);
+		gxeTable.afterPropertiesSet();
+		final List<Environment> environments = gxeTable.getSelectedEnvironments();
 		Assert.assertNotNull(environments);
 		Assert.assertEquals(1, environments.size());
+		final Environment environment = environments.get(0);
+		Assert.assertEquals(GxeTableTest.SITE_FACTOR_VALUE, environment.getName());
+		Assert.assertTrue(environment.getActive());
+		Assert.assertEquals(GxeTableTest.STUDY_FACTOR_VALUE, environment.getTrial());
+		Assert.assertEquals(GxeTableTest.STUDY_FACTOR_VALUE, environment.getTrialno());
 	}
-	
+
 	@Test
-	public void testGetGxeENvironment() {
-		GxeTable gxeTable =
-				new GxeTable(this.studyDataManager, GxeTableTest.STUDY_ID, GxeTableTest.SITE_FACTOR, GxeTableTest.GROUP_FACTOR,
-						this.variatesCheckBoxState, this.listener);
-		GxeEnvironment environment = gxeTable.getGxeEnvironment();
+	public void testGetGxeENvironment() throws Exception {
+		final GxeTable gxeTable =
+				new GxeTable(GxeTableTest.STUDY_ID, GxeTableTest.SITE_FACTOR, GxeTableTest.GROUP_FACTOR, this.variatesCheckBoxState,
+						this.listener);
+		gxeTable.setStudyDataManager(this.studyDataManager);
+		gxeTable.afterPropertiesSet();
+		final GxeEnvironment environment = gxeTable.getGxeEnvironment();
 		Assert.assertNotNull(environment);
 		Assert.assertEquals(1, environment.getLabels().size());
 	}
-	
-	@Test
-	public void testFillTableWithDatasetAndTrialEnvironmentAsSelectedFactorAndWithSelectedGroupFactorName() {
 
-		GxeTable gxeTable =
-				new GxeTable(this.studyDataManager, GxeTableTest.STUDY_ID, GxeTableTest.SITE_FACTOR, GxeTableTest.GROUP_FACTOR,
-						this.variatesCheckBoxState, this.listener);
+	@Test
+
+	public void testFillTableWithDatasetAndTrialEnvironmentAsSelectedFactorAndWithSelectedGroupFactorName() throws Exception {
+
+		final GxeTable gxeTable =
+				new GxeTable(GxeTableTest.STUDY_ID, GxeTableTest.SITE_FACTOR, GxeTableTest.GROUP_FACTOR, this.variatesCheckBoxState,
+						this.listener);
+		gxeTable.setStudyDataManager(this.studyDataManager);
+		gxeTable.afterPropertiesSet();
 
 		Assert.assertTrue("The Trial Instance Factor should always be visible in the table",
-				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.TRIAL_FACTOR));
+				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.STUDY_FACTOR));
 		Assert.assertTrue("The Site Factor is selected so it should be visible",
 				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.SITE_FACTOR));
 		Assert.assertTrue("The Group Factor is selected so it should be visible",
@@ -291,90 +357,94 @@ public class GxeTableTest {
 		Assert.assertTrue(GxeTableTest.VARIATE_NAME_3_MEANS + " is selected so it should be visible in the table",
 				ArrayUtils.contains(gxeTable.getVisibleColumns(), GxeTableTest.VARIATE_NAME_3_MEANS));
 
-		Object itemId = gxeTable.getItemIds().iterator().next();
-		Assert.assertEquals("", GxeTableTest.TRIAL_FACTOR_VALUE,
-				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.TRIAL_FACTOR).getValue()).getValue());
-		Assert.assertEquals("", GxeTableTest.SITE_FACTOR_VALUE, ((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.SITE_FACTOR)
-				.getValue()).getValue());
+		final Object itemId = gxeTable.getItemIds().iterator().next();
+		Assert.assertEquals("", GxeTableTest.STUDY_FACTOR_VALUE,
+				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.STUDY_FACTOR).getValue()).getValue());
+		Assert.assertEquals("", GxeTableTest.SITE_FACTOR_VALUE,
+				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.SITE_FACTOR).getValue()).getValue());
 		Assert.assertEquals("", GxeTableTest.GROUP_FACTOR_VALUE,
 				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.GROUP_FACTOR).getValue()).getValue());
-		Assert.assertEquals("", "0 (" + GxeTableTest.VARIATE_NAME_1_HERITABILITY_VALUE + ")", ((Label) gxeTable.getItem(itemId)
-				.getItemProperty(GxeTableTest.VARIATE_NAME_1_MEANS).getValue()).getValue());
-		Assert.assertEquals("", "0 (" + GxeTableTest.VARIATE_NAME_2_HERITABILITY_VALUE + ")", ((Label) gxeTable.getItem(itemId)
-				.getItemProperty(GxeTableTest.VARIATE_NAME_2_MEANS).getValue()).getValue());
-		Assert.assertEquals("", "0 (" + GxeTableTest.VARIATE_NAME_3_HERITABILITY_VALUE + ")", ((Label) gxeTable.getItem(itemId)
-				.getItemProperty(GxeTableTest.VARIATE_NAME_3_MEANS).getValue()).getValue());
+		Assert.assertEquals("", "0 (" + GxeTableTest.VARIATE_NAME_1_HERITABILITY_VALUE + ")",
+				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.VARIATE_NAME_1_MEANS).getValue()).getValue());
+		Assert.assertEquals("", "0 (" + GxeTableTest.VARIATE_NAME_2_HERITABILITY_VALUE + ")",
+				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.VARIATE_NAME_2_MEANS).getValue()).getValue());
+		Assert.assertEquals("", "0 (" + GxeTableTest.VARIATE_NAME_3_HERITABILITY_VALUE + ")",
+				((Label) gxeTable.getItem(itemId).getItemProperty(GxeTableTest.VARIATE_NAME_3_MEANS).getValue()).getValue());
 
 	}
 
-	private List<DataSet> createMeansDataSets(List<DMSVariableType> factors, List<Variable> factorVariables, List<DMSVariableType> variates,
-			List<Variable> variateVariables) {
+	private List<DataSet> createMeansDataSets(final List<DMSVariableType> factors, final List<Variable> factorVariables,
+			final List<DMSVariableType> variates, final List<Variable> variateVariables) {
 
-		List<DataSet> dataSets = new ArrayList<>();
+		final List<DataSet> dataSets = new ArrayList<>();
 		dataSets.add(this.createMeansDataSet(factors, factorVariables, variates, variateVariables));
 
 		return dataSets;
 	}
 
-	private List<DataSet> createTrialDataSets(List<DMSVariableType> factors, List<Variable> factorVariables, List<DMSVariableType> variates,
-			List<Variable> variateVariables) {
+	private List<DataSet> createTrialDataSets(final List<DMSVariableType> factors, final List<Variable> factorVariables,
+			final List<DMSVariableType> variates, final List<Variable> variateVariables) {
 
-		List<DataSet> dataSets = new ArrayList<>();
-		dataSets.add(this.createTrialDataSet(factors, factorVariables, variates, variateVariables));
+		final List<DataSet> dataSets = new ArrayList<>();
+		dataSets.add(this.createDataSet(factors, factorVariables, variates, variateVariables));
 
 		return dataSets;
 	}
 
-	private DataSet createMeansDataSet(List<DMSVariableType> factors, List<Variable> factorVariables, List<DMSVariableType> variates,
-			List<Variable> variateVariables) {
+	private DataSet createMeansDataSet(final List<DMSVariableType> factors, final List<Variable> factorVariables,
+			final List<DMSVariableType> variates, final List<Variable> variateVariables) {
 
-		DataSet meansDataSet = new DataSet();
+		final DataSet meansDataSet = new DataSet();
 		meansDataSet.setDataSetType(DataSetType.MEANS_DATA);
 		meansDataSet.setName("MEANS-DATA");
 		meansDataSet.setId(GxeTableTest.MEANS_DATASET_ID);
 
-		VariableTypeList variableTypeList = new VariableTypeList();
-		for (DMSVariableType f : factors) {
+		final VariableTypeList variableTypeList = new VariableTypeList();
+		for (final DMSVariableType f : factors) {
 			variableTypeList.add(f);
 		}
-		for (DMSVariableType v : variates) {
+		for (final DMSVariableType v : variates) {
 			variableTypeList.add(v);
 		}
 		meansDataSet.setVariableTypes(variableTypeList);
 		return meansDataSet;
 	}
 
-	private DataSet createTrialDataSet(List<DMSVariableType> factors, List<Variable> factorVariables, List<DMSVariableType> variates,
-			List<Variable> variateVariables) {
+	private DataSet createDataSet(final List<DMSVariableType> factors, final List<Variable> factorVariables,
+			final List<DMSVariableType> variates, final List<Variable> variateVariables) {
 
-		DataSet trialDataSet = new DataSet();
-		trialDataSet.setDataSetType(DataSetType.SUMMARY_DATA);
-		trialDataSet.setName("SUMMARY-DATA");
-		trialDataSet.setId(GxeTableTest.TRIAL_DATASET_ID);
+		final DataSet dataSet = new DataSet();
+		dataSet.setDataSetType(DataSetType.SUMMARY_DATA);
+		dataSet.setName("SUMMARY-DATA");
+		dataSet.setId(GxeTableTest.STUDY_DATASET_ID);
 
-		VariableTypeList variableTypeList = new VariableTypeList();
-		for (DMSVariableType f : factors) {
+		final VariableTypeList variableTypeList = new VariableTypeList();
+		for (final DMSVariableType f : factors) {
 			variableTypeList.add(f);
 		}
-		for (DMSVariableType v : variates) {
+		for (final DMSVariableType v : variates) {
 			variableTypeList.add(v);
 		}
-		trialDataSet.setVariableTypes(variableTypeList);
+		dataSet.setVariableTypes(variableTypeList);
 
-		return trialDataSet;
+		return dataSet;
 	}
 
-	private void createFactorsAndVariatesTestDataForMeans(List<DMSVariableType> factors, List<Variable> factorVariables,
-			List<DMSVariableType> variates, List<Variable> variateVariables) {
+	private void createFactorsAndVariatesTestDataForMeans(final List<DMSVariableType> factors, final List<Variable> factorVariables,
+			final List<DMSVariableType> variates, final List<Variable> variateVariables) {
 
 		int rank = 1;
 
-		this.addVariableToList(factors, factorVariables, GxeTableTest.TRIAL_FACTOR_ID, GxeTableTest.TRIAL_FACTOR, rank++,
-				GxeTableTest.TRIAL_FACTOR_VALUE, PhenotypicType.TRIAL_ENVIRONMENT, GxeTableTest.NUMERIC_VARIABLE,
+		this.addVariableToList(factors, factorVariables, GxeTableTest.STUDY_FACTOR_ID, GxeTableTest.STUDY_FACTOR, rank++,
+				GxeTableTest.STUDY_FACTOR_VALUE, PhenotypicType.TRIAL_ENVIRONMENT, GxeTableTest.NUMERIC_VARIABLE,
 				GxeTableTest.TRIAL_INSTANCE_ROLE, null, null, null);
 
 		this.addVariableToList(factors, factorVariables, GxeTableTest.SITE_FACTOR_ID, GxeTableTest.SITE_FACTOR, rank++,
 				GxeTableTest.SITE_FACTOR_VALUE, PhenotypicType.TRIAL_ENVIRONMENT, GxeTableTest.CHARACTER_VARIABLE,
+				GxeTableTest.TRIAL_ENVIRONMENT_ROLE, null, null, null);
+
+		this.addVariableToList(factors, factorVariables, GxeTableTest.LOCATION_ID_FACTOR_ID, GxeTableTest.LOCATION_ID_FACTOR, rank++,
+				GxeTableTest.LOCATION_ID_FACTOR_VALUE, PhenotypicType.TRIAL_ENVIRONMENT, GxeTableTest.NUMERIC_VARIABLE,
 				GxeTableTest.TRIAL_ENVIRONMENT_ROLE, null, null, null);
 
 		this.addVariableToList(factors, factorVariables, GxeTableTest.GROUP_FACTOR_ID, GxeTableTest.GROUP_FACTOR, rank++,
@@ -407,17 +477,21 @@ public class GxeTableTest {
 
 	}
 
-	private void createFactorsAndVariatesTestDataForTrial(List<DMSVariableType> factors, List<Variable> factorVariables,
-			List<DMSVariableType> variates, List<Variable> variateVariables) {
+	private void createFactorsAndVariatesTestDataForStudy(final List<DMSVariableType> factors, final List<Variable> factorVariables,
+			final List<DMSVariableType> variates, final List<Variable> variateVariables) {
 
 		int rank = 1;
 
-		this.addVariableToList(factors, factorVariables, GxeTableTest.TRIAL_FACTOR_ID, GxeTableTest.TRIAL_FACTOR, rank++,
-				GxeTableTest.TRIAL_FACTOR_VALUE, PhenotypicType.TRIAL_ENVIRONMENT, GxeTableTest.NUMERIC_VARIABLE,
+		this.addVariableToList(factors, factorVariables, GxeTableTest.STUDY_FACTOR_ID, GxeTableTest.STUDY_FACTOR, rank++,
+				GxeTableTest.STUDY_FACTOR_VALUE, PhenotypicType.TRIAL_ENVIRONMENT, GxeTableTest.NUMERIC_VARIABLE,
 				GxeTableTest.TRIAL_INSTANCE_ROLE, null, null, null);
 
 		this.addVariableToList(factors, factorVariables, GxeTableTest.SITE_FACTOR_ID, GxeTableTest.SITE_FACTOR, rank++,
 				GxeTableTest.SITE_FACTOR_VALUE, PhenotypicType.TRIAL_ENVIRONMENT, GxeTableTest.CHARACTER_VARIABLE,
+				GxeTableTest.TRIAL_ENVIRONMENT_ROLE, null, null, null);
+
+		this.addVariableToList(factors, factorVariables, GxeTableTest.LOCATION_ID_FACTOR_ID, GxeTableTest.LOCATION_ID_FACTOR, rank++,
+				GxeTableTest.LOCATION_ID_FACTOR_VALUE, PhenotypicType.TRIAL_ENVIRONMENT, GxeTableTest.NUMERIC_VARIABLE,
 				GxeTableTest.TRIAL_ENVIRONMENT_ROLE, null, null, null);
 
 		this.addVariableToList(factors, factorVariables, GxeTableTest.GROUP_FACTOR_ID, GxeTableTest.GROUP_FACTOR, rank++,
@@ -447,24 +521,25 @@ public class GxeTableTest {
 
 	}
 
-	private void addVariableToList(List<DMSVariableType> variableTypes, List<Variable> variables, int id, String variableName, int rank,
-			String value, PhenotypicType phenotypicType, Term dataType, Term role, Term property, Term scale, Term method) {
-		StandardVariable standardVariable =
+	private void addVariableToList(final List<DMSVariableType> variableTypes, final List<Variable> variables, final int id,
+			final String variableName, final int rank, final String value, final PhenotypicType phenotypicType, final Term dataType,
+			final Term role, final Term property, final Term scale, final Term method) {
+		final StandardVariable standardVariable =
 				this.createStardardVariableTestData(id, phenotypicType, variableName, dataType, role, property, scale, method);
-		DMSVariableType variableType = this.createVariableTypeTestData(variableName, rank, standardVariable);
+		final DMSVariableType variableType = this.createVariableTypeTestData(variableName, rank, standardVariable);
 		variableTypes.add(variableType);
 		variables.add(this.createVariableTestData(variableType, value));
 	}
 
-	private Variable createVariableTestData(DMSVariableType trial, String value) {
-		Variable variable = new Variable();
+	private Variable createVariableTestData(final DMSVariableType study, final String value) {
+		final Variable variable = new Variable();
 		variable.setValue(value);
-		variable.setVariableType(trial);
+		variable.setVariableType(study);
 		return variable;
 	}
 
-	private DMSVariableType createVariableTypeTestData(String localName, int rank, StandardVariable standardVariable) {
-		DMSVariableType variableType = new DMSVariableType();
+	private DMSVariableType createVariableTypeTestData(final String localName, final int rank, final StandardVariable standardVariable) {
+		final DMSVariableType variableType = new DMSVariableType();
 		variableType.setLocalName(localName);
 		variableType.setRank(rank);
 		variableType.setStandardVariable(standardVariable);
@@ -472,17 +547,17 @@ public class GxeTableTest {
 		return variableType;
 	}
 
-	private StandardVariable createStardardVariableTestData(int id, PhenotypicType type, String name, Term dataType, Term storedIn,
-			Term property, Term scale, Term method) {
+	private StandardVariable createStardardVariableTestData(final int id, final PhenotypicType type, final String name, final Term dataType,
+			final Term storedIn, final Term property, final Term scale, final Term method) {
 
-		StandardVariable stdVar = new StandardVariable();
+		final StandardVariable stdVar = new StandardVariable();
 		stdVar.setId(id);
 		stdVar.setPhenotypicType(type);
 		stdVar.setName(name);
 		stdVar.setDataType(dataType);
-		
+
 		if (dataType.getId() == GxeTableTest.CATEGORICAL_VARIABLE.getId()) {
-			List<Enumeration> validValues = new ArrayList<Enumeration>();
+			final List<Enumeration> validValues = new ArrayList<Enumeration>();
 			validValues.add(new Enumeration(GxeTableTest.CATEGORICAL_VARIATE_ENUM_ID, GxeTableTest.CATEGORICAL_VARIATE_ENUM_NAME,
 					GxeTableTest.CATEGORICAL_VARIATE_ENUM_DESCRIPTION, 1));
 			stdVar.setEnumerations(validValues);
@@ -492,48 +567,48 @@ public class GxeTableTest {
 		return stdVar;
 	}
 
-	private TrialEnvironments createTrialEnvironments(List<Variable> factorVariables, List<Variable> variateVariables) {
+	private TrialEnvironments createStudyEnvironments(final List<Variable> factorVariables, final List<Variable> variateVariables) {
 
-		TrialEnvironments envs = new TrialEnvironments();
-		envs.add(this.createTrialEnvironment(factorVariables, variateVariables));
+		final TrialEnvironments envs = new TrialEnvironments();
+		envs.add(this.createStudyEnvironment(factorVariables, variateVariables));
 
 		return envs;
 	}
 
-	private TrialEnvironment createTrialEnvironment(List<Variable> factorVariables, List<Variable> variateVariables) {
+	private TrialEnvironment createStudyEnvironment(final List<Variable> factorVariables, final List<Variable> variateVariables) {
 
-		TrialEnvironment trialEnvironment = new TrialEnvironment(1, new VariableList());
+		final TrialEnvironment environment = new TrialEnvironment(1, new VariableList());
 
-		for (Variable f : factorVariables) {
-			trialEnvironment.getVariables().add(f);
+		for (final Variable f : factorVariables) {
+			environment.getVariables().add(f);
 		}
-		for (Variable v : variateVariables) {
-			trialEnvironment.getVariables().add(v);
+		for (final Variable v : variateVariables) {
+			environment.getVariables().add(v);
 		}
 
-		return trialEnvironment;
+		return environment;
 	}
 
-	private Map<String, Boolean> createVariatesCheckBoxState(List<DMSVariableType> variates) {
-		Map<String, Boolean> map = new HashMap<>();
-		for (DMSVariableType v : variates) {
+	private Map<String, Boolean> createVariatesCheckBoxState(final List<DMSVariableType> variates) {
+		final Map<String, Boolean> map = new HashMap<>();
+		for (final DMSVariableType v : variates) {
 			map.put(v.getLocalName(), true);
 		}
 		return map;
 	}
 
-	private VariableList convertToVariableList(List<Variable> variables) {
-		VariableList variableList = new VariableList();
-		for (Variable v : variables) {
+	private VariableList convertToVariableList(final List<Variable> variables) {
+		final VariableList variableList = new VariableList();
+		for (final Variable v : variables) {
 			variableList.add(v);
 		}
 		return variableList;
 	}
 
-	private List<Experiment> createExperimentsWithTrialEnvironment(List<DMSVariableType> factors, List<Variable> factorVariables,
-			List<DMSVariableType> variates, List<Variable> variateVariables) {
-		List<Experiment> experiments = new ArrayList<>();
-		Experiment exp = new Experiment();
+	private List<Experiment> createExperimentsWithStudyEnvironment(final List<DMSVariableType> factors,
+			final List<Variable> factorVariables, final List<DMSVariableType> variates, final List<Variable> variateVariables) {
+		final List<Experiment> experiments = new ArrayList<>();
+		final Experiment exp = new Experiment();
 		exp.setId(1);
 		exp.setLocationId(1);
 		exp.setFactors(this.convertToVariableList(factorVariables));

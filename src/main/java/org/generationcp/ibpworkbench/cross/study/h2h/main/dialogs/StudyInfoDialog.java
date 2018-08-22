@@ -70,8 +70,7 @@ public class StudyInfoDialog extends BaseSubWindow implements InitializingBean, 
 			this.setCaption("Study Information: " + study.getName());
 			// don't show study details if study record is a Folder ("F")
 			Accordion accordion =
-					new StudyAccordionMenu(this.studyId, new StudyDetailComponent(this.studyDataManager, this.studyId),
-							this.studyDataManager, false, this.h2hCall);
+					new StudyAccordionMenu(this.studyId, new StudyDetailComponent(this.studyId), false, this.h2hCall);
 			accordion.setWidth("93%");
 			accordion.setHeight("490px");
 			mainLayout.addComponent(accordion, "top:10px;left:5px");

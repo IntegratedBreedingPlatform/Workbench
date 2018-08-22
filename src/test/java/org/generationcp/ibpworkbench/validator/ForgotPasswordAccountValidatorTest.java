@@ -4,6 +4,7 @@ package org.generationcp.ibpworkbench.validator;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.workbench.Role;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +36,8 @@ public class ForgotPasswordAccountValidatorTest {
 		userAccount.setFirstName("firstName");
 		userAccount.setLastName("lastName");
 		userAccount.setEmail("email@email.com");
-		userAccount.setRole("ADMIN");
+		// Role ID 1 = ADMIN
+		userAccount.setRole(new Role(1));
 		userAccount.setUsername("username");
 		userAccount.setPassword("password");
 		userAccount.setPasswordConfirmation("password");

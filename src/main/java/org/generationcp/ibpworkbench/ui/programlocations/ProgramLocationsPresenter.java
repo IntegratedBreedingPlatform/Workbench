@@ -1,17 +1,8 @@
-
 package org.generationcp.ibpworkbench.ui.programlocations;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
 
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.LocationDataManager;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.LocationDetails;
@@ -20,13 +11,17 @@ import org.generationcp.middleware.pojos.dms.ProgramFavorite;
 import org.generationcp.middleware.pojos.dms.ProgramFavorite.FavoriteType;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 @Configurable
 public class ProgramLocationsPresenter implements InitializingBean {
@@ -41,88 +36,58 @@ public class ProgramLocationsPresenter implements InitializingBean {
 	private GermplasmDataManager germplasmDataManager;
 
 	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
-
-	@Autowired
 	private LocationDataManager locationDataManager;
 
 	private Project project;
 
-	public ProgramLocationsPresenter(ProgramLocationsView view, Project project) {
+	public ProgramLocationsPresenter(final ProgramLocationsView view, final Project project) {
 		this.view = view;
 		this.project = project;
 	}
 
-	public ProgramLocationsPresenter(ProgramLocationsView view, CropType cropType) {
+	public ProgramLocationsPresenter(final ProgramLocationsView view, final CropType cropType) {
 		this.view = view;
 		this.cropType = cropType;
 		this.isCropOnly = true;
 	}
 
 	/* THIS IS ONLY USED FOR JUNIT TESTS */
-	public ProgramLocationsPresenter(Project project, GermplasmDataManager germplasmDataManager, WorkbenchDataManager workbenchDataManager, LocationDataManager locationDataManager) {
+	public ProgramLocationsPresenter(final Project project, final GermplasmDataManager germplasmDataManager,
+			final LocationDataManager locationDataManager) {
 		this.project = project;
-		this.workbenchDataManager = workbenchDataManager;
 		this.germplasmDataManager = germplasmDataManager;
 		this.locationDataManager = locationDataManager;
 	}
 
 	public Collection<LocationViewModel> getFilteredResults(final Integer countryId, final Integer locationType,
 			final String locationName) {
-		return this.getFilteredResults(countryId, locationType, locationName, Collections.<LocationViewModel>emptyList());
-	}
-
-	public Collection<LocationViewModel> getFilteredResults(final Integer countryId, final Integer locationType, final String locationName,
-			final Collection<LocationViewModel> existingItems) {
 
 		final List<LocationDetails> locationDetails =
 				this.locationDataManager.getFilteredLocations(countryId, locationType, locationName, this.project.getUniqueID());
-		final Collection<LocationViewModel> result = createLocationViewModelList(locationDetails);
 
-		return result;
+		return createLocationViewModelList(locationDetails);
 	}
 
-	private Collection<LocationViewModel> createLocationViewModelList(final List<LocationDetails> locationDetails) {
-		final Collection<LocationViewModel> result = new ArrayList<LocationViewModel>();
-		final PropertyMap<LocationDetails, LocationViewModel> locationMapper = new PropertyMap<LocationDetails, LocationViewModel>() {
+	protected Collection<LocationViewModel> createLocationViewModelList(final List<LocationDetails> locationDetails) {
+		final Collection<LocationViewModel> result = new ArrayList<>();
 
-			@Override
-			protected void configure() {
-				this.map(this.source.getLocid(), this.destination.getLocationId());
-				this.map(this.source.getLocationName(), this.destination.getLocationName());
-				this.map(this.source.getLocationAbbreviation(), this.destination.getLocationAbbreviation());
-				this.map(this.source.getCountryFullName(), this.destination.getCntryFullName());
-				this.map(this.source.getLocationType(), this.destination.getLtypeStr());
-				this.map(this.source.getCntryid(), this.destination.getCntryid());
-				this.map(this.source.getLtype(), this.destination.getLtype());
-				this.map(this.source.getLatitude(), this.destination.getLatitude());
-				this.map(this.source.getLongitude(), this.destination.getLongitude());
-				this.map(this.source.getAltitude(), this.destination.getAltitude());
-			}
-
-		};
-
-		final ModelMapper modelMapper = new ModelMapper();
-
-		modelMapper.addMappings(locationMapper);
-
-		for (final Iterator<LocationDetails> iterator = locationDetails.iterator(); iterator.hasNext();) {
-			final LocationDetails detail = iterator.next();
-			result.add(modelMapper.map(detail, LocationViewModel.class));
+		for (final LocationDetails locationDetail : locationDetails) {
+			result.add(convertFromLocationDetailsToLocationViewModel(locationDetail));
 		}
 		return result;
 	}
 
 	public List<LocationViewModel> getSavedProgramLocations() {
 		if (this.cropType != null) {
-			return new ArrayList<LocationViewModel>();
+			return new ArrayList<>();
 		}
 
-		List<LocationViewModel> result = new ArrayList<LocationViewModel>();
-		List<ProgramFavorite> favorites = this.germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, this.project.getUniqueID());
+		final List<LocationViewModel> result = new ArrayList<>();
+		final List<ProgramFavorite> favorites =
+				this.germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, this.project.getUniqueID());
 
-		for (ProgramFavorite favorite : favorites) {
-			LocationViewModel locationVModel = this.getLocationDetailsByLocId(favorite.getEntityId());
+		for (final ProgramFavorite favorite : favorites) {
+			final LocationViewModel locationVModel = this.getLocationDetailsByLocId(favorite.getEntityId());
 
 			if (locationVModel != null) {
 				result.add(locationVModel);
@@ -132,37 +97,36 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		return result;
 	}
 
-	public LocationViewModel getLocationDetailsByLocId(int locationId) {
+	public LocationViewModel getLocationDetailsByLocId(final int locationId) {
 		try {
-			List<LocationDetails> locList = this.locationDataManager.getLocationDetailsByLocId(locationId, 0, 1);
-			return this.convertFrom(locList.get(0));
-		} catch (IndexOutOfBoundsException e) {
+			final List<LocationDetails> locList = this.locationDataManager.getLocationDetailsByLocId(locationId, 0, 1);
+			return this.convertFromLocationDetailsToLocationViewModel(locList.get(0));
+		} catch (final IndexOutOfBoundsException e) {
 			ProgramLocationsPresenter.LOG.error("Cannot retrieve location info. [locationId=" + locationId + "]", e);
-		} catch (NullPointerException e) {
+		} catch (final NullPointerException e) {
 			ProgramLocationsPresenter.LOG.error("Location [locationId=" + locationId + "]  not found", e);
 		}
 		return null;
 	}
 
-	public boolean saveFavouriteLocations(Collection<LocationViewModel> selectedLocations) {
-		return this.saveFavouriteLocations(selectedLocations, this.project, this.workbenchDataManager);
+	public boolean saveFavouriteLocations(final Collection<LocationViewModel> selectedLocations) {
+		return this.saveFavouriteLocations(selectedLocations, this.project);
 	}
 
-	public boolean saveFavouriteLocations(Collection<LocationViewModel> selectedLocations, Project project,
-			WorkbenchDataManager workbenchDataManager) {
+	public boolean saveFavouriteLocations(final Collection<LocationViewModel> selectedLocations, final Project project) {
 
 		// Delete existing project locations in the database
-		List<ProgramFavorite> favorites = this.germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, project.getUniqueID());
+		final List<ProgramFavorite> favorites = this.germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, project.getUniqueID());
 		this.germplasmDataManager.deleteProgramFavorites(favorites);
 
 		/*
 		 * add selected location to local db location table if it does not yet exist add location in workbench_project_loc_map in workbench
 		 * db
 		 */
-		List<ProgramFavorite> list = new ArrayList<ProgramFavorite>();
-		for (LocationViewModel l : selectedLocations) {
-			ProgramFavorite favorite = new ProgramFavorite();
-			favorite.setEntityId(l.getLocationId());
+		final List<ProgramFavorite> list = new ArrayList<>();
+		for (final LocationViewModel locationViewModel : selectedLocations) {
+			final ProgramFavorite favorite = new ProgramFavorite();
+			favorite.setEntityId(locationViewModel.getLocationId());
 			favorite.setEntityType(FavoriteType.LOCATION.getName());
 			favorite.setUniqueID(project.getUniqueID());
 			list.add(favorite);
@@ -174,35 +138,40 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		return true;
 	}
 
-	private LocationViewModel convertFrom(LocationDetails location) {
-		LocationViewModel viewModel = new LocationViewModel();
-		viewModel.setLocationId(location.getLocid());
-		viewModel.setLocationName(location.getLocationName());
-		viewModel.setLocationAbbreviation(location.getLocationAbbreviation());
-		viewModel.setCntryFullName(location.getCountryFullName());
-		viewModel.setLtypeStr(location.getLocationType());
-		viewModel.setCntryid(location.getCntryid());
-		viewModel.setLtype(location.getLtype());
-		viewModel.setLatitude(location.getLatitude());
-		viewModel.setLongitude(location.getLongitude());
-		viewModel.setAltitude(location.getAltitude());
+	protected LocationViewModel convertFromLocationDetailsToLocationViewModel(final LocationDetails locationDetails) {
+		final LocationViewModel viewModel = new LocationViewModel();
+		viewModel.setLocationId(locationDetails.getLocid());
+		viewModel.setLocationName(locationDetails.getLocationName());
+		viewModel.setLocationAbbreviation(locationDetails.getLocationAbbreviation());
+		viewModel.setCntryFullName(locationDetails.getCountryFullName());
+		viewModel.setLtypeStr(locationDetails.getLocationType());
+		viewModel.setCntryid(locationDetails.getCntryid());
+		viewModel.setCntryName(locationDetails.getCountryName());
+		viewModel.setLtype(locationDetails.getLtype());
+		viewModel.setLatitude(locationDetails.getLatitude());
+		viewModel.setLongitude(locationDetails.getLongitude());
+		viewModel.setAltitude(locationDetails.getAltitude());
+		viewModel.setProgramUUID(locationDetails.getProgramUUID());
+		viewModel.setProvinceId(locationDetails.getProvinceId());
+		viewModel.setProvinceName(locationDetails.getProvinceName());
 		return viewModel;
 	}
 
-	private LocationViewModel convertFrom(Location location) {
-		LocationViewModel viewModel = new LocationViewModel();
+	protected LocationViewModel convertFromLocationToLocationViewModel(final Location location) {
+		final LocationViewModel viewModel = new LocationViewModel();
 		viewModel.setLocationId(location.getLocid());
 		viewModel.setLocationName(location.getLname());
 		viewModel.setLocationAbbreviation(location.getLabbr());
 		viewModel.setLtype(location.getLtype());
 		viewModel.setCntryid(location.getCntryid());
-		viewModel.setProvinceId(location.getSnl3id());
+		viewModel.setProvinceId(location.getSnl1id());
 		viewModel.setLatitude(location.getLatitude());
 		viewModel.setLongitude(location.getLongitude());
 		viewModel.setAltitude(location.getAltitude());
+		viewModel.setProgramUUID(location.getUniqueID());
 
-		Country country = this.locationDataManager.getCountryById(location.getCntryid());
-		UserDefinedField udf = this.locationDataManager.getUserDefinedFieldByID(location.getLtype());
+		final Country country = this.locationDataManager.getCountryById(location.getCntryid());
+		final UserDefinedField udf = this.locationDataManager.getUserDefinedFieldByID(location.getLtype());
 
 		if (country != null) {
 			viewModel.setCntryFullName(country.getIsofull());
@@ -216,11 +185,11 @@ public class ProgramLocationsPresenter implements InitializingBean {
 	}
 
 	public List<Country> getCountryList() {
-		List<Country> countryList = this.locationDataManager.getAllCountry();
+		final List<Country> countryList = this.locationDataManager.getAllCountry();
 		Collections.sort(countryList, new Comparator<Country>() {
 
 			@Override
-			public int compare(Country o1, Country o2) {
+			public int compare(final Country o1, final Country o2) {
 
 				return o1.getIsoabbr().compareTo(o2.getIsoabbr());
 
@@ -234,7 +203,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		return this.locationDataManager.getAllProvinces();
 	}
 
-	public List<Location> getAllProvincesByCountry(Integer countryId) {
+	public List<Location> getAllProvincesByCountry(final Integer countryId) {
 		return this.locationDataManager.getAllProvincesByCountry(countryId);
 	}
 
@@ -247,11 +216,11 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		return this.project;
 	}
 
-
 	/**
 	 * afterPropertiesSet() is called after Aspect4J weaves spring objects when this class is instantiated since this class is
 	 * a @configurable that implements InitializingBean. Since we do not have any need for additional initialization after the weaving, this
 	 * method remains unimplemented.
+	 *
 	 * @throws Exception
 	 */
 	@Override
@@ -263,66 +232,80 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		return this.locationDataManager.getUserDefinedFieldByFieldTableNameAndType("LOCATION", "LTYPE");
 	}
 
-	public void addLocation(Location loc) {
+	public void addLocation(final Location loc) {
 		// if crop only AKA locationView instantiated from Add new program page, just add the row to the view table.
 
 		if (!this.isCropOnly) {
-			loc.setUniqueID(this.project.getUniqueID());
-			this.locationDataManager.addLocation(loc);
 
+			this.locationDataManager.addLocation(loc);
 			final LocationViewModel locationVModel = this.getLocationDetailsByLocId(loc.getLocid());
 			this.view.addRow(locationVModel, true, 0);
 
 		} else {
-			this.view.addRow(this.convertFrom(loc), true, 0);
+			this.view.addRow(this.convertFromLocationToLocationViewModel(loc), true, 0);
 		}
 	}
 
-	public List<Location> getExistingLocations(String locationName) {
+	public void updateLocation(final LocationViewModel locationViewModel, final boolean isEditedFromAvailableTable) {
+		this.locationDataManager.addLocation(convertLocationViewToLocation(locationViewModel));
+		this.view.refreshLocationViewItemInTable(isEditedFromAvailableTable, locationViewModel);
+	}
+
+	public List<Location> getExistingLocations(final String locationName) {
 		return this.locationDataManager.getLocationsByName(locationName, Operation.EQUAL, this.project.getUniqueID());
 	}
 
-	public Location convertLocationViewToLocation(LocationViewModel lvm) {
-		Location location = new Location();
+	public Location convertLocationViewToLocation(final LocationViewModel locationViewModel) {
+		final Location location = new Location();
+
 		location.setLrplce(0);
 
-		location.setLocid(lvm.getLocationId());
-		location.setLname(lvm.getLocationName());
-		location.setLabbr(lvm.getLocationAbbreviation());
-		location.setLtype(lvm.getLtype());
-		location.setCntryid(lvm.getCntryid());
+		location.setLocid(locationViewModel.getLocationId());
+		location.setLname(locationViewModel.getLocationName());
+		location.setLabbr(locationViewModel.getLocationAbbreviation());
+		location.setLtype(locationViewModel.getLtype());
+		location.setCntryid(locationViewModel.getCntryid());
 
 		if (location.getCntryid() == null) {
 			location.setCntryid(0);
 		}
 
-		location.setLatitude(lvm.getLatitude());
-		location.setLongitude(lvm.getLongitude());
-		location.setAltitude(lvm.getAltitude());
+		location.setLatitude(locationViewModel.getLatitude());
+		location.setLongitude(locationViewModel.getLongitude());
+		location.setAltitude(locationViewModel.getAltitude());
 
 		// defaults
 		location.setNllp(0);
-		location.setSnl1id(0);
+		location.setSnl3id(0);
 		location.setSnl2id(0);
-		location.setSnl3id(lvm.getProvinceId());
-		if (location.getSnl3id() == null) {
-			location.setSnl3id(0);
+		location.setSnl1id(locationViewModel.getProvinceId());
+
+		if (location.getSnl1id() == null) {
+			location.setSnl1id(0);
+		}
+
+		if (!locationViewModel.getCropAccessible()) {
+			location.setUniqueID(this.project.getUniqueID());
 		}
 
 		return location;
 	}
 
-	public List<Location> convertTo(Collection<LocationViewModel> locationViewModels) {
-		List<Location> result = new ArrayList<Location>();
+	public List<Location> convertTo(final Collection<LocationViewModel> locationViewModels) {
+		final List<Location> result = new ArrayList<>();
 
-		for (LocationViewModel locationViewModel : locationViewModels) {
+		for (final LocationViewModel locationViewModel : locationViewModels) {
 			result.add(this.convertLocationViewToLocation(locationViewModel));
 		}
 
 		return result;
 	}
 
-	public void setCropType(CropType cropType) {
+	public void setCropType(final CropType cropType) {
 		this.cropType = cropType;
+	}
+
+	public void setView(final ProgramLocationsView view) {
+		this.view = view;
 	}
 }

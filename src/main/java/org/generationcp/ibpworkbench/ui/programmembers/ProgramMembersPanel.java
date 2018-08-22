@@ -16,19 +16,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Resource;
+
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
-import org.generationcp.middleware.pojos.workbench.Role;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -37,7 +36,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Alignment;
@@ -62,13 +60,12 @@ import com.vaadin.ui.themes.Reindeer;
  */
 @Configurable
 public class ProgramMembersPanel extends Panel implements InitializingBean {
-
 	private static final Logger LOG = LoggerFactory.getLogger(ProgramMembersPanel.class);
 	private static final long serialVersionUID = 1L;
 	private static final String ROLE = "role_";
 	private static final String USERNAME = "userName";
 
-	private TwinTableSelect<User> select;
+	private TwinTableSelect<WorkbenchUser> select;
 
 	private Button cancelButton;
 	private Button saveButton;
@@ -78,8 +75,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
 
-	@Autowired
-	private SessionData sessionData;
+	@Resource
+	private ContextUtil contextUtil;
 
 	private final Project project;
 
@@ -101,32 +98,32 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 	}
 
-	private Label generateRoleCell(final Object itemId) {
-		final String role = ((User) itemId).getRoles().get(0).getCapitalizedRole();
+	protected Label generateRoleCell(final Object itemId) {
+		final String role = ((WorkbenchUser) itemId).getRoles().get(0).getCapitalizedRole();
 		final Label label = new Label();
 		label.setDebugId("label");
 		label.setValue(role);
 
-		if (((User) itemId).getUserid().equals(ProgramMembersPanel.this.sessionData.getUserData().getUserid())) {
+		if (((WorkbenchUser) itemId).getUserid().equals(this.contextUtil.getCurrentWorkbenchUserId())) {
 			label.setStyleName("label-bold");
 		}
 		return label;
 	}
 
-	private Label generateUserNameCell(final Object itemId) {
-		final Person person = ((User) itemId).getPerson();
+	protected Label generateUserNameCell(final Object itemId) {
+		final Person person = ((WorkbenchUser) itemId).getPerson();
 		final Label label = new Label();
 		label.setDebugId("label");
 		label.setValue(person.getDisplayName());
 
-		if (((User) itemId).getUserid().equals(ProgramMembersPanel.this.sessionData.getUserData().getUserid())) {
+		if (((WorkbenchUser) itemId).getUserid().equals(this.contextUtil.getCurrentWorkbenchUserId())) {
 			label.setStyleName("label-bold");
 		}
 		return label;
 	}
 
 	protected void initializeComponents() {
-		this.select = new TwinTableSelect<User>(User.class);
+		this.select = new TwinTableSelect<>(WorkbenchUser.class);
 
 		final Table.ColumnGenerator tableLeftUserName = new Table.ColumnGenerator() {
 
@@ -185,8 +182,10 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		this.select.getTableRight().addGeneratedColumn(ProgramMembersPanel.USERNAME, tableRightUserName);
 		this.select.getTableRight().addGeneratedColumn(ProgramMembersPanel.ROLE, tableRightRole);
 
-		this.select.setVisibleColumns(new Object[] {"select", ProgramMembersPanel.USERNAME, ProgramMembersPanel.ROLE});
-		this.select.setColumnHeaders(new String[] {"<span class='glyphicon glyphicon-ok'></span>", "User Name", "Role"});
+		this.select
+				.setVisibleColumns(new Object[] { "select", ProgramMembersPanel.USERNAME, ProgramMembersPanel.ROLE });
+		this.select
+				.setColumnHeaders(new String[] { "<span class='glyphicon glyphicon-ok'></span>", "User Name", "Role" });
 
 		this.select.setLeftColumnCaption("Available Users");
 		this.select.setRightColumnCaption("Selected Program Members");
@@ -205,19 +204,18 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 				ProgramMembersPanel.this.select.removeCheckedSelectedItems();
 			}
 		});
-		
+
 		this.initializeMembersTable();
 	}
-
 
 	private Table initializeMembersTable() {
 		this.tblMembers = new Table();
 		this.tblMembers.setDebugId("tblMembers");
 		this.tblMembers.setImmediate(true);
 
-		final List<Object> columnIds = new ArrayList<Object>();
+		final List<Object> columnIds = new ArrayList<>();
 		columnIds.add(ProgramMembersPanel.USERNAME);
-		final List<String> columnHeaders = new ArrayList<String>();
+		final List<String> columnHeaders = new ArrayList<>();
 		columnHeaders.add("Member");
 
 		// prepare the container
@@ -236,7 +234,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public Field createField(final Container container, final Object itemId, final Object propertyId, final Component uiContext) {
+			public Field createField(final Container container, final Object itemId, final Object propertyId,
+					final Component uiContext) {
 				final int columnIndex = columnIds.indexOf(propertyId);
 				if (columnIndex >= 1) {
 					return new CheckBox();
@@ -263,7 +262,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 		final HorizontalLayout titleContainer = new HorizontalLayout();
 		titleContainer.setDebugId("titleContainer");
-		final Label heading = new Label("<span class='bms-members' style='color: #D1B02A; font-size: 23px'></span>&nbsp;Program Members",
+		final Label heading = new Label(
+				"<span class='bms-members' style='color: #D1B02A; font-size: 23px'></span>&nbsp;Program Members",
 				Label.CONTENT_XHTML);
 		final Label headingDesc = new Label(
 				"Choose team members for this program by dragging available users from the list on the left into the Program Members list on the right.");
@@ -300,13 +300,12 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 	protected void initializeUsers() {
 		final Container container = this.tblMembers.getContainerDataSource();
+		final List<Integer> userIDs = this.workbenchDataManager
+				.getActiveUserIDsByProjectId(this.project.getProjectId());
+		final Set<WorkbenchUser> selectedItems = new HashSet<>();
 
-		final List<ProjectUserRole> projectUserRoles = this.workbenchDataManager.getProjectUserRolesByProject(this.project);
-
-		final Set<User> selectedItems = new HashSet<User>();
-
-		for (final ProjectUserRole projrole : projectUserRoles) {
-			final User userTemp = this.workbenchDataManager.getUserById(projrole.getUserId());
+		for (final Integer userID : userIDs) {
+			final WorkbenchUser userTemp = this.workbenchDataManager.getUserById(userID);
 			selectedItems.add(userTemp);
 
 			container.removeItem(userTemp);
@@ -315,18 +314,18 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			item.getItemProperty("userId").setValue(1);
 			item.getItemProperty(ProgramMembersPanel.USERNAME).setValue(userTemp.getPerson().getDisplayName());
 			item.getItemProperty(ProgramMembersPanel.ROLE).setValue(userTemp.getRoles().get(0).getCapitalizedRole());
-			
+
 			/*
-			 * If default ADMIN user, disable selection so it cannot be removed. 
-			 * Disabling is done here so that it can still be selected in Available Users table
+			 * If user has SUPERADMIN role, disable selection so it cannot be removed.
+			 * Disabling is done here so that it can still be selected in
+			 * Available Users table
 			 */
-			if (ProgramService.ADMIN_USERNAME.equalsIgnoreCase(userTemp.getName())){
+			if (userTemp.getRoles().get(0).getRole().isSuperAdminUser()) {
 				userTemp.setEnabled(false);
 			}
-			
+
 			this.select.select(userTemp);
 		}
-
 	}
 
 	protected void initializeActions() {
@@ -363,12 +362,13 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	}
 
 	protected Container createUsersContainer() {
-		final List<User> validUserList = new ArrayList<User>();
+		final List<WorkbenchUser> validUserList = new ArrayList<>();
 
-		// TODO: This can be improved once we implement proper User-Person mapping
-		final List<User> userList = this.workbenchDataManager.getAllUsersSorted();
+		// TODO: This can be improved once we implement proper User-Person
+		// mapping
+		final List<WorkbenchUser> userList = this.workbenchDataManager.getAllActiveUsersSorted();
 
-		for (final User user : userList) {
+		for (final WorkbenchUser user : userList) {
 			final Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
 			user.setPerson(person);
 
@@ -377,9 +377,10 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			}
 		}
 
-		final BeanItemContainer<User> beanItemContainer = new BeanItemContainer<User>(User.class);
-		for (final User user : validUserList) {
-			if (user.getUserid().equals(this.sessionData.getUserData().getUserid()) || user.getUserid().equals(this.project.getUserId())) {
+		final BeanItemContainer<WorkbenchUser> beanItemContainer = new BeanItemContainer<>(WorkbenchUser.class);
+		for (final WorkbenchUser user : validUserList) {
+			if (user.getUserid().equals(this.contextUtil.getCurrentWorkbenchUserId())
+					|| user.getUserid().equals(this.project.getUserId())) {
 				user.setEnabled(false);
 			}
 
@@ -396,59 +397,30 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 	public boolean validateAndSave() {
 		if (this.validate()) {
-			final Set<User> members = this.select.getValue();
+			final Set<WorkbenchUser> members = this.select.getValue();
 
 			this.project.setMembers(members);
 		}
-		// members not required, so even if there are no values, this returns true
+		// members not required, so even if there are no values, this returns
+		// true
 		return true;
-	}
-
-	public void setInheritedRoles(final Item currentItem, final List<Role> myinheritedRoles) {
-
-		if (this.tblMembers != null) {
-			List<Role> roleList = null;
-			try {
-				roleList = this.workbenchDataManager.getAllRoles();
-			} catch (final MiddlewareQueryException e) {
-				ProgramMembersPanel.LOG.error("Error encountered while getting workbench roles", e);
-				throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
-			}
-
-			// Reset old values
-			for (final Role role : roleList) {
-				final String propertyId = ProgramMembersPanel.ROLE + role.getRoleId();
-				final Property property = currentItem.getItemProperty(propertyId);
-				if (property.getType() == Boolean.class) {
-					property.setValue(Boolean.FALSE);
-				}
-			}
-
-			// Set checked boxes based on inherited roles
-			for (final Role inheritedRole : myinheritedRoles) {
-				final String propertyId = ProgramMembersPanel.ROLE + inheritedRole.getRoleId();
-				ProgramMembersPanel.LOG.debug("inheritedRole " + inheritedRole);
-				ProgramMembersPanel.LOG.debug("currentItem " + currentItem);
-				final Property property = currentItem.getItemProperty(propertyId);
-				if (property.getType() == Boolean.class) {
-					property.setValue(Boolean.TRUE);
-				}
-			}
-			this.requestRepaintAll();
-		}
 	}
 
 	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
 		this.workbenchDataManager = workbenchDataManager;
 	}
 
-	public void setSessionData(final SessionData sessionData) {
-		this.sessionData = sessionData;
+	public void setContextUtil(final ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
 	}
-	
-	public Set<User> getProgramMembersDisplayed(){
+
+	public Set<WorkbenchUser> getProgramMembersDisplayed() {
 		return this.select.getValue();
 	}
+
 	
+	public Project getProject() {
+		return project;
+	}
 
 }

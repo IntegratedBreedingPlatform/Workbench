@@ -1,15 +1,16 @@
-
 package org.generationcp.ibpworkbench.ui.project.create;
 
-import java.util.Set;
-
 import com.vaadin.data.Validator;
-import org.generationcp.ibpworkbench.SessionData;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.service.ProgramService;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+
+import com.vaadin.ui.Window;
+
+import java.util.Set;
 
 /**
  * Created by cyrus on 5/19/14.
@@ -23,15 +24,14 @@ public class AddProgramPresenter {
 	private ProgramService programService;
 
 	@Autowired
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
-	public AddProgramPresenter(AddProgramView view) {
+	public AddProgramPresenter(final AddProgramView view) {
 		this.view = view;
 	}
 
-
-	public void enableProgramMethodsAndLocationsTab() {
-		this.view.updateUIOnProgramSave(this.sessionData.getSelectedProject());
+	public void enableProgramMethodsAndLocationsTab(final Window window) {
+		this.view.updateUIOnProgramSave(this.contextUtil.getProjectInContext(), window);
 	}
 
 	public void disableProgramMethodsAndLocationsTab() {
@@ -40,7 +40,8 @@ public class AddProgramPresenter {
 
 	public Project doAddNewProgram() {
 		final Project program;
-		final Set<User> users;
+		final Set<WorkbenchUser> users;
+
 		try {
 			program = AddProgramPresenter.this.view.createProjectPanel.projectBasicDetailsComponent.getProjectDetails();
 			users = AddProgramPresenter.this.view.programMembersPanel.getSelectedUsers();
@@ -61,6 +62,16 @@ public class AddProgramPresenter {
 
 	public void resetProgramMembers() {
 		this.view.resetProgramMembers();
+	}
+
+
+	public void setProgramService(ProgramService programService) {
+		this.programService = programService;
+	}
+
+
+	public void setContextUtil(ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
 	}
 
 }

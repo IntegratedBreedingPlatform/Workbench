@@ -1,22 +1,16 @@
-
 package org.generationcp.ibpworkbench.ui.recovery;
 
 import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.help.document.HelpModule;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.BackupIBDBSaveAction;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.RestoreIBDBSaveAction;
 import org.generationcp.ibpworkbench.ui.common.UploadField;
-import org.generationcp.ibpworkbench.ui.programmethods.ProgramMethodsView;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.generationcp.middleware.pojos.workbench.Project;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -38,27 +32,26 @@ import com.vaadin.ui.themes.Reindeer;
 public class BackupAndRestoreView extends CustomComponent implements InitializingBean {
 
 	private static final long serialVersionUID = 1L;
-	private static final Logger LOG = LoggerFactory.getLogger(ProgramMethodsView.class);
 
-	private static final String NO_FILE = "NO_FILE";
-	private static final String NO_FILE_SELECTED = "NO_FILE_SELECTED";
+	public static final String NO_FILE = "NO_FILE";
+	public static final String NO_FILE_SELECTED = "NO_FILE_SELECTED";
 	public static final String NOT_VALID = "NOT_VALID";
 	private static final String MARGIN_TOP_10 = "marginTop10";
 	public static final String BMS_LABEL_BOTTOM_SPACE_STYLE = "bms-label-bottom-space";
 
-	private Button backupBtn;
-	private UploadField uploadFrm;
-	private Button restoreBtn;
+	private Button backupButton;
+	private UploadField uploadField;
+	private Button restoreButton;
 	private TabSheet tabSheet;
 	private Panel backupPanel;
 	private Panel restorePanel;
 
 	@Autowired
-	private SessionData sessionData;
-	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
+
 	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
+	private ContextUtil contextUtil;
+
 	private final Panel root = new Panel();
 
 	public BackupAndRestoreView() {
@@ -79,19 +72,19 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 	}
 
 	public void initializeComponents() {
-		this.backupBtn = new Button(this.messageSource.getMessage("BACKUP_BMS_BUTTON"));
-		this.backupBtn.setDebugId("backupBtn");
-		this.uploadFrm = new UploadField() {
+		this.backupButton = new Button(this.messageSource.getMessage("BACKUP_BMS_BUTTON"));
+		this.backupButton.setDebugId("backupBtn");
+		this.uploadField = new UploadField() {
 
 			@Override
 			public void uploadFinished(final Upload.FinishedEvent event) {
 				super.uploadFinished(event);
 
-				BackupAndRestoreView.this.restoreBtn.setEnabled(true);
+				BackupAndRestoreView.this.restoreButton.setEnabled(true);
 			}
 
 			@Override
-			public void validate() throws Validator.InvalidValueException {
+			public void validate() {
 				if (this.getLastFileName() == null) {
 					throw new Validator.InvalidValueException(NO_FILE);
 				} else if (!this.isValid()) {
@@ -119,13 +112,13 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 			}
 		};
 
-		this.uploadFrm.setNoFileSelectedText(this.messageSource.getMessage(NO_FILE_SELECTED));
-		this.uploadFrm.setSelectedFileText("<b>" + this.messageSource.getMessage("SELECTED_BACKUP_FILE") + "</b>");
-		this.uploadFrm.setDeleteCaption(this.messageSource.getMessage("CLEAR"));
-		this.uploadFrm.setFieldType(UploadField.FieldType.FILE);
+		this.uploadField.setNoFileSelectedText(this.messageSource.getMessage(NO_FILE_SELECTED));
+		this.uploadField.setSelectedFileText("<b>" + this.messageSource.getMessage("SELECTED_BACKUP_FILE") + "</b>");
+		this.uploadField.setDeleteCaption(this.messageSource.getMessage("CLEAR"));
+		this.uploadField.setFieldType(UploadField.FieldType.FILE);
 
-		this.restoreBtn = new Button(this.messageSource.getMessage("RESTORE_BMS_BUTTON"));
-		this.restoreBtn.setDebugId("restoreBtn");
+		this.restoreButton = new Button(this.messageSource.getMessage("RESTORE_BMS_BUTTON"));
+		this.restoreButton.setDebugId("restoreBtn");
 
 		this.tabSheet = new TabSheet();
 		this.tabSheet.setDebugId("tabSheet");
@@ -145,7 +138,10 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 	 * If possible, move to a controller class in the future
 	 */
 	public void initializeActions() {
-		final BackupIBDBSaveAction backupAction = new BackupIBDBSaveAction(this.sessionData.getLastOpenedProject(), this.getWindow()) {
+
+		final Project project = contextUtil.getProjectInContext();
+
+		final BackupIBDBSaveAction backupAction = new BackupIBDBSaveAction(project, this.getWindow()) {
 
 			@Override
 			public void doAction() {
@@ -153,9 +149,9 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 			}
 		};
 
-		this.backupBtn.addListener(backupAction);
+		this.backupButton.addListener(backupAction);
 
-		final RestoreIBDBSaveAction restoreAction = new RestoreIBDBSaveAction(this.sessionData.getLastOpenedProject(), this.getWindow()) {
+		final RestoreIBDBSaveAction restoreAction = new RestoreIBDBSaveAction(project, this.getWindow()) {
 
 			@Override
 			public void onClose(final ConfirmDialog dialog) {
@@ -165,53 +161,17 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 			}
 		};
 
-		this.restoreBtn.addListener(new Button.ClickListener() {
+		this.restoreButton.addListener(new RestoreButtonClickListener(project, restoreAction, this.uploadField));
 
-			@Override
-			public void buttonClick(final Button.ClickEvent clickEvent) {
-				// validate file upload
+		this.uploadField.setFileFactory(restoreAction);
 
-				try {
-					BackupAndRestoreView.this.uploadFrm.validate();
-
-				} catch (final Validator.InvalidValueException e) {
-					BackupAndRestoreView.LOG.error(e.getMessage(), e);
-					if (NO_FILE.equals(e.getMessage())) {
-						MessageNotifier.showError(clickEvent.getComponent().getWindow(),
-								BackupAndRestoreView.this.messageSource.getMessage(Message.ERROR_UPLOAD),
-								BackupAndRestoreView.this.messageSource.getMessage(NO_FILE_SELECTED));
-						return;
-					} else {
-						MessageNotifier.showError(clickEvent.getComponent().getWindow(),
-								BackupAndRestoreView.this.messageSource.getMessage(Message.ERROR_UPLOAD),
-								BackupAndRestoreView.this.messageSource.getMessage(Message.ERROR_INVALID_FILE));
-						return;
-					}
-				}
-
-				final String restoreDescMessageFormat = "<b style='color:red'>%s</b><br/><br/>%s";
-
-				final ConfirmDialog dialog = ConfirmDialog.show(clickEvent.getComponent().getWindow(),
-						BackupAndRestoreView.this.messageSource.getMessage(Message.RESTORE_IBDB_WINDOW_CAPTION),
-						String.format(restoreDescMessageFormat,
-								BackupAndRestoreView.this.messageSource.getMessage(Message.RESTORE_IBDB_CONFIRM,
-										BackupAndRestoreView.this.sessionData.getLastOpenedProject().getDatabaseName()),
-								BackupAndRestoreView.this.messageSource.getMessage(Message.RESTORE_BMS_WARN)),
-						BackupAndRestoreView.this.messageSource.getMessage(Message.RESTORE),
-						BackupAndRestoreView.this.messageSource.getMessage(Message.CANCEL), restoreAction);
-				dialog.setContentMode(ConfirmDialog.CONTENT_HTML);
-			}
-		});
-
-		this.uploadFrm.setFileFactory(restoreAction);
-
-		this.uploadFrm.setDeleteButtonListener(new Button.ClickListener() {
+		this.uploadField.setDeleteButtonListener(new Button.ClickListener() {
 
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void buttonClick(final ClickEvent event) {
-				BackupAndRestoreView.this.restoreBtn.setEnabled(true);
+				BackupAndRestoreView.this.restoreButton.setEnabled(true);
 			}
 		});
 	}
@@ -225,16 +185,16 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 		this.tabSheet.getTab(this.restorePanel).setClosable(false);
 		this.tabSheet.getTab(this.restorePanel).setCaption(this.messageSource.getMessage("RESTORE_LABEL"));
 
-		this.backupBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-		this.backupBtn.addStyleName(MARGIN_TOP_10);
+		this.backupButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+		this.backupButton.addStyleName(MARGIN_TOP_10);
 
-		this.restoreBtn.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-		this.restoreBtn.addStyleName(MARGIN_TOP_10);
+		this.restoreButton.setStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+		this.restoreButton.addStyleName(MARGIN_TOP_10);
 
-		this.uploadFrm.getRootLayout().addStyleName("bms-upload-container");
-		this.uploadFrm.getRootLayout().setWidth("100%");
-		this.uploadFrm.setButtonCaption(this.messageSource.getMessage("BROWSE"));
-		this.uploadFrm.addStyleName(BMS_LABEL_BOTTOM_SPACE_STYLE);
+		this.uploadField.getRootLayout().addStyleName("bms-upload-container");
+		this.uploadField.getRootLayout().setWidth("100%");
+		this.uploadField.setButtonCaption(this.messageSource.getMessage("BROWSE"));
+		this.uploadField.addStyleName(BMS_LABEL_BOTTOM_SPACE_STYLE);
 
 		final Label pageTitle = new Label(this.messageSource.getMessage("BACKUP_RESTORE_TITLE"));
 		pageTitle.setDebugId("pageTitle");
@@ -262,11 +222,11 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 		this.backupPanel.addComponent(new Label("<div style='height: 10px'></div>", Label.CONTENT_XHTML));
 		this.backupPanel.addComponent(
 				this.setUpHeadings(HelpModule.BACKUP_PROGRAM_DATA, this.messageSource.getMessage("BACKUP_BMS_TITLE"), "124px"));
-		final Label backupTextLabel = new Label(
-				this.messageSource.getMessage("BACKUP_BMS_DESCRIPTION", this.sessionData.getLastOpenedProject().getProjectName()));
+		final Label backupTextLabel =
+				new Label(this.messageSource.getMessage("BACKUP_BMS_DESCRIPTION", contextUtil.getProjectInContext().getProjectName()));
 		backupTextLabel.addStyleName(BMS_LABEL_BOTTOM_SPACE_STYLE);
 		this.backupPanel.addComponent(backupTextLabel);
-		this.backupPanel.addComponent(this.backupBtn);
+		this.backupPanel.addComponent(this.backupButton);
 
 		this.restorePanel.addComponent(new Label("<div style='height: 20px'></div>", Label.CONTENT_XHTML));
 		this.restorePanel.addComponent(
@@ -276,8 +236,8 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 		restoreDescriptionLabel.addStyleName(BMS_LABEL_BOTTOM_SPACE_STYLE);
 		this.restorePanel.addComponent(restoreDescriptionLabel);
 		this.restorePanel.addComponent(restoreUploadTitle);
-		this.restorePanel.addComponent(this.uploadFrm);
-		this.restorePanel.addComponent(this.restoreBtn);
+		this.restorePanel.addComponent(this.uploadField);
+		this.restorePanel.addComponent(this.restoreButton);
 
 		rootContent.addComponent(this.tabSheet);
 	}
@@ -301,5 +261,20 @@ public class BackupAndRestoreView extends CustomComponent implements Initializin
 		titleLayout.addComponent(helpButton);
 
 		return titleLayout;
+	}
+
+	
+	public Button getBackupButton() {
+		return backupButton;
+	}
+
+	
+	public Button getRestoreButton() {
+		return restoreButton;
+	}
+	
+
+	public void setUploadField(UploadField uploadField) {
+		this.uploadField = uploadField;
 	}
 }

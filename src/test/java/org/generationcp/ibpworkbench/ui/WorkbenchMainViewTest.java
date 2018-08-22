@@ -1,47 +1,55 @@
-
 package org.generationcp.ibpworkbench.ui;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Properties;
 
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Window;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.ibpworkbench.service.ProgramService;
+import org.generationcp.ibpworkbench.actions.AskForSupportAction;
+import org.generationcp.ibpworkbench.actions.HelpButtonClickAction;
+import org.generationcp.ibpworkbench.actions.HomeAction;
+import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.ui.window.ChangeCredentialsWindow;
 import org.generationcp.ibpworkbench.ui.window.ChangePasswordWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.vaadin.hene.popupbutton.PopupButton;
 
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 import junit.framework.Assert;
 
 public class WorkbenchMainViewTest {
 
 	public static final String PROJECT_NAME = "Maize Program 1";
+	public static final String CURRENT_USER_NAME = "John Doe";
 
 	@Mock
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Mock
 	private Properties workbenchProperties;
-	
+
 	@Mock
 	private WorkbenchDataManager workbenchDataManager;
 
@@ -54,6 +62,8 @@ public class WorkbenchMainViewTest {
 	private Project currentProject;
 
 	private int ADMIN_USER_ID = 1;
+	
+	private String askForSupportURL = RandomStringUtils.randomAlphabetic(20);
 
 	@Before
 	public void setup() {
@@ -62,7 +72,8 @@ public class WorkbenchMainViewTest {
 		// Setup mocks
 		final Person person = new Person("A", "B", "C");
 		person.setEmail("a@leafnode.io");
-		final User currentUser = new User(ADMIN_USER_ID);
+		final WorkbenchUser currentUser = new WorkbenchUser(ADMIN_USER_ID);
+		currentUser.setName(CURRENT_USER_NAME);
 		currentUser.setPerson(person);
 
 		Mockito.when(contextUtil.getCurrentWorkbenchUser()).thenReturn(currentUser);
@@ -71,8 +82,11 @@ public class WorkbenchMainViewTest {
 		this.currentProject.setProjectName(PROJECT_NAME);
 		Mockito.when(contextUtil.getProjectInContext()).thenReturn(currentProject);
 
+		this.workbenchMainView.setAskForSupportURL(askForSupportURL);
+		this.workbenchMainView.setIsAddProgramEnabled("true");
 		this.workbenchMainView.initializeComponents();
 		this.workbenchMainView.initializeLayout();
+
 	}
 
 	@Test
@@ -95,8 +109,7 @@ public class WorkbenchMainViewTest {
 	}
 
 	private void verifyLastOpenedProjectNameIsDisplayed() {
-		Assert.assertEquals("<h1>" + this.currentProject.getProjectName() + "</h1>",
-				this.workbenchMainView.getWorkbenchTitle().getValue());
+		Assert.assertEquals("<h1>" + this.currentProject.getProjectName() + "</h1>", this.workbenchMainView.getWorkbenchTitle().getValue());
 	}
 
 	private void verifyHeaderLayoutWHenShowingDashboard() {
@@ -105,6 +118,9 @@ public class WorkbenchMainViewTest {
 
 		final Iterator<Component> componentIterator = workbenchHeaderLayout.getComponentIterator();
 		boolean addProgramButtonShown = false;
+		boolean helpButtonShown = false;
+		boolean askSupportButtonShown = false;
+		boolean userInfoButtonShown = false;
 		while (componentIterator.hasNext()) {
 			final Component component = componentIterator.next();
 			// Verify that button to toggle sidebar is not showing
@@ -117,11 +133,23 @@ public class WorkbenchMainViewTest {
 
 			} else if (component.equals(this.workbenchMainView.getAddProgramButton())) {
 				addProgramButtonShown = true;
+				
+			} else if (component.equals(this.workbenchMainView.getHelpButton())) {
+				helpButtonShown = true;
+				
+			} else if (component.equals(this.workbenchMainView.getAskSupportBtn())) {
+				askSupportButtonShown = true;
+				
+			} else if (component.equals(this.workbenchMainView.getMemberButton())) {
+				userInfoButtonShown = true;
 			}
 		}
 
 		// Verify "Add Program" button is showing
 		Assert.assertTrue(addProgramButtonShown);
+		Assert.assertTrue(helpButtonShown);
+		Assert.assertTrue(askSupportButtonShown);
+		Assert.assertTrue(userInfoButtonShown);
 	}
 
 	private void verifyHeaderLayoutWhenNotShowingDashboard() {
@@ -131,6 +159,9 @@ public class WorkbenchMainViewTest {
 		final Iterator<Component> componentIterator = workbenchHeaderLayout.getComponentIterator();
 		boolean toggleSidebarButtonShowing = false;
 		boolean myProgramsButtonShowing = false;
+		boolean helpButtonShown = false;
+		boolean askSupportButtonShown = false;
+		boolean userInfoButtonShown = false;
 		while (componentIterator.hasNext()) {
 			final Component component = componentIterator.next();
 
@@ -141,6 +172,14 @@ public class WorkbenchMainViewTest {
 				// Verify that Add Program button should not be showing - it's only appears on Dashboard page
 			} else if (component.equals(this.workbenchMainView.getAddProgramButton())) {
 				Assert.fail("Add Program button should be hidden but was not.");
+			} else if (component.equals(this.workbenchMainView.getHelpButton())) {
+				helpButtonShown = true;
+				
+			} else if (component.equals(this.workbenchMainView.getAskSupportBtn())) {
+				askSupportButtonShown = true;
+				
+			} else if (component.equals(this.workbenchMainView.getMemberButton())) {
+				userInfoButtonShown = true;
 			}
 		}
 
@@ -148,12 +187,15 @@ public class WorkbenchMainViewTest {
 		Assert.assertTrue(myProgramsButtonShowing);
 		// Verify that button to toggle sidebar is showing
 		Assert.assertTrue(toggleSidebarButtonShowing);
+		Assert.assertTrue(helpButtonShown);
+		Assert.assertTrue(askSupportButtonShown);
+		Assert.assertTrue(userInfoButtonShown);
 	}
 
 	@Test
 	public void testCreateUserInfoIfNecessary() {
 
-		final User user = new User();
+		final WorkbenchUser user = new WorkbenchUser();
 		user.setUserid(101);
 
 		Mockito.when(this.workbenchDataManager.getUserInfo(Matchers.anyInt())).thenReturn(null);
@@ -167,11 +209,11 @@ public class WorkbenchMainViewTest {
 	}
 
 	@Test
-	public void testShowChangeCredentialsWindowOnFirstLoginUserIsAdminAccount() {
+	public void testShowChangeCredentialsWindowOnFirstLoginUserIsSuperAdminAccount() {
 
 		final Window window = Mockito.mock(Window.class);
-		final User user = new User();
-		user.setName(ProgramService.ADMIN_USERNAME);
+		final WorkbenchUser user = new WorkbenchUser(ADMIN_USER_ID);
+		Mockito.doReturn(true).when(this.workbenchDataManager).isSuperAdminUser(ADMIN_USER_ID);
 
 		final UserInfo userInfo = new UserInfo();
 		userInfo.setUserId(ADMIN_USER_ID);
@@ -185,11 +227,11 @@ public class WorkbenchMainViewTest {
 	}
 
 	@Test
-	public void testShowChangeCredentialsWindowOnFirstLoginUserIsAdminAccountSecondLogin() {
+	public void testShowChangeCredentialsWindowOnFirstLoginUserIsSuperAdminAccountSecondLogin() {
 
 		final Window window = Mockito.mock(Window.class);
-		final User user = new User();
-		user.setName(ProgramService.ADMIN_USERNAME);
+		final WorkbenchUser user = new WorkbenchUser(ADMIN_USER_ID);
+		Mockito.doReturn(true).when(this.workbenchDataManager).isSuperAdminUser(ADMIN_USER_ID);
 
 		final UserInfo userInfo = new UserInfo();
 		userInfo.setUserId(ADMIN_USER_ID);
@@ -203,14 +245,15 @@ public class WorkbenchMainViewTest {
 	}
 
 	@Test
-	public void testShowChangeCredentialsWindowOnFirstLoginUserIsNotAdminAccount() {
+	public void testShowChangeCredentialsWindowOnFirstLoginUserIsNotSuperAdminAccount() {
 
 		final Window window = Mockito.mock(Window.class);
-		final User user = new User();
-		user.setName("Username");
+		final int userId = 1000;
+		final WorkbenchUser user = new WorkbenchUser(userId);
+		Mockito.doReturn(false).when(this.workbenchDataManager).isSuperAdminUser(userId);
 
 		final UserInfo userInfo = new UserInfo();
-		userInfo.setUserId(1000);
+		userInfo.setUserId(userId);
 		userInfo.setLoginCount(0);
 
 		this.workbenchMainView.showChangeCredentialsWindowOnFirstLogin(window, user, userInfo);
@@ -221,14 +264,16 @@ public class WorkbenchMainViewTest {
 	}
 
 	@Test
-	public void testShowChangeCredentialsWindowOnFirstLoginUserIsNotAdminAccountSecondLogin() {
+	public void testShowChangeCredentialsWindowOnFirstLoginUserIsNotSuperAdminAccountSecondLogin() {
 
 		final Window window = Mockito.mock(Window.class);
-		final User user = new User();
-		user.setName(ProgramService.ADMIN_USERNAME);
+		final int userId = 1000;
+		final WorkbenchUser user = new WorkbenchUser(userId);
+		Mockito.doReturn(false).when(this.workbenchDataManager).isSuperAdminUser(userId);
+
 
 		final UserInfo userInfo = new UserInfo();
-		userInfo.setUserId(1000);
+		userInfo.setUserId(userId);
 		userInfo.setLoginCount(1);
 
 		this.workbenchMainView.showChangeCredentialsWindowOnFirstLogin(window, user, userInfo);
@@ -263,12 +308,35 @@ public class WorkbenchMainViewTest {
 	}
 
 	@Test
+	public void testLayoutAddProgramButtonAddProgramEnabledIsTrue() {
+
+		HorizontalLayout layout = new HorizontalLayout();
+		this.workbenchMainView.setIsAddProgramEnabled("true");
+		this.workbenchMainView.layoutAddProgramButton(layout);
+
+		// Verify that Add Program Button button is added in layout
+		Assert.assertTrue(layout.getComponentIndex(this.workbenchMainView.getAddProgramButton()) != -1);
+
+	}
+
+	@Test
+	public void testLayoutAddProgramButtonAddProgramEnabledIsFalse() {
+
+		HorizontalLayout layout = new HorizontalLayout();
+		this.workbenchMainView.setIsAddProgramEnabled("false");
+		this.workbenchMainView.layoutAddProgramButton(layout);
+
+		// Verify that Add Program Button button is added in layout
+		Assert.assertTrue(layout.getComponentIndex(this.workbenchMainView.getAddProgramButton()) == -1);
+
+	}
+
+	@Test
 	public void testOnLoadOperations() {
 
 		this.workbenchMainView.onLoadOperations();
 
 		Mockito.verify(this.workbenchDataManager).incrementUserLogInCount(ADMIN_USER_ID);
-
 
 	}
 
@@ -321,7 +389,68 @@ public class WorkbenchMainViewTest {
 
 		Assert.assertTrue(memberDetailPopup.getComponent(1) instanceof Button);
 
+	}
 
+	@Test
+	public void testUpdateLabels() {
+
+		final PopupButton popupButton = new PopupButton();
+
+		this.workbenchMainView.setMemberButton(popupButton);
+		this.workbenchMainView.updateLabels();
+
+		Assert.assertEquals(
+				"<span class='bms-header-btn2'><span>John Doe</span><span class='bms-fa-caret-down' style='padding: 0 10px 0 0'></span></span>",
+				popupButton.getCaption());
+	}
+
+	@Test
+	public void testInitializeActions() {
+		final String aboutBMSUrl = RandomStringUtils.randomAlphabetic(20);
+		this.workbenchMainView.setAboutBmsURL(aboutBMSUrl);
+		this.workbenchMainView.initializeActions();
+
+		final Collection<?> homeButtonListeneners = this.workbenchMainView.getHomeButton().getListeners(Button.ClickEvent.class);
+		Assert.assertNotNull(homeButtonListeneners);
+		Assert.assertTrue(homeButtonListeneners.size() == 1);
+		Assert.assertTrue(homeButtonListeneners.iterator().next() instanceof HomeAction);
+
+		final Collection<?> logoButtonListeners = this.workbenchMainView.getLogoBtn().getListeners(Button.ClickEvent.class);
+		Assert.assertNotNull(logoButtonListeners);
+		Assert.assertTrue(logoButtonListeners.size() == 1);
+		Assert.assertTrue(logoButtonListeners.iterator().next() instanceof HomeAction);
+
+		final Collection<?> adminButtonListeners = this.workbenchMainView.getAdminButton().getListeners(Button.ClickEvent.class);
+		Assert.assertNotNull(adminButtonListeners);
+		Assert.assertTrue(adminButtonListeners.size() == 1);
+
+		final Collection<?> programAdminButtonListeners =
+				this.workbenchMainView.getAddProgramButton().getListeners(Button.ClickEvent.class);
+		Assert.assertNotNull(programAdminButtonListeners);
+		Assert.assertTrue(programAdminButtonListeners.size() == 1);
+		Assert.assertTrue(programAdminButtonListeners.iterator().next() instanceof OpenNewProjectAction);
+
+		final Collection<?> helpButtonListeners = this.workbenchMainView.getHelpButton().getListeners(Button.ClickEvent.class);
+		Assert.assertNotNull(helpButtonListeners);
+		Assert.assertTrue(helpButtonListeners.size() == 1);
+		final HelpButtonClickAction helpAction = (HelpButtonClickAction) helpButtonListeners.iterator().next();
+		Assert.assertEquals(this.workbenchMainView, helpAction.getSourceWindow());
+		Assert.assertEquals(aboutBMSUrl, helpAction.getUrl());
+
+		final Collection<?> closeEventListeners = this.workbenchMainView.getListeners(Window.CloseEvent.class);
+		Assert.assertNotNull(closeEventListeners);
+		Assert.assertTrue(closeEventListeners.size() == 1);
 	}
 	
+	@Test
+	public void testAskForSupportButton() {
+		final Button askSupportBtn = this.workbenchMainView.getAskSupportBtn();
+		final Collection<?> askSupportButtonListeners = askSupportBtn.getListeners(Button.ClickEvent.class);
+		Assert.assertNotNull(askSupportButtonListeners);
+		Assert.assertTrue(askSupportButtonListeners.size() == 1);
+		final AskForSupportAction askSupportAction = (AskForSupportAction) askSupportButtonListeners.iterator().next();
+		Assert.assertEquals(this.workbenchMainView, askSupportAction.getSourceWindow());
+		Assert.assertEquals(this.askForSupportURL, askSupportAction.getUrl());
+	}
+
 }

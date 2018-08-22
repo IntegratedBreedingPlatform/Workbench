@@ -1,30 +1,4 @@
-
 package org.generationcp.ibpworkbench.ui.summaryview;
-
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
-import org.generationcp.browser.study.containers.StudyDetailsQueryFactory;
-import org.generationcp.commons.util.DateUtil;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
-import org.generationcp.middleware.domain.etl.StudyDetails;
-import org.generationcp.middleware.domain.oms.StudyType;
-import org.generationcp.middleware.manager.api.StudyDataManager;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectActivity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
 
 import com.jensjansson.pagedtable.PagedTable;
 import com.vaadin.addon.tableexport.ExcelExport;
@@ -42,21 +16,46 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
+import org.generationcp.browser.study.containers.StudyDetailsQueryFactory;
+import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.util.DateUtil;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.ibpworkbench.Message;
+import org.generationcp.middleware.domain.etl.StudyDetails;
+import org.generationcp.middleware.domain.study.StudyTypeDto;
+import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ProjectActivity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
+
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 @Configurable
 public class ProgramSummaryView extends VerticalLayout implements InitializingBean {
 
 	// Table Columns Constants
-	public static final String[] ACTIVITIES_COLUMNS =
+	protected static final String[] ACTIVITIES_COLUMNS =
 			new String[] {ProgramSummaryView.CREATED_AT, ProgramSummaryView.NAME, ProgramSummaryView.DESCRIPTION};
 
-	public static final String[] TRIAL_NURSERY_COLUMNS =
-			new String[] {ProgramSummaryView.STUDY_NAME, ProgramSummaryView.TITLE, ProgramSummaryView.OBJECTIVE,
+	protected static final String[] TRIAL_NURSERY_COLUMNS =
+			new String[] {ProgramSummaryView.STUDY_NAME, ProgramSummaryView.DESCRIPTION, ProgramSummaryView.OBJECTIVE,
 					ProgramSummaryView.START_DATE, ProgramSummaryView.END_DATE, ProgramSummaryView.PI_NAME, ProgramSummaryView.SITE_NAME};
 
-	public static final String[] ALL_STUDIES_COLUMNS = new String[] {ProgramSummaryView.STUDY_NAME, ProgramSummaryView.TITLE,
-			ProgramSummaryView.OBJECTIVE, ProgramSummaryView.START_DATE, ProgramSummaryView.END_DATE, ProgramSummaryView.PI_NAME,
-			ProgramSummaryView.SITE_NAME, ProgramSummaryView.STUDY_TYPE};
+	protected static final String[] ALL_STUDIES_COLUMNS =
+			new String[] {ProgramSummaryView.STUDY_NAME, ProgramSummaryView.DESCRIPTION, ProgramSummaryView.OBJECTIVE,
+					ProgramSummaryView.START_DATE, ProgramSummaryView.END_DATE, ProgramSummaryView.PI_NAME, ProgramSummaryView.SITE_NAME,
+					ProgramSummaryView.STUDY_TYPE};
 
 	public static final int COMPONENT_INDEX_OF_TABLES = 1;
 
@@ -71,8 +70,6 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 	private static final Logger LOG = LoggerFactory.getLogger(ProgramSummaryView.class);
 
 	private static final String STUDY_NAME = "studyName";
-
-	private static final String TITLE = "title";
 
 	private static final String OBJECTIVE = "objective";
 
@@ -90,7 +87,7 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
@@ -216,8 +213,8 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 									ProgramSummaryView.this.activityCount, ProgramSummaryView.this.programActivitiesTable);
 							break;
 						case 1:
-							ProgramSummaryView.this.addComponent(ProgramSummaryView.this.programTrialsTable,
-									ProgramSummaryView.COMPONENT_INDEX_OF_TABLES);
+							ProgramSummaryView.this
+									.addComponent(ProgramSummaryView.this.programTrialsTable, ProgramSummaryView.COMPONENT_INDEX_OF_TABLES);
 							ProgramSummaryView.this.updateHeaderAndTableControls(
 									ProgramSummaryView.this.messageSource.getMessage(Message.PROGRAM_SUMMARY_TRIALS),
 									ProgramSummaryView.this.trialCount, ProgramSummaryView.this.programTrialsTable);
@@ -244,26 +241,7 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 			}
 		});
 
-		this.exportBtn.addListener(new Button.ClickListener() {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void buttonClick(final Button.ClickEvent event) {
-				final String tableName = ProgramSummaryView.this.header.getValue().toString().split("\\[")[0].trim();
-				final String programName = ProgramSummaryView.this.sessionData.getSelectedProject().getProjectName();
-
-				final ExcelExport export = new ExcelExport((Table) ProgramSummaryView.this.getComponent(1), tableName);
-				export.setReportTitle(programName + " - " + tableName);
-				export.setExportFileName((tableName + " " + programName + ".xls").replaceAll(" ", "_"));
-				export.setDisplayTotals(false);
-
-				ProgramSummaryView.LOG
-						.info("Exporting " + tableName + ": " + export.getExportFileName() + ".xls will be downloaded in a moment.");
-				export.export();
-
-			}
-		});
+		this.exportBtn.addListener(new ExportButtonListener());
 
 	}
 
@@ -271,7 +249,7 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		final PagedTable activityTable = new PagedTableWithUpdatedControls();
 		activityTable.setImmediate(true);
 
-		final BeanContainer<Integer, ProjectActivity> container = new BeanContainer<Integer, ProjectActivity>(ProjectActivity.class);
+		final BeanContainer<Integer, ProjectActivity> container = new BeanContainer<>(ProjectActivity.class);
 		container.setBeanIdProperty("projectActivityId");
 		activityTable.setContainerDataSource(container);
 
@@ -290,7 +268,7 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		final PagedTable trialSummaryTable = new PagedTableWithUpdatedControls();
 		trialSummaryTable.setImmediate(true);
 
-		final BeanContainer<Integer, StudyDetails> container = new BeanContainer<Integer, StudyDetails>(StudyDetails.class);
+		final BeanContainer<Integer, StudyDetails> container = new BeanContainer<>(StudyDetails.class);
 		container.setBeanIdProperty("id");
 		trialSummaryTable.setContainerDataSource(container);
 
@@ -312,7 +290,7 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		final PagedTable nurserySummaryTable = new PagedTableWithUpdatedControls();
 		nurserySummaryTable.setImmediate(true);
 
-		final BeanContainer<Integer, StudyDetails> container = new BeanContainer<Integer, StudyDetails>(StudyDetails.class);
+		final BeanContainer<Integer, StudyDetails> container = new BeanContainer<>(StudyDetails.class);
 		container.setBeanIdProperty("id");
 		nurserySummaryTable.setContainerDataSource(container);
 
@@ -334,7 +312,7 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		final PagedTable allStudiesTable = new PagedTableWithUpdatedControls();
 		allStudiesTable.setImmediate(true);
 
-		final BeanContainer<Integer, StudyDetails> container = new BeanContainer<Integer, StudyDetails>(StudyDetails.class);
+		final BeanContainer<Integer, StudyDetails> container = new BeanContainer<>(StudyDetails.class);
 		container.setBeanIdProperty("id");
 		allStudiesTable.setContainerDataSource(container);
 
@@ -354,29 +332,36 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 	}
 
 	void initializeData() {
-		long projectActivitiesCount;
-		final Project project = this.sessionData.getSelectedProject();
+		final long projectActivitiesCount;
+		final Project project = this.contextUtil.getProjectInContext();
 		projectActivitiesCount = this.workbenchDataManager.countProjectActivitiesByProjectId(project.getProjectId());
 
 		final List<ProjectActivity> activityList =
 				this.workbenchDataManager.getProjectActivitiesByProjectId(project.getProjectId(), 0, (int) projectActivitiesCount);
 		this.populateActivityTable(activityList);
 
-		final StudyDetailsQueryFactory trialFactory = new StudyDetailsQueryFactory(this.studyDataManager, StudyType.T,
-				Arrays.asList(ProgramSummaryView.TRIAL_NURSERY_COLUMNS), project.getUniqueID());
+		// We still need to differentiate by T and N, because there are 2 explicit filters in the menu. It will be managed as an improvement
+		// DO NOT CHANGE
+		final StudyDetailsQueryFactory trialFactory =
+				new StudyDetailsQueryFactory(this.studyDataManager, StudyTypeDto.getTrialDto(), Arrays.asList
+					(ProgramSummaryView.TRIAL_NURSERY_COLUMNS),
+						project.getUniqueID());
 		this.populateTrialSummaryTable(trialFactory);
 
-		final StudyDetailsQueryFactory nurseryFactory = new StudyDetailsQueryFactory(this.studyDataManager, StudyType.N,
-				Arrays.asList(ProgramSummaryView.TRIAL_NURSERY_COLUMNS), project.getUniqueID());
+		final StudyDetailsQueryFactory nurseryFactory =
+				new StudyDetailsQueryFactory(this.studyDataManager, StudyTypeDto.getNurseryDto(),
+					Arrays.asList(ProgramSummaryView.TRIAL_NURSERY_COLUMNS),
+						project.getUniqueID());
 		this.populateNurserySummaryTable(nurseryFactory);
 
-		final StudyDetailsQueryFactory allStudiesTable = new StudyDetailsQueryFactory(this.studyDataManager, null,
-				Arrays.asList(ProgramSummaryView.ALL_STUDIES_COLUMNS), project.getUniqueID());
+		final StudyDetailsQueryFactory allStudiesTable =
+				new StudyDetailsQueryFactory(this.studyDataManager, null, Arrays.asList(ProgramSummaryView.ALL_STUDIES_COLUMNS),
+						project.getUniqueID());
 		this.populateProgramStudiesTable(allStudiesTable);
 	}
 
 	void populateActivityTable(final List<ProjectActivity> activityList) {
-		final BeanContainer<Integer, ProjectActivity> container = new BeanContainer<Integer, ProjectActivity>(ProjectActivity.class);
+		final BeanContainer<Integer, ProjectActivity> container = new BeanContainer<>(ProjectActivity.class);
 		container.setBeanIdProperty("projectActivityId");
 		this.programActivitiesTable.setContainerDataSource(container);
 
@@ -591,4 +576,37 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		return this.programNurseriesTable;
 	}
 
+	public void setHeader(final Label header) {
+		this.header = header;
+	}
+
+	class ExportButtonListener
+			implements Button.ClickListener {
+
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public void buttonClick(final Button.ClickEvent event) {
+
+			final String tableName = ProgramSummaryView.this.header.getValue().toString().split("\\[")[0].trim();
+			ExportButtonListener.this.doExport(new ExcelExport((Table) ProgramSummaryView.this.getComponent(1), tableName), tableName);
+
+		}
+
+		void doExport(final ExcelExport excelExport, final String tableName) {
+
+			final String programName = ProgramSummaryView.this.contextUtil.getProjectInContext().getProjectName();
+
+			excelExport.setReportTitle(programName + " - " + tableName);
+			excelExport.setExportFileName((tableName + " " + programName + ".xls").replaceAll(" ", "_"));
+			excelExport.setDisplayTotals(false);
+
+			ProgramSummaryView.LOG
+					.info("Exporting " + tableName + ": " + excelExport.getExportFileName() + ".xls will be downloaded in a moment.");
+			excelExport.export();
+
+		}
+
+
+	}
 }

@@ -1,35 +1,71 @@
 
 package org.generationcp.ibpworkbench.study;
 
-import com.vaadin.ui.Table;
-import junit.framework.Assert;
-import org.generationcp.middleware.domain.dms.*;
-import org.generationcp.middleware.domain.oms.Term;
-import org.generationcp.middleware.domain.oms.TermId;
-import org.generationcp.middleware.exceptions.MiddlewareException;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.api.StudyDataManager;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.mockito.Mockito;
-
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.generationcp.commons.util.VaadinFileDownloadResource;
+import org.generationcp.ibpworkbench.GermplasmStudyBrowserApplication;
+import org.generationcp.ibpworkbench.study.util.DatasetExporter;
+import org.generationcp.ibpworkbench.study.util.DatasetExporterException;
+import org.generationcp.middleware.domain.dms.DMSVariableType;
+import org.generationcp.middleware.domain.dms.DataSet;
+import org.generationcp.middleware.domain.dms.PhenotypicType;
+import org.generationcp.middleware.domain.dms.StandardVariable;
+import org.generationcp.middleware.domain.dms.VariableTypeList;
+import org.generationcp.middleware.domain.oms.Term;
+import org.generationcp.middleware.domain.oms.TermId;
+import org.generationcp.middleware.exceptions.MiddlewareException;
+import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+
+import com.vaadin.Application;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.Notification;
+
+import junit.framework.Assert;
+
 public class RepresentationDatasetComponentTest {
+	
+	private static final String XLS_FILEPATH = "/someDirectory/output/" + RepresentationDatasetComponent.TEMP_FILENAME + ".xls";
 
 	private static final int DATASET_ID = 2;
-	private static StudyDataManager studyDataManager = Mockito.mock(StudyDataManager.class);
-	private static RepresentationDatasetComponent datasetComponent;
 
-	@BeforeClass
-	public static void setup() throws MiddlewareQueryException {
-		RepresentationDatasetComponentTest.datasetComponent =
-				new RepresentationDatasetComponent(RepresentationDatasetComponentTest.studyDataManager,
-						RepresentationDatasetComponentTest.DATASET_ID, "", 1, false, false);
+	@Mock
+	private DatasetExporter datasetExporter;
+
+	@Mock
+	private StudyDataManager studyDataManager;
+	
+	@Mock
+	private Window window;
+	
+	@Mock
+	private Application application;
+	
+	private DataSet mockDataset;
+	private RepresentationDatasetComponent datasetComponent;
+
+	@Before
+	public void setup() throws DatasetExporterException {
+		MockitoAnnotations.initMocks(this);
+		this.datasetComponent = new RepresentationDatasetComponent(this.studyDataManager, RepresentationDatasetComponentTest.DATASET_ID, "",
+				1, false, false);
+		this.mockDataset = this.createMockDataset();
+		Mockito.doReturn(this.mockDataset).when(this.studyDataManager).getDataSet(RepresentationDatasetComponentTest.DATASET_ID);
+		Mockito.doReturn(XLS_FILEPATH).when(this.datasetExporter)
+				.exportToFieldBookExcelUsingIBDBv2(RepresentationDatasetComponent.TEMP_FILENAME);
 	}
 
-	private static DataSet createMockDataset() {
+	private DataSet createMockDataset() {
 		DataSet dataSet = new DataSet();
 		VariableTypeList variables = new VariableTypeList();
 		for (DMSVariableType variable : RepresentationDatasetComponentTest.createTestFactors()) {
@@ -87,8 +123,6 @@ public class RepresentationDatasetComponentTest {
 
 	@Test
 	public void testValidateNoDuplicateColumns() throws MiddlewareException {
-		DataSet mockDataset = RepresentationDatasetComponentTest.createMockDataset();
-
 		// duplicate GID variable
 		StandardVariable gidVariable = new StandardVariable();
 		gidVariable = new StandardVariable();
@@ -99,17 +133,12 @@ public class RepresentationDatasetComponentTest {
 		varType.setLocalName("GID");
 		mockDataset.getVariableTypes().add(varType);
 
-		Mockito.doReturn(mockDataset).when(RepresentationDatasetComponentTest.studyDataManager)
-				.getDataSet(RepresentationDatasetComponentTest.DATASET_ID);
-
-		Table table = RepresentationDatasetComponentTest.datasetComponent.generateLazyDatasetTable(false);
+		Table table = this.datasetComponent.generateLazyDatasetTable(false);
 		Assert.assertTrue("Table should only have 5 columns, excluding duplicate variables", table.getColumnHeaders().length == 5);
 	}
 
 	@Test
 	public void testValidateDatasetVariablesAreExcludedFromTable() throws MiddlewareException {
-		DataSet mockDataset = RepresentationDatasetComponentTest.createMockDataset();
-
 		// add DatasetVariables
 		StandardVariable datasetVariable = new StandardVariable();
 		datasetVariable = new StandardVariable();
@@ -133,11 +162,48 @@ public class RepresentationDatasetComponentTest {
 		varType.setLocalName("DATASET_TYPE");
 		mockDataset.getVariableTypes().add(varType);
 
-		Mockito.doReturn(mockDataset).when(RepresentationDatasetComponentTest.studyDataManager)
-				.getDataSet(RepresentationDatasetComponentTest.DATASET_ID);
-
-		Table table = RepresentationDatasetComponentTest.datasetComponent.generateLazyDatasetTable(false);
+		Table table = this.datasetComponent.generateLazyDatasetTable(false);
 		Assert.assertTrue("Table should only have 5 columns, excluding dataset variables", table.getColumnHeaders().length == 5);
+	}
+	
+	@Test
+	public void testExportToExcelAction() throws DatasetExporterException {
+		// Need to spy to be able to mock window to open file to
+		final RepresentationDatasetComponent spyComponent = Mockito.spy(this.datasetComponent);
+		spyComponent.setDatasetExporter(this.datasetExporter);
+		Mockito.doReturn(this.window).when(spyComponent).getWindow();
+		Mockito.doReturn(this.application).when(spyComponent).getApplication();
+		spyComponent.exportToExcelAction();
+		
+		// Verify file is downloaded to the browser with proper filename
+		Mockito.verify(this.datasetExporter).exportToFieldBookExcelUsingIBDBv2(RepresentationDatasetComponent.TEMP_FILENAME);
+		final ArgumentCaptor<VaadinFileDownloadResource> fileDownloadResourceCaptor = ArgumentCaptor.forClass(VaadinFileDownloadResource.class);
+		Mockito.verify(this.window).open(fileDownloadResourceCaptor.capture(), Matchers.anyString(), Matchers.eq(false));
+		final VaadinFileDownloadResource downloadResource = fileDownloadResourceCaptor.getValue();
+		Assert.assertEquals(new File(XLS_FILEPATH).getAbsolutePath(), downloadResource.getSourceFile().getAbsolutePath());
+		Assert.assertEquals(RepresentationDatasetComponent.XLS_DOWNLOAD_FILENAME, downloadResource.getFilename());
+	}
+	
+	@Test
+	public void testExportToExcelActionDatasetExporterExceptionThrown() throws DatasetExporterException {
+		// Need to spy to be able to mock window to open file to
+		final RepresentationDatasetComponent spyComponent = Mockito.spy(this.datasetComponent);
+		spyComponent.setDatasetExporter(this.datasetExporter);
+		final String message = "Some DatasetExporterException message.";
+		Mockito.doThrow(new DatasetExporterException(message)).when(this.datasetExporter)
+				.exportToFieldBookExcelUsingIBDBv2(Matchers.anyString());
+		Mockito.doReturn(this.application).when(spyComponent).getApplication();
+		Mockito.doReturn(this.window).when(this.application).getWindow(GermplasmStudyBrowserApplication.STUDY_WINDOW_NAME);
+		spyComponent.exportToExcelAction();
+		
+		Mockito.verify(this.datasetExporter).exportToFieldBookExcelUsingIBDBv2(RepresentationDatasetComponent.TEMP_FILENAME);
+		Mockito.verify(this.window, Mockito.never()).open(Matchers.any(VaadinFileDownloadResource.class), Matchers.anyString(),
+				Matchers.anyBoolean());
+		final ArgumentCaptor<Notification> notifCaptor = ArgumentCaptor.forClass(Notification.class);
+		Mockito.verify(this.window).showNotification(notifCaptor.capture());
+		final Notification error = notifCaptor.getValue();
+		Assert.assertEquals(message, error.getCaption());
+		Assert.assertEquals("</br>", error.getDescription());
 	}
 
 }

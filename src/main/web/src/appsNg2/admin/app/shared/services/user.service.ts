@@ -6,7 +6,7 @@ import ServiceHelper from "./service.helper";
 
 @Injectable()
 export class UserService{
-  private baseUrl: string = '/bmsapi/brapi/v1';
+  private baseUrl: string = '/bmsapi';
 
   private http: Http;
 
@@ -58,6 +58,7 @@ export class UserService{
       lastName: r.lastName,
       username: r.username,
       role: r.role,
+      roleName : r.role.description,
       email: r.email,
       status: r.status,
     });

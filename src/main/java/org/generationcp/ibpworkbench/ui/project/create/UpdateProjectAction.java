@@ -1,24 +1,14 @@
 
 package org.generationcp.ibpworkbench.ui.project.create;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
-import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
-import org.generationcp.ibpworkbench.util.ToolUtil;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectActivity;
-import org.generationcp.middleware.pojos.workbench.ProjectUserRole;
-import org.generationcp.middleware.pojos.workbench.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,19 +29,18 @@ public class UpdateProjectAction implements Button.ClickListener {
 	private WorkbenchDataManager workbenchDataManager;
 
 	@Autowired
-	private ToolUtil toolUtil;
+	private ContextUtil contextUtil;
 
-	@Autowired
-	private SessionData sessionData;
+	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
 	private static final long serialVersionUID = 1L;
 
-	public UpdateProjectAction(UpdateProjectPanel projectPanel) {
+	public UpdateProjectAction(final UpdateProjectPanel projectPanel) {
 		this.projectPanel = projectPanel;
 	}
 
 	@Override
-	public void buttonClick(Button.ClickEvent event) {
+	public void buttonClick(final Button.ClickEvent event) {
 
 		if (this.projectPanel.validate()) {
 			this.doUpdate();
@@ -59,74 +48,47 @@ public class UpdateProjectAction implements Button.ClickListener {
 
 	}
 
-	private void doUpdate() throws MiddlewareQueryException {
+	private void doUpdate() {
+
+		final Project project = this.contextUtil.getProjectInContext();
 
 		UpdateProjectAction.LOG.debug("doUpdate >");
-		UpdateProjectAction.LOG.debug(String.format("Project: [%s]", this.sessionData.getSelectedProject()));
+		UpdateProjectAction.LOG.debug(String.format("Project: [%s]", project));
 
 		if (this.projectPanel.validate()) {
-			// rename old workspace directory if found
-			this.toolUtil.renameOldWorkspaceDirectoryToNewFormat(this.sessionData.getSelectedProject().getProjectId(),
-					this.projectPanel.getOldProjectName());
+			// It is important to store old project name before updating the project
+			final String oldProjectName = this.projectPanel.getOldProjectName();
 
-			// update the project
-			Project updatedProject = this.projectPanel.projectBasicDetailsComponent.getProjectDetails();
-			this.sessionData.getSelectedProject().setProjectName(updatedProject.getProjectName());
-			this.sessionData.getSelectedProject().setStartDate(updatedProject.getStartDate());
-			this.workbenchDataManager.saveOrUpdateProject(this.sessionData.getSelectedProject());
+			// Update the project
+			final Project updatedProject = this.projectPanel.getProjectBasicDetailsComponent().getProjectDetails();
+			project.setProjectName(updatedProject.getProjectName());
+			project.setStartDate(updatedProject.getStartDate());
+			this.workbenchDataManager.saveOrUpdateProject(project);
 
-			// update project roles
-
-			List<ProjectUserRole> updatedProjectUserRoles = this.getProjectUserRoles();
-
-			// TODO: the following logic is best moved to workbench data manager
-			List<ProjectUserRole> deleteRoles =
-					this.workbenchDataManager.getProjectUserRolesByProject(this.sessionData.getSelectedProject());
-			// remove all previous roles assigned to current user
-			for (ProjectUserRole projectUserRole : deleteRoles) {
-				if (projectUserRole.getUserId().intValue() == this.sessionData.getUserData().getUserid()) {
-					this.workbenchDataManager.deleteProjectUserRole(projectUserRole);
-				}
-			}
-
-			// add the newly updated roles
-			for (ProjectUserRole projectUserRole : updatedProjectUserRoles) {
-				this.workbenchDataManager.addProjectUserRole(this.sessionData.getSelectedProject(), this.sessionData.getUserData(),
-						projectUserRole.getRole());
-			}
+			// Rename old workspace directory if found
+			this.installationDirectoryUtil.renameOldWorkspaceDirectory(oldProjectName, project);
 
 			MessageNotifier.showMessage(this.projectPanel.getWindow(), "Program update is successful",
-					String.format("%s is updated.", StringUtils.abbreviate(this.sessionData.getSelectedProject().getProjectName(), 50)));
+					String.format("%s is updated.", StringUtils.abbreviate(project.getProjectName(), 50)));
 
-			ProjectActivity projAct =
-					new ProjectActivity(new Integer(this.sessionData.getSelectedProject().getProjectId().intValue()),
-							this.sessionData.getSelectedProject(), "Update Program", "Updated Program - "
-									+ this.sessionData.getSelectedProject().getProjectName(), this.sessionData.getUserData(), new Date());
-			this.workbenchDataManager.addProjectActivity(projAct);
+			this.contextUtil.logProgramActivity("Update Program", "Updated Program - " + project.getProjectName());
 
 			if (IBPWorkbenchApplication.get().getMainWindow() instanceof WorkbenchMainView) {
-				((WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow()).addTitle(this.sessionData.getSelectedProject()
-						.getProjectName());
+				((WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow()).addTitle(project.getProjectName());
 			}
 		}
 	}
 
-	public List<ProjectUserRole> getProjectUserRoles() {
-
-		List<ProjectUserRole> projectUserRoles = new ArrayList<ProjectUserRole>();
-		try {
-			// BY DEFAULT, current user has all the roles
-			for (Role role : this.workbenchDataManager.getAllRoles()) {
-				ProjectUserRole projectUserRole = new ProjectUserRole();
-				projectUserRole.setRole(role);
-				projectUserRoles.add(projectUserRole);
-
-			}
-
-		} catch (MiddlewareQueryException e) {
-			throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
-		}
-
-		return projectUserRoles;
+	public void setContextUtil(final ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
 	}
+
+	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
+		this.workbenchDataManager = workbenchDataManager;
+	}
+
+	public void setInstallationDirectoryUtil(final InstallationDirectoryUtil installationDirectoryUtil) {
+		this.installationDirectoryUtil = installationDirectoryUtil;
+	}
+
 }

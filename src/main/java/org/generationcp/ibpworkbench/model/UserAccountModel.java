@@ -13,7 +13,8 @@ package org.generationcp.ibpworkbench.model;
 
 import java.io.Serializable;
 
-import org.generationcp.commons.security.Role;
+import org.generationcp.middleware.pojos.workbench.Role;
+
 
 /**
  * <b>Description</b>: A combined Users and Persons POJO.
@@ -41,11 +42,10 @@ public class UserAccountModel implements Serializable {
 	private String password;
 
 	private String passwordConfirmation;
-
-	private String role;
-
-	private String securityQuestion;
-	private String securityAnswer;
+	
+	private Integer roleId;
+	
+	private Role role;
 
 	/**
 	 * Initialize fields so that the "null" String value does not appear.
@@ -59,11 +59,6 @@ public class UserAccountModel implements Serializable {
 		this.username = "";
 		this.password = "";
 		this.passwordConfirmation = "";
-		this.securityQuestion = "";
-		this.securityAnswer = "";
-
-		// default
-		this.role = Role.TECHNICIAN.name();
 	}
 
 	public String getFirstName() {
@@ -122,27 +117,20 @@ public class UserAccountModel implements Serializable {
 		this.passwordConfirmation = passwordConfirmation;
 	}
 
-	public String getSecurityQuestion() {
-		return this.securityQuestion;
+	public Integer getRoleId() {
+		return this.roleId;
 	}
 
-	public void setSecurityQuestion(String securityQuestion) {
-		this.securityQuestion = securityQuestion;
+	public void setRoleId(final Integer roleId) {
+		this.roleId = roleId;
 	}
 
-	public String getSecurityAnswer() {
-		return this.securityAnswer;
-	}
-
-	public void setSecurityAnswer(String securityAnswer) {
-		this.securityAnswer = securityAnswer;
-	}
-
-	public String getRole() {
+	
+	public Role getRole() {
 		return this.role;
 	}
 
-	public void setRole(String role) {
+	public void setRole(final Role role) {
 		this.role = role;
 	}
 
@@ -155,7 +143,5 @@ public class UserAccountModel implements Serializable {
 		this.username = this.username.trim();
 		this.password = this.password.trim();
 		this.passwordConfirmation = this.passwordConfirmation.trim();
-		this.securityQuestion = this.securityQuestion.trim();
-		this.securityAnswer = this.securityAnswer.trim();
 	}
 }

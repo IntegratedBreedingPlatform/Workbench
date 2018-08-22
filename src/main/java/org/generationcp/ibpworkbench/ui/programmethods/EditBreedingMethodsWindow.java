@@ -1,17 +1,4 @@
-
 package org.generationcp.ibpworkbench.ui.programmethods;
-
-import org.apache.commons.lang3.StringUtils;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.commons.vaadin.ui.BaseSubWindow;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.data.Validator;
 import com.vaadin.data.util.BeanItem;
@@ -23,6 +10,16 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
+import org.apache.commons.lang3.StringUtils;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.ui.BaseSubWindow;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 @Configurable
 public class EditBreedingMethodsWindow extends BaseSubWindow {
@@ -48,11 +45,9 @@ public class EditBreedingMethodsWindow extends BaseSubWindow {
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
-	private SessionData sessionData;
+	private BreedingMethodTracker breedingMethodTracker;
 
-	private final static String[] VISIBLE_ITEM_PROPERTIES = new String[] {"methodName", "methodDescription", "methodType", "methodCode"};
-
-	public EditBreedingMethodsWindow(ProgramMethodsPresenter presenter, MethodView methodView) {
+	public EditBreedingMethodsWindow(final ProgramMethodsPresenter presenter, final MethodView methodView) {
 		this.presenter = presenter;
 
 		this.modelBean = methodView;
@@ -95,8 +90,8 @@ public class EditBreedingMethodsWindow extends BaseSubWindow {
 		final VerticalLayout vl = new VerticalLayout();
 		vl.setDebugId("vl");
 		vl.setSizeFull();
-		vl.addComponent(new Label("<i><span style='color:red; font-weight:bold'>*</span> indicates a mandatory field.</i>",
-				Label.CONTENT_XHTML));
+		vl.addComponent(
+				new Label("<i><span style='color:red; font-weight:bold'>*</span> indicates a mandatory field.</i>", Label.CONTENT_XHTML));
 		vl.addComponent(this.breedingMethodForm);
 		vl.setExpandRatio(this.breedingMethodForm, 1.0F);
 
@@ -115,47 +110,7 @@ public class EditBreedingMethodsWindow extends BaseSubWindow {
 
 	protected void initializeActions() {
 
-		this.editBreedingMethodButton.addListener(new Button.ClickListener() {
-
-			/**
-			 *
-			 */
-			private static final long serialVersionUID = 5290520698158469871L;
-
-			@Override
-			public void buttonClick(Button.ClickEvent clickEvent) {
-				try {
-					EditBreedingMethodsWindow.this.breedingMethodForm.commit();
-				} catch (Validator.EmptyValueException e) {
-					MessageNotifier.showRequiredFieldError(clickEvent.getComponent().getWindow(), e.getLocalizedMessage());
-					LOG.warn(e.getMessage(),e);
-					return;
-				} catch (Validator.InvalidValueException e) {
-					MessageNotifier.showRequiredFieldError(clickEvent.getComponent().getWindow(), e.getLocalizedMessage());
-					LOG.warn(e.getMessage(),e);
-					return;
-				}
-
-				EditBreedingMethodsWindow.this.sessionData.getUniqueBreedingMethods().remove(EditBreedingMethodsWindow.this.modelBean);
-				EditBreedingMethodsWindow.this.sessionData.getProjectBreedingMethodData().remove(
-						EditBreedingMethodsWindow.this.modelBean.getMid());
-
-				MethodView bean = ((BeanItem<MethodView>) EditBreedingMethodsWindow.this.breedingMethodForm.getItemDataSource()).getBean();
-				if (StringUtils.isEmpty(bean.getMtype())) {
-					MessageNotifier.showRequiredFieldError(clickEvent.getComponent().getWindow(),
-							"Please select a Generation Advancement Type");
-					return;
-				}
-
-				MethodView result = EditBreedingMethodsWindow.this.presenter.editBreedingMethod(bean);
-
-				MessageNotifier.showMessage(clickEvent.getComponent().getWindow().getParent().getWindow(),
-						EditBreedingMethodsWindow.this.messageSource.getMessage(Message.SUCCESS), result.getMname()
-								+ " breeding method is updated.");
-
-				EditBreedingMethodsWindow.this.getParent().removeWindow(EditBreedingMethodsWindow.this);
-			}
-		});
+		this.editBreedingMethodButton.addListener(new EditBreedingMethodButtonListener());
 
 		this.cancelButton.addListener(new Button.ClickListener() {
 
@@ -165,7 +120,7 @@ public class EditBreedingMethodsWindow extends BaseSubWindow {
 			private static final long serialVersionUID = 2336400725451747344L;
 
 			@Override
-			public void buttonClick(Button.ClickEvent clickEvent) {
+			public void buttonClick(final Button.ClickEvent clickEvent) {
 
 				clickEvent.getComponent().getWindow().getParent().removeWindow(clickEvent.getComponent().getWindow());
 
@@ -174,7 +129,7 @@ public class EditBreedingMethodsWindow extends BaseSubWindow {
 	}
 
 	protected Component layoutButtonArea() {
-		HorizontalLayout buttonLayout = new HorizontalLayout();
+		final HorizontalLayout buttonLayout = new HorizontalLayout();
 		buttonLayout.setDebugId("buttonLayout");
 		buttonLayout.setSpacing(true);
 		buttonLayout.setMargin(true, false, false, false);
@@ -196,7 +151,63 @@ public class EditBreedingMethodsWindow extends BaseSubWindow {
 		this.initializeActions();
 	}
 
-	public void refreshVisibleItems() {
-		this.breedingMethodForm.setVisibleItemProperties(EditBreedingMethodsWindow.VISIBLE_ITEM_PROPERTIES);
+	public void setBreedingMethodForm(final BreedingMethodForm breedingMethodForm) {
+		this.breedingMethodForm = breedingMethodForm;
 	}
+
+	public void setBreedingMethodTracker(final BreedingMethodTracker breedingMethodTracker) {
+		this.breedingMethodTracker = breedingMethodTracker;
+	}
+
+	public void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+
+	class EditBreedingMethodButtonListener implements Button.ClickListener {
+
+
+		/**
+		 *
+		 */
+		private static final long serialVersionUID = 5290520698158469871L;
+		public static final String BREEDING_METHOD_IS_UPDATED = " breeding method is updated.";
+		public static final String PLEASE_SELECT_A_GENERATION_ADVANCEMENT_TYPE = "Please select a Generation Advancement Type";
+
+		@Override
+		public void buttonClick(final Button.ClickEvent clickEvent) {
+
+			try {
+				EditBreedingMethodsWindow.this.breedingMethodForm.commit();
+			} catch (final Validator.EmptyValueException e) {
+				MessageNotifier.showRequiredFieldError(clickEvent.getComponent().getWindow(), e.getLocalizedMessage());
+				LOG.warn(e.getMessage(), e);
+				return;
+			} catch (final Validator.InvalidValueException e) {
+				MessageNotifier.showRequiredFieldError(clickEvent.getComponent().getWindow(), e.getLocalizedMessage());
+				LOG.warn(e.getMessage(), e);
+				return;
+			}
+
+			breedingMethodTracker.getUniqueBreedingMethods().remove(EditBreedingMethodsWindow.this.modelBean);
+			breedingMethodTracker.getProjectBreedingMethodData().remove(EditBreedingMethodsWindow.this.modelBean.getMid());
+
+			final MethodView bean =
+					((BeanItem<MethodView>) EditBreedingMethodsWindow.this.breedingMethodForm.getItemDataSource()).getBean();
+			if (StringUtils.isEmpty(bean.getMtype())) {
+				MessageNotifier
+						.showRequiredFieldError(clickEvent.getComponent().getWindow(), PLEASE_SELECT_A_GENERATION_ADVANCEMENT_TYPE);
+				return;
+			}
+
+			final MethodView result = EditBreedingMethodsWindow.this.presenter.editBreedingMethod(bean);
+
+			MessageNotifier.showMessage(clickEvent.getComponent().getWindow().getParent().getWindow(),
+					EditBreedingMethodsWindow.this.messageSource.getMessage(Message.SUCCESS),
+					result.getMname() + BREEDING_METHOD_IS_UPDATED);
+
+			EditBreedingMethodsWindow.this.getParent().removeWindow(EditBreedingMethodsWindow.this);
+		}
+
+	}
+
 }

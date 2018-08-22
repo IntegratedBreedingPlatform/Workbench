@@ -1,20 +1,23 @@
-
 package org.generationcp.ibpworkbench.ui.dashboard;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.ServletContext;
-import java.io.InputStream;
+import com.vaadin.data.Item;
+import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Table;
 import org.apache.commons.lang3.StringUtils;
+import org.generationcp.commons.context.ContextConstants;
+import org.generationcp.commons.context.ContextInfo;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.ui.dashboard.listener.LaunchProgramAction;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,13 +27,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import com.vaadin.data.Item;
-import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Embedded;
-import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.Table;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.generationcp.commons.context.ContextConstants.*;
 
 public class WorkbenchDashboardTest {
 
@@ -43,10 +47,16 @@ public class WorkbenchDashboardTest {
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Mock
-	private SessionData sessionData;
+	private ContextUtil contextUtil;
 
 	@Mock
 	private ServletContext servletContext;
+
+	@Mock
+	private HttpServletRequest httpServletRequest;
+
+	@Mock
+	private HttpSession httpSession;
 
 	@InjectMocks
 	private WorkbenchDashboard workbenchDashboard;
@@ -60,13 +70,14 @@ public class WorkbenchDashboardTest {
 		MockitoAnnotations.initMocks(this);
 
 		// Setup test data and mocks
-		final User currentUser = new User(1);
-		Mockito.doReturn(currentUser).when(this.sessionData).getUserData();
+		final WorkbenchUser currentUser = new WorkbenchUser(1);
+		Mockito.doReturn(currentUser).when(this.contextUtil).getCurrentWorkbenchUser();
 
 		this.programs = this.createProjects(WorkbenchDashboardTest.NUMBER_OF_PROGRAMS, new CropType(CropType.CropEnum.MAIZE.toString()));
 		this.lastOpenedProgram = this.programs.get(7);
 		Mockito.doReturn(this.programs).when(this.workbenchDataManager).getProjectsByUser(currentUser);
 		Mockito.doReturn(this.lastOpenedProgram).when(this.workbenchDataManager).getLastOpenedProject(currentUser.getUserid());
+		Mockito.when(httpServletRequest.getSession()).thenReturn(httpSession);
 
 		// Initialize UI components
 		this.workbenchDashboard.initializeComponents();
@@ -97,6 +108,9 @@ public class WorkbenchDashboardTest {
 			Assert.assertNotNull(launchButton.getListeners(ClickListener.class));
 			Assert.assertNotNull(launchButton.getListeners(LaunchProgramAction.class));
 		}
+
+		Assert.assertEquals(this.lastOpenedProgram, programsTable.getValue());
+		Mockito.verify(httpSession).setAttribute(Mockito.eq(SESSION_ATTR_CONTEXT_INFO), Mockito.any(ContextInfo.class));
 
 	}
 

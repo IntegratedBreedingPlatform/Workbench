@@ -1,27 +1,17 @@
-
 package org.generationcp.ibpworkbench.ui.window;
 
-import java.util.List;
-
-import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.SessionData;
 import org.generationcp.ibpworkbench.actions.RestoreIBDBSaveAction;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.util.BeanContainer;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -35,8 +25,6 @@ import com.vaadin.ui.themes.Reindeer;
 @Configurable
 public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean, InternationalizableComponent {
 
-	private static final Logger LOG = LoggerFactory.getLogger(RestoreIBDBWindow.class);
-
 	private static final long serialVersionUID = 1L;
 
 	private final Project project;
@@ -48,13 +36,7 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 	private static final String WINDOW_HEIGHT = "430px";
 
 	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
-
-	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
-
-	@Autowired
-	private SessionData sessionData;
 
 	private Upload upload;
 
@@ -68,23 +50,6 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		this.assemble();
-	}
-
-	protected void initializeData() {
-		try {
-			final List<Project> projects = this.workbenchDataManager.getProjectsByUser(this.sessionData.getUserData());
-
-			// set the Project Table data source
-			final BeanContainer<String, Project> projectContainer = new BeanContainer<String, Project>(Project.class);
-			projectContainer.setBeanIdProperty("projectName");
-			for (final Project project : projects) {
-				projectContainer.addBean(project);
-			}
-
-		} catch (final MiddlewareQueryException e) {
-			RestoreIBDBWindow.LOG.error("Exception", e);
-			throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
-		}
 	}
 
 	protected void initializeComponents() {
@@ -148,6 +113,7 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 
 		// DO button listeners + actions here
 		this.cancelBtn.addListener(new Button.ClickListener() {
+
 			private static final long serialVersionUID = 3986272934965189089L;
 
 			@Override
@@ -157,6 +123,7 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 		});
 
 		this.saveBtn.addListener(new Button.ClickListener() {
+
 			private static final long serialVersionUID = 2139337955546100675L;
 
 			@Override
@@ -176,7 +143,6 @@ public class RestoreIBDBWindow extends BaseSubWindow implements InitializingBean
 	protected void assemble() {
 		this.initializeComponents();
 		this.initializeLayout();
-		this.initializeData();
 		this.initializeActions();
 	}
 

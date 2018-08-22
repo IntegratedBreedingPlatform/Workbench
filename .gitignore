@@ -236,9 +236,11 @@ pip-log.txt
 
 # angular 2
 typings
+src/main/jhipster/src/main/webapp/app/**/*.js
 
 node_modules
 node
+package-lock.json
 
 src/main/webapp/WEB-INF/pages
 src/main/webapp/WEB-INF/static

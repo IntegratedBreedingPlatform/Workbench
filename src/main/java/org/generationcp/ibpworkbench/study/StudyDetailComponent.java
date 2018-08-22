@@ -13,12 +13,14 @@ package org.generationcp.ibpworkbench.study;
 
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
+import org.apache.commons.lang3.StringUtils;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -31,6 +33,9 @@ public class StudyDetailComponent extends GridLayout implements InitializingBean
 	@SuppressWarnings("unused")
 	private static final Logger LOG = LoggerFactory.getLogger(StudyDetailComponent.class);
 	private static final long serialVersionUID = 1738426765643928293L;
+	
+	@Autowired
+	private StudyDataManager studyDataManager;
 
 	private Label lblName;
 	private Label lblTitle;
@@ -46,14 +51,12 @@ public class StudyDetailComponent extends GridLayout implements InitializingBean
 	private Label studyStartDate;
 	private Label studyEndDate;
 
-	private final org.generationcp.middleware.manager.api.StudyDataManager studyDataManager;
 	private final int studyId;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	public StudyDetailComponent(org.generationcp.middleware.manager.api.StudyDataManager studyDataManager, int studyId) {
-		this.studyDataManager = studyDataManager;
+	public StudyDetailComponent(int studyId) {
 		this.studyId = studyId;
 	}
 
@@ -89,11 +92,17 @@ public class StudyDetailComponent extends GridLayout implements InitializingBean
 			study = this.studyDataManager.getStudy(this.studyId);
 
 			this.studyName = new Label(this.setStudyDetailValue(study.getName()));
-			this.studyTitle = new Label(this.setStudyDetailValue(study.getTitle()));
+			this.studyTitle = new Label(this.setStudyDetailValue(study.getDescription()));
 			this.studyObjective = new Label(this.setStudyDetailValue(study.getObjective()));
 			this.studyType = new Label(this.setStudyDetailValue(study.getType().getName()));
 			this.studyStartDate = new Label(this.setStudyDetailValue(String.valueOf(study.getStartDate())));
-			this.studyEndDate = new Label(this.setStudyDetailValue(String.valueOf(study.getEndDate())));
+			if (study.getEndDate() != null) {
+				this.studyEndDate = new Label(this.setStudyDetailValue(String.valueOf(study.getEndDate())));
+			}
+			else {
+				this.studyEndDate = new Label(this.setStudyDetailValue(StringUtils.EMPTY));
+			}
+
 
 		} catch (MiddlewareQueryException e) {
 			throw new InternationalizableException(e, Message.ERROR_IN_GETTING_STUDY_DETAIL_BY_ID, Message.EMPTY_STRING);

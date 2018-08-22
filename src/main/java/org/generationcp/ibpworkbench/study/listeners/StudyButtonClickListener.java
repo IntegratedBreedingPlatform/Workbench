@@ -16,8 +16,8 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Layout;
 import org.generationcp.ibpworkbench.study.RepresentationDatasetComponent;
 import org.generationcp.ibpworkbench.study.SaveRepresentationDatasetExcelDialog;
-import org.generationcp.ibpworkbench.study.StudyTreeComponent;
 import org.generationcp.ibpworkbench.study.TableViewerComponent;
+import org.generationcp.ibpworkbench.study.tree.BrowseStudyTreeComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,15 +68,13 @@ public class StudyButtonClickListener implements Button.ClickListener {
 				&& this.source instanceof SaveRepresentationDatasetExcelDialog) {
 			((SaveRepresentationDatasetExcelDialog) this.source).browseDirectoryButtonClickAction();
 
-			// "Refresh")
-		} else if (event.getButton().getData().equals(StudyTreeComponent.REFRESH_BUTTON_ID) && this.source instanceof StudyTreeComponent) {
-			((StudyTreeComponent) this.source).createTree();
-
-			// "Open in Table Viewer"
+		// "Open in Table Viewer"
 		} else if (event.getButton().getData().equals(RepresentationDatasetComponent.OPEN_TABLE_VIEWER_BUTTON_ID)
 				&& this.source instanceof RepresentationDatasetComponent) {
 			((RepresentationDatasetComponent) this.source).openTableViewerAction();
-
+			// " Open Graphical Filtering Tool"
+		} else if (event.getButton().getData().equals(RepresentationDatasetComponent.OPEN_GRAPHICAL_FILTERING_BUTTON_ID)) {
+			((RepresentationDatasetComponent) this.source).openGraphicalFilteringToolAction();
 		} else {
 			StudyButtonClickListener.LOG.error("StudyButtonClickListener: Error with buttonClick action. Source not identified.");
 		}

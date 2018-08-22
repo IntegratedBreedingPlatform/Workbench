@@ -39,7 +39,7 @@ export class UserCard implements OnInit {
     constructor(private userService: UserService, private roleService: RoleService, private mailService: MailService) {
         // New empty user is built to open a form with empty default values
         // id, firstName, lastName, username, role, email, status
-        this.model = new User("0", "", "", "", "", "", "true");
+        this.model = new User("0", "", "", "", new Role("", ""), "", "true");
         this.errorUserMessage = '';
     }
 
@@ -70,13 +70,14 @@ export class UserCard implements OnInit {
     }
 
     addUser(form: FormGroup) {
-        this.userService
-            .save(this.model)
+    	this.userService
+            .save(this.trimAll(this.model))
             .subscribe(
                 resp => {
                     this.userSaved = true;
                     this.errorUserMessage = '';
                     this.sendEmailToResetPassword(resp);
+                    this.model.roleName = this.model.role.description;
                 },
                 error =>  {this.errorUserMessage =  this.mapErrorUser(error.json().ERROR.errors);
 
@@ -86,12 +87,13 @@ export class UserCard implements OnInit {
 
     editUser() {
         this.userService
-            .update(this.model)
+            .update(this.trimAll(this.model))
             .subscribe(
                 resp => {
                     this.userSaved = true;
                     this.errorUserMessage = '';
                     this.sendEmailToResetPassword(resp);
+                    this.model.roleName = this.model.role.description;
                 },
                 error =>  {this.errorUserMessage =  this.mapErrorUser(error.json().ERROR.errors);
             });
@@ -159,5 +161,13 @@ export class UserCard implements OnInit {
         }, 1000);
       }
     }
+    
+    private trimAll(model: User) {
+		model.firstName = model.firstName.trim();
+		model.lastName = model.lastName.trim();
+		model.email = model.email.trim();
+		model.username = model.username.trim();
+		return model;
+	}
 
 }

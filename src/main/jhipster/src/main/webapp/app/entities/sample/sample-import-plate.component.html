@@ -1,0 +1,54 @@
+<jhi-app-modal modalId="{{modalId}}" modalTitle="Select Data File to Import" modalSize="large" closebtn="true">
+
+    <div class="row form-group clearfix">
+        <div class="col-xs-12 col-md-12">
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-xs-12 col-md-12">
+            <label class=""><em> <span class='required'>*</span> indicates a mandatory field</em></label>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-xs-7 col-md-7">
+            <label class="control-label add_top_padding label-bold">Please specify the format you are importing: </label><span
+                class="required">*</span>
+        </div>
+        <div class="col-xs-5 col-md-5">
+            <select [(ngModel)]="selectedFileType" (change)="onFileTypeChange()" class="form-control" style="width: 205px">
+                <option value="">Please Choose</option>
+                <option value=".csv">CSV</option>
+            </select>
+        </div>
+    </div>
+
+    <div class='row form-group add_top_padding'>
+
+        <div class="col-md-12">
+            <div class="fileupload fileupload-new fbk-import-upload-file" data-provides="fileupload">
+							<span [ngStyle]="{'display': fileName ? 'none' : ''}" class="btn btn-info btn-file" [ngClass]="{ 'disabled': selectedFileType === '' }">
+							<span class="fileupload-new">Browse</span>
+								<input #fileUpload id="fileupload" type="file" class="file-input" (change)="onFileChange($event)"
+                                       multiple="false" accept=".csv" [disabled]="selectedFileType === '' ? 'disabled' : null">file</input>
+							</span>
+                <span *ngIf="fileName"><b><span>Selected import file</span>:</b> <i>{{fileName}}</i></span>
+                <span *ngIf="fileName" style="display: inline-block; margin-left: 15px"><a (click)="clearSelectedFile()" class="btn btn-default" data-dismiss="fileupload">Clear</a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" (click)="close()">Cancel
+        </button>
+        <button type="button" class="btn btn-primary" (click)="import()" aria-hidden="true" #importButton>Import
+        </button>
+    </div>
+</jhi-app-modal>
+
+<!-- The first row in the file is assumed to be the header row -->
+<jhi-sample-import-plate-mapping [importData]="importData" [header]="importData[0]" (onClose)="close()"></jhi-sample-import-plate-mapping>
+
+
+

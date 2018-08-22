@@ -12,6 +12,7 @@
 				// We cannot assign values to one time binding scope properties that are not defined
 				// on the directive instance, so instead we must use a different scope property
 				// and just read from the initial property as to whether the value was given or not.
+				$scope.required = $scope.omRequired || false;
 				$scope.maxLength = $scope.omMaxLength || -1;
 			}],
 			restrict: 'E',
@@ -22,6 +23,7 @@
 				editing: '=omEditing',
 				model: '=omModel',
 				// Use this syntax for optional one time binding properties
+				omRequired: '@',
 				omMaxLength: '@'
 			},
 			templateUrl: 'static/views/ontology/textArea.html'

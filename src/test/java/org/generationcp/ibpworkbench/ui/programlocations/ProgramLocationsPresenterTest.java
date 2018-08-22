@@ -1,14 +1,9 @@
-
 package org.generationcp.ibpworkbench.ui.programlocations;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
+import junit.framework.Assert;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.LocationDataManager;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.LocationDetails;
@@ -21,18 +16,31 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import junit.framework.Assert;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class ProgramLocationsPresenterTest {
 
 	private static final int NO_OF_FAVORITES = 2;
 	private static final int NO_OF_LOCATIONS = 5;
 	private static final int NO_OF_LOCATION_WITH_PROGRAM_UUID = 3;
-	private ProgramLocationsPresenter controller;
+	private static final String COUNTRY_FULL_NAME = "Kenya";
+	private static final String LOCATION_TYPE = "Breeding Location";
+	private static final Integer LOCID = 123;
+	private static final String LOCATION_NAME = "My Location";
+	private static final String LOCATION_ABBREVIATION = "ABC";
+	private static final Integer CNTRYID = 567;
+	private static final Integer LTYPE = 789;
+	private static final double LATITUDE = 1111.0;
+	private static final double LONGITUDE = 2222.0;
+	private static final double ALTITUDE = 3333.0;
+	private static final Integer PROVINCE_ID = 1223;
+	private static final String PROVINCE_NAME = "Nairobi";
 	private static final String DUMMY_PROGRAM_UUID = "1234567890";
 
-	@Mock
-	private static GermplasmDataManager gdm;
+	private ProgramLocationsPresenter controller;
+
 	@Mock
 	private LocationDataManager locationDataManager;
 
@@ -40,18 +48,18 @@ public class ProgramLocationsPresenterTest {
 	private GermplasmDataManager germplasmDataManager;
 
 	@Mock
-	private WorkbenchDataManager workbenchDataManager;
+	private ProgramLocationsView programLocationsView;
 
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 
-		final Project project = this.getProject(ProgramLocationsPresenterTest.DUMMY_PROGRAM_UUID);
-		this.controller =
-				new ProgramLocationsPresenter(project, this.germplasmDataManager, this.workbenchDataManager, this.locationDataManager);
+		final Project project = this.getProject();
+		this.controller = new ProgramLocationsPresenter(project, this.germplasmDataManager, this.locationDataManager);
+		this.controller.setView(this.programLocationsView);
 	}
 
-	private Project getProject(final String dummyProgramUuid) {
+	private Project getProject() {
 		final Project project = new Project();
 		project.setProjectId(1L);
 		project.setProjectName("Project Name");
@@ -155,20 +163,11 @@ public class ProgramLocationsPresenterTest {
 			for (int i = 0; i < ProgramLocationsPresenterTest.NO_OF_LOCATIONS; i++) {
 				final Integer locId = i + 1;
 
-				final Location location = new Location();
-				location.setLocid(locId);
-				location.setLname(locationName);
-				location.setLtype(locationType);
-				location.setCntryid(countryId);
-				location.setUniqueID(programUUID);
+				final Location location = this.createTestLocation(countryId, locationType, locationName, programUUID, locId);
 
 				locationList.add(location);
 
-				final LocationDetails locationDetail = new LocationDetails();
-				locationDetail.setLocid(locId);
-				locationDetail.setLocationName(locationName);
-				locationDetail.setLtype(locationType);
-				locationDetail.setCntryid(countryId);
+				final LocationDetails locationDetail = this.createTestLocationDetails(countryId, locationType, locationName, locId);
 
 				locationDetailsList.add(locationDetail);
 
@@ -187,6 +186,41 @@ public class ProgramLocationsPresenterTest {
 		} catch (final MiddlewareQueryException e) {
 			Assert.fail(e.getMessage());
 		}
+	}
+
+	private LocationDetails createTestLocationDetails(final Integer countryId, final Integer locationType, final String locationName,
+			final Integer locId) {
+		final LocationDetails locationDetail = new LocationDetails();
+		locationDetail.setLocid(locId);
+		locationDetail.setLocationName(locationName);
+		locationDetail.setLocationAbbreviation(LOCATION_ABBREVIATION);
+		locationDetail.setLtype(locationType);
+		locationDetail.setCntryid(countryId);
+		locationDetail.setLocationType(LOCATION_TYPE);
+		locationDetail.setProvinceName(PROVINCE_NAME);
+		locationDetail.setCountryFullName(COUNTRY_FULL_NAME);
+		locationDetail.setAltitude(ALTITUDE);
+		locationDetail.setLatitude(LATITUDE);
+		locationDetail.setLongitude(LONGITUDE);
+		locationDetail.setProgramUUID(DUMMY_PROGRAM_UUID);
+		locationDetail.setProvinceId(PROVINCE_ID);
+		return locationDetail;
+	}
+
+	private Location createTestLocation(final Integer countryId, final Integer locationType, final String locationName, final String programUUID,
+			final Integer locId) {
+		final Location location = new Location();
+		location.setLocid(locId);
+		location.setLname(locationName);
+		location.setLabbr(LOCATION_ABBREVIATION);
+		location.setLtype(locationType);
+		location.setCntryid(countryId);
+		location.setUniqueID(programUUID);
+		location.setSnl1id(PROVINCE_ID);
+		location.setAltitude(ALTITUDE);
+		location.setLatitude(LATITUDE);
+		location.setLongitude(LONGITUDE);
+		return location;
 	}
 
 	@Test
@@ -223,4 +257,158 @@ public class ProgramLocationsPresenterTest {
 				.thenReturn(favorites);
 
 	}
+
+	@Test
+	public void testCreateLocationViewModelList() {
+
+		final List<LocationDetails> locationDetailsList = new ArrayList<>();
+		final LocationDetails locationDetails = new LocationDetails();
+
+		locationDetails.setLocid(LOCID);
+		locationDetails.setLocationName(LOCATION_NAME);
+		locationDetails.setLocationAbbreviation(LOCATION_ABBREVIATION);
+		locationDetails.setCountryFullName(COUNTRY_FULL_NAME);
+		locationDetails.setLocationType(LOCATION_TYPE);
+		locationDetails.setCntryid(CNTRYID);
+		locationDetails.setLtype(LTYPE);
+		locationDetails.setLatitude(LATITUDE);
+		locationDetails.setLongitude(LONGITUDE);
+		locationDetails.setAltitude(ALTITUDE);
+		locationDetails.setProgramUUID(DUMMY_PROGRAM_UUID);
+		locationDetailsList.add(locationDetails);
+
+		final Collection<LocationViewModel> result = controller.createLocationViewModelList(locationDetailsList);
+
+		final LocationViewModel locationViewModel = result.iterator().next();
+
+		Assert.assertEquals(LOCID, locationViewModel.getLocationId());
+		Assert.assertEquals(LOCATION_NAME, locationViewModel.getLocationName());
+		Assert.assertEquals(LOCATION_ABBREVIATION, locationViewModel.getLocationAbbreviation());
+		Assert.assertEquals(COUNTRY_FULL_NAME, locationViewModel.getCntryFullName());
+		Assert.assertEquals(LOCATION_TYPE, locationViewModel.getLtypeStr());
+		Assert.assertEquals(CNTRYID, locationViewModel.getCntryid());
+		Assert.assertEquals(LTYPE, locationViewModel.getLtype());
+		Assert.assertEquals(LATITUDE, locationViewModel.getLatitude());
+		Assert.assertEquals(LONGITUDE, locationViewModel.getLongitude());
+		Assert.assertEquals(ALTITUDE, locationViewModel.getAltitude());
+		Assert.assertEquals(DUMMY_PROGRAM_UUID, locationViewModel.getProgramUUID());
+
+	}
+
+	@Test
+	public void testConvertLocationViewToLocationProgramAccessible() {
+
+		final LocationViewModel locationViewModel = createLocationViewModel();
+		locationViewModel.setCropAccessible(false);
+
+		final Location result = controller.convertLocationViewToLocation(locationViewModel);
+
+		Assert.assertEquals((Integer) 0, result.getLrplce());
+		Assert.assertEquals(LOCID, result.getLocid());
+		Assert.assertEquals(LOCATION_NAME, result.getLname());
+		Assert.assertEquals(LOCATION_ABBREVIATION, result.getLabbr());
+		Assert.assertEquals(LTYPE, result.getLtype());
+		Assert.assertEquals(CNTRYID, result.getCntryid());
+		Assert.assertEquals(LONGITUDE, result.getLongitude());
+		Assert.assertEquals(LATITUDE, result.getLatitude());
+		Assert.assertEquals(ALTITUDE, result.getAltitude());
+		Assert.assertEquals((Integer) 0, result.getNllp());
+		Assert.assertEquals((Integer) 0, result.getSnl3id());
+		Assert.assertEquals((Integer) 0, result.getSnl2id());
+		Assert.assertEquals(PROVINCE_ID, result.getSnl1id());
+		Assert.assertEquals(DUMMY_PROGRAM_UUID, result.getUniqueID());
+
+	}
+
+	@Test
+	public void testConvertLocationViewToLocationCropAccessible() {
+
+		final LocationViewModel locationViewModel = createLocationViewModel();
+		locationViewModel.setCropAccessible(true);
+
+		final Location result = controller.convertLocationViewToLocation(locationViewModel);
+
+		Assert.assertEquals((Integer) 0, result.getLrplce());
+		Assert.assertEquals(LOCID, result.getLocid());
+		Assert.assertEquals(LOCATION_NAME, result.getLname());
+		Assert.assertEquals(LOCATION_ABBREVIATION, result.getLabbr());
+		Assert.assertEquals(LTYPE, result.getLtype());
+		Assert.assertEquals(CNTRYID, result.getCntryid());
+		Assert.assertEquals(LONGITUDE, result.getLongitude());
+		Assert.assertEquals(LATITUDE, result.getLatitude());
+		Assert.assertEquals(ALTITUDE, result.getAltitude());
+		Assert.assertEquals((Integer) 0, result.getNllp());
+		Assert.assertEquals((Integer) 0, result.getSnl3id());
+		Assert.assertEquals((Integer) 0, result.getSnl2id());
+		Assert.assertEquals(PROVINCE_ID, result.getSnl1id());
+		Assert.assertEquals(null, result.getUniqueID());
+
+	}
+
+	@Test
+	public void testConvertFromLocationToLocationViewModel() {
+		final Location location = this.createTestLocation(CNTRYID, LTYPE, LOCATION_NAME, DUMMY_PROGRAM_UUID, LOCID);
+		final LocationViewModel result = this.controller.convertFromLocationToLocationViewModel(location);
+
+		Assert.assertEquals(LOCID, result.getLocationId());
+		Assert.assertEquals(LOCATION_NAME, result.getLocationName());
+		Assert.assertEquals(LOCATION_ABBREVIATION, result.getLocationAbbreviation());
+		Assert.assertEquals(LTYPE, result.getLtype());
+		Assert.assertEquals(CNTRYID, result.getCntryid());
+		Assert.assertEquals(LONGITUDE, result.getLongitude());
+		Assert.assertEquals(LATITUDE, result.getLatitude());
+		Assert.assertEquals(ALTITUDE, result.getAltitude());
+		Assert.assertEquals(PROVINCE_ID, result.getProvinceId());
+		Assert.assertEquals(DUMMY_PROGRAM_UUID, result.getProgramUUID());
+	}
+
+	@Test
+	public void testConvertFromLocationDetailsToLocationViewModel() {
+		final LocationDetails location = this.createTestLocationDetails(CNTRYID, LTYPE, LOCATION_NAME, LOCID);
+		final LocationViewModel result = this.controller.convertFromLocationDetailsToLocationViewModel(location);
+
+		Assert.assertEquals(LOCID, result.getLocationId());
+		Assert.assertEquals(LOCATION_NAME, result.getLocationName());
+		Assert.assertEquals(LOCATION_ABBREVIATION, result.getLocationAbbreviation());
+		Assert.assertEquals(LTYPE, result.getLtype());
+		Assert.assertEquals(CNTRYID, result.getCntryid());
+		Assert.assertEquals(COUNTRY_FULL_NAME, result.getCntryFullName());
+		Assert.assertEquals(LONGITUDE, result.getLongitude());
+		Assert.assertEquals(LATITUDE, result.getLatitude());
+		Assert.assertEquals(ALTITUDE, result.getAltitude());
+		Assert.assertEquals(PROVINCE_ID, result.getProvinceId());
+		Assert.assertEquals(PROVINCE_NAME, result.getProvinceName());
+		Assert.assertEquals(DUMMY_PROGRAM_UUID, result.getProgramUUID());
+	}
+
+	@Test
+	public void testUpdateLocation() {
+
+		final boolean isEditedFromAvailableTable = true;
+		final LocationViewModel locationViewModel = createLocationViewModel();
+
+		this.controller.updateLocation(locationViewModel, isEditedFromAvailableTable);
+
+		Mockito.verify(this.locationDataManager).addLocation(this.controller.convertLocationViewToLocation(locationViewModel));
+		Mockito.verify(this.programLocationsView).refreshLocationViewItemInTable(isEditedFromAvailableTable, locationViewModel);
+
+	}
+
+	private LocationViewModel createLocationViewModel() {
+
+		final LocationViewModel locationViewModel = new LocationViewModel();
+		locationViewModel.setLocationId(LOCID);
+		locationViewModel.setLocationName(LOCATION_NAME);
+		locationViewModel.setLocationAbbreviation(LOCATION_ABBREVIATION);
+		locationViewModel.setLtype(LTYPE);
+		locationViewModel.setCntryid(CNTRYID);
+		locationViewModel.setLongitude(LONGITUDE);
+		locationViewModel.setLatitude(LATITUDE);
+		locationViewModel.setAltitude(ALTITUDE);
+		locationViewModel.setProvinceId(PROVINCE_ID);
+
+		return locationViewModel;
+
+	}
+
 }

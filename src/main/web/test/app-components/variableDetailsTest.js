@@ -29,7 +29,7 @@ describe('Variable details directive', function() {
 		}, {
 			id: 9,
 			name: 'Treatment Factor',
-			description: 'Treatments to be applied to members of a trial.'
+			description: 'Treatments to be applied to members of a study.'
 		}],
 
 		VARIABLE_TYPES_WITHOUT_TREATMENT_FACTOR = [{
@@ -45,6 +45,7 @@ describe('Variable details directive', function() {
 		scalesService = {},
 		variableTypesService = {},
 		variablesService = {},
+		variableStateService = {},
 
 		formUtilities,
 		scope,
@@ -55,6 +56,7 @@ describe('Variable details directive', function() {
 		deferredGetScalesWithNonSystemDataTypes,
 		deferredGetTypes,
 		deferredUpdateVariable,
+		deferredGetVariable,
 		deferredDeleteVariable,
 		deferredDeleteVariablesFromCache,
 		mockTranslateFilter;
@@ -86,6 +88,7 @@ describe('Variable details directive', function() {
 			$provide.value('variablesService', variablesService);
 			$provide.value('variableTypesService', variableTypesService);
 			$provide.value('panelService', panelService);
+			$provide.value('variableStateService', variableStateService);
 		});
 	});
 
@@ -117,6 +120,11 @@ describe('Variable details directive', function() {
 		variablesService.updateVariable = function() {
 			deferredUpdateVariable = q.defer();
 			return deferredUpdateVariable.promise;
+		};
+
+		variablesService.getVariable = function() {
+			deferredGetVariable = q.defer();
+			return deferredGetVariable.promise;
 		};
 
 		variablesService.deleteVariable = function() {
@@ -516,6 +524,8 @@ describe('Variable details directive', function() {
 
 			deferredUpdateVariable.resolve();
 			scope.$apply();
+			deferredGetVariable.resolve(PLANT_VIGOR);
+			scope.$apply();
 
 			expect(scope.updateSelectedVariable).toHaveBeenCalledWith(PLANT_VIGOR);
 		});
@@ -597,6 +607,7 @@ describe('Variable details directive', function() {
 			deferredDeleteVariable.reject();
 			scope.$apply();
 
+			expect(serviceUtilities.serverErrorHandler).toHaveBeenCalled();
 			expect(scope.clientErrors.failedToDelete).toBe(true);
 		});
 
