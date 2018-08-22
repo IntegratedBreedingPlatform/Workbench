@@ -205,11 +205,7 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 					}
 				});
 
-			} catch (final Exception e) {
-
-				if ("basic_details_invalid".equals(e.getMessage())) {
-					return;
-				}
+			} catch (final AddProgramException e) {
 
 				CreateProjectPanel.LOG.error("Oops there might be serious problem on creating the program, investigate it!", e);
 
