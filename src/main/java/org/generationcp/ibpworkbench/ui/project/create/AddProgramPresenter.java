@@ -47,9 +47,9 @@ public class AddProgramPresenter {
 			users = AddProgramPresenter.this.view.programMembersPanel.getSelectedUsers();
 			AddProgramPresenter.this.programService.createNewProgram(program, users);
 
-		} catch (Validator.InvalidValueException e) {
+		} catch (final Validator.InvalidValueException e) {
 			throw e;
-		} catch (RuntimeException e) {
+		} catch (final RuntimeException e) {
 			throw new AddProgramException(
 				"The application could not successfully create a program. Please contact support for further help.", e);
 		}
