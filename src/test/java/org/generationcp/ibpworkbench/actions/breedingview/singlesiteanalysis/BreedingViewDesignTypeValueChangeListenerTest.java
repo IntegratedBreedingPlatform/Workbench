@@ -1,8 +1,7 @@
-package org.generationcp.ibpworkbench.actions;
+package org.generationcp.ibpworkbench.actions.breedingview.singlesiteanalysis;
 
-import com.vaadin.data.Property;
 import org.generationcp.commons.breedingview.xml.DesignType;
-import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDetailsPanel;
+import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDesignDetails;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,11 +10,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.vaadin.data.Property;
+
 @RunWith(MockitoJUnitRunner.class)
 public class BreedingViewDesignTypeValueChangeListenerTest {
 
 	@Mock
-	private SingleSiteAnalysisDetailsPanel source;
+	private SingleSiteAnalysisDesignDetails source;
 
 	@Mock
 	private Property.ValueChangeEvent event;

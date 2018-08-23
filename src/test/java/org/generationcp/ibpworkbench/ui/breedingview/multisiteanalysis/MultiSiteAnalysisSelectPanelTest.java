@@ -8,7 +8,9 @@ import java.util.ListIterator;
 import org.apache.commons.lang3.ArrayUtils;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
+import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDesignDetails;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDetailsPanel;
+import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisEnvironmentsComponent;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
@@ -173,7 +175,7 @@ public class MultiSiteAnalysisSelectPanelTest {
 		final StandardVariable repVariable = new StandardVariable();
 		repVariable.setId(TermId.REP_NO.getId());
 		repVariable.setPhenotypicType(PhenotypicType.TRIAL_DESIGN);
-		repVariable.setProperty(new Term(1, SingleSiteAnalysisDetailsPanel.REPLICATION_FACTOR, "REP_NO"));
+		repVariable.setProperty(new Term(1, SingleSiteAnalysisDesignDetails.REPLICATION_FACTOR, "REP_NO"));
 		repVariable.setScale(new Term(2, "NUMBER", ""));
 		repVariable.setMethod(new Term(3, "ENUMERATED", ""));
 		repVariable.setDataType(new Term(TermId.NUMERIC_VARIABLE.getId(), "Numerical variable", ""));
@@ -182,7 +184,7 @@ public class MultiSiteAnalysisSelectPanelTest {
 		final StandardVariable blockVariable = new StandardVariable();
 		blockVariable.setId(TermId.BLOCK_NO.getId());
 		blockVariable.setPhenotypicType(PhenotypicType.TRIAL_DESIGN);
-		blockVariable.setProperty(new Term(1, SingleSiteAnalysisDetailsPanel.BLOCKING_FACTOR, "BLOCK_NO"));
+		blockVariable.setProperty(new Term(1, SingleSiteAnalysisDesignDetails.BLOCKING_FACTOR, "BLOCK_NO"));
 		blockVariable.setScale(new Term(2, "NUMBER", ""));
 		blockVariable.setMethod(new Term(3, "ENUMERATED", ""));
 		blockVariable.setDataType(new Term(TermId.NUMERIC_VARIABLE.getId(), "Numerical variable", ""));
@@ -191,7 +193,7 @@ public class MultiSiteAnalysisSelectPanelTest {
 		final StandardVariable rowVariable = new StandardVariable();
 		rowVariable.setId(TermId.ROW.getId());
 		rowVariable.setPhenotypicType(PhenotypicType.TRIAL_DESIGN);
-		rowVariable.setProperty(new Term(1, SingleSiteAnalysisDetailsPanel.ROW_FACTOR, "ROW_NO"));
+		rowVariable.setProperty(new Term(1, SingleSiteAnalysisDesignDetails.ROW_FACTOR, "ROW_NO"));
 		rowVariable.setScale(new Term(2, "NUMBER", ""));
 		rowVariable.setMethod(new Term(3, "ENUMERATED", ""));
 		rowVariable.setDataType(new Term(TermId.NUMERIC_VARIABLE.getId(), "Numerical variable", ""));
@@ -200,7 +202,7 @@ public class MultiSiteAnalysisSelectPanelTest {
 		final StandardVariable columnVariable = new StandardVariable();
 		columnVariable.setId(TermId.COLUMN_NO.getId());
 		columnVariable.setPhenotypicType(PhenotypicType.TRIAL_DESIGN);
-		columnVariable.setProperty(new Term(1, SingleSiteAnalysisDetailsPanel.COLUMN_FACTOR, "COL_NO"));
+		columnVariable.setProperty(new Term(1, SingleSiteAnalysisDesignDetails.COLUMN_FACTOR, "COL_NO"));
 		columnVariable.setScale(new Term(2, "NUMBER", ""));
 		columnVariable.setMethod(new Term(3, "ENUMERATED", ""));
 		columnVariable.setDataType(new Term(TermId.NUMERIC_VARIABLE.getId(), "Numerical variable", ""));

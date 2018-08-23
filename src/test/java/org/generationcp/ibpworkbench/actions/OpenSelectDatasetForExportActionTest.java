@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.generationcp.commons.breedingview.xml.ProjectType;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -119,6 +120,8 @@ public class OpenSelectDatasetForExportActionTest {
 	public static final String SANITIZED_DATASET_NAME = "TEST_ _-_-PLOTDATA";
 	public static final Integer DATASET_ID = 99;
 	public static final String INPUT_DIRECTORY = "workspace/input";
+	public static final String OBJECTIVE = RandomStringUtils.randomAlphabetic(20);
+	public static final String DESCRIPTION = RandomStringUtils.randomAlphabetic(20);
 
 	@Before
 	public void setup() {
@@ -133,6 +136,8 @@ public class OpenSelectDatasetForExportActionTest {
 		
 		Mockito.doReturn(STUDY_ID).when(this.study).getId();
 		Mockito.doReturn(STUDY_NAME).when(this.study).getName();
+		Mockito.doReturn(DESCRIPTION).when(this.study).getDescription();
+		Mockito.doReturn(OBJECTIVE).when(this.study).getObjective();
 		Mockito.doReturn(this.project).when(this.singleSiteAnalysisPanel).getCurrentProject();
 		this.openSelectDatasetForExportAction.setProject(this.project);
 		Mockito.doReturn(this.study).when(this.singleSiteAnalysisPanel).getCurrentStudy();
@@ -231,6 +236,8 @@ public class OpenSelectDatasetForExportActionTest {
 		Assert.assertEquals(DATASET_ID, bvInput.getDatasetId());
 		Assert.assertEquals(DATASET_NAME, bvInput.getDatasetName());
 		Assert.assertEquals(STUDY_NAME, bvInput.getDatasetSource());
+		Assert.assertEquals(OBJECTIVE, bvInput.getObjective());
+		Assert.assertEquals(DESCRIPTION, bvInput.getDescription());
 		Assert.assertEquals(BV_VERSION, bvInput.getVersion());
 		Assert.assertEquals(ProjectType.FIELD_TRIAL.getName(), bvInput.getProjectType());
 		Assert.assertEquals(0, bvInput.getOutputDatasetId().intValue());
