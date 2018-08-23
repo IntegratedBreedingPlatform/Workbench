@@ -16,6 +16,7 @@ export class SampleImportPlateMappingComponent {
     @Input() importData: Array<Array<any>>;
     @Input() header: Array<any>;
     @Output() onClose = new EventEmitter();
+    @Output() onBack = new EventEmitter();
 
     sampleIdMapping = '';
     plateIdMapping = '';
@@ -67,6 +68,13 @@ export class SampleImportPlateMappingComponent {
         this.modalService.close(this.modalId);
         this.reset();
         this.onClose.emit();
+    }
+
+    back() {
+        this.modalService.close(this.modalId);
+        this.reset();
+        this.modalService.open('import-plate-modal');
+        this.onBack.emit();
     }
 
     validate() {
