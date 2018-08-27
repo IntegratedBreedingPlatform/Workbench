@@ -15,7 +15,6 @@ import java.util.Objects;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
-import org.generationcp.commons.help.document.HelpWindow;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.tomcat.util.TomcatUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -23,6 +22,8 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.actions.AskForSupportAction;
+import org.generationcp.ibpworkbench.actions.HelpButtonClickAction;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.actions.SignoutAction;
@@ -32,7 +33,6 @@ import org.generationcp.ibpworkbench.ui.project.create.AddProgramView;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
 import org.generationcp.ibpworkbench.ui.window.ChangeCredentialsWindow;
 import org.generationcp.ibpworkbench.ui.window.ChangePasswordWindow;
-import org.generationcp.ibpworkbench.ui.window.EmbeddedWindow;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -72,6 +72,8 @@ import com.vaadin.ui.themes.Reindeer;
 @Configurable
 public class WorkbenchMainView extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
 
+	private static final String BLANK = "_blank";
+
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchMainView.class);
 
 	private static final int SIDEBAR_OPEN_POSITION = 240;
@@ -105,6 +107,13 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	@Value("${workbench.is.add.program.enabled}")
 	private String isAddProgramEnabled;
+	
+	@Value("${ask.for.support.url}")
+	private String askForSupportURL;
+	
+	@Value("${about.bms.url}")
+	private String aboutBmsURL;
+	
 
 	private Label actionsTitle;
 
@@ -263,7 +272,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	}
 
-	private Button getAskSupportBtn() {
+	Button getAskSupportBtn() {
 		if (Objects.equals(this.askSupportBtn, null)) {
 			this.askSupportBtn = new Button("<span class='bms-header-btn2'><span class='fa fa-comments ico'></span></span>");
 			this.askSupportBtn.setDebugId("askSupportBtn");
@@ -272,20 +281,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 			this.askSupportBtn.setSizeUndefined();
 			this.askSupportBtn.setDebugId("support-icon");
 			this.askSupportBtn.setDescription("Ask support/Feedback");
-			this.askSupportBtn.addListener(new Button.ClickListener() {
-
-				@Override
-				public void buttonClick(final ClickEvent clickEvent) {
-					final EmbeddedWindow askSupportWindow = new EmbeddedWindow();
-					askSupportWindow.setDebugId("askSupportWindow");
-					askSupportWindow.setWidth("60%");
-					askSupportWindow.setHeight("80%");
-					askSupportWindow.setCaption("Ask Support/Feedback");
-					askSupportWindow.showContent("/ibpworkbench/controller/support/");
-
-					WorkbenchMainView.this.addWindow(askSupportWindow);
-				}
-			});
+			this.askSupportBtn.addListener(new AskForSupportAction(this, askForSupportURL));
 		}
 
 		return this.askSupportBtn;
@@ -382,13 +378,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 			}
 		});
 
-		this.helpButton.addListener(new Button.ClickListener() {
-
-			@Override
-			public void buttonClick(final ClickEvent event) {
-				thisWindow.addWindow(new HelpWindow(WorkbenchMainView.this.tomcatUtil));
-			}
-		});
+		this.helpButton.addListener(new HelpButtonClickAction(this, aboutBmsURL));
 
 		this.addListener(new CloseListener() {
 
@@ -727,5 +717,15 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	public Button getHelpButton() {
 		return helpButton;
+	}
+
+	
+	protected void setAskForSupportURL(String askForSupportURL) {
+		this.askForSupportURL = askForSupportURL;
+	}
+
+	
+	protected void setAboutBmsURL(String aboutBmsURL) {
+		this.aboutBmsURL = aboutBmsURL;
 	}
 }

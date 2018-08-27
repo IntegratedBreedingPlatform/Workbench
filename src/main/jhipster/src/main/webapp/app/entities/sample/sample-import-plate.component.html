@@ -1,4 +1,4 @@
-<jhi-app-modal modalId="{{modalId}}" modalTitle="Select Data File to Import" modalSize="large" closebtn="true">
+<jhi-app-modal modalId="{{modalId}}" modalTitle="Select Data File to Import" modalSize="medium" closebtn="true">
 
     <div class="row form-group clearfix">
         <div class="col-xs-12 col-md-12">
@@ -48,7 +48,7 @@
 </jhi-app-modal>
 
 <!-- The first row in the file is assumed to be the header row -->
-<jhi-sample-import-plate-mapping [importData]="importData" [header]="importData[0]" (onClose)="close()"></jhi-sample-import-plate-mapping>
+<jhi-sample-import-plate-mapping [importData]="importData" [header]="importData[0]" (onClose)="close()" (onBack)="clearSelectedFile()"></jhi-sample-import-plate-mapping>
 
 
 

@@ -1,18 +1,25 @@
 package org.generationcp.ibpworkbench.security;
 
-import com.vaadin.terminal.gwt.server.WebBrowser;
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Properties;
+import java.util.UUID;
+
+import javax.annotation.Resource;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.servlet.ServletContext;
+
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.WorkbenchAppPathResolver;
 import org.generationcp.ibpworkbench.common.WebClientInfo;
-import org.generationcp.ibpworkbench.model.AskSupportFormModel;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectActivity;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.slf4j.Logger;
@@ -21,25 +28,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.InputStreamSource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-
-import javax.annotation.Resource;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import javax.servlet.ServletContext;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Properties;
-import java.util.UUID;
 
 /**
  * Created by cyrus on 4/6/15.
@@ -120,71 +112,7 @@ public class WorkbenchEmailSenderService {
 		return cal.getTime();
 	}
 
-	public void sendFeedback(final AskSupportFormModel askSupportForm) throws MessagingException {
-		final Project lastOpenedProject = contextUtil.getProjectInContext();
-		final List<ProjectActivity> projectActivitiesByProjectId =
-				workbenchDataManager.getProjectActivitiesByProjectId(lastOpenedProject.getProjectId(), 0, 1);
-
-		final WorkbenchUser currentUser = contextUtil.getCurrentWorkbenchUser();
-		// bms user account used
-		final String accountFullName = currentUser.getPerson().getDisplayName();
-		final String accountUsername = currentUser.getName();
-		final String accountEmail = currentUser.getPerson().getEmail();
-
-		final WebBrowser webBrowser = webClientInfo.getWebBrowser();
-		final String browser = webBrowser.getBrowserApplication();
-		final String screenResolution = String.format("%s width x %s height", webBrowser.getScreenWidth(), webBrowser.getScreenHeight());
-
-		final String lastOpenedProgram = !Objects.equals(lastOpenedProject, null) ? lastOpenedProject.getProjectName() : "N/A";
-		final String lastOpenedCrop = !Objects.equals(lastOpenedProject, null) ? lastOpenedProject.getCropType().getCropName() : "N/A";
-		final String lastOpenedModule = (!projectActivitiesByProjectId.isEmpty()) ? projectActivitiesByProjectId.get(0).getName() : "N/A";
-
-		// prepare message
-		// Prepare message using a Spring helper
-		final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
-		// true = multipart
-		final MimeMessageHelper message = this.getMimeMessageHelper(mimeMessage);
-
-		final Context ctx = new Context(LocaleContextHolder.getLocale());
-		ctx.setVariable("fullName", askSupportForm.getName());
-		ctx.setVariable("email", askSupportForm.getEmail());
-		ctx.setVariable("summary", askSupportForm.getSummary());
-		ctx.setVariable("requestCategory", AskSupportFormModel.CATEGORIES[Integer.valueOf(askSupportForm.getRequestCategory())]);
-		ctx.setVariable("description", askSupportForm.getDescription());
-		ctx.setVariable("accountFullName", accountFullName);
-		ctx.setVariable("accountUsername", accountUsername);
-		ctx.setVariable("accountEmail", accountEmail);
-		ctx.setVariable("browserInfo", browser);
-		ctx.setVariable("bmsVersion", this.workbenchProperties.getProperty("workbench.version", "4.0"));
-		ctx.setVariable("screenResolution", screenResolution);
-		ctx.setVariable("lastOpenedProgram", lastOpenedProgram);
-		ctx.setVariable("lastOpenedCrop", lastOpenedCrop);
-		ctx.setVariable("lastOpenedModule", lastOpenedModule);
-
-		message.setSubject(askSupportForm.getSummary());
-		message.setFrom(askSupportForm.getEmail());
-		message.setTo(this.senderEmail);
-
-		final String htmlContent = this.processTemplate(ctx, "ask-support-email");
-		message.setText(htmlContent, true);
-
-		final String attachName = askSupportForm.getFile().getOriginalFilename();
-
-		if (StringUtils.isNotEmpty(attachName)) {
-			message.addAttachment(attachName, new InputStreamSource() {
-
-				@Override
-				public InputStream getInputStream() throws IOException {
-					return askSupportForm.getFile().getInputStream();
-				}
-			});
-		}
-
-		WorkbenchEmailSenderService.LOG.info("Sent feedback mail from {}", askSupportForm.getEmail());
-
-		this.mailSender.send(mimeMessage);
-	}
-
+	
 	/**
 	 * Pre-req: a validated user email account + username
 	 */

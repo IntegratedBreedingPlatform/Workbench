@@ -4,8 +4,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Properties;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.actions.AskForSupportAction;
+import org.generationcp.ibpworkbench.actions.HelpButtonClickAction;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.ui.window.ChangeCredentialsWindow;
@@ -18,6 +21,7 @@ import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -25,6 +29,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.vaadin.hene.popupbutton.PopupButton;
 
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
@@ -57,6 +62,8 @@ public class WorkbenchMainViewTest {
 	private Project currentProject;
 
 	private int ADMIN_USER_ID = 1;
+	
+	private String askForSupportURL = RandomStringUtils.randomAlphabetic(20);
 
 	@Before
 	public void setup() {
@@ -75,6 +82,7 @@ public class WorkbenchMainViewTest {
 		this.currentProject.setProjectName(PROJECT_NAME);
 		Mockito.when(contextUtil.getProjectInContext()).thenReturn(currentProject);
 
+		this.workbenchMainView.setAskForSupportURL(askForSupportURL);
 		this.workbenchMainView.setIsAddProgramEnabled("true");
 		this.workbenchMainView.initializeComponents();
 		this.workbenchMainView.initializeLayout();
@@ -110,6 +118,9 @@ public class WorkbenchMainViewTest {
 
 		final Iterator<Component> componentIterator = workbenchHeaderLayout.getComponentIterator();
 		boolean addProgramButtonShown = false;
+		boolean helpButtonShown = false;
+		boolean askSupportButtonShown = false;
+		boolean userInfoButtonShown = false;
 		while (componentIterator.hasNext()) {
 			final Component component = componentIterator.next();
 			// Verify that button to toggle sidebar is not showing
@@ -122,11 +133,23 @@ public class WorkbenchMainViewTest {
 
 			} else if (component.equals(this.workbenchMainView.getAddProgramButton())) {
 				addProgramButtonShown = true;
+				
+			} else if (component.equals(this.workbenchMainView.getHelpButton())) {
+				helpButtonShown = true;
+				
+			} else if (component.equals(this.workbenchMainView.getAskSupportBtn())) {
+				askSupportButtonShown = true;
+				
+			} else if (component.equals(this.workbenchMainView.getMemberButton())) {
+				userInfoButtonShown = true;
 			}
 		}
 
 		// Verify "Add Program" button is showing
 		Assert.assertTrue(addProgramButtonShown);
+		Assert.assertTrue(helpButtonShown);
+		Assert.assertTrue(askSupportButtonShown);
+		Assert.assertTrue(userInfoButtonShown);
 	}
 
 	private void verifyHeaderLayoutWhenNotShowingDashboard() {
@@ -136,6 +159,9 @@ public class WorkbenchMainViewTest {
 		final Iterator<Component> componentIterator = workbenchHeaderLayout.getComponentIterator();
 		boolean toggleSidebarButtonShowing = false;
 		boolean myProgramsButtonShowing = false;
+		boolean helpButtonShown = false;
+		boolean askSupportButtonShown = false;
+		boolean userInfoButtonShown = false;
 		while (componentIterator.hasNext()) {
 			final Component component = componentIterator.next();
 
@@ -146,6 +172,14 @@ public class WorkbenchMainViewTest {
 				// Verify that Add Program button should not be showing - it's only appears on Dashboard page
 			} else if (component.equals(this.workbenchMainView.getAddProgramButton())) {
 				Assert.fail("Add Program button should be hidden but was not.");
+			} else if (component.equals(this.workbenchMainView.getHelpButton())) {
+				helpButtonShown = true;
+				
+			} else if (component.equals(this.workbenchMainView.getAskSupportBtn())) {
+				askSupportButtonShown = true;
+				
+			} else if (component.equals(this.workbenchMainView.getMemberButton())) {
+				userInfoButtonShown = true;
 			}
 		}
 
@@ -153,6 +187,9 @@ public class WorkbenchMainViewTest {
 		Assert.assertTrue(myProgramsButtonShowing);
 		// Verify that button to toggle sidebar is showing
 		Assert.assertTrue(toggleSidebarButtonShowing);
+		Assert.assertTrue(helpButtonShown);
+		Assert.assertTrue(askSupportButtonShown);
+		Assert.assertTrue(userInfoButtonShown);
 	}
 
 	@Test
@@ -369,6 +406,8 @@ public class WorkbenchMainViewTest {
 
 	@Test
 	public void testInitializeActions() {
+		final String aboutBMSUrl = RandomStringUtils.randomAlphabetic(20);
+		this.workbenchMainView.setAboutBmsURL(aboutBMSUrl);
 		this.workbenchMainView.initializeActions();
 
 		final Collection<?> homeButtonListeneners = this.workbenchMainView.getHomeButton().getListeners(Button.ClickEvent.class);
@@ -394,10 +433,24 @@ public class WorkbenchMainViewTest {
 		final Collection<?> helpButtonListeners = this.workbenchMainView.getHelpButton().getListeners(Button.ClickEvent.class);
 		Assert.assertNotNull(helpButtonListeners);
 		Assert.assertTrue(helpButtonListeners.size() == 1);
+		final HelpButtonClickAction helpAction = (HelpButtonClickAction) helpButtonListeners.iterator().next();
+		Assert.assertEquals(this.workbenchMainView, helpAction.getSourceWindow());
+		Assert.assertEquals(aboutBMSUrl, helpAction.getUrl());
 
 		final Collection<?> closeEventListeners = this.workbenchMainView.getListeners(Window.CloseEvent.class);
 		Assert.assertNotNull(closeEventListeners);
 		Assert.assertTrue(closeEventListeners.size() == 1);
+	}
+	
+	@Test
+	public void testAskForSupportButton() {
+		final Button askSupportBtn = this.workbenchMainView.getAskSupportBtn();
+		final Collection<?> askSupportButtonListeners = askSupportBtn.getListeners(Button.ClickEvent.class);
+		Assert.assertNotNull(askSupportButtonListeners);
+		Assert.assertTrue(askSupportButtonListeners.size() == 1);
+		final AskForSupportAction askSupportAction = (AskForSupportAction) askSupportButtonListeners.iterator().next();
+		Assert.assertEquals(this.workbenchMainView, askSupportAction.getSourceWindow());
+		Assert.assertEquals(this.askForSupportURL, askSupportAction.getUrl());
 	}
 
 }

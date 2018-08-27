@@ -16,6 +16,7 @@ export class SampleImportPlateMappingComponent {
     @Input() importData: Array<Array<any>>;
     @Input() header: Array<any>;
     @Output() onClose = new EventEmitter();
+    @Output() onBack = new EventEmitter();
 
     sampleIdMapping = '';
     plateIdMapping = '';
@@ -46,8 +47,10 @@ export class SampleImportPlateMappingComponent {
                 this.eventManager.broadcast({name: 'sampleListModification', content: ''});
                 this.alertService.success('bmsjHipsterApp.sample.importPlate.success');
             }, (response) => {
-                if (response.status === 409) {
-                    this.alertService.error('bmsjHipsterApp.sample.error', { param : response.error.errors[0].message});
+                if (response.error.errors[0].message) {
+                    this.alertService.error('bmsjHipsterApp.sample.error', {param: response.error.errors[0].message});
+                } else {
+                    this.alertService.error('bmsjHipsterApp.sample.importPlate.error');
                 }
             });
 
@@ -65,6 +68,13 @@ export class SampleImportPlateMappingComponent {
         this.modalService.close(this.modalId);
         this.reset();
         this.onClose.emit();
+    }
+
+    back() {
+        this.modalService.close(this.modalId);
+        this.reset();
+        this.modalService.open('import-plate-modal');
+        this.onBack.emit();
     }
 
     validate() {

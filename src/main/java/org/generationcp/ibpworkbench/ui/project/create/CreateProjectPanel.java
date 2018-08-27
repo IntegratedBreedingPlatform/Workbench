@@ -157,25 +157,25 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 	public ProjectBasicDetailsComponent getProjectBasicDetailsComponent() {
 		return projectBasicDetailsComponent;
 	}
-	
+
 	public void setProjectBasicDetailsComponent(ProjectBasicDetailsComponent projectBasicDetailsComponent) {
 		this.projectBasicDetailsComponent = projectBasicDetailsComponent;
 	}
-	
+
 	public void setCancelButton(Button cancelButton) {
 		this.cancelButton = cancelButton;
 	}
-	
+
 	public void setSaveProjectButton(Button saveProjectButton) {
 		this.saveProjectButton = saveProjectButton;
 	}
 
-	
+
 	public void setPresenter(AddProgramPresenter presenter) {
 		this.presenter = presenter;
 	}
 
-	
+
 	public void setTransactionManager(PlatformTransactionManager transactionManager) {
 		this.transactionManager = transactionManager;
 	}
@@ -205,11 +205,7 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 					}
 				});
 
-			} catch (final Exception e) {
-
-				if ("basic_details_invalid".equals(e.getMessage())) {
-					return;
-				}
+			} catch (final AddProgramException e) {
 
 				CreateProjectPanel.LOG.error("Oops there might be serious problem on creating the program, investigate it!", e);
 

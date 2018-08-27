@@ -117,6 +117,8 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 			breedingViewInput.setVersion(breedingViewTool.getVersion());
 			breedingViewInput.setProjectType(ProjectType.FIELD_TRIAL.getName());
 			breedingViewInput.setDatasetName(this.datasetName);
+			breedingViewInput.setDescription(this.study.getDescription());
+			breedingViewInput.setObjective(this.study.getObjective());
 
 			// THe study name is stored in the database as escaped html. We need to decode it to use it properly in generating filenames.
 			final String studyName = HtmlEscape.unescapeHtml(this.study.getName());

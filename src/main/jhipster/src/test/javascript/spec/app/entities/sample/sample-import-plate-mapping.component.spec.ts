@@ -51,6 +51,7 @@ describe('Component Tests', () => {
             sampleList.id = 1;
 
             spyOn(modalService, 'close').and.callThrough();
+            spyOn(modalService, 'open').and.callThrough();
             spyOn(alertService, 'error').and.callThrough();
             spyOn(alertService, 'success').and.callThrough();
             spyOn(sampelContext, 'getActiveList').and.returnValue(sampleList);
@@ -89,7 +90,33 @@ describe('Component Tests', () => {
         it('should not proceed with import if there is server validation error', () => {
 
             const errorResponse = new HttpErrorResponse({
-                status: 409,
+                status: 400,
+                error: {
+                    errors: [
+                        {
+                            message: 'errorMessage'
+                        }
+                    ]
+                }
+            });
+
+            spyOn(comp, 'validate').and.returnValue(true);
+            spyOn(comp, 'close').and.callThrough();
+            spyOn(eventManager, 'broadcast').and.callThrough();
+            spyOn(sampleListService, 'importPlateInfo').and.returnValue(Observable.throw(errorResponse));
+
+            comp.proceed();
+
+            expect(alertService.error).toHaveBeenCalledWith('bmsjHipsterApp.sample.error', { param : errorResponse.error.errors[0].message});
+            expect(comp.close).toHaveBeenCalledTimes(0);
+            expect(eventManager.broadcast).toHaveBeenCalledTimes(0);
+
+        });
+
+        it('should not proceed with import if there is Internal Server Error', () => {
+
+            const errorResponse = new HttpErrorResponse({
+                status: 500,
                 error: {
                     errors: [
                         {
@@ -180,6 +207,20 @@ describe('Component Tests', () => {
             return data;
         }
 
+        it('should back the previous modal window', () => {
+
+            spyOn(comp, 'reset').and.callThrough();
+            spyOn(comp.onBack, 'emit').and.callThrough();
+
+            comp.back();
+
+            expect(modalService.close).toHaveBeenCalledWith(comp.modalId);
+            expect(modalService.open).toHaveBeenCalledWith('import-plate-modal');
+
+            expect(comp.reset).toHaveBeenCalled();
+            expect(comp.onBack.emit).toHaveBeenCalled();
+
+        });
     });
 
 });

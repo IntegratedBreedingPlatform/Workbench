@@ -314,4 +314,9 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
 		return this.project;
 	}
 
+	
+	public Window getWindow() {
+		return window;
+	}
+
 }
