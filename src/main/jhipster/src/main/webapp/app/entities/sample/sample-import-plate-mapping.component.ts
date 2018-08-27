@@ -15,12 +15,12 @@ export class SampleImportPlateMappingComponent {
 
     @Input() importData: Array<Array<any>>;
     @Input() header: Array<any>;
+    @Input() sampleIdMapping: string;
+    @Input() plateIdMapping: string;
+    @Input() wellMapping: string;
+
     @Output() onClose = new EventEmitter();
     @Output() onBack = new EventEmitter();
-
-    sampleIdMapping = '';
-    plateIdMapping = '';
-    wellMapping = '';
 
     constructor(private modalService: ModalService,
                 private alertService: JhiAlertService,

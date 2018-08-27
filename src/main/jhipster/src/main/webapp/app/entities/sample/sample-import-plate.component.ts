@@ -17,7 +17,9 @@ export class SampleImportPlateComponent {
 
     selectedFileType = '.csv'; // Set the default file type to CSV.
     fileName = '';
-
+    sampleIdMapping = '';
+    plateIdMapping = '';
+    wellMapping = '';
     importData = new Array<Array<any>>();
 
     constructor(private modalService: ModalService,
@@ -42,6 +44,9 @@ export class SampleImportPlateComponent {
         this.fileUpload.nativeElement.value = '';
         this.importData.length = 0;
         this.fileName = '';
+        this.sampleIdMapping = '';
+        this.plateIdMapping = '';
+        this.wellMapping = '';
     }
 
     onFileTypeChange() {
@@ -60,7 +65,19 @@ export class SampleImportPlateComponent {
         const target: DataTransfer = <DataTransfer>(evt.target);
         this.excelService.parse(target).subscribe((value) => {
             this.importData = value;
+            this.sampleIdMapping = this.mappingHeader(this.importData[0], 'SAMPLE_UID');
+            this.plateIdMapping = this.mappingHeader(this.importData[0], 'PLATE_ID');
+            this.wellMapping = this.mappingHeader(this.importData[0], 'WELL');
         });
+    }
+
+    mappingHeader(header: Array<any>, mapping: string) {
+        for (const column of header) {
+            if (column === mapping) {
+                return mapping;
+            }
+        }
+        return '';
     }
 
     validate() {
