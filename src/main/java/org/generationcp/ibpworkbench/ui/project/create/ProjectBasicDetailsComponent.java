@@ -294,12 +294,13 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 				success = false;
 			}
 
-		}
-
-		final String dateValidationMsg = this.validateDate();
-		if (dateValidationMsg.length() > 0) {
-			this.errorDescription.append(dateValidationMsg);
-			success = false;
+			try {
+				this.startDateField.validate();
+			} catch (final InvalidValueException e) {
+				ProjectBasicDetailsComponent.LOG.debug(e.getMessage(), e);
+				this.errorDescription.append(ValidationUtil.getMessageFor(e));
+				success = false;
+			}
 		}
 
 		if (cropType == null) {
@@ -312,18 +313,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		}
 
 		return success;
-	}
-
-	private String validateDate() {
-		String errorMessage = "";
-		try {
-			this.startDateField.validate();
-		} catch (final InvalidValueException e) {
-			errorMessage = e.getMessage();
-			ProjectBasicDetailsComponent.LOG.debug(e.getMessage(), e);
-		}
-
-		return errorMessage;
 	}
 
 	Project getProjectDetails() {
