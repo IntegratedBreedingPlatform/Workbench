@@ -270,7 +270,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		} else {
 			// Check if the project name already exists for given crop
 			try {
-				if (this.workbenchDataManager.getProjectByNameAndCrop(projectName, cropType) != null) {
+				if (this.workbenchDataManager.getProjectByNameAndCrop(projectName, cropType) != null && !this.isUpdate) {
 					this.errorDescription.append(this.messageSource.getMessage(Message.DUPLICATE_PROGRAM_NAME_ERROR)).append(" ");
 					success = false;
 				}
