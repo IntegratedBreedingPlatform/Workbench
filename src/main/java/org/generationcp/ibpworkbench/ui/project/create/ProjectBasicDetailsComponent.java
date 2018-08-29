@@ -395,4 +395,8 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 	public void setOldCropType(CropType oldCropType) {
 		this.oldCropType = oldCropType;
 	}
+
+	public void setStartDateField(BmsDateField startDateField) {
+		this.startDateField = startDateField;
+	}
 }

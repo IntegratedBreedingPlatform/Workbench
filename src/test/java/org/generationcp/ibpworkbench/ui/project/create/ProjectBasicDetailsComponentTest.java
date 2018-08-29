@@ -3,6 +3,8 @@ package org.generationcp.ibpworkbench.ui.project.create;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -24,6 +26,7 @@ import org.mockito.MockitoAnnotations;
 
 import com.vaadin.data.Validator;
 import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Window;
@@ -49,6 +52,9 @@ public class ProjectBasicDetailsComponentTest {
 	
 	@Mock
 	private CreateProjectPanel createProjectPanel;
+
+	@Mock
+	private BmsDateField startDateField;
 
 	@InjectMocks
 	private ProjectBasicDetailsComponent basicDetailsComponent;
@@ -85,7 +91,6 @@ public class ProjectBasicDetailsComponentTest {
 		
 		final BmsDateField dateField = this.basicDetailsComponent.getStartDateField();
 		Assert.assertTrue(dateField.isRequired());
-		Assert.assertFalse(dateField.isInvalidAllowed());
 		
 		final ComboBox cropTypeCombobox = this.basicDetailsComponent.getCropTypeCombo();
 		Assert.assertEquals(this.cropTypes.size(), cropTypeCombobox.size());
@@ -191,6 +196,19 @@ public class ProjectBasicDetailsComponentTest {
 		this.basicDetailsComponent.updateProjectDetailsFormField(this.testProject);
 
 		Mockito.verify(this.createProjectPanel).cropTypeChanged(newCropType);
+	}
+
+	@Test
+	public void testValidateDateWithInvalidCharacter() throws Exception {
+		this.basicDetailsComponent.setStartDateField(this.startDateField);
+		Mockito.doThrow(new InvalidValueException("Invalid Input")).when(startDateField).validate();
+
+		// Valid Format
+		String validDateFormat = "2018-08-@29@#";
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		this.testProject.setStartDate(dateFormat.parse(validDateFormat));
+		this.basicDetailsComponent.updateProjectDetailsFormField(this.testProject);
+		Assert.assertTrue(this.basicDetailsComponent.validate());
 	}
 
 }
