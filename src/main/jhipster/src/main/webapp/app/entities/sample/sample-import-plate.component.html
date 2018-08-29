@@ -48,7 +48,7 @@
 </jhi-app-modal>
 
 <!-- The first row in the file is assumed to be the header row -->
-<jhi-sample-import-plate-mapping [importData]="importData" [header]="importData[0]" (onClose)="close()" (onBack)="clearSelectedFile()"></jhi-sample-import-plate-mapping>
+<jhi-sample-import-plate-mapping [importData]="importData" [header]="importData[0]" [sampleIdMapping]="sampleIdMapping" [plateIdMapping]="plateIdMapping" [wellMapping]="wellMapping" (onClose)="close()" (onBack)="clearSelectedFile()"></jhi-sample-import-plate-mapping>
 
 
 
