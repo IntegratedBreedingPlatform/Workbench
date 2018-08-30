@@ -175,10 +175,14 @@ public class StudyTreeButtonsPanel extends HorizontalLayout implements Initializ
 	public void updateButtons(final Object itemId) {
 		if (itemId instanceof String) {
 			// this means its the ROOT Folder
-			this.setButtonStatus(false);
+			this.addFolderBtn.setEnabled(true);
+			this.renameFolderBtn.setEnabled(false);
+			this.deleteFolderBtn.setEnabled(false);
 
 		} else if (this.studyTree.isFolder((Integer) itemId)) {
-			this.setButtonStatus(true);
+			this.addFolderBtn.setEnabled(true);
+			this.renameFolderBtn.setEnabled(true);
+			this.deleteFolderBtn.setEnabled(true);
 			// The rest of the local lists
 		} else {
 			this.addFolderBtn.setEnabled(true);
@@ -186,12 +190,6 @@ public class StudyTreeButtonsPanel extends HorizontalLayout implements Initializ
 			this.deleteFolderBtn.setEnabled(false);
 		}
 
-	}
-
-	public void setButtonStatus(final boolean b) {
-		this.addFolderBtn.setEnabled(true);
-		this.renameFolderBtn.setEnabled(b);
-		this.deleteFolderBtn.setEnabled(b);
 	}
 
 	protected Button getAddFolderBtn() {
@@ -236,7 +234,9 @@ public class StudyTreeButtonsPanel extends HorizontalLayout implements Initializ
 
 	public void updateButtons(final Object itemId, final boolean isFirstTimeOpening) {
 		if (isFirstTimeOpening) {
-			this.setButtonStatus(false);
+			this.addFolderBtn.setEnabled(true);
+			this.renameFolderBtn.setEnabled(false);
+			this.deleteFolderBtn.setEnabled(false);
 		} else {
 			this.updateButtons(itemId);
 		}

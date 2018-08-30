@@ -202,7 +202,7 @@ public class BrowseStudyTreeComponentTest {
 	public void testUpdateButtons() {
 		this.browseTreeComponent.setButtonsPanel(this.buttonsPanel);
 		this.browseTreeComponent.updateButtons(STUDY_ID);
-		Mockito.verify(this.buttonsPanel).updateButtons(STUDY_ID);
+		Mockito.verify(this.buttonsPanel).updateButtons(STUDY_ID, false);
 	}
 	
 	@Test
