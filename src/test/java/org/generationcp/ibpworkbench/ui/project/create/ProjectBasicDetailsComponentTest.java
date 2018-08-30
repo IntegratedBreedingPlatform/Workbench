@@ -216,4 +216,13 @@ public class ProjectBasicDetailsComponentTest {
 		Mockito.verify(this.basicDetailsComponent.getStartDateField()).validate();
 	}
 
+	@Test
+	public void testValidateDateSuccess() throws Exception {
+		String validDateFormat = "2018-08-29";
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+		this.testProject.setStartDate(dateFormat.parse(validDateFormat));
+		this.basicDetailsComponent.updateProjectDetailsFormField(this.testProject);
+		Assert.assertTrue(this.basicDetailsComponent.validate());
+	}
 }
