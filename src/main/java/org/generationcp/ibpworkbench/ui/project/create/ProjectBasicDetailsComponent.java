@@ -304,7 +304,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		}
 
 		if (cropType == null) {
-			this.errorDescription.append("CROP_TYPE_REQUIRED_ERROR").append(" ");
+			this.errorDescription.append(this.messageSource.getMessage("CROP_TYPE_REQUIRED_ERROR")).append(" ");
 			success = false;
 		}
 
