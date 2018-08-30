@@ -23,6 +23,7 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import static org.mockito.Mockito.when;
 
 import com.vaadin.data.Validator;
 import com.vaadin.data.validator.StringLengthValidator;
@@ -31,6 +32,7 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
+import com.vaadin.ui.Component;
 
 public class ProjectBasicDetailsComponentTest {
 
@@ -56,6 +58,9 @@ public class ProjectBasicDetailsComponentTest {
 	@Mock
 	private BmsDateField startDateField;
 
+	@Mock
+	private Component parentComponent;
+
 	@InjectMocks
 	private ProjectBasicDetailsComponent basicDetailsComponent;
 	
@@ -73,9 +78,12 @@ public class ProjectBasicDetailsComponentTest {
 		Mockito.when(this.messageSource.getMessage("PROGRAM_NAME_INVALID_ERROR")).thenReturn(INVALID_PROGRAM_NAME);
 		this.basicDetailsComponent = new ProjectBasicDetailsComponent(this.createProjectPanel);
 		this.basicDetailsComponent.setIsUpdate(false);
+		this.basicDetailsComponent.setParent(this.parentComponent);
 		this.basicDetailsComponent.setMessageSource(this.messageSource);
 		this.basicDetailsComponent.setWorkbenchDataManager(this.workbenchDataManager);
 		this.basicDetailsComponent.initializeComponents();
+
+		when(parentComponent.getWindow()).thenReturn(this.window);
 	}
 	
 	@Test
@@ -203,12 +211,9 @@ public class ProjectBasicDetailsComponentTest {
 		this.basicDetailsComponent.setStartDateField(this.startDateField);
 		Mockito.doThrow(new InvalidValueException("Invalid Input")).when(startDateField).validate();
 
-		// Valid Format
-		String validDateFormat = "2018-08-@29@#";
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		this.testProject.setStartDate(dateFormat.parse(validDateFormat));
 		this.basicDetailsComponent.updateProjectDetailsFormField(this.testProject);
-		Assert.assertTrue(this.basicDetailsComponent.validate());
+		Assert.assertFalse(this.basicDetailsComponent.validate());
+		Mockito.verify(this.basicDetailsComponent.getStartDateField()).validate();
 	}
 
 }
