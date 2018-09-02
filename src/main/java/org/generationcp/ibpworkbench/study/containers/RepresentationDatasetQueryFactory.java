@@ -31,6 +31,7 @@ public class RepresentationDatasetQueryFactory implements QueryFactory {
 
 	private final StudyDataManager studyDataManager;
 	private final Integer datasetId;
+	private final Integer studyId;
 	private final List<String> columnIds;
 	@SuppressWarnings("unused")
 	private QueryDefinition definition;
@@ -43,11 +44,13 @@ public class RepresentationDatasetQueryFactory implements QueryFactory {
 	 * @param dataManager
 	 * @param datasetId - id of the selected Representation of a Study
 	 * @param columnIds - List of column ids used for the Vaadin Table displaying the dataset
+	 * @param studyId 
 	 */
-	public RepresentationDatasetQueryFactory(StudyDataManager studyDataManager, Integer datasetId, List<String> columnIds, boolean fromUrl) {
+	public RepresentationDatasetQueryFactory(StudyDataManager studyDataManager, Integer datasetId, List<String> columnIds, boolean fromUrl, Integer studyId) {
 		super();
 		this.studyDataManager = studyDataManager;
 		this.datasetId = datasetId;
+		this.studyId = studyId;
 		this.columnIds = columnIds;
 		this.fromUrl = fromUrl;
 	}
@@ -58,7 +61,7 @@ public class RepresentationDatasetQueryFactory implements QueryFactory {
 	 */
 	@Override
 	public Query constructQuery(Object[] sortPropertyIds, boolean[] sortStates) {
-		return new RepresentationDataSetQuery(this.studyDataManager, this.datasetId, this.columnIds, this.fromUrl);
+		return new RepresentationDataSetQuery(this.studyDataManager, this.datasetId, this.columnIds, this.fromUrl, this.studyId);
 	}
 
 	@Override

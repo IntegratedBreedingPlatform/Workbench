@@ -66,6 +66,8 @@ public class BreedingViewInput implements Serializable {
 	private Map<Integer, String> variateColumns;
 	private String datasetName;
 	private String datasetSource;
+	private String description;
+	private String objective;
 	private Map<String, Boolean> variatesActiveState;
 	private List<SeaEnvironmentModel> selectedEnvironments;
 
@@ -418,5 +420,25 @@ public class BreedingViewInput implements Serializable {
 
 	public void setReplicatesFactorName(String replicatesFactorName) {
 		this.replicatesFactorName = replicatesFactorName;
+	}
+
+	
+	public String getDescription() {
+		return description;
+	}
+
+	
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	
+	public String getObjective() {
+		return objective;
+	}
+
+	
+	public void setObjective(String objective) {
+		this.objective = objective;
 	}
 }

@@ -10,6 +10,9 @@ import { SampleService } from './sample.service';
 // import { ITEMS_PER_PAGE } from '../../shared';
 import { Principal, ITEMS_PER_PAGE } from '../../shared';
 import { SampleList } from './sample-list.model';
+import { SampleListService } from './sample-list.service';
+import { FileDownloadHelper } from './file-download.helper';
+import {ModalService} from '../../shared/modal/modal.service';
 
 @Component({
     selector: 'jhi-sample',
@@ -19,8 +22,6 @@ export class SampleComponent implements OnInit, OnDestroy {
 
     @Input()
     sampleList: SampleList;
-
-    listId: number;
 
     currentAccount: any;
     error: any;
@@ -41,13 +42,16 @@ export class SampleComponent implements OnInit, OnDestroy {
 
     constructor(
         private sampleService: SampleService,
+        private sampleListService: SampleListService,
         private languageservice: JhiLanguageService,
         // private parseLinks: JhiParseLinks,
         private jhiAlertService: JhiAlertService,
         private principal: Principal,
         private activatedRoute: ActivatedRoute,
         private router: Router,
-        private eventManager: JhiEventManager
+        private eventManager: JhiEventManager,
+        private fileDownloadHelper: FileDownloadHelper,
+        private modalService: ModalService
     ) {
         this.itemsPerPage = ITEMS_PER_PAGE;
 
@@ -126,6 +130,17 @@ export class SampleComponent implements OnInit, OnDestroy {
             sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
         }]);
         this.loadAll();
+    }
+    export() {
+        this.sampleListService.download(this.sampleList.id, this.sampleList.listName).subscribe((response) => {
+
+            const fileName = this.fileDownloadHelper.getFileNameFromResponseContentDisposition(response);
+            this.fileDownloadHelper.save(response.body, fileName);
+
+        })
+    }
+    importPlate() {
+        this.modalService.open('import-plate-modal');
     }
     ngOnInit() {
         this.loadAll();

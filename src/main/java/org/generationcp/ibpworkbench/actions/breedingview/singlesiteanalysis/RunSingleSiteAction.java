@@ -8,7 +8,7 @@
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
  *******************************************************************************/
 
-package org.generationcp.ibpworkbench.actions;
+package org.generationcp.ibpworkbench.actions.breedingview.singlesiteanalysis;
 
 import java.io.File;
 import java.io.IOException;
@@ -149,8 +149,8 @@ public class RunSingleSiteAction implements ClickListener {
 			selectedEnvironments.add(m.getTrialno());
 		}
 
-		this.datasetExporter.exportToCSVForBreedingView(breedingViewInput.getSourceXLSFilePath(),
-				(String) this.source.getSelEnvFactor().getValue(), selectedEnvironments, breedingViewInput);
+		this.datasetExporter.exportToCSVForBreedingView(breedingViewInput.getSourceXLSFilePath(), this.source.getSelEnvFactorValue(),
+				selectedEnvironments, breedingViewInput);
 	}
 
 	/**
@@ -186,14 +186,14 @@ public class RunSingleSiteAction implements ClickListener {
 	}
 
 	void populateRowPosAndColPos(final DesignType designType, final BreedingViewInput breedingViewInput) {
-
-		if (designType == DesignType.P_REP_DESIGN) {
-
-			breedingViewInput.setColPos(this.createColPos(this.source.getSelColumnFactorValue()));
-			breedingViewInput.setRowPos(this.createRowPos(this.source.getSelRowFactorValue()));
-
+		final String columnValue = this.source.getSelColumnFactorValue();
+		final String rowValue = this.source.getSelRowFactorValue();
+		// Do not generate RowPos and ColPos tags for Row-Col Design type
+		if (!StringUtils.isNullOrEmpty(rowValue) && !StringUtils.isNullOrEmpty(columnValue)
+				&& !DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.equals(designType)) {
+			breedingViewInput.setColPos(this.createColPos(columnValue));
+			breedingViewInput.setRowPos(this.createRowPos(rowValue));
 		} else {
-
 			breedingViewInput.setColPos(null);
 			breedingViewInput.setRowPos(null);
 		}
@@ -380,7 +380,7 @@ public class RunSingleSiteAction implements ClickListener {
 		}
 
 		if (StringUtils.isNullOrEmpty(replicatesFactor) && designType.equals(DesignType.RANDOMIZED_BLOCK_DESIGN.getName())
-				&& this.source.getSelReplicates().isEnabled()) {
+				&& this.source.replicateFactorEnabled()) {
 			this.showErrorMessage(window, "Please specify replicates factor.", "");
 			return false;
 		}
@@ -398,6 +398,12 @@ public class RunSingleSiteAction implements ClickListener {
 
 		if (StringUtils.isNullOrEmpty(rowFactor) && designType.equals(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName())) {
 			this.showErrorMessage(window, "Please specify row factor.", "");
+			return false;
+		}
+
+		if (!StringUtils.isNullOrEmpty(rowFactor) && StringUtils.isNullOrEmpty(columnFactor)
+				|| StringUtils.isNullOrEmpty(rowFactor) && !StringUtils.isNullOrEmpty(columnFactor)) {
+			this.showErrorMessage(window, "Row and Column factors must be specified together.", "");
 			return false;
 		}
 

@@ -63,6 +63,7 @@ describe('Variables Controller', function() {
 		controller,
 		scope,
 		timeout,
+		routeParams,
 
 		variablesService,
 		panelService,
@@ -120,17 +121,21 @@ describe('Variables Controller', function() {
 			showPanel: function() {}
 		};
 
+		routeParams = {id: null}
+
 		spyOn(variablesService, 'getVariable').and.callThrough();
 		spyOn(variablesService, 'updateVariable').and.callThrough();
 		spyOn(variablesService, 'getVariables').and.callThrough();
 		spyOn(variablesService, 'getFavouriteVariables').and.callThrough();
 		spyOn(panelService, 'showPanel');
 
+
 		controller = $controller('VariablesController', {
 			$scope: scope,
 			variablesService: variablesService,
-			panelService: panelService
-		});
+			panelService: panelService,
+			$routeParams :routeParams
+	});
 
 		spyOn(controller, 'transformToDisplayFormat').and.callThrough();
 		spyOn(controller, 'transformDetailedVariableToDisplayFormat').and.callThrough();

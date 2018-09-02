@@ -10,7 +10,6 @@
 		</button>
 		-->
 	</h2>
-	<jhi-alert></jhi-alert>
 	<!-- TODO SEARCH -->
 	<!--
 	<div class="row">
@@ -31,10 +30,29 @@
 	-->
 	<br/>
 	<div>
-		<span class="control-label">Total Entries: </span>
-		<span class="control-label control-label-bold ">{{totalItems}}</span>
 	</div>
 	<br/>
+	<div class="row">
+		<div class="col-xs-11 col-md-11">
+			<span class="control-label">Total Entries: </span>
+			<span class="control-label control-label-bold ">{{totalItems}}</span>
+		</div>
+		<div class="col-xs-1 col-md-1">
+			<div class="btn-group">
+				<button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" id="listActionButton">
+					<span>Actions</span>
+				</button>
+				<ul class="dropdown-menu dropdown-menu-right">
+					<li>
+						<a (click)="export()">Export list</a>
+					</li>
+					<li>
+						<a (click)="importPlate()">Import Plate Information</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
 	<div class="row">
 		<div style="float: left; padding-left: 15px;">
 			<select [(ngModel)]="itemsPerPage" (change)="loadAll()">
@@ -61,6 +79,9 @@
 				<th jhiSortBy="takenBy"><span jhiTranslate="bmsjHipsterApp.sample.takenBy">TAKEN_BY</span><span class="fa fa-sort"></span> </th>
 				<th jhiSortBy="samplingDate"><span jhiTranslate="bmsjHipsterApp.sample.samplingDate">SAMPLING_DATE</span><span class="fa fa-sort"></span> </th>
 				<th jhiSortBy="sampleBusinessKey"><span jhiTranslate="bmsjHipsterApp.sample.sampleBusinessKey">SAMPLE_UID</span><span class="fa fa-sort"></span> </th>
+				<th jhiSortBy="plant.plateId"><span jhiTranslate="bmsjHipsterApp.sample.plateId">SAMPLE_ID</span><span class="fa fa-sort"></span> </th>
+				<th jhiSortBy="plant.well"><span jhiTranslate="bmsjHipsterApp.sample.well">WELL</span><span class="fa fa-sort"></span> </th>
+
 
 				<!--<th></th>-->
 			</tr>
@@ -78,7 +99,8 @@
 				<!--<td>{{sample.samplingDate | date:'medium'}}</td>-->
 				<td [ngClass]="{ odd: odd, even: even }">{{sample.samplingDate}}</td>
 				<td [ngClass]="{ odd: odd, even: even }">{{sample.sampleBusinessKey}}</td>
-
+				<td [ngClass]="{ odd: odd, even: even }">{{sample.plateId}}</td>
+				<td [ngClass]="{ odd: odd, even: even }">{{sample.well}}</td>
 				<!-- TODO ACTIONS -->
 				<!--
 				<td class="text-right">
@@ -117,5 +139,4 @@
 			<ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
 		</div>
 	</div>
-
 </div>

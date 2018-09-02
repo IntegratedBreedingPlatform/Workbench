@@ -1,97 +1,69 @@
+
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-import com.vaadin.data.Property;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.Select;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Window;
-import org.apache.commons.lang3.ArrayUtils;
-import org.generationcp.commons.breedingview.xml.DesignType;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.actions.breedingview.singlesiteanalysis.RunBreedingViewButtonClickListener;
+import org.generationcp.ibpworkbench.actions.breedingview.singlesiteanalysis.UploadBVFilesButtonClickListener;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
-import org.generationcp.middleware.domain.dms.DMSVariableTypeTestDataInitializer;
-import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.StandardVariable;
-import org.generationcp.middleware.domain.dms.TrialEnvironment;
-import org.generationcp.middleware.domain.dms.TrialEnvironments;
-import org.generationcp.middleware.domain.dms.Variable;
-import org.generationcp.middleware.domain.dms.VariableList;
-import org.generationcp.middleware.domain.dms.VariableTypeList;
 import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Window;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import junit.framework.Assert;
 
 /**
- * Created by IntelliJ IDEA. User: Daniel Villafuerte Date: 12/17/2014 Time:
- * 1:39 PM
+ * Created by IntelliJ IDEA. User: Daniel Villafuerte Date: 12/17/2014 Time: 1:39 PM
  */
 
-@RunWith(MockitoJUnitRunner.class)
 public class SingleSiteAnalysisDetailsPanelTest {
 
-	private static final String LOCATION_NAME = "LOCATION_NAME";
 	private static final String DATASET_TYPE = "DATASET_TYPE";
 	private static final String DATASET_TITLE = "DATASET_TITLE";
 	private static final String DATASET_NAME = "DATASET_NAME";
-	private static final String LOC_ID = "LOC_ID";
-	private static final String LOC_NAME = "LOC_NAME";
 	private static final String EXPT_DESIGN = "EXPT_DESIGN";
+	private static final int DATASET_ID = 3;
+	private static final int STUDY_ID = 1;
+	private static final int LOCATION_ID = 101;
 	private static final String TRIAL_INSTANCE = "TRIAL_INSTANCE";
-	private static final String DEFAULT_REPLICATES = "REPLICATES";
 
-	private static final String ROW_FACTOR_LABEL = "Specify Row Factor";
-	private static final String COLUMN_FACTOR_LABEL = "Specify Column Factor";
+	@Mock
+	private SingleSiteAnalysisStudyDetailsComponent studyDetailsComponent;
 
-	private static final String BLOCK_NO = "BLOCK_NO";
+	@Mock
+	private SingleSiteAnalysisEnvironmentsComponent environmentsComponent;
 
-	private static final String[] TRIAL_ENV_FACTORS =
-			{SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE, SingleSiteAnalysisDetailsPanelTest.LOC_ID,
-					SingleSiteAnalysisDetailsPanelTest.LOC_NAME, SingleSiteAnalysisDetailsPanelTest.EXPT_DESIGN};
-	private static final String[] DATASET_FACTORS =
-			{SingleSiteAnalysisDetailsPanelTest.DATASET_NAME, SingleSiteAnalysisDetailsPanelTest.DATASET_TITLE,
-					SingleSiteAnalysisDetailsPanelTest.DATASET_TYPE};
-	public static final int DATASET_ID = 3;
-	public static final int STUDY_ID = 1;
+	@Mock
+	private SingleSiteAnalysisDesignDetails designDetailsComponent;
 
-	@InjectMocks
-	private SingleSiteAnalysisDetailsPanel ssaPanel;
-
-	private List<DMSVariableType> factors;
-	private List<DMSVariableType> studyFactors;
+	@Mock
+	private SingleSiteAnalysisGenotypesComponent genotypesComponent;
 
 	@Mock
 	private SimpleResourceBundleMessageSource messageSource;
-
-	private BreedingViewInput input;
 
 	@Mock
 	private StudyDataManager studyDataManager;
@@ -102,8 +74,18 @@ public class SingleSiteAnalysisDetailsPanelTest {
 	@Mock
 	private Window window;
 
+	@InjectMocks
+	private SingleSiteAnalysisDetailsPanel ssaPanel;
+
+	private List<DMSVariableType> factors;
+	private List<DMSVariableType> studyFactors;
+
+	private BreedingViewInput input;
+
 	@Before
 	public void setup() {
+		MockitoAnnotations.initMocks(this);
+
 		this.initializeBreedingViewInput();
 		this.factors = this.createTestFactors();
 		this.studyFactors = this.createStudyVariables();
@@ -114,37 +96,13 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		this.ssaPanel.setMessageSource(this.messageSource);
 		this.ssaPanel.setStudyDataManager(this.studyDataManager);
 		this.ssaPanel.setParent(this.parentComponent);
-
-		final Select selEnvFactor = new Select();
-		selEnvFactor.addItem(SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE);
-		selEnvFactor.setValue(SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE);
-		this.ssaPanel.setSelEnvFactor(selEnvFactor);
-
-		this.mockStudyDataManagerCalls();
-		this.mockMessageResource();
+		this.ssaPanel.setEnvironmentsComponent(environmentsComponent);
+		this.ssaPanel.setGenotypesComponent(genotypesComponent);
+		this.ssaPanel.setStudyDetailsComponent(studyDetailsComponent);
+		this.ssaPanel.setDesignDetailsComponent(designDetailsComponent);
 
 		when(parentComponent.getWindow()).thenReturn(this.window);
 
-	}
-
-	private void mockMessageResource() {
-		when(this.messageSource.getMessage(Message.PLEASE_CHOOSE)).thenReturn("Please choose");
-		when(this.messageSource.getMessage(Message.BV_SPECIFY_ROW_FACTOR)).thenReturn(SingleSiteAnalysisDetailsPanelTest.ROW_FACTOR_LABEL);
-		when(this.messageSource.getMessage(Message.BV_SPECIFY_COLUMN_FACTOR))
-				.thenReturn(SingleSiteAnalysisDetailsPanelTest.COLUMN_FACTOR_LABEL);
-	}
-
-	private void mockStudyDataManagerCalls() {
-		final DataSet dataset = new DataSet();
-		final VariableTypeList variableTypes = new VariableTypeList();
-		variableTypes.setVariableTypes(this.factors);
-		dataset.setVariableTypes(variableTypes);
-		when(this.studyDataManager.getDataSet(this.input.getDatasetId())).thenReturn(dataset);
-
-		final TrialEnvironments environments = new TrialEnvironments();
-		final TrialEnvironment trialEnvironment = new TrialEnvironment(2);
-		environments.add(trialEnvironment);
-		when(this.studyDataManager.getTrialEnvironmentsInDataset(this.input.getDatasetId())).thenReturn(environments);
 	}
 
 	private void initializeBreedingViewInput() {
@@ -154,629 +112,139 @@ public class SingleSiteAnalysisDetailsPanelTest {
 	}
 
 	@Test
-	public void testDesignTypeIncompleteBlockDesignResolvableNonLatin() {
+	public void testButtonListeners() {
+		this.ssaPanel.instantiateActionButtons();
+		this.ssaPanel.initializeActions();
 
-		when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
-				.thenReturn(Integer.toString(TermId.RESOLVABLE_INCOMPLETE_BLOCK.getId()));
-
-		this.ssaPanel.initializeComponents();
-
-		final List<Component> components = this.getComponentsListFromGridLayout();
-
-		Assert.assertTrue(components.contains(this.ssaPanel.getLblBlocks()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getSelBlocks()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getLblSpecifyGenotypesHeader()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getLblGenotypes()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getSelGenotypes()));
-
-		Assert.assertFalse(components.contains(this.ssaPanel.getLblSpecifyColumnFactor()));
-		Assert.assertFalse(components.contains(this.ssaPanel.getSelColumnFactor()));
-		Assert.assertFalse(components.contains(this.ssaPanel.getLblSpecifyRowFactor()));
-		Assert.assertFalse(components.contains(this.ssaPanel.getSelRowFactor()));
-
-		Assert.assertEquals(this.ssaPanel.getSelDesignType().getValue(), DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName());
-
-		if ((!this.ssaPanel.getSelReplicates().isEnabled() || this.ssaPanel.getSelReplicates().getItemIds().isEmpty()) && !this.ssaPanel
-				.getSelBlocks().getItemIds().isEmpty()) {
-			Assert.assertTrue(this.ssaPanel.getSelReplicates().isEnabled());
-			for (final Object itemId : this.ssaPanel.getSelBlocks().getItemIds()) {
-				Assert.assertEquals(SingleSiteAnalysisDetailsPanelTest.DEFAULT_REPLICATES,
-					this.ssaPanel.getSelReplicates().getItemCaption(itemId));
-			}
-		}
+		Assert.assertNotNull(this.ssaPanel.getBtnBack().getListeners(ClickEvent.class));
+		Assert.assertNotNull(this.ssaPanel.getBtnReset().getListeners(ClickEvent.class));
+		final Collection<?> runBtnListeners = this.ssaPanel.getBtnRun().getListeners(ClickEvent.class);
+		Assert.assertNotNull(runBtnListeners);
+		Assert.assertTrue(runBtnListeners.iterator().next() instanceof RunBreedingViewButtonClickListener);
+		final Collection<?> uploadBtnListeners = this.ssaPanel.getBtnUpload().getListeners(ClickEvent.class);
+		Assert.assertNotNull(uploadBtnListeners);
+		Assert.assertTrue(uploadBtnListeners.iterator().next() instanceof UploadBVFilesButtonClickListener);
 	}
 
 	@Test
-	public void testDesignTypeIncompleteBlockDesignResolvableLatin() {
-		when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
-				.thenReturn(Integer.toString(TermId.RESOLVABLE_INCOMPLETE_BLOCK_LATIN.getId()));
-
-		this.ssaPanel.initializeComponents();
-
-		final List<Component> components = this.getComponentsListFromGridLayout();
-
-		Assert.assertTrue(components.contains(this.ssaPanel.getLblBlocks()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getSelBlocks()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getLblSpecifyGenotypesHeader()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getLblGenotypes()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getSelGenotypes()));
-
-		Assert.assertFalse(components.contains(this.ssaPanel.getLblSpecifyColumnFactor()));
-		Assert.assertFalse(components.contains(this.ssaPanel.getSelColumnFactor()));
-		Assert.assertFalse(components.contains(this.ssaPanel.getLblSpecifyRowFactor()));
-		Assert.assertFalse(components.contains(this.ssaPanel.getSelRowFactor()));
-
-		Assert.assertEquals(this.ssaPanel.getSelDesignType().getValue(), DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName());
-
-		if ((!this.ssaPanel.getSelReplicates().isEnabled() || this.ssaPanel.getSelReplicates().getItemIds().isEmpty()) && !this.ssaPanel
-				.getSelBlocks().getItemIds().isEmpty()) {
-			Assert.assertTrue(this.ssaPanel.getSelReplicates().isEnabled());
-			for (final Object itemId : this.ssaPanel.getSelBlocks().getItemIds()) {
-				Assert.assertEquals(SingleSiteAnalysisDetailsPanelTest.DEFAULT_REPLICATES,
-					this.ssaPanel.getSelReplicates().getItemCaption(itemId));
-			}
-		}
-	}
-
-	@Test
-	public void testDesignTypeRowColumnDesignLatin() {
-		when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
-				.thenReturn(Integer.toString(TermId.RESOLVABLE_INCOMPLETE_ROW_COL_LATIN.getId()));
-
-		this.ssaPanel.initializeComponents();
-
-		final List<Component> components = this.getComponentsListFromGridLayout();
-
-		Assert.assertTrue(components.contains(this.ssaPanel.getLblSpecifyColumnFactor()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getSelColumnFactor()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getLblSpecifyRowFactor()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getSelRowFactor()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getLblSpecifyGenotypesHeader()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getLblGenotypes()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getSelGenotypes()));
-
-		Assert.assertFalse(components.contains(this.ssaPanel.getLblBlocks()));
-		Assert.assertFalse(components.contains(this.ssaPanel.getSelBlocks()));
-
-		Assert.assertEquals(this.ssaPanel.getSelDesignType().getValue(), DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName());
-
-		if ((!this.ssaPanel.getSelReplicates().isEnabled() || this.ssaPanel.getSelReplicates().getItemIds().isEmpty()) && !this.ssaPanel
-				.getSelBlocks().getItemIds().isEmpty()) {
-			Assert.assertTrue(this.ssaPanel.getSelReplicates().isEnabled());
-			for (final Object itemId : this.ssaPanel.getSelBlocks().getItemIds()) {
-				Assert.assertEquals(SingleSiteAnalysisDetailsPanelTest.DEFAULT_REPLICATES,
-					this.ssaPanel.getSelReplicates().getItemCaption(itemId));
-			}
-		}
-	}
-
-	@Test
-	public void testDesignTypeRowColumnDesignNonLatin() {
-		when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
-				.thenReturn(Integer.toString(TermId.RESOLVABLE_INCOMPLETE_ROW_COL.getId()));
-
-		this.ssaPanel.initializeComponents();
-
-		final List<Component> components = this.getComponentsListFromGridLayout();
-
-		Assert.assertTrue(components.contains(this.ssaPanel.getLblSpecifyColumnFactor()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getSelColumnFactor()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getLblSpecifyRowFactor()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getSelRowFactor()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getLblSpecifyGenotypesHeader()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getLblGenotypes()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getSelGenotypes()));
-
-		Assert.assertFalse(components.contains(this.ssaPanel.getLblBlocks()));
-		Assert.assertFalse(components.contains(this.ssaPanel.getSelBlocks()));
-
-		Assert.assertEquals(this.ssaPanel.getSelDesignType().getValue(), DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName());
-
-		if ((!this.ssaPanel.getSelReplicates().isEnabled() || this.ssaPanel.getSelReplicates().getItemIds().isEmpty()) && !this.ssaPanel
-				.getSelBlocks().getItemIds().isEmpty()) {
-			Assert.assertTrue(this.ssaPanel.getSelReplicates().isEnabled());
-			for (final Object itemId : this.ssaPanel.getSelBlocks().getItemIds()) {
-				Assert.assertEquals(SingleSiteAnalysisDetailsPanelTest.DEFAULT_REPLICATES,
-					this.ssaPanel.getSelReplicates().getItemCaption(itemId));
-			}
-		}
-	}
-
-	@Test
-	public void testDesignTypeRandomizedBlockDesign() {
-		when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
-				.thenReturn(Integer.toString(TermId.RANDOMIZED_COMPLETE_BLOCK.getId()));
-
-		this.ssaPanel.initializeComponents();
-
-		final List<Component> components = this.getComponentsListFromGridLayout();
-
-		Assert.assertTrue(components.contains(this.ssaPanel.getLblSpecifyGenotypesHeader()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getLblGenotypes()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getSelGenotypes()));
-
-		Assert.assertFalse(components.contains(this.ssaPanel.getLblSpecifyColumnFactor()));
-		Assert.assertFalse(components.contains(this.ssaPanel.getSelColumnFactor()));
-		Assert.assertFalse(components.contains(this.ssaPanel.getLblSpecifyRowFactor()));
-		Assert.assertFalse(components.contains(this.ssaPanel.getSelRowFactor()));
-		Assert.assertFalse(components.contains(this.ssaPanel.getLblBlocks()));
-		Assert.assertFalse(components.contains(this.ssaPanel.getSelBlocks()));
-
-		Assert.assertEquals(this.ssaPanel.getSelDesignType().getValue(), DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
-
-		if ((!this.ssaPanel.getSelReplicates().isEnabled() || this.ssaPanel.getSelReplicates().getItemIds().isEmpty()) && !this.ssaPanel
-				.getSelBlocks().getItemIds().isEmpty()) {
-			Assert.assertTrue(this.ssaPanel.getSelReplicates().isEnabled());
-			for (final Object itemId : this.ssaPanel.getSelBlocks().getItemIds()) {
-				Assert.assertEquals(SingleSiteAnalysisDetailsPanelTest.DEFAULT_REPLICATES,
-					this.ssaPanel.getSelReplicates().getItemCaption(itemId));
-			}
-		}
-	}
-
-	@Test
-	public void testDesignTypeInvalid() {
-		when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
-				.thenReturn(null);
-
-		this.ssaPanel.initializeComponents();
-
-		Assert.assertNull(this.ssaPanel.getSelDesignType().getValue());
-	}
-
-	@Test
-	public void testPopulateChoicesForGenotypes() {
-		this.ssaPanel.setSelGenotypes(new Select());
-		this.ssaPanel.populateChoicesForGenotypes();
-		Assert.assertEquals("Genotypes dropdown should have 3 factors", 3, this.ssaPanel.getSelGenotypes().getItemIds().size());
-		for (final Object id : this.ssaPanel.getSelGenotypes().getItemIds()) {
-			final String localName = (String) id;
-			Assert.assertFalse("Entry Type factor should not be included in Genotypes dropdown",
-					TermId.ENTRY_TYPE.name().equals(localName));
-			Assert.assertFalse("Plot ID factor should not be included in Genotypes dropdown", TermId.PLOT_ID.name().equals(localName));
-		}
-	}
-
-	@Test
-	public void testPopulateChoicesForReplicates() {
-		final SingleSiteAnalysisDetailsPanel ssaPanel =
-				new SingleSiteAnalysisDetailsPanel(null, new BreedingViewInput(), this.factors, this.studyFactors, null, null);
-		final SingleSiteAnalysisDetailsPanel mockSSAPanel = Mockito.spy(ssaPanel);
-		final Select repSelect = new Select();
-		Mockito.doReturn(repSelect).when(mockSSAPanel).getSelReplicates();
-
-		mockSSAPanel.populateChoicesForReplicates();
-		Assert.assertEquals("Dropdown should have 1 factor", 1, repSelect.getItemIds().size());
-		Assert.assertNotNull(repSelect.getItem("REP_NO"));
-	}
-
-	@Test
-	public void testPopulateChoicesForBlocks() {
-		final SingleSiteAnalysisDetailsPanel ssaPanel =
-				new SingleSiteAnalysisDetailsPanel(null, new BreedingViewInput(), this.factors, this.studyFactors, null, null);
-		final SingleSiteAnalysisDetailsPanel mockSSAPanel = Mockito.spy(ssaPanel);
-		final Select blockSelect = new Select();
-		Mockito.doReturn(blockSelect).when(mockSSAPanel).getSelBlocks();
-
-		mockSSAPanel.populateChoicesForBlocks();
-		Assert.assertEquals("Dropdown should have 1 factor", 1, blockSelect.getItemIds().size());
-		Assert.assertNotNull(blockSelect.getItem("BLOCK_NO"));
-	}
-
-	@Test
-	public void testPopulateChoicesForRowFactor() {
-		final SingleSiteAnalysisDetailsPanel ssaPanel =
-				new SingleSiteAnalysisDetailsPanel(null, new BreedingViewInput(), this.factors, this.studyFactors, null, null);
-		final SingleSiteAnalysisDetailsPanel mockSSAPanel = Mockito.spy(ssaPanel);
-		final Select rowSelect = new Select();
-		Mockito.doReturn(rowSelect).when(mockSSAPanel).getSelRowFactor();
-
-		mockSSAPanel.populateChoicesForRowFactor();
-		Assert.assertEquals("Dropdown should have 1 factor", 1, rowSelect.getItemIds().size());
-		Assert.assertNotNull(rowSelect.getItem("ROW_NO"));
-	}
-
-	@Test
-	public void testPopulateChoicesForEnvForAnalysis() {
-		this.ssaPanel.setTrialVariablesInDataset(DMSVariableTypeTestDataInitializer.createDMSVariableTypeList());
-		this.ssaPanel.setFooterCheckBox(new CheckBox("Select All", false));
-		this.ssaPanel.setEnvironmentsCheckboxState(new HashMap<String, Boolean>());
-
-		this.ssaPanel.createEnvironmentSelectionTable();
-		final TrialEnvironments environments = new TrialEnvironments();
-		final TrialEnvironment environment = Mockito.mock(TrialEnvironment.class);
-		when(environment.getId()).thenReturn(1);
-		environments.add(environment);
-
-		final VariableList variableList = Mockito.mock(VariableList.class);
-		when(environment.getVariables()).thenReturn(variableList);
-		final Variable trialInstance = new Variable();
-		trialInstance.setValue("1");
-		when(variableList.findByLocalName(SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE)).thenReturn(trialInstance);
-		when(this.studyDataManager.getTrialEnvironmentsInDataset(Matchers.anyInt())).thenReturn(environments);
-		when(this.studyDataManager.getLocalNameByStandardVariableId(Matchers.anyInt(), Matchers.anyInt()))
-				.thenReturn(SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE);
-
-		this.ssaPanel.populateChoicesForEnvForAnalysis();
-		Assert.assertFalse("The footer checkbox value should be false", this.ssaPanel.getFooterCheckBox().booleanValue());
-		Assert.assertEquals("The environment check box state's size should be 0", 0, this.ssaPanel.getEnvironmentsCheckboxState().size());
-		Assert.assertEquals("The trial instance name should be TRIAL_INSTANCE", SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE,
-				this.ssaPanel.getBreedingViewInput().getTrialInstanceName());
-	}
-
-	@Test
-	public void testPopulateEnvironmentSelectionTableWithTrialEnvironmets() {
-		final Table table = new Table();
-		table.addContainerProperty(SingleSiteAnalysisDetailsPanel.SELECT_COLUMN, Select.class, "");
-		table.addContainerProperty(SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN, Integer.class, "");
-
-		final TrialEnvironments environments = new TrialEnvironments();
-		final TrialEnvironment environment = Mockito.mock(TrialEnvironment.class);
-		when(environment.getId()).thenReturn(1);
-		environments.add(environment);
-
-		final VariableList variableList = Mockito.mock(VariableList.class);
-		when(environment.getVariables()).thenReturn(variableList);
-		final Variable trialInstance = new Variable();
-		trialInstance.setValue("1");
-		when(variableList.findByLocalName(SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE)).thenReturn(trialInstance);
-		final Variable locationVariable = new Variable();
-		locationVariable.setValue("Africa Rice Center");
-		when(variableList.findByLocalName(SingleSiteAnalysisDetailsPanelTest.LOCATION_NAME)).thenReturn(locationVariable);
-		when(this.studyDataManager.getTrialEnvironmentsInDataset(Matchers.anyInt())).thenReturn(environments);
-
-		this.ssaPanel.populateEnvironmentSelectionTableWithTrialEnvironmets(table, SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE,
-				SingleSiteAnalysisDetailsPanelTest.LOCATION_NAME);
-		final BeanItemContainer<SeaEnvironmentModel> container = (BeanItemContainer<SeaEnvironmentModel>) table.getContainerDataSource();
-		final SeaEnvironmentModel bean = container.getIdByIndex(0);
-		Assert.assertFalse("The active value should be false", bean.getActive());
-		Assert.assertEquals("The environment name should be Africa Rice Center", "Africa Rice Center", bean.getEnvironmentName());
-		Assert.assertEquals("The study no should be 1", "1", bean.getTrialno());
-		Assert.assertEquals("The location id should be 1", "1", bean.getLocationId().toString());
-	}
-
-	@Test
-	public void testPopulateEnvironmentSelectionTableSelectedFactorIsLocationID() {
-		final Table table = new Table();
-		table.addContainerProperty(SingleSiteAnalysisDetailsPanel.SELECT_COLUMN, Select.class, "");
-		table.addContainerProperty(SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN, Integer.class, "");
-
-		final TrialEnvironments environments = new TrialEnvironments();
-		final TrialEnvironment environment = Mockito.mock(TrialEnvironment.class);
-		when(environment.getId()).thenReturn(1);
-		environments.add(environment);
-
-		final VariableList variableList = Mockito.mock(VariableList.class);
-		when(environment.getVariables()).thenReturn(variableList);
-		final Variable trialInstance = new Variable();
-		trialInstance.setValue("1");
-		when(variableList.findByLocalName(SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE)).thenReturn(trialInstance);
-		final Variable locationIDVariable = new Variable();
-		locationIDVariable.setValue("100");
-		when(variableList.findByLocalName(SingleSiteAnalysisDetailsPanelTest.LOCATION_NAME)).thenReturn(locationIDVariable);
-		when(this.studyDataManager.getTrialEnvironmentsInDataset(Matchers.anyInt())).thenReturn(environments);
-
-		final BiMap<String, String> locationIdToNameMap = HashBiMap.create();
-		locationIdToNameMap.put("100", "Agua Fria");
-
-		when(this.studyDataManager.isLocationIdVariable(STUDY_ID, SingleSiteAnalysisDetailsPanelTest.LOCATION_NAME)).thenReturn(true);
-		when(this.studyDataManager.createInstanceLocationIdToNameMapFromStudy(STUDY_ID)).thenReturn(locationIdToNameMap);
-
-		this.ssaPanel.populateEnvironmentSelectionTableWithTrialEnvironmets(table, SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE,
-				SingleSiteAnalysisDetailsPanelTest.LOCATION_NAME);
-		final BeanItemContainer<SeaEnvironmentModel> container = (BeanItemContainer<SeaEnvironmentModel>) table.getContainerDataSource();
-		final SeaEnvironmentModel bean = container.getIdByIndex(0);
-		Assert.assertFalse("The active value should be false", bean.getActive());
-		Assert.assertEquals("The environment name should be Agua Fria", "Agua Fria", bean.getEnvironmentName());
-		Assert.assertEquals("The study no should be 1", "1", bean.getTrialno());
-		Assert.assertEquals("The location id should be 1", "1", bean.getLocationId().toString());
-	}
-
-	@Test
-	public void testAdjustEnvironmentSelectionTableWhereTrialInstanceFactorNotSelectedEnvFactor() {
-		final Table table = new Table();
-		table.addContainerProperty(SingleSiteAnalysisDetailsPanel.SELECT_COLUMN, Select.class, "");
-		table.addContainerProperty(SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN, Integer.class, "");
-		table.addContainerProperty(SingleSiteAnalysisDetailsPanel.ENVIRONMENT_NAME, String.class, "");
-
-		this.ssaPanel.adjustEnvironmentSelectionTable(table, SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE,
-				SingleSiteAnalysisDetailsPanelTest.LOCATION_NAME);
-		Assert.assertEquals("There should be 3 visible columns", 3, table.getVisibleColumns().length);
-		Assert.assertEquals("There should be 3 column headers", 3, table.getColumnHeaders().length);
-		Assert.assertEquals("Select column's width should be 45.", 45, table.getColumnWidth(SingleSiteAnalysisDetailsPanel.SELECT_COLUMN));
-		Assert.assertEquals("Study No's width should be 60.", 60, table.getColumnWidth(SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN));
-		Assert.assertEquals("Environment Names's width should be 500.", 500,
-				table.getColumnWidth(SingleSiteAnalysisDetailsPanel.ENVIRONMENT_NAME));
-		Assert.assertEquals("Table's width should be 90.0.", "90.0", String.valueOf(table.getWidth()));
+	public void testReset() {
+		this.ssaPanel.reset();
+		Mockito.verify(this.environmentsComponent).reset();
+		Mockito.verify(this.designDetailsComponent).reset();
+		Mockito.verify(this.genotypesComponent).selectFirstItem();
+		Mockito.verify(this.studyDetailsComponent).setAnalysisName();
 
 	}
 
 	@Test
-	public void testAdjustEnvironmentSelectionTableWhereTrialInstanceFactorIsTheSelectedEnvFactor() {
-		final Table table = new Table();
-		table.addContainerProperty(SingleSiteAnalysisDetailsPanel.SELECT_COLUMN, Select.class, "");
-		table.addContainerProperty(SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN, Integer.class, "");
-
-		this.ssaPanel.adjustEnvironmentSelectionTable(table, SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE,
-				SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE);
-		Assert.assertEquals("There should be 2 visible columns", 2, table.getVisibleColumns().length);
-		Assert.assertEquals("There should be 2 column headers", 2, table.getColumnHeaders().length);
-		Assert.assertEquals("Select column's width should be 45.", 45, table.getColumnWidth(SingleSiteAnalysisDetailsPanel.SELECT_COLUMN));
-		Assert.assertEquals("Study No's width should be -1.", -1, table.getColumnWidth(SingleSiteAnalysisDetailsPanel.TRIAL_NO_COLUMN));
-		Assert.assertEquals("Table's width should be 45.0.", "45.0", String.valueOf(table.getWidth()));
-
+	public void testButtonsLayoutWhenServerAppConfigured() {
+		this.ssaPanel.instantiateActionButtons();
+		this.ssaPanel.setIsServerApp("true");
+		this.ssaPanel.updateLabels();
+		Mockito.verify(this.messageSource).setCaption(this.ssaPanel.getBtnRun(), Message.DOWNLOAD_INPUT_FILES);
+		Assert.assertTrue(this.ssaPanel.getBtnUpload().isVisible());
+		Assert.assertEquals("Upload Output Files to BMS", this.ssaPanel.getBtnUpload().getCaption());
 	}
 
 	@Test
-	public void testPopulateChoicesForColumnFactor() {
-		final SingleSiteAnalysisDetailsPanel ssaPanel =
-				new SingleSiteAnalysisDetailsPanel(null, new BreedingViewInput(), this.factors, this.studyFactors, null, null);
-		final SingleSiteAnalysisDetailsPanel mockSSAPanel = Mockito.spy(ssaPanel);
-		final Select columnSelect = new Select();
-		Mockito.doReturn(columnSelect).when(mockSSAPanel).getSelColumnFactor();
-
-		mockSSAPanel.populateChoicesForColumnFactor();
-		Assert.assertEquals("Dropdown should have 1 factor", 1, columnSelect.getItemIds().size());
-		Assert.assertNotNull(columnSelect.getItem("COLUMN_NO"));
+	public void testButtonsLayoutWhenStandaloneConfigured() {
+		this.ssaPanel.instantiateActionButtons();
+		this.ssaPanel.setIsServerApp("false");
+		this.ssaPanel.updateLabels();
+		Mockito.verify(this.messageSource).setCaption(this.ssaPanel.getBtnRun(), Message.RUN_BREEDING_VIEW);
+		Assert.assertFalse(this.ssaPanel.getBtnUpload().isVisible());
 	}
 
 	@Test
-	public void testPopulateChoicesForEnvironmentFactor() {
-		final SingleSiteAnalysisDetailsPanel ssaPanel =
-				new SingleSiteAnalysisDetailsPanel(null, new BreedingViewInput(), this.factors, this.studyFactors, null, null);
-		final SingleSiteAnalysisDetailsPanel mockSSAPanel = Mockito.spy(ssaPanel);
-		mockSSAPanel.setMessageSource(this.messageSource);
-		final String pleaseChooseOption = "Please Choose";
-		Mockito.doReturn(pleaseChooseOption).when(this.messageSource).getMessage(Message.PLEASE_CHOOSE);
-
-		final Select envSelect = new Select();
-		Mockito.doReturn(envSelect).when(mockSSAPanel).getSelEnvFactor();
-
-		mockSSAPanel.populateChoicesForEnvironmentFactor();
-		// "Please Choose" was added as dropdown item
-		Assert.assertEquals("Dropdown should return fixed # of env factors", envSelect.getItemIds().size(),
-			SingleSiteAnalysisDetailsPanelTest.TRIAL_ENV_FACTORS.length + 1);
-		for (final Object id : envSelect.getItemIds()) {
-			final String localName = (String) id;
-			Assert.assertTrue(ArrayUtils.contains(SingleSiteAnalysisDetailsPanelTest.TRIAL_ENV_FACTORS, localName) || pleaseChooseOption
-					.equals(localName));
-			Assert.assertFalse(ArrayUtils.contains(SingleSiteAnalysisDetailsPanelTest.DATASET_FACTORS, localName));
-		}
+	public void testGetSelectedEnvironments() {
+		this.ssaPanel.getSelectedEnvironments();
+		Mockito.verify(this.environmentsComponent).getSelectedEnvironments();
 	}
 
 	@Test
-	public void testDisplayPRepDesignElements() {
-
-		this.ssaPanel.initializeComponents();
-
-		this.ssaPanel.displayPRepDesignElements();
-
-		final List<Component> components = this.getComponentsListFromGridLayout();
-
-		// The following components should be visible in Design Details' Grid
-		// Layout
-		Assert.assertTrue(components.contains(this.ssaPanel.getLblBlocks()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getSelBlocks()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getLblSpecifyColumnFactor()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getSelColumnFactor()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getLblSpecifyRowFactor()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getSelRowFactor()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getLblSpecifyGenotypesHeader()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getLblGenotypes()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getSelGenotypes()));
-
-		// The following components should not be added in Design Details'
-		// GridLayout
-		Assert.assertFalse(components.contains(this.ssaPanel.getLblReplicates()));
-		Assert.assertFalse(components.contains(this.ssaPanel.getSelReplicates()));
-
-		Assert.assertNull("Replicates factor is not needed in P-rep design, so replicates should be unselected (null)",
-				this.ssaPanel.getSelReplicates().getValue());
-
+	public void testReplicateFactorEnabled() {
+		this.ssaPanel.replicateFactorEnabled();
+		Mockito.verify(this.designDetailsComponent).replicateFactorEnabled();
 	}
 
 	@Test
-	public void testDisplayAugmentedDesignElements() {
-
-		this.ssaPanel.initializeComponents();
-		this.ssaPanel.displayAugmentedDesignElements();
-
-		final List<Component> components = this.getComponentsListFromGridLayout();
-
-		// The following components should be visible in Design Details' Grid
-		// Layout
-		Assert.assertTrue(components.contains(this.ssaPanel.getLblBlocks()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getSelBlocks()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getLblSpecifyGenotypesHeader()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getLblGenotypes()));
-		Assert.assertTrue(components.contains(this.ssaPanel.getSelGenotypes()));
-
-		// The following components should not be added in Design Details'
-		// GridLayout
-		Assert.assertFalse(components.contains(this.ssaPanel.getLblSpecifyColumnFactor()));
-		Assert.assertFalse(components.contains(this.ssaPanel.getSelColumnFactor()));
-		Assert.assertFalse(components.contains(this.ssaPanel.getLblSpecifyRowFactor()));
-		Assert.assertFalse(components.contains(this.ssaPanel.getSelRowFactor()));
-		Assert.assertFalse(components.contains(this.ssaPanel.getLblReplicates()));
-		Assert.assertFalse(components.contains(this.ssaPanel.getSelReplicates()));
-
-		Assert.assertNull("Replicates factor is not needed in Augmented design, so replicates should be unselected (null)",
-				this.ssaPanel.getSelReplicates().getValue());
-
+	public void testGetSelDesignTypeValue() {
+		this.ssaPanel.getSelDesignTypeValue();
+		Mockito.verify(this.designDetailsComponent).getSelDesignTypeValue();
 	}
 
 	@Test
-	public void testSubstituteMissingReplicatesWithBlocksNoReplicatesFactor() {
-
-		this.ssaPanel.initializeComponents();
-
-		this.ssaPanel.getSelBlocks().addItem(SingleSiteAnalysisDetailsPanelTest.BLOCK_NO);
-		this.ssaPanel.getSelReplicates().removeAllItems();
-
-		this.ssaPanel.substituteMissingReplicatesWithBlocks();
-
-		Assert.assertEquals("The value of Replicates Factor Select Field should be the same as the Block factor",
-				SingleSiteAnalysisDetailsPanelTest.BLOCK_NO, this.ssaPanel.getSelReplicates().getValue());
-		Assert.assertEquals("If block factor is used as a substitute for replicates, then the item caption should be \""
-						+ SingleSiteAnalysisDetailsPanel.REPLICATES + "\"", SingleSiteAnalysisDetailsPanel.REPLICATES,
-				this.ssaPanel.getSelReplicates().getItemCaption(this.ssaPanel.getSelReplicates().getValue()));
-
+	public void testGetSelEnvFactorValue() {
+		this.ssaPanel.getSelEnvFactorValue();
+		Mockito.verify(this.environmentsComponent).getSelEnvFactorValue();
 	}
 
 	@Test
-	public void testChangeRowAndColumnLabelsBasedOnDesignTypePRepDesign() {
-
-		this.ssaPanel.initializeComponents();
-
-		this.ssaPanel.changeRowAndColumnLabelsBasedOnDesignType(DesignType.P_REP_DESIGN);
-
-		// Row and Column factors are optional in P-rep Design, the labels
-		// should not have required field indicator (red asterisk '*')
-		Assert.assertEquals(SingleSiteAnalysisDetailsPanelTest.COLUMN_FACTOR_LABEL, this.ssaPanel.getLblSpecifyColumnFactor().getValue());
-		Assert.assertEquals(SingleSiteAnalysisDetailsPanelTest.ROW_FACTOR_LABEL, this.ssaPanel.getLblSpecifyRowFactor().getValue());
-
+	public void testGetTxtAnalysisNameValue() {
+		this.ssaPanel.getTxtAnalysisNameValue();
+		Mockito.verify(this.studyDetailsComponent).getTxtAnalysisName();
 	}
 
 	@Test
-	public void testChangeRowAndColumnLabelsBasedOnDesignTypeRowAndColumnDesign() {
-
-		this.ssaPanel.initializeComponents();
-
-		this.ssaPanel.changeRowAndColumnLabelsBasedOnDesignType(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN);
-
-		// Row and Column factors are required in Row-and-Column Design, the
-		// labels should have a required field indicator (red asterisk
-		// '*')
-		Assert.assertEquals(
-				SingleSiteAnalysisDetailsPanelTest.COLUMN_FACTOR_LABEL + SingleSiteAnalysisDetailsPanel.REQUIRED_FIELD_INDICATOR,
-				this.ssaPanel.getLblSpecifyColumnFactor().getValue());
-		Assert.assertEquals(SingleSiteAnalysisDetailsPanelTest.ROW_FACTOR_LABEL + SingleSiteAnalysisDetailsPanel.REQUIRED_FIELD_INDICATOR,
-				this.ssaPanel.getLblSpecifyRowFactor().getValue());
-
+	public void testGetSelReplicatesValue() {
+		this.ssaPanel.getSelReplicatesValue();
+		Mockito.verify(this.designDetailsComponent).getSelReplicatesValue();
 	}
 
 	@Test
-	public void testChangeRowAndColumnLabelsBasedOnDesignTypeRowAndOtherDesign() {
-
-		this.ssaPanel.initializeComponents();
-
-		this.ssaPanel.changeRowAndColumnLabelsBasedOnDesignType(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN);
-
-		Assert.assertEquals(SingleSiteAnalysisDetailsPanelTest.COLUMN_FACTOR_LABEL, this.ssaPanel.getLblSpecifyColumnFactor().getValue());
-		Assert.assertEquals(SingleSiteAnalysisDetailsPanelTest.ROW_FACTOR_LABEL, this.ssaPanel.getLblSpecifyRowFactor().getValue());
-
+	public void testGetSelBlocksValue() {
+		this.ssaPanel.getSelBlocksValue();
+		Mockito.verify(this.designDetailsComponent).getSelBlocksValue();
 	}
 
 	@Test
-	public void testEnvironmentCheckBoxListenerUnchecked() {
+	public void testGetSelRowFactorValue() {
+		this.ssaPanel.getSelRowFactorValue();
+		Mockito.verify(this.designDetailsComponent).getSelRowFactorValue();
+	}
 
+	@Test
+	public void testGetSelColumnFactorValue() {
+		this.ssaPanel.getSelColumnFactorValue();
+		Mockito.verify(this.designDetailsComponent).getSelColumnFactorValue();
+	}
+
+	@Test
+	public void testGetSelGenotypesValue() {
+		this.ssaPanel.getSelGenotypesValue();
+		Mockito.verify(this.genotypesComponent).getSelGenotypesValue();
+	}
+
+	@Test
+	public void testGetTblEnvironmentSelection() {
+		this.ssaPanel.getTblEnvironmentSelection();
+		Mockito.verify(this.environmentsComponent).getTblEnvironmentSelection();
+	}
+
+	@Test
+	public void testEnvironmentContainsValidDataForAnalysis_ReturnTrue() {
+		Mockito.doReturn(TermId.ENTRY_NO.name()).when(this.genotypesComponent).getSelGenotypesValue();
 		final SeaEnvironmentModel model = new SeaEnvironmentModel();
+		model.setLocationId(LOCATION_ID);
+		Mockito.doReturn(true).when(this.studyDataManager).containsAtLeast2CommonEntriesWithValues(Matchers.anyInt(), Matchers.anyInt(),
+				Matchers.anyInt());
 
-		final CheckBox checkBox = new CheckBox();
-		checkBox.setData(model);
-		// Uncheck the checkbox
-		checkBox.setValue(false);
-		final Property.ValueChangeEvent event = Mockito.mock(Property.ValueChangeEvent.class);
-		when(event.getProperty()).thenReturn(checkBox);
-
-		final CheckBox footerCheckBox = Mockito.mock(CheckBox.class);
-		this.ssaPanel.setFooterCheckBox(footerCheckBox);
-
-		final SingleSiteAnalysisDetailsPanel.EnvironmentCheckBoxListener listener = this.ssaPanel.new EnvironmentCheckBoxListener();
-
-		listener.valueChange(event);
-
-		Assert.assertFalse(model.getActive());
-		verify(footerCheckBox).removeListener(Mockito.any(Property.ValueChangeListener.class));
-		verify(footerCheckBox).setValue(false);
-		verify(footerCheckBox).addListener(Mockito.any(Property.ValueChangeListener.class));
-
+		Assert.assertTrue(this.ssaPanel.environmentContainsValidDataForAnalysis(model));
+		Mockito.verify(this.studyDataManager).containsAtLeast2CommonEntriesWithValues(DATASET_ID, LOCATION_ID, TermId.ENTRY_NO.getId());
 	}
 
 	@Test
-	public void testEnvironmentCheckBoxListenerChecked() {
-
-		final Integer locationId = 1;
+	public void testEnvironmentContainsValidDataForAnalysis_ReturnFalse() {
+		Mockito.doReturn(TermId.ENTRY_NO.name()).when(this.genotypesComponent).getSelGenotypesValue();
 		final SeaEnvironmentModel model = new SeaEnvironmentModel();
-		model.setLocationId(1);
+		model.setLocationId(LOCATION_ID);
+		Mockito.doReturn(false).when(this.studyDataManager).containsAtLeast2CommonEntriesWithValues(Matchers.anyInt(), Matchers.anyInt(),
+				Matchers.anyInt());
 
-		final CheckBox checkBox = new CheckBox();
-		checkBox.setData(model);
-		// Check the checkbox
-		checkBox.setValue(true);
-		final Property.ValueChangeEvent event = Mockito.mock(Property.ValueChangeEvent.class);
-		when(event.getProperty()).thenReturn(checkBox);
-
-		final Select selectGenotype = Mockito.mock(Select.class);
-		when(selectGenotype.getValue()).thenReturn("GID");
-		this.ssaPanel.setSelGenotypes(selectGenotype);
-
-		when(this.studyDataManager.containsAtLeast2CommonEntriesWithValues(DATASET_ID, locationId, TermId.GID.getId())).thenReturn(true);
-
-		final SingleSiteAnalysisDetailsPanel.EnvironmentCheckBoxListener listener = this.ssaPanel.new EnvironmentCheckBoxListener();
-		listener.valueChange(event);
-
-		Assert.assertTrue(model.getActive());
-		Assert.assertTrue((Boolean) checkBox.getValue());
-
+		Assert.assertFalse(this.ssaPanel.environmentContainsValidDataForAnalysis(model));
+		Mockito.verify(this.studyDataManager).containsAtLeast2CommonEntriesWithValues(DATASET_ID, LOCATION_ID, TermId.ENTRY_NO.getId());
 	}
-
-	@Test
-	public void testEnvironmentCheckBoxListenerCheckedStudyHasNoData() {
-
-		final Integer locationId = 1234;
-		final String trialInstanceNumber = "1";
-		final SeaEnvironmentModel model = new SeaEnvironmentModel();
-		model.setLocationId(locationId);
-		model.setTrialno(trialInstanceNumber);
-		model.setEnvironmentName(trialInstanceNumber);
-
-		final CheckBox checkBox = new CheckBox();
-		checkBox.setData(model);
-		// Check the checkbox
-		checkBox.setValue(true);
-		final Property.ValueChangeEvent event = Mockito.mock(Property.ValueChangeEvent.class);
-		when(event.getProperty()).thenReturn(checkBox);
-
-		final Select selectGenotype = Mockito.mock(Select.class);
-		when(selectGenotype.getValue()).thenReturn("GID");
-		this.ssaPanel.setSelGenotypes(selectGenotype);
-
-		when(this.studyDataManager.containsAtLeast2CommonEntriesWithValues(DATASET_ID, locationId, TermId.GID.getId())).thenReturn(false);
-
-		final SingleSiteAnalysisDetailsPanel.EnvironmentCheckBoxListener listener = this.ssaPanel.new EnvironmentCheckBoxListener();
-
-		listener.valueChange(event);
-
-		Assert.assertFalse(model.getActive());
-		Assert.assertFalse((Boolean) checkBox.getValue());
-
-		final ArgumentCaptor<Window.Notification> captor = ArgumentCaptor.forClass(Window.Notification.class);
-
-		verify(this.window).showNotification(captor.capture());
-
-		final Window.Notification notification = captor.getValue();
-
-		Assert.assertEquals("Invalid Selection", notification.getCaption());
-		Assert.assertEquals(
-				"</br>TRIAL_INSTANCE \"1\" cannot be used for analysis because the plot data is not complete. The data must contain at least 2 common entries with values.",
-				notification.getDescription());
-
-	}
-
-	private List<Component> getComponentsListFromGridLayout() {
-
-		final GridLayout gLayout = (GridLayout) this.ssaPanel.getDesignDetailsContainer().getComponentIterator().next();
-		final Iterator<Component> componentsIterator = gLayout.getComponentIterator();
-		final List<Component> components = new ArrayList<>();
-		while (componentsIterator.hasNext()) {
-			final Component component = componentsIterator.next();
-			components.add(component);
-		}
-
-		return components;
-	}
-
+	
 	private List<DMSVariableType> createTestFactors() {
 		final List<DMSVariableType> factors = new ArrayList<DMSVariableType>();
 
@@ -814,25 +282,25 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		final StandardVariable repVariable = new StandardVariable();
 		repVariable.setId(TermId.REP_NO.getId());
 		repVariable.setPhenotypicType(PhenotypicType.TRIAL_DESIGN);
-		repVariable.setProperty(new Term(1, SingleSiteAnalysisDetailsPanel.REPLICATION_FACTOR, "REP_NO"));
+		repVariable.setProperty(new Term(1, SingleSiteAnalysisDesignDetails.REPLICATION_FACTOR, "REP_NO"));
 		factors.add(new DMSVariableType(TermId.REP_NO.name(), TermId.REP_NO.name(), repVariable, rank++));
 
 		final StandardVariable blockVariable = new StandardVariable();
 		blockVariable.setId(TermId.BLOCK_NO.getId());
 		blockVariable.setPhenotypicType(PhenotypicType.TRIAL_DESIGN);
-		blockVariable.setProperty(new Term(1, SingleSiteAnalysisDetailsPanel.BLOCKING_FACTOR, "BLOCK_NO"));
+		blockVariable.setProperty(new Term(1, SingleSiteAnalysisDesignDetails.BLOCKING_FACTOR, "BLOCK_NO"));
 		factors.add(new DMSVariableType(TermId.BLOCK_NO.name(), TermId.BLOCK_NO.name(), blockVariable, rank++));
 
 		final StandardVariable rowVariable = new StandardVariable();
 		rowVariable.setId(TermId.ROW.getId());
 		rowVariable.setPhenotypicType(PhenotypicType.TRIAL_DESIGN);
-		rowVariable.setProperty(new Term(1, SingleSiteAnalysisDetailsPanel.ROW_FACTOR, "ROW_NO"));
+		rowVariable.setProperty(new Term(1, SingleSiteAnalysisDesignDetails.ROW_FACTOR, "ROW_NO"));
 		factors.add(new DMSVariableType("ROW_NO", "ROW_NO", rowVariable, rank++));
 
 		final StandardVariable columnVariable = new StandardVariable();
 		columnVariable.setId(TermId.COLUMN_NO.getId());
 		columnVariable.setPhenotypicType(PhenotypicType.TRIAL_DESIGN);
-		columnVariable.setProperty(new Term(1, SingleSiteAnalysisDetailsPanel.COLUMN_FACTOR, "COL_NO"));
+		columnVariable.setProperty(new Term(1, SingleSiteAnalysisDesignDetails.COLUMN_FACTOR, "COL_NO"));
 		factors.add(new DMSVariableType(TermId.COLUMN_NO.name(), TermId.COLUMN_NO.name(), columnVariable, rank++));
 
 		return factors;
@@ -846,9 +314,8 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		trialInstanceVar.setPhenotypicType(PhenotypicType.TRIAL_ENVIRONMENT);
 		trialInstanceVar.setProperty(
 				new Term(1, SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE, SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE));
-		factors.add(
-				new DMSVariableType(SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE, SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE,
-						trialInstanceVar, 1));
+		factors.add(new DMSVariableType(SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE,
+				SingleSiteAnalysisDetailsPanelTest.TRIAL_INSTANCE, trialInstanceVar, 1));
 
 		final StandardVariable exptDesignVar = new StandardVariable();
 		exptDesignVar.setId(TermId.EXPERIMENT_DESIGN_FACTOR.getId());
@@ -857,40 +324,26 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		factors.add(new DMSVariableType(SingleSiteAnalysisDetailsPanelTest.EXPT_DESIGN, SingleSiteAnalysisDetailsPanelTest.EXPT_DESIGN,
 				exptDesignVar, 2));
 
-		final StandardVariable locNameVar = new StandardVariable();
-		locNameVar.setId(TermId.SITE_NAME.getId());
-		locNameVar.setPhenotypicType(PhenotypicType.TRIAL_ENVIRONMENT);
-		locNameVar.setProperty(new Term(1, "LOCATION", "LOCATION"));
-		factors.add(
-				new DMSVariableType(SingleSiteAnalysisDetailsPanelTest.LOC_NAME, SingleSiteAnalysisDetailsPanelTest.LOC_NAME, locNameVar,
-						3));
-
-		final StandardVariable locIDVar = new StandardVariable();
-		locIDVar.setId(TermId.LOCATION_ID.getId());
-		locIDVar.setPhenotypicType(PhenotypicType.TRIAL_ENVIRONMENT);
-		locIDVar.setProperty(new Term(1, "LOCATION", "LOCATION"));
-		factors.add(new DMSVariableType(SingleSiteAnalysisDetailsPanelTest.LOC_ID, SingleSiteAnalysisDetailsPanelTest.LOC_ID, locIDVar, 4));
-
 		final StandardVariable datasetNameVar = new StandardVariable();
 		datasetNameVar.setId(TermId.DATASET_NAME.getId());
 		datasetNameVar.setPhenotypicType(PhenotypicType.DATASET);
 		datasetNameVar.setProperty(new Term(1, "DATASET", "DATASET"));
 		factors.add(new DMSVariableType(SingleSiteAnalysisDetailsPanelTest.DATASET_NAME, SingleSiteAnalysisDetailsPanelTest.DATASET_NAME,
-				datasetNameVar, 5));
+				datasetNameVar, 3));
 
 		final StandardVariable datasetTitleVar = new StandardVariable();
 		datasetTitleVar.setId(TermId.DATASET_NAME.getId());
 		datasetTitleVar.setPhenotypicType(PhenotypicType.DATASET);
 		datasetTitleVar.setProperty(new Term(1, "DATASET TITLE", SingleSiteAnalysisDetailsPanelTest.DATASET_TITLE));
 		factors.add(new DMSVariableType(SingleSiteAnalysisDetailsPanelTest.DATASET_TITLE, SingleSiteAnalysisDetailsPanelTest.DATASET_TITLE,
-				datasetTitleVar, 6));
+				datasetTitleVar, 4));
 
 		final StandardVariable datasetTypeVar = new StandardVariable();
 		datasetTypeVar.setId(TermId.DATASET_NAME.getId());
 		datasetTypeVar.setPhenotypicType(PhenotypicType.DATASET);
 		datasetTypeVar.setProperty(new Term(1, "DATASET", "DATASET"));
 		factors.add(new DMSVariableType(SingleSiteAnalysisDetailsPanelTest.DATASET_TYPE, SingleSiteAnalysisDetailsPanelTest.DATASET_TYPE,
-				datasetTypeVar, 7));
+				datasetTypeVar, 5));
 
 		return factors;
 	}

@@ -2,6 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SampleList } from './sample-list.model';
 import { Subscription } from 'rxjs/Subscription';
 import { ActivatedRoute } from '@angular/router';
+import {ModalService} from '../../shared/modal/modal.service';
+import {SampleContext} from './sample.context';
 
 @Component({
     selector: 'jhi-sample-browse',
@@ -17,7 +19,9 @@ export class SampleBrowseComponent implements OnInit, OnDestroy {
 
     lists: SampleList[] = [];
 
-    constructor(private activatedRoute: ActivatedRoute) {
+    constructor(private activatedRoute: ActivatedRoute,
+                private modalService: ModalService,
+                private sampleContext: SampleContext) {
         this.queryParamSubscription = this.activatedRoute.queryParams.subscribe((params) => {
             this.listId = params['listId'];
 
@@ -46,11 +50,16 @@ export class SampleBrowseComponent implements OnInit, OnDestroy {
         }
     }
 
+    openSearch() {
+        this.modalService.open('search-sample-modal');
+    }
+
     private setActive(listId: number) {
         this.lists.forEach((list) => {
             list.active = false;
             if (list.id === listId) {
                 list.active = true;
+                this.sampleContext.setActiveList(list);
             }
         });
     }

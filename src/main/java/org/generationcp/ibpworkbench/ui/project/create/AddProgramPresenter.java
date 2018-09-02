@@ -1,5 +1,6 @@
 package org.generationcp.ibpworkbench.ui.project.create;
 
+import com.vaadin.data.Validator;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -38,15 +39,21 @@ public class AddProgramPresenter {
 	}
 
 	public Project doAddNewProgram() {
+		final Project program;
+		final Set<WorkbenchUser> users;
+
 		try {
-			final Project program = AddProgramPresenter.this.view.createProjectPanel.projectBasicDetailsComponent.getProjectDetails();
-			final Set<WorkbenchUser> users = AddProgramPresenter.this.view.programMembersPanel.getSelectedUsers();
+			program = AddProgramPresenter.this.view.createProjectPanel.projectBasicDetailsComponent.getProjectDetails();
+			users = AddProgramPresenter.this.view.programMembersPanel.getSelectedUsers();
 			AddProgramPresenter.this.programService.createNewProgram(program, users);
-			return program;
+
+		} catch (final Validator.InvalidValueException e) {
+			throw e;
 		} catch (final RuntimeException e) {
 			throw new AddProgramException(
-					"The application could not successfully create" + " a program. Please contact support for further help.", e);
+				"The application could not successfully create a program. Please contact support for further help.", e);
 		}
+		return program;
 	}
 
 	public void resetBasicDetails() {
@@ -57,12 +64,12 @@ public class AddProgramPresenter {
 		this.view.resetProgramMembers();
 	}
 
-	
+
 	public void setProgramService(ProgramService programService) {
 		this.programService = programService;
 	}
 
-	
+
 	public void setContextUtil(ContextUtil contextUtil) {
 		this.contextUtil = contextUtil;
 	}

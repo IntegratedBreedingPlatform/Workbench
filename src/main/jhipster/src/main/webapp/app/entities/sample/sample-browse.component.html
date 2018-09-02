@@ -7,7 +7,7 @@
 			<h2><img class="image-padding image-padding-with-text" src="/Fieldbook/static/img/review-list-details.png">List Details</h2>
 		</div>
 		<div class="col-xs-12 col-md-12">
-			<div class="control-label"><a href="javascript: browseList()">Browse</a> or <a href="javascript: searchList()">search</a> for a list of samples to work with.</div>
+			<div class="control-label"><a href="javascript: browseList()">Browse</a> or <a (click)="openSearch()" >search</a> for a list of samples to work with.</div>
 		</div>
 	</div>
 
@@ -42,3 +42,5 @@
 <jhi-tree-table></jhi-tree-table>
 
 <jhi-sample-search-list></jhi-sample-search-list>
+<jhi-sample-import-plate></jhi-sample-import-plate>
+<jhi-alert></jhi-alert>

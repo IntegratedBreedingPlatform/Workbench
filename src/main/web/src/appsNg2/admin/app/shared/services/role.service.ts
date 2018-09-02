@@ -6,7 +6,7 @@ import ServiceHelper from "./service.helper";
 
 @Injectable()
 export class RoleService{
-  private baseUrl: string = '/bmsapi/brapi/v1';
+  private baseUrl: string = '/bmsapi';
 
   private http: Http;
 
