@@ -72,25 +72,25 @@ public class StudyTreeDragAndDropHandler implements Serializable {
 		try {
 			if (targetId != null && sourceId != null) {
 				this.studyDataManager.moveDmsProject(sourceId.intValue(), targetId.intValue(), isStudy);
+				// apply to UI
+				if (targetItemId == null || this.targetTree.getItem(targetItemId) == null) {
+					this.targetTree.setChildrenAllowed(sourceItemId, true);
+					this.targetTree.setParent(sourceItemId, StudyTree.STUDY_ROOT_NODE);
+					this.targetTree.expandItem(StudyTree.STUDY_ROOT_NODE);
+				} else {
+					this.targetTree.setChildrenAllowed(targetItemId, true);
+					this.targetTree.setParent(sourceItemId, targetItemId);
+					this.targetTree.expandItem(targetItemId);
+				}
+				this.targetTree.select(sourceItemId);
+				return true;
 			}
 		} catch (final MiddlewareQueryException e) {
 			StudyTreeDragAndDropHandler.LOG.error("Error with moving node to target folder.", e);
-			MessageNotifier.showError(this.targetTree.getWindow(), this.messageSource.getMessage(Message.ERROR_INTERNAL),
-					this.messageSource.getMessage(Message.ERROR_REPORT_TO));
+			MessageNotifier.showError(this.targetTree.getWindow(), this.messageSource.getMessage(Message.ERROR),
+					e.getMessage());
 		}
-
-		// apply to UI
-		if (targetItemId == null || this.targetTree.getItem(targetItemId) == null) {
-			this.targetTree.setChildrenAllowed(sourceItemId, true);
-			this.targetTree.setParent(sourceItemId, StudyTree.STUDY_ROOT_NODE);
-			this.targetTree.expandItem(StudyTree.STUDY_ROOT_NODE);
-		} else {
-			this.targetTree.setChildrenAllowed(targetItemId, true);
-			this.targetTree.setParent(sourceItemId, targetItemId);
-			this.targetTree.expandItem(targetItemId);
-		}
-		this.targetTree.select(sourceItemId);
-		return true;
+		return false;
 	}
 
 	public void setupTreeDragAndDropHandler() {
