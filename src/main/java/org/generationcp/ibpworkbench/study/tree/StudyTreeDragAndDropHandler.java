@@ -87,7 +87,7 @@ public class StudyTreeDragAndDropHandler implements Serializable {
 			}
 		} catch (final MiddlewareQueryException e) {
 			StudyTreeDragAndDropHandler.LOG.error("Error with moving node to target folder.", e);
-			MessageNotifier.showError(this.targetTree.getWindow(), this.messageSource.getMessage(Message.ERROR_INTERNAL),
+			MessageNotifier.showError(this.targetTree.getWindow(), this.messageSource.getMessage(Message.ERROR),
 					e.getMessage());
 		}
 		return false;
