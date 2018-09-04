@@ -310,8 +310,8 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 
 		this.setVariatesCheckboxState(new HashMap<String, Boolean>());
 
-		this.tblFactors = this.initializeFactorsTable();
-		this.tblVariates = this.initializeVariatesTable();
+		this.tblFactors = this.createFactorsTable();
+		this.tblVariates = this.createVariatesTable();
 		this.buttonArea = this.layoutButtonArea();
 
 		this.lblFactors =
@@ -352,18 +352,11 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-
-				if (event.getComponent() != null && event.getComponent().getWindow() != null) {
 					SelectStudyDialog dialog =
 							new SelectStudyDialog(event.getComponent().getWindow(), SingleSiteAnalysisPanel.this,
-									
 									SingleSiteAnalysisPanel.this.currentProject);
 					event.getComponent().getWindow().addWindow(dialog);
-				} else if (event.getComponent() == null) {
-					SingleSiteAnalysisPanel.LOG.error("event component is null");
-				} else if (event.getComponent().getWindow() == null) {
-					SingleSiteAnalysisPanel.LOG.error("event component window is null");
-				}
+
 			}
 
 		});
@@ -374,17 +367,10 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-
-				if (event.getComponent() != null && event.getComponent().getWindow() != null) {
 					SelectStudyDialogForBreedingViewUpload dialog =
 							new SelectStudyDialogForBreedingViewUpload(event.getComponent().getWindow(), SingleSiteAnalysisPanel.this,
 									SingleSiteAnalysisPanel.this.currentProject);
 					event.getComponent().getWindow().addWindow(dialog);
-				} else if (event.getComponent() == null) {
-					SingleSiteAnalysisPanel.LOG.error("event component is null");
-				} else if (event.getComponent().getWindow() == null) {
-					SingleSiteAnalysisPanel.LOG.error("event component window is null");
-				}
 			}
 
 		});
@@ -518,7 +504,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		return buttonLayout;
 	}
 
-	protected Table initializeFactorsTable() {
+	protected Table createFactorsTable() {
 
 		final Table table = new Table();
 		table.setDebugId("table");
@@ -554,7 +540,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		return table;
 	}
 
-	protected Table initializeVariatesTable() {
+	protected Table createVariatesTable() {
 
 		this.variatesCheckboxState.clear();
 
@@ -605,8 +591,8 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 
 		this.tblFactorContainer.removeAllComponents();
 		this.tblVariateContainer.removeAllComponents();
-		this.tblFactors = this.initializeFactorsTable();
-		this.tblVariates = this.initializeVariatesTable();
+		this.tblFactors = this.createFactorsTable();
+		this.tblVariates = this.createVariatesTable();
 		this.tblFactorContainer.addComponent(this.tblFactors);
 		this.tblVariateContainer.addComponent(this.tblVariates);
 		this.tblVariateContainer.addComponent(this.chkVariatesSelectAll);
