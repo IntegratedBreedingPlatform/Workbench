@@ -11,13 +11,22 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.util.BeanContainer;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.help.document.HelpModule;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
@@ -47,22 +56,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.util.BeanContainer;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * 
@@ -162,24 +161,9 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 					SingleSiteAnalysisPanel.this.toggleNextButton(false);
 				}
 			} else {
-				if (SingleSiteAnalysisPanel.this.numOfSelectedVariates < SingleSiteAnalysisPanel.this.variatesCheckboxState.size()) {// add
-																																		// this
-																																		// check
-																																		// to
-																																		// ensure
-																																		// that
-																																		// the
-																																		// number
-																																		// of
-																																		// selected
-																																		// does
-																																		// not
-																																		// exceed
-																																		// the
-																																		// total
-																																		// number
-																																		// of
-																																		// variates
+
+				// add this check to ensure that the number of selected does not exceed the total number of variates.
+				if (SingleSiteAnalysisPanel.this.numOfSelectedVariates < SingleSiteAnalysisPanel.this.variatesCheckboxState.size()) {
 					SingleSiteAnalysisPanel.this.numOfSelectedVariates++;
 				}
 				SingleSiteAnalysisPanel.this.toggleNextButton(true);
@@ -189,16 +173,17 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 	}
 
 	private static final long serialVersionUID = 1L;
+
 	private Button browseLink;
 	private Button uploadLink;
 
 	private HorizontalLayout titleLayout;
 	private Label toolTitle;
 	private HeaderLabelLayout heading;
-	private Label lblFactors;
+	private Label lblGermplasmDescriptors;
 	private Label lblVariates;
 
-	private Table tblFactors;
+	private Table tblGermplasmDescriptors;
 	private Table tblVariates;
 	private Property.ValueChangeListener selectAllListener;
 	private CheckBox chkVariatesSelectAll;
@@ -207,6 +192,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 	private VerticalLayout lblVariateContainer;
 	private VerticalLayout tblFactorContainer;
 	private VerticalLayout tblVariateContainer;
+	private VerticalLayout studyDetailsContainer;
 
 	private VerticalLayout rootLayout;
 
@@ -310,16 +296,16 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 
 		this.setVariatesCheckboxState(new HashMap<String, Boolean>());
 
-		this.tblFactors = this.createFactorsTable();
+		this.tblGermplasmDescriptors = this.createGermplasmDescriptorTable();
 		this.tblVariates = this.createVariatesTable();
 		this.buttonArea = this.layoutButtonArea();
 
-		this.lblFactors =
+		this.lblGermplasmDescriptors =
 				new Label(
-						"<span class='bms-factors' style='color: #39B54A; font-size: 22px; font-weight: bold;'></span><b>&nbsp;FACTORS</b>",
+						"<span class='bms-factors' style='color: #39B54A; font-size: 22px; font-weight: bold;'></span><b>&nbsp;GERMPLASM DESCRIPTORS</b>",
 						Label.CONTENT_XHTML);
-		this.lblFactors.setStyleName(Bootstrap.Typography.H4.styleName());
-		this.lblFactors.setWidth("100%");
+		this.lblGermplasmDescriptors.setStyleName(Bootstrap.Typography.H4.styleName());
+		this.lblGermplasmDescriptors.setWidth("100%");
 
 		this.lblVariates =
 				new Label(
@@ -381,7 +367,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				SingleSiteAnalysisPanel.this.refreshFactorsAndVariatesTable();
+				SingleSiteAnalysisPanel.this.reset();
 				SingleSiteAnalysisPanel.this.toggleNextButton(false);
 			}
 		});
@@ -423,6 +409,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		selectDataForAnalysisLayout.addComponent(this.heading);
 		selectDataForAnalysisLayout.addComponent(browseLabelLayout);
 
+		this.studyDetailsContainer = new VerticalLayout();
 		this.lblFactorContainer = new VerticalLayout();
 		this.lblFactorContainer.setDebugId("lblFactorContainer");
 		this.lblVariateContainer = new VerticalLayout();
@@ -433,24 +420,30 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		this.tblVariateContainer.setDebugId("tblVariateContainer");
 		this.tblVariateContainer.setSpacing(true);
 
-		this.lblFactorContainer.addComponent(this.lblFactors);
+		final SingleSiteAnalysisStudyDetailsComponent studyDetailsComponent = new SingleSiteAnalysisStudyDetailsComponent();
+		this.studyDetailsContainer.addComponent(studyDetailsComponent);
+		this.lblFactorContainer.addComponent(this.lblGermplasmDescriptors);
 		this.lblVariateContainer.addComponent(this.lblVariates);
-		this.tblFactorContainer.addComponent(this.tblFactors);
+		this.tblFactorContainer.addComponent(this.tblGermplasmDescriptors);
 		this.tblVariateContainer.addComponent(this.tblVariates);
 		this.tblVariateContainer.addComponent(this.chkVariatesSelectAll);
 
-		this.lblFactorContainer.setMargin(true, false, false, false);
-		this.lblVariateContainer.setMargin(true, true, false, true);
-		this.tblFactorContainer.setMargin(false, false, false, false);
-		this.tblVariateContainer.setMargin(false, true, false, true);
+		this.studyDetailsContainer.setMargin(true, false, false, false);
+		this.lblFactorContainer.setMargin(true, true, false, true);
+		this.lblVariateContainer.setMargin(true, true, false, false);
+		this.tblFactorContainer.setMargin(false, true, false, true);
+		this.tblVariateContainer.setMargin(false, true, false, false);
 
-		this.studyDetailsLayout = new GridLayout(10, 3);
+		this.studyDetailsLayout = new GridLayout(2, 5);
 		this.studyDetailsLayout.setDebugId("studyDetailsLayout");
 		this.studyDetailsLayout.setWidth("100%");
-		this.studyDetailsLayout.addComponent(this.lblFactorContainer, 0, 0, 4, 0);
-		this.studyDetailsLayout.addComponent(this.lblVariateContainer, 5, 0, 9, 0);
-		this.studyDetailsLayout.addComponent(this.tblFactorContainer, 0, 1, 4, 1);
-		this.studyDetailsLayout.addComponent(this.tblVariateContainer, 5, 1, 9, 1);
+
+
+		this.studyDetailsLayout.addComponent(studyDetailsContainer, 0,0, 0, 1);
+		this.studyDetailsLayout.addComponent(this.lblFactorContainer, 1, 0, 1, 0);
+		this.studyDetailsLayout.addComponent(this.tblFactorContainer, 1, 1, 1, 1);
+		this.studyDetailsLayout.addComponent(this.lblVariateContainer, 0, 2, 0, 2);
+		this.studyDetailsLayout.addComponent(this.tblVariateContainer, 0, 3, 0, 3);
 
 		this.rootLayout = new VerticalLayout();
 		this.rootLayout.setDebugId("rootLayout");
@@ -504,13 +497,12 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		return buttonLayout;
 	}
 
-	protected Table createFactorsTable() {
+	protected Table createGermplasmDescriptorTable() {
 
 		final Table table = new Table();
 		table.setDebugId("table");
 		table.setImmediate(true);
 		table.setWidth("100%");
-		table.setHeight("400px");
 
 		BeanContainer<Integer, FactorModel> container = new BeanContainer<Integer, FactorModel>(FactorModel.class);
 		container.setBeanIdProperty("id");
@@ -586,19 +578,17 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		return table;
 	}
 
-	private Table[] refreshFactorsAndVariatesTable() {
-		Table[] toreturn = new Table[2];
+	private void reset() {
 
+		this.studyDetailsContainer.removeAllComponents();
 		this.tblFactorContainer.removeAllComponents();
 		this.tblVariateContainer.removeAllComponents();
-		this.tblFactors = this.createFactorsTable();
+		this.tblGermplasmDescriptors = this.createGermplasmDescriptorTable();
 		this.tblVariates = this.createVariatesTable();
-		this.tblFactorContainer.addComponent(this.tblFactors);
+		this.tblFactorContainer.addComponent(this.tblGermplasmDescriptors);
 		this.tblVariateContainer.addComponent(this.tblVariates);
 		this.tblVariateContainer.addComponent(this.chkVariatesSelectAll);
-		toreturn[0] = this.tblFactors;
-		toreturn[1] = this.tblVariates;
-		return toreturn;
+		this.studyDetailsContainer.addComponent(new SingleSiteAnalysisStudyDetailsComponent());
 	}
 
 	public Map<String, Boolean> getVariatesCheckboxState() {
@@ -621,9 +611,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		this.numOfSelectedVariates = numOfSelectedVariates;
 	}
 
-	public void showDatasetVariatesDetails(int dataSetId) {
-
-		try {
+	public void showStudyDetails(int dataSetId) {
 
 			DataSet ds = this.studyDataManager.getDataSet(dataSetId);
 
@@ -665,14 +653,13 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 
 			this.setCurrentDatasetName(ds.getName());
 			this.setCurrentDataSetId(ds.getId());
-
 			this.updateFactorsTable(this.factorList);
 			this.updateVariatesTable(this.variateList);
 
-		} catch (MiddlewareException e) {
-			SingleSiteAnalysisPanel.LOG.error(e.getMessage(), e);
-			this.showDatabaseError(this.getWindow());
-		}
+			this.studyDetailsContainer.removeAllComponents();
+			SingleSiteAnalysisStudyDetailsComponent studyDetailsComponent = new SingleSiteAnalysisStudyDetailsComponent(ds.getName(), currentStudy.getDescription(), getCurrentStudy().getObjective(), currentStudy.getName(), "", false);
+			this.studyDetailsContainer.addComponent(studyDetailsComponent);
+
 	}
 
 	public VariateModel transformVariableTypeToVariateModel(DMSVariableType variate) {
@@ -700,20 +687,20 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 	}
 
 	private void updateFactorsTable(List<FactorModel> factorList) {
-		Object[] oldColumns = this.tblFactors.getVisibleColumns();
+		Object[] oldColumns = this.tblGermplasmDescriptors.getVisibleColumns();
 		String[] columns = Arrays.copyOf(oldColumns, oldColumns.length, String[].class);
 
 		BeanContainer<Integer, FactorModel> container = new BeanContainer<Integer, FactorModel>(FactorModel.class);
 		container.setBeanIdProperty("id");
-		this.tblFactors.setContainerDataSource(container);
+		this.tblGermplasmDescriptors.setContainerDataSource(container);
 
 		for (FactorModel f : factorList) {
 			container.addBean(f);
 		}
 
-		this.tblFactors.setContainerDataSource(container);
+		this.tblGermplasmDescriptors.setContainerDataSource(container);
 
-		this.tblFactors.setVisibleColumns(columns);
+		this.tblGermplasmDescriptors.setVisibleColumns(columns);
 	}
 
 	private void updateVariatesTable(List<VariateModel> variateList) {
@@ -736,11 +723,6 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		this.tblVariates.setColumnHeaders(new String[] {"<span class='glyphicon glyphicon-ok'></span>",
 				SingleSiteAnalysisPanel.CAMEL_CASE_NAMED_COLUMN_1, SingleSiteAnalysisPanel.CAMEL_CASE_NAMED_COLUMN_2,
 				SingleSiteAnalysisPanel.CAMEL_CASE_NAMED_COLUMN_3});
-	}
-
-	private void showDatabaseError(Window window) {
-		MessageNotifier.showError(window, this.messageSource.getMessage(Message.DATABASE_ERROR),
-				"<br />" + this.messageSource.getMessage(Message.CONTACT_ADMIN_ERROR_DESC));
 	}
 
 	// SETTERS AND GETTERS

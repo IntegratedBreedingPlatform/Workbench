@@ -45,12 +45,13 @@ public class SingleSiteAnalysisPanelTest {
 		this.singleSiteAnalysisPanel.setStudyDataManager(studyDataManager);
 		this.singleSiteAnalysisPanel.setManagerFactoryProvider(managerFactoryProvider);
 		this.singleSiteAnalysisPanel.instantiateComponents();
+		this.singleSiteAnalysisPanel.layoutComponents();
 	}
 
 	@Test
-	public void testShowDatasetVariatesDetails() {
+	public void testShowStudyDetails() {
 
-		this.singleSiteAnalysisPanel.showDatasetVariatesDetails(StudyUtil.DATASET_ID);
+		this.singleSiteAnalysisPanel.showStudyDetails(StudyUtil.DATASET_ID);
 
 		// check if the data set details are correct
 
@@ -79,8 +80,8 @@ public class SingleSiteAnalysisPanelTest {
 	}
 
 	@Test
-	public void testShowDatasetVariatesDetailsWithSelectedVariatesByDefault() {
-		this.singleSiteAnalysisPanel.showDatasetVariatesDetails(StudyUtil.DATASET_ID);
+	public void testShowStudyDetailsWithSelectedVariatesByDefault() {
+		this.singleSiteAnalysisPanel.showStudyDetails(StudyUtil.DATASET_ID);
 
 		Map<String, Boolean> variatesCheckboxState = this.singleSiteAnalysisPanel.getVariatesCheckboxState();
 		List<VariateModel> variates = this.singleSiteAnalysisPanel.getVariateList();
