@@ -70,6 +70,7 @@ public class BrowseStudyTreeComponent extends VerticalLayout
 	private Map<Integer, Integer> parentChildItemIdMap;
 	private StudyTreeButtonsPanel buttonsPanel;
 	private StudyTypeFilterComponent studyTypeFilterComponent;
+	private boolean isFirstTimeOpening;
 
 	public BrowseStudyTreeComponent(final StudyBrowserMain studyBrowserMain) {
 		this.studyBrowserMain = studyBrowserMain;
@@ -261,7 +262,7 @@ public class BrowseStudyTreeComponent extends VerticalLayout
 	}
 
 	public void updateButtons(final Object itemId) {
-		this.buttonsPanel.updateButtons(itemId);
+		this.buttonsPanel.updateButtons(itemId, this.isFirstTimeOpening);
 
 	}
 
@@ -350,4 +351,11 @@ public class BrowseStudyTreeComponent extends VerticalLayout
 		this.buttonsPanel = buttonsPanel;
 	}
 
+	public boolean isFirstTimeOpening() {
+		return this.isFirstTimeOpening;
+	}
+
+	public void setFirstTimeOpening(final boolean firstTimeOpening) {
+		this.isFirstTimeOpening = firstTimeOpening;
+	}
 }

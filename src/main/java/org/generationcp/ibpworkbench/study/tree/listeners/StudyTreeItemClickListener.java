@@ -28,6 +28,7 @@ public class StudyTreeItemClickListener implements ItemClickListener {
 	}
 
 	public void studyTreeItemClickAction(final Object itemId) {
+		this.browseStudyTreeComponent.setFirstTimeOpening(false);
 		this.studyTree.expandOrCollapseStudyTreeNode(itemId);
 		if (!StudyTree.STUDY_ROOT_NODE.equals(itemId)) {
 			final int studyId = Integer.valueOf(itemId.toString());

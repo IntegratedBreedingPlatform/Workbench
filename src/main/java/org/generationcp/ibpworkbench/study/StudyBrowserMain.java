@@ -131,7 +131,7 @@ public class StudyBrowserMain extends VerticalLayout implements InitializingBean
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 				StudyBrowserMain.this.openBrowseForStudyWindow();
 			}
 		});
@@ -141,7 +141,7 @@ public class StudyBrowserMain extends VerticalLayout implements InitializingBean
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 				StudyBrowserMain.this.openSearchForStudyWindow();
 			}
 		});
@@ -154,7 +154,7 @@ public class StudyBrowserMain extends VerticalLayout implements InitializingBean
 
 		final HeaderLabelLayout headingLayout = new HeaderLabelLayout(StudyBrowserMain.STUDY_DETAILS_ICON, this.headingLabel);
 
-		HorizontalLayout directionLayout = new HorizontalLayout();
+		final HorizontalLayout directionLayout = new HorizontalLayout();
 		directionLayout.addStyleName("study-browser-main");
 		directionLayout.setHeight("16px");
 		directionLayout.setSpacing(true);
@@ -183,6 +183,7 @@ public class StudyBrowserMain extends VerticalLayout implements InitializingBean
 	}
 
 	public void openBrowseForStudyWindow() {
+		this.browseTreeComponent.setFirstTimeOpening(true);
 		this.browseTreeComponent.refreshTree();
 		this.launchListSelectionWindow(this.getWindow(), this.browseTreeComponent, this.messageSource.getMessage(Message.BROWSE_STUDIES))
 				.addListener(this.browseTreeComponent.getSaveTreeStateListener());
