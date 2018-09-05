@@ -26,7 +26,6 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.help.document.HelpModule;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
@@ -34,7 +33,6 @@ import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.HeaderLabelLayout;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchLayout;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.OpenSelectDatasetForExportAction;
@@ -46,11 +44,8 @@ import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.Study;
-import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -182,9 +177,11 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 	private HeaderLabelLayout heading;
 	private Label lblGermplasmDescriptors;
 	private Label lblVariates;
+	private Label lblCovariates;
 
 	private Table tblGermplasmDescriptors;
 	private Table tblVariates;
+	private Table tblCovariates;
 	private Property.ValueChangeListener selectAllListener;
 	private CheckBox chkVariatesSelectAll;
 
@@ -193,6 +190,8 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 	private VerticalLayout tblFactorContainer;
 	private VerticalLayout tblVariateContainer;
 	private VerticalLayout studyDetailsContainer;
+	private VerticalLayout lblCovariateContainer;
+	private VerticalLayout tblCovariateContainer;
 
 	private VerticalLayout rootLayout;
 
@@ -218,8 +217,6 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 	private List<VariateModel> variateList;
 
 	private OpenSelectDatasetForExportAction openSelectDatasetForExportAction;
-
-	private static final Logger LOG = LoggerFactory.getLogger(SingleSiteAnalysisPanel.class);
 
 	@Autowired
 	private ManagerFactoryProvider managerFactoryProvider;
@@ -298,6 +295,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 
 		this.tblGermplasmDescriptors = this.createGermplasmDescriptorTable();
 		this.tblVariates = this.createVariatesTable();
+		this.tblCovariates = this.createVariatesTable();
 		this.buttonArea = this.layoutButtonArea();
 
 		this.lblGermplasmDescriptors =
@@ -314,12 +312,20 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		this.lblVariates.setWidth("100%");
 		this.lblVariates.setStyleName(Bootstrap.Typography.H4.styleName());
 
+		this.lblCovariates =
+				new Label(
+						"<span class='bms-variates' style='color: #B8D433; font-size: 22px; font-weight: bold;'></span><b>&nbsp;COVARIATES</b>",
+						Label.CONTENT_XHTML);
+		this.lblCovariates.setWidth("100%");
+		this.lblCovariates.setStyleName(Bootstrap.Typography.H4.styleName());
+
 		this.chkVariatesSelectAll = new CheckBox();
 		this.chkVariatesSelectAll.setDebugId("chkVariatesSelectAll");
 		this.chkVariatesSelectAll.setImmediate(true);
 		this.chkVariatesSelectAll.setCaption("Select All");
 
 	}
+
 
 	@Override
 	public void initializeValues() {
@@ -414,10 +420,15 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		this.lblFactorContainer.setDebugId("lblFactorContainer");
 		this.lblVariateContainer = new VerticalLayout();
 		this.lblVariateContainer.setDebugId("lblVariateContainer");
+		this.lblCovariateContainer = new VerticalLayout();
+		this.lblCovariateContainer.setDebugId("lblVariateContainer");
 		this.tblFactorContainer = new VerticalLayout();
 		this.tblFactorContainer.setDebugId("tblFactorContainer");
 		this.tblVariateContainer = new VerticalLayout();
 		this.tblVariateContainer.setDebugId("tblVariateContainer");
+		this.tblCovariateContainer = new VerticalLayout();
+		this.tblCovariateContainer.setDebugId("tblCovariateContainer");
+
 		this.tblVariateContainer.setSpacing(true);
 
 		final SingleSiteAnalysisStudyDetailsComponent studyDetailsComponent = new SingleSiteAnalysisStudyDetailsComponent();
@@ -427,23 +438,28 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		this.tblFactorContainer.addComponent(this.tblGermplasmDescriptors);
 		this.tblVariateContainer.addComponent(this.tblVariates);
 		this.tblVariateContainer.addComponent(this.chkVariatesSelectAll);
+		this.lblCovariateContainer.addComponent(this.lblCovariates);
+		this.tblCovariateContainer.addComponent(this.tblCovariates);
 
 		this.studyDetailsContainer.setMargin(true, false, false, false);
-		this.lblFactorContainer.setMargin(true, true, false, true);
+		this.lblFactorContainer.setMargin(true, true, false, false);
 		this.lblVariateContainer.setMargin(true, true, false, false);
-		this.tblFactorContainer.setMargin(false, true, false, true);
+		this.lblCovariateContainer.setMargin(true, true, false, false);
+		this.tblFactorContainer.setMargin(false, true, false, false);
 		this.tblVariateContainer.setMargin(false, true, false, false);
+		this.tblCovariateContainer.setMargin(false, true, false, false);
 
 		this.studyDetailsLayout = new GridLayout(2, 5);
 		this.studyDetailsLayout.setDebugId("studyDetailsLayout");
 		this.studyDetailsLayout.setWidth("100%");
-
 
 		this.studyDetailsLayout.addComponent(studyDetailsContainer, 0,0, 0, 1);
 		this.studyDetailsLayout.addComponent(this.lblFactorContainer, 1, 0, 1, 0);
 		this.studyDetailsLayout.addComponent(this.tblFactorContainer, 1, 1, 1, 1);
 		this.studyDetailsLayout.addComponent(this.lblVariateContainer, 0, 2, 0, 2);
 		this.studyDetailsLayout.addComponent(this.tblVariateContainer, 0, 3, 0, 3);
+		this.studyDetailsLayout.addComponent(this.lblCovariateContainer, 1, 2, 1, 2);
+		this.studyDetailsLayout.addComponent(this.tblCovariateContainer, 1, 3, 1, 3);
 
 		this.rootLayout = new VerticalLayout();
 		this.rootLayout.setDebugId("rootLayout");
@@ -534,8 +550,6 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 
 	protected Table createVariatesTable() {
 
-		this.variatesCheckboxState.clear();
-
 		final Table table = new Table();
 		table.setDebugId("table");
 		table.setImmediate(true);
@@ -579,6 +593,8 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 	}
 
 	private void reset() {
+
+		this.variatesCheckboxState.clear();
 
 		this.studyDetailsContainer.removeAllComponents();
 		this.tblFactorContainer.removeAllComponents();
