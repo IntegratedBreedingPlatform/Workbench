@@ -307,15 +307,19 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		this.studyDetailsContainer.addComponent(studyDetailsComponent);
 		this.lblFactorContainer.addComponent(this.lblGermplasmDescriptors);
 		this.lblVariateContainer.addComponent(this.lblVariates);
+		this.lblVariateContainer.addComponent(new Label(
+				"The traits in the dataset you have selected are shown below. Select the traits you wish to submit for analysis."));
 		this.tblFactorContainer.addComponent(this.germplasmDescriptorsComponent);
 		this.tblVariateContainer.addComponent(this.variatesTableComponent);
 		this.lblCovariateContainer.addComponent(this.lblCovariates);
+		this.lblCovariateContainer
+				.addComponent(new Label("Indicate any covariates you would like to include in the analysis below (optional)."));
 		this.tblCovariateContainer.addComponent(this.covariatesTableComponent);
 
 		this.studyDetailsContainer.setMargin(true, false, false, false);
 		this.lblFactorContainer.setMargin(true, true, false, false);
-		this.lblVariateContainer.setMargin(true, true, false, false);
-		this.lblCovariateContainer.setMargin(true, true, false, false);
+		this.lblVariateContainer.setMargin(true, true, true, false);
+		this.lblCovariateContainer.setMargin(true, true, true, false);
 		this.tblFactorContainer.setMargin(false, true, false, false);
 		this.tblVariateContainer.setMargin(false, true, false, false);
 		this.tblCovariateContainer.setMargin(false, true, false, false);
