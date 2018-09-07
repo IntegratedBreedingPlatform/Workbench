@@ -43,13 +43,21 @@ public class SingleSiteAnalysisPanelTest {
 
 		this.singleSiteAnalysisPanel = new SingleSiteAnalysisPanel(currentProject);
 		this.singleSiteAnalysisPanel.setStudyDataManager(studyDataManager);
-		this.singleSiteAnalysisPanel.setManagerFactoryProvider(managerFactoryProvider);
 		this.singleSiteAnalysisPanel.instantiateComponents();
 		this.singleSiteAnalysisPanel.layoutComponents();
 	}
 
 	@Test
 	public void testShowStudyDetails() {
+
+
+		final VariableTableComponent germplasmDescriptorTableComponent = Mockito.mock(VariableTableComponent.class);
+		final VariableTableComponent variatesTableComponent = Mockito.mock(VariableTableComponent.class);
+		final VariableTableComponent covariatesTableCompoment = Mockito.mock(VariableTableComponent.class);
+
+		this.singleSiteAnalysisPanel.setGermplasmDescriptorsComponent(germplasmDescriptorTableComponent);
+		this.singleSiteAnalysisPanel.setVariatesTableComponent(variatesTableComponent);
+		this.singleSiteAnalysisPanel.setCovariatesTableComponent(covariatesTableCompoment);
 
 		this.singleSiteAnalysisPanel.showStudyDetails(StudyUtil.DATASET_ID);
 
@@ -64,40 +72,11 @@ public class SingleSiteAnalysisPanelTest {
 		Assert.assertEquals("The dataset id should be " + this.currentDataset.getId(), Integer.toString(this.currentDataset.getId()),
 				Integer.toString(this.singleSiteAnalysisPanel.getCurrentDataSetId()));
 
-		List<FactorModel> factors = this.singleSiteAnalysisPanel.getFactorList();
-		Assert.assertNotNull("The dataset should contain factors", factors);
+		Mockito.verify(germplasmDescriptorTableComponent).loadData(Mockito.anyList());
+		Mockito.verify(variatesTableComponent).loadData(Mockito.anyList());
+		Mockito.verify(covariatesTableCompoment).loadData(Mockito.anyList());
 
-		VariableTypeList currentFactors = this.currentDataset.getVariableTypes().getFactors();
-		this.removeDatasetTypes(currentFactors);
 
-		Assert.assertEquals("The dataset should have " + currentFactors.size() + " factors", currentFactors.size(), factors.size());
-
-		List<VariateModel> variates = this.singleSiteAnalysisPanel.getVariateList();
-		VariableTypeList currentVariates = this.currentDataset.getVariableTypes().getVariates();
-		Assert.assertNotNull("The dataset should contain variates", currentVariates);
-		Assert.assertEquals("The dataset should have " + currentVariates.size() + " variates", currentVariates.size(), variates.size());
-
-	}
-
-	@Test
-	public void testShowStudyDetailsWithSelectedVariatesByDefault() {
-		this.singleSiteAnalysisPanel.showStudyDetails(StudyUtil.DATASET_ID);
-
-		Map<String, Boolean> variatesCheckboxState = this.singleSiteAnalysisPanel.getVariatesCheckboxState();
-		List<VariateModel> variates = this.singleSiteAnalysisPanel.getVariateList();
-
-		for (VariateModel vm : variates) {
-			boolean isSelected = variatesCheckboxState.get(vm.getName());
-			if (vm.getActive()) {
-				Assert.assertTrue("Active variates are selected by default", isSelected);
-			}
-			if (vm.isNumericCategoricalVariate()) {
-				Assert.assertTrue("Numeric categorical variates are selected by default", isSelected);
-			}
-			if (vm.isNonNumeric()) {
-				Assert.assertFalse("Non-numeric variates are not selected by default", isSelected);
-			}
-		}
 	}
 
 	private void removeDatasetTypes(VariableTypeList currentFactors) {
@@ -110,30 +89,4 @@ public class SingleSiteAnalysisPanelTest {
 		}
 	}
 
-	@Test
-	public void testTransformVariableTypeToVariateModel() {
-		List<DMSVariableType> variates = this.currentDataset.getVariableTypes().getVariates().getVariableTypes();
-		for (DMSVariableType variate : variates) {
-			VariateModel vm = this.singleSiteAnalysisPanel.transformVariableTypeToVariateModel(variate);
-			Assert.assertEquals(Integer.toString(variate.getRank()), Integer.toString(vm.getId()));
-			Assert.assertEquals(variate.getLocalName(), vm.getName());
-			Assert.assertEquals(variate.getLocalDescription(), vm.getDescription());
-			Assert.assertEquals(variate.getStandardVariable().getScale().getName(), vm.getScname());
-			Assert.assertEquals(Integer.toString(variate.getStandardVariable().getScale().getId()), Integer.toString(vm.getScaleid()));
-			Assert.assertEquals(variate.getStandardVariable().getMethod().getName(), vm.getTmname());
-			Assert.assertEquals(Integer.toString(variate.getStandardVariable().getMethod().getId()), Integer.toString(vm.getTmethid()));
-			Assert.assertEquals(variate.getStandardVariable().getProperty().getName(), vm.getTrname());
-			Assert.assertEquals(Integer.toString(variate.getStandardVariable().getProperty().getId()), Integer.toString(vm.getTraitid()));
-			Assert.assertEquals(variate.getStandardVariable().getDataType().getName(), vm.getDatatype());
-			if (variate.getStandardVariable().isNumeric()) {
-				Assert.assertTrue(vm.getActive());
-				if (variate.getStandardVariable().isNumericCategoricalVariate()) {
-					Assert.assertTrue(vm.isNumericCategoricalVariate());
-				}
-			} else {
-				Assert.assertTrue(vm.isNonNumeric());
-			}
-		}
-
-	}
 }

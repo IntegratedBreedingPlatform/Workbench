@@ -24,6 +24,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDetailsPanel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
+import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.VariableTableItem;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
@@ -196,7 +197,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 			event.getComponent().getWindow().showNotification("Please select a Dataset first.", Notification.TYPE_ERROR_MESSAGE);
 			return false;
 		}
-		final List<VariateModel> variates = this.selectDatasetForBreedingViewPanel.getVariateList();
+		final List<VariableTableItem> variates = this.selectDatasetForBreedingViewPanel.getVariateList();
 		final Map<String, Boolean> variatesCheckboxState = this.selectDatasetForBreedingViewPanel.getVariatesCheckboxState();
 		final boolean includesNonNumeric = this.checkIfNonNumericVarAreIncluded(variates, variatesCheckboxState);
 		if (includesNonNumeric) {
@@ -212,9 +213,9 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 		return true;
 	}
 
-	protected boolean checkIfNumericCategoricalVarAreIncluded(final List<VariateModel> variates,
+	protected boolean checkIfNumericCategoricalVarAreIncluded(final List<VariableTableItem> variableTableItems,
 			final Map<String, Boolean> variatesCheckboxState) {
-		for (final VariateModel vm : variates) {
+		for (final VariableTableItem vm : variableTableItems) {
 			final boolean isSelected = variatesCheckboxState.get(vm.getName());
 			if (isSelected && vm.isNumericCategoricalVariate()) {
 				return true;
@@ -223,8 +224,8 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 		return false;
 	}
 
-	protected boolean checkIfNonNumericVarAreIncluded(final List<VariateModel> variates, final Map<String, Boolean> variatesCheckboxState) {
-		for (final VariateModel vm : variates) {
+	protected boolean checkIfNonNumericVarAreIncluded(final List<VariableTableItem> variableTableItems, final Map<String, Boolean> variatesCheckboxState) {
+		for (final VariableTableItem vm : variableTableItems) {
 			final boolean isSelected = variatesCheckboxState.get(vm.getName());
 			if (isSelected && vm.isNonNumeric()) {
 				return true;
