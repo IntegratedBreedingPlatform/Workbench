@@ -262,7 +262,7 @@ public class DatasetExporterTest {
 		// Setup selected variates
 		final HashMap<String, Boolean> variatesActiveState = new HashMap<String, Boolean>();
 		this.setupSelectedVariablesAsActive(variatesActiveState, this.variates);
-		Mockito.when(this.bvInput.getVariatesActiveState()).thenReturn(variatesActiveState);
+		Mockito.when(this.bvInput.getVariatesSelectionMap()).thenReturn(variatesActiveState);
 
 		// Method to test
 		this.exporter.exportToCSVForBreedingView(DatasetExporterTest.FILENAME,
@@ -554,7 +554,7 @@ public class DatasetExporterTest {
 		// Setup selected variates
 		final HashMap<String, Boolean> variatesActiveState = new HashMap<String, Boolean>();
 		this.setupSelectedVariablesAsActive(variatesActiveState, this.variates);
-		Mockito.when(this.bvInput.getVariatesActiveState()).thenReturn(variatesActiveState);
+		Mockito.when(this.bvInput.getVariatesSelectionMap()).thenReturn(variatesActiveState);
 
 		// Setup test experiments of dataset
 		final Experiment experiment = this.createExperimentTestData(this.factorVariables, this.variateVariables);

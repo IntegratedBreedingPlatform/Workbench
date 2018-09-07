@@ -393,8 +393,12 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		this.studyDetailsContainer.addComponent(new SingleSiteAnalysisStudyDetailsComponent());
 	}
 
-	public Map<String, Boolean> getVariatesCheckboxState() {
+	public Map<String, Boolean> getVariatesSelectionMap() {
 		return this.variatesTableComponent.getCheckboxValuesMap();
+	}
+
+	public Map<String, Boolean> getCovariatesSelectionMap() {
+		return this.covariatesTableComponent.getCheckboxValuesMap();
 	}
 
 	public void toggleNextButton(final boolean enabled) {

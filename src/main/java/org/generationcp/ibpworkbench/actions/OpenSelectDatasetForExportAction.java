@@ -21,7 +21,6 @@ import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDetailsPanel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.VariableTableItem;
@@ -132,7 +131,8 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 			this.populateProjectNameAndFilePaths(breedingViewInput, this.project, inputDir);
 			this.populateAnalysisName(breedingViewInput, this.datasetName);
 
-			breedingViewInput.setVariatesActiveState(this.selectDatasetForBreedingViewPanel.getVariatesCheckboxState());
+			breedingViewInput.setVariatesSelectionMap(this.selectDatasetForBreedingViewPanel.getVariatesSelectionMap());
+			breedingViewInput.setCovariatesSelectionMap(this.selectDatasetForBreedingViewPanel.getCovariatesSelectionMap());
 
 			final IContentWindow w = (IContentWindow) event.getComponent().getWindow();
 
@@ -198,7 +198,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 			return false;
 		}
 		final List<VariableTableItem> variates = this.selectDatasetForBreedingViewPanel.getVariateList();
-		final Map<String, Boolean> variatesCheckboxState = this.selectDatasetForBreedingViewPanel.getVariatesCheckboxState();
+		final Map<String, Boolean> variatesCheckboxState = this.selectDatasetForBreedingViewPanel.getVariatesSelectionMap();
 		final boolean includesNonNumeric = this.checkIfNonNumericVarAreIncluded(variates, variatesCheckboxState);
 		if (includesNonNumeric) {
 			MessageNotifier.showError(event.getComponent().getWindow(), this.messageSource.getMessage(Message.INVALID_INPUT),

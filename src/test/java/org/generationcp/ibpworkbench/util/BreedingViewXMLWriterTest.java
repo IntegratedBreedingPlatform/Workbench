@@ -228,7 +228,7 @@ public class BreedingViewXMLWriterTest {
 
 		breedingViewInput.setEnvironment(environment);
 		breedingViewInput.setSelectedEnvironments(new ArrayList<SeaEnvironmentModel>());
-		breedingViewInput.setVariatesActiveState(new HashMap<String, Boolean>());
+		breedingViewInput.setVariatesSelectionMap(new HashMap<String, Boolean>());
 
 		final Columns columns = new Columns();
 		columns.setName(BreedingViewXMLWriterTest.COLUMN_FACTOR);
