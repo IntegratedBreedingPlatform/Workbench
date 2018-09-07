@@ -100,9 +100,11 @@ public class DatasetExporter {
 
 			final String variateName = variate.getLocalName();
 
-			// Include only the selected traits
+			// Include only the selected traits and covariates
 			if (breedingViewInput.getVariatesSelectionMap().get(variateName).booleanValue()) {
-				// add entry to columns mapping
+				variateColumns.add(variateName);
+			}
+			if (breedingViewInput.getCovariatesSelectionMap().get(variateName).booleanValue()) {
 				variateColumns.add(variateName);
 			}
 
