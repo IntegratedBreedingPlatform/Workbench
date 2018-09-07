@@ -37,6 +37,12 @@ public class VariableTableComponent extends VerticalLayout implements Initializi
 	}
 
 
+	public interface SelectAllChangedListener {
+
+		public void onSelectionChanged();
+	}
+
+
 	private final Map<String, Boolean> checkboxValuesMap = new HashMap<>();
 	private final List<VariableTableItem> variableTableItems = new ArrayList<>();
 	private final String[] visibleColumns;
@@ -48,6 +54,14 @@ public class VariableTableComponent extends VerticalLayout implements Initializi
 
 		@Override
 		public void onSelectionChanged(final VariableTableItem variableTableItem) {
+			// do nothing
+		}
+	};
+
+	private SelectAllChangedListener selectAllChangedListener = new SelectAllChangedListener() {
+
+		@Override
+		public void onSelectionChanged() {
 			// do nothing
 		}
 	};
@@ -135,6 +149,10 @@ public class VariableTableComponent extends VerticalLayout implements Initializi
 
 	public void addSelectionChangedListener(final SelectionChangedListener listener) {
 		this.selectionChangedListener = listener;
+	}
+
+	public void addSelectAllChangedListener(final SelectAllChangedListener listener) {
+		this.selectAllChangedListener = listener;
 	}
 
 	public boolean someItemsAreSelected() {
@@ -280,6 +298,7 @@ public class VariableTableComponent extends VerticalLayout implements Initializi
 			for (final Map.Entry<String, Boolean> entry : VariableTableComponent.this.checkboxValuesMap.entrySet()) {
 				VariableTableComponent.this.checkboxValuesMap.put(entry.getKey(), val);
 			}
+			selectAllChangedListener.onSelectionChanged();
 		}
 	}
 

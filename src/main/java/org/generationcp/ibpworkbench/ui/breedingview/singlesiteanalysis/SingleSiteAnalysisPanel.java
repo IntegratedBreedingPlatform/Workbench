@@ -68,13 +68,13 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 	private VariableTableComponent variatesTableComponent;
 	private VariableTableComponent covariatesTableComponent;
 
-	private VerticalLayout lblFactorContainer;
-	private VerticalLayout lblVariateContainer;
-	private VerticalLayout tblFactorContainer;
-	private VerticalLayout tblVariateContainer;
 	private VerticalLayout studyDetailsContainer;
-	private VerticalLayout lblCovariateContainer;
-	private VerticalLayout tblCovariateContainer;
+	private VerticalLayout germplasmDescriptorHeaderLayout;
+	private VerticalLayout germplasmDescriptorTableLayout;
+	private VerticalLayout traitHeaderLayout;
+	private VerticalLayout traitTableLayout;
+	private VerticalLayout covariateHeaderLayout;
+	private VerticalLayout covariateTableLayout;
 
 	private VerticalLayout rootLayout;
 
@@ -124,7 +124,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 
 	@Override
 	public void updateLabels() {
-		this.messageSource.setCaption(this.btnCancel, Message.RESET);
+		this.messageSource.setCaption(this.btnCancel, Message.CANCEL);
 		this.messageSource.setCaption(this.btnNext, Message.NEXT);
 		this.messageSource.setValue(this.toolTitle, Message.TITLE_SSA);
 	}
@@ -155,15 +155,8 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		this.uploadLink.setCaption("Upload");
 		this.uploadLink.setWidth("48px");
 
-		this.germplasmDescriptorsComponent =
-				new VariableTableComponent(new String[] {VariableTableComponent.NAME_COLUMN, VariableTableComponent.DESCRIPTION_COLUMN},
-						false);
-		this.variatesTableComponent = new VariableTableComponent(
-				new String[] {VariableTableComponent.CHECKBOX_COLUMN, VariableTableComponent.NAME_COLUMN,
-						VariableTableComponent.DESCRIPTION_COLUMN, VariableTableComponent.SCALE_NAME_COLUMN});
-		this.covariatesTableComponent = new VariableTableComponent(
-				new String[] {VariableTableComponent.CHECKBOX_COLUMN, VariableTableComponent.NAME_COLUMN,
-						VariableTableComponent.DESCRIPTION_COLUMN, VariableTableComponent.SCALE_NAME_COLUMN});
+		this.initalizeTableComponents();
+
 		this.buttonArea = this.layoutButtonArea();
 
 		this.lblGermplasmDescriptors = new Label(
@@ -235,22 +228,6 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		this.openSelectDatasetForExportAction = new OpenSelectDatasetForExportAction(this);
 
 		this.btnNext.addListener(this.openSelectDatasetForExportAction);
-
-		this.variatesTableComponent.addSelectionChangedListener(new VariableTableComponent.SelectionChangedListener() {
-
-			@Override
-			public void onSelectionChanged(final VariableTableItem variableTableItem) {
-
-				SingleSiteAnalysisPanel.this.covariatesTableComponent
-						.toggleCheckbox(variableTableItem.getId(), variableTableItem.getActive());
-
-				if (SingleSiteAnalysisPanel.this.variatesTableComponent.someItemsAreSelected()) {
-					SingleSiteAnalysisPanel.this.btnNext.setEnabled(true);
-				} else {
-					SingleSiteAnalysisPanel.this.btnNext.setEnabled(false);
-				}
-			}
-		});
 	}
 
 	@Override
@@ -288,53 +265,53 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		selectDataForAnalysisLayout.addComponent(browseLabelLayout);
 
 		this.studyDetailsContainer = new VerticalLayout();
-		this.lblFactorContainer = new VerticalLayout();
-		this.lblFactorContainer.setDebugId("lblFactorContainer");
-		this.lblVariateContainer = new VerticalLayout();
-		this.lblVariateContainer.setDebugId("lblVariateContainer");
-		this.lblCovariateContainer = new VerticalLayout();
-		this.lblCovariateContainer.setDebugId("lblVariateContainer");
-		this.tblFactorContainer = new VerticalLayout();
-		this.tblFactorContainer.setDebugId("tblFactorContainer");
-		this.tblVariateContainer = new VerticalLayout();
-		this.tblVariateContainer.setDebugId("tblVariateContainer");
-		this.tblCovariateContainer = new VerticalLayout();
-		this.tblCovariateContainer.setDebugId("tblCovariateContainer");
+		this.germplasmDescriptorHeaderLayout = new VerticalLayout();
+		this.germplasmDescriptorHeaderLayout.setDebugId("germplasmDescriptorHeaderLayout");
+		this.traitHeaderLayout = new VerticalLayout();
+		this.traitHeaderLayout.setDebugId("traitHeaderLayout");
+		this.covariateHeaderLayout = new VerticalLayout();
+		this.covariateHeaderLayout.setDebugId("traitHeaderLayout");
+		this.germplasmDescriptorTableLayout = new VerticalLayout();
+		this.germplasmDescriptorTableLayout.setDebugId("germplasmDescriptorTableLayout");
+		this.traitTableLayout = new VerticalLayout();
+		this.traitTableLayout.setDebugId("traitTableLayout");
+		this.covariateTableLayout = new VerticalLayout();
+		this.covariateTableLayout.setDebugId("covariateTableLayout");
 
-		this.tblVariateContainer.setSpacing(true);
+		this.traitTableLayout.setSpacing(true);
 
 		final SingleSiteAnalysisStudyDetailsComponent studyDetailsComponent = new SingleSiteAnalysisStudyDetailsComponent();
 		this.studyDetailsContainer.addComponent(studyDetailsComponent);
-		this.lblFactorContainer.addComponent(this.lblGermplasmDescriptors);
-		this.lblVariateContainer.addComponent(this.lblVariates);
-		this.lblVariateContainer.addComponent(new Label(
+		this.germplasmDescriptorHeaderLayout.addComponent(this.lblGermplasmDescriptors);
+		this.traitHeaderLayout.addComponent(this.lblVariates);
+		this.traitHeaderLayout.addComponent(new Label(
 				"The traits in the dataset you have selected are shown below. Select the traits you wish to submit for analysis."));
-		this.tblFactorContainer.addComponent(this.germplasmDescriptorsComponent);
-		this.tblVariateContainer.addComponent(this.variatesTableComponent);
-		this.lblCovariateContainer.addComponent(this.lblCovariates);
-		this.lblCovariateContainer
+		this.germplasmDescriptorTableLayout.addComponent(this.germplasmDescriptorsComponent);
+		this.traitTableLayout.addComponent(this.variatesTableComponent);
+		this.covariateHeaderLayout.addComponent(this.lblCovariates);
+		this.covariateHeaderLayout
 				.addComponent(new Label("Indicate any covariates you would like to include in the analysis below (optional)."));
-		this.tblCovariateContainer.addComponent(this.covariatesTableComponent);
+		this.covariateTableLayout.addComponent(this.covariatesTableComponent);
 
 		this.studyDetailsContainer.setMargin(true, false, false, false);
-		this.lblFactorContainer.setMargin(true, true, false, false);
-		this.lblVariateContainer.setMargin(true, true, true, false);
-		this.lblCovariateContainer.setMargin(true, true, true, false);
-		this.tblFactorContainer.setMargin(false, true, false, false);
-		this.tblVariateContainer.setMargin(false, true, false, false);
-		this.tblCovariateContainer.setMargin(false, true, false, false);
+		this.germplasmDescriptorHeaderLayout.setMargin(true, true, false, false);
+		this.traitHeaderLayout.setMargin(true, true, true, false);
+		this.covariateHeaderLayout.setMargin(true, true, true, false);
+		this.germplasmDescriptorTableLayout.setMargin(false, true, false, false);
+		this.traitTableLayout.setMargin(false, true, false, false);
+		this.covariateTableLayout.setMargin(false, true, false, false);
 
 		this.studyDetailsLayout = new GridLayout(2, 5);
 		this.studyDetailsLayout.setDebugId("studyDetailsLayout");
 		this.studyDetailsLayout.setWidth("100%");
 
 		this.studyDetailsLayout.addComponent(studyDetailsContainer, 0, 0, 0, 1);
-		this.studyDetailsLayout.addComponent(this.lblFactorContainer, 1, 0, 1, 0);
-		this.studyDetailsLayout.addComponent(this.tblFactorContainer, 1, 1, 1, 1);
-		this.studyDetailsLayout.addComponent(this.lblVariateContainer, 0, 2, 0, 2);
-		this.studyDetailsLayout.addComponent(this.tblVariateContainer, 0, 3, 0, 3);
-		this.studyDetailsLayout.addComponent(this.lblCovariateContainer, 1, 2, 1, 2);
-		this.studyDetailsLayout.addComponent(this.tblCovariateContainer, 1, 3, 1, 3);
+		this.studyDetailsLayout.addComponent(this.germplasmDescriptorHeaderLayout, 1, 0, 1, 0);
+		this.studyDetailsLayout.addComponent(this.germplasmDescriptorTableLayout, 1, 1, 1, 1);
+		this.studyDetailsLayout.addComponent(this.traitHeaderLayout, 0, 2, 0, 2);
+		this.studyDetailsLayout.addComponent(this.traitTableLayout, 0, 3, 0, 3);
+		this.studyDetailsLayout.addComponent(this.covariateHeaderLayout, 1, 2, 1, 2);
+		this.studyDetailsLayout.addComponent(this.covariateTableLayout, 1, 3, 1, 3);
 
 		this.rootLayout = new VerticalLayout();
 		this.rootLayout.setDebugId("rootLayout");
@@ -390,10 +367,15 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 
 	private void reset() {
 		this.studyDetailsContainer.removeAllComponents();
-		this.tblFactorContainer.removeAllComponents();
-		this.tblVariateContainer.removeAllComponents();
-		this.tblFactorContainer.addComponent(this.germplasmDescriptorsComponent);
-		this.tblVariateContainer.addComponent(this.variatesTableComponent);
+		this.germplasmDescriptorTableLayout.removeAllComponents();
+		this.traitTableLayout.removeAllComponents();
+		this.covariateTableLayout.removeAllComponents();
+
+		this.initalizeTableComponents();
+
+		this.germplasmDescriptorTableLayout.addComponent(this.germplasmDescriptorsComponent);
+		this.traitTableLayout.addComponent(this.variatesTableComponent);
+		this.covariateTableLayout.addComponent(this.covariatesTableComponent);
 		this.studyDetailsContainer.addComponent(new SingleSiteAnalysisStudyDetailsComponent());
 	}
 
@@ -444,6 +426,48 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 			}
 		}
 		return factorsWithoutDatasetVariables;
+	}
+
+	protected void initalizeTableComponents() {
+
+		this.germplasmDescriptorsComponent =
+				new VariableTableComponent(new String[] {VariableTableComponent.NAME_COLUMN, VariableTableComponent.DESCRIPTION_COLUMN},
+						false);
+		this.variatesTableComponent = new VariableTableComponent(
+				new String[] {VariableTableComponent.CHECKBOX_COLUMN, VariableTableComponent.NAME_COLUMN,
+						VariableTableComponent.DESCRIPTION_COLUMN, VariableTableComponent.SCALE_NAME_COLUMN});
+		this.variatesTableComponent.addSelectionChangedListener(new VariableTableComponent.SelectionChangedListener() {
+
+			@Override
+			public void onSelectionChanged(final VariableTableItem variableTableItem) {
+
+				SingleSiteAnalysisPanel.this.covariatesTableComponent
+						.toggleCheckbox(variableTableItem.getId(), variableTableItem.getActive());
+
+				if (SingleSiteAnalysisPanel.this.variatesTableComponent.someItemsAreSelected()) {
+					SingleSiteAnalysisPanel.this.btnNext.setEnabled(true);
+				} else {
+					SingleSiteAnalysisPanel.this.btnNext.setEnabled(false);
+				}
+			}
+		});
+
+		this.variatesTableComponent.addSelectAllChangedListener(new VariableTableComponent.SelectAllChangedListener() {
+
+			@Override
+			public void onSelectionChanged() {
+				if (SingleSiteAnalysisPanel.this.variatesTableComponent.someItemsAreSelected()) {
+					SingleSiteAnalysisPanel.this.btnNext.setEnabled(true);
+				} else {
+					SingleSiteAnalysisPanel.this.btnNext.setEnabled(false);
+				}
+			}
+		});
+
+		this.covariatesTableComponent = new VariableTableComponent(
+				new String[] {VariableTableComponent.CHECKBOX_COLUMN, VariableTableComponent.NAME_COLUMN,
+						VariableTableComponent.DESCRIPTION_COLUMN, VariableTableComponent.SCALE_NAME_COLUMN});
+
 	}
 
 	// SETTERS AND GETTERS
