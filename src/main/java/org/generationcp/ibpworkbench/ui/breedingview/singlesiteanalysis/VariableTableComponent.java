@@ -306,4 +306,12 @@ public class VariableTableComponent extends VerticalLayout implements Initializi
 		return variableTableItems;
 	}
 
+	public SelectionChangedListener getSelectionChangedListener() {
+		return selectionChangedListener;
+	}
+
+	public SelectAllChangedListener getSelectAllChangedListener() {
+		return selectAllChangedListener;
+	}
+
 }

@@ -365,7 +365,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		return buttonLayout;
 	}
 
-	private void reset() {
+	protected void reset() {
 		this.studyDetailsContainer.removeAllComponents();
 		this.germplasmDescriptorTableLayout.removeAllComponents();
 		this.traitTableLayout.removeAllComponents();
@@ -436,34 +436,8 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		this.variatesTableComponent = new VariableTableComponent(
 				new String[] {VariableTableComponent.CHECKBOX_COLUMN, VariableTableComponent.NAME_COLUMN,
 						VariableTableComponent.DESCRIPTION_COLUMN, VariableTableComponent.SCALE_NAME_COLUMN});
-		this.variatesTableComponent.addSelectionChangedListener(new VariableTableComponent.SelectionChangedListener() {
-
-			@Override
-			public void onSelectionChanged(final VariableTableItem variableTableItem) {
-
-				SingleSiteAnalysisPanel.this.covariatesTableComponent
-						.toggleCheckbox(variableTableItem.getId(), variableTableItem.getActive());
-
-				if (SingleSiteAnalysisPanel.this.variatesTableComponent.someItemsAreSelected()) {
-					SingleSiteAnalysisPanel.this.btnNext.setEnabled(true);
-				} else {
-					SingleSiteAnalysisPanel.this.btnNext.setEnabled(false);
-				}
-			}
-		});
-
-		this.variatesTableComponent.addSelectAllChangedListener(new VariableTableComponent.SelectAllChangedListener() {
-
-			@Override
-			public void onSelectionChanged() {
-				if (SingleSiteAnalysisPanel.this.variatesTableComponent.someItemsAreSelected()) {
-					SingleSiteAnalysisPanel.this.btnNext.setEnabled(true);
-				} else {
-					SingleSiteAnalysisPanel.this.btnNext.setEnabled(false);
-				}
-			}
-		});
-
+		this.variatesTableComponent.addSelectionChangedListener(new VariateTableSelectionChangedListener());
+		this.variatesTableComponent.addSelectAllChangedListener(new VariateTableSelectAllChangedListener());
 		this.covariatesTableComponent = new VariableTableComponent(
 				new String[] {VariableTableComponent.CHECKBOX_COLUMN, VariableTableComponent.NAME_COLUMN,
 						VariableTableComponent.DESCRIPTION_COLUMN, VariableTableComponent.SCALE_NAME_COLUMN});
@@ -525,6 +499,67 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 
 	protected void setCovariatesTableComponent(final VariableTableComponent covariatesTableComponent) {
 		this.covariatesTableComponent = covariatesTableComponent;
+	}
+
+	protected void setStudyDetailsContainer(final VerticalLayout studyDetailsContainer) {
+		this.studyDetailsContainer = studyDetailsContainer;
+	}
+
+	protected void setGermplasmDescriptorTableLayout(final VerticalLayout germplasmDescriptorTableLayout) {
+		this.germplasmDescriptorTableLayout = germplasmDescriptorTableLayout;
+	}
+
+	protected void setTraitTableLayout(final VerticalLayout traitTableLayout) {
+		this.traitTableLayout = traitTableLayout;
+	}
+
+	protected void setCovariateTableLayout(final VerticalLayout covariateTableLayout) {
+		this.covariateTableLayout = covariateTableLayout;
+	}
+
+	protected VariableTableComponent getGermplasmDescriptorsComponent() {
+		return germplasmDescriptorsComponent;
+	}
+
+	protected VariableTableComponent getVariatesTableComponent() {
+		return variatesTableComponent;
+	}
+
+	protected VariableTableComponent getCovariatesTableComponent() {
+		return covariatesTableComponent;
+	}
+
+	protected void setBtnNext(final Button btnNext) {
+		this.btnNext = btnNext;
+	}
+
+	class VariateTableSelectionChangedListener implements VariableTableComponent.SelectionChangedListener {
+
+		@Override
+		public void onSelectionChanged(final VariableTableItem variableTableItem) {
+
+			SingleSiteAnalysisPanel.this.covariatesTableComponent.toggleCheckbox(variableTableItem.getId(), variableTableItem.getActive());
+
+			if (SingleSiteAnalysisPanel.this.variatesTableComponent.someItemsAreSelected()) {
+				SingleSiteAnalysisPanel.this.btnNext.setEnabled(true);
+			} else {
+				SingleSiteAnalysisPanel.this.btnNext.setEnabled(false);
+			}
+
+		}
+	}
+
+
+	class VariateTableSelectAllChangedListener implements VariableTableComponent.SelectAllChangedListener {
+
+		@Override
+		public void onSelectionChanged() {
+			if (SingleSiteAnalysisPanel.this.variatesTableComponent.someItemsAreSelected()) {
+				SingleSiteAnalysisPanel.this.btnNext.setEnabled(true);
+			} else {
+				SingleSiteAnalysisPanel.this.btnNext.setEnabled(false);
+			}
+		}
 	}
 
 }
