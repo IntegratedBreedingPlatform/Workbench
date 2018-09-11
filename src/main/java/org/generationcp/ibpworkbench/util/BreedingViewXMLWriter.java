@@ -267,7 +267,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 		return design;
 	}
 
-	private DataConfiguration createDataConfiguration(final Environments environments, final Design design) {
+	protected DataConfiguration createDataConfiguration(final Environments environments, final Design design) {
 
 		final DataConfiguration dataConfiguration = new DataConfiguration();
 

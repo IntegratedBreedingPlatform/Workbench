@@ -24,7 +24,7 @@ public class VariableTableComponent extends VerticalLayout implements Initializi
 	public static final String CHECKBOX_COLUMN = "checkbox";
 	public static final String NAME_COLUMN = "name";
 	public static final String DESCRIPTION_COLUMN = "description";
-	public static final String SCALE_NAME_COLUMN = "scname";
+	public static final String SCALE_NAME_COLUMN = "scale";
 	public static final String CHECKBOX_COLUMN_HEADER = "<span class='glyphicon glyphicon-ok'></span>";
 	public static final String NAME_COLUMN_HEADER = "Name";
 	public static final String DESCRIPTION_COLUMN_HEADER = "Description";
@@ -65,6 +65,7 @@ public class VariableTableComponent extends VerticalLayout implements Initializi
 			// do nothing
 		}
 	};
+
 	private CheckBox selectAll;
 	private Table table;
 
@@ -140,9 +141,9 @@ public class VariableTableComponent extends VerticalLayout implements Initializi
 		this.variableTableItems.clear();
 
 		for (final DMSVariableType variableType : variateList) {
-			final VariableTableItem variateModel = this.transformVariableTypeToVariateModel(variableType);
-			this.variableTableItems.add(variateModel);
-			this.checkboxValuesMap.put(variateModel.getName(), variateModel.getActive());
+			final VariableTableItem variableTableItem = this.transformVariableTypeToVariableTableItem(variableType);
+			this.variableTableItems.add(variableTableItem);
+			this.checkboxValuesMap.put(variableTableItem.getName(), variableTableItem.getActive());
 		}
 		this.initializeTableContainer(variableTableItems);
 	}
@@ -166,10 +167,10 @@ public class VariableTableComponent extends VerticalLayout implements Initializi
 	public void toggleCheckbox(final Integer id, final boolean isDisabled) {
 		final BeanItem<VariableTableItem> item = (BeanItem<VariableTableItem>) this.table.getItem(id);
 		if (item != null) {
-			final VariableTableItem variateModel = item.getBean();
-			variateModel.setActive(false);
-			variateModel.setDisabled(isDisabled);
-			checkboxValuesMap.put(variateModel.getName(), variateModel.getActive());
+			final VariableTableItem variableTableItem = item.getBean();
+			variableTableItem.setActive(false);
+			variableTableItem.setDisabled(isDisabled);
+			checkboxValuesMap.put(variableTableItem.getName(), variableTableItem.getActive());
 			this.table.refreshRowCache();
 		}
 	}
@@ -186,17 +187,14 @@ public class VariableTableComponent extends VerticalLayout implements Initializi
 
 	}
 
-	protected VariableTableItem transformVariableTypeToVariateModel(final DMSVariableType variableType) {
+	protected VariableTableItem transformVariableTypeToVariableTableItem(final DMSVariableType variableType) {
 		final VariableTableItem variableTableItem = new VariableTableItem();
 		variableTableItem.setId(variableType.getRank());
 		variableTableItem.setName(variableType.getLocalName());
 		variableTableItem.setDescription(variableType.getLocalDescription());
-		variableTableItem.setScname(variableType.getStandardVariable().getScale().getName());
-		variableTableItem.setScaleid(variableType.getStandardVariable().getScale().getId());
-		variableTableItem.setTmname(variableType.getStandardVariable().getMethod().getName());
-		variableTableItem.setTmethid(variableType.getStandardVariable().getMethod().getId());
-		variableTableItem.setTrname(variableType.getStandardVariable().getProperty().getName());
-		variableTableItem.setTraitid(variableType.getStandardVariable().getProperty().getId());
+		variableTableItem.setScale(variableType.getStandardVariable().getScale().getName());
+		variableTableItem.setMethod(variableType.getStandardVariable().getMethod().getName());
+		variableTableItem.setProperty(variableType.getStandardVariable().getProperty().getName());
 		variableTableItem.setDatatype(variableType.getStandardVariable().getDataType().getName());
 
 		if (variableType.getStandardVariable().isNumeric()) {
@@ -210,7 +208,7 @@ public class VariableTableComponent extends VerticalLayout implements Initializi
 		return variableTableItem;
 	}
 
-	private final class TableItemDescriptionGenerator implements Table.ItemDescriptionGenerator {
+	protected final class TableItemDescriptionGenerator implements Table.ItemDescriptionGenerator {
 
 		private static final String DESCRIPTION =
 				"<span class=\"gcp-table-header-bold\">%s</span><br>" + "<span>Property:</span> %s<br><span>Scale:</span> %s<br>"
@@ -222,12 +220,12 @@ public class VariableTableComponent extends VerticalLayout implements Initializi
 			final BeanContainer<Integer, VariableTableItem> container =
 					(BeanContainer<Integer, VariableTableItem>) VariableTableComponent.this.table.getContainerDataSource();
 			final VariableTableItem vm = container.getItem(itemId).getBean();
-			return String.format(this.DESCRIPTION, vm.getName(), vm.getTrname(), vm.getScname(), vm.getTmname(), vm.getDatatype());
+			return String.format(this.DESCRIPTION, vm.getName(), vm.getProperty(), vm.getScale(), vm.getMethod(), vm.getDatatype());
 		}
 	}
 
 
-	private final class TableColumnGenerator implements Table.ColumnGenerator {
+	protected final class TableColumnGenerator implements Table.ColumnGenerator {
 
 		private static final long serialVersionUID = 1L;
 
@@ -256,12 +254,12 @@ public class VariableTableComponent extends VerticalLayout implements Initializi
 	}
 
 
-	private final class CheckBoxListener implements Property.ValueChangeListener {
+	protected final class CheckBoxListener implements Property.ValueChangeListener {
 
 		private final VariableTableItem variableTableItem;
 		private static final long serialVersionUID = 1L;
 
-		private CheckBoxListener(final VariableTableItem variableTableItem) {
+		protected CheckBoxListener(final VariableTableItem variableTableItem) {
 			this.variableTableItem = variableTableItem;
 		}
 
@@ -280,7 +278,7 @@ public class VariableTableComponent extends VerticalLayout implements Initializi
 	}
 
 
-	private final class SelectAllListener implements Property.ValueChangeListener {
+	protected final class SelectAllListener implements Property.ValueChangeListener {
 
 		private static final long serialVersionUID = 344514045768824046L;
 
@@ -312,6 +310,18 @@ public class VariableTableComponent extends VerticalLayout implements Initializi
 
 	public SelectAllChangedListener getSelectAllChangedListener() {
 		return selectAllChangedListener;
+	}
+
+	protected Table getTable() {
+		return table;
+	}
+
+	protected void setTable(final Table table) {
+		this.table = table;
+	}
+
+	protected void setSelectAll(final CheckBox selectAll) {
+		this.selectAll = selectAll;
 	}
 
 }

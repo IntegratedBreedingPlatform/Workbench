@@ -1,14 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2012, All Rights Reserved.
- *
- * Generation Challenge Programme (GCP)
- *
- *
- * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
- * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- *
- *******************************************************************************/
-
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
 import java.io.Serializable;
@@ -21,16 +10,12 @@ public class VariableTableItem implements Serializable {
 	private static final long serialVersionUID = -6817357350462208956L;
 
 	private Integer id;
-	private Integer variableId;
 	private String name;
 	private String displayName;
 	private String description;
-	private Integer traitid;
-	private String trname;
-	private Integer scaleid;
-	private String scname;
-	private Integer tmethid;
-	private String tmname;
+	private String property;
+	private String scale;
+	private String method;
 	private Boolean active;
 	private String datatype;
 	private boolean isNonNumeric;
@@ -42,9 +27,9 @@ public class VariableTableItem implements Serializable {
 	 */
 	public VariableTableItem() {
 		this.name = "";
-		this.trname = "";
-		this.scname = "";
-		this.tmname = "";
+		this.property = "";
+		this.scale = "";
+		this.method = "";
 		this.active = false;
 		this.disabled = false;
 
@@ -54,7 +39,7 @@ public class VariableTableItem implements Serializable {
 		return this.id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(final Integer id) {
 		this.id = id;
 	}
 
@@ -62,56 +47,32 @@ public class VariableTableItem implements Serializable {
 		return this.name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
-	public Integer getTraitid() {
-		return this.traitid;
+	public String getProperty() {
+		return this.property;
 	}
 
-	public void setTraitid(Integer traitid) {
-		this.traitid = traitid;
+	public void setProperty(final String property) {
+		this.property = property;
 	}
 
-	public String getTrname() {
-		return this.trname;
+	public String getScale() {
+		return this.scale;
 	}
 
-	public void setTrname(String trname) {
-		this.trname = trname;
+	public void setScale(final String scale) {
+		this.scale = scale;
 	}
 
-	public Integer getScaleid() {
-		return this.scaleid;
+	public String getMethod() {
+		return this.method;
 	}
 
-	public void setScaleid(Integer scaleid) {
-		this.scaleid = scaleid;
-	}
-
-	public String getScname() {
-		return this.scname;
-	}
-
-	public void setScname(String scname) {
-		this.scname = scname;
-	}
-
-	public Integer getTmethid() {
-		return this.tmethid;
-	}
-
-	public void setTmethid(Integer tmethid) {
-		this.tmethid = tmethid;
-	}
-
-	public String getTmname() {
-		return this.tmname;
-	}
-
-	public void setTmname(String tmname) {
-		this.tmname = tmname;
+	public void setMethod(final String method) {
+		this.method = method;
 	}
 
 	@Override
@@ -120,19 +81,14 @@ public class VariableTableItem implements Serializable {
 		int result = 1;
 		result = prime * result + (this.id == null ? 0 : this.id.hashCode());
 		result = prime * result + (this.name == null ? 0 : this.name.hashCode());
-		result = prime * result + (this.scaleid == null ? 0 : this.scaleid.hashCode());
-		result = prime * result + (this.scname == null ? 0 : this.scname.hashCode());
-		result = prime * result + (this.tmethid == null ? 0 : this.tmethid.hashCode());
-		result = prime * result + (this.tmname == null ? 0 : this.tmname.hashCode());
-		result = prime * result + (this.traitid == null ? 0 : this.traitid.hashCode());
-		result = prime * result + (this.trname == null ? 0 : this.trname.hashCode());
+		result = prime * result + (this.property == null ? 0 : this.property.hashCode());
 		result = prime * result + (this.description == null ? 0 : this.description.hashCode());
 		result = prime * result + (this.active == null ? 0 : this.active.hashCode());
 		return result;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -142,7 +98,7 @@ public class VariableTableItem implements Serializable {
 		if (this.getClass() != obj.getClass()) {
 			return false;
 		}
-		VariableTableItem other = (VariableTableItem) obj;
+		final VariableTableItem other = (VariableTableItem) obj;
 		if (this.id == null) {
 			if (other.id != null) {
 				return false;
@@ -157,46 +113,25 @@ public class VariableTableItem implements Serializable {
 		} else if (!this.name.equals(other.name)) {
 			return false;
 		}
-		if (this.scaleid == null) {
-			if (other.scaleid != null) {
+		if (this.scale == null) {
+			if (other.scale != null) {
 				return false;
 			}
-		} else if (!this.scaleid.equals(other.scaleid)) {
+		} else if (!this.scale.equals(other.scale)) {
 			return false;
 		}
-		if (this.scname == null) {
-			if (other.scname != null) {
+		if (this.method == null) {
+			if (other.method != null) {
 				return false;
 			}
-		} else if (!this.scname.equals(other.scname)) {
+		} else if (!this.method.equals(other.method)) {
 			return false;
 		}
-		if (this.tmethid == null) {
-			if (other.tmethid != null) {
+		if (this.property == null) {
+			if (other.property != null) {
 				return false;
 			}
-		} else if (!this.tmethid.equals(other.tmethid)) {
-			return false;
-		}
-		if (this.tmname == null) {
-			if (other.tmname != null) {
-				return false;
-			}
-		} else if (!this.tmname.equals(other.tmname)) {
-			return false;
-		}
-		if (this.traitid == null) {
-			if (other.traitid != null) {
-				return false;
-			}
-		} else if (!this.traitid.equals(other.traitid)) {
-			return false;
-		}
-		if (this.trname == null) {
-			if (other.trname != null) {
-				return false;
-			}
-		} else if (!this.trname.equals(other.trname)) {
+		} else if (!this.property.equals(other.property)) {
 			return false;
 		}
 		if (this.description == null) {
@@ -220,7 +155,7 @@ public class VariableTableItem implements Serializable {
 		return this.description;
 	}
 
-	public void setDescription(String description) {
+	public void setDescription(final String description) {
 		this.description = description;
 	}
 
@@ -228,7 +163,7 @@ public class VariableTableItem implements Serializable {
 		return this.active;
 	}
 
-	public void setActive(Boolean active) {
+	public void setActive(final Boolean active) {
 		this.active = active;
 	}
 
@@ -236,23 +171,15 @@ public class VariableTableItem implements Serializable {
 		return this.datatype;
 	}
 
-	public void setDatatype(String datatype) {
+	public void setDatatype(final String datatype) {
 		this.datatype = datatype;
-	}
-
-	public Integer getVariableId() {
-		return this.variableId;
-	}
-
-	public void setVariableId(Integer variableId) {
-		this.variableId = variableId;
 	}
 
 	public String getDisplayName() {
 		return this.displayName;
 	}
 
-	public void setDisplayName(String displayName) {
+	public void setDisplayName(final String displayName) {
 		this.displayName = displayName;
 	}
 
@@ -260,7 +187,7 @@ public class VariableTableItem implements Serializable {
 		return this.isNonNumeric;
 	}
 
-	public void setNonNumeric(boolean isNonNumeric) {
+	public void setNonNumeric(final boolean isNonNumeric) {
 		this.isNonNumeric = isNonNumeric;
 	}
 
@@ -268,7 +195,7 @@ public class VariableTableItem implements Serializable {
 		return this.isNumericCategoricalVariate;
 	}
 
-	public void setNumericCategoricalVariate(boolean isNumericCategoricalVariate) {
+	public void setNumericCategoricalVariate(final boolean isNumericCategoricalVariate) {
 		this.isNumericCategoricalVariate = isNumericCategoricalVariate;
 	}
 
@@ -276,7 +203,7 @@ public class VariableTableItem implements Serializable {
 		return disabled;
 	}
 
-	public void setDisabled(boolean disabled) {
+	public void setDisabled(final boolean disabled) {
 		this.disabled = disabled;
 	}
 }

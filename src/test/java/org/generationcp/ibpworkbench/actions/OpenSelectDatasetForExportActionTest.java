@@ -143,6 +143,14 @@ public class OpenSelectDatasetForExportActionTest {
 		Mockito.doReturn(DATASET_NAME).when(this.singleSiteAnalysisPanel).getCurrentDatasetName();
 		this.openSelectDatasetForExportAction.setDatasetName(DATASET_NAME);
 
+		final Map<String, Boolean> variatesSelectionMap = new HashMap<>();
+		final Map<String, Boolean> covariatesSelectionMap = new HashMap<>();
+		variatesSelectionMap.put("Variable1", true);
+		covariatesSelectionMap.put("Variable2", true);
+
+		Mockito.when(this.singleSiteAnalysisPanel.getVariatesSelectionMap()).thenReturn(variatesSelectionMap);
+		Mockito.when(this.singleSiteAnalysisPanel.getCovariatesSelectionMap()).thenReturn(covariatesSelectionMap);
+
 		Mockito.doReturn(this.summaryDataset).when(this.studyDataManager).getDataSet(DATASET_ID);
 		Mockito.doReturn(this.summaryVariables).when(this.summaryDataset).getVariableTypes();
 		Mockito.doReturn(this.factors).when(this.summaryVariables).getFactors();
@@ -252,6 +260,8 @@ public class OpenSelectDatasetForExportActionTest {
 		Assert.assertEquals(INPUT_DIRECTORY + File.separator + this.project.getProjectName() + "_99_" + SANITIZED_DATASET_NAME + ".csv",
 				bvInput.getSourceXLSFilePath());
 		Assert.assertTrue(bvInput.getBreedingViewAnalysisName().contains("SSA analysis of " + SANITIZED_DATASET_NAME + "  (run at "));
+		Assert.assertTrue(bvInput.getVariatesSelectionMap().get("Variable1"));
+		Assert.assertTrue(bvInput.getCovariatesSelectionMap().get("Variable2"));
 
 	}
 
