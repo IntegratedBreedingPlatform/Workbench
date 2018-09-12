@@ -44,6 +44,7 @@ public class SingleSiteAnalysisStudyDetailsComponent extends VerticalLayout
 	private String objective = "";
 	private String studyName = "";
 	private String analysisName = "";
+	private String projectType = "";
 
 	private boolean showAnalysisName = false;
 
@@ -59,6 +60,7 @@ public class SingleSiteAnalysisStudyDetailsComponent extends VerticalLayout
 		this.studyName = studyName;
 		this.analysisName = analysisName;
 		this.showAnalysisName = showAnalysisName;
+		this.projectType = "Field Trial";
 	}
 
 	@Override
@@ -104,7 +106,6 @@ public class SingleSiteAnalysisStudyDetailsComponent extends VerticalLayout
 		this.lblProjectType = new Label();
 		this.lblProjectType.setDebugId("lblProjectType");
 		this.lblProjectType.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
-		this.lblProjectType.setWidth("100px");
 
 		this.lblAnalysisName = new Label();
 		this.lblAnalysisName.setDebugId("lblAnalysisName");
@@ -123,6 +124,7 @@ public class SingleSiteAnalysisStudyDetailsComponent extends VerticalLayout
 
 		this.valueProjectType = new Label();
 		this.valueProjectType.setDebugId("valueProjectType");
+		this.valueProjectType.setWidth("100%");
 
 		this.valueDatasetName = new Label();
 		this.valueDatasetName.setDebugId("valueDatasetName");
@@ -153,7 +155,7 @@ public class SingleSiteAnalysisStudyDetailsComponent extends VerticalLayout
 		this.lblDescription.setValue(this.messageSource.getMessage(Message.DESCRIPTION_HEADER) + ":");
 		this.lblObjective.setValue(this.messageSource.getMessage(Message.OBJECTIVE_LABEL) + ":");
 
-		this.valueProjectType.setValue("Field Trial");
+		this.valueProjectType.setValue(projectType);
 		this.valueDatasetName.setValue(datasetName);
 		this.valueDescription.setValue(description);
 		this.valueObjective.setValue(objective);
