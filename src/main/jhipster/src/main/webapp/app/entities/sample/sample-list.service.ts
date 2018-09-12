@@ -42,6 +42,10 @@ export class SampleListService {
         return this.http.post(`${this.resourceUrl}/plate-information/import`, importData);
     }
 
+    submitToGOBii(sampleListId: number) {
+        return this.http.post(`${this.resourceUrl}/submitToGOBii`, { sampleListId });
+    }
+
     private convertArrayResponse(res: HttpResponse<SampleList[]>): HttpResponse<SampleList[]> {
         const jsonResponse: SampleList[] = res.body;
         const body: SampleList[] = [];

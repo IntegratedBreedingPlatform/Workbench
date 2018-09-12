@@ -99,12 +99,14 @@ export class SampleComponent implements OnInit, OnDestroy {
                 (res: HttpErrorResponse) => this.onError(res.message)
         );
     }
+
     loadPage(page: number) {
         if (page !== this.previousPage) {
             this.previousPage = page;
             this.transition();
         }
     }
+
     transition() {
         this.loadAll();
     }
@@ -118,6 +120,7 @@ export class SampleComponent implements OnInit, OnDestroy {
         }]);
         this.loadAll();
     }
+
     search(query) {
         if (!query) {
             return this.clear();
@@ -131,6 +134,7 @@ export class SampleComponent implements OnInit, OnDestroy {
         }]);
         this.loadAll();
     }
+
     export() {
         this.sampleListService.download(this.sampleList.id, this.sampleList.listName).subscribe((response) => {
 
@@ -139,9 +143,15 @@ export class SampleComponent implements OnInit, OnDestroy {
 
         })
     }
+
     importPlate() {
         this.modalService.open('import-plate-modal');
     }
+
+    submitToGOBii() {
+        this.sampleListService.submitToGOBii(this.sampleList.id);
+    }
+
     ngOnInit() {
         this.loadAll();
         this.principal.identity().then((account) => {
@@ -158,6 +168,7 @@ export class SampleComponent implements OnInit, OnDestroy {
     trackId(index: number, item: Sample) {
         return item.id;
     }
+
     registerChangeInSamples() {
         this.eventSubscriber = this.eventManager.subscribe('sampleListModification', (response) => this.loadAll());
     }
@@ -181,6 +192,7 @@ export class SampleComponent implements OnInit, OnDestroy {
             this.sampleList.listName = data[0].sampleList;
         }
     }
+
     private onError(error) {
         this.jhiAlertService.error(error.message, null, null);
     }
