@@ -23,15 +23,28 @@
 					$scope.submitted = true;
 					$scope.serverErrors = {};
 
-					variablesService.addFormula(variable.formula).then(function () {
-						variableStateService.reset();
-						$location.path(VARIABLES_PATH + variable.id);
-						variablesService.deleteVariablesFromCache([parseInt(variable.id)]);
-					}, function (response) {
-						$scope.afForm.$setUntouched();
-						$scope.serverErrors = serviceUtilities.serverErrorHandler($scope.serverErrors, response);
-						$scope.submitted = false;
-					});
+					if (variable.formula.formulaId) {
+						variablesService.updateFormula(variable.formula).then(function () {
+							variableStateService.reset();
+							$location.path(VARIABLES_PATH + variable.id);
+							variablesService.deleteVariablesFromCache([parseInt(variable.id)]);
+						}, function (response) {
+							$scope.afForm.$setUntouched();
+							$scope.serverErrors = serviceUtilities.serverErrorHandler($scope.serverErrors, response);
+							$scope.submitted = false;
+						});
+					} else {
+						variablesService.addFormula(variable.formula).then(function () {
+							variableStateService.reset();
+							$location.path(VARIABLES_PATH + variable.id);
+							variablesService.deleteVariablesFromCache([parseInt(variable.id)]);
+						}, function (response) {
+							$scope.afForm.$setUntouched();
+							$scope.serverErrors = serviceUtilities.serverErrorHandler($scope.serverErrors, response);
+							$scope.submitted = false;
+						});
+					}
+
 				}
 			};
 
