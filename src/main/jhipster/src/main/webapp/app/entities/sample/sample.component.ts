@@ -8,7 +8,7 @@ import { JhiLanguageService } from 'ng-jhipster';
 import { Sample } from './sample.model';
 import { SampleService } from './sample.service';
 // import { ITEMS_PER_PAGE } from '../../shared';
-import { Principal, ITEMS_PER_PAGE } from '../../shared';
+import { Principal, ITEMS_PER_PAGE, convertErrorResponse } from '../../shared';
 import { SampleList } from './sample-list.model';
 import { SampleListService } from './sample-list.service';
 import { FileDownloadHelper } from './file-download.helper';
@@ -82,7 +82,7 @@ export class SampleComponent implements OnInit, OnDestroy {
             listId: this.sampleList.id,
             sort: this.sort()}).subscribe(
                 (res: HttpResponse<Sample[]>) => this.onSuccess(res.body, res.headers),
-                (res: HttpErrorResponse) => this.onError(res.message)
+                (res: HttpErrorResponse) => convertErrorResponse(res, this.jhiAlertService)
         );
     }
 
@@ -111,7 +111,9 @@ export class SampleComponent implements OnInit, OnDestroy {
     }
 
     submitToGOBii() {
-        this.sampleListService.submitToGOBii(this.sampleList.id);
+        this.sampleListService.submitToGOBii(this.sampleList.id).subscribe((resp) => {
+
+        }, (resp) => convertErrorResponse(resp, this.jhiAlertService));
     }
 
     ngOnInit() {
@@ -153,9 +155,5 @@ export class SampleComponent implements OnInit, OnDestroy {
         if (data.length) {
             this.sampleList.listName = data[0].sampleList;
         }
-    }
-
-    private onError(error) {
-        this.jhiAlertService.error(error.message, null, null);
     }
 }
