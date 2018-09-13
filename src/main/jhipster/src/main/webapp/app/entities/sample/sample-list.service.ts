@@ -43,7 +43,7 @@ export class SampleListService {
     }
 
     submitToGOBii(sampleListId: number) {
-        return this.http.post(`${this.resourceUrl}/submitToGOBii`, { sampleListId });
+        return this.http.post(`${this.resourceUrl}/${sampleListId}/submitToGOBii`, null);
     }
 
     private convertArrayResponse(res: HttpResponse<SampleList[]>): HttpResponse<SampleList[]> {
