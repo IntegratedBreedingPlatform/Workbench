@@ -75,21 +75,7 @@ export class SampleComponent implements OnInit, OnDestroy {
         if (!this.sampleList || !this.sampleList.id) {
             return;
         }
-        // TODO jhipster elastic search
-        /*
-        if (this.currentSearch) {
-            this.sampleService.search({
-                page: this.page - 1,
-                query: this.currentSearch,
-                size: this.itemsPerPage,
-                listId: this.sampleList.id,
-                sort: this.sort()}).subscribe(
-                    (res: HttpResponse<Sample[]>) => this.onSuccess(res.body, res.headers),
-                    (res: HttpErrorResponse) => this.onError(res.message)
-                );
-            return;
-        }
-        */
+
         this.sampleService.query({
             page: this.page - 1,
             size: this.itemsPerPage,
@@ -108,30 +94,6 @@ export class SampleComponent implements OnInit, OnDestroy {
     }
 
     transition() {
-        this.loadAll();
-    }
-
-    clear() {
-        this.page = 0;
-        this.currentSearch = '';
-        this.router.navigate(['/' + this.crop + '/sample-browse', {
-            page: this.page,
-            sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
-        }]);
-        this.loadAll();
-    }
-
-    search(query) {
-        if (!query) {
-            return this.clear();
-        }
-        this.page = 0;
-        this.currentSearch = query;
-        this.router.navigate(['/' + this.crop + '/sample-browse', {
-            search: this.currentSearch,
-            page: this.page,
-            sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
-        }]);
         this.loadAll();
     }
 
