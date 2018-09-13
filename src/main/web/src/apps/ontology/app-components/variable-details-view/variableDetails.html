@@ -218,11 +218,14 @@
 												</span>
 											</span>
 										</td>
-										<td align="right" >
-											<button ng-hide="editing || confirmDeleteFormula || confirmationNecessary" type="button" class="btn btn-danger btn-icon" aria-label="{{'button.delete' | translate}}"
-													ng-click="deleteFormula($event,variableId)">
-												<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-											</button>
+										<td align="right">
+											<div ng-hide="editing || confirmDeleteFormula || confirmationNecessary">
+												<button class="btn btn-primary" ng-click="editFormula($event)">{{'button.edit' | translate}}
+												</button>
+												<button type="button" class="btn btn-danger btn-icon" aria-label="{{'button.delete' | translate}}" ng-click="deleteFormula($event,variableId)">
+													<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+												</button>
+											</div>
 										</td>
 									</tr>
 									</tbody>
