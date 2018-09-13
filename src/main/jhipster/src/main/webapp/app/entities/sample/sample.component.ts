@@ -112,7 +112,7 @@ export class SampleComponent implements OnInit, OnDestroy {
 
     submitToGOBii() {
         this.sampleListService.submitToGOBii(this.sampleList.id).subscribe((resp) => {
-
+            this.jhiAlertService.success('bmsjHipsterApp.sample.gobii.submit.success', { sampleList: this.sampleList.id })
         }, (resp) => convertErrorResponse(resp, this.jhiAlertService));
     }
 

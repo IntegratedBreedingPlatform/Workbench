@@ -39,7 +39,13 @@
                 "success": "Sample Plate Information has been imported successfully.",
                 "error":"Something went wrong, please try again."
             },
-            "error": "{{ param }}"
+            "error": "{{ param }}",
+            "gobii": {
+                "submit": {
+                    "success": "Sample list {{ sampleList }} submitted successfully"
+                }
+            }
+
         }
     }
 }
