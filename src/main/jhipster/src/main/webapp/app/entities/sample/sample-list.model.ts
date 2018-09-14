@@ -7,6 +7,7 @@ export class SampleList implements BaseEntity {
         public listName?: string,
         public description?: string,
         public active?: boolean,
+        public gobiiProjectId?: number,
         public samples?: Sample[]
     ) {
     }
