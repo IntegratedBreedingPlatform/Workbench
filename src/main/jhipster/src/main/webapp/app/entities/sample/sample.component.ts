@@ -152,8 +152,5 @@ export class SampleComponent implements OnInit, OnDestroy {
         this.queryCount = this.totalItems;
 
         this.sampleList.samples = data;
-        if (data.length) {
-            this.sampleList.listName = data[0].sampleList;
-        }
     }
 }

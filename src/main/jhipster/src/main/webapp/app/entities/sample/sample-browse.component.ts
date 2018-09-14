@@ -4,6 +4,9 @@ import { Subscription } from 'rxjs/Subscription';
 import { ActivatedRoute } from '@angular/router';
 import {ModalService} from '../../shared/modal/modal.service';
 import {SampleContext} from './sample.context';
+import { SampleListService } from './sample-list.service';
+import { convertErrorResponse } from '../../shared';
+import { JhiAlertService } from 'ng-jhipster';
 
 @Component({
     selector: 'jhi-sample-browse',
@@ -21,7 +24,9 @@ export class SampleBrowseComponent implements OnInit, OnDestroy {
 
     constructor(private activatedRoute: ActivatedRoute,
                 private modalService: ModalService,
-                private sampleContext: SampleContext) {
+                private sampleContext: SampleContext,
+                private sampleListService: SampleListService,
+                private jhiAlertService: JhiAlertService) {
         this.queryParamSubscription = this.activatedRoute.queryParams.subscribe((params) => {
             this.listId = params['listId'];
 
@@ -30,7 +35,11 @@ export class SampleBrowseComponent implements OnInit, OnDestroy {
             }
 
             if (!this.exists(this.listId)) {
-                this.lists.push(new SampleList(this.listId, 'List ' + this.listId, '', true, []));
+                this.sampleListService.getById(this.listId).subscribe(
+                    (resp) => {
+                        this.lists.push(new SampleList(this.listId, resp.body.listName, '', true, resp.body.gobiiProjectId, []));
+                    }, (resp) => convertErrorResponse(resp, this.jhiAlertService)
+                )
             }
 
             this.setActive(this.listId);

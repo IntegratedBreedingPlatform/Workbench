@@ -18,6 +18,11 @@ export class SampleListService {
         this.resourceUrl = SERVER_API_URL + `sampleLists/${crop}`;
     }
 
+    getById(sampleListId: number): Observable<HttpResponse<SampleList>> {
+        return this.http.get(`${this.resourceUrl}/${sampleListId}`, { observe: 'response' })
+            .map((res) => this.convertResponse(res));
+    }
+
     search(params: any): Observable<HttpResponse<SampleList[]>> {
         const options = createRequestOption(params);
 
@@ -46,6 +51,11 @@ export class SampleListService {
         return this.http.post(`${this.resourceUrl}/${sampleListId}/submitToGOBii`, null);
     }
 
+    private convertResponse(res: HttpResponse<SampleList>): HttpResponse<SampleList> {
+        const body: SampleList = this.convertItemFromServer(res.body);
+        return res.clone({body});
+    }
+
     private convertArrayResponse(res: HttpResponse<SampleList[]>): HttpResponse<SampleList[]> {
         const jsonResponse: SampleList[] = res.body;
         const body: SampleList[] = [];
@@ -58,8 +68,8 @@ export class SampleListService {
     /**
      * Convert a returned JSON object to SampleList.
      */
-    private convertItemFromServer(sample: any): SampleList {
-        const copy: SampleList = Object.assign({}, sample);
+    private convertItemFromServer(sampleList: any): SampleList {
+        const copy: SampleList = Object.assign({}, sampleList);
         return copy;
     }
 }
