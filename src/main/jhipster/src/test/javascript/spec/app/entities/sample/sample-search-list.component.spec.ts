@@ -44,7 +44,7 @@ describe('Component Tests', () => {
 
                 comp.searchString = 'search term';
 
-                const expectedSampleList = new SampleList(1, 'listName', '', false, []);
+                const expectedSampleList = new SampleList(1, 'listName', '', false, null, []);
                 const headers = new HttpHeaders().append('link', 'link;link');
                 spyOn(service, 'search').and.returnValue(Observable.of(new HttpResponse({
                     body: [expectedSampleList],
@@ -61,7 +61,7 @@ describe('Component Tests', () => {
 
                comp.selectedListId = 1;
 
-               const selectedSampleList = new SampleList(1, 'listName', '', false, []);
+               const selectedSampleList = new SampleList(1, 'listName', '', false, null, []);
                comp.selectList(selectedSampleList);
 
                expect(router.navigate).toHaveBeenCalledWith([ '/maize/sample-browse' ], Object({ queryParams: Object({ listId: 1 }) }));
@@ -72,7 +72,7 @@ describe('Component Tests', () => {
 
                 comp.searchString = 'MyList';
                 comp.exactMatch = true;
-                comp.sampleListResults = [new SampleList(1, 'listName', '', false, [])];
+                comp.sampleListResults = [new SampleList(1, 'listName', '', false, null, [])];
                 comp.selectedListId = 1;
 
                 comp.reset();

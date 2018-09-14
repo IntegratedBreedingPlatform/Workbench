@@ -54,8 +54,8 @@ describe('Service Tests', () => {
             it('should return an array of SampleList', () => {
 
                 const sampleLists = [];
-                sampleLists.push(new SampleList(1, 'Name1', '', false, []));
-                sampleLists.push(new SampleList(2, 'Name2', '', false, []));
+                sampleLists.push(new SampleList(1, 'Name1', '', false, null, []));
+                sampleLists.push(new SampleList(2, 'Name2', '', false, null, []));
 
                 service.search(dummyParams).subscribe((received) => {
                     expect(received.body.length).toEqual(2);
