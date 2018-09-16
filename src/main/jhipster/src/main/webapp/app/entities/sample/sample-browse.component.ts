@@ -46,6 +46,9 @@ export class SampleBrowseComponent implements OnInit, OnDestroy {
             const first = this.lists[0];
             if (first) {
                 first.active = true;
+                window.location.hash = window.location.hash.replace(/listId=[0-9]*$/, "listId=" + first.id);
+            } else {
+                window.location.hash = window.location.hash.replace(/listId=[0-9]*$/, "listId=");
             }
         }
     }
