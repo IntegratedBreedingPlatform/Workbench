@@ -74,8 +74,9 @@ export class SampleBrowseComponent implements OnInit, OnDestroy {
     }
 
     private navigate(listId: any) {
+        this.listId = listId;
         this.router.navigate(['/' + this.crop + '/sample-browse'], {queryParams: {
-                listId: listId
+                listId: this.listId
             }
         });
     }
