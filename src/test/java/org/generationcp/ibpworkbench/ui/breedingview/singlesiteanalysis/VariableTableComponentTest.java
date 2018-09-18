@@ -18,6 +18,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -117,11 +118,86 @@ public class VariableTableComponentTest {
 		final BeanItem<VariableTableItem> beanItem = new BeanItem<VariableTableItem>(item);
 		when(table.getItem(Mockito.anyInt())).thenReturn(beanItem);
 
-		variableTableComponent.toggleCheckbox(variableId, true);
+		variableTableComponent.toggleCheckbox(variableId, false,true);
 
 		assertFalse(item.getActive());
 		assertTrue(item.isDisabled());
 		assertFalse(variableTableComponent.getCheckboxValuesMap().get(variable));
+
+		verify(table).refreshRowCache();
+
+	}
+
+	@Test
+	public void testToggleCheckboxVariableItemIsNonNumeric() throws Exception {
+
+		final String variable = "Variable";
+		final int variableId = 1;
+		final Table table = Mockito.mock(Table.class);
+
+		final VariableTableComponent variableTableComponent = new VariableTableComponent(
+				new String[] {VariableTableComponent.CHECKBOX_COLUMN, VariableTableComponent.NAME_COLUMN,
+						VariableTableComponent.DESCRIPTION_COLUMN, VariableTableComponent.SCALE_NAME_COLUMN}, true);
+		variableTableComponent.afterPropertiesSet();
+		variableTableComponent.setTable(table);
+
+		final VariableTableItem item = new VariableTableItem();
+		item.setName(variable);
+		item.setId(variableId);
+		item.setNonNumeric(true);
+		final BeanItem<VariableTableItem> beanItem = new BeanItem<VariableTableItem>(item);
+		when(table.getItem(Mockito.anyInt())).thenReturn(beanItem);
+
+		variableTableComponent.toggleCheckbox(variableId, true,true);
+
+		assertFalse(item.getActive());
+		assertTrue(item.isDisabled());
+		assertFalse(variableTableComponent.getCheckboxValuesMap().get(variable));
+
+		verify(table).refreshRowCache();
+
+	}
+
+	@Test
+	public void testResetAllCheckbox() throws Exception {
+
+		final String variable1 = "Variable1";
+		final int variableId1 = 1;
+		final String variable2 = "Variable2";
+		final int variableId2 = 2;
+
+		final Table table = Mockito.mock(Table.class);
+
+		final VariableTableComponent variableTableComponent = new VariableTableComponent(
+				new String[] {VariableTableComponent.CHECKBOX_COLUMN, VariableTableComponent.NAME_COLUMN,
+						VariableTableComponent.DESCRIPTION_COLUMN, VariableTableComponent.SCALE_NAME_COLUMN}, true);
+		variableTableComponent.afterPropertiesSet();
+		variableTableComponent.setTable(table);
+
+		final VariableTableItem item1 = new VariableTableItem();
+		item1.setName(variable1);
+		item1.setId(variableId1);
+		final VariableTableItem item2 = new VariableTableItem();
+		item2.setName(variable2);
+		item2.setId(variableId2);
+		final BeanItem<VariableTableItem> beanItem1 = new BeanItem<VariableTableItem>(item1);
+		final BeanItem<VariableTableItem> beanItem2 = new BeanItem<VariableTableItem>(item2);
+
+		List itemIds = new ArrayList();
+		itemIds.add(variableId1);
+		itemIds.add(variableId2);
+		when(table.getItemIds()).thenReturn(itemIds);
+		when(table.getItem(variableId1)).thenReturn(beanItem1);
+		when(table.getItem(variableId2)).thenReturn(beanItem2);
+
+		variableTableComponent.resetAllCheckbox();
+
+		assertFalse(item1.getActive());
+		assertFalse(item1.isDisabled());
+		assertFalse(variableTableComponent.getCheckboxValuesMap().get(variable1));
+		assertFalse(item2.getActive());
+		assertFalse(item2.isDisabled());
+		assertFalse(variableTableComponent.getCheckboxValuesMap().get(variable2));
 
 		verify(table).refreshRowCache();
 
@@ -359,7 +435,7 @@ public class VariableTableComponentTest {
 		assertTrue(variableTableComponent.getCheckboxValuesMap().get(item1.getName()));
 		assertTrue(variableTableComponent.getCheckboxValuesMap().get(item2.getName()));
 		verify(table).refreshRowCache();
-		verify(selectAllChangedListener).onSelectionChanged();
+		verify(selectAllChangedListener).onSelectionChanged(Mockito.anyBoolean());
 
 	}
 
@@ -407,7 +483,7 @@ public class VariableTableComponentTest {
 		assertTrue(variableTableComponent.getCheckboxValuesMap().get(item1.getName()));
 		assertTrue(variableTableComponent.getCheckboxValuesMap().get(item2.getName()));
 		verify(table).refreshRowCache();
-		verify(selectAllChangedListener).onSelectionChanged();
+		verify(selectAllChangedListener).onSelectionChanged(Mockito.anyBoolean());
 
 	}
 
@@ -453,7 +529,7 @@ public class VariableTableComponentTest {
 		assertFalse(variableTableComponent.getCheckboxValuesMap().get(item1.getName()));
 		assertFalse(variableTableComponent.getCheckboxValuesMap().get(item2.getName()));
 		verify(table).refreshRowCache();
-		verify(selectAllChangedListener).onSelectionChanged();
+		verify(selectAllChangedListener).onSelectionChanged(Mockito.anyBoolean());
 
 	}
 

@@ -39,7 +39,7 @@ public class VariableTableComponent extends VerticalLayout implements Initializi
 
 	public interface SelectAllChangedListener {
 
-		public void onSelectionChanged();
+		public void onSelectionChanged(boolean isChecked);
 	}
 
 
@@ -61,7 +61,7 @@ public class VariableTableComponent extends VerticalLayout implements Initializi
 	private SelectAllChangedListener selectAllChangedListener = new SelectAllChangedListener() {
 
 		@Override
-		public void onSelectionChanged() {
+		public void onSelectionChanged(boolean isChecked) {
 			// do nothing
 		}
 	};
@@ -164,15 +164,26 @@ public class VariableTableComponent extends VerticalLayout implements Initializi
 		return checkboxValuesMap;
 	}
 
-	public void toggleCheckbox(final Integer id, final boolean isDisabled) {
+	public void toggleCheckbox(final Integer id, final boolean isActive, final boolean isDisabled) {
 		final BeanItem<VariableTableItem> item = (BeanItem<VariableTableItem>) this.table.getItem(id);
 		if (item != null) {
 			final VariableTableItem variableTableItem = item.getBean();
-			variableTableItem.setActive(false);
+			variableTableItem.setActive(variableTableItem.isNonNumeric() ? false : isActive);
 			variableTableItem.setDisabled(isDisabled);
 			checkboxValuesMap.put(variableTableItem.getName(), variableTableItem.getActive());
 			this.table.refreshRowCache();
 		}
+	}
+
+	public void resetAllCheckbox() {
+		for (Object itemId : this.table.getItemIds()) {
+			final BeanItem<VariableTableItem> item = (BeanItem<VariableTableItem>) this.table.getItem(itemId);
+			final VariableTableItem variableTableItem = item.getBean();
+			variableTableItem.setActive(false);
+			variableTableItem.setDisabled(false);
+			checkboxValuesMap.put(variableTableItem.getName(), variableTableItem.getActive());
+		}
+		this.table.refreshRowCache();
 	}
 
 	protected void initializeTableContainer(final List<VariableTableItem> variableTableItems) {
@@ -296,7 +307,7 @@ public class VariableTableComponent extends VerticalLayout implements Initializi
 			for (final Map.Entry<String, Boolean> entry : VariableTableComponent.this.checkboxValuesMap.entrySet()) {
 				VariableTableComponent.this.checkboxValuesMap.put(entry.getKey(), val);
 			}
-			selectAllChangedListener.onSelectionChanged();
+			selectAllChangedListener.onSelectionChanged(val);
 		}
 	}
 

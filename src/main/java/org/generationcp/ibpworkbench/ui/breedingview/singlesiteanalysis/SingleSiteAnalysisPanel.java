@@ -441,7 +441,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		this.covariatesTableComponent = new VariableTableComponent(
 				new String[] {VariableTableComponent.CHECKBOX_COLUMN, VariableTableComponent.NAME_COLUMN,
 						VariableTableComponent.DESCRIPTION_COLUMN, VariableTableComponent.SCALE_NAME_COLUMN});
-
+		this.covariatesTableComponent.addSelectionChangedListener(new CovariateTableSelectionChangedListener());
 	}
 
 	// SETTERS AND GETTERS
@@ -533,19 +533,21 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		this.btnNext = btnNext;
 	}
 
+	protected void toggleNextButton() {
+		if (SingleSiteAnalysisPanel.this.variatesTableComponent.someItemsAreSelected()) {
+			SingleSiteAnalysisPanel.this.btnNext.setEnabled(true);
+		} else {
+			SingleSiteAnalysisPanel.this.btnNext.setEnabled(false);
+		}
+	}
+
 	class VariateTableSelectionChangedListener implements VariableTableComponent.SelectionChangedListener {
 
 		@Override
 		public void onSelectionChanged(final VariableTableItem variableTableItem) {
 
-			SingleSiteAnalysisPanel.this.covariatesTableComponent.toggleCheckbox(variableTableItem.getId(), variableTableItem.getActive());
-
-			if (SingleSiteAnalysisPanel.this.variatesTableComponent.someItemsAreSelected()) {
-				SingleSiteAnalysisPanel.this.btnNext.setEnabled(true);
-			} else {
-				SingleSiteAnalysisPanel.this.btnNext.setEnabled(false);
-			}
-
+			SingleSiteAnalysisPanel.this.covariatesTableComponent.toggleCheckbox(variableTableItem.getId(), false, variableTableItem.getActive());
+			SingleSiteAnalysisPanel.this.toggleNextButton();
 		}
 	}
 
@@ -553,12 +555,25 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 	class VariateTableSelectAllChangedListener implements VariableTableComponent.SelectAllChangedListener {
 
 		@Override
-		public void onSelectionChanged() {
-			if (SingleSiteAnalysisPanel.this.variatesTableComponent.someItemsAreSelected()) {
-				SingleSiteAnalysisPanel.this.btnNext.setEnabled(true);
-			} else {
-				SingleSiteAnalysisPanel.this.btnNext.setEnabled(false);
+		public void onSelectionChanged(boolean isChecked) {
+
+			if (!isChecked) {
+				SingleSiteAnalysisPanel.this.covariatesTableComponent.resetAllCheckbox();
 			}
+			SingleSiteAnalysisPanel.this.toggleNextButton();
+		}
+	}
+
+	class CovariateTableSelectionChangedListener implements VariableTableComponent.SelectionChangedListener {
+
+		@Override
+		public void onSelectionChanged(final VariableTableItem variableTableItem) {
+
+			if (!variableTableItem.getActive()) {
+				SingleSiteAnalysisPanel.this.variatesTableComponent.toggleCheckbox(variableTableItem.getId(), true, false);
+			}
+			SingleSiteAnalysisPanel.this.toggleNextButton();
+
 		}
 	}
 

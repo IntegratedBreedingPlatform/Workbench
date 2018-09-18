@@ -185,7 +185,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 
 	}
 
-	private boolean validateInput(final ClickEvent event, final Integer studyId, final Integer dataSetId, final String datasetName) {
+	protected boolean validateInput(final ClickEvent event, final Integer studyId, final Integer dataSetId, final String datasetName) {
 		// study is required
 		if (this.selectDatasetForBreedingViewPanel.getCurrentStudy() == null) {
 			event.getComponent().getWindow().showNotification("Please select a Study first.", Notification.TYPE_ERROR_MESSAGE);
@@ -197,14 +197,20 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 			event.getComponent().getWindow().showNotification("Please select a Dataset first.", Notification.TYPE_ERROR_MESSAGE);
 			return false;
 		}
+
 		final List<VariableTableItem> variates = this.selectDatasetForBreedingViewPanel.getVariateList();
 		final Map<String, Boolean> variatesCheckboxState = this.selectDatasetForBreedingViewPanel.getVariatesSelectionMap();
-		final boolean includesNonNumeric = this.checkIfNonNumericVarAreIncluded(variates, variatesCheckboxState);
-		if (includesNonNumeric) {
+		final Map<String, Boolean> covariatesCheckboxState = this.selectDatasetForBreedingViewPanel.getCovariatesSelectionMap();
+
+		final boolean variatesTableIncludesNonNumeric = this.checkIfNonNumericVarAreIncluded(variates, variatesCheckboxState);
+		final boolean covariatesTableIncludesNonNumeric = this.checkIfNonNumericVarAreIncluded(variates, covariatesCheckboxState);
+		if (variatesTableIncludesNonNumeric || covariatesTableIncludesNonNumeric) {
 			MessageNotifier.showError(event.getComponent().getWindow(), this.messageSource.getMessage(Message.INVALID_INPUT),
 					this.messageSource.getMessage(Message.SSA_NON_NUMERIC_CATEGORICAL_VAR_ERROR));
 			return false;
 		}
+
+
 		final boolean includesNumericCategorical = this.checkIfNumericCategoricalVarAreIncluded(variates, variatesCheckboxState);
 		if (includesNumericCategorical) {
 			MessageNotifier.showWarning(event.getComponent().getWindow(), this.messageSource.getMessage(Message.WARNING),
@@ -226,9 +232,11 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 
 	protected boolean checkIfNonNumericVarAreIncluded(final List<VariableTableItem> variableTableItems, final Map<String, Boolean> variatesCheckboxState) {
 		for (final VariableTableItem vm : variableTableItems) {
-			final boolean isSelected = variatesCheckboxState.get(vm.getName());
-			if (isSelected && vm.isNonNumeric()) {
-				return true;
+			if (variatesCheckboxState.containsKey(vm.getName())) {
+				final boolean isSelected = variatesCheckboxState.get(vm.getName());
+				if (isSelected && vm.isNonNumeric()) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -264,5 +272,9 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 
 	public void setIsServerApp(final String isServerApp) {
 		this.isServerApp = isServerApp;
+	}
+
+	public void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
 	}
 }

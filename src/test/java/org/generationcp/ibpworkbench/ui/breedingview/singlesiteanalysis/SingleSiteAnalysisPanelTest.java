@@ -177,7 +177,7 @@ public class SingleSiteAnalysisPanelTest {
 
 		listener.onSelectionChanged(variableTableItem);
 
-		Mockito.verify(this.covariatesTableComponent).toggleCheckbox(variableTableItem.getId(), variableTableItem.getActive());
+		Mockito.verify(this.covariatesTableComponent).toggleCheckbox(variableTableItem.getId(), false, variableTableItem.getActive());
 		Mockito.verify(btnNext).setEnabled(true);
 
 	}
@@ -197,8 +197,48 @@ public class SingleSiteAnalysisPanelTest {
 
 		listener.onSelectionChanged(variableTableItem);
 
-		Mockito.verify(this.covariatesTableComponent).toggleCheckbox(variableTableItem.getId(), variableTableItem.getActive());
+		Mockito.verify(this.covariatesTableComponent).toggleCheckbox(variableTableItem.getId(), false, variableTableItem.getActive());
 		Mockito.verify(btnNext).setEnabled(false);
+
+	}
+
+	@Test
+	public void testCovariatesTableSelectionChangedCovariateItemIsUnchecked() {
+
+		final Button btnNext = Mockito.mock(Button.class);
+		this.singleSiteAnalysisPanel.setBtnNext(btnNext);
+		Mockito.when(this.variatesTableComponent.someItemsAreSelected()).thenReturn(true);
+		final VariableTableComponent.SelectionChangedListener listener =
+				this.singleSiteAnalysisPanel.new CovariateTableSelectionChangedListener();
+
+		final VariableTableItem variableTableItem = new VariableTableItem();
+		variableTableItem.setActive(false);
+		variableTableItem.setId(1);
+
+		listener.onSelectionChanged(variableTableItem);
+
+		Mockito.verify(this.variatesTableComponent).toggleCheckbox(variableTableItem.getId(), true, false);
+		Mockito.verify(btnNext).setEnabled(true);
+
+	}
+
+	@Test
+	public void testCovariatesTableSelectionChangedCovariateItemIsChecked() {
+
+		final Button btnNext = Mockito.mock(Button.class);
+		this.singleSiteAnalysisPanel.setBtnNext(btnNext);
+		Mockito.when(this.variatesTableComponent.someItemsAreSelected()).thenReturn(true);
+		final VariableTableComponent.SelectionChangedListener listener =
+				this.singleSiteAnalysisPanel.new CovariateTableSelectionChangedListener();
+
+		final VariableTableItem variableTableItem = new VariableTableItem();
+		variableTableItem.setActive(true);
+		variableTableItem.setId(1);
+
+		listener.onSelectionChanged(variableTableItem);
+
+		Mockito.verify(this.variatesTableComponent, Mockito.times(0)).toggleCheckbox(variableTableItem.getId(), true, false);
+		Mockito.verify(btnNext).setEnabled(true);
 
 	}
 
@@ -211,7 +251,7 @@ public class SingleSiteAnalysisPanelTest {
 		final VariableTableComponent.SelectAllChangedListener listener =
 				this.singleSiteAnalysisPanel.new VariateTableSelectAllChangedListener();
 
-		listener.onSelectionChanged();
+		listener.onSelectionChanged(true);
 
 		Mockito.verify(btnNext).setEnabled(true);
 
@@ -226,9 +266,10 @@ public class SingleSiteAnalysisPanelTest {
 		final VariableTableComponent.SelectAllChangedListener listener =
 				this.singleSiteAnalysisPanel.new VariateTableSelectAllChangedListener();
 
-		listener.onSelectionChanged();
+		listener.onSelectionChanged(false);
 
 		Mockito.verify(btnNext).setEnabled(false);
+		Mockito.verify(covariatesTableComponent).resetAllCheckbox();
 
 	}
 

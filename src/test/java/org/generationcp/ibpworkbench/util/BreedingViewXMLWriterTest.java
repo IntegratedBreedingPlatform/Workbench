@@ -150,7 +150,7 @@ public class BreedingViewXMLWriterTest {
 
 		final List<Covariate> covariates = this.breedingViewXMLWriter.createCovariates();
 		Assert.assertEquals(1, covariates.size());
-		Assert.assertEquals("Variable4", covariates.get(0).getName());
+		Assert.assertEquals("Variable1", covariates.get(0).getName());
 		Assert.assertTrue(covariates.get(0).isActive());
 
 	}
