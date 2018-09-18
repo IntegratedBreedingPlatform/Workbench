@@ -16,9 +16,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.ui.Window;
+import org.springframework.beans.factory.annotation.Value;
 
 @Configurable
 public class GraphVizUtility {
+
+
+	@Value("${graphviz.executable.path}")
+	private String graphvizExecutablePath;
 
 	private static String TEMP_DIR = System.getProperty("user.dir");
 	private static final Logger LOG = LoggerFactory.getLogger(GraphVizUtility.class);
@@ -53,10 +58,7 @@ public class GraphVizUtility {
 	 * This method should set the path of GraphViz dot executable.
 	 */
 	public void initialize() {
-		// set the GraphViz' dot executable path
-		final String graphvizPath = "infrastructure/graphviz/bin/dot.exe";
-
-		final File dotFile = new File(graphvizPath).getAbsoluteFile();
+		final File dotFile = new File(graphvizExecutablePath).getAbsoluteFile();
 		this.dotPath = dotFile.getAbsolutePath();
 	}
 
