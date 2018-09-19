@@ -32,7 +32,6 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.UserDefinedField;
@@ -142,7 +141,7 @@ public class SaveGermplasmListDialog extends GridLayout implements InitializingB
 
 	private void populateComboBoxListName() throws MiddlewareQueryException {
 		this.germplasmList =
-				this.germplasmListManager.getAllGermplasmLists(0, (int) this.germplasmListManager.countAllGermplasmLists(), Database.LOCAL);
+				this.germplasmListManager.getAllGermplasmLists(0, (int) this.germplasmListManager.countAllGermplasmLists());
 		this.mapExistingList = new HashMap<String, Integer>();
 		this.comboBoxListName.addItem("");
 		for (GermplasmList gList : this.germplasmList) {
