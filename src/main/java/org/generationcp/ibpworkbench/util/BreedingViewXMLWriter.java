@@ -296,7 +296,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 			}
 		}
 
-		// if the list is empty, we must return null so that JAXB will ignore Covariates element and won't be included in the generated XML file.
+		// if the list is empty, we must return null so that JAXB will ignore Traits element and won't be included in the generated XML file.
 		return traits.isEmpty() ? null : traits;
 	}
 
