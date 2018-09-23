@@ -369,6 +369,21 @@ public class WorkbenchMainViewTest {
 	}
 
 	@Test
+	public void testHideSidebarToggleNoProgramExists() {
+
+		final Label workbenchTitleLabel = new Label();
+		this.workbenchMainView.setWorkbenchTitle(workbenchTitleLabel);
+
+		// Throw MiddlewareQueryException to simulate the case where no program exists yet in BMS.
+		Mockito.when(this.contextUtil.getProjectInContext()).thenThrow(new MiddlewareQueryException(""));
+
+		this.workbenchMainView.displayCurrentProjectTitle();
+
+		Assert.assertEquals("", workbenchTitleLabel.getValue());
+		Assert.assertFalse(this.workbenchMainView.getSidebarToggleButton().booleanValue());
+	}
+
+	@Test
 	public void testRefreshMemberDetailsPopup() {
 
 		final String firstName = "firstname";
