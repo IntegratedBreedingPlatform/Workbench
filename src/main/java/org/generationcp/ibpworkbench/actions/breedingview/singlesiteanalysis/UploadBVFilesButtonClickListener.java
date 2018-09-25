@@ -28,7 +28,7 @@ public class UploadBVFilesButtonClickListener implements ClickListener {
 		for (final DMSVariableType factor : this.ssaDetailsPanel.getFactorsInDataset()) {
 			visibleTraitsMap.put(factor.getLocalName(), true);
 		}
-		visibleTraitsMap.putAll(this.ssaDetailsPanel.getBreedingViewInput().getVariatesActiveState());
+		visibleTraitsMap.putAll(this.ssaDetailsPanel.getBreedingViewInput().getVariatesSelectionMap());
 
 		final FileUploadBreedingViewOutputWindow window = new FileUploadBreedingViewOutputWindow(event.getComponent().getWindow(),
 				this.ssaDetailsPanel.getBreedingViewInput().getStudyId(), this.ssaDetailsPanel.getProject(), visibleTraitsMap);

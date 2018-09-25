@@ -11,11 +11,6 @@
 
 package org.generationcp.ibpworkbench.util;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.io.FilenameUtils;
 import org.generationcp.commons.breedingview.xml.Blocks;
 import org.generationcp.commons.breedingview.xml.ColPos;
 import org.generationcp.commons.breedingview.xml.Columns;
@@ -25,12 +20,14 @@ import org.generationcp.commons.breedingview.xml.Plot;
 import org.generationcp.commons.breedingview.xml.Replicates;
 import org.generationcp.commons.breedingview.xml.RowPos;
 import org.generationcp.commons.breedingview.xml.Rows;
-import org.generationcp.commons.util.BreedingViewUtil;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.pojos.workbench.Project;
 
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+
 /**
- *
  * <br>
  * <br>
  *
@@ -68,7 +65,8 @@ public class BreedingViewInput implements Serializable {
 	private String datasetSource;
 	private String description;
 	private String objective;
-	private Map<String, Boolean> variatesActiveState;
+	private Map<String, Boolean> variatesSelectionMap;
+	private Map<String, Boolean> covariatesSelectionMap;
 	private List<SeaEnvironmentModel> selectedEnvironments;
 
 	public BreedingViewInput() {
@@ -356,12 +354,20 @@ public class BreedingViewInput implements Serializable {
 		this.datasetSource = datasetSource;
 	}
 
-	public Map<String, Boolean> getVariatesActiveState() {
-		return this.variatesActiveState;
+	public Map<String, Boolean> getVariatesSelectionMap() {
+		return this.variatesSelectionMap;
 	}
 
-	public void setVariatesActiveState(final Map<String, Boolean> variateActiveStates) {
-		this.variatesActiveState = variateActiveStates;
+	public void setVariatesSelectionMap(final Map<String, Boolean> variateActiveStates) {
+		this.variatesSelectionMap = variateActiveStates;
+	}
+
+	public Map<String, Boolean> getCovariatesSelectionMap() {
+		return covariatesSelectionMap;
+	}
+
+	public void setCovariatesSelectionMap(final Map<String, Boolean> covariatesSelectionMap) {
+		this.covariatesSelectionMap = covariatesSelectionMap;
 	}
 
 	public String getBreedingViewAnalysisName() {
@@ -422,22 +428,18 @@ public class BreedingViewInput implements Serializable {
 		this.replicatesFactorName = replicatesFactorName;
 	}
 
-	
 	public String getDescription() {
 		return description;
 	}
 
-	
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
-	
 	public String getObjective() {
 		return objective;
 	}
 
-	
 	public void setObjective(String objective) {
 		this.objective = objective;
 	}
