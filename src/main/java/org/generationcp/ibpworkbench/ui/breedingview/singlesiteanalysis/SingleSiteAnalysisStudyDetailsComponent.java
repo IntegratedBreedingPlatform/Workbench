@@ -1,6 +1,11 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
+import com.mysql.jdbc.StringUtils;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -9,12 +14,6 @@ import org.generationcp.ibpworkbench.Message;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import com.mysql.jdbc.StringUtils;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
 
 @Configurable
 public class SingleSiteAnalysisStudyDetailsComponent extends VerticalLayout
@@ -40,11 +39,28 @@ public class SingleSiteAnalysisStudyDetailsComponent extends VerticalLayout
 	private Label valueObjective;
 	private Label valueDescription;
 
-	private final SingleSiteAnalysisDetailsPanel ssaDetailsPanel;
+	private String datasetName = "";
+	private String description = "";
+	private String objective = "";
+	private String studyName = "";
+	private String analysisName = "";
+	private String projectType = "";
 
-	public SingleSiteAnalysisStudyDetailsComponent(final SingleSiteAnalysisDetailsPanel ssaDetailsPanel) {
+	private boolean showAnalysisName = false;
+
+	public SingleSiteAnalysisStudyDetailsComponent() {
 		super();
-		this.ssaDetailsPanel = ssaDetailsPanel;
+	}
+
+	public SingleSiteAnalysisStudyDetailsComponent(final String datasetName, final String description, final String objective, final String studyName, final String analysisName, final boolean showAnalysisName) {
+		super();
+		this.datasetName = datasetName;
+		this.description = description;
+		this.objective = objective;
+		this.studyName = studyName;
+		this.analysisName = analysisName;
+		this.showAnalysisName = showAnalysisName;
+		this.projectType = "Field Trial";
 	}
 
 	@Override
@@ -72,7 +88,7 @@ public class SingleSiteAnalysisStudyDetailsComponent extends VerticalLayout
 	public void instantiateComponents() {
 		this.lblDataSelectedForAnalysisHeader =
 				new Label(
-						"<span class='bms-dataset' style='position:relative; top: -1px; color: #FF4612; "
+						"<span class='bms-dataset' style='color: #FF4612; "
 								+ "font-size: 20px; font-weight: bold;'></span><b>&nbsp;"
 								+ this.messageSource.getMessage(Message.BV_DATA_SELECTED_FOR_ANALYSIS_HEADER) + "</b>",
 						Label.CONTENT_XHTML);
@@ -90,7 +106,6 @@ public class SingleSiteAnalysisStudyDetailsComponent extends VerticalLayout
 		this.lblProjectType = new Label();
 		this.lblProjectType.setDebugId("lblProjectType");
 		this.lblProjectType.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
-		this.lblProjectType.setWidth("100px");
 
 		this.lblAnalysisName = new Label();
 		this.lblAnalysisName.setDebugId("lblAnalysisName");
@@ -109,6 +124,7 @@ public class SingleSiteAnalysisStudyDetailsComponent extends VerticalLayout
 
 		this.valueProjectType = new Label();
 		this.valueProjectType.setDebugId("valueProjectType");
+		this.valueProjectType.setWidth("100%");
 
 		this.valueDatasetName = new Label();
 		this.valueDatasetName.setDebugId("valueDatasetName");
@@ -139,17 +155,16 @@ public class SingleSiteAnalysisStudyDetailsComponent extends VerticalLayout
 		this.lblDescription.setValue(this.messageSource.getMessage(Message.DESCRIPTION_HEADER) + ":");
 		this.lblObjective.setValue(this.messageSource.getMessage(Message.OBJECTIVE_LABEL) + ":");
 
-		this.valueProjectType.setValue("Field Trial");
-		this.valueDatasetName.setValue(this.ssaDetailsPanel.getBreedingViewInput().getDatasetName());
-		this.valueDescription.setValue(this.ssaDetailsPanel.getBreedingViewInput().getDescription());
-		this.valueObjective.setValue(this.ssaDetailsPanel.getBreedingViewInput().getObjective());
-		this.valueStudyName.setValue(this.ssaDetailsPanel.getBreedingViewInput().getDatasetSource());
+		this.valueProjectType.setValue(projectType);
+		this.valueDatasetName.setValue(datasetName);
+		this.valueDescription.setValue(description);
+		this.valueObjective.setValue(objective);
+		this.valueStudyName.setValue(studyName);
 
 		this.setAnalysisName();
 	}
 
 	public void setAnalysisName() {
-		final String analysisName = this.ssaDetailsPanel.getBreedingViewInput().getBreedingViewAnalysisName();
 		if (!StringUtils.isNullOrEmpty(analysisName)) {
 			this.txtAnalysisName.setValue(analysisName);
 		}
@@ -219,8 +234,12 @@ public class SingleSiteAnalysisStudyDetailsComponent extends VerticalLayout
 		this.addComponent(row4);
 		this.addComponent(row5);
 		this.addComponent(row6);
-		this.addComponent(row7);
-		this.addComponent(row8);
+
+		if (showAnalysisName) {
+			this.addComponent(row7);
+			this.addComponent(row8);
+		}
+
 	}
 
 	public String getTxtAnalysisName() {
