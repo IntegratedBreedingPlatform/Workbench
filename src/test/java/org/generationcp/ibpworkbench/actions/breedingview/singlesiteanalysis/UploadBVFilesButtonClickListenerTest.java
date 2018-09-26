@@ -67,7 +67,7 @@ public class UploadBVFilesButtonClickListenerTest {
 		this.traitsMap.put("TRT1", true);
 		this.traitsMap.put("TRT2", false);
 		this.traitsMap.put("TRT3", true);
-		this.bvInput.setVariatesActiveState(this.traitsMap);
+		this.bvInput.setVariatesSelectionMap(this.traitsMap);
 		Mockito.doReturn(this.bvInput).when(this.ssaDetailsPanel).getBreedingViewInput();
 		
 		this.testProject = ProjectTestDataInitializer.createProject();

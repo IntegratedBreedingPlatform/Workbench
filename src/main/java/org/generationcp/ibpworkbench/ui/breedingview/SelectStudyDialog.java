@@ -310,7 +310,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		if (this.source instanceof SingleSiteAnalysisPanel) {
 			final Integer dataSetId = this.getPlotDataSetId(r.getId());
 			if (dataSetId != null) {
-				((SingleSiteAnalysisPanel) this.source).showDatasetVariatesDetails(dataSetId);
+				((SingleSiteAnalysisPanel) this.source).showStudyDetails(dataSetId);
 				this.parentWindow.removeWindow(SelectStudyDialog.this);
 			}
 		} else if (this.source instanceof MultiSiteAnalysisPanel) {

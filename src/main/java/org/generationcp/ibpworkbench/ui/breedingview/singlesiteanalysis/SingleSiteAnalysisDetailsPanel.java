@@ -122,7 +122,13 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.lblPageTitle.setDebugId("lblPageTitle");
 		this.lblPageTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 
-		this.studyDetailsComponent = new SingleSiteAnalysisStudyDetailsComponent(this);
+		String datasetName = this.breedingViewInput.getDatasetName();
+		String description = this.breedingViewInput.getDescription();
+		String studyName = this.breedingViewInput.getDatasetSource();
+		String objective = this.breedingViewInput.getObjective();
+		String analysisName = this.breedingViewInput.getBreedingViewAnalysisName();
+
+		this.studyDetailsComponent = new SingleSiteAnalysisStudyDetailsComponent(datasetName, description, objective, studyName, analysisName, true);
 		this.environmentsComponent = new SingleSiteAnalysisEnvironmentsComponent(this);
 		this.designDetailsComponent = new SingleSiteAnalysisDesignDetails(this);
 		this.genotypesComponent = new SingleSiteAnalysisGenotypesComponent(this);
