@@ -127,6 +127,17 @@ public class ProjectBasicDetailsComponentTest {
 	}
 
 	@Test
+	public void testValidateUpdateWithExistingName() throws Exception {
+		Mockito.when(this.workbenchDataManager.getProjectByNameAndCrop(this.testProject.getProjectName(), this.testProject.getCropType()))
+				.thenReturn(this.testProject);
+
+		this.basicDetailsComponent.setIsUpdate(true);
+		this.basicDetailsComponent.updateProjectDetailsFormField(this.testProject);
+		Assert.assertTrue(this.basicDetailsComponent.validate());
+		Assert.assertFalse(this.basicDetailsComponent.getErrorDescription().toString().contains(DUPLICATE_NAME_ERROR));
+	}
+
+	@Test
 	public void testValidateNoProjectWithThatName() throws Exception {
 		this.basicDetailsComponent.updateProjectDetailsFormField(this.testProject);
 		Assert.assertTrue(this.basicDetailsComponent.validate());
