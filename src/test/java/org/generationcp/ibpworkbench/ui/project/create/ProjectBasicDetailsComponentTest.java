@@ -217,13 +217,14 @@ public class ProjectBasicDetailsComponentTest {
 	}
 
 	@Test
-	public void testValidateDateWithInvalidCharacter() throws Exception {
+	public void testValidateDateWithValidationExceptionThrown() throws Exception {
 		this.basicDetailsComponent.setStartDateField(this.startDateField);
 		Mockito.doThrow(new InvalidValueException("Invalid Input")).when(startDateField).validate();
 
 		this.basicDetailsComponent.updateProjectDetailsFormField(this.testProject);
 		Assert.assertFalse(this.basicDetailsComponent.validate());
 		Mockito.verify(this.basicDetailsComponent.getStartDateField()).validate();
+		Assert.assertTrue(this.basicDetailsComponent.getErrorDescription().toString().contains("Invalid Input"));
 	}
 
 	@Test
