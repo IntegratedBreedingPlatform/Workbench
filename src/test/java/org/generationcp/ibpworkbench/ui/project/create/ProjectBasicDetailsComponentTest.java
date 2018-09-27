@@ -39,6 +39,7 @@ public class ProjectBasicDetailsComponentTest {
 	private static final String DUPLICATE_NAME_ERROR = "Program with given name already exists";
 	private static final String NO_PROGRAM_NAME_ERROR = "Program name cannot be empty.";
 	private static final String INVALID_PROGRAM_NAME = "Program name contains invalid characters.";
+	private static final String CROP_TYPE_REQUIRED_ERROR = "No crop type selected";
 	
 	@Mock
 	private CreateProjectPanel panel;
@@ -76,6 +77,7 @@ public class ProjectBasicDetailsComponentTest {
 		Mockito.when(this.messageSource.getMessage(Message.DUPLICATE_PROGRAM_NAME_ERROR)).thenReturn(DUPLICATE_NAME_ERROR);
 		Mockito.when(this.messageSource.getMessage("NO_PROGRAM_NAME_ERROR")).thenReturn(NO_PROGRAM_NAME_ERROR);
 		Mockito.when(this.messageSource.getMessage("PROGRAM_NAME_INVALID_ERROR")).thenReturn(INVALID_PROGRAM_NAME);
+		Mockito.when(this.messageSource.getMessage("CROP_TYPE_REQUIRED_ERROR")).thenReturn(CROP_TYPE_REQUIRED_ERROR);
 		this.basicDetailsComponent = new ProjectBasicDetailsComponent(this.createProjectPanel);
 		this.basicDetailsComponent.setIsUpdate(false);
 		this.basicDetailsComponent.setParent(this.parentComponent);
@@ -204,6 +206,14 @@ public class ProjectBasicDetailsComponentTest {
 		this.basicDetailsComponent.updateProjectDetailsFormField(this.testProject);
 
 		Mockito.verify(this.createProjectPanel).cropTypeChanged(newCropType);
+	}
+
+	@Test
+	public void testCropTypeWhenNull() {
+		this.testProject.setCropType(null);
+		this.basicDetailsComponent.updateProjectDetailsFormField(this.testProject);
+		Assert.assertFalse(this.basicDetailsComponent.validate());
+		Assert.assertTrue(this.basicDetailsComponent.getErrorDescription().toString().contains(CROP_TYPE_REQUIRED_ERROR));
 	}
 
 	@Test
