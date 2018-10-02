@@ -12,6 +12,10 @@ package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
+import org.generationcp.commons.security.AuthorizationUtil;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -22,6 +26,7 @@ import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
+import org.generationcp.middleware.domain.dms.StudyReference;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -96,7 +101,10 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
-
+	
+	@Resource
+	private ContextUtil contextUtil;
+	
 	public SingleSiteAnalysisDetailsPanel() {
 		this.setWidth("100%");
 	}
@@ -269,6 +277,11 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 			this.messageSource.setCaption(this.btnRun, Message.DOWNLOAD_INPUT_FILES);
 			this.btnUpload.setVisible(true);
 			this.btnUpload.setCaption("Upload Output Files to BMS");
+			final StudyReference study = this.studyDataManager.getStudyReference(this.breedingViewInput.getStudyId());
+			if (AuthorizationUtil.userLacksPermissionForStudy(study, this.contextUtil.getContextInfoFromSession().getLoggedInUserId())) {
+				this.btnUpload.setEnabled(false);
+				this.btnUpload.setDescription(this.messageSource.getMessage(Message.LOCKED_STUDY_CANT_BE_MODIFIED, study.getOwnerName()));
+			}
 		} else {
 			this.messageSource.setCaption(this.btnRun, Message.RUN_BREEDING_VIEW);
 			this.btnUpload.setVisible(false);
