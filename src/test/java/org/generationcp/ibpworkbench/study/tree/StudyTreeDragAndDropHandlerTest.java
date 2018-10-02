@@ -40,22 +40,22 @@ public class StudyTreeDragAndDropHandlerTest {
 	}
 
 	@Test
-	public void testSetParentIfSourceIsRootFolderShouldReturnFalse() {
-		final boolean response = this.dropHandler.setParent(StudyTree.STUDY_ROOT_NODE, null, true);
+	public void testTreeNodeCanBeMovedIfSourceIsRootFolder() {
+		final boolean response = this.dropHandler.treeNodeCanBeMoved(StudyTree.STUDY_ROOT_NODE, true);
 		Assert.assertFalse("Should return false since the folder being move is the main root folder", response);
 	}
 
 	@Test
-	public void testSetParentIfSourceIsNotRootFolderButHaveChildShouldReturnFalse() {
+	public void testTreeNodeCanBeMovedIfSourceIsNotRootFolderButHaveChild() {
 		Mockito.when(this.studyTree.hasChildStudy(Matchers.anyInt())).thenReturn(true);
-		final boolean response = this.dropHandler.setParent(new Integer(2), null, true);
+		final boolean response = this.dropHandler.treeNodeCanBeMoved(new Integer(2), true);
 		Assert.assertFalse("Should return false since the folder being move has child folder", response);
 	}
 
 	@Test
-	public void testSetParentIfSourceIsNotRootFolderAndValidTargetFolderReturnTrue() {
+	public void testTreeNodeCanBeMovedIfSourceIsNotRootFolderAndValidTargetFolderReturnTrue() {
 		Mockito.when(this.studyTree.hasChildStudy(Matchers.anyInt())).thenReturn(false);
-		final boolean response = this.dropHandler.setParent(new Integer(2), new Integer(3), true);
+		final boolean response = this.dropHandler.treeNodeCanBeMoved(new Integer(2), true);
 		Assert.assertTrue("Should return true since the folder being move and target folder are both valid", response);
 	}
 

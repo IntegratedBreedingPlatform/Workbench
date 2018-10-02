@@ -1,12 +1,16 @@
 
 package org.generationcp.ibpworkbench.study.tree;
 
+import javax.annotation.Resource;
+
+import org.generationcp.commons.security.AuthorizationUtil;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.GermplasmStudyBrowserLayout;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.study.StudyTabSheet;
-import org.generationcp.middleware.domain.dms.Study;
+import org.generationcp.middleware.domain.dms.StudyReference;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +19,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 
 @Configurable
@@ -27,6 +32,9 @@ public class StudyTreeButtonsPanel extends HorizontalLayout implements Initializ
 
 	@Autowired
 	private StudyDataManager studyDataManager;
+	
+	@Resource
+	private ContextUtil contextUtil;
 
 	private StudyTree studyTree;
 	private final StudyTabSheet studyTabSheet;
@@ -87,17 +95,13 @@ public class StudyTreeButtonsPanel extends HorizontalLayout implements Initializ
 			@Override
 			public void buttonClick(final Button.ClickEvent event) {
 				final Object selectedStudyTreeNodeId = StudyTreeButtonsPanel.this.studyTree.getValue();
-				final int studyId = Integer.valueOf(selectedStudyTreeNodeId.toString());
-				final Study study = StudyTreeButtonsPanel.this.studyDataManager.getStudy(studyId);
-				if (null == study.getProgramUUID()) {
-					if (StudyTreeButtonsPanel.this.getWindow() != null) {
-						MessageNotifier.showError(StudyTreeButtonsPanel.this.getWindow(),
-								StudyTreeButtonsPanel.this.messageSource.getMessage(Message.ERROR), "Program templates cannot be renamed.");
-					}
-				} else {
+				final int itemId = Integer.valueOf(selectedStudyTreeNodeId.toString());
+				final Boolean isFolder = StudyTreeButtonsPanel.this.studyTree.isFolder(itemId);
+				
+				if (isFolder || StudyTreeButtonsPanel.this.treeNodeCanBeRenamed(itemId)) {
 					final String name = StudyTreeButtonsPanel.this.studyTree.getItemCaption(selectedStudyTreeNodeId);
 					StudyTreeButtonsPanel.this.browseTreeComponent.getParentComponent().getWindow().addWindow(new StudyTreeRenameItemWindow(
-							studyId, name, StudyTreeButtonsPanel.this.studyTree, StudyTreeButtonsPanel.this.studyTabSheet));
+							itemId, name, StudyTreeButtonsPanel.this.studyTree, StudyTreeButtonsPanel.this.studyTabSheet));
 				}
 			}
 		});
@@ -177,6 +181,21 @@ public class StudyTreeButtonsPanel extends HorizontalLayout implements Initializ
 			this.deleteFolderBtn.setEnabled(false);
 		}
 
+	}
+	
+	Boolean treeNodeCanBeRenamed(final Integer studyId) {		
+		final Window window = this.browseTreeComponent.getParentComponent().getWindow();
+		final StudyReference studyReference = this.studyDataManager.getStudyReference(studyId);
+		if (null == studyReference.getProgramUUID()) {
+			MessageNotifier.showError(window, this.messageSource.getMessage(Message.ERROR), "Program templates cannot be renamed.");
+			return false;
+		} else if (AuthorizationUtil.userLacksPermissionForStudy(studyReference,
+				this.contextUtil.getContextInfoFromSession().getLoggedInUserId())) {
+			MessageNotifier.showError(window, this.messageSource.getMessage(Message.ERROR),
+					this.messageSource.getMessage(Message.LOCKED_STUDY_CANT_BE_MODIFIED, studyReference.getOwnerName()));
+			return false;
+		}
+		return true;
 	}
 
 	protected Button getAddFolderBtn() {
