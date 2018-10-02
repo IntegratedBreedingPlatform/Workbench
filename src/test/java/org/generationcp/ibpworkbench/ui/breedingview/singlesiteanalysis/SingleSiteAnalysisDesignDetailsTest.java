@@ -57,14 +57,14 @@ public class SingleSiteAnalysisDesignDetailsTest {
 		this.input = new BreedingViewInput();
 		this.input.setStudyId(STUDY_ID);
 		this.input.setDatasetId(DATASET_ID);
-		Mockito.doReturn(this.input).when(ssaDetailsPanel).getBreedingViewInput();
+		Mockito.doReturn(this.input).when(this.ssaDetailsPanel).getBreedingViewInput();
 		Mockito.doReturn(this.createTestFactors()).when(this.ssaDetailsPanel).getFactorsInDataset();
 		
 		Mockito.doReturn(COLUMN_FACTOR_LABEL).when(this.messageSource).getMessage(Message.BV_SPECIFY_COLUMN_FACTOR);
 		Mockito.doReturn(ROW_FACTOR_LABEL).when(this.messageSource).getMessage(Message.BV_SPECIFY_ROW_FACTOR);
 		this.ssaDesignDetails = new SingleSiteAnalysisDesignDetails(this.ssaDetailsPanel);
-		this.ssaDesignDetails.setMessageSource(messageSource);
-		this.ssaDesignDetails.setStudyDataManager(studyDataManager);
+		this.ssaDesignDetails.setMessageSource(this.messageSource);
+		this.ssaDesignDetails.setStudyDataManager(this.studyDataManager);
 		this.ssaDesignDetails.instantiateComponents();
 		this.ssaDesignDetails.initializeValues();
 	}
@@ -394,11 +394,11 @@ public class SingleSiteAnalysisDesignDetailsTest {
 		entryTypeVariable.setProperty(new Term(1, TermId.ENTRY_TYPE.name(), TermId.ENTRY_TYPE.name()));
 		factors.add(new DMSVariableType(TermId.ENTRY_TYPE.name(), TermId.ENTRY_TYPE.name(), entryTypeVariable, rank++));
 
-		final StandardVariable plotIdVariable = new StandardVariable();
-		plotIdVariable.setId(TermId.PLOT_ID.getId());
-		plotIdVariable.setPhenotypicType(PhenotypicType.GERMPLASM);
-		plotIdVariable.setProperty(new Term(1, TermId.PLOT_ID.name(), TermId.PLOT_ID.name()));
-		factors.add(new DMSVariableType(TermId.PLOT_ID.name(), TermId.PLOT_ID.name(), plotIdVariable, rank++));
+		final StandardVariable obsUnitIdVariable = new StandardVariable();
+		obsUnitIdVariable.setId(TermId.OBS_UNIT_ID.getId());
+		obsUnitIdVariable.setPhenotypicType(PhenotypicType.GERMPLASM);
+		obsUnitIdVariable.setProperty(new Term(1, TermId.OBS_UNIT_ID.name(), TermId.OBS_UNIT_ID.name()));
+		factors.add(new DMSVariableType(TermId.OBS_UNIT_ID.name(), TermId.OBS_UNIT_ID.name(), obsUnitIdVariable, rank++));
 
 		final StandardVariable repVariable = new StandardVariable();
 		repVariable.setId(TermId.REP_NO.getId());

@@ -53,7 +53,7 @@ public class SingleSiteAnalysisGenotypesComponentTest {
 			final String localName = (String) id;
 			Assert.assertFalse("Entry Type factor should not be included in Genotypes dropdown",
 					TermId.ENTRY_TYPE.name().equals(localName));
-			Assert.assertFalse("Plot ID factor should not be included in Genotypes dropdown", TermId.PLOT_ID.name().equals(localName));
+			Assert.assertFalse("Plot ID factor should not be included in Genotypes dropdown", TermId.OBS_UNIT_ID.name().equals(localName));
 		}
 		Assert.assertEquals("ENTRY_NO", this.genotypesComponent.getSelGenotypesValue());
 	}
@@ -86,11 +86,11 @@ public class SingleSiteAnalysisGenotypesComponentTest {
 		entryTypeVariable.setProperty(new Term(1, TermId.ENTRY_TYPE.name(), TermId.ENTRY_TYPE.name()));
 		factors.add(new DMSVariableType(TermId.ENTRY_TYPE.name(), TermId.ENTRY_TYPE.name(), entryTypeVariable, rank++));
 
-		final StandardVariable plotIdVariable = new StandardVariable();
-		plotIdVariable.setId(TermId.PLOT_ID.getId());
-		plotIdVariable.setPhenotypicType(PhenotypicType.GERMPLASM);
-		plotIdVariable.setProperty(new Term(1, TermId.PLOT_ID.name(), TermId.PLOT_ID.name()));
-		factors.add(new DMSVariableType(TermId.PLOT_ID.name(), TermId.PLOT_ID.name(), plotIdVariable, rank++));
+		final StandardVariable obsUnitIdVariable = new StandardVariable();
+		obsUnitIdVariable.setId(TermId.OBS_UNIT_ID.getId());
+		obsUnitIdVariable.setPhenotypicType(PhenotypicType.GERMPLASM);
+		obsUnitIdVariable.setProperty(new Term(1, TermId.OBS_UNIT_ID.name(), TermId.OBS_UNIT_ID.name()));
+		factors.add(new DMSVariableType(TermId.OBS_UNIT_ID.name(), TermId.OBS_UNIT_ID.name(), obsUnitIdVariable, rank++));
 
 		final StandardVariable repVariable = new StandardVariable();
 		repVariable.setId(TermId.REP_NO.getId());
