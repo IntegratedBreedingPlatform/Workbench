@@ -11,11 +11,9 @@
 
 package org.generationcp.ibpworkbench.germplasm.containers;
 
-import com.vaadin.data.Container;
-import com.vaadin.data.Item;
-import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.ui.themes.BaseTheme;
+import java.util.List;
+
+import org.generationcp.browser.study.containers.StudyButtonRenderer;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.containers.GermplasmEnvironmentSearchQuery;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.containers.GermplasmEnvironmentSearchQueryFactory;
@@ -23,7 +21,6 @@ import org.generationcp.ibpworkbench.germplasm.GermplasmDetailModel;
 import org.generationcp.ibpworkbench.germplasm.GermplasmNamesAttributesModel;
 import org.generationcp.ibpworkbench.germplasm.GermplasmQueries;
 import org.generationcp.ibpworkbench.germplasm.GermplasmSearchResultModel;
-import org.generationcp.ibpworkbench.ui.common.LinkButton;
 import org.generationcp.middleware.domain.dms.StudyReference;
 import org.generationcp.middleware.manager.api.CrossStudyDataManager;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
@@ -32,7 +29,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
 
-import java.util.List;
+import com.vaadin.data.Container;
+import com.vaadin.data.Item;
+import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.ui.Button;
 
 public final class GermplasmIndexContainer {
 
@@ -63,9 +63,6 @@ public final class GermplasmIndexContainer {
 	public static final String STUDY_DESCRIPTION = "description";
 
 	private static final Object GERMPLASM_PREFNAME = "prefname";
-
-	private static final String[] URL_STUDY_TRIAL = {"/Fieldbook/TrialManager/openTrial/","#/trialSettings"};
-	private static final String PARENT_WINDOW = "_parent";
 
 
 	private final GermplasmQueries qQuery;
@@ -251,42 +248,22 @@ public final class GermplasmIndexContainer {
 
 		// Create the container properties
 		container.addContainerProperty(GermplasmIndexContainer.STUDY_ID, Integer.class, 0);
-		container.addContainerProperty(GermplasmIndexContainer.STUDY_NAME, LinkButton.class, new LinkButton( new ExternalResource(""),""));
+		container.addContainerProperty(GermplasmIndexContainer.STUDY_NAME, Button.class, null);
 		container.addContainerProperty(GermplasmIndexContainer.STUDY_DESCRIPTION, String.class, "");
 
 		final List<StudyReference> studies = this.qQuery.getGermplasmStudyInfo(gModel.getGid());
 		for (final StudyReference study : studies) {
-			GermplasmIndexContainer.addGermplasmStudyInformation(container, study, contextUtil);
+			this.addGermplasmStudyInformation(container, study, new StudyButtonRenderer(study));		
 		}
 		return container;
 	}
 
-	private static void addGermplasmStudyInformation(final Container container, final StudyReference study, final ContextUtil contextUtil) {
+	void addGermplasmStudyInformation(final Container container, final StudyReference study, final StudyButtonRenderer studyButtonRenderer) {
 		final Object itemId = container.addItem();
 		final Item item = container.getItem(itemId);
 		item.getItemProperty(GermplasmIndexContainer.STUDY_ID).setValue(study.getId());
-		final ExternalResource urlToOpenStudy = getURLStudy(study,contextUtil);
-
-		final LinkButton linkStudyButton = new LinkButton(urlToOpenStudy,study.getName(), PARENT_WINDOW);
-		linkStudyButton.setDebugId("linkStudyButton");
-		linkStudyButton.addStyleName(BaseTheme.BUTTON_LINK);
-
-		if (!contextUtil.getCurrentProgramUUID().equals(study.getProgramUUID())) {
-			linkStudyButton.setCaption(linkStudyButton.getCaption());
-			linkStudyButton.setEnabled(false);
-		}
-
-		item.getItemProperty(GermplasmIndexContainer.STUDY_NAME).setValue(linkStudyButton);
 		item.getItemProperty(GermplasmIndexContainer.STUDY_DESCRIPTION).setValue(study.getDescription());
-	}
-
-	private static ExternalResource getURLStudy(final StudyReference study, final ContextUtil contextUtil) {
-		final String aditionalParameters =
-			"?restartApplication&loggedInUserId=" + contextUtil.getContextInfoFromSession().getLoggedInUserId() + "&selectedProjectId="
-				+ contextUtil.getContextInfoFromSession().getSelectedProjectId() + "&authToken=" + contextUtil.getContextInfoFromSession()
-				.getAuthToken();
-
-		return new ExternalResource(URL_STUDY_TRIAL[0] + study.getId() + aditionalParameters + URL_STUDY_TRIAL[1]);
+		item.getItemProperty(GermplasmIndexContainer.STUDY_NAME).setValue(studyButtonRenderer.renderStudyButton());
 	}
 
 }
