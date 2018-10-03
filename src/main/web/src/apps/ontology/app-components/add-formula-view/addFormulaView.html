@@ -28,7 +28,7 @@
 		<div ng-class="formGroupClass('omCalculation', 'definition')">
 			<label for="omDefinition" class="col-sm-2 control-label label-required">{{'formField.calculation' | translate}}</label>
 			<div class="col-sm-5">
-				<om-text-area om-name="omDefinition" om-property="definition" om-adding="true" om-model="model.formula" om-required="true" om-max-length="255"></om-text-area>
+				<om-content-editable om-name="omDefinition" om-property="definition" om-model="model.formula" om-required="true" om-max-length="255"></om-content-editable>
 				<ng-messages for="afForm.omDefinition.$error" ng-if="afForm.$submitted || afForm.omDefinition.$touched">
 					<ng-message when="required"><p class="text-danger">{{'validation.formula.calculationRequired' | translate}}</p></ng-message>
 					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "255"}'}}</p></ng-message>

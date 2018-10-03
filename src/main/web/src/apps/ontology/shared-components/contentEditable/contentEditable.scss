@@ -1,0 +1,27 @@
+om-content-editable {
+
+  .input {
+    height: 100px;
+    overflow: auto;
+    user-select: text;
+    -webkit-user-select: text;
+  }
+
+  .token {
+    display: inline-block;
+    color: rgb(66, 82, 110);
+    cursor: pointer;
+    white-space: nowrap;
+    line-height: 16px;
+    font-size: 12px;
+    font-weight: normal;
+    background: rgba(9, 30, 66, 0.08);
+    border-width: 1px;
+    border-style: solid;
+    border-color: transparent;
+    border-image: initial;
+    border-radius: 20px;
+    padding: 0px 4px 2px 3px;
+  }
+
+}

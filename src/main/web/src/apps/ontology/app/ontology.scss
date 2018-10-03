@@ -142,3 +142,8 @@ ol {
 	text-align: center;
 	padding-top: 5rem;
 }
+
+[contenteditable] {
+	-webkit-user-select: text;
+	user-select: text;
+}
