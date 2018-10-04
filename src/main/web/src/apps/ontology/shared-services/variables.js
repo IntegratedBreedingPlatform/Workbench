@@ -356,104 +356,18 @@
 				return request.then(successHandler, failureHandler);
 			},
 
-			/*
-			Expects a formula in the format:
-
-			{
-				"definition": "",
-				"inputs": [
-					{
-						"id": 0,
-						"targetTermId": 0,
-						"definition": "",
-						"vocabularyId": 0,
-						"obsolete": false,
-						"name": "",
-						"dateCreated": "",
-						"dateLastModified": ""
-					}
-				],
-				"target": {
-					"id": 0,
-					"targetTermId": 0,
-					"definition": "",
-					"vocabularyId": 0,
-					"obsolete": false,
-					"name": "",
-					"dateCreated": "",
-					"dateLastModified": ""
-				},
-				"description": "",
-				"name": "",
-				"active": false,
-				"formulaId": 0
-			}
-
-
-
-			{
-				'errors': [{
-					'fieldNames': ['name'],
-					'message': 'validation message'
-				}]
-			}
-			*/
 			addFormula: function (formula) {
 				var request = $http.post('/bmsapi/ontology/' + configService.getCropName() + '/formula', formula);
 				return request.then(successHandler, failureHandler);
 			},
-			/*
-			Expects a formula in the format:
 
-			{
-				"definition": "",
-				"inputs": [
-					{
-						"id": 0,
-						"targetTermId": 0,
-						"definition": "",
-						"vocabularyId": 0,
-						"obsolete": false,
-						"name": "",
-						"dateCreated": "",
-						"dateLastModified": ""
-					}
-				],
-				"target": {
-					"id": 0,
-					"targetTermId": 0,
-					"definition": "",
-					"vocabularyId": 0,
-					"obsolete": false,
-					"name": "",
-					"dateCreated": "",
-					"dateLastModified": ""
-				},
-				"description": "",
-				"name": "",
-				"active": false,
-				"formulaId": 0
-			}
-
-
-
-			{
-				'errors': [{
-					'fieldNames': ['name'],
-					'message': 'validation message'
-				}]
-			}
-			*/
 			updateFormula: function (formula) {
 				var request = $http.put('/bmsapi/ontology/' + configService.getCropName() + '/formula/' + formula.formulaId,formula);
 				return request.then(successHandler, failureHandler);
 			},
-			/*
-			 *	Deletes the formula from a variable with the specified formulaId of the variable.
-			 */
+
 			deleteFormula: function(formulaId) {
 				var request;
-
 				request = $http.delete('/bmsapi/ontology/' + configService.getCropName() + '/formula/' + formulaId);
 				return request.then(function(response) {
 					return response.status;
