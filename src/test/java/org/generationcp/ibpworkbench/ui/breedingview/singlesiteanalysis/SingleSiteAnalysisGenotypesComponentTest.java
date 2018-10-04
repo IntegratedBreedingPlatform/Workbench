@@ -53,7 +53,7 @@ public class SingleSiteAnalysisGenotypesComponentTest {
 			final String localName = (String) id;
 			Assert.assertFalse("Entry Type factor should not be included in Genotypes dropdown",
 					TermId.ENTRY_TYPE.name().equals(localName));
-			Assert.assertFalse("Plot ID factor should not be included in Genotypes dropdown", TermId.OBS_UNIT_ID.name().equals(localName));
+			Assert.assertFalse("Observation Unit ID factor should not be included in Genotypes dropdown", TermId.OBS_UNIT_ID.name().equals(localName));
 		}
 		Assert.assertEquals("ENTRY_NO", this.genotypesComponent.getSelGenotypesValue());
 	}

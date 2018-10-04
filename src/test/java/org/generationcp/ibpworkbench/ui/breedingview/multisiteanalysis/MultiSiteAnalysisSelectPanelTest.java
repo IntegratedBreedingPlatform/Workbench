@@ -74,12 +74,12 @@ public class MultiSiteAnalysisSelectPanelTest {
 			final String localName = (String) id;
 			Assert.assertFalse("Entry Type factor should not be included in Genotypes dropdown",
 					TermId.ENTRY_TYPE.name().equals(localName));
-			Assert.assertFalse("Plot ID factor should not be included in Genotypes dropdown", TermId.OBS_UNIT_ID.name().equals(localName));
+			Assert.assertFalse("Observation Unit ID factor should not be included in Genotypes dropdown", TermId.OBS_UNIT_ID.name().equals(localName));
 
 			final FactorModel factor = factorsIterator.next();
 			Assert.assertFalse("Entry Type factor should not be included in FactorModel list.",
 					TermId.ENTRY_TYPE.name().equals(factor.getName()));
-			Assert.assertFalse("Plot ID factor should not be included in FactorModel list.",
+			Assert.assertFalse("Observation Unit ID factor should not be included in FactorModel list.",
 					TermId.OBS_UNIT_ID.name().equals(factor.getName()));
 		}
 	}

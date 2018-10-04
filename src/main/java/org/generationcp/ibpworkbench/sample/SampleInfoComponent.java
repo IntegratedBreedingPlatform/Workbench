@@ -37,7 +37,7 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 	private static final String SAMPLE_ID = "Sample ID";
 	private static final String SAMPLE_LIST = "Sample List";
 	private static final String STUDY_NAME = "Study Name";
-	private static final String OBS_UNIT_ID = "Plot ID";
+	private static final String OBS_UNIT_ID = "Observation Unit ID";
 	private static final String PLANT_ID = "Plant ID";
 	private static final String PLATE_ID = "Plate ID";
 	private static final String WELL = "WELL";
