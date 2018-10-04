@@ -160,7 +160,8 @@
 				<div ng-show="!confirmDeleteFormula && confirmationNecessary ">
 					<div class="alert alert-danger">
 						<span ng-show="confirmCancel">{{'warnings.discardConfirmation' | translate}}</span>
-						<span ng-show="confirmDelete">{{'warnings.variables.deleteConfirmation' | translate}}</span>
+						<span ng-show="confirmDelete">{{(varsCtrl.formula ? 'warnings.variables.formula.deleteConfirmation' : 'warnings.variables.deleteConfirmation' ) | translate }}</span>
+
 					</div>
 					<button class="btn btn-danger" ng-click="confirm($event)">
 						<span ng-show="confirmCancel">{{'button.discard' | translate}}</span>
@@ -177,7 +178,7 @@
 			<div ng-show="model.allowsFormula">
 				<div ng-show="!traitHasFormula()">
 					<div class="col-sm-12">
-						<button class="btn btn-default om-add-new-btn" ng-hide="editing" ng-click="addNewFormula($event, 'formula')">{{'button.add' | translate}}
+						<button class="btn btn-default om-add-new-btn" ng-hide="editing" ng-click="addNewFormula($event)">{{'button.add' | translate}}
 						</button>
 					</div>
 					<div class="om-details-subheader">
@@ -218,11 +219,14 @@
 												</span>
 											</span>
 										</td>
-										<td align="right" >
-											<button ng-hide="editing || confirmDeleteFormula || confirmationNecessary" type="button" class="btn btn-danger btn-icon" aria-label="{{'button.delete' | translate}}"
-													ng-click="deleteFormula($event,variableId)">
-												<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-											</button>
+										<td align="right">
+											<div ng-hide="editing || confirmDeleteFormula || confirmationNecessary">
+												<button class="btn btn-primary" ng-click="editFormula($event)">{{'button.edit' | translate}}
+												</button>
+												<button type="button" class="btn btn-danger btn-icon" aria-label="{{'button.delete' | translate}}" ng-click="deleteFormula($event,variableId)">
+													<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+												</button>
+											</div>
 										</td>
 									</tr>
 									</tbody>

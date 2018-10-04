@@ -23,7 +23,11 @@
 					$scope.submitted = true;
 					$scope.serverErrors = {};
 
-					variablesService.addFormula(variable.formula).then(function () {
+					var promise = variable.formula.formulaId ?
+						variablesService.updateFormula(variable.formula)
+						: variablesService.addFormula(variable.formula);
+
+					promise.then(function () {
 						variableStateService.reset();
 						$location.path(VARIABLES_PATH + variable.id);
 						variablesService.deleteVariablesFromCache([parseInt(variable.id)]);
@@ -32,6 +36,7 @@
 						$scope.serverErrors = serviceUtilities.serverErrorHandler($scope.serverErrors, response);
 						$scope.submitted = false;
 					});
+
 				}
 			};
 
