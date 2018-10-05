@@ -3,7 +3,7 @@
 </div>
 <div ng-if="properties">
     <ui-select name="name" theme="select2" ng-model="selectedProperty.value" style="width:100%">
-        <ui-select-match>
+        <ui-select-match placeholder="Select or search variables in the list...">
             <div class="om-item-property-info">
                 <img class="om-icon" alt="Property" src="/ibpworkbench/controller/static/images/property.svg">
                 <span class="om-variable-select-item-label">{{$select.selected.name}}</span>
