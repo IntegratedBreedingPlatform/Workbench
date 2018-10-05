@@ -14,14 +14,30 @@
                 $scope.maxLength = $scope.omMaxLength || -1;
 
 
+                $scope.transformContent = function() {
+                    if ($scope.contentValueTransformer) {
+                        return $scope.contentValueTransformer({ data: $scope.id });
+                    } else {
+                        return $(contentEditableDiv).text();
+                    }
+                };
+
+                $scope.load = function(elm) {
+                    var contentEditableDiv = elm.children($scope.name)[0];
+                    $(contentEditableDiv).html($scope.onLoad({ data: $scope.model.definition }));
+                };
+
             }],
             link: function(scope, elm, attrs, ctrl) {
+
+                // Bind the content of the content editable div to the model
                 elm.children(scope.name).bind('blur', function() {
                     scope.$apply(function() {
-                        scope.model[scope.property] = extractTextFromHtml($(elm)[0]);
+                        scope.model[scope.property] = scope.transformContent();
                     });
                 });
 
+                // Prevent the users from typing or pasting text if the maximum length is reached.
                 elm.children(scope.name).on('keypress paste', function(evt) {
 
                     var backspaceKeyCode = 8;
@@ -32,36 +48,27 @@
                         return true;
                     }
 
-                    if (elm.text().length > scope.maxLength) {
+                    if (scope.transformContent().length > scope.maxLength) {
                         evt.preventDefault();
                         return false;
                     }
                 });
 
-                function extractTextFromHtml(elm) {
+                scope.load(elm);
 
-                    // The variable tokens are inserted as <input type='button' value='{{Name}}'/>, that's why we can't rely on
-                    // $(elm).text() to get the text values of all elements. This function will extract the texts as well as the values
-                    // from input buttons.
-                    var n, a=[], walk=document.createTreeWalker(elm, NodeFilter.SHOW_ALL, null, false);
-                    while(n=walk.nextNode()) {
-                        if (n.nodeType === Node.TEXT_NODE) {
-                            a.push(n.nodeValue);
-                        } else if (n.nodeType === Node.ELEMENT_NODE && n.type === 'button') {
-                            a.push(n.value);
-                        }
-                    }
-                    return a.join('');
-                };
+
             },
             restrict: 'E',
             scope: {
+                id: '@omId',
                 name: '@omName',
                 property: '@omProperty',
                 model: '=omModel',
                 // Use this syntax for optional one time binding properties
                 omRequired: '@',
-                omMaxLength: '@'
+                omMaxLength: '@',
+                onLoad: '&onLoad',
+                contentValueTransformer: '&contentValueTransformer'
             },
             templateUrl: 'static/views/ontology/contentEditable.html'
         };

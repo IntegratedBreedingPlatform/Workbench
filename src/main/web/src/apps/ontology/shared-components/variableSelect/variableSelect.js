@@ -55,28 +55,65 @@
 
 				function transformToSelectVariableItems(variables) {
 
-					var tracker = [];
+					var properyTracker = [];
 					var properties = [];
 
 					variables.forEach(function(variable) {
-						if (tracker.indexOf(variable.property.id) > -1) {
-                            var property = properties[tracker.indexOf(variable.property.id)];
-                            property.variableNames += ', ' +  variable.name;
-                            property.variables.push(variable);
-						} else {
-                            tracker.push(variable.property.id);
-                            properties.push({
-                            	name: variable.property.name,
-								classes: variable.property.classes.join(','),
-								variableNames: variable.name,
-								variables: [ variable ]
-							});
-						}
+
+                        var variableType = function(element) {
+                            return element.id === $scope.variableTypeId;
+                        };
+
+					    if (variable.variableTypes && variable.variableTypes.some(variableType)) {
+                            if (properyTracker.indexOf(variable.property.id) > -1) {
+                                var property = properties[properyTracker.indexOf(variable.property.id)];
+                                property.variableNames += ', ' +  variable.name;
+                                property.variables.push(variable);
+                            } else {
+                                properyTracker.push(variable.property.id);
+                                properties.push({
+                                    name: variable.property.name,
+                                    classes: variable.property.classes.join(','),
+                                    variableNames: variable.name,
+                                    variables: [ variable ]
+                                });
+                            }
+                        }
+
 					});
 
                     return properties;
 
 				};
+
+				$scope.replaceVariableIdsWithNames = function (formula) {
+
+                    if (formula.definition) {
+
+                        var variableNames = [];
+                        $(formula.inputs).each(function(index, inputVariable) {
+                            variableNames[inputVariable.id] = inputVariable.name;
+                        });
+
+                        var result = formula.definition;
+
+                        // matches any word (with alphanumeric characters, underscore , space and carriage return) enclosed with {{ and }}
+                        var expression = /\{\{[\w\r\s_]*\}\}/g;
+                        var matches = formula.definition.match(expression);
+
+                        if (matches) {
+                            $.each(matches, function(index, token) {
+                                result =
+                                    result.replace(token, '{{' + variableNames[token.match(/\d+/)] + '}}');
+                            });
+                        }
+
+                        return result;
+
+                    } else {
+                        return formula.definition;
+                    }
+                };
 
                 $scope.add = function(data) {
                     if ($scope.onAddClick) {
@@ -91,6 +128,7 @@
 			restrict: 'E',
 			scope: {
 				name: '@omName',
+                variableTypeId: '@omVariableTypeId',
 				allowClear: '=omAllowClear',
                 onAddClick: '&onAddClick'
 			},

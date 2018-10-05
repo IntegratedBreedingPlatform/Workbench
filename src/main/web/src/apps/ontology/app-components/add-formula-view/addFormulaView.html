@@ -21,14 +21,16 @@
 				Input Variables
 			</label>
 			<div class="col-sm-6">
-				<om-variable-select om-name="omVariableSelect" on-add-click="insertTrait(variableName)"></om-variable-select>
+				<!--  om-variable-type-id="1808" means display Trait Variables only -->
+				<om-variable-select om-name="omVariableSelect" om-variable-type-id="1808" on-add-click="insertTrait(variableName)"></om-variable-select>
 			</div>
 		</div>
 
 		<div ng-class="formGroupClass('omCalculation', 'definition')">
 			<label for="omDefinition" class="col-sm-2 control-label label-required">{{'formField.calculation' | translate}}</label>
 			<div class="col-sm-5">
-				<om-content-editable om-name="omDefinition" om-property="definition" om-model="model.formula" om-required="true" om-max-length="255"></om-content-editable>
+				<om-content-editable om-id="contentEditableDiv" om-name="omDefinition" om-property="definition" om-model="model.formula" om-required="true" om-max-length="{{formulaDefinitionMaxLength}}"
+				 content-value-transformer="extractTextFromHtml(data)" on-load="convertTextToHtmlStringWithTokens(data)"></om-content-editable>
 				<ng-messages for="afForm.omDefinition.$error" ng-if="afForm.$submitted || afForm.omDefinition.$touched">
 					<ng-message when="required"><p class="text-danger">{{'validation.formula.calculationRequired' | translate}}</p></ng-message>
 					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "255"}'}}</p></ng-message>
@@ -36,7 +38,6 @@
 				<p class="text-danger" ng-hide="afForm.omDefinition.$touched" ng-repeat="error in serverErrors.definition">{{error}}</p>
 			</div>
 		</div>
-
 		<div class="form-group">
 			<div ng-hide="confirmationNecessary" class="col-sm-offset-2 col-sm-7">
 				<button class="btn btn-primary" type="submit">
