@@ -59,7 +59,7 @@ public class UploadBVFilesButtonClickListenerTest {
 		MockitoAnnotations.initMocks(this);
 		Mockito.doReturn(this.component).when(this.event).getComponent();
 		Mockito.doReturn(this.window).when(this.component).getWindow();
-		Mockito.doReturn(createTestFactors()).when(this.ssaDetailsPanel).getFactorsInDataset();
+		Mockito.doReturn(this.createTestFactors()).when(this.ssaDetailsPanel).getFactorsInDataset();
 		
 		this.bvInput = new BreedingViewInput();
 		this.bvInput.setStudyId(STUDY_ID);
@@ -76,7 +76,7 @@ public class UploadBVFilesButtonClickListenerTest {
 	
 	@Test
 	public void testButtonClick() {
-		listener.buttonClick(this.event);
+		this.listener.buttonClick(this.event);
 		
 		final ArgumentCaptor<Window> uploadWindowCaptor = ArgumentCaptor.forClass(Window.class);
 		Mockito.verify(this.window).addWindow(uploadWindowCaptor.capture());
@@ -116,11 +116,11 @@ public class UploadBVFilesButtonClickListenerTest {
 		entryTypeVariable.setProperty(new Term(1, TermId.ENTRY_TYPE.name(), TermId.ENTRY_TYPE.name()));
 		factors.add(new DMSVariableType(TermId.ENTRY_TYPE.name(), TermId.ENTRY_TYPE.name(), entryTypeVariable, rank++));
 
-		final StandardVariable plotIdVariable = new StandardVariable();
-		plotIdVariable.setId(TermId.PLOT_ID.getId());
-		plotIdVariable.setPhenotypicType(PhenotypicType.GERMPLASM);
-		plotIdVariable.setProperty(new Term(1, TermId.PLOT_ID.name(), TermId.PLOT_ID.name()));
-		factors.add(new DMSVariableType(TermId.PLOT_ID.name(), TermId.PLOT_ID.name(), plotIdVariable, rank++));
+		final StandardVariable obsUnitIdVariable = new StandardVariable();
+		obsUnitIdVariable.setId(TermId.OBS_UNIT_ID.getId());
+		obsUnitIdVariable.setPhenotypicType(PhenotypicType.GERMPLASM);
+		obsUnitIdVariable.setProperty(new Term(1, TermId.OBS_UNIT_ID.name(), TermId.OBS_UNIT_ID.name()));
+		factors.add(new DMSVariableType(TermId.OBS_UNIT_ID.name(), TermId.OBS_UNIT_ID.name(), obsUnitIdVariable, rank++));
 
 		final StandardVariable repVariable = new StandardVariable();
 		repVariable.setId(TermId.REP_NO.getId());
