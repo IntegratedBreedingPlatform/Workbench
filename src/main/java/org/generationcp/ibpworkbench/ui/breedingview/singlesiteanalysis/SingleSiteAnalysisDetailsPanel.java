@@ -54,7 +54,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	private static final long serialVersionUID = 1L;
 
-	public static final List<Integer> GENOTYPES_TO_HIDE = Lists.newArrayList(TermId.ENTRY_TYPE.getId(), TermId.PLOT_ID.getId());
+	public static final List<Integer> GENOTYPES_TO_HIDE = Lists.newArrayList(TermId.ENTRY_TYPE.getId(), TermId.OBS_UNIT_ID.getId());
 	public static final String INCOMPLETE_PLOT_DATA_ERROR =
 			"cannot be used for analysis because the plot data is not complete. The data must contain at least 2 common entries with values.";
 	public static final String MARGIN_TOP10 = "marginTop10";
@@ -130,11 +130,11 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.lblPageTitle.setDebugId("lblPageTitle");
 		this.lblPageTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 
-		String datasetName = this.breedingViewInput.getDatasetName();
-		String description = this.breedingViewInput.getDescription();
-		String studyName = this.breedingViewInput.getDatasetSource();
-		String objective = this.breedingViewInput.getObjective();
-		String analysisName = this.breedingViewInput.getBreedingViewAnalysisName();
+		final String datasetName = this.breedingViewInput.getDatasetName();
+		final String description = this.breedingViewInput.getDescription();
+		final String studyName = this.breedingViewInput.getDatasetSource();
+		final String objective = this.breedingViewInput.getObjective();
+		final String analysisName = this.breedingViewInput.getBreedingViewAnalysisName();
 
 		this.studyDetailsComponent = new SingleSiteAnalysisStudyDetailsComponent(datasetName, description, objective, studyName, analysisName, true);
 		this.environmentsComponent = new SingleSiteAnalysisEnvironmentsComponent(this);

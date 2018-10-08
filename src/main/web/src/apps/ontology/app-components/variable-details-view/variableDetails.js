@@ -81,11 +81,17 @@
 						return !!($scope.model && $scope.model.formula);
 					};
 
-					$scope.addNewFormula = function (e, path) {
+					$scope.addNewFormula = function (e) {
 						resetErrors($scope);
 						$scope.model.formula = creatingFormula();
 						variableStateService.storeVariableState($scope.model, null);
-						$scope.addNew(e,path);
+						$scope.addNew(e,'formula');
+					};
+
+					$scope.editFormula = function (e) {
+						resetErrors($scope);
+						variableStateService.storeVariableState($scope.model, null);
+						$scope.addNew(e,'formula');
 					};
 
 					function creatingFormula() {

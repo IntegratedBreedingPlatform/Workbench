@@ -96,12 +96,12 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		this.ssaPanel.setMessageSource(this.messageSource);
 		this.ssaPanel.setStudyDataManager(this.studyDataManager);
 		this.ssaPanel.setParent(this.parentComponent);
-		this.ssaPanel.setEnvironmentsComponent(environmentsComponent);
-		this.ssaPanel.setGenotypesComponent(genotypesComponent);
-		this.ssaPanel.setStudyDetailsComponent(studyDetailsComponent);
-		this.ssaPanel.setDesignDetailsComponent(designDetailsComponent);
+		this.ssaPanel.setEnvironmentsComponent(this.environmentsComponent);
+		this.ssaPanel.setGenotypesComponent(this.genotypesComponent);
+		this.ssaPanel.setStudyDetailsComponent(this.studyDetailsComponent);
+		this.ssaPanel.setDesignDetailsComponent(this.designDetailsComponent);
 
-		when(parentComponent.getWindow()).thenReturn(this.window);
+		when(this.parentComponent.getWindow()).thenReturn(this.window);
 
 	}
 
@@ -273,11 +273,11 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		entryTypeVariable.setProperty(new Term(1, TermId.ENTRY_TYPE.name(), TermId.ENTRY_TYPE.name()));
 		factors.add(new DMSVariableType(TermId.ENTRY_TYPE.name(), TermId.ENTRY_TYPE.name(), entryTypeVariable, rank++));
 
-		final StandardVariable plotIdVariable = new StandardVariable();
-		plotIdVariable.setId(TermId.PLOT_ID.getId());
-		plotIdVariable.setPhenotypicType(PhenotypicType.GERMPLASM);
-		plotIdVariable.setProperty(new Term(1, TermId.PLOT_ID.name(), TermId.PLOT_ID.name()));
-		factors.add(new DMSVariableType(TermId.PLOT_ID.name(), TermId.PLOT_ID.name(), plotIdVariable, rank++));
+		final StandardVariable obsUnitIdVariable = new StandardVariable();
+		obsUnitIdVariable.setId(TermId.OBS_UNIT_ID.getId());
+		obsUnitIdVariable.setPhenotypicType(PhenotypicType.GERMPLASM);
+		obsUnitIdVariable.setProperty(new Term(1, TermId.OBS_UNIT_ID.name(), TermId.OBS_UNIT_ID.name()));
+		factors.add(new DMSVariableType(TermId.OBS_UNIT_ID.name(), TermId.OBS_UNIT_ID.name(), obsUnitIdVariable, rank++));
 
 		final StandardVariable repVariable = new StandardVariable();
 		repVariable.setId(TermId.REP_NO.getId());
