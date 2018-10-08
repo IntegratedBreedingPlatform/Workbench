@@ -130,12 +130,15 @@
                 // when the component loads.
                 if (formulaDefinition) {
                     var matches = formulaDefinition.match(VARIABLE_TOKEN_EXPRESSION);
-
                     if (matches) {
-                        $.each(matches, function(index, match) {
+                        var matchesUnique = matches.filter(function(item, pos, self) {
+                            return self.indexOf(item) === pos;
+                        });
+                        $.each(matchesUnique, function(index, match) {
                             formulaDefinition =
-                                formulaDefinition.replace(match, '<input type="button" class="token" disabled="disabled" value="'
-                                    + match + '"/>');
+                                // replace all occurrences of match's value
+                                formulaDefinition.replace(new RegExp(match, 'g'), '<input type="button" class="token" disabled="disabled" '
+                                    + 'value="' + match + '"/>');
                         });
                     }
 
