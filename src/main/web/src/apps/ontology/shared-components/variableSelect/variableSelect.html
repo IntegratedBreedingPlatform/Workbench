@@ -29,7 +29,7 @@
         <div class="row margin-top-10">
             <div class="col-sm-12">
                 <img class="om-icon-lg" src="/ibpworkbench/controller/static/images/property.svg" alt="Property"/>
-                <h2 class="om-variable-title">{{selectedProperty.value.name}} <span class="om-variable-capitalize">({{selectedProperty.value.classes}})</span>
+                <h2 class="om-variable-title">{{selectedProperty.value.name}}<span class="om-variable-capitalize">({{selectedProperty.value.classes}})</span>
                 </h2>
             </div>
         </div>
@@ -40,6 +40,7 @@
                      <span class="om-variable-name-container">
                         {{variable.name}}
                     </span>
+                    <span ng-if="variable.alias">({{variable.alias}})</span>
                 </div>
                 <div class="col-sm-6">
                     <button type="button" class="om-icon-button" ng-click="add(variable.name)">
