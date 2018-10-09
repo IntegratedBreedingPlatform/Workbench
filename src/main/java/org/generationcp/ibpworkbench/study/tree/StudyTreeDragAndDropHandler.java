@@ -5,8 +5,7 @@ import java.io.Serializable;
 
 import javax.annotation.Resource;
 
-import org.generationcp.commons.security.AuthorizationUtil;
-import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.util.StudyPermissionValidator;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
@@ -42,7 +41,8 @@ public class StudyTreeDragAndDropHandler implements Serializable {
 	private StudyDataManager studyDataManager;
 	
 	@Resource
-	private ContextUtil contextUtil;
+	private StudyPermissionValidator studyPermissionValidator;
+	
 
 	private final StudyTree targetTree;
 
@@ -66,7 +66,7 @@ public class StudyTreeDragAndDropHandler implements Serializable {
 			
 		} else if (isStudy) {
 			final StudyReference studyReference = this.studyDataManager.getStudyReference(sourceId);
-			if (AuthorizationUtil.userLacksPermissionForStudy(studyReference, this.contextUtil.getContextInfoFromSession().getLoggedInUserId())) {
+			if (this.studyPermissionValidator.userLacksPermissionForStudy(studyReference)) {
 				MessageNotifier.showError(this.targetTree.getWindow(), this.messageSource.getMessage(Message.ERROR_WITH_MODIFYING_STUDY_TREE),
 						this.messageSource.getMessage(Message.LOCKED_STUDY_CANT_BE_MODIFIED, studyReference.getOwnerName()));
 				return false;

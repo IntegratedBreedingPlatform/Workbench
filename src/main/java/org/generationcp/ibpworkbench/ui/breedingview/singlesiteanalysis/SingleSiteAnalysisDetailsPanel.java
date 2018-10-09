@@ -14,8 +14,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.generationcp.commons.security.AuthorizationUtil;
-import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.util.StudyPermissionValidator;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -103,7 +102,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	private SimpleResourceBundleMessageSource messageSource;
 	
 	@Resource
-	private ContextUtil contextUtil;
+	private StudyPermissionValidator studyPermissionValidator;
 	
 	public SingleSiteAnalysisDetailsPanel() {
 		this.setWidth("100%");
@@ -278,7 +277,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 			this.btnUpload.setVisible(true);
 			this.btnUpload.setCaption("Upload Output Files to BMS");
 			final StudyReference study = this.studyDataManager.getStudyReference(this.breedingViewInput.getStudyId());
-			if (AuthorizationUtil.userLacksPermissionForStudy(study, this.contextUtil.getContextInfoFromSession().getLoggedInUserId())) {
+			if (this.studyPermissionValidator.userLacksPermissionForStudy(study)) {
 				this.btnUpload.setEnabled(false);
 				this.btnUpload.setDescription(this.messageSource.getMessage(Message.LOCKED_STUDY_CANT_BE_MODIFIED, study.getOwnerName()));
 			}

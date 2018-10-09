@@ -3,8 +3,7 @@ package org.generationcp.ibpworkbench.study.tree;
 
 import javax.annotation.Resource;
 
-import org.generationcp.commons.security.AuthorizationUtil;
-import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.util.StudyPermissionValidator;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.GermplasmStudyBrowserLayout;
@@ -34,7 +33,7 @@ public class StudyTreeButtonsPanel extends HorizontalLayout implements Initializ
 	private StudyDataManager studyDataManager;
 	
 	@Resource
-	private ContextUtil contextUtil;
+	private StudyPermissionValidator studyPermissionValidator;
 
 	private StudyTree studyTree;
 	private final StudyTabSheet studyTabSheet;
@@ -189,8 +188,7 @@ public class StudyTreeButtonsPanel extends HorizontalLayout implements Initializ
 		if (null == studyReference.getProgramUUID()) {
 			MessageNotifier.showError(window, this.messageSource.getMessage(Message.ERROR), "Program templates cannot be renamed.");
 			return false;
-		} else if (AuthorizationUtil.userLacksPermissionForStudy(studyReference,
-				this.contextUtil.getContextInfoFromSession().getLoggedInUserId())) {
+		} else if (this.studyPermissionValidator.userLacksPermissionForStudy(studyReference)) {
 			MessageNotifier.showError(window, this.messageSource.getMessage(Message.ERROR),
 					this.messageSource.getMessage(Message.LOCKED_STUDY_CANT_BE_MODIFIED, studyReference.getOwnerName()));
 			return false;

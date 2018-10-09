@@ -3,8 +3,8 @@ package org.generationcp.browser.study.containers;
 
 import javax.annotation.Resource;
 
-import org.generationcp.commons.security.AuthorizationUtil;
 import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.util.StudyPermissionValidator;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
@@ -24,12 +24,15 @@ public class StudyButtonRenderer {
 
 	private static final String[] URL_STUDY_TRIAL = {"/Fieldbook/TrialManager/openTrial/", "#/trialSettings"};
 	private static final String PARENT_WINDOW = "_parent";
-
-	@Resource
-	private ContextUtil contextUtil;
-
+	
+	@Autowired
+	private StudyPermissionValidator studyPermissionValidator;
+	
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
+	
+	@Resource
+	private ContextUtil contextUtil;
 
 	private StudyReference study;
 
@@ -39,21 +42,19 @@ public class StudyButtonRenderer {
 	}
 
 	public Button renderStudyButton() {
-		final Integer currentUserId = contextUtil.getContextInfoFromSession().getLoggedInUserId();
 		final ExternalResource urlToOpenStudy = getURLStudy();
 		Button studyButton = new LinkButton(urlToOpenStudy, study.getName(), PARENT_WINDOW);
-		studyButton.setDebugId("linkStudyButton");
-		studyButton.addStyleName(BaseTheme.BUTTON_LINK);
 		
 		// If user doesn't have proper permissions for a locked study, show error message
-		if (AuthorizationUtil.userLacksPermissionForStudy(study, currentUserId)) {
+		if (this.studyPermissionValidator.userLacksPermissionForStudy(study)) {
 			studyButton = new Button(study.getName(), new LockedStudyButtonClickListener());
 			
 		} else if (!contextUtil.getCurrentProgramUUID().equals(study.getProgramUUID())) {
 			studyButton.setCaption(studyButton.getCaption());
 			studyButton.setEnabled(false);
 		}
-
+		studyButton.setDebugId("linkStudyButton");
+		studyButton.addStyleName(BaseTheme.BUTTON_LINK);
 		return studyButton;
 	}
 

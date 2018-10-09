@@ -3,8 +3,7 @@ package org.generationcp.ibpworkbench.ui.breedingview;
 
 import javax.annotation.Resource;
 
-import org.generationcp.commons.security.AuthorizationUtil;
-import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.util.StudyPermissionValidator;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
@@ -23,7 +22,7 @@ public class SelectStudyDialogForBreedingViewUpload extends SelectStudyDialog {
 	private static final long serialVersionUID = 1L;
 	
 	@Resource
-	private ContextUtil contextUtil;
+	private StudyPermissionValidator studyPermissionValidator;
 
 	public SelectStudyDialogForBreedingViewUpload(Window parentWindow, Component source,
 			Project project) {
@@ -41,7 +40,7 @@ public class SelectStudyDialogForBreedingViewUpload extends SelectStudyDialog {
 		final Integer studyId = r.getId();
 		final StudyReference study = this.studyDataManager.getStudyReference(studyId);
 		// Prevent user with no permission for locked study from uploading means dataset
-		if (AuthorizationUtil.userLacksPermissionForStudy(study, this.contextUtil.getContextInfoFromSession().getLoggedInUserId())) {
+		if (this.studyPermissionValidator.userLacksPermissionForStudy(study)) {
 			MessageNotifier.showError(this.parentWindow, this.messageSource.getMessage(Message.ERROR_WITH_MODIFYING_STUDY_TREE),
 					this.messageSource.getMessage(Message.LOCKED_STUDY_CANT_BE_MODIFIED, study.getOwnerName()));
 			return;
