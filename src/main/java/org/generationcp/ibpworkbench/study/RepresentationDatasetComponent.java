@@ -36,6 +36,7 @@ import org.generationcp.ibpworkbench.util.Util;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
+import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
@@ -282,7 +283,7 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 
 		// add the column ids to the LazyQueryContainer tells the container the columns to display for the Table
 		for (final String columnId : columnIds) {
-			if (columnId.contains("GID") && !fromUrl) {
+			if (columnId.contains(String.valueOf(TermId.GID.getId())) && !fromUrl) {
 				datasetContainer.addContainerProperty(columnId, Link.class, null);
 			} else {
 				datasetContainer.addContainerProperty(columnId, String.class, null);
