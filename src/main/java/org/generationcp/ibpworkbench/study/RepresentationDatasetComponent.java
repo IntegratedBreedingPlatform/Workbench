@@ -280,15 +280,8 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 		final RepresentationDatasetQueryFactory factory =
 				new RepresentationDatasetQueryFactory(this.studyDataManager, this.datasetId, columnIds, fromUrl, studyIdHolder);
 		final LazyQueryContainer datasetContainer = new LazyQueryContainer(factory, false, 50);
+		this.populateDatasetContainerProperties(fromUrl, columnIds, datasetContainer);
 
-		// add the column ids to the LazyQueryContainer tells the container the columns to display for the Table
-		for (final String columnId : columnIds) {
-			if (columnId.contains(String.valueOf(TermId.GID.getId())) && !fromUrl) {
-				datasetContainer.addContainerProperty(columnId, Link.class, null);
-			} else {
-				datasetContainer.addContainerProperty(columnId, String.class, null);
-			}
-		}
 		// initialize the first batch of data to be displayed
 		datasetContainer.getQueryView().getItem(0);
 
@@ -311,6 +304,17 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 		newTable.setCellStyleGenerator(new DatasetCellStyleGenerator(newTable));
 
 		return newTable;
+	}
+
+	protected void populateDatasetContainerProperties(final boolean fromUrl, final List<String> columnIds, final LazyQueryContainer datasetContainer) {
+		// add the column ids to the LazyQueryContainer tells the container the columns to display for the Table
+		for (final String columnId : columnIds) {
+			if (columnId.contains(String.valueOf(TermId.GID.getId())) && !fromUrl) {
+				datasetContainer.addContainerProperty(columnId, Link.class, null);
+			} else {
+				datasetContainer.addContainerProperty(columnId, String.class, null);
+			}
+		}
 	}
 
 	public void openGraphicalFilteringToolAction() {

@@ -5,15 +5,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vaadin.ui.Link;
 import org.generationcp.commons.util.VaadinFileDownloadResource;
 import org.generationcp.ibpworkbench.GermplasmStudyBrowserApplication;
+import org.generationcp.ibpworkbench.study.containers.RepresentationDatasetQueryFactory;
 import org.generationcp.ibpworkbench.study.util.DatasetExporter;
 import org.generationcp.ibpworkbench.study.util.DatasetExporterException;
-import org.generationcp.middleware.domain.dms.DMSVariableType;
-import org.generationcp.middleware.domain.dms.DataSet;
-import org.generationcp.middleware.domain.dms.PhenotypicType;
-import org.generationcp.middleware.domain.dms.StandardVariable;
-import org.generationcp.middleware.domain.dms.VariableTypeList;
+import org.generationcp.middleware.domain.dms.*;
 import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareException;
@@ -32,6 +30,7 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
 
 import junit.framework.Assert;
+import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
 
 public class RepresentationDatasetComponentTest {
 	
@@ -135,6 +134,21 @@ public class RepresentationDatasetComponentTest {
 
 		Table table = this.datasetComponent.generateLazyDatasetTable(false);
 		Assert.assertTrue("Table should only have 5 columns, excluding duplicate variables", table.getColumnHeaders().length == 5);
+	}
+
+	@Test
+	public void testPopulateDatasetContainerProperties() {
+		final List<String> columnIds = new ArrayList<>();
+		columnIds.add(new StringBuffer().append(TermId.GID.getId()).append("-").append(TermId.GID.name()).toString());
+		columnIds.add(new StringBuffer().append(TermId.ENTRY_NO.getId()).append("-").append(TermId.ENTRY_NO.name()).toString());
+
+		final RepresentationDatasetQueryFactory factory = new RepresentationDatasetQueryFactory(this.studyDataManager, 1, columnIds, false, 1);
+		final LazyQueryContainer datasetContainer = new LazyQueryContainer(factory, false, 50);
+
+		this.datasetComponent.populateDatasetContainerProperties(false, columnIds, datasetContainer);
+
+		Assert.assertEquals(Link.class, datasetContainer.getQueryView().getQueryDefinition().getPropertyType(columnIds.get(0)));
+		Assert.assertEquals(String.class, datasetContainer.getQueryView().getQueryDefinition().getPropertyType(columnIds.get(1)));
 	}
 
 	@Test
