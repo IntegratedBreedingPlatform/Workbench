@@ -236,4 +236,9 @@ public class StudyTreeButtonsPanel extends HorizontalLayout implements Initializ
 		this.studyTree = studyTree;
 	}
 
+	
+	public void setStudyPermissionValidator(StudyPermissionValidator studyPermissionValidator) {
+		this.studyPermissionValidator = studyPermissionValidator;
+	}
+
 }

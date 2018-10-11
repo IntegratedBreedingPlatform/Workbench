@@ -177,4 +177,10 @@ public class StudyTreeDragAndDropHandler implements Serializable {
 		this.studyDataManager = studyDataManager;
 	}
 
+
+	
+	public void setStudyPermissionValidator(StudyPermissionValidator studyPermissionValidator) {
+		this.studyPermissionValidator = studyPermissionValidator;
+	}
+
 }

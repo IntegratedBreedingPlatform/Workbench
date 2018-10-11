@@ -437,4 +437,9 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		return this.btnBack;
 	}
 
+	
+	public void setStudyPermissionValidator(StudyPermissionValidator studyPermissionValidator) {
+		this.studyPermissionValidator = studyPermissionValidator;
+	}
+
 }

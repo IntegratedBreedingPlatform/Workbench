@@ -459,4 +459,9 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		return (studyTypeDto.getName().equals(StudyTypeFilterComponent.ALL)) ? null : studyTypeDto.getId();
 	}
 
+	
+	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+
 }

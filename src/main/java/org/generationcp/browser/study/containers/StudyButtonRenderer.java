@@ -22,8 +22,8 @@ import com.vaadin.ui.themes.BaseTheme;
 @Configurable
 public class StudyButtonRenderer {
 
-	private static final String[] URL_STUDY_TRIAL = {"/Fieldbook/TrialManager/openTrial/", "#/trialSettings"};
-	private static final String PARENT_WINDOW = "_parent";
+	protected static final String[] URL_STUDY_TRIAL = {"/Fieldbook/TrialManager/openTrial/", "#/trialSettings"};
+	protected static final String PARENT_WINDOW = "_parent";
 	
 	@Autowired
 	private StudyPermissionValidator studyPermissionValidator;
@@ -79,6 +79,17 @@ public class StudyButtonRenderer {
 							StudyButtonRenderer.this.study.getOwnerName()));
 		}
 
+	}
+
+
+	
+	public void setStudyPermissionValidator(StudyPermissionValidator studyPermissionValidator) {
+		this.studyPermissionValidator = studyPermissionValidator;
+	}
+
+	
+	public void setContextUtil(ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
 	}
 
 }

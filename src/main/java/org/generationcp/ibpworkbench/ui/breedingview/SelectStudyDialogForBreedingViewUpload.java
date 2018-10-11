@@ -52,4 +52,9 @@ public class SelectStudyDialogForBreedingViewUpload extends SelectStudyDialog {
 		this.parentWindow.getWindow().removeWindow(this);
 	}
 
+	
+	public void setStudyPermissionValidator(StudyPermissionValidator studyPermissionValidator) {
+		this.studyPermissionValidator = studyPermissionValidator;
+	}
+
 }
