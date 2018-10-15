@@ -587,7 +587,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 		// Hide sidebar button if in Workbench Dashboard or in Create Program screens
 		this.isWorkbenchDashboardShown = content instanceof WorkbenchDashboard;
-		this.doHideSidebarToggleButton = isWorkbenchDashboardShown || content instanceof AddProgramView;
+		this.doHideSidebarToggleButton = isWorkbenchDashboardShown || content instanceof AddProgramView || this.workbenchTitle.getDescription() != "";
 		if (doHideSidebarToggleButton) {
 			this.root.setSplitPosition(0, Sizeable.UNITS_PIXELS);
 		} else {
