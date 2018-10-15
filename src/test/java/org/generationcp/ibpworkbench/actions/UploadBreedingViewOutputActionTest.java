@@ -20,6 +20,8 @@ import org.generationcp.ibpworkbench.ui.recovery.BackupAndRestoreView;
 import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow;
 import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow.CustomFileFactory;
 import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow.CustomUploadField;
+import org.generationcp.middleware.data.initializer.DMSVariableTestDataInitializer;
+import org.generationcp.middleware.data.initializer.LocationTestDataInitializer;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
@@ -30,6 +32,7 @@ import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableList;
 import org.generationcp.middleware.domain.dms.VariableTypeList;
 import org.generationcp.middleware.domain.oms.TermId;
+import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.manager.api.OntologyDataManager;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -108,6 +111,9 @@ public class UploadBreedingViewOutputActionTest {
 
 	@Mock
 	private PlatformTransactionManager transactionManager;
+
+	@Mock
+	private LocationDataManager locationDataManager;
 
 	@InjectMocks
 	private final UploadBreedingViewOutputAction uploadBreedingViewOutputAction = new UploadBreedingViewOutputAction();
@@ -293,6 +299,37 @@ public class UploadBreedingViewOutputActionTest {
 				Matchers.anyInt());
 		Mockito.verify(this.breedingViewImportService, Mockito.times(0)).importOutlierData(Matchers.any(File.class), Matchers.anyInt());
 
+	}
+
+	@Test
+	public void testContainsValueByLocalName() {
+		final Variable variable = DMSVariableTestDataInitializer.createVariableWithStandardVariable(TermId.TRIAL_INSTANCE_FACTOR, "1");
+		final TrialEnvironment environment = Mockito.mock(TrialEnvironment.class);
+		final VariableList variableList = Mockito.mock(VariableList.class);
+		Mockito.when(environment.getVariables()).thenReturn(variableList);
+		Mockito.when(variableList.findByLocalName("TRIAL_INSTANCE")).thenReturn(variable);
+
+		boolean containsValue = this.uploadBreedingViewOutputAction.containsValueByLocalName("TRIAL_INSTANCE", "1", environment);
+		Assert.assertTrue(containsValue);
+
+		containsValue = this.uploadBreedingViewOutputAction.containsValueByLocalName("TRIAL_INSTANCE", "2", environment);
+		Assert.assertFalse(containsValue);
+	}
+
+	@Test
+	public void testContainsValueByLocalNameForLocationName() {
+		final Variable variable = DMSVariableTestDataInitializer.createVariableWithStandardVariable(TermId.LOCATION_ID, "1");
+		final TrialEnvironment environment = Mockito.mock(TrialEnvironment.class);
+		final VariableList variableList = Mockito.mock(VariableList.class);
+		Mockito.when(environment.getVariables()).thenReturn(variableList);
+		Mockito.when(variableList.findByLocalName("LOCATION_NAME")).thenReturn(variable);
+		Mockito.when(this.locationDataManager.getLocationByID(1)).thenReturn(LocationTestDataInitializer.createLocation(1, "WARDA"));
+
+		boolean containsValue = this.uploadBreedingViewOutputAction.containsValueByLocalName("LOCATION_NAME", "WARDA", environment);
+		Assert.assertTrue(containsValue);
+
+		containsValue = this.uploadBreedingViewOutputAction.containsValueByLocalName("LOCATION_NAME", "CIMMYT", environment);
+		Assert.assertFalse(containsValue);
 	}
 
 	@Test
