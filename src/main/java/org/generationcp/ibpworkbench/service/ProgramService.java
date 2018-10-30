@@ -30,6 +30,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.WebUtils;
+import org.generationcp.middleware.manager.api.GermplasmDataManager;
+import org.generationcp.middleware.pojos.dms.ProgramFavorite;
 
 @Service
 @Transactional
@@ -44,6 +46,9 @@ public class ProgramService {
 	private UserDataManager userDataManager;
 
 	@Autowired
+	private GermplasmDataManager germplasmDataManager;
+
+	@Autowired
 	private HttpServletRequest request;
 
 	@Autowired
@@ -53,6 +58,8 @@ public class ProgramService {
 	public static final int PROJECT_USER_ACCESS_NUMBER = 100;
 	public static final int PROJECT_USER_TYPE = 422;
 	public static final int PROJECT_USER_STATUS = 1;
+	public static final int UNSPECIFIED_LOCATION_ID = 9016;
+	public static final String UNSPECIFIED_LOCATION_METHOD_NAME = "Location";
 
 	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
@@ -69,6 +76,8 @@ public class ProgramService {
 		this.setContextInfoAndCurrentCrop(program);
 
 		this.saveProgramMembers(program, programUsers);
+
+		this.addUnspecifiedLocationToFavorite(program);
 
 		// After saving, we create folder for program under <install directory>/workspace
 		this.installationDirectoryUtil.createWorkspaceDirectoriesForProject(program);
@@ -258,5 +267,13 @@ public class ProgramService {
 			if(!isProgramMember) removedUserIds.add(activeUserId);
 		}
 		return removedUserIds;
+	}
+
+	public void addUnspecifiedLocationToFavorite(final Project program) {
+		final ProgramFavorite favorite = new ProgramFavorite();
+		favorite.setEntityId(UNSPECIFIED_LOCATION_ID);
+		favorite.setEntityType(UNSPECIFIED_LOCATION_METHOD_NAME);
+		favorite.setUniqueID(program.getUniqueID());
+		this.germplasmDataManager.saveProgramFavorite(favorite);
 	}
 }
