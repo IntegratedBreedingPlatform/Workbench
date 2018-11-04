@@ -18,10 +18,12 @@ import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.data.initializer.WorkbenchUserTestDataInitializer;
+import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.UserDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.dms.ProgramFavorite;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.IbdbUserMap;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -66,6 +68,9 @@ public class ProgramServiceTest {
 
 	@Mock
 	private ProjectUserInfoDAO projectUserInfoDAO;
+
+	@Mock
+	private GermplasmDataManager germplasmDataManager;
 
 	@Mock
 	private Cookie cookie;
@@ -149,6 +154,8 @@ public class ProgramServiceTest {
 		Assert.assertNull(project.getLastOpenDate());
 
 		this.verifyMockInteractionsForSavingProgramMembers();
+
+		Mockito.verify(this.germplasmDataManager, Mockito.times(1)).saveProgramFavorite(Matchers.any(ProgramFavorite.class));
 
 		// Verify that utility to create workspace directory was called
 		Mockito.verify(this.installationDirectoryUtil).createWorkspaceDirectoriesForProject(project);
