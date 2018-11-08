@@ -127,8 +127,6 @@ public class DatasetExporter {
 			return;
 		}
 
-		this.rowsToWrite = new ArrayList<>();
-
 		// Consolidate factors and traits of dataset as column headers
 		final List<String> factorColumns = this.generateFactorColumnsList(dataset);
 		final List<String> variateColumns = this.generateVariateColumnsList(dataset, breedingViewInput);
@@ -148,7 +146,8 @@ public class DatasetExporter {
 			columnNames.add(selectedEnvironmentFactor);
 			selectedEnvFactorInColumnList = false;
 		}
-		
+
+		this.rowsToWrite = new ArrayList<>();
 		// Set column names as first row to be written in file
 		this.getRowsToWrite().add(this.sanitizeColumnNames(columnNames));
 
