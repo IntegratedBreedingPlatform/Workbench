@@ -40,13 +40,7 @@ public class DatasetExporterTest {
 	public static final int DATASET_ID = 1;
 
 	@Mock
-	private static ManagerFactory factory;
-
-	@Mock
 	private static StudyDataManager studyDataManager;
-
-	@Mock
-	private static WorkbenchDataManager workbenchDataManager;
 
 	@Mock
 	private BreedingViewInput bvInput;

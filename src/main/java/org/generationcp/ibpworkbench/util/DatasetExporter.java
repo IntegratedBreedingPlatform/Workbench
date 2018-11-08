@@ -44,7 +44,6 @@ public class DatasetExporter {
 	@Autowired
 	private OntologyService ontologyService;
 
-	private final Map<String, String> headerNameAliasMap = new HashMap<>();
 	private List<String[]> rowsToWrite = new ArrayList<>();
 
 	private static final String MISSING_VALUE_STRING = "missing";
@@ -440,10 +439,6 @@ public class DatasetExporter {
 
 	public List<String[]> getRowsToWrite() {
 		return this.rowsToWrite;
-	}
-
-	public Map<String, String> getHeaderNameAliasMap() {
-		return this.headerNameAliasMap;
 	}
 
 	public WorkbenchDataManager getWorkbenchDataManager() {
