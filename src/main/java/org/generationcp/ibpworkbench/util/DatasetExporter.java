@@ -230,7 +230,7 @@ public class DatasetExporter {
 	 *
 	 * @return array of column names with invalid characters replaced with underscore
 	 */
-	private String[] sanitizeColumnNames(final List<String> columnNames) {
+	String[] sanitizeColumnNames(final List<String> columnNames) {
 
 		final List<String> sanitized = new ArrayList<>();
 
