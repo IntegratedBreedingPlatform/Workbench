@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.WebUtils;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
+import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.pojos.dms.ProgramFavorite;
 
 @Service
@@ -52,14 +53,15 @@ public class ProgramService {
 	private HttpServletRequest request;
 
 	@Autowired
+	private LocationDataManager locationDataManager;
+
+	@Autowired
 	private org.generationcp.commons.spring.util.ContextUtil contextUtil;
 
 	// http://cropwiki.irri.org/icis/index.php/TDM_Users_and_Access
 	public static final int PROJECT_USER_ACCESS_NUMBER = 100;
 	public static final int PROJECT_USER_TYPE = 422;
 	public static final int PROJECT_USER_STATUS = 1;
-	public static final int UNSPECIFIED_LOCATION_ID = 9016;
-	public static final String UNSPECIFIED_LOCATION_METHOD_NAME = "Location";
 
 	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
@@ -71,13 +73,15 @@ public class ProgramService {
 	 * @param programUsers : users to add as members of new program
 	 */
 	public void createNewProgram(final Project program, final Set<WorkbenchUser> programUsers) {
+		final String unspecifiedLocationID = this.locationDataManager.retrieveLocIdOfUnspecifiedLocation();
+
 		// Need to save first to workbench_project so project id can be saved in session
 		this.saveWorkbenchProject(program);
 		this.setContextInfoAndCurrentCrop(program);
 
 		this.saveProgramMembers(program, programUsers);
 
-		this.addUnspecifiedLocationToFavorite(program);
+		this.addUnspecifiedLocationToFavorite(program, unspecifiedLocationID);
 
 		// After saving, we create folder for program under <install directory>/workspace
 		this.installationDirectoryUtil.createWorkspaceDirectoriesForProject(program);
@@ -269,10 +273,10 @@ public class ProgramService {
 		return removedUserIds;
 	}
 
-	public void addUnspecifiedLocationToFavorite(final Project program) {
+	public void addUnspecifiedLocationToFavorite(final Project program, final String unspecifiedLocationID) {
 		final ProgramFavorite favorite = new ProgramFavorite();
-		favorite.setEntityId(UNSPECIFIED_LOCATION_ID);
-		favorite.setEntityType(UNSPECIFIED_LOCATION_METHOD_NAME);
+		favorite.setEntityId(Integer.parseInt(unspecifiedLocationID));
+		favorite.setEntityType(ProgramFavorite.FavoriteType.LOCATION.getName());
 		favorite.setUniqueID(program.getUniqueID());
 		this.germplasmDataManager.saveProgramFavorite(favorite);
 	}
