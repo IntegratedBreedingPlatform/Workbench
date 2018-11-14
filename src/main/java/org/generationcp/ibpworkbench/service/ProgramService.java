@@ -30,6 +30,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.WebUtils;
+import org.generationcp.middleware.manager.api.GermplasmDataManager;
+import org.generationcp.middleware.pojos.dms.ProgramFavorite;
+import org.generationcp.middleware.manager.api.LocationDataManager;
 
 @Service
 @Transactional
@@ -45,6 +48,12 @@ public class ProgramService {
 
 	@Autowired
 	private HttpServletRequest request;
+
+	@Autowired
+	private LocationDataManager locationDataManager;
+
+	@Autowired
+	private GermplasmDataManager germplasmDataManager;
 
 	@Autowired
 	private org.generationcp.commons.spring.util.ContextUtil contextUtil;
@@ -64,11 +73,15 @@ public class ProgramService {
 	 * @param programUsers : users to add as members of new program
 	 */
 	public void createNewProgram(final Project program, final Set<WorkbenchUser> programUsers) {
+		final String unspecifiedLocationID = this.locationDataManager.retrieveLocIdOfUnspecifiedLocation();
+
 		// Need to save first to workbench_project so project id can be saved in session
 		this.saveWorkbenchProject(program);
 		this.setContextInfoAndCurrentCrop(program);
 
 		this.saveProgramMembers(program, programUsers);
+
+		this.addUnspecifiedLocationToFavorite(program, unspecifiedLocationID);
 
 		// After saving, we create folder for program under <install directory>/workspace
 		this.installationDirectoryUtil.createWorkspaceDirectoriesForProject(program);
@@ -258,5 +271,13 @@ public class ProgramService {
 			if(!isProgramMember) removedUserIds.add(activeUserId);
 		}
 		return removedUserIds;
+	}
+
+	public void addUnspecifiedLocationToFavorite(final Project program, final String unspecifiedLocationID) {
+		final ProgramFavorite favorite = new ProgramFavorite();
+		favorite.setEntityId(Integer.parseInt(unspecifiedLocationID));
+		favorite.setEntityType(ProgramFavorite.FavoriteType.LOCATION.getName());
+		favorite.setUniqueID(program.getUniqueID());
+		this.germplasmDataManager.saveProgramFavorite(favorite);
 	}
 }
