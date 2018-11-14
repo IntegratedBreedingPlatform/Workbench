@@ -38,6 +38,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.web.context.request.RequestAttributes;
+import org.generationcp.middleware.manager.api.GermplasmDataManager;
+import org.generationcp.middleware.pojos.dms.ProgramFavorite;
+import org.generationcp.middleware.manager.api.LocationDataManager;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProgramServiceTest {
@@ -72,6 +75,12 @@ public class ProgramServiceTest {
 
 	@Mock
 	private InstallationDirectoryUtil installationDirectoryUtil;
+
+	@Mock
+	private GermplasmDataManager germplasmDataManager;
+
+	@Mock 
+	private LocationDataManager locationDataManager;
 
 	@InjectMocks
 	private final ProgramService programService = new ProgramService();
@@ -150,6 +159,10 @@ public class ProgramServiceTest {
 
 		this.verifyMockInteractionsForSavingProgramMembers();
 
+
+
+		Mockito.verify(this.germplasmDataManager, Mockito.times(1)).saveProgramFavorite(Matchers.any(ProgramFavorite.class));
+
 		// Verify that utility to create workspace directory was called
 		Mockito.verify(this.installationDirectoryUtil).createWorkspaceDirectoriesForProject(project);
 
@@ -161,6 +174,14 @@ public class ProgramServiceTest {
 		Assert.assertEquals(ProgramServiceTest.USER_ID, contextInfo.getLoggedInUserId().intValue());
 		Assert.assertEquals(project.getProjectId(), contextInfo.getSelectedProjectId());
 		Assert.assertEquals(ProgramServiceTest.SAMPLE_AUTH_TOKEN_VALUE, contextInfo.getAuthToken());
+	}
+
+	@Test
+	public void testRetrieveLocIdOfUnspecifiedLocation() {
+
+		final int UNSPECIFIED_LOCATION_LOCID = 9999;
+		Assert.assertEquals(String.valueOf(UNSPECIFIED_LOCATION_LOCID), this.locationDataManager.retrieveLocIdOfUnspecifiedLocation());
+
 	}
 
 	@Test
