@@ -147,6 +147,7 @@ public class ProgramServiceTest {
 		Mockito.when(this.workbenchDataManager.getCropTypeByName(Matchers.anyString()))
 				.thenReturn(project.getCropType());
 		Mockito.when(this.userDataManager.addUser(Matchers.any(User.class))).thenReturn(2);
+		Mockito.when(this.locationDataManager.retrieveLocIdOfUnspecifiedLocation()).thenReturn("9999");
 
 		// Call the method to test
 		this.programService.createNewProgram(project, selectedUsers);
@@ -158,8 +159,6 @@ public class ProgramServiceTest {
 		Assert.assertNull(project.getLastOpenDate());
 
 		this.verifyMockInteractionsForSavingProgramMembers();
-
-
 
 		Mockito.verify(this.germplasmDataManager, Mockito.times(1)).saveProgramFavorite(Matchers.any(ProgramFavorite.class));
 
@@ -174,14 +173,6 @@ public class ProgramServiceTest {
 		Assert.assertEquals(ProgramServiceTest.USER_ID, contextInfo.getLoggedInUserId().intValue());
 		Assert.assertEquals(project.getProjectId(), contextInfo.getSelectedProjectId());
 		Assert.assertEquals(ProgramServiceTest.SAMPLE_AUTH_TOKEN_VALUE, contextInfo.getAuthToken());
-	}
-
-	@Test
-	public void testRetrieveLocIdOfUnspecifiedLocation() {
-
-		final int UNSPECIFIED_LOCATION_LOCID = 9999;
-		Assert.assertEquals(String.valueOf(UNSPECIFIED_LOCATION_LOCID), this.locationDataManager.retrieveLocIdOfUnspecifiedLocation());
-
 	}
 
 	@Test
