@@ -100,9 +100,11 @@ public class DatasetExporter {
 
 			final String variateName = variate.getLocalName();
 
-			// Include only the selected traits
-			if (breedingViewInput.getVariatesActiveState().get(variateName).booleanValue()) {
-				// add entry to columns mapping
+			// Include only the selected traits and covariates
+			if (breedingViewInput.getVariatesSelectionMap().get(variateName).booleanValue()) {
+				variateColumns.add(variateName);
+			}
+			if (breedingViewInput.getCovariatesSelectionMap().get(variateName).booleanValue()) {
 				variateColumns.add(variateName);
 			}
 
@@ -169,10 +171,10 @@ public class DatasetExporter {
 			}
 		}
 		
-		List<Experiment> experiments = this.studyDataManager.getExperiments(this.datasetId, 0, Integer.MAX_VALUE);
+		final List<Experiment> experiments = this.studyDataManager.getExperiments(this.datasetId, 0, Integer.MAX_VALUE);
 		for (final Experiment experiment : experiments) {
 			// Only include experiments that are in selected trial instances/environment(s)
-			boolean experimentIsInSelectedEnvironments =
+			final boolean experimentIsInSelectedEnvironments =
 					this.isExperimentInSelectedEnvironments(breedingViewInput, selectedEnvironments, experiment);
 			
 			if (experimentIsInSelectedEnvironments) {
@@ -181,7 +183,7 @@ public class DatasetExporter {
 				this.populateRowWithVariateValuesFromExperiment(variateColumns, rowValues, experiment);
 				
 				// add "1" value for REP variable if dummy REPLICATES column was used
-				if (isDummyRepVariableUsed(breedingViewInput)) {
+				if (this.isDummyRepVariableUsed(breedingViewInput)) {
 					rowValues.add("1");
 				}
 				
@@ -229,9 +231,9 @@ public class DatasetExporter {
 	 */
 	private String[] sanitizeColumnNames() {
 
-		List<String> sanitized = new ArrayList<>();
+		final List<String> sanitized = new ArrayList<>();
 
-		for (String column : this.columns) {
+		for (final String column : this.columns) {
 			sanitized.add(BreedingViewUtil.trimAndSanitizeName(column));
 		}
 
@@ -264,7 +266,7 @@ public class DatasetExporter {
 			final Experiment currentExperiment, final BreedingViewInput breedingViewInput) {
 
 		// Create map of factors for given experiment as it is possible for dataset factor not to be present for experiment  
-		// (eg. FIELDMAP_COLUMN, FIELDMAP_RANGE. PLOT_ID)
+		// (eg. FIELDMAP_COLUMN, FIELDMAP_RANGE. OBS_UNIT_ID)
 		final List<Variable> factorsOfExperiments = currentExperiment.getFactors().getVariables();
 		final Map<String, Variable> factorsOfExperimentsMap = new HashMap<>();
 		for (final Variable factorVariable : factorsOfExperiments) {
@@ -339,8 +341,8 @@ public class DatasetExporter {
 				}
 
 			// Special Case	
-			} else if (TermId.PLOT_ID.name().equals(factorName)) {
-				experimentRowData.add(currentExperiment.getPlotId());
+			} else if (TermId.OBS_UNIT_ID.name().equals(factorName)) {
+				experimentRowData.add(currentExperiment.getObsUnitId());
 
 			// If dataset factor is not in current experiment (eg. FIELDMAP_COLUMN, FIELDMAP_RANGE), write blank value
 			// So as to avoid wrong alignment of subsequent row data to proper column
@@ -451,7 +453,7 @@ public class DatasetExporter {
 	}
 
 	
-	public void setDatasetId(Integer datasetId) {
+	public void setDatasetId(final Integer datasetId) {
 		this.datasetId = datasetId;
 	}
 

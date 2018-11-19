@@ -12,6 +12,9 @@ package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
+import org.generationcp.commons.util.StudyPermissionValidator;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -22,6 +25,7 @@ import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
+import org.generationcp.middleware.domain.dms.StudyReference;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -49,7 +53,7 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	private static final long serialVersionUID = 1L;
 
-	public static final List<Integer> GENOTYPES_TO_HIDE = Lists.newArrayList(TermId.ENTRY_TYPE.getId(), TermId.PLOT_ID.getId());
+	public static final List<Integer> GENOTYPES_TO_HIDE = Lists.newArrayList(TermId.ENTRY_TYPE.getId(), TermId.OBS_UNIT_ID.getId());
 	public static final String INCOMPLETE_PLOT_DATA_ERROR =
 			"cannot be used for analysis because the plot data is not complete. The data must contain at least 2 common entries with values.";
 	public static final String MARGIN_TOP10 = "marginTop10";
@@ -96,7 +100,10 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
-
+	
+	@Resource
+	private StudyPermissionValidator studyPermissionValidator;
+	
 	public SingleSiteAnalysisDetailsPanel() {
 		this.setWidth("100%");
 	}
@@ -122,7 +129,13 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 		this.lblPageTitle.setDebugId("lblPageTitle");
 		this.lblPageTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 
-		this.studyDetailsComponent = new SingleSiteAnalysisStudyDetailsComponent(this);
+		final String datasetName = this.breedingViewInput.getDatasetName();
+		final String description = this.breedingViewInput.getDescription();
+		final String studyName = this.breedingViewInput.getDatasetSource();
+		final String objective = this.breedingViewInput.getObjective();
+		final String analysisName = this.breedingViewInput.getBreedingViewAnalysisName();
+
+		this.studyDetailsComponent = new SingleSiteAnalysisStudyDetailsComponent(datasetName, description, objective, studyName, analysisName, true);
 		this.environmentsComponent = new SingleSiteAnalysisEnvironmentsComponent(this);
 		this.designDetailsComponent = new SingleSiteAnalysisDesignDetails(this);
 		this.genotypesComponent = new SingleSiteAnalysisGenotypesComponent(this);
@@ -263,6 +276,11 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 			this.messageSource.setCaption(this.btnRun, Message.DOWNLOAD_INPUT_FILES);
 			this.btnUpload.setVisible(true);
 			this.btnUpload.setCaption("Upload Output Files to BMS");
+			final StudyReference study = this.studyDataManager.getStudyReference(this.breedingViewInput.getStudyId());
+			if (this.studyPermissionValidator.userLacksPermissionForStudy(study)) {
+				this.btnUpload.setEnabled(false);
+				this.btnUpload.setDescription(this.messageSource.getMessage(Message.LOCKED_STUDY_CANT_BE_MODIFIED, study.getOwnerName()));
+			}
 		} else {
 			this.messageSource.setCaption(this.btnRun, Message.RUN_BREEDING_VIEW);
 			this.btnUpload.setVisible(false);
@@ -417,6 +435,11 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	protected Button getBtnBack() {
 		return this.btnBack;
+	}
+
+	
+	public void setStudyPermissionValidator(StudyPermissionValidator studyPermissionValidator) {
+		this.studyPermissionValidator = studyPermissionValidator;
 	}
 
 }

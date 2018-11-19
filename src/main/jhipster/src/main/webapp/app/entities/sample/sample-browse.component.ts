@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SampleList } from './sample-list.model';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import {ModalService} from '../../shared/modal/modal.service';
 import {SampleContext} from './sample.context';
 
@@ -13,7 +14,7 @@ import {SampleContext} from './sample.context';
 export class SampleBrowseComponent implements OnInit, OnDestroy {
 
     private listId: number;
-    // private crop: string;
+    private crop: string;
     private queryParamSubscription: Subscription;
     private paramSubscription: Subscription;
 
@@ -21,6 +22,7 @@ export class SampleBrowseComponent implements OnInit, OnDestroy {
 
     constructor(private activatedRoute: ActivatedRoute,
                 private modalService: ModalService,
+                private router: Router,
                 private sampleContext: SampleContext) {
         this.queryParamSubscription = this.activatedRoute.queryParams.subscribe((params) => {
             this.listId = params['listId'];
@@ -36,7 +38,7 @@ export class SampleBrowseComponent implements OnInit, OnDestroy {
             this.setActive(this.listId);
         });
         this.paramSubscription = this.activatedRoute.params.subscribe((params) => {
-            // this.crop = params['crop'];
+            this.crop = params['crop'];
         });
     }
 
@@ -46,6 +48,9 @@ export class SampleBrowseComponent implements OnInit, OnDestroy {
             const first = this.lists[0];
             if (first) {
                 first.active = true;
+                this.navigate(first.id);
+            } else {
+                this.navigate('');
             }
         }
     }
@@ -66,6 +71,14 @@ export class SampleBrowseComponent implements OnInit, OnDestroy {
 
     private exists(listId: number) {
         return this.lists.some((list) => list.id === listId);
+    }
+
+    private navigate(listId: any) {
+        this.listId = listId;
+        this.router.navigate(['/' + this.crop + '/sample-browse'], {queryParams: {
+                listId: this.listId
+            }
+        });
     }
 
     trackId(index: number, item: SampleList) {

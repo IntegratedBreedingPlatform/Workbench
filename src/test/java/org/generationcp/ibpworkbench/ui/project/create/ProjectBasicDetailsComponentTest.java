@@ -3,6 +3,8 @@ package org.generationcp.ibpworkbench.ui.project.create;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -21,19 +23,23 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import static org.mockito.Mockito.when;
 
 import com.vaadin.data.Validator;
 import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
+import com.vaadin.ui.Component;
 
 public class ProjectBasicDetailsComponentTest {
 
 	private static final String DUPLICATE_NAME_ERROR = "Program with given name already exists";
 	private static final String NO_PROGRAM_NAME_ERROR = "Program name cannot be empty.";
 	private static final String INVALID_PROGRAM_NAME = "Program name contains invalid characters.";
+	private static final String CROP_TYPE_REQUIRED_ERROR = "No crop type selected";
 	
 	@Mock
 	private CreateProjectPanel panel;
@@ -50,6 +56,12 @@ public class ProjectBasicDetailsComponentTest {
 	@Mock
 	private CreateProjectPanel createProjectPanel;
 
+	@Mock
+	private BmsDateField startDateField;
+
+	@Mock
+	private Component parentComponent;
+
 	@InjectMocks
 	private ProjectBasicDetailsComponent basicDetailsComponent;
 	
@@ -65,11 +77,15 @@ public class ProjectBasicDetailsComponentTest {
 		Mockito.when(this.messageSource.getMessage(Message.DUPLICATE_PROGRAM_NAME_ERROR)).thenReturn(DUPLICATE_NAME_ERROR);
 		Mockito.when(this.messageSource.getMessage("NO_PROGRAM_NAME_ERROR")).thenReturn(NO_PROGRAM_NAME_ERROR);
 		Mockito.when(this.messageSource.getMessage("PROGRAM_NAME_INVALID_ERROR")).thenReturn(INVALID_PROGRAM_NAME);
+		Mockito.when(this.messageSource.getMessage("CROP_TYPE_REQUIRED_ERROR")).thenReturn(CROP_TYPE_REQUIRED_ERROR);
 		this.basicDetailsComponent = new ProjectBasicDetailsComponent(this.createProjectPanel);
 		this.basicDetailsComponent.setIsUpdate(false);
+		this.basicDetailsComponent.setParent(this.parentComponent);
 		this.basicDetailsComponent.setMessageSource(this.messageSource);
 		this.basicDetailsComponent.setWorkbenchDataManager(this.workbenchDataManager);
 		this.basicDetailsComponent.initializeComponents();
+
+		when(parentComponent.getWindow()).thenReturn(this.window);
 	}
 	
 	@Test
@@ -108,6 +124,17 @@ public class ProjectBasicDetailsComponentTest {
 		Assert.assertFalse(mockComponent.validate());
 		Assert.assertTrue(mockComponent.getErrorDescription().toString().contains(DUPLICATE_NAME_ERROR));
 		Mockito.verify(this.window).showNotification(Matchers.any(Notification.class));
+	}
+
+	@Test
+	public void testValidateUpdateWithExistingName() throws Exception {
+		Mockito.when(this.workbenchDataManager.getProjectByNameAndCrop(this.testProject.getProjectName(), this.testProject.getCropType()))
+				.thenReturn(this.testProject);
+
+		this.basicDetailsComponent.setIsUpdate(true);
+		this.basicDetailsComponent.updateProjectDetailsFormField(this.testProject);
+		Assert.assertTrue(this.basicDetailsComponent.validate());
+		Assert.assertFalse(this.basicDetailsComponent.getErrorDescription().toString().contains(DUPLICATE_NAME_ERROR));
 	}
 
 	@Test
@@ -192,4 +219,32 @@ public class ProjectBasicDetailsComponentTest {
 		Mockito.verify(this.createProjectPanel).cropTypeChanged(newCropType);
 	}
 
+	@Test
+	public void testCropTypeWhenNull() {
+		this.testProject.setCropType(null);
+		this.basicDetailsComponent.updateProjectDetailsFormField(this.testProject);
+		Assert.assertFalse(this.basicDetailsComponent.validate());
+		Assert.assertTrue(this.basicDetailsComponent.getErrorDescription().toString().contains(CROP_TYPE_REQUIRED_ERROR));
+	}
+
+	@Test
+	public void testValidateDateWithValidationExceptionThrown() throws Exception {
+		this.basicDetailsComponent.setStartDateField(this.startDateField);
+		Mockito.doThrow(new InvalidValueException("Invalid Input")).when(startDateField).validate();
+
+		this.basicDetailsComponent.updateProjectDetailsFormField(this.testProject);
+		Assert.assertFalse(this.basicDetailsComponent.validate());
+		Mockito.verify(this.basicDetailsComponent.getStartDateField()).validate();
+		Assert.assertTrue(this.basicDetailsComponent.getErrorDescription().toString().contains("Invalid Input"));
+	}
+
+	@Test
+	public void testValidateDateSuccess() throws Exception {
+		String validDateFormat = "2018-08-29";
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+		this.testProject.setStartDate(dateFormat.parse(validDateFormat));
+		this.basicDetailsComponent.updateProjectDetailsFormField(this.testProject);
+		Assert.assertTrue(this.basicDetailsComponent.validate());
+	}
 }

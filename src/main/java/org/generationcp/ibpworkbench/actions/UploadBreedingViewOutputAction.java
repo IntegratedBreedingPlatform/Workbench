@@ -22,7 +22,10 @@ import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.domain.dms.TrialEnvironment;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
 import org.generationcp.middleware.domain.dms.Variable;
+import org.generationcp.middleware.domain.oms.TermId;
+import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +58,9 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 	@Autowired
 	private PlatformTransactionManager transactionManager;
+
+	@Autowired
+	private LocationDataManager locationDataManager;
 
 	private BMSOutputParser bmsOutputParser;
 
@@ -190,15 +196,18 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 		final Variable environmentFactorVariable = trialEnvironment.getVariables().findByLocalName(environmentFactor);
 		if (environmentFactorVariable != null) {
+			//Check if the selected environment factor is the LOCATION_ID and retrieve the Location using the LOCATION_ID value
+			if(environmentFactorVariable.getVariableType().getStandardVariable().getId() == TermId.LOCATION_ID.getId()) {
+				final Location location = this.locationDataManager.getLocationByID(Integer.valueOf(environmentFactorVariable.getIdValue()));
+				return environmentName.equals(location.getLname());
+			}
 
 			// Unfortunately, Breeding View cannot handle double quotes in CSV! It's very likely that the data that we
 			// pass to Breeding View has comma in them (e.g. Location Name), so we had to replace the comma with semicolon so that Breeding
 			// View will not treat data as multiple fields. Now we have to compare the location name from CSV with the location
 			// name from the database, so we have no choice but to replace the comma in location name to properly match it from the data
 			// from the CSV file.
-
 			return environmentName.equals(environmentFactorVariable.getValue().replace(",", ";"));
-
 		}
 		return false;
 	}

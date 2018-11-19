@@ -37,7 +37,7 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 	private static final String SAMPLE_ID = "Sample ID";
 	private static final String SAMPLE_LIST = "Sample List";
 	private static final String STUDY_NAME = "Study Name";
-	private static final String PLOT_ID = "Plot ID";
+	private static final String OBS_UNIT_ID = "Observation Unit ID";
 	private static final String PLANT_ID = "Plant ID";
 	private static final String PLATE_ID = "Plate ID";
 	private static final String WELL = "WELL";
@@ -95,7 +95,7 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 		this.getSampleTable().addContainerProperty(SampleInfoComponent.SAMPLE_ID, String.class, null);
 		this.getSampleTable().addContainerProperty(SampleInfoComponent.SAMPLE_LIST, String.class, null);
 		this.getSampleTable().addContainerProperty(SampleInfoComponent.STUDY_NAME, LinkButton.class, null);
-		this.getSampleTable().addContainerProperty(SampleInfoComponent.PLOT_ID, String.class, null);
+		this.getSampleTable().addContainerProperty(SampleInfoComponent.OBS_UNIT_ID, String.class, null);
 		this.getSampleTable().addContainerProperty(SampleInfoComponent.PLANT_ID, String.class, null);
 		this.getSampleTable().addContainerProperty(SampleInfoComponent.PLATE_ID, String.class, null);
 		this.getSampleTable().addContainerProperty(SampleInfoComponent.WELL, String.class, null);
@@ -109,7 +109,7 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 		this.getSampleTable().setColumnHeader(SampleInfoComponent.SAMPLE_ID, SampleInfoComponent.SAMPLE_ID);
 		this.getSampleTable().setColumnHeader(SampleInfoComponent.SAMPLE_LIST, SampleInfoComponent.SAMPLE_LIST);
 		this.getSampleTable().setColumnHeader(SampleInfoComponent.STUDY_NAME, SampleInfoComponent.STUDY_NAME);
-		this.getSampleTable().setColumnHeader(SampleInfoComponent.PLOT_ID,SampleInfoComponent.PLOT_ID);
+		this.getSampleTable().setColumnHeader(SampleInfoComponent.OBS_UNIT_ID,SampleInfoComponent.OBS_UNIT_ID);
 		this.getSampleTable().setColumnHeader(SampleInfoComponent.PLANT_ID, SampleInfoComponent.PLANT_ID);
 		this.getSampleTable().setColumnHeader(SampleInfoComponent.PLATE_ID, SampleInfoComponent.PLATE_ID);
 		this.getSampleTable().setColumnHeader(SampleInfoComponent.WELL, SampleInfoComponent.WELL);
@@ -117,12 +117,12 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 
 		this.getSampleTable().setVisibleColumns(
 			new String[] {SampleInfoComponent.SAMPLE_ID, SampleInfoComponent.SAMPLE_LIST, SampleInfoComponent.STUDY_NAME,
-				SampleInfoComponent.PLOT_ID, SampleInfoComponent.PLANT_ID, SampleInfoComponent.PLATE_ID, SampleInfoComponent.WELL,
+				SampleInfoComponent.OBS_UNIT_ID, SampleInfoComponent.PLANT_ID, SampleInfoComponent.PLATE_ID, SampleInfoComponent.WELL,
 				SampleInfoComponent.GENOTYPING_DATA});
 	}
 
 	private void initializeValues() {
-		final List<SampleGermplasmDetailDTO> sampleList = retrieveSampleInformation(this.gid);
+		final List<SampleGermplasmDetailDTO> sampleList = this.retrieveSampleInformation(this.gid);
 		int count = 1;
 
 		if (sampleList.size() > 10) {
@@ -131,7 +131,7 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 			this.sampleTable.setPageLength(sampleList.size());
 		}
 
-		final String authParams = "&" + getAuthParams(contextUtil);
+		final String authParams = "&" + getAuthParams(this.contextUtil);
 
 		for (final SampleGermplasmDetailDTO sample : sampleList) {
 			final StudyReference study = sample.getStudy();
@@ -157,7 +157,7 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 			}
 
 			this.sampleTable.addItem(
-				new Object[] {sample.getSampleBk(), sample.getSampleListName(), linkStudyButton, sample.getPlotId(), sample.getPlantBk(),sample.getPlateId(),sample.getWell(),
+				new Object[] {sample.getSampleBk(), sample.getSampleListName(), linkStudyButton, sample.getObsUnitId(), sample.getPlantBk(),sample.getPlateId(),sample.getWell(),
 					horizontalLayoutForDatasetButton}, count);
 			count++;
 		}
@@ -185,7 +185,7 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 	}
 
 	public Table getSampleTable() {
-		return sampleTable;
+		return this.sampleTable;
 	}
 
 	public void setSampleTable(final Table sampleTable) {
@@ -193,7 +193,7 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 	}
 
 	public Label getNoDataAvailableLabel() {
-		return noDataAvailableLabel;
+		return this.noDataAvailableLabel;
 	}
 
 	public void setNoDataAvailableLabel(final Label noDataAvailableLabel) {
@@ -201,7 +201,7 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 	}
 
 	public SampleService getSampleService() {
-		return sampleService;
+		return this.sampleService;
 	}
 
 	public void setSampleService(final SampleService sampleService) {
@@ -216,7 +216,7 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 			@Override
 			public List<SampleGermplasmDetailDTO> doInTransaction(final TransactionStatus status) {
 				try {
-					return sampleService.getByGid(gid);
+					return SampleInfoComponent.this.sampleService.getByGid(gid);
 				} catch (final MiddlewareException e) {
 					status.setRollbackOnly();
 					throw new MiddlewareException(e.getMessage(), e);
