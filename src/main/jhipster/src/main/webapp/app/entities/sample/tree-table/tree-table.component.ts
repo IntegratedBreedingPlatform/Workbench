@@ -4,7 +4,7 @@ import { TreeNode } from './tree-node.model';
 import { TreeNode as PrimeNgTreeNode } from 'primeng/api';
 import { ModalAnimation } from '../../../shared/animations/modal.animation';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { SampleTreeService } from './sample-tree.service';
 
 declare var authToken: string

@@ -3,6 +3,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 
 import { SERVER_API_URL } from '../../app.constants';
 import { ProfileInfo } from './profile-info.model';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class ProfileService {
@@ -15,7 +16,7 @@ export class ProfileService {
     getProfileInfo(): Promise<ProfileInfo> {
         if (!this.profileInfo) {
             this.profileInfo = this.http.get<ProfileInfo>(this.profileInfoUrl, { observe: 'response' })
-                .map((res: HttpResponse<ProfileInfo>) => {
+                .pipe(map((res: HttpResponse<ProfileInfo>) => {
                     const data = res.body;
                     const pi = new ProfileInfo();
                     pi.activeProfiles = data.activeProfiles;
@@ -23,7 +24,7 @@ export class ProfileService {
                     pi.inProduction = data.activeProfiles.includes('prod') ;
                     pi.swaggerEnabled = data.activeProfiles.includes('swagger');
                     return pi;
-                }).toPromise();
+                })).toPromise();
         }
         return this.profileInfo;
     }

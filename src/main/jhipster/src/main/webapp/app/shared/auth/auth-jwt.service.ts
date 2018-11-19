@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
 import { LocalStorageService, SessionStorageService } from 'ngx-webstorage';
 import { SERVER_API_URL } from '../../app.constants';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class AuthServerProvider {
@@ -24,7 +25,7 @@ export class AuthServerProvider {
             password: credentials.password,
             rememberMe: credentials.rememberMe
         };
-        return this.http.post(SERVER_API_URL + 'brapi/v1/token', data, {observe : 'response'}).map(authenticateSuccess.bind(this));
+        return this.http.post(SERVER_API_URL + 'brapi/v1/token', data, {observe : 'response'}).pipe(map(authenticateSuccess.bind(this)));
 
         function authenticateSuccess(resp) {
             const bearerToken = resp.headers.get('Authorization');

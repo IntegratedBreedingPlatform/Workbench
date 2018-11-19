@@ -1,6 +1,6 @@
 /* tslint:disable max-line-length */
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
 
 import { BmsjHipsterTestModule } from '../../../test.module';
@@ -51,7 +51,7 @@ describe('Component Tests', () => {
                 comp.sampleList = new SampleList(1, 'name', '', true, null);
                 // GIVEN
                 const headers = new HttpHeaders().append('link', 'link;link');
-                spyOn(sampleService, 'query').and.returnValue(Observable.of(new HttpResponse({
+                spyOn(sampleService, 'query').and.returnValue(of(new HttpResponse({
                     body: [new Sample(123)],
                     headers
                 })));
@@ -85,7 +85,7 @@ describe('Component Tests', () => {
                     } else if (arg === 'anotherValue') {
                         return listName;
                     }
-                }).and.returnValue(Observable.of(httpResponse));
+                }).and.returnValue(of(httpResponse));
 
                 spyOn(fileDownloadHelper, 'getFileNameFromResponseContentDisposition').and.returnValue(fileName);
                 spyOn(fileDownloadHelper, 'save').and.callThrough();

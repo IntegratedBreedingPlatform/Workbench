@@ -6,7 +6,7 @@ import {SampleContext} from '../../../../../../main/webapp/app/entities/sample/s
 import {SampleListService} from '../../../../../../main/webapp/app/entities/sample/sample-list.service';
 import {SampleImportPlateMappingComponent} from '../../../../../../main/webapp/app/entities/sample/sample-import-plate-mapping.component';
 import {SampleList} from '../../../../../../main/webapp/app/entities/sample/sample-list.model';
-import {Observable} from 'rxjs/Observable';
+import {Observable, of} from 'rxjs';
 import {HttpErrorResponse} from '@angular/common/http';
 
 describe('Component Tests', () => {
@@ -62,7 +62,7 @@ describe('Component Tests', () => {
             spyOn(comp, 'validate').and.returnValue(true);
             spyOn(comp, 'close').and.callThrough();
             spyOn(eventManager, 'broadcast').and.callThrough();
-            spyOn(sampleListService, 'importPlateInfo').and.returnValue(Observable.of(''));
+            spyOn(sampleListService, 'importPlateInfo').and.returnValue(of(''));
 
             comp.proceed();
 

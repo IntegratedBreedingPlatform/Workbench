@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SampleList } from './sample-list.model';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import {ModalService} from '../../shared/modal/modal.service';
 import {SampleContext} from './sample.context';

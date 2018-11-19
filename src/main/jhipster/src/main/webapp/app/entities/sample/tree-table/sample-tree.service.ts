@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
 import { TreeNode } from './tree-node.model';
 import { createRequestOption } from '../../../shared';
+import { map } from 'rxjs/operators';
 
 export type EntityResponseType = HttpResponse<TreeNode>;
 
@@ -30,7 +31,7 @@ export class SampleTreeService {
     getInitTree(req?: any): Observable<HttpResponse<TreeNode[]>> {
         const options = createRequestOption(req);
         return this.http.get<TreeNode[]>(this.initTreeUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<TreeNode[]>) => this.convertArrayResponse(res));
+            .pipe(map((res: HttpResponse<TreeNode[]>) => this.convertArrayResponse(res)));
     }
 
     // TODO
@@ -39,13 +40,13 @@ export class SampleTreeService {
         const isCropList = target === 'CROPLISTS';
         const url = `${this.bmsapiUrl}/${source}/move?newParentId=${target}&isCropList=${isCropList}&&programUUID=${this.programUID}`;
         return this.http.get<TreeNode[]>(url, { params: options, observe: 'response' })
-            .map((res: HttpResponse<TreeNode[]>) => this.convertArrayResponse(res));
+            .pipe(map((res: HttpResponse<TreeNode[]>) => this.convertArrayResponse(res)));
     }
 
     expand(parentKey: string, req?: any): Observable<HttpResponse<TreeNode[]>> {
         const options = createRequestOption(req);
         return this.http.get<TreeNode[]>(this.getUrl(parentKey), { params: options, observe: 'response' })
-            .map((res: HttpResponse<TreeNode[]>) => this.convertArrayResponse(res, parentKey));
+            .pipe(map((res: HttpResponse<TreeNode[]>) => this.convertArrayResponse(res, parentKey)));
     }
 
     private getUrl(parentKey: string) {
