@@ -22,6 +22,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnit44Runner;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RunWith(MockitoJUnit44Runner.class)
@@ -116,13 +117,14 @@ public class SingleSiteAnalysisPanelTest {
 		final DMSVariableType germplasmVariable =
 				DMSVariableTypeTestDataInitializer.createDMSVariableTypeWithStandardVariable(TermId.ENTRY_NO);
 		germplasmVariable.getStandardVariable().setPhenotypicType(PhenotypicType.GERMPLASM);
+		final DMSVariableType treatmentVariable =
+			DMSVariableTypeTestDataInitializer.createDMSVariableTypeWithStandardVariable(TermId.TREATMENT_MEAN);
+		treatmentVariable.getStandardVariable().setPhenotypicType(PhenotypicType.TRIAL_DESIGN);
+		treatmentVariable.setTreatmentLabel("label");
 
-		final List<DMSVariableType> variableTypeList = new ArrayList<>();
-		variableTypeList.add(datasetVariable);
-		variableTypeList.add(studyVariable);
-		variableTypeList.add(germplasmVariable);
+		final List<DMSVariableType> variableTypeList = Arrays.asList(datasetVariable, studyVariable, germplasmVariable, treatmentVariable);
 
-		final List<DMSVariableType> result = this.singleSiteAnalysisPanel.filterDatasetAndStudyVariables(variableTypeList);
+		final List<DMSVariableType> result = this.singleSiteAnalysisPanel.filterDatasetAndStudyAndTreatmentFactorVariables(variableTypeList);
 
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(germplasmVariable, result.get(0));
