@@ -261,38 +261,18 @@ table > thead > tr > th[jhisortby] {
 /* PrimeNg
  TODO use theming https://www.primefaces.org/primeng/#/theming */
 
-.ui-treetable-row.ui-state-highlight {
+.ui-treetable .ui-state-highlight {
     background: none repeat scroll 0% 0% #BED6B2 !important;
 }
-.ui-treetable-tablewrapper > .tree-table {
+.ui-treetable table {
     border-collapse: separate;
-    border: 1px solid #e4e4e4;
-    border-radius: 10px;
 }
-.ui-treetable thead th {
-    border-style: none;
-    text-align: left;
+.ui-treetable tr:nth-child(even) {
+    background-color: #f0eeee;
 }
-
-.ui-treetable-tablewrapper > .tree-table > thead > tr > th:first-child { border-top-left-radius: 10px; }
-.ui-treetable-tablewrapper > .tree-table > thead > tr > th:last-child { border-top-right-radius: 10px; }
-
-/* TODO rounded bottom */
-/*
-.ui-treetable-tablewrapper > .tree-table tbody:last-child td:first-child { border-bottom-left-radius: 10px; }
-.ui-treetable-tablewrapper > .tree-table tbody:last-child td:last-child { border-bottom-right-radius: 10px; }
-*/
-
-.tree-table-wrapper .tree-table .tree-table-column {
-    border-right: 1px solid #c2c3c4;
+.ui-treetable tr:nth-child(odd) {
+    background-color: #e3e3e3;
 }
-.tree-table-wrapper .tree-table .tree-table-column:last-child {
-    border-right: 0;
-}
-.tree-table-wrapper .tree-table .tree-table-main-column {
-    width: 50%;
-}
-
 .tree-table .folder,
 .tree-table .file
 {

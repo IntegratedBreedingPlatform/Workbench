@@ -63,6 +63,7 @@ export class TreeTableComponent implements OnInit {
     ngOnInit(): void {
         this.service.getInitTree(AUTH_PARAMS).subscribe((res: HttpResponse<TreeNode[]>) => {
             res.body.forEach((node) => this.addNode(node));
+            this.redrawNodes();
             this.nodes.forEach((parent) => {
                 this.expand(parent);
             });
@@ -92,7 +93,7 @@ export class TreeTableComponent implements OnInit {
             node.children.push(this.draggedNode);
             TreeTableComponent.removeParent(this.draggedNode);
             this.draggedNode.parent = node;
-            this.repaintRows();
+            this.redrawNodes();
         }
     }
 
@@ -163,12 +164,17 @@ export class TreeTableComponent implements OnInit {
                 res2.body.forEach((node) => {
                     parent.children.push(this.toPrimeNgNode(node, parent))
                 });
-                this.repaintRows();
+                this.redrawNodes();
             }, (res2: HttpErrorResponse) => this.onError(res2.message));
     }
 
     private addNode(node: TreeNode) {
         return this.nodes.push(this.toPrimeNgNode(node));
+    }
+
+    private redrawNodes() {
+        // see primefaces/primeng/issues/5966#issuecomment-402498667
+        this.nodes = Object.assign([], this.nodes);
     }
 
     private toPrimeNgNode(node: TreeNode, parent?: PrimeNgTreeNode): PrimeNgTreeNode {
@@ -209,16 +215,6 @@ export class TreeTableComponent implements OnInit {
             this.closeModal();
         });
     }
-
-    // XXX TreeTable still don't support odd/even
-    // It'll be implemented in new TreeTable https://github.com/primefaces/primeng/issues/4813
-    repaintRows() {
-        setTimeout(() => {
-            $('.ui-treetable-row.ui-treetable-row-selectable:odd').css('background-color', '#e3e3e3');
-            $('.ui-treetable-row.ui-treetable-row-selectable:even').css('background-color', '#f0eeee');
-        });
-    }
-
 }
 
 export enum Mode {

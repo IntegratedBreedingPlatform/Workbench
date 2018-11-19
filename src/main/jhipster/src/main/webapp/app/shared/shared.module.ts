@@ -14,7 +14,9 @@ import {
     Principal,
     HasAnyAuthorityDirective,
 } from './';
-import { DragDropModule, TreeTableModule } from 'primeng/primeng';
+import { DragDropModule } from 'primeng/primeng';
+import { TreeTableModule } from 'primeng/treetable';
+import { SharedModule } from 'primeng/shared';
 
 @NgModule({
     imports: [
@@ -41,6 +43,7 @@ import { DragDropModule, TreeTableModule } from 'primeng/primeng';
         JhiLoginModalComponent,
         HasAnyAuthorityDirective,
         DatePipe,
+        SharedModule,
         TreeTableModule,
         DragDropModule,
     ],

@@ -112,7 +112,10 @@
 			return true;
 		}
 		function browseList() {
-			$('#listTreeModal').modal({ backdrop: 'static', keyboard: true });
+			$('#listTreeModal').one('shown.bs.modal', function (e) {
+				// FIXME tableStyleClass not working on primeng treetable 6?
+				$('.ui-treetable-table').addClass('table table-curved table-condensed treetable');
+			}).modal({backdrop: 'static', keyboard: true});
 		}
         function searchList() {
             $('#sampleSearchListModal').modal({ backdrop: 'static', keyboard: true });

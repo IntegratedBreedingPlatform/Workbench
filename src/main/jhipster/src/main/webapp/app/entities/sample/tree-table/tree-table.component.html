@@ -56,28 +56,41 @@
 											 selectionMode="single"
 											 [(selection)]="selected"
 											 (onNodeSelect)="onNodeSelect($event)"
-											 styleClass="tree-table-wrapper"
-											 tableStyleClass="tree-table">
-									<p-column field="name" header="Name" styleClass="tree-table-column tree-table-main-column">
-										<ng-template let-node="rowData" pTemplate="body">
-											<span [ngClass]="{ 'folder': !node.leaf, 'file': node.leaf }"></span>
-											<span
-												pDraggable="treedragdrop"
-												pDroppable="treedragdrop"
-												(onDragStart)="onDragStart($event, node)"
-												(onDragEnd)="onDragEnd($event, node)"
-												(onDrop)="onDrop($event, node)"
-												(onDragEnter)="onDragEnter($event, node)"
-												(onDragLeave)="onDragLeave($event, node)"
-												type="text">
-												{{node.data.name}}
+											 styleClass="tree-table">
+									<ng-template pTemplate="header">
+										<tr>
+											<th>Name</th>
+											<th>Owner</th>
+											<th>Description</th>
+											<th>Type</th>
+											<th># of entries</th>
+										</tr>
+									</ng-template>
+									<ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-i="rowIndex" >
+										<tr [ttSelectableRow]="rowNode">
+											<td>
+												<p-treeTableToggler
+													[rowNode]="rowNode"
+												></p-treeTableToggler>
+												<span [ngClass]="{ 'folder': !rowNode.node.leaf, 'file': rowNode.node.leaf }"></span>
+												<span
+													pDraggable="treedragdrop"
+													pDroppable="treedragdrop"
+													(onDragStart)="onDragStart($event, rowNode.node)"
+													(onDragEnd)="onDragEnd($event, rowNode.node)"
+													(onDrop)="onDrop($event, rowNode.node)"
+													(onDragEnter)="onDragEnter($event, rowNode.node)"
+													(onDragLeave)="onDragLeave($event, rowNode.node)"
+													type="text">
+												{{rowData.name}}
 											</span>
-										</ng-template>
-									</p-column>
-									<p-column field="owner" header="Owner" styleClass="tree-table-column"></p-column>
-									<p-column field="description" header="Description" styleClass="tree-table-column"></p-column>
-									<p-column field="type" header="Type" styleClass="tree-table-column"></p-column>
-									<p-column field="numOfEntries" header="# of entries" styleClass="tree-table-column"></p-column>
+											</td>
+											<td>{{rowData.owner}}</td>
+											<td>{{rowData.description}}</td>
+											<td>{{rowData.type}}</td>
+											<td>{{rowData.numOfEntries}}</td>
+										</tr>
+									</ng-template>
 								</p-treeTable>
 							</div>
 						</div>
