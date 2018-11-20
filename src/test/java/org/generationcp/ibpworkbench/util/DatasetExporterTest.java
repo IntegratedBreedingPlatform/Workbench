@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import org.apache.commons.lang3.ArrayUtils;
 import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.breedingview.xml.Replicates;
+import org.generationcp.commons.util.BreedingViewUtil;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
@@ -31,6 +32,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -40,13 +42,7 @@ public class DatasetExporterTest {
 	public static final int DATASET_ID = 1;
 
 	@Mock
-	private static ManagerFactory factory;
-
-	@Mock
 	private static StudyDataManager studyDataManager;
-
-	@Mock
-	private static WorkbenchDataManager workbenchDataManager;
 
 	@Mock
 	private BreedingViewInput bvInput;
@@ -297,6 +293,15 @@ public class DatasetExporterTest {
 				"Expected 6th column header is " + DatasetExporterTest.ALEUCOL_1_5_VARIATE + DatasetExporterTest.CLEANED_VAR_POST_FIX,
 				DatasetExporterTest.ALEUCOL_1_5_VARIATE + DatasetExporterTest.CLEANED_VAR_POST_FIX, headerRow[5]);
 
+	}
+
+	@Test
+	public void testSanitizeColumnNames() {
+		final List<String> columnNames = Arrays.asList("TRIAL_INSTANCE**", "ENTRY_TYPE**", "GID", "DESIGNATION", "ENTRY_NO", "OBS_UNIT_ID",	"REP_NO", "PLOT_NO", "GW_DW_g1000grn");
+		final String[] sanitizedColumnNames = this.exporter.sanitizeColumnNames(columnNames);
+		for(int i=0; i<sanitizedColumnNames.length; i++) {
+			Assert.assertEquals(BreedingViewUtil.trimAndSanitizeName(columnNames.get(i)), sanitizedColumnNames[i]);
+		}
 	}
 
 	@Test

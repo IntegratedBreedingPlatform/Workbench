@@ -44,9 +44,7 @@ public class DatasetExporter {
 	@Autowired
 	private OntologyService ontologyService;
 
-	private final List<String[]> rowsToWrite = new ArrayList<>();
-	private final List<String> columns = new ArrayList<>();
-	private final Map<String, String> headerNameAliasMap = new HashMap<>();
+	private List<String[]> rowsToWrite = new ArrayList<>();
 
 	private static final String MISSING_VALUE_STRING = "missing";
 	private Integer datasetId;
@@ -128,28 +126,30 @@ public class DatasetExporter {
 		if (dataset == null) {
 			return;
 		}
-		
+
 		// Consolidate factors and traits of dataset as column headers
 		final List<String> factorColumns = this.generateFactorColumnsList(dataset);
 		final List<String> variateColumns = this.generateVariateColumnsList(dataset, breedingViewInput);
-		this.columns.addAll(factorColumns);
-		this.columns.addAll(variateColumns);
+		final List<String> columnNames = new ArrayList<>();
+		columnNames.addAll(factorColumns);
+		columnNames.addAll(variateColumns);
 
 		// FIXME See if this can be removed. This was a hack for old (pre BMS 3.0) datasets that did not have REP variable
 		if (this.isDummyRepVariableUsed(breedingViewInput)) {
-			this.columns.add(DatasetExporter.DUMMY_REPLICATES);
+			columnNames.add(DatasetExporter.DUMMY_REPLICATES);
 		}
 
-		// Add column for selected environment factor if not in list of columns generated from factors and variates
+		// Add column for selected environment factor if not in list of columnNames generated from factors and variates
 		// and selected environment factor is not TRIAL INSTANCE (eg. LOCATION_NAME)
 		boolean selectedEnvFactorInColumnList = true;
-		if (!selectedEnvironmentFactor.equalsIgnoreCase(breedingViewInput.getTrialInstanceName()) && !this.columns.contains(selectedEnvironmentFactor)) {
-			this.columns.add(selectedEnvironmentFactor);
+		if (!selectedEnvironmentFactor.equalsIgnoreCase(breedingViewInput.getTrialInstanceName()) && !columnNames.contains(selectedEnvironmentFactor)) {
+			columnNames.add(selectedEnvironmentFactor);
 			selectedEnvFactorInColumnList = false;
 		}
-		
+
+		this.rowsToWrite = new ArrayList<>();
 		// Set column names as first row to be written in file
-		this.getRowsToWrite().add(this.sanitizeColumnNames());
+		this.getRowsToWrite().add(this.sanitizeColumnNames(columnNames));
 
 		// Generate rows for experiments of selected environments
 		this.generateExperimentRows(selectedEnvironments, breedingViewInput, factorColumns, variateColumns, selectedEnvironmentFactor,
@@ -229,11 +229,11 @@ public class DatasetExporter {
 	 *
 	 * @return array of column names with invalid characters replaced with underscore
 	 */
-	private String[] sanitizeColumnNames() {
+	String[] sanitizeColumnNames(final List<String> columnNames) {
 
 		final List<String> sanitized = new ArrayList<>();
 
-		for (final String column : this.columns) {
+		for (final String column : columnNames) {
 			sanitized.add(BreedingViewUtil.trimAndSanitizeName(column));
 		}
 
@@ -438,10 +438,6 @@ public class DatasetExporter {
 
 	public List<String[]> getRowsToWrite() {
 		return this.rowsToWrite;
-	}
-
-	public Map<String, String> getHeaderNameAliasMap() {
-		return this.headerNameAliasMap;
 	}
 
 	public WorkbenchDataManager getWorkbenchDataManager() {
