@@ -22,6 +22,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.help.document.HelpModule;
+import org.generationcp.commons.util.StringUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -406,7 +407,7 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		this.setCurrentDatasetName(ds.getName());
 		this.setCurrentDataSetId(ds.getId());
 
-		this.germplasmDescriptorsComponent.loadData(this.filterDatasetAndStudyVariables(factors));
+		this.germplasmDescriptorsComponent.loadData(this.filterDatasetAndStudyAndTreatmentFactorVariables(factors));
 		this.covariatesTableComponent.loadData(variates);
 		this.variatesTableComponent.loadData(variates);
 
@@ -417,15 +418,26 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		this.studyDetailsContainer.addComponent(studyDetailsComponent);
 	}
 
-	protected List<DMSVariableType> filterDatasetAndStudyVariables(final List<DMSVariableType> factors) {
-		final List<DMSVariableType> factorsWithoutDatasetVariables = new ArrayList<>();
+	protected List<DMSVariableType> filterDatasetAndStudyAndTreatmentFactorVariables(final List<DMSVariableType> factors) {
+		final List<DMSVariableType> filteredVariables = new ArrayList<>();
+		final List<Integer> treatmentFactorIds = this.getTreatmentFactors(factors);
 		for (final DMSVariableType factor : factors) {
 			if (factor.getStandardVariable().getPhenotypicType() != PhenotypicType.DATASET
-					&& factor.getStandardVariable().getPhenotypicType() != PhenotypicType.STUDY) {
-				factorsWithoutDatasetVariables.add(factor);
+					&& factor.getStandardVariable().getPhenotypicType() != PhenotypicType.STUDY && !treatmentFactorIds.contains(factor.getId())) {
+				filteredVariables.add(factor);
 			}
 		}
-		return factorsWithoutDatasetVariables;
+		return filteredVariables;
+	}
+
+	protected List<Integer> getTreatmentFactors(final List<DMSVariableType> factors) {
+		final List<Integer> treatmentFactorIds = new ArrayList<>();
+		for(final DMSVariableType factor: factors) {
+			if(!StringUtil.isEmpty(factor.getTreatmentLabel())) {
+				treatmentFactorIds.add(factor.getId());
+			}
+		}
+		return treatmentFactorIds;
 	}
 
 	protected void initalizeTableComponents() {
