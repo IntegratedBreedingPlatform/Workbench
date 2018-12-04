@@ -164,7 +164,7 @@ public class ProgramServiceTest {
 		this.verifyMockInteractionsForSavingProgramMembers();
 
 		// Capture the argument of the saveProgramFavorite function
-		ArgumentCaptor<ProgramFavorite> captor = ArgumentCaptor.forClass(ProgramFavorite.class);
+		final ArgumentCaptor<ProgramFavorite> captor = ArgumentCaptor.forClass(ProgramFavorite.class);
 		Mockito.verify(this.germplasmDataManager, Mockito.times(1)).saveProgramFavorite(captor.capture());
 		// Assert the arguments
 		final ProgramFavorite programFavorite = captor.getValue();
