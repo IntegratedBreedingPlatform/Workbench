@@ -143,11 +143,14 @@ public class ProgramServiceTest {
 		selectedUsers.add(this.loggedInUser);
 		selectedUsers.add(this.memberUser);
 
+		final Integer unspecifiedLocationID = 9999;
+		final String entityType = "LOCATION";
+
 		// Other WorkbenchDataManager mocks
 		Mockito.when(this.workbenchDataManager.getCropTypeByName(Matchers.anyString()))
 				.thenReturn(project.getCropType());
 		Mockito.when(this.userDataManager.addUser(Matchers.any(User.class))).thenReturn(2);
-		Mockito.when(this.locationDataManager.retrieveLocIdOfUnspecifiedLocation()).thenReturn("9999");
+		Mockito.when(this.locationDataManager.retrieveLocIdOfUnspecifiedLocation()).thenReturn(String.valueOf(unspecifiedLocationID));
 
 		// Call the method to test
 		this.programService.createNewProgram(project, selectedUsers);
@@ -160,7 +163,13 @@ public class ProgramServiceTest {
 
 		this.verifyMockInteractionsForSavingProgramMembers();
 
-		Mockito.verify(this.germplasmDataManager, Mockito.times(1)).saveProgramFavorite(Matchers.any(ProgramFavorite.class));
+		// Capture the argument of the saveProgramFavorite function
+		ArgumentCaptor<ProgramFavorite> captor = ArgumentCaptor.forClass(ProgramFavorite.class);
+		Mockito.verify(this.germplasmDataManager, Mockito.times(1)).saveProgramFavorite(captor.capture());
+		// Assert the arguments
+		final ProgramFavorite programFavorite = captor.getValue();
+		Assert.assertEquals(unspecifiedLocationID, programFavorite.getEntityId());
+		Assert.assertEquals(entityType, programFavorite.getEntityType());
 
 		// Verify that utility to create workspace directory was called
 		Mockito.verify(this.installationDirectoryUtil).createWorkspaceDirectoriesForProject(project);
