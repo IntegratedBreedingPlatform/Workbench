@@ -38,6 +38,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.web.context.request.RequestAttributes;
+import org.generationcp.middleware.manager.api.GermplasmDataManager;
+import org.generationcp.middleware.pojos.dms.ProgramFavorite;
+import org.generationcp.middleware.manager.api.LocationDataManager;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProgramServiceTest {
@@ -72,6 +75,12 @@ public class ProgramServiceTest {
 
 	@Mock
 	private InstallationDirectoryUtil installationDirectoryUtil;
+
+	@Mock
+	private GermplasmDataManager germplasmDataManager;
+
+	@Mock 
+	private LocationDataManager locationDataManager;
 
 	@InjectMocks
 	private final ProgramService programService = new ProgramService();
@@ -134,10 +143,14 @@ public class ProgramServiceTest {
 		selectedUsers.add(this.loggedInUser);
 		selectedUsers.add(this.memberUser);
 
+		final Integer unspecifiedLocationID = 9999;
+		final String entityType = "LOCATION";
+
 		// Other WorkbenchDataManager mocks
 		Mockito.when(this.workbenchDataManager.getCropTypeByName(Matchers.anyString()))
 				.thenReturn(project.getCropType());
 		Mockito.when(this.userDataManager.addUser(Matchers.any(User.class))).thenReturn(2);
+		Mockito.when(this.locationDataManager.retrieveLocIdOfUnspecifiedLocation()).thenReturn(String.valueOf(unspecifiedLocationID));
 
 		// Call the method to test
 		this.programService.createNewProgram(project, selectedUsers);
@@ -149,6 +162,14 @@ public class ProgramServiceTest {
 		Assert.assertNull(project.getLastOpenDate());
 
 		this.verifyMockInteractionsForSavingProgramMembers();
+
+		// Capture the argument of the saveProgramFavorite function
+		final ArgumentCaptor<ProgramFavorite> captor = ArgumentCaptor.forClass(ProgramFavorite.class);
+		Mockito.verify(this.germplasmDataManager, Mockito.times(1)).saveProgramFavorite(captor.capture());
+		// Assert the arguments
+		final ProgramFavorite programFavorite = captor.getValue();
+		Assert.assertEquals(unspecifiedLocationID, programFavorite.getEntityId());
+		Assert.assertEquals(entityType, programFavorite.getEntityType());
 
 		// Verify that utility to create workspace directory was called
 		Mockito.verify(this.installationDirectoryUtil).createWorkspaceDirectoriesForProject(project);
