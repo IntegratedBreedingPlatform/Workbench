@@ -323,6 +323,13 @@ public class ProgramServiceTest {
 		Mockito.verify(this.germplasmDataManager).saveProgramFavorite(Matchers.any(ProgramFavorite.class));
 	}
 
+	@Test
+	public void testNonExistingUnspecifiedLocationId() {
+		Mockito.when(this.locationDataManager.retrieveLocIdOfUnspecifiedLocation()).thenReturn("");
+		this.programService.addUnspecifiedLocationToFavorite(this.createProject());
+		Mockito.verify(this.germplasmDataManager, Mockito.never()).saveProgramFavorite(Matchers.any(ProgramFavorite.class));
+	}
+
 	// Verify Middleware methods to save as program members were called
 	private void verifyMockInteractionsForSavingProgramMembers() {
 		// Verify Ibdb_user_map is added for both current, member and SUPERADMIN
