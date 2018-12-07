@@ -73,15 +73,12 @@ public class ProgramService {
 	 * @param programUsers : users to add as members of new program
 	 */
 	public void createNewProgram(final Project program, final Set<WorkbenchUser> programUsers) {
-		final String unspecifiedLocationID = this.locationDataManager.retrieveLocIdOfUnspecifiedLocation();
-
 		// Need to save first to workbench_project so project id can be saved in session
 		this.saveWorkbenchProject(program);
 		this.setContextInfoAndCurrentCrop(program);
 
 		this.saveProgramMembers(program, programUsers);
-
-		this.addUnspecifiedLocationToFavorite(program, unspecifiedLocationID);
+		this.addUnspecifiedLocationToFavorite(program);
 
 		// After saving, we create folder for program under <install directory>/workspace
 		this.installationDirectoryUtil.createWorkspaceDirectoriesForProject(program);
@@ -273,7 +270,8 @@ public class ProgramService {
 		return removedUserIds;
 	}
 
-	public void addUnspecifiedLocationToFavorite(final Project program, final String unspecifiedLocationID) {
+	public void addUnspecifiedLocationToFavorite(final Project program) {
+		final String unspecifiedLocationID = this.locationDataManager.retrieveLocIdOfUnspecifiedLocation();
 		final ProgramFavorite favorite = new ProgramFavorite();
 		favorite.setEntityId(Integer.parseInt(unspecifiedLocationID));
 		favorite.setEntityType(ProgramFavorite.FavoriteType.LOCATION.getName());
