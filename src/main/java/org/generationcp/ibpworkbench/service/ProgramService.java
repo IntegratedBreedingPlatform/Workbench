@@ -33,6 +33,7 @@ import org.springframework.web.util.WebUtils;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.pojos.dms.ProgramFavorite;
 import org.generationcp.middleware.manager.api.LocationDataManager;
+import org.apache.commons.lang3.StringUtils;
 
 @Service
 @Transactional
@@ -272,10 +273,12 @@ public class ProgramService {
 
 	public void addUnspecifiedLocationToFavorite(final Project program) {
 		final String unspecifiedLocationID = this.locationDataManager.retrieveLocIdOfUnspecifiedLocation();
-		final ProgramFavorite favorite = new ProgramFavorite();
-		favorite.setEntityId(Integer.parseInt(unspecifiedLocationID));
-		favorite.setEntityType(ProgramFavorite.FavoriteType.LOCATION.getName());
-		favorite.setUniqueID(program.getUniqueID());
-		this.germplasmDataManager.saveProgramFavorite(favorite);
+		if(!StringUtils.isEmpty(unspecifiedLocationID)){
+			final ProgramFavorite favorite = new ProgramFavorite();
+			favorite.setEntityId(Integer.parseInt(unspecifiedLocationID));
+			favorite.setEntityType(ProgramFavorite.FavoriteType.LOCATION.getName());
+			favorite.setUniqueID(program.getUniqueID());
+			this.germplasmDataManager.saveProgramFavorite(favorite);
+		}
 	}
 }
