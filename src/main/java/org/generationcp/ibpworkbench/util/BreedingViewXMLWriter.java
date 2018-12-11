@@ -59,8 +59,6 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 
 	private static final String CROP_PLACEHOLDER = "{cropName}";
 
-	public static final String TRIAL_INSTANCE = "TRIAL_INSTANCE";
-
 	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
 	@Autowired
