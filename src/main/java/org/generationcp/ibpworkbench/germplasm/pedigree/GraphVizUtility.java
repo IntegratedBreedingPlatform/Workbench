@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.ui.Window;
+import org.springframework.beans.factory.annotation.Value;
 
 @Configurable
 public class GraphVizUtility {
@@ -25,6 +26,10 @@ public class GraphVizUtility {
 
 	private static final String BSLASH = "\\";
 	private static final String FSLASH = "/";
+
+
+	@Value("${graphviz.executable.path}")
+	private String grapthvizExecutablePath;
 
 	/**
 	 * Where is your dot program located? It will be called externally.
@@ -53,10 +58,7 @@ public class GraphVizUtility {
 	 * This method should set the path of GraphViz dot executable.
 	 */
 	public void initialize() {
-		// set the GraphViz' dot executable path
-		final String graphvizPath = "infrastructure/graphviz/bin/dot.exe";
-
-		final File dotFile = new File(graphvizPath).getAbsoluteFile();
+		final File dotFile = new File(grapthvizExecutablePath).getAbsoluteFile();
 		this.dotPath = dotFile.getAbsolutePath();
 	}
 
