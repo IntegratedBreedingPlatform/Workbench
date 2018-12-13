@@ -35,7 +35,7 @@ public class GraphVizUtility {
 	/**
 	 * The source of the graph written in dot language.
 	 */
-	private StringBuilder graph = new StringBuilder();
+	private final StringBuilder graph = new StringBuilder();
 
 	private String imageOutputPath = null;
 
@@ -84,7 +84,7 @@ public class GraphVizUtility {
 	 * @return A byte array containing the image of the graph.
 	 */
 	public byte[] getGraph(final String dotSource, final String type) {
-		File dot;
+		final File dot;
 		byte[] imgStream = null;
 
 		try {
@@ -112,7 +112,7 @@ public class GraphVizUtility {
 	 */
 	public int writeGraphToFile(final byte[] img, final File to) {
 		try {
-			try (FileOutputStream fos = new FileOutputStream(to)) {
+			try (final FileOutputStream fos = new FileOutputStream(to)) {
 				fos.write(img);
 			}
 		} catch (final java.io.IOException ioe) {
@@ -130,7 +130,7 @@ public class GraphVizUtility {
 	 * @return The image of the graph in .gif format.
 	 */
 	private byte[] getImgStream(final File dot, final String type) {
-		File img;
+		final File img;
 		byte[] imgStream = null;
 
 		try {
@@ -140,7 +140,7 @@ public class GraphVizUtility {
 			final Process p = rt.exec(args);
 			p.waitFor();
 
-			try (FileInputStream in = new FileInputStream(img.getAbsolutePath())) {
+			try (final FileInputStream in = new FileInputStream(img.getAbsolutePath())) {
 				imgStream = new byte[in.available()];
 				in.read(imgStream);
 			}
@@ -165,10 +165,10 @@ public class GraphVizUtility {
 	 * @return The file (as a File object) that contains the source of the graph.
 	 */
 	private File writeDotSourceToFile(final String str) throws java.io.IOException {
-		File temp;
+		final File temp;
 		try {
 			temp = File.createTempFile("graph_", ".dot.tmp", new File(GraphVizUtility.TEMP_DIR));
-			try (FileWriter fout = new FileWriter(temp)) {
+			try (final FileWriter fout = new FileWriter(temp)) {
 				fout.write(str);
 			}
 		} catch (final Exception e) {
