@@ -25,7 +25,7 @@ public class GraphVizUtility {
 	private static final String FSLASH = "/";
 
 	@Value("${graphviz.executable.path}")
-	private String grapthvizExecutablePath;
+	private String graphvizExecutablePath;
 
 	/**
 	 * Where is your dot program located? It will be called externally.
@@ -45,7 +45,7 @@ public class GraphVizUtility {
 	 * This method should set the path of GraphViz dot executable.
 	 */
 	public void initialize() {
-		final File dotFile = new File(grapthvizExecutablePath).getAbsoluteFile();
+		final File dotFile = new File(graphvizExecutablePath).getAbsoluteFile();
 		this.dotPath = dotFile.getAbsolutePath();
 	}
 
@@ -186,6 +186,14 @@ public class GraphVizUtility {
 
 	public String graphVizOutputPath(final String fileName) {
 		return this.imageOutputPath + File.separator + fileName;
+	}
+
+	protected void setGraphvizExecutablePath(final String graphvizExecutablePath) {
+		this.graphvizExecutablePath = graphvizExecutablePath;
+	}
+
+	protected String getDotPath() {
+		return dotPath;
 	}
 
 }
