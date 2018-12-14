@@ -256,6 +256,7 @@ public class ProgramServiceTest {
 		Mockito.verify(this.workbenchDataManager).getProjectUserInfoByProjectIdAndUserIds(Matchers.anyLong(),
 				Matchers.anyList());
 		Mockito.verify(this.workbenchDataManager).deleteProjectUserInfos(Matchers.anyList());
+		Mockito.verify(this.workbenchDataManager).deleteIbdbUserMap(Matchers.anyList(), Matchers.anyLong());
 	}
 
 	@Test

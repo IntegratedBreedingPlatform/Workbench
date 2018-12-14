@@ -253,6 +253,7 @@ public class ProgramService {
 		if(!removedUserIds.isEmpty()) {
 			List<ProjectUserInfo> projectUserInfos = this.workbenchDataManager.getProjectUserInfoByProjectIdAndUserIds(project.getProjectId(), removedUserIds);
 			this.workbenchDataManager.deleteProjectUserInfos(projectUserInfos);
+			this.workbenchDataManager.deleteIbdbUserMap(removedUserIds, project.getProjectId());
 		}
 	}
 	
