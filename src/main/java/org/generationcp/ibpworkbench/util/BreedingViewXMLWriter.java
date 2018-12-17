@@ -59,8 +59,6 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 
 	private static final String CROP_PLACEHOLDER = "{cropName}";
 
-	public static final String TRIAL_INSTANCE = "TRIAL_INSTANCE";
-
 	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
 	@Autowired
@@ -223,7 +221,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 
 		// Trial name attribute is not needed in the BV if the selected
 		// environment factor is Trial instance
-		if (!BreedingViewXMLWriter.TRIAL_INSTANCE.equals(this.breedingViewInput.getEnvironment().getName())) {
+		if (!this.breedingViewInput.getTrialInstanceName().equals(this.breedingViewInput.getEnvironment().getName())) {
 			environments.setTrialName(this.breedingViewInput.getTrialInstanceName());
 		}
 
@@ -234,7 +232,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 
 			// Trial name attribute is not needed in the BV if the selected
 			// environment factor is Trial instance
-			if (!BreedingViewXMLWriter.TRIAL_INSTANCE.equals(this.breedingViewInput.getEnvironment().getName())) {
+			if (!this.breedingViewInput.getTrialInstanceName().equals(this.breedingViewInput.getEnvironment().getName())) {
 				env.setTrial(selectedEnvironment.getTrialno());
 			}
 
