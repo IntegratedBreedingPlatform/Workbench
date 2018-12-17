@@ -251,25 +251,17 @@ public class ProgramService {
 		final List<Integer> activeUserIds = this.workbenchDataManager.getActiveUserIDsByProjectId(project.getProjectId());
 		final List<Integer> removedUserIds = this.getRemovedUserIds(activeUserIds, userList);
 		if(!removedUserIds.isEmpty()) {
-			List<ProjectUserInfo> projectUserInfos = this.workbenchDataManager.getProjectUserInfoByProjectIdAndUserIds(project.getProjectId(), removedUserIds);
-			this.workbenchDataManager.deleteProjectUserInfos(projectUserInfos);
-			this.workbenchDataManager.deleteIbdbUserMap(removedUserIds, project.getProjectId());
+			this.workbenchDataManager.removeUsersFromProgram(removedUserIds, project.getProjectId());
 		}
 	}
 	
 	public List<Integer> getRemovedUserIds(List<Integer> activeUserIds, Collection<WorkbenchUser> userList) {
-		List<Integer> removedUserIds = new ArrayList<>();
-		for(Integer activeUserId: activeUserIds) {
-			boolean isProgramMember = false;
-			for(WorkbenchUser user: userList) {
-				if(user.getUserid().equals(activeUserId)) {
-					isProgramMember = true;
-					break;
-				}
-			}
-			if(!isProgramMember) removedUserIds.add(activeUserId);
+		List<Integer> programMemberIds = new ArrayList<>();
+		for(WorkbenchUser user: userList) {
+			programMemberIds.add(user.getUserid());
 		}
-		return removedUserIds;
+		activeUserIds.removeAll(programMemberIds);
+		return activeUserIds;
 	}
 
 	public void addUnspecifiedLocationToFavorite(final Project program) {
