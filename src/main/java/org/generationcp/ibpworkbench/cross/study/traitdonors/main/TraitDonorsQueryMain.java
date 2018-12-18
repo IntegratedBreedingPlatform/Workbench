@@ -160,7 +160,7 @@ public class TraitDonorsQueryMain extends VerticalLayout implements Initializing
 		this.titleLayout.setDebugId("titleLayout");
 		this.titleLayout.setSpacing(true);
 
-		this.toolTitle = new Label("Trait Donors Query");
+		this.toolTitle = new Label("Weighted Multi-trait Query");
 		this.toolTitle.setDebugId("toolTitle");
 		this.toolTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 		this.toolTitle.setContentMode(Label.CONTENT_XHTML);
