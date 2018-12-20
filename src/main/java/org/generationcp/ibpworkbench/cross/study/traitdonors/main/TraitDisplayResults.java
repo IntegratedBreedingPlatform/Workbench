@@ -459,7 +459,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 	}
 
 	private String getWeightLabel(int weight) {
-		return "Wt = " + weight + "<br/> Score";
+		return "Success Ratio";
 	}
 
 	private String getContainerPropertyName(String name, Integer traitId, TraitType traitType) {
