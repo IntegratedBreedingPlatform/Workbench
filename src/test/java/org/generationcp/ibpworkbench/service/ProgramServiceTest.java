@@ -264,7 +264,9 @@ public class ProgramServiceTest {
 		final List<Integer> activeUserIds = new ArrayList<>();
 		activeUserIds.addAll(Arrays.asList(1, 2));
 		final Collection<WorkbenchUser> userList = Arrays.asList(new WorkbenchUser(1));
-		final List<Integer> removedUserIds = this.programService.getRemovedUserIds(activeUserIds, userList);
+		Mockito.when(this.workbenchDataManager.getActiveUserIDsByProjectId(Matchers.anyLong()))
+			.thenReturn(activeUserIds);
+		final List<Integer> removedUserIds = this.programService.getRemovedUserIds(1, userList);
 		Assert.assertEquals(1, removedUserIds.size());
 		Assert.assertEquals("2", removedUserIds.get(0).toString());
 	}

@@ -248,14 +248,14 @@ public class ProgramService {
 		this.saveWorkbenchUserToCropUserMapping(project, new HashSet<>(userList));
 		
 		//Removal of users
-		final List<Integer> activeUserIds = this.workbenchDataManager.getActiveUserIDsByProjectId(project.getProjectId());
-		final List<Integer> removedUserIds = this.getRemovedUserIds(activeUserIds, userList);
+		final List<Integer> removedUserIds = this.getRemovedUserIds(project.getProjectId(), userList);
 		if(!removedUserIds.isEmpty()) {
 			this.workbenchDataManager.removeUsersFromProgram(removedUserIds, project.getProjectId());
 		}
 	}
 	
-	public List<Integer> getRemovedUserIds(List<Integer> activeUserIds, Collection<WorkbenchUser> userList) {
+	public List<Integer> getRemovedUserIds(final long projectId, final Collection<WorkbenchUser> userList) {
+		final List<Integer> activeUserIds = this.workbenchDataManager.getActiveUserIDsByProjectId(projectId);
 		List<Integer> programMemberIds = new ArrayList<>();
 		for(WorkbenchUser user: userList) {
 			programMemberIds.add(user.getUserid());
