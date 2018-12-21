@@ -1,5 +1,6 @@
 package org.generationcp.ibpworkbench.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -239,8 +240,10 @@ public class ProgramServiceTest {
 
 	@Test
 	public void testUpdateMembersUserInfo() {
+		final List<Integer> userIds = new ArrayList<>();
+		userIds.addAll(Arrays.asList(1, 2, 3));
 		Mockito.when(this.workbenchDataManager.getActiveUserIDsByProjectId(Matchers.anyLong()))
-				.thenReturn(Arrays.asList(1, 2, 3));
+				.thenReturn(userIds);
 		final Project project = ProjectTestDataInitializer.createProject();
 		final Set<WorkbenchUser> userList = new HashSet<>();
 		userList.add(WorkbenchUserTestDataInitializer.createWorkbenchUser());
@@ -253,16 +256,17 @@ public class ProgramServiceTest {
 		Mockito.verify(this.workbenchDataManager, Mockito.times(numberOfUsers))
 				.saveOrUpdateProjectUserInfo(Matchers.any(ProjectUserInfo.class));
 		Mockito.verify(this.workbenchDataManager).getActiveUserIDsByProjectId(Matchers.anyLong());
-		Mockito.verify(this.workbenchDataManager).getProjectUserInfoByProjectIdAndUserIds(Matchers.anyLong(),
-				Matchers.anyList());
-		Mockito.verify(this.workbenchDataManager).deleteProjectUserInfos(Matchers.anyList());
+		Mockito.verify(this.workbenchDataManager).removeUsersFromProgram(Matchers.anyList(), Matchers.anyLong());
 	}
 
 	@Test
 	public void testGetRemovedUserIds() {
-		final List<Integer> activeUserIds = Arrays.asList(1, 2);
+		final List<Integer> activeUserIds = new ArrayList<>();
+		activeUserIds.addAll(Arrays.asList(1, 2));
 		final Collection<WorkbenchUser> userList = Arrays.asList(new WorkbenchUser(1));
-		final List<Integer> removedUserIds = this.programService.getRemovedUserIds(activeUserIds, userList);
+		Mockito.when(this.workbenchDataManager.getActiveUserIDsByProjectId(Matchers.anyLong()))
+			.thenReturn(activeUserIds);
+		final List<Integer> removedUserIds = this.programService.getRemovedUserIds(1, userList);
 		Assert.assertEquals(1, removedUserIds.size());
 		Assert.assertEquals("2", removedUserIds.get(0).toString());
 	}
