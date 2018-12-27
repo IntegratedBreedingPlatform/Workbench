@@ -26,7 +26,6 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.germplasm.listeners.GermplasmButtonClickListener;
-import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -139,19 +138,19 @@ public class SaveGermplasmListDialog extends GridLayout implements InitializingB
 		this.addComponent(hButton, 1, 6);
 	}
 
-	private void populateComboBoxListName() throws MiddlewareQueryException {
+	private void populateComboBoxListName() {
 		this.germplasmList =
 				this.germplasmListManager.getAllGermplasmLists(0, (int) this.germplasmListManager.countAllGermplasmLists());
-		this.mapExistingList = new HashMap<String, Integer>();
+		this.mapExistingList = new HashMap<>();
 		this.comboBoxListName.addItem("");
 		for (GermplasmList gList : this.germplasmList) {
 			this.comboBoxListName.addItem(gList.getName());
-			this.mapExistingList.put(gList.getName(), new Integer(gList.getId()));
+			this.mapExistingList.put(gList.getName(), gList.getId());
 		}
 		this.comboBoxListName.select("");
 	}
 
-	private void populateSelectType(Select selectType) throws MiddlewareQueryException {
+	private void populateSelectType(Select selectType) {
 		List<UserDefinedField> listTypes = this.germplasmListManager.getGermplasmListTypes();
 
 		for (UserDefinedField listType : listTypes) {
@@ -180,7 +179,7 @@ public class SaveGermplasmListDialog extends GridLayout implements InitializingB
 		this.messageSource.setCaption(this.btnCancel, Message.CANCEL_LABEL);
 	}
 
-	public void saveGermplasmListButtonClickAction() throws InternationalizableException {
+	public void saveGermplasmListButtonClickAction() {
 
 		SaveGermplasmListAction saveGermplasmAction = new SaveGermplasmListAction();
 		String listName = this.comboBoxListName.getValue().toString();
