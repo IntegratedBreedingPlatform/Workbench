@@ -99,24 +99,13 @@ export class SampleImportPlateMappingComponent {
         const sampleList = [];
         for (let i = 1; i < this.importData.length; i++) {
             const sampleId = this.importData[i][sampleUidColumnIndex];
-            const plateId = this.importData[i][PlateIdColumnIndex];
-            const well = this.importData[i][WellColumnIndex];
+            const plateInfo = this.importData[i][PlateIdColumnIndex];
+            const wellInfo = this.importData[i][WellColumnIndex];
 
             const sample = {
-                sampleId: undefined
-                ,entryNo: undefined
-                ,gid: undefined
-                ,designation: undefined
-                ,sampleName: undefined
-                ,sampleBusinessKey: sampleId
-                ,takenBy: undefined
-                ,sampleList: undefined
-                ,plantNumber: undefined
-                ,plantBusinessKey: undefined
-                ,plateId: plateId
-                ,well: well
-                ,datasets: undefined
-                ,samplingDate: undefined
+                sampleBusinessKey: sampleId,
+                plateId: plateInfo,
+                well: wellInfo
             };
 
             sampleList.push(sample);
