@@ -24,7 +24,7 @@ export class ExcelService {
                 const ws: XLSX.WorkSheet = wb.Sheets[wsname];
 
                 /* save data */
-                const data = <Array<Array<any>>>(XLSX.utils.sheet_to_json(ws, {header: 1, raw: false, defval: ""}));
+                const data = <Array<Array<any>>>(XLSX.utils.sheet_to_json(ws, {header: 1, raw: false, defval: ''}));
                 observer.next(data);
 
             };
