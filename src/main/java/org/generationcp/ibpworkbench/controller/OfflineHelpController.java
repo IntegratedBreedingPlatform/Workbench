@@ -40,8 +40,6 @@ public class OfflineHelpController {
 			final String helpUrl = this.helpProperties.getProperty(helpModule.getPropertyName());
 			if (HelpDocumentUtil.isIBPDomainReachable(HelpDocumentUtil.getOnLineLink(helpUrl))) {
 				return HelpDocumentUtil.getOnLineLink(helpUrl);
-			} else if (this.isDocumentsFolderFound()) {
-				return String.format("/BMS_HTML/%s.html", helpUrl);
 			}
 
 		} catch (final Exception e) {
@@ -51,9 +49,6 @@ public class OfflineHelpController {
 		return "";
 	}
 
-	private boolean isDocumentsFolderFound() {
-		return HelpDocumentUtil.isDocumentsFolderFound();
-	}
 
 	@RequestMapping(value = "/headerText")
 	@ResponseBody
