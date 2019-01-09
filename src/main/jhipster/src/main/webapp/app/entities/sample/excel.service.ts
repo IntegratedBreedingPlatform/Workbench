@@ -17,14 +17,14 @@ export class ExcelService {
             reader.onload = (e: any) => {
                 /* read workbook */
                 const bstr: string = e.target.result;
-                const wb: XLSX.WorkBook = XLSX.read(bstr, {type: 'binary', sheetStubs: false});
+                const wb: XLSX.WorkBook = XLSX.read(bstr, {type: 'binary'});
 
                 /* grab first sheet */
                 const wsname: string = wb.SheetNames[0];
                 const ws: XLSX.WorkSheet = wb.Sheets[wsname];
 
                 /* save data */
-                const data = <Array<Array<any>>>(XLSX.utils.sheet_to_json(ws, {header: 1, raw: false, defval: ''}));
+                const data = <Array<Array<any>>>(XLSX.utils.sheet_to_json(ws, {header: 1, defval: ''}));
                 observer.next(data);
 
             };
