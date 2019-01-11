@@ -13,6 +13,7 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -56,7 +57,7 @@ public class ChangeWindowActionTest {
 		changeWindowAction.launchWindow(window, ChangeWindowAction.WindowEnums.MEMBER.getwindowName(), false);
 
 		verify(window).showContent(any(ProgramMembersPanel.class));
-		verify(contextUtil).logProgramActivity(eq(ChangeWindowAction.WindowEnums.MEMBER.getwindowName()), anyString());
+		verify(contextUtil).logProgramActivity(eq(ChangeWindowAction.WindowEnums.MEMBER.getwindowName()), ArgumentMatchers.<String>isNull());
 
 	}
 
@@ -66,7 +67,7 @@ public class ChangeWindowActionTest {
 		changeWindowAction.launchWindow(window, ChangeWindowAction.WindowEnums.BACKUP_RESTORE.getwindowName(), false);
 
 		verify(window).showContent(any(BackupAndRestoreView.class));
-		verify(contextUtil).logProgramActivity(eq(ChangeWindowAction.WindowEnums.BACKUP_RESTORE.getwindowName()), anyString());
+		verify(contextUtil).logProgramActivity(eq(ChangeWindowAction.WindowEnums.BACKUP_RESTORE.getwindowName()), ArgumentMatchers.<String>isNull());
 
 	}
 
@@ -76,7 +77,7 @@ public class ChangeWindowActionTest {
 		changeWindowAction.launchWindow(window, ChangeWindowAction.WindowEnums.BREEDING_GXE.getwindowName(), false);
 
 		verify(window).showContent(any(MultiSiteAnalysisPanel.class));
-		verify(contextUtil).logProgramActivity(eq(ChangeWindowAction.WindowEnums.BREEDING_GXE.getwindowName()), anyString());
+		verify(contextUtil).logProgramActivity(eq(ChangeWindowAction.WindowEnums.BREEDING_GXE.getwindowName()), ArgumentMatchers.<String>isNull());
 
 	}
 
@@ -86,7 +87,7 @@ public class ChangeWindowActionTest {
 		changeWindowAction.launchWindow(window, ChangeWindowAction.WindowEnums.BREEDING_VIEW.getwindowName(), false);
 
 		verify(window).showContent(any(SingleSiteAnalysisPanel.class));
-		verify(contextUtil).logProgramActivity(eq(ChangeWindowAction.WindowEnums.BREEDING_VIEW.getwindowName()), anyString());
+		verify(contextUtil).logProgramActivity(eq(ChangeWindowAction.WindowEnums.BREEDING_VIEW.getwindowName()), ArgumentMatchers.<String>isNull());
 
 	}
 
@@ -96,7 +97,7 @@ public class ChangeWindowActionTest {
 		changeWindowAction.launchWindow(window, ChangeWindowAction.WindowEnums.BV_META_ANALYSIS.getwindowName(), false);
 
 		verify(window).showContent(any(MetaAnalysisPanel.class));
-		verify(contextUtil).logProgramActivity(eq(ChangeWindowAction.WindowEnums.BV_META_ANALYSIS.getwindowName()), anyString());
+		verify(contextUtil).logProgramActivity(eq(ChangeWindowAction.WindowEnums.BV_META_ANALYSIS.getwindowName()), ArgumentMatchers.<String>isNull());
 
 	}
 

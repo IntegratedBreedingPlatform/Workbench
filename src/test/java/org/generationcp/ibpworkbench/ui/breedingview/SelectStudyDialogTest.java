@@ -15,6 +15,7 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -51,11 +52,11 @@ public class SelectStudyDialogTest {
 		Mockito.when(this.currentProject.getUniqueID()).thenReturn(SelectStudyDialogTest.UNIQUE_ID);
 		Mockito.when(this.studyTypeFilterComponent.getStudyTypeComboBox()).thenReturn(comboBox);
 		Mockito.when(comboBox.getValue()).thenReturn(StudyTypeFilterComponent.ALL_OPTION);
-		Mockito.when(this.studyDataManager.getRootFoldersByStudyType(Matchers.eq(this.currentProject.getUniqueID()), Mockito.anyInt()))
+		Mockito.when(this.studyDataManager.getRootFoldersByStudyType(Matchers.eq(this.currentProject.getUniqueID()), ArgumentMatchers.<Integer>isNull()))
 				.thenReturn(StudyReferenceTestDataInitializer.createStudyReferenceList(5));
 		final BreedingViewTreeTable table = this.dialog.createStudyTreeTable();
 		Mockito.verify(this.studyDataManager, Mockito.times(1))
-				.getRootFoldersByStudyType(Matchers.eq(SelectStudyDialogTest.UNIQUE_ID), Mockito.anyInt());
+				.getRootFoldersByStudyType(Matchers.eq(SelectStudyDialogTest.UNIQUE_ID), ArgumentMatchers.<Integer>isNull());
 		Assert.assertEquals("There should be 33 property ids.", 3, table.getContainerPropertyIds().size());
 		Assert.assertTrue("The property ids should contain " + SelectStudyDialog.STUDY_NAME,
 				table.getContainerPropertyIds().contains(SelectStudyDialog.STUDY_NAME));

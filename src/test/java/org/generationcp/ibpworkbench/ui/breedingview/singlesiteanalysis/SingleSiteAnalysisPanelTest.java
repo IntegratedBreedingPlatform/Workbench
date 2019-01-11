@@ -17,15 +17,15 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnit44Runner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@RunWith(MockitoJUnit44Runner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class SingleSiteAnalysisPanelTest {
 
 	private DataSet currentDataset;
@@ -99,9 +99,9 @@ public class SingleSiteAnalysisPanelTest {
 		Assert.assertEquals("The dataset id should be " + this.currentDataset.getId(), Integer.toString(this.currentDataset.getId()),
 				Integer.toString(this.singleSiteAnalysisPanel.getCurrentDataSetId()));
 
-		Mockito.verify(germplasmDescriptorsComponent).loadData(Mockito.anyList());
-		Mockito.verify(variatesTableComponent).loadData(Mockito.anyList());
-		Mockito.verify(covariatesTableComponent).loadData(Mockito.anyList());
+		Mockito.verify(germplasmDescriptorsComponent).loadData(ArgumentMatchers.<List<DMSVariableType>>any());
+		Mockito.verify(variatesTableComponent).loadData(ArgumentMatchers.<List<DMSVariableType>>any());
+		Mockito.verify(covariatesTableComponent).loadData(ArgumentMatchers.<List<DMSVariableType>>any());
 
 	}
 

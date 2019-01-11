@@ -2,8 +2,8 @@ package org.generationcp.ibpworkbench.ui.breedingview;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -15,16 +15,15 @@ import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.UserProgramStateDataManager;
 import org.generationcp.middleware.pojos.dms.DmsProject;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -54,15 +53,7 @@ public class SaveBreedingViewStudyTreeStateTest {
 	@Before
 	public void setUp() throws Exception {
 		final Project project = mock(Project.class);
-		final WorkbenchUser userData = mock(WorkbenchUser.class);
-		final ManagerFactory factory = mock(ManagerFactory.class);
 		when(contextUtil.getProjectInContext()).thenReturn(project);
-		when(project.getProjectId()).thenReturn((long) 1);
-		when(contextUtil.getCurrentWorkbenchUser()).thenReturn(userData);
-
-		when(provider.getManagerFactoryForProject(project)).thenReturn(factory);
-		when(factory.getUserProgramStateDataManager()).thenReturn(programStateDataManager);
-
 	}
 
 	@Test
@@ -74,7 +65,7 @@ public class SaveBreedingViewStudyTreeStateTest {
 
 		final ArgumentCaptor<List> stringListCaptor = ArgumentCaptor.forClass(List.class);
 
-		verify(programStateDataManager).saveOrUpdateUserProgramTreeState(anyInt(), anyString(), anyString(), stringListCaptor.capture());
+		verify(programStateDataManager).saveOrUpdateUserProgramTreeState(anyInt(), ArgumentMatchers.<String>isNull(), anyString(), stringListCaptor.capture());
 
 		final List savedTreeState = stringListCaptor.getValue();
 
@@ -91,7 +82,7 @@ public class SaveBreedingViewStudyTreeStateTest {
 
 		final ArgumentCaptor<List> stringListCaptor = ArgumentCaptor.forClass(List.class);
 
-		verify(programStateDataManager).saveOrUpdateUserProgramTreeState(anyInt(), anyString(), anyString(), stringListCaptor.capture());
+		verify(programStateDataManager).saveOrUpdateUserProgramTreeState(anyInt(), ArgumentMatchers.<String>isNull(), anyString(), stringListCaptor.capture());
 
 		final List savedTreeState = stringListCaptor.getValue();
 
@@ -108,7 +99,7 @@ public class SaveBreedingViewStudyTreeStateTest {
 
 		final ArgumentCaptor<List> stringListCaptor = ArgumentCaptor.forClass(List.class);
 
-		verify(programStateDataManager).saveOrUpdateUserProgramTreeState(anyInt(), anyString(), anyString(), stringListCaptor.capture());
+		verify(programStateDataManager).saveOrUpdateUserProgramTreeState(anyInt(), ArgumentMatchers.<String>isNull(), anyString(), stringListCaptor.capture());
 
 		final List savedTreeState = stringListCaptor.getValue();
 

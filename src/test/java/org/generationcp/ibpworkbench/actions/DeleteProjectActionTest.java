@@ -17,6 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -122,7 +123,7 @@ public class DeleteProjectActionTest {
 
 		verify(locationDataManager).deleteProgramLocationsByUniqueId(project.getUniqueID());
 		verify(germplasmDataManager).deleteProgramMethodsByUniqueId(project.getUniqueID());
-		verify(germplasmDataManager, Mockito.times(2)).deleteProgramFavorites(Mockito.anyList());
+		verify(germplasmDataManager, Mockito.times(2)).deleteProgramFavorites(ArgumentMatchers.<List<ProgramFavorite>>any());
 		verify(studyDataManager).deleteProgramStudies(project.getUniqueID());
 		verify(germplasmListManager).deleteGermplasmListsByProgram(project.getUniqueID());
 

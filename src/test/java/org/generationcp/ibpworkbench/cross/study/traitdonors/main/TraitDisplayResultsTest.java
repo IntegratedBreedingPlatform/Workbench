@@ -18,7 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -56,10 +56,10 @@ public class TraitDisplayResultsTest {
 		this.traitDisplayResults.setEnvironmentIds(new ArrayList<Integer>());
 		this.traitDisplayResults.setTraitIds(new ArrayList<Integer>());
 		this.traitDisplayResults.setCrossStudyDataManager(this.crossStudyDataManager);
-		Mockito.when(this.crossStudyDataManager.getObservationsForTraits(Matchers.anyList(), Matchers.anyList()))
+		Mockito.when(this.crossStudyDataManager.getObservationsForTraits(ArgumentMatchers.<List<Integer>>any(), ArgumentMatchers.<List<Integer>>any()))
 				.thenReturn(new ArrayList<Observation>());
 		this.traitDisplayResults.setGermplasmDataManager(this.germplasmDataManager);
-		Mockito.when(this.germplasmDataManager.getPreferredNamesByGids(Matchers.anyList()))
+		Mockito.when(this.germplasmDataManager.getPreferredNamesByGids(ArgumentMatchers.<List<Integer>>any()))
 				.thenReturn(new HashMap<Integer, String>());
 		this.traitDisplayResults.setResultsTable(new AbsoluteLayout());
 		this.traitDisplayResults.setGermplasmIdNameMap(new HashMap<Integer, String>());
@@ -72,9 +72,9 @@ public class TraitDisplayResultsTest {
 		this.traitDisplayResults.populateResultsTable(new ArrayList<EnvironmentForComparison>(),
 				new ArrayList<NumericTraitFilter>(), new ArrayList<CharacterTraitFilter>(),
 				new ArrayList<CategoricalTraitFilter>());
-		Mockito.verify(this.germplasmDataManager, Mockito.times(1)).getPreferredNamesByGids(Matchers.anyList());
-		Mockito.verify(this.crossStudyDataManager, Mockito.times(4)).getObservationsForTraits(Matchers.anyList(),
-				Matchers.anyList());
+		Mockito.verify(this.germplasmDataManager, Mockito.times(1)).getPreferredNamesByGids(ArgumentMatchers.<List<Integer>>any());
+		Mockito.verify(this.crossStudyDataManager, Mockito.times(4)).getObservationsForTraits(ArgumentMatchers.<List<Integer>>any(),
+				ArgumentMatchers.<List<Integer>>any());
 		Assert.assertEquals(this.traitDisplayResults.getResultsTable().getComponentCount(), 3);
 		final Iterator<Component> componentIterator = this.traitDisplayResults.getResultsTable().getComponentIterator();
 		final List<String> debugIds = new ArrayList<>(

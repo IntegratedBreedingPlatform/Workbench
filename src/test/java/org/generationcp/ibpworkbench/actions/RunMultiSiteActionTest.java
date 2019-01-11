@@ -21,6 +21,7 @@ import org.generationcp.ibpworkbench.util.bean.MultiSiteParameters;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
+import org.generationcp.middleware.domain.dms.Experiment;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableList;
@@ -33,6 +34,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatcher;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -137,14 +140,14 @@ public class RunMultiSiteActionTest {
 
 		Mockito.when(this.studyDataManager.getDataSetsByType(STUDY_ID, DataSetType.SUMMARY_DATA)).thenReturn(this.createDataSets());
 
-		Mockito.when(multiSiteDataExporter.exportMeansDatasetToCsv(Mockito.anyString(), Mockito.any(MultiSiteParameters.class),
-				Mockito.anyList(), Mockito.eq(ENVIRONMENT_NAME), Mockito.any(GxeEnvironment.class), Mockito.anyList()))
+		Mockito.when(multiSiteDataExporter.exportMeansDatasetToCsv(ArgumentMatchers.anyString(), ArgumentMatchers.any(MultiSiteParameters.class),
+				ArgumentMatchers.<List<Experiment>>any(), ArgumentMatchers.eq(ENVIRONMENT_NAME), ArgumentMatchers.any(GxeEnvironment.class), ArgumentMatchers.<List<Trait>>any()))
 				.thenReturn(MEANS_DATA_FILEPATH);
 
-		Mockito.when(multiSiteDataExporter.exportTrialDatasetToSummaryStatsCsv(Mockito.anyInt(), Mockito.anyString(), Mockito.anyList(),
-				Mockito.eq(ENVIRONMENT_NAME), Mockito.anyList(), Mockito.any(Project.class))).thenReturn(SUMMARY_DATA_FILEPATH);
+		Mockito.when(multiSiteDataExporter.exportTrialDatasetToSummaryStatsCsv(Mockito.anyInt(), Mockito.anyString(), ArgumentMatchers.<List<Experiment>>any(),
+				Mockito.eq(ENVIRONMENT_NAME), ArgumentMatchers.<List<Trait>>any(), Mockito.any(Project.class))).thenReturn(SUMMARY_DATA_FILEPATH);
 		
-		Mockito.when(this.zipUtil.zipIt(Mockito.anyString(), Mockito.anyListOf(String.class), Mockito.any(Project.class),
+		Mockito.when(this.zipUtil.zipIt(Mockito.anyString(), ArgumentMatchers.<List<String>>any(), ArgumentMatchers.any(Project.class),
 				Mockito.any(ToolName.class))).thenReturn(ZIP_FILE_PATH);
 
 	}
@@ -203,12 +206,12 @@ public class RunMultiSiteActionTest {
 		this.runMultiSiteAction.exportDataFiles(multiSiteParameters, gxeInput, gxeEnvironment, selectedTraits);
 
 		// Make sure the Means DataSet is exported to CSV
-		Mockito.verify(multiSiteDataExporter).exportMeansDatasetToCsv(Mockito.anyString(), Mockito.eq(multiSiteParameters),
-				Mockito.anyList(), Mockito.eq(ENVIRONMENT_NAME), Mockito.any(GxeEnvironment.class), Mockito.anyList());
+		Mockito.verify(multiSiteDataExporter).exportMeansDatasetToCsv(ArgumentMatchers.anyString(), ArgumentMatchers.eq(multiSiteParameters),
+				ArgumentMatchers.<List<Experiment>>any(), ArgumentMatchers.eq(ENVIRONMENT_NAME), ArgumentMatchers.any(GxeEnvironment.class), ArgumentMatchers.<List<Trait>>any());
 
 		// Make sure the Summary Data is exported to CSV
-		Mockito.verify(multiSiteDataExporter).exportTrialDatasetToSummaryStatsCsv(Mockito.anyInt(), Mockito.anyString(), Mockito.anyList(),
-				Mockito.eq(ENVIRONMENT_NAME), Mockito.anyList(), Mockito.any(Project.class));
+		Mockito.verify(multiSiteDataExporter).exportTrialDatasetToSummaryStatsCsv(ArgumentMatchers.anyInt(), ArgumentMatchers.anyString(), ArgumentMatchers.<List<Experiment>>any(),
+				ArgumentMatchers.eq(ENVIRONMENT_NAME), ArgumentMatchers.<List<Trait>>any(), ArgumentMatchers.any(Project.class));
 
 		Assert.assertEquals(MEANS_DATA_FILEPATH, gxeInput.getSourceCSVFilePath());
 		Assert.assertEquals(SUMMARY_DATA_FILEPATH, gxeInput.getSourceCSVSummaryStatsFilePath());

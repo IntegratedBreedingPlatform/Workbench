@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -39,7 +40,7 @@ public class SystemLabelPresenterTest {
 	@Before
 	public void init() {
 
-		Mockito.when(ontologyDataManager.getTermsByIds(Mockito.anyList())).thenReturn(this.createTerms());
+		Mockito.when(ontologyDataManager.getTermsByIds(ArgumentMatchers.<List<Integer>>any())).thenReturn(this.createTerms());
 
 		BeanItemContainer<Term> container = new BeanItemContainer<Term>(Term.class);
 		container.addAll(this.createTerms());
@@ -54,7 +55,7 @@ public class SystemLabelPresenterTest {
 
 		systemLabelPresenter.retrieveSystemLabelTerms();
 
-		ArgumentCaptor<List> termIdListCaptor = new ArgumentCaptor<>();
+		ArgumentCaptor<List> termIdListCaptor = ArgumentCaptor.forClass(List.class);
 
 		// GetTermsByIds should be invoked
 		Mockito.verify(ontologyDataManager).getTermsByIds(termIdListCaptor.capture());
@@ -83,7 +84,7 @@ public class SystemLabelPresenterTest {
 
 		systemLabelPresenter.saveTerms();
 
-		Mockito.verify(ontologyDataManager).updateTerms(Mockito.anyList());
+		Mockito.verify(ontologyDataManager).updateTerms(ArgumentMatchers.<List<Term>>any());
 		Mockito.verify(view).showSaveSuccessMessage();
 
 	}
@@ -97,7 +98,7 @@ public class SystemLabelPresenterTest {
 
 		systemLabelPresenter.saveTerms();
 
-		Mockito.verify(ontologyDataManager, Mockito.times(0)).updateTerms(Mockito.anyList());
+		Mockito.verify(ontologyDataManager, Mockito.times(0)).updateTerms(ArgumentMatchers.<List<Term>>any());
 		Mockito.verify(view).showValidationErrorMessage();
 
 	}
