@@ -18,7 +18,7 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -77,9 +77,10 @@ public class StudyTreeExpandListenerTest {
 		project.setUniqueID(PROGRAM_UUID);
 		Mockito.doReturn(project).when(this.contextUtil).getProjectInContext();
 		Mockito.doReturn(StudyTypeFilterComponent.ALL_OPTION).when(this.studyTree).getStudyTypeFilter();
-		Mockito.doReturn(STUDY_REFERENCES).when(this.studyDataManager).getChildrenOfFolderByStudyType(Matchers.anyInt(),
-				Matchers.anyString(), Matchers.anyInt());
-		
+		Mockito.doReturn(STUDY_REFERENCES).when(this.studyDataManager).getChildrenOfFolderByStudyType(ArgumentMatchers.anyInt(),
+				ArgumentMatchers.anyString(), ArgumentMatchers.anyInt());
+		Mockito.doReturn(STUDY_REFERENCES).when(this.studyDataManager).getChildrenOfFolderByStudyType(ArgumentMatchers.anyInt(),
+				ArgumentMatchers.anyString(), ArgumentMatchers.<Integer>isNull());
 	}
 	
 	@Test
@@ -94,13 +95,13 @@ public class StudyTreeExpandListenerTest {
 	
 	@Test
 	public void testNodeExpandWithMiddlewareException() {
-		Mockito.doThrow(new MiddlewareQueryException("ERROR")).when(this.studyDataManager).getChildrenOfFolderByStudyType(Matchers.anyInt(),
-				Matchers.anyString(), Matchers.anyInt());
+		Mockito.doThrow(new MiddlewareQueryException("ERROR")).when(this.studyDataManager).getChildrenOfFolderByStudyType(ArgumentMatchers.anyInt(),
+				ArgumentMatchers.anyString(), ArgumentMatchers.<Integer>isNull());
 		this.expandListener.nodeExpand(expandEvent);
-		Mockito.verify(this.studyTree, Mockito.never()).addItem(Matchers.anyInt());
-		Mockito.verify(this.studyTree, Mockito.never()).setItemCaption(Matchers.anyInt(), Matchers.anyString());
-		Mockito.verify(this.studyTree, Mockito.never()).setParent(Matchers.anyInt(), Matchers.anyInt());
-		Mockito.verify(this.studyTree, Mockito.never()).setChildrenAllowed(Matchers.anyInt(), Matchers.anyBoolean());
+		Mockito.verify(this.studyTree, Mockito.never()).addItem(ArgumentMatchers.anyInt());
+		Mockito.verify(this.studyTree, Mockito.never()).setItemCaption(ArgumentMatchers.anyInt(), ArgumentMatchers.anyString());
+		Mockito.verify(this.studyTree, Mockito.never()).setParent(ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt());
+		Mockito.verify(this.studyTree, Mockito.never()).setChildrenAllowed(ArgumentMatchers.anyInt(), ArgumentMatchers.anyBoolean());
 		Mockito.verify(this.studyTree).selectItem(STUDY_ID);
 	}
 	
@@ -117,7 +118,7 @@ public class StudyTreeExpandListenerTest {
 	@Test
 	public void testNodeExpandWithFilterOnStudyType() {
 		Mockito.doReturn(TRIAL_FILTER).when(this.studyTree).getStudyTypeFilter();
-		Mockito.doReturn(TRIAL_FILTER).when(this.studyDataManager).getStudyTypeByLabel(Matchers.anyString());
+		Mockito.doReturn(TRIAL_FILTER).when(this.studyDataManager).getStudyTypeByLabel(ArgumentMatchers.anyString());
 		
 		this.expandListener.nodeExpand(expandEvent);
 		verifyItemWasAddedToTree(FOLDER.getId(), FOLDER.getName());
