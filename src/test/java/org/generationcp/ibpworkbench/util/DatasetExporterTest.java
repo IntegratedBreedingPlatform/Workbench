@@ -26,7 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -175,7 +175,7 @@ public class DatasetExporterTest {
 	public void testExportToCSVForBreedingViewWithNumericAndCategoricalVariates() {
 		final Experiment firstRowObservation = this.createExperimentTestData(this.factorVariables, this.variateVariables);
 		final Experiment secondRowObservation = this.createExperimentTestData(this.factorVariables, this.variateVariables);
-		Mockito.when(DatasetExporterTest.studyDataManager.getExperiments(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyInt()))
+		Mockito.when(DatasetExporterTest.studyDataManager.getExperiments(ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt()))
 				.thenReturn(Lists.newArrayList(firstRowObservation, secondRowObservation));
 
 		// Method to test
@@ -200,7 +200,7 @@ public class DatasetExporterTest {
 		final Experiment firstRowObservation = this.createExperimentTestData(this.factorVariables, this.variateVariables);
 		final Experiment secondRowObservation =
 				this.createExperimentTestData(factorVariablesWithoutFieldmapVariables, this.variateVariables);
-		Mockito.when(DatasetExporterTest.studyDataManager.getExperiments(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyInt()))
+		Mockito.when(DatasetExporterTest.studyDataManager.getExperiments(ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt()))
 				.thenReturn(Lists.newArrayList(firstRowObservation, secondRowObservation));
 
 		// Method to test
@@ -550,11 +550,9 @@ public class DatasetExporterTest {
 
 	private void setupMocks() {
 		// Setup Middleware mocks
-		Mockito.when(DatasetExporterTest.studyDataManager.getDataSet(Matchers.anyInt())).thenReturn(this.dataSet);
+		Mockito.when(DatasetExporterTest.studyDataManager.getDataSet(ArgumentMatchers.anyInt())).thenReturn(this.dataSet);
 
 		// Setup BreedingViewInput mocks
-		Mockito.when(this.bvInput.getReplicates()).thenReturn(Mockito.mock(Replicates.class));
-		Mockito.when(this.bvInput.getReplicates().getName()).thenReturn(DatasetExporterTest.REP_NAME);
 		Mockito.when(this.bvInput.getTrialInstanceName()).thenReturn(DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME);
 		Mockito.when(this.bvInput.getDesignType()).thenReturn(DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
 
@@ -575,7 +573,7 @@ public class DatasetExporterTest {
 
 		// Setup test experiments of dataset
 		final Experiment experiment = this.createExperimentTestData(this.factorVariables, this.variateVariables);
-		Mockito.when(DatasetExporterTest.studyDataManager.getExperiments(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyInt()))
+		Mockito.when(DatasetExporterTest.studyDataManager.getExperiments(ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt()))
 				.thenReturn(Lists.newArrayList(experiment));
 	}
 

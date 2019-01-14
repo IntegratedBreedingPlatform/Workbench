@@ -133,8 +133,7 @@ public class EditBreedingMethodsWindowTest {
 		when(component.getWindow()).thenReturn(window);
 		when(breedingMethodTracker.getProjectBreedingMethodData()).thenReturn(projectBreedingMethodData);
 		when(breedingMethodTracker.getUniqueBreedingMethods()).thenReturn(uniqueBreedingMethods);
-		when(breedingMethodForm.getItemDataSource()).thenReturn(new BeanItem<MethodView>(methodViewFromBreedingMethodForm));
-		when(presenter.editBreedingMethod(methodViewFromBreedingMethodForm)).thenReturn(methodViewFromBreedingMethodForm);
+		when(breedingMethodForm.getItemDataSource()).thenReturn(new BeanItem<>(methodViewFromBreedingMethodForm));
 
 		final EditBreedingMethodsWindow.EditBreedingMethodButtonListener listener =
 				this.editBreedingMethodsWindow.new EditBreedingMethodButtonListener();
