@@ -25,6 +25,7 @@ import {
     ActiveMenuDirective,
     ErrorComponent
 } from './layouts';
+import { PrintLabelsModule } from './print-labels/print-labels.module';
 
 @NgModule({
     imports: [
@@ -34,6 +35,7 @@ import {
         BmsjHipsterSharedModule,
         BmsjHipsterHomeModule,
         BmsjHipsterEntityModule,
+        PrintLabelsModule
         // jhipster-needle-angular-add-module JHipster will add new module here
     ],
     declarations: [
