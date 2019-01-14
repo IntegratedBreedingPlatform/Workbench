@@ -42,37 +42,37 @@ public class ChangeCredentialsWindowTest {
 	private ChangeCredentialsWindow.CredentialsChangedEvent credentialsChangedEvent;
 
 	@InjectMocks
-	private ChangeCredentialsWindow changeCredentialsWindow = new ChangeCredentialsWindow(credentialsChangedEvent);
+	private final ChangeCredentialsWindow changeCredentialsWindow = new ChangeCredentialsWindow(this.credentialsChangedEvent);
 
 	@Before
 	public void init() {
 
-		WorkbenchUser user = new WorkbenchUser();
+		final WorkbenchUser user = new WorkbenchUser();
 		user.setUserid(1);
 		user.setName("testUsername");
 		user.setPerson(new Person());
 
-		Mockito.when(contextUtil.getCurrentWorkbenchUser()).thenReturn(user);
+		Mockito.when(this.contextUtil.getCurrentWorkbenchUser()).thenReturn(user);
 
-		changeCredentialsWindow.setParentWindow(parentWindow);
-		changeCredentialsWindow.initializeComponents();
+		this.changeCredentialsWindow.setParentWindow(this.parentWindow);
+		this.changeCredentialsWindow.initializeComponents();
 
 	}
 
 	@Test
 	public void testSaveCredentialsValidationSuccess() {
 
-		changeCredentialsWindow.getFirstName().setValue(FIRSTNAME);
-		changeCredentialsWindow.getLastName().setValue(LASTNAME);
-		changeCredentialsWindow.getEmailAddress().setValue(EMAIL_ADDRESS);
+		this.changeCredentialsWindow.getFirstName().setValue(FIRSTNAME);
+		this.changeCredentialsWindow.getLastName().setValue(LASTNAME);
+		this.changeCredentialsWindow.getEmailAddress().setValue(EMAIL_ADDRESS);
 
-		changeCredentialsWindow.saveCredentials();
+		this.changeCredentialsWindow.saveCredentials();
 
 		// Verify that updateUser is called if there are no validation error.
-		Mockito.verify(workbenchDataManager).updateUser(Mockito.any(WorkbenchUser.class));
-		Mockito.verify(parentWindow).showNotification(Mockito.any(Window.Notification.class));
-		Mockito.verify(parentWindow).removeWindow(Mockito.any(Window.class));
-		Mockito.verify(credentialsChangedEvent).onChanged(FIRSTNAME, LASTNAME, EMAIL_ADDRESS);
+		Mockito.verify(this.workbenchDataManager).updateUser(Mockito.any(WorkbenchUser.class));
+		Mockito.verify(this.parentWindow).showNotification(Mockito.any(Window.Notification.class));
+		Mockito.verify(this.parentWindow).removeWindow(Mockito.any(Window.class));
+		Mockito.verify(this.credentialsChangedEvent).onChanged(FIRSTNAME, LASTNAME, EMAIL_ADDRESS);
 
 	}
 
@@ -80,26 +80,26 @@ public class ChangeCredentialsWindowTest {
 	@Test
 	public void testSaveCredentialsValidationError() {
 
-		changeCredentialsWindow.saveCredentials();
+		this.changeCredentialsWindow.saveCredentials();
 
 		// Verify that updateUser is not called if there is validation error.
-		Mockito.verify(workbenchDataManager, Mockito.times(0)).updateUser(Mockito.any(WorkbenchUser.class));
-		Mockito.verify(parentWindow).showNotification(Mockito.any(Window.Notification.class));
-		Mockito.verify(parentWindow, Mockito.times(0)).removeWindow(Mockito.any(Window.class));
-		Mockito.verify(credentialsChangedEvent, Mockito.times(0)).onChanged(FIRSTNAME, LASTNAME, EMAIL_ADDRESS);
+		Mockito.verify(this.workbenchDataManager, Mockito.times(0)).updateUser(Mockito.any(WorkbenchUser.class));
+		Mockito.verify(this.parentWindow).showNotification(Mockito.any(Window.Notification.class));
+		Mockito.verify(this.parentWindow, Mockito.times(0)).removeWindow(Mockito.any(Window.class));
+		Mockito.verify(this.credentialsChangedEvent, Mockito.times(0)).onChanged(FIRSTNAME, LASTNAME, EMAIL_ADDRESS);
 
 	}
 
 	@Test
 	public void testUpdateUserWithPassword() {
 
-		changeCredentialsWindow.updateUser(FIRSTNAME, LASTNAME, EMAIL_ADDRESS, PASSWORD);
+		this.changeCredentialsWindow.updateUser(FIRSTNAME, LASTNAME, EMAIL_ADDRESS, PASSWORD);
 
-		ArgumentCaptor<WorkbenchUser> captor = ArgumentCaptor.forClass(WorkbenchUser.class);
+		final ArgumentCaptor<WorkbenchUser> captor = ArgumentCaptor.forClass(WorkbenchUser.class);
 
-		Mockito.verify(workbenchDataManager).updateUser(captor.capture());
+		Mockito.verify(this.workbenchDataManager).updateUser(captor.capture());
 
-		WorkbenchUser userToBeUpdated = captor.getValue();
+		final WorkbenchUser userToBeUpdated = captor.getValue();
 
 		Assert.assertTrue(new BCryptPasswordEncoder().matches(PASSWORD, userToBeUpdated.getPassword()));
 		Assert.assertEquals(FIRSTNAME, userToBeUpdated.getPerson().getFirstName());
@@ -112,13 +112,13 @@ public class ChangeCredentialsWindowTest {
 	@Test
 	public void testUpdateUserNoPassword() {
 
-		changeCredentialsWindow.updateUser(FIRSTNAME, LASTNAME, EMAIL_ADDRESS, "");
+		this.changeCredentialsWindow.updateUser(FIRSTNAME, LASTNAME, EMAIL_ADDRESS, "");
 
-		ArgumentCaptor<WorkbenchUser> captor = ArgumentCaptor.forClass(WorkbenchUser.class);
+		final ArgumentCaptor<WorkbenchUser> captor = ArgumentCaptor.forClass(WorkbenchUser.class);
 
-		Mockito.verify(workbenchDataManager).updateUser(captor.capture());
+		Mockito.verify(this.workbenchDataManager).updateUser(captor.capture());
 
-		WorkbenchUser userToBeUpdated = captor.getValue();
+		final WorkbenchUser userToBeUpdated = captor.getValue();
 
 		Assert.assertEquals(null, userToBeUpdated.getPassword());
 		Assert.assertEquals(FIRSTNAME, userToBeUpdated.getPerson().getFirstName());
@@ -131,25 +131,25 @@ public class ChangeCredentialsWindowTest {
 	@Test
 	public void testValidatePassword() {
 
-		String errorMessage = "ERROR_CONFIRM_PASSWORD";
-		Mockito.when(messageSource.getMessage(Message.ERROR_CONFIRM_PASSWORD)).thenReturn(errorMessage);
+		final String errorMessage = "ERROR_CONFIRM_PASSWORD";
+		Mockito.when(this.messageSource.getMessage(Message.ERROR_CONFIRM_PASSWORD)).thenReturn(errorMessage);
 
 		try {
-			changeCredentialsWindow.validatePassword(PASSWORD, "ssfffasd");
+			this.changeCredentialsWindow.validatePassword(PASSWORD, "ssfffasd");
 			Assert.fail("Password and confirm password values are not same so the method should throw a validation exception");
-		} catch (ChangeCredentialsWindow.ValidationException e) {
+		} catch (final ChangeCredentialsWindow.ValidationException e) {
 			Assert.assertEquals(errorMessage, e.getMessage());
 		}
 
 		try {
-			changeCredentialsWindow.validatePassword(PASSWORD, PASSWORD);
-		} catch (ChangeCredentialsWindow.ValidationException e) {
+			this.changeCredentialsWindow.validatePassword(PASSWORD, PASSWORD);
+		} catch (final ChangeCredentialsWindow.ValidationException e) {
 			Assert.fail("Password and confirm password values are equal so the method should not throw a validation exception");
 		}
 
 		try {
-			changeCredentialsWindow.validatePassword("", PASSWORD);
-		} catch (ChangeCredentialsWindow.ValidationException e) {
+			this.changeCredentialsWindow.validatePassword("", PASSWORD);
+		} catch (final ChangeCredentialsWindow.ValidationException e) {
 			Assert.fail("If password is empty, validation is ignored and the method should not throw a validation exception");
 		}
 
@@ -159,30 +159,30 @@ public class ChangeCredentialsWindowTest {
 	@Test
 	public void testValidateEmailAdresss() {
 
-		String errorMessageEmailIsBlank = "ERROR_PASSWORD_IS_BLANK";
-		String errorMessageEmailAlreadyExists = "ERROR_EMAIL_ALREADY_EXISTS";
-		Mockito.when(messageSource.getMessage(Message.ERROR_EMAIL_IS_BLANK)).thenReturn(errorMessageEmailIsBlank);
-		Mockito.when(messageSource.getMessage(Message.ERROR_EMAIL_ALREADY_EXISTS)).thenReturn(errorMessageEmailAlreadyExists);
+		final String errorMessageEmailIsBlank = "ERROR_PASSWORD_IS_BLANK";
+		final String errorMessageEmailAlreadyExists = "ERROR_EMAIL_ALREADY_EXISTS";
+		Mockito.when(this.messageSource.getMessage(Message.ERROR_EMAIL_IS_BLANK)).thenReturn(errorMessageEmailIsBlank);
+		Mockito.when(this.messageSource.getMessage(Message.ERROR_EMAIL_ALREADY_EXISTS)).thenReturn(errorMessageEmailAlreadyExists);
 
 		try {
-			changeCredentialsWindow.validateEmailAdresss(EMAIL_ADDRESS);
-		} catch (ChangeCredentialsWindow.ValidationException e) {
+			this.changeCredentialsWindow.validateEmailAdresss(EMAIL_ADDRESS);
+		} catch (final ChangeCredentialsWindow.ValidationException e) {
 			Assert.fail("Email Address is not empty, so the method should not throw a validation exception");
 		}
 
 		try {
-			changeCredentialsWindow.validateEmailAdresss("");
+			this.changeCredentialsWindow.validateEmailAdresss("");
 			Assert.fail("Email Address is empty, the method should throw a validation exception");
-		} catch (ChangeCredentialsWindow.ValidationException e) {
+		} catch (final ChangeCredentialsWindow.ValidationException e) {
 			Assert.assertEquals(errorMessageEmailIsBlank, e.getMessage());
 		}
 
-		Mockito.when(workbenchDataManager.isPersonWithEmailExists(EMAIL_ADDRESS)).thenReturn(true);
+		Mockito.when(this.workbenchDataManager.isPersonWithEmailExists(EMAIL_ADDRESS)).thenReturn(true);
 
 		try {
-			changeCredentialsWindow.validateEmailAdresss(EMAIL_ADDRESS);
+			this.changeCredentialsWindow.validateEmailAdresss(EMAIL_ADDRESS);
 			Assert.fail("Email Address already exists, the method should throw a validation exception");
-		} catch (ChangeCredentialsWindow.ValidationException e) {
+		} catch (final ChangeCredentialsWindow.ValidationException e) {
 			Assert.assertEquals(errorMessageEmailAlreadyExists, e.getMessage());
 		}
 
@@ -191,12 +191,9 @@ public class ChangeCredentialsWindowTest {
 	@Test
 	public void testValidateEmailFormatEmailIsValid() {
 
-		String errorMessageEmailIsInvalid = "ERROR_EMAIL_ALREADY_EXISTS";
-		Mockito.when(messageSource.getMessage(Message.ERROR_EMAIL_IS_INVALID_FORMAT)).thenReturn(errorMessageEmailIsInvalid);
-
 		try {
-			changeCredentialsWindow.validateEmailFormat("asdjhasjdh@yahoo.com");
-		} catch (ChangeCredentialsWindow.ValidationException e) {
+			this.changeCredentialsWindow.validateEmailFormat("asdjhasjdh@yahoo.com");
+		} catch (final ChangeCredentialsWindow.ValidationException e) {
 			Assert.fail("Email Address format is valid, the method should not throw a validation exception");
 		}
 
@@ -206,20 +203,20 @@ public class ChangeCredentialsWindowTest {
 	@Test
 	public void testValidateEmailFormatEmailIsInvalid() {
 
-		String errorMessageEmailIsInvalid = "ERROR_EMAIL_ALREADY_EXISTS";
-		Mockito.when(messageSource.getMessage(Message.ERROR_EMAIL_IS_INVALID_FORMAT)).thenReturn(errorMessageEmailIsInvalid);
+		final String errorMessageEmailIsInvalid = "ERROR_EMAIL_ALREADY_EXISTS";
+		Mockito.when(this.messageSource.getMessage(Message.ERROR_EMAIL_IS_INVALID_FORMAT)).thenReturn(errorMessageEmailIsInvalid);
 
 		try {
-			changeCredentialsWindow.validateEmailFormat("asdjhasjdh.com");
+			this.changeCredentialsWindow.validateEmailFormat("asdjhasjdh.com");
 			Assert.fail("Email Address format is invalid, the method should throw a validation exception");
-		} catch (ChangeCredentialsWindow.ValidationException e) {
+		} catch (final ChangeCredentialsWindow.ValidationException e) {
 			Assert.assertEquals(errorMessageEmailIsInvalid, e.getMessage());
 		}
 
 		try {
-			changeCredentialsWindow.validateEmailFormat("asdjhasjdh@aksdj");
+			this.changeCredentialsWindow.validateEmailFormat("asdjhasjdh@aksdj");
 			Assert.fail("Email Address format is invalid, the method should throw a validation exception");
-		} catch (ChangeCredentialsWindow.ValidationException e) {
+		} catch (final ChangeCredentialsWindow.ValidationException e) {
 			Assert.assertEquals(errorMessageEmailIsInvalid, e.getMessage());
 		}
 
@@ -230,27 +227,27 @@ public class ChangeCredentialsWindowTest {
 	@Test
 	public void testValidateName() {
 
-		String errorMessageNameIsBlank = "ERROR_NAME_IS_BLANK";
-		Mockito.when(messageSource.getMessage(Message.ERROR_NAME_IS_BLANK)).thenReturn(errorMessageNameIsBlank);
+		final String errorMessageNameIsBlank = "ERROR_NAME_IS_BLANK";
+		Mockito.when(this.messageSource.getMessage(Message.ERROR_NAME_IS_BLANK)).thenReturn(errorMessageNameIsBlank);
 
 
 		try {
-			changeCredentialsWindow.validateName(FIRSTNAME, "");
+			this.changeCredentialsWindow.validateName(FIRSTNAME, "");
 			Assert.fail("Last name is empty, so the method should throw a validation exception");
-		} catch (ChangeCredentialsWindow.ValidationException e) {
+		} catch (final ChangeCredentialsWindow.ValidationException e) {
 			Assert.assertEquals(errorMessageNameIsBlank, e.getMessage());
 		}
 
 		try {
-			changeCredentialsWindow.validateName("", LASTNAME);
+			this.changeCredentialsWindow.validateName("", LASTNAME);
 			Assert.fail("First Name is empty, so the method should throw a validation exception");
-		} catch (ChangeCredentialsWindow.ValidationException e) {
+		} catch (final ChangeCredentialsWindow.ValidationException e) {
 			Assert.assertEquals(errorMessageNameIsBlank, e.getMessage());
 		}
 
 		try {
-			changeCredentialsWindow.validateName(FIRSTNAME, LASTNAME);
-		} catch (ChangeCredentialsWindow.ValidationException e) {
+			this.changeCredentialsWindow.validateName(FIRSTNAME, LASTNAME);
+		} catch (final ChangeCredentialsWindow.ValidationException e) {
 			Assert.fail("First Name and Last Name are not empty, so the method should not throw a validation exception");
 		}
 

@@ -41,7 +41,6 @@ import junit.framework.Assert;
 public class LaunchProgramActionTest {
 
 	private static final Integer USER_ID = 100;
-	private static final String SAMPLE_AUTH_TOKEN_VALUE = "RANDOM_TOKEN";
 
 	@Mock
 	private HttpSession httpSession;
@@ -56,13 +55,7 @@ public class LaunchProgramActionTest {
 	private ProjectUserInfoDAO projectUserInfoDAO;
 
 	@Mock
-	private ToolUtil toolUtil;
-
-	@Mock
 	private ContextUtil contextUtil;
-
-	@Mock
-	private SimpleResourceBundleMessageSource messageSource;
 
 	@Mock
 	private PlatformTransactionManager transactionManager;
@@ -72,9 +65,6 @@ public class LaunchProgramActionTest {
 
 	@Mock
 	private WorkbenchMainView window;
-	
-	@Mock
-	private Cookie cookie;
 
 	@InjectMocks
 	private LaunchProgramAction launchProgramAction;
@@ -97,14 +87,9 @@ public class LaunchProgramActionTest {
 		// Setup Mock objects to return
 		Mockito.doReturn(this.projectUserInfoDAO).when(this.workbenchDataManager).getProjectUserInfoDao();
 		Mockito.doReturn(this.projectUserInfo).when(this.projectUserInfoDAO).getByProjectIdAndUserId(Matchers.anyLong(), Matchers.anyInt());
-		final WorkbenchUser currentUser = new WorkbenchUser(LaunchProgramActionTest.USER_ID);
-		Mockito.doReturn(currentUser).when(this.contextUtil).getCurrentWorkbenchUser();
 		Mockito.doReturn(LaunchProgramActionTest.USER_ID).when(this.contextUtil).getCurrentWorkbenchUserId();
 		
 		Mockito.when(this.request.getSession()).thenReturn(this.httpSession);
-		Mockito.when(this.cookie.getName()).thenReturn(ContextConstants.PARAM_AUTH_TOKEN);;
-		Mockito.when(this.cookie.getValue()).thenReturn(SAMPLE_AUTH_TOKEN_VALUE);
-		Mockito.when(this.request.getCookies()).thenReturn(new Cookie[]{this.cookie});
 	}
 
 	private void setMockDependenciesToTestModule() {
