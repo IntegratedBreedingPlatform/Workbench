@@ -14,6 +14,8 @@ import { SampleListService } from './sample-list.service';
 import { FileDownloadHelper } from './file-download.helper';
 import {ModalService} from '../../shared/modal/modal.service';
 
+declare const cropName: string;
+
 @Component({
     selector: 'jhi-sample',
     templateUrl: './sample.component.html'
@@ -62,7 +64,7 @@ export class SampleComponent implements OnInit, OnDestroy {
             this.predicate = data.pagingParams.predicate;
         });
         this.paramSubscription = this.activatedRoute.params.subscribe((params) => {
-            this.crop = params['crop'];
+            this.crop = cropName;
             this.sampleService.setCrop(this.crop);
             this.loadAll();
         });
@@ -112,7 +114,7 @@ export class SampleComponent implements OnInit, OnDestroy {
     clear() {
         this.page = 0;
         this.currentSearch = '';
-        this.router.navigate(['/' + this.crop + '/sample-browse', {
+        this.router.navigate(['/sample-browse', {
             page: this.page,
             sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
         }]);
@@ -124,7 +126,7 @@ export class SampleComponent implements OnInit, OnDestroy {
         }
         this.page = 0;
         this.currentSearch = query;
-        this.router.navigate(['/' + this.crop + '/sample-browse', {
+        this.router.navigate(['/sample-browse', {
             search: this.currentSearch,
             page: this.page,
             sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')

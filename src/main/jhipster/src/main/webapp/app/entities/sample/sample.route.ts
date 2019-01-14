@@ -26,7 +26,7 @@ export class SampleResolvePagingParams implements Resolve<any> {
 
 export const sampleRoute: Routes = [
     {
-        path: ':crop/sample-browse',
+        path: 'sample-browse',
         component: SampleBrowseComponent,
         resolve: {
             'pagingParams': SampleResolvePagingParams
@@ -37,7 +37,7 @@ export const sampleRoute: Routes = [
         },
         canActivate: [UserRouteAccessService]
     }, {
-        path: ':crop/sample',
+        path: 'sample',
         component: SampleComponent,
         resolve: {
             'pagingParams': SampleResolvePagingParams
@@ -48,7 +48,7 @@ export const sampleRoute: Routes = [
         },
         canActivate: [UserRouteAccessService]
     }, {
-        path: ':crop/sample/:id',
+        path: 'sample/:id',
         component: SampleDetailComponent,
         data: {
             authorities: ['ROLE_USER'],
@@ -60,7 +60,7 @@ export const sampleRoute: Routes = [
 
 export const samplePopupRoute: Routes = [
     {
-        path: ':crop/sample-new',
+        path: 'sample-new',
         component: SamplePopupComponent,
         data: {
             authorities: ['ROLE_USER'],
@@ -70,7 +70,7 @@ export const samplePopupRoute: Routes = [
         outlet: 'popup'
     },
     {
-        path: ':crop/sample/:id/edit',
+        path: 'sample/:id/edit',
         component: SamplePopupComponent,
         data: {
             authorities: ['ROLE_USER'],
@@ -80,7 +80,7 @@ export const samplePopupRoute: Routes = [
         outlet: 'popup'
     },
     {
-        path: ':crop/sample/:id/delete',
+        path: 'sample/:id/delete',
         component: SampleDeletePopupComponent,
         data: {
             authorities: ['ROLE_USER'],

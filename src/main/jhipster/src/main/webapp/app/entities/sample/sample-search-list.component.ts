@@ -6,6 +6,8 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {HttpErrorResponse, HttpResponse} from '@angular/common/http';
 import {JhiAlertService, JhiLanguageService} from 'ng-jhipster';
 
+declare const cropName: string;
+
 @Component({
     selector: 'jhi-sample-search-list',
     templateUrl: './sample-search-list.component.html',
@@ -32,7 +34,7 @@ export class SampleSearchListComponent {
                 private languageservice: JhiLanguageService) {
 
         this.paramSubscription = this.activatedRoute.params.subscribe((params) => {
-            this.crop = params['crop'];
+            this.crop = cropName;
             this.sampleListService.setCrop(this.crop);
         });
         this.activatedRoute.data.subscribe((data) => {
@@ -62,7 +64,7 @@ export class SampleSearchListComponent {
 
     selectList(selectedSampleList: SampleList) {
         this.selectedListId = selectedSampleList.id;
-        this.router.navigate(['/' + this.crop + '/sample-browse'], {queryParams: {
+        this.router.navigate(['/sample-browse'], {queryParams: {
                 listId: this.selectedListId
             }
         });

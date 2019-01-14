@@ -6,6 +6,8 @@ import { Router } from '@angular/router';
 import {ModalService} from '../../shared/modal/modal.service';
 import {SampleContext} from './sample.context';
 
+declare const cropName: string;
+
 @Component({
     selector: 'jhi-sample-browse',
     templateUrl: './sample-browse.component.html',
@@ -38,7 +40,7 @@ export class SampleBrowseComponent implements OnInit, OnDestroy {
             this.setActive(this.listId);
         });
         this.paramSubscription = this.activatedRoute.params.subscribe((params) => {
-            this.crop = params['crop'];
+            this.crop = cropName;
         });
     }
 
@@ -75,7 +77,7 @@ export class SampleBrowseComponent implements OnInit, OnDestroy {
 
     private navigate(listId: any) {
         this.listId = listId;
-        this.router.navigate(['/' + this.crop + '/sample-browse'], {queryParams: {
+        this.router.navigate(['/sample-browse'], {queryParams: {
                 listId: this.listId
             }
         });
