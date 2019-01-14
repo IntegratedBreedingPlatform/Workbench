@@ -13,6 +13,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -46,7 +47,7 @@ public class SaveNewLocationActionTest {
 	@Before
 	public void beforeEachTest() {
 		MockitoAnnotations.initMocks(this);
-		Mockito.doNothing().when(this.contextUtil).logProgramActivity(Matchers.anyString(), Matchers.anyString());
+		Mockito.doNothing().when(this.contextUtil).logProgramActivity(ArgumentMatchers.<String>isNull(), Matchers.anyString());
 		this.saveNewLocationAction = new SaveNewLocationAction(this.newLocationForm, this.window, this.programLocationsPresenter);
 		this.saveNewLocationAction.setMessageSource(this.messageSource);
 		this.saveNewLocationAction.setContextUtil(this.contextUtil);
@@ -81,13 +82,14 @@ public class SaveNewLocationActionTest {
 		final Window mockParentWindow = Mockito.mock(Window.class);
 		Mockito.when(this.window.getParent()).thenReturn(mockParentWindow);
 		Mockito.when(mockParentWindow.removeWindow(this.window)).thenReturn(true);
+		Mockito.when(programLocationsPresenter.convertLocationViewToLocation(ArgumentMatchers.eq(lvm))).thenCallRealMethod();
 
 		// perform the test!
 		this.saveNewLocationAction.saveLocation();
 
 		// assertions
 		Mockito.verify(this.programLocationsPresenter, Mockito.times(1)).addLocation(Mockito.any(Location.class));
-		Mockito.verify(this.contextUtil, Mockito.times(1)).logProgramActivity(Matchers.anyString(), Matchers.anyString());
+		Mockito.verify(this.contextUtil, Mockito.times(1)).logProgramActivity(ArgumentMatchers.<String>isNull(), Matchers.anyString());
 		Mockito.verify(mockParentWindow, Mockito.times(1)).removeWindow(Matchers.any(Window.class));
 	}
 }
