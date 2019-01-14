@@ -60,7 +60,6 @@ public class BreedingMethodFormFieldFactoryTest {
 	public void testMethodNameValidatorValidateSuccess() {
 
 		when(this.germplasmDataManager.getMethodByName(METHOD_NAME, PROGRAM_UUID)).thenReturn(null);
-		when(this.methodNameField.isModified()).thenReturn(true);
 
 		final BreedingMethodFormFieldFactory.MethodNameValidator validator = this.breedingMethodFormFieldFactory.new MethodNameValidator();
 
@@ -116,7 +115,6 @@ public class BreedingMethodFormFieldFactoryTest {
 	public void testMethodNameValidatorMethodNotYetExists() {
 
 		when(this.germplasmDataManager.getMethodByName(METHOD_NAME, PROGRAM_UUID)).thenReturn(null);
-		when(this.methodNameField.isModified()).thenReturn(true);
 
 		final BreedingMethodFormFieldFactory.MethodNameValidator validator = this.breedingMethodFormFieldFactory.new MethodNameValidator();
 
@@ -128,7 +126,6 @@ public class BreedingMethodFormFieldFactoryTest {
 	public void testMethodCodeValidatorValidateSuccess() {
 
 		when(this.germplasmDataManager.getMethodByCode(METHOD_CODE, PROGRAM_UUID)).thenReturn(null);
-		when(this.methodCodeField.isModified()).thenReturn(true);
 
 		final BreedingMethodFormFieldFactory.MethodCodeValidator validator = this.breedingMethodFormFieldFactory.new MethodCodeValidator();
 
@@ -187,7 +184,6 @@ public class BreedingMethodFormFieldFactoryTest {
 	public void testMethodCodeValidatorMethodNotYetExists() {
 
 		when(this.germplasmDataManager.getMethodByCode(METHOD_CODE, PROGRAM_UUID)).thenReturn(null);
-		when(this.methodCodeField.isModified()).thenReturn(true);
 
 		final BreedingMethodFormFieldFactory.MethodCodeValidator validator = this.breedingMethodFormFieldFactory.new MethodCodeValidator();
 
