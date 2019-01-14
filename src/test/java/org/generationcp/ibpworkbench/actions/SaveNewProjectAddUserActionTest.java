@@ -85,8 +85,6 @@ public class SaveNewProjectAddUserActionTest {
 		this.action.setContextUtil(this.contextUtil);
 		Mockito.doReturn(this.bean).when(this.userAccountForm).getItemDataSource();
 		Mockito.doReturn(this.userAccount).when(this.bean).getBean();
-		Mockito.doReturn(this.component).when(this.clickEvent).getComponent();
-		Mockito.doReturn(this.window).when(this.component).getWindow();
 		Mockito.doReturn(this.button).when(this.clickEvent).getButton();
 		Mockito.doReturn(this.window).when(this.button).getWindow();
 		Mockito.doReturn(this.parentWindow).when(this.window).getParent();

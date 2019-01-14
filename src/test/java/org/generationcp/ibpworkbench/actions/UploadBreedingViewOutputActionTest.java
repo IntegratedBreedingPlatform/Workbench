@@ -129,14 +129,8 @@ public class UploadBreedingViewOutputActionTest {
 		Mockito.when(this.fileUploadBreedingViewOutputWindow.getUploadZip()).thenReturn(this.uploadZip);
 		Mockito.when(this.fileUploadBreedingViewOutputWindow.getParent()).thenReturn(this.window);
 		Mockito.when(this.event.getComponent()).thenReturn(this.component);
-		Mockito.when(this.component.getWindow()).thenReturn(this.window);
-		Mockito.when(this.window.getParent()).thenReturn(this.parentWindow);
 		Mockito.when(this.component.getApplication()).thenReturn(this.application);
 		Mockito.when(this.application.getMainWindow()).thenReturn(this.window);
-
-		final DataSet plotDataSet = Mockito.mock(DataSet.class);
-		Mockito.when(plotDataSet.getVariableTypes()).thenReturn(this.createVariateVariableList());
-		Mockito.when(this.studyDataManager.getDataSet(ArgumentMatchers.anyInt())).thenReturn(plotDataSet);
 
 	}
 
@@ -154,8 +148,6 @@ public class UploadBreedingViewOutputActionTest {
 	@Test
 	public void testButtonClickUploadZipHasNoContent() throws URISyntaxException, ZipFileInvalidContentException {
 
-		Mockito.when(this.uploadZip.hasFileSelected()).thenReturn(true);
-		Mockito.when(this.uploadZip.isValid()).thenReturn(true);
 		Mockito.when(this.uploadZip.getFileFactory()).thenReturn(this.customFileFactory);
 		Mockito.when(this.customFileFactory.getFile()).thenReturn(this.zipFile);
 		Mockito.when(this.bmsOutputParser.parseZipFile(this.zipFile)).thenThrow(new ZipFileInvalidContentException());
@@ -171,8 +163,6 @@ public class UploadBreedingViewOutputActionTest {
 			BreedingViewImportException, ZipFileInvalidContentException {
 
 		Mockito.when(this.fileUploadBreedingViewOutputWindow.getStudyId()).thenReturn(55);
-		Mockito.when(this.uploadZip.hasFileSelected()).thenReturn(true);
-		Mockito.when(this.uploadZip.isValid()).thenReturn(true);
 		Mockito.when(this.uploadZip.getFileFactory()).thenReturn(this.customFileFactory);
 		Mockito.when(this.customFileFactory.getFile()).thenReturn(this.zipFile);
 
@@ -192,8 +182,6 @@ public class UploadBreedingViewOutputActionTest {
 	public void testButtonClickUploadSuccessful() throws URISyntaxException, BreedingViewImportException, ZipFileInvalidContentException,
 			IOException {
 
-		Mockito.when(this.uploadZip.hasFileSelected()).thenReturn(true);
-		Mockito.when(this.uploadZip.isValid()).thenReturn(true);
 		Mockito.when(this.uploadZip.getFileFactory()).thenReturn(this.customFileFactory);
 		Mockito.when(this.customFileFactory.getFile()).thenReturn(this.zipFile);
 
@@ -226,8 +214,6 @@ public class UploadBreedingViewOutputActionTest {
 	@Test
 	public void testButtonClickMeansDataAlreadyExists() throws ZipFileInvalidContentException, IOException {
 
-		Mockito.when(this.uploadZip.hasFileSelected()).thenReturn(true);
-		Mockito.when(this.uploadZip.isValid()).thenReturn(true);
 		Mockito.when(this.uploadZip.getFileFactory()).thenReturn(this.customFileFactory);
 		Mockito.when(this.customFileFactory.getFile()).thenReturn(this.zipFile);
 
@@ -235,8 +221,6 @@ public class UploadBreedingViewOutputActionTest {
 		Mockito.when(this.bmsOutputParser.parseZipFile(this.zipFile)).thenReturn(bmsOutputInformation);
 		Mockito.when(this.bmsOutputParser.getBmsOutputInformation()).thenReturn(bmsOutputInformation);
 		Mockito.when(this.bmsOutputParser.getMeansFile()).thenReturn(Mockito.mock(File.class));
-		Mockito.when(this.bmsOutputParser.getSummaryStatsFile()).thenReturn(Mockito.mock(File.class));
-		Mockito.when(this.bmsOutputParser.getOutlierFile()).thenReturn(Mockito.mock(File.class));
 
 		Mockito.when(this.studyDataManager.getDataSetsByType(UploadBreedingViewOutputActionTest.TEST_STUDY_ID, DataSetType.MEANS_DATA))
 				.thenReturn(this.createDataSetList());
@@ -262,7 +246,6 @@ public class UploadBreedingViewOutputActionTest {
 		Mockito.when(this.bmsOutputParser.getMeansFile()).thenReturn(Mockito.mock(File.class));
 		Mockito.when(this.bmsOutputParser.getSummaryStatsFile()).thenReturn(Mockito.mock(File.class));
 		Mockito.when(this.bmsOutputParser.getOutlierFile()).thenReturn(null);
-		Mockito.when(this.bmsOutputParser.getBmsOutputInformation()).thenReturn(this.createBmsOutputInformation());
 
 		Assert.assertEquals(this.fileUploadBreedingViewOutputWindow, this.uploadBreedingViewOutputAction.getWindow());
 		this.uploadBreedingViewOutputAction.processTheUploadedFile(UploadBreedingViewOutputActionTest.TEST_STUDY_ID,
@@ -284,9 +267,6 @@ public class UploadBreedingViewOutputActionTest {
 	public void testProcessTheUploadedFileFailed() throws BreedingViewImportException {
 
 		Mockito.when(this.bmsOutputParser.getMeansFile()).thenReturn(Mockito.mock(File.class));
-		Mockito.when(this.bmsOutputParser.getSummaryStatsFile()).thenReturn(Mockito.mock(File.class));
-		Mockito.when(this.bmsOutputParser.getOutlierFile()).thenReturn(Mockito.mock(File.class));
-		Mockito.when(this.bmsOutputParser.getBmsOutputInformation()).thenReturn(this.createBmsOutputInformation());
 
 		Mockito.doThrow(new BreedingViewImportException()).when(this.breedingViewImportService)
 				.importMeansData(ArgumentMatchers.any(File.class), ArgumentMatchers.anyInt());
