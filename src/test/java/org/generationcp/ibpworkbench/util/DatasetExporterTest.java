@@ -3,7 +3,6 @@ package org.generationcp.ibpworkbench.util;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.ArrayUtils;
 import org.generationcp.commons.breedingview.xml.DesignType;
-import org.generationcp.commons.breedingview.xml.Replicates;
 import org.generationcp.commons.util.BreedingViewUtil;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
@@ -17,16 +16,14 @@ import org.generationcp.middleware.domain.dms.VariableList;
 import org.generationcp.middleware.domain.dms.VariableTypeList;
 import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.domain.oms.TermId;
-import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.service.api.OntologyService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -61,7 +58,6 @@ public class DatasetExporterTest {
 	private static final String ALT_TRIAL_INSTANCE_NAME = "TRIAL";
 	private static final String ENV_NAME = "SITE_NAME";
 	private static final String ENV_VALUE = "CIMMYT Harrare";
-	private static final String REP_NAME = "REP";
 	private static final String EPP_VARIATE = "EPP";
 	private static final String PH_VARIATE = "PH";
 	private static final String CM_VARIATE = "CM";
@@ -175,7 +171,7 @@ public class DatasetExporterTest {
 	public void testExportToCSVForBreedingViewWithNumericAndCategoricalVariates() {
 		final Experiment firstRowObservation = this.createExperimentTestData(this.factorVariables, this.variateVariables);
 		final Experiment secondRowObservation = this.createExperimentTestData(this.factorVariables, this.variateVariables);
-		Mockito.when(DatasetExporterTest.studyDataManager.getExperiments(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyInt()))
+		Mockito.when(DatasetExporterTest.studyDataManager.getExperiments(ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt()))
 				.thenReturn(Lists.newArrayList(firstRowObservation, secondRowObservation));
 
 		// Method to test
@@ -200,7 +196,7 @@ public class DatasetExporterTest {
 		final Experiment firstRowObservation = this.createExperimentTestData(this.factorVariables, this.variateVariables);
 		final Experiment secondRowObservation =
 				this.createExperimentTestData(factorVariablesWithoutFieldmapVariables, this.variateVariables);
-		Mockito.when(DatasetExporterTest.studyDataManager.getExperiments(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyInt()))
+		Mockito.when(DatasetExporterTest.studyDataManager.getExperiments(ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt()))
 				.thenReturn(Lists.newArrayList(firstRowObservation, secondRowObservation));
 
 		// Method to test
@@ -550,11 +546,9 @@ public class DatasetExporterTest {
 
 	private void setupMocks() {
 		// Setup Middleware mocks
-		Mockito.when(DatasetExporterTest.studyDataManager.getDataSet(Matchers.anyInt())).thenReturn(this.dataSet);
+		Mockito.when(DatasetExporterTest.studyDataManager.getDataSet(ArgumentMatchers.anyInt())).thenReturn(this.dataSet);
 
 		// Setup BreedingViewInput mocks
-		Mockito.when(this.bvInput.getReplicates()).thenReturn(Mockito.mock(Replicates.class));
-		Mockito.when(this.bvInput.getReplicates().getName()).thenReturn(DatasetExporterTest.REP_NAME);
 		Mockito.when(this.bvInput.getTrialInstanceName()).thenReturn(DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME);
 		Mockito.when(this.bvInput.getDesignType()).thenReturn(DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
 
@@ -575,7 +569,7 @@ public class DatasetExporterTest {
 
 		// Setup test experiments of dataset
 		final Experiment experiment = this.createExperimentTestData(this.factorVariables, this.variateVariables);
-		Mockito.when(DatasetExporterTest.studyDataManager.getExperiments(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyInt()))
+		Mockito.when(DatasetExporterTest.studyDataManager.getExperiments(ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt()))
 				.thenReturn(Lists.newArrayList(experiment));
 	}
 
