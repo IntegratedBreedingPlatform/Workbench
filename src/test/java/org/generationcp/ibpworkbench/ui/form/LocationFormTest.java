@@ -199,9 +199,6 @@ public class LocationFormTest {
 
 		this.locationForm.setLocationFormFieldFactory(locationFormFieldFactoryMock);
 
-		final CheckBox cropAccessibleCheckbox = new CheckBox();
-		when(this.locationFormFieldFactoryMock.getCropAccessible()).thenReturn(cropAccessibleCheckbox);
-
 		// Set the location to null to simulate the case where location is being created and not edited.
 		this.locationViewModel.setLocationId(null);
 
