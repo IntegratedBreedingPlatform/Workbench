@@ -25,6 +25,7 @@ import org.generationcp.middleware.manager.api.UserProgramStateDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -120,7 +121,7 @@ public class StudyTreeTest {
 
 	@Test
 	public void testPopulateRootNode() {
-		Mockito.doReturn(STUDY_REFERENCES).when(this.studyDataManager).getRootFoldersByStudyType(Matchers.anyString(), Matchers.anyInt());
+		Mockito.doReturn(STUDY_REFERENCES).when(this.studyDataManager).getRootFoldersByStudyType(Matchers.anyString(), ArgumentMatchers.<Integer>isNull());
 		// manually add root node to become the parent
 		this.studyTree.addItem(StudyTree.STUDY_ROOT_NODE);
 

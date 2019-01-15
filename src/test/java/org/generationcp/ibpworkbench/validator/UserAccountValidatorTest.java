@@ -11,10 +11,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.validation.Errors;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -52,12 +52,11 @@ public class UserAccountValidatorTest {
 		userAccount.setPasswordConfirmation("password");
 
 		Mockito.when(this.workbenchDataManager.isUsernameExists(userAccount.getUsername())).thenReturn(false);
-		Mockito.when(this.workbenchDataManager.isPersonExists(userAccount.getFirstName(), userAccount.getLastName())).thenReturn(false);
 
 		partialValidator.validate(userAccount, this.errors);
 
-		Mockito.verify(partialValidator, Mockito.times(3)).validateFieldLength(Matchers.any(Errors.class), Matchers.anyString(),
-				Matchers.anyString(), Matchers.anyString(), Matchers.anyInt());
+		Mockito.verify(partialValidator, Mockito.times(3)).validateFieldLength(ArgumentMatchers.any(Errors.class), ArgumentMatchers.anyString(),
+				ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyInt());
 
 		Mockito.verify(partialValidator).validateEmailFormat(this.errors, userAccount);
 
@@ -128,7 +127,7 @@ public class UserAccountValidatorTest {
 
 		partialValidator.validatePasswordConfirmationIfEquals(this.errors, userAccount);
 
-		Mockito.verify(this.errors, Mockito.never()).rejectValue(Matchers.anyString(), Matchers.anyString());
+		Mockito.verify(this.errors, Mockito.never()).rejectValue(ArgumentMatchers.anyString(), ArgumentMatchers.anyString());
 	}
 
 	@Test
@@ -144,7 +143,7 @@ public class UserAccountValidatorTest {
 		UserAccountValidator partialValidator = Mockito.spy(this.validator);
 		partialValidator.validateUsernameIfExists(this.errors, userAccount);
 
-		Mockito.verify(this.errors).rejectValue(arg1.capture(), arg2.capture(), Matchers.any(String[].class), Matchers.anyString());
+		Mockito.verify(this.errors).rejectValue(arg1.capture(), arg2.capture(), ArgumentMatchers.any(String[].class), ArgumentMatchers.<String>isNull());
 		Assert.assertEquals("error should output username field", UserAccountFields.USERNAME, arg1.getValue());
 		Assert.assertEquals("show correct error code", UserAccountValidator.SIGNUP_FIELD_USERNAME_EXISTS, arg2.getValue());
 	}
@@ -177,7 +176,7 @@ public class UserAccountValidatorTest {
 		UserAccountValidator partialValidator = Mockito.spy(this.validator);
 		partialValidator.validateUsernameIfExists(this.errors, userAccount);
 
-		Mockito.verify(this.errors, Mockito.never()).rejectValue(Matchers.anyString(), Matchers.anyString());
+		Mockito.verify(this.errors, Mockito.never()).rejectValue(ArgumentMatchers.anyString(), ArgumentMatchers.anyString());
 	}
 
 	@Test
@@ -205,7 +204,7 @@ public class UserAccountValidatorTest {
 		UserAccountValidator partialValidator = Mockito.spy(this.validator);
 		partialValidator.validateEmailFormat(this.errors, userAccount);
 
-		Mockito.verify(this.errors, Mockito.never()).rejectValue(Matchers.anyString(), Matchers.anyString());
+		Mockito.verify(this.errors, Mockito.never()).rejectValue(ArgumentMatchers.anyString(), ArgumentMatchers.anyString());
 	}
 
 	@Test
@@ -213,8 +212,8 @@ public class UserAccountValidatorTest {
 		UserAccountValidator partialValidator = Mockito.spy(this.validator);
 		partialValidator.validateFieldLength(this.errors, "invalid length", "field.prop", "Field Name", 5);
 
-		Mockito.verify(this.errors).rejectValue(Matchers.anyString(), Matchers.anyString(), Matchers.any(String[].class),
-				Matchers.anyString());
+		Mockito.verify(this.errors).rejectValue(ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.any(String[].class),
+				ArgumentMatchers.<String>isNull());
 	}
 
 	@Test
@@ -222,8 +221,8 @@ public class UserAccountValidatorTest {
 		UserAccountValidator partialValidator = Mockito.spy(this.validator);
 		partialValidator.validateFieldLength(this.errors, "valid length", "field.prop", "Field Name", 30);
 
-		Mockito.verify(this.errors, Mockito.never()).rejectValue(Matchers.anyString(), Matchers.anyString(), Matchers.any(String[].class),
-				Matchers.anyString());
+		Mockito.verify(this.errors, Mockito.never()).rejectValue(ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.any(String[].class),
+				ArgumentMatchers.anyString());
 	}
 
 	@Test
@@ -272,6 +271,6 @@ public class UserAccountValidatorTest {
 		UserAccountValidator partialValidator = Mockito.spy(this.validator);
 		partialValidator.validatePersonEmailIfExists(this.errors, userAccount);
 
-		Mockito.verify(this.errors, Mockito.never()).rejectValue(Matchers.anyString(), Matchers.anyString());
+		Mockito.verify(this.errors, Mockito.never()).rejectValue(ArgumentMatchers.anyString(), ArgumentMatchers.anyString());
 	}
 }
