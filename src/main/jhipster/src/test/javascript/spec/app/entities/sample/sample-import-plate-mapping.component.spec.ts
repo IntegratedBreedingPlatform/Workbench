@@ -60,6 +60,12 @@ describe('Component Tests', () => {
         it('should proceed with import', () => {
 
             spyOn(comp, 'validate').and.returnValue(true);
+            spyOn(comp, 'buildSampleList').and.returnValue([{
+                sampleBusinessKey: '3Z62SwmGyn3w3',
+                plateId: '1',
+                well: '1'
+            }]);
+
             spyOn(comp, 'close').and.callThrough();
             spyOn(eventManager, 'broadcast').and.callThrough();
             spyOn(sampleListService, 'importPlateInfo').and.returnValue(Observable.of(''));
@@ -101,6 +107,12 @@ describe('Component Tests', () => {
             });
 
             spyOn(comp, 'validate').and.returnValue(true);
+            spyOn(comp, 'buildSampleList').and.returnValue([{
+                sampleBusinessKey: '3Z62SwmGyn3w3',
+                plateId: '1',
+                well: '1'
+            }]);
+
             spyOn(comp, 'close').and.callThrough();
             spyOn(eventManager, 'broadcast').and.callThrough();
             spyOn(sampleListService, 'importPlateInfo').and.returnValue(Observable.throw(errorResponse));
@@ -127,6 +139,12 @@ describe('Component Tests', () => {
             });
 
             spyOn(comp, 'validate').and.returnValue(true);
+            spyOn(comp, 'buildSampleList').and.returnValue([{
+                sampleBusinessKey: '3Z62SwmGyn3w3',
+                plateId: '1',
+                well: '1'
+            }]);
+
             spyOn(comp, 'close').and.callThrough();
             spyOn(eventManager, 'broadcast').and.callThrough();
             spyOn(sampleListService, 'importPlateInfo').and.returnValue(Observable.throw(errorResponse));
