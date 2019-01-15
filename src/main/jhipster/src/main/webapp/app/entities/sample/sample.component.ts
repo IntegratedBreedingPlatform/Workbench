@@ -8,7 +8,7 @@ import { JhiLanguageService } from 'ng-jhipster';
 import { Sample } from './sample.model';
 import { SampleService } from './sample.service';
 // import { ITEMS_PER_PAGE } from '../../shared';
-import { Principal, ITEMS_PER_PAGE } from '../../shared';
+import { ITEMS_PER_PAGE } from '../../shared';
 import { SampleList } from './sample-list.model';
 import { SampleListService } from './sample-list.service';
 import { FileDownloadHelper } from './file-download.helper';
@@ -48,7 +48,6 @@ export class SampleComponent implements OnInit, OnDestroy {
         private languageservice: JhiLanguageService,
         // private parseLinks: JhiParseLinks,
         private jhiAlertService: JhiAlertService,
-        private principal: Principal,
         private activatedRoute: ActivatedRoute,
         private router: Router,
         private eventManager: JhiEventManager,
@@ -146,9 +145,6 @@ export class SampleComponent implements OnInit, OnDestroy {
     }
     ngOnInit() {
         this.loadAll();
-        this.principal.identity().then((account) => {
-            this.currentAccount = account;
-        });
         this.registerChangeInSamples();
     }
 

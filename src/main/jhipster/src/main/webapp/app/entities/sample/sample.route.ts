@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
 import { JhiPaginationUtil } from 'ng-jhipster';
 
-import { UserRouteAccessService } from '../../shared';
 import { SampleComponent, SampleBrowseComponent } from './';
 import { SampleDetailComponent } from './sample-detail.component';
 import { SamplePopupComponent } from './sample-dialog.component';
@@ -35,7 +34,6 @@ export const sampleRoute: Routes = [
             authorities: ['ROLE_USER'],
             pageTitle: 'bmsjHipsterApp.sample.home.title'
         },
-        canActivate: [UserRouteAccessService]
     }, {
         path: 'sample',
         component: SampleComponent,
@@ -45,16 +43,14 @@ export const sampleRoute: Routes = [
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'bmsjHipsterApp.sample.home.title'
-        },
-        canActivate: [UserRouteAccessService]
+        }
     }, {
         path: 'sample/:id',
         component: SampleDetailComponent,
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'bmsjHipsterApp.sample.home.title'
-        },
-        canActivate: [UserRouteAccessService]
+        }
     }
 ];
 
@@ -66,7 +62,6 @@ export const samplePopupRoute: Routes = [
             authorities: ['ROLE_USER'],
             pageTitle: 'bmsjHipsterApp.sample.home.title'
         },
-        canActivate: [UserRouteAccessService],
         outlet: 'popup'
     },
     {
@@ -76,7 +71,6 @@ export const samplePopupRoute: Routes = [
             authorities: ['ROLE_USER'],
             pageTitle: 'bmsjHipsterApp.sample.home.title'
         },
-        canActivate: [UserRouteAccessService],
         outlet: 'popup'
     },
     {
@@ -86,7 +80,6 @@ export const samplePopupRoute: Routes = [
             authorities: ['ROLE_USER'],
             pageTitle: 'bmsjHipsterApp.sample.home.title'
         },
-        canActivate: [UserRouteAccessService],
         outlet: 'popup'
     }
 ];
