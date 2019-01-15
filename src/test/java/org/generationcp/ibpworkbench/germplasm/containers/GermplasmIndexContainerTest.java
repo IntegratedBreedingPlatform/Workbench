@@ -2,27 +2,19 @@ package org.generationcp.ibpworkbench.germplasm.containers;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
 
 import org.generationcp.browser.study.containers.StudyButtonRenderer;
-import org.generationcp.commons.context.ContextInfo;
-import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.germplasm.GermplasmDetailModel;
 import org.generationcp.ibpworkbench.germplasm.GermplasmQueries;
 import org.generationcp.middleware.domain.dms.StudyReference;
-import org.generationcp.middleware.domain.search.StudyResultSet;
-import org.generationcp.middleware.domain.search.filter.StudyQueryFilter;
 import org.generationcp.middleware.domain.study.StudyTypeDto;
-import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.vaadin.data.Item;
@@ -53,34 +45,18 @@ public class GermplasmIndexContainerTest {
 	@InjectMocks
 	private final GermplasmQueries germplasmQueries = new GermplasmQueries();
 
-	@Mock
-	private StudyDataManager studyDataManager;
-
-	@Mock
-	private ContextUtil contextUtil;
-
-	private ContextInfo contextInfo;
-
 	private StudyReference testStudy;
 
 	@Before
 	public void setUp() {
-		final StudyResultSet studyResultSet = Mockito.mock(StudyResultSet.class);
-		when(this.studyDataManager.searchStudies(Matchers.any(StudyQueryFilter.class), Matchers.anyInt())).thenReturn(studyResultSet);
-		when(studyResultSet.hasMore()).thenReturn(true).thenReturn(true).thenReturn(false);
 		final StudyTypeDto studyTypeDTOTrial = StudyTypeDto.getTrialDto();
 		this.testStudy = new StudyReference(TEST_STUDY_ID_2, TEST_STUDY_NAME, TEST_STUDY_NAME, PROGRAM_UUID, studyTypeDTOTrial);
-		when(studyResultSet.next()).thenReturn(testStudy);
 
 		this.gDetailModel = new GermplasmDetailModel();
 		this.gDetailModel.setGid(1);
 
-		germplasmQueries.setTransactionManager(transactionManager);
-		this.germplasmIndexContainer = new GermplasmIndexContainer(germplasmQueries);
-
-		contextInfo = new ContextInfo(1, 10L, "a0z9c8d7f5");
-		doReturn(contextInfo).when(this.contextUtil).getContextInfoFromSession();
-		doReturn(PROGRAM_UUID).when(this.contextUtil).getCurrentProgramUUID();
+		this.germplasmQueries.setTransactionManager(this.transactionManager);
+		this.germplasmIndexContainer = new GermplasmIndexContainer(this.germplasmQueries);
 	}
 
 	@Test
