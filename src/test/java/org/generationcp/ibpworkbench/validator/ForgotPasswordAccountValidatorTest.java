@@ -10,10 +10,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.validation.Errors;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -42,9 +42,6 @@ public class ForgotPasswordAccountValidatorTest {
 		userAccount.setPassword("password");
 		userAccount.setPasswordConfirmation("password");
 
-		Mockito.when(this.workbenchDataManager.isUsernameExists(userAccount.getUsername())).thenReturn(false);
-		Mockito.when(this.workbenchDataManager.isPersonExists(userAccount.getFirstName(), userAccount.getLastName())).thenReturn(false);
-
 		validatorDUT.validate(userAccount, this.errors);
 
 		Mockito.verify(validatorDUT).validatePasswordConfirmationIfEquals(this.errors, userAccount);
@@ -67,7 +64,7 @@ public class ForgotPasswordAccountValidatorTest {
 		ForgotPasswordAccountValidator validatorDUT = Mockito.spy(this.validator);
 		validatorDUT.validateUsernameAndEmailIfNotExists(this.errors, userAccount);
 
-		Mockito.verify(this.errors).rejectValue(arg1.capture(), arg2.capture(), Matchers.any(String[].class), Matchers.anyString());
+		Mockito.verify(this.errors).rejectValue(arg1.capture(), arg2.capture(), ArgumentMatchers.any(String[].class), ArgumentMatchers.<String>isNull());
 		Assert.assertEquals("error should output username field", UserAccountFields.USERNAME, arg1.getValue());
 		Assert.assertEquals("show correct error code", ForgotPasswordAccountValidator.SIGNUP_FIELD_USERNAME_EMAIL_COMBO_NOT_EXISTS,
 				arg2.getValue());
@@ -103,6 +100,6 @@ public class ForgotPasswordAccountValidatorTest {
 		ForgotPasswordAccountValidator validatorDUT = Mockito.spy(this.validator);
 		validatorDUT.validateUsernameAndEmailIfNotExists(this.errors, userAccount);
 
-		Mockito.verify(this.errors, Mockito.never()).rejectValue(Matchers.anyString(), Matchers.anyString());
+		Mockito.verify(this.errors, Mockito.never()).rejectValue(ArgumentMatchers.anyString(), ArgumentMatchers.anyString());
 	}
 }

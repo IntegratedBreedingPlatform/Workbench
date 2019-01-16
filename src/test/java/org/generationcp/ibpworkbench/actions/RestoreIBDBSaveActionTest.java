@@ -25,7 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -116,7 +116,7 @@ public class RestoreIBDBSaveActionTest {
 	// Verify that current user was added to all programs for crop
 	private void verifyCurrentUserWasAddedToAllPrograms(final WorkbenchUser currentUser) {
 		Mockito.verify(this.programService, Mockito.times(RestoreIBDBSaveActionTest.NO_OF_RESTORED_PROGRAMS))
-				.saveProgramMembers(Matchers.any(Project.class), this.userSetCaptor.capture());
+				.saveProgramMembers(ArgumentMatchers.any(Project.class), this.userSetCaptor.capture());
 		final Set<WorkbenchUser> users = this.userSetCaptor.getValue();
 
 		// "Expecting only the current user to be added."
@@ -137,11 +137,11 @@ public class RestoreIBDBSaveActionTest {
 		this.restoreAction.onClose(new CustomConfirmDialog(true));
 
 		// Verify key restore operations
-		Mockito.verify(this.mySqlUtil).restoreDatabase(Matchers.anyString(), Matchers.any(File.class), Matchers.any(Callable.class));
+		Mockito.verify(this.mySqlUtil).restoreDatabase(ArgumentMatchers.anyString(), ArgumentMatchers.any(File.class), ArgumentMatchers.any(Callable.class));
 		Mockito.verify(this.mySqlUtil).updateOwnerships(this.currentProject.getDatabaseName(), this.loggedInUser.getUserid());
 		this.verifyCurrentUserWasAddedToAllPrograms(this.loggedInUser);
 		Mockito.verify(this.installationDirectoryUtil).resetWorkspaceDirectoryForCrop(this.currentProject.getCropType(), this.restoredProjects);
-		Mockito.verify(this.contextUtil).logProgramActivity(Mockito.anyString(), Mockito.anyString());
+		Mockito.verify(this.contextUtil).logProgramActivity(ArgumentMatchers.<String>isNull(), Mockito.anyString());
 		
 
 		Assert.assertFalse("Expecting not to have error since restore process was succesful.", this.restoreAction.isHasRestoreError());
@@ -160,11 +160,11 @@ public class RestoreIBDBSaveActionTest {
 		this.restoreAction.onClose(new CustomConfirmDialog(true));
 
 		// Verify key restore operations
-		Mockito.verify(this.mySqlUtil).restoreDatabase(Matchers.anyString(), Matchers.any(File.class), Matchers.any(Callable.class));
+		Mockito.verify(this.mySqlUtil).restoreDatabase(ArgumentMatchers.anyString(), ArgumentMatchers.any(File.class), ArgumentMatchers.any(Callable.class));
 		Mockito.verify(this.mySqlUtil).updateOwnerships(this.currentProject.getDatabaseName(), this.superAdminUser.getUserid());
 		this.verifyCurrentUserWasAddedToAllPrograms(this.superAdminUser);
 		Mockito.verify(this.installationDirectoryUtil).resetWorkspaceDirectoryForCrop(this.currentProject.getCropType(), this.restoredProjects);
-		Mockito.verify(this.contextUtil).logProgramActivity(Mockito.anyString(), Mockito.anyString());
+		Mockito.verify(this.contextUtil).logProgramActivity(ArgumentMatchers.<String>isNull(), Mockito.anyString());
 
 
 		Assert.assertFalse("Expecting not to have error since restore process was succesful.", this.restoreAction.isHasRestoreError());
@@ -199,7 +199,7 @@ public class RestoreIBDBSaveActionTest {
 	public void testUpdateGermplasmListOwnershipWhenUserIsNull() throws IOException, SQLException {
 		this.restoreAction.updateGermplasmListOwnership(null);
 
-		Mockito.verify(this.workbenchDataManager, Mockito.never()).addProjectActivity(Matchers.any(ProjectActivity.class));
+		Mockito.verify(this.workbenchDataManager, Mockito.never()).addProjectActivity(ArgumentMatchers.any(ProjectActivity.class));
 	}
 
 	private List<Project> createTestProjectsForCrop() {

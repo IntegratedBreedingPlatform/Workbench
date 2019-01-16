@@ -30,10 +30,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -77,20 +77,20 @@ public class AuthenticationControllerTest {
 
 	@InjectMocks
 	private AuthenticationController controller;
-	
+
 	@Mock
 	private WorkbenchDataManager workbenchDataManager;
-	
+
 	private List<Role> roles;
 	private Role selectedRole;
-	
+
 	@Before
 	public void setup() {
 		this.createTestRoles();
 		Mockito.doReturn(this.selectedRole.getId()).when(this.userAccountModel).getRoleId();
 		Mockito.doReturn(this.roles).when(this.workbenchDataManager).getAssignableRoles();
 	}
-	
+
 	@Test
 	public void testIntialize() {
 		this.controller.initialize();
@@ -110,11 +110,11 @@ public class AuthenticationControllerTest {
 	public void testFindInstituteLogo() {
 		final String path = "src/main/web/src/images/institute";
 
-		Mockito.when(this.servletContext.getResourceAsStream(Matchers.anyString())).thenReturn(null);
+		Mockito.when(this.servletContext.getResourceAsStream(ArgumentMatchers.anyString())).thenReturn(null);
 		Assert.assertThat(this.controller.findInstituteLogo(path), is(""));
 
 		final InputStream inputStream = Mockito.mock(InputStream.class);
-		Mockito.when(this.servletContext.getResourceAsStream(Matchers.anyString())).thenReturn(inputStream);
+		Mockito.when(this.servletContext.getResourceAsStream(ArgumentMatchers.anyString())).thenReturn(inputStream);
 		Assert.assertThat(this.controller.findInstituteLogo(path), is(not("")));
 	}
 
@@ -229,9 +229,6 @@ public class AuthenticationControllerTest {
 	@Test
 	public void testDoSendResetPasswordRequestEmail() throws Exception {
 		// default success scenario
-		Mockito.when(this.workbenchUserService.getUserByUserName(Matchers.anyString())).thenReturn(Mockito.mock(WorkbenchUser.class));
-		Mockito.doNothing().when(this.workbenchEmailSenderService).doRequestPasswordReset(Matchers.any(WorkbenchUser.class));
-
 		ResponseEntity<Map<String, Object>> result = this.controller.doSendResetPasswordRequestEmail(Mockito.mock(UserAccountModel.class));
 
 		Assert.assertEquals("no http errors", HttpStatus.OK, result.getStatusCode());
@@ -242,9 +239,9 @@ public class AuthenticationControllerTest {
 	@Test
 	public void testDoSendResetPasswordRequestEmailWithErrors() throws Exception {
 		// houston we have a problem
-		Mockito.when(this.workbenchUserService.getUserByUserName(Matchers.anyString())).thenReturn(Mockito.mock(WorkbenchUser.class));
+		Mockito.when(this.workbenchUserService.getUserByUserName(ArgumentMatchers.<String>isNull())).thenReturn(Mockito.mock(WorkbenchUser.class));
 		Mockito.doThrow(new MessagingException("i cant send me message :(")).when(this.workbenchEmailSenderService)
-		.doRequestPasswordReset(Matchers.any(WorkbenchUser.class));
+		.doRequestPasswordReset(ArgumentMatchers.any(WorkbenchUser.class));
 
 		ResponseEntity<Map<String, Object>> result = this.controller.doSendResetPasswordRequestEmail(Mockito.mock(UserAccountModel.class));
 
@@ -257,7 +254,7 @@ public class AuthenticationControllerTest {
 		UserAccountModel userAccountModel = new UserAccountModel();
 		userAccountModel.setUsername("naymesh");
 		userAccountModel.setPassword("b");
-		Mockito.when(this.workbenchDataManager.getUserInfoByUsername(Matchers.anyString())).thenReturn(Mockito.mock(UserInfo.class));
+		Mockito.when(this.workbenchDataManager.getUserInfoByUsername(ArgumentMatchers.anyString())).thenReturn(Mockito.mock(UserInfo.class));
 		ResponseEntity<Map<String, Object>> result = this.controller.doResetPassword(userAccountModel, this.result);
 
 		Mockito.verify(this.workbenchUserService, Mockito.times(1)).updateUserPassword(userAccountModel.getUsername(), userAccountModel.getPassword());
@@ -313,16 +310,14 @@ public class AuthenticationControllerTest {
 		Assert.assertNull(out.getBody().get("token"));
 		Assert.assertNull(out.getBody().get("expires"));
 	}
-	
+
 	@Test
 	public void testSendResetPasswordEmail() throws Exception {
 		// default success scenario
 		Integer id = RandomUtils.nextInt();
-		Mockito.when(this.workbenchUserService.getUserByUserName(Matchers.anyString()))
-				.thenReturn(Mockito.mock(WorkbenchUser.class));
+
 		Mockito.when(this.workbenchUserService.getUserByUserid(id))
 				.thenReturn(Mockito.mock(WorkbenchUser.class));
-		Mockito.doNothing().when(this.workbenchEmailSenderService).doRequestPasswordReset(Matchers.any(WorkbenchUser.class));
 
 		ResponseEntity<Map<String, Object>> result = this.controller
 				.sendResetPasswordEmail(id);
@@ -336,12 +331,12 @@ public class AuthenticationControllerTest {
 	public void testSendResetPasswordEmailWithErrors() throws Exception {
 		// houston we have a problem
 		Integer id = RandomUtils.nextInt();
-		Mockito.when(this.workbenchUserService.getUserByUserName(Matchers.anyString()))
+		Mockito.when(this.workbenchUserService.getUserByUserName(ArgumentMatchers.<String>isNull()))
 				.thenReturn(Mockito.mock(WorkbenchUser.class));
 		Mockito.when(this.workbenchUserService.getUserByUserid(id))
 				.thenReturn(Mockito.mock(WorkbenchUser.class));
 		Mockito.doThrow(new MessagingException("i cant send me message :(")).when(this.workbenchEmailSenderService)
-				.doRequestPasswordReset(Matchers.any(WorkbenchUser.class));
+				.doRequestPasswordReset(ArgumentMatchers.any(WorkbenchUser.class));
 
 		ResponseEntity<Map<String, Object>> result = this.controller
 				.sendResetPasswordEmail(id);
