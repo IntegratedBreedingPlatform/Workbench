@@ -65,7 +65,7 @@ describe('Component Tests', () => {
                const selectedSampleList = new SampleList(1, 'listName', '', false, []);
                comp.selectList(selectedSampleList);
 
-               expect(router.navigate).toHaveBeenCalledWith([ '/sample-browse' ], Object({ queryParams: Object({ listId: 1 }) }));
+               expect(router.navigate).toHaveBeenCalledWith([ '/sample-manager' ], Object({ queryParams: Object({ listId: 1 }) }));
 
             });
 

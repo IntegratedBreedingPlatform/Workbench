@@ -9,11 +9,11 @@ import {SampleContext} from './sample.context';
 declare const cropName: string;
 
 @Component({
-    selector: 'jhi-sample-browse',
-    templateUrl: './sample-browse.component.html',
+    selector: 'jhi-sample-manager',
+    templateUrl: './sample-manager.component.html',
     styles: []
 })
-export class SampleBrowseComponent implements OnInit, OnDestroy {
+export class SampleManagerComponent implements OnInit, OnDestroy {
 
     private listId: number;
     private crop: string;
@@ -77,7 +77,7 @@ export class SampleBrowseComponent implements OnInit, OnDestroy {
 
     private navigate(listId: any) {
         this.listId = listId;
-        this.router.navigate(['/sample-browse'], {queryParams: {
+        this.router.navigate(['/sample-manager'], {queryParams: {
                 listId: this.listId
             }
         });

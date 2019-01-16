@@ -14,7 +14,7 @@ import {
     sampleRoute,
     samplePopupRoute,
     SampleResolvePagingParams,
-    SampleBrowseComponent
+    SampleManagerComponent
 } from './';
 
 import {SampleSearchListComponent} from './sample-search-list.component';
@@ -44,7 +44,7 @@ const ENTITY_STATES = [
         SampleDeleteDialogComponent,
         SamplePopupComponent,
         SampleDeletePopupComponent,
-        SampleBrowseComponent,
+        SampleManagerComponent,
         SampleSearchListComponent,
         SampleImportPlateComponent,
         SampleImportPlateMappingComponent,
@@ -56,7 +56,7 @@ const ENTITY_STATES = [
         SamplePopupComponent,
         SampleDeleteDialogComponent,
         SampleDeletePopupComponent,
-        SampleBrowseComponent,
+        SampleManagerComponent,
         SampleImportPlateComponent,
         SampleImportPlateMappingComponent,
         ModalComponent

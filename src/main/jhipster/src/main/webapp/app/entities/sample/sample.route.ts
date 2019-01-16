@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
 import { JhiPaginationUtil } from 'ng-jhipster';
 
-import { SampleComponent, SampleBrowseComponent } from './';
+import { SampleComponent, SampleManagerComponent } from './';
 import { SampleDetailComponent } from './sample-detail.component';
 import { SamplePopupComponent } from './sample-dialog.component';
 import { SampleDeletePopupComponent } from './sample-delete-dialog.component';
@@ -25,8 +25,8 @@ export class SampleResolvePagingParams implements Resolve<any> {
 
 export const sampleRoute: Routes = [
     {
-        path: 'sample-browse',
-        component: SampleBrowseComponent,
+        path: 'sample-manager',
+        component: SampleManagerComponent,
         resolve: {
             'pagingParams': SampleResolvePagingParams
         },

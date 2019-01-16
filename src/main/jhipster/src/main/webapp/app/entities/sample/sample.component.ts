@@ -113,7 +113,7 @@ export class SampleComponent implements OnInit, OnDestroy {
     clear() {
         this.page = 0;
         this.currentSearch = '';
-        this.router.navigate(['/sample-browse', {
+        this.router.navigate(['/sample-manager', {
             page: this.page,
             sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
         }]);
@@ -125,7 +125,7 @@ export class SampleComponent implements OnInit, OnDestroy {
         }
         this.page = 0;
         this.currentSearch = query;
-        this.router.navigate(['/sample-browse', {
+        this.router.navigate(['/sample-manager', {
             search: this.currentSearch,
             page: this.page,
             sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')

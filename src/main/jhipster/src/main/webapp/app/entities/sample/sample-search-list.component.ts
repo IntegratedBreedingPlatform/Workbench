@@ -64,7 +64,7 @@ export class SampleSearchListComponent {
 
     selectList(selectedSampleList: SampleList) {
         this.selectedListId = selectedSampleList.id;
-        this.router.navigate(['/sample-browse'], {queryParams: {
+        this.router.navigate(['/sample-manager'], {queryParams: {
                 listId: this.selectedListId
             }
         });

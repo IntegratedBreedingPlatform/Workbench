@@ -104,7 +104,7 @@
 
 			if (window.location.hash.indexOf('listId') < 0) {
 				// TODO merge with page params?
-				window.location.hash = "sample-browse?listId=" + id;
+				window.location.hash = "sample-manager?listId=" + id;
 			} else {
 				window.location.hash = window.location.hash.replace(/listId=[0-9]*/, "listId=" + id);
 			}
