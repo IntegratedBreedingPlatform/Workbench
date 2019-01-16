@@ -3,9 +3,6 @@ import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@a
 import { JhiPaginationUtil } from 'ng-jhipster';
 
 import { SampleComponent, SampleManagerComponent } from './';
-import { SampleDetailComponent } from './sample-detail.component';
-import { SamplePopupComponent } from './sample-dialog.component';
-import { SampleDeletePopupComponent } from './sample-delete-dialog.component';
 
 @Injectable()
 export class SampleResolvePagingParams implements Resolve<any> {
@@ -31,7 +28,6 @@ export const sampleRoute: Routes = [
             'pagingParams': SampleResolvePagingParams
         },
         data: {
-            authorities: ['ROLE_USER'],
             pageTitle: 'bmsjHipsterApp.sample.home.title'
         },
     }, {
@@ -41,19 +37,15 @@ export const sampleRoute: Routes = [
             'pagingParams': SampleResolvePagingParams
         },
         data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'bmsjHipsterApp.sample.home.title'
-        }
-    }, {
-        path: 'sample/:id',
-        component: SampleDetailComponent,
-        data: {
-            authorities: ['ROLE_USER'],
             pageTitle: 'bmsjHipsterApp.sample.home.title'
         }
     }
 ];
 
+// TODO Removing jhipster samplePopup component
+//  but leaving this as a reminder to try again ng-bootstrap (when animations are available)
+//  and popup outlet
+/*
 export const samplePopupRoute: Routes = [
     {
         path: 'sample-new',
@@ -63,23 +55,6 @@ export const samplePopupRoute: Routes = [
             pageTitle: 'bmsjHipsterApp.sample.home.title'
         },
         outlet: 'popup'
-    },
-    {
-        path: 'sample/:id/edit',
-        component: SamplePopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'bmsjHipsterApp.sample.home.title'
-        },
-        outlet: 'popup'
-    },
-    {
-        path: 'sample/:id/delete',
-        component: SampleDeletePopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'bmsjHipsterApp.sample.home.title'
-        },
-        outlet: 'popup'
     }
 ];
+*/

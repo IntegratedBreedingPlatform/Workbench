@@ -4,15 +4,8 @@ import { RouterModule } from '@angular/router';
 import { BmsjHipsterSharedModule } from '../../shared';
 import {
     SampleService,
-    SamplePopupService,
     SampleComponent,
-    SampleDetailComponent,
-    SampleDialogComponent,
-    SamplePopupComponent,
-    SampleDeletePopupComponent,
-    SampleDeleteDialogComponent,
     sampleRoute,
-    samplePopupRoute,
     SampleResolvePagingParams,
     SampleManagerComponent
 } from './';
@@ -29,7 +22,6 @@ import {SampleContext} from './sample.context';
 
 const ENTITY_STATES = [
     ...sampleRoute,
-    ...samplePopupRoute,
 ];
 
 @NgModule({
@@ -39,11 +31,6 @@ const ENTITY_STATES = [
     ],
     declarations: [
         SampleComponent,
-        SampleDetailComponent,
-        SampleDialogComponent,
-        SampleDeleteDialogComponent,
-        SamplePopupComponent,
-        SampleDeletePopupComponent,
         SampleManagerComponent,
         SampleSearchListComponent,
         SampleImportPlateComponent,
@@ -52,10 +39,6 @@ const ENTITY_STATES = [
     ],
     entryComponents: [
         SampleComponent,
-        SampleDialogComponent,
-        SamplePopupComponent,
-        SampleDeleteDialogComponent,
-        SampleDeletePopupComponent,
         SampleManagerComponent,
         SampleImportPlateComponent,
         SampleImportPlateMappingComponent,
@@ -64,7 +47,6 @@ const ENTITY_STATES = [
     providers: [
         SampleService,
         SampleListService,
-        SamplePopupService,
         SampleResolvePagingParams,
         FileDownloadHelper,
         ModalService,
