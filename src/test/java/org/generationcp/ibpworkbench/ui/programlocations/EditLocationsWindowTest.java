@@ -17,15 +17,12 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -63,17 +60,17 @@ public class EditLocationsWindowTest {
 	@Before
 	public void init() {
 
-		this.editLocationsWindow = new EditLocationsWindow(new LocationViewModel(), presenter, sourceTable);
+		this.editLocationsWindow = new EditLocationsWindow(new LocationViewModel(), this.presenter, this.sourceTable);
 		this.editLocationsWindow.setMessageSource(this.messageSource);
 		this.editLocationsWindow.setContextUtil(this.contextUtil);
 		this.editLocationsWindow.setParent(this.parent);
-		this.editLocationsWindow.setLocationForm(locationForm);
+		this.editLocationsWindow.setLocationForm(this.locationForm);
 
 		when(this.component.getWindow()).thenReturn(this.window);
-		when(messageSource.getMessage(Message.WARNING)).thenReturn(WARNING);
-		when(messageSource.getMessage(Message.LOCATION_IS_USED_IN_OTHER_PROGRAM)).thenReturn(LOCATION_IS_USED_IN_OTHER_PROGRAM);
-		when(messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK)).thenReturn(PROJECT_LOCATIONS_LINK);
-		when(presenter.getLocationDetailsByLocId(anyInt())).thenReturn(new LocationViewModel());
+		when(this.messageSource.getMessage(Message.WARNING)).thenReturn(WARNING);
+		when(this.messageSource.getMessage(Message.LOCATION_IS_USED_IN_OTHER_PROGRAM)).thenReturn(LOCATION_IS_USED_IN_OTHER_PROGRAM);
+		when(this.messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK)).thenReturn(PROJECT_LOCATIONS_LINK);
+		when(this.presenter.getLocationDetailsByLocId(anyInt())).thenReturn(new LocationViewModel());
 	}
 
 	@Test
@@ -140,7 +137,6 @@ public class EditLocationsWindowTest {
 		when(item.getBean()).thenReturn(locationViewModel);
 
 		when(this.locationForm.getLocationNameValue()).thenReturn(locationName);
-		when(this.locationForm.isLocationNameModified()).thenReturn(false);
 		// Set an empty existing location list to simulate location name with no duplicate in existing locations.
 		when(this.presenter.getExistingLocations(locationName)).thenReturn(new ArrayList<Location>());
 
@@ -184,7 +180,7 @@ public class EditLocationsWindowTest {
 
 		final FieldEvents.FocusEvent focusEvent = mock(FieldEvents.FocusEvent.class);
 		when(focusEvent.getComponent()).thenReturn(this.component);
-		when(locationForm.isLocationUsedInAnyProgram()).thenReturn(true);
+		when(this.locationForm.isLocationUsedInAnyProgram()).thenReturn(true);
 
 		final EditLocationsWindow.WindowOnFocusListener listener = this.editLocationsWindow.new WindowOnFocusListener();
 
