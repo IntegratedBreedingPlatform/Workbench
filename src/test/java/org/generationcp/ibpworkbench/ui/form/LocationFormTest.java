@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -198,9 +198,6 @@ public class LocationFormTest {
 	public void testPopulateCropAccessibleLocationModelHasNoLocationId() {
 
 		this.locationForm.setLocationFormFieldFactory(locationFormFieldFactoryMock);
-
-		final CheckBox cropAccessibleCheckbox = new CheckBox();
-		when(this.locationFormFieldFactoryMock.getCropAccessible()).thenReturn(cropAccessibleCheckbox);
 
 		// Set the location to null to simulate the case where location is being created and not edited.
 		this.locationViewModel.setLocationId(null);

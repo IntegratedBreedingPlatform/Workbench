@@ -4,23 +4,22 @@ import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.middleware.domain.dms.FolderReference;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.UserProgramStateDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -48,15 +47,7 @@ public class BreedingViewTreeTableTest {
 	@Before
 	public void setUp() throws Exception {
 		final Project project = mock(Project.class);
-		final WorkbenchUser userData = mock(WorkbenchUser.class);
-		final ManagerFactory factory = mock(ManagerFactory.class);
 		when(contextUtil.getProjectInContext()).thenReturn(project);
-		when(project.getProjectId()).thenReturn((long) 1);
-		when(contextUtil.getCurrentWorkbenchUser()).thenReturn(userData);
-
-		when(provider.getManagerFactoryForProject(project)).thenReturn(factory);
-		when(factory.getUserProgramStateDataManager()).thenReturn(programStateDataManager);
-
 	}
 
 	@Test
@@ -95,7 +86,7 @@ public class BreedingViewTreeTableTest {
 		forExpansion.add("STUDY");
 		forExpansion.add(Integer.toString(TEST_FOLDER_ITEM_ID));
 
-		when(programStateDataManager.getUserProgramTreeStateByUserIdProgramUuidAndType(anyInt(), anyString(), anyString()))
+		when(programStateDataManager.getUserProgramTreeStateByUserIdProgramUuidAndType(anyInt(), ArgumentMatchers.<String>isNull(), anyString()))
 				.thenReturn(forExpansion);
 
 		treeTable.reinitializeTree();

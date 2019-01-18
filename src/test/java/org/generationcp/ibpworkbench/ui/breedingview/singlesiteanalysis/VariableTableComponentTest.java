@@ -13,8 +13,9 @@ import org.generationcp.middleware.domain.oms.TermId;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -258,7 +259,6 @@ public class VariableTableComponentTest {
 		variableTableComponent.setTable(table);
 		when(table.getContainerDataSource()).thenReturn(container);
 		when(container.getItem(Mockito.any(Object.class))).thenReturn(beanItem);
-		when(table.getItem(Mockito.anyInt())).thenReturn(beanItem);
 
 		VariableTableComponent.TableItemDescriptionGenerator tableItemDescriptionGenerator =
 				variableTableComponent.new TableItemDescriptionGenerator();
@@ -290,7 +290,6 @@ public class VariableTableComponentTest {
 		variableTableComponent.setTable(table);
 		when(table.getContainerDataSource()).thenReturn(container);
 		when(container.getItem(Mockito.any(Object.class))).thenReturn(beanItem);
-		when(table.getItem(Mockito.anyInt())).thenReturn(beanItem);
 
 		final VariableTableComponent.TableColumnGenerator tableColumnGenerator = variableTableComponent.new TableColumnGenerator();
 
@@ -324,7 +323,6 @@ public class VariableTableComponentTest {
 		variableTableComponent.setTable(table);
 		when(table.getContainerDataSource()).thenReturn(container);
 		when(container.getItem(Mockito.any(Object.class))).thenReturn(beanItem);
-		when(table.getItem(Mockito.anyInt())).thenReturn(beanItem);
 
 		final VariableTableComponent.TableColumnGenerator tableColumnGenerator = variableTableComponent.new TableColumnGenerator();
 
@@ -387,9 +385,9 @@ public class VariableTableComponentTest {
 
 		assertFalse(item.getActive());
 		verify(selectionChangedListener).onSelectionChanged(item);
-		verify(selectAll).removeListener(Mockito.any(VariableTableComponent.SelectAllListener.class));
+		verify(selectAll).removeListener(ArgumentMatchers.<Property.ValueChangeListener>isNull());
 		verify(selectAll).setValue(false);
-		verify(selectAll).addListener(Mockito.any(VariableTableComponent.SelectAllListener.class));
+		verify(selectAll).addListener(ArgumentMatchers.<Property.ValueChangeListener>isNull());
 
 	}
 

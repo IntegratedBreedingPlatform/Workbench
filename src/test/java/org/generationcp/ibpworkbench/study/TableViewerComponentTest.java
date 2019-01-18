@@ -9,7 +9,7 @@ import org.generationcp.ibpworkbench.study.util.TableViewerExporter;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -48,7 +48,7 @@ public class TableViewerComponentTest {
 		MockitoAnnotations.initMocks(this);
 		this.tableViewer = new TableViewerComponent(this.tableViewerTable);
 		Mockito.when(this.tableViewerTable.getVisibleColumns()).thenReturn(new Object[]{"STUDY_ID"});
-		Mockito.when(this.tableViewerExporter.exportToExcel(Matchers.anyString())).thenReturn(XLS_FILEPATH);
+		Mockito.when(this.tableViewerExporter.exportToExcel(ArgumentMatchers.anyString())).thenReturn(XLS_FILEPATH);
 	}
 	
 	@Test
@@ -60,7 +60,7 @@ public class TableViewerComponentTest {
 		// Verify file is downloaded to the browser with proper filename
 		Mockito.verify(this.tableViewerExporter).exportToExcel(TableViewerComponent.FILENAME_PREFIX);
 		final ArgumentCaptor<VaadinFileDownloadResource> fileDownloadResourceCaptor = ArgumentCaptor.forClass(VaadinFileDownloadResource.class);
-		Mockito.verify(this.window).open(fileDownloadResourceCaptor.capture(), Matchers.anyString(), Matchers.eq(false));
+		Mockito.verify(this.window).open(fileDownloadResourceCaptor.capture(), ArgumentMatchers.<String>isNull(), ArgumentMatchers.eq(false));
 		final VaadinFileDownloadResource downloadResource = fileDownloadResourceCaptor.getValue();
 		Assert.assertEquals(new File(XLS_FILEPATH).getAbsolutePath(), downloadResource.getSourceFile().getAbsolutePath());
 		Assert.assertEquals(TableViewerComponent.FILENAME_PREFIX + ".xlsx", downloadResource.getFilename());
@@ -77,7 +77,7 @@ public class TableViewerComponentTest {
 		// Verify file is downloaded to the browser with proper filename
 		Mockito.verify(this.tableViewerExporter).exportToExcel(TableViewerComponent.FILENAME_PREFIX);
 		final ArgumentCaptor<VaadinFileDownloadResource> fileDownloadResourceCaptor = ArgumentCaptor.forClass(VaadinFileDownloadResource.class);
-		Mockito.verify(this.window).open(fileDownloadResourceCaptor.capture(), Matchers.anyString(), Matchers.eq(false));
+		Mockito.verify(this.window).open(fileDownloadResourceCaptor.capture(),ArgumentMatchers.<String>isNull(), ArgumentMatchers.eq(false));
 		final VaadinFileDownloadResource downloadResource = fileDownloadResourceCaptor.getValue();
 		Assert.assertEquals(new File(XLS_FILEPATH).getAbsolutePath(), downloadResource.getSourceFile().getAbsolutePath());
 		Assert.assertEquals(TableViewerComponent.FILENAME_PREFIX + "_" + STUDY_NAME.replace(" ", "_").trim() + ".xlsx",
@@ -90,11 +90,11 @@ public class TableViewerComponentTest {
 		final TableViewerComponent spyComponent = this.setupSpyTableViewer();
 		Mockito.doReturn(this.window).when(this.application).getWindow(GermplasmStudyBrowserApplication.STUDY_WINDOW_NAME);
 		final String errorMessage = "Some TableViewer error.";
-		Mockito.doThrow(new DatasetExporterException(errorMessage)).when(this.tableViewerExporter).exportToExcel(Matchers.anyString());
+		Mockito.doThrow(new DatasetExporterException(errorMessage)).when(this.tableViewerExporter).exportToExcel(ArgumentMatchers.anyString());
 		spyComponent.exportToExcelAction();
 		
 		Mockito.verify(this.tableViewerExporter).exportToExcel(TableViewerComponent.FILENAME_PREFIX);
-		Mockito.verify(this.window, Mockito.never()).open(Matchers.any(VaadinFileDownloadResource.class), Matchers.anyString(), Matchers.anyBoolean());
+		Mockito.verify(this.window, Mockito.never()).open(ArgumentMatchers.any(VaadinFileDownloadResource.class), ArgumentMatchers.anyString(), ArgumentMatchers.anyBoolean());
 		final ArgumentCaptor<Notification> notifCaptor = ArgumentCaptor.forClass(Notification.class);
 		Mockito.verify(this.window).showNotification(notifCaptor.capture());
 		final Notification error = notifCaptor.getValue();

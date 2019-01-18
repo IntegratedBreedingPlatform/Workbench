@@ -2,7 +2,6 @@ package org.generationcp.ibpworkbench.service;
 
 import org.generationcp.commons.context.ContextInfo;
 import org.generationcp.commons.spring.util.ContextUtil;
-import org.generationcp.commons.tomcat.util.TomcatUtil;
 import org.generationcp.ibpworkbench.exception.AppLaunchException;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -19,7 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,7 +26,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Properties;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AppLauncherServiceTest {
@@ -54,19 +52,10 @@ public class AppLauncherServiceTest {
 	private ToolUtil toolUtil;
 
 	@Mock
-	private TomcatUtil tomcatUtil;
-
-	@Mock
-	private Properties workbenchProperties;
-
-	@Mock
 	private ContextUtil contextUtil;
 
 	@Mock
 	private SecurityContext securityContext;
-
-	@Mock
-	private Authentication authentication;
 
 	@InjectMocks
 	private final AppLauncherService appLauncherService = Mockito.spy(new AppLauncherService());
@@ -76,14 +65,14 @@ public class AppLauncherServiceTest {
 
 		final ContextInfo contextInfo = new ContextInfo(LOGGED_IN_USER_ID, PROJECT_ID);
 
-		Mockito.when(contextUtil.getContextInfoFromSession()).thenReturn(contextInfo);
+		Mockito.when(this.contextUtil.getContextInfoFromSession()).thenReturn(contextInfo);
 
 		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(this.request));
 
 		final Authentication authentication = Mockito.mock(Authentication.class);
-		Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+		Mockito.when(this.securityContext.getAuthentication()).thenReturn(authentication);
 		Mockito.when(authentication.getName()).thenReturn(USER_NAME);
-		SecurityContextHolder.setContext(securityContext);
+		SecurityContextHolder.setContext(this.securityContext);
 
 		Mockito.when(this.request.getScheme()).thenReturn(AppLauncherServiceTest.SCHEME);
 		Mockito.when(this.request.getServerName()).thenReturn(AppLauncherServiceTest.HOST_NAME);
@@ -96,6 +85,7 @@ public class AppLauncherServiceTest {
 		final Tool aWebTool = new Tool();
 		aWebTool.setToolName(ToolName.BM_LIST_MANAGER_MAIN.getName());
 		aWebTool.setToolType(ToolType.WEB);
+		aWebTool.setPath(SAMPLE_BASE_URL);
 
 		// case 2: gdms
 		final Tool gdmsTool = new Tool();
@@ -113,7 +103,6 @@ public class AppLauncherServiceTest {
 
 		Mockito.doNothing().when(this.appLauncherService).launchNativeapp(Matchers.any(Tool.class));
 		Mockito.doReturn("/result").when(this.appLauncherService).launchWebappWithLogin(Matchers.any(Tool.class));
-		Mockito.doReturn("/result").when(this.appLauncherService).launchWebapp(Matchers.any(Tool.class), Matchers.any(Integer.class));
 
 		// the tests itself
 		this.appLauncherService.launchTool(ToolName.BREEDING_VIEW.getName(), null);
@@ -207,9 +196,6 @@ public class AppLauncherServiceTest {
 		user.setUserid(LOGGED_IN_USER_ID);
 		user.setName("a_username");
 		user.setPassword("a_password");
-
-		final Project project = Mockito.mock(Project.class);
-		Mockito.when(project.getProjectId()).thenReturn(AppLauncherServiceTest.PROJECT_ID);
 
 		final String urlResult = this.appLauncherService.launchWebappWithLogin(aWebTool);
 
