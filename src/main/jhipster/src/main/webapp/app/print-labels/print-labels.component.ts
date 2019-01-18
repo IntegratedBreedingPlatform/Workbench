@@ -10,10 +10,10 @@ import { printMockData } from './print-labels.mock-data';
     styleUrls: ['./print-labels.component.css']
 })
 export class PrintLabelsComponent implements OnInit {
-    private datasetId: number;
-    private studyId: number;
-    private userLabelPrinting: UserLabelPrinting = {};
-    private printMockData = printMockData;
+    datasetId: number;
+    studyId: number;
+    userLabelPrinting: UserLabelPrinting = {};
+    printMockData = printMockData;
 
     constructor(private route: ActivatedRoute,
                 private languageService: JhiLanguageService) {
