@@ -1,32 +1,34 @@
 export const printMockData = {
     labelTypes: [{
         title: 'Study Details',
+        key: 'Study Details',
         fields: [{
-            id: 8131,
+            id: 'NREP',
             name: 'NREP'
         }, {
-            id: 8180,
+            id: 'LOCATION_NAME',
             name: 'LOCATION_NAME'
         }, {
-            id: 8263,
+            id: 'NPSEL',
             name: 'NPSEL'
         }, {
-            id: 18,
+            id: 'Scale',
             name: 'Scale'
         }]
     }, {
-        title: 'Study Details',
+        title: 'Dataset Details',
+        key: 'Dataset Details',
         fields: [{
-            id: 8131,
+            id: 'NREP',
             name: 'NREP'
         }, {
-            id: 8180,
-            name: 'LOCATION_NAME'
+            id: 'PLANT_NO',
+            name: 'PLANT_NO'
         }, {
-            id: 8263,
+            id: 'NPSEL',
             name: 'NPSEL'
         }, {
-            id: 18,
+            id: 'Scale',
             name: 'Scale'
         }]
     }]

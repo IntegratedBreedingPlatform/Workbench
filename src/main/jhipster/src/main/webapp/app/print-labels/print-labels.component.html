@@ -87,9 +87,11 @@
 															</label>
 														</li>
 													</ul>
-													<ul id="label-type-fields" class="list-group list-group-droppable">
-														<li class="list-group-item text-truncate" [attr.data-label-id]="item.id"
-															*ngFor="let item of labelType.fields">{{item.name}}</li>
+													<ul id="label-type-fields" class="list-group droppable"
+														[attr.data-label-type-key]="labelType.key">
+														<li class="list-group-item text-truncate" *ngFor="let item of labelType.fields"
+															[attr.id]="item.id"
+															[attr.data-label-type-key]="labelType.key">{{item.name}}</li>
 													</ul>
 												</div>
 											</div>
@@ -104,7 +106,7 @@
 														</label>
 													</li>
 												</ul>
-												<ul id="leftSelectedFields" class="list-group list-group-droppable">
+												<ul id="leftSelectedFields" class="list-group droppable print-fields">
 												</ul>
 
 											</div>
@@ -117,7 +119,7 @@
 														</label>
 													</li>
 												</ul>
-												<ul id="rightSelectedFields" class="list-group list-group-droppable">
+												<ul id="rightSelectedFields" class="list-group droppable print-fields">
 												</ul>
 											</div>
 										</div>
@@ -133,6 +135,9 @@
 							<div class="form-group">
 								<div class="col-xs-12 col-md-12 fbk-center">
 									<input type="button" onclick="window.history.back();" value="Cancel" class="btn btn-default"/>
+									<!-- TODO -->
+									<!--<input type="button" id="fbk-lbl-printing-save-preset" value="Save Preset" class="btn btn-info fbk-hide"/>-->
+									<input type="button" (click)="printLabels()" value="Export Label" class="btn btn-primary" />
 								</div>
 							</div>
 						</div>
