@@ -50,6 +50,39 @@
 									<span>{{userLabelPrinting.numberOfInstances}}</span>
 								</div>
 							</div>
+							<div class="col-xs-6 col-md-6">
+								<div class="row">
+									<div class="col-xs-12 col-md-12">
+										<label class="control-label">
+											<strong class="sub-content-heading" jhiTranslate="label-printing.summary.of.labels.needed">
+												SUMMARY OF LABELS NEEDED</strong></label>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-12 col-md-12">
+										<table class="table table-curved table-condensed">
+											<thead>
+												<tr>
+													<th *ngFor="let header of printMockData.summaryData.headers">{{header}}</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr *ngFor="let row of printMockData.summaryData.values; odd as odd; even as even">
+													<td *ngFor="let header of printMockData.summaryData.headers"
+														[ngClass]="{ odd: odd, even: even }">{{row[header]}}</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-12 col-md-12 text-right">
+										<label class="control-label label-bold" jhiTranslate="label-printing.total.number.of.labels">
+											Total # of Labels to Print</label>: &nbsp;
+										<span>{{printMockData.summaryData.totalNumberOfLabelsNeeded}}</span>
+									</div>
+								</div>
+							</div>
 						</div>
 
 						<div class="row">
