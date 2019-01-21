@@ -16,6 +16,8 @@ export class PrintLabelsComponent implements OnInit, AfterViewInit {
     studyId: number;
     userLabelPrinting: UserLabelPrinting = {};
     printMockData = printMockData;
+    FILE_TYPES = FileType;
+    fileType: FileType = FileType.NONE;
 
     constructor(private route: ActivatedRoute,
                 private languageService: JhiLanguageService) {
@@ -29,21 +31,27 @@ export class PrintLabelsComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit() {
+        this.initDragAndDrop();
+    }
+
+    initDragAndDrop() {
         // TODO implement in angular
-        $('ul.droppable').sortable({
-            connectWith: 'ul',
-            receive: (event, ui) => {
-                // event.currentTarget was not working
-                const receiver = $(event.target),
-                    sender = $(ui.sender),
-                    item = $(ui.item);
+        setTimeout(() => {
+            $('ul.droppable').sortable({
+                connectWith: 'ul',
+                receive: (event, ui) => {
+                    // event.currentTarget was not working
+                    const receiver = $(event.target),
+                        sender = $(ui.sender),
+                        item = $(ui.item);
 
-                if (!receiver.hasClass('print-fields')
-                    && item.attr('data-label-type-key') !== receiver.attr('data-label-type-key')) {
+                    if (!receiver.hasClass('print-fields')
+                        && item.attr('data-label-type-key') !== receiver.attr('data-label-type-key')) {
 
-                    $(ui.sender).sortable('cancel');
+                        $(ui.sender).sortable('cancel');
+                    }
                 }
-            }
+            });
         });
     }
 
@@ -53,4 +61,11 @@ export class PrintLabelsComponent implements OnInit, AfterViewInit {
         console.log($('#rightSelectedFields').sortable('toArray'))
     }
 
+}
+
+export enum FileType {
+    NONE = '',
+    CSV = 'CSV',
+    PDF = 'PDF',
+    EXCEL = 'EXCEL'
 }

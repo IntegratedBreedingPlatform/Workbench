@@ -52,7 +52,53 @@
 							</div>
 						</div>
 
-						<div class="label-printing-details">
+						<div class="row">
+							<div class="col-xs-6 col-md-6">
+								<!-- TODO
+								<div class="col-xs-12 col-md-12">
+									<label class="control-label">
+										<strong class="sub-content-heading" jhiTranslate="label-printing.choose.label.type">
+											CHOOSE LABEL TYPE
+										</strong>
+									</label>
+								</div>
+								<div class="col-xs-12 col-md-12">
+
+								</div>
+								-->
+							</div>
+							<div class="col-xs-6 col-md-6">
+								<div class="row">
+									<div class="col-xs-12 col-md-12">
+										<label class="control-label">
+											<strong class="sub-content-heading" jhiTranslate="label-printing.choose.label.output">
+												CHOOSE LABEL OUTPUT
+											</strong>
+										</label>
+									</div>
+									<div class="col-xs-12 col-md-12">
+										<label class="control-label " jhiTranslate="label-printing.choose.label.use.formats">
+											Choose the format you would like to use for your labels:</label>
+									</div>
+									<div class="col-xs-12 col-md-12 form-group">
+										<div class="row">
+											<label class="control-label col-xs-4 col-md-4">
+												<strong jhiTranslate="label-printing.output.format"></strong></label>
+											<div class="col-xs-8 col-md-8">
+												<select class="form-control" [(ngModel)]="fileType" (ngModelChange)="initDragAndDrop()">
+													<option [value]="FILE_TYPES.NONE">Please Choose</option>
+													<option [value]="FILE_TYPES.PDF" disabled>Formatted PDF Label Sheets (not available)</option>
+													<option [value]="FILE_TYPES.EXCEL" disabled>Excel Data (not available)</option>
+													<option [value]="FILE_TYPES.CSV">CSV Data</option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="label-printing-details" *ngIf="fileType">
 							<div class="row">
 								<div class="col-xs-12 col-md-12">
 									<label class="control-label">
