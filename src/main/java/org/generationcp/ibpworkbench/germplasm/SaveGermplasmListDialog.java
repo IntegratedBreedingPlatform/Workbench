@@ -26,13 +26,11 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.germplasm.listeners.GermplasmButtonClickListener;
-import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.Database;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.UserDefinedField;
@@ -48,7 +46,7 @@ import java.util.Map;
 
 @Configurable
 public class SaveGermplasmListDialog extends GridLayout implements InitializingBean, InternationalizableComponent,
-		Property.ValueChangeListener, AbstractSelect.NewItemHandler {
+	Property.ValueChangeListener, AbstractSelect.NewItemHandler {
 
 	@SuppressWarnings("unused")
 	private static final Logger LOG = LoggerFactory.getLogger(SaveGermplasmListDialog.class);
@@ -78,7 +76,7 @@ public class SaveGermplasmListDialog extends GridLayout implements InitializingB
 	private boolean existingListSelected = false;
 	private Map<String, Integer> mapExistingList;
 
-	public SaveGermplasmListDialog(Window mainWindow, Window dialogWindow, TabSheet tabSheet) {
+	public SaveGermplasmListDialog(final Window mainWindow, final Window dialogWindow, final TabSheet tabSheet) {
 		this.dialogWindow = dialogWindow;
 		this.mainWindow = mainWindow;
 		this.tabSheet = tabSheet;
@@ -114,7 +112,7 @@ public class SaveGermplasmListDialog extends GridLayout implements InitializingB
 		this.selectType.setNullSelectionAllowed(false);
 		this.selectType.select("LST");
 
-		HorizontalLayout hButton = new HorizontalLayout();
+		final HorizontalLayout hButton = new HorizontalLayout();
 		hButton.setSpacing(true);
 		this.btnSave = new Button();
 		this.btnSave.setWidth("80px");
@@ -140,23 +138,23 @@ public class SaveGermplasmListDialog extends GridLayout implements InitializingB
 		this.addComponent(hButton, 1, 6);
 	}
 
-	private void populateComboBoxListName() throws MiddlewareQueryException {
+	private void populateComboBoxListName() {
 		this.germplasmList =
-				this.germplasmListManager.getAllGermplasmLists(0, (int) this.germplasmListManager.countAllGermplasmLists(), Database.LOCAL);
-		this.mapExistingList = new HashMap<String, Integer>();
+			this.germplasmListManager.getAllGermplasmLists(0, (int) this.germplasmListManager.countAllGermplasmLists());
+		this.mapExistingList = new HashMap<>();
 		this.comboBoxListName.addItem("");
-		for (GermplasmList gList : this.germplasmList) {
+		for (final GermplasmList gList : this.germplasmList) {
 			this.comboBoxListName.addItem(gList.getName());
-			this.mapExistingList.put(gList.getName(), new Integer(gList.getId()));
+			this.mapExistingList.put(gList.getName(), gList.getId());
 		}
 		this.comboBoxListName.select("");
 	}
 
-	private void populateSelectType(Select selectType) throws MiddlewareQueryException {
-		List<UserDefinedField> listTypes = this.germplasmListManager.getGermplasmListTypes();
+	private void populateSelectType(final Select selectType) {
+		final List<UserDefinedField> listTypes = this.germplasmListManager.getGermplasmListTypes();
 
-		for (UserDefinedField listType : listTypes) {
-			String typeCode = listType.getFcode();
+		for (final UserDefinedField listType : listTypes) {
+			final String typeCode = listType.getFcode();
 			selectType.addItem(typeCode);
 			selectType.setItemCaption(typeCode, listType.getFname());
 			// set "GERMPLASMLISTS" as the default value
@@ -181,26 +179,26 @@ public class SaveGermplasmListDialog extends GridLayout implements InitializingB
 		this.messageSource.setCaption(this.btnCancel, Message.CANCEL_LABEL);
 	}
 
-	public void saveGermplasmListButtonClickAction() throws InternationalizableException {
+	public void saveGermplasmListButtonClickAction() {
 
-		SaveGermplasmListAction saveGermplasmAction = new SaveGermplasmListAction();
-		String listName = this.comboBoxListName.getValue().toString();
-		String listNameId = String.valueOf(this.mapExistingList.get(this.comboBoxListName.getValue()));
+		final SaveGermplasmListAction saveGermplasmAction = new SaveGermplasmListAction();
+		final String listName = this.comboBoxListName.getValue().toString();
+		final String listNameId = String.valueOf(this.mapExistingList.get(this.comboBoxListName.getValue()));
 
 		if (listName.trim().length() == 0) {
 			this.getWindow().showNotification("List Name Input Error...", "Please specify a List Name before saving",
-					Notification.TYPE_WARNING_MESSAGE);
+				Notification.TYPE_WARNING_MESSAGE);
 		} else if (listName.trim().length() > 50) {
 			this.getWindow().showNotification("List Name Input Error...",
-					"Listname input is too large limit the name only up to 50 characters", Notification.TYPE_WARNING_MESSAGE);
+				"Listname input is too large limit the name only up to 50 characters", Notification.TYPE_WARNING_MESSAGE);
 			this.comboBoxListName.setValue("");
 		} else {
 			saveGermplasmAction.addGermplasListNameAndData(listName, listNameId, this.tabSheet, this.txtDescription.getValue().toString(),
-					this.selectType.getValue().toString());
+				this.selectType.getValue().toString());
 			this.closeSavingGermplasmListDialog();
 			// display notification message
 			MessageNotifier.showMessage(this.mainWindow, this.messageSource.getMessage(Message.SAVE_GERMPLASMS_TO_NEW_LIST_LABEL),
-					this.messageSource.getMessage(Message.SAVE_GERMPLASMS_TO_NEW_LIST_SUCCESS));
+				this.messageSource.getMessage(Message.SAVE_GERMPLASMS_TO_NEW_LIST_SUCCESS));
 		}
 	}
 
@@ -216,12 +214,12 @@ public class SaveGermplasmListDialog extends GridLayout implements InitializingB
 	 * Shows a notification when a selection is made.
 	 */
 	@Override
-	public void valueChange(ValueChangeEvent event) {
+	public void valueChange(final ValueChangeEvent event) {
 		if (!this.lastAdded) {
 			try {
-				String listNameId = String.valueOf(this.mapExistingList.get(this.comboBoxListName.getValue()));
+				final String listNameId = String.valueOf(this.mapExistingList.get(this.comboBoxListName.getValue()));
 				if (listNameId != "null") {
-					GermplasmList gList = this.germplasmListManager.getGermplasmListById(Integer.valueOf(listNameId));
+					final GermplasmList gList = this.germplasmListManager.getGermplasmListById(Integer.valueOf(listNameId));
 					this.txtDescription.setValue(gList.getDescription());
 					this.txtDescription.setEnabled(false);
 					this.selectType.select(gList.getType());
@@ -233,9 +231,9 @@ public class SaveGermplasmListDialog extends GridLayout implements InitializingB
 					this.selectType.select("LST");
 					this.selectType.setEnabled(true);
 				}
-			} catch (MiddlewareQueryException e) {
+			} catch (final MiddlewareQueryException e) {
 				MessageNotifier.showError(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
-						this.messageSource.getMessage(Message.ERROR_IN_GETTING_GERMPLASM_LIST_BY_ID));
+					this.messageSource.getMessage(Message.ERROR_IN_GETTING_GERMPLASM_LIST_BY_ID));
 			}
 		} else {
 			if (this.existingListSelected) {
@@ -250,7 +248,7 @@ public class SaveGermplasmListDialog extends GridLayout implements InitializingB
 	}
 
 	@Override
-	public void addNewItem(String newItemCaption) {
+	public void addNewItem(final String newItemCaption) {
 		if (!this.comboBoxListName.containsId(newItemCaption)) {
 			if (this.comboBoxListName.containsId("")) {
 				this.comboBoxListName.removeItem("");
