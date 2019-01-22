@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UserLabelPrinting } from './user-label-printing.model';
 import { JhiLanguageService } from 'ng-jhipster';
@@ -14,7 +14,7 @@ declare const $: any;
 export class PrintLabelsComponent implements OnInit, AfterViewInit {
     datasetId: number;
     studyId: number;
-    userLabelPrinting: UserLabelPrinting = {};
+    userLabelPrinting: UserLabelPrinting = new UserLabelPrinting();
     printMockData = printMockData;
     FILE_TYPES = FileType;
     fileType: FileType = FileType.NONE;
@@ -61,6 +61,18 @@ export class PrintLabelsComponent implements OnInit, AfterViewInit {
         console.log($('#rightSelectedFields').sortable('toArray'))
     }
 
+}
+
+@Pipe({name: 'allLabels'})
+export class AllLabelsPipe implements PipeTransform {
+    transform(labelTypes: { fields: { id: number, name: string }[] }[]): any {
+        if (!labelTypes) {
+            return [];
+        }
+        return labelTypes
+            .map((type) => type.fields)
+            .reduce((allFields, fields) => allFields.concat(fields));
+    }
 }
 
 export enum FileType {

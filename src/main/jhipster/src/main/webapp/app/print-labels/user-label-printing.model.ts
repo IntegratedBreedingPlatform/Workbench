@@ -20,13 +20,9 @@ export class UserLabelPrinting {
         public sizeOfLabelSheet?: string,
         public numberOfLabelPerRow?: number,
         public numberOfRowsPerPageOfLabel?: number,
-        public barcodeNeeded?: boolean,
         public leftSelectedLabelFields?: string,
         public rightSelectedLabelFields?: string,
         public mainSelectedLabelFields?: string,
-        public firstBarcodeField?: string,
-        public secondBarcodeField?: string,
-        public thirdBarcodeField?: string,
         public filename?: string,
         public generateType?: string,
         public order?: string,
@@ -39,7 +35,11 @@ export class UserLabelPrinting {
         public stockListId?: string,
         public stockListTypeName?: string,
         public inventoryDetailsList?: string,
-        public barcodeGeneratedAutomatically?: string
+        public barcodeGeneratedAutomatically = true,
+        public firstBarcodeField = '',
+        public secondBarcodeField = '',
+        public thirdBarcodeField = '',
+        public barcodeNeeded = false
     ) {
     }
 }

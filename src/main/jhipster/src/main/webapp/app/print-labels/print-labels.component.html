@@ -195,7 +195,98 @@
 
 								</div>
 							</div>
-						</div>
+
+							<div class="row">
+								<div class="col-xs-12 col-md-12">
+									<div class="row">
+										<div class="col-xs-6 col-md-6">
+											<h2 class="sub-content-heading" jhiTranslate="label-printing.barcode.options">
+												Barcode Options
+											</h2>
+											<div class="form-group">
+												<label class="control-label label-bold" jhiTranslate="label-printing.do.you.need.bar.codes">Do you need
+													barcodes on your labels?</label>
+												<label class="radio-inline" style="padding-left: 30px">
+													<input type="radio" [value]="true" [(ngModel)]="userLabelPrinting.barcodeNeeded"/>
+													<span jhiTranslate="label-printing.do.you.need.bar.codes.yes">Yes</span>
+												</label>
+												<label class="radio-inline">
+													<input checked="checked" type="radio" [value]="false" [(ngModel)]="userLabelPrinting.barcodeNeeded"/>
+													<span jhiTranslate="label-printing.do.you.need.bar.codes.no">No</span>
+												</label>
+											</div>
+											<div class="form-group" *ngIf="userLabelPrinting.barcodeNeeded">
+												<label class="control-label label-bold"
+													   jhiTranslate="label-printing.do.you.want.automatically.unique.bar.codes">
+													Do you want to use automatically generated unique barcodes?</label>
+												<label class="radio-inline" style="padding-left: 30px">
+													<input checked="checked" type="radio" [value]="true" [(ngModel)]="userLabelPrinting.barcodeGeneratedAutomatically"/>
+													<span jhiTranslate="common.form.yes.text">Yes</span>
+												</label>
+												<label class="radio-inline">
+													<input type="radio" [value]="false" [(ngModel)]="userLabelPrinting.barcodeGeneratedAutomatically"/>
+													<span jhiTranslate="common.form.no.text">No</span>
+												</label>
+											</div>
+										</div>
+										<div class="col-xs-6 col-md-6" *ngIf="!userLabelPrinting.barcodeGeneratedAutomatically">
+											<div>
+												<label class="control-label" jhiTranslate="label-printing.bar.code.note"></label>
+											</div>
+											<div class="form-group row">
+												<div class="col-xs-3 col-md-3">
+													<label class="control-label label-bold add_top_padding"
+														   jhiTranslate="label-printing.first.bar.code.field"></label>:
+												</div>
+												<div class=" col-xs-9 col-md-9">
+													<select [(ngModel)]="userLabelPrinting.firstBarcodeField" class="form-control">
+														<option value="" jhiTranslate="label-printing.bar.code.please.choose.field">Please choose</option>
+														<option *ngFor="let field of printMockData.labelTypes | allLabels" [value]="field.id">
+															{{field.name}}
+														</option>
+													</select>
+												</div>
+											</div>
+											<div class="form-group row">
+												<div class="col-xs-3 col-md-3">
+													<label class="control-label label-bold add_top_padding"
+														   jhiTranslate="label-printing.second.bar.code.field"></label>:
+												</div>
+												<div class=" col-xs-9 col-md-9">
+													<select [(ngModel)]="userLabelPrinting.secondBarcodeField" class="form-control">
+														<option value="" jhiTranslate="label-printing.bar.code.please.choose.field">Please choose</option>
+														<option *ngFor="let field of printMockData.labelTypes | allLabels" [value]="field.id">
+															{{field.name}}
+														</option>
+													</select>
+												</div>
+											</div>
+											<div class="form-group row">
+												<div class="col-xs-3 col-md-3">
+													<label class="control-label label-bold add_top_padding"
+														   jhiTranslate="label-printing.third.bar.code.field"></label>:
+												</div>
+												<div class=" col-xs-9 col-md-9">
+													<select [(ngModel)]="userLabelPrinting.thirdBarcodeField" class="form-control">
+														<option value="" jhiTranslate="label-printing.bar.code.please.choose.field">Please choose</option>
+														<option *ngFor="let field of printMockData.labelTypes | allLabels" [value]="field.id">
+															{{field.name}}
+														</option>
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-12 col-md-12">
+
+								</div>
+							</div>
+
+
+						</div> <!-- /label-printing-details -->
 
 
 						<div class="row">
