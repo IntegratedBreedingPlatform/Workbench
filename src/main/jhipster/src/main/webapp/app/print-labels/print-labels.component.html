@@ -36,7 +36,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-xs-6 col-md-6">
+							<div class="col-xs-6 col-md-6" *ngIf="labelsNeededSummary else loading">
 								<div class="row">
 									<div class="col-xs-12 col-md-12">
 										<h2 class="sub-content-heading" jhiTranslate="label-printing.summary.of.labels.needed">
@@ -306,3 +306,8 @@
 		</div>
 	</div>
 </div>
+<ng-template #loading>
+	<div style=" display: flex; justify-content: center; align-items: center; ">
+		<span class="throbber throbber-2x"></span>
+	</div>
+</ng-template>
