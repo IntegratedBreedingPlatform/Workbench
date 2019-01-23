@@ -207,11 +207,13 @@
 												<label class="control-label label-bold" jhiTranslate="label-printing.do.you.need.bar.codes">Do you need
 													barcodes on your labels?</label>
 												<label class="radio-inline" style="padding-left: 30px">
-													<input type="radio" [value]="true" [(ngModel)]="userLabelPrinting.barcodeNeeded"/>
+													<input type="radio" name="barcodeNeededRadio" [value]="true"
+														   [(ngModel)]="userLabelPrinting.barcodeNeeded"/>
 													<span jhiTranslate="label-printing.do.you.need.bar.codes.yes">Yes</span>
 												</label>
 												<label class="radio-inline">
-													<input checked="checked" type="radio" [value]="false" [(ngModel)]="userLabelPrinting.barcodeNeeded"/>
+													<input checked="checked" type="radio" name="barcodeNeededRadio" [value]="false"
+														   [(ngModel)]="userLabelPrinting.barcodeNeeded"/>
 													<span jhiTranslate="label-printing.do.you.need.bar.codes.no">No</span>
 												</label>
 											</div>
@@ -220,16 +222,18 @@
 													   jhiTranslate="label-printing.do.you.want.automatically.unique.bar.codes">
 													Do you want to use automatically generated unique barcodes?</label>
 												<label class="radio-inline" style="padding-left: 30px">
-													<input checked="checked" type="radio" [value]="true" [(ngModel)]="userLabelPrinting.barcodeGeneratedAutomatically"/>
+													<input checked="checked" type="radio" name="barcodeGeneratedAutomaticallyRadio"
+														   [value]="true" [(ngModel)]="userLabelPrinting.barcodeGeneratedAutomatically"/>
 													<span jhiTranslate="common.form.yes.text">Yes</span>
 												</label>
 												<label class="radio-inline">
-													<input type="radio" [value]="false" [(ngModel)]="userLabelPrinting.barcodeGeneratedAutomatically"/>
+													<input type="radio" [value]="false" name="barcodeGeneratedAutomaticallyRadio"
+														   [(ngModel)]="userLabelPrinting.barcodeGeneratedAutomatically"/>
 													<span jhiTranslate="common.form.no.text">No</span>
 												</label>
 											</div>
 										</div>
-										<div class="col-xs-6 col-md-6" *ngIf="!userLabelPrinting.barcodeGeneratedAutomatically">
+										<div class="col-xs-6 col-md-6" *ngIf="userLabelPrinting.barcodeNeeded && !userLabelPrinting.barcodeGeneratedAutomatically">
 											<div>
 												<label class="control-label" jhiTranslate="label-printing.bar.code.note"></label>
 											</div>
