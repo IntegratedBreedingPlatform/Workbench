@@ -16,7 +16,9 @@ declare const $: any;
 export class PrintLabelsComponent implements OnInit, AfterViewInit {
     userLabelPrinting: UserLabelPrinting = new UserLabelPrinting();
     printMockData = printMockData;
-    labelsNeededSummary: LabelsNeededSummary = new LabelsNeededSummary();
+    labelsNeededSummary: LabelsNeededSummary;
+    metadata: Map<string, string>;
+    metadataKeys: IterableIterator<string>;
     FILE_TYPES = FileType;
     fileType: FileType = FileType.NONE;
 
@@ -34,7 +36,11 @@ export class PrintLabelsComponent implements OnInit, AfterViewInit {
         });
         this.service.getLabelsNeededSummary().subscribe((summary: any) => {
             this.labelsNeededSummary = summary;
-        })
+        });
+        this.service.getOriginResourceMetadada().subscribe((metadata: Map<string, string>) => {
+            this.metadata = new Map(Object.entries(metadata));
+            this.metadataKeys = this.metadata.keys();
+        });
     }
 
     ngAfterViewInit() {

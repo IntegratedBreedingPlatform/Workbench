@@ -27,23 +27,13 @@
 						<div class="row lblprnt-study-details" *ngIf="!userLabelPrinting.fieldMapInfoList">
 							<div class="col-xs-6 col-md-6">
 								<h2 class="sub-content-heading" jhiTranslate="label-printing.selected.study">Selected study</h2>
-								<div class="form-group">
-									<label class="control-label">
-										<strong jhiTranslate="label-printing.study.name">Study name</strong>:
-									</label>
-									<span>{{userLabelPrinting.name}}</span>
-								</div>
-								<div class="form-group">
-									<label class="control-label"><strong jhiTranslate="label-printing.title">Title</strong>:</label>
-									<span>{{userLabelPrinting.title}}</span>
-								</div>
-								<div class="form-group">
-									<label class="control-label"><strong jhiTranslate="label-printing.objective">Objective</strong>:</label>
-									<span>{{userLabelPrinting.objective}}</span>
-								</div>
-								<div class="form-group">
-									<label class="control-label"><strong jhiTranslate="label-printing.number.of.instances">Number of environments</strong>:</label>
-									<span>{{userLabelPrinting.numberOfInstances}}</span>
+								<div *ngIf="metadata else loading">
+									<div class="form-group" *ngFor="let key of metadataKeys">
+										<label class="control-label">
+											<strong>{{key}}</strong>:
+										</label>
+										<span>{{metadata.get(key)}}</span>
+									</div>
 								</div>
 							</div>
 							<div class="col-xs-6 col-md-6">

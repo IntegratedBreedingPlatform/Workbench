@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { SERVER_API_URL } from '../app.constants';
 import { PrintLabelsContext } from './print-labels.context';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 declare const cropName: string;
 
@@ -24,5 +25,14 @@ export class PrintLabelsService {
             studyId: this.context.studyId
         });
 
+    }
+
+    getOriginResourceMetadada() {
+        const printingLabelType = this.context.printingLabelType;
+        const resourceUrl = `crops/${cropName}/labelPrinting/${printingLabelType}/metadata`;
+        return this.http.post(this.baseUrl + resourceUrl, {
+            datasetId: this.context.datasetId,
+            studyId: this.context.studyId
+        });
     }
 }
