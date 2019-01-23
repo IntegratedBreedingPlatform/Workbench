@@ -43,3 +43,11 @@ export class UserLabelPrinting {
     ) {
     }
 }
+
+export class LabelsNeededSummary {
+    constructor(
+        public headers?: any[],
+        public values?: any[],
+        public totalNumberOfLabelsNeeded?: number
+    ) { }
+}

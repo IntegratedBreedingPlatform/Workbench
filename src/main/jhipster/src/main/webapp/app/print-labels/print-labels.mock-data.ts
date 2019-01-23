@@ -31,25 +31,5 @@ export const printMockData = {
             id: 'Scale',
             name: 'Scale'
         }]
-    }],
-    summaryData: {
-        'headers': [
-            'Environment',
-            '# of sub-obs units',
-            'Labels Needed'
-        ],
-        'values': [
-            {
-                'Environment': '1',
-                '# of sub-obs units': '20',
-                'Labels Needed': '20'
-            },
-            {
-                'Environment': '2',
-                '# of sub-obs units': '20',
-                'Labels Needed': '20'
-            }
-        ],
-        'totalNumberOfLabelsNeeded': 40
-    }
+    }]
 };

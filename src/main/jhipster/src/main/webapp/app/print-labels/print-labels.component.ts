@@ -1,8 +1,10 @@
 import { AfterViewInit, Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { UserLabelPrinting } from './user-label-printing.model';
+import { LabelsNeededSummary, UserLabelPrinting } from './user-label-printing.model';
 import { JhiLanguageService } from 'ng-jhipster';
 import { printMockData } from './print-labels.mock-data';
+import { PrintLabelsContext } from './print-labels.context';
+import { PrintLabelsService } from './print-labels.service';
 
 declare const $: any;
 
@@ -12,22 +14,27 @@ declare const $: any;
     styleUrls: ['./print-labels.component.css']
 })
 export class PrintLabelsComponent implements OnInit, AfterViewInit {
-    datasetId: number;
-    studyId: number;
     userLabelPrinting: UserLabelPrinting = new UserLabelPrinting();
     printMockData = printMockData;
+    labelsNeededSummary: LabelsNeededSummary = new LabelsNeededSummary();
     FILE_TYPES = FileType;
     fileType: FileType = FileType.NONE;
 
     constructor(private route: ActivatedRoute,
+                private context: PrintLabelsContext,
+                private service: PrintLabelsService,
                 private languageService: JhiLanguageService) {
     }
 
     ngOnInit() {
         this.route.queryParams.subscribe((params) => {
-            this.datasetId = params['datasetId'];
-            this.studyId = params['studyId'];
+            this.context.datasetId = params['datasetId'];
+            this.context.studyId = params['studyId'];
+            this.context.printingLabelType = params['printingLabelType'];
         });
+        this.service.getLabelsNeededSummary().subscribe((summary: any) => {
+            this.labelsNeededSummary = summary;
+        })
     }
 
     ngAfterViewInit() {
