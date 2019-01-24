@@ -37,7 +37,7 @@ export class PrintLabelsComponent implements OnInit, AfterViewInit {
         this.service.getLabelsNeededSummary().subscribe((summary: any) => {
             this.labelsNeededSummary = summary;
         });
-        this.service.getOriginResourceMetadada().subscribe((metadata: Map<string, string>) => {
+        this.service.getOriginResourceMetadada().subscribe((metadata) => {
             this.metadata = new Map(Object.entries(metadata));
             this.metadataKeys = Array.from(this.metadata.keys());
         });

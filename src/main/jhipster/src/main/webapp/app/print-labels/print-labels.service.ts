@@ -27,10 +27,10 @@ export class PrintLabelsService {
 
     }
 
-    getOriginResourceMetadada() {
+    getOriginResourceMetadada(): Observable<Map<string, string>> {
         const printingLabelType = this.context.printingLabelType;
         const resourceUrl = `crops/${cropName}/labelPrinting/${printingLabelType}/metadata`;
-        return this.http.post(this.baseUrl + resourceUrl, {
+        return this.http.post<Map<string, string>>(this.baseUrl + resourceUrl, {
             datasetId: this.context.datasetId,
             studyId: this.context.studyId
         });
