@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { LabelsNeededSummary, UserLabelPrinting } from './user-label-printing.model';
+import { LabelsNeededSummary, LabelType, UserLabelPrinting } from './user-label-printing.model';
 import { JhiLanguageService } from 'ng-jhipster';
 import { printMockData } from './print-labels.mock-data';
 import { PrintLabelsContext } from './print-labels.context';
@@ -19,6 +19,7 @@ export class PrintLabelsComponent implements OnInit, AfterViewInit {
     labelsNeededSummary: LabelsNeededSummary;
     metadata: Map<string, string>;
     metadataKeys: string[];
+    labelTypes: LabelType[];
     FILE_TYPES = FileType;
     fileType: FileType = FileType.NONE;
 
@@ -40,6 +41,9 @@ export class PrintLabelsComponent implements OnInit, AfterViewInit {
         this.service.getOriginResourceMetadada().subscribe((metadata) => {
             this.metadata = new Map(Object.entries(metadata));
             this.metadataKeys = Array.from(this.metadata.keys());
+        });
+        this.service.getAvailableLabelFields().subscribe((labelTypes) => {
+            this.labelTypes = labelTypes;
         });
     }
 

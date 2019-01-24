@@ -131,7 +131,7 @@
 														 To simplify we split it in two and if there are more (rare)
 														 the following ones will just accommodate -->
 													<div ngClass="col-xs-6 col-md-6"
-														 *ngFor="let labelType of printMockData.labelTypes">
+														 *ngFor="let labelType of labelTypes">
 														<div class="label-type-list">
 															<ul class="list-group field-group">
 																<li class="list-group-item">
@@ -234,7 +234,7 @@
 												<div class="col-xs-8 col-md-8">
 													<select [(ngModel)]="userLabelPrinting.firstBarcodeField" class="form-control">
 														<option value="" jhiTranslate="label-printing.bar.code.please.choose.field">Please choose</option>
-														<option *ngFor="let field of printMockData.labelTypes | allLabels" [value]="field.id">
+														<option *ngFor="let field of labelTypes | allLabels" [value]="field.id">
 															{{field.name}}
 														</option>
 													</select>
@@ -248,7 +248,7 @@
 												<div class="col-xs-8 col-md-8">
 													<select [(ngModel)]="userLabelPrinting.secondBarcodeField" class="form-control">
 														<option value="" jhiTranslate="label-printing.bar.code.please.choose.field">Please choose</option>
-														<option *ngFor="let field of printMockData.labelTypes | allLabels" [value]="field.id">
+														<option *ngFor="let field of labelTypes | allLabels" [value]="field.id">
 															{{field.name}}
 														</option>
 													</select>
@@ -262,7 +262,7 @@
 												<div class="col-xs-8 col-md-8">
 													<select [(ngModel)]="userLabelPrinting.thirdBarcodeField" class="form-control">
 														<option value="" jhiTranslate="label-printing.bar.code.please.choose.field">Please choose</option>
-														<option *ngFor="let field of printMockData.labelTypes | allLabels" [value]="field.id">
+														<option *ngFor="let field of labelTypes | allLabels" [value]="field.id">
 															{{field.name}}
 														</option>
 													</select>

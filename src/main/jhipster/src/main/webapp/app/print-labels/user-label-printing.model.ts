@@ -51,3 +51,11 @@ export class LabelsNeededSummary {
         public totalNumberOfLabelsNeeded?: number
     ) { }
 }
+
+export class LabelType {
+    constructor(
+        public title?: string,
+        public key?: string,
+        public fields?: { id: string, name: string }[]
+    ) { }
+}
