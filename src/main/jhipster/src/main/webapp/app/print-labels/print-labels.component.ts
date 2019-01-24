@@ -18,7 +18,7 @@ export class PrintLabelsComponent implements OnInit, AfterViewInit {
     printMockData = printMockData;
     labelsNeededSummary: LabelsNeededSummary;
     metadata: Map<string, string>;
-    metadataKeys: IterableIterator<string>;
+    metadataKeys: string[];
     FILE_TYPES = FileType;
     fileType: FileType = FileType.NONE;
 
@@ -39,7 +39,7 @@ export class PrintLabelsComponent implements OnInit, AfterViewInit {
         });
         this.service.getOriginResourceMetadada().subscribe((metadata: Map<string, string>) => {
             this.metadata = new Map(Object.entries(metadata));
-            this.metadataKeys = this.metadata.keys();
+            this.metadataKeys = Array.from(this.metadata.keys());
         });
     }
 
