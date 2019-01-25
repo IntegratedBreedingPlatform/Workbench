@@ -166,16 +166,18 @@
 
 													</div>
 													<div class="col-xs-6 col-md-6">
-														<ul class="list-group field-group">
-															<li class="list-group-item">
-																<label class="control-label label-bold"
-																	   jhiTranslate="label-printing.left.selected.fields">
-																	Selected Fields
-																</label>
-															</li>
-														</ul>
-														<ul id="rightSelectedFields" class="list-group droppable print-fields">
-														</ul>
+														<div *ngIf="fileType === FILE_TYPES.PDF">
+															<ul class="list-group field-group">
+																<li class="list-group-item">
+																	<label class="control-label label-bold"
+																		   jhiTranslate="label-printing.left.selected.fields">
+																		Selected Fields
+																	</label>
+																</li>
+															</ul>
+															<ul id="rightSelectedFields" class="list-group droppable print-fields">
+															</ul>
+														</div>
 													</div>
 												</div>
 											</div>
@@ -289,7 +291,7 @@
 									<input type="button" onclick="window.history.back();" value="Cancel" class="btn btn-default"/>
 									<!-- TODO -->
 									<!--<input type="button" id="fbk-lbl-printing-save-preset" value="Save Preset" class="btn btn-info fbk-hide"/>-->
-									<input type="button" (click)="printLabels()" value="Export Label" class="btn btn-primary" />
+									<input type="button" *ngIf="fileType" (click)="printLabels()" value="Export Label" class="btn btn-primary" />
 								</div>
 							</div>
 						</div>
