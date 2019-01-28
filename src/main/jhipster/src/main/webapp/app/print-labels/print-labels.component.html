@@ -155,9 +155,11 @@
 													<div class="col-xs-6 col-md-6">
 														<ul class="list-group field-group">
 															<li class="list-group-item">
-																<label class="control-label label-bold"
+																<label class="control-label label-bold" *ngIf="fileType === FILE_TYPES.PDF"
 																	   jhiTranslate="label-printing.left.selected.fields">
-																	Selected Fields
+																</label>
+																<label class="control-label label-bold" *ngIf="fileType !== FILE_TYPES.PDF"
+																	   jhiTranslate="label-printing.main.selected.fields">
 																</label>
 															</li>
 														</ul>
@@ -170,8 +172,7 @@
 															<ul class="list-group field-group">
 																<li class="list-group-item">
 																	<label class="control-label label-bold"
-																		   jhiTranslate="label-printing.left.selected.fields">
-																		Selected Fields
+																		   jhiTranslate="label-printing.right.selected.fields">
 																	</label>
 																</li>
 															</ul>
