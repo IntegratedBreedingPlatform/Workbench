@@ -23,7 +23,6 @@ export class UserLabelPrinting {
         public leftSelectedLabelFields?: string,
         public rightSelectedLabelFields?: string,
         public mainSelectedLabelFields?: string,
-        public filename?: string,
         public generateType?: string,
         public order?: string,
         public filenameWithExtension?: string,
@@ -39,6 +38,7 @@ export class UserLabelPrinting {
         public firstBarcodeField = '',
         public secondBarcodeField = '',
         public thirdBarcodeField = '',
+        public filename = '',
         public barcodeNeeded = false
     ) {
     }

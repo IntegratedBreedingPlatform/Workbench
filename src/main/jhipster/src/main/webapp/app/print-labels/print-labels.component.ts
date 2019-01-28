@@ -5,6 +5,7 @@ import { JhiLanguageService } from 'ng-jhipster';
 import { printMockData } from './print-labels.mock-data';
 import { PrintLabelsContext } from './print-labels.context';
 import { PrintLabelsService } from './print-labels.service';
+import { yyyymmdd } from '../shared/utils/dateutil';
 
 declare const $: any;
 
@@ -41,6 +42,10 @@ export class PrintLabelsComponent implements OnInit, AfterViewInit {
         this.service.getOriginResourceMetadada().subscribe((metadata) => {
             this.metadata = new Map(Object.entries(metadata));
             this.metadataKeys = Array.from(this.metadata.keys());
+            this.userLabelPrinting.filename = 'Labels-for'
+                + '-' + this.metadata.get('Name')
+                + '-' + this.metadata.get('Selected dataset')
+                + '-' + yyyymmdd();
         });
         this.service.getAvailableLabelFields().subscribe((labelTypes) => {
             this.labelTypes = labelTypes;
