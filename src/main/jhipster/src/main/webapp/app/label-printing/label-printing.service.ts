@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
 import { SERVER_API_URL } from '../app.constants';
-import { PrintLabelsContext } from './print-labels.context';
+import { LabelPrintingContext } from './label-printing.context';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { LabelType } from './user-label-printing.model';
+import { LabelType } from './label-printing.model';
 
 declare const cropName: string;
 
 @Injectable()
-export class PrintLabelsService {
+export class LabelPrintingService {
 
     private baseUrl = SERVER_API_URL;
 
     constructor(
         private http: HttpClient,
-        private context: PrintLabelsContext
+        private context: LabelPrintingContext
     ) {
     }
 

@@ -15,7 +15,7 @@ import {
     JhiMainComponent,
     PageRibbonComponent
 } from './layouts';
-import { PrintLabelsModule } from './print-labels/print-labels.module';
+import { LabelPrintingModule } from './label-printing/label-printing.module';
 
 @NgModule({
     imports: [
@@ -25,7 +25,7 @@ import { PrintLabelsModule } from './print-labels/print-labels.module';
         BmsjHipsterSharedModule,
         BmsjHipsterHomeModule,
         BmsjHipsterEntityModule,
-        PrintLabelsModule
+        LabelPrintingModule
         // jhipster-needle-angular-add-module JHipster will add new module here
     ],
     declarations: [

@@ -1,22 +1,20 @@
 import { AfterViewInit, Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { LabelsNeededSummary, LabelType, UserLabelPrinting } from './user-label-printing.model';
+import { LabelsNeededSummary, LabelType, LabelPrintingData } from './label-printing.model';
 import { JhiLanguageService } from 'ng-jhipster';
-import { printMockData } from './print-labels.mock-data';
-import { PrintLabelsContext } from './print-labels.context';
-import { PrintLabelsService } from './print-labels.service';
+import { LabelPrintingContext } from './label-printing.context';
+import { LabelPrintingService } from './label-printing.service';
 import { yyyymmdd } from '../shared/utils/dateutil';
 
 declare const $: any;
 
 @Component({
-    selector: 'jhi-print-labels',
-    templateUrl: './print-labels.component.html',
-    styleUrls: ['./print-labels.component.css']
+    selector: 'jhi-label-printing',
+    templateUrl: './label-printing.component.html',
+    styleUrls: ['./label-printing.component.css']
 })
-export class PrintLabelsComponent implements OnInit, AfterViewInit {
-    userLabelPrinting: UserLabelPrinting = new UserLabelPrinting();
-    printMockData = printMockData;
+export class LabelPrintingComponent implements OnInit, AfterViewInit {
+    labelPrintingData: LabelPrintingData = new LabelPrintingData();
     labelsNeededSummary: LabelsNeededSummary;
     metadata: Map<string, string>;
     metadataKeys: string[];
@@ -25,8 +23,8 @@ export class PrintLabelsComponent implements OnInit, AfterViewInit {
     fileType: FileType = FileType.NONE;
 
     constructor(private route: ActivatedRoute,
-                private context: PrintLabelsContext,
-                private service: PrintLabelsService,
+                private context: LabelPrintingContext,
+                private service: LabelPrintingService,
                 private languageService: JhiLanguageService) {
     }
 
@@ -42,7 +40,7 @@ export class PrintLabelsComponent implements OnInit, AfterViewInit {
         this.service.getOriginResourceMetadada().subscribe((metadata) => {
             this.metadata = new Map(Object.entries(metadata));
             this.metadataKeys = Array.from(this.metadata.keys());
-            this.userLabelPrinting.filename = 'Labels-for'
+            this.labelPrintingData.filename = 'Labels-for'
                 + '-' + this.metadata.get('Name')
                 + '-' + this.metadata.get('Selected dataset')
                 + '-' + yyyymmdd();

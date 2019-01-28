@@ -1,4 +1,4 @@
-export class UserLabelPrinting {
+export class LabelPrintingData {
     constructor(
         public studyId?: number,
         public study?: string,
