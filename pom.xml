@@ -697,6 +697,8 @@
 						</goals>
 
 						<configuration>
+							<!--FIXME tests breaks if not built first -->
+							<!--<skip>${skipFrontEndBuild}</skip>-->
 							<workingDirectory>src/main/web</workingDirectory>
 							<!-- When the envConfig is set to 'release' then the JS and CSS files are minified -->
 							<arguments>build</arguments>
@@ -711,6 +713,7 @@
 						</goals>
 						<phase>generate-resources</phase>
 						<configuration>
+							<skip>${skipFrontEndBuild}</skip>
 							<workingDirectory>src/main/jhipster</workingDirectory>
 							<arguments>run webpack:prod</arguments>
 						</configuration>
