@@ -24,6 +24,8 @@ import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @Configurable
@@ -130,6 +132,8 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 
 		final String authParams = "&" + getAuthParams(this.contextUtil);
 
+		final DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+
 		for (final SampleDTO sample : sampleList) {
 
 			final ExternalResource urlToOpenStudy = getURLStudy(sample.getStudyId(), authParams);
@@ -154,7 +158,7 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 			}
 
 			this.sampleTable.addItem(
-				new Object[] {sample.getSampleBusinessKey(), sample.getSampleList(), linkStudyButton, sample.getTakenBy(), sample.getSamplingDate(),
+				new Object[] {sample.getSampleBusinessKey(), sample.getSampleList(), linkStudyButton, sample.getTakenBy(), sample.getSamplingDate() != null ? formatter.format(sample.getSamplingDate()) : "-",
 					sample.getDatasetType(), sample.getObservationUnitId(), sample.getEnumerator(), sample.getPlateId(), sample.getWell(),
 					horizontalLayoutForDatasetButton}, count);
 			count++;
