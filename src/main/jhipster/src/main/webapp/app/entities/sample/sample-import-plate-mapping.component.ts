@@ -31,7 +31,7 @@ export class SampleImportPlateMappingComponent {
 
     proceed() {
 
-        const activeListId = this.sampleContext.getActiveList().id;
+        const activeListId = this.sampleContext.activeList.id;
 
         if (this.validate()) {
             const sampleList = this.buildSampleList();

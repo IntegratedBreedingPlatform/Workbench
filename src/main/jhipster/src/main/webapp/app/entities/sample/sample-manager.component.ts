@@ -66,7 +66,7 @@ export class SampleManagerComponent implements OnInit, OnDestroy {
             list.active = false;
             if (list.id === listId) {
                 list.active = true;
-                this.sampleContext.setActiveList(list);
+                this.sampleContext.activeList = list;
             }
         });
     }
