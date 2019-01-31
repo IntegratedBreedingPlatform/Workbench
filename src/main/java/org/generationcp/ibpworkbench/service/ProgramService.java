@@ -30,6 +30,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.WebUtils;
+import org.generationcp.middleware.manager.api.GermplasmDataManager;
+import org.generationcp.middleware.pojos.dms.ProgramFavorite;
+import org.generationcp.middleware.manager.api.LocationDataManager;
+import org.apache.commons.lang3.StringUtils;
 
 @Service
 @Transactional
@@ -45,6 +49,12 @@ public class ProgramService {
 
 	@Autowired
 	private HttpServletRequest request;
+
+	@Autowired
+	private LocationDataManager locationDataManager;
+
+	@Autowired
+	private GermplasmDataManager germplasmDataManager;
 
 	@Autowired
 	private org.generationcp.commons.spring.util.ContextUtil contextUtil;
@@ -69,6 +79,7 @@ public class ProgramService {
 		this.setContextInfoAndCurrentCrop(program);
 
 		this.saveProgramMembers(program, programUsers);
+		this.addUnspecifiedLocationToFavorite(program);
 
 		// After saving, we create folder for program under <install directory>/workspace
 		this.installationDirectoryUtil.createWorkspaceDirectoriesForProject(program);
@@ -237,26 +248,30 @@ public class ProgramService {
 		this.saveWorkbenchUserToCropUserMapping(project, new HashSet<>(userList));
 		
 		//Removal of users
-		final List<Integer> activeUserIds = this.workbenchDataManager.getActiveUserIDsByProjectId(project.getProjectId());
-		final List<Integer> removedUserIds = this.getRemovedUserIds(activeUserIds, userList);
+		final List<Integer> removedUserIds = this.getRemovedUserIds(project.getProjectId(), userList);
 		if(!removedUserIds.isEmpty()) {
-			List<ProjectUserInfo> projectUserInfos = this.workbenchDataManager.getProjectUserInfoByProjectIdAndUserIds(project.getProjectId(), removedUserIds);
-			this.workbenchDataManager.deleteProjectUserInfos(projectUserInfos);
+			this.workbenchDataManager.removeUsersFromProgram(removedUserIds, project.getProjectId());
 		}
 	}
 	
-	public List<Integer> getRemovedUserIds(List<Integer> activeUserIds, Collection<WorkbenchUser> userList) {
-		List<Integer> removedUserIds = new ArrayList<>();
-		for(Integer activeUserId: activeUserIds) {
-			boolean isProgramMember = false;
-			for(WorkbenchUser user: userList) {
-				if(user.getUserid().equals(activeUserId)) {
-					isProgramMember = true;
-					break;
-				}
-			}
-			if(!isProgramMember) removedUserIds.add(activeUserId);
+	public List<Integer> getRemovedUserIds(final long projectId, final Collection<WorkbenchUser> userList) {
+		final List<Integer> activeUserIds = this.workbenchDataManager.getActiveUserIDsByProjectId(projectId);
+		List<Integer> programMemberIds = new ArrayList<>();
+		for(WorkbenchUser user: userList) {
+			programMemberIds.add(user.getUserid());
 		}
-		return removedUserIds;
+		activeUserIds.removeAll(programMemberIds);
+		return activeUserIds;
+	}
+
+	public void addUnspecifiedLocationToFavorite(final Project program) {
+		final String unspecifiedLocationID = this.locationDataManager.retrieveLocIdOfUnspecifiedLocation();
+		if(!StringUtils.isEmpty(unspecifiedLocationID)){
+			final ProgramFavorite favorite = new ProgramFavorite();
+			favorite.setEntityId(Integer.parseInt(unspecifiedLocationID));
+			favorite.setEntityType(ProgramFavorite.FavoriteType.LOCATION.getName());
+			favorite.setUniqueID(program.getUniqueID());
+			this.germplasmDataManager.saveProgramFavorite(favorite);
+		}
 	}
 }

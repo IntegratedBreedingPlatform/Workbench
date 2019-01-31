@@ -87,7 +87,7 @@ module.exports = (options) => ({
             // jhipster-needle-add-assets-to-webpack - JHipster will add/remove third-party resources in this array
             { from: './src/main/webapp/robots.txt', to: 'robots.txt' }
         ]),
-        /* // FIXME using external jquery for now
+        /* FIXME using external jquery for now
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery"

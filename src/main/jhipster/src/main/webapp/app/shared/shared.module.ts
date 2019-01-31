@@ -4,15 +4,7 @@ import { DatePipe } from '@angular/common';
 import {
     BmsjHipsterSharedLibsModule,
     BmsjHipsterSharedCommonModule,
-    CSRFService,
-    AuthServerProvider,
-    AccountService,
-    StateStorageService,
-    LoginService,
-    LoginModalService,
-    JhiLoginModalComponent,
-    Principal,
-    HasAnyAuthorityDirective,
+    AuthServerProvider
 } from './';
 import { DragDropModule } from 'primeng/primeng';
 import { TreeTableModule } from 'primeng/treetable';
@@ -24,28 +16,18 @@ import { SharedModule } from 'primeng/shared';
         BmsjHipsterSharedCommonModule
     ],
     declarations: [
-        JhiLoginModalComponent,
-        HasAnyAuthorityDirective
     ],
     providers: [
-        LoginService,
-        LoginModalService,
-        AccountService,
-        StateStorageService,
-        Principal,
-        CSRFService,
         AuthServerProvider,
         DatePipe
     ],
-    entryComponents: [JhiLoginModalComponent],
+    entryComponents: [],
     exports: [
         BmsjHipsterSharedCommonModule,
-        JhiLoginModalComponent,
-        HasAnyAuthorityDirective,
-        DatePipe,
         SharedModule,
         TreeTableModule,
         DragDropModule,
+        DatePipe
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 

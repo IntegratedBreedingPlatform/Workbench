@@ -4,17 +4,10 @@ import { RouterModule } from '@angular/router';
 import { BmsjHipsterSharedModule } from '../../shared';
 import {
     SampleService,
-    SamplePopupService,
     SampleComponent,
-    SampleDetailComponent,
-    SampleDialogComponent,
-    SamplePopupComponent,
-    SampleDeletePopupComponent,
-    SampleDeleteDialogComponent,
     sampleRoute,
-    samplePopupRoute,
     SampleResolvePagingParams,
-    SampleBrowseComponent
+    SampleManagerComponent
 } from './';
 import { TreeTableComponent } from './tree-table/tree-table.component';
 import { SampleTreeService } from './tree-table/sample-tree.service';
@@ -31,7 +24,6 @@ import {SampleContext} from './sample.context';
 
 const ENTITY_STATES = [
     ...sampleRoute,
-    ...samplePopupRoute,
 ];
 
 @NgModule({
@@ -41,13 +33,7 @@ const ENTITY_STATES = [
     ],
     declarations: [
         SampleComponent,
-        SampleDetailComponent,
-        SampleDialogComponent,
-        SampleDeleteDialogComponent,
-        SamplePopupComponent,
-        SampleDeletePopupComponent,
-        SampleBrowseComponent,
-        SampleSearchListComponent,
+        SampleManagerComponent,
         TreeTableComponent,
         SampleSearchListComponent,
         SampleImportPlateComponent,
@@ -56,13 +42,8 @@ const ENTITY_STATES = [
     ],
     entryComponents: [
         SampleComponent,
-        SampleDialogComponent,
-        SamplePopupComponent,
-        SampleDeleteDialogComponent,
-        SampleDeletePopupComponent,
-        SampleBrowseComponent,
+        SampleManagerComponent,
         TreeTableComponent,
-        SampleBrowseComponent,
         SampleImportPlateComponent,
         SampleImportPlateMappingComponent,
         ModalComponent
@@ -70,7 +51,6 @@ const ENTITY_STATES = [
     providers: [
         SampleService,
         SampleListService,
-        SamplePopupService,
         SampleResolvePagingParams,
         SampleTreeService,
         FileDownloadHelper,

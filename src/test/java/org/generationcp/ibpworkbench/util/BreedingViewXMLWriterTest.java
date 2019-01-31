@@ -29,7 +29,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -172,6 +172,7 @@ public class BreedingViewXMLWriterTest {
 		Mockito.doReturn(OUTPUT_DIRECTORY).when(this.installationDirectoryUtil)
 				.getOutputDirectoryForProjectAndTool(Mockito.any(Project.class), Mockito.any(ToolName.class));
 		final String filePath = this.breedingViewInput.getDestXMLFilePath();
+		this.breedingViewInput.setTrialInstanceName(BreedingViewXMLWriterTest.ENVIRONMENT_NAME);
 		this.breedingViewXMLWriter.writeProjectXML();
 
 		final ArgumentCaptor<Project> projectCaptor = ArgumentCaptor.forClass(Project.class);
@@ -195,6 +196,7 @@ public class BreedingViewXMLWriterTest {
 	public void testCreateEnvironmentsWhereTrialFactorIsTrialInstance() {
 		final SeaEnvironmentModel seaEnvironmentModel = SeaEnvironmentModelTestDataInitializer.createSeaEnvironmentModel();
 		this.breedingViewInput.setSelectedEnvironments(Arrays.asList(seaEnvironmentModel));
+		this.breedingViewInput.setTrialInstanceName(BreedingViewXMLWriterTest.ENVIRONMENT_NAME);
 		final Environments environments = this.breedingViewXMLWriter.createEnvironments();
 		Assert.assertEquals(this.breedingViewInput.getEnvironment().getName(), environments.getName());
 		Assert.assertNull(environments.getTrialName());
@@ -210,7 +212,8 @@ public class BreedingViewXMLWriterTest {
 		final SeaEnvironmentModel seaEnvironmentModel = SeaEnvironmentModelTestDataInitializer.createSeaEnvironmentModel();
 		this.breedingViewInput.setSelectedEnvironments(Arrays.asList(seaEnvironmentModel));
 		this.breedingViewInput.getEnvironment().setName("LOCATION_NAME");
-		;
+		this.breedingViewInput.setTrialInstanceName(BreedingViewXMLWriterTest.ENVIRONMENT_NAME);
+
 		final Environments environments = this.breedingViewXMLWriter.createEnvironments();
 		Assert.assertEquals(this.breedingViewInput.getEnvironment().getName(), environments.getName());
 		Assert.assertEquals(this.breedingViewInput.getTrialInstanceName(), environments.getTrialName());

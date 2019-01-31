@@ -2,11 +2,7 @@ import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
 import { JhiPaginationUtil } from 'ng-jhipster';
 
-import { UserRouteAccessService } from '../../shared';
-import { SampleComponent, SampleBrowseComponent } from './';
-import { SampleDetailComponent } from './sample-detail.component';
-import { SamplePopupComponent } from './sample-dialog.component';
-import { SampleDeletePopupComponent } from './sample-delete-dialog.component';
+import { SampleComponent, SampleManagerComponent } from './';
 
 @Injectable()
 export class SampleResolvePagingParams implements Resolve<any> {
@@ -26,67 +22,39 @@ export class SampleResolvePagingParams implements Resolve<any> {
 
 export const sampleRoute: Routes = [
     {
-        path: ':crop/sample-browse',
-        component: SampleBrowseComponent,
+        path: 'sample-manager',
+        component: SampleManagerComponent,
         resolve: {
             'pagingParams': SampleResolvePagingParams
         },
         data: {
-            authorities: ['ROLE_USER'],
             pageTitle: 'bmsjHipsterApp.sample.home.title'
         },
-        canActivate: [UserRouteAccessService]
     }, {
-        path: ':crop/sample',
+        path: 'sample',
         component: SampleComponent,
         resolve: {
             'pagingParams': SampleResolvePagingParams
         },
         data: {
-            authorities: ['ROLE_USER'],
             pageTitle: 'bmsjHipsterApp.sample.home.title'
-        },
-        canActivate: [UserRouteAccessService]
-    }, {
-        path: ':crop/sample/:id',
-        component: SampleDetailComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'bmsjHipsterApp.sample.home.title'
-        },
-        canActivate: [UserRouteAccessService]
+        }
     }
 ];
 
+// TODO Removing jhipster samplePopup component
+//  but leaving this as a reminder to try again ng-bootstrap (when animations are available)
+//  and popup outlet
+/*
 export const samplePopupRoute: Routes = [
     {
-        path: ':crop/sample-new',
+        path: 'sample-new',
         component: SamplePopupComponent,
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'bmsjHipsterApp.sample.home.title'
         },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: ':crop/sample/:id/edit',
-        component: SamplePopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'bmsjHipsterApp.sample.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: ':crop/sample/:id/delete',
-        component: SampleDeletePopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'bmsjHipsterApp.sample.home.title'
-        },
-        canActivate: [UserRouteAccessService],
         outlet: 'popup'
     }
 ];
+*/

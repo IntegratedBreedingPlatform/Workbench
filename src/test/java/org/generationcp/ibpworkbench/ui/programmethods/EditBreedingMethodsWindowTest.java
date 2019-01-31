@@ -13,7 +13,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -63,18 +63,18 @@ public class EditBreedingMethodsWindowTest {
 	@Before
 	public void init() {
 
-		methodView = new MethodView();
-		methodView.setMid(MID);
-		this.editBreedingMethodsWindow = new EditBreedingMethodsWindow(presenter, methodView);
-		this.editBreedingMethodsWindow.setBreedingMethodForm(breedingMethodForm);
-		this.editBreedingMethodsWindow.setBreedingMethodTracker(breedingMethodTracker);
-		this.editBreedingMethodsWindow.setMessageSource(messageSource);
-		this.editBreedingMethodsWindow.setParent(parent);
+		this.methodView = new MethodView();
+		this.methodView.setMid(MID);
+		this.editBreedingMethodsWindow = new EditBreedingMethodsWindow(this.presenter, this.methodView);
+		this.editBreedingMethodsWindow.setBreedingMethodForm(this.breedingMethodForm);
+		this.editBreedingMethodsWindow.setBreedingMethodTracker(this.breedingMethodTracker);
+		this.editBreedingMethodsWindow.setMessageSource(this.messageSource);
+		this.editBreedingMethodsWindow.setParent(this.parent);
 
-		when(messageSource.getMessage(Message.SUCCESS)).thenReturn(SUCCESS);
+		when(this.messageSource.getMessage(Message.SUCCESS)).thenReturn(SUCCESS);
 
-		when(window.getParent()).thenReturn(parent);
-		when(parent.getWindow()).thenReturn(parentWindow);
+		when(this.window.getParent()).thenReturn(this.parent);
+		when(this.parent.getWindow()).thenReturn(this.parentWindow);
 	}
 
 	@Test
@@ -88,25 +88,25 @@ public class EditBreedingMethodsWindowTest {
 		final Map<Integer, MethodView> projectBreedingMethodData = mock(new HashMap<Integer, MethodView>().getClass());
 		final Set<String> uniqueBreedingMethods = mock(new HashSet<String>().getClass());
 
-		doNothing().when(breedingMethodForm).commit();
-		when(clickEvent.getComponent()).thenReturn(component);
-		when(component.getWindow()).thenReturn(window);
-		when(breedingMethodTracker.getProjectBreedingMethodData()).thenReturn(projectBreedingMethodData);
-		when(breedingMethodTracker.getUniqueBreedingMethods()).thenReturn(uniqueBreedingMethods);
-		when(breedingMethodForm.getItemDataSource()).thenReturn(new BeanItem<MethodView>(methodViewFromBreedingMethodForm));
-		when(presenter.editBreedingMethod(methodViewFromBreedingMethodForm)).thenReturn(methodViewFromBreedingMethodForm);
+		doNothing().when(this.breedingMethodForm).commit();
+		when(this.clickEvent.getComponent()).thenReturn(this.component);
+		when(this.component.getWindow()).thenReturn(this.window);
+		when(this.breedingMethodTracker.getProjectBreedingMethodData()).thenReturn(projectBreedingMethodData);
+		when(this.breedingMethodTracker.getUniqueBreedingMethods()).thenReturn(uniqueBreedingMethods);
+		when(this.breedingMethodForm.getItemDataSource()).thenReturn(new BeanItem<MethodView>(methodViewFromBreedingMethodForm));
+		when(this.presenter.editBreedingMethod(methodViewFromBreedingMethodForm)).thenReturn(methodViewFromBreedingMethodForm);
 
 		final EditBreedingMethodsWindow.EditBreedingMethodButtonListener listener =
 				this.editBreedingMethodsWindow.new EditBreedingMethodButtonListener();
 
-		listener.buttonClick(clickEvent);
+		listener.buttonClick(this.clickEvent);
 
-		verify(projectBreedingMethodData).remove(methodView.getMid());
-		verify(uniqueBreedingMethods).remove(methodView);
+		verify(projectBreedingMethodData).remove(this.methodView.getMid());
+		verify(uniqueBreedingMethods).remove(this.methodView);
 
 		final ArgumentCaptor<Window.Notification> captor = ArgumentCaptor.forClass(Window.Notification.class);
 
-		verify(parentWindow).showNotification(captor.capture());
+		verify(this.parentWindow).showNotification(captor.capture());
 
 		final Window.Notification notification = captor.getValue();
 
@@ -114,7 +114,7 @@ public class EditBreedingMethodsWindowTest {
 		assertEquals("</br>" + methodViewFromBreedingMethodForm.getMname()
 				+ EditBreedingMethodsWindow.EditBreedingMethodButtonListener.BREEDING_METHOD_IS_UPDATED, notification.getDescription());
 
-		verify(parent).removeWindow(editBreedingMethodsWindow);
+		verify(this.parent).removeWindow(this.editBreedingMethodsWindow);
 	}
 
 	@Test
@@ -128,25 +128,25 @@ public class EditBreedingMethodsWindowTest {
 		final Map<Integer, MethodView> projectBreedingMethodData = mock(new HashMap<Integer, MethodView>().getClass());
 		final Set<String> uniqueBreedingMethods = mock(new HashSet<String>().getClass());
 
-		doNothing().when(breedingMethodForm).commit();
-		when(clickEvent.getComponent()).thenReturn(component);
-		when(component.getWindow()).thenReturn(window);
-		when(breedingMethodTracker.getProjectBreedingMethodData()).thenReturn(projectBreedingMethodData);
-		when(breedingMethodTracker.getUniqueBreedingMethods()).thenReturn(uniqueBreedingMethods);
-		when(breedingMethodForm.getItemDataSource()).thenReturn(new BeanItem<MethodView>(methodViewFromBreedingMethodForm));
-		when(presenter.editBreedingMethod(methodViewFromBreedingMethodForm)).thenReturn(methodViewFromBreedingMethodForm);
+		doNothing().when(this.breedingMethodForm).commit();
+		when(this.clickEvent.getComponent()).thenReturn(this.component);
+		when(this.component.getWindow()).thenReturn(this.window);
+		when(this.breedingMethodTracker.getProjectBreedingMethodData()).thenReturn(projectBreedingMethodData);
+		when(this.breedingMethodTracker.getUniqueBreedingMethods()).thenReturn(uniqueBreedingMethods);
+		when(this.breedingMethodForm.getItemDataSource()).thenReturn(new BeanItem<MethodView>(methodViewFromBreedingMethodForm));
+
 
 		final EditBreedingMethodsWindow.EditBreedingMethodButtonListener listener =
 				this.editBreedingMethodsWindow.new EditBreedingMethodButtonListener();
 
-		listener.buttonClick(clickEvent);
+		listener.buttonClick(this.clickEvent);
 
-		verify(projectBreedingMethodData).remove(methodView.getMid());
-		verify(uniqueBreedingMethods).remove(methodView);
+		verify(projectBreedingMethodData).remove(this.methodView.getMid());
+		verify(uniqueBreedingMethods).remove(this.methodView);
 
 		final ArgumentCaptor<Window.Notification> captor = ArgumentCaptor.forClass(Window.Notification.class);
 
-		verify(window).showNotification(captor.capture());
+		verify(this.window).showNotification(captor.capture());
 
 		final Window.Notification notification = captor.getValue();
 
@@ -154,56 +154,56 @@ public class EditBreedingMethodsWindowTest {
 		assertEquals("</br>" + EditBreedingMethodsWindow.EditBreedingMethodButtonListener.PLEASE_SELECT_A_GENERATION_ADVANCEMENT_TYPE,
 				notification.getDescription());
 
-		verify(parent, Mockito.never()).removeWindow(editBreedingMethodsWindow);
+		verify(this.parent, Mockito.never()).removeWindow(this.editBreedingMethodsWindow);
 	}
 
 	@Test
 	public void testEditBreedingMethodButtonEmptyValueException() {
 
-		doThrow(new Validator.EmptyValueException(ERROR_MESSAGE)).when(breedingMethodForm).commit();
-		when(clickEvent.getComponent()).thenReturn(component);
-		when(component.getWindow()).thenReturn(window);
+		doThrow(new Validator.EmptyValueException(ERROR_MESSAGE)).when(this.breedingMethodForm).commit();
+		when(this.clickEvent.getComponent()).thenReturn(this.component);
+		when(this.component.getWindow()).thenReturn(this.window);
 
 		final EditBreedingMethodsWindow.EditBreedingMethodButtonListener listener =
 				this.editBreedingMethodsWindow.new EditBreedingMethodButtonListener();
 
-		listener.buttonClick(clickEvent);
+		listener.buttonClick(this.clickEvent);
 
 		final ArgumentCaptor<Window.Notification> captor = ArgumentCaptor.forClass(Window.Notification.class);
 
-		verify(window).showNotification(captor.capture());
+		verify(this.window).showNotification(captor.capture());
 
 		final Window.Notification notification = captor.getValue();
 
 		assertEquals("Invalid Input", notification.getCaption());
 		assertEquals("</br>" + ERROR_MESSAGE, notification.getDescription());
 
-		verify(parent, Mockito.never()).removeWindow(editBreedingMethodsWindow);
+		verify(this.parent, Mockito.never()).removeWindow(this.editBreedingMethodsWindow);
 
 	}
 
 	@Test
 	public void testEditBreedingMethodButtonInvalidValueException() {
 
-		doThrow(new Validator.InvalidValueException(ERROR_MESSAGE)).when(breedingMethodForm).commit();
-		when(clickEvent.getComponent()).thenReturn(component);
-		when(component.getWindow()).thenReturn(window);
+		doThrow(new Validator.InvalidValueException(ERROR_MESSAGE)).when(this.breedingMethodForm).commit();
+		when(this.clickEvent.getComponent()).thenReturn(this.component);
+		when(this.component.getWindow()).thenReturn(this.window);
 
 		final EditBreedingMethodsWindow.EditBreedingMethodButtonListener listener =
 				this.editBreedingMethodsWindow.new EditBreedingMethodButtonListener();
 
-		listener.buttonClick(clickEvent);
+		listener.buttonClick(this.clickEvent);
 
 		final ArgumentCaptor<Window.Notification> captor = ArgumentCaptor.forClass(Window.Notification.class);
 
-		verify(window).showNotification(captor.capture());
+		verify(this.window).showNotification(captor.capture());
 
 		final Window.Notification notification = captor.getValue();
 
 		assertEquals("Invalid Input", notification.getCaption());
 		assertEquals("</br>" + ERROR_MESSAGE, notification.getDescription());
 
-		verify(parent, Mockito.never()).removeWindow(editBreedingMethodsWindow);
+		verify(this.parent, Mockito.never()).removeWindow(this.editBreedingMethodsWindow);
 
 	}
 

@@ -6,13 +6,14 @@ import { JhiDateUtils } from 'ng-jhipster';
 import { SampleService } from '../../../../../../main/webapp/app/entities/sample/sample.service';
 import { SERVER_API_URL } from '../../../../../../main/webapp/app/app.constants';
 
+declare const cropName: string;
+
 describe('Service Tests', () => {
 
     describe('Sample Service', () => {
         let injector: TestBed;
         let service: SampleService;
         let httpMock: HttpTestingController;
-        const crop = 'maize';
 
         beforeEach(() => {
             TestBed.configureTestingModule({
@@ -27,7 +28,7 @@ describe('Service Tests', () => {
             injector = getTestBed();
             service = injector.get(SampleService);
             httpMock = injector.get(HttpTestingController);
-            service.setCrop(crop)
+            service.setCrop(cropName)
         });
 
         describe('Service methods', () => {
@@ -36,7 +37,7 @@ describe('Service Tests', () => {
 
                 const req  = httpMock.expectOne({ method: 'GET' });
 
-                const resourceUrl = SERVER_API_URL + `sample/${crop}/samples`;
+                const resourceUrl = SERVER_API_URL + `sample/${cropName}/samples`;
                 expect(req.request.url).toEqual(resourceUrl + '/' + 123);
             });
             it('should return Sample', () => {

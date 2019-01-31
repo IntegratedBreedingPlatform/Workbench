@@ -3,23 +3,13 @@
   "short_name": "BmsjHipster",
   "icons": [
       {
-          "src": "./content/images/logo-jhipster.png",
-          "sizes": "192x192",
+          "src": "../../../../../main/webapp/WEB-INF/static/images/favicon-144.png",
+          "sizes": "144x144",
           "type": "image/png"
       },
       {
-          "src": "./content/images/logo-jhipster.png",
-          "sizes": "256x256",
-          "type": "image/png"
-      },
-      {
-          "src": "./content/images/logo-jhipster.png",
-          "sizes": "384x384",
-          "type": "image/png"
-      },
-      {
-          "src": "./content/images/logo-jhipster.png",
-          "sizes": "512x512",
+          "src": "../../../../../main/webapp/WEB-INF/static/images/favicon-152.png",
+          "sizes": "152x152",
           "type": "image/png"
       }
   ],

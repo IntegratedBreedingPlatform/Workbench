@@ -14,6 +14,7 @@ module.exports = (config) => {
 
         // list of files / patterns to load in the browser
         files: [
+            'globals.js',
             'spec/entry.ts'
         ],
 

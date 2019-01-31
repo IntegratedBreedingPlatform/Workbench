@@ -8,11 +8,13 @@ import { JhiLanguageService } from 'ng-jhipster';
 import { Sample } from './sample.model';
 import { SampleService } from './sample.service';
 // import { ITEMS_PER_PAGE } from '../../shared';
-import { Principal, ITEMS_PER_PAGE } from '../../shared';
+import { ITEMS_PER_PAGE } from '../../shared';
 import { SampleList } from './sample-list.model';
 import { SampleListService } from './sample-list.service';
 import { FileDownloadHelper } from './file-download.helper';
 import {ModalService} from '../../shared/modal/modal.service';
+
+declare const cropName: string;
 
 @Component({
     selector: 'jhi-sample',
@@ -46,7 +48,6 @@ export class SampleComponent implements OnInit, OnDestroy {
         private languageservice: JhiLanguageService,
         // private parseLinks: JhiParseLinks,
         private jhiAlertService: JhiAlertService,
-        private principal: Principal,
         private activatedRoute: ActivatedRoute,
         private router: Router,
         private eventManager: JhiEventManager,
@@ -62,7 +63,7 @@ export class SampleComponent implements OnInit, OnDestroy {
             this.predicate = data.pagingParams.predicate;
         });
         this.paramSubscription = this.activatedRoute.params.subscribe((params) => {
-            this.crop = params['crop'];
+            this.crop = cropName;
             this.sampleService.setCrop(this.crop);
             this.loadAll();
         });
@@ -112,7 +113,7 @@ export class SampleComponent implements OnInit, OnDestroy {
     clear() {
         this.page = 0;
         this.currentSearch = '';
-        this.router.navigate(['/' + this.crop + '/sample-browse', {
+        this.router.navigate(['/sample-manager', {
             page: this.page,
             sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
         }]);
@@ -124,7 +125,7 @@ export class SampleComponent implements OnInit, OnDestroy {
         }
         this.page = 0;
         this.currentSearch = query;
-        this.router.navigate(['/' + this.crop + '/sample-browse', {
+        this.router.navigate(['/sample-manager', {
             search: this.currentSearch,
             page: this.page,
             sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
@@ -144,9 +145,6 @@ export class SampleComponent implements OnInit, OnDestroy {
     }
     ngOnInit() {
         this.loadAll();
-        this.principal.identity().then((account) => {
-            this.currentAccount = account;
-        });
         this.registerChangeInSamples();
     }
 

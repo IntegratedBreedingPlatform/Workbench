@@ -201,7 +201,7 @@ export class TreeTableComponent implements OnInit {
     }
 
     openList() {
-        return this.router.navigate(['/' + this.crop + '/sample-browse'], {
+        return this.router.navigate(['/sample-manager'], {
             queryParams: {
                 listId: this.selected.data.id
             },

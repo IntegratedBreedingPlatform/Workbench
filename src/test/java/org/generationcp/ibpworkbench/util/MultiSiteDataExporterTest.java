@@ -22,7 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -93,9 +93,9 @@ public class MultiSiteDataExporterTest {
 
 	private void setupFileUtilMocks() {
 		Mockito.doReturn(BASIC_FILE_NAME + ".csv").when(this.multiSiteDataExporter)
-				.writeToCsvFile(Matchers.anyString(), Matchers.any(Project.class), Matchers.anyList(), Matchers.eq(false));
+				.writeToCsvFile(ArgumentMatchers.anyString(), ArgumentMatchers.any(Project.class), ArgumentMatchers.<List<String[]>>any(), ArgumentMatchers.eq(false));
 		Mockito.doReturn(BASIC_FILE_NAME + MultiSiteDataExporter.SUMMARY_STATS + ".csv").when(this.multiSiteDataExporter)
-				.writeToCsvFile(Matchers.anyString(), Matchers.any(Project.class), Matchers.anyList(), Matchers.eq(true));
+				.writeToCsvFile(ArgumentMatchers.anyString(), ArgumentMatchers.any(Project.class), ArgumentMatchers.<List<String[]>>any(), ArgumentMatchers.eq(true));
 		Mockito.doReturn(BMS_INPUT_FILES_DIR).when(this.installationDirectoryUtil)
 				.getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
 	}
@@ -115,8 +115,8 @@ public class MultiSiteDataExporterTest {
 						this.meansTraits);
 
 		Mockito.verify(this.multiSiteDataExporter)
-				.writeToCsvFile(Matchers.eq(BASIC_FILE_NAME), Matchers.eq(this.project), this.meansRowsCaptor.capture(),
-						Matchers.eq(false));
+				.writeToCsvFile(ArgumentMatchers.eq(BASIC_FILE_NAME), ArgumentMatchers.eq(this.project), this.meansRowsCaptor.capture(),
+						ArgumentMatchers.eq(false));
 		final List<String[]> csvRows = this.meansRowsCaptor.getValue();
 		Assert.assertNotNull(csvRows);
 		Assert.assertEquals(1 + (GIDS.length * environmentNames.size()), csvRows.size());
@@ -173,8 +173,8 @@ public class MultiSiteDataExporterTest {
 						this.meansTraits);
 
 		Mockito.verify(this.multiSiteDataExporter)
-				.writeToCsvFile(Matchers.eq(BASIC_FILE_NAME), Matchers.eq(this.project), this.meansRowsCaptor.capture(),
-						Matchers.eq(false));
+				.writeToCsvFile(ArgumentMatchers.eq(BASIC_FILE_NAME), ArgumentMatchers.eq(this.project), this.meansRowsCaptor.capture(),
+						ArgumentMatchers.eq(false));
 		final List<String[]> csvRows = this.meansRowsCaptor.getValue();
 		Assert.assertNotNull(csvRows);
 		Assert.assertEquals(1 + (GIDS.length * environmentNames.size()), csvRows.size());
@@ -210,8 +210,8 @@ public class MultiSiteDataExporterTest {
 						this.project);
 
 		Mockito.verify(this.multiSiteDataExporter)
-				.writeToCsvFile(Matchers.eq(BASIC_FILE_NAME), Matchers.eq(this.project), this.summaryRowsCaptor.capture(),
-						Matchers.eq(true));
+				.writeToCsvFile(ArgumentMatchers.eq(BASIC_FILE_NAME), ArgumentMatchers.eq(this.project), this.summaryRowsCaptor.capture(),
+						ArgumentMatchers.eq(true));
 		final List<String[]> csvRows = this.summaryRowsCaptor.getValue();
 		Assert.assertNotNull(csvRows);
 		Assert.assertEquals(1 + (this.meansTraits.size() * ENVIRONMENTS.length), csvRows.size());
@@ -287,8 +287,8 @@ public class MultiSiteDataExporterTest {
 						this.project);
 
 		Mockito.verify(this.multiSiteDataExporter)
-				.writeToCsvFile(Matchers.eq(BASIC_FILE_NAME), Matchers.eq(this.project), this.summaryRowsCaptor.capture(),
-						Matchers.eq(true));
+				.writeToCsvFile(ArgumentMatchers.eq(BASIC_FILE_NAME), ArgumentMatchers.eq(this.project), this.summaryRowsCaptor.capture(),
+						ArgumentMatchers.eq(true));
 
 		final List<String[]> csvRows = this.summaryRowsCaptor.getValue();
 		Assert.assertNotNull(csvRows);

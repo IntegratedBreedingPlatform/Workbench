@@ -37,7 +37,7 @@
 	<![endif]-->
 	<jhi-main>
 		<!--TODO use workbench styleguide or bootstrap 4-->
-		<!--<span class="throbber throbber-lg"></span>-->
+		<span class="throbber throbber-2x"></span>
 	</jhi-main>
 	<noscript>
 		<h1>You must enable javascript to view this page.</h1>
@@ -104,7 +104,7 @@
 
 			if (window.location.hash.indexOf('listId') < 0) {
 				// TODO merge with page params?
-				window.location.hash = cropName + "/sample-browse?listId=" + id;
+				window.location.hash = "sample-manager?listId=" + id;
 			} else {
 				window.location.hash = window.location.hash.replace(/listId=[0-9]*/, "listId=" + id);
 			}
@@ -123,70 +123,6 @@
                $('#searchString').focus();
             });
         }
-
-		function displayTreeTable() {
-			'use strict';
-
-			var baseurl = '/Fieldbook/SampleListTreeManager';
-
-			var authParams = {
-				authToken: authToken,
-				selectedProjectId: selectedProjectId,
-				loggedInUserId: loggedInUserId
-			};
-
-			var xAuthToken = JSON.parse(localStorage["bms.xAuthToken"]).token;
-
-			treeTable = new TreeTable({
-				baseurl: baseurl,
-				treeTableSelector: '#treeTable',
-				tableContainer: $('#treeTableContainer'),
-				authparams: authParams,
-				context: $('#listTreeContext'),
-				crop: cropName,
-				ondblclick: chooseList,
-				create: function (parentFolderId, folderName) {
-					return $.ajax({
-						url: '/bmsapi/sampleLists/' + cropName + '/sampleListFolder?folderName=' + folderName + '&parentId=' + parentFolderId + '&programUUID=' + currentProgramId,
-						type: 'POST',
-						dataType: "json",
-						beforeSend: function (xhr) {
-							xhr.setRequestHeader('X-Auth-Token', xAuthToken);
-						},
-						error: null
-					}).fail(failHandler);
-				},
-				move: function (sourceNode, targetNode) {
-					return moveSamplesListFolder({data: {key: sourceNode.id}}, {data: {key: targetNode.id}});
-				},
-				rename: function (id, folderName) {
-					return $.ajax({
-						url: '/bmsapi/sampleLists/' + cropName + '/sampleListFolder/' + id + '?newFolderName=' + folderName,
-						type: 'PUT',
-						beforeSend: function (xhr) {
-							xhr.setRequestHeader('X-Auth-Token', xAuthToken);
-						},
-						error: null
-					}).fail(failHandler);
-				},
-				delete: function (folderId) {
-					return $.ajax({
-						url: '/bmsapi/sampleLists/' + cropName + '/sampleListFolder/' + folderId,
-						type: 'DELETE',
-						beforeSend: function (xhr) {
-							xhr.setRequestHeader('X-Auth-Token', xAuthToken);
-						},
-						error: null
-					}).fail(failHandler);
-				}
-			});
-			treeTable.init().done(function () {
-				setTimeout(function () {
-					treeTable.expandListInTreeTable('LISTS');
-					treeTable.expandListInTreeTable('CROPLISTS');
-				});
-			});
-		}
 		function failHandler(data) {
 			if (data.status == 401) {
 				bmsAuth.handleReAuthentication();
@@ -222,8 +158,6 @@
 			chooseAList = /*[[#{choose.a.list}]]*/ '',
 			ajaxGenericErrorMsg = /*[[#{ajax.generic.exception.error.message}]]*/ ''
 		;
-
-		window.location.hash = cropName + "/sample-browse?listId=";
 	//]]>
 	</script>
 	<div id="notification-container" style="display:none">

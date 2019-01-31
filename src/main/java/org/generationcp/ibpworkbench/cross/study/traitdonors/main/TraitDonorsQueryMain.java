@@ -89,7 +89,7 @@ public class TraitDonorsQueryMain extends VerticalLayout implements Initializing
 		this.welcomeScreen.setDebugId("welcomeScreen");
 
 		this.welcomeTab = this.accordion.addTab(this.welcomeScreen, this.messageSource.getMessage(Message.INTRODUCTION));
-		this.firstTab = this.accordion.addTab(this.screenOne, this.messageSource.getMessage(Message.SETUP_TRAIT_FILTER));
+		this.firstTab = this.accordion.addTab(this.screenOne, this.messageSource.getMessage(Message.SELECT_THE_TRAITS));
 		this.secondTab = this.accordion.addTab(this.screenTwo, this.messageSource.getMessage(Message.SPECIFY_WEIGHT_ENVIRONMENT));
 		this.thirdTab = this.accordion.addTab(this.screenThree, this.messageSource.getMessage(Message.SETUP_TRAIT_FILTER));
 		this.fourthTab = this.accordion.addTab(this.screenFour, this.messageSource.getMessage(Message.DISPLAY_RESULTS));
@@ -160,14 +160,14 @@ public class TraitDonorsQueryMain extends VerticalLayout implements Initializing
 		this.titleLayout.setDebugId("titleLayout");
 		this.titleLayout.setSpacing(true);
 
-		this.toolTitle = new Label("Trait Donors Query");
+		this.toolTitle = new Label("Weighted Multi-trait Query");
 		this.toolTitle.setDebugId("toolTitle");
 		this.toolTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 		this.toolTitle.setContentMode(Label.CONTENT_XHTML);
-		this.toolTitle.setWidth("283px");
+		this.toolTitle.setWidth("410px");
 
 		this.titleLayout.addComponent(this.toolTitle);
-		this.titleLayout.addComponent(new HelpButton(HelpModule.TRAIT_DONOR, "View Trait Donors Query Tutorial"));
+		this.titleLayout.addComponent(new HelpButton(HelpModule.TRAIT_DONOR, "View Weighted Multi-trait Query Tutorial"));
 	}
 
 	@Override
