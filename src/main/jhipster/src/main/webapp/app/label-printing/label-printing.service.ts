@@ -45,4 +45,20 @@ export class LabelPrintingService {
             studyId: this.context.studyId
         });
     }
+
+    download(fileExtension: any, labelsGeneratorInput: any){
+
+        labelsGeneratorInput.datasetId = this.context.datasetId;
+        labelsGeneratorInput.studyId = this.context.studyId;
+
+        const printingLabelType = this.context.printingLabelType;
+        const resourceUrl = `crops/${cropName}/labelPrinting/${printingLabelType}/labels/${fileExtension}`;
+        return this.http.post(`${this.baseUrl + resourceUrl}`, labelsGeneratorInput,
+            {
+                responseType: 'blob',
+                observe: 'response'
+            }
+        );
+    }
+
 }
