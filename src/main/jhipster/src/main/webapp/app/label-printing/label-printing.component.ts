@@ -97,7 +97,7 @@ export class AllLabelsPipe implements PipeTransform {
 
 export enum FileType {
     NONE = '',
-    CSV = 'CSV',
-    PDF = 'PDF',
-    EXCEL = 'EXCEL'
+    CSV = 'csv',
+    PDF = 'pdf',
+    EXCEL = 'xls'
 }
