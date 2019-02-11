@@ -1,10 +1,12 @@
 import { AfterViewInit, Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { LabelsNeededSummary, LabelType, LabelPrintingData } from './label-printing.model';
-import { JhiLanguageService } from 'ng-jhipster';
+import { JhiAlertService, JhiLanguageService } from 'ng-jhipster';
 import { LabelPrintingContext } from './label-printing.context';
 import { LabelPrintingService } from './label-printing.service';
 import { yyyymmdd } from '../shared/utils/dateutil';
+import { FileDownloadHelper } from '../entities/sample/file-download.helper';
+import { HttpErrorResponse } from '@angular/common/http';
 
 declare const $: any;
 
@@ -25,7 +27,9 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
     constructor(private route: ActivatedRoute,
                 private context: LabelPrintingContext,
                 private service: LabelPrintingService,
-                private languageService: JhiLanguageService) {
+                private languageService: JhiLanguageService,
+                private fileDownloadHelper: FileDownloadHelper,
+                private alertService: JhiAlertService) {
     }
 
     ngOnInit() {
@@ -76,9 +80,60 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
     }
 
     printLabels() {
-        // TODO
-        console.log($('#leftSelectedFields').sortable('toArray'))
-        console.log($('#rightSelectedFields').sortable('toArray'))
+        const fieldsSelected = [];
+        const barcodeFieldsSelected = [];
+
+        if (this.fileType === FileType.CSV) {
+            fieldsSelected.push($('#leftSelectedFields').sortable('toArray'));
+        } else {
+            fieldsSelected.push($('#leftSelectedFields').sortable('toArray'));
+            fieldsSelected.push($('#rightSelectedFields').sortable('toArray'));
+        }
+
+        if (this.labelPrintingData.barcodeNeeded && !this.labelPrintingData.barcodeGeneratedAutomatically) {
+            if (this.labelPrintingData.firstBarcodeField !== '') {
+                barcodeFieldsSelected.push(this.labelPrintingData.firstBarcodeField);
+            }
+            if (this.labelPrintingData.secondBarcodeField !== '') {
+                barcodeFieldsSelected.push(this.labelPrintingData.secondBarcodeField);
+            }
+            if (this.labelPrintingData.thirdBarcodeField !== '') {
+                barcodeFieldsSelected.push(this.labelPrintingData.thirdBarcodeField);
+            }
+
+        }
+
+        const labelsGeneratorInput = {
+            fields: fieldsSelected,
+            barcodeRequired: this.labelPrintingData.barcodeNeeded,
+            automaticBarcode: this.labelPrintingData.barcodeGeneratedAutomatically,
+            barcodeFields: barcodeFieldsSelected,
+            fileName: this.labelPrintingData.filename,
+            datasetId: undefined,
+            studyId: undefined
+        };
+
+        this.service.download(this.fileType, labelsGeneratorInput).subscribe((response: any ) => {
+           const fileName = this.fileDownloadHelper.getFileNameFromResponseContentDisposition(response);
+           this.fileDownloadHelper.save(response.body, fileName);
+
+        }, (error: HttpErrorResponse) => {
+            this.handleError(error);
+
+        });
+    }
+
+    private handleError(err: HttpErrorResponse): void {
+        if ('application/json;charset=UTF-8' === err.headers.get('Content-Type')) {
+            const reader = new FileReader();
+            reader.addEventListener('loadend', (e) => {
+                const error = JSON.parse(e.srcElement['result']);
+                this.alertService.error('error.custom', { param: error.errors[0].message });
+            });
+            reader.readAsText(err.error);
+        } else {
+            this.alertService.error('error.general');
+        }
     }
 
 }
