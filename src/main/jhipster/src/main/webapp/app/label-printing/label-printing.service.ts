@@ -46,7 +46,7 @@ export class LabelPrintingService {
         });
     }
 
-    download(fileExtension: any, labelsGeneratorInput: any){
+    download(fileExtension: any, labelsGeneratorInput: any) {
 
         labelsGeneratorInput.datasetId = this.context.datasetId;
         labelsGeneratorInput.studyId = this.context.studyId;
