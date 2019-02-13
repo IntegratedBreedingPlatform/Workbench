@@ -4,6 +4,7 @@ import { LabelPrintingContext } from './label-printing.context';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { LabelType } from './label-printing.model';
+import { OriginResourceMetadata } from './label-printing.model';
 
 declare const cropName: string;
 
@@ -28,10 +29,10 @@ export class LabelPrintingService {
 
     }
 
-    getOriginResourceMetadada(): Observable<Map<string, string>> {
+    getOriginResourceMetadada(): Observable<OriginResourceMetadata> {
         const printingLabelType = this.context.printingLabelType;
         const resourceUrl = `crops/${cropName}/labelPrinting/${printingLabelType}/metadata`;
-        return this.http.post<Map<string, string>>(this.baseUrl + resourceUrl, {
+        return this.http.post<OriginResourceMetadata>(this.baseUrl + resourceUrl, {
             datasetId: this.context.datasetId,
             studyId: this.context.studyId
         });

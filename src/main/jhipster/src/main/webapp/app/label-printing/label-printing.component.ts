@@ -41,13 +41,10 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         this.service.getLabelsNeededSummary().subscribe((summary: any) => {
             this.labelsNeededSummary = summary;
         });
-        this.service.getOriginResourceMetadada().subscribe((metadata) => {
-            this.metadata = new Map(Object.entries(metadata));
+        this.service.getOriginResourceMetadada().subscribe((originResourceMetadata) => {
+            this.metadata = new Map(Object.entries(originResourceMetadata.metadata));
             this.metadataKeys = Array.from(this.metadata.keys());
-            this.labelPrintingData.filename = 'Labels-for'
-                + '-' + this.metadata.get('Name')
-                + '-' + this.metadata.get('Selected dataset')
-                + '-' + yyyymmdd();
+            this.labelPrintingData.filename = originResourceMetadata.defaultFileName;
         });
         this.service.getAvailableLabelFields().subscribe((labelTypes) => {
             this.labelTypes = labelTypes;

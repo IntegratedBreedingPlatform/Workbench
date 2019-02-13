@@ -59,3 +59,10 @@ export class LabelType {
         public fields?: { id: string, name: string }[]
     ) { }
 }
+
+export class OriginResourceMetadata {
+    constructor(
+        public defaultFileName?: string,
+        public metadata?: Map<string, string>
+    ) { }
+}
