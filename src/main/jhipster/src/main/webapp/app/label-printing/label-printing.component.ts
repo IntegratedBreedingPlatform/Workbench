@@ -4,7 +4,6 @@ import { LabelsNeededSummary, LabelType, LabelPrintingData } from './label-print
 import { JhiAlertService, JhiLanguageService } from 'ng-jhipster';
 import { LabelPrintingContext } from './label-printing.context';
 import { LabelPrintingService } from './label-printing.service';
-import { yyyymmdd } from '../shared/utils/dateutil';
 import { FileDownloadHelper } from '../entities/sample/file-download.helper';
 import { HttpErrorResponse } from '@angular/common/http';
 
