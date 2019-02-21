@@ -56,7 +56,7 @@ export class LabelType {
     constructor(
         public title?: string,
         public key?: string,
-        public fields?: { id: string, name: string }[]
+        public fields?: { id: number, name: string }[]
     ) { }
 }
 
