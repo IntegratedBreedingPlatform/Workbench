@@ -66,3 +66,34 @@ export class OriginResourceMetadata {
         public metadata?: Map<string, string>
     ) { }
 }
+
+export class PresetSetting {
+    constructor(
+        public  id?: number,
+        public  programUUID?: string,
+        public  toolSection?: string,
+        public  name?: string,
+        public  type?: string,
+        public  selectedFields?: any[],
+        public barcodeSetting?: BarcodeSetting,
+        public fileConfiguration?: FileConfiguration,
+    ) {
+    }
+}
+
+export class BarcodeSetting {
+    constructor(
+        public automaticBarcode?: boolean,
+        public barcodeFields?: any[],
+        public barcodeNeeded?: boolean
+    ) {
+    }
+}
+
+
+export class FileConfiguration {
+    constructor(
+        public outputType?: string
+    ) {
+    }
+}
