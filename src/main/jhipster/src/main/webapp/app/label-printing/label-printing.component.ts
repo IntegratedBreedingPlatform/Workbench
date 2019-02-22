@@ -20,6 +20,7 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
     metadata: Map<string, string>;
     metadataKeys: string[];
     labelTypes: LabelType[];
+    labelTypesBarCode: LabelType[];
     FILE_TYPES = FileType;
     fileType: FileType = FileType.NONE;
     presetSettingId: number = 0;
@@ -53,6 +54,7 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         });
         this.service.getAvailableLabelFields().subscribe((labelTypes) => {
             this.labelTypes = labelTypes;
+            this.labelTypesBarCode = Object.assign([], labelTypes);
         });
 
         this.service.getAllPresets().subscribe((PresetSettings) => {
@@ -63,6 +65,86 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
 
     ngAfterViewInit() {
         this.initDragAndDrop();
+    }
+
+    applySelectedSetting() {
+        let presetId = this.presetSettingId;
+        let presetSetting: PresetSetting = this.presetSettings.filter(preset => preset.id == presetId)[0];
+
+        if (presetId != 0) {
+
+            if (presetSetting.fileConfiguration.outputType === FileType.CSV.toString() || presetSetting.fileConfiguration.outputType === FileType.EXCEL.toString()) {
+                this.fileType = presetSetting.fileConfiguration.outputType === FileType.CSV.toString() ? FileType.CSV : FileType.EXCEL;
+                let idsSelected = presetSetting.selectedFields[0];
+                let labelsSelected: LabelType[] = new Array();
+                this.service.getAvailableLabelFields().subscribe((labelTypes) => {
+                    this.labelTypes = labelTypes;
+                    this.labelTypes.forEach(function (label: LabelType) {
+                        let labelType = new LabelType();
+                        labelType.title = label.title;
+                        labelType.key = label.key;
+                        labelType.fields = [];
+                        label.fields.forEach(function (item, index, object) {
+                            if (idsSelected.indexOf(item.id) > -1) {
+                                labelType.fields.push(item);
+                                object.splice(index, 1);
+
+                            }
+                        });
+                        labelsSelected.push(labelType);
+
+                    });
+
+                    this.fieldsSelected = Object.assign([], labelsSelected);
+                    setTimeout(() => {
+                        $('#leftSelectedFields').empty();
+                        this.addToUIFieldsList($('#leftSelectedFields'), this.fieldsSelected[0].fields, this.fieldsSelected[0].key);
+                        this.addToUIFieldsList($('#leftSelectedFields'), this.fieldsSelected[1].fields, this.fieldsSelected[1].key);
+
+                    });
+
+                    this.initDragAndDrop();
+                });
+                console.log('Es CSV o Excel');
+
+            }else if(presetSetting.fileConfiguration.outputType === FileType.PDF.toString()){
+                console.log('Es PDF');
+
+            }
+
+
+            this.labelPrintingData.settingsName = presetSetting.name;
+            this.labelPrintingData.barcodeNeeded = presetSetting.barcodeSetting.barcodeNeeded;
+            this.labelPrintingData.barcodeGeneratedAutomatically = presetSetting.barcodeSetting.automaticBarcode;
+
+            if (this.labelPrintingData.barcodeNeeded && !this.labelPrintingData.barcodeGeneratedAutomatically) {
+                this.labelPrintingData.firstBarcodeField = 0;
+                this.labelPrintingData.secondBarcodeField = 0;
+                this.labelPrintingData.thirdBarcodeField = 0;
+
+                if (presetSetting.barcodeSetting.barcodeFields[0]) {
+                    this.labelPrintingData.firstBarcodeField = presetSetting.barcodeSetting.barcodeFields[0];
+                }
+                if (presetSetting.barcodeSetting.barcodeFields[1]) {
+                    this.labelPrintingData.secondBarcodeField = presetSetting.barcodeSetting.barcodeFields[1];
+                }
+                if (presetSetting.barcodeSetting.barcodeFields[2]) {
+                    this.labelPrintingData.thirdBarcodeField = presetSetting.barcodeSetting.barcodeFields[2];
+                }
+
+            }
+        }
+        console.log('Entro applySelectedSetting');
+    }
+
+    deleteSelectedSetting() {
+        this.service.deletePreset(this.presetSettingId).subscribe(() => {
+            this.service.getAllPresets().subscribe((PresetSettings) => {
+                this.presetSettings = PresetSettings;
+                this.presetSettingId = 0;
+                this.fileType = FileType.NONE;
+            });
+        });
     }
 
     initDragAndDrop() {
@@ -98,13 +180,13 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         }
 
         if (this.labelPrintingData.barcodeNeeded && !this.labelPrintingData.barcodeGeneratedAutomatically) {
-            if (this.labelPrintingData.firstBarcodeField !== '') {
+            if (this.labelPrintingData.firstBarcodeField !== 0) {
                 barcodeFieldsSelected.push(this.labelPrintingData.firstBarcodeField);
             }
-            if (this.labelPrintingData.secondBarcodeField !== '') {
+            if (this.labelPrintingData.secondBarcodeField !== 0) {
                 barcodeFieldsSelected.push(this.labelPrintingData.secondBarcodeField);
             }
-            if (this.labelPrintingData.thirdBarcodeField !== '') {
+            if (this.labelPrintingData.thirdBarcodeField !== 0) {
                 barcodeFieldsSelected.push(this.labelPrintingData.thirdBarcodeField);
             }
 
@@ -141,6 +223,66 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         } else {
             this.alertService.error('error.general');
         }
+    }
+
+    savePresets() {
+        let preset: PresetSetting = new PresetSetting();
+        let fileConfiguration: FileConfiguration = new FileConfiguration();
+        let barcodeSetting: BarcodeSetting = new BarcodeSetting();
+        let selectedFields = [];
+
+        fileConfiguration.outputType = this.fileType;
+
+        selectedFields.push($('#leftSelectedFields').sortable('toArray'));
+        if (this.fileType === FileType.EXCEL) {
+            selectedFields.push($('#rightSelectedFields').sortable('toArray'));
+        }
+
+
+        barcodeSetting.automaticBarcode = this.labelPrintingData.barcodeGeneratedAutomatically;
+        barcodeSetting.barcodeNeeded = this.labelPrintingData.barcodeNeeded;
+        if (this.labelPrintingData.barcodeNeeded && !this.labelPrintingData.barcodeGeneratedAutomatically) {
+            barcodeSetting.barcodeFields = [];
+            if (this.labelPrintingData.firstBarcodeField !== 0) {
+                barcodeSetting.barcodeFields.push(this.labelPrintingData.firstBarcodeField);
+            }
+            if (this.labelPrintingData.secondBarcodeField !== 0) {
+                barcodeSetting.barcodeFields.push(this.labelPrintingData.secondBarcodeField);
+            }
+            if (this.labelPrintingData.thirdBarcodeField !== 0) {
+                barcodeSetting.barcodeFields.push(this.labelPrintingData.thirdBarcodeField);
+            }
+
+        }
+
+        preset.programUUID = this.context.programId;
+        preset.toolId = 23;
+        preset.toolSection = 'DATASET_LABEL_PRINTING_PRESET';
+        preset.name = this.labelPrintingData.settingsName;
+        preset.type = 'LabelPrintingPreset';
+        preset.selectedFields = selectedFields;
+        preset.barcodeSetting = barcodeSetting;
+        preset.fileConfiguration = fileConfiguration;
+
+        this.service.addPreset(preset).subscribe(() => {
+            this.service.getAllPresets().subscribe((PresetSettings) => {
+                this.presetSettings = PresetSettings;
+            });
+        });
+
+
+    }
+
+    /**
+     * Adds '<li/>' items to the UI given a map and the list
+     * @param listElem
+     * @param listMap
+     * @param fieldsList
+     */
+    addToUIFieldsList(listElem, fieldsList, dataLabelTypeKey) {
+        fieldsList.forEach(function (field) {
+            $('<li/>').addClass('list-group-item text-truncate ui-sortable-handle').attr('id', field.id).attr('data-label-type-key', dataLabelTypeKey).text(field.name).appendTo(listElem);
+        });
     }
 
 }
