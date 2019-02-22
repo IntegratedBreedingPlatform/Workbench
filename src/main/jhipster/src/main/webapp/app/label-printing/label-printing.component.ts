@@ -35,6 +35,7 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         this.route.queryParams.subscribe((params) => {
             this.context.datasetId = params['datasetId'];
             this.context.studyId = params['studyId'];
+            this.context.programId = params['programId'];
             this.context.printingLabelType = params['printingLabelType'];
         });
         this.service.getLabelsNeededSummary().subscribe((summary: any) => {
