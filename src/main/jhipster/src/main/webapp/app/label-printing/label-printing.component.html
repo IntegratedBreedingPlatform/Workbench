@@ -133,6 +133,12 @@
 									<h2 class="sub-content-heading" jhiTranslate="label-printing.choose.label.fields">
 										CHOOSE LABEL FIELDS
 									</h2>
+									<div class="row">
+										<label class="control-label add_top_padding col-xs-12 col-md-12" *ngIf="fileType !== FILE_TYPES.PDF">
+											Drag fields from the <strong>{{labelTypes[0].title}} </strong>and <strong>{{labelTypes[1].title}}</strong> into <strong>Selected Fields</strong> to add them to your export file.</label>{{diego}}
+										<label class="control-label add_top_padding col-xs-12 col-md-12" *ngIf="fileType === FILE_TYPES.PDF">
+											Drag fields from the <strong>{{labelTypes[0].title}} </strong>and <strong>{{labelTypes[1].title}}</strong> into <strong>Left Side Fields</strong> and <strong>Right Side Fields</strong> to add them to your export file.</label>
+									</div>
 								</div>
 							</div>
 							<div class="row">
