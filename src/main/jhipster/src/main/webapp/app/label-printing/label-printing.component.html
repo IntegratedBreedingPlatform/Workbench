@@ -71,18 +71,32 @@
 
 						<div class="row">
 							<div class="col-xs-6 col-md-6">
-								<!-- TODO
-								<div class="col-xs-12 col-md-12">
-									<label class="control-label">
-										<strong class="sub-content-heading" jhiTranslate="label-printing.choose.label.type">
+								<div class="row">
+									<div class="col-xs-12 col-md-12">
+										<h2 class="sub-content-heading" jhiTranslate="label-printing.choose.label.type">
 											CHOOSE LABEL TYPE
-										</strong>
-									</label>
+										</h2>
+									</div>
+									<div class="col-xs-12 col-md-12">
+										&nbsp;
+									</div>
+									<div class="col-xs-12 col-md-12 form-group">
+										<div class="row">
+											<label class="control-label add_top_padding col-xs-4 col-md-4">
+												<input type="checkbox" [(ngModel)]="loadSavedSettings" name="loadSavedSettings" checked=""/>   Load saved settings: </label>
+											<div class="col-xs-8 col-md-6" style="padding-left: 0px;">
+												<select *ngIf="loadSavedSettings" class="form-control" [(ngModel)]="presetSettingId" (ngModelChange)="applySelectedSetting()">
+													<option [value]="0">Please Choose</option>
+													<option *ngFor="let presetSetting of presetSettings" [value]="presetSetting.id">{{presetSetting.name}}</option>
+												</select>
+											</div>
+											<div class="add_top_padding saved-settings pull-left fbk-left-padding">
+												<a *ngIf="loadSavedSettings &&  presetSettingId!=0" href="javascript: void(0);" class="fb-delete-settings"><span
+													class="glyphicon glyphicon-trash delete-saved-settings" (click)="deleteSelectedSetting()"></span></a>
+											</div>
+										</div>
+									</div>
 								</div>
-								<div class="col-xs-12 col-md-12">
-
-								</div>
-								-->
 							</div>
 							<div class="col-xs-6 col-md-6">
 								<div class="row">
