@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestOperations;
@@ -31,19 +32,21 @@ public class ApiAuthenticationService {
 
 	@Autowired
 	private RestOperations restClient;
+	
+	@Value("${bv.web.url}")
+	private String bvWebUrl;
 
 	public Token authenticate(String userName, String password) {
 		LOG.debug("Trying to authenticate user {} with BMSAPI to obtain a token.", userName);
 		try {
-			String bmsApiAuthURLFormat = "%s://%s:%s/bmsapi/authenticate?username=%s&password=%s";
+			String bmsApiAuthURLFormat = this.bvWebUrl + "authenticate?username=%s&password=%s";
 			/**
 			 * We want to make sure we construct the URL based on the server/port the request was received on. We want to hit the same
 			 * server's authentication end point to obtain token. For servers in networks behind proxies and different cross network access
 			 * rules etc, use of local loop back address and getLocalPort() ensures we always hit the correct server.
 			 */
 			String bmsApiAuthURL =
-					String.format(bmsApiAuthURLFormat, this.currentHttpRequest.getScheme(), LOCAL_LOOPBACK_ADDRESS,
-							this.currentHttpRequest.getLocalPort(), userName, password);
+					String.format(bmsApiAuthURLFormat, userName, password);
 			final Token apiAuthToken = this.restClient.postForObject(bmsApiAuthURL, new HashMap<String, String>(), Token.class);
 			if (apiAuthToken != null) {
 				LOG.debug("Successfully authenticated and obtained a token from BMSAPI for user {}.", userName);
