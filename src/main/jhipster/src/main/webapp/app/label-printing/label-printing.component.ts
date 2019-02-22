@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { LabelsNeededSummary, LabelType, LabelPrintingData } from './label-printing.model';
+import { LabelsNeededSummary, LabelType, LabelPrintingData, PresetSetting, BarcodeSetting, FileConfiguration } from './label-printing.model';
 import { JhiAlertService, JhiLanguageService } from 'ng-jhipster';
 import { LabelPrintingContext } from './label-printing.context';
 import { LabelPrintingService } from './label-printing.service';
@@ -22,6 +22,11 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
     labelTypes: LabelType[];
     FILE_TYPES = FileType;
     fileType: FileType = FileType.NONE;
+    presetSettingId: number = 0;
+    loadSavedSettings = false;
+    fieldsSelected: LabelType[];
+    presetSettings: PresetSetting[];
+
 
     constructor(private route: ActivatedRoute,
                 private context: LabelPrintingContext,
@@ -49,6 +54,11 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         this.service.getAvailableLabelFields().subscribe((labelTypes) => {
             this.labelTypes = labelTypes;
         });
+
+        this.service.getAllPresets().subscribe((PresetSettings) => {
+            this.presetSettings = PresetSettings;
+        });
+        this.presetSettingId = 0;
     }
 
     ngAfterViewInit() {
