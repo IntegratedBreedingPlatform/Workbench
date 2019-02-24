@@ -139,11 +139,18 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
 
     deleteSelectedSetting() {
         this.service.deletePreset(this.presetSettingId).subscribe(() => {
+            this.alertService.success('label-printing.delete.label.settings.success');
             this.service.getAllPresets().subscribe((PresetSettings) => {
                 this.presetSettings = PresetSettings;
                 this.presetSettingId = 0;
                 this.fileType = FileType.NONE;
             });
+        }, (response) => {
+            if (response.error.errors[0].message) {
+                this.alertService.error('error.custom', { param: response.error.errors[0].message });
+            } else {
+                this.alertService.error('error.general');
+            }
         });
     }
 
@@ -268,6 +275,13 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
             this.service.getAllPresets().subscribe((PresetSettings) => {
                 this.presetSettings = PresetSettings;
             });
+            this.alertService.success('label-printing.save.label.settings.success');
+        }, (response) => {
+            if (response.error.errors[0].message) {
+                this.alertService.error('error.custom', { param: response.error.errors[0].message });
+            } else {
+                this.alertService.error('error.general');
+            }
         });
 
 
