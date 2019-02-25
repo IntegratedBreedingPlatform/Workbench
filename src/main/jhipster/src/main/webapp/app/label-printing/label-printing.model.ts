@@ -34,12 +34,12 @@ export class LabelPrintingData {
         public stockListId?: string,
         public stockListTypeName?: string,
         public inventoryDetailsList?: string,
-        public barcodeGeneratedAutomatically: boolean = false,
-        public firstBarcodeField: number = 0,
-        public secondBarcodeField: number = 0,
-        public thirdBarcodeField: number = 0,
+        public barcodeGeneratedAutomatically = false,
+        public firstBarcodeField = 0,
+        public secondBarcodeField = 0,
+        public thirdBarcodeField = 0,
         public filename = '',
-        public barcodeNeeded: boolean = false
+        public barcodeNeeded = false
     ) {
     }
 }
@@ -75,7 +75,7 @@ export class PresetSetting {
         public  toolSection?: string,
         public  name?: string,
         public  type?: string,
-        public  selectedFields?: any[],
+        public  selectedFields?: number[][],
         public barcodeSetting?: BarcodeSetting,
         public fileConfiguration?: FileConfiguration,
     ) {
@@ -85,12 +85,11 @@ export class PresetSetting {
 export class BarcodeSetting {
     constructor(
         public automaticBarcode?: boolean,
-        public barcodeFields?: any[],
+        public barcodeFields?: number[],
         public barcodeNeeded?: boolean
     ) {
     }
 }
-
 
 export class FileConfiguration {
     constructor(
