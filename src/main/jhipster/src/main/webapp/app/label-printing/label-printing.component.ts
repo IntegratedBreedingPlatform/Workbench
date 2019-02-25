@@ -277,8 +277,10 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
      * @param fieldsList
      */
     addToUIFieldsList(listElem, fieldsList, dataLabelTypeKey) {
-        fieldsList.forEach(function (field) {
-            $('<li/>').addClass('list-group-item text-truncate ui-sortable-handle').attr('id', field.id).attr('data-label-type-key', dataLabelTypeKey).text(field.name).appendTo(listElem);
+        fieldsList.forEach(function(field) {
+            $('<li/>').addClass('list-group-item text-truncate ui-sortable-handle') //
+                .attr('id', field.id).attr('data-label-type-key', dataLabelTypeKey) //
+                .text(field.name).appendTo(listElem);
         });
     }
 
