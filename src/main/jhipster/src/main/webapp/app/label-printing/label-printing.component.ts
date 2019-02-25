@@ -23,11 +23,10 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
     labelTypesBarCode: LabelType[];
     FILE_TYPES = FileType;
     fileType: FileType = FileType.NONE;
-    presetSettingId: number = 0;
+    presetSettingId: number;
     loadSavedSettings = false;
     fieldsSelected: LabelType[];
     presetSettings: PresetSetting[];
-
 
     constructor(private route: ActivatedRoute,
                 private context: LabelPrintingContext,
@@ -103,15 +102,10 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
 
                     });
 
-                    this.initDragAndDrop();
-                });
-                console.log('Es CSV o Excel');
-
-            }else if(presetSetting.fileConfiguration.outputType === FileType.PDF.toString()){
-                console.log('Es PDF');
+            this.initDragAndDrop();
+            if (presetSetting.fileConfiguration.outputType === FileType.PDF.toString()) {
 
             }
-
 
             this.labelPrintingData.settingsName = presetSetting.name;
             this.labelPrintingData.barcodeNeeded = presetSetting.barcodeSetting.barcodeNeeded;
@@ -134,7 +128,6 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
 
             }
         }
-        console.log('Entro applySelectedSetting');
     }
 
     deleteSelectedSetting() {
@@ -233,10 +226,10 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
     }
 
     savePresets() {
-        let preset: PresetSetting = new PresetSetting();
-        let fileConfiguration: FileConfiguration = new FileConfiguration();
-        let barcodeSetting: BarcodeSetting = new BarcodeSetting();
-        let selectedFields = [];
+        const preset: PresetSetting = new PresetSetting();
+        const fileConfiguration: FileConfiguration = new FileConfiguration();
+        const barcodeSetting: BarcodeSetting = new BarcodeSetting();
+        const selectedFields = [];
 
         fileConfiguration.outputType = this.fileType;
 
@@ -244,7 +237,6 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         if (this.fileType === FileType.EXCEL) {
             selectedFields.push($('#rightSelectedFields').sortable('toArray'));
         }
-
 
         barcodeSetting.automaticBarcode = this.labelPrintingData.barcodeGeneratedAutomatically;
         barcodeSetting.barcodeNeeded = this.labelPrintingData.barcodeNeeded;
@@ -283,8 +275,6 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
                 this.alertService.error('error.general');
             }
         });
-
-
     }
 
     /**
