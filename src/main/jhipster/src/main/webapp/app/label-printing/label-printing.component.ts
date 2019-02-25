@@ -72,9 +72,10 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
             const presetSetting = this.presetSettings.filter((preset) => preset.id === presetId)[0];
             this.fileType = this.getFileType(presetSetting.fileConfiguration.outputType);
             const labelTypeList = Object.assign([], this.labelTypesBarCode);
-            const fieldsSelected: LabelType[] = new Array();
+            const labelFieldsSelected = new Array();
 
             presetSetting.selectedFields.forEach(function(idsSelected) {
+                const fieldsSelected: LabelType[] = new Array();
                 labelTypeList.forEach(function(label: LabelType) {
                     const labelType = new LabelType(label.title, label.key, []);
                     label.fields.forEach(function(item, index, object) {
@@ -85,15 +86,28 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
                     });
                     fieldsSelected.push(labelType);
                 });
+                labelFieldsSelected.push(fieldsSelected);
             });
 
             this.labelTypes = Object.assign([], labelTypeList);
-            this.fieldsSelected = Object.assign([], fieldsSelected);
+            this.fieldsSelected = Object.assign([], labelFieldsSelected);
+
             setTimeout(() => {
                 $('#leftSelectedFields').empty();
-                this.addToUIFieldsList($('#leftSelectedFields'), this.fieldsSelected[0].fields, this.fieldsSelected[0].key);
-                this.addToUIFieldsList($('#leftSelectedFields'), this.fieldsSelected[1].fields, this.fieldsSelected[1].key);
-
+                let listElem = '#leftSelectedFields';
+                labelFieldsSelected.forEach(function(fieldsList: LabelType[]) {
+                    fieldsList.forEach(function(labelsType: LabelType) {
+                        const key = labelsType.key;
+                        labelsType.fields.forEach(function(field) {
+                            $('<li/>').addClass('list-group-item text-truncate ui-sortable-handle') //
+                                .attr('id', field.id).attr('data-label-type-key', key) //
+                                .text(field.name).appendTo(listElem);
+                        });
+                    });
+                    if (labelFieldsSelected.length > 1) {
+                        listElem = '#rightSelectedFields';
+                    }
+                });
             });
 
             this.initDragAndDrop();
@@ -173,13 +187,13 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         }
 
         if (this.labelPrintingData.barcodeNeeded && !this.labelPrintingData.barcodeGeneratedAutomatically) {
-            if (this.labelPrintingData.firstBarcodeField !== 0) {
+            if (Number(this.labelPrintingData.firstBarcodeField) !== 0) {
                 barcodeFieldsSelected.push(this.labelPrintingData.firstBarcodeField);
             }
-            if (this.labelPrintingData.secondBarcodeField !== 0) {
+            if (Number(this.labelPrintingData.secondBarcodeField) !== 0) {
                 barcodeFieldsSelected.push(this.labelPrintingData.secondBarcodeField);
             }
-            if (this.labelPrintingData.thirdBarcodeField !== 0) {
+            if (Number(this.labelPrintingData.thirdBarcodeField) !== 0) {
                 barcodeFieldsSelected.push(this.labelPrintingData.thirdBarcodeField);
             }
 
@@ -227,7 +241,7 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         fileConfiguration.outputType = this.fileType;
 
         selectedFields.push($('#leftSelectedFields').sortable('toArray'));
-        if (this.fileType === FileType.EXCEL) {
+        if (this.fileType === FileType.PDF) {
             selectedFields.push($('#rightSelectedFields').sortable('toArray'));
         }
 
@@ -235,13 +249,13 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         barcodeSetting.barcodeNeeded = this.labelPrintingData.barcodeNeeded;
         if (this.labelPrintingData.barcodeNeeded && !this.labelPrintingData.barcodeGeneratedAutomatically) {
             barcodeSetting.barcodeFields = new Array();
-            if (this.labelPrintingData.firstBarcodeField !== 0) {
+            if (Number(this.labelPrintingData.firstBarcodeField) !== 0) {
                 barcodeSetting.barcodeFields.push(Number(this.labelPrintingData.firstBarcodeField));
             }
-            if (this.labelPrintingData.secondBarcodeField !== 0) {
+            if (Number(this.labelPrintingData.secondBarcodeField) !== 0) {
                 barcodeSetting.barcodeFields.push(Number(this.labelPrintingData.secondBarcodeField));
             }
-            if (this.labelPrintingData.thirdBarcodeField !== 0) {
+            if (Number(this.labelPrintingData.thirdBarcodeField) !== 0) {
                 barcodeSetting.barcodeFields.push(Number(this.labelPrintingData.thirdBarcodeField));
             }
 
@@ -267,20 +281,6 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
             } else {
                 this.alertService.error('error.general');
             }
-        });
-    }
-
-    /**
-     * Adds '<li/>' items to the UI given a map and the list
-     * @param listElem
-     * @param listMap
-     * @param fieldsList
-     */
-    addToUIFieldsList(listElem, fieldsList, dataLabelTypeKey) {
-        fieldsList.forEach(function(field) {
-            $('<li/>').addClass('list-group-item text-truncate ui-sortable-handle') //
-                .attr('id', field.id).attr('data-label-type-key', dataLabelTypeKey) //
-                .text(field.name).appendTo(listElem);
         });
     }
 
