@@ -67,40 +67,34 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
     }
 
     applySelectedSetting() {
-        let presetId = this.presetSettingId;
-        let presetSetting: PresetSetting = this.presetSettings.filter(preset => preset.id == presetId)[0];
+        const presetId = Number(this.presetSettingId);
+        if (presetId !== 0) {
+            const presetSetting = this.presetSettings.filter((preset) => preset.id === presetId)[0];
+            this.fileType = this.getFileType(presetSetting.fileConfiguration.outputType);
+            const labelTypeList = Object.assign([], this.labelTypesBarCode);
+            const fieldsSelected: LabelType[] = new Array();
 
-        if (presetId != 0) {
-
-            if (presetSetting.fileConfiguration.outputType === FileType.CSV.toString() || presetSetting.fileConfiguration.outputType === FileType.EXCEL.toString()) {
-                this.fileType = presetSetting.fileConfiguration.outputType === FileType.CSV.toString() ? FileType.CSV : FileType.EXCEL;
-                let idsSelected = presetSetting.selectedFields[0];
-                let labelsSelected: LabelType[] = new Array();
-                this.service.getAvailableLabelFields().subscribe((labelTypes) => {
-                    this.labelTypes = labelTypes;
-                    this.labelTypes.forEach(function (label: LabelType) {
-                        let labelType = new LabelType();
-                        labelType.title = label.title;
-                        labelType.key = label.key;
-                        labelType.fields = [];
-                        label.fields.forEach(function (item, index, object) {
-                            if (idsSelected.indexOf(item.id) > -1) {
-                                labelType.fields.push(item);
-                                object.splice(index, 1);
-
-                            }
-                        });
-                        labelsSelected.push(labelType);
-
+            presetSetting.selectedFields.forEach(function(idsSelected) {
+                labelTypeList.forEach(function(label: LabelType) {
+                    const labelType = new LabelType(label.title, label.key, []);
+                    label.fields.forEach(function(item, index, object) {
+                        if (idsSelected.indexOf(item.id) > -1) {
+                            labelType.fields.push(item);
+                            object.splice(index, 0);
+                        }
                     });
+                    fieldsSelected.push(labelType);
+                });
+            });
 
-                    this.fieldsSelected = Object.assign([], labelsSelected);
-                    setTimeout(() => {
-                        $('#leftSelectedFields').empty();
-                        this.addToUIFieldsList($('#leftSelectedFields'), this.fieldsSelected[0].fields, this.fieldsSelected[0].key);
-                        this.addToUIFieldsList($('#leftSelectedFields'), this.fieldsSelected[1].fields, this.fieldsSelected[1].key);
+            this.labelTypes = Object.assign([], labelTypeList);
+            this.fieldsSelected = Object.assign([], fieldsSelected);
+            setTimeout(() => {
+                $('#leftSelectedFields').empty();
+                this.addToUIFieldsList($('#leftSelectedFields'), this.fieldsSelected[0].fields, this.fieldsSelected[0].key);
+                this.addToUIFieldsList($('#leftSelectedFields'), this.fieldsSelected[1].fields, this.fieldsSelected[1].key);
 
-                    });
+            });
 
             this.initDragAndDrop();
             if (presetSetting.fileConfiguration.outputType === FileType.PDF.toString()) {
@@ -289,6 +283,18 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         });
     }
 
+    getFileType(extension: string): FileType {
+        switch (extension) {
+            case FileType.CSV:
+                return FileType.CSV;
+            case FileType.PDF:
+                return FileType.PDF;
+            case FileType.EXCEL:
+                return FileType.EXCEL;
+            default:
+                return FileType.NONE;
+        }
+    }
 }
 
 @Pipe({name: 'allLabels'})
