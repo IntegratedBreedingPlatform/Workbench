@@ -11,43 +11,35 @@
 
 package org.generationcp.ibpworkbench.germplasm;
 
+import org.generationcp.ibpworkbench.germplasm.containers.GermplasmIndexContainer;
+import org.generationcp.ibpworkbench.germplasm.listeners.GermplasmTreeExpandListener;
+import org.generationcp.ibpworkbench.util.Util;
+import org.generationcp.middleware.pojos.GermplasmPedigreeTree;
+import org.generationcp.middleware.pojos.GermplasmPedigreeTreeNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Configurable;
+
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.VerticalLayout;
-import org.generationcp.ibpworkbench.germplasm.containers.GermplasmIndexContainer;
-import org.generationcp.ibpworkbench.germplasm.listeners.GermplasmTreeExpandListener;
-import org.generationcp.ibpworkbench.util.Util;
-import org.generationcp.commons.exceptions.InternationalizableException;
-import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.middleware.pojos.GermplasmPedigreeTree;
-import org.generationcp.middleware.pojos.GermplasmPedigreeTreeNode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 
 @Configurable
-public class GermplasmPedigreeTreeComponent extends Tree implements InitializingBean, InternationalizableComponent {
+public class GermplasmPedigreeTreeComponent extends Tree {
 
 	private static final long serialVersionUID = 1L;
+	private static final Logger LOG = LoggerFactory.getLogger(GermplasmPedigreeTreeComponent.class);
 	private GermplasmPedigreeTree germplasmPedigreeTree;
 	private GermplasmQueries qQuery;
 	private VerticalLayout mainLayout;
 	private TabSheet tabSheet;
 	private GermplasmIndexContainer dataIndexContainer;
 	private Boolean includeDerivativeLines;
-	@SuppressWarnings("unused")
-	private final static Logger LOG = LoggerFactory.getLogger(GermplasmPedigreeTreeComponent.class);
-
-	@Autowired
-	private SimpleResourceBundleMessageSource messageSource;
 
 	public GermplasmPedigreeTreeComponent(int gid, GermplasmQueries qQuery, GermplasmIndexContainer dataResultIndexContainer,
-			VerticalLayout mainLayout, TabSheet tabSheet) throws InternationalizableException {
+			VerticalLayout mainLayout, TabSheet tabSheet) {
 
 		super();
 
@@ -56,7 +48,7 @@ public class GermplasmPedigreeTreeComponent extends Tree implements Initializing
 	}
 
 	public GermplasmPedigreeTreeComponent(int gid, GermplasmQueries qQuery, GermplasmIndexContainer dataResultIndexContainer,
-			VerticalLayout mainLayout, TabSheet tabSheet, Boolean includeDerivativeLines) throws InternationalizableException {
+			VerticalLayout mainLayout, TabSheet tabSheet, Boolean includeDerivativeLines) {
 
 		super();
 
@@ -73,7 +65,7 @@ public class GermplasmPedigreeTreeComponent extends Tree implements Initializing
 		this.includeDerivativeLines = includeDerivativeLines;
 
 		this.setSizeFull();
-		this.germplasmPedigreeTree = qQuery.generatePedigreeTree(Integer.valueOf(gid), 1, includeDerivativeLines); // throws QueryException
+		this.germplasmPedigreeTree = qQuery.generatePedigreeTree(Integer.valueOf(gid), 1, includeDerivativeLines);
 		this.addNode(this.germplasmPedigreeTree.getRoot(), 1);
 		this.setImmediate(false);
 
@@ -159,7 +151,7 @@ public class GermplasmPedigreeTreeComponent extends Tree implements Initializing
 
 	}
 
-	public void displayNewGermplasmDetailTab(int gid) throws InternationalizableException {
+	public void displayNewGermplasmDetailTab(int gid) {
 		if (this.mainLayout != null && this.tabSheet != null) {
 			VerticalLayout detailLayout = new VerticalLayout();
 			detailLayout.setSpacing(true);
@@ -180,19 +172,4 @@ public class GermplasmPedigreeTreeComponent extends Tree implements Initializing
 		}
 	}
 
-	@Override
-	public void afterPropertiesSet() {
-
-	}
-
-	@Override
-	public void attach() {
-		super.attach();
-		this.updateLabels();
-	}
-
-	@Override
-	public void updateLabels() {
-
-	}
 }
