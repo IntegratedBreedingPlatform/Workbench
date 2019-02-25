@@ -130,7 +130,6 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
             this.service.getAllPresets().subscribe((PresetSettings) => {
                 this.presetSettings = PresetSettings;
                 this.presetSettingId = 0;
-                this.fileType = FileType.NONE;
             });
         }, (response) => {
             if (response.error.errors[0].message) {
@@ -235,15 +234,15 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         barcodeSetting.automaticBarcode = this.labelPrintingData.barcodeGeneratedAutomatically;
         barcodeSetting.barcodeNeeded = this.labelPrintingData.barcodeNeeded;
         if (this.labelPrintingData.barcodeNeeded && !this.labelPrintingData.barcodeGeneratedAutomatically) {
-            barcodeSetting.barcodeFields = [];
+            barcodeSetting.barcodeFields = new Array();
             if (this.labelPrintingData.firstBarcodeField !== 0) {
-                barcodeSetting.barcodeFields.push(this.labelPrintingData.firstBarcodeField);
+                barcodeSetting.barcodeFields.push(Number(this.labelPrintingData.firstBarcodeField));
             }
             if (this.labelPrintingData.secondBarcodeField !== 0) {
-                barcodeSetting.barcodeFields.push(this.labelPrintingData.secondBarcodeField);
+                barcodeSetting.barcodeFields.push(Number(this.labelPrintingData.secondBarcodeField));
             }
             if (this.labelPrintingData.thirdBarcodeField !== 0) {
-                barcodeSetting.barcodeFields.push(this.labelPrintingData.thirdBarcodeField);
+                barcodeSetting.barcodeFields.push(Number(this.labelPrintingData.thirdBarcodeField));
             }
 
         }
