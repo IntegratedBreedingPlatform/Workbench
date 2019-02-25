@@ -99,16 +99,9 @@ public class GermplasmPedigreeTreeComponent extends Tree implements Initializing
 
 	private void addNode(GermplasmPedigreeTreeNode node, int level) {
 		if (level == 1) {
-			String preferredName = "";
-			try {
-				preferredName = node.getGermplasm().getPreferredName().getNval();
-			} catch (Exception e) {
-				preferredName = String.valueOf(node.getGermplasm().getGid());
-			}
-			String leafNodeLabel = preferredName + "(" + node.getGermplasm().getGid() + ")";
 			String leafNodeId = node.getGermplasm().getGid().toString();
 			this.addItem(leafNodeId);
-			this.setItemCaption(leafNodeId, leafNodeLabel);
+			this.setItemCaption(leafNodeId, this.getNodeLabel(node));
 			this.setParent(leafNodeId, leafNodeId);
 			this.setChildrenAllowed(leafNodeId, true);
 
@@ -116,44 +109,45 @@ public class GermplasmPedigreeTreeComponent extends Tree implements Initializing
 
 		for (GermplasmPedigreeTreeNode parent : node.getLinkedNodes()) {
 			String leafNodeId = node.getGermplasm().getGid().toString();
-			String preferredName = "";
-			try {
-				preferredName = parent.getGermplasm().getPreferredName().getNval();
-			} catch (Exception e) {
-				preferredName = String.valueOf(parent.getGermplasm().getGid());
-			}
-
-			String parentNodeLabel = preferredName + "(" + parent.getGermplasm().getGid() + ")";
-			String parentNodeId = node.getGermplasm().getGid() + "@" + parent.getGermplasm().getGid();
+			final Integer gid = parent.getGermplasm().getGid();
+			String parentNodeId = node.getGermplasm().getGid() + "@" + gid;
 			this.addItem(parentNodeId);
-			this.setItemCaption(parentNodeId, parentNodeLabel);
+			this.setItemCaption(parentNodeId,  this.getNodeLabel(parent));
 			this.setParent(parentNodeId, leafNodeId);
 			this.setChildrenAllowed(parentNodeId, true);
 
 			this.addNode(parent, level + 1);
 		}
 	}
+	
+	String getNodeLabel(final GermplasmPedigreeTreeNode node) {
+		String preferredName = "";
+		final Integer gid = node.getGermplasm().getGid();
+		try {
+			preferredName = node.getGermplasm().getPreferredName().getNval();
+		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
+			preferredName = String.valueOf(gid);
+		}
+		final StringBuilder sb = new StringBuilder(preferredName);
+		if (gid != 0) {
+			sb.append("(" + gid + ")");
+			
+		}
+		return sb.toString();
+	}
 
 	private void addNode(GermplasmPedigreeTreeNode node, String itemIdOfParent) {
 		for (GermplasmPedigreeTreeNode parent : node.getLinkedNodes()) {
-			String leafNodeId = itemIdOfParent;
-			String preferredName = "";
-			try {
-				preferredName = parent.getGermplasm().getPreferredName().getNval();
-			} catch (Exception e) {
-				preferredName = String.valueOf(parent.getGermplasm().getGid());
-			}
-
-			String parentNodeLabel = preferredName + "(" + parent.getGermplasm().getGid() + ")";
 			String parentNodeId = node.getGermplasm().getGid() + "@" + parent.getGermplasm().getGid();
 			this.addItem(parentNodeId);
-			this.setItemCaption(parentNodeId, parentNodeLabel);
-			this.setParent(parentNodeId, leafNodeId);
+			this.setItemCaption(parentNodeId, this.getNodeLabel(parent));
+			this.setParent(parentNodeId, itemIdOfParent);
 			this.setChildrenAllowed(parentNodeId, true);
 		}
 	}
 
-	public void pedigreeTreeExpandAction(String itemId) throws InternationalizableException {
+	public void pedigreeTreeExpandAction(String itemId) {
 		if (itemId.contains("@")) {
 			String gidString = itemId.substring(itemId.indexOf("@") + 1, itemId.length());
 			this.germplasmPedigreeTree = this.qQuery.generatePedigreeTree(Integer.valueOf(gidString), 2, this.includeDerivativeLines);

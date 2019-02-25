@@ -80,12 +80,18 @@ public class CreatePedigreeGraph {
 		}
 	}
 
-	private String createNodeTextWithFormatting(final GermplasmPedigreeTreeNode node) {
-		final String leafNodeGIDRoot = node.getGermplasm().getGid().toString();
-		final String leafNodeLabelRoot =
-			node.getGermplasm().getPreferredName().getNval() + "\n" + "GID: " + node.getGermplasm().getGid().toString();
+	String createNodeTextWithFormatting(final GermplasmPedigreeTreeNode node) {
+		final Integer nodeGid = node.getGermplasm().getGid();
+		final String leafNodeGIDRoot = nodeGid.toString();
+		final String preferredName = node.getGermplasm().getPreferredName().getNval();
+		final StringBuilder sb = new StringBuilder(preferredName);
+		// The breakline " \n" is needed otherwise the "UNKNOWN" text for GID = 0 becomes truncated at the bottom
+		sb.append(" \n ");
+		if (nodeGid != 0) {
+			sb.append("GID: " + leafNodeGIDRoot);
+		}
 		this.gv.addln(leafNodeGIDRoot + " [shape=box];");
-		this.gv.addln(leafNodeGIDRoot + " [label=\"" + leafNodeLabelRoot + "\", fontname=\"Helvetica\", fontsize=12.0, ordering=\"in\"];");
+		this.gv.addln(leafNodeGIDRoot + " [label=\"" + sb.toString() + "\", fontname=\"Helvetica\", fontsize=12.0, ordering=\"in\"];");
 		return leafNodeGIDRoot;
 	}
 
@@ -97,18 +103,14 @@ public class CreatePedigreeGraph {
 		}
 
 		for (final GermplasmPedigreeTreeNode parent : node.getLinkedNodes()) {
+			final String leafNodeGID = this.createNodeTextWithFormatting(parent);
+			final String parentNodeGID = this.createNodeTextWithFormatting(node);
 
-			if (!"0".equalsIgnoreCase(parent.getGermplasm().getGid().toString())) {
-
-				final String leafNodeGID = this.createNodeTextWithFormatting(parent);
-				final String parentNodeGID = this.createNodeTextWithFormatting(node);
-
-				if (level == 1) {
-					final String leafNodeGIDRoot = this.createNodeTextWithFormatting(node);
-					this.gv.addln(leafNodeGID + "->" + leafNodeGIDRoot + ";");
-				} else {
-					this.gv.addln(leafNodeGID + "->" + parentNodeGID + ";");
-				}
+			if (level == 1) {
+				final String leafNodeGIDRoot = this.createNodeTextWithFormatting(node);
+				this.gv.addln(leafNodeGID + "->" + leafNodeGIDRoot + ";");
+			} else {
+				this.gv.addln(leafNodeGID + "->" + parentNodeGID + ";");
 			}
 
 			this.addNode(parent, level + 1);
