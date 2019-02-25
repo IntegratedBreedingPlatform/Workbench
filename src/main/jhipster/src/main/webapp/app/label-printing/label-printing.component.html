@@ -354,7 +354,7 @@
 								<div class="col-xs-12 col-md-12 fbk-center">
 									<input type="button" onclick="window.history.back();" value="Cancel" class="btn btn-default"/>
 									<!-- TODO -->
-									<input type="button" id="fbk-lbl-printing-save-preset" (click)="savePresets()" value="Save Preset" class="btn btn-info"/>
+									<input type="button" *ngIf="fileType" id="fbk-lbl-printing-save-preset" (click)="savePresets()" value="Save Preset" class="btn btn-info"/>
 									<input type="button" *ngIf="fileType" (click)="printLabels()" value="Export Label" class="btn btn-primary" />
 								</div>
 							</div>
