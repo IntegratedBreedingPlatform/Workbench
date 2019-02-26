@@ -7,7 +7,7 @@ import {
     AuthServerProvider
 } from './';
 import { ModalComponent } from './modal/modal.component';
-import { modalConfirmComponent } from './modal/modal-confirm.component';
+import { ModalConfirmComponent } from './modal/modal-confirm.component';
 import { ModalService } from './modal/modal.service';
 
 @NgModule({
@@ -17,7 +17,7 @@ import { ModalService } from './modal/modal.service';
     ],
     declarations: [
         ModalComponent,
-        modalConfirmComponent
+        ModalConfirmComponent
     ],
     providers: [
         AuthServerProvider,
@@ -26,13 +26,13 @@ import { ModalService } from './modal/modal.service';
     ],
     entryComponents: [
         ModalComponent,
-        modalConfirmComponent
+        ModalConfirmComponent
     ],
     exports: [
         BmsjHipsterSharedCommonModule,
         DatePipe,
         ModalComponent,
-        modalConfirmComponent
+        ModalConfirmComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 
