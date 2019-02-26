@@ -238,7 +238,7 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         const barcodeSetting: BarcodeSetting = new BarcodeSetting();
         const selectedFields = [];
 
-        fileConfiguration.outputType = this.fileType;
+        fileConfiguration.outputType = this.fileType.toString();
 
         selectedFields.push($('#leftSelectedFields').sortable('toArray'));
         if (this.fileType === FileType.PDF) {
