@@ -37,7 +37,6 @@ import junit.framework.Assert;
 @RunWith(value = MockitoJUnitRunner.class)
 public class TraitDisplayResultsTest {
 	private static final Logger LOG = LoggerFactory.getLogger(TraitDisplayResultsTest.class);
-	private static final String GERMPLASM_COL_TABLE_HEIGHT = "445";
 	@Mock
 	private CrossStudyDataManager crossStudyDataManager;
 
@@ -91,8 +90,6 @@ public class TraitDisplayResultsTest {
 		final PagedTable combinedScoreTagColTable = this.traitDisplayResults.getCreateCombinedScoreTagColTable();
 		Assert.assertEquals("combinedScoreTagColTable", combinedScoreTagColTable.getDebugId());
 		Assert.assertEquals(Float.valueOf("160"), combinedScoreTagColTable.getWidth());
-		Assert.assertEquals(Float.valueOf(TraitDisplayResultsTest.GERMPLASM_COL_TABLE_HEIGHT),
-				combinedScoreTagColTable.getHeight());
 		Assert.assertTrue(combinedScoreTagColTable.isImmediate());
 		Assert.assertEquals(15, combinedScoreTagColTable.getPageLength());
 		Assert.assertTrue(combinedScoreTagColTable.isColumnCollapsingAllowed());
@@ -105,8 +102,6 @@ public class TraitDisplayResultsTest {
 		final PagedTable traitsColTable = this.traitDisplayResults.getTraitsColTable();
 		Assert.assertEquals("traitsColTable", traitsColTable.getDebugId());
 		Assert.assertEquals(Float.valueOf("490"), traitsColTable.getWidth());
-		Assert.assertEquals(Float.valueOf(TraitDisplayResultsTest.GERMPLASM_COL_TABLE_HEIGHT),
-				traitsColTable.getHeight());
 		Assert.assertTrue(traitsColTable.isImmediate());
 		Assert.assertEquals(15, traitsColTable.getPageLength());
 		Assert.assertTrue(traitsColTable.isColumnCollapsingAllowed());
@@ -119,8 +114,6 @@ public class TraitDisplayResultsTest {
 		final PagedTable germplasmColTable = this.traitDisplayResults.getGermplasmColTable();
 		Assert.assertEquals("germplasmColTable", germplasmColTable.getDebugId());
 		Assert.assertEquals(Float.valueOf("340"), germplasmColTable.getWidth());
-		Assert.assertEquals(Float.valueOf(TraitDisplayResultsTest.GERMPLASM_COL_TABLE_HEIGHT),
-				germplasmColTable.getHeight());
 		Assert.assertTrue(germplasmColTable.isImmediate());
 		Assert.assertEquals(15, germplasmColTable.getPageLength());
 		Assert.assertTrue(germplasmColTable.isColumnCollapsingAllowed());
