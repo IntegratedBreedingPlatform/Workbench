@@ -270,6 +270,7 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
 
         preset.programUUID = this.context.programId;
         preset.toolSection = 'DATASET_LABEL_PRINTING_PRESET';
+        preset.toolId = 23;
         preset.name = this.labelPrintingData.settingsName;
         preset.type = 'LabelPrintingPreset';
         preset.selectedFields = selectedFields;
