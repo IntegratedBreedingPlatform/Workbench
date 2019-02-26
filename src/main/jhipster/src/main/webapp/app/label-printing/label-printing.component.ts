@@ -262,7 +262,6 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         }
 
         preset.programUUID = this.context.programId;
-        preset.toolId = 23;
         preset.toolSection = 'DATASET_LABEL_PRINTING_PRESET';
         preset.name = this.labelPrintingData.settingsName;
         preset.type = 'LabelPrintingPreset';
@@ -270,10 +269,9 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         preset.barcodeSetting = barcodeSetting;
         preset.fileConfiguration = fileConfiguration;
 
-        this.service.addPreset(preset).subscribe(() => {
-            this.service.getAllPresets().subscribe((PresetSettings) => {
-                this.presetSettings = PresetSettings;
-            });
+        this.service.addPreset(preset).subscribe((presetSetting) => {
+            this.presetSettings.push(presetSetting);
+                this.presetSettingId = presetSetting.id;
             this.alertService.success('label-printing.save.label.settings.success');
         }, (response) => {
             if (response.error.errors[0].message) {
