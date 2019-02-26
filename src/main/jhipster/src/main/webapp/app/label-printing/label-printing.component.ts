@@ -286,11 +286,11 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
 
     getFileType(extension: string): FileType {
         switch (extension) {
-            case FileType.CSV:
+            case FileType.CSV.toString():
                 return FileType.CSV;
-            case FileType.PDF:
+            case FileType.PDF.toString():
                 return FileType.PDF;
-            case FileType.EXCEL:
+            case FileType.EXCEL.toString():
                 return FileType.EXCEL;
             default:
                 return FileType.NONE;
