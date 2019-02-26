@@ -6,6 +6,7 @@ import { LabelPrintingContext } from './label-printing.context';
 import { LabelPrintingService } from './label-printing.service';
 import { FileDownloadHelper } from '../entities/sample/file-download.helper';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ModalService } from '../shared/modal/modal.service';
 
 declare const $: any;
 
@@ -27,13 +28,19 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
     loadSavedSettings = false;
     fieldsSelected: LabelType[];
     presetSettings: PresetSetting[];
+    modalTitle: string;
+    modalMessage: string;
 
     constructor(private route: ActivatedRoute,
                 private context: LabelPrintingContext,
                 private service: LabelPrintingService,
                 private languageService: JhiLanguageService,
                 private fileDownloadHelper: FileDownloadHelper,
-                private alertService: JhiAlertService) {
+                private alertService: JhiAlertService,
+                private modalService: ModalService) {
+    }
+
+    proceed(): void {
     }
 
     ngOnInit() {
