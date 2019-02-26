@@ -11,7 +11,7 @@ import java.io.File;
 public class CreatePedigreeGraph {
 
 	private final GermplasmQueries qQuery;
-	private GraphVizUtility gv;
+	private GraphVizUtility graphVizUtility;
 	private final int gid;
 	private final int level;
 	private final Window window;
@@ -40,8 +40,8 @@ public class CreatePedigreeGraph {
 	 * @param graphName
 	 */
 	public void create(final String graphName) {
-		this.gv = new GraphVizUtility();
-		this.create(graphName, this.gv);
+		this.graphVizUtility = new GraphVizUtility();
+		this.create(graphName, this.graphVizUtility);
 	}
 
 	/**
@@ -51,20 +51,20 @@ public class CreatePedigreeGraph {
 	 * @param gv
 	 */
 	public void create(final String graphName, final GraphVizUtility gv) {
-		this.gv = gv;
-		this.gv.initialize();
-		this.gv.setImageOutputPath(GraphVizUtility.createImageOutputPathForWindow(this.window));
-		this.gv.addln(GraphVizUtility.START_GRAPH);
+		this.graphVizUtility = gv;
+		this.graphVizUtility.initialize();
+		this.graphVizUtility.setImageOutputPath(GraphVizUtility.createImageOutputPathForWindow(this.window));
+		this.graphVizUtility.addln(GraphVizUtility.START_GRAPH);
 
 		this.createDiGraphNode();
-		this.gv.addln(GraphVizUtility.END_GRAPH);
+		this.graphVizUtility.addln(GraphVizUtility.END_GRAPH);
 
 		final String type = "png";
 
 		// Load the directory as a resource
-		final File out = new File(this.gv.graphVizOutputPath(graphName + "." + type));
+		final File out = new File(this.graphVizUtility.graphVizOutputPath(graphName + "." + type));
 		// create graph
-		this.gv.writeGraphToFile(this.gv.getGraph(this.gv.getDotSource(), type), out);
+		this.graphVizUtility.writeGraphToFile(this.graphVizUtility.getGraph(this.graphVizUtility.getDotSource(), type), out);
 
 	}
 
@@ -74,7 +74,7 @@ public class CreatePedigreeGraph {
 
 		if (this.level == 1) {
 			final String leafNodeGIDRoot = this.createNodeTextWithFormatting(germplasmPedigreeTree.getRoot());
-			this.gv.addln(leafNodeGIDRoot + ";");
+			this.graphVizUtility.addln(leafNodeGIDRoot + ";");
 		} else {
 			this.addNode(germplasmPedigreeTree.getRoot(), 1);
 		}
@@ -90,8 +90,8 @@ public class CreatePedigreeGraph {
 		if (nodeGid != 0) {
 			sb.append("GID: " + leafNodeGIDRoot);
 		}
-		this.gv.addln(leafNodeGIDRoot + " [shape=box];");
-		this.gv.addln(leafNodeGIDRoot + " [label=\"" + sb.toString() + "\", fontname=\"Helvetica\", fontsize=12.0, ordering=\"in\"];");
+		this.graphVizUtility.addln(leafNodeGIDRoot + " [shape=box];");
+		this.graphVizUtility.addln(leafNodeGIDRoot + " [label=\"" + sb.toString() + "\", fontname=\"Helvetica\", fontsize=12.0, ordering=\"in\"];");
 		return leafNodeGIDRoot;
 	}
 
@@ -99,7 +99,7 @@ public class CreatePedigreeGraph {
 
 		if (node.getLinkedNodes().isEmpty()) {
 			final String leafNodeGIDRoot = this.createNodeTextWithFormatting(node);
-			this.gv.addln(leafNodeGIDRoot + ";");
+			this.graphVizUtility.addln(leafNodeGIDRoot + ";");
 		}
 
 		for (final GermplasmPedigreeTreeNode parent : node.getLinkedNodes()) {
@@ -108,13 +108,18 @@ public class CreatePedigreeGraph {
 
 			if (level == 1) {
 				final String leafNodeGIDRoot = this.createNodeTextWithFormatting(node);
-				this.gv.addln(leafNodeGID + "->" + leafNodeGIDRoot + ";");
+				this.graphVizUtility.addln(leafNodeGID + "->" + leafNodeGIDRoot + ";");
 			} else {
-				this.gv.addln(leafNodeGID + "->" + parentNodeGID + ";");
+				this.graphVizUtility.addln(leafNodeGID + "->" + parentNodeGID + ";");
 			}
 
 			this.addNode(parent, level + 1);
 		}
+	}
+
+	
+	protected void setGraphVizUtility(GraphVizUtility graphVizUtility) {
+		this.graphVizUtility = graphVizUtility;
 	}
 
 }
