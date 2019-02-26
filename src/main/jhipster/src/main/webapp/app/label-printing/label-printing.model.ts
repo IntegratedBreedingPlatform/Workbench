@@ -34,7 +34,7 @@ export class LabelPrintingData {
         public stockListId?: string,
         public stockListTypeName?: string,
         public inventoryDetailsList?: string,
-        public barcodeGeneratedAutomatically = false,
+        public barcodeGeneratedAutomatically = true,
         public firstBarcodeField = 0,
         public secondBarcodeField = 0,
         public thirdBarcodeField = 0,
