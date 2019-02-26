@@ -167,6 +167,94 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         }
     }
 
+    initDragAndDrop() {
+        // TODO implement in angular
+        setTimeout(() => {
+            $('ul.droppable').sortable({
+                connectWith: 'ul',
+                receive: (event, ui) => {
+                    // event.currentTarget was not working
+                    const receiver = $(event.target),
+                        sender = $(ui.sender),
+                        item = $(ui.item);
+
+                    if (!receiver.hasClass('print-fields')
+                        && item.attr('data-label-type-key') !== receiver.attr('data-label-type-key')) {
+
+                        $(ui.sender).sortable('cancel');
+                    }
+                }
+            });
+        });
+    }
+
+    printLabels() {
+        const fieldsSelected = [];
+        const barcodeFieldsSelected = [];
+
+        if (this.fileType === FileType.CSV) {
+            fieldsSelected.push($('#leftSelectedFields').sortable('toArray'));
+        } else {
+            fieldsSelected.push($('#leftSelectedFields').sortable('toArray'));
+            fieldsSelected.push($('#rightSelectedFields').sortable('toArray'));
+        }
+
+        if (this.labelPrintingData.barcodeNeeded && !this.labelPrintingData.barcodeGeneratedAutomatically) {
+            if (Number(this.labelPrintingData.firstBarcodeField) !== 0) {
+                barcodeFieldsSelected.push(this.labelPrintingData.firstBarcodeField);
+            }
+            if (Number(this.labelPrintingData.secondBarcodeField) !== 0) {
+                barcodeFieldsSelected.push(this.labelPrintingData.secondBarcodeField);
+            }
+            if (Number(this.labelPrintingData.thirdBarcodeField) !== 0) {
+                barcodeFieldsSelected.push(this.labelPrintingData.thirdBarcodeField);
+            }
+
+        }
+
+        const labelsGeneratorInput = {
+            fields: fieldsSelected,
+            barcodeRequired: this.labelPrintingData.barcodeNeeded,
+            automaticBarcode: this.labelPrintingData.barcodeGeneratedAutomatically,
+            barcodeFields: barcodeFieldsSelected,
+            fileName: this.labelPrintingData.filename,
+            datasetId: undefined,
+            studyId: undefined
+        };
+
+        this.proceed = function donwloadPrintingLabel(): void {
+            this.service.download(this.fileType, labelsGeneratorInput).subscribe((response: any ) => {
+                const fileName = this.fileDownloadHelper.getFileNameFromResponseContentDisposition(response);
+                this.fileDownloadHelper.save(response.body, fileName);
+
+            }, (error: HttpErrorResponse) => {
+                this.handleError(error);
+
+            });
+        }
+
+        if (Number(this.presetSettingId) === 0) {
+            this.modalTitle = 'Confirmation';
+            this.modalMessage = 'Proceed export label without saving label printing setting?';
+            this.modalService.open('modal-confirm');
+        } else {
+            this.proceed();
+        }
+    }
+
+    private handleError(err: HttpErrorResponse): void {
+        if ('application/json;charset=UTF-8' === err.headers.get('Content-Type')) {
+            const reader = new FileReader();
+            reader.addEventListener('loadend', (e) => {
+                const error = JSON.parse(e.srcElement['result']);
+                this.alertService.error('error.custom', { param: error.errors[0].message });
+            });
+            reader.readAsText(err.error);
+        } else {
+            this.alertService.error('error.general');
+        }
+    }
+
     savePresets() {
         const preset: PresetSetting = new PresetSetting();
         const fileConfiguration: FileConfiguration = new FileConfiguration();
