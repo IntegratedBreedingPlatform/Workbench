@@ -1,9 +1,9 @@
 import {HttpResponse} from '@angular/common/http';
 import {Injectable} from '@angular/core';
+// TODO Move to shared
 
 @Injectable()
 export class FileDownloadHelper {
-
     constructor() {
     }
 
