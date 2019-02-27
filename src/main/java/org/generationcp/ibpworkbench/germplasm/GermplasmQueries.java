@@ -11,13 +11,20 @@
 
 package org.generationcp.ibpworkbench.germplasm;
 
-import org.generationcp.ibpworkbench.Message;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.domain.dms.StudyReference;
 import org.generationcp.middleware.domain.search.StudyResultSet;
 import org.generationcp.middleware.domain.search.filter.GidStudyQueryFilter;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;
+import org.generationcp.middleware.manager.PedigreeDataManagerImpl;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.InventoryDataManager;
 import org.generationcp.middleware.manager.api.PedigreeDataManager;
@@ -42,11 +49,6 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.annotation.Resource;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 @Configurable
 public class GermplasmQueries implements Serializable, InitializingBean {
 
@@ -57,7 +59,7 @@ public class GermplasmQueries implements Serializable, InitializingBean {
 
 	private GermplasmSearchResultModel germplasmResultByGID;
 	private GermplasmDetailModel germplasmDetail;
-	public static final String MAX_PEDIGREE_LABEL = PedigreeDataManager.MAX_PEDIGREE_LEVEL + "+ generations";
+	public static final String MAX_PEDIGREE_LABEL = PedigreeDataManagerImpl.MAX_PEDIGREE_LEVEL + "+ generations";
 
 	private static final long serialVersionUID = 1L;
 
