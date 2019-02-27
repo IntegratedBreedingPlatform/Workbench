@@ -9,11 +9,12 @@ import {SampleSearchListComponent} from '../../../../../../main/webapp/app/entit
 import {SampleListService} from '../../../../../../main/webapp/app/entities/sample/sample-list.service';
 import {Router} from '@angular/router';
 
+declare const cropName: string;
+
 describe('Component Tests', () => {
 
     describe('Search Sample List Component', () => {
 
-        const crop = 'maize';
         let comp: SampleSearchListComponent;
         let fixture: ComponentFixture<SampleSearchListComponent>;
         let service: SampleListService;
@@ -34,7 +35,7 @@ describe('Component Tests', () => {
         beforeEach(() => {
             fixture = TestBed.createComponent(SampleSearchListComponent);
             comp = fixture.componentInstance;
-            comp.setCrop(crop);
+            comp.setCrop(cropName);
             service = fixture.debugElement.injector.get(SampleListService);
             router = fixture.debugElement.injector.get(Router);
         });
@@ -64,7 +65,7 @@ describe('Component Tests', () => {
                const selectedSampleList = new SampleList(1, 'listName', '', false, []);
                comp.selectList(selectedSampleList);
 
-               expect(router.navigate).toHaveBeenCalledWith([ '/maize/sample-browse' ], Object({ queryParams: Object({ listId: 1 }) }));
+               expect(router.navigate).toHaveBeenCalledWith([ '/sample-manager' ], Object({ queryParams: Object({ listId: 1 }) }));
 
             });
 

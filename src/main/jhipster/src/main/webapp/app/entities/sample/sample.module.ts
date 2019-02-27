@@ -4,32 +4,22 @@ import { RouterModule } from '@angular/router';
 import { BmsjHipsterSharedModule } from '../../shared';
 import {
     SampleService,
-    SamplePopupService,
     SampleComponent,
-    SampleDetailComponent,
-    SampleDialogComponent,
-    SamplePopupComponent,
-    SampleDeletePopupComponent,
-    SampleDeleteDialogComponent,
     sampleRoute,
-    samplePopupRoute,
     SampleResolvePagingParams,
-    SampleBrowseComponent
+    SampleManagerComponent
 } from './';
 
 import {SampleSearchListComponent} from './sample-search-list.component';
 import {SampleListService} from './sample-list.service';
 import {FileDownloadHelper} from './file-download.helper';
 import {SampleImportPlateComponent} from './sample-import-plate.component';
-import {ModalComponent} from '../../shared/modal/modal.component';
-import {ModalService} from '../../shared/modal/modal.service';
 import {ExcelService} from './excel.service';
 import {SampleImportPlateMappingComponent} from './sample-import-plate-mapping.component';
 import {SampleContext} from './sample.context';
 
 const ENTITY_STATES = [
     ...sampleRoute,
-    ...samplePopupRoute,
 ];
 
 @NgModule({
@@ -39,35 +29,22 @@ const ENTITY_STATES = [
     ],
     declarations: [
         SampleComponent,
-        SampleDetailComponent,
-        SampleDialogComponent,
-        SampleDeleteDialogComponent,
-        SamplePopupComponent,
-        SampleDeletePopupComponent,
-        SampleBrowseComponent,
+        SampleManagerComponent,
         SampleSearchListComponent,
         SampleImportPlateComponent,
-        SampleImportPlateMappingComponent,
-        ModalComponent
+        SampleImportPlateMappingComponent
     ],
     entryComponents: [
         SampleComponent,
-        SampleDialogComponent,
-        SamplePopupComponent,
-        SampleDeleteDialogComponent,
-        SampleDeletePopupComponent,
-        SampleBrowseComponent,
+        SampleManagerComponent,
         SampleImportPlateComponent,
-        SampleImportPlateMappingComponent,
-        ModalComponent
+        SampleImportPlateMappingComponent
     ],
     providers: [
         SampleService,
         SampleListService,
-        SamplePopupService,
         SampleResolvePagingParams,
         FileDownloadHelper,
-        ModalService,
         ExcelService,
         SampleContext
     ],
