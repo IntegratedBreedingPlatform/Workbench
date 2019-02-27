@@ -21,7 +21,7 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
     metadata: Map<string, string>;
     metadataKeys: string[];
     labelTypes: LabelType[];
-    labelTypesBarCode: LabelType[];
+    labelTypesOrig: LabelType[];
     FILE_TYPES = FileType;
     fileType: FileType = FileType.NONE;
     presetSettingId: number;
@@ -60,7 +60,7 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         });
         this.service.getAvailableLabelFields().subscribe((labelTypes) => {
             this.labelTypes = labelTypes;
-            this.labelTypesBarCode = Object.assign([], labelTypes);
+            this.labelTypesOrig = labelTypes.map((x) => Object.assign({}, x));
         });
 
         this.service.getAllPresets().subscribe((PresetSettings) => {
