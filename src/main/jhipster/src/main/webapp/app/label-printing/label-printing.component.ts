@@ -268,8 +268,9 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
             selectedFields.push($('#rightSelectedFields').sortable('toArray'));
         }
 
-        barcodeSetting.automaticBarcode = this.labelPrintingData.barcodeGeneratedAutomatically;
         barcodeSetting.barcodeNeeded = this.labelPrintingData.barcodeNeeded;
+        barcodeSetting.automaticBarcode = barcodeSetting.barcodeNeeded ? this.labelPrintingData.barcodeGeneratedAutomatically : false;
+
         if (this.labelPrintingData.barcodeNeeded && !this.labelPrintingData.barcodeGeneratedAutomatically) {
             barcodeSetting.barcodeFields = new Array();
             if (Number(this.labelPrintingData.firstBarcodeField) !== 0) {
