@@ -78,26 +78,23 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         if (presetId !== 0) {
             const presetSetting = this.presetSettings.filter((preset) => preset.id === presetId)[0];
             this.fileType = this.getFileType(presetSetting.fileConfiguration.outputType);
-            const labelTypeList = Object.assign([], this.labelTypesBarCode);
+            const labelTypeList = this.labelTypesOrig.map((x) => Object.assign({}, x));
             const labelFieldsSelected = new Array();
 
             presetSetting.selectedFields.forEach(function(idsSelected) {
                 const fieldsSelected: LabelType[] = new Array();
                 labelTypeList.forEach(function(label: LabelType) {
                     const labelType = new LabelType(label.title, label.key, []);
-                    label.fields.forEach(function(item, index, object) {
-                        if (idsSelected.indexOf(item.id) > -1) {
-                            labelType.fields.push(item);
-                            object.splice(index, 0);
-                        }
-                    });
+                    labelType.fields = label.fields.filter((field) => idsSelected.indexOf(field.id) > -1);
                     fieldsSelected.push(labelType);
+                    const filteredList = label.fields.filter((field) => labelType.fields.indexOf(field) <= -1);
+                    label.fields = filteredList;
                 });
                 labelFieldsSelected.push(fieldsSelected);
             });
 
-            this.labelTypes = Object.assign([], labelTypeList);
-            this.fieldsSelected = Object.assign([], labelFieldsSelected);
+            this.labelTypes = labelTypeList.map((x) => Object.assign({}, x));
+            this.fieldsSelected = labelFieldsSelected;
 
             setTimeout(() => {
                 $('#leftSelectedFields').empty();
