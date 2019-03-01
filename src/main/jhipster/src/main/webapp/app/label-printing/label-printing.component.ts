@@ -26,7 +26,7 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
     fileType: FileType = FileType.NONE;
     presetSettingId: number;
     loadSavedSettings = false;
-    fieldsSelected: LabelType[];
+    fieldsSelected: any[];
     presetSettings: PresetSetting[];
     modalTitle: string;
     modalMessage: string;
@@ -78,46 +78,41 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         if (presetId !== 0) {
             const presetSetting = this.presetSettings.filter((preset) => preset.id === presetId)[0];
             this.fileType = this.getFileType(presetSetting.fileConfiguration.outputType);
-            const labelTypeList = this.labelTypesOrig.map((x) => Object.assign({}, x));
-            const labelFieldsSelected = new Array();
+            this.labelTypes = this.labelTypesOrig.map((x) => Object.assign({}, x));
+            this.fieldsSelected = new Array();
 
-            presetSetting.selectedFields.forEach(function(idsSelected) {
+            presetSetting.selectedFields.forEach((idsSelected) => {
                 const fieldsSelected: LabelType[] = new Array();
-                labelTypeList.forEach(function(label: LabelType) {
+                this.labelTypes.forEach((label: LabelType) => {
                     const labelType = new LabelType(label.title, label.key, []);
                     labelType.fields = label.fields.filter((field) => idsSelected.indexOf(field.id) > -1);
                     fieldsSelected.push(labelType);
                     const filteredList = label.fields.filter((field) => labelType.fields.indexOf(field) <= -1);
                     label.fields = filteredList;
                 });
-                labelFieldsSelected.push(fieldsSelected);
+                this.fieldsSelected.push(fieldsSelected);
             });
-
-            this.labelTypes = labelTypeList.map((x) => Object.assign({}, x));
-            this.fieldsSelected = labelFieldsSelected;
 
             setTimeout(() => {
                 $('#leftSelectedFields').empty();
+                $('#rightSelectedFields').empty();
                 let listElem = '#leftSelectedFields';
-                labelFieldsSelected.forEach(function(fieldsList: LabelType[]) {
-                    fieldsList.forEach(function(labelsType: LabelType) {
+                this.fieldsSelected.forEach((fieldsList: LabelType[]) => {
+                    fieldsList.forEach((labelsType: LabelType) => {
                         const key = labelsType.key;
-                        labelsType.fields.forEach(function(field) {
+                        labelsType.fields.forEach((field) => {
                             $('<li/>').addClass('list-group-item text-truncate ui-sortable-handle') //
                                 .attr('id', field.id).attr('data-label-type-key', key) //
                                 .text(field.name).appendTo(listElem);
                         });
                     });
-                    if (labelFieldsSelected.length > 1) {
+                    if (this.fieldsSelected.length > 1) {
                         listElem = '#rightSelectedFields';
                     }
                 });
             });
 
             this.initDragAndDrop();
-            if (presetSetting.fileConfiguration.outputType === FileType.PDF.toString()) {
-
-            }
 
             this.labelPrintingData.settingsName = presetSetting.name;
             this.labelPrintingData.barcodeNeeded = presetSetting.barcodeSetting.barcodeNeeded;
