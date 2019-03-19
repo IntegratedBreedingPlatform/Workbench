@@ -235,7 +235,8 @@
 								</om-error-list>
 								<div ng-show="confirmDeleteFormula">
 									<div class="alert alert-danger">
-										<span ng-show="confirmDeleteFormula">{{'warnings.formulas.deleteConfirmation' | translate}}</span>
+										<span ng-show="confirmDeleteFormula">{{ varsCtrl.formula && formulaInUsed ? 'warnings.formulas.deleteFormulaInUsedConfirmation' : 'warnings.formulas.deleteConfirmation'| translate}}</span>
+
 									</div>
 									<button class="btn btn-danger" ng-click="confirm($event)">
 										<span ng-show="confirmDeleteFormula">{{'button.delete' | translate}}</span>

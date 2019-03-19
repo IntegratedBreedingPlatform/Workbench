@@ -48,6 +48,7 @@
 						$scope.model = angular.copy(variable);
 						$scope.variableName = $scope.model ? $scope.model.name : '';
 						$scope.deletable = variable && variable.metadata && variable.metadata.deletable || false;
+						$scope.formulaInUsed = !$scope.deletable && $scope.model && $scope.model.formula && $scope.model.formula.formulaId || false;
 					});
 
 					// Show the expected range widget if the chosen scale has a numeric datatype
