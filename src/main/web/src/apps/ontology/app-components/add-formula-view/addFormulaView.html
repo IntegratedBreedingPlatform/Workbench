@@ -6,7 +6,9 @@
 	</om-error-list>
 
 	<form class="form-horizontal" name="afForm" ng-submit="saveFormula($event, model)" novalidate>
-
+		<div ng-if="showWarningEditableMessage" class="alert alert-warning" role="alert">
+			<span>{{'warnings.formulas.editFormulaInUsedConfirmation' | translate }}</span>
+		</div>
 		<div ng-class="formGroupClass('omName', 'name')">
 			<label for="omName" class="col-sm-2 control-label">
 				{{'addNew.formula.targetVariable' | translate}}
