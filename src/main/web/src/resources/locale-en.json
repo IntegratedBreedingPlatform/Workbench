@@ -252,7 +252,9 @@
 		},
 
 		"formulas": {
-			"deleteConfirmation": "Please confirm that you would like to delete this formula."
+			"deleteConfirmation": "Please confirm that you would like to delete this formula.",
+			"deleteFormulaInUsedConfirmation": "The trait containing this formula is already in use for some studies. Do you want to delete it anyway?",
+			"editFormulaInUsedConfirmation": "The trait containing this formula is already in use for some studies. Calculations won't be updated for such studies."
 		}
 	},
 

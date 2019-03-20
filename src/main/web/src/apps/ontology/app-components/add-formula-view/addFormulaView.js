@@ -21,7 +21,7 @@
 
 			$scope.model = storedData.variable;
 			$scope.serverErrors.general = storedData.errors;
-
+			$scope.showWarningEditableMessage = $scope.model && $scope.model.formula && $scope.model.formula.formulaId && $scope.model.metadata && !$scope.model.metadata.deletable || false;
 			$scope.saveFormula = function (e, variable) {
 				e.preventDefault();
 
