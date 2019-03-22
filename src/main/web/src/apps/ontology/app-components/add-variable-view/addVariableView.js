@@ -18,7 +18,6 @@
 				storedData;
 
 			$scope.serverErrors = {};
-
 			// The select2 input needs to be able to call length on the arrays used for the options before the data is returned.
 			$scope.data = {
 				properties: [],
@@ -27,6 +26,8 @@
 
 			// Whether or not we want to display the expected range widget
 			$scope.showRangeWidget = false;
+
+			$scope.aliasIsDisable = true;
 
 			// If we were half way through editing, we don't need to fetch everything again - we just need to copy over the stored state
 			if (variableStateService.updateInProgress()) {
@@ -118,6 +119,10 @@
 						return type.id === TREATMENT_FACTOR_ID;
 					});
 					$scope.showTreatmentFactorAlert = filtered.length > 0;
+				}
+				$scope.aliasIsDisable = !newValue.filter( (variableType) => ['1807', '1808', '1802'].indexOf(variableType.id) > -1).length > 0;
+				if ($scope.aliasIsDisable) {
+					$scope.variable.alias = undefined;
 				}
 			});
 
