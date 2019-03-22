@@ -14,7 +14,7 @@
 				// and just read from the initial property as to whether the value was given or not.
 				$scope.required = $scope.omRequired || false;
 				$scope.maxLength = $scope.omMaxLength || -1;
-
+				$scope.inputDisabled = $scope.inputDisabled || false;
 				$scope.regex = $scope.pattern ? new RegExp($scope.pattern) : /[\s\S]*/;
 			}],
 			restrict: 'E',
@@ -27,7 +27,8 @@
 				pattern: '@omPattern',
 				// Use this syntax for optional one time binding properties
 				omRequired: '@',
-				omMaxLength: '@'
+				omMaxLength: '@',
+				inputDisabled: '=omInputDisabled'
 			},
 			templateUrl: 'static/views/ontology/input.html'
 		};
