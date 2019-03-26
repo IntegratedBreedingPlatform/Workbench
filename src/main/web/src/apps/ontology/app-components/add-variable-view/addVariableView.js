@@ -120,7 +120,7 @@
 					});
 					$scope.showTreatmentFactorAlert = filtered.length > 0;
 				}
-				$scope.aliasIsDisable = !newValue.filter( (variableType) => ['1807', '1808', '1802'].indexOf(variableType.id) > -1).length > 0;
+				$scope.aliasIsDisable = newValue.length === 0 || newValue.filter( (variableType) => ['1807', '1808', '1802'].indexOf(variableType.id) > -1).length !== newValue.length;
 				if ($scope.aliasIsDisable) {
 					$scope.variable.alias = undefined;
 				}
