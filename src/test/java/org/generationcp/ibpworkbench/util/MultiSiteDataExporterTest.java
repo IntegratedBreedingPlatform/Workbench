@@ -7,6 +7,7 @@ import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.util.bean.MultiSiteParameters;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
@@ -112,7 +113,7 @@ public class MultiSiteDataExporterTest {
 
 		this.multiSiteDataExporter
 				.exportMeansDatasetToCsv(BASIC_FILE_NAME, this.multiSiteParameters, meansExperiments, ENV_FACTOR, this.gxeEnvironment,
-						this.meansTraits);
+						this.meansTraits, Mockito.mock(IBPWorkbenchApplication.class));
 
 		Mockito.verify(this.multiSiteDataExporter)
 				.writeToCsvFile(ArgumentMatchers.eq(BASIC_FILE_NAME), ArgumentMatchers.eq(this.project), this.meansRowsCaptor.capture(),
@@ -170,7 +171,7 @@ public class MultiSiteDataExporterTest {
 
 		this.multiSiteDataExporter
 				.exportMeansDatasetToCsv(BASIC_FILE_NAME, this.multiSiteParameters, meansExperiments, LOCATION_ID, testGxeEnvironment,
-						this.meansTraits);
+						this.meansTraits, Mockito.mock(IBPWorkbenchApplication.class));
 
 		Mockito.verify(this.multiSiteDataExporter)
 				.writeToCsvFile(ArgumentMatchers.eq(BASIC_FILE_NAME), ArgumentMatchers.eq(this.project), this.meansRowsCaptor.capture(),

@@ -68,7 +68,7 @@ public class RunMultiSiteActionTest {
 	private static final String MEANS_DATA_FILEPATH = BMS_INPUT_FILES_DIR + "means.csv";
 	private static final String STUDY_NAME = "TEST STUDY";
 	private static final String ZIP_FILE_PATH = "/someDirectory/output/" + STUDY_NAME + ".zip";
-	
+
 
 	@Mock
 	private StudyDataManager studyDataManager;
@@ -93,16 +93,16 @@ public class RunMultiSiteActionTest {
 
 	@Mock
 	Window window;
-	
+
 	@Mock
 	private InstallationDirectoryUtil installationDirectoryUtil;
-	
+
 	@Mock
 	private ContextUtil contextUtil;
 
 	@InjectMocks
 	private final RunMultiSiteAction runMultiSiteAction = new RunMultiSiteAction();
-	
+
 	@Captor
 	private ArgumentCaptor<List<String>> filesInZipCaptor;
 
@@ -116,7 +116,7 @@ public class RunMultiSiteActionTest {
 		final Table selectTraitsTable = this.createTestSelectedTraitsTable();
 		runMultiSiteAction.setSelectTraitsTable(selectTraitsTable);
 		runMultiSiteAction.setBreedingViewTool(breedingViewTool);
-		
+
 		selectedTraits = runMultiSiteAction.getSelectedTraits();
 		gxeEnvironment = this.createGxeEnvironment();
 		multiSiteParameters = this.createMultiSiteParameters();
@@ -141,12 +141,12 @@ public class RunMultiSiteActionTest {
 		Mockito.when(this.studyDataManager.getDataSetsByType(STUDY_ID, DataSetType.SUMMARY_DATA)).thenReturn(this.createDataSets());
 
 		Mockito.when(multiSiteDataExporter.exportMeansDatasetToCsv(ArgumentMatchers.anyString(), ArgumentMatchers.any(MultiSiteParameters.class),
-				ArgumentMatchers.<List<Experiment>>any(), ArgumentMatchers.eq(ENVIRONMENT_NAME), ArgumentMatchers.any(GxeEnvironment.class), ArgumentMatchers.<List<Trait>>any()))
+				ArgumentMatchers.<List<Experiment>>any(), ArgumentMatchers.eq(ENVIRONMENT_NAME), ArgumentMatchers.any(GxeEnvironment.class), ArgumentMatchers.<List<Trait>>any(), Mockito.mock(IBPWorkbenchApplication.class)))
 				.thenReturn(MEANS_DATA_FILEPATH);
 
 		Mockito.when(multiSiteDataExporter.exportTrialDatasetToSummaryStatsCsv(Mockito.anyInt(), Mockito.anyString(), ArgumentMatchers.<List<Experiment>>any(),
 				Mockito.eq(ENVIRONMENT_NAME), ArgumentMatchers.<List<Trait>>any(), Mockito.any(Project.class))).thenReturn(SUMMARY_DATA_FILEPATH);
-		
+
 		Mockito.when(this.zipUtil.zipIt(Mockito.anyString(), ArgumentMatchers.<List<String>>any(), ArgumentMatchers.any(Project.class),
 				Mockito.any(ToolName.class))).thenReturn(ZIP_FILE_PATH);
 
@@ -174,7 +174,7 @@ public class RunMultiSiteActionTest {
 		Assert.assertTrue(filesInZip.contains(MEANS_DATA_FILEPATH));
 		Assert.assertTrue(filesInZip.contains(BMS_INPUT_FILES_DIR + File.separator + getExpectedBVInputXmlFilename() + ".xml"));
 		Assert.assertEquals(ToolName.BV_GXE, toolCaptor.getValue());
-		
+
 		// Verify zip file is downloaded to the browser with proper filename
 		final ArgumentCaptor<VaadinFileDownloadResource> fileDownloadResourceCaptor = ArgumentCaptor.forClass(VaadinFileDownloadResource.class);
 		Mockito.verify(this.window).open(fileDownloadResourceCaptor.capture());
@@ -207,7 +207,7 @@ public class RunMultiSiteActionTest {
 
 		// Make sure the Means DataSet is exported to CSV
 		Mockito.verify(multiSiteDataExporter).exportMeansDatasetToCsv(ArgumentMatchers.anyString(), ArgumentMatchers.eq(multiSiteParameters),
-				ArgumentMatchers.<List<Experiment>>any(), ArgumentMatchers.eq(ENVIRONMENT_NAME), ArgumentMatchers.any(GxeEnvironment.class), ArgumentMatchers.<List<Trait>>any());
+				ArgumentMatchers.<List<Experiment>>any(), ArgumentMatchers.eq(ENVIRONMENT_NAME), ArgumentMatchers.any(GxeEnvironment.class), ArgumentMatchers.<List<Trait>>any(), Mockito.mock(IBPWorkbenchApplication.class));
 
 		// Make sure the Summary Data is exported to CSV
 		Mockito.verify(multiSiteDataExporter).exportTrialDatasetToSummaryStatsCsv(ArgumentMatchers.anyInt(), ArgumentMatchers.anyString(), ArgumentMatchers.<List<Experiment>>any(),
@@ -331,7 +331,7 @@ public class RunMultiSiteActionTest {
 		final Study study = new Study();
 		study.setId(STUDY_ID);
 		study.setName(name);
-		
+
 		final VariableList conditions = new VariableList();
 		final Variable studyNameVariable = new Variable();
 		studyNameVariable.setValue(name);
