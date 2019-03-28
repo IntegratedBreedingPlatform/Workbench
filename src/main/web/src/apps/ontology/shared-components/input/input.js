@@ -8,7 +8,9 @@
 		return {
 			controller: ['$scope', function($scope) {
 				$scope.editable = editable($scope);
-
+				$scope.isDisabled = function(){
+					return $scope.inputDisabled;
+				};
 				// We cannot assign values to one time binding scope properties that are not defined
 				// on the directive instance, so instead we must use a different scope property
 				// and just read from the initial property as to whether the value was given or not.
