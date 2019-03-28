@@ -49,8 +49,12 @@
 						$scope.variableName = $scope.model ? $scope.model.name : '';
 						$scope.deletable = variable && variable.metadata && variable.metadata.deletable || false;
 						$scope.formulaInUsed = !$scope.deletable && $scope.model && $scope.model.formula && $scope.model.formula.formulaId || false;
-						$scope.showAlias = $scope.model && $scope.model && $scope.model.variableTypes && $scope.model.variableTypes.filter( (variableType) => ['1807', '1808', '1802'].indexOf(variableType.id) > -1).length === $scope.model.variableTypes.length;
+						$scope.showAlias = $scope.model && $scope.model && $scope.model.variableTypes && $scope.model.variableTypes.filter(filterByVariableTypes).length === $scope.model.variableTypes.length;
 					});
+
+					function filterByVariableTypes(variableType){
+						return  ['1807', '1808', '1802'].indexOf(variableType.id) > -1;
+					}
 
 					// Show the expected range widget if the chosen scale has a numeric datatype
 					$scope.$watch('model.scale.dataType.name', function(newValue) {
@@ -135,7 +139,7 @@
 						});
 
 						$scope.editing = true;
-						$scope.aliasIsDisable = $scope.model && $scope.model && $scope.model.variableTypes.length === 0 ||  $scope.model.variableTypes.filter( (variableType) => ['1807', '1808', '1802'].indexOf(variableType.id) > -1).length !== $scope.model.variableTypes.length || false;
+						$scope.aliasIsDisable = $scope.model && $scope.model && $scope.model.variableTypes.length === 0 || $scope.model.variableTypes.filter(filterByVariableTypes).length !== $scope.model.variableTypes.length || false;
 					};
 
 					$scope.deleteFormula = function (e, variableId) {
@@ -258,7 +262,7 @@
 							$scope.showTreatmentFactorAlert = filtered.length > 0;
 						}
 
-						var specificVariableTypes = newValue && newValue.length === 0 || newValue && newValue.filter((variableType) => ['1807', '1808', '1802'].indexOf(variableType.id) > -1);
+						var specificVariableTypes = newValue && newValue.length === 0 || newValue && newValue.filter(filterByVariableTypes);
 						$scope.aliasIsDisable = specificVariableTypes && specificVariableTypes.length !== newValue.length;
 						$scope.showAlias = specificVariableTypes && specificVariableTypes.length > 0;
 

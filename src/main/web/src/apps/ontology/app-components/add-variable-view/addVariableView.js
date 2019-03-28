@@ -120,11 +120,15 @@
 					});
 					$scope.showTreatmentFactorAlert = filtered.length > 0;
 				}
-				$scope.aliasIsDisable = newValue.length === 0 || newValue.filter( (variableType) => ['1807', '1808', '1802'].indexOf(variableType.id) > -1).length !== newValue.length;
+				$scope.aliasIsDisable = newValue && newValue.length === 0 || newValue && newValue.filter(filterByVariableTypes).length !== newValue.length;
 				if ($scope.aliasIsDisable) {
 					$scope.variable.alias = undefined;
 				}
 			});
+
+			function filterByVariableTypes(variableType) {
+				return ['1807', '1808', '1802'].indexOf(variableType.id) > -1;
+			}
 
 			$scope.formGroupClass = formUtilities.formGroupClassGenerator($scope, 'avForm');
 		}
