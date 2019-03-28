@@ -33,7 +33,7 @@
 			</div>
 		</div>
 
-		<div ng-class="formGroupClass('omAlias', 'alias')" ng-show="showAlias()">
+		<div ng-class="formGroupClass('omAlias', 'alias')" ng-show="showAlias">
 			<label for="omAlias" class="col-sm-3 control-label">{{'formField.alias' | translate}}</label>
 			<div class="col-sm-9">
 				<om-input ng-if="model.alias!=='' || editing" om-name="omAlias" om-property="alias" om-input-disabled="aliasIsDisable" om-editing="editing" om-model="model" om-max-length="32" om-pattern="^[a-zA-Z_%][a-zA-Z_%0-9]*$"></om-input>
