@@ -18,7 +18,7 @@ describe('Component Tests', () => {
         let modalService: ModalService;
         let alertService: JhiAlertService;
         let eventManager: JhiEventManager;
-        let sampelContext: SampleContext;
+        let sampleContext: SampleContext;
 
         beforeEach(async(() => {
             TestBed.configureTestingModule({
@@ -42,19 +42,17 @@ describe('Component Tests', () => {
             fixture = TestBed.createComponent(SampleImportPlateMappingComponent);
             comp = fixture.componentInstance;
             modalService = fixture.debugElement.injector.get(ModalService);
-            sampelContext = fixture.debugElement.injector.get(SampleContext);
+            sampleContext = fixture.debugElement.injector.get(SampleContext);
             alertService = fixture.debugElement.injector.get(JhiAlertService);
             eventManager = fixture.debugElement.injector.get(JhiEventManager);
             sampleListService = fixture.debugElement.injector.get(SampleListService);
 
-            const sampleList = new SampleList();
-            sampleList.id = 1;
+            sampleContext.activeList = { id: 1 };
 
             spyOn(modalService, 'close').and.callThrough();
             spyOn(modalService, 'open').and.callThrough();
             spyOn(alertService, 'error').and.callThrough();
             spyOn(alertService, 'success').and.callThrough();
-            spyOn(sampelContext, 'getActiveList').and.returnValue(sampleList);
         });
 
         it('should proceed with import', () => {

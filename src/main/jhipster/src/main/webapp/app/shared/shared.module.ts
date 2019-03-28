@@ -4,16 +4,11 @@ import { DatePipe } from '@angular/common';
 import {
     BmsjHipsterSharedLibsModule,
     BmsjHipsterSharedCommonModule,
-    CSRFService,
-    AuthServerProvider,
-    AccountService,
-    StateStorageService,
-    LoginService,
-    LoginModalService,
-    JhiLoginModalComponent,
-    Principal,
-    HasAnyAuthorityDirective,
+    AuthServerProvider
 } from './';
+import { ModalComponent } from './modal/modal.component';
+import { ModalConfirmComponent } from './modal/modal-confirm.component';
+import { ModalService } from './modal/modal.service';
 
 @NgModule({
     imports: [
@@ -21,25 +16,23 @@ import {
         BmsjHipsterSharedCommonModule
     ],
     declarations: [
-        JhiLoginModalComponent,
-        HasAnyAuthorityDirective
+        ModalComponent,
+        ModalConfirmComponent
     ],
     providers: [
-        LoginService,
-        LoginModalService,
-        AccountService,
-        StateStorageService,
-        Principal,
-        CSRFService,
         AuthServerProvider,
-        DatePipe
+        DatePipe,
+        ModalService
     ],
-    entryComponents: [JhiLoginModalComponent],
+    entryComponents: [
+        ModalComponent,
+        ModalConfirmComponent
+    ],
     exports: [
         BmsjHipsterSharedCommonModule,
-        JhiLoginModalComponent,
-        HasAnyAuthorityDirective,
-        DatePipe
+        DatePipe,
+        ModalComponent,
+        ModalConfirmComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 

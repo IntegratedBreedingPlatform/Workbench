@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ProfileService } from './profile.service';
-import { ProfileInfo } from './profile-info.model';
 
 @Component({
     selector: 'jhi-page-ribbon',
@@ -11,15 +9,10 @@ import { ProfileInfo } from './profile-info.model';
 })
 export class PageRibbonComponent implements OnInit {
 
-    profileInfo: ProfileInfo;
     ribbonEnv: string;
 
-    constructor(private profileService: ProfileService) {}
+    constructor() {}
 
     ngOnInit() {
-        this.profileService.getProfileInfo().then((profileInfo) => {
-            this.profileInfo = profileInfo;
-            this.ribbonEnv = profileInfo.ribbonEnv;
-        });
     }
 }

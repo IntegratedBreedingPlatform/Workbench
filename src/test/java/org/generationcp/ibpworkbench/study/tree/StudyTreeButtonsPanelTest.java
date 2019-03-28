@@ -141,7 +141,7 @@ public class StudyTreeButtonsPanelTest {
 		Mockito.doReturn(false).when(this.studyTree).isFolder(Matchers.anyInt());
 		this.buttonsPanel.updateButtons(new Integer("101"));
 		Assert.assertTrue(this.buttonsPanel.getAddFolderBtn().isEnabled());
-		Assert.assertTrue(this.buttonsPanel.getRenameFolderBtn().isEnabled());
+		Assert.assertFalse(this.buttonsPanel.getRenameFolderBtn().isEnabled());
 		Assert.assertFalse(this.buttonsPanel.getDeleteFolderBtn().isEnabled());
 	}
 	

@@ -176,7 +176,7 @@ public class StudyTreeButtonsPanel extends HorizontalLayout implements Initializ
 			// The rest of the local lists
 		} else {
 			this.addFolderBtn.setEnabled(true);
-			this.renameFolderBtn.setEnabled(true);
+			this.renameFolderBtn.setEnabled(false);
 			this.deleteFolderBtn.setEnabled(false);
 		}
 
