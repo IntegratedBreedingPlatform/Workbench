@@ -67,6 +67,8 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
             this.presetSettings = PresetSettings;
         });
         this.presetSettingId = 0;
+        this.labelPrintingData.sizeOfLabelSheet = "1";
+        this.labelPrintingData.numberOfRowsPerPage = 7;
     }
 
     ngAfterViewInit() {
@@ -98,6 +100,8 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
 
             setTimeout(() => {
                 $('#leftSelectedFields').empty();
+                $('#rightSelectedFields').empty();
+
                 let listElem = '#leftSelectedFields';
                 labelFieldsSelected.forEach(function(fieldsList: LabelType[]) {
                     fieldsList.forEach(function(labelsType: LabelType) {
@@ -116,7 +120,8 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
 
             this.initDragAndDrop();
             if (presetSetting.fileConfiguration.outputType === FileType.PDF.toString()) {
-
+                this.labelPrintingData.numberOfRowsPerPage = presetSetting.fileConfiguration.numberOfRowsPerPage;
+                this.labelPrintingData.sizeOfLabelSheet = presetSetting.fileConfiguration.sizeOfLabelSheet;
             }
 
             this.labelPrintingData.settingsName = presetSetting.name;
@@ -164,6 +169,13 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         }
     }
 
+    resetSelectedFields() {
+        this.labelTypes = this.labelTypesOrig.map((x) => Object.assign({}, x));
+        $('#leftSelectedFields').empty();
+        $('#rightSelectedFields').empty();
+        this.initDragAndDrop();
+    }
+
     initDragAndDrop() {
         // TODO implement in angular
         setTimeout(() => {
@@ -180,6 +192,9 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
 
                         $(ui.sender).sortable('cancel');
                     }
+                    if(receiver.hasClass('print-fields') && this.fileType === FileType.PDF && receiver.children().length > 5) {
+                        $(ui.sender).sortable('cancel');
+                    }
                 }
             });
         });
@@ -189,10 +204,8 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         const fieldsSelected = [];
         const barcodeFieldsSelected = [];
 
-        if (this.fileType === FileType.CSV) {
-            fieldsSelected.push($('#leftSelectedFields').sortable('toArray'));
-        } else {
-            fieldsSelected.push($('#leftSelectedFields').sortable('toArray'));
+        fieldsSelected.push($('#leftSelectedFields').sortable('toArray'));
+        if (this.fileType === FileType.PDF) {
             fieldsSelected.push($('#rightSelectedFields').sortable('toArray'));
         }
 
@@ -214,6 +227,8 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
             barcodeRequired: this.labelPrintingData.barcodeNeeded,
             automaticBarcode: this.labelPrintingData.barcodeGeneratedAutomatically,
             barcodeFields: barcodeFieldsSelected,
+            sizeOfLabelSheet: this.labelPrintingData.sizeOfLabelSheet,
+            numberOfRowsPerPageOfLabel: this.labelPrintingData.numberOfRowsPerPage,
             fileName: this.labelPrintingData.filename,
             datasetId: undefined,
             studyId: undefined
@@ -263,6 +278,8 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         selectedFields.push($('#leftSelectedFields').sortable('toArray'));
         if (this.fileType === FileType.PDF) {
             selectedFields.push($('#rightSelectedFields').sortable('toArray'));
+            fileConfiguration.sizeOfLabelSheet = this.labelPrintingData.sizeOfLabelSheet;
+            fileConfiguration.numberOfRowsPerPage = this.labelPrintingData.numberOfRowsPerPage;
         }
 
         barcodeSetting.barcodeNeeded = this.labelPrintingData.barcodeNeeded;
