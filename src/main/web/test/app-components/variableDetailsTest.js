@@ -180,6 +180,7 @@ describe('Variable details directive', function() {
 
 		it('should set the model to be the selected variable if the selected variable changes', function() {
 			scope.selectedVariable = PLANT_VIGOR;
+			scope.selectedVariable.metadata.disableFields = [];
 			scope.$apply();
 			expect(scope.model).toEqual(PLANT_VIGOR);
 		});
@@ -209,6 +210,8 @@ describe('Variable details directive', function() {
 		it('should show the Treatment Factor warning message if the variable types include Treatment Factor', function() {
 			scope.model = {};
 			scope.model.variableTypes = VARIABLE_TYPES_INC_TREATMENT_FACTOR;
+			scope.model.metadata = {disableFields: []};
+
 			scope.$apply();
 
 			expect(scope.showTreatmentFactorAlert).toBe(true);
@@ -217,6 +220,7 @@ describe('Variable details directive', function() {
 		it('should hide the Treatment Factor warning message if the variable types do not include Treatment Factor', function() {
 			scope.model = {};
 			scope.model.variableTypes = VARIABLE_TYPES_WITHOUT_TREATMENT_FACTOR;
+			scope.model.metadata = {disableFields: []};
 			scope.$apply();
 
 			expect(scope.showTreatmentFactorAlert).toBe(false);
@@ -238,6 +242,7 @@ describe('Variable details directive', function() {
 			scope.model = {
 				metadata: {
 					editableFields: ['alias'],
+					disableFields: [],
 				},
 				variableTypes: [VARIABLE_TYPES_WITHOUT_TREATMENT_FACTOR]
 
@@ -254,7 +259,9 @@ describe('Variable details directive', function() {
 				scope.model = {
 					metadata: {
 						editableFields: ['alias'],
-					},
+						disableFields: []
+
+			},
 					variableTypes: [VARIABLE_TYPES_WITHOUT_TREATMENT_FACTOR]
 
 				};
@@ -285,6 +292,7 @@ describe('Variable details directive', function() {
 				scope.model = {
 					metadata: {
 						editableFields: ['alias'],
+						disableFields: []
 					},
 					variableTypes: [VARIABLE_TYPES_WITHOUT_TREATMENT_FACTOR]
 
@@ -316,6 +324,7 @@ describe('Variable details directive', function() {
 				scope.model = {
 					metadata: {
 						editableFields: ['alias'],
+						disableFields: []
 					},
 					variableTypes: [VARIABLE_TYPES_WITHOUT_TREATMENT_FACTOR]
 
@@ -347,6 +356,7 @@ describe('Variable details directive', function() {
 				scope.model = {
 					metadata: {
 						editableFields: ['alias'],
+						disableFields: []
 					},
 					variableTypes: [VARIABLE_TYPES_WITHOUT_TREATMENT_FACTOR]
 
