@@ -49,7 +49,11 @@
 						$scope.variableName = $scope.model ? $scope.model.name : '';
 						$scope.deletable = variable && variable.metadata && variable.metadata.deletable || false;
 						$scope.formulaInUsed = !$scope.deletable && $scope.model && $scope.model.formula && $scope.model.formula.formulaId || false;
-						$scope.showAlias = $scope.model && $scope.model && $scope.model.variableTypes && $scope.model.variableTypes.filter(filterByVariableTypes).length === $scope.model.variableTypes.length;
+						$scope.showAlias = $scope.model && $scope.model.variableTypes && $scope.model.variableTypes.filter(filterByVariableTypes).length === $scope.model.variableTypes.length;
+
+						if ($scope.model && $scope.model.metadata) {
+							$scope.model.metadata.disableFields = [];
+						}
 					});
 
 					function filterByVariableTypes(variableType){
@@ -265,9 +269,12 @@
 						var specificVariableTypes = newValue && newValue.length === 0 || newValue && newValue.filter(filterByVariableTypes);
 						$scope.aliasIsDisable = specificVariableTypes && specificVariableTypes.length !== newValue.length;
 						$scope.showAlias = specificVariableTypes && specificVariableTypes.length > 0;
-
 						if ($scope.aliasIsDisable) {
 							$scope.model.alias = undefined;
+							$scope.model.metadata.disableFields.push('alias');
+
+						} else if ($scope.model && $scope.model.metadata) {
+							$scope.model.metadata.disableFields = [];
 						}
 
 					});
