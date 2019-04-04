@@ -67,7 +67,7 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
             this.presetSettings = PresetSettings;
         });
         this.presetSettingId = 0;
-        this.labelPrintingData.sizeOfLabelSheet = "1";
+        this.labelPrintingData.sizeOfLabelSheet = '1';
         this.labelPrintingData.numberOfRowsPerPage = 7;
     }
 
@@ -192,7 +192,7 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
 
                         $(ui.sender).sortable('cancel');
                     }
-                    if(receiver.hasClass('print-fields') && this.fileType === FileType.PDF && receiver.children().length > 5) {
+                    if (receiver.hasClass('print-fields') && this.fileType === FileType.PDF && receiver.children().length > 5) {
                         $(ui.sender).sortable('cancel');
                     }
                 }
