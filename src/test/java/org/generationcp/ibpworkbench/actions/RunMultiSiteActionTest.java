@@ -141,7 +141,7 @@ public class RunMultiSiteActionTest {
 		Mockito.when(this.studyDataManager.getDataSetsByType(STUDY_ID, DataSetType.SUMMARY_DATA)).thenReturn(this.createDataSets());
 
 		Mockito.when(multiSiteDataExporter.exportMeansDatasetToCsv(ArgumentMatchers.anyString(), ArgumentMatchers.any(MultiSiteParameters.class),
-				ArgumentMatchers.<List<Experiment>>any(), ArgumentMatchers.eq(ENVIRONMENT_NAME), ArgumentMatchers.any(GxeEnvironment.class), ArgumentMatchers.<List<Trait>>any(), Mockito.mock(IBPWorkbenchApplication.class)))
+				ArgumentMatchers.<List<Experiment>>any(), ArgumentMatchers.eq(ENVIRONMENT_NAME), ArgumentMatchers.any(GxeEnvironment.class), ArgumentMatchers.<List<Trait>>any(), ArgumentMatchers.any(IBPWorkbenchApplication.class)))
 				.thenReturn(MEANS_DATA_FILEPATH);
 
 		Mockito.when(multiSiteDataExporter.exportTrialDatasetToSummaryStatsCsv(Mockito.anyInt(), Mockito.anyString(), ArgumentMatchers.<List<Experiment>>any(),
@@ -207,7 +207,7 @@ public class RunMultiSiteActionTest {
 
 		// Make sure the Means DataSet is exported to CSV
 		Mockito.verify(multiSiteDataExporter).exportMeansDatasetToCsv(ArgumentMatchers.anyString(), ArgumentMatchers.eq(multiSiteParameters),
-				ArgumentMatchers.<List<Experiment>>any(), ArgumentMatchers.eq(ENVIRONMENT_NAME), ArgumentMatchers.any(GxeEnvironment.class), ArgumentMatchers.<List<Trait>>any(), Mockito.mock(IBPWorkbenchApplication.class));
+				ArgumentMatchers.<List<Experiment>>any(), ArgumentMatchers.eq(ENVIRONMENT_NAME), ArgumentMatchers.any(GxeEnvironment.class), ArgumentMatchers.<List<Trait>>any(), ArgumentMatchers.any(IBPWorkbenchApplication.class));
 
 		// Make sure the Summary Data is exported to CSV
 		Mockito.verify(multiSiteDataExporter).exportTrialDatasetToSummaryStatsCsv(ArgumentMatchers.anyInt(), ArgumentMatchers.anyString(), ArgumentMatchers.<List<Experiment>>any(),
