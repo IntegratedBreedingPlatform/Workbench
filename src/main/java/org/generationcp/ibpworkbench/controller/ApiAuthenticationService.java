@@ -33,7 +33,7 @@ public class ApiAuthenticationService {
 	@Autowired
 	private RestOperations restClient;
 	
-	@Value("${bv.web.url}")
+	@Value("${bmsapi.url}")
 	private String bvWebUrl;
 
 	public Token authenticate(String userName, String password) {
