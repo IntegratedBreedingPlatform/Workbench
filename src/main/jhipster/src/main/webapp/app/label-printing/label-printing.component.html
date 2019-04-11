@@ -113,10 +113,10 @@
 										<div class="row">
 											<label class="control-label add_top_padding col-xs-4 col-md-4">
 												<strong jhiTranslate="label-printing.output.format"></strong>:</label>
-											<div class="col-xs-8 col-md-6">
-												<select class="form-control" [(ngModel)]="fileType" (ngModelChange)="initDragAndDrop()">
+											<div class="col-xs-8 col-md-7">
+												<select class="form-control" [(ngModel)]="fileType" (ngModelChange)="resetSelectedFields()">
 													<option [value]="FILE_TYPES.NONE">Please Choose</option>
-													<option [value]="FILE_TYPES.PDF" disabled>Formatted PDF Label Sheets (not available)</option>
+													<option [value]="FILE_TYPES.PDF">Formatted PDF Label Sheets</option>
 													<option [value]="FILE_TYPES.EXCEL" disabled>Excel Data (not available)</option>
 													<option [value]="FILE_TYPES.CSV">CSV Data</option>
 												</select>
@@ -126,7 +126,65 @@
 								</div>
 							</div>
 						</div>
+						<div *ngIf="fileType === FILE_TYPES.PDF">
+							<div class="row">
+								<div class="col-xs-12 col-md-12">
+									<div class="">
+										<div class="col-xs-12 col-md-12">
+											<br/>
+											<label class="control-label"><strong class="sub-content-heading"
+																				 jhiTranslate="label-printing.specify.label.stock"></strong></label>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-6 col-md-6">
+									<div class="form-group">
+										<div class="col-xs-12 col-md-12">
+											<label class="control-label " jhiTranslate="label-printing.enter.specs.for.label"></label>
+										</div>
+									</div>
+									<div class="row form-group">
+										<div class="col-xs-7 col-md-7">
+											&nbsp;&nbsp;&nbsp;&nbsp;
+											<label class="control-label label-bold">
+												<strong jhiTranslate="label-printing.size.of.label.sheet"></strong>:</label>
+										</div>
+										<div class="col-xs-5 col-md-5">
+											<select [(ngModel)]="labelPrintingData.sizeOfLabelSheet" class="form-control">
+												<option value="1" jhiTranslate="label-printing.label.size.a4">A4</option>
+												<option value="2" jhiTranslate="label-printing.label.size.letter">Letter</option>
+											</select>
+										</div>
+									</div>
 
+									<div class="row form-group">
+										<div class="col-xs-7 col-md-7">
+											&nbsp;&nbsp;&nbsp;&nbsp;
+											<label class="control-label label-bold">
+												<strong jhiTranslate="label-printing.number.of.rows.per.page"></strong>:</label>
+										</div>
+										<div class="col-xs-5 col-md-5">
+											<select [(ngModel)]="labelPrintingData.numberOfRowsPerPage" class="form-control">
+												<option value="7">7</option>
+												<option value="8">8</option>
+												<option value="10">10</option>
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-6 col-md-6">
+									<div class="form-group">
+										<div class="col-xs-12 col-md-12">&nbsp;</div>
+										<div class="col-xs-12 col-md-12">
+											<br/>
+											<em jhiTranslate="label-printing.specify.label.details.message"></em>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
 						<div class="label-printing-details" *ngIf="fileType">
 							<div class="row">
 								<div class="col-xs-12 col-md-12">
@@ -185,7 +243,6 @@
 														</ul>
 														<ul id="leftSelectedFields" class="list-group droppable print-fields">
 														</ul>
-
 													</div>
 													<div class="col-xs-6 col-md-6">
 														<div *ngIf="fileType === FILE_TYPES.PDF">

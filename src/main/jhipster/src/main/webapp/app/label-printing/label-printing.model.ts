@@ -18,8 +18,7 @@ export class LabelPrintingData {
         public numberOfInstances?: number,
         public totalNumberOfLabelToPrint?: number,
         public sizeOfLabelSheet?: string,
-        public numberOfLabelPerRow?: number,
-        public numberOfRowsPerPageOfLabel?: number,
+        public numberOfRowsPerPage?: number,
         public leftSelectedLabelFields?: string,
         public rightSelectedLabelFields?: string,
         public mainSelectedLabelFields?: string,
@@ -69,13 +68,13 @@ export class OriginResourceMetadata {
 
 export class PresetSetting {
     constructor(
-        public  id?: number,
-        public  programUUID?: string,
-        public  toolId?: number,
-        public  toolSection?: string,
-        public  name?: string,
-        public  type?: string,
-        public  selectedFields?: number[][],
+        public id?: number,
+        public programUUID?: string,
+        public toolId?: number,
+        public toolSection?: string,
+        public name?: string,
+        public type?: string,
+        public selectedFields?: number[][],
         public barcodeSetting?: BarcodeSetting,
         public fileConfiguration?: FileConfiguration,
     ) {
@@ -93,7 +92,9 @@ export class BarcodeSetting {
 
 export class FileConfiguration {
     constructor(
-        public outputType?: string
+        public outputType?: string,
+        public numberOfRowsPerPage?: number,
+        public sizeOfLabelSheet?: string
     ) {
     }
 }
