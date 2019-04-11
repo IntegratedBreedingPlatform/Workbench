@@ -270,7 +270,7 @@
 						$scope.aliasIsDisable = specificVariableTypes && specificVariableTypes.length !== newValue.length;
 						$scope.showAlias = specificVariableTypes && specificVariableTypes.length > 0;
 						if ($scope.aliasIsDisable) {
-							$scope.model.alias = undefined;
+							$scope.model.alias = '';
 							$scope.model.metadata.disableFields.push('alias');
 
 						} else if ($scope.model && $scope.model.metadata) {

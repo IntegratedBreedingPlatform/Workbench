@@ -122,7 +122,7 @@
 				}
 				$scope.aliasIsDisable = newValue && newValue.length === 0 || newValue && newValue.filter(filterByVariableTypes).length !== newValue.length;
 				if ($scope.aliasIsDisable) {
-					$scope.variable.alias = undefined;
+					$scope.variable.alias = '';
 				}
 			});
 
