@@ -4,11 +4,11 @@
 (function() {
 	var inputModule = angular.module('input', ['formFields']);
 
-	inputModule.directive('omInput', ['editable', 'disable', function (editable, disable) {
+	inputModule.directive('omInput', ['editable', 'disabled', function (editable, disabled) {
 		return {
 			controller: ['$scope', function($scope) {
 				$scope.editable = editable($scope);
-				$scope.isDisable = disable($scope);
+				$scope.disabled = disabled($scope);
 
 				// We cannot assign values to one time binding scope properties that are not defined
 				// on the directive instance, so instead we must use a different scope property
