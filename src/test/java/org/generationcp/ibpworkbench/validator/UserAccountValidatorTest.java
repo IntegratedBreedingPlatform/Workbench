@@ -33,12 +33,12 @@ public class UserAccountValidatorTest {
 	private UserAccountValidator validator;
 
 	@Test
-	public void testSupports() throws Exception {
+	public void testSupports() {
 		Assert.assertTrue("UserAccountModel.class is supported by validator", this.validator.supports(UserAccountModel.class));
 	}
 
 	@Test
-	public void testValidate() throws Exception {
+	public void testValidate() {
 		UserAccountValidator partialValidator = Mockito.spy(this.validator);
 
 		UserAccountModel userAccount = new UserAccountModel();
@@ -100,7 +100,7 @@ public class UserAccountValidatorTest {
 	}
 
 	@Test
-	public void testValidatePasswordConfirmationIfEquals() throws Exception {
+	public void testValidatePasswordConfirmationIfEquals() {
 		ArgumentCaptor<String> arg1 = ArgumentCaptor.forClass(String.class);
 		ArgumentCaptor<String> arg2 = ArgumentCaptor.forClass(String.class);
 
@@ -118,7 +118,7 @@ public class UserAccountValidatorTest {
 	}
 
 	@Test
-	public void testValidatePasswordConfirmationIfEqualsNoError() throws Exception {
+	public void testValidatePasswordConfirmationIfEqualsNoError() {
 		UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setPassword("password");
 		userAccount.setPasswordConfirmation("password");
@@ -131,7 +131,7 @@ public class UserAccountValidatorTest {
 	}
 
 	@Test
-	public void testValidateUsernameIfExists() throws Exception {
+	public void testValidateUsernameIfExists() {
 		ArgumentCaptor<String> arg1 = ArgumentCaptor.forClass(String.class);
 		ArgumentCaptor<String> arg2 = ArgumentCaptor.forClass(String.class);
 
@@ -149,7 +149,7 @@ public class UserAccountValidatorTest {
 	}
 
 	@Test
-	public void testValidateUsernameIfExistsDatabaseError() throws Exception {
+	public void testValidateUsernameIfExistsDatabaseError() {
 		ArgumentCaptor<String> arg1 = ArgumentCaptor.forClass(String.class);
 		ArgumentCaptor<String> arg2 = ArgumentCaptor.forClass(String.class);
 
@@ -167,7 +167,7 @@ public class UserAccountValidatorTest {
 	}
 
 	@Test
-	public void testValidateUsernameIfExistsNoError() throws Exception {
+	public void testValidateUsernameIfExistsNoError() {
 		UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setUsername("username");
 
@@ -180,7 +180,7 @@ public class UserAccountValidatorTest {
 	}
 
 	@Test
-	public void testValidateEmailFormat() throws Exception {
+	public void testValidateEmailFormat() {
 		ArgumentCaptor<String> arg1 = ArgumentCaptor.forClass(String.class);
 		ArgumentCaptor<String> arg2 = ArgumentCaptor.forClass(String.class);
 
@@ -197,7 +197,7 @@ public class UserAccountValidatorTest {
 	}
 
 	@Test
-	public void testValidateEmailFormatValid() throws Exception {
+	public void testValidateEmailFormatValid() {
 		UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setEmail("validemail123@outlook.com");
 
@@ -213,7 +213,7 @@ public class UserAccountValidatorTest {
 	}
 
 	@Test
-	public void testValidateFieldLength() throws Exception {
+	public void testValidateFieldLength() {
 		UserAccountValidator partialValidator = Mockito.spy(this.validator);
 		partialValidator.validateFieldLength(this.errors, "invalid length", "field.prop", "Field Name", 5);
 
@@ -222,7 +222,7 @@ public class UserAccountValidatorTest {
 	}
 
 	@Test
-	public void testValidateFieldLengthValidValue() throws Exception {
+	public void testValidateFieldLengthValidValue() {
 		UserAccountValidator partialValidator = Mockito.spy(this.validator);
 		partialValidator.validateFieldLength(this.errors, "valid length", "field.prop", "Field Name", 30);
 
@@ -231,7 +231,7 @@ public class UserAccountValidatorTest {
 	}
 
 	@Test
-	public void testValidateEmailIfExists() throws Exception {
+	public void testValidateEmailIfExists() {
 		ArgumentCaptor<String> arg1 = ArgumentCaptor.forClass(String.class);
 		ArgumentCaptor<String> arg2 = ArgumentCaptor.forClass(String.class);
 
@@ -249,7 +249,7 @@ public class UserAccountValidatorTest {
 	}
 
 	@Test
-	public void testValidateEmailIfExistsDatabaseError() throws Exception {
+	public void testValidateEmailIfExistsDatabaseError() {
 		ArgumentCaptor<String> arg1 = ArgumentCaptor.forClass(String.class);
 		ArgumentCaptor<String> arg2 = ArgumentCaptor.forClass(String.class);
 
@@ -267,7 +267,7 @@ public class UserAccountValidatorTest {
 	}
 
 	@Test
-	public void testValidateEmailIfExistsNoError() throws Exception {
+	public void testValidateEmailIfExistsNoError() {
 		UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setUsername("email@email.com");
 
