@@ -47,17 +47,20 @@
 						}
 						$scope.model = angular.copy(variable);
 						$scope.variableName = $scope.model ? $scope.model.name : '';
-						$scope.deletable = variable && variable.metadata && variable.metadata.deletable || false;
-						$scope.formulaInUsed = !$scope.deletable && $scope.model && $scope.model.formula && $scope.model.formula.formulaId || false;
-						$scope.showAlias = $scope.model && $scope.model.variableTypes && $scope.model.variableTypes.filter(filterByVariableTypes).length === $scope.model.variableTypes.length;
+						$scope.deletable = Boolean(variable && variable.metadata && variable.metadata.deletable);
+						$scope.formulaInUsed = Boolean(!$scope.deletable && $scope.model && $scope.model.formula && $scope.model.formula.formulaId);
+						$scope.showAlias = $scope.model && $scope.model.variableTypes && $scope.model.variableTypes.filter(isVariableTypeAllowed).length > 0;
 
 						if ($scope.model && $scope.model.metadata) {
 							$scope.model.metadata.disableFields = [];
 						}
 					});
 
-					function filterByVariableTypes(variableType){
-						return  ['1807', '1808', '1802'].indexOf(variableType.id) > -1;
+					function isVariableTypeNotAllowed(variableType) {
+						return ['1807', '1808', '1802'].indexOf(variableType.id) === -1;
+					}
+					function isVariableTypeAllowed(variableType) {
+						return ['1807', '1808', '1802'].indexOf(variableType.id) > -1;
 					}
 
 					// Show the expected range widget if the chosen scale has a numeric datatype
@@ -143,7 +146,8 @@
 						});
 
 						$scope.editing = true;
-						$scope.aliasIsDisable = $scope.model && $scope.model && $scope.model.variableTypes.length === 0 || $scope.model.variableTypes.filter(filterByVariableTypes).length !== $scope.model.variableTypes.length || false;
+						$scope.aliasIsDisable = $scope.model && $scope.model.variableTypes && $scope.model.variableTypes.length === 0
+							|| $scope.model.variableTypes.some(isVariableTypeNotAllowed);
 					};
 
 					$scope.deleteFormula = function (e, variableId) {
@@ -260,15 +264,14 @@
 						var filtered;
 
 						if (newValue) {
-							filtered = newValue.filter(function(type) {
+							filtered = newValue.filter(function (type) {
 								return type.id === TREATMENT_FACTOR_ID;
 							});
 							$scope.showTreatmentFactorAlert = filtered.length > 0;
+							$scope.aliasIsDisable = newValue.some(isVariableTypeNotAllowed);
+							$scope.showAlias = newValue.filter(isVariableTypeAllowed).length > 0;
 						}
 
-						var specificVariableTypes = newValue && newValue.length === 0 || newValue && newValue.filter(filterByVariableTypes);
-						$scope.aliasIsDisable = specificVariableTypes && specificVariableTypes.length !== newValue.length;
-						$scope.showAlias = specificVariableTypes && specificVariableTypes.length > 0;
 						if ($scope.aliasIsDisable) {
 							$scope.model.alias = '';
 							$scope.model.metadata.disableFields.push('alias');
@@ -276,7 +279,6 @@
 						} else if ($scope.model && $scope.model.metadata) {
 							$scope.model.metadata.disableFields = [];
 						}
-
 					});
 				}],
 				restrict: 'E',
