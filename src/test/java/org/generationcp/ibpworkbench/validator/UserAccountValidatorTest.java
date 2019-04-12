@@ -205,6 +205,11 @@ public class UserAccountValidatorTest {
 		partialValidator.validateEmailFormat(this.errors, userAccount);
 
 		Mockito.verify(this.errors, Mockito.never()).rejectValue(ArgumentMatchers.anyString(), ArgumentMatchers.anyString());
+
+		userAccount.setEmail("christian.obermeier@agrar.uni-giessen.de");
+		partialValidator.validateEmailFormat(this.errors, userAccount);
+
+		Mockito.verify(this.errors, Mockito.never()).rejectValue(ArgumentMatchers.anyString(), ArgumentMatchers.anyString());
 	}
 
 	@Test
