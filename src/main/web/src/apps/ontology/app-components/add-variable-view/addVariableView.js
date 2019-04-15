@@ -27,7 +27,7 @@
 			// Whether or not we want to display the expected range widget
 			$scope.showRangeWidget = false;
 
-			$scope.aliasIsDisable = true;
+			$scope.isAliasDisabled = true;
 
 			// If we were half way through editing, we don't need to fetch everything again - we just need to copy over the stored state
 			if (variableStateService.updateInProgress()) {
@@ -119,10 +119,10 @@
 						return type.id === TREATMENT_FACTOR_ID;
 					});
 					$scope.showTreatmentFactorAlert = filtered.length > 0;
-					$scope.aliasIsDisable = newValue.length === 0 || newValue.some(isVariableTypeNotAllowed);
+					$scope.isAliasDisabled = newValue.length === 0 || newValue.some(isVariableTypeNotAllowed);
 				}
 
-				if ($scope.aliasIsDisable) {
+				if ($scope.isAliasDisabled) {
 					$scope.variable.alias = '';
 				}
 			});

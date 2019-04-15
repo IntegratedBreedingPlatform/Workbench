@@ -146,7 +146,7 @@
 						});
 
 						$scope.editing = true;
-						$scope.aliasIsDisable = $scope.model && $scope.model.variableTypes && $scope.model.variableTypes.length === 0
+						$scope.isAliasDisabled = $scope.model && $scope.model.variableTypes && $scope.model.variableTypes.length === 0
 							|| $scope.model.variableTypes.some(isVariableTypeNotAllowed);
 					};
 
@@ -268,11 +268,11 @@
 								return type.id === TREATMENT_FACTOR_ID;
 							});
 							$scope.showTreatmentFactorAlert = filtered.length > 0;
-							$scope.aliasIsDisable = newValue.some(isVariableTypeNotAllowed);
+							$scope.isAliasDisabled = newValue.some(isVariableTypeNotAllowed);
 							$scope.showAlias = newValue.filter(isVariableTypeAllowed).length > 0;
 						}
 
-						if ($scope.aliasIsDisable) {
+						if ($scope.isAliasDisabled) {
 							$scope.model.alias = '';
 							$scope.model.metadata.disableFields.push('alias');
 
