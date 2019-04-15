@@ -249,7 +249,7 @@ describe('Variable details directive', function() {
 			};
 			scope.editVariable(fakeEvent);
 			expect(scope.editing).toBe(true);
-			expect(scope.aliasIsDisable).toBe(true);
+			expect(scope.isAliasDisabled).toBe(true);
 
 		});
 
