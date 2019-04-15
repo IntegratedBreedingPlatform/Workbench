@@ -14,4 +14,14 @@
 		};
 	});
 
+	formFieldsModule.factory('disabled', function() {
+		return function($scope) {
+			return function() {
+				return ($scope.adding && $scope.disabling) || $scope.editing &&
+					$scope.model && $scope.model.metadata && $scope.model.metadata.disableFields &&
+					$scope.model.metadata.disableFields.indexOf($scope.property) !== -1;
+
+			};
+		};
+	});
 })();
