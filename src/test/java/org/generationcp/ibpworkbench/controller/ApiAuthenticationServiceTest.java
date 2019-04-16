@@ -1,7 +1,7 @@
 package org.generationcp.ibpworkbench.controller;
 
-import javax.servlet.http.HttpServletRequest;
-
+import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -12,13 +12,10 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestOperations;
 
-import junit.framework.Assert;
-
 
 public class ApiAuthenticationServiceTest {
 
-	@Mock
-	private HttpServletRequest currentHttpRequest;
+	private static final String API_URL = RandomStringUtils.randomAlphabetic(20) + "/";
 
 	@Mock
 	private RestOperations restClient;
@@ -29,32 +26,32 @@ public class ApiAuthenticationServiceTest {
 	@Before
 	public void beforeEachTest() {
 		MockitoAnnotations.initMocks(this);
+		this.apiAuthenticationService.setApiUrl(API_URL);
 	}
 
 	@Test
 	public void testAuthenticate() {
 		final Token testToken = new Token("token", 123456789L);
 
-		Mockito.when(currentHttpRequest.getLocalPort()).thenReturn(78080);
-		Mockito.when(currentHttpRequest.getScheme()).thenReturn("http");
-
-		ArgumentCaptor<String> urlCaptor = ArgumentCaptor.forClass(String.class);
+		final ArgumentCaptor<String> urlCaptor = ArgumentCaptor.forClass(String.class);
 		Mockito.when(this.restClient.postForObject(urlCaptor.capture(), Mockito.any(), Mockito.eq(Token.class))).thenReturn(testToken);
 
-		Token token = this.apiAuthenticationService.authenticate("user", "password");
+		final String user = RandomStringUtils.randomAlphabetic(5);
+		final String password = RandomStringUtils.randomAlphabetic(8);
+		final Token token = this.apiAuthenticationService.authenticate(user, password);
 		Assert.assertEquals(testToken.getToken(), token.getToken());
 		Assert.assertEquals(testToken.getExpires(), token.getExpires());
 		final String urlUsedForTokenResource = urlCaptor.getValue();
 		Assert.assertEquals(
-				"Token authentication request URL must use the local loop back address and local port where request was received.",
-				"http://" + ApiAuthenticationService.LOCAL_LOOPBACK_ADDRESS + ":78080/bmsapi/authenticate?username=user&password=password",
-				urlUsedForTokenResource);
+			"Token authentication request URL must use BMSAPI URL from property files",
+			API_URL + "authenticate?username=" + user + "&password=" + password,
+			urlUsedForTokenResource);
 	}
 
 	@Test
 	public void testAuthenticateWithBMSAPIReturningNullToken() {
 		Mockito.when(this.restClient.postForObject(Mockito.anyString(), Mockito.any(), Mockito.eq(Token.class))).thenReturn(null);
-		Token token = this.apiAuthenticationService.authenticate("user", "password");
+		final Token token = this.apiAuthenticationService.authenticate("user", "password");
 		Assert.assertNull(token);
 	}
 
