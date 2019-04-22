@@ -72,7 +72,7 @@ public class QueryForAdaptedGermplasmMain extends VerticalLayout implements Init
 		this.welcomeScreen.setDebugId("welcomeScreen");
 
 		this.welcomeTab = this.accordion.addTab(this.welcomeScreen, this.messageSource.getMessage(Message.INTRODUCTION));
-		this.firstTab = this.accordion.addTab(this.screenOne, this.messageSource.getMessage(Message.SPECIFY_WEIGHT_ENVIRONMENT));
+		this.firstTab = this.accordion.addTab(this.screenOne, this.messageSource.getMessage(Message.ADD_DETAILS_TO_FILTER));
 		this.secondTab = this.accordion.addTab(this.screenTwo, this.messageSource.getMessage(Message.SETUP_TRAIT_FILTER));
 		this.thirdTab = this.accordion.addTab(this.screenThree, this.messageSource.getMessage(Message.DISPLAY_RESULTS));
 
