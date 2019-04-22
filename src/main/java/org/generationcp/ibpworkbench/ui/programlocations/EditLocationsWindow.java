@@ -32,6 +32,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.formfieldfactory.LocationFormFieldFactory;
 import org.generationcp.ibpworkbench.ui.form.LocationForm;
 import org.generationcp.ibpworkbench.ui.window.ConfirmLocationsWindow;
+import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.pojos.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +52,9 @@ public class EditLocationsWindow extends BaseSubWindow {
 
 	@Resource
 	private SimpleResourceBundleMessageSource messageSource;
+
+	@Resource
+	private LocationDataManager locationDataManager;
 
 	private LocationForm locationForm;
 
@@ -175,7 +179,11 @@ public class EditLocationsWindow extends BaseSubWindow {
 				final List<Location> existingLocationsWithSameName = EditLocationsWindow.this.programLocationsPresenter
 						.getExistingLocations(EditLocationsWindow.this.locationForm.getLocationNameValue());
 
-				if (!existingLocationsWithSameName.isEmpty() && EditLocationsWindow.this.locationForm.isLocationNameModified()) {
+				final String locationAbbreviation = EditLocationsWindow.this.locationForm.getLocationAbbreviationValue();
+
+				if(EditLocationsWindow.this.locationForm.isLocationAbbreviationModified() && EditLocationsWindow.this.locationDataManager.countByLocationAbbreviation(locationAbbreviation) > 0){
+					MessageNotifier.showError(EditLocationsWindow.this, EditLocationsWindow.this.messageSource.getMessage(Message.ERROR), EditLocationsWindow.this.messageSource.getMessage(Message.ADD_LOCATION_EXISTING_LOCABBR_ERROR, locationAbbreviation));
+				} else if (!existingLocationsWithSameName.isEmpty() && EditLocationsWindow.this.locationForm.isLocationNameModified()) {
 					new ConfirmLocationsWindow(EditLocationsWindow.this, existingLocationsWithSameName,
 							EditLocationsWindow.this.programLocationsPresenter, new Button.ClickListener() {
 
