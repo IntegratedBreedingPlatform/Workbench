@@ -10,6 +10,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.form.LocationForm;
 import org.generationcp.ibpworkbench.ui.window.ConfirmLocationsWindow;
+import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.pojos.Location;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,9 +29,9 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class EditLocationsWindowTest {
 
-	public static final String WARNING = "Warning";
-	public static final String LOCATION_IS_USED_IN_OTHER_PROGRAM = "Location is used in other program";
-	public static final String PROJECT_LOCATIONS_LINK = "Project Locations Link";
+	private static final String WARNING = "Warning";
+	private static final String LOCATION_IS_USED_IN_OTHER_PROGRAM = "Location is used in other program";
+	private static final String PROJECT_LOCATIONS_LINK = "Project Locations Link";
 	@Mock
 	private ProgramLocationsPresenter presenter;
 
@@ -55,6 +56,9 @@ public class EditLocationsWindowTest {
 	@Mock
 	private SimpleResourceBundleMessageSource messageSource;
 
+	@Mock
+	private LocationDataManager locationDataManager;
+
 	private EditLocationsWindow editLocationsWindow;
 
 	@Before
@@ -65,6 +69,7 @@ public class EditLocationsWindowTest {
 		this.editLocationsWindow.setContextUtil(this.contextUtil);
 		this.editLocationsWindow.setParent(this.parent);
 		this.editLocationsWindow.setLocationForm(this.locationForm);
+		this.editLocationsWindow.setLocationDataManager(this.locationDataManager);
 
 		when(this.component.getWindow()).thenReturn(this.window);
 		when(this.messageSource.getMessage(Message.WARNING)).thenReturn(WARNING);
@@ -212,4 +217,22 @@ public class EditLocationsWindowTest {
 
 	}
 
+
+	@Test
+	public void testUpdateLocationActionHasDuplicateLocationAbbr() {
+
+		final String locationName = "location name";
+		when(this.locationForm.getLocationNameValue()).thenReturn(locationName);
+		when(this.presenter.getExistingLocations(locationName)).thenReturn(new ArrayList<Location>());
+
+		final String locationAbbr = "LABBR";
+		when(this.locationForm.getLocationAbbreviationValue()).thenReturn(locationAbbr);
+		when(this.locationForm.isLocationAbbreviationModified()).thenReturn(true);
+		when(this.locationDataManager.countByLocationAbbreviation(locationAbbr)).thenReturn(new Long(1));
+		final EditLocationsWindow.UpdateLocationAction updateLocationAction = this.editLocationsWindow.new UpdateLocationAction();
+
+		updateLocationAction.buttonClick(null);
+		Mockito.verify(this.messageSource, Mockito.times(1)).getMessage(Message.ERROR);
+		Mockito.verify(this.messageSource, Mockito.times(1)).getMessage(Message.ADD_LOCATION_EXISTING_LOCABBR_ERROR, locationAbbr);
+	}
 }

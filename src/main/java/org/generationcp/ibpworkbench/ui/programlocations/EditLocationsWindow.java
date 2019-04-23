@@ -251,4 +251,7 @@ public class EditLocationsWindow extends BaseSubWindow {
 		this.contextUtil = contextUtil;
 	}
 
+	public void setLocationDataManager(final LocationDataManager locationDataManager) {
+		this.locationDataManager = locationDataManager;
+	}
 }

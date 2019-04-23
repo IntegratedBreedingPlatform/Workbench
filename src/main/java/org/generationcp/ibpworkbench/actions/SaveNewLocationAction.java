@@ -74,7 +74,7 @@ public class SaveNewLocationAction implements ClickListener {
 			final List<Location> existingLocations = this.programLocationsPresenter.getExistingLocations(location.getLocationName());
 
 			if(this.locationDataManager.countByLocationAbbreviation(location.getLocationAbbreviation()) > 0) {
-				MessageNotifier.showError(event.getComponent().getWindow(), this.messageSource.getMessage(Message.ERROR), this.messageSource.getMessage(Message.ADD_LOCATION_EXISTING_LOCABBR_ERROR, location.getLocationAbbreviation()));
+				MessageNotifier.showError(this.window, this.messageSource.getMessage(Message.ERROR), this.messageSource.getMessage(Message.ADD_LOCATION_EXISTING_LOCABBR_ERROR, location.getLocationAbbreviation()));
 			} else if (!existingLocations.isEmpty()) {
 				new ConfirmLocationsWindow(this.window, existingLocations, this.programLocationsPresenter, new Button.ClickListener() {
 
@@ -116,5 +116,9 @@ public class SaveNewLocationAction implements ClickListener {
 
 	void setContextUtil(final ContextUtil contextUtil) {
 		this.contextUtil = contextUtil;
+	}
+
+	void setLocationDataManager(final LocationDataManager locationDataManager) {
+		this.locationDataManager = locationDataManager;
 	}
 }
