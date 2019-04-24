@@ -7,16 +7,19 @@ $(document).ready(function () {
 		}
 		run = true;
 		var form = $(this).serializeArray().reduce(function (vals, entry) {
-			vals[entry.name] = entry.value
+			vals[entry.name] = entry.value;
 			return vals
 		}, {});
 		var studyDbId = getUrlParameter("studyDbId");
-		params = {"studyDbIds": [studyDbId]};
+		var params = {
+			studyDbIds: [studyDbId],
+			observationLevel: form.observationLevel
+		};
 		loadBrAPIData(params, function (response) {
 			useBrAPIData(response, (!!form.group));
 		});
 		return false;
-	})
+	});
 	$("#brapi-form").submit();
 });
 
