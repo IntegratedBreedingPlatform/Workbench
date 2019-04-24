@@ -235,4 +235,30 @@ public class EditLocationsWindowTest {
 		Mockito.verify(this.messageSource, Mockito.times(1)).getMessage(Message.ERROR);
 		Mockito.verify(this.messageSource, Mockito.times(1)).getMessage(Message.ADD_LOCATION_EXISTING_LOCABBR_ERROR, locationAbbr);
 	}
+
+	@Test
+	public void testUpdateLocationActionLocationAbbreviationFieldNotModified() {
+
+		final String locationName = "location name";
+		when(this.locationForm.getLocationNameValue()).thenReturn(locationName);
+		when(this.presenter.getExistingLocations(locationName)).thenReturn(new ArrayList<Location>());
+
+		final LocationViewModel locationViewModel = new LocationViewModel();
+		final BeanItem item = mock(BeanItem.class);
+		when(this.locationForm.getItemDataSource()).thenReturn(item);
+		when(item.getBean()).thenReturn(locationViewModel);
+
+		when(this.locationForm.isLocationAbbreviationModified()).thenReturn(false);
+		final EditLocationsWindow.UpdateLocationAction updateLocationAction = this.editLocationsWindow.new UpdateLocationAction();
+
+		updateLocationAction.buttonClick(null);
+
+		verify(this.parent, never()).addWindow(any(ConfirmLocationsWindow.class));
+
+		verify(this.locationForm).commit();
+		verify(this.presenter).updateLocation(eq(locationViewModel), anyBoolean());
+		verify(this.contextUtil)
+			.logProgramActivity(PROJECT_LOCATIONS_LINK, "Updated location (" + locationViewModel.getLocationName() + ")");
+		verify(this.parent).removeWindow(this.editLocationsWindow);
+	}
 }
