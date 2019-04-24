@@ -12,6 +12,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestOperations;
 
+import java.net.URI;
 
 public class ApiAuthenticationServiceTest {
 
@@ -21,7 +22,7 @@ public class ApiAuthenticationServiceTest {
 	private RestOperations restClient;
 
 	@InjectMocks
-	private ApiAuthenticationService apiAuthenticationService = new ApiAuthenticationService();
+	private final ApiAuthenticationService apiAuthenticationService = new ApiAuthenticationService();
 
 	@Before
 	public void beforeEachTest() {
@@ -33,7 +34,7 @@ public class ApiAuthenticationServiceTest {
 	public void testAuthenticate() {
 		final Token testToken = new Token("token", 123456789L);
 
-		final ArgumentCaptor<String> urlCaptor = ArgumentCaptor.forClass(String.class);
+		final ArgumentCaptor<URI> urlCaptor = ArgumentCaptor.forClass(URI.class);
 		Mockito.when(this.restClient.postForObject(urlCaptor.capture(), Mockito.any(), Mockito.eq(Token.class))).thenReturn(testToken);
 
 		final String user = RandomStringUtils.randomAlphabetic(5);
@@ -41,24 +42,44 @@ public class ApiAuthenticationServiceTest {
 		final Token token = this.apiAuthenticationService.authenticate(user, password);
 		Assert.assertEquals(testToken.getToken(), token.getToken());
 		Assert.assertEquals(testToken.getExpires(), token.getExpires());
-		final String urlUsedForTokenResource = urlCaptor.getValue();
+		final URI urlUsedForTokenResource = urlCaptor.getValue();
 		Assert.assertEquals(
 			"Token authentication request URL must use BMSAPI URL from property files",
 			API_URL + "authenticate?username=" + user + "&password=" + password,
-			urlUsedForTokenResource);
+			urlUsedForTokenResource.toString());
+	}
+
+	@Test
+	public void testAuthenticateEncodedPassword() {
+		final Token testToken = new Token("token", 123456789L);
+
+		final ArgumentCaptor<URI> urlCaptor = ArgumentCaptor.forClass(URI.class);
+		Mockito.when(this.restClient.postForObject(urlCaptor.capture(), Mockito.any(), Mockito.eq(Token.class))).thenReturn(testToken);
+
+		final String user = RandomStringUtils.randomAlphabetic(5);
+		final String passwordWithSpecialCharacters = "~!@#$%^&*()_+{}|:\"<>?`1234567890-=[]\\;',./ a";
+		final Token token = this.apiAuthenticationService.authenticate(user, passwordWithSpecialCharacters);
+		Assert.assertEquals(testToken.getToken(), token.getToken());
+		Assert.assertEquals(testToken.getExpires(), token.getExpires());
+		final URI urlUsedForTokenResource = urlCaptor.getValue();
+		Assert.assertEquals(
+			"Token authentication request URL must use BMSAPI URL from property files",
+			API_URL + "authenticate?username=" + user + "&password=" + this.apiAuthenticationService
+				.encode(passwordWithSpecialCharacters),
+			urlUsedForTokenResource.toString());
 	}
 
 	@Test
 	public void testAuthenticateWithBMSAPIReturningNullToken() {
-		Mockito.when(this.restClient.postForObject(Mockito.anyString(), Mockito.any(), Mockito.eq(Token.class))).thenReturn(null);
+		Mockito.when(this.restClient.postForObject(Mockito.any(URI.class), Mockito.any(), Mockito.eq(Token.class))).thenReturn(null);
 		final Token token = this.apiAuthenticationService.authenticate("user", "password");
 		Assert.assertNull(token);
 	}
 
 	@Test(expected = RestClientException.class)
 	public void testAuthenticateWithBMSAPIThrowingUp() {
-		Mockito.when(this.restClient.postForObject(Mockito.anyString(), Mockito.any(), Mockito.eq(Token.class))).thenThrow(
-				new RestClientException("Error calling BMSAPI authentication service."));
+		Mockito.when(this.restClient.postForObject(Mockito.any(URI.class), Mockito.any(), Mockito.eq(Token.class))).thenThrow(
+			new RestClientException("Error calling BMSAPI authentication service."));
 		this.apiAuthenticationService.authenticate("user", "password");
 	}
 }
