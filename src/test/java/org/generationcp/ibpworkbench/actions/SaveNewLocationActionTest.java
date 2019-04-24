@@ -92,7 +92,7 @@ public class SaveNewLocationActionTest {
 		final Window mockParentWindow = Mockito.mock(Window.class);
 		Mockito.when(this.window.getParent()).thenReturn(mockParentWindow);
 		Mockito.when(mockParentWindow.removeWindow(this.window)).thenReturn(true);
-		Mockito.when(programLocationsPresenter.convertLocationViewToLocation(ArgumentMatchers.eq(lvm))).thenCallRealMethod();
+		Mockito.when(this.programLocationsPresenter.convertLocationViewToLocation(ArgumentMatchers.eq(lvm))).thenCallRealMethod();
 
 		// perform the test!
 		this.saveNewLocationAction.saveLocation();
@@ -116,7 +116,7 @@ public class SaveNewLocationActionTest {
 		final Window mockParentWindow = Mockito.mock(Window.class);
 		Mockito.when(this.window.getParent()).thenReturn(mockParentWindow);
 		Mockito.when(mockParentWindow.removeWindow(this.window)).thenReturn(true);
-		Mockito.when(programLocationsPresenter.convertLocationViewToLocation(ArgumentMatchers.eq(lvm))).thenCallRealMethod();
+		Mockito.when(this.programLocationsPresenter.convertLocationViewToLocation(ArgumentMatchers.eq(lvm))).thenCallRealMethod();
 
 		final Button.ClickEvent event = Mockito.mock(Button.ClickEvent.class);
 		this.saveNewLocationAction.buttonClick(event);

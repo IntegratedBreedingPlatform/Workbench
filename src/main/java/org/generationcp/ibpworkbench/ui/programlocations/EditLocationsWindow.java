@@ -68,9 +68,9 @@ public class EditLocationsWindow extends BaseSubWindow {
 
 	private final ProgramLocationsPresenter programLocationsPresenter;
 
-	private LocationViewModel locationToEdit;
+	private final LocationViewModel locationToEdit;
 
-	private Table sourceTable;
+	private final Table sourceTable;
 
 	public EditLocationsWindow(final LocationViewModel locationToEdit, final ProgramLocationsPresenter programLocationsPresenter,
 			final Table sourceTable) {
@@ -82,7 +82,8 @@ public class EditLocationsWindow extends BaseSubWindow {
 
 	protected void initializeComponents() {
 
-		this.locationForm = new LocationForm(locationToEdit,
+		this.locationForm = new LocationForm(
+			this.locationToEdit,
 				new LocationFormFieldFactory(this.programLocationsPresenter));
 		this.locationForm.setDebugId("locationForm");
 		this.buttonArea = this.layoutButtonArea();
@@ -213,7 +214,7 @@ public class EditLocationsWindow extends BaseSubWindow {
 			final LocationViewModel locationViewModel = locationBean.getBean();
 
 			EditLocationsWindow.this.programLocationsPresenter
-					.updateLocation(locationViewModel, ProgramLocationsView.AVAILABLE.equals(sourceTable.getData()));
+					.updateLocation(locationViewModel, ProgramLocationsView.AVAILABLE.equals(EditLocationsWindow.this.sourceTable.getData()));
 
 			EditLocationsWindow.this.contextUtil
 					.logProgramActivity(EditLocationsWindow.this.messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK),
@@ -230,8 +231,8 @@ public class EditLocationsWindow extends BaseSubWindow {
 
 		@Override
 		public void focus(final FieldEvents.FocusEvent focusEvent) {
-			if (locationForm.isLocationUsedInAnyProgram()) {
-				MessageNotifier.showWarning(focusEvent.getComponent().getWindow(), messageSource.getMessage(Message.WARNING),
+			if (EditLocationsWindow.this.locationForm.isLocationUsedInAnyProgram()) {
+				MessageNotifier.showWarning(focusEvent.getComponent().getWindow(), EditLocationsWindow.this.messageSource.getMessage(Message.WARNING),
 						EditLocationsWindow.this.messageSource.getMessage(Message.LOCATION_IS_USED_IN_OTHER_PROGRAM));
 			}
 
