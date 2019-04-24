@@ -8,8 +8,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestOperations;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URLEncoder;
 import java.util.HashMap;
 
 /**
@@ -28,7 +31,7 @@ public class ApiAuthenticationService {
 
 	@Autowired
 	private RestOperations restClient;
-	
+
 	@Value("${bmsapi.url}")
 	private String apiUrl;
 
@@ -41,9 +44,13 @@ public class ApiAuthenticationService {
 			 * server's authentication end point to obtain token. For servers in networks behind proxies and different cross network access
 			 * rules etc, use of local loop back address and getLocalPort() ensures we always hit the correct server.
 			 */
-			String bmsApiAuthURL =
-					String.format(bmsApiAuthURLFormat, userName, password);
-			final Token apiAuthToken = this.restClient.postForObject(bmsApiAuthURL, new HashMap<String, String>(), Token.class);
+			final String bmsApiAuthURL = String.format(bmsApiAuthURLFormat, userName, this.encode(password));
+
+			final UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(bmsApiAuthURL);
+			// Indicate that the components are already escaped
+			final URI uri = builder.build(true).toUri();
+
+			final Token apiAuthToken = this.restClient.postForObject(uri, new HashMap<String, String>(), Token.class);
 			if (apiAuthToken != null) {
 				LOG.debug("Successfully authenticated and obtained a token from BMSAPI for user {}.", userName);
 			}
@@ -52,6 +59,17 @@ public class ApiAuthenticationService {
 			LOG.debug("Error encountered while trying authenticate user {} with BMSAPI to obtain a token: {}", userName, e.getMessage());
 			throw e;
 		}
+	}
+
+	String encode(final String textToEncode) {
+		try {
+			// After the text is encoded, make sure that the space (escaped as "+" by URLEncoder) is replaced with "%20" so that
+			// it will work with UriComponentsBuilder.build later.
+			return URLEncoder.encode(textToEncode, "UTF-8").replaceAll("\\+", "%20");
+		} catch (final UnsupportedEncodingException e) {
+			LOG.debug("Error encountered while trying encode password: {}", e.getMessage());
+		}
+		return textToEncode;
 	}
 
 	void setRestClient(RestOperations restClient) {
