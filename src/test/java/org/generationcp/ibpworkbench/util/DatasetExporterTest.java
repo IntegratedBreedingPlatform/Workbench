@@ -221,12 +221,14 @@ public class DatasetExporterTest {
 		// Expecting blank values for FIELMAP columns
 		Assert.assertEquals("Expected 2nd column value is blank", "", secondRow[1]);
 		Assert.assertEquals("Expected 3rd column value is blank", "", secondRow[2]);
-		Assert.assertEquals("Expected 4th column value is " + DatasetExporterTest.EPP_VARIATE_VALUE, DatasetExporterTest.EPP_VARIATE_VALUE,
+		Assert.assertEquals("Expected 4th column value is " + DatasetExporterTest.CATEGORICAL_VARIATE_ENUM_NAME, DatasetExporterTest.CATEGORICAL_VARIATE_ENUM_NAME,
 				secondRow[3]);
-		Assert.assertEquals("Expected 5th column value is " + DatasetExporterTest.PH_VARIATE_VALUE, DatasetExporterTest.PH_VARIATE_VALUE,
+		Assert.assertEquals("Expected 5th column value is " + DatasetExporterTest.EPP_VARIATE_VALUE, DatasetExporterTest.EPP_VARIATE_VALUE,
 				secondRow[4]);
-		Assert.assertEquals("Expected 6th column value is " + DatasetExporterTest.BV_MISSING_VALUE, DatasetExporterTest.BV_MISSING_VALUE,
+		Assert.assertEquals("Expected 6th column value is " + DatasetExporterTest.PH_VARIATE_VALUE, DatasetExporterTest.PH_VARIATE_VALUE,
 				secondRow[5]);
+		Assert.assertEquals("Expected 7th column value is " + DatasetExporterTest.BV_MISSING_VALUE, DatasetExporterTest.BV_MISSING_VALUE,
+				secondRow[6]);
 
 	}
 
@@ -280,15 +282,17 @@ public class DatasetExporterTest {
 				TermId.FIELDMAP_COLUMN.name() + DatasetExporterTest.CLEANED_VAR_POST_FIX, headerRow[1]);
 		Assert.assertEquals("Expected 3rd column header is " + TermId.FIELDMAP_RANGE.name() + DatasetExporterTest.CLEANED_VAR_POST_FIX,
 				TermId.FIELDMAP_RANGE.name() + DatasetExporterTest.CLEANED_VAR_POST_FIX, headerRow[2]);
-		Assert.assertEquals("Expected 4th column header is " + DatasetExporterTest.EPP_VARIATE + DatasetExporterTest.CLEANED_VAR_POST_FIX,
-				DatasetExporterTest.EPP_VARIATE + DatasetExporterTest.CLEANED_VAR_POST_FIX, headerRow[3]);
-		Assert.assertEquals("Expected 5th column header is " + DatasetExporterTest.PH_VARIATE + DatasetExporterTest.CLEANED_VAR_POST_FIX,
-				DatasetExporterTest.PH_VARIATE + DatasetExporterTest.CLEANED_VAR_POST_FIX, headerRow[4]);
+		Assert.assertEquals("Expected 4th column header is " + TermId.ENTRY_TYPE.name() + DatasetExporterTest.CLEANED_VAR_POST_FIX,
+				TermId.ENTRY_TYPE.name()  + DatasetExporterTest.CLEANED_VAR_POST_FIX, headerRow[3]);
+		Assert.assertEquals("Expected 5th column header is " + DatasetExporterTest.EPP_VARIATE + DatasetExporterTest.CLEANED_VAR_POST_FIX,
+				DatasetExporterTest.EPP_VARIATE + DatasetExporterTest.CLEANED_VAR_POST_FIX, headerRow[4]);
+		Assert.assertEquals("Expected 6th column header is " + DatasetExporterTest.PH_VARIATE + DatasetExporterTest.CLEANED_VAR_POST_FIX,
+				DatasetExporterTest.PH_VARIATE + DatasetExporterTest.CLEANED_VAR_POST_FIX, headerRow[5]);
 		Assert.assertFalse(DatasetExporterTest.CM_VARIATE + DatasetExporterTest.CLEANED_VAR_POST_FIX + " should not be included",
 				ArrayUtils.contains(headerRow, DatasetExporterTest.CM_VARIATE + DatasetExporterTest.CLEANED_VAR_POST_FIX));
 		Assert.assertEquals(
-				"Expected 6th column header is " + DatasetExporterTest.ALEUCOL_1_5_VARIATE + DatasetExporterTest.CLEANED_VAR_POST_FIX,
-				DatasetExporterTest.ALEUCOL_1_5_VARIATE + DatasetExporterTest.CLEANED_VAR_POST_FIX, headerRow[5]);
+				"Expected 7th column header is " + DatasetExporterTest.ALEUCOL_1_5_VARIATE + DatasetExporterTest.CLEANED_VAR_POST_FIX,
+				DatasetExporterTest.ALEUCOL_1_5_VARIATE + DatasetExporterTest.CLEANED_VAR_POST_FIX, headerRow[6]);
 
 	}
 
@@ -324,12 +328,12 @@ public class DatasetExporterTest {
 		// Verify the header names
 		final String[] headerRow = rowsToWrite.get(0);
 		this.verifyColumnHeaders(headerRow, DatasetExporterTest.ALT_TRIAL_INSTANCE_NAME);
-		Assert.assertEquals("Expected 7th column header is " + DatasetExporterTest.ENV_NAME, DatasetExporterTest.ENV_NAME, headerRow[6]);
+		Assert.assertEquals("Expected 8th column header is " + DatasetExporterTest.ENV_NAME, DatasetExporterTest.ENV_NAME, headerRow[7]);
 
 		// Verify the values of the first observation row
 		final String[] firstRow = rowsToWrite.get(1);
 		this.verifyRowValues(firstRow);
-		Assert.assertEquals("Expected 7th column value is " + DatasetExporterTest.ENV_VALUE, DatasetExporterTest.ENV_VALUE, firstRow[6]);
+		Assert.assertEquals("Expected 8th column value is " + DatasetExporterTest.ENV_VALUE, DatasetExporterTest.ENV_VALUE, firstRow[7]);
 	}
 
 	@Test
@@ -345,13 +349,13 @@ public class DatasetExporterTest {
 		// Verify the header names
 		final String[] headerRow = rowsToWrite.get(0);
 		this.verifyColumnHeaders(headerRow, DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME);
-		Assert.assertEquals("Expected 7th column header is " + DatasetExporter.DUMMY_REPLICATES, DatasetExporter.DUMMY_REPLICATES,
-				headerRow[6]);
+		Assert.assertEquals("Expected 8th column header is " + DatasetExporter.DUMMY_REPLICATES, DatasetExporter.DUMMY_REPLICATES,
+				headerRow[7]);
 
 		// Verify the values of the first observation row
 		final String[] firstRow = rowsToWrite.get(1);
 		this.verifyRowValues(firstRow);
-		Assert.assertEquals("Expected 7th column value is 1 for column " + DatasetExporter.DUMMY_REPLICATES, "1", firstRow[6]);
+		Assert.assertEquals("Expected 8th column value is 1 for column " + DatasetExporter.DUMMY_REPLICATES, "1", firstRow[7]);
 	}
 
 	private void verifyRowValues(final String[] firstRow) {
@@ -457,6 +461,8 @@ public class DatasetExporterTest {
 		}
 		variables.add(this.createVariableTestData(factors.get(DatasetExporterTest.INDEX_OF_TRIAL_INSTANCE_FACTOR),
 				DatasetExporterTest.TRIAL_INSTANCE_1));
+		variables.add(this.createVariableTestData(factors.get(DatasetExporterTest.INDEX_OF_TRIAL_INSTANCE_FACTOR + 3),
+				DatasetExporterTest.ENTRY_TYPE));
 
 		return variables;
 	}
