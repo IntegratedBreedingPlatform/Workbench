@@ -81,7 +81,9 @@ public class EditLocationsWindow extends BaseSubWindow {
 	}
 
 	protected void initializeComponents() {
-
+		if(this.locationToEdit.getLocationAbbreviation() == null) {
+			this.locationToEdit.setLocationAbbreviation("");
+		}
 		this.locationForm = new LocationForm(
 			this.locationToEdit,
 				new LocationFormFieldFactory(this.programLocationsPresenter));
