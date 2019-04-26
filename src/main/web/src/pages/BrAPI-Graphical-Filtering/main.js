@@ -11,19 +11,56 @@ $(document).ready(function () {
 			return vals
 		}, {});
 		var studyDbId = getUrlParameter("studyDbId");
-		var params = {
-			studyDbIds: [studyDbId],
+
+		loadBrAPIData({
+			studyDbIds: studyDbId ? [studyDbId] : [],
+			locationDbIds: $('#locations select').val(),
 			observationLevel: form.observationLevel
-		};
-		loadBrAPIData(params, function (response) {
+		}).then(function (response) {
 			useBrAPIData(response, (!!form.group));
 		});
+
 		return false;
 	});
 	$("#brapi-form").submit();
+	loadLocations().then(function (response) {
+		buildLocationsCombo(response);
+	});
 });
 
-function loadBrAPIData(parameters, success) {
+function loadLocations() {
+	var url = "/bmsapi/" + getUrlParameter("crop") + "/brapi/v1/locations";
+
+	return $.get({
+		dataType: "json",
+		contentType: "application/json;charset=utf-8",
+		url: url,
+		beforeSend: beforeSend,
+		error: error
+	});
+}
+
+function buildLocationsCombo(response) {
+	if (!response
+		|| !response.result
+		|| !response.result.data) {
+		return;
+	}
+
+	$('#locations').html('<select multiple ></select>');
+	$('#locations select').append(response.result.data.map(function (location) {
+		return '<option value="' + location.locationDbId + '">'
+			+ location.name + ' - (' + location.abbreviation + ')'
+			+ '</option>';
+	}));
+	$('#locations select').select2({
+		containerCss: {
+			width: '100%'
+		}
+	});
+}
+
+function loadBrAPIData(parameters) {
 	var load_url = "/bmsapi/" + getUrlParameter("crop") + "/brapi/v1/phenotypes-search";
 	var data = {
 		"pageSize": 1000,
@@ -33,30 +70,16 @@ function loadBrAPIData(parameters, success) {
 		data[entry.key] = data[entry.key] || entry.value;
 	});
 
-	load();
-
-	function load() {
-		$.ajax({
-			type: "POST",
-			dataType: "json",
-			contentType: "application/json;charset=utf-8",
-			url: load_url,
-			beforeSend: function (xhr) {
-				var xAuthToken = JSON.parse(localStorage["bms.xAuthToken"]).token;
-				xhr.setRequestHeader('Authorization', "Bearer " + xAuthToken);
-			},
-			data: JSON.stringify(data),
-			success: success,
-			error: function (data) {
-				if (data.status == 401) {
-					// TODO BMS-4743
-					alert('Breeding Management System needs to authenticate you again. Redirecting to login page.');
-					window.top.location.href = '/ibpworkbench/logout';
-				}
-			},
-		});
-	}
-};
+	return $.ajax({
+		type: "POST",
+		dataType: "json",
+		contentType: "application/json;charset=utf-8",
+		url: load_url,
+		beforeSend: beforeSend,
+		data: JSON.stringify(data),
+		error: error
+	});
+}
 
 // filters and modifies the response and then creates the root filter object
 // and datatable
@@ -88,6 +111,7 @@ function useBrAPIData(response, groupByAccession) {
 		{title: "Study", data: "studyName"},
 		{title: "Name", data: "observationUnitName"},
 		{title: "Accession", data: "germplasmName"},
+		{title: "Location", data: "studyLocation"},
 	];
 	if (groupByAccession) {
 		var grouped = d3.nest().key(function (d) {
@@ -125,4 +149,17 @@ function useBrAPIData(response, groupByAccession) {
 	// create the root filter object and datatable
 	var gfilter = GraphicalFilter();
 	gfilter.create("#filter_div", "#filtered_results", data, tableCols, trait_names);
+}
+
+function beforeSend(xhr) {
+	var xAuthToken = JSON.parse(localStorage["bms.xAuthToken"]).token;
+	xhr.setRequestHeader('Authorization', "Bearer " + xAuthToken);
+}
+
+function error(data) {
+	if (data.status === 401) {
+		// TODO BMS-4743
+		alert('Breeding Management System needs to authenticate you again. Redirecting to login page.');
+		window.top.location.href = '/ibpworkbench/logout';
+	}
 }
