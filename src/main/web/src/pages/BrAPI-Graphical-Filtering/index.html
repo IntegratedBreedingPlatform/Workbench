@@ -21,9 +21,13 @@
 						<div class="form-group">
 							<label class="control-label col-sm-4">Observation level</label>
 							<div class="col-sm-8">
+								<!-- TODO get /observationLevels -->
 								<select class="form-control" name="observationLevel">
 									<option th:text="${T(org.generationcp.middleware.domain.dms.DataSetType).PLOT_DATA.getReadableName()}" th:value="${T(org.generationcp.middleware.domain.dms.DataSetType).PLOT_DATA.getId()}"></option>
 									<option th:text="${T(org.generationcp.middleware.domain.dms.DataSetType).PLANT_SUBOBSERVATIONS.getReadableName()}" th:value="${T(org.generationcp.middleware.domain.dms.DataSetType).PLANT_SUBOBSERVATIONS.getId()}"></option>
+									<option th:text="${T(org.generationcp.middleware.domain.dms.DataSetType).QUADRAT_SUBOBSERVATIONS.getReadableName()}" th:value="${T(org.generationcp.middleware.domain.dms.DataSetType).QUADRAT_SUBOBSERVATIONS.getId()}"></option>
+									<option th:text="${T(org.generationcp.middleware.domain.dms.DataSetType).TIME_SERIES_SUBOBSERVATIONS.getReadableName()}" th:value="${T(org.generationcp.middleware.domain.dms.DataSetType).TIME_SERIES_SUBOBSERVATIONS.getId()}"></option>
+									<option th:text="${T(org.generationcp.middleware.domain.dms.DataSetType).CUSTOM_SUBOBSERVATIONS.getReadableName()}" th:value="${T(org.generationcp.middleware.domain.dms.DataSetType).CUSTOM_SUBOBSERVATIONS.getId()}"></option>
 									<option th:text="${T(org.generationcp.middleware.domain.dms.DataSetType).MEANS_DATA.getReadableName()}" th:value="${T(org.generationcp.middleware.domain.dms.DataSetType).MEANS_DATA.getId()}"></option>
 								</select>
 							</div>
