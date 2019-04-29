@@ -81,6 +81,7 @@ public class EditLocationsWindow extends BaseSubWindow {
 	}
 
 	protected void initializeComponents() {
+		//Set the value to empty string so that "null" won't be displayed in the edit location window
 		if(this.locationToEdit.getLocationAbbreviation() == null) {
 			this.locationToEdit.setLocationAbbreviation("");
 		}
