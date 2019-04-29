@@ -302,7 +302,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
 		root.setFirstComponent(programArea);
 		root.setSecondComponent(previewArea);
-		root.setHeight("400px");
+		root.setHeight("800px");
 
 		return root;
 	}
