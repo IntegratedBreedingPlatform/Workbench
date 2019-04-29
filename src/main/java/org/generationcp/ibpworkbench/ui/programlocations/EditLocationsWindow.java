@@ -242,7 +242,7 @@ public class EditLocationsWindow extends BaseSubWindow {
 
 	}
 
-	public void setLocationForm(final LocationForm locationForm) {
+	void setLocationForm(final LocationForm locationForm) {
 		this.locationForm = locationForm;
 	}
 
@@ -256,5 +256,9 @@ public class EditLocationsWindow extends BaseSubWindow {
 
 	public void setLocationDataManager(final LocationDataManager locationDataManager) {
 		this.locationDataManager = locationDataManager;
+	}
+
+	LocationViewModel getLocationToEdit() {
+		return this.locationToEdit;
 	}
 }

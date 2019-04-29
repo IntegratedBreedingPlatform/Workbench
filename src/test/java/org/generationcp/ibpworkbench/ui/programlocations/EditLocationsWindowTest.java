@@ -5,6 +5,7 @@ import com.vaadin.event.FieldEvents;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
+import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
@@ -12,6 +13,7 @@ import org.generationcp.ibpworkbench.ui.form.LocationForm;
 import org.generationcp.ibpworkbench.ui.window.ConfirmLocationsWindow;
 import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.pojos.Location;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,7 +65,6 @@ public class EditLocationsWindowTest {
 
 	@Before
 	public void init() {
-
 		this.editLocationsWindow = new EditLocationsWindow(new LocationViewModel(), this.presenter, this.sourceTable);
 		this.editLocationsWindow.setMessageSource(this.messageSource);
 		this.editLocationsWindow.setContextUtil(this.contextUtil);
@@ -260,5 +261,15 @@ public class EditLocationsWindowTest {
 		verify(this.contextUtil)
 			.logProgramActivity(PROJECT_LOCATIONS_LINK, "Updated location (" + locationViewModel.getLocationName() + ")");
 		verify(this.parent).removeWindow(this.editLocationsWindow);
+	}
+
+	@Test
+	public void testLocationViewModelWithNullLabbr() {
+		final LocationViewModel locationViewModel = new LocationViewModel();
+		locationViewModel.setLocationName("Location Name");
+		locationViewModel.setLocationAbbreviation(null);
+		this.editLocationsWindow = new EditLocationsWindow(locationViewModel, this.presenter, this.sourceTable);
+		Assert.assertEquals(locationViewModel.getLocationName(), this.editLocationsWindow.getLocationToEdit().getLocationName());
+		Assert.assertEquals(StringUtils.EMPTY, this.editLocationsWindow.getLocationToEdit().getLocationAbbreviation());
 	}
 }
