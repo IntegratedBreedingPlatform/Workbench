@@ -15,7 +15,8 @@ $(document).ready(function () {
 		loadBrAPIData({
 			studyDbIds: studyDbId ? [studyDbId] : [],
 			locationDbIds: $('#locations select').val(),
-			observationLevel: form.observationLevel
+			observationLevel: form.observationLevel,
+			germplasmDbIds: form.germplasmDbIds ? form.germplasmDbIds.split(",") : []
 		}).then(function (response) {
 			useBrAPIData(response, (!!form.group));
 		});
@@ -110,7 +111,9 @@ function useBrAPIData(response, groupByAccession) {
 	var tableCols = [
 		{title: "Study", data: "studyName"},
 		{title: "Name", data: "observationUnitName"},
+		{title: "observationUnitDbId", data: "observationUnitDbId"},
 		{title: "Accession", data: "germplasmName"},
+		{title: "GID", data: "germplasmDbId"},
 		{title: "Location", data: "studyLocation"},
 	];
 	if (groupByAccession) {
