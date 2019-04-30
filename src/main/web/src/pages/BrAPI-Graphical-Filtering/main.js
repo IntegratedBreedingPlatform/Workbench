@@ -14,8 +14,10 @@ $(document).ready(function () {
 
 		loadBrAPIData({
 			studyDbIds: studyDbId ? [studyDbId] : [],
-			locationDbIds: $('#locations select').val(),
-			observationLevel: form.observationLevel,
+			locationDbIds: $('#locations select').val() || null,
+			observationLevel: form.observationLevel || null,
+			observationTimeStampRangeStart: form.observationTimeStampRangeStart || null,
+			observationTimeStampRangeEnd: form.observationTimeStampRangeEnd || null,
 			germplasmDbIds: form.germplasmDbIds ? form.germplasmDbIds.split(",") : []
 		}).then(function (response) {
 			useBrAPIData(response, (!!form.group));
