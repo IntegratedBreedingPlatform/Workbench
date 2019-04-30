@@ -16,6 +16,8 @@ $(document).ready(function () {
 			studyDbIds: studyDbId ? [studyDbId] : [],
 			locationDbIds: $('#locations select').val() || null,
 			observationLevel: form.observationLevel || null,
+			programDbIds: $('#programs select').val() ? [$('#programs select').val()] : [],
+			trialDbIds: $('#trials select').val() || null,
 			observationTimeStampRangeStart: form.observationTimeStampRangeStart || null,
 			observationTimeStampRangeEnd: form.observationTimeStampRangeEnd || null,
 			germplasmDbIds: form.germplasmDbIds ? form.germplasmDbIds.split(",") : []
@@ -25,11 +27,42 @@ $(document).ready(function () {
 
 		return false;
 	});
-	$("#brapi-form").submit();
+	loadPrograms().then(function (response) {
+		buildProgramsCombo(response);
+	});
 	loadLocations().then(function (response) {
 		buildLocationsCombo(response);
 	});
+
+	$("#brapi-form").submit();
 });
+
+function loadPrograms() {
+	var url = "/bmsapi/" + getUrlParameter("crop") + "/brapi/v1/programs";
+
+	return $.get({
+		dataType: "json",
+		contentType: "application/json;charset=utf-8",
+		url: url,
+		beforeSend: beforeSend,
+		error: error
+	});
+}
+
+function buildProgramsCombo(response) {
+	if (!response
+		|| !response.result
+		|| !response.result.data) {
+		return;
+	}
+
+	$('#programs').html('<select class="form-control"></select>');
+	$('#programs select').append(response.result.data.map(function (program) {
+		return '<option value="' + program.programDbId + '">' + program.name + '</option>';
+	}));
+	$('#programs select').on("change", loadTrials);
+	loadTrials();
+}
 
 function loadLocations() {
 	var url = "/bmsapi/" + getUrlParameter("crop") + "/brapi/v1/locations";
@@ -56,10 +89,31 @@ function buildLocationsCombo(response) {
 			+ location.name + ' - (' + location.abbreviation + ')'
 			+ '</option>';
 	}));
-	$('#locations select').select2({
-		containerCss: {
-			width: '100%'
+	$('#locations select').select2({containerCss: {width: '100%'}});
+}
+
+function loadTrials() {
+	var url = "/bmsapi/" + getUrlParameter("crop") + "/brapi/v1/trials"
+		+ '?programDbId=' + $('#programs select').val();
+
+	$.get({
+		dataType: "json",
+		contentType: "application/json;charset=utf-8",
+		url: url,
+		beforeSend: beforeSend,
+		error: error
+	}).then(function (response) {
+		if (!response
+			|| !response.result
+			|| !response.result.data) {
+			return;
 		}
+
+		$('#trials').html('<select multiple ></select>');
+		$('#trials select').append(response.result.data.map(function (trial) {
+			return '<option value="' + trial.trialDbId + '">' + trial.trialName + '</option>';
+		}));
+		$('#trials select').select2({containerCss: {width: '100%'}});
 	});
 }
 
@@ -111,6 +165,7 @@ function useBrAPIData(response, groupByAccession) {
 		})
 	});
 	var tableCols = [
+		{title: "StudyDbId", data: "studyDbId"},
 		{title: "Study", data: "studyName"},
 		{title: "Name", data: "observationUnitName"},
 		{title: "observationUnitDbId", data: "observationUnitDbId"},
