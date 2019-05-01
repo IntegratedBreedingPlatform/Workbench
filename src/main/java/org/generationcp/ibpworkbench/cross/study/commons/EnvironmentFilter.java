@@ -17,6 +17,7 @@ import com.vaadin.ui.Table.ColumnGenerator;
 import com.vaadin.ui.Table.ColumnResizeEvent;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.cross.study.adapted.main.QueryForAdaptedGermplasmMain;
 import org.generationcp.ibpworkbench.cross.study.adapted.main.SetUpTraitFilter;
@@ -165,6 +166,9 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 
 	@Autowired
 	private CrossStudyDataManager crossStudyDataManager;
+
+	@Autowired
+	private ContextUtil contextUtil;
 
 	private final CrossStudyToolType crossStudyToolType;
 
@@ -719,7 +723,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 			try {
 
 				// FIXME : hit a view for this query - too heavy
-				this.environments = this.crossStudyDataManager.getEnvironmentsForTraits(this.traitsList);
+				this.environments = this.crossStudyDataManager.getEnvironmentsForTraits(this.traitsList, this.contextUtil.getCurrentProgramUUID());
 
 				Set<TrialEnvironment> trialEnvSet = this.environments.getTrialEnvironments();
 				Iterator<TrialEnvironment> trialEnvIter = trialEnvSet.iterator();
