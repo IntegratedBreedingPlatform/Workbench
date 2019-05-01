@@ -5,35 +5,35 @@ import com.vaadin.event.FieldEvents;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
+import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.form.LocationForm;
 import org.generationcp.ibpworkbench.ui.window.ConfirmLocationsWindow;
+import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.pojos.Location;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EditLocationsWindowTest {
 
-	public static final String WARNING = "Warning";
-	public static final String LOCATION_IS_USED_IN_OTHER_PROGRAM = "Location is used in other program";
-	public static final String PROJECT_LOCATIONS_LINK = "Project Locations Link";
+	private static final String WARNING = "Warning";
+	private static final String LOCATION_IS_USED_IN_OTHER_PROGRAM = "Location is used in other program";
+	private static final String PROJECT_LOCATIONS_LINK = "Project Locations Link";
 	@Mock
 	private ProgramLocationsPresenter presenter;
 
@@ -58,22 +58,25 @@ public class EditLocationsWindowTest {
 	@Mock
 	private SimpleResourceBundleMessageSource messageSource;
 
+	@Mock
+	private LocationDataManager locationDataManager;
+
 	private EditLocationsWindow editLocationsWindow;
 
 	@Before
 	public void init() {
-
-		this.editLocationsWindow = new EditLocationsWindow(new LocationViewModel(), presenter, sourceTable);
+		this.editLocationsWindow = new EditLocationsWindow(new LocationViewModel(), this.presenter, this.sourceTable);
 		this.editLocationsWindow.setMessageSource(this.messageSource);
 		this.editLocationsWindow.setContextUtil(this.contextUtil);
 		this.editLocationsWindow.setParent(this.parent);
-		this.editLocationsWindow.setLocationForm(locationForm);
+		this.editLocationsWindow.setLocationForm(this.locationForm);
+		this.editLocationsWindow.setLocationDataManager(this.locationDataManager);
 
 		when(this.component.getWindow()).thenReturn(this.window);
-		when(messageSource.getMessage(Message.WARNING)).thenReturn(WARNING);
-		when(messageSource.getMessage(Message.LOCATION_IS_USED_IN_OTHER_PROGRAM)).thenReturn(LOCATION_IS_USED_IN_OTHER_PROGRAM);
-		when(messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK)).thenReturn(PROJECT_LOCATIONS_LINK);
-		when(presenter.getLocationDetailsByLocId(anyInt())).thenReturn(new LocationViewModel());
+		when(this.messageSource.getMessage(Message.WARNING)).thenReturn(WARNING);
+		when(this.messageSource.getMessage(Message.LOCATION_IS_USED_IN_OTHER_PROGRAM)).thenReturn(LOCATION_IS_USED_IN_OTHER_PROGRAM);
+		when(this.messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK)).thenReturn(PROJECT_LOCATIONS_LINK);
+		when(this.presenter.getLocationDetailsByLocId(anyInt())).thenReturn(new LocationViewModel());
 	}
 
 	@Test
@@ -140,7 +143,6 @@ public class EditLocationsWindowTest {
 		when(item.getBean()).thenReturn(locationViewModel);
 
 		when(this.locationForm.getLocationNameValue()).thenReturn(locationName);
-		when(this.locationForm.isLocationNameModified()).thenReturn(false);
 		// Set an empty existing location list to simulate location name with no duplicate in existing locations.
 		when(this.presenter.getExistingLocations(locationName)).thenReturn(new ArrayList<Location>());
 
@@ -184,7 +186,7 @@ public class EditLocationsWindowTest {
 
 		final FieldEvents.FocusEvent focusEvent = mock(FieldEvents.FocusEvent.class);
 		when(focusEvent.getComponent()).thenReturn(this.component);
-		when(locationForm.isLocationUsedInAnyProgram()).thenReturn(true);
+		when(this.locationForm.isLocationUsedInAnyProgram()).thenReturn(true);
 
 		final EditLocationsWindow.WindowOnFocusListener listener = this.editLocationsWindow.new WindowOnFocusListener();
 
@@ -216,4 +218,58 @@ public class EditLocationsWindowTest {
 
 	}
 
+
+	@Test
+	public void testUpdateLocationActionHasDuplicateLocationAbbr() {
+
+		final String locationName = "location name";
+		when(this.locationForm.getLocationNameValue()).thenReturn(locationName);
+		when(this.presenter.getExistingLocations(locationName)).thenReturn(new ArrayList<Location>());
+
+		final String locationAbbr = "LABBR";
+		when(this.locationForm.getLocationAbbreviationValue()).thenReturn(locationAbbr);
+		when(this.locationForm.isLocationAbbreviationModified()).thenReturn(true);
+		when(this.locationDataManager.countByLocationAbbreviation(locationAbbr)).thenReturn(new Long(1));
+		final EditLocationsWindow.UpdateLocationAction updateLocationAction = this.editLocationsWindow.new UpdateLocationAction();
+
+		updateLocationAction.buttonClick(null);
+		Mockito.verify(this.messageSource, Mockito.times(1)).getMessage(Message.ERROR);
+		Mockito.verify(this.messageSource, Mockito.times(1)).getMessage(Message.ADD_LOCATION_EXISTING_LOCABBR_ERROR, locationAbbr);
+	}
+
+	@Test
+	public void testUpdateLocationActionLocationAbbreviationFieldNotModified() {
+
+		final String locationName = "location name";
+		when(this.locationForm.getLocationNameValue()).thenReturn(locationName);
+		when(this.presenter.getExistingLocations(locationName)).thenReturn(new ArrayList<Location>());
+
+		final LocationViewModel locationViewModel = new LocationViewModel();
+		final BeanItem item = mock(BeanItem.class);
+		when(this.locationForm.getItemDataSource()).thenReturn(item);
+		when(item.getBean()).thenReturn(locationViewModel);
+
+		when(this.locationForm.isLocationAbbreviationModified()).thenReturn(false);
+		final EditLocationsWindow.UpdateLocationAction updateLocationAction = this.editLocationsWindow.new UpdateLocationAction();
+
+		updateLocationAction.buttonClick(null);
+
+		verify(this.parent, never()).addWindow(any(ConfirmLocationsWindow.class));
+
+		verify(this.locationForm).commit();
+		verify(this.presenter).updateLocation(eq(locationViewModel), anyBoolean());
+		verify(this.contextUtil)
+			.logProgramActivity(PROJECT_LOCATIONS_LINK, "Updated location (" + locationViewModel.getLocationName() + ")");
+		verify(this.parent).removeWindow(this.editLocationsWindow);
+	}
+
+	@Test
+	public void testLocationViewModelWithNullLabbr() {
+		final LocationViewModel locationViewModel = new LocationViewModel();
+		locationViewModel.setLocationName("Location Name");
+		locationViewModel.setLocationAbbreviation(null);
+		this.editLocationsWindow = new EditLocationsWindow(locationViewModel, this.presenter, this.sourceTable);
+		Assert.assertEquals(locationViewModel.getLocationName(), this.editLocationsWindow.getLocationToEdit().getLocationName());
+		Assert.assertEquals(StringUtils.EMPTY, this.editLocationsWindow.getLocationToEdit().getLocationAbbreviation());
+	}
 }

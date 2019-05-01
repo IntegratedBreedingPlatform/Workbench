@@ -20,6 +20,8 @@ import org.generationcp.ibpworkbench.ui.recovery.BackupAndRestoreView;
 import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow;
 import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow.CustomFileFactory;
 import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow.CustomUploadField;
+import org.generationcp.middleware.data.initializer.DMSVariableTestDataInitializer;
+import org.generationcp.middleware.data.initializer.LocationTestDataInitializer;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
@@ -30,6 +32,7 @@ import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableList;
 import org.generationcp.middleware.domain.dms.VariableTypeList;
 import org.generationcp.middleware.domain.oms.TermId;
+import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.manager.api.OntologyDataManager;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -38,10 +41,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.vaadin.Application;
@@ -109,6 +112,9 @@ public class UploadBreedingViewOutputActionTest {
 	@Mock
 	private PlatformTransactionManager transactionManager;
 
+	@Mock
+	private LocationDataManager locationDataManager;
+
 	@InjectMocks
 	private final UploadBreedingViewOutputAction uploadBreedingViewOutputAction = new UploadBreedingViewOutputAction();
 
@@ -123,14 +129,8 @@ public class UploadBreedingViewOutputActionTest {
 		Mockito.when(this.fileUploadBreedingViewOutputWindow.getUploadZip()).thenReturn(this.uploadZip);
 		Mockito.when(this.fileUploadBreedingViewOutputWindow.getParent()).thenReturn(this.window);
 		Mockito.when(this.event.getComponent()).thenReturn(this.component);
-		Mockito.when(this.component.getWindow()).thenReturn(this.window);
-		Mockito.when(this.window.getParent()).thenReturn(this.parentWindow);
 		Mockito.when(this.component.getApplication()).thenReturn(this.application);
 		Mockito.when(this.application.getMainWindow()).thenReturn(this.window);
-
-		final DataSet plotDataSet = Mockito.mock(DataSet.class);
-		Mockito.when(plotDataSet.getVariableTypes()).thenReturn(this.createVariateVariableList());
-		Mockito.when(this.studyDataManager.getDataSet(Matchers.anyInt())).thenReturn(plotDataSet);
 
 	}
 
@@ -148,8 +148,6 @@ public class UploadBreedingViewOutputActionTest {
 	@Test
 	public void testButtonClickUploadZipHasNoContent() throws URISyntaxException, ZipFileInvalidContentException {
 
-		Mockito.when(this.uploadZip.hasFileSelected()).thenReturn(true);
-		Mockito.when(this.uploadZip.isValid()).thenReturn(true);
 		Mockito.when(this.uploadZip.getFileFactory()).thenReturn(this.customFileFactory);
 		Mockito.when(this.customFileFactory.getFile()).thenReturn(this.zipFile);
 		Mockito.when(this.bmsOutputParser.parseZipFile(this.zipFile)).thenThrow(new ZipFileInvalidContentException());
@@ -165,8 +163,6 @@ public class UploadBreedingViewOutputActionTest {
 			BreedingViewImportException, ZipFileInvalidContentException {
 
 		Mockito.when(this.fileUploadBreedingViewOutputWindow.getStudyId()).thenReturn(55);
-		Mockito.when(this.uploadZip.hasFileSelected()).thenReturn(true);
-		Mockito.when(this.uploadZip.isValid()).thenReturn(true);
 		Mockito.when(this.uploadZip.getFileFactory()).thenReturn(this.customFileFactory);
 		Mockito.when(this.customFileFactory.getFile()).thenReturn(this.zipFile);
 
@@ -186,8 +182,6 @@ public class UploadBreedingViewOutputActionTest {
 	public void testButtonClickUploadSuccessful() throws URISyntaxException, BreedingViewImportException, ZipFileInvalidContentException,
 			IOException {
 
-		Mockito.when(this.uploadZip.hasFileSelected()).thenReturn(true);
-		Mockito.when(this.uploadZip.isValid()).thenReturn(true);
 		Mockito.when(this.uploadZip.getFileFactory()).thenReturn(this.customFileFactory);
 		Mockito.when(this.customFileFactory.getFile()).thenReturn(this.zipFile);
 
@@ -205,10 +199,10 @@ public class UploadBreedingViewOutputActionTest {
 
 		this.uploadBreedingViewOutputAction.buttonClick(this.event);
 
-		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importMeansData(Matchers.any(File.class), Matchers.anyInt());
-		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importSummaryStatsData(Matchers.any(File.class),
-				Matchers.anyInt());
-		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importOutlierData(Matchers.any(File.class), Matchers.anyInt());
+		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importMeansData(ArgumentMatchers.any(File.class), ArgumentMatchers.anyInt());
+		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importSummaryStatsData(ArgumentMatchers.any(File.class),
+				ArgumentMatchers.anyInt());
+		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importOutlierData(ArgumentMatchers.any(File.class), ArgumentMatchers.anyInt());
 
 		Mockito.verify(this.bmsOutputParser).deleteUploadedZipFile();
 		Mockito.verify(this.bmsOutputParser).deleteTemporaryFiles();
@@ -220,8 +214,6 @@ public class UploadBreedingViewOutputActionTest {
 	@Test
 	public void testButtonClickMeansDataAlreadyExists() throws ZipFileInvalidContentException, IOException {
 
-		Mockito.when(this.uploadZip.hasFileSelected()).thenReturn(true);
-		Mockito.when(this.uploadZip.isValid()).thenReturn(true);
 		Mockito.when(this.uploadZip.getFileFactory()).thenReturn(this.customFileFactory);
 		Mockito.when(this.customFileFactory.getFile()).thenReturn(this.zipFile);
 
@@ -229,16 +221,14 @@ public class UploadBreedingViewOutputActionTest {
 		Mockito.when(this.bmsOutputParser.parseZipFile(this.zipFile)).thenReturn(bmsOutputInformation);
 		Mockito.when(this.bmsOutputParser.getBmsOutputInformation()).thenReturn(bmsOutputInformation);
 		Mockito.when(this.bmsOutputParser.getMeansFile()).thenReturn(Mockito.mock(File.class));
-		Mockito.when(this.bmsOutputParser.getSummaryStatsFile()).thenReturn(Mockito.mock(File.class));
-		Mockito.when(this.bmsOutputParser.getOutlierFile()).thenReturn(Mockito.mock(File.class));
 
 		Mockito.when(this.studyDataManager.getDataSetsByType(UploadBreedingViewOutputActionTest.TEST_STUDY_ID, DataSetType.MEANS_DATA))
 				.thenReturn(this.createDataSetList());
 		Mockito.when(this.studyDataManager.getTrialEnvironmentsInDataset(UploadBreedingViewOutputActionTest.TEST_MEANS_DATASET_ID))
 				.thenReturn(this.createEnvironments());
 		Mockito.when(
-				this.studyDataManager.checkIfAnyLocationIDsExistInExperiments(Matchers.anyInt(), Matchers.any(DataSetType.class),
-						Matchers.anyList())).thenReturn(true);
+				this.studyDataManager.checkIfAnyLocationIDsExistInExperiments(ArgumentMatchers.anyInt(), ArgumentMatchers.any(DataSetType.class),
+						ArgumentMatchers.<List<Integer>>any())).thenReturn(true);
 
 		Mockito.when(this.messageSource.getMessage(Message.BV_UPLOAD_OVERWRITE_WARNING)).thenReturn("");
 		Mockito.when(this.messageSource.getMessage(Message.OK)).thenReturn("");
@@ -256,16 +246,15 @@ public class UploadBreedingViewOutputActionTest {
 		Mockito.when(this.bmsOutputParser.getMeansFile()).thenReturn(Mockito.mock(File.class));
 		Mockito.when(this.bmsOutputParser.getSummaryStatsFile()).thenReturn(Mockito.mock(File.class));
 		Mockito.when(this.bmsOutputParser.getOutlierFile()).thenReturn(null);
-		Mockito.when(this.bmsOutputParser.getBmsOutputInformation()).thenReturn(this.createBmsOutputInformation());
 
 		Assert.assertEquals(this.fileUploadBreedingViewOutputWindow, this.uploadBreedingViewOutputAction.getWindow());
 		this.uploadBreedingViewOutputAction.processTheUploadedFile(UploadBreedingViewOutputActionTest.TEST_STUDY_ID,
 				this.fileUploadBreedingViewOutputWindow.getProject());
 
-		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importMeansData(Matchers.any(File.class), Matchers.anyInt());
-		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importSummaryStatsData(Matchers.any(File.class),
-				Matchers.anyInt());
-		Mockito.verify(this.breedingViewImportService, Mockito.times(0)).importOutlierData(Matchers.any(File.class), Matchers.anyInt());
+		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importMeansData(ArgumentMatchers.any(File.class), ArgumentMatchers.anyInt());
+		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importSummaryStatsData(ArgumentMatchers.any(File.class),
+				ArgumentMatchers.anyInt());
+		Mockito.verify(this.breedingViewImportService, Mockito.times(0)).importOutlierData(ArgumentMatchers.any(File.class), ArgumentMatchers.anyInt());
 
 		Mockito.verify(this.bmsOutputParser).deleteUploadedZipFile();
 		Mockito.verify(this.bmsOutputParser).deleteTemporaryFiles();
@@ -278,21 +267,49 @@ public class UploadBreedingViewOutputActionTest {
 	public void testProcessTheUploadedFileFailed() throws BreedingViewImportException {
 
 		Mockito.when(this.bmsOutputParser.getMeansFile()).thenReturn(Mockito.mock(File.class));
-		Mockito.when(this.bmsOutputParser.getSummaryStatsFile()).thenReturn(Mockito.mock(File.class));
-		Mockito.when(this.bmsOutputParser.getOutlierFile()).thenReturn(Mockito.mock(File.class));
-		Mockito.when(this.bmsOutputParser.getBmsOutputInformation()).thenReturn(this.createBmsOutputInformation());
 
 		Mockito.doThrow(new BreedingViewImportException()).when(this.breedingViewImportService)
-				.importMeansData(Matchers.any(File.class), Matchers.anyInt());
+				.importMeansData(ArgumentMatchers.any(File.class), ArgumentMatchers.anyInt());
 
 		this.uploadBreedingViewOutputAction.processTheUploadedFile(UploadBreedingViewOutputActionTest.TEST_STUDY_ID,
 				this.fileUploadBreedingViewOutputWindow.getProject());
 
-		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importMeansData(Matchers.any(File.class), Matchers.anyInt());
-		Mockito.verify(this.breedingViewImportService, Mockito.times(0)).importSummaryStatsData(Matchers.any(File.class),
-				Matchers.anyInt());
-		Mockito.verify(this.breedingViewImportService, Mockito.times(0)).importOutlierData(Matchers.any(File.class), Matchers.anyInt());
+		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importMeansData(ArgumentMatchers.any(File.class), ArgumentMatchers.anyInt());
+		Mockito.verify(this.breedingViewImportService, Mockito.times(0)).importSummaryStatsData(ArgumentMatchers.any(File.class),
+				ArgumentMatchers.anyInt());
+		Mockito.verify(this.breedingViewImportService, Mockito.times(0)).importOutlierData(ArgumentMatchers.any(File.class), ArgumentMatchers.anyInt());
 
+	}
+
+	@Test
+	public void testContainsValueByLocalName() {
+		final Variable variable = DMSVariableTestDataInitializer.createVariableWithStandardVariable(TermId.TRIAL_INSTANCE_FACTOR, "1");
+		final TrialEnvironment environment = Mockito.mock(TrialEnvironment.class);
+		final VariableList variableList = Mockito.mock(VariableList.class);
+		Mockito.when(environment.getVariables()).thenReturn(variableList);
+		Mockito.when(variableList.findByLocalName("TRIAL_INSTANCE")).thenReturn(variable);
+
+		boolean containsValue = this.uploadBreedingViewOutputAction.containsValueByLocalName("TRIAL_INSTANCE", "1", environment);
+		Assert.assertTrue(containsValue);
+
+		containsValue = this.uploadBreedingViewOutputAction.containsValueByLocalName("TRIAL_INSTANCE", "2", environment);
+		Assert.assertFalse(containsValue);
+	}
+
+	@Test
+	public void testContainsValueByLocalNameForLocationName() {
+		final Variable variable = DMSVariableTestDataInitializer.createVariableWithStandardVariable(TermId.LOCATION_ID, "1");
+		final TrialEnvironment environment = Mockito.mock(TrialEnvironment.class);
+		final VariableList variableList = Mockito.mock(VariableList.class);
+		Mockito.when(environment.getVariables()).thenReturn(variableList);
+		Mockito.when(variableList.findByLocalName("LOCATION_NAME")).thenReturn(variable);
+		Mockito.when(this.locationDataManager.getLocationByID(1)).thenReturn(LocationTestDataInitializer.createLocation(1, "WARDA"));
+
+		boolean containsValue = this.uploadBreedingViewOutputAction.containsValueByLocalName("LOCATION_NAME", "WARDA", environment);
+		Assert.assertTrue(containsValue);
+
+		containsValue = this.uploadBreedingViewOutputAction.containsValueByLocalName("LOCATION_NAME", "CIMMYT", environment);
+		Assert.assertFalse(containsValue);
 	}
 
 	@Test

@@ -1,0 +1,9 @@
+{
+  "common": {
+    "form": {
+      "no.text": "No",
+      "yes.text": "Yes",
+      "ok.text": "OK"
+    }
+  }
+}

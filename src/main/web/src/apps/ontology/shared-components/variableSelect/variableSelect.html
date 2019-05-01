@@ -1,0 +1,82 @@
+<div ng-if="!properties">
+    <span class="throbber throbber-lg"></span>
+</div>
+<div ng-if="properties">
+    <ui-select name="name" theme="select2" ng-model="selectedProperty.value" style="width:100%">
+        <ui-select-match placeholder="Select or search variables in the list...">
+            <div class="om-item-property-info">
+                <img class="om-icon" alt="Property" src="/ibpworkbench/controller/static/images/property.svg">
+                <span class="om-variable-select-item-label">{{$select.selected.name}}</span>
+                (<span class="om-variable-select-item-description">{{$select.selected.classes}}</span>)
+            </div>
+        </ui-select-match>
+        <ui-select-choices repeat="item in properties | propsFilter: { name: $select.search, variableNames: $select.search }">
+            <!--<div ng-bind-html="item.key | highlight: $select.search"></div>-->
+            <div class="om-item-property-info">
+                <img class="om-icon" alt="Property" src="/ibpworkbench/controller/static/images/property.svg">
+                <span class="om-variable-select-item-label">{{item.name}}</span>
+                (<span class="om-variable-select-item-description">{{item.classes}}</span>)
+            </div>
+            <div class="om-item-variables">
+                <img class="om-icon-sm" alt="Variable" src="/ibpworkbench/controller/static/images/variable.png">
+                <span class="ps-item-attr">{{item.variableNames}}</span>
+            </div>
+        </ui-select-choices>
+    </ui-select>
+
+    <div class="variable-section" ng-if="selectedProperty.value">
+        <br/>
+        <div class="row margin-top-10">
+            <div class="col-sm-12">
+                <img class="om-icon-lg" src="/ibpworkbench/controller/static/images/property.svg" alt="Property"/>
+                <h2 class="om-variable-title">{{selectedProperty.value.name}}<span class="om-variable-capitalize">({{selectedProperty.value.classes}})</span>
+                </h2>
+            </div>
+        </div>
+        <!-- Variable List -->
+        <div class="variable-section margin-top-10" ng-repeat="variable in selectedProperty.value.variables">
+            <div class="row margin-top-10">
+                <div class="col-sm-6">
+                     <span class="om-variable-name-container">
+                        {{variable.name}}
+                    </span>
+                    <span ng-if="variable.alias">({{variable.alias}})</span>
+                </div>
+                <div class="col-sm-6">
+                    <button type="button" class="om-icon-button" ng-click="add(variable.name)">
+                        <span class="glyphicon glyphicon-plus"></span>
+                        <span>Add</span>
+                    </button>
+                </div>
+            </div>
+            <div class="row margin-top-5 margin-left-5">
+                <div class="col-sm-6">
+                    <span class="om-variable-description-label">Method:</span> <span class="om-variable-description"
+                                                                                     title="Method Definition">{{variable.method.name}}</span>
+                </div>
+                <div class="col-sm-6">
+                    <span class="om-variable-description-label">Scale:</span> <span class="om-variable-description"
+                                                                                    title="Scale Definition">{{variable.scale.name}}</span>
+                </div>
+            </div>
+            <div ng-if="variable.formula" class="row margin-top-5 margin-left-5">
+                <div class="col-sm-6">
+                    <span class="om-variable-description-label">Calculation:</span>
+                </div>
+                <div class="col-sm-6">
+                    <span class="om-variable-description-label">Input Variables:</span>
+                </div>
+            </div>
+            <div ng-if="variable.formula" class="row margin-top-5 margin-left-5">
+                <div class="col-sm-6">
+                    <span ng-bind="replaceVariableIdsWithNames(variable.formula)"></span>
+                </div>
+                <div class="col-sm-6">
+                    <span ng-repeat="input in variable.formula.inputs">
+                        {{input.name}}<span ng-if="!$last">,</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

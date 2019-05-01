@@ -5,13 +5,14 @@ import { SERVER_API_URL } from '../../../../../../main/webapp/app/app.constants'
 import {SampleListService} from '../../../../../../main/webapp/app/entities/sample/sample-list.service';
 import {SampleList} from '../../../../../../main/webapp/app/entities/sample/sample-list.model';
 
+declare const cropName: string;
+
 describe('Service Tests', () => {
 
     describe('Sample List Service', () => {
         let injector: TestBed;
         let service: SampleListService;
         let httpMock: HttpTestingController;
-        const crop = 'maize';
 
         beforeEach(() => {
             TestBed.configureTestingModule({
@@ -26,7 +27,7 @@ describe('Service Tests', () => {
             injector = getTestBed();
             service = injector.get(SampleListService);
             httpMock = injector.get(HttpTestingController);
-            service.setCrop(crop)
+            service.setCrop(cropName)
         });
 
         describe('Service methods', () => {
@@ -42,9 +43,8 @@ describe('Service Tests', () => {
                 service.search(dummyParams).subscribe(() => {});
 
                 const req = httpMock.expectOne({ method: 'GET' });
-                const resourceUrl = SERVER_API_URL + `sampleLists/${crop}/search`;
+                const resourceUrl = SERVER_API_URL + `sampleLists/${cropName}/search`;
 
-                console.log('myurl:' + req.request.url);
                 expect(req.request.url).toEqual(resourceUrl);
 
                 const expectedParams = 'searchString=Name&exactMatch=true';
@@ -87,9 +87,8 @@ describe('Service Tests', () => {
                 service.download(listId, listName).subscribe(() => {});
 
                 const req = httpMock.expectOne({ method: 'GET' });
-                const resourceUrl = SERVER_API_URL + `sampleLists/${crop}/download`;
+                const resourceUrl = SERVER_API_URL + `sampleLists/${cropName}/download`;
 
-                console.log('myurl:' + req.request.url);
                 expect(req.request.url).toEqual(resourceUrl);
 
                 const expectedParams = 'listId=1&listName=listName';

@@ -310,7 +310,7 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 		if (this.source instanceof SingleSiteAnalysisPanel) {
 			final Integer dataSetId = this.getPlotDataSetId(r.getId());
 			if (dataSetId != null) {
-				((SingleSiteAnalysisPanel) this.source).showDatasetVariatesDetails(dataSetId);
+				((SingleSiteAnalysisPanel) this.source).showStudyDetails(dataSetId);
 				this.parentWindow.removeWindow(SelectStudyDialog.this);
 			}
 		} else if (this.source instanceof MultiSiteAnalysisPanel) {
@@ -457,6 +457,11 @@ public class SelectStudyDialog extends BaseSubWindow implements InitializingBean
 	private Integer getStudyTypeId() {
 		final StudyTypeDto studyTypeDto = (StudyTypeDto) this.studyTypeFilterComponent.getStudyTypeComboBox().getValue();
 		return (studyTypeDto.getName().equals(StudyTypeFilterComponent.ALL)) ? null : studyTypeDto.getId();
+	}
+
+	
+	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
 	}
 
 }

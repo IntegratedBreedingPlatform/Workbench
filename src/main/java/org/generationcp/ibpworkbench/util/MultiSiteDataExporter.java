@@ -14,6 +14,8 @@ import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
 import org.generationcp.commons.util.BreedingViewUtil;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.util.bean.MultiSiteParameters;
 import org.generationcp.middleware.domain.dms.Experiment;
 import org.generationcp.middleware.domain.dms.Variable;
@@ -51,7 +53,7 @@ public class MultiSiteDataExporter {
 
 	public String exportMeansDatasetToCsv(final String inputFileName, final MultiSiteParameters multiSiteParameters,
 			final List<Experiment> experiments, final String environmentName, final GxeEnvironment gxeEnv,
-			final List<Trait> selectedTraits) {
+			final List<Trait> selectedTraits, final IBPWorkbenchApplication workbenchApplication) {
 
 		final Project currentProject = multiSiteParameters.getProject();
 		final String environmentGroup = multiSiteParameters.getSelectedEnvGroupFactorName();
@@ -106,7 +108,7 @@ public class MultiSiteDataExporter {
 		final int studyId = multiSiteParameters.getStudy().getId();
 		final boolean isEnvironmentFactorALocationIdVariable = this.studyDataManager.isLocationIdVariable(studyId, environmentName);
 		final Map<String, String> locationNameMap = this.studyDataManager.createInstanceLocationIdToNameMapFromStudy(studyId);
-
+		boolean hasMissingMean = false;
 		// create table content
 		for (final Experiment experiment : experiments) {
 			final String[] row = new String[headerRow.size()];
@@ -144,21 +146,24 @@ public class MultiSiteDataExporter {
 					var = experiment.getVariates().findByLocalName(traitMapEntry.getKey());
 				}
 
-				if (!(var.getVariableType().getLocalName().equalsIgnoreCase(environmentName) && isEnvironmentFactorALocationIdVariable)) {
-
-					if (var != null && var.getValue() != null && !var.getValue().trim().matches("\\-1(\\.0+)?(E|e)(\\+36)")) {
+				if (var != null && !(var.getVariableType().getLocalName().equalsIgnoreCase(environmentName) && isEnvironmentFactorALocationIdVariable)) {
+					if (var.getValue() != null && !var.getValue().trim().matches("\\-1(\\.0+)?(E|e)(\\+36)")) {
 						row[traitMapEntry.getValue()] = var.getValue().replace(",", ";");
 					}
-
 				}
-
+				if(!hasMissingMean && row[traitMapEntry.getValue()] == null) {
+					hasMissingMean = true;
+				}
 			}
 
 			tableItems.add(i, row);
 
 			i++;
 		}
-
+		if(hasMissingMean) {
+			MessageNotifier
+				.showWarning(workbenchApplication.getMainWindow(), "Warning", "Some traits have missing mean values for some locations.");
+		}
 		return this.writeToCsvFile(inputFileName, currentProject, tableItems, false);
 	}
 

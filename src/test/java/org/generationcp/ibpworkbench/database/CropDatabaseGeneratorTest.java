@@ -4,6 +4,7 @@ package org.generationcp.ibpworkbench.database;
 import java.io.File;
 import java.sql.Connection;
 
+import org.generationcp.commons.util.MySQLUtil;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CropDatabaseGeneratorTest {
@@ -25,9 +26,13 @@ public class CropDatabaseGeneratorTest {
 	@InjectMocks
 	private final CropDatabaseGenerator cropDbGenerator = Mockito.spy(new CropDatabaseGenerator(this.cropType));
 
+	@Mock
+	private MySQLUtil mysqlUtil;
+
 	@Before
 	public void setup() throws Exception {
 		this.cropType.setCropName(CropType.CropEnum.MAIZE.toString());
+		this.cropDbGenerator.setMySQLUtil(this.mysqlUtil);
 		Mockito.doNothing().when(this.connection).setCatalog(Matchers.anyString());
 	}
 
@@ -35,7 +40,6 @@ public class CropDatabaseGeneratorTest {
 	public void testGenerateDatabase() throws Exception {
 		Mockito.doNothing().when(this.cropDbGenerator).createConnection();
 		Mockito.doNothing().when(this.cropDbGenerator).createCropDatabase();
-		Mockito.doNothing().when(this.cropDbGenerator).runScriptsInDirectory(Matchers.anyString(), Matchers.any(File.class));
 
 		this.cropDbGenerator.generateDatabase();
 
@@ -44,7 +48,7 @@ public class CropDatabaseGeneratorTest {
 		Mockito.verify(this.cropDbGenerator, Mockito.times(1)).createCropDatabase();
 		Mockito.verify(this.cropDbGenerator, Mockito.times(1)).runSchemaCreationScripts();
 
-		File localDatabaseDirectory = new File(CropDatabaseGenerator.DB_SCRIPT_FOLDER);
+		final File localDatabaseDirectory = new File(CropDatabaseGenerator.DB_SCRIPT_FOLDER);
 		Mockito.verify(this.cropDbGenerator, Mockito.times(1)).runScriptsInDirectory(null, new File(localDatabaseDirectory, "common"));
 		Mockito.verify(this.cropDbGenerator, Mockito.times(1)).runScriptsInDirectory(null,
 				new File(localDatabaseDirectory, this.cropType.getCropName()));

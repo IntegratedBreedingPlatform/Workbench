@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.generationcp.commons.util.StudyPermissionValidator;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.breedingview.singlesiteanalysis.RunBreedingViewButtonClickListener;
@@ -16,6 +17,7 @@ import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.StandardVariable;
+import org.generationcp.middleware.domain.dms.StudyReference;
 import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.api.StudyDataManager;
@@ -29,6 +31,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Window;
@@ -73,6 +76,9 @@ public class SingleSiteAnalysisDetailsPanelTest {
 
 	@Mock
 	private Window window;
+	
+	@Mock
+	private StudyPermissionValidator studyPermissionValidator;
 
 	@InjectMocks
 	private SingleSiteAnalysisDetailsPanel ssaPanel;
@@ -96,13 +102,15 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		this.ssaPanel.setMessageSource(this.messageSource);
 		this.ssaPanel.setStudyDataManager(this.studyDataManager);
 		this.ssaPanel.setParent(this.parentComponent);
-		this.ssaPanel.setEnvironmentsComponent(environmentsComponent);
-		this.ssaPanel.setGenotypesComponent(genotypesComponent);
-		this.ssaPanel.setStudyDetailsComponent(studyDetailsComponent);
-		this.ssaPanel.setDesignDetailsComponent(designDetailsComponent);
+		this.ssaPanel.setEnvironmentsComponent(this.environmentsComponent);
+		this.ssaPanel.setGenotypesComponent(this.genotypesComponent);
+		this.ssaPanel.setStudyDetailsComponent(this.studyDetailsComponent);
+		this.ssaPanel.setDesignDetailsComponent(this.designDetailsComponent);
+		this.ssaPanel.setStudyPermissionValidator(this.studyPermissionValidator);
 
-		when(parentComponent.getWindow()).thenReturn(this.window);
-
+		when(this.parentComponent.getWindow()).thenReturn(this.window);
+		when(this.studyPermissionValidator.userLacksPermissionForStudy(Matchers.any(StudyReference.class))).thenReturn(false);
+		when(this.studyDataManager.getStudyReference(Matchers.anyInt())).thenReturn(new StudyReference(1, "TRIAL1"));
 	}
 
 	private void initializeBreedingViewInput() {
@@ -144,6 +152,19 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		Mockito.verify(this.messageSource).setCaption(this.ssaPanel.getBtnRun(), Message.DOWNLOAD_INPUT_FILES);
 		Assert.assertTrue(this.ssaPanel.getBtnUpload().isVisible());
 		Assert.assertEquals("Upload Output Files to BMS", this.ssaPanel.getBtnUpload().getCaption());
+	}
+	
+	@Test
+	public void testButtonsLayoutWhentUserLacksPermissionToUpload() {
+		when(this.studyPermissionValidator.userLacksPermissionForStudy(Matchers.any(StudyReference.class))).thenReturn(true);
+		this.ssaPanel.instantiateActionButtons();
+		this.ssaPanel.setIsServerApp("true");
+		this.ssaPanel.updateLabels();
+		Mockito.verify(this.messageSource).setCaption(this.ssaPanel.getBtnRun(), Message.DOWNLOAD_INPUT_FILES);
+		Button btnUpload = this.ssaPanel.getBtnUpload();
+		Assert.assertTrue(btnUpload.isVisible());
+		Assert.assertFalse(btnUpload.isEnabled());
+		Assert.assertEquals("Upload Output Files to BMS", btnUpload.getCaption());
 	}
 
 	@Test
@@ -273,11 +294,11 @@ public class SingleSiteAnalysisDetailsPanelTest {
 		entryTypeVariable.setProperty(new Term(1, TermId.ENTRY_TYPE.name(), TermId.ENTRY_TYPE.name()));
 		factors.add(new DMSVariableType(TermId.ENTRY_TYPE.name(), TermId.ENTRY_TYPE.name(), entryTypeVariable, rank++));
 
-		final StandardVariable plotIdVariable = new StandardVariable();
-		plotIdVariable.setId(TermId.PLOT_ID.getId());
-		plotIdVariable.setPhenotypicType(PhenotypicType.GERMPLASM);
-		plotIdVariable.setProperty(new Term(1, TermId.PLOT_ID.name(), TermId.PLOT_ID.name()));
-		factors.add(new DMSVariableType(TermId.PLOT_ID.name(), TermId.PLOT_ID.name(), plotIdVariable, rank++));
+		final StandardVariable obsUnitIdVariable = new StandardVariable();
+		obsUnitIdVariable.setId(TermId.OBS_UNIT_ID.getId());
+		obsUnitIdVariable.setPhenotypicType(PhenotypicType.GERMPLASM);
+		obsUnitIdVariable.setProperty(new Term(1, TermId.OBS_UNIT_ID.name(), TermId.OBS_UNIT_ID.name()));
+		factors.add(new DMSVariableType(TermId.OBS_UNIT_ID.name(), TermId.OBS_UNIT_ID.name(), obsUnitIdVariable, rank++));
 
 		final StandardVariable repVariable = new StandardVariable();
 		repVariable.setId(TermId.REP_NO.getId());

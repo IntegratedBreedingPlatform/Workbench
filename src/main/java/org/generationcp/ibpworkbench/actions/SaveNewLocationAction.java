@@ -24,6 +24,7 @@ import org.generationcp.ibpworkbench.ui.programlocations.AddLocationsWindow;
 import org.generationcp.ibpworkbench.ui.programlocations.LocationViewModel;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
 import org.generationcp.ibpworkbench.ui.window.ConfirmLocationsWindow;
+import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.pojos.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +53,9 @@ public class SaveNewLocationAction implements ClickListener {
 	private ContextUtil contextUtil;
 
 	@Resource
+	private LocationDataManager locationDataManager;
+
+	@Resource
 	private SimpleResourceBundleMessageSource messageSource;
 
 	public SaveNewLocationAction(final LocationForm newLocationForm, final AddLocationsWindow window,
@@ -69,8 +73,9 @@ public class SaveNewLocationAction implements ClickListener {
 			final LocationViewModel location = this.getLocationFromForm();
 			final List<Location> existingLocations = this.programLocationsPresenter.getExistingLocations(location.getLocationName());
 
-			// there exists a location with the same name?
-			if (!existingLocations.isEmpty()) {
+			if(this.locationDataManager.countByLocationAbbreviation(location.getLocationAbbreviation()) > 0) {
+				MessageNotifier.showError(this.window, this.messageSource.getMessage(Message.ERROR), this.messageSource.getMessage(Message.ADD_LOCATION_EXISTING_LOCABBR_ERROR, location.getLocationAbbreviation()));
+			} else if (!existingLocations.isEmpty()) {
 				new ConfirmLocationsWindow(this.window, existingLocations, this.programLocationsPresenter, new Button.ClickListener() {
 
 					private static final long serialVersionUID = 1L;
@@ -80,7 +85,6 @@ public class SaveNewLocationAction implements ClickListener {
 						SaveNewLocationAction.this.saveLocation();
 					}
 				}).show();
-
 			} else {
 				this.saveLocation();
 			}
@@ -112,5 +116,9 @@ public class SaveNewLocationAction implements ClickListener {
 
 	void setContextUtil(final ContextUtil contextUtil) {
 		this.contextUtil = contextUtil;
+	}
+
+	void setLocationDataManager(final LocationDataManager locationDataManager) {
+		this.locationDataManager = locationDataManager;
 	}
 }

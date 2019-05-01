@@ -9,8 +9,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDesignDetails;
-import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDetailsPanel;
-import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisEnvironmentsComponent;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
@@ -76,13 +74,13 @@ public class MultiSiteAnalysisSelectPanelTest {
 			final String localName = (String) id;
 			Assert.assertFalse("Entry Type factor should not be included in Genotypes dropdown",
 					TermId.ENTRY_TYPE.name().equals(localName));
-			Assert.assertFalse("Plot ID factor should not be included in Genotypes dropdown", TermId.PLOT_ID.name().equals(localName));
+			Assert.assertFalse("Observation Unit ID factor should not be included in Genotypes dropdown", TermId.OBS_UNIT_ID.name().equals(localName));
 
 			final FactorModel factor = factorsIterator.next();
 			Assert.assertFalse("Entry Type factor should not be included in FactorModel list.",
 					TermId.ENTRY_TYPE.name().equals(factor.getName()));
-			Assert.assertFalse("Plot ID factor should not be included in FactorModel list.",
-					TermId.PLOT_ID.name().equals(factor.getName()));
+			Assert.assertFalse("Observation Unit ID factor should not be included in FactorModel list.",
+					TermId.OBS_UNIT_ID.name().equals(factor.getName()));
 		}
 	}
 
@@ -163,14 +161,14 @@ public class MultiSiteAnalysisSelectPanelTest {
 		entryTypeVariable.setDataType(new Term(TermId.CATEGORICAL_VARIABLE.getId(), "Categorical variable", ""));
 		factors.add(new DMSVariableType(TermId.ENTRY_TYPE.name(), TermId.ENTRY_TYPE.name(), entryTypeVariable, rank++));
 
-		final StandardVariable plotIdVariable = new StandardVariable();
-		plotIdVariable.setId(TermId.PLOT_ID.getId());
-		plotIdVariable.setPhenotypicType(PhenotypicType.GERMPLASM);
-		plotIdVariable.setProperty(new Term(1, "ENTRY TYPE", "ENTRY_TYPE"));
-		plotIdVariable.setScale(new Term(2, "NUMBER", ""));
-		plotIdVariable.setMethod(new Term(3, "ENUMERATED", ""));
-		plotIdVariable.setDataType(new Term(TermId.CHARACTER_VARIABLE.getId(), "Character variable", ""));
-		factors.add(new DMSVariableType(TermId.PLOT_ID.name(), TermId.PLOT_ID.name(), plotIdVariable, rank++));
+		final StandardVariable obsUnitIdVariable = new StandardVariable();
+		obsUnitIdVariable.setId(TermId.OBS_UNIT_ID.getId());
+		obsUnitIdVariable.setPhenotypicType(PhenotypicType.GERMPLASM);
+		obsUnitIdVariable.setProperty(new Term(1, "ENTRY TYPE", "ENTRY_TYPE"));
+		obsUnitIdVariable.setScale(new Term(2, "NUMBER", ""));
+		obsUnitIdVariable.setMethod(new Term(3, "ENUMERATED", ""));
+		obsUnitIdVariable.setDataType(new Term(TermId.CHARACTER_VARIABLE.getId(), "Character variable", ""));
+		factors.add(new DMSVariableType(TermId.OBS_UNIT_ID.name(), TermId.OBS_UNIT_ID.name(), obsUnitIdVariable, rank++));
 
 		final StandardVariable repVariable = new StandardVariable();
 		repVariable.setId(TermId.REP_NO.getId());

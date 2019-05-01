@@ -1,13 +1,9 @@
-
 package org.generationcp.ibpworkbench.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.ArrayUtils;
 import org.generationcp.commons.breedingview.xml.DesignType;
-import org.generationcp.commons.breedingview.xml.Replicates;
+import org.generationcp.commons.util.BreedingViewUtil;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
@@ -20,21 +16,22 @@ import org.generationcp.middleware.domain.dms.VariableList;
 import org.generationcp.middleware.domain.dms.VariableTypeList;
 import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.domain.oms.TermId;
-import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.service.api.OntologyService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import com.google.common.collect.Lists;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DatasetExporterTest {
@@ -42,13 +39,7 @@ public class DatasetExporterTest {
 	public static final int DATASET_ID = 1;
 
 	@Mock
-	private static ManagerFactory factory;
-
-	@Mock
 	private static StudyDataManager studyDataManager;
-
-	@Mock
-	private static WorkbenchDataManager workbenchDataManager;
 
 	@Mock
 	private BreedingViewInput bvInput;
@@ -67,7 +58,6 @@ public class DatasetExporterTest {
 	private static final String ALT_TRIAL_INSTANCE_NAME = "TRIAL";
 	private static final String ENV_NAME = "SITE_NAME";
 	private static final String ENV_VALUE = "CIMMYT Harrare";
-	private static final String REP_NAME = "REP";
 	private static final String EPP_VARIATE = "EPP";
 	private static final String PH_VARIATE = "PH";
 	private static final String CM_VARIATE = "CM";
@@ -84,6 +74,7 @@ public class DatasetExporterTest {
 	private static final String CATEGORICAL_VARIATE_ENUM_DESCRIPTION = "Very Severe";
 	private static final String FIELDMAP_COLUMN_VALUE = "99";
 	private static final String FIELDMAP_RANGE_VALUE = "1234";
+	private static final String ENTRY_TYPE = "1";
 
 	private static final Term NUMERIC_VARIABLE = new Term(TermId.NUMERIC_VARIABLE.getId(), "", "");
 	private static final Term CATEGORICAL_VARIABLE = new Term(TermId.CATEGORICAL_VARIABLE.getId(), "", "");
@@ -114,18 +105,16 @@ public class DatasetExporterTest {
 
 	@Test
 	public void testGenerateVariateColumnsList() {
-		final int numberOfVariatesInDataset = this.variates.size();
-		Assert.assertEquals("Expecting dataset has " + numberOfVariatesInDataset + " variates.", numberOfVariatesInDataset,
-				this.dataSet.getVariableTypes().getVariates().size());
 
 		// Method to test
 		final List<String> variateColumnsToWrite = this.exporter.generateVariateColumnsList(this.dataSet, this.bvInput);
 
 		// Only selected variates will be included in variate columns
-		Assert.assertEquals("Expecting only selected variates will be included in variate columns.", numberOfVariatesInDataset - 1,
-				variateColumnsToWrite.size());
-		Assert.assertFalse("Not expecting " + DatasetExporterTest.CM_VARIATE + " to be included in variate columns but was included.",
-				variateColumnsToWrite.contains(DatasetExporterTest.CM_VARIATE));
+		Assert.assertEquals(3, variateColumnsToWrite.size());
+		Assert.assertTrue(variateColumnsToWrite.contains(PH_VARIATE));
+		Assert.assertTrue(variateColumnsToWrite.contains(EPP_VARIATE));
+		Assert.assertTrue(variateColumnsToWrite.contains(ALEUCOL_1_5_VARIATE));
+
 	}
 
 	@Test
@@ -147,13 +136,13 @@ public class DatasetExporterTest {
 
 	@Test
 	public void testExperimentIsInSelectedEnvironments() {
-		boolean isInSelectedEnvironments =
-				this.exporter.isExperimentInSelectedEnvironments(this.bvInput, Lists.newArrayList(DatasetExporterTest.TRIAL_INSTANCE_1),
+		boolean isInSelectedEnvironments = this.exporter
+				.isExperimentInSelectedEnvironments(this.bvInput, Lists.newArrayList(DatasetExporterTest.TRIAL_INSTANCE_1),
 						this.createExperimentTestData(this.factorVariables, this.variateVariables));
 		Assert.assertTrue("Expecting experiment to be detected as part of selected Trial Instance 1", isInSelectedEnvironments);
 
-		isInSelectedEnvironments =
-				this.exporter.isExperimentInSelectedEnvironments(this.bvInput, Lists.newArrayList(DatasetExporterTest.TRIAL_INSTANCE_2),
+		isInSelectedEnvironments = this.exporter
+				.isExperimentInSelectedEnvironments(this.bvInput, Lists.newArrayList(DatasetExporterTest.TRIAL_INSTANCE_2),
 						this.createExperimentTestData(this.factorVariables, this.variateVariables));
 		Assert.assertFalse("Expecting experiment not to be detected as part of selected Trial Instance 2", isInSelectedEnvironments);
 	}
@@ -169,8 +158,9 @@ public class DatasetExporterTest {
 
 		Mockito.when(this.bvInput.getDesignType()).thenReturn(DesignType.P_REP_DESIGN.getName());
 		isDummyRepUsed = this.exporter.isDummyRepVariableUsed(this.bvInput);
-		Assert.assertFalse("Expecting to return false because even though dummy replicates factor was used, design type is "
-				+ DesignType.P_REP_DESIGN.getName(), isDummyRepUsed);
+		Assert.assertFalse(
+				"Expecting to return false because even though dummy replicates factor was used, design type is " + DesignType.P_REP_DESIGN
+						.getName(), isDummyRepUsed);
 
 		Mockito.when(this.bvInput.getDesignType()).thenReturn(DesignType.AUGMENTED_RANDOMIZED_BLOCK.getName());
 		isDummyRepUsed = this.exporter.isDummyRepVariableUsed(this.bvInput);
@@ -182,7 +172,7 @@ public class DatasetExporterTest {
 	public void testExportToCSVForBreedingViewWithNumericAndCategoricalVariates() {
 		final Experiment firstRowObservation = this.createExperimentTestData(this.factorVariables, this.variateVariables);
 		final Experiment secondRowObservation = this.createExperimentTestData(this.factorVariables, this.variateVariables);
-		Mockito.when(DatasetExporterTest.studyDataManager.getExperiments(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyInt()))
+		Mockito.when(DatasetExporterTest.studyDataManager.getExperiments(ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt()))
 				.thenReturn(Lists.newArrayList(firstRowObservation, secondRowObservation));
 
 		// Method to test
@@ -207,7 +197,7 @@ public class DatasetExporterTest {
 		final Experiment firstRowObservation = this.createExperimentTestData(this.factorVariables, this.variateVariables);
 		final Experiment secondRowObservation =
 				this.createExperimentTestData(factorVariablesWithoutFieldmapVariables, this.variateVariables);
-		Mockito.when(DatasetExporterTest.studyDataManager.getExperiments(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyInt()))
+		Mockito.when(DatasetExporterTest.studyDataManager.getExperiments(ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt()))
 				.thenReturn(Lists.newArrayList(firstRowObservation, secondRowObservation));
 
 		// Method to test
@@ -231,12 +221,14 @@ public class DatasetExporterTest {
 		// Expecting blank values for FIELMAP columns
 		Assert.assertEquals("Expected 2nd column value is blank", "", secondRow[1]);
 		Assert.assertEquals("Expected 3rd column value is blank", "", secondRow[2]);
-		Assert.assertEquals("Expected 4th column value is " + DatasetExporterTest.EPP_VARIATE_VALUE, DatasetExporterTest.EPP_VARIATE_VALUE,
+		Assert.assertEquals("Expected 4th column value is " + DatasetExporterTest.CATEGORICAL_VARIATE_ENUM_NAME, DatasetExporterTest.CATEGORICAL_VARIATE_ENUM_NAME,
 				secondRow[3]);
-		Assert.assertEquals("Expected 5th column value is " + DatasetExporterTest.PH_VARIATE_VALUE, DatasetExporterTest.PH_VARIATE_VALUE,
+		Assert.assertEquals("Expected 5th column value is " + DatasetExporterTest.EPP_VARIATE_VALUE, DatasetExporterTest.EPP_VARIATE_VALUE,
 				secondRow[4]);
-		Assert.assertEquals("Expected 6th column value is " + DatasetExporterTest.BV_MISSING_VALUE, DatasetExporterTest.BV_MISSING_VALUE,
+		Assert.assertEquals("Expected 6th column value is " + DatasetExporterTest.PH_VARIATE_VALUE, DatasetExporterTest.PH_VARIATE_VALUE,
 				secondRow[5]);
+		Assert.assertEquals("Expected 7th column value is " + DatasetExporterTest.BV_MISSING_VALUE, DatasetExporterTest.BV_MISSING_VALUE,
+				secondRow[6]);
 
 	}
 
@@ -257,12 +249,23 @@ public class DatasetExporterTest {
 
 	@Test
 	public void testExportToCSVForBreedingViewTraitNamesWithSpecialCharactersAndWhiteSpace() {
-		this.appendSpecialCharactersToVariableName(this.factors);
-		this.appendSpecialCharactersToVariableName(this.variates);
-		// Setup selected variates
-		final HashMap<String, Boolean> variatesActiveState = new HashMap<String, Boolean>();
-		this.setupSelectedVariablesAsActive(variatesActiveState, this.variates);
-		Mockito.when(this.bvInput.getVariatesActiveState()).thenReturn(variatesActiveState);
+		this.appendSpecialCharactersToVariableNames(this.factors);
+		this.appendSpecialCharactersToVariableNames(this.variates);
+
+		final HashMap<String, Boolean> traitsSelectionMap = new HashMap<String, Boolean>();
+		traitsSelectionMap.put(EPP_VARIATE + DatasetExporterTest.VAR_POST_FIX, true);
+		traitsSelectionMap.put(PH_VARIATE + DatasetExporterTest.VAR_POST_FIX, true);
+		traitsSelectionMap.put(ALEUCOL_1_5_VARIATE + DatasetExporterTest.VAR_POST_FIX, false);
+		traitsSelectionMap.put(CM_VARIATE + DatasetExporterTest.VAR_POST_FIX, false);
+
+		final HashMap<String, Boolean> covariatesSelectionMap = new HashMap<String, Boolean>();
+		covariatesSelectionMap.put(EPP_VARIATE + DatasetExporterTest.VAR_POST_FIX, false);
+		covariatesSelectionMap.put(PH_VARIATE + DatasetExporterTest.VAR_POST_FIX, false);
+		covariatesSelectionMap.put(ALEUCOL_1_5_VARIATE + DatasetExporterTest.VAR_POST_FIX, true);
+		covariatesSelectionMap.put(CM_VARIATE + DatasetExporterTest.VAR_POST_FIX, false);
+
+		Mockito.when(this.bvInput.getVariatesSelectionMap()).thenReturn(traitsSelectionMap);
+		Mockito.when(this.bvInput.getCovariatesSelectionMap()).thenReturn(covariatesSelectionMap);
 
 		// Method to test
 		this.exporter.exportToCSVForBreedingView(DatasetExporterTest.FILENAME,
@@ -272,24 +275,34 @@ public class DatasetExporterTest {
 
 		// Verify the header names were "cleaned up"
 		final String[] headerRow = rowsToWrite.get(0);
-		Assert.assertEquals(
-				"Expected 1st column header is " + DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME
+		Assert.assertEquals("Expected 1st column header is " + DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME
 						+ DatasetExporterTest.CLEANED_VAR_POST_FIX,
 				DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME + DatasetExporterTest.CLEANED_VAR_POST_FIX, headerRow[0]);
 		Assert.assertEquals("Expected 2nd column header is " + TermId.FIELDMAP_COLUMN.name() + DatasetExporterTest.CLEANED_VAR_POST_FIX,
 				TermId.FIELDMAP_COLUMN.name() + DatasetExporterTest.CLEANED_VAR_POST_FIX, headerRow[1]);
 		Assert.assertEquals("Expected 3rd column header is " + TermId.FIELDMAP_RANGE.name() + DatasetExporterTest.CLEANED_VAR_POST_FIX,
 				TermId.FIELDMAP_RANGE.name() + DatasetExporterTest.CLEANED_VAR_POST_FIX, headerRow[2]);
-		Assert.assertEquals("Expected 4th column header is " + DatasetExporterTest.EPP_VARIATE + DatasetExporterTest.CLEANED_VAR_POST_FIX,
-				DatasetExporterTest.EPP_VARIATE + DatasetExporterTest.CLEANED_VAR_POST_FIX, headerRow[3]);
-		Assert.assertEquals("Expected 5th column header is " + DatasetExporterTest.PH_VARIATE + DatasetExporterTest.CLEANED_VAR_POST_FIX,
-				DatasetExporterTest.PH_VARIATE + DatasetExporterTest.CLEANED_VAR_POST_FIX, headerRow[4]);
+		Assert.assertEquals("Expected 4th column header is " + TermId.ENTRY_TYPE.name() + DatasetExporterTest.CLEANED_VAR_POST_FIX,
+				TermId.ENTRY_TYPE.name()  + DatasetExporterTest.CLEANED_VAR_POST_FIX, headerRow[3]);
+		Assert.assertEquals("Expected 5th column header is " + DatasetExporterTest.EPP_VARIATE + DatasetExporterTest.CLEANED_VAR_POST_FIX,
+				DatasetExporterTest.EPP_VARIATE + DatasetExporterTest.CLEANED_VAR_POST_FIX, headerRow[4]);
+		Assert.assertEquals("Expected 6th column header is " + DatasetExporterTest.PH_VARIATE + DatasetExporterTest.CLEANED_VAR_POST_FIX,
+				DatasetExporterTest.PH_VARIATE + DatasetExporterTest.CLEANED_VAR_POST_FIX, headerRow[5]);
 		Assert.assertFalse(DatasetExporterTest.CM_VARIATE + DatasetExporterTest.CLEANED_VAR_POST_FIX + " should not be included",
 				ArrayUtils.contains(headerRow, DatasetExporterTest.CM_VARIATE + DatasetExporterTest.CLEANED_VAR_POST_FIX));
 		Assert.assertEquals(
-				"Expected 6th column header is " + DatasetExporterTest.ALEUCOL_1_5_VARIATE + DatasetExporterTest.CLEANED_VAR_POST_FIX,
-				DatasetExporterTest.ALEUCOL_1_5_VARIATE + DatasetExporterTest.CLEANED_VAR_POST_FIX, headerRow[5]);
+				"Expected 7th column header is " + DatasetExporterTest.ALEUCOL_1_5_VARIATE + DatasetExporterTest.CLEANED_VAR_POST_FIX,
+				DatasetExporterTest.ALEUCOL_1_5_VARIATE + DatasetExporterTest.CLEANED_VAR_POST_FIX, headerRow[6]);
 
+	}
+
+	@Test
+	public void testSanitizeColumnNames() {
+		final List<String> columnNames = Arrays.asList("TRIAL_INSTANCE**", "ENTRY_TYPE**", "GID", "DESIGNATION", "ENTRY_NO", "OBS_UNIT_ID",	"REP_NO", "PLOT_NO", "GW_DW_g1000grn");
+		final String[] sanitizedColumnNames = this.exporter.sanitizeColumnNames(columnNames);
+		for(int i=0; i<sanitizedColumnNames.length; i++) {
+			Assert.assertEquals(BreedingViewUtil.trimAndSanitizeName(columnNames.get(i)), sanitizedColumnNames[i]);
+		}
 	}
 
 	@Test
@@ -315,12 +328,12 @@ public class DatasetExporterTest {
 		// Verify the header names
 		final String[] headerRow = rowsToWrite.get(0);
 		this.verifyColumnHeaders(headerRow, DatasetExporterTest.ALT_TRIAL_INSTANCE_NAME);
-		Assert.assertEquals("Expected 7th column header is " + DatasetExporterTest.ENV_NAME, DatasetExporterTest.ENV_NAME, headerRow[6]);
+		Assert.assertEquals("Expected 8th column header is " + DatasetExporterTest.ENV_NAME, DatasetExporterTest.ENV_NAME, headerRow[7]);
 
 		// Verify the values of the first observation row
 		final String[] firstRow = rowsToWrite.get(1);
 		this.verifyRowValues(firstRow);
-		Assert.assertEquals("Expected 7th column value is " + DatasetExporterTest.ENV_VALUE, DatasetExporterTest.ENV_VALUE, firstRow[6]);
+		Assert.assertEquals("Expected 8th column value is " + DatasetExporterTest.ENV_VALUE, DatasetExporterTest.ENV_VALUE, firstRow[7]);
 	}
 
 	@Test
@@ -336,28 +349,30 @@ public class DatasetExporterTest {
 		// Verify the header names
 		final String[] headerRow = rowsToWrite.get(0);
 		this.verifyColumnHeaders(headerRow, DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME);
-		Assert.assertEquals("Expected 7th column header is " + DatasetExporter.DUMMY_REPLICATES, DatasetExporter.DUMMY_REPLICATES,
-				headerRow[6]);
+		Assert.assertEquals("Expected 8th column header is " + DatasetExporter.DUMMY_REPLICATES, DatasetExporter.DUMMY_REPLICATES,
+				headerRow[7]);
 
 		// Verify the values of the first observation row
 		final String[] firstRow = rowsToWrite.get(1);
 		this.verifyRowValues(firstRow);
-		Assert.assertEquals("Expected 7th column value is 1 for column " + DatasetExporter.DUMMY_REPLICATES, "1", firstRow[6]);
+		Assert.assertEquals("Expected 8th column value is 1 for column " + DatasetExporter.DUMMY_REPLICATES, "1", firstRow[7]);
 	}
 
 	private void verifyRowValues(final String[] firstRow) {
 		Assert.assertEquals("Expected 1st column value is " + DatasetExporterTest.TRIAL_INSTANCE_1, DatasetExporterTest.TRIAL_INSTANCE_1,
 				firstRow[0]);
-		Assert.assertEquals("Expected 2st column value is " + DatasetExporterTest.FIELDMAP_COLUMN_VALUE,
+		Assert.assertEquals("Expected 2nd column value is " + DatasetExporterTest.FIELDMAP_COLUMN_VALUE,
 				DatasetExporterTest.FIELDMAP_COLUMN_VALUE, firstRow[1]);
-		Assert.assertEquals("Expected 3st column value is " + DatasetExporterTest.FIELDMAP_RANGE_VALUE,
+		Assert.assertEquals("Expected 3rd column value is " + DatasetExporterTest.FIELDMAP_RANGE_VALUE,
 				DatasetExporterTest.FIELDMAP_RANGE_VALUE, firstRow[2]);
-		Assert.assertEquals("Expected 4nd column value is " + DatasetExporterTest.EPP_VARIATE_VALUE, DatasetExporterTest.EPP_VARIATE_VALUE,
+		Assert.assertEquals("Expected 4th column value is " + DatasetExporterTest.CATEGORICAL_VARIATE_ENUM_NAME, DatasetExporterTest.CATEGORICAL_VARIATE_ENUM_NAME,
 				firstRow[3]);
-		Assert.assertEquals("Expected 5rd column value is " + DatasetExporterTest.PH_VARIATE_VALUE, DatasetExporterTest.PH_VARIATE_VALUE,
+		Assert.assertEquals("Expected 5th column value is " + DatasetExporterTest.EPP_VARIATE_VALUE, DatasetExporterTest.EPP_VARIATE_VALUE,
 				firstRow[4]);
-		Assert.assertEquals("Expected 6th column value is " + DatasetExporterTest.BV_MISSING_VALUE, DatasetExporterTest.BV_MISSING_VALUE,
+		Assert.assertEquals("Expected 6th column value is " + DatasetExporterTest.PH_VARIATE_VALUE, DatasetExporterTest.PH_VARIATE_VALUE,
 				firstRow[5]);
+		Assert.assertEquals("Expected 7th column value is " + DatasetExporterTest.BV_MISSING_VALUE, DatasetExporterTest.BV_MISSING_VALUE,
+				firstRow[6]);
 	}
 
 	private DataSet createDatasetTestData(final List<DMSVariableType> factors, final List<DMSVariableType> variates) {
@@ -389,22 +404,10 @@ public class DatasetExporterTest {
 		return variableList;
 	}
 
-	private void setupSelectedVariablesAsActive(final HashMap<String, Boolean> variableState, final List<DMSVariableType> variates) {
-		for (final DMSVariableType variableType : variates) {
-			final String localName = variableType.getLocalName();
-			if (localName.startsWith(DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME)
-					|| localName.startsWith(DatasetExporterTest.EPP_VARIATE) || localName.startsWith(DatasetExporterTest.PH_VARIATE)
-					|| localName.startsWith(DatasetExporterTest.ALEUCOL_1_5_VARIATE)) {
-				variableState.put(localName, true);
-			} else {
-				variableState.put(localName, false);
-			}
-		}
-	}
-
 	private List<DMSVariableType> createFactors(int rank) {
-		final StandardVariable datasetNameStandardVariable = this.createStardardVariableTestData(PhenotypicType.DATASET,
-				TermId.DATASET_NAME.name(), DatasetExporterTest.CHARACTER_VARIABLE);
+		final StandardVariable datasetNameStandardVariable =
+				this.createStardardVariableTestData(PhenotypicType.DATASET, TermId.DATASET_NAME.name(),
+						DatasetExporterTest.CHARACTER_VARIABLE);
 		final DMSVariableType datasetNameVariableType =
 				this.createVariableTypeTestData(TermId.DATASET_NAME.name(), rank++, datasetNameStandardVariable);
 
@@ -412,23 +415,32 @@ public class DatasetExporterTest {
 				this.createStardardVariableTestData(PhenotypicType.STUDY, "STUDY_NAME", DatasetExporterTest.CHARACTER_VARIABLE);
 		final DMSVariableType studyNameVariableType = this.createVariableTypeTestData("STUDY_NAME", rank++, studyNameStandardVariable);
 
-		final StandardVariable trialEnvironmentStandardVariable = this.createStardardVariableTestData(PhenotypicType.TRIAL_ENVIRONMENT,
-				DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME, DatasetExporterTest.NUMERIC_VARIABLE);
+		final StandardVariable trialEnvironmentStandardVariable =
+				this.createStardardVariableTestData(PhenotypicType.TRIAL_ENVIRONMENT, DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME,
+						DatasetExporterTest.NUMERIC_VARIABLE);
 		final DMSVariableType trialEnvironmentVariableType =
 				this.createVariableTypeTestData(DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME, rank++, trialEnvironmentStandardVariable);
 
-		final StandardVariable fieldmapColumnStandardVariable = this.createStardardVariableTestData(PhenotypicType.TRIAL_ENVIRONMENT,
-				TermId.FIELDMAP_COLUMN.name(), DatasetExporterTest.NUMERIC_VARIABLE);
+		final StandardVariable fieldmapColumnStandardVariable =
+				this.createStardardVariableTestData(PhenotypicType.TRIAL_ENVIRONMENT, TermId.FIELDMAP_COLUMN.name(),
+						DatasetExporterTest.NUMERIC_VARIABLE);
 		final DMSVariableType fieldmapColumnVariableType =
 				this.createVariableTypeTestData(TermId.FIELDMAP_COLUMN.name(), rank++, fieldmapColumnStandardVariable);
 
-		final StandardVariable fieldmapRangeStandardVariable = this.createStardardVariableTestData(PhenotypicType.TRIAL_ENVIRONMENT,
-				TermId.FIELDMAP_RANGE.name(), DatasetExporterTest.NUMERIC_VARIABLE);
+		final StandardVariable fieldmapRangeStandardVariable =
+				this.createStardardVariableTestData(PhenotypicType.TRIAL_ENVIRONMENT, TermId.FIELDMAP_RANGE.name(),
+						DatasetExporterTest.NUMERIC_VARIABLE);
 		final DMSVariableType fieldmapRangeVariableType =
 				this.createVariableTypeTestData(TermId.FIELDMAP_RANGE.name(), rank++, fieldmapRangeStandardVariable);
 
+		final StandardVariable entryTypeStandardVariable =
+				this.createStardardVariableTestData(PhenotypicType.GERMPLASM, TermId.ENTRY_TYPE.name(),
+						DatasetExporterTest.CATEGORICAL_VARIABLE);
+		final DMSVariableType entryTypeVariableType =
+				this.createVariableTypeTestData(TermId.ENTRY_TYPE.name(), rank++, entryTypeStandardVariable);
+
 		return Lists.newArrayList(datasetNameVariableType, studyNameVariableType, trialEnvironmentVariableType, fieldmapColumnVariableType,
-				fieldmapRangeVariableType);
+				fieldmapRangeVariableType, entryTypeVariableType);
 	}
 
 	private List<Variable> createFactorVariablesForExperiment(final List<DMSVariableType> factors) {
@@ -437,6 +449,8 @@ public class DatasetExporterTest {
 				DatasetExporterTest.FIELDMAP_COLUMN_VALUE));
 		variables.add(this.createVariableTestData(factors.get(DatasetExporterTest.INDEX_OF_TRIAL_INSTANCE_FACTOR + 2),
 				DatasetExporterTest.FIELDMAP_RANGE_VALUE));
+		variables.add(this.createVariableTestData(factors.get(DatasetExporterTest.INDEX_OF_TRIAL_INSTANCE_FACTOR + 3),
+				DatasetExporterTest.ENTRY_TYPE));
 		return variables;
 	}
 
@@ -447,26 +461,32 @@ public class DatasetExporterTest {
 		}
 		variables.add(this.createVariableTestData(factors.get(DatasetExporterTest.INDEX_OF_TRIAL_INSTANCE_FACTOR),
 				DatasetExporterTest.TRIAL_INSTANCE_1));
+		variables.add(this.createVariableTestData(factors.get(DatasetExporterTest.INDEX_OF_TRIAL_INSTANCE_FACTOR + 3),
+				DatasetExporterTest.ENTRY_TYPE));
 
 		return variables;
 	}
 
 	private List<DMSVariableType> createVariates(int rank) {
-		final StandardVariable eppStandardVariable = this.createStardardVariableTestData(PhenotypicType.VARIATE,
-				DatasetExporterTest.EPP_VARIATE, DatasetExporterTest.NUMERIC_VARIABLE);
+		final StandardVariable eppStandardVariable =
+				this.createStardardVariableTestData(PhenotypicType.VARIATE, DatasetExporterTest.EPP_VARIATE,
+						DatasetExporterTest.NUMERIC_VARIABLE);
 		final DMSVariableType eppVariableType =
 				this.createVariableTypeTestData(DatasetExporterTest.EPP_VARIATE, rank++, eppStandardVariable);
 
-		final StandardVariable phStandardVariable = this.createStardardVariableTestData(PhenotypicType.VARIATE,
-				DatasetExporterTest.PH_VARIATE, DatasetExporterTest.NUMERIC_VARIABLE);
+		final StandardVariable phStandardVariable =
+				this.createStardardVariableTestData(PhenotypicType.VARIATE, DatasetExporterTest.PH_VARIATE,
+						DatasetExporterTest.NUMERIC_VARIABLE);
 		final DMSVariableType phVariableType = this.createVariableTypeTestData(DatasetExporterTest.PH_VARIATE, rank++, phStandardVariable);
 
-		final StandardVariable cmStandardVariable = this.createStardardVariableTestData(PhenotypicType.VARIATE,
-				DatasetExporterTest.CM_VARIATE, DatasetExporterTest.NUMERIC_VARIABLE);
+		final StandardVariable cmStandardVariable =
+				this.createStardardVariableTestData(PhenotypicType.VARIATE, DatasetExporterTest.CM_VARIATE,
+						DatasetExporterTest.NUMERIC_VARIABLE);
 		final DMSVariableType cmVariableType = this.createVariableTypeTestData(DatasetExporterTest.CM_VARIATE, rank++, cmStandardVariable);
 
-		final StandardVariable aleucol1to5Variable = this.createStardardVariableTestData(PhenotypicType.VARIATE,
-				DatasetExporterTest.ALEUCOL_1_5_VARIATE, DatasetExporterTest.CATEGORICAL_VARIABLE);
+		final StandardVariable aleucol1to5Variable =
+				this.createStardardVariableTestData(PhenotypicType.VARIATE, DatasetExporterTest.ALEUCOL_1_5_VARIATE,
+						DatasetExporterTest.CATEGORICAL_VARIABLE);
 		final DMSVariableType aleucol1to5VariableType =
 				this.createVariableTypeTestData(DatasetExporterTest.ALEUCOL_1_5_VARIATE, rank++, aleucol1to5Variable);
 
@@ -486,13 +506,12 @@ public class DatasetExporterTest {
 
 	}
 
-	private void appendSpecialCharactersToVariableName(final List<DMSVariableType> variables) {
+	private void appendSpecialCharactersToVariableNames(final List<DMSVariableType> variables) {
 
 		for (final DMSVariableType variable : variables) {
 			variable.setLocalName(variable.getLocalName() + DatasetExporterTest.VAR_POST_FIX);
 			variable.getStandardVariable().setName(variable.getStandardVariable().getName() + DatasetExporterTest.VAR_POST_FIX);
 		}
-
 	}
 
 	private Variable createVariableTestData(final DMSVariableType study, final String value) {
@@ -520,8 +539,9 @@ public class DatasetExporterTest {
 
 		if (dataType.getId() == DatasetExporterTest.CATEGORICAL_VARIABLE.getId()) {
 			final List<Enumeration> validValues = new ArrayList<Enumeration>();
-			validValues.add(new Enumeration(DatasetExporterTest.CATEGORICAL_VARIATE_ENUM_ID,
-					DatasetExporterTest.CATEGORICAL_VARIATE_ENUM_NAME, DatasetExporterTest.CATEGORICAL_VARIATE_ENUM_DESCRIPTION, 1));
+			validValues
+					.add(new Enumeration(DatasetExporterTest.CATEGORICAL_VARIATE_ENUM_ID, DatasetExporterTest.CATEGORICAL_VARIATE_ENUM_NAME,
+							DatasetExporterTest.CATEGORICAL_VARIATE_ENUM_DESCRIPTION, 1));
 			stdVar.setEnumerations(validValues);
 		}
 		return stdVar;
@@ -531,34 +551,43 @@ public class DatasetExporterTest {
 		Assert.assertEquals("Expected 1st column header is " + trialInstanceHeader, trialInstanceHeader, headerRow[0]);
 		Assert.assertEquals("Expected 2nd column header is " + TermId.FIELDMAP_COLUMN.name(), TermId.FIELDMAP_COLUMN.name(), headerRow[1]);
 		Assert.assertEquals("Expected 3rd column header is " + TermId.FIELDMAP_RANGE.name(), TermId.FIELDMAP_RANGE.name(), headerRow[2]);
-		Assert.assertEquals("Expected 4th column header is " + DatasetExporterTest.EPP_VARIATE, DatasetExporterTest.EPP_VARIATE,
-				headerRow[3]);
-		Assert.assertEquals("Expected 5th column header is " + DatasetExporterTest.PH_VARIATE, DatasetExporterTest.PH_VARIATE,
+		Assert.assertEquals("Expected 4th column header is " + TermId.ENTRY_TYPE.name(), TermId.ENTRY_TYPE.name(), headerRow[3]);
+		Assert.assertEquals("Expected 5th column header is " + DatasetExporterTest.EPP_VARIATE, DatasetExporterTest.EPP_VARIATE,
 				headerRow[4]);
+		Assert.assertEquals("Expected 6th column header is " + DatasetExporterTest.PH_VARIATE, DatasetExporterTest.PH_VARIATE,
+				headerRow[5]);
 		Assert.assertFalse(DatasetExporterTest.CM_VARIATE + " should not be included",
 				ArrayUtils.contains(headerRow, DatasetExporterTest.CM_VARIATE));
-		Assert.assertEquals("Expected 6th column header is " + DatasetExporterTest.ALEUCOL_1_5_VARIATE,
-				DatasetExporterTest.ALEUCOL_1_5_VARIATE, headerRow[5]);
+		Assert.assertEquals("Expected 7th column header is " + DatasetExporterTest.ALEUCOL_1_5_VARIATE,
+				DatasetExporterTest.ALEUCOL_1_5_VARIATE, headerRow[6]);
 	}
 
 	private void setupMocks() {
 		// Setup Middleware mocks
-		Mockito.when(DatasetExporterTest.studyDataManager.getDataSet(Matchers.anyInt())).thenReturn(this.dataSet);
+		Mockito.when(DatasetExporterTest.studyDataManager.getDataSet(ArgumentMatchers.anyInt())).thenReturn(this.dataSet);
 
 		// Setup BreedingViewInput mocks
-		Mockito.when(this.bvInput.getReplicates()).thenReturn(Mockito.mock(Replicates.class));
-		Mockito.when(this.bvInput.getReplicates().getName()).thenReturn(DatasetExporterTest.REP_NAME);
 		Mockito.when(this.bvInput.getTrialInstanceName()).thenReturn(DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME);
 		Mockito.when(this.bvInput.getDesignType()).thenReturn(DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
 
-		// Setup selected variates
-		final HashMap<String, Boolean> variatesActiveState = new HashMap<String, Boolean>();
-		this.setupSelectedVariablesAsActive(variatesActiveState, this.variates);
-		Mockito.when(this.bvInput.getVariatesActiveState()).thenReturn(variatesActiveState);
+		final HashMap<String, Boolean> traitsSelectionMap = new HashMap<String, Boolean>();
+		traitsSelectionMap.put(EPP_VARIATE, true);
+		traitsSelectionMap.put(PH_VARIATE, true);
+		traitsSelectionMap.put(ALEUCOL_1_5_VARIATE, false);
+		traitsSelectionMap.put(CM_VARIATE, false);
+
+		final HashMap<String, Boolean> covariatesSelectionMap = new HashMap<String, Boolean>();
+		covariatesSelectionMap.put(EPP_VARIATE, false);
+		covariatesSelectionMap.put(PH_VARIATE, false);
+		covariatesSelectionMap.put(ALEUCOL_1_5_VARIATE, true);
+		covariatesSelectionMap.put(CM_VARIATE, false);
+
+		Mockito.when(this.bvInput.getVariatesSelectionMap()).thenReturn(traitsSelectionMap);
+		Mockito.when(this.bvInput.getCovariatesSelectionMap()).thenReturn(covariatesSelectionMap);
 
 		// Setup test experiments of dataset
 		final Experiment experiment = this.createExperimentTestData(this.factorVariables, this.variateVariables);
-		Mockito.when(DatasetExporterTest.studyDataManager.getExperiments(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyInt()))
+		Mockito.when(DatasetExporterTest.studyDataManager.getExperiments(ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt()))
 				.thenReturn(Lists.newArrayList(experiment));
 	}
 

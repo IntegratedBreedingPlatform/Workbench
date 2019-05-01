@@ -72,8 +72,6 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 	private static final String GERMPLASM_COL_TABLE_WIDTH = "340px";
 
-	private static final String GERMPLASM_COL_TABLE_HEIGHT = "445px";
-
 	private static final long serialVersionUID = 1L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(TraitDisplayResults.class);
@@ -152,7 +150,6 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 		resultsTable = new AbsoluteLayout();
 		resultsTable.setDebugId("resultTable");
-		resultsTable.setHeight("470px");
 		resultsTable.setWidth("1000px");
 		
 		createGermplasmColTable();
@@ -254,7 +251,6 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		this.combinedScoreTagColTable = new PagedTable();
 		this.combinedScoreTagColTable.setDebugId("combinedScoreTagColTable");
 		this.combinedScoreTagColTable.setWidth("160px");
-		this.combinedScoreTagColTable.setHeight(GERMPLASM_COL_TABLE_HEIGHT);
 		this.combinedScoreTagColTable.setImmediate(true);
 		this.combinedScoreTagColTable.setPageLength(15);
 		this.combinedScoreTagColTable.setColumnCollapsingAllowed(true);
@@ -265,7 +261,6 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		this.traitsColTable = new PagedTable();
 		this.traitsColTable.setDebugId("traitsColTable");
 		this.traitsColTable.setWidth("490px");
-		this.traitsColTable.setHeight(GERMPLASM_COL_TABLE_HEIGHT);
 		this.traitsColTable.setImmediate(true);
 		this.traitsColTable.setPageLength(15);
 		this.traitsColTable.setColumnCollapsingAllowed(true);
@@ -276,7 +271,6 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		this.germplasmColTable = new PagedTable();
 		this.germplasmColTable.setDebugId("germplasmColTable");
 		this.germplasmColTable.setWidth(GERMPLASM_COL_TABLE_WIDTH);
-		this.germplasmColTable.setHeight(GERMPLASM_COL_TABLE_HEIGHT);
 		this.germplasmColTable.setImmediate(true);
 		this.germplasmColTable.setPageLength(15);
 		this.germplasmColTable.setColumnCollapsingAllowed(true);
@@ -459,7 +453,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 	}
 
 	private String getWeightLabel(int weight) {
-		return "Wt = " + weight + "<br/> Score";
+		return "Success Ratio";
 	}
 
 	private String getContainerPropertyName(String name, Integer traitId, TraitType traitType) {

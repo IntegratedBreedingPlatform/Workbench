@@ -5,15 +5,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vaadin.ui.Link;
 import org.generationcp.commons.util.VaadinFileDownloadResource;
 import org.generationcp.ibpworkbench.GermplasmStudyBrowserApplication;
+import org.generationcp.ibpworkbench.study.containers.RepresentationDatasetQueryFactory;
 import org.generationcp.ibpworkbench.study.util.DatasetExporter;
 import org.generationcp.ibpworkbench.study.util.DatasetExporterException;
-import org.generationcp.middleware.domain.dms.DMSVariableType;
-import org.generationcp.middleware.domain.dms.DataSet;
-import org.generationcp.middleware.domain.dms.PhenotypicType;
-import org.generationcp.middleware.domain.dms.StandardVariable;
-import org.generationcp.middleware.domain.dms.VariableTypeList;
+import org.generationcp.middleware.domain.dms.*;
 import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareException;
@@ -21,7 +19,7 @@ import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -32,6 +30,7 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
 
 import junit.framework.Assert;
+import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
 
 public class RepresentationDatasetComponentTest {
 	
@@ -138,6 +137,21 @@ public class RepresentationDatasetComponentTest {
 	}
 
 	@Test
+	public void testPopulateDatasetContainerProperties() {
+		final List<String> columnIds = new ArrayList<>();
+		columnIds.add(new StringBuffer().append(TermId.GID.getId()).append("-").append(TermId.GID.name()).toString());
+		columnIds.add(new StringBuffer().append(TermId.ENTRY_NO.getId()).append("-").append(TermId.ENTRY_NO.name()).toString());
+
+		final RepresentationDatasetQueryFactory factory = new RepresentationDatasetQueryFactory(this.studyDataManager, 1, columnIds, false, 1);
+		final LazyQueryContainer datasetContainer = new LazyQueryContainer(factory, false, 50);
+
+		this.datasetComponent.populateDatasetContainerProperties(false, columnIds, datasetContainer);
+
+		Assert.assertEquals(Link.class, datasetContainer.getQueryView().getQueryDefinition().getPropertyType(columnIds.get(0)));
+		Assert.assertEquals(String.class, datasetContainer.getQueryView().getQueryDefinition().getPropertyType(columnIds.get(1)));
+	}
+
+	@Test
 	public void testValidateDatasetVariablesAreExcludedFromTable() throws MiddlewareException {
 		// add DatasetVariables
 		StandardVariable datasetVariable = new StandardVariable();
@@ -178,7 +192,7 @@ public class RepresentationDatasetComponentTest {
 		// Verify file is downloaded to the browser with proper filename
 		Mockito.verify(this.datasetExporter).exportToFieldBookExcelUsingIBDBv2(RepresentationDatasetComponent.TEMP_FILENAME);
 		final ArgumentCaptor<VaadinFileDownloadResource> fileDownloadResourceCaptor = ArgumentCaptor.forClass(VaadinFileDownloadResource.class);
-		Mockito.verify(this.window).open(fileDownloadResourceCaptor.capture(), Matchers.anyString(), Matchers.eq(false));
+		Mockito.verify(this.window).open(fileDownloadResourceCaptor.capture(), ArgumentMatchers.<String>isNull(), ArgumentMatchers.eq(false));
 		final VaadinFileDownloadResource downloadResource = fileDownloadResourceCaptor.getValue();
 		Assert.assertEquals(new File(XLS_FILEPATH).getAbsolutePath(), downloadResource.getSourceFile().getAbsolutePath());
 		Assert.assertEquals(RepresentationDatasetComponent.XLS_DOWNLOAD_FILENAME, downloadResource.getFilename());
@@ -191,14 +205,14 @@ public class RepresentationDatasetComponentTest {
 		spyComponent.setDatasetExporter(this.datasetExporter);
 		final String message = "Some DatasetExporterException message.";
 		Mockito.doThrow(new DatasetExporterException(message)).when(this.datasetExporter)
-				.exportToFieldBookExcelUsingIBDBv2(Matchers.anyString());
+				.exportToFieldBookExcelUsingIBDBv2(ArgumentMatchers.anyString());
 		Mockito.doReturn(this.application).when(spyComponent).getApplication();
 		Mockito.doReturn(this.window).when(this.application).getWindow(GermplasmStudyBrowserApplication.STUDY_WINDOW_NAME);
 		spyComponent.exportToExcelAction();
 		
 		Mockito.verify(this.datasetExporter).exportToFieldBookExcelUsingIBDBv2(RepresentationDatasetComponent.TEMP_FILENAME);
-		Mockito.verify(this.window, Mockito.never()).open(Matchers.any(VaadinFileDownloadResource.class), Matchers.anyString(),
-				Matchers.anyBoolean());
+		Mockito.verify(this.window, Mockito.never()).open(ArgumentMatchers.any(VaadinFileDownloadResource.class), ArgumentMatchers.anyString(),
+				ArgumentMatchers.anyBoolean());
 		final ArgumentCaptor<Notification> notifCaptor = ArgumentCaptor.forClass(Notification.class);
 		Mockito.verify(this.window).showNotification(notifCaptor.capture());
 		final Notification error = notifCaptor.getValue();

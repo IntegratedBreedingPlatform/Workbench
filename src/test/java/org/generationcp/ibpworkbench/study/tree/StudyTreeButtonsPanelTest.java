@@ -2,10 +2,13 @@ package org.generationcp.ibpworkbench.study.tree;
 
 import java.util.Collection;
 
+import org.apache.commons.lang.RandomStringUtils;
+import org.generationcp.commons.util.StudyPermissionValidator;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.study.StudyBrowserMain;
 import org.generationcp.ibpworkbench.study.StudyTabSheet;
 import org.generationcp.middleware.domain.dms.Study;
+import org.generationcp.middleware.domain.dms.StudyReference;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +27,8 @@ import junit.framework.Assert;
 
 public class StudyTreeButtonsPanelTest {
 	
+	private static final String PROGRAM_UUID = "abcd-efghij";
+
 	private static final String CURRENT_FOLDER_NAME = "Current Folder Name";
 
 	private static final Integer SELECTED_ID = 1001;
@@ -52,7 +57,10 @@ public class StudyTreeButtonsPanelTest {
 	@Mock
 	private Window window;
 	
+	@Mock
+	private StudyPermissionValidator studyPermissionValidator;
 	
+	private StudyReference studyReference;
 	private StudyTreeButtonsPanel buttonsPanel;
 	
 	@Before
@@ -65,13 +73,18 @@ public class StudyTreeButtonsPanelTest {
 		this.buttonsPanel = new StudyTreeButtonsPanel(this.browseTreeComponent);
 		this.buttonsPanel.setMessageSource(this.messageSource);
 		this.buttonsPanel.setStudyDataManager(this.studyDataManager);
+		this.buttonsPanel.setStudyPermissionValidator(this.studyPermissionValidator);
 		
 		final Study study = new Study();
-		study.setProgramUUID("abcd-efghij");
+		study.setProgramUUID(PROGRAM_UUID);
 		Mockito.doReturn(study).when(this.studyDataManager).getStudy(Matchers.anyInt());
 		Mockito.doReturn(SELECTED_ID).when(this.studyTree).getValue();
 		Mockito.doReturn(this.component).when(this.browseTreeComponent).getParentComponent();
 		Mockito.doReturn(this.window).when(this.component).getWindow();
+		
+		this.studyReference = new StudyReference(1, RandomStringUtils.random(10));
+		this.studyReference.setProgramUUID(PROGRAM_UUID);
+		Mockito.doReturn(this.studyReference).when(this.studyDataManager).getStudyReference(SELECTED_ID);
 	}
 	
 	@Test
@@ -128,7 +141,7 @@ public class StudyTreeButtonsPanelTest {
 		Mockito.doReturn(false).when(this.studyTree).isFolder(Matchers.anyInt());
 		this.buttonsPanel.updateButtons(new Integer("101"));
 		Assert.assertTrue(this.buttonsPanel.getAddFolderBtn().isEnabled());
-		Assert.assertTrue(this.buttonsPanel.getRenameFolderBtn().isEnabled());
+		Assert.assertFalse(this.buttonsPanel.getRenameFolderBtn().isEnabled());
 		Assert.assertFalse(this.buttonsPanel.getDeleteFolderBtn().isEnabled());
 	}
 	
@@ -161,6 +174,25 @@ public class StudyTreeButtonsPanelTest {
 		Assert.assertEquals(this.studyTabSheet, renameFolderWindow.getTabSheet());
 		Assert.assertEquals(SELECTED_ID, renameFolderWindow.getItemId());
 		Assert.assertEquals(CURRENT_FOLDER_NAME, renameFolderWindow.getCurrentName());
+	}
+	
+	@Test
+	public void testTreeNodeCanBeRenamed() {
+		Mockito.doReturn(false).when(this.studyPermissionValidator).userLacksPermissionForStudy(this.studyReference);
+		Assert.assertTrue(this.buttonsPanel.treeNodeCanBeRenamed(SELECTED_ID));
+	}
+	
+	@Test
+	public void testTreeNodeCanBeRenamedForStudyTemplate() {
+		this.studyReference.setProgramUUID(null);
+		Mockito.doReturn(false).when(this.studyPermissionValidator).userLacksPermissionForStudy(this.studyReference);
+		Assert.assertFalse(this.buttonsPanel.treeNodeCanBeRenamed(SELECTED_ID));
+	}
+	
+	@Test
+	public void testTreeNodeCanBeRenamedForRestrictedStudy() {
+		Mockito.doReturn(true).when(this.studyPermissionValidator).userLacksPermissionForStudy(this.studyReference);
+		Assert.assertFalse(this.buttonsPanel.treeNodeCanBeRenamed(SELECTED_ID));
 	}
 
 }

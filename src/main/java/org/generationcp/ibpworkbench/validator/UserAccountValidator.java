@@ -26,7 +26,7 @@ public class UserAccountValidator implements Validator {
 	private static final Logger LOG = LoggerFactory.getLogger(UserAccountValidator.class);
 
 	public static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
 
 	public static final String SIGNUP_FIELD_REQUIRED = "signup.field.required";
 	public static final String SIGNUP_FIELD_INVALID_ROLE = "signup.field.invalid.role";

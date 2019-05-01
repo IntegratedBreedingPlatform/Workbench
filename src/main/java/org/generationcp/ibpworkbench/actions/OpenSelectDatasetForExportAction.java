@@ -21,9 +21,9 @@ import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDetailsPanel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
+import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.VariableTableItem;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
@@ -131,7 +131,8 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 			this.populateProjectNameAndFilePaths(breedingViewInput, this.project, inputDir);
 			this.populateAnalysisName(breedingViewInput, this.datasetName);
 
-			breedingViewInput.setVariatesActiveState(this.selectDatasetForBreedingViewPanel.getVariatesCheckboxState());
+			breedingViewInput.setVariatesSelectionMap(this.selectDatasetForBreedingViewPanel.getVariatesSelectionMap());
+			breedingViewInput.setCovariatesSelectionMap(this.selectDatasetForBreedingViewPanel.getCovariatesSelectionMap());
 
 			final IContentWindow w = (IContentWindow) event.getComponent().getWindow();
 
@@ -184,7 +185,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 
 	}
 
-	private boolean validateInput(final ClickEvent event, final Integer studyId, final Integer dataSetId, final String datasetName) {
+	protected boolean validateInput(final ClickEvent event, final Integer studyId, final Integer dataSetId, final String datasetName) {
 		// study is required
 		if (this.selectDatasetForBreedingViewPanel.getCurrentStudy() == null) {
 			event.getComponent().getWindow().showNotification("Please select a Study first.", Notification.TYPE_ERROR_MESSAGE);
@@ -196,14 +197,20 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 			event.getComponent().getWindow().showNotification("Please select a Dataset first.", Notification.TYPE_ERROR_MESSAGE);
 			return false;
 		}
-		final List<VariateModel> variates = this.selectDatasetForBreedingViewPanel.getVariateList();
-		final Map<String, Boolean> variatesCheckboxState = this.selectDatasetForBreedingViewPanel.getVariatesCheckboxState();
-		final boolean includesNonNumeric = this.checkIfNonNumericVarAreIncluded(variates, variatesCheckboxState);
-		if (includesNonNumeric) {
+
+		final List<VariableTableItem> variates = this.selectDatasetForBreedingViewPanel.getVariateList();
+		final Map<String, Boolean> variatesCheckboxState = this.selectDatasetForBreedingViewPanel.getVariatesSelectionMap();
+		final Map<String, Boolean> covariatesCheckboxState = this.selectDatasetForBreedingViewPanel.getCovariatesSelectionMap();
+
+		final boolean variatesTableIncludesNonNumeric = this.checkIfNonNumericVarAreIncluded(variates, variatesCheckboxState);
+		final boolean covariatesTableIncludesNonNumeric = this.checkIfNonNumericVarAreIncluded(variates, covariatesCheckboxState);
+		if (variatesTableIncludesNonNumeric || covariatesTableIncludesNonNumeric) {
 			MessageNotifier.showError(event.getComponent().getWindow(), this.messageSource.getMessage(Message.INVALID_INPUT),
 					this.messageSource.getMessage(Message.SSA_NON_NUMERIC_CATEGORICAL_VAR_ERROR));
 			return false;
 		}
+
+
 		final boolean includesNumericCategorical = this.checkIfNumericCategoricalVarAreIncluded(variates, variatesCheckboxState);
 		if (includesNumericCategorical) {
 			MessageNotifier.showWarning(event.getComponent().getWindow(), this.messageSource.getMessage(Message.WARNING),
@@ -212,9 +219,9 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 		return true;
 	}
 
-	protected boolean checkIfNumericCategoricalVarAreIncluded(final List<VariateModel> variates,
+	protected boolean checkIfNumericCategoricalVarAreIncluded(final List<VariableTableItem> variableTableItems,
 			final Map<String, Boolean> variatesCheckboxState) {
-		for (final VariateModel vm : variates) {
+		for (final VariableTableItem vm : variableTableItems) {
 			final boolean isSelected = variatesCheckboxState.get(vm.getName());
 			if (isSelected && vm.isNumericCategoricalVariate()) {
 				return true;
@@ -223,11 +230,13 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 		return false;
 	}
 
-	protected boolean checkIfNonNumericVarAreIncluded(final List<VariateModel> variates, final Map<String, Boolean> variatesCheckboxState) {
-		for (final VariateModel vm : variates) {
-			final boolean isSelected = variatesCheckboxState.get(vm.getName());
-			if (isSelected && vm.isNonNumeric()) {
-				return true;
+	protected boolean checkIfNonNumericVarAreIncluded(final List<VariableTableItem> variableTableItems, final Map<String, Boolean> variatesCheckboxState) {
+		for (final VariableTableItem vm : variableTableItems) {
+			if (variatesCheckboxState.containsKey(vm.getName())) {
+				final boolean isSelected = variatesCheckboxState.get(vm.getName());
+				if (isSelected && vm.isNonNumeric()) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -263,5 +272,9 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 
 	public void setIsServerApp(final String isServerApp) {
 		this.isServerApp = isServerApp;
+	}
+
+	public void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
 	}
 }

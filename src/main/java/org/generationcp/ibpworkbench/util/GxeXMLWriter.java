@@ -15,6 +15,8 @@ package org.generationcp.ibpworkbench.util;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -31,7 +33,6 @@ import org.generationcp.commons.sea.xml.MegaEnvironment;
 import org.generationcp.commons.sea.xml.MegaEnvironments;
 import org.generationcp.commons.sea.xml.Pipeline;
 import org.generationcp.commons.sea.xml.Pipelines;
-import org.generationcp.commons.sea.xml.Traits;
 import org.generationcp.commons.util.BreedingViewUtil;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.middleware.pojos.workbench.ToolName;
@@ -62,7 +63,7 @@ public class GxeXMLWriter implements InitializingBean, Serializable {
 	public void writeProjectXML() throws GxeXMLWriterException {
 		final boolean isServerApp = Boolean.parseBoolean(this.isServerAppString);
 
-		final Traits traits = new Traits();
+		final List<Trait> traits = new ArrayList<>();
 		for (final Trait t : this.gxeInput.getTraits()) {
 			final String traitName = BreedingViewUtil.sanitizeName(t.getName());
 			t.setBlues(traitName);

@@ -91,6 +91,11 @@
 		scope="request">
 		<aop:scoped-proxy />
 	</bean>
+	
+	<bean id="studyPermissionValidator" class=" org.generationcp.commons.util.StudyPermissionValidator"
+		scope="request">
+		<aop:scoped-proxy />
+	</bean>
 
 	<bean id="cloner" class="com.rits.cloning.Cloner" />
 
@@ -217,11 +222,6 @@
 
 	<bean id="sampleService" factory-bean="managerFactory"
 		  factory-method="getSampleService" scope="request">
-		<aop:scoped-proxy proxy-target-class="false" />
-	</bean>
-
-	<bean id="plantService" factory-bean="managerFactory"
-		  factory-method="getPlantService" scope="request">
 		<aop:scoped-proxy proxy-target-class="false" />
 	</bean>
 

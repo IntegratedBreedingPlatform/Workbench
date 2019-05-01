@@ -1,56 +1,86 @@
-
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
-import org.generationcp.commons.hibernate.ManagerFactoryProvider;
-import org.generationcp.ibpworkbench.model.FactorModel;
-import org.generationcp.ibpworkbench.model.VariateModel;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.VerticalLayout;
 import org.generationcp.ibpworkbench.util.StudyUtil;
-import org.generationcp.middleware.domain.dms.*;
-import org.generationcp.middleware.manager.ManagerFactory;
+import org.generationcp.middleware.domain.dms.DMSVariableType;
+import org.generationcp.middleware.domain.dms.DMSVariableTypeTestDataInitializer;
+import org.generationcp.middleware.domain.dms.DataSet;
+import org.generationcp.middleware.domain.dms.PhenotypicType;
+import org.generationcp.middleware.domain.dms.Study;
+import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.Iterator;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
+@RunWith(MockitoJUnitRunner.class)
 public class SingleSiteAnalysisPanelTest {
 
-	private SingleSiteAnalysisPanel singleSiteAnalysisPanel;
 	private DataSet currentDataset;
 	private Study currentStudy;
 	private StudyUtil studyUtil;
+
+	@Mock
+	private VariableTableComponent germplasmDescriptorsComponent;
+
+	@Mock
+	private VariableTableComponent variatesTableComponent;
+
+	@Mock
+	private VariableTableComponent covariatesTableComponent;
+
+	@Mock
+	private VerticalLayout studyDetailsContainer;
+
+	@Mock
+	private VerticalLayout germplasmDescriptorTableLayout;
+
+	@Mock
+	private VerticalLayout traitTableLayout;
+
+	@Mock
+	private VerticalLayout covariateTableLayout;
+
+	private SingleSiteAnalysisPanel singleSiteAnalysisPanel;
 
 	@Before
 	public void setup() throws Exception {
 		this.studyUtil = StudyUtil.getInstance();
 		this.currentStudy = this.studyUtil.createStudyTestData();
 		this.currentDataset = this.studyUtil.createDatasetTestData();
-		Project currentProject = new Project();
+		final Project currentProject = new Project();
 
-		ManagerFactoryProvider managerFactoryProvider = Mockito.mock(ManagerFactoryProvider.class);
-		StudyDataManager studyDataManager = Mockito.mock(StudyDataManager.class);
-		ManagerFactory managerFactory = Mockito.mock(ManagerFactory.class);
+		final StudyDataManager studyDataManager = Mockito.mock(StudyDataManager.class);
 
-		Mockito.when(managerFactoryProvider.getManagerFactoryForProject(currentProject)).thenReturn(managerFactory);
-		Mockito.when(managerFactory.getNewStudyDataManager()).thenReturn(studyDataManager);
 		Mockito.when(studyDataManager.getDataSet(StudyUtil.DATASET_ID)).thenReturn(this.currentDataset);
 		Mockito.when(studyDataManager.getStudy(this.currentDataset.getStudyId())).thenReturn(this.currentStudy);
 
-		this.singleSiteAnalysisPanel = new SingleSiteAnalysisPanel(currentProject);
+		this.singleSiteAnalysisPanel = new SingleSiteAnalysisPanel(null);
 		this.singleSiteAnalysisPanel.setStudyDataManager(studyDataManager);
-		this.singleSiteAnalysisPanel.setManagerFactoryProvider(managerFactoryProvider);
-		this.singleSiteAnalysisPanel.instantiateComponents();
+		this.singleSiteAnalysisPanel.setCurrentProject(currentProject);
+		this.singleSiteAnalysisPanel.setGermplasmDescriptorsComponent(this.germplasmDescriptorsComponent);
+		this.singleSiteAnalysisPanel.setVariatesTableComponent(this.variatesTableComponent);
+		this.singleSiteAnalysisPanel.setCovariatesTableComponent(this.covariatesTableComponent);
+		this.singleSiteAnalysisPanel.setStudyDetailsContainer(this.studyDetailsContainer);
+		this.singleSiteAnalysisPanel.setGermplasmDescriptorTableLayout(this.germplasmDescriptorTableLayout);
+		this.singleSiteAnalysisPanel.setTraitTableLayout(this.traitTableLayout);
+		this.singleSiteAnalysisPanel.setCovariateTableLayout(this.covariateTableLayout);
 	}
 
 	@Test
-	public void testShowDatasetVariatesDetails() {
+	public void testShowStudyDetails() {
 
-		this.singleSiteAnalysisPanel.showDatasetVariatesDetails(StudyUtil.DATASET_ID);
+		this.singleSiteAnalysisPanel.showStudyDetails(StudyUtil.DATASET_ID);
 
 		// check if the data set details are correct
 
@@ -63,76 +93,180 @@ public class SingleSiteAnalysisPanelTest {
 		Assert.assertEquals("The dataset id should be " + this.currentDataset.getId(), Integer.toString(this.currentDataset.getId()),
 				Integer.toString(this.singleSiteAnalysisPanel.getCurrentDataSetId()));
 
-		List<FactorModel> factors = this.singleSiteAnalysisPanel.getFactorList();
-		Assert.assertNotNull("The dataset should contain factors", factors);
-
-		VariableTypeList currentFactors = this.currentDataset.getVariableTypes().getFactors();
-		this.removeDatasetTypes(currentFactors);
-
-		Assert.assertEquals("The dataset should have " + currentFactors.size() + " factors", currentFactors.size(), factors.size());
-
-		List<VariateModel> variates = this.singleSiteAnalysisPanel.getVariateList();
-		VariableTypeList currentVariates = this.currentDataset.getVariableTypes().getVariates();
-		Assert.assertNotNull("The dataset should contain variates", currentVariates);
-		Assert.assertEquals("The dataset should have " + currentVariates.size() + " variates", currentVariates.size(), variates.size());
+		Mockito.verify(this.germplasmDescriptorsComponent).loadData(ArgumentMatchers.<List<DMSVariableType>>any());
+		Mockito.verify(this.variatesTableComponent).loadData(ArgumentMatchers.<List<DMSVariableType>>any());
+		Mockito.verify(this.covariatesTableComponent).loadData(ArgumentMatchers.<List<DMSVariableType>>any());
 
 	}
 
 	@Test
-	public void testShowDatasetVariatesDetailsWithSelectedVariatesByDefault() {
-		this.singleSiteAnalysisPanel.showDatasetVariatesDetails(StudyUtil.DATASET_ID);
+	public void testFilterDatasetAndStudyVariables() {
 
-		Map<String, Boolean> variatesCheckboxState = this.singleSiteAnalysisPanel.getVariatesCheckboxState();
-		List<VariateModel> variates = this.singleSiteAnalysisPanel.getVariateList();
+		final DMSVariableType datasetVariable =
+				DMSVariableTypeTestDataInitializer.createDMSVariableTypeWithStandardVariable(TermId.DATASET_TYPE);
+		datasetVariable.getStandardVariable().setPhenotypicType(PhenotypicType.DATASET);
+		final DMSVariableType studyVariable =
+				DMSVariableTypeTestDataInitializer.createDMSVariableTypeWithStandardVariable(TermId.STUDY_DATA_TYPE);
+		studyVariable.getStandardVariable().setPhenotypicType(PhenotypicType.STUDY);
+		final DMSVariableType germplasmVariable =
+				DMSVariableTypeTestDataInitializer.createDMSVariableTypeWithStandardVariable(TermId.ENTRY_NO);
+		germplasmVariable.getStandardVariable().setPhenotypicType(PhenotypicType.GERMPLASM);
+		final DMSVariableType treatmentVariable =
+			DMSVariableTypeTestDataInitializer.createDMSVariableTypeWithStandardVariable(TermId.TREATMENT_MEAN);
+		treatmentVariable.getStandardVariable().setPhenotypicType(PhenotypicType.TRIAL_DESIGN);
+		treatmentVariable.setTreatmentLabel("label");
 
-		for (VariateModel vm : variates) {
-			boolean isSelected = variatesCheckboxState.get(vm.getName());
-			if (vm.getActive()) {
-				Assert.assertTrue("Active variates are selected by default", isSelected);
-			}
-			if (vm.isNumericCategoricalVariate()) {
-				Assert.assertTrue("Numeric categorical variates are selected by default", isSelected);
-			}
-			if (vm.isNonNumeric()) {
-				Assert.assertFalse("Non-numeric variates are not selected by default", isSelected);
-			}
-		}
-	}
+		final List<DMSVariableType> variableTypeList = Arrays.asList(datasetVariable, studyVariable, germplasmVariable, treatmentVariable);
 
-	private void removeDatasetTypes(VariableTypeList currentFactors) {
-		Iterator<DMSVariableType> variableTypeIterator = currentFactors.getVariableTypes().iterator();
-		while (variableTypeIterator.hasNext()) {
-			DMSVariableType variableType = variableTypeIterator.next();
-			if (variableType.getStandardVariable().getPhenotypicType() == PhenotypicType.DATASET) {
-				variableTypeIterator.remove();
-			}
-		}
+		final List<DMSVariableType> result = this.singleSiteAnalysisPanel.filterDatasetAndStudyAndTreatmentFactorVariables(variableTypeList);
+
+		Assert.assertEquals(1, result.size());
+		Assert.assertEquals(germplasmVariable, result.get(0));
 	}
 
 	@Test
-	public void testTransformVariableTypeToVariateModel() {
-		List<DMSVariableType> variates = this.currentDataset.getVariableTypes().getVariates().getVariableTypes();
-		for (DMSVariableType variate : variates) {
-			VariateModel vm = this.singleSiteAnalysisPanel.transformVariableTypeToVariateModel(variate);
-			Assert.assertEquals(Integer.toString(variate.getRank()), Integer.toString(vm.getId()));
-			Assert.assertEquals(variate.getLocalName(), vm.getName());
-			Assert.assertEquals(variate.getLocalDescription(), vm.getDescription());
-			Assert.assertEquals(variate.getStandardVariable().getScale().getName(), vm.getScname());
-			Assert.assertEquals(Integer.toString(variate.getStandardVariable().getScale().getId()), Integer.toString(vm.getScaleid()));
-			Assert.assertEquals(variate.getStandardVariable().getMethod().getName(), vm.getTmname());
-			Assert.assertEquals(Integer.toString(variate.getStandardVariable().getMethod().getId()), Integer.toString(vm.getTmethid()));
-			Assert.assertEquals(variate.getStandardVariable().getProperty().getName(), vm.getTrname());
-			Assert.assertEquals(Integer.toString(variate.getStandardVariable().getProperty().getId()), Integer.toString(vm.getTraitid()));
-			Assert.assertEquals(variate.getStandardVariable().getDataType().getName(), vm.getDatatype());
-			if (variate.getStandardVariable().isNumeric()) {
-				Assert.assertTrue(vm.getActive());
-				if (variate.getStandardVariable().isNumericCategoricalVariate()) {
-					Assert.assertTrue(vm.isNumericCategoricalVariate());
-				}
-			} else {
-				Assert.assertTrue(vm.isNonNumeric());
-			}
-		}
+	public void testReset() {
+
+		this.singleSiteAnalysisPanel.reset();
+
+		Mockito.verify(this.germplasmDescriptorTableLayout).removeAllComponents();
+		Mockito.verify(this.traitTableLayout).removeAllComponents();
+		Mockito.verify(this.covariateTableLayout).removeAllComponents();
+		Mockito.verify(this.studyDetailsContainer).removeAllComponents();
+
+		Mockito.verify(this.germplasmDescriptorTableLayout).addComponent(Mockito.any(VariableTableComponent.class));
+		Mockito.verify(this.traitTableLayout).addComponent(Mockito.any(VariableTableComponent.class));
+		Mockito.verify(this.covariateTableLayout).addComponent(Mockito.any(VariableTableComponent.class));
+		Mockito.verify(this.studyDetailsContainer).addComponent(Mockito.any(SingleSiteAnalysisStudyDetailsComponent.class));
+
+		Mockito.verify(this.germplasmDescriptorTableLayout, Mockito.never()).addComponent(this.germplasmDescriptorsComponent);
+		Mockito.verify(this.traitTableLayout, Mockito.never()).addComponent(this.variatesTableComponent);
+		Mockito.verify(this.covariateTableLayout, Mockito.never()).addComponent(this.covariatesTableComponent);
+	}
+
+	@Test
+	public void testInitalizeTableComponents() {
+
+		this.singleSiteAnalysisPanel.initalizeTableComponents();
+
+		Assert.assertNotSame(this.germplasmDescriptorsComponent, this.singleSiteAnalysisPanel.getGermplasmDescriptorsComponent());
+		Assert.assertNotSame(this.variatesTableComponent, this.singleSiteAnalysisPanel.getVariatesTableComponent());
+		Assert.assertNotSame(this.covariatesTableComponent, this.singleSiteAnalysisPanel.getCovariatesTableComponent());
+		Assert.assertTrue(this.singleSiteAnalysisPanel.getVariatesTableComponent()
+				.getSelectionChangedListener() instanceof SingleSiteAnalysisPanel.VariateTableSelectionChangedListener);
+		Assert.assertTrue(this.singleSiteAnalysisPanel.getVariatesTableComponent()
+				.getSelectAllChangedListener() instanceof SingleSiteAnalysisPanel.VariateTableSelectAllChangedListener);
+	}
+
+	@Test
+	public void testVariatesTableSelectionChangedSomeItemsAreSelected() {
+
+		final Button btnNext = Mockito.mock(Button.class);
+		this.singleSiteAnalysisPanel.setBtnNext(btnNext);
+		Mockito.when(this.variatesTableComponent.someItemsAreSelected()).thenReturn(true);
+		final VariableTableComponent.SelectionChangedListener listener =
+				this.singleSiteAnalysisPanel.new VariateTableSelectionChangedListener();
+
+		final VariableTableItem variableTableItem = new VariableTableItem();
+		variableTableItem.setActive(true);
+		variableTableItem.setId(1);
+
+		listener.onSelectionChanged(variableTableItem);
+
+		Mockito.verify(this.covariatesTableComponent).toggleCheckbox(variableTableItem.getId(), false, variableTableItem.getActive());
+		Mockito.verify(btnNext).setEnabled(true);
 
 	}
+
+	@Test
+	public void testVariatesTableSelectionChangedNoItemSelected() {
+
+		final Button btnNext = Mockito.mock(Button.class);
+		this.singleSiteAnalysisPanel.setBtnNext(btnNext);
+		Mockito.when(this.variatesTableComponent.someItemsAreSelected()).thenReturn(false);
+		final VariableTableComponent.SelectionChangedListener listener =
+				this.singleSiteAnalysisPanel.new VariateTableSelectionChangedListener();
+
+		final VariableTableItem variableTableItem = new VariableTableItem();
+		variableTableItem.setActive(false);
+		variableTableItem.setId(1);
+
+		listener.onSelectionChanged(variableTableItem);
+
+		Mockito.verify(this.covariatesTableComponent).toggleCheckbox(variableTableItem.getId(), false, variableTableItem.getActive());
+		Mockito.verify(btnNext).setEnabled(false);
+
+	}
+
+	@Test
+	public void testCovariatesTableSelectionChangedCovariateItemIsUnchecked() {
+
+		final Button btnNext = Mockito.mock(Button.class);
+		this.singleSiteAnalysisPanel.setBtnNext(btnNext);
+		Mockito.when(this.variatesTableComponent.someItemsAreSelected()).thenReturn(true);
+		final VariableTableComponent.SelectionChangedListener listener =
+				this.singleSiteAnalysisPanel.new CovariateTableSelectionChangedListener();
+
+		final VariableTableItem variableTableItem = new VariableTableItem();
+		variableTableItem.setActive(false);
+		variableTableItem.setId(1);
+
+		listener.onSelectionChanged(variableTableItem);
+
+		Mockito.verify(this.variatesTableComponent).toggleCheckbox(variableTableItem.getId(), true, false);
+		Mockito.verify(btnNext).setEnabled(true);
+
+	}
+
+	@Test
+	public void testCovariatesTableSelectionChangedCovariateItemIsChecked() {
+
+		final Button btnNext = Mockito.mock(Button.class);
+		this.singleSiteAnalysisPanel.setBtnNext(btnNext);
+		Mockito.when(this.variatesTableComponent.someItemsAreSelected()).thenReturn(true);
+		final VariableTableComponent.SelectionChangedListener listener =
+				this.singleSiteAnalysisPanel.new CovariateTableSelectionChangedListener();
+
+		final VariableTableItem variableTableItem = new VariableTableItem();
+		variableTableItem.setActive(true);
+		variableTableItem.setId(1);
+
+		listener.onSelectionChanged(variableTableItem);
+
+		Mockito.verify(this.variatesTableComponent, Mockito.times(0)).toggleCheckbox(variableTableItem.getId(), true, false);
+		Mockito.verify(btnNext).setEnabled(true);
+
+	}
+
+	@Test
+	public void testVariatesTableSelectAllChangedAllItemsAreSelected() {
+
+		final Button btnNext = Mockito.mock(Button.class);
+		this.singleSiteAnalysisPanel.setBtnNext(btnNext);
+		Mockito.when(this.variatesTableComponent.someItemsAreSelected()).thenReturn(true);
+		final VariableTableComponent.SelectAllChangedListener listener =
+				this.singleSiteAnalysisPanel.new VariateTableSelectAllChangedListener();
+
+		listener.onSelectionChanged(true);
+
+		Mockito.verify(btnNext).setEnabled(true);
+
+	}
+
+	@Test
+	public void testVariatesTableSelectAllChangedNoItemSelected() {
+
+		final Button btnNext = Mockito.mock(Button.class);
+		this.singleSiteAnalysisPanel.setBtnNext(btnNext);
+		Mockito.when(this.variatesTableComponent.someItemsAreSelected()).thenReturn(false);
+		final VariableTableComponent.SelectAllChangedListener listener =
+				this.singleSiteAnalysisPanel.new VariateTableSelectAllChangedListener();
+
+		listener.onSelectionChanged(false);
+
+		Mockito.verify(btnNext).setEnabled(false);
+		Mockito.verify(this.covariatesTableComponent).resetAllCheckbox();
+
+	}
+
 }

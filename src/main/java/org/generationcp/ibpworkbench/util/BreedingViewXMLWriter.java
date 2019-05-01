@@ -23,6 +23,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import org.generationcp.commons.breedingview.xml.Covariate;
 import org.generationcp.commons.breedingview.xml.SSAParameters;
 import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.context.ContextConstants;
@@ -34,7 +35,6 @@ import org.generationcp.commons.sea.xml.Design;
 import org.generationcp.commons.sea.xml.Environments;
 import org.generationcp.commons.sea.xml.Pipeline;
 import org.generationcp.commons.sea.xml.Pipelines;
-import org.generationcp.commons.sea.xml.Traits;
 import org.generationcp.commons.security.SecurityUtil;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.BreedingViewUtil;
@@ -58,8 +58,6 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 	private static final Logger LOG = LoggerFactory.getLogger(BreedingViewXMLWriter.class);
 
 	private static final String CROP_PLACEHOLDER = "{cropName}";
-
-	public static final String TRIAL_INSTANCE = "TRIAL_INSTANCE";
 
 	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
@@ -146,8 +144,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 	private BreedingViewProject createBreedingViewProject() {
 		final Environments environments = this.createEnvironments();
 		final Design design = this.createDesign();
-		final Traits traits = this.createTraits();
-		final DataConfiguration dataConfiguration = this.createDataConfiguration(environments, design, traits);
+		final DataConfiguration dataConfiguration = this.createDataConfiguration(environments, design);
 		final Pipelines pipelines = this.createPipelines(dataConfiguration);
 		final BreedingViewProject project = new BreedingViewProject();
 		project.setName(this.breedingViewInput.getBreedingViewAnalysisName());
@@ -224,7 +221,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 
 		// Trial name attribute is not needed in the BV if the selected
 		// environment factor is Trial instance
-		if (!BreedingViewXMLWriter.TRIAL_INSTANCE.equals(this.breedingViewInput.getEnvironment().getName())) {
+		if (!this.breedingViewInput.getTrialInstanceName().equals(this.breedingViewInput.getEnvironment().getName())) {
 			environments.setTrialName(this.breedingViewInput.getTrialInstanceName());
 		}
 
@@ -235,7 +232,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 
 			// Trial name attribute is not needed in the BV if the selected
 			// environment factor is Trial instance
-			if (!BreedingViewXMLWriter.TRIAL_INSTANCE.equals(this.breedingViewInput.getEnvironment().getName())) {
+			if (!this.breedingViewInput.getTrialInstanceName().equals(this.breedingViewInput.getEnvironment().getName())) {
 				env.setTrial(selectedEnvironment.getTrialno());
 			}
 
@@ -268,7 +265,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 		return design;
 	}
 
-	private DataConfiguration createDataConfiguration(final Environments environments, final Design design, final Traits traits) {
+	protected DataConfiguration createDataConfiguration(final Environments environments, final Design design) {
 
 		final DataConfiguration dataConfiguration = new DataConfiguration();
 
@@ -278,23 +275,43 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 
 		dataConfiguration.setGenotypes(this.breedingViewInput.getGenotypes());
 
-		dataConfiguration.setTraits(traits);
+		dataConfiguration.setTraits(this.createTraits());
+
+		dataConfiguration.setCovariates(this.createCovariates());
 
 		return dataConfiguration;
 	}
 
-	private Traits createTraits() {
-		final Traits traits = new Traits();
-		final SortedSet<String> keys = new TreeSet<>(this.breedingViewInput.getVariatesActiveState().keySet());
+	protected List<Trait> createTraits() {
+		final List<Trait> traits = new ArrayList<>();
+		final SortedSet<String> keys = new TreeSet<>(this.breedingViewInput.getVariatesSelectionMap().keySet());
 		for (final String key : keys) {
-			if (this.breedingViewInput.getVariatesActiveState().get(key)) {
+			if (this.breedingViewInput.getVariatesSelectionMap().get(key)) {
 				final Trait trait = new Trait();
 				trait.setName(BreedingViewUtil.trimAndSanitizeName(key));
 				trait.setActive(true);
 				traits.add(trait);
 			}
 		}
-		return traits;
+
+		// if the list is empty, we must return null so that JAXB will ignore Traits element and won't be included in the generated XML file.
+		return traits.isEmpty() ? null : traits;
+	}
+
+	protected List<Covariate> createCovariates() {
+		final List<Covariate> covariates = new ArrayList<>();
+		final SortedSet<String> keys = new TreeSet<>(this.breedingViewInput.getVariatesSelectionMap().keySet());
+		for (final String key : keys) {
+			if (this.breedingViewInput.getCovariatesSelectionMap().get(key)) {
+				final Covariate covariate = new Covariate();
+				covariate.setName(BreedingViewUtil.trimAndSanitizeName(key));
+				covariate.setActive(true);
+				covariates.add(covariate);
+			}
+		}
+
+		// if the list is empty, we must return null so that JAXB will ignore Covariates element and won't be included in the generated XML file.
+		return covariates.isEmpty() ? null : covariates;
 	}
 
 	protected void removePreviousDatastore(final String outputDirectory) {

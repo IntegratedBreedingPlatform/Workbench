@@ -1,22 +1,17 @@
 package org.generationcp.ibpworkbench.util;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-
 import org.generationcp.commons.breedingview.xml.Blocks;
 import org.generationcp.commons.breedingview.xml.ColPos;
 import org.generationcp.commons.breedingview.xml.Columns;
+import org.generationcp.commons.breedingview.xml.Covariate;
 import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.breedingview.xml.Environment;
 import org.generationcp.commons.breedingview.xml.Plot;
 import org.generationcp.commons.breedingview.xml.Replicates;
 import org.generationcp.commons.breedingview.xml.RowPos;
 import org.generationcp.commons.breedingview.xml.Rows;
+import org.generationcp.commons.breedingview.xml.Trait;
+import org.generationcp.commons.sea.xml.DataConfiguration;
 import org.generationcp.commons.sea.xml.Design;
 import org.generationcp.commons.sea.xml.Environments;
 import org.generationcp.commons.spring.util.ContextUtil;
@@ -34,10 +29,20 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BreedingViewXMLWriterTest {
@@ -65,17 +70,17 @@ public class BreedingViewXMLWriterTest {
 	private static final String ENVIRONMENT_NAME = "TRIAL_INSTANCE";
 	private static final String SOURCE_FILE_PATH = BreedingViewXMLWriterTest.INPUT_DIRECTORY + "/test.csv";
 	private static final String DEST_FILE_PATH = BreedingViewXMLWriterTest.INPUT_DIRECTORY + "/test.xml";
-	private static final String WEB_API_URL = "http://localhost:18080/"
-			+ "bmsapi/breeding_view/{cropName}/ssa/save_result_summary&loggedInUserId=1&selectedProjectId=1";
+	private static final String WEB_API_URL =
+			"http://localhost:18080/" + "bmsapi/breeding_view/{cropName}/ssa/save_result_summary&loggedInUserId=1&selectedProjectId=1";
 
 	@Mock
 	private ContextUtil contextUtil;
 
 	@Mock
 	private InstallationDirectoryUtil installationDirectoryUtil;
-	
+
 	private Project project;
-	
+
 	@Before
 	public void setUp() throws Exception {
 		this.project = ProjectTestDataInitializer.createProjectWithCropType();
@@ -116,17 +121,50 @@ public class BreedingViewXMLWriterTest {
 	}
 
 	@Test
+	public void testCreateDataConfiguration() {
+
+		final Environments environments = new Environments();
+		final Design design = new Design();
+		final DataConfiguration dataConfiguration = this.breedingViewXMLWriter.createDataConfiguration(environments, design);
+
+		Assert.assertSame(environments, dataConfiguration.getEnvironments());
+		Assert.assertSame(design, dataConfiguration.getDesign());
+		Assert.assertSame(breedingViewInput.getGenotypes(), dataConfiguration.getGenotypes());
+		Assert.assertNotNull(dataConfiguration.getTraits());
+		Assert.assertNotNull(dataConfiguration.getCovariates());
+
+	}
+
+	@Test
+	public void testCreateTraits() {
+
+		final List<Trait> traits = this.breedingViewXMLWriter.createTraits();
+		Assert.assertEquals(1, traits.size());
+		Assert.assertEquals("Variable1", traits.get(0).getName());
+		Assert.assertTrue(traits.get(0).isActive());
+
+	}
+
+	@Test
+	public void testCreateCovariates() {
+
+		final List<Covariate> covariates = this.breedingViewXMLWriter.createCovariates();
+		Assert.assertEquals(1, covariates.size());
+		Assert.assertEquals("Variable1", covariates.get(0).getName());
+		Assert.assertTrue(covariates.get(0).isActive());
+
+	}
+
+	@Test
 	public void testRemovePreviousDatastore() throws Exception {
 
 		this.breedingViewXMLWriter.removePreviousDatastore(BreedingViewXMLWriterTest.OUTPUT_DIRECTORY);
 		Assert.assertFalse(BreedingViewXMLWriterTest.DATASTORE_FILE + " should not exist",
-				new File(BreedingViewXMLWriterTest.OUTPUT_DIRECTORY + "/" + BreedingViewXMLWriterTest.DATASTORE_FILE)
-						.exists());
+				new File(BreedingViewXMLWriterTest.OUTPUT_DIRECTORY + "/" + BreedingViewXMLWriterTest.DATASTORE_FILE).exists());
 		this.createDummyDatastoreFile(BreedingViewXMLWriterTest.OUTPUT_DIRECTORY);
 		this.breedingViewXMLWriter.removePreviousDatastore(BreedingViewXMLWriterTest.OUTPUT_DIRECTORY);
 		Assert.assertFalse(BreedingViewXMLWriterTest.DATASTORE_FILE + " should not exist",
-				new File(BreedingViewXMLWriterTest.OUTPUT_DIRECTORY + "/" + BreedingViewXMLWriterTest.DATASTORE_FILE)
-						.exists());
+				new File(BreedingViewXMLWriterTest.OUTPUT_DIRECTORY + "/" + BreedingViewXMLWriterTest.DATASTORE_FILE).exists());
 	}
 
 	@Test
@@ -134,12 +172,12 @@ public class BreedingViewXMLWriterTest {
 		Mockito.doReturn(OUTPUT_DIRECTORY).when(this.installationDirectoryUtil)
 				.getOutputDirectoryForProjectAndTool(Mockito.any(Project.class), Mockito.any(ToolName.class));
 		final String filePath = this.breedingViewInput.getDestXMLFilePath();
+		this.breedingViewInput.setTrialInstanceName(BreedingViewXMLWriterTest.ENVIRONMENT_NAME);
 		this.breedingViewXMLWriter.writeProjectXML();
-		
+
 		final ArgumentCaptor<Project> projectCaptor = ArgumentCaptor.forClass(Project.class);
 		final ArgumentCaptor<ToolName> toolCaptor = ArgumentCaptor.forClass(ToolName.class);
-		Mockito.verify(this.installationDirectoryUtil).getOutputDirectoryForProjectAndTool(projectCaptor.capture(),
-				toolCaptor.capture());
+		Mockito.verify(this.installationDirectoryUtil).getOutputDirectoryForProjectAndTool(projectCaptor.capture(), toolCaptor.capture());
 		Assert.assertEquals(this.project, projectCaptor.getValue());
 		Assert.assertEquals(ToolName.BREEDING_VIEW, toolCaptor.getValue());
 		Assert.assertTrue(filePath + " should exist", new File(filePath).exists());
@@ -156,9 +194,9 @@ public class BreedingViewXMLWriterTest {
 
 	@Test
 	public void testCreateEnvironmentsWhereTrialFactorIsTrialInstance() {
-		final SeaEnvironmentModel seaEnvironmentModel = SeaEnvironmentModelTestDataInitializer
-				.createSeaEnvironmentModel();
+		final SeaEnvironmentModel seaEnvironmentModel = SeaEnvironmentModelTestDataInitializer.createSeaEnvironmentModel();
 		this.breedingViewInput.setSelectedEnvironments(Arrays.asList(seaEnvironmentModel));
+		this.breedingViewInput.setTrialInstanceName(BreedingViewXMLWriterTest.ENVIRONMENT_NAME);
 		final Environments environments = this.breedingViewXMLWriter.createEnvironments();
 		Assert.assertEquals(this.breedingViewInput.getEnvironment().getName(), environments.getName());
 		Assert.assertNull(environments.getTrialName());
@@ -171,11 +209,11 @@ public class BreedingViewXMLWriterTest {
 
 	@Test
 	public void testCreateEnvironmentsWhereTrialFactorIsNotTrialInstance() {
-		final SeaEnvironmentModel seaEnvironmentModel = SeaEnvironmentModelTestDataInitializer
-				.createSeaEnvironmentModel();
+		final SeaEnvironmentModel seaEnvironmentModel = SeaEnvironmentModelTestDataInitializer.createSeaEnvironmentModel();
 		this.breedingViewInput.setSelectedEnvironments(Arrays.asList(seaEnvironmentModel));
 		this.breedingViewInput.getEnvironment().setName("LOCATION_NAME");
-		;
+		this.breedingViewInput.setTrialInstanceName(BreedingViewXMLWriterTest.ENVIRONMENT_NAME);
+
 		final Environments environments = this.breedingViewXMLWriter.createEnvironments();
 		Assert.assertEquals(this.breedingViewInput.getEnvironment().getName(), environments.getName());
 		Assert.assertEquals(this.breedingViewInput.getTrialInstanceName(), environments.getTrialName());
@@ -228,7 +266,16 @@ public class BreedingViewXMLWriterTest {
 
 		breedingViewInput.setEnvironment(environment);
 		breedingViewInput.setSelectedEnvironments(new ArrayList<SeaEnvironmentModel>());
-		breedingViewInput.setVariatesActiveState(new HashMap<String, Boolean>());
+
+		final Map<String, Boolean> variatesSelectionMap = new HashMap<>();
+		variatesSelectionMap.put("Variable1", true);
+		variatesSelectionMap.put("Variable2", false);
+		breedingViewInput.setVariatesSelectionMap(variatesSelectionMap);
+
+		final Map<String, Boolean> covariatesSelectionMap = new HashMap<>();
+		covariatesSelectionMap.put("Variable3", false);
+		covariatesSelectionMap.put("Variable4", true);
+		breedingViewInput.setCovariatesSelectionMap(variatesSelectionMap);
 
 		final Columns columns = new Columns();
 		columns.setName(BreedingViewXMLWriterTest.COLUMN_FACTOR);

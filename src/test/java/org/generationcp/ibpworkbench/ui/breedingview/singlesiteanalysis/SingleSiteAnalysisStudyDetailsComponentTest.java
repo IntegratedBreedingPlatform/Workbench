@@ -12,30 +12,24 @@ import org.mockito.MockitoAnnotations;
 import junit.framework.Assert;
 
 public class SingleSiteAnalysisStudyDetailsComponentTest {
-	
+
 	@Mock
 	private SimpleResourceBundleMessageSource messageSource;
 	
-	@Mock
-	private SingleSiteAnalysisDetailsPanel ssaDetailsPanel;
-	
 	private SingleSiteAnalysisStudyDetailsComponent studyDetailsComponent;
-	
-	private BreedingViewInput input;
-	
+
+	public static final String DATASET_NAME = RandomStringUtils.randomAlphanumeric(20);
+	public static final String STUDY_NAME =RandomStringUtils.randomAlphanumeric(20);
+	public static final String OBJECTIVE =RandomStringUtils.randomAlphanumeric(20);
+	public static final String DESCRIPTION =RandomStringUtils.randomAlphanumeric(20);
+	public static final String ANALYSIS_NAME =RandomStringUtils.randomAlphanumeric(20);
+
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		
-		this.input = new BreedingViewInput();
-		this.input.setDatasetName(RandomStringUtils.randomAlphanumeric(20));
-		this.input.setDatasetSource(RandomStringUtils.randomAlphanumeric(20));
-		this.input.setObjective(RandomStringUtils.randomAlphanumeric(20));
-		this.input.setDescription(RandomStringUtils.randomAlphanumeric(20));
-		this.input.setBreedingViewAnalysisName(RandomStringUtils.randomAlphanumeric(20));
-		Mockito.doReturn(this.input).when(this.ssaDetailsPanel).getBreedingViewInput();
-		
-		this.studyDetailsComponent = new SingleSiteAnalysisStudyDetailsComponent(this.ssaDetailsPanel);
+
+		this.studyDetailsComponent = new SingleSiteAnalysisStudyDetailsComponent(DATASET_NAME, DESCRIPTION, OBJECTIVE, STUDY_NAME,
+				ANALYSIS_NAME, true);
 		this.studyDetailsComponent.setMessageSource(messageSource);
 		this.studyDetailsComponent.instantiateComponents();
 	}
@@ -44,11 +38,11 @@ public class SingleSiteAnalysisStudyDetailsComponentTest {
 	public void testInitialization() {
 		this.studyDetailsComponent.initializeValues();
 		Assert.assertEquals("Field Trial", this.studyDetailsComponent.getProjectTypeValue());
-		Assert.assertEquals(this.input.getDatasetName(), this.studyDetailsComponent.getDatasetNameValue());
-		Assert.assertEquals(this.input.getDatasetSource(), this.studyDetailsComponent.getStudyNameValue());
-		Assert.assertEquals(this.input.getDescription(), this.studyDetailsComponent.getDescriptionValue());
-		Assert.assertEquals(this.input.getObjective(), this.studyDetailsComponent.getObjectiveValue());
-		Assert.assertEquals(this.input.getBreedingViewAnalysisName(), this.studyDetailsComponent.getTxtAnalysisName());
+		Assert.assertEquals(DATASET_NAME, this.studyDetailsComponent.getDatasetNameValue());
+		Assert.assertEquals(STUDY_NAME, this.studyDetailsComponent.getStudyNameValue());
+		Assert.assertEquals(DESCRIPTION, this.studyDetailsComponent.getDescriptionValue());
+		Assert.assertEquals(OBJECTIVE, this.studyDetailsComponent.getObjectiveValue());
+		Assert.assertEquals(ANALYSIS_NAME, this.studyDetailsComponent.getTxtAnalysisName());
 	}
 
 }
