@@ -167,7 +167,7 @@ public class TraitDonorsQueryMain extends VerticalLayout implements Initializing
 		this.toolTitle.setWidth("410px");
 
 		this.titleLayout.addComponent(this.toolTitle);
-		this.titleLayout.addComponent(new HelpButton(HelpModule.TRAIT_DONOR, "View Weighted Query Tutorial"));
+		this.titleLayout.addComponent(new HelpButton(HelpModule.TRAIT_DONOR, "View Multi-trait Query Tutorial"));
 	}
 
 	@Override
