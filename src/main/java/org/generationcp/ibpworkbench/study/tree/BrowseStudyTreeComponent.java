@@ -15,8 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -98,16 +96,16 @@ public class BrowseStudyTreeComponent extends VerticalLayout
 		this.studyTree = new StudyTree(this, this.getFilteredStudyType());
 		this.buttonsPanel = new StudyTreeButtonsPanel(this);
 
-		this.okButton = new Button();
-		this.okButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-
-		this.createRefreshButton();
+		this.createActionButtons();
 	}
 
-	protected void createRefreshButton() {
+	protected void createActionButtons() {
 		this.refreshButton = new Button();
 		this.refreshButton.setData(BrowseStudyTreeComponent.REFRESH_BUTTON_ID);
 		this.refreshButton.addStyleName(Bootstrap.Buttons.INFO.styleName());
+
+		this.okButton = new Button();
+		this.okButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 	}
 
 	@Override
@@ -348,6 +346,10 @@ public class BrowseStudyTreeComponent extends VerticalLayout
 
 	protected Button getRefreshButton() {
 		return this.refreshButton;
+	}
+
+	protected Button getOkButton() {
+		return this.okButton;
 	}
 
 	protected void setStudyTypeFilterComponent(final StudyTypeFilterComponent studyTypeFilterComponent) {

@@ -109,7 +109,7 @@ public class BrowseStudyTreeComponentTest {
 	public void testRefreshButtonClick() {
 		final BrowseStudyTreeComponent spyComponent = Mockito.spy(this.browseTreeComponent);
 		Mockito.doNothing().when(spyComponent).createTree();
-		spyComponent.createRefreshButton();
+		spyComponent.createActionButtons();
 		spyComponent.addListeners();
 		spyComponent.setStudyTypeFilterComponent(this.studyTypeFilterComponent);
 		spyComponent.setStudyTree(this.studyTree);
@@ -119,6 +119,20 @@ public class BrowseStudyTreeComponentTest {
 		Mockito.verify(this.comboBox).select(StudyTypeFilterComponent.ALL_OPTION);
 		Mockito.verify(spyComponent).createTree();
 		Mockito.verify(this.studyTree).expandSavedTreeState();
+	}
+
+	@Test
+	public void testOkButtonClick() {
+		final BrowseStudyTreeComponent spyComponent = Mockito.spy(this.browseTreeComponent);
+		Mockito.doNothing().when(spyComponent).createTree();
+		spyComponent.createActionButtons();
+		spyComponent.addListeners();
+		spyComponent.setStudyTypeFilterComponent(this.studyTypeFilterComponent);
+		spyComponent.setStudyTree(this.studyTree);
+
+		// Method to test
+		spyComponent.getOkButton().click();
+		Mockito.verify(spyComponent).closeWindow();
 	}
 	
 	@Test
