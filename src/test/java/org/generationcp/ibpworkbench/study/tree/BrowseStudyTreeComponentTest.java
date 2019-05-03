@@ -124,7 +124,7 @@ public class BrowseStudyTreeComponentTest {
 	@Test
 	public void testOkButtonClick() {
 		final BrowseStudyTreeComponent spyComponent = Mockito.spy(this.browseTreeComponent);
-		Mockito.doNothing().when(spyComponent).createTree();
+		Mockito.doNothing().when(spyComponent).closeWindow();
 		spyComponent.createActionButtons();
 		spyComponent.addListeners();
 		spyComponent.setStudyTypeFilterComponent(this.studyTypeFilterComponent);
