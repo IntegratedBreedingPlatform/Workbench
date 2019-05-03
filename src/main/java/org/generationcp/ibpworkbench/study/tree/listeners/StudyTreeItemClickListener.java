@@ -22,19 +22,26 @@ public class StudyTreeItemClickListener implements ItemClickListener {
 
 	@Override
 	public void itemClick(final ItemClickEvent event) {
-		if (event.getButton() == ClickEvent.BUTTON_LEFT) {
-			this.studyTreeItemClickAction(event.getItemId());
+		final Object itemId = event.getItemId();
+
+		// Open selected study when double clicked
+		if (event.getButton() == ClickEvent.BUTTON_LEFT && event.isDoubleClick()) {
+			this.openSelectedStudy(itemId);
+		} else if (event.getButton() == ClickEvent.BUTTON_LEFT) {
+			// If just single click, just select the item and expand or collapse if applicable
+			this.studyTree.expandOrCollapseStudyTreeNode(itemId);
+			this.studyTree.selectItem(itemId);
 		}
 	}
 
-	public void studyTreeItemClickAction(final Object itemId) {
-		this.studyTree.expandOrCollapseStudyTreeNode(itemId);
+	public void openSelectedStudy(final Object itemId) {
 		if (!StudyTree.STUDY_ROOT_NODE.equals(itemId)) {
-			final int studyId = Integer.valueOf(itemId.toString());
+			final int studyId = Integer.parseInt(itemId.toString());
 			if (!this.studyTree.hasChildStudy(studyId) && !this.studyTree.isFolder(studyId)) {
 				this.browseStudyTreeComponent.createStudyInfoTab(studyId);
 			}
 		}
+		this.studyTree.expandOrCollapseStudyTreeNode(itemId);
 		this.studyTree.selectItem(itemId);
 	}
 

@@ -173,7 +173,7 @@ public class StudyTreeTest {
 		this.studyTree.setClickListener(this.clickListener);
 		final Integer id = TRIAL.getId();
 		this.studyTree.studyTreeItemClickAction(id);
-		Mockito.verify(this.clickListener).studyTreeItemClickAction(id);
+		Mockito.verify(this.clickListener).openSelectedStudy(id);
 	}
 
 	@Test

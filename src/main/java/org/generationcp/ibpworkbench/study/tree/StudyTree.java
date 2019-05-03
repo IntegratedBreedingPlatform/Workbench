@@ -187,7 +187,7 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 	}
 
 	public void studyTreeItemClickAction(final Object itemId) {
-		this.clickListener.studyTreeItemClickAction(itemId);
+		this.clickListener.openSelectedStudy(itemId);
 	}
 
 	public void selectItem(final Object itemId) {

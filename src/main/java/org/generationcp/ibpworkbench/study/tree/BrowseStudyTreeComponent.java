@@ -15,6 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -64,6 +67,7 @@ public class BrowseStudyTreeComponent extends VerticalLayout
 	private final StudyBrowserMain studyBrowserMain;
 	private StudyBrowserMainLayout studyBrowserMainLayout;
 
+	private Button okButton;
 	private Button refreshButton;
 
 	private Integer rootNodeProjectId;
@@ -94,6 +98,9 @@ public class BrowseStudyTreeComponent extends VerticalLayout
 		this.studyTree = new StudyTree(this, this.getFilteredStudyType());
 		this.buttonsPanel = new StudyTreeButtonsPanel(this);
 
+		this.okButton = new Button();
+		this.okButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
+
 		this.createRefreshButton();
 	}
 
@@ -119,7 +126,13 @@ public class BrowseStudyTreeComponent extends VerticalLayout
 				BrowseStudyTreeComponent.this.refreshTree();
 			}
 		});
+		this.okButton.addListener(new Button.ClickListener() {
 
+			@Override
+			public void buttonClick(final Button.ClickEvent clickEvent) {
+				BrowseStudyTreeComponent.this.closeWindow();
+			}
+		});
 	}
 
 	public void refreshTree() {
@@ -127,6 +140,10 @@ public class BrowseStudyTreeComponent extends VerticalLayout
 		this.studyTypeFilterComponent.getStudyTypeComboBox().select(StudyTypeFilterComponent.ALL_OPTION);
 		this.createTree();
 		this.studyTree.expandSavedTreeState();
+	}
+
+	public void closeWindow() {
+		this.getWindow().getParent().removeWindow(this.getWindow());
 	}
 
 	@Override
@@ -138,7 +155,13 @@ public class BrowseStudyTreeComponent extends VerticalLayout
 
 		this.addComponent(this.buttonsPanel);
 		this.addComponent(this.treeContainer);
-		this.addComponent(this.refreshButton);
+
+		final HorizontalLayout horizontalLayout = new HorizontalLayout();
+		horizontalLayout.setSpacing(true);
+		horizontalLayout.addComponent(this.refreshButton);
+		horizontalLayout.addComponent(this.okButton);
+
+		this.addComponent(horizontalLayout);
 	}
 
 	public void createTree() {
@@ -206,6 +229,7 @@ public class BrowseStudyTreeComponent extends VerticalLayout
 	@Override
 	public void updateLabels() {
 		this.messageSource.setCaption(this.refreshButton, Message.REFRESH_LABEL);
+		this.messageSource.setCaption(this.okButton, Message.OK);
 	}
 
 	public StudyTabSheet getTabSheetStudy() {
