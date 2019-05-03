@@ -16,7 +16,7 @@ $(document).ready(function () {
 			studyDbIds: studyDbId ? [studyDbId] : [],
 			locationDbIds: $('#locations select').val() || null,
 			observationLevel: form.observationLevel || null,
-			programDbIds: $('#programs select').val() ? [$('#programs select').val()] : [],
+			programDbIds: [getUrlParameter('programUuid')],
 			trialDbIds: $('#trials select').val() || null,
 			observationTimeStampRangeStart: form.observationTimeStampRangeStart || null,
 			observationTimeStampRangeEnd: form.observationTimeStampRangeEnd || null,
@@ -27,42 +27,11 @@ $(document).ready(function () {
 
 		return false;
 	});
-	loadPrograms().then(function (response) {
-		buildProgramsCombo(response);
-	});
 	loadLocations().then(function (response) {
 		buildLocationsCombo(response);
 	});
-
-	$("#brapi-form").submit();
-});
-
-function loadPrograms() {
-	var url = "/bmsapi/" + getUrlParameter("crop") + "/brapi/v1/programs";
-
-	return $.get({
-		dataType: "json",
-		contentType: "application/json;charset=utf-8",
-		url: url,
-		beforeSend: beforeSend,
-		error: error
-	});
-}
-
-function buildProgramsCombo(response) {
-	if (!response
-		|| !response.result
-		|| !response.result.data) {
-		return;
-	}
-
-	$('#programs').html('<select class="form-control"></select>');
-	$('#programs select').append(response.result.data.map(function (program) {
-		return '<option value="' + program.programDbId + '">' + program.name + '</option>';
-	}));
-	$('#programs select').on("change", loadTrials);
 	loadTrials();
-}
+});
 
 function loadLocations() {
 	var url = "/bmsapi/" + getUrlParameter("crop") + "/brapi/v1/locations";
@@ -94,7 +63,7 @@ function buildLocationsCombo(response) {
 
 function loadTrials() {
 	var url = "/bmsapi/" + getUrlParameter("crop") + "/brapi/v1/trials"
-		+ '?programDbId=' + $('#programs select').val();
+		+ '?programDbId=' + getUrlParameter('programUuid');
 
 	$.get({
 		dataType: "json",
