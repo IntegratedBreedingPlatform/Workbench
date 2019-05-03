@@ -71,7 +71,6 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 	public static final String EXPORT_CSV_BUTTON_ID = "RepresentationDatasetComponent Export CSV Button";
 	public static final String EXPORT_EXCEL_BUTTON_ID = "RepresentationDatasetComponent Export to FieldBook Excel File Button";
 	public static final String OPEN_TABLE_VIEWER_BUTTON_ID = "RepresentationDatasetComponent Open Table Viewer Button";
-	public static final String OPEN_GRAPHICAL_FILTERING_BUTTON_ID = "RepresentationDatasetComponent Open Graphical Filtering Button";
 
 	private static final Logger LOG = LoggerFactory.getLogger(RepresentationDatasetComponent.class);
 	private static final long serialVersionUID = -8476739652987572690L;
@@ -93,7 +92,6 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 	private Button exportCsvButton;
 	private Button exportExcelButton;
 	private Button openTableViewerButton;
-	private Button openGraphicalFilteringTool;
 	private StringBuilder reportTitle;
 
 	@Autowired
@@ -230,10 +228,6 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 			this.openTableViewerButton.setData(RepresentationDatasetComponent.OPEN_TABLE_VIEWER_BUTTON_ID);
 			this.openTableViewerButton.addListener(new StudyButtonClickListener(this));
 
-			this.openGraphicalFilteringTool = new Button();
-			this.openGraphicalFilteringTool.setData(RepresentationDatasetComponent.OPEN_GRAPHICAL_FILTERING_BUTTON_ID);
-			this.openGraphicalFilteringTool.addListener(new StudyButtonClickListener(this));
-
 			final HorizontalLayout buttonLayout = new HorizontalLayout();
 			buttonLayout.setSpacing(true);
 
@@ -241,7 +235,6 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 			if (!this.fromUrl) {
 				buttonLayout.addComponent(this.exportExcelButton);
 				buttonLayout.addComponent(this.openTableViewerButton);
-				buttonLayout.addComponent(this.openGraphicalFilteringTool);
 			}
 
 			this.addComponent(buttonLayout);
@@ -317,26 +310,6 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 		}
 	}
 
-	public void openGraphicalFilteringToolAction() {
-		if (this.datasetTable.getValue() == null) {
-			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.GRAPHICAL_FILTERING_INSTANCE_REQUIRED),
-					this.messageSource.getMessage(Message.ERROR_IN_GETTING_VARIABLES_OF_DATASET));
-		} else {
-			final String itemPropertyValue =
-					(String) this.datasetTable.getItem(this.datasetTable.getValue()).getItemProperty("8170-TRIAL_INSTANCE").getValue();
-			final Integer studyId = this.studiesMappedByInstance.get(itemPropertyValue);
-			this.openGraphicalFilteringTool(studyId);
-		}
-	}
-
-	private void openGraphicalFilteringTool(final Integer studyId) {
-		final Window mainWindow = this.getWindow();
-		final String crop = this.contextUtil.getProjectInContext().getCropType().getCropName();
-		final Window graphicalFilteringToolWindow = new GraphicalFilteringToolComponent(studyId, crop);
-		graphicalFilteringToolWindow.addStyleName(Reindeer.WINDOW_LIGHT);
-		mainWindow.addWindow(graphicalFilteringToolWindow);
-	}
-
 	@Override
 	public void attach() {
 		super.attach();
@@ -348,7 +321,6 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 		this.messageSource.setCaption(this.exportCsvButton, Message.EXPORT_TO_CSV_LABEL);
 		this.messageSource.setCaption(this.exportExcelButton, Message.EXPORT_TO_EXCEL_LABEL);
 		this.messageSource.setCaption(this.openTableViewerButton, Message.OPEN_TABLE_VIEWER_LABEL);
-		this.messageSource.setCaption(this.openGraphicalFilteringTool, Message.OPEN_GRAPHICAL_FILTERING_TOOL);
 	}
 
 	public void setDatasetExporter(final DatasetExporter datasetExporter) {
