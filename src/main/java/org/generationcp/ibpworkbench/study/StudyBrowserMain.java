@@ -165,7 +165,7 @@ public class StudyBrowserMain extends VerticalLayout implements InitializingBean
 
 		HorizontalLayout directionLayout = new HorizontalLayout();
 		directionLayout.addStyleName("study-browser-main");
-		directionLayout.setHeight("20px");
+		directionLayout.setHeight("17px");
 		directionLayout.setSpacing(true);
 		directionLayout.addComponent(this.browseForStudy);
 		directionLayout.addComponent(this.or);
