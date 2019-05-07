@@ -82,7 +82,6 @@ public class HomeAction implements ClickListener, ActionListener {
 			// reinitialize dashboard with default values
 			final Project lastOpenedProgram = contextUtil.getProjectInContext();
 			if (lastOpenedProgram != null) {
-				workbenchMainView.addTitle(lastOpenedProgram.getProjectName());
 				workbenchDashboard.initializeDashboardContents(lastOpenedProgram);
 			}
 

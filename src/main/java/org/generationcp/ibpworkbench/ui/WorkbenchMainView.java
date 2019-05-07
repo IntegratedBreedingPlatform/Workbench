@@ -138,6 +138,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	// Hide sidebar toggle button when in Dashboard and Add Program screens where no program has been selected yet
 	private boolean doHideSidebarToggleButton = true;
 	private boolean isWorkbenchDashboardShown = true;
+	private boolean isSiteAdminShown = false;
 
 	public WorkbenchMainView() {
 		super("Breeding Management System | Workbench");
@@ -264,7 +265,8 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	protected void displayCurrentProjectTitle() {
 
 		try {
-			this.addTitle(contextUtil.getProjectInContext().getProjectName());
+			final String projectTitle = doHideSidebarToggleButton ? "" : contextUtil.getProjectInContext().getProjectName();
+			this.addTitle(projectTitle);
 		} catch (final MiddlewareQueryException e) {
 			// MiddlewareQueryException will be thrown if there's no program exists yet in BMS.
 			LOG.debug(e.getMessage(), e);
@@ -368,6 +370,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 			@Override
 			public void buttonClick(final ClickEvent event) {
+				WorkbenchMainView.this.isSiteAdminShown = true;
 				final IContentWindow contentFrame = (IContentWindow) event.getComponent().getWindow();
 				contentFrame.showContent("controller/admin");
 
@@ -375,6 +378,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 				WorkbenchMainView.this.root.setSplitPosition(0, Sizeable.UNITS_PIXELS);
 				// change icon here
 				WorkbenchMainView.this.toggleSidebarIcon();
+				WorkbenchMainView.this.isSiteAdminShown = false;
 			}
 		});
 
@@ -587,12 +591,15 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 		// Hide sidebar button if in Workbench Dashboard or in Create Program screens
 		this.isWorkbenchDashboardShown = content instanceof WorkbenchDashboard;
-		this.doHideSidebarToggleButton = isWorkbenchDashboardShown || content instanceof AddProgramView || this.workbenchTitle.getDescription() != "";
+		this.doHideSidebarToggleButton = isWorkbenchDashboardShown || isSiteAdminShown || content instanceof AddProgramView || this.workbenchTitle.getDescription() != "";
 		if (doHideSidebarToggleButton) {
 			this.root.setSplitPosition(0, Sizeable.UNITS_PIXELS);
 		} else {
 			this.root.setSplitPosition(SIDEBAR_OPEN_POSITION, Sizeable.UNITS_PIXELS);
 		}
+
+		this.root.setLocked(doHideSidebarToggleButton);
+		this.displayCurrentProjectTitle();
 		// Refresh buttons available on header section
 		refreshHeaderLayout();
 	}
