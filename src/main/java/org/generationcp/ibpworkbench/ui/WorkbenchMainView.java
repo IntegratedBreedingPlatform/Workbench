@@ -232,8 +232,8 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.signoutButton.setSizeFull();
 		this.signoutButton.addListener(new SignoutAction());
 
-		final Person member = contextUtil.getCurrentWorkbenchUser().getPerson();
-		this.getMemberButton().addComponent(createMemberPopup(member.getFirstName(), member.getLastName(), member.getEmail()));
+		final Person member = this.contextUtil.getCurrentWorkbenchUser().getPerson();
+		this.getMemberButton().addComponent(this.createMemberPopup(member.getFirstName(), member.getLastName(), member.getEmail()));
 
 		this.helpButton = new Button("<span class='bms-header-btn2'><span class='bms-fa-question-circle ico'></span></span>");
 		this.helpButton.setDebugId("helpButton");
@@ -262,7 +262,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	void displayCurrentProjectTitle() {
 
 		try {
-			final String projectTitle = doHideSidebarToggleButton ? "" : contextUtil.getProjectInContext().getProjectName();
+			final String projectTitle = this.doHideSidebarToggleButton ? "" : this.contextUtil.getProjectInContext().getProjectName();
 			this.addTitle(projectTitle);
 		} catch (final MiddlewareQueryException e) {
 			// MiddlewareQueryException will be thrown if there's no program exists yet in BMS.
@@ -280,7 +280,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 			this.askSupportBtn.setSizeUndefined();
 			this.askSupportBtn.setDebugId("support-icon");
 			this.askSupportBtn.setDescription("Ask support/Feedback");
-			this.askSupportBtn.addListener(new AskForSupportAction(this, askForSupportURL));
+			this.askSupportBtn.addListener(new AskForSupportAction(this, this.askForSupportURL));
 		}
 
 		return this.askSupportBtn;
@@ -304,7 +304,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 		final Label title = new Label(
 				String.format("<span style='font-size: 8pt; color:#9EA5A7; display: inline-block; margin-left: 3px'>%s&nbsp;%s</span>",
-						this.messageSource.getMessage(Message.WORKBENCH_TITLE), workbenchVersion), Label.CONTENT_XHTML);
+						this.messageSource.getMessage(Message.WORKBENCH_TITLE), this.workbenchVersion), Label.CONTENT_XHTML);
 
 		sidebarWrap.setFirstComponent(this.sidebar);
 		sidebarWrap.setSecondComponent(title);
@@ -378,7 +378,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 			}
 		});
 
-		this.helpButton.addListener(new HelpButtonClickAction(this, aboutBmsURL));
+		this.helpButton.addListener(new HelpButtonClickAction(this, this.aboutBmsURL));
 
 		this.addListener(new CloseListener() {
 
@@ -412,7 +412,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	void onLoadOperations() {
 
-		final WorkbenchUser user = contextUtil.getCurrentWorkbenchUser();
+		final WorkbenchUser user = this.contextUtil.getCurrentWorkbenchUser();
 
 		final UserInfo userInfo = this.createUserInfoIfNecessary(user);
 
@@ -483,7 +483,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.workbenchHeaderLayout.addComponent(this.uriFragUtil);
 
 		try {
-			layoutAdminButton();
+			this.layoutAdminButton();
 		} catch (final AccessDeniedException e) {
 			// do nothing if the user is not authorized to access Admin button
 			LOG.debug(e.getMessage(), e);
@@ -491,7 +491,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 		if (this.isWorkbenchDashboardShown) {
 			try {
-				layoutAddProgramButton(this.workbenchHeaderLayout);
+				this.layoutAddProgramButton(this.workbenchHeaderLayout);
 			} catch (final AccessDeniedException e) {
 				// do nothing if the user is not authorized to access Admin button
 				LOG.debug(e.getMessage(), e);
@@ -520,7 +520,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
 	private void layoutAdminButton() {
-		addAdminButton(this.workbenchHeaderLayout);
+		this.addAdminButton(this.workbenchHeaderLayout);
 	}
 
 	void addAdminButton(final HorizontalLayout layout) {
@@ -587,17 +587,18 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 		// Hide sidebar button if in Workbench Dashboard or in Create Program screens
 		this.isWorkbenchDashboardShown = content instanceof WorkbenchDashboard;
-		this.doHideSidebarToggleButton = isWorkbenchDashboardShown || isSiteAdminShown || content instanceof AddProgramView || this.workbenchTitle.getDescription() != "";
-		if (doHideSidebarToggleButton) {
+		this.doHideSidebarToggleButton = this.isWorkbenchDashboardShown || this.isSiteAdminShown
+			|| content instanceof AddProgramView || this.workbenchTitle.getDescription() != "";
+		if (this.doHideSidebarToggleButton) {
 			this.root.setSplitPosition(0, Sizeable.UNITS_PIXELS);
 		} else {
 			this.root.setSplitPosition(SIDEBAR_OPEN_POSITION, Sizeable.UNITS_PIXELS);
 		}
 
-		this.root.setLocked(doHideSidebarToggleButton);
+		this.root.setLocked(this.doHideSidebarToggleButton);
 		this.displayCurrentProjectTitle();
 		// Refresh buttons available on header section
-		refreshHeaderLayout();
+		this.refreshHeaderLayout();
 	}
 
 	@Override
@@ -642,7 +643,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	@Override
 	public void updateLabels() {
 
-		String signoutName = contextUtil.getCurrentWorkbenchUser().getName();
+		String signoutName = this.contextUtil.getCurrentWorkbenchUser().getName();
 		if (signoutName.length() > 10) {
 			signoutName = signoutName.substring(0, 9) + "...";
 		}
@@ -685,7 +686,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	// For test purposes
 	Button getAdminButton() {
-		return adminButton;
+		return this.adminButton;
 	}
 
 	// For test purposes
@@ -700,14 +701,14 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	void refreshMemberDetailsPopup(final String firstname, final String lastName, final String emailAddress) {
 
-		WorkbenchMainView.this.getMemberButton().removeAllComponents();
-		WorkbenchMainView.this.getMemberButton().addComponent(createMemberPopup(firstname, lastName, emailAddress));
+		this.getMemberButton().removeAllComponents();
+		this.getMemberButton().addComponent(this.createMemberPopup(firstname, lastName, emailAddress));
 
 	}
 
 	// For testing purpose only
 	PopupButton getMemberButton() {
-		return memberButton;
+		return this.memberButton;
 	}
 
 	void setMemberButton(final PopupButton memberButton) {
@@ -715,11 +716,11 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	}
 
 	Button getLogoBtn() {
-		return logoBtn;
+		return this.logoBtn;
 	}
 
 	Button getHelpButton() {
-		return helpButton;
+		return this.helpButton;
 	}
 
 

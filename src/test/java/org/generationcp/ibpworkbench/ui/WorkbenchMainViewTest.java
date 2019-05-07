@@ -59,9 +59,9 @@ public class WorkbenchMainViewTest {
 
 	private Project currentProject;
 
-	private int ADMIN_USER_ID = 1;
+	private final int ADMIN_USER_ID = 1;
 
-	private String askForSupportURL = RandomStringUtils.randomAlphabetic(20);
+	private final String askForSupportURL = RandomStringUtils.randomAlphabetic(20);
 
 	@Before
 	public void setup() {
@@ -70,17 +70,17 @@ public class WorkbenchMainViewTest {
 		// Setup mocks
 		final Person person = new Person("A", "B", "C");
 		person.setEmail("a@leafnode.io");
-		final WorkbenchUser currentUser = new WorkbenchUser(ADMIN_USER_ID);
+		final WorkbenchUser currentUser = new WorkbenchUser(this.ADMIN_USER_ID);
 		currentUser.setName(CURRENT_USER_NAME);
 		currentUser.setPerson(person);
 
-		Mockito.when(contextUtil.getCurrentWorkbenchUser()).thenReturn(currentUser);
+		Mockito.when(this.contextUtil.getCurrentWorkbenchUser()).thenReturn(currentUser);
 
 		this.currentProject = new Project();
 		this.currentProject.setProjectName(PROJECT_NAME);
-		Mockito.when(contextUtil.getProjectInContext()).thenReturn(currentProject);
+		Mockito.when(this.contextUtil.getProjectInContext()).thenReturn(this.currentProject);
 
-		this.workbenchMainView.setAskForSupportURL(askForSupportURL);
+		this.workbenchMainView.setAskForSupportURL(this.askForSupportURL);
 		this.workbenchMainView.setIsAddProgramEnabled("true");
 		this.workbenchMainView.initializeComponents();
 		this.workbenchMainView.initializeLayout();
@@ -255,11 +255,11 @@ public class WorkbenchMainViewTest {
 	public void testShowChangeCredentialsWindowOnFirstLoginUserIsSuperAdminAccount() {
 
 		final Window window = Mockito.mock(Window.class);
-		final WorkbenchUser user = new WorkbenchUser(ADMIN_USER_ID);
-		Mockito.doReturn(true).when(this.workbenchDataManager).isSuperAdminUser(ADMIN_USER_ID);
+		final WorkbenchUser user = new WorkbenchUser(this.ADMIN_USER_ID);
+		Mockito.doReturn(true).when(this.workbenchDataManager).isSuperAdminUser(this.ADMIN_USER_ID);
 
 		final UserInfo userInfo = new UserInfo();
-		userInfo.setUserId(ADMIN_USER_ID);
+		userInfo.setUserId(this.ADMIN_USER_ID);
 		userInfo.setLoginCount(0);
 
 		// Verify that Change Credentials window is displayed
@@ -273,11 +273,11 @@ public class WorkbenchMainViewTest {
 	public void testShowChangeCredentialsWindowOnFirstLoginUserIsSuperAdminAccountSecondLogin() {
 
 		final Window window = Mockito.mock(Window.class);
-		final WorkbenchUser user = new WorkbenchUser(ADMIN_USER_ID);
-		Mockito.doReturn(true).when(this.workbenchDataManager).isSuperAdminUser(ADMIN_USER_ID);
+		final WorkbenchUser user = new WorkbenchUser(this.ADMIN_USER_ID);
+		Mockito.doReturn(true).when(this.workbenchDataManager).isSuperAdminUser(this.ADMIN_USER_ID);
 
 		final UserInfo userInfo = new UserInfo();
-		userInfo.setUserId(ADMIN_USER_ID);
+		userInfo.setUserId(this.ADMIN_USER_ID);
 		userInfo.setLoginCount(1);
 
 		this.workbenchMainView.showChangeCredentialsWindowOnFirstLogin(window, user, userInfo);
@@ -379,7 +379,7 @@ public class WorkbenchMainViewTest {
 
 		this.workbenchMainView.onLoadOperations();
 
-		Mockito.verify(this.workbenchDataManager).incrementUserLogInCount(ADMIN_USER_ID);
+		Mockito.verify(this.workbenchDataManager).incrementUserLogInCount(this.ADMIN_USER_ID);
 
 	}
 

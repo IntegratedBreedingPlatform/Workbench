@@ -33,18 +33,18 @@ public class HomeActionTest {
 		final Project project = new Project();
 		project.setProjectName("ProjectName");
 
-		when(contextUtil.getProjectInContext()).thenReturn(project);
+		when(this.contextUtil.getProjectInContext()).thenReturn(project);
 
 	}
 
 	@Test
 	public void testDoAction() {
 
-		homeAction.doAction(workbenchMainView, null, false);
+		this.homeAction.doAction(this.workbenchMainView, null, false);
 
 		final ArgumentCaptor<WorkbenchDashboard> captor = ArgumentCaptor.forClass(WorkbenchDashboard.class);
 
-		verify(workbenchMainView).showContent(captor.capture());
+		verify(this.workbenchMainView).showContent(captor.capture());
 	}
 
 }
