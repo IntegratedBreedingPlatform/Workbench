@@ -27,6 +27,7 @@ import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableList;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.dms.DatasetType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
@@ -34,7 +35,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatcher;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
@@ -138,7 +138,7 @@ public class RunMultiSiteActionTest {
 		Mockito.when(this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(this.createProject(PROJECT_NAME), ToolName.BREEDING_VIEW))
 				.thenReturn(BMS_INPUT_FILES_DIR);
 
-		Mockito.when(this.studyDataManager.getDataSetsByType(STUDY_ID, DataSetType.SUMMARY_DATA)).thenReturn(this.createDataSets());
+		Mockito.when(this.studyDataManager.getDataSetsByType(STUDY_ID, DatasetType.SUMMARY_DATA)).thenReturn(this.createDataSets());
 
 		Mockito.when(multiSiteDataExporter.exportMeansDatasetToCsv(ArgumentMatchers.anyString(), ArgumentMatchers.any(MultiSiteParameters.class),
 				ArgumentMatchers.<List<Experiment>>any(), ArgumentMatchers.eq(ENVIRONMENT_NAME), ArgumentMatchers.any(GxeEnvironment.class), ArgumentMatchers.<List<Trait>>any(), ArgumentMatchers.any(IBPWorkbenchApplication.class)))
@@ -357,9 +357,8 @@ public class RunMultiSiteActionTest {
 	}
 
 	private DataSet createMeansDataSet(final String dataSetName) {
-
 		final DataSet ds = new DataSet();
-		ds.setDataSetType(DataSetType.MEANS_DATA);
+		ds.setDatasetType(new DatasetType(DatasetType.MEANS_DATA));
 		ds.setId(MEANS_DATASET_ID);
 		ds.setName(dataSetName);
 
@@ -368,9 +367,8 @@ public class RunMultiSiteActionTest {
 	}
 
 	private DataSet createSummaryDataSet() {
-
 		final DataSet ds = new DataSet();
-		ds.setDataSetType(DataSetType.SUMMARY_DATA);
+		ds.setDatasetType(new DatasetType(DatasetType.SUMMARY_DATA));
 		ds.setName(SUMMARY_DATASET_NAME);
 
 		return ds;

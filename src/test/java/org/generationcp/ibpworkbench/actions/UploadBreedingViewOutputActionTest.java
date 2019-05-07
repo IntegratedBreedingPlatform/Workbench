@@ -35,6 +35,8 @@ import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.manager.api.OntologyDataManager;
 import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.pojos.dms.DatasetType;
+import org.generationcp.middleware.pojos.gdms.Dataset;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.junit.Assert;
 import org.junit.Before;
@@ -192,7 +194,7 @@ public class UploadBreedingViewOutputActionTest {
 		Mockito.when(this.bmsOutputParser.getSummaryStatsFile()).thenReturn(Mockito.mock(File.class));
 		Mockito.when(this.bmsOutputParser.getOutlierFile()).thenReturn(Mockito.mock(File.class));
 
-		Mockito.when(this.studyDataManager.getDataSetsByType(UploadBreedingViewOutputActionTest.TEST_STUDY_ID, DataSetType.MEANS_DATA))
+		Mockito.when(this.studyDataManager.getDataSetsByType(UploadBreedingViewOutputActionTest.TEST_STUDY_ID, DatasetType.MEANS_DATA))
 				.thenReturn(this.createDataSetList());
 		Mockito.when(this.studyDataManager.getTrialEnvironmentsInDataset(UploadBreedingViewOutputActionTest.TEST_MEANS_DATASET_ID))
 				.thenReturn(this.createEnvironments());
@@ -222,12 +224,12 @@ public class UploadBreedingViewOutputActionTest {
 		Mockito.when(this.bmsOutputParser.getBmsOutputInformation()).thenReturn(bmsOutputInformation);
 		Mockito.when(this.bmsOutputParser.getMeansFile()).thenReturn(Mockito.mock(File.class));
 
-		Mockito.when(this.studyDataManager.getDataSetsByType(UploadBreedingViewOutputActionTest.TEST_STUDY_ID, DataSetType.MEANS_DATA))
+		Mockito.when(this.studyDataManager.getDataSetsByType(UploadBreedingViewOutputActionTest.TEST_STUDY_ID, DatasetType.MEANS_DATA))
 				.thenReturn(this.createDataSetList());
 		Mockito.when(this.studyDataManager.getTrialEnvironmentsInDataset(UploadBreedingViewOutputActionTest.TEST_MEANS_DATASET_ID))
 				.thenReturn(this.createEnvironments());
 		Mockito.when(
-				this.studyDataManager.checkIfAnyLocationIDsExistInExperiments(ArgumentMatchers.anyInt(), ArgumentMatchers.any(DataSetType.class),
+				this.studyDataManager.checkIfAnyLocationIDsExistInExperiments(ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt(),
 						ArgumentMatchers.<List<Integer>>any())).thenReturn(true);
 
 		Mockito.when(this.messageSource.getMessage(Message.BV_UPLOAD_OVERWRITE_WARNING)).thenReturn("");
@@ -316,7 +318,7 @@ public class UploadBreedingViewOutputActionTest {
 	public void testGetLocationIdsBasedOnInformationFromMeansDataFile() throws IOException {
 
 		Mockito.when(this.bmsOutputParser.getBmsOutputInformation()).thenReturn(this.createBmsOutputInformation());
-		Mockito.when(this.studyDataManager.getDataSetsByType(UploadBreedingViewOutputActionTest.TEST_STUDY_ID, DataSetType.MEANS_DATA))
+		Mockito.when(this.studyDataManager.getDataSetsByType(UploadBreedingViewOutputActionTest.TEST_STUDY_ID, DatasetType.MEANS_DATA))
 				.thenReturn(this.createDataSetList());
 		Mockito.when(this.studyDataManager.getTrialEnvironmentsInDataset(UploadBreedingViewOutputActionTest.TEST_MEANS_DATASET_ID))
 				.thenReturn(this.createEnvironments());

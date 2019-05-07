@@ -26,6 +26,7 @@ import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.Location;
+import org.generationcp.middleware.pojos.dms.DatasetType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,7 +94,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 			if (!locationIds.isEmpty()) {
 				environmentExists =
-						this.studyDataManager.checkIfAnyLocationIDsExistInExperiments(studyId, DataSetType.MEANS_DATA, locationIds);
+						this.studyDataManager.checkIfAnyLocationIDsExistInExperiments(studyId, DatasetType.MEANS_DATA, locationIds);
 			}
 
 			try {
@@ -173,7 +174,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 		final BMSOutputInformation bmsOutputInformation = this.bmsOutputParser.getBmsOutputInformation();
 
-		final List<DataSet> datasets = this.studyDataManager.getDataSetsByType(studyId, DataSetType.MEANS_DATA);
+		final List<DataSet> datasets = this.studyDataManager.getDataSetsByType(studyId, DatasetType.MEANS_DATA);
 
 		if (!datasets.isEmpty()) {
 			final TrialEnvironments trialEnvironments = this.studyDataManager.getTrialEnvironmentsInDataset(datasets.get(0).getId());

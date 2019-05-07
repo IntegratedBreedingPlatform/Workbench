@@ -764,10 +764,10 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 						bean.setStudyId(this.dataSet.getStudyId());
 						bean.setStudyName(this.studyName);
 						bean.setTrialFactorName(trialInstanceFactorName);
-						if (this.dataSet.getDataSetType() == null) {
+						if (this.dataSet.getDatasetType() == null) {
 							bean.setDataSetTypeId(DataSetType.PLOT_DATA.getId());
 						} else {
-							bean.setDataSetTypeId(this.dataSet.getDataSetType().getId());
+							bean.setDataSetTypeId(this.dataSet.getDatasetType().getDatasetTypeId());
 						}
 
 						container.addBean(bean);

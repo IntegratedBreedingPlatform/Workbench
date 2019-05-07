@@ -16,6 +16,7 @@ import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.pojos.dms.DatasetType;
 import org.generationcp.middleware.util.DatasetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -161,7 +162,7 @@ public class GxeTable extends Table implements InitializingBean {
 
 		try {
 
-			final List<DataSet> meansDataSets = this.studyDataManager.getDataSetsByType(studyId, DataSetType.MEANS_DATA);
+			final List<DataSet> meansDataSets = this.studyDataManager.getDataSetsByType(studyId, DatasetType.MEANS_DATA);
 			if (meansDataSets != null && !meansDataSets.isEmpty()) {
 
 				this.meansDataSet = meansDataSets.get(0);
@@ -286,7 +287,7 @@ public class GxeTable extends Table implements InitializingBean {
 			for (final DatasetReference dsRef : datasetRefs) {
 				final DataSet ds = this.studyDataManager.getDataSet(dsRef.getId());
 
-				if (ds.getDataSetType() != DataSetType.MEANS_DATA) {
+				if (ds.getDatasetType().getDatasetTypeId() != DatasetType.MEANS_DATA) {
 
 					final Iterator<DMSVariableType> itrFactor = ds.getVariableTypes().getFactors().getVariableTypes().iterator();
 					while (itrFactor.hasNext()) {

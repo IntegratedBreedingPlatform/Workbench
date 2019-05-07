@@ -32,6 +32,7 @@ import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.pojos.dms.DatasetType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -262,7 +263,7 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 
 			List<DataSet> dataSets = null;
 			try {
-				dataSets = this.getStudyDataManager().getDataSetsByType(study.getId(), DataSetType.MEANS_DATA);
+				dataSets = this.getStudyDataManager().getDataSetsByType(study.getId(), DatasetType.MEANS_DATA);
 			} catch (final MiddlewareException e) {
 				MultiSiteAnalysisPanel.LOG.error("Error getting means dataset", e);
 			}

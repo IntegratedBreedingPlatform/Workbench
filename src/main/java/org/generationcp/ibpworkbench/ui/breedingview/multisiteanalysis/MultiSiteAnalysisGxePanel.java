@@ -30,6 +30,7 @@ import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.pojos.dms.DatasetType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -222,7 +223,7 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout
 	public void initializeValues() {
 		this.ds = null;
 		try {
-			this.ds = this.studyDataManager.getDataSetsByType(this.multiSiteParameters.getStudy().getId(), DataSetType.MEANS_DATA);
+			this.ds = this.studyDataManager.getDataSetsByType(this.multiSiteParameters.getStudy().getId(), DatasetType.MEANS_DATA);
 		} catch (final MiddlewareException e) {
 			MultiSiteAnalysisGxePanel.LOG.error("Error getting means dataset", e);
 		}

@@ -5,6 +5,7 @@ import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.middleware.domain.dms.*;
 import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.domain.oms.TermId;
+import org.generationcp.middleware.pojos.dms.DatasetType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ public class StudyUtil {
 	public static final int DATASET_ID = -3;
 	public static final String DATASET_NAME = "Test Dataset";
 	public static final String DATASET_DESCRIPTION = "Test Dataset Description";
-	public static final DataSetType DATASET_TYPE = DataSetType.PLOT_DATA;
+	public static final int DATASET_TYPE = DatasetType.PLOT_DATA;
 
 	public static final String PROPERTY_POSTFIX = "_PROPERTY";
 	public static final String SCALE_POSTFIX = "_SCALE";
@@ -73,7 +74,7 @@ public class StudyUtil {
 		dataset.setId(StudyUtil.DATASET_ID);
 		dataset.setName(StudyUtil.DATASET_NAME);
 		dataset.setDescription(StudyUtil.DATASET_DESCRIPTION);
-		dataset.setDataSetType(StudyUtil.DATASET_TYPE);
+		dataset.setDatasetType(new DatasetType(StudyUtil.DATASET_TYPE));
 		dataset.setStudyId(StudyUtil.STUDY_ID);
 		dataset.setVariableTypes(this.createDatasetVariableTypesTestData());
 		return dataset;

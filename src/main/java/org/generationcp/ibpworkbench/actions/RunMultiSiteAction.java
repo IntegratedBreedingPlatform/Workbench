@@ -29,6 +29,7 @@ import org.generationcp.middleware.domain.dms.Experiment;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.dms.DatasetType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
@@ -223,7 +224,7 @@ public class RunMultiSiteAction implements ClickListener {
 	DataSet getSummaryStatsDataSet(final int studyId) {
 
 		final DataSet summaryStatsDataSet;
-		final List<DataSet> dataSets = this.studyDataManager.getDataSetsByType(studyId, DataSetType.SUMMARY_DATA);
+		final List<DataSet> dataSets = this.studyDataManager.getDataSetsByType(studyId, DatasetType.SUMMARY_DATA);
 		if (!dataSets.isEmpty()) {
 			summaryStatsDataSet = dataSets.get(0);
 		} else {

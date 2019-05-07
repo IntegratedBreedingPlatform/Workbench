@@ -27,6 +27,7 @@ import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.pojos.dms.DatasetType;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -138,8 +139,8 @@ public class GxeTableTest {
 		Mockito.doReturn(datasetRefs).when(this.studyDataManager).getDatasetReferences(GxeTableTest.STUDY_ID);
 		Mockito.doReturn(dataSet).when(this.studyDataManager).getDataSet(GxeTableTest.STUDY_DATASET_ID);
 		Mockito.doReturn(meansDataSet).when(this.studyDataManager).getDataSet(GxeTableTest.MEANS_DATASET_ID);
-		Mockito.doReturn(meansDataSets).when(this.studyDataManager).getDataSetsByType(GxeTableTest.STUDY_ID, DataSetType.MEANS_DATA);
-		Mockito.doReturn(dataSets).when(this.studyDataManager).getDataSetsByType(GxeTableTest.STUDY_ID, DataSetType.SUMMARY_DATA);
+		Mockito.doReturn(meansDataSets).when(this.studyDataManager).getDataSetsByType(GxeTableTest.STUDY_ID, DatasetType.MEANS_DATA);
+		Mockito.doReturn(dataSets).when(this.studyDataManager).getDataSetsByType(GxeTableTest.STUDY_ID, DatasetType.SUMMARY_DATA);
 		Mockito.doReturn(this.createStudyEnvironments(factorVariables, variateVariables)).when(this.studyDataManager)
 				.getTrialEnvironmentsInDataset(GxeTableTest.MEANS_DATASET_ID);
 		Mockito.doReturn(this.createExperimentsWithStudyEnvironment(factors, factorVariables, variates, variateVariables))
@@ -393,9 +394,8 @@ public class GxeTableTest {
 
 	private DataSet createMeansDataSet(final List<DMSVariableType> factors, final List<Variable> factorVariables,
 			final List<DMSVariableType> variates, final List<Variable> variateVariables) {
-
 		final DataSet meansDataSet = new DataSet();
-		meansDataSet.setDataSetType(DataSetType.MEANS_DATA);
+		meansDataSet.setDatasetType(new DatasetType(DatasetType.MEANS_DATA));
 		meansDataSet.setName("MEANS-DATA");
 		meansDataSet.setId(GxeTableTest.MEANS_DATASET_ID);
 
@@ -412,9 +412,8 @@ public class GxeTableTest {
 
 	private DataSet createDataSet(final List<DMSVariableType> factors, final List<Variable> factorVariables,
 			final List<DMSVariableType> variates, final List<Variable> variateVariables) {
-
 		final DataSet dataSet = new DataSet();
-		dataSet.setDataSetType(DataSetType.SUMMARY_DATA);
+		dataSet.setDatasetType(new DatasetType(DatasetType.SUMMARY_DATA));
 		dataSet.setName("SUMMARY-DATA");
 		dataSet.setId(GxeTableTest.STUDY_DATASET_ID);
 
