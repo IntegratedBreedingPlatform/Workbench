@@ -48,8 +48,6 @@ public class HomeActionTest {
 		final ArgumentCaptor<WorkbenchDashboard> captor = ArgumentCaptor.forClass(WorkbenchDashboard.class);
 
 		verify(workbenchMainView).showContent(captor.capture());
-		verify(workbenchMainView).addTitle(PROJECT_NAME);
-
 	}
 
 }
