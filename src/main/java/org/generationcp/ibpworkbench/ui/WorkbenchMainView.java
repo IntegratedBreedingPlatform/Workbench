@@ -107,13 +107,13 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	@Value("${workbench.is.add.program.enabled}")
 	private String isAddProgramEnabled;
-	
+
 	@Value("${ask.for.support.url}")
 	private String askForSupportURL;
-	
+
 	@Value("${about.bms.url}")
 	private String aboutBmsURL;
-	
+
 
 	private Label actionsTitle;
 
@@ -726,13 +726,25 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		return helpButton;
 	}
 
-	
+
 	protected void setAskForSupportURL(String askForSupportURL) {
 		this.askForSupportURL = askForSupportURL;
 	}
 
-	
+
 	protected void setAboutBmsURL(String aboutBmsURL) {
 		this.aboutBmsURL = aboutBmsURL;
+	}
+
+	void setDoHideSidebarToggleButton(final boolean doHideSidebarToggleButton) {
+		this.doHideSidebarToggleButton = doHideSidebarToggleButton;
+	}
+
+	void setIsSiteAdminShown(final boolean isSiteAdminShown) {
+		this.isSiteAdminShown = isSiteAdminShown;
+	}
+
+	void setIsWorkbenchDashboardShown(final boolean isWorkbenchDashboardShown) {
+		this.isWorkbenchDashboardShown = isWorkbenchDashboardShown;
 	}
 }

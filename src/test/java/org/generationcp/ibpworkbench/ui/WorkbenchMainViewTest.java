@@ -19,9 +19,9 @@ import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -29,7 +29,6 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.vaadin.hene.popupbutton.PopupButton;
 
-import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
@@ -37,7 +36,6 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
-import junit.framework.Assert;
 
 public class WorkbenchMainViewTest {
 
@@ -62,7 +60,7 @@ public class WorkbenchMainViewTest {
 	private Project currentProject;
 
 	private int ADMIN_USER_ID = 1;
-	
+
 	private String askForSupportURL = RandomStringUtils.randomAlphabetic(20);
 
 	@Before
@@ -94,8 +92,54 @@ public class WorkbenchMainViewTest {
 		// Verify header already as dashboard is default content of main window
 		this.verifyHeaderLayoutWHenShowingDashboard();
 
-		// Verify that name of last opened project is displayed on header
-		this.verifyLastOpenedProjectNameIsDisplayed();
+		// Verify that nothing is displayed on header
+		Assert.assertEquals("<h1></h1>", this.workbenchMainView.getWorkbenchTitle().getValue());
+	}
+
+	@Test
+	public void testHeaderLayoutWhenSiteAdminIsShown() {
+		this.workbenchMainView.setIsWorkbenchDashboardShown(false);
+		this.workbenchMainView.setDoHideSidebarToggleButton(false);
+		this.workbenchMainView.setIsSiteAdminShown(true);
+		this.workbenchMainView.showContent(new VerticalLayout());
+
+		final HorizontalLayout workbenchHeaderLayout = this.workbenchMainView.getWorkbenchHeaderLayout();
+		Assert.assertEquals(8, workbenchHeaderLayout.getComponentCount());
+
+		final Iterator<Component> componentIterator = workbenchHeaderLayout.getComponentIterator();
+		boolean homeButtonShown = false;
+		boolean helpButtonShown = false;
+		boolean askSupportButtonShown = false;
+		boolean userInfoButtonShown = false;
+		while (componentIterator.hasNext()) {
+			final Component component = componentIterator.next();
+			// Verify that button to toggle sidebar is not showing
+			if (component.equals(this.workbenchMainView.getSidebarToggleButton())) {
+				Assert.fail("Toggle button to show sidebar should be hidden but was not.");
+
+				// Verify "My Programs" button is not showing
+			} else if (component.equals(this.workbenchMainView.getHomeButton())) {
+				homeButtonShown = true;
+			} else if (component.equals(this.workbenchMainView.getAddProgramButton())) {
+				Assert.fail("Add Program button should be hidden but was not.");
+			} else if (component.equals(this.workbenchMainView.getHelpButton())) {
+				helpButtonShown = true;
+
+			} else if (component.equals(this.workbenchMainView.getAskSupportBtn())) {
+				askSupportButtonShown = true;
+
+			} else if (component.equals(this.workbenchMainView.getMemberButton())) {
+				userInfoButtonShown = true;
+			}
+		}
+
+		Assert.assertTrue(homeButtonShown);
+		Assert.assertTrue(helpButtonShown);
+		Assert.assertTrue(askSupportButtonShown);
+		Assert.assertTrue(userInfoButtonShown);
+
+		// Verify that nothing is displayed on header
+		Assert.assertEquals("<h1></h1>", this.workbenchMainView.getWorkbenchTitle().getValue());
 	}
 
 	@Test
@@ -133,13 +177,12 @@ public class WorkbenchMainViewTest {
 
 			} else if (component.equals(this.workbenchMainView.getAddProgramButton())) {
 				addProgramButtonShown = true;
-				
 			} else if (component.equals(this.workbenchMainView.getHelpButton())) {
 				helpButtonShown = true;
-				
+
 			} else if (component.equals(this.workbenchMainView.getAskSupportBtn())) {
 				askSupportButtonShown = true;
-				
+
 			} else if (component.equals(this.workbenchMainView.getMemberButton())) {
 				userInfoButtonShown = true;
 			}
@@ -174,10 +217,10 @@ public class WorkbenchMainViewTest {
 				Assert.fail("Add Program button should be hidden but was not.");
 			} else if (component.equals(this.workbenchMainView.getHelpButton())) {
 				helpButtonShown = true;
-				
+
 			} else if (component.equals(this.workbenchMainView.getAskSupportBtn())) {
 				askSupportButtonShown = true;
-				
+
 			} else if (component.equals(this.workbenchMainView.getMemberButton())) {
 				userInfoButtonShown = true;
 			}
@@ -346,11 +389,13 @@ public class WorkbenchMainViewTest {
 		final Label workbenchTitleLabel = new Label();
 
 		this.workbenchMainView.setWorkbenchTitle(workbenchTitleLabel);
-
+		this.workbenchMainView.setDoHideSidebarToggleButton(false);
 		this.workbenchMainView.displayCurrentProjectTitle();
-
 		Assert.assertEquals(String.format("<h1>%s</h1>", PROJECT_NAME), workbenchTitleLabel.getValue());
 
+		this.workbenchMainView.setDoHideSidebarToggleButton(true);
+		this.workbenchMainView.displayCurrentProjectTitle();
+		Assert.assertEquals("<h1></h1>", workbenchTitleLabel.getValue());
 	}
 
 	@Test
@@ -364,7 +409,7 @@ public class WorkbenchMainViewTest {
 
 		this.workbenchMainView.displayCurrentProjectTitle();
 
-		Assert.assertEquals("", workbenchTitleLabel.getValue());
+		Assert.assertEquals("<h1></h1>", workbenchTitleLabel.getValue());
 
 	}
 
@@ -379,7 +424,7 @@ public class WorkbenchMainViewTest {
 
 		this.workbenchMainView.displayCurrentProjectTitle();
 
-		Assert.assertEquals("", workbenchTitleLabel.getValue());
+		Assert.assertEquals("<h1></h1>", workbenchTitleLabel.getValue());
 		Assert.assertFalse(this.workbenchMainView.getSidebarToggleButton().booleanValue());
 	}
 
@@ -456,7 +501,7 @@ public class WorkbenchMainViewTest {
 		Assert.assertNotNull(closeEventListeners);
 		Assert.assertTrue(closeEventListeners.size() == 1);
 	}
-	
+
 	@Test
 	public void testAskForSupportButton() {
 		final Button askSupportBtn = this.workbenchMainView.getAskSupportBtn();
