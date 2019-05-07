@@ -39,8 +39,8 @@ import com.vaadin.ui.Window;
 
 public class WorkbenchMainViewTest {
 
-	public static final String PROJECT_NAME = "Maize Program 1";
-	public static final String CURRENT_USER_NAME = "John Doe";
+	private static final String PROJECT_NAME = "Maize Program 1";
+	private static final String CURRENT_USER_NAME = "John Doe";
 
 	@Mock
 	private SimpleResourceBundleMessageSource messageSource;
@@ -346,7 +346,7 @@ public class WorkbenchMainViewTest {
 		this.workbenchMainView.addAdminButton(layout);
 
 		// Verify that Admin button is not added in layout
-		Assert.assertTrue(layout.getComponentIndex(this.workbenchMainView.getAdminButton()) == -1);
+		Assert.assertEquals(-1, layout.getComponentIndex(this.workbenchMainView.getAdminButton()));
 
 	}
 
@@ -358,7 +358,7 @@ public class WorkbenchMainViewTest {
 		this.workbenchMainView.layoutAddProgramButton(layout);
 
 		// Verify that Add Program Button button is added in layout
-		Assert.assertTrue(layout.getComponentIndex(this.workbenchMainView.getAddProgramButton()) != -1);
+		Assert.assertEquals(-1, layout.getComponentIndex(this.workbenchMainView.getAddProgramButton()));
 
 	}
 
@@ -370,7 +370,7 @@ public class WorkbenchMainViewTest {
 		this.workbenchMainView.layoutAddProgramButton(layout);
 
 		// Verify that Add Program Button button is added in layout
-		Assert.assertTrue(layout.getComponentIndex(this.workbenchMainView.getAddProgramButton()) == -1);
+		Assert.assertEquals(-1, layout.getComponentIndex(this.workbenchMainView.getAddProgramButton()));
 
 	}
 
@@ -472,34 +472,34 @@ public class WorkbenchMainViewTest {
 
 		final Collection<?> homeButtonListeneners = this.workbenchMainView.getHomeButton().getListeners(Button.ClickEvent.class);
 		Assert.assertNotNull(homeButtonListeneners);
-		Assert.assertTrue(homeButtonListeneners.size() == 1);
+		Assert.assertEquals(1, homeButtonListeneners.size());
 		Assert.assertTrue(homeButtonListeneners.iterator().next() instanceof HomeAction);
 
 		final Collection<?> logoButtonListeners = this.workbenchMainView.getLogoBtn().getListeners(Button.ClickEvent.class);
 		Assert.assertNotNull(logoButtonListeners);
-		Assert.assertTrue(logoButtonListeners.size() == 1);
+		Assert.assertEquals(1, logoButtonListeners.size());
 		Assert.assertTrue(logoButtonListeners.iterator().next() instanceof HomeAction);
 
 		final Collection<?> adminButtonListeners = this.workbenchMainView.getAdminButton().getListeners(Button.ClickEvent.class);
 		Assert.assertNotNull(adminButtonListeners);
-		Assert.assertTrue(adminButtonListeners.size() == 1);
+		Assert.assertEquals(1, adminButtonListeners.size());
 
 		final Collection<?> programAdminButtonListeners =
 				this.workbenchMainView.getAddProgramButton().getListeners(Button.ClickEvent.class);
 		Assert.assertNotNull(programAdminButtonListeners);
-		Assert.assertTrue(programAdminButtonListeners.size() == 1);
+		Assert.assertEquals(1, programAdminButtonListeners.size());
 		Assert.assertTrue(programAdminButtonListeners.iterator().next() instanceof OpenNewProjectAction);
 
 		final Collection<?> helpButtonListeners = this.workbenchMainView.getHelpButton().getListeners(Button.ClickEvent.class);
 		Assert.assertNotNull(helpButtonListeners);
-		Assert.assertTrue(helpButtonListeners.size() == 1);
+		Assert.assertEquals(1, helpButtonListeners.size());
 		final HelpButtonClickAction helpAction = (HelpButtonClickAction) helpButtonListeners.iterator().next();
 		Assert.assertEquals(this.workbenchMainView, helpAction.getSourceWindow());
 		Assert.assertEquals(aboutBMSUrl, helpAction.getUrl());
 
 		final Collection<?> closeEventListeners = this.workbenchMainView.getListeners(Window.CloseEvent.class);
 		Assert.assertNotNull(closeEventListeners);
-		Assert.assertTrue(closeEventListeners.size() == 1);
+		Assert.assertEquals(1, closeEventListeners.size());
 	}
 
 	@Test
@@ -507,7 +507,7 @@ public class WorkbenchMainViewTest {
 		final Button askSupportBtn = this.workbenchMainView.getAskSupportBtn();
 		final Collection<?> askSupportButtonListeners = askSupportBtn.getListeners(Button.ClickEvent.class);
 		Assert.assertNotNull(askSupportButtonListeners);
-		Assert.assertTrue(askSupportButtonListeners.size() == 1);
+		Assert.assertEquals(1, askSupportButtonListeners.size());
 		final AskForSupportAction askSupportAction = (AskForSupportAction) askSupportButtonListeners.iterator().next();
 		Assert.assertEquals(this.workbenchMainView, askSupportAction.getSourceWindow());
 		Assert.assertEquals(this.askForSupportURL, askSupportAction.getUrl());
