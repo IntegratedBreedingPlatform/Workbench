@@ -358,7 +358,7 @@ public class WorkbenchMainViewTest {
 		this.workbenchMainView.layoutAddProgramButton(layout);
 
 		// Verify that Add Program Button button is added in layout
-		Assert.assertEquals(-1, layout.getComponentIndex(this.workbenchMainView.getAddProgramButton()));
+		Assert.assertEquals(0, layout.getComponentIndex(this.workbenchMainView.getAddProgramButton()));
 
 	}
 
