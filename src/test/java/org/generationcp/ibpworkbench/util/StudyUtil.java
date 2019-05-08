@@ -219,21 +219,7 @@ public class StudyUtil {
 		final VariableTypeList variableTypes = new VariableTypeList();
 		variableTypes.add(this.createDatasetNameVariableTypeTestData());
 		variableTypes.add(this.createDatasetTitleVariableTypeTestData());
-		variableTypes.add(this.createDatasetTypeVariableTypeTestData());
 		return variableTypes;
-	}
-
-	public DMSVariableType createDatasetTypeVariableTypeTestData() {
-		final DMSVariableType variableType = new DMSVariableType();
-		variableType.setLocalName(StudyUtil.DATASET_VAR_TYPE);
-		variableType.setLocalDescription(StudyUtil.DATASET_VAR_TYPE_DESC);
-		variableType.setRank(this.rank++);
-		variableType.setStandardVariable(this.createStandardVariableTestData(TermId.DATASET_TYPE.getId(), variableType.getLocalName(),
-				variableType.getLocalDescription(), TermId.CATEGORICAL_VARIABLE.getId(), TermId.DATASET_INFO_STORAGE.getId(),
-				PhenotypicType.DATASET));
-		variableType.setRole(PhenotypicType.DATASET);
-
-		return variableType;
 	}
 
 	public DMSVariableType createDatasetTitleVariableTypeTestData() {

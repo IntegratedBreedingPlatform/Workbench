@@ -102,9 +102,6 @@ public class SingleSiteAnalysisPanelTest {
 	@Test
 	public void testFilterDatasetAndStudyVariables() {
 
-		final DMSVariableType datasetVariable =
-				DMSVariableTypeTestDataInitializer.createDMSVariableTypeWithStandardVariable(TermId.DATASET_TYPE);
-		datasetVariable.getStandardVariable().setPhenotypicType(PhenotypicType.DATASET);
 		final DMSVariableType studyVariable =
 				DMSVariableTypeTestDataInitializer.createDMSVariableTypeWithStandardVariable(TermId.STUDY_DATA_TYPE);
 		studyVariable.getStandardVariable().setPhenotypicType(PhenotypicType.STUDY);
@@ -116,7 +113,7 @@ public class SingleSiteAnalysisPanelTest {
 		treatmentVariable.getStandardVariable().setPhenotypicType(PhenotypicType.TRIAL_DESIGN);
 		treatmentVariable.setTreatmentLabel("label");
 
-		final List<DMSVariableType> variableTypeList = Arrays.asList(datasetVariable, studyVariable, germplasmVariable, treatmentVariable);
+		final List<DMSVariableType> variableTypeList = Arrays.asList(studyVariable, germplasmVariable, treatmentVariable);
 
 		final List<DMSVariableType> result = this.singleSiteAnalysisPanel.filterDatasetAndStudyAndTreatmentFactorVariables(variableTypeList);
 
