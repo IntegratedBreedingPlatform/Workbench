@@ -19,16 +19,16 @@ import { UserComparator } from './user-comparator.component';
 
 export class UsersDatagrid implements OnInit {
 
-    errorServiceMessage: string = "";
+    errorServiceMessage: string = '';
     showNewDialog = false;
     showEditDialog = false;
     isEditing = false;
     dialogTitle: string;
     showConfirmStatusDialog = false;
     showErrorNotification = false;
-    confirmStatusTitle: string = "Confirm";
+    confirmStatusTitle: string = 'Confirm';
     table: NgDataGridModel<User>;
-    confirmMessage: string = "Please confirm that you would like to deactivate/activate this user account.";
+    confirmMessage: string = 'Please confirm that you would like to deactivate/activate this user account.';
     user: User;
     originalUser: User;
 
@@ -46,13 +46,13 @@ export class UsersDatagrid implements OnInit {
         userCreateCard.resetForm();
         userCreateCard.initialize(false);
 
-        this.dialogTitle = "Add User";
+        this.dialogTitle = 'Add User';
         this.showNewDialog = true;
     }
 
     showEditUserForm(user: User, userEditCard: UserCard) {
 
-        this.dialogTitle = "Edit User";
+        this.dialogTitle = 'Edit User';
         this.originalUser = user;
         this.user = new User(user.id, user.firstName, user.lastName,
             user.username, user.crops, user.role, user.email, user.status);
@@ -61,12 +61,12 @@ export class UsersDatagrid implements OnInit {
         this.showEditDialog = true;
     }
 
-    private getSelectedRole(user : User){
-      for (var i = 0; i < this.roles.length; i++) {
-    		if (this.roles[i].id === user.role.id) {
-    			return this.roles[i];
-    		}
-		}
+    private getSelectedRole(user: User) {
+        for (var i = 0; i < this.roles.length; i++) {
+            if (this.roles[i].id === user.role.id) {
+                return this.roles[i];
+            }
+        }
     }
 
     initUser() {
@@ -74,8 +74,8 @@ export class UsersDatagrid implements OnInit {
     }
 
     ngOnInit() {
-        if(this.table.sortBy == undefined) {
-            this.table.sortBy = "lastName";
+        if (this.table.sortBy == undefined) {
+            this.table.sortBy = 'lastName';
         }
         //get all users
         this.userService
@@ -88,7 +88,7 @@ export class UsersDatagrid implements OnInit {
                         localStorage.removeItem('xAuthToken');
                         this.handleReAuthentication();
                     }
-            });
+                });
 
         // get all roles
         this.roleService
@@ -99,7 +99,7 @@ export class UsersDatagrid implements OnInit {
                     // XXX
                     // handleReAuthentication is called on
                     // userService error
-            });
+                });
     }
 
     onUserAdded(user: User) {
@@ -109,10 +109,9 @@ export class UsersDatagrid implements OnInit {
     }
 
     sortAfterAddOrEdit() {
-        if(this.table.sortBy == undefined) {
-            this.sort("lastName", true);
-        }
-        else {
+        if (this.table.sortBy == undefined) {
+            this.sort('lastName', true);
+        } else {
             this.sort(this.table.sortBy, true);
         }
     }
@@ -141,7 +140,7 @@ export class UsersDatagrid implements OnInit {
             event.preventDefault();
         }
 
-        if(!direction) {
+        if (!direction) {
             if (this.table.sortBy == col) {
                 this.table.sortAsc = !this.table.sortAsc;
             } else {
@@ -156,42 +155,42 @@ export class UsersDatagrid implements OnInit {
         var status = this.userSelected.status;
 
         // TODO Change status to boolean or int as in the backend
-        if (this.userSelected.status === "true") {
-            this.userSelected.status = "false";
+        if (this.userSelected.status === 'true') {
+            this.userSelected.status = 'false';
         } else {
-            this.userSelected.status = "true";
+            this.userSelected.status = 'true';
         }
 
         this.userService
             .update(this.userSelected)
             .subscribe(
-            resp => {
-                this.userSelected = null;
-            },
-            error => {
-                this.errorServiceMessage = error.json().ERROR.errors[0].message;
-                this.showErrorNotification = true;
-                this.userSelected.status = status;
-                this.userSelected = null;
-            });
+                resp => {
+                    this.userSelected = null;
+                },
+                error => {
+                    this.errorServiceMessage = error.json().ERROR.errors[0].message;
+                    this.showErrorNotification = true;
+                    this.userSelected.status = status;
+                    this.userSelected = null;
+                });
 
         this.showConfirmStatusDialog = false;
 
     }
 
-    showUserStatusConfirmPopUp(e: any){
-      this.userSelected = e;
-      this.showConfirmStatusDialog = true;
-      this.confirmMessage = "Please confirm that you would like to ";
+    showUserStatusConfirmPopUp(e: any) {
+        this.userSelected = e;
+        this.showConfirmStatusDialog = true;
+        this.confirmMessage = 'Please confirm that you would like to ';
 
-      if (e.status === "true") {
-          this.confirmMessage = this.confirmMessage + "deactivate this user account.";
-      } else {
-          this.confirmMessage = this.confirmMessage + "activate this user account.";
-      }
+        if (e.status === 'true') {
+            this.confirmMessage = this.confirmMessage + 'deactivate this user account.';
+        } else {
+            this.confirmMessage = this.confirmMessage + 'activate this user account.';
+        }
     }
 
-    closeUserStatusConfirmPopUp(){
-      this.showConfirmStatusDialog = false;
+    closeUserStatusConfirmPopUp() {
+        this.showConfirmStatusDialog = false;
     }
 }

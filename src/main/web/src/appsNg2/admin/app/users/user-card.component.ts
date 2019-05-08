@@ -59,7 +59,10 @@ export class UserCard implements OnInit {
         this.sendMail = !this.isEditing;
     }
 
-    onSubmit() { this.submitted = true; }
+    onSubmit() {
+        this.submitted = true;
+    }
+
     cancel(form: FormGroup) {
         form.reset();
         this.errorUserMessage = '';
@@ -70,7 +73,7 @@ export class UserCard implements OnInit {
     }
 
     addUser(form: FormGroup) {
-    	this.userService
+        this.userService
             .save(this.trimAll(this.model))
             .subscribe(
                 resp => {
@@ -79,9 +82,10 @@ export class UserCard implements OnInit {
                     this.sendEmailToResetPassword(resp);
                     this.model.roleName = this.model.role.description;
                 },
-                error =>  {this.errorUserMessage =  this.mapErrorUser(error.json().ERROR.errors);
+                error => {
+                    this.errorUserMessage = this.mapErrorUser(error.json().ERROR.errors);
 
-              });
+                });
     }
 
 
@@ -95,79 +99,80 @@ export class UserCard implements OnInit {
                     this.sendEmailToResetPassword(resp);
                     this.model.roleName = this.model.role.description;
                 },
-                error =>  {this.errorUserMessage =  this.mapErrorUser(error.json().ERROR.errors);
-            });
-    }
-
-    private mapErrorUser(response:any): string{
-       return response.map(this.toErrorUser);
-    }
-
-    private toErrorUser(r:any): string{
-      let msg ={
-        fieldNames: r.fieldNames,
-        message: r.message,
-      }
-      return " " + msg.fieldNames + " " + msg.message;
-    }
-
-    private sendEmailToResetPassword (respSaving: Response){
-      if (!this.isEditing) {
-          this.model.id = respSaving.json().id;
-      }
-      if (this.sendMail) {
-          this.sendingEmail = true;
-          this.mailService
-              .send(this.model)
-              .subscribe(
-                resp => {
-                  setTimeout(() => {
-                      this.sendingEmail = false;
-                      this.userSaved = false;
-                      this.sendMail = !this.isEditing;
-                      if (!this.isEditing) {
-                        this.onUserAdded.emit(this.model);
-                      } else {
-                        this.onUserEdited.emit(this.model);
-                      }
-                  }, 1000);
-                },
                 error => {
-                    this.sendingEmail = false;
-                    this.errorClass = 'alert alert-warning';
-                    this.errorUserMessage = 'Email was not sent. Please contact your system administrator';
-                    setTimeout(() => {
-                        this.errorUserMessage ='';
-                        this.errorClass = 'alert alert-danger';
-                        this.userSaved = false;
-                        this.sendMail = !this.isEditing;
-                        if (!this.isEditing) {
-                          this.onUserAdded.emit(this.model);
-                        } else {
-                          this.onUserEdited.emit(this.model);
-                        }
-                    }, 2000);
+                    this.errorUserMessage = this.mapErrorUser(error.json().ERROR.errors);
+                });
+    }
+
+    private mapErrorUser(response: any): string {
+        return response.map(this.toErrorUser);
+    }
+
+    private toErrorUser(r: any): string {
+        let msg = {
+            fieldNames: r.fieldNames,
+            message: r.message,
+        }
+        return ' ' + msg.fieldNames + ' ' + msg.message;
+    }
+
+    private sendEmailToResetPassword(respSaving: Response) {
+        if (!this.isEditing) {
+            this.model.id = respSaving.json().id;
+        }
+        if (this.sendMail) {
+            this.sendingEmail = true;
+            this.mailService
+                .send(this.model)
+                .subscribe(
+                    resp => {
+                        setTimeout(() => {
+                            this.sendingEmail = false;
+                            this.userSaved = false;
+                            this.sendMail = !this.isEditing;
+                            if (!this.isEditing) {
+                                this.onUserAdded.emit(this.model);
+                            } else {
+                                this.onUserEdited.emit(this.model);
+                            }
+                        }, 1000);
+                    },
+                    error => {
+                        this.sendingEmail = false;
+                        this.errorClass = 'alert alert-warning';
+                        this.errorUserMessage = 'Email was not sent. Please contact your system administrator';
+                        setTimeout(() => {
+                            this.errorUserMessage = '';
+                            this.errorClass = 'alert alert-danger';
+                            this.userSaved = false;
+                            this.sendMail = !this.isEditing;
+                            if (!this.isEditing) {
+                                this.onUserAdded.emit(this.model);
+                            } else {
+                                this.onUserEdited.emit(this.model);
+                            }
+                        }, 2000);
+                    }
+                );
+        } else {
+            setTimeout(() => {
+                this.userSaved = false;
+                this.sendMail = !this.isEditing;
+                if (!this.isEditing) {
+                    this.onUserAdded.emit(this.model);
+                } else {
+                    this.onUserEdited.emit(this.model);
                 }
-              );
-      } else {
-        setTimeout(() => {
-            this.userSaved = false;
-            this.sendMail = !this.isEditing;
-            if (!this.isEditing) {
-              this.onUserAdded.emit(this.model);
-            } else {
-              this.onUserEdited.emit(this.model);
-            }
-        }, 1000);
-      }
+            }, 1000);
+        }
     }
 
     private trimAll(model: User) {
-		model.firstName = model.firstName.trim();
-		model.lastName = model.lastName.trim();
-		model.email = model.email.trim();
-		model.username = model.username.trim();
-		return model;
-	}
+        model.firstName = model.firstName.trim();
+        model.lastName = model.lastName.trim();
+        model.email = model.email.trim();
+        model.username = model.username.trim();
+        return model;
+    }
 
 }
