@@ -35,6 +35,7 @@ import org.generationcp.middleware.domain.dms.*;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.pojos.dms.DatasetType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -765,7 +766,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 						bean.setStudyName(this.studyName);
 						bean.setTrialFactorName(trialInstanceFactorName);
 						if (this.dataSet.getDatasetType() == null) {
-							bean.setDataSetTypeId(DataSetType.PLOT_DATA.getId());
+							bean.setDataSetTypeId(DatasetType.PLOT_DATA);
 						} else {
 							bean.setDataSetTypeId(this.dataSet.getDatasetType().getDatasetTypeId());
 						}

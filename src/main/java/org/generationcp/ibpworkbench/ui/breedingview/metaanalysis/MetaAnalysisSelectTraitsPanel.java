@@ -28,13 +28,13 @@ import org.generationcp.ibpworkbench.model.MetaEnvironmentModel;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
-import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.domain.dms.Experiment;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.pojos.dms.DatasetType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
@@ -245,7 +245,7 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 					return "0";
 				}
 
-				if (item.getDataSetTypeId() == DataSetType.MEANS_DATA.getId()) {
+				if (item.getDataSetTypeId() == DatasetType.MEANS_DATA) {
 					countData =
 							String.valueOf(
 									MetaAnalysisSelectTraitsPanel.this.studyDataManager.countStocks(item.getDataSetId(),
