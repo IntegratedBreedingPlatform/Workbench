@@ -45,6 +45,7 @@
                         <th [ngClass]="{ sort: isSorted('firstName'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('firstName')">First Name</th>
                         <th [ngClass]="{ sort: isSorted('lastName'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('lastName')">Last Name</th>
                         <th [ngClass]="{ sort: isSorted('email'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('email')">Email</th>
+                        <th>Crop</th>
                         <th [ngClass]="{ sort: isSorted('roleName'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('roleName')">Role</th>
                         <th [ngClass]="{ sort: isSorted('status'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('status')">Status</th>
                     </tr>
@@ -61,6 +62,7 @@
                         <td>{{user.firstName}}</td>
                         <td>{{user.lastName}}</td>
                         <td>{{user.email}}</td>
+                        <td><span *ngFor="let crop of user.crops; let last = last">{{crop.cropName}}{{last ? '' : ', '}}</span></td>
                         <td>{{user.roleName}}</td>
                         <td *ngIf="user.roleName.toUpperCase() == 'SUPERADMIN' && user.status == 'true'">Active</td>
                         <td *ngIf="user.roleName.toUpperCase() == 'SUPERADMIN' && user.status == 'false'">Inactive</td>

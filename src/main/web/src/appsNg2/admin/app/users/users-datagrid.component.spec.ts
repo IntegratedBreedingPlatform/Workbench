@@ -1,19 +1,13 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { NgDataGridModel } from './../shared/components/datagrid/ng-datagrid.model';
-import { PaginationComponent } from './../shared/components/datagrid/pagination.component';
 import { User } from './../shared/models/user.model';
 import { Role } from './../shared/models/role.model';
 import './../shared/utils/array.extensions';
 import { UserService } from './../shared/services/user.service';
 import { RoleService } from './../shared/services/role.service';
-import { Dialog } from './../shared/components/dialog/dialog.component';
-import { UserComparator } from './user-comparator.component';
 import { UsersDatagrid } from './users-datagrid.component';
 import { UserCard } from './user-card.component';
 import { MailService } from './../shared/services/mail.service';
-import { inject, async, TestBed, ComponentFixture } from "@angular/core/testing";
 import { Observable } from 'rxjs/Rx';
-import { Http, Response, ResponseOptions, Headers } from '@angular/http';
+import { Response, ResponseOptions } from '@angular/http';
 
 export function main() {
 
@@ -23,8 +17,8 @@ export function main() {
     }
 
     getAll(): Observable<User[]> {
-      return Observable.of([new User("0", "Vanina", "Maletta", "vmaletta", new Role("2", "technician"), "vanina@leafnode.io", "0"),
-        new User("1", "Clarysabel", "Tovar", "ctovar", new Role("0", "admin"), "clarysabel@leafnode.io", "0")]);
+      return Observable.of([new User("0", "Vanina", "Maletta", "vmaletta", [], new Role("2", "technician"), "vanina@leafnode.io", "0"),
+        new User("1", "Clarysabel", "Tovar", "ctovar", [], new Role("0", "admin"), "clarysabel@leafnode.io", "0")]);
     }
 
     update(user: User): Observable<Response> {
@@ -64,8 +58,8 @@ export function main() {
     let mockUserService: MockUserService;
 
     function createArrayOfUsers() {
-      return [new User("0", "Vanina", "Maletta", "vmaletta", new Role("2", "technician"), "vanina@leafnode.io", "0"),
-        new User("1", "Clarysabel", "Tovar", "ctovar", new Role("0", "admin"), "clarysabel@leafnode.io", "0")
+      return [new User("0", "Vanina", "Maletta", "vmaletta", [], new Role("2", "technician"), "vanina@leafnode.io", "0"),
+        new User("1", "Clarysabel", "Tovar", "ctovar", [], new Role("0", "admin"), "clarysabel@leafnode.io", "0")
       ];
     }
 
@@ -73,7 +67,7 @@ export function main() {
       items = createArrayOfUsers();
       mockRoleService = new MockRoleService();
       mockUserService = new MockUserService();
-      user = new User("3", "Diego", "Cuenya", "dcuenya", new Role("1", "breeder"), "dcuenya@leafnode.io", "0");
+      user = new User("3", "Diego", "Cuenya", "dcuenya", [], new Role("1", "breeder"), "dcuenya@leafnode.io", "0");
       grid = new UsersDatagrid(mockUserService, mockRoleService);
       grid.table.items = items;
     });
@@ -101,14 +95,14 @@ export function main() {
     });
 
     it('Should get number of users in grid equals to 2', function () {
-      grid.table.items = [new User("0", "Vanina", "Maletta", "vmaletta", new Role("0", "admin"), "vanina@leafnode.io", "0"),
-        new User("1", "Clarysabel", "Tovar", "ctovar", new Role("0", "admin"), "clarysabel@leafnode.io", "0")];
+      grid.table.items = [new User("0", "Vanina", "Maletta", "vmaletta", [], new Role("0", "admin"), "vanina@leafnode.io", "0"),
+        new User("1", "Clarysabel", "Tovar", "ctovar", [], new Role("0", "admin"), "clarysabel@leafnode.io", "0")];
       expect(grid.table.items.length).toBe(2);
     });
 
     it('Should filter by typeToSearch equals to A', function () {
       grid.table.sortBy = 'role';
-      grid.table.searchValue = new User("1", "Clarysabel", "Tovar", "ctovar", new Role("0", "admin"), "clarysabel@leafnode.io", "0");
+      grid.table.searchValue = new User("1", "Clarysabel", "Tovar", "ctovar", [], new Role("0", "admin"), "clarysabel@leafnode.io", "0");
       expect(grid.table.itemsFiltered.length).toBe(1);
     });
 
@@ -167,13 +161,13 @@ export function main() {
     });
 
     it('Should open user confirm status popup', function () {
-      user = new User("2", "Clarysabel2", "Tovar2", "ctovar2", new Role("0", "admin"), "clarysabel2@leafnode.io", "true")
+      user = new User("2", "Clarysabel2", "Tovar2", "ctovar2", [], new Role("0", "admin"), "clarysabel2@leafnode.io", "true")
       grid.showUserStatusConfirmPopUp(user);
       expect(grid.showConfirmStatusDialog).toBe(true);
     });
 
     it('Should say the dialog popup', function () {
-      let userChangeStatus = new User("2", "Clarysabel2", "Tovar2", "ctovar2", new Role("0", "admin"), "clarysabel2@leafnode.io", "true")
+      let userChangeStatus = new User("2", "Clarysabel2", "Tovar2", "ctovar2", [], new Role("0", "admin"), "clarysabel2@leafnode.io", "true")
       grid.showUserStatusConfirmPopUp(userChangeStatus);
       expect(grid.confirmMessage).toBe("Please confirm that you would like to deactivate this user account.");
     });
@@ -184,7 +178,7 @@ export function main() {
     });
 
     it('Should update user status when accept confirm status popup', function () {
-      let userChangeStatus = new User("2", "Clarysabel2", "Tovar2", "ctovar2", new Role("0", "admin"), "clarysabel2@leafnode.io", "true")
+      let userChangeStatus = new User("2", "Clarysabel2", "Tovar2", "ctovar2", [], new Role("0", "admin"), "clarysabel2@leafnode.io", "true")
       grid.showUserStatusConfirmPopUp(userChangeStatus);
       grid.changedActiveStatus();
       expect(grid.showConfirmStatusDialog).toBe(false);

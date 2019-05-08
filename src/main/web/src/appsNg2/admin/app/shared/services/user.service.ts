@@ -57,6 +57,7 @@ export class UserService{
       firstName: r.firstName,
       lastName: r.lastName,
       username: r.username,
+      crops: r.crops,
       role: r.role,
       roleName : r.role.description,
       email: r.email,

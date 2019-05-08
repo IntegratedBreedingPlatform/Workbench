@@ -36,7 +36,8 @@ export class UsersDatagrid implements OnInit {
     public userSelected: User;
 
     constructor(private userService: UserService, private roleService: RoleService) {
-        this.table = new NgDataGridModel<User>([], 25, new UserComparator(), <User>{ status: "true" });
+        // TODO migrate to angular datatables
+        this.table = new NgDataGridModel<User>([], 25, new UserComparator(), <User>{ status: 'true' });
         this.initUser();
     }
 
@@ -54,22 +55,22 @@ export class UsersDatagrid implements OnInit {
         this.dialogTitle = "Edit User";
         this.originalUser = user;
         this.user = new User(user.id, user.firstName, user.lastName,
-                        user.username, user.role, user.email, user.status);
+            user.username, user.crops, user.role, user.email, user.status);
         this.user.role = this.getSelectedRole(user);
         userEditCard.initialize(true);
         this.showEditDialog = true;
     }
-    
+
     private getSelectedRole(user : User){
-      for (var i = 0; i < this.roles.length; i++) { 
+      for (var i = 0; i < this.roles.length; i++) {
     		if (this.roles[i].id === user.role.id) {
     			return this.roles[i];
     		}
 		}
     }
-    
+
     initUser() {
-        this.user = new User("0", "", "", "", "", "", "true");
+        this.user = new User('0', '', '', '', [], new Role('', ''), '', 'true');
     }
 
     ngOnInit() {
