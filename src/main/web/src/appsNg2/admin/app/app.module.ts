@@ -1,4 +1,4 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA }      from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule } from '@angular/http';
 import { FormsModule } from '@angular/forms';
@@ -11,7 +11,7 @@ import { UserCard } from './users/user-card.component';
 import { SiteAdminHeader } from './shared/components/header/site-admin-header.component';
 import { UsersAdmin } from './users/index';
 
-import { AppComponent }  from './app.component';
+import { AppComponent } from './app.component';
 
 @NgModule({
   imports: [BrowserModule, HttpModule, FormsModule],

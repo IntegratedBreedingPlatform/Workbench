@@ -7,6 +7,8 @@ import { UserService } from './../shared/services/user.service';
 import { RoleService } from './../shared/services/role.service';
 import { UserCard } from './user-card.component';
 import { UserComparator } from './user-comparator.component';
+import { Crop } from '../shared/models/crop.model';
+import { CropService } from '../shared/services/crop.service';
 
 @Component({
     selector: 'users-datagrid',
@@ -34,8 +36,11 @@ export class UsersDatagrid implements OnInit {
 
     public roles: Role[];
     public userSelected: User;
+    public crops: Crop[];
 
-    constructor(private userService: UserService, private roleService: RoleService) {
+    constructor(private userService: UserService,
+                private roleService: RoleService,
+                private cropService: CropService) {
         // TODO migrate to angular datatables
         this.table = new NgDataGridModel<User>([], 25, new UserComparator(), <User>{ status: 'true' });
         this.initUser();
@@ -100,6 +105,10 @@ export class UsersDatagrid implements OnInit {
                     // handleReAuthentication is called on
                     // userService error
                 });
+        this.cropService
+            .getAll()
+            .subscribe(crops => this.crops = crops);
+
     }
 
     onUserAdded(user: User) {

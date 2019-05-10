@@ -8,6 +8,8 @@ import { UserCard } from './user-card.component';
 import { MailService } from './../shared/services/mail.service';
 import { Observable } from 'rxjs/Rx';
 import { Response, ResponseOptions } from '@angular/http';
+import { Crop } from '../shared/models/crop.model';
+import { CropService } from '../shared/services/crop.service';
 
 export function main() {
 
@@ -46,6 +48,17 @@ export function main() {
 
     }
 
+    class MockCropsService extends CropService {
+        constructor() {
+            super(null);
+        }
+
+        getAll() {
+            return Observable.of([new Crop('maize'),
+                new Crop('wheat')]);
+        }
+    }
+
     describe('User Datagrid Test', () => {
         let items: User[];
         let grid: UsersDatagrid;
@@ -56,6 +69,7 @@ export function main() {
         let user: User;
         let mockRoleService: MockRoleService;
         let mockUserService: MockUserService;
+        let mockCropsService: MockCropsService;
 
         function createArrayOfUsers() {
             return [new User('0', 'Vanina', 'Maletta', 'vmaletta', [], new Role('2', 'technician'), 'vanina@leafnode.io', '0'),
@@ -68,7 +82,7 @@ export function main() {
             mockRoleService = new MockRoleService();
             mockUserService = new MockUserService();
             user = new User('3', 'Diego', 'Cuenya', 'dcuenya', [], new Role('1', 'breeder'), 'dcuenya@leafnode.io', '0');
-            grid = new UsersDatagrid(mockUserService, mockRoleService);
+            grid = new UsersDatagrid(mockUserService, mockRoleService, new MockCropsService());
             grid.table.items = items;
         });
 

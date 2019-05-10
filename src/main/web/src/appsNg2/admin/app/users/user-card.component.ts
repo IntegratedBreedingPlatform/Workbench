@@ -1,7 +1,5 @@
-import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
-import {
-    Validators, FormGroup
-} from '@angular/forms';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { User } from '../shared/models/user.model';
 
 import { UserService } from './../shared/services/user.service';
@@ -9,7 +7,10 @@ import { RoleService } from './../shared/services/role.service';
 import { MailService } from './../shared/services/mail.service';
 import { Role } from './../shared/models/role.model';
 import { Response } from '@angular/http';
+import { Crop } from '../shared/models/crop.model';
+import { CommonModule } from '@angular/common';
 
+declare const $: any;
 
 @Component({
     selector: 'user-card',
@@ -36,6 +37,8 @@ export class UserCard implements OnInit {
     @Output() onUserEdited = new EventEmitter<User>();
     @Output() onCancel = new EventEmitter<void>();
 
+    @Input() crops: Crop[];
+
     constructor(private userService: UserService, private roleService: RoleService, private mailService: MailService) {
         // New empty user is built to open a form with empty default values
         // id, firstName, lastName, username, role, email, status
@@ -57,6 +60,7 @@ export class UserCard implements OnInit {
         this.isEditing = isEditing;
         this.errorUserMessage = '';
         this.sendMail = !this.isEditing;
+        setTimeout(() => this.initSelect2());
     }
 
     onSubmit() {
@@ -70,6 +74,15 @@ export class UserCard implements OnInit {
     }
 
     ngOnInit() {
+    }
+
+    // TODO implement in angular
+    initSelect2() {
+        $('.select2').select2();
+    }
+
+    onChangeCrop() {
+        console.log($('.select2').select2('data'));
     }
 
     addUser(form: FormGroup) {

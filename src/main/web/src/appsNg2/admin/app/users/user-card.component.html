@@ -38,6 +38,18 @@
                     <span class="sr-only">(error)</span>
                 </div>
             </div>
+            <div class="form-group" [class.has-feedback]="!(userCrops?.valid || userCrops?.pristine)" [class.has-error]="!(userCrops?.valid || userCrops?.pristine)">
+                <label for="userCrops" class="col-sm-2 control-label">Crops</label>
+                <div class="col-sm-10">
+                    <select id="userCrops" name="userCrops" class="select2 form-control"
+                            [(ngModel)]="model.crops" #userCrops="ngModel" multiple>
+                        <option *ngFor="let crop of crops" [ngValue]="crop" [selected]="true">{{crop.cropName}}</option>
+                    </select>
+                    <pre><div [innerHTML]="model.crops | json"></div></pre>
+                    <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                    <span class="sr-only">(error)</span>
+                </div>
+            </div>
             <div class="form-group" [class.has-feedback]="!(role?.valid || role?.pristine)" [class.has-error]="!(role?.valid || role?.pristine)">
                 <label for="role" class="col-sm-2 control-label">Role</label>
                 <div class="col-sm-10">
