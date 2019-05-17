@@ -23,6 +23,7 @@
         // other libraries
         'rxjs': 'lib:rxjs',
         'angular-in-memory-web-api': 'lib:angular-in-memory-web-api',
+        'ng2-select2': 'lib:ng2-select2/ng2-select2.bundle.js'
     };
 
     // packages tells the System loader how to load when no filename and/or no extension

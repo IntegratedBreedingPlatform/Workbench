@@ -3,8 +3,12 @@
         <button class="btn btn-default om-add-new-btn form-group pull-right"
             (click)="showNewUserForm(userCreateCard)">Add user</button>
             <app-dialog [(visible)]="showNewDialog" [title]="dialogTitle">
-                <user-card #userCreateCard (onUserAdded)="onUserAdded($event)" [model]="user" [roles]="roles" (onCancel)="showNewDialog = false"
-                           [crops]="crops" ></user-card>
+                <user-card #userCreateCard (onUserAdded)="onUserAdded($event)"
+                           [model]="user"
+                           [roles]="roles"
+                           (onCancel)="showNewDialog = false"
+                           [crops]="crops | toSelect2OptionData"
+                           [selectedCropIds]="user.crops | toSelect2OptionId"></user-card>
             </app-dialog>
   </div>
   <div class="om-panel-header">
@@ -73,8 +77,12 @@
                         </td>
                     </tr>
 					<app-dialog [(visible)]="showEditDialog" [title]="dialogTitle">
- 		                <user-card #userEditCard (onUserEdited)="onUserEdited($event)" (onCancel)="showEditDialog = false" [model]="user" [roles]="roles"
-                                   [crops]="crops"></user-card>
+ 		                <user-card #userEditCard (onUserEdited)="onUserEdited($event)"
+                                   (onCancel)="showEditDialog = false"
+                                   [model]="user"
+                                   [roles]="roles"
+                                   [crops]="crops | toSelect2OptionData"
+                                   [selectedCropIds]="user.crops | toSelect2OptionId"></user-card>
  		            </app-dialog>
                     <div class="popup">
                       <app-dialog [(visible)]="showConfirmStatusDialog" [title]="confirmStatusTitle">

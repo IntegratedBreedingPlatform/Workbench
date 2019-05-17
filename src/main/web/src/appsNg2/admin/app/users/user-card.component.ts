@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, Pipe, PipeTransform } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { User } from '../shared/models/user.model';
 
@@ -8,9 +8,7 @@ import { MailService } from './../shared/services/mail.service';
 import { Role } from './../shared/models/role.model';
 import { Response } from '@angular/http';
 import { Crop } from '../shared/models/crop.model';
-import { CommonModule } from '@angular/common';
-
-declare const $: any;
+import { Select2OptionData } from 'ng2-select2';
 
 @Component({
     selector: 'user-card',
@@ -37,7 +35,19 @@ export class UserCard implements OnInit {
     @Output() onUserEdited = new EventEmitter<User>();
     @Output() onCancel = new EventEmitter<void>();
 
-    @Input() crops: Crop[];
+    /*
+     * TODO Multi-select:
+     *  - ng2-select2 is a bit wonky -> find alternative
+     *  - validations
+     *  - won't work with the latest version https://github.com/NejcZdovc/ng2-select2/issues/144
+     */
+    @Input() crops: Select2OptionData[];
+    @Input() selectedCropIds: string[];
+
+    public select2Options = {
+        multiple: true,
+        theme: 'classic'
+    };
 
     constructor(private userService: UserService, private roleService: RoleService, private mailService: MailService) {
         // New empty user is built to open a form with empty default values
@@ -60,7 +70,6 @@ export class UserCard implements OnInit {
         this.isEditing = isEditing;
         this.errorUserMessage = '';
         this.sendMail = !this.isEditing;
-        setTimeout(() => this.initSelect2());
     }
 
     onSubmit() {
@@ -76,13 +85,15 @@ export class UserCard implements OnInit {
     ngOnInit() {
     }
 
-    // TODO implement in angular
-    initSelect2() {
-        $('.select2').select2();
-    }
-
-    onChangeCrop() {
-        console.log($('.select2').select2('data'));
+    onChangeCrop(data: {value: string[]}) {
+        if (!data || !data.value) {
+            return;
+        }
+        this.model.crops = data.value.map((cropName) => {
+            return {
+                cropName: cropName
+            };
+        });
     }
 
     addUser(form: FormGroup) {
@@ -100,7 +111,6 @@ export class UserCard implements OnInit {
 
                 });
     }
-
 
     editUser() {
         this.userService
@@ -189,3 +199,29 @@ export class UserCard implements OnInit {
     }
 
 }
+
+@Pipe({name: 'toSelect2OptionData'})
+export class ToSelect2OptionDataPipe implements PipeTransform {
+    transform(crops: Crop[]): Select2OptionData[] {
+        if (!crops) {
+            return [];
+        }
+        return crops.map((crop) => {
+            return {
+                id: crop.cropName,
+                text : crop.cropName
+            };
+        });
+    }
+}
+
+@Pipe({name: 'toSelect2OptionId'})
+export class ToSelect2OptionIdPipe implements PipeTransform {
+    transform(crops: Crop[]): string[] {
+        if (!crops) {
+            return [];
+        }
+        return crops.map((crop) => crop.cropName);
+    }
+}
+

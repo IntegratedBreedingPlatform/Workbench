@@ -96,6 +96,9 @@ gulp.task('angular2Libs', function () {
         'reflect-metadata/Reflect.js',
         'rxjs/**',
         'zone.js/dist/zone.js',
+        'jquery/dist/jquery.min.js',
+		'ng2-select2/ng2-select2.bundle.js',
+		'select2/dist/js/select2.min.js',
         '@angular/**/bundles/*.umd.min.js'
     ], { cwd: 'node_modules/**' }) /* Glob required here. */
         .pipe(gulp.dest(path.join(destRoot, 'lib')));
