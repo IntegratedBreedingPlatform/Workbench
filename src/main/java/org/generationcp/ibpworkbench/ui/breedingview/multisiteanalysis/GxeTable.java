@@ -6,12 +6,18 @@ import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
-
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
 import org.generationcp.commons.sea.xml.Environment;
 import org.generationcp.ibpworkbench.util.TableItems;
-import org.generationcp.middleware.domain.dms.*;
+import org.generationcp.middleware.domain.dms.DMSVariableType;
+import org.generationcp.middleware.domain.dms.DataSet;
+import org.generationcp.middleware.domain.dms.DatasetReference;
+import org.generationcp.middleware.domain.dms.Experiment;
+import org.generationcp.middleware.domain.dms.PhenotypicType;
+import org.generationcp.middleware.domain.dms.TrialEnvironments;
+import org.generationcp.middleware.domain.dms.Variable;
+import org.generationcp.middleware.domain.dms.VariableTypeList;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -24,8 +30,19 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 @Configurable
 public class GxeTable extends Table implements InitializingBean {
@@ -66,8 +83,9 @@ public class GxeTable extends Table implements InitializingBean {
 
 	private final Property.ValueChangeListener gxeCheckBoxColumnListener;
 
-	public GxeTable(final Integer studyId, final String selectedEnvFactorName, final String selectedEnvGroupFactorName,
-			final Map<String, Boolean> variatesCheckBoxState, final Property.ValueChangeListener gxeCheckBoxColumnListener) {
+	public GxeTable(
+		final Integer studyId, final String selectedEnvFactorName, final String selectedEnvGroupFactorName,
+		final Map<String, Boolean> variatesCheckBoxState, final Property.ValueChangeListener gxeCheckBoxColumnListener) {
 		this.selectedEnvFactorName = selectedEnvFactorName;
 		this.selectedEnvGroupFactorName = selectedEnvGroupFactorName;
 		this.variatesCheckBoxState = variatesCheckBoxState;
@@ -170,7 +188,7 @@ public class GxeTable extends Table implements InitializingBean {
 
 				final TrialEnvironments trialEnvironments = this.studyDataManager.getTrialEnvironmentsInDataset(this.meansDataSetId);
 				final boolean isSelectedEnvironmentFactorALocation =
-						this.studyDataManager.isLocationIdVariable(studyId, selectedEnvFactorName);
+					this.studyDataManager.isLocationIdVariable(studyId, this.selectedEnvFactorName);
 				final Map<String, String> locationNameMap = this.studyDataManager.createInstanceLocationIdToNameMapFromStudy(studyId);
 
 				// get the SITE NAME and SITE NO
@@ -190,9 +208,9 @@ public class GxeTable extends Table implements InitializingBean {
 				for (final DMSVariableType v : variates.getVariableTypes()) {
 					container.addContainerProperty(v.getLocalName(), Label.class, null);
 					if (!v.getStandardVariable().getMethod().getName().equalsIgnoreCase(GxeTable.ERROR_ESTIMATE) && !v.getStandardVariable()
-							.getMethod().getName().equalsIgnoreCase("error estimate (" + v.getLocalName().replace("_UnitErrors", "") + ")")
-							&& !v.getStandardVariable().getMethod().getName().equalsIgnoreCase(GxeTable.LS_BLUPS) && this
-							.getVariatesCheckBoxState().get(v.getLocalName())) {
+						.getMethod().getName().equalsIgnoreCase("error estimate (" + v.getLocalName().replace("_UnitErrors", "") + ")")
+						&& !v.getStandardVariable().getMethod().getName().equalsIgnoreCase(GxeTable.LS_BLUPS) && this
+						.getVariatesCheckBoxState().get(v.getLocalName())) {
 
 						this.variateLocalNames.put(v.getRank(), v.getLocalName());
 
@@ -203,7 +221,7 @@ public class GxeTable extends Table implements InitializingBean {
 
 				// generate the rows
 				this.exps = this.studyDataManager
-						.getExperimentsWithTrialEnvironment(trialDataSet.getId(), this.meansDataSetId, 0, Integer.MAX_VALUE);
+					.getExperimentsWithTrialEnvironment(trialDataSet.getId(), this.meansDataSetId, 0, Integer.MAX_VALUE);
 
 				int rowCounter = 3;
 
@@ -240,7 +258,7 @@ public class GxeTable extends Table implements InitializingBean {
 					}
 
 					for (final Iterator<Entry<Integer, String>> v = GxeTable.entriesSortedByValues(this.variateLocalNames).iterator(); v
-							.hasNext(); ) {
+						.hasNext(); ) {
 
 						final Entry<Integer, String> x = v.next();
 
@@ -252,7 +270,7 @@ public class GxeTable extends Table implements InitializingBean {
 						}
 						String meansData = "";
 						meansData = this.getMeansData(this.meansDataSetId, trialEnvironments, this.trialInstanceFactorName,
-								trialInstanceFactorValue, varKey);
+							trialInstanceFactorValue, varKey);
 
 						final String heritabilityVal = this.getHeritabilityValues().get(trialInstanceFactorValue).get(x.getValue());
 						if (heritabilityVal != null) {
@@ -338,11 +356,12 @@ public class GxeTable extends Table implements InitializingBean {
 		return heritabilityValues;
 	}
 
-	protected String getMeansData(final int meansDataSetId, final TrialEnvironments envs, final String envFactorName, final String envName,
-			final int varKey) {
+	protected String getMeansData(
+		final int meansDataSetId, final TrialEnvironments envs, final String envFactorName, final String envName,
+		final int varKey) {
 		try {
 			return String.valueOf(
-					this.studyDataManager.countStocks(meansDataSetId, envs.findOnlyOneByLocalName(envFactorName, envName).getId(), varKey));
+				this.studyDataManager.countStocks(meansDataSetId, envs.findOnlyOneByLocalName(envFactorName, envName).getId(), varKey));
 		} catch (final MiddlewareQueryException e) {
 			GxeTable.LOG.error(e.getMessage(), e);
 			return "";

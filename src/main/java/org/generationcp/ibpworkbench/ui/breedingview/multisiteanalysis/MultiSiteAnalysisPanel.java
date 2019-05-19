@@ -11,11 +11,16 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.help.document.HelpModule;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -39,16 +44,10 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.Reindeer;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Multisite analysis component
@@ -161,7 +160,7 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 			public void buttonClick(final ClickEvent event) {
 
 				final SelectStudyDialog dialog = new SelectStudyDialog(event.getComponent().getWindow(), MultiSiteAnalysisPanel.this,
-						MultiSiteAnalysisPanel.this.project);
+					MultiSiteAnalysisPanel.this.project);
 				event.getComponent().getWindow().addWindow(dialog);
 			}
 
@@ -211,9 +210,10 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 		}
 	}
 
-	public void generateTabContent(final Study study, final String selectedEnvFactorName, final String selectedGenotypeFactorName,
-			final String selectedEnvGroupFactorName, final Map<String, Boolean> variatesCheckboxState,
-			final MultiSiteAnalysisSelectPanel gxeSelectEnvironmentPanel) {
+	public void generateTabContent(
+		final Study study, final String selectedEnvFactorName, final String selectedGenotypeFactorName,
+		final String selectedEnvGroupFactorName, final Map<String, Boolean> variatesCheckboxState,
+		final MultiSiteAnalysisSelectPanel gxeSelectEnvironmentPanel) {
 
 		if (selectedEnvFactorName == null || "".equals(selectedEnvFactorName)) {
 			return;
@@ -227,8 +227,8 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 		multiSiteParameters.setStudy(study);
 
 		final MultiSiteAnalysisGxePanel tabContainer =
-				new MultiSiteAnalysisGxePanel(this.getStudyDataManager(), gxeSelectEnvironmentPanel, variatesCheckboxState,
-						multiSiteParameters);
+			new MultiSiteAnalysisGxePanel(this.getStudyDataManager(), gxeSelectEnvironmentPanel, variatesCheckboxState,
+				multiSiteParameters);
 		tabContainer.setVisible(true);
 
 		this.getStudiesTabsheet().setVisible(true);
@@ -270,7 +270,7 @@ public class MultiSiteAnalysisPanel extends VerticalLayout implements Initializi
 			if (dataSets != null && study.getName() != null && !dataSets.isEmpty()) {
 
 				final MultiSiteAnalysisSelectPanel selectEnvironmentPanel =
-						new MultiSiteAnalysisSelectPanel(this.getStudyDataManager(), this.project, study, this);
+					new MultiSiteAnalysisSelectPanel(this.getStudyDataManager(), this.project, study, this);
 
 				selectEnvironmentPanel.setCaption(study.getName());
 				this.getStudiesTabsheet().addTab(selectEnvironmentPanel);

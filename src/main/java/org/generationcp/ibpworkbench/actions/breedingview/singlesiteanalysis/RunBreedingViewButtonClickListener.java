@@ -1,8 +1,8 @@
 
 package org.generationcp.ibpworkbench.actions.breedingview.singlesiteanalysis;
 
-import java.util.List;
-
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDetailsPanel;
@@ -16,8 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
+import java.util.List;
 
 @Configurable
 public class RunBreedingViewButtonClickListener implements ClickListener {
@@ -48,8 +47,9 @@ public class RunBreedingViewButtonClickListener implements ClickListener {
 		final List<DataSet> dataSets;
 		try {
 
-			dataSets = this.studyDataManager.getDataSetsByType(this.ssaDetailsPanel.getBreedingViewInput().getStudyId(),
-					DatasetType.MEANS_DATA);
+			dataSets = this.studyDataManager.getDataSetsByType(
+				this.ssaDetailsPanel.getBreedingViewInput().getStudyId(),
+				DatasetType.MEANS_DATA);
 			if (!dataSets.isEmpty()) {
 
 				final DataSet meansDataSet = dataSets.get(0);
@@ -59,7 +59,7 @@ public class RunBreedingViewButtonClickListener implements ClickListener {
 				for (final SeaEnvironmentModel model : this.ssaDetailsPanel.getSelectedEnvironments()) {
 
 					final TrialEnvironment env = envs
-							.findOnlyOneByLocalName(this.ssaDetailsPanel.getBreedingViewInput().getTrialInstanceName(), model.getTrialno());
+						.findOnlyOneByLocalName(this.ssaDetailsPanel.getBreedingViewInput().getTrialInstanceName(), model.getTrialno());
 					if (env != null) {
 						environmentExists = true;
 						break;
@@ -69,16 +69,16 @@ public class RunBreedingViewButtonClickListener implements ClickListener {
 
 				if (environmentExists) {
 					ConfirmDialog.show(event.getComponent().getWindow(), "",
-							"One or more of the selected traits has existing means data. If you save the results of this analysis, the existing values will be overwritten.",
-							"OK", "Cancel", new Runnable() {
+						"One or more of the selected traits has existing means data. If you save the results of this analysis, the existing values will be overwritten.",
+						"OK", "Cancel", new Runnable() {
 
-								@Override
-								public void run() {
+							@Override
+							public void run() {
 
-									new RunSingleSiteAction(RunBreedingViewButtonClickListener.this.ssaDetailsPanel).buttonClick(event);
-								}
+								new RunSingleSiteAction(RunBreedingViewButtonClickListener.this.ssaDetailsPanel).buttonClick(event);
+							}
 
-							});
+						});
 				} else {
 					this.runSingleSiteAction.buttonClick(event);
 				}

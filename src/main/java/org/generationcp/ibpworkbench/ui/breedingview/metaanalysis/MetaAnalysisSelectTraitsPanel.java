@@ -1,20 +1,22 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview.metaanalysis;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.terminal.DownloadStream;
+import com.vaadin.terminal.FileResource;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.ColumnGenerator;
+import com.vaadin.ui.VerticalLayout;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -43,22 +45,19 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.terminal.DownloadStream;
-import com.vaadin.terminal.FileResource;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Table.ColumnGenerator;
-import com.vaadin.ui.VerticalLayout;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 @Configurable
 public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements InitializingBean, InternationalizableComponent {
@@ -107,8 +106,9 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 	private final MetaAnalysisPanel selectDatasetsForMetaAnalysisPanel;
 	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
-	public MetaAnalysisSelectTraitsPanel(final Project project, final List<MetaEnvironmentModel> metaEnvironments,
-			final MetaAnalysisPanel selectDatasetsForMetaAnalysisPanel) {
+	public MetaAnalysisSelectTraitsPanel(
+		final Project project, final List<MetaEnvironmentModel> metaEnvironments,
+		final MetaAnalysisPanel selectDatasetsForMetaAnalysisPanel) {
 		this.metaEnvironments = metaEnvironments;
 		this.currentProject = project;
 		this.selectDatasetsForMetaAnalysisPanel = selectDatasetsForMetaAnalysisPanel;
@@ -120,8 +120,8 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 		this.lblPageTitle.setDebugId("lblPageTitle");
 		this.lblPageTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 
-		this.factorsCheckBoxState = new HashMap<String, Boolean>();
-		this.variatesCheckBoxState = new HashMap<String, Boolean>();
+		this.factorsCheckBoxState = new HashMap<>();
+		this.variatesCheckBoxState = new HashMap<>();
 
 		this.environmentsTable = new Table();
 		this.environmentsTable.setDebugId("environmentsTable");
@@ -135,8 +135,8 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 			public void valueChange(final ValueChangeEvent event) {
 
 				for (final Iterator<?> itr =
-						MetaAnalysisSelectTraitsPanel.this.environmentsTable.getContainerDataSource().getItemIds().iterator(); itr
-								.hasNext();) {
+					 MetaAnalysisSelectTraitsPanel.this.environmentsTable.getContainerDataSource().getItemIds().iterator(); itr
+						 .hasNext(); ) {
 					final MetaEnvironmentModel m = (MetaEnvironmentModel) itr.next();
 					m.setActive((Boolean) event.getProperty().getValue());
 				}
@@ -154,14 +154,15 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 			public void valueChange(final ValueChangeEvent event) {
 
 				for (final Iterator<?> itr =
-						MetaAnalysisSelectTraitsPanel.this.factorsSelectionTable.getContainerPropertyIds().iterator(); itr.hasNext();) {
+					 MetaAnalysisSelectTraitsPanel.this.factorsSelectionTable.getContainerPropertyIds().iterator(); itr.hasNext(); ) {
 					final Object propertyId = itr.next();
 					final CheckBox chk = (CheckBox) MetaAnalysisSelectTraitsPanel.this.factorsSelectionTable.getItem(1)
-							.getItemProperty(propertyId).getValue();
+						.getItemProperty(propertyId).getValue();
 					if (chk.isEnabled()) {
 						chk.setValue(event.getProperty().getValue());
-						MetaAnalysisSelectTraitsPanel.this.factorsCheckBoxState.put(propertyId.toString(),
-								(Boolean) event.getProperty().getValue());
+						MetaAnalysisSelectTraitsPanel.this.factorsCheckBoxState.put(
+							propertyId.toString(),
+							(Boolean) event.getProperty().getValue());
 					}
 
 				}
@@ -177,13 +178,14 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 			public void valueChange(final ValueChangeEvent event) {
 
 				for (final Iterator<?> itr =
-						MetaAnalysisSelectTraitsPanel.this.variatesSelectionTable.getContainerPropertyIds().iterator(); itr.hasNext();) {
+					 MetaAnalysisSelectTraitsPanel.this.variatesSelectionTable.getContainerPropertyIds().iterator(); itr.hasNext(); ) {
 					final Object propertyId = itr.next();
 					final CheckBox chk = (CheckBox) MetaAnalysisSelectTraitsPanel.this.variatesSelectionTable.getItem(1)
-							.getItemProperty(propertyId).getValue();
+						.getItemProperty(propertyId).getValue();
 					chk.setValue(event.getProperty().getValue());
-					MetaAnalysisSelectTraitsPanel.this.variatesCheckBoxState.put(propertyId.toString(),
-							(Boolean) event.getProperty().getValue());
+					MetaAnalysisSelectTraitsPanel.this.variatesCheckBoxState.put(
+						propertyId.toString(),
+						(Boolean) event.getProperty().getValue());
 				}
 
 			}
@@ -239,7 +241,7 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 				String countData = "0";
 				final MetaEnvironmentModel item = (MetaEnvironmentModel) itemId;
 				final DMSVariableType varType = MetaAnalysisSelectTraitsPanel.this.dataSets.get(item.getDataSetId())
-						.findVariableTypeByLocalName(columnId.toString());
+					.findVariableTypeByLocalName(columnId.toString());
 
 				if (varType == null) {
 					return "0";
@@ -247,18 +249,20 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 
 				if (item.getDataSetTypeId() == DatasetType.MEANS_DATA) {
 					countData =
-							String.valueOf(
-									MetaAnalysisSelectTraitsPanel.this.studyDataManager.countStocks(item.getDataSetId(),
-											MetaAnalysisSelectTraitsPanel.this.trialEnvironmentsList.get(item.getDataSetId())
-													.findOnlyOneByLocalName(item.getTrialFactorName(), item.getTrial()).getId(),
-											varType.getId()));
+						String.valueOf(
+							MetaAnalysisSelectTraitsPanel.this.studyDataManager.countStocks(
+								item.getDataSetId(),
+								MetaAnalysisSelectTraitsPanel.this.trialEnvironmentsList.get(item.getDataSetId())
+									.findOnlyOneByLocalName(item.getTrialFactorName(), item.getTrial()).getId(),
+								varType.getId()));
 				} else {
 					countData =
-							String.valueOf(
-									MetaAnalysisSelectTraitsPanel.this.studyDataManager.countStocks(item.getDataSetId(),
-											MetaAnalysisSelectTraitsPanel.this.trialEnvironmentsList.get(item.getDataSetId())
-													.findOnlyOneByLocalName(item.getTrialFactorName(), item.getTrial()).getId(),
-											varType.getId()));
+						String.valueOf(
+							MetaAnalysisSelectTraitsPanel.this.studyDataManager.countStocks(
+								item.getDataSetId(),
+								MetaAnalysisSelectTraitsPanel.this.trialEnvironmentsList.get(item.getDataSetId())
+									.findOnlyOneByLocalName(item.getTrialFactorName(), item.getTrial()).getId(),
+								varType.getId()));
 				}
 
 				return countData;
@@ -275,7 +279,7 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 
 				final MetaEnvironmentModel item = (MetaEnvironmentModel) itemId;
 				final DMSVariableType varType = MetaAnalysisSelectTraitsPanel.this.dataSets.get(item.getDataSetId())
-						.findVariableTypeByLocalName(columnId.toString());
+					.findVariableTypeByLocalName(columnId.toString());
 				if (varType == null) {
 					return "";
 				} else {
@@ -297,10 +301,10 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 				((MetaEnvironmentModel) chk.getData()).setActive(val);
 				if (!val) {
 					MetaAnalysisSelectTraitsPanel.this.chkSelectAllEnvironments
-							.removeListener(MetaAnalysisSelectTraitsPanel.this.selectAllEnvironmentsListener);
+						.removeListener(MetaAnalysisSelectTraitsPanel.this.selectAllEnvironmentsListener);
 					MetaAnalysisSelectTraitsPanel.this.chkSelectAllEnvironments.setValue(false);
 					MetaAnalysisSelectTraitsPanel.this.chkSelectAllEnvironments
-							.addListener(MetaAnalysisSelectTraitsPanel.this.selectAllEnvironmentsListener);
+						.addListener(MetaAnalysisSelectTraitsPanel.this.selectAllEnvironmentsListener);
 				}
 
 			}
@@ -330,8 +334,8 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 		final Map<String, Boolean> factorsColumnList = new HashMap<>();
 		for (final MetaEnvironmentModel metaEnvironment : this.metaEnvironments) {
 			if (this.dataSets.get(metaEnvironment.getDataSetId()) == null) {
-				DataSet ds;
-				TrialEnvironments envs;
+				final DataSet ds;
+				final TrialEnvironments envs;
 				ds = this.studyDataManager.getDataSet(metaEnvironment.getDataSetId());
 				envs = this.studyDataManager.getTrialEnvironmentsInDataset(ds.getId());
 				this.dataSets.put(metaEnvironment.getDataSetId(), ds);
@@ -360,7 +364,7 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 		}
 
 		final BeanItemContainer<MetaEnvironmentModel> environmentsTableContainer =
-				new BeanItemContainer<MetaEnvironmentModel>(MetaEnvironmentModel.class);
+			new BeanItemContainer<MetaEnvironmentModel>(MetaEnvironmentModel.class);
 
 		for (final MetaEnvironmentModel metaEnvironment : this.metaEnvironments) {
 			metaEnvironment.setActive(true);
@@ -384,7 +388,7 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 		this.environmentsTable.setColumnHeaders(visibleCols.toArray(new String[0]));
 
 		final BeanItemContainer<MetaEnvironmentModel> factorsAnalysisTableContainer =
-				new BeanItemContainer<MetaEnvironmentModel>(MetaEnvironmentModel.class);
+			new BeanItemContainer<MetaEnvironmentModel>(MetaEnvironmentModel.class);
 		for (final MetaEnvironmentModel metaEnvironment : this.metaEnvironments) {
 			factorsAnalysisTableContainer.addBean(metaEnvironment);
 
@@ -418,10 +422,10 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 				MetaAnalysisSelectTraitsPanel.this.variatesCheckBoxState.put(chk.getData().toString(), val);
 				if (!val) {
 					MetaAnalysisSelectTraitsPanel.this.chkSelectAllVariates
-							.removeListener(MetaAnalysisSelectTraitsPanel.this.selectAllTraitsListener);
+						.removeListener(MetaAnalysisSelectTraitsPanel.this.selectAllTraitsListener);
 					MetaAnalysisSelectTraitsPanel.this.chkSelectAllVariates.setValue(false);
 					MetaAnalysisSelectTraitsPanel.this.chkSelectAllVariates
-							.addListener(MetaAnalysisSelectTraitsPanel.this.selectAllTraitsListener);
+						.addListener(MetaAnalysisSelectTraitsPanel.this.selectAllTraitsListener);
 				}
 
 			}
@@ -460,10 +464,10 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 				MetaAnalysisSelectTraitsPanel.this.factorsCheckBoxState.put(chk.getData().toString(), val);
 				if (!val) {
 					MetaAnalysisSelectTraitsPanel.this.chkSelectAllFactors
-							.removeListener(MetaAnalysisSelectTraitsPanel.this.selectAllFactorsListener);
+						.removeListener(MetaAnalysisSelectTraitsPanel.this.selectAllFactorsListener);
 					MetaAnalysisSelectTraitsPanel.this.chkSelectAllFactors.setValue(false);
 					MetaAnalysisSelectTraitsPanel.this.chkSelectAllFactors
-							.addListener(MetaAnalysisSelectTraitsPanel.this.selectAllFactorsListener);
+						.addListener(MetaAnalysisSelectTraitsPanel.this.selectAllFactorsListener);
 				}
 
 			}
@@ -613,7 +617,7 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 			@Override
 			public void buttonClick(final ClickEvent event) {
 				if (MetaAnalysisSelectTraitsPanel.this.variatesCheckBoxState.isEmpty()
-						|| MetaAnalysisSelectTraitsPanel.this.factorsCheckBoxState.isEmpty()
+					|| MetaAnalysisSelectTraitsPanel.this.factorsCheckBoxState.isEmpty()
 
 				) {
 					return;
@@ -631,7 +635,7 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 
 					@Override
 					public DownloadStream getStream() {
-						DownloadStream ds;
+						final DownloadStream ds;
 						try {
 							ds = new DownloadStream(new FileInputStream(this.getSourceFile()), this.getMIMEType(), this.getFilename());
 
@@ -738,7 +742,8 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 					final Row row = defaultSheet.createRow(rowCounter++);
 
 					row.createCell(cellCounter++).setCellValue(envModel.getStudyName()); // STUDYNAME
-					row.createCell(cellCounter++).setCellValue(String.format("%s-%s", envModel.getStudyId(), envModel.getTrial())); // TRIALID
+					row.createCell(cellCounter++)
+						.setCellValue(String.format("%s-%s", envModel.getStudyId(), envModel.getTrial())); // TRIALID
 					final Variable varEntryNo = exp.getFactors().findByLocalName(entrynoFactorName); // //ENTRYID
 					if (varEntryNo != null) {
 						row.createCell(cellCounter++).setCellValue(String.format("%s-%s", envModel.getStudyId(), varEntryNo.getValue()));
