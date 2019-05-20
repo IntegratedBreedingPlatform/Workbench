@@ -113,13 +113,13 @@ public class RunMultiSiteActionTest {
 	public void init() throws IOException {
 
 		final Table selectTraitsTable = this.createTestSelectedTraitsTable();
-		runMultiSiteAction.setSelectTraitsTable(selectTraitsTable);
-		runMultiSiteAction.setBreedingViewTool(breedingViewTool);
+		this.runMultiSiteAction.setSelectTraitsTable(selectTraitsTable);
+		this.runMultiSiteAction.setBreedingViewTool(this.breedingViewTool);
 
-		selectedTraits = runMultiSiteAction.getSelectedTraits();
-		gxeEnvironment = this.createGxeEnvironment();
-		multiSiteParameters = this.createMultiSiteParameters();
-		runMultiSiteAction.setMultiSiteParameters(multiSiteParameters);
+		this.selectedTraits = this.runMultiSiteAction.getSelectedTraits();
+		this.gxeEnvironment = this.createGxeEnvironment();
+		this.multiSiteParameters = this.createMultiSiteParameters();
+		this.runMultiSiteAction.setMultiSiteParameters(this.multiSiteParameters);
 
 		this.initMocks();
 
@@ -127,7 +127,7 @@ public class RunMultiSiteActionTest {
 
 	void initMocks() throws IOException {
 
-		Mockito.when(this.workbenchApplication.getMainWindow()).thenReturn(window);
+		Mockito.when(this.workbenchApplication.getMainWindow()).thenReturn(this.window);
 
 		Mockito.when(this.gxeTable.getSelectedEnvironments()).thenReturn(this.createEnvironmentList());
 		Mockito.when(this.gxeTable.getEnvironmentName()).thenReturn(ENVIRONMENT_NAME);
@@ -139,11 +139,11 @@ public class RunMultiSiteActionTest {
 
 		Mockito.when(this.studyDataManager.getDataSetsByType(STUDY_ID, DatasetType.SUMMARY_DATA)).thenReturn(this.createDataSets());
 
-		Mockito.when(multiSiteDataExporter.exportMeansDatasetToCsv(ArgumentMatchers.anyString(), ArgumentMatchers.any(MultiSiteParameters.class),
+		Mockito.when(this.multiSiteDataExporter.exportMeansDatasetToCsv(ArgumentMatchers.anyString(), ArgumentMatchers.any(MultiSiteParameters.class),
 				ArgumentMatchers.<List<Experiment>>any(), ArgumentMatchers.eq(ENVIRONMENT_NAME), ArgumentMatchers.any(GxeEnvironment.class), ArgumentMatchers.<List<Trait>>any(), ArgumentMatchers.any(IBPWorkbenchApplication.class)))
 				.thenReturn(MEANS_DATA_FILEPATH);
 
-		Mockito.when(multiSiteDataExporter.exportTrialDatasetToSummaryStatsCsv(Mockito.anyInt(), Mockito.anyString(), ArgumentMatchers.<List<Experiment>>any(),
+		Mockito.when(this.multiSiteDataExporter.exportTrialDatasetToSummaryStatsCsv(Mockito.anyInt(), Mockito.anyString(), ArgumentMatchers.<List<Experiment>>any(),
 				Mockito.eq(ENVIRONMENT_NAME), ArgumentMatchers.<List<Trait>>any(), Mockito.any(Project.class))).thenReturn(SUMMARY_DATA_FILEPATH);
 
 		Mockito.when(this.zipUtil.zipIt(Mockito.anyString(), ArgumentMatchers.<List<String>>any(), ArgumentMatchers.any(Project.class),
@@ -155,23 +155,23 @@ public class RunMultiSiteActionTest {
 	public void testButtonClickServerAppIsTrue() throws IOException {
 		final Project project = ProjectTestDataInitializer.createProject();
 		Mockito.doReturn(project).when(this.contextUtil).getProjectInContext();
-		runMultiSiteAction.setIsServerApp(true);
+		this.runMultiSiteAction.setIsServerApp(true);
 
-		runMultiSiteAction.buttonClick(Mockito.mock(Button.ClickEvent.class));
+		this.runMultiSiteAction.buttonClick(Mockito.mock(Button.ClickEvent.class));
 
 		// Make sure that the expected files are compressed in zip
 		final ArgumentCaptor<String> filenameCaptor = ArgumentCaptor.forClass(String.class);
 		final ArgumentCaptor<Project> projectCaptor = ArgumentCaptor.forClass(Project.class);
 		final ArgumentCaptor<ToolName> toolCaptor = ArgumentCaptor.forClass(ToolName.class);
-		Mockito.verify(this.zipUtil).zipIt(filenameCaptor.capture(), filesInZipCaptor.capture(), projectCaptor.capture(),
+		Mockito.verify(this.zipUtil).zipIt(filenameCaptor.capture(), this.filesInZipCaptor.capture(), projectCaptor.capture(),
 				toolCaptor.capture());
 		Assert.assertEquals(STUDY_NAME, filenameCaptor.getValue());
 		Assert.assertEquals(project, projectCaptor.getValue());
-		final List<String> filesInZip = filesInZipCaptor.getValue();
+		final List<String> filesInZip = this.filesInZipCaptor.getValue();
 		Assert.assertEquals(3, filesInZip.size());
 		Assert.assertTrue(filesInZip.contains(SUMMARY_DATA_FILEPATH));
 		Assert.assertTrue(filesInZip.contains(MEANS_DATA_FILEPATH));
-		Assert.assertTrue(filesInZip.contains(BMS_INPUT_FILES_DIR + File.separator + getExpectedBVInputXmlFilename() + ".xml"));
+		Assert.assertTrue(filesInZip.contains(BMS_INPUT_FILES_DIR + File.separator + this.getExpectedBVInputXmlFilename() + ".xml"));
 		Assert.assertEquals(ToolName.BV_GXE, toolCaptor.getValue());
 
 		// Verify zip file is downloaded to the browser with proper filename
@@ -185,11 +185,11 @@ public class RunMultiSiteActionTest {
 	@Test
 	public void testExportMultiSiteProjectFile() {
 
-		final GxeInput gxeInput = runMultiSiteAction.createGxeInput(multiSiteParameters, gxeEnvironment, selectedTraits);
+		final GxeInput gxeInput = this.runMultiSiteAction.createGxeInput(this.multiSiteParameters, this.gxeEnvironment, this.selectedTraits);
 
-		runMultiSiteAction.exportMultiSiteProjectFile(multiSiteParameters, gxeInput);
+		this.runMultiSiteAction.exportMultiSiteProjectFile(this.multiSiteParameters, gxeInput);
 
-		Mockito.verify(multiSiteDataExporter).generateXmlFieldBook(gxeInput);
+		Mockito.verify(this.multiSiteDataExporter).generateXmlFieldBook(gxeInput);
 		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.multiSiteParameters.getProject(),
 				ToolName.BREEDING_VIEW);
 
@@ -200,16 +200,17 @@ public class RunMultiSiteActionTest {
 	@Test
 	public void testExportDataFiles() {
 
-		final GxeInput gxeInput = runMultiSiteAction.createGxeInput(multiSiteParameters, gxeEnvironment, selectedTraits);
+		final GxeInput gxeInput = this.runMultiSiteAction.createGxeInput(this.multiSiteParameters, this.gxeEnvironment, this.selectedTraits);
 
-		this.runMultiSiteAction.exportDataFiles(multiSiteParameters, gxeInput, gxeEnvironment, selectedTraits);
+		this.runMultiSiteAction.exportDataFiles(this.multiSiteParameters, gxeInput, this.gxeEnvironment, this.selectedTraits);
 
 		// Make sure the Means DataSet is exported to CSV
-		Mockito.verify(multiSiteDataExporter).exportMeansDatasetToCsv(ArgumentMatchers.anyString(), ArgumentMatchers.eq(multiSiteParameters),
+		Mockito.verify(this.multiSiteDataExporter).exportMeansDatasetToCsv(ArgumentMatchers.anyString(), ArgumentMatchers.eq(
+			this.multiSiteParameters),
 				ArgumentMatchers.<List<Experiment>>any(), ArgumentMatchers.eq(ENVIRONMENT_NAME), ArgumentMatchers.any(GxeEnvironment.class), ArgumentMatchers.<List<Trait>>any(), ArgumentMatchers.any(IBPWorkbenchApplication.class));
 
 		// Make sure the Summary Data is exported to CSV
-		Mockito.verify(multiSiteDataExporter).exportTrialDatasetToSummaryStatsCsv(ArgumentMatchers.anyInt(), ArgumentMatchers.anyString(), ArgumentMatchers.<List<Experiment>>any(),
+		Mockito.verify(this.multiSiteDataExporter).exportTrialDatasetToSummaryStatsCsv(ArgumentMatchers.anyInt(), ArgumentMatchers.anyString(), ArgumentMatchers.<List<Experiment>>any(),
 				ArgumentMatchers.eq(ENVIRONMENT_NAME), ArgumentMatchers.<List<Trait>>any(), ArgumentMatchers.any(Project.class));
 
 		Assert.assertEquals(MEANS_DATA_FILEPATH, gxeInput.getSourceCSVFilePath());
@@ -220,9 +221,9 @@ public class RunMultiSiteActionTest {
 	@Test
 	public void testGenerateInputFileName() {
 
-		final String result = runMultiSiteAction.generateInputFileName(this.createProject(PROJECT_NAME));
+		final String result = this.runMultiSiteAction.generateInputFileName(this.createProject(PROJECT_NAME));
 
-		Assert.assertEquals(getExpectedBVInputXmlFilename(), result);
+		Assert.assertEquals(this.getExpectedBVInputXmlFilename(), result);
 
 	}
 
@@ -234,16 +235,16 @@ public class RunMultiSiteActionTest {
 	public void testGenerateInputFileNameWithSpecialCharacters() {
 
 		Mockito.when(this.gxeTable.getMeansDataSet()).thenReturn(this.createMeansDataSet(MEANS_DATASET_NAME + TEST_SPECIAL_CHARACTERS));
-		final String result = runMultiSiteAction.generateInputFileName(this.createProject(PROJECT_NAME));
+		final String result = this.runMultiSiteAction.generateInputFileName(this.createProject(PROJECT_NAME));
 
-		Assert.assertEquals(getExpectedBVInputXmlFilename() + "_ _-_111", result);
+		Assert.assertEquals(this.getExpectedBVInputXmlFilename() + "_ _-_111", result);
 
 	}
 
 	@Test
 	public void testCreateGxeInput() {
 
-		final GxeInput result = runMultiSiteAction.createGxeInput(multiSiteParameters, gxeEnvironment, selectedTraits);
+		final GxeInput result = this.runMultiSiteAction.createGxeInput(this.multiSiteParameters, this.gxeEnvironment, this.selectedTraits);
 		Assert.assertNotNull(result.getTraits());
 		Assert.assertNotNull(result.getEnvironment());
 		Assert.assertNotNull(result.getSelectedEnvironments());
@@ -257,7 +258,7 @@ public class RunMultiSiteActionTest {
 	@Test
 	public void testGetSelectedTraits() {
 
-		final List<Trait> result = runMultiSiteAction.getSelectedTraits();
+		final List<Trait> result = this.runMultiSiteAction.getSelectedTraits();
 
 		Assert.assertEquals(TEST_TRAITS.length, result.size());
 
@@ -267,10 +268,10 @@ public class RunMultiSiteActionTest {
 	public void testGetSelectedTraitsOnlyTwoTraitsAreSelected() {
 
 		// deselects the first trait in the table
-		final CheckBox cb = (CheckBox) runMultiSiteAction.getSelectTraitsTable().getItem(1).getItemProperty(TEST_TRAITS[0]).getValue();
+		final CheckBox cb = (CheckBox) this.runMultiSiteAction.getSelectTraitsTable().getItem(1).getItemProperty(TEST_TRAITS[0]).getValue();
 		cb.setValue(false);
 
-		final List<Trait> result = runMultiSiteAction.getSelectedTraits();
+		final List<Trait> result = this.runMultiSiteAction.getSelectedTraits();
 
 		Assert.assertEquals("Only 2 traits are selected.", 2, result.size());
 
@@ -279,7 +280,7 @@ public class RunMultiSiteActionTest {
 	@Test
 	public void testDownloadInputFile() {
 
-		runMultiSiteAction.downloadInputFile(Mockito.mock(File.class), Mockito.anyString());
+		this.runMultiSiteAction.downloadInputFile(Mockito.mock(File.class), Mockito.anyString());
 
 		// Make sure the file is downloaded to the browser.
 		Mockito.verify(this.window).open(Mockito.any(FileResource.class));
