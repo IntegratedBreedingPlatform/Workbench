@@ -73,16 +73,15 @@ public class HomeAction implements ClickListener, ActionListener {
 		// so that the UI is reset to its initial state
 		// we can remove this if we want to present the last UI state.
 		final WorkbenchMainView workbenchMainView = (WorkbenchMainView) window;
-		WorkbenchDashboard workbenchDashboard = null;
+		WorkbenchDashboard workbenchDashboard;
 		try {
 			workbenchDashboard = new WorkbenchDashboard();
 
 			workbenchMainView.showContent(workbenchDashboard);
 
 			// reinitialize dashboard with default values
-			final Project lastOpenedProgram = contextUtil.getProjectInContext();
+			final Project lastOpenedProgram = this.contextUtil.getProjectInContext();
 			if (lastOpenedProgram != null) {
-				workbenchMainView.addTitle(lastOpenedProgram.getProjectName());
 				workbenchDashboard.initializeDashboardContents(lastOpenedProgram);
 			}
 
@@ -92,7 +91,6 @@ public class HomeAction implements ClickListener, ActionListener {
 				final InternationalizableException i = (InternationalizableException) e.getCause();
 				MessageNotifier.showError(window, i.getCaption(), i.getDescription());
 			}
-			return;
 		}
 
 	}
