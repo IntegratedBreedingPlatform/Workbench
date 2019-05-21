@@ -295,9 +295,12 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 	Container createUsersContainer() {
 		final List<WorkbenchUser> validUserList = new ArrayList<>();
 
+		final String cropName = this.contextUtil.getProjectInContext().getCropType().getCropName();
+
 		// TODO: This can be improved once we implement proper User-Person
 		// mapping
-		final List<WorkbenchUser> userList = this.workbenchDataManager.getAllActiveUsersSorted();
+		final List<WorkbenchUser> userList = this.workbenchDataManager.getUsersByCrop(cropName);
+
 		for (final WorkbenchUser user : userList) {
 			final Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
 			user.setPerson(person);
