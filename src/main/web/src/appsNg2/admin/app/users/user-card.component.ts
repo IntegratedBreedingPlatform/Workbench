@@ -38,7 +38,9 @@ export class UserCard implements OnInit {
     /*
      * TODO Multi-select:
      *  - ng2-select2 is a bit wonky -> find alternative
-     *  - validations
+     *  - validations: pristine/touched not working
+     *     See https://github.com/NejcZdovc/ng2-select2/issues/13
+     *      and https://github.com/NejcZdovc/ng2-select2/issues/101
      *  - won't work with the latest version https://github.com/NejcZdovc/ng2-select2/issues/144
      */
     @Input() crops: Select2OptionData[];
@@ -196,6 +198,10 @@ export class UserCard implements OnInit {
         model.email = model.email.trim();
         model.username = model.username.trim();
         return model;
+    }
+
+    isFormValid(form) {
+        return form.valid && this.model.crops.length;
     }
 
 }
