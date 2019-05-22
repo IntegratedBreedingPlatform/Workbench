@@ -32,6 +32,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.RunMultiSiteAction;
 import org.generationcp.ibpworkbench.util.bean.MultiSiteParameters;
 import org.generationcp.middleware.domain.dms.DataSet;
+import org.generationcp.middleware.enumeration.DatasetTypeEnum;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.dms.DatasetType;
@@ -220,7 +221,7 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout
 	public void initializeValues() {
 		this.ds = null;
 		try {
-			this.ds = this.studyDataManager.getDataSetsByType(this.multiSiteParameters.getStudy().getId(), DatasetType.MEANS_DATA);
+			this.ds = this.studyDataManager.getDataSetsByType(this.multiSiteParameters.getStudy().getId(), DatasetTypeEnum.MEANS_DATA.getId());
 		} catch (final MiddlewareException e) {
 			MultiSiteAnalysisGxePanel.LOG.error("Error getting means dataset", e);
 		}

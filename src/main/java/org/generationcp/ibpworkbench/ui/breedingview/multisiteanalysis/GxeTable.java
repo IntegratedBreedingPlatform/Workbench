@@ -19,6 +19,7 @@ import org.generationcp.middleware.domain.dms.TrialEnvironments;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableTypeList;
 import org.generationcp.middleware.domain.oms.TermId;
+import org.generationcp.middleware.enumeration.DatasetTypeEnum;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
@@ -180,7 +181,7 @@ public class GxeTable extends Table implements InitializingBean {
 
 		try {
 
-			final List<DataSet> meansDataSets = this.studyDataManager.getDataSetsByType(studyId, DatasetType.MEANS_DATA);
+			final List<DataSet> meansDataSets = this.studyDataManager.getDataSetsByType(studyId, DatasetTypeEnum.MEANS_DATA.getId());
 			if (meansDataSets != null && !meansDataSets.isEmpty()) {
 
 				this.meansDataSet = meansDataSets.get(0);
@@ -305,7 +306,7 @@ public class GxeTable extends Table implements InitializingBean {
 			for (final DatasetReference dsRef : datasetRefs) {
 				final DataSet ds = this.studyDataManager.getDataSet(dsRef.getId());
 
-				if (ds.getDatasetType().getDatasetTypeId() != DatasetType.MEANS_DATA) {
+				if (ds.getDatasetType().getDatasetTypeId() != DatasetTypeEnum.MEANS_DATA.getId()) {
 
 					final Iterator<DMSVariableType> itrFactor = ds.getVariableTypes().getFactors().getVariableTypes().iterator();
 					while (itrFactor.hasNext()) {

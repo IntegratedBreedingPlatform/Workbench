@@ -21,6 +21,7 @@ import org.generationcp.ibpworkbench.util.MultiSiteDataExporter;
 import org.generationcp.ibpworkbench.util.bean.MultiSiteParameters;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.Experiment;
+import org.generationcp.middleware.enumeration.DatasetTypeEnum;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.dms.DatasetType;
@@ -221,7 +222,7 @@ public class RunMultiSiteAction implements ClickListener {
 	DataSet getSummaryStatsDataSet(final int studyId) {
 
 		final DataSet summaryStatsDataSet;
-		final List<DataSet> dataSets = this.studyDataManager.getDataSetsByType(studyId, DatasetType.SUMMARY_DATA);
+		final List<DataSet> dataSets = this.studyDataManager.getDataSetsByType(studyId, DatasetTypeEnum.SUMMARY_DATA.getId());
 		if (!dataSets.isEmpty()) {
 			summaryStatsDataSet = dataSets.get(0);
 		} else {

@@ -9,6 +9,7 @@ import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSi
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.TrialEnvironment;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
+import org.generationcp.middleware.enumeration.DatasetTypeEnum;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.dms.DatasetType;
 import org.slf4j.Logger;
@@ -49,7 +50,7 @@ public class RunBreedingViewButtonClickListener implements ClickListener {
 
 			dataSets = this.studyDataManager.getDataSetsByType(
 				this.ssaDetailsPanel.getBreedingViewInput().getStudyId(),
-				DatasetType.MEANS_DATA);
+				DatasetTypeEnum.MEANS_DATA.getId());
 			if (!dataSets.isEmpty()) {
 
 				final DataSet meansDataSet = dataSets.get(0);

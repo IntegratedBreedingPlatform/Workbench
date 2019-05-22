@@ -11,6 +11,7 @@ import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.VariableTypeList;
 import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.domain.oms.TermId;
+import org.generationcp.middleware.enumeration.DatasetTypeEnum;
 import org.generationcp.middleware.pojos.dms.DatasetType;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class StudyUtil {
 	public static final int DATASET_ID = -3;
 	public static final String DATASET_NAME = "Test Dataset";
 	public static final String DATASET_DESCRIPTION = "Test Dataset Description";
-	public static final int DATASET_TYPE = DatasetType.PLOT_DATA;
+	public static final int DATASET_TYPE = DatasetTypeEnum.PLOT_DATA.getId();
 
 	public static final String PROPERTY_POSTFIX = "_PROPERTY";
 	public static final String SCALE_POSTFIX = "_SCALE";

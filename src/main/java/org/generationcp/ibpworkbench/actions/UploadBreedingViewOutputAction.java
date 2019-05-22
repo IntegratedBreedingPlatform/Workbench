@@ -20,6 +20,7 @@ import org.generationcp.middleware.domain.dms.TrialEnvironment;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.oms.TermId;
+import org.generationcp.middleware.enumeration.DatasetTypeEnum;
 import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.Location;
@@ -92,7 +93,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 			if (!locationIds.isEmpty()) {
 				environmentExists =
-					this.studyDataManager.checkIfAnyLocationIDsExistInExperiments(studyId, DatasetType.MEANS_DATA, locationIds);
+					this.studyDataManager.checkIfAnyLocationIDsExistInExperiments(studyId, DatasetTypeEnum.MEANS_DATA.getId(), locationIds);
 			}
 
 			try {
@@ -173,7 +174,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 		final BMSOutputInformation bmsOutputInformation = this.bmsOutputParser.getBmsOutputInformation();
 
-		final List<DataSet> datasets = this.studyDataManager.getDataSetsByType(studyId, DatasetType.MEANS_DATA);
+		final List<DataSet> datasets = this.studyDataManager.getDataSetsByType(studyId, DatasetTypeEnum.MEANS_DATA.getId());
 
 		if (!datasets.isEmpty()) {
 			final TrialEnvironments trialEnvironments = this.studyDataManager.getTrialEnvironmentsInDataset(datasets.get(0).getId());

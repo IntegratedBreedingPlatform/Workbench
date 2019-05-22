@@ -35,6 +35,7 @@ import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.oms.TermId;
+import org.generationcp.middleware.enumeration.DatasetTypeEnum;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.dms.DatasetType;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -247,7 +248,7 @@ public class MetaAnalysisSelectTraitsPanel extends VerticalLayout implements Ini
 					return "0";
 				}
 
-				if (item.getDataSetTypeId() == DatasetType.MEANS_DATA) {
+				if (item.getDataSetTypeId() == DatasetTypeEnum.MEANS_DATA.getId()) {
 					countData =
 						String.valueOf(
 							MetaAnalysisSelectTraitsPanel.this.studyDataManager.countStocks(

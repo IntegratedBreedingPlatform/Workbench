@@ -24,6 +24,7 @@ import org.generationcp.middleware.domain.dms.Experiment;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableList;
+import org.generationcp.middleware.enumeration.DatasetTypeEnum;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.dms.DatasetType;
@@ -137,7 +138,7 @@ public class RunMultiSiteActionTest {
 		Mockito.when(this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(this.createProject(PROJECT_NAME), ToolName.BREEDING_VIEW))
 				.thenReturn(BMS_INPUT_FILES_DIR);
 
-		Mockito.when(this.studyDataManager.getDataSetsByType(STUDY_ID, DatasetType.SUMMARY_DATA)).thenReturn(this.createDataSets());
+		Mockito.when(this.studyDataManager.getDataSetsByType(STUDY_ID, DatasetTypeEnum.SUMMARY_DATA.getId())).thenReturn(this.createDataSets());
 
 		Mockito.when(this.multiSiteDataExporter.exportMeansDatasetToCsv(ArgumentMatchers.anyString(), ArgumentMatchers.any(MultiSiteParameters.class),
 				ArgumentMatchers.<List<Experiment>>any(), ArgumentMatchers.eq(ENVIRONMENT_NAME), ArgumentMatchers.any(GxeEnvironment.class), ArgumentMatchers.<List<Trait>>any(), ArgumentMatchers.any(IBPWorkbenchApplication.class)))
@@ -358,7 +359,7 @@ public class RunMultiSiteActionTest {
 
 	private DataSet createMeansDataSet(final String dataSetName) {
 		final DataSet ds = new DataSet();
-		ds.setDatasetType(new DatasetType(DatasetType.MEANS_DATA));
+		ds.setDatasetType(new DatasetType(DatasetTypeEnum.MEANS_DATA.getId()));
 		ds.setId(MEANS_DATASET_ID);
 		ds.setName(dataSetName);
 
@@ -368,7 +369,7 @@ public class RunMultiSiteActionTest {
 
 	private DataSet createSummaryDataSet() {
 		final DataSet ds = new DataSet();
-		ds.setDatasetType(new DatasetType(DatasetType.SUMMARY_DATA));
+		ds.setDatasetType(new DatasetType(DatasetTypeEnum.SUMMARY_DATA.getId()));
 		ds.setName(SUMMARY_DATASET_NAME);
 
 		return ds;
