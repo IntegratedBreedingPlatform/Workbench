@@ -36,7 +36,7 @@ export class UsersDatagrid implements OnInit {
 
     public roles: Role[];
     public userSelected: User;
-    public crops: Crop[];
+    public crops: Crop[] = [];
 
     constructor(private userService: UserService,
                 private roleService: RoleService,
@@ -201,5 +201,9 @@ export class UsersDatagrid implements OnInit {
 
     closeUserStatusConfirmPopUp() {
         this.showConfirmStatusDialog = false;
+    }
+
+    getCropsTitleFormat(crops) {
+        return crops.map((crop) => crop.cropName).splice(1).join(' and ');
     }
 }
