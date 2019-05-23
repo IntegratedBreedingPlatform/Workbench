@@ -100,3 +100,10 @@ users-admin app-dialog div.modal-footer > .message {
     margin: -5px 0;
     display: inline-block;
 }
+
+.mandatory-asterisk:after,
+.form-group.required .control-label:after {
+    content:"*";
+    color:red;
+    margin-left: 2px;
+}
