@@ -188,7 +188,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.logoBtn = new Button();
 		this.logoBtn.setDebugId("logoBtn");
 		this.logoBtn.setIcon(ibpLogo.getSource());
-		this.logoBtn.setStyleName(BaseTheme.BUTTON_LINK + " bms-logo-btn");
+		this.logoBtn.setStyleName(BaseTheme.BUTTON_LINK + " bms-logo-btn bms-logo-btn-with-margin");
 		this.logoBtn.setWidth("34px");
 		this.logoBtn.setHeight("34px");
 
@@ -466,8 +466,10 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	 * Layout the components in Workbench header. Button to expand/collapse will be hidden when in Dashboard and Create Program views.
 	 */
 	private void layoutWorkbenchHeaderComponents() {
+		this.logoBtn.setStyleName(BaseTheme.BUTTON_LINK + " bms-logo-btn bms-logo-btn-with-margin");
 		// Button to collapse or expand sidebar
 		if (!this.doHideSidebarToggleButton) {
+			this.logoBtn.setStyleName(BaseTheme.BUTTON_LINK + " bms-logo-btn");
 			this.workbenchHeaderLayout.addComponent(this.sidebarToggleButton);
 			this.workbenchHeaderLayout.setComponentAlignment(this.sidebarToggleButton, Alignment.MIDDLE_LEFT);
 		}
