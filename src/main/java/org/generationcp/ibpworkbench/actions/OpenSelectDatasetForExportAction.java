@@ -10,10 +10,9 @@
 
 package org.generationcp.ibpworkbench.actions;
 
-import java.io.File;
-import java.util.List;
-import java.util.Map;
-
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Window.Notification;
 import org.generationcp.commons.breedingview.xml.ProjectType;
 import org.generationcp.commons.util.BreedingViewUtil;
 import org.generationcp.commons.util.DateUtil;
@@ -43,14 +42,12 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.unbescape.html.HtmlEscape;
 
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Window.Notification;
+import java.io.File;
+import java.util.List;
+import java.util.Map;
 
 /**
- *
  * @author Jeffrey Morales
- *
  */
 @Configurable
 public class OpenSelectDatasetForExportAction implements ClickListener {
@@ -108,7 +105,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 
 			// List of factors from the new schema
 			final List<DMSVariableType> factorsInDataset =
-					this.studyDataManager.getDataSet(this.dataSetId).getVariableTypes().getFactors().getVariableTypes();
+				this.studyDataManager.getDataSet(this.dataSetId).getVariableTypes().getFactors().getVariableTypes();
 
 			final BreedingViewInput breedingViewInput = new BreedingViewInput();
 			breedingViewInput.setProject(this.project);
@@ -143,7 +140,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 			}
 
 			w.showContent(new SingleSiteAnalysisDetailsPanel(breedingViewTool, breedingViewInput, factorsInDataset, trialVariablesInDataset,
-					this.project, this.selectDatasetForBreedingViewPanel));
+				this.project, this.selectDatasetForBreedingViewPanel));
 
 		} catch (final MiddlewareException e) {
 			OpenSelectDatasetForExportAction.LOG.error(e.getMessage(), e);
@@ -181,7 +178,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 
 		final String timeStamp = DateUtil.getCurrentDateAsStringValue("yyyy-MM-dd_HH:mm");
 		breedingViewInput.setBreedingViewAnalysisName(
-				String.format("SSA analysis of %s  (run at %s)", BreedingViewUtil.sanitizeNameAlphaNumericOnly(datasetName), timeStamp));
+			String.format("SSA analysis of %s  (run at %s)", BreedingViewUtil.sanitizeNameAlphaNumericOnly(datasetName), timeStamp));
 
 	}
 
@@ -206,21 +203,21 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 		final boolean covariatesTableIncludesNonNumeric = this.checkIfNonNumericVarAreIncluded(variates, covariatesCheckboxState);
 		if (variatesTableIncludesNonNumeric || covariatesTableIncludesNonNumeric) {
 			MessageNotifier.showError(event.getComponent().getWindow(), this.messageSource.getMessage(Message.INVALID_INPUT),
-					this.messageSource.getMessage(Message.SSA_NON_NUMERIC_CATEGORICAL_VAR_ERROR));
+				this.messageSource.getMessage(Message.SSA_NON_NUMERIC_CATEGORICAL_VAR_ERROR));
 			return false;
 		}
-
 
 		final boolean includesNumericCategorical = this.checkIfNumericCategoricalVarAreIncluded(variates, variatesCheckboxState);
 		if (includesNumericCategorical) {
 			MessageNotifier.showWarning(event.getComponent().getWindow(), this.messageSource.getMessage(Message.WARNING),
-					this.messageSource.getMessage(Message.SSA_NUMERIC_CATEGORICAL_VAR_WARNING));
+				this.messageSource.getMessage(Message.SSA_NUMERIC_CATEGORICAL_VAR_WARNING));
 		}
 		return true;
 	}
 
-	protected boolean checkIfNumericCategoricalVarAreIncluded(final List<VariableTableItem> variableTableItems,
-			final Map<String, Boolean> variatesCheckboxState) {
+	protected boolean checkIfNumericCategoricalVarAreIncluded(
+		final List<VariableTableItem> variableTableItems,
+		final Map<String, Boolean> variatesCheckboxState) {
 		for (final VariableTableItem vm : variableTableItems) {
 			final boolean isSelected = variatesCheckboxState.get(vm.getName());
 			if (isSelected && vm.isNumericCategoricalVariate()) {
@@ -230,7 +227,8 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 		return false;
 	}
 
-	protected boolean checkIfNonNumericVarAreIncluded(final List<VariableTableItem> variableTableItems, final Map<String, Boolean> variatesCheckboxState) {
+	protected boolean checkIfNonNumericVarAreIncluded(
+		final List<VariableTableItem> variableTableItems, final Map<String, Boolean> variatesCheckboxState) {
 		for (final VariableTableItem vm : variableTableItems) {
 			if (variatesCheckboxState.containsKey(vm.getName())) {
 				final boolean isSelected = variatesCheckboxState.get(vm.getName());

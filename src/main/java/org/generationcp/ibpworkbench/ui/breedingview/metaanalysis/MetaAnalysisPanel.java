@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- * 
+ *
  * Generation Challenge Programme (GCP)
- * 
- * 
+ *
+ *
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- * 
+ *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.ui.breedingview.metaanalysis;
@@ -15,9 +15,17 @@ import com.vaadin.data.util.BeanContainer;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.AbstractSelect.ItemDescriptionGenerator;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
 import org.generationcp.browser.study.listeners.ViewStudyDetailsButtonClickListener;
 import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.help.document.HelpModule;
@@ -31,8 +39,16 @@ import org.generationcp.ibpworkbench.model.FactorModel;
 import org.generationcp.ibpworkbench.model.MetaEnvironmentModel;
 import org.generationcp.ibpworkbench.model.VariateModel;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
-import org.generationcp.middleware.domain.dms.*;
+import org.generationcp.middleware.domain.dms.DMSVariableType;
+import org.generationcp.middleware.domain.dms.DataSet;
+import org.generationcp.middleware.domain.dms.PhenotypicType;
+import org.generationcp.middleware.domain.dms.StandardVariable;
+import org.generationcp.middleware.domain.dms.Study;
+import org.generationcp.middleware.domain.dms.TrialEnvironment;
+import org.generationcp.middleware.domain.dms.TrialEnvironments;
+import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.oms.TermId;
+import org.generationcp.middleware.enumeration.DatasetTypeEnum;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -42,12 +58,14 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
- * 
  * @author Aldrin Batac
- * 
  */
 @Configurable
 public class MetaAnalysisPanel extends VerticalLayout implements InitializingBean, InternationalizableComponent, IBPWorkbenchLayout {
@@ -123,8 +141,8 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 
 		this.setTitleContent();
 
-		ThemeResource resource = new ThemeResource("../vaadin-retro/images/search-nurseries.png");
-		Label headingLabel = new Label("Select Data for Analysis");
+		final ThemeResource resource = new ThemeResource("../vaadin-retro/images/search-nurseries.png");
+		final Label headingLabel = new Label("Select Data for Analysis");
 		headingLabel.setDebugId("headingLabel");
 		headingLabel.setStyleName(Bootstrap.Typography.H4.styleName());
 		headingLabel.addStyleName("label-bold");
@@ -143,7 +161,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 		this.tabSheet.setWidth("100%");
 
 		this.setSelectedEnvironmenTable(new Table());
-		BeanItemContainer<MetaEnvironmentModel> container = new BeanItemContainer<MetaEnvironmentModel>(MetaEnvironmentModel.class);
+		final BeanItemContainer<MetaEnvironmentModel> container = new BeanItemContainer<MetaEnvironmentModel>(MetaEnvironmentModel.class);
 		this.getSelectedEnvironmenTable().setWidth("100%");
 		this.getSelectedEnvironmenTable().setHeight("450px");
 		this.getSelectedEnvironmenTable().setContainerDataSource(container);
@@ -151,9 +169,9 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 		this.getSelectedEnvironmenTable().setColumnHeaders(new String[] {"Study Name", "Dataset Name", "Trial", "Environment"});
 
 		this.lblReviewEnvironments =
-				new Label("<span class='bms-environments' style='position:relative; top: -2px; color: #0076A9; "
-						+ "font-size: 25px; font-weight: bold;'></span><b>&nbsp;" + "<span style='position:relative; top: -3px;'>"
-						+ this.messageSource.getMessage(Message.META_REVIEW_ENVIRONMENTS) + "</span></b>", Label.CONTENT_XHTML);
+			new Label("<span class='bms-environments' style='position:relative; top: -2px; color: #0076A9; "
+				+ "font-size: 25px; font-weight: bold;'></span><b>&nbsp;" + "<span style='position:relative; top: -3px;'>"
+				+ this.messageSource.getMessage(Message.META_REVIEW_ENVIRONMENTS) + "</span></b>", Label.CONTENT_XHTML);
 		this.lblReviewEnvironments.setStyleName(Bootstrap.Typography.H3.styleName());
 
 		this.lblBuildNewAnalysisDescription = new Label();
@@ -167,9 +185,9 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 		this.linkCloseAllTab.setVisible(false);
 
 		this.lblSelectDatasetsForAnalysis =
-				new Label("<span class='bms-dataset' style='position:relative; top: -1px; color: #FF4612; "
-						+ "font-size: 20px; font-weight: bold;'></span><b>&nbsp;"
-						+ this.messageSource.getMessage(Message.META_SELECT_DATASETS_FOR_ANALYSIS) + "</b>", Label.CONTENT_XHTML);
+			new Label("<span class='bms-dataset' style='position:relative; top: -1px; color: #FF4612; "
+				+ "font-size: 20px; font-weight: bold;'></span><b>&nbsp;"
+				+ this.messageSource.getMessage(Message.META_SELECT_DATASETS_FOR_ANALYSIS) + "</b>", Label.CONTENT_XHTML);
 		this.lblSelectDatasetsForAnalysis.setStyleName(Bootstrap.Typography.H3.styleName());
 
 		this.lblSelectDatasetsForAnalysisDescription = new Label();
@@ -197,8 +215,9 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 		this.toolTitle.setWidth("430px");
 
 		this.titleLayout.addComponent(this.toolTitle);
-		this.titleLayout.addComponent(new HelpButton(HelpModule.MULTI_YEAR_MULTI_SITE_ANALYSIS,
-				"Go to Multi-Year Multi-Site Analysis Tutorial"));
+		this.titleLayout.addComponent(new HelpButton(
+			HelpModule.MULTI_YEAR_MULTI_SITE_ANALYSIS,
+			"Go to Multi-Year Multi-Site Analysis Tutorial"));
 	}
 
 	/**
@@ -217,7 +236,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 			private static final long serialVersionUID = -7822326039221887888L;
 
 			@Override
-			public void selectedTabChange(SelectedTabChangeEvent event) {
+			public void selectedTabChange(final SelectedTabChangeEvent event) {
 				if (MetaAnalysisPanel.this.tabSheet.getComponentCount() <= 1) {
 					MetaAnalysisPanel.this.linkCloseAllTab.setVisible(false);
 				} else {
@@ -231,11 +250,11 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 			private static final long serialVersionUID = 1425892265723948423L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 
-				SelectDatasetDialog dialog =
-						new SelectDatasetDialog(event.getComponent().getWindow(), MetaAnalysisPanel.this,
-								MetaAnalysisPanel.this.currentProject);
+				final SelectDatasetDialog dialog =
+					new SelectDatasetDialog(event.getComponent().getWindow(), MetaAnalysisPanel.this,
+						MetaAnalysisPanel.this.currentProject);
 				event.getComponent().getWindow().addWindow(dialog);
 			}
 
@@ -246,7 +265,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 				MetaAnalysisPanel.this.tabSheet.removeAllComponents();
 				MetaAnalysisPanel.this.linkCloseAllTab.setVisible(false);
 			}
@@ -257,7 +276,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 				MetaAnalysisPanel.this.tabSheet.removeAllComponents();
 				MetaAnalysisPanel.this.selectedEnvironmenTable.removeAllItems();
 			}
@@ -269,19 +288,19 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 
 			@SuppressWarnings("unchecked")
 			@Override
-			public void buttonClick(ClickEvent event) {
-				List<MetaEnvironmentModel> metaEnvironments = new ArrayList<MetaEnvironmentModel>();
-				Iterator<MetaEnvironmentModel> itr =
-						(Iterator<MetaEnvironmentModel>) MetaAnalysisPanel.this.getSelectedEnvironmenTable().getContainerDataSource()
-								.getItemIds().iterator();
+			public void buttonClick(final ClickEvent event) {
+				final List<MetaEnvironmentModel> metaEnvironments = new ArrayList<MetaEnvironmentModel>();
+				final Iterator<MetaEnvironmentModel> itr =
+					(Iterator<MetaEnvironmentModel>) MetaAnalysisPanel.this.getSelectedEnvironmenTable().getContainerDataSource()
+						.getItemIds().iterator();
 				while (itr.hasNext()) {
 					metaEnvironments.add(itr.next());
 				}
 
 				if (!metaEnvironments.isEmpty()) {
-					IContentWindow w = (IContentWindow) event.getComponent().getWindow();
+					final IContentWindow w = (IContentWindow) event.getComponent().getWindow();
 					w.showContent(new MetaAnalysisSelectTraitsPanel(MetaAnalysisPanel.this.getCurrentProject(), metaEnvironments,
-							MetaAnalysisPanel.this));
+						MetaAnalysisPanel.this));
 				}
 
 			}
@@ -294,14 +313,14 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 		this.setSpacing(true);
 		this.setWidth("100%");
 
-		HorizontalLayout browseLabelLayout = new HorizontalLayout();
+		final HorizontalLayout browseLabelLayout = new HorizontalLayout();
 		browseLabelLayout.setDebugId("browseLabelLayout");
 		browseLabelLayout.addComponent(this.browseLink);
 		browseLabelLayout.addComponent(new Label("for a dataset to work with."));
 		browseLabelLayout.setSizeUndefined();
 		browseLabelLayout.setMargin(false);
 
-		VerticalLayout selectDataForAnalysisLayout = new VerticalLayout();
+		final VerticalLayout selectDataForAnalysisLayout = new VerticalLayout();
 		selectDataForAnalysisLayout.setDebugId("selectDataForAnalysisLayout");
 		selectDataForAnalysisLayout.addComponent(this.heading);
 		selectDataForAnalysisLayout.addComponent(browseLabelLayout);
@@ -336,7 +355,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 
 	protected Component layoutButtonArea() {
 
-		HorizontalLayout buttonLayout = new HorizontalLayout();
+		final HorizontalLayout buttonLayout = new HorizontalLayout();
 		buttonLayout.setDebugId("buttonLayout");
 
 		buttonLayout.setSpacing(true);
@@ -349,25 +368,25 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 		return buttonLayout;
 	}
 
-	public void generateTab(int dataSetId) {
+	public void generateTab(final int dataSetId) {
 		try {
 			if (this.studyDetailsLayout.getComponent(0, 2) == null) {
 				this.studyDetailsLayout.addComponent(this.tabSheet, 0, 2, 9, 2);
 			}
 
-			TabSheet tabSheet = MetaAnalysisPanel.this.getTabsheet();
-			DataSet ds = MetaAnalysisPanel.this.studyDataManager.getDataSet(dataSetId);
+			final TabSheet tabSheet = this.getTabsheet();
+			final DataSet ds = this.studyDataManager.getDataSet(dataSetId);
 
-			Iterator<Component> itr = tabSheet.getComponentIterator();
+			final Iterator<Component> itr = tabSheet.getComponentIterator();
 			while (itr.hasNext()) {
-				EnvironmentTabComponent tab = (EnvironmentTabComponent) itr.next();
+				final EnvironmentTabComponent tab = (EnvironmentTabComponent) itr.next();
 				if (tab.getDataSetId() == ds.getId()) {
 					tabSheet.setSelectedTab(tab);
 					return;
 				}
 			}
 
-			EnvironmentTabComponent component = new EnvironmentTabComponent(ds);
+			final EnvironmentTabComponent component = new EnvironmentTabComponent(ds);
 			component.setDebugId("component");
 			tabSheet.addTab(component);
 			tabSheet.getTab(component).setClosable(true);
@@ -378,7 +397,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 				this.linkCloseAllTab.setVisible(true);
 			}
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			MetaAnalysisPanel.LOG.error("Error generating dataset tab for id = " + dataSetId, e);
 		}
 	}// end of generateTab
@@ -388,7 +407,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 		return this.currentProject;
 	}
 
-	public void setCurrentProject(Project currentProject) {
+	public void setCurrentProject(final Project currentProject) {
 		this.currentProject = currentProject;
 	}
 
@@ -396,7 +415,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 		return this.currentStudy;
 	}
 
-	public void setCurrentStudy(Study currentStudy) {
+	public void setCurrentStudy(final Study currentStudy) {
 		this.currentStudy = currentStudy;
 	}
 
@@ -404,7 +423,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 		return this.currentRepresentationId;
 	}
 
-	public void setCurrentRepresentationId(Integer currentRepresentationId) {
+	public void setCurrentRepresentationId(final Integer currentRepresentationId) {
 		this.currentRepresentationId = currentRepresentationId;
 	}
 
@@ -412,7 +431,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 		return this.currentDataSetId;
 	}
 
-	public void setCurrentDataSetId(Integer currentDataSetId) {
+	public void setCurrentDataSetId(final Integer currentDataSetId) {
 		this.currentDataSetId = currentDataSetId;
 	}
 
@@ -420,7 +439,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 		return this.currentDatasetName;
 	}
 
-	public void setCurrentDatasetName(String currentDatasetName) {
+	public void setCurrentDatasetName(final String currentDatasetName) {
 		this.currentDatasetName = currentDatasetName;
 	}
 
@@ -428,7 +447,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 		return this.variatesCheckboxState;
 	}
 
-	public void setVariatesCheckboxState(HashMap<String, Boolean> variatesCheckboxState) {
+	public void setVariatesCheckboxState(final HashMap<String, Boolean> variatesCheckboxState) {
 		this.variatesCheckboxState = variatesCheckboxState;
 	}
 
@@ -436,7 +455,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 		return this.tabSheet;
 	}
 
-	public void setTabsheet(TabSheet tabsheet) {
+	public void setTabsheet(final TabSheet tabsheet) {
 		this.tabSheet = tabsheet;
 	}
 
@@ -444,7 +463,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 		return this.selectedEnvironmenTable;
 	}
 
-	public void setSelectedEnvironmenTable(Table selectedEnvironmenTable) {
+	public void setSelectedEnvironmenTable(final Table selectedEnvironmenTable) {
 		this.selectedEnvironmenTable = selectedEnvironmenTable;
 	}
 
@@ -460,7 +479,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 		Label lblTraits;
 		Label lblTraitDescription;
 
-		public EnvironmentTabComponent(DataSet dataSet) {
+		public EnvironmentTabComponent(final DataSet dataSet) {
 
 			this.dataSet = dataSet;
 
@@ -481,31 +500,32 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 
 			try {
 				this.studyName = MetaAnalysisPanel.this.studyDataManager.getStudy(this.dataSet.getStudyId()).getName();
-			} catch (MiddlewareException e) {
+			} catch (final MiddlewareException e) {
 				MetaAnalysisPanel.LOG.error("Error getting study name", e);
 			}
 
 			this.lblFactors =
-					new Label(
-							"<span class='bms-factors' style='color: #39B54A; font-size: 20px; font-weight: bold;'></span><b>&nbsp;FACTORS</b>",
-							Label.CONTENT_XHTML);
+				new Label(
+					"<span class='bms-factors' style='color: #39B54A; font-size: 20px; font-weight: bold;'></span><b>&nbsp;FACTORS</b>",
+					Label.CONTENT_XHTML);
 			this.lblFactors.setStyleName(Bootstrap.Typography.H3.styleName());
 			this.lblFactorDescription = new Label("The factors of the dataset you have selected are shown below for your review.");
 			this.lblFactorDescription.setDebugId("lblFactorDescription");
 			this.lblTraits =
-					new Label(
-							"<span class='bms-variates' style='color: #B8D433; font-size: 20px; font-weight: bold;'></span><b>&nbsp;TRAITS</b>",
-							Label.CONTENT_XHTML);
+				new Label(
+					"<span class='bms-variates' style='color: #B8D433; font-size: 20px; font-weight: bold;'></span><b>&nbsp;TRAITS</b>",
+					Label.CONTENT_XHTML);
 			this.lblTraits.setStyleName(Bootstrap.Typography.H3.styleName());
 			this.lblTraitDescription = new Label("The traits of the dataset you have selected are shown below for your review.");
 			this.lblTraitDescription.setDebugId("lblTraitDescription");
 
-			Label lblStudyName = new Label("<b>Study Name:</b> " + this.studyName);
+			final Label lblStudyName = new Label("<b>Study Name:</b> " + this.studyName);
 			lblStudyName.setDebugId("lblStudyName");
 			lblStudyName.setContentMode(Label.CONTENT_XHTML);
-			Button linkFullStudyDetails = new Button("<span class='glyphicon glyphicon-open' style='right: 6px'></span>Full Study Details");
+			final Button linkFullStudyDetails =
+				new Button("<span class='glyphicon glyphicon-open' style='right: 6px'></span>Full Study Details");
 			linkFullStudyDetails.setDebugId("linkFullStudyDetails");
-			Button linkSaveToList = new Button("<span class='glyphicon glyphicon-plus' style='right: 6px'></span>Save To List");
+			final Button linkSaveToList = new Button("<span class='glyphicon glyphicon-plus' style='right: 6px'></span>Save To List");
 			linkSaveToList.setDebugId("linkSaveToList");
 			linkFullStudyDetails.setHtmlContentAllowed(true);
 			linkSaveToList.setHtmlContentAllowed(true);
@@ -515,7 +535,7 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 				private static final long serialVersionUID = -91508239632267095L;
 
 				@Override
-				public void buttonClick(ClickEvent event) {
+				public void buttonClick(final ClickEvent event) {
 					EnvironmentTabComponent.this.addDataSetToTable();
 
 				}
@@ -596,12 +616,12 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 
 				@Override
 				@SuppressWarnings("unchecked")
-				public String generateDescription(Component source, Object itemId, Object propertyId) {
-					BeanContainer<Integer, VariateModel> container =
-							(BeanContainer<Integer, VariateModel>) tblVariates.getContainerDataSource();
-					VariateModel vm = container.getItem(itemId).getBean();
+				public String generateDescription(final Component source, final Object itemId, final Object propertyId) {
+					final BeanContainer<Integer, VariateModel> container =
+						(BeanContainer<Integer, VariateModel>) tblVariates.getContainerDataSource();
+					final VariateModel vm = container.getItem(itemId).getBean();
 
-					StringBuilder sb = new StringBuilder();
+					final StringBuilder sb = new StringBuilder();
 					sb.append(String.format("<span class=\"gcp-table-header-bold\">%s</span><br>", vm.getName()));
 					sb.append(String.format("<span>Property:</span> %s<br>", vm.getTrname()));
 					sb.append(String.format("<span>Scale:</span> %s<br>", vm.getScname()));
@@ -612,11 +632,11 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 				}
 			});
 
-			BeanContainer<Integer, VariateModel> container = new BeanContainer<Integer, VariateModel>(VariateModel.class);
+			final BeanContainer<Integer, VariateModel> container = new BeanContainer<Integer, VariateModel>(VariateModel.class);
 			container.setBeanIdProperty("id");
 
-			for (DMSVariableType variate : this.dataSet.getVariableTypes().getVariates().getVariableTypes()) {
-				VariateModel vm = new VariateModel();
+			for (final DMSVariableType variate : this.dataSet.getVariableTypes().getVariates().getVariableTypes()) {
+				final VariateModel vm = new VariateModel();
 				vm.setId(variate.getRank());
 				vm.setName(variate.getLocalName());
 				vm.setDescription(variate.getLocalDescription());
@@ -632,8 +652,8 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 
 			tblVariates.setContainerDataSource(container);
 
-			String[] columns = new String[] {"name", "description", "scname"};
-			String[] columnHeaders = new String[] {"Name", "Description", "Scale"};
+			final String[] columns = new String[] {"name", "description", "scname"};
+			final String[] columnHeaders = new String[] {"Name", "Description", "Scale"};
 			tblVariates.setVisibleColumns(columns);
 			tblVariates.setColumnHeaders(columnHeaders);
 
@@ -647,16 +667,17 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 			tblFactors.setImmediate(true);
 			tblFactors.setWidth("100%");
 			tblFactors.setHeight("270px");
-			BeanContainer<Integer, FactorModel> container = new BeanContainer<Integer, FactorModel>(FactorModel.class);
+			final BeanContainer<Integer, FactorModel> container = new BeanContainer<Integer, FactorModel>(FactorModel.class);
 			container.setBeanIdProperty("id");
 
-			for (DMSVariableType factor : this.dataSet.getVariableTypes().getFactors().getVariableTypes()) {
+			for (final DMSVariableType factor : this.dataSet.getVariableTypes().getFactors().getVariableTypes()) {
 
-				if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.DATASET || factor.getStandardVariable().getPhenotypicType() == PhenotypicType.STUDY) {
+				if (factor.getStandardVariable().getPhenotypicType() == PhenotypicType.DATASET
+					|| factor.getStandardVariable().getPhenotypicType() == PhenotypicType.STUDY) {
 					continue;
 				}
 
-				FactorModel fm = new FactorModel();
+				final FactorModel fm = new FactorModel();
 				fm.setId(factor.getRank());
 				fm.setName(factor.getLocalName());
 				fm.setDescription(factor.getLocalDescription());
@@ -671,8 +692,8 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 
 			tblFactors.setContainerDataSource(container);
 
-			String[] columns = new String[] {"name", "description"};
-			String[] columnHeaders = new String[] {"Name", "Description"};
+			final String[] columns = new String[] {"name", "description"};
+			final String[] columnHeaders = new String[] {"Name", "Description"};
 			tblFactors.setVisibleColumns(columns);
 			tblFactors.setColumnHeaders(columnHeaders);
 
@@ -682,12 +703,12 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 
 				@Override
 				@SuppressWarnings("unchecked")
-				public String generateDescription(Component source, Object itemId, Object propertyId) {
-					BeanContainer<Integer, FactorModel> container =
-							(BeanContainer<Integer, FactorModel>) tblFactors.getContainerDataSource();
-					FactorModel fm = container.getItem(itemId).getBean();
+				public String generateDescription(final Component source, final Object itemId, final Object propertyId) {
+					final BeanContainer<Integer, FactorModel> container =
+						(BeanContainer<Integer, FactorModel>) tblFactors.getContainerDataSource();
+					final FactorModel fm = container.getItem(itemId).getBean();
 
-					StringBuilder sb = new StringBuilder();
+					final StringBuilder sb = new StringBuilder();
 					sb.append(String.format("<span class=\"gcp-table-header-bold\">%s</span><br>", fm.getName()));
 					sb.append(String.format("<span>Property:</span> %s<br>", fm.getTrname()));
 					sb.append(String.format("<span>Scale:</span> %s<br>", fm.getScname()));
@@ -704,23 +725,23 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 		@SuppressWarnings("unchecked")
 		private void addDataSetToTable() {
 
-			BeanItemContainer<MetaEnvironmentModel> container =
-					(BeanItemContainer<MetaEnvironmentModel>) MetaAnalysisPanel.this.getSelectedEnvironmenTable().getContainerDataSource();
+			final BeanItemContainer<MetaEnvironmentModel> container =
+				(BeanItemContainer<MetaEnvironmentModel>) MetaAnalysisPanel.this.getSelectedEnvironmenTable().getContainerDataSource();
 
 			String trialInstanceFactorName = null;
 			String environmentFactorName = null;
 
-			for (DMSVariableType f : this.dataSet.getVariableTypes().getFactors().getVariableTypes()) {
+			for (final DMSVariableType f : this.dataSet.getVariableTypes().getFactors().getVariableTypes()) {
 				if (f.getStandardVariable().getId() == TermId.TRIAL_INSTANCE_FACTOR.getId()) {
 					trialInstanceFactorName = f.getLocalName();
 				}
 
 				if (f.getStandardVariable().getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT
-						&& "abbreviation".equalsIgnoreCase(f.getStandardVariable().getScale().getName())) {
+					&& "abbreviation".equalsIgnoreCase(f.getStandardVariable().getScale().getName())) {
 					environmentFactorName = f.getLocalName();
 				}
 
-				if (isGeolocationProperty(f.getStandardVariable()) && environmentFactorName == null) {
+				if (this.isGeolocationProperty(f.getStandardVariable()) && environmentFactorName == null) {
 					environmentFactorName = f.getLocalName();
 				}
 
@@ -730,13 +751,13 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 				environmentFactorName = trialInstanceFactorName;
 			}
 
-			TrialEnvironments envs = studyDataManager.getTrialEnvironmentsInDataset(this.dataSet.getId());
+			final TrialEnvironments envs = MetaAnalysisPanel.this.studyDataManager.getTrialEnvironmentsInDataset(this.dataSet.getId());
 
 			List<Variable> variables;
 			variables = envs.getVariablesByLocalName(environmentFactorName);
 
-			for (Variable var : variables) {
-				TrialEnvironment env = envs.findOnlyOneByLocalName(environmentFactorName, var.getValue());
+			for (final Variable var : variables) {
+				final TrialEnvironment env = envs.findOnlyOneByLocalName(environmentFactorName, var.getValue());
 				if (env == null && environmentFactorName != trialInstanceFactorName) {
 					environmentFactorName = trialInstanceFactorName;
 				}
@@ -747,16 +768,16 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 				variables = envs.getVariablesByLocalName(environmentFactorName);
 			}
 
-			for (Variable var : variables) {
+			for (final Variable var : variables) {
 				if (var != null && !"".equals(var.getValue())) {
-					TrialEnvironment env = envs.findOnlyOneByLocalName(environmentFactorName, var.getValue());
+					final TrialEnvironment env = envs.findOnlyOneByLocalName(environmentFactorName, var.getValue());
 
 					if (env != null) {
 
-						String trialNo = env.getVariables().findByLocalName(trialInstanceFactorName).getValue();
-						String envName = env.getVariables().findByLocalName(environmentFactorName).getValue();
+						final String trialNo = env.getVariables().findByLocalName(trialInstanceFactorName).getValue();
+						final String envName = env.getVariables().findByLocalName(environmentFactorName).getValue();
 
-						MetaEnvironmentModel bean = new MetaEnvironmentModel();
+						final MetaEnvironmentModel bean = new MetaEnvironmentModel();
 						bean.setTrial(trialNo);
 						bean.setEnvironment(envName);
 						bean.setDataSetId(this.dataSet.getId());
@@ -764,10 +785,10 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 						bean.setStudyId(this.dataSet.getStudyId());
 						bean.setStudyName(this.studyName);
 						bean.setTrialFactorName(trialInstanceFactorName);
-						if (this.dataSet.getDataSetType() == null) {
-							bean.setDataSetTypeId(DataSetType.PLOT_DATA.getId());
+						if (this.dataSet.getDatasetType() == null) {
+							bean.setDataSetTypeId(DatasetTypeEnum.PLOT_DATA.getId());
 						} else {
-							bean.setDataSetTypeId(this.dataSet.getDataSetType().getId());
+							bean.setDataSetTypeId(this.dataSet.getDatasetType().getDatasetTypeId());
 						}
 
 						container.addBean(bean);
@@ -776,13 +797,13 @@ public class MetaAnalysisPanel extends VerticalLayout implements InitializingBea
 			}
 		}
 
-		private boolean isGeolocationProperty(StandardVariable standardVariable) {
+		private boolean isGeolocationProperty(final StandardVariable standardVariable) {
 			return standardVariable.getPhenotypicType() == PhenotypicType.TRIAL_ENVIRONMENT && (
-					standardVariable.getId() != TermId.TRIAL_INSTANCE_FACTOR.getId()
-							|| standardVariable.getId() != TermId.LATITUDE.getId() &&
-							standardVariable.getId() != TermId.LONGITUDE.getId() &&
-							standardVariable.getId() != TermId.GEODETIC_DATUM.getId() &&
-							standardVariable.getId() != TermId.ALTITUDE.getId());
+				standardVariable.getId() != TermId.TRIAL_INSTANCE_FACTOR.getId()
+					|| standardVariable.getId() != TermId.LATITUDE.getId() &&
+					standardVariable.getId() != TermId.LONGITUDE.getId() &&
+					standardVariable.getId() != TermId.GEODETIC_DATUM.getId() &&
+					standardVariable.getId() != TermId.ALTITUDE.getId());
 		}
 
 	}// end of EnvironmentTabComponent inner class
