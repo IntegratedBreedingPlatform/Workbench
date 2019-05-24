@@ -1,15 +1,24 @@
 <section>
   <div class="om-panel-content">
-        <button class="btn btn-default om-add-new-btn form-group pull-right"
-            (click)="showNewUserForm(userCreateCard)">Add user</button>
-            <app-dialog [(visible)]="showNewDialog" [title]="dialogTitle">
-                <user-card #userCreateCard (onUserAdded)="onUserAdded($event)"
-                           [model]="user"
-                           [roles]="roles"
-                           (onCancel)="showNewDialog = false"
-                           [crops]="crops | toSelect2OptionData"
-                           [selectedCropIds]="user.crops | toSelect2OptionId"></user-card>
-            </app-dialog>
+      <button class="btn btn-default om-add-new-btn form-group pull-right"
+              (click)="showNewUserForm(userCreateCard)">Add user
+      </button>
+      <app-dialog [(visible)]="showNewDialog" [title]="dialogTitle">
+          <user-card #userCreateCard (onUserAdded)="onUserAdded($event)"
+                     [model]="user"
+                     [roles]="roles"
+                     (onCancel)="showNewDialog = false"
+                     [crops]="crops | toSelect2OptionData"
+                     [selectedCropIds]="user.crops | toSelect2OptionId"></user-card>
+      </app-dialog>
+      <app-dialog [(visible)]="showEditDialog" [title]="dialogTitle">
+          <user-card #userEditCard (onUserEdited)="onUserEdited($event)"
+                     (onCancel)="showEditDialog = false"
+                     [model]="user"
+                     [roles]="roles"
+                     [crops]="crops | toSelect2OptionData"
+                     [selectedCropIds]="user.crops | toSelect2OptionId"></user-card>
+      </app-dialog>
   </div>
   <div class="om-panel-header">
         <h2 class="om-panel-title ">
@@ -85,14 +94,6 @@
                           <a href="javascript:void(0)" *ngIf="user.status == 'false'" (click)="showUserStatusConfirmPopUp(user)">Activate</a>
                         </td>
                     </tr>
-					<app-dialog [(visible)]="showEditDialog" [title]="dialogTitle">
- 		                <user-card #userEditCard (onUserEdited)="onUserEdited($event)"
-                                   (onCancel)="showEditDialog = false"
-                                   [model]="user"
-                                   [roles]="roles"
-                                   [crops]="crops | toSelect2OptionData"
-                                   [selectedCropIds]="user.crops | toSelect2OptionId"></user-card>
- 		            </app-dialog>
                     <div class="popup">
                       <app-dialog [(visible)]="showConfirmStatusDialog" [title]="confirmStatusTitle">
                           <div class="modal-body">
