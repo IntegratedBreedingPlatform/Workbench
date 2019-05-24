@@ -1,11 +1,9 @@
 
 package org.generationcp.ibpworkbench.actions;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
+import com.vaadin.data.Validator.InvalidValueException;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import org.generationcp.commons.exceptions.BreedingViewImportException;
 import org.generationcp.commons.service.BreedingViewImportService;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -18,11 +16,11 @@ import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.BMSOutpu
 import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow;
 import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow.CustomFileFactory;
 import org.generationcp.middleware.domain.dms.DataSet;
-import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.domain.dms.TrialEnvironment;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.oms.TermId;
+import org.generationcp.middleware.enumeration.DatasetTypeEnum;
 import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.Location;
@@ -36,9 +34,10 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.vaadin.data.Validator.InvalidValueException;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Configurable
 public class UploadBreedingViewOutputAction implements ClickListener {
@@ -93,22 +92,22 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 			if (!locationIds.isEmpty()) {
 				environmentExists =
-						this.studyDataManager.checkIfAnyLocationIDsExistInExperiments(studyId, DataSetType.MEANS_DATA, locationIds);
+					this.studyDataManager.checkIfAnyLocationIDsExistInExperiments(studyId, DatasetTypeEnum.MEANS_DATA.getId(), locationIds);
 			}
 
 			try {
 
 				if (environmentExists) {
 					ConfirmDialog.show(event.getComponent().getApplication().getMainWindow(), "",
-							this.messageSource.getMessage(Message.BV_UPLOAD_OVERWRITE_WARNING), this.messageSource.getMessage(Message.OK),
-							this.messageSource.getMessage(Message.CANCEL), new Runnable() {
+						this.messageSource.getMessage(Message.BV_UPLOAD_OVERWRITE_WARNING), this.messageSource.getMessage(Message.OK),
+						this.messageSource.getMessage(Message.CANCEL), new Runnable() {
 
-								@Override
-								public void run() {
-									UploadBreedingViewOutputAction.this.processTheUploadedFile(studyId, project);
-								}
+							@Override
+							public void run() {
+								UploadBreedingViewOutputAction.this.processTheUploadedFile(studyId, project);
+							}
 
-							});
+						});
 				} else {
 					this.processTheUploadedFile(studyId, project);
 				}
@@ -117,9 +116,10 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 				UploadBreedingViewOutputAction.LOG.error(e.getMessage(), e);
 
-				MessageNotifier.showError(UploadBreedingViewOutputAction.this.window.getParent(),
-						UploadBreedingViewOutputAction.this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_HEADER),
-						UploadBreedingViewOutputAction.this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_CANNOT_UPLOAD_MEANS));
+				MessageNotifier.showError(
+					this.window.getParent(),
+					this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_HEADER),
+					this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_CANNOT_UPLOAD_MEANS));
 			}
 
 		}
@@ -128,7 +128,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 	protected boolean isUploadedZipFileValid(final int studyId, final Project project) {
 
-		BMSOutputInformation bmsOutputInformation;
+		final BMSOutputInformation bmsOutputInformation;
 
 		try {
 
@@ -138,7 +138,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 			UploadBreedingViewOutputAction.LOG.error(e.getMessage(), e);
 
 			MessageNotifier.showError(this.window.getParent(), this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_HEADER),
-					this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_INVALID_FORMAT));
+				this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_INVALID_FORMAT));
 
 			return false;
 		}
@@ -151,7 +151,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 			UploadBreedingViewOutputAction.LOG.error(e1.getMessage(), e1);
 
 			MessageNotifier.showError(this.window.getParent(), this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_HEADER),
-					this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_INVALID_CONTENT));
+				this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_INVALID_CONTENT));
 
 			return false;
 		}
@@ -159,7 +159,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 		if (!this.isUploadedZipFileCompatibleWithCurrentStudy(bmsOutputInformation, studyId, project)) {
 
 			MessageNotifier.showError(this.window.getParent(), this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_HEADER),
-					this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_NOT_COMPATIBLE));
+				this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_NOT_COMPATIBLE));
 
 			return false;
 		}
@@ -173,7 +173,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 		final BMSOutputInformation bmsOutputInformation = this.bmsOutputParser.getBmsOutputInformation();
 
-		final List<DataSet> datasets = this.studyDataManager.getDataSetsByType(studyId, DataSetType.MEANS_DATA);
+		final List<DataSet> datasets = this.studyDataManager.getDataSetsByType(studyId, DatasetTypeEnum.MEANS_DATA.getId());
 
 		if (!datasets.isEmpty()) {
 			final TrialEnvironments trialEnvironments = this.studyDataManager.getTrialEnvironmentsInDataset(datasets.get(0).getId());
@@ -191,13 +191,14 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 	}
 
-	protected boolean containsValueByLocalName(final String environmentFactor, final String environmentName,
-			final TrialEnvironment trialEnvironment) {
+	protected boolean containsValueByLocalName(
+		final String environmentFactor, final String environmentName,
+		final TrialEnvironment trialEnvironment) {
 
 		final Variable environmentFactorVariable = trialEnvironment.getVariables().findByLocalName(environmentFactor);
 		if (environmentFactorVariable != null) {
 			//Check if the selected environment factor is the LOCATION_ID and retrieve the Location using the LOCATION_ID value
-			if(environmentFactorVariable.getVariableType().getStandardVariable().getId() == TermId.LOCATION_ID.getId()) {
+			if (environmentFactorVariable.getVariableType().getStandardVariable().getId() == TermId.LOCATION_ID.getId()) {
 				final Location location = this.locationDataManager.getLocationByID(Integer.valueOf(environmentFactorVariable.getIdValue()));
 				return environmentName.equals(location.getLname());
 			}
@@ -212,8 +213,9 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 		return false;
 	}
 
-	protected boolean isUploadedZipFileCompatibleWithCurrentStudy(final BMSOutputInformation bmsInformation, final int studyId,
-			final Project project) {
+	protected boolean isUploadedZipFileCompatibleWithCurrentStudy(
+		final BMSOutputInformation bmsInformation, final int studyId,
+		final Project project) {
 
 		return bmsInformation.getWorkbenchProjectId() == project.getProjectId() && bmsInformation.getStudyId() == studyId;
 
@@ -228,18 +230,19 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 			protected void doInTransactionWithoutResult(final TransactionStatus arg0) {
 				try {
 					UploadBreedingViewOutputAction.this.breedingViewImportService.importMeansData(
-							UploadBreedingViewOutputAction.this.bmsOutputParser.getMeansFile(), studyId);
+						UploadBreedingViewOutputAction.this.bmsOutputParser.getMeansFile(), studyId);
 					UploadBreedingViewOutputAction.this.breedingViewImportService.importSummaryStatsData(
-							UploadBreedingViewOutputAction.this.bmsOutputParser.getSummaryStatsFile(), studyId);
+						UploadBreedingViewOutputAction.this.bmsOutputParser.getSummaryStatsFile(), studyId);
 
 					if (UploadBreedingViewOutputAction.this.bmsOutputParser.getOutlierFile() != null) {
 						UploadBreedingViewOutputAction.this.breedingViewImportService.importOutlierData(
-								UploadBreedingViewOutputAction.this.bmsOutputParser.getOutlierFile(), studyId);
+							UploadBreedingViewOutputAction.this.bmsOutputParser.getOutlierFile(), studyId);
 					}
 
-					MessageNotifier.showMessage(UploadBreedingViewOutputAction.this.window.getParent(),
-							UploadBreedingViewOutputAction.this.messageSource.getMessage(Message.BV_UPLOAD_SUCCESSFUL_HEADER),
-							UploadBreedingViewOutputAction.this.messageSource.getMessage(Message.BV_UPLOAD_SUCCESSFUL_DESCRIPTION));
+					MessageNotifier.showMessage(
+						UploadBreedingViewOutputAction.this.window.getParent(),
+						UploadBreedingViewOutputAction.this.messageSource.getMessage(Message.BV_UPLOAD_SUCCESSFUL_HEADER),
+						UploadBreedingViewOutputAction.this.messageSource.getMessage(Message.BV_UPLOAD_SUCCESSFUL_DESCRIPTION));
 
 					UploadBreedingViewOutputAction.this.bmsOutputParser.deleteUploadedZipFile();
 
@@ -262,18 +265,16 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 	}
 
-	
 	public FileUploadBreedingViewOutputWindow getWindow() {
-		return window;
+		return this.window;
 	}
 
-	public void setWindow(FileUploadBreedingViewOutputWindow window) {
+	public void setWindow(final FileUploadBreedingViewOutputWindow window) {
 		this.window = window;
 	}
 
-	public void setBmsOutputParser(BMSOutputParser bmsOutputParser) {
+	public void setBmsOutputParser(final BMSOutputParser bmsOutputParser) {
 		this.bmsOutputParser = bmsOutputParser;
 	}
-
 
 }

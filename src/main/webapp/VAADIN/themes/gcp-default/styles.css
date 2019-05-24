@@ -226,6 +226,10 @@ span.v-checkbox-hidecheckbox input{display:none !important}
     margin: 0 10px 0 6px;
 }
 
+.bms-logo-btn-with-margin {
+    margin-left: 18px;
+}
+
 .bms-logo-btn img {
     border-radius: 6px;
     width: 34px; height: 34px;

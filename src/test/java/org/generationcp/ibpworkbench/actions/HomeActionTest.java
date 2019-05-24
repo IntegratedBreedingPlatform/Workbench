@@ -18,7 +18,6 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class HomeActionTest {
 
-	public static final String PROJECT_NAME = "ProjectName";
 	@Mock
 	private WorkbenchMainView workbenchMainView;
 
@@ -28,28 +27,24 @@ public class HomeActionTest {
 	@InjectMocks
 	private HomeAction homeAction;
 
-	private Project project;
-
 	@Before
 	public void init() {
 
-		project = new Project();
-		project.setProjectName(PROJECT_NAME);
+		final Project project = new Project();
+		project.setProjectName("ProjectName");
 
-		when(contextUtil.getProjectInContext()).thenReturn(project);
+		when(this.contextUtil.getProjectInContext()).thenReturn(project);
 
 	}
 
 	@Test
 	public void testDoAction() {
 
-		homeAction.doAction(workbenchMainView, null, false);
+		this.homeAction.doAction(this.workbenchMainView, null, false);
 
 		final ArgumentCaptor<WorkbenchDashboard> captor = ArgumentCaptor.forClass(WorkbenchDashboard.class);
 
-		verify(workbenchMainView).showContent(captor.capture());
-		verify(workbenchMainView).addTitle(PROJECT_NAME);
-
+		verify(this.workbenchMainView).showContent(captor.capture());
 	}
 
 }

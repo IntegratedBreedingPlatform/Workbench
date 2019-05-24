@@ -1,14 +1,10 @@
 package org.generationcp.ibpworkbench.actions;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.Window;
 import org.generationcp.commons.breedingview.xml.Genotypes;
 import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
@@ -24,9 +20,8 @@ import org.generationcp.ibpworkbench.util.GxeInput;
 import org.generationcp.ibpworkbench.util.MultiSiteDataExporter;
 import org.generationcp.ibpworkbench.util.bean.MultiSiteParameters;
 import org.generationcp.middleware.domain.dms.DataSet;
-import org.generationcp.middleware.domain.dms.DataSetType;
 import org.generationcp.middleware.domain.dms.Experiment;
-import org.generationcp.middleware.domain.dms.Variable;
+import org.generationcp.middleware.enumeration.DatasetTypeEnum;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -40,11 +35,12 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.unbescape.html.HtmlEscape;
 
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Window;
+import javax.annotation.Resource;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 @Configurable
 public class RunMultiSiteAction implements ClickListener {
@@ -123,7 +119,7 @@ public class RunMultiSiteAction implements ClickListener {
 
 		try {
 			final String finalZipfileName =
-					this.zipUtil.zipIt(outputFilename, filenameList, this.contextUtil.getProjectInContext(), ToolName.BV_GXE);
+				this.zipUtil.zipIt(outputFilename, filenameList, this.contextUtil.getProjectInContext(), ToolName.BV_GXE);
 			this.downloadInputFile(new File(finalZipfileName), outputFilename);
 		} catch (final IOException e) {
 			RunMultiSiteAction.LOG.error("Error creating zip file " + outputFilename + ZipUtil.ZIP_EXTENSION, e);
@@ -153,7 +149,7 @@ public class RunMultiSiteAction implements ClickListener {
 	void exportMultiSiteProjectFile(final MultiSiteParameters multiSiteParameters, final GxeInput gxeInput) {
 
 		final String inputDir =
-				this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(multiSiteParameters.getProject(), ToolName.BREEDING_VIEW);
+			this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(multiSiteParameters.getProject(), ToolName.BREEDING_VIEW);
 		final String inputFileName = this.generateInputFileName(multiSiteParameters.getProject());
 
 		gxeInput.setDestXMLFilePath(inputDir + File.separator + inputFileName + ".xml");
@@ -171,30 +167,32 @@ public class RunMultiSiteAction implements ClickListener {
 	 * @param gxeEnvironment
 	 * @param selectedTraits
 	 */
-	void exportDataFiles(final MultiSiteParameters multiSiteParameters, final GxeInput gxeInput, final GxeEnvironment gxeEnvironment,
-			final List<Trait> selectedTraits) {
+	void exportDataFiles(
+		final MultiSiteParameters multiSiteParameters, final GxeInput gxeInput, final GxeEnvironment gxeEnvironment,
+		final List<Trait> selectedTraits) {
 
 		final int studyId = multiSiteParameters.getStudy().getId();
 
 		final String inputFileName = this.generateInputFileName(multiSiteParameters.getProject());
 
 		final String meansDataFilePath = this.multiSiteDataExporter
-				.exportMeansDatasetToCsv(inputFileName, multiSiteParameters, this.gxeTable.getExperiments(),
-						this.gxeTable.getEnvironmentName(), gxeEnvironment, selectedTraits, this.workbenchApplication);
+			.exportMeansDatasetToCsv(inputFileName, multiSiteParameters, this.gxeTable.getExperiments(),
+				this.gxeTable.getEnvironmentName(), gxeEnvironment, selectedTraits, this.workbenchApplication);
 
 		final DataSet summaryStatsDataSet = this.getSummaryStatsDataSet(studyId);
 
 		final String summaryStatsDataFilePath = this.multiSiteDataExporter
-				.exportTrialDatasetToSummaryStatsCsv(studyId, inputFileName, this.getSummaryStatsExperiments(summaryStatsDataSet.getId()),
-						this.gxeTable.getEnvironmentName(), selectedTraits, multiSiteParameters.getProject());
+			.exportTrialDatasetToSummaryStatsCsv(studyId, inputFileName, this.getSummaryStatsExperiments(summaryStatsDataSet.getId()),
+				this.gxeTable.getEnvironmentName(), selectedTraits, multiSiteParameters.getProject());
 
 		gxeInput.setSourceCSVSummaryStatsFilePath(summaryStatsDataFilePath);
 		gxeInput.setSourceCSVFilePath(meansDataFilePath);
 
 	}
 
-	GxeInput createGxeInput(final MultiSiteParameters multiSiteParameters, final GxeEnvironment gxeEnvironment,
-			final List<Trait> selectedTraits) {
+	GxeInput createGxeInput(
+		final MultiSiteParameters multiSiteParameters, final GxeEnvironment gxeEnvironment,
+		final List<Trait> selectedTraits) {
 
 		final GxeInput gxeInput = new GxeInput(multiSiteParameters.getProject(), "", 0, 0, "", "", "", "");
 
@@ -223,7 +221,7 @@ public class RunMultiSiteAction implements ClickListener {
 	DataSet getSummaryStatsDataSet(final int studyId) {
 
 		final DataSet summaryStatsDataSet;
-		final List<DataSet> dataSets = this.studyDataManager.getDataSetsByType(studyId, DataSetType.SUMMARY_DATA);
+		final List<DataSet> dataSets = this.studyDataManager.getDataSetsByType(studyId, DatasetTypeEnum.SUMMARY_DATA.getId());
 		if (!dataSets.isEmpty()) {
 			summaryStatsDataSet = dataSets.get(0);
 		} else {
@@ -254,11 +252,11 @@ public class RunMultiSiteAction implements ClickListener {
 			pb.start();
 
 			MessageNotifier.showMessage(windowSource, "GxE files saved",
-					"Successfully generated the means dataset and xml input files for breeding view.");
+				"Successfully generated the means dataset and xml input files for breeding view.");
 		} catch (final IOException e) {
 			RunMultiSiteAction.LOG.error(e.getMessage(), e);
 			MessageNotifier.showMessage(windowSource, "Cannot launch " + absoluteToolFile.getName(),
-					"But it successfully created GxE Excel and XML input file for the breeding_view!");
+				"But it successfully created GxE Excel and XML input file for the breeding_view!");
 		}
 
 	}
@@ -283,7 +281,7 @@ public class RunMultiSiteAction implements ClickListener {
 
 	void downloadInputFile(final File file, final String filename) {
 		final VaadinFileDownloadResource fileDownloadResource =
-				new VaadinFileDownloadResource(file, filename + ZipUtil.ZIP_EXTENSION, this.workbenchApplication);
+			new VaadinFileDownloadResource(file, filename + ZipUtil.ZIP_EXTENSION, this.workbenchApplication);
 		this.workbenchApplication.getMainWindow().open(fileDownloadResource);
 	}
 
