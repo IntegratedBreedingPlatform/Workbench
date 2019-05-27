@@ -1,5 +1,6 @@
 package org.generationcp.ibpworkbench.ui.project.create;
 
+import com.google.common.base.Optional;
 import com.vaadin.data.Container;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -79,7 +80,7 @@ public class ProjectMembersComponentTest {
 	@Before
 	public void setUp() {
 		this.project = this.createProjectTestData(1, OWNER_USER_ID);
-		Mockito.doReturn(this.project).when(this.contextUtil).getProjectInContext();
+		Mockito.doReturn(Optional.of(this.project)).when(this.contextUtil).getProject();
 
 		this.projectMembersComponent.setWorkbenchDataManager(this.workbenchDataManager);
 		this.projectMembersComponent.setTransactionManager(this.transactionManager);

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.base.Optional;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -295,7 +296,11 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 	Container createUsersContainer() {
 		final List<WorkbenchUser> validUserList = new ArrayList<>();
 
-		final String cropName = this.contextUtil.getProjectInContext().getCropType().getCropName();
+		final Optional<Project> project = this.contextUtil.getProject();
+		String cropName = "";
+		if (project.isPresent()) {
+			cropName = project.get().getCropType().getCropName();
+		}
 
 		// TODO: This can be improved once we implement proper User-Person
 		// mapping
