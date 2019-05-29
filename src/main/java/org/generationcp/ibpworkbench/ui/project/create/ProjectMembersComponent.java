@@ -292,6 +292,11 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 		return label;
 	}
 
+	/* TODO Refactor
+	 *  In IBP-2697, we disabled the members tab before the crop is chosen because the list of available user is filtered by the crop.
+	 *  We are still getting all active users here as a workaround to assign the current user
+	 *  The crops are filtered by user in the basic details window
+	 */
 	Container createUsersContainer() {
 		final List<WorkbenchUser> validUserList = new ArrayList<>();
 

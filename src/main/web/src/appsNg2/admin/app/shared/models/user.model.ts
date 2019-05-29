@@ -1,4 +1,5 @@
-import { Role } from './../shared/models/role.model';
+import { Crop } from './crop.model';
+import { Role } from './role.model';
 
 export class User {
 	// transient field for easy sorting and filtering
@@ -8,6 +9,7 @@ export class User {
                 public firstName: string,
                 public lastName: string,
                 public username: string,
+                public crops: Crop[],
                 public role: Role,
                 public email: string,
                 public status: string ) {
