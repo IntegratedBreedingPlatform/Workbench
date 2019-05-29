@@ -245,7 +245,9 @@ describe('Add Variable View', function() {
 	describe('when a variable update is in progress', function() {
 
 		var state = {
-			variable: 'variable',
+			variable: {
+				name: 'variable', alias: 'alias'
+			},
 			scopeData: 'data'
 		};
 

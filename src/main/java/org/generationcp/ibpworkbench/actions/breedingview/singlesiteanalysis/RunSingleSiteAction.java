@@ -10,13 +10,11 @@
 
 package org.generationcp.ibpworkbench.actions.breedingview.singlesiteanalysis;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Resource;
-
+import com.google.common.base.Strings;
+import com.mysql.jdbc.StringUtils;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Window;
 import org.generationcp.commons.breedingview.xml.Blocks;
 import org.generationcp.commons.breedingview.xml.ColPos;
 import org.generationcp.commons.breedingview.xml.Columns;
@@ -28,7 +26,6 @@ import org.generationcp.commons.breedingview.xml.Replicates;
 import org.generationcp.commons.breedingview.xml.RowPos;
 import org.generationcp.commons.breedingview.xml.Rows;
 import org.generationcp.commons.spring.util.ContextUtil;
-import org.generationcp.commons.tomcat.util.TomcatUtil;
 import org.generationcp.commons.util.BreedingViewUtil;
 import org.generationcp.commons.util.VaadinFileDownloadResource;
 import org.generationcp.commons.util.ZipUtil;
@@ -50,11 +47,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
-import com.google.common.base.Strings;
-import com.mysql.jdbc.StringUtils;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Window;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Jeffrey Morales
@@ -68,14 +64,8 @@ public class RunSingleSiteAction implements ClickListener {
 
 	private SingleSiteAnalysisDetailsPanel source;
 
-	@Value("${bv.web.url}")
-	private String bvWebUrl;
-
 	@Value("${workbench.is.server.app}")
 	private String isServerApp;
-
-	@Resource
-	private TomcatUtil tomcatUtil;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;

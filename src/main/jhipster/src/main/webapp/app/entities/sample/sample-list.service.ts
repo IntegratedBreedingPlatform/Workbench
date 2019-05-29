@@ -38,8 +38,8 @@ export class SampleListService {
             });
     }
 
-    importPlateInfo(importData: any) {
-        return this.http.post(`${this.resourceUrl}/plate-information/import`, importData);
+    importPlateInfo(listId: number, sampleList: any) {
+        return this.http.patch(`${this.resourceUrl}/sampleList/${listId}/samples`, sampleList);
     }
 
     private convertArrayResponse(res: HttpResponse<SampleList[]>): HttpResponse<SampleList[]> {

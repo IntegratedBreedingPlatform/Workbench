@@ -7,6 +7,7 @@ import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.util.bean.MultiSiteParameters;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
@@ -18,11 +19,13 @@ import org.generationcp.middleware.domain.dms.VariableList;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ToolName;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.Notification;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -56,6 +59,9 @@ public class MultiSiteDataExporterTest {
 
 	@Captor
 	private ArgumentCaptor<List<String[]>> summaryRowsCaptor;
+
+	@Captor
+	private ArgumentCaptor<Notification> notificationCaptor;
 
 	@Mock
 	private InstallationDirectoryUtil installationDirectoryUtil;
@@ -93,9 +99,9 @@ public class MultiSiteDataExporterTest {
 
 	private void setupFileUtilMocks() {
 		Mockito.doReturn(BASIC_FILE_NAME + ".csv").when(this.multiSiteDataExporter)
-				.writeToCsvFile(Matchers.anyString(), Matchers.any(Project.class), Matchers.anyList(), Matchers.eq(false));
+				.writeToCsvFile(ArgumentMatchers.anyString(), ArgumentMatchers.any(Project.class), ArgumentMatchers.<List<String[]>>any(), ArgumentMatchers.eq(false));
 		Mockito.doReturn(BASIC_FILE_NAME + MultiSiteDataExporter.SUMMARY_STATS + ".csv").when(this.multiSiteDataExporter)
-				.writeToCsvFile(Matchers.anyString(), Matchers.any(Project.class), Matchers.anyList(), Matchers.eq(true));
+				.writeToCsvFile(ArgumentMatchers.anyString(), ArgumentMatchers.any(Project.class), ArgumentMatchers.<List<String[]>>any(), ArgumentMatchers.eq(true));
 		Mockito.doReturn(BMS_INPUT_FILES_DIR).when(this.installationDirectoryUtil)
 				.getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
 	}
@@ -112,11 +118,11 @@ public class MultiSiteDataExporterTest {
 
 		this.multiSiteDataExporter
 				.exportMeansDatasetToCsv(BASIC_FILE_NAME, this.multiSiteParameters, meansExperiments, ENV_FACTOR, this.gxeEnvironment,
-						this.meansTraits);
+						this.meansTraits, Mockito.mock(IBPWorkbenchApplication.class));
 
 		Mockito.verify(this.multiSiteDataExporter)
-				.writeToCsvFile(Matchers.eq(BASIC_FILE_NAME), Matchers.eq(this.project), this.meansRowsCaptor.capture(),
-						Matchers.eq(false));
+				.writeToCsvFile(ArgumentMatchers.eq(BASIC_FILE_NAME), ArgumentMatchers.eq(this.project), this.meansRowsCaptor.capture(),
+						ArgumentMatchers.eq(false));
 		final List<String[]> csvRows = this.meansRowsCaptor.getValue();
 		Assert.assertNotNull(csvRows);
 		Assert.assertEquals(1 + (GIDS.length * environmentNames.size()), csvRows.size());
@@ -170,11 +176,11 @@ public class MultiSiteDataExporterTest {
 
 		this.multiSiteDataExporter
 				.exportMeansDatasetToCsv(BASIC_FILE_NAME, this.multiSiteParameters, meansExperiments, LOCATION_ID, testGxeEnvironment,
-						this.meansTraits);
+						this.meansTraits, Mockito.mock(IBPWorkbenchApplication.class));
 
 		Mockito.verify(this.multiSiteDataExporter)
-				.writeToCsvFile(Matchers.eq(BASIC_FILE_NAME), Matchers.eq(this.project), this.meansRowsCaptor.capture(),
-						Matchers.eq(false));
+				.writeToCsvFile(ArgumentMatchers.eq(BASIC_FILE_NAME), ArgumentMatchers.eq(this.project), this.meansRowsCaptor.capture(),
+						ArgumentMatchers.eq(false));
 		final List<String[]> csvRows = this.meansRowsCaptor.getValue();
 		Assert.assertNotNull(csvRows);
 		Assert.assertEquals(1 + (GIDS.length * environmentNames.size()), csvRows.size());
@@ -210,8 +216,8 @@ public class MultiSiteDataExporterTest {
 						this.project);
 
 		Mockito.verify(this.multiSiteDataExporter)
-				.writeToCsvFile(Matchers.eq(BASIC_FILE_NAME), Matchers.eq(this.project), this.summaryRowsCaptor.capture(),
-						Matchers.eq(true));
+				.writeToCsvFile(ArgumentMatchers.eq(BASIC_FILE_NAME), ArgumentMatchers.eq(this.project), this.summaryRowsCaptor.capture(),
+						ArgumentMatchers.eq(true));
 		final List<String[]> csvRows = this.summaryRowsCaptor.getValue();
 		Assert.assertNotNull(csvRows);
 		Assert.assertEquals(1 + (this.meansTraits.size() * ENVIRONMENTS.length), csvRows.size());
@@ -272,6 +278,34 @@ public class MultiSiteDataExporterTest {
 	}
 
 	@Test
+	public void exportMeansDatasetToCsv_HasMissingMean_ShowWarning() {
+		final IBPWorkbenchApplication workbenchApplication = Mockito.mock(IBPWorkbenchApplication.class);
+		final Window window = Mockito.mock(Window.class);
+		Mockito.when(workbenchApplication.getMainWindow()).thenReturn(window);
+
+		final List<String> environmentNames = new ArrayList<>();
+		environmentNames.add("1");
+		environmentNames.add("2");
+		environmentNames.add("3");
+
+		final List<Experiment> meansExperiments = this.createMeansExperiments(ENV_FACTOR, environmentNames);
+
+		// Remove a mean
+		meansExperiments.get(0).getFactors().getVariables().get(0).setValue(null);
+
+		this.multiSiteDataExporter
+				.exportMeansDatasetToCsv(BASIC_FILE_NAME, this.multiSiteParameters, meansExperiments, ENV_FACTOR, this.gxeEnvironment,
+						this.meansTraits, workbenchApplication);
+
+		Mockito.verify(window).showNotification(this.notificationCaptor.capture());
+		final Notification notification = this.notificationCaptor.getValue();
+
+		Assert.assertNotNull(notification);
+		Assert.assertEquals("There are missing mean values", "Warning", notification.getCaption());
+
+	}
+
+	@Test
 	public void testExportTrialDatasetToSummaryStatsCsvEnvironmentFactorIsLocationID() {
 
 		final int studyId = 1;
@@ -287,8 +321,8 @@ public class MultiSiteDataExporterTest {
 						this.project);
 
 		Mockito.verify(this.multiSiteDataExporter)
-				.writeToCsvFile(Matchers.eq(BASIC_FILE_NAME), Matchers.eq(this.project), this.summaryRowsCaptor.capture(),
-						Matchers.eq(true));
+				.writeToCsvFile(ArgumentMatchers.eq(BASIC_FILE_NAME), ArgumentMatchers.eq(this.project), this.summaryRowsCaptor.capture(),
+						ArgumentMatchers.eq(true));
 
 		final List<String[]> csvRows = this.summaryRowsCaptor.getValue();
 		Assert.assertNotNull(csvRows);

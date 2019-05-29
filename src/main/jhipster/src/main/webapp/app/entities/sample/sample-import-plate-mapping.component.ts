@@ -31,24 +31,18 @@ export class SampleImportPlateMappingComponent {
 
     proceed() {
 
-        const activeListId = this.sampleContext.getActiveList().id;
+        const activeListId = this.sampleContext.activeList.id;
 
         if (this.validate()) {
-
-            this.sampleListService.importPlateInfo({
-                listId: activeListId,
-                sampleIdHeader: this.sampleIdMapping,
-                plateIdHeader: this.plateIdMapping,
-                wellHeader: this.wellMapping,
-                importData: this.importData
-            }).subscribe((observer) => {
+            const sampleList = this.buildSampleList();
+            this.sampleListService.importPlateInfo(activeListId, sampleList).subscribe((observer) => {
                 this.close();
                 // Refresh the sample list table.
-                this.eventManager.broadcast({name: 'sampleListModification', content: ''});
+                this.eventManager.broadcast({ name: 'sampleListModification', content: '' });
                 this.alertService.success('bmsjHipsterApp.sample.importPlate.success');
             }, (response) => {
                 if (response.error.errors[0].message) {
-                    this.alertService.error('bmsjHipsterApp.sample.error', {param: response.error.errors[0].message});
+                    this.alertService.error('bmsjHipsterApp.sample.error', { param: response.error.errors[0].message });
                 } else {
                     this.alertService.error('bmsjHipsterApp.sample.importPlate.error');
                 }
@@ -94,6 +88,29 @@ export class SampleImportPlateMappingComponent {
         return this.importData.some((row) => {
             return !row[columnIndex];
         });
+    }
+
+    buildSampleList() {
+        const headerRow = this.importData[0];
+        const sampleUidColumnIndex = headerRow.indexOf(this.sampleIdMapping);
+        const PlateIdColumnIndex = headerRow.indexOf(this.plateIdMapping);
+        const WellColumnIndex = headerRow.indexOf(this.wellMapping);
+
+        const sampleList = [];
+        for (let i = 1; i < this.importData.length; i++) {
+            const sampleId = this.importData[i][sampleUidColumnIndex];
+            const plateInfo = this.importData[i][PlateIdColumnIndex];
+            const wellInfo = this.importData[i][WellColumnIndex];
+
+            const sample = {
+                sampleBusinessKey: sampleId,
+                plateId: plateInfo,
+                well: wellInfo
+            };
+
+            sampleList.push(sample);
+        }
+        return sampleList;
     }
 
 }

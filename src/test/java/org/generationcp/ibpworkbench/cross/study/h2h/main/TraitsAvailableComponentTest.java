@@ -16,6 +16,7 @@ import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.api.CrossStudyDataManager;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -76,6 +77,8 @@ public class TraitsAvailableComponentTest {
 		germplasmPair.setTrialEnvironments(environments);
 		Mockito.doReturn(this.pairs).when(this.crossStudyDataManager).getEnvironmentsForGermplasmPairs(
 				Matchers.anyListOf(GermplasmPair.class), Matchers.anyListOf(Integer.class), Matchers.anyString());
+		Mockito.doReturn(this.pairs).when(this.crossStudyDataManager).getEnvironmentsForGermplasmPairs(
+				ArgumentMatchers.<List<GermplasmPair>>isNull(), Matchers.anyListOf(Integer.class), Matchers.anyString());
 	}
 
 	@Test

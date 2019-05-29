@@ -20,12 +20,14 @@ import org.generationcp.ibpworkbench.util.MultiSiteDataExporter;
 import org.generationcp.ibpworkbench.util.bean.MultiSiteParameters;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.domain.dms.DataSet;
-import org.generationcp.middleware.domain.dms.DataSetType;
+import org.generationcp.middleware.domain.dms.Experiment;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableList;
+import org.generationcp.middleware.enumeration.DatasetTypeEnum;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.dms.DatasetType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
@@ -33,11 +35,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import com.vaadin.terminal.FileResource;
 import com.vaadin.ui.Button;
@@ -65,7 +68,7 @@ public class RunMultiSiteActionTest {
 	private static final String MEANS_DATA_FILEPATH = BMS_INPUT_FILES_DIR + "means.csv";
 	private static final String STUDY_NAME = "TEST STUDY";
 	private static final String ZIP_FILE_PATH = "/someDirectory/output/" + STUDY_NAME + ".zip";
-	
+
 
 	@Mock
 	private StudyDataManager studyDataManager;
@@ -90,16 +93,16 @@ public class RunMultiSiteActionTest {
 
 	@Mock
 	Window window;
-	
+
 	@Mock
 	private InstallationDirectoryUtil installationDirectoryUtil;
-	
+
 	@Mock
 	private ContextUtil contextUtil;
 
 	@InjectMocks
 	private final RunMultiSiteAction runMultiSiteAction = new RunMultiSiteAction();
-	
+
 	@Captor
 	private ArgumentCaptor<List<String>> filesInZipCaptor;
 
@@ -111,13 +114,13 @@ public class RunMultiSiteActionTest {
 	public void init() throws IOException {
 
 		final Table selectTraitsTable = this.createTestSelectedTraitsTable();
-		runMultiSiteAction.setSelectTraitsTable(selectTraitsTable);
-		runMultiSiteAction.setBreedingViewTool(breedingViewTool);
-		
-		selectedTraits = runMultiSiteAction.getSelectedTraits();
-		gxeEnvironment = this.createGxeEnvironment();
-		multiSiteParameters = this.createMultiSiteParameters();
-		runMultiSiteAction.setMultiSiteParameters(multiSiteParameters);
+		this.runMultiSiteAction.setSelectTraitsTable(selectTraitsTable);
+		this.runMultiSiteAction.setBreedingViewTool(this.breedingViewTool);
+
+		this.selectedTraits = this.runMultiSiteAction.getSelectedTraits();
+		this.gxeEnvironment = this.createGxeEnvironment();
+		this.multiSiteParameters = this.createMultiSiteParameters();
+		this.runMultiSiteAction.setMultiSiteParameters(this.multiSiteParameters);
 
 		this.initMocks();
 
@@ -125,7 +128,7 @@ public class RunMultiSiteActionTest {
 
 	void initMocks() throws IOException {
 
-		Mockito.when(this.workbenchApplication.getMainWindow()).thenReturn(window);
+		Mockito.when(this.workbenchApplication.getMainWindow()).thenReturn(this.window);
 
 		Mockito.when(this.gxeTable.getSelectedEnvironments()).thenReturn(this.createEnvironmentList());
 		Mockito.when(this.gxeTable.getEnvironmentName()).thenReturn(ENVIRONMENT_NAME);
@@ -135,16 +138,16 @@ public class RunMultiSiteActionTest {
 		Mockito.when(this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(this.createProject(PROJECT_NAME), ToolName.BREEDING_VIEW))
 				.thenReturn(BMS_INPUT_FILES_DIR);
 
-		Mockito.when(this.studyDataManager.getDataSetsByType(STUDY_ID, DataSetType.SUMMARY_DATA)).thenReturn(this.createDataSets());
+		Mockito.when(this.studyDataManager.getDataSetsByType(STUDY_ID, DatasetTypeEnum.SUMMARY_DATA.getId())).thenReturn(this.createDataSets());
 
-		Mockito.when(multiSiteDataExporter.exportMeansDatasetToCsv(Mockito.anyString(), Mockito.any(MultiSiteParameters.class),
-				Mockito.anyList(), Mockito.eq(ENVIRONMENT_NAME), Mockito.any(GxeEnvironment.class), Mockito.anyList()))
+		Mockito.when(this.multiSiteDataExporter.exportMeansDatasetToCsv(ArgumentMatchers.anyString(), ArgumentMatchers.any(MultiSiteParameters.class),
+				ArgumentMatchers.<List<Experiment>>any(), ArgumentMatchers.eq(ENVIRONMENT_NAME), ArgumentMatchers.any(GxeEnvironment.class), ArgumentMatchers.<List<Trait>>any(), ArgumentMatchers.any(IBPWorkbenchApplication.class)))
 				.thenReturn(MEANS_DATA_FILEPATH);
 
-		Mockito.when(multiSiteDataExporter.exportTrialDatasetToSummaryStatsCsv(Mockito.anyInt(), Mockito.anyString(), Mockito.anyList(),
-				Mockito.eq(ENVIRONMENT_NAME), Mockito.anyList(), Mockito.any(Project.class))).thenReturn(SUMMARY_DATA_FILEPATH);
-		
-		Mockito.when(this.zipUtil.zipIt(Mockito.anyString(), Mockito.anyListOf(String.class), Mockito.any(Project.class),
+		Mockito.when(this.multiSiteDataExporter.exportTrialDatasetToSummaryStatsCsv(Mockito.anyInt(), Mockito.anyString(), ArgumentMatchers.<List<Experiment>>any(),
+				Mockito.eq(ENVIRONMENT_NAME), ArgumentMatchers.<List<Trait>>any(), Mockito.any(Project.class))).thenReturn(SUMMARY_DATA_FILEPATH);
+
+		Mockito.when(this.zipUtil.zipIt(Mockito.anyString(), ArgumentMatchers.<List<String>>any(), ArgumentMatchers.any(Project.class),
 				Mockito.any(ToolName.class))).thenReturn(ZIP_FILE_PATH);
 
 	}
@@ -153,25 +156,25 @@ public class RunMultiSiteActionTest {
 	public void testButtonClickServerAppIsTrue() throws IOException {
 		final Project project = ProjectTestDataInitializer.createProject();
 		Mockito.doReturn(project).when(this.contextUtil).getProjectInContext();
-		runMultiSiteAction.setIsServerApp(true);
+		this.runMultiSiteAction.setIsServerApp(true);
 
-		runMultiSiteAction.buttonClick(Mockito.mock(Button.ClickEvent.class));
+		this.runMultiSiteAction.buttonClick(Mockito.mock(Button.ClickEvent.class));
 
 		// Make sure that the expected files are compressed in zip
 		final ArgumentCaptor<String> filenameCaptor = ArgumentCaptor.forClass(String.class);
 		final ArgumentCaptor<Project> projectCaptor = ArgumentCaptor.forClass(Project.class);
 		final ArgumentCaptor<ToolName> toolCaptor = ArgumentCaptor.forClass(ToolName.class);
-		Mockito.verify(this.zipUtil).zipIt(filenameCaptor.capture(), filesInZipCaptor.capture(), projectCaptor.capture(),
+		Mockito.verify(this.zipUtil).zipIt(filenameCaptor.capture(), this.filesInZipCaptor.capture(), projectCaptor.capture(),
 				toolCaptor.capture());
 		Assert.assertEquals(STUDY_NAME, filenameCaptor.getValue());
 		Assert.assertEquals(project, projectCaptor.getValue());
-		final List<String> filesInZip = filesInZipCaptor.getValue();
+		final List<String> filesInZip = this.filesInZipCaptor.getValue();
 		Assert.assertEquals(3, filesInZip.size());
 		Assert.assertTrue(filesInZip.contains(SUMMARY_DATA_FILEPATH));
 		Assert.assertTrue(filesInZip.contains(MEANS_DATA_FILEPATH));
-		Assert.assertTrue(filesInZip.contains(BMS_INPUT_FILES_DIR + File.separator + getExpectedBVInputXmlFilename() + ".xml"));
+		Assert.assertTrue(filesInZip.contains(BMS_INPUT_FILES_DIR + File.separator + this.getExpectedBVInputXmlFilename() + ".xml"));
 		Assert.assertEquals(ToolName.BV_GXE, toolCaptor.getValue());
-		
+
 		// Verify zip file is downloaded to the browser with proper filename
 		final ArgumentCaptor<VaadinFileDownloadResource> fileDownloadResourceCaptor = ArgumentCaptor.forClass(VaadinFileDownloadResource.class);
 		Mockito.verify(this.window).open(fileDownloadResourceCaptor.capture());
@@ -183,11 +186,11 @@ public class RunMultiSiteActionTest {
 	@Test
 	public void testExportMultiSiteProjectFile() {
 
-		final GxeInput gxeInput = runMultiSiteAction.createGxeInput(multiSiteParameters, gxeEnvironment, selectedTraits);
+		final GxeInput gxeInput = this.runMultiSiteAction.createGxeInput(this.multiSiteParameters, this.gxeEnvironment, this.selectedTraits);
 
-		runMultiSiteAction.exportMultiSiteProjectFile(multiSiteParameters, gxeInput);
+		this.runMultiSiteAction.exportMultiSiteProjectFile(this.multiSiteParameters, gxeInput);
 
-		Mockito.verify(multiSiteDataExporter).generateXmlFieldBook(gxeInput);
+		Mockito.verify(this.multiSiteDataExporter).generateXmlFieldBook(gxeInput);
 		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.multiSiteParameters.getProject(),
 				ToolName.BREEDING_VIEW);
 
@@ -198,17 +201,18 @@ public class RunMultiSiteActionTest {
 	@Test
 	public void testExportDataFiles() {
 
-		final GxeInput gxeInput = runMultiSiteAction.createGxeInput(multiSiteParameters, gxeEnvironment, selectedTraits);
+		final GxeInput gxeInput = this.runMultiSiteAction.createGxeInput(this.multiSiteParameters, this.gxeEnvironment, this.selectedTraits);
 
-		this.runMultiSiteAction.exportDataFiles(multiSiteParameters, gxeInput, gxeEnvironment, selectedTraits);
+		this.runMultiSiteAction.exportDataFiles(this.multiSiteParameters, gxeInput, this.gxeEnvironment, this.selectedTraits);
 
 		// Make sure the Means DataSet is exported to CSV
-		Mockito.verify(multiSiteDataExporter).exportMeansDatasetToCsv(Mockito.anyString(), Mockito.eq(multiSiteParameters),
-				Mockito.anyList(), Mockito.eq(ENVIRONMENT_NAME), Mockito.any(GxeEnvironment.class), Mockito.anyList());
+		Mockito.verify(this.multiSiteDataExporter).exportMeansDatasetToCsv(ArgumentMatchers.anyString(), ArgumentMatchers.eq(
+			this.multiSiteParameters),
+				ArgumentMatchers.<List<Experiment>>any(), ArgumentMatchers.eq(ENVIRONMENT_NAME), ArgumentMatchers.any(GxeEnvironment.class), ArgumentMatchers.<List<Trait>>any(), ArgumentMatchers.any(IBPWorkbenchApplication.class));
 
 		// Make sure the Summary Data is exported to CSV
-		Mockito.verify(multiSiteDataExporter).exportTrialDatasetToSummaryStatsCsv(Mockito.anyInt(), Mockito.anyString(), Mockito.anyList(),
-				Mockito.eq(ENVIRONMENT_NAME), Mockito.anyList(), Mockito.any(Project.class));
+		Mockito.verify(this.multiSiteDataExporter).exportTrialDatasetToSummaryStatsCsv(ArgumentMatchers.anyInt(), ArgumentMatchers.anyString(), ArgumentMatchers.<List<Experiment>>any(),
+				ArgumentMatchers.eq(ENVIRONMENT_NAME), ArgumentMatchers.<List<Trait>>any(), ArgumentMatchers.any(Project.class));
 
 		Assert.assertEquals(MEANS_DATA_FILEPATH, gxeInput.getSourceCSVFilePath());
 		Assert.assertEquals(SUMMARY_DATA_FILEPATH, gxeInput.getSourceCSVSummaryStatsFilePath());
@@ -218,9 +222,9 @@ public class RunMultiSiteActionTest {
 	@Test
 	public void testGenerateInputFileName() {
 
-		final String result = runMultiSiteAction.generateInputFileName(this.createProject(PROJECT_NAME));
+		final String result = this.runMultiSiteAction.generateInputFileName(this.createProject(PROJECT_NAME));
 
-		Assert.assertEquals(getExpectedBVInputXmlFilename(), result);
+		Assert.assertEquals(this.getExpectedBVInputXmlFilename(), result);
 
 	}
 
@@ -232,16 +236,16 @@ public class RunMultiSiteActionTest {
 	public void testGenerateInputFileNameWithSpecialCharacters() {
 
 		Mockito.when(this.gxeTable.getMeansDataSet()).thenReturn(this.createMeansDataSet(MEANS_DATASET_NAME + TEST_SPECIAL_CHARACTERS));
-		final String result = runMultiSiteAction.generateInputFileName(this.createProject(PROJECT_NAME));
+		final String result = this.runMultiSiteAction.generateInputFileName(this.createProject(PROJECT_NAME));
 
-		Assert.assertEquals(getExpectedBVInputXmlFilename() + "_ _-_111", result);
+		Assert.assertEquals(this.getExpectedBVInputXmlFilename() + "_ _-_111", result);
 
 	}
 
 	@Test
 	public void testCreateGxeInput() {
 
-		final GxeInput result = runMultiSiteAction.createGxeInput(multiSiteParameters, gxeEnvironment, selectedTraits);
+		final GxeInput result = this.runMultiSiteAction.createGxeInput(this.multiSiteParameters, this.gxeEnvironment, this.selectedTraits);
 		Assert.assertNotNull(result.getTraits());
 		Assert.assertNotNull(result.getEnvironment());
 		Assert.assertNotNull(result.getSelectedEnvironments());
@@ -255,7 +259,7 @@ public class RunMultiSiteActionTest {
 	@Test
 	public void testGetSelectedTraits() {
 
-		final List<Trait> result = runMultiSiteAction.getSelectedTraits();
+		final List<Trait> result = this.runMultiSiteAction.getSelectedTraits();
 
 		Assert.assertEquals(TEST_TRAITS.length, result.size());
 
@@ -265,10 +269,10 @@ public class RunMultiSiteActionTest {
 	public void testGetSelectedTraitsOnlyTwoTraitsAreSelected() {
 
 		// deselects the first trait in the table
-		final CheckBox cb = (CheckBox) runMultiSiteAction.getSelectTraitsTable().getItem(1).getItemProperty(TEST_TRAITS[0]).getValue();
+		final CheckBox cb = (CheckBox) this.runMultiSiteAction.getSelectTraitsTable().getItem(1).getItemProperty(TEST_TRAITS[0]).getValue();
 		cb.setValue(false);
 
-		final List<Trait> result = runMultiSiteAction.getSelectedTraits();
+		final List<Trait> result = this.runMultiSiteAction.getSelectedTraits();
 
 		Assert.assertEquals("Only 2 traits are selected.", 2, result.size());
 
@@ -277,7 +281,7 @@ public class RunMultiSiteActionTest {
 	@Test
 	public void testDownloadInputFile() {
 
-		runMultiSiteAction.downloadInputFile(Mockito.mock(File.class), Mockito.anyString());
+		this.runMultiSiteAction.downloadInputFile(Mockito.mock(File.class), Mockito.anyString());
 
 		// Make sure the file is downloaded to the browser.
 		Mockito.verify(this.window).open(Mockito.any(FileResource.class));
@@ -328,7 +332,7 @@ public class RunMultiSiteActionTest {
 		final Study study = new Study();
 		study.setId(STUDY_ID);
 		study.setName(name);
-		
+
 		final VariableList conditions = new VariableList();
 		final Variable studyNameVariable = new Variable();
 		studyNameVariable.setValue(name);
@@ -354,9 +358,8 @@ public class RunMultiSiteActionTest {
 	}
 
 	private DataSet createMeansDataSet(final String dataSetName) {
-
 		final DataSet ds = new DataSet();
-		ds.setDataSetType(DataSetType.MEANS_DATA);
+		ds.setDatasetType(new DatasetType(DatasetTypeEnum.MEANS_DATA.getId()));
 		ds.setId(MEANS_DATASET_ID);
 		ds.setName(dataSetName);
 
@@ -365,9 +368,8 @@ public class RunMultiSiteActionTest {
 	}
 
 	private DataSet createSummaryDataSet() {
-
 		final DataSet ds = new DataSet();
-		ds.setDataSetType(DataSetType.SUMMARY_DATA);
+		ds.setDatasetType(new DatasetType(DatasetTypeEnum.SUMMARY_DATA.getId()));
 		ds.setName(SUMMARY_DATASET_NAME);
 
 		return ds;

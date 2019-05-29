@@ -38,7 +38,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import com.vaadin.Application;
 import com.vaadin.ui.Button.ClickEvent;
@@ -169,7 +169,6 @@ public class RunSingleSiteActionTest {
 		Mockito.when(this.source.getSelColumnFactorValue()).thenReturn(COLUMN_FACTOR);
 		Mockito.when(this.source.getSelRowFactorValue()).thenReturn(ROW_FACTOR);
 		Mockito.when(this.source.getSelGenotypesValue()).thenReturn(GENOTYPES_FACTOR);
-		Mockito.when(this.envFactorSelectComponent.getValue()).thenReturn(ENVIRONMENT_FACTOR);
 	}
 
 	@Test
@@ -236,7 +235,6 @@ public class RunSingleSiteActionTest {
 
 		Mockito.when(this.source.getSelDesignTypeValue()).thenReturn(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName());
 		Mockito.when(this.source.getSelReplicatesValue()).thenReturn(null);
-		Mockito.doReturn(true).when(this.source).replicateFactorEnabled();
 
 		Assert.assertTrue("Replicates factor is not required if the design type is not " + DesignType.RANDOMIZED_BLOCK_DESIGN.getName(),
 				runSingleSiteAction.validateDesignInput(this.window, breedingViewInput));

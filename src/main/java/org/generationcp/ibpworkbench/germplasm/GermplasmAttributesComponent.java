@@ -71,7 +71,7 @@ public class GermplasmAttributesComponent extends VerticalLayout implements Init
 			this.attributesTable.setColumnReorderingAllowed(true);
 			this.attributesTable.setColumnCollapsingAllowed(true);
 			this.attributesTable.setColumnHeaders(new String[] {this.messageSource.getMessage(Message.TYPE_LABEL),
-					this.messageSource.getMessage(Message.TYPEDESC_LABEL), this.messageSource.getMessage(Message.NAME_LABEL),
+					this.messageSource.getMessage(Message.TYPEDESC_LABEL), this.messageSource.getMessage(Message.VALUE_HEADER),
 					this.messageSource.getMessage(Message.DATE_LABEL), this.messageSource.getMessage(Message.LOCATION_LABEL)});
 		}
 	}
