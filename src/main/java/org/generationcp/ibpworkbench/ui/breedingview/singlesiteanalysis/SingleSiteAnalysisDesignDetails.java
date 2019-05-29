@@ -235,27 +235,22 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout
 	}
 
 	protected void displayDesignElementsBasedOnDesignTypeOfTheStudy() {
-		String designFactor = null;
 		final int designType = this.retrieveExperimentalDesignTypeID();
 		if (designType != 0) {
 
-			if (designType == TermId.RANDOMIZED_COMPLETE_BLOCK.getId()) {
-				designFactor = ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvDesignName();
+			final ExperimentDesignType experimentDesignType = ExperimentDesignType.getDesignTypeItemByTermId(designType);
+			this.selDesignType.setValue(experimentDesignType.getBvDesignName());
+
+			if (experimentDesignType.getId() == ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getId()) {
 				this.displayRandomizedBlockDesignElements();
-			} else if (designType == TermId.RESOLVABLE_INCOMPLETE_BLOCK.getId()
-					|| designType == TermId.RESOLVABLE_INCOMPLETE_BLOCK_LATIN.getId()) {
-				designFactor = ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getBvDesignName();
+			} else if (experimentDesignType.getId() == ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getId()) {
 				this.displayIncompleteBlockDesignElements();
-			} else if (designType == TermId.RESOLVABLE_INCOMPLETE_ROW_COL.getId()
-					|| designType == TermId.RESOLVABLE_INCOMPLETE_ROW_COL_LATIN.getId()) {
-				designFactor = ExperimentDesignType.ROW_COL.getBvDesignName();
+			} else if (experimentDesignType.getId() == ExperimentDesignType.ROW_COL.getId()) {
 				this.displayRowColumnDesignElements();
-			} else if (designType == TermId.AUGMENTED_RANDOMIZED_BLOCK.getId()) {
-				designFactor = ExperimentDesignType.AUGMENTED_RANDOMIZED_BLOCK.getBvDesignName();
+			} else if (experimentDesignType.getId() == ExperimentDesignType.AUGMENTED_RANDOMIZED_BLOCK.getId()) {
 				this.displayAugmentedDesignElements();
 			}
 
-			this.selDesignType.setValue(designFactor);
 		} else {
 			this.selDesignType.select(null);
 		}
