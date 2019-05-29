@@ -1,10 +1,10 @@
 package org.generationcp.ibpworkbench.ui.project.create;
 
-import com.google.common.base.Optional;
-import com.vaadin.data.Container;
-import com.vaadin.ui.Button;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Window;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -12,7 +12,6 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.data.initializer.PersonTestDataInitializer;
 import org.generationcp.middleware.data.initializer.UserTestDataInitializer;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.junit.Assert;
@@ -20,17 +19,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import com.vaadin.data.Container;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Label;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProjectMembersComponentTest {
@@ -75,13 +72,9 @@ public class ProjectMembersComponentTest {
 	
 	private Button saveButton = new Button();
 	private Button cancelButton = new Button();
-	private Project project;
 
 	@Before
 	public void setUp() {
-		this.project = this.createProjectTestData(1, OWNER_USER_ID);
-		Mockito.doReturn(Optional.of(this.project)).when(this.contextUtil).getProject();
-
 		this.projectMembersComponent.setWorkbenchDataManager(this.workbenchDataManager);
 		this.projectMembersComponent.setTransactionManager(this.transactionManager);
 		this.projectMembersComponent.setContextUtil(this.contextUtil);
@@ -92,7 +85,7 @@ public class ProjectMembersComponentTest {
 		Mockito.when(messageSource.getMessage(Message.SUCCESS)).thenReturn(SUCCESS);
 
 		final List<WorkbenchUser> programMembers = this.createProgramMembersTestData();
-		Mockito.doReturn(programMembers).when(this.workbenchDataManager).getUsersByCrop(ArgumentMatchers.anyString());
+		Mockito.doReturn(programMembers).when(this.workbenchDataManager).getAllActiveUsersSorted();
 		for (final WorkbenchUser user : programMembers) {
 			Mockito.doReturn(PersonTestDataInitializer.createPerson(user.getPersonid())).when(this.workbenchDataManager)
 					.getPersonById(user.getPersonid());
@@ -183,6 +176,9 @@ public class ProjectMembersComponentTest {
 	@Test
 	public void testSaveProjectButtonListener() {
 
+		final Project project = new Project();
+		project.setProjectName(PROJECT_NAME);
+
 		final ProjectMembersComponent.SaveProjectButtonListener listener = this.projectMembersComponent.new SaveProjectButtonListener();
 		final Button.ClickEvent event = Mockito.mock(Button.ClickEvent.class);
 		Mockito.when(event.getComponent()).thenReturn(this.component);
@@ -211,17 +207,5 @@ public class ProjectMembersComponentTest {
 		this.cancelButton .click();
 		Mockito.verify(this.presenter).resetProgramMembers();
 		Mockito.verify(this.presenter).disableProgramMethodsAndLocationsTab();
-	}
-
-	private Project createProjectTestData(final long projectId, final int owner) {
-		final Project project = new Project();
-		project.setProjectId(projectId);
-		project.setProjectName(this.PROJECT_NAME);
-		project.setUniqueID(UUID.randomUUID().toString());
-		project.setUserId(owner);
-		final CropType cropType = new CropType();
-		cropType.setCropName("maize");
-		project.setCropType(cropType);
-		return project;
 	}
 }

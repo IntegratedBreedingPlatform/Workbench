@@ -16,6 +16,7 @@ import java.util.Properties;
 import java.util.regex.Pattern;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.fields.BmsDateField;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -76,6 +77,9 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 
 	@Autowired
 	protected SimpleResourceBundleMessageSource messageSource;
+
+	@Autowired
+	private ContextUtil contextUtil;
 
 	@Autowired
 	@Qualifier("workbenchProperties")
@@ -185,7 +189,8 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 	ComboBox createCropTypeComboBox() {
 		final List<CropType> cropTypes;
 		try {
-			cropTypes = this.workbenchDataManager.getInstalledCropDatabses();
+			final int userId = this.contextUtil.getCurrentWorkbenchUserId();
+			cropTypes = this.workbenchDataManager.getAvailableCropsForUser(userId);
 		} catch (final MiddlewareQueryException e) {
 			ProjectBasicDetailsComponent.LOG.error(this.messageSource.getMessage("INSTALL_CROPS_ERROR"), e);
 			throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
@@ -361,6 +366,10 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 
 	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
 		this.workbenchDataManager = workbenchDataManager;
+	}
+
+	public void setContextUtil(final ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
 	}
 
 	public void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {

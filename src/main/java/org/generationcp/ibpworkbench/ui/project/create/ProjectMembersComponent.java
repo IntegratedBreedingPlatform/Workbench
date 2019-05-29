@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import com.google.common.base.Optional;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -293,19 +292,17 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 		return label;
 	}
 
+	/* TODO Refactor
+	 *  In IBP-2697, we disabled the members tab before the crop is chosen because the list of available user is filtered by the crop.
+	 *  We are still getting all active users here as a workaround to assign the current user
+	 *  The crops are filtered by user in the basic details window
+	 */
 	Container createUsersContainer() {
 		final List<WorkbenchUser> validUserList = new ArrayList<>();
 
-		final Optional<Project> project = this.contextUtil.getProject();
-		String cropName = "";
-		if (project.isPresent()) {
-			cropName = project.get().getCropType().getCropName();
-		}
-
 		// TODO: This can be improved once we implement proper User-Person
 		// mapping
-		final List<WorkbenchUser> userList = this.workbenchDataManager.getUsersByCrop(cropName);
-
+		final List<WorkbenchUser> userList = this.workbenchDataManager.getAllActiveUsersSorted();
 		for (final WorkbenchUser user : userList) {
 			final Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
 			user.setPerson(person);
