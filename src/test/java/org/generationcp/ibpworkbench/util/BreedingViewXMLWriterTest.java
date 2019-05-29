@@ -84,13 +84,13 @@ public class BreedingViewXMLWriterTest {
 	@Before
 	public void setUp() throws Exception {
 		this.project = ProjectTestDataInitializer.createProjectWithCropType();
-		Mockito.when(contextUtil.getProjectInContext()).thenReturn(project);
+		Mockito.when(this.contextUtil.getProjectInContext()).thenReturn(this.project);
 
 		this.breedingViewInput = this.createBreedingViewInput();
 		this.breedingViewXMLWriter = new BreedingViewXMLWriter();
 		this.breedingViewXMLWriter.setBreedingViewInput(this.breedingViewInput);
 		this.breedingViewXMLWriter.setWebApiUrl(WEB_API_URL);
-		this.breedingViewXMLWriter.setContextUtil(contextUtil);
+		this.breedingViewXMLWriter.setContextUtil(this.contextUtil);
 		this.breedingViewXMLWriter.setInstallationDirectoryUtil(this.installationDirectoryUtil);
 		this.createBreedingViewDirectories();
 
@@ -129,7 +129,7 @@ public class BreedingViewXMLWriterTest {
 
 		Assert.assertSame(environments, dataConfiguration.getEnvironments());
 		Assert.assertSame(design, dataConfiguration.getDesign());
-		Assert.assertSame(breedingViewInput.getGenotypes(), dataConfiguration.getGenotypes());
+		Assert.assertSame(this.breedingViewInput.getGenotypes(), dataConfiguration.getGenotypes());
 		Assert.assertNotNull(dataConfiguration.getTraits());
 		Assert.assertNotNull(dataConfiguration.getCovariates());
 
