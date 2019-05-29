@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.generationcp.commons.breedingview.xml.Blocks;
 import org.generationcp.commons.breedingview.xml.Columns;
-import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.breedingview.xml.Environment;
 import org.generationcp.commons.breedingview.xml.Genotypes;
 import org.generationcp.commons.breedingview.xml.Plot;
@@ -24,6 +23,7 @@ import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.ibpworkbench.util.BreedingViewXMLWriter;
 import org.generationcp.ibpworkbench.util.DatasetExporter;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
+import org.generationcp.middleware.domain.dms.ExperimentDesignType;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.ManagerFactory;
 import org.generationcp.middleware.manager.api.StudyDataManager;
@@ -163,7 +163,7 @@ public class RunSingleSiteActionTest {
 
 		Mockito.when(this.source.getTxtAnalysisNameValue()).thenReturn(ANALYSIS_NAME);
 		Mockito.when(this.source.getSelEnvFactorValue()).thenReturn(ENVIRONMENT_FACTOR);
-		Mockito.when(this.source.getSelDesignTypeValue()).thenReturn(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName());
+		Mockito.when(this.source.getSelDesignTypeValue()).thenReturn(ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getBvDesignName());
 		Mockito.when(this.source.getSelReplicatesValue()).thenReturn(REPLICATES_FACTOR);
 		Mockito.when(this.source.getSelBlocksValue()).thenReturn(BLOCK_FACTOR);
 		Mockito.when(this.source.getSelColumnFactorValue()).thenReturn(COLUMN_FACTOR);
@@ -209,11 +209,11 @@ public class RunSingleSiteActionTest {
 	@Test
 	public void testValidateDesignInputReplicatesFactorIsBlankAndDesignTypeIsRCBD() {
 
-		Mockito.when(this.source.getSelDesignTypeValue()).thenReturn(DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
+		Mockito.when(this.source.getSelDesignTypeValue()).thenReturn(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvDesignName());
 		Mockito.when(this.source.getSelReplicatesValue()).thenReturn(null);
 		Mockito.doReturn(true).when(this.source).replicateFactorEnabled();
 
-		Assert.assertFalse("Replicates factor is required if the design type is " + DesignType.RANDOMIZED_BLOCK_DESIGN.getName(),
+		Assert.assertFalse("Replicates factor is required if the design type is " + ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvDesignName(),
 				runSingleSiteAction.validateDesignInput(this.window, breedingViewInput));
 
 	}
@@ -221,11 +221,11 @@ public class RunSingleSiteActionTest {
 	@Test
 	public void testValidateDesignInputReplicatesFactorIsDisabledAndDesignTypeIsRCBD() {
 
-		Mockito.when(this.source.getSelDesignTypeValue()).thenReturn(DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
+		Mockito.when(this.source.getSelDesignTypeValue()).thenReturn(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvDesignName());
 		Mockito.when(this.source.getSelReplicatesValue()).thenReturn(null);
 		Mockito.doReturn(false).when(this.source).replicateFactorEnabled();
 
-		Assert.assertTrue("Replicates factor is required if the design type is " + DesignType.RANDOMIZED_BLOCK_DESIGN.getName(),
+		Assert.assertTrue("Replicates factor is required if the design type is " + ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvDesignName(),
 				runSingleSiteAction.validateDesignInput(this.window, breedingViewInput));
 
 	}
@@ -233,10 +233,10 @@ public class RunSingleSiteActionTest {
 	@Test
 	public void testValidateDesignInputReplicatesFactorIsBlankAndDesignTypeIsNotRCBD() {
 
-		Mockito.when(this.source.getSelDesignTypeValue()).thenReturn(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName());
+		Mockito.when(this.source.getSelDesignTypeValue()).thenReturn(ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getBvDesignName());
 		Mockito.when(this.source.getSelReplicatesValue()).thenReturn(null);
 
-		Assert.assertTrue("Replicates factor is not required if the design type is not " + DesignType.RANDOMIZED_BLOCK_DESIGN.getName(),
+		Assert.assertTrue("Replicates factor is not required if the design type is not " + ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvDesignName(),
 				runSingleSiteAction.validateDesignInput(this.window, breedingViewInput));
 
 	}
@@ -244,10 +244,10 @@ public class RunSingleSiteActionTest {
 	@Test
 	public void testValidateDesignInputBlocksFactorIsBlankAndDesignTypeIsIncompleteBlockDesign() {
 
-		Mockito.when(this.source.getSelDesignTypeValue()).thenReturn(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName());
+		Mockito.when(this.source.getSelDesignTypeValue()).thenReturn(ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getBvDesignName());
 		Mockito.when(this.source.getSelBlocksValue()).thenReturn(null);
 
-		Assert.assertFalse("Block factor is required if the design type is " + DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName(),
+		Assert.assertFalse("Block factor is required if the design type is " + ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getBvDesignName(),
 				runSingleSiteAction.validateDesignInput(this.window, breedingViewInput));
 
 	}
@@ -255,10 +255,10 @@ public class RunSingleSiteActionTest {
 	@Test
 	public void testValidateDesignInputBlocksFactorIsBlankAndDesignTypeIsPRepDesign() {
 
-		Mockito.when(this.source.getSelDesignTypeValue()).thenReturn(DesignType.P_REP_DESIGN.getName());
+		Mockito.when(this.source.getSelDesignTypeValue()).thenReturn(ExperimentDesignType.P_REP.getBvDesignName());
 		Mockito.when(this.source.getSelBlocksValue()).thenReturn(null);
 
-		Assert.assertFalse("Block factor is required if the design type is " + DesignType.P_REP_DESIGN.getName(),
+		Assert.assertFalse("Block factor is required if the design type is " + ExperimentDesignType.P_REP.getBvDesignName(),
 				runSingleSiteAction.validateDesignInput(this.window, breedingViewInput));
 
 	}
@@ -266,11 +266,11 @@ public class RunSingleSiteActionTest {
 	@Test
 	public void testValidateDesignInputBlocksFactorIsBlankAndNotRequired() {
 
-		Mockito.when(this.source.getSelDesignTypeValue()).thenReturn(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName());
+		Mockito.when(this.source.getSelDesignTypeValue()).thenReturn(ExperimentDesignType.ROW_COL.getBvDesignName());
 		Mockito.when(this.source.getSelBlocksValue()).thenReturn(null);
 
 		Assert.assertTrue("Validation should pass because Block factor is not required if the design type is not "
-						+ DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName(),
+						+ ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getBvDesignName(),
 				runSingleSiteAction.validateDesignInput(this.window, breedingViewInput));
 
 	}
@@ -278,10 +278,10 @@ public class RunSingleSiteActionTest {
 	@Test
 	public void testValidateDesignInputRowFactorIsBlankAndRequired() {
 
-		Mockito.when(this.source.getSelDesignTypeValue()).thenReturn(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName());
+		Mockito.when(this.source.getSelDesignTypeValue()).thenReturn(ExperimentDesignType.ROW_COL.getBvDesignName());
 		Mockito.when(this.source.getSelRowFactorValue()).thenReturn(null);
 
-		Assert.assertFalse("Row factor is required if the design type is " + DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName(),
+		Assert.assertFalse("Row factor is required if the design type is " + ExperimentDesignType.ROW_COL.getBvDesignName(),
 				runSingleSiteAction.validateDesignInput(this.window, breedingViewInput));
 
 	}
@@ -289,10 +289,10 @@ public class RunSingleSiteActionTest {
 	@Test
 	public void testValidateDesignInputColumnFactorIsBlankAndRequired() {
 
-		Mockito.when(this.source.getSelDesignTypeValue()).thenReturn(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName());
+		Mockito.when(this.source.getSelDesignTypeValue()).thenReturn(ExperimentDesignType.ROW_COL.getBvDesignName());
 		Mockito.when(this.source.getSelColumnFactorValue()).thenReturn(null);
 
-		Assert.assertFalse("Column factor is required if the design type is " + DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName(),
+		Assert.assertFalse("Column factor is required if the design type is " + ExperimentDesignType.ROW_COL.getBvDesignName(),
 				runSingleSiteAction.validateDesignInput(this.window, breedingViewInput));
 
 	}
@@ -325,7 +325,7 @@ public class RunSingleSiteActionTest {
 		Mockito.when(this.source.getSelRowFactorValue()).thenReturn(null);
 		Mockito.when(this.source.getSelColumnFactorValue()).thenReturn(null);
 
-		Assert.assertTrue("Column and row factors can be blank if the design type is not " + DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName(),
+		Assert.assertTrue("Column and row factors can be blank if the design type is not " + ExperimentDesignType.ROW_COL.getBvDesignName(),
 				runSingleSiteAction.validateDesignInput(this.window, breedingViewInput));
 
 	}
@@ -394,7 +394,7 @@ public class RunSingleSiteActionTest {
 	@Test
 	public void testCreateReplicates() {
 
-		final Replicates replicates = runSingleSiteAction.createReplicates(DesignType.RANDOMIZED_BLOCK_DESIGN.getName(), REPLICATES_FACTOR);
+		final Replicates replicates = runSingleSiteAction.createReplicates(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK, REPLICATES_FACTOR);
 		Assert.assertNotNull(replicates);
 		Assert.assertEquals("Replicates_Factor", replicates.getName());
 
@@ -403,7 +403,7 @@ public class RunSingleSiteActionTest {
 	@Test
 	public void testCreateReplicatesBlankReplicates() {
 
-		final Replicates replicates = runSingleSiteAction.createReplicates(DesignType.RANDOMIZED_BLOCK_DESIGN.getName(), null);
+		final Replicates replicates = runSingleSiteAction.createReplicates(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK, null);
 		Assert.assertNotNull(replicates);
 		Assert.assertEquals(DatasetExporter.DUMMY_REPLICATES, replicates.getName());
 
@@ -412,8 +412,8 @@ public class RunSingleSiteActionTest {
 	@Test
 	public void testCreateReplicatesForPrepDesign() {
 
-		final Replicates replicates = runSingleSiteAction.createReplicates(DesignType.P_REP_DESIGN.getName(), REPLICATES_FACTOR);
-		Assert.assertNull("No replicates should be created if the design type is " + DesignType.P_REP_DESIGN.getName(), replicates);
+		final Replicates replicates = runSingleSiteAction.createReplicates(ExperimentDesignType.P_REP, REPLICATES_FACTOR);
+		Assert.assertNull("No replicates should be created if the design type is " + ExperimentDesignType.P_REP, replicates);
 
 	}
 
@@ -432,7 +432,7 @@ public class RunSingleSiteActionTest {
 	@Test
 	public void testPopulateRowPosAndColPosDesignIsNotRowColumn() {
 
-		runSingleSiteAction.populateRowPosAndColPos(DesignType.P_REP_DESIGN, this.breedingViewInput);
+		runSingleSiteAction.populateRowPosAndColPos(ExperimentDesignType.P_REP, this.breedingViewInput);
 
 		// ColPos and RowPos should not be null if the design type is NOT Row-Column Design
 		Assert.assertNotNull(this.breedingViewInput.getColPos());
@@ -443,7 +443,7 @@ public class RunSingleSiteActionTest {
 	@Test
 	public void testPopulateRowPosAndColPosDesignIsRowColumn() {
 
-		runSingleSiteAction.populateRowPosAndColPos(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN, this.breedingViewInput);
+		runSingleSiteAction.populateRowPosAndColPos(ExperimentDesignType.ROW_COL, this.breedingViewInput);
 
 		// ColPos and RowPos should be null if the design type is Row-Column Design
 		Assert.assertNull(this.breedingViewInput.getColPos());
@@ -454,7 +454,7 @@ public class RunSingleSiteActionTest {
 	@Test
 	public void testPopulateRowAndColumnForRowAndColumnDesign() {
 
-		runSingleSiteAction.populateRowAndColumn(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN, this.breedingViewInput);
+		runSingleSiteAction.populateRowAndColumn(ExperimentDesignType.ROW_COL, this.breedingViewInput);
 
 		// Columns and Rows should not be null if the design type is Row and Column Design
 		Assert.assertNotNull(this.breedingViewInput.getRows());
@@ -465,7 +465,7 @@ public class RunSingleSiteActionTest {
 	@Test
 	public void testPopulateRowAndColumnDesignIsNotRowAndColumn() {
 
-		runSingleSiteAction.populateRowAndColumn(DesignType.RANDOMIZED_BLOCK_DESIGN, this.breedingViewInput);
+		runSingleSiteAction.populateRowAndColumn(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK, this.breedingViewInput);
 
 		// Columns and Rows should be null if the design type is NOT Row and Column Design
 		Assert.assertNull(this.breedingViewInput.getRows());

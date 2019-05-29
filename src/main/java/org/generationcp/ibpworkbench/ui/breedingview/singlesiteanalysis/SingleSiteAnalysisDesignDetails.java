@@ -1,8 +1,11 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -10,20 +13,16 @@ import org.generationcp.ibpworkbench.GermplasmStudyBrowserLayout;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.breedingview.singlesiteanalysis.BreedingViewDesignTypeValueChangeListener;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
+import org.generationcp.middleware.domain.dms.ExperimentDesignType;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
-
 @Configurable
 public class SingleSiteAnalysisDesignDetails extends VerticalLayout
-		implements InitializingBean, InternationalizableComponent, GermplasmStudyBrowserLayout {
+	implements InitializingBean, InternationalizableComponent, GermplasmStudyBrowserLayout {
 
 	private static final long serialVersionUID = 1L;
 
@@ -97,8 +96,8 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout
 		this.lblSpecifyColumnFactor.setStyleName(SingleSiteAnalysisDetailsPanel.LABEL_BOLD_STYLING);
 
 		this.lblSpecifyDesignDetailsHeader =
-				new Label("<span class='bms-exp-design' style='color: #9A8478; " + "font-size: 22px; font-weight: bold;'></span><b>&nbsp;"
-						+ this.messageSource.getMessage(Message.BV_SPECIFY_DESIGN_DETAILS_HEADER) + "</b>", Label.CONTENT_XHTML);
+			new Label("<span class='bms-exp-design' style='color: #9A8478; " + "font-size: 22px; font-weight: bold;'></span><b>&nbsp;"
+				+ this.messageSource.getMessage(Message.BV_SPECIFY_DESIGN_DETAILS_HEADER) + "</b>", Label.CONTENT_XHTML);
 		this.lblSpecifyDesignDetailsHeader.setStyleName(Bootstrap.Typography.H3.styleName());
 
 		final String pleaseChoose = this.messageSource.getMessage(Message.PLEASE_CHOOSE);
@@ -161,16 +160,16 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout
 	}
 
 	private void populateDesignTypeOptions() {
-		this.selDesignType.addItem(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName());
-		this.selDesignType.setItemCaption(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName(), "Incomplete block design");
-		this.selDesignType.addItem(DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
-		this.selDesignType.setItemCaption(DesignType.RANDOMIZED_BLOCK_DESIGN.getName(), "Randomized block design");
-		this.selDesignType.addItem(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName());
-		this.selDesignType.setItemCaption(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName(), "Row-column design");
-		this.selDesignType.addItem(DesignType.P_REP_DESIGN.getName());
-		this.selDesignType.setItemCaption(DesignType.P_REP_DESIGN.getName(), "P-rep design");
-		this.selDesignType.addItem(DesignType.AUGMENTED_RANDOMIZED_BLOCK.getName());
-		this.selDesignType.setItemCaption(DesignType.AUGMENTED_RANDOMIZED_BLOCK.getName(), "Augmented design");
+		this.selDesignType.addItem(ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getBvDesignName());
+		this.selDesignType.setItemCaption(ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getBvDesignName(), "Incomplete block design");
+		this.selDesignType.addItem(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvDesignName());
+		this.selDesignType.setItemCaption(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvDesignName(), "Randomized block design");
+		this.selDesignType.addItem(ExperimentDesignType.ROW_COL.getBvDesignName());
+		this.selDesignType.setItemCaption(ExperimentDesignType.ROW_COL.getBvDesignName(), "Row-column design");
+		this.selDesignType.addItem(ExperimentDesignType.P_REP.getBvDesignName());
+		this.selDesignType.setItemCaption(ExperimentDesignType.P_REP.getBvDesignName(), "P-rep design");
+		this.selDesignType.addItem(ExperimentDesignType.AUGMENTED_RANDOMIZED_BLOCK.getBvDesignName());
+		this.selDesignType.setItemCaption(ExperimentDesignType.AUGMENTED_RANDOMIZED_BLOCK.getBvDesignName(), "Augmented design");
 	}
 
 	@Override
@@ -225,8 +224,9 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout
 	}
 
 	protected int retrieveExperimentalDesignTypeID() {
-		final String expDesign = this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(),
-				this.ssaDetailsPanel.getBreedingViewInput().getStudyId());
+		final String expDesign = this.studyDataManager.getGeolocationPropValue(
+			TermId.EXPERIMENT_DESIGN_FACTOR.getId(),
+			this.ssaDetailsPanel.getBreedingViewInput().getStudyId());
 		if (expDesign != null && !"".equals(expDesign.trim()) && NumberUtils.isNumber(expDesign)) {
 			return Integer.parseInt(expDesign);
 		}
@@ -240,18 +240,18 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout
 		if (designType != 0) {
 
 			if (designType == TermId.RANDOMIZED_COMPLETE_BLOCK.getId()) {
-				designFactor = DesignType.RANDOMIZED_BLOCK_DESIGN.getName();
+				designFactor = ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvDesignName();
 				this.displayRandomizedBlockDesignElements();
 			} else if (designType == TermId.RESOLVABLE_INCOMPLETE_BLOCK.getId()
 					|| designType == TermId.RESOLVABLE_INCOMPLETE_BLOCK_LATIN.getId()) {
-				designFactor = DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName();
+				designFactor = ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getBvDesignName();
 				this.displayIncompleteBlockDesignElements();
 			} else if (designType == TermId.RESOLVABLE_INCOMPLETE_ROW_COL.getId()
 					|| designType == TermId.RESOLVABLE_INCOMPLETE_ROW_COL_LATIN.getId()) {
-				designFactor = DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName();
+				designFactor = ExperimentDesignType.ROW_COL.getBvDesignName();
 				this.displayRowColumnDesignElements();
 			} else if (designType == TermId.AUGMENTED_RANDOMIZED_BLOCK.getId()) {
-				designFactor = DesignType.AUGMENTED_RANDOMIZED_BLOCK.getName();
+				designFactor = ExperimentDesignType.AUGMENTED_RANDOMIZED_BLOCK.getBvDesignName();
 				this.displayAugmentedDesignElements();
 			}
 
@@ -360,9 +360,9 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout
 	void markRowAndColumnFactorsAsMandatory(final Boolean isMandatory) {
 		if (isMandatory) {
 			this.lblSpecifyRowFactor.setValue(
-					this.messageSource.getMessage(Message.BV_SPECIFY_ROW_FACTOR) + SingleSiteAnalysisDetailsPanel.REQUIRED_FIELD_INDICATOR);
+				this.messageSource.getMessage(Message.BV_SPECIFY_ROW_FACTOR) + SingleSiteAnalysisDetailsPanel.REQUIRED_FIELD_INDICATOR);
 			this.lblSpecifyColumnFactor.setValue(this.messageSource.getMessage(Message.BV_SPECIFY_COLUMN_FACTOR)
-					+ SingleSiteAnalysisDetailsPanel.REQUIRED_FIELD_INDICATOR);
+				+ SingleSiteAnalysisDetailsPanel.REQUIRED_FIELD_INDICATOR);
 		} else {
 			this.lblSpecifyRowFactor.setValue(this.messageSource.getMessage(Message.BV_SPECIFY_ROW_FACTOR));
 			this.lblSpecifyColumnFactor.setValue(this.messageSource.getMessage(Message.BV_SPECIFY_COLUMN_FACTOR));
@@ -405,7 +405,7 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout
 	protected void populateChoicesForReplicates() {
 		for (final DMSVariableType factor : this.ssaDetailsPanel.getFactorsInDataset()) {
 			if (factor.getStandardVariable().getProperty().getName().trim()
-					.equalsIgnoreCase(SingleSiteAnalysisDesignDetails.REPLICATION_FACTOR)) {
+				.equalsIgnoreCase(SingleSiteAnalysisDesignDetails.REPLICATION_FACTOR)) {
 				this.selReplicates.addItem(factor.getLocalName());
 				this.selReplicates.setValue(factor.getLocalName());
 			}
@@ -422,7 +422,7 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout
 
 		for (final DMSVariableType factor : this.ssaDetailsPanel.getFactorsInDataset()) {
 			if (factor.getStandardVariable().getProperty().getName().trim()
-					.equalsIgnoreCase(SingleSiteAnalysisDesignDetails.BLOCKING_FACTOR)) {
+				.equalsIgnoreCase(SingleSiteAnalysisDesignDetails.BLOCKING_FACTOR)) {
 				this.selBlocks.addItem(factor.getLocalName());
 				this.selBlocks.setValue(factor.getLocalName());
 				this.selBlocks.setEnabled(true);
@@ -442,7 +442,7 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout
 	protected void populateChoicesForColumnFactor() {
 		for (final DMSVariableType factor : this.ssaDetailsPanel.getFactorsInDataset()) {
 			if (factor.getStandardVariable().getProperty().getName().trim()
-					.equalsIgnoreCase(SingleSiteAnalysisDesignDetails.COLUMN_FACTOR)) {
+				.equalsIgnoreCase(SingleSiteAnalysisDesignDetails.COLUMN_FACTOR)) {
 				this.selColumnFactor.addItem(factor.getLocalName());
 			}
 		}

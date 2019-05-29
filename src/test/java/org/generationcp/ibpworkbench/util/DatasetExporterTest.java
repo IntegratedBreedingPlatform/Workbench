@@ -2,13 +2,13 @@ package org.generationcp.ibpworkbench.util;
 
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.ArrayUtils;
-import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.util.BreedingViewUtil;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.Enumeration;
 import org.generationcp.middleware.domain.dms.Experiment;
+import org.generationcp.middleware.domain.dms.ExperimentDesignType;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.StandardVariable;
 import org.generationcp.middleware.domain.dms.Variable;
@@ -156,16 +156,16 @@ public class DatasetExporterTest {
 				"Expecting to return true since dummy replicates factor was used and design type is " + this.bvInput.getDesignType(),
 				isDummyRepUsed);
 
-		Mockito.when(this.bvInput.getDesignType()).thenReturn(DesignType.P_REP_DESIGN.getName());
+		Mockito.when(this.bvInput.getDesignType()).thenReturn(ExperimentDesignType.P_REP.getBvDesignName());
 		isDummyRepUsed = this.exporter.isDummyRepVariableUsed(this.bvInput);
 		Assert.assertFalse(
-				"Expecting to return false because even though dummy replicates factor was used, design type is " + DesignType.P_REP_DESIGN
-						.getName(), isDummyRepUsed);
+				"Expecting to return false because even though dummy replicates factor was used, design type is " + ExperimentDesignType.P_REP
+						.getBvDesignName(), isDummyRepUsed);
 
-		Mockito.when(this.bvInput.getDesignType()).thenReturn(DesignType.AUGMENTED_RANDOMIZED_BLOCK.getName());
+		Mockito.when(this.bvInput.getDesignType()).thenReturn(ExperimentDesignType.AUGMENTED_RANDOMIZED_BLOCK.getBvDesignName());
 		isDummyRepUsed = this.exporter.isDummyRepVariableUsed(this.bvInput);
 		Assert.assertFalse("Expecting to return false because even though dummy replicates factor was used, design type is "
-				+ DesignType.AUGMENTED_RANDOMIZED_BLOCK.getName(), isDummyRepUsed);
+				+ ExperimentDesignType.AUGMENTED_RANDOMIZED_BLOCK.getBvDesignName(), isDummyRepUsed);
 	}
 
 	@Test
@@ -568,7 +568,7 @@ public class DatasetExporterTest {
 
 		// Setup BreedingViewInput mocks
 		Mockito.when(this.bvInput.getTrialInstanceName()).thenReturn(DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME);
-		Mockito.when(this.bvInput.getDesignType()).thenReturn(DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
+		Mockito.when(this.bvInput.getDesignType()).thenReturn(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvDesignName());
 
 		final HashMap<String, Boolean> traitsSelectionMap = new HashMap<String, Boolean>();
 		traitsSelectionMap.put(EPP_VARIATE, true);
