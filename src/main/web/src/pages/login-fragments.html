@@ -28,7 +28,7 @@
 			<img class="login-footer-logo"
 				th:src="@{/controller/static/images/logo.png}" alt="Logo" />
 			<div class="login-footer-body">
-				Breeding Management System v<span th:text="${version}"></span> &bull;
+				<span th:text="#{about.version.prefix}"></span><span th:text="${version}"></span> &bull;
 				Provided by the <a href="https://www.integratedbreeding.net/">Integrated Breeding Platform</a>
 			</div>
 		</div>

@@ -3,6 +3,7 @@ package org.generationcp.ibpworkbench.controller;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(AboutController.URL)
 public class AboutController {
 	public static final String URL = "/about";
+
+	@Value("${workbench.version}")
+	private String workbenchVersion;
+
+	@ModelAttribute("workbenchVersion")
+	public String getWorkbenchVersion() {
+		return workbenchVersion;
+	}
 
 	@ModelAttribute("partnerImages")
 	public List<String> getPartnerImages() {
