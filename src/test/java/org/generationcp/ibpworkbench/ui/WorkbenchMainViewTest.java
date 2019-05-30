@@ -104,7 +104,7 @@ public class WorkbenchMainViewTest {
 		this.workbenchMainView.showContent(new VerticalLayout());
 
 		final HorizontalLayout workbenchHeaderLayout = this.workbenchMainView.getWorkbenchHeaderLayout();
-		Assert.assertEquals(8, workbenchHeaderLayout.getComponentCount());
+		Assert.assertEquals(9, workbenchHeaderLayout.getComponentCount());
 
 		final Iterator<Component> componentIterator = workbenchHeaderLayout.getComponentIterator();
 		boolean homeButtonShown = false;
@@ -158,7 +158,7 @@ public class WorkbenchMainViewTest {
 
 	private void verifyHeaderLayoutWHenShowingDashboard() {
 		final HorizontalLayout workbenchHeaderLayout = this.workbenchMainView.getWorkbenchHeaderLayout();
-		Assert.assertEquals(8, workbenchHeaderLayout.getComponentCount());
+		Assert.assertEquals(9, workbenchHeaderLayout.getComponentCount());
 
 		final Iterator<Component> componentIterator = workbenchHeaderLayout.getComponentIterator();
 		boolean addProgramButtonShown = false;
@@ -197,7 +197,7 @@ public class WorkbenchMainViewTest {
 
 	private void verifyHeaderLayoutWhenNotShowingDashboard() {
 		final HorizontalLayout workbenchHeaderLayout = this.workbenchMainView.getWorkbenchHeaderLayout();
-		Assert.assertEquals(9, workbenchHeaderLayout.getComponentCount());
+		Assert.assertEquals(10, workbenchHeaderLayout.getComponentCount());
 
 		final Iterator<Component> componentIterator = workbenchHeaderLayout.getComponentIterator();
 		boolean toggleSidebarButtonShowing = false;
