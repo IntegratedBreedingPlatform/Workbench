@@ -59,7 +59,7 @@ export class UserService {
             username: r.username,
             crops: r.crops,
             role: r.role,
-            roleName: r.role.description,
+            roleName: r.role.name,
             email: r.email,
             status: r.status,
         });

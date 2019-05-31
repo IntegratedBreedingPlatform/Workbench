@@ -7,13 +7,13 @@ export function main() {
     describe('Role Model Test', () => {
 
       function createRole() {
-        return new Role("0", "description");
+        return new Role("0", "name");
       }
 
       it('should be createable by constructor', () => {
         let role = createRole();
         expect(role.id).toBe("0");
-        expect(role.description).toBe("description");
+        expect(role.name).toBe("name");
       });
 
     });

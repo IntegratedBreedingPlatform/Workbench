@@ -13,8 +13,8 @@ export class User {
                 public role: Role,
                 public email: string,
                 public status: string ) {
-        if (role.description) {
-	        this.roleName = role.description;
+        if (role.name) {
+	        this.roleName = role.name;
         }
     }
 
