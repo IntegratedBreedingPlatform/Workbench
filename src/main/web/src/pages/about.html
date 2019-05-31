@@ -15,6 +15,16 @@
 			<img th:src="@{/controller/static/images/sponsors/GCP_Splash.jpg}"/>
 		</div>
 
+		<h2 class="about-header">
+			<span th:text="#{about.version.header}">Version</span>
+		</h2>
+
+		<div class="row">
+			<div class="col-xs-4 about-version">
+				<span th:text="#{about.version.prefix}"></span><span th:text="${workbenchVersion}"></span>
+			</div>
+		</div>
+
 		<h2 class="about-header" th:text="#{about.in.partnership.with}">In partnership with</h2>
 
 		<div class="row">

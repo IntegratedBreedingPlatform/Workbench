@@ -83,6 +83,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	private Button adminButton;
 	private PopupButton memberButton;
 	private Button helpButton;
+	private Button aboutButton;
 
 	@Resource
 	private TomcatUtil tomcatUtil;
@@ -235,6 +236,12 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		final Person member = this.contextUtil.getCurrentWorkbenchUser().getPerson();
 		this.getMemberButton().addComponent(this.createMemberPopup(member.getFirstName(), member.getLastName(), member.getEmail()));
 
+		this.aboutButton = new Button("<span class='bms-header-btn2'><span class='bms-fa-information-circle ico'></span></span>");
+		this.aboutButton.setDebugId("aboutButton");
+		this.aboutButton.setStyleName(Bootstrap.Buttons.LINK.styleName());
+		this.aboutButton.setHtmlContentAllowed(true);
+		this.aboutButton.setSizeUndefined();
+
 		this.helpButton = new Button("<span class='bms-header-btn2'><span class='bms-fa-question-circle ico'></span></span>");
 		this.helpButton.setDebugId("helpButton");
 		this.helpButton.setStyleName(Bootstrap.Buttons.LINK.styleName());
@@ -378,6 +385,15 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 			}
 		});
 
+		this.aboutButton.addListener(new Button.ClickListener() {
+
+			@Override
+			public void buttonClick(final ClickEvent event) {
+				final IContentWindow contentFrame = (IContentWindow) event.getComponent().getWindow();
+				contentFrame.showContent("controller/about/");
+			}
+		});
+
 		this.helpButton.addListener(new HelpButtonClickAction(this, this.aboutBmsURL));
 
 		this.addListener(new CloseListener() {
@@ -503,6 +519,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 			this.workbenchHeaderLayout.setComponentAlignment(this.homeButton, Alignment.MIDDLE_RIGHT);
 		}
 
+		this.workbenchHeaderLayout.addComponent(this.aboutButton);
 		this.workbenchHeaderLayout.addComponent(this.helpButton);
 		this.workbenchHeaderLayout.addComponent(this.getAskSupportBtn());
 		this.workbenchHeaderLayout.addComponent(this.getMemberButton());
