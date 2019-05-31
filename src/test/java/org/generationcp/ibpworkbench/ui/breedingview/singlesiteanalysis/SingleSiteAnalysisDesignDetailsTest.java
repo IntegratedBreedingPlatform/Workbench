@@ -1,14 +1,14 @@
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import org.generationcp.commons.breedingview.xml.DesignType;
+import com.vaadin.data.Property;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.GridLayout;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
+import org.generationcp.middleware.domain.dms.ExperimentDesignType;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.StandardVariable;
 import org.generationcp.middleware.domain.oms.Term;
@@ -22,44 +22,43 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import com.vaadin.data.Property;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.GridLayout;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class SingleSiteAnalysisDesignDetailsTest {
-	
+
 	private static final int DATASET_ID = 3;
 	private static final int STUDY_ID = 1;
 	private static final String DEFAULT_REPLICATES = "REPLICATES";
 	private static final String ROW_FACTOR_LABEL = "Specify Row Factor";
 	private static final String COLUMN_FACTOR_LABEL = "Specify Column Factor";
 	private static final String BLOCK_NO = "BLOCK_NO";
-	
+
 	@Mock
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Mock
 	private StudyDataManager studyDataManager;
-	
+
 	@Mock
 	private SingleSiteAnalysisDetailsPanel ssaDetailsPanel;
-	
+
 	@InjectMocks
 	private SingleSiteAnalysisDesignDetails ssaDesignDetails;
-	
+
 	private BreedingViewInput input;
-	
+
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		
+
 		this.input = new BreedingViewInput();
 		this.input.setStudyId(STUDY_ID);
 		this.input.setDatasetId(DATASET_ID);
 		Mockito.doReturn(this.input).when(this.ssaDetailsPanel).getBreedingViewInput();
 		Mockito.doReturn(this.createTestFactors()).when(this.ssaDetailsPanel).getFactorsInDataset();
-		
+
 		Mockito.doReturn(COLUMN_FACTOR_LABEL).when(this.messageSource).getMessage(Message.BV_SPECIFY_COLUMN_FACTOR);
 		Mockito.doReturn(ROW_FACTOR_LABEL).when(this.messageSource).getMessage(Message.BV_SPECIFY_ROW_FACTOR);
 		this.ssaDesignDetails = new SingleSiteAnalysisDesignDetails(this.ssaDetailsPanel);
@@ -68,27 +67,27 @@ public class SingleSiteAnalysisDesignDetailsTest {
 		this.ssaDesignDetails.instantiateComponents();
 		this.ssaDesignDetails.initializeValues();
 	}
-	
+
 	@Test
 	public void testInitialization() {
 		final ComboBox selDesignType = this.ssaDesignDetails.getSelDesignType();
 		Assert.assertEquals(5, selDesignType.getItemIds().size());
 		final Iterator<?> designTypeIterator = selDesignType.getItemIds().iterator();
-		Assert.assertEquals(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName(), designTypeIterator.next());
-		Assert.assertEquals(DesignType.RANDOMIZED_BLOCK_DESIGN.getName(), designTypeIterator.next());
-		Assert.assertEquals(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName(), designTypeIterator.next());
-		Assert.assertEquals(DesignType.P_REP_DESIGN.getName(), designTypeIterator.next());
-		Assert.assertEquals(DesignType.AUGMENTED_RANDOMIZED_BLOCK.getName(), designTypeIterator.next());
-		
+		Assert.assertEquals(ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getBvDesignName(), designTypeIterator.next());
+		Assert.assertEquals(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvDesignName(), designTypeIterator.next());
+		Assert.assertEquals(ExperimentDesignType.ROW_COL.getBvDesignName(), designTypeIterator.next());
+		Assert.assertEquals(ExperimentDesignType.P_REP.getBvDesignName(), designTypeIterator.next());
+		Assert.assertEquals(ExperimentDesignType.AUGMENTED_RANDOMIZED_BLOCK.getBvDesignName(), designTypeIterator.next());
+
 		this.ssaDesignDetails.addListeners();
 		Assert.assertNotNull(selDesignType.getListeners(Property.ValueChangeEvent.class));
 	}
-	
+
 	@Test
 	public void testDesignTypeIncompleteBlockDesignResolvableNonLatin() {
 
 		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
-				.thenReturn(Integer.toString(TermId.RESOLVABLE_INCOMPLETE_BLOCK.getId()));
+			.thenReturn(Integer.toString(TermId.RESOLVABLE_INCOMPLETE_BLOCK.getId()));
 
 		this.ssaDesignDetails.displayDesignElementsBasedOnDesignTypeOfTheStudy();
 		final List<Component> components = this.getComponentsListFromGridLayout();
@@ -100,14 +99,17 @@ public class SingleSiteAnalysisDesignDetailsTest {
 
 		final boolean spatialVariablesRequired = false;
 		this.verifyRowAndColumnFactorsArePresent(components, spatialVariablesRequired);
-		
-		Assert.assertEquals(this.ssaDesignDetails.getSelDesignType().getValue(), DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName());
 
-		if ((!this.ssaDesignDetails.getSelReplicates().isEnabled() || this.ssaDesignDetails.getSelReplicates().getItemIds().isEmpty()) && !this.ssaDesignDetails
-				.getSelBlocks().getItemIds().isEmpty()) {
+		Assert.assertEquals(this.ssaDesignDetails.getSelDesignType().getValue(),
+			ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getBvDesignName());
+
+		if ((!this.ssaDesignDetails.getSelReplicates().isEnabled() || this.ssaDesignDetails.getSelReplicates().getItemIds().isEmpty())
+			&& !this.ssaDesignDetails
+			.getSelBlocks().getItemIds().isEmpty()) {
 			Assert.assertTrue(this.ssaDesignDetails.getSelReplicates().isEnabled());
 			for (final Object itemId : this.ssaDesignDetails.getSelBlocks().getItemIds()) {
-				Assert.assertEquals(SingleSiteAnalysisDesignDetailsTest.DEFAULT_REPLICATES,
+				Assert.assertEquals(
+					SingleSiteAnalysisDesignDetailsTest.DEFAULT_REPLICATES,
 					this.ssaDesignDetails.getSelReplicates().getItemCaption(itemId));
 			}
 		}
@@ -116,7 +118,7 @@ public class SingleSiteAnalysisDesignDetailsTest {
 	@Test
 	public void testDesignTypeIncompleteBlockDesignResolvableLatin() {
 		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
-				.thenReturn(Integer.toString(TermId.RESOLVABLE_INCOMPLETE_BLOCK_LATIN.getId()));
+			.thenReturn(Integer.toString(TermId.RESOLVABLE_INCOMPLETE_BLOCK_LATIN.getId()));
 
 		this.ssaDesignDetails.displayDesignElementsBasedOnDesignTypeOfTheStudy();
 		final List<Component> components = this.getComponentsListFromGridLayout();
@@ -128,14 +130,17 @@ public class SingleSiteAnalysisDesignDetailsTest {
 
 		final boolean spatialVariablesRequired = false;
 		this.verifyRowAndColumnFactorsArePresent(components, spatialVariablesRequired);
-		
-		Assert.assertEquals(this.ssaDesignDetails.getSelDesignType().getValue(), DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName());
 
-		if ((!this.ssaDesignDetails.getSelReplicates().isEnabled() || this.ssaDesignDetails.getSelReplicates().getItemIds().isEmpty()) && !this.ssaDesignDetails
-				.getSelBlocks().getItemIds().isEmpty()) {
+		Assert.assertEquals(this.ssaDesignDetails.getSelDesignType().getValue(),
+			ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getBvDesignName());
+
+		if ((!this.ssaDesignDetails.getSelReplicates().isEnabled() || this.ssaDesignDetails.getSelReplicates().getItemIds().isEmpty())
+			&& !this.ssaDesignDetails
+			.getSelBlocks().getItemIds().isEmpty()) {
 			Assert.assertTrue(this.ssaDesignDetails.getSelReplicates().isEnabled());
 			for (final Object itemId : this.ssaDesignDetails.getSelBlocks().getItemIds()) {
-				Assert.assertEquals(SingleSiteAnalysisDesignDetailsTest.DEFAULT_REPLICATES,
+				Assert.assertEquals(
+					SingleSiteAnalysisDesignDetailsTest.DEFAULT_REPLICATES,
 					this.ssaDesignDetails.getSelReplicates().getItemCaption(itemId));
 			}
 		}
@@ -144,7 +149,7 @@ public class SingleSiteAnalysisDesignDetailsTest {
 	@Test
 	public void testDesignTypeRowColumnDesignLatin() {
 		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
-				.thenReturn(Integer.toString(TermId.RESOLVABLE_INCOMPLETE_ROW_COL_LATIN.getId()));
+			.thenReturn(Integer.toString(TermId.RESOLVABLE_INCOMPLETE_ROW_COL_LATIN.getId()));
 
 		this.ssaDesignDetails.displayDesignElementsBasedOnDesignTypeOfTheStudy();
 		final List<Component> components = this.getComponentsListFromGridLayout();
@@ -156,14 +161,16 @@ public class SingleSiteAnalysisDesignDetailsTest {
 
 		final boolean spatialVariablesRequired = true;
 		this.verifyRowAndColumnFactorsArePresent(components, spatialVariablesRequired);
-		
-		Assert.assertEquals(this.ssaDesignDetails.getSelDesignType().getValue(), DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName());
 
-		if ((!this.ssaDesignDetails.getSelReplicates().isEnabled() || this.ssaDesignDetails.getSelReplicates().getItemIds().isEmpty()) && !this.ssaDesignDetails
-				.getSelBlocks().getItemIds().isEmpty()) {
+		Assert.assertEquals(this.ssaDesignDetails.getSelDesignType().getValue(), ExperimentDesignType.ROW_COL.getBvDesignName());
+
+		if ((!this.ssaDesignDetails.getSelReplicates().isEnabled() || this.ssaDesignDetails.getSelReplicates().getItemIds().isEmpty())
+			&& !this.ssaDesignDetails
+			.getSelBlocks().getItemIds().isEmpty()) {
 			Assert.assertTrue(this.ssaDesignDetails.getSelReplicates().isEnabled());
 			for (final Object itemId : this.ssaDesignDetails.getSelBlocks().getItemIds()) {
-				Assert.assertEquals(SingleSiteAnalysisDesignDetailsTest.DEFAULT_REPLICATES,
+				Assert.assertEquals(
+					SingleSiteAnalysisDesignDetailsTest.DEFAULT_REPLICATES,
 					this.ssaDesignDetails.getSelReplicates().getItemCaption(itemId));
 			}
 		}
@@ -172,7 +179,7 @@ public class SingleSiteAnalysisDesignDetailsTest {
 	@Test
 	public void testDesignTypeRowColumnDesignNonLatin() {
 		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
-				.thenReturn(Integer.toString(TermId.RESOLVABLE_INCOMPLETE_ROW_COL.getId()));
+			.thenReturn(Integer.toString(TermId.RESOLVABLE_INCOMPLETE_ROW_COL.getId()));
 
 		this.ssaDesignDetails.displayDesignElementsBasedOnDesignTypeOfTheStudy();
 		final List<Component> components = this.getComponentsListFromGridLayout();
@@ -184,14 +191,16 @@ public class SingleSiteAnalysisDesignDetailsTest {
 
 		final boolean spatialVariablesRequired = true;
 		this.verifyRowAndColumnFactorsArePresent(components, spatialVariablesRequired);
-		
-		Assert.assertEquals(this.ssaDesignDetails.getSelDesignType().getValue(), DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName());
 
-		if ((!this.ssaDesignDetails.getSelReplicates().isEnabled() || this.ssaDesignDetails.getSelReplicates().getItemIds().isEmpty()) && !this.ssaDesignDetails
-				.getSelBlocks().getItemIds().isEmpty()) {
+		Assert.assertEquals(this.ssaDesignDetails.getSelDesignType().getValue(), ExperimentDesignType.ROW_COL.getBvDesignName());
+
+		if ((!this.ssaDesignDetails.getSelReplicates().isEnabled() || this.ssaDesignDetails.getSelReplicates().getItemIds().isEmpty())
+			&& !this.ssaDesignDetails
+			.getSelBlocks().getItemIds().isEmpty()) {
 			Assert.assertTrue(this.ssaDesignDetails.getSelReplicates().isEnabled());
 			for (final Object itemId : this.ssaDesignDetails.getSelBlocks().getItemIds()) {
-				Assert.assertEquals(SingleSiteAnalysisDesignDetailsTest.DEFAULT_REPLICATES,
+				Assert.assertEquals(
+					SingleSiteAnalysisDesignDetailsTest.DEFAULT_REPLICATES,
 					this.ssaDesignDetails.getSelReplicates().getItemCaption(itemId));
 			}
 		}
@@ -200,7 +209,7 @@ public class SingleSiteAnalysisDesignDetailsTest {
 	@Test
 	public void testDesignTypeRandomizedBlockDesign() {
 		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
-				.thenReturn(Integer.toString(TermId.RANDOMIZED_COMPLETE_BLOCK.getId()));
+			.thenReturn(Integer.toString(TermId.RANDOMIZED_COMPLETE_BLOCK.getId()));
 
 		this.ssaDesignDetails.displayDesignElementsBasedOnDesignTypeOfTheStudy();
 		final List<Component> components = this.getComponentsListFromGridLayout();
@@ -212,23 +221,26 @@ public class SingleSiteAnalysisDesignDetailsTest {
 
 		final boolean spatialVariablesRequired = false;
 		this.verifyRowAndColumnFactorsArePresent(components, spatialVariablesRequired);
-		
-		Assert.assertEquals(this.ssaDesignDetails.getSelDesignType().getValue(), DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
 
-		if ((!this.ssaDesignDetails.getSelReplicates().isEnabled() || this.ssaDesignDetails.getSelReplicates().getItemIds().isEmpty()) && !this.ssaDesignDetails
-				.getSelBlocks().getItemIds().isEmpty()) {
+		Assert.assertEquals(this.ssaDesignDetails.getSelDesignType().getValue(),
+			ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvDesignName());
+
+		if ((!this.ssaDesignDetails.getSelReplicates().isEnabled() || this.ssaDesignDetails.getSelReplicates().getItemIds().isEmpty())
+			&& !this.ssaDesignDetails
+			.getSelBlocks().getItemIds().isEmpty()) {
 			Assert.assertTrue(this.ssaDesignDetails.getSelReplicates().isEnabled());
 			for (final Object itemId : this.ssaDesignDetails.getSelBlocks().getItemIds()) {
-				Assert.assertEquals(SingleSiteAnalysisDesignDetailsTest.DEFAULT_REPLICATES,
+				Assert.assertEquals(
+					SingleSiteAnalysisDesignDetailsTest.DEFAULT_REPLICATES,
 					this.ssaDesignDetails.getSelReplicates().getItemCaption(itemId));
 			}
 		}
 	}
-	
+
 	@Test
 	public void testDesignTypeAugmentedDesign() {
 		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
-				.thenReturn(Integer.toString(TermId.AUGMENTED_RANDOMIZED_BLOCK.getId()));
+			.thenReturn(Integer.toString(TermId.AUGMENTED_RANDOMIZED_BLOCK.getId()));
 
 		this.ssaDesignDetails.displayDesignElementsBasedOnDesignTypeOfTheStudy();
 		final List<Component> components = this.getComponentsListFromGridLayout();
@@ -240,16 +252,18 @@ public class SingleSiteAnalysisDesignDetailsTest {
 
 		final boolean spatialVariablesRequired = false;
 		this.verifyRowAndColumnFactorsArePresent(components, spatialVariablesRequired);
-		
-		Assert.assertEquals(this.ssaDesignDetails.getSelDesignType().getValue(), DesignType.AUGMENTED_RANDOMIZED_BLOCK.getName());
-		Assert.assertNull("Replicates factor is not needed in Augmented design, so replicates should be unselected (null)",
-				this.ssaDesignDetails.getSelReplicates().getValue());
+
+		Assert.assertEquals(this.ssaDesignDetails.getSelDesignType().getValue(),
+			ExperimentDesignType.AUGMENTED_RANDOMIZED_BLOCK.getBvDesignName());
+		Assert.assertNull(
+			"Replicates factor is not needed in Augmented design, so replicates should be unselected (null)",
+			this.ssaDesignDetails.getSelReplicates().getValue());
 	}
-	
+
 	@Test
 	public void testDesignTypePRepDesign() {
 		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
-				.thenReturn(Integer.toString(TermId.AUGMENTED_RANDOMIZED_BLOCK.getId()));
+			.thenReturn(Integer.toString(TermId.AUGMENTED_RANDOMIZED_BLOCK.getId()));
 
 		this.ssaDesignDetails.displayPRepDesignElements();
 		final List<Component> components = this.getComponentsListFromGridLayout();
@@ -261,14 +275,15 @@ public class SingleSiteAnalysisDesignDetailsTest {
 
 		final boolean spatialVariablesRequired = false;
 		this.verifyRowAndColumnFactorsArePresent(components, spatialVariablesRequired);
-		Assert.assertNull("Replicates factor is not needed in P-rep design, so replicates should be unselected (null)",
-				this.ssaDesignDetails.getSelReplicates().getValue());
+		Assert.assertNull(
+			"Replicates factor is not needed in P-rep design, so replicates should be unselected (null)",
+			this.ssaDesignDetails.getSelReplicates().getValue());
 	}
 
 	@Test
 	public void testDesignTypeInvalid() {
 		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
-				.thenReturn(null);
+			.thenReturn(null);
 
 		this.ssaDesignDetails.displayDesignElementsBasedOnDesignTypeOfTheStudy();
 		Assert.assertNull(this.ssaDesignDetails.getSelDesignType().getValue());
@@ -315,29 +330,29 @@ public class SingleSiteAnalysisDesignDetailsTest {
 		this.ssaDesignDetails.substituteMissingReplicatesWithBlocks();
 
 		Assert.assertEquals("The value of Replicates Factor Select Field should be the same as the Block factor",
-				SingleSiteAnalysisDesignDetailsTest.BLOCK_NO, this.ssaDesignDetails.getSelReplicates().getValue());
+			SingleSiteAnalysisDesignDetailsTest.BLOCK_NO, this.ssaDesignDetails.getSelReplicates().getValue());
 		Assert.assertEquals("If block factor is used as a substitute for replicates, then the item caption should be \""
-						+ SingleSiteAnalysisDetailsPanel.REPLICATES + "\"", SingleSiteAnalysisDetailsPanel.REPLICATES,
-				this.ssaDesignDetails.getSelReplicates().getItemCaption(this.ssaDesignDetails.getSelReplicates().getValue()));
+				+ SingleSiteAnalysisDetailsPanel.REPLICATES + "\"", SingleSiteAnalysisDetailsPanel.REPLICATES,
+			this.ssaDesignDetails.getSelReplicates().getItemCaption(this.ssaDesignDetails.getSelReplicates().getValue()));
 	}
-	
+
 	@Test
-	public void testReset(){
+	public void testReset() {
 		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
-				.thenReturn(Integer.toString(TermId.RANDOMIZED_COMPLETE_BLOCK.getId()));
-		this.ssaDesignDetails.getSelDesignType().setValue(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN);
+			.thenReturn(Integer.toString(TermId.RANDOMIZED_COMPLETE_BLOCK.getId()));
+		this.ssaDesignDetails.getSelDesignType().setValue(ExperimentDesignType.ROW_COL.getBvDesignName());
 		this.ssaDesignDetails.getSelReplicates().select(null);
 		this.ssaDesignDetails.getSelColumnFactor().select(null);
 		this.ssaDesignDetails.getSelRowFactor().select(null);
-		
+
 		this.ssaDesignDetails.reset();
-		Assert.assertEquals(DesignType.RANDOMIZED_BLOCK_DESIGN.getName(), this.ssaDesignDetails.getSelDesignTypeValue());
+		Assert
+			.assertEquals(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvDesignName(), this.ssaDesignDetails.getSelDesignTypeValue());
 		Assert.assertEquals("REP_NO", this.ssaDesignDetails.getSelReplicatesValue());
 		Assert.assertEquals("BLOCK_NO", this.ssaDesignDetails.getSelBlocksValue());
 		Assert.assertEquals("ROW_NO", this.ssaDesignDetails.getSelRowFactorValue());
 		Assert.assertEquals("COLUMN_NO", this.ssaDesignDetails.getSelColumnFactorValue());
 	}
-
 
 	private void verifyRowAndColumnFactorsArePresent(final List<Component> components, final boolean spatialVariablesRequired) {
 		Assert.assertTrue(components.contains(this.ssaDesignDetails.getLblSpecifyColumnFactor()));
@@ -345,16 +360,18 @@ public class SingleSiteAnalysisDesignDetailsTest {
 		Assert.assertTrue(components.contains(this.ssaDesignDetails.getLblSpecifyRowFactor()));
 		Assert.assertTrue(components.contains(this.ssaDesignDetails.getSelRowFactor()));
 		if (spatialVariablesRequired) {
-			Assert.assertEquals(COLUMN_FACTOR_LABEL + SingleSiteAnalysisDetailsPanel.REQUIRED_FIELD_INDICATOR, this.ssaDesignDetails.getLblSpecifyColumnFactor().getValue().toString());
-			Assert.assertEquals(ROW_FACTOR_LABEL + SingleSiteAnalysisDetailsPanel.REQUIRED_FIELD_INDICATOR, this.ssaDesignDetails.getLblSpecifyRowFactor().getValue().toString());
+			Assert.assertEquals(COLUMN_FACTOR_LABEL + SingleSiteAnalysisDetailsPanel.REQUIRED_FIELD_INDICATOR,
+				this.ssaDesignDetails.getLblSpecifyColumnFactor().getValue().toString());
+			Assert.assertEquals(ROW_FACTOR_LABEL + SingleSiteAnalysisDetailsPanel.REQUIRED_FIELD_INDICATOR,
+				this.ssaDesignDetails.getLblSpecifyRowFactor().getValue().toString());
 		} else {
 			Assert.assertEquals(COLUMN_FACTOR_LABEL, this.ssaDesignDetails.getLblSpecifyColumnFactor().getValue().toString());
 			Assert.assertEquals(ROW_FACTOR_LABEL, this.ssaDesignDetails.getLblSpecifyRowFactor().getValue().toString());
 		}
 	}
-	
+
 	private List<Component> getComponentsListFromGridLayout() {
-		
+
 		final GridLayout gLayout = (GridLayout) this.ssaDesignDetails.getDesignDetailsContainer().getComponentIterator().next();
 		final Iterator<Component> componentsIterator = gLayout.getComponentIterator();
 		final List<Component> components = new ArrayList<>();
@@ -365,7 +382,7 @@ public class SingleSiteAnalysisDesignDetailsTest {
 
 		return components;
 	}
-	
+
 	private List<DMSVariableType> createTestFactors() {
 		final List<DMSVariableType> factors = new ArrayList<DMSVariableType>();
 
@@ -426,6 +443,5 @@ public class SingleSiteAnalysisDesignDetailsTest {
 
 		return factors;
 	}
-
 
 }

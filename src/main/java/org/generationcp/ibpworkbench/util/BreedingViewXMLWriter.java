@@ -11,18 +11,6 @@
 
 package org.generationcp.ibpworkbench.util;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-
 import org.generationcp.commons.breedingview.xml.Covariate;
 import org.generationcp.commons.breedingview.xml.SSAParameters;
 import org.generationcp.commons.breedingview.xml.Trait;
@@ -49,6 +37,17 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 @Configurable
 public class BreedingViewXMLWriter implements InitializingBean, Serializable {
@@ -132,8 +131,9 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 		return marshaller;
 	}
 
-	private BreedingViewSession createBreedingViewSession(final BreedingViewProject project, final DataFile data,
-			final SSAParameters ssaParameters) {
+	private BreedingViewSession createBreedingViewSession(
+		final BreedingViewProject project, final DataFile data,
+		final SSAParameters ssaParameters) {
 		final BreedingViewSession bvSession = new BreedingViewSession();
 		bvSession.setBreedingViewProject(project);
 		bvSession.setDataFile(data);
@@ -175,7 +175,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 		}
 
 		final String outputDirectory =
-				this.installationDirectoryUtil.getOutputDirectoryForProjectAndTool(workbenchProject, ToolName.BREEDING_VIEW);
+			this.installationDirectoryUtil.getOutputDirectoryForProjectAndTool(workbenchProject, ToolName.BREEDING_VIEW);
 		ssaParameters.setOutputDirectory(outputDirectory);
 
 		if (Boolean.parseBoolean(this.isServerApp)) {
@@ -195,10 +195,10 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 		final Project project = this.contextUtil.getProjectInContext();
 
 		final String contextParameterString = org.generationcp.commons.util.ContextUtil
-				.getContextParameterString(this.contextUtil.getCurrentWorkbenchUserId(), project.getProjectId());
+			.getContextParameterString(this.contextUtil.getCurrentWorkbenchUserId(), project.getProjectId());
 
 		final String authenticationTokenString = org.generationcp.commons.util.ContextUtil
-				.addQueryParameter(ContextConstants.PARAM_AUTH_TOKEN, SecurityUtil.getEncodedToken());
+			.addQueryParameter(ContextConstants.PARAM_AUTH_TOKEN, SecurityUtil.getEncodedToken());
 
 		String webApiUrlWithCropName = this.replaceCropNameInWebApiUrl(url, project.getCropType().getCropName());
 		webApiUrlWithCropName += contextParameterString + authenticationTokenString;
