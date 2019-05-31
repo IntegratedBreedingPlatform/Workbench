@@ -29,7 +29,6 @@ public class UserAccountValidator implements Validator {
 			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
 
 	public static final String SIGNUP_FIELD_REQUIRED = "signup.field.required";
-	public static final String SIGNUP_FIELD_INVALID_ROLE = "signup.field.invalid.role";
 	public static final String SIGNUP_FIELD_PASSWORD_NOT_MATCH = "signup.field.password.not.match";
 	public static final String SIGNUP_FIELD_USERNAME_EXISTS = "signup.field.username.exists";
 	public static final String DATABASE_ERROR = "database.error";
