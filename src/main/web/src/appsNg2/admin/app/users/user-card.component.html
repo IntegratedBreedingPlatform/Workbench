@@ -61,7 +61,7 @@
                 <div class="col-sm-9">
                         <select  id="role" class="form-control" name="role" [(ngModel)]="model.role" #role="ngModel" required>
                         	<option disabled value="">Please choose</option>
-                        	<option  *ngFor="let role of roles" [ngValue]="role">{{role.description}}</option>
+                        	<option  *ngFor="let role of roles" [ngValue]="role">{{role.name}}</option>
                         </select>
                 </div>
             </div>

@@ -44,7 +44,7 @@
                   &nbsp;
                   <select  class="form-control" name="role" [(ngModel)]="table.searchValue.roleName">
                     <option value="undefined">All</option>
-                    <option  *ngFor="let role of roles" [value]="role.description">{{role.description}}</option>
+                    <option  *ngFor="let role of roles" [value]="role.name">{{role.name}}</option>
                   </select>
                 </div>
             </div>
