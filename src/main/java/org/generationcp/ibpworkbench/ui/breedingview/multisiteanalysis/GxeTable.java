@@ -23,7 +23,6 @@ import org.generationcp.middleware.enumeration.DatasetTypeEnum;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
-import org.generationcp.middleware.util.DatasetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -193,7 +192,7 @@ public class GxeTable extends Table implements InitializingBean {
 
 				// get the SITE NAME and SITE NO
 
-				final DataSet trialDataSet = DatasetUtil.getTrialDataSet(this.studyDataManager, studyId);
+				final DataSet trialDataSet = this.studyDataManager.findOneDataSetByType(studyId, DatasetTypeEnum.SUMMARY_DATA.getId());
 				final VariableTypeList trialEnvFactors = trialDataSet.getVariableTypes().getFactors();
 
 				for (final DMSVariableType factor : trialEnvFactors.getVariableTypes()) {

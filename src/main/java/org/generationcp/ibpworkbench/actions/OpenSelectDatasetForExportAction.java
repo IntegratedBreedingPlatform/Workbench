@@ -28,13 +28,13 @@ import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.Study;
+import org.generationcp.middleware.enumeration.DatasetTypeEnum;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
-import org.generationcp.middleware.util.DatasetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -134,7 +134,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 			final IContentWindow w = (IContentWindow) event.getComponent().getWindow();
 
 			List<DMSVariableType> trialVariablesInDataset = null;
-			final DataSet trialDataset = DatasetUtil.getTrialDataSet(this.studyDataManager, this.study.getId());
+			final DataSet trialDataset = this.studyDataManager.findOneDataSetByType(this.study.getId(), DatasetTypeEnum.SUMMARY_DATA.getId());
 			if (trialDataset != null && trialDataset.getVariableTypes() != null) {
 				trialVariablesInDataset = trialDataset.getVariableTypes().getVariableTypes();
 			}
