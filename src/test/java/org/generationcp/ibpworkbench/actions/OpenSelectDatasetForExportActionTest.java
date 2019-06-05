@@ -158,8 +158,8 @@ public class OpenSelectDatasetForExportActionTest {
 		Mockito.doReturn(this.summaryVariables).when(this.summaryDataset).getVariableTypes();
 		Mockito.doReturn(this.factors).when(this.summaryVariables).getFactors();
 		Mockito.doReturn(this.factorVariableTypes).when(this.factors).getVariableTypes();
-		Mockito.doReturn(Arrays.asList(this.studyDataset)).when(this.studyDataManager)
-				.getDataSetsByType(Matchers.eq(STUDY_ID), Matchers.anyInt());
+		Mockito.doReturn(this.studyDataset).when(this.studyDataManager)
+				.findOneDataSetByType(Matchers.eq(STUDY_ID), Matchers.anyInt());
 		Mockito.doReturn(this.studyVariables).when(this.studyDataset).getVariableTypes();
 		Mockito.doReturn(this.trialVariableTypes).when(this.studyVariables).getVariableTypes();
 
@@ -234,7 +234,7 @@ public class OpenSelectDatasetForExportActionTest {
 
 		Mockito.verify(this.workbenchDataManager).getToolWithName(ToolName.BREEDING_VIEW.getName());
 		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
-		Mockito.verify(this.studyDataManager).getDataSetsByType(Matchers.eq(STUDY_ID), Matchers.anyInt());
+		Mockito.verify(this.studyDataManager).findOneDataSetByType(Matchers.eq(STUDY_ID), Matchers.anyInt());
 
 		Mockito.verify(this.window).showContent(this.componentCaptor.capture());
 		Assert.assertTrue(this.componentCaptor.getValue() instanceof SingleSiteAnalysisDetailsPanel);

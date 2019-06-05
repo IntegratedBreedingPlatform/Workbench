@@ -131,7 +131,7 @@ public class GxeTableTest {
 		final DataSet dataSet = this.createDataSet(studyFactors, trialFactorVariables, studyVariates, studyVariateVariables);
 		final DataSet meansDataSet = this.createMeansDataSet(factors, factorVariables, variates, variateVariables);
 		final List<DataSet> meansDataSets = this.createMeansDataSets(factors, factorVariables, variates, variateVariables);
-		final List<DataSet> dataSets = this.createTrialDataSets(studyFactors, trialFactorVariables, studyVariates, studyVariateVariables);
+		final DataSet summaryDataSet = this.createDataSet(studyFactors, trialFactorVariables, studyVariates, studyVariateVariables);
 
 		this.variatesCheckBoxState = this.createVariatesCheckBoxState(variates);
 
@@ -139,7 +139,7 @@ public class GxeTableTest {
 		Mockito.doReturn(dataSet).when(this.studyDataManager).getDataSet(GxeTableTest.STUDY_DATASET_ID);
 		Mockito.doReturn(meansDataSet).when(this.studyDataManager).getDataSet(GxeTableTest.MEANS_DATASET_ID);
 		Mockito.doReturn(meansDataSets).when(this.studyDataManager).getDataSetsByType(GxeTableTest.STUDY_ID, DatasetTypeEnum.MEANS_DATA.getId());
-		Mockito.doReturn(dataSets).when(this.studyDataManager).getDataSetsByType(GxeTableTest.STUDY_ID, DatasetTypeEnum.SUMMARY_DATA.getId());
+		Mockito.doReturn(summaryDataSet).when(this.studyDataManager).findOneDataSetByType(GxeTableTest.STUDY_ID, DatasetTypeEnum.SUMMARY_DATA.getId());
 		Mockito.doReturn(this.createStudyEnvironments(factorVariables, variateVariables)).when(this.studyDataManager)
 			.getTrialEnvironmentsInDataset(GxeTableTest.MEANS_DATASET_ID);
 		Mockito.doReturn(this.createExperimentsWithStudyEnvironment(factors, factorVariables, variates, variateVariables))
