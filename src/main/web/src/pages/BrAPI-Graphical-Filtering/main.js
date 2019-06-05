@@ -34,7 +34,7 @@ $(document).ready(function () {
 });
 
 function loadLocations() {
-	var url = "/bmsapi/" + getUrlParameter("crop") + "/brapi/v1/locations";
+	var url = "/bmsapi/" + getUrlParameter("crop") + "/brapi/v1/locations?pageSize=10000";
 
 	return $.get({
 		dataType: "json",
