@@ -269,7 +269,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 	}
 
 	Label generateRoleCell(final Object itemId) {
-		final String role = ((WorkbenchUser) itemId).getRoles().get(0).getCapitalizedRole();
+		final String role = (!((WorkbenchUser) itemId).getRoles().isEmpty()) ? ((WorkbenchUser) itemId).getRoles().get(0).getCapitalizedRole() : "";
 		final Label label = new Label();
 		label.setDebugId("label");
 		label.setValue(role);
