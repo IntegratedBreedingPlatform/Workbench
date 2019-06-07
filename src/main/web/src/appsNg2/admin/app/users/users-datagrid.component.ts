@@ -67,10 +67,14 @@ export class UsersDatagrid implements OnInit {
     }
 
     private getSelectedRole(user: User) {
-        for (var i = 0; i < this.roles.length; i++) {
-            if (this.roles[i].id === user.role.id) {
-                return this.roles[i];
+        if (user.role) {
+            for (var i = 0; i < this.roles.length; i++) {
+                if (this.roles[i].id === user.role.id) {
+                    return this.roles[i];
+                }
             }
+        } else {
+            return null;
         }
     }
 
