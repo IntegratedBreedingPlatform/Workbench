@@ -214,8 +214,9 @@ export class UsersDatagrid implements OnInit {
 
     getRoleNamesTitleFormat(roleNames) {
         return roleNames.map((userRole) => userRole.role.name)
+            // remove duplicates
             .filter((item, pos, self) => {
-                return self.indexOf(item) == pos;
+                return self.indexOf(item) === pos;
             }).splice(1).join(' and ');
     }
 
@@ -230,8 +231,9 @@ export class AllRoleNamesPipe implements PipeTransform {
         }
         return userRoles
             .map((userRole) => userRole.role.name)
+            // remove duplicates
             .filter((item, pos, self) => {
-                return self.indexOf(item) == pos;
+                return self.indexOf(item) === pos;
             });
     }
 }
