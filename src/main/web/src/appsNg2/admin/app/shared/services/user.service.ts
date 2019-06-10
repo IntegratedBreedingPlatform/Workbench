@@ -3,10 +3,11 @@ import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { User } from './../models/user.model';
 import ServiceHelper from './service.helper';
+import { SERVER_API_URL } from '../../app.constants';
 
 @Injectable()
 export class UserService {
-    private baseUrl: string = '/bmsapi';
+    private baseUrl: string = SERVER_API_URL;
 
     private http: Http;
 
