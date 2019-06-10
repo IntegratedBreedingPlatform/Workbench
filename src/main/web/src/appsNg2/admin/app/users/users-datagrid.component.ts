@@ -60,7 +60,7 @@ export class UsersDatagrid implements OnInit {
         this.dialogTitle = 'Edit User';
         this.originalUser = user;
         this.user = new User(user.id, user.firstName, user.lastName,
-            user.username, user.crops, user.role, user.email, user.status);
+            user.username, user.crops, user.role, user.userRoles, user.email, user.status);
         this.user.role = this.getSelectedRole(user);
         userEditCard.initialize(true);
         this.showEditDialog = true;
@@ -79,7 +79,7 @@ export class UsersDatagrid implements OnInit {
     }
 
     initUser() {
-        this.user = new User('0', '', '', '', [], new Role('', ''), '', 'true');
+        this.user = new User('0', '', '', '', [], new Role('', ''), [], '', 'true');
     }
 
     ngOnInit() {

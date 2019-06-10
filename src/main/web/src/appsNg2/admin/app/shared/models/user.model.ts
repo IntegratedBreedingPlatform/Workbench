@@ -1,5 +1,6 @@
 import { Crop } from './crop.model';
 import { Role } from './role.model';
+import { UserRole } from './userrole.model';
 
 export class User {
 	// transient field for easy sorting and filtering
@@ -11,6 +12,7 @@ export class User {
                 public username: string,
                 public crops: Crop[],
                 public role: Role,
+                public userRoles: UserRole[],
                 public email: string,
                 public status: string ) {
         this.roleName = role ? role.name : "";

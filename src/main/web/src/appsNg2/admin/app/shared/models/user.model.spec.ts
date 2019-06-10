@@ -7,7 +7,7 @@ export function main() {
     describe('User Model Test', () => {
 
       function createUser() {
-        return new User("0", "first", "last", "username", [], new Role("1", "role"), "email", "status");
+          return new User('0', 'first', 'last', 'username', [], new Role('1', 'role', 'instance'), [], 'email', 'status');
       }
 
       it('should be createable by constructor', () => {

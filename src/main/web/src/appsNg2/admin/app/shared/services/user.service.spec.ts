@@ -140,7 +140,7 @@ export function main() {
               );
 
               spyOn(service, 'getHeaders').and.returnValue(header);
-              let user = new User("0", "first", "last", "username", [], new Role("1", "role"), "email", "status");
+              let user = new User('0', 'first', 'last', 'username', [], new Role('1', 'role', 'instance'), [], 'email', 'status');
 
               service.save(user).subscribe(
                   (data) => {
@@ -165,7 +165,7 @@ export function main() {
               );
 
               spyOn(service, 'getHeaders').and.returnValue(header);
-              let user = new User("0", "first", "last", "username", [], new Role("1", "role"), "email", "status");
+              let user = new User('0', 'first', 'last', 'username', [], new Role('1', 'role', 'instance'), [], 'email', 'status');
 
               service.update(user).subscribe(
                   (data) => {

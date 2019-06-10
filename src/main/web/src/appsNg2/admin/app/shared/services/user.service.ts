@@ -59,6 +59,7 @@ export class UserService {
             username: r.username,
             crops: r.crops,
             role: r.role,
+            userRoles: r.userRoles,
             roleName: r.role ? r.role.name : "",
             email: r.email,
             status: r.status,
