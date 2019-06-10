@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { NgDataGridModel } from './../shared/components/datagrid/ng-datagrid.model';
 import { User } from './../shared/models/user.model';
 import { Role } from './../shared/models/role.model';
@@ -9,6 +9,7 @@ import { UserCard } from './user-card.component';
 import { UserComparator } from './user-comparator.component';
 import { Crop } from '../shared/models/crop.model';
 import { CropService } from '../shared/services/crop.service';
+import { UserRole } from '../shared/models/userrole.model';
 
 @Component({
     selector: 'users-datagrid',
@@ -79,7 +80,7 @@ export class UsersDatagrid implements OnInit {
     }
 
     initUser() {
-        this.user = new User('0', '', '', '', [], new Role('', ''), [], '', 'true');
+        this.user = new User('0', '', '', '', [], new Role('', '', ''), [], '', 'true');
     }
 
     ngOnInit() {
@@ -209,5 +210,28 @@ export class UsersDatagrid implements OnInit {
 
     getCropsTitleFormat(crops) {
         return crops.map((crop) => crop.cropName).splice(1).join(' and ');
+    }
+
+    getRoleNamesTitleFormat(roleNames) {
+        return roleNames.map((userRole) => userRole.role.name)
+            .filter((item, pos, self) => {
+                return self.indexOf(item) == pos;
+            }).splice(1).join(' and ');
+    }
+
+}
+
+
+@Pipe({ name: 'allRoleNames' })
+export class AllRoleNamesPipe implements PipeTransform {
+    transform(userRoles: UserRole[]): any {
+        if (!userRoles) {
+            return [];
+        }
+        return userRoles
+            .map((userRole) => userRole.role.name)
+            .filter((item, pos, self) => {
+                return self.indexOf(item) == pos;
+            });
     }
 }

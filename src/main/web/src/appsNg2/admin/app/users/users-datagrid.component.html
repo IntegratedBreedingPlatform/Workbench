@@ -62,6 +62,7 @@
                         <th [ngClass]="{ sort: isSorted('email'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('email')">Email</th>
                         <th>Crop</th>
                         <th [ngClass]="{ sort: isSorted('roleName'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('roleName')">Role</th>
+                        <th>Roles</th>
                         <th [ngClass]="{ sort: isSorted('status'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('status')">Status</th>
                     </tr>
                 </thead>
@@ -87,6 +88,14 @@
                             </span>
                         </td>
                         <td>{{user.roleName}}</td>
+                        <td>
+                            <span *ngIf="user.userRoles?.length > 0">
+                                <span *ngIf="user.userRoles[0]" class="crop-badge">{{(user.userRoles | allRoleNames)[0]}}</span>
+                                <span *ngIf="(user.userRoles | allRoleNames).length > 1"
+                                      [title]="getRoleNamesTitleFormat((user.userRoles))"
+                                      style="padding-left: 5px; color: #428bca;"> and {{(user.userRoles | allRoleNames).length - 1}} more</span>
+                            </span>
+                        </td>
                         <td *ngIf="user.roleName.toUpperCase() == 'SUPERADMIN' && user.status == 'true'">Active</td>
                         <td *ngIf="user.roleName.toUpperCase() == 'SUPERADMIN' && user.status == 'false'">Inactive</td>
                         <td *ngIf="user.roleName.toUpperCase() != 'SUPERADMIN'">

@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule } from '@angular/http';
 import { FormsModule } from '@angular/forms';
 import { EmailValidator } from './shared/validators/email-validator.component';
-import { UsersDatagrid } from './users/users-datagrid.component';
+import { AllRoleNamesPipe, UsersDatagrid } from './users/users-datagrid.component';
 import { Dialog } from './shared/components/dialog/dialog.component';
 import { ErrorNotification } from './shared/components/notify/error-notification.component';
 import { PaginationComponent } from './shared/components/datagrid/pagination.component';
@@ -29,7 +29,8 @@ import { CommonModule } from '@angular/common';
     SiteAdminHeader,
     UsersAdmin,
     ToSelect2OptionDataPipe,
-    ToSelect2OptionIdPipe
+    ToSelect2OptionIdPipe,
+    AllRoleNamesPipe
   ],
   bootstrap: [AppComponent]
 })
