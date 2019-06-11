@@ -3,6 +3,7 @@ import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@a
 import { JhiPaginationUtil } from 'ng-jhipster';
 
 import { SampleComponent, SampleManagerComponent } from './';
+import { RouteAccessService } from '../../shared';
 
 @Injectable()
 export class SampleResolvePagingParams implements Resolve<any> {
@@ -28,8 +29,10 @@ export const sampleRoute: Routes = [
             'pagingParams': SampleResolvePagingParams
         },
         data: {
-            pageTitle: 'bmsjHipsterApp.sample.home.title'
+            pageTitle: 'bmsjHipsterApp.sample.home.title',
+            authorities: ['SUPERADMIN', 'ADMIN', 'BREEDING_ACTIVITIES', 'MANAGE_SAMPLES']
         },
+        canActivate: [RouteAccessService]
     }, {
         path: 'sample',
         component: SampleComponent,
@@ -37,8 +40,10 @@ export const sampleRoute: Routes = [
             'pagingParams': SampleResolvePagingParams
         },
         data: {
-            pageTitle: 'bmsjHipsterApp.sample.home.title'
-        }
+            pageTitle: 'bmsjHipsterApp.sample.home.title',
+            authorities: ['SUPERADMIN', 'ADMIN', 'BREEDING_ACTIVITIES', 'MANAGE_SAMPLES']
+        },
+        canActivate: [RouteAccessService]
     }
 ];
 
