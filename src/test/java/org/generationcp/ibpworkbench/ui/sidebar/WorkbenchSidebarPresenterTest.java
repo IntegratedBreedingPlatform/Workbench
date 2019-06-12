@@ -20,7 +20,6 @@ import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategory;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategoryLink;
-import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategoryLinkRole;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -105,34 +104,34 @@ public class WorkbenchSidebarPresenterTest {
 		this.infoMgtCategory.setSidebarCategoryId(4);
 		this.sidebarCategories
 				.addAll(Arrays.asList(this.adminCategory, this.categoryWithNoLinks, this.activitiesCategory, this.infoMgtCategory));
-
+		//TODO fix this
 		// Breeding Activities Links
 		final WorkbenchSidebarCategoryLink manageGermplasmLink = new WorkbenchSidebarCategoryLink(new Tool(ToolName.BM_LIST_MANAGER_MAIN.toString(), "manage_germplasm", "/ManageGermplasm"),
 				this.activitiesCategory, "manage_list", "Manage Germplasm");
-		manageGermplasmLink.setRoles(Arrays.asList(new WorkbenchSidebarCategoryLinkRole(manageGermplasmLink, new Role(1, "Admin")),
-				new WorkbenchSidebarCategoryLinkRole(manageGermplasmLink, new Role(2, "Breeder"))));
+		//manageGermplasmLink.setRoles(Arrays.asList(new WorkbenchSidebarCategoryLinkRole(manageGermplasmLink, new Role(1, "Admin")),
+		//		new WorkbenchSidebarCategoryLinkRole(manageGermplasmLink, new Role(2, "Breeder"))));
 		final WorkbenchSidebarCategoryLink trialManagerLink = new WorkbenchSidebarCategoryLink(new Tool(ToolName.TRIAL_MANAGER_FIELDBOOK_WEB.toString(), "trial_mgr", "/TrialManager"),
 				this.activitiesCategory, "trial_manager", "Trial Manager");
-		trialManagerLink.setRoles(Arrays.asList(new WorkbenchSidebarCategoryLinkRole(trialManagerLink, new Role(1, "Admin"))));
+		//trialManagerLink.setRoles(Arrays.asList(new WorkbenchSidebarCategoryLinkRole(trialManagerLink, new Role(1, "Admin"))));
 		this.sidebarLinksFromDB.put(this.activitiesCategory, Arrays.asList(manageGermplasmLink, trialManagerLink));
 		
 		// Info Management Links
 		final WorkbenchSidebarCategoryLink gdmsLink = new WorkbenchSidebarCategoryLink(new Tool(ToolName.GDMS.toString(), "gdms", "/GDMS"), this.infoMgtCategory, "gdms",
 				"Genotyping Data Management");
-		gdmsLink.setRoles(Arrays.asList(new WorkbenchSidebarCategoryLinkRole(gdmsLink, new Role(1, "Admin"))));
+		//gdmsLink.setRoles(Arrays.asList(new WorkbenchSidebarCategoryLinkRole(gdmsLink, new Role(1, "Admin"))));
 		final WorkbenchSidebarCategoryLink h2hLink = new WorkbenchSidebarCategoryLink(new Tool(ToolName.TRIAL_MANAGER_FIELDBOOK_WEB.toString(), "h2h", "/H2HMain"),
 				this.infoMgtCategory, "h2h", "Head To Head Query");
-		h2hLink.setRoles(Arrays.asList(new WorkbenchSidebarCategoryLinkRole(h2hLink, new Role(1, "Admin")),
-				new WorkbenchSidebarCategoryLinkRole(h2hLink, new Role(2, "Breeder"))));
+		//h2hLink.setRoles(Arrays.asList(new WorkbenchSidebarCategoryLinkRole(h2hLink, new Role(1, "Admin")),
+		//		new WorkbenchSidebarCategoryLinkRole(h2hLink, new Role(2, "Breeder"))));
 		this.sidebarLinksFromDB.put(this.infoMgtCategory, Arrays.asList(gdmsLink, h2hLink));
 		
 		// Program Admin links
 		final WorkbenchSidebarCategoryLink manageProgramLink = new WorkbenchSidebarCategoryLink(new Tool(ToolName.BM_LIST_MANAGER_MAIN.toString(), "manage_germplasm", "/ManageGermplasm"),
 				this.adminCategory, "manage_program", "Manage Program");
-		manageProgramLink.setRoles(Arrays.asList(new WorkbenchSidebarCategoryLinkRole(manageProgramLink, new Role(1, "Admin"))));
+		//manageProgramLink.setRoles(Arrays.asList(new WorkbenchSidebarCategoryLinkRole(manageProgramLink, new Role(1, "Admin"))));
 		final WorkbenchSidebarCategoryLink backupRestoreLink = new WorkbenchSidebarCategoryLink(new Tool(ToolName.TRIAL_MANAGER_FIELDBOOK_WEB.toString(), "trial_mgr", "/TrialManager"),
 				this.adminCategory, "backup_restore", "Backup and Restore");
-		backupRestoreLink.setRoles(new ArrayList<WorkbenchSidebarCategoryLinkRole>());
+		//backupRestoreLink.setRoles(new ArrayList<WorkbenchSidebarCategoryLinkRole>());
 		this.sidebarLinksFromDB.put(this.adminCategory, Arrays.asList(manageProgramLink, backupRestoreLink));
 		
 		Mockito.doReturn(this.sidebarCategories).when(this.workbenchDataManager).getAllWorkbenchSidebarCategory();
