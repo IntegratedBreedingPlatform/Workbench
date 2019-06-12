@@ -128,7 +128,7 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 	final Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> getSidebarMenu(
 		final Integer userId, final String cropName, final Integer programId) {
 		final Set<PermissionDto> permissions =
-			this.permissionService.getSidebarLinks(userId, cropName, programId);
+			this.permissionService.getPermissionLinks(userId, cropName, programId);
 		// get all categories first
 		final Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> sidebarLinks = new LinkedHashMap<>();
 
