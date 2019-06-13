@@ -56,22 +56,13 @@
                     <span class="sr-only">(error)</span>
                 </div>
             </div>
-            <div class="form-group required" [class.has-feedback]="!(role?.valid || role?.pristine)" [class.has-error]="!(role?.valid || role?.pristine)">
-                <label for="role" class="col-sm-3 control-label">Role</label>
-                <div class="col-sm-9">
-                        <select  id="role" class="form-control" name="role" [(ngModel)]="model.role" #role="ngModel" required>
-                        	<option disabled value="">Please choose</option>
-                        	<option  *ngFor="let role of roles" [ngValue]="role">{{role.name}}</option>
-                        </select>
-                </div>
-            </div>
             <div class="form-group">
                 <label for="userRoles" class="col-sm-3 control-label">Role(s)</label>
                 <div class="col-sm-9">
                     <div>
                         <a href="">+ Assign role</a>
                     </div>
-                    <div *ngIf="model.userRoles">
+                    <div *ngIf="model.userRoles?.length > 0">
                         <table id="userRoles" class="table table-striped">
                             <thead>
                             <th>Role name</th>

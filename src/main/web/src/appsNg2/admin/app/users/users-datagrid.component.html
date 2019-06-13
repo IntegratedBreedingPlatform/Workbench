@@ -42,7 +42,7 @@
                 <div class="form-group">
                   <label class="">Role: </label>
                   &nbsp;
-                  <select  class="form-control" name="role" [(ngModel)]="table.searchValue.roleName">
+                    <select class="form-control" name="role" [(ngModel)]="table.searchValue.roleNames">
                     <option value="undefined">All</option>
                     <option  *ngFor="let role of roles" [value]="role.name">{{role.name}}</option>
                   </select>
@@ -61,7 +61,6 @@
                         <th [ngClass]="{ sort: isSorted('lastName'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('lastName')">Last Name</th>
                         <th [ngClass]="{ sort: isSorted('email'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('email')">Email</th>
                         <th>Crop</th>
-                        <th [ngClass]="{ sort: isSorted('roleName'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('roleName')">Role</th>
                         <th>Roles</th>
                         <th [ngClass]="{ sort: isSorted('status'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('status')">Status</th>
                     </tr>
@@ -71,8 +70,8 @@
                         <td colspan="6" class="text-center">No records found.</td>
                     </tr>
                     <tr *ngFor="let user of table.itemsOnCurrentPage">
-						            <td *ngIf="user.roleName.toUpperCase() == 'SUPERADMIN'"> {{user.username}} </td>
-                        <td *ngIf="user.roleName.toUpperCase() != 'SUPERADMIN'">
+                        <td *ngIf="user.roleNames.indexOf('SuperAdmin')!=-1"> {{user.username}} </td>
+                        <td *ngIf="user.roleNames.indexOf('SuperAdmin')==-1">
                           <a href="javascript:void(0)"  (click)="showEditUserForm(user, userEditCard)"> {{user.username}} </a>
                         </td>
                         <td>{{user.firstName}}</td>
@@ -87,18 +86,17 @@
                                       style="padding-left: 5px; color: #428bca;"> and {{user.crops.length - 1}} more</span>
                             </span>
                         </td>
-                        <td>{{user.roleName}}</td>
                         <td>
-                            <span *ngIf="user.userRoles?.length > 0">
-                                <span *ngIf="user.userRoles[0]" class="crop-badge">{{(user.userRoles | allRoleNames)[0]}}</span>
-                                <span *ngIf="(user.userRoles | allRoleNames).length > 1"
-                                      [title]="getRoleNamesTitleFormat((user.userRoles))"
-                                      style="padding-left: 5px; color: #428bca;"> and {{(user.userRoles | allRoleNames).length - 1}} more</span>
+                            <span *ngIf="user.roleNames.length > 0">
+                                <span *ngIf="user.roleNames[0]" class="crop-badge">{{user.roleNames[0]}}</span>
+                                <span *ngIf="user.roleNames.length > 1"
+                                      [title]="getRoleNamesTitleFormat(user.roleNames)"
+                                      style="padding-left: 5px; color: #428bca;"> and {{user.roleNames.length - 1}} more</span>
                             </span>
                         </td>
-                        <td *ngIf="user.roleName.toUpperCase() == 'SUPERADMIN' && user.status == 'true'">Active</td>
-                        <td *ngIf="user.roleName.toUpperCase() == 'SUPERADMIN' && user.status == 'false'">Inactive</td>
-                        <td *ngIf="user.roleName.toUpperCase() != 'SUPERADMIN'">
+                        <td *ngIf="user.roleNames.indexOf('SuperAdmin')!=-1 && user.status == 'true'">Active</td>
+                        <td *ngIf="user.roleNames.indexOf('SuperAdmin')!=-1 && user.status == 'false'">Inactive</td>
+                        <td *ngIf="user.roleNames.indexOf('SuperAdmin')==-1">
                           <a href="javascript:void(0)" *ngIf="user.status == 'true'" (click)="showUserStatusConfirmPopUp(user)">Deactivate</a>
                           <a href="javascript:void(0)" *ngIf="user.status == 'false'" (click)="showUserStatusConfirmPopUp(user)">Activate</a>
                         </td>

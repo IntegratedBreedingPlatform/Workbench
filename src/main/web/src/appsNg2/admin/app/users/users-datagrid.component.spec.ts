@@ -19,8 +19,8 @@ export function main() {
         }
 
         getAll(): Observable<User[]> {
-            return Observable.of([new User('0', 'Vanina', 'Maletta', 'vmaletta', [], new Role('2', 'technician', 'instance'), [], 'vanina@leafnode.io', '0'),
-                new User('1', 'Clarysabel', 'Tovar', 'ctovar', [], new Role('0', 'admin', 'crop'), [], 'clarysabel@leafnode.io', '0')]);
+            return Observable.of([new User('0', 'Vanina', 'Maletta', 'vmaletta', [], [], 'vanina@leafnode.io', '0'),
+                new User('1', 'Clarysabel', 'Tovar', 'ctovar', [], [], 'clarysabel@leafnode.io', '0')]);
         }
 
         update(user: User): Observable<Response> {
@@ -72,8 +72,8 @@ export function main() {
         let mockCropsService: MockCropsService;
 
         function createArrayOfUsers() {
-            return [new User('0', 'Vanina', 'Maletta', 'vmaletta', [], new Role('2', 'technician', 'program'), [], 'vanina@leafnode.io', '0'),
-                new User('1', 'Clarysabel', 'Tovar', 'ctovar', [], new Role('0', 'admin', 'instance'), [], 'clarysabel@leafnode.io', '0')
+            return [new User('0', 'Vanina', 'Maletta', 'vmaletta', [], [], 'vanina@leafnode.io', '0'),
+                new User('1', 'Clarysabel', 'Tovar', 'ctovar', [], [], 'clarysabel@leafnode.io', '0')
             ];
         }
 
@@ -81,7 +81,7 @@ export function main() {
             items = createArrayOfUsers();
             mockRoleService = new MockRoleService();
             mockUserService = new MockUserService();
-            user = new User('3', 'Diego', 'Cuenya', 'dcuenya', [], new Role('1', 'breeder', 'crop'), [], 'dcuenya@leafnode.io', '0');
+            user = new User('3', 'Diego', 'Cuenya', 'dcuenya', [], [], 'dcuenya@leafnode.io', '0');
             grid = new UsersDatagrid(mockUserService, mockRoleService, new MockCropsService());
             grid.table.items = items;
         });
@@ -109,14 +109,14 @@ export function main() {
         });
 
         it('Should get number of users in grid equals to 2', function () {
-            grid.table.items = [new User('0', 'Vanina', 'Maletta', 'vmaletta', [], new Role('0', 'admin', 'instance'), [], 'vanina@leafnode.io', '0'),
-                new User('1', 'Clarysabel', 'Tovar', 'ctovar', [], new Role('0', 'admin', 'instance'), [], 'clarysabel@leafnode.io', '0')];
+            grid.table.items = [new User('0', 'Vanina', 'Maletta', 'vmaletta', [], [], 'vanina@leafnode.io', '0'),
+                new User('1', 'Clarysabel', 'Tovar', 'ctovar', [], [], 'clarysabel@leafnode.io', '0')];
             expect(grid.table.items.length).toBe(2);
         });
 
         it('Should filter by typeToSearch equals to A', function () {
-            grid.table.sortBy = 'role';
-            grid.table.searchValue = new User('1', 'Clarysabel', 'Tovar', 'ctovar', [], new Role('0', 'admin', 'instance'), [], 'clarysabel@leafnode.io', '0');
+            grid.table.sortBy = 'roleNames';
+            grid.table.searchValue = new User('1', 'Clarysabel', 'Tovar', 'ctovar', [], [], 'clarysabel@leafnode.io', '0');
             expect(grid.table.itemsFiltered.length).toBe(1);
         });
 
@@ -175,13 +175,13 @@ export function main() {
         });
 
         it('Should open user confirm status popup', function () {
-            user = new User('2', 'Clarysabel2', 'Tovar2', 'ctovar2', [], new Role('0', 'admin', 'instance'), [], 'clarysabel2@leafnode.io', 'true')
+            user = new User('2', 'Clarysabel2', 'Tovar2', 'ctovar2', [], [], 'clarysabel2@leafnode.io', 'true')
             grid.showUserStatusConfirmPopUp(user);
             expect(grid.showConfirmStatusDialog).toBe(true);
         });
 
         it('Should say the dialog popup', function () {
-            let userChangeStatus = new User('2', 'Clarysabel2', 'Tovar2', 'ctovar2', [], new Role('0', 'admin', 'instance'), [], 'clarysabel2@leafnode.io', 'true')
+            let userChangeStatus = new User('2', 'Clarysabel2', 'Tovar2', 'ctovar2', [], [], 'clarysabel2@leafnode.io', 'true')
             grid.showUserStatusConfirmPopUp(userChangeStatus);
             expect(grid.confirmMessage).toBe('Please confirm that you would like to deactivate this user account.');
         });
@@ -192,7 +192,7 @@ export function main() {
         });
 
         it('Should update user status when accept confirm status popup', function () {
-            let userChangeStatus = new User('2', 'Clarysabel2', 'Tovar2', 'ctovar2', [], new Role('0', 'admin', 'instance'), [], 'clarysabel2@leafnode.io', 'true')
+            let userChangeStatus = new User('2', 'Clarysabel2', 'Tovar2', 'ctovar2', [], [], 'clarysabel2@leafnode.io', 'true')
             grid.showUserStatusConfirmPopUp(userChangeStatus);
             grid.changedActiveStatus();
             expect(grid.showConfirmStatusDialog).toBe(false);

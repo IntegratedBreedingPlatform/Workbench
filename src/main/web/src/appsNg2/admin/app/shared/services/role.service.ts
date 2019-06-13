@@ -35,7 +35,8 @@ function mapRoles(response:Response): Role[]{
 function toRole(r:any): Role{
   let Role = <Role>({
     id: r.id,
-   name: r.name,
+    name: r.name,
+    type: r.type
   });
   return Role;
 }

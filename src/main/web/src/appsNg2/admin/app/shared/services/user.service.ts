@@ -53,19 +53,24 @@ export class UserService {
     }
 
     private toUser(r: any): User {
-        let User = <User>({
+        let user = <User>({
             id: r.id,
             firstName: r.firstName,
             lastName: r.lastName,
             username: r.username,
             crops: r.crops,
-            role: r.role,
-            userRoles: r.userRoles,
-            roleName: r.role ? r.role.name : "",
+            userRoles: (r.userRoles == null) ? [] : r.userRoles,
             email: r.email,
             status: r.status,
+            roleNames: []
         });
-        return User;
+        for (let i = 0; i < user.userRoles.length; i++) {
+            let userRole = user.userRoles[i];
+            if (user.roleNames.indexOf(userRole.role.name) == -1) {
+                user.roleNames.push(userRole.role.name)
+            }
+        }
+        return user;
     }
 
     private mapUser(response: Response): User {

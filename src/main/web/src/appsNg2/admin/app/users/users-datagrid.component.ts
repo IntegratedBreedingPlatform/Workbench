@@ -1,4 +1,4 @@
-import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { NgDataGridModel } from './../shared/components/datagrid/ng-datagrid.model';
 import { User } from './../shared/models/user.model';
 import { Role } from './../shared/models/role.model';
@@ -9,7 +9,6 @@ import { UserCard } from './user-card.component';
 import { UserComparator } from './user-comparator.component';
 import { Crop } from '../shared/models/crop.model';
 import { CropService } from '../shared/services/crop.service';
-import { UserRole } from '../shared/models/userrole.model';
 
 @Component({
     selector: 'users-datagrid',
@@ -61,26 +60,13 @@ export class UsersDatagrid implements OnInit {
         this.dialogTitle = 'Edit User';
         this.originalUser = user;
         this.user = new User(user.id, user.firstName, user.lastName,
-            user.username, user.crops, user.role, user.userRoles, user.email, user.status);
-        this.user.role = this.getSelectedRole(user);
+            user.username, user.crops, user.userRoles, user.email, user.status);
         userEditCard.initialize(true);
         this.showEditDialog = true;
     }
 
-    private getSelectedRole(user: User) {
-        if (user.role) {
-            for (var i = 0; i < this.roles.length; i++) {
-                if (this.roles[i].id === user.role.id) {
-                    return this.roles[i];
-                }
-            }
-        } else {
-            return null;
-        }
-    }
-
     initUser() {
-        this.user = new User('0', '', '', '', [], new Role('', '', ''), [], '', 'true');
+        this.user = new User('0', '', '', '', [], [], '', 'true');
     }
 
     ngOnInit() {
@@ -213,27 +199,7 @@ export class UsersDatagrid implements OnInit {
     }
 
     getRoleNamesTitleFormat(roleNames) {
-        return roleNames.map((userRole) => userRole.role.name)
-            // remove duplicates
-            .filter((item, pos, self) => {
-                return self.indexOf(item) === pos;
-            }).splice(1).join(' and ');
+        return roleNames.slice().splice(1).join(' and ');
     }
 
-}
-
-
-@Pipe({ name: 'allRoleNames' })
-export class AllRoleNamesPipe implements PipeTransform {
-    transform(userRoles: UserRole[]): any {
-        if (!userRoles) {
-            return [];
-        }
-        return userRoles
-            .map((userRole) => userRole.role.name)
-            // remove duplicates
-            .filter((item, pos, self) => {
-                return self.indexOf(item) === pos;
-            });
-    }
 }
