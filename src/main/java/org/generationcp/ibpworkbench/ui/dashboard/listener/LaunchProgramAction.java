@@ -15,6 +15,8 @@ import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Window;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -46,7 +48,6 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @Configurable
 public class LaunchProgramAction implements ItemClickListener, ClickListener {
@@ -127,23 +128,31 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 
 	final Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> getSidebarMenu(
 		final Integer userId, final String cropName, final Integer programId) {
-		final Set<PermissionDto> permissions =
+		final List<PermissionDto> permissions =
 			this.permissionService.getPermissionLinks(userId, cropName, programId);
-		// get all categories first
+
+		final List<Integer> linkIds = (List<Integer>) CollectionUtils.collect(permissions, new Transformer() {
+			@Override
+			public Integer transform(final Object o) {
+				return ((PermissionDto) o).getWorkbenchCategoryLinkId();
+			}
+		});
+
+		final List<WorkbenchSidebarCategory> categoriesByLinkIds = this.workbenchDataManager.getCategoriesByLinkIds(linkIds);
 		final Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> sidebarLinks = new LinkedHashMap<>();
 
-		for (final PermissionDto permission : permissions) {
-			final WorkbenchSidebarCategoryLink link = this.workbenchDataManager.getWorkbenchSidebarLinksById(permission.getWorkbenchCategoryLinkId());
-			if (link != null) {
-				if (sidebarLinks.get(link.getWorkbenchSidebarCategory()) == null) {
-					sidebarLinks.put(link.getWorkbenchSidebarCategory(), new ArrayList<WorkbenchSidebarCategoryLink>());
+		for (final WorkbenchSidebarCategory workbenchSidebarCategory : categoriesByLinkIds) {
+			if (workbenchSidebarCategory != null) {
+				for (final WorkbenchSidebarCategoryLink workbenchSidebarCategoryLink: workbenchSidebarCategory.getWorkbenchSidebarCategoryLinks()) {
+					if (sidebarLinks.get(workbenchSidebarCategory) == null) {
+						sidebarLinks.put(workbenchSidebarCategory, new ArrayList<WorkbenchSidebarCategoryLink>());
+						if (workbenchSidebarCategoryLink.getTool() == null) {
+							workbenchSidebarCategoryLink.setTool(new Tool(workbenchSidebarCategoryLink.getSidebarLinkName(), workbenchSidebarCategoryLink.getSidebarLinkTitle(), ""));
+						}
+					}
+					sidebarLinks.get(workbenchSidebarCategory).add(workbenchSidebarCategoryLink);
 				}
-				if (link.getTool() == null) {
-					link.setTool(new Tool(link.getSidebarLinkName(), link.getSidebarLinkTitle(), ""));
-				}
-				sidebarLinks.get(link.getWorkbenchSidebarCategory()).add(link);
 			}
-
 		}
 		return sidebarLinks;
 	}
