@@ -134,13 +134,16 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 
 		for (final PermissionDto permission : permissions) {
 			final WorkbenchSidebarCategoryLink link = this.workbenchDataManager.getWorkbenchSidebarLinksById(permission.getWorkbenchCategoryLinkId());
-			if (sidebarLinks.get(link.getWorkbenchSidebarCategory()) == null) {
-				sidebarLinks.put(link.getWorkbenchSidebarCategory(), new ArrayList<WorkbenchSidebarCategoryLink>());
+			if (link != null) {
+				if (sidebarLinks.get(link.getWorkbenchSidebarCategory()) == null) {
+					sidebarLinks.put(link.getWorkbenchSidebarCategory(), new ArrayList<WorkbenchSidebarCategoryLink>());
+				}
+				if (link.getTool() == null) {
+					link.setTool(new Tool(link.getSidebarLinkName(), link.getSidebarLinkTitle(), ""));
+				}
+				sidebarLinks.get(link.getWorkbenchSidebarCategory()).add(link);
 			}
-			if (link.getTool() == null) {
-				link.setTool(new Tool(link.getSidebarLinkName(), link.getSidebarLinkTitle(), ""));
-			}
-			sidebarLinks.get(link.getWorkbenchSidebarCategory()).add(link);
+
 		}
 		return sidebarLinks;
 	}
