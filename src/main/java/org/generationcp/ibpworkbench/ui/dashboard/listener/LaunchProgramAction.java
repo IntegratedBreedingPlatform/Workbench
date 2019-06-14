@@ -33,6 +33,7 @@ import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategory;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategoryLink;
 import org.generationcp.middleware.service.api.permission.PermissionService;
+import org.generationcp.middleware.service.api.permission.PermissionServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +74,8 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 
 	private Project selectedProgram;
 
+	private WorkbenchMainView workbenchMainView;
+
 	private LaunchWorkbenchToolAction launchListManagerToolAction = new LaunchWorkbenchToolAction(ToolName.BM_LIST_MANAGER_MAIN);
 
 	public LaunchProgramAction() {
@@ -99,16 +102,19 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 					LaunchProgramAction.this.updateProjectLastOpenedDate(project);
 
 					// Set project name to header
-					final WorkbenchMainView workbenchMainView = (WorkbenchMainView) window;
-					workbenchMainView.getSidebar().populateLinks(LaunchProgramAction.this
+					LaunchProgramAction.this.workbenchMainView = (WorkbenchMainView) window;
+					if (LaunchProgramAction.this.workbenchMainView.getSidebar() == null) {
+						LaunchProgramAction.this.workbenchMainView.setSidebar(new WorkbenchSidebar());
+					}
+					LaunchProgramAction.this.workbenchMainView.getSidebar().populateLinks(LaunchProgramAction.this
 						.getSidebarMenu(LaunchProgramAction.this.contextUtil.getCurrentWorkbenchUserId(), project.getCropType().getCropName(),
 							Integer.valueOf(project.getProjectId().toString())));
-					workbenchMainView.addTitle(project.getProjectName());
+					LaunchProgramAction.this.workbenchMainView.addTitle(project.getProjectName());
 
 					// update sidebar selection
 					LaunchProgramAction.LOG.trace("selecting sidebar");
 					if (null != WorkbenchSidebar.sidebarTreeMap.get("manage_list")) {
-						workbenchMainView.getSidebar().selectItem(WorkbenchSidebar.sidebarTreeMap.get("manage_list"));
+						LaunchProgramAction.this.workbenchMainView.getSidebar().selectItem(WorkbenchSidebar.sidebarTreeMap.get("manage_list"));
 					}
 
 					// page change to list manager, with parameter passed
@@ -129,7 +135,7 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 	final Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> getSidebarMenu(
 		final Integer userId, final String cropName, final Integer programId) {
 		final List<PermissionDto> permissions =
-			this.permissionService.getPermissionLinks(userId, cropName, programId);
+		this.permissionService.getPermissionLinks(userId, cropName, programId);
 
 		final List<Integer> linkIds = (List<Integer>) CollectionUtils.collect(permissions, new Transformer() {
 			@Override
@@ -209,5 +215,17 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 
 	public void setRequest(final HttpServletRequest request) {
 		this.request = request;
+	}
+
+	public void setPermissionService(final PermissionServiceImpl permissionService) {
+		this.permissionService = permissionService;
+	}
+
+	public void setWindow(final WorkbenchMainView window) {
+		this.workbenchMainView = window;
+	}
+
+	public WorkbenchMainView getWorkbenchMainView() {
+		return this.workbenchMainView;
 	}
 }

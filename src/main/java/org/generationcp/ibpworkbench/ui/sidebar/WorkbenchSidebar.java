@@ -222,7 +222,7 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 
 	class TreeItemClickListener implements ItemClickEvent.ItemClickListener {
 
-		private WorkbenchSidebar workbenchSidebar;
+		private final WorkbenchSidebar workbenchSidebar;
 
 		public TreeItemClickListener(final WorkbenchSidebar workbenchSidebar) {
 			this.workbenchSidebar = workbenchSidebar;
@@ -255,5 +255,9 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 			});
 		}
 
+	}
+
+	public WorkbenchSidebarPresenter getPresenter() {
+		return this.presenter;
 	}
 }
