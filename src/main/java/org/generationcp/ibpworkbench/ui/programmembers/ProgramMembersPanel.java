@@ -11,29 +11,6 @@
 
 package org.generationcp.ibpworkbench.ui.programmembers;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.Resource;
-
-import org.generationcp.commons.exceptions.InternationalizableException;
-import org.generationcp.commons.spring.util.ContextUtil;
-import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.Person;
-import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItemContainer;
@@ -53,6 +30,27 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TableFieldFactory;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
+import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.Person;
+import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -99,7 +97,9 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	}
 
 	protected Label generateRoleCell(final Object itemId) {
-		final String role = ((WorkbenchUser) itemId).getRoles().get(0).getCapitalizedRole();
+		//TODO Review with new development
+		final String role = (((WorkbenchUser) itemId).getRoles() != null && !((WorkbenchUser) itemId).getRoles().isEmpty()
+			&& ((WorkbenchUser) itemId).getRoles().get(0) != null) ? ((WorkbenchUser) itemId).getRoles().get(0).getCapitalizedRole() : "";
 		final Label label = new Label();
 		label.setDebugId("label");
 		label.setValue(role);
@@ -198,6 +198,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			 *
 			 */
 			private static final long serialVersionUID = -7548361229675101895L;
+
 
 			@Override
 			public void buttonClick(final ClickEvent event) {
@@ -313,14 +314,19 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			final Item item = container.addItem(userTemp);
 			item.getItemProperty("userId").setValue(1);
 			item.getItemProperty(ProgramMembersPanel.USERNAME).setValue(userTemp.getPerson().getDisplayName());
-			item.getItemProperty(ProgramMembersPanel.ROLE).setValue(userTemp.getRoles().get(0).getCapitalizedRole());
+			//TODO Review with new development
+			item.getItemProperty(ProgramMembersPanel.ROLE).setValue(
+				(userTemp.getRoles() != null && !userTemp.getRoles().isEmpty() && userTemp.getRoles().get(0) != null) ?
+					userTemp.getRoles().get(0).getCapitalizedRole() : "");
 
 			/*
 			 * If user has SUPERADMIN role, disable selection so it cannot be removed.
 			 * Disabling is done here so that it can still be selected in
 			 * Available Users table
 			 */
-			if (userTemp.getRoles().get(0).getRole().isSuperAdminUser()) {
+			//TODO Review with new development
+			if (((userTemp.getRoles() != null && userTemp.getRoles().get(0) != null) ? userTemp.getRoles().get(0).getCapitalizedRole() : "")
+				.equals("SUPERADMIN")) {
 				userTemp.setEnabled(false);
 			}
 
