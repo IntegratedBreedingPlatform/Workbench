@@ -10,14 +10,11 @@
 
 package org.generationcp.ibpworkbench.ui.dashboard.listener;
 
-import com.google.common.collect.Lists;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Window;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Transformer;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -47,11 +44,17 @@ import org.springframework.transaction.support.TransactionTemplate;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 @Configurable
 public class LaunchProgramAction implements ItemClickListener, ClickListener {
@@ -140,31 +143,31 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 		final List<PermissionDto> permissions =
 			this.permissionService.getPermissionLinks(userId, cropName, programId);
 		// get all categories first
-		final Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> sidebarLinks = new LinkedHashMap<>();
+		final Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> unsortedMapLinks = new LinkedHashMap<>();
 
 		for (final PermissionDto permission : permissions) {
 			final WorkbenchSidebarCategoryLink link =
 				this.workbenchDataManager.getWorkbenchSidebarLinksById(permission.getWorkbenchCategoryLinkId());
 			if (link != null) {
-				if (sidebarLinks.get(link.getWorkbenchSidebarCategory()) == null) {
-					sidebarLinks.put(link.getWorkbenchSidebarCategory(), new ArrayList<WorkbenchSidebarCategoryLink>());
+				if (unsortedMapLinks.get(link.getWorkbenchSidebarCategory()) == null) {
+					unsortedMapLinks.put(link.getWorkbenchSidebarCategory(), new ArrayList<WorkbenchSidebarCategoryLink>());
 				}
 				if (link.getTool() == null) {
 					link.setTool(new Tool(link.getSidebarLinkName(), link.getSidebarLinkTitle(), ""));
 				}
-				sidebarLinks.get(link.getWorkbenchSidebarCategory()).add(link);
+				unsortedMapLinks.get(link.getWorkbenchSidebarCategory()).add(link);
 			}
 		}
 
-		//FIXME sorting method
-		final List<WorkbenchSidebarCategory> workbenchSidebarCategories = Lists.newArrayList(sidebarLinks.keySet());
-		Collections.sort(workbenchSidebarCategories);
-		final Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> result = new LinkedHashMap<>();
-		for (final WorkbenchSidebarCategory category : workbenchSidebarCategories) {
-			Collections.sort(sidebarLinks.get(category));
-			result.put(category, sidebarLinks.get(category));
+		//Convert HashMap to TreeMap.It will be sorted in natural order.
+		final Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> treeMap = new TreeMap<>( unsortedMapLinks );
+
+		//sorting the list with a comparator
+		for (final WorkbenchSidebarCategory category : treeMap.keySet()) {
+			Collections.sort(unsortedMapLinks.get(category));
 		}
-		return result;
+
+		return treeMap;
 	}
 
 	/**
