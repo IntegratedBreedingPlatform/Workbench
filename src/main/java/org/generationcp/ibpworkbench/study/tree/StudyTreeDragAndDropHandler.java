@@ -87,7 +87,7 @@ public class StudyTreeDragAndDropHandler implements Serializable {
 			
 			try {
 				if (targetId != null && sourceId != null) {
-					this.studyDataManager.moveDmsProject(sourceId.intValue(), targetId.intValue(), isStudy);
+					this.studyDataManager.moveDmsProject(sourceId.intValue(), targetId.intValue());
 				}
 			} catch (final MiddlewareQueryException e) {
 				StudyTreeDragAndDropHandler.LOG.error("Error with moving node to target folder.", e);
