@@ -10,6 +10,7 @@
 
 package org.generationcp.ibpworkbench.ui.dashboard.listener;
 
+import com.google.common.collect.Lists;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.ui.Button.ClickEvent;
@@ -45,10 +46,12 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Configurable
 public class LaunchProgramAction implements ItemClickListener, ClickListener {
@@ -135,32 +138,33 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 	final Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> getSidebarMenu(
 		final Integer userId, final String cropName, final Integer programId) {
 		final List<PermissionDto> permissions =
-		this.permissionService.getPermissionLinks(userId, cropName, programId);
-
-		final List<Integer> linkIds = (List<Integer>) CollectionUtils.collect(permissions, new Transformer() {
-			@Override
-			public Integer transform(final Object o) {
-				return ((PermissionDto) o).getWorkbenchCategoryLinkId();
-			}
-		});
-
-		final List<WorkbenchSidebarCategory> categoriesByLinkIds = this.workbenchDataManager.getCategoriesByLinkIds(linkIds);
+			this.permissionService.getPermissionLinks(userId, cropName, programId);
+		// get all categories first
 		final Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> sidebarLinks = new LinkedHashMap<>();
 
-		for (final WorkbenchSidebarCategory workbenchSidebarCategory : categoriesByLinkIds) {
-			if (workbenchSidebarCategory != null) {
-				for (final WorkbenchSidebarCategoryLink workbenchSidebarCategoryLink: workbenchSidebarCategory.getWorkbenchSidebarCategoryLinks()) {
-					if (sidebarLinks.get(workbenchSidebarCategory) == null) {
-						sidebarLinks.put(workbenchSidebarCategory, new ArrayList<WorkbenchSidebarCategoryLink>());
-						if (workbenchSidebarCategoryLink.getTool() == null) {
-							workbenchSidebarCategoryLink.setTool(new Tool(workbenchSidebarCategoryLink.getSidebarLinkName(), workbenchSidebarCategoryLink.getSidebarLinkTitle(), ""));
-						}
-					}
-					sidebarLinks.get(workbenchSidebarCategory).add(workbenchSidebarCategoryLink);
+		for (final PermissionDto permission : permissions) {
+			final WorkbenchSidebarCategoryLink link =
+				this.workbenchDataManager.getWorkbenchSidebarLinksById(permission.getWorkbenchCategoryLinkId());
+			if (link != null) {
+				if (sidebarLinks.get(link.getWorkbenchSidebarCategory()) == null) {
+					sidebarLinks.put(link.getWorkbenchSidebarCategory(), new ArrayList<WorkbenchSidebarCategoryLink>());
 				}
+				if (link.getTool() == null) {
+					link.setTool(new Tool(link.getSidebarLinkName(), link.getSidebarLinkTitle(), ""));
+				}
+				sidebarLinks.get(link.getWorkbenchSidebarCategory()).add(link);
 			}
 		}
-		return sidebarLinks;
+
+		//FIXME sorting method
+		final List<WorkbenchSidebarCategory> workbenchSidebarCategories = Lists.newArrayList(sidebarLinks.keySet());
+		Collections.sort(workbenchSidebarCategories);
+		final Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> result = new LinkedHashMap<>();
+		for (final WorkbenchSidebarCategory category : workbenchSidebarCategories) {
+			Collections.sort(sidebarLinks.get(category));
+			result.put(category, sidebarLinks.get(category));
+		}
+		return result;
 	}
 
 	/**
