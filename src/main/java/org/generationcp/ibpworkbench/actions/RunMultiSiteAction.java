@@ -27,7 +27,6 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
-import org.generationcp.middleware.util.DatasetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -219,17 +218,7 @@ public class RunMultiSiteAction implements ClickListener {
 	}
 
 	DataSet getSummaryStatsDataSet(final int studyId) {
-
-		final DataSet summaryStatsDataSet;
-		final List<DataSet> dataSets = this.studyDataManager.getDataSetsByType(studyId, DatasetTypeEnum.SUMMARY_DATA.getId());
-		if (!dataSets.isEmpty()) {
-			summaryStatsDataSet = dataSets.get(0);
-		} else {
-			summaryStatsDataSet = DatasetUtil.getTrialDataSet(this.studyDataManager, studyId);
-
-		}
-
-		return summaryStatsDataSet;
+		return this.studyDataManager.findOneDataSetByType(studyId, DatasetTypeEnum.SUMMARY_DATA.getId());
 	}
 
 	String generateInputFileName(final Project project) {

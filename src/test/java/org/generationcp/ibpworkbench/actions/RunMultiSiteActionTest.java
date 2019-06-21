@@ -138,7 +138,7 @@ public class RunMultiSiteActionTest {
 		Mockito.when(this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(this.createProject(PROJECT_NAME), ToolName.BREEDING_VIEW))
 				.thenReturn(BMS_INPUT_FILES_DIR);
 
-		Mockito.when(this.studyDataManager.getDataSetsByType(STUDY_ID, DatasetTypeEnum.SUMMARY_DATA.getId())).thenReturn(this.createDataSets());
+		Mockito.when(this.studyDataManager.findOneDataSetByType(STUDY_ID, DatasetTypeEnum.SUMMARY_DATA.getId())).thenReturn(this.createSummaryDataSet());
 
 		Mockito.when(this.multiSiteDataExporter.exportMeansDatasetToCsv(ArgumentMatchers.anyString(), ArgumentMatchers.any(MultiSiteParameters.class),
 				ArgumentMatchers.<List<Experiment>>any(), ArgumentMatchers.eq(ENVIRONMENT_NAME), ArgumentMatchers.any(GxeEnvironment.class), ArgumentMatchers.<List<Trait>>any(), ArgumentMatchers.any(IBPWorkbenchApplication.class)))
@@ -373,14 +373,6 @@ public class RunMultiSiteActionTest {
 		ds.setName(SUMMARY_DATASET_NAME);
 
 		return ds;
-
-	}
-
-	private List<DataSet> createDataSets() {
-
-		final List<DataSet> datasets = new ArrayList<>();
-		datasets.add(this.createSummaryDataSet());
-		return datasets;
 
 	}
 
