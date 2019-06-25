@@ -62,7 +62,7 @@ export function main()
 
                 spyOn( service, 'getHeaders' ).and.returnValue( header );
 
-                service.getAll().subscribe(
+                service.getFilteredRoles(null).subscribe(
                     ( roles ) =>
                     {
                         expect( roles[0].description ).toBe( 'description' );

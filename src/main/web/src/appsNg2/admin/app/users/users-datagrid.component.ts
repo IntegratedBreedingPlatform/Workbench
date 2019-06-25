@@ -88,7 +88,7 @@ export class UsersDatagrid implements OnInit {
 
         // get all roles
         this.roleService
-            .getAll()
+            .getFilteredRoles(null)
             .subscribe(
                 roles => this.roles = roles,
                 error => {

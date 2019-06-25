@@ -40,7 +40,7 @@ export function main() {
             super(null);
         }
 
-        getAll(): Observable<Role[]> {
+        getFilteredRoles(): Observable<Role[]> {
             return Observable.of([new Role('0', 'admin', 'instance'),
                 new Role('1', 'breeder', 'crop'),
                 new Role('2', 'technician', 'program')]);

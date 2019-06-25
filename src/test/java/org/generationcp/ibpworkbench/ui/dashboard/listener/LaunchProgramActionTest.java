@@ -232,7 +232,6 @@ public class LaunchProgramActionTest {
 		this.launchProgramAction.setPermissionService(this.permissionService);
 		Mockito.when(this.permissionService.getPermissionLinks(Mockito.anyInt(), Mockito.anyString(), Mockito.anyInt()))
 			.thenReturn(this.permissions);
-		Mockito.when(this.workbenchDataManager.getCategoriesByLinkIds(Mockito.<Integer>anyList())).thenReturn(this.categoriesByLinkIds);
 		Mockito.when(this.presenter.getCategoryLinkItems())
 			.thenReturn(this.workbenchSidebarCategoryListMap);
 		Mockito.when(this.window.getSidebar()).thenReturn(this.sidebar);

@@ -24,6 +24,7 @@ import org.generationcp.ibpworkbench.ui.form.UserAccountForm;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.generationcp.middleware.service.api.user.RoleSearchDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -134,7 +135,7 @@ public class NewProjectAddUserPanel extends Panel {
 	protected void initializeValues() {
 
 		ComboBox roleField = (ComboBox) this.userForm.getField("role");
-		final List<Role> roles = this.workbenchDataManager.getAssignableRoles();
+		final List<Role> roles = this.workbenchDataManager.getRoles(new RoleSearchDto(Boolean.TRUE, null));
 		for (final Role role : roles){
 			roleField.addItem(role);
 		}

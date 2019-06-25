@@ -21,6 +21,7 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.generationcp.middleware.service.api.user.RoleSearchDto;
 import org.owasp.html.Sanitizers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,7 +106,7 @@ public class AuthenticationController {
 
 	@PostConstruct
 	public void initialize() {
-		this.roles = this.workbenchDataManager.getAssignableRoles();
+		this.roles = this.workbenchDataManager.getRoles( new RoleSearchDto(Boolean.TRUE, null));
 		this.footerMessage = Sanitizers.FORMATTING.sanitize(this.footerMessage);
 	}
 
