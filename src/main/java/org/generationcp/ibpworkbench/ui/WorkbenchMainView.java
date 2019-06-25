@@ -153,6 +153,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	protected void initializeComponents() {
 		// initialize dashboard
 		this.workbenchDashboard = new WorkbenchDashboard();
+		this.workbenchDashboard.setWindow(getWindow());
 		this.workbenchDashboard.setDebugId("workbenchDashboard");
 
 		// workbench header components

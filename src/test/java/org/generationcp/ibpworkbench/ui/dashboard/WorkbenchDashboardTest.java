@@ -8,8 +8,8 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.Window;
 import org.apache.commons.lang3.StringUtils;
-import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.context.ContextInfo;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -58,6 +58,9 @@ public class WorkbenchDashboardTest {
 	@Mock
 	private HttpSession httpSession;
 
+	@Mock
+	private Window window;
+
 	@InjectMocks
 	private WorkbenchDashboard workbenchDashboard;
 
@@ -78,6 +81,8 @@ public class WorkbenchDashboardTest {
 		Mockito.doReturn(this.programs).when(this.workbenchDataManager).getProjectsByUser(currentUser);
 		Mockito.doReturn(this.lastOpenedProgram).when(this.workbenchDataManager).getLastOpenedProject(currentUser.getUserid());
 		Mockito.when(httpServletRequest.getSession()).thenReturn(httpSession);
+
+		this.workbenchDashboard.setWindow(this.window);
 
 		// Initialize UI components
 		this.workbenchDashboard.initializeComponents();
