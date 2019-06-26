@@ -28,6 +28,9 @@
 	<link href="/Fieldbook/static/css/lib/jquery/jquery.treetable.css" rel="stylesheet"/>
 	<link href="/Fieldbook/static/css/lib/jquery/jquery.treetable.theme.custom.css" rel="stylesheet"/>
 	<link href="/Fieldbook/static/css/lib/jquery-ui/jquery-ui.css" rel="stylesheet"/>
+	
+	<link th:href="@{/controller/static/css/access-denied.css}" rel="stylesheet"/>
+	<link th:href="@{/controller/static/lib/font-awesome-4.2.0/css/font-awesome.css}" rel="stylesheet"/>
 
 	<!-- jhipster-needle-add-resources-to-root - JHipster will add new resources here -->
 </head>
@@ -80,8 +83,11 @@
 	<script type="text/javascript" src="/Fieldbook/static/js/treetable.js"></script>
 
 	<!-- get crop name, used in listTreeOperation.js -->
-	<script src="/ibpworkbench/controller/static/js/lib/get-url-parameter.js" charset="utf-8"></script>
+	<script type="text/javascript" th:src="@{/controller/static/js/lib/get-url-parameter.js}" charset="utf-8"></script>
 	<script type="text/javascript" src="/Fieldbook/static/js/bmsAuth.js"></script>
+	
+	<script type="text/javascript" th:src="@{/controller/static/js/lib/modernizr-custom.js}"></script>
+	<script type="text/javascript" th:src="@{/controller/static/js/access-denied.js}"></script>
 
 	<script type="text/javascript" th:inline="javascript">
 		//<![CDATA[

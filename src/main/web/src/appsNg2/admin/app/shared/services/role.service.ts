@@ -1,12 +1,14 @@
-import { Injectable , Inject} from '@angular/core';
-import { Http, Response, Headers } from '@angular/http';
+import { Inject, Injectable } from '@angular/core';
+import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { Role } from './../models/role.model';
-import ServiceHelper from "./service.helper";
+import { RoleFilter } from './../models/role-filter.model';
+import ServiceHelper from './service.helper';
+import { SERVER_API_URL } from '../../app.constants';
 
 @Injectable()
 export class RoleService{
-  private baseUrl: string = '/bmsapi';
+  private baseUrl: string = SERVER_API_URL;
 
   private http: Http;
 
@@ -14,9 +16,12 @@ export class RoleService{
       this.http = http;
   }
 
-  getAll(): Observable<Role[]>{
+  getFilteredRoles(roleFilter: RoleFilter): Observable<Role[]> {
+    let headers = this.getHeaders()
+    headers.append('Content-Type', 'application/json');
+
     let Roles$ = this.http
-      .get(`${this.baseUrl}/roles/assignable`, {headers: this.getHeaders()})
+        .post(`${this.baseUrl}/roles/search`, JSON.stringify(roleFilter), { headers: headers })
       .map(mapRoles);
       return Roles$;
   }
@@ -34,7 +39,8 @@ function mapRoles(response:Response): Role[]{
 function toRole(r:any): Role{
   let Role = <Role>({
     id: r.id,
-   description: r.description,
+    name: r.name,
+    type: r.type
   });
   return Role;
 }

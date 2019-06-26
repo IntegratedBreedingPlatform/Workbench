@@ -1,4 +1,4 @@
-import {IObjectComparator} from './../shared/components/datagrid/object-comparator.interface';
+import { IObjectComparator } from './../shared/components/datagrid/object-comparator.interface';
 
 export class UserComparator implements IObjectComparator {
 
@@ -16,9 +16,10 @@ export class UserComparator implements IObjectComparator {
           if (source[prop] === undefined || source[prop] === null || source[prop] === '') continue;
           if (typeof source[prop] === 'object' && this.same(source[prop], target[prop])) continue;
 
-          if (typeof source[prop] === 'string' && target[prop].startsWith(source[prop])) continue;
+          if (typeof source[prop] === 'string' && typeof target[prop] === 'string' && target[prop].startsWith(source[prop])) continue;
+          if (typeof source[prop] === 'string' && target[prop].length && target[prop].indexOf(source[prop]) != -1) continue;
           if (source[prop] === target[prop]) continue;
-          if (source[prop].toUpperCase()  === target[prop].toUpperCase()) continue;
+          if (typeof target[prop] === 'string' && source[prop].toUpperCase() === target[prop].toUpperCase()) continue;
           if (source[prop] == "undefined") continue;
           //Option for status Active
           if(prop == "status" && source[prop] == "undefined" && target[prop] === "true") continue;

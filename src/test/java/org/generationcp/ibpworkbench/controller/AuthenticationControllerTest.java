@@ -25,6 +25,7 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.generationcp.middleware.service.api.user.RoleSearchDto;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -88,13 +89,13 @@ public class AuthenticationControllerTest {
 	public void setup() {
 		this.createTestRoles();
 		Mockito.doReturn(this.selectedRole.getId()).when(this.userAccountModel).getRoleId();
-		Mockito.doReturn(this.roles).when(this.workbenchDataManager).getAssignableRoles();
+		Mockito.doReturn(this.roles).when(this.workbenchDataManager).getRoles(new RoleSearchDto(Boolean.TRUE, null));
 	}
 
 	@Test
 	public void testIntialize() {
 		this.controller.initialize();
-		Mockito.verify(this.workbenchDataManager).getAssignableRoles();
+		Mockito.verify(this.workbenchDataManager).getRoles(new RoleSearchDto(Boolean.TRUE, null));
 		Assert.assertEquals(this.roles, this.controller.getRoles());
 	}
 

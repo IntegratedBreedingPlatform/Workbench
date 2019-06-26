@@ -10,10 +10,26 @@
 
 package org.generationcp.ibpworkbench.ui;
 
-import java.util.Objects;
-
-import javax.annotation.Resource;
-
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.terminal.Sizeable;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.UriFragmentUtility;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.VerticalSplitPanel;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.BaseTheme;
+import com.vaadin.ui.themes.Reindeer;
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.tomcat.util.TomcatUtil;
@@ -48,26 +64,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.vaadin.hene.popupbutton.PopupButton;
 
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.Sizeable;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.Embedded;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Layout;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.UriFragmentUtility;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.VerticalSplitPanel;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.BaseTheme;
-import com.vaadin.ui.themes.Reindeer;
+import javax.annotation.Resource;
+import java.util.Objects;
 
 @Configurable
 public class WorkbenchMainView extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
@@ -155,6 +153,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	protected void initializeComponents() {
 		// initialize dashboard
 		this.workbenchDashboard = new WorkbenchDashboard();
+		this.workbenchDashboard.setWindow(getWindow());
 		this.workbenchDashboard.setDebugId("workbenchDashboard");
 
 		// workbench header components
@@ -676,6 +675,10 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		return this.sidebar;
 	}
 
+	public void setSidebar(final WorkbenchSidebar sidebar) {
+		this.sidebar = sidebar;
+	}
+
 	// For test purposes
 	HorizontalLayout getWorkbenchHeaderLayout() {
 		return this.workbenchHeaderLayout;
@@ -743,12 +746,12 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	}
 
 
-	void setAskForSupportURL(String askForSupportURL) {
+	void setAskForSupportURL(final String askForSupportURL) {
 		this.askForSupportURL = askForSupportURL;
 	}
 
 
-	void setAboutBmsURL(String aboutBmsURL) {
+	void setAboutBmsURL(final String aboutBmsURL) {
 		this.aboutBmsURL = aboutBmsURL;
 	}
 

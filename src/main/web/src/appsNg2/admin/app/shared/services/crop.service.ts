@@ -3,10 +3,11 @@ import { Http } from '@angular/http';
 import ServiceHelper from './service.helper';
 import { Observable } from 'rxjs';
 import { Crop } from '../models/crop.model';
+import { SERVER_API_URL } from '../../app.constants';
 
 @Injectable()
 export class CropService {
-    private baseUrl: string = '/bmsapi/brapi/v1';
+    private baseUrl: string = SERVER_API_URL + '/brapi/v1';
 
     constructor(private http: Http) {
     }

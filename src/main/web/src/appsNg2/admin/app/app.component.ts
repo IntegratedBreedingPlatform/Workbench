@@ -22,8 +22,7 @@ import { CropService } from './shared/services/crop.service';
   ],
   template: `
     <div class="container-fluid">
-        <site-admin-header></site-admin-header>
-        <users-admin></users-admin>
+        <router-outlet></router-outlet>
     </div>
   `,
   moduleId: module.id,
@@ -33,6 +32,5 @@ import { CropService } from './shared/services/crop.service';
 export class AppComponent {
 
   constructor() {
-
   }
 }

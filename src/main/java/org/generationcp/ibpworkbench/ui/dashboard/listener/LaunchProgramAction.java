@@ -10,10 +10,11 @@
 
 package org.generationcp.ibpworkbench.ui.dashboard.listener;
 
-import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Window;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -21,10 +22,16 @@ import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
+import org.generationcp.middleware.domain.workbench.PermissionDto;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
+import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
+import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategory;
+import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategoryLink;
+import org.generationcp.middleware.service.api.permission.PermissionService;
+import org.generationcp.middleware.service.api.permission.PermissionServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,16 +41,22 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Window;
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 @Configurable
 public class LaunchProgramAction implements ItemClickListener, ClickListener {
 
 	private static final long serialVersionUID = 5742093045098439073L;
+
+	@Autowired
+	private PermissionService permissionService;
 
 	@Autowired
 	private HttpServletRequest request;
@@ -60,6 +73,8 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 	private static final Logger LOG = LoggerFactory.getLogger(LaunchProgramAction.class);
 
 	private Project selectedProgram;
+
+	private WorkbenchMainView workbenchMainView;
 
 	private LaunchWorkbenchToolAction launchListManagerToolAction = new LaunchWorkbenchToolAction(ToolName.BM_LIST_MANAGER_MAIN);
 
@@ -82,18 +97,24 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 
 					// Sets selected program/project to context
 					org.generationcp.commons.util.ContextUtil
-							.setContextInfo(request, contextUtil.getCurrentWorkbenchUserId(), project.getProjectId(), null);
+							.setContextInfo(LaunchProgramAction.this.request, LaunchProgramAction.this.contextUtil.getCurrentWorkbenchUserId(), project.getProjectId(), null);
 
 					LaunchProgramAction.this.updateProjectLastOpenedDate(project);
 
 					// Set project name to header
-					final WorkbenchMainView workbenchMainView = (WorkbenchMainView) window;
-					workbenchMainView.addTitle(project.getProjectName());
+					LaunchProgramAction.this.workbenchMainView = (WorkbenchMainView) window;
+					if (LaunchProgramAction.this.workbenchMainView.getSidebar() == null) {
+						LaunchProgramAction.this.workbenchMainView.setSidebar(new WorkbenchSidebar());
+					}
+					LaunchProgramAction.this.workbenchMainView.getSidebar().populateLinks(LaunchProgramAction.this
+						.getSidebarMenu(LaunchProgramAction.this.contextUtil.getCurrentWorkbenchUserId(), project.getCropType().getCropName(),
+							Integer.valueOf(project.getProjectId().toString())));
+					LaunchProgramAction.this.workbenchMainView.addTitle(project.getProjectName());
 
 					// update sidebar selection
 					LaunchProgramAction.LOG.trace("selecting sidebar");
 					if (null != WorkbenchSidebar.sidebarTreeMap.get("manage_list")) {
-						workbenchMainView.getSidebar().selectItem(WorkbenchSidebar.sidebarTreeMap.get("manage_list"));
+						LaunchProgramAction.this.workbenchMainView.getSidebar().selectItem(WorkbenchSidebar.sidebarTreeMap.get("manage_list"));
 					}
 
 					// page change to list manager, with parameter passed
@@ -111,6 +132,38 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 		}
 	}
 
+	final Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> getSidebarMenu(
+		final Integer userId, final String cropName, final Integer programId) {
+		final List<PermissionDto> permissions =
+			this.permissionService.getPermissionLinks(userId, cropName, programId);
+		// get all categories first
+		final Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> unsortedMapLinks = new LinkedHashMap<>();
+
+		for (final PermissionDto permission : permissions) {
+			final WorkbenchSidebarCategoryLink link =
+				this.workbenchDataManager.getWorkbenchSidebarLinksById(permission.getWorkbenchCategoryLinkId());
+			if (link != null) {
+				if (unsortedMapLinks.get(link.getWorkbenchSidebarCategory()) == null) {
+					unsortedMapLinks.put(link.getWorkbenchSidebarCategory(), new ArrayList<WorkbenchSidebarCategoryLink>());
+				}
+				if (link.getTool() == null) {
+					link.setTool(new Tool(link.getSidebarLinkName(), link.getSidebarLinkTitle(), ""));
+				}
+				unsortedMapLinks.get(link.getWorkbenchSidebarCategory()).add(link);
+			}
+		}
+
+		//Convert HashMap to TreeMap.It will be sorted in natural order.
+		final Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> treeMap = new TreeMap<>( unsortedMapLinks );
+
+		//sorting the list with a comparator
+		for (final WorkbenchSidebarCategory category : treeMap.keySet()) {
+			Collections.sort(unsortedMapLinks.get(category));
+		}
+
+		return treeMap;
+	}
+
 	/**
 	 * Updates last opened project for user in DB
 	 *
@@ -120,7 +173,7 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 
 		final ProjectUserInfoDAO projectUserInfoDao = this.workbenchDataManager.getProjectUserInfoDao();
 		final ProjectUserInfo projectUserInfo =
-				projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId(), contextUtil.getCurrentWorkbenchUserId());
+				projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId(), this.contextUtil.getCurrentWorkbenchUserId());
 		if (projectUserInfo != null) {
 			projectUserInfo.setLastOpenDate(new Date());
 			this.workbenchDataManager.saveOrUpdateProjectUserInfo(projectUserInfo);
@@ -163,5 +216,17 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 
 	public void setRequest(final HttpServletRequest request) {
 		this.request = request;
+	}
+
+	public void setPermissionService(final PermissionServiceImpl permissionService) {
+		this.permissionService = permissionService;
+	}
+
+	public void setWindow(final WorkbenchMainView window) {
+		this.workbenchMainView = window;
+	}
+
+	public WorkbenchMainView getWorkbenchMainView() {
+		return this.workbenchMainView;
 	}
 }

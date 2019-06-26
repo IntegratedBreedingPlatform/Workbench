@@ -14,9 +14,14 @@ import { UsersAdmin } from './users/index';
 import { AppComponent } from './app.component';
 import { Select2Module } from 'ng2-select2';
 import { CommonModule } from '@angular/common';
+import { UserRouteAccessService } from './shared/auth/user-route-access-service';
+import { Principal } from './shared/auth/principal.service';
+import { AppRoutingModule } from './app-routing.module';
+import { ErrorComponent } from './layouts/error/error.component';
+import { AccountService } from './shared/auth/account.service';
 
 @NgModule({
-  imports: [BrowserModule, HttpModule, FormsModule, Select2Module, CommonModule],
+  imports: [BrowserModule, HttpModule, FormsModule, Select2Module, CommonModule, AppRoutingModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   declarations: [
     AppComponent,
@@ -24,12 +29,18 @@ import { CommonModule } from '@angular/common';
     UsersDatagrid,
     Dialog,
     ErrorNotification,
+    ErrorComponent,
     PaginationComponent,
     UserCard,
     SiteAdminHeader,
     UsersAdmin,
     ToSelect2OptionDataPipe,
     ToSelect2OptionIdPipe
+  ],
+  providers: [
+      UserRouteAccessService,
+      Principal,
+      AccountService
   ],
   bootstrap: [AppComponent]
 })

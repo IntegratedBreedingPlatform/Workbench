@@ -3,8 +3,7 @@ import { DatePipe } from '@angular/common';
 
 import {
     BmsjHipsterSharedLibsModule,
-    BmsjHipsterSharedCommonModule,
-    AuthServerProvider
+    BmsjHipsterSharedCommonModule, Principal, AccountService
 } from './';
 import { ModalComponent } from './modal/modal.component';
 import { ModalConfirmComponent } from './modal/modal-confirm.component';
@@ -20,9 +19,10 @@ import { ModalService } from './modal/modal.service';
         ModalConfirmComponent
     ],
     providers: [
-        AuthServerProvider,
         DatePipe,
-        ModalService
+        ModalService,
+        Principal,
+        AccountService
     ],
     entryComponents: [
         ModalComponent,

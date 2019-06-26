@@ -1,9 +1,10 @@
 package org.generationcp.ibpworkbench.ui.sidebar;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.vaadin.data.Item;
+import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Tree;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.actions.ActionListener;
 import org.generationcp.ibpworkbench.actions.ChangeWindowAction;
@@ -12,7 +13,6 @@ import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.actions.OpenProgramLocationsAction;
 import org.generationcp.ibpworkbench.actions.OpenProgramMethodsAction;
 import org.generationcp.ibpworkbench.actions.OpenToolVersionsAction;
-import org.generationcp.ibpworkbench.actions.PageAction;
 import org.generationcp.ibpworkbench.ui.programadministration.OpenManageProgramPageAction;
 import org.generationcp.ibpworkbench.ui.project.create.OpenUpdateProjectPageAction;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -29,11 +29,9 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Tree;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Configurable
 public class WorkbenchSidebar extends CssLayout implements InitializingBean {
@@ -65,7 +63,7 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 	@Override
 	public void afterPropertiesSet() {
 		this.initializeComponents();
-		this.populateLinks();
+		//this.populateLinks(LaunchProgramAction.this.getSidebarMenu());
 	}
 
 	protected void initializeComponents() {
@@ -75,31 +73,33 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 		this.addComponent(this.sidebarTree);
 	}
 
-	void populateLinks() {
+	public void populateLinks(
+		final Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> sidebarMenu) {
 		this.removeAllComponents();
 
 		this.sidebarTree = new Tree();
 		this.sidebarTree.setDebugId("sidebarTree");
 		this.sidebarTree.setImmediate(true);
 
-		Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> links = this.presenter.getCategoryLinkItems();
+		final Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> links = sidebarMenu;
+		this.presenter.getCategoryLinkItems();
 		this.sidebarTree.setContainerDataSource(new HierarchicalContainer());
 		this.sidebarTree.addContainerProperty("id", String.class, "");
 		this.sidebarTree.addContainerProperty("caption", String.class, "");
 		this.sidebarTree.addContainerProperty("value", Object.class, null);
 
 		boolean expandedFirst = false;
-		for (WorkbenchSidebarCategory category : links.keySet()) {
-			TreeItem parentItem = new TreeItem(category.getSidebarCategoryName(), category.getSidebarCategorylabel(), null);
+		for (final WorkbenchSidebarCategory category : links.keySet()) {
+			final TreeItem parentItem = new TreeItem(category.getSidebarCategoryName(), category.getSidebarCategorylabel(), null);
 
 			WorkbenchSidebar.sidebarTreeMap.put(category.getSidebarCategoryName(), parentItem);
 
-			Item parent = this.sidebarTree.addItem(parentItem);
+			final Item parent = this.sidebarTree.addItem(parentItem);
 
 			this.sidebarTree.setChildrenAllowed(parent, true);
 			this.sidebarTree.setItemCaption(parentItem, parentItem.getCaption());
-			for (WorkbenchSidebarCategoryLink link : links.get(category)) {
-				TreeItem item = new TreeItem(link.getTool().getToolName(), link.getSidebarLinkTitle(), link);
+			for (final WorkbenchSidebarCategoryLink link : links.get(category)) {
+				final TreeItem item = new TreeItem(link.getTool().getToolName(), link.getSidebarLinkTitle(), link);
 
 				WorkbenchSidebar.sidebarTreeMap.put(link.getSidebarLinkName(), item);
 
@@ -122,11 +122,11 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 		this.addComponent(this.sidebarTree);
 	}
 
-	public void selectItem(TreeItem item) {
+	public void selectItem(final TreeItem item) {
 		this.sidebarTree.setValue(item);
 	}
 
-	protected boolean doCollapse(TreeItem treeItem) {
+	protected boolean doCollapse(final TreeItem treeItem) {
 		if (treeItem.getValue() != null) {
 			return false;
 		}
@@ -140,7 +140,7 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 		return true;
 	}
 
-	protected ActionListener getLinkActions(final String toolName, Project project) {
+	protected ActionListener getLinkActions(final String toolName, final Project project) {
 		if (toolName == null) {
 			return null;
 		}
@@ -189,7 +189,7 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 		private Object value;
 		private String caption;
 
-		public TreeItem(String id, String caption, Object action) {
+		public TreeItem(final String id, final String caption, final Object action) {
 			this.id = id;
 			this.value = action;
 			this.caption = caption;
@@ -199,7 +199,7 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 			return this.id;
 		}
 
-		public void setId(String id) {
+		public void setId(final String id) {
 			this.id = id;
 		}
 
@@ -207,11 +207,11 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 			return this.value;
 		}
 
-		public void setValue(String caption) {
+		public void setValue(final String caption) {
 			this.caption = caption;
 		}
 
-		public void setValue(Object action) {
+		public void setValue(final Object action) {
 			this.value = action;
 		}
 
@@ -222,10 +222,10 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 
 	class TreeItemClickListener implements ItemClickEvent.ItemClickListener {
 
-		private WorkbenchSidebar workbenchSidebar;
+		private final WorkbenchSidebar workbenchSidebar;
 
 		public TreeItemClickListener(final WorkbenchSidebar workbenchSidebar) {
-			TreeItemClickListener.this.workbenchSidebar = workbenchSidebar;
+			this.workbenchSidebar = workbenchSidebar;
 		}
 
 		@Override
@@ -234,19 +234,20 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 			transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 
 				@Override
-				protected void doInTransactionWithoutResult(TransactionStatus status) {
+				protected void doInTransactionWithoutResult(final TransactionStatus status) {
 					if (event.getItemId() == null) {
 						return;
 					}
 
 					WorkbenchSidebar.LOG.trace(event.getItemId().toString());
 
-					TreeItem treeItem = (TreeItem) event.getItemId();
+					final TreeItem treeItem = (TreeItem) event.getItemId();
 
 					if (!TreeItemClickListener.this.workbenchSidebar.doCollapse(treeItem)) {
 						WorkbenchSidebar.this.presenter.updateProjectLastOpenedDate();
 
-						ActionListener listener = TreeItemClickListener.this.workbenchSidebar.getLinkActions(treeItem.getId(), contextUtil.getProjectInContext());
+						final ActionListener listener = TreeItemClickListener.this.workbenchSidebar.getLinkActions(treeItem.getId(),
+							WorkbenchSidebar.this.contextUtil.getProjectInContext());
 
 						listener.doAction(event.getComponent().getWindow(), "/" + treeItem.getId(), true);
 					}
@@ -254,5 +255,9 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 			});
 		}
 
+	}
+
+	public WorkbenchSidebarPresenter getPresenter() {
+		return this.presenter;
 	}
 }

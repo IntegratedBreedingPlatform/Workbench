@@ -3,10 +3,11 @@ import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { User } from './../models/user.model';
 import ServiceHelper from './service.helper';
+import { SERVER_API_URL } from '../../app.constants';
 
 @Injectable()
 export class UserService {
-    private baseUrl: string = '/bmsapi';
+    private baseUrl: string = SERVER_API_URL;
 
     private http: Http;
 
@@ -52,18 +53,24 @@ export class UserService {
     }
 
     private toUser(r: any): User {
-        let User = <User>({
+        let user = <User>({
             id: r.id,
             firstName: r.firstName,
             lastName: r.lastName,
             username: r.username,
             crops: r.crops,
-            role: r.role,
-            roleName: r.role.description,
+            userRoles: (r.userRoles == null) ? [] : r.userRoles,
             email: r.email,
             status: r.status,
+            roleNames: []
         });
-        return User;
+        for (let i = 0; i < user.userRoles.length; i++) {
+            let userRole = user.userRoles[i];
+            if (user.roleNames.indexOf(userRole.role.name) == -1) {
+                user.roleNames.push(userRole.role.name)
+            }
+        }
+        return user;
     }
 
     private mapUser(response: Response): User {
