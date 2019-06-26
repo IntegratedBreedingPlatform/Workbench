@@ -47,6 +47,7 @@ public class ProgramServiceTest {
 	private static final String SUPERADMIN_USERNAME = "superadmin";
 	private static final int USER_ID = 123;
 	private static final String SAMPLE_AUTH_TOKEN_VALUE = "RANDOM_TOKEN";
+	private static final String CROP_NAME = "maize";
 
 	@Mock
 	private HttpServletRequest request;
@@ -236,7 +237,7 @@ public class ProgramServiceTest {
 	public void testUpdateMembersUserInfo() {
 		final List<Integer> userIds = new ArrayList<>();
 		userIds.addAll(Arrays.asList(1, 2, 3));
-		Mockito.when(this.workbenchDataManager.getActiveUserIDsByProjectId(ArgumentMatchers.anyLong()))
+		Mockito.when(this.workbenchDataManager.getActiveUserIDsByProjectId(ArgumentMatchers.anyLong(), CROP_NAME ))
 				.thenReturn(userIds);
 		final Project project = ProjectTestDataInitializer.createProject();
 		final Set<WorkbenchUser> userList = new HashSet<>();
@@ -249,7 +250,7 @@ public class ProgramServiceTest {
 		// as a member
 		Mockito.verify(this.workbenchDataManager, Mockito.times(numberOfUsers))
 				.saveOrUpdateProjectUserInfo(ArgumentMatchers.any(ProjectUserInfo.class));
-		Mockito.verify(this.workbenchDataManager).getActiveUserIDsByProjectId(ArgumentMatchers.anyLong());
+		Mockito.verify(this.workbenchDataManager).getActiveUserIDsByProjectId(ArgumentMatchers.anyLong(), CROP_NAME );
 		Mockito.verify(this.workbenchDataManager).removeUsersFromProgram(ArgumentMatchers.<List<Integer>>any(), ArgumentMatchers.anyLong());
 	}
 
@@ -258,9 +259,9 @@ public class ProgramServiceTest {
 		final List<Integer> activeUserIds = new ArrayList<>();
 		activeUserIds.addAll(Arrays.asList(1, 2));
 		final Collection<WorkbenchUser> userList = Arrays.asList(new WorkbenchUser(1));
-		Mockito.when(this.workbenchDataManager.getActiveUserIDsByProjectId(ArgumentMatchers.anyLong()))
+		Mockito.when(this.workbenchDataManager.getActiveUserIDsByProjectId(ArgumentMatchers.anyLong(), CROP_NAME ))
 			.thenReturn(activeUserIds);
-		final List<Integer> removedUserIds = this.programService.getRemovedUserIds(1, userList);
+		final List<Integer> removedUserIds = this.programService.getRemovedUserIds(1, userList, CROP_NAME);
 		Assert.assertEquals(1, removedUserIds.size());
 		Assert.assertEquals("2", removedUserIds.get(0).toString());
 	}

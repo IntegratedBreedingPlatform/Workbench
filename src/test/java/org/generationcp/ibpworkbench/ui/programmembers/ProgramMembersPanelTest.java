@@ -44,6 +44,7 @@ public class ProgramMembersPanelTest {
 	private static final int ADMIN_USER_ID = 3;
 	private static final int ADMIN_PERSON_ID = 3;
 	private static final String ADMIN_NAME = "USER3";
+	private static final String CROP_NAME = "maize";
 
 	@Mock
 	private WorkbenchDataManager workbenchDataManager;
@@ -132,9 +133,9 @@ public class ProgramMembersPanelTest {
 	@Test
 	public void testGenerateRoleCellForOwner() {
 		this.mockCurrentUser(ProgramMembersPanelTest.OWNER_USER_ID);
-		final Object itemId = UserTestDataInitializer.createUserWithRole(ProgramMembersPanelTest.OWNER_USER_ID);
+		final WorkbenchUser itemId = UserTestDataInitializer.createUserWithRole(ProgramMembersPanelTest.OWNER_USER_ID);
 		final Label roleLabel = this.programMembersPanel.generateRoleCell(itemId);
-		Assert.assertEquals(((WorkbenchUser) itemId).getRoles().get(0).getCapitalizedRole(), roleLabel.getValue());
+		Assert.assertEquals( itemId.getRoles().get(0).getCapitalizedRole(), roleLabel.getValue());
 		Assert.assertEquals("label", roleLabel.getDebugId());
 		Assert.assertEquals("label-bold", roleLabel.getStyleName());
 	}
@@ -142,9 +143,9 @@ public class ProgramMembersPanelTest {
 	@Test
 	public void testGenerateRoleCellForMember() {
 		this.mockCurrentUser(ProgramMembersPanelTest.OWNER_USER_ID);
-		final Object itemId = UserTestDataInitializer.createUserWithRole(ProgramMembersPanelTest.MEMBER_PERSON_ID);
+		final WorkbenchUser itemId = UserTestDataInitializer.createUserWithRole(ProgramMembersPanelTest.MEMBER_PERSON_ID);
 		final Label roleLabel = this.programMembersPanel.generateRoleCell(itemId);
-		Assert.assertEquals(((WorkbenchUser) itemId).getRoles().get(0).getCapitalizedRole(), roleLabel.getValue());
+		Assert.assertEquals( itemId.getRoles().get(0).getCapitalizedRole(), roleLabel.getValue());
 		Assert.assertEquals("label", roleLabel.getDebugId());
 		Assert.assertNotSame("label-bold", roleLabel.getStyleName());
 	}
@@ -152,10 +153,10 @@ public class ProgramMembersPanelTest {
 	@Test
 	public void testgenerateUserNameCellForOwner() {
 		this.mockCurrentUser(ProgramMembersPanelTest.OWNER_USER_ID);
-		final Object itemId = UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.OWNER_PERSON_ID,
+		final WorkbenchUser itemId = UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.OWNER_PERSON_ID,
 				"UserName", 1, "Firstname", "Middlename");
 		final Label roleLabel = this.programMembersPanel.generateUserNameCell(itemId);
-		Assert.assertEquals(((WorkbenchUser) itemId).getPerson().getDisplayName(), roleLabel.getValue());
+		Assert.assertEquals( itemId.getPerson().getDisplayName(), roleLabel.getValue());
 		Assert.assertEquals("label", roleLabel.getDebugId());
 		Assert.assertEquals("label-bold", roleLabel.getStyleName());
 	}
@@ -163,10 +164,10 @@ public class ProgramMembersPanelTest {
 	@Test
 	public void testgenerateUserNameCellForMember() {
 		this.mockCurrentUser(ProgramMembersPanelTest.OWNER_USER_ID);
-		final Object itemId = UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.MEMBER_PERSON_ID,
+		final WorkbenchUser itemId = UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.MEMBER_PERSON_ID,
 				"UserName", 1, "Firstname", "Middlename");
 		final Label roleLabel = this.programMembersPanel.generateUserNameCell(itemId);
-		Assert.assertEquals(((WorkbenchUser) itemId).getPerson().getDisplayName(), roleLabel.getValue());
+		Assert.assertEquals( itemId.getPerson().getDisplayName(), roleLabel.getValue());
 		Assert.assertEquals("label", roleLabel.getDebugId());
 		Assert.assertNotSame("label-bold", roleLabel.getStyleName());
 	}
@@ -174,7 +175,7 @@ public class ProgramMembersPanelTest {
 	@Test
 	public void testInitializeUsers() {
 		// Setup test data and mocks
-		Mockito.when(this.workbenchDataManager.getActiveUserIDsByProjectId(Matchers.anyLong()))
+		Mockito.when(this.workbenchDataManager.getActiveUserIDsByProjectId(Matchers.anyLong(), CROP_NAME ))
 				.thenReturn(Arrays.asList(ProgramMembersPanelTest.OWNER_USER_ID, ProgramMembersPanelTest.ADMIN_USER_ID,
 						ProgramMembersPanelTest.MEMBER_USER_ID));
 		this.mockCurrentUser(ProgramMembersPanelTest.MEMBER_USER_ID);

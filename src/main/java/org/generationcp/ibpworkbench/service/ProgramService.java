@@ -238,26 +238,27 @@ public class ProgramService {
 	
 	public void updateMembersUserInfo(final Collection<WorkbenchUser> userList, final Project project) {
 		//Addition of new members
-		for (WorkbenchUser u : userList) {
+		for (final WorkbenchUser u : userList) {
 			if (this.workbenchDataManager.getProjectUserInfoByProjectIdAndUserId(project.getProjectId(),
 					u.getUserid()) == null) {
-				ProjectUserInfo pUserInfo = new ProjectUserInfo(project, u.getUserid());
+				final ProjectUserInfo pUserInfo = new ProjectUserInfo(project, u.getUserid());
 				this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
 			}
 		}
 		this.saveWorkbenchUserToCropUserMapping(project, new HashSet<>(userList));
 		
 		//Removal of users
-		final List<Integer> removedUserIds = this.getRemovedUserIds(project.getProjectId(), userList);
+		final List<Integer> removedUserIds =
+			this.getRemovedUserIds( project.getProjectId(), userList, project.getCropType().getCropName() );
 		if(!removedUserIds.isEmpty()) {
 			this.workbenchDataManager.removeUsersFromProgram(removedUserIds, project.getProjectId());
 		}
 	}
 	
-	public List<Integer> getRemovedUserIds(final long projectId, final Collection<WorkbenchUser> userList) {
-		final List<Integer> activeUserIds = this.workbenchDataManager.getActiveUserIDsByProjectId(projectId);
-		List<Integer> programMemberIds = new ArrayList<>();
-		for(WorkbenchUser user: userList) {
+	public List<Integer> getRemovedUserIds(final long projectId, final Collection<WorkbenchUser> userList, final String cropName) {
+		final List<Integer> activeUserIds = this.workbenchDataManager.getActiveUserIDsByProjectId(projectId, cropName );
+		final List<Integer> programMemberIds = new ArrayList<>();
+		for(final WorkbenchUser user: userList) {
 			programMemberIds.add(user.getUserid());
 		}
 		activeUserIds.removeAll(programMemberIds);

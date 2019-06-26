@@ -302,7 +302,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	protected void initializeUsers() {
 		final Container container = this.tblMembers.getContainerDataSource();
 		final List<Integer> userIDs = this.workbenchDataManager
-				.getActiveUserIDsByProjectId(this.project.getProjectId());
+			.getActiveUserIDsByProjectId( this.project.getProjectId(), this.project.getCropType().getCropName() );
 		final Set<WorkbenchUser> selectedItems = new HashSet<>();
 
 		for (final Integer userID : userIDs) {
@@ -428,7 +428,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 	
 	public Project getProject() {
-		return project;
+		return this.project;
 	}
 
 }
