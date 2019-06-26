@@ -369,18 +369,36 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		}
 	}
 
-	// For test purposes only
-	public Table getProgramsTable() {
+	Table getProgramsTable() {
 		return this.programsTable;
 	}
 
-	// For test purposes only
-	public void setInstituteLogo(final Embedded instituteLogo) {
+	void setInstituteLogo(final Embedded instituteLogo) {
 		this.instituteLogo = instituteLogo;
 	}
 
-	public void setWindow(final Window window) {
+	void setWindow(final Window window) {
 		this.window = window;
+	}
+
+	void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
+		this.workbenchDataManager = workbenchDataManager;
+	}
+
+	void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+
+	void setServletContext(final ServletContext servletContext) {
+		this.servletContext = servletContext;
+	}
+
+	void setContextUtil(final ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
+	}
+
+	void setHttpServletRequest(final HttpServletRequest httpServletRequest) {
+		this.httpServletRequest = httpServletRequest;
 	}
 
 }
