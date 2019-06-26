@@ -97,8 +97,9 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
 	private Embedded instituteLogo;
 
-	public WorkbenchDashboard() {
+	public WorkbenchDashboard(final Window window) {
 		super();
+		this.window = window;
 	}
 
 	@Override

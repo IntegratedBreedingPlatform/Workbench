@@ -75,8 +75,7 @@ public class HomeAction implements ClickListener, ActionListener {
 		final WorkbenchMainView workbenchMainView = (WorkbenchMainView) window;
 		WorkbenchDashboard workbenchDashboard;
 		try {
-			workbenchDashboard = new WorkbenchDashboard();
-			workbenchDashboard.setWindow(window);
+			workbenchDashboard = new WorkbenchDashboard(window);
 
 			workbenchMainView.showContent(workbenchDashboard);
 
