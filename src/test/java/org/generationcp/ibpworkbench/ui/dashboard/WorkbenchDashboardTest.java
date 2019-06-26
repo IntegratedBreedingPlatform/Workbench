@@ -20,13 +20,12 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.mockito.InjectMocks;
+import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -35,9 +34,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.generationcp.commons.context.ContextConstants.*;
+import static org.generationcp.commons.context.ContextConstants.SESSION_ATTR_CONTEXT_INFO;
 
-@Ignore // FIXME inject mocks and constructor
+@RunWith(MockitoJUnitRunner.class)
 public class WorkbenchDashboardTest {
 
 	private static final int NUMBER_OF_PROGRAMS = 10;
@@ -63,7 +62,6 @@ public class WorkbenchDashboardTest {
 	@Mock
 	private Window window;
 
-	@InjectMocks
 	private WorkbenchDashboard workbenchDashboard;
 
 	private List<Project> programs;
@@ -72,7 +70,7 @@ public class WorkbenchDashboardTest {
 
 	@Before
 	public void setup() {
-		MockitoAnnotations.initMocks(this);
+		this.workbenchDashboard = new WorkbenchDashboard(this.window);
 
 		// Setup test data and mocks
 		final WorkbenchUser currentUser = new WorkbenchUser(1);
@@ -85,6 +83,11 @@ public class WorkbenchDashboardTest {
 		Mockito.when(httpServletRequest.getSession()).thenReturn(httpSession);
 
 		this.workbenchDashboard.setWindow(this.window);
+		this.workbenchDashboard.setWorkbenchDataManager(this.workbenchDataManager);
+		this.workbenchDashboard.setMessageSource(this.messageSource);
+		this.workbenchDashboard.setContextUtil(this.contextUtil);
+		this.workbenchDashboard.setServletContext(this.servletContext);
+		this.workbenchDashboard.setHttpServletRequest(this.httpServletRequest);
 
 		// Initialize UI components
 		this.workbenchDashboard.initializeComponents();
