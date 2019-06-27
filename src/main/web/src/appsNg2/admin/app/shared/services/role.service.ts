@@ -6,8 +6,6 @@ import { RoleFilter } from './../models/role-filter.model';
 import ServiceHelper from './service.helper';
 import { SERVER_API_URL } from '../../app.constants';
 
-ten
-
 @Injectable()
 export class RoleService{
   private baseUrl: string = SERVER_API_URL;
