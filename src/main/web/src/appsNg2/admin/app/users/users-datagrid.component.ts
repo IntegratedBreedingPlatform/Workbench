@@ -124,7 +124,7 @@ export class UsersDatagrid implements OnInit {
     }
 
     // TODO
-    // - Move to a shared component
+    // - Move to interceptor
     // - see /ibpworkbench/src/main/web/src/apps/ontology/app-services/bmsAuth.js
     handleReAuthentication() {
         alert('Site Admin needs to authenticate you again. Redirecting to login page.');

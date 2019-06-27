@@ -48,7 +48,12 @@ export class Principal {
             return this.userIdentity;
         }).catch((err) => {
             this.userIdentity = null;
-            return null;
+            // TODO Move to interceptor
+            if (err.status === 401) {
+                localStorage.removeItem('xAuthToken');
+                alert('Site Admin needs to authenticate you again. Redirecting to login page.');
+                window.top.location.href = '/ibpworkbench/logout';
+            }
         });
     }
 }
