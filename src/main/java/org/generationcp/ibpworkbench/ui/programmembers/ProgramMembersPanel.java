@@ -307,30 +307,33 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 		for (final Integer userID : userIDs) {
 			final WorkbenchUser userTemp = this.workbenchDataManager.getUserById(userID);
-			selectedItems.add(userTemp);
 
-			container.removeItem(userTemp);
+			if (!this.workbenchDataManager.isSuperAdminUser(userID)) {
+				selectedItems.add(userTemp);
 
-			final Item item = container.addItem(userTemp);
-			item.getItemProperty("userId").setValue(1);
-			item.getItemProperty(ProgramMembersPanel.USERNAME).setValue(userTemp.getPerson().getDisplayName());
-			//TODO Review with new development
-			item.getItemProperty(ProgramMembersPanel.ROLE).setValue(
-				(userTemp.getRoles() != null && !userTemp.getRoles().isEmpty() && userTemp.getRoles().get(0) != null) ?
-					userTemp.getRoles().get(0).getCapitalizedRole() : "");
+				container.removeItem(userTemp);
 
-			/*
-			 * If user has SUPERADMIN role, disable selection so it cannot be removed.
-			 * Disabling is done here so that it can still be selected in
-			 * Available Users table
-			 */
-			//TODO Review with new development
-			if (((userTemp.getRoles() != null && userTemp.getRoles().get(0) != null) ? userTemp.getRoles().get(0).getCapitalizedRole() : "")
-				.equals("SUPERADMIN")) {
-				userTemp.setEnabled(false);
+				final Item item = container.addItem(userTemp);
+				item.getItemProperty("userId").setValue(1);
+				item.getItemProperty(ProgramMembersPanel.USERNAME).setValue(userTemp.getPerson().getDisplayName());
+				//TODO Review with new development
+				item.getItemProperty(ProgramMembersPanel.ROLE).setValue(
+					(userTemp.getRoles() != null && !userTemp.getRoles().isEmpty() && userTemp.getRoles().get(0) != null) ?
+						userTemp.getRoles().get(0).getCapitalizedRole() : "");
+
+				/*
+				 * If user has SUPERADMIN role, disable selection so it cannot be removed.
+				 * Disabling is done here so that it can still be selected in
+				 * Available Users table
+				 */
+				//TODO Review with new development
+				if (((userTemp.getRoles() != null && userTemp.getRoles().get(0) != null) ? userTemp.getRoles().get(0).getCapitalizedRole() : "")
+					.equals("SUPERADMIN")) {
+					userTemp.setEnabled(false);
+				}
+
+				this.select.select(userTemp);
 			}
-
-			this.select.select(userTemp);
 		}
 	}
 
@@ -378,10 +381,12 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 		for (final WorkbenchUser user : userList) {
 			final Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
-			user.setPerson(person);
+			if (!this.workbenchDataManager.isSuperAdminUser(user.getUserid())) {
+				user.setPerson(person);
 
-			if (person != null) {
-				validUserList.add(user);
+				if (person != null) {
+					validUserList.add(user);
+				}
 			}
 		}
 
