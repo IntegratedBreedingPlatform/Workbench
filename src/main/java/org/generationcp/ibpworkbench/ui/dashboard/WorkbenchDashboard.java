@@ -210,7 +210,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
 		try {
 			final WorkbenchUser currentUser = contextUtil.getCurrentWorkbenchUser();
-			this.programs = this.workbenchDataManager.getProjectsByUser(currentUser);
+			this.programs = this.workbenchDataManager.getProjectsByUser(currentUser, null);
 			lastOpenedProgram = this.workbenchDataManager.getLastOpenedProject(currentUser.getUserid());
 		} catch (final MiddlewareQueryException e) {
 			WorkbenchDashboard.LOG.error("Exception", e);
