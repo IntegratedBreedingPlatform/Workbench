@@ -44,7 +44,6 @@ public class ProgramMembersPanelTest {
 	private static final int ADMIN_USER_ID = 3;
 	private static final int ADMIN_PERSON_ID = 3;
 	private static final String ADMIN_NAME = "USER3";
-	private static final String CROP_NAME = "maize";
 
 	@Mock
 	private WorkbenchDataManager workbenchDataManager;
@@ -91,7 +90,7 @@ public class ProgramMembersPanelTest {
 
 		final Collection<WorkbenchUser> programMembers = (Collection<WorkbenchUser>) usersContainer.getItemIds();
 		Assert.assertNotNull(programMembers);
-		Assert.assertEquals("There should be 3 program members.", 3, programMembers.size());
+		Assert.assertEquals("There should be 2 program members.", 2, programMembers.size());
 
 		// Check that program owner should be disabled
 		for (final WorkbenchUser user : programMembers) {
@@ -115,7 +114,7 @@ public class ProgramMembersPanelTest {
 
 		final Collection<WorkbenchUser> programMembers = (Collection<WorkbenchUser>) usersContainer.getItemIds();
 		Assert.assertNotNull(programMembers);
-		Assert.assertEquals("There should be 3 program members.", 3, programMembers.size());
+		Assert.assertEquals("There should be 2 program members.", 2, programMembers.size());
 
 		// Two users should be disabled - current user and program owner
 		for (final WorkbenchUser user : programMembers) {
@@ -175,7 +174,7 @@ public class ProgramMembersPanelTest {
 	@Test
 	public void testInitializeUsers() {
 		// Setup test data and mocks
-		Mockito.when(this.workbenchDataManager.getActiveUserIDsByProjectId(Matchers.anyLong(), CROP_NAME ))
+		Mockito.when(this.workbenchDataManager.getActiveUserIDsByProjectId(Matchers.anyLong(), ArgumentMatchers.anyString() ))
 				.thenReturn(Arrays.asList(ProgramMembersPanelTest.OWNER_USER_ID, ProgramMembersPanelTest.ADMIN_USER_ID,
 						ProgramMembersPanelTest.MEMBER_USER_ID));
 		this.mockCurrentUser(ProgramMembersPanelTest.MEMBER_USER_ID);
@@ -194,7 +193,7 @@ public class ProgramMembersPanelTest {
 		// Check that members are selected in twin table
 		final Set<WorkbenchUser> programMembers = this.programMembersPanel.getProgramMembersDisplayed();
 		Assert.assertNotNull(programMembers);
-		Assert.assertEquals("There should be 3 program members.", 3, programMembers.size());
+		Assert.assertEquals("There should be 2 program members.", 2, programMembers.size());
 
 		// Check that ADMIN user is disabled from selection
 		for (final WorkbenchUser user : programMembers) {

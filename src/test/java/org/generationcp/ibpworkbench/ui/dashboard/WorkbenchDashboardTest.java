@@ -78,7 +78,7 @@ public class WorkbenchDashboardTest {
 
 		this.programs = this.createProjects(WorkbenchDashboardTest.NUMBER_OF_PROGRAMS, new CropType(CropType.CropEnum.MAIZE.toString()));
 		this.lastOpenedProgram = this.programs.get(7);
-		Mockito.doReturn(this.programs).when(this.workbenchDataManager).getProjectsByUser(currentUser);
+		Mockito.doReturn(this.programs).when(this.workbenchDataManager).getProjectsByUser(currentUser, null);
 		Mockito.doReturn(this.lastOpenedProgram).when(this.workbenchDataManager).getLastOpenedProject(currentUser.getUserid());
 		Mockito.when(httpServletRequest.getSession()).thenReturn(httpSession);
 
