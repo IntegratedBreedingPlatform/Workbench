@@ -1,4 +1,3 @@
-
 package org.generationcp.ibpworkbench.controller;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -89,13 +88,13 @@ public class AuthenticationControllerTest {
 	public void setup() {
 		this.createTestRoles();
 		Mockito.doReturn(this.selectedRole.getId()).when(this.userAccountModel).getRoleId();
-		Mockito.doReturn(this.roles).when(this.workbenchDataManager).getRoles(new RoleSearchDto(Boolean.TRUE, null));
+		Mockito.doReturn(this.roles).when(this.workbenchDataManager).getRoles(new RoleSearchDto(Boolean.TRUE, null, null));
 	}
 
 	@Test
 	public void testIntialize() {
 		this.controller.initialize();
-		Mockito.verify(this.workbenchDataManager).getRoles(new RoleSearchDto(Boolean.TRUE, null));
+		Mockito.verify(this.workbenchDataManager).getRoles(new RoleSearchDto(Boolean.TRUE, null, null));
 		Assert.assertEquals(this.roles, this.controller.getRoles());
 	}
 

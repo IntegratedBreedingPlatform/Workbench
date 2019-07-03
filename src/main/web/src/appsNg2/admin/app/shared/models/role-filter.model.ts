@@ -1,6 +1,9 @@
 export class RoleFilter {
 
-    constructor(public assignable: boolean) {
+    constructor(
+        public roleIds: number[],
+        public assignable: boolean,
+        public roleTypeId: number) {
 
     }
 }

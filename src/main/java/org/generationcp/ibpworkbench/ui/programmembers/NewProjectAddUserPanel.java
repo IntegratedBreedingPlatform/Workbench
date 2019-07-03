@@ -135,7 +135,7 @@ public class NewProjectAddUserPanel extends Panel {
 	protected void initializeValues() {
 
 		ComboBox roleField = (ComboBox) this.userForm.getField("role");
-		final List<Role> roles = this.workbenchDataManager.getRoles(new RoleSearchDto(Boolean.TRUE, null));
+		final List<Role> roles = this.workbenchDataManager.getRoles(new RoleSearchDto(Boolean.TRUE, null, null));
 		for (final Role role : roles){
 			roleField.addItem(role);
 		}

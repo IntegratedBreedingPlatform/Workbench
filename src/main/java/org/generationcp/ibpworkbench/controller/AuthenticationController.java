@@ -106,7 +106,7 @@ public class AuthenticationController {
 
 	@PostConstruct
 	public void initialize() {
-		this.roles = this.workbenchDataManager.getRoles( new RoleSearchDto(Boolean.TRUE, null));
+		this.roles = this.workbenchDataManager.getRoles(new RoleSearchDto(Boolean.TRUE, null, null));
 		this.footerMessage = Sanitizers.FORMATTING.sanitize(this.footerMessage);
 	}
 
