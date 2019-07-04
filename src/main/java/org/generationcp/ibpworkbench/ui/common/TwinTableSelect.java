@@ -429,6 +429,26 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 		this.getTableRight().setColumnHeaders(columnHeaders);
 	}
 
+	public void setLeftVisibleColumns(final Object[] visibleColumns) {
+		this.visibleColumns = visibleColumns;
+		this.getTableLeft().setVisibleColumns(visibleColumns);
+	}
+
+	public void setRightVisibleColumns(final Object[] visibleColumns) {
+		this.visibleColumns = visibleColumns;
+		this.getTableRight().setVisibleColumns(visibleColumns);
+	}
+
+	public void setLeftColumnHeaders(final String[] columnHeaders) {
+		this.columnHeaders = columnHeaders;
+		this.getTableLeft().setColumnHeaders(this.columnHeaders);
+	}
+
+	public void setRightColumnHeaders(final String[] columnHeaders) {
+		this.columnHeaders = columnHeaders;
+		this.getTableRight().setColumnHeaders(columnHeaders);
+	}
+
 	public void select(Object itemId) {
 		this.getTableLeft().removeItem(itemId);
 		this.getTableRight().addItem(itemId);
