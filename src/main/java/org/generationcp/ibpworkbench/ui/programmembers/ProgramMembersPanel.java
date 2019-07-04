@@ -252,6 +252,10 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		try {
 			final Container container = this.createUsersContainer();
 			this.select.setContainerDataSource(container);
+			this.select.setLeftVisibleColumns(new Object[] {"select", ProgramMembersPanel.USERNAME});
+			this.select
+				.setLeftColumnHeaders(new String[] { "<span class='glyphicon glyphicon-ok'></span>", "User Name" });
+
 		} catch (final MiddlewareQueryException e) {
 			ProgramMembersPanel.LOG.error("Error encountered while getting workbench users", e);
 			throw new InternationalizableException(e, Message.DATABASE_ERROR, Message.CONTACT_ADMIN_ERROR_DESC);
