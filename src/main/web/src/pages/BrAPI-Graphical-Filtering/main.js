@@ -86,13 +86,10 @@ function buildObservationLevelsCombo(response) {
 		return;
 	}
 
-	$('#observationLevels').html('<select multiple ></select>');
+	$('#observationLevels').html('<select class="form-control" name="observationLevel"></select>');
 	$('#observationLevels select').append(response.result.data.map(function (observationLevel) {
-		return '<option value="' + observationLevel + '">'
-			+ observationLevel
-			+ '</option>';
+		return '<option value="' + observationLevel + '">' + observationLevel + '</option>';
 	}));
-	$('#observationLevels select').select2({containerCss: {width: '100%'}});
 }
 
 function loadTrials() {
