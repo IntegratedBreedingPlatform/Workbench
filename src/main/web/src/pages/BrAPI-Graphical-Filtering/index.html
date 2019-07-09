@@ -37,17 +37,7 @@
 						</div>
 						<div class="form-group">
 							<label class="control-label col-sm-4">Observation level</label>
-							<div class="col-sm-8">
-								<!-- TODO get /observationLevels, get names from table and remove enum dependency -->
-								<select class="form-control" name="observationLevel">
-									<option th:text="PLOT" th:value="${T(org.generationcp.middleware.enumeration.DatasetTypeEnum).PLOT_DATA.getId()}"></option>
-									<option th:text="PLANT" th:value="${T(org.generationcp.middleware.enumeration.DatasetTypeEnum).PLANT_SUBOBSERVATIONS.getId()}"></option>
-									<option th:text="QUADRAT" th:value="${T(org.generationcp.middleware.enumeration.DatasetTypeEnum).QUADRAT_SUBOBSERVATIONS.getId()}"></option>
-									<option th:text="TIME_SERIES" th:value="${T(org.generationcp.middleware.enumeration.DatasetTypeEnum).TIME_SERIES_SUBOBSERVATIONS.getId()}"></option>
-									<option th:text="CUSTOM" th:value="${T(org.generationcp.middleware.enumeration.DatasetTypeEnum).CUSTOM_SUBOBSERVATIONS.getId()}"></option>
-									<option th:text="MEANS" th:value="${T(org.generationcp.middleware.enumeration.DatasetTypeEnum).MEANS_DATA.getId()}"></option>
-								</select>
-							</div>
+							<div class="col-sm-8" id="observationLevels"></div>
 						</div>
 						<div class="form-group">
 							<label class="control-label col-sm-4">Observation timestamp range start</label>
