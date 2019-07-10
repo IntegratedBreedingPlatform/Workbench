@@ -178,6 +178,11 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 			projectUserInfo.setLastOpenDate(new Date());
 			this.workbenchDataManager.saveOrUpdateProjectUserInfo(projectUserInfo);
 		}
+		else {
+				final ProjectUserInfo pUserInfo = new ProjectUserInfo(project, this.contextUtil.getCurrentWorkbenchUserId());
+				pUserInfo.setLastOpenDate(new Date());
+				this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
+		}
 
 		project.setLastOpenDate(new Date());
 		this.workbenchDataManager.mergeProject(project);
@@ -224,9 +229,5 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 
 	public void setWindow(final WorkbenchMainView window) {
 		this.workbenchMainView = window;
-	}
-
-	public WorkbenchMainView getWorkbenchMainView() {
-		return this.workbenchMainView;
 	}
 }
