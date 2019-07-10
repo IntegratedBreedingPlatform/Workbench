@@ -499,7 +499,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 					userTemp.setEnabled(false);
 				}
 
-			this.getSelect().select(userTemp);
+				this.getSelect().select(userTemp);
+			}
 		}
 	}
 
