@@ -49,6 +49,8 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 
 	private final Class<? super T> type;
 
+	private Property.ValueChangeListener tableValueChangeListener;
+
 	public TwinTableSelect(Class<? super T> class1) {
 
 		super(2, 3);
@@ -83,12 +85,12 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 		this.btnLinkRight.setStyleName("link");
 		this.btnLinkRight.setImmediate(true);
 
-		this.chkSelectAllLeft = new CheckBox("Select All");
-		this.chkSelectAllLeft.setDebugId("chkSelectAllLeft");
-		this.chkSelectAllRight = new CheckBox("Select All");
-		this.chkSelectAllRight.setDebugId("chkSelectAllRight");
-		this.chkSelectAllLeft.setImmediate(true);
-		this.chkSelectAllRight.setImmediate(true);
+		this.setChkSelectAllLeft(new CheckBox("Select All"));
+		this.getChkSelectAllLeft().setDebugId("chkSelectAllLeft");
+		this.setChkSelectAllRight(new CheckBox("Select All"));
+		this.getChkSelectAllRight().setDebugId("chkSelectAllRight");
+		this.getChkSelectAllLeft().setImmediate(true);
+		this.getChkSelectAllRight().setImmediate(true);
 
 		this.tableLeft = this.buildCustomTable();
 		this.tableLeft.setData("left");
@@ -102,7 +104,7 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 
 	private void initializeActions() {
 
-		this.chkSelectAllLeft.addListener(new Button.ClickListener() {
+		this.getChkSelectAllLeft().addListener(new Button.ClickListener() {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
@@ -125,7 +127,7 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 			}
 		});
 
-		this.chkSelectAllRight.addListener(new Button.ClickListener() {
+		this.getChkSelectAllRight().addListener(new Button.ClickListener() {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
@@ -162,7 +164,7 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 
 		HorizontalLayout hLayout1 = new HorizontalLayout();
 		hLayout1.setDebugId("hLayout1");
-		hLayout1.addComponent(this.chkSelectAllLeft);
+		hLayout1.addComponent(this.getChkSelectAllLeft());
 		hLayout1.addComponent(this.btnLinkLeft);
 		hLayout1.setComponentAlignment(this.btnLinkLeft, Alignment.TOP_RIGHT);
 		hLayout1.setSizeFull();
@@ -170,7 +172,7 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 
 		HorizontalLayout hLayout2 = new HorizontalLayout();
 		hLayout2.setDebugId("hLayout2");
-		hLayout2.addComponent(this.chkSelectAllRight);
+		hLayout2.addComponent(this.getChkSelectAllRight());
 		hLayout2.addComponent(this.btnLinkRight);
 		hLayout2.setComponentAlignment(this.btnLinkRight, Alignment.TOP_RIGHT);
 		hLayout2.setSizeFull();
@@ -209,7 +211,7 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 	private Table buildCustomTable() {
 		final Table table = new Table();
 		table.setDebugId("table");
-		final Property.ValueChangeListener tableValueChangeListener = new Property.ValueChangeListener() {
+		this.setTableValueChangeListener(new Property.ValueChangeListener() {
 
 			private static final long serialVersionUID = 1L;
 
@@ -235,9 +237,9 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 
 			}
 
-		};
+		});
 
-		table.addListener(tableValueChangeListener);
+		table.addListener(getTableValueChangeListener());
 
 		table.addGeneratedColumn("select", new Table.ColumnGenerator() {
 
@@ -268,9 +270,9 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 						} else {
 							source.unselect(itemId);
 							if (source.getData().equals("left")) {
-								TwinTableSelect.this.chkSelectAllLeft.setValue(val);
+								TwinTableSelect.this.getChkSelectAllLeft().setValue(val);
 							} else {
-								TwinTableSelect.this.chkSelectAllRight.setValue(val);
+								TwinTableSelect.this.getChkSelectAllRight().setValue(val);
 							}
 						}
 
@@ -312,7 +314,7 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 				Object itemIdOver = t.getItemId();
 
 				// temporarily disable the value change listener to avoid conflict
-				target.removeListener(tableValueChangeListener);
+				target.removeListener(getTableValueChangeListener());
 
 				Set<Object> sourceItemIds = (Set<Object>) source.getValue();
 				for (Object itemId : sourceItemIds) {
@@ -336,7 +338,7 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 					}
 				}
 
-				target.addListener(tableValueChangeListener);
+				target.addListener(getTableValueChangeListener());
 
 			}
 
@@ -368,20 +370,20 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 			public void handleAction(final Action action, final Object sender, final Object target) {
 				if (actionSelectAll == action) {
 					if (table.getData().toString().equals("left")) {
-						TwinTableSelect.this.chkSelectAllLeft.setValue(true);
-						TwinTableSelect.this.chkSelectAllLeft.click();
+						TwinTableSelect.this.getChkSelectAllLeft().setValue(true);
+						TwinTableSelect.this.getChkSelectAllLeft().click();
 					} else {
-						TwinTableSelect.this.chkSelectAllRight.setValue(true);
-						TwinTableSelect.this.chkSelectAllRight.click();
+						TwinTableSelect.this.getChkSelectAllRight().setValue(true);
+						TwinTableSelect.this.getChkSelectAllRight().click();
 					}
 
 				} else if (actionDeSelectAll == action) {
 					if (table.getData().toString().equals("left")) {
-						TwinTableSelect.this.chkSelectAllLeft.setValue(false);
-						TwinTableSelect.this.chkSelectAllLeft.click();
+						TwinTableSelect.this.getChkSelectAllLeft().setValue(false);
+						TwinTableSelect.this.getChkSelectAllLeft().click();
 					} else {
-						TwinTableSelect.this.chkSelectAllRight.setValue(false);
-						TwinTableSelect.this.chkSelectAllRight.click();
+						TwinTableSelect.this.getChkSelectAllRight().setValue(false);
+						TwinTableSelect.this.getChkSelectAllRight().click();
 					}
 				} else if (actionAddToProgramMembers == action) {
 					TwinTableSelect.this.addCheckedSelectedItems();
@@ -413,8 +415,8 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 		if (this.columnHeaders != null) {
 			this.setColumnHeaders(this.columnHeaders);
 		}
-		this.chkSelectAllLeft.setValue(false);
-		this.chkSelectAllRight.setValue(false);
+		this.getChkSelectAllLeft().setValue(false);
+		this.getChkSelectAllRight().setValue(false);
 	}
 
 	public void setVisibleColumns(Object[] visibleColumns) {
@@ -563,4 +565,27 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 
 	}
 
+	public Property.ValueChangeListener getTableValueChangeListener() {
+		return tableValueChangeListener;
+	}
+
+	public void setTableValueChangeListener(Property.ValueChangeListener tableValueChangeListener) {
+		this.tableValueChangeListener = tableValueChangeListener;
+	}
+
+	public CheckBox getChkSelectAllLeft() {
+		return chkSelectAllLeft;
+	}
+
+	public void setChkSelectAllLeft(CheckBox chkSelectAllLeft) {
+		this.chkSelectAllLeft = chkSelectAllLeft;
+	}
+
+	public CheckBox getChkSelectAllRight() {
+		return chkSelectAllRight;
+	}
+
+	public void setChkSelectAllRight(CheckBox chkSelectAllRight) {
+		this.chkSelectAllRight = chkSelectAllRight;
+	}
 }
