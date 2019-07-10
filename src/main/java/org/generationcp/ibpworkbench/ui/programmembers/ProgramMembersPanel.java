@@ -15,6 +15,7 @@ import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.event.Action;
 import com.vaadin.event.DataBoundTransferable;
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
@@ -218,7 +219,18 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		});
 
 		this.addDragAndDropBehavior();
+		this.addActionHandler();
 		this.initializeMembersTable();
+	}
+
+	private void addActionHandler() {
+		this.getSelect().getTableLeft().removeAllActionHandlers();
+		this.getSelect().getTableRight().removeAllActionHandlers();
+		this.getSelect().getTableLeft().setData("left");
+		this.getSelect().getTableRight().setData("right");
+
+		this.getSelect().getTableLeft().addActionHandler(this.getActionMenu(this.getSelect().getTableLeft()));
+		this.getSelect().getTableRight().addActionHandler(this.getActionMenu(this.getSelect().getTableRight()));
 	}
 
 	private void addDragAndDropBehavior() {
@@ -370,6 +382,131 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 				return AbstractSelect.AcceptItem.ALL;
 			}
 		});
+	}
+
+	final Action actionAddToProgramMembers = new Action("Add Selected Items");
+	final Action actionRemoveFromProgramMembers = new Action("Remove Selected Items");
+	final Action actionSelectAll = new Action("Select All");
+	final Action actionDeSelectAll = new Action("De-select All");
+
+	private Action.Handler getActionMenu(final Table table) {
+		Action.Handler actionMenu = new Action.Handler() {
+
+			@Override
+			public Action[] getActions(final Object target, final Object sender) {
+
+				if (table.getData().toString().equals("left")) {
+					return new Action[] {actionAddToProgramMembers, actionSelectAll, actionDeSelectAll};
+				} else {
+					return new Action[] {actionRemoveFromProgramMembers, actionSelectAll, actionDeSelectAll};
+				}
+
+			}
+
+			@Override
+			public void handleAction(final Action action, final Object sender, final Object target) {
+				if (actionSelectAll == action) {
+					if (table.getData().toString().equals("left")) {
+						ProgramMembersPanel.this.getSelect().getChkSelectAllLeft().setValue(true);
+						ProgramMembersPanel.this.getSelect().getChkSelectAllLeft().click();
+					} else {
+						ProgramMembersPanel.this.getSelect().getChkSelectAllRight().setValue(true);
+						ProgramMembersPanel.this.getSelect().getChkSelectAllRight().click();
+					}
+
+				} else if (actionDeSelectAll == action) {
+					if (table.getData().toString().equals("left")) {
+						ProgramMembersPanel.this.getSelect().getChkSelectAllLeft().setValue(false);
+						ProgramMembersPanel.this.getSelect().getChkSelectAllLeft().click();
+					} else {
+						ProgramMembersPanel.this.getSelect().getChkSelectAllRight().setValue(false);
+						ProgramMembersPanel.this.getSelect().getChkSelectAllRight().click();
+					}
+				} else if (actionAddToProgramMembers == action) {
+					ProgramMembersPanel.this.addCheckedSelectedItems();
+				} else if (actionRemoveFromProgramMembers == action) {
+					ProgramMembersPanel.this.removeCheckedSelectedItems();
+				}
+
+			}
+
+		};
+
+		return actionMenu;
+	}
+
+	private void removeCheckedSelectedItems() {
+
+		if (((Set<Object>) ProgramMembersPanel.this.getSelect().getTableRight().getValue()).size() != 0) {
+			MessageNotifier.showWarning(ProgramMembersPanel.this.getWindow(), "Information",
+				"Selected members will no longer have a role associated to access current program. After saving these changes will be impacted.");
+		}
+
+		for (Object itemId : (Set<Object>) ProgramMembersPanel.this.getSelect().getTableRight().getValue()) {
+			if (((WorkbenchUser) itemId).isActive() && ((WorkbenchUser) itemId).isEnabled()) {
+				((WorkbenchUser) itemId).setActive(false);
+				ProgramMembersPanel.this.getSelect().getTableLeft().addItem(itemId);
+				ProgramMembersPanel.this.getSelect().getTableRight().removeItem(itemId);
+				ProgramMembersPanel.this.getSelect().getChkSelectAllRight().setValue(false);
+			}
+		}
+
+	}
+
+	private void addCheckedSelectedItems() {
+
+		if (((Set<Object>) ProgramMembersPanel.this.getSelect().getTableLeft().getValue()).size() != 0) {
+
+			ProgramMembersPanel.this.setRoleSelectionWindow(new RoleSelectionWindow(ProgramMembersPanel.this,
+				new Button.ClickListener() {
+
+					private static final long serialVersionUID = 1L;
+
+					@Override
+					public void buttonClick(ClickEvent event) {
+
+						Role roleSelected = null;
+						Integer roleId = (Integer) ProgramMembersPanel.this.getRoleSelectionWindow().getRolesComboBox().getValue();
+						for (Role role : ProgramMembersPanel.this.getRoles()) {
+							if (role.getId().equals(roleId)) {
+								roleSelected = role;
+								break;
+							}
+						}
+
+						if (roleSelected == null) {
+							MessageNotifier.showWarning(ProgramMembersPanel.this.getWindow(), "Assign Role error",
+								"Select a Program role for the user(s) selected");
+							return;
+						}
+
+
+						for (Object itemId : (Set<Object>) ProgramMembersPanel.this.getSelect().getTableLeft().getValue()) {
+							if (((WorkbenchUser) itemId).isActive() && ((WorkbenchUser) itemId).isEnabled()) {
+								((WorkbenchUser) itemId).setActive(false);
+								final List<UserRole> userRoles = new ArrayList<>();
+								UserRole userRole = new UserRole();
+								userRole.setRole(roleSelected);
+								userRole.setUser((WorkbenchUser) itemId);
+								userRoles.add(userRole);
+								((WorkbenchUser) itemId).setRoles(userRoles);
+								ProgramMembersPanel.this.getSelect().getTableRight().addItem(itemId);
+								ProgramMembersPanel.this.getSelect().getTableLeft().removeItem(itemId);
+								ProgramMembersPanel.this.getSelect().getChkSelectAllLeft().setValue(false);
+							}
+						}
+
+						ProgramMembersPanel.this.getRoleSelectionWindow().getParent()
+							.removeWindow(ProgramMembersPanel.this.getRoleSelectionWindow());
+					}
+
+				}));
+
+			getRoleSelectionWindow().setVisible(true);
+			ProgramMembersPanel.this.getWindow().addWindow(getRoleSelectionWindow());
+
+		}
+
 	}
 
 	private Table initializeMembersTable() {
