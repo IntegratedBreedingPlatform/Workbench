@@ -15,6 +15,11 @@ import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.event.DataBoundTransferable;
+import com.vaadin.event.dd.DragAndDropEvent;
+import com.vaadin.event.dd.DropHandler;
+import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
+import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -33,13 +38,17 @@ import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.Role;
+import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.generationcp.middleware.service.api.user.RoleSearchDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -48,6 +57,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -64,7 +74,6 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	private static final String USERNAME = "userName";
 
 	private TwinTableSelect<WorkbenchUser> select;
-
 	private Button cancelButton;
 	private Button saveButton;
 
@@ -123,7 +132,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	}
 
 	protected void initializeComponents() {
-		this.select = new TwinTableSelect<>(WorkbenchUser.class);
+		this.setSelect(new TwinTableSelect<>(WorkbenchUser.class));
 
 		final Table.ColumnGenerator tableLeftUserName = new Table.ColumnGenerator() {
 
@@ -177,22 +186,22 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 		};
 
-		this.select.getTableLeft().addGeneratedColumn(ProgramMembersPanel.USERNAME, tableLeftUserName);
-		this.select.getTableLeft().addGeneratedColumn(ProgramMembersPanel.ROLE, tableLeftRole);
-		this.select.getTableRight().addGeneratedColumn(ProgramMembersPanel.USERNAME, tableRightUserName);
-		this.select.getTableRight().addGeneratedColumn(ProgramMembersPanel.ROLE, tableRightRole);
+		this.getSelect().getTableLeft().addGeneratedColumn(ProgramMembersPanel.USERNAME, tableLeftUserName);
+		this.getSelect().getTableLeft().addGeneratedColumn(ProgramMembersPanel.ROLE, tableLeftRole);
+		this.getSelect().getTableRight().addGeneratedColumn(ProgramMembersPanel.USERNAME, tableRightUserName);
+		this.getSelect().getTableRight().addGeneratedColumn(ProgramMembersPanel.ROLE, tableRightRole);
 
-		this.select
+		this.getSelect()
 				.setVisibleColumns(new Object[] { "select", ProgramMembersPanel.USERNAME, ProgramMembersPanel.ROLE });
-		this.select
+		this.getSelect()
 				.setColumnHeaders(new String[] { "<span class='glyphicon glyphicon-ok'></span>", "User Name", "Role" });
 
-		this.select.setLeftColumnCaption("Available Users");
-		this.select.setRightColumnCaption("Selected Program Members");
+		this.getSelect().setLeftColumnCaption("Available Users");
+		this.getSelect().setRightColumnCaption("Selected Program Members");
 
-		this.select.setLeftLinkCaption("");
-		this.select.setRightLinkCaption("Remove Selected Members");
-		this.select.addRightLinkListener(new Button.ClickListener() {
+		this.getSelect().setRightLinkCaption("Remove Selected Members");
+		this.getSelect().setLeftLinkCaption("");
+		this.getSelect().addRightLinkListener(new Button.ClickListener() {
 
 			/**
 			 *
@@ -202,7 +211,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 			@Override
 			public void buttonClick(final ClickEvent event) {
-				ProgramMembersPanel.this.select.removeCheckedSelectedItems();
+				ProgramMembersPanel.this.getSelect().removeCheckedSelectedItems();
 			}
 		});
 
@@ -251,9 +260,9 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	protected void initializeValues() {
 		try {
 			final Container container = this.createUsersContainer();
-			this.select.setContainerDataSource(container);
-			this.select.setLeftVisibleColumns(new Object[] {"select", ProgramMembersPanel.USERNAME});
-			this.select
+			this.getSelect().setContainerDataSource(container);
+			this.getSelect().setLeftVisibleColumns(new Object[] {"select", ProgramMembersPanel.USERNAME});
+			this.getSelect()
 				.setLeftColumnHeaders(new String[] { "<span class='glyphicon glyphicon-ok'></span>", "User Name" });
 
 		} catch (final MiddlewareQueryException e) {
@@ -292,7 +301,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 		final ComponentContainer buttonArea = this.layoutButtonArea();
 
-		root.addComponent(this.select);
+		root.addComponent(this.getSelect());
 
 		root.addComponent(buttonArea);
 		root.setComponentAlignment(buttonArea, Alignment.TOP_CENTER);
@@ -336,13 +345,12 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 					userTemp.setEnabled(false);
 				}
 
-				this.select.select(userTemp);
-			}
+			this.getSelect().select(userTemp);
 		}
 	}
 
 	protected void initializeActions() {
-		this.saveButton.addListener(new SaveUsersInProjectAction(this.project, this.select));
+		this.saveButton.addListener(new SaveUsersInProjectAction(this.project, this.getSelect()));
 		this.cancelButton.addListener(new Button.ClickListener() {
 
 			private static final long serialVersionUID = 8879824681692031501L;
@@ -414,7 +422,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 	public boolean validateAndSave() {
 		if (this.validate()) {
-			final Set<WorkbenchUser> members = this.select.getValue();
+			final Set<WorkbenchUser> members = this.getSelect().getValue();
 
 			this.project.setMembers(members);
 		}
@@ -432,7 +440,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	}
 
 	public Set<WorkbenchUser> getProgramMembersDisplayed() {
-		return this.select.getValue();
+		return this.getSelect().getValue();
 	}
 
 	
@@ -440,4 +448,23 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		return this.project;
 	}
 
+	public Collection<Role> getRoles() {
+		return this.workbenchDataManager.getRoles(new RoleSearchDto() );
+	}
+
+	public TwinTableSelect<WorkbenchUser> getSelect() {
+		return select;
+	}
+
+	public void setSelect(TwinTableSelect<WorkbenchUser> select) {
+		this.select = select;
+	}
+
+	public RoleSelectionWindow getRoleSelectionWindow() {
+		return roleSelectionWindow;
+	}
+
+	public void setRoleSelectionWindow(RoleSelectionWindow roleSelectionWindow) {
+		this.roleSelectionWindow = roleSelectionWindow;
+	}
 }
