@@ -87,6 +87,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 	private final Project project;
 
+	private RoleSelectionWindow roleSelectionWindow;
+
 	public ProgramMembersPanel(final Project project) {
 		this.project = project;
 	}
@@ -215,7 +217,159 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			}
 		});
 
+		this.addDragAndDropBehavior();
 		this.initializeMembersTable();
+	}
+
+	private void addDragAndDropBehavior() {
+
+		this.getSelect().getTableRight().setDropHandler(new DropHandler() {
+
+			private static final long serialVersionUID = -8853235163238131008L;
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public void drop(final DragAndDropEvent dragAndDropEvent) {
+				final DataBoundTransferable t = (DataBoundTransferable) dragAndDropEvent.getTransferable();
+
+				if (t.getSourceComponent() == dragAndDropEvent.getTargetDetails().getTarget()) {
+					return;
+				}
+				ProgramMembersPanel.this.setRoleSelectionWindow(new RoleSelectionWindow(ProgramMembersPanel.this,
+					new Button.ClickListener() {
+
+						private static final long serialVersionUID = 1L;
+
+						@Override
+						public void buttonClick(ClickEvent event) {
+
+							Role roleSelected = null;
+							Integer roleId = (Integer) ProgramMembersPanel.this.getRoleSelectionWindow().getRolesComboBox().getValue();
+							for (Role role : ProgramMembersPanel.this.getRoles()) {
+								if (role.getId().equals(roleId)) {
+									roleSelected = role;
+									break;
+								}
+							}
+
+							if (roleSelected == null) {
+								MessageNotifier.showWarning(ProgramMembersPanel.this.getWindow(), "Assign Role error",
+									"Select a Program role for the user(s) selected");
+								return;
+							}
+
+
+							Table source = (Table) t.getSourceComponent();
+							Table target = (Table) dragAndDropEvent.getTargetDetails().getTarget();
+
+							Object itemIdOver = t.getItemId();
+							// temporarily disable the value change listener to avoid conflict
+							target.removeListener(ProgramMembersPanel.this.getSelect().getTableValueChangeListener());
+
+							Set<Object> sourceItemIds = (Set<Object>) source.getValue();
+							for (Object itemId : sourceItemIds) {
+								final List<UserRole> userRoles = new ArrayList<>();
+								UserRole userRole = new UserRole();
+								userRole.setRole(roleSelected);
+								userRole.setUser((WorkbenchUser) itemId);
+								userRoles.add(userRole);
+								((WorkbenchUser) itemId).setRoles(userRoles);
+								if (((WorkbenchUser) itemId).isEnabled()) {
+									source.removeItem(itemId);
+									target.addItem(itemId);
+								}
+							}
+
+							boolean selectedItemIsDisabled = false;
+							if (sourceItemIds.size() == 1) {
+								if (!((WorkbenchUser) sourceItemIds.iterator().next()).isEnabled()) {
+									selectedItemIsDisabled = true;
+								}
+							}
+
+							if (itemIdOver != null && (sourceItemIds.isEmpty() || selectedItemIsDisabled)) {
+								if (((WorkbenchUser) itemIdOver).isEnabled()) {
+									final List<UserRole> userRoles = new ArrayList<>();
+									UserRole userRole = new UserRole();
+									userRole.setRole(roleSelected);
+									userRole.setUser((WorkbenchUser) itemIdOver);
+									userRoles.add(userRole);
+									((WorkbenchUser) itemIdOver).setRoles(userRoles);
+									source.removeItem(itemIdOver);
+									target.addItem(itemIdOver);
+								}
+							}
+
+							target.addListener(ProgramMembersPanel.this.getSelect().getTableValueChangeListener());
+
+							ProgramMembersPanel.this.getRoleSelectionWindow().getParent()
+								.removeWindow(ProgramMembersPanel.this.getRoleSelectionWindow());
+						}
+
+					}));
+
+				getRoleSelectionWindow().setVisible(true);
+				ProgramMembersPanel.this.getWindow().addWindow(getRoleSelectionWindow());
+			}
+
+			@Override
+			public AcceptCriterion getAcceptCriterion() {
+				return AbstractSelect.AcceptItem.ALL;
+			}
+		});
+
+		this.getSelect().getTableLeft().setDropHandler(new DropHandler() {
+
+			private static final long serialVersionUID = -885323516323813999L;
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public void drop(final DragAndDropEvent dragAndDropEvent) {
+				final DataBoundTransferable t = (DataBoundTransferable) dragAndDropEvent.getTransferable();
+
+				if (t.getSourceComponent() == dragAndDropEvent.getTargetDetails().getTarget()) {
+					return;
+				}
+
+				Table source = (Table) t.getSourceComponent();
+				Table target = (Table) dragAndDropEvent.getTargetDetails().getTarget();
+
+				Object itemIdOver = t.getItemId();
+				final WorkbenchUser workbenchUser = (WorkbenchUser) itemIdOver;
+				workbenchUser.getRoles().remove(0);
+
+				Set<Object> sourceItemIds = (Set<Object>) source.getValue();
+				for (Object itemId : sourceItemIds) {
+					if (((WorkbenchUser) itemId).isEnabled()) {
+						source.removeItem(itemId);
+						target.addItem(itemId);
+					}
+				}
+
+				boolean selectedItemIsDisabled = false;
+				if (sourceItemIds.size() == 1) {
+					if (!((WorkbenchUser) sourceItemIds.iterator().next()).isEnabled()) {
+						selectedItemIsDisabled = true;
+					}
+				}
+
+				if (itemIdOver != null && (sourceItemIds.isEmpty() || selectedItemIsDisabled)) {
+					if (((WorkbenchUser) itemIdOver).isEnabled()) {
+						source.removeItem(itemIdOver);
+						target.addItem(itemIdOver);
+					}
+				}
+
+				MessageNotifier.showWarning(ProgramMembersPanel.this.getWindow(), "Information",
+					"Selected members will no longer have a role associated to access current program. After saving these changes will be impacted.");
+
+			}
+
+			@Override
+			public AcceptCriterion getAcceptCriterion() {
+				return AbstractSelect.AcceptItem.ALL;
+			}
+		});
 	}
 
 	private Table initializeMembersTable() {
