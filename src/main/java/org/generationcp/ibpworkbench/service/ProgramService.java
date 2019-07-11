@@ -1,28 +1,24 @@
 
 package org.generationcp.ibpworkbench.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-
+import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.middleware.ContextHolder;
+import org.generationcp.middleware.manager.api.GermplasmDataManager;
+import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.manager.api.UserDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
+import org.generationcp.middleware.pojos.dms.ProgramFavorite;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.IbdbUserMap;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
+import org.generationcp.middleware.pojos.workbench.Role;
+import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,10 +26,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.WebUtils;
-import org.generationcp.middleware.manager.api.GermplasmDataManager;
-import org.generationcp.middleware.pojos.dms.ProgramFavorite;
-import org.generationcp.middleware.manager.api.LocationDataManager;
-import org.apache.commons.lang3.StringUtils;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -102,8 +103,7 @@ public class ProgramService {
 
 		// Save workbench project metadata and to crop users, persons (if necessary)
 		if (!users.isEmpty()) {
-			final List<Integer> userIDs = this.saveWorkbenchUserToCropUserMapping(program, users);
-			this.saveProjectUserInfo(program, userIDs);
+			this.saveWorkbenchUserToCropUserMapping(program, users);
 		}
 	}
 
@@ -114,20 +114,6 @@ public class ProgramService {
 
 		ContextHolder.setCurrentCrop(program.getCropType().getCropName());
 		ContextHolder.setCurrentProgram(program.getUniqueID());
-	}
-
-	/*
-	 * Create records for workbench_project_user_info table if combination of project id, user id is not yet existing in workbench DB
-	 */
-	private void saveProjectUserInfo(final Project program, final List<Integer> userIDs) {
-		for (final Integer userID : userIDs) {
-			final Long projectID = program.getProjectId();
-
-			if (this.workbenchDataManager.getProjectUserInfoDao().getByProjectIdAndUserId(projectID, userID) == null) {
-				final ProjectUserInfo pUserInfo = new ProjectUserInfo(program, userID);
-				this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
-			}
-		}
 	}
 
 	/*
@@ -224,6 +210,18 @@ public class ProgramService {
 		this.workbenchDataManager.addIbdbUserMap(ibdbUserMap);
 	}
 
+	// Add the mapping between Workbench user and the ibdb user.
+	private UserRole createAndSaveUserRoleMap(final Project project, final WorkbenchUser user, final Role role) {
+		final WorkbenchUser loggedUser = this.contextUtil.getCurrentWorkbenchUser();
+		final UserRole userRole = new UserRole();
+		userRole.setWorkbenchProject(project);
+		userRole.setUser(user);
+		userRole.setCreatedDate(new Date());
+		userRole.setCreatedBy(loggedUser);
+		userRole.setRole(role);
+		return userRole;
+	}
+
 	private Integer getCurrentDate() {
 		return DateUtil.getCurrentDateAsIntegerValue();
 	}
@@ -239,11 +237,10 @@ public class ProgramService {
 	public void updateMembersUserInfo(final Collection<WorkbenchUser> userList, final Project project) {
 		//Addition of new members
 		for (final WorkbenchUser u : userList) {
-			if (this.workbenchDataManager.getProjectUserInfoByProjectIdAndUserId(project.getProjectId(),
-					u.getUserid()) == null) {
-				final ProjectUserInfo pUserInfo = new ProjectUserInfo(project, u.getUserid());
-				this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
+			for (final UserRole role : u.getRoles()) {
+				this.saveWorkbenchUserToUserRoleMapping(project, u, role );
 			}
+
 		}
 		this.saveWorkbenchUserToCropUserMapping(project, new HashSet<>(userList));
 		
@@ -254,7 +251,23 @@ public class ProgramService {
 			this.workbenchDataManager.removeUsersFromProgram(removedUserIds, project.getProjectId());
 		}
 	}
-	
+
+	private void saveWorkbenchUserToUserRoleMapping(final Project project, final WorkbenchUser user,
+		final UserRole userRole) {
+
+		if (userRole.getCreatedBy() == null) {
+			userRole.setCreatedBy(this.contextUtil.getCurrentWorkbenchUser());
+		}
+
+		if (userRole.getCreatedDate() == null) {
+			userRole.setCreatedDate(new Date());
+		}
+
+		userRole.setUser(this.workbenchDataManager.getUserById(user.getUserid()));
+
+		this.workbenchDataManager.saveOrUpdateUserRole(userRole);
+	}
+
 	public List<Integer> getRemovedUserIds(final long projectId, final Collection<WorkbenchUser> userList, final String cropName) {
 		final List<Integer> activeUserIds = this.workbenchDataManager.getActiveUserIDsByProjectId(projectId, cropName );
 		final List<Integer> programMemberIds = new ArrayList<>();
