@@ -53,7 +53,7 @@ public class RoleSelectionWindow extends BaseSubWindow {
 		this.setRolesComboBox(new ComboBox());
 		this.getRolesComboBox().setInputPrompt("Please select a role");
 		this.getRolesComboBox().setDebugId("role");
-		this.getRolesComboBox().setWidth("200px");
+		this.getRolesComboBox().setWidth("300px");
 		this.getRolesComboBox().setContainerDataSource(userRoleBeanContainer);
 		this.getRolesComboBox().setItemCaptionMode( AbstractSelect.ITEM_CAPTION_MODE_PROPERTY);
 		this.getRolesComboBox().setItemCaptionPropertyId("name");
@@ -108,8 +108,10 @@ public class RoleSelectionWindow extends BaseSubWindow {
 		hLayoutLabelMandatory.setHeight("30px");
 		hLayoutLabelMandatory.setSpacing(true);
 
+		panel.addComponent(hLayoutLabelMandatory);
 		panel.addComponent(hLayoutLabelRoleComboBox);
 		panel.addComponent(hLayoutRolesComboBox);
+		panel.setHeight("100%");
 		this.layout.addComponent(panel);
 		this.layout.addComponent(this.buttonArea);
 
