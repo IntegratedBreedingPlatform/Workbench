@@ -101,7 +101,12 @@ public class RoleSelectionWindow extends BaseSubWindow {
 		hLayoutRolesComboBox.addComponent(comboLabel);
 		hLayoutRolesComboBox.addComponent(this.getRolesComboBox());
 		hLayoutRolesComboBox.setExpandRatio(this.getRolesComboBox(), 1.0F);
-		hLayoutRolesComboBox.setComponentAlignment(this.getRolesComboBox(), Alignment.TOP_CENTER);
+		hLayoutRolesComboBox.setComponentAlignment(this.getRolesComboBox(), Alignment.MIDDLE_CENTER);
+		final HorizontalLayout hLayoutLabelMandatory = new HorizontalLayout();
+		hLayoutLabelMandatory.addComponent(
+			new Label("<i><span style='color:red; font-weight:bold'>*</span> indicates a mandatory field.</i>", Label.CONTENT_XHTML));
+		hLayoutLabelMandatory.setHeight("30px");
+		hLayoutLabelMandatory.setSpacing(true);
 
 		panel.addComponent(hLayoutLabelRoleComboBox);
 		panel.addComponent(hLayoutRolesComboBox);
@@ -141,8 +146,6 @@ public class RoleSelectionWindow extends BaseSubWindow {
 		this.setSelectButton(new Button("Assign role"));
 		this.getSelectButton().setDebugId("selectButton");
 		this.getSelectButton().addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
-		//this.getSelectButton().setEnabled(false);
-
 		buttonLayout.addComponent(this.getCancelButton());
 		buttonLayout.addComponent(this.getSelectButton());
 
