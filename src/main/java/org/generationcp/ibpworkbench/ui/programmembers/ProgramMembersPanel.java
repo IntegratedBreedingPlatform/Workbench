@@ -285,6 +285,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 								UserRole userRole = new UserRole();
 								userRole.setRole(roleSelected);
 								userRole.setUser((WorkbenchUser) itemId);
+								userRole.setWorkbenchProject(ProgramMembersPanel.this.project);
+								userRole.setCropType(ProgramMembersPanel.this.project.getCropType());
 								userRoles.add(userRole);
 								((WorkbenchUser) itemId).setRoles(userRoles);
 								if (((WorkbenchUser) itemId).isEnabled()) {
@@ -306,6 +308,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 									UserRole userRole = new UserRole();
 									userRole.setRole(roleSelected);
 									userRole.setUser((WorkbenchUser) itemIdOver);
+									userRole.setWorkbenchProject(ProgramMembersPanel.this.project);
+									userRole.setCropType(ProgramMembersPanel.this.project.getCropType());
 									userRoles.add(userRole);
 									((WorkbenchUser) itemIdOver).setRoles(userRoles);
 									source.removeItem(itemIdOver);
@@ -488,6 +492,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 								final List<UserRole> userRoles = new ArrayList<>();
 								UserRole userRole = new UserRole();
 								userRole.setRole(roleSelected);
+								userRole.setWorkbenchProject(ProgramMembersPanel.this.project);
+								userRole.setCropType(ProgramMembersPanel.this.project.getCropType());
 								userRole.setUser((WorkbenchUser) itemId);
 								userRoles.add(userRole);
 								((WorkbenchUser) itemId).setRoles(userRoles);
