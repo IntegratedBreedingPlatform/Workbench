@@ -254,18 +254,19 @@ public class ProgramService {
 
 	private void saveWorkbenchUserToUserRoleMapping(final Project project, final WorkbenchUser user,
 		final UserRole userRole) {
+		if (userRole.getId() == null) {
+			if (userRole.getCreatedBy() == null) {
+				userRole.setCreatedBy(this.contextUtil.getCurrentWorkbenchUser());
+			}
 
-		if (userRole.getCreatedBy() == null) {
-			userRole.setCreatedBy(this.contextUtil.getCurrentWorkbenchUser());
+			if (userRole.getCreatedDate() == null) {
+				userRole.setCreatedDate(new Date());
+			}
+
+			userRole.setUser(this.workbenchDataManager.getUserById(user.getUserid()));
+
+			this.workbenchDataManager.saveOrUpdateUserRole(userRole);
 		}
-
-		if (userRole.getCreatedDate() == null) {
-			userRole.setCreatedDate(new Date());
-		}
-
-		userRole.setUser(this.workbenchDataManager.getUserById(user.getUserid()));
-
-		this.workbenchDataManager.saveOrUpdateUserRole(userRole);
 	}
 
 	public List<Integer> getRemovedUserIds(final long projectId, final Collection<WorkbenchUser> userList, final String cropName) {
