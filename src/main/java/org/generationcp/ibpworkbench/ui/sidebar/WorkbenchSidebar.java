@@ -39,7 +39,6 @@ import com.vaadin.ui.Tree;
 public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 
 	private static final String DELETE_PROJECT = "delete_project";
-	private static final String ABOUT_BMS = "about_bms";
 	private static final String PROJECT_LOCATION = "project_location";
 	private static final String PROJECT_METHOD = "project_method";
 	private static final String UPDATE_PROJECT = "update_project";
@@ -160,8 +159,6 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 			return new OpenProgramMethodsAction();
 		} else if (PROJECT_LOCATION.equals(toolName)) {
 			return new OpenProgramLocationsAction();
-		} else if (ABOUT_BMS.equals(toolName)) {
-			return new PageAction("/ibpworkbench/controller/about/");
 		} else if (DELETE_PROJECT.equals(toolName)) {
 			return new DeleteProjectAction();
 		}

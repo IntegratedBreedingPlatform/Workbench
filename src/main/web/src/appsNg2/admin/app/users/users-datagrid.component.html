@@ -1,14 +1,29 @@
 <section>
   <div class="om-panel-content">
-        <button class="btn btn-default om-add-new-btn form-group pull-right"
-            (click)="showNewUserForm(userCreateCard)">Add user</button>
-            <app-dialog [(visible)]="showNewDialog" [title]="dialogTitle">
-                <user-card #userCreateCard (onUserAdded)="onUserAdded($event)" [model]="user" [roles]="roles" (onCancel)="showNewDialog = false"></user-card>
-            </app-dialog>
+      <button class="btn btn-default om-add-new-btn form-group pull-right"
+              (click)="showNewUserForm(userCreateCard)">Add user
+      </button>
+      <app-dialog [(visible)]="showNewDialog" [title]="dialogTitle">
+          <user-card #userCreateCard (onUserAdded)="onUserAdded($event)"
+                     [model]="user"
+                     [roles]="roles"
+                     (onCancel)="showNewDialog = false"
+                     [crops]="crops | toSelect2OptionData"
+                     [selectedCropIds]="user.crops | toSelect2OptionId"></user-card>
+      </app-dialog>
+      <app-dialog [(visible)]="showEditDialog" [title]="dialogTitle">
+          <user-card #userEditCard (onUserEdited)="onUserEdited($event)"
+                     (onCancel)="showEditDialog = false"
+                     [model]="user"
+                     [roles]="roles"
+                     [crops]="crops | toSelect2OptionData"
+                     [selectedCropIds]="user.crops | toSelect2OptionId"></user-card>
+      </app-dialog>
   </div>
   <div class="om-panel-header">
         <h2 class="om-panel-title ">
             Manage users</h2>
+      <div>Click a <strong>User name</strong> to inspect or edit their personal information.</div>
   </div>
   <br/>
     <div class="row">
@@ -45,6 +60,7 @@
                         <th [ngClass]="{ sort: isSorted('firstName'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('firstName')">First Name</th>
                         <th [ngClass]="{ sort: isSorted('lastName'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('lastName')">Last Name</th>
                         <th [ngClass]="{ sort: isSorted('email'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('email')">Email</th>
+                        <th>Crop</th>
                         <th [ngClass]="{ sort: isSorted('roleName'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('roleName')">Role</th>
                         <th [ngClass]="{ sort: isSorted('status'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('status')">Status</th>
                     </tr>
@@ -61,6 +77,15 @@
                         <td>{{user.firstName}}</td>
                         <td>{{user.lastName}}</td>
                         <td>{{user.email}}</td>
+                        <td>
+                            <span *ngIf="user.crops.length === crops.length" class="crop-badge">All crops</span>
+                            <span *ngIf="user.crops.length !== crops.length && user.crops.length > 0" >
+                                <span *ngIf="user.crops[0]" class="crop-badge">{{user.crops[0].cropName}}</span>
+                                <span *ngIf="user.crops.length > 1"
+                                      [title]="getCropsTitleFormat(user.crops)"
+                                      style="padding-left: 5px; color: #428bca;"> and {{user.crops.length - 1}} more</span>
+                            </span>
+                        </td>
                         <td>{{user.roleName}}</td>
                         <td *ngIf="user.roleName.toUpperCase() == 'SUPERADMIN' && user.status == 'true'">Active</td>
                         <td *ngIf="user.roleName.toUpperCase() == 'SUPERADMIN' && user.status == 'false'">Inactive</td>
@@ -69,9 +94,6 @@
                           <a href="javascript:void(0)" *ngIf="user.status == 'false'" (click)="showUserStatusConfirmPopUp(user)">Activate</a>
                         </td>
                     </tr>
-					<app-dialog [(visible)]="showEditDialog" [title]="dialogTitle">
- 		                <user-card #userEditCard (onUserEdited)="onUserEdited($event)" (onCancel)="showEditDialog = false" [model]="user" [roles]="roles"></user-card>
- 		            </app-dialog>
                     <div class="popup">
                       <app-dialog [(visible)]="showConfirmStatusDialog" [title]="confirmStatusTitle">
                           <div class="modal-body">

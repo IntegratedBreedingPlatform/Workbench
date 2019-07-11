@@ -149,6 +149,7 @@ public class AddProgramView extends Panel implements InitializingBean {
 		if (!Boolean.parseBoolean(getIsSingleUserOnly())) {
 			programMembersContainer.setVisible(true);
 			tabSheet.addTab(programMembersContainer);
+			tabSheet.getTab(programMembersContainer).setEnabled(false);
 			tabSheet.getTab(programMembersContainer).setClosable(false);
 			tabSheet.getTab(programMembersContainer).setCaption("Members");
 		}
@@ -276,15 +277,16 @@ public class AddProgramView extends Panel implements InitializingBean {
 		this.getProgramLocationsContainer().removeAllComponents();
 		this.getProgramLocationsContainer().addComponent(this.programLocationsView);
 
+		this.getTabSheet().getTab(this.getProgramMembersContainer()).setEnabled(true);
+		this.getProgramMembersContainer().removeAllComponents();
+		this.getProgramMembersContainer().addComponent(new ProgramMembersPanel(this.contextUtil.getProjectInContext()));
+
 		// re-initialize program members and basic details (in update mode)
 		this.getBasicDetailsContainer().removeAllComponents();
 		final UpdateProjectPanel updateProjectPanel = new UpdateProjectPanel();
 		updateProjectPanel.setDebugId("updateProjectPanel");
 		updateProjectPanel.hideDeleteBtn();
 		this.getBasicDetailsContainer().addComponent(updateProjectPanel);
-
-		this.getProgramMembersContainer().removeAllComponents();
-		this.getProgramMembersContainer().addComponent(new ProgramMembersPanel(this.contextUtil.getProjectInContext()));
 
 		this.finishButton.setEnabled(true);
 		this.cancelButton.setEnabled(false);
@@ -293,6 +295,7 @@ public class AddProgramView extends Panel implements InitializingBean {
 	public void disableOptionalTabsAndFinish() {
 		this.getTabSheet().getTab(this.getProgramMethodsContainer()).setEnabled(false);
 		this.getTabSheet().getTab(this.getProgramLocationsContainer()).setEnabled(false);
+		this.getTabSheet().getTab(this.getProgramMembersContainer()).setEnabled(false);
 
 		this.finishButton.setEnabled(false);
 	}
@@ -366,8 +369,6 @@ public class AddProgramView extends Panel implements InitializingBean {
 		return basicDetailsContainer;
 	}
 
-	
-	
 	public void setBasicDetailsContainer(VerticalLayout basicDetailsContainer) {
 		this.basicDetailsContainer = basicDetailsContainer;
 	}

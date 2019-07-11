@@ -7,12 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.util.BreedingViewUtil;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.Experiment;
+import org.generationcp.middleware.domain.dms.ExperimentDesignType;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.ValueReference;
 import org.generationcp.middleware.domain.dms.Variable;
@@ -199,8 +199,8 @@ public class DatasetExporter {
     }
 
     boolean isDummyRepVariableUsed(final BreedingViewInput breedingViewInput) {
-        return !DesignType.P_REP_DESIGN.getName().equals(breedingViewInput.getDesignType())
-                && !DesignType.AUGMENTED_RANDOMIZED_BLOCK.getName().equals(breedingViewInput.getDesignType())
+        return !ExperimentDesignType.P_REP.getBvDesignName().equals(breedingViewInput.getDesignType())
+                && !ExperimentDesignType.AUGMENTED_RANDOMIZED_BLOCK.getBvDesignName().equals(breedingViewInput.getDesignType())
                 && DatasetExporter.DUMMY_REPLICATES.equals(breedingViewInput.getReplicatesFactorName());
     }
 

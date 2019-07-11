@@ -13,6 +13,7 @@ import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.middleware.data.initializer.PersonTestDataInitializer;
 import org.generationcp.middleware.data.initializer.UserTestDataInitializer;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.UserRole;
@@ -20,6 +21,7 @@ import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -63,6 +65,7 @@ public class ProgramMembersPanelTest {
 		this.programMembersPanel = new ProgramMembersPanel(this.project);
 		this.programMembersPanel.setWorkbenchDataManager(this.workbenchDataManager);
 		this.programMembersPanel.setContextUtil(this.contextUtil);
+		Mockito.doReturn(this.project).when(this.contextUtil).getProjectInContext();
 	}
 
 	private Project createProjectTestData(final long projectId, final int owner) {
@@ -71,6 +74,9 @@ public class ProgramMembersPanelTest {
 		project.setProjectName("Project " + projectId);
 		project.setUniqueID(UUID.randomUUID().toString());
 		project.setUserId(owner);
+		final CropType cropType = new CropType();
+		cropType.setCropName("maize");
+		project.setCropType(cropType);
 		return project;
 	}
 
@@ -203,7 +209,7 @@ public class ProgramMembersPanelTest {
 
 	private void mockProgramMembers() {
 		final List<WorkbenchUser> programMembers = this.createProgramMembersTestData();
-		Mockito.doReturn(programMembers).when(this.workbenchDataManager).getAllActiveUsersSorted();
+		Mockito.doReturn(programMembers).when(this.workbenchDataManager).getUsersByCrop(ArgumentMatchers.anyString());
 		for (final WorkbenchUser user : programMembers) {
 			Mockito.doReturn(PersonTestDataInitializer.createPerson(user.getPersonid())).when(this.workbenchDataManager)
 					.getPersonById(user.getPersonid());

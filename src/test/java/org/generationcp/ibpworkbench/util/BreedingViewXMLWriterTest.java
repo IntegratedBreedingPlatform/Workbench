@@ -4,7 +4,6 @@ import org.generationcp.commons.breedingview.xml.Blocks;
 import org.generationcp.commons.breedingview.xml.ColPos;
 import org.generationcp.commons.breedingview.xml.Columns;
 import org.generationcp.commons.breedingview.xml.Covariate;
-import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.breedingview.xml.Environment;
 import org.generationcp.commons.breedingview.xml.Plot;
 import org.generationcp.commons.breedingview.xml.Replicates;
@@ -19,6 +18,7 @@ import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.ibpworkbench.data.initializer.SeaEnvironmentModelTestDataInitializer;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
+import org.generationcp.middleware.domain.dms.ExperimentDesignType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.junit.After;
@@ -84,13 +84,13 @@ public class BreedingViewXMLWriterTest {
 	@Before
 	public void setUp() throws Exception {
 		this.project = ProjectTestDataInitializer.createProjectWithCropType();
-		Mockito.when(contextUtil.getProjectInContext()).thenReturn(project);
+		Mockito.when(this.contextUtil.getProjectInContext()).thenReturn(this.project);
 
 		this.breedingViewInput = this.createBreedingViewInput();
 		this.breedingViewXMLWriter = new BreedingViewXMLWriter();
 		this.breedingViewXMLWriter.setBreedingViewInput(this.breedingViewInput);
 		this.breedingViewXMLWriter.setWebApiUrl(WEB_API_URL);
-		this.breedingViewXMLWriter.setContextUtil(contextUtil);
+		this.breedingViewXMLWriter.setContextUtil(this.contextUtil);
 		this.breedingViewXMLWriter.setInstallationDirectoryUtil(this.installationDirectoryUtil);
 		this.createBreedingViewDirectories();
 
@@ -116,7 +116,7 @@ public class BreedingViewXMLWriterTest {
 		Assert.assertEquals(BreedingViewXMLWriterTest.ROW_POS_FACTOR, result.getRowPos().getName());
 		Assert.assertEquals(BreedingViewXMLWriterTest.REPLICATES_FACTOR, result.getReplicates().getName());
 		Assert.assertEquals(BreedingViewXMLWriterTest.PLOT_FACTOR, result.getPlot().getName());
-		Assert.assertEquals(DesignType.RANDOMIZED_BLOCK_DESIGN.getName(), result.getType());
+		Assert.assertEquals(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvDesignName(), result.getType());
 
 	}
 
@@ -129,7 +129,7 @@ public class BreedingViewXMLWriterTest {
 
 		Assert.assertSame(environments, dataConfiguration.getEnvironments());
 		Assert.assertSame(design, dataConfiguration.getDesign());
-		Assert.assertSame(breedingViewInput.getGenotypes(), dataConfiguration.getGenotypes());
+		Assert.assertSame(this.breedingViewInput.getGenotypes(), dataConfiguration.getGenotypes());
 		Assert.assertNotNull(dataConfiguration.getTraits());
 		Assert.assertNotNull(dataConfiguration.getCovariates());
 
@@ -305,7 +305,7 @@ public class BreedingViewXMLWriterTest {
 		plot.setName(BreedingViewXMLWriterTest.PLOT_FACTOR);
 		breedingViewInput.setPlot(plot);
 
-		breedingViewInput.setDesignType(DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
+		breedingViewInput.setDesignType(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvDesignName());
 
 		return breedingViewInput;
 	}

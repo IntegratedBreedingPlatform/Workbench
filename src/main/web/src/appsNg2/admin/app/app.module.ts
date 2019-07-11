@@ -1,4 +1,4 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA }      from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule } from '@angular/http';
 import { FormsModule } from '@angular/forms';
@@ -7,14 +7,16 @@ import { UsersDatagrid } from './users/users-datagrid.component';
 import { Dialog } from './shared/components/dialog/dialog.component';
 import { ErrorNotification } from './shared/components/notify/error-notification.component';
 import { PaginationComponent } from './shared/components/datagrid/pagination.component';
-import { UserCard } from './users/user-card.component';
+import { ToSelect2OptionDataPipe, ToSelect2OptionIdPipe, UserCard } from './users/user-card.component';
 import { SiteAdminHeader } from './shared/components/header/site-admin-header.component';
 import { UsersAdmin } from './users/index';
 
-import { AppComponent }  from './app.component';
+import { AppComponent } from './app.component';
+import { Select2Module } from 'ng2-select2';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
-  imports: [BrowserModule, HttpModule, FormsModule],
+  imports: [BrowserModule, HttpModule, FormsModule, Select2Module, CommonModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   declarations: [
     AppComponent,
@@ -25,7 +27,9 @@ import { AppComponent }  from './app.component';
     PaginationComponent,
     UserCard,
     SiteAdminHeader,
-    UsersAdmin
+    UsersAdmin,
+    ToSelect2OptionDataPipe,
+    ToSelect2OptionIdPipe
   ],
   bootstrap: [AppComponent]
 })

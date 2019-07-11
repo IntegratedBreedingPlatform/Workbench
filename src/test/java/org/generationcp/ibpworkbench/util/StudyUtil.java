@@ -2,9 +2,17 @@
 package org.generationcp.ibpworkbench.util;
 
 import org.generationcp.ibpworkbench.model.VariateModel;
-import org.generationcp.middleware.domain.dms.*;
+import org.generationcp.middleware.domain.dms.DMSVariableType;
+import org.generationcp.middleware.domain.dms.DataSet;
+import org.generationcp.middleware.domain.dms.Enumeration;
+import org.generationcp.middleware.domain.dms.PhenotypicType;
+import org.generationcp.middleware.domain.dms.StandardVariable;
+import org.generationcp.middleware.domain.dms.Study;
+import org.generationcp.middleware.domain.dms.VariableTypeList;
 import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.domain.oms.TermId;
+import org.generationcp.middleware.enumeration.DatasetTypeEnum;
+import org.generationcp.middleware.pojos.dms.DatasetType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +24,7 @@ public class StudyUtil {
 	public static final int DATASET_ID = -3;
 	public static final String DATASET_NAME = "Test Dataset";
 	public static final String DATASET_DESCRIPTION = "Test Dataset Description";
-	public static final DataSetType DATASET_TYPE = DataSetType.PLOT_DATA;
+	public static final int DATASET_TYPE = DatasetTypeEnum.PLOT_DATA.getId();
 
 	public static final String PROPERTY_POSTFIX = "_PROPERTY";
 	public static final String SCALE_POSTFIX = "_SCALE";
@@ -73,7 +81,7 @@ public class StudyUtil {
 		dataset.setId(StudyUtil.DATASET_ID);
 		dataset.setName(StudyUtil.DATASET_NAME);
 		dataset.setDescription(StudyUtil.DATASET_DESCRIPTION);
-		dataset.setDataSetType(StudyUtil.DATASET_TYPE);
+		dataset.setDatasetType(new DatasetType(StudyUtil.DATASET_TYPE));
 		dataset.setStudyId(StudyUtil.STUDY_ID);
 		dataset.setVariableTypes(this.createDatasetVariableTypesTestData());
 		return dataset;
@@ -129,11 +137,11 @@ public class StudyUtil {
 		final DMSVariableType variableType = new DMSVariableType();
 		variableType.setLocalName(StudyUtil.VARIATE_VAR_PREFIX + StudyUtil.CATEGORICAL_NON_NUMERIC_PREFIX + StudyUtil.VAR_NAME);
 		variableType.setLocalDescription(
-				StudyUtil.VARIATE_VAR_PREFIX + StudyUtil.CATEGORICAL_NON_NUMERIC_PREFIX + StudyUtil.VAR_DESCRIPTION);
+			StudyUtil.VARIATE_VAR_PREFIX + StudyUtil.CATEGORICAL_NON_NUMERIC_PREFIX + StudyUtil.VAR_DESCRIPTION);
 		variableType.setRank(this.rank++);
 		variableType.setStandardVariable(
-				this.createStandardVariableTestData(variableType.getRank(), variableType.getLocalName(), variableType.getLocalDescription(),
-						TermId.CATEGORICAL_VARIABLE.getId(), TermId.CATEGORICAL_VARIATE.getId(), PhenotypicType.VARIATE));
+			this.createStandardVariableTestData(variableType.getRank(), variableType.getLocalName(), variableType.getLocalDescription(),
+				TermId.CATEGORICAL_VARIABLE.getId(), TermId.CATEGORICAL_VARIATE.getId(), PhenotypicType.VARIATE));
 		variableType.setRole(PhenotypicType.VARIATE);
 
 		return variableType;
@@ -145,8 +153,8 @@ public class StudyUtil {
 		variableType.setLocalDescription(StudyUtil.VARIATE_VAR_PREFIX + StudyUtil.CATEGORICAL_NUMERIC_PREFIX + StudyUtil.VAR_DESCRIPTION);
 		variableType.setRank(this.rank++);
 		variableType.setStandardVariable(this.createStandardVariableTestData(variableType.getRank(), variableType.getLocalName(),
-				variableType.getLocalDescription(), TermId.CATEGORICAL_VARIABLE.getId(), TermId.CATEGORICAL_VARIATE.getId(),
-				PhenotypicType.VARIATE));
+			variableType.getLocalDescription(), TermId.CATEGORICAL_VARIABLE.getId(), TermId.CATEGORICAL_VARIATE.getId(),
+			PhenotypicType.VARIATE));
 		final List<Enumeration> validValues = new ArrayList<Enumeration>();
 		validValues.add(new Enumeration(1, StudyUtil.CATEGORICAL_VAR_NUMERIC_ENUM_NAME, StudyUtil.CATEGORICAL_VAR_NUMERIC_ENUM_DEF, 1));
 		variableType.getStandardVariable().setEnumerations(validValues);
@@ -161,8 +169,8 @@ public class StudyUtil {
 		variableType.setLocalDescription(StudyUtil.VARIATE_VAR_PREFIX + StudyUtil.NUMERIC_PREFIX + StudyUtil.VAR_DESCRIPTION);
 		variableType.setRank(this.rank++);
 		variableType.setStandardVariable(
-				this.createStandardVariableTestData(variableType.getRank(), variableType.getLocalName(), variableType.getLocalDescription(),
-						TermId.NUMERIC_VARIABLE.getId(), TermId.OBSERVATION_VARIATE.getId(), PhenotypicType.VARIATE));
+			this.createStandardVariableTestData(variableType.getRank(), variableType.getLocalName(), variableType.getLocalDescription(),
+				TermId.NUMERIC_VARIABLE.getId(), TermId.OBSERVATION_VARIATE.getId(), PhenotypicType.VARIATE));
 		variableType.setRole(PhenotypicType.VARIATE);
 
 		return variableType;
@@ -175,8 +183,8 @@ public class StudyUtil {
 		variableType.setLocalDescription(StudyUtil.STUDY_DESIGN_VAR_PREFIX + StudyUtil.VAR_DESCRIPTION);
 		variableType.setRank(this.rank++);
 		variableType.setStandardVariable(
-				this.createStandardVariableTestData(TermId.PLOT_NO.getId(), variableType.getLocalName(), variableType.getLocalDescription(),
-						TermId.NUMERIC_VARIABLE.getId(), TermId.TRIAL_DESIGN_INFO_STORAGE.getId(), PhenotypicType.TRIAL_DESIGN));
+			this.createStandardVariableTestData(TermId.PLOT_NO.getId(), variableType.getLocalName(), variableType.getLocalDescription(),
+				TermId.NUMERIC_VARIABLE.getId(), TermId.TRIAL_DESIGN_INFO_STORAGE.getId(), PhenotypicType.TRIAL_DESIGN));
 		variableTypes.add(variableType);
 		variableType.setRole(PhenotypicType.TRIAL_DESIGN);
 
@@ -190,8 +198,8 @@ public class StudyUtil {
 		variableType.setLocalDescription(StudyUtil.GERMPLASM_ENTRY_VAR_PREFIX + StudyUtil.VAR_DESCRIPTION);
 		variableType.setRank(this.rank++);
 		variableType.setStandardVariable(this.createStandardVariableTestData(TermId.ENTRY_NO.getId(), variableType.getLocalName(),
-				variableType.getLocalDescription(), TermId.NUMERIC_VARIABLE.getId(), TermId.ENTRY_NUMBER_STORAGE.getId(),
-				PhenotypicType.GERMPLASM));
+			variableType.getLocalDescription(), TermId.NUMERIC_VARIABLE.getId(), TermId.ENTRY_NUMBER_STORAGE.getId(),
+			PhenotypicType.GERMPLASM));
 		variableTypes.add(variableType);
 		variableType.setRole(PhenotypicType.GERMPLASM);
 
@@ -205,9 +213,9 @@ public class StudyUtil {
 		variableType.setLocalDescription(StudyUtil.TRIAL_INSTANCE_VAR_DESC);
 		variableType.setRank(this.rank++);
 		variableType.setStandardVariable(
-				this.createStandardVariableTestData(TermId.TRIAL_INSTANCE_FACTOR.getId(), variableType.getLocalName(),
-						variableType.getLocalDescription(), TermId.NUMERIC_VARIABLE.getId(), TermId.TRIAL_INSTANCE_STORAGE.getId(),
-						PhenotypicType.TRIAL_ENVIRONMENT));
+			this.createStandardVariableTestData(TermId.TRIAL_INSTANCE_FACTOR.getId(), variableType.getLocalName(),
+				variableType.getLocalDescription(), TermId.NUMERIC_VARIABLE.getId(), TermId.TRIAL_INSTANCE_STORAGE.getId(),
+				PhenotypicType.TRIAL_ENVIRONMENT));
 		variableTypes.add(variableType);
 		variableType.setRole(PhenotypicType.TRIAL_ENVIRONMENT);
 
@@ -218,21 +226,7 @@ public class StudyUtil {
 		final VariableTypeList variableTypes = new VariableTypeList();
 		variableTypes.add(this.createDatasetNameVariableTypeTestData());
 		variableTypes.add(this.createDatasetTitleVariableTypeTestData());
-		variableTypes.add(this.createDatasetTypeVariableTypeTestData());
 		return variableTypes;
-	}
-
-	public DMSVariableType createDatasetTypeVariableTypeTestData() {
-		final DMSVariableType variableType = new DMSVariableType();
-		variableType.setLocalName(StudyUtil.DATASET_VAR_TYPE);
-		variableType.setLocalDescription(StudyUtil.DATASET_VAR_TYPE_DESC);
-		variableType.setRank(this.rank++);
-		variableType.setStandardVariable(this.createStandardVariableTestData(TermId.DATASET_TYPE.getId(), variableType.getLocalName(),
-				variableType.getLocalDescription(), TermId.CATEGORICAL_VARIABLE.getId(), TermId.DATASET_INFO_STORAGE.getId(),
-				PhenotypicType.DATASET));
-		variableType.setRole(PhenotypicType.DATASET);
-
-		return variableType;
 	}
 
 	public DMSVariableType createDatasetTitleVariableTypeTestData() {
@@ -241,8 +235,8 @@ public class StudyUtil {
 		variableType.setLocalDescription(StudyUtil.DATASET_VAR_TITLE_DESC);
 		variableType.setRank(this.rank++);
 		variableType.setStandardVariable(this.createStandardVariableTestData(TermId.DATASET_TITLE.getId(), variableType.getLocalName(),
-				variableType.getLocalDescription(), TermId.CHARACTER_VARIABLE.getId(), TermId.DATASET_TITLE_STORAGE.getId(),
-				PhenotypicType.DATASET));
+			variableType.getLocalDescription(), TermId.CHARACTER_VARIABLE.getId(), TermId.DATASET_TITLE_STORAGE.getId(),
+			PhenotypicType.DATASET));
 		variableType.setRole(PhenotypicType.DATASET);
 
 		return variableType;
@@ -254,15 +248,16 @@ public class StudyUtil {
 		variableType.setLocalDescription(StudyUtil.DATASET_VAR_NAME_DESC);
 		variableType.setRank(this.rank++);
 		variableType.setStandardVariable(this.createStandardVariableTestData(TermId.DATASET_NAME.getId(), variableType.getLocalName(),
-				variableType.getLocalDescription(), TermId.CHARACTER_VARIABLE.getId(), TermId.DATASET_NAME_STORAGE.getId(),
-				PhenotypicType.DATASET));
+			variableType.getLocalDescription(), TermId.CHARACTER_VARIABLE.getId(), TermId.DATASET_NAME_STORAGE.getId(),
+			PhenotypicType.DATASET));
 		variableType.setRole(PhenotypicType.DATASET);
 
 		return variableType;
 	}
 
-	public StandardVariable createStandardVariableTestData(int id, final String name, final String description, final Integer dataTypeId, final Integer storedIn,
-			final PhenotypicType phenotypicType) {
+	public StandardVariable createStandardVariableTestData(
+		int id, final String name, final String description, final Integer dataTypeId, final Integer storedIn,
+		final PhenotypicType phenotypicType) {
 		final StandardVariable var = new StandardVariable();
 		var.setId(id);
 		var.setName(name);

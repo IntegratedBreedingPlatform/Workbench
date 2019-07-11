@@ -11,8 +11,11 @@
 
 package org.generationcp.ibpworkbench.study;
 
+import com.vaadin.terminal.ExternalResource;
 import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.help.document.HelpModule;
+import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.util.WorkbenchAppPathResolver;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -21,6 +24,7 @@ import org.generationcp.commons.vaadin.ui.HeaderLabelLayout;
 import org.generationcp.ibpworkbench.GermplasmStudyBrowserLayout;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.study.tree.BrowseStudyTreeComponent;
+import org.generationcp.ibpworkbench.ui.common.LinkButton;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -37,6 +41,8 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.themes.Reindeer;
+
+import javax.annotation.Resource;
 
 @Configurable
 public class StudyBrowserMain extends VerticalLayout implements InitializingBean, InternationalizableComponent, GermplasmStudyBrowserLayout {
@@ -58,6 +64,9 @@ public class StudyBrowserMain extends VerticalLayout implements InitializingBean
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
+
+	@Resource
+	private ContextUtil contextUtil;
 
 	public static final ThemeResource STUDY_DETAILS_ICON = new ThemeResource("images/study-details.png");
 
@@ -156,12 +165,24 @@ public class StudyBrowserMain extends VerticalLayout implements InitializingBean
 
 		HorizontalLayout directionLayout = new HorizontalLayout();
 		directionLayout.addStyleName("study-browser-main");
-		directionLayout.setHeight("16px");
+		directionLayout.setHeight("17px");
 		directionLayout.setSpacing(true);
 		directionLayout.addComponent(this.browseForStudy);
 		directionLayout.addComponent(this.or);
 		directionLayout.addComponent(this.searchForStudy);
 		directionLayout.addComponent(this.browseStudyDescriptionLabel);
+
+		final String crop = this.contextUtil.getProjectInContext().getCropType().getCropName();
+		final String programUuid = this.contextUtil.getCurrentProgramUUID();
+		final LinkButton graphicalFilteringButton =
+			new LinkButton(new ExternalResource(WorkbenchAppPathResolver.getFullWebAddress(String.format(
+				"/ibpworkbench/controller/graphical-filtering?crop=%s&restartApplication&programUuid=%s", crop, programUuid))),
+				"Graphical Filtering tool");
+		graphicalFilteringButton.setImmediate(true);
+		graphicalFilteringButton.setStyleName(BaseTheme.BUTTON_LINK);
+		directionLayout.addComponent(new Label(" You can also filter using the "));
+		directionLayout.addComponent(graphicalFilteringButton);
+
 		directionLayout.setComponentAlignment(this.browseForStudy, Alignment.BOTTOM_CENTER);
 		directionLayout.setComponentAlignment(this.searchForStudy, Alignment.BOTTOM_CENTER);
 
