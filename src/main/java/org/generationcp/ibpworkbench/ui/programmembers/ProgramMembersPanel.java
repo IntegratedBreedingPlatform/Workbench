@@ -42,6 +42,7 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
+import org.generationcp.middleware.domain.workbench.RoleType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
@@ -741,7 +742,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	}
 
 	public Collection<Role> getRoles() {
-		return this.workbenchDataManager.getRoles(new RoleSearchDto() );
+		return this.workbenchDataManager.getRoles(new RoleSearchDto(Boolean.TRUE, RoleType.PROGRAM.getId(), null) );
 	}
 
 	public TwinTableSelect<WorkbenchUser> getSelect() {
