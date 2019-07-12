@@ -263,7 +263,6 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 								return;
 							}
 
-
 							Table source = (Table) t.getSourceComponent();
 							Table target = (Table) dragAndDropEvent.getTargetDetails().getTarget();
 
@@ -479,7 +478,6 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 							return;
 						}
 
-
 						for (Object itemId : (Set<Object>) ProgramMembersPanel.this.getSelect().getTableLeft().getValue()) {
 							if (((WorkbenchUser) itemId).isActive() && ((WorkbenchUser) itemId).isEnabled()) {
 								((WorkbenchUser) itemId).setActive(false);
@@ -550,7 +548,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			this.getSelect().setContainerDataSource(container);
 			this.getSelect().setLeftVisibleColumns(new Object[] {"select", ProgramMembersPanel.USERNAME});
 			this.getSelect()
-				.setLeftColumnHeaders(new String[] { "<span class='glyphicon glyphicon-ok'></span>", "User Name" });
+				.setLeftColumnHeaders(new String[] {"<span class='glyphicon glyphicon-ok'></span>", "User Name"});
 
 		} catch (final MiddlewareQueryException e) {
 			ProgramMembersPanel.LOG.error("Error encountered while getting workbench users", e);
@@ -564,10 +562,10 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		final HorizontalLayout titleContainer = new HorizontalLayout();
 		titleContainer.setDebugId("titleContainer");
 		final Label heading = new Label(
-				"<span class='bms-members' style='color: #D1B02A; font-size: 23px'></span>&nbsp;Program Members",
-				Label.CONTENT_XHTML);
+			"<span class='bms-members' style='color: #D1B02A; font-size: 23px'></span>&nbsp;Program Members",
+			Label.CONTENT_XHTML);
 		final Label headingDesc = new Label(
-				"Choose team members for this program by dragging available users from the list on the left into the Program Members list on the right.");
+			"Choose team members for this program by dragging available users from the list on the left into the Program Members list on the right.");
 
 		heading.setStyleName(Bootstrap.Typography.H4.styleName());
 
@@ -602,7 +600,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	protected void initializeUsers() {
 		final Container container = this.tblMembers.getContainerDataSource();
 		final List<Integer> userIDs = this.workbenchDataManager
-			.getActiveUserIDsByProjectId( this.project.getProjectId(), this.project.getCropType().getCropName() );
+			.getActiveUserIDsByProjectId(this.project.getProjectId(), this.project.getCropType().getCropName());
 		final Set<WorkbenchUser> selectedItems = new HashSet<>();
 
 		for (final Integer userID : userIDs) {
