@@ -256,15 +256,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 						@Override
 						public void buttonClick(ClickEvent event) {
 
-							Role roleSelected = null;
-							Integer roleId = (Integer) ProgramMembersPanel.this.getRoleSelectionWindow().getRolesComboBox().getValue();
-							for (Role role : ProgramMembersPanel.this.getRoles()) {
-								if (role.getId().equals(roleId)) {
-									roleSelected = role;
-									break;
-								}
-							}
-
+							final Role roleSelected = ProgramMembersPanel.this.getRoleSelected();
 							if (roleSelected == null) {
 								MessageNotifier.showWarning(ProgramMembersPanel.this.getWindow(), "Assign Role error",
 									"Select a Program role for the user(s) selected");
@@ -282,12 +274,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 							Set<Object> sourceItemIds = (Set<Object>) source.getValue();
 							for (Object itemId : sourceItemIds) {
 								final List<UserRole> userRoles = new ArrayList<>();
-								UserRole userRole = new UserRole();
-								userRole.setRole(roleSelected);
-								userRole.setUser((WorkbenchUser) itemId);
-								userRole.setWorkbenchProject(ProgramMembersPanel.this.project);
-								userRole.setCropType(ProgramMembersPanel.this.project.getCropType());
-								userRoles.add(userRole);
+								userRoles.add(ProgramMembersPanel.this.createUserRole(roleSelected, (WorkbenchUser) itemId));
 								((WorkbenchUser) itemId).setRoles(userRoles);
 								if (((WorkbenchUser) itemId).isEnabled()) {
 									source.removeItem(itemId);
@@ -305,12 +292,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 							if (itemIdOver != null && (sourceItemIds.isEmpty() || selectedItemIsDisabled)) {
 								if (((WorkbenchUser) itemIdOver).isEnabled()) {
 									final List<UserRole> userRoles = new ArrayList<>();
-									UserRole userRole = new UserRole();
-									userRole.setRole(roleSelected);
-									userRole.setUser((WorkbenchUser) itemIdOver);
-									userRole.setWorkbenchProject(ProgramMembersPanel.this.project);
-									userRole.setCropType(ProgramMembersPanel.this.project.getCropType());
-									userRoles.add(userRole);
+									userRoles.add(ProgramMembersPanel.this.createUserRole(roleSelected, (WorkbenchUser) itemIdOver));
 									((WorkbenchUser) itemIdOver).setRoles(userRoles);
 									source.removeItem(itemIdOver);
 									target.addItem(itemIdOver);
@@ -387,6 +369,25 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 				return AbstractSelect.AcceptItem.ALL;
 			}
 		});
+	}
+
+	private Role getRoleSelected() {
+		Integer roleId = (Integer) ProgramMembersPanel.this.getRoleSelectionWindow().getRolesComboBox().getValue();
+		for (final Role role : ProgramMembersPanel.this.getRoles()) {
+			if (role.getId().equals(roleId)) {
+				return role;
+			}
+		}
+		return null;
+	}
+
+	private UserRole createUserRole(final Role roleSelected, final WorkbenchUser workbenchUser) {
+		UserRole userRole = new UserRole();
+		userRole.setRole(roleSelected);
+		userRole.setUser(workbenchUser);
+		userRole.setWorkbenchProject(ProgramMembersPanel.this.project);
+		userRole.setCropType(ProgramMembersPanel.this.project.getCropType());
+		return userRole;
 	}
 
 	final Action actionAddToProgramMembers = new Action("Add Selected Items");
@@ -470,14 +471,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 					@Override
 					public void buttonClick(ClickEvent event) {
 
-						Role roleSelected = null;
-						Integer roleId = (Integer) ProgramMembersPanel.this.getRoleSelectionWindow().getRolesComboBox().getValue();
-						for (Role role : ProgramMembersPanel.this.getRoles()) {
-							if (role.getId().equals(roleId)) {
-								roleSelected = role;
-								break;
-							}
-						}
+						final Role roleSelected =  ProgramMembersPanel.this.getRoleSelected();
 
 						if (roleSelected == null) {
 							MessageNotifier.showWarning(ProgramMembersPanel.this.getWindow(), "Assign Role error",
@@ -490,12 +484,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 							if (((WorkbenchUser) itemId).isActive() && ((WorkbenchUser) itemId).isEnabled()) {
 								((WorkbenchUser) itemId).setActive(false);
 								final List<UserRole> userRoles = new ArrayList<>();
-								UserRole userRole = new UserRole();
-								userRole.setRole(roleSelected);
-								userRole.setWorkbenchProject(ProgramMembersPanel.this.project);
-								userRole.setCropType(ProgramMembersPanel.this.project.getCropType());
-								userRole.setUser((WorkbenchUser) itemId);
-								userRoles.add(userRole);
+								userRoles.add(ProgramMembersPanel.this.createUserRole(roleSelected, (WorkbenchUser) itemId));
 								((WorkbenchUser) itemId).setRoles(userRoles);
 								ProgramMembersPanel.this.getSelect().getTableRight().addItem(itemId);
 								ProgramMembersPanel.this.getSelect().getTableLeft().removeItem(itemId);
