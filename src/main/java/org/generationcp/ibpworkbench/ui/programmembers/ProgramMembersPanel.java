@@ -656,8 +656,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 			@Override
 			public void buttonClick(final ClickEvent event) {
-				ProgramMembersPanel.this.initializeValues();
-				ProgramMembersPanel.this.initializeUsers();
+				ProgramMembersPanel.this.assemble();
 			}
 		});
 	}
