@@ -55,7 +55,7 @@
 
 			$scope.formGroupClass = formUtilities.formGroupClassGenerator($scope, 'afForm');
 
-            $scope.insertTrait = function(variableName) {
+            $scope.insertVariable = function(variableName) {
 
                 var contentEditableDivLength = $scope.extractTextFromHtml('contentEditableDiv').length;
                 var variableToken = '{{' + variableName + '}}';

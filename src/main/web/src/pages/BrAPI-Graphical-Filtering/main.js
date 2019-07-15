@@ -30,6 +30,9 @@ $(document).ready(function () {
 	loadLocations().then(function (response) {
 		buildLocationsCombo(response);
 	});
+	loadObservationLevels().then(function (response) {
+		buildObservationLevelsCombo(response);
+	});
 	loadTrials();
 });
 
@@ -59,6 +62,34 @@ function buildLocationsCombo(response) {
 			+ '</option>';
 	}));
 	$('#locations select').select2({containerCss: {width: '100%'}});
+}
+
+
+function loadObservationLevels() {
+
+	var url = "/bmsapi/" + getUrlParameter("crop") + "/brapi/v1/observationLevels";
+
+	return $.get({
+		dataType: "json",
+		contentType: "application/json;charset=utf-8",
+		url: url,
+		beforeSend: beforeSend,
+		error: error
+	});
+}
+
+
+function buildObservationLevelsCombo(response) {
+	if (!response
+		|| !response.result
+		|| !response.result.data) {
+		return;
+	}
+
+	$('#observationLevels').html('<select class="form-control" name="observationLevel"></select>');
+	$('#observationLevels select').append(response.result.data.map(function (observationLevel) {
+		return '<option value="' + observationLevel + '">' + observationLevel + '</option>';
+	}));
 }
 
 function loadTrials() {
