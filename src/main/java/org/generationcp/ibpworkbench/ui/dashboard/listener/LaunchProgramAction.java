@@ -16,6 +16,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Window;
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.security.SecurityUtil;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
@@ -30,12 +31,17 @@ import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategory;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategoryLink;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.generationcp.middleware.service.api.permission.PermissionService;
 import org.generationcp.middleware.service.api.permission.PermissionServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
@@ -120,6 +126,8 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 					// page change to list manager, with parameter passed
 					LaunchProgramAction.this.launchListManagerToolAction.onAppLaunch(window);
 
+					reloadAuthorities(project);
+
 				}
 			});
 		} catch (final InternationalizableException e) {
@@ -130,6 +138,31 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 			MessageNotifier.showError(window, "", e.getLocalizedMessage());
 
 		}
+	}
+
+	// Workaround to reload authorities per program
+	private void reloadAuthorities(final Project project) {
+		final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+		final String cropName = project.getCropType().getCropName();
+		final Integer programId = project.getProjectId().intValue();
+
+		final WorkbenchUser currentUser = contextUtil.getCurrentWorkbenchUser();
+
+		new TransactionTemplate(this.transactionManager).execute(new TransactionCallbackWithoutResult() {
+
+			@Override
+			protected void doInTransactionWithoutResult(final TransactionStatus status) {
+				final List<GrantedAuthority> authorities = new ArrayList<>( //
+					SecurityUtil.getAuthorities(permissionService.getPermissions( //
+						currentUser.getUserid(), //
+						cropName, //
+						programId)));
+
+				final Authentication newAuth = new UsernamePasswordAuthenticationToken(auth.getPrincipal(), auth.getCredentials(), authorities);
+				SecurityContextHolder.getContext().setAuthentication(newAuth);
+			}
+		});
 	}
 
 	final Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> getSidebarMenu(
