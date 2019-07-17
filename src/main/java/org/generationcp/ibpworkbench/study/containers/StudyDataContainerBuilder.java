@@ -26,7 +26,6 @@ import org.generationcp.middleware.domain.dms.StudySearchMatchingOption;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableList;
 import org.generationcp.middleware.domain.dms.VariableTypeList;
-import org.generationcp.middleware.domain.search.StudyResultSet;
 import org.generationcp.middleware.domain.search.filter.BrowseStudyQueryFilter;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -209,15 +208,12 @@ public class StudyDataContainerBuilder {
 			filter.setStartDate(date);
 			filter.setStudySearchMatchingOption(studySearchMatchingOption);
 			filter.setProgramUUID(this.contextUtil.getCurrentProgramUUID());
-			final StudyResultSet studyResultSet = this.studyDataManager.searchStudies(filter, 50);
+			final List<StudyReference> studyReferences = this.studyDataManager.searchStudies(filter);
 
-			if (studyResultSet != null) {
-				while (studyResultSet.hasMore()) {
-					final StudyReference studyRef = studyResultSet.next();
-					if (mapChecker.get(studyRef.getId().toString()) == null) {
-						mapChecker.put(studyRef.getId().toString(), studyRef);
-						this.addStudyDataToContainer(container, studyRef.getId(), studyRef.getName());
-					}
+			for (final StudyReference studyRef : studyReferences) {
+				if (mapChecker.get(studyRef.getId().toString()) == null) {
+					mapChecker.put(studyRef.getId().toString(), studyRef);
+					this.addStudyDataToContainer(container, studyRef.getId(), studyRef.getName());
 				}
 			}
 		} catch (final MiddlewareQueryException e) {
