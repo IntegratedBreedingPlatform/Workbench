@@ -15,7 +15,6 @@ import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.dms.ProgramFavorite;
 import org.generationcp.middleware.pojos.workbench.CropType;
-import org.generationcp.middleware.pojos.workbench.IbdbUserMap;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
@@ -90,7 +89,7 @@ public class ProgramServiceTest {
 	private User cropUser;
 
 	@Before
-	public void setup() throws Exception {
+	public void setup() {
 
 		Mockito.when(this.request.getSession()).thenReturn(this.httpSession);
 		Mockito.when(this.cookie.getName()).thenReturn(ContextConstants.PARAM_AUTH_TOKEN);
@@ -180,59 +179,6 @@ public class ProgramServiceTest {
 	}
 
 	@Test
-	public void testCreateCropPersonIfNecessaryWhenPersonIsExisting() {
-		// Call method to test
-		final Person result = this.programService.createCropPersonIfNecessary(this.loggedInPerson);
-
-		Mockito.verify(this.userDataManager, Mockito.times(0)).addPerson(ArgumentMatchers.any(Person.class));
-		Assert.assertSame(result, this.loggedInPerson);
-
-	}
-
-	@Test
-	public void testCreateCropPersonIfNecessaryWhenPersonIsNotExisting() {
-		// Returning null means person does not exist yet
-		Mockito.when(this.userDataManager.getPersonByEmail(this.loggedInPerson.getEmail())).thenReturn(null);
-
-		// Call method to test
-		final Person result = this.programService.createCropPersonIfNecessary(this.loggedInPerson);
-
-		Mockito.verify(this.userDataManager, Mockito.times(1)).addPerson(ArgumentMatchers.any(Person.class));
-		Assert.assertNotSame(result, this.loggedInPerson);
-		Assert.assertEquals(result.getFirstName(), this.loggedInPerson.getFirstName());
-		Assert.assertEquals(result.getLastName(), this.loggedInPerson.getLastName());
-
-	}
-
-	@Test
-	public void testCreateCropUserIfNecessaryWhenUserIsExisting() {
-		// Call method to test
-		final User user = this.programService.createCropUserIfNecessary(this.loggedInUser, this.loggedInPerson);
-
-		Mockito.verify(this.userDataManager, Mockito.times(0)).addUser(ArgumentMatchers.any(User.class));
-		Assert.assertSame(this.cropUser, user);
-	}
-
-	@Test
-	public void testCreateCropUserIfNecessaryWhenUserIsNotExisting() {
-		// Returning null means user does not exist yet
-		Mockito.when(this.userDataManager.getUserByUserName(this.loggedInUser.getName())).thenReturn(null);
-
-		// Call method to test
-		final User user = this.programService.createCropUserIfNecessary(this.loggedInUser, this.memberPerson);
-
-		Mockito.verify(this.userDataManager, Mockito.times(1)).addUser(ArgumentMatchers.any(User.class));
-
-		Assert.assertEquals(this.memberPerson.getId(), user.getPersonid());
-		Assert.assertEquals(Integer.valueOf(ProgramService.PROJECT_USER_ACCESS_NUMBER), user.getAccess());
-		Assert.assertEquals(Integer.valueOf(ProgramService.PROJECT_USER_TYPE), user.getType());
-		Assert.assertEquals(Integer.valueOf(0), user.getInstalid());
-		Assert.assertEquals(Integer.valueOf(ProgramService.PROJECT_USER_STATUS), user.getStatus());
-		Assert.assertNotNull(user.getAssignDate());
-
-	}
-
-	@Test
 	public void testUpdateMembersUserInfo() {
 		final List<Integer> userIds = new ArrayList<>();
 		userIds.addAll(Arrays.asList(1, 2, 3));
@@ -263,20 +209,6 @@ public class ProgramServiceTest {
 		final List<Integer> removedUserIds = this.programService.getRemovedUserIds(1, userList);
 		Assert.assertEquals(1, removedUserIds.size());
 		Assert.assertEquals("2", removedUserIds.get(0).toString());
-	}
-
-	@Test
-	public void testSaveWorkbenchUserToCropUserMapping() {
-
-		final Project project = this.createProject();
-		final Set<WorkbenchUser> users = new HashSet<>();
-		users.add(this.loggedInUser);
-
-		// Call method to test
-		this.programService.saveWorkbenchUserToCropUserMapping(project, users);
-
-		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).addIbdbUserMap(ArgumentMatchers.any(IbdbUserMap.class));
-
 	}
 
 	@Test
@@ -330,10 +262,6 @@ public class ProgramServiceTest {
 
 	// Verify Middleware methods to save as program members were called
 	private void verifyMockInteractionsForSavingProgramMembers() {
-		// Verify Ibdb_user_map is added for both current, member and SUPERADMIN
-		// user
-		Mockito.verify(this.workbenchDataManager, Mockito.times(3)).addIbdbUserMap(ArgumentMatchers.any(IbdbUserMap.class));
-
 		// Verify Workbench_project_user_info records are created
 		Mockito.verify(this.workbenchDataManager, Mockito.times(3))
 				.saveOrUpdateProjectUserInfo(ArgumentMatchers.any(ProjectUserInfo.class));
@@ -362,7 +290,9 @@ public class ProgramServiceTest {
 		final WorkbenchUser loggedInUser = new WorkbenchUser();
 		loggedInUser.setUserid(userId);
 		loggedInUser.setName(username);
-		loggedInUser.setPersonid(personId);
+		final Person person = new Person();
+		person.setId(personId);
+		loggedInUser.setPerson(person);
 		return loggedInUser;
 	}
 
