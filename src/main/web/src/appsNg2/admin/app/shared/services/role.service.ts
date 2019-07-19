@@ -5,6 +5,9 @@ import { Role } from './../models/role.model';
 import { RoleFilter } from './../models/role-filter.model';
 import ServiceHelper from './service.helper';
 import { SERVER_API_URL } from '../../app.constants';
+import { Crop } from '../models/crop.model';
+import { Program } from '../models/program.model';
+import { RoleType } from '../models/role-type.model';
 
 @Injectable()
 export class RoleService{
@@ -16,8 +19,22 @@ export class RoleService{
       this.http = http;
   }
 
+  getRoleTypes(){
+    return this.http.get(`${this.baseUrl}/role-types`,{ headers: this.getHeaders() }).map(response => this.mapRoleType(response));
+  }
+
+  getCrops(): Observable<Crop[]> {
+    return this.http.get(`${this.baseUrl}/crop/list`,{ headers: this.getHeaders() }).map(response => this.mapCrop(response));
+
+  }
+
+  getPrograms(cropName: string){
+    return this.http.get(`${this.baseUrl}/program?cropName=${cropName}`,{ headers: this.getHeaders() }).map(response => this.mapProgram(response));
+
+  }
+
   getFilteredRoles(roleFilter: RoleFilter): Observable<Role[]> {
-    let headers = this.getHeaders()
+    let headers = this.getHeaders();
     headers.append('Content-Type', 'application/json');
 
     let Roles$ = this.http
@@ -29,11 +46,33 @@ export class RoleService{
   private getHeaders(){
       return ServiceHelper.getHeaders();
   }
+
+  private mapRoleType(response: Response): Program[] {
+    return response.json().map(toRoleType);
+  }
+
+  private mapCrop(response: Response): Crop[] {
+    return response.json().map(toCrop);
+  }
+
+  private mapProgram(response: Response): Program[] {
+    return response.json().map(toProgram);
+  }
+
 }
+
 
 
 function mapRoles(response:Response): Role[]{
    return response.json().map(toRole)
+}
+
+function toRoleType(r:any): RoleType{
+  let roleType = <RoleType>({
+    id: r.id,
+    name: r.name
+  });
+  return roleType;
 }
 
 function toRole(r:any): Role{
@@ -43,6 +82,22 @@ function toRole(r:any): Role{
     type: r.type
   });
   return Role;
+}
+
+function toCrop(r:any): Crop{
+  let crop = <Crop>({
+    cropName: r.cropName
+  });
+  return crop;
+}
+
+function toProgram(r: any): Program {
+  let Program = <Program>({
+    id: r.id,
+    name: r.name,
+    crop: r.crop
+  });
+  return Program;
 }
 
 function mapRole(response:Response): Role{
