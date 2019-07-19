@@ -60,7 +60,7 @@
                 <label for="userRoles" class="col-sm-3 control-label">Role(s)</label>
                 <div class="col-sm-9">
                     <div>
-                        <a href="">+ Assign role</a>
+                        <a (click)="AssignRole()">+ Assign role</a>
                     </div>
                     <div *ngIf="model.userRoles?.length > 0">
                         <table id="userRoles" class="table table-striped">

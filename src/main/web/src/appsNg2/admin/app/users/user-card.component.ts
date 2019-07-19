@@ -9,6 +9,7 @@ import { Role } from './../shared/models/role.model';
 import { Response } from '@angular/http';
 import { Crop } from '../shared/models/crop.model';
 import { Select2OptionData } from 'ng2-select2';
+import { ModalContext } from '../shared/components/dialog/modal.context';
 
 @Component({
     selector: 'user-card',
@@ -51,7 +52,7 @@ export class UserCard implements OnInit {
         theme: 'classic'
     };
 
-    constructor(private userService: UserService, private roleService: RoleService, private mailService: MailService) {
+    constructor(private userService: UserService, private roleService: RoleService, private mailService: MailService, private modalContext: ModalContext) {
         // New empty user is built to open a form with empty default values
         // id, firstName, lastName, username, role, email, status
         this.model = new User('0', '', '', '', [], [], '', 'true');
@@ -125,6 +126,16 @@ export class UserCard implements OnInit {
                 error => {
                     this.errorUserMessage = this.mapErrorUser(error.json().ERROR.errors);
                 });
+    }
+
+    AssignRole() {
+        this.modalContext.popupVisible['assign-roles'] = true;
+        if (this.modalContext.popupVisible['user-create']) {
+            this.modalContext.popupVisible['user-create'] = false;
+        } else {
+            this.modalContext.popupVisible['user-edit'] = false;
+        }
+        // this.showAddRoleDialog = true;
     }
 
     private mapErrorUser(response: any): string {
