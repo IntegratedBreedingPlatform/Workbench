@@ -26,10 +26,12 @@ export class UserRoleCard implements OnInit {
     roleSelected: Role;
     cropSelected = '';
     programSelected = '';
+    isRoleNameComboDisable: boolean = true;
+    isCropComboDisable: boolean = true;
+    isProgramComboDisable: boolean = true;
     @Input() model: User;
     @Input() modalPrevius: string;
     onCancel = new EventEmitter<void>();
-
 
     constructor(private roleService: RoleService, private modalContext: ModalContext) {
         this.roleService.getRoleTypes().subscribe(resp => {
@@ -39,31 +41,48 @@ export class UserRoleCard implements OnInit {
     }
 
     cancel() {
+        this.resetCombo();
         this.modalContext.popupVisible["assign-roles"] = false;
         this.modalContext.popupVisible[this.modalPrevius] = true;
     }
 
     changeRole() {
+        if (this.roleTypeSelected === undefined) {
+            this.isRoleNameComboDisable = true;
+            this.isCropComboDisable = true;
+            this.isProgramComboDisable = true;
+            return
+        }
+
         let roleFilter = new RoleFilter([], true, this.roleTypeSelected);
         this.roleService.getFilteredRoles(roleFilter).subscribe(resp => {
                 this.roles = resp;
+                this.crops = this.model.crops;
 
                 console.log('Select Role Type ' + this.roleTypeSelected);
                 this.programs = [];
-                this.resetCombo();
+                this.roleSelected = undefined;
+                this.cropSelected = '';
+                this.programSelected = '';
+                this.isRoleNameComboDisable = false;
                 switch (Number(this.roleTypeSelected)) {
 
                     case 1:
                         console.log('Debe habilitar No habilita Crop y program');
                         this.cropSelected = '';
                         this.programSelected = '';
+                        this.isCropComboDisable = true;
+                        this.isProgramComboDisable = true;
                         break;
                     case 2:
                         console.log('Debe habilitar Crop');
-                        this.crops = this.model.crops;
+                        this.isCropComboDisable = false;
+                        this.isProgramComboDisable = true;
                         break;
                     case 3:
                         console.log('Debe habilitar Crop, program');
+                        this.isCropComboDisable = false;
+                        this.isProgramComboDisable = false;
                         break;
                 }
 
@@ -71,12 +90,14 @@ export class UserRoleCard implements OnInit {
         );
     }
 
-    resetCombo(){
+    resetCombo() {
+        this.roleTypeSelected = undefined;
         this.roleSelected = undefined;
         this.cropSelected = '';
         this.programSelected = '';
     }
     assignRole() {
+        this.resetCombo();
         this.modalContext.popupVisible["assign-roles"] = false;
     }
 

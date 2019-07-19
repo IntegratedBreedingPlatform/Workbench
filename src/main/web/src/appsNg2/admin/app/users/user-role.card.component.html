@@ -23,7 +23,7 @@
 					<label class="control-label add_top_padding label-bold">Role name:<span class="mandatory-asterisk"></span></label>
 				</div>
 				<div class="col-xs-7 col-md-7">
-					<select class="form-control" id="roleNameCombo" [(ngModel)]="roleSelected">
+					<select class="form-control" id="roleNameCombo" [(ngModel)]="roleSelected" [disabled]="isRoleNameComboDisable">
 						<option value="undefined">Please select a role</option>
 						<option *ngFor="let role of roles" [value]="role">{{role.name}}</option>
 					</select>
@@ -34,7 +34,7 @@
 					<label class="control-label add_top_padding label-bold">Crop:<span class="mandatory-asterisk"></span></label>
 				</div>
 				<div class="col-xs-7 col-md-7">
-					<select class="form-control" id="cropCombo" [(ngModel)]="cropSelected" (ngModelChange)="changeCrop()">
+					<select class="form-control" id="cropCombo" [(ngModel)]="cropSelected" (ngModelChange)="changeCrop()" [disabled]="isCropComboDisable">
 						<option value="">Please select a crop</option>
 						<option *ngFor="let crop of crops" [value]="crop.cropName">{{crop.cropName}}</option>
 					</select>
@@ -45,7 +45,7 @@
 					<label class="control-label add_top_padding label-bold">Program:<span class="mandatory-asterisk"></span></label>
 				</div>
 				<div class="col-xs-7 col-md-7">
-					<select class="form-control" id="programCombo" [(ngModel)]="programSelected">
+					<select class="form-control" id="programCombo" [(ngModel)]="programSelected" [disabled]="isProgramComboDisable">
 						<option value="">Please select a program</option>
 						<option *ngFor="let program of programs" [value]="program">{{program.name}}</option>
 					</select>
