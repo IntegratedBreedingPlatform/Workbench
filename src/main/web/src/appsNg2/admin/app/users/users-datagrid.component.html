@@ -19,6 +19,7 @@
                      [crops]="crops | toSelect2OptionData"
                      [selectedCropIds]="user.crops | toSelect2OptionId"></user-card>
       </app-dialog>
+      <user-role-card [model]="user" [modalPrevius]="modalPrevious"></user-role-card>
   </div>
   <div class="om-panel-header">
         <h2 class="om-panel-title ">
