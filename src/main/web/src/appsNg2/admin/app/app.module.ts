@@ -8,6 +8,7 @@ import { Dialog } from './shared/components/dialog/dialog.component';
 import { ErrorNotification } from './shared/components/notify/error-notification.component';
 import { PaginationComponent } from './shared/components/datagrid/pagination.component';
 import { ToSelect2OptionDataPipe, ToSelect2OptionIdPipe, UserCard } from './users/user-card.component';
+import { UserRoleCard } from './users/user-role.card.component';
 import { SiteAdminHeader } from './shared/components/header/site-admin-header.component';
 import { UsersAdmin } from './users/index';
 
@@ -19,6 +20,7 @@ import { Principal } from './shared/auth/principal.service';
 import { AppRoutingModule } from './app-routing.module';
 import { ErrorComponent } from './layouts/error/error.component';
 import { AccountService } from './shared/auth/account.service';
+import { ModalContext } from './shared/components/dialog/modal.context';
 
 @NgModule({
   imports: [BrowserModule, HttpModule, FormsModule, Select2Module, CommonModule, AppRoutingModule],
@@ -32,6 +34,7 @@ import { AccountService } from './shared/auth/account.service';
     ErrorComponent,
     PaginationComponent,
     UserCard,
+    UserRoleCard,
     SiteAdminHeader,
     UsersAdmin,
     ToSelect2OptionDataPipe,
@@ -40,7 +43,8 @@ import { AccountService } from './shared/auth/account.service';
   providers: [
       UserRouteAccessService,
       Principal,
-      AccountService
+      AccountService,
+      ModalContext
   ],
   bootstrap: [AppComponent]
 })
