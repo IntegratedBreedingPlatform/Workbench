@@ -9,6 +9,7 @@ import { UserCard } from './user-card.component';
 import { UserComparator } from './user-comparator.component';
 import { Crop } from '../shared/models/crop.model';
 import { CropService } from '../shared/services/crop.service';
+import { ModalContext } from '../shared/components/dialog/modal.context';
 
 @Component({
     selector: 'users-datagrid',
@@ -22,8 +23,6 @@ import { CropService } from '../shared/services/crop.service';
 export class UsersDatagrid implements OnInit {
 
     errorServiceMessage: string = '';
-    showNewDialog = false;
-    showEditDialog = false;
     isEditing = false;
     dialogTitle: string;
     showConfirmStatusDialog = false;
@@ -33,6 +32,7 @@ export class UsersDatagrid implements OnInit {
     confirmMessage: string = 'Please confirm that you would like to deactivate/activate this user account.';
     user: User;
     originalUser: User;
+    modalPrevious: string;
 
     public roles: Role[];
     public userSelected: User;
@@ -40,10 +40,13 @@ export class UsersDatagrid implements OnInit {
 
     constructor(private userService: UserService,
                 private roleService: RoleService,
-                private cropService: CropService) {
+                private cropService: CropService,private modalContext: ModalContext) {
         // TODO migrate to angular datatables
         this.table = new NgDataGridModel<User>([], 25, new UserComparator(), <User>{ status: 'true' });
         this.initUser();
+        this.modalContext.popupVisible["user-create"] = false;
+        this.modalContext.popupVisible["user-edit"] = false;
+        this.modalContext.popupVisible["assign-roles"] = false;
     }
 
     showNewUserForm(userCreateCard: UserCard) {
@@ -52,7 +55,8 @@ export class UsersDatagrid implements OnInit {
         userCreateCard.initialize(false);
 
         this.dialogTitle = 'Add User';
-        this.showNewDialog = true;
+        this.modalContext.popupVisible["user-create"] = true;
+        this.modalPrevious = 'user-create';
     }
 
     showEditUserForm(user: User, userEditCard: UserCard) {
@@ -62,7 +66,8 @@ export class UsersDatagrid implements OnInit {
         this.user = new User(user.id, user.firstName, user.lastName,
             user.username, user.crops, user.userRoles, user.email, user.status);
         userEditCard.initialize(true);
-        this.showEditDialog = true;
+        this.modalContext.popupVisible["user-edit"] = true;
+        this.modalPrevious = 'user-edit';
     }
 
     initUser() {
@@ -103,7 +108,7 @@ export class UsersDatagrid implements OnInit {
     }
 
     onUserAdded(user: User) {
-        this.showNewDialog = false;
+        this.modalContext.popupVisible["user-create"] = false;
         this.table.items.push(user);
         this.sortAfterAddOrEdit();
     }
@@ -117,7 +122,7 @@ export class UsersDatagrid implements OnInit {
     }
 
     onUserEdited(user: User) {
-        this.showEditDialog = false;
+        this.modalContext.popupVisible["user-edit"] = false;
         this.table.items.remove(this.originalUser);
         this.table.items.push(user);
         this.sortAfterAddOrEdit();

@@ -3,17 +3,17 @@
       <button class="btn btn-default om-add-new-btn form-group pull-right"
               (click)="showNewUserForm(userCreateCard)">Add user
       </button>
-      <app-dialog [(visible)]="showNewDialog" [title]="dialogTitle">
+      <app-dialog [(visible)]="modalContext.popupVisible['user-create']" [title]="dialogTitle">
           <user-card #userCreateCard (onUserAdded)="onUserAdded($event)"
                      [model]="user"
                      [roles]="roles"
-                     (onCancel)="showNewDialog = false"
+                     (onCancel)="modalContext.popupVisible['user-create'] = false"
                      [crops]="crops | toSelect2OptionData"
                      [selectedCropIds]="user.crops | toSelect2OptionId"></user-card>
       </app-dialog>
-      <app-dialog [(visible)]="showEditDialog" [title]="dialogTitle">
+      <app-dialog [(visible)]="modalContext.popupVisible['user-edit']" [title]="dialogTitle">
           <user-card #userEditCard (onUserEdited)="onUserEdited($event)"
-                     (onCancel)="showEditDialog = false"
+                     (onCancel)="modalContext.popupVisible['user-edit'] = false"
                      [model]="user"
                      [roles]="roles"
                      [crops]="crops | toSelect2OptionData"
