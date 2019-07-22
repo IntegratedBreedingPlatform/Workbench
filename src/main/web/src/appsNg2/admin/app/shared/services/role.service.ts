@@ -19,7 +19,7 @@ export class RoleService{
       this.http = http;
   }
 
-  getRoleTypes(){
+  getRoleTypes(): Observable<RoleType[]>{
     return this.http.get(`${this.baseUrl}/role-types`,{ headers: this.getHeaders() }).map(response => this.mapRoleType(response));
   }
 
@@ -47,7 +47,7 @@ export class RoleService{
       return ServiceHelper.getHeaders();
   }
 
-  private mapRoleType(response: Response): Program[] {
+  private mapRoleType(response: Response): RoleType[] {
     return response.json().map(toRoleType);
   }
 
