@@ -21,6 +21,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { ErrorComponent } from './layouts/error/error.component';
 import { AccountService } from './shared/auth/account.service';
 import { ModalContext } from './shared/components/dialog/modal.context';
+import { RolesAdmin } from './roles/roles-admin.component';
+import { SiteAdminComponent } from './site-admin.component';
 
 @NgModule({
   imports: [BrowserModule, HttpModule, FormsModule, Select2Module, CommonModule, AppRoutingModule],
@@ -36,7 +38,9 @@ import { ModalContext } from './shared/components/dialog/modal.context';
     UserCard,
     UserRoleCard,
     SiteAdminHeader,
+    SiteAdminComponent,
     UsersAdmin,
+    RolesAdmin,
     ToSelect2OptionDataPipe,
     ToSelect2OptionIdPipe
   ],

@@ -1,11 +1,13 @@
 import { Routes } from '@angular/router';
 import { UsersAdmin } from './users/index';
 import { UserRouteAccessService } from './shared/auth/user-route-access-service';
+import { RolesAdmin } from './roles/roles-admin.component';
+import { SiteAdminComponent } from './site-admin.component';
 
 export const routes: Routes = [
     {
         path: '',
-        redirectTo: '/users-admin',
+        redirectTo: '/site-admin/users-admin',
         pathMatch: 'full',
         data: {
             authorities: ['SUPERADMIN', 'ADMIN', 'ADMINISTRATION', 'SITE_ADMIN']
@@ -13,11 +15,29 @@ export const routes: Routes = [
         canActivate: [UserRouteAccessService]
     },
     {
-        path: 'users-admin',
-        component: UsersAdmin,
+        path: 'site-admin',
+        component: SiteAdminComponent,
         data: {
             authorities: ['SUPERADMIN', 'ADMIN', 'ADMINISTRATION', 'SITE_ADMIN']
         },
-        canActivate: [UserRouteAccessService]
+        canActivate: [UserRouteAccessService],
+        children: [
+            {
+                path: 'users-admin',
+                component: UsersAdmin,
+                data: {
+                    authorities: ['SUPERADMIN', 'ADMIN', 'ADMINISTRATION', 'SITE_ADMIN']
+                },
+                canActivate: [UserRouteAccessService]
+            },
+            {
+                path: 'roles-admin',
+                component: RolesAdmin,
+                data: {
+                    authorities: ['SUPERADMIN', 'ADMIN', 'ADMINISTRATION', 'SITE_ADMIN']
+                },
+                canActivate: [UserRouteAccessService]
+            }
+        ]
     }
 ];
