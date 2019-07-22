@@ -5,10 +5,11 @@ import { Role } from './role.model';
 
 export class UserRole {
 
-    constructor(public id: string,
+    constructor(public id: number,
                 public role: Role,
                 public crop: Crop,
-                public program: Program) {
+                public program: Program,
+                public createdBy: number) {
 
     }
 }

@@ -1,5 +1,5 @@
 import { Crop } from './crop.model';
-import { UserRole } from './userrole.model';
+import { UserRole } from './user-role.model';
 
 export class User {
 	// transient field for easy sorting and filtering

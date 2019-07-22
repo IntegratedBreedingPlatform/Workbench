@@ -1,8 +1,11 @@
 export class Role {
 
-    constructor(public id: string,
+    constructor(public id: number,
                 public name: string,
-                public type: string) {
-
+                public description: string,
+                public type: string,
+                public active: boolean,
+                public editable: boolean,
+                public assignable: boolean) {
     }
 }
