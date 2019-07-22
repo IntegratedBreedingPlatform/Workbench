@@ -76,12 +76,16 @@ function toRoleType(r:any): RoleType{
 }
 
 function toRole(r:any): Role{
-  let Role = <Role>({
+  let role = <Role>({
     id: r.id,
     name: r.name,
-    type: r.type
+    description: r.description,
+    type: r.roleType.name,
+    active: r.active,
+    editable: r.editable,
+    assignable: r.assignable
   });
-  return Role;
+  return role;
 }
 
 function toCrop(r:any): Crop{
@@ -95,7 +99,8 @@ function toProgram(r: any): Program {
   let Program = <Program>({
     id: r.id,
     name: r.name,
-    crop: r.crop
+    uuid: r.uniqueID,
+    crop: new Crop(r.crop)
   });
   return Program;
 }
