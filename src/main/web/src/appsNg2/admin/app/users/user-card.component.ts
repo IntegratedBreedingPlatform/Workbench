@@ -213,6 +213,11 @@ export class UserCard implements OnInit {
         return form.valid && this.model.crops.length;
     }
 
+    deleteRole(userRoleSelected: UserRole){
+        const userRole = this.model.userRoles.filter(userRole => userRole !== userRoleSelected);
+        this.model.userRoles = userRole;
+    }
+
 }
 
 @Pipe({name: 'toSelect2OptionData'})
