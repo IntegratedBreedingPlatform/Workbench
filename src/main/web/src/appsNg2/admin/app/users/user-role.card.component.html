@@ -56,7 +56,7 @@
 		<div class="modal-footer">
 			<button type="button" class="btn btn-default" (click)="cancel()">Cancel
 			</button>
-			<button type="button" class="btn btn-primary" (click)="assignRole()" aria-hidden="true">Assign role
+			<button type="button" class="btn btn-primary" (click)="assignRole()" [disabled]="isAssignRoleButtonDisable()" aria-hidden="true">Assign role
 			</button>
 		</div>
 	</div>

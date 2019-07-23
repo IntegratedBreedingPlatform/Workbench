@@ -129,6 +129,13 @@ export class UserRoleCard implements OnInit {
         }
     }
 
+    isAssignRoleButtonDisable() {
+        return !this.roleTypeSelected
+            || (this.roleTypeSelected === 1 && !this.roleSelected)
+            || (this.roleTypeSelected === 2 && (!this.roleSelected || !this.cropSelected))
+            || (this.roleTypeSelected === 3 && (!this.roleSelected || !this.cropSelected || !this.programSelected));
+    }
+
     isUserRoleValid(newUserRole: UserRole): boolean {
         this.errorUserRoleMessage = '';
         let errorMessage = '';
