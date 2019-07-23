@@ -51,6 +51,7 @@
 					</select>
 				</div>
 			</div>
+			<div [class]="errorClass" role="alert" *ngIf="errorUserRoleMessage">Errors: {{errorUserRoleMessage}}</div>
 		</div>
 		<div class="modal-footer">
 			<button type="button" class="btn btn-default" (click)="cancel()">Cancel

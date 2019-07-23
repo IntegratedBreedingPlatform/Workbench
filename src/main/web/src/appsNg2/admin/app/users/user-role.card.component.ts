@@ -19,6 +19,11 @@ import { UserRole } from '../shared/models/user-role.model';
 export class UserRoleCard implements OnInit {
 
     active: boolean = true;
+
+    errorClass: string = 'alert alert-danger';
+    errorUserRoleMessage: string = '';
+
+
     roleTypes: RoleType[];
     roles: Role[];
     crops: Crop[];
@@ -116,11 +121,38 @@ export class UserRoleCard implements OnInit {
                 break;
         }
 
-        this.model.userRoles.push(userRole);
-        this.reset();
-        this.modalContext.popupVisible['assign-roles'] = false;
-        this.modalContext.popupVisible[this.modalPrevius] = true;
+        if (this.isUserRoleValid(userRole)) {
+            this.model.userRoles.push(userRole);
+            this.reset();
+            this.modalContext.popupVisible['assign-roles'] = false;
+            this.modalContext.popupVisible[this.modalPrevius] = true;
+        }
+    }
 
+    isUserRoleValid(newUserRole: UserRole): boolean {
+        this.errorUserRoleMessage = '';
+        let errorMessage = '';
+        let result: UserRole[];
+        switch (Number(this.roleTypeSelected)) {
+            case 1:
+                result = this.model.userRoles.filter(userRole => userRole.role.type === newUserRole.role.type);
+                errorMessage = 'The user ' + this.model.username + ' has already assigned an Instance role.';
+                break;
+            case 2:
+                result = this.model.userRoles.filter(userRole => userRole.role.type === newUserRole.role.type && userRole.crop === newUserRole.crop);
+                errorMessage = 'The user ' + this.model.username + ' has already assigned a Crop role for ' + newUserRole.crop + ' crop.';
+                break;
+            case 3:
+                result = this.model.userRoles.filter(userRole => userRole.role.type === newUserRole.role.type && userRole.crop === newUserRole.crop && userRole.program === newUserRole.program);
+                errorMessage = 'The user ' + this.model.username + ' has already assigned a Program role for ' + newUserRole.program.name + ' program.';
+                break;
+        }
+
+        if (result.length > 0) {
+            this.errorUserRoleMessage = errorMessage;
+            return false;
+        }
+        return true;
     }
 
     ngOnInit() {
