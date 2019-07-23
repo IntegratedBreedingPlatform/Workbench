@@ -10,6 +10,7 @@ import { Response } from '@angular/http';
 import { Crop } from '../shared/models/crop.model';
 import { Select2OptionData } from 'ng2-select2';
 import { ModalContext } from '../shared/components/dialog/modal.context';
+import { UserRole } from '../shared/models/user-role.model';
 
 @Component({
     selector: 'user-card',
@@ -36,6 +37,9 @@ export class UserCard implements OnInit {
     @Output() onUserEdited = new EventEmitter<User>();
     @Output() onCancel = new EventEmitter<void>();
 
+    userRoles: UserRole[];
+    showDeleteUserRoleConfirmPopUpDialog = false;
+    userRoleSelected: UserRole;
     /*
      * TODO Multi-select:
      *  - ng2-select2 is a bit wonky -> find alternative
@@ -46,6 +50,9 @@ export class UserCard implements OnInit {
      */
     @Input() crops: Select2OptionData[];
     @Input() selectedCropIds: string[];
+
+    modalTitle: string = 'Delete Role';
+    modalMessage: string = 'Selected role will be dissociated from user. If it is a crop or program role, the user will no longer have access to the crop or program associated to the role. Do you want to proceed?';
 
     public select2Options = {
         multiple: true,
@@ -135,7 +142,6 @@ export class UserCard implements OnInit {
         } else {
             this.modalContext.popupVisible['user-edit'] = false;
         }
-        // this.showAddRoleDialog = true;
     }
 
     private mapErrorUser(response: any): string {
@@ -213,11 +219,21 @@ export class UserCard implements OnInit {
         return form.valid && this.model.crops.length;
     }
 
-    deleteRole(userRoleSelected: UserRole){
-        const userRole = this.model.userRoles.filter(userRole => userRole !== userRoleSelected);
-        this.model.userRoles = userRole;
+    showDeleteUserRoleConfirmPopUp(userRole: UserRole){
+        this.showDeleteUserRoleConfirmPopUpDialog = true;
+        this.userRoleSelected = userRole;
     }
 
+    closeUserRoleDeleteConfirmPopUp(){
+        this.showDeleteUserRoleConfirmPopUpDialog = false;
+    }
+
+    deleteUserRole(){
+        const idx = this.model.userRoles.indexOf(this.userRoleSelected);
+        this.model.userRoles.splice(idx, 1);
+        this.showDeleteUserRoleConfirmPopUpDialog = false;
+        this.userRoleSelected = undefined;
+    }
 }
 
 @Pipe({name: 'toSelect2OptionData'})

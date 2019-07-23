@@ -77,7 +77,7 @@
                                 <td>{{userRole.role.type}}</td>
                                 <td>{{userRole.crop?.cropName}}</td>
                                 <td>{{userRole.program?.name}}</td>
-                                <td><a href="javascript:void(0)" (click)="deleteRole(userRole)"><span class="glyphicon glyphicon-remove" style="color:red"></span></a></td>
+                                <td><a href="javascript:void(0)" (click)="showDeleteUserRoleConfirmPopUp(userRole)"><span class="glyphicon glyphicon-remove" style="color:red"></span></a></td>
                             </tr>
                             </tbody>
                         </table>
@@ -116,6 +116,22 @@
         </form>
         <div *ngIf="sendingEmail">
         <span class="throbber throbber-lg"></span>
+        </div>
+        <div class="popup">
+            <app-dialog [(visible)]="showDeleteUserRoleConfirmPopUpDialog" [title]="modalTitle">
+                <div class="modal-body">
+                    <div class="separator"></div>
+                    <form class="form-horizontal">
+                        <div class="popup-center-text">
+                            {{modalMessage}}
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" (click)="closeUserRoleDeleteConfirmPopUp()">No</button>
+                    <button type="button" class="btn btn-primary" (click)="deleteUserRole()">Yes</button>
+                </div>
+            </app-dialog>
         </div>
         <div [class]="errorClass" role="alert" *ngIf="errorUserMessage">Errors: {{errorUserMessage}}</div>
     </div>
