@@ -268,6 +268,11 @@
 		<property name="userTransaction" ref="atomikosUserTransaction" />
 	</bean>
 
+	<bean id="userService"
+		  class="org.generationcp.middleware.service.impl.user.UserServiceImpl">
+        <constructor-arg ref="workbenchHibernateSessionProvider" />
+    </bean>
+
 
 	<bean id="workbenchHibernateSessionProvider"
 		class="org.generationcp.middleware.hibernate.HibernateSessionPerRequestProvider">
