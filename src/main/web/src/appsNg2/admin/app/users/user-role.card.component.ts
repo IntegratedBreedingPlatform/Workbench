@@ -80,12 +80,10 @@ export class UserRoleCard implements OnInit {
                         this.isProgramComboDisable = true;
                         break;
                     case 2:
-                        console.log('Debe habilitar Crop');
                         this.isCropComboDisable = false;
                         this.isProgramComboDisable = true;
                         break;
                     case 3:
-                        console.log('Debe habilitar Crop, program');
                         this.isCropComboDisable = false;
                         this.isProgramComboDisable = false;
                         break;
