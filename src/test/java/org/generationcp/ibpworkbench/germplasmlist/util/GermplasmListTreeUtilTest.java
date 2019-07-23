@@ -70,7 +70,7 @@ public class GermplasmListTreeUtilTest {
 		MockitoAnnotations.initMocks(this);
 
 		this.setUpMessageSource();
-		Mockito.when(this.contextUtil.getCurrentUserLocalId()).thenReturn(GermplasmListTreeUtilTest.IBDB_USER_ID);
+		Mockito.when(this.contextUtil.getCurrentWorkbenchUserId()).thenReturn(GermplasmListTreeUtilTest.IBDB_USER_ID);
 		Mockito.doReturn(GermplasmListTreeUtilTest.PROGRAM_UUID).when(this.contextUtil).getCurrentProgramUUID();
 
 		this.util =
@@ -179,7 +179,7 @@ public class GermplasmListTreeUtilTest {
 	public void testValidateItemToDeleteThrowsExceptionIfGermplasmListIsNotOwnedByTheCurrentUser() {
 		this.setUpGermplasmListDataManager(GermplasmListTreeUtilTest.GERMPLASM_LIST_ID, true);
 
-		Mockito.when(this.contextUtil.getCurrentUserLocalId()).thenReturn(GermplasmListTreeUtilTest.OTHER_IBDB_USER_ID);
+		Mockito.when(this.contextUtil.getCurrentWorkbenchUserId()).thenReturn(GermplasmListTreeUtilTest.OTHER_IBDB_USER_ID);
 
 		try {
 			this.util.validateItemToDelete(GermplasmListTreeUtilTest.GERMPLASM_LIST_ID);
