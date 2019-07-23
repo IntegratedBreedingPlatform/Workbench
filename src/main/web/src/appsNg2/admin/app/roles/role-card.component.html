@@ -1,7 +1,94 @@
 <app-dialog [(visible)]="isVisible" [title]="'Create Role'">
 	<div class="modal-body">
-		<form class="form-horizontal" #form="ngForm" >
-			Role creation!!
+		<form class="form-horizontal" #form="ngForm">
+			<div class="form-group">
+				<div class="col-sm-12">
+					<span class="mandatory-asterisk"></span> Indicates a mandatory field
+				</div>
+			</div>
+			<div class="form-group required" [class.has-feedback]="!(roleName?.valid || roleName?.pristine)" [class.has-error]="!(roleName?.valid || roleName?.pristine)">
+				<label for="roleName" class="col-sm-3 control-label">Role name:</label>
+				<div class="col-sm-9">
+					<input type="text" class="form-control" [(ngModel)]="model.name" #roleName="ngModel" required name="roleName" id="roleName"
+						   placeholder="" maxlength="30">
+					<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+					<span class="sr-only">(error)</span>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="description" class="col-sm-3 control-label">Description:</label>
+				<div class="col-sm-9">
+					<input type="text" class="form-control" [(ngModel)]="model.description" #description="ngModel" name="description" id="description"
+						   placeholder="" maxlength="30">
+					<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+					<span class="sr-only">(error)</span>
+				</div>
+			</div>
+			<div class="row form-group required" [class.has-feedback]="!(roleTypeInput?.valid || roleTypeInput?.pristine)" [class.has-error]="!(roleTypeInput?.valid || roleTypeInput?.pristine)">
+				<label for="roleType" class="col-sm-3 control-label">Role type:</label>
+				<div class="col-xs-9 col-md-9">
+					<select class="form-control" [(ngModel)]="roleType" #roleTypeInput="ngModel" required name="roleType" id="roleType" (ngModelChange)="changeRoleType()">
+						<option value="">Please select a role type</option>
+						<option *ngFor="let roleType of roleTypes" [ngValue]="roleType.id">{{roleType.name}}</option>
+					</select>
+				</div>
+			</div>
+			<div class="row form-group">
+				<label for="roleName" class="col-sm-3 control-label">Permissions:</label>
+				<div class="col-xs-9 col-md-9">
+					<div style="display: flex">
+						<div class="">
+							<div class="panel panel-primary">
+								<div class="panel-heading">Available permissions</div>
+								<div class="panel-body">
+									<label>
+										<strong>
+											Crop management
+										</strong>
+									</label>
+									<div class="checkbox">
+										<label>
+											<input type="checkbox" value="">
+											Manage Ontologies
+										</label>
+										<label>
+											<input type="checkbox" value="">
+											Import germplasm
+										</label>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="column-item-transfer">
+							<span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span>
+							<span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>
+						</div>
+						<div class="">
+							<div class="panel panel-primary">
+								<div class="panel-heading">Available permissions</div>
+								<div class="panel-body">
+									<label>
+										<strong>
+											Crop management
+										</strong>
+									</label>
+									<div class="checkbox">
+										<label>
+											<input type="checkbox" value="">
+											Manage Ontologies
+										</label>
+										<label>
+											<input type="checkbox" value="">
+											Import germplasm
+										</label>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
 		</form>
 	</div>
 	<div class="modal-footer">

@@ -107,3 +107,15 @@ users-admin app-dialog div.modal-footer > .message {
     color:red;
     margin-left: 2px;
 }
+
+.column-item-transfer {
+    flex-direction: column;
+    justify-content: center;
+    display: flex;
+    margin: 0 5px;
+}
+.column-item-transfer > span {
+    padding-bottom: 10px;
+    font-size: 1.5em;
+    cursor: pointer;
+}
