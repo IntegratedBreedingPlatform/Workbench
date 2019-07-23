@@ -16,6 +16,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectActivity;
@@ -55,7 +56,7 @@ public class RestoreIBDBSaveActionTest {
 
 	@Mock
 	private File restoreFile;
-	
+
 	@Mock
 	private InstallationDirectoryUtil installationDirectoryUtil;
 
@@ -130,8 +131,6 @@ public class RestoreIBDBSaveActionTest {
 		// Setup another user (not the super admin) as current user
 		Mockito.when(this.contextUtil.getCurrentWorkbenchUserId()).thenReturn(this.loggedInUser.getUserid());
 		Mockito.when(this.contextUtil.getCurrentWorkbenchUser()).thenReturn(this.loggedInUser);
-		Mockito.when(this.workbenchDataManager.getLocalIbdbUserId(this.loggedInUser.getUserid(), this.currentProject.getProjectId()))
-				.thenReturn(this.loggedInUser.getUserid());
 
 		// Call method to test. True means user confirmed to continue restore operation
 		this.restoreAction.onClose(new CustomConfirmDialog(true));
@@ -142,7 +141,7 @@ public class RestoreIBDBSaveActionTest {
 		this.verifyCurrentUserWasAddedToAllPrograms(this.loggedInUser);
 		Mockito.verify(this.installationDirectoryUtil).resetWorkspaceDirectoryForCrop(this.currentProject.getCropType(), this.restoredProjects);
 		Mockito.verify(this.contextUtil).logProgramActivity(ArgumentMatchers.<String>isNull(), Mockito.anyString());
-		
+
 
 		Assert.assertFalse("Expecting not to have error since restore process was succesful.", this.restoreAction.isHasRestoreError());
 	}
@@ -153,8 +152,6 @@ public class RestoreIBDBSaveActionTest {
 		// Setup another user (not the default admin) as current user
 		Mockito.when(this.contextUtil.getCurrentWorkbenchUserId()).thenReturn(this.superAdminUser.getUserid());
 		Mockito.when(this.contextUtil.getCurrentWorkbenchUser()).thenReturn(this.superAdminUser);
-		Mockito.when(this.workbenchDataManager.getLocalIbdbUserId(this.superAdminUser.getUserid(), this.currentProject.getProjectId()))
-				.thenReturn(this.superAdminUser.getUserid());
 
 		// Call method to test. True means user confirmed to continue restore operation
 		this.restoreAction.onClose(new CustomConfirmDialog(true));
@@ -214,7 +211,9 @@ public class RestoreIBDBSaveActionTest {
 		final WorkbenchUser loggedInUser = new WorkbenchUser();
 		loggedInUser.setUserid(userId);
 		loggedInUser.setName(username);
-		loggedInUser.setPersonid(personId);
+		final Person person = new Person();
+		person.setId(personId);
+		loggedInUser.setPerson(person);
 		return loggedInUser;
 	}
 

@@ -2,23 +2,20 @@ package org.generationcp.ibpworkbench.ui.dashboard.listener;
 
 import java.util.Date;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.context.ContextInfo;
 import org.generationcp.commons.spring.util.ContextUtil;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
-import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
-import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,10 +46,10 @@ public class LaunchProgramActionTest {
 	private HttpServletRequest request;
 
 	@Mock
-	private WorkbenchDataManager workbenchDataManager;
+	private UserService userService;
 
 	@Mock
-	private ProjectUserInfoDAO projectUserInfoDAO;
+	private WorkbenchDataManager workbenchDataManager;
 
 	@Mock
 	private ContextUtil contextUtil;
@@ -85,19 +82,19 @@ public class LaunchProgramActionTest {
 		this.projectUserInfo.setUserId(LaunchProgramActionTest.USER_ID);
 
 		// Setup Mock objects to return
-		Mockito.doReturn(this.projectUserInfoDAO).when(this.workbenchDataManager).getProjectUserInfoDao();
-		Mockito.doReturn(this.projectUserInfo).when(this.projectUserInfoDAO).getByProjectIdAndUserId(Matchers.anyLong(), Matchers.anyInt());
+		Mockito.doReturn(this.projectUserInfo).when(this.userService).getProjectUserInfoByProjectIdAndUserId(Matchers.anyLong(), Matchers.anyInt());
 		Mockito.doReturn(LaunchProgramActionTest.USER_ID).when(this.contextUtil).getCurrentWorkbenchUserId();
-		
+
 		Mockito.when(this.request.getSession()).thenReturn(this.httpSession);
 	}
 
 	private void setMockDependenciesToTestModule() {
 		this.launchProgramAction.setTransactionManager(this.transactionManager);
-		this.launchProgramAction.setWorkbenchDataManager(this.workbenchDataManager);
+		this.launchProgramAction.setUserService(this.userService);
 		this.launchProgramAction.setLaunchWorkbenchToolAction(this.launchWorkbenchToolAction);
 		this.launchProgramAction.setContextUtil(this.contextUtil);
 		this.launchProgramAction.setRequest(this.request);
+		this.launchProgramAction.setWorkbenchDataManager(this.workbenchDataManager);
 	}
 
 	@Test
@@ -147,15 +144,15 @@ public class LaunchProgramActionTest {
 	}
 
 	/*
-	 * Verify from mock interactions that launch program processing was done on: 
-	 * 1. Check that session data was set, 
+	 * Verify from mock interactions that launch program processing was done on:
+	 * 1. Check that session data was set,
 	 * 2. Last open date for project user was updated,
-	 * 3. Sidebar and workbench header updated 
+	 * 3. Sidebar and workbench header updated
 	 * 4. List Manager was launched
 	 */
 	private void verifyMockInteractionsWhenOpeningProgram() {
 		Mockito.verify(this.window).addTitle(this.selectedProgram.getProjectName());
-		
+
 		// Verify session attribute was set
 		final ArgumentCaptor<Object> contextInfoCaptor = ArgumentCaptor.forClass(Object.class);
 		Mockito.verify(this.httpSession).setAttribute(Matchers.eq(ContextConstants.SESSION_ATTR_CONTEXT_INFO), contextInfoCaptor.capture());
@@ -163,7 +160,7 @@ public class LaunchProgramActionTest {
 		Assert.assertEquals(USER_ID.intValue(), contextInfo.getLoggedInUserId().intValue());
 		Assert.assertEquals(this.selectedProgram.getProjectId(), contextInfo.getSelectedProjectId());
 		Assert.assertNull(contextInfo.getAuthToken());
-		
+
 		this.verifyMockInteractionsForUpdatingProgram();
 		Mockito.verify(this.launchWorkbenchToolAction, Mockito.times(1)).onAppLaunch(this.window);
 	}

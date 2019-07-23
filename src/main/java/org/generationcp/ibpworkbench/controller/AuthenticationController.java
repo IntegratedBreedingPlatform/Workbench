@@ -17,10 +17,10 @@ import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.ibpworkbench.validator.ForgotPasswordAccountValidator;
 import org.generationcp.ibpworkbench.validator.UserAccountFields;
 import org.generationcp.ibpworkbench.validator.UserAccountValidator;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.owasp.html.Sanitizers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +62,7 @@ public class AuthenticationController {
 	private WorkbenchUserService workbenchUserService;
 
 	@Resource
-	private WorkbenchDataManager workbenchDataManager;
+	private UserService userService;
 
 	@Resource
 	private UserAccountValidator userAccountValidator;
@@ -100,12 +100,12 @@ public class AuthenticationController {
 
 	@Value("${workbench.version}")
 	private String workbenchVersion;
-	
+
 	private List<Role> roles;
 
 	@PostConstruct
 	public void initialize() {
-		this.roles = this.workbenchDataManager.getAssignableRoles();
+		this.roles = this.userService.getAssignableRoles();
 		this.footerMessage = Sanitizers.FORMATTING.sanitize(this.footerMessage);
 	}
 
@@ -324,16 +324,16 @@ public class AuthenticationController {
 
 			// 3. Create user info
 
-			UserInfo userInfo = this.workbenchDataManager.getUserInfoByUsername(model.getUsername());
+			UserInfo userInfo = this.userService.getUserInfoByUsername(model.getUsername());
 
 			if (userInfo == null) {
-				final WorkbenchUser user = this.workbenchDataManager.getUserByUsername(model.getUsername());
+				final WorkbenchUser user = this.userService.getUserByUsername(model.getUsername());
 				userInfo = new UserInfo();
 				userInfo.setUserId(user.getUserid());
 			}
 
 			userInfo.setLoginCount(userInfo.getLoginCount() + 1);
-			this.workbenchDataManager.insertOrUpdateUserInfo(userInfo);
+			this.userService.insertOrUpdateUserInfo(userInfo);
 
 			isSuccess = HttpStatus.OK;
 			out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
@@ -372,8 +372,8 @@ public class AuthenticationController {
 		this.isSingleUserOnly = isSingleUserOnly;
 	}
 
-	
-	
+
+
 	public List<Role> getRoles() {
 		return roles;
 	}

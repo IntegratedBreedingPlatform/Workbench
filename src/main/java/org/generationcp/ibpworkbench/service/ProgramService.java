@@ -15,6 +15,7 @@ import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,9 @@ public class ProgramService {
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
+
+	@Autowired
+	private UserService userService;
 
 	@Autowired
 	private HttpServletRequest request;
@@ -88,7 +92,7 @@ public class ProgramService {
 	 */
 	public void saveProgramMembers(final Project program, final Set<WorkbenchUser> users) {
 		// Add user(s) with SUPERADMIN role to selected users of program to give access to new program
-		final List<WorkbenchUser> superAdminUsers = this.workbenchDataManager.getSuperAdminUsers();
+		final List<WorkbenchUser> superAdminUsers = this.userService.getSuperAdminUsers();
 		users.addAll(superAdminUsers);
 
 		// Save workbench project metadata and to crop users, persons (if necessary)
@@ -115,7 +119,7 @@ public class ProgramService {
 			final Integer userID = user.getUserid();
 			final Long projectID = program.getProjectId();
 
-			if (this.workbenchDataManager.getProjectUserInfoDao().getByProjectIdAndUserId(projectID, userID) == null) {
+			if (this.userService.getProjectUserInfoByProjectIdAndUserId(projectID, userID) == null) {
 				final ProjectUserInfo pUserInfo = new ProjectUserInfo(program, userID);
 				this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
 			}
@@ -151,11 +155,11 @@ public class ProgramService {
 	public void setInstallationDirectoryUtil(final InstallationDirectoryUtil installationDirectoryUtil) {
 		this.installationDirectoryUtil = installationDirectoryUtil;
 	}
-	
+
 	public void updateMembersUserInfo(final Collection<WorkbenchUser> userList, final Project project) {
 		//Addition of new members
 		for (WorkbenchUser u : userList) {
-			if (this.workbenchDataManager.getProjectUserInfoByProjectIdAndUserId(project.getProjectId(),
+			if (this.userService.getProjectUserInfoByProjectIdAndUserId(project.getProjectId(),
 					u.getUserid()) == null) {
 				ProjectUserInfo pUserInfo = new ProjectUserInfo(project, u.getUserid());
 				this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
@@ -165,12 +169,12 @@ public class ProgramService {
 		//Removal of users
 		final List<Integer> removedUserIds = this.getRemovedUserIds(project.getProjectId(), userList);
 		if(!removedUserIds.isEmpty()) {
-			this.workbenchDataManager.removeUsersFromProgram(removedUserIds, project.getProjectId());
+			this.userService.removeUsersFromProgram(removedUserIds, project.getProjectId());
 		}
 	}
-	
+
 	public List<Integer> getRemovedUserIds(final long projectId, final Collection<WorkbenchUser> userList) {
-		final List<Integer> activeUserIds = this.workbenchDataManager.getActiveUserIDsByProjectId(projectId);
+		final List<Integer> activeUserIds = this.userService.getActiveUserIDsByProjectId(projectId);
 		List<Integer> programMemberIds = new ArrayList<>();
 		for(WorkbenchUser user: userList) {
 			programMemberIds.add(user.getUserid());

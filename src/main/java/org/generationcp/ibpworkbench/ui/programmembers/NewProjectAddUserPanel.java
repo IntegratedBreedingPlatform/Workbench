@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- * 
+ *
  * Generation Challenge Programme (GCP)
- * 
- * 
+ *
+ *
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- * 
+ *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.ui.programmembers;
@@ -21,9 +21,9 @@ import org.generationcp.ibpworkbench.actions.SaveNewProjectAddUserAction;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.ibpworkbench.ui.form.UserAccountForm;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -39,10 +39,10 @@ import com.vaadin.ui.themes.Reindeer;
 
 /**
  * <b>Description</b>: Panel for displaying UserAccountForm in the AddUser pop-up window.
- * 
+ *
  * <br>
  * <br>
- * 
+ *
  * <b>Author</b>: Mark Agarrado <br>
  * <b>File Created</b>: October 15, 2012
  */
@@ -67,9 +67,9 @@ public class NewProjectAddUserPanel extends Panel {
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
-	
+
 	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
+	private UserService userService;
 
 	public NewProjectAddUserPanel(TwinTableSelect<WorkbenchUser> membersSelect) {
 		this.membersSelect = membersSelect;
@@ -134,7 +134,7 @@ public class NewProjectAddUserPanel extends Panel {
 	protected void initializeValues() {
 
 		ComboBox roleField = (ComboBox) this.userForm.getField("role");
-		final List<Role> roles = this.workbenchDataManager.getAssignableRoles();
+		final List<Role> roles = this.userService.getAssignableRoles();
 		for (final Role role : roles){
 			roleField.addItem(role);
 		}

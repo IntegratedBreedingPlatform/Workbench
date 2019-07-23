@@ -4,20 +4,18 @@ import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.context.ContextInfo;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
-import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.data.initializer.WorkbenchUserTestDataInitializer;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.LocationDataManager;
-import org.generationcp.middleware.manager.api.UserDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
-import org.generationcp.middleware.pojos.User;
 import org.generationcp.middleware.pojos.dms.ProgramFavorite;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,13 +55,10 @@ public class ProgramServiceTest {
 	private WorkbenchDataManager workbenchDataManager;
 
 	@Mock
-	private UserDataManager userDataManager;
+	private UserService userService;
 
 	@Mock
 	private ContextUtil contextUtil;
-
-	@Mock
-	private ProjectUserInfoDAO projectUserInfoDAO;
 
 	@Mock
 	private Cookie cookie;
@@ -74,7 +69,7 @@ public class ProgramServiceTest {
 	@Mock
 	private GermplasmDataManager germplasmDataManager;
 
-	@Mock 
+	@Mock
 	private LocationDataManager locationDataManager;
 
 	@InjectMocks
@@ -86,7 +81,7 @@ public class ProgramServiceTest {
 	private WorkbenchUser loggedInUser;
 	private WorkbenchUser memberUser;
 	private WorkbenchUser superAdminUser;
-	private User cropUser;
+	private WorkbenchUser cropUser;
 
 	@Before
 	public void setup() {
@@ -98,8 +93,6 @@ public class ProgramServiceTest {
 		Mockito.when(this.request.getCookies()).thenReturn(new Cookie[] { this.cookie });
 
 		this.initializeTestPersonsAndUsers();
-
-		Mockito.when(this.workbenchDataManager.getProjectUserInfoDao()).thenReturn(this.projectUserInfoDAO);
 		Mockito.when(this.contextUtil.getCurrentWorkbenchUserId()).thenReturn(ProgramServiceTest.USER_ID);
 	}
 
@@ -112,20 +105,20 @@ public class ProgramServiceTest {
 		this.loggedInUser = this.createUser(1, "mrbreeder", 1);
 		this.memberUser = this.createUser(2, "mrbreederfriend", 2);
 		this.superAdminUser = this.createUser(3, ProgramServiceTest.SUPERADMIN_USERNAME, 3);
-		this.cropUser = this.loggedInUser.copyToUser();
+		this.cropUser = this.loggedInUser;
 		this.cropUser.setUserid(1);
 
 		// Setup mocks
-		Mockito.when(this.userDataManager.getUserByUserName(this.loggedInUser.getName())).thenReturn(this.cropUser);
-		Mockito.when(this.userDataManager.getPersonByEmail(this.loggedInPerson.getEmail()))
+		Mockito.when(this.userService.getUserByUsername(this.loggedInUser.getName())).thenReturn(this.cropUser);
+		Mockito.when(this.userService.getPersonByEmail(this.loggedInPerson.getEmail()))
 				.thenReturn(this.loggedInPerson);
 
-		Mockito.when(this.workbenchDataManager.getPersonById(this.loggedInPerson.getId()))
+		Mockito.when(this.userService.getPersonById(this.loggedInPerson.getId()))
 				.thenReturn(this.loggedInPerson);
-		Mockito.when(this.workbenchDataManager.getPersonById(this.memberPerson.getId())).thenReturn(this.memberPerson);
-		Mockito.when(this.workbenchDataManager.getPersonById(this.superAdminPerson.getId()))
+		Mockito.when(this.userService.getPersonById(this.memberPerson.getId())).thenReturn(this.memberPerson);
+		Mockito.when(this.userService.getPersonById(this.superAdminPerson.getId()))
 				.thenReturn(this.superAdminPerson);
-		Mockito.when(this.workbenchDataManager.getSuperAdminUsers())
+		Mockito.when(this.userService.getSuperAdminUsers())
 				.thenReturn(Collections.singletonList(this.superAdminUser));
 	}
 
@@ -143,7 +136,7 @@ public class ProgramServiceTest {
 		// Other WorkbenchDataManager mocks
 		Mockito.when(this.workbenchDataManager.getCropTypeByName(ArgumentMatchers.anyString()))
 				.thenReturn(project.getCropType());
-		Mockito.when(this.userDataManager.addUser(ArgumentMatchers.any(User.class))).thenReturn(2);
+		Mockito.when(this.userService.addUser(ArgumentMatchers.any(WorkbenchUser.class))).thenReturn(2);
 		Mockito.when(this.locationDataManager.retrieveLocIdOfUnspecifiedLocation()).thenReturn(String.valueOf(unspecifiedLocationID));
 
 		// Call the method to test
@@ -182,21 +175,21 @@ public class ProgramServiceTest {
 	public void testUpdateMembersUserInfo() {
 		final List<Integer> userIds = new ArrayList<>();
 		userIds.addAll(Arrays.asList(1, 2, 3));
-		Mockito.when(this.workbenchDataManager.getActiveUserIDsByProjectId(ArgumentMatchers.anyLong()))
+		Mockito.when(this.userService.getActiveUserIDsByProjectId(ArgumentMatchers.anyLong()))
 				.thenReturn(userIds);
 		final Project project = ProjectTestDataInitializer.createProject();
 		final Set<WorkbenchUser> userList = new HashSet<>();
 		userList.add(WorkbenchUserTestDataInitializer.createWorkbenchUser());
 		this.programService.updateMembersUserInfo(userList, project);
 		final int numberOfUsers = userList.size();
-		Mockito.verify(this.workbenchDataManager, Mockito.times(numberOfUsers))
+		Mockito.verify(this.userService, Mockito.times(numberOfUsers))
 				.getProjectUserInfoByProjectIdAndUserId(ArgumentMatchers.anyLong(), ArgumentMatchers.anyInt());
 		// Expecting to save only the 2nd user as the 1st user is already saved
 		// as a member
 		Mockito.verify(this.workbenchDataManager, Mockito.times(numberOfUsers))
 				.saveOrUpdateProjectUserInfo(ArgumentMatchers.any(ProjectUserInfo.class));
-		Mockito.verify(this.workbenchDataManager).getActiveUserIDsByProjectId(ArgumentMatchers.anyLong());
-		Mockito.verify(this.workbenchDataManager).removeUsersFromProgram(ArgumentMatchers.<List<Integer>>any(), ArgumentMatchers.anyLong());
+		Mockito.verify(this.userService).getActiveUserIDsByProjectId(ArgumentMatchers.anyLong());
+		Mockito.verify(this.userService).removeUsersFromProgram(ArgumentMatchers.<List<Integer>>any(), ArgumentMatchers.anyLong());
 	}
 
 	@Test
@@ -204,7 +197,7 @@ public class ProgramServiceTest {
 		final List<Integer> activeUserIds = new ArrayList<>();
 		activeUserIds.addAll(Arrays.asList(1, 2));
 		final Collection<WorkbenchUser> userList = Arrays.asList(new WorkbenchUser(1));
-		Mockito.when(this.workbenchDataManager.getActiveUserIDsByProjectId(ArgumentMatchers.anyLong()))
+		Mockito.when(this.userService.getActiveUserIDsByProjectId(ArgumentMatchers.anyLong()))
 			.thenReturn(activeUserIds);
 		final List<Integer> removedUserIds = this.programService.getRemovedUserIds(1, userList);
 		Assert.assertEquals(1, removedUserIds.size());

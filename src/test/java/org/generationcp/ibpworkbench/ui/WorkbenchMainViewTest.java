@@ -14,11 +14,11 @@ import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.ui.window.ChangeCredentialsWindow;
 import org.generationcp.ibpworkbench.ui.window.ChangePasswordWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +49,7 @@ public class WorkbenchMainViewTest {
 	private Properties workbenchProperties;
 
 	@Mock
-	private WorkbenchDataManager workbenchDataManager;
+	private UserService userService;
 
 	@Mock
 	private ContextUtil contextUtil;
@@ -241,11 +241,11 @@ public class WorkbenchMainViewTest {
 		final WorkbenchUser user = new WorkbenchUser();
 		user.setUserid(101);
 
-		Mockito.when(this.workbenchDataManager.getUserInfo(Matchers.anyInt())).thenReturn(null);
+		Mockito.when(this.userService.getUserInfo(Matchers.anyInt())).thenReturn(null);
 
 		final UserInfo newUserInfo = this.workbenchMainView.createUserInfoIfNecessary(user);
 
-		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).insertOrUpdateUserInfo(newUserInfo);
+		Mockito.verify(this.userService, Mockito.times(1)).insertOrUpdateUserInfo(newUserInfo);
 		Assert.assertEquals(user.getUserid(), newUserInfo.getUserId());
 		Assert.assertEquals(Integer.valueOf(0), newUserInfo.getLoginCount());
 
@@ -256,7 +256,7 @@ public class WorkbenchMainViewTest {
 
 		final Window window = Mockito.mock(Window.class);
 		final WorkbenchUser user = new WorkbenchUser(this.ADMIN_USER_ID);
-		Mockito.doReturn(true).when(this.workbenchDataManager).isSuperAdminUser(this.ADMIN_USER_ID);
+		Mockito.doReturn(true).when(this.userService).isSuperAdminUser(this.ADMIN_USER_ID);
 
 		final UserInfo userInfo = new UserInfo();
 		userInfo.setUserId(this.ADMIN_USER_ID);
@@ -274,7 +274,7 @@ public class WorkbenchMainViewTest {
 
 		final Window window = Mockito.mock(Window.class);
 		final WorkbenchUser user = new WorkbenchUser(this.ADMIN_USER_ID);
-		Mockito.doReturn(true).when(this.workbenchDataManager).isSuperAdminUser(this.ADMIN_USER_ID);
+		Mockito.doReturn(true).when(this.userService).isSuperAdminUser(this.ADMIN_USER_ID);
 
 		final UserInfo userInfo = new UserInfo();
 		userInfo.setUserId(this.ADMIN_USER_ID);
@@ -293,7 +293,7 @@ public class WorkbenchMainViewTest {
 		final Window window = Mockito.mock(Window.class);
 		final int userId = 1000;
 		final WorkbenchUser user = new WorkbenchUser(userId);
-		Mockito.doReturn(false).when(this.workbenchDataManager).isSuperAdminUser(userId);
+		Mockito.doReturn(false).when(this.userService).isSuperAdminUser(userId);
 
 		final UserInfo userInfo = new UserInfo();
 		userInfo.setUserId(userId);
@@ -312,7 +312,7 @@ public class WorkbenchMainViewTest {
 		final Window window = Mockito.mock(Window.class);
 		final int userId = 1000;
 		final WorkbenchUser user = new WorkbenchUser(userId);
-		Mockito.doReturn(false).when(this.workbenchDataManager).isSuperAdminUser(userId);
+		Mockito.doReturn(false).when(this.userService).isSuperAdminUser(userId);
 
 
 		final UserInfo userInfo = new UserInfo();
@@ -379,7 +379,7 @@ public class WorkbenchMainViewTest {
 
 		this.workbenchMainView.onLoadOperations();
 
-		Mockito.verify(this.workbenchDataManager).incrementUserLogInCount(this.ADMIN_USER_ID);
+		Mockito.verify(this.userService).incrementUserLogInCount(this.ADMIN_USER_ID);
 
 	}
 

@@ -10,7 +10,7 @@
 
 package org.generationcp.ibpworkbench.validator;
 
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -33,7 +33,7 @@ public class PersonNameValidator extends AbstractValidator {
 	private static final long serialVersionUID = 4065915808146235650L;
 
 	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
+	private UserService userService;
 
 	@Autowired
 	private ValidatorCounter validatorCounter;
@@ -69,7 +69,7 @@ public class PersonNameValidator extends AbstractValidator {
 			return true;
 		}
 
-		return !this.workbenchDataManager.isPersonExists(this.firstName.getValue().toString(),
+		return !this.userService.isPersonExists(this.firstName.getValue().toString(),
 				this.lastName.getValue().toString());
 
 	}
@@ -86,7 +86,7 @@ public class PersonNameValidator extends AbstractValidator {
 		this.validatorCounter = validatorCounter;
 	}
 
-	void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
-		this.workbenchDataManager = workbenchDataManager;
+	void setUserService(final UserService userService) {
+		this.userService = userService;
 	}
 }
