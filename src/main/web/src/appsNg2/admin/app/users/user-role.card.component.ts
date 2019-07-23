@@ -145,7 +145,7 @@ export class UserRoleCard implements OnInit {
                 break;
             case 2:
                 result = this.model.userRoles.filter(userRole => userRole.role.type == newUserRole.role.type && userRole.crop.cropName === newUserRole.crop.cropName);
-                errorMessage = 'The user ' + this.model.username + ' has already assigned a Crop role for ' + newUserRole.crop + ' crop.';
+                errorMessage = 'The user ' + this.model.username + ' has already assigned a Crop role for ' + newUserRole.crop.cropName + ' crop.';
                 break;
             case 3:
                 result = this.model.userRoles.filter(userRole => userRole.role.type == newUserRole.role.type && userRole.crop.cropName === newUserRole.crop.cropName && userRole.program.uuid === newUserRole.program.uuid);
