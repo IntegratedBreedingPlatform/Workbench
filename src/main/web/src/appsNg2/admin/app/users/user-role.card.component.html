@@ -13,8 +13,8 @@
 				</div>
 				<div class="col-xs-7 col-md-7">
 					<select class="form-control" id="roleTypeCombo" [(ngModel)]="roleTypeSelected" (ngModelChange)="changeRole()">
-						<option value="undefined">Please select a role type</option>
-						<option *ngFor="let roleType of roleTypes" [value]="roleType.id">{{roleType.name}}</option>
+						<option value=0>Please select a role type</option>
+						<option *ngFor="let roleType of roleTypes" [ngValue]="roleType.id">{{roleType.name}}</option>
 					</select>
 				</div>
 			</div>
@@ -24,8 +24,8 @@
 				</div>
 				<div class="col-xs-7 col-md-7">
 					<select class="form-control" id="roleNameCombo" [(ngModel)]="roleSelected" [disabled]="isRoleNameComboDisable">
-						<option value="undefined">Please select a role</option>
-						<option *ngFor="let role of roles" [value]="role">{{role.name}}</option>
+						<option value="">Please select a role</option>
+						<option *ngFor="let role of roles" [ngValue]="role">{{role.name}}</option>
 					</select>
 				</div>
 			</div>
@@ -36,7 +36,7 @@
 				<div class="col-xs-7 col-md-7">
 					<select class="form-control" id="cropCombo" [(ngModel)]="cropSelected" (ngModelChange)="changeCrop()" [disabled]="isCropComboDisable">
 						<option value="">Please select a crop</option>
-						<option *ngFor="let crop of crops" [value]="crop.cropName">{{crop.cropName}}</option>
+						<option *ngFor="let crop of crops" [ngValue]="crop">{{crop.cropName}}</option>
 					</select>
 				</div>
 			</div>
@@ -47,7 +47,7 @@
 				<div class="col-xs-7 col-md-7">
 					<select class="form-control" id="programCombo" [(ngModel)]="programSelected" [disabled]="isProgramComboDisable">
 						<option value="">Please select a program</option>
-						<option *ngFor="let program of programs" [value]="program">{{program.name}}</option>
+						<option *ngFor="let program of programs" [ngValue]="program">{{program.name}}</option>
 					</select>
 				</div>
 			</div>
