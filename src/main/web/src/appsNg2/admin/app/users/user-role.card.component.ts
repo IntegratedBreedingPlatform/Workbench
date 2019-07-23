@@ -103,12 +103,24 @@ export class UserRoleCard implements OnInit {
     }
 
     assignRole() {
-        this.resetCombo();
-        this.modalContext.popupVisible["assign-roles"] = false;
-    }
+        let userRole: UserRole = undefined;
+        switch (Number(this.roleTypeSelected)) {
+            case 1:
+                userRole = new UserRole(null, this.roleSelected, null, null, null);
+                break;
+            case 2:
+                userRole = new UserRole(null, this.roleSelected, this.cropSelected, null, null);
+                break;
+            case 3:
+                userRole = new UserRole(null, this.roleSelected, this.cropSelected, this.programSelected, null);
+                break;
+        }
 
-    isDisable(selected) {
-        return selected === '' || selected === undefined ? 'disabled' : null;
+        this.model.userRoles.push(userRole);
+        this.reset();
+        this.modalContext.popupVisible['assign-roles'] = false;
+        this.modalContext.popupVisible[this.modalPrevius] = true;
+
     }
 
     ngOnInit() {
