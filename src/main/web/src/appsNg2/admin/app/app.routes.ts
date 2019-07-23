@@ -3,6 +3,7 @@ import { UsersAdmin } from './users/index';
 import { UserRouteAccessService } from './shared/auth/user-route-access-service';
 import { RolesAdmin } from './roles/roles-admin.component';
 import { SiteAdminComponent } from './site-admin.component';
+import { RoleCardComponent } from './roles/role-card.component';
 
 export const routes: Routes = [
     {
@@ -36,7 +37,17 @@ export const routes: Routes = [
                 data: {
                     authorities: ['SUPERADMIN', 'ADMIN', 'ADMINISTRATION', 'SITE_ADMIN']
                 },
-                canActivate: [UserRouteAccessService]
+                canActivate: [UserRouteAccessService],
+                children: [
+                    {
+                        path: '',
+                        component: null,
+                    },
+                    {
+                        path: 'role-card',
+                        component: RoleCardComponent,
+                    }
+                ]
             }
         ]
     }
