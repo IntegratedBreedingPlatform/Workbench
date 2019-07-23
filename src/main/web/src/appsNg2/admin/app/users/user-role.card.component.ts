@@ -140,15 +140,15 @@ export class UserRoleCard implements OnInit {
         let result: UserRole[];
         switch (Number(this.roleTypeSelected)) {
             case 1:
-                result = this.model.userRoles.filter(userRole => userRole.role.type === newUserRole.role.type);
+                result = this.model.userRoles.filter(userRole => userRole.role.type == newUserRole.role.type);
                 errorMessage = 'The user ' + this.model.username + ' has already assigned an Instance role.';
                 break;
             case 2:
-                result = this.model.userRoles.filter(userRole => userRole.role.type === newUserRole.role.type && userRole.crop === newUserRole.crop);
+                result = this.model.userRoles.filter(userRole => userRole.role.type == newUserRole.role.type && userRole.crop.cropName === newUserRole.crop.cropName);
                 errorMessage = 'The user ' + this.model.username + ' has already assigned a Crop role for ' + newUserRole.crop + ' crop.';
                 break;
             case 3:
-                result = this.model.userRoles.filter(userRole => userRole.role.type === newUserRole.role.type && userRole.crop === newUserRole.crop && userRole.program === newUserRole.program);
+                result = this.model.userRoles.filter(userRole => userRole.role.type == newUserRole.role.type && userRole.crop.cropName === newUserRole.crop.cropName && userRole.program.uuid === newUserRole.program.uuid);
                 errorMessage = 'The user ' + this.model.username + ' has already assigned a Program role for ' + newUserRole.program.name + ' program.';
                 break;
         }
