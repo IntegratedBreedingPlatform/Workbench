@@ -95,7 +95,7 @@ export class RoleCardComponent implements OnInit {
     }
 
     addRole(form: NgForm) {
-
+        this.roleService.onRoleAdded.next(this.model);
     }
 
     editRole(form: NgForm) {

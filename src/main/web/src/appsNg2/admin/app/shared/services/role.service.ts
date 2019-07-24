@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
+import { Observable, Subject } from 'rxjs/Rx';
 import { Role } from './../models/role.model';
 import { RoleFilter } from './../models/role-filter.model';
 import ServiceHelper from './service.helper';
@@ -11,8 +11,10 @@ import { RoleType } from '../models/role-type.model';
 
 @Injectable()
 export class RoleService{
-  private baseUrl: string = SERVER_API_URL;
 
+  public onRoleAdded = new Subject<Role>();
+
+  private baseUrl: string = SERVER_API_URL;
   private http: Http;
 
   constructor(@Inject(Http) http:Http) {
