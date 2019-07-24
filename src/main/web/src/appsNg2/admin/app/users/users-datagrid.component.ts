@@ -64,7 +64,7 @@ export class UsersDatagrid implements OnInit {
         this.dialogTitle = 'Edit User';
         this.originalUser = user;
         this.user = new User(user.id, user.firstName, user.lastName,
-            user.username, user.crops, user.userRoles, user.email, user.status);
+            user.username, user.crops, user.userRoles.map((x) => Object.assign({}, x)), user.email, user.status);
         userEditCard.initialize(true);
         this.modalContext.popupVisible["user-edit"] = true;
         this.modalPrevious = 'user-edit';
