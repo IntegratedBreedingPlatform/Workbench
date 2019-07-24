@@ -91,6 +91,7 @@ public class SaveUsersInProjectActionTest {
 	@Test
 	public void testButtonClick() {
 		this.saveUsersInProjectAction.buttonClick(this.clickEvent);
-		Mockito.verify(this.programService).updateMembersUserInfo(userList, project);
+		Mockito.verify(this.programService).updateMembersProjectUserInfo(userList, project);
+		Mockito.verify(this.programService).updateMembersCropPerson(userList, project);
 	}
 }

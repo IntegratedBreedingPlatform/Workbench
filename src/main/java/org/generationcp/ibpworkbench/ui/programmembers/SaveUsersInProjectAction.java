@@ -80,7 +80,8 @@ public class SaveUsersInProjectAction implements ClickListener {
 				@Override
 				protected void doInTransactionWithoutResult(TransactionStatus status) {
 					
-					SaveUsersInProjectAction.this.programService.updateMembersUserInfo(userList, project);
+					SaveUsersInProjectAction.this.programService.updateMembersProjectUserInfo(userList, project);
+					SaveUsersInProjectAction.this.programService.updateMembersCropPerson(userList, project);
 					
 					MessageNotifier.showMessage(event.getComponent().getWindow(), "Success", "Successfully updated this project's members list.");
 				}

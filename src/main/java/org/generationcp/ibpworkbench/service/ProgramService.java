@@ -11,6 +11,7 @@ import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.dms.ProgramFavorite;
+import org.generationcp.middleware.pojos.workbench.CropPerson;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
@@ -155,36 +156,50 @@ public class ProgramService {
 		this.installationDirectoryUtil = installationDirectoryUtil;
 	}
 
-	public void updateMembersUserInfo(final Collection<WorkbenchUser> userList, final Project project) {
-		//Addition of new members
-		for (WorkbenchUser u : userList) {
-			if (this.userService.getProjectUserInfoByProjectIdAndUserId(project.getProjectId(),
-					u.getUserid()) == null) {
-				ProjectUserInfo pUserInfo = new ProjectUserInfo(project, u.getUserid());
-				this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
-			}
+	public void updateMembersProjectUserInfo(final Collection<WorkbenchUser> workbenchUsers, final Project project) {
+		for (final WorkbenchUser workbenchUser : workbenchUsers) {
+			final ProjectUserInfo pUserInfo = new ProjectUserInfo(project, workbenchUser);
+			this.userService.saveProjectUserInfo(pUserInfo);
 		}
-
-		//Removal of users
-		final List<Integer> removedUserIds = this.getRemovedUserIds(project.getProjectId(), userList);
-		if(!removedUserIds.isEmpty()) {
-			this.userService.removeUsersFromProgram(removedUserIds, project.getProjectId());
+		// Get the users with no association to the specified program.
+		final List<Integer> userIdsToBeRemoved = this.getUsersNotAssociatedToSpecificProgram(project.getProjectId(), workbenchUsers);
+		if (!userIdsToBeRemoved.isEmpty()) {
+			this.userService.removeUsersFromProgram(userIdsToBeRemoved, project.getProjectId());
 		}
 	}
 
-	public List<Integer> getRemovedUserIds(final long projectId, final Collection<WorkbenchUser> userList) {
-		final List<Integer> activeUserIds = this.userService.getActiveUserIDsByProjectId(projectId);
-		List<Integer> programMemberIds = new ArrayList<>();
-		for(WorkbenchUser user: userList) {
-			programMemberIds.add(user.getUserid());
+	public void updateMembersCropPerson(final Collection<WorkbenchUser> workbenchUsers, final Project project) {
+		for (final WorkbenchUser workbenchUser : workbenchUsers) {
+			final CropPerson cropPerson = new CropPerson(project.getCropType(), workbenchUser.getPerson());
+			this.userService.saveCropPerson(cropPerson);
 		}
-		activeUserIds.removeAll(programMemberIds);
+		// Get the users with no association to any programs in a crop.
+		final List<WorkbenchUser> usersToBeRemoved = this.getUsersNotAssociatedToAnyProgram(project.getCropType(), workbenchUsers);
+		for (final WorkbenchUser workbenchUser : usersToBeRemoved) {
+			final CropPerson cropPerson = new CropPerson(project.getCropType(), workbenchUser.getPerson());
+			this.userService.removeCropPerson(cropPerson);
+		}
+	}
+
+	protected List<Integer> getUsersNotAssociatedToSpecificProgram(final long projectId, final Collection<WorkbenchUser> workbenchUsers) {
+		final List<Integer> activeUserIds = this.userService.getActiveUserIDsByProjectId(projectId);
+		final List<Integer> userIdsOfUsersAssociatedToAProgram = new ArrayList<>();
+		for (final WorkbenchUser user : workbenchUsers) {
+			userIdsOfUsersAssociatedToAProgram.add(user.getUserid());
+		}
+		activeUserIds.removeAll(userIdsOfUsersAssociatedToAProgram);
 		return activeUserIds;
+	}
+
+	protected List<WorkbenchUser> getUsersNotAssociatedToAnyProgram(final CropType cropType, final Collection<WorkbenchUser> workbenchUsers) {
+		final List<WorkbenchUser> usersAssignedToPrograms = this.userService.getActiveUsersByCrop(cropType);
+		usersAssignedToPrograms.removeAll(workbenchUsers);
+		return usersAssignedToPrograms;
 	}
 
 	public void addUnspecifiedLocationToFavorite(final Project program) {
 		final String unspecifiedLocationID = this.locationDataManager.retrieveLocIdOfUnspecifiedLocation();
-		if(!StringUtils.isEmpty(unspecifiedLocationID)){
+		if (!StringUtils.isEmpty(unspecifiedLocationID)) {
 			final ProgramFavorite favorite = new ProgramFavorite();
 			favorite.setEntityId(Integer.parseInt(unspecifiedLocationID));
 			favorite.setEntityType(ProgramFavorite.FavoriteType.LOCATION.getName());

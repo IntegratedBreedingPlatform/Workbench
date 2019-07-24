@@ -189,7 +189,7 @@ public class ProgramServiceTest {
 		final Collection<WorkbenchUser> userList = Arrays.asList(new WorkbenchUser(1));
 		Mockito.when(this.userService.getActiveUserIDsByProjectId(ArgumentMatchers.anyLong()))
 			.thenReturn(activeUserIds);
-		final List<Integer> removedUserIds = this.programService.getRemovedUserIds(1, userList);
+		final List<Integer> removedUserIds = this.programService.getUsersNotAssociatedToSpecificProgram(1, userList);
 		Assert.assertEquals(1, removedUserIds.size());
 		Assert.assertEquals("2", removedUserIds.get(0).toString());
 	}
