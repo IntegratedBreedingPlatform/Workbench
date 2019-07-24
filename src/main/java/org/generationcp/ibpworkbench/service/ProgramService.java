@@ -114,14 +114,13 @@ public class ProgramService {
 	/*
 	 * Create records for workbench_project_user_info table if combination of project id, user id is not yet existing in workbench DB
 	 */
-	private void saveProjectUserInfo(final Project program,  final Set<WorkbenchUser> users) {
+	private void saveProjectUserInfo(final Project program, final Set<WorkbenchUser> users) {
 		for (final WorkbenchUser user : users) {
-			final Integer userID = user.getUserid();
 			final Long projectID = program.getProjectId();
 
-			if (this.userService.getProjectUserInfoByProjectIdAndUserId(projectID, userID) == null) {
-				final ProjectUserInfo pUserInfo = new ProjectUserInfo(program, userID);
-				this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
+			if (this.userService.getProjectUserInfoByProjectIdAndUserId(projectID, user.getUserid()) == null) {
+				final ProjectUserInfo pUserInfo = new ProjectUserInfo(program, user);
+				this.userService.saveProjectUserInfo(pUserInfo);
 			}
 		}
 	}

@@ -126,7 +126,7 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 				this.userService.getProjectUserInfoByProjectIdAndUserId(project.getProjectId(), contextUtil.getCurrentWorkbenchUserId());
 		if (projectUserInfo != null) {
 			projectUserInfo.setLastOpenDate(new Date());
-			this.workbenchDataManager.saveOrUpdateProjectUserInfo(projectUserInfo);
+			this.userService.saveProjectUserInfo(projectUserInfo);
 		}
 
 		project.setLastOpenDate(new Date());

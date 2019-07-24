@@ -20,6 +20,7 @@ import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategory;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategoryLink;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategoryLinkRole;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.generationcp.middleware.service.api.user.UserService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -83,7 +84,7 @@ public class WorkbenchSidebarPresenterTest {
 		this.selectedProgram = ProjectTestDataInitializer.createProject();
 		this.projectUserInfo = new ProjectUserInfo();
 		this.projectUserInfo.setProject(this.selectedProgram);
-		this.projectUserInfo.setUserId(WorkbenchSidebarPresenterTest.USER_ID);
+		this.projectUserInfo.setUser(new WorkbenchUser(WorkbenchSidebarPresenterTest.USER_ID));
 
 		// Setup Mock objects to return
 		Mockito.doReturn(WorkbenchSidebarPresenterTest.USER_ID).when(this.contextUtil).getCurrentWorkbenchUserId();
@@ -197,7 +198,7 @@ public class WorkbenchSidebarPresenterTest {
 		this.workbenchSidebarPresenter.updateProjectLastOpenedDate();
 
 		final Date currentDate = new Date();
-		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).saveOrUpdateProjectUserInfo(this.projectUserInfo);
+		Mockito.verify(this.userService, Mockito.times(1)).saveProjectUserInfo(this.projectUserInfo);
 		final Date userLastOpenDate = this.projectUserInfo.getLastOpenDate();
 		Assert.assertEquals(currentDate.getYear(), userLastOpenDate.getYear());
 		Assert.assertEquals(currentDate.getMonth(), userLastOpenDate.getMonth());

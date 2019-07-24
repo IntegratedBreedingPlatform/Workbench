@@ -246,8 +246,7 @@ public class ProgramServiceTest {
 	// Verify Middleware methods to save as program members were called
 	private void verifyMockInteractionsForSavingProgramMembers() {
 		// Verify Workbench_project_user_info records are created
-		Mockito.verify(this.workbenchDataManager, Mockito.times(3))
-				.saveOrUpdateProjectUserInfo(ArgumentMatchers.any(ProjectUserInfo.class));
+		Mockito.verify(this.userService, Mockito.times(3)).saveProjectUserInfo(ArgumentMatchers.any(ProjectUserInfo.class));
 	}
 
 	private Project createProject() {

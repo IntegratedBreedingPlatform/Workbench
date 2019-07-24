@@ -15,6 +15,7 @@ import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.generationcp.middleware.service.api.user.UserService;
 import org.junit.Before;
 import org.junit.Test;
@@ -79,7 +80,7 @@ public class LaunchProgramActionTest {
 		this.selectedProgram = ProjectTestDataInitializer.createProject();
 		this.projectUserInfo = new ProjectUserInfo();
 		this.projectUserInfo.setProject(this.selectedProgram);
-		this.projectUserInfo.setUserId(LaunchProgramActionTest.USER_ID);
+		this.projectUserInfo.setUser(new WorkbenchUser(LaunchProgramActionTest.USER_ID));
 
 		// Setup Mock objects to return
 		Mockito.doReturn(this.projectUserInfo).when(this.userService).getProjectUserInfoByProjectIdAndUserId(Matchers.anyLong(), Matchers.anyInt());
@@ -167,7 +168,7 @@ public class LaunchProgramActionTest {
 
 	private void verifyMockInteractionsForUpdatingProgram() {
 		final Date currentDate = new Date();
-		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).saveOrUpdateProjectUserInfo(this.projectUserInfo);
+		Mockito.verify(this.userService, Mockito.times(1)).saveProjectUserInfo(this.projectUserInfo);
 		final Date userLastOpenDate = this.projectUserInfo.getLastOpenDate();
 		Assert.assertEquals(currentDate.getYear(), userLastOpenDate.getYear());
 		Assert.assertEquals(currentDate.getMonth(), userLastOpenDate.getMonth());
