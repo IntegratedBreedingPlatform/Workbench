@@ -41,21 +41,7 @@
 							<div class="panel panel-primary">
 								<div class="panel-heading">Available permissions</div>
 								<div class="panel-body">
-									<label>
-										<strong>
-											Crop management
-										</strong>
-									</label>
-									<div class="checkbox">
-										<label>
-											<input type="checkbox" value="">
-											Manage Ontologies
-										</label>
-										<label>
-											<input type="checkbox" value="">
-											Import germplasm
-										</label>
-									</div>
+									<permission-tree [permissions]="permissions"></permission-tree>
 								</div>
 							</div>
 						</div>
@@ -65,23 +51,9 @@
 						</div>
 						<div class="">
 							<div class="panel panel-primary">
-								<div class="panel-heading">Available permissions</div>
+								<div class="panel-heading">Selected permissions</div>
 								<div class="panel-body">
-									<label>
-										<strong>
-											Crop management
-										</strong>
-									</label>
-									<div class="checkbox">
-										<label>
-											<input type="checkbox" value="">
-											Manage Ontologies
-										</label>
-										<label>
-											<input type="checkbox" value="">
-											Import germplasm
-										</label>
-									</div>
+									<permission-tree [permissions]="permissionsSelected"></permission-tree>
 								</div>
 							</div>
 						</div>

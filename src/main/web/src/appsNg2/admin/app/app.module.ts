@@ -23,7 +23,7 @@ import { AccountService } from './shared/auth/account.service';
 import { ModalContext } from './shared/components/dialog/modal.context';
 import { RolesAdmin } from './roles/roles-admin.component';
 import { SiteAdminComponent } from './site-admin.component';
-import { RoleCardComponent } from './roles/role-card.component';
+import { PermissionTree, RoleCardComponent } from './roles/role-card.component';
 
 @NgModule({
   imports: [BrowserModule, HttpModule, FormsModule, Select2Module, CommonModule, AppRoutingModule],
@@ -43,6 +43,7 @@ import { RoleCardComponent } from './roles/role-card.component';
     UsersAdmin,
     RolesAdmin,
     RoleCardComponent,
+    PermissionTree,
     ToSelect2OptionDataPipe,
     ToSelect2OptionIdPipe
   ],
