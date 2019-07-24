@@ -170,14 +170,14 @@ public class ProgramServiceTest {
 		final Project project = ProjectTestDataInitializer.createProject();
 		final Set<WorkbenchUser> userList = new HashSet<>();
 		userList.add(WorkbenchUserTestDataInitializer.createWorkbenchUser());
-		this.programService.updateMembersUserInfo(userList, project);
+		this.programService.updateMembersProjectUserInfo(userList, project);
 		final int numberOfUsers = userList.size();
 		Mockito.verify(this.userService, Mockito.times(numberOfUsers))
 				.getProjectUserInfoByProjectIdAndUserId(ArgumentMatchers.anyLong(), ArgumentMatchers.anyInt());
 		// Expecting to save only the 2nd user as the 1st user is already saved
 		// as a member
-		Mockito.verify(this.workbenchDataManager, Mockito.times(numberOfUsers))
-				.saveOrUpdateProjectUserInfo(ArgumentMatchers.any(ProjectUserInfo.class));
+		Mockito.verify(this.userService, Mockito.times(numberOfUsers))
+				.saveProjectUserInfo(ArgumentMatchers.any(ProjectUserInfo.class));
 		Mockito.verify(this.userService).getActiveUserIDsByProjectId(ArgumentMatchers.anyLong());
 		Mockito.verify(this.userService).removeUsersFromProgram(ArgumentMatchers.<List<Integer>>any(), ArgumentMatchers.anyLong());
 	}
