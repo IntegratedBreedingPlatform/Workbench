@@ -45,7 +45,6 @@ public class WorkbenchUserService {
 
 		WorkbenchUser user = new WorkbenchUser();
 		user.setPerson(person);
-		user.setPerson(person);
 		user.setName(userAccount.getUsername());
 		user.setPassword(passwordEncoder.encode(userAccount.getPassword()));
 		user.setAccess(0);
@@ -65,7 +64,6 @@ public class WorkbenchUserService {
 		Person person = this.createPerson(userAccount);
 
 		WorkbenchUser user = new WorkbenchUser();
-		user.setPerson(person);
 		user.setPerson(person);
 		user.setName(userAccount.getUsername());
 
