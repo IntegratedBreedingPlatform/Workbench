@@ -124,11 +124,6 @@
 		<aop:scoped-proxy />
 	</bean>
 
-	<bean id="userDataManager" factory-bean="managerFactory"
-		factory-method="getUserDataManager" scope="request">
-		<aop:scoped-proxy />
-	</bean>
-
 	<bean id="germplasmDataManager" factory-bean="managerFactory"
 		factory-method="getGermplasmDataManager" scope="request">
 		<aop:scoped-proxy />
