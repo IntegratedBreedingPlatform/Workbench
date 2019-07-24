@@ -23,20 +23,15 @@ export class UserRoleCard implements OnInit {
     errorClass: string = 'alert alert-danger';
     errorUserRoleMessage: string = '';
 
-
     roleTypes: RoleType[];
     roles: Role[];
     crops: Crop[];
     programs: Program[];
 
-    roleTypeSelected: number = 0;
+    roleTypeSelected: any = '';
     roleSelected: any = '';
     cropSelected: any = '';
     programSelected: any = '';
-
-    isRoleNameComboDisable: boolean = true;
-    isCropComboDisable: boolean = true;
-    isProgramComboDisable: boolean = true;
 
     @Input() model: User;
     @Input() modalPrevius: string;
@@ -56,13 +51,6 @@ export class UserRoleCard implements OnInit {
     }
 
     changeRole() {
-        if (this.roleTypeSelected === 0) {
-            this.isRoleNameComboDisable = true;
-            this.isCropComboDisable = true;
-            this.isProgramComboDisable = true;
-            return
-        }
-
         let roleFilter = new RoleFilter([], true, this.roleTypeSelected);
         this.roleService.getFilteredRoles(roleFilter).subscribe(resp => {
                 this.roles = resp;
@@ -72,36 +60,15 @@ export class UserRoleCard implements OnInit {
                 this.roleSelected = '';
                 this.cropSelected = '';
                 this.programSelected = '';
-                this.isRoleNameComboDisable = false;
-                switch (Number(this.roleTypeSelected)) {
-
-                    case 1:
-                        this.isCropComboDisable = true;
-                        this.isProgramComboDisable = true;
-                        break;
-                    case 2:
-                        this.isCropComboDisable = false;
-                        this.isProgramComboDisable = true;
-                        break;
-                    case 3:
-                        this.isCropComboDisable = false;
-                        this.isProgramComboDisable = false;
-                        break;
-                }
-
             }
         );
     }
 
     reset() {
-        this.roleTypeSelected = 0;
+        this.roleTypeSelected = '';
         this.roleSelected = '';
         this.cropSelected = '';
         this.programSelected = '';
-
-        this.isRoleNameComboDisable = true;
-        this.isCropComboDisable = true;
-        this.isProgramComboDisable = true;
         this.errorUserRoleMessage = '';
     }
 
@@ -125,6 +92,18 @@ export class UserRoleCard implements OnInit {
             this.modalContext.popupVisible['assign-roles'] = false;
             this.modalContext.popupVisible[this.modalPrevius] = true;
         }
+    }
+
+    isRoleNameComboDisable(){
+        return !this.roleTypeSelected;
+    }
+
+    isCropComboDisable(){
+        return this.isRoleNameComboDisable() || this.roleTypeSelected === 1;
+    }
+
+    isProgramComboDisable(){
+        return this.isRoleNameComboDisable() || this.roleTypeSelected != 3;
     }
 
     isAssignRoleButtonDisable() {
