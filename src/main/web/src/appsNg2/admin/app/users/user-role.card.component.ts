@@ -99,18 +99,18 @@ export class UserRoleCard implements OnInit {
     }
 
     isCropComboDisable(){
-        return this.isRoleNameComboDisable() || this.roleTypeSelected === 1;
+        return this.isRoleNameComboDisable() || this.roleTypeSelected === RoleTypeEnum.INSTANCE;
     }
 
     isProgramComboDisable(){
-        return this.isRoleNameComboDisable() || this.roleTypeSelected != 3;
+        return this.isRoleNameComboDisable() || this.roleTypeSelected != RoleTypeEnum.PROGRAM;
     }
 
     isAssignRoleButtonDisable() {
         return !this.roleTypeSelected
-            || (this.roleTypeSelected === 1 && !this.roleSelected)
-            || (this.roleTypeSelected === 2 && (!this.roleSelected || !this.cropSelected))
-            || (this.roleTypeSelected === 3 && (!this.roleSelected || !this.cropSelected || !this.programSelected));
+            || (this.roleTypeSelected === RoleTypeEnum.INSTANCE && !this.roleSelected)
+            || (this.roleTypeSelected === RoleTypeEnum.CROP && (!this.roleSelected || !this.cropSelected))
+            || (this.roleTypeSelected === RoleTypeEnum.PROGRAM && (!this.roleSelected || !this.cropSelected || !this.programSelected));
     }
 
     isUserRoleValid(newUserRole: UserRole): boolean {
@@ -150,3 +150,6 @@ export class UserRoleCard implements OnInit {
     }
 }
 
+enum RoleTypeEnum {
+    INSTANCE = 1, CROP = 2, PROGRAM = 3
+}
