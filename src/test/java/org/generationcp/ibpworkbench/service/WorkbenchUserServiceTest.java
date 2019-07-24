@@ -123,7 +123,6 @@ public class WorkbenchUserServiceTest {
 
 		Mockito.when(this.workbenchDataManager.getUserByName(TEST_USERNAME, 0, 1, Operation.EQUAL)).thenReturn(
 				userList);
-		Mockito.when(this.workbenchDataManager.getPersonById(TEST_PERSON_ID)).thenReturn(person);
 
 		Assert.assertTrue(this.userService.isUserActive(userAccount));
 
@@ -150,7 +149,6 @@ public class WorkbenchUserServiceTest {
 
 		Mockito.when(this.workbenchDataManager.getUserByName(TEST_USERNAME, 0, 1, Operation.EQUAL)).thenReturn(
 				userList);
-		Mockito.when(this.workbenchDataManager.getPersonById(TEST_PERSON_ID)).thenReturn(person);
 
 		Assert.assertTrue(this.userService.isValidUserLogin(userAccount));
 	}
@@ -191,7 +189,6 @@ public class WorkbenchUserServiceTest {
 
 		Mockito.when(this.workbenchDataManager.getUserByName(TEST_USERNAME, 0, 1, Operation.EQUAL)).thenReturn(
 				userList);
-		Mockito.when(this.workbenchDataManager.getPersonById(TEST_PERSON_ID)).thenReturn(person);
 
 		WorkbenchUser resultUser = this.userService.getUserByUserName(TEST_USERNAME);
 
@@ -219,7 +216,6 @@ public class WorkbenchUserServiceTest {
 		user.setPerson(person);
 		person.setId(TEST_PERSON_ID);
 		Mockito.when(this.workbenchDataManager.getUserById(TEST_USER_ID)).thenReturn(user);
-		Mockito.when(this.workbenchDataManager.getPersonById(TEST_PERSON_ID)).thenReturn(person);
 
 		WorkbenchUser resultUser = this.userService.getUserByUserid(TEST_USER_ID);
 

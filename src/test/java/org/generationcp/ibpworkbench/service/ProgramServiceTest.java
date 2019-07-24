@@ -109,15 +109,6 @@ public class ProgramServiceTest {
 		this.cropUser.setUserid(1);
 
 		// Setup mocks
-		Mockito.when(this.userService.getUserByUsername(this.loggedInUser.getName())).thenReturn(this.cropUser);
-		Mockito.when(this.userService.getPersonByEmail(this.loggedInPerson.getEmail()))
-				.thenReturn(this.loggedInPerson);
-
-		Mockito.when(this.userService.getPersonById(this.loggedInPerson.getId()))
-				.thenReturn(this.loggedInPerson);
-		Mockito.when(this.userService.getPersonById(this.memberPerson.getId())).thenReturn(this.memberPerson);
-		Mockito.when(this.userService.getPersonById(this.superAdminPerson.getId()))
-				.thenReturn(this.superAdminPerson);
 		Mockito.when(this.userService.getSuperAdminUsers())
 				.thenReturn(Collections.singletonList(this.superAdminUser));
 	}
@@ -136,7 +127,6 @@ public class ProgramServiceTest {
 		// Other WorkbenchDataManager mocks
 		Mockito.when(this.workbenchDataManager.getCropTypeByName(ArgumentMatchers.anyString()))
 				.thenReturn(project.getCropType());
-		Mockito.when(this.userService.addUser(ArgumentMatchers.any(WorkbenchUser.class))).thenReturn(2);
 		Mockito.when(this.locationDataManager.retrieveLocIdOfUnspecifiedLocation()).thenReturn(String.valueOf(unspecifiedLocationID));
 
 		// Call the method to test

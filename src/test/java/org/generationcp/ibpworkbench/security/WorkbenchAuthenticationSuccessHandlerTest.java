@@ -54,7 +54,6 @@ public class WorkbenchAuthenticationSuccessHandlerTest {
 
 		// Just make sure following methods are invoked to populate session data for now.
 		Mockito.verify(userService).getUserByName(WorkbenchAuthenticationSuccessHandlerTest.TEST_USER, 0, 1, Operation.EQUAL);
-		Mockito.verify(userService).getPersonById(testUserWorkbench.getPerson().getId());
 		Mockito.verify(httpSession).setAttribute(Matchers.eq(ContextConstants.SESSION_ATTR_CONTEXT_INFO), Matchers.isA(ContextInfo.class));
 	}
 
