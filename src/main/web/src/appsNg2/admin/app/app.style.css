@@ -119,3 +119,6 @@ users-admin app-dialog div.modal-footer > .message {
     font-size: 1.5em;
     cursor: pointer;
 }
+.ul-tree-level-zero {
+    padding: 0;
+}

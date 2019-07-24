@@ -41,19 +41,22 @@
 							<div class="panel panel-primary">
 								<div class="panel-heading">Available permissions</div>
 								<div class="panel-body">
-									<permission-tree [permissions]="permissions"></permission-tree>
+									<permission-tree [permissions]="permissions"
+													 [isLevelZero]="true"></permission-tree>
 								</div>
 							</div>
 						</div>
 						<div class="column-item-transfer">
-							<span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span>
-							<span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>
+							<span class="glyphicon glyphicon-menu-right" aria-hidden="true" (click)="moveSelected(permissions, false)"></span>
+							<span class="glyphicon glyphicon-menu-left" aria-hidden="true" (click)="moveSelected(permissions, true)"></span>
 						</div>
 						<div class="">
 							<div class="panel panel-primary">
 								<div class="panel-heading">Selected permissions</div>
 								<div class="panel-body">
-									<permission-tree [permissions]="permissionsSelected"></permission-tree>
+									<permission-tree [permissions]="permissions"
+													 [isLevelZero]="true"
+													 [isSelectedPermissionTable]="true"></permission-tree>
 								</div>
 							</div>
 						</div>

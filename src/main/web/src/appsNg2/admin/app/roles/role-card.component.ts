@@ -83,7 +83,7 @@ export class RoleCardComponent implements OnInit {
         });
         this.roleService.getRoleTypes().subscribe((roleTypes) => {
             this.roleTypes = roleTypes;
-        })
+        });
     }
 
     isFormValid(form: NgForm) {
@@ -105,30 +105,63 @@ export class RoleCardComponent implements OnInit {
     changeRoleType() {
 
     }
+
+    moveSelected(permissions: Permission[], doRemove: boolean) {
+        if (!permissions) {
+            return;
+        }
+
+        for (const permission: Permission of permissions) {
+            if (permission.selected) {
+                permission.transferred = !doRemove;
+            }
+            if (permission.children) {
+                this.moveSelected(permission.children, doRemove);
+            }
+        }
+    }
 }
 
+/**
+ * Recursive component to display a tree of Permissions
+ * Using a combination of the permission.transferred property and the #isSelectedPermissionTable flag
+ * it decides to show the selected items or not, which is used to display two trees next to each other:
+ * Available and selected.
+ *
+ * Note: If the requirement evolves beyond this basic prototype
+ *  or gets too complex (drag and drop, shift-select), consider looking for a library
+ */
 @Component({
     selector: 'permission-tree',
-    // TODO level 0 padding 0, extract style
+    // TODO
+    //  - extract style
+    //  - click select children
+    //  - show non-selected grandparents in right table
     template: `
-		<ul style="list-style-type: none">
+		<ul style="list-style-type: none" [class.ul-tree-level-zero]="isLevelZero">
 			<li *ngFor="let permission of permissions">
-				<div *ngIf="!permission.selectable">
-					<strong>
-						{{permission.description}}
-					</strong>
-				</div>
-				<div class="checkbox" *ngIf="permission.selectable">
-					<label>
-						<input type="checkbox" value="">
-						{{permission.description}}
-					</label>
-				</div>
-				<permission-tree *ngIf="permission.children" [permissions]="permission.children"></permission-tree>
+				<ng-container *ngIf="!isSelectedPermissionTable || permission.transferred">
+					<div *ngIf="!permission.selectable">
+						<strong>
+							{{permission.description}}
+						</strong>
+					</div>
+					<div class="checkbox" *ngIf="permission.selectable">
+						<label>
+							<input type="checkbox" *ngIf="isSelectedPermissionTable || !permission.transferred"
+                                   [(ngModel)]="permission.selected">
+							{{permission.description}}
+						</label>
+					</div>
+				</ng-container>
+				<permission-tree *ngIf="permission.children" [permissions]="permission.children"
+                                 [isSelectedPermissionTable]="isSelectedPermissionTable"></permission-tree>
 			</li>
 		</ul>
     `
 })
 export class PermissionTree {
     @Input() permissions: Permission [];
+    @Input() isLevelZero: boolean;
+    @Input() isSelectedPermissionTable: boolean;
 }
