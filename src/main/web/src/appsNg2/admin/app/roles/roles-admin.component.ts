@@ -9,7 +9,7 @@ import { Role } from '../shared/models/role.model';
 })
 
 export class RolesAdmin implements OnInit {
-    constructor() {
+    constructor(private roleService: RoleService) {
     }
 
     ngOnInit() {
