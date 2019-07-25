@@ -108,17 +108,31 @@ users-admin app-dialog div.modal-footer > .message {
     margin-left: 2px;
 }
 
-.column-item-transfer {
+.permission-selector > .panel-wrapper,
+.permission-selector > .panel-wrapper > .panel > .panel-body {
+    overflow-x: auto;
+}
+.permission-selector-buttons {
     flex-direction: column;
     justify-content: center;
     display: flex;
     margin: 0 5px;
 }
-.column-item-transfer > span {
+.permission-selector-buttons > span {
     padding-bottom: 10px;
     font-size: 1.5em;
     cursor: pointer;
 }
-.ul-tree-level-zero {
+.ul-tree {
+    list-style-type: none;
+    padding-left: 20px;
+}
+.ul-tree.ul-tree-level-zero {
     padding: 0;
+}
+.ul-tree > li > div.checkbox {
+    padding-top: 0;
+}
+.ul-tree > li > div > label {
+
 }

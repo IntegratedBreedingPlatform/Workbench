@@ -36,8 +36,8 @@
 			<div class="row form-group">
 				<label for="roleName" class="col-sm-3 control-label">Permissions:</label>
 				<div class="col-xs-9 col-md-9">
-					<div style="display: flex">
-						<div class="">
+					<div style="display: flex" class="permission-selector">
+						<div class="panel-wrapper">
 							<div class="panel panel-primary">
 								<div class="panel-heading">Available permissions</div>
 								<div class="panel-body">
@@ -46,11 +46,11 @@
 								</div>
 							</div>
 						</div>
-						<div class="column-item-transfer">
+						<div class="permission-selector-buttons">
 							<span class="glyphicon glyphicon-menu-right" aria-hidden="true" (click)="moveSelected(permissions, false)"></span>
 							<span class="glyphicon glyphicon-menu-left" aria-hidden="true" (click)="moveSelected(permissions, true)"></span>
 						</div>
-						<div class="">
+						<div class="panel-wrapper">
 							<div class="panel panel-primary">
 								<div class="panel-heading">Selected permissions</div>
 								<div class="panel-body">

@@ -111,7 +111,7 @@ export class RoleCardComponent implements OnInit {
             return;
         }
 
-        for (const permission: Permission of permissions) {
+        for (const permission of permissions) {
             if (permission.selected) {
                 permission.transferred = !doRemove;
             }
@@ -134,22 +134,16 @@ export class RoleCardComponent implements OnInit {
 @Component({
     selector: 'permission-tree',
     // TODO
-    //  - extract style
     //  - click select children
     //  - show non-selected grandparents in right table
     template: `
-		<ul style="list-style-type: none" [class.ul-tree-level-zero]="isLevelZero">
+		<ul class="ul-tree" [class.ul-tree-level-zero]="isLevelZero">
 			<li *ngFor="let permission of permissions">
 				<ng-container *ngIf="!isSelectedPermissionTable || permission.transferred">
-					<div *ngIf="!permission.selectable">
-						<strong>
-							{{permission.description}}
-						</strong>
-					</div>
-					<div class="checkbox" *ngIf="permission.selectable">
+					<div [class.checkbox]="permission.selectable">
 						<label>
-							<input type="checkbox" *ngIf="isSelectedPermissionTable || !permission.transferred"
-                                   [(ngModel)]="permission.selected">
+							<input type="checkbox" *ngIf="permission.selectable && (isSelectedPermissionTable || !permission.transferred)"
+                                   [(ngModel)]="permission.selected" >
 							{{permission.description}}
 						</label>
 					</div>
