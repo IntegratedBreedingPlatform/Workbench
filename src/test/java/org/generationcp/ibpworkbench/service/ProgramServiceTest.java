@@ -172,8 +172,6 @@ public class ProgramServiceTest {
 		userList.add(WorkbenchUserTestDataInitializer.createWorkbenchUser());
 		this.programService.updateMembersProjectUserInfo(userList, project);
 		final int numberOfUsers = userList.size();
-		Mockito.verify(this.userService, Mockito.times(numberOfUsers))
-				.getProjectUserInfoByProjectIdAndUserId(ArgumentMatchers.anyLong(), ArgumentMatchers.anyInt());
 		// Expecting to save only the 2nd user as the 1st user is already saved
 		// as a member
 		Mockito.verify(this.userService, Mockito.times(numberOfUsers))
