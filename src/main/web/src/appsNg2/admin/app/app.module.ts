@@ -24,6 +24,7 @@ import { ModalContext } from './shared/components/dialog/modal.context';
 import { RolesAdmin } from './roles/roles-admin.component';
 import { SiteAdminComponent } from './site-admin.component';
 import { PermissionTree, RoleCardComponent } from './roles/role-card.component';
+import { RolesDatagrid } from './roles/roles-datagrid.component';
 
 @NgModule({
   imports: [BrowserModule, HttpModule, FormsModule, Select2Module, CommonModule, AppRoutingModule],
@@ -32,6 +33,7 @@ import { PermissionTree, RoleCardComponent } from './roles/role-card.component';
     AppComponent,
     EmailValidator,
     UsersDatagrid,
+    RolesDatagrid,
     Dialog,
     ErrorNotification,
     ErrorComponent,
