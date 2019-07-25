@@ -1,17 +1,4 @@
 <section>
-	<div class="om-panel-content">
-		<a class="btn btn-default form-group pull-right"
-				[routerLink]="['role-card']"
-				[queryParams]="{isEditing: false}">
-			Create role
-		</a>
-	</div>
-	<div class="om-panel-header">
-		<h2 class="om-panel-title ">
-			Manage Roles</h2>
-		<div>Click a <strong>role names</strong>
-			to inspect or edit their associated permissions and accessibility.
-		</div>
-	</div>
+	<roles-datagrid></roles-datagrid>
 </section>
 <router-outlet></router-outlet>
