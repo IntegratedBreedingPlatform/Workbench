@@ -47,8 +47,8 @@
 							</div>
 						</div>
 						<div class="permission-selector-buttons">
-							<span class="glyphicon glyphicon-menu-right" aria-hidden="true" (click)="moveSelected(permissions, false)"></span>
-							<span class="glyphicon glyphicon-menu-left" aria-hidden="true" (click)="moveSelected(permissions, true)"></span>
+							<span class="glyphicon glyphicon-menu-right" aria-hidden="true" (click)="moveSelected(permissions, false) && showTransferredBranches()"></span>
+							<span class="glyphicon glyphicon-menu-left" aria-hidden="true" (click)="moveSelected(permissions, true) && showTransferredBranches()"></span>
 						</div>
 						<div class="panel-wrapper">
 							<div class="panel panel-primary">
@@ -61,7 +61,6 @@
 							</div>
 						</div>
 					</div>
-
 				</div>
 			</div>
 		</form>

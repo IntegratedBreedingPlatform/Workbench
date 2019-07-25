@@ -8,6 +8,7 @@ import { SERVER_API_URL } from '../../app.constants';
 import { Crop } from '../models/crop.model';
 import { Program } from '../models/program.model';
 import { RoleType } from '../models/role-type.model';
+import { Permission } from '../models/permission.model';
 
 @Injectable()
 export class RoleService{
@@ -110,4 +111,17 @@ function toProgram(r: any): Program {
 
 function mapRole(response:Response): Role{
   return toRole(response.json());
+}
+
+/**
+ * @permissions permissions iterate the list and set the parent based on the children
+ */
+export function setParent(permissions: Permission[], parent: Permission) {
+    for (const permission of permissions) {
+        permission.parent = parent;
+        if (permission.children && permission.children.length) {
+            setParent(permission.children, permission);
+        }
+    }
+    return permissions;
 }

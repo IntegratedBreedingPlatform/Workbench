@@ -3,8 +3,9 @@ import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Role } from '../shared/models/role.model';
 import { RoleType } from '../shared/models/role-type.model';
-import { RoleService } from '../shared/services/role.service';
+import { RoleService, setParent } from '../shared/services/role.service';
 import { Permission } from '../shared/models/permission.model';
+import mockData from './permissions-mock';
 
 @Component({
     selector: 'role-card',
@@ -23,54 +24,7 @@ export class RoleCardComponent implements OnInit {
 
     permissionsSelected: Permission[];
     // TODO hook service
-    permissions: Permission[] = [
-        {
-            id: 1,
-            name: 'CROP_MANAGEMENT',
-            description: 'Crop management',
-            children: [{}],
-            selectable: false,
-        },
-        {
-            id: 2,
-            name: 'MANAGE_ONTOLOGIES',
-            description: 'Manage Ontologies',
-            children: [{}],
-            selectable: true,
-        },
-        {
-            id: 3,
-            name: 'MANAGE_GERMPLASM',
-            description: 'Manage Germplasm',
-            children: [
-                {
-                    id: 1,
-                    name: 'CROP_MANAGEMENT',
-                    description: 'Crop management',
-                    children: [{}],
-                    selectable: false,
-                },
-                {
-                    id: 2,
-                    name: 'MANAGE_ONTOLOGIES',
-                    description: 'Manage Ontologies',
-                    children: [{}],
-                    selectable: true,
-                },
-                {
-                    id: 3,
-                    name: 'MANAGE_GERMPLASM',
-                    description: 'Manage Germplasm',
-                    children: [
-
-                    ],
-                    selectable: true,
-                }
-
-            ],
-            selectable: true,
-        }
-    ];
+    permissions: Permission[] = setParent(mockData, null);
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
@@ -113,10 +67,39 @@ export class RoleCardComponent implements OnInit {
 
         for (const permission of permissions) {
             if (permission.selected) {
-                permission.transferred = !doRemove;
+                permission.isTransferred = !doRemove;
             }
             if (permission.children) {
                 this.moveSelected(permission.children, doRemove);
+            }
+        }
+        return permissions;
+    }
+
+    /**
+     * Iterate over the tree to display all the ancestors of an item that has been transferred
+     */
+    showTransferredBranches() {
+        let parentsToShow: Permission[] = [];
+        let permissions: Permission[] = Object.assign([], this.permissions);
+        while (permissions && permissions.length) {
+            let permission = permissions.pop();
+            if (permission.parent && permission.isTransferred && permission.selectable) {
+                parentsToShow.push(permission.parent);
+            }
+            if (permission.children) {
+                permissions.push.apply(permissions, permission.children);
+            }
+            // Take advantage of this tree traversal logic to reset this property
+            permission.hasDescendantsTransferred = false;
+        }
+        // Make all the branch visible
+        // Include all the ancestors up to the root
+        while (parentsToShow.length) {
+            let parent = parentsToShow.pop();
+            parent.hasDescendantsTransferred = true;
+            if (parent.parent) {
+                parentsToShow.push(parent.parent);
             }
         }
     }
@@ -124,7 +107,7 @@ export class RoleCardComponent implements OnInit {
 
 /**
  * Recursive component to display a tree of Permissions
- * Using a combination of the permission.transferred property and the #isSelectedPermissionTable flag
+ * Using a combination of the permission.isTransferred property and the #isSelectedPermissionTable flag
  * it decides to show the selected items or not, which is used to display two trees next to each other:
  * Available and selected.
  *
@@ -135,21 +118,21 @@ export class RoleCardComponent implements OnInit {
     selector: 'permission-tree',
     // TODO
     //  - click select children
-    //  - show non-selected grandparents in right table
     template: `
 		<ul class="ul-tree" [class.ul-tree-level-zero]="isLevelZero">
 			<li *ngFor="let permission of permissions">
-				<ng-container *ngIf="!isSelectedPermissionTable || permission.transferred">
+				<ng-container *ngIf="isShowContainer(permission)">
 					<div [class.checkbox]="permission.selectable">
 						<label>
-							<input type="checkbox" *ngIf="permission.selectable && (isSelectedPermissionTable || !permission.transferred)"
-                                   [(ngModel)]="permission.selected" >
+							<input type="checkbox" *ngIf="isShowCheckbox(permission)"
+                                   [disabled]="!this.isSelectedPermissionTable && permission.isTransferred"
+								   [(ngModel)]="permission.selected">
 							{{permission.description}}
 						</label>
 					</div>
 				</ng-container>
 				<permission-tree *ngIf="permission.children" [permissions]="permission.children"
-                                 [isSelectedPermissionTable]="isSelectedPermissionTable"></permission-tree>
+								 [isSelectedPermissionTable]="isSelectedPermissionTable"></permission-tree>
 			</li>
 		</ul>
     `
@@ -158,4 +141,19 @@ export class PermissionTree {
     @Input() permissions: Permission [];
     @Input() isLevelZero: boolean;
     @Input() isSelectedPermissionTable: boolean;
+
+    isShowContainer(permission: Permission) {
+        return !this.isSelectedPermissionTable || permission.isTransferred || permission.hasDescendantsTransferred;
+    }
+
+    isShowCheckbox(permission: Permission) {
+        if (!permission.selectable) {
+            return false;
+        }
+        return !this.isSelectedPermissionTable || permission.isTransferred;
+    }
+
+    isCheckboxDisabled(permission: Permission) {
+        return !this.isSelectedPermissionTable && permission.isTransferred;
+    }
 }

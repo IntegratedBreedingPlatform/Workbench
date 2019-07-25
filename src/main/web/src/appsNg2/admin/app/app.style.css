@@ -108,6 +108,9 @@ users-admin app-dialog div.modal-footer > .message {
     margin-left: 2px;
 }
 
+.permission-selector > .panel-wrapper {
+    display: flex;
+}
 .permission-selector > .panel-wrapper,
 .permission-selector > .panel-wrapper > .panel > .panel-body {
     overflow-x: auto;
