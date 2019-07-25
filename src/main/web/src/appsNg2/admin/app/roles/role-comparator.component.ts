@@ -22,12 +22,12 @@ export class RoleComparator implements IObjectComparator {
             if (typeof target[prop] === 'string' && source[prop].toUpperCase() === target[prop].toUpperCase()) continue;
             if (source[prop] == "undefined") continue;
             //Option for status Active
-            if(prop == "active" && source[prop] == "undefined" && target[prop] === "true") continue;
+            if(prop == "active" && source[prop] == "undefined" && target[prop] === true) continue;
             if((source[prop] == "undefined" && prop != "active") || source[prop] == "all") continue;
             return false;
         }
 
-        if(source["active"] == undefined && target["active"] == "false") {
+        if(source["active"] == undefined && target["active"] == false) {
             return false;
         }
 
