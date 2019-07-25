@@ -174,8 +174,8 @@ public class ProgramService {
 			this.userService.saveCropPerson(cropPerson);
 		}
 		// Get the users with no association to any programs in a crop.
-		final List<WorkbenchUser> usersToBeRemoved = this.getUsersNotAssociatedToAnyProgram(project.getCropType(), workbenchUsers);
-		for (final WorkbenchUser workbenchUser : usersToBeRemoved) {
+		final List<WorkbenchUser> usersWithoutAssociatedPrograms = this.userService.getUsersWithoutAssociatedPrograms(project.getCropType());
+		for (final WorkbenchUser workbenchUser : usersWithoutAssociatedPrograms) {
 			final CropPerson cropPerson = new CropPerson(project.getCropType(), workbenchUser.getPerson());
 			this.userService.removeCropPerson(cropPerson);
 		}
@@ -189,12 +189,6 @@ public class ProgramService {
 		}
 		activeUserIds.removeAll(userIdsOfUsersAssociatedToAProgram);
 		return activeUserIds;
-	}
-
-	protected List<WorkbenchUser> getUsersNotAssociatedToAnyProgram(final CropType cropType, final Collection<WorkbenchUser> workbenchUsers) {
-		final List<WorkbenchUser> usersAssignedToPrograms = this.userService.getActiveUsersByCrop(cropType);
-		usersAssignedToPrograms.removeAll(workbenchUsers);
-		return usersAssignedToPrograms;
 	}
 
 	public void addUnspecifiedLocationToFavorite(final Project program) {
