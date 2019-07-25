@@ -22,7 +22,7 @@ export class RolesDatagrid implements  OnInit {
 
     constructor(private roleService: RoleService, private modalContext: ModalContext) {
 
-        this.table = new NgDataGridModel<Role>([], 25, new RoleComparator(), <Role>{ active: 'true' });
+        this.table = new NgDataGridModel<Role>([], 25, new RoleComparator(), <Role>{ active: true });
     }
 
     ngOnInit() {
