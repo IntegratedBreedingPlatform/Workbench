@@ -42,11 +42,11 @@
 									  style="padding-left: 5px; color: #428bca;"> and {{role.permissions.length - 1}} more</span>
                             </span>
 					</td>
-					<td *ngIf="role.name.indexOf('Admin')!=-1 && role.active == 'true'">Active</td>
-					<td *ngIf="role.name.indexOf('Admin')!=-1 && role.active == 'false'">Inactive</td>
+					<td *ngIf="role.name.indexOf('Admin')!=-1 && role.active === true">Active</td>
+					<td *ngIf="role.name.indexOf('Admin')!=-1 && role.active === false">Inactive</td>
 					<td  *ngIf="role.name.indexOf('Admin')==-1">
-						<a href="javascript:void(0)" *ngIf="role.active == 'true'">Deactivate</a>
-						<a href="javascript:void(0)" *ngIf="role.active == 'false'">Activate</a>
+						<a href="javascript:void(0)" *ngIf="role.active === true">Deactivate</a>
+						<a href="javascript:void(0)" *ngIf="role.active === false">Activate</a>
 					</td>
 				</tr>
 				</tbody>
