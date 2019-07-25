@@ -125,7 +125,6 @@ export class RoleCardComponent implements OnInit {
 					<div [class.checkbox]="permission.selectable">
 						<label>
 							<input type="checkbox" *ngIf="isShowCheckbox(permission)"
-                                   [disabled]="!this.isSelectedPermissionTable && permission.isTransferred"
 								   [(ngModel)]="permission.selected">
 							{{permission.description}}
 						</label>
@@ -150,10 +149,7 @@ export class PermissionTree {
         if (!permission.selectable) {
             return false;
         }
-        return !this.isSelectedPermissionTable || permission.isTransferred;
-    }
-
-    isCheckboxDisabled(permission: Permission) {
-        return !this.isSelectedPermissionTable && permission.isTransferred;
+        return !this.isSelectedPermissionTable && !permission.isTransferred
+            || this.isSelectedPermissionTable && permission.isTransferred;
     }
 }
