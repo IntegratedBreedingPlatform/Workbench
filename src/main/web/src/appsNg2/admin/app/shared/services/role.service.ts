@@ -83,9 +83,9 @@ function toRole(r:any): Role{
     name: r.name,
     description: r.description,
     type: r.roleType.name,
-    active: String(r.active),
-    editable: String(r.editable),
-    assignable: String(r.assignable),
+    active: r.active,
+    editable: r.editable,
+    assignable: r.assignable,
     permissions: r.permissions
   });
   return role;

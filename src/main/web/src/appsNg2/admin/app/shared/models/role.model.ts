@@ -6,9 +6,9 @@ export class Role {
                 public name?: string,
                 public description?: string,
                 public type?: string,
-                public active?: string,
-                public editable?: string,
-                public assignable?: string,
+                public active?: boolean,
+                public editable?: boolean,
+                public assignable?: boolean,
                 public permissions?: Permission[]) {
     }
 }
