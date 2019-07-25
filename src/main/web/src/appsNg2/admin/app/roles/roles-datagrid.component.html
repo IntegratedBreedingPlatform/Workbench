@@ -22,7 +22,7 @@
 					<th [ngClass]="{ sort: isSorted('name'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('name')">Name</th>
 					<th [ngClass]="{ sort: isSorted('description'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('description')">Description</th>
 					<th [ngClass]="{ sort: isSorted('type'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('type')">Type</th>
-					<th [ngClass]="{ sort: isSorted('permissions'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('permissions')">Permissions</th>
+					<th>Permissions</th>
 					<th [ngClass]="{ sort: isSorted('active'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('active')">Status</th>
 				</tr>
 				</thead>
