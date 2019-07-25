@@ -11,7 +11,6 @@ export class RoleComparator implements IObjectComparator {
         if ( ! ( source instanceof Object ) || ! ( target instanceof Object ) ) return false;
         // if they are not strictly equal, they both need to be Objects
         for ( let prop in source ) {
-            // console.log("source " + source[prop]);
             if (!source.hasOwnProperty(prop)) continue;
             if (source[prop] === undefined || source[prop] === null || source[prop] === '') continue;
             if (typeof source[prop] === 'object' && this.same(source[prop], target[prop])) continue;
@@ -22,12 +21,8 @@ export class RoleComparator implements IObjectComparator {
             if (typeof target[prop] === 'string' && source[prop].toUpperCase() === target[prop].toUpperCase()) continue;
             if (source[prop] == "undefined") continue;
             //Option for status Active
-            if(prop == "active" && source[prop] == "undefined" && target[prop] === true) continue;
+            if(prop === 'active' && source[prop] != target[prop]) continue;
             if((source[prop] == "undefined" && prop != "active") || source[prop] == "all") continue;
-            return false;
-        }
-
-        if(source["active"] == undefined && target["active"] == false) {
             return false;
         }
 
