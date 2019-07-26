@@ -1,4 +1,4 @@
-<app-dialog [visible]="modalContext.popupVisible['assign-roles']" [title]="'Assign role'">
+<app-dialog [visible]="active" [title]="'Assign role'" (onClose)="cancel()">
 	<div *ngIf="active">
 		<div class="modal-body">
 			<div class="row form-group">
