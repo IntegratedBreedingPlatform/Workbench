@@ -1,3 +1,4 @@
+<app-dialog [(visible)]="active" [title]="dialogTitle" (onClose)="cancel(form)">
 <div *ngIf="active">
     <div class="modal-body">
         <form class="form-horizontal" #form="ngForm" >
@@ -47,9 +48,9 @@
                 <label for="userCrops" class="col-sm-3 control-label">Crops</label>
                 <div class="col-sm-9">
                     <select2 required id="userCrops" name="userCrops"
-                             [data]="crops"
+                             [data]="crops | toSelect2OptionData"
                              [options]="select2Options"
-                             [value]="selectedCropIds"
+                             [value]="model.crops | toSelect2OptionId"
                              [width]="'100%'"
                              (valueChanged)="onChangeCrop($event)"></select2>
                     <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
@@ -118,7 +119,7 @@
         <span class="throbber throbber-lg"></span>
         </div>
         <div class="popup">
-            <app-dialog [(visible)]="showDeleteUserRoleConfirmPopUpDialog" [title]="modalTitle">
+            <app-dialog [(visible)]="showDeleteUserRoleConfirmPopUpDialog" [title]="modalTitle" >
                 <div class="modal-body">
                     <div class="separator"></div>
                     <form class="form-horizontal">
@@ -142,3 +143,4 @@
         <button type="submit" class="btn btn-success" [disabled]="!isFormValid(form)" *ngIf="userSaved">User saved!</button>
     </div>
 </div>
+</app-dialog>
