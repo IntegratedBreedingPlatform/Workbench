@@ -20,7 +20,6 @@ import { Principal } from './shared/auth/principal.service';
 import { AppRoutingModule } from './app-routing.module';
 import { ErrorComponent } from './layouts/error/error.component';
 import { AccountService } from './shared/auth/account.service';
-import { ModalContext } from './shared/components/dialog/modal.context';
 import { RolesAdmin } from './roles/roles-admin.component';
 import { SiteAdminComponent } from './site-admin.component';
 import { PermissionTree, RoleCardComponent } from './roles/role-card.component';
@@ -52,8 +51,7 @@ import { RolesDatagrid } from './roles/roles-datagrid.component';
   providers: [
       UserRouteAccessService,
       Principal,
-      AccountService,
-      ModalContext
+      AccountService
   ],
   bootstrap: [AppComponent]
 })
