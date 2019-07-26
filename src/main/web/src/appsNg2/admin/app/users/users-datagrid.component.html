@@ -1,7 +1,7 @@
 <section>
   <div class="om-panel-content">
       <button class="btn btn-default om-add-new-btn form-group pull-right"
-              (click)="showNewUserForm(userCreateCard)">Add user
+              (click)="showNewUserForm()">Add user
       </button>
   </div>
   <div class="om-panel-header">
@@ -56,7 +56,7 @@
                     <tr *ngFor="let user of table.itemsOnCurrentPage">
                         <td *ngIf="user.roleNames.indexOf('SuperAdmin')!=-1"> {{user.username}} </td>
                         <td *ngIf="user.roleNames.indexOf('SuperAdmin')==-1">
-                          <a href="javascript:void(0)"  (click)="showEditUserForm(user, userEditCard)"> {{user.username}} </a>
+                          <a href="javascript:void(0)" (click)="showEditUserForm(user)"> {{user.username}} </a>
                         </td>
                         <td>{{user.firstName}}</td>
                         <td>{{user.lastName}}</td>
