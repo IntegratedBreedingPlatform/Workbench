@@ -8,6 +8,7 @@ import { SERVER_API_URL } from '../../app.constants';
 @Injectable()
 export class CropService {
     private baseUrl: string = SERVER_API_URL + '/brapi/v1';
+    public crops: Crop[];
 
     constructor(private http: Http) {
     }
