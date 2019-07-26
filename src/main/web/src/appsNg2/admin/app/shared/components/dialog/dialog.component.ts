@@ -34,13 +34,13 @@ export class Dialog implements OnInit {
   @Input() visible: boolean;
   @Input() title: string;
   @Output() visibleChange: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() onClose = new EventEmitter();
 
   constructor() { }
 
   ngOnInit() { }
 
   close() {
-    this.visible = false;
-    this.visibleChange.emit(this.visible);
+    this.onClose.emit();
   }
 }
