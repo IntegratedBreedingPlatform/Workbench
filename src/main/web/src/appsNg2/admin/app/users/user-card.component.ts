@@ -1,16 +1,16 @@
-import { Component, EventEmitter, Input, OnInit, Output, Pipe, PipeTransform } from '@angular/core';
+import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { User } from '../shared/models/user.model';
 
 import { UserService } from './../shared/services/user.service';
 import { RoleService } from './../shared/services/role.service';
 import { MailService } from './../shared/services/mail.service';
-import { Role } from './../shared/models/role.model';
 import { Response } from '@angular/http';
 import { Crop } from '../shared/models/crop.model';
 import { Select2OptionData } from 'ng2-select2';
-import { ModalContext } from '../shared/components/dialog/modal.context';
 import { UserRole } from '../shared/models/user-role.model';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CropService } from '../shared/services/crop.service';
 
 @Component({
     selector: 'user-card',
@@ -22,6 +22,8 @@ export class UserCard implements OnInit {
 
     active: boolean = true;
 
+    dialogTitle: string;
+
     errorUserMessage: string = '';
     errorClass: string = 'alert alert-danger';
     submitted = false;
@@ -29,15 +31,9 @@ export class UserCard implements OnInit {
     isEditing: boolean;
     sendMail: boolean;
 
-    @Input() originalUser: User;
-    @Input() userSaved: boolean = false;
-    @Input() model: User;
-    @Input() roles: Role[];
-    @Output() onUserAdded = new EventEmitter<User>();
-    @Output() onUserEdited = new EventEmitter<User>();
-    @Output() onCancel = new EventEmitter<void>();
+    userSaved: boolean = false;
+    model: User;
 
-    userRoles: UserRole[];
     showDeleteUserRoleConfirmPopUpDialog = false;
     userRoleSelected: UserRole;
     /*
@@ -48,8 +44,7 @@ export class UserCard implements OnInit {
      *      and https://github.com/NejcZdovc/ng2-select2/issues/101
      *  - won't work with the latest version https://github.com/NejcZdovc/ng2-select2/issues/144
      */
-    @Input() crops: Select2OptionData[];
-    @Input() selectedCropIds: string[];
+    crops: Crop[];
 
     modalTitle: string = 'Delete Role';
     modalMessage: string = 'Selected role will be dissociated from user. If it is a crop or program role, the user will no longer have access to the crop or program associated to the role. Do you want to proceed?';
@@ -59,7 +54,7 @@ export class UserCard implements OnInit {
         theme: 'classic'
     };
 
-    constructor(private userService: UserService, private roleService: RoleService, private mailService: MailService, private modalContext: ModalContext) {
+    constructor(private cropService: CropService, private userService: UserService, private roleService: RoleService, private mailService: MailService, private router: Router, private activatedRoute: ActivatedRoute) {
         // New empty user is built to open a form with empty default values
         // id, firstName, lastName, username, role, email, status
         this.model = new User('0', '', '', '', [], [], '', 'true');
@@ -89,10 +84,21 @@ export class UserCard implements OnInit {
     cancel(form: FormGroup) {
         form.reset();
         this.errorUserMessage = '';
-        this.onCancel.emit();
+        this.router.navigate(['../'], { relativeTo: this.activatedRoute });
     }
 
     ngOnInit() {
+        this.activatedRoute.params.subscribe(params => {
+            this.isEditing = Boolean(params['isEditing']);
+            this.errorUserMessage = '';
+            this.sendMail = !this.isEditing;
+
+
+        this.dialogTitle = this.isEditing ? 'Edit User' : 'Add User';
+        this.model = this.userService.user;
+        this.crops = this.cropService.crops;
+        });
+        console.log('user-card isEditing: ' + this.isEditing);
     }
 
     onChangeCrop(data: {value: string[]}) {
@@ -117,7 +123,6 @@ export class UserCard implements OnInit {
                 },
                 error => {
                     this.errorUserMessage = this.mapErrorUser(error.json().ERROR.errors);
-
                 });
     }
 
@@ -136,12 +141,7 @@ export class UserCard implements OnInit {
     }
 
     AssignRole() {
-        this.modalContext.popupVisible['assign-roles'] = true;
-        if (this.modalContext.popupVisible['user-create']) {
-            this.modalContext.popupVisible['user-create'] = false;
-        } else {
-            this.modalContext.popupVisible['user-edit'] = false;
-        }
+        this.router.navigate(['../user-role-card', { isEditing: this.isEditing }], { relativeTo: this.activatedRoute });
     }
 
     private mapErrorUser(response: any): string {
@@ -170,11 +170,7 @@ export class UserCard implements OnInit {
                             this.sendingEmail = false;
                             this.userSaved = false;
                             this.sendMail = !this.isEditing;
-                            if (!this.isEditing) {
-                                this.onUserAdded.emit(this.model);
-                            } else {
-                                this.onUserEdited.emit(this.model);
-                            }
+                            this.updateUserDataGridTable();
                         }, 1000);
                     },
                     error => {
@@ -186,11 +182,7 @@ export class UserCard implements OnInit {
                             this.errorClass = 'alert alert-danger';
                             this.userSaved = false;
                             this.sendMail = !this.isEditing;
-                            if (!this.isEditing) {
-                                this.onUserAdded.emit(this.model);
-                            } else {
-                                this.onUserEdited.emit(this.model);
-                            }
+                            this.updateUserDataGridTable();
                         }, 2000);
                     }
                 );
@@ -198,13 +190,18 @@ export class UserCard implements OnInit {
             setTimeout(() => {
                 this.userSaved = false;
                 this.sendMail = !this.isEditing;
-                if (!this.isEditing) {
-                    this.onUserAdded.emit(this.model);
-                } else {
-                    this.onUserEdited.emit(this.model);
-                }
+                this.updateUserDataGridTable();
             }, 1000);
         }
+    }
+
+    private updateUserDataGridTable() {
+        if (!this.isEditing) {
+            this.userService.onUserAdded.next(this.model);
+        } else {
+            this.userService.onUserUpdated.next(this.model);
+        }
+        this.router.navigate(['../'], { relativeTo: this.activatedRoute });
     }
 
     private trimAll(model: User) {
