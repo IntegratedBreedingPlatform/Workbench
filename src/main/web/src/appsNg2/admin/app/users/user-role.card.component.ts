@@ -1,13 +1,14 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit } from '@angular/core';
 import { Crop } from '../shared/models/crop.model';
 import { Program } from '../shared/models/program.model';
 import { Role } from '../shared/models/role.model';
 import { RoleType } from '../shared/models/role-type.model';
 import { User } from '../shared/models/user.model';
 import { RoleService } from '../shared/services/role.service';
-import { ModalContext } from '../shared/components/dialog/modal.context';
 import { RoleFilter } from '../shared/models/role-filter.model';
 import { UserRole } from '../shared/models/user-role.model';
+import { ActivatedRoute, Router } from '@angular/router';
+import { UserService } from '../shared/services/user.service';
 
 
 @Component({
@@ -33,11 +34,11 @@ export class UserRoleCard implements OnInit {
     cropSelected: any = '';
     programSelected: any = '';
 
-    @Input() model: User;
-    @Input() modalPrevius: string;
+    model: User;
     onCancel = new EventEmitter<void>();
+    isEditing: Boolean;
 
-    constructor(private roleService: RoleService, private modalContext: ModalContext) {
+    constructor(private userService: UserService, private roleService: RoleService, private router: Router, private activatedRoute: ActivatedRoute) {
         this.roleService.getRoleTypes().subscribe(resp => {
                 this.roleTypes = resp;
             }
@@ -45,9 +46,7 @@ export class UserRoleCard implements OnInit {
     }
 
     cancel() {
-        this.reset();
-        this.modalContext.popupVisible['assign-roles'] = false;
-        this.modalContext.popupVisible[this.modalPrevius] = true;
+        this.router.navigate(['../user-card', { isEditing: this.isEditing }], { relativeTo: this.activatedRoute });
     }
 
     changeRole() {
@@ -88,9 +87,7 @@ export class UserRoleCard implements OnInit {
 
         if (this.isUserRoleValid(userRole)) {
             this.model.userRoles.push(userRole);
-            this.reset();
-            this.modalContext.popupVisible['assign-roles'] = false;
-            this.modalContext.popupVisible[this.modalPrevius] = true;
+            this.router.navigate(['../user-card', { isEditing: this.isEditing }], { relativeTo: this.activatedRoute });
         }
     }
 
@@ -140,6 +137,17 @@ export class UserRoleCard implements OnInit {
     }
 
     ngOnInit() {
+        this.activatedRoute.params.subscribe(params => {
+            this.isEditing = Boolean(params['isEditing']);
+        });
+
+        this.model = this.userService.user;
+        this.roleTypeSelected = '';
+        this.roleSelected = '';
+        this.cropSelected = '';
+        this.programSelected = '';
+        this.errorUserRoleMessage = '';
+
     }
 
     changeCrop() {
