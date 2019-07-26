@@ -41,7 +41,21 @@ export class RoleCardComponent implements OnInit {
     }
 
     isFormValid(form: NgForm) {
-        return form.valid;
+        return form.valid && this.hasTransferredPermissions();
+    }
+
+    private hasTransferredPermissions(): boolean {
+        let permissions: Permission[] = Object.assign([], this.permissions);
+        while (permissions.length) {
+            let permission = permissions.pop();
+            if (permission.isTransferred) {
+                return true;
+            }
+            if (permission.children) {
+                permissions.push.apply(permissions, permission.children);
+            }
+        }
+        return false;
     }
 
     cancel(form: NgForm) {
