@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
+import { Observable, Subject } from 'rxjs/Rx';
 import { User } from './../models/user.model';
 import ServiceHelper from './service.helper';
 import { SERVER_API_URL } from '../../app.constants';
@@ -8,6 +8,12 @@ import { SERVER_API_URL } from '../../app.constants';
 @Injectable()
 export class UserService {
     private baseUrl: string = SERVER_API_URL;
+
+    public onUserAdded = new Subject<User>();
+    public onUserUpdated = new Subject<User>();
+
+    /** User been edited or created */
+    public user: User;
 
     private http: Http;
 
