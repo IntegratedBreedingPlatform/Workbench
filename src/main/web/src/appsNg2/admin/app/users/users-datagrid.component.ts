@@ -1,15 +1,14 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgDataGridModel } from './../shared/components/datagrid/ng-datagrid.model';
 import { User } from './../shared/models/user.model';
 import { Role } from './../shared/models/role.model';
 import './../shared/utils/array.extensions';
 import { UserService } from './../shared/services/user.service';
 import { RoleService } from './../shared/services/role.service';
-import { UserCard } from './user-card.component';
 import { UserComparator } from './user-comparator.component';
 import { Crop } from '../shared/models/crop.model';
 import { CropService } from '../shared/services/crop.service';
-import { ModalContext } from '../shared/components/dialog/modal.context';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
     selector: 'users-datagrid',
@@ -40,34 +39,24 @@ export class UsersDatagrid implements OnInit {
 
     constructor(private userService: UserService,
                 private roleService: RoleService,
-                private cropService: CropService,private modalContext: ModalContext) {
+                private cropService: CropService, private router: Router, private activatedRoute: ActivatedRoute) {
         // TODO migrate to angular datatables
         this.table = new NgDataGridModel<User>([], 25, new UserComparator(), <User>{ status: 'true' });
         this.initUser();
-        this.modalContext.popupVisible["user-create"] = false;
-        this.modalContext.popupVisible["user-edit"] = false;
-        this.modalContext.popupVisible["assign-roles"] = false;
     }
 
-    showNewUserForm(userCreateCard: UserCard) {
-        this.initUser();
-        userCreateCard.resetForm();
-        userCreateCard.initialize(false);
+    showNewUserForm() {
+        this.userService.user = new User('0', '', '', '', [], [], '', 'true');;
+        this.router.navigate(['user-card', { isEditing: false }], { relativeTo: this.activatedRoute });
 
-        this.dialogTitle = 'Add User';
-        this.modalContext.popupVisible["user-create"] = true;
-        this.modalPrevious = 'user-create';
     }
 
-    showEditUserForm(user: User, userEditCard: UserCard) {
-
-        this.dialogTitle = 'Edit User';
+    showEditUserForm(user: User) {
         this.originalUser = user;
-        this.user = new User(user.id, user.firstName, user.lastName,
+        this.userService.user = new User(user.id, user.firstName, user.lastName,
             user.username, user.crops, user.userRoles.map((x) => Object.assign({}, x)), user.email, user.status);
-        userEditCard.initialize(true);
-        this.modalContext.popupVisible["user-edit"] = true;
-        this.modalPrevious = 'user-edit';
+        this.router.navigate(['user-card', { isEditing: true }], { relativeTo: this.activatedRoute });
+
     }
 
     initUser() {
@@ -103,14 +92,23 @@ export class UsersDatagrid implements OnInit {
                 });
         this.cropService
             .getAll()
-            .subscribe(crops => this.crops = crops);
+            .subscribe(crops => {
+                this.crops = crops;
+                this.cropService.crops = this.crops;
+            });
 
-    }
+        this.userService.onUserAdded.subscribe((userAdded: User) => {
+            this.table.items.push(userAdded);
+            this.sortAfterAddOrEdit();
+            }
+        );
 
-    onUserAdded(user: User) {
-        this.modalContext.popupVisible["user-create"] = false;
-        this.table.items.push(user);
-        this.sortAfterAddOrEdit();
+        this.userService.onUserUpdated.subscribe((userUpdated: User) => {
+            this.table.items.remove(this.originalUser);
+            this.table.items.push(userUpdated);
+            this.sortAfterAddOrEdit();
+            }
+        );
     }
 
     sortAfterAddOrEdit() {
@@ -119,13 +117,6 @@ export class UsersDatagrid implements OnInit {
         } else {
             this.sort(this.table.sortBy, true);
         }
-    }
-
-    onUserEdited(user: User) {
-        this.modalContext.popupVisible["user-edit"] = false;
-        this.table.items.remove(this.originalUser);
-        this.table.items.push(user);
-        this.sortAfterAddOrEdit();
     }
 
     // TODO
