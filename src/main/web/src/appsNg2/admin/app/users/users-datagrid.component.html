@@ -86,7 +86,7 @@
                         </td>
                     </tr>
                     <div class="popup">
-                      <app-dialog [(visible)]="showConfirmStatusDialog" [title]="confirmStatusTitle">
+                      <app-dialog [(visible)]="showConfirmStatusDialog" [title]="confirmStatusTitle" (onClose)="closeUserStatusConfirmPopUp()">
                           <div class="modal-body">
                               <form class="form-horizontal">
                                   <div class="popup-center-text">
