@@ -35,7 +35,9 @@ export class RoleService{
       roleType: role.type,
       permissions: role.permissions.map((permission: Permission) => {
         return permission.id;
-      })
+      }),
+      editable: true,
+      assignable: true
     }, { headers: this.getHeaders() });
   }
 
