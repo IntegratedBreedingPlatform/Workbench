@@ -92,14 +92,13 @@ export class UserCard implements OnInit {
             this.sendMail = !this.isEditing;
 
 
-        this.dialogTitle = this.isEditing ? 'Edit User' : 'Add User';
-        this.model = this.userService.user;
-        this.crops = this.cropService.crops;
+            this.dialogTitle = this.isEditing ? 'Edit User' : 'Add User';
+            this.model = this.userService.user;
+            this.crops = this.cropService.crops;
         });
-        console.log('user-card isEditing: ' + this.isEditing);
     }
 
-    onChangeCrop(data: {value: string[]}) {
+    onChangeCrop(data: { value: string[] }) {
         if (!data || !data.value) {
             return;
         }
@@ -214,16 +213,16 @@ export class UserCard implements OnInit {
         return form.valid && this.model.crops.length;
     }
 
-    showDeleteUserRoleConfirmPopUp(userRole: UserRole){
+    showDeleteUserRoleConfirmPopUp(userRole: UserRole) {
         this.showDeleteUserRoleConfirmPopUpDialog = true;
         this.userRoleSelected = userRole;
     }
 
-    closeUserRoleDeleteConfirmPopUp(){
+    closeUserRoleDeleteConfirmPopUp() {
         this.showDeleteUserRoleConfirmPopUpDialog = false;
     }
 
-    deleteUserRole(){
+    deleteUserRole() {
         const idx = this.model.userRoles.indexOf(this.userRoleSelected);
         this.model.userRoles.splice(idx, 1);
         this.showDeleteUserRoleConfirmPopUpDialog = false;
@@ -231,7 +230,7 @@ export class UserCard implements OnInit {
     }
 }
 
-@Pipe({name: 'toSelect2OptionData'})
+@Pipe({ name: 'toSelect2OptionData' })
 export class ToSelect2OptionDataPipe implements PipeTransform {
     transform(crops: Crop[]): Select2OptionData[] {
         if (!crops) {
@@ -240,13 +239,13 @@ export class ToSelect2OptionDataPipe implements PipeTransform {
         return crops.map((crop) => {
             return {
                 id: crop.cropName,
-                text : crop.cropName
+                text: crop.cropName
             };
         });
     }
 }
 
-@Pipe({name: 'toSelect2OptionId'})
+@Pipe({ name: 'toSelect2OptionId' })
 export class ToSelect2OptionIdPipe implements PipeTransform {
     transform(crops: Crop[]): string[] {
         if (!crops) {
