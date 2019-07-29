@@ -67,17 +67,7 @@ export class UsersDatagrid implements OnInit {
             this.table.sortBy = 'lastName';
         }
         //get all users
-        this.userService
-            .getAll()
-            .subscribe(
-                users => this.table.items = users,
-                error => {
-                    this.errorServiceMessage = error;
-                    if (error.status === 401) {
-                        localStorage.removeItem('xAuthToken');
-                        this.handleReAuthentication();
-                    }
-                });
+        this.loadTheUsersDataGridTable();
 
         // get all roles
         this.roleService
@@ -96,18 +86,31 @@ export class UsersDatagrid implements OnInit {
                 this.cropService.crops = this.crops;
             });
 
-        this.userService.onUserAdded.subscribe((userAdded: User) => {
-            this.table.items.push(userAdded);
+        this.userService.onUserAdded.subscribe(() => {
+            this.loadTheUsersDataGridTable();
             this.sortAfterAddOrEdit();
             }
         );
 
-        this.userService.onUserUpdated.subscribe((userUpdated: User) => {
-            this.table.items.remove(this.originalUser);
-            this.table.items.push(userUpdated);
+        this.userService.onUserUpdated.subscribe(() => {
+            this.loadTheUsersDataGridTable();
             this.sortAfterAddOrEdit();
             }
         );
+    }
+
+    private loadTheUsersDataGridTable() {
+        this.userService
+            .getAll()
+            .subscribe(
+                users => this.table.items = users,
+                error => {
+                    this.errorServiceMessage = error;
+                    if (error.status === 401) {
+                        localStorage.removeItem('xAuthToken');
+                        this.handleReAuthentication();
+                    }
+                });
     }
 
     sortAfterAddOrEdit() {
