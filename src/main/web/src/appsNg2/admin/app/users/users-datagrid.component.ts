@@ -31,7 +31,6 @@ export class UsersDatagrid implements OnInit {
     confirmMessage: string = 'Please confirm that you would like to deactivate/activate this user account.';
     user: User;
     originalUser: User;
-    modalPrevious: string;
 
     public roles: Role[];
     public userSelected: User;
