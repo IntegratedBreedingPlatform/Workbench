@@ -1,4 +1,4 @@
-<app-dialog [(visible)]="active" [title]="dialogTitle" (onClose)="cancel(form)">
+<app-dialog [(visible)]="active" [title]="dialogTitle" (onClose)="cancel()">
 <div *ngIf="active">
     <div class="modal-body">
         <form class="form-horizontal" #form="ngForm" >
@@ -137,9 +137,9 @@
         <div [class]="errorClass" role="alert" *ngIf="errorUserMessage">Errors: {{errorUserMessage}}</div>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="cancel(form)">Cancel</button>
-        <button type="submit" class="btn btn-primary" [disabled]="!isFormValid(form)" (click)="addUser(form)" *ngIf="!isEditing && !userSaved">Add user</button>
-        <button type="submit" class="btn btn-primary" [disabled]="!isFormValid(form)" (click)="editUser(form)" *ngIf="isEditing && !userSaved">Update user</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="cancel()">Cancel</button>
+        <button type="submit" class="btn btn-primary" [disabled]="!isFormValid(form)" (click)="addUser()" *ngIf="!isEditing && !userSaved">Add user</button>
+        <button type="submit" class="btn btn-primary" [disabled]="!isFormValid(form)" (click)="editUser()" *ngIf="isEditing && !userSaved">Update user</button>
         <button type="submit" class="btn btn-success" [disabled]="!isFormValid(form)" *ngIf="userSaved">User saved!</button>
     </div>
 </div>

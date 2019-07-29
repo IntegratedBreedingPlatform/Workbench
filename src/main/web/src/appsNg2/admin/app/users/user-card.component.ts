@@ -1,5 +1,4 @@
 import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import { User } from '../shared/models/user.model';
 
 import { UserService } from './../shared/services/user.service';
@@ -81,8 +80,7 @@ export class UserCard implements OnInit {
         this.submitted = true;
     }
 
-    cancel(form: FormGroup) {
-        form.reset();
+    cancel() {
         this.errorUserMessage = '';
         this.router.navigate(['../'], { relativeTo: this.activatedRoute });
     }
@@ -112,7 +110,7 @@ export class UserCard implements OnInit {
         });
     }
 
-    addUser(form: FormGroup) {
+    addUser() {
         this.userService
             .save(this.trimAll(this.model))
             .subscribe(
