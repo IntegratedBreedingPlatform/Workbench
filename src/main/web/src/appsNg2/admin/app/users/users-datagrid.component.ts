@@ -194,8 +194,8 @@ export class UsersDatagrid implements OnInit {
         return crops.map((crop) => crop.cropName).splice(1).join(' and ');
     }
 
-    getRoleNamesTitleFormat(roleNames) {
-        return roleNames.slice().splice(1).join(' and ');
+    getRoleNamesTitleFormat(userRoles) {
+        return userRoles.map((userRole) => userRole.role.name).splice(1).join(' and ');
     }
 
 }
