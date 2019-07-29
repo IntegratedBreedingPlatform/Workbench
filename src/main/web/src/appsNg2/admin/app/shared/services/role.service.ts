@@ -22,6 +22,12 @@ export class RoleService{
       this.http = http;
   }
 
+  getPermissionsTree(roleType: RoleType): Observable<Permission> {
+    return this.http.get(`${this.baseUrl}/permissions/tree?roleTypeId=${roleType.id}`, {
+      headers: this.getHeaders(),
+    }).map((response) => response.json());
+  }
+
   createRole(role: Role): any {
     return this.http.post(`${this.baseUrl}/roles`, {
       name: role.name,

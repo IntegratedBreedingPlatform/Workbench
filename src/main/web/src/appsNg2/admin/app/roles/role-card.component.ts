@@ -22,7 +22,7 @@ export class RoleCardComponent implements OnInit {
     // TODO merge into Role
     roleType: any = "";
     roleTypes: RoleType[];
-    permissions: Permission[];
+    permissions: Permission[] = [];
 
     errors: ErrorResponseInterface[];
 
@@ -34,9 +34,6 @@ export class RoleCardComponent implements OnInit {
     ngOnInit() {
         this.model = new Role();
         this.errors = [];
-
-        // TODO get from service
-        this.permissions = setParent(mockData, null);
 
         this.route.params.subscribe(params => {
             this.isEditing = params['isEditing'];
@@ -98,7 +95,9 @@ export class RoleCardComponent implements OnInit {
     }
 
     changeRoleType() {
-        // TODO
+        this.roleService.getPermissionsTree(this.roleType).subscribe((root: Permission) => {
+            this.permissions = setParent([root], null);
+        });
     }
 
     moveSelected(permissions: Permission[], doRemove: boolean) {
