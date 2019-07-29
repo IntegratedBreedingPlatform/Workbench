@@ -6,6 +6,7 @@ import { RoleType } from '../shared/models/role-type.model';
 import { RoleService, setParent } from '../shared/services/role.service';
 import { Permission } from '../shared/models/permission.model';
 import mockData from './permissions-mock';
+import { ErrorResponseInterface } from '../shared/services/error-response.interface';
 
 @Component({
     selector: 'role-card',
@@ -17,14 +18,13 @@ export class RoleCardComponent implements OnInit {
     isEditing: boolean;
     isVisible = true;
 
-    model: Role = new Role();
+    model: Role;
     // TODO merge into Role
-    roleType: RoleType;
+    roleType: any = "";
     roleTypes: RoleType[];
+    permissions: Permission[] = [];
 
-    permissionsSelected: Permission[];
-    // TODO hook service
-    permissions: Permission[] = setParent(mockData, null);
+    errors: ErrorResponseInterface[];
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
@@ -32,6 +32,9 @@ export class RoleCardComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.model = new Role();
+        this.errors = [];
+
         this.route.params.subscribe(params => {
             this.isEditing = params['isEditing'];
         });
@@ -41,7 +44,21 @@ export class RoleCardComponent implements OnInit {
     }
 
     isFormValid(form: NgForm) {
-        return form.valid;
+        return form.valid && this.hasTransferredPermissions();
+    }
+
+    private hasTransferredPermissions(): boolean {
+        let permissions: Permission[] = Object.assign([], this.permissions);
+        while (permissions.length) {
+            let permission = permissions.pop();
+            if (permission.isTransferred) {
+                return true;
+            }
+            if (permission.children) {
+                permissions.push.apply(permissions, permission.children);
+            }
+        }
+        return false;
     }
 
     cancel(form: NgForm) {
@@ -49,15 +66,38 @@ export class RoleCardComponent implements OnInit {
     }
 
     addRole(form: NgForm) {
-        this.roleService.onRoleAdded.next(this.model);
+        this.model.permissions = [];
+        let permissions: Permission[] = Object.assign([], this.permissions);
+        // flatten permission structure and set it to model
+        while (permissions.length) {
+            let permission = permissions.pop();
+            if (permission.isTransferred) {
+                this.model.permissions.push(permission);
+            }
+            if (permission.children) {
+                permissions.push.apply(permissions, permission.children);
+            }
+        }
+
+        this.model.type = this.roleType.id;
+
+        this.roleService.createRole(this.model).subscribe((resp) => {
+            this.router.navigate(['../'], { relativeTo: this.route }).then(() => {
+                this.roleService.onRoleAdded.next(this.model);
+            });
+        }, error => {
+            this.errors = error.json().errors;
+        });
     }
 
     editRole(form: NgForm) {
-
+        // TODO
     }
 
     changeRoleType() {
-
+        this.roleService.getPermissionsTree(this.roleType).subscribe((root: Permission) => {
+            this.permissions = setParent([root], null);
+        });
     }
 
     moveSelected(permissions: Permission[], doRemove: boolean) {

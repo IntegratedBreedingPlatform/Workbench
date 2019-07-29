@@ -12,7 +12,7 @@ var mockData = [
                 selectable: false,
                 children: [
                     {
-                        id: '5',
+                        id: '13',
                         name: 'MANAGE_PROGRAM_SETTINGS',
                         description: 'Manage program settings',
                         selectable: true,
@@ -28,13 +28,13 @@ var mockData = [
         selectable: false,
         children: [
             {
-                id: '8',
+                id: '14',
                 name: 'MANAGE_GERMPLASM',
                 description: 'Manage Germplasm',
                 selectable: true,
                 children: [
                     {
-                        id: '9',
+                        id: '14',
                         name: 'DELETE_GERMPLASM',
                         description: 'Delete Germplasm',
                         selectable: true,
@@ -42,7 +42,7 @@ var mockData = [
                 ]
             },
             {
-                id: '7',
+                id: '16',
                 name: 'MANAGE_STUDIES',
                 description: 'Manage Studies',
                 selectable: true,

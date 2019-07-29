@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { NgDataGridModel } from '../shared/components/datagrid/ng-datagrid.model';
 import { Role } from '../shared/models/role.model';
 import { RoleService } from '../shared/services/role.service';
-import { ModalContext } from '../shared/components/dialog/modal.context';
 import { RoleComparator } from './role-comparator.component';
 
 
@@ -20,7 +19,7 @@ export class RolesDatagrid implements  OnInit {
     table: NgDataGridModel<Role>;
 
 
-    constructor(private roleService: RoleService, private modalContext: ModalContext) {
+    constructor(private roleService: RoleService) {
 
         this.table = new NgDataGridModel<Role>([], 25, new RoleComparator(), <Role>{ active: true });
     }
