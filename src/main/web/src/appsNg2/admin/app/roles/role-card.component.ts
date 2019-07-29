@@ -36,8 +36,9 @@ export class RoleCardComponent implements OnInit {
         this.errors = [];
 
         this.route.params.subscribe(params => {
-            this.isEditing = params['isEditing'];
+            this.isEditing = params['isEditing'] === 'true';
         });
+
         this.roleService.getRoleTypes().subscribe((roleTypes) => {
             this.roleTypes = roleTypes;
         });
