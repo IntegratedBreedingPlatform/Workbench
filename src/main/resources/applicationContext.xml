@@ -294,6 +294,31 @@
 		<property name="passwordEncoder" ref="encoder" />
 	</bean>
 
+	<bean id="trialEnvironmentBuilder" factory-bean="managerFactory"
+		  factory-method="getTrialEnvironmentBuilder" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="dataSetBuilder" factory-bean="managerFactory"
+		  factory-method="getDataSetBuilder" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="stockBuilder" factory-bean="managerFactory"
+		  factory-method="getStockBuilder" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="workbookBuilder" factory-bean="managerFactory"
+		  factory-method="getWorkbookBuilder" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="workbookSaver" factory-bean="managerFactory"
+		  factory-method="getWorkbookSaver" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
 	<!-- Nested <beans> elements can only be at the end. -->
 	
 	<!-- Only activate liquibase auto update in non-production environments. 
