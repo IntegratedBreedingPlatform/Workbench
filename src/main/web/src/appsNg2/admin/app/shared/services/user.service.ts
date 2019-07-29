@@ -70,12 +70,6 @@ export class UserService {
             status: r.status,
             roleNames: []
         });
-        for (let i = 0; i < user.userRoles.length; i++) {
-            let userRole = user.userRoles[i];
-            if (user.roleNames.indexOf(userRole.role.name) == -1) {
-                user.roleNames.push(userRole.role.name)
-            }
-        }
         return user;
     }
 
