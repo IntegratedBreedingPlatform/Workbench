@@ -9,7 +9,8 @@ export class Permission {
         public selected?: boolean,
         // has been copied to the selected permissions tree
         public isTransferred?: boolean,
-        public hasDescendantsTransferred?: boolean
+        public hasDescendantsTransferred?: boolean,
+        public disabled?: boolean
     ) {
     }
 }

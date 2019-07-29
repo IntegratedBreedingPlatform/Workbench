@@ -5,7 +5,6 @@ import { Role } from '../shared/models/role.model';
 import { RoleType } from '../shared/models/role-type.model';
 import { RoleService, setParent } from '../shared/services/role.service';
 import { Permission } from '../shared/models/permission.model';
-import mockData from './permissions-mock';
 import { ErrorResponseInterface } from '../shared/services/error-response.interface';
 
 @Component({
@@ -157,15 +156,14 @@ export class RoleCardComponent implements OnInit {
  */
 @Component({
     selector: 'permission-tree',
-    // TODO
-    //  - click select children
     template: `
 		<ul class="ul-tree" [class.ul-tree-level-zero]="isLevelZero">
 			<li *ngFor="let permission of permissions">
 				<ng-container *ngIf="isShowContainer(permission)">
 					<div [class.checkbox]="permission.selectable">
 						<label>
-							<input type="checkbox" *ngIf="isShowCheckbox(permission)"
+							<input type="checkbox" *ngIf="isShowCheckbox(permission)" (click)="onPermissionClick($event, permission)"
+								   [disabled]="permission.disabled"
 								   [(ngModel)]="permission.selected">
 							{{permission.description}}
 						</label>
@@ -192,5 +190,23 @@ export class PermissionTree {
         }
         return !this.isSelectedPermissionTable && !permission.isTransferred
             || this.isSelectedPermissionTable && permission.isTransferred;
+    }
+
+    // Note to devs: while this logic may have some quirks, they are mild and harmless.
+    // and because of that we decided not to introduce additional complexity into the code
+    // to get rid of them
+    onPermissionClick(event: any, permission: Permission) {
+        if (permission.children) {
+            let permissions = Object.assign([], permission.children);
+            while (permissions.length) {
+                let descendant: Permission = permissions.pop();
+                descendant.selected = event.currentTarget.checked;
+                // enable descendants only in available view
+                descendant.disabled = event.currentTarget.checked || this.isSelectedPermissionTable;
+                if (descendant.children) {
+                    permissions.push.apply(permissions, descendant.children);
+                }
+            }
+        }
     }
 }
