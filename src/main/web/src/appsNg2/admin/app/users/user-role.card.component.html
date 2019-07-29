@@ -7,20 +7,20 @@
 				</div>
 			</div>
 			<div class="col-sm-12"><br></div>
-			<div class="row form-group">
-				<div class="col-xs-3 col-md-3" style="padding-left: 25px;">
-					<label class="control-label add_top_padding label-bold">Role type:<span class="mandatory-asterisk"></span></label>
+			<div class="row form-group required">
+				<div class="col-md-3" style="padding-left: 25px;">
+					<label class="control-label pull-right">Role type</label>
 				</div>
 				<div class="col-xs-7 col-md-7">
-					<select class="form-control" id="roleTypeCombo" [(ngModel)]="roleTypeSelected" (ngModelChange)="changeRole()">
+					<select class="form-control" id="roleTypeCombo" [(ngModel)]="roleTypeSelected" name="roleTypeSelected" (ngModelChange)="changeRole()">
 						<option value="">Please select a role type</option>
 						<option *ngFor="let roleType of roleTypes" [ngValue]="roleType.id">{{roleType.name}}</option>
 					</select>
 				</div>
 			</div>
 			<div class="row form-group">
-				<div class="col-xs-3 col-md-3" style="padding-left: 25px;">
-					<label class="control-label add_top_padding label-bold">Role name:<span class="mandatory-asterisk"></span></label>
+				<div class="col-md-3" style="padding-left: 25px;">
+					<label class="control-label pull-right">Role name<span class="mandatory-asterisk"></span></label>
 				</div>
 				<div class="col-xs-7 col-md-7">
 					<select class="form-control" id="roleNameCombo" [(ngModel)]="roleSelected" [disabled]="isRoleNameComboDisable()">
@@ -30,8 +30,8 @@
 				</div>
 			</div>
 			<div class="row form-group">
-				<div class="col-xs-3 col-md-3" style="padding-left: 25px;">
-					<label class="control-label add_top_padding label-bold">Crop:<span class="mandatory-asterisk"></span></label>
+				<div class="col-md-3" style="padding-left: 25px;">
+					<label class="control-label pull-right">Crop<span class="mandatory-asterisk"></span></label>
 				</div>
 				<div class="col-xs-7 col-md-7">
 					<select class="form-control" id="cropCombo" [(ngModel)]="cropSelected" (ngModelChange)="changeCrop()" [disabled]="isCropComboDisable()">
@@ -41,8 +41,8 @@
 				</div>
 			</div>
 			<div class="row form-group">
-				<div class="col-xs-3 col-md-3" style="padding-left: 25px;">
-					<label class="control-label add_top_padding label-bold">Program:<span class="mandatory-asterisk"></span></label>
+				<div class="col-md-3" style="padding-left: 25px;">
+					<label class="control-label pull-right">Program<span class="mandatory-asterisk"></span></label>
 				</div>
 				<div class="col-xs-7 col-md-7">
 					<select class="form-control" id="programCombo" [(ngModel)]="programSelected" [disabled]="isProgramComboDisable()">
