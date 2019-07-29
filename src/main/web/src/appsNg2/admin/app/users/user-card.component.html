@@ -47,7 +47,9 @@
 			<div class="form-group required" [class.has-feedback]="!model.crops?.length" [class.has-error]="!model.crops?.length">
                 <label for="userCrops" class="col-sm-3 control-label">Crops</label>
                 <div class="col-sm-9">
-                    <select2 required id="userCrops" name="userCrops"
+                    <!-- FIXME used ngIf to hidden the select2 because isn't embedded in -->
+                    <!-- the modal and it does Overlap with the confirm modal popup. -->
+                    <select2 *ngIf="!showDeleteUserRoleConfirmPopUpDialog" required id="userCrops" name="userCrops"
                              [data]="crops | toSelect2OptionData"
                              [options]="select2Options"
                              [value]="model.crops | toSelect2OptionId"
