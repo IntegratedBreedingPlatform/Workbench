@@ -138,7 +138,7 @@ export class UserRoleCard implements OnInit {
 
     ngOnInit() {
         this.activatedRoute.params.subscribe(params => {
-            this.isEditing = Boolean(params['isEditing']);
+            this.isEditing = params['isEditing'] === 'true';
         });
 
         this.model = this.userService.user;

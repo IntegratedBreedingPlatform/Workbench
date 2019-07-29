@@ -89,7 +89,7 @@ export class UserCard implements OnInit {
 
     ngOnInit() {
         this.activatedRoute.params.subscribe(params => {
-            this.isEditing = Boolean(params['isEditing']);
+            this.isEditing = params['isEditing'] === 'true';
             this.errorUserMessage = '';
             this.sendMail = !this.isEditing;
 
