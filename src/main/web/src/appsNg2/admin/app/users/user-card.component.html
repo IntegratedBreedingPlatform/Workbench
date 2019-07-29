@@ -121,7 +121,7 @@
         <span class="throbber throbber-lg"></span>
         </div>
         <div class="popup">
-            <app-dialog [(visible)]="showDeleteUserRoleConfirmPopUpDialog" [title]="modalTitle" >
+            <app-dialog [(visible)]="showDeleteUserRoleConfirmPopUpDialog" [title]="modalTitle" (onClose)="closeUserRoleDeleteConfirmPopUp()">
                 <div class="modal-body">
                     <div class="separator"></div>
                     <form class="form-horizontal">
