@@ -13,9 +13,5 @@ export class RolesAdmin implements OnInit {
     }
 
     ngOnInit() {
-        this.roleService.onRoleAdded.subscribe((role: Role) => {
-            // TODO
-            console.log(role);
-        });
     }
 }

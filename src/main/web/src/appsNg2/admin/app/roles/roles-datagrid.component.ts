@@ -25,11 +25,17 @@ export class RolesDatagrid implements  OnInit {
     }
 
     ngOnInit() {
-        if (this.table.sortBy == undefined) {
+        if (!this.table.sortBy) {
             this.table.sortBy = 'name';
         }
 
+        this.roleService.onRoleAdded.subscribe((role: Role) => {
+            this.loadTable();
+        });
+        this.loadTable();
+    }
 
+    private loadTable() {
         this.roleService.getFilteredRoles(null).subscribe(roles => this.table.items = roles, error => {
             this.errorServiceMessage = error;
             if (error.status === 401) {
@@ -38,9 +44,7 @@ export class RolesDatagrid implements  OnInit {
             }
 
         });
-
     }
-
 
     // TODO
     // - Move to interceptor
