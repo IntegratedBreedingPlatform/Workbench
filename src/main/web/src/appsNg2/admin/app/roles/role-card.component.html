@@ -37,27 +37,13 @@
 			<div class="row form-group required">
 				<label for="roleName" class="col-sm-3 control-label">Permissions:</label>
 				<div class="col-xs-9 col-md-9">
-					<div style="display: flex" class="permission-selector">
+					<div style="" class="permission-selector">
 						<div class="panel-wrapper">
 							<div class="panel panel-primary">
-								<div class="panel-heading">Available permissions</div>
+								<div class="panel-heading">Select permissions</div>
 								<div class="panel-body">
 									<permission-tree [permissions]="permissions"
 													 [isLevelZero]="true"></permission-tree>
-								</div>
-							</div>
-						</div>
-						<div class="permission-selector-buttons">
-							<span class="glyphicon glyphicon-menu-right" aria-hidden="true" (click)="moveSelected(permissions, false) && showTransferredBranches()"></span>
-							<span class="glyphicon glyphicon-menu-left" aria-hidden="true" (click)="moveSelected(permissions, true) && showTransferredBranches()"></span>
-						</div>
-						<div class="panel-wrapper">
-							<div class="panel panel-primary">
-								<div class="panel-heading">Selected permissions</div>
-								<div class="panel-body">
-									<permission-tree [permissions]="permissions"
-													 [isLevelZero]="true"
-													 [isSelectedPermissionTable]="true"></permission-tree>
 								</div>
 							</div>
 						</div>

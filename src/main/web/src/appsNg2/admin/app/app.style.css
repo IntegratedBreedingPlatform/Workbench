@@ -108,23 +108,9 @@ users-admin app-dialog div.modal-footer > .message {
     margin-left: 2px;
 }
 
-.permission-selector > .panel-wrapper {
-    display: flex;
-}
 .permission-selector > .panel-wrapper,
 .permission-selector > .panel-wrapper > .panel > .panel-body {
     overflow-x: auto;
-}
-.permission-selector-buttons {
-    flex-direction: column;
-    justify-content: center;
-    display: flex;
-    margin: 0 5px;
-}
-.permission-selector-buttons > span {
-    padding-bottom: 10px;
-    font-size: 1.5em;
-    cursor: pointer;
 }
 .ul-tree {
     list-style-type: none;
@@ -135,7 +121,4 @@ users-admin app-dialog div.modal-footer > .message {
 }
 .ul-tree > li > div.checkbox {
     padding-top: 0;
-}
-.ul-tree > li > div > label {
-
 }

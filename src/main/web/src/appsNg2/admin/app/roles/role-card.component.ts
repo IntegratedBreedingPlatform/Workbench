@@ -44,14 +44,14 @@ export class RoleCardComponent implements OnInit {
     }
 
     isFormValid(form: NgForm) {
-        return form.valid && this.hasTransferredPermissions();
+        return form.valid && this.hasPermissionsSelected();
     }
 
-    private hasTransferredPermissions(): boolean {
+    private hasPermissionsSelected(): boolean {
         let permissions: Permission[] = Object.assign([], this.permissions);
         while (permissions.length) {
             let permission = permissions.pop();
-            if (permission.isTransferred) {
+            if (permission.selected) {
                 return true;
             }
             if (permission.children) {
@@ -71,7 +71,7 @@ export class RoleCardComponent implements OnInit {
         // flatten permission structure and set it to model
         while (permissions.length) {
             let permission = permissions.pop();
-            if (permission.isTransferred) {
+            if (permission.selected) {
                 this.model.permissions.push(permission);
             }
             if (permission.children) {
@@ -99,67 +99,20 @@ export class RoleCardComponent implements OnInit {
             this.permissions = setParent([root], null);
         });
     }
-
-    moveSelected(permissions: Permission[], doRemove: boolean) {
-        if (!permissions) {
-            return;
-        }
-
-        for (const permission of permissions) {
-            if (permission.selected) {
-                permission.isTransferred = !doRemove;
-            }
-            if (permission.children) {
-                this.moveSelected(permission.children, doRemove);
-            }
-        }
-        return permissions;
-    }
-
-    /**
-     * Iterate over the tree to display all the ancestors of an item that has been transferred
-     */
-    showTransferredBranches() {
-        let parentsToShow: Permission[] = [];
-        let permissions: Permission[] = Object.assign([], this.permissions);
-        while (permissions && permissions.length) {
-            let permission = permissions.pop();
-            if (permission.parent && permission.isTransferred && permission.selectable) {
-                parentsToShow.push(permission.parent);
-            }
-            if (permission.children) {
-                permissions.push.apply(permissions, permission.children);
-            }
-            // Take advantage of this tree traversal logic to reset this property
-            permission.hasDescendantsTransferred = false;
-        }
-        // Make all the branch visible
-        // Include all the ancestors up to the root
-        while (parentsToShow.length) {
-            let parent = parentsToShow.pop();
-            parent.hasDescendantsTransferred = true;
-            if (parent.parent) {
-                parentsToShow.push(parent.parent);
-            }
-        }
-    }
 }
 
 /**
  * Recursive component to display a tree of Permissions
- * Using a combination of the permission.isTransferred property and the #isSelectedPermissionTable flag
- * it decides to show the selected items or not, which is used to display two trees next to each other:
- * Available and selected.
  *
  * Note: If the requirement evolves beyond this basic prototype
- *  or gets too complex (drag and drop, shift-select), consider looking for a library
+ *  or gets too complex (shift-select), consider looking for a library
  */
 @Component({
     selector: 'permission-tree',
     template: `
 		<ul class="ul-tree" [class.ul-tree-level-zero]="isLevelZero">
 			<li *ngFor="let permission of permissions">
-				<ng-container *ngIf="isShowContainer(permission)">
+				<ng-container>
 					<div [class.checkbox]="permission.selectable">
 						<label>
 							<input type="checkbox" *ngIf="isShowCheckbox(permission)" (click)="onPermissionClick($event, permission)"
@@ -169,8 +122,7 @@ export class RoleCardComponent implements OnInit {
 						</label>
 					</div>
 				</ng-container>
-				<permission-tree *ngIf="permission.children" [permissions]="permission.children"
-								 [isSelectedPermissionTable]="isSelectedPermissionTable"></permission-tree>
+				<permission-tree *ngIf="permission.children" [permissions]="permission.children"></permission-tree>
 			</li>
 		</ul>
     `
@@ -178,31 +130,18 @@ export class RoleCardComponent implements OnInit {
 export class PermissionTree {
     @Input() permissions: Permission [];
     @Input() isLevelZero: boolean;
-    @Input() isSelectedPermissionTable: boolean;
-
-    isShowContainer(permission: Permission) {
-        return !this.isSelectedPermissionTable || permission.isTransferred || permission.hasDescendantsTransferred;
-    }
 
     isShowCheckbox(permission: Permission) {
-        if (!permission.selectable) {
-            return false;
-        }
-        return !this.isSelectedPermissionTable && !permission.isTransferred
-            || this.isSelectedPermissionTable && permission.isTransferred;
+        return permission.selectable;
     }
 
-    // Note to devs: while this logic may have some quirks, they are mild and harmless.
-    // and because of that we decided not to introduce additional complexity into the code
-    // to get rid of them
     onPermissionClick(event: any, permission: Permission) {
         if (permission.children) {
             let permissions = Object.assign([], permission.children);
             while (permissions.length) {
                 let descendant: Permission = permissions.pop();
                 descendant.selected = event.currentTarget.checked;
-                // enable descendants only in available view
-                descendant.disabled = event.currentTarget.checked || this.isSelectedPermissionTable;
+                descendant.disabled = event.currentTarget.checked;
                 if (descendant.children) {
                     permissions.push.apply(permissions, descendant.children);
                 }
