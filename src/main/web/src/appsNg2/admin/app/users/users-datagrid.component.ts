@@ -200,4 +200,7 @@ export class UsersDatagrid implements OnInit {
         return userRoles.map((userRole) => userRole.role.name).splice(1).join(' and ');
     }
 
+    hasSuperAdminRole(userRoles){
+        return userRoles.findIndex(userRole => userRole.role.name === 'SuperAdmin');
+    }
 }

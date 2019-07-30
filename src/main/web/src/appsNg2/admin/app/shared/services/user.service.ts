@@ -67,8 +67,7 @@ export class UserService {
             crops: r.crops,
             userRoles: (r.userRoles == null) ? [] : r.userRoles,
             email: r.email,
-            status: r.status,
-            roleNames: []
+            status: r.status
         });
         return user;
     }
