@@ -35,6 +35,7 @@ export class UsersDatagrid implements OnInit {
     public roles: Role[];
     public userSelected: User;
     public crops: Crop[] = [];
+    private message: string;
 
     constructor(private userService: UserService,
                 private roleService: RoleService,
@@ -86,13 +87,16 @@ export class UsersDatagrid implements OnInit {
                 this.cropService.crops = this.crops;
             });
 
-        this.userService.onUserAdded.subscribe(() => {
+        this.userService.onUserAdded.subscribe((user) => {
+            this.message = `${user.username} user was successfully saved!`;
             this.loadTheUsersDataGridTable();
             this.sortAfterAddOrEdit();
             }
         );
 
-        this.userService.onUserUpdated.subscribe(() => {
+        this.userService.onUserUpdated.subscribe((user) => {
+            this.message = `${user.username} user was successfully updated!`;
+
             this.loadTheUsersDataGridTable();
             this.sortAfterAddOrEdit();
             }

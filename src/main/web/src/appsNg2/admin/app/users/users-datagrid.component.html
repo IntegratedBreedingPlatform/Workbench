@@ -113,3 +113,6 @@
                 (pageNumberChanged)="table.currentPageIndex = $event">
     </pagination>
 </section>
+<notification [(visible)]="message" title="Success" (visibleChange)="message = ''" >
+    {{message}}
+</notification>
