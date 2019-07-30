@@ -10,16 +10,20 @@
 				<label for="roleName" class="col-sm-3 control-label">Role name:</label>
 				<div class="col-sm-9">
 					<input type="text" class="form-control" [(ngModel)]="model.name" #roleName="ngModel" required name="roleName" id="roleName"
-						   placeholder="" maxlength="30">
+						   pattern="[A-Za-z0-9-\/_*\(\):\.]*"
+						   title="Role name field only accepts letters, numbers and special characters - / _ * ( ) : ."
+						   placeholder="" maxlength="100">
 					<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
 					<span class="sr-only">(error)</span>
 				</div>
 			</div>
-			<div class="form-group">
+			<div class="form-group" [class.has-feedback]="!(description?.valid || description?.pristine)" [class.has-error]="!(description?.valid || description?.pristine)">
 				<label for="description" class="col-sm-3 control-label">Description:</label>
 				<div class="col-sm-9">
 					<input type="text" class="form-control" [(ngModel)]="model.description" #description="ngModel" name="description" id="description"
-						   placeholder="" maxlength="30">
+						   pattern="[A-Za-z0-9-\/_*\(\):\.]*"
+						   title="Description field only accepts letters, numbers and special characters - / _ * ( ) : ."
+						   placeholder="" maxlength="255">
 					<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
 					<span class="sr-only">(error)</span>
 				</div>
@@ -58,10 +62,10 @@
 		<button type="submit" class="btn btn-primary" [disabled]="!isFormValid(form)" (click)="editRole(form)" *ngIf="isEditing">Update Role</button>
 	</div>
 </app-dialog>
-<error-notification [(visible)]="errors.length" title="Error" [classes]="'error-notify'"
-					(visibleChange)="errors = []">
+<notification [(visible)]="errors.length" title="Error" [classes]="'error-notify'"
+			  (visibleChange)="errors = []">
 	<ul>
 		<li *ngFor="let error of errors">{{error.message}}</li>
 	</ul>
-</error-notification>`
+</notification>`
 
