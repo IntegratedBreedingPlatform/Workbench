@@ -63,7 +63,6 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 	@Override
 	public void afterPropertiesSet() {
 		this.initializeComponents();
-		//this.populateLinks(LaunchProgramAction.this.getSidebarMenu());
 	}
 
 	protected void initializeComponents() {
@@ -81,15 +80,13 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 		this.sidebarTree.setDebugId("sidebarTree");
 		this.sidebarTree.setImmediate(true);
 
-		final Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> links = sidebarMenu;
-		this.presenter.getCategoryLinkItems();
 		this.sidebarTree.setContainerDataSource(new HierarchicalContainer());
 		this.sidebarTree.addContainerProperty("id", String.class, "");
 		this.sidebarTree.addContainerProperty("caption", String.class, "");
 		this.sidebarTree.addContainerProperty("value", Object.class, null);
 
 		boolean expandedFirst = false;
-		for (final WorkbenchSidebarCategory category : links.keySet()) {
+		for (final WorkbenchSidebarCategory category : sidebarMenu.keySet()) {
 			final TreeItem parentItem = new TreeItem(category.getSidebarCategoryName(), category.getSidebarCategorylabel(), null);
 
 			WorkbenchSidebar.sidebarTreeMap.put(category.getSidebarCategoryName(), parentItem);
@@ -98,7 +95,7 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 
 			this.sidebarTree.setChildrenAllowed(parent, true);
 			this.sidebarTree.setItemCaption(parentItem, parentItem.getCaption());
-			for (final WorkbenchSidebarCategoryLink link : links.get(category)) {
+			for (final WorkbenchSidebarCategoryLink link : sidebarMenu.get(category)) {
 				final TreeItem item = new TreeItem(link.getTool().getToolName(), link.getSidebarLinkTitle(), link);
 
 				WorkbenchSidebar.sidebarTreeMap.put(link.getSidebarLinkName(), item);

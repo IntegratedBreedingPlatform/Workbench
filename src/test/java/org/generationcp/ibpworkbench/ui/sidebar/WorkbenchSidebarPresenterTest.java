@@ -7,13 +7,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.generationcp.commons.security.SecurityUtil;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
-import org.generationcp.middleware.domain.workbench.PermissionDto;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
@@ -30,13 +28,8 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.google.common.collect.Lists;
 
 public class WorkbenchSidebarPresenterTest {
 
@@ -61,8 +54,6 @@ public class WorkbenchSidebarPresenterTest {
 
 	private ProjectUserInfo projectUserInfo;
 
-	private UsernamePasswordAuthenticationToken loggedInUser;
-
 	@InjectMocks
 	private final WorkbenchSidebarPresenter workbenchSidebarPresenter = new WorkbenchSidebarPresenter();
 
@@ -75,10 +66,6 @@ public class WorkbenchSidebarPresenterTest {
 
 	@Mock
 	private WorkbenchSidebar sidebar;
-	private HashMap<Object, Object> workbenchSidebarCategoryListMap;
-	private ArrayList<Object> workbenchSidebarCategoryList;
-	private ArrayList<PermissionDto> permissions;
-	private ArrayList<WorkbenchSidebarCategory> categoriesByLinkIds;
 
 	@Mock
 	private WorkbenchMainView window;
@@ -157,40 +144,6 @@ public class WorkbenchSidebarPresenterTest {
 		Mockito.doReturn(this.sidebarLinksFromDB.get(this.adminCategory)).when(this.workbenchDataManager)
 		.getAllWorkbenchSidebarLinksByCategoryId(this.adminCategory);
 	}
-	
-	@Test
-	public void testGetCategoryLinkItemsForAdmin() {
-		final SimpleGrantedAuthority roleAuthority = new SimpleGrantedAuthority(SecurityUtil.ROLE_PREFIX + "ADMIN");
-		this.loggedInUser = new UsernamePasswordAuthenticationToken("admin", "admin", Lists.newArrayList(roleAuthority));
-		final SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-		Mockito.when(securityContext.getAuthentication()).thenReturn(this.loggedInUser);
-		SecurityContextHolder.setContext(securityContext);
-		final Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> linksMap =
-			this.workbenchSidebarPresenter.getCategoryLinkItems();
-		this.setMocks();
-		// Expecting categories without links and with no links he has access to to not be included
-		Assert.assertEquals(this.sidebarCategories.size() - 4, linksMap.keySet().size());
-		Assert.assertNull(linksMap.get(this.categoryWithNoLinks));
-		Assert.assertNull(linksMap.get(this.adminCategory));
-
-	}
-	
-	@Test
-	public void testGetCategoryLinkItemsForBreeder() {
-		final SimpleGrantedAuthority roleAuthority = new SimpleGrantedAuthority(SecurityUtil.ROLE_PREFIX + "BREEDER");
-		this.loggedInUser = new UsernamePasswordAuthenticationToken("breeder", "breeder", Lists.newArrayList(roleAuthority));
-		final SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-		Mockito.when(securityContext.getAuthentication()).thenReturn(this.loggedInUser);
-		SecurityContextHolder.setContext(securityContext);
-		
-		final Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> linksMap =
-				this.workbenchSidebarPresenter.getCategoryLinkItems();
-		this.setMocks();
-		// Expecting categories without links and with no links he has access to to not be included
-		Assert.assertEquals(this.sidebarCategories.size() - 4, linksMap.keySet().size());
-		Assert.assertNull(linksMap.get(this.categoryWithNoLinks));
-		Assert.assertNull(linksMap.get(this.adminCategory));
-	}
 
 	@Test
 	public void testUpdateProjectLastOpenedDate() {
@@ -207,39 +160,6 @@ public class WorkbenchSidebarPresenterTest {
 		Assert.assertEquals(currentDate.getYear(), lastOpenDate.getYear());
 		Assert.assertEquals(currentDate.getMonth(), lastOpenDate.getMonth());
 		Assert.assertEquals(currentDate.getDate(), lastOpenDate.getDate());
-	}
-	private void setMocks() {
-		this.sidebar = new WorkbenchSidebar();
-		this.sidebar.setPresenter(this.workbenchSidebarPresenter);
-		this.workbenchSidebarCategoryListMap = new HashMap<>();
-		this.workbenchSidebarCategoryList = Lists.newArrayList();
-		final PermissionDto permissionDto = new PermissionDto();
-		permissionDto.setId(1);
-		permissionDto.setDescription("Test");
-		permissionDto.setName("TestName");
-		permissionDto.setParentId(null);
-		permissionDto.setWorkbenchCategoryLinkId(1);
-		this.permissions = Lists.newArrayList(permissionDto);
-
-		final WorkbenchSidebarCategoryLink link = new WorkbenchSidebarCategoryLink();
-		final WorkbenchSidebarCategory workbenchSidebarCategory = new WorkbenchSidebarCategory();
-		link.setSidebarCategoryLinkId(1);
-		link.setWorkbenchSidebarCategory(workbenchSidebarCategory);
-		link.setSidebarLinkTitle("Title");
-		link.setSidebarLinkName("Name");
-
-		workbenchSidebarCategory.setSidebarCategoryName("Category");
-		workbenchSidebarCategory.setSidebarCategorylabel("Label");
-		workbenchSidebarCategory.setSidebarCategoryId(1);
-		workbenchSidebarCategory.setWorkbenchSidebarCategoryLinks(Lists.newArrayList(link));
-		this.categoriesByLinkIds = Lists.newArrayList(workbenchSidebarCategory);
-
-		this.window.setSidebar(new WorkbenchSidebar());
-
-		Mockito.when(this.permissionService.getPermissionLinks(Mockito.anyInt(), Mockito.anyString(), Mockito.anyInt()))
-			.thenReturn(this.permissions);
-		Mockito.when(this.workbenchDataManager.getCategoriesByLinkIds(Mockito.<Integer>anyList())).thenReturn(this.categoriesByLinkIds);
-		Mockito.when(this.window.getSidebar()).thenReturn(this.sidebar);
 	}
 
 }
