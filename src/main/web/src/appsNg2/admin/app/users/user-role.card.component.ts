@@ -142,12 +142,7 @@ export class UserRoleCard implements OnInit {
         });
 
         this.model = this.userService.user;
-        this.roleTypeSelected = '';
-        this.roleSelected = '';
-        this.cropSelected = '';
-        this.programSelected = '';
-        this.errorUserRoleMessage = '';
-
+        this.reset();
     }
 
     changeCrop() {
