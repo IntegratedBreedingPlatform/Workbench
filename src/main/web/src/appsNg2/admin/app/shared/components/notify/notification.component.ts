@@ -1,12 +1,12 @@
 import { Component, OnInit, Input, Output, OnChanges, EventEmitter, trigger, state, style, animate, transition } from '@angular/core';
 
 @Component({
-  selector: 'error-notification',
-  templateUrl: 'error-notification.component.html',
-  styleUrls: ['error-notification.component.css'],
+  selector: 'notification',
+  templateUrl: 'notification.component.html',
+  styleUrls: ['notification.component.css'],
   moduleId: module.id,
   animations: [
-    trigger('errorNotificationTrigger', [
+    trigger('notificationTrigger', [
       state('in', style({ opacity: 1, transform: 'translateX(0)' })),
       transition('void => *', [
         style({
@@ -24,11 +24,11 @@ import { Component, OnInit, Input, Output, OnChanges, EventEmitter, trigger, sta
     ])
   ]
 })
-export class ErrorNotification implements OnInit {
+export class NotificationComponent implements OnInit {
   @Input() closable = true;
   @Input() visible: boolean;
   @Input() title: string;
-  @Input() classes: string = "error-notify";
+  @Input() classes: string;
   @Output() visibleChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   constructor() { }

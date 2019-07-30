@@ -58,10 +58,10 @@
 		<button type="submit" class="btn btn-primary" [disabled]="!isFormValid(form)" (click)="editRole(form)" *ngIf="isEditing">Update Role</button>
 	</div>
 </app-dialog>
-<error-notification [(visible)]="errors.length" title="Error" [classes]="'error-notify'"
-					(visibleChange)="errors = []">
+<notification [(visible)]="errors.length" title="Error" [classes]="'error-notify'"
+			  (visibleChange)="errors = []">
 	<ul>
 		<li *ngFor="let error of errors">{{error.message}}</li>
 	</ul>
-</error-notification>`
+</notification>`
 
