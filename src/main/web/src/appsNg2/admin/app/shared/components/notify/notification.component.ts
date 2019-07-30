@@ -1,5 +1,6 @@
-import { Component, OnInit, Input, Output, OnChanges, EventEmitter, trigger, state, style, animate, transition } from '@angular/core';
+import { animate, Component, EventEmitter, Input, OnInit, Output, state, style, transition, trigger } from '@angular/core';
 
+// TODO close non-error type after n seconds
 @Component({
   selector: 'notification',
   templateUrl: 'notification.component.html',
