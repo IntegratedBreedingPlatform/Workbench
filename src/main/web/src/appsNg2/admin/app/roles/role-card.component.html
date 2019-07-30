@@ -1,4 +1,4 @@
-<app-dialog [(visible)]="isVisible" [title]="'Create Role'">
+<app-dialog [(visible)]="isVisible" [title]="'Create Role'" (onClose)="cancel(form)">
 	<div class="modal-body">
 		<form class="form-horizontal" #form="ngForm">
 			<div class="form-group">
