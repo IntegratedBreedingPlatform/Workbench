@@ -14,6 +14,7 @@ export function main() {
     describe('Site Admin Header Test', () => {
 
       beforeEach( async(() => {
+          // FIXME
         TestBed.configureTestingModule({
           declarations: [SiteAdminHeader],
         })
