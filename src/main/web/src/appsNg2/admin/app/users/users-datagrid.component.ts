@@ -42,7 +42,6 @@ export class UsersDatagrid implements OnInit {
                 private cropService: CropService, private router: Router, private activatedRoute: ActivatedRoute) {
         // TODO migrate to angular datatables
         this.table = new NgDataGridModel<User>([], 25, new UserComparator(), <User>{ status: 'true' });
-        this.initUser();
     }
 
     showNewUserForm() {
@@ -57,10 +56,6 @@ export class UsersDatagrid implements OnInit {
             user.username, user.crops, user.userRoles.map((x) => Object.assign({}, x)), user.email, user.status);
         this.router.navigate(['user-card', { isEditing: true }], { relativeTo: this.activatedRoute });
 
-    }
-
-    initUser() {
-        this.user = new User('0', '', '', '', [], [], '', 'true');
     }
 
     ngOnInit() {
