@@ -17,6 +17,7 @@ import { RoleComparator } from './role-comparator.component';
 export class RolesDatagrid implements  OnInit {
 
     table: NgDataGridModel<Role>;
+    private message: string;
 
 
     constructor(private roleService: RoleService) {
@@ -30,13 +31,16 @@ export class RolesDatagrid implements  OnInit {
         }
 
         this.roleService.onRoleAdded.subscribe((role: Role) => {
+            this.message = `${role.name} role was successfully saved!`;
             this.loadTable();
         });
         this.loadTable();
     }
 
     private loadTable() {
-        this.roleService.getFilteredRoles(null).subscribe(roles => this.table.items = roles, error => {
+        this.roleService.getFilteredRoles(null).subscribe(roles => {
+            this.table.items = roles;
+        }, error => {
             this.errorServiceMessage = error;
             if (error.status === 401) {
                 localStorage.removeItem('xAuthToken');
