@@ -1,4 +1,5 @@
-/// <reference path="../../../../../node_modules/@types/jasmine/index.d.ts" />
+/// <reference path="../../../../../typings/globals/jasmine/index.d.ts" />
+
 import { User } from './../shared/models/user.model';
 import { Role } from './../shared/models/role.model';
 import './../shared/utils/array.extensions';
