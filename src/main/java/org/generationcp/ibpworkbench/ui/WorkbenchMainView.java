@@ -535,7 +535,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.workbenchHeaderLayout.requestRepaint();
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ADMINISTRATION') or hasRole('ROLE_SITE_ADMIN')")
 	private void layoutAdminButton() {
 		this.addAdminButton(this.workbenchHeaderLayout);
 	}
