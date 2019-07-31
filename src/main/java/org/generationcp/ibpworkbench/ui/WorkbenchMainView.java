@@ -110,7 +110,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	@Value("${about.bms.url}")
 	private String aboutBmsURL;
 
-
 	private Label actionsTitle;
 
 	private HorizontalSplitPanel root;
@@ -454,7 +453,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 		// Only display the Change Credentials/Password on first login of user
 		if (userInfo.getLoginCount() < 1) {
-			if (this.workbenchDataManager.isSuperAdminUser(user.getUserid())) {
+			if (user.isSuperAdmin()) {
 				// If the user has SUPERADMIN role, on first login, force the user to change
 				// the account firstname, lastname, email address and password (optional)
 				window.addWindow(new ChangeCredentialsWindow(new ChangeCredentialsWindow.CredentialsChangedEvent() {
