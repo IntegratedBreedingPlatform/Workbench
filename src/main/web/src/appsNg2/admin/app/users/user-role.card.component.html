@@ -8,12 +8,13 @@
 					</div>
 				</div>
 				<div class="col-sm-12"><br></div>
-				<div class="row form-group required">
+				<div class="row form-group required" [class.has-feedback]="!(roleTypeInput.valid || roleTypeInput.pristine)" [class.has-error]="!(roleTypeInput.valid || roleTypeInput.pristine)">
 					<div class="col-md-3" style="padding-left: 25px;">
 						<label class="control-label pull-right">Role type</label>
 					</div>
 					<div class="col-xs-7 col-md-7">
-						<select class="form-control" id="roleTypeCombo" [(ngModel)]="roleTypeSelected" name="roleTypeSelected" (ngModelChange)="changeRole()" name="roleTypeSelected">
+						<select class="form-control" [(ngModel)]="roleTypeSelected" #roleTypeInput="ngModel" required name="roleTypeSelected" id="roleTypeSelected"
+								(ngModelChange)="changeRole()">
 							<option value="">Please select a role type</option>
 							<option *ngFor="let roleType of roleTypes" [ngValue]="roleType.id">{{roleType.name}}</option>
 						</select>
