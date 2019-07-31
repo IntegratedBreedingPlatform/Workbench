@@ -26,8 +26,9 @@ import { animate, Component, EventEmitter, Input, OnInit, Output, state, style, 
   ]
 })
 export class NotificationComponent implements OnInit {
+
   @Input() closable = true;
-  @Input() visible: boolean;
+  _visible: boolean;
   @Input() title: string;
   @Input() classes: string;
   @Output() visibleChange: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -37,7 +38,21 @@ export class NotificationComponent implements OnInit {
   ngOnInit() { }
 
   close() {
-    this.visible = false;
-    this.visibleChange.emit(this.visible);
+    this._visible = false;
+    this.visibleChange.emit(this._visible);
+  }
+
+  // TODO FIXME for error notifications.
+  @Input('visible') set visible(value: boolean) {
+    this._visible = value;
+    if (value) {
+      setTimeout(() => {
+        this.close();
+      }, 3000);
+    }
+  }
+
+  get visible(): boolean {
+    return this._visible;
   }
 }
