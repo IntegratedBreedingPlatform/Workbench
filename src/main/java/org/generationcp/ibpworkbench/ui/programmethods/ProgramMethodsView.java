@@ -73,6 +73,9 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
+	@Autowired
+	private AuthorizationUtil authorizationUtil;
+
 	public static final String[][] METHOD_TYPES = { {"GEN", "Generative"}, {"DER", "Derivative"}, {"MAN", "Maintenance"}};
 	public static final String[][] METHOD_GROUPS = { {"S", "Self Fertilizing"}, {"O", "Cross Pollinating"}, {"C", "Clonally Propagating"},
 			{"G", "All System"}};
@@ -299,15 +302,14 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 
 			@Override
 			public Object generateCell(final Table source, final Object itemId, Object colId) {
-				try {
-					AuthorizationUtil.preAuthorizeAdminAuthority();
+				//TODO Verify with Mariano if this functionality will be restricted to superadmin user
+				if (authorizationUtil.isSuperAdminUser()) {
 					final Button mNameBtn = new Button(((MethodView) itemId).getMname());
 					mNameBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
 					mNameBtn.setData(itemId);
 					mNameBtn.addListener(ProgramMethodsView.this.editMethodListener);
 					return mNameBtn;
-					
-				} catch (final AccessDeniedException ex) {
+				} else {
 					// If logged in user does not have admin authority, do not render as link
 					final Label mNameLabel = new Label();
 					mNameLabel.setDebugId("mNameLabel");
