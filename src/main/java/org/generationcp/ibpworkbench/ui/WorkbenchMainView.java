@@ -549,7 +549,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_CROP_MANAGEMENT','ROLE_MANAGE_PROGRAMS','ROLE_ADD_PROGRAM')")
 	void layoutAddProgramButton(final HorizontalLayout layout) {
 
 		if (Boolean.parseBoolean(this.isAddProgramEnabled)) {
