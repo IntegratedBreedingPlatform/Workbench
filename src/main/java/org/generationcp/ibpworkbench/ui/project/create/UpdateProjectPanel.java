@@ -128,7 +128,7 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 	/**
 	 * Only the Delete button need to be restricted
 	 */
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	private void initializeRestrictedComponents() {
 
 		this.deleteProgramButton = new Button("DELETE PROGRAM");
