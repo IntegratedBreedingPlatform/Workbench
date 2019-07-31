@@ -606,7 +606,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		for (final Integer userID : userIDs) {
 			final WorkbenchUser userTemp = this.workbenchDataManager.getUserById(userID);
 
-			if (!this.workbenchDataManager.isSuperAdminUser(userID)) {
+			if (!userTemp.isSuperAdmin()) {
 				selectedItems.add(userTemp);
 
 				container.removeItem(userTemp);
@@ -678,7 +678,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 		for (final WorkbenchUser user : userList) {
 			final Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
-			if (!this.workbenchDataManager.isSuperAdminUser(user.getUserid())) {
+			if (!user.isSuperAdmin()) {
 				user.setPerson(person);
 
 				if (person != null) {
