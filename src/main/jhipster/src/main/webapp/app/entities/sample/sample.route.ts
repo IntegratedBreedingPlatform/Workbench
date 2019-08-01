@@ -30,7 +30,7 @@ export const sampleRoute: Routes = [
         },
         data: {
             pageTitle: 'bmsjHipsterApp.sample.home.title',
-            authorities: ['SUPERADMIN', 'ADMIN', 'BREEDING_ACTIVITIES', 'MANAGE_SAMPLES']
+            authorities: ['ADMIN', 'BREEDING_ACTIVITIES', 'MANAGE_SAMPLES']
         },
         canActivate: [RouteAccessService]
     }, {
@@ -41,7 +41,7 @@ export const sampleRoute: Routes = [
         },
         data: {
             pageTitle: 'bmsjHipsterApp.sample.home.title',
-            authorities: ['SUPERADMIN', 'ADMIN', 'BREEDING_ACTIVITIES', 'MANAGE_SAMPLES']
+            authorities: ['ADMIN', 'BREEDING_ACTIVITIES', 'MANAGE_SAMPLES']
         },
         canActivate: [RouteAccessService]
     }

@@ -8,7 +8,7 @@ export const LABEL_PRINTING_ROUTES: Routes = [
     path: 'label-printing',
     component: LabelPrintingComponent,
     data: {
-      authorities: ['SUPERADMIN', 'ADMIN', 'BREEDING_ACTIVITIES', 'MANAGE_STUDIES']
+      authorities: ['ADMIN', 'BREEDING_ACTIVITIES', 'MANAGE_STUDIES']
     },
     canActivate: [RouteAccessService]
   }

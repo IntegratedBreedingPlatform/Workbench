@@ -13,7 +13,7 @@ export const routes: Routes = [
         redirectTo: '/site-admin/users-admin',
         pathMatch: 'full',
         data: {
-            authorities: ['SUPERADMIN', 'ADMIN', 'ADMINISTRATION', 'SITE_ADMIN']
+            authorities: ['ADMIN', 'ADMINISTRATION', 'SITE_ADMIN']
         },
         canActivate: [UserRouteAccessService]
     },
@@ -21,7 +21,7 @@ export const routes: Routes = [
         path: 'site-admin',
         component: SiteAdminComponent,
         data: {
-            authorities: ['SUPERADMIN', 'ADMIN', 'ADMINISTRATION', 'SITE_ADMIN']
+            authorities: ['ADMIN', 'ADMINISTRATION', 'SITE_ADMIN']
         },
         canActivate: [UserRouteAccessService],
         children: [
@@ -29,7 +29,7 @@ export const routes: Routes = [
                 path: 'users-admin',
                 component: UsersAdmin,
                 data: {
-                    authorities: ['SUPERADMIN', 'ADMIN', 'ADMINISTRATION', 'SITE_ADMIN']
+                    authorities: ['ADMIN', 'ADMINISTRATION', 'SITE_ADMIN']
                 },
                 canActivate: [UserRouteAccessService],
                 children: [
@@ -51,7 +51,7 @@ export const routes: Routes = [
                 path: 'roles-admin',
                 component: RolesAdmin,
                 data: {
-                    authorities: ['SUPERADMIN', 'ADMIN', 'ADMINISTRATION', 'SITE_ADMIN']
+                    authorities: ['ADMIN', 'ADMINISTRATION', 'SITE_ADMIN']
                 },
                 canActivate: [UserRouteAccessService],
                 children: [
