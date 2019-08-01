@@ -64,7 +64,7 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 	 * Only the Save and Delete actions need to be restricted
 	 * If a user with unauthorize access is trying to access this method an ${@link AccessDeniedException} will be thrown.
 	 */
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CROP_MANAGEMENT')")
 	void saveAndDeleteProjectActionUpdate() {
 		super.saveProjectButton.addListener(new UpdateProjectAction(this));
 		super.saveProjectButton.setCaption("Save");
@@ -128,7 +128,7 @@ public class UpdateProjectPanel extends CreateProjectPanel {
 	/**
 	 * Only the Delete button need to be restricted
 	 */
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CROP_MANAGEMENT')")
 	private void initializeRestrictedComponents() {
 
 		this.deleteProgramButton = new Button("DELETE PROGRAM");
