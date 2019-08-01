@@ -180,9 +180,11 @@ public class ProgramService {
 		// Get the users with no association to any programs in a crop.
 		final List<WorkbenchUser> usersWithoutAssociatedPrograms = this.userService.getUsersWithoutAssociatedPrograms(project.getCropType());
 		for (final WorkbenchUser workbenchUser : usersWithoutAssociatedPrograms) {
-			final CropPerson cropPerson = this.userService.getCropPerson(project.getCropType().getCropName(), workbenchUser.getPerson().getId());
-			if (cropPerson != null) {
-				this.userService.removeCropPerson(cropPerson);
+			if (workbenchUser.getPerson() != null) {
+				final CropPerson cropPerson = this.userService.getCropPerson(project.getCropType().getCropName(), workbenchUser.getPerson().getId());
+				if (cropPerson != null) {
+					this.userService.removeCropPerson(cropPerson);
+				}
 			}
 		}
 	}
