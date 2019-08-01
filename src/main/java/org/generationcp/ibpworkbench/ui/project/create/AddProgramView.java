@@ -142,7 +142,7 @@ public class AddProgramView extends Panel implements InitializingBean {
 		this.cancelButton.setDebugId("cancelBtn");
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CROP_MANAGEMENT', 'ROLE_MANAGE_PROGRAMS', 'ROLE_ADD_PROGRAM')")
 	protected void addProgramMembersTab(final TabSheet tabSheet, final VerticalLayout programMembersContainer) {
 
 		// Do not display the Program Members tab if BMS is in single user mode.

@@ -3,7 +3,6 @@ package org.generationcp.ibpworkbench.ui.programmethods;
 
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -23,15 +22,11 @@ import org.generationcp.ibpworkbench.ui.common.IContainerFittable;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.Role;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Property;
@@ -228,7 +223,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 		this.initializeFilterForm();
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CROP_MANAGEMENT')")
 	private void initializeRestrictedComponents() {
 		this.addNewMethodsBtn.setVisible(true);
 	}
@@ -824,7 +819,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 			private static final long serialVersionUID = -6938448455072630697L;
 
 			@Override
-			@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
+			@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CROP_MANAGEMENT')")
 			public void buttonClick(Button.ClickEvent event) {
 				event.getComponent()
 						.getWindow()
@@ -838,7 +833,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 			private static final long serialVersionUID = 6467414813762353127L;
 
 			@Override
-			@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
+			@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CROP_MANAGEMENT')")
 			public void buttonClick(Button.ClickEvent event) {
 				event.getComponent().getWindow().addWindow(new AddBreedingMethodsWindow(ProgramMethodsView.this));
 			}
