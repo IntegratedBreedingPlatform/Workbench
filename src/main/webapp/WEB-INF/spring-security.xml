@@ -22,7 +22,7 @@
 
 		<!--INFORMATION_MANAGEMENT-->
 		<!--ROLE_BROWSE_STUDIES-->
-		<intercept-url pattern="/maingpsb/study" access="hasAnyAuthority('ROLE_SUPERADMIN', 'ROLE_ADMIN', 'ROLE_INFORMATION_MANAGEMENT', 'ROLE_BROWSE_STUDIES')"/>
+		<intercept-url pattern="/maingpsb/study" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_INFORMATION_MANAGEMENT', 'ROLE_BROWSE_STUDIES')"/>
 		<intercept-url pattern="/controller/BrAPI-Graphical-Filtering/*" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_INFORMATION_MANAGEMENT', 'ROLE_BROWSE_STUDIES')"/>
 		<intercept-url pattern="/controller/BrAPI-Graphical-Filtering/**" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_INFORMATION_MANAGEMENT', 'ROLE_BROWSE_STUDIES')"/>
 		<!--HEAD_TO_HEAD_QUERY-->
