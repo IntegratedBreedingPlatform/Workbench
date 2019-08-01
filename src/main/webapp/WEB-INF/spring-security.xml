@@ -23,16 +23,16 @@
 		<!--INFORMATION_MANAGEMENT-->
 		<!--ROLE_BROWSE_STUDIES-->
 		<intercept-url pattern="/maingpsb/study" access="hasAnyAuthority('ROLE_SUPERADMIN', 'ROLE_ADMIN', 'ROLE_INFORMATION_MANAGEMENT', 'ROLE_BROWSE_STUDIES')"/>
-		<intercept-url pattern="/controller/BrAPI-Graphical-Filtering/*" access="hasAnyAuthority('ROLE_SUPERADMIN', 'ROLE_ADMIN', 'ROLE_INFORMATION_MANAGEMENT', 'ROLE_BROWSE_STUDIES')"/>
-		<intercept-url pattern="/controller/BrAPI-Graphical-Filtering/**" access="hasAnyAuthority('ROLE_SUPERADMIN', 'ROLE_ADMIN', 'ROLE_INFORMATION_MANAGEMENT', 'ROLE_BROWSE_STUDIES')"/>
+		<intercept-url pattern="/controller/BrAPI-Graphical-Filtering/*" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_INFORMATION_MANAGEMENT', 'ROLE_BROWSE_STUDIES')"/>
+		<intercept-url pattern="/controller/BrAPI-Graphical-Filtering/**" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_INFORMATION_MANAGEMENT', 'ROLE_BROWSE_STUDIES')"/>
 		<!--HEAD_TO_HEAD_QUERY-->
-		<intercept-url pattern="/maingpsb/Head_to_head_comparison" access="hasAnyAuthority('ROLE_SUPERADMIN', 'ROLE_ADMIN', 'ROLE_INFORMATION_MANAGEMENT', 'ROLE_HEAD_TO_HEAD_QUERY')"/>
+		<intercept-url pattern="/maingpsb/Head_to_head_comparison" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_INFORMATION_MANAGEMENT', 'ROLE_HEAD_TO_HEAD_QUERY')"/>
 		<!--MULTI_TRAIT_QUERY-->
-		<intercept-url pattern="/maingpsb/Trait_Donors_Query" access="hasAnyAuthority('ROLE_SUPERADMIN', 'ROLE_ADMIN', 'ROLE_INFORMATION_MANAGEMENT', 'ROLE_MULTI_TRAIT_QUERY')"/>
+		<intercept-url pattern="/maingpsb/Trait_Donors_Query" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_INFORMATION_MANAGEMENT', 'ROLE_MULTI_TRAIT_QUERY')"/>
 
 		<!--CROP_MANAGEMENT-->
 		<!--MANAGE_ONTOLOGIES-->
-		<intercept-url pattern="/controller/ontology/**" access="hasAnyAuthority('ROLE_SUPERADMIN', 'ROLE_ADMIN', 'ROLE_CROP_MANAGEMENT', 'ROLE_MANAGE_ONTOLOGIES')"/>
+		<intercept-url pattern="/controller/ontology/**" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_CROP_MANAGEMENT', 'ROLE_MANAGE_ONTOLOGIES')"/>
 		<!--MANAGE_GENOTYPING_DATA-->
 		<!-- TODO GDMS add spring security -->
 
@@ -47,8 +47,8 @@
 
 		<!--ADMINISTRATION-->
 		<!--SITE_ADMIN-->
-		<intercept-url pattern="/controller/admin/*" access="hasAnyAuthority('ROLE_SUPERADMIN', 'ROLE_ADMIN', 'ROLE_ADMINISTRATION', 'ROLE_SITE_ADMIN')"/>
-		<intercept-url pattern="/controller/admin/**" access="hasAnyAuthority('ROLE_SUPERADMIN', 'ROLE_ADMIN', 'ROLE_ADMINISTRATION', 'ROLE_SITE_ADMIN')"/>
+		<intercept-url pattern="/controller/admin/*" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_ADMINISTRATION', 'ROLE_SITE_ADMIN')"/>
+		<intercept-url pattern="/controller/admin/**" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_ADMINISTRATION', 'ROLE_SITE_ADMIN')"/>
 
 		<intercept-url pattern="/**" access="isAuthenticated()" />
 		
