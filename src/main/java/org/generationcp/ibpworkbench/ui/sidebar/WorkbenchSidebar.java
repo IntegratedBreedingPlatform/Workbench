@@ -98,7 +98,7 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 			for (final WorkbenchSidebarCategoryLink link : sidebarMenu.get(category)) {
 				final TreeItem item = new TreeItem(link.getTool().getToolName(), link.getSidebarLinkTitle(), link);
 
-				WorkbenchSidebar.sidebarTreeMap.put(link.getSidebarLinkName(), item);
+				WorkbenchSidebar.sidebarTreeMap.put(link.getTool().getToolName(), item);
 
 				this.sidebarTree.addItem(item);
 				this.sidebarTree.setParent(item, parentItem);

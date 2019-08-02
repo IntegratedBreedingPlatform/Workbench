@@ -82,7 +82,7 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 
 	private WorkbenchMainView workbenchMainView;
 
-	private LaunchWorkbenchToolAction launchListManagerToolAction = new LaunchWorkbenchToolAction(ToolName.BM_LIST_MANAGER_MAIN);
+	private LaunchWorkbenchToolAction launchListManagerToolAction;
 
 	public LaunchProgramAction() {
 		super();
@@ -112,15 +112,25 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 					if (LaunchProgramAction.this.workbenchMainView.getSidebar() == null) {
 						LaunchProgramAction.this.workbenchMainView.setSidebar(new WorkbenchSidebar());
 					}
-					LaunchProgramAction.this.workbenchMainView.getSidebar().populateLinks(LaunchProgramAction.this
-						.getSidebarMenu(LaunchProgramAction.this.contextUtil.getCurrentWorkbenchUserId(), project.getCropType().getCropName(),
-							Integer.valueOf(project.getProjectId().toString())));
+
+					final Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> sidebarMenu =
+						LaunchProgramAction.this.getSidebarMenu( //
+							LaunchProgramAction.this.contextUtil.getCurrentWorkbenchUserId(), //
+							project.getCropType().getCropName(), //
+							Integer.valueOf(project.getProjectId().toString()));
+
+					LaunchProgramAction.this.workbenchMainView.getSidebar().populateLinks(sidebarMenu);
 					LaunchProgramAction.this.workbenchMainView.addTitle(project.getProjectName());
+
+					// Set the first tool the user has access to
+					final ToolName firstAvailableTool = getFirstAvailableTool(sidebarMenu);
+					launchListManagerToolAction = new LaunchWorkbenchToolAction(firstAvailableTool);
 
 					// update sidebar selection
 					LaunchProgramAction.LOG.trace("selecting sidebar");
-					if (null != WorkbenchSidebar.sidebarTreeMap.get("manage_list")) {
-						LaunchProgramAction.this.workbenchMainView.getSidebar().selectItem(WorkbenchSidebar.sidebarTreeMap.get("manage_list"));
+					if (firstAvailableTool != null && WorkbenchSidebar.sidebarTreeMap.get(firstAvailableTool.getName()) != null) {
+						LaunchProgramAction.this.workbenchMainView.getSidebar()
+							.selectItem(WorkbenchSidebar.sidebarTreeMap.get(firstAvailableTool.getName()));
 					}
 
 					// page change to list manager, with parameter passed
@@ -138,6 +148,20 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 			MessageNotifier.showError(window, "", e.getLocalizedMessage());
 
 		}
+	}
+
+	private ToolName getFirstAvailableTool(final Map<WorkbenchSidebarCategory, List<WorkbenchSidebarCategoryLink>> sidebarMenu) {
+
+		if (sidebarMenu != null) {
+			for (final List<WorkbenchSidebarCategoryLink> links : sidebarMenu.values()) {
+				for (final WorkbenchSidebarCategoryLink link : links) {
+					if (link.getTool() != null) {
+						return ToolName.equivalentToolEnum(link.getTool().getToolName());
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 	// Workaround to reload authorities per program
