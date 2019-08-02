@@ -31,7 +31,7 @@ export class RoleService{
   createRole(role: Role): any {
     return this.http.post(`${this.baseUrl}/roles`, {
       name: role.name,
-      description: role.description,
+      description: role.description || '',
       roleType: role.type,
       permissions: role.permissions.map((permission: Permission) => {
         return permission.id;
