@@ -100,7 +100,10 @@ public class LaunchWorkbenchToolAction implements ClickListener, ActionListener 
 	public void onAppLaunch(Window window) {
 		try {
 			final IContentWindow contentFrame = (IContentWindow) window;
-			String url = this.appLauncherService.launchTool(this.tool.getName(), this.idParam);
+			String url = "";
+			if (tool != null) {
+				url = this.appLauncherService.launchTool(this.tool.getName(), this.idParam);
+			}
 			if (!"".equals(url)) {
 				contentFrame.showContent(url);
 			}
