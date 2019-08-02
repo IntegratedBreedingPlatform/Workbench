@@ -614,22 +614,6 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 				final Item item = container.addItem(userTemp);
 				item.getItemProperty("userId").setValue(1);
 				item.getItemProperty(ProgramMembersPanel.USERNAME).setValue(userTemp.getPerson().getDisplayName());
-//				//TODO Review with new development
-//				item.getItemProperty(ProgramMembersPanel.ROLE).setValue(
-//					(userTemp.getRoles() != null && !userTemp.getRoles().isEmpty() && userTemp.getRoles().get(0) != null) ?
-//						userTemp.getRoles().get(0).getCapitalizedRole() : "");
-
-				/*
-				 * If user has SUPERADMIN role, disable selection so it cannot be removed.
-				 * Disabling is done here so that it can still be selected in
-				 * Available Users table
-				 */
-				//TODO Review with new development
-//				if (((userTemp.getRoles() != null && userTemp.getRoles().get(0) != null) ? userTemp.getRoles().get(0).getCapitalizedRole() : "")
-//					.equals("SUPERADMIN")) {
-//					userTemp.setEnabled(false);
-//				}
-
 				this.getSelect().select(userTemp);
 			}
 		}
