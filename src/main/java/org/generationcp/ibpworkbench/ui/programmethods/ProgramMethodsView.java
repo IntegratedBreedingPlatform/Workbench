@@ -297,23 +297,16 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 
 			@Override
 			public Object generateCell(final Table source, final Object itemId, Object colId) {
-				//TODO Verify with Mariano if this functionality will be restricted to superadmin user
-				if (authorizationUtil.isSuperAdminUser()) {
-					final Button mNameBtn = new Button(((MethodView) itemId).getMname());
-					mNameBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
-					mNameBtn.setData(itemId);
-					mNameBtn.addListener(ProgramMethodsView.this.editMethodListener);
-					return mNameBtn;
-				} else {
+				try {
+					return ProgramMethodsView.this.addEditableMethodName(itemId);
+				} catch (final AccessDeniedException e) {
 					// If logged in user does not have admin authority, do not render as link
 					final Label mNameLabel = new Label();
 					mNameLabel.setDebugId("mNameLabel");
 					mNameLabel.setDescription(((MethodView) itemId).getMname());
 					mNameLabel.setValue(((MethodView) itemId).getMname());
-
 					return mNameLabel;
 				}
-
 			}
 		});
 
@@ -430,15 +423,15 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 
 						if (((Table) t.getSourceComponent()).getData().toString().equals(ProgramMethodsView.FAVORITES)) {
 							((Table) t.getSourceComponent()).getContainerDataSource().removeItem(itemIdOver);
-							ProgramMethodsView.this.updateNoOfEntries(ProgramMethodsView.this.favTotalEntriesLabel,
-									(Table) t.getSourceComponent());
+							ProgramMethodsView.this
+									.updateNoOfEntries(ProgramMethodsView.this.favTotalEntriesLabel, (Table) t.getSourceComponent());
 						}
 						((Table) dragAndDropEvent.getTargetDetails().getTarget()).getContainerDataSource().addItem(itemIdOver);
 
 					}
 				} else {
-					ProgramMethodsView.this.moveSelectedItems((Table) t.getSourceComponent(), (Table) dragAndDropEvent.getTargetDetails()
-							.getTarget());
+					ProgramMethodsView.this
+							.moveSelectedItems((Table) t.getSourceComponent(), (Table) dragAndDropEvent.getTargetDetails().getTarget());
 				}
 
 				((Table) dragAndDropEvent.getTargetDetails().getTarget()).addListener(vcl);
@@ -454,6 +447,15 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 		});
 
 		return table;
+	}
+
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CROP_MANAGEMENT')")
+	public Button addEditableMethodName(final Object itemId) {
+		final Button mNameBtn = new Button(((MethodView) itemId).getMname());
+		mNameBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
+		mNameBtn.setData(itemId);
+		mNameBtn.addListener(ProgramMethodsView.this.editMethodListener);
+		return mNameBtn;
 	}
 
 	@SuppressWarnings("unchecked")
