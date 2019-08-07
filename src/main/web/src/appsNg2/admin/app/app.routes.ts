@@ -60,7 +60,7 @@ export const routes: Routes = [
                         component: null,
                     },
                     {
-                        path: 'role-card',
+                        path: 'role-card/:id',
                         component: RoleCardComponent,
                     }
                 ]

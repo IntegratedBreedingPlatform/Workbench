@@ -1,7 +1,7 @@
 <section>
 	<div class="om-panel-content">
 		<a class="btn btn-default form-group pull-right"
-		   [routerLink]="['role-card']"
+		   [routerLink]="['role-card', '']"
 		   [queryParams]="{isEditing: false}">
 			Create role
 		</a>
@@ -31,7 +31,11 @@
 					<td colspan="6" class="text-center">No records found.</td>
 				</tr>
 				<tr *ngFor="let role of table.itemsOnCurrentPage">
-					<td> {{role.name}} </td>
+					<td *ngIf="isSuperAdminRole(role)"> {{role.name}} </td>
+					<td *ngIf="!isSuperAdminRole(role)">
+						<a href="javascript:void(0)" (click)="editRole(role)" [routerLink]="['role-card', role.id]"
+						   [queryParams]="{isEditing: true}">{{role.name}} </a>
+					</td>
 					<td>{{role.description}}</td>
 					<td>{{role.type}}</td>
 					<td>
@@ -42,11 +46,17 @@
 									  style="padding-left: 5px; color: #428bca;"> and {{role.permissions.length - 1}} more</span>
                             </span>
 					</td>
-					<td *ngIf="role.name.indexOf('Admin')!=-1 && role.active === true">Active</td>
-					<td *ngIf="role.name.indexOf('Admin')!=-1 && role.active === false">Inactive</td>
-					<td  *ngIf="role.name.indexOf('Admin')==-1">
+					<td *ngIf="isSuperAdminRole(role) && role.active === true">Active</td>
+					<td *ngIf="isSuperAdminRole(role) && role.active === false">Inactive</td>
+					<!-- TODO deactivation logic is not defined yet -->
+					<!--
+					<td  *ngIf="!isSuperAdminRole(role)">
 						<a href="javascript:void(0)" *ngIf="role.active === true">Deactivate</a>
 						<a href="javascript:void(0)" *ngIf="role.active === false">Activate</a>
+					</td> -->
+					<td  *ngIf="!isSuperAdminRole(role)">
+						<span *ngIf="role.active === true">Active</span>
+						<span *ngIf="role.active === false">Inactive</span>
 					</td>
 				</tr>
 				</tbody>

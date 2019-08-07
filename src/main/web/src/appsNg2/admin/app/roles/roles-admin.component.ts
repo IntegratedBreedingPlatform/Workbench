@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { RoleService } from '../shared/services/role.service';
-import { Role } from '../shared/models/role.model';
 
 @Component({
     selector: 'roles-admin',

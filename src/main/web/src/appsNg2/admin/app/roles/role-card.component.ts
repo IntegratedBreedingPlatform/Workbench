@@ -16,10 +16,11 @@ import { ErrorResponseInterface } from '../shared/services/error-response.interf
 export class RoleCardComponent implements OnInit {
     isEditing: boolean;
     isVisible = true;
+    roleId: number;
 
     model: Role;
     // TODO merge into Role
-    roleType: any = "";
+    roleTypeId: any = "";
     roleTypes: RoleType[];
     permissions: Permission[] = [];
 
@@ -35,6 +36,16 @@ export class RoleCardComponent implements OnInit {
         this.errors = [];
 
         this.route.params.subscribe(params => {
+            this.roleId = Number(params['id']);
+            if (this.roleId) {
+                // TODO get by id
+                this.model = this.roleService.role;
+                this.roleTypeId = this.model.roleType.id;
+                this.changeRoleType();
+            }
+        });
+
+        this.route.queryParams.subscribe(params => {
             this.isEditing = params['isEditing'] === 'true';
         });
 
@@ -62,7 +73,7 @@ export class RoleCardComponent implements OnInit {
     }
 
     cancel(form: NgForm) {
-        this.router.navigate(['../'], { relativeTo: this.route });
+        this.router.navigate(['../../'], { relativeTo: this.route});
     }
 
     addRole(form: NgForm) {
@@ -79,10 +90,10 @@ export class RoleCardComponent implements OnInit {
             }
         }
 
-        this.model.type = this.roleType.id;
+        this.model.type = this.roleTypeId;
 
         this.roleService.createRole(this.model).subscribe((resp) => {
-            this.router.navigate(['../'], { relativeTo: this.route }).then(() => {
+            this.router.navigate(['../../'], { relativeTo: this.route }).then(() => {
                 this.roleService.onRoleAdded.next(this.model);
             });
         }, error => {
@@ -95,7 +106,10 @@ export class RoleCardComponent implements OnInit {
     }
 
     changeRoleType() {
-        this.roleService.getPermissionsTree(this.roleType).subscribe((root: Permission) => {
+        this.roleService.getPermissionsTree(this.roleTypeId).subscribe((root: Permission) => {
+            // TODO merge selected stated between model and permission tree
+            // if (this.model.permissions && this.model.permissions.length) {
+            // }
             this.permissions = setParent([root], null);
         });
     }

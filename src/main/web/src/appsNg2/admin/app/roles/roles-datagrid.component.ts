@@ -3,6 +3,8 @@ import { NgDataGridModel } from '../shared/components/datagrid/ng-datagrid.model
 import { Role } from '../shared/models/role.model';
 import { RoleService } from '../shared/services/role.service';
 import { RoleComparator } from './role-comparator.component';
+import { Router } from '@angular/router';
+import { Permission } from '../shared/models/permission.model';
 
 
 @Component({
@@ -20,7 +22,8 @@ export class RolesDatagrid implements  OnInit {
     private message: string;
 
 
-    constructor(private roleService: RoleService) {
+    constructor(private roleService: RoleService,
+                private router: Router) {
 
         this.table = new NgDataGridModel<Role>([], 25, new RoleComparator(), <Role>{ active: true });
     }
@@ -82,4 +85,34 @@ export class RolesDatagrid implements  OnInit {
         return permissions.map((permission) => permission.description).splice(1).join(' and ');
     }
 
+    isSuperAdminRole(role: Role) {
+        return role.name === 'SuperAdmin';
+    }
+
+    editRole(role: Role) {
+
+        // TODO remove after geting by id
+        function copyPermissions(permissions: Permission[]) {
+            if (!permissions || !permissions.length) {
+                return [];
+            }
+            return role.permissions.map((permission) => {
+                let copy = Object.assign({}, permission);
+                copy.children = copyPermissions(permission.children);
+                return copy;
+            });
+        }
+        this.roleService.role = <Role>({
+            id: role.id,
+            name: role.name,
+            description: role.description,
+            roleType: role.roleType,
+            editable: role.editable,
+            assignable: role.assignable,
+            active: role.active,
+            permissions: copyPermissions(role.permissions)
+        });
+
+        this.router.navigate(['role-card', role.id], { queryParams: { isEditing: false } });
+    }
 }

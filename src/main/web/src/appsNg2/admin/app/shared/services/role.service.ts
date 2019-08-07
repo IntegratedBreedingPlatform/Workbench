@@ -18,12 +18,15 @@ export class RoleService{
   private baseUrl: string = SERVER_API_URL;
   private http: Http;
 
+  /** Role being edited or created */
+  role: Role;
+
   constructor(@Inject(Http) http:Http) {
       this.http = http;
   }
 
-  getPermissionsTree(roleType: RoleType): Observable<Permission> {
-    return this.http.get(`${this.baseUrl}/permissions/tree?roleTypeId=${roleType.id}`, {
+  getPermissionsTree(roleTypeId: number): Observable<Permission> {
+    return this.http.get(`${this.baseUrl}/permissions/tree?roleTypeId=${roleTypeId}`, {
       headers: this.getHeaders(),
     }).map((response) => response.json());
   }
@@ -102,7 +105,8 @@ function toRole(r:any): Role{
     id: r.id,
     name: r.name,
     description: r.description,
-    type: r.roleType.name,
+    type: r.roleType.name, // TODO Deprecate
+    roleType: r.roleType,
     active: r.active,
     editable: r.editable,
     assignable: r.assignable,
