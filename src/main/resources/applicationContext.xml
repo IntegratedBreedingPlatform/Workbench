@@ -319,6 +319,11 @@
 		<aop:scoped-proxy />
 	</bean>
 
+	<bean id="listDataProjectSaver" factory-bean="managerFactory"
+          factory-method="getListDataProjectSaver" scope="request">
+        <aop:scoped-proxy />
+    </bean>
+
 	<!-- Nested <beans> elements can only be at the end. -->
 	
 	<!-- Only activate liquibase auto update in non-production environments. 
