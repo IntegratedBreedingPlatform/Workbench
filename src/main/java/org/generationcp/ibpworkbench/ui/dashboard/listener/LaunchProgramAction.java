@@ -19,6 +19,7 @@ import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.security.SecurityUtil;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.actions.ActionListener;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
@@ -133,8 +134,11 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 							.selectItem(WorkbenchSidebar.sidebarTreeMap.get(firstAvailableTool.getName()));
 					}
 
-					// page change to list manager, with parameter passed
-					LaunchProgramAction.this.launchListManagerToolAction.onAppLaunch(window);
+					final ActionListener listener =
+						LaunchProgramAction.this.workbenchMainView.getSidebar().getLinkActions(firstAvailableTool.getName(),
+							project);
+
+					listener.doAction(workbenchMainView, "/" + firstAvailableTool.getName(), true);
 
 					reloadAuthorities(project);
 

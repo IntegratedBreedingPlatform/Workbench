@@ -137,7 +137,7 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 		return true;
 	}
 
-	protected ActionListener getLinkActions(final String toolName, final Project project) {
+	public ActionListener getLinkActions(final String toolName, final Project project) {
 		if (toolName == null) {
 			return null;
 		}
