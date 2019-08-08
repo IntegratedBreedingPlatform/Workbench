@@ -335,7 +335,7 @@ public class SaveToListDialog extends BaseSubWindow
 			final String description, final String type) {
 
 		try {
-			final Integer userId = this.contextUtil.getCurrentUserLocalId();
+			final Integer userId = this.contextUtil.getCurrentWorkbenchUserId();
 			final GermplasmList parent = (GermplasmList) this.folderToSaveListTo.getData();
 			final int statusListName = 1;
 			String gidListString = "";

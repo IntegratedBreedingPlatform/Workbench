@@ -4,8 +4,8 @@ package org.generationcp.ibpworkbench.validator;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Role;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +24,7 @@ public class UserAccountValidatorTest {
 	private Errors errors;
 
 	@Mock
-	private WorkbenchDataManager workbenchDataManager;
+	private UserService userService;
 
 	@Mock
 	private WorkbenchUserService workbenchUserService;
@@ -51,7 +51,7 @@ public class UserAccountValidatorTest {
 		userAccount.setPassword("password");
 		userAccount.setPasswordConfirmation("password");
 
-		Mockito.when(this.workbenchDataManager.isUsernameExists(userAccount.getUsername())).thenReturn(false);
+		Mockito.when(this.userService.isUsernameExists(userAccount.getUsername())).thenReturn(false);
 
 		partialValidator.validate(userAccount, this.errors);
 
@@ -138,7 +138,7 @@ public class UserAccountValidatorTest {
 		final UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setUsername("username");
 
-		Mockito.when(this.workbenchDataManager.isUsernameExists(userAccount.getUsername())).thenReturn(true);
+		Mockito.when(this.userService.isUsernameExists(userAccount.getUsername())).thenReturn(true);
 
 		final UserAccountValidator partialValidator = Mockito.spy(this.validator);
 		partialValidator.validateUsernameIfExists(this.errors, userAccount);
@@ -156,7 +156,7 @@ public class UserAccountValidatorTest {
 		final UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setUsername("username");
 
-		Mockito.when(this.workbenchDataManager.isUsernameExists(userAccount.getUsername())).thenThrow(MiddlewareQueryException.class);
+		Mockito.when(this.userService.isUsernameExists(userAccount.getUsername())).thenThrow(MiddlewareQueryException.class);
 
 		final UserAccountValidator partialValidator = Mockito.spy(this.validator);
 		partialValidator.validateUsernameIfExists(this.errors, userAccount);
@@ -171,7 +171,7 @@ public class UserAccountValidatorTest {
 		final UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setUsername("username");
 
-		Mockito.when(this.workbenchDataManager.isUsernameExists(userAccount.getUsername())).thenReturn(false);
+		Mockito.when(this.userService.isUsernameExists(userAccount.getUsername())).thenReturn(false);
 
 		final UserAccountValidator partialValidator = Mockito.spy(this.validator);
 		partialValidator.validateUsernameIfExists(this.errors, userAccount);
@@ -238,7 +238,7 @@ public class UserAccountValidatorTest {
 		final UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setEmail("email@email.com");
 
-		Mockito.when(this.workbenchDataManager.isPersonWithEmailExists(userAccount.getEmail())).thenReturn(true);
+		Mockito.when(this.userService.isPersonWithEmailExists(userAccount.getEmail())).thenReturn(true);
 
 		final UserAccountValidator partialValidator = Mockito.spy(this.validator);
 		partialValidator.validatePersonEmailIfExists(this.errors, userAccount);
@@ -256,7 +256,7 @@ public class UserAccountValidatorTest {
 		final UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setEmail("email@email.com");
 
-		Mockito.when(this.workbenchDataManager.isPersonWithEmailExists(userAccount.getEmail())).thenThrow(MiddlewareQueryException.class);
+		Mockito.when(this.userService.isPersonWithEmailExists(userAccount.getEmail())).thenThrow(MiddlewareQueryException.class);
 
 		final UserAccountValidator partialValidator = Mockito.spy(this.validator);
 		partialValidator.validatePersonEmailIfExists(this.errors, userAccount);
@@ -271,7 +271,7 @@ public class UserAccountValidatorTest {
 		final UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setUsername("email@email.com");
 
-		Mockito.when(this.workbenchDataManager.isPersonWithEmailExists(userAccount.getEmail())).thenReturn(false);
+		Mockito.when(this.userService.isPersonWithEmailExists(userAccount.getEmail())).thenReturn(false);
 
 		final UserAccountValidator partialValidator = Mockito.spy(this.validator);
 		partialValidator.validatePersonEmailIfExists(this.errors, userAccount);

@@ -10,10 +10,10 @@ import junit.framework.Assert;
 import org.generationcp.commons.util.DateUtil;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.middleware.manager.Operation;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -42,7 +42,7 @@ public class WorkbenchUserServiceTest {
 	private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 	@Mock
-	private WorkbenchDataManager workbenchDataManager;
+	private UserService workbenchDataManager;
 
 	@InjectMocks
 	private WorkbenchUserService userService;
@@ -115,14 +115,14 @@ public class WorkbenchUserServiceTest {
 		UserAccountModel userAccount = this.createUserAccount();
 		WorkbenchUser user = new WorkbenchUser();
 		user.setStatus(0);
-		user.setPersonid(TEST_PERSON_ID);
 		Person person = new Person();
+		person.setId(TEST_PERSON_ID);
+		user.setPerson(person);
 		List<WorkbenchUser> userList = new ArrayList<>();
 		userList.add(user);
 
 		Mockito.when(this.workbenchDataManager.getUserByName(TEST_USERNAME, 0, 1, Operation.EQUAL)).thenReturn(
 				userList);
-		Mockito.when(this.workbenchDataManager.getPersonById(TEST_PERSON_ID)).thenReturn(person);
 
 		Assert.assertTrue(this.userService.isUserActive(userAccount));
 
@@ -140,15 +140,15 @@ public class WorkbenchUserServiceTest {
 	public void testIsValidUserLogin() throws Exception {
 		UserAccountModel userAccount = this.createUserAccount();
 		WorkbenchUser user = new WorkbenchUser();
-		user.setPersonid(TEST_PERSON_ID);
 		user.setPassword(HASHED_PASSWORD);
 		Person person = new Person();
+		person.setId(TEST_PERSON_ID);
+		user.setPerson(person);
 		List<WorkbenchUser> userList = new ArrayList<>();
 		userList.add(user);
 
 		Mockito.when(this.workbenchDataManager.getUserByName(TEST_USERNAME, 0, 1, Operation.EQUAL)).thenReturn(
 				userList);
-		Mockito.when(this.workbenchDataManager.getPersonById(TEST_PERSON_ID)).thenReturn(person);
 
 		Assert.assertTrue(this.userService.isValidUserLogin(userAccount));
 	}
@@ -180,14 +180,15 @@ public class WorkbenchUserServiceTest {
 	@Test
 	public void testGetUserByUserName() throws Exception {
 		WorkbenchUser user = new WorkbenchUser();
-		user.setPersonid(TEST_PERSON_ID);
 		Person person = new Person();
+		person.setId(TEST_PERSON_ID);
+		user.setPerson(person);
+
 		List<WorkbenchUser> userList = new ArrayList<>();
 		userList.add(user);
 
 		Mockito.when(this.workbenchDataManager.getUserByName(TEST_USERNAME, 0, 1, Operation.EQUAL)).thenReturn(
 				userList);
-		Mockito.when(this.workbenchDataManager.getPersonById(TEST_PERSON_ID)).thenReturn(person);
 
 		WorkbenchUser resultUser = this.userService.getUserByUserName(TEST_USERNAME);
 
@@ -211,10 +212,10 @@ public class WorkbenchUserServiceTest {
 	@Test
 	public void testGetUserByUserId() throws Exception {
 		WorkbenchUser user = new WorkbenchUser();
-		user.setPersonid(TEST_PERSON_ID);
 		Person person = new Person();
+		user.setPerson(person);
+		person.setId(TEST_PERSON_ID);
 		Mockito.when(this.workbenchDataManager.getUserById(TEST_USER_ID)).thenReturn(user);
-		Mockito.when(this.workbenchDataManager.getPersonById(TEST_PERSON_ID)).thenReturn(person);
 
 		WorkbenchUser resultUser = this.userService.getUserByUserid(TEST_USER_ID);
 

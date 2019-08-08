@@ -1,10 +1,10 @@
 package org.generationcp.ibpworkbench.ui.sidebar;
 
 import org.generationcp.commons.spring.util.ContextUtil;
-import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -20,6 +20,9 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 
 	@Autowired
 	private WorkbenchDataManager manager;
+
+	@Autowired
+	private UserService userService;
 
 	@Autowired
 	private ContextUtil contextUtil;
@@ -47,13 +50,12 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 	public void updateProjectLastOpenedDate() {
 		final Project project = this.contextUtil.getProjectInContext();
 
-		final ProjectUserInfoDAO projectUserInfoDao = this.manager.getProjectUserInfoDao();
 		final ProjectUserInfo projectUserInfo =
-				projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId(), this.contextUtil.getCurrentWorkbenchUserId());
+				this.userService.getProjectUserInfoByProjectIdAndUserId(project.getProjectId(), this.contextUtil.getCurrentWorkbenchUserId());
 
 		if (projectUserInfo != null) {
 			projectUserInfo.setLastOpenDate(new Date());
-			this.manager.saveOrUpdateProjectUserInfo(projectUserInfo);
+			this.userService.saveProjectUserInfo(projectUserInfo);
 		}
 
 		project.setLastOpenDate(new Date());

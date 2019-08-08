@@ -130,11 +130,6 @@
 		<aop:scoped-proxy />
 	</bean>
 
-	<bean id="userDataManager" factory-bean="managerFactory"
-		factory-method="getUserDataManager" scope="request">
-		<aop:scoped-proxy />
-	</bean>
-
 	<bean id="germplasmDataManager" factory-bean="managerFactory"
 		factory-method="getGermplasmDataManager" scope="request">
 		<aop:scoped-proxy />
@@ -277,6 +272,11 @@
 		<property name="userTransaction" ref="atomikosUserTransaction" />
 	</bean>
 
+	<bean id="userService"
+		  class="org.generationcp.middleware.service.impl.user.UserServiceImpl">
+        <constructor-arg ref="workbenchHibernateSessionProvider" />
+    </bean>
+
 
 	<bean id="workbenchHibernateSessionProvider"
 		class="org.generationcp.middleware.hibernate.HibernateSessionPerRequestProvider">
@@ -302,6 +302,36 @@
 		<property name="userDetailsService" ref="workbenchUserDetailsService" />
 		<property name="passwordEncoder" ref="encoder" />
 	</bean>
+
+	<bean id="trialEnvironmentBuilder" factory-bean="managerFactory"
+		  factory-method="getTrialEnvironmentBuilder" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="dataSetBuilder" factory-bean="managerFactory"
+		  factory-method="getDataSetBuilder" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="stockBuilder" factory-bean="managerFactory"
+		  factory-method="getStockBuilder" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="workbookBuilder" factory-bean="managerFactory"
+		  factory-method="getWorkbookBuilder" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="workbookSaver" factory-bean="managerFactory"
+		  factory-method="getWorkbookSaver" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="listDataProjectSaver" factory-bean="managerFactory"
+          factory-method="getListDataProjectSaver" scope="request">
+        <aop:scoped-proxy />
+    </bean>
 
 	<!-- Nested <beans> elements can only be at the end. -->
 	

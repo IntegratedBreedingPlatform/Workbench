@@ -6,6 +6,7 @@ import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
 import org.generationcp.middleware.manager.api.LocationDataManager;
@@ -70,6 +71,9 @@ public class DeleteProjectActionTest {
 	@Mock
 	private GermplasmListManager germplasmListManager;
 
+	@Mock
+	private ProgramService programService;
+
 	@InjectMocks
 	private DeleteProjectAction deleteProjectAction;
 
@@ -126,6 +130,7 @@ public class DeleteProjectActionTest {
 		verify(germplasmDataManager, Mockito.times(2)).deleteProgramFavorites(ArgumentMatchers.<List<ProgramFavorite>>any());
 		verify(studyDataManager).deleteProgramStudies(project.getUniqueID());
 		verify(germplasmListManager).deleteGermplasmListsByProgram(project.getUniqueID());
+		verify(programService).removeCropPersonsOfUsersWithNoPrograms(project);
 
 	}
 

@@ -19,6 +19,7 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -41,6 +42,9 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 	private WorkbenchDataManager workbenchDataManager;
 
 	@Autowired
+	private UserService userService;
+
+	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
@@ -51,9 +55,9 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 
 	@Autowired
 	private ProgramService programService;
-	
+
 	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
-	
+
 	private final Project project;
 
 	private File restoreFile;
@@ -79,7 +83,7 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 			try {
 				// Store the crop type of current program before restoring
 				final CropType cropType = this.project.getCropType();
-				
+
 				// Restore the database
 				this.mysqlUtil.restoreDatabase(this.project.getDatabaseName(), this.restoreFile, new Callable<Boolean>() {
 
@@ -96,14 +100,13 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 						this.messageSource.getMessage(Message.RESTORE_IBDB_COMPLETE));
 
 				// Set current user as owner of restored germplasm lists
-				final Integer userId =
-						this.workbenchDataManager.getLocalIbdbUserId(contextUtil.getCurrentWorkbenchUserId(), this.project.getProjectId());
+				final Integer userId = this.contextUtil.getCurrentWorkbenchUserId();
 				this.updateGermplasmListOwnership(userId);
 
 				// Add current user and users with SUPERADMIN role as members of all restored programs
 				final List<Project> restoredPrograms = this.workbenchDataManager.getProjectsByCrop(cropType);
 				this.addSuperAdminAndCurrentUserAsMembersOfRestoredPrograms(restoredPrograms);
-				
+
 				// Remove directories for old programs and generate new folders for programs of restored backup file
 				this.installationDirectoryUtil.resetWorkspaceDirectoryForCrop(cropType, restoredPrograms);
 
@@ -206,12 +209,12 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 		return this.hasRestoreError;
 	}
 
-	
+
 	public Project getProject() {
 		return project;
 	}
 
-	
+
 	public void setInstallationDirectoryUtil(InstallationDirectoryUtil installationDirectoryUtil) {
 		this.installationDirectoryUtil = installationDirectoryUtil;
 	}

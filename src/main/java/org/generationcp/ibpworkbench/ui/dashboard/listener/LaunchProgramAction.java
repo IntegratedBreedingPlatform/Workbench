@@ -23,7 +23,6 @@ import org.generationcp.ibpworkbench.actions.ActionListener;
 import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
-import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.domain.workbench.PermissionDto;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -35,6 +34,7 @@ import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategoryLink;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.generationcp.middleware.service.api.permission.PermissionService;
 import org.generationcp.middleware.service.api.permission.PermissionServiceImpl;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +67,9 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 
 	@Autowired
 	private HttpServletRequest request;
+
+	@Autowired
+	private UserService userService;
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
@@ -232,15 +235,14 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 	 */
 	void updateProjectLastOpenedDate(final Project project) {
 
-		final ProjectUserInfoDAO projectUserInfoDao = this.workbenchDataManager.getProjectUserInfoDao();
 		final ProjectUserInfo projectUserInfo =
-				projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId(), this.contextUtil.getCurrentWorkbenchUserId());
+				this.userService.getProjectUserInfoByProjectIdAndUserId(project.getProjectId(), this.contextUtil.getCurrentWorkbenchUserId());
 		if (projectUserInfo != null) {
 			projectUserInfo.setLastOpenDate(new Date());
-			this.workbenchDataManager.saveOrUpdateProjectUserInfo(projectUserInfo);
+			this.userService.saveProjectUserInfo(projectUserInfo);
 		}
 		else {
-				final ProjectUserInfo pUserInfo = new ProjectUserInfo(project, this.contextUtil.getCurrentWorkbenchUserId());
+				final ProjectUserInfo pUserInfo = new ProjectUserInfo(project, this.contextUtil.getCurrentWorkbenchUser());
 				pUserInfo.setLastOpenDate(new Date());
 				this.workbenchDataManager.saveOrUpdateProjectUserInfo(pUserInfo);
 		}
@@ -266,6 +268,10 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 
 	public void setTransactionManager(final PlatformTransactionManager transactionManager) {
 		this.transactionManager = transactionManager;
+	}
+
+	public void setUserService(final UserService userService) {
+		this.userService = userService;
 	}
 
 	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {

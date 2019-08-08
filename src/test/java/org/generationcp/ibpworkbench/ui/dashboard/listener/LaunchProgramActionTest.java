@@ -1,5 +1,10 @@
 package org.generationcp.ibpworkbench.ui.dashboard.listener;
 
+import java.util.Date;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import com.google.common.collect.Lists;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.Button;
@@ -13,7 +18,6 @@ import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebarPresenter;
-import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.domain.workbench.PermissionDto;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -21,7 +25,9 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategory;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategoryLink;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.generationcp.middleware.service.api.permission.PermissionServiceImpl;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,9 +39,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,10 +55,10 @@ public class LaunchProgramActionTest {
 	private HttpServletRequest request;
 
 	@Mock
-	private WorkbenchDataManager workbenchDataManager;
+	private UserService userService;
 
 	@Mock
-	private ProjectUserInfoDAO projectUserInfoDAO;
+	private WorkbenchDataManager workbenchDataManager;
 
 	@Mock
 	private ContextUtil contextUtil;
@@ -100,10 +103,9 @@ public class LaunchProgramActionTest {
 		this.selectedProgram = ProjectTestDataInitializer.createProject();
 		this.projectUserInfo = new ProjectUserInfo();
 		this.projectUserInfo.setProject(this.selectedProgram);
-		this.projectUserInfo.setUserId(LaunchProgramActionTest.USER_ID);
+		this.projectUserInfo.setUser(new WorkbenchUser(LaunchProgramActionTest.USER_ID));
 		// Setup Mock objects to return
-		Mockito.doReturn(this.projectUserInfoDAO).when(this.workbenchDataManager).getProjectUserInfoDao();
-		Mockito.doReturn(this.projectUserInfo).when(this.projectUserInfoDAO).getByProjectIdAndUserId(Matchers.anyLong(), Matchers.anyInt());
+		Mockito.doReturn(this.projectUserInfo).when(this.userService).getProjectUserInfoByProjectIdAndUserId(Matchers.anyLong(), Matchers.anyInt());
 		Mockito.doReturn(LaunchProgramActionTest.USER_ID).when(this.contextUtil).getCurrentWorkbenchUserId();
 
 		Mockito.when(this.request.getSession()).thenReturn(this.httpSession);
@@ -111,10 +113,11 @@ public class LaunchProgramActionTest {
 
 	private void setMockDependenciesToTestModule() {
 		this.launchProgramAction.setTransactionManager(this.transactionManager);
-		this.launchProgramAction.setWorkbenchDataManager(this.workbenchDataManager);
+		this.launchProgramAction.setUserService(this.userService);
 		this.launchProgramAction.setLaunchWorkbenchToolAction(this.launchWorkbenchToolAction);
 		this.launchProgramAction.setContextUtil(this.contextUtil);
 		this.launchProgramAction.setRequest(this.request);
+		this.launchProgramAction.setWorkbenchDataManager(this.workbenchDataManager);
 	}
 
 	@Test
@@ -188,7 +191,7 @@ public class LaunchProgramActionTest {
 
 	private void verifyMockInteractionsForUpdatingProgram() {
 		final Date currentDate = new Date();
-		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).saveOrUpdateProjectUserInfo(this.projectUserInfo);
+		Mockito.verify(this.userService, Mockito.times(1)).saveProjectUserInfo(this.projectUserInfo);
 		final Date userLastOpenDate = this.projectUserInfo.getLastOpenDate();
 		Assert.assertEquals(currentDate.getYear(), userLastOpenDate.getYear());
 		Assert.assertEquals(currentDate.getMonth(), userLastOpenDate.getMonth());

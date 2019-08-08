@@ -51,6 +51,7 @@ import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.generationcp.middleware.service.api.user.RoleSearchDto;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -80,6 +81,9 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	private Button saveButton;
 
 	private Table tblMembers;
+
+	@Autowired
+	private UserService userService;
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
@@ -599,12 +603,12 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 	protected void initializeUsers() {
 		final Container container = this.tblMembers.getContainerDataSource();
-		final List<Integer> userIDs = this.workbenchDataManager
+		final List<Integer> userIDs = this.userService
 			.getActiveUserIDsByProjectId(this.project.getProjectId(), this.project.getCropType().getCropName());
 		final Set<WorkbenchUser> selectedItems = new HashSet<>();
 
 		for (final Integer userID : userIDs) {
-			final WorkbenchUser userTemp = this.workbenchDataManager.getUserById(userID);
+			final WorkbenchUser userTemp = this.userService.getUserById(userID);
 
 			if (!userTemp.isSuperAdmin()) {
 				selectedItems.add(userTemp);
@@ -652,28 +656,16 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	}
 
 	protected Container createUsersContainer() {
-		final List<WorkbenchUser> validUserList = new ArrayList<>();
-
 		final String cropName = this.contextUtil.getProjectInContext().getCropType().getCropName();
 
 		// TODO: This can be improved once we implement proper User-Person
 		// mapping
-		final List<WorkbenchUser> userList = this.workbenchDataManager.getUsersByCrop(cropName);
-
-		for (final WorkbenchUser user : userList) {
-			final Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
-			if (!user.isSuperAdmin()) {
-				user.setPerson(person);
-
-				if (person != null) {
-					validUserList.add(user);
-				}
-			}
-		}
+		final List<WorkbenchUser> userList = this.userService.getUsersByCrop(cropName);
 
 		final BeanItemContainer<WorkbenchUser> beanItemContainer = new BeanItemContainer<>(WorkbenchUser.class);
-		for (final WorkbenchUser user : validUserList) {
-			if (user.getUserid().equals(this.contextUtil.getCurrentWorkbenchUserId())
+		final int currentUserId = this.contextUtil.getCurrentWorkbenchUserId();
+		for (final WorkbenchUser user : userList) {
+			if (user.getUserid().equals(currentUserId)
 					|| user.getUserid().equals(this.project.getUserId())) {
 				user.setEnabled(false);
 			}
@@ -700,8 +692,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		return true;
 	}
 
-	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
-		this.workbenchDataManager = workbenchDataManager;
+	public void setUserService(final UserService userService) {
+		this.userService = userService;
 	}
 
 	public void setContextUtil(final ContextUtil contextUtil) {
@@ -712,7 +704,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		return this.getSelect().getValue();
 	}
 
-	
+
 	public Project getProject() {
 		return this.project;
 	}

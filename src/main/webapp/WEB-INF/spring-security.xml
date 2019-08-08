@@ -87,7 +87,7 @@
 	</bean:bean>
 
 	<bean:bean id="workbenchUserDetailsService" class="org.generationcp.commons.security.WorkbenchUserDetailsService">
-		<bean:property name="workbenchDataManager" ref="workbenchDataManager" />
+		<bean:property name="userService" ref="userService" />
 	</bean:bean>
 
 	<bean:bean id="workbenchAuthenticationSuccessHandler" class="org.generationcp.ibpworkbench.security.WorkbenchAuthenticationSuccessHandler" />

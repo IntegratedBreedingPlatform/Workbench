@@ -10,7 +10,6 @@ import java.util.Map;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
-import org.generationcp.middleware.dao.ProjectUserInfoDAO;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -20,6 +19,8 @@ import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategory;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategoryLink;
 import org.generationcp.middleware.service.api.permission.PermissionService;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,13 +43,13 @@ public class WorkbenchSidebarPresenterTest {
 	private ContextUtil contextUtil;
 
 	@Mock
-	private ProjectUserInfoDAO projectUserInfoDAO;
-
-	@Mock
 	private WorkbenchDataManager workbenchDataManager;
 
 	@Mock
 	private PlatformTransactionManager transactionManager;
+
+	@Mock
+	private UserService userService;
 
 	private Project selectedProgram;
 
@@ -84,13 +85,12 @@ public class WorkbenchSidebarPresenterTest {
 		this.selectedProgram = ProjectTestDataInitializer.createProject();
 		this.projectUserInfo = new ProjectUserInfo();
 		this.projectUserInfo.setProject(this.selectedProgram);
-		this.projectUserInfo.setUserId(WorkbenchSidebarPresenterTest.USER_ID);
+		this.projectUserInfo.setUser(new WorkbenchUser(WorkbenchSidebarPresenterTest.USER_ID));
 
 		// Setup Mock objects to return
 		Mockito.doReturn(WorkbenchSidebarPresenterTest.USER_ID).when(this.contextUtil).getCurrentWorkbenchUserId();
 		Mockito.doReturn(this.selectedProgram).when(this.contextUtil).getProjectInContext();
-		Mockito.doReturn(this.projectUserInfoDAO).when(this.workbenchDataManager).getProjectUserInfoDao();
-		Mockito.doReturn(this.projectUserInfo).when(this.projectUserInfoDAO).getByProjectIdAndUserId(Matchers.anyLong(), Matchers.anyInt());
+		Mockito.doReturn(this.projectUserInfo).when(this.userService).getProjectUserInfoByProjectIdAndUserId(Matchers.anyLong(), Matchers.anyInt());
 
 	}
 
@@ -116,7 +116,7 @@ public class WorkbenchSidebarPresenterTest {
 				this.activitiesCategory, "trial_manager", "Trial Manager");
 		//trialManagerLink.setRoles(Arrays.asList(new WorkbenchSidebarCategoryLinkRole(trialManagerLink, new Role(1, "Admin"))));
 		this.sidebarLinksFromDB.put(this.activitiesCategory, Arrays.asList(manageGermplasmLink, trialManagerLink));
-		
+
 		// Info Management Links
 		final WorkbenchSidebarCategoryLink gdmsLink = new WorkbenchSidebarCategoryLink(new Tool(ToolName.GDMS.toString(), "gdms", "/GDMS"), this.infoMgtCategory, "gdms",
 				"Genotyping Data Management");
@@ -126,7 +126,7 @@ public class WorkbenchSidebarPresenterTest {
 		//h2hLink.setRoles(Arrays.asList(new WorkbenchSidebarCategoryLinkRole(h2hLink, new Role(1, "Admin")),
 		//		new WorkbenchSidebarCategoryLinkRole(h2hLink, new Role(2, "Breeder"))));
 		this.sidebarLinksFromDB.put(this.infoMgtCategory, Arrays.asList(gdmsLink, h2hLink));
-		
+
 		// Program Admin links
 		final WorkbenchSidebarCategoryLink manageProgramLink = new WorkbenchSidebarCategoryLink(new Tool(ToolName.BM_LIST_MANAGER_MAIN.toString(), "manage_germplasm", "/ManageGermplasm"),
 				this.adminCategory, "manage_program", "Manage Program");
@@ -135,7 +135,7 @@ public class WorkbenchSidebarPresenterTest {
 				this.adminCategory, "backup_restore", "Backup and Restore");
 		//backupRestoreLink.setRoles(new ArrayList<WorkbenchSidebarCategoryLinkRole>());
 		this.sidebarLinksFromDB.put(this.adminCategory, Arrays.asList(manageProgramLink, backupRestoreLink));
-		
+
 		Mockito.doReturn(this.sidebarCategories).when(this.workbenchDataManager).getAllWorkbenchSidebarCategory();
 		Mockito.doReturn(this.sidebarLinksFromDB.get(this.activitiesCategory)).when(this.workbenchDataManager)
 				.getAllWorkbenchSidebarLinksByCategoryId(this.activitiesCategory);
@@ -150,7 +150,7 @@ public class WorkbenchSidebarPresenterTest {
 		this.workbenchSidebarPresenter.updateProjectLastOpenedDate();
 
 		final Date currentDate = new Date();
-		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).saveOrUpdateProjectUserInfo(this.projectUserInfo);
+		Mockito.verify(this.userService, Mockito.times(1)).saveProjectUserInfo(this.projectUserInfo);
 		final Date userLastOpenDate = this.projectUserInfo.getLastOpenDate();
 		Assert.assertEquals(currentDate.getYear(), userLastOpenDate.getYear());
 		Assert.assertEquals(currentDate.getMonth(), userLastOpenDate.getMonth());

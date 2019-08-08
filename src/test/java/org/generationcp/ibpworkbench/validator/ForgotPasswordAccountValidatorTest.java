@@ -3,8 +3,8 @@ package org.generationcp.ibpworkbench.validator;
 
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Role;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,7 +23,7 @@ public class ForgotPasswordAccountValidatorTest {
 	private Errors errors;
 
 	@Mock
-	private WorkbenchDataManager workbenchDataManager;
+	private UserService userService;
 
 	@InjectMocks
 	private ForgotPasswordAccountValidator validator;
@@ -58,7 +58,7 @@ public class ForgotPasswordAccountValidatorTest {
 		UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setUsername("username");
 
-		Mockito.when(this.workbenchDataManager.isPersonWithUsernameAndEmailExists(userAccount.getUsername(), userAccount.getEmail()))
+		Mockito.when(this.userService.isPersonWithUsernameAndEmailExists(userAccount.getUsername(), userAccount.getEmail()))
 				.thenReturn(false);
 
 		ForgotPasswordAccountValidator validatorDUT = Mockito.spy(this.validator);
@@ -78,7 +78,7 @@ public class ForgotPasswordAccountValidatorTest {
 		UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setUsername("username");
 
-		Mockito.when(this.workbenchDataManager.isPersonWithUsernameAndEmailExists(userAccount.getUsername(), userAccount.getEmail()))
+		Mockito.when(this.userService.isPersonWithUsernameAndEmailExists(userAccount.getUsername(), userAccount.getEmail()))
 				.thenThrow(MiddlewareQueryException.class);
 
 		ForgotPasswordAccountValidator validatorDUT = Mockito.spy(this.validator);
@@ -94,7 +94,7 @@ public class ForgotPasswordAccountValidatorTest {
 		UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setUsername("username");
 
-		Mockito.when(this.workbenchDataManager.isPersonWithUsernameAndEmailExists(userAccount.getUsername(), userAccount.getEmail()))
+		Mockito.when(this.userService.isPersonWithUsernameAndEmailExists(userAccount.getUsername(), userAccount.getEmail()))
 				.thenReturn(true);
 
 		ForgotPasswordAccountValidator validatorDUT = Mockito.spy(this.validator);

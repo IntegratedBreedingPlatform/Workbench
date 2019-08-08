@@ -25,6 +25,7 @@ import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.generationcp.middleware.service.api.user.RoleSearchDto;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -77,6 +78,9 @@ public class AuthenticationControllerTest {
 
 	@InjectMocks
 	private AuthenticationController controller;
+
+	@Mock
+	private UserService userService;
 
 	@Mock
 	private WorkbenchDataManager workbenchDataManager;
@@ -254,7 +258,7 @@ public class AuthenticationControllerTest {
 		UserAccountModel userAccountModel = new UserAccountModel();
 		userAccountModel.setUsername("naymesh");
 		userAccountModel.setPassword("b");
-		Mockito.when(this.workbenchDataManager.getUserInfoByUsername(ArgumentMatchers.anyString())).thenReturn(Mockito.mock(UserInfo.class));
+		Mockito.when(this.userService.getUserInfoByUsername(ArgumentMatchers.anyString())).thenReturn(Mockito.mock(UserInfo.class));
 		ResponseEntity<Map<String, Object>> result = this.controller.doResetPassword(userAccountModel, this.result);
 
 		Mockito.verify(this.workbenchUserService, Mockito.times(1)).updateUserPassword(userAccountModel.getUsername(), userAccountModel.getPassword());
@@ -382,7 +386,7 @@ public class AuthenticationControllerTest {
 
 		Assert.assertFalse(this.controller.isAccountCreationEnabled());
 	}
-	
+
 	private void createTestRoles() {
 		this.roles = new ArrayList<>();
 		this.roles.add(new Role(1, "Admin"));

@@ -11,16 +11,9 @@
 
 package org.generationcp.ibpworkbench.germplasm;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Resource;
-
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.domain.dms.StudyReference;
-import org.generationcp.middleware.domain.search.StudyResultSet;
 import org.generationcp.middleware.domain.search.filter.GidStudyQueryFilter;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;
@@ -48,6 +41,11 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
+
+import javax.annotation.Resource;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Configurable
 public class GermplasmQueries implements Serializable, InitializingBean {
@@ -389,11 +387,7 @@ public class GermplasmQueries implements Serializable, InitializingBean {
 				@Override
 				protected void doInTransactionWithoutResult(TransactionStatus arg0) {
 					GidStudyQueryFilter gidFilter = new GidStudyQueryFilter(gid);
-					StudyResultSet resultSet = GermplasmQueries.this.studyDataManager.searchStudies(gidFilter, 50);
-					while (resultSet.hasMore()) {
-						StudyReference reference = resultSet.next();
-						results.add(reference);
-					}
+					results.addAll(GermplasmQueries.this.studyDataManager.searchStudies(gidFilter));
 				}
 
 			});

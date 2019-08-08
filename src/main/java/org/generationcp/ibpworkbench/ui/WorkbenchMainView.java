@@ -51,10 +51,10 @@ import org.generationcp.ibpworkbench.ui.window.ChangeCredentialsWindow;
 import org.generationcp.ibpworkbench.ui.window.ChangePasswordWindow;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -87,7 +87,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	private TomcatUtil tomcatUtil;
 
 	@Resource
-	private WorkbenchDataManager workbenchDataManager;
+	private UserService userService;
 
 	@Resource
 	private SimpleResourceBundleMessageSource messageSource;
@@ -431,19 +431,19 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 		this.showChangeCredentialsWindowOnFirstLogin(this.getWindow(), user, userInfo);
 
-		this.workbenchDataManager.incrementUserLogInCount(userInfo.getUserId());
+		this.userService.incrementUserLogInCount(userInfo.getUserId());
 
 	}
 
 	UserInfo createUserInfoIfNecessary(final WorkbenchUser user) {
 
-		UserInfo userInfo = this.workbenchDataManager.getUserInfo(user.getUserid());
+		UserInfo userInfo = this.userService.getUserInfo(user.getUserid());
 
 		if (userInfo == null) {
 			userInfo = new UserInfo();
 			userInfo.setUserId(user.getUserid());
 			userInfo.setLoginCount(0);
-			this.workbenchDataManager.insertOrUpdateUserInfo(userInfo);
+			this.userService.insertOrUpdateUserInfo(userInfo);
 		}
 
 		return userInfo;
