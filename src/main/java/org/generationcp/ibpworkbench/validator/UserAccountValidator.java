@@ -8,7 +8,7 @@ import javax.annotation.Resource;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -48,7 +48,7 @@ public class UserAccountValidator implements Validator {
 	public static final String CONFIRMATION_PASSWORD_STR = "Confirmation Password";
 
 	@Resource
-	protected WorkbenchDataManager workbenchDataManager;
+	protected UserService userService;
 
 	@Resource
 	private WorkbenchUserService workbenchUserService;
@@ -130,7 +130,7 @@ public class UserAccountValidator implements Validator {
 
 	protected void validateUsernameIfExists(Errors errors, UserAccountModel userAccount) {
 		try {
-			if (this.workbenchDataManager.isUsernameExists(userAccount.getUsername())) {
+			if (this.userService.isUsernameExists(userAccount.getUsername())) {
 				errors.rejectValue(UserAccountFields.USERNAME, UserAccountValidator.SIGNUP_FIELD_USERNAME_EXISTS,
 						new String[] {userAccount.getUsername()}, null);
 			}
@@ -142,7 +142,7 @@ public class UserAccountValidator implements Validator {
 
 	protected void validatePersonEmailIfExists(Errors errors, UserAccountModel userAccount) {
 		try {
-			if (this.workbenchDataManager.isPersonWithEmailExists(userAccount.getEmail())) {
+			if (this.userService.isPersonWithEmailExists(userAccount.getEmail())) {
 				errors.rejectValue(UserAccountFields.EMAIL, UserAccountValidator.SIGNUP_FIELD_EMAIL_EXISTS);
 			}
 		} catch (MiddlewareQueryException e) {

@@ -8,10 +8,10 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.service.WorkbenchUserService;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,7 +44,7 @@ public class WorkbenchEmailSenderServiceTest {
 	private WorkbenchUserService workbenchUserService;
 
 	@Mock
-	private WorkbenchDataManager workbenchDataManager;
+	private UserService userService;
 
 	@Mock
 	private ServletContext servletContext;
@@ -96,7 +96,7 @@ public class WorkbenchEmailSenderServiceTest {
 		testUser.setName("TEST_NAME");
 		testUser.setPerson(testPerson);
 
-		Mockito.when(this.workbenchDataManager.getUserInfoByUsername(testUser.getName())).thenReturn(userInfo);
+		Mockito.when(this.userService.getUserInfoByUsername(testUser.getName())).thenReturn(userInfo);
 		Mockito.doReturn(WorkbenchEmailSenderServiceTest.GENERATED_URL).when(this.service).generateResetPasswordUrl(userInfo);
 		Mockito.doNothing().when(this.service)
 				.sendForgotPasswordRequest(Matchers.anyString(), Matchers.anyString(), Matchers.eq(generatedUrl));
@@ -116,7 +116,7 @@ public class WorkbenchEmailSenderServiceTest {
 
 		Assert.assertNotNull(url);
 
-		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).updateUserInfo(userInfo);
+		Mockito.verify(this.userService, Mockito.times(1)).updateUserInfo(userInfo);
 
 	}
 
@@ -142,7 +142,7 @@ public class WorkbenchEmailSenderServiceTest {
 	public void testValidateResetToken() throws Exception {
 		UserInfo userInfo = new UserInfo();
 		userInfo.setUserId(1);
-		Mockito.when(this.workbenchDataManager.getUserInfoByResetToken(WorkbenchEmailSenderServiceTest.RESET_TOKEN_TEST)).thenReturn(
+		Mockito.when(this.userService.getUserInfoByResetToken(WorkbenchEmailSenderServiceTest.RESET_TOKEN_TEST)).thenReturn(
 				userInfo);
 
 		Mockito.doReturn(true).when(this.service).isResetTokenValid(userInfo);
@@ -156,7 +156,7 @@ public class WorkbenchEmailSenderServiceTest {
 	public void testValidateResetTokenWithException() throws Exception {
 		UserInfo userInfo = new UserInfo();
 		userInfo.setUserId(1);
-		Mockito.when(this.workbenchDataManager.getUserInfoByResetToken(WorkbenchEmailSenderServiceTest.RESET_TOKEN_TEST)).thenReturn(
+		Mockito.when(this.userService.getUserInfoByResetToken(WorkbenchEmailSenderServiceTest.RESET_TOKEN_TEST)).thenReturn(
 				userInfo);
 
 		Mockito.doReturn(false).when(this.service).isResetTokenValid(userInfo);
@@ -169,10 +169,10 @@ public class WorkbenchEmailSenderServiceTest {
 		UserAccountModel user = new UserAccountModel();
 		user.setUsername("sample");
 
-		Mockito.when(this.workbenchDataManager.getUserInfoByUsername(user.getUsername())).thenReturn(new UserInfo());
+		Mockito.when(this.userService.getUserInfoByUsername(user.getUsername())).thenReturn(new UserInfo());
 
 		ArgumentCaptor<UserInfo> userInfoArg = ArgumentCaptor.forClass(UserInfo.class);
-		Mockito.when(this.workbenchDataManager.updateUserInfo(userInfoArg.capture())).thenReturn(null);
+		Mockito.when(this.userService.updateUserInfo(userInfoArg.capture())).thenReturn(null);
 
 		this.service.deleteToken(user);
 
@@ -180,7 +180,7 @@ public class WorkbenchEmailSenderServiceTest {
 		Assert.assertNull("null token", resultUserInfo.getResetToken());
 		Assert.assertNull("null expiry date", resultUserInfo.getResetExpiryDate());
 
-		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).updateUserInfo(Matchers.any(UserInfo.class));
+		Mockito.verify(this.userService, Mockito.times(1)).updateUserInfo(Matchers.any(UserInfo.class));
 
 	}
 }

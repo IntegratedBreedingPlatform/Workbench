@@ -17,6 +17,7 @@ import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategory;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategoryLink;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategoryLinkRole;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -31,6 +32,9 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 
 	@Autowired
 	private WorkbenchDataManager manager;
+
+	@Autowired
+	private UserService userService;
 
 	@Autowired
 	private ContextUtil contextUtil;
@@ -66,7 +70,7 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 		for (final WorkbenchSidebarCategory category : workbenchSidebarCategoryList) {
 			categoryLinks.addAll(this.manager.getAllWorkbenchSidebarLinksByCategoryId(category));
 		}
-		
+
 		for (final WorkbenchSidebarCategoryLink link : categoryLinks) {
 			if (this.isCategoryLinkPermissibleForUserRole(link)) {
 				if (sidebarLinks.get(link.getWorkbenchSidebarCategory()) == null) {
@@ -102,13 +106,12 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 	public void updateProjectLastOpenedDate() {
 		final Project project = contextUtil.getProjectInContext();
 
-		final ProjectUserInfoDAO projectUserInfoDao = WorkbenchSidebarPresenter.this.manager.getProjectUserInfoDao();
 		final ProjectUserInfo projectUserInfo =
-				projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId(), contextUtil.getCurrentWorkbenchUserId());
+				this.userService.getProjectUserInfoByProjectIdAndUserId(project.getProjectId(), contextUtil.getCurrentWorkbenchUserId());
 
 		if (projectUserInfo != null) {
 			projectUserInfo.setLastOpenDate(new Date());
-			WorkbenchSidebarPresenter.this.manager.saveOrUpdateProjectUserInfo(projectUserInfo);
+			WorkbenchSidebarPresenter.this.userService.saveProjectUserInfo(projectUserInfo);
 		}
 
 		project.setLastOpenDate(new Date());

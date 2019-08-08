@@ -12,12 +12,12 @@ import java.util.UUID;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.middleware.data.initializer.PersonTestDataInitializer;
 import org.generationcp.middleware.data.initializer.UserTestDataInitializer;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +46,7 @@ public class ProgramMembersPanelTest {
 	private static final String ADMIN_NAME = "USER3";
 
 	@Mock
-	private WorkbenchDataManager workbenchDataManager;
+	private UserService userService;
 
 	@Mock
 	private ContextUtil contextUtil;
@@ -55,7 +55,7 @@ public class ProgramMembersPanelTest {
 
 	@InjectMocks
 	private ProgramMembersPanel programMembersPanel;
-	
+
 	private WorkbenchUser superAdminUser;
 
 	@Before
@@ -63,7 +63,7 @@ public class ProgramMembersPanelTest {
 		MockitoAnnotations.initMocks(this);
 		this.project = this.createProjectTestData(1, ProgramMembersPanelTest.OWNER_USER_ID);
 		this.programMembersPanel = new ProgramMembersPanel(this.project);
-		this.programMembersPanel.setWorkbenchDataManager(this.workbenchDataManager);
+		this.programMembersPanel.setUserService(this.userService);
 		this.programMembersPanel.setContextUtil(this.contextUtil);
 		Mockito.doReturn(this.project).when(this.contextUtil).getProjectInContext();
 	}
@@ -174,13 +174,13 @@ public class ProgramMembersPanelTest {
 	@Test
 	public void testInitializeUsers() {
 		// Setup test data and mocks
-		Mockito.when(this.workbenchDataManager.getActiveUserIDsByProjectId(Matchers.anyLong()))
+		Mockito.when(this.userService.getActiveUserIDsByProjectId(Matchers.anyLong()))
 				.thenReturn(Arrays.asList(ProgramMembersPanelTest.OWNER_USER_ID, ProgramMembersPanelTest.ADMIN_USER_ID,
 						ProgramMembersPanelTest.MEMBER_USER_ID));
 		this.mockCurrentUser(ProgramMembersPanelTest.MEMBER_USER_ID);
 		final List<WorkbenchUser> testProgramMembers = this.createProgramMembersTestData();
 		for (final WorkbenchUser user : testProgramMembers) {
-			Mockito.when(this.workbenchDataManager.getUserById(user.getUserid())).thenReturn(user);
+			Mockito.when(this.userService.getUserById(user.getUserid())).thenReturn(user);
 		}
 
 		// Initialization in controller
@@ -209,11 +209,7 @@ public class ProgramMembersPanelTest {
 
 	private void mockProgramMembers() {
 		final List<WorkbenchUser> programMembers = this.createProgramMembersTestData();
-		Mockito.doReturn(programMembers).when(this.workbenchDataManager).getUsersByCrop(ArgumentMatchers.anyString());
-		for (final WorkbenchUser user : programMembers) {
-			Mockito.doReturn(PersonTestDataInitializer.createPerson(user.getPersonid())).when(this.workbenchDataManager)
-					.getPersonById(user.getPersonid());
-		}
+		Mockito.doReturn(programMembers).when(this.userService).getUsersByCrop(ArgumentMatchers.anyString());
 	}
 
 	private void mockCurrentUser(final int userId) {
@@ -233,14 +229,14 @@ public class ProgramMembersPanelTest {
 				ProgramMembersPanelTest.MEMBER_NAME, ProgramMembersPanelTest.MEMBER_NAME);
 		user2.setRoles(Collections.singletonList(new UserRole(user2, new Role(3, "Technician"))));
 		programMembers.add(user2);
-		
+
 		this.superAdminUser = UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.ADMIN_USER_ID,
 				ProgramMembersPanelTest.ADMIN_NAME, ProgramMembersPanelTest.ADMIN_PERSON_ID,
 				ProgramMembersPanelTest.ADMIN_NAME, ProgramMembersPanelTest.ADMIN_NAME);
 		this.superAdminUser.setRoles(Collections.singletonList(new UserRole(this.superAdminUser, new Role(5, "SuperAdmin"))));
-		Mockito.when(this.workbenchDataManager.isSuperAdminUser(this.superAdminUser.getUserid())).thenReturn(true);
+		Mockito.when(this.userService.isSuperAdminUser(this.superAdminUser.getUserid())).thenReturn(true);
 		programMembers.add(this.superAdminUser);
-		
+
 		return programMembers;
 	}
 

@@ -27,7 +27,7 @@ public class ForgotPasswordAccountValidator extends UserAccountValidator {
 
 	protected void validateUsernameAndEmailIfNotExists(Errors errors, UserAccountModel userAccount) {
 		try {
-			if (!this.workbenchDataManager.isPersonWithUsernameAndEmailExists(userAccount.getUsername(), userAccount.getEmail())) {
+			if (!this.userService.isPersonWithUsernameAndEmailExists(userAccount.getUsername(), userAccount.getEmail())) {
 				errors.rejectValue(UserAccountFields.USERNAME, ForgotPasswordAccountValidator.SIGNUP_FIELD_USERNAME_EMAIL_COMBO_NOT_EXISTS,
 						new String[] {userAccount.getUsername(), userAccount.getEmail()}, null);
 			}

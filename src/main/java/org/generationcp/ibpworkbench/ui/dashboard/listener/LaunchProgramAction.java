@@ -25,6 +25,7 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
 import org.generationcp.middleware.pojos.workbench.ToolName;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,9 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 
 	@Autowired
 	private HttpServletRequest request;
+
+	@Autowired
+	private UserService userService;
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
@@ -118,12 +122,11 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 	 */
 	void updateProjectLastOpenedDate(final Project project) {
 
-		final ProjectUserInfoDAO projectUserInfoDao = this.workbenchDataManager.getProjectUserInfoDao();
 		final ProjectUserInfo projectUserInfo =
-				projectUserInfoDao.getByProjectIdAndUserId(project.getProjectId(), contextUtil.getCurrentWorkbenchUserId());
+				this.userService.getProjectUserInfoByProjectIdAndUserId(project.getProjectId(), contextUtil.getCurrentWorkbenchUserId());
 		if (projectUserInfo != null) {
 			projectUserInfo.setLastOpenDate(new Date());
-			this.workbenchDataManager.saveOrUpdateProjectUserInfo(projectUserInfo);
+			this.userService.saveProjectUserInfo(projectUserInfo);
 		}
 
 		project.setLastOpenDate(new Date());
@@ -147,6 +150,10 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 
 	public void setTransactionManager(final PlatformTransactionManager transactionManager) {
 		this.transactionManager = transactionManager;
+	}
+
+	public void setUserService(final UserService userService) {
+		this.userService = userService;
 	}
 
 	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {

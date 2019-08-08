@@ -1,6 +1,6 @@
 package org.generationcp.ibpworkbench.validator;
 
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +19,7 @@ import junit.framework.Assert;
 public class PersonNameValidatorTest {
 
 	@Mock
-	private WorkbenchDataManager workbenchDataManager;
+	private UserService userService;
 
 	@Mock
 	private ValidatorCounter validatorCounter;
@@ -38,7 +38,7 @@ public class PersonNameValidatorTest {
 		this.personNameValidator.setLastName(lastName);
 
 		this.personNameValidator.setValidatorCounter(this.validatorCounter);
-		this.personNameValidator.setWorkbenchDataManager(this.workbenchDataManager);
+		this.personNameValidator.setUserService(this.userService);
 	}
 
 	@Test
@@ -54,7 +54,7 @@ public class PersonNameValidatorTest {
 	@Test
 	public void testValidateWhereValueIsValidAndPersonCounterIsLessThan2() {
 		Mockito.when(this.validatorCounter.getNameValidationCounter()).thenReturn(0);
-		Mockito.when(this.workbenchDataManager.isPersonExists(Matchers.anyString(), Matchers.anyString()))
+		Mockito.when(this.userService.isPersonExists(Matchers.anyString(), Matchers.anyString()))
 				.thenReturn(false);
 		try {
 			this.personNameValidator.validate(new Object());
@@ -66,7 +66,7 @@ public class PersonNameValidatorTest {
 	@Test(expected = InvalidValueException.class)
 	public void testValidateWhereValueIsInValid() {
 		Mockito.when(this.validatorCounter.getNameValidationCounter()).thenReturn(0);
-		Mockito.when(this.workbenchDataManager.isPersonExists(Matchers.anyString(), Matchers.anyString()))
+		Mockito.when(this.userService.isPersonExists(Matchers.anyString(), Matchers.anyString()))
 				.thenReturn(true);
 		this.personNameValidator.validate(new Object());
 	}

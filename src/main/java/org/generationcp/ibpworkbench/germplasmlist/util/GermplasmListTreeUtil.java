@@ -78,7 +78,7 @@ public class GermplasmListTreeUtil implements Serializable {
 		this.messageSource = messageSource;
 		this.contextUtil = contextUtil;
 	}
-	
+
 	public void setParent(Object sourceItemId, Object targetItemId) {
 
 		if (sourceItemId.equals(ListManagerTreeComponent.CENTRAL)) {
@@ -422,7 +422,7 @@ public class GermplasmListTreeUtil implements Serializable {
 
 	private boolean isListOwnedByTheUser(GermplasmList gpList) {
 		try {
-			Integer ibdbUserId = this.contextUtil.getCurrentUserLocalId();
+			Integer ibdbUserId = this.contextUtil.getCurrentWorkbenchUserId();
 			if (!gpList.getUserId().equals(ibdbUserId)) {
 				return false;
 			}
@@ -508,7 +508,7 @@ public class GermplasmListTreeUtil implements Serializable {
 			newFolder.setDescription(itemName);
 			newFolder.setType(GermplasmListTreeUtil.FOLDER);
 			newFolder.setStatus(0);
-			newFolder.setUserId(this.contextUtil.getCurrentUserLocalId());
+			newFolder.setUserId(this.contextUtil.getCurrentWorkbenchUserId());
 			newFolder.setDate(DateUtil.getCurrentDateAsLongValue());
 			newFolder.setProgramUUID(this.contextUtil.getCurrentProgramUUID());
 

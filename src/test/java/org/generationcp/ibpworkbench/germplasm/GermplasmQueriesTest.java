@@ -1,12 +1,8 @@
 
 package org.generationcp.ibpworkbench.germplasm;
 
-import java.util.List;
-
 import org.generationcp.middleware.domain.dms.StudyReference;
-import org.generationcp.middleware.domain.search.StudyResultSet;
 import org.generationcp.middleware.domain.search.filter.StudyQueryFilter;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.InventoryDataManager;
 import org.generationcp.middleware.manager.api.PedigreeDataManager;
@@ -15,12 +11,16 @@ import org.generationcp.middleware.util.MaxPedigreeLevelReachedException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.transaction.PlatformTransactionManager;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA. User: Daniel Villafuerte Date: 3/27/2015 Time: 3:59 PM
@@ -54,8 +54,8 @@ public class GermplasmQueriesTest {
 	private final GermplasmQueries dut = new GermplasmQueries();
 
 	@Test
-	public void testGetPedigreeCountLabelMaxPedigreeReached() throws MiddlewareQueryException {
-		Mockito.when(this.pedigreeDataManager.countPedigreeLevel(Matchers.anyInt(), Matchers.anyBoolean(), Matchers.anyBoolean()))
+	public void testGetPedigreeCountLabelMaxPedigreeReached() {
+		Mockito.when(this.pedigreeDataManager.countPedigreeLevel(ArgumentMatchers.anyInt(), ArgumentMatchers.anyBoolean(), ArgumentMatchers.anyBoolean()))
 				.thenThrow(MaxPedigreeLevelReachedException.class);
 
 		final String label = this.dut.getPedigreeLevelCountLabel(1, true, false);
@@ -64,9 +64,9 @@ public class GermplasmQueriesTest {
 	}
 
 	@Test
-	public void testGetPedigreeCountLabelMaxNotReached() throws MiddlewareQueryException {
+	public void testGetPedigreeCountLabelMaxNotReached() {
 		final int dummyPedigreeCount = 4;
-		Mockito.when(this.pedigreeDataManager.countPedigreeLevel(Matchers.anyInt(), Matchers.anyBoolean(), Matchers.anyBoolean()))
+		Mockito.when(this.pedigreeDataManager.countPedigreeLevel(ArgumentMatchers.anyInt(), Matchers.anyBoolean(), Matchers.anyBoolean()))
 				.thenReturn(dummyPedigreeCount);
 
 		final String label = this.dut.getPedigreeLevelCountLabel(1, true, false);
@@ -75,9 +75,9 @@ public class GermplasmQueriesTest {
 	}
 
 	@Test
-	public void testGetPedigreeCountLabelMaxNotReachedOneGenerationOnly() throws MiddlewareQueryException {
+	public void testGetPedigreeCountLabelMaxNotReachedOneGenerationOnly() {
 		final int dummyPedigreeCount = 1;
-		Mockito.when(this.pedigreeDataManager.countPedigreeLevel(Matchers.anyInt(), Matchers.anyBoolean(), Matchers.anyBoolean()))
+		Mockito.when(this.pedigreeDataManager.countPedigreeLevel(ArgumentMatchers.anyInt(), Matchers.anyBoolean(), Matchers.anyBoolean()))
 				.thenReturn(dummyPedigreeCount);
 
 		final String label = this.dut.getPedigreeLevelCountLabel(1, true, false);
@@ -86,14 +86,11 @@ public class GermplasmQueriesTest {
 	}
 
 	@Test
-	public void testGetGermplasmStudyInfo() throws MiddlewareQueryException {
+	public void testGetGermplasmStudyInfo() {
 
 		final int testGid = 1;
-		final StudyResultSet studyResultSet = Mockito.mock(StudyResultSet.class);
-		Mockito.when(this.studyDataManager.searchStudies(Mockito.any(StudyQueryFilter.class), Mockito.anyInt())).thenReturn(studyResultSet);
-		Mockito.when(studyResultSet.hasMore()).thenReturn(true).thenReturn(true).thenReturn(false);
-		Mockito.when(studyResultSet.next()).thenReturn(new StudyReference(TEST_STUDY_ID_1, TEST_STUDY_NAME_1))
-				.thenReturn(new StudyReference(TEST_STUDY_ID_2, TEST_STUDY_NAME_2));
+		Mockito.when(this.studyDataManager.searchStudies(Mockito.any(StudyQueryFilter.class))).thenReturn(
+			Arrays.asList(new StudyReference(TEST_STUDY_ID_1, TEST_STUDY_NAME_1), new StudyReference(TEST_STUDY_ID_2, TEST_STUDY_NAME_2)));
 
 		final List<StudyReference> result = this.dut.getGermplasmStudyInfo(testGid);
 

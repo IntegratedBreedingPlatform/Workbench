@@ -9,11 +9,11 @@ import org.generationcp.commons.util.DateUtil;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,13 +24,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class WorkbenchUserService {
 
 	@Resource
-	private WorkbenchDataManager workbenchDataManager;
+	private UserService userService;
 
 	private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 	/**
 	 * Cretes new user account
-	 * 
+	 *
 	 * @param userAccount
 	 */
 	public void saveUserAccount(UserAccountModel userAccount) {
@@ -44,7 +44,6 @@ public class WorkbenchUserService {
 		Person person = this.createPerson(userAccount);
 
 		WorkbenchUser user = new WorkbenchUser();
-		user.setPersonid(person.getId());
 		user.setPerson(person);
 		user.setName(userAccount.getUsername());
 		user.setPassword(passwordEncoder.encode(userAccount.getPassword()));
@@ -57,7 +56,7 @@ public class WorkbenchUserService {
 
 		// add user roles to the particular user
 		user.setRoles(Arrays.asList(new UserRole(user, userAccount.getRole())));
-		this.workbenchDataManager.addUser(user);
+		this.userService.addUser(user);
 
 	}
 
@@ -65,7 +64,6 @@ public class WorkbenchUserService {
 		Person person = this.createPerson(userAccount);
 
 		WorkbenchUser user = new WorkbenchUser();
-		user.setPersonid(person.getId());
 		user.setPerson(person);
 		user.setName(userAccount.getUsername());
 
@@ -81,12 +79,12 @@ public class WorkbenchUserService {
 
 		// add user roles to the particular user
 		user.setRoles(Arrays.asList(new UserRole(user, userAccount.getRole())));
-		this.workbenchDataManager.addUser(user);
+		this.userService.addUser(user);
 
 		UserInfo userInfo = new UserInfo();
 		userInfo.setUserId(user.getUserid());
 		userInfo.setLoginCount(0);
-		this.workbenchDataManager.insertOrUpdateUserInfo(userInfo);
+		this.userService.insertOrUpdateUserInfo(userInfo);
 
 		return user;
 	}
@@ -99,12 +97,12 @@ public class WorkbenchUserService {
 	 * @throws MiddlewareQueryException
 	 */
 	public boolean updateUserPassword(String username, String password) {
-		return this.workbenchDataManager.changeUserPassword(username, passwordEncoder.encode(password));
+		return this.userService.changeUserPassword(username, passwordEncoder.encode(password));
 	}
 
 	/**
 	 * Checks if user is active
-	 * 
+	 *
 	 * @param userAccount
 	 * @return
 	 */
@@ -121,7 +119,7 @@ public class WorkbenchUserService {
 
 	/**
 	 * Checks validity of user
-	 * 
+	 *
 	 * @param userAccount
 	 * @return
 	 */
@@ -137,17 +135,15 @@ public class WorkbenchUserService {
 
 	/**
 	 * Retrieves User obj including the Person object information
-	 * 
+	 *
 	 * @param username
 	 * @return
 	 */
 	public WorkbenchUser getUserByUserName(String username) {
-		List<WorkbenchUser> userList = this.workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL);
+		List<WorkbenchUser> userList = this.userService.getUserByName(username, 0, 1, Operation.EQUAL);
 
 		if (!userList.isEmpty()) {
 			WorkbenchUser user = userList.get(0);
-			Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
-			user.setPerson(person);
 			return user;
 		}
 
@@ -156,16 +152,13 @@ public class WorkbenchUserService {
 
 	/**
 	 * Retreives User with Person object given user id
-	 * 
+	 *
 	 * @param userId
 	 * @return
 	 */
 	public WorkbenchUser getUserByUserid(Integer userId) {
 
-		WorkbenchUser user = this.workbenchDataManager.getUserById(userId);
-		Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
-		user.setPerson(person);
-
+		WorkbenchUser user = this.userService.getUserById(userId);
 		return user;
 
 	}
@@ -185,7 +178,7 @@ public class WorkbenchUserService {
 		person.setNotes("-");
 		person.setPositionName("-");
 		person.setPhone("-");
-		this.workbenchDataManager.addPerson(person);
+		this.userService.addPerson(person);
 
 		return person;
 	}
