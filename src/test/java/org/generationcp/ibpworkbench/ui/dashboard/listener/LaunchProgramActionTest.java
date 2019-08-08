@@ -191,7 +191,7 @@ public class LaunchProgramActionTest {
 
 	private void verifyMockInteractionsForUpdatingProgram() {
 		final Date currentDate = new Date();
-		Mockito.verify(this.userService, Mockito.times(1)).saveProjectUserInfo(this.projectUserInfo);
+		Mockito.verify(this.userService, Mockito.times(1)).saveOrUpdateProjectUserInfo(this.projectUserInfo);
 		final Date userLastOpenDate = this.projectUserInfo.getLastOpenDate();
 		Assert.assertEquals(currentDate.getYear(), userLastOpenDate.getYear());
 		Assert.assertEquals(currentDate.getMonth(), userLastOpenDate.getMonth());

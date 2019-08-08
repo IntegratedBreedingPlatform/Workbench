@@ -55,7 +55,7 @@ public class WorkbenchSidebarPresenter implements InitializingBean {
 
 		if (projectUserInfo != null) {
 			projectUserInfo.setLastOpenDate(new Date());
-			this.userService.saveProjectUserInfo(projectUserInfo);
+			this.userService.saveOrUpdateProjectUserInfo(projectUserInfo);
 		}
 
 		project.setLastOpenDate(new Date());

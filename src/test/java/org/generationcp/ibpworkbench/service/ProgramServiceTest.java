@@ -176,7 +176,7 @@ public class ProgramServiceTest {
 		// Expecting to save only the 2nd user as the 1st user is already saved
 		// as a member
 		Mockito.verify(this.userService, Mockito.times(numberOfUsers))
-				.saveProjectUserInfo(ArgumentMatchers.any(ProjectUserInfo.class));
+				.saveOrUpdateProjectUserInfo(ArgumentMatchers.any(ProjectUserInfo.class));
 		Mockito.verify(this.userService).getActiveUserIDsByProjectId(ArgumentMatchers.anyLong(), ArgumentMatchers.anyString() );
 		Mockito.verify(this.userService).removeUsersFromProgram(ArgumentMatchers.<List<Integer>>any(), ArgumentMatchers.anyLong());
 	}
@@ -245,7 +245,7 @@ public class ProgramServiceTest {
 	// Verify Middleware methods to save as program members were called
 	private void verifyMockInteractionsForSavingProgramMembers() {
 		// Verify Workbench_project_user_info records are created
-		Mockito.verify(this.userService, Mockito.times(3)).saveProjectUserInfo(ArgumentMatchers.any(ProjectUserInfo.class));
+		Mockito.verify(this.userService, Mockito.times(3)).saveOrUpdateProjectUserInfo(ArgumentMatchers.any(ProjectUserInfo.class));
 	}
 
 	private Project createProject() {

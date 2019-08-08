@@ -123,7 +123,7 @@ public class ProgramService {
 
 			if (this.userService.getProjectUserInfoByProjectIdAndUserId(projectID, user.getUserid()) == null) {
 				final ProjectUserInfo pUserInfo = new ProjectUserInfo(program, user);
-				this.userService.saveProjectUserInfo(pUserInfo);
+				this.userService.saveOrUpdateProjectUserInfo(pUserInfo);
 			}
 		}
 	}
