@@ -4,8 +4,6 @@ import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.context.ContextInfo;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
-import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
-import org.generationcp.middleware.data.initializer.WorkbenchUserTestDataInitializer;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -160,25 +158,6 @@ public class ProgramServiceTest {
 		Assert.assertEquals(ProgramServiceTest.USER_ID, contextInfo.getLoggedInUserId().intValue());
 		Assert.assertEquals(project.getProjectId(), contextInfo.getSelectedProjectId());
 		Assert.assertEquals(ProgramServiceTest.SAMPLE_AUTH_TOKEN_VALUE, contextInfo.getAuthToken());
-	}
-
-	@Test
-	public void testUpdateMembersUserInfo() {
-		final List<Integer> userIds = new ArrayList<>();
-		userIds.addAll(Arrays.asList(1, 2, 3));
-		Mockito.when(this.userService.getActiveUserIDsByProjectId(ArgumentMatchers.anyLong(), ArgumentMatchers.anyString() ))
-				.thenReturn(userIds);
-		final Project project = ProjectTestDataInitializer.createProject();
-		final Set<WorkbenchUser> userList = new HashSet<>();
-		userList.add(WorkbenchUserTestDataInitializer.createWorkbenchUser());
-		this.programService.updateMembersProjectUserInfo(userList, project);
-		final int numberOfUsers = userList.size();
-		// Expecting to save only the 2nd user as the 1st user is already saved
-		// as a member
-		Mockito.verify(this.userService, Mockito.times(numberOfUsers))
-				.saveOrUpdateProjectUserInfo(ArgumentMatchers.any(ProjectUserInfo.class));
-		Mockito.verify(this.userService).getActiveUserIDsByProjectId(ArgumentMatchers.anyLong(), ArgumentMatchers.anyString() );
-		Mockito.verify(this.userService).removeUsersFromProgram(ArgumentMatchers.<List<Integer>>any(), ArgumentMatchers.anyLong());
 	}
 
 	@Test

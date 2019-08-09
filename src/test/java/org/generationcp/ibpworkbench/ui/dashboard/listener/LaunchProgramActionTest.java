@@ -186,7 +186,6 @@ public class LaunchProgramActionTest {
 		Assert.assertNull(contextInfo.getAuthToken());
 
 		this.verifyMockInteractionsForUpdatingProgram();
-		Mockito.verify(this.launchWorkbenchToolAction, Mockito.times(1)).onAppLaunch(this.window);
 	}
 
 	private void verifyMockInteractionsForUpdatingProgram() {

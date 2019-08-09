@@ -79,55 +79,6 @@ public class ProgramMembersPanelTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
-	public void testCreateUsersContainerWhenProgramOwnerIsCurrentUser() {
-		this.mockProgramMembers();
-		this.mockCurrentUser(ProgramMembersPanelTest.OWNER_USER_ID);
-
-		final Container usersContainer = this.programMembersPanel.createUsersContainer();
-
-		final Collection<WorkbenchUser> programMembers = (Collection<WorkbenchUser>) usersContainer.getItemIds();
-		Assert.assertNotNull(programMembers);
-		Assert.assertEquals("There should be 2 program members.", 2, programMembers.size());
-
-		// Check that program owner should be disabled
-		for (final WorkbenchUser user : programMembers) {
-			if (user.getUserid().equals(ProgramMembersPanelTest.OWNER_PERSON_ID)) {
-				Assert.assertFalse(
-						"Program Owner and Default Admin users should be disabled so they cannot be removed as member.",
-						user.isEnabled());
-			} else {
-				Assert.assertTrue("Other users should be enabled so they can be removed as members.", user.isEnabled());
-			}
-		}
-	}
-
-	@Test
-	@SuppressWarnings("unchecked")
-	public void testCreateUsersContainerWhenCurrentUserIsNotProgramOwner() {
-		this.mockProgramMembers();
-		this.mockCurrentUser(ProgramMembersPanelTest.MEMBER_USER_ID);
-
-		final Container usersContainer = this.programMembersPanel.createUsersContainer();
-
-		final Collection<WorkbenchUser> programMembers = (Collection<WorkbenchUser>) usersContainer.getItemIds();
-		Assert.assertNotNull(programMembers);
-		Assert.assertEquals("There should be 2 program members.", 2, programMembers.size());
-
-		// Two users should be disabled - current user and program owner
-		for (final WorkbenchUser user : programMembers) {
-			if (user.getUserid().equals(ProgramMembersPanelTest.OWNER_PERSON_ID)
-					|| user.getUserid().equals(ProgramMembersPanelTest.MEMBER_PERSON_ID)) {
-				Assert.assertFalse(
-						"Program owner and current user should be disabled and cannot be removed as program members.",
-						user.isEnabled());
-			} else {
-				Assert.assertTrue("Other users should be enabled so they can be removed as members.", user.isEnabled());
-			}
-		}
-	}
-
-	@Test
 	public void testGenerateRoleCellForOwner() {
 		this.mockCurrentUser(ProgramMembersPanelTest.OWNER_USER_ID);
 		final WorkbenchUser itemId = UserTestDataInitializer.createUserWithRole(ProgramMembersPanelTest.OWNER_USER_ID);
