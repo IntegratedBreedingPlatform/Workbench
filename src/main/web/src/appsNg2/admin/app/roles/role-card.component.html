@@ -32,7 +32,7 @@
 				<label for="roleType" class="col-sm-3 control-label">Role type</label>
 				<div class="col-xs-9 col-md-9">
 					<select class="form-control" [(ngModel)]="roleTypeId" #roleTypeInput="ngModel" required name="roleType" id="roleType"
-							(ngModelChange)="changeRoleType()">
+							(ngModelChange)="onChangeRoleType()" [disabled]="roleTypeDisabled">
 						<option value="">Please select a role type</option>
 						<option *ngFor="let roleType of roleTypes" [value]="roleType.id">{{roleType.name}}</option>
 					</select>

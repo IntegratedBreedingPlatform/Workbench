@@ -31,6 +31,12 @@ export class RoleService{
     }).map((response) => response.json());
   }
 
+  getRole(roleId: number) {
+    return this.http.get(`${this.baseUrl}/roles/${roleId}`, {
+      headers: this.getHeaders(),
+    }).map((response) => response.json());
+  }
+
   createRole(role: Role): any {
     return this.http.post(`${this.baseUrl}/roles`, {
       name: role.name,
@@ -137,14 +143,27 @@ function mapRole(response:Response): Role{
 }
 
 /**
- * @permissions permissions iterate the list and set the parent based on the children
+ * Visit each permission in the tree
+ */
+export function visitPermissions(permissions: Permission[], visit: (permission: Permission) => any) {
+  for (const permission of permissions) {
+    visit(permission);
+    if (permission.children && permission.children.length) {
+      visitPermissions(permission.children, visit);
+    }
+  }
+  return permissions;
+}
+
+/**
+ * @permissions recurse the tree and set the parent
  */
 export function setParent(permissions: Permission[], parent: Permission) {
-    for (const permission of permissions) {
-        permission.parent = parent;
-        if (permission.children && permission.children.length) {
-            setParent(permission.children, permission);
-        }
+  for (const permission of permissions) {
+    permission.parent = parent;
+    if (permission.children && permission.children.length) {
+      setParent(permission.children, permission);
     }
-    return permissions;
+  }
+  return permissions;
 }

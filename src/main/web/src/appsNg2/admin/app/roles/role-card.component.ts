@@ -3,7 +3,7 @@ import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Role } from '../shared/models/role.model';
 import { RoleType } from '../shared/models/role-type.model';
-import { RoleService, setParent } from '../shared/services/role.service';
+import { OnPermissionSelectedType, RoleService, setParent, visitPermissions } from '../shared/services/role.service';
 import { Permission } from '../shared/models/permission.model';
 import { ErrorResponseInterface } from '../shared/services/error-response.interface';
 
@@ -17,9 +17,11 @@ export class RoleCardComponent implements OnInit {
     isEditing: boolean;
     isVisible = true;
     roleId: number;
+    roleTypeDisabled: boolean;
+    // keep permissions selected when changing role types. value can be anything (is there other data structure that fits better?)
+    permissionSelectedIdMap: { [id: string]: any } = {};
 
     model: Role;
-    // TODO merge into Role
     roleTypeId: any = "";
     roleTypes: RoleType[];
     permissions: Permission[] = [];
@@ -38,10 +40,28 @@ export class RoleCardComponent implements OnInit {
         this.route.params.subscribe(params => {
             this.roleId = Number(params['id']);
             if (this.roleId) {
-                // TODO get by id
-                this.model = this.roleService.role;
-                this.roleTypeId = this.model.roleType.id;
-                this.changeRoleType();
+                this.roleService.getRole(this.roleId).subscribe((role: Role) => {
+                    this.model = <Role>({
+                        id: role.id,
+                        name: role.name,
+                        description: role.description,
+                        roleType: role.roleType,
+                        editable: role.editable,
+                        assignable: role.assignable,
+                        active: role.active,
+                    });
+
+                    // role type cannot be changed if there are users assigned to them
+                    this.roleTypeDisabled = Boolean(role.userRoles && role.userRoles.length);
+
+                    this.permissionSelectedIdMap = role.permissions.reduce((map, permission: Permission) => {
+                        map[permission.id] = true;
+                        return map;
+                    }, {});
+
+                    this.roleTypeId = this.model.roleType.id;
+                    this.drawTree();
+                });
             }
         });
 
@@ -105,12 +125,22 @@ export class RoleCardComponent implements OnInit {
         // TODO
     }
 
-    changeRoleType() {
+    onChangeRoleType() {
+        this.drawTree();
+    }
+
+    drawTree() {
         this.roleService.getPermissionsTree(this.roleTypeId).subscribe((root: Permission) => {
-            // TODO merge selected stated between model and permission tree
-            // if (this.model.permissions && this.model.permissions.length) {
-            // }
             this.permissions = setParent([root], null);
+            visitPermissions(this.permissions, (permission) => {
+                if (this.permissionSelectedIdMap[permission.id] && permission.selectable) {
+                    permission.selected = true;
+                }
+                if (permission.parent && permission.parent.selected) {
+                    permission.selected = true;
+                    permission.disabled = true;
+                }
+            });
         });
     }
 }

@@ -90,29 +90,6 @@ export class RolesDatagrid implements  OnInit {
     }
 
     editRole(role: Role) {
-
-        // TODO remove after geting by id
-        function copyPermissions(permissions: Permission[]) {
-            if (!permissions || !permissions.length) {
-                return [];
-            }
-            return role.permissions.map((permission) => {
-                let copy = Object.assign({}, permission);
-                copy.children = copyPermissions(permission.children);
-                return copy;
-            });
-        }
-        this.roleService.role = <Role>({
-            id: role.id,
-            name: role.name,
-            description: role.description,
-            roleType: role.roleType,
-            editable: role.editable,
-            assignable: role.assignable,
-            active: role.active,
-            permissions: copyPermissions(role.permissions)
-        });
-
         this.router.navigate(['role-card', role.id], { queryParams: { isEditing: false } });
     }
 }
