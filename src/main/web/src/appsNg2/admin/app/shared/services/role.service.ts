@@ -10,10 +10,13 @@ import { Program } from '../models/program.model';
 import { RoleType } from '../models/role-type.model';
 import { Permission } from '../models/permission.model';
 
+export type OnPermissionSelectedType = { id: string, selected: boolean };
+
 @Injectable()
 export class RoleService{
 
   public onRoleAdded = new Subject<Role>();
+  public onPermissionSelected = new Subject<OnPermissionSelectedType>();
 
   private baseUrl: string = SERVER_API_URL;
   private http: Http;

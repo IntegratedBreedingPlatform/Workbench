@@ -72,6 +72,14 @@ export class RoleCardComponent implements OnInit {
         this.roleService.getRoleTypes().subscribe((roleTypes) => {
             this.roleTypes = roleTypes;
         });
+
+        this.roleService.onPermissionSelected.subscribe((selected: OnPermissionSelectedType) => {
+            if (selected.selected) {
+                this.permissionSelectedIdMap[selected.id] = selected.selected;
+            } else {
+                delete this.permissionSelectedIdMap[selected.id];
+            }
+        });
     }
 
     isFormValid(form: NgForm) {
@@ -175,17 +183,23 @@ export class PermissionTree {
     @Input() permissions: Permission [];
     @Input() isLevelZero: boolean;
 
+    constructor(private roleService: RoleService) {
+    }
+
     isShowCheckbox(permission: Permission) {
         return permission.selectable;
     }
 
     onPermissionClick(event: any, permission: Permission) {
+        let checked = event.currentTarget.checked;
+        this.roleService.onPermissionSelected.next({ id: permission.id, selected: checked });
         if (permission.children) {
             let permissions = Object.assign([], permission.children);
             while (permissions.length) {
                 let descendant: Permission = permissions.pop();
-                descendant.selected = event.currentTarget.checked;
-                descendant.disabled = event.currentTarget.checked;
+                descendant.selected = checked;
+                descendant.disabled = checked;
+                this.roleService.onPermissionSelected.next({ id: descendant.id, selected: checked });
                 if (descendant.children) {
                     permissions.push.apply(permissions, descendant.children);
                 }
