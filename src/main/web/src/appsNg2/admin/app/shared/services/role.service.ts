@@ -53,6 +53,21 @@ export class RoleService{
     }, { headers: this.getHeaders() });
   }
 
+  updateRole(role: Role, showWarnings: boolean) {
+    return this.http.put(`${this.baseUrl}/roles`, {
+      id: role.id,
+      name: role.name,
+      description: role.description || '',
+      roleType: role.type,
+      permissions: role.permissions.map((permission: Permission) => {
+        return permission.id;
+      }),
+      editable: true,
+      assignable: true,
+      showWarnings: showWarnings
+    }, { headers: this.getHeaders() });
+  }
+
   getRoleTypes(): Observable<RoleType[]>{
     return this.http.get(`${this.baseUrl}/role-types`,{ headers: this.getHeaders() }).map(response => this.mapRoleType(response));
   }

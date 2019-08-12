@@ -59,7 +59,7 @@
 	<div class="modal-footer">
 		<button type="button" class="btn btn-default" data-dismiss="modal" (click)="cancel(form)">Cancel</button>
 		<button type="submit" class="btn btn-primary" [disabled]="!isFormValid(form)" (click)="addRole(form)" *ngIf="!isEditing">Add Role</button>
-		<button type="submit" class="btn btn-primary" [disabled]="!isFormValid(form)" (click)="editRole(form)" *ngIf="isEditing">Update Role</button>
+		<button type="submit" class="btn btn-primary" [disabled]="!isFormValid(form)" (click)="updateRole(form, true)" *ngIf="isEditing">Update Role</button>
 	</div>
 </app-dialog>
 <notification [(visible)]="errors.length" title="Error" [classes]="'error-notify'"
@@ -68,4 +68,24 @@
 		<li *ngFor="let error of errors">{{error.message}}</li>
 	</ul>
 </notification>`
-
+<div class="popup">
+	<app-dialog [(visible)]="confirmMessages.length" [title]="'Confirmation'"
+				(onClose)="confirmMessages = []">
+		<div class="modal-body">
+			<div class="separator"></div>
+			<ul *ngIf="confirmMessages.length > 1">
+				<li *ngFor="let error of confirmMessages">{{error.message}}</li>
+			</ul>
+			<div *ngIf="confirmMessages.length === 1">
+				{{confirmMessages[0].message}}
+			</div>
+			<div>
+				Do you want to proceed?
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal" (click)="confirmMessages = []">No</button>
+			<button type="button" class="btn btn-primary" (click)="updateRole(form, false)">Yes</button>
+		</div>
+	</app-dialog>
+</div>

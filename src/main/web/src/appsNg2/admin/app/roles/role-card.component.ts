@@ -6,6 +6,7 @@ import { RoleType } from '../shared/models/role-type.model';
 import { OnPermissionSelectedType, RoleService, setParent, visitPermissions } from '../shared/services/role.service';
 import { Permission } from '../shared/models/permission.model';
 import { ErrorResponseInterface } from '../shared/services/error-response.interface';
+import { scrollTop } from '../shared/utils/scroll-top';
 
 @Component({
     selector: 'role-card',
@@ -27,6 +28,7 @@ export class RoleCardComponent implements OnInit {
     permissions: Permission[] = [];
 
     errors: ErrorResponseInterface[];
+    confirmMessages: any[] = [];
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
@@ -104,7 +106,7 @@ export class RoleCardComponent implements OnInit {
         this.router.navigate(['../../'], { relativeTo: this.route});
     }
 
-    addRole(form: NgForm) {
+    private prepareModelForSaving() {
         this.model.permissions = [];
         let permissions: Permission[] = Object.assign([], this.permissions);
         // flatten permission structure and set it to model
@@ -119,6 +121,10 @@ export class RoleCardComponent implements OnInit {
         }
 
         this.model.type = this.roleTypeId;
+    }
+
+    addRole(form: NgForm) {
+        this.prepareModelForSaving();
 
         this.roleService.createRole(this.model).subscribe((resp) => {
             this.router.navigate(['../../'], { relativeTo: this.route }).then(() => {
@@ -129,8 +135,20 @@ export class RoleCardComponent implements OnInit {
         });
     }
 
-    editRole(form: NgForm) {
-        // TODO
+    updateRole(form: NgForm, showWarnings: boolean) {
+        this.prepareModelForSaving();
+        this.roleService.updateRole(this.model, showWarnings).subscribe((resp) => {
+            this.router.navigate(['../../'], { relativeTo: this.route }).then(() => {
+                this.roleService.onRoleAdded.next(this.model);
+            });
+        }, error => {
+            if (error.status === 409) {
+                scrollTop();
+                this.confirmMessages = error.json().errors;
+            } else {
+                this.errors = error.json().errors;
+            }
+        });
     }
 
     onChangeRoleType() {
