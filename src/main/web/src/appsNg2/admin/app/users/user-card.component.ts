@@ -145,6 +145,7 @@ export class UserCard implements OnInit {
         return response.map(this.toErrorUser);
     }
 
+    // TODO set form.controls (See role-card)
     private toErrorUser(r: any): string {
         let msg = {
             fieldNames: r.fieldNames,

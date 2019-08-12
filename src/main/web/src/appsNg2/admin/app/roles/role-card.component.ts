@@ -131,7 +131,7 @@ export class RoleCardComponent implements OnInit {
                 this.roleService.onRoleAdded.next(this.model);
             });
         }, error => {
-            this.errors = error.json().errors;
+            this.mapError(error, form);
         });
     }
 
@@ -146,9 +146,22 @@ export class RoleCardComponent implements OnInit {
                 scrollTop();
                 this.confirmMessages = error.json().errors;
             } else {
-                this.errors = error.json().errors;
+                this.mapError(error, form);
             }
         });
+    }
+
+    private mapError(error, form: NgForm) {
+        this.errors = error.json().errors;
+        if (this.errors.length) {
+            this.errors.forEach((error) => {
+                if (error.fieldNames && error.fieldNames.length) {
+                    error.fieldNames.forEach((fieldName) => {
+                        form.controls[fieldName].setErrors({ 'incorrect': true });
+                    });
+                }
+            });
+        }
     }
 
     onChangeRoleType() {
