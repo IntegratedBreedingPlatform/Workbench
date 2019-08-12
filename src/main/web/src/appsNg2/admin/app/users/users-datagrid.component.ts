@@ -9,6 +9,7 @@ import { UserComparator } from './user-comparator.component';
 import { Crop } from '../shared/models/crop.model';
 import { CropService } from '../shared/services/crop.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { scrollTop } from '../shared/utils/scroll-top';
 
 @Component({
     selector: 'users-datagrid',
@@ -47,7 +48,7 @@ export class UsersDatagrid implements OnInit {
     showNewUserForm() {
         this.userService.user = new User('0', '', '', '', [], [], '', 'true');;
         this.router.navigate(['user-card', { isEditing: false }], { relativeTo: this.activatedRoute });
-
+        scrollTop();
     }
 
     showEditUserForm(user: User) {
@@ -55,7 +56,7 @@ export class UsersDatagrid implements OnInit {
         this.userService.user = new User(user.id, user.firstName, user.lastName,
             user.username, user.crops, user.userRoles.map((x) => Object.assign({}, x)), user.email, user.status);
         this.router.navigate(['user-card', { isEditing: true }], { relativeTo: this.activatedRoute });
-
+        scrollTop();
     }
 
     ngOnInit() {

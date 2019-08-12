@@ -4,8 +4,7 @@ import { Role } from '../shared/models/role.model';
 import { RoleService } from '../shared/services/role.service';
 import { RoleComparator } from './role-comparator.component';
 import { Router } from '@angular/router';
-import { Permission } from '../shared/models/permission.model';
-
+import { scrollTop } from '../shared/utils/scroll-top';
 
 @Component({
     selector: 'roles-datagrid',
@@ -91,5 +90,6 @@ export class RolesDatagrid implements  OnInit {
 
     editRole(role: Role) {
         this.router.navigate(['role-card', role.id], { queryParams: { isEditing: false } });
+        scrollTop();
     }
 }
