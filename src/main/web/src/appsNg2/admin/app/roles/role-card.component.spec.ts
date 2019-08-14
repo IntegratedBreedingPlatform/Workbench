@@ -4,34 +4,49 @@ import { PermissionTree } from './role-card.component';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Permission } from '../shared/models/permission.model';
 import { FormsModule } from '@angular/forms';
+import { RoleService } from '../shared/services/role.service';
 
 export function main() {
 
+    let onPermissionSelectedSpy = jasmine.createSpyObj('onPermissionSelected', ['next']);
+    let onRoleAddedSpy = jasmine.createSpyObj('onRoleAdded', ['next']);
+
+    class RoleServiceMock  {
+        onPermissionSelected = onPermissionSelectedSpy;
+        onRoleAdded = onRoleAddedSpy;
+    }
+
     describe('RoleCardComponent', () => {
         describe('Permission tree', () => {
+
+            let fixture: ComponentFixture<PermissionTree>;
+            let permissionTree: PermissionTree;
+
+            beforeEach(() => {
+                TestBed.configureTestingModule({
+                    declarations: [PermissionTree],
+                    imports: [FormsModule],
+                    providers: [{provide: RoleService, useClass: RoleServiceMock}]
+                });
+                fixture = TestBed.createComponent(PermissionTree);
+                permissionTree = fixture.componentInstance;
+            });
 
             /**
              * Test the class
              */
             describe('Class', () => {
-
-                let permissionTree: PermissionTree;
-                let permission: Permission;
-
-                beforeEach(() => {
-                    permissionTree = new PermissionTree();
-                    permission = getPermissionMock();
-                });
-
                 it('should hide checkbox if not selectable', () => {
                     expect(permissionTree.isShowCheckbox({ selectable: true })).toBe(true);
                     expect(permissionTree.isShowCheckbox({ selectable: false })).toBe(false);
                 });
 
                 it('should hide checkbox if not selectable', () => {
+                    let permission = getPermissionMock();
                     permissionTree.onPermissionClick({ currentTarget: { checked: true } }, permission);
                     expect(permission.children[1].children[1].selected).toBe(true); // MANAGE_STUDIES
                     expect(permission.children[0].children[0].children[0].selected).toBe(true); // MANAGE_PROGRAM_SETTINGS
+                    expect(onPermissionSelectedSpy.next).toHaveBeenCalledTimes(8);
                 });
             });
 
@@ -40,22 +55,10 @@ export function main() {
              */
             describe('Component', () => {
 
-                let fixture: ComponentFixture<PermissionTree>;
-                let component: PermissionTree;
-
-                beforeEach(() => {
-                    TestBed.configureTestingModule({
-                        declarations: [PermissionTree],
-                        imports: [FormsModule]
-                    });
-                    fixture = TestBed.createComponent(PermissionTree);
-                    component = fixture.componentInstance;
-                });
-
                 it('should render recursively', () => {
-                    component.permissions = [getPermissionMock()];
+                    permissionTree.permissions = [getPermissionMock()];
                     fixture.detectChanges();
-                    expect(component).toBeDefined();
+                    expect(permissionTree).toBeDefined();
                     let treeCount = fixture.debugElement.nativeElement.querySelectorAll('permission-tree').length;
                     expect(treeCount).toBe(5); // root tree + 4 sub-trees (children)
                 });
