@@ -107,6 +107,9 @@ export class RoleCardComponent implements OnInit {
     }
 
     private prepareModelForSaving() {
+        this.model.name = this.model.name.trim();
+        this.model.description = this.model.description.trim();
+
         this.model.permissions = [];
         let permissions: Permission[] = Object.assign([], this.permissions);
         // flatten permission structure and set it to model
@@ -137,6 +140,7 @@ export class RoleCardComponent implements OnInit {
 
     updateRole(form: NgForm, showWarnings: boolean) {
         this.prepareModelForSaving();
+
         this.roleService.updateRole(this.model, showWarnings).subscribe((resp) => {
             this.router.navigate(['../../'], { relativeTo: this.route }).then(() => {
                 this.roleService.onRoleAdded.next(this.model);
