@@ -40,7 +40,7 @@
 					<td>{{role.type}}</td>
 					<td>
 						<span>
-                                <span *ngIf="role.permissions[0]" class="crop-badge">{{role.permissions[0].description}}</span>
+                                <span *ngIf="role.permissions[0]" class="site-admin-badge">{{role.permissions[0].description}}</span>
                                 <span *ngIf="role.permissions.length > 1"
 									  [title]="getPermissionsTitleFormat(role.permissions)"
 									  style="padding-left: 5px; color: #428bca;"> and {{role.permissions.length - 1}} more</span>
