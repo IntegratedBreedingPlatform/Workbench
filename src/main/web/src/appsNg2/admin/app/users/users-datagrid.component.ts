@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { NgDataGridModel } from './../shared/components/datagrid/ng-datagrid.model';
 import { User } from './../shared/models/user.model';
 import { Role } from './../shared/models/role.model';
@@ -10,6 +10,7 @@ import { Crop } from '../shared/models/crop.model';
 import { CropService } from '../shared/services/crop.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { scrollTop } from '../shared/utils/scroll-top';
+import { UserRole } from '../shared/models/user-role.model';
 
 @Component({
     selector: 'users-datagrid',
@@ -195,11 +196,27 @@ export class UsersDatagrid implements OnInit {
         return crops.map((crop) => crop.cropName).splice(1).join(' and ');
     }
 
-    getRoleNamesTitleFormat(userRoles) {
-        return userRoles.map((userRole) => userRole.role.name).splice(1).join(' and ');
+
+    getRoleNamesTitleFormat(roles: string[]) {
+        return roles.splice(1).join(' and ');
     }
 
     hasSuperAdminRole(userRoles) {
         return userRoles.some(userRole => userRole.role.name === 'SuperAdmin');
+    }
+}
+
+// TODO upgrade angular, use ngIf-as
+@Pipe({name: 'dedupRoleNames'})
+export class DedupRoleNamesPipe implements PipeTransform {
+    transform(userRoles: UserRole[]): string[] {
+        if (!userRoles || !userRoles.length) {
+            return null;
+        }
+        return userRoles.map((userRole) => userRole.role.name)
+            .filter((item, pos, self) => {
+                // remove dups
+                return self.indexOf(item) === pos;
+            });
     }
 }

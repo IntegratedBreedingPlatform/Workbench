@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule } from '@angular/http';
 import { FormsModule } from '@angular/forms';
 import { EmailValidator } from './shared/validators/email-validator.component';
-import { UsersDatagrid } from './users/users-datagrid.component';
+import { DedupRoleNamesPipe, UsersDatagrid } from './users/users-datagrid.component';
 import { Dialog } from './shared/components/dialog/dialog.component';
 import { NotificationComponent } from './shared/components/notify/notification.component';
 import { PaginationComponent } from './shared/components/datagrid/pagination.component';
@@ -46,7 +46,8 @@ import { RolesDatagrid } from './roles/roles-datagrid.component';
     RoleCardComponent,
     PermissionTree,
     ToSelect2OptionDataPipe,
-    ToSelect2OptionIdPipe
+    ToSelect2OptionIdPipe,
+    DedupRoleNamesPipe
   ],
   providers: [
       UserRouteAccessService,
