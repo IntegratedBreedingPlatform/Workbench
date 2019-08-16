@@ -665,15 +665,14 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		final BeanItemContainer<WorkbenchUser> beanItemContainer = new BeanItemContainer<>(WorkbenchUser.class);
 		final int currentUserId = this.contextUtil.getCurrentWorkbenchUserId();
 		for (final WorkbenchUser user : userList) {
-			if (user.getUserid().equals(currentUserId)
+			if (!user.isSuperAdmin()) {
+				if (user.getUserid().equals(currentUserId)
 					|| user.getUserid().equals(this.project.getUserId())) {
-				user.setEnabled(false);
+					user.setEnabled(false);
+				}
+				beanItemContainer.addBean(user);
 			}
-
-			beanItemContainer.addBean(user);
-
 		}
-
 		return beanItemContainer;
 	}
 
