@@ -51,7 +51,7 @@
                 </thead>
                 <tbody>
                     <tr *ngIf="!table.totalFilteredRows" class="clickable-row">
-                        <td colspan="6" class="text-center">No records found.</td>
+                        <td colspan="7" class="text-center">No records found.</td>
                     </tr>
                     <tr *ngFor="let user of table.itemsOnCurrentPage">
                         <td *ngIf="hasSuperAdminRole(user.userRoles)"> {{user.username}} </td>
