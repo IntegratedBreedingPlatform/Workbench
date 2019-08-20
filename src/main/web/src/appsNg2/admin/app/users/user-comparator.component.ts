@@ -2,37 +2,33 @@ import { IObjectComparator } from './../shared/components/datagrid/object-compar
 
 export class UserComparator implements IObjectComparator {
 
-  constructor (){
-  }
+    constructor() {
+    }
 
-  public same (source, target): boolean {
+    public same(source, target): boolean {
+        if (source === target) return true;
+        if (!(source instanceof Object) || !(target instanceof Object)) return false;
+        // if they are not strictly equal, they both need to be Objects
+        for (let prop in source) {
+            // console.log("source " + source[prop]);
+            if (!source.hasOwnProperty(prop)) continue;
+            if (source[prop] === undefined || source[prop] === null || source[prop] === '') continue;
+            if (source[prop] == 'undefined') continue;
 
-      if (source === target) return true;
-      if ( ! ( source instanceof Object ) || ! ( target instanceof Object ) ) return false;
-      // if they are not strictly equal, they both need to be Objects
-      for ( let prop in source ) {
-          // console.log("source " + source[prop]);
-          if (!source.hasOwnProperty(prop)) continue;
-          if (source[prop] === undefined || source[prop] === null || source[prop] === '') continue;
-          if (typeof source[prop] === 'object' && this.same(source[prop], target[prop])) continue;
-
-          if (typeof source[prop] === 'string' && typeof target[prop] === 'string' && target[prop].startsWith(source[prop])) continue;
-          if (typeof source[prop] === 'string' && target[prop].length && target[prop].indexOf(source[prop]) != -1) continue;
-          if (source[prop] === target[prop]) continue;
-          if (typeof target[prop] === 'string' && source[prop].toUpperCase() === target[prop].toUpperCase()) continue;
-          if (source[prop] == "undefined") continue;
-          //Option for status Active
-          if(prop == "status" && source[prop] == "undefined" && target[prop] === "true") continue;
-          if((source[prop] == "undefined" && prop != "status") || source[prop] == "all") continue;
-          return false;
-      }
-
-      if(source["status"] == undefined && target["status"] == "false") {
-          return false;
-      }
-
-      return true;
-  };
+            //Option for status Active
+            if (typeof target[prop] === 'string' && prop == 'status') {
+                if (source[prop] == 'all' || source[prop] == 'undefined') continue;
+                if (source[prop].toUpperCase() === target[prop].toUpperCase()) continue;
+            }
+            //Option for Role type
+            if (prop == 'roleNames') {
+                if (source[prop] == 'all' || source[prop] == 'undefined') continue;
+                if (target.userRoles.some(userRole => userRole.role.name == source[prop])) continue;
+            }
+            return false;
+        }
+        return true;
+    };
 
   public equals ( x: any, y: any ): boolean {
 
