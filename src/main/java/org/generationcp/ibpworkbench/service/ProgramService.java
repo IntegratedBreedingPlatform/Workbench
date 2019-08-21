@@ -172,6 +172,7 @@ public class ProgramService {
 		if (!userIdsToBeRemoved.isEmpty()) {
 			this.userService.removeUsersFromProgram(userIdsToBeRemoved, project.getProjectId());
 		}
+
 	}
 
 	public void updateMembersCropPerson(final Collection<WorkbenchUser> workbenchUsers, final Project project) {
@@ -206,7 +207,7 @@ public class ProgramService {
 				userRole.setCreatedDate(new Date());
 			}
 
-			userRole.setUser(this.userService.getUserById(user.getUserid()));
+			userRole.setUser(user);
 
 			this.workbenchDataManager.saveOrUpdateUserRole(userRole);
 		}
@@ -233,4 +234,5 @@ public class ProgramService {
 			this.germplasmDataManager.saveProgramFavorite(favorite);
 		}
 	}
+
 }
