@@ -152,8 +152,6 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 
 		this.manager.deleteProject(project);
 
-		this.programService.removeCropPersonsOfUsersWithNoPrograms(project);
-
 	}
 
 	protected void deleteAllProgramLocationsAndMethods(final Project project) {

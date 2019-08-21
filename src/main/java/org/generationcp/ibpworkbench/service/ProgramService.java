@@ -11,7 +11,6 @@ import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.dms.ProgramFavorite;
-import org.generationcp.middleware.pojos.workbench.CropPerson;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
@@ -173,27 +172,6 @@ public class ProgramService {
 			this.userService.removeUsersFromProgram(userIdsToBeRemoved, project.getProjectId());
 		}
 
-	}
-
-	public void updateMembersCropPerson(final Collection<WorkbenchUser> workbenchUsers, final Project project) {
-		for (final WorkbenchUser workbenchUser : workbenchUsers) {
-			final CropPerson cropPerson = new CropPerson(project.getCropType(), workbenchUser.getPerson());
-			this.userService.saveCropPerson(cropPerson);
-		}
-		this.removeCropPersonsOfUsersWithNoPrograms(project);
-	}
-
-	public void removeCropPersonsOfUsersWithNoPrograms(final Project project) {
-		// Get the users with no association to any programs in a crop.
-		final List<WorkbenchUser> usersWithoutAssociatedPrograms = this.userService.getUsersWithoutAssociatedPrograms(project.getCropType());
-		for (final WorkbenchUser workbenchUser : usersWithoutAssociatedPrograms) {
-			if (workbenchUser.getPerson() != null) {
-				final CropPerson cropPerson = this.userService.getCropPerson(project.getCropType().getCropName(), workbenchUser.getPerson().getId());
-				if (cropPerson != null) {
-					this.userService.removeCropPerson(cropPerson);
-				}
-			}
-		}
 	}
 
 	private void saveWorkbenchUserToUserRoleMapping(final Project project, final WorkbenchUser user,
