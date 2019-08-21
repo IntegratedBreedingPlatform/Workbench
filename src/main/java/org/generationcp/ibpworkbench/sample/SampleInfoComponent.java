@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
@@ -138,6 +140,12 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 
 			final ExternalResource urlToOpenStudy = getURLStudy(sample.getStudyId(), authParams);
 			final LinkButton linkStudyButton = new LinkButton(urlToOpenStudy, sample.getStudyName(), PARENT_WINDOW);
+
+			try {
+				availableLinkToStudy(linkStudyButton);
+			} catch (final AccessDeniedException e) {
+				linkStudyButton.setEnabled(false);
+			}
 			linkStudyButton.setDebugId("linkStudyButton");
 			linkStudyButton.addStyleName(BaseTheme.BUTTON_LINK);
 
@@ -163,6 +171,11 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 					horizontalLayoutForDatasetButton}, count);
 			count++;
 		}
+	}
+
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGE_STUDIES')")
+	private void availableLinkToStudy(final LinkButton linkStudyButton) {
+		linkStudyButton.setEnabled(true);
 	}
 
 	private void layoutComponents() {
