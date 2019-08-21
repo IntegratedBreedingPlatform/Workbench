@@ -220,6 +220,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			@Override
 			public void buttonClick(final ClickEvent event) {
 				ProgramMembersPanel.this.getSelect().removeCheckedSelectedItems();
+				MessageNotifier.showWarning(ProgramMembersPanel.this.getWindow(), "Information",
+					"Selected members will no longer have a role associated to access current program. After saving these changes will be impacted.");
 			}
 		});
 
