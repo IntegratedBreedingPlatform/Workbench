@@ -173,40 +173,6 @@ public class ProgramServiceTest {
 	}
 
 	@Test
-	public void testSaveProgramMembersWhenSuperAdminPartOfSelectedUsers() {
-		// Setup test project users
-		final Project project = this.createProject();
-		final Set<WorkbenchUser> selectedUsers = new HashSet<WorkbenchUser>();
-		selectedUsers.add(this.loggedInUser);
-		selectedUsers.add(this.memberUser);
-		selectedUsers.add(this.superAdminUser);
-
-		// call method to test
-		this.programService.saveProgramMembers(project, selectedUsers);
-
-		this.verifyMockInteractionsForSavingProgramMembers();
-	}
-
-	@Test
-	public void testSaveProgramMembersWhenSuperAdminNotPartOfSelectedUsers() {
-		// Setup test project users
-		final Project project = this.createProject();
-		final Set<WorkbenchUser> selectedUsers = new HashSet<WorkbenchUser>();
-		selectedUsers.add(this.loggedInUser);
-		selectedUsers.add(this.memberUser);
-
-		// call method to test
-		this.programService.saveProgramMembers(project, selectedUsers);
-
-		// Verify that in saveProgramMembers, superadmin user was added to set
-		// of users
-		Assert.assertEquals(3, selectedUsers.size());
-		Assert.assertTrue(selectedUsers.contains(this.superAdminUser));
-
-		this.verifyMockInteractionsForSavingProgramMembers();
-	}
-
-	@Test
 	public void testAddUnspecifiedLocationToFavorite() {
 		Mockito.when(this.locationDataManager.retrieveLocIdOfUnspecifiedLocation()).thenReturn("1");
 		this.programService.addUnspecifiedLocationToFavorite(this.createProject());

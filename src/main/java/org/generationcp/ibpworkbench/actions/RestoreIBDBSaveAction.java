@@ -1,12 +1,6 @@
 package org.generationcp.ibpworkbench.actions;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.concurrent.Callable;
-
+import com.vaadin.ui.Window;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.commons.util.MySQLUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -18,7 +12,6 @@ import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.generationcp.middleware.service.api.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +20,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.vaadin.easyuploads.FileFactory;
 
-import com.vaadin.ui.Window;
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 @Configurable
 public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, InitializingBean, FileFactory {
@@ -105,7 +102,6 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 
 				// Add current user and users with SUPERADMIN role as members of all restored programs
 				final List<Project> restoredPrograms = this.workbenchDataManager.getProjectsByCrop(cropType);
-				this.addSuperAdminAndCurrentUserAsMembersOfRestoredPrograms(restoredPrograms);
 
 				// Remove directories for old programs and generate new folders for programs of restored backup file
 				this.installationDirectoryUtil.resetWorkspaceDirectoryForCrop(cropType, restoredPrograms);
@@ -131,21 +127,6 @@ public class RestoreIBDBSaveAction implements ConfirmDialog.Listener, Initializi
 	void updateGermplasmListOwnership(final Integer userId) throws IOException, SQLException {
 		if (userId != null) {
 			this.mysqlUtil.updateOwnerships(this.project.getDatabaseName(), userId);
-		}
-	}
-
-	/*
-	 * Call ProgramService to add SUPERADMIN user(s) and current user (if he is not a super admin user) as program members
-	 */
-	void addSuperAdminAndCurrentUserAsMembersOfRestoredPrograms(final List<Project> projects) {
-
-		final WorkbenchUser currentUser = contextUtil.getCurrentWorkbenchUser();
-		final HashSet<WorkbenchUser> users = new HashSet<>();
-		users.add(currentUser);
-
-		for (final Project proj : projects) {
-			// The SUPERADMIN user(s) is being added in ProgramService
-			this.programService.saveProgramMembers(proj, users);
 		}
 	}
 
