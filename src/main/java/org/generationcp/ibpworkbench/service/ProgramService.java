@@ -13,7 +13,6 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.dms.ProgramFavorite;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
 import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.generationcp.middleware.service.api.user.UserService;
@@ -75,7 +74,6 @@ public class ProgramService {
 		this.saveWorkbenchProject(program);
 		this.setContextInfoAndCurrentCrop(program);
 
-		this.saveProgramMembers(program, programUsers);
 		this.addUnspecifiedLocationToFavorite(program);
 
 		// After saving, we create folder for program under <install directory>/workspace
@@ -85,25 +83,6 @@ public class ProgramService {
 				+ program.getStartDate());
 	}
 
-	/**
-	 * Save user(s) with SUPERADMIN role and other selected users as members of given program by saving in the ff tables:
-	 * workbench_project_user_role, workbench_project_user_info and in crop.persons (if applicable)
-	 *
-	 * @param program : program to add members to
-	 * @param users : users to add as members of given program
-	 */
-	public void saveProgramMembers(final Project program, final Set<WorkbenchUser> users) {
-		// Add user(s) with SUPERADMIN role to selected users of program to give access to new program
-		final List<WorkbenchUser> superAdminUsers = this.userService.getSuperAdminUsers();
-		users.addAll(superAdminUsers);
-
-		// Save workbench project metadata and to crop users, persons (if necessary)
-		if (!users.isEmpty()) {
-
-			this.saveProjectUserInfo(program, users);
-		}
-	}
-
 	private void setContextInfoAndCurrentCrop(final Project program) {
 		final Cookie authToken = WebUtils.getCookie(this.request, ContextConstants.PARAM_AUTH_TOKEN);
 		ContextUtil.setContextInfo(this.request, this.contextUtil.getCurrentWorkbenchUserId(), program.getProjectId(),
@@ -111,20 +90,6 @@ public class ProgramService {
 
 		ContextHolder.setCurrentCrop(program.getCropType().getCropName());
 		ContextHolder.setCurrentProgram(program.getUniqueID());
-	}
-
-	/*
-	 * Create records for workbench_project_user_info table if combination of project id, user id is not yet existing in workbench DB
-	 */
-	private void saveProjectUserInfo(final Project program, final Set<WorkbenchUser> users) {
-		for (final WorkbenchUser user : users) {
-			final Long projectID = program.getProjectId();
-
-			if (this.userService.getProjectUserInfoByProjectIdAndUserId(projectID, user.getUserid()) == null) {
-				final ProjectUserInfo pUserInfo = new ProjectUserInfo(program, user);
-				this.userService.saveOrUpdateProjectUserInfo(pUserInfo);
-			}
-		}
 	}
 
 	/*
