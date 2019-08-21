@@ -137,8 +137,6 @@ public class ProgramServiceTest {
 		Assert.assertEquals(ProgramServiceTest.USER_ID, project.getUserId());
 		Assert.assertNull(project.getLastOpenDate());
 
-		this.verifyMockInteractionsForSavingProgramMembers();
-
 		// Capture the argument of the saveProgramFavorite function
 		final ArgumentCaptor<ProgramFavorite> captor = ArgumentCaptor.forClass(ProgramFavorite.class);
 		Mockito.verify(this.germplasmDataManager, Mockito.times(1)).saveProgramFavorite(captor.capture());
@@ -185,12 +183,6 @@ public class ProgramServiceTest {
 		Mockito.when(this.locationDataManager.retrieveLocIdOfUnspecifiedLocation()).thenReturn("");
 		this.programService.addUnspecifiedLocationToFavorite(this.createProject());
 		Mockito.verify(this.germplasmDataManager, Mockito.never()).saveProgramFavorite(ArgumentMatchers.any(ProgramFavorite.class));
-	}
-
-	// Verify Middleware methods to save as program members were called
-	private void verifyMockInteractionsForSavingProgramMembers() {
-		// Verify Workbench_project_user_info records are created
-		Mockito.verify(this.userService, Mockito.times(3)).saveOrUpdateProjectUserInfo(ArgumentMatchers.any(ProjectUserInfo.class));
 	}
 
 	private Project createProject() {
