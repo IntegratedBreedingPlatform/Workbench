@@ -22,6 +22,8 @@ import org.generationcp.middleware.manager.api.GermplasmListManager;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.vaadin.addons.lazyquerycontainer.Query;
 
 import java.util.ArrayList;
@@ -99,9 +101,14 @@ public class ListsForGermplasmQuery implements Query {
 				item.addItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_ID, new ObjectProperty<String>(list.getId().toString()));
 
 				final ExternalResource urlToOpenGermplasmList = new ExternalResource(MANAGER_GERMPLASM + list.getId());
-				LinkButton linkListButton = new LinkButton(urlToOpenGermplasmList,list.getName(),PARENT_WINDOW);
-				linkListButton.setDebugId("linkStudyButton");
+				LinkButton linkListButton = new LinkButton(urlToOpenGermplasmList, list.getName(), PARENT_WINDOW);
+				linkListButton.setDebugId("linkManageListButton");
 				linkListButton.addStyleName(BaseTheme.BUTTON_LINK);
+				try {
+					availableLinkToManageGermplasm(linkListButton);
+				} catch (final AccessDeniedException e) {
+					linkListButton.setEnabled(false);
+				}
 
 				item.addItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_NAME, new ObjectProperty<LinkButton>(linkListButton));
 				item.addItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_DATE, new ObjectProperty<String>(String.valueOf(list.getDate())));
@@ -114,6 +121,11 @@ public class ListsForGermplasmQuery implements Query {
 			ListsForGermplasmQuery.LOG.error("Error with getting lists for gid = " + this.gid + ": " + ex.getMessage(), ex);
 			throw new MiddlewareQueryException("Error in displaying the table for germplasm with GID " + this.gid);
 		}
+	}
+
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGE_GERMPLASM')")
+	private void availableLinkToManageGermplasm(final LinkButton linkListButton) {
+		linkListButton.setEnabled(true);
 	}
 
 	@Override
