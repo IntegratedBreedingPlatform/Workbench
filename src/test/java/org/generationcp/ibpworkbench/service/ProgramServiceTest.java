@@ -107,9 +107,6 @@ public class ProgramServiceTest {
 		this.cropUser = this.loggedInUser;
 		this.cropUser.setUserid(1);
 
-		// Setup mocks
-		Mockito.when(this.userService.getSuperAdminUsers())
-				.thenReturn(Collections.singletonList(this.superAdminUser));
 	}
 
 	@Test
