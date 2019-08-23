@@ -361,17 +361,17 @@ public class AuthenticationController {
 	protected boolean isAccountCreationEnabled() {
 
 		// Do not display the Create Account link if BMS is in single user mode.
-		if (Boolean.parseBoolean(isSingleUserOnly)) {
+		/*if (Boolean.parseBoolean(isSingleUserOnly)) {
 			return false;
 		} else {
 			return Boolean.parseBoolean(this.enableCreateAccount);
-		}
-
+		}*/
+			return false;
 	}
 
-	protected void setEnableCreateAccount(final String enableCreateAccount) {
+	/*protected void setEnableCreateAccount(final String enableCreateAccount) {
 		this.enableCreateAccount = enableCreateAccount;
-	}
+	}*/
 
 	protected void setIsSingleUserOnly(final String isSingleUserOnly) {
 		this.isSingleUserOnly = isSingleUserOnly;
