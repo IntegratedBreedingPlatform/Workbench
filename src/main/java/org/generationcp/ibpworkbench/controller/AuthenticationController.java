@@ -91,8 +91,10 @@ public class AuthenticationController {
 	@Qualifier("workbenchProperties")
 	private Properties workbenchProperties;
 
-	@Value("${workbench.enable.create.account}")
-	private String enableCreateAccount;
+	//TODO: Disable this option until decide which is the best
+	// way to create user with roles in the Login page. ISSUE-5928
+	//@Value("${workbench.enable.create.account}")
+	//private String enableCreateAccount;
 
 	@Value("${workbench.is.single.user.only}")
 	private String isSingleUserOnly;
