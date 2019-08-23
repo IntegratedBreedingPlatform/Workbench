@@ -51,6 +51,7 @@ import org.generationcp.ibpworkbench.ui.window.ChangeCredentialsWindow;
 import org.generationcp.ibpworkbench.ui.window.ChangePasswordWindow;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
@@ -91,6 +92,9 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	@Resource
 	private SimpleResourceBundleMessageSource messageSource;
+
+	@Resource
+	private WorkbenchDataManager workbenchDataManager;
 
 	@Resource
 	private ContextUtil contextUtil;
@@ -505,12 +509,12 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		}
 
 		if (this.isWorkbenchDashboardShown) {
-			try {
+			final WorkbenchUser user = this.contextUtil.getCurrentWorkbenchUser();
+
+			if (!workbenchDataManager.getCropsWithAddProgramPermission(user.getUserid()).isEmpty()) {
 				this.layoutAddProgramButton(this.workbenchHeaderLayout);
-			} catch (final AccessDeniedException e) {
-				// do nothing if the user is not authorized to access Admin button
-				LOG.debug(e.getMessage(), e);
 			}
+
 		} else {
 			this.workbenchHeaderLayout.addComponent(this.homeButton);
 			this.workbenchHeaderLayout.setComponentAlignment(this.homeButton, Alignment.MIDDLE_RIGHT);
@@ -548,7 +552,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_CROP_MANAGEMENT','ROLE_MANAGE_PROGRAMS','ROLE_ADD_PROGRAM')")
 	void layoutAddProgramButton(final HorizontalLayout layout) {
 
 		if (Boolean.parseBoolean(this.isAddProgramEnabled)) {
