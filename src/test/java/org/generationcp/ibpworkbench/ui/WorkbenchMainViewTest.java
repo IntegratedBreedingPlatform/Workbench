@@ -15,6 +15,7 @@ import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.ui.window.ChangeCredentialsWindow;
 import org.generationcp.ibpworkbench.ui.window.ChangePasswordWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Role;
@@ -57,6 +58,9 @@ public class WorkbenchMainViewTest {
 
 	@Mock
 	private ContextUtil contextUtil;
+
+	@Mock
+	private WorkbenchDataManager workbenchDataManager;
 
 	@InjectMocks
 	private WorkbenchMainView workbenchMainView;
@@ -170,7 +174,7 @@ public class WorkbenchMainViewTest {
 
 	private void verifyHeaderLayoutWHenShowingDashboard() {
 		final HorizontalLayout workbenchHeaderLayout = this.workbenchMainView.getWorkbenchHeaderLayout();
-		Assert.assertEquals(9, workbenchHeaderLayout.getComponentCount());
+		Assert.assertEquals(8, workbenchHeaderLayout.getComponentCount());
 
 		final Iterator<Component> componentIterator = workbenchHeaderLayout.getComponentIterator();
 		boolean addProgramButtonShown = false;
@@ -201,7 +205,7 @@ public class WorkbenchMainViewTest {
 		}
 
 		// Verify "Add Program" button is showing
-		Assert.assertTrue(addProgramButtonShown);
+		Assert.assertFalse(addProgramButtonShown);
 		Assert.assertTrue(helpButtonShown);
 		Assert.assertTrue(askSupportButtonShown);
 		Assert.assertTrue(userInfoButtonShown);
