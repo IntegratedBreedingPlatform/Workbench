@@ -114,7 +114,6 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	}
 
 	protected Label generateRoleCell(final Object itemId) {
-		//TODO Review with new development
 		final String role = (((WorkbenchUser) itemId).getRoles() != null && !((WorkbenchUser) itemId).getRoles().isEmpty()
 			&& ((WorkbenchUser) itemId).getRoles().get(0) != null) ? ((WorkbenchUser) itemId).getRoles().get(0).getCapitalizedRole() : "";
 		final Label label = new Label();
@@ -679,17 +678,6 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	}
 
 	public boolean validate() {
-		return true;
-	}
-
-	public boolean validateAndSave() {
-		if (this.validate()) {
-			final Set<WorkbenchUser> members = this.getSelect().getValue();
-
-			this.project.setMembers(members);
-		}
-		// members not required, so even if there are no values, this returns
-		// true
 		return true;
 	}
 
