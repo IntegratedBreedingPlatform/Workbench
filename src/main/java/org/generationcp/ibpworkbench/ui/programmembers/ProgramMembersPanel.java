@@ -38,6 +38,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
@@ -94,6 +95,9 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	private final Project project;
 
 	private RoleSelectionWindow roleSelectionWindow;
+
+	@Autowired
+	private SimpleResourceBundleMessageSource messageSource;
 
 	public ProgramMembersPanel(final Project project) {
 		this.project = project;
@@ -203,10 +207,10 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		this.getSelect()
 				.setColumnHeaders(new String[] { "<span class='glyphicon glyphicon-ok'></span>", "User Name", "Role" });
 
-		this.getSelect().setLeftColumnCaption("Available Users");
-		this.getSelect().setRightColumnCaption("Selected Program Members");
+		this.getSelect().setLeftColumnCaption(messageSource.getMessage(Message.MEMBERS_TAB_AVAILABLE_USERS));
+		this.getSelect().setRightColumnCaption(this.messageSource.getMessage(Message.MEMBERS_TAB_SELECTED_PROGRAM_MEMBERS));
 
-		this.getSelect().setRightLinkCaption("Remove Selected Members");
+		this.getSelect().setRightLinkCaption(messageSource.getMessage(Message.MEMBERS_TAB_REMOVE_SELECTED_MEMBERS));
 		this.getSelect().setLeftLinkCaption("");
 		this.getSelect().addRightLinkListener(new Button.ClickListener() {
 
@@ -220,7 +224,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			public void buttonClick(final ClickEvent event) {
 				ProgramMembersPanel.this.getSelect().removeCheckedSelectedItems();
 				MessageNotifier.showWarning(ProgramMembersPanel.this.getWindow(), "Information",
-					"Selected members will no longer have a role associated to access current program. After saving these changes will be impacted.");
+					ProgramMembersPanel.this.messageSource.getMessage(Message.MEMBERS_TAB_UNSELECT_MEMBERS_CONFIRMATION_MESSAGE));
 			}
 		});
 
@@ -263,8 +267,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 							final Role roleSelected = ProgramMembersPanel.this.getRoleSelected();
 							if (roleSelected == null) {
-								MessageNotifier.showWarning(ProgramMembersPanel.this.getWindow(), "Assign Role error",
-									"Select a Program role for the user(s) selected");
+								MessageNotifier.showWarning(ProgramMembersPanel.this.getWindow(), ProgramMembersPanel.this.messageSource.getMessage(Message.MEMBERS_TAB_ASSIGN_ROLE_ERROR),
+									ProgramMembersPanel.this.messageSource.getMessage(Message.MEMBERS_TAB_SELECT_PROGRAM_ROLE));
 								return;
 							}
 
@@ -364,7 +368,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 				}
 
 				MessageNotifier.showWarning(ProgramMembersPanel.this.getWindow(), "Information",
-					"Selected members will no longer have a role associated to access current program. After saving these changes will be impacted.");
+					ProgramMembersPanel.this.messageSource.getMessage(Message.MEMBERS_TAB_UNSELECT_MEMBERS_CONFIRMATION_MESSAGE));
 
 			}
 
@@ -449,7 +453,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 		if (((Set<Object>) ProgramMembersPanel.this.getSelect().getTableRight().getValue()).size() != 0) {
 			MessageNotifier.showWarning(ProgramMembersPanel.this.getWindow(), "Information",
-				"Selected members will no longer have a role associated to access current program. After saving these changes will be impacted.");
+				ProgramMembersPanel.this.messageSource.getMessage(Message.MEMBERS_TAB_UNSELECT_MEMBERS_CONFIRMATION_MESSAGE));
 		}
 
 		for (Object itemId : (Set<Object>) ProgramMembersPanel.this.getSelect().getTableRight().getValue()) {
@@ -478,8 +482,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 						final Role roleSelected =  ProgramMembersPanel.this.getRoleSelected();
 
 						if (roleSelected == null) {
-							MessageNotifier.showWarning(ProgramMembersPanel.this.getWindow(), "Assign Role error",
-								"Select a Program role for the user(s) selected");
+							MessageNotifier.showWarning(ProgramMembersPanel.this.getWindow(), ProgramMembersPanel.this.messageSource.getMessage(Message.MEMBERS_TAB_ASSIGN_ROLE_ERROR),
+								ProgramMembersPanel.this.messageSource.getMessage(Message.MEMBERS_TAB_SELECT_PROGRAM_ROLE));
 							return;
 						}
 
@@ -570,7 +574,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			"<span class='bms-members' style='color: #D1B02A; font-size: 23px'></span>&nbsp;Program Members",
 			Label.CONTENT_XHTML);
 		final Label headingDesc = new Label(
-			"Choose team members for this program by dragging available users from the list on the left into the Program Members list on the right.");
+			ProgramMembersPanel.this.messageSource.getMessage(Message.MEMBERS_TAB_CHOOSE_TEAM_MEMBERS));
 
 		heading.setStyleName(Bootstrap.Typography.H4.styleName());
 
@@ -659,8 +663,6 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	protected Container createUsersContainer() {
 		final String cropName = this.contextUtil.getProjectInContext().getCropType().getCropName();
 
-		// TODO: This can be improved once we implement proper User-Person
-		// mapping
 		final List<WorkbenchUser> userList = this.userService.getUsersByCrop(cropName);
 
 		final BeanItemContainer<WorkbenchUser> beanItemContainer = new BeanItemContainer<>(WorkbenchUser.class);
@@ -716,5 +718,9 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 	public void setRoleSelectionWindow(RoleSelectionWindow roleSelectionWindow) {
 		this.roleSelectionWindow = roleSelectionWindow;
+	}
+
+	public void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
 	}
 }

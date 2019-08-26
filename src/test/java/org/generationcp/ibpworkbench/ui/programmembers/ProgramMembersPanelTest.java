@@ -1,9 +1,9 @@
 
 package org.generationcp.ibpworkbench.ui.programmembers;
 
-import com.vaadin.data.Container;
 import com.vaadin.ui.Label;
 import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.middleware.data.initializer.UserTestDataInitializer;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -23,7 +23,6 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -49,6 +48,9 @@ public class ProgramMembersPanelTest {
 	@Mock
 	private ContextUtil contextUtil;
 
+	@Mock
+	private SimpleResourceBundleMessageSource messageSource;
+
 	private Project project;
 
 	@InjectMocks
@@ -63,6 +65,7 @@ public class ProgramMembersPanelTest {
 		this.programMembersPanel = new ProgramMembersPanel(this.project);
 		this.programMembersPanel.setUserService(this.userService);
 		this.programMembersPanel.setContextUtil(this.contextUtil);
+		this.programMembersPanel.setMessageSource(messageSource);
 		Mockito.doReturn(this.project).when(this.contextUtil).getProjectInContext();
 	}
 
