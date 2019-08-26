@@ -205,7 +205,7 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 
 		for (final PermissionDto permission : permissions) {
 			final WorkbenchSidebarCategoryLink link =
-				this.workbenchDataManager.getWorkbenchSidebarLinksById(permission.getWorkbenchCategoryLinkId());
+				this.workbenchDataManager.getWorkbenchSidebarLinksByCategoryId(permission.getWorkbenchCategoryLinkId());
 			if (link != null) {
 				if (unsortedMapLinks.get(link.getWorkbenchSidebarCategory()) == null) {
 					unsortedMapLinks.put(link.getWorkbenchSidebarCategory(), new ArrayList<WorkbenchSidebarCategoryLink>());
