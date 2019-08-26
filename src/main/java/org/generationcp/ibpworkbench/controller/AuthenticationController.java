@@ -91,8 +91,10 @@ public class AuthenticationController {
 	@Qualifier("workbenchProperties")
 	private Properties workbenchProperties;
 
-	@Value("${workbench.enable.create.account}")
-	private String enableCreateAccount;
+	//TODO: Disable this option until decide which is the best
+	// way to create user with roles in the Login page. ISSUE-5928
+	//@Value("${workbench.enable.create.account}")
+	//private String enableCreateAccount;
 
 	@Value("${workbench.is.single.user.only}")
 	private String isSingleUserOnly;
@@ -361,17 +363,17 @@ public class AuthenticationController {
 	protected boolean isAccountCreationEnabled() {
 
 		// Do not display the Create Account link if BMS is in single user mode.
-		if (Boolean.parseBoolean(isSingleUserOnly)) {
+		/*if (Boolean.parseBoolean(isSingleUserOnly)) {
 			return false;
 		} else {
 			return Boolean.parseBoolean(this.enableCreateAccount);
-		}
-
+		}*/
+			return false;
 	}
 
-	protected void setEnableCreateAccount(final String enableCreateAccount) {
+	/*protected void setEnableCreateAccount(final String enableCreateAccount) {
 		this.enableCreateAccount = enableCreateAccount;
-	}
+	}*/
 
 	protected void setIsSingleUserOnly(final String isSingleUserOnly) {
 		this.isSingleUserOnly = isSingleUserOnly;
