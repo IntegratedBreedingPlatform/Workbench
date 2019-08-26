@@ -11,6 +11,7 @@ import { CropService } from '../shared/services/crop.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { scrollTop } from '../shared/utils/scroll-top';
 import { UserRole } from '../shared/models/user-role.model';
+import 'rxjs/add/operator/toPromise';
 
 @Component({
     selector: 'users-datagrid',
@@ -39,6 +40,9 @@ export class UsersDatagrid implements OnInit {
     public crops: Crop[] = [];
     private message: string;
 
+    // TODO upgrade angular, use ngIf-else and async pipe
+    private loading: boolean;
+
     constructor(private userService: UserService,
                 private roleService: RoleService,
                 private cropService: CropService, private router: Router, private activatedRoute: ActivatedRoute) {
@@ -47,7 +51,7 @@ export class UsersDatagrid implements OnInit {
     }
 
     showNewUserForm() {
-        this.userService.user = new User('0', '', '', '', [], [], '', 'true');;
+        this.userService.user = new User('0', '', '', '', [], [], '', 'true');
         this.router.navigate(['user-card', { isEditing: false }], { relativeTo: this.activatedRoute });
         scrollTop();
     }
@@ -100,17 +104,19 @@ export class UsersDatagrid implements OnInit {
     }
 
     private loadTheUsersDataGridTable() {
-        this.userService
-            .getAll()
-            .subscribe(
-                users => this.table.items = users,
-                error => {
-                    this.errorServiceMessage = error;
-                    if (error.status === 401) {
-                        localStorage.removeItem('xAuthToken');
-                        this.handleReAuthentication();
-                    }
-                });
+        this.loading = true;
+        this.userService.getAll().toPromise()
+            .then(users => {
+                this.table.items = users;
+                this.loading = false;
+            }, error => {
+                this.loading = false;
+                this.errorServiceMessage = error;
+                if (error.status === 401) {
+                    localStorage.removeItem('xAuthToken');
+                    this.handleReAuthentication();
+                }
+            });
     }
 
     sortAfterAddOrEdit() {

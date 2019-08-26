@@ -5,6 +5,7 @@ import { RoleService } from '../shared/services/role.service';
 import { RoleComparator } from './role-comparator.component';
 import { Router } from '@angular/router';
 import { scrollTop } from '../shared/utils/scroll-top';
+import 'rxjs/add/operator/toPromise';
 
 @Component({
     selector: 'roles-datagrid',
@@ -20,6 +21,8 @@ export class RolesDatagrid implements  OnInit {
     table: NgDataGridModel<Role>;
     private message: string;
 
+    // TODO upgrade angular, use ngIf-else and async pipe
+    private loading: boolean;
 
     constructor(private roleService: RoleService,
                 private router: Router) {
@@ -40,16 +43,19 @@ export class RolesDatagrid implements  OnInit {
     }
 
     private loadTable() {
-        this.roleService.getFilteredRoles(null).subscribe(roles => {
+        this.loading = true;
+        this.roleService.getFilteredRoles(null).toPromise().then(roles => {
+            this.loading = false;
             this.table.items = roles;
         }, error => {
+            this.loading = false;
             this.errorServiceMessage = error;
             if (error.status === 401) {
                 localStorage.removeItem('xAuthToken');
                 this.handleReAuthentication();
             }
 
-        });
+        };
     }
 
     // TODO

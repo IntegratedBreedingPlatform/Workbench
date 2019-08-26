@@ -16,7 +16,8 @@
 	<br/><br/>
 	<div class="row">
 		<div class="col-xs-12">
-			<table class="table table-striped">
+			<span class="throbber throbber-lg" *ngIf="loading"></span>
+			<table class="table table-striped" *ngIf="!loading" >
 				<thead>
 				<tr>
 					<th [ngClass]="{ sort: isSorted('name'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('name')">Name</th>
