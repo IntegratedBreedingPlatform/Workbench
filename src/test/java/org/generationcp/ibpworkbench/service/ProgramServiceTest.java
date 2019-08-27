@@ -11,7 +11,6 @@ import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.dms.ProgramFavorite;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.generationcp.middleware.service.api.user.UserService;
 import org.junit.Assert;
@@ -31,7 +30,6 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -42,7 +40,6 @@ public class ProgramServiceTest {
 	private static final String SUPERADMIN_USERNAME = "superadmin";
 	private static final int USER_ID = 123;
 	private static final String SAMPLE_AUTH_TOKEN_VALUE = "RANDOM_TOKEN";
-	private static final String CROP_NAME = "maize";
 
 	@Mock
 	private HttpServletRequest request;
@@ -89,7 +86,7 @@ public class ProgramServiceTest {
 		Mockito.when(this.cookie.getName()).thenReturn(ContextConstants.PARAM_AUTH_TOKEN);
 		;
 		Mockito.when(this.cookie.getValue()).thenReturn(ProgramServiceTest.SAMPLE_AUTH_TOKEN_VALUE);
-		Mockito.when(this.request.getCookies()).thenReturn(new Cookie[] { this.cookie });
+		Mockito.when(this.request.getCookies()).thenReturn(new Cookie[] {this.cookie});
 
 		this.initializeTestPersonsAndUsers();
 		Mockito.when(this.contextUtil.getCurrentWorkbenchUserId()).thenReturn(ProgramServiceTest.USER_ID);
@@ -160,9 +157,9 @@ public class ProgramServiceTest {
 		final List<Integer> activeUserIds = new ArrayList<>();
 		activeUserIds.addAll(Arrays.asList(1, 2));
 		final Collection<WorkbenchUser> userList = Arrays.asList(new WorkbenchUser(1));
-		Mockito.when(this.userService.getActiveUserIDsByProjectId(ArgumentMatchers.anyLong(), ArgumentMatchers.anyString() ))
+		Mockito.when(this.userService.getActiveUserIDsWithProgramRoleByProjectId(ArgumentMatchers.anyLong()))
 			.thenReturn(activeUserIds);
-		final List<Integer> removedUserIds = this.programService.getUsersNotAssociatedToSpecificProgram(1, userList, CROP_NAME);
+		final List<Integer> removedUserIds = this.programService.getUsersNotAssociatedToSpecificProgram(1, userList);
 		Assert.assertEquals(1, removedUserIds.size());
 		Assert.assertEquals("2", removedUserIds.get(0).toString());
 	}

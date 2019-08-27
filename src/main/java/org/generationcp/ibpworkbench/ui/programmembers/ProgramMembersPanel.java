@@ -609,7 +609,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	protected void initializeUsers() {
 		final Container container = this.tblMembers.getContainerDataSource();
 		final List<Integer> userIDs = this.userService
-			.getActiveUserIDsByProjectId(this.project.getProjectId(), this.project.getCropType().getCropName());
+			.getActiveUserIDsWithProgramRoleByProjectId(this.project.getProjectId());
 		final Set<WorkbenchUser> selectedItems = new HashSet<>();
 
 		for (final Integer userID : userIDs) {

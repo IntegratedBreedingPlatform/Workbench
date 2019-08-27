@@ -4,7 +4,6 @@ package org.generationcp.ibpworkbench.service;
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.util.ContextUtil;
-import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.middleware.ContextHolder;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
@@ -79,8 +78,9 @@ public class ProgramService {
 		// After saving, we create folder for program under <install directory>/workspace
 		this.installationDirectoryUtil.createWorkspaceDirectoriesForProject(program);
 
-		ProgramService.LOG.info("Program created. ID:" + program.getProjectId() + " Name:" + program.getProjectName() + " Start date:"
-				+ program.getStartDate());
+		ProgramService.LOG.info(
+				"Program created. ID:" + program.getProjectId() + " Name:" + program.getProjectName() + " Start date:" + program
+						.getStartDate());
 	}
 
 	private void setContextInfoAndCurrentCrop(final Project program) {
@@ -110,10 +110,6 @@ public class ProgramService {
 		this.workbenchDataManager.addProject(program);
 	}
 
-	private Integer getCurrentDate() {
-		return DateUtil.getCurrentDateAsIntegerValue();
-	}
-
 	void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
 		this.workbenchDataManager = workbenchDataManager;
 	}
@@ -132,7 +128,7 @@ public class ProgramService {
 
 		// Get the users with no association to the specified program.
 		final List<Integer> userIdsToBeRemoved =
-			this.getUsersNotAssociatedToSpecificProgram(project.getProjectId(), userList, project.getCropType().getCropName());
+			this.getUsersNotAssociatedToSpecificProgram(project.getProjectId(), userList);
 		if (!userIdsToBeRemoved.isEmpty()) {
 			this.userService.removeUsersFromProgram(userIdsToBeRemoved, project.getProjectId());
 		}
@@ -156,9 +152,8 @@ public class ProgramService {
 		}
 	}
 
-	protected List<Integer> getUsersNotAssociatedToSpecificProgram(final long projectId, final Collection<WorkbenchUser> workbenchUsers,
-		final String cropName) {
-		final List<Integer> activeUserIds = this.userService.getActiveUserIDsByProjectId(projectId, cropName);
+	protected List<Integer> getUsersNotAssociatedToSpecificProgram(final long projectId, final Collection<WorkbenchUser> workbenchUsers) {
+		final List<Integer> activeUserIds = this.userService.getActiveUserIDsWithProgramRoleByProjectId(projectId);
 		final List<Integer> userIdsOfUsersAssociatedToAProgram = new ArrayList<>();
 		for (final WorkbenchUser user : workbenchUsers) {
 			userIdsOfUsersAssociatedToAProgram.add(user.getUserid());
