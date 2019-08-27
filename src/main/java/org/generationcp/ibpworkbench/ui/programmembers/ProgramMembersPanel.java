@@ -306,9 +306,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 									target.addItem(itemIdOver);
 								}
 							}
-
 							target.addListener(ProgramMembersPanel.this.getSelect().getTableValueChangeListener());
-
+							ProgramMembersPanel.this.getSelect().getChkSelectAllLeft().setValue(false);
 							ProgramMembersPanel.this.getRoleSelectionWindow().getParent()
 								.removeWindow(ProgramMembersPanel.this.getRoleSelectionWindow());
 						}
@@ -366,7 +365,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 						target.addItem(itemIdOver);
 					}
 				}
-
+				ProgramMembersPanel.this.getSelect().getChkSelectAllRight().setValue(false);
 				MessageNotifier.showWarning(ProgramMembersPanel.this.getWindow(), "Information",
 					ProgramMembersPanel.this.messageSource.getMessage(Message.MEMBERS_TAB_UNSELECT_MEMBERS_CONFIRMATION_MESSAGE));
 

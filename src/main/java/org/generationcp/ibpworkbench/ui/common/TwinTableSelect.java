@@ -541,7 +541,7 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 
 			}
 		}
-
+		this.getChkSelectAllRight().setValue(false);
 	}
 
 	public void addCheckedSelectedItems() {
@@ -554,7 +554,7 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 
 			}
 		}
-
+		this.getChkSelectAllLeft().setValue(false);
 	}
 
 	public void addAllToSelectedItems() {

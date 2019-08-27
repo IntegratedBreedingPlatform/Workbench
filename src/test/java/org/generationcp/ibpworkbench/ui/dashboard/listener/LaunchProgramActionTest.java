@@ -67,9 +67,6 @@ public class LaunchProgramActionTest {
 	private PlatformTransactionManager transactionManager;
 
 	@Mock
-	private LaunchWorkbenchToolAction launchWorkbenchToolAction;
-
-	@Mock
 	private WorkbenchMainView window;
 
 	@Mock
@@ -114,7 +111,6 @@ public class LaunchProgramActionTest {
 	private void setMockDependenciesToTestModule() {
 		this.launchProgramAction.setTransactionManager(this.transactionManager);
 		this.launchProgramAction.setUserService(this.userService);
-		this.launchProgramAction.setLaunchWorkbenchToolAction(this.launchWorkbenchToolAction);
 		this.launchProgramAction.setContextUtil(this.contextUtil);
 		this.launchProgramAction.setRequest(this.request);
 		this.launchProgramAction.setWorkbenchDataManager(this.workbenchDataManager);

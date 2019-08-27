@@ -92,7 +92,7 @@ public class AuthenticationController {
 	private Properties workbenchProperties;
 
 	//TODO: Disable this option until decide which is the best
-	// way to create user with roles in the Login page. ISSUE-5928
+	// way to create user with roles in the Login page. ISSUE IBP-2958
 	//@Value("${workbench.enable.create.account}")
 	//private String enableCreateAccount;
 

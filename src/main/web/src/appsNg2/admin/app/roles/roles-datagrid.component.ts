@@ -55,7 +55,7 @@ export class RolesDatagrid implements  OnInit {
                 this.handleReAuthentication();
             }
 
-        };
+        });
     }
 
     // TODO

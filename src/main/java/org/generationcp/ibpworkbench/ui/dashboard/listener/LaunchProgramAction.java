@@ -86,8 +86,6 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 
 	private WorkbenchMainView workbenchMainView;
 
-	private LaunchWorkbenchToolAction launchListManagerToolAction;
-
 	public LaunchProgramAction() {
 		super();
 	}
@@ -128,7 +126,6 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 
 					// Set the first tool the user has access to
 					final ToolName firstAvailableTool = getFirstAvailableTool(sidebarMenu);
-					launchListManagerToolAction = new LaunchWorkbenchToolAction(firstAvailableTool);
 
 					// update sidebar selection
 					LaunchProgramAction.LOG.trace("selecting sidebar");
@@ -276,10 +273,6 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 
 	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
 		this.workbenchDataManager = workbenchDataManager;
-	}
-
-	public void setLaunchWorkbenchToolAction(final LaunchWorkbenchToolAction launchWorkbenchToolAction) {
-		this.launchListManagerToolAction = launchWorkbenchToolAction;
 	}
 
 	public void setContextUtil(final ContextUtil contextUtil) {

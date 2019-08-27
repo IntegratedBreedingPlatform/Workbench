@@ -21,7 +21,7 @@
 				<label for="description" class="col-sm-3 control-label">Description</label>
 				<div class="col-sm-9">
 					<input type="text" class="form-control" [(ngModel)]="model.description" #description="ngModel" name="description" id="description"
-						   pattern="[A-Za-z0-9-\/_*\(\):\.\s]*[A-Za-z0-9-\/_*\(\):\.]+[A-Za-z0-9-\/_*\(\):\.\s]*"
+						   pattern="[A-Za-z0-9-\/_*\(\):\.\s]*"
 						   title="Description field only accepts letters, numbers, spaces and special characters - / _ * ( ) : ."
 						   placeholder="" maxlength="255">
 					<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>

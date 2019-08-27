@@ -67,7 +67,7 @@ public class StudyButtonRenderer {
 		return studyButton;
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGE_STUDIES')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGE_STUDIES','ROLE_BREEDING_ACTIVITIES')")
 	private void availableLinkToStudy(final Button studyButton) {
 		studyButton.setEnabled(true);
 	}
