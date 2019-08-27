@@ -108,7 +108,7 @@ export class RoleCardComponent implements OnInit {
 
     private prepareModelForSaving() {
         this.model.name = this.model.name.trim();
-        this.model.description = this.model.description.trim();
+        this.model.description = this.model.description && this.model.description.trim();
 
         this.model.permissions = [];
         let permissions: Permission[] = Object.assign([], this.permissions);
