@@ -122,7 +122,7 @@ public class ProgramService {
 		//Addition of new members
 		for (final WorkbenchUser u : userList) {
 			for (final UserRole role : u.getRoles()) {
-				this.saveWorkbenchUserToUserRoleMapping(project, u, role );
+				this.saveWorkbenchUserToUserRoleMapping(u, role );
 			}
 		}
 
@@ -135,7 +135,7 @@ public class ProgramService {
 
 	}
 
-	private void saveWorkbenchUserToUserRoleMapping(final Project project, final WorkbenchUser user,
+	private void saveWorkbenchUserToUserRoleMapping(final WorkbenchUser user,
 		final UserRole userRole) {
 		if (userRole.getId() == null) {
 			if (userRole.getCreatedBy() == null) {
