@@ -110,7 +110,11 @@ public class ProgramServiceTest {
 	public void testCreateNewProgram() throws Exception {
 		// Create test data and set up mocks
 		final Project project = this.createProject();
-		final Set<WorkbenchUser> selectedUsers = new HashSet<WorkbenchUser>();
+
+		// TODO unused list after modifying programService.createNewProgram
+		//  Rewrite or make new tests for program-role users
+		//noinspection MismatchedQueryAndUpdateOfCollection
+		final Set<WorkbenchUser> selectedUsers = new HashSet<>();
 		selectedUsers.add(this.loggedInUser);
 		selectedUsers.add(this.memberUser);
 
@@ -123,7 +127,7 @@ public class ProgramServiceTest {
 		Mockito.when(this.locationDataManager.retrieveLocIdOfUnspecifiedLocation()).thenReturn(String.valueOf(unspecifiedLocationID));
 
 		// Call the method to test
-		this.programService.createNewProgram(project, selectedUsers);
+		this.programService.createNewProgram(project);
 
 		// Verify that the key database operations for program creation are
 		// invoked.

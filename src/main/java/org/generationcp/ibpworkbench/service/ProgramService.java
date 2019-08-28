@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @Transactional
@@ -62,13 +61,11 @@ public class ProgramService {
 	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
 	/**
-	 * Create new project in workbench and add specified users as project members. Also creates copy of workbench person and user to currect
-	 * crop DB, if not yet existing. Finally, create a new folder under <install directory>/workspace/<program name>
+	 * Create new project in workbench. Finally, create a new folder under <install directory>/workspace/<program name>
 	 *
 	 * @param program : program to save
-	 * @param programUsers : users to add as members of new program
 	 */
-	public void createNewProgram(final Project program, final Set<WorkbenchUser> programUsers) {
+	public void createNewProgram(final Project program) {
 		// Need to save first to workbench_project so project id can be saved in session
 		this.saveWorkbenchProject(program);
 		this.setContextInfoAndCurrentCrop(program);
