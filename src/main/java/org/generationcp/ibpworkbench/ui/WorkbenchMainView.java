@@ -32,7 +32,6 @@ import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.themes.Reindeer;
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.spring.util.ContextUtil;
-import org.generationcp.commons.tomcat.util.TomcatUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -83,9 +82,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	private PopupButton memberButton;
 	private Button helpButton;
 	private Button aboutButton;
-
-	@Resource
-	private TomcatUtil tomcatUtil;
 
 	@Resource
 	private UserService userService;

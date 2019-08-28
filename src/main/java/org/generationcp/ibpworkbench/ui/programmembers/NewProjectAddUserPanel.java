@@ -71,7 +71,7 @@ public class NewProjectAddUserPanel extends Panel {
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
 
-	public NewProjectAddUserPanel(TwinTableSelect<WorkbenchUser> membersSelect) {
+	public NewProjectAddUserPanel(final TwinTableSelect<WorkbenchUser> membersSelect) {
 		this.membersSelect = membersSelect;
 
 		this.assemble();
@@ -118,7 +118,7 @@ public class NewProjectAddUserPanel extends Panel {
 
 		this.rootLayout.setMargin(new Layout.MarginInfo(false, true, true, true));
 		this.rootLayout.setSpacing(true);
-		Label lblTitle = new Label(this.messageSource.getMessage(Message.REGISTER_USER_ACCOUNT_TITLE));
+		final Label lblTitle = new Label(this.messageSource.getMessage(Message.REGISTER_USER_ACCOUNT_TITLE));
 		lblTitle.setDebugId("lblTitle");
 		lblTitle.setStyleName(Bootstrap.Typography.H4.styleName());
 		this.rootLayout.addComponent(lblTitle);
@@ -133,7 +133,7 @@ public class NewProjectAddUserPanel extends Panel {
 
 	protected void initializeValues() {
 
-		ComboBox roleField = (ComboBox) this.userForm.getField("role");
+		final ComboBox roleField = (ComboBox) this.userForm.getField("role");
 		final List<Role> roles = this.workbenchDataManager.getRoles(new RoleSearchDto(Boolean.TRUE, null, null));
 		for (final Role role : roles){
 			roleField.addItem(role);
@@ -172,7 +172,4 @@ public class NewProjectAddUserPanel extends Panel {
 		return this.userForm;
 	}
 
-	public void refreshVisibleItems() {
-		this.userForm.setVisibleItemProperties(NewProjectAddUserPanel.VISIBLE_ITEM_PROPERTIES);
-	}
 }

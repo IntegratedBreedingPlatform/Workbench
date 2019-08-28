@@ -263,7 +263,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 						private static final long serialVersionUID = 1L;
 
 						@Override
-						public void buttonClick(ClickEvent event) {
+						public void buttonClick(final ClickEvent event) {
 
 							final Role roleSelected = ProgramMembersPanel.this.getRoleSelected();
 							if (roleSelected == null) {
@@ -272,15 +272,15 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 								return;
 							}
 
-							Table source = (Table) t.getSourceComponent();
-							Table target = (Table) dragAndDropEvent.getTargetDetails().getTarget();
+							final Table source = (Table) t.getSourceComponent();
+							final Table target = (Table) dragAndDropEvent.getTargetDetails().getTarget();
 
-							Object itemIdOver = t.getItemId();
+							final Object itemIdOver = t.getItemId();
 							// temporarily disable the value change listener to avoid conflict
 							target.removeListener(ProgramMembersPanel.this.getSelect().getTableValueChangeListener());
 
-							Set<Object> sourceItemIds = (Set<Object>) source.getValue();
-							for (Object itemId : sourceItemIds) {
+							final Set<Object> sourceItemIds = (Set<Object>) source.getValue();
+							for (final Object itemId : sourceItemIds) {
 								final List<UserRole> userRoles = new ArrayList<>();
 								userRoles.add(ProgramMembersPanel.this.createUserRole(roleSelected, (WorkbenchUser) itemId));
 								((WorkbenchUser) itemId).setRoles(userRoles);
@@ -337,15 +337,15 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 					return;
 				}
 
-				Table source = (Table) t.getSourceComponent();
-				Table target = (Table) dragAndDropEvent.getTargetDetails().getTarget();
+				final Table source = (Table) t.getSourceComponent();
+				final Table target = (Table) dragAndDropEvent.getTargetDetails().getTarget();
 
-				Object itemIdOver = t.getItemId();
+				final Object itemIdOver = t.getItemId();
 				final WorkbenchUser workbenchUser = (WorkbenchUser) itemIdOver;
 				workbenchUser.getRoles().remove(0);
 
-				Set<Object> sourceItemIds = (Set<Object>) source.getValue();
-				for (Object itemId : sourceItemIds) {
+				final Set<Object> sourceItemIds = (Set<Object>) source.getValue();
+				for (final Object itemId : sourceItemIds) {
 					if (((WorkbenchUser) itemId).isEnabled()) {
 						source.removeItem(itemId);
 						target.addItem(itemId);
@@ -379,7 +379,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	}
 
 	private Role getRoleSelected() {
-		Integer roleId = (Integer) ProgramMembersPanel.this.getRoleSelectionWindow().getRolesComboBox().getValue();
+		final Integer roleId = (Integer) ProgramMembersPanel.this.getRoleSelectionWindow().getRolesComboBox().getValue();
 		for (final Role role : ProgramMembersPanel.this.getRoles()) {
 			if (role.getId().equals(roleId)) {
 				return role;
@@ -389,7 +389,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	}
 
 	private UserRole createUserRole(final Role roleSelected, final WorkbenchUser workbenchUser) {
-		UserRole userRole = new UserRole();
+		final UserRole userRole = new UserRole();
 		userRole.setRole(roleSelected);
 		userRole.setUser(workbenchUser);
 		userRole.setWorkbenchProject(ProgramMembersPanel.this.project);
@@ -403,7 +403,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	final Action actionDeSelectAll = new Action("De-select All");
 
 	private Action.Handler getActionMenu(final Table table) {
-		Action.Handler actionMenu = new Action.Handler() {
+		final Action.Handler actionMenu = new Action.Handler() {
 
 			@Override
 			public Action[] getActions(final Object target, final Object sender) {
@@ -455,7 +455,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 				ProgramMembersPanel.this.messageSource.getMessage(Message.MEMBERS_TAB_UNSELECT_MEMBERS_CONFIRMATION_MESSAGE));
 		}
 
-		for (Object itemId : (Set<Object>) ProgramMembersPanel.this.getSelect().getTableRight().getValue()) {
+		for (final Object itemId : (Set<Object>) ProgramMembersPanel.this.getSelect().getTableRight().getValue()) {
 			if (((WorkbenchUser) itemId).isActive() && ((WorkbenchUser) itemId).isEnabled()) {
 				((WorkbenchUser) itemId).setActive(false);
 				ProgramMembersPanel.this.getSelect().getTableLeft().addItem(itemId);
@@ -476,7 +476,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 					private static final long serialVersionUID = 1L;
 
 					@Override
-					public void buttonClick(ClickEvent event) {
+					public void buttonClick(final ClickEvent event) {
 
 						final Role roleSelected =  ProgramMembersPanel.this.getRoleSelected();
 
@@ -486,7 +486,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 							return;
 						}
 
-						for (Object itemId : (Set<Object>) ProgramMembersPanel.this.getSelect().getTableLeft().getValue()) {
+						for (final Object itemId : (Set<Object>) ProgramMembersPanel.this.getSelect().getTableLeft().getValue()) {
 							if (((WorkbenchUser) itemId).isActive() && ((WorkbenchUser) itemId).isEnabled()) {
 								((WorkbenchUser) itemId).setActive(false);
 								final List<UserRole> userRoles = new ArrayList<>();
@@ -707,7 +707,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		return select;
 	}
 
-	public void setSelect(TwinTableSelect<WorkbenchUser> select) {
+	public void setSelect(final TwinTableSelect<WorkbenchUser> select) {
 		this.select = select;
 	}
 
@@ -715,7 +715,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		return roleSelectionWindow;
 	}
 
-	public void setRoleSelectionWindow(RoleSelectionWindow roleSelectionWindow) {
+	public void setRoleSelectionWindow(final RoleSelectionWindow roleSelectionWindow) {
 		this.roleSelectionWindow = roleSelectionWindow;
 	}
 

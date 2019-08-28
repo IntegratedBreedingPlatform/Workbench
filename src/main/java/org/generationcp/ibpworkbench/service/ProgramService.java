@@ -53,11 +53,6 @@ public class ProgramService {
 	@Autowired
 	private org.generationcp.commons.spring.util.ContextUtil contextUtil;
 
-	// http://cropwiki.irri.org/icis/index.php/TDM_Users_and_Access
-	public static final int PROJECT_USER_ACCESS_NUMBER = 100;
-	public static final int PROJECT_USER_TYPE = 422;
-	public static final int PROJECT_USER_STATUS = 1;
-
 	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
 	/**
