@@ -1,10 +1,5 @@
 package org.generationcp.ibpworkbench.ui.dashboard.listener;
 
-import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import com.google.common.collect.Lists;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.Button;
@@ -14,10 +9,8 @@ import junit.framework.Assert;
 import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.context.ContextInfo;
 import org.generationcp.commons.spring.util.ContextUtil;
-import org.generationcp.ibpworkbench.actions.LaunchWorkbenchToolAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
-import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebarPresenter;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.domain.workbench.PermissionDto;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -39,6 +32,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,9 +73,6 @@ public class LaunchProgramActionTest {
 
 	@Mock
 	private WorkbenchSidebar sidebar;
-
-	@Mock
-	private WorkbenchSidebarPresenter presenter;
 
 	private Project selectedProgram;
 
@@ -200,7 +193,6 @@ public class LaunchProgramActionTest {
 
 	private void setMocks() {
 		this.sidebar = new WorkbenchSidebar();
-		this.sidebar.setPresenter(this.presenter);
 		this.workbenchSidebarCategoryListMap = new HashMap<>();
 		this.workbenchSidebarCategoryList = Lists.newArrayList();
 		final PermissionDto permissionDto = new PermissionDto();

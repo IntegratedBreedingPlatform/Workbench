@@ -15,10 +15,13 @@ import org.generationcp.ibpworkbench.actions.OpenProgramMethodsAction;
 import org.generationcp.ibpworkbench.actions.OpenToolVersionsAction;
 import org.generationcp.ibpworkbench.ui.programadministration.OpenManageProgramPageAction;
 import org.generationcp.ibpworkbench.ui.project.create.OpenUpdateProjectPageAction;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
 import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategory;
 import org.generationcp.middleware.pojos.workbench.WorkbenchSidebarCategoryLink;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -29,6 +32,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,8 +50,6 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchSidebar.class);
 	public static final Map<String, TreeItem> sidebarTreeMap = new HashMap<>();
 
-	private WorkbenchSidebarPresenter presenter;
-
 	private Tree sidebarTree;
 
 	@Autowired
@@ -56,9 +58,11 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 	@Autowired
 	private ContextUtil contextUtil;
 
-	public WorkbenchSidebar() {
-		this.presenter = new WorkbenchSidebarPresenter();
-	}
+	@Autowired
+	private UserService userService;
+
+	@Autowired
+	private WorkbenchDataManager workbenchDataManager;
 
 	@Override
 	public void afterPropertiesSet() {
@@ -171,10 +175,6 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 		this.contextUtil = contextUtil;
 	}
 
-	public void setPresenter(final WorkbenchSidebarPresenter presenter) {
-		this.presenter = presenter;
-	}
-
 	public void setTransactionManager(final PlatformTransactionManager transactionManager) {
 		this.transactionManager = transactionManager;
 	}
@@ -241,7 +241,7 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 					final TreeItem treeItem = (TreeItem) event.getItemId();
 
 					if (!TreeItemClickListener.this.workbenchSidebar.doCollapse(treeItem)) {
-						WorkbenchSidebar.this.presenter.updateProjectLastOpenedDate();
+						workbenchSidebar.updateProjectLastOpenedDate();
 
 						final ActionListener listener = TreeItemClickListener.this.workbenchSidebar.getLinkActions(treeItem.getId(),
 							WorkbenchSidebar.this.contextUtil.getProjectInContext());
@@ -254,7 +254,26 @@ public class WorkbenchSidebar extends CssLayout implements InitializingBean {
 
 	}
 
-	public WorkbenchSidebarPresenter getPresenter() {
-		return this.presenter;
+	public void updateProjectLastOpenedDate() {
+		final Project project = this.contextUtil.getProjectInContext();
+
+		final ProjectUserInfo projectUserInfo =
+			this.userService.getProjectUserInfoByProjectIdAndUserId(project.getProjectId(), this.contextUtil.getCurrentWorkbenchUserId());
+
+		if (projectUserInfo != null) {
+			projectUserInfo.setLastOpenDate(new Date());
+			this.userService.saveOrUpdateProjectUserInfo(projectUserInfo);
+		}
+
+		project.setLastOpenDate(new Date());
+		this.workbenchDataManager.mergeProject(project);
+	}
+
+	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
+		this.workbenchDataManager = workbenchDataManager;
+	}
+
+	public void setUserService(final UserService userService) {
+		this.userService = userService;
 	}
 }
