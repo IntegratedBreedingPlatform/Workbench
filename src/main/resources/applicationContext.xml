@@ -237,7 +237,7 @@
 
 	<bean id="workbenchUserService" class="org.generationcp.ibpworkbench.service.WorkbenchUserService" />
 
-	<bean id="authorizationUtil" class="org.generationcp.commons.security.AuthorizationUtil"/>
+	<bean id="authorizationService" class="org.generationcp.commons.security.AuthorizationService"/>
 
 	<bean id="fieldbookService" factory-bean="managerFactory"
 		factory-method="getFieldbookMiddlewareService" scope="request">

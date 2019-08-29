@@ -12,7 +12,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.generationcp.commons.security.AuthorizationUtil;
+import org.generationcp.commons.security.AuthorizationService;
 import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -69,7 +69,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
-	private AuthorizationUtil authorizationUtil;
+	private AuthorizationService authorizationService;
 
 	public static final String[][] METHOD_TYPES = { {"GEN", "Generative"}, {"DER", "Derivative"}, {"MAN", "Maintenance"}};
 	public static final String[][] METHOD_GROUPS = { {"S", "Self Fertilizing"}, {"O", "Cross Pollinating"}, {"C", "Clonally Propagating"},
