@@ -40,12 +40,10 @@ public class AddProgramPresenter {
 
 	public Project doAddNewProgram() {
 		final Project program;
-		final Set<WorkbenchUser> users;
 
 		try {
 			program = AddProgramPresenter.this.view.createProjectPanel.projectBasicDetailsComponent.getProjectDetails();
-			users = AddProgramPresenter.this.view.programMembersPanel.getSelectedUsers();
-			AddProgramPresenter.this.programService.createNewProgram(program, users);
+			AddProgramPresenter.this.programService.createNewProgram(program);
 
 		} catch (final Validator.InvalidValueException e) {
 			throw e;

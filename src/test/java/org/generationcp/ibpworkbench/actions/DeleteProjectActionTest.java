@@ -130,7 +130,6 @@ public class DeleteProjectActionTest {
 		verify(germplasmDataManager, Mockito.times(2)).deleteProgramFavorites(ArgumentMatchers.<List<ProgramFavorite>>any());
 		verify(studyDataManager).deleteProgramStudies(project.getUniqueID());
 		verify(germplasmListManager).deleteGermplasmListsByProgram(project.getUniqueID());
-		verify(programService).removeCropPersonsOfUsersWithNoPrograms(project);
 
 	}
 

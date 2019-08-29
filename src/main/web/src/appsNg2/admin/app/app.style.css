@@ -92,7 +92,7 @@ users-admin app-dialog div.modal-footer > .message {
     }
 }
 
-.crop-badge {
+.site-admin-badge {
     border-radius: 4px;
     background-color: #e6e6e6;
     padding: 6px 12px;
@@ -106,4 +106,19 @@ users-admin app-dialog div.modal-footer > .message {
     content:"*";
     color:red;
     margin-left: 2px;
+}
+
+.permission-selector > .panel-wrapper,
+.permission-selector > .panel-wrapper > .panel > .panel-body {
+    overflow-x: auto;
+}
+.ul-tree {
+    list-style-type: none;
+    padding-left: 20px;
+}
+.ul-tree.ul-tree-level-zero {
+    padding: 0;
+}
+.ul-tree > li > div.checkbox {
+    padding-top: 0;
 }

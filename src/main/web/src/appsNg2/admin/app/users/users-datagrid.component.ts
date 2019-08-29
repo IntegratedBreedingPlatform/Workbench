@@ -1,14 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { NgDataGridModel } from './../shared/components/datagrid/ng-datagrid.model';
 import { User } from './../shared/models/user.model';
 import { Role } from './../shared/models/role.model';
 import './../shared/utils/array.extensions';
 import { UserService } from './../shared/services/user.service';
 import { RoleService } from './../shared/services/role.service';
-import { UserCard } from './user-card.component';
 import { UserComparator } from './user-comparator.component';
 import { Crop } from '../shared/models/crop.model';
 import { CropService } from '../shared/services/crop.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { scrollTop } from '../shared/utils/scroll-top';
+import { UserRole } from '../shared/models/user-role.model';
+import 'rxjs/add/operator/toPromise';
 
 @Component({
     selector: 'users-datagrid',
@@ -22,8 +25,6 @@ import { CropService } from '../shared/services/crop.service';
 export class UsersDatagrid implements OnInit {
 
     errorServiceMessage: string = '';
-    showNewDialog = false;
-    showEditDialog = false;
     isEditing = false;
     dialogTitle: string;
     showConfirmStatusDialog = false;
@@ -37,45 +38,30 @@ export class UsersDatagrid implements OnInit {
     public roles: Role[];
     public userSelected: User;
     public crops: Crop[] = [];
+    private message: string;
+
+    // TODO upgrade angular, use ngIf-else and async pipe
+    private loading: boolean;
 
     constructor(private userService: UserService,
                 private roleService: RoleService,
-                private cropService: CropService) {
+                private cropService: CropService, private router: Router, private activatedRoute: ActivatedRoute) {
         // TODO migrate to angular datatables
         this.table = new NgDataGridModel<User>([], 25, new UserComparator(), <User>{ status: 'true' });
-        this.initUser();
     }
 
-    showNewUserForm(userCreateCard: UserCard) {
-        this.initUser();
-        userCreateCard.resetForm();
-        userCreateCard.initialize(false);
-
-        this.dialogTitle = 'Add User';
-        this.showNewDialog = true;
+    showNewUserForm() {
+        this.userService.user = new User('0', '', '', '', [], [], '', 'true');
+        this.router.navigate(['user-card', { isEditing: false }], { relativeTo: this.activatedRoute });
+        scrollTop();
     }
 
-    showEditUserForm(user: User, userEditCard: UserCard) {
-
-        this.dialogTitle = 'Edit User';
+    showEditUserForm(user: User) {
         this.originalUser = user;
-        this.user = new User(user.id, user.firstName, user.lastName,
-            user.username, user.crops, user.role, user.email, user.status);
-        this.user.role = this.getSelectedRole(user);
-        userEditCard.initialize(true);
-        this.showEditDialog = true;
-    }
-
-    private getSelectedRole(user: User) {
-        for (var i = 0; i < this.roles.length; i++) {
-            if (this.roles[i].id === user.role.id) {
-                return this.roles[i];
-            }
-        }
-    }
-
-    initUser() {
-        this.user = new User('0', '', '', '', [], new Role('', ''), '', 'true');
+        this.userService.user = new User(user.id, user.firstName, user.lastName,
+            user.username, user.crops, user.userRoles.map((x) => Object.assign({}, x)), user.email, user.status);
+        this.router.navigate(['user-card', { isEditing: true }], { relativeTo: this.activatedRoute });
+        scrollTop();
     }
 
     ngOnInit() {
@@ -83,21 +69,11 @@ export class UsersDatagrid implements OnInit {
             this.table.sortBy = 'lastName';
         }
         //get all users
-        this.userService
-            .getAll()
-            .subscribe(
-                users => this.table.items = users,
-                error => {
-                    this.errorServiceMessage = error;
-                    if (error.status === 401) {
-                        localStorage.removeItem('xAuthToken');
-                        this.handleReAuthentication();
-                    }
-                });
+        this.loadTheUsersDataGridTable();
 
         // get all roles
         this.roleService
-            .getAll()
+            .getFilteredRoles(null)
             .subscribe(
                 roles => this.roles = roles,
                 error => {
@@ -107,14 +83,40 @@ export class UsersDatagrid implements OnInit {
                 });
         this.cropService
             .getAll()
-            .subscribe(crops => this.crops = crops);
+            .subscribe(crops => {
+                this.crops = crops;
+                this.cropService.crops = this.crops;
+            });
 
+        this.userService.onUserAdded.subscribe((user) => {
+                this.message = `${user.username} user was successfully saved!`;
+                this.loadTheUsersDataGridTable();
+                this.sortAfterAddOrEdit();
+            }
+        );
+
+        this.userService.onUserUpdated.subscribe((user) => {
+                this.message = `${user.username} user was successfully updated!`;
+                this.loadTheUsersDataGridTable();
+                this.sortAfterAddOrEdit();
+            }
+        );
     }
 
-    onUserAdded(user: User) {
-        this.showNewDialog = false;
-        this.table.items.push(user);
-        this.sortAfterAddOrEdit();
+    private loadTheUsersDataGridTable() {
+        this.loading = true;
+        this.userService.getAll().toPromise()
+            .then(users => {
+                this.table.items = users;
+                this.loading = false;
+            }, error => {
+                this.loading = false;
+                this.errorServiceMessage = error;
+                if (error.status === 401) {
+                    localStorage.removeItem('xAuthToken');
+                    this.handleReAuthentication();
+                }
+            });
     }
 
     sortAfterAddOrEdit() {
@@ -125,15 +127,8 @@ export class UsersDatagrid implements OnInit {
         }
     }
 
-    onUserEdited(user: User) {
-        this.showEditDialog = false;
-        this.table.items.remove(this.originalUser);
-        this.table.items.push(user);
-        this.sortAfterAddOrEdit();
-    }
-
     // TODO
-    // - Move to a shared component
+    // - Move to interceptor
     // - see /ibpworkbench/src/main/web/src/apps/ontology/app-services/bmsAuth.js
     handleReAuthentication() {
         alert('Site Admin needs to authenticate you again. Redirecting to login page.');
@@ -205,5 +200,29 @@ export class UsersDatagrid implements OnInit {
 
     getCropsTitleFormat(crops) {
         return crops.map((crop) => crop.cropName).splice(1).join(' and ');
+    }
+
+
+    getRoleNamesTitleFormat(roles: string[]) {
+        return roles.splice(1).join(' and ');
+    }
+
+    hasSuperAdminRole(userRoles) {
+        return userRoles.some(userRole => userRole.role.name === 'SuperAdmin');
+    }
+}
+
+// TODO upgrade angular, use ngIf-as
+@Pipe({name: 'dedupRoleNames'})
+export class DedupRoleNamesPipe implements PipeTransform {
+    transform(userRoles: UserRole[]): string[] {
+        if (!userRoles || !userRoles.length) {
+            return null;
+        }
+        return userRoles.map((userRole) => userRole.role.name)
+            .filter((item, pos, self) => {
+                // remove dups
+                return self.indexOf(item) === pos;
+            });
     }
 }

@@ -3,7 +3,6 @@ package org.generationcp.ibpworkbench.ui.programmethods;
 
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -23,15 +22,11 @@ import org.generationcp.ibpworkbench.ui.common.IContainerFittable;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.Role;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Property;
@@ -72,6 +67,9 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
+
+	@Autowired
+	private AuthorizationUtil authorizationUtil;
 
 	public static final String[][] METHOD_TYPES = { {"GEN", "Generative"}, {"DER", "Derivative"}, {"MAN", "Maintenance"}};
 	public static final String[][] METHOD_GROUPS = { {"S", "Self Fertilizing"}, {"O", "Cross Pollinating"}, {"C", "Clonally Propagating"},
@@ -225,7 +223,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 		this.initializeFilterForm();
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CROP_MANAGEMENT')")
 	private void initializeRestrictedComponents() {
 		this.addNewMethodsBtn.setVisible(true);
 	}
@@ -300,23 +298,15 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 			@Override
 			public Object generateCell(final Table source, final Object itemId, Object colId) {
 				try {
-					AuthorizationUtil.preAuthorizeAdminAuthority();
-					final Button mNameBtn = new Button(((MethodView) itemId).getMname());
-					mNameBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
-					mNameBtn.setData(itemId);
-					mNameBtn.addListener(ProgramMethodsView.this.editMethodListener);
-					return mNameBtn;
-					
-				} catch (final AccessDeniedException ex) {
+					return ProgramMethodsView.this.addEditableMethodName(itemId);
+				} catch (final AccessDeniedException e) {
 					// If logged in user does not have admin authority, do not render as link
 					final Label mNameLabel = new Label();
 					mNameLabel.setDebugId("mNameLabel");
 					mNameLabel.setDescription(((MethodView) itemId).getMname());
 					mNameLabel.setValue(((MethodView) itemId).getMname());
-
 					return mNameLabel;
 				}
-
 			}
 		});
 
@@ -433,15 +423,15 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 
 						if (((Table) t.getSourceComponent()).getData().toString().equals(ProgramMethodsView.FAVORITES)) {
 							((Table) t.getSourceComponent()).getContainerDataSource().removeItem(itemIdOver);
-							ProgramMethodsView.this.updateNoOfEntries(ProgramMethodsView.this.favTotalEntriesLabel,
-									(Table) t.getSourceComponent());
+							ProgramMethodsView.this
+									.updateNoOfEntries(ProgramMethodsView.this.favTotalEntriesLabel, (Table) t.getSourceComponent());
 						}
 						((Table) dragAndDropEvent.getTargetDetails().getTarget()).getContainerDataSource().addItem(itemIdOver);
 
 					}
 				} else {
-					ProgramMethodsView.this.moveSelectedItems((Table) t.getSourceComponent(), (Table) dragAndDropEvent.getTargetDetails()
-							.getTarget());
+					ProgramMethodsView.this
+							.moveSelectedItems((Table) t.getSourceComponent(), (Table) dragAndDropEvent.getTargetDetails().getTarget());
 				}
 
 				((Table) dragAndDropEvent.getTargetDetails().getTarget()).addListener(vcl);
@@ -457,6 +447,15 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 		});
 
 		return table;
+	}
+
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CROP_MANAGEMENT')")
+	public Button addEditableMethodName(final Object itemId) {
+		final Button mNameBtn = new Button(((MethodView) itemId).getMname());
+		mNameBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
+		mNameBtn.setData(itemId);
+		mNameBtn.addListener(ProgramMethodsView.this.editMethodListener);
+		return mNameBtn;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -822,7 +821,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 			private static final long serialVersionUID = -6938448455072630697L;
 
 			@Override
-			@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
+			@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CROP_MANAGEMENT')")
 			public void buttonClick(Button.ClickEvent event) {
 				event.getComponent()
 						.getWindow()
@@ -836,7 +835,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 			private static final long serialVersionUID = 6467414813762353127L;
 
 			@Override
-			@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
+			@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CROP_MANAGEMENT')")
 			public void buttonClick(Button.ClickEvent event) {
 				event.getComponent().getWindow().addWindow(new AddBreedingMethodsWindow(ProgramMethodsView.this));
 			}

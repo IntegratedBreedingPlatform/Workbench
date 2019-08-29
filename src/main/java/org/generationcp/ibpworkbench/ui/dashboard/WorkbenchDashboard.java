@@ -26,11 +26,14 @@ import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
 import org.apache.commons.lang3.StringUtils;
+import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.help.document.HelpModule;
+import org.generationcp.commons.security.SecurityUtil;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -56,11 +59,15 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.util.List;
 
+import static org.generationcp.commons.util.ContextUtil.addQueryParameter;
+import static org.generationcp.commons.util.ContextUtil.getContextParameterString;
+
 @Configurable
 public class WorkbenchDashboard extends VerticalLayout implements InitializingBean, InternationalizableComponent {
 
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchDashboard.class);
 	private static final long serialVersionUID = 1L;
+	private Window window;
 
 	private Table programsTable;
 
@@ -90,13 +97,29 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
 	private Embedded instituteLogo;
 
-	public WorkbenchDashboard() {
+	public WorkbenchDashboard(final Window window) {
 		super();
+		this.window = window;
 	}
 
 	@Override
 	public void afterPropertiesSet() {
 		this.assemble();
+		this.logoutSubModules();
+	}
+
+
+	/* FIXME Workaround to reload authorities per program
+	 *  logout the modules first so that Spring reloads the principal
+	 *  when the module is loaded again. See BMSPreAuthenticationFilter
+	 */
+	private void logoutSubModules() {
+		final String contextParameterString = getContextParameterString(this.contextUtil.getContextInfoFromSession());
+		final String authenticationTokenString = addQueryParameter(ContextConstants.PARAM_AUTH_TOKEN, SecurityUtil.getEncodedToken());
+		final String queryParams = "?restartApplication" + contextParameterString + authenticationTokenString;
+
+		this.window.executeJavaScript("fetch('/BreedingManager/logout" + queryParams + "');");
+		this.window.executeJavaScript("fetch('/Fieldbook/logout" + queryParams + "');");
 	}
 
 	public void initializeComponents() {
@@ -187,7 +210,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
 		try {
 			final WorkbenchUser currentUser = contextUtil.getCurrentWorkbenchUser();
-			this.programs = this.workbenchDataManager.getProjectsByUser(currentUser);
+			this.programs = this.workbenchDataManager.getProjectsByUser(currentUser, null);
 			lastOpenedProgram = this.workbenchDataManager.getLastOpenedProject(currentUser.getUserid());
 		} catch (final MiddlewareQueryException e) {
 			WorkbenchDashboard.LOG.error("Exception", e);
@@ -346,13 +369,36 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		}
 	}
 
-	// For test purposes only
-	public Table getProgramsTable() {
+	Table getProgramsTable() {
 		return this.programsTable;
 	}
 
-	// For test purposes only
-	public void setInstituteLogo(final Embedded instituteLogo) {
+	void setInstituteLogo(final Embedded instituteLogo) {
 		this.instituteLogo = instituteLogo;
 	}
+
+	void setWindow(final Window window) {
+		this.window = window;
+	}
+
+	void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
+		this.workbenchDataManager = workbenchDataManager;
+	}
+
+	void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+
+	void setServletContext(final ServletContext servletContext) {
+		this.servletContext = servletContext;
+	}
+
+	void setContextUtil(final ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
+	}
+
+	void setHttpServletRequest(final HttpServletRequest httpServletRequest) {
+		this.httpServletRequest = httpServletRequest;
+	}
+
 }

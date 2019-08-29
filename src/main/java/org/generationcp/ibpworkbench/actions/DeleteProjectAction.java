@@ -98,7 +98,7 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 	}
 
 	@Override
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CROP_MANAGEMENT')")
 	public void doAction(final Window window, final String uriFragment, final boolean isLinkAccessed) {
 		final Application app = window.getApplication();
 		final Project currentProject = this.contextUtil.getProjectInContext();
@@ -151,8 +151,6 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 		this.manager.deleteProjectDependencies(project);
 
 		this.manager.deleteProject(project);
-
-		this.programService.removeCropPersonsOfUsersWithNoPrograms(project);
 
 	}
 

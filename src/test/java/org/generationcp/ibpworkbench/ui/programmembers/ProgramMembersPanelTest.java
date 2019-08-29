@@ -1,16 +1,9 @@
 
 package org.generationcp.ibpworkbench.ui.programmembers;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
+import com.vaadin.ui.Label;
 import org.generationcp.commons.spring.util.ContextUtil;
-import org.generationcp.middleware.data.initializer.PersonTestDataInitializer;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.middleware.data.initializer.UserTestDataInitializer;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -28,8 +21,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import com.vaadin.data.Container;
-import com.vaadin.ui.Label;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 public class ProgramMembersPanelTest {
 
@@ -51,6 +48,9 @@ public class ProgramMembersPanelTest {
 	@Mock
 	private ContextUtil contextUtil;
 
+	@Mock
+	private SimpleResourceBundleMessageSource messageSource;
+
 	private Project project;
 
 	@InjectMocks
@@ -65,6 +65,7 @@ public class ProgramMembersPanelTest {
 		this.programMembersPanel = new ProgramMembersPanel(this.project);
 		this.programMembersPanel.setUserService(this.userService);
 		this.programMembersPanel.setContextUtil(this.contextUtil);
+		this.programMembersPanel.setMessageSource(messageSource);
 		Mockito.doReturn(this.project).when(this.contextUtil).getProjectInContext();
 	}
 
@@ -81,60 +82,11 @@ public class ProgramMembersPanelTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
-	public void testCreateUsersContainerWhenProgramOwnerIsCurrentUser() {
-		this.mockProgramMembers();
-		this.mockCurrentUser(ProgramMembersPanelTest.OWNER_USER_ID);
-
-		final Container usersContainer = this.programMembersPanel.createUsersContainer();
-
-		final Collection<WorkbenchUser> programMembers = (Collection<WorkbenchUser>) usersContainer.getItemIds();
-		Assert.assertNotNull(programMembers);
-		Assert.assertEquals("There should be 3 program members.", 3, programMembers.size());
-
-		// Check that program owner should be disabled
-		for (final WorkbenchUser user : programMembers) {
-			if (user.getUserid().equals(ProgramMembersPanelTest.OWNER_PERSON_ID)) {
-				Assert.assertFalse(
-						"Program Owner and Default Admin users should be disabled so they cannot be removed as member.",
-						user.isEnabled());
-			} else {
-				Assert.assertTrue("Other users should be enabled so they can be removed as members.", user.isEnabled());
-			}
-		}
-	}
-
-	@Test
-	@SuppressWarnings("unchecked")
-	public void testCreateUsersContainerWhenCurrentUserIsNotProgramOwner() {
-		this.mockProgramMembers();
-		this.mockCurrentUser(ProgramMembersPanelTest.MEMBER_USER_ID);
-
-		final Container usersContainer = this.programMembersPanel.createUsersContainer();
-
-		final Collection<WorkbenchUser> programMembers = (Collection<WorkbenchUser>) usersContainer.getItemIds();
-		Assert.assertNotNull(programMembers);
-		Assert.assertEquals("There should be 3 program members.", 3, programMembers.size());
-
-		// Two users should be disabled - current user and program owner
-		for (final WorkbenchUser user : programMembers) {
-			if (user.getUserid().equals(ProgramMembersPanelTest.OWNER_PERSON_ID)
-					|| user.getUserid().equals(ProgramMembersPanelTest.MEMBER_PERSON_ID)) {
-				Assert.assertFalse(
-						"Program owner and current user should be disabled and cannot be removed as program members.",
-						user.isEnabled());
-			} else {
-				Assert.assertTrue("Other users should be enabled so they can be removed as members.", user.isEnabled());
-			}
-		}
-	}
-
-	@Test
 	public void testGenerateRoleCellForOwner() {
 		this.mockCurrentUser(ProgramMembersPanelTest.OWNER_USER_ID);
-		final Object itemId = UserTestDataInitializer.createUserWithRole(ProgramMembersPanelTest.OWNER_USER_ID);
+		final WorkbenchUser itemId = UserTestDataInitializer.createUserWithRole(ProgramMembersPanelTest.OWNER_USER_ID);
 		final Label roleLabel = this.programMembersPanel.generateRoleCell(itemId);
-		Assert.assertEquals(((WorkbenchUser) itemId).getRoles().get(0).getCapitalizedRole(), roleLabel.getValue());
+		Assert.assertEquals( itemId.getRoles().get(0).getCapitalizedRole(), roleLabel.getValue());
 		Assert.assertEquals("label", roleLabel.getDebugId());
 		Assert.assertEquals("label-bold", roleLabel.getStyleName());
 	}
@@ -142,9 +94,9 @@ public class ProgramMembersPanelTest {
 	@Test
 	public void testGenerateRoleCellForMember() {
 		this.mockCurrentUser(ProgramMembersPanelTest.OWNER_USER_ID);
-		final Object itemId = UserTestDataInitializer.createUserWithRole(ProgramMembersPanelTest.MEMBER_PERSON_ID);
+		final WorkbenchUser itemId = UserTestDataInitializer.createUserWithRole(ProgramMembersPanelTest.MEMBER_PERSON_ID);
 		final Label roleLabel = this.programMembersPanel.generateRoleCell(itemId);
-		Assert.assertEquals(((WorkbenchUser) itemId).getRoles().get(0).getCapitalizedRole(), roleLabel.getValue());
+		Assert.assertEquals( itemId.getRoles().get(0).getCapitalizedRole(), roleLabel.getValue());
 		Assert.assertEquals("label", roleLabel.getDebugId());
 		Assert.assertNotSame("label-bold", roleLabel.getStyleName());
 	}
@@ -152,10 +104,10 @@ public class ProgramMembersPanelTest {
 	@Test
 	public void testgenerateUserNameCellForOwner() {
 		this.mockCurrentUser(ProgramMembersPanelTest.OWNER_USER_ID);
-		final Object itemId = UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.OWNER_PERSON_ID,
+		final WorkbenchUser itemId = UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.OWNER_PERSON_ID,
 				"UserName", 1, "Firstname", "Middlename");
 		final Label roleLabel = this.programMembersPanel.generateUserNameCell(itemId);
-		Assert.assertEquals(((WorkbenchUser) itemId).getPerson().getDisplayName(), roleLabel.getValue());
+		Assert.assertEquals( itemId.getPerson().getDisplayName(), roleLabel.getValue());
 		Assert.assertEquals("label", roleLabel.getDebugId());
 		Assert.assertEquals("label-bold", roleLabel.getStyleName());
 	}
@@ -163,10 +115,10 @@ public class ProgramMembersPanelTest {
 	@Test
 	public void testgenerateUserNameCellForMember() {
 		this.mockCurrentUser(ProgramMembersPanelTest.OWNER_USER_ID);
-		final Object itemId = UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.MEMBER_PERSON_ID,
+		final WorkbenchUser itemId = UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.MEMBER_PERSON_ID,
 				"UserName", 1, "Firstname", "Middlename");
 		final Label roleLabel = this.programMembersPanel.generateUserNameCell(itemId);
-		Assert.assertEquals(((WorkbenchUser) itemId).getPerson().getDisplayName(), roleLabel.getValue());
+		Assert.assertEquals( itemId.getPerson().getDisplayName(), roleLabel.getValue());
 		Assert.assertEquals("label", roleLabel.getDebugId());
 		Assert.assertNotSame("label-bold", roleLabel.getStyleName());
 	}
@@ -174,7 +126,7 @@ public class ProgramMembersPanelTest {
 	@Test
 	public void testInitializeUsers() {
 		// Setup test data and mocks
-		Mockito.when(this.userService.getActiveUserIDsByProjectId(Matchers.anyLong()))
+		Mockito.when(this.userService.getActiveUserIDsWithProgramRoleByProjectId(Matchers.anyLong()))
 				.thenReturn(Arrays.asList(ProgramMembersPanelTest.OWNER_USER_ID, ProgramMembersPanelTest.ADMIN_USER_ID,
 						ProgramMembersPanelTest.MEMBER_USER_ID));
 		this.mockCurrentUser(ProgramMembersPanelTest.MEMBER_USER_ID);
@@ -193,7 +145,7 @@ public class ProgramMembersPanelTest {
 		// Check that members are selected in twin table
 		final Set<WorkbenchUser> programMembers = this.programMembersPanel.getProgramMembersDisplayed();
 		Assert.assertNotNull(programMembers);
-		Assert.assertEquals("There should be 3 program members.", 3, programMembers.size());
+		Assert.assertEquals("There should be 2 program members.", 2, programMembers.size());
 
 		// Check that ADMIN user is disabled from selection
 		for (final WorkbenchUser user : programMembers) {

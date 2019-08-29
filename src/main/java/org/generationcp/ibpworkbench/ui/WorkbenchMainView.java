@@ -10,44 +10,6 @@
 
 package org.generationcp.ibpworkbench.ui;
 
-import java.util.Objects;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.lang3.StringUtils;
-import org.generationcp.commons.spring.util.ContextUtil;
-import org.generationcp.commons.tomcat.util.TomcatUtil;
-import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.actions.AskForSupportAction;
-import org.generationcp.ibpworkbench.actions.HelpButtonClickAction;
-import org.generationcp.ibpworkbench.actions.HomeAction;
-import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
-import org.generationcp.ibpworkbench.actions.SignoutAction;
-import org.generationcp.ibpworkbench.navigation.NavUriFragmentChangedListener;
-import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
-import org.generationcp.ibpworkbench.ui.project.create.AddProgramView;
-import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
-import org.generationcp.ibpworkbench.ui.window.ChangeCredentialsWindow;
-import org.generationcp.ibpworkbench.ui.window.ChangePasswordWindow;
-import org.generationcp.ibpworkbench.ui.window.IContentWindow;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.pojos.Person;
-import org.generationcp.middleware.pojos.workbench.UserInfo;
-import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
-import org.generationcp.middleware.service.api.user.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.vaadin.hene.popupbutton.PopupButton;
-
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.ThemeResource;
@@ -68,6 +30,42 @@ import com.vaadin.ui.VerticalSplitPanel;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.themes.Reindeer;
+import org.apache.commons.lang3.StringUtils;
+import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.actions.AskForSupportAction;
+import org.generationcp.ibpworkbench.actions.HelpButtonClickAction;
+import org.generationcp.ibpworkbench.actions.HomeAction;
+import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
+import org.generationcp.ibpworkbench.actions.SignoutAction;
+import org.generationcp.ibpworkbench.navigation.NavUriFragmentChangedListener;
+import org.generationcp.ibpworkbench.ui.dashboard.WorkbenchDashboard;
+import org.generationcp.ibpworkbench.ui.project.create.AddProgramView;
+import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
+import org.generationcp.ibpworkbench.ui.window.ChangeCredentialsWindow;
+import org.generationcp.ibpworkbench.ui.window.ChangePasswordWindow;
+import org.generationcp.ibpworkbench.ui.window.IContentWindow;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.Person;
+import org.generationcp.middleware.pojos.workbench.UserInfo;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.generationcp.middleware.service.api.user.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.vaadin.hene.popupbutton.PopupButton;
+
+import javax.annotation.Resource;
+import java.util.Objects;
 
 @Configurable
 public class WorkbenchMainView extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
@@ -86,13 +84,13 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	private Button aboutButton;
 
 	@Resource
-	private TomcatUtil tomcatUtil;
-
-	@Resource
 	private UserService userService;
 
 	@Resource
 	private SimpleResourceBundleMessageSource messageSource;
+
+	@Resource
+	private WorkbenchDataManager workbenchDataManager;
 
 	@Resource
 	private ContextUtil contextUtil;
@@ -111,7 +109,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	@Value("${about.bms.url}")
 	private String aboutBmsURL;
-
 
 	private Label actionsTitle;
 
@@ -154,7 +151,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	protected void initializeComponents() {
 		// initialize dashboard
-		this.workbenchDashboard = new WorkbenchDashboard();
+		this.workbenchDashboard = new WorkbenchDashboard(getWindow());
 		this.workbenchDashboard.setDebugId("workbenchDashboard");
 
 		// workbench header components
@@ -456,7 +453,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 		// Only display the Change Credentials/Password on first login of user
 		if (userInfo.getLoginCount() < 1) {
-			if (this.userService.isSuperAdminUser(user.getUserid())) {
+			if (user.isSuperAdmin()) {
 				// If the user has SUPERADMIN role, on first login, force the user to change
 				// the account firstname, lastname, email address and password (optional)
 				window.addWindow(new ChangeCredentialsWindow(new ChangeCredentialsWindow.CredentialsChangedEvent() {
@@ -508,12 +505,12 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		}
 
 		if (this.isWorkbenchDashboardShown) {
-			try {
+			final WorkbenchUser user = this.contextUtil.getCurrentWorkbenchUser();
+
+			if (!workbenchDataManager.getCropsWithAddProgramPermission(user.getUserid()).isEmpty()) {
 				this.layoutAddProgramButton(this.workbenchHeaderLayout);
-			} catch (final AccessDeniedException e) {
-				// do nothing if the user is not authorized to access Admin button
-				LOG.debug(e.getMessage(), e);
 			}
+
 		} else {
 			this.workbenchHeaderLayout.addComponent(this.homeButton);
 			this.workbenchHeaderLayout.setComponentAlignment(this.homeButton, Alignment.MIDDLE_RIGHT);
@@ -537,7 +534,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.workbenchHeaderLayout.requestRepaint();
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ADMINISTRATION') or hasRole('ROLE_SITE_ADMIN')")
 	private void layoutAdminButton() {
 		this.addAdminButton(this.workbenchHeaderLayout);
 	}
@@ -551,7 +548,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
 	void layoutAddProgramButton(final HorizontalLayout layout) {
 
 		if (Boolean.parseBoolean(this.isAddProgramEnabled)) {
@@ -676,6 +672,10 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		return this.sidebar;
 	}
 
+	public void setSidebar(final WorkbenchSidebar sidebar) {
+		this.sidebar = sidebar;
+	}
+
 	// For test purposes
 	HorizontalLayout getWorkbenchHeaderLayout() {
 		return this.workbenchHeaderLayout;
@@ -743,12 +743,12 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	}
 
 
-	void setAskForSupportURL(String askForSupportURL) {
+	void setAskForSupportURL(final String askForSupportURL) {
 		this.askForSupportURL = askForSupportURL;
 	}
 
 
-	void setAboutBmsURL(String aboutBmsURL) {
+	void setAboutBmsURL(final String aboutBmsURL) {
 		this.aboutBmsURL = aboutBmsURL;
 	}
 

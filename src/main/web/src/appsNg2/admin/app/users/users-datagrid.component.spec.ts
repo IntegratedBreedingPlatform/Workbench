@@ -1,3 +1,5 @@
+/// <reference path="../../../../../typings/globals/jasmine/index.d.ts" />
+
 import { User } from './../shared/models/user.model';
 import { Role } from './../shared/models/role.model';
 import './../shared/utils/array.extensions';
@@ -19,8 +21,8 @@ export function main() {
         }
 
         getAll(): Observable<User[]> {
-            return Observable.of([new User('0', 'Vanina', 'Maletta', 'vmaletta', [], new Role('2', 'technician'), 'vanina@leafnode.io', '0'),
-                new User('1', 'Clarysabel', 'Tovar', 'ctovar', [], new Role('0', 'admin'), 'clarysabel@leafnode.io', '0')]);
+            return Observable.of([new User('0', 'Vanina', 'Maletta', 'vmaletta', [], [], 'vanina@leafnode.io', 'true'),
+                new User('1', 'Clarysabel', 'Tovar', 'ctovar', [], [], 'clarysabel@leafnode.io', 'true')]);
         }
 
         update(user: User): Observable<Response> {
@@ -40,10 +42,10 @@ export function main() {
             super(null);
         }
 
-        getAll(): Observable<Role[]> {
-            return Observable.of([new Role('0', 'admin'),
-                new Role('1', 'breeder'),
-                new Role('2', 'technician')]);
+        getFilteredRoles(): Observable<Role[]> {
+            return Observable.of([new Role('0', 'admin', 'instance'),
+                new Role('1', 'breeder', 'crop'),
+                new Role('2', 'technician', 'program')]);
         }
 
     }
@@ -71,9 +73,12 @@ export function main() {
         let mockUserService: MockUserService;
         let mockCropsService: MockCropsService;
 
+        const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+        const routeSpy = jasmine.createSpy('Route');
+
         function createArrayOfUsers() {
-            return [new User('0', 'Vanina', 'Maletta', 'vmaletta', [], new Role('2', 'technician'), 'vanina@leafnode.io', '0'),
-                new User('1', 'Clarysabel', 'Tovar', 'ctovar', [], new Role('0', 'admin'), 'clarysabel@leafnode.io', '0')
+            return [new User('0', 'Vanina', 'Maletta', 'vmaletta', [], [], 'vanina@leafnode.io', 'true'),
+                new User('1', 'Clarysabel', 'Tovar', 'ctovar', [], [], 'clarysabel@leafnode.io', 'false')
             ];
         }
 
@@ -81,8 +86,8 @@ export function main() {
             items = createArrayOfUsers();
             mockRoleService = new MockRoleService();
             mockUserService = new MockUserService();
-            user = new User('3', 'Diego', 'Cuenya', 'dcuenya', [], new Role('1', 'breeder'), 'dcuenya@leafnode.io', '0');
-            grid = new UsersDatagrid(mockUserService, mockRoleService, new MockCropsService());
+            user = new User('3', 'Diego', 'Cuenya', 'dcuenya', [], [], 'dcuenya@leafnode.io', 'true');
+            grid = new UsersDatagrid(mockUserService, mockRoleService, new MockCropsService(), routerSpy, routeSpy);
             grid.table.items = items;
         });
 
@@ -109,44 +114,39 @@ export function main() {
         });
 
         it('Should get number of users in grid equals to 2', function () {
-            grid.table.items = [new User('0', 'Vanina', 'Maletta', 'vmaletta', [], new Role('0', 'admin'), 'vanina@leafnode.io', '0'),
-                new User('1', 'Clarysabel', 'Tovar', 'ctovar', [], new Role('0', 'admin'), 'clarysabel@leafnode.io', '0')];
+            grid.table.items = [new User('0', 'Vanina', 'Maletta', 'vmaletta', [], [], 'vanina@leafnode.io', 'true'),
+                new User('1', 'Clarysabel', 'Tovar', 'ctovar', [], [], 'clarysabel@leafnode.io', 'true')];
             expect(grid.table.items.length).toBe(2);
         });
 
         it('Should filter by typeToSearch equals to A', function () {
-            grid.table.sortBy = 'role';
-            grid.table.searchValue = new User('1', 'Clarysabel', 'Tovar', 'ctovar', [], new Role('0', 'admin'), 'clarysabel@leafnode.io', '0');
+            grid.table.sortBy = 'lastName';
+            grid.table.searchValue = <User>{ status: 'true' };
             expect(grid.table.itemsFiltered.length).toBe(1);
         });
 
         it('Should open add user popup', function () {
-            userCard = new UserCard(userService, roleService, mailService);
-            grid.showNewUserForm(userCard);
-            expect(grid.showNewDialog).toBe(true);
+            grid.showNewUserForm();
+            pending(); // TODO implement using router
         });
 
         it('Should open edit user popup', function () {
             // initialize to retrieve list of roles
             grid.ngOnInit();
-            userCard = new UserCard(userService, roleService, mailService);
-            grid.showEditUserForm(user, userCard);
-            expect(grid.showEditDialog).toBe(true);
+            grid.showEditUserForm(user);
+            pending(); // TODO implement using router
         });
 
         it('Should close add user popup', function () {
-            grid.onUserAdded(user);
-            expect(grid.showNewDialog).toBe(false);
+            pending(); // TODO implement using router
         });
 
         it('Should close edit user popup', function () {
-            grid.onUserEdited(user);
-            expect(grid.showEditDialog).toBe(false);
+            pending(); // TODO implement using router
         });
 
         it('Should init user', function () {
-            grid.initUser();
-            expect(grid.user.id).toBe('0');
+            pending(); // TODO implement in user-card
         });
 
         it('Should return is sorted by specific column', function () {
@@ -175,13 +175,13 @@ export function main() {
         });
 
         it('Should open user confirm status popup', function () {
-            user = new User('2', 'Clarysabel2', 'Tovar2', 'ctovar2', [], new Role('0', 'admin'), 'clarysabel2@leafnode.io', 'true')
+            user = new User('2', 'Clarysabel2', 'Tovar2', 'ctovar2', [], [], 'clarysabel2@leafnode.io', 'true');
             grid.showUserStatusConfirmPopUp(user);
             expect(grid.showConfirmStatusDialog).toBe(true);
         });
 
         it('Should say the dialog popup', function () {
-            let userChangeStatus = new User('2', 'Clarysabel2', 'Tovar2', 'ctovar2', [], new Role('0', 'admin'), 'clarysabel2@leafnode.io', 'true')
+            let userChangeStatus = new User('2', 'Clarysabel2', 'Tovar2', 'ctovar2', [], [], 'clarysabel2@leafnode.io', 'true');
             grid.showUserStatusConfirmPopUp(userChangeStatus);
             expect(grid.confirmMessage).toBe('Please confirm that you would like to deactivate this user account.');
         });
@@ -192,7 +192,7 @@ export function main() {
         });
 
         it('Should update user status when accept confirm status popup', function () {
-            let userChangeStatus = new User('2', 'Clarysabel2', 'Tovar2', 'ctovar2', [], new Role('0', 'admin'), 'clarysabel2@leafnode.io', 'true')
+            let userChangeStatus = new User('2', 'Clarysabel2', 'Tovar2', 'ctovar2', [], [], 'clarysabel2@leafnode.io', 'true');
             grid.showUserStatusConfirmPopUp(userChangeStatus);
             grid.changedActiveStatus();
             expect(grid.showConfirmStatusDialog).toBe(false);
