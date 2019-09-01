@@ -18,7 +18,9 @@ import com.vaadin.ui.Window;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.security.SecurityUtil;
 import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.ActionListener;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.sidebar.WorkbenchSidebar;
@@ -60,6 +62,9 @@ import java.util.TreeMap;
 public class LaunchProgramAction implements ItemClickListener, ClickListener {
 
 	private static final long serialVersionUID = 5742093045098439073L;
+
+	@Autowired
+	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
 	private PermissionService permissionService;
@@ -126,9 +131,15 @@ public class LaunchProgramAction implements ItemClickListener, ClickListener {
 					// Set the first tool the user has access to
 					final ToolName firstAvailableTool = getFirstAvailableTool(sidebarMenu);
 
+					if (firstAvailableTool == null) {
+						MessageNotifier.showError(window, messageSource.getMessage(Message.LAUNCH_TOOL_ERROR),
+							messageSource.getMessage(Message.LAUNCH_TOOL_ERROR_NO_TOOL));
+						return;
+					}
+
 					// update sidebar selection
 					LaunchProgramAction.LOG.trace("selecting sidebar");
-					if (firstAvailableTool != null && WorkbenchSidebar.sidebarTreeMap.get(firstAvailableTool.getName()) != null) {
+					if (WorkbenchSidebar.sidebarTreeMap.get(firstAvailableTool.getName()) != null) {
 						LaunchProgramAction.this.workbenchMainView.getSidebar()
 							.selectItem(WorkbenchSidebar.sidebarTreeMap.get(firstAvailableTool.getName()));
 					}
