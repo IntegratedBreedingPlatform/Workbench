@@ -30,8 +30,8 @@
                 <label for="username" class="col-sm-3 control-label">username</label>
                 <div class="col-sm-9">
                     <input type="text" class="form-control" [(ngModel)]="model.username" #username="ngModel" required name="username" id="username"
-                           pattern="[A-Za-z0-9-\/_*\(\):\.]+"
-                           title="username field only accepts letters, numbers and special characters - / _ * ( ) : ."
+                           [pattern]="EMAIL_LOCAL_PART_REGEX"
+                           title="username field only accepts letters, numbers and special characters - _ . (e.g. user_name, user.name, user-name.company)"
                            placeholder="username" maxlength="30">
                     <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
                     <span class="sr-only">(error)</span>
