@@ -44,7 +44,7 @@ public class ApiAuthenticationService {
 			 * server's authentication end point to obtain token. For servers in networks behind proxies and different cross network access
 			 * rules etc, use of local loop back address and getLocalPort() ensures we always hit the correct server.
 			 */
-			final String bmsApiAuthURL = String.format(bmsApiAuthURLFormat, userName, this.encode(password));
+			final String bmsApiAuthURL = String.format(bmsApiAuthURLFormat, this.encode(userName), this.encode(password));
 
 			final UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(bmsApiAuthURL);
 			// Indicate that the components are already escaped
