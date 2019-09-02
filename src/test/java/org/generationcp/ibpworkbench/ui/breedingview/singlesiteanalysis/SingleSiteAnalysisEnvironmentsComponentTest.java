@@ -1,14 +1,14 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Select;
+import com.vaadin.ui.Table;
 import org.apache.commons.lang3.ArrayUtils;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
@@ -33,14 +33,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Select;
-import com.vaadin.ui.Table;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+import static org.mockito.Mockito.when;
 
 public class SingleSiteAnalysisEnvironmentsComponentTest {
 
@@ -318,6 +317,8 @@ public class SingleSiteAnalysisEnvironmentsComponentTest {
 		final Iterator<?> envsIterator = this.ssaEnvironmentsComponent.getTblEnvironmentSelection().getContainerDataSource().getItemIds().iterator();
 		final SeaEnvironmentModel env1 = (SeaEnvironmentModel)envsIterator.next();
 		final SeaEnvironmentModel env2 = (SeaEnvironmentModel)envsIterator.next();
+		env1.setActive(true);
+		env2.setActive(true);
 		Mockito.doReturn(false).when(ssaDetailsPanel).environmentContainsValidDataForAnalysis(env1);
 		Mockito.doReturn(false).when(ssaDetailsPanel).environmentContainsValidDataForAnalysis(env2);
 		invalidEnvironments = this.ssaEnvironmentsComponent.getInvalidEnvironments();
