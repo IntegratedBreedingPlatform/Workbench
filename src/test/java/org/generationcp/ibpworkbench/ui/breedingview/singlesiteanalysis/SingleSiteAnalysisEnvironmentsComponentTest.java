@@ -1,14 +1,14 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Select;
+import com.vaadin.ui.Table;
 import org.apache.commons.lang3.ArrayUtils;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
@@ -33,14 +33,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Select;
-import com.vaadin.ui.Table;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+import static org.mockito.Mockito.when;
 
 public class SingleSiteAnalysisEnvironmentsComponentTest {
 
@@ -80,9 +79,9 @@ public class SingleSiteAnalysisEnvironmentsComponentTest {
 		this.input = new BreedingViewInput();
 		this.input.setStudyId(STUDY_ID);
 		this.input.setDatasetId(DATASET_ID);
-		Mockito.doReturn(this.input).when(ssaDetailsPanel).getBreedingViewInput();
+		Mockito.doReturn(this.input).when(this.ssaDetailsPanel).getBreedingViewInput();
 
-		final List<DMSVariableType> trialVariables = createStudyVariables();
+		final List<DMSVariableType> trialVariables = this.createStudyVariables();
 		Mockito.when(this.ssaDetailsPanel.getTrialVariablesInDataset())
 				.thenReturn(DMSVariableTypeTestDataInitializer.createDMSVariableTypeList());
 		Mockito.when(this.ssaDetailsPanel.getTrialVariablesInDataset()).thenReturn(trialVariables);
@@ -311,16 +310,18 @@ public class SingleSiteAnalysisEnvironmentsComponentTest {
 	@Test
 	public void testGetInvalidEnvironments() {
 		this.populateTableWithTestEnvironments();
-		Mockito.doReturn(true).when(ssaDetailsPanel).environmentContainsValidDataForAnalysis(Matchers.any(SeaEnvironmentModel.class));
-		List<String> invalidEnvironments = this.ssaEnvironmentsComponent.getInvalidEnvironments();
+		Mockito.doReturn(true).when(this.ssaDetailsPanel).environmentContainsValidDataForAnalysis(Matchers.any(SeaEnvironmentModel.class));
+		List<String> invalidEnvironments = this.ssaEnvironmentsComponent.getInvalidEnvironments(true);
 		Assert.assertTrue(invalidEnvironments.isEmpty());
 		
 		final Iterator<?> envsIterator = this.ssaEnvironmentsComponent.getTblEnvironmentSelection().getContainerDataSource().getItemIds().iterator();
 		final SeaEnvironmentModel env1 = (SeaEnvironmentModel)envsIterator.next();
 		final SeaEnvironmentModel env2 = (SeaEnvironmentModel)envsIterator.next();
-		Mockito.doReturn(false).when(ssaDetailsPanel).environmentContainsValidDataForAnalysis(env1);
-		Mockito.doReturn(false).when(ssaDetailsPanel).environmentContainsValidDataForAnalysis(env2);
-		invalidEnvironments = this.ssaEnvironmentsComponent.getInvalidEnvironments();
+		env1.setActive(true);
+		env2.setActive(true);
+		Mockito.doReturn(false).when(this.ssaDetailsPanel).environmentContainsValidDataForAnalysis(env1);
+		Mockito.doReturn(false).when(this.ssaDetailsPanel).environmentContainsValidDataForAnalysis(env2);
+		invalidEnvironments = this.ssaEnvironmentsComponent.getInvalidEnvironments(true);
 		Assert.assertTrue(invalidEnvironments.size() == 2);
 		Assert.assertEquals(env1.getEnvironmentName(), invalidEnvironments.get(0));
 		Assert.assertEquals(env2.getEnvironmentName(), invalidEnvironments.get(1));
