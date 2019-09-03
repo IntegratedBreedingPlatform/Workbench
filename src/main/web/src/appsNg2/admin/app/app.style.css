@@ -101,13 +101,6 @@ users-admin app-dialog div.modal-footer > .message {
     display: inline-block;
 }
 
-/* FIXME workaround to display search icon IBP-2790 */
-select2 ul {
-    width: 100%;
-}
-select2 ul input {
-    width: 95% !important;
-}
 .select2-search {
     z-index: auto;
 }
