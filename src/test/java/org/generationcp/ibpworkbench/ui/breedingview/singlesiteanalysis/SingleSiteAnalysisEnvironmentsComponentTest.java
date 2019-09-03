@@ -311,7 +311,7 @@ public class SingleSiteAnalysisEnvironmentsComponentTest {
 	public void testGetInvalidEnvironments() {
 		this.populateTableWithTestEnvironments();
 		Mockito.doReturn(true).when(ssaDetailsPanel).environmentContainsValidDataForAnalysis(Matchers.any(SeaEnvironmentModel.class));
-		List<String> invalidEnvironments = this.ssaEnvironmentsComponent.getInvalidEnvironments();
+		List<String> invalidEnvironments = this.ssaEnvironmentsComponent.getInvalidEnvironments(true);
 		Assert.assertTrue(invalidEnvironments.isEmpty());
 		
 		final Iterator<?> envsIterator = this.ssaEnvironmentsComponent.getTblEnvironmentSelection().getContainerDataSource().getItemIds().iterator();
@@ -321,7 +321,7 @@ public class SingleSiteAnalysisEnvironmentsComponentTest {
 		env2.setActive(true);
 		Mockito.doReturn(false).when(ssaDetailsPanel).environmentContainsValidDataForAnalysis(env1);
 		Mockito.doReturn(false).when(ssaDetailsPanel).environmentContainsValidDataForAnalysis(env2);
-		invalidEnvironments = this.ssaEnvironmentsComponent.getInvalidEnvironments();
+		invalidEnvironments = this.ssaEnvironmentsComponent.getInvalidEnvironments(true);
 		Assert.assertTrue(invalidEnvironments.size() == 2);
 		Assert.assertEquals(env1.getEnvironmentName(), invalidEnvironments.get(0));
 		Assert.assertEquals(env2.getEnvironmentName(), invalidEnvironments.get(1));

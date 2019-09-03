@@ -1,8 +1,11 @@
 package org.generationcp.ibpworkbench.actions.breedingview.singlesiteanalysis;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
+import com.vaadin.data.Container;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.Notification;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisEnvironmentsComponent;
 import org.junit.Assert;
@@ -14,12 +17,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import com.vaadin.data.Container;
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.Window.Notification;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class SSAEnvironmentsFooterCheckboxListenerTest {
 	
@@ -69,7 +68,7 @@ public class SSAEnvironmentsFooterCheckboxListenerTest {
 		Mockito.doReturn(false).when(this.property).getValue();
 		this.listener.valueChange(this.event);
 		
-		Mockito.verify(this.environmentsComponent, Mockito.never()).getInvalidEnvironments();
+		Mockito.verify(this.environmentsComponent, Mockito.never()).getInvalidEnvironments(true);
 		Mockito.verifyZeroInteractions(this.window);
 		Mockito.verify(this.environmentsTable).refreshRowCache();
 		Assert.assertFalse(model1.getActive());
@@ -79,10 +78,10 @@ public class SSAEnvironmentsFooterCheckboxListenerTest {
 	@Test
 	public void testFooterCheckboxSelectedAllValidEnvironments(){
 		Mockito.doReturn(true).when(this.property).getValue();
-		Mockito.doReturn(new ArrayList<String>()).when(this.environmentsComponent).getInvalidEnvironments();
+		Mockito.doReturn(new ArrayList<String>()).when(this.environmentsComponent).getInvalidEnvironments(true);
 		this.listener.valueChange(this.event);
 		
-		Mockito.verify(this.environmentsComponent).getInvalidEnvironments();
+		Mockito.verify(this.environmentsComponent).getInvalidEnvironments(true);
 		Mockito.verifyZeroInteractions(this.window);
 		Mockito.verify(this.environmentsTable, Mockito.never()).refreshRowCache();
 		Assert.assertTrue(model1.getActive());
@@ -91,10 +90,10 @@ public class SSAEnvironmentsFooterCheckboxListenerTest {
 	@Test
 	public void testFooterCheckboxSelectedWithInvalidEnvironment(){
 		Mockito.doReturn(true).when(this.property).getValue();
-		Mockito.doReturn(Arrays.asList("ENV 1")).when(this.environmentsComponent).getInvalidEnvironments();
+		Mockito.doReturn(Arrays.asList("ENV 1")).when(this.environmentsComponent).getInvalidEnvironments(true);
 		this.listener.valueChange(this.event);
 		
-		Mockito.verify(this.environmentsComponent).getInvalidEnvironments();
+		Mockito.verify(this.environmentsComponent).getInvalidEnvironments(true);
 		Mockito.verify(this.window).showNotification(Matchers.any(Notification.class));
 		Mockito.verify(this.environmentsTable, Mockito.never()).refreshRowCache();
 		Assert.assertTrue(model1.getActive());

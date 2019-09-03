@@ -340,19 +340,21 @@ public class SingleSiteAnalysisEnvironmentsComponent extends VerticalLayout
 		return envs;
 	}
 
-	public List<String> getInvalidEnvironments() {
+	public List<String> getInvalidEnvironments(final boolean allEnvironments) {
 
 		final List<String> invalidEnvs = new ArrayList<>();
 
 		for (final Iterator<?> itr = this.tblEnvironmentSelection.getContainerDataSource().getItemIds().iterator(); itr.hasNext();) {
 			final SeaEnvironmentModel m = (SeaEnvironmentModel) itr.next();
 
-			if (m.getActive()) {
+			if (allEnvironments || m.getActive()) {
 				final Boolean valid = this.ssaDetailsPanel.environmentContainsValidDataForAnalysis(m);
 
 				if (!valid) {
 					invalidEnvs.add(m.getEnvironmentName());
 					m.setActive(false);
+				} else {
+					m.setActive(true);
 				}
 			}
 		}
