@@ -14,7 +14,6 @@ import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.help.document.HelpModule;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
@@ -30,7 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -142,7 +140,6 @@ public class AddProgramView extends Panel implements InitializingBean {
 		this.cancelButton.setDebugId("cancelBtn");
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CROP_MANAGEMENT', 'ROLE_MANAGE_PROGRAMS', 'ROLE_ADD_PROGRAM')")
 	protected void addProgramMembersTab(final TabSheet tabSheet, final VerticalLayout programMembersContainer) {
 
 		// Do not display the Program Members tab if BMS is in single user mode.
