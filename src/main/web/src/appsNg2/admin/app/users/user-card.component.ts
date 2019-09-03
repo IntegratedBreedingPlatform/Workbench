@@ -109,6 +109,14 @@ export class UserCard implements OnInit {
         });
     }
 
+    onSelectAllCrops($event: any) {
+        if ($event.currentTarget.checked) {
+            this.model.crops = Object.assign([], this.crops);
+        } else {
+            this.model.crops = [];
+        }
+    }
+
     addUser() {
         this.userService
             .save(this.trimAll(this.model))
