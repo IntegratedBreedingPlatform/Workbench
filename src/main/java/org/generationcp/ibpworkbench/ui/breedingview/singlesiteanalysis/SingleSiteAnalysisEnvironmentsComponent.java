@@ -1,12 +1,15 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
+import com.vaadin.data.Property;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Select;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.ColumnGenerator;
+import com.vaadin.ui.VerticalLayout;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -27,15 +30,11 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.Property;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Select;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Table.ColumnGenerator;
-import com.vaadin.ui.VerticalLayout;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 @Configurable
 public class SingleSiteAnalysisEnvironmentsComponent extends VerticalLayout
@@ -341,20 +340,22 @@ public class SingleSiteAnalysisEnvironmentsComponent extends VerticalLayout
 		return envs;
 	}
 
-	public List<String> getInvalidEnvironments() {
+	public List<String> getInvalidEnvironments(final boolean allEnvironments) {
 
 		final List<String> invalidEnvs = new ArrayList<>();
 
 		for (final Iterator<?> itr = this.tblEnvironmentSelection.getContainerDataSource().getItemIds().iterator(); itr.hasNext();) {
 			final SeaEnvironmentModel m = (SeaEnvironmentModel) itr.next();
 
-			final Boolean valid = this.ssaDetailsPanel.environmentContainsValidDataForAnalysis(m);
+			if (allEnvironments || m.getActive()) {
+				final Boolean valid = this.ssaDetailsPanel.environmentContainsValidDataForAnalysis(m);
 
-			if (!valid) {
-				invalidEnvs.add(m.getEnvironmentName());
-				m.setActive(false);
-			} else {
-				m.setActive(true);
+				if (!valid) {
+					invalidEnvs.add(m.getEnvironmentName());
+					m.setActive(false);
+				} else {
+					m.setActive(true);
+				}
 			}
 		}
 
