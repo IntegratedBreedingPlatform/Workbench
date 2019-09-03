@@ -55,12 +55,12 @@ public class SSAEnvironmentsFooterCheckboxListenerTest {
 		Mockito.doReturn(this.container).when(this.environmentsTable).getContainerDataSource();
 		
 		this.model1 = new SeaEnvironmentModel();
-		model1.setLocationId(1);
-		model1.setActive(true);
+		this.model1.setLocationId(1);
+		this.model1.setActive(true);
 		this.model2 = new SeaEnvironmentModel();
-		model2.setLocationId(2);
-		model2.setActive(true);
-		Mockito.doReturn(Arrays.asList(model1, model2)).when(this.container).getItemIds();
+		this.model2.setLocationId(2);
+		this.model2.setActive(true);
+		Mockito.doReturn(Arrays.asList(this.model1, this.model2)).when(this.container).getItemIds();
 	}
 	
 	@Test
@@ -71,8 +71,8 @@ public class SSAEnvironmentsFooterCheckboxListenerTest {
 		Mockito.verify(this.environmentsComponent, Mockito.never()).getInvalidEnvironments(true);
 		Mockito.verifyZeroInteractions(this.window);
 		Mockito.verify(this.environmentsTable).refreshRowCache();
-		Assert.assertFalse(model1.getActive());
-		Assert.assertFalse(model2.getActive());
+		Assert.assertFalse(this.model1.getActive());
+		Assert.assertFalse(this.model2.getActive());
 	}
 	
 	@Test
@@ -84,8 +84,8 @@ public class SSAEnvironmentsFooterCheckboxListenerTest {
 		Mockito.verify(this.environmentsComponent).getInvalidEnvironments(true);
 		Mockito.verifyZeroInteractions(this.window);
 		Mockito.verify(this.environmentsTable, Mockito.never()).refreshRowCache();
-		Assert.assertTrue(model1.getActive());
-		Assert.assertTrue(model2.getActive());
+		Assert.assertTrue(this.model1.getActive());
+		Assert.assertTrue(this.model2.getActive());
 	}
 	@Test
 	public void testFooterCheckboxSelectedWithInvalidEnvironment(){
@@ -96,8 +96,8 @@ public class SSAEnvironmentsFooterCheckboxListenerTest {
 		Mockito.verify(this.environmentsComponent).getInvalidEnvironments(true);
 		Mockito.verify(this.window).showNotification(Matchers.any(Notification.class));
 		Mockito.verify(this.environmentsTable, Mockito.never()).refreshRowCache();
-		Assert.assertTrue(model1.getActive());
-		Assert.assertTrue(model2.getActive());
+		Assert.assertTrue(this.model1.getActive());
+		Assert.assertTrue(this.model2.getActive());
 	}
 
 }
