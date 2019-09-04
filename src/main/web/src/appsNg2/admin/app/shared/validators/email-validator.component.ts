@@ -12,7 +12,7 @@ export const EMAIL_LOCAL_PART_REGEX = '^[_A-Za-z0-9-+]+(\\.[_A-Za-z0-9-]+)*';
 })
 export class EmailValidator { }
 
-function validateEmail(c: FormControl) {
+export function validateEmail(c: FormControl) {
   let EMAIL_REGEXP = new RegExp(EMAIL_LOCAL_PART_REGEX + "@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*(\.[A-Za-z]{2,})$" , "i");
 
   return EMAIL_REGEXP.test(c.value) ? null : {
