@@ -101,6 +101,10 @@ users-admin app-dialog div.modal-footer > .message {
     display: inline-block;
 }
 
+.select2-search {
+    z-index: auto;
+}
+
 .mandatory-asterisk:after,
 .form-group.required .control-label:after {
     content:"*";
