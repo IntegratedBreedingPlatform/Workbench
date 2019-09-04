@@ -19,6 +19,7 @@ import com.vaadin.ui.Layout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
+import org.generationcp.commons.security.AuthorizationService;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -59,6 +60,9 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 
 	@Autowired
 	private PlatformTransactionManager transactionManager;
+
+	@Autowired
+	private AuthorizationService authorizationService;
 
 	private Label heading;
 
@@ -184,6 +188,9 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 		this.messageSource = messageSource;
 	}
 
+	public void setAuthorizationService(final AuthorizationService authorizationService) {
+		this.authorizationService = authorizationService;
+	}
 
 	class SaveProjectButtonListener implements Button.ClickListener {
 
@@ -197,11 +204,15 @@ public class CreateProjectPanel extends Panel implements InitializingBean {
 					protected void doInTransactionWithoutResult(final TransactionStatus status) {
 						final Project newlyCreatedProgram = CreateProjectPanel.this.presenter.doAddNewProgram();
 
+						CreateProjectPanel.this.authorizationService.reloadAuthorities(newlyCreatedProgram);
+
 						MessageNotifier.showMessage(clickEvent.getComponent().getWindow(),
 								CreateProjectPanel.this.messageSource.getMessage(Message.SUCCESS),
 								newlyCreatedProgram.getProjectName() + " program has been successfully created.");
 
 						CreateProjectPanel.this.presenter.enableProgramMethodsAndLocationsTab(clickEvent.getComponent().getWindow());
+
+
 					}
 				});
 

@@ -113,12 +113,7 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 		this.tabSheet.getTab(this.basicDetailsPanel).setCaption(this.messageSource.getMessage(Message.BASIC_DETAILS_LABEL));
 
 		// Program Members tab - only for admin users
-		try {
-			this.addProgramMembersTab(this.tabSheet, this.programMembersPanel);
-		} catch (final AccessDeniedException e) {
-			// Do not do anything as the screen should be displayed, just this tab shouldn't appear for non-admins
-			LOG.debug(e.getMessage(), e);
-		}
+		this.addProgramMembersTab(this.tabSheet, this.programMembersPanel);
 
 		// Locations tab
 		this.tabSheet.addTab(this.programLocationsView);
@@ -179,7 +174,6 @@ public class ProgramAdministrationPanel extends Panel implements InitializingBea
 		return tab;
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_CROP_MANAGEMENT','ROLE_MANAGE_PROGRAMS', 'ROLE_ADD_PROGRAM', 'ROLE_MANAGE_PROGRAM_SETTINGS')")
 	protected void addProgramMembersTab(final TabSheet tabSheet, final ProgramMembersPanel programMembersPanel) {
 
 		// Do not display the Program Members tab if BMS is in single user mode.
