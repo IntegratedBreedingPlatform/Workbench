@@ -10,6 +10,7 @@ import { Select2OptionData } from 'ng2-select2';
 import { UserRole } from '../shared/models/user-role.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CropService } from '../shared/services/crop.service';
+import { EMAIL_LOCAL_PART_REGEX } from '../shared/validators/email-validator.component';
 
 @Component({
     selector: 'user-card',
@@ -18,6 +19,8 @@ import { CropService } from '../shared/services/crop.service';
 })
 
 export class UserCard implements OnInit {
+
+    EMAIL_LOCAL_PART_REGEX = EMAIL_LOCAL_PART_REGEX;
 
     active: boolean = true;
 

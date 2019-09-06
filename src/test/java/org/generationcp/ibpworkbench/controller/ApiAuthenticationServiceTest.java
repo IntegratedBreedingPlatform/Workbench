@@ -56,16 +56,15 @@ public class ApiAuthenticationServiceTest {
 		final ArgumentCaptor<URI> urlCaptor = ArgumentCaptor.forClass(URI.class);
 		Mockito.when(this.restClient.postForObject(urlCaptor.capture(), Mockito.any(), Mockito.eq(Token.class))).thenReturn(testToken);
 
-		final String user = RandomStringUtils.randomAlphabetic(5);
-		final String passwordWithSpecialCharacters = "~!@#$%^&*()_+{}|:\"<>?`1234567890-=[]\\;',./ a";
-		final Token token = this.apiAuthenticationService.authenticate(user, passwordWithSpecialCharacters);
+		final String specialCharacters = "~!@#$%^&*()_+{}|:\"<>?`1234567890-=[]\\;',./ a";
+		final Token token = this.apiAuthenticationService.authenticate(specialCharacters, specialCharacters);
 		Assert.assertEquals(testToken.getToken(), token.getToken());
 		Assert.assertEquals(testToken.getExpires(), token.getExpires());
 		final URI urlUsedForTokenResource = urlCaptor.getValue();
 		Assert.assertEquals(
-			"Token authentication request URL must use BMSAPI URL from property files",
-			API_URL + "authenticate?username=" + user + "&password=" + this.apiAuthenticationService
-				.encode(passwordWithSpecialCharacters),
+			"Token authentication request URL must use BMSAPI URL from property files", API_URL
+				+ "authenticate?username=" + this.apiAuthenticationService.encode(specialCharacters)
+				+ "&password=" + this.apiAuthenticationService.encode(specialCharacters),
 			urlUsedForTokenResource.toString());
 	}
 
