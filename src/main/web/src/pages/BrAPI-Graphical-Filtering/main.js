@@ -1,4 +1,7 @@
+var currentData;
+
 $(document).ready(function () {
+
 	var run = false;
 	$("#brapi-form").submit(function () {
 		if (run) {
@@ -138,6 +141,18 @@ function loadBrAPIData(parameters) {
 	});
 }
 
+function tryParseInt(str, defaultValue) {
+	var retValue = defaultValue;
+	if(str !== null) {
+		if(str.length > 0) {
+			if (!isNaN(str)) {
+				retValue = parseInt(str);
+			}
+		}
+	}
+	return retValue;
+}
+
 // filters and modifies the response and then creates the root filter object
 // and datatable
 function useBrAPIData(response, groupByAccession) {
@@ -151,7 +166,7 @@ function useBrAPIData(response, groupByAccession) {
 				}
 			});
 			observeUnit.observations.forEach(function (obs) {
-				newObj[obs.observationVariableName] = obs.value;
+				newObj[obs.observationVariableName] = tryParseInt(obs.value, obs.value);
 				traits[obs.observationVariableName] = true;
 			});
 			return newObj;
@@ -165,6 +180,7 @@ function useBrAPIData(response, groupByAccession) {
 		})
 	});
 	var tableCols = [
+		{title: "TrialInstance", data: "instanceNumber"},
 		{title: "StudyDbId", data: "studyDbId"},
 		{title: "Study", data: "studyName"},
 		{title: "Name", data: "observationUnitName"},
@@ -206,9 +222,13 @@ function useBrAPIData(response, groupByAccession) {
 		return {title: d, data: d.replace(/\./g, "\\.")};
 	}));
 
+	currentData = data;
+
 	// create the root filter object and datatable
 	var gfilter = GraphicalFilter();
 	gfilter.create("#filter_div", "#filtered_results", data, tableCols, trait_names);
+
+
 }
 
 function beforeSend(xhr) {
@@ -223,3 +243,65 @@ function error(data) {
 		window.top.location.href = '/ibpworkbench/logout';
 	}
 }
+
+
+// Angular ****************************
+
+var mainApp = angular.module('mainApp', []);
+
+mainApp.controller('MainController', function MainController($scope) {
+
+	// TODO: Fetch predefined R call objects from server
+	$scope.rCallObjects = [
+		{
+			description: 'MEAN: Traits over Trial Instance per Entry Number',
+			endpoint: 'http://public.opencpu.org/ocpu/library/reshape/R/cast/csv',
+			params: {formula: 'entryNumber~variable+instanceNumber'},
+			meltVariables: 'c(\"instanceNumber\",\"blockNumber\",\"entryNumber\",\"entryType\",\"germplasmDbId\",\"germplasmName\",\"observationLevel\",\"observationLevels\",\"observationUnitDbId\",\"observationUnitName\",\"plantNumber\",\"plotNumber\",\"programName\",\"replicate\",\"studyDbId\",\"studyLocation\",\"studyLocationDbId\",\"studyName\",\"x\",\"y\")'
+		},
+		{
+			description: 'PLOT: Average of traits per germplasm and instance',
+			endpoint: 'http://public.opencpu.org/ocpu/library/reshape/R/cast/csv',
+			params: {formula: 'instanceNumber+entryNumber~variable', 'fun.aggregate': 'mean'},
+			meltVariables: 'c(\"instanceNumber\",\"blockNumber\",\"entryNumber\",\"entryType\",\"germplasmDbId\",\"germplasmName\",\"observationLevel\",\"observationLevels\",\"observationUnitDbId\",\"observationUnitName\",\"plantNumber\",\"plotNumber\",\"programName\",\"replicate\",\"studyDbId\",\"studyLocation\",\"studyLocationDbId\",\"studyName\",\"x\",\"y\")'
+		}
+	];
+
+	$scope.selectedRCallObject = $scope.rCallObjects[1];
+
+	$scope.onExportClick = function () {
+		if (currentData) {
+			transform($scope.selectedRCallObject, currentData);
+		}
+	};
+
+	function transform(rObject, data) {
+		var meltParams = {id: rObject.meltVariables, data: JSON.stringify(currentData)};
+		// melt the data first before transforming
+		executeOpenCPU('http://public.opencpu.org/ocpu/library/reshape/R/melt/json', meltParams).then(function (moltenData) {
+			rObject.params.data = JSON.stringify(moltenData);
+			// transform the molten data through R cast function
+			return executeOpenCPU(rObject.endpoint, rObject.params);
+		}).then(function (result) {
+			// download the transformed data as CSV.
+			download(result);
+		})
+	}
+
+	function executeOpenCPU(url, parameters) {
+		var deferred = $.Deferred();
+		// perform the request
+		$.post(url, parameters, function (data) {
+			deferred.resolve(data)
+		});
+		return deferred.promise();
+	}
+
+	function download(data) {
+		var link = window.document.createElement('a');
+		var blob = new Blob([data]);
+		link.href = window.URL.createObjectURL(blob);
+		link.download = 'datafile.csv';
+		link.click();
+	}
+});
