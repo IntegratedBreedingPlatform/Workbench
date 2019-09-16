@@ -143,8 +143,8 @@ function loadBrAPIData(parameters) {
 
 function tryParseInt(str, defaultValue) {
 	var retValue = defaultValue;
-	if(str !== null) {
-		if(str.length > 0) {
+	if (str !== null) {
+		if (str.length > 0) {
 			if (!isNaN(str)) {
 				retValue = parseInt(str);
 			}
@@ -247,9 +247,11 @@ function error(data) {
 
 // Angular ****************************
 
-var mainApp = angular.module('mainApp', []);
+var mainApp = angular.module('mainApp', ['loadingStatus']);
 
-mainApp.controller('MainController', function MainController($scope) {
+mainApp.controller('MainController', function MainController($scope, $http, $q) {
+
+	$scope.errorMessage = '';
 
 	// TODO: Fetch predefined R call objects from server
 	$scope.rCallObjects = [
@@ -267,11 +269,12 @@ mainApp.controller('MainController', function MainController($scope) {
 		}
 	];
 
-	$scope.selectedRCallObject = $scope.rCallObjects[1];
+	$scope.selectedRCallObject = $scope.rCallObjects[0];
 
 	$scope.onExportClick = function () {
+		$scope.errorMessage = '';
 		if (currentData) {
-			transform($scope.selectedRCallObject, currentData);
+			transform(angular.copy($scope.selectedRCallObject), currentData);
 		}
 	};
 
@@ -289,12 +292,19 @@ mainApp.controller('MainController', function MainController($scope) {
 	}
 
 	function executeOpenCPU(url, parameters) {
-		var deferred = $.Deferred();
+		var deferred = $q.defer();
 		// perform the request
-		$.post(url, parameters, function (data) {
-			deferred.resolve(data)
+		$http({
+			method: 'POST',
+			url: url,
+			data: $.param(parameters),
+			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+		}).success(function (data) {
+			deferred.resolve(data);
+		}).error(function (message) {
+			$scope.errorMessage = message;
 		});
-		return deferred.promise();
+		return deferred.promise;
 	}
 
 	function download(data) {
@@ -304,4 +314,51 @@ mainApp.controller('MainController', function MainController($scope) {
 		link.download = 'datafile.csv';
 		link.click();
 	}
+});
+
+
+angular.module('loadingStatus', []).config(function ($httpProvider) {
+	$httpProvider.interceptors.push('loadingStatusInterceptor');
+}).directive('loadingStatusMessage', function () {
+	return {
+		link: function ($scope, $element, attrs) {
+			var show = function () {
+				$element.css('display', 'block');
+			};
+			var hide = function () {
+				$element.css('display', 'none');
+			};
+			$scope.$on('loadingStatusActive', show);
+			$scope.$on('loadingStatusInactive', hide);
+			hide();
+		}
+	};
+}).factory('loadingStatusInterceptor', function ($q, $rootScope) {
+	var activeRequests = 0;
+	var started = function () {
+		if (activeRequests == 0) {
+			$rootScope.$broadcast('loadingStatusActive');
+		}
+		activeRequests++;
+	};
+	var ended = function () {
+		activeRequests--;
+		if (activeRequests == 0) {
+			$rootScope.$broadcast('loadingStatusInactive');
+		}
+	};
+	return {
+		request: function (config) {
+			started();
+			return config || $q.when(config);
+		},
+		response: function (response) {
+			ended();
+			return response || $q.when(response);
+		},
+		responseError: function (rejection) {
+			ended();
+			return $q.reject(rejection);
+		}
+	};
 });
